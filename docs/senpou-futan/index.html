@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>振込手数料 先方負担 計算ツール｜差引額がすぐわかる【無料】</title>
-<meta name="description" content="振込手数料が先方負担のとき、請求額からいくら差し引いて振り込めばよいかを自動計算。差引前基準・差引後基準・一律差引の3方式に対応。入金額が請求額より少ないときの手数料差引チェックもできます。登録不要・無料。">
+<meta name="description" content="振込手数料が先方負担のとき、請求額からいくら差し引いて振り込めばよいかを自動計算。銀行実務の3方式(据置型・未満手数料加算型・以上手数料加算型)と一律差引に対応、主要銀行の手数料プリセットつき。入金額が請求額より少ないときの手数料差引チェックも。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <script type="application/ld+json">
 {
@@ -18,8 +18,8 @@
     },
     {
       "@type": "Question",
-      "name": "差引前基準と差引後基準の違いは？",
-      "acceptedAnswer": {"@type": "Answer", "text": "差し引く手数料をどの金額で判定するかの違いです。差引前基準は請求額(差引前)に対する手数料区分を使い、差引後基準は実際の振込額(差引後)に対する手数料区分を使います。請求額が3万円前後のときに差額が生じるため、取引先の規程に合わせる必要があります。"}
+      "name": "先方負担の差引額の決め方に種類はありますか？",
+      "acceptedAnswer": {"@type": "Answer", "text": "銀行の法人向けインターネットバンキングでは主に3方式があります。据置型(請求額を3万円と比較・当方有利)、未満手数料加算型(基準額=3万円+3万円未満の手数料)、以上手数料加算型(基準額=3万円+3万円以上の手数料・先方有利)です。請求額が3万円前後のとき方式によって差引額が変わるため、取引先の規程に合わせる必要があります。"}
     },
     {
       "@type": "Question",
@@ -40,15 +40,17 @@
     <label for="invoice">請求額(振込予定額・円)</label>
     <input type="number" id="invoice" inputmode="numeric" placeholder="例: 110000" min="1">
 
-    <label>差引方式</label>
+    <label>差引方式（取引先・自社の規程に合わせて選択）</label>
     <div class="radio-row" id="method">
-      <label><input type="radio" name="method" value="sashihiki_mae" checked>差引前基準<br><small>請求額で手数料を判定</small></label>
-      <label><input type="radio" name="method" value="sashihiki_go">差引後基準<br><small>振込額で手数料を判定</small></label>
+      <label><input type="radio" name="method" value="sueoki" checked>据置型<br><small>差引前基準・当方有利。多くの銀行の初期設定</small></label>
+      <label><input type="radio" name="method" value="mikan_kasan">未満手数料加算型<br><small>基準額＝3万円＋未満手数料</small></label>
+      <label><input type="radio" name="method" value="ijo_kasan">以上手数料加算型<br><small>差引後基準・先方有利</small></label>
       <label><input type="radio" name="method" value="flat">一律差引<br><small>550円などの固定額</small></label>
     </div>
 
     <div id="fee-inputs">
       <label>振込手数料(税込・円)</label>
+      <select id="bankPreset" style="margin-bottom:10px"><option value="">銀行から選ぶ（他行宛・2026年7月確認）／手入力</option></select>
       <div class="fee-pair">
         <div>
           <label for="feeUnder" style="font-weight:400;font-size:13px;margin-top:0">3万円未満</label>
@@ -59,7 +61,6 @@
           <input type="number" id="feeOver" inputmode="numeric" placeholder="例: 440">
         </div>
       </div>
-      <select id="bankPreset" style="margin-top:10px"><option value="">銀行から選ぶ(準備中) / 手入力</option></select>
     </div>
 
     <div id="flat-input" style="display:none">
@@ -86,10 +87,12 @@
     <h2>よくある質問</h2>
     <h3>「先方負担」とは？</h3>
     <p>振込手数料を受取側(請求した側)が負担する取り決めです。支払側は請求額から手数料相当額を差し引いた金額を振り込みます。</p>
-    <h3>差引前基準と差引後基準の違いは？</h3>
-    <p>差し引く手数料を「請求額(差引前)」で判定するか「振込額(差引後)」で判定するかの違いです。請求額が3万円前後のとき結果が変わることがあり、どちらを使うかは取引先の規程・商慣行によります。本ツールは両方式に対応し、境界帯では注意書きを表示します。</p>
+    <h3>差引額の決め方の「3方式」とは？</h3>
+    <p>銀行の法人向けインターネットバンキングには主に「据置型(請求額を3万円と比較・当方有利)」「未満手数料加算型(基準額＝3万円＋未満手数料)」「以上手数料加算型(基準額＝3万円＋以上手数料・先方有利)」の3方式があり、どれを使うかは会社側の設定です。請求額が3万円前後のとき方式で差引額が変わるため、本ツールは差が出る帯では3方式の結果を並べて表示します。</p>
     <h3>一律550円が差し引かれるのはなぜ？</h3>
     <p>実際の手数料額にかかわらず「一律550円(または660円等)を差し引く」と規程で定めている会社があるためです。この場合は「一律差引」を選んでください。</p>
+    <h3>銀行プリセットの手数料はいつ時点のもの？</h3>
+    <p>2026年7月に各銀行の公式サイトで確認した「他行宛・インターネットバンキング経由」の税込手数料です。無料回数の特典や同行宛の割引は含みません。改定されることがあるため、確実を期す場合は銀行の最新の手数料表をご確認ください。</p>
   </section>
 </main>
 <footer class="site">
@@ -97,10 +100,27 @@
   © 経理ミニツールズ
 </footer>
 <script type="module">
-import { calcMae, calcGo, calcFlat, explainShortfall, COMMON_FEES } from "../assets/senpou_core.js";
+import { calc, calcFlat, METHODS, methodsDisagree, explainShortfall } from "../assets/senpou_core.js";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => n.toLocaleString("ja-JP") + " 円";
+
+// 銀行プリセット
+fetch("../assets/fee_table.json").then((r) => r.json()).then((data) => {
+  const sel = $("bankPreset");
+  data.banks.forEach((b, i) => {
+    const o = document.createElement("option");
+    o.value = i;
+    o.textContent = `${b.name}　${b.under30k}円 / ${b.over30k}円`;
+    sel.appendChild(o);
+  });
+  sel.addEventListener("change", () => {
+    if (sel.value === "") return;
+    const b = data.banks[Number(sel.value)];
+    $("feeUnder").value = b.under30k;
+    $("feeOver").value = b.over30k;
+  });
+});
 
 document.querySelectorAll('input[name="method"]').forEach((r) =>
   r.addEventListener("change", () => {
@@ -114,35 +134,35 @@ $("calc").addEventListener("click", () => {
   const invoice = Number($("invoice").value);
   const method = document.querySelector('input[name="method"]:checked').value;
   const box = $("result");
-  if (!invoice || invoice <= 0) { box.style.display = "block"; box.innerHTML = "請求額を入力してください。"; return; }
-  let html = "";
+  box.style.display = "block";
+  if (!invoice || invoice <= 0) { box.innerHTML = "請求額を入力してください。"; return; }
+
   if (method === "flat") {
     const flatFee = Number($("flatFee").value) || 0;
     const r = calcFlat(invoice, flatFee);
-    html = render(invoice, r.fee, r.transfer, []);
-  } else {
-    const feeTable = { under30k: Number($("feeUnder").value), over30k: Number($("feeOver").value) };
-    if (Number.isNaN(feeTable.under30k) || Number.isNaN(feeTable.over30k) || $("feeUnder").value === "" || $("feeOver").value === "") {
-      box.style.display = "block"; box.innerHTML = "振込手数料(3万円未満/以上)を入力してください。"; return;
-    }
-    if (method === "sashihiki_mae") {
-      const r = calcMae(invoice, feeTable);
-      html = render(invoice, r.fee, r.transfer, r.notes);
-    } else {
-      const r = calcGo(invoice, feeTable);
-      html = r.candidates.map((c) => render(invoice, c.fee, c.transfer, [])).join("<hr>");
-      html += r.notes.map((n) => `<div class="note">${n}</div>`).join("");
-    }
+    box.innerHTML = render(invoice, r.fee, r.transfer);
+    return;
   }
-  box.style.display = "block";
+  const feeTable = { under30k: Number($("feeUnder").value), over30k: Number($("feeOver").value) };
+  if ($("feeUnder").value === "" || $("feeOver").value === "") {
+    box.innerHTML = "振込手数料(3万円未満/以上)を入力するか、銀行を選んでください。"; return;
+  }
+  const r = calc(method, invoice, feeTable);
+  let html = render(invoice, r.fee, r.transfer, METHODS[method].label);
+  if (methodsDisagree(invoice, feeTable)) {
+    const rows = ["sueoki", "mikan_kasan", "ijo_kasan"].map((m) => {
+      const x = calc(m, invoice, feeTable);
+      return `${METHODS[m].label}: 差引 ${yen(x.fee)} → 振込 ${yen(x.transfer)}`;
+    });
+    html += `<div class="note">この請求額は3万円境界の付近で、<b>方式によって差引額が変わります</b>。取引先の規程を確認してください。<br>${rows.join("<br>")}</div>`;
+  }
   box.innerHTML = html;
 });
 
-function render(invoice, fee, transfer, notes) {
+function render(invoice, fee, transfer, methodLabel) {
   return `
     <div class="row">振込額 <span class="big">${yen(transfer)}</span></div>
-    <div class="row">差し引く手数料: ${yen(fee)}（請求額 ${yen(invoice)}）</div>
-    ${notes.map((n) => `<div class="note">${n}</div>`).join("")}`;
+    <div class="row">差し引く手数料: ${yen(fee)}（請求額 ${yen(invoice)}${methodLabel ? "・" + methodLabel : ""}）</div>`;
 }
 
 $("check").addEventListener("click", () => {
@@ -151,7 +171,7 @@ $("check").addEventListener("click", () => {
   const box = $("checkResult");
   box.style.display = "block";
   if (!invoice || !received) { box.innerHTML = "請求額と入金額を入力してください。"; return; }
-  const e = explainShortfall(invoice, received, COMMON_FEES);
+  const e = explainShortfall(invoice, received);
   if (e.verdict === "match") box.innerHTML = "差額はありません。全額入金されています。";
   else if (e.verdict === "overpaid") box.innerHTML = `入金が請求より ${yen(-e.diff)} 多い状態です(過入金)。`;
   else if (e.verdict === "likely_fee")
