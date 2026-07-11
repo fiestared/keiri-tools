@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>振込手数料 先方負担 計算ツール｜差引額がすぐわかる【無料】</title>
+<meta name="description" content="振込手数料が先方負担のとき、請求額からいくら差し引いて振り込めばよいかを自動計算。差引前基準・差引後基準・一律差引の3方式に対応。入金額が請求額より少ないときの手数料差引チェックもできます。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "振込手数料の「先方負担」とは何ですか？",
+      "acceptedAnswer": {"@type": "Answer", "text": "振込手数料を受取側(請求した側)が負担する取り決めのことです。支払側は請求額から振込手数料相当額を差し引いた金額を振り込みます。"}
+    },
+    {
+      "@type": "Question",
+      "name": "差引前基準と差引後基準の違いは？",
+      "acceptedAnswer": {"@type": "Answer", "text": "差し引く手数料をどの金額で判定するかの違いです。差引前基準は請求額(差引前)に対する手数料区分を使い、差引後基準は実際の振込額(差引後)に対する手数料区分を使います。請求額が3万円前後のときに差額が生じるため、取引先の規程に合わせる必要があります。"}
+    },
+    {
+      "@type": "Question",
+      "name": "入金額が請求額より数百円少ないのはなぜ？",
+      "acceptedAnswer": {"@type": "Answer", "text": "振込手数料の先方負担(当方負担への切り替え漏れ含む)で、支払側が手数料相当額を差し引いて振り込んだ可能性が高いです。差額が110〜880円程度なら、このページの差額チェックで代表的な手数料額と照合できます。"}
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site"><a href="../">経理ミニツールズ</a><span class="tag">登録不要・ブラウザ内で完結</span></header>
+<main>
+  <h1>振込手数料「先方負担」計算ツール</h1>
+  <p class="lead">請求額からいくら差し引いて振り込めばよいかを計算します。金額はサーバーに送信されず、ブラウザ内だけで処理されます。</p>
+
+  <div class="card">
+    <label for="invoice">請求額(振込予定額・円)</label>
+    <input type="number" id="invoice" inputmode="numeric" placeholder="例: 110000" min="1">
+
+    <label>差引方式</label>
+    <div class="radio-row" id="method">
+      <label><input type="radio" name="method" value="sashihiki_mae" checked>差引前基準<br><small>請求額で手数料を判定</small></label>
+      <label><input type="radio" name="method" value="sashihiki_go">差引後基準<br><small>振込額で手数料を判定</small></label>
+      <label><input type="radio" name="method" value="flat">一律差引<br><small>550円などの固定額</small></label>
+    </div>
+
+    <div id="fee-inputs">
+      <label>振込手数料(税込・円)</label>
+      <div class="fee-pair">
+        <div>
+          <label for="feeUnder" style="font-weight:400;font-size:13px;margin-top:0">3万円未満</label>
+          <input type="number" id="feeUnder" inputmode="numeric" placeholder="例: 220">
+        </div>
+        <div>
+          <label for="feeOver" style="font-weight:400;font-size:13px;margin-top:0">3万円以上</label>
+          <input type="number" id="feeOver" inputmode="numeric" placeholder="例: 440">
+        </div>
+      </div>
+      <select id="bankPreset" style="margin-top:10px"><option value="">銀行から選ぶ(準備中) / 手入力</option></select>
+    </div>
+
+    <div id="flat-input" style="display:none">
+      <label for="flatFee">差し引く固定額(円)</label>
+      <input type="number" id="flatFee" inputmode="numeric" value="550">
+    </div>
+
+    <button class="primary" id="calc">計算する</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:17px;margin-top:0">入金差額チェック（消込用）</h2>
+    <p class="lead" style="margin-bottom:4px">入金が請求よりも少ないとき、差額が振込手数料で説明できるかを判定します。</p>
+    <div class="fee-pair">
+      <div><label for="chkInvoice">請求額(円)</label><input type="number" id="chkInvoice" inputmode="numeric" placeholder="110000"></div>
+      <div><label for="chkReceived">入金額(円)</label><input type="number" id="chkReceived" inputmode="numeric" placeholder="109560"></div>
+    </div>
+    <button class="primary" id="check">差額を判定する</button>
+    <div class="result" id="checkResult"></div>
+  </div>
+
+  <section class="faq">
+    <h2>よくある質問</h2>
+    <h3>「先方負担」とは？</h3>
+    <p>振込手数料を受取側(請求した側)が負担する取り決めです。支払側は請求額から手数料相当額を差し引いた金額を振り込みます。</p>
+    <h3>差引前基準と差引後基準の違いは？</h3>
+    <p>差し引く手数料を「請求額(差引前)」で判定するか「振込額(差引後)」で判定するかの違いです。請求額が3万円前後のとき結果が変わることがあり、どちらを使うかは取引先の規程・商慣行によります。本ツールは両方式に対応し、境界帯では注意書きを表示します。</p>
+    <h3>一律550円が差し引かれるのはなぜ？</h3>
+    <p>実際の手数料額にかかわらず「一律550円(または660円等)を差し引く」と規程で定めている会社があるためです。この場合は「一律差引」を選んでください。</p>
+  </section>
+</main>
+<footer class="site">
+  本ツールの計算結果は目安です。実際の差引額は取引先との取り決め・各銀行の最新の手数料をご確認ください。金額データはブラウザの外へ送信されません。<br>
+  © 経理ミニツールズ
+</footer>
+<script type="module">
+import { calcMae, calcGo, calcFlat, explainShortfall, COMMON_FEES } from "../assets/senpou_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => n.toLocaleString("ja-JP") + " 円";
+
+document.querySelectorAll('input[name="method"]').forEach((r) =>
+  r.addEventListener("change", () => {
+    const flat = document.querySelector('input[name="method"]:checked').value === "flat";
+    $("fee-inputs").style.display = flat ? "none" : "";
+    $("flat-input").style.display = flat ? "" : "none";
+  })
+);
+
+$("calc").addEventListener("click", () => {
+  const invoice = Number($("invoice").value);
+  const method = document.querySelector('input[name="method"]:checked').value;
+  const box = $("result");
+  if (!invoice || invoice <= 0) { box.style.display = "block"; box.innerHTML = "請求額を入力してください。"; return; }
+  let html = "";
+  if (method === "flat") {
+    const flatFee = Number($("flatFee").value) || 0;
+    const r = calcFlat(invoice, flatFee);
+    html = render(invoice, r.fee, r.transfer, []);
+  } else {
+    const feeTable = { under30k: Number($("feeUnder").value), over30k: Number($("feeOver").value) };
+    if (Number.isNaN(feeTable.under30k) || Number.isNaN(feeTable.over30k) || $("feeUnder").value === "" || $("feeOver").value === "") {
+      box.style.display = "block"; box.innerHTML = "振込手数料(3万円未満/以上)を入力してください。"; return;
+    }
+    if (method === "sashihiki_mae") {
+      const r = calcMae(invoice, feeTable);
+      html = render(invoice, r.fee, r.transfer, r.notes);
+    } else {
+      const r = calcGo(invoice, feeTable);
+      html = r.candidates.map((c) => render(invoice, c.fee, c.transfer, [])).join("<hr>");
+      html += r.notes.map((n) => `<div class="note">${n}</div>`).join("");
+    }
+  }
+  box.style.display = "block";
+  box.innerHTML = html;
+});
+
+function render(invoice, fee, transfer, notes) {
+  return `
+    <div class="row">振込額 <span class="big">${yen(transfer)}</span></div>
+    <div class="row">差し引く手数料: ${yen(fee)}（請求額 ${yen(invoice)}）</div>
+    ${notes.map((n) => `<div class="note">${n}</div>`).join("")}`;
+}
+
+$("check").addEventListener("click", () => {
+  const invoice = Number($("chkInvoice").value);
+  const received = Number($("chkReceived").value);
+  const box = $("checkResult");
+  box.style.display = "block";
+  if (!invoice || !received) { box.innerHTML = "請求額と入金額を入力してください。"; return; }
+  const e = explainShortfall(invoice, received, COMMON_FEES);
+  if (e.verdict === "match") box.innerHTML = "差額はありません。全額入金されています。";
+  else if (e.verdict === "overpaid") box.innerHTML = `入金が請求より ${yen(-e.diff)} 多い状態です(過入金)。`;
+  else if (e.verdict === "likely_fee")
+    box.innerHTML = `差額 <b>${yen(e.diff)}</b> は代表的な振込手数料額と一致します。<b>手数料の先方負担(差引)の可能性が高い</b>です。`;
+  else if (e.verdict === "near_fee")
+    box.innerHTML = `差額 ${yen(e.diff)} は振込手数料(${e.near.map(yen).join(", ")})に近い金額です。手数料差引の可能性があります。`;
+  else
+    box.innerHTML = `差額 ${yen(e.diff)} は代表的な振込手数料額と一致しません。値引き・相殺・一部入金など他の要因を確認してください。`;
+});
+</script>
+</body>
+</html>
