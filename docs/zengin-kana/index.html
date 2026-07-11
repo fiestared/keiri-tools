@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>振込名義カナ変換ツール｜全銀フォーマット一括正規化【無料】</title>
+<meta name="description" content="総合振込の受取人名・振込依頼人名を全銀フォーマットへ一括変換。半角カナ変換、株式会社→カ)などの法人略語、小文字・長音・中黒の置換、使用可能文字と30文字チェックまで自動。複数名義をまとめて処理できます。登録不要・無料・データ送信なし。">
+<link rel="stylesheet" href="../assets/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "振込名義で「株式会社」はどう書きますか？",
+      "acceptedAnswer": {"@type": "Answer", "text": "位置によって形式が変わります。先頭なら「カ)」(例: 株式会社ヤマダ→ｶ)ﾔﾏﾀﾞ)、末尾なら「(カ」(例: ヤマダ株式会社→ﾔﾏﾀﾞ(ｶ)、中間なら「(カ)」です。有限会社=ユ、合同会社=ド、医療法人=イなど法人格ごとに略語が定められています。"}
+    },
+    {
+      "@type": "Question",
+      "name": "振込名義に使える文字は？",
+      "acceptedAnswer": {"@type": "Answer", "text": "半角カタカナ(ヲと小文字を除く)、濁点・半濁点、英大文字、数字、記号の括弧・ハイフン・ピリオドです。小文字カナ(ッャュョ等)は大文字に、長音「ー」はハイフンに、中黒「・」はピリオドに置き換えます。"}
+    },
+    {
+      "@type": "Question",
+      "name": "文字数の上限はありますか？",
+      "acceptedAnswer": {"@type": "Answer", "text": "総合振込の受取人名は半角30文字が一般的な上限です(銀行・フォーマットにより異なります)。本ツールは変換後の文字数を表示し、超過時に警告します。"}
+    }
+  ]
+}
+</script>
+</head>
+<body>
+<header class="site"><a href="../">経理ミニツールズ</a><span class="tag">登録不要・ブラウザ内で完結</span></header>
+<main>
+  <h1>振込名義カナ変換（全銀フォーマット一括正規化）</h1>
+  <p class="lead">総合振込の受取人名を貼り付けると、半角カナ・法人略語(株式会社→ｶ)等)・使用可能文字・文字数まで一括で整えます。1行に1名義。データはブラウザの外へ送信されません。</p>
+
+  <div class="card">
+    <label for="names">名義リスト（1行1名義）</label>
+    <textarea id="names" rows="8" style="width:100%;font-size:15px;padding:10px 12px;border:1px solid var(--line);border-radius:8px" placeholder="株式会社ヤマダ&#10;すずき商店&#10;タナカ健康保険組合"></textarea>
+    <button class="primary" id="run">全銀フォーマットに変換する</button>
+    <div id="out" style="margin-top:16px"></div>
+    <button class="primary" id="copyAll" style="display:none;background:#5b6b7b">変換結果をすべてコピー</button>
+  </div>
+
+  <section class="faq">
+    <h2>変換ルール（出典つき）</h2>
+    <h3>法人略語（位置で形式が変わります）</h3>
+    <p>先頭:「カ)」/ 末尾:「(カ」/ 中間:「(カ)」。株式会社=カ、有限会社=ユ、合名会社=メ、合資会社=シ、合同会社=ド、医療法人=イ、財団法人=ザイ、社団法人=シヤ、宗教法人=シユウ、学校法人=ガク、社会福祉法人=フク、NPO法人=トクヒ、独立行政法人=ドク、弁護士法人=ベン、税理士法人=ゼイ、国立大学法人=ダイ。営業所=エイ、出張所=シユツ。連合会=レン、協同組合=キヨウクミ、健康保険組合=ケンポ、生活協同組合=セイキヨウ(事業略語は括弧なし)。</p>
+    <h3>文字の置き換え</h3>
+    <p>ひらがな→半角カタカナ、小文字カナ(ッャュョ等)→大文字、長音「ー」→ハイフン、中黒「・」→ピリオド、英字→半角大文字、「ヲ」→「オ」。使用できるのは半角カナ・英大文字・数字・記号()-.のみ(全銀協の使用文字一覧に基づく)。</p>
+    <h3>漢字の名義について</h3>
+    <p>法人格(株式会社等)以外の漢字は読みが特定できないため自動変換しません。警告が出た行は、カナ読みに直して再変換してください。</p>
+    <h3>注意</h3>
+    <p>文字数上限や一部記号の扱いは銀行・振込フォーマットによって異なることがあります。最終的には各銀行の仕様をご確認ください。</p>
+  </section>
+</main>
+<footer class="site">
+  変換ルールの出典: 全銀協「使用文字一覧」、銀行公式の法人略語一覧(2026年7月確認)。データはブラウザの外へ送信されません。<br>
+  © 経理ミニツールズ
+</footer>
+<script type="module">
+import { normalizeBatch } from "../assets/zengin_core.js";
+
+const $ = (id) => document.getElementById(id);
+let lastResults = [];
+
+$("run").addEventListener("click", () => {
+  const rs = normalizeBatch($("names").value);
+  lastResults = rs;
+  const out = $("out");
+  if (!rs.length) { out.innerHTML = "名義を入力してください。"; return; }
+  out.innerHTML = rs.map((r) => `
+    <div style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:${r.ok ? "#f2f9f6" : "#fff7e6"}">
+      <div style="font-size:12px;color:var(--sub)">${esc(r.input)}</div>
+      <div style="font-size:19px;font-weight:700;font-family:ui-monospace,monospace">${esc(r.output) || "（変換結果なし）"}</div>
+      <div style="font-size:12px;color:var(--sub)">${r.length}文字 ${r.ok ? "✓" : ""}</div>
+      ${r.warnings.map((w) => `<div class="note" style="margin-top:6px">${esc(w)}</div>`).join("")}
+    </div>`).join("");
+  $("copyAll").style.display = "block";
+});
+
+$("copyAll").addEventListener("click", async () => {
+  await navigator.clipboard.writeText(lastResults.map((r) => r.output).join("\n"));
+  $("copyAll").textContent = "コピーしました ✓";
+  setTimeout(() => ($("copyAll").textContent = "変換結果をすべてコピー"), 1500);
+});
+
+function esc(s) {
+  return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+}
+</script>
+</body>
+</html>
