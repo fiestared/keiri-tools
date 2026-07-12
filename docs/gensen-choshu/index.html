@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>源泉徴収税額 計算機｜報酬・原稿料・士業への支払いから自動計算【消費税の扱いも対応】</title>
+<meta name="description" content="原稿料・デザイン料・弁護士や税理士への報酬などから源泉徴収税額を自動計算。10.21%と20.42%の境界（100万円）、司法書士の1万円控除、消費税を区分した場合の扱いまで対応。国税庁の計算式に基づく無料ツール。登録不要。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/gensen-choshu/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {"@type": "WebApplication", "name": "源泉徴収税額 計算機",
+     "applicationCategory": "BusinessApplication", "operatingSystem": "Web",
+     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"},
+     "description": "報酬・料金等の源泉徴収税額を計算します。国税庁の計算式に準拠。"},
+    {"@type": "BreadcrumbList", "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://keiri-tools.com/"},
+      {"@type": "ListItem", "position": 2, "name": "源泉徴収税額 計算機"}]},
+    {"@type": "FAQPage", "mainEntity": [
+      {"@type": "Question", "name": "源泉徴収税額の計算式は？",
+       "acceptedAnswer": {"@type": "Answer", "text": "支払金額が100万円以下の場合は「支払金額×10.21%」、100万円を超える場合は「(支払金額−100万円)×20.42%＋102,100円」です。求めた税額の1円未満の端数は切り捨てます。"}},
+      {"@type": "Question", "name": "消費税込みの金額から源泉徴収しますか？",
+       "acceptedAnswer": {"@type": "Answer", "text": "原則は消費税込みの金額が対象です。ただし請求書等で報酬額と消費税額が明確に区分されている場合は、税抜の報酬額のみを対象にすることができます（所得税基本通達204-2）。"}},
+      {"@type": "Question", "name": "司法書士への報酬は計算式が違うのですか？",
+       "acceptedAnswer": {"@type": "Answer", "text": "はい。司法書士・土地家屋調査士・海事代理士については、1回の支払額から10,000円を差し引いた残額に10.21%を掛けます。弁護士・税理士とは計算式が異なります。"}}]}
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 源泉徴収税額 計算機</nav>
+
+<section class="hero">
+  <h1>源泉徴収税額 計算機</h1>
+  <p>原稿料・デザイン料・士業への報酬などから、源泉徴収する税額を計算します。<b>消費税を区分した場合の扱い</b>と、<b>司法書士の1万円控除</b>にも対応。国税庁の計算式に基づいています。</p>
+</section>
+
+<div class="card">
+  <label for="kind">報酬の種類</label>
+  <select id="kind"></select>
+  <div id="kind-note" style="font-size:12.5px;color:var(--sub);margin-top:5px"></div>
+
+  <label for="fee">報酬額（税抜・円）</label>
+  <input type="number" id="fee" placeholder="例: 100000" inputmode="numeric">
+
+  <label>消費税</label>
+  <div class="radio-row">
+    <label><input type="radio" name="tax" value="sep" checked>請求書で区分されている<br><small>税抜の報酬額のみが源泉徴収の対象（有利）</small></label>
+    <label><input type="radio" name="tax" value="inc">区分されていない<br><small>税込金額の全体が対象（原則）</small></label>
+    <label><input type="radio" name="tax" value="none">消費税なし<br><small>不課税・免税の取引</small></label>
+  </div>
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>計算のしくみと注意点</h2>
+
+  <h3>計算式（原稿料・弁護士・税理士など一般のケース）</h3>
+  <table>
+    <tr><th>支払金額（A）</th><th>源泉徴収税額</th></tr>
+    <tr><td>100万円以下</td><td>A × <b>10.21%</b></td></tr>
+    <tr><td>100万円超</td><td>（A − 100万円）× <b>20.42%</b> ＋ 102,100円</td></tr>
+  </table>
+  <p>10.21% は「所得税10% ＋ 復興特別所得税0.21%」です。求めた税額の<b>1円未満の端数は切り捨て</b>ます。</p>
+
+  <h3>消費税の扱い — ここが実務で一番間違えます</h3>
+  <p><b>原則は「消費税込みの金額」が源泉徴収の対象</b>です。ただし、請求書等で<b>報酬額と消費税額が明確に区分されている場合は、税抜の報酬額のみを対象にできます</b>（所得税基本通達204-2）。</p>
+  <div class="callout">
+    <b>例: 報酬10万円＋消費税1万円</b><br>
+    ・請求書に「報酬 100,000円 / 消費税 10,000円」と<b>区分あり</b> → 100,000円 × 10.21% = <b>10,210円</b><br>
+    ・「合計 110,000円」としか書いていない（<b>区分なし</b>） → 110,000円 × 10.21% = <b>11,231円</b><br>
+    区分して請求するだけで、源泉徴収される額が1,021円変わります。
+  </div>
+
+  <h3>司法書士等は計算式が違います</h3>
+  <p><b>司法書士・土地家屋調査士・海事代理士</b>への報酬は、<b>1回の支払額から10,000円を差し引いた残額に10.21%</b>を掛けます。弁護士・税理士とは別の式なので注意してください。</p>
+  <p>例: 5万円の支払い → （50,000 − 10,000）× 10.21% = <b>4,084円</b></p>
+
+  <h3>源泉徴収が必要な報酬の例</h3>
+  <ul>
+    <li>原稿料・講演料・デザイン料・翻訳料・通訳料</li>
+    <li>弁護士・公認会計士・税理士・社会保険労務士・弁理士・行政書士など</li>
+    <li>司法書士・土地家屋調査士・海事代理士（計算式が異なる）</li>
+    <li>プロスポーツ選手・モデル・外交員・芸能人</li>
+    <li>ホステス等（別の計算式）</li>
+  </ul>
+  <p style="font-size:13.5px;color:var(--sub)">※ 支払先が<b>法人</b>の場合、原則として源泉徴収は不要です（馬主である法人などを除く）。個人事業主への支払いが対象になります。</p>
+
+  <h3>納付の期限</h3>
+  <p>源泉徴収した税額は、原則として<b>支払った月の翌月10日まで</b>に納付します。納期の特例の承認を受けている場合は、1〜6月分は7月10日、7〜12月分は翌年1月20日が期限です。</p>
+
+  <div class="callout">
+    <b>ご注意</b>
+    本ツールの計算結果は目安です。実際の処理は税務署または税理士にご確認ください。
+  </div>
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 国税庁タックスアンサー No.2795（原稿料や講演料等）／No.2798（弁護士や税理士等）／No.2801（司法書士等）。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+</footer>
+
+<script type="module">
+import { calcWithholding, withholdingTarget, KINDS } from "../assets/gensen_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+const sel = $("kind");
+for (const [k, v] of Object.entries(KINDS)) {
+  const o = document.createElement("option");
+  o.value = k;
+  o.textContent = v.label;
+  sel.appendChild(o);
+}
+const showNote = () => { $("kind-note").textContent = KINDS[sel.value].note; };
+sel.addEventListener("change", showNote);
+showNote();
+
+$("calc").addEventListener("click", () => {
+  const box = $("result");
+  box.style.display = "block";
+  const fee = Number($("fee").value);
+  if (!fee || fee <= 0) { box.innerHTML = "報酬額を入力してください。"; return; }
+
+  const taxMode = document.querySelector('input[name="tax"]:checked').value;
+  const rate = taxMode === "none" ? 0 : 0.1;
+  const t = withholdingTarget(fee, rate, taxMode === "sep");
+  const r = calcWithholding(t.target, sel.value);
+
+  box.innerHTML = `
+    <div class="row">源泉徴収税額 <span class="big">${yen(r.tax)}</span></div>
+    <div class="row" style="margin-top:6px">お支払い額（差引後） <b>${yen(t.total - r.tax)}</b></div>
+    <div style="overflow-x:auto;margin-top:12px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr><td style="padding:6px 8px">報酬額（税抜）</td><td style="padding:6px 8px;text-align:right">${yen(fee)}</td></tr>
+      ${rate > 0 ? `<tr><td style="padding:6px 8px">消費税（10%）</td><td style="padding:6px 8px;text-align:right">${yen(t.total - fee)}</td></tr>` : ""}
+      <tr><td style="padding:6px 8px">請求額（合計）</td><td style="padding:6px 8px;text-align:right">${yen(t.total)}</td></tr>
+      <tr style="background:#e7f3f0"><td style="padding:6px 8px">源泉徴収の対象額</td><td style="padding:6px 8px;text-align:right"><b>${yen(t.target)}</b></td></tr>
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">源泉徴収税額</td><td style="padding:6px 8px;text-align:right">− ${yen(r.tax)}</td></tr>
+      <tr style="font-weight:700">
+        <td style="padding:6px 8px">差引支払額</td><td style="padding:6px 8px;text-align:right">${yen(t.total - r.tax)}</td></tr>
+    </table></div>
+    <div class="note" style="margin-top:10px">
+      <b>計算式</b>: ${r.formula}<br>
+      ${t.explain}
+    </div>`;
+});
+</script>
+</body>
+</html>
