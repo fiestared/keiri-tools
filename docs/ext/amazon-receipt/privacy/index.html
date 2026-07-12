@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>プライバシーポリシー｜アマゾン領収書・電帳法索引簿メーカー</title>
+<meta name="description" content="Chrome拡張「アマゾン領収書・電帳法索引簿メーカー」のプライバシーポリシー。注文データは一切外部に送信されず、すべてブラウザ内で処理されます。">
+<link rel="stylesheet" href="../../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/ext/amazon-receipt/privacy/">
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../../../">経理ミニツールズ</a>
+  <nav><a href="../../../#tools">ツール</a><a href="../../../column/">コラム</a></nav>
+</header>
+<main>
+<article>
+  <h1>プライバシーポリシー</h1>
+  <p class="article-meta">Chrome拡張機能「アマゾン領収書・電帳法索引簿メーカー」／最終更新: 2026年7月12日</p>
+
+  <div class="summary-box">
+    <div class="t">要点</div>
+    <ul>
+      <li>ご注文の内容・金額・氏名・住所などのデータを<b>外部に送信することは一切ありません</b></li>
+      <li>すべての処理は<b>お使いのブラウザ内で完結</b>します。当方のサーバーに保存されるデータはありません</li>
+      <li>作成されたCSV・領収書ファイルは<b>お使いのパソコンにのみ</b>保存されます</li>
+    </ul>
+  </div>
+
+  <h2>1. 取得しないデータ</h2>
+  <p>本拡張機能は、以下のデータを<b>取得・送信・保存しません</b>。</p>
+  <ul>
+    <li>Amazonのアカウント情報（メールアドレス・パスワード・Cookie）</li>
+    <li>注文内容、商品名、金額、注文番号、氏名、住所、支払い方法</li>
+    <li>閲覧履歴、その他のウェブサイトの情報</li>
+  </ul>
+  <p>注文履歴ページから読み取った情報は、<b>ブラウザのメモリ上でCSVを組み立てるためだけに使われ</b>、処理後に破棄されます。当方のサーバーへ送信されることはありません。</p>
+
+  <h2>2. 拡張機能が行う通信</h2>
+  <p>本拡張機能が外部と通信するのは、次の2点のみです。</p>
+  <table>
+    <tr><th>通信先</th><th>目的</th><th>送信される内容</th></tr>
+    <tr>
+      <td><code>keiri-tools.com</code></td>
+      <td>抽出ルール（セレクタ定義）の取得。Amazonのページ構造が変わった際に、拡張機能を更新せずに修正できるようにするため</td>
+      <td><b>なし</b>（定義ファイルを取得するだけで、こちらから情報は送りません）</td>
+    </tr>
+    <tr>
+      <td><code>amazon.co.jp</code></td>
+      <td>領収書ページの読み取り（注文履歴に金額が表示されない注文の補完）</td>
+      <td>お使いのブラウザが通常アクセスするのと同じ内容のみ。当方は関与しません</td>
+    </tr>
+  </table>
+  <p>Pro版をご利用の場合、ライセンス確認のために決済事業者（ExtensionPay / Stripe）と通信します。この際に送信されるのは<b>ライセンス確認用の識別子とメールアドレスのみ</b>で、注文データは一切含まれません。</p>
+
+  <h2>3. 権限を必要とする理由</h2>
+  <table>
+    <tr><th>権限</th><th>必要な理由</th></tr>
+    <tr><td><code>storage</code></td><td>抽出ルールのキャッシュと設定の保存（ローカルのみ）</td></tr>
+    <tr><td><code>downloads</code></td><td>索引簿CSV・領収書ファイルをお使いのパソコンに保存するため</td></tr>
+    <tr><td>amazon.co.jp へのアクセス</td><td>注文履歴ページの読み取りと、領収書ページの取得のため</td></tr>
+  </table>
+
+  <h2>4. 第三者への提供</h2>
+  <p>取得するデータがないため、第三者へ提供するデータもありません。分析ツール・広告トラッカーの類は一切組み込んでいません。</p>
+
+  <h2>5. お問い合わせ</h2>
+  <p>本ポリシーに関するお問い合わせは、<a href="https://github.com/fiestared/keiri-tools/issues">GitHubのIssue</a>までお願いします。</p>
+
+  <h2>6. 改定</h2>
+  <p>本ポリシーを改定する場合は、このページで告知します。</p>
+</article>
+</main>
+<footer class="site" style="display:block">© 経理ミニツールズ</footer>
+</body>
+</html>
