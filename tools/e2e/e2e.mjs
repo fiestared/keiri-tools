@@ -28,6 +28,10 @@ const SCENES = [
   { name: "senpou_check", expect: (s) => /550 円/.test(s.result) && /先方負担/.test(s.result) },
   { name: "zengin", expect: (s) =>
       /ｶ\)ﾔﾏﾀﾞ/.test(s.out) && s.injectedImg === 0 && !s.pwned && s.copyShown },
+  // 未変換の行が黙ってクリップボード(=総合振込ファイル)へ流れないこと
+  { name: "zengin_ng_copy", expect: (s) =>
+      s.blocked && /組戻し/.test(s.errText) &&
+      s.forcedLines === 3 && /山田商店/.test(s.forced) },
   // 支払予定日が銀行休業日に落ちていたら不合格。ツールの存在意義そのもの
   { name: "payday", expect: (s) => s.rows === 12 && s.onHoliday.length === 0 && !s.warn },
   { name: "payday_slow", slow: true,

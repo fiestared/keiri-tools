@@ -70,3 +70,60 @@ assert.equal(n("ヤマダ（カ）"), "ﾔﾏﾀﾞ(ｶ)");
 }
 
 console.log("all zengin_core tests passed");
+
+// ---- 全銀の文字表に無いカナ(2026-07-13追加) ----
+// 一次ソース(但馬信金 zengin_moji.pdf)のカタカナ一覧は ｱ〜ﾜﾝ のみ。ヰ・ヱ・ヵ・ヶ は半角に無い。
+// 以前はこれらが変換されずに残り、「漢字は読みをカナで入力してください」という
+// 直しようのない助言が出ていた(ヱビス/ヰセキ は実在の名義)。
+assert.equal(n("ヱビス"), "ｴﾋﾞｽ");
+assert.equal(n("ヰセキ"), "ｲｾｷ");
+assert.equal(n("株式会社ヱスビーショクヒン"), "ｶ)ｴｽﾋﾞ-ｼﾖｸﾋﾝ");
+assert.equal(n("ゐのうえ"), "ｲﾉｳｴ");        // ひらがな旧かな経由
+assert.equal(n("マルヶイ"), "ﾏﾙｹｲ");        // ヶ は小書きケ → ケ
+assert.equal(n("ヵブト"), "ｶﾌﾞﾄ");
+{
+  const r = normalize("ヱビス");
+  assert.equal(r.ok, true, "ヰ/ヱ は変換できるので ok=true でなければならない");
+  assert.ok(r.warnings.some((w) => w.includes("ヰ")), "置き換えたことを申告すること");
+}
+
+// ---- 記号: 受取人名フィールドの許可集合は ( ) - . の4種類だけ ----
+// 全銀協「使用文字一覧」注1: 「口座名等で使用できる文字は、カナ(ヲと小文字を除く)、濁点、(中略)、
+// 記号4種類(( ) -〔ハイフン〕 .〔ピリオド〕)のみである」。
+// 銀行が配る「全銀仕様データレコード使用可能文字」表には / ¥ ｢｣ も載っているが、それは
+// **レコード全体の文字集合**であって受取人名フィールドの許可集合ではない。
+// この2階層を混同して許可を広げかけた(2026-07-13)。広げないことをここで固定する。
+assert.equal(normalize("ｴｰﾋﾞｰ/ｼｰ").ok, false, "スラッシュは受取人名では使えない");
+assert.equal(normalize("ABC¥ﾊﾞﾘﾕ-").ok, false, "円マークは受取人名では使えない");
+assert.equal(normalize("｢ﾔﾏﾀﾞ｣ｼﾖｳﾃﾝ").ok, false, "かぎ括弧は受取人名では使えない");
+assert.equal(normalize("ABC,LTD").ok, false, "カンマは受取人名では使えない");
+assert.equal(normalize("ﾔﾏﾀﾞ(ｶ").ok, true, "丸括弧は使える");
+assert.equal(normalize("ｴｽ.ﾋﾞ-").ok, true, "ピリオド・ハイフンは使える");
+{
+  // 長音ｰ(U+FF70)はハイフン-(U+002D)と別物。一次ソースが名指しで注意している
+  const r = normalize("ｺｰﾎﾟﾚｰｼﾖﾝ");
+  assert.equal(r.output, "ｺ-ﾎﾟﾚ-ｼﾖﾝ", "半角長音もハイフンへ倒すこと");
+  assert.ok(!r.output.includes("ｰ"), "出力に長音ｰが残ってはいけない");
+}
+{
+  // 記号が残ったときに「漢字はカナで」と言わない(直しようのない助言だった)
+  const w = normalize("ABC,LTD").warnings.join(" ");
+  assert.ok(w.includes("記号"), "記号の残存は記号として説明すること");
+  assert.ok(!w.includes("漢字は読みを"), "記号なのに漢字の助言を出さないこと");
+}
+
+// ---- 出力は必ず受取人名の許可集合に収まる(ok=true のとき) ----
+// 「変換できた」と言い切った出力に許可外文字が混ざっていないかを機械で担保する。
+const ALLOWED_RE = /^[ｱ-ﾝﾞﾟA-Z0-9()\-. ]*$/;
+for (const s of ["株式会社ヴィレッジヴァンガード", "ヱビス", "ヲノ ヨーコ", "ジャックポット",
+                 "株式会社エヌ・ティ・ティ・ドコモ", "株式会社Ｇｏｏｄ", "マルヶイ"]) {
+  const r = normalize(s);
+  assert.equal(r.ok, true, `${s} は変換できるはず`);
+  assert.ok(ALLOWED_RE.test(r.output), `ok=true なのに許可外文字が出た: ${s} -> ${r.output}`);
+}
+
+// ---- 冪等性: 正規化済みの名義を再投入しても壊れない ----
+for (const s of ["株式会社ヤマダ", "ヤマダ株式会社", "株式会社ABCコーポレーション", "ヱビス"]) {
+  const a = normalize(s).output;
+  assert.equal(normalize(a).output, a, `冪等でない: ${s}`);
+}

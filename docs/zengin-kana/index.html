@@ -51,6 +51,8 @@
     <button class="primary" id="run">全銀フォーマットに変換する</button>
     <div id="out" style="margin-top:16px"></div>
     <button class="primary" id="copyAll" style="display:none;background:#5b6b7b">変換結果をすべてコピー</button>
+    <div id="copyErr" class="note" style="margin-top:8px;color:#a33"></div>
+    <a href="#" id="forceCopy" style="display:none;font-size:12px;color:var(--sub)">未変換の行も含めてコピーする</a>
   </div>
 
   <section class="faq">
@@ -88,13 +90,48 @@ $("run").addEventListener("click", () => {
       ${r.warnings.map((w) => `<div class="note" style="margin-top:6px">${esc(w)}</div>`).join("")}
     </div>`).join("");
   $("copyAll").style.display = "block";
+  $("copyAll").textContent = copyLabel();
+  $("copyErr").textContent = "";
+  $("forceCopy").style.display = "none";
 });
 
+// 未変換の行(漢字が残っている・30文字超)をそのままコピーさせない。
+// 総合振込ファイルに貼れば銀行側で弾かれるか、名義相違で組戻し(手数料+入金遅延)になる。
+// 行を「間引く」のは危険(取引先リストと行がズレて別口座に別名義が付く)ので、
+// 順序は保ったまま、既定ではコピー自体を止める。
+function ngRows() {
+  return lastResults.map((r, i) => ({ ...r, no: i + 1 })).filter((r) => !r.ok);
+}
+function copyLabel() {
+  const ng = ngRows();
+  return ng.length
+    ? `⚠ ${ng.length}件が未変換です（${ng.slice(0, 5).map((r) => r.no + "行目").join(" / ")}${ng.length > 5 ? " ほか" : ""}）`
+    : "変換結果をすべてコピー";
+}
+
 $("copyAll").addEventListener("click", async () => {
+  const ng = ngRows();
+  if (ng.length) {
+    $("copyErr").textContent =
+      `${ng.length}件が全銀フォーマットに変換できていません。そのまま振込データに使うと、` +
+      `銀行で弾かれるか名義相違で組戻しになります。上の⚠の行を直してから、もう一度押してください。`;
+    $("forceCopy").style.display = "inline";
+    return;
+  }
+  await writeAll();
+});
+
+$("forceCopy").addEventListener("click", async (e) => {
+  e.preventDefault();
+  await writeAll();
+  $("copyErr").textContent = "未変換の行を含めてコピーしました。振込データに使う前に必ず確認してください。";
+});
+
+async function writeAll() {
   await navigator.clipboard.writeText(lastResults.map((r) => r.output).join("\n"));
   $("copyAll").textContent = "コピーしました ✓";
-  setTimeout(() => ($("copyAll").textContent = "変換結果をすべてコピー"), 1500);
-});
+  setTimeout(() => ($("copyAll").textContent = copyLabel()), 1500);
+}
 
 function esc(s) {
   return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));

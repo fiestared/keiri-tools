@@ -143,6 +143,34 @@ const SCENES = {
     };
   },
 
+  // 一括コピーは総合振込ファイルへの貼り付けが前提。未変換の行(漢字が残っている・30文字超)を
+  // そのままクリップボードに載せると、銀行で弾かれるか名義相違で組戻しになる。
+  // clipboardを差し替えて「何が実際に書き込まれたか」を見る(画面の警告だけでは足りない)。
+  async zengin_ng_copy() {
+    const doc = await open("/docs/zengin-kana/");
+    const win = doc.defaultView;
+    const writes = [];
+    Object.defineProperty(win.navigator, "clipboard", {
+      configurable: true,
+      value: { writeText: async (t) => { writes.push(t); } },
+    });
+    // 1行目=正常 / 2行目=漢字が残る / 3行目=30文字超
+    set(doc, "names", "株式会社ニトリ\n株式会社山田商店\nカブシキガイシヤ テストコーポレーシヨンジヤパンホールデイングス");
+    click(doc, "run");
+    await waitFor(() => doc.querySelectorAll("#out div").length > 0, "変換結果の描画");
+    click(doc, "copyAll");                       // 既定ではコピーを止めるはず
+    const blocked = writes.length === 0;
+    const errText = text(doc, "copyErr");
+    click(doc, "forceCopy");                     // 承知のうえで強行する導線
+    await waitFor(() => writes.length > 0, "強制コピー");
+    return {
+      blocked,                                   // false なら未変換行が黙って外へ出ている
+      errText,
+      forced: writes[0] || "",
+      forcedLines: (writes[0] || "").split("\n").length, // 行を間引くと取引先リストとズレる
+    };
+  },
+
   // 支払サイト: 描画された支払予定日が1つでも銀行休業日ならNG。
   // 5日払いにすると、どの12ヶ月窓にも必ず 5/5(こどもの日) が入る = 常設の祝日プローブになる。
   async payday() {
