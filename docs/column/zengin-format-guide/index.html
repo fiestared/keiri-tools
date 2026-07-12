@@ -10,38 +10,65 @@
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "振込名義の書き方ガイド｜全銀フォーマットの使用可能文字と法人略語一覧",
-  "datePublished": "2026-07-12",
-  "dateModified": "2026-07-12",
-  "author": {"@type": "Organization", "name": "経理ミニツールズ"}
+  "@graph": [
+    {"@type": "Article",
+     "headline": "振込名義の書き方ガイド｜全銀フォーマットの使用可能文字と法人略語一覧",
+     "datePublished": "2026-07-12", "dateModified": "2026-07-12",
+     "author": {"@type": "Organization", "name": "経理ミニツールズ"},
+     "publisher": {"@type": "Organization", "name": "経理ミニツールズ"},
+     "mainEntityOfPage": "https://keiri-tools.com/column/zengin-format-guide/"},
+    {"@type": "BreadcrumbList", "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://keiri-tools.com/"},
+      {"@type": "ListItem", "position": 2, "name": "経理コラム", "item": "https://keiri-tools.com/column/"},
+      {"@type": "ListItem", "position": 3, "name": "振込名義の書き方ガイド"}]},
+    {"@type": "FAQPage", "mainEntity": [
+      {"@type": "Question", "name": "振込名義で「株式会社」はどう書きますか？",
+       "acceptedAnswer": {"@type": "Answer", "text": "位置によって形式が変わります。先頭ならカ)、末尾なら(カ、中間なら(カ)です。"}},
+      {"@type": "Question", "name": "振込名義に使える文字は？",
+       "acceptedAnswer": {"@type": "Answer", "text": "半角カタカナ(ヲと小文字を除く)、濁点・半濁点、英大文字、数字、記号の括弧・ハイフン・ピリオドです。"}}]}
+  ]
 }
 </script>
-<style>
-article h2 { font-size: 20px; margin-top: 36px; border-left: 4px solid var(--accent); padding-left: 10px; }
-article h3 { font-size: 16px; margin-top: 24px; }
-article p, article li { font-size: 15px; line-height: 1.9; }
-article table { border-collapse: collapse; width: 100%; font-size: 14px; }
-article th, article td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; }
-article th { background: var(--accent-soft); }
-article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-size: 14px; }
-.tool-cta { display: block; background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 10px; padding: 14px 18px; margin: 24px 0; text-decoration: none; color: var(--ink); }
-.tool-cta b { color: var(--accent); }
-.date { color: var(--sub); font-size: 13px; }
-</style>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
      crossorigin="anonymous"></script>
 </head>
 <body>
-<header class="site"><a href="../../">経理ミニツールズ</a><span class="tag">登録不要・ブラウザ内で完結</span></header>
+<header class="site">
+  <a class="brand" href="../../">経理ミニツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../column/">コラム</a>
+  </nav>
+</header>
 <main>
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">経理コラム</a> › 振込名義の書き方ガイド</nav>
 <article>
   <h1>振込名義の書き方ガイド｜全銀フォーマットの使用可能文字と法人略語一覧</h1>
-  <p class="date">公開: 2026年7月12日（全銀協・銀行公式の公開資料に基づく）</p>
+  <p class="article-meta">公開日: 2026年7月12日 ／ 最終更新: 2026年7月12日 ／ 全銀協・銀行の公開資料をもとに作成</p>
 
-  <p>総合振込のデータを作るとき、受取人名を「<code>ｶ)ﾔﾏﾀﾞ</code>」のような半角カナに直す作業でつまずく方は多いはずです。使える文字の範囲は全銀協（全国銀行協会）の通信プロトコル仕様で決まっており、法人格の略し方には明確なルールがあります。この記事で一覧化します。</p>
+  <p>総合振込のデータを作るとき、受取人名を「<code>ｶ)ﾔﾏﾀﾞ</code>」のような半角カナに直す作業でつまずく方は多いはずです。</p>
+  <p>使える文字の範囲は<b>全銀協（全国銀行協会）の通信プロトコル仕様</b>で決まっており、法人格の略し方にも明確なルールがあります。しかも<b>「株式会社」の略し方は、名義のどこに来るかで変わります</b>（先頭なら <code>ｶ)</code>、末尾なら <code>(ｶ</code>）。この記事で、必要なルールを一覧にまとめます。</p>
 
-  <h2>使用できる文字</h2>
+  <nav class="toc">
+    <div class="toc-title">目次</div>
+    <ol>
+      <li><a href="#moji">使用できる文字</a>
+        <ol><li><a href="#okikae">よくある置き換え</a></li></ol>
+      </li>
+      <li><a href="#ryakugo">法人略語一覧 — 位置によって括弧が変わる</a>
+        <ol>
+          <li><a href="#zukai">図解：位置による書き分け</a></li>
+          <li><a href="#list">主な法人略語</a></li>
+          <li><a href="#eigyo">営業所・事業の略語</a></li>
+        </ol>
+      </li>
+      <li><a href="#machigai">間違えるとどうなる？</a></li>
+      <li><a href="#matome">まとめ</a></li>
+      <li><a href="#faq">よくある質問</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="moji">使用できる文字</h2>
   <table>
     <tr><th>種類</th><th>内容</th></tr>
     <tr><td>カナ</td><td>半角カタカナ。<b>「ヲ」と小文字（ッャュョァィゥェォ）は使用不可</b></td></tr>
@@ -50,7 +77,7 @@ article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-s
     <tr><td>記号</td><td><code>(</code> <code>)</code> <code>-</code>（ハイフン） <code>.</code>（ピリオド）</td></tr>
   </table>
 
-  <h3>よくある置き換え</h3>
+  <h3 id="okikae">よくある置き換え</h3>
   <ul>
     <li>小文字カナ → 大文字に: キャッシュ → <code>ｷﾔﾂｼﾕ</code></li>
     <li>長音「ー」→ ハイフンに: スーパー → <code>ｽ-ﾊﾟ-</code></li>
@@ -60,9 +87,12 @@ article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-s
   </ul>
   <p>受取人名の文字数上限は<b>半角30文字</b>が一般的です（銀行・フォーマットにより異なります）。</p>
 
-  <a class="tool-cta" href="../../zengin-kana/"><b>→ 無料ツール: 振込名義カナ変換</b><br>名義リストを貼り付けるだけで、半角カナ変換・法人略語・使用可能文字・文字数チェックまで一括処理します。</a>
+  <a class="tool-cta" href="../../zengin-kana/">
+    <b>無料ツール：振込名義カナ変換</b>
+    <span>名義リストを貼り付けるだけ。半角カナ変換・法人略語・使用可能文字・30文字チェックまで一括処理します。</span>
+  </a>
 
-  <h2>法人略語一覧 — 位置によって括弧が変わる</h2>
+  <h2 id="ryakugo">法人略語一覧 — 位置によって括弧が変わる</h2>
   <p>法人格は略語にし、<b>名義のどこに来るかで括弧の付け方が変わります</b>。</p>
   <table>
     <tr><th>位置</th><th>形式</th><th>例</th></tr>
@@ -71,7 +101,47 @@ article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-s
     <tr><td>中間</td><td><code>(</code> + 略語 + <code>)</code></td><td>ヤマダ株式会社東京営業所 → <code>ﾔﾏﾀﾞ(ｶ)ﾄｳｷﾖｳ(ｴｲ</code></td></tr>
   </table>
 
-  <h3>主な法人略語</h3>
+
+  <h3 id="zukai">図解：位置による書き分け</h3>
+  <figure class="figure">
+  <svg viewBox="0 0 640 210" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="法人略語の位置による書き分けの図">
+    <defs><style>
+      .h{font:600 12.5px system-ui,sans-serif;fill:#24313f}
+      .m{font:13px ui-monospace,monospace;fill:#24313f}
+      .s{font:11px system-ui,sans-serif;fill:#5b6b7b}
+      .k{font:600 12px system-ui,sans-serif;fill:#1f6f5c}
+    </style></defs>
+    <text x="8" y="20" class="h">先頭にあるとき</text>
+    <rect x="8" y="30" width="180" height="30" rx="5" fill="#f2f7f5" stroke="#c9d1d8"/>
+    <text x="18" y="50" class="m">株式会社ヤマダ</text>
+    <path d="M198 45 L232 45" stroke="#1f6f5c" stroke-width="1.6"/>
+    <path d="M226 40 L232 45 L226 50" fill="none" stroke="#1f6f5c" stroke-width="1.6"/>
+    <rect x="242" y="30" width="180" height="30" rx="5" fill="#e7f3f0" stroke="#1f6f5c"/>
+    <text x="252" y="50" class="m">ｶ)ﾔﾏﾀﾞ</text>
+    <text x="440" y="50" class="k">略語 + )</text>
+
+    <text x="8" y="90" class="h">末尾にあるとき</text>
+    <rect x="8" y="100" width="180" height="30" rx="5" fill="#f2f7f5" stroke="#c9d1d8"/>
+    <text x="18" y="120" class="m">ヤマダ株式会社</text>
+    <path d="M198 115 L232 115" stroke="#1f6f5c" stroke-width="1.6"/>
+    <path d="M226 110 L232 115 L226 120" fill="none" stroke="#1f6f5c" stroke-width="1.6"/>
+    <rect x="242" y="100" width="180" height="30" rx="5" fill="#e7f3f0" stroke="#1f6f5c"/>
+    <text x="252" y="120" class="m">ﾔﾏﾀﾞ(ｶ</text>
+    <text x="440" y="120" class="k">( + 略語（閉じない）</text>
+
+    <text x="8" y="160" class="h">中間にあるとき</text>
+    <rect x="8" y="170" width="180" height="30" rx="5" fill="#f2f7f5" stroke="#c9d1d8"/>
+    <text x="18" y="190" class="m" style="font-size:11px">ヤマダ株式会社東京営業所</text>
+    <path d="M198 185 L232 185" stroke="#1f6f5c" stroke-width="1.6"/>
+    <path d="M226 180 L232 185 L226 190" fill="none" stroke="#1f6f5c" stroke-width="1.6"/>
+    <rect x="242" y="170" width="180" height="30" rx="5" fill="#e7f3f0" stroke="#1f6f5c"/>
+    <text x="252" y="190" class="m" style="font-size:11px">ﾔﾏﾀﾞ(ｶ)ﾄｳｷﾖｳ(ｴｲ</text>
+    <text x="440" y="190" class="k">( + 略語 + )</text>
+  </svg>
+  <figcaption>「株式会社」は先頭・末尾・中間で括弧の付き方が変わる。末尾では括弧を閉じないのがポイント。</figcaption>
+  </figure>
+
+  <h3 id="list">主な法人略語</h3>
   <table>
     <tr><th>法人格</th><th>略語</th><th>法人格</th><th>略語</th></tr>
     <tr><td>株式会社</td><td>カ</td><td>一般財団法人・財団法人</td><td>ザイ</td></tr>
@@ -84,16 +154,42 @@ article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-s
     <tr><td>税理士法人</td><td>ゼイ</td><td>国立大学法人</td><td>ダイ</td></tr>
   </table>
 
-  <h3>営業所・事業の略語</h3>
+  <h3 id="eigyo">営業所・事業の略語</h3>
   <ul>
     <li>営業所 → <code>ｴｲ</code>、出張所 → <code>ｼﾕﾂ</code>（位置ルールは法人略語と同じ）</li>
     <li>連合会 → <code>ﾚﾝ</code>、協同組合 → <code>ｷﾖｳｸﾐ</code>、健康保険組合 → <code>ｹﾝﾎﾟ</code>、生活協同組合 → <code>ｾｲｷﾖｳ</code>（これらは括弧を付けずそのまま）</li>
   </ul>
 
-  <h2>間違えるとどうなる？</h2>
+  <h2 id="machigai">間違えるとどうなる？</h2>
   <p>名義の不一致だけで振込が即エラーになるとは限りませんが、受取口座の確認に引っかかると<b>組戻し（手数料は依頼人負担で660〜880円程度）</b>や着金遅延の原因になります。特に総合振込で件数が多い場合、名義エラーの修正は手間なので、データ作成時点で正規化しておくのが確実です。</p>
 
-  <h2>よくある質問</h2>
+  <h2 id="matome">まとめ</h2>
+  <div class="summary-box">
+    <div class="t">この記事のまとめ</div>
+    <ul>
+      <li>使えるのは<b>半角カナ（ヲと小文字を除く）・英大文字・数字・記号 ( ) - .</b> のみ</li>
+      <li>小文字カナ→大文字、長音「ー」→ハイフン、中黒「・」→ピリオドに置き換える</li>
+      <li>法人略語は<b>位置で括弧が変わる</b>（先頭 <code>ｶ)</code>／末尾 <code>(ｶ</code>／中間 <code>(ｶ)</code>）</li>
+      <li>連合会・協同組合などの<b>事業略語は括弧を付けない</b></li>
+      <li>受取人名は<b>半角30文字</b>が一般的な上限</li>
+    </ul>
+  </div>
+
+  <section class="related">
+    <h2>関連記事・ツール</h2>
+    <div class="tool-list">
+      <a href="../senpou-futan-3hoshiki/">
+        <div class="name">振込手数料の先方負担「3方式」の違いと実務</div>
+        <div class="desc">3万円境界で差引額が変わる仕組みを図解。</div>
+      </a>
+      <a href="../../zengin-kana/">
+        <div class="name">振込名義カナ変換ツール</div>
+        <div class="desc">名義リストを貼るだけで全銀フォーマットに一括正規化。</div>
+      </a>
+    </div>
+  </section>
+
+  <h2 id="faq">よくある質問</h2>
   <h3>ひらがなで入力してしまったら？</h3>
   <p>銀行のインターネットバンキングには全角→半角の自動変換を備えるものもありますが（りそな銀行など）、対応範囲は銀行によって異なります。事前に半角カナへ正規化しておくのが安全です。</p>
   <h3>「カ.」のようにピリオドを使う形式も見ますが？</h3>
