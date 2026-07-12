@@ -1,15 +1,20 @@
 /**
- * 社会保険料（健康保険・介護保険・厚生年金）の計算ロジック。DOM非依存・テスト対象。
+ * 社会保険料（健康保険・介護保険・子ども子育て支援金・厚生年金）の計算ロジック。DOM非依存・テスト対象。
  *
  * 一次ソース:
- * - 健康保険料率(都道府県別) / 介護保険料率: 全国健康保険協会「都道府県毎の保険料率」令和8年度
- * - 標準報酬月額の等級表: 健康保険=第1〜50級(58,000〜1,390,000円) / 厚生年金=第1〜32級(88,000〜650,000円)
- * - 厚生年金保険料率: 18.3%（全国一律・平成29年9月以降固定）
+ * - 協会けんぽ「都道府県毎の保険料率」令和8年度
+ * - 協会けんぽ「令和8年3月分（4月納付分）からの健康保険・厚生年金保険の保険料額表」(東京支部PDF)
+ *   → tests/fixtures/kyoukaikenpo_tokyo_r08.json に全50等級を機械抽出して保存し、
+ *     tests/test_shaho_oracle.mjs で本ファイルの計算結果と全数照合している
  *
  * 実務の要点:
  * - 保険料は「標準報酬月額 × 料率」。実際の給与額そのものには掛けない
  * - 労使折半（本人負担は1/2）。端数は円未満を50銭以下切捨・50銭超切上（納入告知書の通例）
- * - 介護保険料は40歳以上65歳未満のみ
+ * - **介護保険料(1.62%)は健康保険料と合算した1本の料率で控除する**（40〜64歳のみ）。
+ *   公式の保険料額表が「介護保険第2号に該当する場合」を合算列(例: 東京 11.47%)で示しているため、
+ *   健保と介護を別々に端数処理すると額表と1円ずれることがある
+ * - **子ども・子育て支援金(0.23%・全国一律)は令和8年4月分から**。額表では独立した列で、
+ *   年齢に関係なく全員にかかり、労使折半（例: 標準報酬58,000円なら全額133.4円・折半66.7円）
  * - 賞与は「標準賞与額」（1,000円未満切捨）に同じ料率。健保は年度累計573万円、厚年は1回150万円が上限
  */
 
@@ -37,7 +42,7 @@ export const KENKO_GRADES = [
 
 /**
  * 厚生年金の等級表（第1〜32級）。健康保険の第4級(88,000)が厚年の第1級、
- * 健康保険の第35級(650,000)が厚年の第32級で頭打ちになる。
+ * 健康保険の第35級(650,000)が厚年の第32級で頭打ちになる（公式額表で全数確認済み）。
  */
 export const KOSEI_MIN = 88000;
 export const KOSEI_MAX = 650000;
@@ -76,65 +81,75 @@ export function roundHalf(v) {
   return frac > 0.5 ? int + 1 : int;
 }
 
+export function kaigoApplies(age) {
+  return age >= KAIGO_AGE_FROM && age < KAIGO_AGE_TO;
+}
+
+/**
+ * 保険料の1項目を組み立てる。
+ * total/half は銭（小数）のまま保持する（公式の保険料額表と直接照合できるようにするため）。
+ * self は端数処理後の実際の控除額（円）。
+ */
+function component(rate, base) {
+  const total = base * (rate / 100);
+  const half = total / 2;
+  const self = roundHalf(half);
+  return { rate, base, total, half, self, company: Math.round(total) - self };
+}
+
 /**
  * 月額保険料を計算する。
- * @param {number} monthly 報酬月額（円）
+ * @param {number} monthly  報酬月額（円）
  * @param {number} kenkoRate 健康保険料率(%) 都道府県別
- * @param {number} kaigoRate 介護保険料率(%)
+ * @param {number} kaigoRate 介護保険料率(%) 全国一律
  * @param {number} age 年齢
  * @param {number} koseiRate 厚生年金保険料率(%) 既定18.3
+ * @param {number} kosodateRate 子ども・子育て支援金率(%) 既定0.23（令和8年4月分〜）
  */
-export function calcMonthly(monthly, kenkoRate, kaigoRate, age, koseiRate = 18.3) {
+export function calcMonthly(monthly, kenkoRate, kaigoRate, age, koseiRate = 18.3,
+                            kosodateRate = 0.23) {
   const { grade, standard } = kenkoGrade(monthly);
   const koseiStd = koseiStandard(monthly);
-  const kaigoApplies = age >= KAIGO_AGE_FROM && age < KAIGO_AGE_TO;
+  const kaigo = kaigoApplies(age);
 
-  const kenkoTotal = standard * (kenkoRate / 100);
-  const kaigoTotal = kaigoApplies ? standard * (kaigoRate / 100) : 0;
-  const koseiTotal = koseiStd * (koseiRate / 100);
-
-  const half = (v) => roundHalf(v / 2);
-  const kenkoSelf = half(kenkoTotal);
-  const kaigoSelf = half(kaigoTotal);
-  const koseiSelf = half(koseiTotal);
+  // 健保と介護は合算した料率で控除する（公式額表の「介護保険第2号に該当する場合」列）
+  const kenkoKaigoRate = kenkoRate + (kaigo ? kaigoRate : 0);
+  const kenkoKaigo = component(kenkoKaigoRate, standard);
+  const kosodate = component(kosodateRate, standard);
+  const kosei = component(koseiRate, koseiStd);
 
   return {
-    grade, standard, koseiStandard: koseiStd, kaigoApplies,
-    kenko: { total: Math.round(kenkoTotal), self: kenkoSelf, company: Math.round(kenkoTotal) - kenkoSelf },
-    kaigo: { total: Math.round(kaigoTotal), self: kaigoSelf, company: Math.round(kaigoTotal) - kaigoSelf },
-    kosei: { total: Math.round(koseiTotal), self: koseiSelf, company: Math.round(koseiTotal) - koseiSelf },
-    selfTotal: kenkoSelf + kaigoSelf + koseiSelf,
-    companyTotal: (Math.round(kenkoTotal) - kenkoSelf) + (Math.round(kaigoTotal) - kaigoSelf)
-      + (Math.round(koseiTotal) - koseiSelf),
+    grade, standard, koseiStandard: koseiStd, kaigoApplies: kaigo,
+    // 表示用の内訳（端数処理前）。控除額の正は kenkoKaigo 側
+    kenkoRate, kaigoRate: kaigo ? kaigoRate : 0,
+    kenkoKaigo, kosodate, kosei,
+    selfTotal: kenkoKaigo.self + kosodate.self + kosei.self,
+    companyTotal: kenkoKaigo.company + kosodate.company + kosei.company,
   };
 }
 
 /**
  * 賞与の保険料を計算する。標準賞与額は1,000円未満切捨。
- * @param {number} bonus 賞与額（円）
+ * 子ども・子育て支援金も健保と同じ標準賞与額にかかる。
  * @param {number} yearPaidKenko 当年度に既に支払った標準賞与額の累計（健保の573万円上限判定用）
  */
 export function calcBonus(bonus, kenkoRate, kaigoRate, age, koseiRate = 18.3,
-                          yearPaidKenko = 0) {
+                          yearPaidKenko = 0, kosodateRate = 0.23) {
   const std = Math.floor(bonus / 1000) * 1000;
-  // 健保: 年度累計573万円が上限
   const kenkoRemain = Math.max(0, BONUS_KENKO_YEAR_CAP - yearPaidKenko);
-  const kenkoStd = Math.min(std, kenkoRemain);
-  // 厚年: 1回あたり150万円が上限
-  const koseiStd = Math.min(std, BONUS_KOSEI_PER_CAP);
-  const kaigoApplies = age >= KAIGO_AGE_FROM && age < KAIGO_AGE_TO;
+  const kenkoStd = Math.min(std, kenkoRemain);          // 健保: 年度累計573万円が上限
+  const koseiStd = Math.min(std, BONUS_KOSEI_PER_CAP);  // 厚年: 1回あたり150万円が上限
+  const kaigo = kaigoApplies(age);
 
-  const kenkoTotal = kenkoStd * (kenkoRate / 100);
-  const kaigoTotal = kaigoApplies ? kenkoStd * (kaigoRate / 100) : 0;
-  const koseiTotal = koseiStd * (koseiRate / 100);
-  const half = (v) => roundHalf(v / 2);
+  const kenkoKaigo = component(kenkoRate + (kaigo ? kaigoRate : 0), kenkoStd);
+  const kosodate = component(kosodateRate, kenkoStd);
+  const kosei = component(koseiRate, koseiStd);
 
   return {
-    standardBonus: std, kenkoStandard: kenkoStd, koseiStandard: koseiStd, kaigoApplies,
+    standardBonus: std, kenkoStandard: kenkoStd, koseiStandard: koseiStd, kaigoApplies: kaigo,
     capped: { kenko: kenkoStd < std, kosei: koseiStd < std },
-    kenko: { total: Math.round(kenkoTotal), self: half(kenkoTotal) },
-    kaigo: { total: Math.round(kaigoTotal), self: half(kaigoTotal) },
-    kosei: { total: Math.round(koseiTotal), self: half(koseiTotal) },
-    selfTotal: half(kenkoTotal) + half(kaigoTotal) + half(koseiTotal),
+    kenkoKaigo, kosodate, kosei,
+    selfTotal: kenkoKaigo.self + kosodate.self + kosei.self,
+    companyTotal: kenkoKaigo.company + kosodate.company + kosei.company,
   };
 }

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>有給休暇の付与日数 計算機｜入社日から自動計算（パート・アルバイトの比例付与も対応）</title>
+<meta name="description" content="入社日と週の勤務日数を入れるだけで、年次有給休暇の付与日数と付与日を自動計算。パート・アルバイトの比例付与、年5日の取得義務の対象判定、次回付与日までのスケジュールも表示。労働基準法39条に基づく無料ツール。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/yukyu/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {"@type": "WebApplication", "name": "有給休暇の付与日数 計算機",
+     "applicationCategory": "BusinessApplication", "operatingSystem": "Web",
+     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"},
+     "description": "労働基準法39条に基づき、年次有給休暇の付与日数と付与日を計算します。比例付与にも対応。"},
+    {"@type": "BreadcrumbList", "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://keiri-tools.com/"},
+      {"@type": "ListItem", "position": 2, "name": "有給休暇の付与日数 計算機"}]},
+    {"@type": "FAQPage", "mainEntity": [
+      {"@type": "Question", "name": "有給休暇はいつ付与されますか？",
+       "acceptedAnswer": {"@type": "Answer", "text": "入社から6か月continuous勤務し、全労働日の8割以上出勤した時点で10日付与されます。以後は1年ごとに付与され、6年6か月以降は年20日で上限となります。"}},
+      {"@type": "Question", "name": "パート・アルバイトにも有給休暇はありますか？",
+       "acceptedAnswer": {"@type": "Answer", "text": "あります。週の所定労働日数が4日以下かつ週30時間未満の場合は、所定労働日数に応じて比例付与されます。週4日勤務なら6か月経過時点で7日です。なお週30時間以上働いていれば、週4日でも通常の10日が付与されます。"}},
+      {"@type": "Question", "name": "年5日の取得義務とは？",
+       "acceptedAnswer": {"@type": "Answer", "text": "年10日以上の有給休暇が付与される労働者について、会社は年5日を確実に取得させる義務があります（2019年4月から）。違反すると30万円以下の罰金の対象です。パートでも10日以上付与されれば対象になります。"}}]}
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 有給休暇の付与日数 計算機</nav>
+
+<section class="hero">
+  <h1>有給休暇の付与日数 計算機</h1>
+  <p>入社日と勤務日数を入れるだけで、<b>付与日数・付与日・次回付与日</b>を計算します。<b>パート・アルバイトの比例付与</b>と、<b>年5日の取得義務</b>の判定にも対応。</p>
+</section>
+
+<div class="card">
+  <label for="hire">入社日</label>
+  <input type="date" id="hire">
+
+  <div class="fee-pair">
+    <div>
+      <label for="wdays">週の所定労働日数</label>
+      <select id="wdays">
+        <option value="5">週5日以上</option>
+        <option value="4">週4日</option>
+        <option value="3">週3日</option>
+        <option value="2">週2日</option>
+        <option value="1">週1日</option>
+      </select>
+    </div>
+    <div>
+      <label for="whours">週の所定労働時間</label>
+      <input type="number" id="whours" value="40" inputmode="numeric" step="0.5">
+    </div>
+  </div>
+  <div style="font-size:12.5px;color:var(--sub);margin-top:6px">
+    ※ <b>週30時間以上</b>なら、週4日以下でも通常どおり（10日〜）の付与になります。
+  </div>
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>有給休暇のしくみ</h2>
+
+  <h3>付与のルール（労働基準法39条）</h3>
+  <p>入社から<b>6か月継続勤務し、全労働日の8割以上出勤</b>すると10日付与されます。以後は1年ごとに付与され、<b>6年6か月以降は年20日</b>で上限です。</p>
+  <table>
+    <tr><th>勤続年数</th><th>6か月</th><th>1年6か月</th><th>2年6か月</th><th>3年6か月</th><th>4年6か月</th><th>5年6か月</th><th>6年6か月〜</th></tr>
+    <tr><td>付与日数</td><td>10日</td><td>11日</td><td>12日</td><td>14日</td><td>16日</td><td>18日</td><td><b>20日</b></td></tr>
+  </table>
+
+  <h3>パート・アルバイトの比例付与</h3>
+  <p>週の所定労働日数が<b>4日以下 かつ 週30時間未満</b>の場合、所定労働日数に応じて比例付与されます。</p>
+  <table>
+    <tr><th>週の日数</th><th>6か月</th><th>1年6か月</th><th>2年6か月</th><th>3年6か月</th><th>4年6か月</th><th>5年6か月</th><th>6年6か月〜</th></tr>
+    <tr><td>週4日</td><td>7日</td><td>8日</td><td>9日</td><td>10日</td><td>12日</td><td>13日</td><td>15日</td></tr>
+    <tr><td>週3日</td><td>5日</td><td>6日</td><td>6日</td><td>8日</td><td>9日</td><td>10日</td><td>11日</td></tr>
+    <tr><td>週2日</td><td>3日</td><td>4日</td><td>4日</td><td>5日</td><td>6日</td><td>6日</td><td>7日</td></tr>
+    <tr><td>週1日</td><td>1日</td><td>2日</td><td>2日</td><td>2日</td><td>3日</td><td>3日</td><td>3日</td></tr>
+  </table>
+  <div class="callout">
+    <b>間違えやすいポイント</b>
+    週4日勤務でも、<b>週30時間以上働いていれば「通常の労働者」扱い</b>で10日付与されます（比例付与にはなりません）。日数だけで判断しないよう注意してください。
+  </div>
+
+  <h3>年5日の取得義務（2019年4月〜）</h3>
+  <p><b>年10日以上の有給休暇が付与される労働者</b>について、会社は<b>年5日を確実に取得させる義務</b>があります。違反すると<b>30万円以下の罰金</b>の対象です（労働者1人につき1罪）。</p>
+  <p>パート・アルバイトでも、<b>比例付与で10日以上になれば対象</b>です（例: 週4日勤務で3年6か月＝10日）。見落としやすいので注意してください。</p>
+
+  <h3>時効は2年</h3>
+  <p>有給休暇は<b>付与日から2年で時効消滅</b>します。前年度の繰越分と当年度分がある場合、どちらから消化するかは就業規則の定めによります（定めがなければ労働者に有利な繰越分から充てるのが一般的です）。</p>
+
+  <h3>出勤率8割の判定</h3>
+  <p>「全労働日の8割以上出勤」が要件です。<b>業務上の負傷・疾病による休業、産前産後休業、育児介護休業、有給休暇を取得した日は「出勤したもの」として扱います</b>。8割未満の年は付与されませんが、<b>勤続年数のカウントは進みます</b>（翌年8割以上なら、その年数に応じた日数が付与されます）。</p>
+
+  <div class="callout">
+    <b>ご注意</b>
+    本ツールの計算結果は法定の最低基準に基づく目安です。就業規則で法定を上回る付与をしている場合や、入社日を統一する「斉一的取扱い」を採用している場合は結果が異なります。個別の判断は社会保険労務士にご確認ください。
+  </div>
+</section>
+</main>
+<footer class="site" style="display:block">
+  根拠: 労働基準法39条／厚生労働省「年次有給休暇の付与日数」。<br>© 経理ミニツールズ
+</footer>
+
+<script type="module">
+import { grantDays, needsFiveDays, schedule } from "../assets/yukyu_core.js";
+
+const $ = (id) => document.getElementById(id);
+const t0 = new Date();
+$("hire").value = `${t0.getFullYear() - 1}-04-01`;
+
+$("calc").addEventListener("click", () => {
+  const box = $("result");
+  box.style.display = "block";
+  const hire = $("hire").value;
+  if (!hire) { box.innerHTML = "入社日を入力してください。"; return; }
+  const wd = Number($("wdays").value);
+  const wh = Number($("whours").value) || 0;
+
+  // 経過年数
+  const [hy, hm, hd] = hire.split("-").map(Number);
+  const now = new Date();
+  const months = (now.getFullYear() - hy) * 12 + (now.getMonth() + 1 - hm)
+    - (now.getDate() < hd ? 1 : 0);
+  const years = months / 12;
+
+  const g = grantDays(years, wd, wh);
+  const rows = schedule(hire, wd, wh, 8);
+  const nextRow = rows.find(r => new Date(r.date) > now);
+
+  let html;
+  if (g.days === 0) {
+    const first = rows[0];
+    html = `
+      <div class="row">現時点の付与日数 <span class="big">0日</span></div>
+      <div class="row" style="margin-top:6px">入社から6か月未満のため、まだ付与されていません。</div>
+      <div class="note" style="margin-top:10px">
+        <b>初回の付与日: ${first.date.replaceAll("-", "/")}</b>（${first.days}日）<br>
+        6か月継続勤務し、全労働日の8割以上出勤していることが条件です。
+      </div>`;
+  } else {
+    html = `
+      <div class="row">現在の付与日数 <span class="big">${g.days}日</span></div>
+      <div class="row" style="margin-top:4px">
+        勤続 ${Math.floor(years)}年${Math.round((years % 1) * 12)}か月
+        ／ ${g.type === "proportional" ? "<b>比例付与</b>（週" + wd + "日・週30時間未満）" : "通常付与（週5日以上または週30時間以上）"}
+      </div>
+      ${needsFiveDays(g.days)
+        ? `<div class="note" style="margin-top:10px;background:#fff3d6;border-color:#e6c47a">
+             <b>⚠️ 年5日の取得義務の対象です</b><br>
+             10日以上付与されているため、会社は<b>年5日を確実に取得させる義務</b>があります（違反は30万円以下の罰金）。
+           </div>`
+        : `<div style="font-size:13px;color:var(--sub);margin-top:8px">付与日数が10日未満のため、年5日の取得義務の対象外です。</div>`}
+      ${nextRow ? `<div style="font-size:13.5px;margin-top:10px">次回の付与: <b>${nextRow.date.replaceAll("-", "/")}</b>（${nextRow.days}日）</div>` : ""}
+      <div style="overflow-x:auto;margin-top:14px">
+      <table style="width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border-radius:8px">
+        <tr style="background:#e7f3f0">
+          <th style="text-align:left;padding:6px 8px">付与日</th>
+          <th style="text-align:left;padding:6px 8px">勤続</th>
+          <th style="text-align:right;padding:6px 8px">付与日数</th>
+          <th style="text-align:center;padding:6px 8px">年5日義務</th></tr>
+        ${rows.map(r => {
+          const past = new Date(r.date) <= now;
+          return `<tr style="${past ? "" : "color:var(--sub)"}">
+            <td style="padding:6px 8px">${r.date.replaceAll("-", "/")}${past ? "" : "（予定）"}</td>
+            <td style="padding:6px 8px">${r.years === 0.5 ? "6か月" : Math.floor(r.years) + "年6か月"}</td>
+            <td style="padding:6px 8px;text-align:right"><b>${r.days}日</b></td>
+            <td style="padding:6px 8px;text-align:center">${r.mustTakeFive ? "対象" : "—"}</td></tr>`;
+        }).join("")}
+      </table></div>
+      <div style="font-size:12.5px;color:var(--sub);margin-top:8px">
+        ※ 各年度で全労働日の8割以上出勤していることが前提です。有給休暇は付与日から2年で時効消滅します。
+      </div>`;
+  }
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>

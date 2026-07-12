@@ -42,14 +42,14 @@ assert.equal(roundHalf(100.0), 100);
   const r = calcMonthly(300000, tokyo, RATES.kaigo_rate, 35);
   assert.equal(r.standard, 300000);
   assert.equal(r.kaigoApplies, false);
-  assert.equal(r.kaigo.self, 0);
-  // 健保: 300,000 x 9.85% = 29,550 → 折半 14,775
-  assert.equal(r.kenko.total, 29550);
-  assert.equal(r.kenko.self, 14775);
+  // 介護なしなので健保料率のみ: 300,000 x 9.85% = 29,550 → 折半 14,775
+  assert.equal(r.kenkoKaigo.rate, tokyo);
+  assert.equal(r.kenkoKaigo.self, 14775);
   // 厚年: 300,000 x 18.3% = 54,900 → 折半 27,450
-  assert.equal(r.kosei.total, 54900);
   assert.equal(r.kosei.self, 27450);
-  assert.equal(r.selfTotal, 14775 + 27450);
+  // 子ども・子育て支援金 0.23%(令和8年4月分〜・年齢不問): 300,000 x 0.23% = 690 → 折半 345
+  assert.equal(r.kosodate.self, 345);
+  assert.equal(r.selfTotal, 14775 + 27450 + 345);
 }
 
 // 介護保険は40歳以上65歳未満のみ
@@ -59,10 +59,10 @@ assert.equal(roundHalf(100.0), 100);
   assert.equal(calcMonthly(300000, tokyo, RATES.kaigo_rate, 40).kaigoApplies, true);
   assert.equal(calcMonthly(300000, tokyo, RATES.kaigo_rate, 64).kaigoApplies, true);
   assert.equal(calcMonthly(300000, tokyo, RATES.kaigo_rate, 65).kaigoApplies, false);
+  // 介護は健保と「合算した料率」で控除する(別々に端数処理すると公式額表と1円ずれる)
   const r = calcMonthly(300000, tokyo, RATES.kaigo_rate, 45);
-  // 介護: 300,000 x 1.62% = 4,860 → 折半 2,430
-  assert.equal(r.kaigo.total, 4860);
-  assert.equal(r.kaigo.self, 2430);
+  assert.equal(r.kenkoKaigo.rate, tokyo + RATES.kaigo_rate);  // 9.85 + 1.62 = 11.47%
+  assert.equal(r.kenkoKaigo.self, Math.round(300000 * (tokyo + RATES.kaigo_rate) / 100 / 2));
 }
 
 // 高給者: 厚年だけ頭打ちになる(健保は続く)
@@ -71,7 +71,7 @@ assert.equal(roundHalf(100.0), 100);
   const r = calcMonthly(800000, tokyo, RATES.kaigo_rate, 35);
   assert.equal(r.standard, 790000);        // 健保は第39級
   assert.equal(r.koseiStandard, KOSEI_MAX); // 厚年は650,000で頭打ち
-  assert.equal(r.kosei.total, Math.round(650000 * 0.183));
+  assert.equal(r.kosei.base, KOSEI_MAX);
 }
 
 // 賞与: 標準賞与額は1,000円未満切捨
@@ -79,7 +79,7 @@ assert.equal(roundHalf(100.0), 100);
   const tokyo = RATES.kenko_rates["東京都"];
   const b = calcBonus(456789, tokyo, RATES.kaigo_rate, 35);
   assert.equal(b.standardBonus, 456000);
-  assert.equal(b.kenko.total, Math.round(456000 * tokyo / 100));
+  assert.equal(b.kenkoKaigo.base, 456000);
 }
 // 賞与: 厚年は1回150万円が上限
 {
@@ -87,7 +87,7 @@ assert.equal(roundHalf(100.0), 100);
   const b = calcBonus(2000000, tokyo, RATES.kaigo_rate, 35);
   assert.equal(b.koseiStandard, 1500000);
   assert.equal(b.capped.kosei, true);
-  assert.equal(b.kosei.total, Math.round(1500000 * 0.183));
+  assert.equal(b.kosei.base, 1500000);
 }
 // 賞与: 健保は年度累計573万円が上限
 {
@@ -101,7 +101,7 @@ assert.equal(roundHalf(100.0), 100);
 {
   const niigata = calcMonthly(300000, RATES.kenko_rates["新潟県"], RATES.kaigo_rate, 35);
   const saga = calcMonthly(300000, RATES.kenko_rates["佐賀県"], RATES.kaigo_rate, 35);
-  assert.ok(saga.kenko.self > niigata.kenko.self, "佐賀 > 新潟のはず");
+  assert.ok(saga.kenkoKaigo.self > niigata.kenkoKaigo.self, "佐賀 > 新潟のはず");
 }
 
 console.log("all shaho_core tests passed");

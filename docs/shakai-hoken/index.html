@@ -76,8 +76,10 @@
   <p><b>40歳に達したときから65歳に達するまで</b>です（40歳の誕生日の前日が属する月から）。65歳以降は介護保険の第1号被保険者となり、原則として年金天引きに変わります。</p>
   <h3>賞与の保険料には上限があります</h3>
   <p>標準賞与額（1,000円未満切捨）に同じ料率を掛けますが、<b>健康保険は年度累計573万円、厚生年金は1回あたり150万円</b>が上限です。上限を超えた分には保険料がかかりません。</p>
+  <h3>子ども・子育て支援金（令和8年4月から新設）</h3>
+  <p>令和8年（2026年）4月分から、<b>子ども・子育て支援金</b>（0.23%）の徴収が始まりました。<b>年齢に関係なく全員が対象</b>で、労使折半です。健康保険料とは別枠で控除されます。</p>
   <h3>この計算機の前提</h3>
-  <p>協会けんぽ（全国健康保険協会）の令和8年度の都道府県別料率、厚生年金保険料率18.3%（全国一律）で計算しています。健康保険組合に加入している場合は料率が異なります。子ども・子育て拠出金（会社負担のみ）は含んでいません。</p>
+  <p>協会けんぽ（全国健康保険協会）の令和8年度の都道府県別料率、厚生年金保険料率18.3%（全国一律）で計算しています。健康保険組合に加入している場合は料率が異なります。子ども・子育て支援金（0.23%・労使折半）を含みます。子ども・子育て拠出金（会社負担のみ）は含んでいません。</p>
   <div class="callout">
     <b>ご注意</b>
     本ツールの計算結果は目安です。実際の保険料額は、日本年金機構・協会けんぽの決定した標準報酬月額に基づきます。個別の判断は年金事務所または社会保険労務士にご確認ください。
@@ -125,12 +127,16 @@ $("calc").addEventListener("click", () => {
     <tr><td style="padding:6px 8px">${label}</td>
         <td style="padding:6px 8px;text-align:right">${yen(o.self)}</td>
         <td style="padding:6px 8px;text-align:right;color:var(--sub)">${yen(o.company)}</td>
-        <td style="padding:6px 8px;text-align:right;color:var(--sub)">${yen(o.total)}</td></tr>` : "";
+        <td style="padding:6px 8px;text-align:right;color:var(--sub)">${yen(o.self + o.company)}</td></tr>` : "";
+
+  const kenkoLabel = r.kaigoApplies
+    ? `健康保険＋介護保険（${pref} ${kRate.toFixed(2)}% ＋ ${RATES.kaigo_rate.toFixed(2)}% ＝ ${r.kenkoKaigo.rate.toFixed(2)}%）`
+    : `健康保険（${pref} ${kRate.toFixed(2)}%）`;
 
   let html = `
     <div class="row" style="margin-bottom:10px">
       標準報酬月額 <b>${yen(r.standard)}</b>（健康保険 第${r.grade}級）
-      ${r.koseiStandard !== r.standard ? `／厚生年金 <b>${yen(r.koseiStandard)}</b>（上限・下限で調整）` : ""}
+      ${r.koseiStandard !== r.standard ? `／厚生年金 <b>${yen(r.koseiStandard)}</b>（上下限で調整）` : ""}
     </div>
     <div class="row">毎月の本人負担 <span class="big">${yen(r.selfTotal)}</span></div>
     <div style="overflow-x:auto;margin-top:10px">
@@ -140,19 +146,21 @@ $("calc").addEventListener("click", () => {
         <th style="text-align:right;padding:6px 8px">本人負担</th>
         <th style="text-align:right;padding:6px 8px">会社負担</th>
         <th style="text-align:right;padding:6px 8px">合計</th></tr>
-      ${row(`健康保険（${pref} ${kRate.toFixed(2)}%）`, r.kenko)}
-      ${row(`介護保険（${RATES.kaigo_rate.toFixed(2)}%・40〜64歳）`, r.kaigo, r.kaigoApplies)}
+      ${row(kenkoLabel, r.kenkoKaigo)}
+      ${row(`子ども・子育て支援金（${r.kosodate.rate.toFixed(2)}%）`, r.kosodate)}
       ${row("厚生年金（18.3%）", r.kosei)}
       <tr style="border-top:2px solid var(--accent);font-weight:700">
         <td style="padding:6px 8px">合計</td>
         <td style="padding:6px 8px;text-align:right">${yen(r.selfTotal)}</td>
         <td style="padding:6px 8px;text-align:right">${yen(r.companyTotal)}</td>
         <td style="padding:6px 8px;text-align:right">${yen(r.selfTotal + r.companyTotal)}</td></tr>
-    </table></div>`;
-
-  if (!r.kaigoApplies) {
-    html += `<div style="font-size:12.5px;color:var(--sub);margin-top:8px">※ ${age}歳のため介護保険料はかかりません（40歳以上65歳未満が対象）。</div>`;
-  }
+    </table></div>
+    <div style="font-size:12.5px;color:var(--sub);margin-top:8px">
+      ${r.kaigoApplies
+        ? "※ 介護保険料は健康保険料と合算した料率で控除します（公式の保険料額表と同じ方式）。"
+        : `※ ${age}歳のため介護保険料はかかりません（40歳以上65歳未満が対象）。`}
+      <br>※ 子ども・子育て支援金は令和8年4月分から。年齢に関係なく全員が対象で、労使折半です。
+    </div>`;
 
   const bonus = Number($("bonus").value);
   if (bonus > 0) {
