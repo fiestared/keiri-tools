@@ -28,6 +28,7 @@
     <div style="font-weight:700;margin-bottom:6px">電帳法索引簿メーカー <span style="font-weight:400;color:#6b7280">v0.1</span></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button id="kt-scan" style="cursor:pointer;padding:6px 10px;border:1px solid #2563eb;background:#2563eb;color:#fff;border-radius:6px">このページをスキャン</button>
+      <button id="kt-fill" disabled style="cursor:pointer;padding:6px 10px;border:1px solid #c8cdd4;background:#fff;color:#374151;border-radius:6px">金額を補完</button>
       <button id="kt-csv" disabled style="cursor:pointer;padding:6px 10px;border:1px solid #c8cdd4;background:#f3f4f6;color:#9ca3af;border-radius:6px">索引簿CSV</button>
       <button id="kt-refresh" title="セレクタ定義を最新に更新" style="cursor:pointer;padding:6px 8px;border:1px solid #c8cdd4;background:#fff;color:#6b7280;border-radius:6px">⟳</button>
     </div>
@@ -52,6 +53,7 @@
       ? `${incomplete}件で日付または金額が取得できませんでした。CSVの「要確認」列を見て手入力してください。`
       : [...new Set(result.warnings)].slice(0, 2).join(" / ");
     const csvBtn = $("#kt-csv");
+    if (incomplete > 0) $("#kt-fill").disabled = false;
     if (result.orders.length > 0) {
       csvBtn.disabled = false;
       csvBtn.style.background = "#059669";
@@ -59,6 +61,39 @@
       csvBtn.style.color = "#fff";
     }
     console.log("[電帳法索引簿] スキャン結果", result);
+  });
+
+  // 注文履歴ページに金額が無い注文は、領収書ページを開いて補完する(実測で必要と判明)
+  $("#kt-fill").addEventListener("click", async () => {
+    if (!lastResult) return;
+    const targets = lastResult.orders.filter(o => o.orderId && (o.total == null || !o.orderDate));
+    if (targets.length === 0) { $("#kt-status").textContent = "補完が必要な注文はありません。"; return; }
+    const btn = $("#kt-fill");
+    btn.disabled = true;
+    let done = 0, filled = 0;
+    for (const o of targets) {
+      $("#kt-status").textContent = `領収書を確認中… ${++done}/${targets.length}`;
+      try {
+        const url = ktReceiptUrl(o.orderId, selectors.receipt);
+        const res = await fetch(url, { credentials: "include" });
+        if (res.ok) {
+          const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+          const got = ktParseReceipt(doc, selectors.receipt.fields);
+          if (o.total == null && got.total != null) { o.total = got.total; filled++; }
+          if (!o.orderDate && got.orderDate) { o.orderDate = got.orderDate; filled++; }
+        }
+      } catch (e) {
+        console.warn("[電帳法索引簿] 領収書の取得に失敗", o.orderId, e);
+      }
+      await new Promise(r => setTimeout(r, 800)); // Amazonへの負荷を避ける
+    }
+    const remain = ktCountIncomplete(lastResult.orders);
+    $("#kt-status").textContent =
+      `補完完了: ${filled}項目を取得` + (remain ? ` / まだ要確認${remain}件` : " / 全件そろいました");
+    $("#kt-warn").textContent = remain
+      ? "残りはCSVの「要確認」列を見て手入力してください。"
+      : "";
+    btn.disabled = false;
   });
 
   $("#kt-refresh").addEventListener("click", async () => {

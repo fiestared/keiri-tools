@@ -25,10 +25,34 @@ function ktConvertMatch(m, type) {
  * candidate.mode: "css"(selector+attr) | "cardText"(カード全文にregex)
  * @returns {value, via} | null
  */
+/**
+ * ラベル(「注文日」「合計」)の要素を探し、その値要素のテキストを返す。
+ * 実DOM(2026-07-12)の構造:
+ *   <li class="order-header__header-list-item">
+ *     <div class="a-row a-size-mini"><span class="a-text-caps">合計</span></div>
+ *     <div class="a-row"><span>￥8,978</span></div>
+ *   </li>
+ * ラベルと値がクラス名で区別できず順序でしか対応しないため、専用モードで扱う。
+ */
+function ktLabeledValue(card, label) {
+  const labelEls = card.querySelectorAll(".a-text-caps");
+  for (const el of labelEls || []) {
+    if ((el.textContent || "").trim() !== label) continue;
+    // ラベルspan -> 親div(a-row) -> 次のdiv(a-row) の中のテキスト
+    const labelRow = el.parentElement;
+    const valueRow = labelRow && labelRow.nextElementSibling;
+    if (valueRow && valueRow.textContent) return valueRow.textContent;
+  }
+  return null;
+}
+
 function ktExtractField(card, fieldSpec) {
   for (const cand of fieldSpec.candidates || []) {
     let raw = null;
-    if (cand.mode === "cardText") {
+    if (cand.mode === "labeledValue") {
+      raw = ktLabeledValue(card, cand.label);
+      if (raw == null) continue;
+    } else if (cand.mode === "cardText") {
       raw = card.textContent || "";
     } else {
       const el = card.querySelector(cand.selector);
@@ -97,6 +121,23 @@ function ktParseOrderHistory(root, historySpec) {
     orders.push(o);
   }
   return { orders, cardCount: cards.length, usedCardSelector, warnings };
+}
+
+/**
+ * 領収書ページのHTMLから金額・日付を補完する。
+ * **注文履歴ページには金額が存在しない注文がある**(実測10件中3件はDOMに￥表記ゼロ)ため、
+ * 索引簿として使うにはここでの補完が必須。
+ * @param {Document} doc DOMParserで作った領収書ページのdocument
+ * @param {object} receiptFields selectors.receipt.fields
+ */
+function ktParseReceipt(doc, receiptFields) {
+  const root = doc.body || doc.documentElement;
+  const out = {};
+  for (const [name, spec] of Object.entries(receiptFields || {})) {
+    const hit = ktExtractField(root, spec);
+    if (hit) out[name] = hit.value;
+  }
+  return out;
 }
 
 /** 注文IDから領収書URLを組み立てる(デジタル注文はD始まり) */
