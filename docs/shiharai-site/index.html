@@ -116,7 +116,16 @@ import { schedule, toICS, DOW_JA } from "../assets/payday_core.js";
 const $ = (id) => document.getElementById(id);
 let HOLIDAYS = {};
 let lastRows = [], lastLabel = "";
-fetch("../assets/holidays_jp.json").then((r) => r.json()).then((d) => { HOLIDAYS = d; });
+
+// 祝日データは非同期で届く。**届く前に計算ボタンを押されても待つ**こと。
+// (待たずに計算すると祝日を知らないまま「5/5(水)に振込」等と答えてしまう。
+//  回線が速いと再現しないので、tools/e2e の payday_slow シーンで固定している)
+const holidaysReady = fetch("../assets/holidays_jp.json")
+  .then((r) => r.json())
+  .then((d) => { HOLIDAYS = d; return true; })
+  .catch(() => false); // 読み込めなかったときは黙って土日判定にせず、下で断り書きを出す
+
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 const LS_KEY = "shiharai_conditions_v1";
 const loadSaved = () => JSON.parse(localStorage.getItem(LS_KEY) || "[]");
@@ -137,7 +146,8 @@ function condLabel(c) {
   return `${cl}締め ${of}${pd}払い`;
 }
 
-function run() {
+async function run() {
+  const holidaysOk = await holidaysReady; // ← 祝日データが届くまで計算しない
   const now = new Date();
   const c = cond();
   lastRows = schedule(c, now.getFullYear(), now.getMonth() + 1, 12, HOLIDAYS);
@@ -146,15 +156,25 @@ function run() {
     <tr>
       <td style="padding:6px 8px;border-bottom:1px solid var(--line);font-size:13px">${r.periodFrom.slice(5).replace("-", "/")}〜${r.periodTo.slice(5).replace("-", "/")}</td>
       <td style="padding:6px 8px;border-bottom:1px solid var(--line);font-weight:700">${r.payIso.replaceAll("-", "/")} (${r.payDow})</td>
-      <td style="padding:6px 8px;border-bottom:1px solid var(--line);font-size:12px;color:var(--sub)">${r.moved ? "営業日調整 (" + r.rawPayIso.slice(5).replace("-", "/") + "→)" : ""}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid var(--line);font-size:12px;color:var(--sub)">${r.moved ? "営業日調整 (" + r.rawPayIso.slice(5).replace("-", "/") + "→)" : ""}${r.beyondData ? `${r.moved ? " " : ""}<span title="祝日データ未収録">⚠︎ 概算</span>` : ""}</td>
     </tr>`).join("");
+
+  // 祝日を知らないまま答えている行があるなら、必ずそう言う(黙って断言しない)
+  const beyond = lastRows.filter((r) => r.beyondData);
+  const notes = [];
+  if (!holidaysOk)
+    notes.push("<b>祝日データを読み込めませんでした。</b>土日・年末年始のみで判定しています(祝日は反映されていません)。再読み込みしてください。");
+  else if (beyond.length)
+    notes.push(`<b>⚠︎ の行は概算です。</b>${beyond[0].payIso.slice(0, 4)}年以降の祝日はまだ公表されていないため、その行は土日・年末年始のみで判定しています(祝日が来れば前倒しになります)。`);
+
   $("out").innerHTML = `
-    <div style="font-weight:700;margin-bottom:6px">${lastLabel}（${condLabel(c)}）</div>
+    <div style="font-weight:700;margin-bottom:6px">${esc(lastLabel)}（${condLabel(c)}）</div>
     <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse">
       <tr><th style="text-align:left;padding:6px 8px;font-size:12px;color:var(--sub)">締め期間</th>
           <th style="text-align:left;padding:6px 8px;font-size:12px;color:var(--sub)">支払予定日</th>
           <th style="text-align:left;padding:6px 8px;font-size:12px;color:var(--sub)">備考</th></tr>
-      ${rows}</table></div>`;
+      ${rows}</table></div>
+    ${notes.map((n) => `<div class="note" style="margin-top:10px">${n}</div>`).join("")}`;
   $("ics").style.display = "block";
   $("csv").style.display = "block";
 }
@@ -191,7 +211,7 @@ function renderSaved() {
     ? "<div style='font-size:12px;color:var(--sub);margin-bottom:4px'>保存済みの取引先（この端末のみ）</div>" +
       list.map((s, i) => `
         <span style="display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:4px 10px;margin:2px;font-size:13px;background:#fff">
-          <a href="#" data-load="${i}" style="text-decoration:none;color:var(--accent)">${s.label}</a>
+          <a href="#" data-load="${i}" style="text-decoration:none;color:var(--accent)">${esc(s.label)}</a>
           <a href="#" data-del="${i}" style="text-decoration:none;color:#c33">×</a>
         </span>`).join("")
     : "";

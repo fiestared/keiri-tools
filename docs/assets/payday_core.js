@@ -26,6 +26,20 @@ export function dayOfWeek(y, m, d) {
 
 export const DOW_JA = ["日", "月", "火", "水", "木", "金", "土"];
 
+/**
+ * 祝日データの収録最終年。holidays が空(=読み込み失敗)なら -Infinity。
+ * これを超える年の日付は「祝日を知らないまま営業日判定している」ことになるので、
+ * 黙って答えず、呼び出し側で必ず断り書きを出す(下の beyondData)。
+ */
+export function coverageMaxYear(holidays) {
+  let max = -Infinity;
+  for (const k of Object.keys(holidays)) {
+    const y = Number(k.slice(0, 4));
+    if (y > max) max = y;
+  }
+  return max;
+}
+
 export function isBankHoliday(y, m, d, holidays) {
   const dow = dayOfWeek(y, m, d);
   if (dow === 0 || dow === 6) return true;
@@ -64,6 +78,7 @@ function addMonths(y, m, n) {
  */
 export function schedule(cond, startY, startM, months, holidays) {
   const rows = [];
+  const maxY = coverageMaxYear(holidays);
   for (let i = 0; i < months; i++) {
     const cm = addMonths(startY, startM, i);
     const closeD = resolveDay(cm.y, cm.m, cond.closing);
@@ -83,9 +98,24 @@ export function schedule(cond, startY, startM, months, holidays) {
       payDow: DOW_JA[dayOfWeek(adj.y, adj.m, adj.d)],
       rawPayIso: iso(pm.y, pm.m, payD),
       moved: adj.moved,
+      // 祝日データの収録年を超えている = 土日と年末年始しか見ていない(祝日を見落としうる)。
+      // 例: 2028年の祝日が未収録のまま 2028-05-05(こどもの日)を「営業日」と答えてしまう
+      beyondData: Math.max(pm.y, adj.y) > maxY,
     });
   }
   return rows;
+}
+
+/**
+ * iCal(.ics)のTEXT値はエスケープが要る(RFC5545 3.3.11)。特に**改行を素通しすると
+ * 取引先名から任意のICSプロパティを注入できる**ので、必ずここを通す。
+ */
+export function icsText(s) {
+  return String(s)
+    .replace(/\\/g, "\\\\")
+    .replace(/;/g, "\\;")
+    .replace(/,/g, "\\,")
+    .replace(/\r?\n/g, "\\n");
 }
 
 /** iCal(.ics)文字列を生成。終日イベント。 */
@@ -98,9 +128,9 @@ export function toICS(rows, label) {
     const ymd = r.payIso.replaceAll("-", "");
     lines.push(
       "BEGIN:VEVENT",
-      `UID:${ymd}-${label.replace(/\s/g, "")}@keiri-tools.com`,
+      `UID:${ymd}-${icsText(label).replace(/\s/g, "")}@keiri-tools.com`,
       `DTSTART;VALUE=DATE:${ymd}`,
-      `SUMMARY:支払日: ${label}`,
+      `SUMMARY:支払日: ${icsText(label)}`,
       `DESCRIPTION:締め期間 ${r.periodFrom}〜${r.periodTo}`,
       "END:VEVENT"
     );

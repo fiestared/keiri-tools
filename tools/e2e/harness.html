@@ -1,0 +1,186 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>keiri-tools E2E harness</title>
+<!--
+  公開中の3ツールを **実ブラウザで・実ページのまま** 動かす結合テスト。
+  ツールのHTMLは1行も改変せず、同一オリジンのiframeに読み込んでユーザーと同じ操作
+  (値を入れる→ボタンを押す→描画された結果を読む)をする。
+
+  なぜ要るか: 単体テスト(tests/*.mjs)が見ているのは assets/*_core.js の純ロジックだけで、
+  ページ内の <script type="module"> ── 入力の読み取り・fetchしたデータの適用・結果の描画 ──
+  は**どのテストも通っていなかった**。Chrome拡張で同じ空白から実バグ(取引先に「販売: 」が
+  混入)が出た実績があるので、同じ手当てをツール側にも入れる。
+-->
+<body style="margin:0;font:14px system-ui">
+<iframe id="f" style="width:1100px;height:1000px;border:0"></iframe>
+<script type="module">
+const q = new URLSearchParams(location.search);
+const scene = q.get("scene");
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/** 条件が真になるまで待つ(タイミング勘に頼らない) */
+async function waitFor(fn, label, timeout = 8000) {
+  const t0 = Date.now();
+  for (;;) {
+    let v;
+    try { v = fn(); } catch { v = null; }
+    if (v) return v;
+    if (Date.now() - t0 > timeout) throw new Error(`待っても起きなかった: ${label}`);
+    await sleep(20);
+  }
+}
+
+/** ツールのページをiframeで開く。load後は「ユーザーが見ている状態」 */
+function open(path) {
+  const f = document.getElementById("f");
+  return new Promise((ok, ng) => {
+    f.addEventListener("load", () => ok(f.contentDocument), { once: true });
+    f.addEventListener("error", () => ng(new Error("iframe load error")), { once: true });
+    f.src = path;
+  });
+}
+
+const set = (doc, id, v) => {
+  const el = doc.getElementById(id);
+  el.value = v;
+  el.dispatchEvent(new doc.defaultView.Event("input", { bubbles: true }));
+  el.dispatchEvent(new doc.defaultView.Event("change", { bubbles: true }));
+  return el;
+};
+const click = (doc, id) => doc.getElementById(id).click();
+const text = (doc, id) => doc.getElementById(id).textContent.replace(/\s+/g, " ").trim();
+
+const pickRadio = (doc, name, value) => {
+  const r = doc.querySelector(`input[name="${name}"][value="${value}"]`);
+  r.checked = true;
+  r.dispatchEvent(new doc.defaultView.Event("change", { bubbles: true }));
+};
+
+// ── 銀行休業日の判定(ハーネス側の独立実装。ツール側のロジックは信用しない) ──────────
+// テストが被検体と同じ関数を使うと「両方同じように間違える」ので、ここでは素朴に書き直す。
+const isBankHoliday = (iso, holidays) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  const dow = new Date(y, m - 1, d).getDay();
+  if (dow === 0 || dow === 6) return true;          // 土日
+  if (m === 12 && d === 31) return true;            // 年末年始
+  if (m === 1 && d <= 3) return true;
+  return Object.prototype.hasOwnProperty.call(holidays, iso); // 祝日
+};
+
+/** 支払サイト表を読む → [{payIso, dow, moved}] */
+function readPaydayRows(doc) {
+  const trs = [...doc.querySelectorAll("#out table tr")].slice(1); // 1行目はヘッダ
+  return trs.map((tr) => {
+    const tds = tr.querySelectorAll("td");
+    const m = tds[1].textContent.match(/(\d{4})\/(\d{2})\/(\d{2})\s*\((.)\)/);
+    return {
+      payIso: `${m[1]}-${m[2]}-${m[3]}`,
+      dow: m[4],
+      moved: /営業日調整/.test(tds[2].textContent),
+    };
+  });
+}
+
+// ── シーン ────────────────────────────────────────────────────────────────
+const SCENES = {
+  // 銀行プリセットを選ぶと手数料欄が本当に埋まるか(fetch→select→input の配線)
+  async senpou_preset() {
+    const doc = await open("/docs/senpou-futan/");
+    const banks = await (await fetch("/docs/assets/fee_table.json?raw=1")).json();
+    const i = banks.banks.findIndex((b) => b.under30k !== b.over30k); // 3万円で段のある銀行
+    const bank = banks.banks[i];
+
+    await waitFor(() => doc.getElementById("bankPreset").options.length > 1, "銀行プリセットの読み込み");
+    set(doc, "bankPreset", String(i));
+    const filled = {
+      under: doc.getElementById("feeUnder").value,
+      over: doc.getElementById("feeOver").value,
+    };
+
+    pickRadio(doc, "method", "sueoki");
+    set(doc, "invoice", "30000"); // ちょうど3万円 = 据置型なら「3万円以上」の手数料
+    click(doc, "calc");
+    return {
+      bank: bank.name, filled,
+      expectFilled: { under: String(bank.under30k), over: String(bank.over30k) },
+      result: text(doc, "result"),
+      expectTransfer: (30000 - bank.over30k).toLocaleString("ja-JP"),
+    };
+  },
+
+  // 3万円境界の「不定帯」で3方式の併記が出るか
+  async senpou_disagree() {
+    const doc = await open("/docs/senpou-futan/");
+    pickRadio(doc, "method", "sueoki");
+    set(doc, "feeUnder", "110");
+    set(doc, "feeOver", "330");
+    set(doc, "invoice", "30200"); // 据置=330 / 未満加算=330 / 以上加算=110 → 割れる
+    click(doc, "calc");
+    return { result: text(doc, "result") };
+  },
+
+  // 入金差額チェック(550円=一律差引の商慣行)
+  async senpou_check() {
+    const doc = await open("/docs/senpou-futan/");
+    set(doc, "chkInvoice", "100000");
+    set(doc, "chkReceived", "99450");
+    click(doc, "check");
+    return { result: text(doc, "checkResult") };
+  },
+
+  // 全銀カナ: 変換が描画されるか + 入力のHTMLがエスケープされるか
+  async zengin() {
+    const doc = await open("/docs/zengin-kana/");
+    set(doc, "names", '株式会社ヤマダ商事\n<img src=x onerror="window.__pwned=1">');
+    click(doc, "run");
+    await waitFor(() => doc.querySelectorAll("#out div").length > 0, "変換結果の描画");
+    return {
+      out: text(doc, "out"),
+      injectedImg: doc.querySelectorAll("#out img").length, // 0でなければエスケープ漏れ
+      pwned: !!doc.defaultView.__pwned,
+      copyShown: doc.getElementById("copyAll").style.display === "block",
+    };
+  },
+
+  // 支払サイト: 描画された支払予定日が1つでも銀行休業日ならNG。
+  // 5日払いにすると、どの12ヶ月窓にも必ず 5/5(こどもの日) が入る = 常設の祝日プローブになる。
+  async payday() {
+    const doc = await open("/docs/shiharai-site/");
+    const holidays = await (await fetch("/docs/assets/holidays_jp.json?raw=1")).json();
+    set(doc, "closing", "末");
+    set(doc, "offset", "1");   // 月末締め翌月5日払い
+    set(doc, "payday", "5");
+    pickRadio(doc, "adjust", "prev");
+    click(doc, "calc"); // ← 祝日データの到着を待たずに押す(実ユーザーと同じ)
+    await waitFor(() => doc.querySelectorAll("#out table tr").length > 1, "支払予定表の描画");
+    const rows = readPaydayRows(doc);
+    return {
+      rows: rows.length,
+      onHoliday: rows.filter((r) => isBankHoliday(r.payIso, holidays)), // ここが空でなければ実バグ
+      mayRow: rows.find((r) => r.payIso.slice(5, 7) === "05") || null,
+      warn: text(doc, "out").includes("読み込めませんでした"),
+      // 祝日を知らずに答えている行は「⚠︎ 概算」と申告されているはず
+      beyondRows: doc.querySelectorAll("#out table td span[title]").length,
+      noteText: [...doc.querySelectorAll("#out .note")].map((n) => n.textContent).join(" "),
+    };
+  },
+};
+// 同じ操作を、祝日JSONの配信を変えて撮る:
+//   payday_slow   … 800ms遅らせる(モバイル回線。届く前にボタンを押される)
+//   payday_nodata … 404(配信失敗)
+//   payday_stale  … 2025年までしか収録が無い(データが古びた将来の姿)
+SCENES.payday_slow = SCENES.payday;
+SCENES.payday_nodata = SCENES.payday;
+SCENES.payday_stale = SCENES.payday;
+
+let state;
+try {
+  state = { scene, ...(await SCENES[scene]()) };
+} catch (e) {
+  state = { scene, error: String(e && e.message || e) };
+}
+window.__state = state; // 手で開いたとき devtools から見る用
+await fetch("/__state", { method: "POST", body: JSON.stringify(state) }).catch(() => {});
+window.__done = true;
+</script>

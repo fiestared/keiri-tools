@@ -2,6 +2,7 @@ import assert from "node:assert";
 import { readFileSync } from "node:fs";
 import {
   lastDayOfMonth, resolveDay, isBankHoliday, adjustBusinessDay, schedule,
+  coverageMaxYear, toICS, icsText,
 } from "../docs/assets/payday_core.js";
 
 const HOLIDAYS = JSON.parse(
@@ -59,5 +60,39 @@ rows = schedule({ closing: "末", offsetMonths: 1, payday: 4, adjust: "next" },
   2026, 12, 1, HOLIDAYS);
 assert.equal(rows[0].payIso, "2027-01-04");
 assert.equal(rows[0].moved, false);
+
+// ── 祝日データの守備範囲(2026-07-13追加) ────────────────────────────────────
+// 収録年を超えた日付は「祝日を知らないまま営業日と答える」ため、必ず beyondData で申告する。
+// 実害の例: 2028年の祝日が未収録だと 2028-05-05(こどもの日・金)を「振込可」と断言してしまう
+assert.equal(coverageMaxYear(HOLIDAYS), 2027);
+assert.equal(coverageMaxYear({}), -Infinity); // 読み込み失敗時は全行が概算扱いになる
+
+rows = schedule({ closing: "末", offsetMonths: 1, payday: 5, adjust: "prev" }, 2027, 5, 12, HOLIDAYS);
+const kodomo = rows.find((r) => r.rawPayIso === "2028-05-05");
+assert.equal(kodomo.beyondData, true, "収録年外なのに概算フラグが立っていない");
+assert.equal(rows.find((r) => r.rawPayIso === "2027-06-05").beyondData, false); // 収録内は通常表示
+
+// データ読み込み失敗(空)なら、全行を概算として申告する(黙って土日だけで答えない)
+assert.ok(schedule({ closing: "末", offsetMonths: 1, payday: 5, adjust: "prev" }, 2026, 7, 12, {})
+  .every((r) => r.beyondData));
+
+// カナリア: 祝日データが「今日から6ヶ月先」より手前で尽きるなら落とす。
+// 落ちたら内閣府CSV(https://www8.cao.go.jp/chosei/shukujitsu/syukujitsu.csv)から翌年分を
+// holidays_jp.json に追記すること。ユーザーは beyondData の断り書きで守られているが、
+// 断り書きを常態にしないための締切として置く。
+const now = new Date();
+const horizon = new Date(now.getFullYear(), now.getMonth() + 6, 1);
+assert.ok(
+  new Date(coverageMaxYear(HOLIDAYS), 11, 31) >= horizon,
+  `祝日データが尽きかけている(収録は${coverageMaxYear(HOLIDAYS)}年まで)。内閣府CSVから翌年分を追加すること`
+);
+
+// ── ICSのエスケープ ────────────────────────────────────────────────────────
+// 取引先名は自由入力。改行を素通しすると任意のICSプロパティを注入できる
+assert.equal(icsText("A;B,C\\D"), "A\\;B\\,C\\\\D");
+const ics = toICS([{ payIso: "2026-08-05", periodFrom: "2026-07-01", periodTo: "2026-07-31" }],
+  "株式会社ヤマダ\nSUMMARY:注入");
+assert.ok(!/\r\nSUMMARY:注入/.test(ics), "ICSに改行が素通しされている(プロパティ注入)");
+assert.ok(ics.includes("SUMMARY:支払日: 株式会社ヤマダ\\nSUMMARY:注入"));
 
 console.log("all payday_core tests passed");
