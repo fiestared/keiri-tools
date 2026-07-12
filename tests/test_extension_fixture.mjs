@@ -27,8 +27,8 @@ const check = (name, actual, expected) => {
 };
 
 const r = sandbox.ktParseOrderHistory(dom.window.document, selectors.orderHistory);
-check("カード検出(.js-order-card)", r.cardCount, 4);
-const [a, b, c, d] = r.orders;
+check("カード検出(.js-order-card)", r.cardCount, 6);
+const [a, b, c, d, e, f] = r.orders;
 
 // A: 注文日+合計あり → 正常に取れる
 check("A 注文ID", a.orderId, "111-1111111-1111111");
@@ -47,11 +47,19 @@ check("C 日付は取れる", c.orderDate, "2026-07-12");
 check("D 注文日なし", d.orderDate, undefined);
 check("D 注文ID(デジタル)", d.orderId, "D01-4444444-4444444");
 
-// CSV: 未取得は空欄+要確認列
+// E: キャンセル注文 → 請求が無いので索引簿から除外する
+check("E キャンセルを検出", !!e.cancelled, true);
+// F: 通常注文の「返品期限案内」をキャンセルと誤検出しない(実DOMの誤検出源)
+check("F 返品案内はキャンセルではない", !!f.cancelled, false);
+check("F 金額は取れる", f.total, 5800);
+
+// CSV: キャンセルは載せない / 未取得は空欄+要確認列
 const csv = sandbox.ktBuildIndexCsv(r.orders);
-const lines = csv.split("\r\n");
-check("CSVの行数(ヘッダ+4件)", lines.filter(l => l.trim()).length, 5);
-check("要確認の件数", sandbox.ktCountIncomplete(r.orders), 3);
+const lines = csv.split("\r\n").filter(l => l.trim());
+check("キャンセル注文の件数", sandbox.ktCountCancelled(r.orders), 1);
+check("CSVはキャンセルを除外(ヘッダ+5件)", lines.length, 6);
+check("CSVにキャンセル注文が入らない", csv.includes("555-5555555-5555555"), false);
+check("要確認の件数(キャンセルは数えない)", sandbox.ktCountIncomplete(r.orders), 3);
 check("Dの行に日付・金額の要確認が出る", /D01-4444444-4444444.*日付・金額/.test(csv), true);
 
 // 領収書ページからの金額補完(注文履歴に金額が無い注文の救済)

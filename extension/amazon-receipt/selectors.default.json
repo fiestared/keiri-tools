@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "version": "2026-07-12.3",
-  "note": "実DOM検証済(2026-07-12・注文履歴10件)。確定事項: カードは .js-order-card、注文IDは .yohtmlc-order-id、日付と金額は a-text-caps ラベル(注文日/合計)と直後の a-row の値の対応で取る(labeledValueモード)。**重要: 注文履歴ページに金額が存在しない注文がある(実測10件中3件はDOMに￥表記ゼロ)。この場合は領収書ページをfetchして補完する(receipt.fields)**。サブスク注文(D01-)には注文日ラベルが無いことがある。リモート版は https://keiri-tools.com/ext/amazon-receipt/selectors.json",
+  "version": "2026-07-12.4",
+  "note": "実DOM検証済(2026-07-12・注文履歴10件)。カード=.js-order-card / 注文ID=.yohtmlc-order-id / 日付・金額は a-text-caps ラベル(注文日/合計)と直後の a-row の順序対応(labeledValue)。**キャンセル注文はDOMに金額が存在せず、請求も発生していないため索引簿から除外する** (検出語は「キャンセル済み」「注文はキャンセルされました」のみ。「返品」は通常注文の返品期限案内に現れるため誤検出源であり使わない)。サブスク注文(D01-)は注文日ラベルが無いことがある。金額がDOMに無い/￥0の注文は領収書ページ(receipt.fields)で補完を試みる。",
   "orderHistory": {
     "orderCardSelectors": [
       ".js-order-card",
@@ -87,6 +87,16 @@
             "mode": "css",
             "selector": ".a-fixed-left-grid-col.a-col-right a.a-link-normal",
             "attr": "text"
+          }
+        ]
+      },
+      "cancelled": {
+        "type": "string",
+        "optional": true,
+        "candidates": [
+          {
+            "mode": "cardText",
+            "regex": "(キャンセル済み|注文はキャンセルされました|この注文の請求は行われていません)"
           }
         ]
       }

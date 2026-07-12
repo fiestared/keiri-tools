@@ -22,7 +22,18 @@ function ktReceiptFilename(order, ext) {
  * @param {Array} orders ktParseOrderHistoryの結果
  * @returns {string} BOM付きCSV
  */
-function ktBuildIndexCsv(orders) {
+/** キャンセル注文は請求が発生していないため索引簿の対象外(実DOMで確認) */
+function ktIsCancelled(o) {
+  return !!o.cancelled;
+}
+
+/** 索引簿に載せるべき注文だけを返す */
+function ktIndexableOrders(orders) {
+  return orders.filter(o => !ktIsCancelled(o));
+}
+
+function ktBuildIndexCsv(allOrders) {
+  const orders = ktIndexableOrders(allOrders);
   const header = [
     "連番", "取引年月日", "取引先", "取引金額(税込)", "書類種別",
     "注文番号", "保存ファイル名", "要確認", "備考"
@@ -50,9 +61,14 @@ function ktBuildIndexCsv(orders) {
   return "\uFEFF" + body + "\r\n";
 }
 
-/** 未取得のある注文の件数(UI警告用) */
+/** 未取得のある注文の件数(UI警告用)。キャンセル注文は対象外なので数えない */
 function ktCountIncomplete(orders) {
-  return orders.filter(o => !o.orderDate || o.total == null).length;
+  return ktIndexableOrders(orders).filter(o => !o.orderDate || o.total == null).length;
+}
+
+/** キャンセル注文の件数 */
+function ktCountCancelled(orders) {
+  return orders.filter(ktIsCancelled).length;
 }
 
 /** テキストをファイルとしてダウンロードさせる(content script内でblob+aタグ) */

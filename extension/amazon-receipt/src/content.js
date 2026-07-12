@@ -40,34 +40,45 @@
 
   const $ = id => panel.querySelector(id);
 
-  $("#kt-scan").addEventListener("click", () => {
+  function renderStatus() {
+    const orders = lastResult.orders;
+    const cancelled = ktCountCancelled(orders);
+    const target = ktIndexableOrders(orders);
+    const incomplete = ktCountIncomplete(orders);
+    const sum = target.reduce((a, o) => a + (o.total || 0), 0);
+    $("#kt-status").textContent =
+      `対象${target.length}件 / 合計¥${sum.toLocaleString()}` +
+      (cancelled ? ` / キャンセル${cancelled}件は除外` : "") +
+      (incomplete ? ` / 要確認${incomplete}件` : "");
+    $("#kt-warn").textContent = incomplete
+      ? `${incomplete}件の金額または日付が取得できませんでした。CSVの「要確認」列を見て手入力してください。`
+      : "";
+    $("#kt-fill").disabled = incomplete === 0;
+  }
+
+  $("#kt-scan").addEventListener("click", async () => {
     const result = ktParseOrderHistory(document, selectors.orderHistory);
     lastResult = result;
-    const incomplete = ktCountIncomplete(result.orders);
-    const sum = result.orders.reduce((a, o) => a + (o.total || 0), 0);
-    $("#kt-status").textContent =
-      `${result.cardCount}件検出 / 合計¥${sum.toLocaleString()}` +
-      (incomplete ? ` / 要確認${incomplete}件` : " / 全件取得");
-    // 取れなかった項目は推測で埋めずCSVの「要確認」列に出す(電帳法では誤値の方が有害)
-    $("#kt-warn").textContent = incomplete
-      ? `${incomplete}件で日付または金額が取得できませんでした。CSVの「要確認」列を見て手入力してください。`
-      : [...new Set(result.warnings)].slice(0, 2).join(" / ");
+    console.log("[電帳法索引簿] スキャン結果", result);
     const csvBtn = $("#kt-csv");
-    if (incomplete > 0) $("#kt-fill").disabled = false;
     if (result.orders.length > 0) {
       csvBtn.disabled = false;
       csvBtn.style.background = "#059669";
       csvBtn.style.borderColor = "#059669";
       csvBtn.style.color = "#fff";
     }
-    console.log("[電帳法索引簿] スキャン結果", result);
+    renderStatus();
+    // 金額が無い注文は領収書ページで補完する。ボタンの押し忘れを防ぐため自動実行
+    if (ktCountIncomplete(result.orders) > 0) await fillFromReceipts();
   });
 
-  // 注文履歴ページに金額が無い注文は、領収書ページを開いて補完する(実測で必要と判明)
-  $("#kt-fill").addEventListener("click", async () => {
+  // 注文履歴ページに金額が無い注文は、領収書ページを開いて補完する(実測で必要と判明)。
+  // キャンセル注文は請求が無いので対象外
+  async function fillFromReceipts() {
     if (!lastResult) return;
-    const targets = lastResult.orders.filter(o => o.orderId && (o.total == null || !o.orderDate));
-    if (targets.length === 0) { $("#kt-status").textContent = "補完が必要な注文はありません。"; return; }
+    const targets = ktIndexableOrders(lastResult.orders)
+      .filter(o => o.orderId && (o.total == null || !o.orderDate));
+    if (targets.length === 0) { renderStatus(); return; }
     const btn = $("#kt-fill");
     btn.disabled = true;
     let done = 0, filled = 0;
@@ -87,14 +98,10 @@
       }
       await new Promise(r => setTimeout(r, 800)); // Amazonへの負荷を避ける
     }
-    const remain = ktCountIncomplete(lastResult.orders);
-    $("#kt-status").textContent =
-      `補完完了: ${filled}項目を取得` + (remain ? ` / まだ要確認${remain}件` : " / 全件そろいました");
-    $("#kt-warn").textContent = remain
-      ? "残りはCSVの「要確認」列を見て手入力してください。"
-      : "";
-    btn.disabled = false;
-  });
+    console.log(`[電帳法索引簿] 領収書から${filled}項目を補完`);
+    renderStatus();
+  }
+  $("#kt-fill").addEventListener("click", fillFromReceipts);
 
   $("#kt-refresh").addEventListener("click", async () => {
     $("#kt-ver").textContent = "定義を再取得中…";
