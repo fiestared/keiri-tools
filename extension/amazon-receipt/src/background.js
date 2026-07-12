@@ -73,6 +73,19 @@ async function getSelectors(forceRefresh) {
   return { source: "bundled", data: bundled, version: bundled.version };
 }
 
+/**
+ * ダウンロード先パスを安全にする。ファイル名には商品名・注文番号など外部由来の文字が
+ * 入るため、そのまま downloads API に渡すと `..` でダウンロードフォルダの外に
+ * 書き出せてしまう。フォルダ区切りの "/" だけは残す(サブフォルダ保存に必要)
+ */
+function ktSafeDownloadPath(filename) {
+  const parts = String(filename || "receipt.html")
+    .split("/")
+    .map(seg => seg.replace(/[\\:*?"<>|\x00-\x1f]/g, "_").trim())
+    .filter(seg => seg && !/^\.+$/.test(seg));   // "." ".." は捨てる(残すとゴミ階層ができる)
+  return parts.length ? parts.join("/") : "receipt.html";
+}
+
 // 拡張の更新・再読み込み時はキャッシュを必ず捨てる(修正が即反映されるように)
 chrome.runtime.onInstalled.addListener(() => chrome.storage.local.remove(CACHE_KEY));
 
@@ -84,7 +97,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true; // async
   }
   if (msg && msg.type === "downloadDataUrl") {
-    chrome.downloads.download({ url: msg.url, filename: msg.filename, saveAs: false })
+    chrome.downloads.download({ url: msg.url, filename: ktSafeDownloadPath(msg.filename), saveAs: false })
       .then(id => sendResponse({ ok: true, id }))
       .catch(e => sendResponse({ ok: false, error: String(e) }));
     return true;

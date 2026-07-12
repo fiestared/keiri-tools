@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>アマゾン領収書・電帳法索引簿メーカー｜Amazonの注文履歴から索引簿CSVを作るChrome拡張</title>
+<meta name="description" content="Amazon.co.jpの注文履歴から、電子帳簿保存法の検索要件を満たす索引簿CSVを1クリックで作成するChrome拡張。キャンセル注文は自動除外。処理はすべてブラウザ内で完結し、注文データは外部に送信されません。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/ext/amazon-receipt/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "アマゾン領収書・電帳法索引簿メーカー",
+  "applicationCategory": "BusinessApplication",
+  "operatingSystem": "Chrome",
+  "description": "Amazon.co.jpの注文履歴から電子帳簿保存法の索引簿CSVを作成するChrome拡張機能。",
+  "url": "https://keiri-tools.com/ext/amazon-receipt/"
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../../">経理ミニツールズ</a>
+  <nav><a href="../../#tools">ツール</a><a href="../../column/">コラム</a></nav>
+</header>
+<main>
+  <section class="hero">
+    <h1>Amazonの注文履歴から、<br>電帳法の「索引簿」を1クリックで。</h1>
+    <p>電子取引データの検索要件（取引年月日・取引金額・取引先）を満たすCSVを、注文履歴ページから自動で作成するChrome拡張機能です。キャンセル注文は自動で除外します。</p>
+    <div class="badges">
+      <span>✓ 無料で使えます</span>
+      <span>✓ 注文データは外部に送信されません</span>
+      <span>✓ Excelでそのまま開けるCSV</span>
+    </div>
+  </section>
+
+  <div class="note">
+    <b>現在、Chromeウェブストアへの公開を準備中です。</b>
+    公開までは、開発者モードでの読み込みでお使いいただけます（下記「使い方」）。
+  </div>
+
+  <div class="section-head"><h2>なにが面倒なのか</h2></div>
+  <p class="lead">電子取引（Amazonでの購入もこれにあたります）のデータは、<b>取引年月日・取引金額・取引先の3つで検索できる状態</b>で保存することが求められます。索引簿（一覧表）を作れば、この要件を満たせます。</p>
+  <p>とはいえ、注文履歴を1件ずつ開いて日付と金額を書き写す作業は、件数が増えるほど苦行です。しかもAmazonの注文履歴は、<b>カードによっては金額がページ上に表示されていない</b>（サブスクリプションなど）、<b>キャンセルした注文も同じ見た目で並んでいる</b>——と、機械的にコピーするだけでは正しい索引簿になりません。</p>
+
+  <figure class="figure">
+    <svg viewBox="0 0 640 190" role="img" aria-label="注文履歴から索引簿CSVを作る流れ">
+      <rect x="8" y="30" width="180" height="130" rx="8" fill="#f8fafc" stroke="#cbd5e1"/>
+      <text x="98" y="52" text-anchor="middle" font-size="13" fill="#334155">Amazon 注文履歴</text>
+      <rect x="24" y="64" width="148" height="20" rx="4" fill="#fff" stroke="#e2e8f0"/>
+      <text x="32" y="78" font-size="10" fill="#64748b">7/10  ￥8,978</text>
+      <rect x="24" y="90" width="148" height="20" rx="4" fill="#fff" stroke="#e2e8f0"/>
+      <text x="32" y="104" font-size="10" fill="#94a3b8">7/08  キャンセル済み</text>
+      <rect x="24" y="116" width="148" height="20" rx="4" fill="#fff" stroke="#e2e8f0"/>
+      <text x="32" y="130" font-size="10" fill="#64748b">7/05  （金額の表示なし）</text>
+
+      <path d="M196 95 h56" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#a)"/>
+      <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+        <path d="M0 0 L8 4 L0 8 z" fill="#2563eb"/></marker></defs>
+      <rect x="258" y="66" width="124" height="58" rx="8" fill="#eff6ff" stroke="#2563eb"/>
+      <text x="320" y="90" text-anchor="middle" font-size="12" fill="#1d4ed8">拡張機能</text>
+      <text x="320" y="108" text-anchor="middle" font-size="10" fill="#3b82f6">除外・補完・整形</text>
+      <path d="M390 95 h56" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#a)"/>
+
+      <rect x="452" y="30" width="180" height="130" rx="8" fill="#f0fdf4" stroke="#86efac"/>
+      <text x="542" y="52" text-anchor="middle" font-size="13" fill="#166534">索引簿CSV</text>
+      <rect x="468" y="64" width="148" height="20" rx="4" fill="#fff" stroke="#dcfce7"/>
+      <text x="476" y="78" font-size="9" fill="#166534">2026-07-10 / Amazon / 8,978</text>
+      <rect x="468" y="90" width="148" height="20" rx="4" fill="#fff" stroke="#dcfce7"/>
+      <text x="476" y="104" font-size="9" fill="#166534">2026-07-05 / Amazon / 1,320</text>
+      <rect x="468" y="116" width="148" height="20" rx="4" fill="#fff" stroke="#dcfce7"/>
+      <text x="476" y="130" font-size="9" fill="#a16207">★ 要確認列で明示</text>
+    </svg>
+    <figcaption>キャンセル注文は落とし、金額が無い注文は領収書ページから補って、索引簿の形にする。</figcaption>
+  </figure>
+
+  <div class="section-head"><h2>この拡張がやること</h2></div>
+  <div class="summary-box">
+    <div class="t">できること</div>
+    <ul>
+      <li>注文履歴から<b>索引簿CSV</b>を作成（取引年月日・取引先・取引金額・注文番号）</li>
+      <li><b>キャンセル注文を自動で除外</b>（請求が発生していない注文を索引簿に載せないため）</li>
+      <li>金額が表示されない注文は、<b>領収書ページから自動で補完</b></li>
+      <li>確認が必要な行は<b>「要確認」列で明示</b>（0円の注文など）。推測値では埋めません</li>
+      <li>ExcelでそのままJSON崩れなく開けるCSV（UTF-8 BOM付き）</li>
+    </ul>
+  </div>
+  <div class="callout">
+    <b>「わからない」を空欄にする方針です。</b>
+    索引簿では、誤った値は空欄より有害です。取得できなかった項目は空欄のまま残し、「要確認」列で必ず気づけるようにしています。
+  </div>
+
+  <div class="section-head"><h2>無料版とPro版</h2></div>
+  <div class="card">
+    <table>
+      <thead><tr><th>機能</th><th>無料</th><th>Pro</th></tr></thead>
+      <tbody>
+        <tr><td>表示中のページの索引簿CSV（キャンセル除外・要確認判定つき）</td><td>✅</td><td>✅</td></tr>
+        <tr><td>領収書ページからの金額・日付の自動補完</td><td>✅</td><td>✅</td></tr>
+        <tr><td><b>全ページを自動で巡回</b>（年間分をまとめて索引簿に）</td><td>—</td><td>✅</td></tr>
+        <tr><td><b>領収書の一括保存</b>（電帳法のファイル名規約つき）</td><td>—</td><td>✅</td></tr>
+      </tbody>
+    </table>
+    <p class="hint">Pro版は買い切り¥1,480を予定（現在準備中）。無料版だけでも、表示中のページの索引簿CSVは作れます。</p>
+  </div>
+  <p><b>領収書の保存形式について</b>：Amazonは領収書をPDFで配信していないため、保存されるのは<b>領収書ページのHTML</b>です（これが電子取引データそのものであり、保存要件を満たします）。PDFで残したい場合は、保存したファイルを開いて印刷→PDFに保存してください。ファイル名は <code>日付_amazon_金額_注文番号</code> の規約で保存され、索引簿CSVの「保存ファイル名」列と一致します。</p>
+
+  <div class="section-head"><h2>使い方</h2></div>
+  <ol>
+    <li><code>chrome://extensions</code> を開き、右上の「デベロッパーモード」をONにします</li>
+    <li>「パッケージ化されていない拡張機能を読み込む」で、拡張のフォルダを選びます</li>
+    <li>Amazonの<b>注文履歴ページ</b>を開くと、右下にパネルが出ます</li>
+    <li>「このページをスキャン」→ 件数と合計を確認 → 「索引簿CSV」でダウンロード</li>
+  </ol>
+
+  <div class="section-head"><h2>プライバシー</h2></div>
+  <p>注文内容・金額・氏名などのデータを<b>外部に送信することは一切ありません</b>。すべての処理はお使いのブラウザ内で完結し、作成されたCSV・領収書ファイルはお使いのパソコンにのみ保存されます。詳細は<a href="privacy/">プライバシーポリシー</a>をご覧ください。</p>
+
+  <div class="section-head"><h2>よくある質問</h2></div>
+  <p><b>Q. Amazonのページが変わったら動かなくなりますか？</b><br>
+  A. 一時的に動かなくなることがあります。抽出ルールを外部から更新できる設計にしているため、通常は数日以内に修正されます（拡張機能の再インストールは不要です）。</p>
+  <p><b>Q. これだけで電帳法の対応は完了しますか？</b><br>
+  A. 索引簿の作成を助けるツールです。保存要件の最終的な判断は、税理士等の専門家にご確認ください。</p>
+  <p><b>Q. Amazonの公式ツールですか？</b><br>
+  A. いいえ。Amazon.co.jpの非公式ツールであり、Amazon.comとは関係ありません。</p>
+
+  <div class="related">
+    <h2>関連</h2>
+    <ul>
+      <li><a href="../../">経理ミニツールズ（トップ）</a> — 振込手数料・振込名義・支払日の無料ツール</li>
+      <li><a href="../../column/">経理コラム</a></li>
+    </ul>
+  </div>
+</main>
+<footer class="site" style="display:block">
+  経理ミニツールズは、経理実務の細かい計算を無料で提供するツール集です。本ツールは記録作成の補助を目的としており、保存要件の最終的な判断は専門家にご確認ください。<br>
+  © 経理ミニツールズ
+</footer>
+</body>
+</html>

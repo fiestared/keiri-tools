@@ -10,11 +10,15 @@ function ktCsvEscape(v) {
   return s;
 }
 
-/** 保存ファイル名の規約: YYYYMMDD_amazon_金額_注文番号 */
+/**
+ * 保存ファイル名の規約: YYYYMMDD_amazon_金額_注文番号
+ * 既定の拡張子が html なのは、Amazonに領収書PDFの配信が無く、保存できるのは
+ * 領収書ページ(=電子取引データそのもの)のHTMLだからPDFとは名乗らない。
+ */
 function ktReceiptFilename(order, ext) {
   const d = (order.orderDate || "0000-00-00").replace(/-/g, "");
   const total = order.total != null ? order.total : "不明";
-  return `${d}_amazon_${total}_${order.orderId || "不明"}.${ext || "pdf"}`;
+  return `${d}_amazon_${total}_${order.orderId || "不明"}.${ext || "html"}`;
 }
 
 /**
@@ -74,6 +78,29 @@ function ktCountIncomplete(orders) {
 /** キャンセル注文の件数 */
 function ktCountCancelled(orders) {
   return orders.filter(ktIsCancelled).length;
+}
+
+/**
+ * 領収書ページのHTMLをデータURLにする(background の downloads API へ渡す形式)。
+ * - 相対パスのCSS/画像が保存後に壊れないよう <base> を注入する
+ * - btoa は Latin-1 しか受け付けないので UTF-8 をバイト列にしてから通す。
+ *   String.fromCharCode(...bytes) は数十万要素でスタックを溢れさせるため必ず分割する
+ */
+function ktHtmlToDataUrl(html, pageUrl) {
+  let out = String(html);
+  if (pageUrl && !/<base\s/i.test(out)) {
+    const base = `<base href="${String(pageUrl).replace(/"/g, "&quot;")}">`;
+    out = /<head[^>]*>/i.test(out)
+      ? out.replace(/<head[^>]*>/i, m => m + base)
+      : base + out;
+  }
+  const bytes = new TextEncoder().encode(out);
+  let bin = "";
+  const CHUNK = 0x8000;
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+  }
+  return "data:text/html;charset=utf-8;base64," + btoa(bin);
 }
 
 /** テキストをファイルとしてダウンロードさせる(content script内でblob+aタグ) */

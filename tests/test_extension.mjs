@@ -83,7 +83,8 @@ check("CSV: BOM付き", csv.charCodeAt(0), 0xFEFF);
 check("CSV: 検索要件3要素がヘッダに存在",
   ["取引年月日", "取引金額(税込)", "取引先"].every(h => csv.includes(h)), true);
 check("CSV: データ行", csv.includes("2026-07-03,サンプル書店,3980,領収書,249-1234567-8901234"), true);
-check("CSV: ファイル名規約", csv.includes("20260703_amazon_3980_249-1234567-8901234.pdf"), true);
+// 保存されるのは領収書ページのHTML(AmazonはPDFの領収書を配信していない)ので .html
+check("CSV: ファイル名規約", csv.includes("20260703_amazon_3980_249-1234567-8901234.html"), true);
 check("CSVエスケープ", sandbox.ktCsvEscape('a,"b"\n'), '"a,""b""\n"');
 
 if (failed > 0) { console.error(`\n${failed} test(s) failed`); process.exit(1); }

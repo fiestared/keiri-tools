@@ -146,3 +146,75 @@ function ktReceiptUrl(orderId, receiptSpec) {
   const isDigital = orderId.startsWith(receiptSpec.digitalOrderIdPrefix || "D");
   return (isDigital ? t.digital : t.physical).replace("{orderId}", orderId);
 }
+
+/**
+ * 次ページのリンクを探す(「次へ」ボタン)。
+ * 見つからなくても諦めずに ktNextPageUrlByIndex で合成する(下記)ため、null は失敗ではない。
+ * @returns {string|null} 絶対URL
+ */
+function ktFindNextPageUrl(root, baseUrl, pagSpec) {
+  const spec = pagSpec || {};
+  const abs = href => {
+    if (!href || href === "#" || /^javascript:/i.test(href)) return null;
+    try { return new URL(href, baseUrl).href; } catch (e) { return null; }
+  };
+  for (const sel of spec.nextLinkSelectors || []) {
+    let el;
+    try { el = root.querySelector(sel); } catch (e) { continue; } // 不正セレクタで全体を殺さない
+    if (!el) continue;
+    // 最終ページでは「次へ」が無効化されて残る。無効リンクを踏むと1ページ目に戻り無限ループになる
+    if (el.closest && el.closest(".a-disabled")) continue;
+    if ((el.getAttribute("aria-disabled") || "") === "true") continue;
+    const u = abs(el.getAttribute("href"));
+    if (u) return u;
+  }
+  const texts = spec.nextLinkTexts || [];
+  if (texts.length) {
+    for (const a of root.querySelectorAll("a[href]")) {
+      const t = (a.textContent || "").trim();
+      if (!texts.some(x => t === x || t.startsWith(x))) continue;
+      if (a.closest && a.closest(".a-disabled")) continue;
+      const u = abs(a.getAttribute("href"));
+      if (u) return u;
+    }
+  }
+  return null;
+}
+
+/**
+ * 注文履歴は startIndex クエリで送られる(1ページ10件)。「次へ」リンクの
+ * DOMは変わりやすいが、このURL規則は安定しているのでフォールバックとして使う。
+ * @returns {string|null}
+ */
+function ktNextPageUrlByIndex(currentUrl, startIndex, pagSpec) {
+  const spec = pagSpec || {};
+  const param = spec.startIndexParam || "startIndex";
+  try {
+    const u = new URL(currentUrl);
+    u.searchParams.set(param, String(startIndex));
+    return u.href;
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * 注文の同一性キー。注文IDが取れない注文もあるため、その場合は内容で代用する。
+ * **巡回の停止条件に使う**: Amazonは範囲外のstartIndexで1ページ目を返すことがあり、
+ * 「新規0件なら終わり」で止めないと無限ループになる
+ */
+function ktOrderKey(o) {
+  return o.orderId || `${o.orderDate || "?"}|${o.total == null ? "?" : o.total}|${(o.firstItemTitle || "").slice(0, 40)}`;
+}
+
+/** 既出キーを除いた新規注文だけ返す(seenは破壊的に更新される) */
+function ktDedupeNewOrders(orders, seen) {
+  const fresh = [];
+  for (const o of orders) {
+    const key = ktOrderKey(o);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    fresh.push(o);
+  }
+  return fresh;
+}
