@@ -294,6 +294,109 @@ SCENES.yukyu_monthend = yukyuScene("2020-08-31", 5, 40);       // → 2021-02-28
 SCENES.yukyu_monthend_leap = yukyuScene("2019-08-31", 5, 40);  // → 2020-02-29（閏年）
 SCENES.yukyu_normal = yukyuScene("2020-04-01", 5, 40);         // → 2020-10-01（丸めない）
 
+// ── 消費税・端数処理 ────────────────────────────────────────────────
+// 期待値は shohizei_core を使わず BigInt の厳密整数で作る(被検体と同じ式で照合しない)。
+const taxIndep = (amount, num, den) => Number((BigInt(amount) * BigInt(num)) / BigInt(den)); // 切捨て
+
+/** 明細の行を rows の内容ちょうどにして計算させる */
+const fillLines = (doc, rows) => {
+  const addBtn = doc.getElementById("add-line");
+  let have = doc.querySelectorAll(".inv-line").length;
+  while (have < rows.length) { addBtn.click(); have++; }
+  const lines = [...doc.querySelectorAll(".inv-line")];
+  // 余った行は削除
+  for (let i = rows.length; i < lines.length; i++) lines[i].querySelector(".l-del").click();
+  const live = [...doc.querySelectorAll(".inv-line")];
+  rows.forEach((r, i) => {
+    const row = live[i];
+    row.querySelector(".l-name").value = r.name || "";
+    const amt = row.querySelector(".l-amount");
+    amt.value = String(r.amount);
+    amt.dispatchEvent(new doc.defaultView.Event("input", { bubbles: true }));
+    row.querySelector(".l-rate").value = r.rate;
+  });
+};
+
+// 国税庁 インボイスQ&A 問57 の記載例そのもの。税込100,000円 / 10%と8%の混在。
+// 10%対象 60,000 → 5,454円 / 8%対象 40,000 → 2,962円 / 合計 8,416円
+SCENES.shohizei_invoice = async () => {
+  const doc = await open("/docs/shohizei/");
+  pickRadio(doc, "inv-dir", "included");
+  fillLines(doc, [
+    { name: "小麦粉", amount: 5000, rate: "reduced" },
+    { name: "牛肉", amount: 8000, rate: "reduced" },
+    { name: "その他(8%)", amount: 27000, rate: "reduced" },
+    { name: "キッチンペーパー", amount: 2000, rate: "standard" },
+    { name: "その他(10%)", amount: 58000, rate: "standard" },
+  ]);
+  doc.getElementById("inv-mode").value = "floor";
+  click(doc, "inv-calc");
+  await waitFor(() => text(doc, "inv-result").includes("消費税額"), "請求書の計算結果");
+  const body = text(doc, "inv-result");
+
+  // ハーネス側の独立計算(税率ごとに合計してから1回だけ切捨て)
+  const std = taxIndep(60000, 10, 110);   // 5454
+  const red = taxIndep(40000, 8, 108);    // 2962
+  return {
+    body,
+    expected: { std, red, total: std + red },   // 5454 / 2962 / 8416
+    shownTotal: text(doc, "inv-tax"),
+    showsStd: body.includes(std.toLocaleString("ja-JP")),
+    showsRed: body.includes(red.toLocaleString("ja-JP")),
+    showsTotal: text(doc, "inv-tax").includes((std + red).toLocaleString("ja-JP")),
+  };
+};
+
+// 明細ごとの端数処理(認められない方法)との差が、ちゃんと警告として出ること。
+// 105円 × 10% = 10.5 → 行ごとに切り捨てると10円。10行で100円だが、正しくは 1,050×10% = 105円。
+SCENES.shohizei_perline = async () => {
+  const doc = await open("/docs/shohizei/");
+  pickRadio(doc, "inv-dir", "excluded");
+  fillLines(doc, Array.from({ length: 10 }, (_, i) => ({ name: `品${i}`, amount: 105, rate: "standard" })));
+  doc.getElementById("inv-mode").value = "floor";
+  click(doc, "inv-calc");
+  await waitFor(() => text(doc, "inv-result").includes("消費税額"), "請求書の計算結果");
+  const body = text(doc, "inv-result");
+  return {
+    body,
+    correct: taxIndep(1050, 10, 100),          // 105
+    perLine: 10 * taxIndep(105, 10, 100),      // 100
+    showsCorrect: text(doc, "inv-tax").includes("105"),
+    warns: /認められていません/.test(body) && /明細ごと/.test(body),
+    showsPerLine: body.includes("100"),
+  };
+};
+
+// 税込→税額。99円は「真の答えがちょうど9円」= 素朴な浮動小数点実装(税込/1.1*0.1)が
+// 8円を返す値。ページ側が ×10/110 以外の書き方に変わったら、ここで落ちる常設プローブ。
+const convertScene = (AMOUNT, DIR, RATE) => async () => {
+  const doc = await open("/docs/shohizei/");
+  pickRadio(doc, "dir", DIR);
+  pickRadio(doc, "rate", RATE);
+  set(doc, "amount", String(AMOUNT));
+  doc.getElementById("mode").value = "floor";
+  click(doc, "calc");
+  await waitFor(() => text(doc, "result").includes("消費税額"), "税込税抜の計算結果");
+
+  const num = (id) => Number(text(doc, id).replace(/[^0-9]/g, ""));
+  const [n, d] = RATE === "standard"
+    ? (DIR === "included" ? [10, 110] : [10, 100])
+    : (DIR === "included" ? [8, 108] : [8, 100]);
+  const expectedTax = taxIndep(AMOUNT, n, d);
+  const tax = num("r-tax"), excluded = num("r-excluded"), included = num("r-included");
+  return {
+    amount: AMOUNT, dir: DIR, rate: RATE,
+    tax, excluded, included, expectedTax,
+    taxOk: tax === expectedTax,
+    // 画面の3つの数字が足し算で閉じていること(閉じないと利用者が必ず気付く)
+    reconciles: excluded + tax === included,
+    anchorOk: DIR === "included" ? included === AMOUNT : excluded === AMOUNT,
+  };
+};
+SCENES.shohizei_convert_99 = convertScene(99, "included", "standard");      // → 税額9円(素朴実装は8円)
+SCENES.shohizei_convert_incl = convertScene(10780, "included", "standard"); // → 980円
+SCENES.shohizei_convert_excl = convertScene(1234, "excluded", "reduced");   // → 98円(8%)
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()) };

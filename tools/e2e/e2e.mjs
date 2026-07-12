@@ -59,6 +59,18 @@ const SCENES = [
       s.showsLegal && !s.showsCarried && s.clampNote },
   { name: "yukyu_normal", expect: (s) =>
       s.showsLegal && !s.showsCarried && !s.clampNote },
+
+  // 消費税: 国税庁Q&A問57の記載例(税込10万・8%と10%混在)を画面が再現すること
+  { name: "shohizei_invoice", expect: (s) =>
+      s.expected.total === 8416 && s.showsStd && s.showsRed && s.showsTotal },
+  // 明細ごとの端数処理(認められない方法)との差を、黙って飲み込まず警告すること
+  { name: "shohizei_perline", expect: (s) =>
+      s.correct === 105 && s.perLine === 100 && s.showsCorrect && s.warns },
+  // 税込99円 = 真の税額がちょうど9円。素朴な浮動小数点実装なら8円になる常設プローブ
+  { name: "shohizei_convert_99", expect: (s) =>
+      s.expectedTax === 9 && s.taxOk && s.reconciles && s.anchorOk },
+  { name: "shohizei_convert_incl", expect: (s) => s.taxOk && s.reconciles && s.anchorOk },
+  { name: "shohizei_convert_excl", expect: (s) => s.taxOk && s.reconciles && s.anchorOk },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
