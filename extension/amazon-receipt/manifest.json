@@ -1,0 +1,35 @@
+{
+  "manifest_version": 3,
+  "name": "アマゾン領収書・電帳法索引簿メーカー",
+  "version": "0.1.0",
+  "description": "Amazon.co.jpの注文履歴から電子帳簿保存法の索引簿CSVを生成。領収書の一括保存にも対応予定。処理はすべてブラウザ内で完結し、注文データが外部に送信されることはありません。",
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.amazon.co.jp/gp/css/order-history*",
+        "https://www.amazon.co.jp/gp/your-account/order-history*",
+        "https://www.amazon.co.jp/your-orders/orders*"
+      ],
+      "js": [
+        "src/lib/scrape.js",
+        "src/lib/csv.js",
+        "src/content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "permissions": ["storage", "downloads"],
+  "host_permissions": [
+    "https://www.amazon.co.jp/*",
+    "https://keiri-tools.com/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["selectors.default.json"],
+      "matches": ["https://www.amazon.co.jp/*"]
+    }
+  ]
+}

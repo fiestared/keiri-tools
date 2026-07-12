@@ -10,7 +10,11 @@ AI月30万円プロジェクト・柱Aの初号プロダクト群。経理実務
   - `index.html` — ハブトップ(ツール一覧)
   - `senpou-futan/` — 振込手数料「先方負担」計算 + 入金差額チェック
   - `assets/senpou_core.js` — 計算純ロジック(DOM非依存)。**変更したら必ずテストを回す**
-- `tests/test_senpou.mjs` — `node tests/test_senpou.mjs` で実行
+  - `ext/amazon-receipt/selectors.json` — Chrome拡張のリモートセレクタ定義(下記)。
+    AmazonのDOM変更はこのJSONの更新+pushだけで直せる(ストア再審査不要)
+- `extension/amazon-receipt/` — アマゾン領収書・電帳法索引簿メーカー(Chrome拡張, MV3)。
+  設計・現状・動作確認手順は同フォルダのREADME.md。セレクタは実DOM未検証(フィクスチャ待ち)
+- `tests/test_senpou.mjs`, `tests/test_extension.mjs` — `node tests/<file>` で実行
 
 ## ドメイン知識(実装済みの仕様)
 - 差引方式は3つ: 差引前基準(請求額で手数料判定)/差引後基準(振込額で判定)/一律差引(550円等)
