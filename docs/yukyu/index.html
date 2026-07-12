@@ -117,11 +117,17 @@
 </footer>
 
 <script type="module">
-import { grantDays, needsFiveDays, schedule } from "../assets/yukyu_core.js";
+import { needsFiveDays, currentGrant, todayISO } from "../assets/yukyu_core.js";
 
 const $ = (id) => document.getElementById(id);
 const t0 = new Date();
 $("hire").value = `${t0.getFullYear() - 1}-04-01`;
+
+// 日付の計算・比較は すべて yukyu_core に置く（ページ側で new Date(...) を組み立てない）。
+// ページ側に日付計算を持つと単体テストが届かず、実際に3件のバグが出た（2026-07-13）。
+const CLAMP_NOTE = `<div style="font-size:12.5px;color:var(--sub);margin-top:8px">
+  ※ 6か月後・1年後に<b>同じ日が無い月</b>（例: 8/31入社 → 2/31は無い）は、
+  <b>その月の末日</b>を付与日としています（民法143条2項・応当日がないときは末日）。</div>`;
 
 $("calc").addEventListener("click", () => {
   const box = $("result");
@@ -131,16 +137,10 @@ $("calc").addEventListener("click", () => {
   const wd = Number($("wdays").value);
   const wh = Number($("whours").value) || 0;
 
-  // 経過年数
-  const [hy, hm, hd] = hire.split("-").map(Number);
-  const now = new Date();
-  const months = (now.getFullYear() - hy) * 12 + (now.getMonth() + 1 - hm)
-    - (now.getDate() < hd ? 1 : 0);
-  const years = months / 12;
-
-  const g = grantDays(years, wd, wh);
-  const rows = schedule(hire, wd, wh, 8);
-  const nextRow = rows.find(r => new Date(r.date) > now);
+  const today = todayISO();
+  const g = currentGrant(hire, wd, wh, today);
+  const rows = g.rows;
+  const nextRow = g.next;
 
   let html;
   if (g.days === 0) {
@@ -151,12 +151,13 @@ $("calc").addEventListener("click", () => {
       <div class="note" style="margin-top:10px">
         <b>初回の付与日: ${first.date.replaceAll("-", "/")}</b>（${first.days}日）<br>
         6か月継続勤務し、全労働日の8割以上出勤していることが条件です。
-      </div>`;
+      </div>
+      ${g.clamped ? CLAMP_NOTE : ""}`;
   } else {
     html = `
       <div class="row">現在の付与日数 <span class="big">${g.days}日</span></div>
       <div class="row" style="margin-top:4px">
-        勤続 ${Math.floor(years)}年${Math.round((years % 1) * 12)}か月
+        勤続 ${Math.floor(g.months / 12)}年${g.months % 12}か月
         ／ ${g.type === "proportional" ? "<b>比例付与</b>（週" + wd + "日・週30時間未満）" : "通常付与（週5日以上または週30時間以上）"}
       </div>
       ${needsFiveDays(g.days)
@@ -174,7 +175,7 @@ $("calc").addEventListener("click", () => {
           <th style="text-align:right;padding:6px 8px">付与日数</th>
           <th style="text-align:center;padding:6px 8px">年5日義務</th></tr>
         ${rows.map(r => {
-          const past = new Date(r.date) <= now;
+          const past = r.date <= today;   // 文字列比較（new Date("YYYY-MM-DD")はUTC扱いで当日の朝に狂う）
           return `<tr style="${past ? "" : "color:var(--sub)"}">
             <td style="padding:6px 8px">${r.date.replaceAll("-", "/")}${past ? "" : "（予定）"}</td>
             <td style="padding:6px 8px">${r.years === 0.5 ? "6か月" : Math.floor(r.years) + "年6か月"}</td>
@@ -182,6 +183,7 @@ $("calc").addEventListener("click", () => {
             <td style="padding:6px 8px;text-align:center">${r.mustTakeFive ? "対象" : "—"}</td></tr>`;
         }).join("")}
       </table></div>
+      ${g.clamped ? CLAMP_NOTE : ""}
       <div style="font-size:12.5px;color:var(--sub);margin-top:8px">
         ※ 各年度で全労働日の8割以上出勤していることが前提です。有給休暇は付与日から2年で時効消滅します。
       </div>`;

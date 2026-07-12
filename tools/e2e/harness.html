@@ -249,6 +249,51 @@ SCENES.eigyobi_slow = SCENES.eigyobi;    // 800ms遅らせる(モバイル回線
 SCENES.eigyobi_nodata = SCENES.eigyobi;  // 404(配信失敗)
 SCENES.eigyobi_beyond = eigyobiScene("2028-05-01", "2028-05-10"); // 収録範囲外の年
 
+// ── 有給休暇: 月末入社の付与日 ───────────────────────────────────────────────
+// 8/31入社の6ヶ月後は「2/31」が無い。JSの日付繰り越しに任せると 3/3 になり、
+// **法定より遅い付与日**を答える(年5日の取得義務の起算も遅れる)。
+// 正: 応当日が無い月はその月の末日 = 2/28 (民法143条2項)。閏年なら2/29。
+// yukyu_core は使わない — 被検体と同じ関数で期待値を作ったら、両方同じように間違える。
+const lastDayIndep = (y, m) => {
+  const leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;
+  return [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][m - 1];
+};
+const jp = (iso) => iso.replaceAll("-", "/");
+const yukyuScene = (HIRE, WDAYS, WHOURS) => async () => {
+  const doc = await open("/docs/yukyu/");
+  set(doc, "hire", HIRE);
+  set(doc, "wdays", String(WDAYS));
+  set(doc, "whours", String(WHOURS));
+  click(doc, "calc");
+  await waitFor(() => text(doc, "result").includes("付与"), "付与結果の描画");
+  const body = text(doc, "result");
+
+  const [hy, hm, hd] = HIRE.split("-").map(Number);
+  const tm = ((hm - 1 + 6) % 12) + 1;
+  const ty = hy + Math.floor((hm - 1 + 6) / 12);
+
+  // 正: 応当日が無ければその月の末日（民法143条2項）
+  const legal = `${ty}-${String(tm).padStart(2, "0")}-${String(Math.min(hd, lastDayIndep(ty, tm))).padStart(2, "0")}`;
+  // 誤: JSの日付繰り越しに任せたときに出る日（2/31 → 3/3）。これが画面に出たら即アウト
+  const carried = (() => {
+    const t = new Date(hy, hm - 1 + 6, hd);
+    return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+  })();
+
+  return {
+    hire: HIRE, legal, carried,
+    showsLegal: body.includes(jp(legal)),                       // 法定の付与日を出しているか
+    showsCarried: carried !== legal && body.includes(jp(carried)), // 繰り越した日を出していないか
+    clampNote: body.includes("末日"),                           // 末日に丸めたことを申告しているか
+    body,
+  };
+};
+// 8/31入社 = 6ヶ月後が2月(28/29日)。繰り越しバグが最大3日ズレる常設プローブ。
+// 入社日は過去に固定 = 実行日に依存しないテストになる（第3便の教訓）
+SCENES.yukyu_monthend = yukyuScene("2020-08-31", 5, 40);       // → 2021-02-28（誤: 03-03）
+SCENES.yukyu_monthend_leap = yukyuScene("2019-08-31", 5, 40);  // → 2020-02-29（閏年）
+SCENES.yukyu_normal = yukyuScene("2020-04-01", 5, 40);         // → 2020-10-01（丸めない）
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()) };

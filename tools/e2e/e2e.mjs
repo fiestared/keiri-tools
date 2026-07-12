@@ -51,6 +51,14 @@ const SCENES = [
   { name: "eigyobi_nodata", holidays: "404", expect: (s) => s.warn },
   // 収録範囲外の年(2028)は「概算」と申告すること。黙って断言しない
   { name: "eigyobi_beyond", expect: (s) => s.beyond },
+
+  // 有給: 月末入社。応当日が無い月は末日(民法143条2項)。繰り越すと法定より遅い付与日になる
+  { name: "yukyu_monthend", expect: (s) =>
+      s.showsLegal && !s.showsCarried && s.clampNote },
+  { name: "yukyu_monthend_leap", expect: (s) =>
+      s.showsLegal && !s.showsCarried && s.clampNote },
+  { name: "yukyu_normal", expect: (s) =>
+      s.showsLegal && !s.showsCarried && !s.clampNote },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",

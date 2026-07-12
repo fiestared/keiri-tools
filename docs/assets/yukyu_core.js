@@ -76,21 +76,91 @@ export function needsFiveDays(grantedDays) {
   return grantedDays >= 10;
 }
 
-/** 入社日から見た「次の付与日」と、そこまでの各段階の付与日数 */
-export function schedule(hireISO, weeklyDays, weeklyHours, count = 8) {
+const pad = (n) => String(n).padStart(2, "0");
+
+/** ローカル時刻の「今日」を YYYY-MM-DD で返す。
+ *  日付の比較に new Date("YYYY-MM-DD") を使ってはいけない（ISO日付形式はUTCとして解釈され、
+ *  JST(+9)では付与日当日の 00:00〜09:00 が「まだ来ていない」と判定される）。
+ *  日付どうしは YYYY-MM-DD の文字列比較で行う＝タイムゾーンの影響を受けない。 */
+export function todayISO(now = new Date()) {
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+}
+
+/** 指定した年月の末日（28〜31） */
+export function lastDayOfMonth(year, month1to12) {
+  return new Date(year, month1to12, 0).getDate();
+}
+
+/**
+ * 入社日の Nヶ月後の「応当日」。
+ * **応当する日がない月は、その月の末日**（民法143条2項ただし書き / 社労士実務）。
+ * 例) 8/31入社の6ヶ月後は「2/31」が無いので **2/28**（閏年は2/29）。10/31入社 → 4/30。
+ * JSの new Date(y, m + months, 31) は存在しない日を**翌月へ繰り越す**ため使えない
+ * （2/31 → 3/3 になり、法定より遅い付与日を答えてしまう）。
+ * @returns {{date:string, clamped:boolean}} clamped=末日に丸めた（＝応当日が無かった）
+ */
+export function addMonthsClamped(hireISO, months) {
   const [y, m, d] = hireISO.split("-").map(Number);
+  const t = new Date(y, m - 1 + months, 1);        // 対象の「月」だけを求める（日は繰り越さない）
+  const ty = t.getFullYear();
+  const tm = t.getMonth() + 1;
+  const last = lastDayOfMonth(ty, tm);
+  const day = Math.min(d, last);
+  return { date: `${ty}-${pad(tm)}-${pad(day)}`, clamped: day < d };
+}
+
+/** 入社日から今日までの勤続月数（応当日に達していなければ切り捨て。末日クランプと整合させる） */
+export function elapsedMonths(hireISO, today = todayISO()) {
+  const [hy, hm, hd] = hireISO.split("-").map(Number);
+  const [ty, tm, td] = today.split("-").map(Number);
+  let months = (ty - hy) * 12 + (tm - hm);
+  const anniv = Math.min(hd, lastDayOfMonth(ty, tm)); // 今月に応当日が無ければ末日が応当日
+  if (td < anniv) months -= 1;
+  return Math.max(0, months);
+}
+
+/** 入社日から見た各段階の付与日と付与日数 */
+export function schedule(hireISO, weeklyDays, weeklyHours, count = 8) {
   const rows = [];
-  for (let i = 0; i < count && i < STAGES.length + 3; i++) {
+  for (let i = 0; i < Math.min(count, 60); i++) {
     const years = 0.5 + i;   // 6ヶ月, 1年6ヶ月, ...
-    const months = Math.round(years * 12);
-    const t = new Date(y, m - 1 + months, d);
+    const { date, clamped } = addMonthsClamped(hireISO, Math.round(years * 12));
     const g = grantDays(years, weeklyDays, weeklyHours);
-    rows.push({
-      date: `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`,
-      years,
-      days: g.days,
-      mustTakeFive: needsFiveDays(g.days),
-    });
+    rows.push({ date, clamped, years, days: g.days, mustTakeFive: needsFiveDays(g.days) });
   }
   return rows;
+}
+
+/**
+ * 「今日」時点の付与状況。**画面の見出しも表もこの1つの結果から描く**こと。
+ * 以前は見出し（勤続月数からの逆算）と表（付与日の一覧）が別々の日付計算を持っていて、
+ * 月末入社のとき「10日付与済み」と「初回付与は未来（予定）」を同時に表示していた。
+ * @returns {{days, type, months, grantDate, clamped, current, next, rows}}
+ */
+export function currentGrant(hireISO, weeklyDays, weeklyHours, today = todayISO()) {
+  const [hy] = hireISO.split("-").map(Number);
+  const [ty] = today.split("-").map(Number);
+  const count = Math.max(8, ty - hy + 3);           // 長期勤続でも「次回の付与」が必ず出る段数
+  const all = schedule(hireISO, weeklyDays, weeklyHours, count);
+
+  let current = null, next = null;
+  for (const r of all) {
+    if (r.date <= today) current = r;               // 文字列比較（タイムゾーン非依存）
+    else { next = r; break; }
+  }
+  const months = elapsedMonths(hireISO, today);
+  const type = grantDays(Math.max(0.5, months / 12), weeklyDays, weeklyHours).type;
+
+  // 表は最大8行。長期勤続では「次回の付与」が必ず見えるよう末尾を窓で切る
+  const nextIdx = next ? all.indexOf(next) : all.length - 1;
+  const end = Math.min(all.length, Math.max(8, nextIdx + 1));
+  const rows = all.slice(Math.max(0, end - 8), end);
+
+  return {
+    days: current ? current.days : 0,
+    type, months,
+    grantDate: current ? current.date : null,
+    clamped: all.some((r) => r.clamped),
+    current, next, rows,
+  };
 }
