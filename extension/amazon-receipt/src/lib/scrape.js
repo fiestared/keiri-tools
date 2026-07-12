@@ -43,6 +43,8 @@ function ktExtractField(card, fieldSpec) {
       if (!m) continue;
       const value = ktConvertMatch(m, fieldSpec.type);
       if (value == null || value === "") continue;
+      // 0円は「無料」ではなく抽出失敗のことが多い(サブスク注文で実測)。次の候補へ回す
+      if (fieldSpec.rejectZero && value === 0) continue;
       return { value, via: cand.mode + (cand.selector ? ":" + cand.selector : "") };
     }
     const value = String(raw).trim();

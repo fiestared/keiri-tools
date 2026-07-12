@@ -40,12 +40,15 @@
   $("#kt-scan").addEventListener("click", () => {
     const result = ktParseOrderHistory(document, selectors.orderHistory);
     lastResult = result;
-    const ok = result.orders.filter(o => o.missing.length === 0).length;
+    const incomplete = ktCountIncomplete(result.orders);
     const sum = result.orders.reduce((a, o) => a + (o.total || 0), 0);
     $("#kt-status").textContent =
-      `${result.cardCount}件検出 / 完全取得${ok}件 / 合計¥${sum.toLocaleString()}`;
-    const uniqueWarnings = [...new Set(result.warnings)];
-    $("#kt-warn").textContent = uniqueWarnings.slice(0, 3).join(" / ");
+      `${result.cardCount}件検出 / 合計¥${sum.toLocaleString()}` +
+      (incomplete ? ` / 要確認${incomplete}件` : " / 全件取得");
+    // 取れなかった項目は推測で埋めずCSVの「要確認」列に出す(電帳法では誤値の方が有害)
+    $("#kt-warn").textContent = incomplete
+      ? `${incomplete}件で日付または金額が取得できませんでした。CSVの「要確認」列を見て手入力してください。`
+      : [...new Set(result.warnings)].slice(0, 2).join(" / ");
     const csvBtn = $("#kt-csv");
     if (result.orders.length > 0) {
       csvBtn.disabled = false;

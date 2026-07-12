@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "version": "2026-07-12.1",
-  "note": "初版・実DOM未検証。実際の注文履歴HTMLフィクスチャで検証後に更新すること。リモート版は https://keiri-tools.com/ext/amazon-receipt/selectors.json",
+  "version": "2026-07-12.2",
+  "note": "実DOM検証済(2026-07-12): 10件中7件の金額・9件の日付が正しく取得できることを確認。サブスク注文(D01-)で日付が今日にズレる事故があったため、日付は「注文日」ラベル起点の候補のみに厳格化。金額0円は抽出失敗として扱う(rejectZero)。リモート版は https://keiri-tools.com/ext/amazon-receipt/selectors.json",
   "orderHistory": {
     "orderCardSelectors": [
       ".order-card",
@@ -12,39 +12,102 @@
       "orderId": {
         "type": "string",
         "candidates": [
-          { "mode": "css", "selector": ".yohtmlc-order-id span[dir='ltr']", "attr": "text", "regex": "([0-9]{3}-[0-9]{7}-[0-9]{7}|D[0-9]{2}-[0-9]{7}-[0-9]{7})" },
-          { "mode": "css", "selector": "a[href*='orderID=']", "attr": "href", "regex": "orderID=([0-9D][0-9-]{15,20})" },
-          { "mode": "cardText", "regex": "注文番号[\\s\\S]{0,20}?([0-9]{3}-[0-9]{7}-[0-9]{7}|D[0-9]{2}-[0-9]{7}-[0-9]{7})" }
+          {
+            "mode": "css",
+            "selector": ".yohtmlc-order-id span[dir='ltr']",
+            "attr": "text",
+            "regex": "([0-9]{3}-[0-9]{7}-[0-9]{7}|D[0-9]{2}-[0-9]{7}-[0-9]{7})"
+          },
+          {
+            "mode": "css",
+            "selector": "a[href*='orderID=']",
+            "attr": "href",
+            "regex": "orderID=([0-9D][0-9-]{15,20})"
+          },
+          {
+            "mode": "cardText",
+            "regex": "注文番号[\\s\\S]{0,20}?([0-9]{3}-[0-9]{7}-[0-9]{7}|D[0-9]{2}-[0-9]{7}-[0-9]{7})"
+          }
         ]
       },
       "orderDate": {
         "type": "dateJp",
         "candidates": [
-          { "mode": "cardText", "regex": "注文日[\\s\\S]{0,30}?([0-9]{4})年\\s*([0-9]{1,2})月\\s*([0-9]{1,2})日" },
-          { "mode": "cardText", "regex": "([0-9]{4})年\\s*([0-9]{1,2})月\\s*([0-9]{1,2})日" }
+          {
+            "mode": "css",
+            "selector": ".order-info .a-column:first-child .a-size-base, .yohtmlc-order-details-container .a-column:first-child",
+            "attr": "text",
+            "regex": "([0-9]{4})年\\s*([0-9]{1,2})月\\s*([0-9]{1,2})日"
+          },
+          {
+            "mode": "cardText",
+            "regex": "注文日[\\s\\S]{0,30}?([0-9]{4})年\\s*([0-9]{1,2})月\\s*([0-9]{1,2})日"
+          },
+          {
+            "mode": "cardText",
+            "regex": "([0-9]{4})年\\s*([0-9]{1,2})月\\s*([0-9]{1,2})日[\\s\\S]{0,20}?に注文"
+          }
         ]
       },
       "total": {
         "type": "yen",
         "candidates": [
-          { "mode": "css", "selector": ".yohtmlc-order-total .value", "attr": "text", "regex": "([0-9,]+)" },
-          { "mode": "cardText", "regex": "合計[\\s\\S]{0,30}?[￥¥]\\s*([0-9,]+)" }
-        ]
+          {
+            "mode": "css",
+            "selector": ".yohtmlc-order-total .value, .yohtmlc-order-total .a-color-secondary + .a-color-secondary",
+            "attr": "text",
+            "regex": "([0-9,]+)"
+          },
+          {
+            "mode": "css",
+            "selector": "[class*='order-total'] .a-text-bold, [class*='order-total'] span",
+            "attr": "text",
+            "regex": "[￥¥]\\s*([0-9,]+)"
+          },
+          {
+            "mode": "cardText",
+            "regex": "合計[\\s\\S]{0,40}?[￥¥]\\s*([0-9,]+)"
+          },
+          {
+            "mode": "cardText",
+            "regex": "注文金額[\\s\\S]{0,40}?[￥¥]\\s*([0-9,]+)"
+          },
+          {
+            "mode": "cardText",
+            "regex": "[￥¥]\\s*([0-9,]{3,})"
+          }
+        ],
+        "rejectZero": true
       },
       "seller": {
         "type": "string",
         "optional": true,
         "candidates": [
-          { "mode": "css", "selector": ".yohtmlc-seller-name", "attr": "text" },
-          { "mode": "cardText", "regex": "販売[:：]\\s*([^\\n]{1,60})" }
+          {
+            "mode": "css",
+            "selector": ".yohtmlc-seller-name",
+            "attr": "text"
+          },
+          {
+            "mode": "cardText",
+            "regex": "販売[:：]\\s*([^\\n]{1,60})"
+          }
         ]
       },
       "firstItemTitle": {
         "type": "string",
         "optional": true,
         "candidates": [
-          { "mode": "css", "selector": ".yohtmlc-product-title", "attr": "text" },
-          { "mode": "css", "selector": ".a-fixed-left-grid-col.a-col-right a.a-link-normal", "attr": "text" }
+          {
+            "mode": "css",
+            "selector": ".yohtmlc-product-title",
+            "attr": "text"
+          },
+          {
+            "mode": "css",
+            "selector": ".a-fixed-left-grid-col.a-col-right a.a-link-normal",
+            "attr": "text"
+          }
         ]
       }
     },

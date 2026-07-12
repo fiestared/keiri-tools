@@ -88,3 +88,34 @@ check("CSVエスケープ", sandbox.ktCsvEscape('a,"b"\n'), '"a,""b""\n"');
 
 if (failed > 0) { console.error(`\n${failed} test(s) failed`); process.exit(1); }
 console.log("\nall tests passed");
+
+// --- 実DOM検証(2026-07-12)で判明した事故の回帰テスト ---
+// 事故1: サブスク注文で「合計¥0」を拾い金額0になった → 0円は抽出失敗として次候補へ
+{
+  const spec = { type: "yen", rejectZero: true, candidates: [
+    { mode: "cardText", regex: "合計[\\s\\S]{0,10}?[￥¥]\\s*([0-9,]+)" },
+    { mode: "cardText", regex: "注文金額[\\s\\S]{0,10}?[￥¥]\\s*([0-9,]+)" },
+  ]};
+  const card = new FakeEl({ text: "合計 ¥0 注文金額 ¥1,280" });
+  const hit = sandbox.ktExtractField(card, spec);
+  check("rejectZero: 0円を飛ばして次候補を採用", hit && hit.value, 1280);
+}
+// 事故2: サブスクの「次回請求日」を注文日として拾い、今日の日付が入った
+{
+  const spec = { type: "dateJp", candidates: [
+    { mode: "cardText", regex: "注文日[\\s\\S]{0,30}?([0-9]{4})年\\s*([0-9]{1,2})月\\s*([0-9]{1,2})日" },
+  ]};
+  const card = new FakeEl({ text: "次回請求日 2026年7月12日" });
+  check("日付は注文日ラベル起点のみ採用", sandbox.ktExtractField(card, spec), null);
+}
+// 未取得は空欄+要確認列(推測で埋めない)
+{
+  const csv = sandbox.ktBuildIndexCsv([{ orderId: "D01-1", orderDate: null, total: null }]);
+  check("要確認列がある", csv.includes("要確認"), true);
+  check("不足項目を明示", csv.includes("日付・金額を手入力してください"), true);
+  check("未取得件数のカウント",
+    sandbox.ktCountIncomplete([{ orderDate: null, total: 1 }, { orderDate: "2026-01-01", total: 2 }]), 1);
+}
+
+if (failed > 0) { console.error(`\n${failed} test(s) failed`); process.exit(1); }
+console.log("\nall tests passed");

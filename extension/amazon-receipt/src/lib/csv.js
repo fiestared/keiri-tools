@@ -25,10 +25,15 @@ function ktReceiptFilename(order, ext) {
 function ktBuildIndexCsv(orders) {
   const header = [
     "連番", "取引年月日", "取引先", "取引金額(税込)", "書類種別",
-    "注文番号", "保存ファイル名", "備考"
+    "注文番号", "保存ファイル名", "要確認", "備考"
   ];
   const rows = [header];
   orders.forEach((o, i) => {
+    // 電帳法の索引簿では「誤った値」は「空欄」より有害。取れなかった項目は空欄にし、
+    // 要確認列で人が必ず気づけるようにする(推測値で埋めない)
+    const need = [];
+    if (!o.orderDate) need.push("日付");
+    if (o.total == null) need.push("金額");
     rows.push([
       i + 1,
       o.orderDate || "",
@@ -37,11 +42,17 @@ function ktBuildIndexCsv(orders) {
       "領収書",
       o.orderId || "",
       ktReceiptFilename(o),
+      need.length ? "★ " + need.join("・") + "を手入力してください" : "",
       o.firstItemTitle ? String(o.firstItemTitle).slice(0, 50) : ""
     ]);
   });
   const body = rows.map(r => r.map(ktCsvEscape).join(",")).join("\r\n");
   return "\uFEFF" + body + "\r\n";
+}
+
+/** 未取得のある注文の件数(UI警告用) */
+function ktCountIncomplete(orders) {
+  return orders.filter(o => !o.orderDate || o.total == null).length;
 }
 
 /** テキストをファイルとしてダウンロードさせる(content script内でblob+aタグ) */
