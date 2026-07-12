@@ -60,6 +60,29 @@ const o2 = sandbox.ktParseOrderCard(card2, selectors.orderHistory.fields);
 check("css: orderId(デジタル注文D)", o2.orderId, "D01-9876543-2109876");
 check("css: total", o2.total, 12000);
 
+// --- 抽出エンジン: sellerのcss候補は「販売: 」ラベルを剥がす ---
+// cssはseller候補の**1番目**=要素があれば必ずこれが勝つ。ここでラベルを剥がし損ねると
+// 索引簿の取引先が「販売: サンプル紙業」になる(実際にハーネスの絵で発覚した)。
+// 要素にラベルが入っている形/入っていない形の両方が実在しうるので、両方を固定する。
+const sellerLabeled = new FakeEl({
+  text: "注文日 2026年7月3日 合計 ￥1,000 注文番号 111-1111111-1111111",
+  byselector: { ".yohtmlc-seller-name": new FakeEl({ text: "\n  販売: サンプル紙業\n" }) },
+});
+check("css: seller(要素にラベル込み→剥がす)",
+  sandbox.ktParseOrderCard(sellerLabeled, selectors.orderHistory.fields).seller, "サンプル紙業");
+
+const sellerBare = new FakeEl({
+  text: "注文日 2026年7月3日 合計 ￥1,000 注文番号 111-1111111-1111111",
+  byselector: { ".yohtmlc-seller-name": new FakeEl({ text: "  サンプル紙業  " }) },
+});
+check("css: seller(要素が名前のみ→そのまま)",
+  sandbox.ktParseOrderCard(sellerBare, selectors.orderHistory.fields).seller, "サンプル紙業");
+
+// 取引先に「販売:」が混じったら索引簿として不正。CSVの実出力でも固定しておく
+const csvSeller = sandbox.ktBuildIndexCsv([
+  sandbox.ktParseOrderCard(sellerLabeled, selectors.orderHistory.fields)]);
+check("CSV: 取引先にラベルが混入しない", /販売[:：]/.test(csvSeller), false);
+
 // --- ページパース: カード0件で警告 ---
 const emptyPage = new FakeEl({});
 const r0 = sandbox.ktParseOrderHistory(emptyPage, selectors.orderHistory);

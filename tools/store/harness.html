@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<!--
+  ストア用スクリーンショット兼「実ブラウザ結合テスト」ハーネス。
+
+  なぜ作るか:
+  - Chromeウェブストアには 1280x800 のスクリーンショットが要る。しかし**実注文履歴の
+    スクショは使えない**(Masahiroの購入履歴=個人データを公開することになる)。
+  - これまでのテストは node 上の単体テストだけで、content.js(パネルUI・巡回ループ・
+    領収書保存)を**ブラウザで動かしたことが一度も無かった**。license.js が manifest から
+    漏れていた事故(v0.2で発見)はこの層が無かったせいで見逃されていた。
+
+  何をしているか:
+  - 拡張の**実コード**(src/lib/*.js + src/content.js)をそのまま読み込む
+  - chrome.* と fetch をシムに差し替え、注文履歴デモページ(実DOM構造・合成データ)を配る
+  - 実際にボタンを押して、パネル・巡回・領収書保存・CSVを**本物の経路**で動かす
+  → 出てくる画面がそのままスクショになり、同時に結合テストになっている。
+
+  scene=free      無料版: このページをスキャンした状態
+  scene=csv       生成された索引簿CSVの中身(実出力をテーブル表示)
+  scene=pro       Pro版: 全ページ巡回(4ページ・重複で自動停止)
+  scene=receipts  Pro版: 領収書の一括保存(ファイル名規約つき)
+-->
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>store screenshot harness</title>
+<style>
+  html,body { margin:0; padding:0; }
+  body { width:1280px; height:800px; overflow:hidden; background:#eaeded;
+         font:14px/1.6 -apple-system,"Hiragino Sans",sans-serif; color:#0f1111; }
+  /* 上部のキャプション帯(ストア掲載画像の定番。何の画面かを1行で示す) */
+  #cap { height:88px; box-sizing:border-box; padding:16px 28px;
+         background:linear-gradient(90deg,#1e40af,#2563eb); color:#fff; }
+  #cap h1 { margin:0; font-size:22px; font-weight:700; letter-spacing:.2px; }
+  #cap p  { margin:3px 0 0; font-size:13px; opacity:.92; }
+  #view { position:relative; height:712px; overflow:hidden; background:#fff; }
+  /* Amazonのロゴ・商標は使わない(非公式ツールのため)。注文履歴の「構造」だけを再現する */
+  .bar { display:flex; align-items:center; gap:12px; padding:10px 20px;
+         border-bottom:1px solid #ddd; background:#f7f8f8; }
+  .bar .t { font-weight:700; font-size:16px; }
+  .bar .demo { margin-left:auto; font-size:11px; color:#6b7280;
+               border:1px solid #d1d5db; border-radius:4px; padding:2px 8px; background:#fff; }
+  #orders { padding:14px 20px; }
+  .js-order-card { border:1px solid #d5d9d9; border-radius:8px; margin-bottom:12px; background:#fff; }
+  .oh { display:flex; gap:28px; background:#f0f2f2; border-bottom:1px solid #d5d9d9;
+        padding:10px 16px; border-radius:8px 8px 0 0; list-style:none; margin:0; }
+  .order-header__header-list-item { list-style:none; }
+  .a-text-caps { font-size:11px; letter-spacing:.4px; text-transform:uppercase; color:#565959; }
+  .a-row .a-size-base { font-size:13px; }
+  .ob { padding:12px 16px; display:flex; gap:14px; align-items:center; }
+  .thumb { width:56px; height:56px; border-radius:6px; background:#eef1f3; flex:none; }
+  .yohtmlc-product-title { color:#007185; font-size:14px; }
+  .yohtmlc-seller-name { color:#565959; font-size:12px; }
+  .yohtmlc-order-id { color:#565959; font-size:12px; }
+  .cancel { color:#b12704; font-weight:700; }
+  /* CSVプレビュー(scene=csv) */
+  #csv { position:absolute; inset:0; background:#fff; padding:22px 26px; }
+  #csv table { border-collapse:collapse; width:100%; font-size:13px; }
+  #csv th { background:#1f2937; color:#fff; text-align:left; padding:8px 10px; font-weight:600; }
+  #csv td { border-bottom:1px solid #e5e7eb; padding:8px 10px; }
+  #csv tr.warn td { background:#fffbeb; }
+  #csv .req { margin-top:16px; display:flex; gap:10px; }
+  #csv .req span { font-size:12px; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0;
+                   border-radius:999px; padding:4px 12px; }
+  /* 保存ファイル一覧(scene=receipts) */
+  #files { position:absolute; left:26px; top:70px; width:640px; background:#fff;
+           border:1px solid #d1d5db; border-radius:10px; padding:14px 18px;
+           box-shadow:0 4px 16px rgba(0,0,0,.08); }
+  #files h3 { margin:0 0 8px; font-size:13px; color:#374151; }
+  #files li { font-family:"SF Mono",Menlo,monospace; font-size:12px; color:#111827;
+              list-style:none; padding:3px 0; border-bottom:1px dashed #e5e7eb; }
+</style>
+</head>
+<body>
+<div id="cap"><h1></h1><p></p></div>
+<div id="view">
+  <div class="bar"><span class="t">注文履歴</span>
+    <span class="demo">デモ表示（サンプルデータ）</span></div>
+  <div id="orders"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// デモの注文データ(合成。実在の購入履歴は一切含まない)
+// 実DOMで確認済みの4パターンを必ず含める:
+//   A)注文日+合計あり B)￥0 C)合計がDOMに無い(→領収書から補完) D)キャンセル
+// ─────────────────────────────────────────────────────────────
+const PAGES = [
+  [ {id:"503-1847265-3391842", date:"2026年3月9日",  total:"￥8,980", title:"A4コピー用紙 5000枚（500枚×10冊）", seller:"サンプル紙業"},
+    {id:"503-9926184-7735019", date:"2026年3月7日",  total:"￥3,480", title:"モバイルバッテリー 10000mAh USB-C", seller:"デモ電子"},
+    {id:"503-2237740-1180266", date:"2026年3月5日",  total:null,      title:"レーザープリンター トナーカートリッジ", seller:"テスト事務機"},
+    {id:"503-5518402-9047731", date:"2026年3月4日",  total:"￥12,800", title:"オフィスチェア メッシュ ハイバック", seller:"サンプル家具"},
+    {id:"503-7719355-2264518", date:"2026年3月2日",  total:"￥0",      title:"Kindle Unlimited 会員登録", seller:"デジタル"},
+    {id:"503-3390174-8825503", date:"2026年3月1日",  total:null,      title:"名刺用紙 マルチカード", seller:"サンプル紙業", cancelled:true} ],
+  [ {id:"503-6614829-3357104", date:"2026年2月26日", total:"￥5,480", title:"ラベルプリンター 感熱式", seller:"デモ電子"},
+    {id:"503-1102938-5567220", date:"2026年2月21日", total:"￥1,980", title:"ファイルボックス A4 5個組", seller:"テスト文具"},
+    {id:"503-8845019-6612847", date:"2026年2月18日", total:"￥24,800", title:"モニター 27インチ USB-C接続", seller:"デモ電子"},
+    {id:"503-4471925-1039663", date:"2026年2月14日", total:"￥760",   title:"ボールペン 替芯 10本入", seller:"テスト文具"},
+    {id:"503-9038261-4482915", date:"2026年2月9日",  total:"￥3,200", title:"シュレッダー用ゴミ袋 50枚", seller:"サンプル紙業"} ],
+  [ {id:"503-2274618-9903351", date:"2026年1月30日", total:"￥6,400", title:"外付けSSD 1TB", seller:"デモ電子"},
+    {id:"503-7736402-2218806", date:"2026年1月22日", total:"￥14,300", title:"複合機 インクカートリッジ 大容量セット", seller:"テスト事務機"},
+    {id:"503-5590183-7746129", date:"2026年1月15日", total:"￥2,180", title:"領収書ファイル 12ヶ月分類", seller:"テスト文具"} ],
+];
+
+// 領収書ページ(金額がDOMに無い注文の補完元)。実DOMの print.html に合わせた文言
+const RECEIPTS = {
+  "503-2237740-1180266": 15800,
+  "503-3390174-8825503": 0,      // キャンセル(索引簿の対象外なので参照されないはず)
+};
+
+const yen = n => "￥" + n.toLocaleString();
+
+/** 実DOM(tests/fixtures/order_history_2026-07.html)と同じクラス構造でカードを組む */
+function cardHtml(o) {
+  const label = (cap, val) => `
+    <li class="order-header__header-list-item">
+      <div class="a-row a-size-mini"><span class="a-color-secondary a-text-caps">${cap}</span></div>
+      <div class="a-row"><span class="a-size-base a-color-secondary aok-break-word">${val}</span></div>
+    </li>`;
+  return `
+  <div class="js-order-card order-card">
+    <ul class="oh">
+      ${o.date ? label("注文日", o.date) : ""}
+      ${o.total != null ? label("合計", o.total) : ""}
+      ${label("注文番号", `<span class="yohtmlc-order-id"><span dir="ltr">${o.id}</span></span>`)}
+    </ul>
+    <div class="ob">
+      <div class="thumb"></div>
+      <div>
+        <div class="yohtmlc-product-title">${o.title}</div>
+        <div class="yohtmlc-seller-name">販売: ${o.seller}</div>
+        ${o.cancelled ? `<div class="a-row cancel">キャンセル済み</div>
+          <div class="a-row">注文はキャンセルされました。 この注文の請求は行われていません。</div>` : ""}
+      </div>
+    </div>
+  </div>`;
+}
+
+/** ページ番号(0始まり)の注文履歴HTML。1ページ目だけ「次へ」リンクを持たせ、
+ *  2ページ目以降は**リンク無し**にして startIndex 合成のフォールバックを実際に踏ませる */
+function pageHtml(i) {
+  const cards = (PAGES[i] || []).map(cardHtml).join("");
+  const pager = i === 0
+    ? `<ul class="a-pagination"><li class="a-last"><a href="?startIndex=10">次へ</a></li></ul>` : "";
+  return `<div id="orders">${cards}${pager}</div>`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// chrome.* / fetch のシム(拡張の実コードは一切変えない)
+// ─────────────────────────────────────────────────────────────
+const SAVED = [];                       // downloads API に渡ってきたファイル名
+const store = {};
+window.chrome = {
+  runtime: {
+    getURL: p => new URL("../../extension/amazon-receipt/" + p, location.href).href,
+    async sendMessage(msg) {
+      if (msg.type === "getSelectors") {
+        const r = await fetch(chrome.runtime.getURL("selectors.default.json"));
+        const data = await r.json();
+        return { source: "remote", data, version: data.version };
+      }
+      if (msg.type === "downloadDataUrl") { SAVED.push(msg.filename); return { ok: true, id: SAVED.length }; }
+      return null;
+    },
+  },
+  storage: { local: {
+    async get(k) { return k in store ? { [k]: store[k] } : {}; },
+    async set(o) { Object.assign(store, o); },
+    async remove(k) { delete store[k]; },
+  } },
+};
+
+// ネットワーク: 注文履歴の続きページと領収書ページを配る。
+// **Amazonの実挙動を模す**: 範囲外の startIndex では1ページ目を返す(終端を返さない)。
+// 巡回ループが「新規0件」で止まれることを、ここで実際に確かめる。
+const realFetch = window.fetch.bind(window);
+window.fetch = async (url, opts) => {
+  const u = String(url);
+  if (u.includes("selectors.default.json")) return realFetch(url, opts);
+  const m = u.match(/orderID=(D?[\d-]+)/);
+  if (m) {
+    const total = RECEIPTS[m[1]];
+    const body = `<html><body><div>注文日 2026年3月5日</div>
+      <div>注文合計 ${total != null ? yen(total) : "￥0"}</div></body></html>`;
+    return new Response(body, { status: 200, headers: { "content-type": "text/html" } });
+  }
+  const si = parseInt(new URL(u, location.href).searchParams.get("startIndex") || "0", 10);
+  const idx = Math.floor(si / 10);
+  const page = idx < PAGES.length ? idx : 0;         // ← 範囲外は1ページ目(Amazonの実挙動)
+  return new Response(`<html><body>${pageHtml(page)}</body></html>`,
+                      { status: 200, headers: { "content-type": "text/html" } });
+};
+
+// 1ページ目を描画してから拡張の実コードを読み込む
+document.getElementById("orders").outerHTML = pageHtml(0);
+const scene = new URLSearchParams(location.search).get("scene") || "free";
+const CAPTIONS = {
+  free:     ["注文履歴を開いて、1クリック。", "その場で索引簿ができます。キャンセル注文は自動で除外、金額が取れない注文は領収書ページから自動補完。"],
+  csv:      ["電子帳簿保存法の検索要件を満たすCSV。", "取引年月日・取引先・取引金額の3要素を1行1取引で出力。Excelでそのまま開けます（UTF-8 BOM付き）。"],
+  pro:      ["Pro：全ページを自動で巡回。", "1年分の注文をまとめて索引簿に。最後のページまで来たら自動で停止します。"],
+  receipts: ["Pro：領収書ページを一括保存。", "「日付_取引先_金額_注文番号」の電帳法ファイル名規約で保存。索引簿CSVの行と1対1で対応します。"],
+};
+document.querySelector("#cap h1").textContent = CAPTIONS[scene][0];
+document.querySelector("#cap p").textContent  = CAPTIONS[scene][1];
+if (scene === "pro" || scene === "receipts") store.license = { pro: true, source: "dev" };
+</script>
+
+<!-- ここから下は拡張の実コード(1文字も変えない) -->
+<script src="../../extension/amazon-receipt/src/lib/scrape.js"></script>
+<script src="../../extension/amazon-receipt/src/lib/csv.js"></script>
+<script src="../../extension/amazon-receipt/src/lib/license.js"></script>
+<script src="../../extension/amazon-receipt/src/content.js"></script>
+
+<script>
+// ─────────────────────────────────────────────────────────────
+// ドライバ: 実際にパネルのボタンを押す。押した結果がスクショになる。
+// window.__done を立てるので、撮影側はこれを待つ(タイミング勘に頼らない)
+// ─────────────────────────────────────────────────────────────
+(async function drive() {
+  const wait = (fn, ms = 20000) => new Promise((ok, ng) => {
+    const t0 = Date.now();
+    (function poll() {
+      const v = fn();
+      if (v) return ok(v);
+      if (Date.now() - t0 > ms) return ng(new Error("timeout"));
+      setTimeout(poll, 50);
+    })();
+  });
+  const panel = await wait(() => document.getElementById("kt-denchoho-panel"));
+  const $ = id => panel.querySelector(id);
+  const idle = () => wait(() => !$("#kt-scan").disabled, 60000);
+
+  if (scene === "pro") {
+    $("#kt-crawl").click();
+  } else {
+    $("#kt-scan").click();
+  }
+  await idle();
+
+  if (scene === "csv") {
+    // 「索引簿CSV」ボタンが実際に吐くCSVをそのまま奪って表示する(再パースしない)。
+    // こうしないと領収書から補完した金額が消え、実際の出力と違う絵になる
+    let captured = "";
+    window.ktDownloadText = (name, text) => { captured = text; };
+    $("#kt-csv").click();
+    await wait(() => captured);
+    const csv = captured.replace(/^﻿/, "");
+    const rows = csv.trim().split(/\r?\n/).map(r => r.match(/("([^"]|"")*"|[^,]*)(,|$)/g)
+      .map(c => c.replace(/,$/, "").replace(/^"|"$/g, "").replace(/""/g, '"')).slice(0, -1));
+    const head = rows.shift();
+    const div = document.createElement("div");
+    div.id = "csv";
+    div.innerHTML =
+      `<table><thead><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>` +
+      rows.map(r => `<tr class="${r[r.length - 1] ? "warn" : ""}">${r.map(c => `<td>${c || ""}</td>`).join("")}</tr>`).join("") +
+      `</tbody></table>
+       <div class="req"><span>✓ 取引年月日</span><span>✓ 取引金額</span><span>✓ 取引先</span>
+         <span>✓ キャンセルは除外済み</span><span>✓ Excel対応（BOM付きUTF-8）</span></div>`;
+    document.getElementById("view").appendChild(div);
+  }
+
+  if (scene === "receipts") {
+    $("#kt-receipts").click();
+    await idle();
+    const div = document.createElement("div");
+    div.id = "files";
+    div.innerHTML = `<h3>ダウンロード / Amazon領収書 / （${SAVED.length}件を保存）</h3>` +
+      SAVED.slice(0, 9).map(f => `<li>${f.replace(/^Amazon領収書\//, "")}</li>`).join("");
+    document.getElementById("view").appendChild(div);
+  }
+
+  // 撮影スクリプト(shoot.mjs)へ最終状態を返す。撮った絵が期待どおりかを機械で確かめるため。
+  // 絵だけ見て「たぶん合っている」で出さない
+  report({
+    status: document.querySelector("#kt-status").textContent,
+    warn: document.querySelector("#kt-warn").textContent,
+    saved: SAVED.slice(),
+    csvRows: document.querySelectorAll("#csv tbody tr").length,
+    csvText: document.getElementById("csv") ? document.getElementById("csv").textContent : "",
+  });
+})().catch(e => report({ error: String(e) }));
+
+function report(state) {
+  window.__state = state;                       // 手で開いたときに devtools から見る用
+  realFetch("/__state", { method: "POST", body: JSON.stringify(state) }).catch(() => {});
+}
+</script>
+</body>
+</html>

@@ -60,6 +60,11 @@ check("キャンセル注文の件数", sandbox.ktCountCancelled(r.orders), 1);
 check("CSVはキャンセルを除外(ヘッダ+5件)", lines.length, 6);
 check("CSVにキャンセル注文が入らない", csv.includes("555-5555555-5555555"), false);
 check("要確認の件数(0円・金額なし・日付なし。キャンセルは数えない)", sandbox.ktCountIncomplete(r.orders), 3);
+// 「要確認」は性質の違う2つの合併。UIで「取得できませんでした」と言ってよいのは missing だけ。
+// 足し算にすると、日付が無く**かつ**￥0のサブスク注文(D01-)を二重に数えて件数が合わなくなる
+check("missing(取れなかった)の件数", sandbox.ktCountMissing(r.orders), 2);     // 金額なし + 日付なし
+check("zeroYen(￥0だが取得済み)の件数", sandbox.ktCountZeroYen(r.orders), 2);  // ￥0が2件
+check("missing+zeroYenは重なるので合計と一致しない", sandbox.ktCountMissing(r.orders) + sandbox.ktCountZeroYen(r.orders) !== sandbox.ktCountIncomplete(r.orders), true);
 check("Dの行は日付のみ要確認(金額は0円として取得)", /D01-4444444-4444444.*日付を手入力/.test(csv), true);
 check("0円の行は値0を残しつつ理由つきで要確認", /222-2222222-2222222.*0円/.test(csv), true);
 

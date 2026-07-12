@@ -69,7 +69,25 @@ function ktBuildIndexCsv(allOrders) {
   return "\uFEFF" + body + "\r\n";
 }
 
-/** 未取得のある注文の件数(UI警告用)。キャンセル注文は対象外なので数えない */
+/**
+ * 「要確認」は性質の違う2つが混ざっている。混ぜたまま数えると、
+ * ￥0の注文にまで「取得できませんでした。手入力してください」と言ってしまう(実際は取得できている)。
+ * - missing : 日付・金額がそもそも取れなかった → 人が手入力するしかない。領収書から補完も試みる
+ * - zeroYen : ￥0はAmazonの実表示(無料サブスク/ポイント全額充当/請求前) → 値は正しい。内容の確認だけ促す
+ * キャンセル注文は索引簿の対象外なのでどちらにも数えない。
+ */
+function ktCountMissing(orders) {
+  return ktIndexableOrders(orders).filter(o => !o.orderDate || o.total == null).length;
+}
+
+function ktCountZeroYen(orders) {
+  return ktIndexableOrders(orders).filter(o => o.total === 0).length;
+}
+
+/**
+ * CSVの「要確認」列に印が付く注文の件数。missing と zeroYen は**重なる**ので
+ * 足し算にしない(日付が無く、かつ￥0のサブスク注文が実在する。実DOMで確認済み)
+ */
 function ktCountIncomplete(orders) {
   return ktIndexableOrders(orders)
     .filter(o => !o.orderDate || o.total == null || o.total === 0).length;

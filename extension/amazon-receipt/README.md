@@ -67,6 +67,22 @@ chrome.storage.local.set({ license: { pro: true, source: "dev" } })
 
 元に戻す: `chrome.storage.local.remove("license")`
 
+## 実ブラウザでの結合テスト / ストア用スクリーンショット
+
+`tools/store/harness.html` は**拡張の実コードをそのままブラウザで動かす**ハーネス。
+`chrome.*` と `fetch` だけをシムに差し替え、注文履歴のデモページ(実DOM構造・合成データ)を配る。
+パネル描画・全ページ巡回・領収書保存・CSV生成が**本物の経路**で走るので、
+nodeの単体テストでは通らない層(content.js)を初めて機械で検証できる。
+
+```
+node tools/store/shoot.mjs      # 4シーンを1280x800で撮影 + 期待値を検証(不一致なら exit 1)
+bash tools/store/build_zip.sh   # ストアにアップロードするZIP(manifest参照の過不足も検査)
+```
+
+デモは**合成データのみ**。Masahiroの実注文履歴をストア掲載画像に使わない(個人データの公開になる)。
+巡回シーンは「範囲外startIndexで1ページ目が返る」Amazonの実挙動を模しており、
+重複検知で止まること(=無限ループしないこと)をここで確認している。
+
 ## ファイル名規約
 
 `YYYYMMDD_amazon_金額_注文番号.html` — 索引簿の「保存ファイル名」列と一括保存の実ファイル名を

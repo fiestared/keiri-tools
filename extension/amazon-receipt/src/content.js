@@ -61,11 +61,13 @@
     const orders = lastResult ? lastResult.orders : [];
     const limits = ktLimits(license);
     const has = orders.length > 0;
-    const incomplete = has ? ktCountIncomplete(orders) : 0;
+    // 補完できるのは「取れなかった」注文だけ。￥0は取得済みなので補完対象にしない
+    // (ここを ktCountIncomplete にすると、￥0が1件あるだけで押しても何も起きないボタンが残る)
+    const missing = has ? ktCountMissing(orders) : 0;
 
     $("#kt-plan").textContent = license.pro ? "v0.2 Pro" : "v0.2";
     $("#kt-csv").disabled = !has;
-    $("#kt-fill").disabled = incomplete === 0;
+    $("#kt-fill").disabled = missing === 0;
     // Proは「機能を隠す」のではなく「押すと案内が出る」。無料でも価値が分かるように
     $("#kt-crawl").disabled = false;
     $("#kt-receipts").disabled = !has;
@@ -96,16 +98,20 @@
     const orders = lastResult ? lastResult.orders : [];
     const cancelled = ktCountCancelled(orders);
     const target = ktIndexableOrders(orders);
-    const incomplete = ktCountIncomplete(orders);
+    const missing = ktCountMissing(orders);
+    const zeroYen = ktCountZeroYen(orders);
+    const incomplete = ktCountIncomplete(orders);   // missing と zeroYen は重なるので足さない
     const sum = target.reduce((a, o) => a + (o.total || 0), 0);
     status(
       `対象${target.length}件 / 合計¥${sum.toLocaleString()}` +
       (cancelled ? ` / キャンセル${cancelled}件は除外` : "") +
       (incomplete ? ` / 要確認${incomplete}件` : "")
     );
-    $("#kt-warn").textContent = incomplete
-      ? `${incomplete}件の金額または日付が取得できませんでした。CSVの「要確認」列を見て手入力してください。`
-      : "";
+    // ￥0は「取得できなかった」わけではない。同じ文言にすると嘘になるので分けて言う
+    const warn = [];
+    if (missing) warn.push(`${missing}件は金額または日付が取得できませんでした。CSVの「要確認」列を見て手入力してください。`);
+    if (zeroYen) warn.push(`${zeroYen}件は￥0でした（無料・ポイント全額充当・請求前の可能性）。金額はそのまま載ります。`);
+    $("#kt-warn").textContent = warn.join(" ");
     syncButtons();
   }
 
