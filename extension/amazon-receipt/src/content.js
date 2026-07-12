@@ -12,7 +12,7 @@
     console.warn("[電帳法索引簿] セレクタ定義を取得できませんでした", resp);
     return;
   }
-  const selectors = resp.data;
+  let selectors = resp.data;
   let lastResult = null;
 
   const panel = document.createElement("div");
@@ -29,9 +29,11 @@
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button id="kt-scan" style="cursor:pointer;padding:6px 10px;border:1px solid #2563eb;background:#2563eb;color:#fff;border-radius:6px">このページをスキャン</button>
       <button id="kt-csv" disabled style="cursor:pointer;padding:6px 10px;border:1px solid #c8cdd4;background:#f3f4f6;color:#9ca3af;border-radius:6px">索引簿CSV</button>
+      <button id="kt-refresh" title="セレクタ定義を最新に更新" style="cursor:pointer;padding:6px 8px;border:1px solid #c8cdd4;background:#fff;color:#6b7280;border-radius:6px">⟳</button>
     </div>
-    <div id="kt-status" style="margin-top:8px;color:#374151">未スキャン(セレクタ定義: ${resp.source})</div>
+    <div id="kt-status" style="margin-top:8px;color:#374151">未スキャン</div>
     <div id="kt-warn" style="margin-top:4px;color:#b45309;font-size:12px"></div>
+    <div id="kt-ver" style="margin-top:6px;color:#9ca3af;font-size:11px">定義 ${resp.version || "?"}（${resp.source}）</div>
   `;
   document.body.appendChild(panel);
 
@@ -57,6 +59,14 @@
       csvBtn.style.color = "#fff";
     }
     console.log("[電帳法索引簿] スキャン結果", result);
+  });
+
+  $("#kt-refresh").addEventListener("click", async () => {
+    $("#kt-ver").textContent = "定義を再取得中…";
+    const fresh = await chrome.runtime.sendMessage({ type: "getSelectors", forceRefresh: true });
+    selectors = fresh.data;
+    $("#kt-ver").textContent = `定義 ${fresh.version || "?"}（${fresh.source}）`;
+    $("#kt-status").textContent = "定義を更新しました。もう一度スキャンしてください。";
   });
 
   $("#kt-csv").addEventListener("click", () => {

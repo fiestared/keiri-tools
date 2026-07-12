@@ -22,28 +22,59 @@ async function loadBundled() {
   return res.json();
 }
 
+/** "2026-07-12.2" 形式のversionを比較可能な配列にする */
+function versionKey(v) {
+  return String(v || "0").split(/[.\-]/).map(n => parseInt(n, 10) || 0);
+}
+function isNewer(a, b) {
+  const [x, y] = [versionKey(a), versionKey(b)];
+  for (let i = 0; i < Math.max(x.length, y.length); i++) {
+    if ((x[i] || 0) !== (y[i] || 0)) return (x[i] || 0) > (y[i] || 0);
+  }
+  return false;
+}
+
 async function getSelectors(forceRefresh) {
   const stored = await chrome.storage.local.get(CACHE_KEY);
-  const cache = stored[CACHE_KEY];
+  let cache = stored[CACHE_KEY];
+  // 拡張を更新したのにキャッシュが古いままだと修正が効かない事故が起きる(2026-07-12実測)。
+  // 同梱デフォルトの方が新しければキャッシュを捨てる
+  if (cache && isValidSelectors(cache.data)) {
+    const bundled = await loadBundled();
+    if (isNewer(bundled.version, cache.data.version)) {
+      await chrome.storage.local.remove(CACHE_KEY);
+      cache = null;
+    }
+  }
   if (!forceRefresh && cache && Date.now() - cache.fetchedAt < CACHE_TTL_MS &&
       isValidSelectors(cache.data)) {
-    return { source: "cache", data: cache.data };
+    return { source: "cache", data: cache.data, version: cache.data.version };
   }
   try {
     const res = await fetch(REMOTE_SELECTORS_URL, { cache: "no-cache" });
     if (res.ok) {
       const data = await res.json();
       if (isValidSelectors(data)) {
-        await chrome.storage.local.set({ [CACHE_KEY]: { fetchedAt: Date.now(), data } });
-        return { source: "remote", data };
+        const bundled = await loadBundled();
+        // リモートが同梱より古い場合は同梱を使う(配信遅延・CDNキャッシュ対策)
+        const best = isNewer(bundled.version, data.version) ? bundled : data;
+        await chrome.storage.local.set({ [CACHE_KEY]: { fetchedAt: Date.now(), data: best } });
+        return { source: best === data ? "remote" : "bundled(newer)", data: best,
+                 version: best.version };
       }
     }
   } catch (e) {
     // オフライン等。フォールバックへ
   }
-  if (cache && isValidSelectors(cache.data)) return { source: "stale-cache", data: cache.data };
-  return { source: "bundled", data: await loadBundled() };
+  if (cache && isValidSelectors(cache.data)) {
+    return { source: "stale-cache", data: cache.data, version: cache.data.version };
+  }
+  const bundled = await loadBundled();
+  return { source: "bundled", data: bundled, version: bundled.version };
 }
+
+// 拡張の更新・再読み込み時はキャッシュを必ず捨てる(修正が即反映されるように)
+chrome.runtime.onInstalled.addListener(() => chrome.storage.local.remove(CACHE_KEY));
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg && msg.type === "getSelectors") {
