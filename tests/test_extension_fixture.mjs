@@ -37,7 +37,7 @@ check("A 合計", a.total, 8978);
 
 // B: 合計が￥0 → 抽出失敗扱い(推測で0を入れない)
 check("B 日付は取れる", b.orderDate, "2026-07-12");
-check("B ￥0は採用しない", b.total, undefined);
+check("B ￥0はAmazonの実表示なので値0として採用", b.total, 0);
 
 // C: 合計がDOMに存在しない(実測10件中3件) → 空 + 要確認
 check("C 合計なし", c.total, undefined);
@@ -59,8 +59,9 @@ const lines = csv.split("\r\n").filter(l => l.trim());
 check("キャンセル注文の件数", sandbox.ktCountCancelled(r.orders), 1);
 check("CSVはキャンセルを除外(ヘッダ+5件)", lines.length, 6);
 check("CSVにキャンセル注文が入らない", csv.includes("555-5555555-5555555"), false);
-check("要確認の件数(キャンセルは数えない)", sandbox.ktCountIncomplete(r.orders), 3);
-check("Dの行に日付・金額の要確認が出る", /D01-4444444-4444444.*日付・金額/.test(csv), true);
+check("要確認の件数(0円・金額なし・日付なし。キャンセルは数えない)", sandbox.ktCountIncomplete(r.orders), 3);
+check("Dの行は日付のみ要確認(金額は0円として取得)", /D01-4444444-4444444.*日付を手入力/.test(csv), true);
+check("0円の行は値0を残しつつ理由つきで要確認", /222-2222222-2222222.*0円/.test(csv), true);
 
 // 領収書ページからの金額補完(注文履歴に金額が無い注文の救済)
 const receiptDom = new JSDOM(`<body><table><tr><td>注文合計:</td><td>￥12,345</td></tr>

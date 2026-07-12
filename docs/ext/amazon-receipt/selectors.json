@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "version": "2026-07-12.4",
-  "note": "実DOM検証済(2026-07-12・注文履歴10件)。カード=.js-order-card / 注文ID=.yohtmlc-order-id / 日付・金額は a-text-caps ラベル(注文日/合計)と直後の a-row の順序対応(labeledValue)。**キャンセル注文はDOMに金額が存在せず、請求も発生していないため索引簿から除外する** (検出語は「キャンセル済み」「注文はキャンセルされました」のみ。「返品」は通常注文の返品期限案内に現れるため誤検出源であり使わない)。サブスク注文(D01-)は注文日ラベルが無いことがある。金額がDOMに無い/￥0の注文は領収書ページ(receipt.fields)で補完を試みる。",
+  "version": "2026-07-12.5",
+  "note": "実DOM検証済(2026-07-12・注文履歴10件)。カード=.js-order-card / 注文ID=.yohtmlc-order-id / 日付・金額は a-text-caps ラベル(注文日/合計)と直後の a-row の順序対応(labeledValue)。**キャンセル注文はDOMに金額が存在せず、請求も発生していないため索引簿から除外する** (検出語は「キャンセル済み」「注文はキャンセルされました」のみ。「返品」は通常注文の返品期限案内に現れるため誤検出源であり使わない)。サブスク注文(D01-)は注文日ラベルが無いことがある。￥0はAmazonの実表示(無料サブスク/ポイント全額充当/請求前)なので値0として採用し、理由つきで要確認にする(空欄にしない)。金額がDOMに無い注文は領収書ページで補完を試みる。",
   "orderHistory": {
     "orderCardSelectors": [
       ".js-order-card",
@@ -46,7 +46,7 @@
       },
       "total": {
         "type": "yen",
-        "rejectZero": true,
+        "rejectZero": false,
         "candidates": [
           {
             "mode": "labeledValue",

@@ -45,6 +45,10 @@ function ktBuildIndexCsv(allOrders) {
     const need = [];
     if (!o.orderDate) need.push("日付");
     if (o.total == null) need.push("金額");
+    // ￥0はAmazonの実表示(無料サブスク/ポイント全額充当/請求前)。値は残しつつ確認を促す
+    const zeroNote = o.total === 0
+      ? "★ 金額が0円です（無料・ポイント充当・請求前の可能性）。ご確認ください"
+      : "";
     rows.push([
       i + 1,
       o.orderDate || "",
@@ -53,7 +57,7 @@ function ktBuildIndexCsv(allOrders) {
       "領収書",
       o.orderId || "",
       ktReceiptFilename(o),
-      need.length ? "★ " + need.join("・") + "を手入力してください" : "",
+      need.length ? "★ " + need.join("・") + "を手入力してください" : zeroNote,
       o.firstItemTitle ? String(o.firstItemTitle).slice(0, 50) : ""
     ]);
   });
@@ -63,7 +67,8 @@ function ktBuildIndexCsv(allOrders) {
 
 /** 未取得のある注文の件数(UI警告用)。キャンセル注文は対象外なので数えない */
 function ktCountIncomplete(orders) {
-  return ktIndexableOrders(orders).filter(o => !o.orderDate || o.total == null).length;
+  return ktIndexableOrders(orders)
+    .filter(o => !o.orderDate || o.total == null || o.total === 0).length;
 }
 
 /** キャンセル注文の件数 */
