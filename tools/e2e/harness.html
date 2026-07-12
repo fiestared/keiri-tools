@@ -68,6 +68,27 @@ const isBankHoliday = (iso, holidays) => {
   return Object.prototype.hasOwnProperty.call(holidays, iso); // 祝日
 };
 
+/**
+ * 営業日数の独立実装(土日+祝日を休みとする。年末年始オプションはOFF前提)。
+ * eigyobi_core は一切使わない — 被検体と同じ関数で数えたら、祝日を落としていても両方同じ答えになる。
+ */
+const countBusinessIndep = (fromIso, toIso, holidays) => {
+  const [fy, fm, fd] = fromIso.split("-").map(Number);
+  const [ty, tm, td] = toIso.split("-").map(Number);
+  let business = 0, hol = 0, total = 0;
+  const end = Date.UTC(ty, tm - 1, td);
+  for (let t = Date.UTC(fy, fm - 1, fd); t <= end; t += 86400000) {
+    const dt = new Date(t);
+    const iso = dt.toISOString().slice(0, 10);
+    const w = dt.getUTCDay();
+    const isHol = Object.prototype.hasOwnProperty.call(holidays, iso);
+    total++;
+    if (isHol) hol++;
+    if (w !== 0 && w !== 6 && !isHol) business++;
+  }
+  return { business, holidays: hol, total };
+};
+
 /** 支払サイト表を読む → [{payIso, dow, moved}] */
 function readPaydayRows(doc) {
   const trs = [...doc.querySelectorAll("#out table tr")].slice(1); // 1行目はヘッダ
@@ -201,6 +222,32 @@ const SCENES = {
 SCENES.payday_slow = SCENES.payday;
 SCENES.payday_nodata = SCENES.payday;
 SCENES.payday_stale = SCENES.payday;
+
+// 営業日計算: 「祝日を除いて数える」ことがこのツールの存在意義そのもの。
+// 祝日データが効いていなければ必ず数がズレる期間を選ぶ = 常設の祝日プローブ。
+// GW(5/1〜5/10)は祝日が4日入るので、祝日を落とすと営業日が 3 → 6 に倍増する。
+const eigyobiScene = (FROM, TO) => async () => {
+  const doc = await open("/docs/eigyobi/");
+  const holidays = await (await fetch("/docs/assets/holidays_jp.json?raw=1")).json();
+  set(doc, "from", FROM);
+  set(doc, "to", TO);
+  click(doc, "calc"); // ← 祝日データの到着を待たずに押す(実ユーザーと同じ)
+  await waitFor(() => text(doc, "result").includes("営業日"), "営業日の描画");
+  const body = text(doc, "result");
+  const m = body.match(/営業日\s*([\d,]+)\s*日/);
+  return {
+    range: `${FROM}〜${TO}`,
+    business: m ? Number(m[1].replace(/,/g, "")) : null,
+    expected: countBusinessIndep(FROM, TO, holidays), // ハーネス側の独立実装
+    warn: body.includes("読み込めませんでした"),
+    beyond: body.includes("概算"),
+    body,
+  };
+};
+SCENES.eigyobi = eigyobiScene("2026-05-01", "2026-05-10");
+SCENES.eigyobi_slow = SCENES.eigyobi;    // 800ms遅らせる(モバイル回線)
+SCENES.eigyobi_nodata = SCENES.eigyobi;  // 404(配信失敗)
+SCENES.eigyobi_beyond = eigyobiScene("2028-05-01", "2028-05-10"); // 収録範囲外の年
 
 let state;
 try {

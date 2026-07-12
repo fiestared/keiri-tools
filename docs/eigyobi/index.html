@@ -123,10 +123,18 @@
 import {
   parseISO, iso, countDays, addBusinessDays, adjust, DOW_JA, dow, holidayName,
 } from "../assets/eigyobi_core.js";
+import { coverageMaxYear } from "../assets/payday_core.js";
 
 const $ = (id) => document.getElementById(id);
 let H = {};
-fetch("../assets/holidays_jp.json").then(r => r.json()).then(d => { H = d; });
+
+// 祝日データは非同期で届く。**届く前に計算ボタンを押されても待つ**こと。
+// (待たずに数えると祝日を1日も知らないまま「GWの営業日は6日」等と答える。真の答えは3日。
+//  回線が速いと再現しないので、tools/e2e の eigyobi_slow シーンで固定している)
+const holidaysReady = fetch("../assets/holidays_jp.json")
+  .then((r) => r.json())
+  .then((d) => { H = d; return true; })
+  .catch(() => false); // 読めなかったときは黙って土日だけで数えず、下で断り書きを出す
 
 const today = new Date();
 const iso0 = (dt) => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
@@ -157,9 +165,35 @@ const fmt = (dt) => {
   return `${iso(dt).replaceAll("-", "/")}（${DOW_JA[dow(dt)]}）${hn ? " " + hn : ""}`;
 };
 
-$("calc").addEventListener("click", () => {
+/**
+ * 祝日データの収録最終年を超える日付は「祝日を知らないまま」判定している。
+ * 黙って断言せず、必ず「概算」と申告する(内閣府の公表は翌年分までしか無い)。
+ */
+const isBeyond = (...dts) => {
+  const maxY = coverageMaxYear(H);
+  return dts.filter(Boolean).some((dt) => dt.y > maxY);
+};
+
+/** 祝日を反映できていないときの断り書き。祝日を休みにしない設定なら不要。 */
+const disclaimer = (holidaysOk, beyond, o) => {
+  if (!o.holiday) return ""; // 祝日を休みに数えない設定 = データの有無は結果に影響しない
+  const only = `土日${o.yearEnd ? "・年末年始" : ""}のみ`;
+  if (!holidaysOk) {
+    return `<div class="note" style="margin-top:10px"><b>祝日データを読み込めませんでした。</b>
+      ${only}で判定しています（祝日は反映されていません）。ページを再読み込みしてください。</div>`;
+  }
+  if (beyond) {
+    return `<div class="note" style="margin-top:10px"><b>⚠︎ 概算です。</b>
+      ${coverageMaxYear(H) + 1}年以降の祝日はまだ公表されていないため、その範囲は${only}で判定しています
+      （祝日が確定すれば営業日はさらに減ります）。</div>`;
+  }
+  return "";
+};
+
+$("calc").addEventListener("click", async () => {
   const box = $("result");
   box.style.display = "block";
+  const holidaysOk = await holidaysReady; // ← 祝日データが届くまで計算しない
   const o = opts();
 
   if (mode === "diff") {
@@ -172,7 +206,8 @@ $("calc").addEventListener("click", () => {
       <div style="font-size:13px;color:var(--sub);margin-top:8px">
         ${fmt(from)} 〜 ${fmt(to)}（${both ? "両端を含む" : "開始日を含まない"}）
       </div>
-      ${r.holidays.length ? `<div class="note" style="margin-top:10px"><b>期間内の祝日 ${r.holidays.length}日</b><br>${r.holidays.map(h => `${h.date.replaceAll("-", "/")} ${h.name}`).join("<br>")}</div>` : ""}`;
+      ${r.holidays.length ? `<div class="note" style="margin-top:10px"><b>期間内の祝日 ${r.holidays.length}日</b><br>${r.holidays.map(h => `${h.date.replaceAll("-", "/")} ${h.name}`).join("<br>")}</div>` : ""}
+      ${disclaimer(holidaysOk, isBeyond(from, to), o)}`;
 
   } else if (mode === "add") {
     const base = parseISO($("base").value);
@@ -181,7 +216,8 @@ $("calc").addEventListener("click", () => {
     box.innerHTML = `
       <div class="row">${n >= 0 ? n + "営業日後" : Math.abs(n) + "営業日前"} <span class="big">${iso(r).replaceAll("-", "/")}</span></div>
       <div class="row" style="margin-top:4px">${fmt(r)}</div>
-      <div style="font-size:13px;color:var(--sub);margin-top:8px">基準日: ${fmt(base)}（起算日は翌日から・当日は含みません）</div>`;
+      <div style="font-size:13px;color:var(--sub);margin-top:8px">基準日: ${fmt(base)}（起算日は翌日から・当日は含みません）</div>
+      ${disclaimer(holidaysOk, isBeyond(base, r), o)}`;
 
   } else {
     const t = parseISO($("target").value);
@@ -192,7 +228,8 @@ $("calc").addEventListener("click", () => {
       <div class="row" style="margin-top:4px">${fmt(r)}</div>
       <div style="font-size:13px;color:var(--sub);margin-top:8px">
         ${r.moved ? `${fmt(t)} は休業日のため、${m === "prev" ? "前" : "翌"}営業日にずらしました。` : `${fmt(t)} は営業日のため、そのままです。`}
-      </div>`;
+      </div>
+      ${disclaimer(holidaysOk, isBeyond(t, r), o)}`;
   }
 });
 </script>

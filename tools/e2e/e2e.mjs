@@ -41,6 +41,16 @@ const SCENES = [
     expect: (s) => s.rows === 12 && s.noteText.includes("読み込めませんでした") },
   { name: "payday_stale", holidays: "stale", // 2025年までしか収録が無い状態を再現
     expect: (s) => s.rows === 12 && s.beyondRows === 12 && /2026年以降の祝日/.test(s.noteText) },
+
+  // 営業日計算。営業日数が独立実装と一致すること = 祝日がちゃんと効いていること。
+  { name: "eigyobi", expect: (s) => s.business === s.expected.business && !s.warn && !s.beyond },
+  // 祝日JSONが届く前にボタンを押されても、待って正しく数えること(遅い回線のユーザー)
+  { name: "eigyobi_slow", slow: true,
+    expect: (s) => s.business === s.expected.business && !s.warn && !s.beyond },
+  // 読めなかったら黙って土日だけで答えず、断り書きを出すこと
+  { name: "eigyobi_nodata", holidays: "404", expect: (s) => s.warn },
+  // 収録範囲外の年(2028)は「概算」と申告すること。黙って断言しない
+  { name: "eigyobi_beyond", expect: (s) => s.beyond },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
