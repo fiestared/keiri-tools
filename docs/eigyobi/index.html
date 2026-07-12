@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>日数計算・営業日計算ツール｜期間の日数と「◯営業日後」を土日祝対応で自動計算</title>
+<meta name="description" content="2つの日付の日数を数える、「3営業日後」を計算する、期間内の営業日数を数える——土日・祝日・年末年始に対応した無料の日数計算ツール。祝日データは内閣府の公表分を使用。登録不要・ブラウザ内で完結。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/eigyobi/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {"@type": "WebApplication", "name": "日数計算・営業日計算ツール",
+     "applicationCategory": "BusinessApplication", "operatingSystem": "Web",
+     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"},
+     "description": "期間の日数と営業日数、◯営業日後の日付を土日祝対応で計算します。"},
+    {"@type": "BreadcrumbList", "itemListElement": [
+      {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://keiri-tools.com/"},
+      {"@type": "ListItem", "position": 2, "name": "日数計算・営業日計算"}]},
+    {"@type": "FAQPage", "mainEntity": [
+      {"@type": "Question", "name": "「3営業日後」はいつですか？",
+       "acceptedAnswer": {"@type": "Answer", "text": "土日・祝日を除いて3日進めた日です。起算日は翌日からで、当日は含みません。たとえば金曜の3営業日後は、翌週の水曜になります（祝日がなければ）。"}},
+      {"@type": "Question", "name": "日数計算で開始日は含みますか？",
+       "acceptedAnswer": {"@type": "Answer", "text": "本ツールでは「両端を含む」と「片端のみ」を切り替えられます。契約書の期間計算では初日不算入が原則ですが、宿泊日数や在籍日数では両端を含めることがあります。"}}]}
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<style>
+.tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.tabs button { flex: 1 1 140px; padding: 10px; border: 1px solid var(--line); background: #fff;
+  border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--sub); }
+.tabs button[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.pane { display: none; }
+.pane[data-active] { display: block; }
+.opts { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font-size: 13.5px; }
+.opts label { font-weight: 400; margin: 0; display: flex; align-items: center; gap: 5px; }
+</style>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 日数計算・営業日計算</nav>
+
+<section class="hero">
+  <h1>日数計算・営業日計算</h1>
+  <p>期間の日数、<b>「◯営業日後」の日付</b>、期間内の営業日数を計算します。土日・祝日・年末年始に対応（祝日データは内閣府の公表分）。</p>
+</section>
+
+<div class="card">
+  <div class="tabs" role="tablist">
+    <button id="tab-diff" role="tab" aria-selected="true">期間の日数を数える</button>
+    <button id="tab-add" role="tab" aria-selected="false">◯営業日後を計算</button>
+    <button id="tab-adj" role="tab" aria-selected="false">休業日なら前後にずらす</button>
+  </div>
+
+  <div class="pane" id="pane-diff" data-active>
+    <div class="fee-pair">
+      <div><label for="from">開始日</label><input type="date" id="from"></div>
+      <div><label for="to">終了日</label><input type="date" id="to"></div>
+    </div>
+    <div class="opts">
+      <label><input type="radio" name="edge" value="both" checked>両端を含む</label>
+      <label><input type="radio" name="edge" value="one">片端のみ（開始日を含まない）</label>
+    </div>
+  </div>
+
+  <div class="pane" id="pane-add">
+    <div class="fee-pair">
+      <div><label for="base">基準日</label><input type="date" id="base"></div>
+      <div><label for="n">営業日数</label><input type="number" id="n" value="3" inputmode="numeric"></div>
+    </div>
+    <div style="font-size:12.5px;color:var(--sub);margin-top:6px">マイナスを入れると「◯営業日前」を計算します。</div>
+  </div>
+
+  <div class="pane" id="pane-adj">
+    <label for="target">対象の日付</label>
+    <input type="date" id="target">
+    <div class="opts">
+      <label><input type="radio" name="adjmode" value="prev" checked>前営業日に前倒し</label>
+      <label><input type="radio" name="adjmode" value="next">翌営業日に後ろ倒し</label>
+    </div>
+  </div>
+
+  <label style="margin-top:16px">休業日の設定</label>
+  <div class="opts">
+    <label><input type="checkbox" id="o-sat" checked>土曜</label>
+    <label><input type="checkbox" id="o-sun" checked>日曜</label>
+    <label><input type="checkbox" id="o-hol" checked>祝日</label>
+    <label><input type="checkbox" id="o-ye">年末年始（12/31〜1/3）</label>
+  </div>
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>使い方と考え方</h2>
+  <h3>「3営業日後」はいつ？</h3>
+  <p>土日・祝日を除いて3日進めた日です。<b>起算日は翌日から</b>で、当日は数えません。たとえば金曜日の3営業日後は、翌週の水曜日になります（間に祝日がなければ）。</p>
+  <h3>日数計算で開始日は含める？</h3>
+  <p>用途によって変わります。契約期間の計算では<b>初日不算入</b>が原則（民法140条）ですが、宿泊日数・在籍日数などは両端を含めて数えることがあります。本ツールは切り替えられます。</p>
+  <h3>銀行の休業日について</h3>
+  <p>銀行は土日祝に加えて<b>12月31日〜1月3日も休業</b>します。振込の着金日を計算するときは「年末年始」にチェックを入れてください。</p>
+  <h3>支払日の計算をしたい場合</h3>
+  <p>「月末締め翌月末払い」のような支払条件から支払日を一覧で出したいときは、<a href="../shiharai-site/">支払サイト・支払日計算ツール</a>をご利用ください。取引先ごとの条件を保存でき、カレンダー(.ics)にも出力できます。</p>
+  <div class="callout">
+    <b>祝日データについて</b>
+    内閣府が公表している「国民の祝日」のデータを使用しています（2027年分まで収録）。それ以降の日付では祝日が反映されないため、結果が実際とずれる場合があります。
+  </div>
+</section>
+</main>
+<footer class="site" style="display:block">
+  祝日データ: 内閣府「国民の祝日について」。計算結果は目安です。<br>© 経理ミニツールズ
+</footer>
+
+<script type="module">
+import {
+  parseISO, iso, countDays, addBusinessDays, adjust, DOW_JA, dow, holidayName,
+} from "../assets/eigyobi_core.js";
+
+const $ = (id) => document.getElementById(id);
+let H = {};
+fetch("../assets/holidays_jp.json").then(r => r.json()).then(d => { H = d; });
+
+const today = new Date();
+const iso0 = (dt) => `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+$("from").value = iso0(today);
+$("to").value = iso0(new Date(today.getFullYear(), today.getMonth() + 1, today.getDate()));
+$("base").value = iso0(today);
+$("target").value = iso0(today);
+
+const panes = ["diff", "add", "adj"];
+let mode = "diff";
+for (const p of panes) {
+  $("tab-" + p).addEventListener("click", () => {
+    mode = p;
+    for (const q of panes) {
+      $("tab-" + q).setAttribute("aria-selected", String(q === p));
+      $("pane-" + q).toggleAttribute("data-active", q === p);
+    }
+    $("result").style.display = "none";
+  });
+}
+
+const opts = () => ({
+  sat: $("o-sat").checked, sun: $("o-sun").checked,
+  holiday: $("o-hol").checked, yearEnd: $("o-ye").checked,
+});
+const fmt = (dt) => {
+  const hn = holidayName(dt, H);
+  return `${iso(dt).replaceAll("-", "/")}（${DOW_JA[dow(dt)]}）${hn ? " " + hn : ""}`;
+};
+
+$("calc").addEventListener("click", () => {
+  const box = $("result");
+  box.style.display = "block";
+  const o = opts();
+
+  if (mode === "diff") {
+    const from = parseISO($("from").value), to = parseISO($("to").value);
+    const both = document.querySelector('input[name="edge"]:checked').value === "both";
+    const r = countDays(from, to, H, o, both);
+    box.innerHTML = `
+      <div class="row">日数 <span class="big">${r.total}日</span></div>
+      <div class="row" style="margin-top:6px">うち<b>営業日 ${r.business}日</b> ／ 休業日 ${r.closed}日</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:8px">
+        ${fmt(from)} 〜 ${fmt(to)}（${both ? "両端を含む" : "開始日を含まない"}）
+      </div>
+      ${r.holidays.length ? `<div class="note" style="margin-top:10px"><b>期間内の祝日 ${r.holidays.length}日</b><br>${r.holidays.map(h => `${h.date.replaceAll("-", "/")} ${h.name}`).join("<br>")}</div>` : ""}`;
+
+  } else if (mode === "add") {
+    const base = parseISO($("base").value);
+    const n = Number($("n").value);
+    const r = addBusinessDays(base, n, H, o);
+    box.innerHTML = `
+      <div class="row">${n >= 0 ? n + "営業日後" : Math.abs(n) + "営業日前"} <span class="big">${iso(r).replaceAll("-", "/")}</span></div>
+      <div class="row" style="margin-top:4px">${fmt(r)}</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:8px">基準日: ${fmt(base)}（起算日は翌日から・当日は含みません）</div>`;
+
+  } else {
+    const t = parseISO($("target").value);
+    const m = document.querySelector('input[name="adjmode"]:checked').value;
+    const r = adjust(t, m, H, o);
+    box.innerHTML = `
+      <div class="row">調整後 <span class="big">${iso(r).replaceAll("-", "/")}</span></div>
+      <div class="row" style="margin-top:4px">${fmt(r)}</div>
+      <div style="font-size:13px;color:var(--sub);margin-top:8px">
+        ${r.moved ? `${fmt(t)} は休業日のため、${m === "prev" ? "前" : "翌"}営業日にずらしました。` : `${fmt(t)} は営業日のため、そのままです。`}
+      </div>`;
+  }
+});
+</script>
+</body>
+</html>
