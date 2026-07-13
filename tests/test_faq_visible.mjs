@@ -58,6 +58,29 @@ const squash = (s) =>
 const STRAY_LATIN =
   /[ぁ-んァ-ヶ一-龯][a-z]{4,}(?![A-Za-z])|(?<![A-Za-z])[a-z]{4,}[ぁ-んァ-ヶ一-龯]/;
 
+/**
+ * 本文の「よくある質問」ブロック(h3+p)の件数を数える。
+ *
+ * **逆向きの検査のため**にある。このテストは長らく「FAQPageのJSON-LDがあるページ」だけを
+ * 見ており(faq.length===0 なら skip)、**本文にFAQがあるのにJSON-LDが無いページを
+ * 1件も見ていなかった**。生成器も「更新はするが挿入はしない」作りだったので、
+ * 新しく書いた記事は黙って構造化データ無しで公開されていた
+ * (2026-07-13 第17便に発覚。既存6記事・37設問がこの状態。生成器は「差分なし」と言い続けた)。
+ *
+ * ここは生成器と**同じブロックの約束**(h2「よくある質問」or data-faq → h3+p の並び)を見る。
+ * 約束そのものなので一致していなければならない(ズレると、生成器が作れないものを
+ * テストが要求して詰む)。**独立実装の規律は「中身の照合」の方**で守る
+ * — 設問・答えの可視性は下で本文から取り直して突き合わせている。
+ */
+function bodyFaqCount(html) {
+  const h2 = html.match(/<h2[^>]*\sdata-faq[^>]*>[\s\S]*?<\/h2>|<h2[^>]*>\s*よくある質問\s*<\/h2>/);
+  if (!h2) return 0;
+  const rest = html.slice(h2.index + h2[0].length);
+  const end = rest.search(/<h2[\s>]|<section[\s>]|<\/section>|<\/main>/);
+  const block = end === -1 ? rest : rest.slice(0, end);
+  return [...block.matchAll(/<h3[^>]*>[\s\S]*?<\/h3>\s*<p[^>]*>[\s\S]*?<\/p>/g)].length;
+}
+
 let pages = 0, questions = 0;
 const problems = [];
 
@@ -79,7 +102,17 @@ for (const file of htmlFiles(DOCS)) {
       for (const q of node.mainEntity || []) faq.push(q);
     }
   }
-  if (faq.length === 0) continue;
+  if (faq.length === 0) {
+    // 本文にFAQがあるのに構造化データが無い = リッチリザルト対象外のまま公開されている
+    const n = bodyFaqCount(html);
+    if (n > 0) {
+      problems.push(
+        `${rel}: 本文に「よくある質問」(設問${n}件)があるのに、FAQPageの構造化データがありません。\n` +
+        `      → node tools/gen_faq_jsonld.mjs を実行してコミットしてください。`
+      );
+    }
+    continue;
+  }
   pages++;
 
   // 独自に取り直す: 本文のh3の文言と、ページ全体の可視テキスト(script/styleを除く)

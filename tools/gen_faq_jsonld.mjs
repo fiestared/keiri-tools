@@ -76,10 +76,13 @@ const problems = [];
 for (const file of htmlFiles(DOCS)) {
   let html = readFileSync(file, "utf8");
   const rel = file.slice(DOCS.length);
+  const pairs = extractFaq(html);
 
   const blocks = [...html.matchAll(
     /(<script[^>]*type="application\/ld\+json"[^>]*>)([\s\S]*?)(<\/script>)/g
   )];
+
+  let hasFaqNode = false;
 
   for (const [whole, open, body, close] of blocks) {
     let data;
@@ -89,8 +92,8 @@ for (const file of htmlFiles(DOCS)) {
     // その場で書き換える(こうすれば @context もキー順も保たれる)。
     const target = (data["@graph"] || [data]).find((n) => n["@type"] === "FAQPage");
     if (!target) continue;
+    hasFaqNode = true;
 
-    const pairs = extractFaq(html);
     if (!pairs || pairs.length === 0) {
       problems.push(
         `${rel}: FAQPageのJSON-LDがあるのに、本文に「よくある質問」ブロック(h3+p)がありません。\n` +
@@ -109,6 +112,31 @@ for (const file of htmlFiles(DOCS)) {
     writeFileSync(file, html);
     changed++;
     console.log(`  更新: ${rel} (設問${pairs.length}件)`);
+  }
+
+  // 挿入: 本文にFAQがあるのに FAQPageノードが無いページ。
+  // ここが無いと「更新するだけで挿入しない」生成器になり、**新しく書いた記事は
+  // 黙って構造化データ無しで公開される**(2026-07-13 第17便に発覚。既存6記事・37設問が
+  // この状態だった。生成器は「差分なし」と言い、検査も何も言わなかった)。
+  if (!hasFaqNode && pairs && pairs.length > 0) {
+    const graphBlock = blocks.find(([, , body]) => {
+      try { return Array.isArray(JSON.parse(body)["@graph"]); } catch { return false; }
+    });
+    if (!graphBlock) {
+      problems.push(
+        `${rel}: 本文に「よくある質問」があるのに、FAQPageを入れる @graph のJSON-LDがありません。\n` +
+        `      → 記事の<head>にArticle/BreadcrumbListの@graphを置いてください(既存記事のコピーで可)。`
+      );
+      continue;
+    }
+    const [whole, open, body, close] = graphBlock;
+    const data = JSON.parse(body);
+    data["@graph"].push(faqNode(pairs));
+    const json = JSON.stringify(data, null, 2);
+    html = html.replace(whole, `${open}\n${json}\n${close}`);
+    writeFileSync(file, html);
+    changed++;
+    console.log(`  追加: ${rel} (設問${pairs.length}件・FAQPageを新規挿入)`);
   }
 }
 
