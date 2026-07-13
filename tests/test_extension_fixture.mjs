@@ -11,8 +11,9 @@ import { JSDOM } from "jsdom";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const extDir = join(root, "extension/amazon-receipt");
 
-const dom = new JSDOM(readFileSync(join(root, "tests/fixtures/order_history_2026-07.html"), "utf-8"));
-const sandbox = { console, document: dom.window.document, Element: dom.window.Element };
+const dom = new JSDOM(readFileSync(join(root, "tests/fixtures/order_history_2026-07.html"), "utf-8"),
+  { url: "https://www.amazon.co.jp/your-orders/orders" });
+const sandbox = { console, document: dom.window.document, Element: dom.window.Element, URL: dom.window.URL };
 vm.createContext(sandbox);
 for (const f of ["src/lib/scrape.js", "src/lib/csv.js"]) {
   vm.runInContext(readFileSync(join(extDir, f), "utf-8"), sandbox, { filename: f });
@@ -74,6 +75,15 @@ const receiptDom = new JSDOM(`<body><table><tr><td>注文合計:</td><td>￥12,3
 const got = sandbox.ktParseReceipt(receiptDom.window.document, selectors.receipt.fields);
 check("領収書から金額を補完", got.total, 12345);
 check("領収書から日付を補完", got.orderDate, "2026-07-12");
+
+// ページ送り: 実DOMの次ページリンク(li.a-last > a)を検出できること
+// ※ pagination定義は selectors.orderHistory.pagination にある(selectors.pagination ではない)
+{
+  const next = sandbox.ktFindNextPageUrl(
+    dom.window.document, "https://www.amazon.co.jp/your-orders/orders",
+    selectors.orderHistory.pagination);
+  check("次ページリンクを検出", next, "https://www.amazon.co.jp/your-orders/orders?startIndex=10");
+}
 
 if (failed) { console.error(`\n${failed} test(s) failed`); process.exit(1); }
 console.log("\nall fixture tests passed");

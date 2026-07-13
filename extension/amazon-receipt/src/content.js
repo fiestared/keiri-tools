@@ -49,11 +49,19 @@
 
   const $ = id => panel.querySelector(id);
 
-  /** 無料版の上限に当たったときだけアップグレード導線を出す(押し売りしない) */
+  /**
+   * 無料版の上限に当たったときだけアップグレード導線を出す(押し売りしない)。
+   * 「次のページがある」= このページだけでは足りない人 = Proの価値がある人。
+   * 次ページリンクのDOMは変わりやすいので、**10件ちょうど**(=Amazonの1ページ上限)も
+   * 「続きがある」と見なす。
+   */
   function renderProCta(orders) {
     const box = $("#kt-pro");
-    if (license.pro || !orders) { box.innerHTML = ""; return; }
-    const hasMore = ktHasMorePages(document, selectors.pagination);
+    if (!box) return;
+    if (license.pro) { box.innerHTML = ""; return; }
+    const list = orders || [];
+    const nextUrl = ktFindNextPageUrl(document, location.href, selectors.orderHistory.pagination);
+    const hasMore = !!nextUrl || list.length >= 10;
     if (!hasMore) { box.innerHTML = ""; return; }  // 1ページで完結する人には出さない
     box.innerHTML = `
       <div style="background:#fff7e6;border:1px solid #e6c47a;border-radius:8px;padding:9px 10px;font-size:12px">
@@ -143,6 +151,7 @@
       lastResult = ktParseOrderHistory(document, selectors.orderHistory);
       console.log("[電帳法索引簿] スキャン結果", lastResult);
       renderStatus();
+      renderProCta(lastResult.orders);
       if (ktCountIncomplete(lastResult.orders) > 0) await fillFromReceipts();
     } finally { setBusy(false); }
   });
