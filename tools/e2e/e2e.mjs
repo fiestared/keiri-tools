@@ -92,6 +92,23 @@ const SCENES = [
     expect: (s) => s.failed && s.tax === null },
   // 乙欄は同じ給与額でも甲欄よりかなり高い。欄の取り違えを固定する
   { name: "gensen_kyuyo_otsu", expect: (s) => s.tax === s.expected && s.tax > 0 },
+
+  // 賞与: 額は**ハーネス側が生の算出率の表を独立に引いた値**と一致すること。
+  // 国税庁の使用例(554,000円/前月196,616円/扶養2人 → 2.042% → 9,564円)をそのまま流す
+  { name: "gensen_shoyo", expect: (s) =>
+      s.tax === s.expected && s.tax === 9564 && s.showsYear && !s.failed },
+  // 表の到着を待たずに押しても、待って正しい額を出すこと(0円と答えない)
+  { name: "gensen_shoyo_slow", slow: true, expect: (s) =>
+      s.tax === s.expected && s.tax === 9564 && !s.failed },
+  // 算出率の表を配信できないときは、額を出さずに「読み込めませんでした」と申告すること
+  { name: "gensen_shoyo_nodata", data404: "gensen_shoyo_r08.json",
+    expect: (s) => s.failed && s.tax === null },
+  // 前月給与の10倍超は算出率の表を使ってはいけない(備考4)。月額表による額を出し、
+  // かつ「表を使えない」と画面で申告すること。率で答えると黙って誤答になる
+  { name: "gensen_shoyo_10x", expect: (s) =>
+      s.viaGetsugaku && s.tax === s.expected && s.tax > 0 && s.declaresGetsugaku },
+  // 乙欄は扶養親族等の数を見ず、前月給与だけで率が決まる
+  { name: "gensen_shoyo_otsu", expect: (s) => s.tax === s.expected && s.tax > 0 },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
