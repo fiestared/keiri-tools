@@ -29,7 +29,7 @@
 </div>
 
 <div class="card">
-  <form id="contact-form" action="https://formspree.io/f/REPLACE_ME" method="POST">
+  <form id="contact-form" action="https://formspree.io/f/mzdnbbyp" method="POST">
     <label for="category">お問い合わせの種類</label>
     <select id="category" name="種類" required>
       <option value="">選択してください</option>
@@ -83,10 +83,6 @@ const form = document.getElementById("contact-form");
 const status = document.getElementById("form-status");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (form.action.includes("REPLACE_ME")) {
-    status.innerHTML = '<div class="note">送信先が未設定です。しばらくお待ちください。</div>';
-    return;
-  }
   const btn = form.querySelector("button");
   btn.disabled = true;
   btn.textContent = "送信中…";
