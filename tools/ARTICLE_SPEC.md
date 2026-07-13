@@ -15,8 +15,10 @@
    （正しくは新潟県9.21%。同じ回答の中に9.21%を列挙しながら矛盾していた）。
    **エラーにならないので気づけない。必ず生テキストを読む。**
    ```
-   curl -s <URL>                                   # タックスアンサー(/taxes/…/taxanswer/)は UTF-8。iconv は不要(通すと壊れる)
-   curl -s <URL> | iconv -f cp932 -t utf-8         # ただし /publication/ ・/users/gensen/ は Shift_JIS(改正のあらまし等)
+   curl -s <URL> | grep -io 'charset=[a-z0-9_-]*'  # ★まず文字コードを見る。ディレクトリで決め打つな
+   curl -s <URL>                                   # charset=utf-8 のとき(iconv を通すと壊れる)
+   curl -s <URL> | iconv -f cp932 -t utf-8         # charset=shift_jis のとき
+   # 同じ taxanswer 配下でも混在する: 1130.htm=UTF-8 / 1130_qa.htm(質疑応答)=Shift_JIS
    curl -s -o /tmp/x.pdf <URL> && pdftotext -layout /tmp/x.pdf -
    curl -s "https://laws.e-gov.go.jp/api/2/law_data/{law_id}"      # ← v2。v1は古い条文を返す
    ```
