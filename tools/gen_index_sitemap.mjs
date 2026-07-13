@@ -24,12 +24,14 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
-  "nenmatsu-chosei-kakikata",
+  "nenmatsu-chosei-kakikata",   // 年末調整 書き方 57,105/月
+  "ikuji-kyugyo-kyufukin",      // 育児休業給付金 31,302/月
   "invoice-wakariyasuku",
   "shakai-hoken-kanyu-joken",
   "shakai-hokenryo-keisan",
   "taishokukin-zeikin",
-  "gensen-choshuhyo-mikata",
+  "gensen-choshuhyo-mikata",    // 源泉徴収票 見方 17,131/月
+  "shussan-teate-kin",          // 出産手当金 11,464/月
   "nenmatsu-chosei-itsumade",
   "denchoho-wakariyasuku",
   "kaigo-hokenryo-itsukara",
