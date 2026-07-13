@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>源泉徴収税額 計算機｜報酬・原稿料・士業への支払いから自動計算【消費税の扱いも対応】</title>
-<meta name="description" content="原稿料・デザイン料・弁護士や税理士への報酬などから源泉徴収税額を自動計算。10.21%と20.42%の境界（100万円）、司法書士の1万円控除、消費税を区分した場合の扱いまで対応。国税庁の計算式に基づく無料ツール。登録不要。">
+<title>源泉徴収税額 計算機｜給与の月額表（令和8年分・甲欄/乙欄）と報酬10.21%に対応</title>
+<meta name="description" content="給与から源泉徴収する税額を、国税庁の税額表（月額表・令和8年分）を引いて自動計算。甲欄・乙欄、扶養親族等の数、障害者・寡婦・ひとり親の加算に対応。原稿料や士業への報酬（10.21%）も計算できます。無料・登録不要。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/gensen-choshu/">
 <script type="application/ld+json">
@@ -21,7 +21,7 @@
         "price": "0",
         "priceCurrency": "JPY"
       },
-      "description": "報酬・料金等の源泉徴収税額を計算します。国税庁の計算式に準拠。"
+      "description": "給与の源泉徴収税額を国税庁の税額表（月額表・令和8年分／甲欄・乙欄）から計算します。報酬・料金等の10.21%にも対応。"
     },
     {
       "@type": "BreadcrumbList",
@@ -42,6 +42,46 @@
     {
       "@type": "FAQPage",
       "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "給与の源泉徴収税額はどうやって計算しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "給与には「◯%」という計算式がなく、国税庁の給与所得の源泉徴収税額表（月額表）を引いて求めます。「その月の社会保険料等控除後の給与等の金額」と「扶養親族等の数」の組み合わせで税額が表に直接書かれています。上の計算機は令和8年分の月額表を引いて自動で表示します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "甲欄と乙欄はどちらを使えばよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "従業員から「給与所得者の扶養控除等（異動）申告書」の提出を受けていれば甲欄、受けていなければ乙欄です。乙欄は税額が高くなるため、提出を受けているのに乙欄で引くと毎月過大に天引きしてしまいます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "扶養親族等の数に16歳未満の子は含めますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "含めません。16歳未満の子は扶養控除の対象外のため、扶養親族等の数には数えません。一方で、本人が障害者・寡婦・ひとり親・勤労学生に該当するごとに1人を加算します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "給与ソフトの源泉徴収税額と金額が合わないのはなぜですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "国税庁は月額表のほかに「電算機計算の特例」（給与額から算式で求める方法）も認めており、この2つの税額は必ずしも一致しません。令和8年分では差は最大100円です。どちらも適法で、差額は年末調整で精算されます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "表を引く金額は総支給額ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "いいえ。「その月の社会保険料等控除後の給与等の金額」です。課税支給額（通勤手当などの非課税分を除く）から健康保険・厚生年金・雇用保険などの社会保険料等を差し引いた後の金額で表を引きます。"
+          }
+        },
         {
           "@type": "Question",
           "name": "源泉徴収税額の計算式は？",
@@ -73,6 +113,14 @@
 </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
      crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
 </head>
 <body>
 <header class="site">
@@ -84,30 +132,103 @@
 
 <section class="hero">
   <h1>源泉徴収税額 計算機</h1>
-  <p>原稿料・デザイン料・士業への報酬などから、源泉徴収する税額を計算します。<b>消費税を区分した場合の扱い</b>と、<b>司法書士の1万円控除</b>にも対応。国税庁の計算式に基づいています。</p>
+  <p><b>給与</b>は国税庁の<b>税額表（月額表・令和8年分）</b>を引いて計算します。甲欄・乙欄、扶養親族等の数、障害者・寡婦・ひとり親の加算に対応。PDFの表を目で追う必要はありません。<b>報酬・料金</b>（原稿料・士業など）の10.21%も同じページで計算できます。</p>
 </section>
 
 <div class="card">
-  <label for="kind">報酬の種類</label>
-  <select id="kind"></select>
-  <div id="kind-note" style="font-size:12.5px;color:var(--sub);margin-top:5px"></div>
-
-  <label for="fee">報酬額（税抜・円）</label>
-  <input type="number" id="fee" placeholder="例: 100000" inputmode="numeric">
-
-  <label>消費税</label>
-  <div class="radio-row">
-    <label><input type="radio" name="tax" value="sep" checked>請求書で区分されている<br><small>税抜の報酬額のみが源泉徴収の対象（有利）</small></label>
-    <label><input type="radio" name="tax" value="inc">区分されていない<br><small>税込金額の全体が対象（原則）</small></label>
-    <label><input type="radio" name="tax" value="none">消費税なし<br><small>不課税・免税の取引</small></label>
+  <div class="tabs" role="tablist">
+    <button id="tab-kyuyo" role="tab" aria-selected="true">給与・賞与（月額表）</button>
+    <button id="tab-hoshu" role="tab" aria-selected="false">報酬・料金（10.21%）</button>
   </div>
 
-  <button class="primary" id="calc">計算する</button>
-  <div class="result" id="result"></div>
+  <!-- ── 給与（月額表） ────────────────────────────────── -->
+  <div class="pane" id="pane-kyuyo" data-active>
+    <label for="amount">その月の社会保険料等控除後の給与等の金額</label>
+    <input type="number" id="amount" placeholder="例: 250000" inputmode="numeric">
+    <div class="hint">
+      <b>総支給額ではありません。</b>課税支給額（通勤手当などの非課税分を除く）から、健康保険・厚生年金・雇用保険などの<b>社会保険料等を差し引いた後</b>の金額です。
+      社会保険料の額は<a href="../shakai-hoken/">社会保険料 計算機</a>で計算できます。
+    </div>
+
+    <label>税額表の欄</label>
+    <div class="radio-row">
+      <label><input type="radio" name="ran" value="kou" checked>甲欄<br><small>「扶養控除等申告書」の提出<b>あり</b>（通常の従業員）</small></label>
+      <label><input type="radio" name="ran" value="otsu">乙欄<br><small>提出<b>なし</b>（掛け持ちの従たる勤務先など）</small></label>
+    </div>
+
+    <div id="kou-only">
+      <label for="fuyo">扶養親族等の数</label>
+      <select id="fuyo"></select>
+      <div class="hint">源泉控除対象配偶者と控除対象扶養親族の合計。<b>16歳未満の子は含めません。</b></div>
+
+      <label>本人が次に該当する（該当するごとに1人を加算）</label>
+      <div class="opts">
+        <label><input type="checkbox" id="shogaisha">障害者</label>
+        <label><input type="checkbox" id="kafu">寡婦</label>
+        <label><input type="checkbox" id="hitorioya">ひとり親</label>
+        <label><input type="checkbox" id="kinro">勤労学生</label>
+      </div>
+
+      <label for="fuyoShogai">扶養親族のうち 障害者・同居特別障害者の人数</label>
+      <select id="fuyoShogai"></select>
+      <div class="hint">該当するごとに扶養親族等の数に1人を加算します（同居特別障害者は2人分ではなく1人）。</div>
+    </div>
+
+    <div id="otsu-only" style="display:none">
+      <label for="jutaru">「従たる給与についての扶養控除等申告書」による扶養親族等の数</label>
+      <select id="jutaru"></select>
+      <div class="hint">この申告書の提出が<b>ない</b>場合は 0 のままにしてください（乙欄では通常0です）。</div>
+    </div>
+
+    <button class="primary" id="calcK">計算する</button>
+    <div class="result" id="resultK"></div>
+  </div>
+
+  <!-- ── 報酬・料金 ───────────────────────────────────── -->
+  <div class="pane" id="pane-hoshu">
+    <label for="kind">報酬の種類</label>
+    <select id="kind"></select>
+    <div id="kind-note" style="font-size:12.5px;color:var(--sub);margin-top:5px"></div>
+
+    <label for="fee">報酬額（税抜・円）</label>
+    <input type="number" id="fee" placeholder="例: 100000" inputmode="numeric">
+
+    <label>消費税</label>
+    <div class="radio-row">
+      <label><input type="radio" name="tax" value="sep" checked>請求書で区分されている<br><small>税抜の報酬額のみが源泉徴収の対象（有利）</small></label>
+      <label><input type="radio" name="tax" value="inc">区分されていない<br><small>税込金額の全体が対象（原則）</small></label>
+      <label><input type="radio" name="tax" value="none">消費税なし<br><small>不課税・免税の取引</small></label>
+    </div>
+
+    <button class="primary" id="calc">計算する</button>
+    <div class="result" id="result"></div>
+  </div>
 </div>
 
 <section class="faq">
-  <h2>計算のしくみと注意点</h2>
+  <h2>給与の源泉徴収 — 税額表（月額表）の引き方</h2>
+
+  <h3>給与は「率」ではなく「表」で決まります</h3>
+  <p>報酬・料金と違い、<b>給与には「◯%」という掛け算の式がありません</b>。国税庁が公表する<b>給与所得の源泉徴収税額表（月額表）</b>に、金額の階級（○円以上 ○円未満）と扶養親族等の数の組み合わせで税額が直接書かれており、そこを引き当てます。上の計算機は、この表（令和8年分・231行）を機械的に引いています。</p>
+
+  <h3>甲欄と乙欄の違い</h3>
+  <p>従業員から「<b>給与所得者の扶養控除等（異動）申告書</b>」の提出を受けていれば<b>甲欄</b>、受けていなければ<b>乙欄</b>を使います。乙欄は税額がかなり高くなります（掛け持ち勤務の「従たる勤務先」が典型です）。提出を受けているのに乙欄で引くと、毎月過大に天引きしてしまいます。</p>
+
+  <div class="callout">
+    <b>入力する金額を間違えないでください</b><br>
+    表を引くのは<b>「その月の社会保険料等控除後の給与等の金額」</b>です。総支給額ではありません。<br>
+    課税支給額（通勤手当などの非課税分を除く）− 社会保険料等（健康保険・厚生年金・雇用保険）＝ 表を引く金額
+  </div>
+
+  <h3>扶養親族等の数の数え方</h3>
+  <p>源泉控除対象配偶者と控除対象扶養親族の合計です。<b>16歳未満の子は含めません</b>（扶養控除の対象外のため）。さらに、本人が障害者・寡婦・ひとり親・勤労学生に該当するごとに1人、扶養親族のうち障害者・同居特別障害者に該当するごとに1人を<b>加算</b>します。7人を超える場合は、7人の税額から1人につき1,610円を控除します。</p>
+
+  <h3>給与ソフトの税額と1円単位で合わないことがあります</h3>
+  <p>国税庁は月額表のほかに「<b>電算機計算の特例</b>」（給与額から算式で求める方法）も認めており、<b>この2つの税額は必ずしも一致しません</b>（特例の資料に明記されています）。令和8年分の表を全数照合すると、差が出るのは一部の階級で、<b>最大でも100円</b>です。どちらも適法で、差額は年末調整で精算されます。上の計算機は<b>月額表の額</b>を主として表示し、特例の額が異なる場合は参考として併記します。</p>
+</section>
+
+<section class="faq">
+  <h2>報酬・料金の源泉徴収 — 計算のしくみと注意点</h2>
 
   <h3>計算式（原稿料・弁護士・税理士など一般のケース）</h3>
   <table>
@@ -151,6 +272,16 @@
 
 <section class="faq">
   <h2 id="faq">よくある質問</h2>
+  <h3>給与の源泉徴収税額はどうやって計算しますか？</h3>
+  <p>給与には「◯%」という計算式がなく、国税庁の<b>給与所得の源泉徴収税額表（月額表）</b>を引いて求めます。「その月の社会保険料等控除後の給与等の金額」と「扶養親族等の数」の組み合わせで税額が表に直接書かれています。上の計算機は令和8年分の月額表を引いて自動で表示します。</p>
+  <h3>甲欄と乙欄はどちらを使えばよいですか？</h3>
+  <p>従業員から「給与所得者の扶養控除等（異動）申告書」の提出を受けていれば<b>甲欄</b>、受けていなければ<b>乙欄</b>です。乙欄は税額が高くなるため、提出を受けているのに乙欄で引くと毎月過大に天引きしてしまいます。</p>
+  <h3>扶養親族等の数に16歳未満の子は含めますか？</h3>
+  <p><b>含めません。</b>16歳未満の子は扶養控除の対象外のため、扶養親族等の数には数えません。一方で、本人が障害者・寡婦・ひとり親・勤労学生に該当するごとに1人を加算します。</p>
+  <h3>給与ソフトの源泉徴収税額と金額が合わないのはなぜですか？</h3>
+  <p>国税庁は月額表のほかに「電算機計算の特例」（給与額から算式で求める方法）も認めており、<b>この2つの税額は必ずしも一致しません</b>。令和8年分では差は最大100円です。どちらも適法で、差額は年末調整で精算されます。</p>
+  <h3>表を引く金額は総支給額ですか？</h3>
+  <p>いいえ。<b>「その月の社会保険料等控除後の給与等の金額」</b>です。課税支給額（通勤手当などの非課税分を除く）から健康保険・厚生年金・雇用保険などの社会保険料等を差し引いた後の金額で表を引きます。</p>
   <h3>源泉徴収税額の計算式は？</h3>
   <p>支払金額が100万円以下の場合は「<b>支払金額 × 10.21%</b>」、100万円を超える場合は「<b>(支払金額 − 100万円) × 20.42% ＋ 102,100円</b>」です。求めた税額の1円未満の端数は切り捨てます。</p>
   <h3>消費税込みの金額から源泉徴収しますか？</h3>
@@ -167,10 +298,137 @@
 
 <script type="module">
 import { calcWithholding, withholdingTarget, KINDS } from "../assets/gensen_core.js";
+import {
+  kouTax, otsuTax, denshiKouTax, findRow, extraDependentCount,
+} from "../assets/gensen_kyuyo_core.js";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
 
+// ── タブ ──────────────────────────────────────────────
+for (const [t, other] of [["kyuyo", "hoshu"], ["hoshu", "kyuyo"]]) {
+  $("tab-" + t).addEventListener("click", () => {
+    $("tab-" + t).setAttribute("aria-selected", "true");
+    $("tab-" + other).setAttribute("aria-selected", "false");
+    $("pane-" + t).setAttribute("data-active", "");
+    $("pane-" + other).removeAttribute("data-active");
+  });
+}
+
+// ── 給与（月額表） ────────────────────────────────────
+// 月額表は非同期で届く。**届く前に計算ボタンを押されても待つ**こと。
+// (待たずに計算すると表を1行も知らないまま税額を断言する。回線が速いと再現しないので、
+//  tools/e2e の gensen_kyuyo_slow シーンで配信を遅らせて固定している)
+let TABLE = null;
+const tableReady = fetch("../assets/gensen_getsugaku_r08.json")
+  .then((r) => r.json())
+  .then((d) => { TABLE = d; return true; })
+  .catch(() => false); // 読めなかったときは黙って0円と答えず、下で断り書きを出す
+
+for (const [id, max] of [["fuyo", 10], ["fuyoShogai", 5], ["jutaru", 5]]) {
+  for (let i = 0; i <= max; i++) {
+    const o = document.createElement("option");
+    o.value = String(i);
+    o.textContent = i + "人";
+    $(id).appendChild(o);
+  }
+}
+
+const ran = () => document.querySelector('input[name="ran"]:checked').value;
+for (const r of document.querySelectorAll('input[name="ran"]')) {
+  r.addEventListener("change", () => {
+    const kou = ran() === "kou";
+    $("kou-only").style.display = kou ? "" : "none";
+    $("otsu-only").style.display = kou ? "none" : "";
+    $("resultK").style.display = "none";
+  });
+}
+
+$("calcK").addEventListener("click", async () => {
+  const box = $("resultK");
+  box.style.display = "block";
+  const A = Number($("amount").value);
+  if (!A || A <= 0) { box.innerHTML = "社会保険料等控除後の給与等の金額を入力してください。"; return; }
+
+  box.innerHTML = "計算中…";
+  const loaded = await tableReady;           // ← 表の到着を必ず待つ
+  if (!loaded || !TABLE) {
+    box.innerHTML = `<div class="note"><b>税額表を読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。表を引けない状態で税額を答えることはできません。</div>`;
+    return;
+  }
+
+  const isKou = ran() === "kou";
+  let tax, n = 0, extra = 0, denshi = null;
+
+  if (isKou) {
+    const base = Number($("fuyo").value);
+    extra = extraDependentCount({
+      shogaisha: $("shogaisha").checked, kafu: $("kafu").checked,
+      hitorioya: $("hitorioya").checked, kinroGakusei: $("kinro").checked,
+      shogaishaFuyoCount: Number($("fuyoShogai").value),
+    });
+    n = base + extra;
+    tax = kouTax(TABLE, A, n);
+    denshi = denshiKouTax(A, n);
+  } else {
+    tax = otsuTax(TABLE, A, Number($("jutaru").value));
+  }
+
+  // 表のどの行を引いたのかを見せる（このツールの存在意義＝表引きの代行なので、
+  // 「どこを見た結果か」を出さないと利用者は検算できない）
+  const row = findRow(TABLE, A);
+  let rowNote;
+  if (A < TABLE.otsuLowMax) {
+    rowNote = isKou
+      ? `${yen(TABLE.otsuLowMax)}未満のため、甲欄は<b>0円</b>です。`
+      : `${yen(TABLE.otsuLowMax)}未満のため、乙欄は<b>金額 × 3.063%</b>（表ではなく算式）で求めます。`;
+  } else if (row) {
+    rowNote = `月額表の「${yen(row.min)}以上 ${yen(row.max)}未満」の行` +
+      (isKou ? `、扶養親族等 <b>${n}人</b>の列` : `の乙欄`) + `を引きました。`;
+  } else {
+    rowNote = `${yen(TABLE.tableMax)}以上のため、表ではなく<b>算式</b>（区分の基点の税額＋基点を超える金額×率）で求めます。`;
+  }
+
+  const over7 = isKou && n > 7
+    ? `<br>扶養親族等が7人を超えるため、7人の税額から1人につき ${yen(TABLE.over7Deduction)} を控除しています（${n - 7}人分）。`
+    : "";
+  const extraNote = isKou && extra > 0
+    ? `<br>本人・扶養親族の障害者等の該当により、扶養親族等の数に <b>${extra}人</b> を加算しています。`
+    : "";
+
+  // 電算機計算の特例は「表と一致しない」。給与ソフトの値と食い違って見えるのを
+  // 事前に説明しておく（どちらも適法・差額は年末調整で精算される）。
+  const denshiRow = (denshi !== null && denshi !== tax)
+    ? `<tr><td style="padding:6px 8px">参考: 電算機計算の特例</td>
+         <td style="padding:6px 8px;text-align:right">${yen(denshi)}</td></tr>`
+    : "";
+
+  box.innerHTML = `
+    <div class="row">源泉徴収税額（${TABLE.year}・月額表 ${isKou ? "甲欄" : "乙欄"}）
+      <span class="big">${yen(tax)}</span></div>
+    <div style="overflow-x:auto;margin-top:12px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr><td style="padding:6px 8px">社会保険料等控除後の給与等の金額</td>
+          <td style="padding:6px 8px;text-align:right">${yen(A)}</td></tr>
+      ${isKou ? `<tr><td style="padding:6px 8px">扶養親族等の数</td>
+          <td style="padding:6px 8px;text-align:right">${n}人</td></tr>` : ""}
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">源泉徴収税額</td>
+        <td style="padding:6px 8px;text-align:right">${yen(tax)}</td></tr>
+      ${denshiRow}
+    </table></div>
+    <div class="note" style="margin-top:10px">
+      <b>${TABLE.year}</b>の月額表による税額です。${rowNote}${extraNote}${over7}
+    </div>
+    ${denshiRow ? `<div class="hint" style="margin-top:8px">
+      給与ソフトは「電算機計算の特例」で計算することがあり、その額は <b>${yen(denshi)}</b> です。
+      月額表の額と一致しないことがありますが（国税庁も明記）、<b>どちらも適法</b>で、
+      差額は年末調整で精算されます。手元の税額表と突き合わせるなら上の額を使ってください。
+    </div>` : ""}`;
+});
+
+// ── 報酬・料金 ────────────────────────────────────────
 const sel = $("kind");
 for (const [k, v] of Object.entries(KINDS)) {
   const o = document.createElement("option");
