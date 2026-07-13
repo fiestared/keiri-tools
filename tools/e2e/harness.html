@@ -474,6 +474,55 @@ SCENES.shohizei_shinkoku_noinv = async () => {
   };
 };
 
+// ── 給与の源泉徴収(月額表) ──────────────────────────────────────────────────
+// このツールの存在意義は「国税庁PDFの税額表を引く代わりをする」こと。表が効いていなければ
+// 必ず額がズレる。**期待値はハーネス側で生の月額表JSONを独立に引いて出す**
+// (被検体と同じ gensen_kyuyo_core.js を使うと、coreのバグで両方同じように間違える)。
+const lookupIndep = (table, A, n, ran) => {
+  if (ran === "otsu") {
+    if (A < table.otsuLowMax) return Math.floor(A * table.otsuLowRate);
+    const row = table.rows.find((r) => A >= r.min && A < r.max);
+    return row ? row.otsu : null;
+  }
+  if (A < table.otsuLowMax) return 0;
+  const row = table.rows.find((r) => A >= r.min && A < r.max);
+  return row ? row.kou[Math.min(n, 7)] : null;
+};
+
+const kyuyoScene = (A, n, ran = "kou") => async () => {
+  const doc = await open("/docs/gensen-choshu/");
+  const table = await (await fetch("/docs/assets/gensen_getsugaku_r08.json?raw=1")).json();
+
+  if (ran === "otsu") doc.querySelector('input[name="ran"][value="otsu"]').click();
+  set(doc, "amount", String(A));
+  if (ran === "kou") set(doc, "fuyo", String(n));
+  click(doc, "calcK"); // ← 税額表の到着を待たずに押す(実ユーザーと同じ)
+
+  // 金額は「¥3,140」形式で描かれる(「円」の字は出ない)。待ち受ける文字列を間違えると
+  // 商品が正しくてもタイムアウトする(実際にやった)ので、結果ブロックの見出しで待つ
+  await waitFor(
+    () => /源泉徴収税額|読み込めませんでした/.test(text(doc, "resultK")),
+    "給与の計算結果",
+  );
+  const body = text(doc, "resultK");
+  // 「源泉徴収税額」の行に出ている額(最初の大きな数字)を読む
+  const m = body.match(/源泉徴収税額（[^）]*）\s*¥([\d,]+)/);
+  return {
+    A, n, ran,
+    tax: m ? Number(m[1].replace(/,/g, "")) : null,
+    expected: lookupIndep(table, A, n, ran), // ハーネス側の独立実装
+    year: table.year,
+    showsYear: body.includes(table.year),      // どの年分の表を引いたかを申告しているか
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// 250,000円・扶養2人 → 表が効いていなければ絶対に合わない額。常設の税額表プローブ
+SCENES.gensen_kyuyo = kyuyoScene(250000, 2);
+SCENES.gensen_kyuyo_slow = SCENES.gensen_kyuyo;        // 800ms遅らせる(モバイル回線)
+SCENES.gensen_kyuyo_nodata = SCENES.gensen_kyuyo;      // 配信失敗 → 額を出さず断り書き
+SCENES.gensen_kyuyo_otsu = kyuyoScene(250000, 0, "otsu"); // 乙欄は甲欄より高い
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()) };

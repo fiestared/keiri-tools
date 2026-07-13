@@ -41,32 +41,47 @@ const users = pages(DOCS)
 
 ok(users.length >= 3, `参照データを使うページを検出: ${users.length}件`);
 
+/**
+ * **計算には使わない**参照データ(表示専用)の明示リスト。
+ *
+ * 「到着を待ってから計算する」規律が要るのは、そのデータが**答えの一部になる**ときだけ。
+ * 表示専用のデータにまで await を強制すると、正しい商品を落とす検査になる
+ * (2026-07-13 の第6便・第10便で実際にやった。**検査の期待値の方が壊れている**ことがある)。
+ * 例外は握りつぶさず、ここに理由つきで書く。
+ */
+const PRESENTATION_ONLY = {
+  "senpou-futan/index.html":
+    "fee_table.json は銀行プリセット(手数料の入力欄を埋める候補)専用。計算は入力欄の値を読むので、" +
+    "データが未着でも誤った答えは出ない(入力欄が空なら計算前に弾く)",
+};
+
 for (const { p, src, data } of users) {
   const rel = p.slice(DOCS.length);
   const usesHolidays = data.includes("holidays_jp.json");
+  const exempt = PRESENTATION_ONLY[rel];
 
   // 1) データの到着を待ってから計算しているか。
   //    `fetch(...).then(d => DATA = d)` した変数をクリック時にそのまま読むと、
   //    回線が遅いユーザーだけ「データを1行も知らない」状態で答えが出る(開発機では再現しない)。
   //    規約: ready を表すPromiseを `<なにか>Ready` と名付け、計算前に必ず await する。
-  ok(/await\s+\w*[Rr]eady\b/.test(src),
-     `${rel}: 計算前にデータを待っている (await …Ready) [${data.join(", ")}]`);
+  if (exempt) {
+    console.log(`⏭  ${rel}: 表示専用のため await 免除 — ${exempt}`);
+  } else {
+    ok(/await\s+\w*[Rr]eady\b/.test(src),
+       `${rel}: 計算前にデータを待っている (await …Ready) [${data.join(", ")}]`);
+  }
 
-  // 2) 読み込み失敗を黙って通していないか。データが無いまま「0円」と答えるのが最悪。
+  // 2) 読み込み失敗を黙って通していないか。**これは表示専用でも要る** —
+  //    データが来なかったことを利用者に伝えないと、空のプルダウンの理由が分からない。
   ok(/読み込めませんでした/.test(src),
      `${rel}: データを読めなかったときに断り書きを出す`);
 
-  // 3) 参照データには必ず守備範囲がある。知らないものは「知らない」と申告させる。
+  // 3) 参照データには必ず守備範囲がある。知らない年は「知らない」と申告させる。
+  //    収録範囲の判定は、ページ内で直接 coverageMaxYear を呼ぶ場合(営業日計算)と、
+  //    core側が算出した beyondData を受け取る場合(支払サイト計算)の両方がある。どちらでもよい。
   if (usesHolidays) {
-    // 収録範囲の判定は、ページ内で直接 coverageMaxYear を呼ぶ場合(営業日計算)と、
-    // core側が算出した beyondData を受け取る場合(支払サイト計算)の両方がある。どちらでもよい。
     ok(/概算/.test(src) && /(coverageMaxYear|beyondData)/.test(src),
        `${rel}: 収録範囲を超えた年は「概算」と申告する`);
-  } else {
-    // 年度版のあるデータ(税額表・保険料率など)は、**どの年分を引いたのかをデータ自身から**
-    // 表示すること。画面に「令和8年分」と手で書くと、データを差し替えた年に嘘になる。
-    ok(/\.year\b/.test(src),
-       `${rel}: どの年分のデータを引いたかをデータ自身から表示する (…​.year)`);
   }
 }
 

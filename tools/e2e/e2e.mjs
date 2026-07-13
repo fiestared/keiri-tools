@@ -78,6 +78,20 @@ const SCENES = [
       s.total === 500000 && !s.offersForbidden && s.showsThree && s.explainsForbidden },
   // 積上げ用の入力が空のとき、0円として計算して積上げを不当に有利に見せないこと
   { name: "shohizei_shinkoku_noinv", expect: (s) => s.declaresSkip && s.positive },
+
+  // 給与の源泉徴収: 額は**ハーネス側が生の月額表を独立に引いた値**と一致すること。
+  // どの年分の表を引いたのかを画面に出していること(来年の表に差し替えたら文言も追随する)
+  { name: "gensen_kyuyo", expect: (s) =>
+      s.tax === s.expected && s.tax > 0 && s.showsYear && !s.failed },
+  // 表の到着を待たずに押しても、待って正しい額を出すこと(0円と答えない)
+  { name: "gensen_kyuyo_slow", slow: true, expect: (s) =>
+      s.tax === s.expected && s.tax > 0 && !s.failed },
+  // 表を配信できないときは、額を出さずに「読み込めませんでした」と申告すること。
+  // 税額表を引けないまま税額を断言するのが、このツールで最悪の壊れ方
+  { name: "gensen_kyuyo_nodata", data404: "gensen_getsugaku_r08.json",
+    expect: (s) => s.failed && s.tax === null },
+  // 乙欄は同じ給与額でも甲欄よりかなり高い。欄の取り違えを固定する
+  { name: "gensen_kyuyo_otsu", expect: (s) => s.tax === s.expected && s.tax > 0 },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
@@ -86,6 +100,7 @@ const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; cha
 let received = null;
 let slowHolidays = false;
 let holidayMode = null; // null=そのまま | "404"=配信失敗 | "stale"=2025年までしか無い
+let data404 = null;     // 指定したJSONファイルだけ配信失敗させる(参照データ全般)
 
 const server = createServer(async (req, res) => {
   const [rawPath, query] = req.url.split("?");
@@ -96,10 +111,16 @@ const server = createServer(async (req, res) => {
     res.writeHead(204); res.end();
     return;
   }
-  // ハーネス自身の照合用フェッチ(?raw=1)は素通し。ツール側のfetchだけを細工する
+  // ハーネス自身の照合用フェッチ(?raw=1)は素通し。ツール側のfetchだけを細工する。
+  // 遅延・配信失敗は**参照データ全般**に効かせる(祝日JSONだけの細工にしていると、
+  // 新しい参照データ=税額表などを足したときに「待っているか」を試せない)
+  const isToolDataFetch = /\/assets\/[\w.-]+\.json$/.test(path) && !/raw=1/.test(query || "");
+  if (isToolDataFetch) {
+    if (slowHolidays) await new Promise((r) => setTimeout(r, 800));
+    if (data404 && path.endsWith(data404)) { res.writeHead(404); res.end("not found"); return; }
+  }
   const isToolHolidayFetch = path.endsWith("holidays_jp.json") && !/raw=1/.test(query || "");
   if (isToolHolidayFetch) {
-    if (slowHolidays) await new Promise((r) => setTimeout(r, 800));
     if (holidayMode === "404") { res.writeHead(404); res.end("not found"); return; }
     if (holidayMode === "stale") {
       const all = JSON.parse(await readFile(join(ROOT, "docs/assets/holidays_jp.json"), "utf8"));
@@ -125,6 +146,7 @@ const fails = [];
 for (const sc of SCENES.filter((s) => !only || s.name === only)) {
   slowHolidays = !!sc.slow;
   holidayMode = sc.holidays || null;
+  data404 = sc.data404 || null;
   received = null;
   const url = `http://127.0.0.1:${port}/tools/e2e/harness.html?scene=${sc.name}`;
   const dir = join(ROOT, "tools", "e2e", ".chrome-" + sc.name);

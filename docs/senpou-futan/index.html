@@ -93,6 +93,7 @@
     <div id="fee-inputs">
       <label>振込手数料(税込・円)</label>
       <select id="bankPreset" style="margin-bottom:10px"><option value="">銀行から選ぶ（他行宛・2026年7月確認）／手入力</option></select>
+      <div class="note" id="preset-note" style="display:none;margin-bottom:10px"></div>
       <div class="fee-pair">
         <div>
           <label for="feeUnder" style="font-weight:400;font-size:13px;margin-top:0">3万円未満</label>
@@ -150,22 +151,35 @@ import { calc, calcFlat, METHODS, methodsDisagree, explainShortfall } from "../a
 const $ = (id) => document.getElementById(id);
 const yen = (n) => n.toLocaleString("ja-JP") + " 円";
 
-// 銀行プリセット
-fetch("../assets/fee_table.json").then((r) => r.json()).then((data) => {
-  const sel = $("bankPreset");
-  data.banks.forEach((b, i) => {
-    const o = document.createElement("option");
-    o.value = i;
-    o.textContent = `${b.name}　${b.under30k}円 / ${b.over30k}円`;
-    sel.appendChild(o);
+// 銀行プリセット。
+// これは**手数料の入力欄を埋めるだけ**の候補リストで、計算そのものには使わない
+// (計算は入力欄の値を読む)。だから他のツールのように「到着を待ってから計算」する必要はない。
+// ただし読み込みに失敗したときに**黙って空のプルダウンを出す**と、利用者は
+// 「銀行が選べない」理由が分からない(手入力すれば使えることにも気付けない)。
+const presetsReady = fetch("../assets/fee_table.json")
+  .then((r) => r.json())
+  .then((data) => {
+    const sel = $("bankPreset");
+    data.banks.forEach((b, i) => {
+      const o = document.createElement("option");
+      o.value = i;
+      o.textContent = `${b.name}　${b.under30k}円 / ${b.over30k}円`;
+      sel.appendChild(o);
+    });
+    sel.addEventListener("change", () => {
+      if (sel.value === "") return;
+      const b = data.banks[Number(sel.value)];
+      $("feeUnder").value = b.under30k;
+      $("feeOver").value = b.over30k;
+    });
+    return true;
+  })
+  .catch(() => {
+    $("preset-note").innerHTML =
+      "<b>銀行プリセットを読み込めませんでした。</b>振込手数料は手入力してください（計算はできます）。";
+    $("preset-note").style.display = "";
+    return false;
   });
-  sel.addEventListener("change", () => {
-    if (sel.value === "") return;
-    const b = data.banks[Number(sel.value)];
-    $("feeUnder").value = b.under30k;
-    $("feeOver").value = b.over30k;
-  });
-});
 
 document.querySelectorAll('input[name="method"]').forEach((r) =>
   r.addEventListener("change", () => {
