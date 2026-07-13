@@ -70,9 +70,14 @@ const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, 
                     .replace(/"/g, "&quot;");
 
 const articles = [];
+const skipped = [];
 for (const slug of readdirSync(COLUMN)) {
   const f = join(COLUMN, slug, "index.html");
   if (!existsSync(f) || !statSync(join(COLUMN, slug)).isDirectory()) continue;
+  // 書きかけ・公開してはいけない記事は .nopublish を置いて外す。
+  // これが無いと、作業ツリーに残った記事(未コミット=本番に出ない)が sitemap と一覧に載り、
+  // 404 へのリンクを公開してしまう(2026-07-13 第23便に実際に起きかけた)。
+  if (existsSync(join(COLUMN, slug, ".nopublish"))) { skipped.push(slug); continue; }
   const html = readFileSync(f, "utf8");
   const title = strip(html.match(/<h1>([\s\S]*?)<\/h1>/)?.[1] ?? "");
   const date = html.match(/"datePublished":\s*"(\d{4})-(\d{2})-(\d{2})"/);
@@ -160,4 +165,6 @@ top = top.slice(0, tStart) + "\n" + topCards + "\n  " + top.slice(tEnd);
 const a = write(join(DOCS, "sitemap.xml"), sitemap, "sitemap.xml");
 const b = write(colPath, col, "column/index.html");
 const c = write(topPath, top, "index.html（トップの新着6本）");
+// 黙って落とさない。外した記事は必ず名指しで報告する(「全部載った」と誤読させない)
+for (const slug of skipped) console.log(`  ⚠️  除外(.nopublish): ${slug} — sitemap・一覧に載せていない`);
 console.log(`✓ 記事 ${articles.length}本${a || b || c ? "" : "（変更なし）"}`);

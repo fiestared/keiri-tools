@@ -27,9 +27,13 @@ const fail = (slug, msg) => fails.push(`${slug}: ${msg}`);
 const sitemap = readFileSync(join(DOCS, "sitemap.xml"), "utf8");
 const columnIndex = readFileSync(join(COLUMN, "index.html"), "utf8");
 
-const slugs = readdirSync(COLUMN).filter(
-  (n) => existsSync(join(COLUMN, n, "index.html"))
-);
+// .nopublish は「公開しない記事」の印(gen_index_sitemap.mjs と同じ規約)。
+// 公開しない以上 sitemap・一覧への掲載は要求できないので、検査対象から外す。
+// 黙って外すと「全記事が型を満たしている」と誤読されるため、必ず名指しで出す。
+const all = readdirSync(COLUMN).filter((n) => existsSync(join(COLUMN, n, "index.html")));
+const drafts = all.filter((n) => existsSync(join(COLUMN, n, ".nopublish")));
+const slugs = all.filter((n) => !drafts.includes(n));
+for (const d of drafts) console.log(`  ⚠️  検査対象外(.nopublish): ${d}`);
 
 if (slugs.length === 0) fails.push("記事が1本も無い(検査対象の取り違え)");
 
