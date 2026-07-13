@@ -25,15 +25,32 @@ const KT_PRO_FEATURES = [
   "キャンセル注文の自動除外・要確認の自動判定（無料版にも搭載）",
 ];
 
-/** 現在のライセンス状態(拡張のstorageにキャッシュ) */
+/**
+ * 現在のライセンス状態を取得する。
+ * 決済の正は **ExtensionPay(Stripe)** で、service worker 経由で問い合わせる。
+ * 取得に失敗したら直前のキャッシュを使い、それも無ければ無料版として動く。
+ * **決済サーバーの障害で無料機能まで止めないこと**（有料機能だけが使えない状態が正しい）。
+ */
 async function ktGetLicense() {
-  const { license } = await chrome.storage.local.get("license");
-  if (!license) return { pro: false, source: "none" };
-  // 期限つきライセンスの失効チェック(買い切りはexpiresAtを持たない)
-  if (license.expiresAt && Date.now() > license.expiresAt) {
-    return { pro: false, source: "expired" };
+  try {
+    const res = await chrome.runtime.sendMessage({ type: "getLicense" });
+    if (res && !res.error) {
+      const license = { pro: !!res.pro, email: res.email || null, checkedAt: Date.now() };
+      await chrome.storage.local.set({ license });
+      return { ...license, source: "extensionpay" };
+    }
+  } catch (e) {
+    console.warn("[電帳法索引簿] ライセンス確認に失敗（キャッシュで判定します）", e);
   }
-  return { pro: !!license.pro, source: license.source || "cache", email: license.email };
+  // オフライン等: 直前の判定を使う
+  const { license } = await chrome.storage.local.get("license");
+  if (license && license.pro) return { ...license, source: "cache" };
+  return { pro: false, source: "none" };
+}
+
+/** 購入ページ(ExtensionPay)を開く */
+async function ktOpenPayment() {
+  return chrome.runtime.sendMessage({ type: "openPayment" });
 }
 
 function ktLimits(license) {

@@ -42,11 +42,30 @@
     </div>
     <div id="kt-status" style="margin-top:8px;color:#374151">未スキャン</div>
     <div id="kt-warn" style="margin-top:4px;color:#b45309;font-size:12px"></div>
-    <div id="kt-ver" style="margin-top:6px;color:#9ca3af;font-size:11px">定義 ${resp.version || "?"}（${resp.source}）</div>
+    <div id="kt-pro" style="margin-top:8px"></div>
+    <div id="kt-ver" style="margin-top:6px;color:#9ca3af;font-size:11px">定義 ${resp.version || "?"}（${resp.source}）${license.pro ? " ・ Pro" : ""}</div>
   `;
   document.body.appendChild(panel);
 
   const $ = id => panel.querySelector(id);
+
+  /** 無料版の上限に当たったときだけアップグレード導線を出す(押し売りしない) */
+  function renderProCta(orders) {
+    const box = $("#kt-pro");
+    if (license.pro || !orders) { box.innerHTML = ""; return; }
+    const hasMore = ktHasMorePages(document, selectors.pagination);
+    if (!hasMore) { box.innerHTML = ""; return; }  // 1ページで完結する人には出さない
+    box.innerHTML = `
+      <div style="background:#fff7e6;border:1px solid #e6c47a;border-radius:8px;padding:9px 10px;font-size:12px">
+        <b>次のページ以降も注文があります。</b><br>
+        Pro版なら<b>全ページを自動で巡回</b>して年間分をまとめて索引簿にし、
+        <b>領収書の一括保存</b>もできます。
+        <button id="kt-buy" style="margin-top:6px;width:100%;cursor:pointer;padding:6px;border:1px solid #b45309;background:#b45309;color:#fff;border-radius:6px;font-weight:700">
+          Pro版にする（¥1,480 買い切り）
+        </button>
+      </div>`;
+    $("#kt-buy").addEventListener("click", ktOpenPayment);
+  }
   const status = t => { $("#kt-status").textContent = t; };
   const setBusy = b => {
     busy = b;
@@ -91,6 +110,7 @@
       `無料版は<b>表示中のページ</b>の索引簿CSVまで作れます。<br>` +
       `Pro版（買い切り）で<b>全ページの一括処理</b>と<b>領収書の一括保存</b>が使えます。<br>` +
       `<a href="https://keiri-tools.com/ext/amazon-receipt/" target="_blank" rel="noopener">詳細を見る</a>`;
+    renderProCta(lastResult ? lastResult.orders : []);
     return false;
   }
 

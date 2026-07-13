@@ -7,6 +7,13 @@
 
 "use strict";
 
+// ExtensionPay（決済）。Chromeウェブストアの決済機能は廃止済みのため外部決済を使う。
+// 売上はMasahiroのStripeへ直接入金される（ExtensionPayは決済ごとに5%）。
+importScripts("./lib/ExtPay.js");
+const EXTPAY_ID = "amazon-receipt-denchoho"; // ExtensionPayで登録した Extension ID
+const extpay = ExtPay(EXTPAY_ID);
+extpay.startBackground();
+
 const REMOTE_SELECTORS_URL = "https://keiri-tools.com/ext/amazon-receipt/selectors.json";
 const CACHE_KEY = "selectorsCache";
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -90,6 +97,20 @@ function ktSafeDownloadPath(filename) {
 chrome.runtime.onInstalled.addListener(() => chrome.storage.local.remove(CACHE_KEY));
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  // ライセンス状態の問い合わせ。**取得に失敗しても無料機能は必ず動かす**
+  // (壊れた決済サーバーで製品全体を止めない)
+  if (msg && msg.type === "getLicense") {
+    extpay.getUser()
+      .then(user => sendResponse({ pro: !!user.paid, email: user.email || null }))
+      .catch(e => sendResponse({ pro: false, error: String(e) }));
+    return true;
+  }
+  if (msg && msg.type === "openPayment") {
+    extpay.openPaymentPage()
+      .then(() => sendResponse({ ok: true }))
+      .catch(e => sendResponse({ ok: false, error: String(e) }));
+    return true;
+  }
   if (msg && msg.type === "getSelectors") {
     getSelectors(!!msg.forceRefresh)
       .then(sendResponse)
