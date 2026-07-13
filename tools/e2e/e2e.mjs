@@ -10,8 +10,9 @@
 // 出ていた(2026-07-13に発見・修正)。回線の速さに結果が左右されないことを固定する。
 
 import { createServer } from "node:http";
-import { readFile, readdir } from "node:fs/promises";
+import { readFile, readdir, mkdtemp, rm } from "node:fs/promises";
 import { spawn } from "node:child_process";
+import { tmpdir } from "node:os";
 import { join, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -132,6 +133,7 @@ const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; cha
                ".json": "application/json; charset=utf-8", ".css": "text/css; charset=utf-8" };
 
 let received = null;
+let onReceived = null;   // 結果が届いた瞬間にシーンを終わらせる(下記)
 let slowHolidays = false;
 let holidayMode = null; // null=そのまま | "404"=配信失敗 | "stale"=2025年までしか無い
 let data404 = null;     // 指定したJSONファイルだけ配信失敗させる(参照データ全般)
@@ -143,6 +145,7 @@ const server = createServer(async (req, res) => {
     let b = ""; for await (const c of req) b += c;
     received = JSON.parse(b);
     res.writeHead(204); res.end();
+    onReceived?.();   // シーンの答えは出た。Chromeの終了を待たない
     return;
   }
   // ハーネス自身の照合用フェッチ(?raw=1)は素通し。ツール側のfetchだけを細工する。
@@ -184,16 +187,39 @@ for (const sc of SCENES.filter((s) => !only || s.name === only)) {
   data404 = sc.data404 || null;
   received = null;
   const url = `http://127.0.0.1:${port}/tools/e2e/harness.html?scene=${sc.name}`;
-  const dir = join(ROOT, "tools", "e2e", ".chrome-" + sc.name);
+  // Chromeのuser-data-dirは**毎回使い捨て**にする(2026-07-13 第15便)。
+  // 以前は `tools/e2e/.chrome-<シーン名>` を使い回していたが、これには2つ問題があった:
+  //   1. 同じ名前なので**2つ目の実行が1つ目のプロファイルを奪い合う**。うっかり全数実行を
+  //      並走させたら全部が停滞し、中断で**壊れたプロファイルが36個(513MB)残った**
+  //   2. 壊れたプロファイルは次の実行でも**そのまま開かれる**ので、Chromeが復旧を試みて
+  //      起動が数分に劣化する。テストが自分の残骸で遅くなっていく
+  // 使い捨てなら、並走しても衝突せず、前回の残骸も引きずらない(リポジトリも汚れない)。
+  const dir = await mkdtemp(join(tmpdir(), "keiri-e2e-"));
   const args = ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
                 `--user-data-dir=${dir}`, "--window-size=1280,1000",
                 "--virtual-time-budget=20000", "--dump-dom", url];
-  await new Promise((ok, ng) => {
-    const p = spawn(CHROME, args, { stdio: "ignore" });
-    const kill = setTimeout(() => { p.kill("SIGKILL"); ok(); }, 60_000);
-    p.on("exit", () => { clearTimeout(kill); ok(); });
-    p.on("error", (e) => { clearTimeout(kill); ng(e); });
-  });
+  // **結果のPOSTが届いた時点でシーンは終わり**。Chromeの終了は待たない(2026-07-13 第15便)。
+  // --headless=new --dump-dom の Chrome は**自分から終了しないことがある**(実測: 149系で
+  // 全シーンが終了せず、毎回 60 秒の SIGKILL まで待っていた)。判定自体は1秒で済んでいるのに
+  // **1シーン60秒 × 36シーン = 36分**かかり、**通しで走らせるのが現実的でなくなっていた**。
+  // 全数実行を誰もやらなくなった結果が第14便の全損見逃し(社会保険料にシーンが無いことに
+  // 7便気付かなかった)。**遅すぎる検査は、いずれ走らされなくなって存在しないのと同じになる**。
+  const p = spawn(CHROME, args, { stdio: "ignore" });
+  const exited = new Promise((r) => p.on("exit", r));
+  try {
+    await new Promise((ok, ng) => {
+      const done = () => { clearTimeout(kill); onReceived = null; ok(); };
+      const kill = setTimeout(done, 60_000);   // 何も返らないまま黙り込んだとき用
+      onReceived = done;                       // 通常はこちらで抜ける
+      p.on("exit", done);                      // 先に落ちたら received=null → 失敗として報告される
+      p.on("error", (e) => { clearTimeout(kill); onReceived = null; ng(e); });
+    });
+  } finally {
+    p.kill("SIGKILL");
+    await exited;   // **死にきるまで待ってから消す**。死ぬ途中のChromeはまだプロファイルに
+                    // 書き込んでいるので、先に消すと ENOTEMPTY で落ちる(実際に踏んだ)
+    await rm(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
+  }
 
   const s = received || { error: "ハーネスから状態が返らなかった(描画前に落ちた可能性)" };
   const ok = !s.error && sc.expect(s);
