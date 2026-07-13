@@ -32,6 +32,14 @@ const ORDER = [
   "taishokukin-zeikin",
   "gensen-choshuhyo-mikata",    // 源泉徴収票 見方 17,131/月
   "shussan-teate-kin",          // 出産手当金 11,464/月
+  "shakai-hokenryo-kojo",       // 社会保険料控除 9,390/月
+  "yukyu-fuyo-nissu",           // 有給休暇 付与日数 7,656/月
+  "shobyo-teate-kin",           // 傷病手当金 6,260/月
+  "zuiji-kaitei",               // 随時改定・月額変更届 4,652/月
+  "kotei-zangyodai",            // 固定残業代 4,188/月
+  "kenko-hoken-nini-keizoku",   // 健康保険 任意継続 4,188/月
+  "tsukin-teate-hikazei",       // 通勤手当 非課税 2,791/月
+  "furikomi-tesuryo-kanjo-kamoku", // 振込手数料 勘定科目 1,523/月
   "nenmatsu-chosei-itsumade",
   "denchoho-wakariyasuku",
   "kaigo-hokenryo-itsukara",

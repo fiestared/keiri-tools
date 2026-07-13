@@ -108,6 +108,33 @@ for (const slug of slugs) {
   if (/<style[\s>]/.test(html)) fail(slug, "記事内に <style> がある(assets/style.css に集約する)");
 }
 
+// --- 導線: 公開する記事は必ず gen_index_sitemap.mjs の ORDER に登録する ---
+// ORDER は「一覧の並び順(検索需要の大きい順)」であり、トップページに載る6本もここの上位6本。
+// 載っていない記事は末尾に付くだけなので、**需要の大きい記事ほど埋もれる**。
+// 生成物(sitemap・一覧)にしても、生成器の入力が手管理だと腐る。実際 2026-07-14 時点で
+// 需要 9,390/月・7,656/月・6,260/月 の記事を含む8本が未登録のまま放置されていた。
+// → 記事を足したら ORDER への登録を機械が強制する。
+{
+  const genSrc = readFileSync(new URL("../tools/gen_index_sitemap.mjs", import.meta.url).pathname, "utf8");
+  const block = genSrc.match(/const ORDER = \[([\s\S]*?)\];/);
+  if (!block) {
+    console.error("✗ gen_index_sitemap.mjs の ORDER 配列を読めなかった(検査が機能していない)");
+    process.exit(1);
+  }
+  const order = [...block[1].matchAll(/"([a-z0-9-]+)"/g)].map((m) => m[1]);
+  // 読み取り本数のassert: 正規表現がずれて0本になると「全記事が未登録」でも
+  // 逆に「登録済み」でもなく、検査が黙って壊れる。必ず本数を確かめる。
+  if (order.length < 10) {
+    console.error(`✗ ORDER の読み取りが ${order.length}本しかない(検査が壊れている)`);
+    process.exit(1);
+  }
+  const missing = slugs.filter((s) => !order.includes(s));
+  for (const s of missing) fail(s, "gen_index_sitemap.mjs の ORDER に未登録(一覧の末尾に埋もれる)");
+  const ghosts = order.filter((s) => !slugs.includes(s) && !drafts.includes(s));
+  for (const s of ghosts) fail(s, "ORDER に載っているが記事が存在しない");
+  console.log(`  ORDER 登録 ${order.length}件 / 公開記事 ${slugs.length}本を照合`);
+}
+
 if (fails.length) {
   console.error(`✗ 記事の型 違反 ${fails.length}件 (対象 ${slugs.length}記事)`);
   for (const f of fails) console.error("  - " + f);
