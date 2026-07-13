@@ -73,6 +73,38 @@
             "@type": "Answer",
             "text": "まず税率ごとに対価の額を合計し、その税率ごとの合計額に対してそれぞれ1回だけ端数処理します。 8%の商品と10%の商品をまとめて1つの合計にして計算することはできません。 適格請求書には、税率ごとに区分した対価の額と消費税額等の記載が必要です。"
           }
+        },
+        {
+          "@type": "Question",
+          "name": "申告の「割戻し計算」と「積上げ計算」の違いは何ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "割戻し計算は、税率ごとの税込売上の合計から割り戻して税額を出す方法です （税込 × 100/110 で課税標準額を求め、7.8%を掛けます。軽減税率は 100/108 と 6.24%）。 積上げ計算は、交付した適格請求書に記載した消費税額等を合計し、それに 78/100 を掛ける方法です。 売上税額は割戻し計算が原則、積上げ計算が特例です（国税庁 No.6383）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "売上を積上げ計算にしたら、仕入も積上げ計算にしなければいけませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "そのとおりです。国税庁 No.6391 は「割戻し計算により仕入税額を計算できるのは、 売上税額を割戻し計算している場合に限られます」と明記しています。 つまり売上=積上げ × 仕入=割戻し は選べず、認められる組み合わせは3通りだけです。 上の「3. 申告の消費税額を計算する」は、この3通りを全部計算して納付税額を比べます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "仕入税額の計算はどちらが原則ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "仕入税額は積上げ計算が原則で、割戻し計算が特例です（売上税額とは原則・特例が逆です）。 積上げ計算には、交付を受けた適格請求書の消費税額等を合計する「請求書等積上げ計算」と、 課税仕入れの都度、支払対価に 10/110（軽減8/108）を掛けて端数処理した額を積み上げる 「帳簿積上げ計算」の2つがあります。どちらも合計に 78/100 を掛けて国税分を求めます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "地方消費税はどうやって計算しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "消費税（国税）の差引税額 × 22/78 で計算します。 10%の内訳は国税7.8%＋地方2.2%、軽減8%の内訳は国税6.24%＋地方1.76%だからです。 申告では課税標準額を税率ごとに千円未満切捨て、差引税額を百円未満切捨てにします。"
+          }
         }
       ]
     }
@@ -149,6 +181,49 @@
   <div id="inv-result" class="result" style="display:none"></div>
 </div>
 
+<!-- ============ 3. 申告: 割戻し計算 / 積上げ計算 ============ -->
+<div class="card">
+  <h2 id="shinkoku" style="margin-top:0">3. 申告の消費税額を計算する（割戻し / 積上げ）</h2>
+  <p style="margin-top:0;font-size:14px;color:var(--sub)">
+    確定申告の消費税額は、売上・仕入それぞれで<b>割戻し計算</b>と<b>積上げ計算</b>を選べます。
+    ただし<b>売上を積上げにすると、仕入に割戻しは選べません</b>（国税庁 No.6391）。
+    認められる<b>3通り</b>を全部計算して、<b>納付税額がいちばん少ない組み合わせ</b>を出します。
+  </p>
+
+  <label>課税売上（税込・1年分）</label>
+  <div class="radio-row">
+    <label style="flex-direction:column;align-items:stretch">10%対象
+      <input type="number" id="s10" placeholder="例: 11000000" inputmode="numeric"></label>
+    <label style="flex-direction:column;align-items:stretch">8%対象（軽減）
+      <input type="number" id="s8" placeholder="例: 0" inputmode="numeric"></label>
+  </div>
+
+  <label for="s-inv">交付した適格請求書の「消費税額等」の合計（積上げ計算に使う）</label>
+  <input type="number" id="s-inv" placeholder="例: 1000000" inputmode="numeric">
+  <div class="hint" style="font-size:12.5px;margin-top:5px">
+    請求書に記載した消費税額を全部足した額。空欄なら積上げ計算は比較から外します。
+  </div>
+
+  <label style="margin-top:14px">課税仕入れ（税込・1年分）</label>
+  <div class="radio-row">
+    <label style="flex-direction:column;align-items:stretch">10%対象
+      <input type="number" id="p10" placeholder="例: 5500000" inputmode="numeric"></label>
+    <label style="flex-direction:column;align-items:stretch">8%対象（軽減）
+      <input type="number" id="p8" placeholder="例: 0" inputmode="numeric"></label>
+  </div>
+
+  <label for="p-inv">受領した適格請求書の「消費税額等」の合計（積上げ計算に使う）</label>
+  <input type="number" id="p-inv" placeholder="例: 500000" inputmode="numeric">
+
+  <button id="dec-calc" class="tool-cta" style="margin-top:14px">3通りを比較する</button>
+  <div id="dec-result" class="result" style="display:none"></div>
+
+  <div class="note" style="margin-top:12px">
+    <b>この試算の前提</b>：本則課税・全額控除（課税売上割合95%以上）・中間納付なし・
+    貸倒れや返還等なし。簡易課税、2割特例、非課税売上が多い事業者はこの式では計算できません。
+  </div>
+</div>
+
 <section class="card">
   <h2 id="rules" data-faq>消費税の端数処理のルール</h2>
 
@@ -180,6 +255,29 @@
   8%の商品と10%の商品をまとめて1つの合計にして計算することはできません。
   適格請求書には、税率ごとに区分した対価の額と消費税額等の記載が必要です。</p>
 
+  <h3 id="rule-divide">申告の「割戻し計算」と「積上げ計算」の違いは何ですか？</h3>
+  <p><b>割戻し計算</b>は、税率ごとの税込売上の合計から割り戻して税額を出す方法です
+  （税込 × 100/110 で課税標準額を求め、7.8%を掛けます。軽減税率は 100/108 と 6.24%）。
+  <b>積上げ計算</b>は、交付した適格請求書に記載した消費税額等を合計し、それに 78/100 を掛ける方法です。
+  売上税額は割戻し計算が原則、積上げ計算が特例です（国税庁 No.6383）。</p>
+
+  <h3 id="rule-combo">売上を積上げ計算にしたら、仕入も積上げ計算にしなければいけませんか？</h3>
+  <p><b>そのとおりです。</b>国税庁 No.6391 は「割戻し計算により仕入税額を計算できるのは、
+  売上税額を割戻し計算している場合に限られます」と明記しています。
+  つまり<b>売上=積上げ × 仕入=割戻し は選べず</b>、認められる組み合わせは3通りだけです。
+  上の「3. 申告の消費税額を計算する」は、この3通りを全部計算して納付税額を比べます。</p>
+
+  <h3 id="rule-shiire">仕入税額の計算はどちらが原則ですか？</h3>
+  <p>仕入税額は<b>積上げ計算が原則</b>で、割戻し計算が特例です（売上税額とは原則・特例が逆です）。
+  積上げ計算には、交付を受けた適格請求書の消費税額等を合計する「請求書等積上げ計算」と、
+  課税仕入れの都度、支払対価に 10/110（軽減8/108）を掛けて端数処理した額を積み上げる
+  「帳簿積上げ計算」の2つがあります。どちらも合計に 78/100 を掛けて国税分を求めます。</p>
+
+  <h3 id="rule-chihou">地方消費税はどうやって計算しますか？</h3>
+  <p>消費税（国税）の<b>差引税額 × 22/78</b> で計算します。
+  10%の内訳は国税7.8%＋地方2.2%、軽減8%の内訳は国税6.24%＋地方1.76%だからです。
+  申告では課税標準額を<b>税率ごとに千円未満切捨て</b>、差引税額を<b>百円未満切捨て</b>にします。</p>
+
   <div class="summary-box">
     <b>まとめ</b>
     <ul>
@@ -187,6 +285,8 @@
       <li><b>明細ごとの端数処理は認められない</b>（Q&amp;A問57(注)）</li>
       <li>切捨て／切上げ／四捨五入は<b>任意</b>。社内で統一して継続適用する</li>
       <li>税込から税額は <b>×10/110</b>（8%は <b>×8/108</b>）</li>
+      <li>申告は<b>売上=割戻しが原則／仕入=積上げが原則</b>。
+          <b>売上を積上げにすると仕入に割戻しは選べない</b>（No.6391）</li>
     </ul>
   </div>
 </section>
@@ -218,7 +318,7 @@
 </footer>
 
 <script type="module">
-import { RATES, ROUNDINGS, convert, calcInvoice, yen } from "../assets/shohizei_core.js";
+import { RATES, ROUNDINGS, convert, calcInvoice, compareDeclarationMethods, yen } from "../assets/shohizei_core.js";
 
 const $ = (id) => document.getElementById(id);
 const radio = (name) => document.querySelector(`input[name="${name}"]:checked`).value;
@@ -359,6 +459,103 @@ $("inv-calc").addEventListener("click", () => {
     <div class="hint" style="margin-top:10px;font-size:13px">
       端数処理は<b>税率ごとの合計に1回だけ</b>（${ROUNDINGS[mode].label}）適用しています。
       適格請求書には、税率ごとに区分した対価の額と消費税額等の記載が必要です。
+    </div>`;
+});
+
+/* ---------- 3. 申告（割戻し / 積上げ） ----------
+ * 計算は一切ここでやらない。入力を読んで core に渡し、返ってきたものを描くだけ
+ * （ページ側に計算を書くと単体テストが1行も届かない。CLAUDE.md参照）。 */
+const num = (id) => {
+  const v = Number($(id).value);
+  return v > 0 ? v : 0;
+};
+
+$("dec-calc").addEventListener("click", () => {
+  const box = $("dec-result");
+  box.style.display = "block";
+
+  const input = {
+    salesIncluded: { standard: num("s10"), reduced: num("s8") },
+    salesInvoiceTax: num("s-inv"),
+    purchasesIncluded: { standard: num("p10"), reduced: num("p8") },
+    purchaseInvoiceTax: num("p-inv"),
+  };
+
+  const salesTotal = input.salesIncluded.standard + input.salesIncluded.reduced;
+  if (salesTotal <= 0) {
+    box.innerHTML = "課税売上（税込）を入力してください。";
+    return;
+  }
+
+  // 積上げ計算は「請求書に記載した消費税額等の合計」が無いと計算できない。
+  // 無い入力を0として計算すると、積上げが不当に有利に見える（＝黙って間違える）。
+  const canPileUpSales = input.salesInvoiceTax > 0;
+  const canPileUpPurchase = input.purchaseInvoiceTax > 0;
+
+  const all = compareDeclarationMethods(input);
+  const usable = all.results.filter((r) =>
+    (r.salesMethod === "divide" || canPileUpSales) &&
+    (r.purchaseMethod === "divide" || canPileUpPurchase)
+  );
+
+  if (usable.length === 0) {
+    box.innerHTML = "計算できる組み合わせがありません。金額を確認してください。";
+    return;
+  }
+
+  const best = usable.reduce((a, b) => (b.total < a.total ? b : a));
+  const spread = Math.max(...usable.map((r) => r.total)) - Math.min(...usable.map((r) => r.total));
+
+  const rows = usable.map((r) => {
+    const isBest = r === best;
+    return `<tr style="${isBest ? "background:#e7f3f0;font-weight:700" : ""}">
+      <td style="padding:6px 8px">${r.label}${isBest ? " ★" : ""}<br>
+        <small style="font-weight:400;color:var(--sub)">${r.note}</small></td>
+      <td style="padding:6px 8px;text-align:right">${yen(r.sales.tax)}</td>
+      <td style="padding:6px 8px;text-align:right">${yen(r.purchase.tax)}</td>
+      <td style="padding:6px 8px;text-align:right">${yen(r.total)}</td></tr>`;
+  }).join("");
+
+  const skipped = [];
+  if (!canPileUpSales) skipped.push("売上の積上げ計算");
+  if (!canPileUpPurchase) skipped.push("仕入の積上げ計算");
+  const skipHtml = skipped.length
+    ? `<div class="note" style="margin-top:10px">
+         <b>${skipped.join("・")}は比較していません</b>。
+         適格請求書に記載した「消費税額等」の合計を入れると、その組み合わせも比較します
+         （0円として計算すると積上げが不当に有利に見えるため、あえて計算していません）。
+       </div>`
+    : "";
+
+  box.innerHTML = `
+    <div class="row">いちばん納付が少ないのは
+      <span class="big" id="dec-best">${best.label}</span></div>
+    <div style="overflow-x:auto;margin-top:12px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr style="background:#f2f5f4">
+        <th style="padding:6px 8px;text-align:left">組み合わせ</th>
+        <th style="padding:6px 8px;text-align:right">売上税額</th>
+        <th style="padding:6px 8px;text-align:right">仕入税額</th>
+        <th style="padding:6px 8px;text-align:right">納付税額</th></tr>
+      ${rows}
+    </table></div>
+    <div class="row" style="margin-top:12px">組み合わせによる差額
+      <span class="big" id="dec-spread">${yen(spread)}</span></div>
+    <div style="overflow-x:auto;margin-top:12px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr><td style="padding:6px 8px">消費税（国税）差引税額</td>
+        <td style="padding:6px 8px;text-align:right" id="dec-national">${yen(best.national)}</td></tr>
+      <tr><td style="padding:6px 8px">地方消費税（国税 × 22/78）</td>
+        <td style="padding:6px 8px;text-align:right" id="dec-local">${yen(best.local)}</td></tr>
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">納付税額</td>
+        <td style="padding:6px 8px;text-align:right" id="dec-total">${yen(best.total)}</td></tr>
+    </table></div>
+    ${best.refund ? '<div class="note" style="margin-top:10px"><b>控除不足（還付）</b>です。仕入税額が売上税額を上回っています。</div>' : ""}
+    ${skipHtml}
+    <div class="hint" style="margin-top:10px;font-size:13px">
+      課税標準額は<b>税率ごとに千円未満切捨て</b>、差引税額は<b>百円未満切捨て</b>で計算しています。
+      <b>売上=積上げ × 仕入=割戻し は認められない</b>ため、比較には含めていません（No.6391）。
     </div>`;
 });
 </script>

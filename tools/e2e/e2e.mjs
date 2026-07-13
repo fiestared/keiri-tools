@@ -71,6 +71,13 @@ const SCENES = [
       s.expectedTax === 9 && s.taxOk && s.reconciles && s.anchorOk },
   { name: "shohizei_convert_incl", expect: (s) => s.taxOk && s.reconciles && s.anchorOk },
   { name: "shohizei_convert_excl", expect: (s) => s.taxOk && s.reconciles && s.anchorOk },
+  // 申告(割戻し/積上げ)。納付税額はハーネス側の独立オラクルと照合し、
+  // 認められない組み合わせ(売上=積上げ×仕入=割戻し)を画面に出さないことを固定する
+  { name: "shohizei_shinkoku", expect: (s) =>
+      s.national === s.want.national && s.local === s.want.local && s.total === s.want.total &&
+      s.total === 500000 && !s.offersForbidden && s.showsThree && s.explainsForbidden },
+  // 積上げ用の入力が空のとき、0円として計算して積上げを不当に有利に見せないこと
+  { name: "shohizei_shinkoku_noinv", expect: (s) => s.declaresSkip && s.positive },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
