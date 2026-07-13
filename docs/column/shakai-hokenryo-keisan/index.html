@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>社会保険料の計算方法｜月給30万円だといくら？【令和8年度・全47都道府県】</title>
+<meta name="description" content="社会保険料は「標準報酬月額×料率÷2」で計算します。給与額そのものには掛けません。東京都・月給30万円・35歳なら本人負担は42,570円（健康保険14,775円＋子ども・子育て支援金345円＋厚生年金27,450円）。令和8年度の47都道府県の料率、健康保険と介護保険を合算して端数処理する落とし穴まで、実数で解説します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/shakai-hokenryo-keisan/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "社会保険料の計算方法｜月給30万円だといくら？【令和8年度】",
+      "datePublished": "2026-07-13",
+      "dateModified": "2026-07-13",
+      "author": {
+        "@type": "Organization",
+        "name": "経理ミニツールズ"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "経理ミニツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/shakai-hokenryo-keisan/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "経理コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "社会保険料の計算方法"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 社会保険料は給与の何％くらいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 東京都・令和8年度なら、本人負担は標準報酬月額の 約14.19%（40歳未満）、ちょうど15.00%（40〜64歳）です。健康保険9.85%＋子ども・子育て支援金0.23%＋厚生年金18.3%＝28.38%を労使折半するためです。ただし掛ける相手は給与額ではなく標準報酬月額なので、給与に対する実際の比率は等級によって多少前後します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 通勤手当も社会保険料の対象ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 対象です。所得税では月15万円まで非課税ですが、社会保険では非課税枠がなく、通勤手当も全額が報酬月額に含まれます。残業手当・住宅手当・役職手当も同じで、現物給与（通勤定期券・社宅・食事など）も金銭に換算して含めます。数か月分をまとめて支給した通勤手当は、月数で割って各月の報酬月額に含めます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 残業が増えたら、すぐに保険料も上がりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. すぐには上がりません。標準報酬月額は原則として4〜6月に支払われた給与の平均で決まり、その年の9月分から翌年8月分まで使われます（定時決定）。ただし、基本給などの固定的賃金が変わって標準報酬月額が2等級以上動いた場合は、年の途中でも改定されます（随時改定）。残業代だけが増えても随時改定の対象にはなりません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 40歳になったら、いつから介護保険料が引かれますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 40歳の誕生日の「前日」が属する月分からです。たとえば5月2日生まれの人は5月1日が40歳到達日なので5月分から、5月1日生まれの人は4月30日が到達日なので4月分から徴収が始まります。1日生まれの人だけ1か月早くなるので注意してください。徴収が終わるのは65歳の誕生日の前日が属する月からで、以後は市区町村が第1号被保険者として徴収します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 給与計算ソフトの金額が、協会けんぽの保険料額表と1円合いません。",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. まず、健康保険料と介護保険料を別々に端数処理していないかを確認してください。40〜64歳の人は、健康保険料率と介護保険料率を合算した料率（東京都なら11.47%）で1本で計算し、最後に1回だけ端数処理するのが正しい方法です。別々に計算して足すと、一部の等級で額表と1円ずれます。それでも合わない場合は、端数処理が「50銭以下切捨・50銭超切上」になっているか（50銭ちょうどを切り上げていないか）を確認してください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 会社の負担額はいくらですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 健康保険・介護保険・厚生年金・子ども・子育て支援金はすべて労使折半なので、本人と同額です（東京都・月給30万円・35歳なら42,570円）。これに加えて会社は 子ども・子育て拠出金0.36% を全額負担します（本人負担はゼロ）。標準報酬月額30万円なら1,080円で、会社の実負担は43,650円になります。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../../">経理ミニツールズ</a>
+  <nav><a href="../../#tools">ツール</a><a href="../">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">経理コラム</a> › 社会保険料の計算方法</nav>
+<article>
+  <h1>社会保険料の計算方法｜月給30万円だといくら？【令和8年度】</h1>
+  <p class="article-meta">公開日: 2026年7月13日 ／ 協会けんぽ「都道府県毎の保険料率（令和8年度）」・日本年金機構「厚生年金保険料額表」に基づいて作成</p>
+
+  <p>結論から言います。社会保険料は <b>「標準報酬月額 × 料率 ÷ 2（労使折半）」</b> で計算します。<b>給与の額そのものには掛けません。</b></p>
+  <p>ここを勘違いしている人が非常に多いところです。月給25万円の人の保険料は「250,000円 × 料率」ではありません。250,000円は<b>第20等級</b>に入るため、標準報酬月額は <b>260,000円</b> になり、この26万円に料率を掛けます。給与額より保険料が高くなる、ということが実際に起きます。</p>
+  <p>東京都・月給30万円・35歳・令和8年度なら、<b>本人負担は月42,570円</b>（健康保険14,775円＋子ども・子育て支援金345円＋厚生年金27,450円）。同額を会社も負担するので、会社が納めるのは合計85,140円です。この記事では、この数字を<b>1円までたどれる形</b>で、最後まで通します。</p>
+
+  <nav class="toc">
+    <div class="toc-title">目次</div>
+    <ol>
+      <li><a href="#kekkaron">結論：掛けるのは「給与」ではなく「標準報酬月額」</a></li>
+      <li><a href="#tejun">計算の5ステップ（図解）</a></li>
+      <li><a href="#jitsurei">実例：東京都・月給30万円・35歳（令和8年度）</a></li>
+      <li><a href="#gassan">落とし穴：健康保険と介護保険は「合算した料率」で端数処理する</a></li>
+      <li><a href="#todofuken">健康保険料率は都道府県で違う（最大1.34ポイント差）</a></li>
+      <li><a href="#kosei">厚生年金は全国一律18.3%・標準報酬月額65万円で頭打ち</a></li>
+      <li><a href="#tenbiki">いつの給与から天引きされるか（1日違いで1か月分変わる）</a></li>
+      <li><a href="#faq">よくある質問</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="kekkaron">結論：掛けるのは「給与」ではなく「標準報酬月額」</h2>
+  <p>社会保険料（健康保険・介護保険・厚生年金）の計算式は、たった1行です。</p>
+  <div class="summary-box">
+    <div class="t">社会保険料の計算式</div>
+    <ul>
+      <li><b>保険料（全額）＝ 標準報酬月額 × 料率</b></li>
+      <li><b>本人の控除額 ＝ 全額 ÷ 2</b>（労使折半。残り半分は会社が負担）</li>
+      <li>端数は <b>50銭以下は切捨・50銭超は切上</b>（給与から控除する場合）</li>
+    </ul>
+  </div>
+  <p>ポイントは <b>「標準報酬月額」</b> です。これは実際の給与額ではなく、給与額を<b>等級表に当てはめて丸めた金額</b>のこと。健康保険は50等級（58,000円〜1,390,000円）、厚生年金は32等級（88,000円〜650,000円）に区切られています。</p>
+
+  <div class="callout">
+    <b>報酬月額に含めるもの・含めないもの</b>
+    等級を決めるもとになる「報酬月額」は、<b>税引き前の給与の総額</b>です。基本給だけでなく <b>残業手当・通勤手当・住宅手当・役職手当</b>、さらに<b>現物給与</b>（通勤定期券・社宅・食事など）も含めます。<br>
+    逆に、<b>年3回以下の賞与</b>は報酬に含めません（賞与は「標準賞与額」として別に計算します）。見舞金など臨時のものも対象外です。
+  </div>
+  <p class="lead">※ 通勤手当は、所得税では月15万円まで非課税ですが、<b>社会保険では非課税枠がなく全額が報酬</b>です。ここは所得税と扱いが違うので注意してください。</p>
+
+  <h2 id="tejun">計算の5ステップ（図解）</h2>
+  <p>手計算の手順は、次の流れで固定です。上から順にたどれば必ず答えが出ます。</p>
+
+  <figure class="figure">
+    <svg viewBox="0 0 760 250" role="img" aria-label="給与額から社会保険料の控除額までの計算の流れ図">
+      <defs>
+        <marker id="ar" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto">
+          <path d="M0 1 L7.5 4.5 L0 8 z" fill="var(--accent)"/>
+        </marker>
+      </defs>
+
+      <!-- Row 1 -->
+      <rect x="20" y="26" width="150" height="58" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="95" y="49" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">① 給与の総額</text>
+      <text x="95" y="69" text-anchor="middle" font-size="11.5" fill="var(--sub)">基本給＋残業＋通勤費</text>
+
+      <rect x="210" y="26" width="150" height="58" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="285" y="49" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">② 報酬月額</text>
+      <text x="285" y="69" text-anchor="middle" font-size="11.5" fill="var(--sub)">300,000円</text>
+
+      <rect x="400" y="26" width="150" height="58" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="475" y="49" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">③ 等級</text>
+      <text x="475" y="69" text-anchor="middle" font-size="11.5" fill="var(--sub)">健保 第22級／厚年 第19級</text>
+
+      <rect x="590" y="26" width="150" height="58" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="665" y="49" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">④ 標準報酬月額</text>
+      <text x="665" y="69" text-anchor="middle" font-size="11.5" fill="var(--sub)">300,000円</text>
+
+      <line x1="172" y1="55" x2="204" y2="55" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#ar)"/>
+      <line x1="362" y1="55" x2="394" y2="55" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#ar)"/>
+      <line x1="552" y1="55" x2="584" y2="55" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#ar)"/>
+
+      <!-- wrap -->
+      <path d="M665 86 V104 H95 V120" fill="none" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#ar)"/>
+
+      <!-- Row 2 -->
+      <rect x="20" y="128" width="150" height="58" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="95" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">⑤ × 料率</text>
+      <text x="95" y="171" text-anchor="middle" font-size="11.5" fill="var(--sub)">健保9.85%／厚年18.3%</text>
+
+      <rect x="210" y="128" width="150" height="58" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="285" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">⑥ ÷ 2</text>
+      <text x="285" y="171" text-anchor="middle" font-size="11.5" fill="var(--sub)">労使折半</text>
+
+      <rect x="400" y="128" width="150" height="58" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="475" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">⑦ 端数処理</text>
+      <text x="475" y="171" text-anchor="middle" font-size="11.5" fill="var(--sub)">50銭以下は切捨</text>
+
+      <rect x="590" y="128" width="150" height="58" rx="8" fill="#fff" stroke="var(--accent)" stroke-width="2.4"/>
+      <text x="665" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">本人の控除額</text>
+      <text x="665" y="171" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--accent)">42,570円</text>
+
+      <line x1="172" y1="157" x2="204" y2="157" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#ar)"/>
+      <line x1="362" y1="157" x2="394" y2="157" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#ar)"/>
+      <line x1="552" y1="157" x2="584" y2="157" stroke="var(--accent)" stroke-width="1.6" marker-end="url(#ar)"/>
+
+      <text x="380" y="214" text-anchor="middle" font-size="12" fill="var(--sub)">※ 40〜64歳は、⑤で健康保険料率に介護保険料率1.62%を「合算してから」掛ける</text>
+      <text x="380" y="232" text-anchor="middle" font-size="12" fill="var(--sub)">（別々に計算して足すと、公式の保険料額表と1円ずれることがある）</text>
+    </svg>
+    <figcaption>給与額 → 報酬月額 → 等級 → 標準報酬月額 → ×料率 → ÷2 の流れ（東京都・月給30万円・35歳・令和8年度）</figcaption>
+  </figure>
+
+  <p>②から③の「等級への当てはめ」が、給与額と保険料がズレる原因です。等級の幅は、標準報酬月額30万円のあたりでは <b>290,000円以上310,000円未満</b> と2万円もあります。給与が29万円でも31万円直前でも、保険料は同じになります。</p>
+
+  <h2 id="jitsurei">実例：東京都・月給30万円・35歳（令和8年度）</h2>
+  <p>実際に最後まで通します。報酬月額300,000円は、健康保険の <b>第22等級</b>・厚生年金の <b>第19等級</b> に当てはまり、<b>標準報酬月額は300,000円</b> です（たまたま給与額と同額になるケース）。</p>
+
+  <table>
+    <tr><th>保険</th><th>料率</th><th>全額（会社＋本人）</th><th>本人負担（÷2）</th></tr>
+    <tr><td>健康保険</td><td>9.85%</td><td>29,550円</td><td><b>14,775円</b></td></tr>
+    <tr><td>子ども・子育て支援金</td><td>0.23%</td><td>690円</td><td><b>345円</b></td></tr>
+    <tr><td>厚生年金</td><td>18.3%</td><td>54,900円</td><td><b>27,450円</b></td></tr>
+    <tr style="font-weight:700;border-top:2px solid var(--accent)"><td>合計</td><td>28.38%</td><td>85,140円</td><td>42,570円</td></tr>
+  </table>
+  <p>本人負担は <b>42,570円</b>。標準報酬月額300,000円に対して <b>14.19%</b>（28.38% ÷ 2）です。会社も同じ42,570円を負担します。</p>
+
+  <div class="callout">
+    <b>子ども・子育て支援金（0.23%）は令和8年4月から新設されました</b>
+    令和8年4月分（5月納付分）から、<b>全国一律0.23%</b> の子ども・子育て支援金が医療保険料に上乗せされます。<b>年齢に関係なく全員</b>にかかり、労使折半です。給与明細の控除額が去年より増えているのは、多くの場合これが理由です。
+  </div>
+
+  <h3>40〜64歳の場合（介護保険料が加わる）</h3>
+  <p>同じ条件で年齢だけを <b>42歳</b> にすると、介護保険料（全国一律1.62%）が加わります。</p>
+  <table>
+    <tr><th>保険</th><th>料率</th><th>全額</th><th>本人負担</th></tr>
+    <tr><td>健康保険＋介護保険（合算）</td><td>11.47%</td><td>34,410円</td><td><b>17,205円</b></td></tr>
+    <tr><td>子ども・子育て支援金</td><td>0.23%</td><td>690円</td><td><b>345円</b></td></tr>
+    <tr><td>厚生年金</td><td>18.3%</td><td>54,900円</td><td><b>27,450円</b></td></tr>
+    <tr style="font-weight:700;border-top:2px solid var(--accent)"><td>合計</td><td>30.00%</td><td>90,000円</td><td>45,000円</td></tr>
+  </table>
+  <p>合計はちょうど <b>45,000円</b>（標準報酬月額のちょうど15%）。東京都・40〜64歳は料率の合計が偶然きれいに30.00%になるため、覚えやすい水準です。</p>
+
+  <h3>月給別の早見表（東京都・令和8年度・本人負担）</h3>
+  <table>
+    <tr><th>月給（報酬月額）</th><th>標準報酬月額（等級）</th><th>40歳未満</th><th>40〜64歳</th></tr>
+    <tr><td>200,000円</td><td>200,000円（第17級）</td><td>28,380円</td><td>30,000円</td></tr>
+    <tr><td>250,000円</td><td><b>260,000円</b>（第20級）</td><td>36,894円</td><td>39,000円</td></tr>
+    <tr><td>300,000円</td><td>300,000円（第22級）</td><td>42,570円</td><td>45,000円</td></tr>
+    <tr><td>400,000円</td><td><b>410,000円</b>（第27級）</td><td>58,178円</td><td>61,499円</td></tr>
+    <tr><td>500,000円</td><td>500,000円（第30級）</td><td>70,950円</td><td>75,000円</td></tr>
+    <tr><td>700,000円</td><td>710,000円（第37級）※</td><td>95,258円</td><td>101,009円</td></tr>
+  </table>
+  <p class="lead">※ 厚生年金は標準報酬月額650,000円で頭打ちのため、月給70万円の厚生年金保険料は本人59,475円で固定されます（後述）。<br>
+  ※ 月給25万円・40万円の行に注目してください。<b>標準報酬月額が給与額より高くなっています。</b>等級表に当てはめた結果であり、間違いではありません。</p>
+
+  <a class="tool-cta" href="../../shakai-hoken/">
+    <b>無料ツール：社会保険料 計算機（登録不要）</b>
+    <span>都道府県・月給・年齢を入れるだけ。<b>47都道府県の令和8年度料率</b>で、本人負担・会社負担・等級まで自動計算します。介護保険料の合算・子ども・子育て支援金0.23%・賞与の上限にも対応。</span>
+  </a>
+
+  <h2 id="gassan">落とし穴：健康保険と介護保険は「合算した料率」で端数処理する</h2>
+  <p>ここが、ほとんどの解説サイトが書いていない、しかし<b>実際に1円合わなくなる</b>ポイントです。</p>
+  <p>40〜64歳の人の保険料を計算するとき、<b>健康保険料と介護保険料を別々に計算して足してはいけません。</b>合算した料率（東京都なら 9.85% + 1.62% = <b>11.47%</b>）で1本で計算し、<b>最後に1回だけ端数処理</b>します。</p>
+
+  <h3>実際にズレる例：東京都・標準報酬月額134,000円（第10等級）・45歳</h3>
+  <table>
+    <tr><th></th><th>やり方</th><th>計算</th><th>結果</th></tr>
+    <tr><td rowspan="3">✗ 誤</td><td>健康保険だけ先に</td><td>134,000円 × 9.85% = 13,199円 → 折半 6,599.50円 → 50銭以下は切捨</td><td>6,599円</td></tr>
+    <tr><td>介護保険だけ先に</td><td>134,000円 × 1.62% = 2,170.80円 → 折半 1,085.40円 → 切捨</td><td>1,085円</td></tr>
+    <tr><td>足す</td><td>6,599円 + 1,085円</td><td><b>7,684円</b></td></tr>
+    <tr style="border-top:2px solid var(--accent)"><td>✓ 正</td><td>合算料率で1本</td><td>134,000円 × <b>11.47%</b> = 15,369.80円 → 折半 7,684.90円 → <b>50銭超なので切上</b></td><td><b>7,685円</b></td></tr>
+  </table>
+  <p><b>1円ずれます。</b>協会けんぽの公式の保険料額表（東京支部）で第10等級の「介護保険第2号被保険者に該当する場合」の折半額を見ると <b>7,684.9円</b> と書かれており、正しい控除額は <b>7,685円</b> です。</p>
+  <p>なぜこうなるかというと、切り捨てられた端数が<b>2回発生する</b>からです。別々に処理すると 0.50円 + 0.40円 = 0.90円 が両方とも捨てられますが、合算すれば 0.90円 は「50銭超」として1円に切り上がります。</p>
+
+  <div class="callout">
+    <b>ズレるのは一部の等級だけ。だから気づきにくい</b>
+    東京都・令和8年度の料率でこのズレが出るのは、<b>全50等級のうち2等級だけ</b>（第10級134,000円・第11級142,000円）です。ほとんどの等級では偶然一致してしまうため、<b>「今まで別々に計算していたが問題なかった」という人も、いずれ必ず1円合わなくなります。</b>ズレる等級は料率が変われば変わります。<br>
+    給与計算ソフトが公式額表と1円合わないときは、まずここを疑ってください。
+  </div>
+
+  <h3>端数処理のルール（法律の根拠）</h3>
+  <p>1円未満の端数は「通貨の単位及び貨幣の発行等に関する法律」の規定にならい、次のように扱います。<b>給与天引きの場合と、本人が現金で納める場合で、境界がズレる</b>のがポイントです。</p>
+  <table>
+    <tr><th>ケース</th><th>切り捨てる</th><th>切り上げる</th></tr>
+    <tr><td><b>給与から控除する</b>（通常の給与天引き）</td><td>50銭<b>以下</b></td><td>50銭を<b>超える</b></td></tr>
+    <tr><td>本人が現金で事業主に支払う</td><td>50銭<b>未満</b></td><td>50銭<b>以上</b></td></tr>
+  </table>
+  <p>つまり<b>ちょうど50銭のとき</b>だけ、結果が1円変わります。たとえば東京都・標準報酬月額710,000円の子ども・子育て支援金は、全額1,633.0円 → 折半 <b>816.5円</b>。給与天引きなら <b>816円</b>、本人が現金で納めるなら <b>817円</b> です。</p>
+  <p class="lead">※ なお、事業主と被保険者の間に<b>特約</b>がある場合は、その特約による端数処理ができます（会社が1円分を負担する運用など）。</p>
+
+  <h2 id="todofuken">健康保険料率は都道府県で違う（最大1.34ポイント差）</h2>
+  <p>厚生年金は全国一律ですが、<b>健康保険料率は都道府県ごとに違います</b>（協会けんぽの場合）。都道府県ごとの医療費水準を反映して、毎年度決まります。適用されるのは<b>勤務先（事業所）の所在地</b>の都道府県の料率で、自分の住所地ではありません。</p>
+
+  <h3>令和8年度の健康保険料率（高い順・低い順）</h3>
+  <table>
+    <tr><th>順位</th><th>高い都道府県</th><th>料率</th><th></th><th>低い都道府県</th><th>料率</th></tr>
+    <tr><td>1</td><td><b>佐賀県</b></td><td><b>10.55%</b></td><td></td><td><b>新潟県</b></td><td><b>9.21%</b></td></tr>
+    <tr><td>2</td><td>北海道</td><td>10.28%</td><td></td><td>沖縄県</td><td>9.44%</td></tr>
+    <tr><td>3</td><td>徳島県</td><td>10.24%</td><td></td><td>福島県</td><td>9.50%</td></tr>
+    <tr><td>4</td><td>山口県</td><td>10.15%</td><td></td><td>岩手県</td><td>9.51%</td></tr>
+    <tr><td>5</td><td>大阪府・鹿児島県</td><td>10.13%</td><td></td><td>茨城県</td><td>9.52%</td></tr>
+    <tr><td>—</td><td colspan="5">（参考）東京都 9.85% ／ 愛知県 9.93% ／ 神奈川県 9.92% ／ 全国平均 約9.87%</td></tr>
+  </table>
+
+  <p>最も高い <b>佐賀県（10.55%）</b> と最も低い <b>新潟県（9.21%）</b> の差は <b>1.34ポイント</b>。月給30万円・35歳で比べると、本人負担はこれだけ変わります。</p>
+  <table>
+    <tr><th>勤務先</th><th>健康保険（本人）</th><th>社会保険料 合計（本人）</th><th>年間</th></tr>
+    <tr><td>佐賀県（10.55%）</td><td>15,825円</td><td><b>43,620円</b></td><td>523,440円</td></tr>
+    <tr><td>新潟県（9.21%）</td><td>13,815円</td><td><b>41,610円</b></td><td>499,320円</td></tr>
+    <tr style="font-weight:700;border-top:2px solid var(--accent)"><td>差</td><td>2,010円</td><td>2,010円／月</td><td>24,120円／年</td></tr>
+  </table>
+
+  <div class="callout">
+    <b>令和8年度は「47都道府県すべてで据置か引下げ」。引上げはゼロ</b>
+    令和8年度の改定では、<b>40の都道府県で料率が下がり、7県が据置</b>、引き上げられた都道府県は<b>1つもありません</b>。下げ幅が最大なのは<b>長崎県（10.41% → 10.06%、0.35ポイント減）</b>で、これに<b>新潟県（9.55% → 9.21%）と山梨県（9.89% → 9.55%）の0.34ポイント減</b>が続きます。<b>料率がいちばん低いのは新潟県（9.21%）ですが、いちばん下がったのは長崎県</b>です（「低い」と「下がった」は別物なので、負担の変化を見るときは注意してください）。<br>
+    ただし、これとは別に <b>子ども・子育て支援金0.23%が新設</b>されるため、<b>手取りが増えるとは限りません</b>。東京都なら健康保険料率は0.06ポイント下がりますが（9.91% → 9.85%）、支援金0.23%が加わるので<b>差引では負担増</b>です。
+  </div>
+
+  <p class="lead">※ 健康保険料率が変わるのは <b>令和8年3月分（4月納付分）</b> から、子ども・子育て支援金が加わるのは <b>令和8年4月分（5月納付分）</b> からです。改定のタイミングが1か月ずれているので、給与計算の設定変更も2回に分けて行う必要があります。</p>
+
+  <a class="tool-cta" href="../../shakai-hoken/">
+    <b>あなたの都道府県で計算する → 社会保険料 計算機</b>
+    <span>47都道府県の料率を収録。等級・本人負担・会社負担を1円単位で表示します（介護保険料は合算料率で正しく端数処理）。</span>
+  </a>
+
+  <h2 id="kosei">厚生年金は全国一律18.3%・標準報酬月額65万円で頭打ち</h2>
+  <p>厚生年金保険料率は <b>全国一律18.3%</b>（本人は折半で9.15%）です。平成16年から段階的に引き上げられてきましたが、<b>平成29年9月を最後に引上げが終了し、18.3%で固定</b>されています。都道府県による違いはありません。</p>
+  <p>大事なのは <b>上限</b> です。厚生年金の等級表は健康保険より短く、<b>32等級・標準報酬月額650,000円で打ち止め</b>になります。</p>
+
+  <table>
+    <tr><th></th><th>健康保険</th><th>厚生年金</th></tr>
+    <tr><td>等級の数</td><td>50等級</td><td><b>32等級</b></td></tr>
+    <tr><td>下限</td><td>58,000円（第1級）</td><td>88,000円（第1級）</td></tr>
+    <tr><td>上限</td><td>1,390,000円（第50級）</td><td><b>650,000円（第32級）</b></td></tr>
+    <tr><td>上限に達する報酬月額</td><td>1,355,000円以上</td><td><b>635,000円以上</b></td></tr>
+    <tr><td>上限での本人負担</td><td>—</td><td><b>59,475円</b>（118,950円の折半）</td></tr>
+    <tr><td>料率</td><td>都道府県別（9.21〜10.55%）</td><td>全国一律 18.3%</td></tr>
+  </table>
+
+  <div class="callout">
+    <b>月給70万円の人も、月給100万円の人も、厚生年金保険料は同じ59,475円</b>
+    報酬月額が635,000円を超えると、厚生年金の標準報酬月額は650,000円で固定されます。月給70万円でも100万円でも、<b>本人が払う厚生年金保険料は月59,475円で変わりません</b>（将来受け取る年金額も、この上限までしか反映されません）。<br>
+    一方、<b>健康保険は上限1,390,000円まで上がり続けます</b>。高額所得者ほど「厚生年金は増えないのに健康保険だけ増える」という形になります。
+  </div>
+
+  <h3>会社はもう一つ「子ども・子育て拠出金」を全額負担している</h3>
+  <p>混同しやすいので整理します。名前がよく似た2つの負担があり、<b>まったく別物</b>です。</p>
+  <table>
+    <tr><th></th><th>子ども・子育て<b>支援金</b></th><th>子ども・子育て<b>拠出金</b></th></tr>
+    <tr><td>率（令和8年度）</td><td><b>0.23%</b></td><td><b>0.36%</b></td></tr>
+    <tr><td>誰が払う</td><td><b>労使折半</b>（本人も払う）</td><td><b>事業主が全額負担</b>（本人負担なし）</td></tr>
+    <tr><td>いつから</td><td>令和8年4月分から<b>新設</b></td><td>従来からある</td></tr>
+    <tr><td>給与明細に出るか</td><td>出る（健康保険料に含めて表示されることも）</td><td><b>出ない</b>（本人は払わないため）</td></tr>
+    <tr><td>ベース</td><td>標準報酬月額・標準賞与額</td><td>標準報酬月額・標準賞与額</td></tr>
+  </table>
+  <p>標準報酬月額300,000円なら、拠出金は 300,000円 × 0.36% = <b>1,080円</b>。会社の実際の負担は 42,570円 + 1,080円 = <b>43,650円</b> になります。従業員が受け取る給与30万円に対し、会社が実際に出しているお金は <b>343,650円</b> という計算です。</p>
+
+  <h2 id="tenbiki">いつの給与から天引きされるか（1日違いで1か月分変わる）</h2>
+  <p>計算ができても、<b>「どの月の給与から引くか」</b>を間違えると結局合いません。ルールは3つです。</p>
+  <ol>
+    <li><b>保険料は月単位。日割りはしない。</b>月の途中で入社しても、その月は1か月分かかります。</li>
+    <li><b>資格取得日（＝入社日）の月から</b>保険料が発生します。</li>
+    <li><b>資格喪失日は「退職日の翌日」。</b>資格喪失月の保険料はかかりません（＝前月分まで）。</li>
+  </ol>
+  <p>そして控除の原則は、<b>「前月分の保険料を当月の給与から控除する」</b>です（健康保険法167条1項・厚生年金保険法84条1項）。事業主は、前月分の保険料を当月の報酬から控除できる、と定められています。会社が年金事務所に納めるのは翌月末日までです。</p>
+
+  <h3>退職日が1日違うと、控除される保険料が1か月分変わる</h3>
+
+  <figure class="figure">
+    <svg viewBox="0 0 760 210" role="img" aria-label="3月30日退職と3月31日退職で保険料の負担が1か月分変わることを示す図">
+      <text x="297" y="20" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--sub)">2月分の保険料</text>
+      <text x="492" y="20" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--sub)">3月分の保険料</text>
+
+      <!-- Case A -->
+      <text x="8" y="58" font-size="13" font-weight="700" fill="currentColor">3月30日に退職</text>
+      <text x="8" y="76" font-size="11.5" fill="var(--sub)">資格喪失日 3/31（3月は喪失月）</text>
+      <rect x="207" y="38" width="180" height="46" rx="7" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="297" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">かかる</text>
+      <rect x="402" y="38" width="180" height="46" rx="7" fill="none" stroke="var(--line)" stroke-width="1.5" stroke-dasharray="5 4"/>
+      <text x="492" y="66" text-anchor="middle" font-size="13" font-weight="700" fill="var(--sub)">かからない</text>
+
+      <!-- Case B -->
+      <text x="8" y="126" font-size="13" font-weight="700" fill="currentColor">3月31日に退職</text>
+      <text x="8" y="144" font-size="11.5" fill="var(--sub)">資格喪失日 4/1（3月は在籍月）</text>
+      <rect x="207" y="106" width="180" height="46" rx="7" fill="var(--accent-soft)" stroke="var(--accent)"/>
+      <text x="297" y="134" text-anchor="middle" font-size="13" font-weight="700" fill="var(--accent)">かかる</text>
+      <rect x="402" y="106" width="180" height="46" rx="7" fill="var(--warn-bg)" stroke="var(--warn-line)" stroke-width="2"/>
+      <text x="492" y="134" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">かかる</text>
+
+      <text x="598" y="126" font-size="11.5" fill="var(--sub)">→ 3月の給与から</text>
+      <text x="598" y="143" font-size="11.5" font-weight="700" fill="currentColor">2か月分を控除</text>
+
+      <text x="8" y="182" font-size="12" fill="var(--sub)">※ 資格喪失日＝退職日の翌日。資格喪失月の保険料はかからない（日割りはしない）</text>
+      <text x="8" y="200" font-size="12" fill="var(--sub)">※ 原則、前月分の保険料を当月の給与から控除する（健康保険法167条1項）</text>
+    </svg>
+    <figcaption>3月30日退職と3月31日退職の違い。1日の差で、3月分の保険料（1か月分）がかかるかどうかが変わる</figcaption>
+  </figure>
+
+  <ul>
+    <li><b>3月30日に退職</b> → 資格喪失日は3月31日 → <b>3月は資格喪失月</b> → 3月分の保険料はかからない。3月の給与から控除するのは<b>2月分の1か月分だけ</b>。</li>
+    <li><b>3月31日（月末）に退職</b> → 資格喪失日は4月1日 → <b>3月分まで保険料がかかる</b> → 3月の給与から <b>2月分＋3月分の2か月分</b> を控除できる。</li>
+  </ul>
+  <p>「月末で辞めたら最後の給与から社会保険料が2か月分引かれた」という話の正体はこれです。<b>会社のミスではありません。</b></p>
+
+  <div class="callout">
+    <b>ただし「月末退職は損」とは限りません</b>
+    3月30日退職なら3月分の保険料はかかりませんが、<b>3月31日から健康保険証が使えなくなり</b>、3月分は国民健康保険料または任意継続の保険料を自分で払うことになります。厚生年金も1か月分、加入期間が短くなります。<br>
+    「保険料が引かれない＝得」ではなく、<b>その月を国保・国民年金で自己負担する</b>だけです。
+  </div>
+
+  <h3>賞与も同じルール</h3>
+  <p>退職月に支給する賞与は、<b>月末退職の場合を除き、保険料控除の対象になりません</b>。3月30日退職の人に3月に賞与を出しても、社会保険料はかかりません（ただし賞与支払届の提出は必要です）。</p>
+
+  <h3>同じ月に入社して退職した場合（同月得喪）</h3>
+  <p>入社した月にそのまま退職した場合、厚生年金保険料は<b>原則として1か月分必要</b>です。ただし、<b>その月のうちに別の厚生年金または国民年金の資格を取得した場合は、先の厚生年金保険料は不要</b>になり、年金事務所から還付の通知が届きます。</p>
+
+  <div class="summary-box">
+    <div class="t">この記事のまとめ</div>
+    <ul>
+      <li>社会保険料は <b>標準報酬月額 × 料率 ÷ 2</b>。給与額そのものには掛けない</li>
+      <li>東京都・月給30万円・35歳（令和8年度）の本人負担は <b>月42,570円</b></li>
+      <li>40〜64歳は、健康保険料率に介護保険料率1.62%を <b>合算してから</b> 端数処理する（別々だと1円ずれる）</li>
+      <li>端数は <b>50銭以下切捨・50銭超切上</b>（給与天引きの場合）</li>
+      <li>健康保険料率は都道府県別（<b>9.21%〜10.55%</b>）。厚生年金は全国一律18.3%・標準報酬月額65万円で頭打ち</li>
+      <li>令和8年4月から <b>子ども・子育て支援金0.23%</b> が全員に加算</li>
+      <li>控除は <b>前月分を当月給与から</b>。資格喪失日＝退職日の翌日で、1日違うと1か月分変わる</li>
+    </ul>
+  </div>
+
+  <h2 id="faq">よくある質問</h2>
+  <h3>Q. 社会保険料は給与の何％くらいですか？</h3>
+  <p>A. 東京都・令和8年度なら、本人負担は標準報酬月額の <b>約14.19%</b>（40歳未満）、<b>ちょうど15.00%</b>（40〜64歳）です。健康保険9.85%＋子ども・子育て支援金0.23%＋厚生年金18.3%＝28.38%を労使折半するためです。ただし掛ける相手は給与額ではなく標準報酬月額なので、給与に対する実際の比率は等級によって多少前後します。</p>
+  <h3>Q. 通勤手当も社会保険料の対象ですか？</h3>
+  <p>A. <b>対象です。</b>所得税では月15万円まで非課税ですが、社会保険では非課税枠がなく、通勤手当も全額が報酬月額に含まれます。残業手当・住宅手当・役職手当も同じで、現物給与（通勤定期券・社宅・食事など）も金銭に換算して含めます。数か月分をまとめて支給した通勤手当は、月数で割って各月の報酬月額に含めます。</p>
+  <h3>Q. 残業が増えたら、すぐに保険料も上がりますか？</h3>
+  <p>A. <b>すぐには上がりません。</b>標準報酬月額は原則として4〜6月に支払われた給与の平均で決まり、その年の9月分から翌年8月分まで使われます（定時決定）。ただし、基本給などの固定的賃金が変わって標準報酬月額が2等級以上動いた場合は、年の途中でも改定されます（随時改定）。残業代だけが増えても随時改定の対象にはなりません。</p>
+  <h3>Q. 40歳になったら、いつから介護保険料が引かれますか？</h3>
+  <p>A. <b>40歳の誕生日の「前日」が属する月分から</b>です。たとえば5月2日生まれの人は5月1日が40歳到達日なので5月分から、<b>5月1日生まれの人は4月30日が到達日</b>なので<b>4月分</b>から徴収が始まります。1日生まれの人だけ1か月早くなるので注意してください。徴収が終わるのは65歳の誕生日の前日が属する月からで、以後は市区町村が第1号被保険者として徴収します。</p>
+  <h3>Q. 給与計算ソフトの金額が、協会けんぽの保険料額表と1円合いません。</h3>
+  <p>A. まず、健康保険料と介護保険料を<b>別々に端数処理していないか</b>を確認してください。40〜64歳の人は、健康保険料率と介護保険料率を合算した料率（東京都なら11.47%）で1本で計算し、最後に1回だけ端数処理するのが正しい方法です。別々に計算して足すと、一部の等級で額表と1円ずれます。それでも合わない場合は、端数処理が「50銭以下切捨・50銭超切上」になっているか（50銭ちょうどを切り上げていないか）を確認してください。</p>
+  <h3>Q. 会社の負担額はいくらですか？</h3>
+  <p>A. 健康保険・介護保険・厚生年金・子ども・子育て支援金はすべて労使折半なので、<b>本人と同額</b>です（東京都・月給30万円・35歳なら42,570円）。これに加えて会社は <b>子ども・子育て拠出金0.36%</b> を全額負担します（本人負担はゼロ）。標準報酬月額30万円なら1,080円で、会社の実負担は43,650円になります。</p>
+
+  <section class="related">
+    <h2>関連記事・ツール</h2>
+    <div class="tool-grid">
+      <a class="tool-card" href="../../shakai-hoken/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.4 8.8-8 10-4.6-1.2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <div><div class="name">社会保険料 計算機</div>
+        <div class="desc">47都道府県の令和8年度料率で自動計算。</div></div>
+      </a>
+      <a class="tool-card" href="../hyojun-hoshu-gakuhyo/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 9v11"/></svg></div>
+        <div><div class="name">標準報酬月額の等級表</div>
+        <div class="desc">全50等級・保険料の実額つき（令和8年度）。</div></div>
+      </a>
+      <a class="tool-card" href="../teiji-kettei/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18"/><path d="M5 6h14v14H5z"/></svg></div>
+        <div><div class="name">定時決定（算定基礎届）</div>
+        <div class="desc">4〜6月の給与で標準報酬月額が決まる仕組み。</div></div>
+      </a>
+      <a class="tool-card" href="../shoyo-shakaihoken/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v9H4v-9M2 7h20v5H2zM12 22V7M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7zM12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg></div>
+        <div><div class="name">賞与の社会保険料</div>
+        <div class="desc">上限（573万円・150万円）と免除のルール。</div></div>
+      </a>
+      <a class="tool-card" href="../kodomo-kosodate-shienkin/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg></div>
+        <div><div class="name">子ども・子育て支援金0.23%</div>
+        <div class="desc">2026年4月新設。いくら引かれるか。</div></div>
+      </a>
+      <a class="tool-card" href="../../gensen-choshu/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5M9 13h7M9 17h5"/></svg></div>
+        <div><div class="name">源泉徴収税額 計算機</div>
+        <div class="desc">社会保険料控除後の金額から所得税を計算。</div></div>
+      </a>
+    </div>
+  </section>
+
+  <h2>出典</h2>
+  <ul style="font-size:13px;color:var(--sub)">
+    <li>全国健康保険協会「令和8年度の協会けんぽの保険料率は3月分（4月納付分）から改定されます／都道府県毎の保険料率」（47都道府県の健康保険料率、介護保険料率1.62%、子ども・子育て支援金0.23%は令和8年4月分（5月納付分）から）</li>
+    <li>全国健康保険協会「令和8年3月分（4月納付分）からの健康保険・厚生年金保険の保険料額表（東京支部）」（等級ごとの全額・折半額。介護保険第2号被保険者に該当する場合は合算列で表示）</li>
+    <li>日本年金機構「厚生年金保険料額表（令和8年度）」（保険料率18.300%／折半9.150%、第1級88,000円〜第32級650,000円）</li>
+    <li>日本年金機構「厚生年金保険の保険料」（平成29年9月を最後に引上げが終了し18.3%で固定）</li>
+    <li>日本年金機構「保険料の計算方法」（端数処理：給与から控除する場合は50銭以下切捨・50銭超切上／現金で支払う場合は50銭未満切捨・50銭以上切上。特約がある場合は特約による）</li>
+    <li>日本年金機構「退職した従業員の保険料の徴収」「月の途中で入社したときや、退職したとき」（資格喪失日＝退職日の翌日、日割りなし、同月得喪の取扱い）</li>
+    <li>日本年金機構「標準報酬月額の対象となる報酬とは何ですか」「標準報酬月額の対象となる報酬に、通勤手当は含まれるのですか」</li>
+    <li>日本年金機構「子ども・子育て拠出金率が改定されました」（令和8年度も0.36%、事業主が全額負担）</li>
+    <li>全国健康保険協会「介護保険制度と介護保険料について」（40歳到達＝誕生日の前日、65歳到達で徴収終了）</li>
+    <li>通貨の単位及び貨幣の発行等に関する法律（端数処理）／健康保険法167条1項・厚生年金保険法84条1項（前月分の報酬からの控除）</li>
+  </ul>
+  <p style="font-size:13px;color:var(--sub)">本記事は一般的な情報提供を目的としたものです。個別の判断は年金事務所・社会保険労務士にご確認ください。健康保険組合に加入している場合は、料率が協会けんぽと異なります。</p>
+</article>
+</main>
+<footer class="site" style="display:block">© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+</body>
+</html>

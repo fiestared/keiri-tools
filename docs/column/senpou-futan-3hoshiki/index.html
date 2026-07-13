@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>振込手数料の先方負担｜差引額の計算「3方式」と仕訳・インボイス対応【2026年版】</title>
 <meta name="description" content="振込手数料が先方負担のとき、請求額からいくら差し引くのか。銀行実務の3方式（据置型・未満手数料加算型・以上手数料加算型）の違いを図解で解説。請求額3万円前後で差額が出る仕組み、一律550円差引の商慣行、入金差額の消込手順まで、銀行の一次資料をもとにまとめました。">
+<meta name="card-desc" content="据置型・未満手数料加算型・以上手数料加算型の違いを図解。3万円境界で差額が出る仕組み、一律550円差引の商慣行、入金差額の消込手順まで。">
 <link rel="stylesheet" href="../../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/column/senpou-futan-3hoshiki/">
 <script type="application/ld+json">
@@ -176,47 +177,42 @@
 
   <figure class="figure">
   <svg viewBox="0 0 660 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="3方式の基準額の違いを示す図">
-    <defs><style>
-      .lb{font:600 12px system-ui,sans-serif;fill:#24313f}
-      .sm{font:11px system-ui,sans-serif;fill:#5b6b7b}
-      .tag{font:600 11px system-ui,sans-serif;fill:#fff}
-    </style></defs>
     <!-- 軸 -->
     <line x1="120" y1="225" x2="640" y2="225" stroke="#c9d1d8" stroke-width="1.5"/>
-    <text x="130" y="245" class="sm">29,800</text>
-    <text x="290" y="245" class="sm">30,000円</text>
-    <text x="440" y="245" class="sm">30,220</text>
-    <text x="560" y="245" class="sm">30,440</text>
+    <text x="130" y="245" class="fg-s">29,800</text>
+    <text x="290" y="245" class="fg-s">30,000円</text>
+    <text x="440" y="245" class="fg-s">30,220</text>
+    <text x="560" y="245" class="fg-s">30,440</text>
     <line x1="320" y1="40" x2="320" y2="228" stroke="#b8c4cf" stroke-width="1" stroke-dasharray="4 3"/>
     <line x1="470" y1="40" x2="470" y2="228" stroke="#b8c4cf" stroke-width="1" stroke-dasharray="4 3"/>
     <line x1="590" y1="40" x2="590" y2="228" stroke="#b8c4cf" stroke-width="1" stroke-dasharray="4 3"/>
 
     <!-- 据置型 -->
-    <text x="10" y="66" class="lb">据置型</text>
-    <text x="10" y="80" class="sm">基準 30,000円</text>
+    <text x="10" y="66" class="fg-lb">据置型</text>
+    <text x="10" y="80" class="fg-s">基準 30,000円</text>
     <rect x="120" y="50" width="200" height="26" rx="4" fill="#5b9e8c"/>
-    <text x="128" y="68" class="tag">220円を差引</text>
+    <text x="128" y="68" class="fg-tag">220円を差引</text>
     <rect x="320" y="50" width="320" height="26" rx="4" fill="#c1553f"/>
-    <text x="328" y="68" class="tag">440円を差引</text>
+    <text x="328" y="68" class="fg-tag">440円を差引</text>
 
     <!-- 未満手数料加算型 -->
-    <text x="10" y="126" class="lb">未満加算型</text>
-    <text x="10" y="140" class="sm">基準 30,220円</text>
+    <text x="10" y="126" class="fg-lb">未満加算型</text>
+    <text x="10" y="140" class="fg-s">基準 30,220円</text>
     <rect x="120" y="110" width="350" height="26" rx="4" fill="#5b9e8c"/>
-    <text x="128" y="128" class="tag">220円を差引</text>
+    <text x="128" y="128" class="fg-tag">220円を差引</text>
     <rect x="470" y="110" width="170" height="26" rx="4" fill="#c1553f"/>
-    <text x="478" y="128" class="tag">440円を差引</text>
+    <text x="478" y="128" class="fg-tag">440円を差引</text>
 
     <!-- 以上手数料加算型 -->
-    <text x="10" y="186" class="lb">以上加算型</text>
-    <text x="10" y="200" class="sm">基準 30,440円</text>
+    <text x="10" y="186" class="fg-lb">以上加算型</text>
+    <text x="10" y="200" class="fg-s">基準 30,440円</text>
     <rect x="120" y="170" width="470" height="26" rx="4" fill="#5b9e8c"/>
-    <text x="128" y="188" class="tag">220円を差引</text>
+    <text x="128" y="188" class="fg-tag">220円を差引</text>
     <rect x="590" y="170" width="50" height="26" rx="4" fill="#c1553f"/>
 
-    <text x="120" y="26" class="sm">← 請求額</text>
+    <text x="120" y="26" class="fg-s">← 請求額</text>
     <rect x="320" y="8" width="270" height="18" rx="3" fill="#fff3d6" stroke="#e6c47a"/>
-    <text x="330" y="21" class="sm">この帯（30,000〜30,440円）で方式ごとに差引額が変わる</text>
+    <text x="330" y="21" class="fg-s">この帯（30,000〜30,440円）で方式ごとに差引額が変わる</text>
   </svg>
   <figcaption>手数料220円／440円の銀行の場合。緑＝220円差引、赤＝440円差引。基準額が方式ごとにズレるため、3万円台前半で結果が分かれる。</figcaption>
   </figure>

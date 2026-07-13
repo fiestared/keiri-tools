@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>標準報酬月額の等級表【令和8年度・保険料の実額つき】東京都・全50等級</title>
 <meta name="description" content="標準報酬月額の等級表（令和8年度・協会けんぽ東京支部）を、実際に引かれる保険料の金額つきで全50等級掲載。健康保険・介護保険・子ども子育て支援金・厚生年金の本人負担額が一目でわかります。等級の調べ方、厚生年金の上限（第32級）も解説。">
+<meta name="card-desc" content="全50等級について、実際に引かれる金額を計算して掲載。厚生年金だけ上限（65万円）がある理由も。">
 <link rel="stylesheet" href="../../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/column/hyojun-hoshu-gakuhyo/">
 <script type="application/ld+json">
@@ -98,13 +99,6 @@
 </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
      crossorigin="anonymous"></script>
-<style>
-.grades { font-size: 13px; }
-.grades th { position: sticky; top: 0; background: var(--accent-soft); z-index: 1; font-size: 12px; padding: 7px 6px; }
-.grades td { padding: 5px 6px; }
-.grades tr:nth-child(even) td { background: #fafbfc; }
-.scroll-wrap { max-height: 640px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; }
-</style>
 </head>
 <body>
 <header class="site">
@@ -140,7 +134,7 @@
   <h2 id="hyou">等級表（全50等級・保険料の実額つき）</h2>
   <p style="font-size:13.5px;color:var(--sub)">東京都・協会けんぽ・令和8年度／金額はすべて<b>本人負担分（月額）</b>／端数処理（50銭以下切捨）を適用した実額です。</p>
   <div class="scroll-wrap">
-  <table class="grades">
+  <table class="data-table">
     <tr>
       <th>等級</th>
       <th>標準報酬<br>月額</th>
@@ -216,6 +210,54 @@
     <b>介護保険料は健康保険料と合算した料率で計算します</b>
     健康保険料と介護保険料を別々に計算して端数処理すると、公式の保険料額表と<b>1円ずれる</b>ことがあります。実務では「9.85% ＋ 1.62% ＝ 11.47%」と合算した料率で計算します（この表もそうしています）。
   </div>
+
+  <figure class="figure">
+  <svg viewBox="0 0 640 278" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="報酬月額から標準報酬月額への階段状の対応。報酬月額290,000円以上310,000円未満なら22等級・標準報酬月額300,000円になる">
+    <text class="fg-t" x="10" y="24">標準報酬月額</text>
+
+    <!-- 目盛り線 -->
+    <line class="fg-grid" x1="90" y1="60" x2="600" y2="60"/>
+    <line class="fg-grid" x1="90" y1="107" x2="600" y2="107"/>
+    <line class="fg-grid" x1="90" y1="153" x2="600" y2="153"/>
+    <line class="fg-grid" x1="90" y1="200" x2="600" y2="200"/>
+    <text class="fg-s" x="82" y="64" text-anchor="end">320,000</text>
+    <text class="fg-s" x="82" y="111" text-anchor="end">300,000</text>
+    <text class="fg-s" x="82" y="157" text-anchor="end">280,000</text>
+    <text class="fg-s" x="82" y="204" text-anchor="end">260,000</text>
+
+    <!-- 階段（報酬月額 → 標準報酬月額） -->
+    <path class="fg-line-accent" d="M90 200 L218 200 L218 153 L345 153 L345 107 L473 107 L473 60 L600 60"/>
+    <text class="fg-accent" x="154" y="192" text-anchor="middle">20等級</text>
+    <text class="fg-accent" x="281" y="145" text-anchor="middle">21等級</text>
+    <text class="fg-accent" x="409" y="99" text-anchor="middle">22等級</text>
+    <text class="fg-accent" x="536" y="52" text-anchor="middle">23等級</text>
+
+    <!-- 例: 給与295,000円 -->
+    <line class="fg-bound" x1="377" y1="228" x2="377" y2="107"/>
+    <line class="fg-bound" x1="90" y1="107" x2="377" y2="107"/>
+    <circle cx="377" cy="107" r="4.5" fill="#a8641b"/>
+    <rect class="fg-box-w" x="100" y="34" width="238" height="52" rx="6"/>
+    <text class="fg-v" x="112" y="55">給与（総支給額）が 295,000円 なら</text>
+    <text class="fg-warn" x="112" y="76">→ 22等級・標準報酬月額 300,000円</text>
+    <path class="fg-arrow" d="M338 74 C360 84 370 92 375 100"/>
+    <path class="fg-arrow" d="M368 96 L377 104 L374 93"/>
+
+    <!-- 横軸 -->
+    <line class="fg-axis" x1="90" y1="228" x2="600" y2="228"/>
+    <line class="fg-axis" x1="90" y1="228" x2="90" y2="234"/>
+    <line class="fg-axis" x1="218" y1="228" x2="218" y2="234"/>
+    <line class="fg-axis" x1="345" y1="228" x2="345" y2="234"/>
+    <line class="fg-axis" x1="473" y1="228" x2="473" y2="234"/>
+    <line class="fg-axis" x1="600" y1="228" x2="600" y2="234"/>
+    <text class="fg-s" x="90" y="248" text-anchor="middle">250,000</text>
+    <text class="fg-s" x="218" y="248" text-anchor="middle">270,000</text>
+    <text class="fg-s" x="345" y="248" text-anchor="middle">290,000</text>
+    <text class="fg-s" x="473" y="248" text-anchor="middle">310,000</text>
+    <text class="fg-s" x="600" y="248" text-anchor="end">330,000</text>
+    <text class="fg-t" x="600" y="270" text-anchor="end">報酬月額（実際の総支給額）→</text>
+  </svg>
+  <figcaption>報酬月額は、範囲ごとに1つの標準報酬月額へ「丸められる」（20〜23等級の部分を拡大）。同じ範囲の中で給与が多少上下しても等級は変わらず、範囲をまたいだ瞬間に階段を1段上がる。</figcaption>
+  </figure>
 
   <a class="tool-cta" href="../../shakai-hoken/">
     <b>無料ツール：社会保険料 計算機</b>
