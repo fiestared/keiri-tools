@@ -33,6 +33,7 @@ const ORDER = [
   "gensen-choshuhyo-mikata",    // 源泉徴収票 見方 17,131/月
   "shussan-teate-kin",          // 出産手当金 11,464/月
   "shussan-ikuji-ichijikin",    // 出産育児一時金 11,464/月
+  "koyou-hokenryo-ritsu",       // 雇用保険料率 11,464/月
   "shakai-hokenryo-kojo",       // 社会保険料控除 9,390/月
   "yukyu-fuyo-nissu",           // 有給休暇 付与日数 7,656/月
   "shobyo-teate-kin",           // 傷病手当金 6,260/月
