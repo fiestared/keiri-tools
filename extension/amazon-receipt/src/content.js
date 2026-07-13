@@ -1,6 +1,13 @@
 // content.js — 注文履歴ページに操作パネルを差し込むエントリポイント。
-// 無料: このページの注文をスキャン → 索引簿CSV。
-// Pro : 全ページ巡回(年間分をまとめて) + 領収書ページの一括保存。
+//
+// UI設計の原則（2026-07-13 全面刷新。それまでは「スキャン」「補完」「CSV」と
+// 6個のボタンを押させる技術者の発想だった）:
+//   1. **押すボタンは1つ**。「一覧表をつくる」を押せば、読み取り→金額の確認→
+//      ファイル保存まで全部やる。利用者は途中の工程を知る必要がない
+//   2. **専門用語を使わない**。スキャン→読み取り / 補完→金額を調べる / CSV→ファイル
+//   3. **なぜそれが必要かを言う**。「金額が表示されていない注文があるので、
+//      注文ごとの領収書ページを見て調べます」と説明してから実行する
+//   4. 細かい操作は「詳しい操作」の中に隠す
 
 "use strict";
 
@@ -14,7 +21,7 @@
   }
   let selectors = resp.data;
   let license = await ktGetLicense();
-  let lastResult = null;   // {orders: [...]}
+  let lastResult = null;
   let busy = false;
 
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -23,143 +30,235 @@
   panel.id = "kt-denchoho-panel";
   panel.style.cssText = [
     "position:fixed", "right:16px", "bottom:16px", "z-index:2147483646",
-    "background:#fff", "border:1px solid #c8cdd4", "border-radius:10px",
-    "box-shadow:0 4px 16px rgba(0,0,0,.18)", "padding:12px 14px",
-    "font:13px/1.5 -apple-system,'Hiragino Sans',sans-serif", "color:#1a1e24",
-    "max-width:340px"
+    "background:#fff", "border:1px solid #c8cdd4", "border-radius:12px",
+    "box-shadow:0 6px 24px rgba(0,0,0,.16)", "padding:14px 16px",
+    "font:14px/1.65 -apple-system,'Hiragino Sans','Yu Gothic',sans-serif",
+    "color:#1a1e24", "width:320px",
   ].join(";");
-  const btn = (id, label, primary) => `<button id="${id}" style="cursor:pointer;padding:6px 10px;border:1px solid ${primary ? "#2563eb" : "#c8cdd4"};background:${primary ? "#2563eb" : "#fff"};color:${primary ? "#fff" : "#374151"};border-radius:6px">${label}</button>`;
+
   panel.innerHTML = `
-    <div style="font-weight:700;margin-bottom:6px">電帳法索引簿メーカー
-      <span id="kt-plan" style="font-weight:400;color:#6b7280">v0.2</span></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      ${btn("kt-scan", "このページをスキャン", true)}
-      ${btn("kt-crawl", "全ページを巡回")}
-      ${btn("kt-fill", "金額を補完")}
-      ${btn("kt-receipts", "領収書を一括保存")}
-      ${btn("kt-csv", "索引簿CSV")}
-      ${btn("kt-refresh", "⟳")}
+    <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px">
+      <div style="font-weight:700;font-size:15px">領収書の一覧表メーカー</div>
+      <span id="kt-plan" style="font-size:11px;color:#6b7280"></span>
+      <button id="kt-min" title="小さくする" style="margin-left:auto;cursor:pointer;border:0;background:none;color:#9ca3af;font-size:16px;line-height:1;padding:2px 4px">−</button>
     </div>
-    <div id="kt-status" style="margin-top:8px;color:#374151">未スキャン</div>
-    <div id="kt-warn" style="margin-top:4px;color:#b45309;font-size:12px"></div>
-    <div id="kt-pro" style="margin-top:8px"></div>
-    <div id="kt-ver" style="margin-top:6px;color:#9ca3af;font-size:11px">定義 ${resp.version || "?"}（${resp.source}）${license.pro ? " ・ Pro" : ""}</div>
+    <div id="kt-body">
+      <div style="color:#6b7280;font-size:12.5px;margin-bottom:11px">
+        電子帳簿保存法で必要な「索引簿（一覧表）」を、この画面の注文からつくります。
+      </div>
+
+      <button id="kt-go" style="width:100%;cursor:pointer;padding:12px;border:0;
+        background:#1f6f5c;color:#fff;border-radius:9px;font-size:15px;font-weight:700">
+        一覧表をつくる
+      </button>
+
+      <div id="kt-progress" style="display:none;margin-top:10px;color:#374151;font-size:13px"></div>
+      <div id="kt-done" style="display:none;margin-top:12px"></div>
+      <div id="kt-pro" style="margin-top:10px"></div>
+
+      <details id="kt-adv" style="margin-top:12px">
+        <summary style="cursor:pointer;color:#6b7280;font-size:12px;outline:none">詳しい操作</summary>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <button id="kt-crawl" style="flex:1 1 100%;cursor:pointer;padding:7px;border:1px solid #c8cdd4;background:#fff;color:#374151;border-radius:6px;font-size:12.5px">全ページ分をまとめてつくる</button>
+          <button id="kt-receipts" style="flex:1 1 100%;cursor:pointer;padding:7px;border:1px solid #c8cdd4;background:#fff;color:#374151;border-radius:6px;font-size:12.5px">領収書をまとめて保存する</button>
+          <button id="kt-refresh" title="読み取りルールを最新にします" style="flex:1;cursor:pointer;padding:7px;border:1px solid #c8cdd4;background:#fff;color:#6b7280;border-radius:6px;font-size:12px">読み取りルールを更新</button>
+        </div>
+        <div id="kt-ver" style="margin-top:7px;color:#9ca3af;font-size:11px"></div>
+      </details>
+    </div>
   `;
   document.body.appendChild(panel);
 
   const $ = id => panel.querySelector(id);
+  const yen = n => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+  $("#kt-plan").textContent = license.pro ? "Pro" : "";
+  $("#kt-ver").textContent = `読み取りルール ${resp.version || "?"}（${resp.source}）`;
+
+  // 最小化（じゃまなときに畳める）
+  let minimized = false;
+  $("#kt-min").addEventListener("click", () => {
+    minimized = !minimized;
+    $("#kt-body").style.display = minimized ? "none" : "";
+    $("#kt-min").textContent = minimized ? "＋" : "−";
+  });
+
+  function progress(text) {
+    const p = $("#kt-progress");
+    p.style.display = "block";
+    p.innerHTML = `<span style="display:inline-block;width:10px;height:10px;border:2px solid #1f6f5c;
+      border-right-color:transparent;border-radius:50%;margin-right:6px;
+      animation:kt-spin .7s linear infinite;vertical-align:-1px"></span>${text}`;
+  }
+  function clearProgress() { $("#kt-progress").style.display = "none"; }
+
+  if (!document.getElementById("kt-style")) {
+    const st = document.createElement("style");
+    st.id = "kt-style";
+    st.textContent = "@keyframes kt-spin{to{transform:rotate(360deg)}}";
+    document.head.appendChild(st);
+  }
+
+  function setBusy(v) {
+    busy = v;
+    $("#kt-go").disabled = v;
+    $("#kt-go").style.opacity = v ? ".6" : "1";
+  }
+
+  /** Pro機能のガード */
+  function requirePro(featureName) {
+    if (license.pro) return true;
+    $("#kt-done").style.display = "block";
+    $("#kt-done").innerHTML = `
+      <div style="background:#fff7e6;border:1px solid #e6c47a;border-radius:8px;padding:10px;font-size:12.5px">
+        <b>「${featureName}」は Pro版の機能です。</b><br>
+        無料版では、いま開いているページの注文（10件）まで一覧表にできます。
+      </div>`;
+    renderProCta(lastResult ? lastResult.orders : []);
+    return false;
+  }
 
   /**
-   * 無料版の上限に当たったときだけアップグレード導線を出す(押し売りしない)。
-   * 「次のページがある」= このページだけでは足りない人 = Proの価値がある人。
-   * 次ページリンクのDOMは変わりやすいので、**10件ちょうど**(=Amazonの1ページ上限)も
-   * 「続きがある」と見なす。
+   * 「このページだけでは足りない人」にだけPro版を案内する（押し売りしない）。
+   * 次のページがある = 続きの注文がある = 1年分を作りたい人。
    */
   function renderProCta(orders) {
     const box = $("#kt-pro");
     if (!box) return;
     if (license.pro) { box.innerHTML = ""; return; }
     const list = orders || [];
-    const nextUrl = ktFindNextPageUrl(document, location.href, selectors.orderHistory.pagination);
+    const nextUrl = ktFindNextPageUrl(document, location.href,
+      (selectors.orderHistory && selectors.orderHistory.pagination) || {});
     const hasMore = !!nextUrl || list.length >= 10;
-    if (!hasMore) { box.innerHTML = ""; return; }  // 1ページで完結する人には出さない
+    if (!hasMore) { box.innerHTML = ""; return; }
     box.innerHTML = `
-      <div style="background:#fff7e6;border:1px solid #e6c47a;border-radius:8px;padding:9px 10px;font-size:12px">
-        <b>次のページ以降も注文があります。</b><br>
-        Pro版なら<b>全ページを自動で巡回</b>して年間分をまとめて索引簿にし、
-        <b>領収書の一括保存</b>もできます。
-        <button id="kt-buy" style="margin-top:6px;width:100%;cursor:pointer;padding:6px;border:1px solid #b45309;background:#b45309;color:#fff;border-radius:6px;font-weight:700">
-          Pro版にする（¥1,480 買い切り）
+      <div style="background:#f6faf9;border:1px solid #bcd9d1;border-radius:9px;padding:11px">
+        <div style="font-weight:700;font-size:13px;margin-bottom:4px">まだ続きの注文があります</div>
+        <div style="font-size:12.5px;color:#4b5563;line-height:1.7">
+          Pro版にすると、<b>次のページ以降も自動でめくって</b>、1年分をまとめて1つの一覧表にできます。
+          <b>領収書のファイルもまとめて保存</b>できます。
+        </div>
+        <button id="kt-buy" style="margin-top:9px;width:100%;cursor:pointer;padding:9px;
+          border:0;background:#b45309;color:#fff;border-radius:7px;font-weight:700;font-size:13.5px">
+          Pro版にする（¥1,480・1回きりの支払い）
         </button>
       </div>`;
     $("#kt-buy").addEventListener("click", ktOpenPayment);
   }
-  const status = t => { $("#kt-status").textContent = t; };
-  const setBusy = b => {
-    busy = b;
-    for (const id of ["#kt-scan", "#kt-crawl", "#kt-fill", "#kt-receipts", "#kt-csv"]) {
-      $(id).disabled = b;
-    }
-    if (!b) syncButtons();
-  };
 
-  /** ボタンの活殺をライセンスと現在の結果から決める(唯一の真実の置き場) */
-  function syncButtons() {
-    const orders = lastResult ? lastResult.orders : [];
-    const limits = ktLimits(license);
-    const has = orders.length > 0;
-    // 補完できるのは「取れなかった」注文だけ。￥0は取得済みなので補完対象にしない
-    // (ここを ktCountIncomplete にすると、￥0が1件あるだけで押しても何も起きないボタンが残る)
-    const missing = has ? ktCountMissing(orders) : 0;
-
-    $("#kt-plan").textContent = license.pro ? "v0.2 Pro" : "v0.2";
-    $("#kt-csv").disabled = !has;
-    $("#kt-fill").disabled = missing === 0;
-    // Proは「機能を隠す」のではなく「押すと案内が出る」。無料でも価値が分かるように
-    $("#kt-crawl").disabled = false;
-    $("#kt-receipts").disabled = !has;
-    for (const [id, allowed] of [["#kt-crawl", limits.allowMultiPage],
-                                 ["#kt-receipts", limits.allowReceiptDownload]]) {
-      const b = $(id);
-      b.textContent = b.textContent.replace(/\s*🔒$/, "") + (allowed ? "" : " 🔒");
-      b.title = allowed ? "" : "Pro版の機能です";
-    }
-    if (has) {
-      const csv = $("#kt-csv");
-      csv.style.background = "#059669"; csv.style.borderColor = "#059669"; csv.style.color = "#fff";
-    }
-  }
-
-  /** Pro機能のガード。falseなら呼び出し側は中断する */
-  function requirePro(featureName) {
-    if (license.pro) return true;
-    status(`「${featureName}」はPro版の機能です`);
-    $("#kt-warn").innerHTML =
-      `無料版は<b>表示中のページ</b>の索引簿CSVまで作れます。<br>` +
-      `Pro版（買い切り）で<b>全ページの一括処理</b>と<b>領収書の一括保存</b>が使えます。<br>` +
-      `<a href="https://keiri-tools.com/ext/amazon-receipt/" target="_blank" rel="noopener">詳細を見る</a>`;
-    renderProCta(lastResult ? lastResult.orders : []);
-    return false;
-  }
-
-  function renderStatus() {
-    const orders = lastResult ? lastResult.orders : [];
+  /** 結果を「ふつうの日本語」で見せる */
+  function renderDone(orders, savedFileName) {
+    const box = $("#kt-done");
+    box.style.display = "block";
     const cancelled = ktCountCancelled(orders);
     const target = ktIndexableOrders(orders);
     const missing = ktCountMissing(orders);
     const zeroYen = ktCountZeroYen(orders);
-    const incomplete = ktCountIncomplete(orders);   // missing と zeroYen は重なるので足さない
     const sum = target.reduce((a, o) => a + (o.total || 0), 0);
-    status(
-      `対象${target.length}件 / 合計¥${sum.toLocaleString()}` +
-      (cancelled ? ` / キャンセル${cancelled}件は除外` : "") +
-      (incomplete ? ` / 要確認${incomplete}件` : "")
-    );
-    // ￥0は「取得できなかった」わけではない。同じ文言にすると嘘になるので分けて言う
-    const warn = [];
-    if (missing) warn.push(`${missing}件は金額または日付が取得できませんでした。CSVの「要確認」列を見て手入力してください。`);
-    if (zeroYen) warn.push(`${zeroYen}件は￥0でした（無料・ポイント全額充当・請求前の可能性）。金額はそのまま載ります。`);
-    $("#kt-warn").textContent = warn.join(" ");
-    syncButtons();
+
+    const notes = [];
+    if (cancelled) {
+      notes.push(`<li><b>キャンセルされた注文が${cancelled}件</b>ありました。
+        お金を払っていないので、一覧表には入れていません。</li>`);
+    }
+    if (missing) {
+      notes.push(`<li><b>${missing}件は、金額か日付が分かりませんでした。</b>
+        一覧表の「要確認」の欄に印をつけてあります。
+        お手数ですが、その行だけご自分で書き足してください。</li>`);
+    }
+    if (zeroYen) {
+      notes.push(`<li><b>${zeroYen}件は金額が0円</b>でした（無料のサービスや、
+        ポイントで全額払った注文などです）。念のためご確認ください。</li>`);
+    }
+
+    box.innerHTML = `
+      <div style="background:#ecf7f3;border:1px solid #1f6f5c;border-radius:9px;padding:12px">
+        <div style="font-weight:700;color:#1f6f5c;margin-bottom:5px">✓ 一覧表ができました</div>
+        <div style="font-size:13px">
+          <b>${target.length}件</b>の注文を一覧にしました（合計 <b>${yen(sum)}</b>）。<br>
+          <span style="color:#4b5563;font-size:12.5px">
+            ファイル名: ${savedFileName}<br>
+            パソコンの「ダウンロード」フォルダに入っています。Excelで開けます。
+          </span>
+        </div>
+        ${notes.length ? `
+          <ul style="margin:9px 0 0;padding-left:18px;font-size:12.5px;color:#4b5563;line-height:1.75">
+            ${notes.join("")}
+          </ul>` : ""}
+      </div>`;
   }
 
-  // ── 無料: 表示中のページをスキャン ──────────────────────────────
-  $("#kt-scan").addEventListener("click", async () => {
+  /**
+   * 領収書ページを見に行って、金額・日付を調べる。
+   * **なぜ必要か**: Amazonの注文履歴には金額が表示されない注文がある（実測10件中3件）。
+   * 利用者にとってはどうでもいい内部事情なので、進捗の文言でだけ理由を伝える。
+   */
+  async function fillFromReceipts(orders) {
+    const targets = ktIndexableOrders(orders)
+      .filter(o => o.orderId && (o.total == null || !o.orderDate));
+    if (targets.length === 0) return;
+    let done = 0;
+    for (const o of targets) {
+      done++;
+      progress(`金額がのっていない注文があるので、領収書を見て調べています…（${done}/${targets.length}件）`);
+      try {
+        const res = await fetch(ktReceiptUrl(o.orderId, selectors.receipt), { credentials: "include" });
+        if (res.ok) {
+          const doc = new DOMParser().parseFromString(await res.text(), "text/html");
+          const got = ktParseReceipt(doc, selectors.receipt.fields);
+          if (o.total == null && got.total != null) o.total = got.total;
+          if (!o.orderDate && got.orderDate) o.orderDate = got.orderDate;
+        }
+      } catch (e) {
+        console.warn("[電帳法索引簿] 領収書の取得に失敗", o.orderId, e);
+      }
+      await sleep(800);
+    }
+  }
+
+  function saveCsv(orders) {
+    const csv = ktBuildIndexCsv(orders);
+    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    const name = `Amazon領収書の一覧表_${today}.csv`;
+    ktDownloadText(name, csv);
+    return name;
+  }
+
+  /** ★ 主役のボタン: 読み取り → 金額を調べる → ファイル保存 まで一気にやる */
+  $("#kt-go").addEventListener("click", async () => {
     if (busy) return;
     setBusy(true);
+    $("#kt-done").style.display = "none";
     try {
+      progress("この画面の注文を読み取っています…");
+      await sleep(150);
       lastResult = ktParseOrderHistory(document, selectors.orderHistory);
-      console.log("[電帳法索引簿] スキャン結果", lastResult);
-      renderStatus();
+      console.log("[電帳法索引簿] 読み取り結果", lastResult);
+
+      if (lastResult.orders.length === 0) {
+        clearProgress();
+        $("#kt-done").style.display = "block";
+        $("#kt-done").innerHTML = `
+          <div style="background:#fff7e6;border:1px solid #e6c47a;border-radius:8px;padding:10px;font-size:12.5px">
+            注文が見つかりませんでした。<br>
+            Amazonの<b>「注文履歴」のページ</b>を開いてから、もう一度お試しください。
+          </div>`;
+        return;
+      }
+
+      await fillFromReceipts(lastResult.orders);
+
+      progress("一覧表のファイルを保存しています…");
+      await sleep(150);
+      const name = saveCsv(lastResult.orders);
+
+      clearProgress();
+      renderDone(lastResult.orders, name);
       renderProCta(lastResult.orders);
-      if (ktCountIncomplete(lastResult.orders) > 0) await fillFromReceipts();
     } finally { setBusy(false); }
   });
 
-  // ── Pro: 全ページ巡回 ────────────────────────────────────────
-  // 「次へ」リンクを辿るのが第一候補。リンクが見つからないときは startIndex を
-  // 増やしてURLを合成する(DOMより安定)。**新規0件で必ず止める** — Amazonは範囲外の
-  // startIndexで1ページ目を返すことがあり、URL合成だけでは終端を判定できない
+  // ── Pro: 全ページ分をまとめてつくる ──────────────────────────
   async function crawlAllPages() {
     const pag = (selectors.orderHistory && selectors.orderHistory.pagination) || {};
     const maxPages = pag.maxPages || 30;
@@ -173,19 +272,17 @@
       const res = ktParseOrderHistory(doc, selectors.orderHistory);
       const fresh = ktDedupeNewOrders(res.orders, seen);
       all.push(...fresh);
-      status(`巡回中… ${page}ページ目 / 累計${all.length}件`);
+      progress(`${page}ページ目を読んでいます…（これまでに${all.length}件）`);
 
-      if (fresh.length === 0 && page > 1) break;          // 終端(または同一ページの再取得)
-      if (page === maxPages) {
-        $("#kt-warn").textContent = `安全上の上限(${maxPages}ページ)で巡回を止めました。期間で絞り込むと全件取得できます。`;
-        break;
-      }
+      // 新規0件なら終端。Amazonは範囲外のstartIndexで1ページ目を返すため必須の停止条件
+      if (fresh.length === 0 && page > 1) break;
+      if (page === maxPages) break;
 
       let next = ktFindNextPageUrl(doc, url, pag);
       if (!next) next = ktNextPageUrlByIndex(url, page * pageSize, pag);
       if (!next || next === url) break;
 
-      await sleep(1200);                                   // Amazonへの負荷を避ける
+      await sleep(1200);  // Amazonへの負荷を避ける
       let r;
       try { r = await fetch(next, { credentials: "include" }); }
       catch (e) { console.warn("[電帳法索引簿] 次ページの取得に失敗", next, e); break; }
@@ -197,60 +294,37 @@
   }
 
   $("#kt-crawl").addEventListener("click", async () => {
-    if (busy || !requirePro("全ページを巡回")) return;
+    if (busy || !requirePro("全ページ分をまとめてつくる")) return;
     setBusy(true);
+    $("#kt-done").style.display = "none";
     try {
       const orders = await crawlAllPages();
       lastResult = { orders, cardCount: orders.length, warnings: [] };
-      renderStatus();
-      if (ktCountIncomplete(orders) > 0) await fillFromReceipts();
+      await fillFromReceipts(orders);
+      progress("一覧表のファイルを保存しています…");
+      const name = saveCsv(orders);
+      clearProgress();
+      renderDone(orders, name);
     } finally { setBusy(false); }
   });
 
-  // ── 領収書ページから金額・日付を補完(無料にも搭載) ───────────────
-  // 注文履歴ページに金額が無い注文があるため索引簿には必須。キャンセルは請求が無いので対象外
-  async function fillFromReceipts() {
-    if (!lastResult) return;
-    const targets = ktIndexableOrders(lastResult.orders)
-      .filter(o => o.orderId && (o.total == null || !o.orderDate));
-    if (targets.length === 0) { renderStatus(); return; }
-    let done = 0, filled = 0;
-    for (const o of targets) {
-      status(`領収書を確認中… ${++done}/${targets.length}`);
-      try {
-        const res = await fetch(ktReceiptUrl(o.orderId, selectors.receipt), { credentials: "include" });
-        if (res.ok) {
-          const doc = new DOMParser().parseFromString(await res.text(), "text/html");
-          const got = ktParseReceipt(doc, selectors.receipt.fields);
-          if (o.total == null && got.total != null) { o.total = got.total; filled++; }
-          if (!o.orderDate && got.orderDate) { o.orderDate = got.orderDate; filled++; }
-        }
-      } catch (e) {
-        console.warn("[電帳法索引簿] 領収書の取得に失敗", o.orderId, e);
-      }
-      await sleep(800);
-    }
-    console.log(`[電帳法索引簿] 領収書から${filled}項目を補完`);
-    renderStatus();
-  }
-  $("#kt-fill").addEventListener("click", async () => {
-    if (busy) return;
-    setBusy(true);
-    try { await fillFromReceipts(); } finally { setBusy(false); }
-  });
-
-  // ── Pro: 領収書ページの一括保存 ───────────────────────────────
+  // ── Pro: 領収書をまとめて保存 ────────────────────────────────
   // AmazonはPDFの領収書を配信していない。保存できるのは領収書ページのHTML
-  // (=電子取引データそのもの)なので、PDFとは名乗らずHTMLで保存する
   $("#kt-receipts").addEventListener("click", async () => {
-    if (busy || !lastResult || !requirePro("領収書を一括保存")) return;
+    if (busy || !requirePro("領収書をまとめて保存する")) return;
+    if (!lastResult) {
+      $("#kt-done").style.display = "block";
+      $("#kt-done").innerHTML = `<div style="font-size:12.5px;color:#b45309">
+        先に「一覧表をつくる」を押してください。</div>`;
+      return;
+    }
     const targets = ktIndexableOrders(lastResult.orders).filter(o => o.orderId);
     if (targets.length === 0) return;
     setBusy(true);
     let done = 0, saved = 0, failed = 0;
     try {
       for (const o of targets) {
-        status(`領収書を保存中… ${++done}/${targets.length}（保存${saved}件）`);
+        progress(`領収書を保存しています…（${++done}/${targets.length}件）`);
         try {
           const url = ktReceiptUrl(o.orderId, selectors.receipt);
           const res = await fetch(url, { credentials: "include" });
@@ -259,7 +333,7 @@
           const r = await chrome.runtime.sendMessage({
             type: "downloadDataUrl",
             url: dataUrl,
-            filename: `Amazon領収書/${ktReceiptFilename(o, "html")}`
+            filename: `Amazon領収書/${ktReceiptFilename(o, "html")}`,
           });
           r && r.ok ? saved++ : failed++;
         } catch (e) {
@@ -268,30 +342,26 @@
         }
         await sleep(1000);
       }
-      status(`領収書を${saved}件保存しました（ダウンロード/Amazon領収書/）`);
-      $("#kt-warn").textContent = failed
-        ? `${failed}件は保存できませんでした。時間をおいて再実行してください。`
-        : "PDFで残す場合は、保存したHTMLをブラウザで開いて印刷→PDFに保存してください。";
+      clearProgress();
+      $("#kt-done").style.display = "block";
+      $("#kt-done").innerHTML = `
+        <div style="background:#ecf7f3;border:1px solid #1f6f5c;border-radius:9px;padding:12px;font-size:13px">
+          <div style="font-weight:700;color:#1f6f5c;margin-bottom:5px">✓ 領収書を${saved}件保存しました</div>
+          <div style="color:#4b5563;font-size:12.5px">
+            「ダウンロード」フォルダの中の <b>Amazon領収書</b> フォルダに入っています。<br>
+            ${failed ? `${failed}件は保存できませんでした。時間をおいてもう一度お試しください。<br>` : ""}
+            PDFで残したいときは、保存したファイルを開いて「印刷 → PDFに保存」してください。
+          </div>
+        </div>`;
     } finally { setBusy(false); }
   });
 
-  // ── CSV ───────────────────────────────────────────────────
-  $("#kt-csv").addEventListener("click", () => {
-    if (!lastResult || lastResult.orders.length === 0) return;
-    const csv = ktBuildIndexCsv(lastResult.orders);
-    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-    ktDownloadText(`電帳法索引簿_amazon_${today}.csv`, csv);
-  });
-
   $("#kt-refresh").addEventListener("click", async () => {
-    $("#kt-ver").textContent = "定義を再取得中…";
+    $("#kt-ver").textContent = "更新しています…";
     const fresh = await chrome.runtime.sendMessage({ type: "getSelectors", forceRefresh: true });
     selectors = fresh.data;
     license = await ktGetLicense();
-    $("#kt-ver").textContent = `定義 ${fresh.version || "?"}（${fresh.source}）`;
-    status("定義を更新しました。もう一度スキャンしてください。");
-    syncButtons();
+    $("#kt-plan").textContent = license.pro ? "Pro" : "";
+    $("#kt-ver").textContent = `読み取りルール ${fresh.version || "?"}（${fresh.source}）`;
   });
-
-  syncButtons();
 })();
