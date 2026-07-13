@@ -9,18 +9,42 @@ import vm from "node:vm";
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const extDir = join(root, "extension/amazon-receipt");
 
-// background.js は読み込み時に chrome.* を触るので最小スタブを与える
+// background.js は読み込み時に chrome.* を触るので最小スタブを与える。
+// importScripts は MV3 service worker のグローバル(Nodeには無い)。ExtPay を差し替えるのではなく、
+// 実際のworkerと同じく「同じグローバルへ読み込む」形で再現する — スタブで置き換えてしまうと、
+// 決済層が壊れていてもこのテストは緑のままになる。
 const sandbox = {
   TextEncoder, btoa, atob, URL,
   console,
+  // ExtPay同梱のbrowser-polyfillが読み込み時に runtime.id を見る
   chrome: {
-    runtime: { onInstalled: { addListener() {} }, onMessage: { addListener() {} } },
+    runtime: {
+      id: "test-extension-id",
+      onInstalled: { addListener() {} },
+      onMessage: { addListener() {} },
+    },
     storage: { local: { get: async () => ({}), set: async () => {}, remove: async () => {} } },
   },
+  fetch: async () => { throw new Error("fetch: テスト中にネットワークへ出ようとした"); },
 };
 vm.createContext(sandbox);
+sandbox.self = sandbox; // service worker のグローバル別名(ExtPayが参照する)
+sandbox.importScripts = (...paths) => {
+  for (const p of paths) {
+    // background.js からの相対パス(実行時のworkerと同じ解決)
+    const f = join(extDir, "src", p);
+    vm.runInContext(readFileSync(f, "utf-8"), sandbox, { filename: p });
+  }
+};
 for (const f of ["src/lib/scrape.js", "src/lib/csv.js", "src/background.js"]) {
   vm.runInContext(readFileSync(join(extDir, f), "utf-8"), sandbox, { filename: f });
+}
+
+// importScripts が実際にExtPayを読み込めたことを確認する(空実装で通り抜けていないか)。
+// ここが緑でないと、以下の全テストが「決済層ごと消えた別物」を見ていることになる。
+if (typeof sandbox.ExtPay !== "function") {
+  console.error("FAIL importScripts が ExtPay を読み込めていない(決済層が未検証のまま)");
+  process.exit(1);
 }
 const selectors = JSON.parse(readFileSync(join(extDir, "selectors.default.json"), "utf-8"));
 const pag = selectors.orderHistory.pagination;
