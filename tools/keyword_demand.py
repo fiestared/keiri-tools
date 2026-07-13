@@ -18,6 +18,7 @@ import re
 import sys
 import time
 import urllib.parse
+from pathlib import Path
 import urllib.request
 
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
@@ -55,6 +56,56 @@ def volume(kw):
     if len(vals) >= 2:
         return vals[0], vals[1]
     return None, None
+
+
+def existing_articles():
+    """公開済みコラムの (slug, h1) を返す。テーマ重複を書く前に検知するため。"""
+    col = Path(__file__).resolve().parent.parent / "docs" / "column"
+    out = []
+    if not col.is_dir():
+        return out
+    for d in sorted(col.iterdir()):
+        f = d / "index.html"
+        if not f.is_file() or d.name == "index.html":
+            continue
+        html = f.read_text(encoding="utf-8", errors="replace")
+        m = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S)
+        if m:
+            out.append((d.name, re.sub(r"<[^>]+>", "", m.group(1)).strip()))
+    return out
+
+
+def warn_existing(keywords):
+    """キーワードの語をすべて含む既存記事があれば「重複」として強く警告する。
+
+    2026-07-13 第22便: 需要を測り一次ソースを集め記事を書き切ったあとで、
+    同テーマの既存記事に気づいた(危うく重複公開するところだった)。
+    競合は調べたのに自分のサイトを調べていなかった。散文の約束は守られないので、
+    テーマ決定時に必ず走るこのツールに検査を寄せる。
+    """
+    arts = existing_articles()
+    if not arts:
+        return
+    print("\n=== 既存記事との重複チェック ===", file=sys.stderr)
+    hit = False
+    for kw in keywords:
+        toks = [t for t in kw.split() if t]
+        if not toks:
+            continue
+        strong = [a for a in arts if all(t in a[1] or t in a[0] for t in toks)]
+        weak = [a for a in arts
+                if a not in strong and any(t in a[1] for t in toks)]
+        if strong:
+            hit = True
+            print(f"⚠️  「{kw}」は既に書かれている可能性が高い:", file=sys.stderr)
+            for slug, title in strong:
+                print(f"      /column/{slug}/  {title}", file=sys.stderr)
+        elif weak:
+            print(f"・「{kw}」に近いテーマの記事: "
+                  + ", ".join(s for s, _ in weak[:5]), file=sys.stderr)
+    if hit:
+        print("→ 新規に書かず、既存記事を深く書き直すことを検討する"
+              "(重複記事は検索で互いを食い合う)", file=sys.stderr)
 
 
 def main():
@@ -101,6 +152,8 @@ def main():
     for k, g, y, t in sorted(rows, key=lambda r: -r[3]):
         if t:
             print(f"{t:>7,}  {k}", file=sys.stderr)
+
+    warn_existing(kws)
 
 
 if __name__ == "__main__":
