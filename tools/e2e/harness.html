@@ -32,7 +32,9 @@ async function waitFor(fn, label, timeout = 8000) {
 }
 
 /** ツールのページをiframeで開く。load後は「ユーザーが見ている状態」 */
+let openedPage = null; // どのページを実際に開いたか(E2Eの網羅チェックに使う。下の coverage 参照)
 function open(path) {
+  openedPage = path;
   const f = document.getElementById("f");
   return new Promise((ok, ng) => {
     f.addEventListener("load", () => ok(f.contentDocument), { once: true });
@@ -600,11 +602,67 @@ SCENES.gensen_shoyo_10x = shoyoScene({ shoyo: 1500000, shoyoIns: 0, zengetsu: 10
 // 乙欄は前月給与だけで決まる(扶養親族等の数を見ない)
 SCENES.gensen_shoyo_otsu = shoyoScene({ shoyo: 500000, shoyoIns: 0, zengetsu: 300000, ran: "otsu" });
 
+// ── 社会保険料(協会けんぽ) ───────────────────────────────────────────────────
+// 需要が最大(23,980回/月)の看板ツールなのに、E2Eシーンが1つも無かった(2026-07-13 第14便)。
+// **期待値は協会けんぽの公式PDFから機械抽出した保険料額表**(tests/fixtures/kyoukaikenpo_tokyo_r08.json)
+// を独立オラクルにする。被検体と同じ shaho_core.js で期待値を作ると、coreのバグで両方同じように
+// 間違える(第3便からの規律)。額表は「全額/折半額」を銭単位で持つ公式の値なので、
+// 料率・等級・端数処理のどれが壊れても必ず落ちる。
+const shahoScene = ({ monthly, age, bonus = 0 }) => async () => {
+  const doc = await open("/docs/shakai-hoken/");
+  const kenpo = await (await fetch("/tests/fixtures/kyoukaikenpo_tokyo_r08.json?raw=1")).json();
+
+  set(doc, "monthly", String(monthly));
+  set(doc, "age", String(age));
+  if (bonus > 0) set(doc, "bonus", String(bonus));
+  click(doc, "calc"); // ← 料率JSONの到着を待たずに押す(実ユーザーと同じ)
+
+  await waitFor(
+    () => /本人負担|読み込めませんでした/.test(text(doc, "result")),
+    "社会保険料の計算結果",
+  );
+  const body = text(doc, "result");
+
+  // 公式額表(東京・standard=報酬月額そのものが等級の額になる入力を選ぶ)から本人負担を組む。
+  // 40歳未満/65歳以上は介護なし、40〜64歳は健保+介護の合算列を使う(公式額表と同じ方式)
+  const g = kenpo.grades.find((x) => x.standard === monthly);
+  const kaigo = age >= 40 && age < 65;
+  const expectedSelf = g
+    ? Math.round((kaigo ? g.kenko_kaigo_half : g.kenko_half) + g.kosodate_half + g.kosei_half)
+    : null;
+
+  const m = body.match(/毎月の本人負担\s*¥([\d,]+)/);
+  // 「介護保険料の行が出ているか」は**本文への正規表現で見てはいけない**。画面は
+  // 「30歳のため介護保険料はかかりません」という**否定文**にも同じ語を含むので、
+  // テキスト検索では「提示」と「否定」を区別できない(第10便で同じ誤検知をした)。
+  // → 結果テーブルの**行ラベル**(DOMの構造)で見る
+  const rowLabels = [...doc.querySelectorAll("#result table tr")]
+    .map((tr) => (tr.cells[0]?.textContent || "").trim());
+  return {
+    monthly, age,
+    self: m ? Number(m[1].replace(/,/g, "")) : null,
+    expected: expectedSelf,          // ← 公式PDF由来。ツールのコードを一切通っていない
+    kaigoApplies: kaigo,
+    showsKaigoRow: rowLabels.some((l) => l.includes("介護保険")),
+    showsYear: /令和\d+年度の料率/.test(body), // どの年度の料率で答えたかを申告しているか
+    rowLabels,
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// 東京都・標準報酬30万円・30歳 → 公式額表で 14,775 + 345 + 27,450 = 42,570円。
+// 料率が1つでも欠ける/端数処理が別方式だと必ずズレる常設プローブ
+SCENES.shaho = shahoScene({ monthly: 300000, age: 30 });
+SCENES.shaho_slow = SCENES.shaho;    // 800ms遅らせる(モバイル回線)。待って正答すること
+SCENES.shaho_nodata = SCENES.shaho;  // 料率を配信できない → 額を出さず申告すること
+// 40〜64歳は介護保険料がかかる(健保と合算した料率で控除。公式額表と同じ方式)
+SCENES.shaho_kaigo = shahoScene({ monthly: 300000, age: 45 });
+
 let state;
 try {
-  state = { scene, ...(await SCENES[scene]()) };
+  state = { scene, ...(await SCENES[scene]()), page: openedPage };
 } catch (e) {
-  state = { scene, error: String(e && e.message || e) };
+  state = { scene, error: String(e && e.message || e), page: openedPage };
 }
 window.__state = state; // 手で開いたとき devtools から見る用
 await fetch("/__state", { method: "POST", body: JSON.stringify(state) }).catch(() => {});

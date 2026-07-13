@@ -144,7 +144,7 @@
 </section>
 </main>
 <footer class="site" style="display:block">
-  料率の出典: 全国健康保険協会「都道府県毎の保険料率（令和8年度）」／厚生年金保険料率18.3%（日本年金機構）。<span id="src-note"></span><br>
+  料率の出典: 全国健康保険協会「都道府県毎の保険料率」<span id="src-note"></span>／厚生年金保険料率18.3%（日本年金機構）。<br>
   入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
 </footer>
@@ -160,22 +160,44 @@ let RATES = null;
 // (以前は「読み込み中です。少し待って再度お試しください」と出して終わっていたが、
 //  ①利用者にもう一度押させる ②読み込みが恒久的に失敗しても永遠に「読み込み中」と言い続ける
 //  という2つの問題があった。待てるものは待ち、失敗したら失敗と言う)
+//
+// **この catch が拾ってよいのは「料率が手に入らなかった」ことだけ**(2026-07-13 第14便)。
+// 飾りの描画まで同じ catch に入れてはいけない: 出典ノートが参照キーを間違えていた
+// (`_meta.applies_from`。正しくは `rate_applies_from`)ため TypeError が飛び、それをこの catch が
+// 拾って ratesReady=false になり、**料率は正常に届いているのに「読み込めませんでした」と
+// 言い続ける全損**になっていた(しかも都道府県プルダウンは料率入りで描けているので画面は正常に見える)。
+// 飾りの失敗が、答えを出さない理由になってはいけない。
 const ratesReady = fetch("../assets/shaho_rates_r08.json")
-  .then(r => r.json())
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
   .then(d => {
-    RATES = d;
-    const sel = $("pref");
-    for (const p of Object.keys(d.kenko_rates)) {
-      const o = document.createElement("option");
-      o.value = p;
-      o.textContent = `${p}（${d.kenko_rates[p].toFixed(2)}%）`;
-      if (p === "東京都") o.selected = true;
-      sel.appendChild(o);
-    }
-    $("src-note").textContent = `適用: ${d._meta.applies_from.replace("-", "年")}月分から`;
+    RATES = d;      // ここから下は「答えを出すのに要るもの」だけ。失敗したら答えない(fail closed)
+    fillPrefs(d);   // 都道府県の選択肢も答えに要る(pref が空だと料率を引けない)
     return true;
   })
   .catch(() => false); // 料率が無いまま保険料を答えることはできない。下で断り書きを出す
+
+// 出典の表示は飾り。ここで転んでも計算は止めない(ratesReady には影響させない)
+ratesReady.then(ok => { if (ok) showSource(RATES); }).catch(() => {});
+
+function fillPrefs(d) {
+  const sel = $("pref");
+  for (const p of Object.keys(d.kenko_rates)) {
+    const o = document.createElement("option");
+    o.value = p;
+    o.textContent = `${p}（${d.kenko_rates[p].toFixed(2)}%）`;
+    if (p === "東京都") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+
+// 年度・適用開始は**データが持っている値**を出す。ページに「令和8年度」と手書きすると、
+// 料率JSONを差し替えた年に画面だけが古い年度を名乗る(嘘をつく)
+function showSource(d) {
+  const m = d._meta || {};
+  const from = (m.rate_applies_from || "").replace("-", "年");
+  const parts = [m.year, from && `${from}月分から適用`].filter(Boolean);
+  $("src-note").textContent = parts.length ? `（${parts.join("・")}）` : "";
+}
 
 $("calc").addEventListener("click", async () => {
   const box = $("result");
@@ -193,6 +215,12 @@ $("calc").addEventListener("click", async () => {
   if (!monthly || monthly <= 0) { box.innerHTML = "報酬月額を入力してください。"; return; }
 
   const kRate = RATES.kenko_rates[pref];
+  // 料率を引けない都道府県で NaN を答えない(知らないことは知らないと言う)
+  if (!kRate) {
+    box.innerHTML = `<div class="note"><b>「${pref || "未選択"}」の健康保険料率が見つかりませんでした。</b>
+      都道府県を選び直してください。</div>`;
+    return;
+  }
   const r = calcMonthly(monthly, kRate, RATES.kaigo_rate, age);
 
   const row = (label, o, show = true) => show ? `
@@ -210,7 +238,8 @@ $("calc").addEventListener("click", async () => {
       標準報酬月額 <b>${yen(r.standard)}</b>（健康保険 第${r.grade}級）
       ${r.koseiStandard !== r.standard ? `／厚生年金 <b>${yen(r.koseiStandard)}</b>（上下限で調整）` : ""}
     </div>
-    <div class="row">毎月の本人負担 <span class="big">${yen(r.selfTotal)}</span></div>
+    <div class="row">毎月の本人負担 <span class="big">${yen(r.selfTotal)}</span>
+      ${RATES._meta?.year ? `<span class="hint">（${RATES._meta.year}の料率）</span>` : ""}</div>
     <div style="overflow-x:auto;margin-top:10px">
     <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
       <tr style="background:#e7f3f0">

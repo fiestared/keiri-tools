@@ -10,7 +10,7 @@
 // 出ていた(2026-07-13に発見・修正)。回線の速さに結果が左右されないことを固定する。
 
 import { createServer } from "node:http";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { spawn } from "node:child_process";
 import { join, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -109,6 +109,23 @@ const SCENES = [
       s.viaGetsugaku && s.tax === s.expected && s.tax > 0 && s.declaresGetsugaku },
   // 乙欄は扶養親族等の数を見ず、前月給与だけで率が決まる
   { name: "gensen_shoyo_otsu", expect: (s) => s.tax === s.expected && s.tax > 0 },
+
+  // 社会保険料(需要最大の看板ツール。2026-07-13 第14便までE2Eが1つも無かった)。
+  // 期待値は協会けんぽの**公式保険料額表**(PDF機械抽出)。ツールのコードを通っていない独立オラクル
+  // 40歳未満は介護保険料の**行が出ない**こと(否定文「かかりません」は本文に出るので、
+  // 判定は本文の正規表現でなく結果テーブルの行ラベルで見る)。どの年度の料率かも申告すること
+  { name: "shaho", expect: (s) =>
+      s.self === s.expected && s.self === 42570 && !s.failed &&
+      !s.showsKaigoRow && s.showsYear },
+  // 料率の到着を待たずに押しても、待って正しい額を出すこと
+  { name: "shaho_slow", slow: true, expect: (s) =>
+      s.self === s.expected && s.self === 42570 && !s.failed },
+  // 料率を配信できないときは、額を出さずに「読み込めませんでした」と申告すること
+  { name: "shaho_nodata", data404: "shaho_rates_r08.json",
+    expect: (s) => s.failed && s.self === null },
+  // 40〜64歳は介護保険料がかかる。合算料率で控除するのが公式額表と同じ方式
+  { name: "shaho_kaigo", expect: (s) =>
+      s.self === s.expected && s.self === 45000 && s.showsKaigoRow && !s.failed },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
@@ -159,6 +176,7 @@ const port = server.address().port;
 
 const only = process.env.E2E_ONLY;
 const fails = [];
+const covered = new Map(); // ページ → 正常条件で駆動したシーン名
 
 for (const sc of SCENES.filter((s) => !only || s.name === only)) {
   slowHolidays = !!sc.slow;
@@ -179,6 +197,13 @@ for (const sc of SCENES.filter((s) => !only || s.name === only)) {
 
   const s = received || { error: "ハーネスから状態が返らなかった(描画前に落ちた可能性)" };
   const ok = !s.error && sc.expect(s);
+  // 「正常条件で正しい答えが出た」シーンだけを網羅とみなす(下の coverage 参照)。
+  // 配信失敗・遅延を再現するシーンは、壊れたツールでも通ってしまうので数えない
+  const normal = !sc.data404 && !sc.holidays && !sc.slow;
+  if (ok && normal && s.page) {
+    if (!covered.has(s.page)) covered.set(s.page, []);
+    covered.get(s.page).push(sc.name);
+  }
   console.log(`${ok ? "✅" : "❌"} ${sc.name}`);
   if (!ok) {
     fails.push(sc.name);
@@ -188,6 +213,35 @@ for (const sc of SCENES.filter((s) => !only || s.name === only)) {
 }
 
 server.close();
+
+// ── 網羅チェック: 計算ツールを1つもE2Eで触っていない状態を許さない ──────────────
+// 2026-07-13 第14便: 需要が最大の看板ツール(社会保険料)だけE2Eシーンが**1つも無く**、
+// 「料率は届いているのに『読み込めませんでした』と言い続ける」全損を**本番で放置**していた。
+// 他の7ツールにはシーンがあったので、抜けは「作り忘れ」でしか起こらない = 機械で塞ぐ。
+//
+// **失敗再現シーン(404/遅延)は網羅に数えない**。壊れたツールでも通るため:
+// 実際 shaho_nodata は「常に読み込み失敗と言う」壊れた状態で**緑のまま**だった。
+// 数えるのは「正常条件で、正しい答えを出した」シーンだけ。
+if (!only) {
+  const toolPages = [];
+  for (const d of await readdir(join(ROOT, "docs"), { withFileTypes: true })) {
+    if (!d.isDirectory()) continue;
+    const idx = join(ROOT, "docs", d.name, "index.html");
+    let html;
+    try { html = await readFile(idx, "utf8"); } catch { continue; }
+    // 計算ツール = assets/*_core.js を読み込んで計算しているページ(記事・about等は除外)
+    if (/assets\/[a-z_]+_core\.js/.test(html)) toolPages.push(`/docs/${d.name}/`);
+  }
+  const uncovered = toolPages.filter((p) => !covered.has(p));
+  if (uncovered.length) {
+    console.error(`\n❌ E2Eシーンが無い計算ツール: ${uncovered.join(", ")}`);
+    console.error("   正常条件で正しい答えが出ることを確かめるシーンを tools/e2e/harness.html に足すこと");
+    fails.push(...uncovered.map((p) => `coverage:${p}`));
+  } else {
+    console.log(`\n📋 計算ツール ${toolPages.length}件すべてに正常系シーンあり`);
+  }
+}
+
 if (fails.length) {
   console.error(`\n❌ 失敗: ${fails.join(", ")}`);
   process.exit(1);
