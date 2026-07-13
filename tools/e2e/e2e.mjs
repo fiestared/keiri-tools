@@ -115,18 +115,31 @@ const SCENES = [
   // 期待値は協会けんぽの**公式保険料額表**(PDF機械抽出)。ツールのコードを通っていない独立オラクル
   // 40歳未満は介護保険料の**行が出ない**こと(否定文「かかりません」は本文に出るので、
   // 判定は本文の正規表現でなく結果テーブルの行ラベルで見る)。どの年度の料率かも申告すること
+  // 42,570(公式額表) + 1,500(雇用保険 300,000×5/1000) = 44,070
   { name: "shaho", expect: (s) =>
-      s.self === s.expected && s.self === 42570 && !s.failed &&
-      !s.showsKaigoRow && s.showsYear },
+      s.self === s.expected && s.self === 44070 && !s.failed &&
+      !s.showsKaigoRow && s.showsKoyouRow && s.showsYear },
   // 料率の到着を待たずに押しても、待って正しい額を出すこと
   { name: "shaho_slow", slow: true, expect: (s) =>
-      s.self === s.expected && s.self === 42570 && !s.failed },
+      s.self === s.expected && s.self === 44070 && !s.failed },
   // 料率を配信できないときは、額を出さずに「読み込めませんでした」と申告すること
   { name: "shaho_nodata", data404: "shaho_rates_r08.json",
     expect: (s) => s.failed && s.self === null },
   // 40〜64歳は介護保険料がかかる。合算料率で控除するのが公式額表と同じ方式
+  // 45,000 + 1,500 = 46,500
   { name: "shaho_kaigo", expect: (s) =>
-      s.self === s.expected && s.self === 45000 && s.showsKaigoRow && !s.failed },
+      s.self === s.expected && s.self === 46500 && s.showsKaigoRow && !s.failed },
+  // ★雇用保険は標準報酬月額でなく**賃金総額**にかかる。報酬月額305,000は等級としては
+  //   300,000(第22級)なので健保・厚年は据え置きだが、雇用保険だけは 305,000×5/1000 = 1,525円。
+  //   ページが標準報酬月額を渡していれば1,500円になり 44,070 に落ちて**ここで捕まる**
+  //   (coreの単体テストは全部緑のままなので、この検査でしか捕まらない)
+  { name: "shaho_koyou_gaku", expect: (s) =>
+      s.self === s.expected && s.self === 44095 && s.expectedKoyou === 1525 &&
+      s.showsKoyouRow && !s.failed },
+  // 業種を建設にすると本人6/1000 → 300,000×6/1000 = 1,800円。42,570 + 1,800 = 44,370
+  { name: "shaho_koyou_kensetsu", expect: (s) =>
+      s.self === s.expected && s.self === 44370 && s.expectedKoyou === 1800 &&
+      s.showsKoyouRow && !s.failed },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",

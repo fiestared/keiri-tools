@@ -608,13 +608,26 @@ SCENES.gensen_shoyo_otsu = shoyoScene({ shoyo: 500000, shoyoIns: 0, zengetsu: 30
 // を独立オラクルにする。被検体と同じ shaho_core.js で期待値を作ると、coreのバグで両方同じように
 // 間違える(第3便からの規律)。額表は「全額/折半額」を銭単位で持つ公式の値なので、
 // 料率・等級・端数処理のどれが壊れても必ず落ちる。
-const shahoScene = ({ monthly, age, bonus = 0 }) => async () => {
+// 雇用保険の**独立オラクル**: 厚労省が公表した「労働者負担」そのもの(1000分率)。
+// 出典: 厚生労働省「令和8年度 雇用保険料率のご案内」(LL080312保01)
+//   https://www.mhlw.go.jp/content/001692566.pdf
+// ★ツールの shaho_rates_r08.json も shaho_core.js の導出式も通らない値をここに置く。
+//   (ツールは total と 二事業 から (13.5-3.5)/2 と**導出**する。導出が壊れればここと合わなくなる)
+const KOYOU_WORKER_PERMILLE = { general: 5, agri_sake: 6, construction: 6 };
+
+const shahoScene = ({ monthly, age, bonus = 0, standard = null, gyoshu = null }) => async () => {
   const doc = await open("/docs/shakai-hoken/");
   const kenpo = await (await fetch("/tests/fixtures/kyoukaikenpo_tokyo_r08.json?raw=1")).json();
 
   set(doc, "monthly", String(monthly));
   set(doc, "age", String(age));
   if (bonus > 0) set(doc, "bonus", String(bonus));
+  // 業種を変えるシーンだけは、選択肢が描かれるのを待ってから選ぶ(選択肢は料率JSONから作られる)。
+  // 既定(一般の事業)のシーンは待たずに押す ＝ 実ユーザーと同じ「到着前に押す」経路を残す
+  if (gyoshu) {
+    await waitFor(() => doc.querySelector(`#gyoshu option[value="${gyoshu}"]`), "業種の選択肢");
+    set(doc, "gyoshu", gyoshu);
+  }
   click(doc, "calc"); // ← 料率JSONの到着を待たずに押す(実ユーザーと同じ)
 
   await waitFor(
@@ -623,13 +636,22 @@ const shahoScene = ({ monthly, age, bonus = 0 }) => async () => {
   );
   const body = text(doc, "result");
 
-  // 公式額表(東京・standard=報酬月額そのものが等級の額になる入力を選ぶ)から本人負担を組む。
-  // 40歳未満/65歳以上は介護なし、40〜64歳は健保+介護の合算列を使う(公式額表と同じ方式)
-  const g = kenpo.grades.find((x) => x.standard === monthly);
+  // 公式額表(東京)から健保・支援金・厚年の本人負担を組む。
+  // standard を明示できる(報酬月額 305,000 は等級としては 300,000 になる、のような入力を試すため)
+  const std = standard ?? monthly;
+  const g = kenpo.grades.find((x) => x.standard === std);
   const kaigo = age >= 40 && age < 65;
-  const expectedSelf = g
+  const shahoSelf = g
     ? Math.round((kaigo ? g.kenko_kaigo_half : g.kenko_half) + g.kosodate_half + g.kosei_half)
     : null;
+
+  // ★雇用保険は**標準報酬月額ではなく賃金総額(monthly)**にかかる(徴収法11条1項)。
+  //   ここで std でなく monthly を使うのが肝。ページが標準報酬月額を渡していれば、
+  //   monthly≠std のシーン(shaho_koyou_gaku)でここと食い違って落ちる。
+  //   端数は50銭以下切捨・50銭超切上
+  const raw = monthly * (KOYOU_WORKER_PERMILLE[gyoshu ?? "general"] / 1000);
+  const koyouSelf = (raw - Math.floor(raw)) > 0.5 ? Math.ceil(raw) : Math.floor(raw);
+  const expectedSelf = shahoSelf === null ? null : shahoSelf + koyouSelf;
 
   const m = body.match(/毎月の本人負担\s*¥([\d,]+)/);
   // 「介護保険料の行が出ているか」は**本文への正規表現で見てはいけない**。画面は
@@ -641,22 +663,35 @@ const shahoScene = ({ monthly, age, bonus = 0 }) => async () => {
   return {
     monthly, age,
     self: m ? Number(m[1].replace(/,/g, "")) : null,
-    expected: expectedSelf,          // ← 公式PDF由来。ツールのコードを一切通っていない
+    expected: expectedSelf,          // ← 公式PDF+厚労省公表値由来。ツールのコードを一切通っていない
+    expectedKoyou: koyouSelf,
     kaigoApplies: kaigo,
     showsKaigoRow: rowLabels.some((l) => l.includes("介護保険")),
+    showsKoyouRow: rowLabels.some((l) => l.includes("雇用保険")),
     showsYear: /令和\d+年度の料率/.test(body), // どの年度の料率で答えたかを申告しているか
     rowLabels,
     failed: body.includes("読み込めませんでした"),
     body,
   };
 };
-// 東京都・標準報酬30万円・30歳 → 公式額表で 14,775 + 345 + 27,450 = 42,570円。
+// 東京都・標準報酬30万円・30歳 → 公式額表で 14,775 + 345 + 27,450 = 42,570円
+//                              + 雇用保険 300,000×5/1000 = 1,500円 → 44,070円。
 // 料率が1つでも欠ける/端数処理が別方式だと必ずズレる常設プローブ
 SCENES.shaho = shahoScene({ monthly: 300000, age: 30 });
 SCENES.shaho_slow = SCENES.shaho;    // 800ms遅らせる(モバイル回線)。待って正答すること
 SCENES.shaho_nodata = SCENES.shaho;  // 料率を配信できない → 額を出さず申告すること
 // 40〜64歳は介護保険料がかかる(健保と合算した料率で控除。公式額表と同じ方式)
 SCENES.shaho_kaigo = shahoScene({ monthly: 300000, age: 45 });
+
+// ★★雇用保険は「賃金総額」にかかる。**単体テストでは絶対に捕まらないページのバグ**を狙う:
+//   ページが calcKoyou(monthly) でなく calcKoyou(r.standard) と書いていても、
+//   core のテストは全部緑のまま(coreは正しいので)。第14便の「coreは正しくページが壊れていた」と同型。
+//   報酬月額 305,000 は等級としては 300,000(第22級)なので、健保・厚年は 300,000 のときと**同額**。
+//   しかし雇用保険だけは実額にかかるので 305,000×5/1000 = 1,525円 でなければならない
+//   (標準報酬月額を渡していれば 1,500円 になり、25円ずれて落ちる)。
+SCENES.shaho_koyou_gaku = shahoScene({ monthly: 305000, age: 30, standard: 300000 });
+// 業種で雇用保険料率が変わること(建設は本人6/1000)。健保・厚年は業種で変わらない
+SCENES.shaho_koyou_kensetsu = shahoScene({ monthly: 300000, age: 30, gyoshu: "construction" });
 
 let state;
 try {

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>社会保険料 計算機｜標準報酬月額から健康保険・厚生年金を自動計算【2026年度・都道府県別】</title>
-<meta name="description" content="給与額を入れるだけで、標準報酬月額の等級・健康保険料・介護保険料・厚生年金保険料を自動計算。令和8年度（2026年度）の都道府県別料率に対応。本人負担と会社負担、賞与の保険料（上限つき）も計算できます。登録不要・無料。">
+<title>社会保険料 計算機｜健康保険・厚生年金・雇用保険を自動計算【2026年度・都道府県別】</title>
+<meta name="description" content="給与額を入れるだけで、標準報酬月額の等級・健康保険料・介護保険料・厚生年金保険料・雇用保険料を自動計算。令和8年度（2026年度）の都道府県別料率・雇用保険料率に対応。本人負担と会社負担、賞与の保険料も計算できます。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/shakai-hoken/">
 <script type="application/ld+json">
@@ -21,7 +21,7 @@
         "price": "0",
         "priceCurrency": "JPY"
       },
-      "description": "標準報酬月額から健康保険・介護保険・厚生年金の保険料を計算します。令和8年度の都道府県別料率対応。"
+      "description": "標準報酬月額から健康保険・介護保険・厚生年金の保険料と、賃金総額から雇用保険料を計算します。令和8年度の都道府県別料率・雇用保険料率対応。"
     },
     {
       "@type": "BreadcrumbList",
@@ -65,6 +65,14 @@
             "@type": "Answer",
             "text": "協会けんぽの健康保険料率は、都道府県ごとの医療費水準を反映して設定されているためです。毎年度改定されます。なお厚生年金保険料率は全国一律で18.3%です。"
           }
+        },
+        {
+          "@type": "Question",
+          "name": "雇用保険料はなぜ労使折半ではないのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "会社だけが負担する部分があるからです。雇用保険料率のうち「雇用保険二事業」（雇用調整助成金などの財源）は事業主のみが負担します。労働保険徴収法31条1項1号は、被保険者の負担を「雇用保険率から二事業の分を差し引いた額の2分の1」と定めており、二事業を除いてから折半する仕組みです。令和8年度の一般の事業では、雇用保険率13.5/1,000のうち二事業が3.5/1,000なので、本人は（13.5−3.5）÷2＝5/1,000、会社は残りの8.5/1,000を負担します。"
+          }
         }
       ]
     }
@@ -92,7 +100,7 @@
 
 <section class="hero">
   <h1>社会保険料 計算機</h1>
-  <p>給与額を入れるだけで、<b>標準報酬月額の等級</b>・健康保険料・介護保険料・厚生年金保険料を自動計算します。<b>令和8年度（2026年度）の都道府県別料率</b>に対応。</p>
+  <p>給与額を入れるだけで、<b>標準報酬月額の等級</b>・健康保険料・介護保険料・厚生年金保険料・<b>雇用保険料</b>を自動計算します。<b>令和8年度（2026年度）の都道府県別料率</b>に対応。</p>
 </section>
 
 <div class="card">
@@ -106,6 +114,9 @@
       <input type="number" id="age" value="35" min="15" max="74" inputmode="numeric">
     </div>
   </div>
+
+  <label for="gyoshu">業種<span style="font-weight:400;font-size:12px;color:var(--sub)">　雇用保険料率だけが業種で変わります（健康保険・厚生年金は業種で変わりません）</span></label>
+  <select id="gyoshu"></select>
 
   <label for="monthly">報酬月額（円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　基本給＋残業手当＋通勤手当など、税引き前の総支給額</span></label>
   <input type="number" id="monthly" placeholder="例: 300000" inputmode="numeric">
@@ -125,8 +136,10 @@
   <p>標準賞与額（1,000円未満切捨）に同じ料率を掛けますが、<b>健康保険は年度累計573万円、厚生年金は1回あたり150万円</b>が上限です。上限を超えた分には保険料がかかりません。</p>
   <h3>子ども・子育て支援金（令和8年4月から新設）</h3>
   <p>令和8年（2026年）4月分から、<b>子ども・子育て支援金</b>（0.23%）の徴収が始まりました。<b>年齢に関係なく全員が対象</b>で、労使折半です。健康保険料とは別枠で控除されます。</p>
+  <h3>雇用保険料は「賃金総額」にかかります（等級は関係ありません）</h3>
+  <p>健康保険・厚生年金は標準報酬月額（等級）に料率を掛けますが、<b>雇用保険料だけは、実際に支払われた賃金の総額にそのまま料率がかかります</b>（労働保険徴収法11条1項）。等級表を経由しないので、<b>同じ等級でも賃金が違えば雇用保険料は違います</b>。通勤手当・残業代・賞与もすべて含まれ、<b>賞与には1,000円未満切捨も上限もありません</b>。</p>
   <h3>この計算機の前提</h3>
-  <p>協会けんぽ（全国健康保険協会）の令和8年度の都道府県別料率、厚生年金保険料率18.3%（全国一律）で計算しています。健康保険組合に加入している場合は料率が異なります。子ども・子育て支援金（0.23%・労使折半）を含みます。子ども・子育て拠出金（会社負担のみ）は含んでいません。</p>
+  <p>協会けんぽ（全国健康保険協会）の令和8年度の都道府県別料率、厚生年金保険料率18.3%（全国一律）、雇用保険料率は令和8年度（厚生労働省）で計算しています。健康保険組合に加入している場合は料率が異なります。子ども・子育て支援金（0.23%・労使折半）を含みます。子ども・子育て拠出金（会社負担のみ）と労災保険料（全額会社負担）は含んでいません。</p>
   <div class="callout">
     <b>ご注意</b>
     本ツールの計算結果は目安です。実際の保険料額は、日本年金機構・協会けんぽの決定した標準報酬月額に基づきます。個別の判断は年金事務所または社会保険労務士にご確認ください。
@@ -141,16 +154,18 @@
   <p><b>40歳に達したとき（40歳の誕生日の前日が属する月）から、65歳に達するまで</b>です。65歳以降は介護保険の第1号被保険者となり、原則として年金からの天引きに変わります。</p>
   <h3>健康保険料率が都道府県で違うのはなぜ？</h3>
   <p>協会けんぽの健康保険料率は、<b>都道府県ごとの医療費水準を反映して設定されている</b>ためです。毎年度改定されます。なお厚生年金保険料率は全国一律で18.3%です。</p>
+  <h3>雇用保険料はなぜ労使折半ではないのですか？</h3>
+  <p>会社だけが負担する部分があるからです。雇用保険料率のうち<b>「雇用保険二事業」（雇用調整助成金などの財源）は事業主のみが負担します</b>。労働保険徴収法31条1項1号は、被保険者の負担を「雇用保険率から二事業の分を差し引いた額の<b>2分の1</b>」と定めており、<b>二事業を除いてから折半する</b>仕組みです。令和8年度の一般の事業では、雇用保険率13.5/1,000のうち二事業が3.5/1,000なので、本人は（13.5−3.5）÷2＝<b>5/1,000</b>、会社は残りの<b>8.5/1,000</b>を負担します。</p>
 </section>
 </main>
 <footer class="site" style="display:block">
-  料率の出典: 全国健康保険協会「都道府県毎の保険料率」<span id="src-note"></span>／厚生年金保険料率18.3%（日本年金機構）。<br>
+  料率の出典: 全国健康保険協会「都道府県毎の保険料率」<span id="src-note"></span>／厚生年金保険料率18.3%（日本年金機構）／雇用保険料率（厚生労働省）<span id="src-koyou"></span>。<br>
   入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
 </footer>
 
 <script type="module">
-import { calcMonthly, calcBonus, KENKO_GRADES } from "../assets/shaho_core.js";
+import { calcMonthly, calcBonus, calcKoyou, KENKO_GRADES } from "../assets/shaho_core.js";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
@@ -172,6 +187,7 @@ const ratesReady = fetch("../assets/shaho_rates_r08.json")
   .then(d => {
     RATES = d;      // ここから下は「答えを出すのに要るもの」だけ。失敗したら答えない(fail closed)
     fillPrefs(d);   // 都道府県の選択肢も答えに要る(pref が空だと料率を引けない)
+    fillGyoshu(d);  // 業種も答えに要る(雇用保険料率は業種で決まる)
     return true;
   })
   .catch(() => false); // 料率が無いまま保険料を答えることはできない。下で断り書きを出す
@@ -190,6 +206,19 @@ function fillPrefs(d) {
   }
 }
 
+// 業種の選択肢も料率データから描く（ページに業種名と料率を手書きしない）。
+// 選択肢のラベルには**労働者負担**を出す(利用者が見るのは自分の負担なので)。
+function fillGyoshu(d) {
+  const sel = $("gyoshu");
+  for (const [key, t] of Object.entries(d.koyou.types)) {
+    const o = document.createElement("option");
+    o.value = key;
+    o.textContent = `${t.label}（本人 ${t.worker_permille}/1,000）`;
+    if (key === "general") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+
 // 年度・適用開始は**データが持っている値**を出す。ページに「令和8年度」と手書きすると、
 // 料率JSONを差し替えた年に画面だけが古い年度を名乗る(嘘をつく)
 function showSource(d) {
@@ -197,6 +226,12 @@ function showSource(d) {
   const from = (m.rate_applies_from || "").replace("-", "年");
   const parts = [m.year, from && `${from}月分から適用`].filter(Boolean);
   $("src-note").textContent = parts.length ? `（${parts.join("・")}）` : "";
+
+  // 雇用保険の適用期間も**データの値**を出す(ページに手書きしない)
+  const k = d.koyou || {};
+  const span = [k.applies_from, k.applies_to].filter(Boolean)
+    .map(s => s.replace("-", "年") + "月").join("〜");
+  $("src-koyou").textContent = span ? `（${span}）` : "";
 }
 
 $("calc").addEventListener("click", async () => {
@@ -223,6 +258,16 @@ $("calc").addEventListener("click", async () => {
   }
   const r = calcMonthly(monthly, kRate, RATES.kaigo_rate, age);
 
+  // 雇用保険。**渡すのは r.standard(標準報酬月額)ではなく monthly(賃金総額)**。
+  // 雇用保険料だけは等級表を経由せず、実際に支払う賃金の総額にそのまま料率がかかる(徴収法11条1項)。
+  const gy = RATES.koyou.types[$("gyoshu").value];
+  if (!gy) {
+    box.innerHTML = `<div class="note"><b>業種の雇用保険料率が見つかりませんでした。</b>
+      業種を選び直してください。</div>`;
+    return;
+  }
+  const k = calcKoyou(monthly, gy.total_permille, gy.jigyo2_permille);
+
   const row = (label, o, show = true) => show ? `
     <tr><td style="padding:6px 8px">${label}</td>
         <td style="padding:6px 8px;text-align:right">${yen(o.self)}</td>
@@ -233,12 +278,15 @@ $("calc").addEventListener("click", async () => {
     ? `健康保険＋介護保険（${pref} ${kRate.toFixed(2)}% ＋ ${RATES.kaigo_rate.toFixed(2)}% ＝ ${r.kenkoKaigo.rate.toFixed(2)}%）`
     : `健康保険（${pref} ${kRate.toFixed(2)}%）`;
 
+  const selfAll = r.selfTotal + k.self;             // 雇用保険を含めた本人負担
+  const companyAll = r.companyTotal + k.company;
+
   let html = `
     <div class="row" style="margin-bottom:10px">
       標準報酬月額 <b>${yen(r.standard)}</b>（健康保険 第${r.grade}級）
       ${r.koseiStandard !== r.standard ? `／厚生年金 <b>${yen(r.koseiStandard)}</b>（上下限で調整）` : ""}
     </div>
-    <div class="row">毎月の本人負担 <span class="big">${yen(r.selfTotal)}</span>
+    <div class="row">毎月の本人負担 <span class="big">${yen(selfAll)}</span>
       ${RATES._meta?.year ? `<span class="hint">（${RATES._meta.year}の料率）</span>` : ""}</div>
     <div style="overflow-x:auto;margin-top:10px">
     <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
@@ -250,29 +298,38 @@ $("calc").addEventListener("click", async () => {
       ${row(kenkoLabel, r.kenkoKaigo)}
       ${row(`子ども・子育て支援金（${r.kosodate.rate.toFixed(2)}%）`, r.kosodate)}
       ${row("厚生年金（18.3%）", r.kosei)}
+      ${row(`雇用保険（${gy.label} 本人 ${gy.worker_permille}/1,000）`, k)}
       <tr style="border-top:2px solid var(--accent);font-weight:700">
         <td style="padding:6px 8px">合計</td>
-        <td style="padding:6px 8px;text-align:right">${yen(r.selfTotal)}</td>
-        <td style="padding:6px 8px;text-align:right">${yen(r.companyTotal)}</td>
-        <td style="padding:6px 8px;text-align:right">${yen(r.selfTotal + r.companyTotal)}</td></tr>
+        <td style="padding:6px 8px;text-align:right">${yen(selfAll)}</td>
+        <td style="padding:6px 8px;text-align:right">${yen(companyAll)}</td>
+        <td style="padding:6px 8px;text-align:right">${yen(selfAll + companyAll)}</td></tr>
     </table></div>
     <div style="font-size:12.5px;color:var(--sub);margin-top:8px">
       ${r.kaigoApplies
         ? "※ 介護保険料は健康保険料と合算した料率で控除します（公式の保険料額表と同じ方式）。"
         : `※ ${age}歳のため介護保険料はかかりません（40歳以上65歳未満が対象）。`}
       <br>※ 子ども・子育て支援金は令和8年4月分から。年齢に関係なく全員が対象で、労使折半です。
+      <br>※ <b>雇用保険料だけは標準報酬月額ではなく、賃金総額（${yen(k.base)}）にそのままかかります。</b>
+      また<b>労使折半ではありません</b>（本人 ${gy.worker_permille}/1,000 ⇔ 会社 ${gy.employer_permille}/1,000）。
+      差の ${gy.jigyo2_permille}/1,000 は<b>会社だけが負担する「雇用保険二事業」</b>の分です。
     </div>`;
 
   const bonus = Number($("bonus").value);
   if (bonus > 0) {
     const b = calcBonus(bonus, kRate, RATES.kaigo_rate, age);
+    // 賞与にも雇用保険はかかる。**標準賞与額(1,000円未満切捨)ではなく賞与の実額**にかかり、
+    // 健保の573万円・厚年の150万円のような**上限も無い**(徴収法2条2項が賞与を賃金に含める)。
+    const bk = calcKoyou(bonus, gy.total_permille, gy.jigyo2_permille);
     html += `
       <div style="margin-top:18px;padding-top:14px;border-top:1px solid var(--line)">
-        <div class="row">賞与の本人負担 <span class="big">${yen(b.selfTotal)}</span></div>
+        <div class="row">賞与の本人負担 <span class="big">${yen(b.selfTotal + bk.self)}</span></div>
         <div style="font-size:13px;color:var(--sub);margin-top:4px">
-          標準賞与額 ${yen(b.standardBonus)}（1,000円未満切捨）
+          健康保険・厚生年金・支援金 ${yen(b.selfTotal)}（標準賞与額 ${yen(b.standardBonus)}・1,000円未満切捨）
           ${b.capped.kosei ? "／厚生年金は1回150万円の上限を適用" : ""}
           ${b.capped.kenko ? "／健康保険は年度573万円の上限を適用" : ""}
+          <br>雇用保険 ${yen(bk.self)}（<b>賞与の実額 ${yen(bonus)} にそのままかかります</b>。
+          1,000円未満切捨も、上限もありません）
         </div>
       </div>`;
   }

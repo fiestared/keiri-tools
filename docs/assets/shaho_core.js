@@ -128,6 +128,65 @@ export function calcMonthly(monthly, kenkoRate, kaigoRate, age, koseiRate = 18.3
   };
 }
 
+/* ─────────────────── 雇用保険 ───────────────────
+ * 雇用保険は上の3つ(健保・支援金・厚年)と**3点で作りが違う**。混ぜると必ず間違える。
+ *
+ * ① 課税ベースが違う: **標準報酬月額ではなく「賃金総額」**にかかる(徴収法11条1項
+ *    「一般保険料の額は、賃金総額に…保険料率を乗じて得た額とする」)。
+ *    賃金＝「賃金、給料、手当、賞与その他名称のいかんを問わず、労働の対償として事業主が
+ *    労働者に支払うもの」(徴収法2条2項)なので、**通勤手当も残業代も賞与も、実額がそのまま**入る。
+ *    等級表も、標準賞与額の1,000円未満切捨も、573万/150万の上限も**一切ない**。
+ *
+ * ② **労使折半ではない**(令和8年度・一般の事業: 労働者5/1,000 ⇔ 事業主8.5/1,000)。
+ *    折半しているのは失業等給付・育児休業給付の部分だけで、**「雇用保険二事業」
+ *    (雇用安定事業・能力開発事業)は事業主だけが負担する**(3.5/1,000。建設は4.5/1,000)。
+ *    徴収法31条1項1号がそのまま「イ(雇用保険率に応ずる部分)から ロ(イ×二事業率)を減じた額の
+ *    **二分の一**」と書いている ＝ **二事業を抜いてから折半する**。だから:
+ *        労働者負担率 = (雇用保険率 − 二事業分) ÷ 2
+ *        事業主負担率 = 雇用保険率 − 労働者負担率            (31条3項)
+ *    実際、(13.5 − 3.5)/2 = 5、(16.5 − 4.5)/2 = 6 と**厚労省の公表値が再現する**
+ *    (3業種すべて。tests/test_koyou_oracle.mjs で照合)。
+ *
+ * ③ 料率は**業種で変わる**(一般 / 農林水産・清酒製造 / 建設)。都道府県では変わらない
+ *    (健保と逆。健保は都道府県で変わり業種で変わらない)。
+ *
+ * 端数: 源泉控除するときは50銭以下切捨・50銭超切上(roundHalf と同じ実務通例)。
+ * ★ 労働者負担率は**すでに本人の負担分**なので、component() のように 1/2 してはいけない。
+ */
+
+/** 1,000分率 → % */
+const permilleToPct = (p) => p / 10;
+
+/**
+ * 業種の料率(1000分率)から、労働者・事業主の負担率を条文どおりに導出する。
+ * @param {number} totalPermille  雇用保険率(例: 一般の事業 13.5)
+ * @param {number} jigyo2Permille 雇用保険二事業の率・事業主のみ(例: 3.5)
+ */
+export function koyouRates(totalPermille, jigyo2Permille) {
+  const worker = (totalPermille - jigyo2Permille) / 2;  // 徴収法31条1項1号
+  const employer = totalPermille - worker;              // 徴収法31条3項
+  return { totalPermille, jigyo2Permille, workerPermille: worker, employerPermille: employer };
+}
+
+/**
+ * 雇用保険料を計算する。**base は賃金総額(実額)**。標準報酬月額を渡してはいけない。
+ * @param {number} wage 賃金(円)。月給なら総支給額、賞与なら賞与額そのもの
+ */
+export function calcKoyou(wage, totalPermille, jigyo2Permille) {
+  const r = koyouRates(totalPermille, jigyo2Permille);
+  const total = wage * (totalPermille / 1000);
+  const selfRaw = wage * (r.workerPermille / 1000);
+  const self = roundHalf(selfRaw);           // ← すでに本人分。1/2しない
+  return {
+    ...r,
+    base: wage,
+    rate: permilleToPct(totalPermille),      // 表示用(%)
+    workerRate: permilleToPct(r.workerPermille),
+    total, selfRaw, self,
+    company: Math.round(total) - self,
+  };
+}
+
 /**
  * 賞与の保険料を計算する。標準賞与額は1,000円未満切捨。
  * 子ども・子育て支援金も健保と同じ標準賞与額にかかる。
