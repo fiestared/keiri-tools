@@ -47,25 +47,53 @@ t("計算例3: 775,200円・3人 → 月額表59,477円 / 特例59,470円", () =
 });
 
 // ── 2. 表の全行 × 0〜7人 を、特例(中間値)と突合する ──
-t("月額表の全行 == 電算機特例(階級の中間値) [231行 × 8人数]", () => {
+//
+// ⚠️ ここは最初「表の値 == 特例(中間値)」で書いたが、**その等式は成り立たない**。
+// 特例PDFの「税額表は階級の中間値を基として計算してある」は、両者が食い違う *理由の説明* であって、
+// 「中間値を入れれば表と同じ値になる」という保証ではなかった（1,848セル中375件が不一致）。
+// PDF自身が「特例により求めた税額は税額表による税額とは必ずしも一致しません」と明記している。
+//
+// 実測した食い違いの姿（令和8年分）:
+//   - 375/1,848件が不一致。うち368件は**ちょうど±10円**（丸めの境界）
+//   - 残り7件は「表は0円だが特例は少額を出す」ケース（課税給与所得金額がほぼ0の境目）
+//   - **最大の差は100円**
+// したがって等式ではなく「100円以内に収まること」を不変条件にする。
+// 列がずれる・桁を読み違えるといった抽出事故は数百〜数千円の差になるので、この幅で確実に落ちる。
+const MAX_DIVERGENCE = 100;
+
+t(`月額表と電算機特例(中間値)の差が${MAX_DIVERGENCE}円以内 [231行 × 8人数]`, () => {
   let checked = 0;
-  const diffs = [];
+  const bad = [];
   for (const r of table.rows) {
     const mid = (r.min + r.max) / 2;
     assert.ok(Number.isInteger(mid), `中間値が整数でない: ${r.min}-${r.max}`);
     for (let n = 0; n <= 7; n++) {
-      const fromTable = r.kou[n];
-      const fromFormula = denshiKouTax(mid, n);
-      if (fromTable !== fromFormula) {
-        diffs.push(`${r.min.toLocaleString()}〜${r.max.toLocaleString()}円/${n}人: `
-          + `表${fromTable} vs 特例(${mid.toLocaleString()})${fromFormula}`);
+      const d = Math.abs(denshiKouTax(mid, n) - r.kou[n]);
+      if (d > MAX_DIVERGENCE) {
+        bad.push(`${r.min.toLocaleString()}〜${r.max.toLocaleString()}円/${n}人: `
+          + `表${r.kou[n]} vs 特例(${mid.toLocaleString()})${denshiKouTax(mid, n)} 差${d}`);
       }
       checked++;
     }
   }
-  assert.equal(diffs.length, 0,
-    `${diffs.length}/${checked}件が不一致:\n  ` + diffs.slice(0, 10).join("\n  "));
+  assert.equal(bad.length, 0,
+    `${bad.length}件が${MAX_DIVERGENCE}円を超えて乖離:\n  ` + bad.slice(0, 10).join("\n  "));
   assert.equal(checked, table.rows.length * 8);
+});
+
+// 「一致しない」こと自体も固定する。ここが0件になったら、
+// 表か特例のどちらかを取り違えている（同じものを2回計算している）疑いがある。
+t("表と特例は実際に食い違う（同じ計算を2回していないことの確認）", () => {
+  let diff = 0;
+  for (const r of table.rows) {
+    const mid = (r.min + r.max) / 2;
+    for (let n = 0; n <= 7; n++) {
+      if (denshiKouTax(mid, n) !== r.kou[n]) diff++;
+    }
+  }
+  assert.ok(diff > 0, "表と特例が完全一致した — 別々の計算になっていない可能性");
+  // 国税庁PDFの計算例1がまさにこの食い違い（表250円 / 特例210円）
+  assert.notEqual(kouTax(table, 175_000, 2), denshiKouTax(175_000, 2));
 });
 
 // ── 3. 表の構造 ──
