@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>お問い合わせ｜経理ミニツールズ</title>
+<meta name="description" content="経理ミニツールズへのお問い合わせ。計算結果の誤り・料率の改定・ツールの不具合のご報告、機能のご要望、掲載・取材のご依頼などをお送りいただけます。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/contact/">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › お問い合わせ</nav>
+
+<section class="hero">
+  <h1>お問い合わせ</h1>
+  <p>計算結果の誤り・料率の改定のご指摘、ツールの不具合、機能のご要望、掲載・取材のご依頼など、お気軽にお送りください。</p>
+</section>
+
+<div class="callout">
+  <b>計算結果の誤りを見つけたら、ぜひ教えてください</b>
+  当サイトのツールは、協会けんぽ・国税庁・全銀協などの公表資料に基づいて作成し、公式の計算例と照合するテストを行っています。それでも法改正や料率改定の反映漏れ、判定条件の見落としがあり得ます。<b>具体的な入力値と、正しいはずの結果を添えてご連絡いただければ、確認して修正します。</b>
+</div>
+
+<div class="card">
+  <form id="contact-form" action="https://formspree.io/f/REPLACE_ME" method="POST">
+    <label for="category">お問い合わせの種類</label>
+    <select id="category" name="種類" required>
+      <option value="">選択してください</option>
+      <option>計算結果の誤り・料率の改定について</option>
+      <option>ツールの不具合・エラー</option>
+      <option>機能のご要望</option>
+      <option>Chrome拡張機能について</option>
+      <option>掲載・取材・執筆のご依頼</option>
+      <option>その他</option>
+    </select>
+
+    <label for="name">お名前（任意）</label>
+    <input type="text" id="name" name="お名前" autocomplete="name">
+
+    <label for="email">メールアドレス<span style="font-weight:400;font-size:12px;color:var(--sub)">　返信が必要な場合はご記入ください</span></label>
+    <input type="email" id="email" name="email" autocomplete="email">
+
+    <label for="page">対象のページ（任意）</label>
+    <input type="text" id="page" name="対象ページ" placeholder="例: 社会保険料 計算機">
+
+    <label for="message">お問い合わせ内容</label>
+    <textarea id="message" name="内容" rows="8" required
+      style="width:100%;font-size:15px;padding:10px 12px;border:1px solid var(--line);border-radius:8px"
+      placeholder="計算結果の誤りの場合は、入力した値（例: 東京都・月給30万円・35歳）と、正しいはずの結果を書いていただけると助かります。"></textarea>
+
+    <!-- スパムよけ(人間には見えない。ボットが埋めると送信しない) -->
+    <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+
+    <button class="primary" type="submit">送信する</button>
+    <div id="form-status" style="margin-top:12px"></div>
+  </form>
+</div>
+
+<section class="faq">
+  <h2>お問い合わせの前に</h2>
+  <h3>個別の税務・労務相談にはお答えできません</h3>
+  <p>当サイトは計算ツールと情報提供を行うものであり、<b>税理士・社会保険労務士による個別のご相談には応じられません</b>。具体的な処理の判断は、顧問の専門家または所轄の税務署・年金事務所にご確認ください。</p>
+  <h3>入力したデータについて</h3>
+  <p>ツールに入力された金額などのデータは<b>ブラウザの外に送信されていません</b>ので、当方から確認することはできません。不具合のご報告の際は、<b>再現する入力値をお書き添えください</b>。</p>
+  <h3>返信について</h3>
+  <p>個人で運営しているため、すべてのお問い合わせに返信できるとは限りません。<b>計算誤りのご指摘については優先的に確認・修正</b>いたします。</p>
+</section>
+</main>
+<footer class="site" style="display:block">© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script>
+// Formspreeへ非同期送信し、ページ遷移せずに結果を出す
+const form = document.getElementById("contact-form");
+const status = document.getElementById("form-status");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (form.action.includes("REPLACE_ME")) {
+    status.innerHTML = '<div class="note">送信先が未設定です。しばらくお待ちください。</div>';
+    return;
+  }
+  const btn = form.querySelector("button");
+  btn.disabled = true;
+  btn.textContent = "送信中…";
+  try {
+    const res = await fetch(form.action, {
+      method: "POST",
+      body: new FormData(form),
+      headers: { Accept: "application/json" },
+    });
+    if (res.ok) {
+      form.style.display = "none";
+      status.innerHTML = '<div class="summary-box"><div class="t">送信しました</div>' +
+        '<p style="margin:0">お問い合わせありがとうございます。内容を確認いたします。' +
+        '返信が必要な場合は、順次ご連絡します。</p></div>';
+    } else {
+      throw new Error("送信に失敗しました");
+    }
+  } catch (err) {
+    status.innerHTML = '<div class="note">送信できませんでした。時間をおいて再度お試しください。</div>';
+    btn.disabled = false;
+    btn.textContent = "送信する";
+  }
+});
+</script>
+</body>
+</html>
