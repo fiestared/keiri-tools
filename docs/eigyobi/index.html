@@ -11,18 +11,71 @@
 {
   "@context": "https://schema.org",
   "@graph": [
-    {"@type": "WebApplication", "name": "日数計算・営業日計算ツール",
-     "applicationCategory": "BusinessApplication", "operatingSystem": "Web",
-     "offers": {"@type": "Offer", "price": "0", "priceCurrency": "JPY"},
-     "description": "期間の日数と営業日数、◯営業日後の日付を土日祝対応で計算します。"},
-    {"@type": "BreadcrumbList", "itemListElement": [
-      {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://keiri-tools.com/"},
-      {"@type": "ListItem", "position": 2, "name": "日数計算・営業日計算"}]},
-    {"@type": "FAQPage", "mainEntity": [
-      {"@type": "Question", "name": "「3営業日後」はいつですか？",
-       "acceptedAnswer": {"@type": "Answer", "text": "土日・祝日を除いて3日進めた日です。起算日は翌日からで、当日は含みません。たとえば金曜の3営業日後は、翌週の水曜になります（祝日がなければ）。"}},
-      {"@type": "Question", "name": "日数計算で開始日は含みますか？",
-       "acceptedAnswer": {"@type": "Answer", "text": "本ツールでは「両端を含む」と「片端のみ」を切り替えられます。契約書の期間計算では初日不算入が原則ですが、宿泊日数や在籍日数では両端を含めることがあります。"}}]}
+    {
+      "@type": "WebApplication",
+      "name": "日数計算・営業日計算ツール",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "期間の日数と営業日数、◯営業日後の日付を土日祝対応で計算します。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "日数計算・営業日計算"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "「3営業日後」はいつですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "土日・祝日を除いて3日進めた日です。起算日は翌日からで、当日は数えません。たとえば金曜日の3営業日後は、翌週の水曜日になります（間に祝日がなければ）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "日数計算で開始日は含みますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "用途によって変わります。契約期間の計算では初日不算入が原則（民法140条）ですが、宿泊日数・在籍日数などは両端を含めて数えることがあります。本ツールは切り替えられます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "銀行が休みになるのはいつですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "銀行は土日祝に加えて12月31日〜1月3日も休業します。振込の着金日を計算するときは「年末年始」にチェックを入れてください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "支払日（月末締め翌月末払いなど）を計算したいときは？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "「月末締め翌月末払い」のような支払条件から支払日を一覧で出したいときは、支払サイト・支払日計算ツールをご利用ください。取引先ごとの条件を保存でき、カレンダー(.ics)にも出力できます。"
+          }
+        }
+      ]
+    }
   ]
 }
 </script>
@@ -100,14 +153,14 @@
 </div>
 
 <section class="faq">
-  <h2>使い方と考え方</h2>
-  <h3>「3営業日後」はいつ？</h3>
+  <h2 id="faq">よくある質問</h2>
+  <h3>「3営業日後」はいつですか？</h3>
   <p>土日・祝日を除いて3日進めた日です。<b>起算日は翌日から</b>で、当日は数えません。たとえば金曜日の3営業日後は、翌週の水曜日になります（間に祝日がなければ）。</p>
-  <h3>日数計算で開始日は含める？</h3>
+  <h3>日数計算で開始日は含みますか？</h3>
   <p>用途によって変わります。契約期間の計算では<b>初日不算入</b>が原則（民法140条）ですが、宿泊日数・在籍日数などは両端を含めて数えることがあります。本ツールは切り替えられます。</p>
-  <h3>銀行の休業日について</h3>
+  <h3>銀行が休みになるのはいつですか？</h3>
   <p>銀行は土日祝に加えて<b>12月31日〜1月3日も休業</b>します。振込の着金日を計算するときは「年末年始」にチェックを入れてください。</p>
-  <h3>支払日の計算をしたい場合</h3>
+  <h3>支払日（月末締め翌月末払いなど）を計算したいときは？</h3>
   <p>「月末締め翌月末払い」のような支払条件から支払日を一覧で出したいときは、<a href="../shiharai-site/">支払サイト・支払日計算ツール</a>をご利用ください。取引先ごとの条件を保存でき、カレンダー(.ics)にも出力できます。</p>
   <div class="callout">
     <b>祝日データについて</b>
