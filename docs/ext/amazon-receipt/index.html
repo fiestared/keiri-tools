@@ -43,12 +43,11 @@
       <span>✓ 注文データは外部に送信されません</span>
       <span>✓ Excelでそのまま開けるCSV</span>
     </div>
+    <a class="store-cta" href="https://chromewebstore.google.com/detail/fggblnhfkgdfmgjfnmhckoidpbiideob" rel="noopener">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="3.6" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8.4h9M8.9 13.8 4.4 6.1M15.1 13.8l-4.5 7.7" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+      <span>Chromeウェブストアで追加する（無料）</span>
+    </a>
   </section>
-
-  <div class="note">
-    <b>現在、Chromeウェブストアへの公開を準備中です。</b>
-    公開までは、開発者モードでの読み込みでお使いいただけます（下記「使い方」）。
-  </div>
 
   <div class="section-head"><h2>なにが面倒なのか</h2></div>
   <p class="lead">電子取引（Amazonでの購入もこれにあたります）のデータは、<b>取引年月日・取引金額・取引先の3つで検索できる状態</b>で保存することが求められます。索引簿（一覧表）を作れば、この要件を満たせます。</p>
@@ -112,17 +111,18 @@
         <tr><td><b>領収書の一括保存</b>（電帳法のファイル名規約つき）</td><td>—</td><td>✅</td></tr>
       </tbody>
     </table>
-    <p class="hint">Pro版は買い切り¥1,480を予定（現在準備中）。無料版だけでも、表示中のページの索引簿CSVは作れます。</p>
+    <p class="hint">Pro版は<b>買い切り¥1,480</b>（月額ではありません）。まず無料版で試してから、必要なら拡張機能の画面からアップグレードできます。</p>
   </div>
   <p><b>領収書の保存形式について</b>：Amazonは領収書をPDFで配信していないため、保存されるのは<b>領収書ページのHTML</b>です（これが電子取引データそのものであり、保存要件を満たします）。PDFで残したい場合は、保存したファイルを開いて印刷→PDFに保存してください。ファイル名は <code>日付_amazon_金額_注文番号</code> の規約で保存され、索引簿CSVの「保存ファイル名」列と一致します。</p>
 
   <div class="section-head"><h2>使い方</h2></div>
   <ol>
-    <li><code>chrome://extensions</code> を開き、右上の「デベロッパーモード」をONにします</li>
-    <li>「パッケージ化されていない拡張機能を読み込む」で、拡張のフォルダを選びます</li>
-    <li>Amazonの<b>注文履歴ページ</b>を開くと、右下にパネルが出ます</li>
-    <li>「このページをスキャン」→ 件数と合計を確認 → 「索引簿CSV」でダウンロード</li>
+    <li><a href="https://chromewebstore.google.com/detail/fggblnhfkgdfmgjfnmhckoidpbiideob" rel="noopener"><b>Chromeウェブストアで「Chromeに追加」</b></a>を押します（無料）</li>
+    <li>Amazonの<b>注文履歴ページ</b>を開きます（Amazon → アカウント＆リスト → 注文履歴）</li>
+    <li>画面に出てくる<b>「一覧表をつくる」</b>を押します</li>
+    <li>索引簿CSVがダウンロードされます。Excelでそのまま開けます</li>
   </ol>
+  <p class="hint">キャンセルした注文は自動で除外され、金額が取れなかった行には「要確認」の印がつきます。年間分をまとめて作りたい場合は、Pro版で全ページを自動巡回できます。</p>
 
   <div class="section-head"><h2>プライバシー</h2></div>
   <p>注文内容・金額・氏名などのデータを<b>外部に送信することは一切ありません</b>。すべての処理はお使いのブラウザ内で完結し、作成されたCSV・領収書ファイルはお使いのパソコンにのみ保存されます。詳細は<a href="privacy/">プライバシーポリシー</a>をご覧ください。</p>
