@@ -31,6 +31,7 @@ const ORDER = [
   "shakai-hokenryo-keisan",
   "taishokukin-zeikin",
   "gensen-choshuhyo-mikata",    // 源泉徴収票 見方 17,131/月
+  "gensen-zeigakuhyo-mikata",   // 源泉徴収税額表 14,001/月
   "shussan-teate-kin",          // 出産手当金 11,464/月
   "shussan-ikuji-ichijikin",    // 出産育児一時金 11,464/月
   "koyou-hokenryo-ritsu",       // 雇用保険料率 11,464/月
