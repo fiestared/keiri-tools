@@ -141,6 +141,12 @@ function normalizeFamily(f) {
     hitorioyaHaha: !!f?.hitorioyaHaha,
     hitorioyaChichi: !!f?.hitorioyaChichi,
     kinroGakusei: !!f?.kinroGakusei,
+    // ★16歳未満の扶養親族。所得控除には1円も効かない（平成24年に年少扶養控除が廃止された）が、
+    //   均等割・所得割の非課税限度額の「扶養親族の数」には入る（施行令47条の3第1号・附則3条の3）。
+    fuyoNensho: n(f?.fuyoNensho),
+    // 地税295条1項2号の判定に使う（本人が障害者／未成年者か）。扶養親族の障害者控除とは別物。
+    honninShogai: !!f?.honninShogai,
+    honninMiseinen: !!f?.honninMiseinen,
   };
 }
 
@@ -386,6 +392,74 @@ export function shakaiHokenGaisan(kyuyoShunyu, age, kenName, S) {
  *   kifu                // （任意）実際に寄附する額。入れると控除の内訳を返す
  * }
  */
+/** 自治体プリセットを引く。未知のキーは標準税率（先頭）に倒す。 */
+export function pickJichitai(key, D) {
+  const list = D.kintouwari.jichitai;
+  return list.find((j) => j.key === key) || list[0];
+}
+
+/**
+ * 非課税限度額の判定（地税295条1項・3項、附則3条の3）。
+ *
+ * ★★均等割と所得割は根拠も金額も別物:
+ *   - 均等割: 基本額(級地で1.0/0.9/0.8倍) × 人数 + 10万 +（扶養等がいれば）加算額(級地倍率あり)
+ *   - 所得割: 35万 × 人数 + 10万 +（扶養等がいれば）32万  ← 法律で全国一律。級地は効かない
+ * 加算額が21万 vs 32万と違うので、「所得割は非課税だが均等割は課税される」帯ができる。
+ */
+export function hikazeiHantei(goukeiShotoku, sotShotokuTou, family, kyuchi, D) {
+  const H = D.hikazei;
+  const f = normalizeFamily(family);
+
+  const fuyoCount =
+    f.fuyoIppan + f.fuyoTokutei + f.fuyoRojin + f.fuyoDokyoRooya + f.fuyoNensho;
+  const haigushaCount = f.haigusha !== 'none' ? 1 : 0;
+  const ninzu = 1 + haigushaCount + fuyoCount; // 本人＋同一生計配偶者＋扶養親族
+  const hasFuyo = haigushaCount + fuyoCount > 0; // 加算額が発動するか
+
+  // 295条1項2号：本人が障害者・未成年者・寡婦・ひとり親で、合計所得135万円以下 → 均等割も所得割も非課税
+  const honninTokurei =
+    f.honninShogai || f.honninMiseinen || f.kafu || f.hitorioyaHaha || f.hitorioyaChichi;
+  const jonrei295 = honninTokurei && goukeiShotoku <= H.shogaisha_goukei_limit;
+
+  const K = H.kintouwari.kyuchi[String(kyuchi)] || H.kintouwari.kyuchi['1'];
+  const kintouLimit = K.kihon * ninzu + H.kintouwari.plus + (hasFuyo ? K.kasan : 0);
+
+  const S = H.shotokuwari;
+  const shotokuLimit = S.kihon * ninzu + S.plus + (hasFuyo ? S.kasan : 0);
+
+  // 均等割は「合計所得金額」、所得割は「総所得金額等」で判定する（条文が別の語を使っている）
+  const kintouwariHikazei = jonrei295 || goukeiShotoku <= kintouLimit;
+  const shotokuwariHikazei = jonrei295 || sotShotokuTou <= shotokuLimit;
+
+  return {
+    kintouwariHikazei,
+    shotokuwariHikazei,
+    kintouLimit,
+    shotokuLimit,
+    ninzu,
+    hasFuyo,
+    jonrei295,
+    kyuchi: String(kyuchi),
+    kyuchiLabel: K.label,
+    // 所得割だけ非課税＝均等割（＋森林環境税）だけを払う帯
+    kintouwariOnly: !kintouwariHikazei && shotokuwariHikazei,
+  };
+}
+
+/** 均等割＋森林環境税。均等割が非課税なら森林環境税もかからない（森林環境税法4条）。 */
+export function kintouwariGaku(jichitai, kintouwariHikazei, D) {
+  if (kintouwariHikazei) {
+    return { shichoson: 0, dofuken: 0, shinrin: 0, total: 0 };
+  }
+  const shinrin = D.kintouwari.shinrin_kankyozei;
+  return {
+    shichoson: jichitai.shichoson_kintou,
+    dofuken: jichitai.dofuken_kintou,
+    shinrin,
+    total: jichitai.shichoson_kintou + jichitai.dofuken_kintou + shinrin,
+  };
+}
+
 export function calc(input, D) {
   if (!D) throw new Error('参照データ（juminzei_r08.json）が渡されていません');
 
@@ -402,18 +476,45 @@ export function calc(input, D) {
 
   const kazei = kazeiSoShotoku(goukei, kojoGokei);
 
+  // 自治体プリセット。未指定なら標準税率（＝従来の呼び出し側の挙動を変えない）。
+  const hasJichitai = input.jichitai != null && input.jichitai !== '';
+  const J = pickJichitai(input.jichitai, D);
+  const shitei = hasJichitai ? !!J.shitei : !!input.shiteiToshi;
+
   const Z = D.zeiritsu;
-  const sPct = input.shiteiToshi ? Z.shitei_shichoson_pct : Z.shichoson_pct;
-  const dPct = input.shiteiToshi ? Z.shitei_dofuken_pct : Z.dofuken_pct;
+  const sPct = shitei ? Z.shitei_shichoson_pct : Z.shichoson_pct;
+  const dPct = shitei ? Z.shitei_dofuken_pct : Z.dofuken_pct;
 
   const saGokei = jintekiSaGokei(input.family, goukei, D);
-  const chosei = choseiKojo(kazei, saGokei, goukei, !!input.shiteiToshi, D);
+  const chosei = choseiKojo(kazei, saGokei, goukei, shitei, D);
 
+  // ★非課税の判定（均等割と所得割で別々に効く）。
+  //   このコアは繰越損失を扱わないので「合計所得金額」＝「総所得金額等」として扱う。
+  const hikazei = hikazeiHantei(goukei, goukei, input.family, input.kyuchi || 1, D);
+
+  // ── ① 標準税率で計算した所得割額 ──────────────────────────────
+  // ★★ふるさと納税の限度額は、必ずこちらで決まる。
+  //   地税37条の2第11項の20%上限は「第三十五条及び前条の規定を適用した場合の所得割の額」＝
+  //   標準税率で計算した額を明文で指すので、自治体の超過課税・減税は限度額を1円も動かさない。
   const shichosonRaw = Math.floor(kazei * sPct / 100);
   const dofukenRaw = Math.floor(kazei * dPct / 100);
   const shichoson = Math.max(0, shichosonRaw - chosei.shichoson);
   const dofuken = Math.max(0, dofukenRaw - chosei.dofuken);
-  const shotokuwari = shichoson + dofuken; // 調整控除後・寄附金控除前の所得割額
+  // 所得割が非課税なら、控除される所得割そのものが無い（限度額も自己負担2,000円だけになる）
+  const shotokuwari = hikazei.shotokuwariHikazei ? 0 : shichoson + dofuken;
+
+  // ── ② その自治体で実際に課される所得割額 ──────────────────────
+  // 超過課税（神奈川県 +0.025%）・減税（名古屋市 7.7%）はこちらにだけ効く。
+  const aSPct1000 = hasJichitai ? J.shichoson_pct_x1000 : sPct * 1000;
+  const aDPct1000 = hasJichitai ? J.dofuken_pct_x1000 : dPct * 1000;
+  const jissaiShichoson = hikazei.shotokuwariHikazei
+    ? 0 : Math.max(0, Math.floor(kazei * aSPct1000 / 100000) - chosei.shichoson);
+  const jissaiDofuken = hikazei.shotokuwariHikazei
+    ? 0 : Math.max(0, Math.floor(kazei * aDPct1000 / 100000) - chosei.dofuken);
+  const shotokuwariJissai = jissaiShichoson + jissaiDofuken;
+
+  // ── ③ 均等割＋森林環境税 ────────────────────────────────────
+  const kintou = kintouwariGaku(J, hikazei.kintouwariHikazei, D);
 
   const choseiGaku = jintekiChoseiGaku(input.family, goukei, D);
   const R = tokureiRitsu(kazei, choseiGaku, D);
@@ -436,11 +537,20 @@ export function calc(input, D) {
     furusatoGendo: gendo,
     tokureiCap: cap,
     year: D._meta?.year || '',
+
+    // 住民税そのもの（/juminzei/ が使う）
+    jichitai: J,
+    hikazei,
+    shotokuwariJissaiShichoson: jissaiShichoson,
+    shotokuwariJissaiDofuken: jissaiDofuken,
+    shotokuwariJissai,
+    kintouwari: kintou,
+    juminzeiTotal: shotokuwariJissai + kintou.total,
   };
 
   if (input.kifu != null && input.kifu !== '') {
     out.kifu = furusatoKojo(
-      input.kifu, shichoson, dofuken, R.pct_x1000, R.shotokuzei_pct, goukei, !!input.shiteiToshi, D
+      input.kifu, shichoson, dofuken, R.pct_x1000, R.shotokuzei_pct, goukei, shitei, D
     );
   }
   return out;

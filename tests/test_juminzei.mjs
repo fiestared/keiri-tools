@@ -15,6 +15,7 @@ import {
   kyuyoShotoku, kyuyoKojo, juminzeiKisoKojo, shotokuzeiKisoKojo,
   jintekiKojo, jintekiSaGokei, jintekiChoseiGaku, kazeiSoShotoku,
   choseiKojo, tokureiRitsu, furusatoGendo, calc, shakaiHokenGaisan,
+  hikazeiHantei, kintouwariGaku, pickJichitai,
 } from '../docs/assets/juminzei_core.js';
 
 const D = JSON.parse(readFileSync(new URL('../docs/assets/juminzei_r08.json', import.meta.url), 'utf8'));
@@ -267,6 +268,140 @@ for (const shunyu of [3_000_000, 5_000_000, 8_000_000, 12_000_000, 30_000_000]) 
   const plus1 = calc({ kyuyoShunyu: shunyu, shakaiHoken: shakai, family: {}, kifu: r.furusatoGendo + 1 }, D);
   ok(plus1.kifu.jikoFutan >= at.kifu.jikoFutan,
      `年収${shunyu / 10000}万: 限度額+1円 → 自己負担は減らない`);
+}
+
+
+// ─────────────────────────────────────────────────────────────────────
+console.log('\n■ 均等割・森林環境税（地税310条 3,000円 / 38条 1,000円 / 森林環境税法5条 1,000円）');
+
+{
+  const std = pickJichitai('hyojun', D);
+  const k = kintouwariGaku(std, false, D);
+  eq(k.shichoson, 3000, '市町村民税の均等割の標準税率は3,000円（地税310条）');
+  eq(k.dofuken, 1000, '道府県民税の均等割の標準税率は1,000円（地税38条）');
+  eq(k.shinrin, 1000, '森林環境税は国税で全国一律1,000円（森林環境税法5条）');
+  eq(k.total, 5000, '標準税率の自治体の均等割＋森林環境税は5,000円');
+
+  // ★外部オラクル: 自治体が自分で公表している「合計額」と一致するか
+  //   （内訳を自分で足した数ではなく、横浜市・神戸市が公表している総額と突き合わせる）
+  const yoko = kintouwariGaku(pickJichitai('yokohama', D), false, D);
+  eq(yoko.total, 6200, '★横浜市の公表額 6,200円と一致（市3,900＋県1,300＋森林1,000）');
+  const kobe = kintouwariGaku(pickJichitai('kobe', D), false, D);
+  eq(kobe.total, 6200, '★神戸市の公表額 6,200円と一致（市3,400＋県1,800＋森林1,000）');
+
+  // 均等割が非課税なら森林環境税もかからない（森林環境税法4条）
+  const hi = kintouwariGaku(pickJichitai('yokohama', D), true, D);
+  eq(hi.total, 0, '均等割が非課税なら森林環境税もかからない（森林環境税法4条）');
+  eq(hi.shinrin, 0, '　└ 森林環境税だけ残ったりしない');
+
+  // 未知のキーは標準に倒す（黙って undefined を掛け算しない）
+  eq(pickJichitai('存在しない市', D).key, 'hyojun', '未知の自治体キーは標準税率に倒す');
+}
+
+// ─────────────────────────────────────────────────────────────────────
+console.log('\n■ ★★超過課税は「納税額」を動かすが「ふるさと納税の限度額」は1円も動かさない');
+
+{
+  // 地税37条の2第11項の20%上限は「第三十五条及び前条の規定を適用した場合の所得割の額」＝
+  // 標準税率で計算した所得割額を明文で指す。だから神奈川県（所得割+0.025%）でも限度額は変わらない。
+  const inp = { kyuyoShunyu: 5000000, shakaiHoken: 700000, family: {} };
+  const hyojun = calc({ ...inp, jichitai: 'hyojun' }, D);
+  const kanagawa = calc({ ...inp, jichitai: 'kanagawa' }, D);
+  const yokohama = calc({ ...inp, jichitai: 'yokohama' }, D);
+
+  eq(kanagawa.furusatoGendo, hyojun.furusatoGendo,
+     '★神奈川県（所得割 4.025%）でも、ふるさと納税の限度額は標準の自治体と同額');
+  eq(yokohama.furusatoGendo, hyojun.furusatoGendo,
+     '★横浜市（指定都市8:2＋県の超過課税）でも、限度額は同額');
+
+  // 一方、実際に払う所得割は増える（＝限度額と納税額で答えが逆になる）
+  ok(kanagawa.shotokuwariJissai > hyojun.shotokuwariJissai,
+     '★しかし実際に払う所得割は神奈川県のほうが高い（超過課税がここには効く）');
+  eq(kanagawa.shotokuwariJissai - hyojun.shotokuwariJissai, 607,
+     '　└ 年収500万・独身・社保70万での差は607円（課税総所得243万 × 0.025%）');
+  eq(yokohama.shotokuwariJissai, kanagawa.shotokuwariJissai,
+     '　└ 横浜市も同額（8%+2.025% ＝ 6%+4.025%。指定都市かどうかで合計は変わらない）');
+
+  // 標準の自治体では、標準税率の所得割と実際の所得割が一致する
+  eq(hyojun.shotokuwariJissai, hyojun.shotokuwari,
+     '標準税率の自治体では「標準の所得割」＝「実際に払う所得割」');
+
+  // 住民税の合計＝所得割（実額）＋均等割＋森林環境税
+  eq(hyojun.juminzeiTotal, hyojun.shotokuwariJissai + 5000,
+     '住民税の合計 ＝ 所得割 ＋ 均等割 ＋ 森林環境税');
+  eq(yokohama.juminzeiTotal, yokohama.shotokuwariJissai + 6200,
+     '横浜市の住民税の合計は均等割6,200円を含む');
+
+  // 自治体を指定しない従来の呼び出しは、標準税率のまま（既存ページを壊さない）
+  const legacy = calc(inp, D);
+  eq(legacy.furusatoGendo, hyojun.furusatoGendo, '自治体を指定しない呼び出しは標準税率どおり');
+}
+
+// ─────────────────────────────────────────────────────────────────────
+console.log('\n■ 非課税限度額（均等割＝条例・級地で変わる / 所得割＝法律で全国一律）');
+
+{
+  // 単身・1級地: 均等割 35万+10万=45万 / 所得割 35万+10万=45万 → 一致するので帯は生じない
+  const tanshin1 = hikazeiHantei(450000, 450000, {}, 1, D);
+  eq(tanshin1.kintouLimit, 450000, '単身・1級地の均等割の非課税限度額は45万円');
+  eq(tanshin1.shotokuLimit, 450000, '単身・1級地の所得割の非課税限度額は45万円');
+  ok(tanshin1.kintouwariHikazei && tanshin1.shotokuwariHikazei, '合計所得45万円ちょうどは両方とも非課税');
+  eq(tanshin1.kintouwariOnly, false, '単身・1級地では「均等割だけ課税」の帯は生じない');
+
+  // ★級地は均等割にだけ効く（所得割は全国一律）
+  const tanshin3 = hikazeiHantei(400000, 400000, {}, 3, D);
+  eq(tanshin3.kintouLimit, 380000, '★単身・3級地の均等割の非課税限度額は38万円（35万×0.8＋10万）');
+  eq(tanshin3.shotokuLimit, 450000, '★所得割の非課税限度額は3級地でも45万円のまま（級地は効かない）');
+  eq(tanshin3.kintouwariOnly, true,
+     '★3級地・合計所得40万円は「均等割だけ課税」（均等割38万超・所得割45万以下）');
+
+  // ★扶養1人・1級地: 均等割 101万 / 所得割 112万 → 11万円分の帯ができる
+  const fuyo = { fuyoIppan: 1 };
+  const f1 = hikazeiHantei(1050000, 1050000, fuyo, 1, D);
+  eq(f1.kintouLimit, 1010000, '扶養1人・1級地の均等割の限度額は101万円（35万×2＋10万＋21万）');
+  eq(f1.shotokuLimit, 1120000, '扶養1人・1級地の所得割の限度額は112万円（35万×2＋10万＋32万）');
+  ok(f1.shotokuLimit > f1.kintouLimit,
+     '★加算額が21万円（均等割）と32万円（所得割）で違うので、所得割の限度額のほうが高い');
+  eq(f1.kintouwariOnly, true, '★合計所得105万円・扶養1人は「均等割だけ課税」される帯に入る');
+
+  // ★16歳未満の年少扶養は所得控除に1円も効かないが、非課税限度額には効く（施行令47条の3第1号）
+  const nashi = hikazeiHantei(1000000, 1000000, {}, 1, D);
+  const nensho = hikazeiHantei(1000000, 1000000, { fuyoNensho: 1 }, 1, D);
+  eq(nashi.kintouLimit, 450000, '扶養なしの均等割の限度額は45万円');
+  eq(nensho.kintouLimit, 1010000,
+     '★16歳未満の子が1人いると均等割の限度額は101万円に上がる（年少扶養控除は廃止されているのに、非課税限度額には効く）');
+  ok(!nashi.kintouwariHikazei && nensho.kintouwariHikazei,
+     '★同じ合計所得100万円でも、16歳未満の子の有無だけで均等割の課税/非課税が変わる');
+  // 年少扶養は所得控除には1円も効かない（限度額にだけ効く、の裏側）
+  eq(jintekiKojo({ fuyoNensho: 1 }, 1000000, D), jintekiKojo({}, 1000000, D),
+     '★一方で16歳未満の子は人的控除を1円も増やさない（年少扶養控除は廃止済み）');
+
+  // 地税295条1項2号: 本人が障害者・未成年者・寡婦・ひとり親で合計所得135万円以下 → 両方非課税
+  const oya = hikazeiHantei(1300000, 1300000, { hitorioyaHaha: true }, 1, D);
+  ok(oya.jonrei295, '本人がひとり親・合計所得130万円 → 295条1項2号が効く');
+  ok(oya.kintouwariHikazei && oya.shotokuwariHikazei, '　└ 均等割も所得割も非課税');
+  const oya2 = hikazeiHantei(1360000, 1360000, { hitorioyaHaha: true }, 1, D);
+  eq(oya2.jonrei295, false, '★合計所得135万円を1円でも超えると295条1項2号は効かない');
+}
+
+// ─────────────────────────────────────────────────────────────────────
+console.log('\n■ 非課税は calc() の答えにも効く（均等割だけ課税される人の住民税）');
+
+{
+  // 給与収入170万 → 給与所得 105万（控除65万）。扶養1人・1級地。
+  const r = calc({ kyuyoShunyu: 1700000, family: { fuyoIppan: 1 }, jichitai: 'hyojun', kyuchi: 1 }, D);
+  eq(r.goukeiShotoku, 1050000, '給与収入170万円の給与所得は105万円');
+  ok(r.hikazei.kintouwariOnly, '★扶養1人・1級地なら「均等割だけ課税」の帯に入る');
+  eq(r.shotokuwariJissai, 0, '　└ 所得割は非課税なので0円');
+  eq(r.juminzeiTotal, 5000, '　└ 住民税は均等割4,000円＋森林環境税1,000円＝5,000円だけ');
+  eq(r.furusatoGendo, 0,
+     '★所得割が非課税の人はふるさと納税で得をしない（限度額0円。差し引く所得割が無い）');
+
+  // 完全に非課税の人（単身・給与収入100万＝給与所得35万）
+  const zero = calc({ kyuyoShunyu: 1000000, family: {}, jichitai: 'hyojun', kyuchi: 1 }, D);
+  eq(zero.goukeiShotoku, 350000, '給与収入100万円の給与所得は35万円');
+  ok(zero.hikazei.kintouwariHikazei && zero.hikazei.shotokuwariHikazei, '単身・合計所得35万円は完全に非課税');
+  eq(zero.juminzeiTotal, 0, '　└ 住民税は0円（均等割も森林環境税もかからない）');
 }
 
 console.log(`\n${failed === 0 ? '✅' : '❌'} test_juminzei: ${checks - failed}/${checks} checks passed`);
