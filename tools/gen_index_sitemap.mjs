@@ -215,8 +215,13 @@ const git = (...a) => {
 const TODAY = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }); // YYYY-MM-DD
 const root = git("rev-parse", "--show-toplevel");
 // 作業ツリーで変更中のファイル(未追跡を含む)を1回で集める。git status の経路は root からの相対。
+// ★`-uall` が要る: 既定の git status は**未追跡ディレクトリを1行に畳む**(`?? docs/juminzei/`)。
+//   畳まれると dirty に入るのは**ディレクトリ**なので、`docs/juminzei/index.html` の照合が外れ、
+//   git log にも履歴が無い(まだコミット前)ため **lastmod が丸ごと落ちる**。
+//   = **新しく作ったページ**、つまり lastmod がいちばん要るページだけが黙って lastmod 無しで出る。
+//   実際に /juminzei/ を lastmod 無しで本番へ出した(2026-07-14 第23便)。
 const dirty = new Set(
-  git("status", "--porcelain", "--", DOCS).split("\n").filter(Boolean)
+  git("status", "--porcelain", "-uall", "--", DOCS).split("\n").filter(Boolean)
     .map((l) => l.slice(3).split(" -> ").pop().replace(/^"|"$/g, ""))
     .map((p) => join(root, p)),
 );
