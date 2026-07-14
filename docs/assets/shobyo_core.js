@@ -262,6 +262,16 @@ export function keizokuKyufu(input) {
 }
 
 /**
+ * 入力から被保険者期間（月数）を読む。104条の「引き続き1年以上」の判定に使う。
+ * standards（月ごとの標準報酬月額）だけが渡されたときは、その列の長さを月数とみなす。
+ */
+function hihokenshaMonths(i) {
+  const m = Math.floor(Number(i.months) || 0);
+  if (m > 0) return m;
+  return Array.isArray(i.standards) ? i.standards.length : 0;
+}
+
+/**
  * 傷病手当金をまとめて計算する。
  *
  * @param input.standards       各月の標準報酬月額（古い→新しい順）。monthly と排他
@@ -269,23 +279,49 @@ export function keizokuKyufu(input) {
  * @param input.months          monthly を使うときの被保険者期間（月数）
  * @param input.restDays        仕事を休んだ日数
  * @param input.taikiDone       待期3日が完成済みか
- * @param input.ninnikeizoku    任意継続被保険者か（true なら支給されない：99条1項）
+ * @param input.ninnikeizoku    任意継続被保険者か（99条1項：**新たに** 病気になった人には支給されない）
+ * @param input.taishokugo      退職後の継続給付か（104条）。★任意継続でもこれが立てば支給される
  * @param D 参照データ（fail closed）
  */
 export function calcShobyo(input, D) {
   if (!D) throw new Error('参照データ（shobyo_r08.json）が渡されていません');
   const i = input || {};
 
-  // 任意継続被保険者には傷病手当金は出ない（99条1項のかっこ書き）
+  // ── 任意継続被保険者（99条1項のかっこ書き） ─────────────────────────────
+  // ★★ここは「任意継続なら¥0」で終わらせてはいけない。**104条の継続給付は別の権利**で、
+  //   退職前から受けていた人は、任意継続被保険者になっても受け続けられる。
+  //   104条1項が「被保険者の資格を喪失した日（**任意継続被保険者の資格を喪失した者にあっては、
+  //   その資格を取得した日**）の前日まで引き続き一年以上被保険者…であった者」と書いているとおり、
+  //   条文自身が「任意継続になる人」を想定して起算日を用意している。
+  //   （108条5項も「傷病手当金の支給を受けるべき者（**第百四条の規定により受けるべき者**…）」と言う）
+  //
+  //   99条1項が排除しているのは **任意継続の期間中に新たに労務不能になった人** だけ。
+  //   病気で辞めた人はほぼ全員が任意継続を選ぶ（病気なのだから保険が要る）ので、
+  //   ここを取り違えると **いちばん重い病気の人に「¥0」と答える**（月給30万で 3,640,182円）。
   if (i.ninnikeizoku) {
-    return {
-      eligible: false,
-      reason: 'ninnikeizoku',
-      message:
-        '任意継続被保険者には傷病手当金は支給されません（健康保険法99条1項）。'
-        + 'ただし退職前から受けていた場合は、資格喪失後の継続給付として受けられます（104条）。',
-      total: 0,
-    };
+    const k = keizokuKyufu({
+      hihokenshaMonths: hihokenshaMonths(i),
+      receivingAtLoss: !!i.taishokugo,
+    });
+    if (!k.ok) {
+      return {
+        eligible: false,
+        reason: k.receiving ? 'keizoku_under1y' : 'ninnikeizoku',
+        keizoku: k,
+        message: k.receiving
+          // 継続給付だと言っているが、1年要件を満たしていない
+          ? '退職日までの被保険者期間が1年に満たないため、資格喪失後の継続給付は受けられません'
+            + '（健康保険法104条。任意継続の期間はこの1年に算入されません）。'
+          // 任意継続の期間中に新たに労務不能になった人（99条1項の本来の対象外）
+          : '任意継続被保険者が、任意継続になってから新たに病気やケガで働けなくなった場合、'
+            + '傷病手当金は支給されません（健康保険法99条1項）。'
+            + '★ただし、退職する前から傷病手当金を受けていた（受けられる状態だった）方は、'
+            + '任意継続でも「資格喪失後の継続給付」として受け続けられます（104条）。'
+            + 'その場合は「退職後の継続給付を受けている」にチェックしてください。',
+        total: 0,
+      };
+    }
+    // k.ok → 104条の継続給付。以下、通常どおり計算する
   }
 
   // 標準報酬月額の列を用意する
@@ -318,6 +354,8 @@ export function calcShobyo(input, D) {
 
   return {
     eligible: true,
+    // ★104条の継続給付として計算したか（任意継続なのに支給される＝画面で必ず名乗る）
+    via104: !!i.ninnikeizoku,
     estimated,
     months: n.months,
     rule: n.rule,

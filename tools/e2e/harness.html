@@ -1025,6 +1025,7 @@ const shobyoScene = (inp) => async () => {
   set(doc, "hoshuNichigaku", String(inp.hoshuNichigaku ?? 0));
   set(doc, "heikinOverride", String(inp.heikinOverride ?? 0));
   if (inp.ninnikeizoku) check(doc, "ninnikeizoku", true);
+  if (inp.taishokugo) check(doc, "taishokugo", true);
   click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
 
   await waitFor(
@@ -1048,8 +1049,13 @@ const shobyoScene = (inp) => async () => {
     showsCap: /この方は上限（1日 ¥7,113）にかかっています/.test(body),
     // ★給与が出ていても差額は出る（108条1項ただし書）。「対象外」と黙らせない
     showsSagaku: /給与（報酬）を受けていても、差額が支給されます/.test(body),
-    // 任意継続被保険者には支給されない（99条1項のかっこ書き）
-    showsNinnikeizoku: /任意継続被保険者には傷病手当金は支給されません/.test(body),
+    // 任意継続の期間中に**新たに**発病した人には支給されない（99条1項のかっこ書き）
+    showsNinnikeizoku: /任意継続になってから新たに病気やケガで働けなくなった場合、傷病手当金は支給されません/.test(body),
+    // ★★その ¥0 の画面が、**104条という逃げ道**と、どこを押せばよいかを必ず言うこと。
+    //   ここを黙ると、退職前から受けていた人が「自分は対象外だ」と読んで諦める（＝本番で起きていた）
+    showsKeizokuHint: /退職する前から傷病手当金を受けていた（受けられる状態だった）方は、任意継続でも「資格喪失後の継続給付」として受け続けられます/.test(body),
+    // ★任意継続なのに**支給される**＝104条の継続給付。なぜ出るのかを画面が名乗ること
+    showsKeizoku: /これは「資格喪失後の継続給付」（健康保険法104条）として計算しています。/.test(body),
     failed: body.includes("読み込めませんでした"),
     body,
   };
@@ -1081,8 +1087,20 @@ SCENES.shobyo_cap = shobyoScene({ startDate: "2026-08-01", monthly: 500000, mont
 //   給与の日額3,000円 → 6,667 − 3,000 = **3,667円/日** × 27日 = **99,009円**
 //   ★ここで0円を出すと、**受け取れるはずの差額を失う人**を生む（「給料が出てるから対象外」の誤り）
 SCENES.shobyo_sagaku = shobyoScene({ startDate: "2026-08-01", monthly: 300000, hoshuNichigaku: 3000 });
-// 任意継続被保険者には支給されない（99条1項のかっこ書きが明文で除いている）
+// 任意継続の期間中に**新たに**発病した人には支給されない（99条1項のかっこ書きが明文で除いている）
+// ★この ¥0 の画面は、104条という逃げ道と「どこを押せばよいか」を必ず言うこと（showsKeizokuHint）
 SCENES.shobyo_ninnikeizoku = shobyoScene({ startDate: "2026-08-01", ninnikeizoku: true });
+// ★★【第6便】任意継続でも、**退職する前から受けていた人**は受け続けられる（104条の継続給付）。
+//   本番はここで「¥0（支給されません）」と答えていた。**病気で辞めた人はほぼ全員が任意継続を選ぶ**
+//   （病気なのだから保険が要る）ので、**いちばん重い病気の人**が諦めていた。
+//   月給30万 → 日額6,667円（300,000÷30=10,000 → ×2/3=6,666.67 → 6,667）
+//   546日休む → 待期3日を引いて543日 × 6,667 = **3,620,181円**（旧実装の答えは ¥0）
+//   ★コアの keizokuKyufu() は**実装も単体テストもあったのに、どのページからも呼ばれていなかった**。
+//     単体テストは永久に緑だった。**このシーンだけが、それを画面で捕まえる。**
+SCENES.shobyo_keizoku = shobyoScene({
+  startDate: "2026-08-01", monthly: 300000, months: 24, restDays: 546,
+  ninnikeizoku: true, taishokugo: true,
+});
 // 参照データを配信できない → 金額を出さずに断ること（fail closed）。
 // ★ここで黙って答えると、入社1年未満の人に**上限を無視した高い額**を信じさせる
 SCENES.shobyo_nodata = shobyoScene({ startDate: "2026-08-01", monthly: 500000, months: 3 });

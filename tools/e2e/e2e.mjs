@@ -265,9 +265,18 @@ const SCENES = [
   //   ここで0円を出すと「給料が出てるから対象外」の誤解を機械が追認し、**差額を失う人**を生む。
   { name: "shobyo_sagaku", expect: (s) =>
       s.nichigaku === 3667 && s.total === 99009 && s.showsSagaku && !s.failed },
-  // 任意継続被保険者には支給されない(99条1項のかっこ書き)
+  // 任意継続の期間中に**新たに**発病した人には支給されない(99条1項のかっこ書き)。
+  // ★★ただしその ¥0 の画面は、**104条という逃げ道**と「どこを押せばよいか」を必ず言うこと。
+  //   ここを黙ると、退職前から受けていた人が「自分は対象外」と読んで諦める(本番で起きていた)。
   { name: "shobyo_ninnikeizoku", expect: (s) =>
-      s.total === 0 && s.showsNinnikeizoku && !s.failed },
+      s.total === 0 && s.showsNinnikeizoku && s.showsKeizokuHint && !s.failed },
+  // ★★【第6便】任意継続でも、退職する前から受けていた人は受け続けられる(104条の継続給付)。
+  //   本番は **¥0(支給されません)** と答えていた。月給30万・546日 → 543日 × 6,667 = **3,620,181円**。
+  //   コアの keizokuKyufu() は実装も単体テストもあったのに **どのページからも呼ばれていなかった**
+  //   (=§37の到達不能コード)。単体は永久に緑。**このシーンだけが画面でそれを捕まえる。**
+  { name: "shobyo_keizoku", expect: (s) =>
+      s.total === 3620181 && s.nichigaku === 6667 && s.days === 543 &&
+      s.showsKeizoku && !s.failed },
   // 参照データが配信できないときは、金額を出さずに断る(fail closed)。
   // ★黙って答えると入社1年未満の人に**上限を無視した高い額**を信じさせる
   { name: "shobyo_nodata", data404: "shobyo_r08.json",

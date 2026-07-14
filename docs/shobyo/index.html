@@ -126,6 +126,22 @@
   <label style="font-weight:400;display:block">
     <input type="checkbox" id="ninnikeizoku"> <b>任意継続被保険者</b>である（退職後に健康保険を任意継続している）
   </label>
+  <label style="font-weight:400;display:block">
+    <input type="checkbox" id="taishokugo"> <b>退職する前から</b>傷病手当金を受けていた（受けられる状態だった）＝<b>資格喪失後の継続給付</b>（104条）
+  </label>
+  <div class="note" id="keizoku-note">
+    ★<b>病気やケガで退職して、健康保険を任意継続している方へ。</b>
+    「任意継続の人には傷病手当金は出ない」と書かれているのを見て諦めた方が多いのですが、
+    <b>それは任意継続になってから新たに病気になった人の話です</b>（99条1項）。
+    <b>退職する前から傷病手当金を受けていた方は、任意継続でも受け続けられます</b>
+    （<b>資格喪失後の継続給付</b>・104条）。上の<b>2つとも</b>チェックしてください。
+    受け取れるのは<b>支給開始から通算1年6か月</b>までです。
+    <br>
+    条件は2つ。<b>①退職日までに健康保険に引き続き1年以上加入していたこと</b>
+    （<b>任意継続の期間はこの1年に入りません</b>）、<b>②退職日に傷病手当金を受けていた（受けられる状態だった）こと</b>。
+    ★<b>②のために、退職日には出社しないでください</b>（数時間でも出社すると「労務不能でない」とされ、
+    1年以上の給付がまるごと消えることがあります）。
+  </div>
 
   <details style="margin-top:12px">
     <summary>給与・年金を受け取っている場合（差額が出ます）／標準報酬月額を月ごとに入れる／健保組合の方</summary>
@@ -145,10 +161,6 @@
         </div>
       </div>
       <div class="hint">年金は<b>年額 ÷ 360</b>で日額にして比べます（健康保険法施行規則89条）。★<b>老齢年金との調整は「退職後も継続して受けている人」だけ</b>にかかります（108条5項）。<b>在職中の方は老齢年金を受けていても調整されません</b>。一方<b>障害厚生年金との調整は在職中でもかかります</b>（108条3項）。</div>
-
-      <label style="font-weight:400;display:block;margin-top:10px">
-        <input type="checkbox" id="taishokugo"> 退職後の<b>継続給付</b>を受けている（健康保険法104条）
-      </label>
 
       <label for="standards" style="margin-top:10px">標準報酬月額を月ごとに入れる（カンマ区切り・<b>古い月→新しい月</b>の順／円）</label>
       <input type="text" id="standards" placeholder="例: 160000,160000,160000,160000,160000,160000,180000,180000,180000,180000,180000,180000" inputmode="numeric">
@@ -325,6 +337,13 @@ $("calc").addEventListener("click", async () => {
 
   const adj = r.chosei;
 
+  // ★任意継続なのに支給される＝104条の継続給付。なぜ支給されるのかを必ず名乗る
+  const keizokuNote = r.via104
+    ? `<div class="callout"><b>これは「資格喪失後の継続給付」（健康保険法104条）として計算しています。</b>
+        任意継続被保険者でも、<b>退職する前から傷病手当金を受けていた方は受け続けられます</b>。
+        受け取れるのは<b>支給を始めた日から通算1年6か月</b>までです。</div>`
+    : "";
+
   // 概算で計算したときは、その前提を必ず名乗る（黙って勝手な標準報酬月額で答えない）
   const estimatedNote = r.estimated
     ? `<div class="hint"><b>標準報酬月額は月給 ${yen(monthly)} から等級表を引いて概算しました</b>
@@ -368,6 +387,7 @@ $("calc").addEventListener("click", async () => {
   box.innerHTML = `
     <div class="big">傷病手当金 ${yen(r.total)}<span style="font-size:15px;font-weight:600">（${r.days}日分）</span></div>
     <div class="hint" style="margin-bottom:10px">1日あたり <b>${yen(r.paidNichigaku)}</b> × <b>${r.days}日</b></div>
+    ${keizokuNote}
     ${capNote}
     ${choseiNote}
     <table class="res">

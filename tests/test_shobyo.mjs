@@ -299,6 +299,43 @@ console.log('§7 資格喪失後の継続給付（法104条）／任意継続（
   ok(/104条/.test(r.message), '★継続給付という逃げ道があることも示す');
 }
 
+// ── 第6便で見つけた実バグの錠前（本番で ¥0 と誤答していた） ──────────────
+// calcShobyo は ninnikeizoku を見た瞬間に ¥0 を返し、taishokugo（104条）を **一度も見なかった**。
+// keizokuKyufu() は実装も単体テストもあったのに **どのページからも呼ばれていなかった**（到達不能）。
+// 病気で辞めた人はほぼ全員が任意継続を選ぶ（病気なのだから保険が要る）ので、
+// いちばん重い病気の人が「¥0（支給されません）」を受け取っていた。
+{
+  const base = { startDate: '2026-07-01', monthly: 300000, restDays: 546 };
+
+  // ★救済されるべき人：任意継続 かつ 退職前から受給していた（104条）
+  const r = calcShobyo({ ...base, months: 24, ninnikeizoku: true, taishokugo: true }, D);
+  ok(r.eligible, '★★任意継続でも、退職前から受けていた人は支給される（104条の継続給付）');
+  ok(r.via104, '★104条として計算したことを名乗る（画面で理由を出すため）');
+  eq(r.total, 3620181, '★旧実装は ¥0 と答えていた。正しくは 3,620,181円');
+  ok(r.total > 0, '★回帰の錠前：ここが 0 に戻ったら、それは本番の実バグの再来');
+
+  // 104条の人は「在職中だったら受け取れたはずの額」をそのまま受け取る（104条の条文どおり）
+  const zaishoku = calcShobyo({ ...base, months: 24, ninnikeizoku: false }, D);
+  eq(r.total, zaishoku.total, '★「被保険者として受けることができるはずであった」額と一致する');
+
+  // 任意継続だが、任意継続になってから新たに発病した人 → 99条1項で出ない（ここは ¥0 が正しい）
+  const shin = calcShobyo({ ...base, months: 24, ninnikeizoku: true, taishokugo: false }, D);
+  eq(shin.eligible, false, '任意継続になってから新たに発病 → 出ない（99条1項）');
+  eq(shin.total, 0, '0円');
+  ok(/新たに病気/.test(shin.message), '★「新たに病気になった人の話」だと名指しする');
+  ok(/チェック/.test(shin.message), '★継続給付の人には、どこを押せばよいか言う');
+
+  // 104条だと言っているが、加入が1年未満 → 104条の要件を満たさない（ここも ¥0 が正しい）
+  const tan = calcShobyo({ ...base, months: 11, ninnikeizoku: true, taishokugo: true }, D);
+  eq(tan.eligible, false, '★加入11か月 → 104条の「引き続き1年以上」を満たさない');
+  eq(tan.reason, 'keizoku_under1y', '理由を区別して返す（99条1項の不支給とは別物）');
+  ok(/1年に満たない/.test(tan.message), '理由を画面に出せる');
+
+  // 退職後の継続給付だが任意継続ではない人（国保・被扶養者）＝従来どおり支給される
+  const kokuho = calcShobyo({ ...base, months: 24, ninnikeizoku: false, taishokugo: true }, D);
+  ok(kokuho.eligible, '任意継続でない継続給付（国保・被扶養者）も従来どおり支給される');
+}
+
 // ───────────────────────────────────────────────────────────────
 console.log('§8 通し計算（calcShobyo）');
 
