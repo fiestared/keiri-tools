@@ -35,6 +35,7 @@ const ORDER = [
   "ikuji-kyugyo-kyufukin",      // 育児休業給付金 31,302/月
   "tedori-keisan",              // 手取り計算 25,591/月（手取り20万 9,390・手取り30万 7,656 も同記事で受ける）
   "shitsugyo-hoken-keisan",     // 失業保険 計算 25,591/月（失業保険 自己都合 25,591・失業保険 期間 11,464 も同記事で受ける）
+  "saishushoku-teate",          // 再就職手当 25,591/月
   "invoice-wakariyasuku",
   "shakai-hoken-kanyu-joken",
   "shakai-hokenryo-keisan",
@@ -124,7 +125,7 @@ const CATEGORIES = [
     desc: "医療費が高額になったとき、病気・出産・育児で働けないとき、失業したときに受け取れるお金。",
     slugs: [
       "kogaku-ryoyohi", "shobyo-teate-kin", "shussan-teate-kin", "shussan-ikuji-ichijikin",
-      "ikuji-kyugyo-kyufukin", "shitsugyo-hoken-keisan",
+      "ikuji-kyugyo-kyufukin", "shitsugyo-hoken-keisan", "saishushoku-teate",
     ],
   },
   {
