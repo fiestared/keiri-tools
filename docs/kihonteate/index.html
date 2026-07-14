@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>失業保険 計算｜基本手当日額・給付日数・総額がいくらか自動計算</title>
+<meta name="description" content="離職時の年齢・月給・勤続年数・退職理由を入れるだけで、失業保険（雇用保険の基本手当）の日額・所定給付日数・受け取れる総額の目安・支給が始まる時期を自動計算。会社都合と自己都合の違い、給付制限1か月にも対応。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/kihonteate/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "失業保険（基本手当）計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "雇用保険の基本手当について、賃金日額・給付率・基本手当日額・所定給付日数・受給できる総額の目安・支給開始時期を計算します。厚生労働省の最新の自動変更対象額に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "失業保険（基本手当）計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "失業保険は月給の何割もらえますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "1日あたりの支給額（基本手当日額）は、賃金日額の50％〜80％です（60歳以上65歳未満は45％〜80％）。賃金日額が低い人ほど率が高く、高い人ほど率が低くなります。さらに賃金日額そのものに年齢別の上限があるため、給料が高い人ほど「割合」も「上限」も効いて、月給に対する割合は小さくなります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "自己都合と会社都合で何が変わりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "1日あたりの金額（基本手当日額）は変わりません。変わるのは「もらえる日数」と「いつから始まるか」です。自己都合は年齢に関係なく90日・120日・150日の3段階ですが、会社都合（特定受給資格者）は年齢と勤続年数の表で最長330日まで伸びます。また自己都合には給付制限（原則1か月）がありますが、会社都合にはありません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "自己都合退職の給付制限は2か月ではないのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "2025年4月1日以降に離職した人は、原則1か月です。ただし離職日からさかのぼって5年間に2回を超えて自己都合退職している場合は3か月になります。なお雇用保険法33条は「1か月以上3か月以内でハローワーク所長の定める期間」としか書いておらず、「2か月」も「1か月」も法律の条文には書かれていません。運用の基準（通達）で決まる数字です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "勤続1年未満でも失業保険はもらえますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "自己都合や定年での退職では、原則もらえません。受給には離職日以前2年間に被保険者期間が通算12か月以上必要だからです（雇用保険法13条1項）。ただし会社都合（倒産・解雇）や契約期間満了・更新なし、正当な理由のある自己都合の場合は、離職日以前1年間に被保険者期間が6か月以上あれば受給できます（同条2項）。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 失業保険（基本手当）計算機</nav>
+
+<section class="hero">
+  <h1>失業保険（基本手当）計算機</h1>
+  <p>離職時の年齢・給料・勤続年数・退職理由を入れるだけで、<b>1日あたりの金額（基本手当日額）</b>・<b>もらえる日数</b>・<b>総額の目安</b>・<b>いつから支給が始まるか</b>を計算します。厚生労働省の最新の上限額・下限額に対応。</p>
+</section>
+
+<div class="card">
+  <div class="fee-pair">
+    <div>
+      <label for="age">離職時の年齢</label>
+      <input type="number" id="age" value="35" min="15" max="70" inputmode="numeric">
+    </div>
+    <div>
+      <label for="monthly">毎月の給料（総支給・円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　賞与は含めない</span></label>
+      <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
+    </div>
+  </div>
+
+  <label for="period">雇用保険に入っていた期間（算定基礎期間）</label>
+  <select id="period">
+    <option value="under1">1年未満</option>
+    <option value="y1_5">1年以上5年未満</option>
+    <option value="y5_10">5年以上10年未満</option>
+    <option value="y10_20" selected>10年以上20年未満</option>
+    <option value="y20">20年以上</option>
+  </select>
+
+  <label for="reason">退職の理由</label>
+  <select id="reason">
+    <option value="jiko" selected>自己都合（転職したい・正当な理由なし）</option>
+    <option value="kaisha">会社都合（倒産・解雇・退職勧奨など）</option>
+    <option value="keiyaku">契約期間が満了し、更新されなかった</option>
+    <option value="seito">正当な理由のある自己都合（病気・介護・配偶者の転勤など）</option>
+    <option value="teinen">定年退職</option>
+  </select>
+
+  <label style="font-weight:400;display:block;margin-top:12px">
+    <input type="checkbox" id="repeated"> 離職日から5年間で、自己都合の退職が3回目以上（給付制限が3か月になります）
+  </label>
+  <label style="font-weight:400;display:block">
+    <input type="checkbox" id="training"> 離職日前1年以内に教育訓練を受けた／受給中に受ける（給付制限が解除されます）
+  </label>
+  <label style="font-weight:400;display:block">
+    <input type="checkbox" id="konnan"> 障害者手帳をお持ちなど、就職が困難な方
+  </label>
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>この計算機の見方</h2>
+  <h3>1日あたりの金額は「月給 → 賃金日額 → 給付率」の順で決まります</h3>
+  <p>まず<b>賃金日額＝離職前6か月の賃金総額 ÷ 180</b>（雇用保険法17条1項）。おおよそ月給の30分の1です。賞与は含めません。次にこの賃金日額に<b>50〜80％の給付率</b>（60歳以上65歳未満は45〜80％）を掛けたものが、1日あたりの支給額です。<b>給料が低い人ほど率が高くなる</b>逆進的な仕組みになっています。</p>
+  <h3>離職理由で変わるのは「日数」と「開始時期」。日額は変わりません</h3>
+  <p>会社都合でも自己都合でも、<b>1日あたりの金額は同じ</b>です。変わるのは<b>もらえる日数</b>（自己都合は90/120/150日の3段階、会社都合は年齢と勤続年数の表で最長330日）と、<b>支給が始まる時期</b>（自己都合には給付制限があります）です。</p>
+  <h3>上限額・下限額は毎年8月1日に変わります</h3>
+  <p>賃金日額の上限額・下限額は、雇用保険法18条の<b>「自動変更対象額」</b>として、毎月勤労統計の平均給与額の変動に応じて<b>毎年8月1日に改定</b>されます。この計算機は<span id="src-label">厚生労働省が公表している最新の額</span>で計算しています。</p>
+  <div class="callout">
+    <b>ご注意</b>
+    この計算機の結果は目安です。実際の金額は、離職票に記載された賃金・離職理由をもとにハローワークが決定します。とくに離職理由（会社都合か自己都合か）は、会社が離職票に記載した理由に対して本人が異議を申し立てることができ、ハローワークが判定します。
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>失業保険は月給の何割もらえますか？</h3>
+  <p>1日あたりの支給額（基本手当日額）は、<b>賃金日額の50％〜80％</b>です（60歳以上65歳未満は45％〜80％）。賃金日額が低い人ほど率が高く、高い人ほど率が低くなります。さらに賃金日額そのものに年齢別の上限があるため、給料が高い人ほど「割合」も「上限」も効いて、月給に対する割合は小さくなります。</p>
+  <h3>自己都合と会社都合で何が変わりますか？</h3>
+  <p><b>1日あたりの金額（基本手当日額）は変わりません。</b>変わるのは「もらえる日数」と「いつから始まるか」です。自己都合は年齢に関係なく90日・120日・150日の3段階ですが、会社都合（特定受給資格者）は年齢と勤続年数の表で<b>最長330日</b>まで伸びます。また自己都合には給付制限（原則1か月）がありますが、会社都合にはありません。</p>
+  <h3>自己都合退職の給付制限は2か月ではないのですか？</h3>
+  <p>2025年4月1日以降に離職した人は、<b>原則1か月</b>です。ただし離職日からさかのぼって5年間に2回を超えて自己都合退職している場合は3か月になります。なお<b>雇用保険法33条は「1か月以上3か月以内でハローワーク所長の定める期間」としか書いておらず、「2か月」も「1か月」も法律の条文には書かれていません</b>。運用の基準（通達）で決まる数字です。</p>
+  <h3>勤続1年未満でも失業保険はもらえますか？</h3>
+  <p>自己都合や定年での退職では、<b>原則もらえません</b>。受給には離職日以前2年間に被保険者期間が通算12か月以上必要だからです（雇用保険法13条1項）。ただし<b>会社都合（倒産・解雇）や契約期間満了・更新なし、正当な理由のある自己都合の場合は、離職日以前1年間に被保険者期間が6か月以上あれば受給できます</b>（同条2項）。</p>
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 厚生労働省「基本手当日額の計算式及び金額」<span id="src-note"></span>／雇用保険法16条・17条・22条・23条・33条／雇用保険法施行規則28条の3。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcKihonteate, REASONS } from "../assets/kihonteate_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+// 上限額・下限額（自動変更対象額）は非同期で届く。**届く前に押されても待つ**。
+// この catch が拾ってよいのは「額が手に入らなかったこと」だけ。飾りの描画は下で別に行う。
+let DATA = null;
+const dataReady = fetch("../assets/kihonteate_r07.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { DATA = d; return true; })
+  .catch(() => false);
+
+// 出典の表示は飾り。ここで転んでも計算は止めない
+dataReady.then(ok => {
+  if (!ok || !DATA) return;
+  $("src-note").textContent = `（${DATA._meta.label}）`;
+  $("src-label").textContent = DATA._meta.label;
+}).catch(() => {});
+
+$("calc").addEventListener("click", async () => {
+  const ready = await dataReady;
+  const box = $("result");
+  if (!ready || !DATA) {
+    box.innerHTML = `<div class="callout"><b>上限額・下限額を読み込めませんでした。</b>` +
+      `通信環境を確認して、ページを再読み込みしてください。金額の上限・下限が分からないまま` +
+      `失業保険の額を答えることはできないため、計算を止めています。</div>`;
+    return;
+  }
+
+  const input = {
+    age: Number($("age").value),
+    monthly: Number($("monthly").value),
+    period: $("period").value,
+    reason: $("reason").value,
+    repeated: $("repeated").checked,
+    training: $("training").checked,
+    konnan: $("konnan").checked,
+  };
+  if (!(input.monthly > 0)) {
+    box.innerHTML = `<div class="callout">毎月の給料（総支給額）を入力してください。</div>`;
+    return;
+  }
+
+  const r = calcKihonteate(input, DATA);
+
+  if (!r.supported) {
+    box.innerHTML = `<div class="callout"><b>この計算機の対象外です。</b>${r.message}</div>`;
+    return;
+  }
+  if (!r.eligible) {
+    box.innerHTML = `<div class="callout"><b>受給資格を満たさない可能性が高いです。</b>${r.eligibilityMessage}</div>`;
+    return;
+  }
+
+  const capNote = r.capped === "max"
+    ? `<div class="hint">賃金日額は${yen(r.wageDailyRaw)}ですが、この年齢の<b>上限額${yen(r.cap)}</b>が適用されました（雇用保険法17条4項）。</div>`
+    : r.capped === "min"
+    ? `<div class="hint">賃金日額は${yen(r.wageDailyRaw)}ですが、<b>下限額${yen(r.cap)}</b>が適用されました（雇用保険法17条4項）。</div>`
+    : "";
+
+  const restriction = r.restrictionMonths > 0
+    ? `<tr><th>給付制限</th><td><b>${r.restrictionMonths}か月</b></td></tr>`
+    : `<tr><th>給付制限</th><td><b>なし</b></td></tr>`;
+
+  const trainingNote = (input.reason === "jiko" && input.training)
+    ? `<div class="hint">教育訓練を受けたため、給付制限が解除されています（雇用保険法33条1項ただし書）。</div>`
+    : "";
+
+  box.innerHTML = `
+    <div class="big">総額の目安　${yen(r.total)}</div>
+    <table class="res">
+      <tr><th>賃金日額</th><td>${yen(r.wageDaily)}（6か月の賃金総額 ${yen(r.total6m)} ÷ 180）</td></tr>
+      <tr><th>給付率</th><td>${(r.rate * 100).toFixed(1)}％</td></tr>
+      <tr><th>基本手当日額</th><td><b>${yen(r.daily)}</b>／日</td></tr>
+      <tr><th>所定給付日数</th><td><b>${r.days}日</b>（${REASONS[input.reason]}${input.konnan ? "・就職困難" : ""}）</td></tr>
+      <tr><th>総額の目安</th><td>${yen(r.daily)} × ${r.days}日 ＝ <b>${yen(r.total)}</b></td></tr>
+      <tr><th>待期</th><td>7日（雇用保険法21条）</td></tr>
+      ${restriction}
+      <tr><th>受給期間</th><td>離職日の翌日から<b>${r.receivePeriodDays === 365 ? "1年" : `1年＋${r.receivePeriodDays - 365}日`}</b>（この期間を過ぎると、残っていても受け取れません）</td></tr>
+    </table>
+    ${capNote}
+    ${trainingNote}
+    <div class="hint">${r.startDelayNote}</div>
+    ${r.eligibilityMessage ? `<div class="hint">${r.eligibilityMessage}</div>` : ""}
+  `;
+});
+</script>
+</body>
+</html>

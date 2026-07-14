@@ -693,6 +693,51 @@ SCENES.shaho_koyou_gaku = shahoScene({ monthly: 305000, age: 30, standard: 30000
 // 業種で雇用保険料率が変わること(建設は本人6/1000)。健保・厚年は業種で変わらない
 SCENES.shaho_koyou_kensetsu = shahoScene({ monthly: 300000, age: 30, gyoshu: "construction" });
 
+// ── 失業保険(基本手当) ────────────────────────────────────────────────────────
+// 期待値は**厚労省の公表式をここに書き直したもの**(kihonteate_core.js は一切通さない)。
+//   出典: 厚生労働省「基本手当日額の計算式及び金額(令和7年8月1日～)」
+//   https://www.mhlw.go.jp/content/001520033.pdf
+//   30〜44歳: 5,340円以上13,140円以下 → y = 0.8w − 0.3{(w−5340)/(13140−5340)}w、1円未満切捨
+// 所定給付日数も雇用保険法22条・23条の表からここに直接書く。
+const KIHON_DAILY_INDEP = (w) => Math.floor(0.8 * w - 0.3 * ((w - 5340) / (13140 - 5340)) * w);
+
+const kihonScene = ({ age, monthly, period, reason }) => async () => {
+  const doc = await open("/docs/kihonteate/");
+  set(doc, "age", String(age));
+  set(doc, "monthly", String(monthly));
+  set(doc, "period", period);
+  set(doc, "reason", reason);
+  click(doc, "calc"); // ← 上限額JSONの到着を待たずに押す(実ユーザーと同じ)
+
+  await waitFor(
+    () => /基本手当日額|読み込めませんでした|対象外|受給資格/.test(text(doc, "result")),
+    "失業保険の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+
+  return {
+    age, monthly, period, reason,
+    daily: num(/基本手当日額\s*¥([\d,]+)/),
+    days: num(/所定給付日数\s*(\d+)日/),
+    total: num(/総額の目安\s*¥([\d,]+)/),
+    expectedDaily: KIHON_DAILY_INDEP((monthly * 6) / 180),
+    showsRestriction: /給付制限\s*1か月/.test(body),
+    showsNoRestriction: /給付制限\s*なし/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+
+// 35歳・月30万・勤続12年。賃金日額 = 300,000×6÷180 = 10,000円(逓減帯)
+// → 日額 6,207円 / 自己都合は22条1項で120日 / 給付制限1か月
+SCENES.kihonteate = kihonScene({ age: 35, monthly: 300000, period: "y10_20", reason: "jiko" });
+// ★同じ人が会社都合で辞めると: **日額は1円も変わらず**、日数だけ120→240日(23条)、給付制限は消える。
+//   ページが離職理由を日額のほうに効かせてしまっていたら、ここで落ちる。
+SCENES.kihonteate_kaisha = kihonScene({ age: 35, monthly: 300000, period: "y10_20", reason: "kaisha" });
+// 上限額・下限額を配信できない → 額を出さず申告すること(fail closed)
+SCENES.kihonteate_nodata = SCENES.kihonteate;
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };

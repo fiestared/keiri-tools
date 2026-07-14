@@ -140,6 +140,19 @@ const SCENES = [
   { name: "shaho_koyou_kensetsu", expect: (s) =>
       s.self === s.expected && s.self === 44370 && s.expectedKoyou === 1800 &&
       s.showsKoyouRow && !s.failed },
+
+  // ── 失業保険(基本手当) ──────────────────────────────────────────────────
+  // 35歳・月30万・勤続12年・自己都合 → 賃金日額10,000円 → 日額6,207円 × 120日 = 744,840円
+  { name: "kihonteate", expect: (s) =>
+      s.daily === s.expectedDaily && s.daily === 6207 && s.days === 120 &&
+      s.total === 6207 * 120 && s.showsRestriction && !s.failed },
+  // ★離職理由で変わるのは**日数と給付制限だけ**。日額は1円も変わらない
+  { name: "kihonteate_kaisha", expect: (s) =>
+      s.daily === s.expectedDaily && s.daily === 6207 && s.days === 240 &&
+      s.total === 6207 * 240 && s.showsNoRestriction && !s.failed },
+  // 上限額が配信できないときは、額を出さずに断る(fail closed)
+  { name: "kihonteate_nodata", data404: "kihonteate_r07.json",
+    expect: (s) => s.failed && s.daily === null && s.total === null },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
