@@ -153,6 +153,25 @@ const SCENES = [
   // 上限額が配信できないときは、額を出さずに断る(fail closed)
   { name: "kihonteate_nodata", data404: "kihonteate_r07.json",
     expect: (s) => s.failed && s.daily === null && s.total === null },
+
+  // ── 退職金の税金(退職所得) ──────────────────────────────────────────────
+  // ★期待値は**国税庁 No.2732 の計算例(実額)**。退職金800万円・勤続10年2か月 → 91,890円。
+  //   控除440万・1年未満切上げ(11年)・1/2・千円未満切捨・超過累進・102.1%の**どれか1つでも
+  //   間違っていたら、この額にはならない**。住民税は地税328条の3/50条の4から独立に計算。
+  { name: "taishoku", expect: (s) =>
+      s.kojo === 4400000 && s.taxable === 1800000 &&
+      s.incomeTax === 91890 &&                       // ← 国税庁が公表している実額
+      s.juminzei === 180000 &&                       // ← 180万×6% + 180万×4%
+      s.tedori === 8000000 - 91890 - 180000 && !s.failed },
+  // ★看板の主張が画面に出ているか: 勤続20年0か月なら「あと1か月で91,155円安くなる」
+  { name: "taishoku_kiriage", expect: (s) =>
+      s.kojo === 8000000 && s.taxable === 3500000 && s.showsOneMonth && !s.failed },
+  // ★特定役員(役員等5年以下)は1/2が効かない → 課税退職所得は400万でなく800万になる
+  { name: "taishoku_yakuin", expect: (s) =>
+      s.kojo === 2000000 && s.taxable === 8000000 && !s.failed },
+  // 税率表が配信できないときは、額を出さずに断る(fail closed)
+  { name: "taishoku_nodata", data404: "taishoku_rates_r08.json",
+    expect: (s) => s.failed && s.taxable === null && s.tedori === null },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",

@@ -53,6 +53,13 @@ const set = (doc, id, v) => {
 const click = (doc, id) => doc.getElementById(id).click();
 const text = (doc, id) => doc.getElementById(id).textContent.replace(/\s+/g, " ").trim();
 
+// チェックボックスを実ユーザーと同じように操作する(change を発火させる)
+const check = (doc, id, on) => {
+  const el = doc.getElementById(id);
+  if (el.checked !== !!on) el.click();
+  return el;
+};
+
 const pickRadio = (doc, name, value) => {
   const r = doc.querySelector(`input[name="${name}"][value="${value}"]`);
   r.checked = true;
@@ -737,6 +744,57 @@ SCENES.kihonteate = kihonScene({ age: 35, monthly: 300000, period: "y10_20", rea
 SCENES.kihonteate_kaisha = kihonScene({ age: 35, monthly: 300000, period: "y10_20", reason: "kaisha" });
 // 上限額・下限額を配信できない → 額を出さず申告すること(fail closed)
 SCENES.kihonteate_nodata = SCENES.kihonteate;
+
+// ── 退職金の税金(退職所得) ──────────────────────────────────────────────────
+// 期待値は**国税庁が実額で公表している計算例そのもの**をここに書き写す(taishoku_core.js は一切通さない)。
+//   出典: 国税庁 No.2732「退職金に対する源泉徴収」の計算例
+//   例1: 退職金800万円・勤続10年2か月 → 勤続11年 → 控除440万円 → 課税退職所得180万円
+//        → 源泉徴収税額 **91,890円**
+// 住民税は地方税法328条の3(市町村民税6%)・50条の4(道府県民税4%)から独立に計算する。
+//   課税退職所得180万円 → 市 108,000円 + 県 72,000円 = 180,000円
+const NTA_REI1 = { amount: 8000000, years: 10, months: 2, kojo: 4400000, taxable: 1800000,
+                   incomeTax: 91890, juminzei: 180000 };
+
+const taishokuScene = ({ amount, years, months, officer }) => async () => {
+  const doc = await open("/docs/taishokukin/");
+  set(doc, "amount", String(amount));
+  set(doc, "years", String(years));
+  set(doc, "months", String(months));
+  if (officer) check(doc, "officer", true);
+  click(doc, "calc"); // ← 税率JSONの到着を待たずに押す(実ユーザーと同じ)
+
+  await waitFor(
+    () => /手取り|読み込めませんでした|税金は0円/.test(text(doc, "result")),
+    "退職金の税額の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+
+  return {
+    amount, years, months,
+    kojo: num(/退職所得控除額\s*¥([\d,]+)/),
+    taxable: num(/課税退職所得金額\s*¥([\d,]+)/),
+    incomeTax: num(/復興特別所得税\s*¥([\d,]+)/),
+    juminzei: num(/住民税\s*¥([\d,]+)/),
+    tedori: num(/手取り\s*¥([\d,]+)/),
+    // ★あと1か月勤めたら安くなる、という看板の主張が実際に画面に出ているか
+    showsOneMonth: /あと1か月勤めると、税金が¥91,155安くなります/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+
+// 国税庁の計算例そのもの。ページが控除・切上げ・1/2・千円未満切捨・102.1%を
+// **全部正しく噛み合わせて**いなければ、91,890円にはならない。
+SCENES.taishoku = taishokuScene({ amount: NTA_REI1.amount, years: NTA_REI1.years, months: NTA_REI1.months });
+// ★看板の主張: 勤続20年0か月の人は、あと1か月勤めると控除が70万円増えて税金が91,155円安くなる。
+//   (退職金1,500万円・20年0か月 → 控除800万・課税350万 / 20年1か月 → 勤続21年・控除870万・課税315万)
+SCENES.taishoku_kiriage = taishokuScene({ amount: 15000000, years: 20, months: 0 });
+// ★特定役員(役員等5年以下)は1/2が効かない。効かせてしまっていたらここで落ちる。
+//   退職金1,000万円・勤続5年 → 控除200万円 → 一般なら課税400万円だが、特定役員は**800万円**
+SCENES.taishoku_yakuin = taishokuScene({ amount: 10000000, years: 5, months: 0, officer: true });
+// 税率表を配信できない → 額を出さずに断ること(fail closed)
+SCENES.taishoku_nodata = SCENES.taishoku;
 
 let state;
 try {

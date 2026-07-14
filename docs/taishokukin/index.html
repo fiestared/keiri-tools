@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>退職金の税金 計算｜手取りはいくら？所得税・住民税を自動計算</title>
+<meta name="description" content="退職金の額と勤続年数を入れるだけで、退職所得控除・所得税・復興特別所得税・住民税・手取り額を自動計算。勤続年数は1年未満を切り上げるため、退職日が1か月違うだけで税額が数万円変わります。役員5年以下・勤続5年以下・障害退職にも対応。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/taishokukin/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "退職金の税金（退職所得）計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "退職金の額と勤続年数から、退職所得控除額・課税退職所得金額・所得税・復興特別所得税・住民税（市町村民税6%＋道府県民税4%）・手取り額を計算します。所得税法30条・89条、地方税法50条の4・328条の3にもとづく計算。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "退職金の税金（退職所得）計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "退職金にかかる税金はいくらですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "多くの人はゼロです。退職金には「退職所得控除」があり、勤続20年までは1年につき40万円、20年を超える分は1年につき70万円が退職金から差し引かれます。勤続20年なら800万円、勤続30年なら1,500万円まで税金はかかりません。控除を超えた分も、原則としてその2分の1にしか課税されません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "退職日が1か月違うと税金は変わりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "変わります。勤続年数は1年未満の端数を1年に切り上げて数えるためです（所得税法施行令69条2項）。勤続20年ちょうどで辞めると控除は800万円ですが、あと1か月勤めて20年1か月になると勤続21年として扱われ、控除は870万円に増えます。退職金1,500万円の人なら、これだけで税額が91,155円変わります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "「退職所得の受給に関する申告書」を出さないとどうなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "退職所得控除も2分の1課税も使われず、退職金の支給額そのものに一律20.42％の所得税・復興特別所得税が源泉徴収されます（所得税法201条3項）。退職金800万円・勤続11年の人なら、申告書を出せば91,890円で済むところが1,633,600円引かれます。ただし取られっぱなしになるわけではなく、自分で確定申告をすれば精算されて戻ってきます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "退職金の住民税はいつ払いますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "退職金を受け取るときに天引き（特別徴収）されて終わりです。ふつうの住民税は前年の所得に対して翌年6月から払いますが、退職金は他の所得と分離して、支払いのときに市町村民税6％・道府県民税4％が引かれます（地方税法50条の2・328条）。翌年に請求が来ることはありません。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 退職金の税金（退職所得）計算機</nav>
+
+<section class="hero">
+  <h1>退職金の税金（退職所得）計算機</h1>
+  <p>退職金の額と勤続年数を入れるだけで、<b>退職所得控除額</b>・<b>所得税</b>・<b>住民税</b>・<b>手取り額</b>を計算します。<b>勤続年数は1年未満を切り上げる</b>ので、退職日が1か月違うだけで税額が数万円変わります。その差額も出します。</p>
+</section>
+
+<div class="card">
+  <label for="amount">退職金の額（円・税引き前）</label>
+  <input type="number" id="amount" value="15000000" placeholder="例: 15000000" inputmode="numeric">
+
+  <div class="fee-pair">
+    <div>
+      <label for="years">勤続年数（年）</label>
+      <input type="number" id="years" value="20" min="0" max="60" inputmode="numeric">
+    </div>
+    <div>
+      <label for="months">端数（か月）<span style="font-weight:400;font-size:12px;color:var(--sub)">　1か月でも1年に切上げ</span></label>
+      <input type="number" id="months" value="0" min="0" max="11" inputmode="numeric">
+    </div>
+  </div>
+
+  <label style="font-weight:400;display:block;margin-top:12px">
+    <input type="checkbox" id="officer"> 役員等（取締役・監査役・議員・公務員など）としての勤続年数が5年以下
+  </label>
+  <label style="font-weight:400;display:block">
+    <input type="checkbox" id="disabled"> 障害者になったことが直接の原因で退職した（控除が100万円増えます）
+  </label>
+  <label style="font-weight:400;display:block">
+    <input type="checkbox" id="filed" checked> 「退職所得の受給に関する申告書」を会社に提出する（<b>ふつうは提出します</b>）
+  </label>
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>この計算機の見方</h2>
+
+  <h3>退職金の税金は、3つの引き算でほとんど消えます</h3>
+  <p>退職金は、給料とはまったく別の計算をします。<b>①退職所得控除を引く</b>（勤続20年までは1年あたり40万円、20年を超える分は1年あたり70万円）→ <b>②残った額を2分の1にする</b> → <b>③その額にだけ課税する</b>、の3段階です（所得税法30条）。勤続30年なら控除だけで<b>1,500万円</b>あるので、退職金が1,500万円以下なら<b>税金は1円もかかりません</b>。</p>
+
+  <h3>★退職日が1か月違うと、控除が70万円変わります</h3>
+  <p>勤続年数は<b>1年未満の端数を1年に切り上げて</b>数えます（所得税法施行令69条2項）。つまり<b>勤続20年ちょうど</b>で辞めると控除は800万円ですが、<b>20年と1日</b>勤めれば<b>勤続21年</b>として扱われ、控除は<b>870万円</b>になります。1日の勤務で控除が70万円増えるということです。この計算機は「あと1か月勤めたら税金がいくら変わるか」も併せて表示します。</p>
+
+  <h3>2分の1課税が効かない人が2種類います</h3>
+  <p><b>役員等としての勤続年数が5年以下</b>の人（特定役員退職手当等）は、<b>2分の1が丸ごと適用されません</b>。また<b>役員以外でも勤続5年以下</b>の人（短期退職手当等）は、控除を引いた残額のうち<b>300万円を超える部分にだけ</b>2分の1が適用されません（所得税法30条2項）。短期のほうは2022年1月1日以後の退職金から適用されています。</p>
+
+  <h3>住民税は、退職金を受け取るときに引かれて終わりです</h3>
+  <p>ふつうの住民税は前年の所得に対して翌年6月から払いますが、<b>退職金の住民税だけは他の所得と分離して、支払いのときに天引き</b>されます（地方税法50条の2・328条）。税率は<b>市町村民税6％＋道府県民税4％＝10％</b>（地方税法328条の3・50条の4）。<b>翌年に請求が来ることはありません。</b></p>
+
+  <div class="callout">
+    <b>ご注意</b>
+    この計算機は、<b>その年に受け取る退職金が1か所からの1回だけ</b>である場合を計算します。同じ年に2か所以上から退職金を受け取る場合や、<b>前年以前に退職金を受け取ったことがある場合</b>（確定拠出年金・iDeCoの一時金を含む）は、勤続期間の重複分だけ控除が減るため、結果より税金が高くなることがあります。とくに<b>2026年1月1日以後は、iDeCoの一時金との重複判定が「前年以前4年内」から「前年以前9年内」に広がりました</b>（国税庁No.2732）。心当たりのある方は税務署か勤務先にご確認ください。
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>退職金にかかる税金はいくらですか？</h3>
+  <p><b>多くの人はゼロです。</b>退職金には「退職所得控除」があり、勤続20年までは1年につき40万円、20年を超える分は1年につき70万円が退職金から差し引かれます。<b>勤続20年なら800万円、勤続30年なら1,500万円</b>まで税金はかかりません。控除を超えた分も、原則として<b>その2分の1</b>にしか課税されません。</p>
+  <h3>退職日が1か月違うと税金は変わりますか？</h3>
+  <p><b>変わります。</b>勤続年数は1年未満の端数を1年に切り上げて数えるためです（所得税法施行令69条2項）。勤続20年ちょうどで辞めると控除は800万円ですが、あと1か月勤めて20年1か月になると<b>勤続21年</b>として扱われ、控除は<b>870万円</b>に増えます。退職金1,500万円の人なら、これだけで税額が<b>91,155円</b>変わります。</p>
+  <h3>「退職所得の受給に関する申告書」を出さないとどうなりますか？</h3>
+  <p>退職所得控除も2分の1課税も使われず、<b>退職金の支給額そのものに一律20.42％</b>の所得税・復興特別所得税が源泉徴収されます（所得税法201条3項）。退職金800万円・勤続11年の人なら、申告書を出せば<b>91,890円</b>で済むところが<b>1,633,600円</b>引かれます。ただし取られっぱなしになるわけではなく、<b>自分で確定申告をすれば精算されて戻ってきます</b>。</p>
+  <h3>退職金の住民税はいつ払いますか？</h3>
+  <p><b>退職金を受け取るときに天引き（特別徴収）されて終わりです。</b>ふつうの住民税は前年の所得に対して翌年6月から払いますが、退職金は他の所得と分離して、支払いのときに<b>市町村民税6％・道府県民税4％</b>が引かれます（地方税法50条の2・328条）。<b>翌年に請求が来ることはありません。</b></p>
+</section>
+
+<section class="faq">
+  <h2>関連するツール・記事</h2>
+  <p>
+    <a href="../column/taishokukin-zeikin/">退職金の税金｜いくら引かれる？計算方法と早見表</a>（この計算機の解説記事）<br>
+    <a href="../kihonteate/">失業保険（基本手当）計算機</a>（退職後にもらえる額を計算する）<br>
+    <a href="../column/rishokuhyo/">離職票とは？いつ届く・届かないときの対処法</a><br>
+    <a href="../shakai-hoken/">社会保険料計算機</a>（毎月の給料から引かれる額を計算する）
+  </p>
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 所得税法30条（退職所得）・89条（税率）・201条（徴収税額）／所得税法施行令69条2項（勤続年数）／地方税法50条の4・328条の3（分離課税に係る所得割の税率）・20条の4の2（端数計算）／国税庁 No.1420・No.2732<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcTaishoku, oneMonthLater, KINDS } from "../assets/taishoku_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+// 税率・控除額は非同期で届く。**届く前に押されても待つ**（回線が遅い人だけ空データで計算される事故を防ぐ）。
+let DATA = null;
+const dataReady = fetch("../assets/taishoku_rates_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { DATA = d; return true; })
+  .catch(() => false);
+
+// 出典の表示は飾り。ここで転んでも計算は止めない
+dataReady.then(ok => {
+  if (!ok || !DATA) return;
+  $("src-note").textContent = `（${DATA._meta.label}）`;
+}).catch(() => {});
+
+$("calc").addEventListener("click", async () => {
+  const ready = await dataReady;
+  const box = $("result");
+  if (!ready || !DATA) {
+    box.innerHTML = `<div class="callout"><b>税率表を読み込めませんでした。</b>` +
+      `通信環境を確認して、ページを再読み込みしてください。税率が分からないまま` +
+      `退職金の税額を答えることはできないため、計算を止めています。</div>`;
+    return;
+  }
+
+  const input = {
+    amount: Number($("amount").value),
+    years: Number($("years").value),
+    months: Number($("months").value),
+    isOfficer: $("officer").checked,
+    disabled: $("disabled").checked,
+    filed: $("filed").checked,
+  };
+  if (!(input.amount > 0)) {
+    box.innerHTML = `<div class="callout">退職金の額を入力してください。</div>`;
+    return;
+  }
+
+  const r = calcTaishoku(input, DATA);
+  const o = oneMonthLater(input, DATA);
+
+  const kinzokuNote = (Number($("months").value) > 0)
+    ? `<div class="hint">勤続${input.years}年${input.months}か月は、<b>${r.nensu}年</b>として計算します（1年未満の端数は1年に切上げ・所得税法施行令69条2項）。</div>`
+    : "";
+
+  // 「あと1か月勤めたら」の差額。年数が切り上がるときだけ意味がある
+  const laterNote = (o.kojoUp > 0 && o.saved > 0)
+    ? `<div class="callout"><b>★あと1か月勤めると、税金が${yen(o.saved)}安くなります。</b>
+        退職日が1か月ずれると勤続年数が<b>${r.nensu}年→${o.later.nensu}年</b>に切り上がり、
+        退職所得控除が<b>${yen(o.kojoUp)}</b>増えるためです（税額 ${yen(r.total)} → ${yen(o.later.total)}）。
+        <span class="hint">退職日を選べる立場なら、勤続年数の端数が「0か月」になっていないか確認してください。</span></div>`
+    : "";
+
+  if (r.taxFree) {
+    box.innerHTML = `
+      <div class="big">税金は0円　手取り ${yen(r.tedori)}</div>
+      <table class="res">
+        <tr><th>勤続年数</th><td>${r.nensu}年</td></tr>
+        <tr><th>退職所得控除額</th><td><b>${yen(r.kojo)}</b>${r.disabled ? "（障害退職のため+100万円）" : ""}</td></tr>
+        <tr><th>課税退職所得金額</th><td><b>0円</b>（退職金が控除の範囲に収まっています）</td></tr>
+        <tr><th>所得税・復興特別所得税</th><td><b>0円</b></td></tr>
+        <tr><th>住民税</th><td><b>0円</b></td></tr>
+        <tr><th>手取り</th><td><b>${yen(r.tedori)}</b>（満額）</td></tr>
+      </table>
+      ${kinzokuNote}
+      <div class="hint">退職所得控除額（${yen(r.kojo)}）が退職金（${yen(r.amount)}）を上回るため、所得税も住民税もかかりません。</div>`;
+    return;
+  }
+
+  if (!r.filed) {
+    box.innerHTML = `
+      <div class="big">手取り ${yen(r.tedori)}　（税金 ${yen(r.total)}）</div>
+      <table class="res">
+        <tr><th>所得税・復興特別所得税</th><td><b>${yen(r.incomeTax)}</b>（支給額 ${yen(r.amount)} × 20.42％）</td></tr>
+        <tr><th>住民税</th><td><b>${yen(r.juminzei)}</b>（市町村民税 ${yen(r.shichoson)} ＋ 道府県民税 ${yen(r.dofuken)}）</td></tr>
+        <tr><th>合計</th><td><b>${yen(r.total)}</b></td></tr>
+        <tr><th>手取り</th><td><b>${yen(r.tedori)}</b></td></tr>
+      </table>
+      <div class="callout"><b>「退職所得の受給に関する申告書」を出さないと、退職所得控除も2分の1課税も使われません。</b>
+        支給額そのものに一律20.42％がかかります（所得税法201条3項）。
+        申告書を出した場合の所得税は<b>${yen(calcTaishoku({ ...input, filed: true }, DATA).incomeTax)}</b>です。
+        <span class="hint">出し忘れても、自分で確定申告をすれば精算されて戻ってきます。</span></div>`;
+    return;
+  }
+
+  const halfNote = !r.halfApplied
+    ? `<div class="callout"><b>この退職金は「2分の1課税」が効いていません。</b>
+        ${r.kind === "yakuin"
+          ? `役員等としての勤続年数が5年以下のため、<b>特定役員退職手当等</b>として2分の1が適用されません（所得税法30条2項）。`
+          : `勤続5年以下で、控除を引いた残額が300万円を超えるため、<b>短期退職手当等</b>として300万円を超える部分に2分の1が適用されません（所得税法30条2項）。`}</div>`
+    : "";
+
+  box.innerHTML = `
+    <div class="big">手取り ${yen(r.tedori)}　（税金 ${yen(r.total)}）</div>
+    <table class="res">
+      <tr><th>勤続年数</th><td>${r.nensu}年（${r.kindLabel}）</td></tr>
+      <tr><th>退職所得控除額</th><td><b>${yen(r.kojo)}</b>${r.disabled ? "（障害退職のため+100万円）" : ""}</td></tr>
+      <tr><th>課税退職所得金額</th><td><b>${yen(r.taxable)}</b>${r.halfApplied ? `（（${yen(r.amount)} − ${yen(r.kojo)}）× 1/2・1,000円未満切捨）` : "（1,000円未満切捨）"}</td></tr>
+      <tr><th>所得税</th><td>${yen(r.shotoku)}（所得税法89条の税率表）</td></tr>
+      <tr><th>所得税＋復興特別所得税</th><td><b>${yen(r.incomeTax)}</b>（× 102.1％・1円未満切捨）</td></tr>
+      <tr><th>住民税</th><td><b>${yen(r.juminzei)}</b>（市町村民税6％ ${yen(r.shichoson)} ＋ 道府県民税4％ ${yen(r.dofuken)}）</td></tr>
+      <tr><th>税金の合計</th><td><b>${yen(r.total)}</b></td></tr>
+      <tr><th>手取り</th><td><b>${yen(r.tedori)}</b>（${yen(r.amount)} − ${yen(r.total)}）</td></tr>
+    </table>
+    ${kinzokuNote}
+    ${halfNote}
+    ${laterNote}`;
+});
+</script>
+</body>
+</html>
