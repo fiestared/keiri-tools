@@ -22,7 +22,11 @@ trap 'rm -rf "$STAGE"' EXIT
 mkdir -p "$STAGE/src/lib" "$STAGE/icons"
 cp "$SRC/manifest.json" "$SRC/selectors.default.json" "$STAGE/"
 cp "$SRC/src/background.js" "$SRC/src/content.js" "$STAGE/src/"
-cp "$SRC/src/lib/scrape.js" "$SRC/src/lib/csv.js" "$SRC/src/lib/license.js" "$STAGE/src/lib/"
+# ExtPay.js を忘れないこと: background.js が importScripts で読み込むので、
+# 入れ忘れると**service workerが起動時に落ちて拡張が丸ごと死ぬ**(セレクタ取得・ライセンス・
+# ダウンロードが全滅する)。2026-07-14までZIPから漏れていた(下の検証が捕まえた)
+cp "$SRC/src/lib/scrape.js" "$SRC/src/lib/crawl.js" "$SRC/src/lib/csv.js" \
+   "$SRC/src/lib/license.js" "$SRC/src/lib/ExtPay.js" "$STAGE/src/lib/"
 cp "$SRC/icons/icon16.png" "$SRC/icons/icon48.png" "$SRC/icons/icon128.png" "$STAGE/icons/"
 
 # ── 検証: manifestが参照するファイルがZIPに全部入っているか ──────────────
