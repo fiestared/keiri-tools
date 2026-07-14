@@ -1,0 +1,43 @@
+<!--
+  Amazon注文履歴の「ページ送り」部分（合成フィクスチャ）。
+
+  なぜ手で書いたか:
+  ページ送りのDOMだけ実物を持っておらず、セレクタが当たっているかを一度も検証できていなかった。
+  そのせいで「全ページ巡回」(Pro版の目玉機能)が壊れているのか動いているのかすら分からなかった。
+  実データ(利用者の注文履歴)はここに置けないので、**注文情報を含まない**ページ送りの
+  マークアップだけを、実物の構造どおりに手で書き起こしている。
+
+  実物の構造(2026-07-14 に確認):
+    <ul class="a-pagination">
+      <li class="a-disabled a-first">前へ</li>
+      <li class="a-selected"><a>1</a></li>
+      <li class="a-normal"><a href="...startIndex=10...">2</a></li>
+      ...
+      <li class="a-last"><a href="...startIndex=10...">次へ →</a></li>
+    </ul>
+  最終ページでは a-last が <li class="a-last a-disabled"> になり、<a> ではなく <span> になる。
+  ここを踏むと1ページ目に戻り、無限ループになる(だから a-disabled を必ず除外する)。
+-->
+<div id="page-1" data-desc="途中のページ（次へ が有効）">
+  <ul class="a-pagination">
+    <li class="a-disabled a-first">前へ</li>
+    <li class="a-selected"><a href="#">1</a></li>
+    <li class="a-normal"><a href="https://www.amazon.co.jp/your-orders/orders?is-secure=true&amp;startIndex=10&amp;ref_=xxx">2</a></li>
+    <li class="a-normal"><a href="https://www.amazon.co.jp/your-orders/orders?is-secure=true&amp;startIndex=20&amp;ref_=xxx">3</a></li>
+    <li class="a-normal"><a href="https://www.amazon.co.jp/your-orders/orders?is-secure=true&amp;startIndex=30&amp;ref_=xxx">4</a></li>
+    <li class="a-last"><a href="https://www.amazon.co.jp/your-orders/orders?is-secure=true&amp;startIndex=10&amp;ref_=xxx">次へ<span class="a-letter-space"></span>→</a></li>
+  </ul>
+</div>
+
+<div id="page-last" data-desc="最終ページ（次へ が無効化されている）">
+  <ul class="a-pagination">
+    <li class="a-normal"><a href="https://www.amazon.co.jp/your-orders/orders?is-secure=true&amp;startIndex=30&amp;ref_=xxx">前へ</a></li>
+    <li class="a-normal"><a href="https://www.amazon.co.jp/your-orders/orders?is-secure=true&amp;startIndex=30&amp;ref_=xxx">4</a></li>
+    <li class="a-selected"><a href="#">5</a></li>
+    <li class="a-last a-disabled"><span>次へ<span class="a-letter-space"></span>→</span></li>
+  </ul>
+</div>
+
+<div id="page-none" data-desc="ページ送りが無い（注文が1ページに収まっている）">
+  <div class="order-history">注文が10件以下なので、ページ送りは描画されない。</div>
+</div>

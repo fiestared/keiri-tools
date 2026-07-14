@@ -121,7 +121,25 @@
     $("#kt-go").style.opacity = v ? ".6" : "1";
   }
 
-  /** Pro機能のガード */
+  /** Pro機能のガード。
+   *  **押した時点でライセンスを取り直す。**
+   *  以前はパネル生成時の1回しか見ていなかったため、**Amazonのページを開いたまま購入した人は
+   *  そのページがずっと「無料版」のまま**だった(再読込しないとProにならない)。
+   *  買った直後に使えないのは、商品として致命的。 */
+  async function refreshLicense() {
+    try {
+      const fresh = await ktGetLicense();
+      if (fresh && fresh.pro && !license.pro) {
+        license = fresh;
+        $("#kt-plan").textContent = "Pro";
+        $("#kt-go").textContent = "一覧表をつくる（全ページ分）";
+        $("#kt-proacts").style.display = "block";
+        $("#kt-pro").innerHTML = "";
+      }
+    } catch (e) { console.warn("[電帳法索引簿] ライセンスの再確認に失敗", e); }
+    return license.pro;
+  }
+
   function requirePro(featureName) {
     if (license.pro) return true;
     $("#kt-done").style.display = "block";
@@ -279,10 +297,32 @@
       clearProgress();
       renderDone(orders, name, allPages ? pagesRead : 1);
       renderProCta(orders);
+    } catch (e) {
+      // **黙って失敗しない**。以前は例外が握り潰され、押しても何も起きないように見えた
+      // (2026-07-14: 全ページ巡回が失敗し、Masahiroには「ダウンロードできない」としか見えなかった)。
+      console.error("[電帳法索引簿] 失敗", e);
+      clearProgress();
+      $("#kt-done").style.display = "block";
+      $("#kt-done").innerHTML = `
+        <div style="background:#fff1f0;border:1px solid #e5a3a0;border-radius:8px;padding:11px;font-size:12.5px">
+          <b>うまくいきませんでした。</b><br>
+          Amazonの画面の作りが変わった可能性があります。<br>
+          <span style="color:#6b7280">${String(e && e.message || e).slice(0, 160)}</span><br>
+          <button id="kt-fallback" style="margin-top:8px;width:100%;cursor:pointer;padding:8px;
+            border:1px solid #c8cdd4;background:#fff;border-radius:6px;font-size:12.5px">
+            この画面に出ている分だけで一覧表をつくる
+          </button>
+        </div>`;
+      const fb = $("#kt-fallback");
+      if (fb) fb.addEventListener("click", () => build(false));
     } finally { setBusy(false); }
   }
 
-  $("#kt-go").addEventListener("click", () => build(license.pro));
+  $("#kt-go").addEventListener("click", async () => {
+    if (busy) return;
+    await refreshLicense();          // 買った直後でも、再読込なしでProになる
+    build(license.pro);
+  });
   $("#kt-one").addEventListener("click", () => build(false));
 
   // ── Pro: 全ページ分をまとめてつくる ──────────────────────────
@@ -310,6 +350,7 @@
 
       let next = ktFindNextPageUrl(doc, url, pag);
       if (!next) next = ktNextPageUrlByIndex(url, page * pageSize, pag);
+      console.log("[電帳法索引簿] 次ページ", { page, found: !!next, next });
       if (!next || next === url) break;
 
       await sleep(1200);  // Amazonへの負荷を避ける
