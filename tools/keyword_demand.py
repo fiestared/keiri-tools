@@ -189,6 +189,17 @@ def main():
         return
 
     kws = list(a.keywords)
+
+    # ⚠️ 引用符の付け忘れを検知する（2026-07-14に実際に踏んだ）。
+    #   python3 keyword_demand.py コンビニ 新商品   → シェルが2語に分割し、**別々のキーワード**として測る
+    #   → 「コンビニ」単体の巨大な検索数を見て、桁を読み違える。
+    # フレーズを測るつもりなら引用符が要る。複数語を渡されたら必ず警告する。
+    if len(kws) > 1 and not a.file:
+        print("⚠️  複数のキーワードとして測ります:", " / ".join(f"「{k}」" for k in kws),
+              file=sys.stderr)
+        print("    フレーズ（例: コンビニ 新商品）を測りたいなら、"
+              "**引用符で囲む**こと → \"コンビニ 新商品\"", file=sys.stderr)
+        print(file=sys.stderr)
     if a.file:
         kws += [l.strip() for l in open(a.file) if l.strip()
                 and not l.startswith("#")]
