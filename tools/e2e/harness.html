@@ -1187,6 +1187,78 @@ SCENES.ikuji_cap = ikujiScene({ monthly: 600000, leaveDays: 180 });
 // ★黙って答えると、上限に張りつく人に**上限を無視した高い額**を信じさせる（月30万円以上ずれる）
 SCENES.ikuji_nodata = ikujiScene({ monthly: 600000, nodata: true });
 
+// ═══════════════════════════════════════════════════════════════════════════
+// 産後パパ育休（/papa-ikukyu/）— 61条の8 ＋ 61条の10
+//
+// ★★期待値は **厚労省「育児休業等給付の内容と支給申請手続」(001461102.pdf) 5頁の計算例**。
+//    実装を一切通さず、資料に印刷された金額をそのまま焼き付ける（外部オラクル）。
+//      賃金日額10,000円・14日 → 67%: **93,800円** / 13%: **18,200円**
+//      同・3日就労で賃金30,000円 → 67%: 112,000−30,000 = **82,000円** / 13%: **18,200円**（減額なし）
+//
+// ★★このページの主役は **配偶者要件の免除（61条の10第2項3号）**。
+//    父親は妻が産後休業中なので、**妻が育休を1日も取らなくても13%が乗る**。
+//    ページの既定の選択（「配偶者が出産した」）が、コアに exempt:true を**本当に渡しているか**を
+//    画面の実額（18,200円）で固定する。渡し忘れれば「配偶者の育児休業が14日未満」で0円になり落ちる。
+// ═══════════════════════════════════════════════════════════════════════════
+const papaScene = (inp) => async () => {
+  const doc = await open("/docs/papa-ikukyu/");
+  set(doc, "monthly", String(inp.monthly ?? 300000)); // 賃金日額 10,000円
+  set(doc, "leaveDays", String(inp.leaveDays ?? 14));
+  set(doc, "wage", String(inp.wage ?? 0));
+  if (inp.spouse) set(doc, "spouse", inp.spouse);
+  if (inp.spouseDays !== undefined) set(doc, "spouseDays", String(inp.spouseDays));
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /産後パパ育休の給付 ¥|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "産後パパ育休の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+
+  return {
+    ...inp,
+    total: num(/産後パパ育休の給付 ¥([\d,]+)/),
+    shusshoji: num(/出生時育児休業給付金（67%）¥([\d,]+)/),
+    // ★13%の行は**常に描かれる**（乗るなら金額・乗らないなら理由）。渡し忘れで行が消える余地を残さない
+    shien: num(/出生後休業支援給付金（＋13%）¥([\d,]+)/),
+    daily: num(/賃金日額 ¥([\d,]+)/),
+    // ★★産後パパ育休の日数が、そのあとの育休の180日枠を食うことを画面が自分から言うこと
+    remaining67: num(/67%が続くのは残り(\d+)日/),
+    // 13%が乗らないときは**なぜ乗らないか**を名指しで言う（黙って0円にしない）
+    showsOwnDaysReason: /あなたの休業が14日未満/.test(body),
+    showsCliffHint: /13%（約¥18,200）がまるごと乗ります/.test(body),
+    showsSpouseReason: /配偶者の育児休業が14日未満/.test(body),
+    // ★賃金で67%が減っても13%は減らないことを画面が明示する
+    showsWageReduced: /出生後休業支援給付金（13%）は減額されません/.test(body),
+    // ★★80%以上working → 67%不支給。**13%も道連れで消える**（条文に無い規則・厚労省5頁）
+    showsUnpaidBoth: /出生後休業支援給付金（13%）も\s*支給されません/.test(body),
+    showsCap: /賃金日額が上限（¥16,110）に張りついています/.test(body),
+    showsDaysCap: /支給の対象は28日までです/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+
+// ★看板の答え（厚労省5頁の計算例①）: 月給30万・14日・賃金なし・妻が産後休業中
+//   → 67%: 93,800円 / 13%: 18,200円 / 合計 112,000円（＝80%）
+//   ★★13%が乗るのは、ページが「配偶者が出産した＝産後休業中」を exempt として渡しているから。
+//     渡し忘れれば「配偶者の育児休業が14日未満」で0円になり、このシーンが落ちる。
+SCENES.papa = papaScene({});
+// ★★厚労省5頁の計算例②: 3日就労して賃金30,000円 → 67%は82,000円に減るが、**13%は18,200円のまま**
+SCENES.papa_wage = papaScene({ wage: 30000 });
+// ★★賃金が80%相当額（112,000円）以上 → 67%は不支給。**13%も支給されない**（厚労省5頁）。
+//   条文（61条の10）には賃金調整の規定が無いので、条文だけ読むと13%は出ると読める。**それは誤り**。
+SCENES.papa_unpaid = papaScene({ wage: 112000 });
+// ★14日の崖: 13日では13%が1円も出ない（61条の10第1項2号）。あと1日で18,200円乗ることを画面が言う
+SCENES.papa_13days = papaScene({ leaveDays: 13 });
+// ★免除に当てはまらない人（子が養子など）は、配偶者が14日以上取らないと13%は0円
+SCENES.papa_no_exempt = papaScene({ spouse: "employed", spouseDays: 0 });
+// ★28日で頭打ち（61条の8第2項2号）＋上限に張りつく人 → 67%: 302,223円 / 13%: 58,640円（厚労省の公表値）
+SCENES.papa_cap = papaScene({ monthly: 600000, leaveDays: 40 });
+// 参照データを配信できないときは、金額を出さずに断る（fail closed）
+SCENES.papa_nodata = papaScene({ nodata: true });
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };

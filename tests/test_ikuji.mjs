@@ -25,7 +25,7 @@ import { readFileSync } from 'node:fs';
 import {
   yen, wageDaily, applyIkujiCaps, adjustForWage,
   addMonthsClamped, parseYmd, fmtYmd, unitPeriods, unitPayment, UNIT_DAYS,
-  shienKyufu, shusshojiKyufu, calcIkuji,
+  shienKyufu, shusshojiKyufu, calcIkuji, calcPapaIkukyu,
   RATE_HIGH, RATE_LOW, RATE_SHIEN, HIGH_DAYS, SHIEN_MAX_DAYS, WORK_CAP,
 } from '../docs/assets/ikuji_core.js';
 
@@ -300,6 +300,133 @@ eq(RATE_LOW, 0.5, '50%（同項）');
 eq(RATE_SHIEN, 0.13, '13%（61条の10第6項）');
 eq(WORK_CAP, 0.8, '80%（61条の7第7項）');
 eq(HIGH_DAYS, 180, '180日（61条の7第6項）');
+
+// ═══════════════════════════════════════════════════════════════
+// 産後パパ育休（calcPapaIkukyu）— 61条の8 ＋ 61条の10
+//
+// ★★オラクルは厚労省「育児休業等給付の内容と支給申請手続」(001461102.pdf) の**計算例**。
+//    実装を一切通さず、資料に印刷された金額をそのまま焼き付ける。
+//    これが緑になることは「67%・13%・28日上限・80%調整・切り捨て」が同時に正しい証明になる。
+// ═══════════════════════════════════════════════════════════════
+const papa = (over) => calcPapaIkukyu({
+  total6m: 10000 * 180,   // 賃金日額 10,000円（＝厚労省の計算例の前提）
+  leaveDays: 14,
+  wage: 0,
+  spouse: { exempt: true }, // 妻が産後休業中（父親の既定・61条の10第2項3号）
+  ...over,
+}, D);
+
+// ── 厚労省の計算例①: 賃金日額10,000円・14日・賃金なし（資料5頁）
+{
+  const r = papa({});
+  eq(r.daily, 10000, '【オラクル・厚労省5頁】賃金日額 = 10,000円');
+  eq(r.shusshoji.amount, 93800, '【オラクル・厚労省5頁】出生時育児休業給付金 = 10,000×14×67% = 93,800円');
+  eq(r.shien.amount, 18200, '【オラクル・厚労省5頁】出生後休業支援給付金 = 10,000×14×13% = 18,200円');
+  eq(r.total, 112000, '【オラクル】合計 = 112,000円（＝80%相当額）');
+  eq(r.shusshoji.unpaid, false, '賃金がなければ不支給にならない');
+  eq(r.shien.eligible, true, '14日取得＋配偶者要件免除 → 13%が乗る');
+}
+
+// ── 厚労省の計算例②: 同上で**3日就労して賃金30,000円**が支払われた場合（資料5頁）
+//    ★ここが本丸: **67%は減額されるが、13%は減額されない**。
+{
+  const r = papa({ wage: 30000 });
+  eq(r.shusshoji.cap, 112000, '80%相当額 = 10,000×14×80% = 112,000円（資料の【参考】と一致）');
+  eq(r.shusshoji.amount, 82000, '【オラクル・厚労省5頁】67% = 112,000 − 30,000 = 82,000円');
+  eq(r.shusshoji.reduced, true, '賃金が13%超なので減額される');
+  eq(r.shien.amount, 18200, '★★【オラクル・厚労省5頁】13%は**減額されない** = 18,200円');
+  eq(r.total, 100200, '合計 = 82,000 + 18,200 = 100,200円');
+}
+
+// ── ★★賃金が80%以上 → 67%は不支給。**13%も道連れで消える**（資料5頁の表の3行目）
+//    条文（61条の10）には賃金調整の規定が**無い**ので、条文だけ読むと13%は出ると読める。誤り。
+{
+  const r = papa({ wage: 112000 }); // ちょうど80%相当額
+  eq(r.shusshoji.unpaid, true, '賃金が80%相当額以上 → 出生時育児休業給付金は不支給（61条の8第5項）');
+  eq(r.shusshoji.amount, 0, '67% = 0円');
+  eq(r.shien.amount, 0, '★★13%も支給されない（厚労省5頁が明記。条文には書いていない）');
+  eq(r.shien.reason, 'shusshoji_unpaid', '13%が出ない理由を「67%が不支給だから」と申告する');
+  eq(r.total, 0, '合計 0円');
+}
+{
+  // 80%の1円下 → 67%は1円だけ出て、13%は満額。境界が「以上」であることを固定する。
+  const r = papa({ wage: 111999 });
+  eq(r.shusshoji.unpaid, false, '80%相当額を1円下回れば不支給にならない');
+  eq(r.shusshoji.amount, 1, '67% = 112,000 − 111,999 = 1円');
+  eq(r.shien.amount, 18200, '13%は満額のまま');
+}
+
+// ── 賃金が「13%以下」なら67%も13%も減額されない（資料5頁の表の1行目）
+{
+  const gross = 10000 * 14;              // 140,000
+  const r = papa({ wage: gross * 0.13 }); // 18,200円 ＝ ちょうど13%
+  eq(r.shusshoji.amount, 93800, '賃金が13%ちょうどなら67%は満額（93,800円）— 減額されない');
+  eq(r.shien.amount, 18200, '13%も満額');
+}
+
+// ── 28日で頭打ち（61条の8第2項2号）＋ 上限額（オラクル: 302,223円 / 58,640円）
+{
+  const r = papa({ leaveDays: 40 });
+  eq(r.payDays, 28, '★40日申告しても支給対象は28日（61条の8第2項2号）');
+  eq(r.cappedDays, true, '28日で頭打ちになったことを申告する');
+  eq(r.leaveDays, 40, '申告された休業日数はそのまま返す（画面で両方見せるため）');
+}
+{
+  const r = calcPapaIkukyu({
+    total6m: 16110 * 180 * 2, // 上限（16,110円）を大きく超える人
+    leaveDays: 28, wage: 0, spouse: { exempt: true },
+  }, D);
+  eq(r.capped, true, '賃金日額が上限に張りつく');
+  eq(r.daily, 16110, '★上限は年齢によらず16,110円（17条4項2号ハ・61条の8第4項の読替え）');
+  eq(r.shusshoji.amount, 302223, '【オラクル・厚労省】産後パパ育休28日の上限 = 302,223円');
+  eq(r.shien.amount, 58640, '【オラクル・厚労省】出生後休業支援28日の上限 = 58,640円');
+  eq(r.total, 360863, '上限に張りつく人の合計 = 302,223 + 58,640');
+}
+
+// ── ★13%の「14日の崖」— 13日だと1円も出ない（61条の10第1項2号）
+{
+  const r13 = papa({ leaveDays: 13 });
+  const r14 = papa({ leaveDays: 14 });
+  eq(r13.shien.eligible, false, '★13日では13%は出ない（14日以上が要件・61条の10第1項2号）');
+  eq(r13.shien.reason, 'own_days', '理由は「自分の休業日数が14日未満」');
+  eq(r13.shien.amount, 0, '13日 → 13%は0円');
+  eq(r14.shien.amount, 18200, '14日 → 13%が18,200円乗る');
+  // 1日増やしただけで、67%の6,700円に加えて13%の18,200円が“崖”のように乗る
+  eq(r14.total - r13.total, 6700 + 18200, '★13日→14日で合計が24,900円増える（1日分の67%＋13%まるごと）');
+}
+
+// ── ★★配偶者要件（61条の10第1項3号 と 2項3号）
+{
+  // 父親の既定: 妻が産後休業中 → 2項3号で免除 → 妻が育休を1日も取らなくても13%が出る
+  const exempt = papa({ spouse: { exempt: true } });
+  eq(exempt.shien.amount, 18200, '★★妻が産後休業中なら、妻の育休0日でも13%が出る（61条の10第2項3号）');
+
+  // 免除されない人（例: 子が養子で配偶者が産後休業をしていない）は、配偶者の14日以上が要る
+  const noSpouse = papa({ spouse: { exempt: false, days: 0 } });
+  eq(noSpouse.shien.eligible, false, '免除されない場合、配偶者が育休0日なら13%は出ない（1項3号）');
+  eq(noSpouse.shien.reason, 'spouse_days', '理由は「配偶者の休業日数が14日未満」');
+  eq(noSpouse.shien.amount, 0, '13%は0円');
+
+  const spouse14 = papa({ spouse: { exempt: false, days: 14 } });
+  eq(spouse14.shien.amount, 18200, '配偶者が14日取れば13%が乗る');
+}
+
+// ── ★産後パパ育休の日数は、そのあとの育休の「67%の180日枠」を食う（61条の8第7項の読替え）
+{
+  eq(papa({ leaveDays: 28 }).remaining67, 152, '★28日取ると、そのあとの育休で67%が続くのは残り152日（180日はリセットされない）');
+  eq(papa({ leaveDays: 14 }).remaining67, 166, '14日なら残り166日');
+  eq(papa({ leaveDays: 40 }).remaining67, 152, '40日申告でも支給は28日なので、食うのも28日');
+}
+
+// ── fail closed（省略を「0」「対象外」と黙って読まない）
+{
+  const base = { total6m: 10000 * 180, leaveDays: 14, wage: 0, spouse: { exempt: true } };
+  throws(() => calcPapaIkukyu({ ...base }, null), '参照データが無ければ計算しない（fail closed）');
+  throws(() => calcPapaIkukyu({ ...base, wage: undefined }, D), '★賃金の省略を0と読まない（渡し忘れると給付を多く見積もる）');
+  throws(() => calcPapaIkukyu({ ...base, spouse: undefined }, D), '★配偶者の状況の省略を許さない（13%が黙って消える／黙って出る）');
+  throws(() => calcPapaIkukyu({ ...base, spouse: { exempt: false } }, D), '★免除されないのに配偶者の日数が無ければ例外（黙って0日と読まない）');
+  throws(() => calcPapaIkukyu({ ...base, leaveDays: 0 }, D), '休業日数0は計算しない');
+}
 
 // ───────────────────────────────────────────────────────────────
 if (failed) {
