@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ふるさと納税 限度額シミュレーション｜年収と家族構成で自動計算</title>
+<meta name="description" content="年収と家族構成を入れるだけで、ふるさと納税で全額控除される寄附額の上限（限度額）を自動計算。地方税法37条の2と附則5条の6にもとづき、特例控除額の割合は復興特別所得税を織り込んだ84.895％などの正しい値で計算します。寄附額を入れると自己負担2,000円に収まるかも判定。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/furusato/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "ふるさと納税 限度額シミュレーション",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "給与収入と家族構成から、ふるさと納税で自己負担2,000円に収まる寄附額の上限（限度額）を計算します。住民税の所得割額・調整控除・特例控除額の割合（地方税法附則5条の6の読替え後）にもとづく計算。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "ふるさと納税 限度額シミュレーション"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "ふるさと納税の限度額は何で決まりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "住民税の所得割額で決まります。ふるさと納税の「特例控除額」は住民税の所得割額の20％を超えられないと決められているため（地方税法37条の2第11項）、限度額はおおよそ「所得割額 × 20％ ÷ 特例控除額の割合 ＋ 2,000円」になります。年収そのものではなく、社会保険料や扶養家族を引いたあとの課税所得で決まるので、同じ年収でも家族構成で限度額は変わります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "限度額を超えて寄附するとどうなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "超えた分は自己負担になります。限度額の中で寄附すれば自己負担は2,000円だけで済みますが、限度額を超えた部分は税金から引かれず、そのまま持ち出しになります。たとえば限度額6万円の人が8万円寄附すると、自己負担は2,000円ではなく約2万2,000円になります。返礼品の価値は寄附額の3割までなので、超過分は損になることが多いです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "いつまでに寄附すればいいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "その年の12月31日までです。ふるさと納税は暦年（1月1日〜12月31日）で区切られ、決済が完了した日で判定されます。2026年に寄附した分は2027年度の住民税から引かれます。年末はサイトが混み合い、クレジットカード決済の反映が年をまたぐこともあるので、12月中旬までに済ませるのが安全です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "限度額は去年の住民税の通知書で計算するのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "いいえ。限度額を決めるのは寄附する年の所得です。2026年に寄附した分は2027年度の住民税から引かれ、その所得割額は2026年（令和8年分）の所得で決まります。去年の通知書は見積もりの材料にはなりますが、今年に転職・昇給・産休・退職などがあった人は去年の額で計算すると限度額を誤ります。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › ふるさと納税 限度額シミュレーション</nav>
+
+<section class="hero">
+  <h1>ふるさと納税 限度額シミュレーション</h1>
+  <p>年収と家族構成を入れるだけで、<b>自己負担2,000円で収まる寄附額の上限（限度額）</b>を計算します。<b>限度額は住民税の所得割額の20％</b>から逆算して決まるので、同じ年収でも家族構成や社会保険料で変わります。寄附額を入れると<b>本当に2,000円で収まるか</b>も判定します。</p>
+</section>
+
+<div class="card">
+  <label for="shunyu">給与収入（年収・額面／円）</label>
+  <input type="number" id="shunyu" value="5000000" placeholder="例: 5000000" inputmode="numeric">
+
+  <div class="fee-pair">
+    <div>
+      <label for="age">年齢</label>
+      <input type="number" id="age" value="40" min="0" max="120" inputmode="numeric">
+    </div>
+    <div>
+      <label for="ken">お住まいの都道府県</label>
+      <select id="ken"></select>
+    </div>
+  </div>
+  <div class="hint">年齢と都道府県は<b>社会保険料の概算</b>にだけ使います（40〜64歳は介護保険料がかかり、健康保険料率は都道府県で違うため）。</div>
+
+  <label for="shakai" style="margin-top:12px">社会保険料（年額／円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　空欄なら年収から概算します</span></label>
+  <input type="number" id="shakai" placeholder="源泉徴収票の「社会保険料等の金額」" inputmode="numeric">
+
+  <div class="fee-pair" style="margin-top:12px">
+    <div>
+      <label for="haigusha">配偶者控除</label>
+      <select id="haigusha">
+        <option value="none">なし（共働き・配偶者なし）</option>
+        <option value="ippan">あり（70歳未満）</option>
+        <option value="rojin">あり（70歳以上）</option>
+      </select>
+    </div>
+    <div>
+      <label for="fuyoIppan">扶養親族（一般・16〜18歳／23〜69歳）</label>
+      <input type="number" id="fuyoIppan" value="0" min="0" max="20" inputmode="numeric">
+    </div>
+  </div>
+
+  <div class="fee-pair">
+    <div>
+      <label for="fuyoTokutei">特定扶養（19〜22歳）</label>
+      <input type="number" id="fuyoTokutei" value="0" min="0" max="20" inputmode="numeric">
+    </div>
+    <div>
+      <label for="fuyoRojin">老人扶養（70歳以上・同居以外）</label>
+      <input type="number" id="fuyoRojin" value="0" min="0" max="20" inputmode="numeric">
+    </div>
+  </div>
+  <div class="hint"><b>15歳以下の子どもは数えません</b>（児童手当があるため扶養控除の対象外です）。限度額も変わりません。</div>
+
+  <details style="margin-top:12px">
+    <summary>その他の控除（生命保険料・ひとり親・障害者・給与以外の所得など）</summary>
+    <div style="margin-top:10px">
+      <label for="sonotaKojo">その他の所得控除（円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　生命保険料控除・地震保険料控除・iDeCoの掛金など</span></label>
+      <input type="number" id="sonotaKojo" value="0" min="0" inputmode="numeric">
+
+      <label for="sonotaShotoku" style="margin-top:10px">給与以外の所得（円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　副業・不動産などの所得金額</span></label>
+      <input type="number" id="sonotaShotoku" value="0" min="0" inputmode="numeric">
+
+      <div style="margin-top:10px">
+        <label for="fuyoDokyoRooya">同居老親等（70歳以上・同居）</label>
+        <input type="number" id="fuyoDokyoRooya" value="0" min="0" max="20" inputmode="numeric">
+      </div>
+
+      <label style="font-weight:400;display:block;margin-top:10px">
+        <input type="checkbox" id="hitorioya"> ひとり親
+      </label>
+      <label style="font-weight:400;display:block">
+        <input type="checkbox" id="kafu"> 寡婦
+      </label>
+      <label style="font-weight:400;display:block">
+        <input type="checkbox" id="shogai"> 障害者（本人・同一生計配偶者・扶養親族のいずれか。一般）
+      </label>
+      <label style="font-weight:400;display:block">
+        <input type="checkbox" id="gakusei"> 勤労学生
+      </label>
+    </div>
+  </details>
+
+  <label for="kifu" style="margin-top:12px">寄附する予定の額（円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　任意。入れると自己負担が2,000円で収まるか判定します</span></label>
+  <input type="number" id="kifu" placeholder="例: 60000" inputmode="numeric">
+
+  <button class="primary" id="calc">限度額を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>この計算機の見方</h2>
+
+  <h3>限度額は「年収」ではなく「住民税の所得割額」で決まります</h3>
+  <p>ふるさと納税でいちばん大きく効く控除は<b>特例控除</b>ですが、これには<b>「住民税の所得割額の20％まで」</b>という天井があります（地方税法37条の2第11項）。この天井にちょうど届く寄附額が限度額なので、式はこうなります。</p>
+  <div class="callout">
+    <b>限度額 ＝ 住民税の所得割額 × 20％ ÷ 特例控除額の割合 ＋ 2,000円</b>
+    所得割額は「（年収 − 給与所得控除 − 社会保険料 − 扶養控除など）× 10％ − 調整控除」で求めます。<b>年収が同じでも、社会保険料や扶養家族が多い人は所得割額が小さくなり、限度額も小さくなります。</b>だから「年収だけ」で出した早見表は当てになりません。
+  </div>
+
+  <h3>★この計算機は「84.895％」で計算します（85％ではありません）</h3>
+  <p>上の式の「特例控除額の割合」は、地方税法の<b>本則</b>を読むと 85／80／70／67／57／50／45％と書いてあります。しかし<b>附則5条の6</b>が、平成26年度から<b>令和20年度</b>までのあいだ、この表を<b>84.895／79.79／69.58／66.517／56.307／49.16／44.055％</b>に読み替えています。これは<b>「90％ − 所得税の限界税率 × 1.021」</b>、つまり<b>復興特別所得税を織り込んだ値</b>です。</p>
+  <p>本則の85％のまま計算すると<b>限度額を小さく</b>見積もり、逆に復興特別所得税（×1.021）を忘れて「90％ − 所得税率」で計算すると<b>限度額を大きく</b>見積もります。後者は<b>上限を超えて寄附して自腹を切る</b>ことになります。この計算機は読み替え後の値を使います。</p>
+
+  <h3>指定都市（政令市）に住んでいるかは聞きません</h3>
+  <p>政令指定都市では住民税の内訳が変わります（市民税8％・県民税2％。ふつうは6％・4％）。しかし調整控除も特例控除額も同じ比率で入れ替わるため、<b>市と県を合計した限度額は1円も変わりません</b>。だから、この計算機は指定都市かどうかを聞きません。</p>
+
+  <div class="callout">
+    <b>社会保険料は「概算」です — 正確に出したい人は実額を入れてください</b>
+    社会保険料は<b>全額が所得控除</b>になるので、限度額に直接効きます。空欄のときは<b>賞与がない前提で年収を12等分し、協会けんぽ（選んだ都道府県）・厚生年金・雇用保険（一般の事業）の料率</b>で概算します。<b>賞与がある人・組合健保や共済の人・扶養家族の社会保険を負担している人は実額とずれます。</b>お手元に源泉徴収票があれば、<b>「社会保険料等の金額」</b>の欄をそのまま入れてください。
+  </div>
+
+  <div class="note">
+    <b>この計算機で正しく出ない人</b>
+    <b>住宅ローン控除・医療費控除を受ける人</b>（税額控除・所得控除の分だけ限度額が下がることがあります）、<b>ワンストップ特例を使う人で住宅ローン控除がある人</b>、<b>退職金を受け取った年</b>、<b>株式の譲渡所得・配当所得がある人</b>は、結果より限度額が小さくなることがあります。心当たりのある方は、余裕をもって少なめに寄附するか、お住まいの市区町村にご確認ください。
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>ふるさと納税の限度額は何で決まりますか？</h3>
+  <p><b>住民税の所得割額で決まります。</b>ふるさと納税の「特例控除額」は<b>住民税の所得割額の20％</b>を超えられないと決められているため（地方税法37条の2第11項）、限度額はおおよそ「<b>所得割額 × 20％ ÷ 特例控除額の割合 ＋ 2,000円</b>」になります。年収そのものではなく、社会保険料や扶養家族を引いたあとの課税所得で決まるので、<b>同じ年収でも家族構成で限度額は変わります</b>。</p>
+  <h3>限度額を超えて寄附するとどうなりますか？</h3>
+  <p><b>超えた分は自己負担になります。</b>限度額の中で寄附すれば自己負担は2,000円だけで済みますが、限度額を超えた部分は税金から引かれず、そのまま持ち出しになります。たとえば限度額6万円の人が8万円寄附すると、自己負担は2,000円ではなく<b>約2万2,000円</b>になります。返礼品の価値は寄附額の3割までなので、超過分は損になることが多いです。</p>
+  <h3>いつまでに寄附すればいいですか？</h3>
+  <p><b>その年の12月31日までです。</b>ふるさと納税は暦年（1月1日〜12月31日）で区切られ、<b>決済が完了した日</b>で判定されます。2026年に寄附した分は<b>2027年度の住民税</b>から引かれます。年末はサイトが混み合い、クレジットカード決済の反映が年をまたぐこともあるので、<b>12月中旬までに済ませるのが安全です</b>。</p>
+  <h3>限度額は去年の住民税の通知書で計算するのですか？</h3>
+  <p><b>いいえ。限度額を決めるのは寄附する年の所得です。</b>2026年に寄附した分は2027年度の住民税から引かれ、その所得割額は<b>2026年（令和8年分）の所得</b>で決まります。去年の通知書は見積もりの材料にはなりますが、<b>今年に転職・昇給・産休・退職などがあった人は去年の額で計算すると限度額を誤ります</b>。</p>
+</section>
+
+<section class="faq">
+  <h2>関連するツール・記事</h2>
+  <p>
+    <a href="../shakai-hoken/">社会保険料計算機</a>（毎月の給料から引かれる社会保険料を正確に計算する）<br>
+    <a href="../gensen-choshu/">源泉徴収税額 計算機</a>（毎月の給料から引かれる所得税を計算する）<br>
+    <a href="../taishokukin/">退職金の税金 計算機</a>（退職金にかかる所得税・住民税を計算する）<br>
+    <a href="../zangyodai/">残業代（割増賃金）計算機</a>
+  </p>
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 地方税法 37条の2・314条の7（寄附金税額控除）／同法 附則5条の6（特例控除額の割合の読替え）／35条・314条の3（所得割の税率）／37条・314条の6（調整控除）／20条の4の2（端数計算）／所得税法 28条・別表第五（給与所得）・86条（基礎控除）／租税特別措置法 41条の16の2<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calc, shakaiHokenGaisan } from "../assets/juminzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const pct = (x1000) => (x1000 / 1000).toLocaleString("ja-JP", { maximumFractionDigits: 3 }) + "％";
+
+// 税率・控除額・社会保険料率は非同期で届く。**どちらも答えの一部**なので、届く前に押されても待つ
+// （回線が遅い人だけ空データで計算され、限度額が過大に出る事故を防ぐ = fail closed）。
+let D = null, S = null;
+const dataReady = Promise.all([
+  fetch("../assets/juminzei_r08.json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
+  fetch("../assets/shaho_rates_r08.json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
+]).then(([d, s]) => { D = d; S = s; return true; }).catch(() => false);
+
+// 都道府県プルダウンと出典表示は飾り。ここで転んでも計算は止めない
+dataReady.then(ok => {
+  if (!ok || !D || !S) return;
+  const sel = $("ken");
+  for (const name of Object.keys(S.kenko_rates)) {
+    const o = document.createElement("option");
+    o.value = name; o.textContent = name;
+    if (name === "東京都") o.selected = true;
+    sel.appendChild(o);
+  }
+  $("src-note").textContent = `（${D._meta.label}）`;
+}).catch(() => {});
+
+$("calc").addEventListener("click", async () => {
+  const ready = await dataReady;
+  const box = $("result");
+  if (!ready || !D || !S) {
+    box.innerHTML = `<div class="callout"><b>税率表を読み込めませんでした。</b>` +
+      `通信環境を確認して、ページを再読み込みしてください。税率が分からないまま` +
+      `ふるさと納税の限度額を答えると、上限を超えて寄附して自己負担が増えるおそれがあるため、` +
+      `計算を止めています。</div>`;
+    return;
+  }
+
+  const shunyu = Number($("shunyu").value);
+  if (!(shunyu > 0)) {
+    box.innerHTML = `<div class="callout">給与収入（年収）を入力してください。</div>`;
+    return;
+  }
+
+  // 社会保険料: 空欄なら年収から概算する（画面に金額と前提を必ず出す）
+  const shakaiInput = $("shakai").value.trim();
+  const gaisan = shakaiHokenGaisan(shunyu, Number($("age").value), $("ken").value, S);
+  const useGaisan = shakaiInput === "";
+  const shakai = useGaisan ? gaisan.total : Number(shakaiInput);
+
+  const family = {
+    haigusha: $("haigusha").value,
+    fuyoIppan: Number($("fuyoIppan").value),
+    fuyoTokutei: Number($("fuyoTokutei").value),
+    fuyoRojin: Number($("fuyoRojin").value),
+    fuyoDokyoRooya: Number($("fuyoDokyoRooya").value),
+    shogaiIppan: $("shogai").checked ? 1 : 0,
+    kafu: $("kafu").checked,
+    hitorioyaHaha: $("hitorioya").checked,
+    kinroGakusei: $("gakusei").checked,
+  };
+
+  const kifuInput = $("kifu").value.trim();
+  const r = calc({
+    kyuyoShunyu: shunyu,
+    shakaiHoken: shakai,
+    sonotaKojo: Number($("sonotaKojo").value),
+    sonotaShotoku: Number($("sonotaShotoku").value),
+    family,
+    kifu: kifuInput === "" ? null : Number(kifuInput),
+  }, D);
+
+  if (r.shotokuwari <= 0) {
+    box.innerHTML = `
+      <div class="big">限度額 ¥0</div>
+      <div class="callout"><b>住民税の所得割がかからないため、ふるさと納税をしても税金は戻りません。</b>
+        控除（給与所得控除・社会保険料・扶養控除など）の合計が所得を上回っているため、
+        課税所得が0円になっています。この場合、寄附しても<b>寄附額がそのまま自己負担</b>になります
+        （返礼品を目的に寄附すること自体は自由ですが、税制上の得はありません）。</div>
+      <div class="hint">給与収入 ${yen(r.kyuyoShotoku ? shunyu : shunyu)} → 給与所得 ${yen(r.kyuyoShotoku)}
+        ／ 所得控除の合計 ${yen(r.shotokuKojoGokei)} ／ 課税総所得 ${yen(r.kazeiSoShotoku)}</div>`;
+    return;
+  }
+
+  const shakaiNote = useGaisan
+    ? `<div class="hint"><b>社会保険料 ${yen(gaisan.total)} は概算です</b>（賞与なしとして年収を12等分し、
+        協会けんぽ ${$("ken").value}［${gaisan.kenkoRate}％］${gaisan.kaigoApplies ? "＋介護保険" : ""}
+        ・厚生年金 ${S.kosei_nenkin_rate}％・雇用保険［一般の事業］で計算）。
+        <b>源泉徴収票の「社会保険料等の金額」を入れると正確になります。</b></div>`
+    : `<div class="hint">社会保険料は入力された実額 <b>${yen(shakai)}</b> で計算しました。</div>`;
+
+  const kifuBlock = r.kifu ? renderKifu(r, Number(kifuInput)) : "";
+
+  box.innerHTML = `
+    <div class="big">限度額 ${yen(r.furusatoGendo)}</div>
+    <div class="hint" style="margin-bottom:10px">この額までの寄附なら、<b>自己負担は2,000円だけ</b>で済みます（${D._meta.year}の所得にもとづく計算）。</div>
+    <table class="res">
+      <tr><th>給与所得</th><td>${yen(r.kyuyoShotoku)}（給与収入 ${yen(shunyu)} − 給与所得控除）</td></tr>
+      <tr><th>所得控除の合計</th><td>${yen(r.shotokuKojoGokei)}（基礎控除 ${yen(r.kisoKojo)} ＋ 社会保険料 ${yen(shakai)} ＋ 人的控除 ${yen(r.jintekiKojo)} ほか）</td></tr>
+      <tr><th>課税総所得金額</th><td>${yen(r.kazeiSoShotoku)}（1,000円未満切捨）</td></tr>
+      <tr><th>調整控除</th><td>${yen(r.choseiKojo.total)}</td></tr>
+      <tr><th>住民税の所得割額</th><td><b>${yen(r.shotokuwari)}</b>（課税総所得 × 10％ − 調整控除）</td></tr>
+      <tr><th>特例控除の上限（所得割額の20％）</th><td>${yen(r.tokureiCap)}</td></tr>
+      <tr><th>特例控除額の割合</th><td><b>${pct(r.tokureiRitsu.pct_x1000)}</b>（本則${r.tokureiRitsu.honsoku_pct}％を附則5条の6が読み替えた値）</td></tr>
+      <tr><th>限度額</th><td><b>${yen(r.furusatoGendo)}</b>（${yen(r.tokureiCap)} ÷ ${pct(r.tokureiRitsu.pct_x1000)} ＋ 2,000円）</td></tr>
+    </table>
+    ${shakaiNote}
+    ${kifuBlock}`;
+});
+
+/** 寄附額を入れたときの内訳（自己負担が2,000円で収まるか） */
+function renderKifu(r, kifu) {
+  const k = r.kifu;
+  const over = kifu > r.furusatoGendo;
+  const head = over
+    ? `<div class="callout"><b>★この寄附額は限度額を ${yen(kifu - r.furusatoGendo)} 超えています。</b>
+        自己負担は2,000円ではなく<b>${yen(k.jikoFutan)}</b>になります
+        （超えた分は税金から引かれず、そのまま持ち出しになります）。</div>`
+    : `<div class="callout"><b>この寄附額なら自己負担は ${yen(k.jikoFutan)} です。</b>
+        限度額（${yen(r.furusatoGendo)}）の範囲内なので、寄附額のうち2,000円を除いた全額が
+        所得税と住民税から引かれます。</div>`;
+
+  return `${head}
+    <table class="res">
+      <tr><th>寄附額</th><td>${yen(kifu)}</td></tr>
+      <tr><th>所得税からの控除</th><td>${yen(k.shotokuzei)}（（寄附額 − 2,000円）× ${r.tokureiRitsu.shotokuzei_pct}％ × 1.021）</td></tr>
+      <tr><th>住民税・基本分</th><td>${yen(k.kihon)}（（寄附額 − 2,000円）× 10％）</td></tr>
+      <tr><th>住民税・特例分</th><td>${yen(k.tokurei)}${k.tokureiCapped ? "（<b>所得割額の20％の上限に達しています</b>）" : ""}</td></tr>
+      <tr><th>控除の合計</th><td><b>${yen(k.total)}</b></td></tr>
+      <tr><th>実質の自己負担</th><td><b>${yen(k.jikoFutan)}</b>（寄附額 ${yen(kifu)} − 控除 ${yen(k.total)}）</td></tr>
+    </table>`;
+}
+</script>
+</body>
+</html>

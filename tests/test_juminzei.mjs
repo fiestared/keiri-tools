@@ -14,10 +14,11 @@ import { readFileSync } from 'node:fs';
 import {
   kyuyoShotoku, kyuyoKojo, juminzeiKisoKojo, shotokuzeiKisoKojo,
   jintekiKojo, jintekiSaGokei, jintekiChoseiGaku, kazeiSoShotoku,
-  choseiKojo, tokureiRitsu, furusatoGendo, calc,
+  choseiKojo, tokureiRitsu, furusatoGendo, calc, shakaiHokenGaisan,
 } from '../docs/assets/juminzei_core.js';
 
 const D = JSON.parse(readFileSync(new URL('../docs/assets/juminzei_r08.json', import.meta.url), 'utf8'));
+const S = JSON.parse(readFileSync(new URL('../docs/assets/shaho_rates_r08.json', import.meta.url), 'utf8'));
 
 let checks = 0, failed = 0;
 function eq(actual, expected, label) {
@@ -204,6 +205,69 @@ ok(threw, '参照データ未読込なら例外を投げる（空データで黙
 console.log('■ 年度はデータが名乗る（ページに手書きしない）');
 eq(calc({ kyuyoShunyu: 5_000_000, family: {} }, D).year, D._meta.year, '結果に年分が載る');
 ok(/令和8年分/.test(D._meta.year), '_meta.year が令和8年分');
+
+// ───────────────────────────────────────────────────────────
+console.log('■ 社会保険料の概算（限度額に直接効く。黙って0円で計算したら限度額が過大になる）');
+{
+  const g = shakaiHokenGaisan(5_000_000, 40, '東京都', S);
+  // 料率は shaho_rates_r08.json が正本。ここでは「実額を書き写した期待値」ではなく
+  // **構造**（社会保険料が年収に対して現実的な帯に入るか・上限が効くか）を固定する。
+  ok(g.total > 0, '年収500万・40歳 → 社会保険料の概算が0円にならない');
+  ok(g.total > 5_000_000 * 0.13 && g.total < 5_000_000 * 0.18,
+     `年収の13〜18%に収まる（実際 ${g.total}円 = ${(g.total / 5_000_000 * 100).toFixed(1)}%）`);
+  ok(g.kaigoApplies, '★40歳は介護保険料がかかる（第2号被保険者）');
+  ok(!shakaiHokenGaisan(5_000_000, 39, '東京都', S).kaigoApplies, '★39歳はかからない');
+  ok(shakaiHokenGaisan(5_000_000, 39, '東京都', S).total < g.total, '39歳のほうが保険料は少ない');
+
+  // ★厚生年金の標準報酬月額には上限（65万円）がある。
+  //   上限が効いていないと、高所得者の社会保険料を過大に見積もり、**限度額を過小に**出す。
+  const rich = shakaiHokenGaisan(20_000_000, 40, '東京都', S);
+  const mid = shakaiHokenGaisan(10_000_000, 40, '東京都', S);
+  ok(rich.kosei === mid.kosei,
+     '★年収1,000万も2,000万も厚生年金は同額（標準報酬月額65万円で頭打ち・KOSEI_MAX）');
+  ok(rich.total / 20_000_000 < mid.total / 10_000_000,
+     '★年収が上がるほど社会保険料の「率」は下がる（上限が効くため。15%固定で計算すると誤る）');
+
+  // ★知らない都道府県名を渡されても、料率0%で黙って計算しない（保険料が消えて限度額が過大になる）
+  const unknown = shakaiHokenGaisan(5_000_000, 40, 'ジパング国', S);
+  ok(unknown.unknownKen, '★収録外の都道府県名は unknownKen を立てる');
+  ok(unknown.kenkoRate > 0, '★料率0%で計算しない（東京都にフォールバック）');
+  eq(unknown.total, g.total, '★フォールバック後は東京都と同額（保険料が消えていない）');
+
+  let threwS = false;
+  try { shakaiHokenGaisan(5_000_000, 40, '東京都', null); } catch { threwS = true; }
+  ok(threwS, '料率データ未読込なら例外を投げる（空データで黙って概算しない）');
+
+  // ★社会保険料は全額が所得控除 → 限度額に直接効く。「概算」と名乗る理由がこれ。
+  const a = calc({ kyuyoShunyu: 5_000_000, shakaiHoken: 700_000, family: {} }, D);
+  const b = calc({ kyuyoShunyu: 5_000_000, shakaiHoken: g.total, family: {} }, D);
+  ok(a.furusatoGendo !== b.furusatoGendo,
+     `★社会保険料が6万円違うと限度額も変わる（実額70万→${a.furusatoGendo}円 / 概算${g.total}円→${b.furusatoGendo}円）`);
+  ok(b.furusatoGendo < a.furusatoGendo, '社会保険料が多いほど限度額は小さい（控除が増えて所得割が減るため）');
+}
+
+// ───────────────────────────────────────────────────────────
+console.log('■ ★限度額ちょうど寄附すると自己負担は2,000円で収まる（限度額の定義そのもの）');
+// ⚠️この検査は最初「きっかり2,000円」と書いて落ちた。**間違っていたのは検査の期待値のほう**（規則1）。
+//   寄附金税額控除は市・県を別々に計算して**1円未満を切り上げる**（大阪市の公表例で裏を取った規則）ので、
+//   控除が最大2円多く出て、自己負担は 1,998〜2,000円 になりうる。**利用者への約束は
+//   「2,000円を超えない」**であって「きっかり2,000円」ではない。実装は正しく、検査が厳しすぎた。
+//   → 本当に守るべき不変条件（超えないこと・1円でも超過寄附すれば増えること）を固定する。
+for (const shunyu of [3_000_000, 5_000_000, 8_000_000, 12_000_000, 30_000_000]) {
+  const shakai = Math.floor(shunyu * 0.14);
+  const r = calc({ kyuyoShunyu: shunyu, shakaiHoken: shakai, family: {} }, D);
+  const at = calc({ kyuyoShunyu: shunyu, shakaiHoken: shakai, family: {}, kifu: r.furusatoGendo }, D);
+  ok(at.kifu.jikoFutan <= 2000 && at.kifu.jikoFutan >= 1998,
+     `年収${shunyu / 10000}万: 限度額(${r.furusatoGendo}円)ちょうど → 自己負担 ${at.kifu.jikoFutan}円（2,000円を超えない）`);
+  // ★1,000円でも超えたら自己負担が増える = 限度額が「上限」として本当に効いている
+  const over = calc({ kyuyoShunyu: shunyu, shakaiHoken: shakai, family: {}, kifu: r.furusatoGendo + 1000 }, D);
+  ok(over.kifu.jikoFutan > 2000,
+     `年収${shunyu / 10000}万: 限度額+1,000円 → 自己負担が2,000円を超える（${over.kifu.jikoFutan}円）`);
+  // ★限度額の1円上でも、もう2,000円では収まらない（限度額が「1円単位で正しい」ことの確認）
+  const plus1 = calc({ kyuyoShunyu: shunyu, shakaiHoken: shakai, family: {}, kifu: r.furusatoGendo + 1 }, D);
+  ok(plus1.kifu.jikoFutan >= at.kifu.jikoFutan,
+     `年収${shunyu / 10000}万: 限度額+1円 → 自己負担は減らない`);
+}
 
 console.log(`\n${failed === 0 ? '✅' : '❌'} test_juminzei: ${checks - failed}/${checks} checks passed`);
 if (failed > 0) process.exit(1);

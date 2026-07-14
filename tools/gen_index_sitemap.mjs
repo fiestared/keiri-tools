@@ -163,7 +163,7 @@ const CATEGORIES = [
 
 /** sitemap に載せるツール・固定ページ(記事は自動で追加される) */
 const STATIC_PAGES = [
-  "", "shakai-hoken/", "gensen-choshu/", "kihonteate/", "taishokukin/", "zangyodai/", "shohizei/", "eigyobi/",
+  "", "furusato/", "shakai-hoken/", "gensen-choshu/", "kihonteate/", "taishokukin/", "zangyodai/", "shohizei/", "eigyobi/",
   "yukyu/", "denchoho-index/", "senpou-futan/", "zengin-kana/", "shiharai-site/",
   "ext/amazon-receipt/", "column/", "about/", "privacy/", "contact/",
 ];

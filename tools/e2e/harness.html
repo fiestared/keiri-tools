@@ -851,6 +851,69 @@ SCENES.zangyodai_fixed = zangyodaiScene({ base: 300000, holidays: 120, daily: 8,
 // 割増率を配信できない → 額を出さずに断ること(fail closed)
 SCENES.zangyodai_nodata = SCENES.zangyodai;
 
+// ── ふるさと納税 限度額 ──────────────────────────────────────────────
+// ★期待値は juminzei_core.js を一切通さず、**条文から手で積み上げた実額**を固定する。
+//   年収500万・独身・社会保険料70万（実額入力）の鎖:
+//     給与所得   5,000,000 − 1,440,000(=収入×20%+44万) = 3,560,000
+//     課税総所得 3,560,000 − (基礎控除43万 + 社保70万)  = 2,430,000
+//     所得割     2,430,000 × 10% − 調整控除2,500        =   240,500
+//     20%上限    240,500 × 20%                          =    48,100
+//     割合       判定額2,280,000 → **79.79%**（本則80%を附則5条の6が読み替えた値）
+//     限度額     48,100 ÷ 0.7979 + 2,000                =    62,283
+//   ★本則の80%で割ると62,125円、復興特別所得税を忘れて80%(=90−10)…ではなく
+//     「90−所得税率」で計算しても80%になり、いずれもこの額にならない。
+//     **62,283円が出る＝附則5条の6の読替えが効いている**ことの証明になる。
+const furusatoScene = (inp) => async () => {
+  const doc = await open("/docs/furusato/");
+  // 都道府県プルダウンは料率JSONの到着後に作られる。**中身が出来る前に選ぶと空振りする**。
+  // ★配信失敗を再現するシーンでは、プルダウンは**永久に出来ない**のが正しい挙動なので待たない
+  //   (待つと「fail closedを検査するシーン」がタイムアウトで落ち、断り書きを一度も見ないまま終わる)
+  if (!inp.nodata) {
+    await waitFor(() => doc.getElementById("ken").options.length > 40, "都道府県プルダウン");
+    set(doc, "ken", "東京都");
+  }
+  set(doc, "shunyu", String(inp.shunyu));
+  set(doc, "age", String(inp.age ?? 40));
+  set(doc, "shakai", inp.shakai == null ? "" : String(inp.shakai)); // 空欄 = 年収から概算させる
+  set(doc, "kifu", inp.kifu == null ? "" : String(inp.kifu));
+  click(doc, "calc");
+
+  await waitFor(
+    () => /限度額 ¥|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "限度額の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+
+  return {
+    ...inp,
+    gendo: num(/限度額 ¥([\d,]+)/),
+    shotokuwari: num(/住民税の所得割額¥([\d,]+)/),
+    // ★附則5条の6の読替え後の割合が**画面に出ている**こと(本則80%と1桁も違わないなら意味がない)
+    showsRitsu: /特例控除額の割合79\.79％/.test(body),
+    // 概算を使ったときは、金額と前提を必ず名乗ること(黙って勝手な社保で答えない)
+    showsGaisan: /社会保険料 ¥762,988 は概算です/.test(body),
+    jikoFutan: num(/実質の自己負担¥([\d,]+)/),
+    showsOver: /この寄附額は限度額を ¥17,717 超えています/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+
+// ★看板の答え: 年収500万・独身・社保70万 → 限度額 62,283円
+SCENES.furusato = furusatoScene({ shunyu: 5000000, shakai: 700000 });
+// ★限度額ちょうど寄附すると、自己負担は**きっかり2,000円**になる。
+//   これは限度額の定義そのもの(2,000円で収まる寄附額の上限)＝鎖が全部正しいときだけ成立する
+SCENES.furusato_gendo = furusatoScene({ shunyu: 5000000, shakai: 700000, kifu: 62283 });
+// ★超過分は自腹。8万円寄附 → 限度額を17,717円超えるので自己負担は2,000円でなく16,137円
+SCENES.furusato_over = furusatoScene({ shunyu: 5000000, shakai: 700000, kifu: 80000 });
+// ★社保を空欄にしたら年収から概算し、**その金額と前提を画面に出す**こと
+//   (東京都9.85%・介護あり・厚年18.3%・雇用保険5/1000 → 762,988円 → 限度額 60,704円)
+SCENES.furusato_gaisan = furusatoScene({ shunyu: 5000000, age: 40 });
+// 税率表を配信できない → 限度額を出さずに断ること(fail closed)。
+// ★ここで黙って答えると、利用者は上限を超えて寄附して自腹を切る
+SCENES.furusato_nodata = furusatoScene({ shunyu: 5000000, shakai: 700000, nodata: true });
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };

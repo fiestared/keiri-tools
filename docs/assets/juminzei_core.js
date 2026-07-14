@@ -45,6 +45,8 @@
  * 5. **金額は整数で計算する。** 84.895% は 84895/100000 と整数比で書く（浮動小数だと1円ずれる）。
  */
 
+import { calcMonthly, calcKoyou } from './shaho_core.js';
+
 /** null を「上限なし」として扱う区分表の検索 */
 function pickBracket(list, value) {
   for (const b of list) {
@@ -316,6 +318,58 @@ export function furusatoKojo(kifu, shotokuwariShichoson, shotokuwariDofuken, pct
     total,
     // 実質の自己負担額（2,000円で収まっていれば上限内）
     jikoFutan: Math.max(0, k - total),
+  };
+}
+
+/**
+ * 社会保険料（本人負担・年額）の**概算**。
+ *
+ * ★ なぜ概算をわざわざ作るのか（そして、なぜ「概算」と名乗り続けるのか）:
+ *   限度額は社会保険料の実額で動く（社会保険料は全額が所得控除なので、課税所得＝所得割額＝限度額に
+ *   そのまま効く）。ところが利用者は自分の社会保険料の年額を覚えていない。
+ *   → **年収から概算し、画面に金額を出したうえで、源泉徴収票の実額で上書きできるようにする**。
+ *
+ * ★★ 総務省の「目安」一覧表を再現しようとしてはいけない（第20便の教訓）。
+ *   あの表は**社会保険料の前提を公表していない**ので、合わせに行くと
+ *   「自分の入力を相手の出力にフィッティングする」だけになり、検証にならない。
+ *   ここでは前提（下の3つ）を**すべて画面に出して**、利用者が実額で上書きできる形にする。
+ *
+ * 前提（＝概算である理由。ここが実態と違う人は源泉徴収票の額を入れてもらう）:
+ *   1. **賞与がない**ものとして年収を12等分する。賞与がある人は標準賞与額の上限
+ *      （健保は年度累計573万円・厚年は1回150万円）が効くので、保険料は概算より少なくなりうる。
+ *   2. 健康保険は**協会けんぽ**の都道府県料率（組合健保・共済は料率が違う）。
+ *   3. 雇用保険は**一般の事業**の料率。
+ *
+ * 料率は shaho_rates_r08.json をそのまま使う（このツールのために数字を書き写さない ＝ 正本を1つにする）。
+ *
+ * @param {number} kyuyoShunyu 給与収入（年額・額面）
+ * @param {number} age 年齢（40〜64歳は介護保険料がかかる）
+ * @param {string} kenName 都道府県名（協会けんぽの料率表のキー）
+ * @param {object} S shaho_rates_r08.json
+ */
+export function shakaiHokenGaisan(kyuyoShunyu, age, kenName, S) {
+  if (!S) throw new Error('参照データ（shaho_rates_r08.json）が渡されていません');
+  const shunyu = yen(kyuyoShunyu);
+  if (shunyu <= 0) return { total: 0, kenkoKaigoKosodate: 0, kosei: 0, koyou: 0, monthly: 0, kenkoRate: 0, unknownKen: false };
+
+  const kenkoRate = S.kenko_rates[kenName];
+  const unknownKen = !(kenkoRate > 0);
+  // 収録外の都道府県名を渡されたら黙って0%で計算しない（保険料が消えて限度額が過大になる）。
+  const rate = unknownKen ? S.kenko_rates['東京都'] : kenkoRate;
+
+  const monthly = Math.floor(shunyu / 12); // ★賞与なしの前提
+  const m = calcMonthly(monthly, rate, S.kaigo_rate, Number(age) || 0, S.kosei_nenkin_rate, S.kosodate_rate);
+  const kenkoKaigoKosodate = (m.kenkoKaigo.self + m.kosodate.self) * 12;
+  const kosei = m.kosei.self * 12;
+
+  // 雇用保険は標準報酬月額ではなく**賃金総額**にかかる（徴収法11条1項）。年収にそのまま当てる。
+  const g = S.koyou.types.general;
+  const koyou = calcKoyou(shunyu, g.total_permille, g.jigyo2_permille).self;
+
+  return {
+    total: kenkoKaigoKosodate + kosei + koyou,
+    kenkoKaigoKosodate, kosei, koyou,
+    monthly, kenkoRate: rate, kaigoApplies: m.kaigoApplies, unknownKen,
   };
 }
 

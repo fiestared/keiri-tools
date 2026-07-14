@@ -187,6 +187,27 @@ const SCENES = [
   // 割増率が配信できないときは、額を出さずに断る(fail closed)
   { name: "zangyodai_nodata", data404: "zangyodai_rates.json",
     expect: (s) => s.failed && s.total === null },
+
+  // ── ふるさと納税 限度額 ──────────────────────────────────────────────
+  // ★期待値は条文から手で積み上げた実額(harness側のコメントに鎖を全部書いた)。
+  //   年収500万・独身・社保70万 → 所得割240,500円 → 限度額**62,283円**。
+  //   本則の80%で割ると62,125円になるので、**62,283円が出ること自体が
+  //   「附則5条の6の読替え(79.79%)が効いている」ことの証明**になる。
+  { name: "furusato", expect: (s) =>
+      s.gendo === 62283 && s.shotokuwari === 240500 && s.showsRitsu && !s.failed },
+  // ★限度額ちょうど寄附すると自己負担は**きっかり2,000円**。これは限度額の定義そのもので、
+  //   給与所得・調整控除・割合・20%上限・端数のどれか1つでも狂うと2,000円にならない
+  { name: "furusato_gendo", expect: (s) => s.gendo === 62283 && s.jikoFutan === 2000 && !s.failed },
+  // ★超えた分は自腹。8万円寄附 → 自己負担は2,000円ではなく16,137円になることを画面が言う
+  { name: "furusato_over", expect: (s) =>
+      s.jikoFutan === 16137 && s.showsOver && !s.failed },
+  // ★社保が空欄なら年収から概算し、**その金額と前提を画面に出す**(黙って勝手な社保で答えない)
+  { name: "furusato_gaisan", expect: (s) =>
+      s.gendo === 60704 && s.showsGaisan && !s.failed },
+  // 税率表が配信できないときは、限度額を出さずに断る(fail closed)。
+  // ★黙って答えると、利用者は上限を超えて寄附して自腹を切る
+  { name: "furusato_nodata", data404: "juminzei_r08.json",
+    expect: (s) => s.failed && s.gendo === null },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
