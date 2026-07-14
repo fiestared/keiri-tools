@@ -36,26 +36,34 @@
   <!-- 検索はブラウザの中だけで完結する(サーバー不要・入力は外部に送らない)。
        JSが動くときだけ表示する — JSが無効でも下のカテゴリ別一覧はそのまま読める。 -->
   <div class="col-search" id="col-search" hidden>
-    <input type="search" id="q" placeholder="キーワードで探す（例: 年末調整 書き方）"
+    <input type="search" id="q" placeholder="キーワードで探す"
            autocomplete="off" spellcheck="false" aria-label="記事をキーワードで検索">
     <p class="q-status" id="q-status" role="status" aria-live="polite"></p>
+    <div class="q-eg">
+      よく調べられていること:
+      <button type="button" data-q="年末調整">年末調整</button>
+      <button type="button" data-q="130万">130万円の壁</button>
+      <button type="button" data-q="インボイス">インボイス</button>
+      <button type="button" data-q="有給">有給</button>
+      <button type="button" data-q="手取り">手取り</button>
+    </div>
   </div>
   <p class="col-empty" id="q-empty" hidden></p>
 
   <!-- GEN:COLUMN-INDEX -->
   <nav class="cat-nav" id="cat-nav">
-    <a href="#cat-shakai-hoken">社会保険・年金<span>12</span></a>
-    <a href="#cat-nenmatsu-gensen">年末調整・源泉徴収<span>10</span></a>
-    <a href="#cat-kyuyo">給与計算・手取り<span>5</span></a>
-    <a href="#cat-kyufu">健康保険の給付<span>5</span></a>
-    <a href="#cat-yukyu">有給休暇<span>4</span></a>
-    <a href="#cat-shohizei">消費税・インボイス<span>4</span></a>
-    <a href="#cat-denchoho">電子帳簿保存法<span>2</span></a>
-    <a href="#cat-keiri">経理・振込の実務<span>6</span></a>
+    <a href="#cat-shakai-hoken">社会保険・年金<span>(12)</span></a>
+    <a href="#cat-nenmatsu-gensen">年末調整・源泉徴収<span>(10)</span></a>
+    <a href="#cat-kyuyo">給与計算・手取り<span>(5)</span></a>
+    <a href="#cat-kyufu">健康保険の給付<span>(5)</span></a>
+    <a href="#cat-yukyu">有給休暇<span>(4)</span></a>
+    <a href="#cat-shohizei">消費税・インボイス<span>(4)</span></a>
+    <a href="#cat-denchoho">電子帳簿保存法<span>(2)</span></a>
+    <a href="#cat-keiri">経理・振込の実務<span>(6)</span></a>
   </nav>
 
   <section class="cat" id="cat-shakai-hoken" data-cat>
-    <h2>社会保険・年金<span class="badge">12本</span></h2>
+    <h2>社会保険・年金<span class="cat-n">(12)</span></h2>
     <p class="cat-desc">加入の条件、保険料の決まり方(標準報酬月額・定時決定・随時改定)、扶養と年収の壁。</p>
     <div class="post-list">
       <a href="shakai-hoken-kanyu-joken/" data-s="社会保険の加入条件｜パートの4分の3基準と週20時間を図解 社会保険（健康保険・厚生年金）の加入条件を判定フロー図で解説。正社員は無条件、パートは「4分の3基準」か「週20時間・月8.8万円・従業員51人以上」。2026年10月に賃金要件（106万円の壁）が撤廃される最新情報と、雇用保険との違いまで。無料の保険料計算ツールつき。">
@@ -145,7 +153,7 @@
     </div>
   </section>
   <section class="cat" id="cat-nenmatsu-gensen" data-cat>
-    <h2>年末調整・源泉徴収<span class="badge">10本</span></h2>
+    <h2>年末調整・源泉徴収<span class="cat-n">(10)</span></h2>
     <p class="cat-desc">年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、各種控除と法定調書。</p>
     <div class="post-list">
       <a href="nenmatsu-chosei-kakikata/" data-s="年末調整の書き方｜令和8年分・4種類の書類はどの欄に何を書くか 令和8年分の年末調整で会社に出す書類は4種類。扶養控除等申告書・基礎控除申告書・保険料控除申告書・住宅ローン控除申告書について、誰が出すか、どの欄に何を書くか、書かなくていい欄はどこかを国税庁の様式で解説。基礎控除104万円など令和8年度改正の数字も反映。">
@@ -221,7 +229,7 @@
     </div>
   </section>
   <section class="cat" id="cat-kyuyo" data-cat>
-    <h2>給与計算・手取り<span class="badge">5本</span></h2>
+    <h2>給与計算・手取り<span class="cat-n">(5)</span></h2>
     <p class="cat-desc">額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務。</p>
     <div class="post-list">
       <a href="tedori-keisan/" data-s="手取りはいくら？額面から手取りを計算する方法【令和8年度】 手取りは額面の約8割。だが社会保険料は等級表の階段で決まるので、額面309,999円の人より310,000円の人のほうが手取りが2,837円少ない。所得税は同じ行に収まって1円も動かないため、社会保険料の増加がまるごと手取りの減少になる。住民税は去年の所得にかかるので、新卒1年目には引かれない。">
@@ -262,7 +270,7 @@
     </div>
   </section>
   <section class="cat" id="cat-kyufu" data-cat>
-    <h2>健康保険の給付<span class="badge">5本</span></h2>
+    <h2>健康保険の給付<span class="cat-n">(5)</span></h2>
     <p class="cat-desc">医療費が高額になったとき、病気・出産・育児で働けないときに受け取れるお金。</p>
     <div class="post-list">
       <a href="kogaku-ryoyohi/" data-s="高額療養費の自己負担限度額【令和8年】区分は年収でなく標準報酬月額で決まる 限度額の区分を決めるのは年収ではなく標準報酬月額。報酬月額が1円違うだけで等級が上がり、医療費100万円のときの自己負担が87,430円から171,820円に変わる。世帯合算は21,000円未満を拾わない。マイナ保険証を使う人は、そもそも限度額適用認定証を申請できない（省令が交付対象を資格確認書を持つ人に限っている）。">
@@ -303,7 +311,7 @@
     </div>
   </section>
   <section class="cat" id="cat-yukyu" data-cat>
-    <h2>有給休暇<span class="badge">4本</span></h2>
+    <h2>有給休暇<span class="cat-n">(4)</span></h2>
     <p class="cat-desc">付与日数の数え方、年5日の取得義務、パート・アルバイトの比例付与と買い取り。</p>
     <div class="post-list">
       <a href="yukyu-fuyo-nissu/" data-s="有給休暇の付与日数｜勤続年数ごとの一覧表と、出勤率8割・時効2年の落とし穴 入社6か月で10日、以後11・12・14・16・18・20日（労基法39条）。出勤率8割未満で付与ゼロになっても勤続年数はリセットされず、翌年は10日に戻りません。">
@@ -337,7 +345,7 @@
     </div>
   </section>
   <section class="cat" id="cat-shohizei" data-cat>
-    <h2>消費税・インボイス<span class="badge">4本</span></h2>
+    <h2>消費税・インボイス<span class="cat-n">(4)</span></h2>
     <p class="cat-desc">インボイス制度の基本と2割特例・簡易課税、消費税の端数処理。</p>
     <div class="post-list">
       <a href="invoice-wakariyasuku/" data-s="インボイス制度とは？わかりやすく3行で｜損をするのは「買い手」です インボイス制度を3行で。損をするのは売り手ではなく「買い手」です。2026年7月現在、免税事業者からの仕入れは9月30日まで80%控除・10月1日から70%控除に下がります（令和8年度改正）。2割特例の終了と3割特例、少額特例（税込1万円未満）まで、立場別に解説。">
@@ -371,7 +379,7 @@
     </div>
   </section>
   <section class="cat" id="cat-denchoho" data-cat>
-    <h2>電子帳簿保存法<span class="badge">2本</span></h2>
+    <h2>電子帳簿保存法<span class="cat-n">(2)</span></h2>
     <p class="cat-desc">電子取引データの保存義務と、検索要件を満たす索引簿・ファイル名のつけ方。</p>
     <div class="post-list">
       <a href="denchoho-wakariyasuku/" data-s="電子帳簿保存法をわかりやすく｜義務は3区分のうち「電子取引」だけ 電子帳簿保存法の3区分のうち、義務なのは「電子取引データ保存」だけです。紙の請求書はスキャンしなくて構いません。やることは改ざん防止（事務処理規程は無料）と検索要件の2つだけ。売上5,000万円以下の検索要件免除、2024年1月からの猶予措置、罰則の実際まで、国税庁の一問一答（令和8年7月）に基づいて解説します。">
@@ -391,7 +399,7 @@
     </div>
   </section>
   <section class="cat" id="cat-keiri" data-cat>
-    <h2>経理・振込の実務<span class="badge">6本</span></h2>
+    <h2>経理・振込の実務<span class="cat-n">(6)</span></h2>
     <p class="cat-desc">振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日と減価償却。</p>
     <div class="post-list">
       <a href="furikomi-tesuryo-kanjo-kamoku/" data-s="振込手数料の勘定科目｜支払手数料でよい理由と、売手負担が違法になる新ルール 自社負担なら「支払手数料」。売手負担は売上値引き・支払手数料・立替金で消費税の扱いが変わり、2026年1月の取適法では合意があっても違反になります。">
@@ -450,6 +458,14 @@
   var box = document.getElementById("col-search");
   var q = document.getElementById("q");
   var status = document.getElementById("q-status");
+  // 例のボタン: 押したら検索欄に入れて実行する（何を打てばいいか分からない人向け）
+  document.querySelectorAll(".q-eg button").forEach(function (b) {
+    b.addEventListener("click", function () {
+      q.value = b.dataset.q;
+      q.dispatchEvent(new Event("input"));
+      q.focus();
+    });
+  });
   var empty = document.getElementById("q-empty");
   var nav = document.getElementById("cat-nav");
   var cats = [].slice.call(document.querySelectorAll("[data-cat]"));

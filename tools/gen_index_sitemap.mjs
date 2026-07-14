@@ -251,10 +251,10 @@ if (uncategorized.length) {
 }
 
 const catNav = groups.map((g) =>
-  `    <a href="#cat-${g.id}">${esc(g.name)}<span>${g.items.length}</span></a>`).join("\n");
+  `    <a href="#cat-${g.id}">${esc(g.name)}<span>(${g.items.length})</span></a>`).join("\n");
 
 const sections = groups.map((g) => `  <section class="cat" id="cat-${g.id}" data-cat>
-    <h2>${esc(g.name)}<span class="badge">${g.items.length}本</span></h2>
+    <h2>${esc(g.name)}<span class="cat-n">(${g.items.length})</span></h2>
     <p class="cat-desc">${esc(g.desc)}</p>
     <div class="post-list">
 ${g.items.map((a) => card(a, "      ")).join("\n")}
