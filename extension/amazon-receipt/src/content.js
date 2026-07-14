@@ -53,6 +53,17 @@
       </button>
 
       <div id="kt-progress" style="display:none;margin-top:10px;color:#374151;font-size:13px"></div>
+
+      <!-- 巡回中の「中止」。**利用者が途中で止められること**は必須(何ページあるか分からないまま
+           勝手にページが移動していく画面は、止められないと恐い)。押したら**それまでに集めた分で**
+           一覧表をつくる — 全損させない。 -->
+      <div id="kt-stop" style="display:none;margin-top:8px">
+        <button id="kt-abort" style="width:100%;cursor:pointer;padding:8px;border:1px solid #c8cdd4;
+          background:#fff;color:#6b7280;border-radius:7px;font-size:12.5px">
+          中止する（ここまでの分で一覧表をつくる）
+        </button>
+      </div>
+
       <div id="kt-done" style="display:none;margin-top:12px"></div>
 
       <!-- Proの目玉機能。ここに置く。
@@ -259,35 +270,47 @@
     return name;
   }
 
-  /** ★ 主役のボタン: 読み取り → 金額を調べる → ファイル保存 まで一気にやる。
-   *  Proなら **全ページを巡回する**(それが買ったもの)。無料版は表示中のページだけ。 */
-  async function build(allPages) {
-    if (busy) return;
-    setBusy(true);
-    $("#kt-done").style.display = "none";
+  /** 注文が1件も無いとき(注文履歴以外のページで押された等) */
+  function renderNoOrders() {
+    $("#kt-done").style.display = "block";
+    $("#kt-done").innerHTML = `
+      <div style="background:#fff7e6;border:1px solid #e6c47a;border-radius:8px;padding:10px;font-size:12.5px">
+        注文が見つかりませんでした。<br>
+        Amazonの<b>「注文履歴」のページ</b>を開いてから、もう一度お試しください。
+      </div>`;
+  }
+
+  /** **黙って失敗しない**。以前は例外が握り潰され、押しても何も起きないように見えた
+   *  (2026-07-14: 全ページ巡回が失敗し、Masahiroには「ダウンロードできない」としか見えなかった)。 */
+  function renderError(e) {
+    console.error("[電帳法索引簿] 失敗", e);
+    clearProgress();
+    $("#kt-stop").style.display = "none";
+    $("#kt-done").style.display = "block";
+    $("#kt-done").innerHTML = `
+      <div style="background:#fff1f0;border:1px solid #e5a3a0;border-radius:8px;padding:11px;font-size:12.5px">
+        <b>うまくいきませんでした。</b><br>
+        Amazonの画面の作りが変わった可能性があります。<br>
+        <span style="color:#6b7280">${String(e && e.message || e).slice(0, 160)}</span><br>
+        <button id="kt-fallback" style="margin-top:8px;width:100%;cursor:pointer;padding:8px;
+          border:1px solid #c8cdd4;background:#fff;border-radius:6px;font-size:12.5px">
+          この画面に出ている分だけで一覧表をつくる
+        </button>
+      </div>`;
+    const fb = $("#kt-fallback");
+    if (fb) fb.addEventListener("click", () => build());
+  }
+
+  /** 集め終わったあとの仕上げ: 金額を調べる → ファイル保存 → 結果表示。
+   *  1ページ分でも全ページ巡回でも、ここは同じ。 */
+  async function finishUp(orders, pages) {
     try {
-      let orders;
-      if (allPages) {
-        orders = await crawlAllPages();
-      } else {
-        progress("この画面の注文を読み取っています…");
-        await sleep(150);
-        orders = ktParseOrderHistory(document, selectors.orderHistory).orders;
-      }
       lastResult = { orders, cardCount: orders.length, warnings: [] };
       console.log("[電帳法索引簿] 読み取り結果", lastResult);
+      if (orders.length === 0) { clearProgress(); renderNoOrders(); return; }
 
-      if (orders.length === 0) {
-        clearProgress();
-        $("#kt-done").style.display = "block";
-        $("#kt-done").innerHTML = `
-          <div style="background:#fff7e6;border:1px solid #e6c47a;border-radius:8px;padding:10px;font-size:12.5px">
-            注文が見つかりませんでした。<br>
-            Amazonの<b>「注文履歴」のページ</b>を開いてから、もう一度お試しください。
-          </div>`;
-        return;
-      }
-
+      // 領収書ページの取得は**裏からのfetchのままでよい**。注文履歴と違い、
+      // 領収書ページ(print.html)は fetch で正しい中身が返る(実績あり)
       await fillFromReceipts(orders);
 
       progress("一覧表のファイルを保存しています…");
@@ -295,74 +318,156 @@
       const name = saveCsv(orders);
 
       clearProgress();
-      renderDone(orders, name, allPages ? pagesRead : 1);
+      renderDone(orders, name, pages);
       renderProCta(orders);
     } catch (e) {
-      // **黙って失敗しない**。以前は例外が握り潰され、押しても何も起きないように見えた
-      // (2026-07-14: 全ページ巡回が失敗し、Masahiroには「ダウンロードできない」としか見えなかった)。
-      console.error("[電帳法索引簿] 失敗", e);
-      clearProgress();
-      $("#kt-done").style.display = "block";
-      $("#kt-done").innerHTML = `
-        <div style="background:#fff1f0;border:1px solid #e5a3a0;border-radius:8px;padding:11px;font-size:12.5px">
-          <b>うまくいきませんでした。</b><br>
-          Amazonの画面の作りが変わった可能性があります。<br>
-          <span style="color:#6b7280">${String(e && e.message || e).slice(0, 160)}</span><br>
-          <button id="kt-fallback" style="margin-top:8px;width:100%;cursor:pointer;padding:8px;
-            border:1px solid #c8cdd4;background:#fff;border-radius:6px;font-size:12.5px">
-            この画面に出ている分だけで一覧表をつくる
-          </button>
-        </div>`;
-      const fb = $("#kt-fallback");
-      if (fb) fb.addEventListener("click", () => build(false));
+      renderError(e);
     } finally { setBusy(false); }
   }
+
+  /** ★ 主役のボタン(無料版 / 「この画面に出ている分だけ」): 表示中のページだけ。 */
+  async function build() {
+    if (busy) return;
+    setBusy(true);
+    $("#kt-done").style.display = "none";
+    try {
+      progress("この画面の注文を読み取っています…");
+      await sleep(150);
+      const orders = ktParseOrderHistory(document, selectors.orderHistory).orders;
+      await finishUp(orders, 1);          // finishUp が setBusy(false) まで見る
+    } catch (e) {
+      renderError(e);
+      setBusy(false);
+    }
+  }
+
+  // ══ Pro: 全ページ巡回 ══════════════════════════════════════════
+  //
+  // **裏からfetchする方式は捨てた**(v0.3まで)。Amazonに通用しない — 実測(2026-07-14):
+  // 3ページ目のURLを fetch すると10件返るが**全部が既出**(＝別ページの中身が返っている)。
+  // 同じURLを利用者がブラウザで開けば、ちゃんと3ページ目が出る。
+  //
+  // → **利用者がクリックするのと同じ経路で巡回する**。実際に location.href でページを移動し、
+  //   content script は毎ページのロードで走るので、状態(kt_crawl)を持ち回して続きをやる。
+  //   判断(次へ行く/打ち切る)は全て純ロジック src/lib/crawl.js にあり、テストで守られている。
+
+  const CRAWL_RUN_KEY = "kt_crawl_run";
+  let aborted = false;
+
+  async function loadCrawl() {
+    const got = await chrome.storage.local.get(KT_CRAWL_KEY);
+    return got[KT_CRAWL_KEY] || null;
+  }
+  const saveCrawl = state => chrome.storage.local.set({ [KT_CRAWL_KEY]: state });
+  const clearCrawl = () => chrome.storage.local.remove(KT_CRAWL_KEY);
+
+  /** 巡回を始めたタブの印。**別のタブで注文履歴を開いても、そのタブは移動しない**ようにする。
+   *  sessionStorage はタブ単位で、同じタブ内のページ移動では消えないので、この用途に合う。
+   *  (tabs権限は使わない — ストアの再審査が重くなる)
+   *  @returns {string|null} null = sessionStorageが使えない → 所有者チェックはしない */
+  function myRunId() {
+    try { return sessionStorage.getItem(CRAWL_RUN_KEY) || ""; } catch (e) { return null; }
+  }
+  function newRunId() {
+    const id = Date.now() + "-" + Math.random().toString(36).slice(2, 8);
+    try { sessionStorage.setItem(CRAWL_RUN_KEY, id); } catch (e) { return ""; }
+    return id;
+  }
+
+  /** 1ページ分: 読む → 積む → (次へ移動 | 完了)
+   *
+   *  **次ページのURLは、必ずページ上の「次へ」リンクから取る**(ktFindNextPageUrl)。
+   *  startIndexから組み立てたURL(ktNextPageUrlByIndex)へ**移動してはいけない**:
+   *  `?startIndex=20`(ref_なし)をブラウザで開くと、Amazonは**1ページ目を返す**(実測)。
+   *  移動方式では、それは「利用者を1ページ目へ連れ戻す無駄な移動」になり、
+   *  ページ数の表示まで狂う。リンクが取れない＝終わり、で正しい。 */
+  async function runCrawlStep(state) {
+    setBusy(true);
+    aborted = false;
+    $("#kt-done").style.display = "none";
+    $("#kt-stop").style.display = "block";
+    progress(`${(state.pages || 0) + 1}ページ目を読んでいます…（これまでに${(state.orders || []).length}件）`);
+    await sleep(150);
+
+    const pag = (selectors.orderHistory && selectors.orderHistory.pagination) || {};
+    let r;
+    try {
+      const parsed = ktParseOrderHistory(document, selectors.orderHistory);
+      const next = ktFindNextPageUrl(document, location.href, pag);
+      r = ktCrawlAdvance(state, { url: location.href, orders: parsed.orders, nextUrl: next },
+                         { now: Date.now() });
+      console.log("[電帳法索引簿] 巡回", { page: r.state.pages, 新規: r.added,
+        累計: r.state.orders.length, 次: r.action, 理由: r.reason, url: r.nextUrl });
+    } catch (e) {
+      // 読み取りで転んでも、**それまでに集めた分は捨てない**(全損させない)
+      await clearCrawl();
+      $("#kt-stop").style.display = "none";
+      const kept = (state && state.orders) || [];
+      if (kept.length) await finishUp(kept, state.pages || 0);
+      else { renderError(e); setBusy(false); }
+      return;
+    }
+
+    if (r.action === "navigate") {
+      await saveCrawl(r.state);
+      progress(`${r.state.pages}ページ目まで読みました（${r.state.orders.length}件）。次のページへ移動します…`);
+      await sleep(1200);                       // Amazonへの負荷を避ける
+      if (aborted) return;                     // 「中止」が押された → 移動しない
+      const still = await loadCrawl();          // 他所で消されていたら移動しない
+      if (!still || !still.active) return;
+      location.href = r.nextUrl;                // ★ 利用者がクリックするのと同じ経路
+      return;
+    }
+
+    // 完了(次が無い / 新規0件 / 訪問済み / 上限)
+    await clearCrawl();
+    $("#kt-stop").style.display = "none";
+    await finishUp(r.state.orders, r.state.pages);
+  }
+
+  async function startCrawl() {
+    if (busy) return;
+    const pag = (selectors.orderHistory && selectors.orderHistory.pagination) || {};
+    const state = ktCrawlStart({
+      now: Date.now(),
+      maxPages: pag.maxPages || 30,
+      runId: newRunId(),
+    });
+    await saveCrawl(state);
+    await runCrawlStep(state);
+  }
+
+  /** 中止: 状態を消し、**それまでに集めた分で**一覧表をつくる(全損させない) */
+  $("#kt-abort").addEventListener("click", async () => {
+    aborted = true;
+    $("#kt-stop").style.display = "none";
+    const st = await loadCrawl();
+    await clearCrawl();
+    const orders = (st && st.orders) || [];
+    progress("中止しました。ここまでに集めた分で一覧表をつくります…");
+    await finishUp(orders, (st && st.pages) || 1);
+  });
 
   $("#kt-go").addEventListener("click", async () => {
     if (busy) return;
     await refreshLicense();          // 買った直後でも、再読込なしでProになる
-    build(license.pro);
+    if (license.pro) startCrawl(); else build();
   });
-  $("#kt-one").addEventListener("click", () => build(false));
+  $("#kt-one").addEventListener("click", () => build());
 
-  // ── Pro: 全ページ分をまとめてつくる ──────────────────────────
-  let pagesRead = 1;
-  async function crawlAllPages() {
-    pagesRead = 0;
-    const pag = (selectors.orderHistory && selectors.orderHistory.pagination) || {};
-    const maxPages = pag.maxPages || 30;
-    const pageSize = pag.pageSize || 10;
-    const seen = new Set();
-    const all = [];
-    let doc = document;
-    let url = location.href;
-
-    for (let page = 1; page <= maxPages; page++) {
-      const res = ktParseOrderHistory(doc, selectors.orderHistory);
-      pagesRead = page;
-      const fresh = ktDedupeNewOrders(res.orders, seen);
-      all.push(...fresh);
-      progress(`${page}ページ目を読んでいます…（これまでに${all.length}件）`);
-
-      // 新規0件なら終端。Amazonは範囲外のstartIndexで1ページ目を返すため必須の停止条件
-      if (fresh.length === 0 && page > 1) break;
-      if (page === maxPages) break;
-
-      let next = ktFindNextPageUrl(doc, url, pag);
-      if (!next) next = ktNextPageUrlByIndex(url, page * pageSize, pag);
-      console.log("[電帳法索引簿] 次ページ", { page, found: !!next, next });
-      if (!next || next === url) break;
-
-      await sleep(1200);  // Amazonへの負荷を避ける
-      let r;
-      try { r = await fetch(next, { credentials: "include" }); }
-      catch (e) { console.warn("[電帳法索引簿] 次ページの取得に失敗", next, e); break; }
-      if (!r.ok) break;
-      doc = new DOMParser().parseFromString(await r.text(), "text/html");
-      url = next;
-    }
-    return all;
-  }
+  // ── 巡回の再開: このページが巡回の途中なら、続きをやる ────────────────
+  // **勝手に動き出さないこと**が最優先。前回の中断が残ったまま注文履歴を開いた人の
+  // ページが、いきなり移動し始めるのは事故。古い状態(10分以上前)は必ず捨てる。
+  (async function resumeIfCrawling() {
+    let saved = null;
+    try { saved = await loadCrawl(); } catch (e) { return; }
+    if (!saved) return;
+    if (ktCrawlIsStale(saved, Date.now())) { await clearCrawl(); return; }
+    const mine = myRunId();
+    if (mine !== null && !ktCrawlIsOwnRun(saved, mine)) return;  // 別タブの巡回。触らない
+    if (!license.pro) { await clearCrawl(); return; }            // Proでない人は巡回しない
+    await runCrawlStep(saved);
+  })();
 
   // ── Pro: 領収書をまとめて保存 ────────────────────────────────
   // AmazonはPDFの領収書を配信していない。保存できるのは領収書ページのHTML

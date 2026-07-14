@@ -182,8 +182,13 @@ function ktFindNextPageUrl(root, baseUrl, pagSpec) {
 }
 
 /**
- * 注文履歴は startIndex クエリで送られる(1ページ10件)。「次へ」リンクの
- * DOMは変わりやすいが、このURL規則は安定しているのでフォールバックとして使う。
+ * 注文履歴は startIndex クエリで送られる(1ページ10件)。
+ *
+ * ⚠️ **このURLへ「移動」してはいけない**(2026-07-14 実測)。
+ * `?startIndex=20`(ref_なし)をブラウザで開くと、Amazonは**1ページ目を返す**。
+ * ref_ の付いた本物の「次へ」リンクを開いたときだけ、ちゃんと3ページ目が出る。
+ * 全ページ巡回(crawl.js)の次ページは、必ず ktFindNextPageUrl から取ること。
+ * ここはURL規則を組み立てるだけの道具として残してある(ページ送りの検査に使う)。
  * @returns {string|null}
  */
 function ktNextPageUrlByIndex(currentUrl, startIndex, pagSpec) {
