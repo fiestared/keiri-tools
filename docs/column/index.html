@@ -39,14 +39,6 @@
     <input type="search" id="q" placeholder="キーワードで探す"
            autocomplete="off" spellcheck="false" aria-label="記事をキーワードで検索">
     <p class="q-status" id="q-status" role="status" aria-live="polite"></p>
-    <div class="q-eg">
-      よく調べられていること:
-      <button type="button" data-q="年末調整">年末調整</button>
-      <button type="button" data-q="130万">130万円の壁</button>
-      <button type="button" data-q="インボイス">インボイス</button>
-      <button type="button" data-q="有給">有給</button>
-      <button type="button" data-q="手取り">手取り</button>
-    </div>
   </div>
   <p class="col-empty" id="q-empty" hidden></p>
 
@@ -458,14 +450,6 @@
   var box = document.getElementById("col-search");
   var q = document.getElementById("q");
   var status = document.getElementById("q-status");
-  // 例のボタン: 押したら検索欄に入れて実行する（何を打てばいいか分からない人向け）
-  document.querySelectorAll(".q-eg button").forEach(function (b) {
-    b.addEventListener("click", function () {
-      q.value = b.dataset.q;
-      q.dispatchEvent(new Event("input"));
-      q.focus();
-    });
-  });
   var empty = document.getElementById("q-empty");
   var nav = document.getElementById("cat-nav");
   var cats = [].slice.call(document.querySelectorAll("[data-cat]"));
