@@ -36,6 +36,7 @@ const ORDER = [
   "tedori-keisan",              // 手取り計算 25,591/月（手取り20万 9,390・手取り30万 7,656 も同記事で受ける）
   "shitsugyo-hoken-keisan",     // 失業保険 計算 25,591/月（失業保険 自己都合 25,591・失業保険 期間 11,464 も同記事で受ける）
   "saishushoku-teate",          // 再就職手当 25,591/月
+  "koyou-hoken-kanyu-joken",    // 雇用保険 加入条件 25,591/月
   "invoice-wakariyasuku",
   "shakai-hoken-kanyu-joken",
   "shakai-hokenryo-keisan",
@@ -96,7 +97,7 @@ const CATEGORIES = [
       "shakai-hoken-kanyu-joken", "shakai-hokenryo-keisan", "hyojun-hoshu-gakuhyo",
       "teiji-kettei", "zuiji-kaitei", "shoyo-shakaihoken", "kaigo-hokenryo-itsukara",
       "kodomo-kosodate-shienkin", "shakai-hoken-fuyo-joken", "nenshu-no-kabe",
-      "koyou-hokenryo-ritsu", "kenko-hoken-nini-keizoku",
+      "koyou-hoken-kanyu-joken", "koyou-hokenryo-ritsu", "kenko-hoken-nini-keizoku",
     ],
   },
   {
