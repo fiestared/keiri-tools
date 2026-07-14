@@ -90,7 +90,7 @@ eq(applyIkujiCaps(15000, D).daily, 15000, '★25歳でも「30歳未満の上限
 const poor = applyIkujiCaps(1666.67, D); // 6か月で30万円しか賃金がない人
 eq(poor.daily, MIN, '★賃金日額が下限を割る人は3,014円まで引き上げられる');
 eq(poor.floored, true, '下限に張りついたことを画面に出せる');
-const poorRun = calcIkuji({ total6m: 300000, leaveDays: 30 }, D); // 賃金日額1,666.67 → 下限へ
+const poorRun = calcIkuji({ total6m: 300000, leaveDays: 30, shien: null }, D); // 賃金日額1,666.67 → 下限へ
 eq(poorRun.floored, true, '★calcIkuji でも下限が当たる（端から端まで）');
 eq(poorRun.ikujiTotal, 60581, '★低賃金の人の1か月分は下限額60,581円（賃金日額のままなら33,500円で赤）');
 
@@ -147,7 +147,10 @@ eq(shusshojiKyufu(w, 28, 0).amount, 187600, '28日分 = 10,000×28×67%');
 eq(shusshojiKyufu(w, 28, 250000).unpaid, true, '賃金が80%以上なら不支給（5項）');
 
 // ── 9. 通し計算（calcIkuji）────────────────────────────────
-const r = calcIkuji({ total6m: 300000 * 6, leaveDays: 365, shienOwnDays: 28, shienSpouseDays: 28 }, D);
+const r = calcIkuji(
+  { total6m: 300000 * 6, leaveDays: 365, shien: { ownDays: 28, spouseDays: 28 } },
+  D,
+);
 eq(r.daily, 10000, '賃金日額10,000円');
 eq(r.units.length, 13, '365日 → 30日×12 + 5日 = 13期間');
 eq(r.units[0].amount, 201000, '1期間目は67%');
@@ -160,17 +163,42 @@ eq(r.total, r.ikujiTotal + r.shien.amount, '合計＝育休給付＋支援給付
 eq(r.year, D._meta.label, '★年度はデータから採る（ページに手書きしない）');
 
 // 上限に張りつく人（月給60万）
-const rich2 = calcIkuji({ total6m: 600000 * 6, leaveDays: 180, shienOwnDays: 0, shienSpouseDays: 0 }, D);
+const rich2 = calcIkuji(
+  { total6m: 600000 * 6, leaveDays: 180, shien: { ownDays: 0, spouseDays: 0 } },
+  D,
+);
 eq(rich2.capped, true, '月給60万は上限に張りつく');
 eq(rich2.ikujiTotal, 323811 * 6, '180日すべて67%の上限額');
 eq(rich2.shien.eligible, false, '出生後休業をしていなければ13%は乗らない');
 
 // ── 10. fail closed（参照データが無ければ計算しない）──────────────
-throws(() => calcIkuji({ total6m: 1800000, leaveDays: 180 }, null), '★参照データなしでは計算しない（fail closed）');
+throws(() => calcIkuji({ total6m: 1800000, leaveDays: 180, shien: null }, null), '★参照データなしでは計算しない（fail closed）');
 throws(() => applyIkujiCaps(10000, null), '★上下限データなしでは丸めない（fail closed）');
 throws(() => applyIkujiCaps(10000, { chingin_nichigaku_min: 3014 }), '上限が欠けたデータで計算しない');
-throws(() => calcIkuji({ total6m: 0, leaveDays: 180 }, D), '賃金総額が0なら計算しない');
-throws(() => calcIkuji({ total6m: 1800000, leaveDays: 0 }, D), '休業日数が0なら計算しない');
+throws(() => calcIkuji({ total6m: 0, leaveDays: 180, shien: null }, D), '賃金総額が0なら計算しない');
+throws(() => calcIkuji({ total6m: 1800000, leaveDays: 0, shien: null }, D), '休業日数が0なら計算しない');
+
+// ── 11. ★★「渡し忘れ」を構造的に殺す（3便連続で踏んだ事故の型）─────────
+// /furusato/ の fuyoNensho（第23便）・/shobyo/ の startDate（第25便）と同じ型:
+// **コアは正しいのに、ページが省略可能な引数を渡し忘れて、給付が黙って消える**。
+// 対策は「もっとテストする」ではなく **引数を必須にすること**。以下はその錠前。
+throws(
+  () => calcIkuji({ total6m: 1800000, leaveDays: 180 }, D),
+  '★★shien を省略したら計算しない（省略を「対象外」と読むと13%が黙って消える）',
+);
+throws(
+  () => shienKyufu(w, undefined, 28, false),
+  '★自分の休業日数を知らないまま13%を判定しない',
+);
+throws(
+  () => shienKyufu(w, 28, undefined, false),
+  '★★配偶者の日数を知らないまま「配偶者要件を満たさない」と決めつけない（渡し忘れ＝不支給、は事故）',
+);
+// 免除される人（ひとり親等）だけは、配偶者の日数を知らなくてよい（61条の10第2項）
+eq(shienKyufu(w, 28, undefined, true).eligible, true, 'ひとり親等は配偶者の日数なしで判定できる（2項）');
+// 「対象外」は呼び出し側が言明する。黙って0円にする道は残さない
+eq(calcIkuji({ total6m: 1800000, leaveDays: 180, shien: null }, D).shien.reason, 'not_applicable',
+   '対象外は shien: null で**明示的に**言明された状態だけ');
 
 // ── 11. 定数が条文どおりであること ────────────────────────────
 eq(RATE_HIGH, 0.67, '67%（61条の7第6項）');

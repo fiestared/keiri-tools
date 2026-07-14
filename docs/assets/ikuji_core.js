@@ -145,8 +145,25 @@ export function adjustForWage(amount, wage, gross) {
  * @param ownDays     自分が対象期間内にした出生後休業の日数
  * @param spouseDays  配偶者が8週間以内にした出生後休業の日数
  * @param spouseExempt 配偶者要件の免除（ひとり親・配偶者が被用者でない等。61条の10第2項）
+ *
+ * ★★「知らされていない」を「0日」として読まない（fail closed）。
+ *   省略された引数を `|| 0` で0日と読むと、**呼び出し側が渡し忘れたときに13%が黙って消える**
+ *   （最大58,640円。しかも「金額が違う」のではなく「行がまるごと出ない」ので画面で気づけない）。
+ *   これは /furusato/ の `fuyoNensho`（第23便）・/shobyo/ の `startDate`（第25便）と**同じ型**で、
+ *   3便連続で踏んだ。対策は「もっとテストする」ではなく **引数を必須にして渡し忘れを構造的に消すこと**。
+ *   → 日数を知らないまま呼ぶことはできない。対象外なら 0 を**明示的に**渡す。
  */
 export function shienKyufu(daily, ownDays, spouseDays, spouseExempt) {
+  if (ownDays === undefined || ownDays === null) {
+    throw new Error('出生後休業支援給付金: 自分の出生後休業の日数（ownDays）が渡されていません');
+  }
+  // 配偶者要件が免除される人（ひとり親等・2項）だけ、配偶者の日数を知らなくてよい
+  if (!spouseExempt && (spouseDays === undefined || spouseDays === null)) {
+    throw new Error(
+      '出生後休業支援給付金: 配偶者の出生後休業の日数（spouseDays）が渡されていません。' +
+        'ひとり親等で配偶者要件が免除される方は spouseExempt を明示してください（61条の10第2項）',
+    );
+  }
   const own = Math.max(0, Math.floor(Number(ownDays) || 0));
   const sp = Math.max(0, Math.floor(Number(spouseDays) || 0));
   if (own < SHIEN_MIN_DAYS) {
@@ -174,14 +191,29 @@ export function shusshojiKyufu(daily, leaveDays, wage) {
 /**
  * 育児休業を通しで取ったときの支給スケジュールと合計。
  *
- * @param input.total6m     休業開始前6か月の賃金総額（賞与を除く）
- * @param input.leaveDays   育児休業の日数（例: 6か月なら180日）
- * @param input.shienOwnDays / shienSpouseDays / spouseExempt … 出生後休業支援給付金の要件
+ * @param input.total6m   休業開始前6か月の賃金総額（賞与を除く）
+ * @param input.leaveDays 育児休業の日数（例: 6か月なら180日）
+ * @param input.shien     出生後休業支援給付金（13%）の要件。**省略できない**:
+ *                        - 対象になりうる人 … `{ ownDays, spouseDays, spouseExempt }`
+ *                        - 対象外だと分かっている人 … `null` を**明示的に**渡す
+ *
+ * ★★`shien` を省略可能にしない理由（3便連続で踏んだ事故の型）:
+ *   省略を「対象外」と読むと、**ページが渡し忘れたときに13%が黙って消える**。
+ *   単体テストはコアを直接呼ぶので**永久に緑**のまま、画面からは行がまるごと消える
+ *   （「間違った数字が出る」より悪い。**無い行は、レビューでも本番でも見えない**）。
+ *   → 「対象外」は呼び出し側が `null` で**言明する**。黙って0円にする道を残さない。
+ *
  * @param D 参照データ（fail closed）
  */
 export function calcIkuji(input, D) {
   if (!D) throw new Error('参照データ（kihonteate_r07.json）が渡されていません'); // fail closed
   const i = input || {};
+  if (!('shien' in i)) {
+    throw new Error(
+      '出生後休業支援給付金（13%）の要否が渡されていません。対象外の方は shien: null を明示してください' +
+        '（省略を許すと、渡し忘れたときに13%＝最大58,640円が黙って消えます）',
+    );
+  }
   const raw = wageDaily(i.total6m);
   const cap = applyIkujiCaps(raw, D);
   const daily = cap.daily;
@@ -200,7 +232,11 @@ export function calcIkuji(input, D) {
   }
   const ikujiTotal = units.reduce((s, u) => s + u.amount, 0);
 
-  const shien = shienKyufu(daily, i.shienOwnDays, i.shienSpouseDays, !!i.spouseExempt);
+  // shien: null ＝「この人は出生後休業支援の対象ではない」と呼び出し側が言明した状態
+  const shien =
+    i.shien === null
+      ? { eligible: false, reason: 'not_applicable', amount: 0, days: 0 }
+      : shienKyufu(daily, i.shien.ownDays, i.shien.spouseDays, !!i.shien.spouseExempt);
 
   return {
     rawDaily: raw,

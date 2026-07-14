@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>育児休業給付金 計算機｜毎月いくら・いつまで67%かを自動計算</title>
+<meta name="description" content="育休中にもらえる育児休業給付金を自動計算。月給から毎月の支給額と合計額を出します。67%は休業180日まで、181日目からは50%。2025年4月に始まった出生後休業支援給付金（13%）にも対応し、配偶者が14日以上育休を取らないと13%が乗らない条件も判定します。上限額は年齢に関係なく賃金日額16,110円（失業保険と違い、45歳以上でも上がりません）。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/ikuji/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "育児休業給付金 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "雇用保険の育児休業給付金を支給単位期間ごとに計算します。67%（休業180日まで）と50%（181日目から）の切り替わり、180日目をまたぐ期間の日割り、賃金日額の上限額（年齢に関係なく16,110円）、出生後休業支援給付金（13%）の配偶者要件の判定。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "育児休業給付金 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "育児休業給付金は月にいくらもらえますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "休業開始前6か月の賃金総額を180で割った「賃金日額」の67%（180日まで）です。月給30万円（賞与を除く）の方なら賃金日額は10,000円で、1か月あたり201,000円になります。181日目からは50%に下がり、150,000円です。ただし賃金日額には上限（16,110円）があるため、67%の期間の上限は月323,811円です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "育児休業給付金の上限は年齢で変わりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "変わりません。育児休業給付は、年齢に関係なく賃金日額16,110円が上限です。失業保険（基本手当）は年齢で4段階に分かれますが、育児休業給付は61条の7第6項の読替えによって「30歳以上45歳未満」の額に固定されています。50歳の方でも上限は16,110円（17,740円ではありません）、25歳の方でも16,110円（14,510円ではありません）です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "出生後休業支援給付金の13%は誰でももらえますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "いいえ。あなたが14日以上の出生後休業をしたうえで、配偶者も14日以上の休業をしなければ支給されません（雇用保険法61条の10第1項3号）。あなたが条件を満たしていても、配偶者が育休を取らなければ13%は0円です。ただしひとり親の方や、配偶者が被用者でない方などは、この配偶者要件が免除されます（同条2項）。支給されるのは最大28日分です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "賞与（ボーナス）も育児休業給付金の計算に入りますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "入りません。1円も反映されません（雇用保険法17条1項が「三箇月を超える期間ごとに支払われる賃金」を除いているためです）。そのため賞与の割合が大きい方ほど、年収に対する実質の補償率は下がります。月給30万円・賞与が年120万円の方（年収480万円）の場合、年収に対する補償率は2/3ではなく約50%です。年収を12で割った額を月給として入力すると、給付額を多く見積もってしまいます。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 育児休業給付金 計算機</nav>
+
+<section class="hero">
+  <h1>育児休業給付金 計算機</h1>
+  <p>育児休業中に雇用保険から出る<b>育児休業給付金</b>を計算します。<b>毎月いくら振り込まれるか</b>を30日ごとに出し、<b>67%が終わって50%に下がる回</b>も表示します。2025年4月に始まった<b>出生後休業支援給付金（＋13%）</b>にも対応しています。</p>
+</section>
+
+<div class="card">
+  <label for="monthly">月給（額面・<b>賞与を除く</b>／円）</label>
+  <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
+  <div class="hint">通勤手当・残業代・役職手当を<b>含む</b>額面の月給です。★<b>賞与（ボーナス）は1円も入りません</b>（雇用保険法17条1項）。年収を12で割った額を入れると<b>必ず多く出ます</b>。</div>
+
+  <label for="leaveDays" style="margin-top:12px">育児休業の日数</label>
+  <input type="number" id="leaveDays" value="365" min="1" max="1095" inputmode="numeric">
+  <div class="hint">土日祝を含む<b>暦の日数</b>です（1年なら365日、6か月なら180日、1歳6か月まで延長するなら約547日）。</div>
+
+  <fieldset style="margin-top:16px;border:1px solid var(--line);border-radius:8px;padding:12px">
+    <legend style="font-weight:700;font-size:14px;padding:0 6px">出生後休業支援給付金（＋13%）の判定</legend>
+    <div class="hint" style="margin-top:0">2025年4月に新設された給付です。要件を満たすと<b>最大28日分だけ13%が上乗せ</b>され、67%＋13%＝<b>80%</b>になります（育児休業給付は非課税で社会保険料も免除されるため、手取りでは休業前の<b>約10割</b>になります）。</div>
+
+    <div class="fee-pair" style="margin-top:10px">
+      <div>
+        <label for="shienOwnDays">あなたが出生後休業をする日数</label>
+        <input type="number" id="shienOwnDays" value="28" min="0" max="112" inputmode="numeric">
+      </div>
+      <div>
+        <label for="shienSpouseDays">配偶者が出生後休業をする日数</label>
+        <input type="number" id="shienSpouseDays" value="0" min="0" max="112" inputmode="numeric">
+      </div>
+    </div>
+    <div class="hint">★<b>13%は「配偶者も14日以上」取らないと乗りません</b>（雇用保険法61条の10第1項3号）。あなたが条件を満たしていても、<b>配偶者が育休を取らなければ0円</b>です。対象期間は<b>産後休業をしなかった方（多くは父）が出生日から8週間、産後休業をした方（母）が16週間</b>です（同条7項）。</div>
+
+    <label style="font-weight:400;display:block;margin-top:10px">
+      <input type="checkbox" id="spouseExempt"> <b>配偶者の要件が免除される</b>（ひとり親／配偶者が被用者でない・行方不明など・61条の10第2項）
+    </label>
+  </fieldset>
+
+  <button class="primary" id="calc">育児休業給付金を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>この計算機の見方</h2>
+
+  <h3>計算のしかた（雇用保険法61条の7第6項）</h3>
+  <div class="callout">
+    <b>1か月あたりの給付 ＝ 休業開始時賃金日額 × 支給日数（原則30日）× 67%</b>
+    賃金日額は<b>休業前6か月の賃金総額 ÷ 180</b>です。<b>67%が続くのは休業180日まで</b>で、<b>181日目からは50%</b>に下がります。端数は<b>円未満切り捨て</b>です。
+  </div>
+
+  <h3>★★上限額は「あなたの年齢」では変わりません（賃金日額16,110円）</h3>
+  <p>賃金日額には上限があり、それを超える人は<b>16,110円</b>で頭打ちになります。つまり67%の期間は<b>月323,811円</b>が上限です。</p>
+  <div class="note">
+    <b>「45歳以上は上限が高い」は、育休には当てはまりません</b>
+    失業保険（基本手当）の上限額は<b>年齢によって4段階</b>に分かれます（30歳未満／30〜44歳／45〜59歳／60〜64歳）。ところが<b>育児休業給付は、年齢に関係なく「30歳以上45歳未満」の額に固定されています</b>。61条の7第6項が、17条を適用するときに「第二号に掲げる額」を「<b>第二号ハに定める額</b>」と読み替えると明記しているためです（17条4項2号の並びは<b>年齢の降順</b>で、ハ＝30歳以上45歳未満）。<br>
+    → <b>50歳の方でも上限は16,110円</b>です（「45〜59歳」の17,740円ではありません）。<b>25歳の方でも16,110円</b>です（「30歳未満」の14,510円ではなく、こちらは有利に働きます）。<br>
+    ★裏づけ: 厚生労働省が育児休業給付の支給限度額を<b>1つしか公表していない（323,811円）</b>こと自体が、上限が年齢に依存しないことの証拠です。年齢で変わるなら4つ公表されるはずです。
+  </div>
+
+  <h3>★180日目をまたぐ支給単位期間は「まるごと50%」になりません（日割り）</h3>
+  <p>67%から50%への切り替わりは、月の区切りではなく<b>通算180日目</b>で起こります。180日目をまたぐ支給単位期間は、<b>180日目までの日数×67%と、181日目からの日数×50%を足した額</b>になります（61条の7第6項かっこ書き）。</p>
+  <p>賃金日額10,000円の方が通算170日の時点から30日休むと、<b>10日分が67%（67,000円）＋20日分が50%（100,000円）＝167,000円</b>です。「まるごと50%」と考えると150,000円になり、<b>17,000円少なく見積もってしまいます</b>。</p>
+  <div class="note">
+    <b>この計算機は30日ごとに区切って表示します（合計額は正確です）</b>
+    実際の<b>支給単位期間は、あなたの育児休業開始日から1か月ごと</b>（応当日）で区切られるため、<b>日数が28〜31日とばらつきます</b>。その結果、<b>実際の支給決定通知書では、67%と50%が混ざった回が1回出ることがあります</b>。この計算機は<b>30日ごと</b>に区切って表示するので、切り替わりはちょうど<b>7回目</b>に来ます。<b>合計額は、67%が通算180日・それ以降が50%という条文どおりに計算しているため、どちらの区切り方でも変わりません</b>（変わるのは1回ごとの内訳だけです）。
+  </div>
+
+  <h3>★★13%が乗るかどうかは「配偶者が育休を取るか」で決まります</h3>
+  <p>出生後休業支援給付金（13%）は、①<b>あなたが対象期間に14日以上</b>の休業をし、かつ②<b>配偶者も14日以上</b>の休業をした場合に、<b>最大28日分</b>支給されます（61条の10第1項2号・3号）。</p>
+  <div class="callout">
+    <b>あなたが条件を満たしていても、配偶者が育休を取らなければ13%は0円です</b>
+    この非対称は、<b>長期の育休を取る側（多くは母親）が損をしうる</b>形をしています。母親が1年間の育休を取っても、<b>父親が14日以上取らなければ13%は乗りません</b>。逆に、父親が14日取り、母親も産後休業に続けて14日以上休業していれば、<b>二人とも13%を受けられます</b>。<b>ひとり親の方や、配偶者が自営業・無職などで被用者でない方は、この要件が免除されます</b>（61条の10第2項）。
+  </div>
+
+  <h3>賞与（ボーナス）は1円も入りません</h3>
+  <p>賃金日額の計算に使うのは、<b>3か月を超える期間ごとに支払われる賃金を除いた</b>賃金です（17条1項）。つまり<b>賞与は入りません</b>。月給30万円＋賞与が年120万円（年収480万円）の方の場合、賃金日額は月給だけで決まるので、<b>年収に対する実質の補償率は2/3ではなく約50%</b>になります。</p>
+
+  <div class="note">
+    <b>この計算機で正しく出ない方</b>
+    <b>育休中に就業して賃金を受け取る方</b>は、賃金と給付の合計が<b>休業前の80%</b>で頭打ちになります（61条の7第7項。賃金が80%以上なら不支給ですが、80%までは働いた分だけ増えるので「少し働くと損」ではありません）。<b>産後パパ育休（出生時育児休業給付金）</b>は別の給付です（61条の8）。<b>雇用保険の被保険者期間が足りない方</b>（原則、休業開始前2年間に賃金支払基礎日数11日以上の月が12か月以上）は支給されません。最終的な金額は<b>お住まいの地域のハローワーク</b>にご確認ください。
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>育児休業給付金は月にいくらもらえますか？</h3>
+  <p><b>休業開始前6か月の賃金総額を180で割った「賃金日額」の67%（180日まで）です。</b>月給30万円（賞与を除く）の方なら賃金日額は10,000円で、<b>1か月あたり201,000円</b>になります。181日目からは50%に下がり、<b>150,000円</b>です。ただし賃金日額には上限（16,110円）があるため、67%の期間の上限は<b>月323,811円</b>です。</p>
+  <h3>育児休業給付金の上限は年齢で変わりますか？</h3>
+  <p><b>変わりません。育児休業給付は、年齢に関係なく賃金日額16,110円が上限です。</b>失業保険（基本手当）は年齢で4段階に分かれますが、育児休業給付は61条の7第6項の読替えによって「30歳以上45歳未満」の額に固定されています。<b>50歳の方でも上限は16,110円</b>（17,740円ではありません）、<b>25歳の方でも16,110円</b>（14,510円ではありません）です。</p>
+  <h3>出生後休業支援給付金の13%は誰でももらえますか？</h3>
+  <p><b>いいえ。あなたが14日以上の出生後休業をしたうえで、配偶者も14日以上の休業をしなければ支給されません</b>（雇用保険法61条の10第1項3号）。あなたが条件を満たしていても、<b>配偶者が育休を取らなければ13%は0円</b>です。ただし<b>ひとり親の方や、配偶者が被用者でない方などは、この配偶者要件が免除されます</b>（同条2項）。支給されるのは<b>最大28日分</b>です。</p>
+  <h3>賞与（ボーナス）も育児休業給付金の計算に入りますか？</h3>
+  <p><b>入りません。1円も反映されません</b>（雇用保険法17条1項が「三箇月を超える期間ごとに支払われる賃金」を除いているためです）。そのため賞与の割合が大きい方ほど、年収に対する実質の補償率は下がります。月給30万円・賞与が年120万円の方（年収480万円）の場合、<b>年収に対する補償率は2/3ではなく約50%</b>です。年収を12で割った額を月給として入力すると、給付額を多く見積もってしまいます。</p>
+</section>
+
+<section class="faq">
+  <h2>関連するツール・記事</h2>
+  <p>
+    <a href="../column/ikuji-kyugyo-kyufukin/">育児休業給付金とは？いくら・いつまで・申請の流れ</a>（制度の解説記事）<br>
+    <a href="../shakai-hoken/">社会保険料計算機</a>（育休中に免除される保険料を確認する）<br>
+    <a href="../kihonteate/">失業保険（基本手当）計算機</a>（こちらは年齢で上限が変わります）<br>
+    <a href="../juminzei/">住民税 計算機</a>（育休中も前年の所得に対して課税されます）
+  </p>
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 雇用保険法 61条の7（育児休業給付金・給付率・180日のまたぎ・就業したときの80%）／61条の8（出生時育児休業給付金）／61条の10（出生後休業支援給付金・配偶者要件・免除）／17条（賃金日額・上限額・下限額）／18条（自動変更対象額）／厚生労働省「育児休業給付の内容と支給申請手続」<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcIkuji } from "../assets/ikuji_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+// 参照データ（賃金日額の上限額・下限額）は非同期で届く。**これは答えの一部**なので、
+// 届く前にボタンが押されても待つ。回線が遅い人だけ上限を知らないまま計算され、
+// **実際より高い額を信じてしまう**事故を防ぐ（上限に張りつく人は月30万円以上ずれる）。
+// ★上限・下限は基本手当と同じ「自動変更対象額」（18条）で毎年8月1日に同時改定されるため、
+//   育休専用のJSONは作らず kihonteate_r07.json を参照する（数字の正本を2箇所に置かない）。
+let D = null;
+const dataReady = fetch("../assets/kihonteate_r07.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { D = d; return true; })
+  .catch(() => false);
+
+// 出典の年度表示は**飾り**。ここで転んでも計算は止めない
+// （飾りのバグをデータ取得の失敗に化けさせない）。
+dataReady.then((ok) => {
+  if (!ok || !D) return;
+  $("src-note").textContent = `（${D._meta.label}）`;
+}).catch(() => {});
+
+$("calc").addEventListener("click", async () => {
+  const ready = await dataReady;
+  const box = $("result");
+  if (!ready || !D) {
+    box.innerHTML = `<div class="callout"><b>参照データを読み込めませんでした。</b>` +
+      `通信環境を確認して、ページを再読み込みしてください。賃金日額の上限額` +
+      `（16,110円）が分からないまま金額を答えると、上限に張りつく方に実際より高い額を` +
+      `信じさせ、育休中の生活費の計画を誤らせるおそれがあるため、計算を止めています。</div>`;
+    return;
+  }
+
+  const monthly = Number($("monthly").value);
+  if (!(monthly > 0)) {
+    box.innerHTML = `<div class="callout">月給（額面・賞与を除く）を入力してください。</div>`;
+    return;
+  }
+
+  let r;
+  try {
+    r = calcIkuji({
+      total6m: monthly * 6,   // 休業前6か月の賃金総額（賞与を除く）
+      leaveDays: Number($("leaveDays").value),
+      // ★出生後休業支援給付金（13%）は**必ず明示的に渡す**。コアは省略を許さない
+      //   （省略を「対象外」と読むと、渡し忘れたときに13%＝最大58,640円が黙って消える。
+      //   /furusato/ の fuyoNensho・/shobyo/ の startDate と同じ事故の型）。
+      //   このページは3つの入力を**必ず画面で聞く**ので、null を渡す道はない。
+      shien: {
+        ownDays: Number($("shienOwnDays").value),
+        spouseDays: Number($("shienSpouseDays").value),
+        spouseExempt: $("spouseExempt").checked,
+      },
+    }, D);
+  } catch (e) {
+    box.innerHTML = `<div class="callout"><b>計算できませんでした。</b>${e.message}</div>`;
+    return;
+  }
+
+  // 上限・下限に張りついたときは、その事実と根拠を必ず開示する（黙って値を変えない）
+  const capNote = r.capped
+    ? `<div class="callout"><b>★賃金日額が上限（${yen(r.max)}）に張りついています。</b>
+        実際の賃金日額 ${yen(Math.floor(r.rawDaily))} ではなく、上限額で計算されます。
+        ★この上限は<b>年齢に関係なく同じ</b>です（61条の7第6項が17条4項2号<b>ハ</b>＝「30歳以上45歳未満」の額に
+        固定しているため）。<b>45歳以上の方でも17,740円にはなりません</b>し、<b>30歳未満の方でも
+        14,510円まで下げられません</b>。</div>`
+    : r.floored
+      ? `<div class="callout"><b>★賃金日額が下限（${yen(r.min)}）まで引き上げられています</b>
+          （17条4項1号）。実際の賃金日額 ${yen(Math.floor(r.rawDaily))} より高い額で計算されます。</div>`
+      : "";
+
+  // ★13%の行は**必ず出す**（乗るときは金額、乗らないときは理由）。
+  //   「該当しないから行ごと消す」を許すと、渡し忘れで消えたのか本当に対象外なのかが
+  //   画面から区別できなくなる。**無い行は、レビューでも本番でも見えない**。
+  const s = r.shien;
+  let shienRow;
+  if (s.eligible) {
+    shienRow = `<tr><th>出生後休業支援給付金（＋13%）</th><td><b>${yen(s.amount)}</b>（${s.days}日分・最大28日）</td></tr>`;
+  } else if (s.reason === "own_days") {
+    shienRow = `<tr><th>出生後休業支援給付金（＋13%）</th><td>¥0 — <b>あなたの出生後休業が14日未満</b>のため（61条の10第1項2号）</td></tr>`;
+  } else {
+    shienRow = `<tr><th>出生後休業支援給付金（＋13%）</th><td>¥0 — <b>配偶者の出生後休業が14日未満</b>のため（61条の10第1項3号）</td></tr>`;
+  }
+
+  const shienNote = !s.eligible && s.reason === "spouse_days"
+    ? `<div class="callout"><b>★配偶者が14日以上の育児休業を取れば、13%（最大28日分）が上乗せされます。</b>
+        あなた自身は条件を満たしていますが、<b>配偶者が14日以上休業していないため0円</b>です
+        （雇用保険法61条の10第1項3号）。<b>ひとり親の方や、配偶者が被用者でない方は
+        この要件が免除されます</b>ので、上の「配偶者の要件が免除される」にチェックしてください（同条2項）。</div>`
+    : "";
+
+  // 支給単位期間ごとの内訳（67%→50%の切り替わりと、180日目をまたぐ月の日割りを見せる）
+  const rows = r.units.map((u, n) => {
+    const rate = u.lowDays === 0 ? "67%"
+               : u.highDays === 0 ? "50%"
+               : `<b>67%と50%の日割り</b>（${u.highDays}日＋${u.lowDays}日）`;
+    return `<tr><th>${n + 1}回目（${u.from}〜${u.to}日目）</th><td>${yen(u.amount)}　<span style="color:var(--sub)">${u.days}日分・${rate}</span></td></tr>`;
+  }).join("");
+
+  box.innerHTML = `
+    <div class="big">育児休業給付 ${yen(r.total)}<span style="font-size:15px;font-weight:600">（${r.leaveDays}日分の合計）</span></div>
+    <div class="hint" style="margin-bottom:10px">賃金日額 <b>${yen(Math.floor(r.daily))}</b>（休業前6か月の賃金総額 ÷ 180）</div>
+    ${capNote}
+    ${shienNote}
+    <table class="res">
+      <tr><th>育児休業給付金（67%／50%）</th><td><b>${yen(r.ikujiTotal)}</b></td></tr>
+      ${shienRow}
+      <tr><th>合計</th><td><b>${yen(r.total)}</b></td></tr>
+    </table>
+    <h3 style="font-size:15px;margin:16px 0 6px">毎月いくら振り込まれるか（30日ごと）</h3>
+    <table class="res">${rows}</table>
+    <div class="hint">★実際の支給単位期間は<b>育児休業開始日から1か月ごと</b>に区切られるため日数が28〜31日とばらつき、
+      <b>実際の通知書では67%と50%が混ざった回が1回出ることがあります</b>。ここでは30日ごとに区切って表示しています
+      （<b>合計額は条文どおり「67%は通算180日まで」で計算しているので、区切り方によらず同じ</b>です）。
+      <b>賞与は1円も計算に入りません</b>（17条1項）。</div>`;
+});
+</script>
+</body>
+</html>
