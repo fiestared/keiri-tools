@@ -241,6 +241,37 @@ const SCENES = [
   // 税率表が配信できないときは、税額を出さずに断る(fail closed)
   { name: "juminzei_nodata", data404: "juminzei_r08.json",
     expect: (s) => s.failed && s.total === null },
+
+  // ── 傷病手当金 ────────────────────────────────────────────────────────
+  // ★期待値は**保険者が実額で公表している計算例**(コアを一切通さない。詳細は harness.html)。
+  //   協会けんぽ: 標準報酬16万×6 + 18万×6 → 平均17万 → ÷30=5,670 → ×2/3 = **3,780円/日**。
+  //   30日休むと待期3日を引いて**27日分** = 102,060円。
+  //   ★同時に**支給期間**も見る: 厚労省事務連絡の実例 2022-03-04 開始 → 2023-09-03 まで=**549日**。
+  //     「1年6か月=546日」と焼き込んでいたら落ちる。**そして startDate の渡し忘れもここで落ちる**
+  //     (コアは startDate が無いと kikan を null にするだけ = 画面から支給期間が黙って消える)。
+  { name: "shobyo", expect: (s) =>
+      s.nichigaku === 3780 && s.base === 5670 && s.days === 27 && s.total === 102060 &&
+      s.kikanDays === 549 && s.showsKikanEnd && !s.failed },
+  // ★★丸めの向きが**逆**の公表例(ITS健保/厚労省資料): 20万×5 + 24万×7 → ÷30=7,440(切捨て側)
+  //   → ×2/3 = **4,960円/日**。協会けんぽ(切上げ側)と**同時に**合う = 四捨五入の境界が正しい証明。
+  { name: "shobyo_its", expect: (s) =>
+      s.nichigaku === 4960 && s.base === 7440 && !s.failed },
+  // ★入社1年未満の頭打ち(99条2項ただし書)。月給50万・3か月 → 自分の平均16,670ではなく
+  //   全被保険者の平均32万から出た10,670を採り → ×2/3 = **7,113円/日**。
+  //   ★★世に出回る「上限は日額6,667円」は**30万円時代の古い値**。6,667を出したらここで落ちる。
+  { name: "shobyo_cap", expect: (s) =>
+      s.nichigaku === 7113 && s.days === 27 && s.total === 192051 && s.showsCap && !s.failed },
+  // ★給与が出ていても差額は出る(108条1項ただし書)。日額6,667 − 給与日額3,000 = **3,667円/日**。
+  //   ここで0円を出すと「給料が出てるから対象外」の誤解を機械が追認し、**差額を失う人**を生む。
+  { name: "shobyo_sagaku", expect: (s) =>
+      s.nichigaku === 3667 && s.total === 99009 && s.showsSagaku && !s.failed },
+  // 任意継続被保険者には支給されない(99条1項のかっこ書き)
+  { name: "shobyo_ninnikeizoku", expect: (s) =>
+      s.total === 0 && s.showsNinnikeizoku && !s.failed },
+  // 参照データが配信できないときは、金額を出さずに断る(fail closed)。
+  // ★黙って答えると入社1年未満の人に**上限を無視した高い額**を信じさせる
+  { name: "shobyo_nodata", data404: "shobyo_r08.json",
+    expect: (s) => s.failed && s.total === null },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",

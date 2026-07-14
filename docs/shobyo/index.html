@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>傷病手当金 計算機｜日額・支給期間・給与や年金との差額を自動計算</title>
+<meta name="description" content="病気やケガで働けないときの傷病手当金を自動計算。月給から1日あたりの金額（日額）と支給される日数・合計額を出します。待期3日、支給期間（暦で1年6か月）、給与が出ている場合の差額支給、障害厚生年金・老齢年金との調整にも対応。入社1年未満の上限額（協会けんぽは日額7,113円）も判定します。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/shobyo/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "傷病手当金 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "健康保険の傷病手当金の日額・支給日数・合計額を計算します。待期3日、支給期間（暦で通算1年6か月）、報酬・障害厚生年金・老齢退職年金との調整、被保険者期間が12か月未満の場合の上限額にもとづく計算。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "傷病手当金 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "傷病手当金は給料の3分の2もらえますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "標準報酬月額の3分の2であって、年収の3分の2ではありません。計算の材料になるのは標準報酬月額だけで、賞与（ボーナス）は1円も入りません。そのため賞与の割合が大きい人ほど、年収に対する実質の補償率は下がります。月給30万円・賞与が年120万円（年収480万円）の人なら、年収に対する補償率は約50％です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "給料が出ていると傷病手当金はもらえませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "もらえないとは限りません。給料が傷病手当金より少なければ、その差額が支給されます（健康保険法108条1項ただし書）。有給休暇を使った日や、給与の一部が支払われている日でも、日額を比べて少ない分だけ支給されます。「給料が出ているから対象外」と思い込んで申請しないと、受け取れるはずの差額を失います。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "傷病手当金の上限は日額6,667円ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "いいえ、協会けんぽの上限は日額7,113円です（2025年4月1日以降に支給が始まる人）。この上限がかかるのは被保険者期間が12か月未満の人だけです。上限の元になる「全被保険者の平均標準報酬月額」が30万円から32万円に改定されたため、6,667円は古い値です。健保組合の方は組合自身の平均額で決まるため、さらに異なります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "退職しても傷病手当金は受け取れますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "①退職日まで1年以上健康保険に加入していて、②退職日に働けない状態だった人だけが受け取れます（資格喪失後の継続給付・健康保険法104条）。★退職日に挨拶や引き継ぎで出社すると、その日は働けたことになり、退職後の傷病手当金が一切受けられなくなります。また、任意継続被保険者になっても傷病手当金は出ません（99条1項）。退職後に一度でも働ける状態になると、その後は再び働けなくなっても支給されません。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 傷病手当金 計算機</nav>
+
+<section class="hero">
+  <h1>傷病手当金 計算機</h1>
+  <p>病気やケガで働けないときに健康保険から出る<b>傷病手当金</b>を計算します。<b>1日あたりの金額（日額）・支給される日数・合計額</b>に加えて、<b>支給期間（暦で通算1年6か月）</b>も出します。<b>給与が出ていても差額がもらえる場合</b>、<b>入社1年未満で上限にかかる場合</b>も判定します。</p>
+</section>
+
+<div class="card">
+  <label for="startDate">支給を始める日（働けなくなって4日目＝待期3日の翌日）</label>
+  <input type="date" id="startDate" value="">
+  <div class="hint">この日は<b>2つの意味で必要</b>です。①<b>支給期間（1年6か月）の起算日</b>になります。②入社1年未満の方は、この日によって<b>上限額が変わります</b>（協会けんぽの平均標準報酬月額は改定されるため）。<b>まだ休み始めていない方は、休む予定の初日から4日目を入れてください。</b></div>
+
+  <label for="monthly" style="margin-top:12px">月給（額面・社会保険の報酬月額／円）</label>
+  <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
+  <div class="hint">通勤手当・残業代・役職手当を<b>含む</b>額面の月給です。<b>賞与（ボーナス）は1円も入りません</b>（下の解説を参照）。</div>
+
+  <label for="months" style="margin-top:12px">健康保険の被保険者期間（この会社などで加入している月数）</label>
+  <input type="number" id="months" value="12" min="1" max="600" inputmode="numeric">
+  <div class="hint">★<b>12か月未満の方は上限がかかります</b>（健康保険法99条2項ただし書）。<b>入社1年未満で給料が高い方は、ここを正しく入れないと金額が大きくずれます。</b></div>
+
+  <label for="restDays" style="margin-top:12px">仕事を休んだ日数（休む予定の日数）</label>
+  <input type="number" id="restDays" value="30" min="0" max="600" inputmode="numeric">
+  <div class="hint">土日祝も含めた<b>暦の日数</b>を入れてください（給与の支払われない休日も支給の対象です）。</div>
+
+  <label style="font-weight:400;display:block;margin-top:10px">
+    <input type="checkbox" id="taikiDone"> すでに<b>待期3日</b>が完成している（受給中で、続きの分を計算したい）
+  </label>
+  <label style="font-weight:400;display:block">
+    <input type="checkbox" id="ninnikeizoku"> <b>任意継続被保険者</b>である（退職後に健康保険を任意継続している）
+  </label>
+
+  <details style="margin-top:12px">
+    <summary>給与・年金を受け取っている場合（差額が出ます）／標準報酬月額を月ごとに入れる／健保組合の方</summary>
+    <div style="margin-top:10px">
+      <label for="hoshuNichigaku">休んでいる間に受けられる給与の日額（円）</label>
+      <input type="number" id="hoshuNichigaku" value="0" min="0" inputmode="numeric">
+      <div class="hint">★<b>給与が出ていても「対象外」とは限りません。</b>給与の日額が傷病手当金の日額より<b>少なければ、その差額が支給されます</b>（健康保険法108条1項ただし書）。</div>
+
+      <div class="fee-pair" style="margin-top:10px">
+        <div>
+          <label for="shogaiNenkin">障害厚生年金＋障害基礎年金（年額・円）</label>
+          <input type="number" id="shogaiNenkin" value="0" min="0" inputmode="numeric">
+        </div>
+        <div>
+          <label for="roureiNenkin">老齢・退職を事由とする年金（年額・円）</label>
+          <input type="number" id="roureiNenkin" value="0" min="0" inputmode="numeric">
+        </div>
+      </div>
+      <div class="hint">年金は<b>年額 ÷ 360</b>で日額にして比べます（健康保険法施行規則89条）。★<b>老齢年金との調整は「退職後も継続して受けている人」だけ</b>にかかります（108条5項）。<b>在職中の方は老齢年金を受けていても調整されません</b>。一方<b>障害厚生年金との調整は在職中でもかかります</b>（108条3項）。</div>
+
+      <label style="font-weight:400;display:block;margin-top:10px">
+        <input type="checkbox" id="taishokugo"> 退職後の<b>継続給付</b>を受けている（健康保険法104条）
+      </label>
+
+      <label for="standards" style="margin-top:10px">標準報酬月額を月ごとに入れる（カンマ区切り・<b>古い月→新しい月</b>の順／円）</label>
+      <input type="text" id="standards" placeholder="例: 160000,160000,160000,160000,160000,160000,180000,180000,180000,180000,180000,180000" inputmode="numeric">
+      <div class="hint">昇給・降給があった方は、こちらに<b>直近12か月の標準報酬月額</b>を入れると正確になります（入れた場合は上の「月給」より優先されます）。標準報酬月額は<b>給与明細や健康保険証の記載、会社の総務</b>で分かります。</div>
+
+      <label for="heikinOverride" style="margin-top:10px">保険者の平均標準報酬月額（円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　健保組合の方だけ</span></label>
+      <input type="number" id="heikinOverride" value="0" min="0" inputmode="numeric">
+      <div class="hint">★<b>被保険者期間が12か月未満の方の上限額は、保険者ごとに違います。</b>この計算機は既定で<b>協会けんぽ</b>の額を使います。<b>健保組合の方</b>は、組合が公表している「全被保険者の平均標準報酬月額」を入れてください（例: 関東ITソフトウェア健保は38万円）。</div>
+    </div>
+  </details>
+
+  <button class="primary" id="calc">傷病手当金を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>この計算機の見方</h2>
+
+  <h3>計算のしかた（健康保険法99条2項。端数の処理まで条文が決めています）</h3>
+  <div class="callout">
+    <b>日額 ＝ 直近12か月の標準報酬月額の平均 ÷ 30 ×  2／3</b>
+    ただし<b>2段階で丸めます</b>。①「÷30」した額を<b>10円未満で四捨五入</b>（5円以上は切上げ）し、②それに2／3を掛けた額を<b>1円未満で四捨五入</b>（50銭以上は切上げ）します。<b>「月給の3分の2を30で割る」は順序が逆</b>で、答えがずれます。
+  </div>
+  <p>協会けんぽが公表している計算例で確かめられます。標準報酬月額が<b>16万円が6か月・18万円が6か月</b>の人なら、平均は17万円 → ÷30 で 5,666.67 → <b>5,670円</b>（①の四捨五入）→ ×2／3 で <b>1日あたり3,780円</b>です。②の丸めを飛ばすと3,778円になり、2円ずれます。</p>
+
+  <h3>★★賞与（ボーナス）は1円も入りません</h3>
+  <p>計算の材料になるのは<b>標準報酬月額だけ</b>で、賞与の額（標準賞与額）は99条2項に<b>一度も出てきません</b>。<b>保険料は賞与からも取られるのに、給付には反映されない</b>という非対称があります。</p>
+  <p>そのため、<b>賞与の割合が大きい人ほど、実質の補償率は3分の2より下がります</b>。月給30万円＋賞与が年120万円（年収480万円＝月平均40万円）の人の場合、傷病手当金の日額は月給30万円だけで決まるので、<b>年収に対する補償率は約50％</b>です。「給料の3分の2はもらえる」と考えて資金計画を立てると足りなくなります。</p>
+
+  <h3>★入社1年未満の人には上限があります（協会けんぽは日額7,113円）</h3>
+  <p>被保険者期間が<b>12か月に満たない</b>人は、①自分の平均と②<b>全被保険者の平均標準報酬月額</b>の、<b>少ないほう</b>で計算します（99条2項ただし書）。協会けんぽの②の額は<b>32万円</b>なので、<b>上限は日額7,113円</b>です。</p>
+  <div class="note">
+    <b>「上限は日額6,667円」と書いてある解説は、今は誤りです</b>
+    協会けんぽの②の額は<b>30万円から32万円に改定されました</b>（支給開始日が2025年4月1日以降の人に適用）。6,667円は<b>30万円時代の古い値</b>で、いま広く引用されていますが、<b>協会けんぽの一次情報のどこにも載っていません</b>（派生値が独り歩きしています）。正しい上限は<b>日額7,113円</b>です。月給50万円の人が入社3か月目に休職すると、日額11,113円のはずが<b>7,113円</b>になり、<b>月に約12万円の差</b>が出ます。
+  </div>
+  <p><b>健保組合の方は額が違います。</b>②は「保険者ごとの平均」なので、組合は組合自身の平均を使います（例: 関東ITソフトウェア健保は38万円）。上の詳細欄で上書きできます。</p>
+
+  <h3>★支給期間「1年6か月」を日数に直すと、人によって違います</h3>
+  <p>支給期間は「支給を始めた日から<b>通算して</b>1年6か月」です（99条4項）。<b>2022年1月から「通算」になった</b>ので、途中で復職した期間は期限を消費しません。がん治療のように<b>休んだり働いたりを繰り返す人に効きます</b>。</p>
+  <p><b>「1年6か月＝546日」と覚えないでください。</b>厚生労働省の事務連絡が<b>「暦に従って1年6月間の計算を行う」</b>と明記しているため、<b>総日数は支給開始日によって変わります</b>。この計算機は暦で計算し、<b>最終日と総日数を表示します</b>（例: 2022年3月4日開始なら2023年9月3日まで＝<b>549日</b>／2026年2月15日開始なら546日）。</p>
+
+  <div class="callout">
+    <b>★★休職中に退職する人は、退職日に出社してはいけません</b>
+    退職後も傷病手当金を受け続けられるのは（資格喪失後の継続給付・104条）、<b>①退職日まで引き続き1年以上被保険者だった人</b>で、かつ<b>②退職日に労務不能だった人</b>だけです。<b>挨拶・引き継ぎ・私物の引き取りのために退職日に出社すると、その日は「働けた」ことになり、退職後の傷病手当金が一切受けられなくなります。</b>数時間の出社と引き換えに<b>1年以上の給付が丸ごと消えます</b>。荷物や挨拶は<b>退職日を避けて</b>ください。
+  </div>
+
+  <div class="note">
+    <b>この計算機で正しく出ない人</b>
+    <b>国民健康保険の方</b>（自営業・フリーランス）には<b>原則ありません</b>（国民健康保険法58条2項が任意給付と定めているため）。<b>健保組合の付加給付がある方</b>（給付率が3分の2より高い組合があります）、<b>出産手当金を同時に受けられる方</b>（出産手当金が優先されます・103条）、<b>労災の休業補償を受ける方</b>（労災が優先で健康保険からは出ません）は、結果と異なります。最終的な金額は<b>ご加入の健康保険（協会けんぽ・健保組合）にご確認ください</b>。
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>傷病手当金は給料の3分の2もらえますか？</h3>
+  <p><b>標準報酬月額の3分の2であって、年収の3分の2ではありません。</b>計算の材料になるのは標準報酬月額だけで、<b>賞与（ボーナス）は1円も入りません</b>。そのため賞与の割合が大きい人ほど、年収に対する実質の補償率は下がります。月給30万円・賞与が年120万円（年収480万円）の人なら、<b>年収に対する補償率は約50％</b>です。</p>
+  <h3>給料が出ていると傷病手当金はもらえませんか？</h3>
+  <p><b>もらえないとは限りません。給料が傷病手当金より少なければ、その差額が支給されます</b>（健康保険法108条1項ただし書）。有給休暇を使った日や、給与の一部が支払われている日でも、日額を比べて少ない分だけ支給されます。「給料が出ているから対象外」と思い込んで申請しないと、受け取れるはずの差額を失います。</p>
+  <h3>傷病手当金の上限は日額6,667円ですか？</h3>
+  <p><b>いいえ、協会けんぽの上限は日額7,113円です（2025年4月1日以降に支給が始まる人）。</b>この上限がかかるのは<b>被保険者期間が12か月未満の人だけ</b>です。上限の元になる「全被保険者の平均標準報酬月額」が30万円から32万円に改定されたため、6,667円は<b>古い値</b>です。健保組合の方は組合自身の平均額で決まるため、さらに異なります。</p>
+  <h3>退職しても傷病手当金は受け取れますか？</h3>
+  <p><b>①退職日まで1年以上健康保険に加入していて、②退職日に働けない状態だった人だけが受け取れます</b>（資格喪失後の継続給付・健康保険法104条）。★<b>退職日に挨拶や引き継ぎで出社すると、その日は働けたことになり、退職後の傷病手当金が一切受けられなくなります。</b>また、<b>任意継続被保険者になっても傷病手当金は出ません</b>（99条1項）。退職後に一度でも働ける状態になると、その後は再び働けなくなっても支給されません。</p>
+</section>
+
+<section class="faq">
+  <h2>関連するツール・記事</h2>
+  <p>
+    <a href="../column/shobyo-teate-kin/">傷病手当金とは？いくらもらえる・いつまで・退職後の注意点</a>（制度の解説記事）<br>
+    <a href="../shakai-hoken/">社会保険料計算機</a>（標準報酬月額と毎月の保険料を確認する）<br>
+    <a href="../kihonteate/">失業保険（基本手当）計算機</a>（退職後に受け取れる失業給付を計算する）<br>
+    <a href="../taishokukin/">退職金の税金 計算機</a>（退職金にかかる所得税・住民税を計算する）
+  </p>
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 健康保険法 99条（傷病手当金の額・待期・支給期間）／103条（出産手当金との調整）／104条（資格喪失後の継続給付）／108条（報酬・障害厚生年金・老齢退職年金との調整）／同法施行規則 89条（年金の日額換算）／国民健康保険法 58条／厚生労働省保険局保険課 事務連絡（令和3年11月10日・支給期間の通算）／全国健康保険協会「傷病手当金」<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcShobyo } from "../assets/shobyo_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const jp = (iso) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${y}年${m}月${d}日`;
+};
+
+// 参照データ（全被保険者の平均標準報酬月額）は非同期で届く。**これは答えの一部**
+// （被保険者期間12か月未満の人の上限額を決める）なので、届く前に押されても待つ。
+// 回線が遅い人だけ上限を知らないまま計算され、**実際より高い額を信じてしまう**事故を防ぐ。
+let D = null;
+const dataReady = fetch("../assets/shobyo_r08.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { D = d; return true; })
+  .catch(() => false);
+
+// 出典の年度表示は**飾り**。ここで転んでも計算は止めない
+// （飾りのバグをデータ取得の失敗に化けさせない）。
+dataReady.then((ok) => {
+  if (!ok || !D) return;
+  $("src-note").textContent = `（${D._meta.fiscal_year}・${D._meta.insurer}）`;
+}).catch(() => {});
+
+$("calc").addEventListener("click", async () => {
+  const ready = await dataReady;
+  const box = $("result");
+  if (!ready || !D) {
+    box.innerHTML = `<div class="callout"><b>参照データを読み込めませんでした。</b>` +
+      `通信環境を確認して、ページを再読み込みしてください。入社1年未満の方の上限額` +
+      `（全被保険者の平均標準報酬月額）が分からないまま金額を答えると、実際より高い額を` +
+      `信じて生活費の計画を誤るおそれがあるため、計算を止めています。</div>`;
+    return;
+  }
+
+  // ★支給開始日は必須にする。省略できるようにすると、支給期間（1年6か月）が黙って
+  //   表示されなくなる（コアは startDate が無ければ kikan を null にするだけで、
+  //   エラーにならない）。**必須にすることで、渡し忘れが起きても画面で気づける。**
+  const startDate = $("startDate").value;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) {
+    box.innerHTML = `<div class="callout"><b>「支給を始める日」を入力してください。</b>` +
+      `この日がないと、支給期間（通算1年6か月）の最終日を出せません` +
+      `（総日数は開始日によって546日にも549日にも変わるため、決め打ちできません）。</div>`;
+    return;
+  }
+
+  const monthly = Number($("monthly").value);
+  const standardsRaw = $("standards").value.trim();
+  const standards = standardsRaw
+    ? standardsRaw.split(/[,、\s]+/).filter(Boolean).map(Number)
+    : null;
+
+  if (standards && standards.some((v) => !(v > 0))) {
+    box.innerHTML = `<div class="callout">標準報酬月額は、<b>0より大きい数をカンマ区切り</b>で入れてください。</div>`;
+    return;
+  }
+  if (!standards && !(monthly > 0)) {
+    box.innerHTML = `<div class="callout">月給（報酬月額）を入力してください。</div>`;
+    return;
+  }
+
+  const ninnikeizoku = $("ninnikeizoku").checked;
+
+  let r;
+  try {
+    r = calcShobyo({
+      startDate,                                  // ★日額の上限判定と支給期間の両方に効く
+      standards,                                  // 入っていれば monthly より優先される
+      monthly,
+      months: Number($("months").value),
+      restDays: Number($("restDays").value),
+      taikiDone: $("taikiDone").checked,
+      ninnikeizoku,
+      hoshuNichigaku: Number($("hoshuNichigaku").value),
+      shogaiNenkin: Number($("shogaiNenkin").value),
+      roureiNenkin: Number($("roureiNenkin").value),
+      taishokugo: $("taishokugo").checked,
+      heikinOverride: Number($("heikinOverride").value),
+    }, D);
+  } catch (e) {
+    box.innerHTML = `<div class="callout"><b>計算できませんでした。</b>${e.message}</div>`;
+    return;
+  }
+
+  // ── 任意継続被保険者は支給されない（99条1項のかっこ書き） ──────────────
+  if (!r.eligible) {
+    box.innerHTML = `
+      <div class="big">傷病手当金 ¥0（支給されません）</div>
+      <div class="callout"><b>${r.message}</b></div>`;
+    return;
+  }
+
+  const adj = r.chosei;
+
+  // 概算で計算したときは、その前提を必ず名乗る（黙って勝手な標準報酬月額で答えない）
+  const estimatedNote = r.estimated
+    ? `<div class="hint"><b>標準報酬月額は月給 ${yen(monthly)} から等級表を引いて概算しました</b>
+        （毎月同じ等級だったものとして計算しています）。昇給・降給があった方は、詳細欄の
+        <b>「標準報酬月額を月ごとに入れる」</b>に実際の額を入れると正確になります。</div>`
+    : `<div class="hint">標準報酬月額は入力された <b>${r.months}か月分</b>の実額で計算しました。</div>`;
+
+  // ★被保険者期間12か月未満で上限にかかった人には、その理由と前提を開示する
+  const capNote = r.capped
+    ? `<div class="callout"><b>★この方は上限（1日 ${yen(r.chosei.amount)}）にかかっています。</b>
+        健康保険の被保険者期間が<b>${r.months}か月</b>（12か月未満）のため、①ご自身の平均から出した額
+        <b>${yen(r.own)}</b>ではなく、②<b>全被保険者の平均標準報酬月額 ${yen(r.heikin)}</b>
+        （${r.heikinLabel}）から出した額 <b>${yen(r.cap)}</b> の、<b>少ないほう</b>で計算されます
+        （健康保険法99条2項ただし書）。<b>健保組合の方は②の額が違います</b>ので、詳細欄で上書きしてください。</div>`
+    : "";
+
+  // ★給与・年金との調整（108条）。「差額は出る」ことを必ず言う
+  let choseiNote = "";
+  if (adj.deduct > 0) {
+    const src = adj.reason === "hoshu" ? "給与（報酬）"
+              : adj.reason === "shogai" ? "障害厚生年金"
+              : "老齢・退職を事由とする年金";
+    choseiNote = adj.zero
+      ? `<div class="callout"><b>★${src}の日額 ${yen(adj.deduct)} が傷病手当金の日額
+          ${yen(adj.amount)} 以上のため、傷病手当金は支給されません</b>（健康保険法108条）。</div>`
+      : `<div class="callout"><b>★${src}を受けていても、差額が支給されます。</b>
+          傷病手当金の日額 <b>${yen(adj.amount)}</b> から ${src}の日額 <b>${yen(adj.deduct)}</b> を
+          差し引いた <b>${yen(adj.paid)}</b> が、1日あたり支給されます
+          （健康保険法108条1項ただし書）。<b>「給料が出ているから対象外」ではありません。</b></div>`;
+  }
+
+  const taikiNote = r.taikiDays > 0
+    ? `<tr><th>待期（支給されない日）</th><td>${r.taikiDays}日（連続して休んだ最初の3日。有給・土日祝も含みます）</td></tr>`
+    : "";
+
+  // ★支給期間は暦で出す（546日と決め打ちしない）
+  const kikanRow = r.kikan
+    ? `<tr><th>支給期間の最終日</th><td>${jp(r.kikan.end)}（${jp(r.kikan.start)}から通算1年6か月＝<b>${r.kikan.totalDays}日</b>）</td></tr>`
+    : "";
+
+  box.innerHTML = `
+    <div class="big">傷病手当金 ${yen(r.total)}<span style="font-size:15px;font-weight:600">（${r.days}日分）</span></div>
+    <div class="hint" style="margin-bottom:10px">1日あたり <b>${yen(r.paidNichigaku)}</b> × <b>${r.days}日</b></div>
+    ${capNote}
+    ${choseiNote}
+    <table class="res">
+      <tr><th>1日あたりの金額（日額）</th><td><b>${yen(r.paidNichigaku)}</b>${adj.deduct > 0 ? `（調整前 ${yen(adj.amount)}）` : ""}</td></tr>
+      <tr><th>標準報酬月額の平均 ÷ 30</th><td>${yen(r.base)}（10円未満を四捨五入）</td></tr>
+      ${taikiNote}
+      <tr><th>支給される日数</th><td>${r.days}日</td></tr>
+      ${kikanRow}
+      <tr><th>合計（支給額）</th><td><b>${yen(r.total)}</b></td></tr>
+    </table>
+    ${estimatedNote}
+    <div class="hint">★<b>休職中に退職する予定の方へ:</b> 退職日に挨拶や引き継ぎで<b>出社すると、その日は労務不能でなくなり、退職後の傷病手当金が受けられなくなります</b>（健康保険法104条）。荷物や挨拶は<b>退職日を避けて</b>ください。</div>`;
+});
+</script>
+</body>
+</html>
