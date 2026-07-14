@@ -54,13 +54,24 @@
 
       <div id="kt-progress" style="display:none;margin-top:10px;color:#374151;font-size:13px"></div>
       <div id="kt-done" style="display:none;margin-top:12px"></div>
+
+      <!-- Proの目玉機能。ここに置く。
+           以前は <details>「詳しい操作」の中に隠していたため、**¥1,480払った人が、買った機能の
+           ボタンを見つけられなかった**(2026-07-14にMasahiroが実際に踏んだ)。
+           有料機能を折りたたみの中に入れてはいけない。 -->
+      <div id="kt-proacts" style="display:none;margin-top:9px">
+        <button id="kt-receipts" style="width:100%;cursor:pointer;padding:9px;border:1px solid #1f6f5c;
+          background:#fff;color:#1f6f5c;border-radius:8px;font-size:13.5px;font-weight:700">
+          領収書もまとめて保存する
+        </button>
+      </div>
+
       <div id="kt-pro" style="margin-top:10px"></div>
 
       <details id="kt-adv" style="margin-top:12px">
         <summary style="cursor:pointer;color:#6b7280;font-size:12px;outline:none">詳しい操作</summary>
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
-          <button id="kt-crawl" style="flex:1 1 100%;cursor:pointer;padding:7px;border:1px solid #c8cdd4;background:#fff;color:#374151;border-radius:6px;font-size:12.5px">全ページ分をまとめてつくる</button>
-          <button id="kt-receipts" style="flex:1 1 100%;cursor:pointer;padding:7px;border:1px solid #c8cdd4;background:#fff;color:#374151;border-radius:6px;font-size:12.5px">領収書をまとめて保存する</button>
+          <button id="kt-one" style="flex:1 1 100%;cursor:pointer;padding:7px;border:1px solid #c8cdd4;background:#fff;color:#374151;border-radius:6px;font-size:12.5px">この画面に出ている分だけつくる</button>
           <button id="kt-refresh" title="読み取りルールを最新にします" style="flex:1;cursor:pointer;padding:7px;border:1px solid #c8cdd4;background:#fff;color:#6b7280;border-radius:6px;font-size:12px">読み取りルールを更新</button>
         </div>
         <div id="kt-ver" style="margin-top:7px;color:#9ca3af;font-size:11px"></div>
@@ -73,6 +84,11 @@
   const yen = n => "¥" + Math.round(n).toLocaleString("ja-JP");
 
   $("#kt-plan").textContent = license.pro ? "Pro" : "";
+  if (license.pro) {
+    // 買った機能が主ボタンで手に入ることを、文言で明示する
+    $("#kt-go").textContent = "一覧表をつくる（全ページ分）";
+    $("#kt-proacts").style.display = "block";
+  }
   $("#kt-ver").textContent = `読み取りルール ${resp.version || "?"}（${resp.source}）`;
 
   // 最小化（じゃまなときに畳める）
@@ -147,7 +163,7 @@
   }
 
   /** 結果を「ふつうの日本語」で見せる */
-  function renderDone(orders, savedFileName) {
+  function renderDone(orders, savedFileName, pages) {
     const box = $("#kt-done");
     box.style.display = "block";
     const cancelled = ktCountCancelled(orders);
@@ -176,6 +192,7 @@
         <div style="font-weight:700;color:#1f6f5c;margin-bottom:5px">✓ 一覧表ができました</div>
         <div style="font-size:13px">
           <b>${target.length}件</b>の注文を一覧にしました（合計 <b>${yen(sum)}</b>）。<br>
+          ${pages > 1 ? `<span style="color:#1f6f5c;font-size:12.5px">${pages}ページ分をまとめました。</span><br>` : ""}
           <span style="color:#4b5563;font-size:12.5px">
             ファイル名: ${savedFileName}<br>
             パソコンの「ダウンロード」フォルダに入っています。Excelで開けます。
@@ -224,18 +241,25 @@
     return name;
   }
 
-  /** ★ 主役のボタン: 読み取り → 金額を調べる → ファイル保存 まで一気にやる */
-  $("#kt-go").addEventListener("click", async () => {
+  /** ★ 主役のボタン: 読み取り → 金額を調べる → ファイル保存 まで一気にやる。
+   *  Proなら **全ページを巡回する**(それが買ったもの)。無料版は表示中のページだけ。 */
+  async function build(allPages) {
     if (busy) return;
     setBusy(true);
     $("#kt-done").style.display = "none";
     try {
-      progress("この画面の注文を読み取っています…");
-      await sleep(150);
-      lastResult = ktParseOrderHistory(document, selectors.orderHistory);
+      let orders;
+      if (allPages) {
+        orders = await crawlAllPages();
+      } else {
+        progress("この画面の注文を読み取っています…");
+        await sleep(150);
+        orders = ktParseOrderHistory(document, selectors.orderHistory).orders;
+      }
+      lastResult = { orders, cardCount: orders.length, warnings: [] };
       console.log("[電帳法索引簿] 読み取り結果", lastResult);
 
-      if (lastResult.orders.length === 0) {
+      if (orders.length === 0) {
         clearProgress();
         $("#kt-done").style.display = "block";
         $("#kt-done").innerHTML = `
@@ -246,20 +270,25 @@
         return;
       }
 
-      await fillFromReceipts(lastResult.orders);
+      await fillFromReceipts(orders);
 
       progress("一覧表のファイルを保存しています…");
       await sleep(150);
-      const name = saveCsv(lastResult.orders);
+      const name = saveCsv(orders);
 
       clearProgress();
-      renderDone(lastResult.orders, name);
-      renderProCta(lastResult.orders);
+      renderDone(orders, name, allPages ? pagesRead : 1);
+      renderProCta(orders);
     } finally { setBusy(false); }
-  });
+  }
+
+  $("#kt-go").addEventListener("click", () => build(license.pro));
+  $("#kt-one").addEventListener("click", () => build(false));
 
   // ── Pro: 全ページ分をまとめてつくる ──────────────────────────
+  let pagesRead = 1;
   async function crawlAllPages() {
+    pagesRead = 0;
     const pag = (selectors.orderHistory && selectors.orderHistory.pagination) || {};
     const maxPages = pag.maxPages || 30;
     const pageSize = pag.pageSize || 10;
@@ -270,6 +299,7 @@
 
     for (let page = 1; page <= maxPages; page++) {
       const res = ktParseOrderHistory(doc, selectors.orderHistory);
+      pagesRead = page;
       const fresh = ktDedupeNewOrders(res.orders, seen);
       all.push(...fresh);
       progress(`${page}ページ目を読んでいます…（これまでに${all.length}件）`);
@@ -292,21 +322,6 @@
     }
     return all;
   }
-
-  $("#kt-crawl").addEventListener("click", async () => {
-    if (busy || !requirePro("全ページ分をまとめてつくる")) return;
-    setBusy(true);
-    $("#kt-done").style.display = "none";
-    try {
-      const orders = await crawlAllPages();
-      lastResult = { orders, cardCount: orders.length, warnings: [] };
-      await fillFromReceipts(orders);
-      progress("一覧表のファイルを保存しています…");
-      const name = saveCsv(orders);
-      clearProgress();
-      renderDone(orders, name);
-    } finally { setBusy(false); }
-  });
 
   // ── Pro: 領収書をまとめて保存 ────────────────────────────────
   // AmazonはPDFの領収書を配信していない。保存できるのは領収書ページのHTML
@@ -362,6 +377,11 @@
     selectors = fresh.data;
     license = await ktGetLicense();
     $("#kt-plan").textContent = license.pro ? "Pro" : "";
+  if (license.pro) {
+    // 買った機能が主ボタンで手に入ることを、文言で明示する
+    $("#kt-go").textContent = "一覧表をつくる（全ページ分）";
+    $("#kt-proacts").style.display = "block";
+  }
     $("#kt-ver").textContent = `読み取りルール ${fresh.version || "?"}（${fresh.source}）`;
   });
 })();

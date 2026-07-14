@@ -132,7 +132,31 @@ for (const slug of slugs) {
   for (const s of missing) fail(s, "gen_index_sitemap.mjs の ORDER に未登録(一覧の末尾に埋もれる)");
   const ghosts = order.filter((s) => !slugs.includes(s) && !drafts.includes(s));
   for (const s of ghosts) fail(s, "ORDER に載っているが記事が存在しない");
-  console.log(`  ORDER 登録 ${order.length}件 / 公開記事 ${slugs.length}本を照合`);
+
+  // --- カテゴリ: 一覧はカテゴリ別セクションで出す。未分類は「その他」に落ちて埋もれる ---
+  // ORDER と同じ理由で機械が強制する。48本ある一覧では、カテゴリの無い記事は
+  // 「その他」という誰も見ない箱に入るだけで、事実上どこからも辿られない。
+  const catBlock = genSrc.match(/const CATEGORIES = \[([\s\S]*?)\n\];/);
+  if (!catBlock) {
+    console.error("✗ gen_index_sitemap.mjs の CATEGORIES を読めなかった(検査が機能していない)");
+    process.exit(1);
+  }
+  // id/name/desc の文字列を拾わないよう、slugs: [...] の中だけから拾う
+  const cats = [...catBlock[1].matchAll(/slugs:\s*\[([\s\S]*?)\]/g)]
+    .flatMap((m) => [...m[1].matchAll(/"([a-z0-9-]+)"/g)].map((x) => x[1]));
+  if (cats.length < 10) {
+    console.error(`✗ CATEGORIES の読み取りが ${cats.length}本しかない(検査が壊れている)`);
+    process.exit(1);
+  }
+  const uncat = slugs.filter((s) => !cats.includes(s));
+  for (const s of uncat) fail(s, "gen_index_sitemap.mjs の CATEGORIES に未分類(一覧の「その他」に埋もれる)");
+  const catGhosts = cats.filter((s) => !slugs.includes(s) && !drafts.includes(s));
+  for (const s of catGhosts) fail(s, "CATEGORIES に載っているが記事が存在しない");
+  // 設定だけでなく**生成された一覧**も見る(設定は正しいのに生成器が壊れている、を落とす)
+  if (/id="cat-sonota"/.test(columnIndex)) {
+    fails.push("column/index.html に「その他」セクションが出ている(未分類の記事がある)");
+  }
+  console.log(`  ORDER 登録 ${order.length}件 / CATEGORIES 分類 ${cats.length}件 / 公開記事 ${slugs.length}本を照合`);
 }
 
 if (fails.length) {

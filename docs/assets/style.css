@@ -222,6 +222,45 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .post-list .p-title { font-size: 15px; font-weight: 600; }
 .post-list .p-desc { font-size: 13px; color: var(--sub); margin-top: 3px; }
 
+/* ---- コラム一覧: 検索 + カテゴリ分け ----
+   絞り込みは hidden 属性で行う。.post-list a は display:flex なので、
+   UA既定の [hidden]{display:none} が効かない(flexが勝つ)。明示的に消す。 */
+.post-list a[hidden], .cat[hidden], .cat-nav[hidden] { display: none; }
+
+.col-search { margin: 22px 0 4px; }
+.col-search input {
+  width: 100%; padding: 12px 14px 12px 42px; font-size: 15px; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 10px; background-color: #fff;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%235b6b7b" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5l-4.2-4.2"/></svg>');
+  background-repeat: no-repeat; background-position: 13px center; background-size: 18px 18px;
+}
+.col-search input:focus {
+  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.q-status { font-size: 12.5px; color: var(--sub); margin: 7px 2px 0; }
+.col-empty {
+  background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 10px;
+  padding: 14px 16px; font-size: 14px; margin: 16px 0 0;
+}
+
+.cat-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 4px; }
+.cat-nav a {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600;
+  color: var(--sub); text-decoration: none; background: #fff; border: 1px solid var(--line);
+  border-radius: 99px; padding: 5px 12px;
+}
+.cat-nav a:hover { border-color: var(--accent); color: var(--accent); }
+.cat-nav a span { font-size: 11px; font-weight: 400; color: var(--sub); }
+.cat-nav a:hover span { color: var(--accent); }
+
+.cat { margin-top: 34px; scroll-margin-top: 16px; }
+.cat h2 {
+  display: flex; align-items: center; gap: 8px; font-size: 18px; margin: 0;
+  padding: 4px 0 4px 11px; border-left: 5px solid var(--accent);
+}
+.cat h2 .badge { margin-left: 0; flex: none; }
+.cat-desc { font-size: 13px; color: var(--sub); margin: 8px 0 2px; padding-left: 16px; }
+
 /* ---- 銀行別手数料一覧テーブル ---- */
 .fee-table td:nth-child(2), .fee-table td:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .fee-table td:nth-child(4) { font-size: 12px; white-space: nowrap; }
@@ -244,3 +283,8 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
   font-size: 16px; padding: 14px 24px; border-radius: 10px; }
 .store-cta:hover { opacity: .93; }
 .store-cta svg { flex: none; }
+
+/* 失業保険(基本手当)計算機の結果表 */
+.result table.res { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; background: #fff; border-radius: 8px; overflow: hidden; }
+.result table.res th { text-align: left; padding: 8px 10px; width: 34%; background: var(--accent-soft); font-weight: 600; vertical-align: top; white-space: nowrap; }
+.result table.res td { padding: 8px 10px; border-bottom: 1px solid var(--line); }

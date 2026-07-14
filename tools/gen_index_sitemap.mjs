@@ -14,6 +14,12 @@
  *   日付     … JSON-LD の datePublished
  *   説明文   … <meta name="card-desc">(一覧カード用の短い惹句)。無ければ meta description
  * 並び順は下の ORDER。載っていない記事は日付降順で後ろに付く。
+ *
+ * 一覧は CATEGORIES ごとのセクションに分けて出す(48本を縦一列に並べても探せない)。
+ * **カテゴリ内の並びは ORDER(検索需要順)のまま**。日付順にしない
+ * (需要の大きい記事ほど上に出したいのであって、新しい記事を上に出したいのではない)。
+ * CATEGORIES に無い記事は「その他」に入れたうえで名指しで警告する。
+ * 黙って埋もれさせないため、未分類は test_article_structure.mjs が落とす。
  */
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -74,9 +80,84 @@ const ORDER = [
   "zengin-format-guide",
 ];
 
+/**
+ * 一覧のカテゴリ。ここに無い記事は「その他」送り + 警告 + テスト失敗。
+ * 記事を書いたら ORDER と CATEGORIES の**両方**に登録する(片方だけだと一覧で埋もれる)。
+ * カテゴリ内の並びは ORDER(需要順)が効くので、slugs の順序は意味を持たない。
+ */
+const CATEGORIES = [
+  {
+    id: "shakai-hoken",
+    name: "社会保険・年金",
+    desc: "加入の条件、保険料の決まり方(標準報酬月額・定時決定・随時改定)、扶養と年収の壁。",
+    slugs: [
+      "shakai-hoken-kanyu-joken", "shakai-hokenryo-keisan", "hyojun-hoshu-gakuhyo",
+      "teiji-kettei", "zuiji-kaitei", "shoyo-shakaihoken", "kaigo-hokenryo-itsukara",
+      "kodomo-kosodate-shienkin", "shakai-hoken-fuyo-joken", "nenshu-no-kabe",
+      "koyou-hokenryo-ritsu", "kenko-hoken-nini-keizoku",
+    ],
+  },
+  {
+    id: "nenmatsu-gensen",
+    name: "年末調整・源泉徴収",
+    desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、各種控除と法定調書。",
+    slugs: [
+      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin",
+      "fuyo-kojo-shinkokusho", "gensen-choshuhyo-mikata", "gensen-zeigakuhyo-mikata",
+      "hoteichosho-goukeihyo", "shakai-hokenryo-kojo", "iryohi-kojo-ikura-kara",
+      "taishokukin-zeikin",
+    ],
+  },
+  {
+    id: "kyuyo",
+    name: "給与計算・手取り",
+    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務。",
+    slugs: [
+      "tedori-keisan", "zangyodai-keisan", "kotei-zangyodai", "tsukin-teate-hikazei",
+      "juminzei-tokubetsu-choshu",
+    ],
+  },
+  {
+    id: "kyufu",
+    name: "健康保険の給付",
+    desc: "医療費が高額になったとき、病気・出産・育児で働けないときに受け取れるお金。",
+    slugs: [
+      "kogaku-ryoyohi", "shobyo-teate-kin", "shussan-teate-kin", "shussan-ikuji-ichijikin",
+      "ikuji-kyugyo-kyufukin",
+    ],
+  },
+  {
+    id: "yukyu",
+    name: "有給休暇",
+    desc: "付与日数の数え方、年5日の取得義務、パート・アルバイトの比例付与と買い取り。",
+    slugs: ["yukyu-fuyo-nissu", "yukyu-nen5ka", "part-yukyu", "yukyu-kaitori"],
+  },
+  {
+    id: "shohizei",
+    name: "消費税・インボイス",
+    desc: "インボイス制度の基本と2割特例・簡易課税、消費税の端数処理。",
+    slugs: ["invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-hasu-shori"],
+  },
+  {
+    id: "denchoho",
+    name: "電子帳簿保存法",
+    desc: "電子取引データの保存義務と、検索要件を満たす索引簿・ファイル名のつけ方。",
+    slugs: ["denchoho-wakariyasuku", "denchoho-kensaku-yoken"],
+  },
+  {
+    id: "keiri",
+    name: "経理・振込の実務",
+    desc: "振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日と減価償却。",
+    slugs: [
+      "furikomi-tesuryo-hikaku", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
+      "zengin-format-guide", "eigyobi-kazoekata", "shogaku-genka-shokyaku",
+    ],
+  },
+];
+
 /** sitemap に載せるツール・固定ページ(記事は自動で追加される) */
 const STATIC_PAGES = [
-  "", "shakai-hoken/", "gensen-choshu/", "shohizei/", "eigyobi/", "yukyu/",
+  "", "shakai-hoken/", "gensen-choshu/", "kihonteate/", "shohizei/", "eigyobi/", "yukyu/",
   "denchoho-index/", "senpou-futan/", "zengin-kana/", "shiharai-site/",
   "ext/amazon-receipt/", "column/", "about/", "privacy/", "contact/",
 ];
@@ -126,25 +207,77 @@ ${urls.map((u) => `  <url><loc>${u}</loc></url>`).join("\n")}
 </urlset>
 `;
 
-// ---- column/index.html の記事リスト ----
-const cards = articles.map((a) => `    <a href="${a.slug}/">
-      <div class="p-date">${a.ymd}</div>
-      <div>
-        <div class="p-title">${esc(a.title)}</div>
-        <div class="p-desc">${esc(a.desc)}</div>
-      </div>
-    </a>`).join("\n");
+// ---- column/index.html の記事リスト(カテゴリ別セクション) ----
+// CATEGORIES の記述ミス(存在しない記事・同じ記事を2つのカテゴリに登録)は黙って通すと
+// 「一覧に2回出る」「カテゴリの件数が合わない」になる。ここで落とす。
+{
+  const seen = new Map();
+  for (const c of CATEGORIES) {
+    for (const s of c.slugs) {
+      if (seen.has(s)) {
+        console.error(`✗ CATEGORIES: ${s} が「${seen.get(s)}」と「${c.name}」に重複登録`);
+        process.exit(1);
+      }
+      seen.set(s, c.name);
+    }
+  }
+}
+
+const catOf = new Map();
+for (const c of CATEGORIES) for (const s of c.slugs) catOf.set(s, c.id);
+const uncategorized = articles.filter((a) => !catOf.has(a.slug));
+
+// 記事カード。data-s = 「タイトル＋説明文」を小文字化したもの(クライアント側の絞り込み用)。
+// 検索はブラウザの中だけで完結する — 入力を外部に送らない(このサイトの売り)。
+const card = (a, indent) => `${indent}<a href="${a.slug}/" data-s="${esc((a.title + " " + a.desc).toLowerCase())}">
+${indent}  <div class="p-date">${a.ymd}</div>
+${indent}  <div>
+${indent}    <div class="p-title">${esc(a.title)}</div>
+${indent}    <div class="p-desc">${esc(a.desc)}</div>
+${indent}  </div>
+${indent}</a>`;
+
+// カテゴリ内の並びは articles(=ORDER=需要順)のまま。日付順にはしない。
+const groups = CATEGORIES.map((c) => ({
+  id: c.id, name: c.name, desc: c.desc,
+  items: articles.filter((a) => catOf.get(a.slug) === c.id),
+})).filter((g) => g.items.length > 0);
+if (uncategorized.length) {
+  groups.push({
+    id: "sonota", name: "その他",
+    desc: "カテゴリ未設定の記事(gen_index_sitemap.mjs の CATEGORIES に登録してください)。",
+    items: uncategorized,
+  });
+}
+
+const catNav = groups.map((g) =>
+  `    <a href="#cat-${g.id}">${esc(g.name)}<span>${g.items.length}</span></a>`).join("\n");
+
+const sections = groups.map((g) => `  <section class="cat" id="cat-${g.id}" data-cat>
+    <h2>${esc(g.name)}<span class="badge">${g.items.length}本</span></h2>
+    <p class="cat-desc">${esc(g.desc)}</p>
+    <div class="post-list">
+${g.items.map((a) => card(a, "      ")).join("\n")}
+    </div>
+  </section>`).join("\n");
+
+const colBlock = `  <nav class="cat-nav" id="cat-nav">
+${catNav}
+  </nav>
+
+${sections}`;
 
 const colPath = join(COLUMN, "index.html");
 let col = readFileSync(colPath, "utf8");
-const open = col.indexOf(`<div class="post-list"`);
-const listStart = col.indexOf(">", open) + 1;
-const listEnd = col.indexOf("</div>\n</main>", listStart);
-if (open === -1 || listEnd === -1) {
-  console.error("✗ column/index.html の post-list ブロックが見つからない");
+const OPEN = "<!-- GEN:COLUMN-INDEX -->";
+const CLOSE = "<!-- /GEN:COLUMN-INDEX -->";
+const cOpen = col.indexOf(OPEN);
+const cClose = col.indexOf(CLOSE);
+if (cOpen === -1 || cClose === -1) {
+  console.error(`✗ column/index.html に ${OPEN} … ${CLOSE} が見つからない`);
   process.exit(1);
 }
-col = col.slice(0, listStart) + "\n" + cards + "\n  " + col.slice(listEnd);
+col = col.slice(0, cOpen + OPEN.length) + "\n" + colBlock + "\n" + col.slice(cClose);
 
 const write = (path, next, label) => {
   const prev = existsSync(path) ? readFileSync(path, "utf8") : "";
@@ -183,4 +316,15 @@ const b = write(colPath, col, "column/index.html");
 const c = write(topPath, top, "index.html（トップの新着6本）");
 // 黙って落とさない。外した記事は必ず名指しで報告する(「全部載った」と誤読させない)
 for (const slug of skipped) console.log(`  ⚠️  除外(.nopublish): ${slug} — sitemap・一覧に載せていない`);
-console.log(`✓ 記事 ${articles.length}本${a || b || c ? "" : "（変更なし）"}`);
+
+// 未分類は「その他」に落ちて誰にも探されない。名指しで警告する
+// (ORDER と同じで、登録忘れは黙って通ると気づけない。test_article_structure.mjs が落とす)
+for (const a of uncategorized) {
+  console.error(`  ⚠️  未分類: ${a.slug} — CATEGORIES に登録していないので「その他」に入れた`);
+}
+if (uncategorized.length) {
+  console.error(`  → tools/gen_index_sitemap.mjs の CATEGORIES に ${uncategorized.length}本を割り当てること`);
+}
+
+const counts = groups.map((g) => `${g.name} ${g.items.length}`).join(" / ");
+console.log(`✓ 記事 ${articles.length}本${a || b || c ? "" : "（変更なし）"}  [${counts}]`);

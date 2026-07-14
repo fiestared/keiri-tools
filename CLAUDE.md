@@ -19,7 +19,8 @@ AI月30万円プロジェクト・柱Aのプロダクト。経理実務の「ち
 **型の正本は `tools/ARTICLE_SPEC.md`。書く前に必ず読む。**
 - `python3 tools/keyword_demand.py <語>` — **書く前に需要を測る。月1,000検索未満は書かない**
 - `node tests/test_article_structure.mjs` — 型の違反を落とす(canonical/GA4/AdSense/構造化データ/
-  目次と全h2の対応/図解(figure内インラインSVG)/FAQ/出典/ツール導線/title 60字/一覧・sitemap掲載/**ORDER登録**)
+  目次と全h2の対応/図解(figure内インラインSVG)/FAQ/出典/ツール導線/title 60字/一覧・sitemap掲載/
+  **ORDER登録**(需要順)・**CATEGORIES分類**(一覧のカテゴリ。未分類は「その他」に埋もれるので落とす))
 - `node tools/gen_index_sitemap.mjs` — **sitemap.xml / コラム一覧 / トップの新着6本を生成**(手で足さない)
 - `node tools/gen_faq_jsonld.mjs` — FAQのJSON-LDを**本文から生成**(手で書かない)
 
