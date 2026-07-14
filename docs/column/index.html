@@ -458,11 +458,10 @@
 
   box.hidden = false;                       // JSが動いたときだけ検索欄を出す
   var TOTAL = cards.length;
-  var IDLE = "全" + TOTAL + "本。キーワードで絞り込めます。";
   // カテゴリ見出しの件数バッジ。絞り込み中は「見えている本数」に差し替える
   // (全体の本数を出したままだと、3本しか出ていないのに「10本」と嘘をつく)
   var badges = cats.map(function (s) {
-    var b = s.querySelector(".badge");
+    var b = s.querySelector(".cat-n");
     return { el: b, full: b ? b.textContent : "" };
   });
 
@@ -474,7 +473,7 @@
       badges.forEach(function (b) { if (b.el) b.el.textContent = b.full; });
       if (nav) nav.hidden = false;
       empty.hidden = true;
-      status.textContent = IDLE;
+      status.textContent = "";  // 入力が無いときは何も言わない
       return;
     }
     var hit = 0;
