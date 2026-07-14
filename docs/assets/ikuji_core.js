@@ -29,10 +29,26 @@
  *    月給30万＋賞与年120万の人の実質補償率は 2/3 ではなく **約50%**。
  *    → 賃金日額は「賞与を除いた6か月の総額 ÷ 180」。年収÷12で月給を出すと**必ず過大**になる。
  *
- * 3. **67%は「180日」まで。その180日は暦月ではなく“休業日数の通算”**（61条の7第6項）。
- *    しかも **180日目をまたぐ支給単位期間は日割り**になる（同項かっこ書きが、
- *    180日目までの日数×67% と 181日目からの日数×50% を **足して得た額** と明記している）。
- *    → 「7か月目からまるごと50%」と実装すると、6か月目の額が過大になる。
+ * 3. **★★「支給日数」と「休業日数」は別の数え方であり、これを混同すると合計額が過大になる。**
+ *
+ *    - **支給日数**（いくら払うかを決める日数・61条の7第6項の各号）:
+ *        1号 … 終了月**以外**の支給単位期間は **一律「三十日」**（暦が31日の月でも30日、28日の2月でも30日）
+ *        2号 … **終了月**の支給単位期間は 休業開始応当日 → 育児休業を終了した日 までの**実日数**
+ *    - **休業日数**（67%が50%に落ちる境目を決める日数・同項本文）: **暦の日数の通算**。
+ *        180日目 ＝ 休業開始日 + 179日（暦日）。
+ *
+ *    → **暦が31日の月でも支給日数は30日しか進まないのに、休業日数は31日進む。**
+ *      **だから「180日目」が来た時点で、支給されている日数はまだ177日程度しかない。**
+ *      **「30日ずつ区切って67%を180日分払う」と実装すると、67%の日数を数日多く払ってしまう。**
+ *      実例（賃金日額10,000円・4/1から365日）: 条文どおり 67%=177日/50%=184日=**¥2,105,900** に対し、
+ *      30日区切りモデルは 67%=180日/50%=185日=**¥2,131,000** → **¥25,100 過大**（実測・第3便）。
+ *      ⚠️「合計は区切り方によらず同じ」は**誤り**。この誤りを公開ページに書いていた（撤回済み）。
+ *
+ * 3b. **180日目をまたぐ支給単位期間は日割り**（同項かっこ書き）。この回だけは支給日数が30日ではなく
+ *    **暦の実日数**になる（かっこ書きが各号の日数を置き換えるため）:
+ *      休業開始応当日 → 180日目 までの日数 × 67%  ＋  181日目 → 翌月の休業開始応当日の前日
+ *      （育児休業を終了した日のほうが早ければその日）までの日数 × 50%
+ *    → 「7か月目からまるごと50%」と実装すると、切り替わりの回の額が過大になる。
  *
  * 4. **働いて賃金をもらうと減る。基準は 80%**（61条の7第7項）:
  *      賃金 + 給付 ≧ 賃金日額×支給日数 の80% → 給付 = 80%の額 − 賃金
@@ -107,23 +123,129 @@ export function applyIkujiCaps(w, D) {
   return { daily: capped ? max : floored ? min : w, max, min, capped, floored };
 }
 
-/**
- * 1支給単位期間の育児休業給付金（61条の7第6項）。
- * @param daily   休業開始時賃金日額（上下限適用後）
- * @param days    支給日数（原則30日。終了月は実日数）
- * @param elapsed この支給単位期間の**開始時点**で通算済みの休業日数
+/* ───────── 日付（支給単位期間は暦の応当日で区切る。61条の7第5項） ─────────
  *
- * 180日目をまたぐ期間は、67%部分と50%部分に**分けて計算して足す**（同項かっこ書き）。
+ * ⚠️ `new Date("2026-04-01")` は **UTCの真夜中**として解釈される（ローカル時刻ではない）。
+ *    JSTで `getDate()` を呼ぶと日付がずれるので、**入出力とも UTC で統一**する。
+ */
+
+/** "YYYY-MM-DD" → UTCのエポックms。壊れた入力は例外にする（黙って Invalid Date を流さない）。 */
+export function parseYmd(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(s ?? '').trim());
+  if (!m) throw new Error(`日付は YYYY-MM-DD の形で渡してください（受け取った値: ${s}）`);
+  const [y, mo, d] = [Number(m[1]), Number(m[2]), Number(m[3])];
+  const t = Date.UTC(y, mo - 1, d);
+  const back = new Date(t);
+  // 2026-02-31 のような「暦に存在しない日」を弾く（Date.UTC は黙って3/3に繰り上げる）
+  if (back.getUTCFullYear() !== y || back.getUTCMonth() !== mo - 1 || back.getUTCDate() !== d) {
+    throw new Error(`存在しない日付です: ${s}`);
+  }
+  return t;
+}
+
+/** UTCのエポックms → "YYYY-MM-DD" */
+export function fmtYmd(t) {
+  const d = new Date(t);
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())}`;
+}
+
+export const DAY_MS = 86400000;
+export const addDays = (t, n) => t + n * DAY_MS;
+export const diffDays = (a, b) => Math.round((b - a) / DAY_MS);
+
+/**
+ * **休業開始応当日**（61条の7第5項）＝ 休業開始日から k か月後の「応当する日」。
+ * ★条文が明記する例外: **「その日に応当する日がない月においては、その月の末日」**。
+ *   例: 1月31日開始 → 2月の応当日は **2月28日**（うるう年なら29日）、3月は31日、4月は **30日**。
+ *   ★クランプは**毎回もとの開始日から**当てる（前月の丸めた日を持ち回さない）。
+ *     1/31 → 2/28 → その次を「2/28の1か月後」と数えると 3/28 になってしまい、条文の 3/31 と食い違う。
+ */
+export function addMonthsClamped(startMs, k) {
+  const s = new Date(startMs);
+  const y = s.getUTCFullYear();
+  const mo = s.getUTCMonth();
+  const day = s.getUTCDate();
+  const lastOfTarget = new Date(Date.UTC(y, mo + k + 1, 0)).getUTCDate(); // 翌月0日 = 当月末日
+  return Date.UTC(y, mo + k, Math.min(day, lastOfTarget));
+}
+
+/**
+ * 育児休業を**暦の応当日**で支給単位期間に区切る（61条の7第5項）。
+ * 各期間 ＝ 休業開始応当日 → 翌月の休業開始応当日の**前日**
+ *          （育児休業を終了した日の属する月は、終了した日まで）。
+ *
+ * 返す各期間: `{ index, fromMs, toMs, from, to, startDay, endDay, calDays, isFinal }`
+ *   `startDay`/`endDay` ＝ その日が**通算何日目の休業日か**（開始日＝1日目）。
+ *   ★以降の計算は日付ではなく**この通算日数だけ**を見る（180日目の判定は暦日の通算で行うため）。
+ */
+export function unitPeriods(startMs, leaveDays) {
+  const n = Math.floor(Number(leaveDays));
+  if (!Number.isFinite(n) || n <= 0) throw new Error('育児休業の日数を入力してください');
+  const endMs = addDays(startMs, n - 1); // 終了日（開始日を1日目と数える）
+  const units = [];
+  let k = 0;
+  let fromMs = startMs;
+  while (fromMs <= endMs) {
+    const nextAnniv = addMonthsClamped(startMs, k + 1);
+    const toMs = Math.min(addDays(nextAnniv, -1), endMs);
+    const startDay = diffDays(startMs, fromMs) + 1;
+    const endDay = diffDays(startMs, toMs) + 1;
+    units.push({
+      index: k + 1,
+      fromMs,
+      toMs,
+      from: fmtYmd(fromMs),
+      to: fmtYmd(toMs),
+      startDay,
+      endDay,
+      calDays: endDay - startDay + 1,
+      isFinal: toMs === endMs,
+    });
+    fromMs = nextAnniv;
+    k++;
+  }
+  return units;
+}
+
+/**
+ * 1支給単位期間の育児休業給付金（61条の7第6項＋1号・2号＋かっこ書き）。
+ *
+ * **支給日数の決まり方は3通りしかない**:
+ *   a) 180日目を含む回  … かっこ書きが各号を**置き換える** → **暦の実日数**を
+ *                          「応当日→180日目」（67%）と「181日目→期間の終わり」（50%）に割る
+ *   b) 終了月の回（2号）… 応当日 → 終了日 までの**実日数**
+ *   c) それ以外（1号） … **一律30日**（暦が31日でも28日でも30日）
+ *
  * 内訳を画面に出したときに合計と1円ずれないよう、**区分ごとに丸めてから足す**。
  */
-export function unitAmount(daily, days, elapsed) {
-  const d = Math.max(0, Math.floor(Number(days) || 0));
-  const e = Math.max(0, Math.floor(Number(elapsed) || 0));
-  const highDays = Math.min(d, Math.max(0, HIGH_DAYS - e)); // 67%で払われる日数
-  const lowDays = d - highDays; // 50%で払われる日数
+export function unitPayment(daily, unit) {
+  const { startDay, endDay, isFinal, calDays } = unit;
+  const straddle = startDay <= HIGH_DAYS && HIGH_DAYS <= endDay;
+  let highDays;
+  let lowDays;
+  if (straddle) {
+    highDays = HIGH_DAYS - startDay + 1; // 応当日 → 180日目
+    lowDays = endDay > HIGH_DAYS ? endDay - HIGH_DAYS : 0; // 181日目 → 期間の終わり
+  } else if (endDay < HIGH_DAYS) {
+    highDays = isFinal ? calDays : UNIT_DAYS;
+    lowDays = 0;
+  } else {
+    highDays = 0;
+    lowDays = isFinal ? calDays : UNIT_DAYS;
+  }
   const high = yen(daily * highDays * RATE_HIGH);
   const low = yen(daily * lowDays * RATE_LOW);
-  return { days: d, highDays, lowDays, high, low, amount: high + low };
+  return {
+    ...unit,
+    straddle,
+    payDays: highDays + lowDays,
+    highDays,
+    lowDays,
+    high,
+    low,
+    amount: high + low,
+  };
 }
 
 /**
@@ -192,7 +314,11 @@ export function shusshojiKyufu(daily, leaveDays, wage) {
  * 育児休業を通しで取ったときの支給スケジュールと合計。
  *
  * @param input.total6m   休業開始前6か月の賃金総額（賞与を除く）
- * @param input.leaveDays 育児休業の日数（例: 6か月なら180日）
+ * @param input.startDate 育児休業を**開始した日**（"YYYY-MM-DD"）。**必須**。
+ *                        支給単位期間は暦の応当日で区切られる（5項）ので、開始日を知らずに
+ *                        「毎月いくら」は出せない。**省略可能にすると、ページが渡し忘れても
+ *                        コアが黙って別の区切り方で答えてしまう**（/shobyo/ の startDate と同じ錠前）。
+ * @param input.leaveDays 育児休業の日数（例: 1年なら365日）
  * @param input.shien     出生後休業支援給付金（13%）の要件。**省略できない**:
  *                        - 対象になりうる人 … `{ ownDays, spouseDays, spouseExempt }`
  *                        - 対象外だと分かっている人 … `null` を**明示的に**渡す
@@ -214,23 +340,26 @@ export function calcIkuji(input, D) {
         '（省略を許すと、渡し忘れたときに13%＝最大58,640円が黙って消えます）',
     );
   }
+  if (i.startDate === undefined || i.startDate === null || i.startDate === '') {
+    throw new Error(
+      '育児休業を開始した日（startDate）が渡されていません。支給単位期間は開始日からの応当日で' +
+        '区切られる（61条の7第5項）ため、開始日なしに「毎月いくら」は計算できません',
+    );
+  }
+  const startMs = parseYmd(i.startDate);
+
   const raw = wageDaily(i.total6m);
   const cap = applyIkujiCaps(raw, D);
   const daily = cap.daily;
 
-  const leaveDays = Math.max(0, Math.floor(Number(i.leaveDays) || 0));
+  const leaveDays = Math.floor(Number(i.leaveDays) || 0);
   if (leaveDays <= 0) throw new Error('育児休業の日数を入力してください');
 
-  // 支給単位期間（原則30日ずつ。最後の期間は残りの日数）に区切る
-  const units = [];
-  let elapsed = 0;
-  while (elapsed < leaveDays) {
-    const days = Math.min(UNIT_DAYS, leaveDays - elapsed);
-    const u = unitAmount(daily, days, elapsed);
-    units.push({ ...u, from: elapsed + 1, to: elapsed + days });
-    elapsed += days;
-  }
+  // 支給単位期間 = 暦の応当日で区切る（5項）。支給日数は各号（1号=30日 / 2号=終了月は実日数）。
+  const units = unitPeriods(startMs, leaveDays).map((u) => unitPayment(daily, u));
   const ikujiTotal = units.reduce((s, u) => s + u.amount, 0);
+  const payDays67 = units.reduce((s, u) => s + u.highDays, 0);
+  const payDays50 = units.reduce((s, u) => s + u.lowDays, 0);
 
   // shien: null ＝「この人は出生後休業支援の対象ではない」と呼び出し側が言明した状態
   const shien =
@@ -245,9 +374,15 @@ export function calcIkuji(input, D) {
     floored: cap.floored,
     max: cap.max,
     min: cap.min,
+    startDate: fmtYmd(startMs),
+    endDate: fmtYmd(addDays(startMs, leaveDays - 1)),
     leaveDays,
     units,
     ikujiTotal,
+    // ★「休業日数（暦・leaveDays）」と「支給日数（払われる日数）」は一致しない。両方返して画面に出す。
+    payDays67,
+    payDays50,
+    payDaysTotal: payDays67 + payDays50,
     shien,
     total: ikujiTotal + shien.amount,
     // 画面に出す年度（データに持たせる。ページに手書きしない）

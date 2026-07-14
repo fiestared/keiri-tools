@@ -44,8 +44,38 @@ const BREAKS = [
    "return Math.ceil(x);"],
 
   ["★180日目のまたぎを無視し、期間まるごとを50%/67%のどちらかにする",
-   "const highDays = Math.min(d, Math.max(0, HIGH_DAYS - e));",
-   "const highDays = e < HIGH_DAYS ? d : 0;"],
+   "  if (straddle) {\n    highDays = HIGH_DAYS - startDay + 1; // 応当日 → 180日目",
+   "  if (false) {\n    highDays = HIGH_DAYS - startDay + 1; // 応当日 → 180日目"],
+
+  // ───── ここから、第3便で実際に本番に出ていたバグの型（支給日数と休業日数の混同）─────
+
+  ["★★支給単位期間を「30日ずつ」で区切る（＝開始日を無視する。本番で1年25,100円 過大に答えていたバグ）",
+   "export function unitPeriods(startMs, leaveDays) {",
+   "export function unitPeriods(startMs, leaveDays) {\n  { const n0 = Math.floor(Number(leaveDays)); const us = []; let e = 0, k = 0;\n    while (e < n0) { const d = Math.min(UNIT_DAYS, n0 - e);\n      us.push({ index: ++k, fromMs: startMs, toMs: startMs, from: fmtYmd(startMs), to: fmtYmd(startMs),\n                startDay: e + 1, endDay: e + d, calDays: d, isFinal: e + d >= n0 }); e += d; }\n    return us; }"],
+
+  ["★★支給日数を「暦の日数」にする（31日の月に31日分払う。1号の『三十日』を読み落とす）",
+   "    highDays = isFinal ? calDays : UNIT_DAYS;\n    lowDays = 0;",
+   "    highDays = calDays;\n    lowDays = 0;"],
+
+  ["★★終了月も30日で切る（2号の『終了した日までの日数』を読み落とす）",
+   "    lowDays = isFinal ? calDays : UNIT_DAYS;",
+   "    lowDays = UNIT_DAYS;"],
+
+  ["★応当日のクランプを外す（1/31の1か月後を「2/31」＝3/3にしてしまう。5項の『その月の末日』を落とす）",
+   "  return Date.UTC(y, mo + k, Math.min(day, lastOfTarget));",
+   "  return Date.UTC(y, mo + k, day);"],
+
+  ["★応当日のクランプを毎回“前月の丸めた日”から当てる（1/31→2/28→3/28。条文は3/31）",
+   "  const day = s.getUTCDate();",
+   "  const day = k > 1 ? new Date(addMonthsClamped(startMs, k - 1)).getUTCDate() : s.getUTCDate();"],
+
+  // ⚠️この壊しは一度**素通し**した。原因は「検査が弱い」ではなく**壊し方が外れていた**（規則8）:
+  //   ガード節（if）を消しただけでは parseYmd(undefined) が例外を投げるので、挙動は変わらない
+  //   （＝錠前が**二重**にかかっている。これ自体は良いこと）。
+  //   本当に危ないのは「省略されたら**黙って既定日にフォールバックする**」ほう。そこを壊す。
+  ["★★開始日の必須（錠前）を外し、省略されたら黙って既定日で計算する",
+   "  if (i.startDate === undefined || i.startDate === null || i.startDate === '') {\n    throw new Error(\n      '育児休業を開始した日（startDate）が渡されていません。支給単位期間は開始日からの応当日で' +\n        '区切られる（61条の7第5項）ため、開始日なしに「毎月いくら」は計算できません',\n    );\n  }\n  const startMs = parseYmd(i.startDate);",
+   "  const startMs = i.startDate ? parseYmd(i.startDate) : Date.UTC(2026, 3, 1);"],
 
   ["67%が続く日数を183日（＝6か月と誤読）にする",
    "export const HIGH_DAYS = 180;",
