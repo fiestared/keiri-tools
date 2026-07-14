@@ -23,6 +23,7 @@
  */
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { execFileSync } from "node:child_process";
 
 const DOCS = new URL("../docs/", import.meta.url).pathname;
 const COLUMN = join(DOCS, "column");
@@ -202,13 +203,39 @@ articles.sort((a, b) => {
 });
 
 // ---- sitemap.xml ----
+// lastmod は「そのページが最後に変わった日」= gitのコミット日から採る。
+// **生成日(今日)を全URLに押すと嘘になる**: 中身が変わっていない69本まで「今日更新した」と
+// 名乗ることになり、Googleは lastmod が当てにならないと学習して**以後この値を無視する**
+// (= 本当に更新した日を伝える手段を自分で捨てる)。
+// 未コミット/未追跡のファイルだけは「今まさに変わっている」ので今日でよい(こちらも真)。
+const git = (...a) => {
+  try { return execFileSync("git", a, { cwd: DOCS, encoding: "utf8" }).trim(); }
+  catch { return ""; }
+};
+const TODAY = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }); // YYYY-MM-DD
+const root = git("rev-parse", "--show-toplevel");
+// 作業ツリーで変更中のファイル(未追跡を含む)を1回で集める。git status の経路は root からの相対。
+const dirty = new Set(
+  git("status", "--porcelain", "--", DOCS).split("\n").filter(Boolean)
+    .map((l) => l.slice(3).split(" -> ").pop().replace(/^"|"$/g, ""))
+    .map((p) => join(root, p)),
+);
+const lastmodOf = (file) => {
+  if (dirty.has(file)) return TODAY;
+  return git("log", "-1", "--format=%cs", "--", file); // 履歴が無ければ "" → lastmod を出さない
+};
+
 const urls = [
-  ...STATIC_PAGES.map((p) => `https://keiri-tools.com/${p}`),
-  ...articles.map((a) => `https://keiri-tools.com/column/${a.slug}/`),
+  ...STATIC_PAGES.map((p) => ({ loc: `https://keiri-tools.com/${p}`, file: join(DOCS, p, "index.html") })),
+  ...articles.map((a) => ({ loc: `https://keiri-tools.com/column/${a.slug}/`,
+                            file: join(COLUMN, a.slug, "index.html") })),
 ];
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((u) => `  <url><loc>${u}</loc></url>`).join("\n")}
+${urls.map(({ loc, file }) => {
+  const d = lastmodOf(file);
+  return `  <url><loc>${loc}</loc>${d ? `<lastmod>${d}</lastmod>` : ""}</url>`;
+}).join("\n")}
 </urlset>
 `;
 
