@@ -208,6 +208,39 @@ const SCENES = [
   // ★黙って答えると、利用者は上限を超えて寄附して自腹を切る
   { name: "furusato_nodata", data404: "juminzei_r08.json",
     expect: (s) => s.failed && s.gendo === null },
+  // ★★公開済みページに実在したバグの再発防止(2026-07-14 第23便)。
+  //   16歳未満の子は**扶養控除が0円**だが**非課税限度額の扶養親族の数には入る**(施行令47条の3)。
+  //   年収170万・子1人は**所得割が非課税** → 控除される所得割が無いので**限度額は0円**。
+  //   ページが fuyoNensho を渡していなかったので「限度額9,888円」と答えていた
+  //   ＝ **税金が1円も戻らない人に寄附させる**(いちばん余裕のない層を直撃する)。
+  //   **coreは正しく、壊れていたのはページ**なので単体テストでは捕まらない。E2Eでしか守れない。
+  { name: "furusato_nensho", expect: (s) =>
+      s.gendo === 0 && s.showsNoBenefit && !s.failed },
+
+  // ── 住民税 ────────────────────────────────────────────────────────────
+  // ★期待値は条文から手で積み上げた実額(鎖は harness.html のコメントに全部書いた)。
+  //   標準税率・独身・年収500万・社保70万 → 所得割240,500 + 均等割5,000 = **245,500円**。
+  //   所得割240,500は /furusato/ の検証済みの鎖と同じ値(同じコアの別の顔なので一致するのが正しい)。
+  { name: "juminzei", expect: (s) =>
+      s.total === 245500 && s.shotokuwari === 240500 && s.kintouwari === 5000 &&
+      s.showsShinrin && !s.failed },
+  // ★★この計算機の看板の主張: **16歳未満の子は扶養控除が0円なのに住民税を変える**。
+  //   合計所得105万・1級地・子1人 → 均等割の限度額101万は超える / 所得割の限度額112万は超えない
+  //   → **均等割だけ課税** = 住民税5,000円。画面がその帯にいることを名指しで言うこと。
+  { name: "juminzei_nensho", expect: (s) =>
+      s.total === 5000 && s.shotokuwari === 0 && s.kintouwari === 5000 &&
+      s.showsKintouOnly && !s.failed },
+  // ↑の対照。同じ所得で子がいなければ所得割も課税され 40,500円(=所得割35,500+均等割5,000)。
+  // **この2シーンの差35,500円が「扶養控除0円なのに効く」ことの証明**(片方だけでは何も言えない)
+  { name: "juminzei_nensho_nashi", expect: (s) =>
+      s.total === 40500 && s.shotokuwari === 35500 && !s.showsKintouOnly && !s.failed },
+  // ★超過課税。横浜市は市3,900+県1,300+森林環境税1,000 = **6,200円**(横浜市の公表額と一致)。
+  //   所得割は指定都市の8%:2% に神奈川県の超過課税(+0.025%)が乗る → 241,107円
+  { name: "juminzei_yokohama", expect: (s) =>
+      s.total === 247307 && s.shotokuwari === 241107 && s.kintouwari === 6200 && !s.failed },
+  // 税率表が配信できないときは、税額を出さずに断る(fail closed)
+  { name: "juminzei_nodata", data404: "juminzei_r08.json",
+    expect: (s) => s.failed && s.total === null },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",

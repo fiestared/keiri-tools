@@ -876,6 +876,7 @@ const furusatoScene = (inp) => async () => {
   set(doc, "age", String(inp.age ?? 40));
   set(doc, "shakai", inp.shakai == null ? "" : String(inp.shakai)); // 空欄 = 年収から概算させる
   set(doc, "kifu", inp.kifu == null ? "" : String(inp.kifu));
+  set(doc, "fuyoNensho", String(inp.fuyoNensho ?? 0));
   click(doc, "calc");
 
   await waitFor(
@@ -895,6 +896,8 @@ const furusatoScene = (inp) => async () => {
     showsGaisan: /社会保険料 ¥762,988 は概算です/.test(body),
     jikoFutan: num(/実質の自己負担¥([\d,]+)/),
     showsOver: /この寄附額は限度額を ¥17,717 超えています/.test(body),
+    // ★所得割が非課税の人には「寄附しても税金は戻らない」と言い切ること
+    showsNoBenefit: /住民税の所得割がかからないため、ふるさと納税をしても税金は戻りません/.test(body),
     failed: body.includes("読み込めませんでした"),
     body,
   };
@@ -913,6 +916,86 @@ SCENES.furusato_gaisan = furusatoScene({ shunyu: 5000000, age: 40 });
 // 税率表を配信できない → 限度額を出さずに断ること(fail closed)。
 // ★ここで黙って答えると、利用者は上限を超えて寄附して自腹を切る
 SCENES.furusato_nodata = furusatoScene({ shunyu: 5000000, shakai: 700000, nodata: true });
+// ★★2026-07-14 第23便に見つけた**公開済みページの実バグ**の再発防止シーン。
+//   年収170万・16歳未満の子1人 → **住民税の所得割が非課税**(限度額 35万×2+10万+32万=112万 ≧ 合計所得105万)
+//   なので、ふるさと納税をしても控除される所得割が無い = **限度額は0円**。
+//   ところがページが family に fuyoNensho を渡していなかったため、扶養0人として判定され
+//   **「限度額 9,888円」と答えていた**(寄附しても税金は1円も戻らないのに寄附させる)。
+//   ★coreは正しく、壊れていたのは**ページ**だったので**単体テストでは永久に捕まらない**。
+//   だからここ(E2E)で固定する。
+SCENES.furusato_nensho = furusatoScene({ shunyu: 1700000, shakai: 240000, fuyoNensho: 1 });
+
+// ── 住民税 ──────────────────────────────────────────────────────────
+// ★期待値は juminzei_core.js を一切通さず、**条文から手で積み上げた実額**を固定する。
+//
+//   [標準税率・独身・年収500万・社保70万（実額）]
+//     給与所得   5,000,000 − 1,440,000(=収入×20%+44万) = 3,560,000  (所法28条・別表第五)
+//     課税総所得 3,560,000 − (基礎控除43万 + 社保70万)  = 2,430,000  (地税314条の2/20条の4の2)
+//     所得割     市 2,430,000×6% − 調整控除1,500 = 144,300
+//                県 2,430,000×4% − 調整控除1,000 =  96,200  → 合計 240,500
+//                （調整控除の基礎は5万円。課税総所得が200万超なので下限の5万円に張り付く）
+//     均等割     市3,000 + 県1,000 + 森林環境税1,000       =     5,000
+//     住民税     240,500 + 5,000                           = **245,500**
+//   ★所得割240,500は /furusato/ の検証済みの鎖と同じ値（同じコアの別の顔なので一致するのが正しい）
+//
+//   [★16歳未満の子1人・1級地・合計所得105万]  ＝ この計算機の看板の主張
+//     給与収入 1,700,000 → 給与所得 1,700,000 − 650,000 = 1,050,000 (190万未満は別表第五の定額)
+//     均等割の非課税限度額 35万×(本人1+扶養1) + 10万 + **21万** = 1,010,000 → 105万 > 101万 → **課税**
+//     所得割の非課税限度額 35万×(本人1+扶養1) + 10万 + **32万** = 1,120,000 → 105万 ≦ 112万 → **非課税**
+//     → 住民税は均等割＋森林環境税の **5,000円だけ**（所得割は0円）
+//   ★子がいなければ限度額は45万円まで落ちるので所得割も課税され、住民税は 40,500円になる。
+//     **扶養控除は1円もつかない**のに（年少扶養控除は平成24年に廃止）、**35,500円変わる**。
+//     施行令47条の3第1号が非課税限度額の扶養親族を「年齢十六歳未満の者及び…」と明記しているため。
+const juminzeiScene = (inp) => async () => {
+  const doc = await open("/docs/juminzei/");
+  // 自治体・級地・都道府県のプルダウンは参照データの到着後に作られる。
+  // ★配信失敗を再現するシーンでは**永久に出来ない**のが正しい挙動なので待たない
+  if (!inp.nodata) {
+    await waitFor(() => doc.getElementById("jichitai").options.length > 1, "自治体プルダウン");
+    await waitFor(() => doc.getElementById("ken").options.length > 40, "都道府県プルダウン");
+    set(doc, "jichitai", inp.jichitai ?? "hyojun");
+    set(doc, "kyuchi", String(inp.kyuchi ?? 1));
+    set(doc, "ken", "東京都");
+  }
+  set(doc, "shunyu", String(inp.shunyu));
+  set(doc, "age", String(inp.age ?? 40));
+  set(doc, "shakai", inp.shakai == null ? "" : String(inp.shakai)); // 空欄 = 年収から概算させる
+  set(doc, "fuyoNensho", String(inp.fuyoNensho ?? 0));
+  click(doc, "calc");
+
+  await waitFor(
+    () => /住民税 ¥|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "住民税の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+
+  return {
+    ...inp,
+    total: num(/住民税 ¥([\d,]+)/),
+    shotokuwari: num(/所得割 ¥([\d,]+)/),
+    kintouwari: num(/均等割・森林環境税 ¥([\d,]+)/),
+    // ★「均等割だけ課税される帯」に入った人に、画面がそれを名指しで言うこと
+    showsKintouOnly: /この方は「均等割だけ」がかかります/.test(body),
+    // ★森林環境税を内訳として名乗ること（「復興特別税1,000円」ではない）
+    showsShinrin: /森林環境税（国税）¥1,000/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+
+// ★看板の答え: 標準税率・独身・年収500万・社保70万 → 住民税 245,500円（所得割240,500＋均等割5,000）
+SCENES.juminzei = juminzeiScene({ shunyu: 5000000, shakai: 700000 });
+// ★★16歳未満の子1人で「均等割だけ課税」の帯に落ちる（住民税5,000円）。
+//   扶養控除は0円なのに、子の有無だけで住民税が 40,500円 → 5,000円 に変わる
+SCENES.juminzei_nensho = juminzeiScene({ shunyu: 1700000, shakai: 240000, fuyoNensho: 1, kyuchi: 1 });
+// ↑の対照: 同じ所得で子がいなければ所得割も課税され 40,500円になる
+SCENES.juminzei_nensho_nashi = juminzeiScene({ shunyu: 1700000, shakai: 240000, fuyoNensho: 0, kyuchi: 1 });
+// ★超過課税: 横浜市は市民税均等割3,900＋県民税1,300＋森林環境税1,000 = 6,200円（横浜市の公表額）
+//   所得割も指定都市の8%:2%＋神奈川県の超過課税0.025%が効く
+SCENES.juminzei_yokohama = juminzeiScene({ shunyu: 5000000, shakai: 700000, jichitai: "yokohama" });
+// 税率表を配信できない → 税額を出さずに断ること(fail closed)
+SCENES.juminzei_nodata = juminzeiScene({ shunyu: 5000000, shakai: 700000, nodata: true });
 
 let state;
 try {

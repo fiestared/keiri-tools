@@ -147,7 +147,15 @@
       <input type="number" id="fuyoRojin" value="0" min="0" max="20" inputmode="numeric">
     </div>
   </div>
-  <div class="hint"><b>15歳以下の子どもは数えません</b>（児童手当があるため扶養控除の対象外です）。限度額も変わりません。</div>
+
+  <div class="fee-pair">
+    <div>
+      <label for="fuyoNensho">16歳未満の子ども（人）</label>
+      <input type="number" id="fuyoNensho" value="0" min="0" max="20" inputmode="numeric">
+    </div>
+    <div></div>
+  </div>
+  <div class="hint"><b>16歳未満の子は扶養控除が1円もつきません</b>（平成24年に廃止）が、<b>入力してください</b>。<b>住民税の非課税限度額の「扶養親族の数」には入る</b>ので、所得が低い方は<b>子どもの有無で「そもそも所得割が非課税＝限度額0円」に変わることがあります</b>（地方税法附則3条の3）。所得割がかかる方は限度額は変わりません。</div>
 
   <details style="margin-top:12px">
     <summary>その他の控除（生命保険料・ひとり親・障害者・給与以外の所得など）</summary>
@@ -298,6 +306,10 @@ $("calc").addEventListener("click", async () => {
     fuyoTokutei: Number($("fuyoTokutei").value),
     fuyoRojin: Number($("fuyoRojin").value),
     fuyoDokyoRooya: Number($("fuyoDokyoRooya").value),
+    // ★16歳未満の子。所得控除には1円も効かないが、住民税の**非課税限度額**の扶養親族の数には入る
+    //   （施行令47条の3・附則3条の3）。渡し忘れると、所得割が非課税の人（＝限度額0円）に
+    //   「限度額9,888円」などと答えてしまう＝寄附しても税金は1円も戻らないのに寄附させる。
+    fuyoNensho: Number($("fuyoNensho").value),
     shogaiIppan: $("shogai").checked ? 1 : 0,
     kafu: $("kafu").checked,
     hitorioyaHaha: $("hitorioya").checked,
@@ -315,13 +327,25 @@ $("calc").addEventListener("click", async () => {
   }, D);
 
   if (r.shotokuwari <= 0) {
+    // ★所得割が0円になる理由は2つあり、**画面に出す説明を取り違えてはいけない**。
+    //   (a) 非課税限度額以下 … 課税総所得は0でないのに、法が所得割を課さない（附則3条の3）
+    //   (b) 控除が所得を上回る … 課税総所得そのものが0
+    //   (a) に (b) の説明を出すと「課税所得が0円です」と言いながら課税総所得38万円を並べて
+    //   表示することになり、画面が自分と矛盾する。
+    const hikazei = r.hikazei.shotokuwariHikazei;
+    const riyu = hikazei
+      ? `合計所得金額 <b>${yen(r.goukeiShotoku)}</b> が、住民税の<b>所得割の非課税限度額
+         ${yen(r.hikazei.shotokuLimit)}</b>（本人＋同一生計配偶者＋扶養親族 ${r.hikazei.ninzu}人分）
+         <b>以下</b>のため、所得割が非課税になっています（地方税法附則3条の3）。
+         <b>16歳未満のお子さんも、この人数に入ります</b>（扶養控除は0円ですが、非課税限度額には効きます）。`
+      : `控除（給与所得控除・社会保険料・扶養控除など）の合計が所得を上回っているため、
+         課税所得が0円になっています。`;
     box.innerHTML = `
       <div class="big">限度額 ¥0</div>
       <div class="callout"><b>住民税の所得割がかからないため、ふるさと納税をしても税金は戻りません。</b>
-        控除（給与所得控除・社会保険料・扶養控除など）の合計が所得を上回っているため、
-        課税所得が0円になっています。この場合、寄附しても<b>寄附額がそのまま自己負担</b>になります
+        ${riyu} この場合、寄附しても<b>寄附額がそのまま自己負担</b>になります
         （返礼品を目的に寄附すること自体は自由ですが、税制上の得はありません）。</div>
-      <div class="hint">給与収入 ${yen(r.kyuyoShotoku ? shunyu : shunyu)} → 給与所得 ${yen(r.kyuyoShotoku)}
+      <div class="hint">給与収入 ${yen(shunyu)} → 給与所得 ${yen(r.kyuyoShotoku)}
         ／ 所得控除の合計 ${yen(r.shotokuKojoGokei)} ／ 課税総所得 ${yen(r.kazeiSoShotoku)}</div>`;
     return;
   }
