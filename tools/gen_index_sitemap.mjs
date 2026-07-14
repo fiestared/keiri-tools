@@ -37,6 +37,7 @@ const ORDER = [
   "shitsugyo-hoken-keisan",     // 失業保険 計算 25,591/月（失業保険 自己都合 25,591・失業保険 期間 11,464 も同記事で受ける）
   "saishushoku-teate",          // 再就職手当 25,591/月
   "koyou-hoken-kanyu-joken",    // 雇用保険 加入条件 25,591/月
+  "rishokuhyo",                 // 離職票 25,591/月（離職票 書き方 2,284・離職票 いつもらえる 1,226 も同記事で受ける）
   "invoice-wakariyasuku",
   "shakai-hoken-kanyu-joken",
   "shakai-hokenryo-keisan",
@@ -127,6 +128,7 @@ const CATEGORIES = [
     slugs: [
       "kogaku-ryoyohi", "shobyo-teate-kin", "shussan-teate-kin", "shussan-ikuji-ichijikin",
       "ikuji-kyugyo-kyufukin", "shitsugyo-hoken-keisan", "saishushoku-teate",
+      "rishokuhyo",
     ],
   },
   {
