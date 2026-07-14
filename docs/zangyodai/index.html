@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>残業代 計算機｜1時間あたりの単価から自動計算（60時間超50%・深夜・固定残業代）</title>
+<meta name="description" content="月給・年間所定休日・残業時間を入れるだけで、1時間あたりの単価と残業代を自動計算。1か月60時間を超えた時間外は50%（2023年4月から中小企業も対象）、深夜は上乗せ25%、法定休日は35%。固定残業代を超えた差額も計算します。割増賃金の基礎から除ける手当は7つだけ。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/zangyodai/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "残業代（割増賃金）計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "月給と年間所定休日から1時間あたりの単価を求め、時間外労働（25%・60時間超は50%）・法定休日労働（35%）・深夜労働（上乗せ25%）の割増賃金を計算します。固定残業代を超えた差額も表示。労働基準法37条・平成6年政令第5号・労働基準法施行規則19条・20条・21条にもとづく計算。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "残業代（割増賃金）計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "残業代の1時間あたりの単価はどう計算しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "月給を「1年間における1月平均所定労働時間数」で割ります（労働基準法施行規則19条1項4号）。1月平均所定労働時間数は（365日−年間所定休日日数）×1日の所定労働時間÷12で求めます。年間所定休日120日・1日8時間なら月平均163.33時間なので、月給30万円の人の単価は1,836.73円です。その月の所定労働時間で割るのではありません（月によって単価が変わってしまうため）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "残業代の基礎になる賃金から除ける手当は何ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "家族手当・通勤手当・別居手当・子女教育手当・住宅手当・臨時に支払われた賃金・1か月を超える期間ごとに支払われる賃金（賞与など）の7つだけです（労働基準法37条5項、労働基準法施行規則21条）。これは限定列挙なので、役職手当・資格手当・皆勤手当・精勤手当・地域手当などはどんな名前でも基礎に算入しなければなりません。さらに列挙された手当でも名前ではなく実態で判断し、扶養家族の人数に関係なく全員へ一律に払う「家族手当」は家族手当ではないため基礎に算入します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "月60時間を超える残業の割増率50%は中小企業にも適用されますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "適用されます。1か月60時間を超えた時間外労働の割増率50%は、2023年4月1日から中小企業にも適用されています（それ以前は猶予されていました）。なお、この60時間に法定休日の労働時間は入りません。労働基準法37条1項ただし書が数えるのは「延長して労働させた時間」＝時間外労働であり、休日労働は「延長」ではないためです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "固定残業代（みなし残業）をもらっていれば、残業代は払われなくてよいのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "いいえ。固定残業代は割増賃金の前払いにすぎないため、実際の割増賃金が固定残業代を超えた月は、その差額を別に支払わなければなりません。また固定残業代そのものは割増賃金であって「通常の労働時間の賃金」ではないので、1時間あたりの単価を計算するときの基礎賃金には含めません。含めてしまうと単価が高く出ます。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 残業代（割増賃金）計算機</nav>
+
+<section class="hero">
+  <h1>残業代（割増賃金）計算機</h1>
+  <p>月給と年間所定休日から<b>1時間あたりの単価</b>を求め、<b>時間外（25%）</b>・<b>1か月60時間超（50%）</b>・<b>法定休日（35%）</b>・<b>深夜（上乗せ25%）</b>の残業代を計算します。<b>固定残業代を超えた差額</b>も出します。</p>
+</section>
+
+<div class="card">
+  <label for="base">割増賃金の基礎となる賃金（円・月額）</label>
+  <input type="number" id="base" value="300000" placeholder="例: 300000" inputmode="numeric">
+  <div class="hint">基本給＋諸手当（役職手当・資格手当・皆勤手当なども<b>含める</b>）。<b>固定残業代・家族手当・通勤手当・住宅手当は含めません</b>（下の「この計算機の見方」を参照）。</div>
+
+  <div class="fee-pair">
+    <div>
+      <label for="holidays">年間所定休日日数</label>
+      <input type="number" id="holidays" value="120" min="0" max="364" inputmode="numeric">
+    </div>
+    <div>
+      <label for="daily">1日の所定労働時間</label>
+      <input type="number" id="daily" value="8" min="0" max="24" step="0.25" inputmode="decimal">
+    </div>
+  </div>
+
+  <div class="fee-pair">
+    <div>
+      <label for="overtime">時間外労働（時間／月）</label>
+      <input type="number" id="overtime" value="70" min="0" step="0.5" inputmode="decimal">
+    </div>
+    <div>
+      <label for="holidayhours">法定休日の労働（時間／月）</label>
+      <input type="number" id="holidayhours" value="0" min="0" step="0.5" inputmode="decimal">
+    </div>
+  </div>
+
+  <label for="night">深夜労働（22時〜5時・時間／月）</label>
+  <input type="number" id="night" value="0" min="0" step="0.5" inputmode="decimal">
+  <div class="hint">★<b>時間外・休日と重ねて数えて構いません</b>。深夜の割増は<b>上乗せ25%だけ</b>を足すので、二重には払われません（例: 22時〜24時に残業した2時間は、時間外にも深夜にも「2時間」と入れます）。</div>
+
+  <label for="fixed">固定残業代・みなし残業手当（円／月・もらっていれば）</label>
+  <input type="number" id="fixed" value="0" min="0" inputmode="numeric">
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>この計算機の見方</h2>
+
+  <h3>単価は「その月の所定労働時間」で割ってはいけません</h3>
+  <p>月給制の1時間あたりの単価は、月給を<b>「1年間における1月平均所定労働時間数」</b>で割って求めます（労働基準法施行規則19条1項4号）。<b>（365日 − 年間所定休日日数）× 1日の所定労働時間 ÷ 12</b> です。その月の所定労働時間で割ると、営業日の少ない月ほど単価が上がってしまい、<b>同じ1時間の残業なのに月によって残業代が変わります</b>。</p>
+
+  <h3>★基礎から除ける手当は「7つ」だけです（限定列挙）</h3>
+  <p>割増賃金の基礎となる賃金から除けるのは、<b>家族手当・通勤手当・別居手当・子女教育手当・住宅手当・臨時に支払われた賃金・1か月を超える期間ごとに支払われる賃金（賞与など）</b>の7つだけです（労働基準法37条5項＋施行規則21条）。これは<b>限定列挙</b>なので、<b>役職手当・資格手当・皆勤手当・精勤手当・地域手当は、どんな名前でも基礎に算入しなければなりません</b>。基礎賃金が1万円違えば、残業20時間分でおよそ765円変わります。</p>
+  <p>さらに、列挙された手当でも<b>名前ではなく実態で判断</b>します。扶養家族の人数に関係なく<b>全員へ一律に払う「家族手当」は家族手当ではない</b>ので、基礎に算入します（住宅手当も同じ）。</p>
+
+  <h3>★1か月60時間を超えた時間外は50%。ただし休日労働は数えません</h3>
+  <p>1か月60時間を超えた時間外労働の割増率は<b>50%</b>です（労働基準法37条1項ただし書）。<b>2023年4月1日から中小企業にも適用</b>されています。ただし、この60時間に<b>法定休日の労働は入りません</b>。条文が数えるのは「<b>延長して</b>労働させた時間」＝時間外労働であり、<b>休日労働は「延長」ではない</b>からです。一方、<b>法定外休日</b>（会社が決めた休み）の労働は、法定労働時間を超える限り時間外労働なので60時間に入ります。</p>
+
+  <h3>所定労働時間内の深夜労働は、上乗せ25%だけです</h3>
+  <p>法律が「割増賃金」と呼ぶのは<b>上乗せ分だけ</b>で、支払総額ではありません。時間外労働1時間の支払額が単価の125%になるのは、上乗せ25%に加えて<b>その1時間の労働そのものの対価100%</b>が別に発生するからです。<b>所定労働時間内の深夜労働は、対価100%が月給に既に含まれている</b>ので、上乗せ25%だけを払います。ここを125%で計算すると、月給制の人の深夜手当を<b>5倍</b>に見積もることになります。</p>
+
+  <div class="callout">
+    <b>この計算機と会社の給与明細が数円ずれることがあります</b>
+    1時間あたりの単価を<b>端数処理せずに</b>計算しているためです。通達（昭和63.3.14 基発150号）は、単価や割増賃金額の1円未満を「50銭未満切捨・50銭以上切上げ」で処理することも認めているので、<b>会社が単価を1円単位に丸めてから掛けている場合、数円の差が出ます</b>（どちらも適法です）。なお、この計算機は<b>区分ごと</b>（時間外・60時間超・休日・深夜）に1円未満を処理し、その合計を総額としています。<b>数円ではなく数千円・数万円ずれる場合は、基礎賃金に入れる手当か、単価の割り方（月平均所定労働時間）が違っている可能性があります。</b>
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>残業代の1時間あたりの単価はどう計算しますか？</h3>
+  <p>月給を<b>「1年間における1月平均所定労働時間数」</b>で割ります（労働基準法施行規則19条1項4号）。1月平均所定労働時間数は<b>（365日−年間所定休日日数）×1日の所定労働時間÷12</b>で求めます。年間所定休日120日・1日8時間なら月平均163.33時間なので、月給30万円の人の単価は<b>1,836.73円</b>です。その月の所定労働時間で割るのではありません（月によって単価が変わってしまうため）。</p>
+  <h3>残業代の基礎になる賃金から除ける手当は何ですか？</h3>
+  <p><b>家族手当・通勤手当・別居手当・子女教育手当・住宅手当・臨時に支払われた賃金・1か月を超える期間ごとに支払われる賃金（賞与など）の7つだけ</b>です（労働基準法37条5項、労働基準法施行規則21条）。これは<b>限定列挙</b>なので、役職手当・資格手当・皆勤手当・精勤手当・地域手当などは<b>どんな名前でも基礎に算入</b>しなければなりません。さらに列挙された手当でも名前ではなく実態で判断し、扶養家族の人数に関係なく全員へ一律に払う「家族手当」は家族手当ではないため基礎に算入します。</p>
+  <h3>月60時間を超える残業の割増率50%は中小企業にも適用されますか？</h3>
+  <p><b>適用されます。</b>1か月60時間を超えた時間外労働の割増率50%は、<b>2023年4月1日から中小企業にも適用</b>されています（それ以前は猶予されていました）。なお、この60時間に<b>法定休日の労働時間は入りません</b>。労働基準法37条1項ただし書が数えるのは「延長して労働させた時間」＝時間外労働であり、休日労働は「延長」ではないためです。</p>
+  <h3>固定残業代（みなし残業）をもらっていれば、残業代は払われなくてよいのですか？</h3>
+  <p><b>いいえ。</b>固定残業代は割増賃金の<b>前払い</b>にすぎないため、実際の割増賃金が固定残業代を超えた月は、<b>その差額を別に支払わなければなりません</b>。また固定残業代そのものは割増賃金であって「通常の労働時間の賃金」ではないので、<b>1時間あたりの単価を計算するときの基礎賃金には含めません</b>。含めてしまうと単価が高く出ます。</p>
+</section>
+
+<section class="faq">
+  <h2>関連するツール・記事</h2>
+  <p>
+    <a href="../column/zangyodai-keisan/">残業代の計算方法｜1時間あたりの単価と割増率（25%・35%・50%）</a>（この計算機の解説記事）<br>
+    <a href="../column/kotei-zangyodai/">固定残業代（みなし残業）とは？</a><br>
+    <a href="../shakai-hoken/">社会保険料計算機</a>（残業代が増えると社会保険料も上がります）<br>
+    <a href="../gensen-choshu/">源泉徴収税額 計算機</a>（残業代を含めた給与から引かれる所得税）
+  </p>
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 労働基準法37条（時間外・休日・深夜の割増賃金）／労働基準法第三十七条第一項の時間外及び休日の割増賃金に係る率の最低限度を定める政令（平成6年政令第5号）／労働基準法施行規則19条・20条・21条<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcZangyodai } from "../assets/zangyodai_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const yen2 = (n) => "¥" + n.toLocaleString("ja-JP", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const hrs = (n) => n.toLocaleString("ja-JP", { maximumFractionDigits: 2 });
+
+// 割増率は非同期で届く。**届く前に押されても待つ**（回線が遅い人だけ空データで計算される事故を防ぐ）。
+let DATA = null;
+const dataReady = fetch("../assets/zangyodai_rates.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { DATA = d; return true; })
+  .catch(() => false);
+
+// 出典の表示は飾り。ここで転んでも計算は止めない
+dataReady.then(ok => {
+  if (!ok || !DATA) return;
+  $("src-note").textContent = `（${DATA._meta.label}）`;
+}).catch(() => {});
+
+$("calc").addEventListener("click", async () => {
+  const ready = await dataReady;
+  const box = $("result");
+  if (!ready || !DATA) {
+    box.innerHTML = `<div class="callout"><b>割増率を読み込めませんでした。</b>` +
+      `通信環境を確認して、ページを再読み込みしてください。割増率が分からないまま` +
+      `残業代を答えることはできないため、計算を止めています。</div>`;
+    return;
+  }
+
+  const input = {
+    base: Number($("base").value),
+    annualHolidays: Number($("holidays").value),
+    dailyHours: Number($("daily").value),
+    overtimeHours: Number($("overtime").value),
+    holidayHours: Number($("holidayhours").value),
+    nightHours: Number($("night").value),
+    fixedAmount: Number($("fixed").value),
+  };
+
+  const r = calcZangyodai(input, DATA);
+  if (!r) {
+    box.innerHTML = `<div class="callout">月給・1日の所定労働時間・年間所定休日日数を入力してください` +
+      `（1時間あたりの単価が計算できません）。</div>`;
+    return;
+  }
+
+  const rows = [
+    ["overtime", `時間外労働（${r.hasOver60 ? "60時間まで" : "25%"}）`],
+    ["overtime_over60", "うち1か月60時間を超えた分（50%）"],
+    ["holiday", "法定休日の労働（35%）"],
+    ["night", "深夜の割増（上乗せ25%）"],
+  ].filter(([k]) => r.breakdown[k].hours > 0)
+   .map(([k, label]) => {
+     const b = r.breakdown[k];
+     return `<tr><th>${label}</th><td>${hrs(b.hours)}時間 × ${yen2(r.hourlyRate)} × ${b.pct}％ ＝ <b>${yen(b.amount)}</b></td></tr>`;
+   }).join("");
+
+  // ★60時間を超えたことは、画面で必ず名指しする（率が上がったことに気づかない人が多い）
+  const over60Note = r.hasOver60
+    ? `<div class="callout"><b>★1か月60時間を超えた${hrs(r.over60Hours)}時間は、割増率が50%になります。</b>
+        （労働基準法37条1項ただし書。<b>2023年4月1日から中小企業にも適用</b>されています。）
+        25%のままで計算されていると、この分だけで<b>${yen(r.over60Extra)}</b>不足します。
+        <span class="hint">この60時間に<b>法定休日の労働は入りません</b>（条文が数えるのは「延長して労働させた時間」＝時間外労働だけ）。</span></div>`
+    : "";
+
+  // ★固定残業代の差額は、この計算機のいちばん実利のある答え
+  const fixedNote = r.fixed > 0
+    ? (r.fixedIsShort
+      ? `<div class="callout"><b>★固定残業代 ${yen(r.fixed)} では ${yen(r.shortfall)} 足りません。</b>
+          実際の割増賃金は<b>${yen(r.total)}</b>なので、差額<b>${yen(r.shortfall)}</b>を
+          固定残業代とは<b>別に</b>支払う必要があります（固定残業代は割増賃金の前払いにすぎません）。</div>`
+      : `<div class="hint">固定残業代 ${yen(r.fixed)} は、この月の割増賃金 ${yen(r.total)} を満たしています
+          （差額の支払いは不要です）。</div>`)
+    : "";
+
+  box.innerHTML = `
+    <div class="big">残業代 ${yen(r.total)}</div>
+    <table class="res">
+      <tr><th>1時間あたりの単価</th><td><b>${yen2(r.hourlyRate)}</b>（${yen(r.base)} ÷ ${hrs(r.monthlyHours)}時間）</td></tr>
+      <tr><th>1月平均所定労働時間</th><td>${hrs(r.monthlyHours)}時間（（365日 − ${input.annualHolidays}日）× ${hrs(input.dailyHours)}時間 ÷ 12）</td></tr>
+      ${rows}
+      <tr><th>残業代の合計</th><td><b>${yen(r.total)}</b></td></tr>
+    </table>
+    ${over60Note}
+    ${fixedNote}`;
+});
+</script>
+</body>
+</html>

@@ -172,6 +172,21 @@ const SCENES = [
   // 税率表が配信できないときは、額を出さずに断る(fail closed)
   { name: "taishoku_nodata", data404: "taishoku_rates_r08.json",
     expect: (s) => s.failed && s.taxable === null && s.tedori === null },
+
+  // ── 残業代(割増賃金) ────────────────────────────────────────────────
+  // ★期待値は**神奈川労働局が実額で公表している計算例**(1,500円×1.5＝2,250円)。
+  //   同じ1時間を「時間外」と「深夜」に重ねて数え、深夜は**上乗せ25%だけ**を足す ──
+  //   この設計が正しいことを、労働局の公表額が裏書きしている(125%で足していたら3,750円)。
+  { name: "zangyodai", expect: (s) =>
+      s.hourlyRate === 1500 && s.total === 2250 && !s.failed },
+  // ★1か月60時間超の50%(2023年4月から中小企業も)。画面が率の変化を名指しすること
+  { name: "zangyodai_over60", expect: (s) =>
+      s.total === 137755 + 27551 && s.showsOver60 && s.shows50pct && !s.failed },
+  // ★固定残業代を超えた差額。この計算機のいちばん実利のある答え
+  { name: "zangyodai_fixed", expect: (s) => s.total === 45918 && s.showsShortfall && !s.failed },
+  // 割増率が配信できないときは、額を出さずに断る(fail closed)
+  { name: "zangyodai_nodata", data404: "zangyodai_rates.json",
+    expect: (s) => s.failed && s.total === null },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",

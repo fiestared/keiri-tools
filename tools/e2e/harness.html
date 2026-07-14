@@ -796,6 +796,61 @@ SCENES.taishoku_yakuin = taishokuScene({ amount: 10000000, years: 5, months: 0, 
 // 税率表を配信できない → 額を出さずに断ること(fail closed)
 SCENES.taishoku_nodata = SCENES.taishoku;
 
+// ── 残業代(割増賃金) ──────────────────────────────────────────────────────
+// ★期待値は**神奈川労働局が実額で公表している計算例そのもの**(zangyodai_core.js は一切通さない)。
+//   https://jsite.mhlw.go.jp/kanagawa-roudoukyoku/content/contents/001107232.pdf
+//     「①(365-125)×8÷12＝160、②240,000÷160＝1,500」
+//     「1時間あたりの賃金額が1,500円の労働者に…22時から23時までは時間外労働かつ深夜労働となるため、
+//       1,500(時間給)×1.5(時間外労働1.25＋深夜労働0.25)＝**2,250円**支払わなければなりません。」
+//   同じ1時間を「時間外1時間」「深夜1時間」と**重ねて**入れて2,250円になること＝この計算機の設計そのもの。
+//   深夜を125%で計算していたら3,750円になり、労働局の公表額と合わない。
+const RODOKYOKU = { base: 240000, holidays: 125, daily: 8, overtime: 1, night: 1, total: 2250 };
+
+const zangyodaiScene = (inp) => async () => {
+  const doc = await open("/docs/zangyodai/");
+  set(doc, "base", String(inp.base));
+  set(doc, "holidays", String(inp.holidays));
+  set(doc, "daily", String(inp.daily));
+  set(doc, "overtime", String(inp.overtime));
+  set(doc, "holidayhours", String(inp.holidayhours ?? 0));
+  set(doc, "night", String(inp.night ?? 0));
+  set(doc, "fixed", String(inp.fixed ?? 0));
+  click(doc, "calc"); // ← 割増率JSONの到着を待たずに押す(実ユーザーと同じ)
+
+  await waitFor(
+    () => /残業代 ¥|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "残業代の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+
+  return {
+    ...inp,
+    total: num(/残業代 ¥([\d,]+)/),
+    // ★`\s*` を忘れないこと: th と td の textContent は**空白なしで連結**されるので
+    //   「1時間あたりの単価¥1,500.00」になる(空白を要求する正規表現は、正しい画面を落とす)
+    hourlyRate: num(/1時間あたりの単価\s*¥([\d,]+)/),   // 小数部の前まで取れれば十分
+    // ★60時間を超えたことを画面が名指ししているか(率が上がったことに気づかない人が多い)
+    showsOver60: /1か月60時間を超えた10時間は、割増率が50%になります/.test(body),
+    shows50pct: /うち1か月60時間を超えた分（50%）/.test(body),
+    // ★固定残業代の差額(この計算機のいちばん実利のある答え)
+    showsShortfall: /固定残業代 ¥30,000 では ¥15,918 足りません/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+
+// ★労働局の公表実額。ページが「深夜は上乗せ25%だけ」を正しく描いていなければ2,250円にならない。
+SCENES.zangyodai = zangyodaiScene(RODOKYOKU);
+// ★60時間超の50%。月給30万・年間休日120日・8時間・時間外70時間
+//   → 単価1,836.73… / 60時間まで137,755円 + 超えた10時間27,551円 = 165,306円
+SCENES.zangyodai_over60 = zangyodaiScene({ base: 300000, holidays: 120, daily: 8, overtime: 70 });
+// ★固定残業代3万円 < 実際の割増賃金45,918円 → 差額15,918円を画面で名指しすること
+SCENES.zangyodai_fixed = zangyodaiScene({ base: 300000, holidays: 120, daily: 8, overtime: 20,
+                                          fixed: 30000 });
+// 割増率を配信できない → 額を出さずに断ること(fail closed)
+SCENES.zangyodai_nodata = SCENES.zangyodai;
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };
