@@ -37,7 +37,7 @@
 </header>
 <main>
   <section class="hero">
-    <h1>経理・労務の計算を、さっと片づける。</h1>
+    <h1>経理・労務・税務の計算を、さっと片づける。</h1>
     <p>社会保険料の計算、電帳法の索引簿づくり、支払日の計算——調べ直すのが面倒な作業を、無料のツールにしました。</p>
 
     <div class="qa-box">
@@ -286,10 +286,11 @@ import { search } from "./assets/qa_search.js";
 
 let QA = [];
 let qaFailed = false;
+let qaLoaded = false;
 // 索引の到着を**待ってから**検索する。遅い回線で未着のまま検索して「該当なし」を出さないため。
 const qaReady = fetch("assets/qa_index.json")
   .then((r) => { if (!r.ok) throw new Error("http " + r.status); return r.json(); })
-  .then((d) => { QA = d; })
+  .then((d) => { QA = d; qaLoaded = true; })
   .catch(() => { qaFailed = true; });
 
 const form = document.getElementById("qa-form");
@@ -320,11 +321,13 @@ function card(e) {
     </div>`;
 }
 
-async function ask(q) {
+// commit=false: 打つそばから探す（キーワード検索と同じ体感。GA4には記録しない）
+// commit=true : Enter/「聞く」で確定。該当が無ければ案内を出し、GA4に質問を記録する
+async function ask(q, commit) {
   q = (q || "").trim();
-  if (!q) return;
+  if (!q) { box.hidden = true; box.innerHTML = ""; return; }
   box.hidden = false;
-  box.innerHTML = `<p class="qa-status">探しています…</p>`;
+  if (!qaLoaded) box.innerHTML = `<p class="qa-status">探しています…</p>`;
   await qaReady;
   if (qaFailed) {
     box.innerHTML = `<div class="qa-empty">質問の索引を読み込めませんでした。通信環境を確認して、ページを再読み込みしてください。</div>`;
@@ -333,14 +336,24 @@ async function ask(q) {
   const r = search(QA, q);
   if (r.matched && r.results.length) {
     box.innerHTML = `<div class="qa-reslist">${r.results.map(card).join("")}</div>`;
-    track(q, true, r.results[0].url);
-  } else {
+    if (commit) track(q, true, r.results[0].url);
+  } else if (commit) {
     box.innerHTML = `<div class="qa-empty"><b>ぴったりの記事がまだありません。</b>いただいた質問は、記事にするか検討します。<div style="margin-top:8px"><a href="column/">経理コラムの一覧を見る →</a></div></div>`;
     track(q, false, "");
+  } else {
+    // 入力中で未一致のときは、案内を出さずに静かに待つ（打ちながらの誤爆を防ぐ）
+    box.hidden = true; box.innerHTML = "";
   }
 }
 
-form.addEventListener("submit", (ev) => { ev.preventDefault(); ask(input.value); });
+// 打つそばから探す（180msデバウンス）
+let qaTimer = null;
+input.addEventListener("input", () => {
+  clearTimeout(qaTimer);
+  qaTimer = setTimeout(() => ask(input.value, false), 180);
+});
+// Enter / 「聞く」で確定（GA4記録）
+form.addEventListener("submit", (ev) => { ev.preventDefault(); clearTimeout(qaTimer); ask(input.value, true); });
 </script>
 </body>
 </html>
