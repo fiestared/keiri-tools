@@ -353,10 +353,11 @@ const waitFor = (fn, ms = 5000) => new Promise((ok, ng) => {
 });
 
 async function driveContent({ serve, startUrl = pageUrl(0), pro = true, preset = null,
-                              session = {}, quiet = false, abortOnPage = 0, maxLoads = 10 }) {
+                              session = {}, quiet = false, abortOnPage = 0, maxLoads = 10,
+                              refreshSelectors = null }) {
   const storage = {};        // chrome.storage.local(ページ移動をまたいで残る)
   const reads = [], navigations = [], fetched = [];
-  let csv = null, done = "";
+  let csv = null, done = "", selectorRefreshes = 0;
   if (preset) storage.kt_crawl = JSON.stringify(preset);
 
   for (let load = 0; ; load++) {
@@ -384,7 +385,16 @@ async function driveContent({ serve, startUrl = pageUrl(0), pro = true, preset =
       chrome: {
         runtime: {
           sendMessage: async msg => {
-            if (msg.type === "getSelectors") return { source: "test", data: selectors, version: selectors.version };
+            if (msg.type === "getSelectors") {
+              // 本番の getSelectors は forceRefresh で 24時間キャッシュを飛ばして取り直す。
+              // 自己修復の検査のため、forceRefresh のときだけ別(新しい)定義を返せるようにする
+              if (msg.forceRefresh) {
+                selectorRefreshes++;
+                const s = refreshSelectors || selectors;
+                return { source: "test-refresh", data: s, version: s.version };
+              }
+              return { source: "test", data: selectors, version: selectors.version };
+            }
             if (msg.type === "getLicense") return { pro, email: null };
             return null;
           },
@@ -420,11 +430,11 @@ async function driveContent({ serve, startUrl = pageUrl(0), pro = true, preset =
     if (quiet) {
       // 「何も起きない」ことが正解のケース。少し待って、動かないことを確かめる
       await new Promise(r => setTimeout(r, 400));
-      return { reads, navigations, csv, done, storage, fetched, session };
+      return { reads, navigations, csv, done, storage, fetched, session, selectorRefreshes };
     }
     await waitFor(() => navigated || csv || doneBox.style.display === "block", 5000);
     done = doneBox.textContent.replace(/\s+/g, " ").trim();
-    if (!navigated) return { reads, navigations, csv, done, storage, fetched, session };
+    if (!navigated) return { reads, navigations, csv, done, storage, fetched, session, selectorRefreshes };
   }
 }
 
@@ -450,6 +460,46 @@ const csvRows = csv => csv.text.replace(/^﻿/, "").trim().split("\r\n").slice(1
   const r = await driveContent({ serve: makeSite({ pageCount: 3 }), pro: false });
   check("[content.js] 無料版はページを移動しない",
     [r.navigations.length, csvRows(r.csv).length], [0, 10]);
+}
+
+// ══ 11. Amazonの画面変更(セレクタ全滅)で黙って死なない ═══════════════
+// 注文が0件のとき、2つの原因(本当に0件 / セレクタが全滅した)を区別できない。
+// 黙って「見つかりませんでした」で終えると、画面には注文が出ているのに0件と出た利用者は
+// 「壊れている」とだけ見えてアンインストールし、**こちらにも直す合図が来ない**
+// (=リモートセレクタ方式が機能しなくなる)。→ 0件のときは報告先を出し、定義を取り直す。
+{
+  // (a) 0件のとき: 報告への導線を出し、最新のセレクタ定義を取り直そうとする
+  const serveEmpty = () => "<html><body><div id='ordersContainer'></div></body></html>";
+  const r = await driveContent({ serve: serveEmpty, pro: false });
+  check("[content.js] 0件でも黙らず「画面仕様が変わった可能性」と報告先を出す",
+    /変わった可能性/.test(r.done) && /お知らせ/.test(r.done), true);
+  check("[content.js] 0件のときは最新のセレクタ定義を取り直す(即回復のため)",
+    r.selectorRefreshes >= 1, true);
+}
+{
+  // (b) 自己修復: 既定のセレクタでは0件だが、取り直した新しい定義なら読める
+  //     → その場で読み直して救う(利用者は最大24時間待たずに回復する)
+  const refreshSel = JSON.parse(JSON.stringify(selectors));
+  refreshSel.version = "9999-01-01.1";
+  refreshSel.orderHistory.orderCardSelectors =
+    [".xx-order-card", ...refreshSel.orderHistory.orderCardSelectors];
+  const driftPage = () => `<html><body><div id="ordersContainer">
+    ${ordersOf(0).map(o => cardHtml(o).replace("js-order-card", "xx-order-card")).join("")}
+    ${pagerHtml(null)}</div></body></html>`;
+  // 前提の確認: 既定のセレクタ**だけ**では0件になる(=壊し方が本物である)
+  const parsedByDefault = ctx.ktParseOrderHistory(new JSDOM(driftPage()).window.document, HIST).orders;
+  check("[content.js] 前提: 既定セレクタでは新レイアウトを読めない(0件)", parsedByDefault.length, 0);
+  const r = await driveContent({ serve: driftPage, pro: false, refreshSelectors: refreshSel });
+  check("[content.js] 定義を取り直して新レイアウトを読み、10件を救う",
+    [r.selectorRefreshes >= 1, csvRows(r.csv).length], [true, 10]);
+}
+
+// ══ 12. renderNoOrders に報告先URLが実在する(文言だけで消えない錠前) ══
+// r.done は textContent なので href は現れない。ソースを名指しで守る(規則3の精神)。
+{
+  const src = readFileSync(EXT + "src/content.js", "utf8");
+  check("[content.js] 0件表示に問い合わせ先URLが埋め込まれている",
+    src.includes("https://keiri-tools.com/contact/"), true);
 }
 // 以下3つは「移動しないこと」の検査。**放っておけば必ず移動する状態**(まだ1件も集めていない
 // 巡回中の状態 + 1ページ目 = 読めば10件新規 → 次へ移動する)を置いた上で、

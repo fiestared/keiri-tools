@@ -270,13 +270,24 @@
     return name;
   }
 
-  /** 注文が1件も無いとき(注文履歴以外のページで押された等) */
+  /** 注文が1件も無いとき。2通りある:
+   *  (a) 本当に注文が無い / 表示期間の絞り込みで0件、
+   *  (b) **Amazonの画面仕様が変わってセレクタが全滅した**(＝画面には注文が出ているのに0件になる)。
+   *  (b)を黙って「注文が見つかりませんでした」で終えると、利用者には「拡張が壊れている」としか見えず
+   *  アンインストールされ、**こちらにも直す合図(セレクタ定義を更新するきっかけ)が来ない**。
+   *  リモートセレクタ方式(=DOM変更をJSON差し替えだけで直す設計)が機能する条件が「合図が来ること」
+   *  なので、**0件のときは必ず報告先を出す**。 */
   function renderNoOrders() {
     $("#kt-done").style.display = "block";
     $("#kt-done").innerHTML = `
       <div style="background:#fff7e6;border:1px solid #e6c47a;border-radius:8px;padding:10px;font-size:12.5px">
         注文が見つかりませんでした。<br>
-        Amazonの<b>「注文履歴」のページ</b>を開いてから、もう一度お試しください。
+        Amazonの<b>「注文履歴」のページ</b>で、注文が表示されている状態でお試しください
+        （表示期間の絞り込みにご注意ください）。<br>
+        <span style="color:#6b7280">注文が画面に出ているのに0件と表示される場合は、Amazonの画面仕様が
+        変わった可能性があります。お手数ですが
+        <a href="https://keiri-tools.com/contact/" target="_blank" rel="noopener"
+           style="color:#1a6ee0">こちらからお知らせ</a>いただければすぐ直します。</span>
       </div>`;
   }
 
@@ -333,7 +344,20 @@
     try {
       progress("この画面の注文を読み取っています…");
       await sleep(150);
-      const orders = ktParseOrderHistory(document, selectors.orderHistory).orders;
+      let orders = ktParseOrderHistory(document, selectors.orderHistory).orders;
+      // ★自己修復: 0件のときは Amazon の画面変更でセレクタが全滅した可能性がある。
+      //   24時間キャッシュを飛ばして最新のセレクタ定義を取り直し、**版が変わっていれば**1回だけ再読み取りする。
+      //   = 我々が selectors.json を直して push すれば、この利用者は最大24時間待たずに即回復する
+      //   (定義が同じなら再読み取りしても無駄なので版で判定。取得失敗時は元の結果のまま続行)。
+      if (orders.length === 0) {
+        try {
+          const fresh = await chrome.runtime.sendMessage({ type: "getSelectors", forceRefresh: true });
+          if (fresh && fresh.data && fresh.data.version !== (selectors && selectors.version)) {
+            selectors = fresh.data;
+            orders = ktParseOrderHistory(document, selectors.orderHistory).orders;
+          }
+        } catch (e) { /* オフライン等: 元の結果のまま続行する */ }
+      }
       await finishUp(orders, 1);          // finishUp が setBusy(false) まで見る
     } catch (e) {
       renderError(e);
