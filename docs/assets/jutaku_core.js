@@ -30,11 +30,14 @@
  *    さらに床面積40〜50㎡の「特例居住用家屋」は所得要件が1,000万円以下と厳しい。
  *    所得を入力されたときだけ判定し、未入力なら判定せず注意喚起する（黙って対象と決めつけない）。
  *
- * 5. **控除しきれない分は所得税額が上限。**（このコアは所得税額までは計算しない＝v1）
- *    年間控除額がその年の所得税額を上回ると、上回った分は翌年度の住民税から一定額まで引かれ、
- *    それでも余ると切り捨てられる（還付されない）。＝「借入残高 × 0.7％ が満額戻る」とは限らない。
- *    残高が大きい人ほどこの天井に当たる。ここは v1 では“注記”にとどめ、数字は出さない
- *    （住民税の繰越上限を一次情報で確かめてから計算に入れる。うろ覚えの数字を計算に混ぜない）。
+ * 5. **控除しきれない分は所得税額が上限。**（＝「借入残高 × 0.7％ が満額戻る」とは限らない）
+ *    年間控除額がその年の所得税額を上回ると、上回った分は翌年度の個人住民税から一定額まで引かれ、
+ *    それでも余ると切り捨てられる（還付されない）。残高が大きい人ほどこの天井に当たる。
+ *    → juminzeiKoujo() で計算する（総務省の一次情報で上限を確かめた）。
+ *      控除額(A) = 年間控除額（住宅ローン控除可能額）− 住宅ローン控除“適用前”の所得税額。
+ *      住民税の控除限度額(B) = min(課税総所得金額等 × 5％, 97,500円)。住民税控除 = min(A, B)、残りは切り捨て。
+ *      ★令和4〜令和7年入居はすべて 5％・97,500円（7％・136,500円は平成26〜令和3年の特定取得のみ＝本ツール範囲外）。
+ *      所得税額は源泉徴収票・確定申告で分かるので入力させる。未入力なら“上限概算”のまま（黙って満額戻ると言わない）。
  *
  * 6. **中古（既存住宅）は新築・買取再販と別レジーム（No.1211-3）。混ぜると桁で間違える。**
  *    ★新築と違い『その他の住宅』でも令和6・7年入居で0円にならない（一律2,000万・10年）。
@@ -93,6 +96,58 @@ export function resolveGendo(kubun, year, tokurei, keikaSochi, D, type) {
 }
 
 /**
+ * 所得税から引ききれなかった住宅ローン控除を、翌年度の個人住民税から控除する額を計算する。
+ * 一次ソース：総務省「所得税から住宅ローン控除額を引ききれなかった方」
+ *   個人住民税の住宅ローン控除額(A) ＝ 住宅ローン控除可能額 − 住宅ローン控除“適用前”の前年の所得税額。
+ *   ただし A が上限(B)＝「前年分の所得税の課税総所得金額等の5％（97,500円を限度）」を超えるときは B が控除額。
+ *   （率・上限は JSON の juminzei に持たせる。★令和4〜令和7年入居はすべて5％・97,500円）
+ *
+ * @param nenkanKoujo  その年の住宅ローン控除可能額（＝calc の nenkanKoujo。所得税＋住民税に配分される総枠）
+ * @param shotokuzei   住宅ローン控除“適用前”のその年分の所得税額（円）。源泉徴収票・確定申告で分かる
+ * @param kazeiSotoku  （任意）課税総所得金額等（円）。5％上限の判定に使う。未入力なら5％判定を省き上限97,500円で概算する
+ * @returns 所得税から控除された額・住民税から控除された額・切り捨て額・実際の軽減税額の内訳
+ */
+export function juminzeiKoujo(nenkanKoujo, shotokuzei, kazeiSotoku, D) {
+  if (!D || !D.juminzei) throw new Error('参照データ（jutaku_r07.json の juminzei）が渡されていません');
+  const J = D.juminzei;
+  const koujoKanou = yen(nenkanKoujo);   // その年の控除可能額（住宅ローン控除枠）
+  const zei = yen(shotokuzei);           // 適用前の所得税額
+
+  // 所得税から控除される額（所得税額を上限に食う）と、引ききれなかった額 A
+  const shotokuzeiKoujo = Math.min(koujoKanou, zei);
+  const hikikirenai = Math.max(0, koujoKanou - zei);   // A
+
+  // 住民税の控除限度額 B = min(課税総所得金額等 × 5％, 97,500円)。
+  // 課税総所得が未入力のときは 5％判定ができないので、上限（97,500円）で概算し capUnknown を立てる
+  //（実際は課税総所得×5％でさらに下がりうる＝黙って多めに言わない）。
+  const flatCap = J.gendo_cap_yen;
+  let capB = flatCap;
+  let capUnknown = false;
+  const kazei = kazeiSotoku != null && kazeiSotoku !== '' ? yen(kazeiSotoku) : null;
+  if (kazei != null) {
+    const pctCap = Math.floor(kazei * J.gendo_rate_permille / 1000); // 5％ = 50/1000
+    capB = Math.min(pctCap, flatCap);
+  } else {
+    capUnknown = true;
+  }
+
+  const juminzeiKoujoGaku = Math.min(hikikirenai, capB);        // 住民税から控除された額
+  const kirisute = Math.max(0, hikikirenai - juminzeiKoujoGaku); // 住民税上限も超えて消える分（還付されない）
+
+  return {
+    koujoKanou,               // その年の控除可能額
+    shotokuzeiGaku: zei,      // 適用前の所得税額
+    shotokuzeiKoujo,          // 所得税から控除された額
+    hikikirenai,              // 所得税で引ききれなかった額 A
+    juminzeiCapB: capB,       // 住民税の控除限度額 B
+    juminzeiCapUnknown: capUnknown, // 課税総所得未入力で 5％判定を省いたか（true なら実額はさらに下がりうる）
+    juminzeiKoujoGaku,        // 住民税から控除された額
+    kirisute,                 // 切り捨て（どちらの税からも引けず還付されない額）
+    jitsuGenzei: shotokuzeiKoujo + juminzeiKoujoGaku, // 実際に軽減された税額（＝実質の“戻り”）
+  };
+}
+
+/**
  * 入口。
  * input = {
  *   type,               // 'shinchiku'(新築・買取再販／既定) | 'chuko'(中古) | 'zokaichiku'(増改築)
@@ -103,7 +158,9 @@ export function resolveGendo(kubun, year, tokurei, keikaSochi, D, type) {
  *   kosodateTokurei,    // （任意・真偽）特例対象個人（子育て世帯・若者夫婦世帯）か
  *   keikaSochi,         // （任意・真偽）その他の住宅の経過措置に該当するか
  *   goukeiShotoku,      // （任意）その年の合計所得金額（円）。所得要件の判定に使う
- *   menseki             // （任意）床面積（㎡）。床面積・所得要件の判定に使う
+ *   menseki,            // （任意）床面積（㎡）。床面積・所得要件の判定に使う
+ *   shotokuzeiGaku,     // （任意）住宅ローン控除“適用前”の所得税額（円）。渡すと juminzeiKoujo で実還付額を出す
+ *   kazeiSotokugaku     // （任意）課税総所得金額等（円）。住民税の5％上限の判定に使う
  * }
  */
 export function calc(input, D) {
@@ -173,6 +230,13 @@ export function calc(input, D) {
   // 総控除額は「年間控除額 × 控除期間」の“上限概算”（残高が毎年減るぶん実際は少ない）
   const soKoujoGaisan = nenkanKoujo * g.kikan;
 
+  // 所得税額が渡されたときだけ、実際の軽減額（所得税から＋住民税から）を出す。
+  // 渡されなければ juminzei は null＝「上限概算のまま」（黙って満額戻ると言わない）。
+  const shotokuzeiGivenRaw = input.shotokuzeiGaku;
+  const juminzei = (eligible && shotokuzeiGivenRaw != null && shotokuzeiGivenRaw !== '')
+    ? juminzeiKoujo(nenkanKoujo, shotokuzeiGivenRaw, input.kazeiSotokugaku, D)
+    : null;
+
   return {
     ...base,
     eligible,
@@ -185,6 +249,7 @@ export function calc(input, D) {
     koujoTaisho,
     nenkanKoujo,
     soKoujoGaisan,
+    juminzei,                 // 所得税額を渡したときだけ非null＝実還付額の内訳（所得税から/住民税から/切り捨て）
     koujoRitsuPct: koujoRitsuPermille / 10, // 表示用（0.7）
     // 状態フラグ（ページが文言・警告を出すのに使う）
     isChuko,                  // 中古（既存住宅）か（ページが中古専用の注意書きを出すのに使う）
