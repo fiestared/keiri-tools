@@ -31,6 +31,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "furusato-nozei-keisan",      // ふるさと納税 計算 85,023/月（ふるさと納税 シミュレーション 57,105 も同記事で受ける）
   "nenmatsu-chosei-kakikata",   // 年末調整 書き方 57,105/月
   "kogaku-ryoyohi",             // 高額療養費制度 38,281/月（限度額適用認定証 31,302 も同記事で受ける）
   "ikuji-kyugyo-kyufukin",      // 育児休業給付金 31,302/月
@@ -104,9 +105,10 @@ const CATEGORIES = [
   },
   {
     id: "nenmatsu-gensen",
-    name: "年末調整・源泉徴収",
-    desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、各種控除と法定調書。",
+    name: "年末調整・源泉徴収・控除",
+    desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、医療費控除・ふるさと納税など各種控除と確定申告。",
     slugs: [
+      "furusato-nozei-keisan",
       "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin",
       "fuyo-kojo-shinkokusho", "gensen-choshuhyo-mikata", "gensen-zeigakuhyo-mikata",
       "hoteichosho-goukeihyo", "shakai-hokenryo-kojo", "iryohi-kojo-ikura-kara",
