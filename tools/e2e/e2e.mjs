@@ -408,10 +408,19 @@ const SCENES = [
   //   特例フラグの渡し忘れで上乗せが消えると31.5万円になってここで落ちる。
   { name: "jutaku_tokurei", expect: (s) =>
       s.nenkan === 350000 && s.showsTokurei && !s.failed },
-  // ★中古(既存住宅)は借入限度額・控除期間が違う → 黙って答えず「扱えない」と言うこと(fail closed)。
-  //   この regime の数字で中古を計算すると過大になる。
+  // ★中古(既存住宅・No.1211-3)は新築と別レジーム。認定住宅等・令和6年・残高4,500万 →
+  //   借入限度3,000万 × 0.7% = **21万円/年**、控除期間**10年**、総額概算 21万×10 = **210万円**。
+  //   ページが type を渡し忘れて新築で計算すると 31.5万/13年 に化けてここで落ちる。
   { name: "jutaku_chuko", expect: (s) =>
-      s.showsChuko && s.nenkan === null && !s.failed },
+      s.nenkan === 210000 && s.kikan === 10 && s.soKoujo === 2100000 &&
+      s.showsChuko && !s.failed },
+  // ★★中古の主役の事実: 「その他の住宅」でも0円にならない(新築との決定的な違い)。
+  //   中古・その他・令和6年・残高3,000万 → 借入限度2,000万 × 0.7% = **14万円/年**、10年。**0円ではない**。
+  { name: "jutaku_chuko_sonota", expect: (s) =>
+      s.nenkan === 140000 && s.kikan === 10 && !s.zero && s.showsChuko && !s.failed },
+  // ★増改築(No.1211-4)は計算方法がまるごと違う → 黙って答えず「この計算機では計算できません」と断る
+  { name: "jutaku_zokaichiku", expect: (s) =>
+      s.showsCannotCompute && s.nenkan === null && !s.failed },
   // 参照データが配信できないときは、控除額を出さずに断る(fail closed)。
   // ★黙って答えると、戻らない金額を「戻る」と信じて資金計画を誤らせる
   { name: "jutaku_nodata", data404: "jutaku_r07.json",

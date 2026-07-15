@@ -85,10 +85,11 @@ const MUTATIONS = [
     apply: (s) => s.replace(/^      kosodateTokurei: \$\("tokurei"\)\.checked,\n/m, "      kosodateTokurei: false,\n"),
   },
   {
-    // ★中古（借入限度額・控除期間が違う）に新築の数字を当ててしまう＝過大表示。
-    //   type を新築で焼き込むと、中古のはずが借入限度額どおりの控除額を出してしまう。
-    name: "★ページが取得のしかた（type）を渡し忘れる（中古に新築の数字を当てる）",
-    scene: "jutaku_chuko",
+    // ★★中古の「その他の住宅」は令和6・7年入居でも**14万円**（新築と違い0円にならない）。
+    //   type を新築で焼き込むと、中古のはずが新築その他令和6年＝**0円**に化ける
+    //   ＝中古を買った人に「1円も戻りません」と嘘をつく（このツール導入でいちばん防ぎたい誤答）。
+    name: "★★ページが取得のしかた（type）を渡し忘れる（中古その他の14万円が新築扱いで0円に化ける）",
+    scene: "jutaku_chuko_sonota",
     file: PAGE,
     src: () => pageOrig,
     apply: (s) => s.replace(/^      type,\n/m, '      type: "shinchiku",\n'),

@@ -1369,8 +1369,10 @@ const jutakuScene = (inp) => async () => {
     showsKeikaApplied: /「その他の住宅」の経過措置を適用しました/.test(body),
     // ★子育て世帯等の上乗せを適用したことを名乗る
     showsTokurei: /子育て世帯・若者夫婦世帯（特例対象個人）の上乗せを適用/.test(body),
-    // ★中古・増改築は黙って答えない（fail closed）
-    showsChuko: /中古|既存住宅/.test(body),
+    // ★中古（既存住宅）として計算したことを名乗る（新築と別レジーム）
+    showsChuko: /中古（既存住宅）として計算しています|中古（既存住宅）・/.test(body),
+    // ★増改築・想定外の取得のしかたは黙って答えない（fail closed）＝「この計算機では計算できません」
+    showsCannotCompute: /この計算機では計算できません/.test(body),
     // ★総控除額は「上限のめやす」であって満額戻る額ではないことを画面が言う
     showsGaisan: /上限のめやす/.test(body),
     failed: /読み込めませんでした/.test(body),
@@ -1387,8 +1389,15 @@ SCENES.jutaku_sonota_r6 = jutakuScene({ kubun: "sonota", year: 2024, zandaka: 30
 SCENES.jutaku_keika = jutakuScene({ kubun: "sonota", year: 2024, zandaka: 30000000, keika: true });
 // ★★子育て世帯・若者夫婦世帯の上乗せ（令和6年入居のみ）。認定4,500万→5,000万 → 35万円/年
 SCENES.jutaku_tokurei = jutakuScene({ kubun: "nintei", year: 2024, zandaka: 60000000, tokurei: true });
-// ★中古（既存住宅）は借入限度額・控除期間が違う → 黙って答えず、この計算機では扱えないと言うこと
+// ★中古（既存住宅・No.1211-3）は新築と別レジーム。認定住宅等の借入限度額3,000万・控除期間10年。
+//   認定・令和6年・年末残高4,500万 → min(4,500万, 3,000万)=3,000万 × 0.7% = 21万円/年、10年（新築なら31.5万/13年）。
+//   ページが type を渡し忘れて新築で計算すると21万→31.5万・10年→13年に化けてここで落ちる。
 SCENES.jutaku_chuko = jutakuScene({ type: "chuko", kubun: "nintei", year: 2024, zandaka: 45000000 });
+// ★★中古の主役の事実: 「その他の住宅」でも令和6・7年入居で0円にならない（新築との決定的な違い）。
+//   中古・その他・令和6年・年末残高3,000万 → 借入限度2,000万 × 0.7% = 14万円/年、10年（新築なら0円）。
+SCENES.jutaku_chuko_sonota = jutakuScene({ type: "chuko", kubun: "sonota", year: 2024, zandaka: 30000000 });
+// ★増改築（No.1211-4）は計算方法がまるごと違う → 黙って答えず「この計算機では計算できません」と言うこと
+SCENES.jutaku_zokaichiku = jutakuScene({ type: "zokaichiku", kubun: "shoene", year: 2024, zandaka: 45000000 });
 // 参照データを配信できないとき → 控除額を出さずに断る（fail closed）。戻らない額を「戻る」と信じさせない
 SCENES.jutaku_nodata = jutakuScene({ kubun: "nintei", year: 2024, zandaka: 45000000 });
 

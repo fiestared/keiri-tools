@@ -36,8 +36,12 @@
  *    残高が大きい人ほどこの天井に当たる。ここは v1 では“注記”にとどめ、数字は出さない
  *    （住民税の繰越上限を一次情報で確かめてから計算に入れる。うろ覚えの数字を計算に混ぜない）。
  *
- * 6. **このツールは新築・買取再販だけ。既存住宅（中古）・増改築は借入限度額も控除期間も違う。**
- *    中古/増改築の入居には beyondData を立てて「黙って答えない」（fail closed）。
+ * 6. **中古（既存住宅）は新築・買取再販と別レジーム（No.1211-3）。混ぜると桁で間違える。**
+ *    ★新築と違い『その他の住宅』でも令和6・7年入居で0円にならない（一律2,000万・10年）。
+ *    控除期間は一律10年（新築13年より短い）。子育て特例の上乗せは無い。床面積は50㎡以上
+ *    （新築の40〜50㎡の特例＝小規模居住用家屋は中古に無い）。借入限度額は認定住宅等（認定・ZEH・
+ *    省エネをまとめて）3,000万・その他2,000万。→ 中古は D.chuko を使い、type='chuko' で分岐する。
+ *    ★増改築等（No.1211-4）は計算方法がまるごと違う → beyondData を立てて「黙って答えない」（fail closed）。
  */
 
 /** 円に丸める（0未満・未入力・数値でないものは0）。undefined を素通しすると結果が NaN になり画面が全損する。 */
@@ -50,7 +54,20 @@ const yen = (n) => {
  * 住宅区分・入居年・特例対象個人・経過措置から、借入限度額（万円）・控除期間（年）を引く。
  * 収録範囲外（不明な区分・入居年）は null を返す（＝呼び出し側で beyondData にする）。
  */
-export function resolveGendo(kubun, year, tokurei, keikaSochi, D) {
+export function resolveGendo(kubun, year, tokurei, keikaSochi, D, type) {
+  type = type || 'shinchiku';
+
+  // 中古（既存住宅・No.1211-3）… 令和4〜令和7年入居で一律。区分は認定住宅等（認定/ZEH/省エネ）3,000万・
+  // その他2,000万、控除期間はどちらも10年。★子育て特例の上乗せも経過措置も無い（新築と違う）ので
+  // tokurei・keikaSochi は素通しにする（フラグが立っていても無視）。
+  if (type === 'chuko') {
+    const C = D.chuko;
+    if (!C || !C.years_valid.includes(String(year))) return null;
+    const K = C.kubun[kubun];
+    if (!K) return null;
+    return { gendoMan: K.gendo_man, kikan: K.kikan, keika: false, tokureiApplied: false, zero: false };
+  }
+
   const K = D.kubun[kubun];
   if (!K) return null;
   const y = K.years[String(year)];
@@ -94,32 +111,40 @@ export function calc(input, D) {
   const type = input.type || 'shinchiku';
   const base = { type, eligible: true, beyondData: false, warnings: [], year: input.year };
 
-  // 中古・増改築は借入限度額も控除期間も違う（この regime で計算すると過大になる）→ 黙って答えない
-  if (type !== 'shinchiku') {
+  // 増改築等（No.1211-4）は計算方法がまるごと違う → 黙って答えない（fail closed）。
+  // 想定外の type も同様に beyondData（新築の数字を誤って当てない）。中古（chuko）は下で計算する。
+  if (type !== 'shinchiku' && type !== 'chuko') {
     return {
       ...base, beyondData: true, eligible: false,
-      reason: type === 'chuko'
-        ? '既存住宅（中古）の取得は借入限度額・控除期間が異なります（認定住宅等3,000万円・その他2,000万円・控除期間10年）。このツール（新築・買取再販）では扱えません。'
-        : '増改築等は別の計算方法です。このツール（新築・買取再販）では扱えません。',
+      reason: type === 'zokaichiku'
+        ? '増改築等は借入限度額も控除額の計算方法も異なります（国税庁 No.1211-4）。このツール（新築・買取再販・中古）では扱えません。'
+        : 'この取得のしかたには対応していません。',
     };
   }
 
+  const isChuko = type === 'chuko';
   const yearNum = Math.floor(Number(input.year));
-  const g = resolveGendo(input.kubun, yearNum, !!input.kosodateTokurei, !!input.keikaSochi, D);
+  const g = resolveGendo(input.kubun, yearNum, !!input.kosodateTokurei, !!input.keikaSochi, D, type);
   if (!g) {
     return {
       ...base, beyondData: true, eligible: false,
-      reason: `入居年（${input.year}）または住宅区分が、このツールの収録範囲（令和4〜令和7年に新築・買取再販へ入居）の外です。`,
+      reason: isChuko
+        ? `入居年（${input.year}）または住宅区分が、中古（既存住宅）の収録範囲（令和4〜令和7年入居）の外です。`
+        : `入居年（${input.year}）または住宅区分が、このツールの収録範囲（令和4〜令和7年に新築・買取再販へ入居）の外です。`,
     };
   }
 
   // ── 所得要件・床面積要件（入力があるときだけ判定。無ければ判定せず注意喚起する）──
+  // ★中古は床面積50㎡以上が要件（新築の40〜50㎡＝小規模居住用家屋の特例は中古に無い）。
+  //   新築は floor=40（40〜50㎡は小規模）／中古は floor=full=50（40〜50㎡でも対象外）。
   const Y = D.shotoku_yoken;
+  const mensekiFloor = isChuko ? D.chuko.menseki_min : Y.shokibo_menseki_min; // 中古50・新築40
+  const mensekiFull = isChuko ? D.chuko.menseki_min : Y.menseki_min;          // どちらも50
   const menseki = input.menseki != null && input.menseki !== '' ? Number(input.menseki) : null;
-  let mensekiStatus = 'unknown'; // 'unknown' | 'ok'(50㎡以上) | 'shokibo'(40〜50㎡未満) | 'too_small'(40㎡未満)
+  let mensekiStatus = 'unknown'; // 'unknown' | 'ok' | 'shokibo'(新築のみ40〜50㎡未満) | 'too_small'
   if (menseki != null && Number.isFinite(menseki)) {
-    if (menseki < Y.shokibo_menseki_min) mensekiStatus = 'too_small';
-    else if (menseki < Y.menseki_min) mensekiStatus = 'shokibo';
+    if (menseki < mensekiFloor) mensekiStatus = 'too_small';
+    else if (menseki < mensekiFull) mensekiStatus = 'shokibo'; // 中古は floor==full なので立たない
     else mensekiStatus = 'ok';
   }
   const shotokuLimit = mensekiStatus === 'shokibo' ? Y.shokibo_goukei_shotoku_limit : Y.goukei_shotoku_limit;
@@ -162,10 +187,12 @@ export function calc(input, D) {
     soKoujoGaisan,
     koujoRitsuPct: koujoRitsuPermille / 10, // 表示用（0.7）
     // 状態フラグ（ページが文言・警告を出すのに使う）
+    isChuko,                  // 中古（既存住宅）か（ページが中古専用の注意書きを出すのに使う）
     tokureiApplied: g.tokureiApplied,
     keikaApplied: g.keika,
     sonotaZero: g.zero,
     mensekiStatus,
+    mensekiFloor,             // 対象外になる床面積の下限（新築40／中古50）＝画面のしきい値表示に使う
     incomeOver,
     shotokuLimit,
     goukeiShotokuGiven: goukeiShotoku,

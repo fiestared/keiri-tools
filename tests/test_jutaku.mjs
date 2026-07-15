@@ -127,20 +127,81 @@ eq(calc({ kubun: "sonota", year: 2022, nenmatsuZandaka: BIG }, D).nenkanKoujo, 2
     "★借入5,000万でも35万円（1％なら50万になる＝過大表示のバグ）");
 }
 
-// ===== 6. 中古・増改築・収録範囲外は「黙って答えない」（fail closed）=====
+// ===== 6. 中古（既存住宅・No.1211-3）— 新築と別レジーム。外部オラクル＝公表控除限度額21万/14万 =====
+// ★No.1211-3 が公表する控除限度額：認定住宅等（認定/ZEH/省エネ）21万円・その他14万円、控除期間は一律10年。
+//   JSON には借入限度額（3,000万/2,000万）だけを持たせ、0.7％を掛けてこの2値を再現する。
 {
   const r = calc({ type: "chuko", kubun: "nintei", year: 2024, nenmatsuZandaka: BIG }, D);
-  eq(r.beyondData, true, "★中古はbeyondData（この regime の数字で答えない）");
-  eq(r.eligible, false, "中古は対象外扱い");
-  ok(r.nenkanKoujo === undefined, "中古は控除額を計算しない");
-  ok(/中古|既存/.test(r.reason), "理由に中古/既存が入る");
+  eq(r.beyondData, false, "★中古は計算する（beyondDataにしない）");
+  eq(r.eligible, true, "中古・認定住宅等は対象");
+  eq(r.nenkanKoujo, 210000, "★中古・認定住宅等：控除限度額21万円（借入3,000万×0.7％）");
+  eq(r.kikan, 10, "★中古の控除期間は一律10年（新築13年より短い）");
+  eq(r.shakunyuGendoEn, 30000000, "中古・認定住宅等の借入限度額3,000万円");
+  eq(r.soKoujoGaisan, 2100000, "総控除額の上限概算＝21万×10年＝210万円");
+  eq(r.isChuko, true, "isChukoフラグが立つ");
 }
+// ZEH・省エネも中古では「認定住宅等」に一本化＝どれも3,000万・21万円
+eq(calc({ type: "chuko", kubun: "zeh", year: 2025, nenmatsuZandaka: BIG }, D).nenkanKoujo, 210000,
+  "★中古・ZEHも認定住宅等＝21万円（新築のように区分ごとに分かれない）");
+eq(calc({ type: "chuko", kubun: "shoene", year: 2022, nenmatsuZandaka: BIG }, D).nenkanKoujo, 210000,
+  "★中古・省エネも認定住宅等＝21万円");
+// ★★中古の「その他の住宅」は令和6・7年入居でも0円にならない（新築との決定的な違い）
+{
+  const r6 = calc({ type: "chuko", kubun: "sonota", year: 2024, nenmatsuZandaka: BIG }, D);
+  eq(r6.nenkanKoujo, 140000, "★★中古・その他・令和6年：14万円（新築と違い0円にならない！）");
+  eq(r6.sonotaZero, false, "中古のその他は sonotaZero が立たない");
+  eq(r6.eligible, true, "中古・その他・令和6年は対象");
+  eq(r6.kikan, 10, "中古・その他も控除期間10年");
+  eq(r6.shakunyuGendoEn, 20000000, "中古・その他の借入限度額2,000万円");
+}
+eq(calc({ type: "chuko", kubun: "sonota", year: 2022, nenmatsuZandaka: BIG }, D).nenkanKoujo, 140000,
+  "中古・その他・令和4年も14万円（令和4〜7年で一律）");
+// 年末残高が限度額未満なら残高で決まる（中古も同じ）
+eq(calc({ type: "chuko", kubun: "nintei", year: 2024, nenmatsuZandaka: 20000000 }, D).nenkanKoujo, 140000,
+  "中古・認定・年末残高2,000万→14万円（借入限度3,000万に届かない）");
+// ★中古には子育て特例の上乗せが無い（フラグを立てても素通し）
+{
+  const r = calc({ type: "chuko", kubun: "nintei", year: 2024, nenmatsuZandaka: BIG, kosodateTokurei: true }, D);
+  eq(r.tokureiApplied, false, "★中古に子育て特例の上乗せは無い（フラグ素通し）");
+  eq(r.nenkanKoujo, 210000, "上乗せされず21万円のまま（新築なら35万円に上がるが中古は上がらない）");
+}
+// ★中古には経過措置が無い（そもそも0円にならないので不要。フラグ素通し）
+eq(calc({ type: "chuko", kubun: "sonota", year: 2024, nenmatsuZandaka: BIG, keikaSochi: true }, D).keikaApplied, false,
+  "★中古に経過措置の概念は無い（フラグ素通し）");
+// ★中古の床面積要件は50㎡以上（新築の40〜50㎡＝小規模居住用家屋の特例は中古に無い）
+{
+  const r = calc({ type: "chuko", kubun: "nintei", year: 2024, nenmatsuZandaka: BIG, menseki: 45 }, D);
+  eq(r.mensekiStatus, "too_small", "★中古・45㎡は対象外（新築なら小規模で対象になるが中古は50㎡未満で不可）");
+  eq(r.eligible, false, "中古・45㎡は控除を受けられない");
+  eq(r.mensekiFloor, 50, "中古の床面積の下限は50㎡");
+}
+{
+  const r = calc({ type: "chuko", kubun: "shoene", year: 2024, nenmatsuZandaka: BIG, menseki: 55, goukeiShotoku: 18000000 }, D);
+  eq(r.mensekiStatus, "ok", "中古・55㎡は要件を満たす");
+  eq(r.shotokuLimit, 20000000, "中古の所得要件は2,000万円（小規模の1,000万円枠は無い）");
+  eq(r.eligible, true, "中古・55㎡・所得1,800万は対象");
+}
+eq(calc({ type: "chuko", kubun: "nintei", year: 2024, nenmatsuZandaka: BIG, goukeiShotoku: 25000000 }, D).eligible, false,
+  "中古・合計所得2,000万円超は対象外");
+// 中古の収録外の入居年・区分は beyondData
+eq(calc({ type: "chuko", kubun: "nintei", year: 2021, nenmatsuZandaka: BIG }, D).beyondData, true,
+  "★中古・令和3年入居は収録外");
+eq(calc({ type: "chuko", kubun: "nintei", year: 2026, nenmatsuZandaka: BIG }, D).beyondData, true,
+  "★中古・令和8年入居は収録外（税制改正で未確定）");
+eq(calc({ type: "chuko", kubun: "unknown", year: 2024, nenmatsuZandaka: BIG }, D).beyondData, true,
+  "中古・不明な区分は beyondData");
+
+// ===== 6b. 増改築・想定外typeは「黙って答えない」（fail closed）=====
 {
   const r = calc({ type: "zokaichiku", kubun: "shoene", year: 2024, nenmatsuZandaka: BIG }, D);
-  eq(r.beyondData, true, "★増改築はbeyondData");
+  eq(r.beyondData, true, "★増改築はbeyondData（No.1211-4＝別の計算方法）");
+  ok(r.nenkanKoujo === undefined, "増改築は控除額を計算しない");
+  ok(/増改築/.test(r.reason), "理由に増改築が入る");
 }
+eq(calc({ type: "foobar", kubun: "nintei", year: 2024, nenmatsuZandaka: BIG }, D).beyondData, true,
+  "★想定外のtypeは beyondData（新築の数字を誤って当てない）");
 {
-  // 収録外の入居年（令和3年＝2021、令和8年＝2026）
+  // 収録外の入居年（令和3年＝2021、令和8年＝2026）— 新築
   eq(calc({ kubun: "nintei", year: 2021, nenmatsuZandaka: BIG }, D).beyondData, true,
     "★令和3年入居は収録外（別の表・控除率1％）");
   eq(calc({ kubun: "nintei", year: 2026, nenmatsuZandaka: BIG }, D).beyondData, true,
@@ -160,6 +221,12 @@ eq(resolveGendo("sonota", 2024, false, false, D).zero, true, "その他・令和
 eq(resolveGendo("sonota", 2024, false, true, D).gendoMan, 2000, "その他・令和6年＋経過措置は2,000万");
 eq(resolveGendo("nintei", 2020, false, false, D), null, "収録外の年は null");
 eq(resolveGendo("unknown", 2024, false, false, D), null, "不明な区分は null");
+// 中古（type='chuko'）… 認定住宅等3,000万・その他2,000万、控除期間10年、特例・経過措置は素通し
+eq(resolveGendo("nintei", 2024, false, false, D, "chuko").gendoMan, 3000, "中古・認定住宅等は3,000万");
+eq(resolveGendo("nintei", 2024, false, false, D, "chuko").kikan, 10, "中古の控除期間は10年");
+eq(resolveGendo("sonota", 2024, false, false, D, "chuko").gendoMan, 2000, "中古・その他は2,000万（0円にならない）");
+eq(resolveGendo("nintei", 2024, true, true, D, "chuko").tokureiApplied, false, "中古は子育て特例が素通し");
+eq(resolveGendo("nintei", 2021, false, false, D, "chuko"), null, "中古・収録外の年は null");
 
 // ===== 9. fail closed：参照データを渡さないと例外 =====
 assert.throws(() => calc({ kubun: "nintei", year: 2024, nenmatsuZandaka: BIG }, undefined),
