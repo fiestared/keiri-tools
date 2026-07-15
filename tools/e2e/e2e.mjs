@@ -242,6 +242,26 @@ const SCENES = [
   { name: "juminzei_nodata", data404: "juminzei_r08.json",
     expect: (s) => s.failed && s.total === null },
 
+  // ── 手取り (/tedori/) ─────────────────────────────────────────────────
+  // ★このツールは3つの検証済みコアの**合成**。E2Eは合成とページ配線が正しいかを見る。
+  //   期待値(s.expected*)はハーネス側で社保=公式額表・所得税=月額表を**独立に**引いて組む。
+  //   東京都・額面30万・30歳・扶養0・住民税(月)10,000 → 44,070 + 6,320 + 10,000 → 手取り**239,610**。
+  { name: "tedori", expect: (s) =>
+      s.tedori === s.expectedTedori && s.tedori === 239610 &&
+      s.expectedShaho === 44070 && s.expectedTax === 6320 && s.showsYear && !s.failed },
+  { name: "tedori_slow", slow: true, expect: (s) =>
+      s.tedori === s.expectedTedori && s.tedori === 239610 && !s.failed },
+  // 料率・税額表を配信できない → 手取りを出さず断る(fail closed)。黙って住民税だけ引いた額を信じさせない
+  { name: "tedori_nodata", data404: "shaho_rates_r08.json",
+    expect: (s) => s.failed && s.tedori === null },
+  // ★住民税を除くと記事の早見表と同じ値(額面30万 → 249,610円)。同じコアの別の顔なので一致するのが正しい
+  { name: "tedori_none", expect: (s) =>
+      s.tedori === s.expectedTedori && s.tedori === 249610 && s.expectedJumin === 0 && !s.failed },
+  // ★概算(前年ベース)。住民税 年150,600 → 月12,550 → 手取り237,060。住民税の配線が狂えば落ちる
+  { name: "tedori_estimate", expect: (s) =>
+      s.tedori === s.expectedTedori && s.tedori === 237060 &&
+      s.juminMonthly === s.expectedJumin && s.juminMonthly === 12550 && !s.failed },
+
   // ── 傷病手当金 ────────────────────────────────────────────────────────
   // ★期待値は**保険者が実額で公表している計算例**(コアを一切通さない。詳細は harness.html)。
   //   協会けんぽ: 標準報酬16万×6 + 18万×6 → 平均17万 → ÷30=5,670 → ×2/3 = **3,780円/日**。

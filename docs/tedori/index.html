@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>手取り計算機｜額面月給から手取りを自動計算【2026年度・社会保険料＋所得税＋住民税】</title>
+<meta name="description" content="額面の月給を入れるだけで、健康保険・厚生年金・雇用保険・子ども子育て支援金の社会保険料、給与の源泉所得税、住民税を差し引いた手取りを自動計算。令和8年度（2026年度）の都道府県別料率・国税庁の月額表で計算します。住民税は前年の所得で決まるため、概算・給与明細の実額入力・含めないを選べます。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/tedori/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "手取り計算機",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+      "description": "額面月給から、社会保険料（健康保険・厚生年金・雇用保険・子ども子育て支援金）・給与の源泉所得税・住民税を差し引いた手取りを計算します。2026年度の都道府県別料率と国税庁の月額表に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://keiri-tools.com/" },
+        { "@type": "ListItem", "position": 2, "name": "手取り計算機" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "手取りは額面の何割ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "住民税を除くとおおむね8割です。東京都・30歳・扶養なしなら、額面30万円で手取り249,610円（83.2%）になります。額面から引かれるのは、健康保険・厚生年金・雇用保険・子ども子育て支援金という社会保険料と、給与の源泉所得税、そして住民税です。住民税まで引かれると、これより月1〜2万円ほど少なくなります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "住民税は今の給料から計算できますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "できません。地方税法32条1項は住民税の所得割の課税標準を「前年の所得」と定めています。だから今の月給ではなく、去年の所得で住民税が決まり、321条の5第1項により6月から翌年5月まで毎月天引きされます。新卒1年目は前年に所得がないため住民税は引かれず、2年目の6月から引かれ始めます。この計算機では、住民税を「概算する（この年収が前年も続いたと仮定）」「給与明細の額を入力」「含めない」から選べます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "額面が少し増えたのに手取りが減ることはありますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "あります。社会保険料は標準報酬月額という等級表の階段で決まるため、境目をまたぐと保険料が一段上がります。東京都・30歳・扶養なしの場合、報酬月額309,999円は健康保険の第22級（標準報酬月額300,000円）ですが、310,000円だと第23級（320,000円）に上がり、社会保険料が2,838円増えます。所得税は源泉徴収税額表の同じ行に収まって変わらないため、手取りは2,837円減ります（年34,044円）。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 手取り計算機</nav>
+
+<section class="hero">
+  <h1>手取り計算機</h1>
+  <p>額面の月給を入れるだけで、<b>社会保険料</b>（健康保険・厚生年金・雇用保険・子ども子育て支援金）・<b>給与の源泉所得税</b>・<b>住民税</b>を差し引いた<b>手取り</b>を自動計算します。<b>2026年度の都道府県別料率</b>と国税庁の月額表に対応。</p>
+</section>
+
+<div class="card">
+  <div class="fee-pair">
+    <div>
+      <label for="pref">勤務先の都道府県</label>
+      <select id="pref"></select>
+    </div>
+    <div>
+      <label for="age">年齢</label>
+      <input type="number" id="age" value="30" min="15" max="74" inputmode="numeric">
+    </div>
+  </div>
+
+  <label for="gross">額面の月給（円）<span class="hint">　基本給＋残業手当＋通勤手当など、税引き前の総支給額</span></label>
+  <input type="number" id="gross" placeholder="例: 300000" inputmode="numeric">
+
+  <label for="dependents">扶養親族等の数<span class="hint">　源泉控除対象になる配偶者と扶養親族の合計（16歳以上）。いなければ0</span></label>
+  <input type="number" id="dependents" value="0" min="0" max="20" inputmode="numeric">
+
+  <label for="gyoshu">業種<span class="hint">　雇用保険料率だけが業種で変わります（健康保険・厚生年金は変わりません）</span></label>
+  <select id="gyoshu"></select>
+
+  <fieldset style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:14px">
+    <legend style="font-weight:700;font-size:14px;padding:0 6px">住民税の扱い</legend>
+    <label style="font-weight:400;display:block;margin:2px 0"><input type="radio" name="jmode" value="estimate" checked> 概算する（この年収が<b>前年も続いた</b>と仮定した目安）</label>
+    <label style="font-weight:400;display:block;margin:2px 0"><input type="radio" name="jmode" value="manual"> 給与明細の住民税額（月額）を入力する</label>
+    <label style="font-weight:400;display:block;margin:2px 0"><input type="radio" name="jmode" value="none"> 含めない（新卒1年目など、前年に所得がない人）</label>
+    <div id="manual-wrap" style="display:none;margin-top:6px">
+      <label for="jmanual">住民税（月額・円）<span class="hint">　給与明細か住民税決定通知書の月額</span></label>
+      <input type="number" id="jmanual" placeholder="例: 12000" inputmode="numeric">
+    </div>
+  </fieldset>
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>使い方と注意点</h2>
+  <div class="callout">
+    <b>住民税は「去年の給料」にかかります</b>
+    住民税は今の月給ではなく<b>前年の所得</b>で決まり（地方税法32条1項）、<b>6月から翌年5月まで</b>毎月天引きされます（321条の5第1項）。だから<b>今の額面からは住民税は出せません</b>。新卒1年目は前年に所得がないため引かれず、<b>2年目の6月から</b>引かれ始めて手取りが急に減ります。この計算機の「概算」は、<b>この年収が前年も続いたと仮定した2年目以降の目安</b>です。正確な額は給与明細の住民税額を入力してください。
+  </div>
+  <h3>額面の月給に含めるもの</h3>
+  <p>基本給のほか、残業手当・通勤手当・住宅手当・役職手当など、<b>労働の対償として支給されるものはすべて含みます</b>（通勤手当も含む点に注意）。社会保険料の等級（標準報酬月額）は、この総支給額をもとに決まります。</p>
+  <h3>この計算機の前提</h3>
+  <p>健康保険は協会けんぽ（全国健康保険協会）の都道府県別料率、厚生年金18.3%（全国一律）、雇用保険は選んだ業種の料率で計算します。<b>健康保険組合に加入している場合は料率が異なります</b>。所得税は国税庁の<b>給与所得の源泉徴収税額表（月額表・甲欄）</b>で計算した源泉徴収額です（年末調整で精算されます）。<b>賞与は含みません</b>（月給のみ）。住民税の概算は、扶養親族をすべて一般扶養（16歳以上）として計算しています。</p>
+  <div class="note">
+    本ツールの計算結果は目安です。標準報酬月額は本来、定時決定・随時改定で決まるため、入社直後や大きな給与変動の直後は実際とずれることがあります。正確な控除額は給与明細・源泉徴収票・住民税決定通知書でご確認ください。
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>手取りは額面の何割ですか？</h3>
+  <p>住民税を除くとおおむね8割です。東京都・30歳・扶養なしなら、額面30万円で手取り<b>249,610円（83.2%）</b>になります。額面から引かれるのは、健康保険・厚生年金・雇用保険・子ども子育て支援金という<b>社会保険料</b>と、給与の<b>源泉所得税</b>、そして<b>住民税</b>です。住民税まで引かれると、これより月1〜2万円ほど少なくなります。</p>
+  <h3>住民税は今の給料から計算できますか？</h3>
+  <p>できません。<b>地方税法32条1項は住民税の所得割の課税標準を「前年の所得」と定めています</b>。だから今の月給ではなく、去年の所得で住民税が決まり、321条の5第1項により6月から翌年5月まで毎月天引きされます。<b>新卒1年目は前年に所得がないため住民税は引かれず、2年目の6月から</b>引かれ始めます。この計算機では、住民税を「概算する（この年収が前年も続いたと仮定）」「給与明細の額を入力」「含めない」から選べます。</p>
+  <h3>額面が少し増えたのに手取りが減ることはありますか？</h3>
+  <p>あります。社会保険料は<b>標準報酬月額という等級表の階段</b>で決まるため、境目をまたぐと保険料が一段上がります。東京都・30歳・扶養なしの場合、報酬月額309,999円は健康保険の第22級（標準報酬月額300,000円）ですが、310,000円だと第23級（320,000円）に上がり、社会保険料が2,838円増えます。所得税は源泉徴収税額表の同じ行に収まって変わらないため、<b>手取りは2,837円減ります</b>（年34,044円）。くわしくは<a href="../column/tedori-keisan/">手取りの計算方法</a>で解説しています。</p>
+</section>
+</main>
+<footer class="site" style="display:block">
+  料率・税額表の出典: 全国健康保険協会「都道府県毎の保険料率」<span id="src-note"></span>／厚生年金保険料率18.3%（日本年金機構）／雇用保険料率（厚生労働省）／国税庁「給与所得の源泉徴収税額表（月額表）」<span id="src-gensen"></span>／住民税は地方税法（所得割10%・均等割・森林環境税）。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcTedori } from "../assets/tedori_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+let SHAHO = null, GENSEN = null, JUMIN = null;
+
+// 参照データは非同期で届く。**届く前に計算ボタンを押されても待つ**(実ユーザーと同じ経路)。
+// この catch が拾ってよいのは「データが手に入らなかった」ことだけ(飾りの描画は別に処理する)。
+const shahoReady = fetch("../assets/shaho_rates_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { SHAHO = d; fillPrefs(d); fillGyoshu(d); return true; })
+  .catch(() => false);
+const gensenReady = fetch("../assets/gensen_getsugaku_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { GENSEN = d; return true; })
+  .catch(() => false);
+// 住民税データは「概算」モードのときだけ答えに要る。none/manual では無くても計算できる。
+const juminReady = fetch("../assets/juminzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { JUMIN = d; return true; })
+  .catch(() => false);
+
+// 出典表示は飾り。ここで転んでも計算は止めない(Ready には影響させない)
+Promise.all([shahoReady, gensenReady]).then(() => showSource()).catch(() => {});
+
+function fillPrefs(d) {
+  const sel = $("pref");
+  for (const p of Object.keys(d.kenko_rates)) {
+    const o = document.createElement("option");
+    o.value = p; o.textContent = `${p}（${d.kenko_rates[p].toFixed(2)}%）`;
+    if (p === "東京都") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+function fillGyoshu(d) {
+  const sel = $("gyoshu");
+  for (const [key, t] of Object.entries(d.koyou.types)) {
+    const o = document.createElement("option");
+    o.value = key; o.textContent = `${t.label}（本人 ${t.worker_permille}/1,000）`;
+    if (key === "general") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+// 年度・年分は**データが持っている値**を出す(ページに「令和8年度」と手書きしない)。
+function showSource() {
+  const from = ((SHAHO?._meta?.rate_applies_from) || "").replace("-", "年");
+  const parts = [SHAHO?._meta?.year, from && `${from}月分から適用`].filter(Boolean);
+  $("src-note").textContent = parts.length ? `（${parts.join("・")}）` : "";
+  $("src-gensen").textContent = GENSEN?.year ? `（${GENSEN.year}）` : "";
+}
+
+// 住民税の入力欄は「入力する」を選んだときだけ見せる
+for (const r of document.querySelectorAll('input[name="jmode"]')) {
+  r.addEventListener("change", () => {
+    $("manual-wrap").style.display =
+      document.querySelector('input[name="jmode"]:checked')?.value === "manual" ? "block" : "none";
+  });
+}
+const jmode = () => document.querySelector('input[name="jmode"]:checked')?.value || "estimate";
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+  // 必要な参照データの到着を必ず待つ。社保・所得税はどのモードでも要る。
+  const okShaho = await shahoReady;
+  const okGensen = await gensenReady;
+  const mode = jmode();
+  const okJumin = await juminReady;   // 概算モードでだけ必須(下で判定)
+  if (!okShaho || !okGensen || !SHAHO || !GENSEN) {
+    box.innerHTML = `<div class="note"><b>料率・税額表を読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。データが分からない状態で手取りを答えることはできません。</div>`;
+    return;
+  }
+  if (mode === "estimate" && (!okJumin || !JUMIN)) {
+    box.innerHTML = `<div class="note"><b>住民税データを読み込めませんでした。</b>
+      「含めない」か「給与明細の額を入力」に切り替えるか、再読み込みしてください。</div>`;
+    return;
+  }
+
+  const gross = Number($("gross").value);
+  if (!gross || gross <= 0) { box.innerHTML = "額面の月給を入力してください。"; return; }
+  const pref = $("pref").value;
+  if (!SHAHO.kenko_rates[pref]) {
+    box.innerHTML = `<div class="note"><b>「${pref || "未選択"}」の健康保険料率が見つかりませんでした。</b>
+      都道府県を選び直してください。</div>`;
+    return;
+  }
+
+  let r;
+  try {
+    r = calcTedori({
+      gross, age: Number($("age").value), prefecture: pref,
+      dependents: Number($("dependents").value) || 0,
+      gyoshu: $("gyoshu").value,
+      juminzeiMode: mode,
+      juminzeiManual: Number($("jmanual").value) || 0,
+    }, { shahoRates: SHAHO, gensenTable: GENSEN, juminzeiData: JUMIN });
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  const sh = r.shakaiHoken;
+  const kaigoLabel = sh.kaigoApplies
+    ? `健康保険＋介護保険（${pref} ${sh.kenkoRate.toFixed(2)}% ＋ ${SHAHO.kaigo_rate.toFixed(2)}%）`
+    : `健康保険（${pref} ${sh.kenkoRate.toFixed(2)}%）`;
+
+  const jLabel = {
+    estimate: "住民税（概算・前年ベース）",
+    manual: "住民税（給与明細の月額）",
+    none: "住民税（含めていません）",
+  }[r.juminzeiMode];
+
+  const drow = (label, amount, sub = "") => `
+    <tr><td style="padding:6px 8px">${label}${sub ? `<br><span style="font-size:12px;color:var(--sub)">${sub}</span>` : ""}</td>
+        <td style="padding:6px 8px;text-align:right;white-space:nowrap">− ${yen(amount)}</td></tr>`;
+
+  let html = `
+    <div class="row">毎月の手取り <span class="big">${yen(r.tedori)}</span>
+      <span class="hint">（額面の ${(r.tedoriRate * 100).toFixed(1)}%）</span></div>
+    <div style="overflow-x:auto;margin-top:10px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr style="background:#e7f3f0"><th style="text-align:left;padding:6px 8px">項目</th>
+        <th style="text-align:right;padding:6px 8px">月額</th></tr>
+      <tr style="font-weight:700"><td style="padding:6px 8px">額面の月給</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.gross)}</td></tr>
+      ${drow("社会保険料（本人負担）", sh.self,
+        `標準報酬月額 ${yen(sh.standard)}（健保 第${sh.grade}級）`)}
+      ${drow("所得税（源泉徴収）", r.shotokuzei,
+        `社保控除後 ${yen(r.afterShaho)}・扶養親族等 ${r.dependents}人（月額表・甲欄）`)}
+      ${drow(jLabel, r.juminzeiMonthly)}
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">手取り</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.tedori)}</td></tr>
+    </table></div>
+
+    <div style="margin-top:12px">
+      <b>社会保険料の内わけ（本人負担 ${yen(sh.self)}）</b>
+      <table style="width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px">
+        <tr><td style="padding:4px 8px">${kaigoLabel}</td><td style="padding:4px 8px;text-align:right">${yen(sh.kenkoKaigo.self)}</td></tr>
+        <tr><td style="padding:4px 8px">子ども・子育て支援金（${sh.kosodate.rate.toFixed(2)}%）</td><td style="padding:4px 8px;text-align:right">${yen(sh.kosodate.self)}</td></tr>
+        <tr><td style="padding:4px 8px">厚生年金（18.3%）</td><td style="padding:4px 8px;text-align:right">${yen(sh.kosei.self)}</td></tr>
+        <tr><td style="padding:4px 8px">雇用保険（${sh.gyoshu.label} 本人 ${sh.gyoshu.worker_permille}/1,000・賃金総額にかかる）</td><td style="padding:4px 8px;text-align:right">${yen(sh.koyou.self)}</td></tr>
+      </table>
+    </div>`;
+
+  // 住民税モードごとの説明(黙って前提を隠さない)
+  if (r.juminzeiMode === "estimate") {
+    html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ※ 住民税は<b>この年収（額面×12＝${yen(r.gross * 12)}）が前年も続いたと仮定</b>した概算です（年額 約${yen(r.juminzeiAnnual)}）。
+      住民税は<b>前年の所得</b>で決まり6月〜翌5月に月割りで特別徴収されるため、<b>今の月給からは正確には出せません</b>。
+      新卒1年目は住民税が引かれず、この額は<b>2年目以降</b>の目安です。正確な額は「給与明細の住民税額を入力」に切り替えてください。
+      <br>※ 扶養親族はすべて一般扶養（16歳以上）として概算しています（特定扶養・配偶者の状況で変わります）。</div>`;
+  } else if (r.juminzeiMode === "none") {
+    html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ※ この手取りには<b>住民税を含めていません</b>。住民税は前年の所得で決まるため、
+      新卒1年目は引かれませんが、<b>2年目の6月から</b>引かれ始めて手取りが月1〜2万円ほど減ります。</div>`;
+  } else {
+    html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ※ 住民税は入力された月額（${yen(r.juminzeiMonthly)}）をそのまま引いています。</div>`;
+  }
+  html += `<div style="font-size:12.5px;color:var(--sub);margin-top:6px">
+      ※ 所得税は源泉徴収額です（年末調整で精算されます）。賞与は含みません（月給のみ）。
+      ${sh.kaigoApplies ? "介護保険料は健康保険料と合算した料率で控除しています。" : `${Number($("age").value)}歳のため介護保険料はかかりません（40歳以上65歳未満が対象）。`}
+      ${r.year ? `<span class="hint">（${r.year}の料率・税額表）</span>` : ""}</div>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>
