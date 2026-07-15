@@ -387,6 +387,35 @@ const SCENES = [
   // 参照データが配信できないときは、金額を出さずに断る(fail closed)
   { name: "papa_nodata", data404: "kihonteate_r07.json",
     expect: (s) => s.failed && s.total === null },
+
+  // ── 住宅ローン控除(/jutaku/) 措置法41条・国税庁 No.1211-1 ──────────────────
+  // ★期待値は jutaku_core.js を一切通さず、国税庁が No.1211-1 で公表する控除限度額と条文の率から積む。
+  //   認定住宅・令和6年(一般)・年末残高4,500万 → 借入限度額4,500万 × 0.7% = **31.5万円/年**、控除期間13年。
+  //   総控除額の上限概算 = 315,000 × 13 = **4,095,000円**(残高一定と仮定した天井。実際は毎年減る)。
+  { name: "jutaku", expect: (s) =>
+      s.nenkan === 315000 && s.kikan === 13 && s.soKoujo === 4095000 &&
+      s.showsGaisan && !s.failed },
+  // ★★このツールの主役の事実: 「その他の住宅」を令和6年に入居した人は**原則0円**(借入限度額0円)。
+  //   ローンを組んでも1円も戻らないという事実と、経過措置という逃げ道を、必ず画面に出すこと。
+  //   ページが year/kubun を渡し忘れて別区分で計算すれば0円が21万円に化けてここで落ちる。
+  { name: "jutaku_sonota_r6", expect: (s) =>
+      s.zero && s.showsSonotaZero && s.showsKeikaHint && s.nenkan === null && !s.failed },
+  // ★経過措置に該当 → 借入2,000万・控除期間10年・14万円/年で復活。経過措置フラグの渡し忘れを捕まえる
+  { name: "jutaku_keika", expect: (s) =>
+      s.nenkan === 140000 && s.kikan === 10 && s.soKoujo === 1400000 &&
+      s.showsKeikaApplied && !s.failed },
+  // ★★子育て世帯・若者夫婦世帯の上乗せ(令和6年入居のみ)。認定4,500万→5,000万 → 35万円/年。
+  //   特例フラグの渡し忘れで上乗せが消えると31.5万円になってここで落ちる。
+  { name: "jutaku_tokurei", expect: (s) =>
+      s.nenkan === 350000 && s.showsTokurei && !s.failed },
+  // ★中古(既存住宅)は借入限度額・控除期間が違う → 黙って答えず「扱えない」と言うこと(fail closed)。
+  //   この regime の数字で中古を計算すると過大になる。
+  { name: "jutaku_chuko", expect: (s) =>
+      s.showsChuko && s.nenkan === null && !s.failed },
+  // 参照データが配信できないときは、控除額を出さずに断る(fail closed)。
+  // ★黙って答えると、戻らない金額を「戻る」と信じて資金計画を誤らせる
+  { name: "jutaku_nodata", data404: "jutaku_r07.json",
+    expect: (s) => s.failed && s.nenkan === null },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",

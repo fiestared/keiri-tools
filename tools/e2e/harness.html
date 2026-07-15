@@ -1332,6 +1332,66 @@ SCENES.papa_cap = papaScene({ monthly: 600000, leaveDays: 40 });
 // 参照データを配信できないときは、金額を出さずに断る（fail closed）
 SCENES.papa_nodata = papaScene({ nodata: true });
 
+// ── 住宅ローン控除（/jutaku/） 措置法41条・国税庁 No.1211-1 ────────────────
+// ★期待値は jutaku_core.js を一切通さず、国税庁 No.1211-1 が公表する控除限度額と条文の率から積む。
+//   借入限度額 × 0.7%（100円未満切捨）。認定・令和6年（一般）は借入4,500万 → **31.5万円/年**。
+//   ★このツールの主役の事実: 「その他の住宅」を令和6・7年に入居した人は**原則0円**（借入限度額0円）。
+//   ページが year/kubun/経過措置/特例のフラグをコアに渡し忘れると、この0円や上乗せが黙って崩れる。
+const jutakuScene = (inp) => async () => {
+  const doc = await open("/docs/jutaku/");
+  set(doc, "type", inp.type ?? "shinchiku");
+  set(doc, "kubun", inp.kubun ?? "shoene");
+  set(doc, "year", String(inp.year ?? 2025));
+  set(doc, "zandaka", String(inp.zandaka ?? 30000000));
+  set(doc, "taika", inp.taika != null ? String(inp.taika) : "");
+  set(doc, "shotoku", inp.shotoku != null ? String(inp.shotoku) : "");
+  set(doc, "menseki", inp.menseki != null ? String(inp.menseki) : "");
+  if (inp.tokurei) check(doc, "tokurei", true);
+  if (inp.keika) check(doc, "keika", true);
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /控除額|計算できません|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "住宅ローン控除の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    ...inp,
+    nenkan: num(/控除額（1年あたり・上限）¥([\d,]+)/),
+    soKoujo: num(/総控除額（上限のめやす）¥([\d,]+)/),
+    kikan: num(/控除期間(\d+)年/),
+    // ★「その他の住宅」令和6・7年 → 原則0円。その理由と経過措置の逃げ道を必ず画面に出す
+    zero: /控除の対象になりません/.test(body),
+    showsSonotaZero: /「その他の住宅」を.*入居したため、原則として控除の対象になりません/.test(body),
+    showsKeikaHint: /「経過措置に該当する」にチェック/.test(body),
+    // ★経過措置を適用 → 借入2,000万・10年で復活したことを名乗る
+    showsKeikaApplied: /「その他の住宅」の経過措置を適用しました/.test(body),
+    // ★子育て世帯等の上乗せを適用したことを名乗る
+    showsTokurei: /子育て世帯・若者夫婦世帯（特例対象個人）の上乗せを適用/.test(body),
+    // ★中古・増改築は黙って答えない（fail closed）
+    showsChuko: /中古|既存住宅/.test(body),
+    // ★総控除額は「上限のめやす」であって満額戻る額ではないことを画面が言う
+    showsGaisan: /上限のめやす/.test(body),
+    failed: /読み込めませんでした/.test(body),
+    body,
+  };
+};
+
+// ★看板の答え: 認定住宅・令和6年（一般）・年末残高4,500万 → 借入限度額4,500万×0.7% = 31.5万円/年、13年
+SCENES.jutaku = jutakuScene({ kubun: "nintei", year: 2024, zandaka: 45000000 });
+// ★★このツールの主役の事実: 「その他の住宅」令和6年入居は原則0円（借入限度額0円）。
+//   ローンを組んだのに0円という事実と、経過措置という逃げ道を、必ず画面に出すこと。
+SCENES.jutaku_sonota_r6 = jutakuScene({ kubun: "sonota", year: 2024, zandaka: 30000000 });
+// ★経過措置に該当 → 借入2,000万・控除期間10年・14万円/年で復活。フラグの渡し忘れを捕まえる
+SCENES.jutaku_keika = jutakuScene({ kubun: "sonota", year: 2024, zandaka: 30000000, keika: true });
+// ★★子育て世帯・若者夫婦世帯の上乗せ（令和6年入居のみ）。認定4,500万→5,000万 → 35万円/年
+SCENES.jutaku_tokurei = jutakuScene({ kubun: "nintei", year: 2024, zandaka: 60000000, tokurei: true });
+// ★中古（既存住宅）は借入限度額・控除期間が違う → 黙って答えず、この計算機では扱えないと言うこと
+SCENES.jutaku_chuko = jutakuScene({ type: "chuko", kubun: "nintei", year: 2024, zandaka: 45000000 });
+// 参照データを配信できないとき → 控除額を出さずに断る（fail closed）。戻らない額を「戻る」と信じさせない
+SCENES.jutaku_nodata = jutakuScene({ kubun: "nintei", year: 2024, zandaka: 45000000 });
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };

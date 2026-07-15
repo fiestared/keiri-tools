@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>住宅ローン控除 計算機｜控除額・借入限度額・総額の目安を自動計算（新築・買取再販）</title>
+<meta name="description" content="住宅ローン控除（住宅借入金等特別控除）の1年あたりの控除額・控除期間・総額の目安を自動計算。控除率は0.7％（1％ではありません）。住宅の種類（認定住宅・ZEH・省エネ・その他）と入居年から借入限度額を判定します。★2024年・2025年に入居した「その他の住宅（省エネ基準を満たさない住宅）」は原則ゼロ円（借入限度額0円）。子育て世帯・若者夫婦世帯の借入限度額の上乗せ、合計所得2,000万円以下・床面積の要件にも対応。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/jutaku/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "住宅ローン控除 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "住宅ローン控除（住宅借入金等特別控除・新築／買取再販）の1年あたりの控除額・控除期間・総額の目安を計算します。控除率0.7％、住宅の種類と入居年による借入限度額、子育て世帯等の上乗せ、合計所得2,000万円以下・床面積要件にもとづく計算。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "住宅ローン控除 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "住宅ローン控除の控除率は1％ですか、0.7％ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "2022年以降に入居した場合は0.7％です。1％だったのは2021年までに入居した場合で、いまの新築・買取再販に1％を当てはめると控除額を約1.4倍に過大表示してしまいます。この計算機は年末の借入残高に0.7％を掛け、100円未満を切り捨てて各年の控除額を出します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "省エネ基準を満たさない「その他の住宅」でも控除は受けられますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "2024年・2025年に入居した「その他の住宅」は、原則として控除の対象になりません（借入限度額0円）。2023年までの入居なら借入限度額3,000万円で受けられました。ただし2023年末までに建築確認を受けたもの、または2024年6月末までに建築されたものは、経過措置として借入限度額2,000万円・控除期間10年で受けられます。ローンを組んだからといって当然に受けられるわけではないので、住宅の省エネ性能を必ず確認してください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "計算に出た「総控除額」はそのまま戻ってくる金額ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "いいえ、上限のめやすです。各年の控除額はその年の年末の借入残高で決まり、返済が進むほど残高が減るので実際の控除額は毎年少なくなります。総控除額は「年間控除額×控除期間」で出した上限の概算です。さらに、控除しきれない分はその年の所得税額が上限で、余りは翌年度の住民税から一定額まで引かれ、それでも余ると戻りません。残高が大きい人ほどこの上限に当たります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "収入が高くても住宅ローン控除は受けられますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "その年の合計所得金額が2,000万円を超える年は、その年は控除を受けられません。以前は3,000万円でしたが、2022年の改正で2,000万円に引き下げられました。また床面積40㎡以上50㎡未満の「特例居住用家屋」は、合計所得1,000万円以下でなければ受けられません（そのかわり40㎡から対象になります）。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 住宅ローン控除 計算機</nav>
+
+<section class="hero">
+  <h1>住宅ローン控除 計算機</h1>
+  <p><b>住宅ローン控除（住宅借入金等特別控除）</b>の<b>1年あたりの控除額・控除期間・総額のめやす</b>を計算します。<b>控除率は0.7％</b>（1％ではありません）。<b>住宅の種類</b>と<b>入居した年</b>で<b>借入限度額</b>が大きく変わります。★<b>省エネ基準を満たさない「その他の住宅」を2024年・2025年に入居した人は、原則1円も控除されません</b>。新築・買取再販に対応。</p>
+</section>
+
+<div class="card">
+  <label for="type">取得のしかた</label>
+  <select id="type">
+    <option value="shinchiku" selected>新築・買取再販（建売・注文住宅・買取再販マンション等）</option>
+    <option value="chuko">中古（既存住宅）を個人などから購入した</option>
+    <option value="zokaichiku">増改築・リフォーム</option>
+  </select>
+  <div class="hint">この計算機は<b>新築・買取再販</b>を計算します。<b>中古（既存住宅）・増改築は借入限度額も控除期間も違う</b>ので、この計算機では扱いません（選ぶと、その旨をお知らせします）。</div>
+
+  <label for="kubun" style="margin-top:12px">住宅の種類（省エネ性能）</label>
+  <select id="kubun">
+    <option value="nintei">認定住宅（認定長期優良住宅・認定低炭素住宅）</option>
+    <option value="zeh">ZEH水準省エネ住宅（断熱等性能等級5以上かつ一次エネルギー消費量等級6以上）</option>
+    <option value="shoene" selected>省エネ基準適合住宅（断熱等性能等級4以上かつ一次エネルギー消費量等級4以上）</option>
+    <option value="sonota">その他の住宅（上記の省エネ基準を満たさない住宅）</option>
+  </select>
+  <div class="hint">★<b>借入限度額は住宅の種類で大きく変わります</b>。省エネ性能は<b>建築士の設計住宅性能評価書・住宅省エネルギー性能証明書</b>などで分かります。分からないときは、いちばん条件のきびしい<b>「その他の住宅」</b>で見てから、性能証明を確認してください。</div>
+
+  <label for="year" style="margin-top:12px">入居した年（住み始めた年）</label>
+  <select id="year"></select>
+  <div class="hint">★<b>入居した年（居住開始した年）</b>で借入限度額が決まります（購入契約の年でも、ローンを組んだ年でもありません）。2021年までの入居は<b>控除率も限度額も違う別の制度</b>なので、この計算機では扱いません。</div>
+
+  <label for="zandaka" style="margin-top:12px">年末のローン残高（その年の12月31日時点／円）</label>
+  <input type="number" id="zandaka" value="30000000" placeholder="例: 30000000" inputmode="numeric">
+  <div class="hint">その年の<b>12月31日時点の住宅ローンの残高</b>を入れてください。控除額は毎年この残高で決まるので、<b>返済が進むほど控除額は減っていきます</b>。</div>
+
+  <details style="margin-top:12px">
+    <summary>くわしく計算する（取得対価・所得・床面積・子育て世帯の特例）</summary>
+    <div style="margin-top:10px">
+      <label style="font-weight:400;display:block;margin-top:2px">
+        <input type="checkbox" id="tokurei"> <b>特例対象個人（子育て世帯・若者夫婦世帯）</b>である
+      </label>
+      <div class="hint">2024年・2025年に入居した場合、次の<b>いずれか</b>に当てはまる人は<b>借入限度額が上乗せ</b>されます（居住した年の12月31日時点で判定。年の途中で亡くなったときはその時点）。</div>
+      <ul id="jutaku-tokurei-list" class="note" style="margin-top:6px">
+        <li>年齢が<b>40歳未満</b>であって、<b>配偶者</b>がいる</li>
+        <li>年齢が<b>40歳以上</b>であって、<b>40歳未満の配偶者</b>がいる</li>
+        <li><b>19歳未満の扶養親族</b>がいる</li>
+      </ul>
+
+      <label style="font-weight:400;display:block;margin-top:10px">
+        <input type="checkbox" id="keika"> <b>経過措置に該当する</b>（「その他の住宅」を2024年・2025年に入居した場合のみ）
+      </label>
+      <div class="hint">「その他の住宅」を2024年・2025年に入居した場合でも、<b>2023年末までに建築確認を受けた</b>、または<b>2024年6月末までに建築された</b>住宅は、経過措置として<b>借入限度額2,000万円・控除期間10年</b>で控除を受けられます。それ以外は原則0円です。</div>
+
+      <label for="taika" style="margin-top:12px">住宅の取得対価等（円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　任意</span></label>
+      <input type="number" id="taika" value="" placeholder="空欄でOK" inputmode="numeric">
+      <div class="hint">住宅の<b>取得価額（消費税込み・土地代を含む）</b>です。ローン残高より<b>少ない</b>ときは、こちらが控除の対象になります（家より大きなローンを組んだ人向け）。分からなければ空欄でOKです。</div>
+
+      <label for="shotoku" style="margin-top:12px">その年の合計所得金額（円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　任意</span></label>
+      <input type="number" id="shotoku" value="" placeholder="空欄でOK" inputmode="numeric">
+      <div class="hint">★<b>合計所得金額が2,000万円を超える年は、その年は控除を受けられません</b>（給与だけなら年収およそ2,195万円が目安）。空欄のときは所得の判定をせずに計算します。</div>
+
+      <label for="menseki" style="margin-top:12px">床面積（㎡）<span style="font-weight:400;font-size:12px;color:var(--sub)">　任意</span></label>
+      <input type="number" id="menseki" value="" placeholder="空欄でOK" inputmode="numeric">
+      <div class="hint">登記事項証明書の床面積（マンションは専有部分）です。<b>50㎡以上</b>が原則。<b>40㎡以上50㎡未満</b>は「特例居住用家屋」として<b>合計所得1,000万円以下</b>なら対象。<b>40㎡未満は対象外</b>です。</div>
+    </div>
+  </details>
+
+  <button class="primary" id="calc">控除額を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>この計算機の見方</h2>
+
+  <h3>控除額の出しかた（控除率は0.7％。1％ではありません）</h3>
+  <div class="callout">
+    <b>各年の控除額 ＝ min（年末のローン残高, 借入限度額, 取得対価等）× 0.7％</b>（100円未満は切り捨て）
+    借入限度額は<b>住宅の種類</b>と<b>入居した年</b>で決まります。控除率を<b>1％</b>（2021年までの入居の率）で計算すると、控除額を<b>約1.4倍</b>に過大表示してしまいます。
+  </div>
+  <p>たとえば認定住宅を2022年に入居して年末残高が5,000万円以上なら、各年の控除額は<b>借入限度額5,000万円 × 0.7％ ＝ 35万円</b>が上限です。年末残高が2,000万円なら<b>2,000万円 × 0.7％ ＝ 14万円</b>になります（残高で決まります）。</p>
+
+  <h3>★★「その他の住宅」を2024年・2025年に入居した人は、原則ゼロ円です</h3>
+  <p>省エネ基準を満たさない<b>「その他の住宅」</b>は、<b>2024年・2025年の入居で借入限度額が0円</b>になりました（2023年までは3,000万円）。<b>「住宅ローンを組んだのだから当然もらえる」と思っていると、実際は1円も戻りません。</b></p>
+  <div class="note">
+    <b>経過措置に当たれば復活します（借入限度額2,000万円・控除期間10年）</b>
+    <b>2023年末までに建築確認を受けた</b>、または<b>2024年6月末までに建築された</b>「その他の住宅」は、経過措置として控除を受けられます。当てはまるときは、上の詳細欄で<b>「経過措置に該当する」にチェック</b>してください。
+  </div>
+
+  <h3>★子育て世帯・若者夫婦世帯は借入限度額が上乗せされます（2024年・2025年入居）</h3>
+  <p>2024年・2025年に入居した<b>特例対象個人（子育て世帯・若者夫婦世帯）</b>は、認定住宅なら4,500万円→<b>5,000万円</b>、ZEHなら3,500万円→<b>4,500万円</b>、省エネなら3,000万円→<b>4,000万円</b>に借入限度額が上乗せされます。上の詳細欄でチェックしてください（「その他の住宅」には上乗せはありません）。</p>
+
+  <h3>★「総控除額」は戻ってくる金額そのものではありません（上限のめやす）</h3>
+  <p>各年の控除額は<b>その年の年末残高</b>で決まり、<b>返済が進むほど毎年少なくなります</b>。総控除額は「年間控除額 × 控除期間」で出した<b>上限の概算</b>で、実際はこれより少なくなります。</p>
+  <div class="note">
+    <b>控除しきれない分は「その年の所得税額」が上限です</b>
+    年間の控除額がその年の<b>所得税額</b>を上回ると、上回った分は<b>翌年度の住民税</b>から一定額まで引かれ、それでも余ると<b>切り捨て（戻りません）</b>。<b>残高が大きい人ほど、この上限に当たって満額は戻りません。</b>この計算機は各年の控除額の<b>上限</b>を出すもので、実際の還付・軽減額はあなたの所得税額によって決まります。
+  </div>
+
+  <div class="note">
+    <b>この計算機で正しく出ない人・注意点</b>
+    <b>中古（既存住宅）・増改築は借入限度額も控除期間も違う</b>ので扱っていません（取得のしかたで選ぶとお知らせします）。<b>2021年までの入居</b>は控除率1％の別制度なので扱っていません。<b>合計所得2,000万円超の年</b>・<b>床面積40㎡未満</b>は対象外です。実際の控除額・還付額は<b>所得税額</b>や住民税の控除上限で変わります。最終的な金額は<b>お近くの税務署・確定申告（初年度は確定申告が必要）</b>でご確認ください。
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>住宅ローン控除の控除率は1％ですか、0.7％ですか？</h3>
+  <p><b>2022年以降に入居した場合は0.7％です。</b>1％だったのは2021年までに入居した場合で、いまの新築・買取再販に1％を当てはめると<b>控除額を約1.4倍に過大表示</b>してしまいます。この計算機は年末の借入残高に0.7％を掛け、100円未満を切り捨てて各年の控除額を出します。</p>
+  <h3>省エネ基準を満たさない「その他の住宅」でも控除は受けられますか？</h3>
+  <p><b>2024年・2025年に入居した「その他の住宅」は、原則として控除の対象になりません（借入限度額0円）。</b>2023年までの入居なら借入限度額3,000万円で受けられました。ただし<b>2023年末までに建築確認を受けたもの、または2024年6月末までに建築されたもの</b>は、経過措置として借入限度額2,000万円・控除期間10年で受けられます。ローンを組んだからといって当然に受けられるわけではないので、住宅の省エネ性能を必ず確認してください。</p>
+  <h3>計算に出た「総控除額」はそのまま戻ってくる金額ですか？</h3>
+  <p><b>いいえ、上限のめやすです。</b>各年の控除額はその年の年末の借入残高で決まり、返済が進むほど残高が減るので<b>実際の控除額は毎年少なくなります</b>。総控除額は「年間控除額×控除期間」で出した上限の概算です。さらに、<b>控除しきれない分はその年の所得税額が上限</b>で、余りは翌年度の住民税から一定額まで引かれ、それでも余ると戻りません。残高が大きい人ほどこの上限に当たります。</p>
+  <h3>収入が高くても住宅ローン控除は受けられますか？</h3>
+  <p><b>その年の合計所得金額が2,000万円を超える年は、その年は控除を受けられません。</b>以前は3,000万円でしたが、2022年の改正で2,000万円に引き下げられました。また床面積<b>40㎡以上50㎡未満</b>の「特例居住用家屋」は、<b>合計所得1,000万円以下</b>でなければ受けられません（そのかわり40㎡から対象になります）。</p>
+</section>
+
+<section class="faq">
+  <h2>関連するツール・記事</h2>
+  <p>
+    <a href="../furusato/">ふるさと納税 限度額シミュレーション</a>（住宅ローン控除があると限度額が下がります）<br>
+    <a href="../juminzei/">住民税 計算機</a>（控除しきれない分が引かれる先です）<br>
+    <a href="../gensen-choshu/">源泉徴収税額 計算機</a>（毎月の源泉所得税を確認する）<br>
+    <a href="../shakai-hoken/">社会保険料 計算機</a>（標準報酬月額と毎月の保険料を確認する）
+  </p>
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 国税庁タックスアンサー No.1211-1「住宅の新築等をし、令和4年以降に居住の用に供した場合（住宅借入金等特別控除）」／租税特別措置法41条<span id="src-note"></span>。<br>
+  この計算機は各年の控除額の<b>上限のめやす</b>を出すもので、実際の還付・軽減額は所得税額によって決まります。入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calc } from "../assets/jutaku_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const man = (n) => (n % 10000 === 0 ? `${(n / 10000).toLocaleString("ja-JP")}万円` : yen(n));
+// 西暦→和暦ラベル（令和は2019年が元年）。**JSで描く**ので静的HTMLに「令和N年」を焼き込まない
+// （年度データを差し替えても画面の年号が嘘にならないための規律・test_year_staleness）。
+const eraLabel = (y) => `令和${y - 2018}年（${y}年）`;
+
+// ★入居年の選択肢を**同期で**組み立てる（module実行はiframeのload前に済むので、
+//   E2Eが値をセットする時点で選択肢が存在する）。西暦をvalueに、和暦をラベルに。
+const yearSel = $("year");
+for (const y of [2022, 2023, 2024, 2025]) {
+  const o = document.createElement("option");
+  o.value = String(y);
+  o.textContent = eraLabel(y);
+  if (y === 2025) o.selected = true; // 既定は最新の入居年
+  yearSel.appendChild(o);
+}
+
+// 参照データ（借入限度額・控除率・控除期間）は非同期で届く。**これは答えの一部**なので、
+// 届く前にボタンを押されても待つ（回線が遅い人だけ空データで計算される事故を防ぐ）。
+let D = null;
+const dataReady = fetch("../assets/jutaku_r07.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { D = d; return true; })
+  .catch(() => false);
+
+// 出典の年度表示は**飾り**。ここで転んでも計算は止めない（別のPromiseで描く）。
+dataReady.then((ok) => {
+  if (!ok || !D) return;
+  $("src-note").textContent = `（${D._meta.year}・${D._meta.checked}確認）`;
+}).catch(() => {});
+
+const numOrNull = (id) => {
+  const v = $(id).value.trim();
+  if (v === "") return null;
+  const n = Number(v);
+  return Number.isFinite(n) ? n : null;
+};
+
+$("calc").addEventListener("click", async () => {
+  const ready = await dataReady;
+  const box = $("result");
+  if (!ready || !D) {
+    box.innerHTML = `<div class="callout"><b>参照データを読み込めませんでした。</b>` +
+      `通信環境を確認して、ページを再読み込みしてください。借入限度額や控除率が分からないまま` +
+      `控除額を答えると、実際には戻らない金額を「戻る」と信じて資金計画を誤るおそれがあるため、` +
+      `計算を止めています。</div>`;
+    return;
+  }
+
+  const zandaka = Number($("zandaka").value);
+  const type = $("type").value;
+  if (type === "shinchiku" && !(zandaka > 0)) {
+    box.innerHTML = `<div class="callout"><b>「年末のローン残高」を入力してください。</b>` +
+      `その年の12月31日時点の残高で控除額が決まります。</div>`;
+    return;
+  }
+
+  let r;
+  try {
+    r = calc({
+      type,
+      kubun: $("kubun").value,
+      year: Number($("year").value),
+      nenmatsuZandaka: zandaka,
+      shutokuTaika: numOrNull("taika"),
+      kosodateTokurei: $("tokurei").checked,
+      keikaSochi: $("keika").checked,
+      goukeiShotoku: numOrNull("shotoku"),
+      menseki: numOrNull("menseki"),
+    }, D);
+  } catch (e) {
+    box.innerHTML = `<div class="callout"><b>計算できませんでした。</b>${e.message}</div>`;
+    return;
+  }
+
+  // ── 中古・増改築・収録範囲外の年 → 黙って答えない（fail closed） ─────────────
+  if (r.beyondData) {
+    box.innerHTML = `
+      <div class="big">この計算機では計算できません</div>
+      <div class="callout"><b>${r.reason}</b></div>`;
+    return;
+  }
+
+  const kubunLabel = r.kubunLabel;
+  const yearLabel = eraLabel(r.year);
+
+  // ── 対象外（¥0）─────────────────────────────────────────────────────
+  if (!r.eligible) {
+    let why = "";
+    if (r.sonotaZero) {
+      why = `
+        <div class="callout"><b>★「その他の住宅」を${yearLabel}に入居したため、原則として控除の対象になりません（借入限度額0円）。</b>
+          省エネ基準を満たさない住宅は、2024年・2025年の入居で控除がゼロになりました（2023年までは3,000万円）。</div>
+        <div class="note"><b>経過措置に当たれば復活します（借入限度額2,000万円・控除期間10年）</b>
+          <b>2023年末までに建築確認を受けた</b>、または<b>2024年6月末までに建築された</b>住宅なら、
+          上の詳細欄で<b>「経過措置に該当する」にチェック</b>すると計算し直します。</div>`;
+    } else if (r.mensekiStatus === "too_small") {
+      why = `<div class="callout"><b>★床面積が40㎡未満のため、住宅ローン控除の対象になりません。</b>
+        住宅ローン控除は床面積40㎡以上（原則50㎡以上）が要件です。</div>`;
+    } else if (r.incomeOver) {
+      why = `<div class="callout"><b>★その年の合計所得金額（${yen(r.goukeiShotokuGiven)}）が上限（${man(r.shotokuLimit)}）を超えているため、その年は控除を受けられません。</b>
+        ${r.shotokuLimit === 10000000
+          ? "床面積40〜50㎡未満の特例居住用家屋は、合計所得1,000万円以下でなければ対象になりません。"
+          : "合計所得金額が2,000万円を超える年は、その年は控除を受けられません（2022年の改正で3,000万円から引き下げ）。"}</div>`;
+    }
+    box.innerHTML = `
+      <div class="big">控除額 ¥0（原則、控除の対象になりません）</div>
+      <div class="hint" style="margin-bottom:10px">${kubunLabel}・${yearLabel}に入居</div>
+      ${why}`;
+    return;
+  }
+
+  // ── 対象（控除額あり）─────────────────────────────────────────────────
+  const tokureiNote = r.tokureiApplied
+    ? `<div class="callout"><b>★子育て世帯・若者夫婦世帯（特例対象個人）の上乗せを適用しました。</b>
+        借入限度額が<b>${man(r.shakunyuGendoEn)}</b>になっています。</div>`
+    : "";
+  const keikaNote = r.keikaApplied
+    ? `<div class="callout"><b>★「その他の住宅」の経過措置を適用しました。</b>
+        借入限度額<b>2,000万円</b>・控除期間<b>10年</b>で計算しています。</div>`
+    : "";
+  // 取得対価がローン残高より小さく、そちらが上限になっているとき
+  const taikaGiven = numOrNull("taika");
+  const zandakaVal = Number($("zandaka").value);
+  const taikaNote = (taikaGiven != null && taikaGiven < zandakaVal && r.koujoTaisho === taikaGiven)
+    ? `<div class="hint">取得対価等（${yen(taikaGiven)}）がローン残高より小さいため、取得対価等を控除の対象にしています。</div>`
+    : "";
+  // 残高が借入限度額を超えて天井に張り付いているとき
+  const cappedNote = (zandakaVal > r.shakunyuGendoEn)
+    ? `<div class="hint">年末残高が借入限度額（${man(r.shakunyuGendoEn)}）を超えているため、控除の対象は借入限度額で頭打ちになっています。</div>`
+    : "";
+
+  box.innerHTML = `
+    <div class="big">控除額（1年あたり・上限）${yen(r.nenkanKoujo)}</div>
+    <div class="hint" style="margin-bottom:10px">${kubunLabel}・${yearLabel}に入居</div>
+    ${tokureiNote}
+    ${keikaNote}
+    ${taikaNote}
+    ${cappedNote}
+    <table class="res">
+      <tr><th>年間の控除額（上限）</th><td><b>${yen(r.nenkanKoujo)}</b></td></tr>
+      <tr><th>控除の対象になる借入残高</th><td>${yen(r.koujoTaisho)}（＝年末残高・取得対価・借入限度額のうち最も小さい額）</td></tr>
+      <tr><th>借入限度額</th><td>${man(r.shakunyuGendoEn)}</td></tr>
+      <tr><th>控除率</th><td>${r.koujoRitsuPct}％</td></tr>
+      <tr><th>控除期間</th><td>${r.kikan}年</td></tr>
+      <tr><th>総控除額（上限のめやす）</th><td><b>${yen(r.soKoujoGaisan)}</b></td></tr>
+    </table>
+    <div class="note">
+      <b>★この金額は「上限のめやす」です。そのまま戻る金額ではありません。</b>
+      各年の控除額は<b>その年の年末残高</b>で決まり、<b>返済が進むほど毎年減ります</b>。総控除額（${yen(r.soKoujoGaisan)}）は「年間控除額 × ${r.kikan}年」で出した<b>上限の概算</b>で、実際はこれより少なくなります。
+      さらに<b>控除しきれない分はその年の所得税額が上限</b>（余りは翌年度の住民税から一定額まで）なので、<b>残高が大きい人ほど満額は戻りません</b>。
+    </div>
+    <div class="hint">各年の控除額は<b>100円未満を切り捨て</b>ています（借入残高 × 0.7％）。初年度は<b>確定申告</b>が必要です（2年目以降は年末調整で受けられます）。</div>`;
+});
+</script>
+</body>
+</html>
