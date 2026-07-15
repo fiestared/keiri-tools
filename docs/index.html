@@ -39,10 +39,23 @@
   <section class="hero">
     <h1>経理・労務の計算を、さっと片づける。</h1>
     <p>社会保険料の計算、電帳法の索引簿づくり、支払日の計算——調べ直すのが面倒な作業を、無料のツールにしました。</p>
+
+    <div class="qa-box">
+      <div class="qa-head"><span class="q-ico">Q.</span>経理で困っていること、聞いてください</div>
+      <form class="qa-form" id="qa-form">
+        <input id="qa-q" type="text" autocomplete="off" enterkeyhint="search"
+               aria-label="経理・労務の質問を入力"
+               placeholder="例: ボーナスの社会保険料はいくら引かれる？ / ふるさと納税の上限は？">
+        <button type="submit" class="qa-submit" id="qa-go">聞く</button>
+      </form>
+      <p class="qa-note">検証済みの記事とツールから、いちばん近いものを探して表示します（AIが文章を作るのではありません）。いただいた質問は、どんな困りごとが多いかを把握し記事づくりに役立てるため記録されます（<a href="privacy/">プライバシーポリシー</a>）。</p>
+      <div class="qa-results" id="qa-results" hidden></div>
+    </div>
+
     <div class="badges">
       <span>✓ 登録不要</span>
       <span>✓ 無料</span>
-      <span>✓ データはブラウザの外に出ません</span>
+      <span>✓ 計算した数字はブラウザの外に出ません</span>
     </div>
   </section>
 
@@ -253,5 +266,68 @@
   © 経理ミニツールズ
   <div style="margin-top:8px;font-size:12px"><a href="about/" style="color:var(--sub)">このサイトについて</a>　<a href="privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="contact/" style="color:var(--sub)">お問い合わせ</a></div>
 </footer>
+
+<!-- トップの質問欄。答えは qa_index.json(検証済みの記事/ツール) から返す。LLM は呼ばない。 -->
+<script type="module">
+import { search } from "./assets/qa_search.js";
+
+let QA = [];
+let qaFailed = false;
+// 索引の到着を**待ってから**検索する。遅い回線で未着のまま検索して「該当なし」を出さないため。
+const qaReady = fetch("assets/qa_index.json")
+  .then((r) => { if (!r.ok) throw new Error("http " + r.status); return r.json(); })
+  .then((d) => { QA = d; })
+  .catch(() => { qaFailed = true; });
+
+const form = document.getElementById("qa-form");
+const input = document.getElementById("qa-q");
+const box = document.getElementById("qa-results");
+const esc = (s) => String(s).replace(/[&<>"]/g,
+  (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// GA4 は自サイトの計測。★質問文が「何に困っているか」の生データ = 記事づくりの需要になる。
+// gtag が無い環境(ローカル等)では黙って握りつぶす(検索そのものは止めない)。
+function track(q, matched, top) {
+  try {
+    if (typeof gtag === "function") {
+      gtag("event", "question", { q: q.slice(0, 120), matched: matched, top: top || "" });
+    }
+  } catch (_) { /* 計測が落ちても検索は続ける */ }
+}
+
+function card(e) {
+  const isTool = e.type === "tool";
+  const toolLink = (!isTool && e.tool)
+    ? `<a class="qa-tool-link" href="${esc(e.tool)}">計算ツールで試す →</a>` : "";
+  return `<div class="qa-card">
+      <span class="qa-tag${isTool ? " is-tool" : ""}">${isTool ? "ツール" : "記事"}</span>
+      <a class="qa-card-title" href="${esc(e.url)}">${esc(e.title)}</a>
+      <p class="qa-card-ans">${esc(e.answer)}</p>
+      <div class="qa-links"><a href="${esc(e.url)}">${isTool ? "ツールを開く" : "詳しく読む"} →</a>${toolLink}</div>
+    </div>`;
+}
+
+async function ask(q) {
+  q = (q || "").trim();
+  if (!q) return;
+  box.hidden = false;
+  box.innerHTML = `<p class="qa-status">探しています…</p>`;
+  await qaReady;
+  if (qaFailed) {
+    box.innerHTML = `<div class="qa-empty">質問の索引を読み込めませんでした。通信環境を確認して、ページを再読み込みしてください。</div>`;
+    return;
+  }
+  const r = search(QA, q);
+  if (r.matched && r.results.length) {
+    box.innerHTML = `<div class="qa-reslist">${r.results.map(card).join("")}</div>`;
+    track(q, true, r.results[0].url);
+  } else {
+    box.innerHTML = `<div class="qa-empty"><b>ぴったりの記事がまだありません。</b>いただいた質問は、記事にするか検討します。<div style="margin-top:8px"><a href="column/">経理コラムの一覧を見る →</a></div></div>`;
+    track(q, false, "");
+  }
+}
+
+form.addEventListener("submit", (ev) => { ev.preventDefault(); ask(input.value); });
+</script>
 </body>
 </html>

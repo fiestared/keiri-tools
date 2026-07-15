@@ -288,3 +288,41 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .result table.res { width: 100%; border-collapse: collapse; font-size: 14px; margin-top: 12px; background: #fff; border-radius: 8px; overflow: hidden; }
 .result table.res th { text-align: left; padding: 8px 10px; width: 34%; background: var(--accent-soft); font-weight: 600; vertical-align: top; white-space: nowrap; }
 .result table.res td { padding: 8px 10px; border-bottom: 1px solid var(--line); }
+
+/* ---- トップの「経理で困ったら聞ける」質問欄(hero 内) ----
+   LLM を呼ばず、質問を検証済みの記事/ツールに橋渡しするクライアントサイド検索。 */
+.qa-box { margin: 18px 0 4px; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 16px; }
+.qa-head { font-weight: 700; font-size: 16px; margin-bottom: 10px; }
+.qa-head .q-ico { color: var(--accent); margin-right: 6px; }
+.qa-form { display: flex; gap: 8px; }
+.qa-form input {
+  flex: 1; min-width: 0; padding: 14px 16px; font-size: 16px; color: var(--ink);
+  border: 2px solid var(--line); border-radius: 10px; background: #fff;
+}
+.qa-form input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.qa-submit { flex: 0 0 auto; font-size: 15px; font-weight: 700; color: #fff; background: var(--accent);
+  border: 0; border-radius: 10px; padding: 0 20px; cursor: pointer; }
+.qa-submit:hover { opacity: .92; }
+.qa-note { font-size: 12px; color: var(--sub); margin: 10px 2px 0; line-height: 1.6; }
+.qa-results { margin-top: 14px; }
+.qa-status { font-size: 13px; color: var(--sub); margin: 4px 2px; }
+.qa-reslist { display: flex; flex-direction: column; gap: 10px; }
+.qa-card { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; background: var(--bg); }
+.qa-tag { display: inline-block; font-size: 11px; font-weight: 700; color: var(--sub);
+  background: #fff; border: 1px solid var(--line); border-radius: 99px; padding: 1px 9px; margin-bottom: 6px; }
+.qa-tag.is-tool { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.qa-card-title { display: block; font-size: 15.5px; font-weight: 700; color: var(--ink); text-decoration: none; }
+.qa-card-title:hover { color: var(--accent); text-decoration: underline; }
+.qa-card-ans { font-size: 13px; color: var(--sub); margin: 6px 0 10px; line-height: 1.7; }
+.qa-links { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.qa-links a { font-size: 13px; font-weight: 700; color: var(--accent); text-decoration: none; }
+.qa-links a:hover { text-decoration: underline; }
+.qa-tool-link { padding: 3px 10px; background: var(--accent-soft); border-radius: 8px; }
+.qa-empty { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 10px;
+  padding: 14px 16px; font-size: 14px; line-height: 1.7; }
+.qa-empty a { color: var(--accent); font-weight: 700; text-decoration: none; }
+.qa-empty a:hover { text-decoration: underline; }
+@media (max-width: 480px) {
+  .qa-form { flex-wrap: wrap; }
+  .qa-submit { flex: 1 0 100%; padding: 12px; }
+}
