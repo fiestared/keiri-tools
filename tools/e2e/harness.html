@@ -1105,6 +1105,61 @@ SCENES.shobyo_keizoku = shobyoScene({
 // ★ここで黙って答えると、入社1年未満の人に**上限を無視した高い額**を信じさせる
 SCENES.shobyo_nodata = shobyoScene({ startDate: "2026-08-01", monthly: 500000, months: 3 });
 
+// ── 出産手当金（/shussan/） 健保法102条 ──────────────────────────────────
+// ★期待値は shussan_core / shobyo_core を一切通さず、協会けんぽの公表額と条文の日数から積む。
+//   標準報酬30万 → 300,000÷30=10,000 → ×2/3=6,666.67 → **6,667円**（傷病手当金と同じ99条2項の算式）。
+//   ★待期3日は無い（102条2項が準用するのは99条2項・3項だけ）→ 産前42 + 産後56 = **98日**まるごと。
+//   6,667 × 98 = **653,366円**（協会けんぽ公表・gbrain hr/shussan-teate-kin）。
+const shussanScene = (inp) => async () => {
+  const doc = await open("/docs/shussan/");
+  set(doc, "yoteibi", inp.yoteibi ?? "2026-06-01");
+  set(doc, "shussanbi", inp.shussanbi ?? "");
+  set(doc, "monthly", String(inp.monthly ?? 300000));
+  set(doc, "months", String(inp.months ?? 12));
+  set(doc, "standards", inp.standards ?? "");
+  set(doc, "hoshuNichigaku", String(inp.hoshuNichigaku ?? 0));
+  set(doc, "heikinOverride", String(inp.heikinOverride ?? 0));
+  if (inp.tatai) check(doc, "tatai", true);
+  if (inp.ninnikeizoku) check(doc, "ninnikeizoku", true);
+  if (inp.taishokugo) check(doc, "taishokugo", true);
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /出産手当金 ¥|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "出産手当金の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+
+  return {
+    ...inp,
+    nichigaku: num(/1日あたりの金額（日額）¥([\d,]+)/),
+    days: num(/支給される日数(\d+)日/),
+    total: num(/出産手当金 ¥([\d,]+)/),
+    // ★出産が予定日より遅れた日数がそのまま給付に乗ることを、画面が名指しで言う（102条1項かっこ書き）
+    showsDelay: /出産が予定日より 10日 遅れたため、産前が 10日 延びています/.test(body),
+    // ★任意継続なのに**支給される**＝104条の継続給付（shobyo と同じ「黙って¥0」の罠）。名乗ること
+    showsKeizoku: /これは「資格喪失後の継続給付」（健康保険法104条）として計算しています。/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+
+// ★看板の答え: 協会けんぽの公表額（6,667円/日）× 産前42+産後56=98日 = 653,366円（★待期3日は無い）
+SCENES.shussan = shussanScene({ yoteibi: "2026-06-01", shussanbi: "2026-06-01" });
+// ★★出産が予定日より遅れた日数はそのまま給付が増える（102条1項かっこ書き）。
+//   10日遅れ → 産前52 + 産後56 = 108日 → 6,667 × 108 = **720,036円**（+66,670円）。
+//   「産前は必ず42日」と焼き込んでいたら、ここで98日のまま落ちる。**このツールの主役の事実**。
+SCENES.shussan_late = shussanScene({ yoteibi: "2026-06-01", shussanbi: "2026-06-11" });
+// ★★任意継続でも、退職前から産前休業に入っていた人は受け続けられる（104条の継続給付）。
+//   shobyo で本番が「¥0」と答えていたのと同じ型。ここで 653,366円 と 104条の名乗りを固定する。
+SCENES.shussan_keizoku = shussanScene({
+  yoteibi: "2026-06-01", shussanbi: "2026-06-01", months: 24,
+  ninnikeizoku: true, taishokugo: true,
+});
+// 参照データを配信できない → 金額を出さずに断ること（fail closed）。上限を無視した高い額を信じさせない
+SCENES.shussan_nodata = shussanScene({ yoteibi: "2026-06-01", shussanbi: "2026-06-01", monthly: 500000, months: 3 });
+
 // ── 育児休業給付金 ────────────────────────────────────────────────────────
 // ★期待値は ikuji_core.js を一切通さず、**厚労省の公表する支給限度額**と条文の率から積み上げる。
 //

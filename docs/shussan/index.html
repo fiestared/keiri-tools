@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>出産手当金 計算機｜産前産後の日数・金額・遅れた場合の増額を自動計算</title>
+<meta name="description" content="産休中に健康保険から出る出産手当金を自動計算。月給から1日あたりの金額（日額）と支給日数・合計額を出します。日額は傷病手当金と同じ標準報酬÷30×2/3ですが、待期3日は無く産休初日から対象。出産予定日より遅れた日数はそのまま給付が増えます（10日遅れで約6.7万円）。多胎は産前98日。給与が出た場合の差額支給、入社1年未満の上限（協会けんぽ日額7,113円）、退職後の継続給付にも対応。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/shussan/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "出産手当金 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "健康保険の出産手当金の日額・支給日数・合計額を計算します。産前42日（多胎98日）＋産後56日、出産予定日より遅れた場合の増額、報酬との差額支給、被保険者期間12か月未満の上限額、退職後の継続給付にもとづく計算。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "出産手当金 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "出産手当金と傷病手当金は同じ計算ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "1日あたりの金額（日額）の計算は同じです。どちらも標準報酬月額の平均を30で割り、3分の2を掛けます（健康保険法102条2項が99条2項を準用）。ただし出産手当金には待期3日がなく、産前休業の初日から支給されます。また支給される期間も違い、傷病手当金は最長1年6か月ですが、出産手当金は産前42日（多胎98日）と産後56日に固定されています。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "出産予定日より遅れて産まれると出産手当金は増えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "増えます。産前の起点は出産日の42日前ですが、出産日が予定日より後のときは起点が予定日の42日前に固定され、終点は常に出産日後56日なので、遅れた日数がそのまま産前に足されます（健康保険法102条1項）。標準報酬月額30万円なら日額は6,667円なので、10日遅れると66,670円増えます。逆に予定日より早く産まれると、起点が実際の出産日に戻るため産前が短くなり、その分減ります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "産休中に給料が出ると出産手当金はもらえませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "もらえないとは限りません。給料の日額が出産手当金の日額より少なければ、その差額が支給されます（健康保険法108条2項ただし書）。給料の日額が出産手当金の日額以上のときだけ、支給されません。「給料が出ているから対象外」と思い込んで申請しないと、受け取れるはずの差額を失います。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "退職しても出産手当金は受け取れますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "①退職日まで1年以上健康保険に加入していて、②退職日に出産手当金を受けられる状態（産前休業に入っている）だった人だけが受け取れます（資格喪失後の継続給付・健康保険法104条）。★退職日に挨拶や引き継ぎで出社すると、その日は労務に服したことになり、退職後の出産手当金が一切受けられなくなります。産休に入る前に退職した人には出ません。ただし出産育児一時金は資格喪失後6か月以内の出産なら受け取れます（別の給付・106条）。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 出産手当金 計算機</nav>
+
+<section class="hero">
+  <h1>出産手当金 計算機</h1>
+  <p>産休中に健康保険から出る<b>出産手当金</b>を計算します。<b>1日あたりの金額（日額）・支給日数・合計額</b>を出します。日額は傷病手当金と同じ算式（<b>標準報酬 ÷ 30 × 2／3</b>）ですが、<b>待期3日は無く産休初日から</b>対象です。<b>出産予定日より遅れた日数は、そのまま給付が増えます</b>。<b>多胎は産前98日</b>。給与が出ても差額はもらえます。</p>
+</section>
+
+<div class="card">
+  <label for="yoteibi">出産予定日</label>
+  <input type="date" id="yoteibi" value="">
+  <div class="hint">母子健康手帳に書かれている予定日を入れてください。産前休業は<b>この日の42日前（多胎は98日前）</b>から取れます。この日は、入社1年未満の方の<b>上限額の判定</b>にも使います。</div>
+
+  <label for="shussanbi" style="margin-top:12px">実際の出産日<span style="font-weight:400;font-size:12px;color:var(--sub)">　まだ産まれていない方は空欄でOK</span></label>
+  <input type="date" id="shussanbi" value="">
+  <div class="hint">★<b>予定日より遅れて産まれると、遅れた日数ぶん給付が増えます</b>（早いと減ります）。空欄のときは<b>予定日どおりに産まれた見込み</b>で計算します。</div>
+
+  <label style="font-weight:400;display:block;margin-top:10px">
+    <input type="checkbox" id="tatai"> <b>多胎妊娠</b>（双子以上）である（産前が42日→<b>98日</b>になります）
+  </label>
+
+  <label for="monthly" style="margin-top:12px">月給（額面・社会保険の報酬月額／円）</label>
+  <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
+  <div class="hint">通勤手当・残業代・役職手当を<b>含む</b>額面の月給です。<b>賞与（ボーナス）は1円も入りません</b>（下の解説を参照）。</div>
+
+  <label for="months" style="margin-top:12px">健康保険の被保険者期間（この会社などで加入している月数）</label>
+  <input type="number" id="months" value="12" min="1" max="600" inputmode="numeric">
+  <div class="hint">★<b>12か月未満の方は上限がかかります</b>（健康保険法99条2項ただし書を102条2項が準用）。<b>入社1年未満で給料が高い方は、ここを正しく入れないと金額が大きくずれます。</b></div>
+
+  <label style="font-weight:400;display:block;margin-top:10px">
+    <input type="checkbox" id="ninnikeizoku"> <b>任意継続被保険者</b>である（退職後に健康保険を任意継続している）
+  </label>
+  <label style="font-weight:400;display:block">
+    <input type="checkbox" id="taishokugo"> <b>退職する前から</b>産前休業に入っていた（＝退職日に出産手当金を受けられる状態だった）＝<b>資格喪失後の継続給付</b>（104条）
+  </label>
+  <div class="note" id="keizoku-note">
+    ★<b>出産・産休を機に退職して、健康保険を任意継続している方へ。</b>
+    「任意継続の人には出産手当金は出ない」と書かれているのを見て諦めた方が多いのですが、
+    <b>それは任意継続になってから出産した人の話です</b>（99条1項かっこ書き・102条1項）。
+    <b>退職する前から産前休業に入っていた方は、任意継続でも受け続けられます</b>
+    （<b>資格喪失後の継続給付</b>・104条）。上の<b>2つとも</b>チェックしてください。
+    <br>
+    条件は2つ。<b>①退職日までに健康保険に引き続き1年以上加入していたこと</b>
+    （<b>任意継続の期間はこの1年に入りません</b>）、<b>②退職日に出産手当金を受けられる状態だったこと</b>。
+    ★<b>②のために、退職日には出社しないでください</b>（数時間でも出社すると「労務に服した」とされ、
+    産休いっぱいの給付がまるごと消えることがあります）。
+    <br>
+    なお、<b>産休に入る前に退職すると出産手当金は出ません</b>（②を満たさないため）。
+    ただし<b>出産育児一時金</b>は、資格喪失後6か月以内の出産なら受け取れます（別の給付・106条）。
+  </div>
+
+  <details style="margin-top:12px">
+    <summary>産休中に給与が出る場合（差額が出ます）／標準報酬月額を月ごとに入れる／健保組合の方</summary>
+    <div style="margin-top:10px">
+      <label for="hoshuNichigaku">産休中に受けられる給与の日額（円）</label>
+      <input type="number" id="hoshuNichigaku" value="0" min="0" inputmode="numeric">
+      <div class="hint">★<b>給与が出ていても「対象外」とは限りません。</b>給与の日額が出産手当金の日額より<b>少なければ、その差額が支給されます</b>（健康保険法108条2項ただし書）。</div>
+
+      <label for="standards" style="margin-top:10px">標準報酬月額を月ごとに入れる（カンマ区切り・<b>古い月→新しい月</b>の順／円）</label>
+      <input type="text" id="standards" placeholder="例: 160000,160000,160000,160000,160000,160000,180000,180000,180000,180000,180000,180000" inputmode="numeric">
+      <div class="hint">昇給・降給があった方は、こちらに<b>直近12か月の標準報酬月額</b>を入れると正確になります（入れた場合は上の「月給」より優先されます）。標準報酬月額は<b>給与明細や健康保険証の記載、会社の総務</b>で分かります。</div>
+
+      <label for="heikinOverride" style="margin-top:10px">保険者の平均標準報酬月額（円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　健保組合の方だけ</span></label>
+      <input type="number" id="heikinOverride" value="0" min="0" inputmode="numeric">
+      <div class="hint">★<b>被保険者期間が12か月未満の方の上限額は、保険者ごとに違います。</b>この計算機は既定で<b>協会けんぽ</b>の額を使います。<b>健保組合の方</b>は、組合が公表している「全被保険者の平均標準報酬月額」を入れてください（例: 関東ITソフトウェア健保は38万円）。</div>
+    </div>
+  </details>
+
+  <button class="primary" id="calc">出産手当金を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>この計算機の見方</h2>
+
+  <h3>計算のしかた（日額は傷病手当金と同じ。健康保険法102条2項が99条2項を準用）</h3>
+  <div class="callout">
+    <b>日額 ＝ 支給開始日以前12か月の標準報酬月額の平均 ÷ 30 × 2／3</b>
+    ただし<b>2段階で丸めます</b>。①「÷30」した額を<b>10円未満で四捨五入</b>（5円以上は切上げ）し、②それに2／3を掛けた額を<b>1円未満で四捨五入</b>（50銭以上は切上げ）します。
+  </div>
+  <p>協会けんぽが公表している計算例で確かめられます。標準報酬月額の平均が<b>17万円</b>の人なら、÷30 で 5,666.67 → <b>5,670円</b>（①の四捨五入）→ ×2／3 で <b>1日あたり3,780円</b>です。標準報酬月額30万円なら<b>日額6,667円</b>、産前42＋産後56＝<b>98日で653,366円</b>になります。</p>
+
+  <h3>★★傷病手当金と違い、待期3日はありません（産休初日から出ます）</h3>
+  <p>準用されるのは99条の<b>2項・3項だけ</b>で、待期3日を定めた<b>1項は準用されません</b>。<b>産前休業の初日から支給対象</b>です。傷病手当金のつもりで「最初の3日は出ない」と考えると、3日ぶん少なく見積もってしまいます。</p>
+
+  <h3>★出産予定日より遅れた日数は、そのまま給付が増えます</h3>
+  <p>産前の起点は「出産日の42日前」ですが、<b>出産日が予定日より後のときは起点が『予定日の42日前』に固定</b>されます（102条1項かっこ書き）。終点は常に「出産日後56日」なので、<b>遅れた日数はまるごと産前に足されます</b>。</p>
+  <div class="note">
+    <b>10日遅れると約6.7万円 増えます（標準報酬30万円の場合）</b>
+    日額6,667円 × 10日 ＝ <b>66,670円</b>。逆に<b>予定日より早く産まれると、起点が実際の出産日に戻る</b>ので産前が短くなり、その分減ります。「産前は必ず42日」と思っていると、遅れて産まれた人は<b>実際より少なく</b>見積もってしまいます。この計算機は、<b>実際の出産日</b>を入れると自動で調整します。
+  </div>
+
+  <h3>多胎（双子以上）は産前98日です</h3>
+  <p>産前が42日→<b>98日</b>になります（産後は56日のまま）。合計<b>154日</b>で、標準報酬30万円なら約<b>102万円</b>です。</p>
+
+  <h3>★入社1年未満の人には上限があります（協会けんぽは日額7,113円）</h3>
+  <p>被保険者期間が<b>12か月に満たない</b>人は、①自分の平均と②<b>全被保険者の平均標準報酬月額</b>の、<b>少ないほう</b>で計算します（99条2項ただし書）。協会けんぽの②の額は<b>32万円</b>なので、<b>上限は日額7,113円</b>です。<b>健保組合の方は額が違います</b>（組合自身の平均を使います）。上の詳細欄で上書きできます。</p>
+
+  <div class="callout">
+    <b>★★産休を機に退職する人は、退職日に出社してはいけません</b>
+    退職後も出産手当金を受け続けられるのは（資格喪失後の継続給付・104条）、<b>①退職日まで引き続き1年以上被保険者だった人</b>で、かつ<b>②退職日に出産手当金を受けられる状態（産前休業に入っている）だった人</b>だけです。<b>挨拶・引き継ぎ・私物の引き取りのために退職日に出社すると、その日は「労務に服した」ことになり、退職後の出産手当金が一切受けられなくなります。</b>荷物や挨拶は<b>退職日を避けて</b>ください。<b>産休に入る前に退職した人には出ません。</b>
+  </div>
+
+  <div class="note">
+    <b>この計算機で正しく出ない人・注意点</b>
+    <b>国民健康保険の方</b>（自営業・フリーランス）には<b>原則ありません</b>。<b>健保組合の付加給付がある方</b>は結果と異なります。<b>傷病手当金を同時に受けられる方は、出産手当金が優先されます</b>（103条。傷病手当金は差額のみ）。産後57日目からは<b>育児休業給付金（月額の上限323,811円で頭打ち）</b>に切り替わり、高収入の方ほど<b>金額が大きく下がります</b>ので、産休中の金額で家計を組まないでください。最終的な金額は<b>ご加入の健康保険（協会けんぽ・健保組合）にご確認ください</b>。
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>出産手当金と傷病手当金は同じ計算ですか？</h3>
+  <p><b>1日あたりの金額（日額）の計算は同じです。</b>どちらも標準報酬月額の平均を30で割り、3分の2を掛けます（健康保険法102条2項が99条2項を準用）。ただし<b>出産手当金には待期3日がなく、産前休業の初日から支給されます</b>。また支給される期間も違い、傷病手当金は最長1年6か月ですが、<b>出産手当金は産前42日（多胎98日）と産後56日に固定</b>されています。</p>
+  <h3>出産予定日より遅れて産まれると出産手当金は増えますか？</h3>
+  <p><b>増えます。</b>産前の起点は出産日の42日前ですが、出産日が予定日より後のときは起点が予定日の42日前に固定され、終点は常に出産日後56日なので、<b>遅れた日数がそのまま産前に足されます</b>（健康保険法102条1項）。標準報酬月額30万円なら日額は6,667円なので、<b>10日遅れると66,670円増えます</b>。逆に予定日より早く産まれると、起点が実際の出産日に戻るため産前が短くなり、その分減ります。</p>
+  <h3>産休中に給料が出ると出産手当金はもらえませんか？</h3>
+  <p><b>もらえないとは限りません。給料の日額が出産手当金の日額より少なければ、その差額が支給されます</b>（健康保険法108条2項ただし書）。給料の日額が出産手当金の日額以上のときだけ、支給されません。「給料が出ているから対象外」と思い込んで申請しないと、受け取れるはずの差額を失います。</p>
+  <h3>退職しても出産手当金は受け取れますか？</h3>
+  <p><b>①退職日まで1年以上健康保険に加入していて、②退職日に出産手当金を受けられる状態（産前休業に入っている）だった人だけが受け取れます</b>（資格喪失後の継続給付・健康保険法104条）。★<b>退職日に挨拶や引き継ぎで出社すると、その日は労務に服したことになり、退職後の出産手当金が一切受けられなくなります。</b>産休に入る前に退職した人には出ません。ただし<b>出産育児一時金</b>は資格喪失後6か月以内の出産なら受け取れます（別の給付・106条）。</p>
+</section>
+
+<section class="faq">
+  <h2>関連するツール・記事</h2>
+  <p>
+    <a href="../column/shussan-teate-kin/">出産手当金とは？産前産後の数え方・任意継続・退職時の注意点</a>（制度の解説記事）<br>
+    <a href="../shobyo/">傷病手当金 計算機</a>（病気やケガで働けないときの給付。日額は同じ算式）<br>
+    <a href="../ikuji/">育児休業給付金 計算機</a>（産後57日目から始まる育休の給付を計算する）<br>
+    <a href="../shakai-hoken/">社会保険料計算機</a>（標準報酬月額と毎月の保険料を確認する）
+  </p>
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 健康保険法 102条（出産手当金の額・支給期間・99条2項の準用）／99条（日額の算定・端数処理）／103条（傷病手当金との調整）／104条（資格喪失後の継続給付）／106条（資格喪失後の出産育児一時金）／108条2項（報酬との調整）／全国健康保険協会「出産手当金」<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcShussan } from "../assets/shussan_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const jp = (iso) => {
+  const [y, m, d] = iso.split("-").map(Number);
+  return `${y}年${m}月${d}日`;
+};
+
+// 参照データ（全被保険者の平均標準報酬月額）は非同期で届く。**これは答えの一部**
+// （被保険者期間12か月未満の人の上限額を決める）ので、届く前に押されても待つ。
+// 傷病手当金と同じ参照データ（shobyo_r08.json）を共用する（正本を2箇所に置かない）。
+let D = null;
+const dataReady = fetch("../assets/shobyo_r08.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { D = d; return true; })
+  .catch(() => false);
+
+// 出典の年度表示は**飾り**。ここで転んでも計算は止めない。
+dataReady.then((ok) => {
+  if (!ok || !D) return;
+  $("src-note").textContent = `（${D._meta.fiscal_year}・${D._meta.insurer}）`;
+}).catch(() => {});
+
+$("calc").addEventListener("click", async () => {
+  const ready = await dataReady;
+  const box = $("result");
+  if (!ready || !D) {
+    box.innerHTML = `<div class="callout"><b>参照データを読み込めませんでした。</b>` +
+      `通信環境を確認して、ページを再読み込みしてください。入社1年未満の方の上限額` +
+      `（全被保険者の平均標準報酬月額）が分からないまま金額を答えると、実際より高い額を` +
+      `信じて生活費の計画を誤るおそれがあるため、計算を止めています。</div>`;
+    return;
+  }
+
+  // ★出産予定日は必須。無いと産前・産後の日数も上限額の基準日も出せない。
+  const yoteibi = $("yoteibi").value;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(yoteibi)) {
+    box.innerHTML = `<div class="callout"><b>「出産予定日」を入力してください。</b>` +
+      `この日がないと、産前・産後の日数（産前は予定日の42日前から）を数えられません。</div>`;
+    return;
+  }
+  const shussanbi = $("shussanbi").value; // 空欄なら予定日で見込み（コア側で処理）
+  if (shussanbi && !/^\d{4}-\d{2}-\d{2}$/.test(shussanbi)) {
+    box.innerHTML = `<div class="callout">実際の出産日は日付で入れてください（まだの方は空欄でOK）。</div>`;
+    return;
+  }
+
+  const monthly = Number($("monthly").value);
+  const standardsRaw = $("standards").value.trim();
+  const standards = standardsRaw
+    ? standardsRaw.split(/[,、\s]+/).filter(Boolean).map(Number)
+    : null;
+
+  if (standards && standards.some((v) => !(v > 0))) {
+    box.innerHTML = `<div class="callout">標準報酬月額は、<b>0より大きい数をカンマ区切り</b>で入れてください。</div>`;
+    return;
+  }
+  if (!standards && !(monthly > 0)) {
+    box.innerHTML = `<div class="callout">月給（報酬月額）を入力してください。</div>`;
+    return;
+  }
+
+  let r;
+  try {
+    r = calcShussan({
+      yoteibi,
+      shussanbi: shussanbi || undefined,        // 空欄は予定日で見込み
+      tatai: $("tatai").checked,
+      standards,                                // 入っていれば monthly より優先
+      monthly,
+      months: Number($("months").value),
+      hoshuNichigaku: Number($("hoshuNichigaku").value),
+      ninnikeizoku: $("ninnikeizoku").checked,
+      taishokugo: $("taishokugo").checked,
+      heikinOverride: Number($("heikinOverride").value),
+    }, D);
+  } catch (e) {
+    box.innerHTML = `<div class="callout"><b>計算できませんでした。</b>${e.message}</div>`;
+    return;
+  }
+
+  // ── 任意継続だが104条の継続給付でない＝支給されない ─────────────────
+  if (!r.eligible) {
+    box.innerHTML = `
+      <div class="big">出産手当金 ¥0（支給されません）</div>
+      <div class="callout"><b>${r.message}</b></div>`;
+    return;
+  }
+
+  const adj = r.chosei;
+  const k = r.kikan;
+
+  // ★任意継続なのに支給される＝104条の継続給付。なぜ支給されるのかを必ず名乗る
+  const keizokuNote = r.via104
+    ? `<div class="callout"><b>これは「資格喪失後の継続給付」（健康保険法104条）として計算しています。</b>
+        任意継続被保険者でも、<b>退職する前から産前休業に入っていた方は受け続けられます</b>。
+        ★退職日に出社すると受けられなくなるので注意してください。</div>`
+    : "";
+
+  // 概算で計算したときは、その前提を必ず名乗る
+  const estimatedNote = r.estimated
+    ? `<div class="hint"><b>標準報酬月額は月給 ${yen(monthly)} から等級表を引いて概算しました</b>
+        （毎月同じ等級だったものとして計算しています）。昇給・降給があった方は、詳細欄の
+        <b>「標準報酬月額を月ごとに入れる」</b>に実際の額を入れると正確になります。</div>`
+    : `<div class="hint">標準報酬月額は入力された <b>${r.months}か月分</b>の実額で計算しました。</div>`;
+
+  // ★出産日を入れていないときは「予定日での見込み」であることを名乗る
+  const yoteiNote = k.shussanbiEstimated
+    ? `<div class="hint">実際の出産日が未入力のため、<b>予定日どおりに産まれた見込み</b>で計算しています。
+        遅れて産まれると<b>その日数ぶん増えます</b>ので、産まれたら出産日を入れ直してください。</div>`
+    : "";
+
+  // ★予定日とずれた場合、その効果を明示する
+  const delayNote = (!k.shussanbiEstimated && k.delay !== 0)
+    ? (k.delay > 0
+        ? `<div class="callout"><b>★出産が予定日より ${k.delay}日 遅れたため、産前が ${k.delay}日 延びています</b>
+            （その分 <b>${yen(r.paidNichigaku * k.delay)}</b> 増えました）。産前の起点が予定日に固定されるためです（102条1項）。</div>`
+        : `<div class="callout"><b>★出産が予定日より ${-k.delay}日 早かったため、産前が ${-k.delay}日 短くなっています</b>
+            （産前の起点が実際の出産日に戻るためです）。</div>`)
+    : "";
+
+  // ★被保険者期間12か月未満で上限にかかった人には、その理由と前提を開示する
+  const capNote = r.capped
+    ? `<div class="callout"><b>★この方は上限（1日 ${yen(r.cap)}）にかかっています。</b>
+        健康保険の被保険者期間が<b>${r.months}か月</b>（12か月未満）のため、①ご自身の平均から出した額
+        <b>${yen(r.own)}</b>ではなく、②<b>全被保険者の平均標準報酬月額 ${yen(r.heikin)}</b>
+        （${r.heikinLabel}）から出した額 <b>${yen(r.cap)}</b> の、<b>少ないほう</b>で計算されます
+        （健康保険法99条2項ただし書）。<b>健保組合の方は②の額が違います</b>ので、詳細欄で上書きしてください。</div>`
+    : "";
+
+  // ★給与との調整（108条2項）。「差額は出る」ことを必ず言う
+  let choseiNote = "";
+  if (adj.deduct > 0) {
+    choseiNote = adj.zero
+      ? `<div class="callout"><b>★給与（報酬）の日額 ${yen(adj.deduct)} が出産手当金の日額
+          ${yen(adj.amount)} 以上のため、出産手当金は支給されません</b>（健康保険法108条2項）。</div>`
+      : `<div class="callout"><b>★給与が出ていても、差額が支給されます。</b>
+          出産手当金の日額 <b>${yen(adj.amount)}</b> から給与の日額 <b>${yen(adj.deduct)}</b> を
+          差し引いた <b>${yen(adj.paid)}</b> が、1日あたり支給されます
+          （健康保険法108条2項ただし書）。<b>「給料が出ているから対象外」ではありません。</b></div>`;
+  }
+
+  const tataiLabel = k.tatai ? "（多胎妊娠）" : "";
+
+  box.innerHTML = `
+    <div class="big">出産手当金 ${yen(r.total)}<span style="font-size:15px;font-weight:600">（${r.days}日分）</span></div>
+    <div class="hint" style="margin-bottom:10px">1日あたり <b>${yen(r.paidNichigaku)}</b> × <b>${r.days}日</b></div>
+    ${keizokuNote}
+    ${delayNote}
+    ${capNote}
+    ${choseiNote}
+    <table class="res">
+      <tr><th>1日あたりの金額（日額）</th><td><b>${yen(r.paidNichigaku)}</b>${adj.deduct > 0 ? `（調整前 ${yen(adj.amount)}）` : ""}</td></tr>
+      <tr><th>標準報酬月額の平均 ÷ 30</th><td>${yen(r.base)}（10円未満を四捨五入）</td></tr>
+      <tr><th>産前${tataiLabel}</th><td>${k.sanzen}日${k.delay > 0 ? `（基準${k.sanzenBase}日＋遅れ${k.delay}日）` : k.delay < 0 ? `（基準${k.sanzenBase}日−早産${-k.delay}日）` : `（基準${k.sanzenBase}日）`}</td></tr>
+      <tr><th>産後</th><td>${k.sango}日</td></tr>
+      <tr><th>支給される日数</th><td><b>${r.days}日</b></td></tr>
+      <tr><th>支給期間</th><td>${jp(k.startDate)} 〜 ${jp(k.endDate)}</td></tr>
+      <tr><th>合計（支給額）</th><td><b>${yen(r.total)}</b></td></tr>
+    </table>
+    ${yoteiNote}
+    ${estimatedNote}
+    <div class="hint">★<b>産後57日目からは育児休業給付金</b>に切り替わり、<b>月額323,811円で頭打ち</b>になります。高収入の方ほど金額が下がるので、産休中の金額で家計を組まないでください。</div>`;
+});
+</script>
+</body>
+</html>
