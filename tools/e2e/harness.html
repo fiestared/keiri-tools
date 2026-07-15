@@ -1346,6 +1346,8 @@ const jutakuScene = (inp) => async () => {
   set(doc, "taika", inp.taika != null ? String(inp.taika) : "");
   set(doc, "shotoku", inp.shotoku != null ? String(inp.shotoku) : "");
   set(doc, "menseki", inp.menseki != null ? String(inp.menseki) : "");
+  set(doc, "shotokuzei", inp.shotokuzei != null ? String(inp.shotokuzei) : "");
+  set(doc, "kazei", inp.kazei != null ? String(inp.kazei) : "");
   if (inp.tokurei) check(doc, "tokurei", true);
   if (inp.keika) check(doc, "keika", true);
   click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
@@ -1375,6 +1377,16 @@ const jutakuScene = (inp) => async () => {
     showsCannotCompute: /この計算機では計算できません/.test(body),
     // ★総控除額は「上限のめやす」であって満額戻る額ではないことを画面が言う
     showsGaisan: /上限のめやす/.test(body),
+    // ★所得税額を入れたときだけ出る「実際に戻る税額」の内訳（総務省の一次情報どおり）
+    showsRefund: /実際に戻る税額（合計）/.test(body),
+    jitsuGenzei: num(/実際に戻る税額（合計）¥([\d,]+)/),
+    refundShotokuzei: num(/所得税から引かれる額¥([\d,]+)/),
+    refundJuminzei: num(/住民税から引かれる額¥([\d,]+)/),
+    kirisute: num(/控除枠のうち戻らない額（切り捨て）¥([\d,]+)/),
+    // ★課税総所得未入力 → 上限97,500円で概算した旨を必ず名乗る（黙って多めに言わない）
+    showsCapUnknown: /「課税総所得金額等」が未入力のため/.test(body),
+    // ★所得税額を入れていないときは、入れれば実額が分かる案内を出す
+    showsRefundPrompt: /実際に戻る（軽減される）税額を知りたいときは/.test(body),
     failed: /読み込めませんでした/.test(body),
     body,
   };
@@ -1400,6 +1412,20 @@ SCENES.jutaku_chuko_sonota = jutakuScene({ type: "chuko", kubun: "sonota", year:
 SCENES.jutaku_zokaichiku = jutakuScene({ type: "zokaichiku", kubun: "shoene", year: 2024, zandaka: 45000000 });
 // 参照データを配信できないとき → 控除額を出さずに断る（fail closed）。戻らない額を「戻る」と信じさせない
 SCENES.jutaku_nodata = jutakuScene({ kubun: "nintei", year: 2024, zandaka: 45000000 });
+// ★実際に戻る税額（総務省の一次情報）。期待値は core を通さず条文の率から積む。
+//   控除枠315,000（認定・令和6年・残高4,500万 × 0.7%）。所得税額25万・課税総所得600万を入れると:
+//     所得税から min(315,000,250,000)=250,000 / 住民税から min(65,000, min(600万×5%=30万,97,500))=65,000
+//     → 切り捨て0・実還付 250,000+65,000 = **315,000**（控除枠を満額使えた）。
+SCENES.jutaku_refund = jutakuScene({ kubun: "nintei", year: 2024, zandaka: 45000000, shotokuzei: 250000, kazei: 6000000 });
+// ★★「残高が大きい人ほど満額戻らない」＋住民税の5％上限が効くケース。控除枠315,000だが所得税額が7.5万円。
+//   所得税から75,000 / 住民税から min(240,000, min(150万×5%=**75,000**,97,500))=**75,000**（5％側が上限）
+//   → 実還付 75,000+75,000 = **150,000**・切り捨て **165,000**。
+//   ★課税総所得を渡し忘れると上限が97,500に化け、住民税75,000→97,500・実還付が172,500に過大化してここで落ちる。
+SCENES.jutaku_refund_capped = jutakuScene({ kubun: "nintei", year: 2024, zandaka: 45000000, shotokuzei: 75000, kazei: 1500000 });
+// ★課税総所得を入れない → 5％判定ができないので上限97,500で概算し、その旨を必ず名乗る（黙って多めに言わない）。
+//   同じ所得税額7.5万でも、住民税から min(240,000,97,500)=97,500 → 実還付 172,500・切り捨て142,500。
+//   ＝課税総所得を入れた jutaku_refund_capped（150,000）より多めに出る＝概算だと明示する義務がある。
+SCENES.jutaku_refund_nocap = jutakuScene({ kubun: "nintei", year: 2024, zandaka: 45000000, shotokuzei: 75000 });
 
 let state;
 try {

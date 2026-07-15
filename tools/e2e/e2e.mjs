@@ -425,6 +425,21 @@ const SCENES = [
   // ★黙って答えると、戻らない金額を「戻る」と信じて資金計画を誤らせる
   { name: "jutaku_nodata", data404: "jutaku_r07.json",
     expect: (s) => s.failed && s.nenkan === null },
+  // ── ★実際に戻る税額(総務省「所得税から住宅ローン控除額を引ききれなかった方」) ──────────
+  // 期待値は jutaku_core.js を通さず、控除枠と条文の率(5%・97,500円)から手で積む。
+  // 控除枠315,000・所得税25万・課税総所得600万 → 所得税から25万＋住民税から6.5万 = **31.5万円**が満額戻る(切り捨て0)。
+  { name: "jutaku_refund", expect: (s) =>
+      s.showsRefund && s.jitsuGenzei === 315000 && s.refundShotokuzei === 250000 &&
+      s.refundJuminzei === 65000 && s.kirisute === null && !s.showsCapUnknown && !s.failed },
+  // ★★控除枠315,000だが所得税7.5万・課税総所得150万 → 住民税上限は5%側の75,000で頭打ち。
+  //   実還付150,000・切り捨て165,000。★課税総所得の渡し忘れ(97,500に化ける)をこのシーンが捕まえる。
+  { name: "jutaku_refund_capped", expect: (s) =>
+      s.showsRefund && s.jitsuGenzei === 150000 && s.refundShotokuzei === 75000 &&
+      s.refundJuminzei === 75000 && s.kirisute === 165000 && !s.showsCapUnknown && !s.failed },
+  // ★課税総所得を入れない → 上限97,500で概算し、その旨を名乗る(fail closed)。実還付172,500・切り捨て142,500。
+  { name: "jutaku_refund_nocap", expect: (s) =>
+      s.showsRefund && s.jitsuGenzei === 172500 && s.refundJuminzei === 97500 &&
+      s.showsCapUnknown && !s.failed },
 ];
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",

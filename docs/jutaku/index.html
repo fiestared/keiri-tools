@@ -138,7 +138,7 @@
   <div class="hint">その年の<b>12月31日時点の住宅ローンの残高</b>を入れてください。控除額は毎年この残高で決まるので、<b>返済が進むほど控除額は減っていきます</b>。</div>
 
   <details style="margin-top:12px">
-    <summary>くわしく計算する（取得対価・所得・床面積・子育て世帯の特例）</summary>
+    <summary>くわしく計算する（★実際に戻る額・取得対価・所得・床面積・子育て世帯の特例）</summary>
     <div style="margin-top:10px">
       <label style="font-weight:400;display:block;margin-top:2px">
         <input type="checkbox" id="tokurei"> <b>特例対象個人（子育て世帯・若者夫婦世帯）</b>である
@@ -166,6 +166,14 @@
       <label for="menseki" style="margin-top:12px">床面積（㎡）<span style="font-weight:400;font-size:12px;color:var(--sub)">　任意</span></label>
       <input type="number" id="menseki" value="" placeholder="空欄でOK" inputmode="numeric">
       <div class="hint">登記事項証明書の床面積（マンションは専有部分）です。<b>50㎡以上</b>が原則。<b>40㎡以上50㎡未満</b>は「特例居住用家屋」として<b>合計所得1,000万円以下</b>なら対象。<b>40㎡未満は対象外</b>です。</div>
+
+      <label for="shotokuzei" style="margin-top:12px">その年の所得税額（住宅ローン控除を受ける前・円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　任意</span></label>
+      <input type="number" id="shotokuzei" value="" placeholder="空欄でOK" inputmode="numeric">
+      <div class="hint">★これを入れると<b>実際に戻る（軽減される）税額</b>を計算します。<b>源泉徴収票の「源泉徴収税額」や確定申告書の所得税額</b>（住宅ローン控除を差し引く<b>前</b>の額）を入れてください。年間の控除額がこの所得税額を上回ると、はみ出した分は<b>翌年度の住民税</b>から一定額まで引かれ、それでも余ると<b>戻りません</b>。</div>
+
+      <label for="kazei" style="margin-top:12px">課税総所得金額等（円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　任意</span></label>
+      <input type="number" id="kazei" value="" placeholder="空欄でOK" inputmode="numeric">
+      <div class="hint">住民税から引ける上限は<b>「課税総所得金額等 × 5％」と「97,500円」の小さいほう</b>です。課税総所得金額等（＝所得税の課税所得金額）を入れると上限をより正確に判定します。<b>空欄のときは上限97,500円で概算</b>し、実際はこれより下がることがある旨をお知らせします。</div>
     </div>
   </details>
 
@@ -205,7 +213,7 @@
   <p>各年の控除額は<b>その年の年末残高</b>で決まり、<b>返済が進むほど毎年少なくなります</b>。総控除額は「年間控除額 × 控除期間」で出した<b>上限の概算</b>で、実際はこれより少なくなります。</p>
   <div class="note">
     <b>控除しきれない分は「その年の所得税額」が上限です</b>
-    年間の控除額がその年の<b>所得税額</b>を上回ると、上回った分は<b>翌年度の住民税</b>から一定額まで引かれ、それでも余ると<b>切り捨て（戻りません）</b>。<b>残高が大きい人ほど、この上限に当たって満額は戻りません。</b>この計算機は各年の控除額の<b>上限</b>を出すもので、実際の還付・軽減額はあなたの所得税額によって決まります。
+    年間の控除額がその年の<b>所得税額</b>を上回ると、上回った分は<b>翌年度の住民税</b>から一定額まで引かれ、それでも余ると<b>切り捨て（戻りません）</b>。<b>残高が大きい人ほど、この上限に当たって満額は戻りません。</b>この計算機は各年の控除額の<b>上限</b>を出しますが、上の「くわしく計算する」で<b>所得税額</b>を入れると、<b>実際に戻る税額（所得税から◯円・住民税から◯円・切り捨て◯円）</b>まで内訳を計算します。
   </div>
 
   <div class="note">
@@ -317,6 +325,8 @@ $("calc").addEventListener("click", async () => {
       keikaSochi: $("keika").checked,
       goukeiShotoku: numOrNull("shotoku"),
       menseki: numOrNull("menseki"),
+      shotokuzeiGaku: numOrNull("shotokuzei"),
+      kazeiSotokugaku: numOrNull("kazei"),
     }, D);
   } catch (e) {
     box.innerHTML = `<div class="callout"><b>計算できませんでした。</b>${e.message}</div>`;
@@ -391,6 +401,38 @@ $("calc").addEventListener("click", async () => {
     ? `<div class="hint">年末残高が借入限度額（${man(r.shakunyuGendoEn)}）を超えているため、控除の対象は借入限度額で頭打ちになっています。</div>`
     : "";
 
+  // ── ★実際に戻る（軽減される）税額 ────────────────────────────────────────
+  // 所得税額を入れたときだけ内訳を出す（未入力なら「上限のめやす」のまま＝黙って満額戻ると言わない）。
+  // 数字は core の juminzeiKoujo() が総務省の一次情報どおりに積んだもの。ページは並べるだけ。
+  const j = r.juminzei;
+  let refundBlock;
+  if (j) {
+    // 課税総所得未入力 → 5％判定ができず上限97,500円で概算。実額はさらに下がりうる旨を必ず言う（fail closed）
+    const capUnknownNote = j.juminzeiCapUnknown
+      ? `<div class="hint">「課税総所得金額等」が未入力のため、住民税からの控除上限を<b>${yen(j.juminzeiCapB)}</b>で概算しています。実際の上限は<b>課税総所得金額等 × 5％</b>なので、これより下がって実際の戻りが少なくなることがあります（詳細欄で課税総所得金額等を入れると正確になります）。</div>`
+      : "";
+    const kirisuteRow = j.kirisute > 0
+      ? `<tr><th>控除枠のうち戻らない額（切り捨て）</th><td><b>${yen(j.kirisute)}</b>（所得税でも住民税でも引ききれなかった分）</td></tr>`
+      : "";
+    const jitsuMsg = j.kirisute > 0
+      ? `<div class="note"><b>★控除枠${yen(j.koujoKanou)}のうち、実際に戻るのは${yen(j.jitsuGenzei)}です（${yen(j.kirisute)}は戻りません）。</b>年間の控除額が所得税額（${yen(j.shotokuzeiGaku)}）を上回り、住民税からの控除上限（${yen(j.juminzeiCapB)}）も超えたためです。<b>年末残高が大きい人・所得税額が小さい人ほど、この切り捨てが大きくなります。</b></div>`
+      : `<div class="note"><b>★控除枠${yen(j.koujoKanou)}が、実際にそのまま戻ります（切り捨てなし）。</b>所得税から${yen(j.shotokuzeiKoujo)}、住民税から${yen(j.juminzeiKoujoGaku)}が軽減されます。</div>`;
+    refundBlock = `
+      <div class="big" style="margin-top:16px">実際に戻る税額（この年の実質の軽減）${yen(j.jitsuGenzei)}</div>
+      <table class="res">
+        <tr><th>この年の控除枠（控除可能額）</th><td>${yen(j.koujoKanou)}</td></tr>
+        <tr><th>所得税から引かれる額</th><td>${yen(j.shotokuzeiKoujo)}（所得税額${yen(j.shotokuzeiGaku)}が上限）</td></tr>
+        <tr><th>住民税から引かれる額</th><td>${yen(j.juminzeiKoujoGaku)}（上限${yen(j.juminzeiCapB)}）</td></tr>
+        ${kirisuteRow}
+        <tr><th>実際に戻る税額（合計）</th><td><b>${yen(j.jitsuGenzei)}</b></td></tr>
+      </table>
+      ${jitsuMsg}
+      ${capUnknownNote}`;
+  } else {
+    // 所得税額を入れていない → 実額は出さず、入れれば分かることを案内する（黙って満額と言わない）
+    refundBlock = `<div class="note"><b>実際に戻る（軽減される）税額を知りたいときは、上の「くわしく計算する」で「所得税額」を入力してください。</b>住宅ローン控除は年間の控除額がそのまま戻るとは限らず、その年の<b>所得税額</b>と<b>翌年度の住民税の上限</b>までしか軽減されません。</div>`;
+  }
+
   box.innerHTML = `
     <div class="big">控除額（1年あたり・上限）${yen(r.nenkanKoujo)}</div>
     <div class="hint" style="margin-bottom:10px">${r.isChuko ? "中古（既存住宅）・" : ""}${kubunLabel}・${yearLabel}に入居</div>
@@ -412,7 +454,8 @@ $("calc").addEventListener("click", async () => {
       各年の控除額は<b>その年の年末残高</b>で決まり、<b>返済が進むほど毎年減ります</b>。総控除額（${yen(r.soKoujoGaisan)}）は「年間控除額 × ${r.kikan}年」で出した<b>上限の概算</b>で、実際はこれより少なくなります。
       さらに<b>控除しきれない分はその年の所得税額が上限</b>（余りは翌年度の住民税から一定額まで）なので、<b>残高が大きい人ほど満額は戻りません</b>。
     </div>
-    <div class="hint">各年の控除額は<b>100円未満を切り捨て</b>ています（借入残高 × 0.7％）。初年度は<b>確定申告</b>が必要です（2年目以降は年末調整で受けられます）。</div>`;
+    ${refundBlock}
+    <div class="hint">各年の控除額は<b>100円未満を切り捨て</b>ています（借入残高 × 0.7％）。初年度は<b>確定申告</b>が必要です（2年目以降は年末調整で受けられます）。実際に戻る税額はその年の<b>所得税額</b>で決まるので、上の「くわしく計算する」で所得税額を入れると内訳が出ます。</div>`;
 });
 </script>
 </body>

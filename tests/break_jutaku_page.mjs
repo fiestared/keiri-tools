@@ -95,6 +95,25 @@ const MUTATIONS = [
     apply: (s) => s.replace(/^      type,\n/m, '      type: "shinchiku",\n'),
   },
   {
+    // ★所得税額の渡し忘れ → juminzei が null になり「実際に戻る税額」の内訳が**行ごと消える**。
+    //   無い行はレビューでも本番でも見えない（§39と同型）。控除額だけ出て「実額」が黙って消える。
+    name: "★ページが所得税額（shotokuzeiGaku）を渡し忘れる（実還付の内訳が丸ごと消える）",
+    scene: "jutaku_refund",
+    file: PAGE,
+    src: () => pageOrig,
+    apply: (s) => s.replace(/^      shotokuzeiGaku: numOrNull\("shotokuzei"\),\n/m, "      shotokuzeiGaku: null,\n"),
+  },
+  {
+    // ★★課税総所得の渡し忘れ → 住民税上限が「課税総所得×5％」でなく一律97,500円に化ける。
+    //   低所得者（5％側が先に上限）に、住民税控除を過大に、実還付を多めに答える（黙って多めに言う）。
+    //   jutaku_refund_capped（150,000）が172,500に化けてここで落ちる。
+    name: "★★ページが課税総所得（kazeiSotokugaku）を渡し忘れる（5％上限が効かず実還付を過大表示）",
+    scene: "jutaku_refund_capped",
+    file: PAGE,
+    src: () => pageOrig,
+    apply: (s) => s.replace(/^      kazeiSotokugaku: numOrNull\("kazei"\),\n/m, "      kazeiSotokugaku: null,\n"),
+  },
+  {
     // ★★控除率を 0.7% ではなく 1%（＝2021年までの入居の率）にすると、全ツールが**約1.4倍に過大表示**。
     //   率は JSON の koujo_ritsu_permille だけを正本にしているので、そこを壊すと 315,000 が 450,000 に。
     name: "★★控除率を0.7%でなく1%にする（データを 7→10 に）＝約1.4倍の過大表示",
