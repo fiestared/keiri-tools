@@ -1071,6 +1071,60 @@ SCENES.tedori_none = tedoriScene({ gross: 300000, jmode: "none" });
 //   年150,600 → 月12,550 → 手取り 237,060円。住民税の配線(年収×12・社保実額)が狂えば落ちる
 SCENES.tedori_estimate = tedoriScene({ gross: 300000, jmode: "estimate", juminAnnual: 150600 });
 
+// ── 年収の壁 (/kabe/) ─────────────────────────────────────────────────────
+// ★このツールは shaho_core.calcMonthly の合成。E2Eは「年収→壁判定→社保→手取り」の配線を見る。
+//   独立オラクル: 社会保険料 = 協会けんぽ額表の各項目(健保±介護/子育て支援金/厚年)を50銭以下切捨で
+//   丸めて合算 ×12（雇用保険は含めない＝壁の前後で増減しないため。記事の手取り定義と同じ）。
+//   ★kabe_core を一切通さず、fixture の折半額と端数処理だけから積む（被検体と別実装）。
+const round58 = (h) => (h - Math.floor(h) > 0.5 ? Math.ceil(h) : Math.floor(h)); // 50銭超で切上・以下切捨
+const kabeSiAnnual = (kenpo, std, age) => {
+  const g = kenpo.grades.find((x) => x.standard === std);
+  const kaigo = age >= 40 && age < 65;
+  const monthly = round58(kaigo ? g.kenko_kaigo_half : g.kenko_half) + round58(g.kosodate_half) + round58(g.kosei_half);
+  return monthly * 12;
+};
+const kabeScene = ({ annual, age = 30, pref = "東京都", wall = "hifuyousha", wallAmt, std }) => async () => {
+  const doc = await open("/docs/kabe/");
+  const kenpo = await (await fetch("/tests/fixtures/kyoukaikenpo_tokyo_r08.json?raw=1")).json();
+  await waitFor(() => doc.querySelector('#pref option[value="東京都"]'), "都道府県の選択肢");
+  set(doc, "pref", pref);
+  pickRadio(doc, "wall", wall);
+  set(doc, "age", String(age));
+  set(doc, "annual", String(annual));
+  click(doc, "calc"); // 参照データの到着を待たずに押す(実ユーザーと同じ)
+
+  await waitFor(
+    () => /扶養内|いまの手取り|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "年収の壁の計算結果");
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+
+  // ── ハーネス側の独立オラクル ──
+  const joins = annual >= wallAmt;
+  const si = joins ? kabeSiAnnual(kenpo, std, age) : 0;     // 加入時のみ社保。std は当該年収の標準報酬月額
+  const expectedTedori = annual - si;
+  const expectedBottom = wallAmt - kabeSiAnnual(kenpo, std, age); // 壁ちょうどで加入した手取り(底)
+
+  return {
+    annual, wall, joins,
+    current: num(/いまは扶養内 ¥([\d,]+)/),                 // 扶養内(未加入)のとき
+    tedori: num(/いまの手取り ¥([\d,]+)/),                  // 加入者のとき
+    bottom: num(/手取りは¥([\d,]+)まで下がります/),
+    shaho: num(/社会保険料 ¥([\d,]+)／年/),
+    recoveryShown: num(/元の手取りに戻る年収 ¥([\d,]+)/),
+    expectedTedori, expectedBottom, expectedSi: si,
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// ★看板の答え(東京都・30歳・130万の壁): 年収129万(扶養内)→手取り129万・壁の底(130万加入)112万2,704・回復150万5,000
+SCENES.kabe = kabeScene({ annual: 1290000, std: 110000, wallAmt: 1300000 });
+SCENES.kabe_slow = SCENES.kabe;   // 800ms遅らせる(モバイル回線)。待って正答すること
+// 加入側(131万): 社保187,296を引いて手取り112万2,704。合成の配線が狂えば落ちる
+SCENES.kabe_join = kabeScene({ annual: 1310000, std: 110000, wallAmt: 1300000 });
+// 基準額を配信できない → 手取りを出さず断る(fail closed)
+SCENES.kabe_nodata = kabeScene({ annual: 1290000, std: 110000, wallAmt: 1300000 });
+
 // ── 傷病手当金 ──────────────────────────────────────────────────────────
 // ★期待値は shobyo_core.js を一切通さず、**保険者が実額で公表している計算例**と条文から積み上げる。
 //

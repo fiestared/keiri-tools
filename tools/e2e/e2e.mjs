@@ -262,6 +262,22 @@ const SCENES = [
       s.tedori === s.expectedTedori && s.tedori === 237060 &&
       s.juminMonthly === s.expectedJumin && s.juminMonthly === 12550 && !s.failed },
 
+  // ── 年収の壁 (/kabe/) ────────────────────────────────────────────────
+  // ★合成(壁判定→社保→手取り)とページ配線を見る。独立オラクルは協会けんぽ額表の端数処理で組む。
+  //   東京都・30歳・130万の壁: 年収129万(扶養内)→手取り129万・壁の底(130万加入)112万2,704・回復150万5,000。
+  { name: "kabe", expect: (s) =>
+      s.current === s.expectedTedori && s.current === 1290000 &&
+      s.bottom === s.expectedBottom && s.bottom === 1112704 &&
+      s.recoveryShown === 1505000 && !s.failed },
+  // 加入側(131万): 社保187,296を引いて手取り112万2,704
+  { name: "kabe_join", expect: (s) =>
+      s.tedori === s.expectedTedori && s.tedori === 1122704 && s.shaho === 187296 && !s.failed },
+  { name: "kabe_slow", slow: true, expect: (s) =>
+      s.current === 1290000 && s.bottom === 1112704 && s.recoveryShown === 1505000 && !s.failed },
+  // 基準額・料率を配信できない → 手取りを出さず断る(fail closed)。黙って壁ゼロの手取りを信じさせない
+  { name: "kabe_nodata", data404: "kabe_thresholds_r08.json",
+    expect: (s) => s.failed && s.current === null && s.tedori === null },
+
   // ── 傷病手当金 ────────────────────────────────────────────────────────
   // ★期待値は**保険者が実額で公表している計算例**(コアを一切通さない。詳細は harness.html)。
   //   協会けんぽ: 標準報酬16万×6 + 18万×6 → 平均17万 → ÷30=5,670 → ×2/3 = **3,780円/日**。
