@@ -220,8 +220,12 @@ articles.sort((a, b) => {
 // 名乗ることになり、Googleは lastmod が当てにならないと学習して**以後この値を無視する**
 // (= 本当に更新した日を伝える手段を自分で捨てる)。
 // 未コミット/未追跡のファイルだけは「今まさに変わっている」ので今日でよい(こちらも真)。
+// ★末尾の改行だけ落とす。`.trim()` にすると status --porcelain の**1行目の先頭スペース**
+//   (` M path` の状態カラム)まで削れ、**dirty一覧の先頭ファイルだけ** slice(3) が path を
+//   1文字食う(`docs/…`→`ocs/…`)→照合が外れ lastmod が古いまま/新規ページなら丸ごと落ちる
+//   (2026-07-17 第12便で実発生: 先頭の denchoho-index だけ lastmod が更新されなかった)。
 const git = (...a) => {
-  try { return execFileSync("git", a, { cwd: DOCS, encoding: "utf8" }).trim(); }
+  try { return execFileSync("git", a, { cwd: DOCS, encoding: "utf8" }).replace(/\s+$/, ""); }
   catch { return ""; }
 };
 const TODAY = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }); // YYYY-MM-DD
