@@ -1160,6 +1160,42 @@ SCENES.sozokuzei_below = sozokuScene({ isan: 4000, spouse: true, koReal: 2 });
 // 参照データ配信不可 → 税額を出さずに断る（fail closed）。
 SCENES.sozokuzei_nodata = sozokuScene({ isan: 10000, spouse: true, koReal: 2 });
 
+// ── 贈与税 (/zoyozei/) ──────────────────────────────────────────────────────
+// ★その年に受けた贈与の合計から暦年課税の贈与税額を出す。基礎控除110万は合計から1回だけ。
+//   特例税率（直系尊属→18歳以上）／一般税率／両方受けた年の按分（No.4408）の配線を見る。入力は万円。
+const zoyoScene = ({ tokurei = 0, ippan = 0 }) => async () => {
+  const doc = await open("/docs/zoyozei/");
+  set(doc, "tokurei", String(tokurei));
+  set(doc, "ippan", String(ippan));
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /贈与税額|贈与税はかかりません|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "贈与税の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    tokurei, ippan,
+    zei: num(/贈与税額[^¥]*¥([\d,]+)/),  // 贈与税額（100円未満切り捨て後）
+    below: /贈与税はかかりません/.test(body),
+    showsYear: /令和\d+年/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// ★No.4408例: 特例500万（父母から18歳以上へ）→ 48.5万円。基礎控除110万→390万→特例15%−10万 の配線。
+SCENES.zoyozei = zoyoScene({ tokurei: 500 });
+SCENES.zoyozei_slow = SCENES.zoyozei;   // 800ms遅らせる（モバイル回線）。待って正答すること
+// ★一般500万 → 53万円（特例より重い＝税率の取り違えを検出）。
+SCENES.zoyozei_ippan = zoyoScene({ ippan: 500 });
+// ★混在（一般100万＋特例400万）→ 49.4万円（按分・No.4408 (3)）。
+SCENES.zoyozei_mixed = zoyoScene({ ippan: 100, tokurei: 400 });
+// ★合計110万以下（特例100万）→ 非課税を明言。黙って税額を出さない。
+SCENES.zoyozei_below = zoyoScene({ tokurei: 100 });
+// 参照データ配信不可 → 税額を出さずに断る（fail closed）。
+SCENES.zoyozei_nodata = zoyoScene({ tokurei: 500 });
+
 // ── 年収の壁 (/kabe/) ─────────────────────────────────────────────────────
 // ★このツールは shaho_core.calcMonthly の合成。E2Eは「年収→壁判定→社保→手取り」の配線を見る。
 //   独立オラクル: 社会保険料 = 協会けんぽ額表の各項目(健保±介護/子育て支援金/厚年)を50銭以下切捨で

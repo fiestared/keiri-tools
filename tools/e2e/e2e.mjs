@@ -304,6 +304,25 @@ const SCENES = [
   { name: "sozokuzei_nodata", data404: "sozokuzei_r08.json",
     expect: (s) => s.failed && s.sogaku === null },
 
+  // ── 贈与税 (/zoyozei/) ───────────────────────────────────────────────
+  // ★No.4408例: 特例500万 → 48.5万円。基礎控除110万→390万→特例税率15%−10万 の配線が1段でも狂えば落ちる。
+  { name: "zoyozei", expect: (s) =>
+      s.zei === 485000 && s.showsYear && !s.failed },
+  { name: "zoyozei_slow", slow: true, expect: (s) =>
+      s.zei === 485000 && !s.failed },
+  // ★一般500万 → 53万円（特例より重い＝一般/特例の取り違えを検出。特例なら48.5万で落ちる）。
+  { name: "zoyozei_ippan", expect: (s) =>
+      s.zei === 530000 && !s.failed },
+  // ★混在（一般100万＋特例400万）→ 49.4万円（按分・No.4408 (3)）。按分を落とせば別の額で落ちる。
+  { name: "zoyozei_mixed", expect: (s) =>
+      s.zei === 494000 && !s.failed },
+  // ★合計110万以下（特例100万）→ 相続税ならぬ贈与税0を明言。黙って税額を出さない。
+  { name: "zoyozei_below", expect: (s) =>
+      s.below && s.zei === null && !s.failed },
+  // 参照データ配信不可 → 税額を出さずに断る(fail closed)。過大/過少な税額を信じさせない
+  { name: "zoyozei_nodata", data404: "zoyozei_r08.json",
+    expect: (s) => s.failed && s.zei === null },
+
   // ── 年収の壁 (/kabe/) ────────────────────────────────────────────────
   // ★合成(壁判定→社保→手取り)とページ配線を見る。独立オラクルは協会けんぽ額表の端数処理で組む。
   //   東京都・30歳・130万の壁: 年収129万(扶養内)→手取り129万・壁の底(130万加入)112万2,704・回復150万5,000。

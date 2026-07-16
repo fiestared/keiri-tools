@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>贈与税 計算機｜暦年課税でいくらかかるか自動計算【令和8年・一般／特例税率】</title>
+<meta name="description" content="その年に受けた贈与の合計額を入れるだけで、暦年課税の贈与税額を自動計算。基礎控除は年110万円（もらった人の合計から1回だけ）。直系尊属（父母・祖父母）から18歳以上で受けた贈与は特例税率、それ以外は一般税率で、両方受けた年は按分計算にも対応。合計110万円以下なら贈与税0・申告不要。令和8年・登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/zoyozei/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "贈与税 計算機（暦年課税）",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+      "description": "その年に受けた贈与財産の合計額から、暦年課税の贈与税額の目安を計算します。基礎控除110万円・一般税率／特例税率の速算表・両方受けた年の按分計算に対応。令和8年。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://keiri-tools.com/" },
+        { "@type": "ListItem", "position": 2, "name": "贈与税 計算機" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "贈与税は年間いくらまでなら非課税ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "暦年課税では、1年間（1月1日から12月31日まで）に受け取った贈与財産の合計額が110万円以下なら贈与税はかかりません（基礎控除）。この110万円は、もらった人1人につき1年で1回だけです。複数の人から贈与を受けても、贈与者ごとに110万円ではなく、合計額から110万円を1回だけ差し引きます。合計が110万円以下なら申告も不要です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "一般税率と特例税率はどう違いますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "特例税率は、父母や祖父母などの直系尊属から、受け取った年の1月1日に18歳以上の子や孫が受けた贈与に使う税率で、一般税率より負担が軽くなっています。直系尊属以外（配偶者・兄弟姉妹・他人など）から受けた贈与や、直系尊属からでも受け取った年の1月1日に18歳未満だった場合は一般税率です。18歳は令和4年4月1日以後の贈与についてで、それより前の贈与は20歳です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "同じ年に父母からと他人からの両方の贈与を受けたらどう計算しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "一般贈与財産と特例贈与財産の両方を同じ年に受けた場合は按分計算になります。まず合計額から基礎控除110万円を1回だけ引き、その金額を全額一般贈与財産として計算した税額に一般贈与財産の割合を掛けた額と、全額特例贈与財産として計算した税額に特例贈与財産の割合を掛けた額を合計します。このツールは一般と特例の両方に金額を入れると、この按分計算で税額を出します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "暦年課税と相続時精算課税はどちらで計算されますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "このツールは暦年課税で計算します。相続時精算課税は、届出を出した特定の贈与者からの贈与について、累計2,500万円の特別控除と令和6年からの年110万円の基礎控除で計算する別の制度で、このツールの対象外です。相続時精算課税を選んでいる贈与者からの贈与は、この目安には含めず、税理士や国税庁の相続税・贈与税の申告書等作成コーナーで確認してください。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 贈与税 計算機</nav>
+
+<section class="hero">
+  <h1>贈与税 計算機（暦年課税）</h1>
+  <p>その年（1月1日〜12月31日）に受けた<b>贈与財産の合計額</b>を入れるだけで、<b>暦年課税</b>の贈与税額を自動計算します。<b>基礎控除は年110万円</b>（もらった人の合計から1回だけ）。<b>直系尊属（父母・祖父母）から18歳以上で受けた贈与は特例税率</b>、それ以外は<b>一般税率</b>。両方受けた年の<b>按分計算</b>にも対応。合計110万円以下なら贈与税は0円。<b>令和8年</b>。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b>どちらの欄に入れる？</b>
+    <b>特例贈与財産</b>＝<b>父母・祖父母（直系尊属）</b>から、あなたが受け取った年の<b>1月1日に18歳以上</b>で受けた贈与。<b>一般贈与財産</b>＝それ以外（配偶者・兄弟姉妹・他人などから、または受け取った年に18歳未満で受けた贈与）。★<b>ほとんどの人はどちらか一方だけ</b>を入れます。同じ年に両方を受けたときだけ両方に入れてください（按分で計算します）。
+  </div>
+
+  <label for="tokurei">特例贈与財産の合計（<b>万円</b>）<span class="hint">　父母・祖父母から、あなたが18歳以上で受けた贈与。例: 500 なら500万円</span></label>
+  <input type="number" id="tokurei" value="0" min="0" inputmode="numeric" placeholder="例: 500">
+  <div id="tokurei-echo" class="hint" style="margin:-6px 0 10px"></div>
+
+  <label for="ippan">一般贈与財産の合計（<b>万円</b>）<span class="hint">　直系尊属以外から、または18歳未満で受けた贈与。無ければ0のまま</span></label>
+  <input type="number" id="ippan" value="0" min="0" inputmode="numeric" placeholder="例: 0">
+  <div id="ippan-echo" class="hint" style="margin:-6px 0 10px"></div>
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>使い方と注意点</h2>
+  <div class="callout">
+    <b>まず「合計110万円」を超えるかどうか</b>
+    暦年課税の贈与税は、その年に受け取った贈与財産の<b>合計額が110万円（基礎控除）を超えたとき</b>だけかかります。★この<b>110万円は、もらった人1人につき1年で1回だけ</b>。複数の人から贈与を受けても、贈与者ごとに110万円ではなく、<b>合計額から1回だけ</b>差し引きます。合計110万円以下なら贈与税は0円で、申告も不要です。
+  </div>
+  <div class="callout">
+    <b>税率は「基礎控除後の課税価格」に当てます</b>
+    贈与税額は、①その年の贈与の合計額から基礎控除110万円を引いて<b>基礎控除後の課税価格</b>を出し、②その金額の帯の<b>税率を掛けて控除額を引き</b>ます（速算表）。★<b>特例税率</b>（父母・祖父母から18歳以上へ）は<b>一般税率</b>より負担が軽く、条件を満たすときだけ使えます。片方でも欠ければ一般税率です。
+  </div>
+
+  <h3>特例贈与財産用の速算表（令和8年・国税庁 No.4408）</h3>
+  <p class="hint" style="margin:2px 0 8px">直系尊属（父母・祖父母）から、受け取った年の1月1日に18歳以上で受けた贈与</p>
+  <table id="sokusanhyo-tokurei" class="tbl">
+    <thead><tr><th>基礎控除後の課税価格</th><th>税率</th><th>控除額</th></tr></thead>
+    <tbody>
+      <tr><td>200万円以下</td><td>10%</td><td>—</td></tr>
+      <tr><td>200万円超 400万円以下</td><td>15%</td><td>10万円</td></tr>
+      <tr><td>400万円超 600万円以下</td><td>20%</td><td>30万円</td></tr>
+      <tr><td>600万円超 1,000万円以下</td><td>30%</td><td>90万円</td></tr>
+      <tr><td>1,000万円超 1,500万円以下</td><td>40%</td><td>190万円</td></tr>
+      <tr><td>1,500万円超 3,000万円以下</td><td>45%</td><td>265万円</td></tr>
+      <tr><td>3,000万円超 4,500万円以下</td><td>50%</td><td>415万円</td></tr>
+      <tr><td>4,500万円超</td><td>55%</td><td>640万円</td></tr>
+    </tbody>
+  </table>
+
+  <h3>一般贈与財産用の速算表（令和8年・国税庁 No.4408）</h3>
+  <p class="hint" style="margin:2px 0 8px">直系尊属以外（配偶者・兄弟姉妹・他人など）から、または18歳未満で受けた贈与</p>
+  <table id="sokusanhyo-ippan" class="tbl">
+    <thead><tr><th>基礎控除後の課税価格</th><th>税率</th><th>控除額</th></tr></thead>
+    <tbody>
+      <tr><td>200万円以下</td><td>10%</td><td>—</td></tr>
+      <tr><td>200万円超 300万円以下</td><td>15%</td><td>10万円</td></tr>
+      <tr><td>300万円超 400万円以下</td><td>20%</td><td>25万円</td></tr>
+      <tr><td>400万円超 600万円以下</td><td>30%</td><td>65万円</td></tr>
+      <tr><td>600万円超 1,000万円以下</td><td>40%</td><td>125万円</td></tr>
+      <tr><td>1,000万円超 1,500万円以下</td><td>45%</td><td>175万円</td></tr>
+      <tr><td>1,500万円超 3,000万円以下</td><td>50%</td><td>250万円</td></tr>
+      <tr><td>3,000万円超</td><td>55%</td><td>400万円</td></tr>
+    </tbody>
+  </table>
+
+  <div class="note">
+    <b>このツールは「目安」です。</b>相続時精算課税（届出を出した贈与者からの累計2,500万円の特別控除＋令和6年からの年110万円の基礎控除）は<b>別制度で対象外</b>です。また、住宅取得等資金・教育資金・結婚子育て資金の一括贈与の非課税、扶養義務者からの生活費・教育費、配偶者への居住用不動産2,000万円控除などの<b>非課税の特例は反映していません</b>。正確な税額は<b>税理士や国税庁の「相続税・贈与税の申告書等作成コーナー」</b>で確認してください。贈与税の申告・納付の期限は、贈与を受けた年の翌年の<b>2月1日から3月15日まで</b>です。
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>贈与税は年間いくらまでなら非課税ですか？</h3>
+  <p>暦年課税では、1年間（1月1日から12月31日まで）に受け取った贈与財産の合計額が110万円以下なら贈与税はかかりません（基礎控除）。この110万円は、もらった人1人につき1年で1回だけです。複数の人から贈与を受けても、贈与者ごとに110万円ではなく、合計額から110万円を1回だけ差し引きます。合計が110万円以下なら申告も不要です。</p>
+  <h3>一般税率と特例税率はどう違いますか？</h3>
+  <p>特例税率は、父母や祖父母などの直系尊属から、受け取った年の1月1日に18歳以上の子や孫が受けた贈与に使う税率で、一般税率より負担が軽くなっています。直系尊属以外（配偶者・兄弟姉妹・他人など）から受けた贈与や、直系尊属からでも受け取った年の1月1日に18歳未満だった場合は一般税率です。18歳は令和4年4月1日以後の贈与についてで、それより前の贈与は20歳です。</p>
+  <h3>同じ年に父母からと他人からの両方の贈与を受けたらどう計算しますか？</h3>
+  <p>一般贈与財産と特例贈与財産の両方を同じ年に受けた場合は按分計算になります。まず合計額から基礎控除110万円を1回だけ引き、その金額を全額一般贈与財産として計算した税額に一般贈与財産の割合を掛けた額と、全額特例贈与財産として計算した税額に特例贈与財産の割合を掛けた額を合計します。このツールは一般と特例の両方に金額を入れると、この按分計算で税額を出します。</p>
+  <h3>暦年課税と相続時精算課税はどちらで計算されますか？</h3>
+  <p>このツールは暦年課税で計算します。相続時精算課税は、届出を出した特定の贈与者からの贈与について、累計2,500万円の特別控除と令和6年からの年110万円の基礎控除で計算する別の制度で、このツールの対象外です。相続時精算課税を選んでいる贈与者からの贈与は、この目安には含めず、税理士や国税庁の相続税・贈与税の申告書等作成コーナーで確認してください。</p>
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 国税庁「贈与税の計算と税率（暦年課税）」No.4408／相続税法21条の5・21条の7／租税特別措置法70条の2の4・70条の2の5<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcZoyozei } from "../assets/zoyozei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+// 万円入力を「○億○万円」に読み替える（飾り。計算には使わない）
+const manToWords = (man) => {
+  man = Math.floor(man);
+  if (!Number.isFinite(man) || man <= 0) return "";
+  const oku = Math.floor(man / 10000), rest = man % 10000;
+  return "＝" + (oku ? oku + "億" : "") + (rest ? rest + "万円" : (oku ? "円" : "万円"));
+};
+let ZOYO = null;
+
+// 参照データは非同期で届く。届く前に計算ボタンを押されても待つ（実ユーザーと同じ経路）。
+// この catch が拾ってよいのは「データが手に入らなかった」ことだけ（飾りの描画は別に処理する）。
+const zoyoReady = fetch("../assets/zoyozei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { ZOYO = d; return true; })
+  .catch(() => false);
+
+// 出典の年分表示は飾り。ここで転んでも計算は止めない。
+zoyoReady.then(() => { $("src-note").textContent = ZOYO?._meta?.year ? `（${ZOYO._meta.year}）` : ""; }).catch(() => {});
+
+// 万円→言葉のエコー（入力補助・飾り）
+$("tokurei").addEventListener("input", () => { $("tokurei-echo").textContent = manToWords(Number($("tokurei").value)); });
+$("ippan").addEventListener("input", () => { $("ippan-echo").textContent = manToWords(Number($("ippan").value)); });
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+  const ok = await zoyoReady; // 必要な参照データの到着を必ず待つ
+  if (!ok || !ZOYO) {
+    box.innerHTML = `<div class="note"><b>データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。データが分からない状態で贈与税を答えることはできません。</div>`;
+    return;
+  }
+
+  const tokureiMan = Number($("tokurei").value) || 0;
+  const ippanMan = Number($("ippan").value) || 0;
+  if (tokureiMan <= 0 && ippanMan <= 0) {
+    box.innerHTML = "その年に受けた贈与財産の合計額（万円）を入力してください。"; return;
+  }
+
+  let r;
+  try {
+    r = calcZoyozei({
+      ippan: Math.round(ippanMan * 10000),
+      tokurei: Math.round(tokureiMan * 10000),
+    }, ZOYO);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  const yearTag = r.year ? `<span class="hint">（${r.year}で計算）</span>` : "";
+
+  if (r.below) {
+    box.innerHTML = `
+      <div class="row">贈与税はかかりません <span class="big">¥0</span></div>
+      <div style="font-size:13px;color:var(--sub);margin-top:6px">
+        その年の贈与の合計 ${yen(r.total)} が、<b>基礎控除 ${yen(r.kiso)}</b>（年110万円）以下です。</div>
+      <div class="note" style="margin-top:10px">合計110万円以下なら、暦年課税の贈与税はかからず<b>申告も不要</b>です。ただし相続時精算課税を選んでいる贈与者からの贈与や、非課税の特例を使う場合は別途手続きが必要なことがあります。${yearTag}</div>`;
+    return;
+  }
+
+  const tblLabel = { ippan: "一般税率", tokurei: "特例税率", mixed: "一般＋特例の按分" }[r.mode] || "";
+
+  // 内訳の行
+  let breakRows = "";
+  if (r.mode === "mixed") {
+    const g = r.breakdown.general, s = r.breakdown.special;
+    breakRows = `
+      <div style="font-size:13px;color:var(--sub);margin-top:8px">同じ年に一般と特例の両方を受けたので、合計を基に按分して計算します（国税庁 No.4408）。</div>
+      <div class="row" style="font-size:14px">① 特例贈与 ${yen(s.amount)} 分（全額特例なら ${yen(s.zei)}） <span>${yen(s.part)}</span></div>
+      <div style="font-size:12px;color:var(--sub);margin-top:-2px">基礎控除後 ${yen(r.baseAfter)} × 特例税率${s.rate_pct}% − 控除 ${yen(s.deduction)} ＝ ${yen(s.zei)}、× ${s.amount/10000}万÷${r.total/10000}万</div>
+      <div class="row" style="font-size:14px">② 一般贈与 ${yen(g.amount)} 分（全額一般なら ${yen(g.zei)}） <span>${yen(g.part)}</span></div>
+      <div style="font-size:12px;color:var(--sub);margin-top:-2px">基礎控除後 ${yen(r.baseAfter)} × 一般税率${g.rate_pct}% − 控除 ${yen(g.deduction)} ＝ ${yen(g.zei)}、× ${g.amount/10000}万÷${r.total/10000}万</div>`;
+  } else {
+    const bd = r.breakdown.special || r.breakdown.general;
+    breakRows = `
+      <div style="font-size:12px;color:var(--sub);margin-top:6px">
+        基礎控除後の課税価格 ${yen(r.baseAfter)} × ${tblLabel}${bd.rate_pct}% − 控除額 ${yen(bd.deduction)} ＝ ${yen(bd.zei)}（速算表の「${bd.label}」の帯）。</div>`;
+  }
+
+  box.innerHTML = `
+    <div style="font-size:13px;color:var(--sub)">
+      その年の贈与の合計：<b>${yen(r.total)}</b>／
+      基礎控除：<b>${yen(r.kiso)}</b>（年110万円）／
+      基礎控除後の課税価格：<b>${yen(r.baseAfter)}</b>（${tblLabel}）</div>
+    <div style="border-top:2px solid var(--accent);margin-top:12px;padding-top:10px">
+      <div class="row"><b>贈与税額</b> <span class="big">${yen(r.zei)}</span></div>
+      ${breakRows}
+    </div>
+    <div style="font-size:12.5px;color:var(--sub);margin-top:12px">
+      ※ 暦年課税の目安です。相続時精算課税（別制度）・住宅取得等資金などの非課税の特例は反映していません。正確な税額は税理士・国税庁の申告書等作成コーナーで確認してください。贈与税の申告・納付は、贈与を受けた年の翌年の<b>2月1日〜3月15日</b>。${yearTag}</div>`;
+});
+</script>
+</body>
+</html>
