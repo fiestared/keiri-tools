@@ -161,6 +161,7 @@ const years = await dataYears();
 const pages = await walk(DOCS);
 const problems = [];
 const usedExemptions = new Set();
+const rawByRel = new Map(); // 免除の生死判定用(article/ld+json に在って strip 後に消える文言のため)
 
 // その年号が「免除された文」の中にあるか。**位置**で見る。
 // (文字列を含むかだけで見ると、同じ「令和8年」を含む免除が複数あるとき**先頭の1件が
@@ -178,6 +179,7 @@ function exemptionAt(rel, html, at, lit) {
 for (const page of pages) {
   const rel = relative(DOCS, page);
   const raw = await readFile(page, "utf8");
+  rawByRel.set(rel, raw);
   const html = stripLdJson(stripArticleBody(stripArticleCards(stripComments(raw))));
 
   // このページが fetch している年つきデータ = 名乗ってよい年
@@ -209,10 +211,14 @@ for (const page of pages) {
 
 // 免除リストが腐っていないか(直したのに残っている / 文言が変わって当たらない)
 for (const h of HISTORICAL_FACTS) {
-  if (!usedExemptions.has(h.file + "|" + h.snippet)) {
-    problems.push(`HISTORICAL_FACTS が当たらない: ${h.file} 「${h.snippet}」` +
-                  `(文言が変わったか、記述が消えた。リストを直すこと)`);
-  }
+  if (usedExemptions.has(h.file + "|" + h.snippet)) continue;
+  // 年チェックでは使われなかったが、文言が生きている場合がある:
+  // ツール本体化で静的な制度事実が <article> の中へ移ると strip 後の html には現れないが、
+  // 記述自体は残っている。raw に在れば「腐った免除」ではないので見逃す(genuine な文言変更のみ落とす)。
+  const raw = rawByRel.get(h.file);
+  if (raw && raw.includes(h.snippet)) continue;
+  problems.push(`HISTORICAL_FACTS が当たらない: ${h.file} 「${h.snippet}」` +
+                `(文言が変わったか、記述が消えた。リストを直すこと)`);
 }
 
 if (problems.length) {
