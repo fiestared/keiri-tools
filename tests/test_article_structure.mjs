@@ -70,6 +70,16 @@ for (const slug of slugs) {
 
   if (!/<h1>/.test(body)) fail(slug, "<h1> が無い");
   if (!/class="article-meta"/.test(body)) fail(slug, "公開日(article-meta)が無い");
+
+  // --- E-E-A-T: 著者は実名(匿名Organizationに戻さない)。可視バイライン+JSON-LD authorの両方 ---
+  // (YMYLで匿名運営=QRG Low。about#operatorのPersonを各記事が参照する設計。gbrain参照)
+  if (!/class="byline"/.test(body) || !/文責/.test(body))
+    fail(slug, "可視の著者バイライン(class=\"byline\" 文責:…)が無い");
+  else if (!/<p class="byline">[\s\S]*?about\//.test(body))
+    fail(slug, "バイラインが about/ へリンクしていない");
+  const authorBlk = html.match(/"author"\s*:\s*\{[\s\S]*?\}/)?.[0] ?? "";
+  if (!/"@type"\s*:\s*"Person"/.test(authorBlk) || !authorBlk.includes("Masahiro Yasu"))
+    fail(slug, "JSON-LD author が実名Person(Masahiro Yasu)でない(匿名に戻っている)");
   if (!/<nav class="toc">/.test(body)) fail(slug, "目次(nav.toc)が無い");
 
   // 目次は全 h2 を指していること(見出しを足して目次に入れ忘れる、を落とす)

@@ -55,6 +55,10 @@
   <article>
     <h1>…</h1>
     <p class="article-meta">公開日: 2026年7月13日 ／ 〈根拠の出所を一言〉</p>
+    <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者。税理士ではありません）</p>
+       ← 実名バイライン必須(E-E-A-T)。JSON-LDの author も Person(Masahiro Yasu, about参照)で書く。
+         匿名Organizationに戻すとテストが落とす。「あなたはこうすべき」でなく「一般に〜と計算する」で書く
+         (一般的情報提供であって個別の税務相談ではない=税理士法の線引き)
 
     〈結論ファーストのリード 2〜3段落〉  ← 読者は「答え」を探しに来ている。先に言う
 
