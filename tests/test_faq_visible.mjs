@@ -145,7 +145,11 @@ for (const file of htmlFiles(DOCS)) {
       );
     }
     // ③ 日本語に英単語が紛れていないか
-    for (const [label, text] of [["設問", name], ["答え", answer]]) {
+    // 小文字始まりの固有名詞(製品名)は誤検知するので先に除去する。Excel/Google等の大文字始まりは
+    // 正規表現(小文字4字以上)で元々通るが、"freee"のような小文字ブランド名は明示的に許可する。
+    const ALLOWED_LATIN = /freee/gi;
+    for (const [label, text0] of [["設問", name], ["答え", answer]]) {
+      const text = text0.replace(ALLOWED_LATIN, "");
       const hit = text.match(STRAY_LATIN);
       if (hit) problems.push(`${rel}: ${label}に英単語が紛れています: 「…${hit[0]}…」\n      設問: 「${name}」`);
     }

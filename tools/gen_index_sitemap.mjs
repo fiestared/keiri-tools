@@ -86,6 +86,7 @@ const ORDER = [
   "furikomi-tesuryo-hikaku",
   "senpou-futan-3hoshiki",
   "zengin-format-guide",
+  "ai-keiri-hanjidoka",         // AIで経理を半自動化(E-E-A-T・実務経験)
 ];
 
 /**
@@ -163,10 +164,11 @@ const CATEGORIES = [
   {
     id: "keiri",
     name: "経理・振込の実務",
-    desc: "振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日と減価償却。",
+    desc: "振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日と減価償却、経理の自動化。",
     slugs: [
       "furikomi-tesuryo-hikaku", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "zengin-format-guide", "eigyobi-kazoekata", "shogaku-genka-shokyaku",
+      "ai-keiri-hanjidoka",
     ],
   },
 ];
