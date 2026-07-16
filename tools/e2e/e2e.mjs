@@ -283,6 +283,27 @@ const SCENES = [
   { name: "iryohi_nodata", data404: "iryohi_r08.json",
     expect: (s) => s.failed && s.kojo === null },
 
+  // ── 相続税 (/sozokuzei/) ─────────────────────────────────────────────
+  // ★公開されている早見表: 1億・配偶者＋子2人 → 相続税の総額630万・実際の納税額315万。
+  //   基礎控除4,800万→課税遺産総額→法定相続分(配偶者1/2・子1/4ずつ)→速算表→配偶者の税額軽減 の
+  //   合成が1段でも狂えば落ちる。
+  { name: "sozokuzei", expect: (s) =>
+      s.sogaku === 6300000 && s.jishitsu === 3150000 && s.kiso === 48000000 && s.showsYear && !s.failed },
+  { name: "sozokuzei_slow", slow: true, expect: (s) =>
+      s.sogaku === 6300000 && s.jishitsu === 3150000 && !s.failed },
+  // ★兄弟姉妹は2割加算(相法18条): 1億・兄弟2人 → 総額770万・実質924万。加算を落とせば770万で落ちる。
+  { name: "sozokuzei_siblings", expect: (s) =>
+      s.sogaku === 7700000 && s.jishitsu === 9240000 && !s.failed },
+  // ★配偶者のみ → 配偶者の税額軽減で実質0（総額1,220万は出す）。軽減を外せば実質1,220万で落ちる。
+  { name: "sozokuzei_spouseonly", expect: (s) =>
+      s.sogaku === 12200000 && s.jishitsu === 0 && !s.failed },
+  // ★基礎控除以下(遺産4,000万・配偶者＋子2人＝基礎控除4,800万)→ 相続税0を明言。黙って税額を出さない
+  { name: "sozokuzei_below", expect: (s) =>
+      s.belowKiso && s.sogaku === null && !s.failed },
+  // 参照データ配信不可 → 税額を出さずに断る(fail closed)。過大/過少な税額を信じさせない
+  { name: "sozokuzei_nodata", data404: "sozokuzei_r08.json",
+    expect: (s) => s.failed && s.sogaku === null },
+
   // ── 年収の壁 (/kabe/) ────────────────────────────────────────────────
   // ★合成(壁判定→社保→手取り)とページ配線を見る。独立オラクルは協会けんぽ額表の端数処理で組む。
   //   東京都・30歳・130万の壁: 年収129万(扶養内)→手取り129万・壁の底(130万加入)112万2,704・回復150万5,000。

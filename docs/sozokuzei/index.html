@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>相続税 計算機｜遺産と相続人からいくらかかるか自動計算【令和8年・早見表対応】</title>
+<meta name="description" content="遺産の総額と相続人（配偶者・子・親・兄弟姉妹）の構成を入れるだけで、相続税の総額と、配偶者が法定相続分を取得した場合の実際の納税額を自動計算。基礎控除は3,000万円＋600万円×法定相続人の数。速算表8区分・配偶者の税額軽減（1.6億円）・兄弟姉妹の2割加算・養子の算入制限にも対応。課税価格が基礎控除以下なら相続税0。令和8年・登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/sozokuzei/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "相続税 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+      "description": "遺産の総額と相続人の構成から、相続税の総額と実際の納税額（配偶者が法定相続分を取得した場合）の目安を計算します。基礎控除3,000万円＋600万円×法定相続人の数・速算表・配偶者の税額軽減・2割加算に対応。令和8年。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://keiri-tools.com/" },
+        { "@type": "ListItem", "position": 2, "name": "相続税 計算機" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "相続税はいくらの遺産からかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "基礎控除は「3,000万円＋600万円×法定相続人の数」です（相続税法15条）。課税価格の合計額がこの額以下なら相続税はかかりません。たとえば配偶者と子2人（法定相続人3人）なら基礎控除は4,800万円、子2人だけ（法定相続人2人）なら4,200万円です。この基礎控除を超えた部分にだけ相続税がかかります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "相続税の税率は何％ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "10％から55％の8段階の超過累進です（相続税法16条・速算表）。ただし税率は「遺産全体」や「実際に取得した額」ではなく、課税遺産総額を各相続人が法定相続分どおりに取得したと仮定した金額に当てます。1,000万円以下10％、3,000万円以下15％、5,000万円以下20％、1億円以下30％、2億円以下40％、3億円以下45％、6億円以下50％、6億円超55％です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "配偶者は相続税がかかりませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "配偶者は「1億6,000万円」と「配偶者の法定相続分相当額」のいずれか多い方まで相続税がかかりません（配偶者の税額軽減・相続税法19条の2）。このため配偶者が法定相続分の範囲で取得すれば、配偶者の相続税は0円になります。ただしこの軽減を使って0円になる場合でも、相続税の申告そのものは必要です。目先の軽減だけで配偶者に多く相続させると、次にその配偶者が亡くなる二次相続で子の負担が増えることがあります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "兄弟姉妹が相続すると相続税は高くなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "はい。配偶者・親・子・代襲相続人である孫以外の人（兄弟姉妹・甥姪など）が財産を取得した場合、その人の相続税額に2割が加算されます（相続税法18条）。たとえば兄弟姉妹が相続人になるケースでは、各人の算出税額が2割増しになります。孫を養子にした場合（孫養子）も2割加算の対象です。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 相続税 計算機</nav>
+
+<section class="hero">
+  <h1>相続税 計算機</h1>
+  <p><b>遺産の総額</b>と<b>相続人の構成</b>を入れるだけで、<b>相続税の総額</b>と、配偶者が法定相続分を取得した場合の<b>実際の納税額</b>を自動計算します。<b>基礎控除は「3,000万円＋600万円×法定相続人の数」</b>。課税価格がこれ以下なら相続税はかかりません。<b>配偶者の税額軽減</b>・<b>兄弟姉妹の2割加算</b>・<b>養子の算入制限</b>にも対応。<b>令和8年</b>。</p>
+</section>
+
+<div class="card">
+  <label for="isan">遺産の総額（課税価格の合計・<b>万円</b>）<span class="hint">　プラスの財産から借金・葬式費用を引いた課税価格の合計。例: 10000 なら1億円</span></label>
+  <input type="number" id="isan" placeholder="例: 10000（＝1億円）" inputmode="numeric" min="0">
+  <div id="isan-echo" class="hint" style="margin:-6px 0 10px"></div>
+
+  <label for="haiguusha">配偶者（夫・妻）<span class="hint">　いる場合は税額軽減で配偶者の負担が大きく下がります</span></label>
+  <select id="haiguusha">
+    <option value="1">いる</option>
+    <option value="0">いない（すでに死亡・離婚など）</option>
+  </select>
+
+  <label for="koReal">子の数（実子）<span class="hint">　亡くなった人の子。先に亡くなった子がいる場合はその孫（代襲相続人）も含める</span></label>
+  <input type="number" id="koReal" value="0" min="0" inputmode="numeric">
+
+  <label for="koYoshi">うち養子の数<span class="hint">　法定相続人に数えられる養子は、実子がいれば1人まで・実子がいなければ2人まで（相続税法15条）</span></label>
+  <input type="number" id="koYoshi" value="0" min="0" inputmode="numeric">
+
+  <div class="callout" style="margin:10px 0">
+    <b>子がいない場合だけ、下の父母・兄弟姉妹が相続人になります</b>
+    相続の順位は <b>①子（いなければその孫）→ ②父母（直系尊属）→ ③兄弟姉妹</b> の順です（民法887〜890条）。子が1人でもいれば、父母・兄弟姉妹は相続人になりません（下の欄を入れても無視されます）。
+  </div>
+
+  <label for="oya">父母（存命の直系尊属）の数<span class="hint">　子がいないときのみ。父母がいなければ祖父母</span></label>
+  <input type="number" id="oya" value="0" min="0" inputmode="numeric">
+
+  <label for="kyodai">兄弟姉妹の数<span class="hint">　子も父母もいないときのみ。★兄弟姉妹は相続税が2割加算されます</span></label>
+  <input type="number" id="kyodai" value="0" min="0" inputmode="numeric">
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<section class="faq">
+  <h2>使い方と注意点</h2>
+  <div class="callout">
+    <b>まず「基礎控除」を超えるかどうか</b>
+    相続税は、遺産の課税価格の合計が <b>「3,000万円＋600万円×法定相続人の数」</b> を超えたときだけかかります。法定相続人が3人なら基礎控除は4,800万円。★この<b>法定相続人の数は、相続を放棄した人がいても放棄がなかったものとして数え</b>、<b>養子は実子がいれば1人まで・いなければ2人まで</b>しか数えません（相続税法15条）。
+  </div>
+  <div class="callout">
+    <b>税率は「法定相続分に応ずる取得金額」に当てます</b>
+    相続税の総額は、①課税価格の合計から基礎控除を引いて<b>課税遺産総額</b>を出し、②これを各相続人が<b>法定相続分どおりに取得したと仮定</b>して1人ずつ速算表を当て、③合計します（相続税法16条）。★遺産全体や「実際に相続した額」に税率を当てるのは誤りです。この仕組みのおかげで、同じ遺産額でも<b>相続人が多いほど1人あたりの税率が下がり、相続税の総額は小さく</b>なります。
+  </div>
+  <h3>相続税の速算表（令和8年・国税庁 No.4155）</h3>
+  <table id="sokusanhyo" class="tbl">
+    <thead><tr><th>法定相続分に応ずる取得金額</th><th>税率</th><th>控除額</th></tr></thead>
+    <tbody>
+      <tr><td>1,000万円以下</td><td>10%</td><td>—</td></tr>
+      <tr><td>1,000万円超 3,000万円以下</td><td>15%</td><td>50万円</td></tr>
+      <tr><td>3,000万円超 5,000万円以下</td><td>20%</td><td>200万円</td></tr>
+      <tr><td>5,000万円超 1億円以下</td><td>30%</td><td>700万円</td></tr>
+      <tr><td>1億円超 2億円以下</td><td>40%</td><td>1,700万円</td></tr>
+      <tr><td>2億円超 3億円以下</td><td>45%</td><td>2,700万円</td></tr>
+      <tr><td>3億円超 6億円以下</td><td>50%</td><td>4,200万円</td></tr>
+      <tr><td>6億円超</td><td>55%</td><td>7,200万円</td></tr>
+    </tbody>
+  </table>
+  <h3>配偶者の税額軽減と2割加算</h3>
+  <p><b>配偶者</b>は「1億6,000万円」と「配偶者の法定相続分相当額」の多い方まで相続税がかかりません（相続税法19条の2）。このツールは<b>配偶者が法定相続分を取得した場合</b>を計算するので、配偶者の税額は0円になります。一方、<b>兄弟姉妹</b>など（配偶者・親・子・代襲相続人である孫 以外）が相続すると、その人の税額に<b>2割が加算</b>されます（相続税法18条）。</p>
+  <div class="note">
+    <b>このツールは「目安」です。</b>小規模宅地等の特例（自宅の土地を最大8割減）、生命保険金・退職金の非課税枠（500万円×法定相続人の数）、未成年者控除・障害者控除・相次相続控除、農地や自社株の納税猶予、相続時精算課税、生前贈与加算などの個別事情は<b>反映していません</b>。また②の実際の納税額は「配偶者が法定相続分を取得する典型的な分け方」を前提にした目安で、実際の分け方によって各人の負担は変わります。正確な税額は<b>税理士や国税庁の「相続税の申告書等作成コーナー」</b>で確認してください。相続税の申告・納付の期限は、相続の開始を知った日の翌日から<b>10か月以内</b>です。
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>相続税はいくらの遺産からかかりますか？</h3>
+  <p>基礎控除は「3,000万円＋600万円×法定相続人の数」です（相続税法15条）。課税価格の合計額がこの額以下なら相続税はかかりません。たとえば配偶者と子2人（法定相続人3人）なら基礎控除は4,800万円、子2人だけ（法定相続人2人）なら4,200万円です。この基礎控除を超えた部分にだけ相続税がかかります。</p>
+  <h3>相続税の税率は何％ですか？</h3>
+  <p>10％から55％の8段階の超過累進です（相続税法16条・速算表）。ただし税率は「遺産全体」や「実際に取得した額」ではなく、課税遺産総額を各相続人が法定相続分どおりに取得したと仮定した金額に当てます。1,000万円以下10％、3,000万円以下15％、5,000万円以下20％、1億円以下30％、2億円以下40％、3億円以下45％、6億円以下50％、6億円超55％です。</p>
+  <h3>配偶者は相続税がかかりませんか？</h3>
+  <p>配偶者は「1億6,000万円」と「配偶者の法定相続分相当額」のいずれか多い方まで相続税がかかりません（配偶者の税額軽減・相続税法19条の2）。このため配偶者が法定相続分の範囲で取得すれば、配偶者の相続税は0円になります。ただしこの軽減を使って0円になる場合でも、相続税の申告そのものは必要です。目先の軽減だけで配偶者に多く相続させると、次にその配偶者が亡くなる二次相続で子の負担が増えることがあります。</p>
+  <h3>兄弟姉妹が相続すると相続税は高くなりますか？</h3>
+  <p>はい。配偶者・親・子・代襲相続人である孫以外の人（兄弟姉妹・甥姪など）が財産を取得した場合、その人の相続税額に2割が加算されます（相続税法18条）。たとえば兄弟姉妹が相続人になるケースでは、各人の算出税額が2割増しになります。孫を養子にした場合（孫養子）も2割加算の対象です。</p>
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 国税庁「相続税の計算」No.4152／「相続税の税率」No.4155／「配偶者の税額軽減」No.4158／「相続税額の2割加算」No.4157／相続税法15条・16条・18条・19条の2・民法900条<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcSozokuzei } from "../assets/sozokuzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+// 万円入力を「○億○万円」に読み替える（飾り。計算には使わない）
+const manToWords = (man) => {
+  man = Math.floor(man);
+  if (!Number.isFinite(man) || man <= 0) return "";
+  const oku = Math.floor(man / 10000), rest = man % 10000;
+  return "＝" + (oku ? oku + "億" : "") + (rest ? rest + "万円" : (oku ? "円" : "万円"));
+};
+let SOZOKU = null;
+
+// 参照データは非同期で届く。届く前に計算ボタンを押されても待つ（実ユーザーと同じ経路）。
+// この catch が拾ってよいのは「データが手に入らなかった」ことだけ（飾りの描画は別に処理する）。
+const sozokuReady = fetch("../assets/sozokuzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { SOZOKU = d; return true; })
+  .catch(() => false);
+
+// 出典の年分表示は飾り。ここで転んでも計算は止めない。
+sozokuReady.then(() => { $("src-note").textContent = SOZOKU?._meta?.year ? `（${SOZOKU._meta.year}）` : ""; }).catch(() => {});
+
+// 万円→言葉のエコー（入力補助・飾り）
+$("isan").addEventListener("input", () => { $("isan-echo").textContent = manToWords(Number($("isan").value)); });
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+  const ok = await sozokuReady; // 必要な参照データの到着を必ず待つ
+  if (!ok || !SOZOKU) {
+    box.innerHTML = `<div class="note"><b>データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。データが分からない状態で相続税を答えることはできません。</div>`;
+    return;
+  }
+
+  const man = Number($("isan").value);
+  if (!man || man <= 0) { box.innerHTML = "遺産の総額（課税価格の合計・万円）を入力してください。"; return; }
+  const isanTotal = Math.round(man * 10000); // 万円 → 円
+
+  let r;
+  try {
+    r = calcSozokuzei({
+      isanTotal,
+      hasSpouse: $("haiguusha").value === "1",
+      numChildrenReal: Number($("koReal").value) || 0,
+      numChildrenAdopted: Number($("koYoshi").value) || 0,
+      numParents: Number($("oya").value) || 0,
+      numSiblings: Number($("kyodai").value) || 0,
+    }, SOZOKU);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  const yearTag = r.year ? `<span class="hint">（${r.year}で計算）</span>` : "";
+
+  if (r.belowKiso) {
+    box.innerHTML = `
+      <div class="row">相続税はかかりません <span class="big">¥0</span></div>
+      <div style="font-size:13px;color:var(--sub);margin-top:6px">
+        遺産の課税価格の合計 ${yen(r.isanTotal)} が、<b>基礎控除 ${yen(r.kiso)}</b>（3,000万円＋600万円×${r.houteiCount}人）以下です。</div>
+      <div class="note" style="margin-top:10px">課税価格が基礎控除以下なら、原則として相続税の申告も不要です。ただし<b>小規模宅地等の特例や配偶者の税額軽減を使って0円にする場合は、控除の前の課税価格が基礎控除を超えていれば申告が必要</b>です。${yearTag}</div>`;
+    return;
+  }
+
+  // 相続人の内訳（放棄無視・養子制限後）
+  const b = r.sozokunin.blood;
+  const bLabel = { child: "子", parent: "父母（直系尊属）", sibling: "兄弟姉妹" }[b.kind] || "";
+  let ninzuText = [];
+  if (r.hasSpouse) ninzuText.push("配偶者1人");
+  if (b.n > 0) ninzuText.push(`${bLabel}${b.n}人`);
+  let youshiNote = "";
+  if (b.kind === "child" && b.youshiCapped) {
+    youshiNote = `<div style="font-size:12px;color:var(--sub)">※ 入力された養子のうち、法定相続人に数えられるのは${b.youshi}人までです（相続税法15条）。</div>`;
+  }
+
+  // ② 実際の納税額の内訳
+  const rows = r.perHeir.map(h => {
+    if (h.who === "spouse") {
+      return `<div class="row" style="font-size:14px">配偶者 <span>${yen(0)}</span></div>
+        <div style="font-size:12px;color:var(--sub);margin-top:-2px">配偶者の税額軽減（相続税法19条の2）で0円</div>`;
+    }
+    const per = h.count > 1 ? `（1人あたり ${yen(h.eachTax)}）` : "";
+    const kasanNote = h.kasan ? "（2割加算あり）" : "";
+    return `<div class="row" style="font-size:14px">${h.label} ${h.count}人${kasanNote} <span>${yen(h.groupTax)}</span></div>
+      <div style="font-size:12px;color:var(--sub);margin-top:-2px">${per}</div>`;
+  }).join("");
+
+  box.innerHTML = `
+    <div style="font-size:13px;color:var(--sub)">
+      法定相続人：<b>${ninzuText.join("・")}（計${r.houteiCount}人）</b>／
+      基礎控除：<b>${yen(r.kiso)}</b>（3,000万円＋600万円×${r.houteiCount}人）／
+      課税遺産総額：<b>${yen(r.kazeiIsan)}</b></div>
+    ${youshiNote}
+    <div style="border-top:2px solid var(--accent);margin-top:12px;padding-top:10px">
+      <div class="row"><b>① 相続税の総額</b>（家族全体・税額軽減や2割加算の前） <span class="big">${yen(r.sogaku)}</span></div>
+      <div style="font-size:12px;color:var(--sub);margin-top:2px">課税遺産総額を法定相続分で按分し、速算表を当てて合計した額です（相続税法16条）。</div>
+    </div>
+    <div style="border-top:2px solid var(--accent);margin-top:14px;padding-top:10px">
+      <div class="row"><b>② 実際に納める相続税の合計</b> <span class="big">${yen(r.jishitsuFutan)}</span></div>
+      <div style="font-size:12px;color:var(--sub);margin:2px 0 8px">配偶者が法定相続分を取得した場合の、各人の納税額の合計です${r.niwariKasan ? "（兄弟姉妹は2割加算）" : ""}。</div>
+      ${rows}
+    </div>
+    <div style="font-size:12.5px;color:var(--sub);margin-top:12px">
+      ※ 小規模宅地等の特例・生命保険金の非課税枠・各種税額控除などは反映していない<b>目安</b>です。②は「配偶者が法定相続分を取得する典型的な分け方」を前提にしており、実際の分け方で各人の負担は変わります。正確な税額は税理士・国税庁の申告書等作成コーナーで確認してください。相続税の申告・納付は相続開始を知った日の翌日から<b>10か月以内</b>。${yearTag}</div>`;
+});
+</script>
+</body>
+</html>

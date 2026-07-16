@@ -1117,6 +1117,49 @@ SCENES.iryohi_norate = iryohiScene({ iryohi: 300000, hoten: 0, shunyu: 5000000 }
 // 参照データ配信不可 → 控除額を出さずに断る（fail closed）。過大な控除額を信じさせない
 SCENES.iryohi_nodata = iryohiScene({ iryohi: 300000, hoten: 0, shunyu: 5000000, rate: 10, nodata: true });
 
+// ── 相続税 (/sozokuzei/) ──────────────────────────────────────────────────
+// ★遺産と相続人の構成から「相続税の総額」と「実際の納税額（配偶者が法定相続分を取得）」を出す。
+//   E2Eは「基礎控除→課税遺産総額→法定相続分で按分→速算表→配偶者の税額軽減／2割加算」の配線と、
+//   基礎控除以下・配信失敗の申告を見る。遺産の入力は万円（例: 1億＝10000）。
+const sozokuScene = ({ isan, spouse = true, koReal = 0, koYoshi = 0, oya = 0, kyodai = 0 }) => async () => {
+  const doc = await open("/docs/sozokuzei/");
+  set(doc, "isan", String(isan));
+  set(doc, "haiguusha", spouse ? "1" : "0"); // <select> の value
+  set(doc, "koReal", String(koReal));
+  set(doc, "koYoshi", String(koYoshi));
+  set(doc, "oya", String(oya));
+  set(doc, "kyodai", String(kyodai));
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /相続税の総額|相続税はかかりません|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "相続税の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    isan,
+    sogaku: num(/相続税の総額[^¥]*¥([\d,]+)/),         // ① 家族全体（軽減・加算の前）
+    jishitsu: num(/実際に納める相続税の合計[^¥]*¥([\d,]+)/), // ② 配偶者が法定相続分を取得した前提
+    kiso: num(/基礎控除[：:]\s*¥([\d,]+)/),
+    belowKiso: /相続税はかかりません/.test(body),
+    showsYear: /令和\d+年/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// ★早見表: 1億・配偶者＋子2人 → 総額630万・実質315万（配偶者0＋子315万）。
+SCENES.sozokuzei = sozokuScene({ isan: 10000, spouse: true, koReal: 2 });
+SCENES.sozokuzei_slow = SCENES.sozokuzei;   // 800ms遅らせる（モバイル回線）。待って正答すること
+// ★兄弟姉妹は2割加算（相法18条）: 1億・兄弟2人 → 総額770万・実質924万。加算を落とせば770万で落ちる。
+SCENES.sozokuzei_siblings = sozokuScene({ isan: 10000, spouse: false, kyodai: 2 });
+// ★配偶者のみ → 配偶者の税額軽減で実質0（総額1,220万は出す）。
+SCENES.sozokuzei_spouseonly = sozokuScene({ isan: 10000, spouse: true });
+// ★基礎控除以下（遺産4,000万・配偶者＋子2人＝基礎控除4,800万）→ 相続税0を明言。
+SCENES.sozokuzei_below = sozokuScene({ isan: 4000, spouse: true, koReal: 2 });
+// 参照データ配信不可 → 税額を出さずに断る（fail closed）。
+SCENES.sozokuzei_nodata = sozokuScene({ isan: 10000, spouse: true, koReal: 2 });
+
 // ── 年収の壁 (/kabe/) ─────────────────────────────────────────────────────
 // ★このツールは shaho_core.calcMonthly の合成。E2Eは「年収→壁判定→社保→手取り」の配線を見る。
 //   独立オラクル: 社会保険料 = 協会けんぽ額表の各項目(健保±介護/子育て支援金/厚年)を50銭以下切捨で
