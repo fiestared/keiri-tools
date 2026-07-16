@@ -76,7 +76,9 @@ const QUERIES = [
   ["ふるさと納税の上限は？", ["/furusato/", "/column/furusato-nozei-keisan/"]],
   ["失業保険 いくら", ["/column/shitsugyo-hoken-keisan/", "/kihonteate/"]],
   ["有給 何日", ["/column/yukyu-fuyo-nissu/", "/column/part-yukyu/", "/yukyu/"]],
-  ["手取り 計算", ["/column/tedori-keisan/", "/shakai-hoken/"]],           // 額面→手取り
+  // 旧: /column/tedori-keisan/ を期待していたが、2026-07-16 に /tedori/ 本体へ統合(.nopublish)。
+  // いまの正解は手取り計算のツール2本(月給/賞与)のどちらか
+  ["手取り 計算", ["/tedori/", "/bonus-tedori/"]],                          // 額面→手取り
   ["バイト 有給", ["/column/part-yukyu/", "/yukyu/"]],                     // バイト→アルバイト
   ["退職金 税金", ["/taishokukin/", "/column/taishokukin-zeikin/"]],
   ["インボイスってなに", ["/column/invoice-wakariyasuku/", "/column/invoice-2wari-tokurei/"]],

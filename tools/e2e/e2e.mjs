@@ -262,6 +262,28 @@ const SCENES = [
       s.tedori === s.expectedTedori && s.tedori === 237060 &&
       s.juminMonthly === s.expectedJumin && s.juminMonthly === 12550 && !s.failed },
 
+  // ── ボーナス手取り (/bonus-tedori/) ──────────────────────────────────
+  // ★検証済み3コア(calcBonus/calcKoyou/calcShoyo)の合成。期待値はハーネス側で
+  //   公式額表(fixture)と生の算出率の表を独立に引いて組む(被検体のコアを一切通さない)。
+  //   東京都・賞与50万・30歳・扶養0・前月額面30万 → 社保73,450 + 税17,420 → 手取り409,130。
+  //   ★住民税の行が「¥0・賞与からは天引きされません」と明示されること(このツールの看板の主張)
+  { name: "bonus_tedori", expect: (s) =>
+      s.tedori === s.expectedTedori && s.tedori === 409130 &&
+      s.shahoSelf === s.expectedShaho && s.shahoSelf === 73450 &&
+      s.shotokuzei === s.expectedTax && s.shotokuzei === 17420 &&
+      s.juminzei === 0 && s.declaresNoJuminzei && s.showsYear && !s.failed },
+  // 表の到着を待たずに押しても、待って正しい額を出すこと(0円と答えない)
+  { name: "bonus_tedori_slow", slow: true, expect: (s) =>
+      s.tedori === s.expectedTedori && s.tedori === 409130 && !s.failed },
+  // 算出率の表を配信できない → 手取りを出さずに断ること(fail closed)
+  { name: "bonus_tedori_nodata", data404: "gensen_shoyo_r08.json",
+    expect: (s) => s.failed && s.tedori === null },
+  // 前月給与なし → 算出率の表を使えない(備考4)。月額表による例外計算を**画面で申告**し、
+  // 賞与30万は月額表の非課税帯 → 税0円・手取り255,930。黙って率で計算したら落ちる
+  { name: "bonus_tedori_noprev", expect: (s) =>
+      s.viaGetsugaku && s.declaresGetsugaku && s.shotokuzei === 0 &&
+      s.tedori === s.expectedTedori && s.tedori === 255930 && !s.failed },
+
   // ── 医療費控除 (/iryohi/) ────────────────────────────────────────────
   // ★看板の答え: 医療費30万・補填0・年収500万(足切り10万)・税率10% → 控除額20万・軽減40,420。
   //   juminzei.kyuyoShotoku(年収→総所得)＋所法73条の足切り＋速算表の合成が1段でも狂えば落ちる。

@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ボーナス手取り計算機｜賞与の額面から手取りを自動計算【2026年・社会保険料＋源泉所得税】</title>
+<meta name="description" content="ボーナス（賞与）の額面を入れるだけで、健康保険・厚生年金・雇用保険・子ども子育て支援金の社会保険料と源泉所得税を差し引いた手取りを自動計算。賞与の税率は賞与額ではなく「前月の給与」で決まります。住民税はボーナスからは天引きされません。令和8年度（2026年度）の料率と令和8年分の算出率の表に対応。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/bonus-tedori/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "ボーナス手取り計算機",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "ボーナス（賞与）の額面から、社会保険料（健康保険・厚生年金・雇用保険・子ども子育て支援金）と源泉所得税を差し引いた手取りを計算します。2026年の都道府県別料率と国税庁の算出率の表に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "ボーナス手取り計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. ボーナスから住民税は引かれますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 引かれません。住民税の特別徴収は、地方税法321条の5第1項により年税額の12分の1を6月から翌年5月まで毎月の給与から天引きする仕組みで、賞与からは徴収されません。ただしボーナスも前年の所得に含まれるため、翌年度の住民税（毎月の給与からの天引き額）はその分増えます。引かれる場所と時期が給与に寄っているだけで、住民税がかからない収入というわけではありません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. ボーナスの手取りは額面の何割ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. おおむね8割前後です。東京都・30歳・扶養親族0人・前月の月給30万円なら、額面50万円のボーナスの手取りは409,130円（81.8%）です。ただし賞与の税率は前月の給与で決まるため、前月の月給が高い人ほど税率が上がり、手取り率は下がります。40〜64歳の人は介護保険料も加わります。正確な額は上の計算機で、自分の前月給与を入れて確かめてください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. なぜ前月の給与でボーナスの税率が決まるのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 賞与の源泉徴収は「月々の給与とボーナスを合わせた年間の収入」に対する所得税を前払いする仕組みだからです。国税庁の算出率の表は、前月の給与水準からその人の年間の収入を推定し、それに見合う税率を賞与に適用する作りになっています。このため賞与額そのものではなく、前月の社会保険料等控除後の給与の金額で率が決まります。過不足は年末調整で精算されるので、源泉徴収の段階の率が高くても取られすぎのままにはなりません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. ボーナスの社会保険料は月給と同じ計算ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 料率は同じですが、かかる土台が違います。月給は標準報酬月額という等級表で丸めた額にかかるのに対し、賞与は標準賞与額（額面の1,000円未満を切り捨てた額）にかかり、等級表はありません。また健康保険は年度累計573万円、厚生年金は1回150万円という賞与専用の上限があります。雇用保険だけは月給・賞与とも実額にそのまま料率がかかります。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › ボーナス手取り計算機</nav>
+
+<section class="hero">
+  <h1>ボーナス手取り計算機</h1>
+  <p>ボーナス（賞与）の額面を入れるだけで、<b>社会保険料</b>（健康保険・厚生年金・雇用保険・子ども子育て支援金）と<b>源泉所得税</b>を差し引いた<b>手取り</b>を自動計算します。賞与の税率は賞与の額ではなく<b>「前月の給与」で決まる</b>ので、前月の月給も入力してください。</p>
+</section>
+
+<div class="card">
+  <div class="fee-pair">
+    <div>
+      <label for="pref">勤務先の都道府県</label>
+      <select id="pref"></select>
+    </div>
+    <div>
+      <label for="age">年齢</label>
+      <input type="number" id="age" value="30" min="15" max="74" inputmode="numeric">
+    </div>
+  </div>
+
+  <label for="bonus">ボーナスの額面（円）<span class="hint">　支給明細の総支給額（税金・保険料が引かれる前）</span></label>
+  <input type="number" id="bonus" placeholder="例: 500000" inputmode="numeric">
+
+  <fieldset style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:14px">
+    <legend style="font-weight:700;font-size:14px;padding:0 6px">前月の給与（税率を決める鍵）</legend>
+    <label style="font-weight:400;display:block;margin:2px 0"><input type="radio" name="zmode" value="paid" checked> 前月に給与の支払いがあった</label>
+    <div id="zengetsu-wrap" style="margin:4px 0 6px 22px">
+      <label for="zengetsu">前月の額面の月給（円）<span class="hint">　基本給＋残業手当＋通勤手当などの総支給額</span></label>
+      <input type="number" id="zengetsu" placeholder="例: 300000" inputmode="numeric">
+    </div>
+    <label style="font-weight:400;display:block;margin:2px 0"><input type="radio" name="zmode" value="nopaid"> 前月に給与の支払いがない（休職明け・新規入社など）</label>
+  </fieldset>
+
+  <label for="dependents">扶養親族等の数<span class="hint">　源泉控除対象になる配偶者と扶養親族の合計（16歳以上）。いなければ0</span></label>
+  <input type="number" id="dependents" value="0" min="0" max="20" inputmode="numeric">
+
+  <label for="gyoshu">業種<span class="hint">　雇用保険料率だけが業種で変わります（健康保険・厚生年金は変わりません）</span></label>
+  <select id="gyoshu"></select>
+
+  <label style="font-weight:400;display:block;margin-top:10px"><input type="checkbox" id="over6"> 賞与の計算期間が6か月を超える（年1回の決算賞与・役員賞与など）</label>
+
+  <label for="yearpaid">今年度すでに支給された賞与の合計（円・任意）<span class="hint">　健康保険の上限（年度累計573万円）の判定に使います。ふつうは空欄のままで大丈夫です</span></label>
+  <input type="number" id="yearpaid" placeholder="例: 0" inputmode="numeric">
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p>ボーナス（賞与）の手取りは、額面から<b>社会保険料</b>と<b>源泉所得税</b>を引いた残りです。毎月の給料と引かれるものは似ていますが、<b>税率の決まり方がまったく違い</b>、そして<b>住民税は引かれません</b>。上の計算機で自分の額面から手取りが出せます。以下では、賞与の控除で誤解の多いポイントを、実数と根拠つきで解説します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+
+<nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#tsukaikata">使い方と注意点</a></li>
+<li><a href="#shikumi">ボーナスから引かれるもの — 給与との3つの違い</a></li>
+<li><a href="#rei">計算例 — 賞与50万円の手取り</a></li>
+<li><a href="#reigai">算出率の表が使えない3つの場合</a></li>
+<li><a href="#jogen">賞与の社会保険料には上限がある</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav>
+
+<h2 id="tsukaikata">使い方と注意点</h2>
+  <div class="callout">
+    <b>ボーナスの税率は、賞与の額ではなく「前月の給与」で決まります</b>
+    賞与の源泉所得税は、国税庁「賞与に対する源泉徴収税額の算出率の表」で計算します。この表を引く鍵は<b>前月の社会保険料等控除後の給与</b>です（賞与の額ではありません）。だから<b>同じ額のボーナスでも、前月の月給が違えば税額が変わります</b>。この計算機では前月の額面の月給を入力すると、その月の社会保険料を概算して控除後の額を作ります。
+  </div>
+  <h3>この計算機の前提</h3>
+  <p>健康保険は協会けんぽ（全国健康保険協会）の都道府県別料率、厚生年金18.3%（全国一律）、雇用保険は選んだ業種の料率で計算します。<b>健康保険組合に加入している場合は料率が異なります</b>。源泉所得税は<b>甲欄</b>（主たる勤務先に扶養控除等申告書を出している人）で計算します。前月の給与の社会保険料は概算のため、実際の給与明細と数円ずれることがあります。</p>
+  <div class="note">
+    本ツールの計算結果は目安です。正確な控除額は賞与支給明細でご確認ください。所得税は源泉徴収額であり、年末調整で精算されます。
+  </div>
+
+<h2 id="shikumi">ボーナスから引かれるもの — 給与との3つの違い</h2>
+
+<p>賞与の手取りは、次の式で決まります。</p>
+
+<div class="summary-box">
+<p><b>ボーナスの手取り ＝ 額面 −（健康保険料 ＋ 厚生年金保険料 ＋ 子ども子育て支援金 ＋ 雇用保険料）− 源泉所得税</b></p>
+</div>
+
+<p>毎月の給与と比べたときの違いは3つあります。</p>
+
+<table>
+<thead>
+<tr><th>&nbsp;</th><th>毎月の給与</th><th>ボーナス（賞与）</th></tr>
+</thead>
+<tbody>
+<tr><td>社会保険料のかかる土台</td><td>標準報酬<b>月額</b>（等級表で丸める）</td><td><b>標準賞与額</b>（1,000円未満切捨・等級表なし）</td></tr>
+<tr><td>所得税の決まり方</td><td>月額表を<b>その月の給与</b>で引く</td><td>算出率の表を<b>前月の給与</b>で引く</td></tr>
+<tr><td>住民税</td><td>月割で天引きされる</td><td><b>天引きされない</b></td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+<p><b>住民税はボーナスから引かれません</b></p>
+<p>住民税（特別徴収）は、地方税法321条の5第1項が年税額の<b>「十二分の一の額を六月から翌年五月まで」</b>毎月徴収すると定めており、この月割は<b>毎月の給与</b>から引かれます。賞与支給時に住民税の行はありません。ただし<b>ボーナスも前年の所得には含まれる</b>ので、翌年度の住民税（毎月の給与からの天引き額）はその分増えます。「引かれない」のではなく「引かれる場所と時期が違う」と理解するのが正確です。</p>
+</div>
+
+<h2 id="rei">計算例 — 賞与50万円の手取り</h2>
+
+<p>東京都・30歳・扶養親族0人・前月の額面月給30万円・一般の事業で、額面50万円のボーナスを受け取る場合です（上の計算機と同じ計算）。</p>
+
+<div id="rei-box" class="summary-box">
+<p>① 社会保険料: 健康保険 24,625円 ＋ 子ども子育て支援金 575円 ＋ 厚生年金 45,750円 ＋ 雇用保険 2,500円 ＝ <b>73,450円</b></p>
+<p>② 前月の社会保険料等控除後の給与 ＝ 300,000円 − 44,070円 ＝ 255,930円 → 算出率の表（甲欄・扶養0人）で <b>4.084%</b></p>
+<p>③ 源泉所得税 ＝ (500,000円 − 73,450円) × 4.084% ＝ <b>17,420円</b>（1円未満切捨て）</p>
+<p>④ 手取り ＝ 500,000円 − 73,450円 − 17,420円 ＝ <b>409,130円</b>（額面の81.8%）</p>
+</div>
+
+<p>ポイントは②です。<b>税率4.084%を決めたのは賞与の50万円ではなく、前月の給与（の社会保険料控除後の255,930円）</b>です。前月の月給がもっと高い人は、同じ50万円のボーナスでも税率が上がります。逆に扶養親族がいる人は、算出率の表の列が右へずれて税率が下がります。</p>
+
+<a class="tool-cta" href="../tedori/">毎月の給与の手取りは「手取り計算機」で計算する</a>
+
+<h2 id="reigai">算出率の表が使えない3つの場合 — 月額表による例外計算</h2>
+
+<p>算出率の表の備考は、次の場合に<b>この表を使わず、月額表で計算する</b>と定めています（計算式は国税庁タックスアンサー No.2523）。この計算機は3つとも自動で判定し、例外計算に切り替えたときは結果にその旨を表示します。</p>
+
+<ol>
+<li><b>前月中に給与の支払がない</b>（休職明け・新規入社の直後など）</li>
+<li><b>前月の給与が、前月の社会保険料等以下</b>（控除後が0円以下になる）</li>
+<li><b>賞与（社会保険料等控除後）が、前月の給与（同）の10倍を超える</b></li>
+</ol>
+
+<p>例外計算では、賞与を6等分（計算期間が6か月を超える賞与は12等分）して月額表に当てはめ、出てきた税額を6倍（12倍）します。前月給与がない人の少額の賞与は、月額表の非課税帯に収まって<b>源泉所得税が0円</b>になることもあります（年末調整または確定申告で最終的な税額に精算されます）。</p>
+
+<h2 id="jogen">賞与の社会保険料には上限がある</h2>
+
+<p>賞与の社会保険料は<b>標準賞与額</b>（額面の1,000円未満を切り捨てた額）にかかりますが、上限があります。</p>
+
+<table>
+<thead>
+<tr><th>保険</th><th>上限</th><th>根拠</th></tr>
+</thead>
+<tbody>
+<tr><td>健康保険（＋介護保険・支援金）</td><td><b>年度の累計573万円</b>まで</td><td>健康保険法45条1項</td></tr>
+<tr><td>厚生年金</td><td><b>1回の支給につき150万円</b>まで</td><td>厚生年金保険法24条の4・令和2年政令第246号2条</td></tr>
+<tr><td>雇用保険</td><td><b>上限なし</b>（実額にそのまま料率）</td><td>労働保険徴収法11条1項（賃金総額）</td></tr>
+</tbody>
+</table>
+
+<p>たとえば200万円のボーナスなら、厚生年金保険料は150万円分までしかかかりません。一方、<b>雇用保険だけは切り捨ても上限もなく</b>、支給額の実額に料率（一般の事業は本人5/1,000）がかかります。高額の賞与を入力すると、この計算機は上限を適用した旨を結果に表示します。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. ボーナスから住民税は引かれますか？</h3>
+<p>A. 引かれません。住民税の特別徴収は、地方税法321条の5第1項により年税額の12分の1を6月から翌年5月まで毎月の給与から天引きする仕組みで、賞与からは徴収されません。ただしボーナスも前年の所得に含まれるため、翌年度の住民税（毎月の給与からの天引き額）はその分増えます。引かれる場所と時期が給与に寄っているだけで、住民税がかからない収入というわけではありません。</p>
+
+<h3>Q. ボーナスの手取りは額面の何割ですか？</h3>
+<p>A. おおむね8割前後です。東京都・30歳・扶養親族0人・前月の月給30万円なら、額面50万円のボーナスの手取りは409,130円（81.8%）です。ただし賞与の税率は前月の給与で決まるため、前月の月給が高い人ほど税率が上がり、手取り率は下がります。40〜64歳の人は介護保険料も加わります。正確な額は上の計算機で、自分の前月給与を入れて確かめてください。</p>
+
+<h3>Q. なぜ前月の給与でボーナスの税率が決まるのですか？</h3>
+<p>A. 賞与の源泉徴収は「月々の給与とボーナスを合わせた年間の収入」に対する所得税を前払いする仕組みだからです。国税庁の算出率の表は、前月の給与水準からその人の年間の収入を推定し、それに見合う税率を賞与に適用する作りになっています。このため賞与額そのものではなく、前月の社会保険料等控除後の給与の金額で率が決まります。過不足は年末調整で精算されるので、源泉徴収の段階の率が高くても取られすぎのままにはなりません。</p>
+
+<h3>Q. ボーナスの社会保険料は月給と同じ計算ですか？</h3>
+<p>A. 料率は同じですが、かかる土台が違います。月給は標準報酬月額という等級表で丸めた額にかかるのに対し、賞与は標準賞与額（額面の1,000円未満を切り捨てた額）にかかり、等級表はありません。また健康保険は年度累計573万円、厚生年金は1回150万円という賞与専用の上限があります。雇用保険だけは月給・賞与とも実額にそのまま料率がかかります。</p>
+
+<section class="related">
+<div class="tool-grid">
+<a class="tool-card" href="../tedori/"><b>手取り計算機（月給）</b><span>額面の月給から、社会保険料・所得税・住民税を引いた毎月の手取りを計算します。</span></a>
+<a class="tool-card" href="../gensen-choshu/"><b>源泉徴収税額計算</b><span>給与・賞与の源泉所得税を、月額表・算出率の表から求めます（経理担当者向け）。</span></a>
+<a class="tool-card" href="../shakai-hoken/"><b>社会保険料計算機</b><span>標準報酬月額から健康保険・厚生年金・雇用保険の本人負担額を計算します。</span></a>
+<a class="tool-card" href="../column/shoyo-shakaihoken/"><b>賞与の社会保険料</b><span>標準賞与額の決まり方と、賞与の保険料の内わけを詳しく解説します。</span></a>
+</div>
+</section>
+
+<h2 id="source">出典</h2>
+<ul>
+<li>国税庁「賞与に対する源泉徴収税額の算出率の表（令和8年分）」— 率を引く鍵は「前月の社会保険料等控除後の給与等の金額」。備考に、前月中に給与等の支払がない場合・賞与（社会保険料等控除後）が前月の給与（同）の10倍を超える場合は、この表によらず月額表を使うと定める</li>
+<li>国税庁 タックスアンサー No.2523「賞与に対する源泉徴収」— 算出率の表が使えない場合の月額表による計算式（賞与÷6を月額表に当てはめ税額を6倍。計算期間が6か月を超えるときは12で除し12倍）</li>
+<li>健康保険法 第45条第1項（標準賞与額の決定）— e-Gov法令検索。賞与額の千円未満を切り捨てた額を標準賞与額とし、年度における標準賞与額の累計額が573万円を超えるときは、累計573万円に達するまでの額とする</li>
+<li>厚生年金保険法 第24条の4第1項（標準賞与額の決定）／厚生年金保険法の標準報酬月額の等級区分の改定等に関する政令（令和2年政令第246号）第2条 — 賞与の標準賞与額の上限を1回につき150万円と定める</li>
+<li>労働保険の保険料の徴収等に関する法律 第11条第1項 — 雇用保険料の課税ベースは「賃金総額」。賞与も実額のまま含まれ、標準賞与額の切り捨ても上限もない</li>
+<li>地方税法 第321条の5第1項（給与所得に係る特別徴収）— 特別徴収税額の「十二分の一の額を六月から翌年五月まで…毎月徴収」と定める（賞与からの徴収ではない）</li>
+<li>全国健康保険協会（協会けんぽ）「令和8年度 都道府県毎の保険料率」— 都道府県別の健康保険料率・介護保険料率1.62%・子ども・子育て支援金率0.23%</li>
+<li>厚生労働省「令和8年度 雇用保険料率のご案内」— 一般の事業の労働者負担は1,000分の5（農林水産・清酒製造／建設は6/1,000）</li>
+</ul>
+
+<p class="note">本ページの解説・計算例は令和8年（2026年）時点の法令にもとづく一般的な情報であり、個別の事案に対する助言ではありません。実際の手取りは、加入している健康保険（協会けんぽ・健康保険組合）、扶養親族の数、前月の給与の実額などによって異なります。正確な金額は賞与支給明細でご確認ください。</p>
+
+</article>
+</main>
+<footer class="site" style="display:block">
+  料率・税額表の出典: 全国健康保険協会「都道府県毎の保険料率」<span id="src-note"></span>／厚生年金保険料率18.3%（日本年金機構）／雇用保険料率（厚生労働省）／国税庁「賞与に対する源泉徴収税額の算出率の表」<span id="src-shoyo"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcBonusTedori } from "../assets/bonus_tedori_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+let SHAHO = null, SHOYO = null, GENSEN = null;
+
+// 参照データは非同期で届く。**届く前に計算ボタンを押されても待つ**(実ユーザーと同じ経路)。
+// この catch が拾ってよいのは「データが手に入らなかった」ことだけ(飾りの描画は別に処理する)。
+const shahoReady = fetch("../assets/shaho_rates_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { SHAHO = d; fillPrefs(d); fillGyoshu(d); return true; })
+  .catch(() => false);
+const shoyoReady = fetch("../assets/gensen_shoyo_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { SHOYO = d; return true; })
+  .catch(() => false);
+// 月額表は例外計算(前月給与なし・10倍超)のときだけ使うが、例外に入るかは計算するまで
+// 分からないので**常に必須**として待つ(fail closed)
+const gensenReady = fetch("../assets/gensen_getsugaku_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { GENSEN = d; return true; })
+  .catch(() => false);
+
+// 出典表示は飾り。ここで転んでも計算は止めない(Ready には影響させない)
+Promise.all([shahoReady, shoyoReady]).then(() => showSource()).catch(() => {});
+
+function fillPrefs(d) {
+  const sel = $("pref");
+  for (const p of Object.keys(d.kenko_rates)) {
+    const o = document.createElement("option");
+    o.value = p; o.textContent = `${p}（${d.kenko_rates[p].toFixed(2)}%）`;
+    if (p === "東京都") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+function fillGyoshu(d) {
+  const sel = $("gyoshu");
+  for (const [key, t] of Object.entries(d.koyou.types)) {
+    const o = document.createElement("option");
+    o.value = key; o.textContent = `${t.label}（本人 ${t.worker_permille}/1,000）`;
+    if (key === "general") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+// 年度・年分は**データが持っている値**を出す(ページに「令和8年度」と手書きしない)。
+function showSource() {
+  const from = ((SHAHO?._meta?.rate_applies_from) || "").replace("-", "年");
+  const parts = [SHAHO?._meta?.year, from && `${from}月分から適用`].filter(Boolean);
+  $("src-note").textContent = parts.length ? `（${parts.join("・")}）` : "";
+  $("src-shoyo").textContent = SHOYO?.year ? `（${SHOYO.year}）` : "";
+}
+
+// 前月給与の入力欄は「支払いがあった」のときだけ見せる
+for (const r of document.querySelectorAll('input[name="zmode"]')) {
+  r.addEventListener("change", () => {
+    $("zengetsu-wrap").style.display =
+      document.querySelector('input[name="zmode"]:checked')?.value === "paid" ? "block" : "none";
+  });
+}
+const zmode = () => document.querySelector('input[name="zmode"]:checked')?.value || "paid";
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+  // 必要な参照データの到着を必ず待つ(3つとも答えの一部になりうる)
+  const okShaho = await shahoReady;
+  const okShoyo = await shoyoReady;
+  const okGensen = await gensenReady;
+  if (!okShaho || !okShoyo || !okGensen || !SHAHO || !SHOYO || !GENSEN) {
+    box.innerHTML = `<div class="note"><b>料率・税額表を読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。データが分からない状態で手取りを答えることはできません。</div>`;
+    return;
+  }
+
+  const bonus = Number($("bonus").value);
+  if (!bonus || bonus <= 0) { box.innerHTML = "ボーナスの額面を入力してください。"; return; }
+  const paid = zmode() === "paid";
+  const zengetsu = Number($("zengetsu").value);
+  if (paid && (!zengetsu || zengetsu <= 0)) {
+    box.innerHTML = `<div class="note"><b>前月の額面の月給を入力してください。</b>
+      賞与の税率は前月の給与で決まるため、この欄が空だと計算できません。
+      前月に給与の支払いがなかった場合は、その選択肢に切り替えてください。</div>`;
+    return;
+  }
+  const pref = $("pref").value;
+  if (!SHAHO.kenko_rates[pref]) {
+    box.innerHTML = `<div class="note"><b>「${pref || "未選択"}」の健康保険料率が見つかりませんでした。</b>
+      都道府県を選び直してください。</div>`;
+    return;
+  }
+
+  let r;
+  try {
+    r = calcBonusTedori({
+      bonus, age: Number($("age").value), prefecture: pref,
+      dependents: Number($("dependents").value) || 0,
+      gyoshu: $("gyoshu").value,
+      zengetsuPaid: paid, zengetsu,
+      monthsOver6: $("over6").checked,
+      yearPaidKenko: Number($("yearpaid").value) || 0,
+    }, { shahoRates: SHAHO, shoyoTable: SHOYO, gensenTable: GENSEN });
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  const sh = r.shakaiHoken;
+  const kaigoLabel = sh.kaigoApplies
+    ? `健康保険＋介護保険（${pref} ${sh.kenkoRate.toFixed(2)}% ＋ ${SHAHO.kaigo_rate.toFixed(2)}%）`
+    : `健康保険（${pref} ${sh.kenkoRate.toFixed(2)}%）`;
+
+  const taxSub = r.shoyo.method === "rate"
+    ? `前月の社保後給与 ${yen(r.zengetsuAfterIns)} → 率 ${r.shoyo.ratePercent.toFixed(3)}%（算出率の表・甲欄・扶養親族等 ${r.dependents}人）`
+    : `月額表による例外計算（${r.shoyo.detail}）`;
+
+  const drow = (label, amount, sub = "") => `
+    <tr><td style="padding:6px 8px">${label}${sub ? `<br><span style="font-size:12px;color:var(--sub)">${sub}</span>` : ""}</td>
+        <td style="padding:6px 8px;text-align:right;white-space:nowrap">− ${yen(amount)}</td></tr>`;
+
+  let html = `
+    <div class="row">ボーナスの手取り <span class="big">${yen(r.tedori)}</span>
+      <span class="hint">（額面の ${(r.tedoriRate * 100).toFixed(1)}%）</span></div>
+    <div style="overflow-x:auto;margin-top:10px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr style="background:#e7f3f0"><th style="text-align:left;padding:6px 8px">項目</th>
+        <th style="text-align:right;padding:6px 8px">金額</th></tr>
+      <tr style="font-weight:700"><td style="padding:6px 8px">ボーナスの額面</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.bonus)}</td></tr>
+      ${drow("社会保険料（本人負担）", sh.self,
+        `標準賞与額 ${yen(sh.standardBonus)}（1,000円未満切捨）`)}
+      ${drow("所得税（源泉徴収）", r.shotokuzei, taxSub)}
+      ${drow("住民税", 0, "賞与からは天引きされません（毎月の給与から月割で徴収）")}
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">手取り</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.tedori)}</td></tr>
+    </table></div>
+
+    <div style="margin-top:12px">
+      <b>社会保険料の内わけ（本人負担 ${yen(sh.self)}）</b>
+      <table style="width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px">
+        <tr><td style="padding:4px 8px">${kaigoLabel}</td><td style="padding:4px 8px;text-align:right">${yen(sh.kenkoKaigo.self)}</td></tr>
+        <tr><td style="padding:4px 8px">子ども・子育て支援金（${sh.kosodate.rate.toFixed(2)}%）</td><td style="padding:4px 8px;text-align:right">${yen(sh.kosodate.self)}</td></tr>
+        <tr><td style="padding:4px 8px">厚生年金（18.3%）</td><td style="padding:4px 8px;text-align:right">${yen(sh.kosei.self)}</td></tr>
+        <tr><td style="padding:4px 8px">雇用保険（${sh.gyoshu.label} 本人 ${sh.gyoshu.worker_permille}/1,000・賞与の実額にかかる）</td><td style="padding:4px 8px;text-align:right">${yen(sh.koyou.self)}</td></tr>
+      </table>
+    </div>`;
+
+  // 例外計算・上限適用は黙らずに申告する
+  if (r.shoyo.method === "getsugaku") {
+    html += `<div class="note" style="margin-top:10px"><b>算出率の表は使えないため、月額表による例外計算（国税庁 No.2523）で計算しました。</b>
+      理由: ${r.shoyo.detail}。賞与を${r.shoyo.steps.divisor}等分して月額表に当てはめ、税額を${r.shoyo.steps.divisor}倍しています。</div>`;
+  }
+  if (sh.capped.kenko) {
+    html += `<div class="note" style="margin-top:10px"><b>健康保険の年度上限（累計573万円）を適用しました。</b>
+      健康保険・介護保険・支援金は、標準賞与額のうち ${yen(sh.kenkoStandard)} にだけかかっています。</div>`;
+  }
+  if (sh.capped.kosei) {
+    html += `<div class="note" style="margin-top:10px"><b>厚生年金の上限（1回150万円）を適用しました。</b>
+      厚生年金保険料は、標準賞与額のうち ${yen(sh.koseiStandard)} にだけかかっています。</div>`;
+  }
+
+  html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ※ 所得税は源泉徴収額です（年末調整で精算されます）。
+      ※ 住民税は賞与から天引きされませんが、賞与も前年の所得に含まれるため翌年度の住民税は増えます。
+      ${sh.kaigoApplies ? "介護保険料は健康保険料と合算した料率で控除しています。" : `${Number($("age").value)}歳のため介護保険料はかかりません（40歳以上65歳未満が対象）。`}
+      ${r.year ? `<span class="hint">（${r.year}の料率・${r.taxYear || ""}の算出率の表）</span>` : ""}</div>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>

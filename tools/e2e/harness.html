@@ -1071,6 +1071,93 @@ SCENES.tedori_none = tedoriScene({ gross: 300000, jmode: "none" });
 //   年150,600 → 月12,550 → 手取り 237,060円。住民税の配線(年収×12・社保実額)が狂えば落ちる
 SCENES.tedori_estimate = tedoriScene({ gross: 300000, jmode: "estimate", juminAnnual: 150600 });
 
+// ── ボーナス手取り(額面の賞与 − 社保 − 源泉所得税。住民税は引かれない) ─────────────
+// tedoriScene と同じ作法: 期待値はハーネス側で独立に組む。
+//   賞与の社保 = 公式額表(fixture)を**標準賞与額**で引く(★入力する賞与は1,000円の倍数かつ
+//   額表の標準報酬月額と一致する値にする。賞与に等級表は無いが、料率×折半×端数処理が同じなので
+//   「標準賞与額50万の保険料」=「標準報酬月額50万の保険料」が公式の値どうしで一致する)
+//   ＋雇用保険(実額×5/1000)。源泉 = 生の算出率の表(rateIndep)/月額表(lookupIndep)を直に引く。
+const bonusTedoriScene = ({ bonus, age = 30, pref = "東京都", dependents = 0,
+                            zengetsu = 300000, noPrev = false, nodata = false }) => async () => {
+  const doc = await open("/docs/bonus-tedori/");
+  const kenpo = await (await fetch("/tests/fixtures/kyoukaikenpo_tokyo_r08.json?raw=1")).json();
+  const st = await (await fetch("/docs/assets/gensen_shoyo_r08.json?raw=1")).json();
+
+  // 都道府県プルダウンは社保データ到着後に作られる。配信失敗の再現シーンでは待たない
+  if (!nodata) {
+    await waitFor(() => doc.querySelector('#pref option[value="東京都"]'), "都道府県の選択肢");
+    set(doc, "pref", pref);
+  }
+  set(doc, "age", String(age));
+  set(doc, "bonus", String(bonus));
+  set(doc, "dependents", String(dependents));
+  if (noPrev) pickRadio(doc, "zmode", "nopaid");
+  else set(doc, "zengetsu", String(zengetsu));
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す(実ユーザーと同じ)
+
+  await waitFor(
+    () => /ボーナスの手取り|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "賞与手取りの計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+
+  // ── ハーネス側の独立オラクル ──
+  const roundH = (v) => (v - Math.floor(v)) > 0.5 ? Math.ceil(v) : Math.floor(v);
+  const kaigo = age >= 40 && age < 65;
+  const stdBonus = Math.floor(bonus / 1000) * 1000;
+  const gB = kenpo.grades.find((x) => x.standard === stdBonus);
+  const shahoB = gB
+    ? Math.round((kaigo ? gB.kenko_kaigo_half : gB.kenko_half) + gB.kosodate_half + gB.kosei_half)
+      + roundH(bonus * (KOYOU_WORKER_PERMILLE.general / 1000))   // 雇用保険は賞与の実額にかかる
+    : null;
+  let zenAfter = 0;
+  if (!noPrev) {
+    const gZ = kenpo.grades.find((x) => x.standard === zengetsu);
+    const shahoZ = Math.round((kaigo ? gZ.kenko_kaigo_half : gZ.kenko_half) + gZ.kosodate_half + gZ.kosei_half)
+                 + roundH(zengetsu * (KOYOU_WORKER_PERMILLE.general / 1000));
+    zenAfter = zengetsu - shahoZ;                                // 前月の社会保険料等控除後の給与
+  }
+  const shoyoAfter = shahoB === null ? null : bonus - shahoB;
+  let expectedTax = null, viaGetsugaku = false;
+  if (shoyoAfter !== null) {
+    if (noPrev || shoyoAfter > zenAfter * 10) {
+      viaGetsugaku = true;                                       // 備考4 → 月額表による例外計算
+      const mt = await (await fetch("/docs/assets/gensen_getsugaku_r08.json?raw=1")).json();
+      const per = Math.floor(shoyoAfter / 6);
+      const t1 = lookupIndep(mt, per + zenAfter, dependents, "kou");
+      const t2 = zenAfter > 0 ? lookupIndep(mt, zenAfter, dependents, "kou") : 0;
+      expectedTax = Math.max(0, t1 - t2) * 6;
+    } else {
+      const rate = rateIndep(st, zenAfter, dependents, "kou");
+      expectedTax = Math.floor((shoyoAfter * rate) / 100000);
+    }
+  }
+  const expectedTedori = (shahoB === null || expectedTax === null)
+    ? null : bonus - shahoB - expectedTax;
+
+  return {
+    bonus, dependents,
+    tedori: num(/ボーナスの手取り ¥([\d,]+)/),
+    shahoSelf: num(/社会保険料（本人負担）[\s\S]*?− ¥([\d,]+)/),
+    shotokuzei: num(/所得税（源泉徴収）[\s\S]*?− ¥([\d,]+)/),
+    juminzei: num(/住民税[\s\S]*?− ¥([\d,]+)/),
+    declaresNoJuminzei: /賞与からは天引きされません/.test(body),  // 看板の主張が画面に出ているか
+    declaresGetsugaku: /月額表による例外計算/.test(body),         // 例外計算を黙って行っていないか
+    expectedTedori, expectedShaho: shahoB, expectedTax, viaGetsugaku,
+    showsYear: /令和\d+年(度|分)/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// ★看板の答え: 東京都・賞与50万・30歳・扶養0・前月額面30万
+//   → 社保73,450(健保24,625+支援金575+厚年45,750+雇用2,500) + 税17,420(4.084%) → 手取り409,130
+SCENES.bonus_tedori = bonusTedoriScene({ bonus: 500000 });
+SCENES.bonus_tedori_slow = SCENES.bonus_tedori;   // 800ms遅らせる(モバイル回線)。待って正答すること
+SCENES.bonus_tedori_nodata = bonusTedoriScene({ bonus: 500000, nodata: true });
+// 前月給与なし(備考4) → 月額表による例外計算。賞与30万÷6=5万は月額表の非課税帯 → 税0円
+SCENES.bonus_tedori_noprev = bonusTedoriScene({ bonus: 300000, noPrev: true });
+
 // ── 医療費控除 (/iryohi/) ─────────────────────────────────────────────────
 // ★このツールは juminzei_core.kyuyoShotoku（年収→総所得・別表第五）＋ 所法73条の足切り＋速算表の合成。
 //   E2Eは「年収→総所得→足切り→控除額→軽減額」の配線と、税率未選択・配信失敗の申告を見る。
