@@ -345,6 +345,27 @@ const SCENES = [
   { name: "zoyozei_nodata", data404: "zoyozei_r08.json",
     expect: (s) => s.failed && s.zei === null },
 
+  // ── 収入印紙 (/inshi/) ───────────────────────────────────────────────
+  // ★No.6925: 税込54,800円・消費税等4,981円区分記載 → 税抜49,819円で判定＝非課税（印紙不要）。
+  //   ハーネス側の引き算 54,800−4,981=49,819<50,000 と一致し、一覧表23行（判取帳まで）も描かれること。
+  { name: "inshi", expect: (s) =>
+      s.hikazei && s.judge === 49819 && s.tax === null &&
+      s.tableRows === 23 && s.tableHasHantori && !s.failed },
+  { name: "inshi_slow", slow: true, expect: (s) =>
+      s.hikazei && s.judge === 49819 && s.tax === null && !s.failed },
+  // ★免税事業者は区分記載しても税込判定 → 200円（非課税と言ったら誤答＝過怠税コース）。
+  { name: "inshi_menzei", expect: (s) =>
+      s.tax === 200 && !s.hikazei && !s.failed },
+  // ★No.7108の計算例: 不動産6,000万円 → 軽減30,000円（本則60,000円なら落ちる）。
+  { name: "inshi_keigen", expect: (s) =>
+      s.tax === 30000 && s.keigen && !s.failed },
+  // ★5万円ちょうどの領収書 → 200円（「5万円未満」の境界を「以下」に読み違えたら落ちる）。
+  { name: "inshi_50k", expect: (s) =>
+      s.tax === 200 && !s.hikazei && !s.failed },
+  // 参照データ配信不可 → 印紙額を出さずに断る(fail closed)。誤った印紙額を信じさせない
+  { name: "inshi_nodata", data404: "inshi_r07.json",
+    expect: (s) => s.failed && s.tax === null },
+
   // ── 年収の壁 (/kabe/) ────────────────────────────────────────────────
   // ★合成(壁判定→社保→手取り)とページ配線を見る。独立オラクルは協会けんぽ額表の端数処理で組む。
   //   東京都・30歳・130万の壁: 年収129万(扶養内)→手取り129万・壁の底(130万加入)112万2,704・回復150万5,000。

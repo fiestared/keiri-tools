@@ -1283,6 +1283,55 @@ SCENES.zoyozei_below = zoyoScene({ tokurei: 100 });
 // 参照データ配信不可 → 税額を出さずに断る（fail closed）。
 SCENES.zoyozei_nodata = zoyoScene({ tokurei: 500 });
 
+// ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
+// ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
+//   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。
+//   消費税の区分記載（No.6925）はハーネス側でも 54,800−4,981=49,819<50,000 を素朴に確かめる。
+const inshiScene = ({ doc = "k17_uriage", amount = "", taxPart = 0, menzei = false }) => async () => {
+  const d = await open("/docs/inshi/");
+  if (doc !== "k17_uriage") {
+    const el = d.getElementById("doc");
+    el.value = doc;
+    el.dispatchEvent(new d.defaultView.Event("change", { bubbles: true }));
+  }
+  if (amount !== "") set(d, "amount", String(amount));
+  if (taxPart) set(d, "taxpart", String(taxPart));
+  if (menzei) check(d, "menzei", true);
+  click(d, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /必要な収入印紙|収入印紙は不要|読み込めませんでした|入力を確認|入力するか/.test(text(d, "result")),
+    "収入印紙の判定結果",
+  );
+  const body = text(d, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    doc, amount,
+    tax: num(/必要な収入印紙[^¥]*¥([\d,]+)/),      // 課税のときの印紙額
+    hikazei: /収入印紙は不要です（非課税）/.test(body),
+    judge: num(/判定金額（税抜）: ¥([\d,]+)/),      // No.6925 を使ったときだけ出る
+    keigen: /軽減税率を適用/.test(body),
+    showsYear: /令和\d+年/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    // 一覧表（全20号=行23: 1号・2号・17号は2区分ずつ）が正本データから描かれていること
+    tableRows: d.querySelectorAll("#zeigaku-table tbody tr").length,
+    tableHasHantori: /判取帳/.test(d.getElementById("zeigaku-table").textContent),
+    body,
+  };
+};
+// ★No.6925: 税込54,800円・うち消費税等4,981円 → 判定金額49,819円（ハーネスの引き算でも5万円未満）＝非課税。
+//   同時に一覧表が23行描かれ判取帳まで出ていること（一覧表ページとしての体裁）。
+SCENES.inshi = inshiScene({ amount: 54800, taxPart: 4981 });
+SCENES.inshi_slow = SCENES.inshi;   // 800ms遅らせる（モバイル回線）。待って正答すること
+// ★免税事業者は区分記載しても税込54,800円で判定 → 200円（非課税と答えたら誤答）。
+SCENES.inshi_menzei = inshiScene({ amount: 54800, taxPart: 4981, menzei: true });
+// ★No.7108の計算例: 不動産の譲渡6,000万円 → 軽減30,000円（本則60,000円と答えたら落ちる）。
+SCENES.inshi_keigen = inshiScene({ doc: "k1_fudosan", amount: 60000000 });
+// ★5万円ちょうどの領収書は課税200円（「未満」の境界。非課税と答えたら落ちる）。
+SCENES.inshi_50k = inshiScene({ amount: 50000 });
+// 参照データ配信不可 → 印紙額を出さずに断る（fail closed）。
+SCENES.inshi_nodata = inshiScene({ amount: 54800, taxPart: 4981 });
+
 // ── 年収の壁 (/kabe/) ─────────────────────────────────────────────────────
 // ★このツールは shaho_core.calcMonthly の合成。E2Eは「年収→壁判定→社保→手取り」の配線を見る。
 //   独立オラクル: 社会保険料 = 協会けんぽ額表の各項目(健保±介護/子育て支援金/厚年)を50銭以下切捨で
