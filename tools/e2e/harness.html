@@ -1071,6 +1071,52 @@ SCENES.tedori_none = tedoriScene({ gross: 300000, jmode: "none" });
 //   年150,600 → 月12,550 → 手取り 237,060円。住民税の配線(年収×12・社保実額)が狂えば落ちる
 SCENES.tedori_estimate = tedoriScene({ gross: 300000, jmode: "estimate", juminAnnual: 150600 });
 
+// ── 医療費控除 (/iryohi/) ─────────────────────────────────────────────────
+// ★このツールは juminzei_core.kyuyoShotoku（年収→総所得・別表第五）＋ 所法73条の足切り＋速算表の合成。
+//   E2Eは「年収→総所得→足切り→控除額→軽減額」の配線と、税率未選択・配信失敗の申告を見る。
+const iryohiScene = ({ iryohi, hoten = 0, hotenTaisho, shunyu, rate, selfmed, nodata = false }) => async () => {
+  const doc = await open("/docs/iryohi/");
+  set(doc, "iryohi", String(iryohi));
+  set(doc, "hoten", String(hoten));
+  if (hotenTaisho != null) set(doc, "hotenTaisho", String(hotenTaisho));
+  set(doc, "shunyu", String(shunyu));
+  if (rate != null) set(doc, "zeiritsu", String(rate)); // <select> の value = 税率(%)
+  if (selfmed != null) set(doc, "selfmed", String(selfmed));
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /医療費控除の控除額|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "医療費控除の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    iryohi, shunyu,
+    kojo: num(/医療費控除の控除額 ¥([\d,]+)/),
+    ashikiri: num(/足切り額[^¥]*¥([\d,]+)/),
+    keigen: num(/戻ってくる税金の目安 ¥([\d,]+)/), // 最初の一致＝通常の医療費控除の軽減額
+    selfmedKojo: num(/セルフメディケーション税制[\s\S]*?控除額 ¥([\d,]+)/),
+    recommendsSelf: /おすすめ：② セルフメディケーション/.test(body),
+    showsRatePrompt: /税率）」を選んでください/.test(body),   // 税率未選択のとき軽減額の代わりに出る
+    showsYear: /令和\d+年(度|分)/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// ★看板の答え: 医療費30万・補填0・年収500万（足切り10万）・税率10% → 控除額20万・軽減40,420。
+//   合成（年収→総所得3,560,000→足切り10万→控除20万→20万×10%+復興420+住民税20万）が1段でも狂えば落ちる。
+SCENES.iryohi = iryohiScene({ iryohi: 300000, hoten: 0, shunyu: 5000000, rate: 10 });
+SCENES.iryohi_slow = SCENES.iryohi;   // 800ms遅らせる（モバイル回線）。待って正答すること
+// ★★低所得の主役: 年収160万（総所得95万）・医療費6万 → 足切り47,500（5%側）・控除額12,500。
+//   「10万円は下限ではない」を画面で固定する。足切りを一律10万にしていたら控除額0になって落ちる。
+SCENES.iryohi_lowincome = iryohiScene({ iryohi: 60000, hoten: 0, shunyu: 1600000, rate: 5 });
+// ★通常とセルフメディの選択: 医療費11万（控除1万）vs 購入10万（控除88,000）→ ②を推奨。
+SCENES.iryohi_selfmed = iryohiScene({ iryohi: 110000, hoten: 0, shunyu: 5000000, rate: 10, selfmed: 100000 });
+// ★税率未選択 → 軽減額を黙って0円で出さず「税率を選んでください」と言う（控除額は出す）。
+SCENES.iryohi_norate = iryohiScene({ iryohi: 300000, hoten: 0, shunyu: 5000000 });
+// 参照データ配信不可 → 控除額を出さずに断る（fail closed）。過大な控除額を信じさせない
+SCENES.iryohi_nodata = iryohiScene({ iryohi: 300000, hoten: 0, shunyu: 5000000, rate: 10, nodata: true });
+
 // ── 年収の壁 (/kabe/) ─────────────────────────────────────────────────────
 // ★このツールは shaho_core.calcMonthly の合成。E2Eは「年収→壁判定→社保→手取り」の配線を見る。
 //   独立オラクル: 社会保険料 = 協会けんぽ額表の各項目(健保±介護/子育て支援金/厚年)を50銭以下切捨で

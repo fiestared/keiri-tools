@@ -262,6 +262,27 @@ const SCENES = [
       s.tedori === s.expectedTedori && s.tedori === 237060 &&
       s.juminMonthly === s.expectedJumin && s.juminMonthly === 12550 && !s.failed },
 
+  // ── 医療費控除 (/iryohi/) ────────────────────────────────────────────
+  // ★看板の答え: 医療費30万・補填0・年収500万(足切り10万)・税率10% → 控除額20万・軽減40,420。
+  //   juminzei.kyuyoShotoku(年収→総所得)＋所法73条の足切り＋速算表の合成が1段でも狂えば落ちる。
+  { name: "iryohi", expect: (s) =>
+      s.kojo === 200000 && s.ashikiri === 100000 && s.keigen === 40420 && s.showsYear && !s.failed },
+  { name: "iryohi_slow", slow: true, expect: (s) =>
+      s.kojo === 200000 && s.keigen === 40420 && !s.failed },
+  // ★★低所得の主役: 年収160万・医療費6万 → 足切り47,500(5%側)・控除額12,500。「10万円は下限ではない」。
+  //   足切りを一律10万に実装していたら控除額0になってここで落ちる（記事の目玉の逆）。
+  { name: "iryohi_lowincome", expect: (s) =>
+      s.ashikiri === 47500 && s.kojo === 12500 && !s.failed },
+  // ★通常とセルフメディは選択 → 控除額の大きい②を推奨。控除額88,000。
+  { name: "iryohi_selfmed", expect: (s) =>
+      s.selfmedKojo === 88000 && s.recommendsSelf && !s.failed },
+  // ★税率未選択 → 軽減額を黙って0円で出さず「税率を選んでください」と言う（控除額は出す）。
+  { name: "iryohi_norate", expect: (s) =>
+      s.kojo === 200000 && s.keigen === null && s.showsRatePrompt && !s.failed },
+  // 参照データが配信できないときは、控除額を出さずに断る（fail closed）。過大な控除額を信じさせない
+  { name: "iryohi_nodata", data404: "iryohi_r08.json",
+    expect: (s) => s.failed && s.kojo === null },
+
   // ── 年収の壁 (/kabe/) ────────────────────────────────────────────────
   // ★合成(壁判定→社保→手取り)とページ配線を見る。独立オラクルは協会けんぽ額表の端数処理で組む。
   //   東京都・30歳・130万の壁: 年収129万(扶養内)→手取り129万・壁の底(130万加入)112万2,704・回復150万5,000。
