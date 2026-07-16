@@ -33,8 +33,8 @@ const HISTORICAL_FACTS = [
     reason: "徴収開始時期の事実。将来の年度の料率表に差し替えても変わらない" },
   { file: "shakai-hoken/index.html", snippet: "子ども・子育て支援金は令和8年4月分から",
     reason: "同上(結果欄の注記。JSのテンプレートリテラルから描かれている)" },
-  { file: "about/index.html", snippet: "令和8年（2026年）4月分から新設された",
-    reason: "同上(新設時期の事実)。about は料率データを読まないが、事実なので書いてよい" },
+  // about は本文全体が <article> なので stripArticleBody で丸ごと免除される
+  // (旧: 令和8年4月新設の個別免除は、article免除の導入で不要になった)。
   { file: "juminzei/index.html", snippet: "令和5年度で終了",
     reason: "★復興財源による均等割の上乗せ(市500円+県500円)が終わった年度そのもの＝制度の事実。" +
             "根拠法(平成23年法律第118号2条)が『平成26年度から平成35年度まで』と年度で区切っており、" +
@@ -138,6 +138,25 @@ function stripArticleCards(html) {
   return html.replace(/<div class="p-(?:title|desc)">[\s\S]*?<\/div>/gi, "");
 }
 
+// ツール本体化(#1)で、ツールページの計算機の下に**解説記事の中身を <article> で埋め込む**ように
+// なった(例: /tedori/)。<article> の中は column/ と同じく制度の沿革・改正履歴・他年度との比較を
+// 語る(令和2年政令、令和7年度→令和8年度の料率比較など)ので、column/ を対象外にしたのと同じ理由で
+// **<article> の中は年チェックの対象外**にする。**計算に使ったデータの年の申告は JS が結果欄に
+// 描いており(<article>の外)、そちらは引き続き厳格にチェックされる**ので、嘘の申告は防げる。
+// (埋め込んだ早見表の手書き数字の鮮度は、記事と同じく test_fee_article 型の照合で別途担保する)
+function stripArticleBody(html) {
+  return html.replace(/<article[\s\S]*?<\/article>/gi, "");
+}
+
+// JSON-LD(application/ld+json)は**利用者に見えない機械可読の写し**で、中身は本文(FAQ等)の
+// 言い換え。可視の本文側は既にチェック(または<article>で免除)されているので、写しをもう一度
+// 突き合わせると二重になり、しかも本文がgen_faq_jsonldで生成した歴史的事実(令和2年政令 等)を
+// **head の JSON-LD が抱えるため <article> 免除をすり抜けて誤検知する**。写しは外す。
+// ⚠️ 外すのは ld+json だけ。**結果欄を描く <script type="module"> は外さない**(可視文字列を描くため)。
+function stripLdJson(html) {
+  return html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/gi, "");
+}
+
 const years = await dataYears();
 const pages = await walk(DOCS);
 const problems = [];
@@ -159,7 +178,7 @@ function exemptionAt(rel, html, at, lit) {
 for (const page of pages) {
   const rel = relative(DOCS, page);
   const raw = await readFile(page, "utf8");
-  const html = stripArticleCards(stripComments(raw));
+  const html = stripLdJson(stripArticleBody(stripArticleCards(stripComments(raw))));
 
   // このページが fetch している年つきデータ = 名乗ってよい年
   const fetched = [...raw.matchAll(/assets\/([\w.-]+\.json)/g)].map((m) => m[1]);
