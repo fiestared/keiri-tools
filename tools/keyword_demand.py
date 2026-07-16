@@ -43,6 +43,49 @@ def suggest(kw):
         return []
 
 
+# ニッチ発見: 種ワードに1文字ずつ足してサジェストを叩き、長尾を機械的に掘る。
+# 「社会保険料 」の後ろに あ/い/う… A/B/C… を付けると、実際に打たれている
+# 続き(「社会保険料 いつから」「社会保険料 二重」等)が数百件 採れる。
+_SUFFIXES = list("あいうえおかきくたなはまやらわ")  # 主要な頭音(全部は重いので要所)
+_SUFFIXES += list("0123456789")                      # 「130万」等の数字系
+_SUFFIXES += ["いつ", "いくら", "とは", "計算", "方法", "違い", "条件", "対象", "できない"]  # 経理で多い接尾
+
+
+def deep_suggest(seed, rounds=1):
+    """種ワードを深掘りサジェスト展開して、長尾フレーズの集合を返す。
+    rounds=1 で seed+接尾 の1階層。得られた語はさらに1回だけ再展開する。"""
+    found = {}
+    def add(items):
+        for s in items:
+            s = s.strip()
+            if s and s != seed and len(s) <= 40:
+                found[s] = found.get(s, 0) + 1
+    add(suggest(seed))
+    for suf in _SUFFIXES:
+        add(suggest(f"{seed} {suf}"))
+        time.sleep(0.15)  # サジェストは軽いが礼儀として間を空ける
+    if rounds >= 2:
+        for s in list(found)[:30]:
+            add(suggest(s))
+            time.sleep(0.15)
+    return sorted(found)
+
+
+def winnability(kw):
+    """『勝てそう度』の目安(0〜100)。長尾ほど・具体的なほど高い。
+    大手が独占する頭ワード(短い・単語1〜2語)は低く、複数概念の長尾は高い。"""
+    toks = [t for t in re.split(r"[\s　]+", kw) if t]
+    n_words = len(toks)
+    length = len(kw.replace(" ", "").replace("　", ""))
+    score = 0
+    score += min(n_words * 22, 55)          # 語数(3語で満点近く)
+    score += min(max(length - 4, 0) * 4, 30)  # 文字数(具体的=長い)
+    # 具体化キーワードが入っていると勝ちやすい(検索意図が明確)
+    if re.search(r"いつ|いくら|とは|計算|方法|違い|条件|対象|できない|書き方|やり方|の壁|とき", kw):
+        score += 15
+    return min(score, 100)
+
+
 def volume(kw):
     """aramakijake.jp の月間推定検索数 (google, yahoo)。取れなければ (None, None)。"""
     url = "https://aramakijake.jp/keyword/index.php?keyword=" + urllib.parse.quote(kw)
@@ -177,11 +220,52 @@ def main():
                     help="各キーワードをサジェスト展開してから需要を測る")
     ap.add_argument("--check-dupes", action="store_true",
                     help="重複チェックだけを機械可読(TSV)で行う。通信しない")
+    ap.add_argument("--niche", metavar="SEED",
+                    help="種ワードを深掘りサジェスト展開→需要を測る→「ボリューム×勝てそう度」で並べる。"
+                         "『ニッチだけどボリュームが出そう』を機械的に発見する")
+    ap.add_argument("--min-vol", type=int, default=300,
+                    help="--niche で、この検索数(google+yahoo)未満は捨てる(既定300)")
     a = ap.parse_args()
 
     if a.suggest:
         for s in suggest(a.suggest):
             print(s)
+        return
+
+    if a.niche:
+        print(f"# 種「{a.niche}」を深掘り中…", file=sys.stderr)
+        phrases = deep_suggest(a.niche)
+        arts = existing_articles()
+        print(f"# サジェスト {len(phrases)}件 → 需要を測って選別（min-vol={a.min_vol}）",
+              file=sys.stderr)
+        rows = []
+        for p in phrases:
+            g, y = volume(p)
+            tot = (g or 0) + (y or 0)
+            time.sleep(1.0)
+            if tot < a.min_vol:
+                continue
+            # 既存記事との重なりを4段階で判定（seed一致で全部「既存」にしない）
+            h = dupe_hits(p, arts)
+            if h["title"]:
+                dup, ref = "重複", h["title"][0][0]       # 記事まるごとある→押し上げ対象
+            elif h["section"]:
+                dup, ref = "節あり", h["section"][0][0]   # 節で扱い済→深掘りの余地
+            elif h["body"]:
+                dup, ref = "言及", h["body"][0][0]        # 触れてるだけ→新規の芽
+            else:
+                dup, ref = "★未開拓", ""                  # どこにも無い＝狙い目
+            w = winnability(p)
+            rows.append((p, tot, w, tot * w // 100, dup, ref))
+        # スコア = ボリューム × 勝てそう度 の降順
+        rows.sort(key=lambda r: -r[3])
+        print(f"\n{'スコア':>6} {'検索数':>7} {'勝て度':>5}  区分     参照/狙い    キーワード")
+        for p, tot, w, sc, dup, ref in rows[:40]:
+            print(f"{sc:>6} {tot:>7,} {w:>5}  {dup:<6} {ref:<12} {p}")
+        print(f"\n→ ★未開拓 かつ 上位＝**ニッチだけどボリュームがある空白**。ここから新記事。",
+              file=sys.stderr)
+        print(f"→ 言及/節あり＝既存記事に節を足して深掘り。重複＝sc_check.py の押し上げ対象。",
+              file=sys.stderr)
         return
 
     if a.check_dupes:
