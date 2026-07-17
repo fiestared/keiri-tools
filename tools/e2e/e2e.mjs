@@ -392,6 +392,30 @@ const SCENES = [
   { name: "jidoshazei_nodata", data404: "jidoshazei_r08.json",
     expect: (s) => s.failed && s.annual === null },
 
+  // ── 減価償却 (/genka/) ───────────────────────────────────────────────
+  // ★独立オラクル=国税庁 No.2106/別表第十の公表計算例（取得価額100万円・耐用年数10年）。
+  //   定額法=毎年10万円・合計999,999・10年で1円まで。償却率一覧表(2〜50年=49行)が正本データから描かれる。
+  { name: "genka", expect: (s) =>
+      s.firstYear === 100000 && s.total === 999999 && s.rows === 10 && s.ritsuRows === 49 && !s.failed },
+  { name: "genka_slow", slow: true, expect: (s) =>
+      s.firstYear === 100000 && s.total === 999999 && !s.failed },
+  // ★200%定率法: 1年目20万・7年目に償却保証額を下回り改定65,536へ切替・10年目65,535（1円残す）。
+  { name: "genka_teiritsu", expect: (s) =>
+      s.firstYear === 200000 && s.depCol[6] === 65536 && s.depCol[s.depCol.length - 1] === 65535 &&
+      s.total === 999999 && !s.failed },
+  // ★初年度の月割: 4月取得(9か月)=75,000。以降10万で11年目まで延びる。
+  { name: "genka_getsuwari", expect: (s) =>
+      s.firstYear === 75000 && s.rows === 11 && s.total === 999999 && !s.failed },
+  // ★事業専用割合60%: 償却費10万・必要経費算入額6万（帳簿価額は全額で減る）。
+  { name: "genka_ratio", expect: (s) =>
+      s.firstYear === 100000 && s.necessary === 60000 && !s.failed },
+  // ★平成19年3月以前取得=旧法で対象外。誤って新法で答えず断る（fail closed）。
+  { name: "genka_kyuho", expect: (s) =>
+      s.rejected && s.firstYear === null && !s.failed },
+  // 参照データ配信不可 → 償却費を出さずに断る（fail closed）。
+  { name: "genka_nodata", data404: "genka_rates.json",
+    expect: (s) => s.failed && s.firstYear === null },
+
   // ── 年収の壁 (/kabe/) ────────────────────────────────────────────────
   // ★合成(壁判定→社保→手取り)とページ配線を見る。独立オラクルは協会けんぽ額表の端数処理で組む。
   //   東京都・30歳・130万の壁: 年収129万(扶養内)→手取り129万・壁の底(130万加入)112万2,704・回復150万5,000。

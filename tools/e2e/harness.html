@@ -1386,6 +1386,61 @@ SCENES.jidoshazei_kei = jidoshazeiScene({ vehicle: "kei", year: 2020 });
 // 参照データ配信不可 → 税額を出さずに断る（fail closed）。誤った税額を信じさせない。
 SCENES.jidoshazei_nodata = jidoshazeiScene({ cc: "le2000", year: 2021 });
 
+// ── 減価償却 (/genka/) ────────────────────────────────────────────────────────
+// ★取得価額・耐用年数・償却方法から償却スケジュールを計算。独立オラクル=国税庁 No.2106/別表第十の
+//   公表計算例（100万円・耐用年数10年）。定額法=毎年10万、200%定率法=1年目20万→7年目改定65,536→10年目65,535。
+//   コアは一切通さず、結果表の「償却費」列（<b>）を読み取って公表値と照合する。
+const genkaScene = ({ method = "teigaku", cost = 1000000, life = 10, year = 2015, month = 1, ratio = 100 }) => async () => {
+  const d = await open("/docs/genka/");
+  if (method !== "teigaku") set(d, "method", method);
+  set(d, "cost", String(cost));
+  set(d, "life", String(life));
+  set(d, "acqyear", String(year));
+  set(d, "acqmonth", String(month));
+  if (ratio !== 100) set(d, "ratio", String(ratio));
+  click(d, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /の償却費|読み込めませんでした|計算できませんでした/.test(text(d, "result")),
+    "減価償却の計算結果",
+  );
+  const body = text(d, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  // 結果のスケジュール表の「償却費」列（太字<b>のtd）を配列で取る。改定切替・備忘1円をここで照合。
+  const resultTable = d.querySelector("#result table");
+  const depCol = resultTable
+    ? [...resultTable.querySelectorAll("tbody tr")].map((tr) => {
+        const b = tr.querySelector("td b");
+        return b ? Number(b.textContent.replace(/[^\d]/g, "")) : null;
+      })
+    : [];
+  return {
+    method, cost, life,
+    firstYear: num(/の償却費\s*¥([\d,]+)/),                 // 初年度の償却費（見出し）
+    total: num(/償却費の合計\s*¥([\d,]+)/),                  // 合計＝取得価額−1円
+    necessary: num(/必要経費に算入できる額（事業専用割合\d+％）＝\s*¥([\d,]+)/), // 事業割合<100のとき
+    rows: resultTable ? resultTable.querySelectorAll("tbody tr").length : 0,
+    depCol,
+    ritsuRows: d.querySelectorAll("#ritsu-table tbody tr").length, // 償却率一覧表（2〜50年=49行）
+    failed: body.includes("読み込めませんでした"),   // 参照データ配信不可（fail closed）
+    rejected: body.includes("計算できませんでした"),  // 旧法・不正入力の拒否（fail closed）
+    body,
+  };
+};
+// ★定額法 100万・耐用年数10年・1月取得（通年）＝毎年10万・合計999,999・10年で1円まで。
+SCENES.genka = genkaScene({ method: "teigaku", cost: 1000000, life: 10, year: 2015, month: 1 });
+SCENES.genka_slow = SCENES.genka; // 800ms遅らせる（モバイル回線）。待って正答すること
+// ★200%定率法（平成24年4月以後取得）100万・n10＝1年目20万、7年目に改定65,536へ切替、10年目65,535。
+SCENES.genka_teiritsu = genkaScene({ method: "teiritsu", cost: 1000000, life: 10, year: 2015, month: 1 });
+// ★初年度の月割: 4月取得(9か月)＝75,000。以降10万で11年目まで延びる。
+SCENES.genka_getsuwari = genkaScene({ method: "teigaku", cost: 1000000, life: 10, year: 2015, month: 4 });
+// ★事業専用割合60%＝償却費10万・必要経費算入額6万（帳簿価額は全額で減る）。
+SCENES.genka_ratio = genkaScene({ method: "teigaku", cost: 1000000, life: 10, year: 2015, month: 1, ratio: 60 });
+// ★平成19年3月以前取得（2006年）＝旧法で対象外。新法で答えず断る（fail closed）。
+SCENES.genka_kyuho = genkaScene({ method: "teigaku", cost: 1000000, life: 10, year: 2006, month: 1 });
+// 参照データ配信不可 → 償却費を出さずに断る（fail closed）。
+SCENES.genka_nodata = genkaScene({ method: "teigaku", cost: 1000000, life: 10, year: 2015, month: 1 });
+
 // ── 年収の壁 (/kabe/) ─────────────────────────────────────────────────────
 // ★このツールは shaho_core.calcMonthly の合成。E2Eは「年収→壁判定→社保→手取り」の配線を見る。
 //   独立オラクル: 社会保険料 = 協会けんぽ額表の各項目(健保±介護/子育て支援金/厚年)を50銭以下切捨で
