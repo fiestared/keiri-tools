@@ -1332,6 +1332,60 @@ SCENES.inshi_50k = inshiScene({ amount: 50000 });
 // 参照データ配信不可 → 印紙額を出さずに断る（fail closed）。
 SCENES.inshi_nodata = inshiScene({ amount: 54800, taxPart: 4981 });
 
+// ── 自動車税 (/jidoshazei/) ──────────────────────────────────────────────────
+// ★総排気量＋初度登録の年月から自動車税（種別割）の年額を判定。独立オラクル: 期待値は東京都主税局
+//   の税率表・重課税額表・月割表の数字そのもの（コアを一切通さない）。
+//   新1.5L超2L=36,000／旧=39,500／重課(旧)=45,400／月割 43,500×7/12=25,375→25,300（切捨）。
+//   ★ハイブリッドは13年超でも重課対象外＝標準税率のまま（一律15%増しは誤答）。
+const jidoshazeiScene = ({ vehicle = "passenger", cc = "le2000", year = 2021, month = 4,
+                           fuel = "gasoline", jyuka = false, proate = false }) => async () => {
+  const d = await open("/docs/jidoshazei/");
+  if (vehicle !== "passenger") set(d, "vehicle", vehicle);
+  if (vehicle === "passenger" && cc !== "le2000") set(d, "cc", cc);
+  set(d, "regyear", String(year));
+  set(d, "regmonth", String(month));
+  if (fuel !== "gasoline") set(d, "fuel", fuel);
+  if (jyuka) check(d, "jyuka", true);
+  if (proate) check(d, "proate", true);
+  click(d, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /の年額|読み込めませんでした|判定できませんでした/.test(text(d, "result")),
+    "自動車税の判定結果",
+  );
+  const body = text(d, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    vehicle, cc, year,
+    annual: num(/の年額\s*¥([\d,]+)/),          // 主たる年額
+    proration: num(/月割（\d+月登録）\s*¥([\d,]+)/), // 月割がある年度のみ
+    zeroYear: /（3月登録）\s*¥0/.test(body),      // 3月登録＝その年度0円
+    jyuka: /重課を適用/.test(body),
+    rateNew: /新税率/.test(body),
+    rateOld: /旧税率/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    // 税額一覧表（11区分）が正本データから描かれていること
+    tableRows: d.querySelectorAll("#zeigaku-table tbody tr").length,
+    tableHasGt6000: /6リットル超/.test(d.getElementById("zeigaku-table").textContent),
+    body,
+  };
+};
+// ★新税率: 1.5L超2L以下・令和元10月以降(2021年)登録=年36,000。一覧表11区分・6L超まで描かれること。
+SCENES.jidoshazei = jidoshazeiScene({ cc: "le2000", year: 2021 });
+SCENES.jidoshazei_slow = SCENES.jidoshazei; // 800ms遅らせる（モバイル回線）。待って正答すること
+// ★旧税率: 同じ排気量でも令和元9月以前(2015年)登録は39,500（新36,000と別。境界の読み違えで落ちる）。
+SCENES.jidoshazei_old = jidoshazeiScene({ cc: "le2000", year: 2015 });
+// ★13年超の重課(ガソリン): 旧39,500 → 45,400。
+SCENES.jidoshazei_jyuka = jidoshazeiScene({ cc: "le2000", year: 2008, fuel: "gasoline", jyuka: true });
+// ★★ハイブリッドは13年超でも重課対象外 → 旧標準39,500のまま（一律15%増しと答えたら落ちる＝最大の急所）。
+SCENES.jidoshazei_hybrid = jidoshazeiScene({ cc: "le2000", year: 2008, fuel: "hybrid", jyuka: true });
+// ★月割: 新2.5L超(43,500)を8月登録 → 7か月分 25,300（43,500×7/12=25,375の100円未満切捨）。
+SCENES.jidoshazei_getsuwari = jidoshazeiScene({ cc: "le2500", year: 2021, month: 8, proate: true });
+// ★軽自動車: H27.4以降(2020年)最初の新規検査=10,800（月割なし・別の税）。
+SCENES.jidoshazei_kei = jidoshazeiScene({ vehicle: "kei", year: 2020 });
+// 参照データ配信不可 → 税額を出さずに断る（fail closed）。誤った税額を信じさせない。
+SCENES.jidoshazei_nodata = jidoshazeiScene({ cc: "le2000", year: 2021 });
+
 // ── 年収の壁 (/kabe/) ─────────────────────────────────────────────────────
 // ★このツールは shaho_core.calcMonthly の合成。E2Eは「年収→壁判定→社保→手取り」の配線を見る。
 //   独立オラクル: 社会保険料 = 協会けんぽ額表の各項目(健保±介護/子育て支援金/厚年)を50銭以下切捨で

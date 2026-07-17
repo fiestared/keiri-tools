@@ -175,7 +175,7 @@ const CATEGORIES = [
 
 /** sitemap に載せるツール・固定ページ(記事は自動で追加される) */
 const STATIC_PAGES = [
-  "", "tedori/", "bonus-tedori/", "inshi/", "kabe/", "iryohi/", "sozokuzei/", "zoyozei/", "jutaku/", "furusato/", "shobyo/", "shussan/", "ikuji/", "papa-ikukyu/", "juminzei/", "shakai-hoken/", "gensen-choshu/", "kihonteate/", "taishokukin/", "zangyodai/", "shohizei/", "eigyobi/",
+  "", "tedori/", "bonus-tedori/", "inshi/", "jidoshazei/", "kabe/", "iryohi/", "sozokuzei/", "zoyozei/", "jutaku/", "furusato/", "shobyo/", "shussan/", "ikuji/", "papa-ikukyu/", "juminzei/", "shakai-hoken/", "gensen-choshu/", "kihonteate/", "taishokukin/", "zangyodai/", "shohizei/", "eigyobi/",
   "yukyu/", "denchoho-index/", "senpou-futan/", "zengin-kana/", "shiharai-site/",
   "ext/amazon-receipt/", "column/", "about/", "privacy/", "contact/",
 ];

@@ -366,6 +366,32 @@ const SCENES = [
   { name: "inshi_nodata", data404: "inshi_r07.json",
     expect: (s) => s.failed && s.tax === null },
 
+  // ── 自動車税 (/jidoshazei/) ──────────────────────────────────────────
+  // ★新税率(令和元10月以降)・1.5L超2L以下=36,000。一覧表11区分・6L超まで描かれること。
+  { name: "jidoshazei", expect: (s) =>
+      s.annual === 36000 && s.rateNew && !s.jyuka &&
+      s.tableRows === 11 && s.tableHasGt6000 && !s.failed },
+  { name: "jidoshazei_slow", slow: true, expect: (s) =>
+      s.annual === 36000 && s.rateNew && !s.failed },
+  // ★旧税率(令和元9月以前)=39,500。新旧の境界を読み違えたら落ちる。
+  { name: "jidoshazei_old", expect: (s) =>
+      s.annual === 39500 && s.rateOld && !s.failed },
+  // ★13年超の重課(ガソリン): 旧39,500→45,400。
+  { name: "jidoshazei_jyuka", expect: (s) =>
+      s.annual === 45400 && s.jyuka && !s.failed },
+  // ★★ハイブリッドは13年超でも重課対象外→旧標準39,500のまま(一律15%増しと答えたら落ちる)。
+  { name: "jidoshazei_hybrid", expect: (s) =>
+      s.annual === 39500 && !s.jyuka && !s.failed },
+  // ★月割: 新2.5L超(43,500)を8月登録=7か月分25,300(43,500×7/12=25,375の100円未満切捨)。
+  { name: "jidoshazei_getsuwari", expect: (s) =>
+      s.proration === 25300 && s.annual === 43500 && !s.failed },
+  // ★軽自動車(H27.4以降 最初の新規検査)=10,800。別の税・月割なし。
+  { name: "jidoshazei_kei", expect: (s) =>
+      s.annual === 10800 && !s.failed },
+  // 参照データ配信不可 → 税額を出さずに断る(fail closed)。誤った税額を信じさせない
+  { name: "jidoshazei_nodata", data404: "jidoshazei_r08.json",
+    expect: (s) => s.failed && s.annual === null },
+
   // ── 年収の壁 (/kabe/) ────────────────────────────────────────────────
   // ★合成(壁判定→社保→手取り)とページ配線を見る。独立オラクルは協会けんぽ額表の端数処理で組む。
   //   東京都・30歳・130万の壁: 年収129万(扶養内)→手取り129万・壁の底(130万加入)112万2,704・回復150万5,000。
