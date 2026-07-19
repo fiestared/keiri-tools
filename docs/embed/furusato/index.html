@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ふるさと納税 限度額ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/furusato/ と重複させない）。計算は本体と同じ ../../assets/juminzei_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/furusato/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="年収と家族構成からふるさと納税の限度額（自己負担2,000円で収まる寄附の上限）を計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .radios{ display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+  .radios label{ display:flex; align-items:center; gap:4px; margin:0; font-size:13px; color:var(--ink);
+    border:1px solid var(--line); border-radius:8px; padding:6px 8px; cursor:pointer; }
+  details{ margin-top:8px; } summary{ font-size:12.5px; color:var(--sub); cursor:pointer; }
+  .chk{ font-size:13px; color:var(--ink); display:flex; align-items:center; gap:6px; margin-top:6px; }
+  .chk input{ width:auto; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:26px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; margin-top:8px; }
+  td{ padding:4px 6px; } td.n{ text-align:right; white-space:nowrap; }
+  .tot{ border-top:2px solid var(--accent); font-weight:800; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .a-share{ border:1px solid var(--line); color:var(--ink); }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>ふるさと納税 限度額シミュレーション</h1>
+  <p class="lead">年収と家族構成から、自己負担2,000円で収まる寄附額の上限（限度額）を概算します。限度額は住民税の所得割額の20％から逆算して決まります。</p>
+
+  <label for="shunyu">給与収入（年収・額面／円）</label>
+  <input id="shunyu" type="number" inputmode="numeric" value="5000000" placeholder="例: 5000000" min="0" step="10000">
+
+  <div class="grid">
+    <div>
+      <label for="age">年齢</label>
+      <input id="age" type="number" inputmode="numeric" value="40" min="0" max="120">
+    </div>
+    <div>
+      <label for="ken">お住まいの都道府県</label>
+      <select id="ken"><option value="">読み込み中…</option></select>
+    </div>
+  </div>
+  <div class="hint">年齢と都道府県は<b>社会保険料の概算</b>にだけ使います。</div>
+
+  <label for="shakai" style="margin-top:10px">社会保険料（年額／円）<span class="hint">　空欄なら年収から概算</span></label>
+  <input id="shakai" type="number" inputmode="numeric" placeholder="源泉徴収票の「社会保険料等の金額」">
+
+  <div class="grid">
+    <div>
+      <label for="haigusha">配偶者控除</label>
+      <select id="haigusha">
+        <option value="none">なし（共働き・配偶者なし）</option>
+        <option value="ippan">あり（70歳未満）</option>
+        <option value="rojin">あり（70歳以上）</option>
+      </select>
+    </div>
+    <div>
+      <label for="fuyoIppan">一般扶養（16〜18・23〜69歳）</label>
+      <input id="fuyoIppan" type="number" inputmode="numeric" value="0" min="0" max="20">
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <label for="fuyoTokutei">特定扶養（19〜22歳）</label>
+      <input id="fuyoTokutei" type="number" inputmode="numeric" value="0" min="0" max="20">
+    </div>
+    <div>
+      <label for="fuyoNensho">16歳未満の子ども（人）</label>
+      <input id="fuyoNensho" type="number" inputmode="numeric" value="0" min="0" max="20">
+    </div>
+  </div>
+  <div class="hint">16歳未満の子は扶養控除は0円ですが、<b>非課税限度額の判定に効く</b>ので入力してください。</div>
+
+  <details>
+    <summary>その他の控除・給与以外の所得</summary>
+    <div class="grid" style="margin-top:6px">
+      <div>
+        <label for="fuyoRojin">老人扶養（70歳以上・別居）</label>
+        <input id="fuyoRojin" type="number" inputmode="numeric" value="0" min="0" max="20">
+      </div>
+      <div>
+        <label for="fuyoDokyoRooya">同居老親等（70歳以上・同居）</label>
+        <input id="fuyoDokyoRooya" type="number" inputmode="numeric" value="0" min="0" max="20">
+      </div>
+    </div>
+    <label for="sonotaKojo" style="margin-top:6px">その他の所得控除（円）<span class="hint">　生命保険料・地震保険料・iDeCoなど</span></label>
+    <input id="sonotaKojo" type="number" inputmode="numeric" value="0" min="0">
+    <label for="sonotaShotoku" style="margin-top:6px">給与以外の所得（円）<span class="hint">　副業・不動産などの所得金額</span></label>
+    <input id="sonotaShotoku" type="number" inputmode="numeric" value="0" min="0">
+    <label class="chk"><input id="hitorioya" type="checkbox"> ひとり親</label>
+    <label class="chk"><input id="kafu" type="checkbox"> 寡婦</label>
+    <label class="chk"><input id="shogai" type="checkbox"> 障害者（本人・同一生計配偶者・扶養親族のいずれか。一般）</label>
+    <label class="chk"><input id="gakusei" type="checkbox"> 勤労学生</label>
+  </details>
+
+  <label for="kifu" style="margin-top:10px">寄附する予定の額（円）<span class="hint">　任意。自己負担が2,000円で収まるか判定</span></label>
+  <input id="kifu" type="number" inputmode="numeric" placeholder="例: 60000">
+
+  <button id="calc" type="button">限度額を計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a href="https://keiri-tools.com/furusato/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（地方税法・附則5条の6の読替え後の割合で計算）。
+  </div>
+</div>
+
+<script type="module">
+import { calc, shakaiHokenGaisan } from "../../assets/juminzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const pct = (x1000) => (x1000 / 1000).toLocaleString("ja-JP", { maximumFractionDigits: 3 }) + "％";
+const BASE = "https://keiri-tools.com/furusato/?utm_source=embed&utm_medium=widget";
+
+// 参照データは非同期で届く。**どちらも答えの一部**（社会保険料の概算＝限度額に直接効く）なので、
+// 届く前に押されても await で待つ（回線が遅い人だけ空データで計算され限度額を過大に出す事故を防ぐ = fail closed）。
+let D = null, S = null;
+const juminReady = fetch("../../assets/juminzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { D = d; return true; })
+  .catch(() => false);
+const shahoReady = fetch("../../assets/shaho_rates_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { S = d; fillKen(d); return true; })
+  .catch(() => false);
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "furusato", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+function fillKen(s) {
+  const sel = $("ken"); sel.innerHTML = "";
+  for (const name of Object.keys(s.kenko_rates)) {
+    const o = document.createElement("option");
+    o.value = name; o.textContent = name;
+    if (name === "東京都") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+
+  const okJ = await juminReady;
+  const okS = await shahoReady;
+  if (!okJ || !okS || !D || !S) {
+    box.innerHTML = `<div class="warn"><b>税率表を読み込めませんでした。</b>通信環境を確認して再読み込みしてください。税率が分からないまま限度額を答えると、上限を超えて寄附して自己負担が増えるおそれがあるため計算を止めています。</div>`;
+    postHeight(); return;
+  }
+
+  const shunyu = Number($("shunyu").value);
+  if (!(shunyu > 0)) { box.innerHTML = `<div class="warn">給与収入（年収）を入力してください。</div>`; postHeight(); return; }
+
+  const shakaiInput = $("shakai").value.trim();
+  const gaisan = shakaiHokenGaisan(shunyu, Number($("age").value), $("ken").value, S);
+  const useGaisan = shakaiInput === "";
+  const shakai = useGaisan ? gaisan.total : Number(shakaiInput);
+
+  const family = {
+    haigusha: $("haigusha").value,
+    fuyoIppan: Number($("fuyoIppan").value),
+    fuyoTokutei: Number($("fuyoTokutei").value),
+    fuyoRojin: Number($("fuyoRojin").value),
+    fuyoDokyoRooya: Number($("fuyoDokyoRooya").value),
+    fuyoNensho: Number($("fuyoNensho").value),
+    shogaiIppan: $("shogai").checked ? 1 : 0,
+    kafu: $("kafu").checked,
+    hitorioyaHaha: $("hitorioya").checked,
+    kinroGakusei: $("gakusei").checked,
+  };
+
+  const kifuInput = $("kifu").value.trim();
+  let r;
+  try {
+    r = calc({
+      kyuyoShunyu: shunyu,
+      shakaiHoken: shakai,
+      sonotaKojo: Number($("sonotaKojo").value),
+      sonotaShotoku: Number($("sonotaShotoku").value),
+      family,
+      kifu: kifuInput === "" ? null : Number(kifuInput),
+    }, D);
+  } catch (e) {
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    postHeight(); return;
+  }
+
+  if (r.shotokuwari <= 0) {
+    const hikazei = r.hikazei.shotokuwariHikazei;
+    const riyu = hikazei
+      ? `合計所得金額 <b>${yen(r.goukeiShotoku)}</b> が住民税の所得割の非課税限度額 <b>${yen(r.hikazei.shotokuLimit)}</b>（本人＋同一生計配偶者＋扶養親族 ${r.hikazei.ninzu}人分）以下のため、所得割が非課税です（16歳未満のお子さんもこの人数に入ります）。`
+      : `控除の合計が所得を上回り、課税所得が0円になっています。`;
+    box.innerHTML = `
+      <div>限度額 <span class="big">¥0</span></div>
+      <div class="note"><b>住民税の所得割がかからないため、ふるさと納税をしても税金は戻りません。</b>${riyu} この場合、寄附額はそのまま自己負担になります。</div>
+      <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
+    postHeight(); return;
+  }
+
+  const shakaiNote = useGaisan
+    ? `<div class="note"><b>社会保険料 ${yen(gaisan.total)} は概算です</b>（賞与なしとして年収を12等分し、協会けんぽ ${$("ken").value}［${gaisan.kenkoRate}％］${gaisan.kaigoApplies ? "＋介護保険" : ""}・厚生年金 ${S.kosei_nenkin_rate}％・雇用保険［一般の事業］で計算）。源泉徴収票の実額を入れると正確になります。</div>`
+    : `<div class="note">社会保険料は入力された実額 <b>${yen(shakai)}</b> で計算しました。</div>`;
+
+  const kifuBlock = r.kifu ? renderKifu(r, Number(kifuInput)) : "";
+
+  box.innerHTML = `
+    <div>ふるさと納税の限度額 <span class="big">${yen(r.furusatoGendo)}</span></div>
+    <div class="hint">この額までの寄附なら、自己負担は2,000円だけで済みます（${r.year}の所得にもとづく計算）。</div>
+    <table>
+      <tr><td>住民税の所得割額</td><td class="n">${yen(r.shotokuwari)}</td></tr>
+      <tr><td>特例控除の上限（所得割額の20％）</td><td class="n">${yen(r.tokureiCap)}</td></tr>
+      <tr><td>特例控除額の割合</td><td class="n">${pct(r.tokureiRitsu.pct_x1000)}</td></tr>
+      <tr class="tot"><td>限度額</td><td class="n">${yen(r.furusatoGendo)}</td></tr>
+    </table>
+    ${shakaiNote}
+    ${kifuBlock}
+    <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
+  postHeight();
+});
+
+function renderKifu(r, kifu) {
+  const k = r.kifu;
+  const over = kifu > r.furusatoGendo;
+  const head = over
+    ? `<div class="warn" style="margin-top:8px"><b>★この寄附額は限度額を ${yen(kifu - r.furusatoGendo)} 超えています。</b>自己負担は2,000円ではなく <b>${yen(k.jikoFutan)}</b> になります（超えた分は税金から引かれません）。</div>`
+    : `<div class="note"><b>この寄附額なら自己負担は ${yen(k.jikoFutan)} です。</b>限度額（${yen(r.furusatoGendo)}）の範囲内なので、寄附額のうち2,000円を除いた全額が所得税と住民税から引かれます。</div>`;
+  return `${head}
+    <table>
+      <tr><td>寄附額</td><td class="n">${yen(kifu)}</td></tr>
+      <tr><td>所得税からの控除</td><td class="n">${yen(k.shotokuzei)}</td></tr>
+      <tr><td>住民税・基本分</td><td class="n">${yen(k.kihon)}</td></tr>
+      <tr><td>住民税・特例分</td><td class="n">${yen(k.tokurei)}</td></tr>
+      <tr class="tot"><td>実質の自己負担</td><td class="n">${yen(k.jikoFutan)}</td></tr>
+    </table>`;
+}
+</script>
+</body>
+</html>

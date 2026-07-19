@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>源泉徴収税額 計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/gensen-choshu/ と重複させない）。計算は本体と同じ ../../assets/ の各コア。 -->
+<link rel="canonical" href="https://keiri-tools.com/gensen-choshu/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="給与（月額表）・賞与（算出率の表）・報酬料金（10.21%）の源泉徴収税額を自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .tabs{ display:flex; gap:4px; margin-bottom:12px; }
+  .tabs button{ flex:1; margin:0; padding:8px 4px; font-size:12px; font-weight:700; background:#fff;
+    color:var(--sub); border:1px solid var(--line); border-radius:8px; cursor:pointer; }
+  .tabs button[aria-selected="true"]{ background:var(--accent); color:#fff; border-color:var(--accent); }
+  .pane{ display:none; } .pane[data-active]{ display:block; }
+  .radio-row{ display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+  .radio-row label{ flex:1; min-width:130px; display:block; font-size:12.5px; color:var(--ink);
+    border:1px solid var(--line); border-radius:8px; padding:6px 8px; margin:0; cursor:pointer; }
+  .radio-row small{ color:var(--sub); font-size:11px; }
+  .radio-row input{ width:auto; margin-right:4px; }
+  .opts{ display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+  .opts label{ display:flex; align-items:center; gap:4px; font-size:12.5px; color:var(--ink); margin:0; }
+  .opts input{ width:auto; }
+  .inline{ display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ink); margin-top:10px; }
+  .inline input{ width:auto; }
+  button.primary{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:24px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  .row{ margin-bottom:4px; }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; margin-top:8px; background:#fff; }
+  td{ padding:5px 6px; } td.n{ text-align:right; white-space:nowrap; }
+  .tot td{ border-top:2px solid var(--accent); font-weight:800; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .scroll{ overflow-x:auto; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>源泉徴収税額 計算</h1>
+  <p class="lead">給与は月額表、賞与は算出率の表を引いて計算します。報酬・料金（原稿料・士業など）の10.21%も同じ画面で計算できます。</p>
+
+  <div class="tabs" role="tablist">
+    <button id="tab-kyuyo" role="tab" aria-selected="true">給与（月額表）</button>
+    <button id="tab-shoyo" role="tab" aria-selected="false">賞与（算出率）</button>
+    <button id="tab-hoshu" role="tab" aria-selected="false">報酬（10.21%）</button>
+  </div>
+
+  <!-- ── 給与（月額表） ── -->
+  <div class="pane" id="pane-kyuyo" data-active>
+    <label for="amount">その月の社会保険料等控除後の給与等の金額</label>
+    <input type="number" id="amount" placeholder="例: 250000" inputmode="numeric">
+    <div class="hint"><b>総支給額ではありません。</b>社会保険料等を差し引いた後の金額です。</div>
+
+    <label>税額表の欄</label>
+    <div class="radio-row">
+      <label><input type="radio" name="ran" value="kou" checked>甲欄<br><small>扶養控除等申告書の提出<b>あり</b></small></label>
+      <label><input type="radio" name="ran" value="otsu">乙欄<br><small>提出<b>なし</b>（従たる勤務先など）</small></label>
+    </div>
+
+    <div id="kou-only">
+      <label for="fuyo">扶養親族等の数</label>
+      <select id="fuyo"></select>
+      <div class="hint">源泉控除対象配偶者と控除対象扶養親族の合計。<b>16歳未満の子は含めません。</b></div>
+      <label>本人が次に該当する（該当ごとに1人加算）</label>
+      <div class="opts">
+        <label><input type="checkbox" id="shogaisha">障害者</label>
+        <label><input type="checkbox" id="kafu">寡婦</label>
+        <label><input type="checkbox" id="hitorioya">ひとり親</label>
+        <label><input type="checkbox" id="kinro">勤労学生</label>
+      </div>
+      <label for="fuyoShogai">扶養親族のうち 障害者・同居特別障害者の人数</label>
+      <select id="fuyoShogai"></select>
+    </div>
+
+    <div id="otsu-only" style="display:none">
+      <label for="jutaru">「従たる給与についての扶養控除等申告書」による扶養親族等の数</label>
+      <select id="jutaru"></select>
+      <div class="hint">この申告書が<b>ない</b>場合は 0 のままに（乙欄では通常0）。</div>
+    </div>
+
+    <button class="primary" id="calcK" type="button">計算する</button>
+    <div class="result" id="resultK"></div>
+  </div>
+
+  <!-- ── 賞与（算出率の表） ── -->
+  <div class="pane" id="pane-shoyo">
+    <div class="note" style="margin-bottom:8px">賞与は月額表では計算しません。「算出率の表」で率を引き、賞与に掛けます。率を決めるのは<b>前月の給与</b>です。</div>
+
+    <label for="shoyoAmt">賞与の支給額</label>
+    <input type="number" id="shoyoAmt" placeholder="例: 554000" inputmode="numeric">
+    <label for="shoyoIns">賞与から控除する社会保険料等</label>
+    <input type="number" id="shoyoIns" placeholder="例: 85593" inputmode="numeric">
+
+    <label class="inline"><input type="checkbox" id="zenPaid" checked> 前月に給与の支払があった</label>
+    <div id="zen-only">
+      <label for="zenAmt">前月の給与等の金額</label>
+      <input type="number" id="zenAmt" placeholder="例: 300000" inputmode="numeric">
+      <label for="zenIns">前月の給与から控除された社会保険料等</label>
+      <input type="number" id="zenIns" placeholder="例: 45000" inputmode="numeric">
+    </div>
+
+    <label>税額表の欄</label>
+    <div class="radio-row">
+      <label><input type="radio" name="ranS" value="kou" checked>甲欄<br><small>提出<b>あり</b></small></label>
+      <label><input type="radio" name="ranS" value="otsu">乙欄<br><small>提出<b>なし</b></small></label>
+    </div>
+
+    <div id="kouS-only">
+      <label for="fuyoS">扶養親族等の数</label>
+      <select id="fuyoS"></select>
+      <label>本人が次に該当する（該当ごとに1人加算）</label>
+      <div class="opts">
+        <label><input type="checkbox" id="shogaishaS">障害者</label>
+        <label><input type="checkbox" id="kafuS">寡婦</label>
+        <label><input type="checkbox" id="hitorioyaS">ひとり親</label>
+        <label><input type="checkbox" id="kinroS">勤労学生</label>
+      </div>
+      <label for="fuyoShogaiS">扶養親族のうち 障害者・同居特別障害者の人数</label>
+      <select id="fuyoShogaiS"></select>
+    </div>
+
+    <label for="monthsS">賞与の計算期間</label>
+    <select id="monthsS">
+      <option value="6">6か月以内（通常の夏・冬の賞与）</option>
+      <option value="12">6か月を超える</option>
+    </select>
+
+    <button class="primary" id="calcS" type="button">計算する</button>
+    <div class="result" id="resultS"></div>
+  </div>
+
+  <!-- ── 報酬・料金 ── -->
+  <div class="pane" id="pane-hoshu">
+    <label for="kind">報酬の種類</label>
+    <select id="kind"></select>
+    <div id="kind-note" class="hint" style="margin-top:5px"></div>
+
+    <label for="fee">報酬額（税抜・円）</label>
+    <input type="number" id="fee" placeholder="例: 100000" inputmode="numeric">
+
+    <label>消費税</label>
+    <div class="radio-row">
+      <label><input type="radio" name="tax" value="sep" checked>区分あり<br><small>税抜の報酬額のみが対象（有利）</small></label>
+      <label><input type="radio" name="tax" value="inc">区分なし<br><small>税込金額の全体が対象（原則）</small></label>
+      <label><input type="radio" name="tax" value="none">消費税なし<br><small>不課税・免税</small></label>
+    </div>
+
+    <button class="primary" id="calc" type="button">計算する</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="brand">
+    🧮 <a id="brand-link" href="https://keiri-tools.com/gensen-choshu/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（国税庁の税額表・算出率の表）。
+  </div>
+</div>
+
+<script type="module">
+import { calcWithholding, withholdingTarget, KINDS } from "../../assets/gensen_core.js";
+import { kouTax, otsuTax, denshiKouTax, findRow, extraDependentCount } from "../../assets/gensen_kyuyo_core.js";
+import { calcShoyo } from "../../assets/gensen_shoyo_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const BASE = "https://keiri-tools.com/gensen-choshu/?utm_source=embed&utm_medium=widget";
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "gensen-choshu", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+// ── タブ ──
+const TABS = ["kyuyo", "shoyo", "hoshu"];
+for (const t of TABS) {
+  $("tab-" + t).addEventListener("click", () => {
+    for (const o of TABS) {
+      const on = o === t;
+      $("tab-" + o).setAttribute("aria-selected", on ? "true" : "false");
+      if (on) $("pane-" + o).setAttribute("data-active", "");
+      else $("pane-" + o).removeAttribute("data-active");
+    }
+    postHeight();
+  });
+}
+
+// 月額表・算出率の表は非同期で届く。届く前に押されても await で待つ（本体と同じ規律）。
+// catch が拾ってよいのは「表が手に入らなかったこと」だけ。読めなければ税額を答えない（fail closed）。
+let TABLE = null, SHOYO = null;
+const tableReady = fetch("../../assets/gensen_getsugaku_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { TABLE = d; return true; })
+  .catch(() => false);
+const shoyoReady = fetch("../../assets/gensen_shoyo_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { SHOYO = d; return true; })
+  .catch(() => false);
+
+for (const [id, max] of [["fuyo", 10], ["fuyoShogai", 5], ["jutaru", 5], ["fuyoS", 10], ["fuyoShogaiS", 5]]) {
+  for (let i = 0; i <= max; i++) {
+    const o = document.createElement("option");
+    o.value = String(i); o.textContent = i + "人";
+    $(id).appendChild(o);
+  }
+}
+
+// ── 給与（月額表） ──
+const ran = () => document.querySelector('input[name="ran"]:checked').value;
+for (const r of document.querySelectorAll('input[name="ran"]')) {
+  r.addEventListener("change", () => {
+    const kou = ran() === "kou";
+    $("kou-only").style.display = kou ? "" : "none";
+    $("otsu-only").style.display = kou ? "none" : "";
+    $("resultK").style.display = "none"; postHeight();
+  });
+}
+
+$("calcK").addEventListener("click", async () => {
+  const box = $("resultK");
+  box.style.display = "block";
+  const A = Number($("amount").value);
+  if (!A || A <= 0) { box.innerHTML = `<div class="warn">社会保険料等控除後の給与等の金額を入力してください。</div>`; postHeight(); return; }
+
+  box.innerHTML = "計算中…"; postHeight();
+  const loaded = await tableReady;
+  if (!loaded || !TABLE) {
+    box.innerHTML = `<div class="warn"><b>税額表を読み込めませんでした。</b>通信環境を確認して再読み込みしてください。表を引けない状態で税額は答えられません。</div>`;
+    postHeight(); return;
+  }
+
+  const isKou = ran() === "kou";
+  let tax, n = 0, extra = 0, denshi = null;
+  if (isKou) {
+    const base = Number($("fuyo").value);
+    extra = extraDependentCount({
+      shogaisha: $("shogaisha").checked, kafu: $("kafu").checked,
+      hitorioya: $("hitorioya").checked, kinroGakusei: $("kinro").checked,
+      shogaishaFuyoCount: Number($("fuyoShogai").value),
+    });
+    n = base + extra;
+    tax = kouTax(TABLE, A, n);
+    denshi = denshiKouTax(A, n);
+  } else {
+    tax = otsuTax(TABLE, A, Number($("jutaru").value));
+  }
+
+  const row = findRow(TABLE, A);
+  let rowNote;
+  if (A < TABLE.otsuLowMax) {
+    rowNote = isKou ? `${yen(TABLE.otsuLowMax)}未満のため、甲欄は<b>0円</b>です。`
+      : `${yen(TABLE.otsuLowMax)}未満のため、乙欄は<b>金額 × 3.063%</b>（算式）で求めます。`;
+  } else if (row) {
+    rowNote = `月額表の「${yen(row.min)}以上 ${yen(row.max)}未満」の行` +
+      (isKou ? `、扶養親族等 <b>${n}人</b>の列` : `の乙欄`) + `を引きました。`;
+  } else {
+    rowNote = `${yen(TABLE.tableMax)}以上のため、表ではなく<b>算式</b>で求めます。`;
+  }
+  const over7 = isKou && n > 7
+    ? `<br>扶養親族等が7人を超えるため、7人の税額から1人につき ${yen(TABLE.over7Deduction)} を控除（${n - 7}人分）。` : "";
+  const extraNote = isKou && extra > 0
+    ? `<br>本人・扶養親族の障害者等の該当により、扶養親族等の数に <b>${extra}人</b> を加算しています。` : "";
+  const denshiRow = (denshi !== null && denshi !== tax)
+    ? `<tr><td>参考: 電算機計算の特例</td><td class="n">${yen(denshi)}</td></tr>` : "";
+
+  box.innerHTML = `
+    <div class="row">源泉徴収税額（${TABLE.year}・月額表 ${isKou ? "甲欄" : "乙欄"}） <span class="big">${yen(tax)}</span></div>
+    <div class="scroll"><table>
+      <tr><td>社会保険料等控除後の給与等の金額</td><td class="n">${yen(A)}</td></tr>
+      ${isKou ? `<tr><td>扶養親族等の数</td><td class="n">${n}人</td></tr>` : ""}
+      <tr class="tot"><td>源泉徴収税額</td><td class="n">${yen(tax)}</td></tr>
+      ${denshiRow}
+    </table></div>
+    <div class="note"><b>${TABLE.year}</b>の月額表による税額です。${rowNote}${extraNote}${over7}</div>
+    ${denshiRow ? `<div class="hint" style="margin-top:6px">給与ソフトは「電算機計算の特例」で計算することがあり、その額は <b>${yen(denshi)}</b> です。月額表の額と一致しないことがありますが（国税庁も明記）どちらも適法で、差額は年末調整で精算されます。</div>` : ""}
+    <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい解説を見る</a></div>`;
+  postHeight();
+});
+
+// ── 賞与（算出率の表） ──
+const ranS = () => document.querySelector('input[name="ranS"]:checked').value;
+for (const r of document.querySelectorAll('input[name="ranS"]')) {
+  r.addEventListener("change", () => {
+    $("kouS-only").style.display = ranS() === "kou" ? "" : "none";
+    $("resultS").style.display = "none"; postHeight();
+  });
+}
+$("zenPaid").addEventListener("change", () => {
+  $("zen-only").style.display = $("zenPaid").checked ? "" : "none";
+  $("resultS").style.display = "none"; postHeight();
+});
+
+$("calcS").addEventListener("click", async () => {
+  const box = $("resultS");
+  box.style.display = "block";
+  const shoyo = Number($("shoyoAmt").value);
+  if (!shoyo || shoyo <= 0) { box.innerHTML = `<div class="warn">賞与の支給額を入力してください。</div>`; postHeight(); return; }
+
+  box.innerHTML = "計算中…"; postHeight();
+  // 算出率の表と月額表の両方を待つ（例外計算に入ると月額表を引くため）
+  const [okS, okM] = await Promise.all([shoyoReady, tableReady]);
+  if (!okS || !okM || !SHOYO || !TABLE) {
+    box.innerHTML = `<div class="warn"><b>税額表を読み込めませんでした。</b>通信環境を確認して再読み込みしてください。表を引けない状態で税額は答えられません。</div>`;
+    postHeight(); return;
+  }
+
+  const isKou = ranS() === "kou";
+  const paid = $("zenPaid").checked;
+  let extra = 0, n = 0;
+  if (isKou) {
+    extra = extraDependentCount({
+      shogaisha: $("shogaishaS").checked, kafu: $("kafuS").checked,
+      hitorioya: $("hitorioyaS").checked, kinroGakusei: $("kinroS").checked,
+      shogaishaFuyoCount: Number($("fuyoShogaiS").value),
+    });
+    n = Number($("fuyoS").value) + extra;
+  }
+
+  const r = calcShoyo({
+    table: SHOYO, shoyo,
+    shoyoIns: Number($("shoyoIns").value) || 0,
+    zengetsu: paid ? Number($("zenAmt").value) || 0 : 0,
+    zengetsuIns: paid ? Number($("zenIns").value) || 0 : 0,
+    zengetsuPaid: paid, dependents: n,
+    kubun: isKou ? "kou" : "otsu",
+    months: Number($("monthsS").value),
+    monthlyTax: (amount, kubun) => kubun === "otsu" ? otsuTax(TABLE, amount) : kouTax(TABLE, amount, n),
+  });
+
+  const extraNote = isKou && extra > 0
+    ? `<br>本人・扶養親族の障害者等の該当により、扶養親族等の数に <b>${extra}人</b> を加算しています。` : "";
+
+  if (r.method === "rate") {
+    const b = r.band;
+    const band = b.min == null ? `${b.max}千円未満` : b.max == null ? `${b.min}千円以上` : `${b.min}千円以上 ${b.max}千円未満`;
+    box.innerHTML = `
+      <div class="row">賞与の源泉徴収税額（${SHOYO.year}・${isKou ? "甲欄" : "乙欄"}） <span class="big">${yen(r.tax)}</span></div>
+      <div class="scroll"><table>
+        <tr><td>賞与（社会保険料等控除後）</td><td class="n">${yen(r.shoyoAfterIns)}</td></tr>
+        <tr><td>前月の給与（社会保険料等控除後）</td><td class="n">${yen(r.zengetsuAfterIns)}</td></tr>
+        ${isKou ? `<tr><td>扶養親族等の数</td><td class="n">${n}人</td></tr>` : ""}
+        <tr><td>賞与の金額に乗ずべき率</td><td class="n">${r.ratePercent}%</td></tr>
+        <tr class="tot"><td>源泉徴収税額</td><td class="n">${yen(r.tax)}</td></tr>
+      </table></div>
+      <div class="note">算出率の表の<b>${isKou ? `扶養親族等 ${n}人` : "乙欄"}</b>で、前月の社会保険料等控除後の給与 ${yen(r.zengetsuAfterIns)} が入る「<b>${band}</b>」の行を引き、率 <b>${r.ratePercent}%</b> を得ました。${yen(r.shoyoAfterIns)} × ${r.ratePercent}% ＝ <b>${yen(r.tax)}</b>（1円未満切捨て）。${extraNote}</div>
+      <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい解説を見る</a></div>`;
+    postHeight(); return;
+  }
+
+  if (r.method === "getsugaku") {
+    const s = r.steps;
+    const noPrev = r.reason === "no_prev";
+    box.innerHTML = `
+      <div class="row">賞与の源泉徴収税額（${SHOYO.year}・月額表による例外計算） <span class="big">${yen(r.tax)}</span></div>
+      <div class="note"><b>この賞与は算出率の表を使えません。</b>${r.detail}、国税庁の定めにより<b>月額表</b>を使って計算します（算出率の表の備考4）。</div>
+      <div class="scroll"><table>
+        <tr><td>① 賞与（社保控除後） ${yen(r.shoyoAfterIns)} ÷ ${s.divisor}</td><td class="n">${yen(s.perMonth)}</td></tr>
+        ${noPrev ? "" : `<tr><td>② ① ＋ 前月の給与（社保控除後） ${yen(r.zengetsuAfterIns)}</td><td class="n">${yen(s.combined)}</td></tr>`}
+        <tr><td>${noPrev ? "②" : "③"} ${noPrev ? "①" : "②"}の金額を月額表で引いた税額</td><td class="n">${yen(s.taxCombined)}</td></tr>
+        ${noPrev ? "" : `<tr><td>④ 前月の給与に対する税額（月額表）</td><td class="n">− ${yen(s.taxZengetsu)}</td></tr>`}
+        <tr class="tot"><td>${noPrev ? "③" : "⑤"} 差額 ${yen(s.diff)} × ${s.divisor}</td><td class="n">${yen(r.tax)}</td></tr>
+      </table></div>
+      <div class="hint" style="margin-top:6px">①の1円未満は切り捨てます。賞与の計算期間が6か月を超える場合は 6 ではなく <b>12</b> で計算します（いまは <b>${s.divisor}</b>）。${extraNote}</div>
+      <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい解説を見る</a></div>`;
+    postHeight(); return;
+  }
+
+  box.innerHTML = `<div class="warn">計算できませんでした。入力を確認してください。</div>`;
+  postHeight();
+});
+
+// ── 報酬・料金 ──
+const sel = $("kind");
+for (const [k, v] of Object.entries(KINDS)) {
+  const o = document.createElement("option");
+  o.value = k; o.textContent = v.label;
+  sel.appendChild(o);
+}
+const showNote = () => { $("kind-note").textContent = KINDS[sel.value].note; };
+sel.addEventListener("change", () => { showNote(); postHeight(); });
+showNote();
+
+$("calc").addEventListener("click", () => {
+  const box = $("result");
+  box.style.display = "block";
+  const fee = Number($("fee").value);
+  if (!fee || fee <= 0) { box.innerHTML = `<div class="warn">報酬額を入力してください。</div>`; postHeight(); return; }
+
+  const taxMode = document.querySelector('input[name="tax"]:checked').value;
+  const rate = taxMode === "none" ? 0 : 0.1;
+  const t = withholdingTarget(fee, rate, taxMode === "sep");
+  const r = calcWithholding(t.target, sel.value);
+
+  box.innerHTML = `
+    <div class="row">源泉徴収税額 <span class="big">${yen(r.tax)}</span></div>
+    <div class="row">お支払い額（差引後） <b>${yen(t.total - r.tax)}</b></div>
+    <div class="scroll"><table>
+      <tr><td>報酬額（税抜）</td><td class="n">${yen(fee)}</td></tr>
+      ${rate > 0 ? `<tr><td>消費税（10%）</td><td class="n">${yen(t.total - fee)}</td></tr>` : ""}
+      <tr><td>請求額（合計）</td><td class="n">${yen(t.total)}</td></tr>
+      <tr><td>源泉徴収の対象額</td><td class="n"><b>${yen(t.target)}</b></td></tr>
+      <tr><td>源泉徴収税額</td><td class="n">− ${yen(r.tax)}</td></tr>
+      <tr class="tot"><td>差引支払額</td><td class="n">${yen(t.total - r.tax)}</td></tr>
+    </table></div>
+    <div class="note"><b>計算式</b>: ${r.formula}<br>${t.explain}</div>
+    <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい解説を見る</a></div>`;
+  postHeight();
+});
+</script>
+</body>
+</html>

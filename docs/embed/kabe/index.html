@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>年収の壁 手取り逆転シミュレーター ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/kabe/ と重複させない）。計算は本体と同じ ../../assets/kabe_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/kabe/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="社会保険の壁（約106万円・130万円）を超えると手取りがいくら逆転し、年収いくらまで働けば元に戻るかを自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  fieldset{ border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:0 0 4px; }
+  legend{ font-size:12.5px; font-weight:700; padding:0 4px; }
+  .rc label{ display:block; font-size:12.5px; color:var(--ink); margin:3px 0; }
+  .rc input{ width:auto; margin-right:6px; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:26px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  .row{ margin-bottom:6px; }
+  .callout{ margin-top:10px; padding:10px; background:var(--accent2); border-radius:8px; font-size:13px; }
+  .callout b{ display:block; margin-bottom:4px; }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; margin-top:8px; }
+  td{ padding:4px 6px; } td.n{ text-align:right; white-space:nowrap; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>年収の壁 手取り逆転シミュレーター</h1>
+  <p class="lead">パート・アルバイトの年収から、社会保険の壁（約106万円・130万円）を超えると手取りがいくら逆転し、年収いくらまで働けば元に戻るかを概算します（社会保険料のみ。税金は含みません）。</p>
+
+  <fieldset class="rc">
+    <legend>どちらの壁で判定しますか</legend>
+    <label><input type="radio" name="wall" value="hifuyousha" checked> <b>130万円の壁</b>（家族の健康保険の扶養。すべての勤め先。60歳以上・障害者は180万円）</label>
+    <label><input type="radio" name="wall" value="tekiyoKakudai"> <b>約106万円の壁</b>（従業員51人以上で5要件を満たす短時間労働者）</label>
+  </fieldset>
+
+  <div class="grid">
+    <div>
+      <label for="pref">勤務先の都道府県</label>
+      <select id="pref"><option value="">読み込み中…</option></select>
+    </div>
+    <div>
+      <label for="age">年齢</label>
+      <input id="age" type="number" inputmode="numeric" value="30" min="15" max="79">
+    </div>
+  </div>
+
+  <label for="annual">現在の年収（円）<span class="hint">　パート・アルバイト先の税引き前の年収</span></label>
+  <input id="annual" type="number" inputmode="numeric" placeholder="例: 1290000" min="0" step="10000">
+
+  <button id="calc" type="button">壁を超えるといくら減るか計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a id="brand-link" href="https://keiri-tools.com/kabe/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（協会けんぽ料率・厚生年金18.3%）。
+  </div>
+</div>
+
+<script type="module">
+import { calcKabe } from "../../assets/kabe_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const man = (n) => (n / 10000).toLocaleString("ja-JP", { maximumFractionDigits: 1 }) + "万円";
+const BASE = "https://keiri-tools.com/kabe/?utm_source=embed&utm_medium=widget";
+let THRESH = null, SHAHO = null;
+
+// 参照データは非同期で届く。届く前に押されても await で待つ（本体と同じ規律）。
+// catch が拾ってよいのは「データが手に入らなかったこと」だけ。
+const threshReady = fetch("../../assets/kabe_thresholds_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { THRESH = d; return true; })
+  .catch(() => false);
+const shahoReady = fetch("../../assets/shaho_rates_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { SHAHO = d; fillPrefs(d); return true; })
+  .catch(() => false);
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "kabe", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+function fillPrefs(d) {
+  const sel = $("pref"); sel.innerHTML = "";
+  for (const p of Object.keys(d.kenko_rates)) {
+    const o = document.createElement("option");
+    o.value = p; o.textContent = `${p}（${d.kenko_rates[p].toFixed(2)}%）`;
+    if (p === "東京都") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+const wallType = () => document.querySelector('input[name="wall"]:checked')?.value || "hifuyousha";
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+  const okThresh = await threshReady;
+  const okShaho = await shahoReady;
+  if (!okThresh || !okShaho || !THRESH || !SHAHO) {
+    box.innerHTML = `<div class="warn"><b>基準額・料率を読み込めませんでした。</b>通信環境を確認して再読み込みしてください。データが分からない状態では答えられません。</div>`;
+    postHeight(); return;
+  }
+  const annual = Number($("annual").value);
+  if (!annual || annual <= 0) { box.innerHTML = `<div class="warn">現在の年収を入力してください。</div>`; postHeight(); return; }
+  const pref = $("pref").value;
+  if (!SHAHO.kenko_rates[pref]) { box.innerHTML = `<div class="warn">都道府県を選び直してください。</div>`; postHeight(); return; }
+
+  let r;
+  try {
+    r = calcKabe({ annual, age: Number($("age").value), prefecture: pref, wallType: wallType() },
+      { thresholds: THRESH, shahoRates: SHAHO });
+  } catch (e) {
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    postHeight(); return;
+  }
+
+  const wallLabel = r.wallType === "tekiyoKakudai" ? "約106万円（社会保険の適用拡大）" : `${man(r.wall)}（被扶養者の認定基準）`;
+  const rec = r.recovery;
+
+  // 現在地の一行
+  let head;
+  if (!r.joins) {
+    head = `<div class="row">いまは扶養内 <span class="big">${yen(r.tedori)}</span>
+      <span class="hint">（社会保険料 ¥0・年収がそのまま手取り）</span></div>`;
+  } else {
+    head = `<div class="row">いまの手取り <span class="big">${yen(r.tedori)}</span>
+      <span class="hint">（社会保険料 ${yen(r.shahoAnnual)}／年・年収の ${(r.tedoriRate * 100).toFixed(1)}%）</span></div>`;
+  }
+
+  // 逆転の説明
+  let body;
+  if (!r.joins) {
+    body = `<div class="callout">
+      <b>${wallLabel}を超えて社会保険に入ると、手取りは一段下がります</b>
+      年収が<b>${yen(r.wall)}</b>以上になると自分で社会保険（健康保険・厚生年金）に加入し本人負担が発生します。
+      壁のすぐ上では社会保険料が<b>${yen(r.bottomShahoAnnual)}</b>かかり、手取りは<b>${yen(r.bottomTedori)}</b>まで下がります。
+      いまの手取り（${yen(r.reference)}）と比べて最大<b>${yen(r.maxLoss)}</b>の逆転です。</div>`;
+  } else {
+    body = `<div class="callout">
+      <b>あなたは社会保険に加入しています（本人負担 ${yen(r.shahoAnnual)}／年）</b>
+      扶養内で働ける上限（年収${yen(r.wall - 1)}）なら手取りは約${yen(r.reference)}でした。
+      社会保険に入ったぶん、その水準に戻る・上回るには下の年収まで働く必要があります。</div>`;
+  }
+
+  // 回復年収（収録範囲を超えると rec は null で返る＝算出できないと申告する）
+  let recBox;
+  if (rec == null) {
+    recBox = `<div class="note">回復年収を算出できませんでした（収録範囲を超えています）。</div>`;
+  } else if (r.joins && annual >= rec) {
+    recBox = `<div class="row" style="margin-top:10px">回復済み
+      <span class="hint">年収${yen(annual)}は、扶養内の上限の手取り（${yen(r.reference)}）を既に上回っています</span></div>`;
+  } else {
+    recBox = `<div style="margin-top:12px">
+      <div class="row">元の手取りに戻る年収 <span class="big">${yen(rec)}</span></div>
+      <div class="hint">いまの手取り（${yen(r.reference)}）に戻すには、壁を超えたうえで<b>あと ${yen(r.recoveryGap)}</b> 多く働く必要があります。
+      中途半端に壁を超えるより、<b>${man(rec)}以上</b>を目指すほうが手取りは増えます。</div></div>`;
+  }
+
+  // 内わけ（加入時のみ）
+  let breakdown = "";
+  if (r.joins && r.shaho) {
+    const sh = r.shaho;
+    const kaigoLabel = sh.kaigoApplies
+      ? `健康保険＋介護保険（${SHAHO.kenko_rates[pref].toFixed(2)}%＋${SHAHO.kaigo_rate.toFixed(2)}%）`
+      : `健康保険（${SHAHO.kenko_rates[pref].toFixed(2)}%）`;
+    breakdown = `<div style="margin-top:12px">
+      <b style="font-size:13px">社会保険料の内わけ（本人・月 ${yen(sh.monthly)}／年 ${yen(sh.annual)}）</b>
+      <div class="hint">標準報酬月額 ${yen(sh.standard)}（健保 第${sh.grade}級）で計算</div>
+      <table>
+        <tr><td>${kaigoLabel}</td><td class="n">${yen(sh.kenkoKaigo.self)}／月</td></tr>
+        <tr><td>子ども・子育て支援金（${sh.kosodate.rate.toFixed(2)}%）</td><td class="n">${yen(sh.kosodate.self)}／月</td></tr>
+        <tr><td>厚生年金（18.3%）</td><td class="n">${yen(sh.kosei.self)}／月</td></tr>
+      </table></div>`;
+  }
+
+  box.innerHTML = head + body + recBox + breakdown +
+    `<div class="note">※ 手取り＝年収 − 社会保険料（本人・健保＋介護＋子育て支援金＋厚年）。年収を12で割った月額を標準報酬月額として計算。雇用保険・所得税・住民税は含みません。
+      ${r.year ? `<span class="hint">（${r.year}の基準・協会けんぽ${SHAHO?._meta?.year || ""}の料率）</span>` : ""}</div>
+    <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
+  postHeight();
+});
+</script>
+</body>
+</html>

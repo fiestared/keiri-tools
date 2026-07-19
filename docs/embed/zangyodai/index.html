@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>残業代（割増賃金）計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/zangyodai/ と重複させない）。計算は本体と同じ ../../assets/zangyodai_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/zangyodai/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="月給・年間所定休日・残業時間から残業代を自動計算する埋め込みウィジェット（60時間超50%・深夜・固定残業代対応）。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:26px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  table{ width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th{ text-align:left; padding:4px 6px; font-weight:400; color:var(--sub); vertical-align:top; white-space:nowrap; }
+  td{ padding:4px 6px; }
+  .callout{ font-size:13px; margin-top:10px; padding:9px 11px; background:#fff; border:1px solid #e6c47a; border-radius:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>残業代（割増賃金）計算機</h1>
+  <p class="lead">月給と年間所定休日から1時間あたりの単価を求め、時間外（25%）・60時間超（50%）・法定休日（35%）・深夜（上乗せ25%）の残業代を計算します。</p>
+
+  <label for="base">割増賃金の基礎となる賃金（円・月額）</label>
+  <input type="number" id="base" value="300000" placeholder="例: 300000" inputmode="numeric">
+  <div class="hint">基本給＋諸手当（役職手当・資格手当・皆勤手当なども<b>含める</b>）。<b>固定残業代・家族手当・通勤手当・住宅手当は含めません</b>。</div>
+
+  <div class="grid">
+    <div>
+      <label for="holidays">年間所定休日日数</label>
+      <input type="number" id="holidays" value="120" min="0" max="364" inputmode="numeric">
+    </div>
+    <div>
+      <label for="daily">1日の所定労働時間</label>
+      <input type="number" id="daily" value="8" min="0" max="24" step="0.25" inputmode="decimal">
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <label for="overtime">時間外労働（時間／月）</label>
+      <input type="number" id="overtime" value="70" min="0" step="0.5" inputmode="decimal">
+    </div>
+    <div>
+      <label for="holidayhours">法定休日の労働（時間／月）</label>
+      <input type="number" id="holidayhours" value="0" min="0" step="0.5" inputmode="decimal">
+    </div>
+  </div>
+
+  <label for="night">深夜労働（22時〜5時・時間／月）</label>
+  <input type="number" id="night" value="0" min="0" step="0.5" inputmode="decimal">
+  <div class="hint">★時間外・休日と<b>重ねて数えて構いません</b>。深夜は上乗せ25%だけを足すので二重には払われません。</div>
+
+  <label for="fixed">固定残業代・みなし残業手当（円／月・もらっていれば）</label>
+  <input type="number" id="fixed" value="0" min="0" inputmode="numeric">
+
+  <button id="calc" type="button">計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a href="https://keiri-tools.com/zangyodai/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（労働基準法37条・平成6年政令第5号・労基則）。
+  </div>
+</div>
+
+<script type="module">
+import { calcZangyodai } from "../../assets/zangyodai_core.js";
+
+const $ = (id) => document.getElementById(id);
+const BASE = "https://keiri-tools.com/zangyodai/?utm_source=embed&utm_medium=widget";
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const yen2 = (n) => "¥" + n.toLocaleString("ja-JP", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const hrs = (n) => n.toLocaleString("ja-JP", { maximumFractionDigits: 2 });
+
+// 割増率は非同期で届く。届く前に押されても await で待つ（回線が遅い人だけ空データで計算される事故を防ぐ）。
+let DATA = null;
+const dataReady = fetch("../../assets/zangyodai_rates.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { DATA = d; return true; })
+  .catch(() => false);
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "zangyodai", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+  const ready = await dataReady; // ← 割増率が届くまで計算しない
+  if (!ready || !DATA) {
+    box.innerHTML = `<div class="warn" style="color:#b4232a"><b>割増率を読み込めませんでした。</b>通信環境を確認して、ページを再読み込みしてください。割増率が分からないまま残業代を答えることはできないため、計算を止めています。</div>`;
+    postHeight(); return;
+  }
+
+  const input = {
+    base: Number($("base").value),
+    annualHolidays: Number($("holidays").value),
+    dailyHours: Number($("daily").value),
+    overtimeHours: Number($("overtime").value),
+    holidayHours: Number($("holidayhours").value),
+    nightHours: Number($("night").value),
+    fixedAmount: Number($("fixed").value),
+  };
+
+  const r = calcZangyodai(input, DATA);
+  if (!r) {
+    box.innerHTML = `<div class="callout">月給・1日の所定労働時間・年間所定休日日数を入力してください（1時間あたりの単価が計算できません）。</div>`;
+    postHeight(); return;
+  }
+
+  const rows = [
+    ["overtime", `時間外労働（${r.hasOver60 ? "60時間まで" : "25%"}）`],
+    ["overtime_over60", "うち60時間超（50%）"],
+    ["holiday", "法定休日の労働（35%）"],
+    ["night", "深夜の割増（上乗せ25%）"],
+  ].filter(([k]) => r.breakdown[k].hours > 0)
+   .map(([k, label]) => {
+     const b = r.breakdown[k];
+     return `<tr><th>${label}</th><td>${hrs(b.hours)}時間 × ${yen2(r.hourlyRate)} × ${b.pct}％ ＝ <b>${yen(b.amount)}</b></td></tr>`;
+   }).join("");
+
+  // ★60時間を超えたことは、画面で必ず名指しする（率が上がったことに気づかない人が多い）
+  const over60Note = r.hasOver60
+    ? `<div class="callout"><b>★1か月60時間を超えた${hrs(r.over60Hours)}時間は、割増率が50%になります。</b>（労働基準法37条1項ただし書。<b>2023年4月1日から中小企業にも適用</b>。）25%のままだとこの分だけで<b>${yen(r.over60Extra)}</b>不足します。</div>`
+    : "";
+
+  // ★固定残業代の差額は、この計算機のいちばん実利のある答え
+  const fixedNote = r.fixed > 0
+    ? (r.fixedIsShort
+      ? `<div class="callout"><b>★固定残業代 ${yen(r.fixed)} では ${yen(r.shortfall)} 足りません。</b>実際の割増賃金は<b>${yen(r.total)}</b>なので、差額<b>${yen(r.shortfall)}</b>を固定残業代とは<b>別に</b>支払う必要があります。</div>`
+      : `<div class="hint" style="margin-top:8px">固定残業代 ${yen(r.fixed)} は、この月の割増賃金 ${yen(r.total)} を満たしています（差額の支払いは不要です）。</div>`)
+    : "";
+
+  box.innerHTML = `
+    <div class="big">残業代 ${yen(r.total)}</div>
+    <table>
+      <tr><th>1時間あたりの単価</th><td><b>${yen2(r.hourlyRate)}</b>（${yen(r.base)} ÷ ${hrs(r.monthlyHours)}時間）</td></tr>
+      <tr><th>1月平均所定労働時間</th><td>${hrs(r.monthlyHours)}時間（（365日 − ${input.annualHolidays}日）× ${hrs(input.dailyHours)}時間 ÷ 12）</td></tr>
+      ${rows}
+      <tr><th>残業代の合計</th><td><b>${yen(r.total)}</b></td></tr>
+    </table>
+    ${over60Note}
+    ${fixedNote}
+    <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 割増率・基礎賃金の詳しい解説を見る</a></div>`;
+  postHeight();
+});
+</script>
+</body>
+</html>

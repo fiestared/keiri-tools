@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>出産手当金 計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/shussan/ と重複させない）。計算は本体と同じ ../../assets/shussan_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/shussan/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="産休中に健康保険から出る出産手当金（日額・支給日数・合計）を自動計算する埋め込みウィジェット。予定日より遅れた分の増額にも対応。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  input[type=checkbox]{ width:auto; }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .chk{ display:flex; gap:6px; align-items:flex-start; font-size:13px; color:var(--ink); margin:8px 0 2px; }
+  .chk input{ margin-top:3px; }
+  details{ margin-top:8px; } summary{ font-size:12.5px; color:var(--sub); cursor:pointer; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:24px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; margin-top:8px; }
+  td{ padding:4px 6px; } td.n{ text-align:right; white-space:nowrap; }
+  .tot{ border-top:2px solid var(--accent); font-weight:800; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .callout{ font-size:12.5px; margin-top:8px; padding:8px 10px; background:var(--accent2); border-radius:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>出産手当金 計算</h1>
+  <p class="lead">産休中に健康保険から出る出産手当金（日額・支給日数・合計）を概算します。日額は標準報酬÷30×2／3。多胎は産前98日。予定日より遅れた日数はそのまま給付が増えます。</p>
+
+  <label for="yoteibi">出産予定日</label>
+  <input id="yoteibi" type="date" value="">
+  <div class="hint">産前休業はこの日の42日前（多胎は98日前）から取れます。入社1年未満の方の上限額の判定にも使います。</div>
+
+  <label for="shussanbi">実際の出産日<span style="font-weight:400">　まだの方は空欄でOK</span></label>
+  <input id="shussanbi" type="date" value="">
+  <div class="hint">★予定日より遅れると、遅れた日数ぶん給付が増えます（早いと減ります）。空欄なら予定日どおりの見込みで計算します。</div>
+
+  <label class="chk"><input id="tatai" type="checkbox"> <span><b>多胎妊娠</b>（双子以上）である（産前が42日→<b>98日</b>になります）</span></label>
+
+  <label for="monthly">月給（額面・社会保険の報酬月額／円）</label>
+  <input id="monthly" type="number" inputmode="numeric" value="300000" placeholder="例: 300000" min="0" step="1000">
+  <div class="hint">賞与（ボーナス）は1円も入りません。</div>
+
+  <label for="months">健康保険の被保険者期間（加入している月数）</label>
+  <input id="months" type="number" inputmode="numeric" value="12" min="1" max="600">
+  <div class="hint">★12か月未満の方は上限がかかります（99条2項ただし書）。</div>
+
+  <label class="chk"><input id="ninnikeizoku" type="checkbox"> <span><b>任意継続被保険者</b>である（退職後に健康保険を任意継続している）</span></label>
+  <label class="chk"><input id="taishokugo" type="checkbox"> <span><b>退職する前から</b>産前休業に入っていた＝<b>資格喪失後の継続給付</b>（104条）</span></label>
+
+  <details>
+    <summary>産休中に給与が出る場合／標準報酬月額を月ごとに入れる／健保組合の方</summary>
+    <label for="hoshuNichigaku">産休中に受けられる給与の日額（円）</label>
+    <input id="hoshuNichigaku" type="number" inputmode="numeric" value="0" min="0">
+    <div class="hint">★給与が出ていても、日額が出産手当金より少なければ差額が支給されます（108条2項ただし書）。</div>
+    <label for="standards">標準報酬月額を月ごとに（カンマ区切り・古い月→新しい月／円）</label>
+    <input id="standards" type="text" placeholder="例: 160000,160000,180000,180000,180000,180000" inputmode="numeric">
+    <div class="hint">昇給・降給があった方は直近12か月を入れると正確です（入れた場合は上の月給より優先）。</div>
+    <label for="heikinOverride">保険者の平均標準報酬月額（円）<span style="font-weight:400">　健保組合の方だけ</span></label>
+    <input id="heikinOverride" type="number" inputmode="numeric" value="0" min="0">
+    <div class="hint">既定は協会けんぽの額。健保組合の方は組合公表の平均額を入れてください（例: 関東ITソフトウェア健保は38万円）。</div>
+  </details>
+
+  <button id="calc" type="button">出産手当金を計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a href="https://keiri-tools.com/shussan/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（健康保険法・全国健康保険協会）。
+  </div>
+</div>
+
+<script type="module">
+import { calcShussan } from "../../assets/shussan_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const jp = (iso) => { const [y, m, d] = iso.split("-").map(Number); return `${y}年${m}月${d}日`; };
+const BASE = "https://keiri-tools.com/shussan/?utm_source=embed&utm_medium=widget";
+
+// 参照データ（全被保険者の平均標準報酬月額）は非同期で届く。これは答えの一部
+// （被保険者期間12か月未満の人の上限額を決める）なので await で待つ。
+let D = null;
+const dataReady = fetch("../../assets/shobyo_r08.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { D = d; return true; })
+  .catch(() => false);
+
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "shussan", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+
+  const ready = await dataReady;
+  if (!ready || !D) {
+    box.innerHTML = `<div class="warn"><b>参照データを読み込めませんでした。</b>通信環境を確認して再読み込みしてください。入社1年未満の方の上限額（全被保険者の平均標準報酬月額）が分からないまま金額を答えると、実際より高い額を信じて生活費の計画を誤るおそれがあるため、計算を止めています。</div>`;
+    postHeight(); return;
+  }
+
+  const yoteibi = $("yoteibi").value;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(yoteibi)) {
+    box.innerHTML = `<div class="warn"><b>「出産予定日」を入力してください。</b>この日がないと、産前・産後の日数（産前は予定日の42日前から）を数えられません。</div>`;
+    postHeight(); return;
+  }
+  const shussanbi = $("shussanbi").value;
+  if (shussanbi && !/^\d{4}-\d{2}-\d{2}$/.test(shussanbi)) {
+    box.innerHTML = `<div class="warn">実際の出産日は日付で入れてください（まだの方は空欄でOK）。</div>`;
+    postHeight(); return;
+  }
+
+  const monthly = Number($("monthly").value);
+  const standardsRaw = $("standards").value.trim();
+  const standards = standardsRaw ? standardsRaw.split(/[,、\s]+/).filter(Boolean).map(Number) : null;
+  if (standards && standards.some((v) => !(v > 0))) { box.innerHTML = `<div class="warn">標準報酬月額は0より大きい数をカンマ区切りで入れてください。</div>`; postHeight(); return; }
+  if (!standards && !(monthly > 0)) { box.innerHTML = `<div class="warn">月給（報酬月額）を入力してください。</div>`; postHeight(); return; }
+
+  let r;
+  try {
+    r = calcShussan({
+      yoteibi,
+      shussanbi: shussanbi || undefined,
+      tatai: $("tatai").checked,
+      standards,
+      monthly,
+      months: Number($("months").value),
+      hoshuNichigaku: Number($("hoshuNichigaku").value),
+      ninnikeizoku: $("ninnikeizoku").checked,
+      taishokugo: $("taishokugo").checked,
+      heikinOverride: Number($("heikinOverride").value),
+    }, D);
+  } catch (e) {
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>${e.message}</div>`;
+    postHeight(); return;
+  }
+
+  if (!r.eligible) {
+    box.innerHTML = `<div class="big">出産手当金 ¥0（支給されません）</div><div class="callout">${r.message}</div>`;
+    postHeight(); return;
+  }
+
+  const adj = r.chosei;
+  const k = r.kikan;
+
+  const keizokuNote = r.via104
+    ? `<div class="callout">これは「資格喪失後の継続給付」（健康保険法104条）として計算しています。退職する前から産前休業に入っていた方は、任意継続でも受け続けられます。★退職日に出社すると受けられなくなります。</div>`
+    : "";
+  const delayNote = (!k.shussanbiEstimated && k.delay !== 0)
+    ? (k.delay > 0
+        ? `<div class="callout">★出産が予定日より ${k.delay}日 遅れたため、産前が ${k.delay}日 延びています（+${yen(r.paidNichigaku * k.delay)}）。産前の起点が予定日に固定されるためです（102条1項）。</div>`
+        : `<div class="callout">★出産が予定日より ${-k.delay}日 早かったため、産前が ${-k.delay}日 短くなっています。</div>`)
+    : "";
+  const capNote = r.capped
+    ? `<div class="callout">★被保険者期間が${r.months}か月（12か月未満）のため、上限（1日 ${yen(r.cap)}）にかかっています。ご自身の平均から出した ${yen(r.own)} ではなく、全被保険者の平均標準報酬月額 ${yen(r.heikin)}（${r.heikinLabel}）から出した額の少ないほうで計算されます（99条2項ただし書）。</div>`
+    : "";
+  let choseiNote = "";
+  if (adj.deduct > 0) {
+    choseiNote = adj.zero
+      ? `<div class="callout">★給与の日額 ${yen(adj.deduct)} が出産手当金の日額 ${yen(adj.amount)} 以上のため、出産手当金は支給されません（108条2項）。</div>`
+      : `<div class="callout">★給与が出ていても差額が支給されます。日額 ${yen(adj.amount)} − 給与 ${yen(adj.deduct)} ＝ <b>${yen(adj.paid)}</b>／日（108条2項ただし書）。</div>`;
+  }
+  const yoteiNote = k.shussanbiEstimated
+    ? `<div class="hint">実際の出産日が未入力のため、予定日どおりの見込みで計算しています。遅れて産まれるとその日数ぶん増えます。</div>`
+    : "";
+  const estimatedNote = r.estimated
+    ? `<div class="hint">標準報酬月額は月給 ${yen(monthly)} から等級表を引いて概算しました。昇給・降給があった方は詳細欄で実額を入れると正確になります。</div>`
+    : `<div class="hint">標準報酬月額は入力された ${r.months}か月分の実額で計算しました。</div>`;
+  const tataiLabel = k.tatai ? "（多胎）" : "";
+
+  box.innerHTML = `
+    <div class="big">出産手当金 ${yen(r.total)}</div>
+    <div class="hint">${r.days}日分／1日あたり <b>${yen(r.paidNichigaku)}</b></div>
+    ${keizokuNote}
+    ${delayNote}
+    ${capNote}
+    ${choseiNote}
+    <table>
+      <tr><td>日額${adj.deduct > 0 ? "（調整後）" : ""}</td><td class="n">${yen(r.paidNichigaku)}</td></tr>
+      <tr><td>標準報酬月額の平均 ÷ 30</td><td class="n">${yen(r.base)}</td></tr>
+      <tr><td>産前${tataiLabel}</td><td class="n">${k.sanzen}日${k.delay > 0 ? `（基準${k.sanzenBase}＋遅${k.delay}）` : k.delay < 0 ? `（基準${k.sanzenBase}−早${-k.delay}）` : ""}</td></tr>
+      <tr><td>産後</td><td class="n">${k.sango}日</td></tr>
+      <tr><td>支給期間</td><td class="n">${jp(k.startDate)}〜${jp(k.endDate)}</td></tr>
+      <tr class="tot"><td>合計</td><td class="n">${yen(r.total)}</td></tr>
+    </table>
+    ${yoteiNote}
+    ${estimatedNote}
+    <div class="note">★産後57日目からは育児休業給付金に切り替わり、月額323,811円で頭打ちになります。産休中の金額で家計を組まないでください。</div>
+    <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
+  postHeight();
+});
+</script>
+</body>
+</html>

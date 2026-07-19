@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ボーナス手取り計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/bonus-tedori/ と重複させない）。計算は本体と同じ ../../assets/ の各コア。 -->
+<link rel="canonical" href="https://keiri-tools.com/bonus-tedori/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="ボーナス（賞与）の額面から、社会保険料と源泉所得税を引いた手取りを自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  fieldset{ border:1px solid var(--line); border-radius:8px; padding:8px 10px; margin:10px 0 0; }
+  legend{ font-size:12.5px; font-weight:700; padding:0 4px; }
+  .rc label{ display:block; font-size:13px; color:var(--ink); margin:3px 0; }
+  .rc input{ width:auto; margin-right:6px; }
+  .check{ display:flex; align-items:center; gap:6px; font-size:13px; color:var(--ink); margin-top:10px; }
+  .check input{ width:auto; }
+  details{ margin-top:8px; } summary{ font-size:12.5px; color:var(--sub); cursor:pointer; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:26px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; margin-top:8px; }
+  td{ padding:4px 6px; } td.n{ text-align:right; white-space:nowrap; }
+  .tot{ border-top:2px solid var(--accent); font-weight:800; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .a-share{ border:1px solid var(--line); color:var(--ink); }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>ボーナス手取り計算</h1>
+  <p class="lead">賞与の額面から、社会保険料・源泉所得税を引いた手取りを概算します。税率は賞与の額ではなく「前月の給与」で決まります。</p>
+
+  <label for="bonus">ボーナスの額面（円）</label>
+  <input id="bonus" type="number" inputmode="numeric" placeholder="例: 500000" min="0" step="1000">
+
+  <div class="grid">
+    <div>
+      <label for="pref">勤務先の都道府県</label>
+      <select id="pref"><option value="">読み込み中…</option></select>
+    </div>
+    <div>
+      <label for="age">年齢</label>
+      <input id="age" type="number" inputmode="numeric" value="30" min="15" max="74">
+    </div>
+  </div>
+
+  <label for="dependents">扶養親族等の数<span class="hint">　源泉控除対象の配偶者＋扶養親族（16歳以上）</span></label>
+  <input id="dependents" type="number" inputmode="numeric" value="0" min="0" max="20">
+
+  <fieldset class="rc">
+    <legend>前月の給与（税率を決める鍵）</legend>
+    <label><input type="radio" name="zmode" value="paid" checked> 前月に給与の支払いがあった</label>
+    <div id="zengetsu-wrap">
+      <label for="zengetsu">前月の額面の月給（円）<span class="hint">　総支給額</span></label>
+      <input id="zengetsu" type="number" inputmode="numeric" placeholder="例: 300000" min="0" step="1000">
+    </div>
+    <label><input type="radio" name="zmode" value="nopaid"> 前月に給与の支払いがない（休職明け・新規入社など）</label>
+  </fieldset>
+
+  <details>
+    <summary>詳細設定（業種・計算期間・年度累計）</summary>
+    <label for="gyoshu">業種（雇用保険料率）</label>
+    <select id="gyoshu"><option value="general">一般の事業</option></select>
+    <label class="check"><input type="checkbox" id="over6"> 賞与の計算期間が6か月を超える（決算賞与・役員賞与など）</label>
+    <label for="yearpaid">今年度すでに支給された賞与の合計（円・任意）<span class="hint">　健保の年度上限判定用。通常は空欄</span></label>
+    <input id="yearpaid" type="number" inputmode="numeric" placeholder="例: 0" min="0" step="1000">
+  </details>
+
+  <button id="calc" type="button">ボーナスの手取りを計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a id="brand-link" href="https://keiri-tools.com/bonus-tedori/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（協会けんぽ料率・国税庁の算出率の表）。
+  </div>
+</div>
+
+<script type="module">
+import { calcBonusTedori } from "../../assets/bonus_tedori_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const BASE = "https://keiri-tools.com/bonus-tedori/?utm_source=embed&utm_medium=widget";
+let SHAHO = null, SHOYO = null, GENSEN = null;
+
+// 参照データは非同期で届く。届く前に押されても await で待つ（本体と同じ規律）。
+// catch が拾ってよいのは「データが手に入らなかったこと」だけ。
+const shahoReady = fetch("../../assets/shaho_rates_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { SHAHO = d; fillPrefs(d); fillGyoshu(d); return true; })
+  .catch(() => false);
+const shoyoReady = fetch("../../assets/gensen_shoyo_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { SHOYO = d; return true; })
+  .catch(() => false);
+// 月額表は例外計算（前月給与なし・10倍超）のときだけ使うが、例外に入るかは計算するまで
+// 分からないので常に必須として待つ（fail closed）。
+const gensenReady = fetch("../../assets/gensen_getsugaku_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { GENSEN = d; return true; })
+  .catch(() => false);
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "bonus-tedori", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+function fillPrefs(d) {
+  const sel = $("pref"); sel.innerHTML = "";
+  for (const p of Object.keys(d.kenko_rates)) {
+    const o = document.createElement("option");
+    o.value = p; o.textContent = `${p}（${d.kenko_rates[p].toFixed(2)}%）`;
+    if (p === "東京都") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+function fillGyoshu(d) {
+  const sel = $("gyoshu"); sel.innerHTML = "";
+  for (const [key, t] of Object.entries(d.koyou.types)) {
+    const o = document.createElement("option");
+    o.value = key; o.textContent = `${t.label}（本人 ${t.worker_permille}/1,000）`;
+    if (key === "general") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+
+// 前月給与の入力欄は「支払いがあった」のときだけ見せる
+for (const r of document.querySelectorAll('input[name="zmode"]')) {
+  r.addEventListener("change", () => {
+    $("zengetsu-wrap").style.display =
+      document.querySelector('input[name="zmode"]:checked')?.value === "paid" ? "block" : "none";
+    postHeight();
+  });
+}
+const zmode = () => document.querySelector('input[name="zmode"]:checked')?.value || "paid";
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+
+  const okShaho = await shahoReady;
+  const okShoyo = await shoyoReady;
+  const okGensen = await gensenReady;
+  if (!okShaho || !okShoyo || !okGensen || !SHAHO || !SHOYO || !GENSEN) {
+    box.innerHTML = `<div class="warn"><b>料率・税額表を読み込めませんでした。</b>通信環境を確認して再読み込みしてください。データが分からない状態で手取りは答えられません。</div>`;
+    postHeight(); return;
+  }
+  const bonus = Number($("bonus").value);
+  if (!bonus || bonus <= 0) { box.innerHTML = `<div class="warn">ボーナスの額面を入力してください。</div>`; postHeight(); return; }
+  const paid = zmode() === "paid";
+  const zengetsu = Number($("zengetsu").value);
+  if (paid && (!zengetsu || zengetsu <= 0)) {
+    box.innerHTML = `<div class="warn"><b>前月の額面の月給を入力してください。</b>賞与の税率は前月の給与で決まるため、この欄が空だと計算できません。前月に給与がなかった場合はその選択肢に切り替えてください。</div>`;
+    postHeight(); return;
+  }
+  const pref = $("pref").value;
+  if (!SHAHO.kenko_rates[pref]) { box.innerHTML = `<div class="warn">都道府県を選び直してください。</div>`; postHeight(); return; }
+
+  let r;
+  try {
+    r = calcBonusTedori({
+      bonus, age: Number($("age").value), prefecture: pref,
+      dependents: Number($("dependents").value) || 0,
+      gyoshu: $("gyoshu").value,
+      zengetsuPaid: paid, zengetsu,
+      monthsOver6: $("over6").checked,
+      yearPaidKenko: Number($("yearpaid").value) || 0,
+    }, { shahoRates: SHAHO, shoyoTable: SHOYO, gensenTable: GENSEN });
+  } catch (e) {
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    postHeight(); return;
+  }
+
+  const sh = r.shakaiHoken;
+  const taxSub = r.shoyo.method === "rate"
+    ? `前月の社保後給与 ${yen(r.zengetsuAfterIns)} → 率 ${r.shoyo.ratePercent.toFixed(3)}%（算出率の表・甲欄・扶養 ${r.dependents}人）`
+    : `月額表による例外計算（${r.shoyo.detail}）`;
+
+  let notes = "";
+  if (r.shoyo.method === "getsugaku") {
+    notes += `<div class="note"><b>算出率の表は使えないため、月額表による例外計算（国税庁 No.2523）で計算しました。</b>理由: ${r.shoyo.detail}。</div>`;
+  }
+  if (sh.capped.kenko) notes += `<div class="note">健康保険の年度上限（累計573万円）を適用（対象 ${yen(sh.kenkoStandard)}）。</div>`;
+  if (sh.capped.kosei) notes += `<div class="note">厚生年金の上限（1回150万円）を適用（対象 ${yen(sh.koseiStandard)}）。</div>`;
+
+  box.innerHTML = `
+    <div>ボーナスの手取り <span class="big">${yen(r.tedori)}</span> <span class="hint">（額面の ${(r.tedoriRate*100).toFixed(1)}%）</span></div>
+    <table>
+      <tr><td>ボーナスの額面</td><td class="n">${yen(r.bonus)}</td></tr>
+      <tr><td>社会保険料（本人）<br><span class="hint">標準賞与額 ${yen(sh.standardBonus)}</span></td><td class="n">− ${yen(sh.self)}</td></tr>
+      <tr><td>所得税（源泉）<br><span class="hint">${taxSub}</span></td><td class="n">− ${yen(r.shotokuzei)}</td></tr>
+      <tr><td>住民税<br><span class="hint">賞与からは天引きされません</span></td><td class="n">− ${yen(0)}</td></tr>
+      <tr class="tot"><td>手取り</td><td class="n">${yen(r.tedori)}</td></tr>
+    </table>
+    ${notes}
+    <div class="note">※ 所得税は源泉額（年末調整で精算）。住民税は賞与から天引きされませんが、翌年度の住民税は増えます。
+      ${sh.kaigoApplies ? "介護保険料は健康保険料と合算しています。" : `${Number($("age").value)}歳のため介護保険料はかかりません（40〜64歳が対象）。`}
+      ${r.year ? `<span class="hint">（${r.year}の料率・${r.taxYear || ""}の算出率の表）</span>` : ""}</div>
+    <div class="cta">
+      <a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a>
+    </div>`;
+  postHeight();
+});
+</script>
+</body>
+</html>

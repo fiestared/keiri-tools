@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>医療費控除 計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/iryohi/ と重複させない）。計算は本体と同じ ../../assets/iryohi_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/iryohi/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="1年間の医療費と年収から医療費控除の控除額と戻る税金の目安を計算する埋め込みウィジェット。セルフメディケーション税制対応。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:24px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  .block{ border-top:2px solid var(--accent); margin-top:12px; padding-top:10px; }
+  .block2{ border-top:1px dashed var(--line); margin-top:12px; padding-top:10px; }
+  .row{ margin-top:6px; }
+  .callout{ font-size:12.5px; color:var(--ink); background:var(--accent2); border-radius:8px; padding:8px 10px; margin-top:10px; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>医療費控除 計算機</h1>
+  <p class="lead">1年間の医療費と年収から、控除額と、戻ってくる税金（所得税＋復興特別所得税＋住民税）の目安を計算します。足切りは「総所得金額等の5％」と「10万円」の低いほうです。</p>
+
+  <label for="iryohi">1年間に支払った医療費の合計（円）<span class="hint">　家族分を合算・通院交通費も含む</span></label>
+  <input id="iryohi" type="number" inputmode="numeric" placeholder="例: 300000" min="0">
+
+  <label for="hoten">保険金などで補填される金額（円）<span class="hint">　高額療養費・入院給付金など。無ければ0</span></label>
+  <input id="hoten" type="number" inputmode="numeric" value="0" min="0">
+
+  <label for="hotenTaisho">（任意）その補填金がひも付く医療費（円）<span class="hint">　空欄なら医療費全体から引きます</span></label>
+  <input id="hotenTaisho" type="number" inputmode="numeric" placeholder="例: 150000（入院費）" min="0">
+
+  <label for="shunyu">給与収入（年収・円）<span class="hint">　税引き前の額面。足切りの計算に使います</span></label>
+  <input id="shunyu" type="number" inputmode="numeric" placeholder="例: 5000000" min="0">
+
+  <label for="zeiritsu">課税される所得金額の帯（＝所得税の税率）<span class="hint">　戻る税金の計算に使います</span></label>
+  <select id="zeiritsu">
+    <option value="">選択してください</option>
+    <option value="5">195万円以下（税率5%）</option>
+    <option value="10">195万円超 330万円以下（税率10%）</option>
+    <option value="20">330万円超 695万円以下（税率20%）</option>
+    <option value="23">695万円超 900万円以下（税率23%）</option>
+    <option value="33">900万円超 1,800万円以下（税率33%）</option>
+    <option value="40">1,800万円超 4,000万円以下（税率40%）</option>
+    <option value="45">4,000万円超（税率45%）</option>
+  </select>
+
+  <label for="selfmed">（任意）セルフメディケーション税制の購入費（円）<span class="hint">　スイッチOTC等の年間購入費。通常の控除とは選択</span></label>
+  <input id="selfmed" type="number" inputmode="numeric" placeholder="例: 30000" min="0">
+
+  <button id="calc" type="button">計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a href="https://keiri-tools.com/iryohi/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（所得税法73条・国税庁 No.1120 ほか）。
+  </div>
+</div>
+
+<script type="module">
+import { calcIryohi } from "../../assets/iryohi_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const BASE = "https://keiri-tools.com/iryohi/?utm_source=embed&utm_medium=widget";
+
+// 参照データは非同期で届く。**どちらも答えの一部**（iryohi=控除の金額表／jumin=年収→総所得の換算で足切りに効く）
+// なので、届く前に押されても await で待つ（= fail closed）。
+let IRYOHI = null, JUMIN = null;
+const iryohiReady = fetch("../../assets/iryohi_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { IRYOHI = d; return true; })
+  .catch(() => false);
+const juminReady = fetch("../../assets/juminzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { JUMIN = d; return true; })
+  .catch(() => false);
+
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "iryohi", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+
+  const okI = await iryohiReady;
+  const okJ = await juminReady;
+  if (!okI || !IRYOHI) {
+    box.innerHTML = `<div class="warn"><b>データを読み込めませんでした。</b>通信環境を確認して再読み込みしてください。データが分からない状態で控除額を答えることはできません。</div>`;
+    postHeight(); return;
+  }
+
+  const iryohi = Number($("iryohi").value);
+  if (!iryohi || iryohi <= 0) { box.innerHTML = `<div class="warn">1年間に支払った医療費の合計を入力してください。</div>`; postHeight(); return; }
+  const shunyu = Number($("shunyu").value);
+  if (!shunyu || shunyu <= 0) { box.innerHTML = `<div class="warn">給与収入（年収）を入力してください（足切りの計算に必要です）。</div>`; postHeight(); return; }
+  if (!okJ || !JUMIN) {
+    box.innerHTML = `<div class="warn"><b>データを読み込めませんでした。</b>年収から総所得金額等を換算するデータが読めませんでした。再読み込みしてください。</div>`;
+    postHeight(); return;
+  }
+
+  const rateSel = $("zeiritsu").value;
+  const htVal = $("hotenTaisho").value;
+  const smVal = $("selfmed").value;
+
+  let r;
+  try {
+    r = calcIryohi({
+      iryohi,
+      hoten: Number($("hoten").value) || 0,
+      hotenTaisho: htVal !== "" ? Number(htVal) : undefined,
+      kyuyoShunyu: shunyu,
+      shotokuzeiRate: rateSel !== "" ? Number(rateSel) : undefined,
+      selfmedPurchase: smVal !== "" ? Number(smVal) : undefined,
+    }, { iryohiData: IRYOHI, juminzeiData: JUMIN });
+  } catch (e) {
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    postHeight(); return;
+  }
+
+  // 軽減額の行は常に描く（税率未選択なら理由を出す。黙って消さない）。
+  const keigenRow = (keigen) => keigen
+    ? `<div class="row">戻ってくる税金の目安 <span class="big">${yen(keigen.total)}</span></div>
+       <div class="hint">内わけ： 所得税 ${yen(keigen.shotokuzei)} ＋ 復興特別所得税 ${yen(keigen.fukko)} ＋ 住民税 ${yen(keigen.jumin)}（所得税率 ${keigen.rate}%・住民税一律10%）</div>`
+    : `<div class="note"><b>戻ってくる税金の目安を出すには「課税される所得金額の帯（＝所得税の税率）」を選んでください。</b>医療費控除は所得控除なので、戻る額は控除額に税率を掛けた分になります。</div>`;
+
+  const ashiNote = r.ashikiriCapped
+    ? `総所得金額等 ${yen(r.sotoShotoku)} の5%（${yen(Math.floor(r.sotoShotoku * 0.05))}）より10万円が小さいので<b>10万円</b>`
+    : `総所得金額等 ${yen(r.sotoShotoku)} が200万円未満なので<b>その5%＝${yen(r.ashikiri)}</b>（10万円より小さい）`;
+
+  const nk = r.normal;
+  let html = `
+    <div class="hint">足切り額（10万円と総所得金額等の5%の低いほう）： <b>${yen(r.ashikiri)}</b><br><span>${ashiNote}</span></div>
+    <div class="block">
+      <b>① 通常の医療費控除</b>
+      <div class="row">医療費控除の控除額 <span class="big">${yen(nk.kojo)}</span></div>
+      <div class="hint">（医療費 ${yen(iryohi)} − 補填金 ${yen(nk.netHoten)} − 足切り ${yen(r.ashikiri)}${nk.capped ? " → 上限200万円で頭打ち" : ""}）</div>
+      ${keigenRow(nk.keigen)}
+    </div>`;
+
+  if (r.selfmed) {
+    const sk = r.selfmed;
+    html += `
+      <div class="block2">
+        <b>② セルフメディケーション税制</b>（通常の控除とは<b>どちらか一方だけ</b>）
+        <div class="row">控除額 <span class="big">${yen(sk.kojo)}</span></div>
+        <div class="hint">（購入費 ${yen(sk.purchase)} − 12,000円${sk.kojo >= 88000 ? " → 上限88,000円で頭打ち" : ""}）</div>
+        ${keigenRow(sk.keigen)}
+      </div>
+      <div class="callout"><b>おすすめ：${r.recommended === "selfmed" ? "② セルフメディケーション税制" : "① 通常の医療費控除"}</b> 控除額が大きいほうを選ぶと戻る税金が大きくなります。</div>`;
+  }
+
+  html += `<div class="note">※ 戻る税金は<b>概算（目安）</b>です。医療費控除・セルフメディケーション税制は<b>確定申告</b>が必要です。所得税を納めていない人は所得税は戻りません（住民税は課税されていれば戻ります）。${r.year ? `（${r.year}）` : ""}</div>
+    <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
+
+  box.innerHTML = html;
+  postHeight();
+});
+</script>
+</body>
+</html>

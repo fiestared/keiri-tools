@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>贈与税 計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/zoyozei/ と重複させない）。計算は本体と同じ ../../assets/zoyozei_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/zoyozei/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="その年に受けた贈与額から暦年課税の贈与税額を計算する埋め込みウィジェット。基礎控除110万円・一般税率／特例税率対応。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .echo{ font-size:12px; color:var(--sub); margin:2px 0 0; min-height:1em; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:26px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  .block{ border-top:2px solid var(--accent); margin-top:12px; padding-top:10px; }
+  .row{ margin-top:6px; display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .callout{ font-size:12.5px; color:var(--ink); background:var(--accent2); border-radius:8px; padding:8px 10px; margin-bottom:10px; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>贈与税 計算機（暦年課税）</h1>
+  <p class="lead">その年（1/1〜12/31）に受けた贈与財産の合計額から、暦年課税の贈与税額を計算します。基礎控除は年110万円（もらった人の合計から1回だけ）。合計110万円以下なら贈与税は0円。</p>
+
+  <div class="callout">
+    <b>どちらの欄に入れる？</b> <b>特例贈与財産</b>＝父母・祖父母（直系尊属）から、あなたが受け取った年の1月1日に18歳以上で受けた贈与。<b>一般贈与財産</b>＝それ以外。ほとんどの人はどちらか一方だけを入れます。
+  </div>
+
+  <label for="tokurei">特例贈与財産の合計（<b>万円</b>）<span class="hint">　父母・祖父母から、18歳以上で受けた贈与。例: 500</span></label>
+  <input id="tokurei" type="number" inputmode="numeric" value="0" min="0" placeholder="例: 500">
+  <div id="tokurei-echo" class="echo"></div>
+
+  <label for="ippan">一般贈与財産の合計（<b>万円</b>）<span class="hint">　直系尊属以外から、または18歳未満で受けた贈与。無ければ0</span></label>
+  <input id="ippan" type="number" inputmode="numeric" value="0" min="0" placeholder="例: 0">
+  <div id="ippan-echo" class="echo"></div>
+
+  <button id="calc" type="button">計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a href="https://keiri-tools.com/zoyozei/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（国税庁 No.4408・一般／特例の速算表）。
+  </div>
+</div>
+
+<script type="module">
+import { calcZoyozei } from "../../assets/zoyozei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const BASE = "https://keiri-tools.com/zoyozei/?utm_source=embed&utm_medium=widget";
+// 万円入力を「○億○万円」に読み替える（飾り。計算には使わない）
+const manToWords = (man) => {
+  man = Math.floor(man);
+  if (!Number.isFinite(man) || man <= 0) return "";
+  const oku = Math.floor(man / 10000), rest = man % 10000;
+  return "＝" + (oku ? oku + "億" : "") + (rest ? rest + "万円" : (oku ? "円" : "万円"));
+};
+
+// 参照データ（速算表）は非同期で届く。**答えの一部**なので届く前に押されても await で待つ（= fail closed）。
+let ZOYO = null;
+const zoyoReady = fetch("../../assets/zoyozei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { ZOYO = d; return true; })
+  .catch(() => false);
+
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "zoyozei", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+$("tokurei").addEventListener("input", () => { $("tokurei-echo").textContent = manToWords(Number($("tokurei").value)); });
+$("ippan").addEventListener("input", () => { $("ippan-echo").textContent = manToWords(Number($("ippan").value)); });
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+
+  const ok = await zoyoReady; // 必要な参照データの到着を必ず待つ
+  if (!ok || !ZOYO) {
+    box.innerHTML = `<div class="warn"><b>データを読み込めませんでした。</b>通信環境を確認して再読み込みしてください。データが分からない状態で贈与税を答えることはできません。</div>`;
+    postHeight(); return;
+  }
+
+  const tokureiMan = Number($("tokurei").value) || 0;
+  const ippanMan = Number($("ippan").value) || 0;
+  if (tokureiMan <= 0 && ippanMan <= 0) {
+    box.innerHTML = `<div class="warn">その年に受けた贈与財産の合計額（万円）を入力してください。</div>`; postHeight(); return;
+  }
+
+  let r;
+  try {
+    r = calcZoyozei({
+      ippan: Math.round(ippanMan * 10000),
+      tokurei: Math.round(tokureiMan * 10000),
+    }, ZOYO);
+  } catch (e) {
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    postHeight(); return;
+  }
+
+  const yearTag = r.year ? `（${r.year}で計算）` : "";
+  const cta = `<div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
+
+  if (r.below) {
+    box.innerHTML = `
+      <div>贈与税はかかりません <span class="big">¥0</span></div>
+      <div class="hint">その年の贈与の合計 ${yen(r.total)} が、基礎控除 ${yen(r.kiso)}（年110万円）以下です。</div>
+      <div class="note">合計110万円以下なら、暦年課税の贈与税はかからず<b>申告も不要</b>です。${yearTag}</div>${cta}`;
+    postHeight(); return;
+  }
+
+  const tblLabel = { ippan: "一般税率", tokurei: "特例税率", mixed: "一般＋特例の按分" }[r.mode] || "";
+  let breakRows = "";
+  if (r.mode === "mixed") {
+    const g = r.breakdown.general, s = r.breakdown.special;
+    breakRows = `
+      <div class="hint">同じ年に一般と特例の両方を受けたので、合計を基に按分して計算します（国税庁 No.4408）。</div>
+      <div class="row">① 特例贈与 ${yen(s.amount)} 分 <span>${yen(s.part)}</span></div>
+      <div class="hint">基礎控除後 ${yen(r.baseAfter)} × 特例税率${s.rate_pct}% − 控除 ${yen(s.deduction)} ＝ ${yen(s.zei)}、× ${s.amount / 10000}万÷${r.total / 10000}万</div>
+      <div class="row">② 一般贈与 ${yen(g.amount)} 分 <span>${yen(g.part)}</span></div>
+      <div class="hint">基礎控除後 ${yen(r.baseAfter)} × 一般税率${g.rate_pct}% − 控除 ${yen(g.deduction)} ＝ ${yen(g.zei)}、× ${g.amount / 10000}万÷${r.total / 10000}万</div>`;
+  } else {
+    const bd = r.breakdown.special || r.breakdown.general;
+    breakRows = `<div class="hint">基礎控除後の課税価格 ${yen(r.baseAfter)} × ${tblLabel}${bd.rate_pct}% − 控除額 ${yen(bd.deduction)} ＝ ${yen(bd.zei)}（速算表の「${bd.label}」の帯）。</div>`;
+  }
+
+  box.innerHTML = `
+    <div class="hint">その年の贈与の合計：<b>${yen(r.total)}</b> ／ 基礎控除：<b>${yen(r.kiso)}</b>（年110万円）／ 基礎控除後の課税価格：<b>${yen(r.baseAfter)}</b>（${tblLabel}）</div>
+    <div class="block">
+      <div class="row"><b>贈与税額</b> <span class="big">${yen(r.zei)}</span></div>
+      ${breakRows}
+    </div>
+    <div class="note">※ 暦年課税の目安です。相続時精算課税・住宅取得等資金などの非課税の特例は反映していません。贈与税の申告・納付は翌年の<b>2月1日〜3月15日</b>。${yearTag}</div>${cta}`;
+  postHeight();
+});
+</script>
+</body>
+</html>

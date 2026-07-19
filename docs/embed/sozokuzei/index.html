@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>相続税 計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/sozokuzei/ と重複させない）。計算は本体と同じ ../../assets/sozokuzei_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/sozokuzei/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="遺産総額と相続人の構成から相続税の総額と実際の納税額を計算する埋め込みウィジェット。配偶者の税額軽減・2割加算・養子の算入制限対応。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .echo{ font-size:12px; color:var(--sub); margin:2px 0 0; min-height:1em; }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:24px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  .block{ border-top:2px solid var(--accent); margin-top:12px; padding-top:10px; }
+  .row{ margin-top:6px; display:flex; justify-content:space-between; align-items:baseline; gap:8px; }
+  .callout{ font-size:12.5px; color:var(--ink); background:var(--accent2); border-radius:8px; padding:8px 10px; margin:8px 0; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>相続税 計算機</h1>
+  <p class="lead">遺産の総額と相続人の構成から、相続税の総額と、配偶者が法定相続分を取得した場合の実際の納税額を計算します。基礎控除は「3,000万円＋600万円×法定相続人の数」。</p>
+
+  <label for="isan">遺産の総額（課税価格の合計・<b>万円</b>）<span class="hint">　借金・葬式費用を引いた額。例: 10000 なら1億円</span></label>
+  <input id="isan" type="number" inputmode="numeric" placeholder="例: 10000（＝1億円）" min="0">
+  <div id="isan-echo" class="echo"></div>
+
+  <label for="haiguusha">配偶者（夫・妻）<span class="hint">　いる場合は税額軽減で負担が大きく下がります</span></label>
+  <select id="haiguusha">
+    <option value="1">いる</option>
+    <option value="0">いない（すでに死亡・離婚など）</option>
+  </select>
+
+  <div class="grid">
+    <div>
+      <label for="koReal">子の数（実子）<span class="hint">　代襲相続の孫も含む</span></label>
+      <input id="koReal" type="number" inputmode="numeric" value="0" min="0">
+    </div>
+    <div>
+      <label for="koYoshi">うち養子の数<span class="hint">　実子ありは1人・なしは2人まで</span></label>
+      <input id="koYoshi" type="number" inputmode="numeric" value="0" min="0">
+    </div>
+  </div>
+
+  <div class="callout">
+    <b>子がいない場合だけ、下の父母・兄弟姉妹が相続人になります</b> 相続の順位は ①子（いなければ孫）→ ②父母 → ③兄弟姉妹 の順です（民法887〜890条）。
+  </div>
+
+  <div class="grid">
+    <div>
+      <label for="oya">父母（存命の直系尊属）の数<span class="hint">　子がいないときのみ</span></label>
+      <input id="oya" type="number" inputmode="numeric" value="0" min="0">
+    </div>
+    <div>
+      <label for="kyodai">兄弟姉妹の数<span class="hint">　子も父母もいないとき。2割加算</span></label>
+      <input id="kyodai" type="number" inputmode="numeric" value="0" min="0">
+    </div>
+  </div>
+
+  <button id="calc" type="button">計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a href="https://keiri-tools.com/sozokuzei/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（国税庁 No.4152・4155・相続税法15/16/18/19条の2）。
+  </div>
+</div>
+
+<script type="module">
+import { calcSozokuzei } from "../../assets/sozokuzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const BASE = "https://keiri-tools.com/sozokuzei/?utm_source=embed&utm_medium=widget";
+// 万円入力を「○億○万円」に読み替える（飾り。計算には使わない）
+const manToWords = (man) => {
+  man = Math.floor(man);
+  if (!Number.isFinite(man) || man <= 0) return "";
+  const oku = Math.floor(man / 10000), rest = man % 10000;
+  return "＝" + (oku ? oku + "億" : "") + (rest ? rest + "万円" : (oku ? "円" : "万円"));
+};
+
+// 参照データ（速算表・基礎控除）は非同期で届く。**答えの一部**なので届く前に押されても await で待つ（= fail closed）。
+let SOZOKU = null;
+const sozokuReady = fetch("../../assets/sozokuzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { SOZOKU = d; return true; })
+  .catch(() => false);
+
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "sozokuzei", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+$("isan").addEventListener("input", () => { $("isan-echo").textContent = manToWords(Number($("isan").value)); });
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+
+  const ok = await sozokuReady; // 必要な参照データの到着を必ず待つ
+  if (!ok || !SOZOKU) {
+    box.innerHTML = `<div class="warn"><b>データを読み込めませんでした。</b>通信環境を確認して再読み込みしてください。データが分からない状態で相続税を答えることはできません。</div>`;
+    postHeight(); return;
+  }
+
+  const man = Number($("isan").value);
+  if (!man || man <= 0) { box.innerHTML = `<div class="warn">遺産の総額（課税価格の合計・万円）を入力してください。</div>`; postHeight(); return; }
+  const isanTotal = Math.round(man * 10000);
+
+  let r;
+  try {
+    r = calcSozokuzei({
+      isanTotal,
+      hasSpouse: $("haiguusha").value === "1",
+      numChildrenReal: Number($("koReal").value) || 0,
+      numChildrenAdopted: Number($("koYoshi").value) || 0,
+      numParents: Number($("oya").value) || 0,
+      numSiblings: Number($("kyodai").value) || 0,
+    }, SOZOKU);
+  } catch (e) {
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    postHeight(); return;
+  }
+
+  const yearTag = r.year ? `（${r.year}で計算）` : "";
+  const cta = `<div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
+
+  if (r.belowKiso) {
+    box.innerHTML = `
+      <div>相続税はかかりません <span class="big">¥0</span></div>
+      <div class="hint">遺産の課税価格の合計 ${yen(r.isanTotal)} が、基礎控除 ${yen(r.kiso)}（3,000万円＋600万円×${r.houteiCount}人）以下です。</div>
+      <div class="note">課税価格が基礎控除以下なら、原則として相続税の申告も不要です。${yearTag}</div>${cta}`;
+    postHeight(); return;
+  }
+
+  const b = r.sozokunin.blood;
+  const bLabel = { child: "子", parent: "父母（直系尊属）", sibling: "兄弟姉妹" }[b.kind] || "";
+  let ninzuText = [];
+  if (r.hasSpouse) ninzuText.push("配偶者1人");
+  if (b.n > 0) ninzuText.push(`${bLabel}${b.n}人`);
+  let youshiNote = "";
+  if (b.kind === "child" && b.youshiCapped) {
+    youshiNote = `<div class="hint">※ 入力された養子のうち、法定相続人に数えられるのは${b.youshi}人までです（相続税法15条）。</div>`;
+  }
+
+  const rows = r.perHeir.map(h => {
+    if (h.who === "spouse") {
+      return `<div class="row">配偶者 <span>${yen(0)}</span></div><div class="hint">配偶者の税額軽減（相続税法19条の2）で0円</div>`;
+    }
+    const per = h.count > 1 ? `（1人あたり ${yen(h.eachTax)}）` : "";
+    const kasanNote = h.kasan ? "（2割加算あり）" : "";
+    return `<div class="row">${h.label} ${h.count}人${kasanNote} <span>${yen(h.groupTax)}</span></div><div class="hint">${per}</div>`;
+  }).join("");
+
+  box.innerHTML = `
+    <div class="hint">法定相続人：<b>${ninzuText.join("・")}（計${r.houteiCount}人）</b> ／ 基礎控除：<b>${yen(r.kiso)}</b> ／ 課税遺産総額：<b>${yen(r.kazeiIsan)}</b></div>
+    ${youshiNote}
+    <div class="block">
+      <div class="row"><b>① 相続税の総額</b>（軽減・2割加算の前） <span class="big">${yen(r.sogaku)}</span></div>
+      <div class="hint">課税遺産総額を法定相続分で按分し、速算表を当てて合計した額です（相続税法16条）。</div>
+    </div>
+    <div class="block">
+      <div class="row"><b>② 実際に納める相続税の合計</b> <span class="big">${yen(r.jishitsuFutan)}</span></div>
+      <div class="hint">配偶者が法定相続分を取得した場合の、各人の納税額の合計です${r.niwariKasan ? "（兄弟姉妹は2割加算）" : ""}。</div>
+      ${rows}
+    </div>
+    <div class="note">※ 小規模宅地等の特例・生命保険金の非課税枠・各種税額控除などは反映していない<b>目安</b>です。相続税の申告・納付は相続開始を知った日の翌日から<b>10か月以内</b>。${yearTag}</div>${cta}`;
+  postHeight();
+});
+</script>
+</body>
+</html>

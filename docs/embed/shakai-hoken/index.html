@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>社会保険料 計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/shakai-hoken/ と重複させない）。計算は本体と同じ ../../assets/shaho_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/shakai-hoken/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="報酬月額から健康保険・介護保険・厚生年金・雇用保険の本人負担と会社負担を自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:26px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  .row{ margin-bottom:6px; }
+  table{ width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th{ background:var(--accent2); text-align:right; padding:4px 6px; font-size:12px; }
+  th.l{ text-align:left; }
+  td{ padding:4px 6px; } td.n{ text-align:right; white-space:nowrap; } td.s{ color:var(--sub); }
+  .tot td{ border-top:2px solid var(--accent); font-weight:800; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+  .scroll{ overflow-x:auto; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>社会保険料 計算</h1>
+  <p class="lead">報酬月額から、標準報酬月額の等級・健康保険・介護保険・厚生年金・雇用保険の本人負担と会社負担を概算します。</p>
+
+  <div class="grid">
+    <div>
+      <label for="pref">勤務先の都道府県</label>
+      <select id="pref"><option value="">読み込み中…</option></select>
+    </div>
+    <div>
+      <label for="age">年齢</label>
+      <input id="age" type="number" inputmode="numeric" value="35" min="15" max="74">
+    </div>
+  </div>
+
+  <label for="gyoshu">業種<span class="hint">　雇用保険料率だけが業種で変わります</span></label>
+  <select id="gyoshu"><option value="general">一般の事業</option></select>
+
+  <label for="monthly">報酬月額（円）<span class="hint">　基本給＋残業手当＋通勤手当などの総支給額</span></label>
+  <input id="monthly" type="number" inputmode="numeric" placeholder="例: 300000" min="0" step="1000">
+
+  <label for="bonus">賞与額（円・任意）<span class="hint">　入力すると賞与の保険料も計算します</span></label>
+  <input id="bonus" type="number" inputmode="numeric" placeholder="例: 500000" min="0" step="1000">
+
+  <button id="calc" type="button">社会保険料を計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a id="brand-link" href="https://keiri-tools.com/shakai-hoken/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（協会けんぽ料率・厚生年金18.3%・雇用保険料率）。
+  </div>
+</div>
+
+<script type="module">
+import { calcMonthly, calcBonus, calcKoyou } from "../../assets/shaho_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const BASE = "https://keiri-tools.com/shakai-hoken/?utm_source=embed&utm_medium=widget";
+let RATES = null;
+
+// 料率データは非同期で届く。届く前に押されても await で待つ。
+// catch が拾ってよいのは「料率が手に入らなかったこと」だけ（都道府県・業種の選択肢を埋めるのは
+// 答えに要るのでこの then に入れてよいが、飾りの描画は別に処理する）。
+const ratesReady = fetch("../../assets/shaho_rates_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { RATES = d; fillPrefs(d); fillGyoshu(d); return true; })
+  .catch(() => false);
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "shakai-hoken", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+function fillPrefs(d) {
+  const sel = $("pref"); sel.innerHTML = "";
+  for (const p of Object.keys(d.kenko_rates)) {
+    const o = document.createElement("option");
+    o.value = p; o.textContent = `${p}（${d.kenko_rates[p].toFixed(2)}%）`;
+    if (p === "東京都") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+function fillGyoshu(d) {
+  const sel = $("gyoshu"); sel.innerHTML = "";
+  for (const [key, t] of Object.entries(d.koyou.types)) {
+    const o = document.createElement("option");
+    o.value = key; o.textContent = `${t.label}（本人 ${t.worker_permille}/1,000）`;
+    if (key === "general") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+  const loaded = await ratesReady;
+  if (!loaded || !RATES) {
+    box.innerHTML = `<div class="warn"><b>料率データを読み込めませんでした。</b>通信環境を確認して再読み込みしてください。料率が分からない状態で保険料は答えられません。</div>`;
+    postHeight(); return;
+  }
+  const monthly = Number($("monthly").value);
+  const age = Number($("age").value);
+  const pref = $("pref").value;
+  if (!monthly || monthly <= 0) { box.innerHTML = `<div class="warn">報酬月額を入力してください。</div>`; postHeight(); return; }
+  const kRate = RATES.kenko_rates[pref];
+  if (!kRate) { box.innerHTML = `<div class="warn">都道府県を選び直してください。</div>`; postHeight(); return; }
+  const gy = RATES.koyou.types[$("gyoshu").value];
+  if (!gy) { box.innerHTML = `<div class="warn">業種を選び直してください。</div>`; postHeight(); return; }
+
+  // 雇用保険には r.standard（標準報酬月額）ではなく monthly（賃金総額）を渡す（徴収法11条1項）。
+  const r = calcMonthly(monthly, kRate, RATES.kaigo_rate, age);
+  const k = calcKoyou(monthly, gy.total_permille, gy.jigyo2_permille);
+
+  const kenkoLabel = r.kaigoApplies
+    ? `健康保険＋介護保険（${kRate.toFixed(2)}%＋${RATES.kaigo_rate.toFixed(2)}%）`
+    : `健康保険（${kRate.toFixed(2)}%）`;
+  const row = (label, o) => `
+    <tr><td>${label}</td><td class="n">${yen(o.self)}</td>
+        <td class="n s">${yen(o.company)}</td><td class="n s">${yen(o.self + o.company)}</td></tr>`;
+
+  const selfAll = r.selfTotal + k.self;
+  const companyAll = r.companyTotal + k.company;
+
+  let html = `
+    <div class="row">標準報酬月額 <b>${yen(r.standard)}</b>（健保 第${r.grade}級）
+      ${r.koseiStandard !== r.standard ? `／厚年 <b>${yen(r.koseiStandard)}</b>` : ""}</div>
+    <div class="row">毎月の本人負担 <span class="big">${yen(selfAll)}</span>
+      ${RATES._meta?.year ? `<span class="hint">（${RATES._meta.year}の料率）</span>` : ""}</div>
+    <div class="scroll">
+    <table>
+      <tr><th class="l">項目</th><th>本人</th><th>会社</th><th>合計</th></tr>
+      ${row(kenkoLabel, r.kenkoKaigo)}
+      ${row(`子ども・子育て支援金（${r.kosodate.rate.toFixed(2)}%）`, r.kosodate)}
+      ${row("厚生年金（18.3%）", r.kosei)}
+      ${row(`雇用保険（${gy.label} 本人 ${gy.worker_permille}/1,000）`, k)}
+      <tr class="tot"><td>合計</td><td class="n">${yen(selfAll)}</td>
+        <td class="n">${yen(companyAll)}</td><td class="n">${yen(selfAll + companyAll)}</td></tr>
+    </table></div>
+    <div class="note">
+      ${r.kaigoApplies ? "※ 介護保険料は健康保険料と合算した料率で控除しています。" : `※ ${age}歳のため介護保険料はかかりません（40〜64歳が対象）。`}
+      <br>※ 雇用保険料は標準報酬月額ではなく賃金総額（${yen(k.base)}）にかかり、労使折半ではありません（本人 ${gy.worker_permille}/1,000 ⇔ 会社 ${gy.employer_permille}/1,000）。
+    </div>`;
+
+  const bonus = Number($("bonus").value);
+  if (bonus > 0) {
+    const b = calcBonus(bonus, kRate, RATES.kaigo_rate, age);
+    const bk = calcKoyou(bonus, gy.total_permille, gy.jigyo2_permille);
+    html += `
+      <div class="note" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">
+        <div class="row" style="color:var(--ink)">賞与の本人負担 <span class="big">${yen(b.selfTotal + bk.self)}</span></div>
+        健康保険・厚生年金・支援金 ${yen(b.selfTotal)}（標準賞与額 ${yen(b.standardBonus)}）
+        ${b.capped.kosei ? "／厚年は1回150万円の上限を適用" : ""}${b.capped.kenko ? "／健保は年度573万円の上限を適用" : ""}
+        <br>雇用保険 ${yen(bk.self)}（賞与の実額 ${yen(bonus)} にそのままかかります）
+      </div>`;
+  }
+
+  html += `<div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
+  box.innerHTML = html;
+  postHeight();
+});
+</script>
+</body>
+</html>

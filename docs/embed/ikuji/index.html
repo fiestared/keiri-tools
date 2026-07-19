@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>育児休業給付金 計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/ikuji/ と重複させない）。計算は本体と同じ ../../assets/ikuji_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/ikuji/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="育児休業給付金（67%／181日目から50%）と出生後休業支援給付金（＋13%）を自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  input[type=checkbox]{ width:auto; }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  fieldset{ border:1px solid var(--line); border-radius:8px; padding:10px 12px; margin-top:12px; }
+  legend{ font-size:12.5px; font-weight:700; padding:0 6px; color:var(--ink); }
+  .chk{ display:flex; gap:6px; align-items:flex-start; font-size:13px; color:var(--ink); margin:8px 0 2px; }
+  .chk input{ margin-top:3px; }
+  details{ margin-top:8px; } summary{ font-size:12.5px; color:var(--sub); cursor:pointer; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:24px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; margin-top:8px; }
+  td{ padding:4px 6px; } td.n{ text-align:right; white-space:nowrap; }
+  .tot{ border-top:2px solid var(--accent); font-weight:800; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .callout{ font-size:12.5px; margin-top:8px; padding:8px 10px; background:var(--accent2); border-radius:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>育児休業給付金 計算</h1>
+  <p class="lead">育休中に雇用保険から出る育児休業給付金（67%・181日目から50%）と、出生後休業支援給付金（＋13%）を概算します。</p>
+
+  <label for="monthly">月給（額面・<b>賞与を除く</b>／円）</label>
+  <input id="monthly" type="number" inputmode="numeric" value="300000" placeholder="例: 300000" min="0" step="1000">
+  <div class="hint">賞与（ボーナス）は1円も入りません（雇用保険法17条1項）。年収を12で割った額を入れると多く出ます。</div>
+
+  <label for="startDate">育児休業を開始する日</label>
+  <input id="startDate" type="date" value="2026-04-01">
+
+  <label for="leaveDays">育児休業の日数（暦の日数）</label>
+  <input id="leaveDays" type="number" inputmode="numeric" value="365" min="1" max="1095">
+
+  <fieldset>
+    <legend>出生後休業支援給付金（＋13%）の判定</legend>
+    <div class="grid">
+      <div>
+        <label for="shienOwnDays">あなたの出生後休業の日数</label>
+        <input id="shienOwnDays" type="number" inputmode="numeric" value="28" min="0" max="112">
+      </div>
+      <div>
+        <label for="shienSpouseDays">配偶者の出生後休業の日数</label>
+        <input id="shienSpouseDays" type="number" inputmode="numeric" value="0" min="0" max="112">
+      </div>
+    </div>
+    <div class="hint">★13%は「配偶者も14日以上」取らないと乗りません（61条の10第1項3号）。</div>
+    <label class="chk"><input id="spouseExempt" type="checkbox"> <span><b>配偶者の要件が免除される</b>（61条の10第2項）</span></label>
+    <div class="hint">次の<b>いずれか</b>なら免除です（子の出生日の翌日の時点で判定）：
+      ①配偶者がいない（行方不明を含む）／②配偶者が子と法律上の親子関係がない／③配偶者から暴力を受け別居中／
+      ④配偶者が<b>無業者</b>／⑤配偶者が<b>自営業・フリーランス</b>など雇用される労働者でない／
+      <b>⑥配偶者が産後休業中</b>／⑦その他の理由で配偶者が育児休業をできない。
+      ★<b>あなたが父親で配偶者が子を出産した場合（子が養子でない）は⑥に当たります</b>。妻が育休を1日も取らなくても13%を受け取れるので、父親はチェックしてください。</div>
+  </fieldset>
+
+  <button id="calc" type="button">育児休業給付金を計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a href="https://keiri-tools.com/ikuji/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（雇用保険法・厚生労働省の支給限度額）。
+  </div>
+</div>
+
+<script type="module">
+import { calcIkuji } from "../../assets/ikuji_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const BASE = "https://keiri-tools.com/ikuji/?utm_source=embed&utm_medium=widget";
+
+// 参照データ（賃金日額の上限額・下限額）は非同期で届く。これは答えの一部なので、
+// 届く前に押されても await で待つ（回線が遅い人だけ上限を知らないまま計算される事故を防ぐ）。
+let D = null;
+const dataReady = fetch("../../assets/kihonteate_r07.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { D = d; return true; })
+  .catch(() => false);
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "ikuji", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+
+  const ready = await dataReady;
+  if (!ready || !D) {
+    box.innerHTML = `<div class="warn"><b>賃金日額の上限額・下限額を読み込めませんでした。</b>通信環境を確認して再読み込みしてください。上限額（16,110円）が分からないまま金額を答えると、上限に張りつく方に実際より高い額を信じさせてしまうため、計算を止めています。</div>`;
+    postHeight(); return;
+  }
+
+  const monthly = Number($("monthly").value);
+  if (!(monthly > 0)) { box.innerHTML = `<div class="warn">月給（額面・賞与を除く）を入力してください。</div>`; postHeight(); return; }
+  const startDate = $("startDate").value;
+  if (!startDate) { box.innerHTML = `<div class="warn">育児休業を開始する日を入力してください（支給単位期間は開始日の応当日で区切られます）。</div>`; postHeight(); return; }
+
+  let r;
+  try {
+    r = calcIkuji({
+      total6m: monthly * 6,
+      startDate,
+      leaveDays: Number($("leaveDays").value),
+      shien: {
+        ownDays: Number($("shienOwnDays").value),
+        spouseDays: Number($("shienSpouseDays").value),
+        spouseExempt: $("spouseExempt").checked,
+      },
+    }, D);
+  } catch (e) {
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    postHeight(); return;
+  }
+
+  const capNote = r.capped
+    ? `<div class="callout">★賃金日額が上限（${yen(r.max)}）に張りついています。この上限は<b>年齢に関係なく同じ</b>です（45歳以上でも17,740円にはなりません）。</div>`
+    : r.floored
+      ? `<div class="callout">★賃金日額が下限（${yen(r.min)}）まで引き上げられています（17条4項1号）。</div>`
+      : "";
+
+  const s = r.shien;
+  let shienRow, shienNote = "";
+  if (s.eligible) {
+    shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">${yen(s.amount)}</td></tr>`;
+  } else if (s.reason === "own_days") {
+    shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">¥0</td></tr>`;
+    shienNote = `<div class="callout">出生後休業支援給付金（13%）は<b>あなたの出生後休業が14日未満</b>のため0円です（61条の10第1項2号）。</div>`;
+  } else {
+    shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">¥0</td></tr>`;
+    shienNote = `<div class="callout">★<b>配偶者が14日以上の育児休業を取れば、13%（最大28日分）が上乗せ</b>されます。配偶者が14日以上休業していないため0円です（61条の10第1項3号）。ひとり親・配偶者が被用者でない方は上の「配偶者の要件が免除される」にチェック（同条2項）。</div>`;
+  }
+
+  box.innerHTML = `
+    <div class="big">育児休業給付 ${yen(r.total)}</div>
+    <div class="hint">${r.startDate}〜${r.endDate}・${r.leaveDays}日／賃金日額 <b>${yen(Math.floor(r.daily))}</b></div>
+    ${capNote}
+    ${shienNote}
+    <table>
+      <tr><td>育児休業給付金（67%／50%）</td><td class="n">${yen(r.ikujiTotal)}</td></tr>
+      ${shienRow}
+      <tr class="tot"><td>合計</td><td class="n">${yen(r.total)}</td></tr>
+    </table>
+    <div class="note">支給日数は終了月以外つねに30日なので、67%で払われる日数は<b>${r.payDays67}日</b>・50%は<b>${r.payDays50}日</b>（暦の${r.leaveDays}日とは一致しません）。賞与は計算に入りません。${r.year ? `<span class="hint">（${r.year}）</span>` : ""}</div>
+    <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
+  postHeight();
+});
+</script>
+</body>
+</html>

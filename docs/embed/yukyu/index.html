@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>有給休暇の付与日数 計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/yukyu/ と重複させない）。計算は本体と同じ ../../assets/yukyu_core.js。
+     このツールは参照JSONを使わない（労基法39条の付与表はcoreに定数で持つ）ため fetch は無い。 -->
+<link rel="canonical" href="https://keiri-tools.com/yukyu/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="入社日と週の勤務日数から年次有給休暇の付与日数・付与日を自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:26px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  .row{ margin-top:2px; }
+  table{ width:100%; border-collapse:collapse; font-size:13px; margin-top:12px; background:#fff; }
+  th{ padding:6px 8px; text-align:left; background:var(--accent2); }
+  td{ padding:6px 8px; border-bottom:1px solid var(--line); }
+  .note{ font-size:12px; color:var(--sub); margin-top:10px; padding:8px 10px; background:#fff; border:1px solid var(--line); border-radius:8px; }
+  .warn5{ background:#fff3d6; border:1px solid #e6c47a; color:var(--ink); }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>有給休暇の付与日数 計算機</h1>
+  <p class="lead">入社日と勤務日数を入れるだけで、付与日数・付与日・次回付与日を計算します。パート・アルバイトの比例付与、年5日の取得義務にも対応。</p>
+
+  <label for="hire">入社日</label>
+  <input type="date" id="hire">
+
+  <div class="grid">
+    <div>
+      <label for="wdays">週の所定労働日数</label>
+      <select id="wdays">
+        <option value="5">週5日以上</option>
+        <option value="4">週4日</option>
+        <option value="3">週3日</option>
+        <option value="2">週2日</option>
+        <option value="1">週1日</option>
+      </select>
+    </div>
+    <div>
+      <label for="whours">週の所定労働時間</label>
+      <input type="number" id="whours" value="40" inputmode="numeric" step="0.5">
+    </div>
+  </div>
+  <div class="hint" style="margin-top:6px">※ <b>週30時間以上</b>なら、週4日以下でも通常どおり（10日〜）の付与になります。</div>
+
+  <button id="calc" type="button">計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a href="https://keiri-tools.com/yukyu/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（労働基準法39条・厚生労働省の付与日数表）。
+  </div>
+</div>
+
+<script type="module">
+import { needsFiveDays, currentGrant, todayISO } from "../../assets/yukyu_core.js";
+
+const $ = (id) => document.getElementById(id);
+const BASE = "https://keiri-tools.com/yukyu/?utm_source=embed&utm_medium=widget";
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "yukyu", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+// 既定値は「昨年の4/1」を文字列で組むだけ（答えを左右する日付演算は core 側にある）
+const t0 = new Date();
+$("hire").value = `${t0.getFullYear() - 1}-04-01`;
+
+const CLAMP_NOTE = `<div class="note">※ 6か月後・1年後に<b>同じ日が無い月</b>（例: 8/31入社 → 2/31は無い）は、<b>その月の末日</b>を付与日としています（民法143条2項・応当日がないときは末日）。</div>`;
+
+$("calc").addEventListener("click", () => {
+  const box = $("result");
+  box.style.display = "block";
+  const hire = $("hire").value;
+  if (!hire) { box.innerHTML = "入社日を入力してください。"; postHeight(); return; }
+  const wd = Number($("wdays").value);
+  const wh = Number($("whours").value) || 0;
+
+  const today = todayISO();
+  const g = currentGrant(hire, wd, wh, today); // 日付の計算・比較は すべて yukyu_core に置く
+  const rows = g.rows;
+
+  let html;
+  if (g.days === 0) {
+    const first = rows[0];
+    html = `
+      <div class="row">現時点の付与日数 <span class="big">0日</span></div>
+      <div class="row" style="margin-top:6px">入社から6か月未満のため、まだ付与されていません。</div>
+      <div class="note"><b>初回の付与日: ${first.date.replaceAll("-", "/")}</b>（${first.days}日）<br>6か月継続勤務し、全労働日の8割以上出勤していることが条件です。</div>
+      ${g.clamped ? CLAMP_NOTE : ""}`;
+  } else {
+    html = `
+      <div class="row">現在の付与日数 <span class="big">${g.days}日</span></div>
+      <div class="row" style="margin-top:4px">勤続 ${Math.floor(g.months / 12)}年${g.months % 12}か月 ／ ${g.type === "proportional" ? "<b>比例付与</b>（週" + wd + "日・週30時間未満）" : "通常付与（週5日以上または週30時間以上）"}</div>
+      ${needsFiveDays(g.days)
+        ? `<div class="note warn5"><b>⚠️ 年5日の取得義務の対象です</b><br>10日以上付与されているため、会社は<b>年5日を確実に取得させる義務</b>があります（違反は30万円以下の罰金）。</div>`
+        : `<div class="hint" style="margin-top:8px">付与日数が10日未満のため、年5日の取得義務の対象外です。</div>`}
+      ${g.next ? `<div style="font-size:13.5px;margin-top:10px">次回の付与: <b>${g.next.date.replaceAll("-", "/")}</b>（${g.next.days}日）</div>` : ""}
+      <div style="overflow-x:auto"><table>
+        <tr><th>付与日</th><th>勤続</th><th style="text-align:right">付与日数</th><th style="text-align:center">年5日義務</th></tr>
+        ${rows.map(r => {
+          const past = r.date <= today; // 文字列比較（new Date("YYYY-MM-DD")はUTC扱いで当日の朝に狂う）
+          return `<tr style="${past ? "" : "color:var(--sub)"}">
+            <td>${r.date.replaceAll("-", "/")}${past ? "" : "（予定）"}</td>
+            <td>${r.years === 0.5 ? "6か月" : Math.floor(r.years) + "年6か月"}</td>
+            <td style="text-align:right"><b>${r.days}日</b></td>
+            <td style="text-align:center">${r.mustTakeFive ? "対象" : "—"}</td></tr>`;
+        }).join("")}
+      </table></div>
+      ${g.clamped ? CLAMP_NOTE : ""}
+      <div class="hint" style="margin-top:8px">※ 各年度で全労働日の8割以上出勤していることが前提です。有給休暇は付与日から2年で時効消滅します。</div>`;
+  }
+  box.innerHTML = html + `<div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 比例付与の早見表・詳しい解説を見る</a></div>`;
+  postHeight();
+});
+</script>
+</body>
+</html>

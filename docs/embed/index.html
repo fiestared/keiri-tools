@@ -3,43 +3,52 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>無料の計算ウィジェット（埋め込み）｜keiri-tools</title>
-<meta name="description" content="手取り計算などの計算機を、あなたのサイト・ブログに無料で埋め込めます。コピペするだけ。登録不要・改変不要。keiri-tools 提供。">
+<title>無料の計算ウィジェット27種（埋め込み）｜keiri-tools</title>
+<meta name="description" content="手取り・住民税・ふるさと納税・相続税・失業保険など27種の計算機を、あなたのサイト・ブログに無料で埋め込めます。コピペするだけ。登録不要・改変不要。keiri-tools 提供。">
 <link rel="canonical" href="https://keiri-tools.com/embed/">
 <style>
   :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; }
   *{ box-sizing:border-box; }
   body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
     color:var(--ink); line-height:1.75; margin:0; padding:0 16px; }
-  .wrap{ max-width:760px; margin:0 auto; padding:28px 0 60px; }
+  .wrap{ max-width:860px; margin:0 auto; padding:28px 0 60px; }
   a{ color:var(--accent); }
-  h1{ font-size:24px; margin:0 0 6px; } h2{ font-size:18px; margin:32px 0 8px; }
+  h1{ font-size:25px; margin:0 0 6px; } h2{ font-size:18px; margin:34px 0 10px; }
   .lead{ color:var(--sub); }
-  .row{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
-  @media(max-width:640px){ .row{ grid-template-columns:1fr; } }
-  pre{ background:#0f172a; color:#e2e8f0; padding:14px; border-radius:10px; overflow-x:auto; font-size:12.5px; line-height:1.6; }
-  .card{ border:1px solid var(--line); border-radius:12px; padding:16px; }
   .tag{ display:inline-block; background:var(--accent2); color:var(--accent); font-size:12px; font-weight:700; padding:2px 8px; border-radius:6px; }
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; margin-top:8px; }
+  @media(max-width:680px){ .row{ grid-template-columns:1fr; } }
+  pre{ background:#0f172a; color:#e2e8f0; padding:14px; border-radius:10px; overflow-x:auto; font-size:12.5px; line-height:1.6; }
+  .card-preview{ border:1px solid var(--line); border-radius:12px; overflow:hidden; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px; }
+  .card{ border:1px solid var(--line); border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:6px; }
+  .cn{ font-weight:700; font-size:14.5px; }
+  .cs{ font-size:11.5px; color:var(--sub); font-family:ui-monospace,monospace; }
+  .cb{ display:flex; gap:8px; margin-top:auto; align-items:center; }
+  .cb a.prev{ font-size:12.5px; text-decoration:none; }
+  .cb button{ font-size:12.5px; border:1px solid var(--accent); background:#fff; color:var(--accent);
+    border-radius:7px; padding:4px 10px; cursor:pointer; font-weight:700; }
+  .cb button:hover{ background:var(--accent2); }
   ul{ padding-left:1.2em; } li{ margin:4px 0; }
   .steps{ counter-reset:s; list-style:none; padding:0; }
   .steps li{ counter-increment:s; padding-left:34px; position:relative; margin:10px 0; }
   .steps li::before{ content:counter(s); position:absolute; left:0; top:0; width:24px; height:24px; background:var(--accent);
     color:#fff; border-radius:50%; display:grid; place-items:center; font-size:13px; font-weight:700; }
-  footer{ margin-top:40px; padding-top:16px; border-top:1px solid var(--line); color:var(--sub); font-size:13px; }
+  footer{ margin-top:44px; padding-top:16px; border-top:1px solid var(--line); color:var(--sub); font-size:13px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <span class="tag">無料・登録不要</span>
+  <span class="tag">無料・登録不要・27種</span>
   <h1>計算ウィジェットを、あなたのサイトに埋め込む</h1>
-  <p class="lead">記事やブログに <b>手取り計算機</b> をそのまま設置できます。コピペするだけ。サーバー処理なし・データ送信なし（計算は閲覧者のブラウザ内で完結）。</p>
+  <p class="lead">手取り・住民税・ふるさと納税・相続税・失業保険…など<b>27種の計算機</b>を、記事やブログにそのまま設置できます。コピペするだけ。サーバー処理なし・データ送信なし（計算は閲覧者のブラウザ内で完結）。料率・税額表はこちらで最新に保ちます。</p>
 
   <div class="row">
     <div>
       <h2>① コピーする</h2>
-      <p>この2つを、貼りたい場所の HTML に入れるだけです。</p>
-      <pre>&lt;iframe src="https://keiri-tools.com/embed/tedori/"
-  title="手取り計算機" loading="lazy"
+      <p>各ツールの「コピー」ボタンでこの形のコードが取れます。<code>src</code> のツール名を変えるだけで、どの計算機でも使えます。</p>
+      <pre>&lt;iframe src="https://keiri-tools.com/embed/<b>tedori</b>/"
+  title="手取り計算" loading="lazy"
   style="width:100%;max-width:480px;height:640px;
   border:1px solid #e2e8f0;border-radius:12px"&gt;&lt;/iframe&gt;
 
@@ -55,20 +64,32 @@ addEventListener("message",function(e){
   }
 });
 &lt;/script&gt;</pre>
-      <p style="font-size:13px;color:var(--sub)">※ 2つ目の &lt;script&gt; は、中身の高さに合わせて枠を自動調整するためのものです（省略すると固定 640px）。</p>
+      <p style="font-size:13px;color:var(--sub)">※ 2つ目の &lt;script&gt; は中身の高さに合わせて枠を自動調整します（省略時は固定640px）。複数のウィジェットを貼っても1つで足ります。</p>
     </div>
     <div>
       <h2>② こう表示されます</h2>
-      <div class="card" style="padding:0;overflow:hidden">
+      <div class="card-preview">
         <iframe src="/embed/tedori/" title="手取り計算機（プレビュー）" loading="lazy"
           style="width:100%;height:640px;border:0;display:block"></iframe>
       </div>
+      <p style="font-size:12px;color:var(--sub);text-align:center">↑ 手取り計算のライブプレビュー</p>
     </div>
   </div>
 
+  <h2>使えるウィジェット一覧（27種）</h2>
+
+  <h3 style="margin:18px 0 6px;font-size:15px">給与・賞与・手取り</h3>
+  <div class="grid" id="g1"></div>
+  <h3 style="margin:18px 0 6px;font-size:15px">税金の計算</h3>
+  <div class="grid" id="g2"></div>
+  <h3 style="margin:18px 0 6px;font-size:15px">保険給付・退職</h3>
+  <div class="grid" id="g3"></div>
+  <h3 style="margin:18px 0 6px;font-size:15px">経理・振込・日付</h3>
+  <div class="grid" id="g4"></div>
+
   <h2>使い方</h2>
   <ol class="steps">
-    <li>上のコードをコピーする</li>
+    <li>使いたいツールの「コピー」を押す</li>
     <li>WordPress なら「カスタムHTML」ブロック、その他は記事の HTML に貼る</li>
     <li>公開して完了。以後こちらで料率・税額表を最新に保つので、貼りっぱなしで大丈夫です</li>
   </ol>
@@ -77,18 +98,59 @@ addEventListener("message",function(e){
   <ul>
     <li><b>無料</b>・商用サイトでも使えます。登録不要。</li>
     <li>ウィジェット内の「keiri-tools」表記とリンクは<b>そのまま</b>にしてください（改変・非表示は不可）。</li>
-    <li>計算結果は概算です。正確な額は給与明細・お住まいの自治体でご確認ください。</li>
+    <li>計算結果は概算です。正確な額は給与明細・お住まいの自治体等でご確認ください。</li>
     <li>予告なく仕様変更・提供終了する場合があります。</li>
   </ul>
 
   <footer>
     🧮 <a href="https://keiri-tools.com/?utm_source=embed_page">keiri-tools</a> — 経理・給与・税金のミニ計算ツール。
-    要望・他のツールの埋め込みは <a href="https://keiri-tools.com/contact/">お問い合わせ</a>まで。
+    要望・不具合は <a href="https://keiri-tools.com/contact/">お問い合わせ</a>まで。
   </footer>
 </div>
 
-<!-- プレビューの iframe 高さを自動調整（貼り付けコードと同じ仕組みの実演） -->
 <script>
+// 全ウィジェットのカードを生成（カテゴリ別）
+var TOOLS = {
+  g1: [["tedori","手取り計算"],["bonus-tedori","ボーナス手取り計算"],["shakai-hoken","社会保険料 計算"],
+       ["gensen-choshu","源泉徴収税額 計算"],["zangyodai","残業代（割増賃金）計算"],["kabe","年収の壁シミュレーター"]],
+  g2: [["juminzei","住民税 計算"],["shohizei","消費税の計算（税込・税抜）"],["sozokuzei","相続税 計算"],
+       ["zoyozei","贈与税 計算（暦年課税）"],["jidoshazei","自動車税 判定"],["inshi","収入印紙の金額 判定"],
+       ["iryohi","医療費控除 計算"],["jutaku","住宅ローン控除 計算"],["furusato","ふるさと納税 限度額"]],
+  g3: [["kihonteate","失業保険（基本手当）計算"],["shobyo","傷病手当金 計算"],["ikuji","育児休業給付金 計算"],
+       ["papa-ikukyu","産後パパ育休 給付金 計算"],["shussan","出産手当金 計算"],["yukyu","有給休暇の付与日数"],
+       ["taishokukin","退職金の税金 計算"]],
+  g4: [["genka","減価償却費の計算"],["senpou-futan","振込手数料「先方負担」計算"],["zengin-kana","振込名義カナ変換"],
+       ["eigyobi","日数・営業日計算"],["shiharai-site","支払サイト・支払日計算"]]
+};
+function snippet(slug, name){
+  return '<iframe src="https://keiri-tools.com/embed/'+slug+'/" title="'+name+'" loading="lazy" '
+    + 'style="width:100%;max-width:480px;height:640px;border:1px solid #e2e8f0;border-radius:12px"></iframe>\n'
+    + '<script>\n'
+    + 'addEventListener("message",function(e){if(e.data&&e.data.type==="keiri-embed"){'
+    + 'document.querySelectorAll(\'iframe[src*="keiri-tools.com/embed/"]\').forEach(function(f){'
+    + 'if(f.contentWindow===e.source)f.style.height=e.data.height+"px";});}});\n'
+    + '<\/script>';
+}
+for (var gid in TOOLS){
+  var box = document.getElementById(gid), html = "";
+  TOOLS[gid].forEach(function(t){
+    html += '<div class="card"><div class="cn">'+t[1]+'</div>'
+      + '<div class="cs">/embed/'+t[0]+'/</div>'
+      + '<div class="cb"><a class="prev" href="/embed/'+t[0]+'/" target="_blank" rel="noopener">プレビュー ↗</a>'
+      + '<button class="copy" data-slug="'+t[0]+'" data-name="'+t[1]+'">コピー</button></div></div>';
+  });
+  box.innerHTML = html;
+}
+document.querySelectorAll(".copy").forEach(function(b){
+  b.addEventListener("click", function(){
+    var code = snippet(b.dataset.slug, b.dataset.name);
+    var done = function(){ var o=b.textContent; b.textContent="コピーしました✓"; setTimeout(function(){b.textContent=o;},1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(done).catch(function(){ window.prompt("コピーしてください:", code); });
+    } else { window.prompt("コピーしてください:", code); }
+  });
+});
+// プレビュー iframe の高さ自動調整（貼り付けコードと同じ仕組みの実演）
 addEventListener("message", function (e) {
   if (e.data && e.data.type === "keiri-embed") {
     document.querySelectorAll('iframe[src*="/embed/"]').forEach(function (f) {

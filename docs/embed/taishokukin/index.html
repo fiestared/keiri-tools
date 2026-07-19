@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>退職金の税金（退職所得）計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/taishokukin/ と重複させない）。計算は本体と同じ ../../assets/taishoku_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/taishokukin/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="退職金の額と勤続年数から所得税・住民税・手取り額を自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .chk{ display:block; font-size:13px; color:var(--ink); font-weight:400; margin:8px 0 0; }
+  .chk input{ width:auto; margin-right:6px; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:22px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); margin-top:8px; }
+  table{ width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+  th{ text-align:left; padding:4px 6px; font-weight:400; color:var(--sub); vertical-align:top; white-space:nowrap; }
+  td{ padding:4px 6px; }
+  .callout{ font-size:13px; margin-top:10px; padding:9px 11px; background:#fff; border:1px solid #e6c47a; border-radius:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>退職金の税金（退職所得）計算機</h1>
+  <p class="lead">退職金の額と勤続年数を入れるだけで、退職所得控除額・所得税・住民税・手取り額を計算します。勤続年数は1年未満を切り上げるので、退職日が1か月違うだけで税額が数万円変わります。</p>
+
+  <label for="amount">退職金の額（円・税引き前）</label>
+  <input type="number" id="amount" value="15000000" placeholder="例: 15000000" inputmode="numeric">
+
+  <div class="grid">
+    <div>
+      <label for="years">勤続年数（年）</label>
+      <input type="number" id="years" value="20" min="0" max="60" inputmode="numeric">
+    </div>
+    <div>
+      <label for="months">端数（か月）<span style="font-size:11px;color:var(--sub)">1か月でも1年に切上げ</span></label>
+      <input type="number" id="months" value="0" min="0" max="11" inputmode="numeric">
+    </div>
+  </div>
+
+  <label class="chk"><input type="checkbox" id="officer">役員等（取締役・監査役・議員・公務員など）としての勤続年数が5年以下</label>
+  <label class="chk"><input type="checkbox" id="disabled">障害者になったことが直接の原因で退職した（控除が100万円増えます）</label>
+  <label class="chk"><input type="checkbox" id="filed" checked>「退職所得の受給に関する申告書」を会社に提出する（<b>ふつうは提出します</b>）</label>
+
+  <button id="calc" type="button">計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a href="https://keiri-tools.com/taishokukin/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（所得税法30条・89条／地方税法）。
+  </div>
+</div>
+
+<script type="module">
+import { calcTaishoku, oneMonthLater } from "../../assets/taishoku_core.js";
+
+const $ = (id) => document.getElementById(id);
+const BASE = "https://keiri-tools.com/taishokukin/?utm_source=embed&utm_medium=widget";
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+// 税率・控除額は非同期で届く。届く前に押されても await で待つ（回線が遅い人だけ空データで計算される事故を防ぐ）。
+let DATA = null;
+const dataReady = fetch("../../assets/taishoku_rates_r08.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { DATA = d; return true; })
+  .catch(() => false);
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "taishokukin", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+  const ready = await dataReady; // ← 税率表が届くまで計算しない
+  if (!ready || !DATA) {
+    box.innerHTML = `<div class="warn"><b>税率表を読み込めませんでした。</b>通信環境を確認して、ページを再読み込みしてください。税率が分からないまま退職金の税額を答えることはできないため、計算を止めています。</div>`;
+    postHeight(); return;
+  }
+
+  const input = {
+    amount: Number($("amount").value),
+    years: Number($("years").value),
+    months: Number($("months").value),
+    isOfficer: $("officer").checked,
+    disabled: $("disabled").checked,
+    filed: $("filed").checked,
+  };
+  if (!(input.amount > 0)) {
+    box.innerHTML = `<div class="callout">退職金の額を入力してください。</div>`;
+    postHeight(); return;
+  }
+
+  const r = calcTaishoku(input, DATA);
+  const o = oneMonthLater(input, DATA);
+  const cta = `<div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・注意点を見る</a></div>`;
+
+  const kinzokuNote = (input.months > 0)
+    ? `<div class="hint">勤続${input.years}年${input.months}か月は、<b>${r.nensu}年</b>として計算します（1年未満の端数は1年に切上げ・所得税法施行令69条2項）。</div>`
+    : "";
+
+  // 「あと1か月勤めたら」の差額。年数が切り上がるときだけ意味がある
+  const laterNote = (o.kojoUp > 0 && o.saved > 0)
+    ? `<div class="callout"><b>★あと1か月勤めると、税金が${yen(o.saved)}安くなります。</b>退職日が1か月ずれると勤続年数が<b>${r.nensu}年→${o.later.nensu}年</b>に切り上がり、退職所得控除が<b>${yen(o.kojoUp)}</b>増えるためです（税額 ${yen(r.total)} → ${yen(o.later.total)}）。</div>`
+    : "";
+
+  if (r.taxFree) {
+    box.innerHTML = `
+      <div class="big">税金は0円　手取り ${yen(r.tedori)}</div>
+      <table>
+        <tr><th>勤続年数</th><td>${r.nensu}年</td></tr>
+        <tr><th>退職所得控除額</th><td><b>${yen(r.kojo)}</b>${r.disabled ? "（障害退職のため+100万円）" : ""}</td></tr>
+        <tr><th>課税退職所得金額</th><td><b>0円</b>（退職金が控除の範囲に収まっています）</td></tr>
+        <tr><th>所得税・住民税</th><td><b>0円</b></td></tr>
+        <tr><th>手取り</th><td><b>${yen(r.tedori)}</b>（満額）</td></tr>
+      </table>
+      ${kinzokuNote}${cta}`;
+    postHeight(); return;
+  }
+
+  if (!r.filed) {
+    box.innerHTML = `
+      <div class="big">手取り ${yen(r.tedori)}　（税金 ${yen(r.total)}）</div>
+      <table>
+        <tr><th>所得税・復興特別所得税</th><td><b>${yen(r.incomeTax)}</b>（支給額 ${yen(r.amount)} × 20.42％）</td></tr>
+        <tr><th>住民税</th><td><b>${yen(r.juminzei)}</b>（市町村民税 ${yen(r.shichoson)} ＋ 道府県民税 ${yen(r.dofuken)}）</td></tr>
+        <tr><th>合計</th><td><b>${yen(r.total)}</b></td></tr>
+        <tr><th>手取り</th><td><b>${yen(r.tedori)}</b></td></tr>
+      </table>
+      <div class="callout"><b>「退職所得の受給に関する申告書」を出さないと、退職所得控除も2分の1課税も使われません。</b>支給額そのものに一律20.42％がかかります（所得税法201条3項）。申告書を出した場合の所得税は<b>${yen(calcTaishoku({ ...input, filed: true }, DATA).incomeTax)}</b>です。</div>${cta}`;
+    postHeight(); return;
+  }
+
+  const halfNote = !r.halfApplied
+    ? `<div class="callout"><b>この退職金は「2分の1課税」が効いていません。</b>${r.kind === "yakuin"
+        ? "役員等としての勤続年数が5年以下のため、<b>特定役員退職手当等</b>として2分の1が適用されません（所得税法30条2項）。"
+        : "勤続5年以下で、控除を引いた残額が300万円を超えるため、<b>短期退職手当等</b>として300万円を超える部分に2分の1が適用されません（所得税法30条2項）。"}</div>`
+    : "";
+
+  box.innerHTML = `
+    <div class="big">手取り ${yen(r.tedori)}　（税金 ${yen(r.total)}）</div>
+    <table>
+      <tr><th>勤続年数</th><td>${r.nensu}年（${r.kindLabel}）</td></tr>
+      <tr><th>退職所得控除額</th><td><b>${yen(r.kojo)}</b>${r.disabled ? "（障害退職のため+100万円）" : ""}</td></tr>
+      <tr><th>課税退職所得金額</th><td><b>${yen(r.taxable)}</b>${r.halfApplied ? `（（${yen(r.amount)} − ${yen(r.kojo)}）× 1/2・1,000円未満切捨）` : "（1,000円未満切捨）"}</td></tr>
+      <tr><th>所得税＋復興特別所得税</th><td><b>${yen(r.incomeTax)}</b>（× 102.1％）</td></tr>
+      <tr><th>住民税</th><td><b>${yen(r.juminzei)}</b>（市町村民税6％ ${yen(r.shichoson)} ＋ 道府県民税4％ ${yen(r.dofuken)}）</td></tr>
+      <tr><th>税金の合計</th><td><b>${yen(r.total)}</b></td></tr>
+      <tr><th>手取り</th><td><b>${yen(r.tedori)}</b>（${yen(r.amount)} − ${yen(r.total)}）</td></tr>
+    </table>
+    ${kinzokuNote}
+    ${halfNote}
+    ${laterNote}${cta}`;
+  postHeight();
+});
+</script>
+</body>
+</html>

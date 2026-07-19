@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>失業保険（基本手当）計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/kihonteate/ と重複させない）。計算は本体と同じ ../../assets/kihonteate_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/kihonteate/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="失業保険（雇用保険の基本手当）の日額・所定給付日数・受け取れる総額の目安を自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  input[type=checkbox]{ width:auto; }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .chk{ display:flex; gap:6px; align-items:flex-start; font-size:13px; color:var(--ink); margin:8px 0 2px; }
+  .chk input{ margin-top:3px; }
+  details{ margin-top:8px; } summary{ font-size:12.5px; color:var(--sub); cursor:pointer; }
+  details ol{ margin:6px 0; padding-left:1.3em; font-size:12px; color:var(--sub); }
+  details ul{ margin:4px 0; padding-left:1.2em; font-size:12px; color:var(--sub); }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:24px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; margin-top:8px; }
+  td{ padding:4px 6px; } td.n{ text-align:right; white-space:nowrap; }
+  .tot{ border-top:2px solid var(--accent); font-weight:800; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .callout{ font-size:12.5px; margin-top:8px; padding:8px 10px; background:var(--accent2); border-radius:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>失業保険（基本手当）計算</h1>
+  <p class="lead">離職時の年齢・給料・勤続年数・退職理由から、1日あたりの金額・もらえる日数・総額の目安・支給が始まる時期を概算します。</p>
+
+  <div class="grid">
+    <div>
+      <label for="age">離職時の年齢</label>
+      <input id="age" type="number" inputmode="numeric" value="35" min="15" max="70">
+    </div>
+    <div>
+      <label for="monthly">毎月の給料（総支給・円）</label>
+      <input id="monthly" type="number" inputmode="numeric" value="300000" placeholder="例: 300000" min="0" step="1000">
+    </div>
+  </div>
+  <div class="hint">給料は賞与を含めない額です。</div>
+
+  <label for="period">雇用保険に入っていた期間（算定基礎期間）</label>
+  <select id="period">
+    <option value="under1">1年未満</option>
+    <option value="y1_5">1年以上5年未満</option>
+    <option value="y5_10">5年以上10年未満</option>
+    <option value="y10_20" selected>10年以上20年未満</option>
+    <option value="y20">20年以上</option>
+  </select>
+
+  <div class="callout">
+    ★<b>退職届を出していても「会社都合」になることがあります。</b>下の<b>16の事由</b>のどれかが原因で辞めたなら、自分から退職届を出していても法律上は「特定受給資格者」＝会社都合です（所定給付日数が最大2倍以上・給付制限なし）。
+    <details>
+      <summary>16の事由をすべて見る（法律が列挙しているもの）</summary>
+      <p style="margin:8px 0 2px;font-weight:600;font-size:12px">会社の状態による（施行規則35条）</p>
+      <ol>
+        <li>倒産（破産・民事再生などの手続き）</li>
+        <li>大量の雇用変動の届出があった、または被保険者の3分の1を超える人が辞めた</li>
+        <li>事業所の廃止</li>
+        <li>事業所の移転により、通勤が困難になった</li>
+      </ol>
+      <p style="margin:8px 0 2px;font-weight:600;font-size:12px">働かせ方による（施行規則36条）★ここが見落とされます</p>
+      <ol>
+        <li>解雇（自分の重大な落ち度によるものを除く）</li>
+        <li><b>求人票や労働契約で示された労働条件が、実際と著しく違った</b></li>
+        <li><b>賃金の3分の1を超える額が、支払日までに支払われなかった</b>（賃金不払い）</li>
+        <li><b>賃金が、以前の85%未満に下がった</b>（予期できなかった場合）</li>
+        <li><b>長時間労働・法令違反</b>
+          <ul>
+            <li>3か月連続で、月45時間を超える時間外・休日労働があった</li>
+            <li>1か月に100時間以上の時間外・休日労働があった</li>
+            <li>2〜6か月の平均で、月80時間を超える時間外・休日労働があった</li>
+            <li>危険・健康障害を防ぐ措置を、行政に指摘されても会社が講じなかった</li>
+            <li><b>妊娠・出産・育児・介護</b>に関して法令違反があった、制度の利用を不当に制限された、または利用を理由に不利益な取扱いを受けた（マタハラ・パタハラ）</li>
+          </ul>
+        </li>
+        <li>職種転換などの際に、職業生活の継続のために必要な配慮がなかった</li>
+        <li>有期契約が更新されて3年以上雇用された後、更新されなかった</li>
+        <li>契約を更新すると明示されていたのに、更新されなかった</li>
+        <li><b>事業主や同僚から、就業環境が著しく害されるような言動を受けた</b>（パワハラ・セクハラ）</li>
+        <li>会社から退職するよう勧奨された（退職勧奨）</li>
+        <li>会社側の都合による休業が、3か月以上続いた</li>
+        <li>事業所の業務が法令に違反していた</li>
+      </ol>
+      <p style="margin:8px 0 0;font-size:12px">最終的な判断はハローワークが行います。離職票の理由に納得できないときは、証拠を持って異議を申し立てられます。</p>
+    </details>
+  </div>
+
+  <label for="reason">退職の理由</label>
+  <select id="reason">
+    <option value="jiko" selected>自己都合（転職・独立など。上の16事由に当てはまらない）</option>
+    <option value="kaisha">会社都合＝特定受給資格者（上の16事由。自分から辞めた場合も含む）</option>
+    <option value="keiyaku">契約期間が満了し、更新されなかった</option>
+    <option value="seito">正当な理由のある自己都合（病気・介護・配偶者の転勤・結婚による転居など）</option>
+    <option value="teinen">定年退職</option>
+  </select>
+
+  <label class="chk"><input id="repeated" type="checkbox"> <span>離職日から5年間で、自己都合の退職が3回目以上（給付制限が3か月になります）</span></label>
+  <label class="chk"><input id="training" type="checkbox"> <span>離職日前1年以内に教育訓練を受けた／受給中に受ける（給付制限が解除されます）</span></label>
+  <label class="chk"><input id="konnan" type="checkbox"> <span>障害者手帳をお持ちなど、就職が困難な方</span></label>
+
+  <button id="calc" type="button">計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a href="https://keiri-tools.com/kihonteate/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（雇用保険法・厚生労働省の自動変更対象額）。
+  </div>
+</div>
+
+<script type="module">
+import { calcKihonteate, REASONS } from "../../assets/kihonteate_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const BASE = "https://keiri-tools.com/kihonteate/?utm_source=embed&utm_medium=widget";
+
+// 上限額・下限額（自動変更対象額）は非同期で届く。届く前に押されても await で待つ。
+let DATA = null;
+const dataReady = fetch("../../assets/kihonteate_r07.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { DATA = d; return true; })
+  .catch(() => false);
+
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "kihonteate", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+
+  const ready = await dataReady;
+  if (!ready || !DATA) {
+    box.innerHTML = `<div class="warn"><b>上限額・下限額を読み込めませんでした。</b>通信環境を確認して再読み込みしてください。金額の上限・下限が分からないまま失業保険の額を答えることはできないため、計算を止めています。</div>`;
+    postHeight(); return;
+  }
+
+  const input = {
+    age: Number($("age").value),
+    monthly: Number($("monthly").value),
+    period: $("period").value,
+    reason: $("reason").value,
+    repeated: $("repeated").checked,
+    training: $("training").checked,
+    konnan: $("konnan").checked,
+  };
+  if (!(input.monthly > 0)) { box.innerHTML = `<div class="warn">毎月の給料（総支給額）を入力してください。</div>`; postHeight(); return; }
+
+  const r = calcKihonteate(input, DATA);
+  if (!r.supported) { box.innerHTML = `<div class="warn"><b>この計算機の対象外です。</b>${r.message}</div>`; postHeight(); return; }
+  if (!r.eligible) { box.innerHTML = `<div class="warn"><b>受給資格を満たさない可能性が高いです。</b>${r.eligibilityMessage}</div>`; postHeight(); return; }
+
+  const capNote = r.capped === "max"
+    ? `<div class="hint">賃金日額は${yen(r.wageDailyRaw)}ですが、この年齢の<b>上限額${yen(r.cap)}</b>が適用されました（雇用保険法17条4項）。</div>`
+    : r.capped === "min"
+      ? `<div class="hint">賃金日額は${yen(r.wageDailyRaw)}ですが、<b>下限額${yen(r.cap)}</b>が適用されました（雇用保険法17条4項）。</div>`
+      : "";
+
+  const trainingNote = (input.reason === "jiko" && input.training)
+    ? `<div class="hint">教育訓練を受けたため、給付制限が解除されています（雇用保険法33条1項ただし書）。</div>`
+    : "";
+
+  box.innerHTML = `
+    <div class="big">総額の目安 ${yen(r.total)}</div>
+    <table>
+      <tr><td>賃金日額</td><td class="n">${yen(r.wageDaily)}</td></tr>
+      <tr><td>給付率</td><td class="n">${(r.rate * 100).toFixed(1)}％</td></tr>
+      <tr><td>基本手当日額</td><td class="n">${yen(r.daily)}／日</td></tr>
+      <tr><td>所定給付日数</td><td class="n">${r.days}日</td></tr>
+      <tr><td>給付制限</td><td class="n">${r.restrictionMonths > 0 ? r.restrictionMonths + "か月" : "なし"}</td></tr>
+      <tr><td>受給期間</td><td class="n">${r.receivePeriodDays === 365 ? "1年" : "1年＋" + (r.receivePeriodDays - 365) + "日"}</td></tr>
+      <tr class="tot"><td>総額の目安</td><td class="n">${yen(r.total)}</td></tr>
+    </table>
+    <div class="hint">${REASONS[input.reason]}${input.konnan ? "・就職困難" : ""}／待期7日（21条）。${r.startDelayNote}</div>
+    ${capNote}
+    ${trainingNote}
+    <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
+  postHeight();
+});
+</script>
+</body>
+</html>
