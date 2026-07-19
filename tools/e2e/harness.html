@@ -51,7 +51,20 @@ const set = (doc, id, v) => {
   return el;
 };
 const click = (doc, id) => doc.getElementById(id).click();
-const text = (doc, id) => doc.getElementById(id).textContent.replace(/\s+/g, " ").trim();
+// textContent は display:none でも読めてしまう(結果ボックス非表示の全損10件を素通しした構造要因。
+// gbrain ops/webtool-silent-wrong-answer-patterns §46)。「利用者に見えている文字」だけを結果として
+// 読むため、本人と祖先の display / visibility を確かめてから読む。隠れていれば throw する
+// (waitFor の中では catch されて再試行になり、描画完了まで待つ動きと両立する)
+const text = (doc, id) => {
+  const el = doc.getElementById(id);
+  const win = doc.defaultView;
+  for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
+    const cs = win.getComputedStyle(n);
+    if (cs.display === "none" || cs.visibility === "hidden")
+      throw new Error(`#${id} は非表示のまま(${n.tagName.toLowerCase()} が display:${cs.display}/visibility:${cs.visibility})。結果が画面に見えていない`);
+  }
+  return el.textContent.replace(/\s+/g, " ").trim();
+};
 
 // チェックボックスを実ユーザーと同じように操作する(change を発火させる)
 const check = (doc, id, on) => {
