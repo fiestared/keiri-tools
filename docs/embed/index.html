@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>無料の計算ウィジェット（埋め込み）｜keiri-tools</title>
+<meta name="description" content="手取り計算などの計算機を、あなたのサイト・ブログに無料で埋め込めます。コピペするだけ。登録不要・改変不要。keiri-tools 提供。">
+<link rel="canonical" href="https://keiri-tools.com/embed/">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; }
+  *{ box-sizing:border-box; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); line-height:1.75; margin:0; padding:0 16px; }
+  .wrap{ max-width:760px; margin:0 auto; padding:28px 0 60px; }
+  a{ color:var(--accent); }
+  h1{ font-size:24px; margin:0 0 6px; } h2{ font-size:18px; margin:32px 0 8px; }
+  .lead{ color:var(--sub); }
+  .row{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
+  @media(max-width:640px){ .row{ grid-template-columns:1fr; } }
+  pre{ background:#0f172a; color:#e2e8f0; padding:14px; border-radius:10px; overflow-x:auto; font-size:12.5px; line-height:1.6; }
+  .card{ border:1px solid var(--line); border-radius:12px; padding:16px; }
+  .tag{ display:inline-block; background:var(--accent2); color:var(--accent); font-size:12px; font-weight:700; padding:2px 8px; border-radius:6px; }
+  ul{ padding-left:1.2em; } li{ margin:4px 0; }
+  .steps{ counter-reset:s; list-style:none; padding:0; }
+  .steps li{ counter-increment:s; padding-left:34px; position:relative; margin:10px 0; }
+  .steps li::before{ content:counter(s); position:absolute; left:0; top:0; width:24px; height:24px; background:var(--accent);
+    color:#fff; border-radius:50%; display:grid; place-items:center; font-size:13px; font-weight:700; }
+  footer{ margin-top:40px; padding-top:16px; border-top:1px solid var(--line); color:var(--sub); font-size:13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="tag">無料・登録不要</span>
+  <h1>計算ウィジェットを、あなたのサイトに埋め込む</h1>
+  <p class="lead">記事やブログに <b>手取り計算機</b> をそのまま設置できます。コピペするだけ。サーバー処理なし・データ送信なし（計算は閲覧者のブラウザ内で完結）。</p>
+
+  <div class="row">
+    <div>
+      <h2>① コピーする</h2>
+      <p>この2つを、貼りたい場所の HTML に入れるだけです。</p>
+      <pre>&lt;iframe src="https://keiri-tools.com/embed/tedori/"
+  title="手取り計算機" loading="lazy"
+  style="width:100%;max-width:480px;height:640px;
+  border:1px solid #e2e8f0;border-radius:12px"&gt;&lt;/iframe&gt;
+
+&lt;script&gt;
+addEventListener("message",function(e){
+  if(e.data&amp;&amp;e.data.type==="keiri-embed"){
+    document.querySelectorAll(
+      'iframe[src*="keiri-tools.com/embed/"]'
+    ).forEach(function(f){
+      if(f.contentWindow===e.source)
+        f.style.height=e.data.height+"px";
+    });
+  }
+});
+&lt;/script&gt;</pre>
+      <p style="font-size:13px;color:var(--sub)">※ 2つ目の &lt;script&gt; は、中身の高さに合わせて枠を自動調整するためのものです（省略すると固定 640px）。</p>
+    </div>
+    <div>
+      <h2>② こう表示されます</h2>
+      <div class="card" style="padding:0;overflow:hidden">
+        <iframe src="/embed/tedori/" title="手取り計算機（プレビュー）" loading="lazy"
+          style="width:100%;height:640px;border:0;display:block"></iframe>
+      </div>
+    </div>
+  </div>
+
+  <h2>使い方</h2>
+  <ol class="steps">
+    <li>上のコードをコピーする</li>
+    <li>WordPress なら「カスタムHTML」ブロック、その他は記事の HTML に貼る</li>
+    <li>公開して完了。以後こちらで料率・税額表を最新に保つので、貼りっぱなしで大丈夫です</li>
+  </ol>
+
+  <h2>利用について</h2>
+  <ul>
+    <li><b>無料</b>・商用サイトでも使えます。登録不要。</li>
+    <li>ウィジェット内の「keiri-tools」表記とリンクは<b>そのまま</b>にしてください（改変・非表示は不可）。</li>
+    <li>計算結果は概算です。正確な額は給与明細・お住まいの自治体でご確認ください。</li>
+    <li>予告なく仕様変更・提供終了する場合があります。</li>
+  </ul>
+
+  <footer>
+    🧮 <a href="https://keiri-tools.com/?utm_source=embed_page">keiri-tools</a> — 経理・給与・税金のミニ計算ツール。
+    要望・他のツールの埋め込みは <a href="https://keiri-tools.com/contact/">お問い合わせ</a>まで。
+  </footer>
+</div>
+
+<!-- プレビューの iframe 高さを自動調整（貼り付けコードと同じ仕組みの実演） -->
+<script>
+addEventListener("message", function (e) {
+  if (e.data && e.data.type === "keiri-embed") {
+    document.querySelectorAll('iframe[src*="/embed/"]').forEach(function (f) {
+      if (f.contentWindow === e.source) f.style.height = e.data.height + "px";
+    });
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>手取り計算ウィジェット｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/tedori/ と重複させない）。計算は本体と同じ ../../assets/tedori_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/tedori/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="額面月給から手取りを自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .radios{ display:flex; gap:6px; flex-wrap:wrap; margin-top:4px; }
+  .radios label{ display:flex; align-items:center; gap:4px; margin:0; font-size:13px; color:var(--ink);
+    border:1px solid var(--line); border-radius:8px; padding:6px 8px; cursor:pointer; }
+  details{ margin-top:8px; } summary{ font-size:12.5px; color:var(--sub); cursor:pointer; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:26px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; margin-top:8px; }
+  td{ padding:4px 6px; } td.n{ text-align:right; white-space:nowrap; }
+  .tot{ border-top:2px solid var(--accent); font-weight:800; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .a-share{ border:1px solid var(--line); color:var(--ink); }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>手取り計算</h1>
+  <p class="lead">額面の月給から、社会保険料・所得税・住民税を引いた手取りを概算します。</p>
+
+  <label for="gross">額面の月給（円）</label>
+  <input id="gross" type="number" inputmode="numeric" placeholder="例: 300000" min="0" step="1000">
+
+  <div class="grid">
+    <div>
+      <label for="pref">勤務先の都道府県</label>
+      <select id="pref"><option value="">読み込み中…</option></select>
+    </div>
+    <div>
+      <label for="age">年齢</label>
+      <input id="age" type="number" inputmode="numeric" value="30" min="0" max="120">
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <label for="dependents">扶養親族の数</label>
+      <input id="dependents" type="number" inputmode="numeric" value="0" min="0" max="20">
+    </div>
+    <div>
+      <label>住民税</label>
+      <select id="jmode">
+        <option value="estimate">概算（前年ベース）</option>
+        <option value="none">含めない（新卒1年目など）</option>
+        <option value="manual">給与明細の月額を入力</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="manual-wrap" style="display:none">
+    <label for="jmanual">住民税の月額（給与明細）</label>
+    <input id="jmanual" type="number" inputmode="numeric" placeholder="例: 12000" min="0" step="100">
+  </div>
+
+  <details>
+    <summary>詳細設定（雇用保険の業種）</summary>
+    <label for="gyoshu">業種</label>
+    <select id="gyoshu"><option value="general">一般の事業</option></select>
+  </details>
+
+  <button id="calc" type="button">手取りを計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a id="brand-link" href="https://keiri-tools.com/tedori/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（協会けんぽ料率・国税庁の月額表）。
+  </div>
+</div>
+
+<script type="module">
+import { calcTedori } from "../../assets/tedori_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const BASE = "https://keiri-tools.com/tedori/?utm_source=embed&utm_medium=widget";
+let SHAHO = null, GENSEN = null, JUMIN = null;
+
+// 参照データは非同期で届く。届く前に押されても await で待つ（test_data_pages の規律）。
+// catch が拾ってよいのは「データが手に入らなかったこと」だけ。
+const shahoReady = fetch("../../assets/shaho_rates_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { SHAHO = d; fillPrefs(d); fillGyoshu(d); return true; })
+  .catch(() => false);
+const gensenReady = fetch("../../assets/gensen_getsugaku_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { GENSEN = d; return true; })
+  .catch(() => false);
+const juminReady = fetch("../../assets/juminzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { JUMIN = d; return true; })
+  .catch(() => false);
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "tedori", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+function fillPrefs(d) {
+  const sel = $("pref"); sel.innerHTML = "";
+  for (const p of Object.keys(d.kenko_rates)) {
+    const o = document.createElement("option");
+    o.value = p; o.textContent = `${p}（${d.kenko_rates[p].toFixed(2)}%）`;
+    if (p === "東京都") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+function fillGyoshu(d) {
+  const sel = $("gyoshu"); sel.innerHTML = "";
+  for (const [key, t] of Object.entries(d.koyou.types)) {
+    const o = document.createElement("option");
+    o.value = key; o.textContent = t.label;
+    if (key === "general") o.selected = true;
+    sel.appendChild(o);
+  }
+}
+
+$("jmode").addEventListener("change", () => {
+  $("manual-wrap").style.display = $("jmode").value === "manual" ? "block" : "none";
+  postHeight();
+});
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+
+  const okShaho = await shahoReady;
+  const okGensen = await gensenReady;
+  const mode = $("jmode").value;
+  const okJumin = await juminReady;
+  if (!okShaho || !okGensen || !SHAHO || !GENSEN) {
+    box.innerHTML = `<div class="warn"><b>料率・税額表を読み込めませんでした。</b>通信環境を確認して再読み込みしてください。データが分からない状態で手取りは答えられません。</div>`;
+    postHeight(); return;
+  }
+  if (mode === "estimate" && (!okJumin || !JUMIN)) {
+    box.innerHTML = `<div class="warn"><b>住民税データを読み込めませんでした。</b>「含めない」に切り替えるか再読み込みしてください。</div>`;
+    postHeight(); return;
+  }
+  const gross = Number($("gross").value);
+  if (!gross || gross <= 0) { box.innerHTML = `<div class="warn">額面の月給を入力してください。</div>`; postHeight(); return; }
+  const pref = $("pref").value;
+  if (!SHAHO.kenko_rates[pref]) { box.innerHTML = `<div class="warn">都道府県を選び直してください。</div>`; postHeight(); return; }
+
+  let r;
+  try {
+    r = calcTedori({
+      gross, age: Number($("age").value), prefecture: pref,
+      dependents: Number($("dependents").value) || 0,
+      gyoshu: $("gyoshu").value,
+      juminzeiMode: mode,
+      juminzeiManual: Number($("jmanual").value) || 0,
+    }, { shahoRates: SHAHO, gensenTable: GENSEN, juminzeiData: JUMIN });
+  } catch (e) {
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    postHeight(); return;
+  }
+
+  const sh = r.shakaiHoken;
+  const jLabel = { estimate: "住民税（概算）", manual: "住民税", none: "住民税（含めず）" }[r.juminzeiMode];
+  const shareText = `額面月給${Math.round(r.gross/10000)}万円の手取りは月${yen(r.tedori)}でした🧮`;
+  const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent("https://keiri-tools.com/tedori/?utm_source=embed_share")}`;
+
+  box.innerHTML = `
+    <div>毎月の手取り <span class="big">${yen(r.tedori)}</span> <span class="hint">（額面の ${(r.tedoriRate*100).toFixed(1)}%）</span></div>
+    <table>
+      <tr><td>額面の月給</td><td class="n">${yen(r.gross)}</td></tr>
+      <tr><td>社会保険料（本人）</td><td class="n">− ${yen(sh.self)}</td></tr>
+      <tr><td>所得税（源泉）</td><td class="n">− ${yen(r.shotokuzei)}</td></tr>
+      <tr><td>${jLabel}</td><td class="n">− ${yen(r.juminzeiMonthly)}</td></tr>
+      <tr class="tot"><td>手取り</td><td class="n">${yen(r.tedori)}</td></tr>
+    </table>
+    <div class="note">${r.juminzeiMode === "estimate"
+      ? "※ 住民税はこの年収が前年も続いた前提の概算です（新卒1年目は2年目から発生）。所得税は源泉額（年末調整で精算）。賞与は含みません。"
+      : "※ 所得税は源泉額（年末調整で精算）。賞与は含みません。"}
+      ${r.year ? `<span class="hint">（${r.year}の料率・税額表）</span>` : ""}</div>
+    <div class="cta">
+      <a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a>
+      <a class="a-share" href="${shareUrl}" target="_blank" rel="noopener">結果をシェア</a>
+    </div>`;
+  postHeight();
+});
+</script>
+</body>
+</html>
