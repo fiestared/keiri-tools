@@ -27,7 +27,8 @@ const OUT = join(DOCS, "assets", "qa_index.json");
 const CHECK = process.argv.includes("--check");
 
 // docs 直下でツールとして扱わないディレクトリ(素材・記事・固定ページ・拡張)。
-const EXCLUDE_TOP = new Set(["assets", "column", "ext", "about", "privacy", "contact"]);
+// embed = 他サイト設置用ウィジェット群(noindex・sitemap外)。質問箱の答えとして出す面ではない
+const EXCLUDE_TOP = new Set(["assets", "column", "ext", "about", "privacy", "contact", "embed"]);
 
 const strip = (s) => (s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
