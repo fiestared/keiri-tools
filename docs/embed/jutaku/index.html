@@ -77,7 +77,7 @@
 
   <details>
     <summary>詳細設定（子育て世帯の上乗せ・経過措置）</summary>
-    <label class="chk"><input type="checkbox" id="tokurei"> 特例対象個人（子育て世帯・若者夫婦世帯）である（2024・2025年入居で借入限度額が上乗せ）</label>
+    <label class="chk"><input type="checkbox" id="tokurei"> 特例対象個人（子育て世帯・若者夫婦世帯）である（2024年以降の入居で借入限度額が上乗せ。2026年からは中古にも）</label>
     <label class="chk"><input type="checkbox" id="keika"> 「その他の住宅」の経過措置に該当する（2023年末までに建築確認、または2024年6月末までに建築）</label>
   </details>
 
@@ -103,11 +103,11 @@ const eraLabel = (y) => `令和${y - 2018}年（${y}年）`;
 
 // 入居年の選択肢を同期で組み立てる（西暦をvalue、和暦をラベルに）
 const yearSel = $("year");
-for (const y of [2022, 2023, 2024, 2025]) {
+for (const y of [2022, 2023, 2024, 2025, 2026]) {
   const o = document.createElement("option");
   o.value = String(y);
   o.textContent = eraLabel(y);
-  if (y === 2025) o.selected = true;
+  if (y === 2026) o.selected = true;
   yearSel.appendChild(o);
 }
 
@@ -175,7 +175,7 @@ $("calc").addEventListener("click", async () => {
   if (!r.eligible) {
     let why = "";
     if (r.sonotaZero) {
-      why = `<div class="callout"><b>★「その他の住宅」を${yearLabel}に入居したため、原則として控除の対象になりません（借入限度額0円）。</b>省エネ基準を満たさない住宅は2024年・2025年の入居で控除がゼロになりました（2023年までは3,000万円）。<b>2023年末までに建築確認を受けた</b>、または<b>2024年6月末までに建築された</b>住宅なら、上の詳細設定で<b>「経過措置に該当する」</b>にチェックすると2,000万円・10年で計算し直します。</div>`;
+      why = `<div class="callout"><b>★「その他の住宅」を${yearLabel}に入居したため、原則として控除の対象になりません（借入限度額0円）。</b>省エネ基準を満たさない住宅は2024年以降の入居で新築の控除がゼロになりました（2023年までは3,000万円）。<b>2023年末までに建築確認を受けた</b>、または<b>2024年6月末までに建築された</b>住宅なら、上の詳細設定で<b>「経過措置に該当する」</b>にチェックすると2,000万円・10年で計算し直します。★宅建業者のリフォーム済み再販（買取再販住宅）は0円にならず2,000万円・10年＝<b>「中古（既存住宅）」×「その他の住宅」</b>を選んで計算してください。</div>`;
     } else {
       why = `<div class="callout">入力の条件では控除の対象になりません。</div>`;
     }
@@ -188,9 +188,9 @@ $("calc").addEventListener("click", async () => {
   }
 
   // ── 対象（控除額あり）──
-  const chukoNote = r.isChuko
-    ? `<div class="callout"><b>★中古（既存住宅）として計算しています。</b>借入限度額は<b>認定住宅等3,000万円／その他2,000万円</b>、控除期間は<b>一律10年</b>。新築と違い「その他の住宅」でも0円になりません。子育て世帯の上乗せ・経過措置は中古にはありません。</div>`
-    : "";
+  const chukoNote = !r.isChuko ? "" : (r.year >= 2026
+    ? `<div class="callout"><b>★中古（既存住宅）として計算しています（2026年・令和8年以降のルール）。</b>借入限度額は<b>認定住宅・ZEH水準3,500万円／省エネ2,000万円／その他2,000万円</b>、控除期間は<b>認定住宅等13年・その他10年</b>。子育て世帯の上乗せが中古にも適用されます（認定・ZEH→4,500万円／省エネ→3,000万円）。</div>`
+    : `<div class="callout"><b>★中古（既存住宅）として計算しています（2025年までの入居のルール）。</b>借入限度額は<b>認定住宅等3,000万円／その他2,000万円</b>、控除期間は<b>一律10年</b>。新築と違い「その他の住宅」でも0円になりません。子育て世帯の上乗せ・経過措置は2025年までの中古にはありません。</div>`);
   const tokureiNote = r.tokureiApplied
     ? `<div class="callout"><b>★子育て世帯・若者夫婦世帯の上乗せを適用しました。</b>借入限度額が<b>${man(r.shakunyuGendoEn)}</b>になっています。</div>`
     : "";

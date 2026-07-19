@@ -1919,6 +1919,11 @@ SCENES.jutaku_chuko = jutakuScene({ type: "chuko", kubun: "nintei", year: 2024, 
 // ★★中古の主役の事実: 「その他の住宅」でも令和6・7年入居で0円にならない（新築との決定的な違い）。
 //   中古・その他・令和6年・年末残高3,000万 → 借入限度2,000万 × 0.7% = 14万円/年、10年（新築なら0円）。
 SCENES.jutaku_chuko_sonota = jutakuScene({ type: "chuko", kubun: "sonota", year: 2024, zandaka: 30000000 });
+// ★★令和8年（2026）入居の再編（令和8年法律第12号）: 中古・認定住宅は3,500万・13年になり、
+//   子育て世帯等の上乗せが**中古にも**効く（→4,500万）。中古・認定・令和8年・残高6,000万・特例あり →
+//   借入限度額4,500万 × 0.7% = **31.5万円/年**、**13年**、総額概算 315,000×13 = **4,095,000円**。
+//   ページが year=2026 を渡し損ねる/旧・中古表（3,000万・10年・上乗せ無し）で計算すると 21万/10年 に化けてここで落ちる。
+SCENES.jutaku_r8_chuko_tokurei = jutakuScene({ type: "chuko", kubun: "nintei", year: 2026, zandaka: 60000000, tokurei: true });
 // ★増改築（No.1211-4）は計算方法がまるごと違う → 黙って答えず「この計算機では計算できません」と言うこと
 SCENES.jutaku_zokaichiku = jutakuScene({ type: "zokaichiku", kubun: "shoene", year: 2024, zandaka: 45000000 });
 // 参照データを配信できないとき → 控除額を出さずに断る（fail closed）。戻らない額を「戻る」と信じさせない

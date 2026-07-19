@@ -608,6 +608,12 @@ const SCENES = [
   //   中古・その他・令和6年・残高3,000万 → 借入限度2,000万 × 0.7% = **14万円/年**、10年。**0円ではない**。
   { name: "jutaku_chuko_sonota", expect: (s) =>
       s.nenkan === 140000 && s.kikan === 10 && !s.zero && s.showsChuko && !s.failed },
+  // ★★令和8年(2026)入居の再編(令和8年法律第12号): 中古・認定は3,500万・13年＋子育て上乗せが中古にも効く(→4,500万)。
+  //   中古・認定・令和8年・残高6,000万・特例あり → 4,500万 × 0.7% = **31.5万円/年**・**13年**・総額 **4,095,000円**。
+  //   旧・中古表(3,000万・10年・上乗せ無し)のままだと 21万/10年 に化けてここで落ちる。
+  { name: "jutaku_r8_chuko_tokurei", expect: (s) =>
+      s.nenkan === 315000 && s.kikan === 13 && s.soKoujo === 4095000 &&
+      s.showsChuko && s.showsTokurei && !s.failed },
   // ★増改築(No.1211-4)は計算方法がまるごと違う → 黙って答えず「この計算機では計算できません」と断る
   { name: "jutaku_zokaichiku", expect: (s) =>
       s.showsCannotCompute && s.nenkan === null && !s.failed },
