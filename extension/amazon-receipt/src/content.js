@@ -264,7 +264,9 @@
 
   function saveCsv(orders) {
     const csv = ktBuildIndexCsv(orders);
-    const today = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+    // toISOString() はUTC日付 — JSTの0〜9時に作ると前日の日付名になる。ローカル日付で組む
+    const d = new Date();
+    const today = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}`;
     const name = `Amazon領収書の一覧表_${today}.csv`;
     ktDownloadText(name, csv);
     return name;
@@ -543,15 +545,21 @@
 
   $("#kt-refresh").addEventListener("click", async () => {
     $("#kt-ver").textContent = "更新しています…";
-    const fresh = await chrome.runtime.sendMessage({ type: "getSelectors", forceRefresh: true });
-    selectors = fresh.data;
-    license = await ktGetLicense();
-    $("#kt-plan").textContent = license.pro ? "Pro" : "";
-  if (license.pro) {
-    // 買った機能が主ボタンで手に入ることを、文言で明示する
-    $("#kt-go").textContent = "一覧表をつくる（全ページ分）";
-    $("#kt-proacts").style.display = "block";
-  }
-    $("#kt-ver").textContent = `読み取りルール ${fresh.version || "?"}（${fresh.source}）`;
+    // build() 内の自己修復パスと同じガード: sendMessage の reject(service worker停止等)で
+    // 「更新しています…」のまま止まらない / fresh.data が無い応答で selectors を undefined にしない
+    try {
+      const fresh = await chrome.runtime.sendMessage({ type: "getSelectors", forceRefresh: true });
+      if (fresh && fresh.data) selectors = fresh.data;
+      license = await ktGetLicense();
+      $("#kt-plan").textContent = license.pro ? "Pro" : "";
+      if (license.pro) {
+        // 買った機能が主ボタンで手に入ることを、文言で明示する
+        $("#kt-go").textContent = "一覧表をつくる（全ページ分）";
+        $("#kt-proacts").style.display = "block";
+      }
+      $("#kt-ver").textContent = `読み取りルール ${fresh.version || "?"}（${fresh.source}）`;
+    } catch (e) {
+      $("#kt-ver").textContent = "更新できませんでした。時間をおいてもう一度お試しください";
+    }
   });
 })();

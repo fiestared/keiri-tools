@@ -109,9 +109,11 @@ for (const file of htmlFiles(DOCS)) {
 
     const json = JSON.stringify(data, null, 2);
     html = html.replace(whole, `${open}\n${json}\n${close}`);
-    writeFileSync(file, html);
+    // --check は「差分があれば失敗」の読み取り専用モード(gen_index_sitemap / gen_qa_index と同じ)。
+    // ここで書いてしまうと、検査のつもりの実行が作業ツリーを黙って書き換える
+    if (!CHECK) writeFileSync(file, html);
     changed++;
-    console.log(`  更新: ${rel} (設問${pairs.length}件)`);
+    console.log(`  ${CHECK ? "差分" : "更新"}: ${rel} (設問${pairs.length}件)`);
   }
 
   // 挿入: 本文にFAQがあるのに FAQPageノードが無いページ。
@@ -134,9 +136,9 @@ for (const file of htmlFiles(DOCS)) {
     data["@graph"].push(faqNode(pairs));
     const json = JSON.stringify(data, null, 2);
     html = html.replace(whole, `${open}\n${json}\n${close}`);
-    writeFileSync(file, html);
+    if (!CHECK) writeFileSync(file, html);
     changed++;
-    console.log(`  追加: ${rel} (設問${pairs.length}件・FAQPageを新規挿入)`);
+    console.log(`  ${CHECK ? "差分(挿入)" : "追加"}: ${rel} (設問${pairs.length}件・FAQPageを新規挿入)`);
   }
 }
 

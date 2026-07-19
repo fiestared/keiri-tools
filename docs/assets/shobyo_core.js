@@ -297,7 +297,8 @@ export function calcShobyo(input, D) {
   //
   //   99条1項が排除しているのは **任意継続の期間中に新たに労務不能になった人** だけ。
   //   病気で辞めた人はほぼ全員が任意継続を選ぶ（病気なのだから保険が要る）ので、
-  //   ここを取り違えると **いちばん重い病気の人に「¥0」と答える**（月給30万で 3,640,182円）。
+  //   ここを取り違えると **いちばん重い病気の人に「¥0」と答える**（月給30万・546日休業で
+  //   3,620,181円 = 待期3日を引いた543日 × 6,667円。test_shobyo.mjs / e2e shobyo_keizoku の正値）。
   if (i.ninnikeizoku) {
     const k = keizokuKyufu({
       hihokenshaMonths: hihokenshaMonths(i),

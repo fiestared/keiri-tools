@@ -260,6 +260,8 @@ dataReady.then((ok) => {
 $("calc").addEventListener("click", async () => {
   const ready = await dataReady;
   const box = $("result");
+  box.style.display = "block";   // .result は既定 display:none(style.css)。開示しないと結果もエラーも見えない
+  box.innerHTML = "計算中…";
   if (!ready || !D) {
     box.innerHTML = `<div class="callout"><b>参照データを読み込めませんでした。</b>` +
       `通信環境を確認して、ページを再読み込みしてください。入社1年未満の方の上限額` +
@@ -357,7 +359,7 @@ $("calc").addEventListener("click", async () => {
 
   // ★被保険者期間12か月未満で上限にかかった人には、その理由と前提を開示する
   const capNote = r.capped
-    ? `<div class="callout"><b>★この方は上限（1日 ${yen(r.cap)}）にかかっています。</b>
+    ? `<div class="callout"><b>★この方は上限（1日 ${yen(r.nichigaku)}）にかかっています。</b>
         健康保険の被保険者期間が<b>${r.months}か月</b>（12か月未満）のため、①ご自身の平均から出した額
         <b>${yen(r.own)}</b>ではなく、②<b>全被保険者の平均標準報酬月額 ${yen(r.heikin)}</b>
         （${r.heikinLabel}）から出した額 <b>${yen(r.cap)}</b> の、<b>少ないほう</b>で計算されます
