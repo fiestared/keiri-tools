@@ -614,6 +614,12 @@ const SCENES = [
   { name: "jutaku_r8_chuko_tokurei", expect: (s) =>
       s.nenkan === 315000 && s.kikan === 13 && s.soKoujo === 4095000 &&
       s.showsChuko && s.showsTokurei && !s.failed },
+  // ★令和9年(2027)入居＝令和8年と同値(2026-07-20 条文確認)。新築・省エネ・特例あり・残高4,000万 →
+  //   上乗せ3,000万 × 0.7% = **21万円/年**・**13年**・総額 **2,730,000円**。
+  //   2027年の収録漏れなら「収録範囲の外です」、令和6・7年の上乗せ表(4,000万)を誤って引けば28万円に化けてここで落ちる。
+  { name: "jutaku_r9_shoene_tokurei", expect: (s) =>
+      s.nenkan === 210000 && s.kikan === 13 && s.soKoujo === 2730000 &&
+      s.showsTokurei && !s.failed },
   // ★増改築(No.1211-4)は計算方法がまるごと違う → 黙って答えず「この計算機では計算できません」と断る
   { name: "jutaku_zokaichiku", expect: (s) =>
       s.showsCannotCompute && s.nenkan === null && !s.failed },

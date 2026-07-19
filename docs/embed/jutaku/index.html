@@ -103,11 +103,11 @@ const eraLabel = (y) => `令和${y - 2018}年（${y}年）`;
 
 // 入居年の選択肢を同期で組み立てる（西暦をvalue、和暦をラベルに）
 const yearSel = $("year");
-for (const y of [2022, 2023, 2024, 2025, 2026]) {
+for (const y of [2022, 2023, 2024, 2025, 2026, 2027]) {
   const o = document.createElement("option");
   o.value = String(y);
   o.textContent = eraLabel(y);
-  if (y === 2026) o.selected = true;
+  if (y === 2026) o.selected = true; // 既定は今年の入居
   yearSel.appendChild(o);
 }
 

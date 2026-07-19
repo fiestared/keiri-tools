@@ -8,6 +8,9 @@
  *   https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1211-1.htm
  * - ★令和8年（2026年）入居分：租税特別措置法41条（令和8年法律第12号による改正後。
  *   e-Gov法令API v2 の現行施行版で逐語確認）＋令和8年度税制改正の大綱（2025-12-26閣議決定）。
+ * - ★令和9年（2027年）入居分：令和8年と同値（2026-07-20 条文で確認。41条の居住年レンジは
+ *   全て令和12年まで・41条/措令26条とも2028-01-01施行リビジョンまで逐語同一＝未施行改正なし。
+ *   41条25項の段差は令和10年1月1日以後の居住にのみ効く）。
  *   タックスアンサーは2026-07-19時点で令和7年版のまま未更新＝令和8年分の正本は条文。
  *   改正の骨子：適用期限を令和12年12月31日まで5年延長／中古（既存認定住宅等）が13年・3,500万円へ／
  *   子育て世帯等の上乗せが中古にも／中古も40㎡から（所得1,000万円以下の年のみ）／
@@ -236,11 +239,16 @@ export function calc(input, D) {
 
   const g = resolveGendo(input.kubun, yearNum, !!input.kosodateTokurei && !tokureiDenied, !!input.keikaSochi, D, type);
   if (!g) {
+    // 収録範囲はデータの years キーから描く（年を足すたびに文言を手で直すと必ずずれて、
+    // 「収録範囲の外です」が実際には収録済みの年を名指しする嘘になる）。
+    const recorded = Object.keys((isChuko ? D.chuko.kubun : D.kubun).nintei.years).map(Number);
+    const era = (y) => `令和${y - 2018}`;
+    const hani = `${era(Math.min(...recorded))}〜${era(Math.max(...recorded))}年`;
     return {
       ...base, beyondData: true, eligible: false,
       reason: isChuko
-        ? `入居年（${input.year}）または住宅区分が、中古（既存住宅）の収録範囲（令和4〜令和8年入居）の外です。`
-        : `入居年（${input.year}）または住宅区分が、このツールの収録範囲（令和4〜令和8年に新築・買取再販へ入居）の外です。`,
+        ? `入居年（${input.year}）または住宅区分が、中古（既存住宅）の収録範囲（${hani}入居）の外です。`
+        : `入居年（${input.year}）または住宅区分が、このツールの収録範囲（${hani}に新築・買取再販へ入居）の外です。`,
     };
   }
   const shotokuLimit = mensekiStatus === 'shokibo' ? Y.shokibo_goukei_shotoku_limit : Y.goukei_shotoku_limit;

@@ -1924,6 +1924,10 @@ SCENES.jutaku_chuko_sonota = jutakuScene({ type: "chuko", kubun: "sonota", year:
 //   借入限度額4,500万 × 0.7% = **31.5万円/年**、**13年**、総額概算 315,000×13 = **4,095,000円**。
 //   ページが year=2026 を渡し損ねる/旧・中古表（3,000万・10年・上乗せ無し）で計算すると 21万/10年 に化けてここで落ちる。
 SCENES.jutaku_r8_chuko_tokurei = jutakuScene({ type: "chuko", kubun: "nintei", year: 2026, zandaka: 60000000, tokurei: true });
+// ★令和9年（2027）入居＝令和8年と同値（41条の居住年レンジは令和12年まで・2026-07-20条文確認）。
+//   新築・省エネ・令和9年・残高4,000万・特例あり → 上乗せ3,000万 × 0.7% = **21万円/年**、**13年**、総額 210,000×13 = **2,730,000円**。
+//   2027年が収録から漏れると「収録範囲の外です」に化け、令和6・7年の上乗せ表（4,000万）を誤って引くと28万円に化けてここで落ちる。
+SCENES.jutaku_r9_shoene_tokurei = jutakuScene({ kubun: "shoene", year: 2027, zandaka: 40000000, tokurei: true });
 // ★増改築（No.1211-4）は計算方法がまるごと違う → 黙って答えず「この計算機では計算できません」と言うこと
 SCENES.jutaku_zokaichiku = jutakuScene({ type: "zokaichiku", kubun: "shoene", year: 2024, zandaka: 45000000 });
 // 参照データを配信できないとき → 控除額を出さずに断る（fail closed）。戻らない額を「戻る」と信じさせない
