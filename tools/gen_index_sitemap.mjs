@@ -86,6 +86,7 @@ const ORDER = [
   "furikomi-tesuryo-hikaku",
   "senpou-futan-3hoshiki",
   "zengin-format-guide",
+  "fukugyo-20man-kakutei-shinkoku", // 副業 確定申告 20万円
   "ai-keiri-hanjidoka",         // AIで経理を半自動化(E-E-A-T・実務経験)
 ];
 
@@ -115,7 +116,7 @@ const CATEGORIES = [
       "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin",
       "fuyo-kojo-shinkokusho", "gensen-choshuhyo-mikata", "gensen-zeigakuhyo-mikata",
       "hoteichosho-goukeihyo", "shakai-hokenryo-kojo", "iryohi-kojo-ikura-kara",
-      "taishokukin-zeikin",
+      "taishokukin-zeikin", "fukugyo-20man-kakutei-shinkoku",
     ],
   },
   {
