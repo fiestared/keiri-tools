@@ -75,6 +75,41 @@ t('回復年収: 129万の手取りに戻るのは年収1,505,000', () => {
   assert.ok(justBefore < 1290000, `1,000円手前 ${justBefore} < 1,290,000（最小である）`);
 });
 
+// ── 3b. ★回復年収の定義（2026-07-19レビューで強化）: 回復年収**以後**に手取りが基準を
+//        割る年収は無い。「◯◯円以上を目指す」という画面の助言が等級境界の凹みで
+//        偽にならないことを、掃引範囲の全点で確かめる。
+//        あわせて「最初に基準以上になった点」（旧定義）と一致すること＝定義変更で
+//        記事オラクル(1,505,000円)が動いていないことも固定する。
+t('回復年収の以後に基準割れの年収は無い・旧定義と同値（オラクル不変）', () => {
+  const combos = [];
+  // 130万壁×30歳は全47都道府県（料率で等級境界の凹み方が変わる）
+  for (const pref of Object.keys(S.kenko_rates)) combos.push({ pref, age: 30, wallType: 'hifuyousha' });
+  // 介護あり(45)・適用拡大(106万)・60歳以上(180万壁)は代表3県
+  for (const pref of ['東京都', '新潟県', '佐賀県']) {
+    combos.push({ pref, age: 45, wallType: 'hifuyousha' });
+    combos.push({ pref, age: 30, wallType: 'tekiyoKakudai' });
+    combos.push({ pref, age: 45, wallType: 'tekiyoKakudai' });
+    combos.push({ pref, age: 62, wallType: 'hifuyousha' });
+  }
+  for (const { pref, age, wallType } of combos) {
+    const rate = S.kenko_rates[pref];
+    // 基準がいちばん高い入力（壁−1円）＝いちばん破れやすい条件で見る
+    const r = calcKabe({ annual: wallAmount(K, wallType, age) - 1, age, prefecture: pref, wallType }, refs);
+    assert.ok(r.recovery != null, `${pref}/${age}/${wallType}: 回復年収が出ない`);
+    let firstCross = null;
+    for (let a = r.wall; a <= r.wall + 4000000; a += 1000) {
+      const td = a - shakaiHokenAnnual(a, age, rate, S).annual;
+      if (td >= r.reference && firstCross == null) firstCross = a;
+      if (a >= r.recovery) {
+        assert.ok(td >= r.reference,
+          `${pref}/${age}/${wallType}: 回復年収${r.recovery}以後の年収${a}で手取り${td}が基準${r.reference}を割る`);
+      }
+    }
+    assert.strictEqual(r.recovery, firstCross,
+      `${pref}/${age}/${wallType}: 令和8年度データでは旧定義（最初の交差点）と一致するはず`);
+  }
+});
+
 // ── 4. 壁を超えると手取りは実際に下がる（逆転が起きている） ──────────────────
 t('壁の手前の手取り > 壁の底の手取り（逆転が実在する）', () => {
   const r = calcKabe({ ...base, annual: 1290000 }, refs);

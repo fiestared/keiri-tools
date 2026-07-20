@@ -53,6 +53,14 @@ assert.equal(calcWithholding(300000, "diagnosis").tax, Math.floor(100000 * RATE_
   const inc = withholdingTarget(100000, 0.1, false);
   assert.equal(inc.target, 110000);
   assert.equal(calcWithholding(inc.target, "general").tax, 11231); // 110,000 x 10.21%
+
+  // ★消費税なし(不課税・免税) → 報酬額そのもの。説明文が「区分されていないため税込全体が対象」
+  //   と名乗ってはいけない(消費税が存在しないのだから「区分」の話ではない。2026-07-19レビュー)
+  const none = withholdingTarget(100000, 0, false);
+  assert.equal(none.target, 100000);
+  assert.equal(none.total, 100000);
+  assert.ok(none.explain.includes("不課税・免税"), "消費税なしの説明文を名乗る");
+  assert.ok(!none.explain.includes("区分されていない"), "「区分されていない」と言わない");
 }
 
 // 0円・負の入力で壊れない

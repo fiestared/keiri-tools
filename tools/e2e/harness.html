@@ -163,6 +163,18 @@ const SCENES = {
     return { result: text(doc, "result") };
   },
 
+  // ★手数料が請求額以上(少額請求)のとき、マイナスの振込額を黙って出さず警告すること
+  //   (2026-07-19レビュー: 請求300円・手数料550円で「振込額 ¥-250」とだけ表示していた)
+  async senpou_fee_over() {
+    const doc = await open("/docs/senpou-futan/");
+    pickRadio(doc, "method", "sueoki");
+    set(doc, "feeUnder", "550");
+    set(doc, "feeOver", "330");
+    set(doc, "invoice", "300"); // 3万円未満 → 差引550円 > 請求300円
+    click(doc, "calc");
+    return { result: text(doc, "result") };
+  },
+
   // 入金差額チェック(550円=一律差引の商慣行)
   async senpou_check() {
     const doc = await open("/docs/senpou-futan/");
@@ -890,6 +902,8 @@ const furusatoScene = (inp) => async () => {
   set(doc, "shakai", inp.shakai == null ? "" : String(inp.shakai)); // 空欄 = 年収から概算させる
   set(doc, "kifu", inp.kifu == null ? "" : String(inp.kifu));
   set(doc, "fuyoNensho", String(inp.fuyoNensho ?? 0));
+  // ★本人が障害者(295条1項2号)。「障害者控除」と「本人である」は別のチェック
+  if (inp.honninShogai) { check(doc, "shogai", true); check(doc, "honninShogai", true); }
   click(doc, "calc");
 
   await waitFor(
@@ -937,6 +951,10 @@ SCENES.furusato_nodata = furusatoScene({ shunyu: 5000000, shakai: 700000, nodata
 //   ★coreは正しく、壊れていたのは**ページ**だったので**単体テストでは永久に捕まらない**。
 //   だからここ(E2E)で固定する。
 SCENES.furusato_nensho = furusatoScene({ shunyu: 1700000, shakai: 240000, fuyoNensho: 1 });
+// ★★本人が障害者・給与190万(給与所得125万 ≦ 135万) → 地税295条1項2号で住民税が非課税
+//   ＝限度額0円。ページが honninShogai を配線していなかった実バグ(2026-07-19レビュー)の再発防止。
+//   fuyoNensho(第23便)と同型: coreは正しく、壊れていたのはページの配線なので単体では捕まらない
+SCENES.furusato_honnin_shogai = furusatoScene({ shunyu: 1900000, shakai: 280000, honninShogai: true });
 
 // ── 住民税 ──────────────────────────────────────────────────────────
 // ★期待値は juminzei_core.js を一切通さず、**条文から手で積み上げた実額**を固定する。
@@ -974,6 +992,11 @@ const juminzeiScene = (inp) => async () => {
   set(doc, "age", String(inp.age ?? 40));
   set(doc, "shakai", inp.shakai == null ? "" : String(inp.shakai)); // 空欄 = 年収から概算させる
   set(doc, "fuyoNensho", String(inp.fuyoNensho ?? 0));
+  // ★ひとり親は父/母で調整控除の人的控除差が違う(母5万/父1万)。checkboxとselectの2段
+  if (inp.hitorioya) {
+    check(doc, "hitorioya", true);
+    set(doc, "hitorioyaSei", inp.hitorioyaSei ?? "haha");
+  }
   click(doc, "calc");
 
   await waitFor(
@@ -1007,6 +1030,17 @@ SCENES.juminzei_nensho_nashi = juminzeiScene({ shunyu: 1700000, shakai: 240000, 
 // ★超過課税: 横浜市は市民税均等割3,900＋県民税1,300＋森林環境税1,000 = 6,200円（横浜市の公表額）
 //   所得割も指定都市の8%:2%＋神奈川県の超過課税0.025%が効く
 SCENES.juminzei_yokohama = juminzeiScene({ shunyu: 5000000, shakai: 700000, jichitai: "yokohama" });
+// ★ひとり親の父/母(2026-07-19レビュー: 一律「母」で配線され父の住民税が2,000円過小だった)。
+//   条文から手で積んだ鎖(年収400万・社保60万・16歳未満の子1人):
+//     給与所得 4,000,000 − (4,000,000×20%+440,000) = 2,760,000
+//     課税総所得 2,760,000 − (基礎43万+社保60万+ひとり親30万) = 1,430,000
+//     人的控除差 = 基礎5万 + ひとり親(母5万/父1万) → 調整控除 母5,000円/父3,000円
+//     所得割 母 143,000−5,000 = 138,000 / 父 143,000−3,000 = 140,000 (市県計・調整控除は市県で按分)
+//     住民税 = 所得割 + 均等割5,000 → 母143,000円 / 父145,000円(2,000円差)
+SCENES.juminzei_hitorioya_haha = juminzeiScene({
+  shunyu: 4000000, shakai: 600000, fuyoNensho: 1, hitorioya: true, hitorioyaSei: "haha", kyuchi: 1 });
+SCENES.juminzei_hitorioya_chichi = juminzeiScene({
+  shunyu: 4000000, shakai: 600000, fuyoNensho: 1, hitorioya: true, hitorioyaSei: "chichi", kyuchi: 1 });
 // 税率表を配信できない → 税額を出さずに断ること(fail closed)
 SCENES.juminzei_nodata = juminzeiScene({ shunyu: 5000000, shakai: 700000, nodata: true });
 

@@ -32,10 +32,42 @@ assert.equal(isClosed(d("2027-01-04"), H, { yearEnd: true }), false); // 月曜
   assert.equal(r.holidays.length, 1);
   assert.equal(r.holidays[0].date, "2026-07-20");
 }
-// 片端のみ（開始日を含まない）
-assert.equal(countDays(d("2026-07-01"), d("2026-07-31"), H, {}, false).total, 30);
+// 片端のみ（初日不算入・民法140条）。★数えないのは**開始日**であって終了日ではない
+{
+  const r = countDays(d("2026-07-01"), d("2026-07-31"), H, {}, false);
+  assert.equal(r.total, 30);
+  // 7/1(水)を数えず、7/31(金)は数える → 営業日は両端含む(22日)より1日少ない21日
+  assert.equal(r.business, 21);
+  assert.equal(r.closed, 9);
+  // 終了日側の祝日(7/20 海の日)は落ちない
+  assert.equal(r.holidays.length, 1);
+  assert.equal(r.holidays[0].date, "2026-07-20");
+}
+// ★実測例(2026-07-19レビュー): 7/17(金)→7/20(月・海の日)。初日不算入なら
+//   数えるのは 7/18(土)・7/19(日)・7/20(祝) の3日で、営業日は0日・海の日が一覧に載る。
+//   旧実装(終了日除外)は 7/17(金)を営業日1日と数え、海の日を落としていた。
+{
+  const r = countDays(d("2026-07-17"), d("2026-07-20"), H, {}, false);
+  assert.equal(r.total, 3);
+  assert.equal(r.business, 0, "金曜開始でも初日不算入なら営業日0日");
+  assert.equal(r.closed, 3);
+  assert.equal(r.holidays.length, 1, "終了日の海の日が祝日リストに載る");
+  assert.equal(r.holidays[0].name.includes("海の日") || r.holidays[0].date === "2026-07-20", true);
+  assert.equal(r.holidays[0].date, "2026-07-20");
+  // 曜日内訳too: 土1・日1・月1、金は数えない
+  assert.deepEqual(r.weekdays, [1, 1, 0, 0, 0, 0, 1]);
+}
+// 対照: 両端含むなら4日・営業日は7/17(金)の1日
+{
+  const r = countDays(d("2026-07-17"), d("2026-07-20"), H);
+  assert.equal(r.total, 4);
+  assert.equal(r.business, 1);
+}
+// 同日で初日不算入なら0日
+assert.equal(countDays(d("2026-07-17"), d("2026-07-17"), H, {}, false).total, 0);
 // 逆順に渡しても壊れない
 assert.equal(countDays(d("2026-07-31"), d("2026-07-01"), H).total, 31);
+assert.equal(countDays(d("2026-07-31"), d("2026-07-01"), H, {}, false).total, 30);
 
 // 営業日加算
 // 2026-07-13(月) の3営業日後 → 7/14(火),7/15(水),7/16(木)

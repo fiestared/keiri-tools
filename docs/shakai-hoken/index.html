@@ -643,7 +643,10 @@ $("calc").addEventListener("click", async () => {
       都道府県を選び直してください。</div>`;
     return;
   }
-  const r = calcMonthly(monthly, kRate, RATES.kaigo_rate, age);
+  // ★厚年・支援金の率もJSONから渡す(コアの既定値に頼らない)。料率改定でJSONを差し替えたとき、
+  //   ここが既定値のままだと画面だけ古い率で計算し続ける(kabe/juminzei と同じ渡し方に統一)
+  const r = calcMonthly(monthly, kRate, RATES.kaigo_rate, age,
+                        RATES.kosei_nenkin_rate, RATES.kosodate_rate);
 
   // 雇用保険。**渡すのは r.standard(標準報酬月額)ではなく monthly(賃金総額)**。
   // 雇用保険料だけは等級表を経由せず、実際に支払う賃金の総額にそのまま料率がかかる(徴収法11条1項)。
@@ -684,7 +687,7 @@ $("calc").addEventListener("click", async () => {
         <th style="text-align:right;padding:6px 8px">合計</th></tr>
       ${row(kenkoLabel, r.kenkoKaigo)}
       ${row(`子ども・子育て支援金（${r.kosodate.rate.toFixed(2)}%）`, r.kosodate)}
-      ${row("厚生年金（18.3%）", r.kosei)}
+      ${row(`厚生年金（${r.kosei.rate.toFixed(1)}%）`, r.kosei)}
       ${row(`雇用保険（${gy.label} 本人 ${gy.worker_permille}/1,000）`, k)}
       <tr style="border-top:2px solid var(--accent);font-weight:700">
         <td style="padding:6px 8px">合計</td>
@@ -695,6 +698,8 @@ $("calc").addEventListener("click", async () => {
     <div style="font-size:12.5px;color:var(--sub);margin-top:8px">
       ${r.kaigoApplies
         ? "※ 介護保険料は健康保険料と合算した料率で控除します（公式の保険料額表と同じ方式）。"
+        : $("age").value === ""
+        ? "※ 年齢が未入力のため、介護保険料はかからない（40歳未満）ものとして計算しています（40歳以上65歳未満は介護保険料がかかります）。"
         : `※ ${age}歳のため介護保険料はかかりません（40歳以上65歳未満が対象）。`}
       <br>※ 子ども・子育て支援金は令和8年4月分から。年齢に関係なく全員が対象で、労使折半です。
       <br>※ <b>雇用保険料だけは標準報酬月額ではなく、賃金総額（${yen(k.base)}）にそのままかかります。</b>
@@ -704,7 +709,8 @@ $("calc").addEventListener("click", async () => {
 
   const bonus = Number($("bonus").value);
   if (bonus > 0) {
-    const b = calcBonus(bonus, kRate, RATES.kaigo_rate, age);
+    const b = calcBonus(bonus, kRate, RATES.kaigo_rate, age,
+                        RATES.kosei_nenkin_rate, 0, RATES.kosodate_rate);
     // 賞与にも雇用保険はかかる。**標準賞与額(1,000円未満切捨)ではなく賞与の実額**にかかり、
     // 健保の573万円・厚年の150万円のような**上限も無い**(徴収法2条2項が賞与を賃金に含める)。
     const bk = calcKoyou(bonus, gy.total_permille, gy.jigyo2_permille);

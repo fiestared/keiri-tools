@@ -27,6 +27,9 @@ const SCENES = [
       /方式によって差引額が変わります/.test(s.result) &&
       /据置型/.test(s.result) && /未満手数料加算型/.test(s.result) && /以上手数料加算型/.test(s.result) },
   { name: "senpou_check", expect: (s) => /550 円/.test(s.result) && /先方負担/.test(s.result) },
+  // 手数料(550円) > 請求額(300円) → マイナスの振込額を黙って出さず、警告を出すこと
+  { name: "senpou_fee_over", expect: (s) =>
+      /振込額がマイナスになります/.test(s.result) && /当方負担/.test(s.result) },
   { name: "zengin", expect: (s) =>
       /ｶ\)ﾔﾏﾀﾞ/.test(s.out) && s.injectedImg === 0 && !s.pwned && s.copyShown },
   // 未変換の行が黙ってクリップボード(=総合振込ファイル)へ流れないこと
@@ -216,6 +219,11 @@ const SCENES = [
   //   **coreは正しく、壊れていたのはページ**なので単体テストでは捕まらない。E2Eでしか守れない。
   { name: "furusato_nensho", expect: (s) =>
       s.gendo === 0 && s.showsNoBenefit && !s.failed },
+  // ★★同型の実バグ2号(2026-07-19レビュー): 本人が障害者・給与190万(給与所得125万≦135万)は
+  //   地税295条1項2号で住民税が非課税＝限度額0円。ページが honninShogai を配線していなかったので
+  //   「本人である」に印を付けても正の限度額を出していた。coreは正しくページの配線が欠けていた
+  { name: "furusato_honnin_shogai", expect: (s) =>
+      s.gendo === 0 && s.showsNoBenefit && !s.failed },
 
   // ── 住民税 ────────────────────────────────────────────────────────────
   // ★期待値は条文から手で積み上げた実額(鎖は harness.html のコメントに全部書いた)。
@@ -238,6 +246,13 @@ const SCENES = [
   //   所得割は指定都市の8%:2% に神奈川県の超過課税(+0.025%)が乗る → 241,107円
   { name: "juminzei_yokohama", expect: (s) =>
       s.total === 247307 && s.shotokuwari === 241107 && s.kintouwari === 6200 && !s.failed },
+  // ★ひとり親の父/母(2026-07-19レビュー)。控除30万円は同じでも人的控除差が母5万/父1万なので、
+  //   調整控除を通じて住民税が2,000円違う。ページが一律「母」で配線していた(父の住民税が過小)。
+  //   期待値の鎖は harness.html のシーン定義のコメントに全部書いた
+  { name: "juminzei_hitorioya_haha", expect: (s) =>
+      s.total === 143000 && s.shotokuwari === 138000 && !s.failed },
+  { name: "juminzei_hitorioya_chichi", expect: (s) =>
+      s.total === 145000 && s.shotokuwari === 140000 && !s.failed },
   // 税率表が配信できないときは、税額を出さずに断る(fail closed)
   { name: "juminzei_nodata", data404: "juminzei_r08.json",
     expect: (s) => s.failed && s.total === null },

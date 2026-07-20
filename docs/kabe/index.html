@@ -245,7 +245,8 @@ $("calc").addEventListener("click", async () => {
     recBox = `<div style="margin-top:12px">
       <div class="row">元の手取りに戻る年収 <span class="big">${yen(rec)}</span></div>
       <div class="hint">いまの手取り（${yen(r.reference)}）に戻すには、壁を超えたうえで<b>あと ${yen(r.recoveryGap)}</b> 多く働く必要があります。
-      中途半端に壁を超えるより、<b>${man(rec)}以上</b>を目指すほうが手取りは増えます。</div></div>`;
+      中途半端に壁を超えるより、<b>${man(rec)}以上</b>を目指すのが目安です（${man(rec)}以上なら手取りはいまの水準を下回りません。
+      ただし標準報酬月額の等級が上がる境目をまたいだ直後は、年収の増加より保険料の増加が大きく、手取りが一時的に凹むことがあります）。</div></div>`;
   }
 
   // 内わけ（加入時のみ）
@@ -261,7 +262,7 @@ $("calc").addEventListener("click", async () => {
       <table style="width:100%;border-collapse:collapse;font-size:13.5px;margin-top:4px">
         <tr><td style="padding:4px 8px">${kaigoLabel}</td><td style="padding:4px 8px;text-align:right">${yen(sh.kenkoKaigo.self)}／月</td></tr>
         <tr><td style="padding:4px 8px">子ども・子育て支援金（${sh.kosodate.rate.toFixed(2)}%）</td><td style="padding:4px 8px;text-align:right">${yen(sh.kosodate.self)}／月</td></tr>
-        <tr><td style="padding:4px 8px">厚生年金（18.3%）</td><td style="padding:4px 8px;text-align:right">${yen(sh.kosei.self)}／月</td></tr>
+        <tr><td style="padding:4px 8px">厚生年金（${sh.kosei.rate.toFixed(1)}%）</td><td style="padding:4px 8px;text-align:right">${yen(sh.kosei.self)}／月</td></tr>
       </table>
       <div class="hint" style="margin-top:4px">※ 雇用保険は週20時間で加入済みのため壁の前後で増減せず、この「手取り」には含めていません。所得税・住民税も含みません（<a href="../tedori/">手取り計算機</a>で全部込みの手取りが出せます）。</div>
     </div>`;

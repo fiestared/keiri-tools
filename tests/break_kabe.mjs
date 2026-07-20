@@ -49,8 +49,8 @@ const BREAKS = [
    "const bottomTedori = wall + bottomShaho.annual;"],
 
   ["回復判定の向きを逆にする（手取りが基準「以下」で回復とみなす）",
-   "if (t >= reference) { recovery = a; break; }",
-   "if (t <= reference) { recovery = a; break; }"],
+   "if (t >= reference) { if (recovery == null) recovery = a; }",
+   "if (t <= reference) { if (recovery == null) recovery = a; }"],
 
   ["★fail closed を外す（健康保険料率が無くても計算してしまう）",
    "  if (!(kenkoRate > 0)) throw new Error('健康保険料率が特定できません（都道府県を確認してください）');\n  const m = calcMonthly",

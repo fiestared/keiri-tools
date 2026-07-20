@@ -113,8 +113,13 @@
     <label for="sonotaShotoku" style="margin-top:6px">給与以外の所得（円）<span class="hint">　副業・不動産などの所得金額</span></label>
     <input id="sonotaShotoku" type="number" inputmode="numeric" value="0" min="0">
     <label class="chk"><input id="hitorioya" type="checkbox"> ひとり親</label>
+    <div class="hint" style="margin:0 0 4px 20px">あなたは
+      <select id="hitorioyaSei" style="width:auto;display:inline-block">
+        <option value="haha" selected>母</option><option value="chichi">父</option>
+      </select> です（人的控除差が母5万円・父1万円と異なるため）</div>
     <label class="chk"><input id="kafu" type="checkbox"> 寡婦</label>
     <label class="chk"><input id="shogai" type="checkbox"> 障害者（本人・同一生計配偶者・扶養親族のいずれか。一般）</label>
+    <label class="chk"><input id="honninShogai" type="checkbox"> 上の障害者が<b>本人</b>である<span class="hint">　合計所得135万円以下なら非課税＝限度額0円</span></label>
     <label class="chk"><input id="gakusei" type="checkbox"> 勤労学生</label>
   </details>
 
@@ -198,8 +203,12 @@ $("calc").addEventListener("click", async () => {
     fuyoDokyoRooya: Number($("fuyoDokyoRooya").value),
     fuyoNensho: Number($("fuyoNensho").value),
     shogaiIppan: $("shogai").checked ? 1 : 0,
+    // 本人が障害者＋合計所得135万円以下 → 非課税＝限度額0円（地税295条1項2号）。本体ページと同じ配線
+    honninShogai: $("honninShogai").checked,
     kafu: $("kafu").checked,
-    hitorioyaHaha: $("hitorioya").checked,
+    // ひとり親の人的控除差は母5万円・父1万円（本体ページと同じ配線）
+    hitorioyaHaha: $("hitorioya").checked && $("hitorioyaSei").value !== "chichi",
+    hitorioyaChichi: $("hitorioya").checked && $("hitorioyaSei").value === "chichi",
     kinroGakusei: $("gakusei").checked,
   };
 

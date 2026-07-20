@@ -144,9 +144,13 @@ $("calc").addEventListener("click", () => {
 });
 
 function render(invoice, fee, transfer, methodLabel) {
+  // ★手数料が請求額以上の少額請求で、マイナス（や0円）の振込額を黙って出さない（本体ページと同じ）
+  const warn = transfer <= 0
+    ? `<div class="warn"><b>差し引く手数料（${yen(fee)}）が請求額（${yen(invoice)}）以上のため、振込額が${transfer < 0 ? "マイナスに" : "0円に"}なります。</b>手数料を当方負担にするか、取引先と取り決めを確認してください。</div>`
+    : "";
   return `
     <div class="row">振込額 <span class="big">${yen(transfer)}</span></div>
-    <div class="row hint">差し引く手数料: ${yen(fee)}（請求額 ${yen(invoice)}${methodLabel ? "・" + methodLabel : ""}）</div>`;
+    <div class="row hint">差し引く手数料: ${yen(fee)}（請求額 ${yen(invoice)}${methodLabel ? "・" + methodLabel : ""}）</div>${warn}`;
 }
 </script>
 </body>

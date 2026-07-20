@@ -183,7 +183,8 @@ $("calc").addEventListener("click", async () => {
     recBox = `<div style="margin-top:12px">
       <div class="row">元の手取りに戻る年収 <span class="big">${yen(rec)}</span></div>
       <div class="hint">いまの手取り（${yen(r.reference)}）に戻すには、壁を超えたうえで<b>あと ${yen(r.recoveryGap)}</b> 多く働く必要があります。
-      中途半端に壁を超えるより、<b>${man(rec)}以上</b>を目指すほうが手取りは増えます。</div></div>`;
+      中途半端に壁を超えるより、<b>${man(rec)}以上</b>を目指すのが目安です（${man(rec)}以上なら手取りはいまの水準を下回りません。
+      ただし標準報酬月額の等級が上がる境目をまたいだ直後は、年収の増加より保険料の増加が大きく、手取りが一時的に凹むことがあります）。</div></div>`;
   }
 
   // 内わけ（加入時のみ）
@@ -199,7 +200,7 @@ $("calc").addEventListener("click", async () => {
       <table>
         <tr><td>${kaigoLabel}</td><td class="n">${yen(sh.kenkoKaigo.self)}／月</td></tr>
         <tr><td>子ども・子育て支援金（${sh.kosodate.rate.toFixed(2)}%）</td><td class="n">${yen(sh.kosodate.self)}／月</td></tr>
-        <tr><td>厚生年金（18.3%）</td><td class="n">${yen(sh.kosei.self)}／月</td></tr>
+        <tr><td>厚生年金（${sh.kosei.rate.toFixed(1)}%）</td><td class="n">${yen(sh.kosei.self)}／月</td></tr>
       </table></div>`;
   }
 

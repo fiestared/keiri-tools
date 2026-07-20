@@ -141,7 +141,9 @@ $("calc").addEventListener("click", async () => {
   if (!gy) { box.innerHTML = `<div class="warn">業種を選び直してください。</div>`; postHeight(); return; }
 
   // 雇用保険には r.standard（標準報酬月額）ではなく monthly（賃金総額）を渡す（徴収法11条1項）。
-  const r = calcMonthly(monthly, kRate, RATES.kaigo_rate, age);
+  // ★厚年・支援金の率もJSONから渡す(コアの既定値に頼らない。本体ページと同じ)
+  const r = calcMonthly(monthly, kRate, RATES.kaigo_rate, age,
+                        RATES.kosei_nenkin_rate, RATES.kosodate_rate);
   const k = calcKoyou(monthly, gy.total_permille, gy.jigyo2_permille);
 
   const kenkoLabel = r.kaigoApplies
@@ -164,19 +166,20 @@ $("calc").addEventListener("click", async () => {
       <tr><th class="l">項目</th><th>本人</th><th>会社</th><th>合計</th></tr>
       ${row(kenkoLabel, r.kenkoKaigo)}
       ${row(`子ども・子育て支援金（${r.kosodate.rate.toFixed(2)}%）`, r.kosodate)}
-      ${row("厚生年金（18.3%）", r.kosei)}
+      ${row(`厚生年金（${r.kosei.rate.toFixed(1)}%）`, r.kosei)}
       ${row(`雇用保険（${gy.label} 本人 ${gy.worker_permille}/1,000）`, k)}
       <tr class="tot"><td>合計</td><td class="n">${yen(selfAll)}</td>
         <td class="n">${yen(companyAll)}</td><td class="n">${yen(selfAll + companyAll)}</td></tr>
     </table></div>
     <div class="note">
-      ${r.kaigoApplies ? "※ 介護保険料は健康保険料と合算した料率で控除しています。" : `※ ${age}歳のため介護保険料はかかりません（40〜64歳が対象）。`}
+      ${r.kaigoApplies ? "※ 介護保険料は健康保険料と合算した料率で控除しています。" : $("age").value === "" ? "※ 年齢未入力のため介護保険料なし（40歳未満）として計算しています（40〜64歳は対象）。" : `※ ${age}歳のため介護保険料はかかりません（40〜64歳が対象）。`}
       <br>※ 雇用保険料は標準報酬月額ではなく賃金総額（${yen(k.base)}）にかかり、労使折半ではありません（本人 ${gy.worker_permille}/1,000 ⇔ 会社 ${gy.employer_permille}/1,000）。
     </div>`;
 
   const bonus = Number($("bonus").value);
   if (bonus > 0) {
-    const b = calcBonus(bonus, kRate, RATES.kaigo_rate, age);
+    const b = calcBonus(bonus, kRate, RATES.kaigo_rate, age,
+                        RATES.kosei_nenkin_rate, 0, RATES.kosodate_rate);
     const bk = calcKoyou(bonus, gy.total_permille, gy.jigyo2_permille);
     html += `
       <div class="note" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">

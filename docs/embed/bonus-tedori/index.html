@@ -222,7 +222,7 @@ $("calc").addEventListener("click", async () => {
     </table>
     ${notes}
     <div class="note">※ 所得税は源泉額（年末調整で精算）。住民税は賞与から天引きされませんが、翌年度の住民税は増えます。
-      ${sh.kaigoApplies ? "介護保険料は健康保険料と合算しています。" : `${Number($("age").value)}歳のため介護保険料はかかりません（40〜64歳が対象）。`}
+      ${sh.kaigoApplies ? "介護保険料は健康保険料と合算しています。" : $("age").value === "" ? "年齢未入力のため介護保険料なし（40歳未満）として計算（40〜64歳は対象）。" : `${Number($("age").value)}歳のため介護保険料はかかりません（40〜64歳が対象）。`}
       ${r.year ? `<span class="hint">（${r.year}の料率・${r.taxYear || ""}の算出率の表）</span>` : ""}</div>
     <div class="cta">
       <a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a>

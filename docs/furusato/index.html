@@ -190,11 +190,22 @@
       <label style="font-weight:400;display:block;margin-top:10px">
         <input type="checkbox" id="hitorioya"> ひとり親
       </label>
+      <div style="font-size:12.5px;color:var(--sub);margin:2px 0 4px 22px">
+        あなたは
+        <select id="hitorioyaSei" style="width:auto;display:inline-block">
+          <option value="haha" selected>母</option>
+          <option value="chichi">父</option>
+        </select>
+        です（控除額30万円は同じですが、調整控除の「人的控除差」が母5万円・父1万円と法定されており、住民税の所得割＝限度額がわずかに変わります）
+      </div>
       <label style="font-weight:400;display:block">
         <input type="checkbox" id="kafu"> 寡婦
       </label>
       <label style="font-weight:400;display:block">
         <input type="checkbox" id="shogai"> 障害者（本人・同一生計配偶者・扶養親族のいずれか。一般）
+      </label>
+      <label style="font-weight:400;display:block">
+        <input type="checkbox" id="honninShogai"> 上の障害者が<b>本人</b>である<span style="font-size:12px;color:var(--sub)">　本人が障害者で合計所得135万円以下なら住民税が非課税になり、限度額が0円になります（地方税法295条1項2号）</span>
       </label>
       <label style="font-weight:400;display:block">
         <input type="checkbox" id="gakusei"> 勤労学生
@@ -545,8 +556,15 @@ $("calc").addEventListener("click", async () => {
     //   「限度額9,888円」などと答えてしまう＝寄附しても税金は1円も戻らないのに寄附させる。
     fuyoNensho: Number($("fuyoNensho").value),
     shogaiIppan: $("shogai").checked ? 1 : 0,
+    // ★本人が障害者かは障害者控除とは別に渡す。地税295条1項2号（本人が障害者で合計所得135万円以下
+    //   → 住民税非課税＝限度額0円）の判定に使う。渡し忘れると、非課税の人に正の限度額を答えて
+    //   「寄附しても税金は1円も戻らないのに寄附させる」（fuyoNensho と同型の事故）。
+    honninShogai: $("honninShogai").checked,
     kafu: $("kafu").checked,
-    hitorioyaHaha: $("hitorioya").checked,
+    // ★ひとり親は父か母かで調整控除の「人的控除差」が違う（母5万円・父1万円）。
+    //   一律「母」で計算すると、父のひとり親の住民税を2,000円少なく・限度額を約470円少なく出す。
+    hitorioyaHaha: $("hitorioya").checked && $("hitorioyaSei").value !== "chichi",
+    hitorioyaChichi: $("hitorioya").checked && $("hitorioyaSei").value === "chichi",
     kinroGakusei: $("gakusei").checked,
   };
 

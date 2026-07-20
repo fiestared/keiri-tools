@@ -91,6 +91,15 @@ export function calcWithholding(amount, kind = "general") {
  */
 export function withholdingTarget(fee, taxRate, separated) {
   const total = Math.floor(fee * (1 + taxRate));
+  // ★消費税なし（不課税・免税）のときに「区分されていないため税込金額の全体が対象」と
+  //   言ってはいけない — 消費税が存在しないのだから「区分」の話ではない
+  //   （2026-07-19レビュー: 説明文が、消費税の行を出さない結果表と矛盾していた）。
+  if (taxRate === 0) {
+    return {
+      target: total, total,
+      explain: "消費税のかからない取引（不課税・免税）のため、報酬額そのものが源泉徴収の対象です。",
+    };
+  }
   if (separated) {
     return {
       target: fee, total,
