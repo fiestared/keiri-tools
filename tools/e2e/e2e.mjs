@@ -644,6 +644,22 @@ const SCENES = [
       s.showsCapUnknown && !s.failed },
 ];
 
+// ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────
+// 27本の埋め込みウィジェットは docs/ 直下しか走査しない下の網羅チェックに**構造的に**
+// 入らず、結果ボックス全損(§46)の型が起きても検出できなかった。シーンは本体ページと
+// 同じ入力を与え、**利用者に見えている見出し値(.big)が本体と一致する**ことを固定する。
+// オラクルは本体 — 本体は上の各シーンが一次情報(公式額表・条文)と照合済みなので、
+// 期待値をもう一組持たない(二重管理は必ず腐る)。
+const EMBED_TOOLS = [
+  "bonus-tedori", "eigyobi", "furusato", "genka", "gensen-choshu", "ikuji", "inshi",
+  "iryohi", "jidoshazei", "juminzei", "jutaku", "kabe", "kihonteate", "papa-ikukyu",
+  "senpou-futan", "shakai-hoken", "shiharai-site", "shobyo", "shohizei", "shussan",
+  "sozokuzei", "taishokukin", "tedori", "yukyu", "zangyodai", "zengin-kana", "zoyozei",
+];
+for (const t of EMBED_TOOLS)
+  SCENES.push({ name: `embed_${t}`, expect: (s) =>
+    s.mainVal != null && s.mainVal !== "" && s.mainVal !== "0" && s.mainVal === s.embedVal });
+
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
                ".json": "application/json; charset=utf-8", ".css": "text/css; charset=utf-8" };
 
@@ -746,6 +762,9 @@ for (const sc of SCENES.filter((s) => !only || s.name === only)) {
     covered.get(s.page).push(sc.name);
   }
   console.log(`${ok ? "✅" : "❌"} ${sc.name}`);
+  // E2E_DUMP=1 で成功時も状態を見る(緑が「何を読んで緑なのか」を確かめる用)
+  if (ok && process.env.E2E_DUMP)
+    console.log("   ↳ " + JSON.stringify(s, null, 2).split("\n").join("\n   "));
   if (!ok) {
     fails.push(sc.name);
     // 「期待と違う」だけでは直せない。実際に画面に何が出ていたかを必ず見せる
@@ -765,13 +784,17 @@ server.close();
 // 数えるのは「正常条件で、正しい答えを出した」シーンだけ。
 if (!only) {
   const toolPages = [];
-  for (const d of await readdir(join(ROOT, "docs"), { withFileTypes: true })) {
-    if (!d.isDirectory()) continue;
-    const idx = join(ROOT, "docs", d.name, "index.html");
-    let html;
-    try { html = await readFile(idx, "utf8"); } catch { continue; }
-    // 計算ツール = assets/*_core.js を読み込んで計算しているページ(記事・about等は除外)
-    if (/assets\/[a-z_]+_core\.js/.test(html)) toolPages.push(`/docs/${d.name}/`);
+  // docs直下に加えて docs/embed 配下(2階層目)も走査する。27ウィジェットは1階層の走査では
+  // **構造的に網の外**で、結果ボックス全損(§46)の型が起きても検出できなかった(2026-07-20)
+  for (const base of ["docs", "docs/embed"]) {
+    for (const d of await readdir(join(ROOT, base), { withFileTypes: true })) {
+      if (!d.isDirectory()) continue;
+      const idx = join(ROOT, base, d.name, "index.html");
+      let html;
+      try { html = await readFile(idx, "utf8"); } catch { continue; }
+      // 計算ツール = assets/*_core.js を読み込んで計算しているページ(記事・about等は除外)
+      if (/assets\/[a-z_]+_core\.js/.test(html)) toolPages.push(`/${base}/${d.name}/`);
+    }
   }
   const uncovered = toolPages.filter((p) => !covered.has(p));
   if (uncovered.length) {

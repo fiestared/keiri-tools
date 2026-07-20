@@ -1947,6 +1947,131 @@ SCENES.jutaku_refund_capped = jutakuScene({ kubun: "nintei", year: 2024, zandaka
 //   ＝課税総所得を入れた jutaku_refund_capped（150,000）より多めに出る＝概算だと明示する義務がある。
 SCENES.jutaku_refund_nocap = jutakuScene({ kubun: "nintei", year: 2024, zandaka: 45000000, shotokuzei: 75000 });
 
+// ── /embed/ ウィジェットのパリティ検証(2026-07-20) ──────────────────────────────
+// 本体ページと埋め込みウィジェットに**同じ入力**を与え、利用者に見えている見出し値(.big)が
+// 一致することを確かめる。期待値の正しさは本体側の各シーン(一次情報オラクル)が担保して
+// いるので、ここでは期待値をもう一組持たない(二重管理は必ず腐る)。読むのは**可視**の
+// .big だけ — textContent の素読みは display:none を素通しする(§46)。
+const visibleEl = (doc, el) => {
+  const win = doc.defaultView;
+  for (let n = el; n && n.nodeType === 1; n = n.parentElement) {
+    const cs = win.getComputedStyle(n);
+    if (cs.display === "none" || cs.visibility === "hidden") return false;
+  }
+  return true;
+};
+const bigsIn = (doc, id) => {
+  const root = doc.getElementById(id);
+  if (!root || !visibleEl(doc, root)) return null;   // 結果ボックス自体が非表示 = 全損の型
+  return [...root.querySelectorAll(".big")].filter((el) => visibleEl(doc, el))
+    .map((el) => el.textContent.replace(/\s+/g, " ").trim());
+};
+// 見出し値の正規化: 「¥239,610」と「239,610円」は同じ数なので**最初の数値トークン**で比べる
+// (本体の見出しは「¥2,105,900（〜2027-03-31・365日）」のように補足を同じ要素に含むことがあり、
+// 数字の全連結だと本体とembedの補足の差で偽赤になる)。数字の無い見出し(「扶養内」等)はそのまま
+const normVal = (t) => {
+  const m = t.match(/\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?/);
+  return m ? m[0] : t;
+};
+
+const embedParityScene = (tool, cfg) => async () => {
+  const drive = async (path, ops, resultId) => {
+    const doc = await open(path);
+    if (cfg.wait) await waitFor(() => doc.querySelector(cfg.wait), `${path} ${cfg.wait}`);
+    for (const [op, a, b] of ops) {
+      if (op === "set") set(doc, a, String(b));
+      else if (op === "radio") pickRadio(doc, a, b);
+      else if (op === "check") check(doc, a, b);
+      else if (op === "click") click(doc, a);
+    }
+    click(doc, cfg.button || "calc");
+    // 進捗表示の文言はウィジェットにより「計算中…」「判定中…」等 — 消えるまで待つ
+    await waitFor(() => { const t = text(doc, resultId); return t && !/計算中|判定中|読み込み中/.test(t); },
+      `${path} の結果`);
+    const body = text(doc, resultId);
+    // keyRe 指定(表・カナ変換など .big の無いページ)はそれを、無ければ可視 .big の先頭を読む
+    let val, bigs = null;
+    if (cfg.keyRe) {
+      const m = body.match(cfg.keyRe);
+      val = m ? (cfg.keyRe.global ? m.join("|") : (m[1] ?? m[0])) : null;
+    } else {
+      bigs = bigsIn(doc, resultId);
+      val = bigs && bigs.length ? normVal(bigs[0]) : null;
+    }
+    return { val, bigs, body: body.slice(0, 260) };
+  };
+  const ops = cfg.ops || [];
+  const main = await drive(`/docs/${tool}/`, [...ops, ...(cfg.mainOps || [])],
+    cfg.mainResult || cfg.result || "result");
+  const emb = await drive(`/docs/embed/${tool}/`, [...ops, ...(cfg.embedOps || [])],
+    cfg.result || "result");
+  return { mainVal: main.val, embedVal: emb.val,
+           mainBigs: main.bigs, embedBigs: emb.bigs, mainBody: main.body, embedBody: emb.body };
+};
+
+// 入力は各ツールの本体シーン(上)の正常系と同じ値。本体とembedで機構が違う入力だけ
+// mainOps/embedOps に分ける(例: tedoriの住民税モードは本体=radio・embed=select)
+const EMBED_PARITY = {
+  "tedori": {
+    wait: '#pref option[value="東京都"]',
+    ops: [["set", "pref", "東京都"], ["set", "age", 30], ["set", "gross", 300000], ["set", "dependents", 0]],
+    mainOps: [["radio", "jmode", "manual"], ["set", "jmanual", 10000]],
+    embedOps: [["set", "jmode", "manual"], ["set", "jmanual", 10000]],
+  },
+  "bonus-tedori": {
+    wait: '#pref option[value="東京都"]',
+    ops: [["set", "pref", "東京都"], ["set", "age", 30], ["set", "bonus", 500000],
+          ["set", "dependents", 0], ["set", "zengetsu", 300000]],
+  },
+  "shakai-hoken": { ops: [["set", "monthly", 300000], ["set", "age", 30]] },
+  "gensen-choshu": { button: "calcK", result: "resultK",
+    ops: [["set", "amount", 250000], ["set", "fuyo", 2]] },
+  "eigyobi": { ops: [["set", "from", "2026-05-01"], ["set", "to", "2026-05-10"]] },
+  "yukyu": { ops: [["set", "hire", "2020-04-01"], ["set", "wdays", 5], ["set", "whours", 40]] },
+  "shohizei": { ops: [["radio", "dir", "included"], ["radio", "rate", "standard"], ["set", "amount", 99]] },
+  "furusato": { ops: [["set", "ken", "東京都"], ["set", "shunyu", 5000000], ["set", "age", 40],
+                      ["set", "shakai", 700000], ["set", "fuyoNensho", 0]] },
+  "juminzei": { ops: [["set", "jichitai", "hyojun"], ["set", "kyuchi", 1], ["set", "ken", "東京都"],
+                      ["set", "shunyu", 5000000], ["set", "age", 40], ["set", "shakai", 700000],
+                      ["set", "fuyoNensho", 0]] },
+  "kihonteate": { ops: [["set", "age", 35], ["set", "monthly", 300000],
+                        ["set", "period", "y10_20"], ["set", "reason", "jiko"]] },
+  "taishokukin": { ops: [["set", "amount", 15000000], ["set", "years", 20], ["set", "months", 0]] },
+  "zangyodai": { ops: [["set", "base", 300000], ["set", "holidays", 120], ["set", "daily", 8],
+                       ["set", "overtime", 20], ["set", "holidayhours", 0], ["set", "night", 0],
+                       ["set", "fixed", 0]] },
+  "iryohi": { ops: [["set", "iryohi", 300000], ["set", "hoten", 0], ["set", "shunyu", 5000000],
+                    ["set", "zeiritsu", 10]] },
+  "sozokuzei": { ops: [["set", "isan", 10000], ["set", "haiguusha", 1], ["set", "koReal", 2],
+                       ["set", "koYoshi", 0], ["set", "oya", 0], ["set", "kyodai", 0]] },
+  "zoyozei": { ops: [["set", "tokurei", 500], ["set", "ippan", 0]] },
+  // 記載金額54,800(税抜き分離なし) → 5万円以上100万円以下の第17号 = 200円。
+  // 税額を分離した54,800-4,981=49,819は5万円未満=非課税(0円)で、0は縮退ガードに当たるため使わない
+  "inshi": { ops: [["set", "amount", 54800]] },
+  "jidoshazei": { ops: [["set", "regyear", 2021], ["set", "regmonth", 4]] },
+  "genka": { ops: [["set", "method", "teigaku"], ["set", "cost", 1000000], ["set", "life", 10],
+                   ["set", "acqyear", 2015], ["set", "acqmonth", 1]] },
+  "kabe": { ops: [["set", "pref", "東京都"], ["set", "age", 30], ["set", "annual", 1290000]],
+    mainOps: [["radio", "wall", "hifuyousha"]] },
+  "shobyo": { ops: [["set", "startDate", "2026-08-01"], ["set", "monthly", 300000],
+                    ["set", "months", 12], ["set", "restDays", 30]] },
+  "shussan": { ops: [["set", "yoteibi", "2026-06-01"], ["set", "monthly", 300000], ["set", "months", 12]] },
+  "ikuji": { ops: [["set", "monthly", 300000], ["set", "startDate", "2026-04-01"],
+                   ["set", "leaveDays", 365], ["set", "shienOwnDays", 28], ["set", "shienSpouseDays", 0]] },
+  "papa-ikukyu": { ops: [["set", "monthly", 300000], ["set", "leaveDays", 28], ["set", "wage", 0]] },
+  "jutaku": { ops: [["set", "type", "shinchiku"], ["set", "kubun", "nintei"],
+                    ["set", "year", 2024], ["set", "zandaka", 45000000]] },
+  "senpou-futan": { ops: [["radio", "method", "sueoki"], ["set", "feeUnder", 110],
+                          ["set", "feeOver", 330], ["set", "invoice", 50000]] },
+  "shiharai-site": { mainResult: "out",
+    ops: [["set", "closing", "末"], ["set", "offset", 1], ["set", "payday", 5], ["radio", "adjust", "prev"]],
+    keyRe: /\d{4}\/\d{1,2}\/\d{1,2}/g },
+  "zengin-kana": { button: "run", result: "out",
+    ops: [["set", "names", "株式会社ヤマダ商事"]],
+    keyRe: /ｶ\)\S+/ },
+};
+for (const [t, cfg] of Object.entries(EMBED_PARITY)) SCENES[`embed_${t}`] = embedParityScene(t, cfg);
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };
