@@ -2,7 +2,8 @@
  * 配偶者控除・配偶者特別控除（haigushaKojo / kyuyoToGokeiShotoku）のオラクル照合。
  *
  * 所得税: 国税庁No.1191（配偶者控除 2区分×3段）・No.1195（配偶者特別控除 9帯×3段）の
- *         「令和7年分以降」の表を**そのまま独立に書いて全数照合**する（計33値）。
+ *         表を**そのまま独立に書いて全数照合**する（計33値）。帯ごとの金額は令和8年度改正でも
+ *         変更なし（所法83条・83条の2逐語同一）。配特の下限だけ58万→62万（所法2条1項33号）。
  * 住民税: 地方税法314条の2第1項10号（配偶者控除 33/22/11万・老人38/26/13万）は条文の直書き値、
  *         10号の2（配偶者特別控除）は**条文の計算式そのもの**（≤100万→33万、100万超130万以下→
  *         38万−「93万1円を超える部分」の5万円刻み、>130万→3万、900万超の段は2/3・1/3の
@@ -28,8 +29,8 @@ const eq = (got, want, msg) => {
   // 住民税: 地方税法314条の2①十イロハの直書き値
   eq(k.ippan.jumin, [330_000, 220_000, 110_000], "配偶者控除(住民税) 一般: 33/22/11万(地方税法314条の2①十)");
   eq(k.rojin.jumin, [380_000, 260_000, 130_000], "配偶者控除(住民税) 老人: 38/26/13万(同)");
-  eq(D.haigu.income_limit, 580_000, "配偶者の所得要件58万円(令和7年分以後)");
-  eq(D.haigu.income_limit_kyuyo, 1_230_000, "給与収入換算123万円(58万+給与所得控除の最低保障65万)");
+  eq(D.haigu.income_limit, 620_000, "配偶者の所得要件62万円(令和8年分以後・所法2条1項33号=同一生計配偶者・e-Gov逐語)");
+  eq(D.haigu.income_limit_kyuyo, 1_360_000, "給与収入換算136万円(62万+給与所得控除74万=措法29条の4・令和8・9年分)");
   eq(D.haigu.tokubetsu_max, 1_330_000, "配偶者特別控除の上限133万円(No.1195)");
 }
 
@@ -37,7 +38,7 @@ const eq = (got, want, msg) => {
 {
   const NTA1195 = [
     // [over, upto, 900万以下, 900超950以下, 950超1000以下]
-    [  580_000,   950_000, 380_000, 260_000, 130_000],
+    [  620_000,   950_000, 380_000, 260_000, 130_000],
     [  950_000, 1_000_000, 360_000, 240_000, 120_000],
     [1_000_000, 1_050_000, 310_000, 210_000, 110_000],
     [1_050_000, 1_100_000, 260_000, 180_000,  90_000],
@@ -91,16 +92,16 @@ const eq = (got, want, msg) => {
   eq([r.type, r.tier, r.shotoku, r.jumin], ["haigusha", 1, 320_000, 260_000], "本人900万超×老人: 32/26万(段2)");
 }
 {
-  const r = haigushaKojo({ honninShotoku: 10_000_000, haiguShotoku: 580_000 }, D);
-  eq([r.type, r.tier, r.shotoku, r.jumin], ["haigusha", 2, 130_000, 110_000], "本人ちょうど1,000万×配偶者58万: 13/11万(段3・両方とも境界の内側)");
+  const r = haigushaKojo({ honninShotoku: 10_000_000, haiguShotoku: 620_000 }, D);
+  eq([r.type, r.tier, r.shotoku, r.jumin], ["haigusha", 2, 130_000, 110_000], "本人ちょうど1,000万×配偶者62万: 13/11万(段3・両方とも境界の内側)");
 }
 {
   const r = haigushaKojo({ honninShotoku: 10_000_001, haiguShotoku: 400_000 }, D);
   eq([r.type, r.reason, r.shotoku + r.jumin], ["none", "honnin_over", 0], "本人1,000万超: 適用なし(理由を申告)");
 }
 {
-  const r = haigushaKojo({ honninShotoku: 6_000_000, haiguShotoku: 580_001 }, D);
-  eq([r.type, r.shotoku, r.jumin], ["tokubetsu", 380_000, 330_000], "配偶者58万+1円: 配特へ切替(38/33万・住民税は33万)");
+  const r = haigushaKojo({ honninShotoku: 6_000_000, haiguShotoku: 620_001 }, D);
+  eq([r.type, r.shotoku, r.jumin], ["tokubetsu", 380_000, 330_000], "配偶者62万+1円: 配特へ切替(38/33万・住民税は33万)");
 }
 {
   const r = haigushaKojo({ honninShotoku: 6_000_000, haiguShotoku: 1_050_000 }, D);
@@ -121,26 +122,42 @@ const eq = (got, want, msg) => {
   eq([r.type, r.reason], ["none", "haigu_over"], "配偶者133万超: 適用なし(理由を申告)");
 }
 
-// ── kyuyoToGokeiShotoku: 給与収入→合計所得(収入190万円以下のみ・No.1410の定額65万) ──
-eq(kyuyoToGokeiShotoku(1_000_000, D), { ok: true, shotoku: 350_000 }, "給与100万 → 所得35万");
-eq(kyuyoToGokeiShotoku(1_230_000, D), { ok: true, shotoku: 580_000 }, "給与123万 → 所得58万(配偶者控除の上限ちょうど)");
-eq(kyuyoToGokeiShotoku(1_230_001, D), { ok: true, shotoku: 580_001 }, "給与123万+1円 → 配特の帯へ");
-eq(kyuyoToGokeiShotoku(1_600_000, D), { ok: true, shotoku: 950_000 }, "給与160万 → 所得95万(配特38万の帯の上限)");
-eq(kyuyoToGokeiShotoku(1_900_000, D), { ok: true, shotoku: 1_250_000 }, "給与190万 → 所得125万(定額65万の上限)");
-eq(kyuyoToGokeiShotoku(1_900_001, D), { ok: false, reason: "over_limit" }, "給与190万超 → 換算しない(fail closed)");
+// ── kyuyoToGokeiShotoku: 給与収入→合計所得(措法29条の4・令和8・9年分は収入220万以下=定額74万。
+//    換算はデータの上限219万円まで=同条2項2号の「74.1万以上219.1万未満は収入−74万」の範囲内) ──
+eq(kyuyoToGokeiShotoku(1_000_000, D), { ok: true, shotoku: 260_000 }, "給与100万 → 所得26万");
+eq(kyuyoToGokeiShotoku(1_360_000, D), { ok: true, shotoku: 620_000 }, "給与136万 → 所得62万(配偶者控除の上限ちょうど)");
+eq(kyuyoToGokeiShotoku(1_360_001, D), { ok: true, shotoku: 620_001 }, "給与136万+1円 → 配特の帯へ");
+eq(kyuyoToGokeiShotoku(1_690_000, D), { ok: true, shotoku: 950_000 }, "給与169万 → 所得95万(配特38万の帯の上限)");
+eq(kyuyoToGokeiShotoku(2_070_000, D), { ok: true, shotoku: 1_330_000 }, "給与207万 → 所得133万(配特の上限ちょうど)");
+eq(kyuyoToGokeiShotoku(2_190_000, D), { ok: true, shotoku: 1_450_000 }, "給与219万 → 所得145万(換算上限。配特対象外だが換算はできる)");
+eq(kyuyoToGokeiShotoku(2_190_001, D), { ok: false, reason: "over_limit" }, "給与219万超 → 換算しない(fail closed・219.1万以上は量子化帯)");
+eq(kyuyoToGokeiShotoku(740_999, D), { ok: true, shotoku: 0 }, "給与74.1万円未満 → 所得0(措法29条の4②一「給与所得の金額はないものとする」)");
+eq(kyuyoToGokeiShotoku(741_000, D), { ok: true, shotoku: 1_000 }, "給与74.1万円ちょうど → 所得1,000円(同②二の下端)");
 eq(kyuyoToGokeiShotoku(500_000, D), { ok: true, shotoku: 0 }, "給与50万 → 所得0(マイナスにしない)");
 
 // ── 節税額（速算表を手で当てた独立オラクル・taxSavingSplitとの結合） ──
-// E2Eシーンのオラクル: 本人所得区分≤900万・配偶者給与170万(→所得105万・配特31/31万)・課税所得500万
+// 本人所得区分≤900万・配偶者給与179万(→所得105万・配特31/31万)・課税所得500万
 //   before 5,000,000×20%−427,500 = 572,500 / after shotokuzei(4,690,000) = 510,500 → 所得税減62,000
 //   復興 floor(62,000×2.1%) = 1,302 / 住民 31万×10% = 31,000 → 合計 94,302
 {
-  const conv = kyuyoToGokeiShotoku(1_700_000, D);
+  const conv = kyuyoToGokeiShotoku(1_790_000, D);
   const k = haigushaKojo({ honninShotoku: 9_000_000, haiguShotoku: conv.shotoku }, D);
-  eq([k.type, k.shotoku, k.jumin], ["tokubetsu", 310_000, 310_000], "E2E前段: 給与170万→所得105万→配特31/31万");
+  eq([k.type, k.shotoku, k.jumin], ["tokubetsu", 310_000, 310_000], "結合前段: 給与179万→所得105万→配特31/31万");
   const r = taxSavingSplit({ kazeiShotoku: 5_000_000, shotokuKojo: k.shotoku, juminKojo: k.jumin }, D);
   eq([r.shotokuGen, r.fukkoGen, r.juminGen, r.total], [62_000, 1_302, 31_000, 94_302],
-     "E2Eオラクル: 課税所得500万×配特31/31万 → 節税94,302");
+     "結合オラクル: 課税所得500万×配特31/31万 → 節税94,302");
+}
+// E2Eシーンのオラクル: 給与150万(→所得76万=150万−74万)は配特帯1(38/33万)。
+// 課税所得500万 → before 572,500 / after shotokuzei(4,620,000)=496,500 → 76,000
+// 復興 floor(76,000×2.1%)=1,596 / 住民 33万×10%=33,000 → 合計 110,596
+{
+  const conv = kyuyoToGokeiShotoku(1_500_000, D);
+  const k = haigushaKojo({ honninShotoku: 9_000_000, haiguShotoku: conv.shotoku }, D);
+  eq([conv.shotoku, k.type, k.shotoku, k.jumin], [760_000, "tokubetsu", 380_000, 330_000],
+     "E2E前段: 給与150万→所得76万→配特帯1=38/33万");
+  const r = taxSavingSplit({ kazeiShotoku: 5_000_000, shotokuKojo: k.shotoku, juminKojo: k.jumin }, D);
+  eq([r.shotokuGen, r.fukkoGen, r.juminGen, r.total], [76_000, 1_596, 33_000, 110_596],
+     "E2Eオラクル: 課税所得500万×配特帯1 → 節税110,596");
 }
 // 配偶者控除(一般38/33)・課税所得500万 → 110,596(test_fuyoの一般1人と同額になるのが正しい)
 {

@@ -27,13 +27,10 @@ const DOCS = join(ROOT, "docs");
 // 「制度の事実」= 年が変わっても真であり続ける記述。機械置換の対象にしてはいけない。
 // snippet はページに**そのまま含まれる**文字列。文言を変えたら免除が外れて落ちる。
 const HISTORICAL_FACTS = [
-  { file: "haigusha-kojo/index.html", snippet: "令和7年分からの新しい基準（所得58万円・給与123万円）に対応",
-    reason: "配偶者の所得要件48万→58万の改正が適用され始めた年分＝制度の事実(meta description)。" +
-            "令和9年分のデータに差し替えても『令和7年分から』は真のまま" },
-  { file: "haigusha-kojo/index.html", snippet: "令和7年分からの新基準（配偶者の所得58万円・給与123万円）に対応しています",
-    reason: "同上(hero)。改正の適用開始年分は歴史であってデータの申告ではない" },
-  { file: "index.html", snippet: "令和7年分からの新基準（給与123万円・160万円）に対応",
-    reason: "同上(トップのツールカード)。123万・160万の基準が始まった年分＝制度の事実" },
+  { file: "haigusha-kojo/index.html", snippet: "令和8年度改正で引き上げ",
+    reason: "★配偶者の所得要件58万→62万に引き上げた改正の固有名＝制度の事実(hero。jutakuの" +
+            "『令和8年度税制改正』と同型)。データを差し替えても『令和8年度改正で引き上げられた』は真のまま。" +
+            "どの年分で計算したかは setsuzei_r08.json の _meta.year から結果欄に描いている" },
   { file: "shakai-hoken/index.html", snippet: "子ども・子育て支援金（令和8年4月から新設）",
     reason: "新設された時期そのものが事実。令和9年度になっても『令和8年4月に新設』は真" },
   { file: "shakai-hoken/index.html", snippet: "令和8年（2026年）4月分から、",

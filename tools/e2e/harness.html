@@ -2037,8 +2037,9 @@ SCENES.fuyo = async () => {
   };
 };
 
-// 配偶者控除・配偶者特別控除: 給与150万(→所得85万)は配特の帯1=所得税38万/住民税33万と
-// **額が違う帯**なので、住民税の減少が所得税側の控除で計算される事故(fuyoと同型)がここで落ちる。
+// 配偶者控除・配偶者特別控除: 給与150万(→所得76万=150万−74万・措法29条の4)は配特の帯1=
+// 所得税38万/住民税33万と**額が違う帯**なので、住民税の減少が所得税側の控除で計算される
+// 事故(fuyoと同型)がここで落ちる。
 SCENES.haigusha = async () => {
   const doc = await open("/docs/haigusha-kojo/");
   await waitFor(() => doc.querySelector('#honnin option[value="9000000"]'), "配偶者控除の所得区分の読み込み");
@@ -2057,7 +2058,7 @@ SCENES.haigusha = async () => {
     shotokuGen: setsuzeiNum(body, /所得税の減少[^¥]*¥([\d,]+)/),
     juminGen: setsuzeiNum(body, /住民税の減少[^¥]*¥([\d,]+)/),
     // 給与150万は配偶者控除でなく**配偶者特別控除の帯1**と名乗ること(換算の配線も含めて固定)
-    isTokubetsu: /配偶者特別控除（配偶者の合計所得 58万円超95万円以下/.test(body),
+    isTokubetsu: /配偶者特別控除（配偶者の合計所得 62万円超95万円以下/.test(body),
     failed: body.includes("読み込めませんでした"),
   };
 };

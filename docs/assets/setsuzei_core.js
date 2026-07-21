@@ -153,15 +153,18 @@ export function haigushaKojo(input, D) {
 }
 
 /**
- * 給与収入だけの人の合計所得金額への換算。収入190万円以下は給与所得控除が定額65万円
- * （国税庁No.1410・令和7年分以降）なのでその範囲だけ換算し、超えたら換算しない（fail closed —
- * 190万円超は控除が収入で変わるため、この参照データでは答えられない）。
+ * 給与収入だけの人の合計所得金額への換算。令和8・9年分は措法29条の4（給与所得控除の
+ * 最低控除額等の特例）により収入220万円以下の給与所得控除が定額74万円。収入74.1万円未満は
+ * 給与所得なし（同条2項1号）、74.1万円以上219.1万円未満は「収入−74万円」（同2号）。
+ * 参照データの kyuyo_kojo_min_limit（219万円）以下だけ換算し、超えたら換算しない（fail closed —
+ * 219.1万円以上220万円未満は量子化帯・220万円超は控除が収入で変わるため、このデータでは答えられない）。
  * @returns { ok: true, shotoku } | { ok: false, reason: 'over_limit' }
  */
 export function kyuyoToGokeiShotoku(shunyu, D) {
   if (!D?.haigu) throw new Error('参照データ（setsuzei_r08.json の haigu）が渡されていません');
   const s = yen0(shunyu);
   if (s > D.haigu.kyuyo_kojo_min_limit) return { ok: false, reason: 'over_limit' };
+  if (s < (D.haigu.kyuyo_kojo_zero_below ?? 0)) return { ok: true, shotoku: 0 };
   return { ok: true, shotoku: Math.max(0, s - D.haigu.kyuyo_kojo_min) };
 }
 
