@@ -1,0 +1,42 @@
+{
+  "_meta": {
+    "year": "令和8年分",
+    "as_of": "2026-07-21",
+    "note": "所得控除による節税額の計算に使う料率。所得税は速算表(超過累進)で厳密に、住民税所得割は一律10%として概算する(住民税は課税所得の算定が所得税と少し違うため概算)。復興特別所得税は所得税額の2.1%(令和19年分まで)。掛金・上限は各制度の公式値を一次照合。",
+    "sources": {
+      "shotokuzei_sokusan": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "shokibo_kyosai": "https://kyosai-web.smrj.go.jp/customer/skyosai/installment/",
+      "ideco_gendogaku": "https://www.mhlw.go.jp/content/10600000/001328784.pdf"
+    }
+  },
+  "juminzei_shotokuwari_rate": 0.10,
+  "fukko_rate": 0.021,
+  "shotokuzei_brackets": [
+    { "upto": 1949000, "rate": 0.05, "deduct": 0 },
+    { "upto": 3299000, "rate": 0.10, "deduct": 97500 },
+    { "upto": 6949000, "rate": 0.20, "deduct": 427500 },
+    { "upto": 8999000, "rate": 0.23, "deduct": 636000 },
+    { "upto": 17999000, "rate": 0.33, "deduct": 1536000 },
+    { "upto": 39999000, "rate": 0.40, "deduct": 2796000 },
+    { "upto": null, "rate": 0.45, "deduct": 4796000 }
+  ],
+  "shokibo_kyosai": {
+    "min_monthly": 1000,
+    "max_monthly": 70000,
+    "step": 500,
+    "kojo": "小規模企業共済等掛金控除（全額所得控除）"
+  },
+  "ideco": {
+    "kojo": "小規模企業共済等掛金控除（全額所得控除）",
+    "min_monthly": 5000,
+    "step": 1000,
+    "limits": [
+      { "key": "jieigyo",       "label": "自営業・フリーランス（第1号）", "monthly": 68000, "note": "国民年金基金・付加保険料と合算した上限" },
+      { "key": "kaishain_none", "label": "会社員（企業年金なし）",         "monthly": 23000, "note": "" },
+      { "key": "kaishain_dc",   "label": "会社員（企業型DCあり）",         "monthly": 20000, "note": "企業型DC等との合算上限あり" },
+      { "key": "kaishain_db",   "label": "会社員（DB等あり）・公務員",     "monthly": 20000, "note": "2024年12月改正で月2.0万円に。合算上限あり" },
+      { "key": "fuyo",          "label": "専業主婦・主夫（第3号）",        "monthly": 23000, "note": "" }
+    ],
+    "kaisei_note": "2027年1月から上限引き上げ予定（第1号は月7.5万円、企業年金なしの会社員は月6.2万円）。現行は上記。"
+  }
+}

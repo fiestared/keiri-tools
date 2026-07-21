@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小規模企業共済 節税シミュレーター｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/shokibo-kyosai/ と重複させない）。計算は本体と同じ ../../assets/setsuzei_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/shokibo-kyosai/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="小規模企業共済の掛金による年間の節税額を自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  .hintline{ font-size:11.5px; color:var(--sub); margin-top:2px; }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:26px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; margin-top:8px; }
+  td{ padding:4px 6px; } td.n{ text-align:right; white-space:nowrap; }
+  .tot{ border-top:2px solid var(--accent); font-weight:800; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .a-share{ border:1px solid var(--line); color:var(--ink); }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>小規模企業共済 節税シミュレーター</h1>
+  <p class="lead">課税される所得金額と月額掛金から、掛金による年間の節税額を概算します。</p>
+
+  <label for="kazei">課税される所得金額（円）</label>
+  <input id="kazei" type="number" inputmode="numeric" placeholder="例: 5000000" min="0" step="10000">
+  <div class="hintline">源泉徴収票・確定申告書の「課税される所得金額」（年収ではありません）</div>
+
+  <label for="monthly">月額掛金（円）</label>
+  <input id="monthly" type="number" inputmode="numeric" value="30000" min="1000" max="70000" step="500">
+  <div class="hintline">1,000〜70,000円・500円きざみ</div>
+
+  <button id="calc" type="button">節税額を計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a id="brand-link" href="https://keiri-tools.com/shokibo-kyosai/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（国税庁の速算表・中小機構の掛金ルール）。
+  </div>
+</div>
+
+<script type="module">
+import { taxSavingByMonthly } from "../../assets/setsuzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const BASE = "https://keiri-tools.com/shokibo-kyosai/?utm_source=embed&utm_medium=widget";
+let D = null;
+
+// 参照データ(速算表・料率)は非同期で届く。届く前に押されても await で待つ（test_data_pages の規律）。
+// catch が拾ってよいのは「データが手に入らなかったこと」だけ。
+const coreReady = fetch("../../assets/setsuzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { D = d; return true; })
+  .catch(() => false);
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "shokibo-kyosai", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+
+  const ok = await coreReady;
+  if (!ok || !D || !D.shokibo_kyosai) {
+    box.innerHTML = `<div class="warn"><b>速算表・料率を読み込めませんでした。</b>通信環境を確認して再読み込みしてください。データが分からない状態で節税額は答えられません。</div>`;
+    postHeight(); return;
+  }
+
+  const kazei = Number($("kazei").value);
+  if (!kazei || kazei <= 0) { box.innerHTML = `<div class="warn">課税される所得金額を入力してください。</div>`; postHeight(); return; }
+
+  const monthly = Number($("monthly").value);
+  const K = D.shokibo_kyosai;
+  if (!monthly || monthly < K.min_monthly) {
+    box.innerHTML = `<div class="warn">月額掛金は${K.min_monthly.toLocaleString("ja-JP")}円以上を入力してください。</div>`;
+    postHeight(); return;
+  }
+
+  let r;
+  try {
+    r = taxSavingByMonthly({ kazeiShotoku: kazei, monthly, annualLimit: K.max_monthly * 12 }, D);
+  } catch (e) {
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    postHeight(); return;
+  }
+
+  const shareText = `課税所得${Math.round(r.kazeiShotoku/10000)}万円・月掛金${Math.round(r.monthly/10000*10)/10}万円なら、小規模企業共済で年${yen(r.total)}の節税でした🧮`;
+  const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent("https://keiri-tools.com/shokibo-kyosai/?utm_source=embed_share")}`;
+
+  let extra = "";
+  if (r.beyondLimit) {
+    extra += `<div class="warn" style="margin-top:6px">※ 上限は月${K.max_monthly.toLocaleString("ja-JP")}円です。上限額で計算しています。</div>`;
+  }
+  if (r.usedDeduction < r.annual) {
+    extra += `<div class="note">※ 課税所得が掛金より小さいため、節税に効くのは課税所得の範囲まで（${yen(r.usedDeduction)}）です。</div>`;
+  }
+
+  box.innerHTML = `
+    <div>年間の節税額 <span class="big">${yen(r.total)}</span> <span class="hint">（掛金 年${yen(r.annual)} の ${(r.effectiveRate*100).toFixed(1)}%）</span></div>
+    <table>
+      <tr><td>所得税の減少</td><td class="n">${yen(r.shotokuGen)}</td></tr>
+      <tr><td>復興特別所得税の減少</td><td class="n">${yen(r.fukkoGen)}</td></tr>
+      <tr><td>住民税の減少（概算）</td><td class="n">${yen(r.juminGen)}</td></tr>
+      <tr class="tot"><td>年間の節税額</td><td class="n">${yen(r.total)}</td></tr>
+    </table>
+    ${extra}
+    <div class="note">※ 掛金は全額が小規模企業共済等掛金控除。所得税は速算表で厳密に、住民税の減少は所得割10%の概算です。
+      ${r.year ? `<span class="hint">（${r.year}の速算表・料率）</span>` : ""}</div>
+    <div class="cta">
+      <a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 早見表・詳しい解説を見る</a>
+      <a class="a-share" href="${shareUrl}" target="_blank" rel="noopener">結果をシェア</a>
+    </div>`;
+  postHeight();
+});
+</script>
+</body>
+</html>

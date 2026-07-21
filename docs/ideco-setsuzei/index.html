@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iDeCo節税シミュレーター｜掛金と課税所得から年間の節税額を計算</title>
+<meta name="description" content="iDeCo（イデコ）の掛金でどれだけ税金が安くなるかを試算。加入区分と課税される所得金額、月額掛金を入れるだけで、所得税・住民税の年間の節税額を自動計算します。掛金は全額が小規模企業共済等掛金控除。令和8年分の所得税速算表で計算。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/ideco-setsuzei/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "iDeCo節税シミュレーター",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "加入区分・課税される所得金額・月額掛金から、iDeCoの掛金で減る所得税・住民税の年間の節税額を計算します。掛金は全額が小規模企業共済等掛金控除。所得税は速算表（超過累進）で計算。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "iDeCo節税シミュレーター"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. iDeCoは課税所得がいくらから得ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 課税される所得金額が1円でもあれば、掛金の分だけ所得税と住民税が下がるので節税になります。節税率は所得税の税率で決まり、課税所得195万円以下なら所得税5％＋住民税10％で約15％、330万円以下なら10％＋10％で約20％、695万円以下なら20％＋10％で約30％です。会社員（企業年金なし）が月23,000円（年276,000円）を積み立てると、課税所得300万円で年55,779円、課税所得500万円で年83,959円の節税になります。課税所得が高い人ほど節税額は大きくなります。ただし課税される所得金額が0円の人（掛金より所得控除が大きく所得税がかからない人）は、そもそも引く税金がないので節税にはなりません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 課税される所得金額とは年収のことですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 違います。年収から給与所得控除・基礎控除・社会保険料控除・扶養控除などをすべて引いた後の金額が課税される所得金額です。源泉徴収票では「課税される所得金額」ではなく「給与所得控除後の金額」と「所得控除の額の合計額」が載っているので、前者から後者を引いた額が課税所得です。確定申告書ならB表の「課税される所得金額」の欄そのものです。年収500万円の会社員でも、課税される所得金額はおおむね200万〜250万円程度になります。年収を入れると節税額を過大に見積もるので、必ず課税所得を入れてください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. iDeCoの掛金の上限はいくらですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 加入区分で決まります。自営業・フリーランス（第1号）は月68,000円（年816,000円・国民年金基金や付加保険料と合算した上限）、会社員（企業年金なし）と専業主婦・主夫（第3号）は月23,000円（年276,000円）、会社員（企業型DCあり）と会社員（DB等あり）・公務員は月20,000円（年240,000円）です。最低は月5,000円で、1,000円単位で決められます。なお2027年1月からは上限が引き上げられる予定で、第1号は月75,000円、企業年金なしの会社員は月62,000円になる見込みです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. iDeCoは受け取るときに税金がかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. かかることがありますが、大きな控除が用意されています。一時金でまとめて受け取ると退職所得として扱われ、退職所得控除（勤続年数＝掛金を払った年数が20年以下なら40万円×年数、20年超なら800万円＋70万円×20年超の年数）を引いた残りの2分の1だけが課税対象になります。年金として分割で受け取ると公的年金等の雑所得となり、公的年金等控除を差し引いて所得を計算します。積立時に全額を所得控除できるうえ、受取時にもこれらの控除が使えるため、多くの人は受取時の税負担が積立時の節税額より小さくなります。ただし退職金と重なると退職所得控除を使い切ることがあるため、受け取り方は事前に確認してください。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › iDeCo節税シミュレーター</nav>
+
+<section class="hero">
+  <h1>iDeCo節税シミュレーター</h1>
+  <p>iDeCo（イデコ）の掛金は<b>全額が所得控除</b>になります。<b>加入区分</b>・<b>課税される所得金額</b>・<b>月額掛金</b>を入れるだけで、掛金でどれだけ<b>所得税・住民税が下がるか（年間の節税額）</b>を自動計算します。所得税は速算表で厳密に計算します。</p>
+</section>
+
+<div class="card">
+  <label for="kubun">加入区分<span class="hint">　選ぶと月額掛金の上限が決まります</span></label>
+  <select id="kubun"><option value="">読み込み中…</option></select>
+
+  <label for="kazei">課税される所得金額（課税所得・円）<span class="hint">　源泉徴収票や確定申告書の「課税される所得金額」。年収ではありません</span></label>
+  <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000">
+
+  <label for="monthly">月額掛金（円）<span class="hint">　5,000円以上・1,000円単位。<span id="limit-hint"></span></span></label>
+  <input type="number" id="monthly" placeholder="例: 23000" inputmode="numeric" min="5000" step="1000">
+
+  <button class="primary" id="calc">節税額を計算する</button>
+  <div class="result" id="result"></div>
+  <p class="hint" id="kaisei-note" style="margin-top:10px"></p>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p>iDeCo（個人型確定拠出年金）の最大の魅力は、<b>払った掛金の全額がその年の所得から差し引かれ、所得税と住民税が下がる</b>ことです。上の計算機で、自分の加入区分・課税所得・掛金から年間の節税額が出せます。以下では、<b>なぜ節税になるのか、区分ごとの上限、課税所得別の節税額、そして受け取るときの税金</b>まで、計算のしくみを一次資料にもとづいて解説します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+
+<nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#tsukaikata">使い方と注意点</a></li>
+<li><a href="#shikumi">iDeCoの節税のしくみ — 掛金は全額が所得控除</a></li>
+<li><a href="#jougen">加入区分別の月額掛金の上限</a></li>
+<li><a href="#reidai">課税所得別の節税額の例</a></li>
+<li><a href="#uketori">受け取るときの税金 — 一時金と年金で違う</a></li>
+<li><a href="#kaisei">2027年1月からの上限引き上げ</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav>
+
+<h2 id="tsukaikata">使い方と注意点</h2>
+  <div class="callout">
+    <b>入れるのは「年収」ではなく「課税される所得金額」です</b>
+    節税額は税率で決まり、税率は<b>課税される所得金額</b>で決まります。これは年収ではなく、年収から給与所得控除・基礎控除・社会保険料控除・扶養控除などを<b>すべて引いた後</b>の金額です。源泉徴収票なら「給与所得控除後の金額」から「所得控除の額の合計額」を引いた額、確定申告書なら「課税される所得金額」の欄そのものです。<b>年収を入れると節税額を大きく見積もりすぎます。</b>
+  </div>
+  <h3>このツールの前提</h3>
+  <p>所得税は国税庁の<b>所得税の速算表</b>で計算します。掛金による控除で税率の段（ブラケット）をまたぐ場合も、速算表の差をとって<b>超過累進</b>を正しく反映します（「掛金×税率」の概算ではありません）。住民税の所得割は<b>一律10％</b>として概算します（住民税は課税所得の算定が所得税と少し違うため概算）。復興特別所得税（所得税額の2.1％）の減少も含めています。</p>
+  <div class="note">
+    本ツールの結果は目安です。実際の税額は、他の所得控除や税額控除、お住まいの市区町村、受け取り方などによって変わります。加入や受け取りの前に、運営管理機関や税務署・税理士でご確認ください。
+  </div>
+
+<h2 id="shikumi">iDeCoの節税のしくみ — 掛金は全額が所得控除</h2>
+
+<p>iDeCoの掛金は、<b>小規模企業共済等掛金控除</b>として<b>全額が所得から差し引かれます</b>。所得が減れば、その減った分にかかっていた<b>所得税と住民税がまるごと軽くなります</b>。節税額は次の式で決まります。</p>
+
+<div class="summary-box">
+<p><b>年間の節税額 ＝ 所得税の減少 ＋ 復興特別所得税の減少 ＋ 住民税の減少</b></p>
+<p>所得税の減少は、掛金を引く前と引いた後の所得税を<b>速算表で計算した差</b>です。住民税の減少は、掛金 × 10％（所得割）で概算します。</p>
+</div>
+
+<p>ポイントは、<b>節税率が「所得税率＋住民税率10％」でおおよそ決まる</b>ことです。課税所得が高く所得税率が高い人ほど、同じ掛金でも節税額が大きくなります。たとえば課税所得300万円（所得税10％）の会社員が月23,000円（年276,000円）を積み立てると、所得税が27,600円、住民税が27,600円、復興特別所得税が579円軽くなり、<b>年間の節税額は55,779円</b>になります。掛金に対する節税率は約20.2％です。</p>
+
+<figure class="figure">
+<svg viewBox="0 0 640 220" role="img" aria-label="課税所得300万円の会社員が月23,000円を積み立てると、年間の掛金276,000円のうち55,779円が所得税・住民税の減少として戻る図">
+  <text x="20" y="16" font-size="13" fill="currentColor">課税所得300万円・会社員が月23,000円を積み立てた場合（年間の掛金 276,000円）</text>
+
+  <rect x="20" y="30" width="479" height="32" fill="var(--accent)" opacity="0.12" stroke="var(--accent)"/>
+  <rect x="499" y="30" width="121" height="32" fill="var(--accent)" opacity="0.32" stroke="var(--accent)"/>
+  <text x="28" y="51" font-size="12" fill="currentColor">実質の負担 220,221円</text>
+  <text x="612" y="80" font-size="12" fill="currentColor" text-anchor="end">節税 55,779円（掛金の20.2%）</text>
+  <line x1="560" y1="62" x2="560" y2="72" stroke="var(--accent)" stroke-dasharray="3 2"/>
+
+  <text x="20" y="112" font-size="12" fill="currentColor">節税 55,779円 の内わけ（税目ごと）:</text>
+  <rect x="20" y="122" width="297" height="28" fill="var(--accent)" opacity="0.24" stroke="var(--accent)"/>
+  <rect x="317" y="122" width="297" height="28" fill="var(--accent)" opacity="0.14" stroke="var(--accent)"/>
+  <rect x="614" y="122" width="6" height="28" fill="var(--sub)" opacity="0.35" stroke="var(--sub)"/>
+  <text x="26" y="141" font-size="12" fill="currentColor">所得税 27,600円</text>
+  <text x="323" y="141" font-size="12" fill="currentColor">住民税 27,600円</text>
+  <text x="614" y="168" font-size="11" fill="currentColor" text-anchor="end">↑ 復興特別所得税 579円</text>
+  <text x="20" y="206" font-size="11" fill="currentColor">※ 掛金は全額が小規模企業共済等掛金控除。所得税は速算表（超過累進）、住民税所得割は一律10%で計算。</text>
+</svg>
+<figcaption>掛金276,000円のうち55,779円（20.2%）が所得税・住民税の減少として戻る。実質の負担は220,221円。</figcaption>
+</figure>
+
+<h2 id="jougen">加入区分別の月額掛金の上限</h2>
+
+<p>iDeCoの掛金には、<b>加入区分ごとに上限</b>があります。最低は月5,000円で、1,000円単位で決められます。上限は次のとおりです。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>加入区分</th><th>月額の上限</th><th>年額の上限</th><th>備考</th></tr>
+</thead>
+<tbody>
+<tr><td>自営業・フリーランス（第1号）</td><td><b>68,000円</b></td><td>816,000円</td><td>国民年金基金・付加保険料と合算した上限</td></tr>
+<tr><td>会社員（企業年金なし）</td><td><b>23,000円</b></td><td>276,000円</td><td>&nbsp;</td></tr>
+<tr><td>会社員（企業型DCあり）</td><td><b>20,000円</b></td><td>240,000円</td><td>企業型DC等との合算上限あり</td></tr>
+<tr><td>会社員（DB等あり）・公務員</td><td><b>20,000円</b></td><td>240,000円</td><td>合算上限あり</td></tr>
+<tr><td>専業主婦・主夫（第3号）</td><td><b>23,000円</b></td><td>276,000円</td><td>&nbsp;</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout">
+<p><b>自営業（第1号）の枠がいちばん大きい</b></p>
+<p>自営業・フリーランスは月68,000円（年816,000円）まで積み立てられ、会社員の約3倍です。ただし、この68,000円は<b>国民年金基金や国民年金の付加保険料と合わせた上限</b>なので、それらに加入している場合はiDeCoに回せる額がその分だけ減ります。会社員（企業型DCあり）・会社員（DB等あり）・公務員の枠も、企業型DCや確定給付企業年金（DB）との<b>合算</b>で上限が決まります。</p>
+</div>
+
+<h2 id="reidai">課税所得別の節税額の例</h2>
+
+<p>会社員（企業年金なし）が上限の<b>月23,000円（年276,000円）</b>を積み立てた場合、課税所得ごとの年間の節税額は次のようになります（このツールと同じ速算表で計算した実数です）。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>課税される所得金額</th><th>年間の掛金</th><th>年間の節税額</th><th>掛金に対する節税率</th></tr>
+</thead>
+<tbody>
+<tr><td>150万円</td><td>276,000円</td><td><b>41,689円</b></td><td>15.1%</td></tr>
+<tr><td>300万円</td><td>276,000円</td><td><b>55,779円</b></td><td>20.2%</td></tr>
+<tr><td>500万円</td><td>276,000円</td><td><b>83,959円</b></td><td>30.4%</td></tr>
+<tr><td>700万円</td><td>276,000円</td><td><b>85,490円</b></td><td>31.0%</td></tr>
+<tr><td>900万円</td><td>276,000円</td><td><b>92,413円</b></td><td>33.5%</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>課税所得が上がるほど所得税率が上がるため、同じ掛金でも節税額が増えます。掛金の枠が大きい<b>自営業（第1号）が上限の月68,000円（年816,000円）を積み立てる</b>と、課税所得300万円で年<b>164,913円</b>、課税所得500万円で年<b>248,227円</b>と、節税額はさらに大きくなります。</p>
+
+<div class="callout">
+<p><b>節税率は「所得税率＋10%」でおおよそ決まる</b></p>
+<p>住民税所得割が一律10%なので、節税率は「その人の所得税率＋10%」に近い値になります。課税所得195万円以下（所得税5%）なら約15%、330万円以下（10%）なら約20%、695万円以下（20%）なら約30%です。復興特別所得税（所得税額の2.1%）の分だけ、実際はこれより少し高くなります。</p>
+</div>
+
+<a class="tool-cta" href="../tedori/">手取り計算機で、いまの額面から社会保険料・税金の内わけを確かめる</a>
+
+<h2 id="uketori">受け取るときの税金 — 一時金と年金で違う</h2>
+
+<p>iDeCoは積み立てるときに全額を所得控除できますが、<b>60歳以降に受け取るときには課税されることがあります</b>。ただし大きな控除が用意されているため、受取時の負担が積立時の節税額を上回ることは多くありません。受け取り方で税金の種類が変わります。</p>
+
+<table>
+<thead>
+<tr><th>受け取り方</th><th>所得の種類</th><th>使える控除</th></tr>
+</thead>
+<tbody>
+<tr><td><b>一時金</b>（まとめて受け取る）</td><td>退職所得</td><td>退職所得控除</td></tr>
+<tr><td><b>年金</b>（分割で受け取る）</td><td>公的年金等の雑所得</td><td>公的年金等控除</td></tr>
+</tbody>
+</table>
+
+<p>国税庁のタックスアンサーNo.1420は、<b>「確定拠出年金法に規定する…個人型年金規約に基づいて老齢給付金として支給される一時金…は退職所得とみなされます」</b>と明記しています。退職所得の金額は、<b>（収入金額 − 退職所得控除額）× 2分の1</b>で計算します。退職所得控除額は勤続年数（iDeCoでは掛金を払った年数）に応じて決まり、<b>20年以下は40万円×年数、20年を超える部分は1年あたり70万円</b>（20年で800万円＋超えた年数×70万円）です。</p>
+
+<p>年金として分割で受け取る場合は、<b>公的年金等の雑所得</b>となり、<b>公的年金等控除</b>を差し引いて所得を計算します（国税庁No.1600）。公的年金や他の企業年金と合算されるため、受け取る年齢や金額の配分で税額が変わります。</p>
+
+<div class="callout">
+<p><b>受取時のいちばんの注意点は「退職金との重なり」</b></p>
+<p>退職所得控除は、会社の退職金とiDeCoの一時金で<b>枠を共有</b>します。同じ年や近い時期に両方を一時金で受け取ると、退職所得控除を使い切って課税される部分が増えることがあります。受け取り方（一時金・年金・併用）とタイミングは、退職金の予定と合わせて事前に確認してください。</p>
+</div>
+
+<h2 id="kaisei">2027年1月からの上限引き上げ</h2>
+
+<p><b>2027年1月から、iDeCoの掛金の上限が引き上げられる予定</b>です。<b>自営業（第1号）は月75,000円、企業年金なしの会社員は月62,000円</b>になる見込みで、いずれも現行より大きく増えます。上限が上がれば所得控除できる額も増えるため、節税の効果はさらに大きくなります。上の計算機は<b>現行の上限</b>で試算しています（改正が施行されたら上限を差し替えます）。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. iDeCoは課税所得がいくらから得ですか？</h3>
+<p>A. 課税される所得金額が1円でもあれば、掛金の分だけ所得税と住民税が下がるので節税になります。節税率は所得税の税率で決まり、課税所得195万円以下なら所得税5％＋住民税10％で約15％、330万円以下なら10％＋10％で約20％、695万円以下なら20％＋10％で約30％です。会社員（企業年金なし）が月23,000円（年276,000円）を積み立てると、課税所得300万円で年55,779円、課税所得500万円で年83,959円の節税になります。課税所得が高い人ほど節税額は大きくなります。ただし課税される所得金額が0円の人（掛金より所得控除が大きく所得税がかからない人）は、そもそも引く税金がないので節税にはなりません。</p>
+
+<h3>Q. 課税される所得金額とは年収のことですか？</h3>
+<p>A. 違います。年収から給与所得控除・基礎控除・社会保険料控除・扶養控除などをすべて引いた後の金額が課税される所得金額です。源泉徴収票では「課税される所得金額」ではなく「給与所得控除後の金額」と「所得控除の額の合計額」が載っているので、前者から後者を引いた額が課税所得です。確定申告書ならB表の「課税される所得金額」の欄そのものです。年収500万円の会社員でも、課税される所得金額はおおむね200万〜250万円程度になります。年収を入れると節税額を過大に見積もるので、必ず課税所得を入れてください。</p>
+
+<h3>Q. iDeCoの掛金の上限はいくらですか？</h3>
+<p>A. 加入区分で決まります。自営業・フリーランス（第1号）は月68,000円（年816,000円・国民年金基金や付加保険料と合算した上限）、会社員（企業年金なし）と専業主婦・主夫（第3号）は月23,000円（年276,000円）、会社員（企業型DCあり）と会社員（DB等あり）・公務員は月20,000円（年240,000円）です。最低は月5,000円で、1,000円単位で決められます。なお2027年1月からは上限が引き上げられる予定で、第1号は月75,000円、企業年金なしの会社員は月62,000円になる見込みです。</p>
+
+<h3>Q. iDeCoは受け取るときに税金がかかりますか？</h3>
+<p>A. かかることがありますが、大きな控除が用意されています。一時金でまとめて受け取ると退職所得として扱われ、退職所得控除（勤続年数＝掛金を払った年数が20年以下なら40万円×年数、20年超なら800万円＋70万円×20年超の年数）を引いた残りの2分の1だけが課税対象になります。年金として分割で受け取ると公的年金等の雑所得となり、公的年金等控除を差し引いて所得を計算します。積立時に全額を所得控除できるうえ、受取時にもこれらの控除が使えるため、多くの人は受取時の税負担が積立時の節税額より小さくなります。ただし退職金と重なると退職所得控除を使い切ることがあるため、受け取り方は事前に確認してください。</p>
+
+<section class="related">
+<div class="tool-grid">
+<a class="tool-card" href="../tedori/"><b>手取り計算機</b><span>額面月給から社会保険料・所得税・住民税を引いた手取りを計算します。</span></a>
+<a class="tool-card" href="../furusato/"><b>ふるさと納税 上限計算</b><span>課税所得から、自己負担2,000円で寄付できる上限額の目安を出します。</span></a>
+<a class="tool-card" href="../gensen-choshu/"><b>源泉徴収税額計算</b><span>令和8年分の月額表から、扶養人数に応じた所得税を求めます。</span></a>
+<a class="tool-card" href="../taishokukin/"><b>退職金の税金計算</b><span>退職所得控除を引いて、退職金にかかる所得税・住民税を計算します。</span></a>
+</div>
+</section>
+
+<h2 id="source">出典</h2>
+<ul>
+<li>国税庁「No.2260 所得税の税率」— 所得税の速算表（課税される所得金額に対する税率5%〜45%と控除額）。本ツールの所得税の減少は、この速算表で掛金控除の前後の税額を計算した差で求めている</li>
+<li>厚生労働省「iDeCo（個人型確定拠出年金）の拠出限度額」— 加入区分ごとの月額の拠出限度額（第1号68,000円、企業年金なしの会社員・第3号23,000円、企業型DC・DB等・公務員20,000円）。最低掛金は月5,000円・1,000円単位</li>
+<li>国税庁「No.1420 退職金を受け取ったとき（退職所得）」[令和7年4月1日現在法令等] — 「確定拠出年金法に規定する…個人型年金規約に基づいて老齢給付金として支給される一時金…なども退職所得とみなされます」。退職所得の金額は（収入金額 − 退職所得控除額）×1/2。退職所得控除額は勤続年数20年以下で40万円×年数、20年超で800万円＋70万円×（年数−20年）</li>
+<li>国税庁「No.1600 公的年金等の課税関係」[令和7年4月1日現在法令等] — 公的年金等は雑所得として、年金の収入金額から公的年金等控除額を差し引いて所得を計算する。確定拠出年金を年金で受け取る場合はこの公的年金等に含まれる</li>
+<li>住民税所得割の標準税率10%（道府県民税4%＋市町村民税6%・地方税法）／復興特別所得税は所得税額の2.1%（令和19年分まで）</li>
+</ul>
+
+<p class="note">本ページの解説・計算例は令和8年（2026年）時点の法令にもとづく一般的な情報であり、個別の事案に対する助言ではありません。実際の節税額・受取時の税額は、他の所得控除や税額控除、住んでいる市区町村、受け取り方、退職金の有無などによって異なります。加入・受け取りの前に運営管理機関・税務署・税理士でご確認ください。</p>
+
+</article>
+</main>
+<footer class="site" style="display:block">
+  計算の出典: 国税庁「No.2260 所得税の税率」（速算表）／厚生労働省「iDeCoの拠出限度額」／住民税所得割10%（地方税法）<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { taxSavingByMonthly } from "../assets/setsuzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+let R08 = null;
+
+// 参照データ(税率・掛金上限)は非同期で届く。**届く前に計算ボタンを押されても await で待つ**。
+// この catch が拾ってよいのは「データが手に入らなかったこと」だけ(飾りの表示は別に処理する)。
+const r08Ready = fetch("../assets/setsuzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { R08 = d; fillKubun(d); return true; })
+  .catch(() => false);
+
+// 出典・改正予定の表示は飾り。ここで転んでも計算は止めない(r08Ready には影響させない)。
+r08Ready.then(ok => { if (ok) showMeta(); }).catch(() => {});
+
+function fillKubun(d) {
+  const sel = $("kubun"); sel.innerHTML = "";
+  for (const l of d.ideco.limits) {
+    const o = document.createElement("option");
+    o.value = l.key;
+    o.textContent = `${l.label}（上限 月${yen(l.monthly)}）`;
+    if (l.key === "kaishain_none") o.selected = true;
+    sel.appendChild(o);
+  }
+  applyLimit();
+}
+// 選んだ区分の上限を、月額掛金入力欄の max とヒントに反映する(表示専用。計算時は改めて判定する)。
+function applyLimit() {
+  if (!R08) return;
+  const k = R08.ideco.limits.find(l => l.key === $("kubun").value);
+  if (!k) return;
+  $("monthly").max = String(k.monthly);
+  $("limit-hint").textContent = `この区分の上限は月${yen(k.monthly)}`;
+}
+$("kubun").addEventListener("change", applyLimit);
+
+// 年度・改正予定は**データが持っている値**を出す(ページに手書きしない)。
+function showMeta() {
+  if (R08?.ideco?.kaisei_note) $("kaisei-note").textContent = "※ " + R08.ideco.kaisei_note;
+  if (R08?._meta?.year) $("src-note").textContent = `（${R08._meta.year}の所得税速算表）`;
+}
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+
+  // 参照データ(税率・掛金上限)の到着を必ず待つ。これが無いと節税額は答えられない。
+  const ok = await r08Ready;
+  if (!ok || !R08) {
+    box.innerHTML = `<div class="note"><b>料率・上限データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。税率や掛金上限が分からない状態で節税額を答えることはできません。</div>`;
+    return;
+  }
+
+  const kubun = R08.ideco.limits.find(l => l.key === $("kubun").value);
+  if (!kubun) { box.innerHTML = `<div class="note">加入区分を選び直してください。</div>`; return; }
+
+  const kazei = Number($("kazei").value);
+  if (!kazei || kazei <= 0) {
+    box.innerHTML = `課税される所得金額を入力してください（<b>年収ではなく課税所得</b>です）。`;
+    return;
+  }
+  const monthly = Number($("monthly").value);
+  const min = R08.ideco.min_monthly;
+  if (!monthly || monthly < min) {
+    box.innerHTML = `月額掛金は <b>${yen(min)} 以上</b>で入力してください（iDeCoの最低掛金）。`;
+    return;
+  }
+
+  const limitMonthly = kubun.monthly;
+  const annualLimit = limitMonthly * 12;
+
+  let raw;
+  try {
+    raw = taxSavingByMonthly({ kazeiShotoku: kazei, monthly, annualLimit }, R08);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  // 上限超過は黙って計算しない。iDeCoは区分上限までしか拠出できないので、上限額で試算して超過を申告する。
+  const r = raw.beyondLimit
+    ? taxSavingByMonthly({ kazeiShotoku: kazei, monthly: limitMonthly, annualLimit }, R08)
+    : raw;
+  const effMonthly = r.monthly;
+
+  let html = `
+    <div class="row">年間の節税額 <span class="big">${yen(r.total)}</span>
+      <span class="hint">（掛金 年${yen(r.annual)}・節税率 ${(r.effectiveRate * 100).toFixed(1)}%）</span></div>
+    <div style="overflow-x:auto;margin-top:10px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr style="background:#e7f3f0"><th style="text-align:left;padding:6px 8px">項目</th>
+        <th style="text-align:right;padding:6px 8px">年額</th></tr>
+      <tr><td style="padding:6px 8px">月額掛金 × 12</td>
+        <td style="padding:6px 8px;text-align:right">${yen(effMonthly)} × 12 ＝ ${yen(r.annual)}</td></tr>
+      <tr><td style="padding:6px 8px">所得税の減少</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.shotokuGen)}</td></tr>
+      <tr><td style="padding:6px 8px">復興特別所得税の減少（2.1%）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.fukkoGen)}</td></tr>
+      <tr><td style="padding:6px 8px">住民税の減少（所得割10%・概算）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.juminGen)}</td></tr>
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">年間の節税額</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.total)}</td></tr>
+    </table></div>`;
+
+  if (raw.beyondLimit) {
+    html += `<div class="note" style="margin-top:10px"><b>入力した月額掛金 ${yen(monthly)} は、${kubun.label}の上限（月${yen(limitMonthly)}）を超えています。</b>
+      iDeCoではこの区分の上限までしか積み立てられないため、<b>上限（月${yen(limitMonthly)}・年${yen(annualLimit)}）</b>で試算しました。</div>`;
+  }
+
+  // 課税所得より掛金の方が大きいと、掛金の一部しか控除に使えない(黙って全額控除で答えない)。
+  if (r.usedDeduction < r.annual) {
+    html += `<div class="note" style="margin-top:10px"><b>課税される所得金額（${yen(kazei)}）が年間の掛金より小さいため、掛金のうち ${yen(r.usedDeduction)} 分しか所得控除に使えていません。</b>
+      控除しきれない分は節税につながりません。</div>`;
+  }
+
+  html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ※ 掛金は全額が<b>${R08.ideco.kojo}</b>。所得税は速算表（超過累進）、住民税所得割は一律10%で概算しています。
+      ${r.year ? `<span class="hint">（${r.year}の所得税速算表で計算）</span>` : ""}<br>
+      ※ 受け取るときには課税されることがあります（一時金＝退職所得・年金＝雑所得。いずれも控除あり）。本文の「受け取るときの税金」を参照してください。</div>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>

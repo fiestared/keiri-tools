@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iDeCo節税シミュレーター（ウィジェット）｜keiri-tools</title>
+<!-- 埋め込み用ウィジェット: 他サイトが iframe で設置する。canonical で本体ページに集約し、
+     このページ自体は noindex（/ideco-setsuzei/ と重複させない）。計算は本体と同じ ../../assets/setsuzei_core.js。 -->
+<link rel="canonical" href="https://keiri-tools.com/ideco-setsuzei/">
+<meta name="robots" content="noindex, follow">
+<meta name="description" content="加入区分・課税所得・月額掛金からiDeCoの年間の節税額を計算する埋め込みウィジェット。keiri-tools 提供。">
+<style>
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; --bg:#fff; }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+    color:var(--ink); background:var(--bg); line-height:1.6; font-size:15px; padding:14px; }
+  .w{ max-width:460px; margin:0 auto; }
+  h1{ font-size:16px; margin:0 0 2px; }
+  .lead{ font-size:12.5px; color:var(--sub); margin:0 0 12px; }
+  label{ display:block; font-size:12.5px; color:var(--sub); margin:8px 0 2px; }
+  input,select{ width:100%; padding:8px 10px; font-size:15px; border:1px solid var(--line);
+    border-radius:8px; background:#fff; color:var(--ink); }
+  button{ width:100%; margin-top:12px; padding:11px; font-size:15px; font-weight:700; color:#fff;
+    background:var(--accent); border:0; border-radius:9px; cursor:pointer; }
+  .result{ display:none; margin-top:14px; padding:12px; background:#f7fbfa; border:1px solid var(--line); border-radius:10px; }
+  .big{ font-size:26px; font-weight:800; color:var(--accent); }
+  .hint{ font-size:12px; color:var(--sub); }
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; margin-top:8px; }
+  td{ padding:4px 6px; } td.n{ text-align:right; white-space:nowrap; }
+  .tot{ border-top:2px solid var(--accent); font-weight:800; }
+  .note{ font-size:12px; color:var(--sub); margin-top:8px; }
+  .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
+  .a-detail{ background:var(--accent2); color:var(--accent); font-weight:700; }
+  .a-share{ border:1px solid var(--line); color:var(--ink); }
+  .brand{ margin-top:12px; padding-top:10px; border-top:1px solid var(--line); font-size:11.5px; color:var(--sub); }
+  .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
+  .warn{ font-size:13px; color:#b4232a; }
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>iDeCo節税シミュレーター</h1>
+  <p class="lead">加入区分・課税所得・月額掛金から、iDeCoの掛金で減る所得税・住民税（年間の節税額）を概算します。</p>
+
+  <label for="kubun">加入区分</label>
+  <select id="kubun"><option value="">読み込み中…</option></select>
+
+  <label for="kazei">課税される所得金額（課税所得・円）<span class="hint">　年収ではありません</span></label>
+  <input id="kazei" type="number" inputmode="numeric" placeholder="例: 3000000" min="0" step="10000">
+
+  <label for="monthly">月額掛金（円）<span class="hint">　5,000円以上・1,000円単位。<span id="limit-hint"></span></span></label>
+  <input id="monthly" type="number" inputmode="numeric" placeholder="例: 23000" min="5000" step="1000">
+
+  <button id="calc" type="button">節税額を計算する</button>
+
+  <div class="result" id="result"></div>
+
+  <div class="brand">
+    🧮 <a id="brand-link" href="https://keiri-tools.com/ideco-setsuzei/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
+    の計算エンジンで動いています（所得税は速算表・掛金上限は公式値）。
+  </div>
+</div>
+
+<script type="module">
+import { taxSavingByMonthly } from "../../assets/setsuzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const BASE = "https://keiri-tools.com/ideco-setsuzei/?utm_source=embed&utm_medium=widget";
+let R08 = null;
+
+// 参照データ(税率・掛金上限)は非同期で届く。届く前に押されても await で待つ。
+// catch が拾ってよいのは「データが手に入らなかったこと」だけ。
+const r08Ready = fetch("../../assets/setsuzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { R08 = d; fillKubun(d); return true; })
+  .catch(() => false);
+
+// 高さを親フレームへ通知（他サイトの iframe が中身に合わせてリサイズできるように）
+function postHeight() {
+  const h = Math.ceil(document.documentElement.getBoundingClientRect().height) + 2;
+  try { parent.postMessage({ type: "keiri-embed", widget: "ideco-setsuzei", height: h }, "*"); } catch {}
+}
+addEventListener("load", postHeight);
+addEventListener("resize", postHeight);
+if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
+
+function fillKubun(d) {
+  const sel = $("kubun"); sel.innerHTML = "";
+  for (const l of d.ideco.limits) {
+    const o = document.createElement("option");
+    o.value = l.key;
+    o.textContent = `${l.label}（上限 月${yen(l.monthly)}）`;
+    if (l.key === "kaishain_none") o.selected = true;
+    sel.appendChild(o);
+  }
+  applyLimit();
+}
+function applyLimit() {
+  if (!R08) return;
+  const k = R08.ideco.limits.find(l => l.key === $("kubun").value);
+  if (!k) return;
+  $("monthly").max = String(k.monthly);
+  $("limit-hint").textContent = `上限 月${yen(k.monthly)}`;
+}
+$("kubun").addEventListener("change", () => { applyLimit(); postHeight(); });
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…"; postHeight();
+
+  const ok = await r08Ready;
+  if (!ok || !R08) {
+    box.innerHTML = `<div class="warn"><b>料率・上限データを読み込めませんでした。</b>通信環境を確認して再読み込みしてください。税率や掛金上限が分からない状態で節税額は答えられません。</div>`;
+    postHeight(); return;
+  }
+  const kubun = R08.ideco.limits.find(l => l.key === $("kubun").value);
+  if (!kubun) { box.innerHTML = `<div class="warn">加入区分を選び直してください。</div>`; postHeight(); return; }
+
+  const kazei = Number($("kazei").value);
+  if (!kazei || kazei <= 0) { box.innerHTML = `<div class="warn">課税される所得金額（年収ではなく課税所得）を入力してください。</div>`; postHeight(); return; }
+  const monthly = Number($("monthly").value);
+  const min = R08.ideco.min_monthly;
+  if (!monthly || monthly < min) { box.innerHTML = `<div class="warn">月額掛金は ${yen(min)} 以上で入力してください。</div>`; postHeight(); return; }
+
+  const limitMonthly = kubun.monthly;
+  const annualLimit = limitMonthly * 12;
+
+  let raw;
+  try {
+    raw = taxSavingByMonthly({ kazeiShotoku: kazei, monthly, annualLimit }, R08);
+  } catch (e) {
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    postHeight(); return;
+  }
+
+  // 上限超過は黙って計算しない。区分上限までしか拠出できないので上限で試算し超過を申告する。
+  const r = raw.beyondLimit
+    ? taxSavingByMonthly({ kazeiShotoku: kazei, monthly: limitMonthly, annualLimit }, R08)
+    : raw;
+
+  const shareText = `iDeCoで年${Math.round(r.total).toLocaleString("ja-JP")}円の節税になりました🧮`;
+  const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent("https://keiri-tools.com/ideco-setsuzei/?utm_source=embed_share")}`;
+
+  let html = `
+    <div>年間の節税額 <span class="big">${yen(r.total)}</span> <span class="hint">（掛金 年${yen(r.annual)}・節税率 ${(r.effectiveRate*100).toFixed(1)}%）</span></div>
+    <table>
+      <tr><td>年間の掛金</td><td class="n">${yen(r.annual)}</td></tr>
+      <tr><td>所得税の減少</td><td class="n">${yen(r.shotokuGen)}</td></tr>
+      <tr><td>復興特別所得税の減少</td><td class="n">${yen(r.fukkoGen)}</td></tr>
+      <tr><td>住民税の減少（10%概算）</td><td class="n">${yen(r.juminGen)}</td></tr>
+      <tr class="tot"><td>年間の節税額</td><td class="n">${yen(r.total)}</td></tr>
+    </table>`;
+  if (raw.beyondLimit) {
+    html += `<div class="note"><b>入力した月額掛金 ${yen(monthly)} は${kubun.label}の上限（月${yen(limitMonthly)}）を超えています。</b>上限（月${yen(limitMonthly)}）で試算しました。</div>`;
+  }
+  if (r.usedDeduction < r.annual) {
+    html += `<div class="note">課税所得（${yen(kazei)}）が掛金より小さいため、${yen(r.usedDeduction)}分しか控除に使えていません。</div>`;
+  }
+  html += `<div class="note">※ 掛金は全額が所得控除。所得税は速算表・住民税は所得割10%で概算。受取時は課税されることがあります（控除あり）。${r.year ? `<span class="hint">（${r.year}の速算表）</span>` : ""}</div>
+    <div class="cta">
+      <a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 上限・受取時の税金など詳しく見る</a>
+      <a class="a-share" href="${shareUrl}" target="_blank" rel="noopener">結果をシェア</a>
+    </div>`;
+
+  box.innerHTML = html;
+  postHeight();
+});
+</script>
+</body>
+</html>

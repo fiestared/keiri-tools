@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小規模企業共済 節税シミュレーター｜掛金の節税額を自動計算【2026年】</title>
+<meta name="description" content="小規模企業共済の掛金でいくら節税できるかを自動計算。課税される所得金額と月額掛金（1,000〜70,000円）を入れるだけで、所得税・復興特別所得税・住民税を合わせた年間の節税額と、掛金に対する節税率がわかります。掛金は全額が小規模企業共済等掛金控除。国税庁の速算表・中小機構の掛金ルールに準拠。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/shokibo-kyosai/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "小規模企業共済 節税シミュレーター",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "課税される所得金額と月額掛金から、小規模企業共済の掛金による年間の節税額（所得税・復興特別所得税・住民税の減少）を計算します。掛金は全額が小規模企業共済等掛金控除。国税庁の所得税速算表に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "小規模企業共済 節税シミュレーター"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 小規模企業共済でいくら節税できますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 掛金は全額が所得控除になるため、節税額は課税される所得金額と掛金月額で決まります。課税される所得金額500万円の人が上限の月70,000円（年84万円）を払うと、所得税・復興特別所得税・住民税を合わせて年間255,528円の節税になります（掛金の30.4%）。同じ所得でも掛金が少なければ節税額もほぼ比例して小さくなり、月30,000円（年36万円）なら109,512円です。上の計算機に課税される所得金額と掛金月額を入れると、あなたの年間節税額が出ます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 掛金はいくらから始められますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 月額1,000円から70,000円までの範囲で、500円きざみで自由に決められます。加入後も月に1回に限り増額・減額でき、1年以内の前納掛金もその年の所得控除にできます。掛金は共済契約者本人名義の口座から毎月18日（休日なら翌営業日）に振り替えられ、月払いのほか半年払い・年払いも選べます。所得が読みにくい年は少額で始め、余裕のある年に増やす使い方ができます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 払った掛金は経費になりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. なりません。掛金は事業上の損金や必要経費には算入できず、あくまで個人の「小規模企業共済等掛金控除」として課税所得から差し引きます。法人の役員が加入した場合も、法人の経費ではなく役員個人の所得控除です。税負担を下げる効果は経費と同じですが、確定申告では経費欄ではなく所得控除欄に記載する点が異なります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 受け取るときに税金はかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. かかりますが、受け取り方で扱いが変わります。共済金を一括で受け取ると退職所得、分割で受け取ると公的年金等の雑所得となり、どちらも退職所得控除や公的年金等控除が使えるため、通常の所得より軽い課税で済みます。ただし65歳未満で任意解約した解約手当金は一時所得扱いとなり、掛金納付月数が240か月（20年）を下回ると受取額が掛金合計を下回ることがあります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 課税される所得金額とは何ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 年収でも、事業の売上でもありません。源泉徴収票や確定申告書に載る「課税される所得金額」で、所得から基礎控除・扶養控除・社会保険料控除などをすべて引いた後の、税率をかける直前の金額です。この額が大きい人ほど高い税率がかかるため、同じ掛金でも節税額は大きくなります。会社員なら源泉徴収票の「課税される所得金額」、個人事業主なら確定申告書の「課税される所得金額」を使ってください。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 小規模企業共済 節税シミュレーター</nav>
+
+<section class="hero">
+  <h1>小規模企業共済 節税シミュレーター</h1>
+  <p><b>課税される所得金額</b>と<b>月額掛金</b>を入れるだけで、小規模企業共済の掛金による<b>年間の節税額</b>（所得税・復興特別所得税・住民税の減少）を自動計算します。掛金は<b>全額が小規模企業共済等掛金控除</b>。国税庁の所得税速算表で計算します。</p>
+</section>
+
+<div class="card">
+  <label for="kazei">課税される所得金額（円）<span class="hint">　源泉徴収票・確定申告書の「課税される所得金額」。年収や売上ではありません</span></label>
+  <input type="number" id="kazei" placeholder="例: 5000000" inputmode="numeric" min="0" step="10000">
+
+  <label for="monthly">月額掛金（円）<span class="hint">　1,000〜70,000円の範囲・500円きざみ。加入後も月1回まで増減できます</span></label>
+  <input type="number" id="monthly" value="30000" min="1000" max="70000" step="500" inputmode="numeric">
+
+  <button class="primary" id="calc">節税額を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p>小規模企業共済は、個人事業主や小さな会社の役員が「自分の退職金」を積み立てる国の制度です。最大の魅力は、<b>払った掛金の全額が所得控除になる</b>こと。つまり掛金を払った年は、その分だけ課税所得が下がり、所得税と住民税が軽くなります。上の計算機で、<b>あなたの課税所得と掛金から、1年でいくら税金が減るか</b>を出せます。以下では仕組み・掛金のルール・課税所得別の早見表・受け取るときの税金まで、実数と出典つきで解説します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+
+<nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#tsukaikata">使い方 — 「課税される所得金額」の見つけ方</a></li>
+<li><a href="#shikumi">節税の仕組み — 掛金は全額が所得控除</a></li>
+<li><a href="#kakekin">掛金の範囲と変更 — 月1,000〜70,000円</a></li>
+<li><a href="#hayami">課税所得・掛金別の節税額 早見表</a></li>
+<li><a href="#keisan">節税額の計算方法</a></li>
+<li><a href="#uketori">受け取るときの税金</a></li>
+<li><a href="#shikaku">加入できる人</a></li>
+<li><a href="#chuii">始める前に知っておく注意点</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav>
+
+<h2 id="tsukaikata">使い方 — 「課税される所得金額」の見つけ方</h2>
+  <div class="callout">
+    <b>入れるのは「年収」ではなく「課税される所得金額」です</b>
+    節税額は<b>掛金にかかっていた税率</b>で決まるため、税率を決める<b>課税される所得金額</b>（課税所得）を入力します。これは<b>年収でも売上でもありません</b>。会社員は<b>源泉徴収票の「課税される所得金額」</b>、個人事業主は<b>確定申告書の「課税される所得金額」</b>を使ってください。所得から基礎控除・扶養控除・社会保険料控除などをすべて引いた、<b>税率をかける直前の金額</b>です。
+  </div>
+  <p>月額掛金は<b>1,000円から70,000円まで・500円きざみ</b>で自由に決められます（既定は30,000円）。計算機は入力した掛金の年額（月額×12）を所得控除として、<b>1年あたりの節税額</b>を出します。掛金を上限の70,000円にしても、<b>課税所得がそれより小さければ節税額はその範囲まで</b>にとどまります（下げられる税金には限りがあるため）。</p>
+  <div class="note">
+    本ツールの結果は目安です。所得税は国税庁の速算表で厳密に計算しますが、<b>住民税の減少は所得割を一律10%として概算</b>しています（住民税は課税所得の算定が所得税と少し異なるため）。均等割・調整控除などは含みません。正確な税額は税理士・お住まいの市区町村でご確認ください。
+  </div>
+
+<h2 id="shikumi">節税の仕組み — 掛金は全額が「所得控除」</h2>
+
+<p>小規模企業共済の掛金は、その全額が<b>「小規模企業共済等掛金控除」</b>という所得控除になります（国税庁 No.1135）。所得控除とは、税率をかける前の課税所得から差し引ける金額のこと。掛金を年84万円払えば、<b>課税所得が84万円下がる</b>ので、その84万円にかかっていたはずの所得税と住民税が丸ごと消えます。</p>
+
+<div class="summary-box">
+<p><b>年間の節税額 ＝ 所得税の減少 ＋ 復興特別所得税の減少（所得税の2.1%）＋ 住民税の減少（所得割の概算10%）</b></p>
+</div>
+
+<p>ポイントは、<b>減る税額は「掛金 × あなたの税率」で決まる</b>ことです。所得税は課税所得が高い人ほど高い税率（5%〜45%の超過累進）がかかるので、<b>同じ掛金でも、課税所得が高い人ほど節税額が大きく</b>なります。ここに住民税の所得割10%が上乗せされるため、実際の節税率は「所得税率＋10%」に近い水準になります。</p>
+
+<div class="callout">
+<p><b>「経費」ではなく「所得控除」— でも税金を下げる効果は同じ</b></p>
+<p>掛金は事業の<b>損金や必要経費にはなりません</b>（中小機構）。あくまで<b>個人の所得控除</b>で、確定申告では経費欄ではなく<b>所得控除欄</b>に書きます。法人の役員が加入した場合も、法人の経費ではなく<b>役員個人</b>の控除です。「経費で落とす」のとは扱いが違いますが、<b>課税所得を下げて税金を減らす</b>という結果は同じです。</p>
+</div>
+
+<h2 id="kakekin">掛金の範囲と変更 — 月1,000〜70,000円</h2>
+
+<p>掛金月額は<b>1,000円から70,000円まで、500円単位</b>で設定できます。年間では最大<b>84万円</b>（70,000円×12か月）を所得控除にできます。掛金のルールは次のとおりです（中小機構）。</p>
+
+<table>
+<thead>
+<tr><th>項目</th><th>内容</th></tr>
+</thead>
+<tbody>
+<tr><td>掛金月額</td><td><b>1,000円〜70,000円</b>の範囲で、<b>500円単位</b></td></tr>
+<tr><td>変更</td><td>加入後も<b>月に1回に限り</b>、増額・減額できる（同月中の再変更は不可）</td></tr>
+<tr><td>納付方法</td><td>本人名義の口座から振替。<b>月払い・半年払い・年払い</b>から選べる</td></tr>
+<tr><td>振替日</td><td>毎月<b>18日</b>（土日祝なら翌営業日）</td></tr>
+<tr><td>前納</td><td><b>1年以内の前納掛金も</b>、その年の所得控除にできる</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+<p><b>「増やして節税、苦しい年は減らす」ができる</b></p>
+<p>掛金は月1回まで自由に増減できるので、<b>利益が出た年は掛金を増やして節税し、資金繰りが苦しい年は下限の1,000円まで減らす</b>といった調整が可能です。さらに<b>12月にその年の分をまとめて前納</b>すれば（1年以内の前納）、払った年の所得控除に間に合います。所得が読めない自営業・フリーランスと相性のよい仕組みです。</p>
+</div>
+
+<h2 id="hayami">課税所得・掛金別の節税額 早見表</h2>
+
+<p>課税される所得金額と月額掛金の組み合わせで、<b>1年あたりの節税額</b>がどう変わるかの早見表です。所得税（速算表）＋復興特別所得税（所得税の2.1%）＋住民税所得割（概算10%）の合計で、いずれも上の計算機と同じ計算です。かっこ内は<b>掛金に対する節税率</b>です。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>課税される所得金額</th><th>月1万円<br>（年12万円）</th><th>月3万円<br>（年36万円）</th><th>月5万円<br>（年60万円）</th><th>月7万円<br>（年84万円・上限）</th></tr>
+</thead>
+<tbody>
+<tr><td>195万円</td><td>18,126円<br>（15.1%）</td><td>54,378円<br>（15.1%）</td><td>90,630円<br>（15.1%）</td><td>126,882円<br>（15.1%）</td></tr>
+<tr><td>300万円</td><td>24,252円<br>（20.2%）</td><td>72,756円<br>（20.2%）</td><td>121,260円<br>（20.2%）</td><td>169,764円<br>（20.2%）</td></tr>
+<tr><td>500万円</td><td>36,504円<br>（30.4%）</td><td>109,512円<br>（30.4%）</td><td>182,520円<br>（30.4%）</td><td><b>255,528円</b><br>（30.4%）</td></tr>
+<tr><td>700万円</td><td>38,035円<br>（31.7%）</td><td>111,043円<br>（30.8%）</td><td>184,051円<br>（30.7%）</td><td>257,059円<br>（30.6%）</td></tr>
+<tr><td>900万円</td><td>40,179円<br>（33.5%）</td><td>120,538円<br>（33.5%）</td><td>200,898円<br>（33.5%）</td><td>281,257円<br>（33.5%）</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>同じ掛金でも、課税所得500万円の人と195万円の人では節税額が倍以上違います。<b>課税所得が高い人ほど、上限まで掛けるうまみが大きい</b>ことがわかります。課税所得500万円で上限の月7万円を掛ければ、<b>年84万円の積立をしながら、その約3割にあたる255,528円の税金が戻ってくる</b>計算です。</p>
+
+<figure class="figure">
+<svg viewBox="0 0 640 210" role="img" aria-label="課税所得500万円・月7万円の場合、年84万円の掛金のうち255,528円が節税で戻り、実質負担は584,472円という帯グラフ">
+  <text x="0" y="14" font-size="13" fill="currentColor">課税される所得金額 500万円・月70,000円（年84万円）の掛金の内わけ　※幅は金額比</text>
+
+  <rect x="0" y="30" width="445" height="34" fill="var(--accent)" opacity="0.14" stroke="var(--accent)"/>
+  <rect x="445" y="30" width="195" height="34" fill="var(--accent)" opacity="0.30" stroke="var(--accent)"/>
+  <text x="10" y="52" font-size="13" fill="currentColor">実質の自己負担 584,472円</text>
+  <text x="632" y="52" font-size="12" fill="currentColor" text-anchor="end">節税で戻る 255,528円</text>
+
+  <text x="0" y="92" font-size="12" fill="currentColor">節税 255,528円 の内わけ:</text>
+  <rect x="0" y="102" width="420" height="26" fill="var(--accent)" opacity="0.22" stroke="var(--accent)"/>
+  <rect x="420" y="102" width="210" height="26" fill="var(--accent)" opacity="0.12" stroke="var(--accent)"/>
+  <rect x="630" y="102" width="10" height="26" fill="var(--sub)" opacity="0.30" stroke="var(--sub)"/>
+  <text x="8" y="120" font-size="12" fill="currentColor">所得税 168,000円</text>
+  <text x="428" y="120" font-size="12" fill="currentColor">住民税 84,000円</text>
+  <text x="620" y="120" font-size="11" fill="currentColor" text-anchor="end">復興 3,528円 →</text>
+
+  <line x1="0" y1="150" x2="640" y2="150" stroke="currentColor" opacity="0.25"/>
+  <text x="0" y="174" font-size="12" fill="currentColor">掛金 840,000円は「自分の退職金」として積み立てられ、そのうえで 255,528円 の税金が戻る。</text>
+  <text x="0" y="196" font-size="11" fill="currentColor">※ 掛金の全額が小規模企業共済等掛金控除。所得税は速算表・住民税は所得割10%の概算。</text>
+</svg>
+<figcaption>課税所得500万円・上限掛金の例。掛金84万円は積み立てつつ、掛金の約3割にあたる255,528円が節税で戻る。</figcaption>
+</figure>
+
+<h2 id="keisan">節税額の計算方法</h2>
+
+<p>この計算機は、<b>掛金を引く前と引いた後の税額の差</b>を節税額としています。単純に「掛金×税率」で出すと、控除によって税率のブラケット（段）をまたぐ人の額がずれるため、<b>国税庁の速算表で超過累進を厳密に</b>反映しています。手順は次のとおりです。</p>
+
+<ol>
+<li><b>所得税の減少</b>：速算表で「課税所得の税額」と「課税所得−年間掛金の税額」を出し、その差を取る。</li>
+<li><b>復興特別所得税の減少</b>：減った所得税の<b>2.1%</b>（令和19年分まで課される）。</li>
+<li><b>住民税の減少</b>：所得割を<b>一律10%</b>として、年間掛金×10%で概算する。</li>
+</ol>
+
+<p>この3つの合計が年間の節税額です。所得税の速算表（課税所得に応じた税率と控除額）は次のとおりで、計算機はこの表を読んで計算しています。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>課税される所得金額</th><th>税率</th><th>控除額</th></tr>
+</thead>
+<tbody>
+<tr><td>1,000円 〜 194万9,000円</td><td>5%</td><td>0円</td></tr>
+<tr><td>195万円 〜 329万9,000円</td><td>10%</td><td>97,500円</td></tr>
+<tr><td>330万円 〜 694万9,000円</td><td>20%</td><td>427,500円</td></tr>
+<tr><td>695万円 〜 899万9,000円</td><td>23%</td><td>636,000円</td></tr>
+<tr><td>900万円 〜 1,799万9,000円</td><td>33%</td><td>1,536,000円</td></tr>
+<tr><td>1,800万円 〜 3,999万9,000円</td><td>40%</td><td>2,796,000円</td></tr>
+<tr><td>4,000万円 以上</td><td>45%</td><td>4,796,000円</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>たとえば課税所得500万円は20%の段にいます。ここから掛金84万円を引くと416万円で、まだ同じ20%の段にとどまるため、所得税は「84万円×20%＝168,000円」減ります。これに復興特別所得税3,528円（168,000円×2.1%）と住民税84,000円（84万円×10%）を足した<b>255,528円</b>が節税額です。</p>
+
+<h2 id="uketori">受け取るときの税金</h2>
+
+<p>節税で得をしても「受け取るときに課税されて相殺されるのでは」と気になるところです。結論として、<b>共済金の受け取りには、通常の所得より軽い課税の仕組みが用意されています</b>（中小機構）。</p>
+
+<table>
+<thead>
+<tr><th>受け取り方</th><th>税金の扱い</th></tr>
+</thead>
+<tbody>
+<tr><td>一括で受け取る</td><td><b>退職所得</b>扱い（退職所得控除が使える）</td></tr>
+<tr><td>分割で受け取る</td><td><b>公的年金等の雑所得</b>扱い（公的年金等控除が使える）</td></tr>
+<tr><td>一括と分割の併用</td><td>それぞれの扱い（併用も可能）</td></tr>
+</tbody>
+</table>
+
+<p>共済金は<b>退職・廃業のとき</b>に受け取れ、満期や満額はありません。一括受け取りなら退職所得控除、分割受け取りなら公的年金等控除が働くため、掛金を払ったときに受けた所得控除が、そのまま受取時に取り返されるわけではありません。<b>払うときに高い税率で節税し、受け取るときは軽い課税で受け取る</b>——ここに制度の妙味があります。</p>
+
+<div class="note">
+ただし<b>65歳未満で任意解約</b>した解約手当金は<b>一時所得</b>扱いになります（退職所得より重くなりやすい）。受け取り時の具体的な税額は、退職所得控除・公的年金等控除の額や他の所得によって変わるため、実際の金額は税理士・お住まいの税務署でご確認ください。
+</div>
+
+<h2 id="shikaku">加入できる人</h2>
+
+<p>小規模企業共済に加入できるのは、<b>個人事業の事業主とその共同経営者、および小規模企業を経営する会社などの役員</b>です（中小機構）。業種ごとに常時使用する従業員数の上限などの要件があり、加入資格は事業の形態（個人事業主・共同経営者・会社役員）によって細かく定められています。自分が対象かどうかは、中小機構の加入資格ページで事業形態を選んで確認してください。</p>
+
+<div class="callout">
+<p><b>会社員（給与所得だけの人）は原則対象外</b></p>
+<p>この制度は<b>小規模な事業の経営者・役員のための退職金制度</b>です。勤め先から給与だけを受け取る会社員は原則として加入できません。給与所得者が掛金の全額所得控除で似た節税をしたい場合は、<b>iDeCo（個人型確定拠出年金）</b>が候補になります（iDeCoの掛金も同じ小規模企業共済等掛金控除の対象です）。副業が事業所得の規模になっているかなど、加入資格は必ず一次情報で確認してください。</p>
+</div>
+
+<h2 id="chuii">始める前に知っておく注意点</h2>
+
+<p>節税メリットが大きい一方で、次の点は加入前に理解しておくべきです（中小機構）。</p>
+
+<ul>
+<li><b>短期で解約すると元本割れの可能性がある。</b>解約手当金は掛金納付月数が<b>12か月未満だと受け取れず</b>、<b>240か月（20年）を下回る</b>と受取額が掛金合計を下回ることがあります。長く続ける前提の制度です。</li>
+<li><b>掛金は経費ではない。</b>事業の損金・必要経費にはならず、個人の所得控除です（前述）。</li>
+<li><b>受け取り方で税の扱いが変わる。</b>とくに65歳未満の任意解約は一時所得になります。出口も含めて設計するのが得策です。</li>
+</ul>
+
+<p>逆に言えば、<b>長く続けられる範囲の掛金で、退職・廃業まで積み立てる</b>のが基本の使い方です。無理のない月額から始め、利益の出た年に増額していく——上の計算機で、掛金を変えたときに節税額がどう動くかを試してみてください。</p>
+
+<a class="tool-cta" href="../tedori/">手取り計算機で、いまの手取りと社会保険料を確かめる</a>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 小規模企業共済でいくら節税できますか？</h3>
+<p>A. 掛金は全額が所得控除になるため、節税額は課税される所得金額と掛金月額で決まります。課税される所得金額500万円の人が上限の月70,000円（年84万円）を払うと、所得税・復興特別所得税・住民税を合わせて年間255,528円の節税になります（掛金の30.4%）。同じ所得でも掛金が少なければ節税額もほぼ比例して小さくなり、月30,000円（年36万円）なら109,512円です。上の計算機に課税される所得金額と掛金月額を入れると、あなたの年間節税額が出ます。</p>
+
+<h3>Q. 掛金はいくらから始められますか？</h3>
+<p>A. 月額1,000円から70,000円までの範囲で、500円きざみで自由に決められます。加入後も月に1回に限り増額・減額でき、1年以内の前納掛金もその年の所得控除にできます。掛金は共済契約者本人名義の口座から毎月18日（休日なら翌営業日）に振り替えられ、月払いのほか半年払い・年払いも選べます。所得が読みにくい年は少額で始め、余裕のある年に増やす使い方ができます。</p>
+
+<h3>Q. 払った掛金は経費になりますか？</h3>
+<p>A. なりません。掛金は事業上の損金や必要経費には算入できず、あくまで個人の「小規模企業共済等掛金控除」として課税所得から差し引きます。法人の役員が加入した場合も、法人の経費ではなく役員個人の所得控除です。税負担を下げる効果は経費と同じですが、確定申告では経費欄ではなく所得控除欄に記載する点が異なります。</p>
+
+<h3>Q. 受け取るときに税金はかかりますか？</h3>
+<p>A. かかりますが、受け取り方で扱いが変わります。共済金を一括で受け取ると退職所得、分割で受け取ると公的年金等の雑所得となり、どちらも退職所得控除や公的年金等控除が使えるため、通常の所得より軽い課税で済みます。ただし65歳未満で任意解約した解約手当金は一時所得扱いとなり、掛金納付月数が240か月（20年）を下回ると受取額が掛金合計を下回ることがあります。</p>
+
+<h3>Q. 課税される所得金額とは何ですか？</h3>
+<p>A. 年収でも、事業の売上でもありません。源泉徴収票や確定申告書に載る「課税される所得金額」で、所得から基礎控除・扶養控除・社会保険料控除などをすべて引いた後の、税率をかける直前の金額です。この額が大きい人ほど高い税率がかかるため、同じ掛金でも節税額は大きくなります。会社員なら源泉徴収票の「課税される所得金額」、個人事業主なら確定申告書の「課税される所得金額」を使ってください。</p>
+
+<section class="related">
+<div class="tool-grid">
+<a class="tool-card" href="../tedori/"><b>手取り計算機</b><span>額面の月給から、社会保険料・所得税・住民税を引いた手取りを計算します。</span></a>
+<a class="tool-card" href="../gensen-choshu/"><b>源泉徴収税額計算</b><span>令和8年分の月額表から、扶養人数に応じた所得税を求めます。</span></a>
+<a class="tool-card" href="../juminzei/"><b>住民税計算機</b><span>課税所得から住民税（所得割・均等割）の目安を計算します。</span></a>
+</div>
+</section>
+
+<h2 id="source">出典</h2>
+<ul>
+<li>国税庁「No.1135 小規模企業共済等掛金控除」— <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1135.htm">nta.go.jp</a>。小規模企業共済法に規定された共済契約に基づく掛金等を支払った場合、その支払った金額について所得控除が受けられる（＝全額所得控除）。iDeCo（確定拠出年金）の掛金も同じ控除の対象。</li>
+<li>国税庁「No.2260 所得税の税率」— <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm">nta.go.jp</a>。課税される所得金額に応じた税率（5%〜45%の超過累進）と控除額の速算表。本ツールの所得税の計算はこの速算表による。</li>
+<li>中小機構（独立行政法人 中小企業基盤整備機構）「小規模企業共済の掛金」— <a href="https://kyosai-web.smrj.go.jp/customer/skyosai/installment/">kyosai-web.smrj.go.jp</a>。掛金月額は1,000円〜70,000円の範囲で500円単位。掛金は全額を小規模企業共済等掛金控除として所得から控除でき、1年以内の前納掛金も同様に控除できる。掛金は事業上の損金・必要経費には算入できない。掛金月額は加入後も月に1回に限り増減できる。振替日は毎月18日（休日なら翌営業日）。</li>
+<li>中小機構「小規模企業共済（制度概要）」— <a href="https://kyosai-web.smrj.go.jp/skyosai/know/">kyosai-web.smrj.go.jp</a>。共済金は退職・廃業時に受け取り可能で満期・満額はない。受け取り方は一括・分割・併用が選べ、一括受取りは退職所得扱い、分割受取りは公的年金等の雑所得扱い。</li>
+<li>中小機構「小規模企業共済の加入資格」— <a href="https://kyosai-web.smrj.go.jp/skyosai/entry/index_02.html">kyosai-web.smrj.go.jp</a>。個人事業の事業主とその共同経営者、および小規模企業を経営する会社等の役員が加入できる。</li>
+<li>中小機構「共済金・解約手当金の請求」— <a href="https://kyosai-web.smrj.go.jp/customer/skyosai/claim/">kyosai-web.smrj.go.jp</a>。解約手当金は掛金納付月数が12か月未満だと受け取れず、掛金区分ごとの掛金納付月数が240か月を下回ると解約手当金が掛金合計額を下回ることがある。65歳未満の任意解約による解約手当金は一時所得扱い。</li>
+</ul>
+
+<p class="note">本ページの解説・計算例は2026年時点の法令にもとづく一般的な情報であり、個別の事案に対する助言ではありません。住民税の減少は所得割を一律10%とした概算で、均等割・調整控除などは含みません。受け取り時の税額は退職所得控除・公的年金等控除の額や他の所得によって変わります。実際の加入資格・税額は中小機構および税理士・税務署でご確認ください。</p>
+
+</article>
+</main>
+<footer class="site" style="display:block">
+  計算の出典: 国税庁「所得税の税率（速算表・No.2260）」／国税庁「小規模企業共済等掛金控除（No.1135）」／中小機構「小規模企業共済の掛金」<span id="src-note"></span>。<br>
+  住民税の減少は所得割10%の概算です。入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { taxSavingByMonthly } from "../assets/setsuzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+let D = null;
+
+// 参照データ(速算表・料率)は非同期で届く。**届く前に計算ボタンを押されても await で待つ**
+// (回線が遅いユーザーだけ空データで計算されるのを防ぐ)。
+// この catch が拾ってよいのは「データが手に入らなかったこと」だけ。
+const coreReady = fetch("../assets/setsuzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { D = d; return true; })
+  .catch(() => false);
+
+// 年度・出典の表示は飾り。ここで転んでも計算は止めない(Ready には影響させない)。
+coreReady.then((ok) => { if (ok) showMeta(); }).catch(() => {});
+
+// 年分は**データが持っている値**を出す(ページに「令和8年分」と手書きしない)。
+function showMeta() {
+  const y = D?._meta?.year;
+  $("src-note").textContent = y ? `（${y}の速算表・料率）` : "";
+}
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+
+  // 参照データの到着を必ず待つ。データが分からない状態で節税額は答えない(fail closed)。
+  const ok = await coreReady;
+  if (!ok || !D || !D.shokibo_kyosai) {
+    box.innerHTML = `<div class="note"><b>速算表・料率を読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。データが分からない状態で節税額を答えることはできません。</div>`;
+    return;
+  }
+
+  const kazei = Number($("kazei").value);
+  if (!kazei || kazei <= 0) { box.innerHTML = "課税される所得金額を入力してください。"; return; }
+
+  const monthly = Number($("monthly").value);
+  const K = D.shokibo_kyosai;
+  if (!monthly || monthly < K.min_monthly) {
+    box.innerHTML = `月額掛金は${K.min_monthly.toLocaleString("ja-JP")}円以上を入力してください（500円単位）。`;
+    return;
+  }
+
+  let r;
+  try {
+    r = taxSavingByMonthly({ kazeiShotoku: kazei, monthly, annualLimit: K.max_monthly * 12 }, D);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  const trow = (label, amount, sub = "") => `
+    <tr><td style="padding:6px 8px">${label}${sub ? `<br><span style="font-size:12px;color:var(--sub)">${sub}</span>` : ""}</td>
+        <td style="padding:6px 8px;text-align:right;white-space:nowrap">${yen(amount)}</td></tr>`;
+
+  let html = `
+    <div class="row">年間の節税額 <span class="big">${yen(r.total)}</span>
+      <span class="hint">（掛金 年${yen(r.annual)} の ${(r.effectiveRate * 100).toFixed(1)}%）</span></div>
+    <div style="overflow-x:auto;margin-top:10px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr style="background:#e7f3f0"><th style="text-align:left;padding:6px 8px">内わけ</th>
+        <th style="text-align:right;padding:6px 8px">年額</th></tr>
+      ${trow("所得税の減少", r.shotokuGen, `課税所得 ${yen(r.kazeiShotoku)} → ${yen(Math.max(0, r.kazeiShotoku - r.usedDeduction))}（速算表の差）`)}
+      ${trow("復興特別所得税の減少", r.fukkoGen, "所得税の減少 × 2.1%")}
+      ${trow("住民税の減少（概算）", r.juminGen, "所得割 一律10%で概算")}
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">年間の節税額</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.total)}</td></tr>
+    </table></div>
+
+    <div style="margin-top:12px;font-size:13.5px">
+      <b>掛金は全額が小規模企業共済等掛金控除</b>になります。月額 ${yen(r.monthly)} × 12か月 ＝ 年 ${yen(r.annual)} を、その年の課税所得から差し引いた前提です。
+    </div>`;
+
+  // 上限(月70,000円)超過は黙って丸めず申告する
+  if (r.beyondLimit) {
+    html += `<div style="font-size:12.5px;color:#b4232a;margin-top:8px">
+      ※ 月額掛金の上限は<b>${K.max_monthly.toLocaleString("ja-JP")}円</b>（年${(K.max_monthly * 12).toLocaleString("ja-JP")}円）です。
+      入力額はこれを超えているため、<b>上限を超える掛金は設定できません</b>。上限額で計算しています。</div>`;
+  }
+  // 掛金より課税所得が小さいと、控除しきれない分は節税に効かない
+  if (r.usedDeduction < r.annual) {
+    html += `<div style="font-size:12.5px;color:var(--sub);margin-top:8px">
+      ※ 課税される所得金額（${yen(r.kazeiShotoku)}）が年間掛金（${yen(r.annual)}）より小さいため、
+      節税に効くのは<b>課税所得の範囲まで（${yen(r.usedDeduction)}）</b>です（それ以上は下げる税金がありません）。</div>`;
+  }
+  html += `<div style="font-size:12.5px;color:var(--sub);margin-top:8px">
+      ※ 所得税は国税庁の速算表で超過累進を厳密に計算しています。<b>住民税の減少は所得割を一律10%とした概算</b>で、
+      均等割・調整控除などは含みません（住民税は課税所得の算定が所得税と少し異なるため）。
+      ${r.year ? `<span class="hint">（${r.year}の速算表・料率）</span>` : ""}</div>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>
