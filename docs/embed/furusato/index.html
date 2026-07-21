@@ -222,6 +222,9 @@ $("calc").addEventListener("click", async () => {
       sonotaShotoku: Number($("sonotaShotoku").value),
       family,
       kifu: kifuInput === "" ? null : Number(kifuInput),
+      // 2026年寄附＝令和9年度住民税＝令和8年分の所得。令和8年度改正（措法29条の4ほか）を
+      // 反映した規則で計算する（本体ページと同じ配線。落とすと限度額を過大に出す）
+      zeisei: "r8",
     }, D);
   } catch (e) {
     box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
