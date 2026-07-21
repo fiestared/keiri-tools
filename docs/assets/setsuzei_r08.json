@@ -8,7 +8,11 @@
       "shokibo_kyosai": "https://kyosai-web.smrj.go.jp/customer/skyosai/installment/",
       "ideco_gendogaku": "https://www.mhlw.go.jp/content/10600000/001328784.pdf",
       "fuyo_shotokuzei": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1180.htm",
-      "fuyo_juminzei": "https://laws.e-gov.go.jp/law/325AC0000000226"
+      "fuyo_juminzei": "https://laws.e-gov.go.jp/law/325AC0000000226",
+      "haigu_shotokuzei": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1191.htm",
+      "haigu_tokubetsu_shotokuzei": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1195.htm",
+      "haigu_juminzei": "https://laws.e-gov.go.jp/law/325AC0000000226",
+      "kyuyo_shotoku_kojo": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1410.htm"
     }
   },
   "juminzei_shotokuwari_rate": 0.10,
@@ -40,6 +44,34 @@
       { "key": "fuyo",          "label": "専業主婦・主夫（第3号）",        "monthly": 23000, "note": "" }
     ],
     "kaisei_note": "2027年1月から上限引き上げ予定（第1号は月7.5万円、企業年金なしの会社員は月6.2万円）。現行は上記。"
+  },
+  "haigu": {
+    "note": "配偶者控除・配偶者特別控除の額。所得税=国税庁No.1191/No.1195の令和7年分以降の表(令和7年12月1日施行・令和7年分から適用)、住民税=地方税法314条の2第1項10号(配偶者控除)・10号の2(配偶者特別控除)。住民税の納税者所得900万円超の列は条文の『3分の2/3分の1(1万円未満切上げ)』で機械検算済み。配偶者の所得要件は合計所得金額58万円以下(配偶者控除)・58万円超133万円以下(配偶者特別控除)。給与収入190万円以下は給与所得控除が定額65万円(国税庁No.1410・令和7年分以降)なので、その範囲でのみ給与収入→合計所得の換算を行う。",
+    "income_limit": 580000,
+    "income_limit_kyuyo": 1230000,
+    "tokubetsu_max": 1330000,
+    "kyuyo_kojo_min": 650000,
+    "kyuyo_kojo_min_limit": 1900000,
+    "honnin_tiers": [
+      { "upto": 9000000,  "label": "900万円以下",             "kyuyo_label": "給与収入だけなら1,095万円以下" },
+      { "upto": 9500000,  "label": "900万円超950万円以下",    "kyuyo_label": "給与収入だけなら1,095万円超1,145万円以下" },
+      { "upto": 10000000, "label": "950万円超1,000万円以下",  "kyuyo_label": "給与収入だけなら1,145万円超1,195万円以下" }
+    ],
+    "kojo": {
+      "ippan": { "label": "一般の控除対象配偶者",              "shotoku": [380000, 260000, 130000], "jumin": [330000, 220000, 110000] },
+      "rojin": { "label": "老人控除対象配偶者（70歳以上）",    "shotoku": [480000, 320000, 160000], "jumin": [380000, 260000, 130000] }
+    },
+    "tokubetsu_bands": [
+      { "over":  580000, "upto":  950000, "label": "58万円超95万円以下",   "kyuyo": "123万円超160万円以下", "shotoku": [380000, 260000, 130000], "jumin": [330000, 220000, 110000] },
+      { "over":  950000, "upto": 1000000, "label": "95万円超100万円以下",  "kyuyo": "160万円超165万円以下", "shotoku": [360000, 240000, 120000], "jumin": [330000, 220000, 110000] },
+      { "over": 1000000, "upto": 1050000, "label": "100万円超105万円以下", "kyuyo": "165万円超170万円以下", "shotoku": [310000, 210000, 110000], "jumin": [310000, 210000, 110000] },
+      { "over": 1050000, "upto": 1100000, "label": "105万円超110万円以下", "kyuyo": "170万円超175万円以下", "shotoku": [260000, 180000,  90000], "jumin": [260000, 180000,  90000] },
+      { "over": 1100000, "upto": 1150000, "label": "110万円超115万円以下", "kyuyo": "175万円超180万円以下", "shotoku": [210000, 140000,  70000], "jumin": [210000, 140000,  70000] },
+      { "over": 1150000, "upto": 1200000, "label": "115万円超120万円以下", "kyuyo": "180万円超185万円以下", "shotoku": [160000, 110000,  60000], "jumin": [160000, 110000,  60000] },
+      { "over": 1200000, "upto": 1250000, "label": "120万円超125万円以下", "kyuyo": "185万円超190万円以下", "shotoku": [110000,  80000,  40000], "jumin": [110000,  80000,  40000] },
+      { "over": 1250000, "upto": 1300000, "label": "125万円超130万円以下", "kyuyo": "190万円超(所得で入力)", "shotoku": [ 60000,  40000,  20000], "jumin": [ 60000,  40000,  20000] },
+      { "over": 1300000, "upto": 1330000, "label": "130万円超133万円以下", "kyuyo": "同上",                 "shotoku": [ 30000,  20000,  10000], "jumin": [ 30000,  20000,  10000] }
+    ]
   },
   "fuyo": {
     "note": "扶養控除の額。所得税=所得税法84条(同居老親等の+10万円は租税特別措置法41条の16)、住民税=地方税法314条の2第1項11号・第4項。令和8年12月施行の改正法(令和8年法律第12号)の条文と逐語一致を確認済み(令和8年分の額の変更なし)。扶養親族の所得要件は合計所得金額58万円以下(所得税法2条1項34号・令和7年分以後)＝給与収入だけなら123万円以下(給与所得控除の最低保障65万円)。",

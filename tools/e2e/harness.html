@@ -2037,6 +2037,31 @@ SCENES.fuyo = async () => {
   };
 };
 
+// 配偶者控除・配偶者特別控除: 給与150万(→所得85万)は配特の帯1=所得税38万/住民税33万と
+// **額が違う帯**なので、住民税の減少が所得税側の控除で計算される事故(fuyoと同型)がここで落ちる。
+SCENES.haigusha = async () => {
+  const doc = await open("/docs/haigusha-kojo/");
+  await waitFor(() => doc.querySelector('#honnin option[value="9000000"]'), "配偶者控除の所得区分の読み込み");
+  set(doc, "honnin", "9000000");
+  set(doc, "htype", "kyuyo");
+  set(doc, "hincome", "1500000");
+  set(doc, "kazei", "5000000");
+  click(doc, "calc");
+  await waitFor(() => { const t = text(doc, "result"); return t && !/計算中/.test(t); }, "配偶者控除の計算結果");
+  const body = text(doc, "result");
+  return {
+    total: setsuzeiNum(body, /年間の節税額 ¥([\d,]+)/),
+    // ★所得税と住民税で控除額が違うことが画面に出ていること(38万/33万)
+    kojoShotoku: setsuzeiNum(body, /控除 所得税¥([\d,]+)/),
+    kojoJumin: setsuzeiNum(body, /／住民税¥([\d,]+)/),
+    shotokuGen: setsuzeiNum(body, /所得税の減少[^¥]*¥([\d,]+)/),
+    juminGen: setsuzeiNum(body, /住民税の減少[^¥]*¥([\d,]+)/),
+    // 給与150万は配偶者控除でなく**配偶者特別控除の帯1**と名乗ること(換算の配線も含めて固定)
+    isTokubetsu: /配偶者特別控除（配偶者の合計所得 58万円超95万円以下/.test(body),
+    failed: body.includes("読み込めませんでした"),
+  };
+};
+
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ──────────────────────────────
 // 本体ページと埋め込みウィジェットに**同じ入力**を与え、利用者に見えている見出し値(.big)が
 // 一致することを確かめる。期待値の正しさは本体側の各シーン(一次情報オラクル)が担保して
@@ -2166,6 +2191,9 @@ const EMBED_PARITY = {
   "shokibo-kyosai": { ops: [["set", "kazei", 5000000], ["set", "monthly", 70000]] },
   "fuyo-kojo": { wait: "#n-ippan",
     ops: [["set", "n-ippan", 1], ["set", "n-tokutei", 1], ["set", "kazei", 5000000]] },
+  "haigusha-kojo": { wait: '#honnin option[value="9000000"]',
+    ops: [["set", "honnin", "9000000"], ["set", "htype", "kyuyo"],
+          ["set", "hincome", 1500000], ["set", "kazei", 5000000]] },
 };
 for (const [t, cfg] of Object.entries(EMBED_PARITY)) SCENES[`embed_${t}`] = embedParityScene(t, cfg);
 

@@ -670,6 +670,11 @@ const SCENES = [
   { name: "fuyo", expect: (s) =>
       s.total === 284242 && s.shotokuGen === 202000 && s.juminGen === 78000 &&
       s.kojoShotoku === 1010000 && s.kojoJumin === 780000 && !s.failed },
+  // 配偶者控除・配偶者特別控除: 本人900万以下・配偶者給与150万(→所得85万・配特帯1=38万/33万)・
+  // 課税所得500万 → 節税110,596。★住民税の減少は33,000(住民税側の控除×10%)。38,000に化けたら落ちる
+  { name: "haigusha", expect: (s) =>
+      s.total === 110596 && s.shotokuGen === 76000 && s.juminGen === 33000 &&
+      s.kojoShotoku === 380000 && s.kojoJumin === 330000 && s.isTokubetsu && !s.failed },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────
@@ -680,7 +685,7 @@ const SCENES = [
 // 期待値をもう一組持たない(二重管理は必ず腐る)。
 const EMBED_TOOLS = [
   "bonus-tedori", "eigyobi", "furusato", "fuyo-kojo", "genka", "gensen-choshu",
-  "ideco-setsuzei", "ikuji", "inshi",
+  "haigusha-kojo", "ideco-setsuzei", "ikuji", "inshi",
   "iryohi", "jidoshazei", "juminzei", "jutaku", "kabe", "kihonteate", "papa-ikukyu",
   "senpou-futan", "shakai-hoken", "shiharai-site", "shobyo", "shohizei", "shokibo-kyosai",
   "shussan", "sozokuzei", "taishokukin", "tedori", "yukyu", "zangyodai", "zengin-kana", "zoyozei",

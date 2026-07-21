@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>配偶者控除・配偶者特別控除シミュレーター｜いくら税金が安くなるか計算</title>
+<meta name="description" content="配偶者控除・配偶者特別控除でどれだけ所得税・住民税が安くなるかを試算。あなたの所得区分と配偶者のパート年収（給与収入または合計所得）を入れるだけで、控除額と年間の節税額を自動計算します。令和7年分からの新しい基準（所得58万円・給与123万円）に対応。令和8年分の所得税速算表で計算。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/haigusha-kojo/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "配偶者控除・配偶者特別控除シミュレーター",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "あなた（納税者本人）の合計所得金額の区分と、配偶者の収入（給与収入または合計所得金額）から、配偶者控除・配偶者特別控除の控除額（所得税・住民税）と年間の節税額を計算します。所得税は速算表（超過累進）で計算。所得税と住民税で控除額が異なる点も反映。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "配偶者控除・配偶者特別控除シミュレーター"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 配偶者控除と配偶者特別控除の違いは何ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 配偶者の合計所得金額で決まります。58万円以下（給与収入だけなら123万円以下）なら配偶者控除、58万円超133万円以下（給与収入だけなら123万円超・約201万円まで）なら配偶者特別控除です。どちらも最大38万円（70歳以上の配偶者は配偶者控除で最大48万円）で、配偶者特別控除は配偶者の所得が増えるほど段階的に減ります。どちらの場合も、控除を受けるあなたの合計所得金額が1,000万円を超えると受けられません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. パートの「150万円の壁」はどうなりましたか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 令和7年分からは「160万円」です。配偶者特別控除が満額38万円のまま受けられる配偶者の給与収入の上限は、以前は150万円でしたが、令和7年度税制改正で配偶者の所得の帯が95万円以下（給与所得控除の最低保障65万円と合わせて給与収入160万円以下）に引き上げられました。160万円を超えても控除がいきなり消えるわけではなく、階段状に減りながら約201万円まで続きます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 「103万円の壁」を超えると配偶者控除はなくなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. いまの基準は103万円ではなく123万円で、超えても配偶者特別控除に切り替わるだけです。令和7年分から配偶者控除の所得要件が合計所得金額58万円以下（給与収入123万円以下）に引き上げられました。123万円を超えても、給与収入160万円までは配偶者特別控除で同額の38万円が受けられるため、あなたの税金が急に増えることはありません。ただし配偶者自身の社会保険（106万円・130万円の壁）は別の制度なので注意してください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 本人の年収が高いと配偶者控除は受けられませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. あなたの合計所得金額が1,000万円（給与収入だけなら1,195万円）を超えると、配偶者控除も配偶者特別控除も受けられません。また900万円（給与収入1,095万円）を超えると控除額が段階的に減り、一般の配偶者控除38万円が26万円（900万円超950万円以下）、13万円（950万円超1,000万円以下）になります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 内縁・事実婚のパートナーでも配偶者控除を受けられますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 受けられません。配偶者控除・配偶者特別控除の対象は民法の規定による配偶者だけで、内縁関係の人は該当しないと国税庁が明記しています。婚姻届を出していない事実婚・同性パートナーは、生計を一にしていても対象外です。なお住民税（地方税法）でも扱いは同じです。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 配偶者控除・配偶者特別控除シミュレーター</nav>
+
+<section class="hero">
+  <h1>配偶者控除・配偶者特別控除シミュレーター</h1>
+  <p>配偶者を扶養していると、<b>配偶者控除</b>または<b>配偶者特別控除</b>で所得税・住民税が安くなります。<b>あなたの所得区分</b>と<b>配偶者の年収（パート給与または所得）</b>を入れるだけで、どちらの控除がいくら受けられ、<b>年間いくら税金が下がるか</b>を自動計算します。令和7年分からの新基準（配偶者の所得58万円・給与123万円）に対応しています。</p>
+</section>
+
+<div class="card">
+  <label for="honnin">あなた（控除を受ける人）の合計所得金額<span class="hint">　900万円を超えると控除額が減り、1,000万円超で対象外です</span></label>
+  <select id="honnin"><option value="">読み込み中…</option></select>
+
+  <label for="hincome">配偶者の収入<span class="hint">　パートなど給与だけの人は「給与収入」のまま年収を入れてください</span></label>
+  <div style="display:flex;gap:8px">
+    <select id="htype" style="width:13em;flex:none">
+      <option value="kyuyo" selected>給与収入（年収）で入力</option>
+      <option value="shotoku">合計所得金額で入力</option>
+    </select>
+    <input type="number" id="hincome" placeholder="例: 1100000" inputmode="numeric" min="0" step="10000">
+  </div>
+
+  <label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13.5px">
+    <input type="checkbox" id="rojin" style="width:auto">
+    配偶者は70歳以上（その年12月31日時点）<span class="hint">　老人控除対象配偶者は控除額が増えます</span>
+  </label>
+
+  <label for="kazei">あなたの課税される所得金額（課税所得・円）<span class="hint">　源泉徴収票や確定申告書の「課税される所得金額」。年収ではありません</span></label>
+  <input type="number" id="kazei" placeholder="例: 4000000" inputmode="numeric" min="0" step="10000">
+
+  <button class="primary" id="calc">節税額を計算する</button>
+  <div class="result" id="result"></div>
+  <p class="hint" id="yoken-note" style="margin-top:10px"></p>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p>配偶者控除は、<b>合計所得金額58万円以下（給与収入だけなら123万円以下）の配偶者</b>がいる人の所得から最大38万円（70歳以上の配偶者は最大48万円）を差し引く所得控除です。配偶者の所得が58万円を超えても、133万円以下までは<b>配偶者特別控除</b>が段階的に受けられます。上の計算機で、あなたの所得区分と配偶者の年収から、<b>どちらの控除がいくら受けられ、所得税・住民税が年間いくら下がるか</b>が出せます。以下では、<b>控除額の表（所得税・住民税）、要件、そして「103万円・150万円の壁」がいまどうなったか</b>まで、一次資料（国税庁・条文）にもとづいて解説します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+
+<nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#tsukaikata">使い方と注意点</a></li>
+<li><a href="#kojo">配偶者控除の金額 — 最大38万円（老人配偶者48万円）</a></li>
+<li><a href="#tokubetsu">配偶者特別控除の金額 — 配偶者の所得で9段階</a></li>
+<li><a href="#yoken">要件 — 配偶者の所得58万円以下（給与なら123万円）</a></li>
+<li><a href="#reidai">課税所得別の節税額の例</a></li>
+<li><a href="#taishogai">対象にならないケース — 内縁・本人1,000万円超・専従者</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav>
+
+<h2 id="tsukaikata">使い方と注意点</h2>
+  <div class="callout">
+    <b>「あなたの合計所得金額」と「課税される所得金額」は別の数字です</b>
+    控除額の区分（900万円以下かどうか）は<b>合計所得金額</b>（収入から給与所得控除などを引いた所得の合計。所得控除を引く前）で決まり、節税額は<b>課税される所得金額</b>（そこから基礎控除・社会保険料控除などの所得控除をすべて引いた後）で決まります。源泉徴収票なら、合計所得金額は「給与所得控除後の金額」、課税される所得金額は「給与所得控除後の金額」から「所得控除の額の合計額」を引いた額です。すでに配偶者控除が引かれた後の課税所得を入れると二重に引くことになるため、<b>「配偶者控除を引く前」の課税所得</b>を入れると正確です。
+  </div>
+  <h3>このツールの前提</h3>
+  <p>控除額は国税庁の表（No.1191・No.1195の令和7年分以降の表）と地方税法の条文をそのまま参照データに持ち、所得税は国税庁の<b>所得税の速算表</b>で計算します。控除で税率の段をまたぐ場合も、速算表の差をとって<b>超過累進</b>を正しく反映します。住民税の所得割は<b>一律10％</b>として概算します。<b>配偶者控除・配偶者特別控除は所得税と住民税で控除額が違う</b>（例: 一般の配偶者控除は所得税38万円・住民税33万円）ため、住民税の減少は住民税側の控除額で計算します。復興特別所得税（所得税額の2.1％）の減少も含めています。配偶者の給与収入は、<b>収入190万円以下なら給与所得控除が定額65万円</b>（令和7年分以降）なので「収入−65万円」で所得に換算します。190万円を超える場合は控除額が収入によって変わるため、このツールでは<b>合計所得金額での入力</b>をお願いしています（黙って概算しません）。</p>
+  <div class="note">
+    本ツールの結果は目安です。実際の税額は、他の所得控除や税額控除、お住まいの市区町村などによって変わります。申告の前に税務署・税理士でご確認ください。
+  </div>
+
+<h2 id="kojo">配偶者控除の金額 — 最大38万円（老人配偶者48万円）</h2>
+
+<p>配偶者の合計所得金額が<b>58万円以下</b>（給与収入だけなら123万円以下）のときは<b>配偶者控除</b>です。控除額は、<b>控除を受けるあなた自身の合計所得金額</b>で3段階に分かれ、<b>1,000万円を超えると受けられません</b>。70歳以上（その年12月31日時点）の配偶者は「老人控除対象配偶者」として増額されます。<b>所得税と住民税で金額が違う</b>点に注意してください。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th rowspan="2">あなたの合計所得金額</th><th colspan="2">一般の控除対象配偶者</th><th colspan="2">老人控除対象配偶者（70歳以上）</th></tr>
+<tr><th>所得税</th><th>住民税</th><th>所得税</th><th>住民税</th></tr>
+</thead>
+<tbody>
+<tr><td>900万円以下</td><td><b>38万円</b></td><td>33万円</td><td><b>48万円</b></td><td>38万円</td></tr>
+<tr><td>900万円超950万円以下</td><td>26万円</td><td>22万円</td><td>32万円</td><td>26万円</td></tr>
+<tr><td>950万円超1,000万円以下</td><td>13万円</td><td>11万円</td><td>16万円</td><td>13万円</td></tr>
+<tr><td>1,000万円超</td><td colspan="4">適用なし（配偶者特別控除も受けられません）</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>あなたの合計所得金額900万円は、<b>給与収入だけなら1,095万円</b>に当たります（収入850万円超の給与所得控除は上限195万円のため）。同様に950万円は給与収入1,145万円、1,000万円は1,195万円です。上の計算機の区分選択にもこの給与収入のめやすを載せています。</p>
+
+<h2 id="tokubetsu">配偶者特別控除の金額 — 配偶者の所得で9段階</h2>
+
+<p>配偶者の合計所得金額が<b>58万円を超えても、133万円以下までは配偶者特別控除</b>が受けられます。控除額は配偶者の所得が増えるほど階段状に減ります。次の表は<b>所得税</b>の控除額です（国税庁No.1195・令和7年分以降）。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>配偶者の合計所得金額</th><th>給与収入のめやす</th><th>あなたの所得<br>900万円以下</th><th>900万円超<br>950万円以下</th><th>950万円超<br>1,000万円以下</th></tr>
+</thead>
+<tbody>
+<tr><td>58万円超95万円以下</td><td>123万円超160万円以下</td><td><b>38万円</b></td><td>26万円</td><td>13万円</td></tr>
+<tr><td>95万円超100万円以下</td><td>160万円超165万円以下</td><td>36万円</td><td>24万円</td><td>12万円</td></tr>
+<tr><td>100万円超105万円以下</td><td>165万円超170万円以下</td><td>31万円</td><td>21万円</td><td>11万円</td></tr>
+<tr><td>105万円超110万円以下</td><td>170万円超175万円以下</td><td>26万円</td><td>18万円</td><td>9万円</td></tr>
+<tr><td>110万円超115万円以下</td><td>175万円超180万円以下</td><td>21万円</td><td>14万円</td><td>7万円</td></tr>
+<tr><td>115万円超120万円以下</td><td>180万円超185万円以下</td><td>16万円</td><td>11万円</td><td>6万円</td></tr>
+<tr><td>120万円超125万円以下</td><td>185万円超190万円以下</td><td>11万円</td><td>8万円</td><td>4万円</td></tr>
+<tr><td>125万円超130万円以下</td><td>190万円超（所得で入力）</td><td>6万円</td><td>4万円</td><td>2万円</td></tr>
+<tr><td>130万円超133万円以下</td><td>同上（約201万円まで）</td><td>3万円</td><td>2万円</td><td>1万円</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout">
+<p><b>住民税の配偶者特別控除は最大33万円</b></p>
+<p>住民税（地方税法314条の2）では、配偶者の合計所得金額<b>100万円以下の帯の控除額が33万円</b>（あなたの所得900万円超950万円以下なら22万円・950万円超1,000万円以下なら11万円）になります。つまり所得税で38万円・36万円の帯だけ住民税は33万円に頭打ちで、<b>100万円超の帯は所得税と同じ金額</b>です。このツールは住民税の減少を住民税側の控除額で計算しています。</p>
+</div>
+
+<figure class="figure">
+<svg viewBox="0 0 640 260" role="img" aria-label="配偶者の合計所得金額と所得税の控除額（あなたの所得900万円以下の場合）。95万円までは38万円で一定、95万円を超えると階段状に減り、133万円を超えると0円">
+  <text x="20" y="16" font-size="13" fill="currentColor">配偶者の所得と控除額（所得税・あなたの合計所得900万円以下）</text>
+  <!-- 軸 -->
+  <line x1="60" y1="210" x2="600" y2="210" stroke="currentColor" stroke-width="1"/>
+  <line x1="60" y1="50" x2="60" y2="210" stroke="currentColor" stroke-width="1"/>
+  <!-- 38万円の水準線ラベル -->
+  <text x="14" y="62" font-size="11" fill="currentColor">38万円</text>
+  <text x="30" y="214" font-size="11" fill="currentColor">0円</text>
+  <!-- 控除額の階段(95万まで38万 → 階段状 → 133万で0) -->
+  <polyline points="60,58 426,58 426,66 446,66 446,86 465,86 465,106 484,106 484,126 503,126 503,146 523,146 523,166 542,166 542,186 561,186 561,198 573,198 573,210 600,210"
+    fill="none" stroke="var(--accent)" stroke-width="3"/>
+  <!-- 58万の境界(配偶者控除→配偶者特別控除) -->
+  <line x1="284" y1="50" x2="284" y2="210" stroke="currentColor" stroke-width="1" stroke-dasharray="4 3" opacity="0.5"/>
+  <text x="100" y="40" font-size="11.5" fill="currentColor">← 配偶者控除</text>
+  <text x="300" y="40" font-size="11.5" fill="currentColor">配偶者特別控除 →</text>
+  <!-- x軸の目盛り -->
+  <text x="266" y="228" font-size="11" fill="currentColor">58万</text>
+  <text x="408" y="228" font-size="11" fill="currentColor">95万</text>
+  <text x="555" y="228" font-size="11" fill="currentColor">133万</text>
+  <text x="180" y="248" font-size="11" fill="currentColor">配偶者の合計所得金額（給与収入なら「＋65万円」）</text>
+</svg>
+<figcaption>配偶者の合計所得95万円（給与収入160万円)までは控除38万円で満額のまま。95万円を超えると階段状に減り、133万円を超えると0円になる。</figcaption>
+</figure>
+
+<h2 id="yoken">要件 — 配偶者の所得58万円以下（給与なら123万円）</h2>
+
+<p><b>配偶者控除</b>の対象になる「控除対象配偶者」は、その年の12月31日時点で、次の<b>4つの要件すべて</b>に当てはまる人です（加えて、控除を受けるあなたの合計所得金額が1,000万円以下であることが必要です）。</p>
+
+<ol>
+<li><b>民法の規定による配偶者</b>であること（内縁関係の人は該当しません）</li>
+<li>納税者と<b>生計を一にしている</b>こと</li>
+<li>年間の<b>合計所得金額が58万円以下</b>であること（<b>給与収入だけなら123万円以下</b>。令和7年分から48万円→58万円に引き上げ）</li>
+<li>青色申告者の事業専従者としてその年を通じて一度も給与の支払を受けていないこと、または白色申告者の事業専従者でないこと</li>
+</ol>
+
+<p><b>配偶者特別控除</b>は、配偶者の合計所得金額が<b>58万円超133万円以下</b>で、上の1・2・4を満たすときに受けられます。さらに次の要件があります。</p>
+
+<ol>
+<li>控除を受けるあなたの<b>合計所得金額が1,000万円以下</b>であること</li>
+<li><b>配偶者が配偶者特別控除を適用していない</b>こと（夫婦の間で互いに受けることはできません）</li>
+<li>配偶者が、扶養控除等申告書に記載された<b>源泉控除対象配偶者がある居住者として源泉徴収されていない</b>こと（給与・公的年金とも。配偶者が年末調整や確定申告で配偶者特別控除の適用を受けなかった場合等を除く）</li>
+</ol>
+
+<div class="callout">
+<p><b>「103万円以下」は古い情報です — いまは給与収入123万円以下</b></p>
+<p>配偶者控除の所得要件は、令和7年度税制改正で<b>合計所得金額48万円以下から58万円以下</b>に引き上げられました（令和7年12月1日施行・令和7年分から適用）。給与所得控除の最低保障も65万円に上がったため、<b>給与収入だけなら123万円以下（58万円＋65万円）</b>が新しいラインです。配偶者特別控除の範囲も48万円超133万円以下から<b>58万円超133万円以下</b>に変わりました。</p>
+</div>
+
+<h2 id="reidai">課税所得別の節税額の例</h2>
+
+<p>年間の節税額は、あなたの課税所得（＝所得税率）と控除額で決まります。このツールと同じ速算表で計算した実数です（あなたの合計所得金額900万円以下の場合）。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>あなたの課税所得</th><th>配偶者控除（38万/33万円）</th><th>配偶者特別控除（配偶者の所得105万円・31万/31万円）</th></tr>
+</thead>
+<tbody>
+<tr><td>300万円</td><td><b>71,798円</b></td><td><b>62,651円</b></td></tr>
+<tr><td>500万円</td><td><b>110,596円</b></td><td><b>94,302円</b></td></tr>
+<tr><td>700万円</td><td><b>112,127円</b></td><td><b>95,833円</b></td></tr>
+</tbody>
+</table>
+</div>
+
+<p>たとえば課税所得500万円の人の配偶者がパート年収110万円（合計所得45万円）なら配偶者控除で<b>年110,596円</b>、パート年収170万円（合計所得105万円）でも配偶者特別控除で<b>年94,302円</b>の節税になります。配偶者控除・配偶者特別控除は掛金のいらない「申告するだけの控除」なので、<b>申告し忘れがそのまま損</b>になります。申告し忘れていた場合は、確定申告（還付申告は5年以内）で取り戻せます。</p>
+
+<a class="tool-cta" href="../kabe/">配偶者本人の手取りが気になる場合は「年収の壁シミュレーター」で社会保険の壁も確認する</a>
+
+<h2 id="taishogai">対象にならないケース — 内縁・本人1,000万円超・専従者</h2>
+
+<p>「配偶者がいるのに控除がない」と迷いやすいケースをまとめます。</p>
+
+<table>
+<thead>
+<tr><th>ケース</th><th>配偶者控除・配偶者特別控除</th><th>備考</th></tr>
+</thead>
+<tbody>
+<tr><td><b>内縁・事実婚のパートナー</b></td><td>対象外</td><td>民法の規定による配偶者のみが対象</td></tr>
+<tr><td><b>あなたの合計所得金額が1,000万円超</b></td><td>対象外（両方とも）</td><td>給与収入だけなら1,195万円超</td></tr>
+<tr><td><b>配偶者が青色事業専従者として給与を受けている・白色の事業専従者</b></td><td>対象外</td><td>専従者給与・専従者控除との併用不可</td></tr>
+<tr><td><b>配偶者の合計所得金額が133万円超</b></td><td>対象外</td><td>配偶者自身の基礎控除等はある</td></tr>
+<tr><td><b>夫婦がお互いに配偶者特別控除</b></td><td>どちらか一方のみ</td><td>夫婦の間で互いに受けることはできない</td></tr>
+</tbody>
+</table>
+
+<div class="callout">
+<p><b>税金の壁と社会保険の壁は別ものです</b></p>
+<p>このページの58万円（給与123万円）・95万円（給与160万円）・133万円は<b>あなたの税金</b>が変わるライン、いわゆる「106万円の壁・130万円の壁」は<b>配偶者自身の社会保険料</b>が発生するラインで、まったく別の制度です。配偶者の働き方を考えるときは、<a href="../kabe/">年収の壁シミュレーター</a>で社会保険の壁もあわせて確認してください。</p>
+</div>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 配偶者控除と配偶者特別控除の違いは何ですか？</h3>
+<p>A. 配偶者の合計所得金額で決まります。58万円以下（給与収入だけなら123万円以下）なら配偶者控除、58万円超133万円以下（給与収入だけなら123万円超・約201万円まで）なら配偶者特別控除です。どちらも最大38万円（70歳以上の配偶者は配偶者控除で最大48万円）で、配偶者特別控除は配偶者の所得が増えるほど段階的に減ります。どちらの場合も、控除を受けるあなたの合計所得金額が1,000万円を超えると受けられません。</p>
+
+<h3>Q. パートの「150万円の壁」はどうなりましたか？</h3>
+<p>A. 令和7年分からは「160万円」です。配偶者特別控除が満額38万円のまま受けられる配偶者の給与収入の上限は、以前は150万円でしたが、令和7年度税制改正で配偶者の所得の帯が95万円以下（給与所得控除の最低保障65万円と合わせて給与収入160万円以下）に引き上げられました。160万円を超えても控除がいきなり消えるわけではなく、階段状に減りながら約201万円まで続きます。</p>
+
+<h3>Q. 「103万円の壁」を超えると配偶者控除はなくなりますか？</h3>
+<p>A. いまの基準は103万円ではなく123万円で、超えても配偶者特別控除に切り替わるだけです。令和7年分から配偶者控除の所得要件が合計所得金額58万円以下（給与収入123万円以下）に引き上げられました。123万円を超えても、給与収入160万円までは配偶者特別控除で同額の38万円が受けられるため、あなたの税金が急に増えることはありません。ただし配偶者自身の社会保険（106万円・130万円の壁）は別の制度なので注意してください。</p>
+
+<h3>Q. 本人の年収が高いと配偶者控除は受けられませんか？</h3>
+<p>A. あなたの合計所得金額が1,000万円（給与収入だけなら1,195万円）を超えると、配偶者控除も配偶者特別控除も受けられません。また900万円（給与収入1,095万円）を超えると控除額が段階的に減り、一般の配偶者控除38万円が26万円（900万円超950万円以下）、13万円（950万円超1,000万円以下）になります。</p>
+
+<h3>Q. 内縁・事実婚のパートナーでも配偶者控除を受けられますか？</h3>
+<p>A. 受けられません。配偶者控除・配偶者特別控除の対象は民法の規定による配偶者だけで、内縁関係の人は該当しないと国税庁が明記しています。婚姻届を出していない事実婚・同性パートナーは、生計を一にしていても対象外です。なお住民税（地方税法）でも扱いは同じです。</p>
+
+<section class="related">
+<div class="tool-grid">
+<a class="tool-card" href="../kabe/"><b>年収の壁シミュレーター</b><span>配偶者本人の社会保険・税金の壁（106万・130万円など）を判定します。</span></a>
+<a class="tool-card" href="../fuyo-kojo/"><b>扶養控除シミュレーター</b><span>子どもや親の扶養控除で年間いくら税金が下がるかを計算します。</span></a>
+<a class="tool-card" href="../gensen-choshu/"><b>源泉徴収税額計算</b><span>令和8年分の月額表から、毎月の給与の所得税を求めます。</span></a>
+<a class="tool-card" href="../juminzei/"><b>住民税 計算</b><span>年収から住民税の所得割・均等割を計算します。</span></a>
+</div>
+</section>
+
+<h2 id="source">出典</h2>
+<ul>
+<li>国税庁「No.1191 配偶者控除」[令和7年4月1日現在法令等] — 控除額の表（一般38万・26万・13万円／老人48万・32万・16万円）、控除対象配偶者の4要件、所得要件58万円（令和7年12月1日施行・令和7年分から適用）、本人1,000万円超は適用なし</li>
+<li>国税庁「No.1195 配偶者特別控除」[令和7年4月1日現在法令等] — 令和7年分以降の控除額の表（配偶者の所得9帯×本人の所得3段・38万円〜1万円）、要件（夫婦の間で互いに受けられない等）</li>
+<li>地方税法314条の2第1項10号・10号の2 — 住民税の配偶者控除（33万・22万・11万円／老人38万・26万・13万円）・配偶者特別控除（最大33万円。本人900万円超の段は3分の2・3分の1の1万円未満切上げ）— e-Gov法令検索で条文を確認</li>
+<li>国税庁「No.2260 所得税の税率」— 所得税の速算表（5%〜45%）。本ツールの所得税の減少は、この速算表で控除の前後の税額を計算した差で求めている</li>
+<li>国税庁「No.1410 給与所得控除」[令和7年4月1日現在法令等] — 給与収入190万円以下の給与所得控除は定額65万円（給与収入→所得の換算の根拠）、収入850万円超の上限195万円（本人の所得区分の給与収入めやす1,095万・1,145万・1,195万円の根拠）</li>
+<li>復興特別所得税は所得税額の2.1%（令和19年分まで）／住民税所得割の標準税率10%（地方税法）</li>
+</ul>
+
+<p class="note">本ページの解説・計算例は令和8年（2026年）時点の法令にもとづく一般的な情報であり、個別の事案に対する助言ではありません。実際の節税額は、他の所得控除や税額控除、住んでいる市区町村などによって異なります。申告の前に税務署・税理士でご確認ください。</p>
+
+</article>
+</main>
+<footer class="site" style="display:block">
+  計算の出典: 国税庁「No.1191 配偶者控除」「No.1195 配偶者特別控除」／地方税法314条の2／国税庁「No.2260 所得税の税率」（速算表）「No.1410 給与所得控除」<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { taxSavingSplit, haigushaKojo, kyuyoToGokeiShotoku } from "../assets/setsuzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const man = (n) => (n / 10000).toLocaleString("ja-JP") + "万円";
+let R08 = null;
+
+// 参照データ(控除額の表・税率)は非同期で届く。**届く前に計算ボタンを押されても await で待つ**。
+// この catch が拾ってよいのは「データが手に入らなかったこと」だけ(飾りの表示は別に処理する)。
+const r08Ready = fetch("../assets/setsuzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { R08 = d; fillHonnin(d); return true; })
+  .catch(() => false);
+
+// 要件の表示は飾り。ここで転んでも計算は止めない(r08Ready には影響させない)。
+r08Ready.then(ok => { if (ok) showMeta(); }).catch(() => {});
+
+// 本人の所得区分(ラベル・給与収入めやす)は参照データが正本。ページに金額を手書きしない。
+function fillHonnin(d) {
+  const sel = $("honnin"); sel.innerHTML = "";
+  d.haigu.honnin_tiers.forEach((t, i) => {
+    const o = document.createElement("option");
+    o.value = String(t.upto);
+    o.textContent = `${t.label}（${t.kyuyo_label}）`;
+    if (i === 0) o.selected = true;
+    sel.appendChild(o);
+  });
+  const over = document.createElement("option");
+  const last = d.haigu.honnin_tiers[d.haigu.honnin_tiers.length - 1];
+  over.value = String(last.upto + 1);
+  over.textContent = "1,000万円超（対象外）";
+  sel.appendChild(over);
+}
+
+// 所得要件は**データが持っている値**を出す(ページに手書きしない)。
+function showMeta() {
+  if (R08?.haigu?.income_limit != null) {
+    $("yoken-note").textContent =
+      `※ 配偶者控除は配偶者の合計所得金額${man(R08.haigu.income_limit)}以下（給与収入だけなら${man(R08.haigu.income_limit_kyuyo)}以下）、配偶者特別控除は${man(R08.haigu.income_limit)}超${man(R08.haigu.tokubetsu_max)}以下が対象です。民法上の配偶者(内縁を除く)・生計一・事業専従者でないことが要件です。`;
+  }
+  if (R08?._meta?.year) $("src-note").textContent = `（${R08._meta.year}の所得税速算表）`;
+}
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+
+  // 参照データ(控除額の表・税率)の到着を必ず待つ。これが無いと控除額は答えられない。
+  const ok = await r08Ready;
+  if (!ok || !R08) {
+    box.innerHTML = `<div class="note"><b>控除額・税率データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。控除額や税率が分からない状態で節税額を答えることはできません。</div>`;
+    return;
+  }
+
+  const honnin = Number($("honnin").value);
+  if (!honnin) {
+    box.innerHTML = `あなたの合計所得金額の区分を選んでください。`;
+    return;
+  }
+
+  const hincomeRaw = $("hincome").value;
+  if (hincomeRaw === "" || Number(hincomeRaw) < 0) {
+    box.innerHTML = `配偶者の収入を入力してください（収入が無い場合は 0 を入れてください）。`;
+    return;
+  }
+  const hincome = Number(hincomeRaw);
+
+  // 給与収入で入力されたら所得へ換算する。収入190万円超は換算できない(fail closed — 黙って概算しない)。
+  let haiguShotoku = hincome;
+  let convNote = "";
+  if ($("htype").value === "kyuyo") {
+    const conv = kyuyoToGokeiShotoku(hincome, R08);
+    if (!conv.ok) {
+      box.innerHTML = `<div class="note"><b>給与収入${yen(hincome)}は、このツールでは所得に換算できません。</b>
+        給与収入${man(R08.haigu.kyuyo_kojo_min_limit)}超は給与所得控除が収入によって変わるため、
+        「合計所得金額で入力」に切り替えて、給与所得控除を引いた後の所得を入れてください
+        （なお配偶者の合計所得金額が${man(R08.haigu.tokubetsu_max)}を超えると配偶者特別控除の対象外です）。</div>`;
+      return;
+    }
+    haiguShotoku = conv.shotoku;
+    convNote = `給与収入${yen(hincome)} → 合計所得金額${yen(haiguShotoku)}（給与所得控除${man(R08.haigu.kyuyo_kojo_min)}）として計算。`;
+  }
+
+  let k;
+  try {
+    k = haigushaKojo({ honninShotoku: honnin, haiguShotoku, rojin: $("rojin").checked }, R08);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  // 適用なしの2ケースは、0円でなく**理由を名指し**して答える。
+  if (k.type === "none") {
+    const msg = k.reason === "honnin_over"
+      ? `あなたの合計所得金額が1,000万円を超えるため、<b>配偶者控除・配偶者特別控除は受けられません</b>（適用なし・節税額0円）。`
+      : `配偶者の合計所得金額（${yen(haiguShotoku)}）が${man(R08.haigu.tokubetsu_max)}を超えるため、<b>配偶者控除・配偶者特別控除は受けられません</b>（適用なし・節税額0円）。`;
+    box.innerHTML = `<div class="row">${msg}</div>
+      <div style="font-size:12.5px;color:var(--sub);margin-top:8px">${convNote}</div>`;
+    return;
+  }
+
+  const kazei = Number($("kazei").value);
+  if (!kazei || kazei <= 0) {
+    box.innerHTML = `あなたの課税される所得金額を入力してください（<b>年収ではなく課税所得</b>です）。`;
+    return;
+  }
+
+  // 区分(合計所得)と課税所得の矛盾は黙って答えない: 課税所得は合計所得から所得控除を引いた後
+  // なので、必ず 合計所得 ≧ 課税所得 になる。
+  if (kazei > honnin) {
+    box.innerHTML = `<div class="note"><b>課税される所得金額（${yen(kazei)}）が、選んだ合計所得金額の区分（${k.tierLabel}）を超えています。</b>
+      課税所得は合計所得金額から所得控除を引いた後の金額なので、区分より大きくなることはありません。
+      合計所得金額の区分を選び直してください（区分が上がると控除額が変わります）。</div>`;
+    return;
+  }
+
+  let r;
+  try {
+    r = taxSavingSplit({ kazeiShotoku: kazei, shotokuKojo: k.shotoku, juminKojo: k.jumin }, R08);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  const typeLabel = k.type === "haigusha"
+    ? `配偶者控除（${k.rojin ? "老人控除対象配偶者" : "一般の控除対象配偶者"}・あなたの所得${k.tierLabel}）`
+    : `配偶者特別控除（配偶者の合計所得 ${k.bandLabel}・あなたの所得${k.tierLabel}）`;
+
+  let html = `
+    <div class="row">年間の節税額 <span class="big">${yen(r.total)}</span>
+      <span class="hint">（控除 所得税${yen(k.shotoku)}／住民税${yen(k.jumin)}）</span></div>
+    <div style="font-size:13px;margin-top:6px"><b>${typeLabel}</b></div>
+    <div style="overflow-x:auto;margin-top:10px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr style="background:#e7f3f0"><th style="text-align:left;padding:6px 8px">項目</th>
+        <th style="text-align:right;padding:6px 8px">金額</th></tr>
+      <tr><td style="padding:6px 8px">控除額（所得税分 ／ 住民税分）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(k.shotoku)} ／ ${yen(k.jumin)}</td></tr>
+      <tr style="border-top:1px solid #ddd"><td style="padding:6px 8px">所得税の減少（速算表の差）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.shotokuGen)}</td></tr>
+      <tr><td style="padding:6px 8px">復興特別所得税の減少（2.1%）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.fukkoGen)}</td></tr>
+      <tr><td style="padding:6px 8px">住民税の減少（所得割10%・概算）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.juminGen)}</td></tr>
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">年間の節税額</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.total)}</td></tr>
+    </table></div>`;
+
+  // 課税所得より控除の方が大きいと、控除の一部しか効かない(黙って満額で答えない)。
+  if (r.usedShotoku < k.shotoku) {
+    html += `<div class="note" style="margin-top:10px"><b>課税される所得金額（${yen(kazei)}）が控除額より小さいため、控除の一部しか税金の減少につながっていません。</b>
+      引ききれない控除は切り捨てられます。</div>`;
+  }
+
+  html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ${convNote}
+      ※ 民法上の配偶者・生計一・事業専従者でない等の要件を満たしている前提で計算しています。
+      所得税は速算表（超過累進）、住民税は所得割10%で概算しています。
+      ${r.year ? `<span class="hint">（${r.year}の所得税速算表で計算）</span>` : ""}<br>
+      ※ 配偶者自身の社会保険（106万円・130万円の壁）は別の制度です。<a href="../kabe/">年収の壁シミュレーター</a>で確認できます。</div>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>

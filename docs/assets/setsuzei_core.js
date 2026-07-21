@@ -122,6 +122,50 @@ export function taxSavingSplit(input, D) {
 }
 
 /**
+ * 配偶者控除・配偶者特別控除: 本人の合計所得金額・配偶者の合計所得金額・配偶者の年齢(70歳以上か)から
+ * 所得税・住民税それぞれの控除額を出す（額の表は参照データが正本。ページに手書きしない）。
+ * 本人1,000万円超・配偶者133万円超は「適用なし」を type で申告する（黙って0で答えない）。
+ * @param input { honninShotoku(本人の合計所得金額), haiguShotoku(配偶者の合計所得金額), rojin(70歳以上か) }
+ * @returns { type: 'haigusha'|'tokubetsu'|'none', reason?, tier, tierLabel, shotoku, jumin, bandLabel }
+ */
+export function haigushaKojo(input, D) {
+  if (!D?.haigu?.honnin_tiers) throw new Error('参照データ（setsuzei_r08.json の haigu）が渡されていません');
+  const H = D.haigu;
+  const honnin = yen0(input.honninShotoku);
+  const haigu = yen0(input.haiguShotoku);
+  const rojin = !!input.rojin;
+  const tier = H.honnin_tiers.findIndex((t) => honnin <= t.upto);
+  if (tier < 0) {
+    return { type: 'none', reason: 'honnin_over', tier: null, tierLabel: '', shotoku: 0, jumin: 0, bandLabel: '' };
+  }
+  const tierLabel = H.honnin_tiers[tier].label;
+  if (haigu <= H.income_limit) {
+    const k = rojin ? H.kojo.rojin : H.kojo.ippan;
+    return { type: 'haigusha', rojin, tier, tierLabel,
+             shotoku: k.shotoku[tier], jumin: k.jumin[tier], bandLabel: k.label };
+  }
+  const band = H.tokubetsu_bands.find((b) => haigu > b.over && haigu <= b.upto);
+  if (!band) {
+    return { type: 'none', reason: 'haigu_over', tier, tierLabel, shotoku: 0, jumin: 0, bandLabel: '' };
+  }
+  return { type: 'tokubetsu', tier, tierLabel,
+           shotoku: band.shotoku[tier], jumin: band.jumin[tier], bandLabel: band.label };
+}
+
+/**
+ * 給与収入だけの人の合計所得金額への換算。収入190万円以下は給与所得控除が定額65万円
+ * （国税庁No.1410・令和7年分以降）なのでその範囲だけ換算し、超えたら換算しない（fail closed —
+ * 190万円超は控除が収入で変わるため、この参照データでは答えられない）。
+ * @returns { ok: true, shotoku } | { ok: false, reason: 'over_limit' }
+ */
+export function kyuyoToGokeiShotoku(shunyu, D) {
+  if (!D?.haigu) throw new Error('参照データ（setsuzei_r08.json の haigu）が渡されていません');
+  const s = yen0(shunyu);
+  if (s > D.haigu.kyuyo_kojo_min_limit) return { ok: false, reason: 'over_limit' };
+  return { ok: true, shotoku: Math.max(0, s - D.haigu.kyuyo_kojo_min) };
+}
+
+/**
  * 扶養控除: 区分ごとの人数から所得税・住民税の控除額合計を出す（区分の額は参照データが正本）。
  * @param counts { ippan, tokutei, rojin, dokyo_rojin } 各区分の人数
  * @returns { shotoku, jumin, count, items: [{key,label,n,shotoku,jumin}] }
