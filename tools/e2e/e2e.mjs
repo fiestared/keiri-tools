@@ -657,6 +657,19 @@ const SCENES = [
   { name: "jutaku_refund_nocap", expect: (s) =>
       s.showsRefund && s.jitsuGenzei === 172500 && s.refundJuminzei === 97500 &&
       s.showsCapUnknown && !s.failed },
+
+  // ── 節税シミュレーター(setsuzei_core)。期待値は tests/ と同じ速算表の手計算オラクル ──
+  // iDeCo: 課税所得300万・会社員(企業年金なし)・月23,000 → 年55,779(所得税27,600+住民27,600+復興579)
+  { name: "ideco", expect: (s) =>
+      s.total === 55779 && s.shotokuGen === 27600 && s.juminGen === 27600 && !s.failed },
+  // 小規模企業共済: 課税所得500万・月70,000 → 年255,528(復興3,528+住民84,000 → 所得税168,000も一意に決まる)
+  { name: "shokibo", expect: (s) =>
+      s.total === 255528 && s.fukkoGen === 3528 && s.juminGen === 84000 && !s.failed },
+  // 扶養控除: 課税所得500万・一般1+特定1 → 控除 所得税101万/住民税78万・節税284,242。
+  // ★住民税の減少は78,000(住民税側の控除×10%)。所得税側の101万×10%=101,000に化けたら落ちる
+  { name: "fuyo", expect: (s) =>
+      s.total === 284242 && s.shotokuGen === 202000 && s.juminGen === 78000 &&
+      s.kojoShotoku === 1010000 && s.kojoJumin === 780000 && !s.failed },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────
@@ -666,10 +679,11 @@ const SCENES = [
 // オラクルは本体 — 本体は上の各シーンが一次情報(公式額表・条文)と照合済みなので、
 // 期待値をもう一組持たない(二重管理は必ず腐る)。
 const EMBED_TOOLS = [
-  "bonus-tedori", "eigyobi", "furusato", "genka", "gensen-choshu", "ikuji", "inshi",
+  "bonus-tedori", "eigyobi", "furusato", "fuyo-kojo", "genka", "gensen-choshu",
+  "ideco-setsuzei", "ikuji", "inshi",
   "iryohi", "jidoshazei", "juminzei", "jutaku", "kabe", "kihonteate", "papa-ikukyu",
-  "senpou-futan", "shakai-hoken", "shiharai-site", "shobyo", "shohizei", "shussan",
-  "sozokuzei", "taishokukin", "tedori", "yukyu", "zangyodai", "zengin-kana", "zoyozei",
+  "senpou-futan", "shakai-hoken", "shiharai-site", "shobyo", "shohizei", "shokibo-kyosai",
+  "shussan", "sozokuzei", "taishokukin", "tedori", "yukyu", "zangyodai", "zengin-kana", "zoyozei",
 ];
 for (const t of EMBED_TOOLS)
   SCENES.push({ name: `embed_${t}`, expect: (s) =>

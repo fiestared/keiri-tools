@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>扶養控除シミュレーター｜扶養親族1人でいくら税金が安くなるか計算</title>
+<meta name="description" content="扶養控除でどれだけ所得税・住民税が安くなるかを試算。扶養親族の区分（一般・特定・老人・同居老親等）と人数、課税される所得金額を入れるだけで年間の節税額を自動計算します。所得税と住民税で控除額が違う点も正しく反映。令和8年分の所得税速算表で計算。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/fuyo-kojo/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "扶養控除シミュレーター",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "扶養親族の区分（一般・特定・老人・同居老親等）と人数、課税される所得金額から、扶養控除で減る所得税・住民税の年間の節税額を計算します。所得税は速算表（超過累進）で計算。所得税と住民税で控除額が異なる点も反映。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "扶養控除シミュレーター"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 扶養控除で税金はいくら戻りますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 「所得税側の控除額×あなたの所得税率＋住民税側の控除額×10%」がめやすです。たとえば課税所得500万円（所得税率20%）の人なら、一般の扶養親族1人で年110,596円、特定扶養親族（19歳以上23歳未満）1人で年173,646円の節税になります。年末調整で申告していれば毎月の源泉徴収と年末調整で反映されるので「戻る」というより「最初から引かれない」形になります。申告し忘れていた場合は、確定申告（還付申告は5年以内）で取り戻せます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 子どものアルバイト収入はいくらまで扶養に入れますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 給与収入だけなら年123万円以下です。令和7年分から扶養親族の所得要件が合計所得金額48万円以下から58万円以下に引き上げられ、給与所得控除の最低保障65万円と合わせて給与収入123万円以下になりました。以前の「103万円以下」は古い情報です。なお19歳以上23歳未満の子が123万円を超えても、188万円以下までは親が特定親族特別控除（段階的な控除）を受けられます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 16歳未満の子どもに扶養控除はありますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. ありません。16歳未満の子ども（年少扶養親族）は扶養控除の対象外で、代わりに児童手当が支給されます。扶養控除の対象は、その年12月31日時点で16歳以上の扶養親族（控除対象扶養親族）だけです。年末調整の扶養控除等申告書に16歳未満の子どもを書く欄がありますが、これは住民税の計算などに使われるもので、所得税の扶養控除にはつながりません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 別居している親でも扶養控除は受けられますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 受けられます。要件は「生計を一にしている」ことで、同居は必須ではありません。仕送りで親の生活費を支えていれば、別居の親（70歳以上なら老人扶養親族48万円）も対象になり得ます。ただし親の合計所得金額が58万円以下（公的年金だけなら公的年金等控除を引いた後の所得で判定）という要件は同じです。なお70歳以上の親と同居している場合は同居老親等として58万円に増えます。病気の入院で別居している間は同居として扱われますが、老人ホームに入所している場合は同居にはなりません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 共働きの場合、子どもはどちらの扶養に入れるべきですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 原則として、所得（税率）の高い方に付けるのが有利です。扶養控除は同じ1人をどちらか一方でしか使えず（重複不可）、所得税は超過累進なので、税率の高い方で使った方が減る税額が大きくなります。たとえば所得税率20%の親に付ければ特定扶養親族1人で年17万円強、5%の親なら年11万円弱と、差がつきます。上の計算機に両方の課税所得を入れて比べてみてください。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 扶養控除シミュレーター</nav>
+
+<section class="hero">
+  <h1>扶養控除シミュレーター</h1>
+  <p>子どもや親を扶養していると、<b>扶養控除</b>で所得税・住民税が安くなります。<b>扶養親族の区分と人数</b>・<b>課税される所得金額</b>を入れるだけで、<b>年間いくら税金が下がるか</b>を自動計算します。所得税（38万〜63万円）と住民税（33万〜45万円）で控除額が違う点も正しく反映します。</p>
+</section>
+
+<div class="card">
+  <label>扶養親族の区分と人数<span class="hint">　その年12月31日時点の年齢で選びます</span></label>
+  <div id="kubun-rows"><p class="hint">読み込み中…</p></div>
+
+  <label for="kazei">あなたの課税される所得金額（課税所得・円）<span class="hint">　源泉徴収票や確定申告書の「課税される所得金額」。年収ではありません</span></label>
+  <input type="number" id="kazei" placeholder="例: 4000000" inputmode="numeric" min="0" step="10000">
+
+  <button class="primary" id="calc">節税額を計算する</button>
+  <div class="result" id="result"></div>
+  <p class="hint" id="yoken-note" style="margin-top:10px"></p>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p>扶養控除は、<b>16歳以上の子どもや親などを扶養している人の所得から、1人につき38万〜63万円（所得税）を差し引く</b>所得控除です。年末調整や確定申告で扶養親族を申告するだけで、その分の所得税と住民税が安くなります。上の計算機で、自分の課税所得と扶養親族の内わけから年間の節税額が出せます。以下では、<b>区分ごとの控除額、扶養親族の要件（所得58万円以下）、そして対象にならないケース</b>まで、一次資料（国税庁・条文）にもとづいて解説します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+
+<nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#tsukaikata">使い方と注意点</a></li>
+<li><a href="#kubun">扶養控除の金額 — 区分で38万〜63万円</a></li>
+<li><a href="#yoken">扶養親族の要件 — 所得58万円以下（給与なら123万円）</a></li>
+<li><a href="#reidai">課税所得別の節税額の例</a></li>
+<li><a href="#taishogai">対象にならないケース — 16歳未満・収入超過・配偶者</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav>
+
+<h2 id="tsukaikata">使い方と注意点</h2>
+  <div class="callout">
+    <b>入れるのは「年収」ではなく「課税される所得金額」です</b>
+    節税額は税率で決まり、税率は<b>課税される所得金額</b>で決まります。これは年収ではなく、年収から給与所得控除・基礎控除・社会保険料控除などを<b>すべて引いた後</b>の金額です。源泉徴収票なら「給与所得控除後の金額」から「所得控除の額の合計額」を引いた額、確定申告書なら「課税される所得金額」の欄そのものです。すでに扶養控除が引かれた後の課税所得を入れると二重に引くことになるため、<b>「扶養控除を引く前」の課税所得</b>（＝いま扶養控除を外したらいくらになるか）を入れると正確です。
+  </div>
+  <h3>このツールの前提</h3>
+  <p>所得税は国税庁の<b>所得税の速算表</b>で計算します。控除で税率の段（ブラケット）をまたぐ場合も、速算表の差をとって<b>超過累進</b>を正しく反映します（「控除額×税率」の概算ではありません）。住民税の所得割は<b>一律10％</b>として概算します。<b>扶養控除は所得税と住民税で控除額が違う</b>（例: 一般は所得税38万円・住民税33万円）ため、住民税の減少は住民税側の控除額で計算します。復興特別所得税（所得税額の2.1％）の減少も含めています。</p>
+  <div class="note">
+    本ツールの結果は目安です。実際の税額は、他の所得控除や税額控除、お住まいの市区町村などによって変わります。申告の前に税務署・税理士でご確認ください。
+  </div>
+
+<h2 id="kubun">扶養控除の金額 — 区分で38万〜63万円</h2>
+
+<p>控除額は、扶養親族の<b>その年12月31日時点の年齢</b>と同居の有無で決まります。<b>所得税と住民税で金額が違う</b>点に注意してください。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>区分</th><th>年齢（12月31日時点）</th><th>所得税の控除額</th><th>住民税の控除額</th></tr>
+</thead>
+<tbody>
+<tr><td>一般の控除対象扶養親族</td><td>16歳以上（下記以外）</td><td><b>38万円</b></td><td>33万円</td></tr>
+<tr><td>特定扶養親族</td><td>19歳以上23歳未満</td><td><b>63万円</b></td><td>45万円</td></tr>
+<tr><td>老人扶養親族（同居老親等以外）</td><td>70歳以上</td><td><b>48万円</b></td><td>38万円</td></tr>
+<tr><td>同居老親等</td><td>70歳以上の同居の父母・祖父母</td><td><b>58万円</b></td><td>45万円</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><b>特定扶養親族（19歳以上23歳未満・大学生の年代）がいちばん大きく63万円</b>です。学費のかかる年代への配慮で、一般より25万円上乗せされています。<b>同居老親等</b>は、70歳以上の老人扶養親族のうち<b>納税者またはその配偶者の直系の父母・祖父母で、普段同居している人</b>です。48万円に10万円が加算されて58万円になります。病気の治療のため入院して別居している場合は、1年以上の長期でも同居として扱って差し支えないとされていますが、<b>老人ホームに入所している場合は同居にはなりません</b>（この場合は同居老親等以外の48万円）。</p>
+
+<figure class="figure">
+<svg viewBox="0 0 640 250" role="img" aria-label="扶養控除の区分別の控除額。所得税は一般38万円・特定63万円・老人48万円・同居老親等58万円、住民税は33万・45万・38万・45万円">
+  <text x="20" y="16" font-size="13" fill="currentColor">扶養親族1人あたりの控除額（■ 所得税 ／ □ 住民税）</text>
+
+  <text x="20" y="44" font-size="12" fill="currentColor">一般（16歳以上）</text>
+  <rect x="180" y="32" width="266" height="14" fill="var(--accent)" opacity="0.55"/>
+  <text x="452" y="44" font-size="12" fill="currentColor">38万円</text>
+  <rect x="180" y="48" width="231" height="8" fill="var(--accent)" opacity="0.18"/>
+  <text x="417" y="56" font-size="10.5" fill="currentColor">住民税 33万円</text>
+
+  <text x="20" y="94" font-size="12" fill="currentColor">特定（19〜22歳）</text>
+  <rect x="180" y="82" width="441" height="14" fill="var(--accent)" opacity="0.55"/>
+  <text x="560" y="93" font-size="12" font-weight="bold" fill="currentColor">63万円</text>
+  <rect x="180" y="98" width="315" height="8" fill="var(--accent)" opacity="0.18"/>
+  <text x="501" y="106" font-size="10.5" fill="currentColor">住民税 45万円</text>
+
+  <text x="20" y="144" font-size="12" fill="currentColor">老人（70歳以上）</text>
+  <rect x="180" y="132" width="336" height="14" fill="var(--accent)" opacity="0.55"/>
+  <text x="522" y="144" font-size="12" fill="currentColor">48万円</text>
+  <rect x="180" y="148" width="266" height="8" fill="var(--accent)" opacity="0.18"/>
+  <text x="452" y="156" font-size="10.5" fill="currentColor">住民税 38万円</text>
+
+  <text x="20" y="194" font-size="12" fill="currentColor">同居老親等</text>
+  <rect x="180" y="182" width="406" height="14" fill="var(--accent)" opacity="0.55"/>
+  <text x="592" y="194" font-size="12" fill="currentColor">58万円</text>
+  <rect x="180" y="198" width="315" height="8" fill="var(--accent)" opacity="0.18"/>
+  <text x="501" y="206" font-size="10.5" fill="currentColor">住民税 45万円</text>
+
+  <text x="20" y="238" font-size="11" fill="currentColor">※ 所得税=所得税法84条（同居老親等の+10万円は措法41条の16）／住民税=地方税法314条の2</text>
+</svg>
+<figcaption>特定扶養親族（19歳以上23歳未満）が最大の63万円。同じ区分でも所得税と住民税で控除額が違う。</figcaption>
+</figure>
+
+<h2 id="yoken">扶養親族の要件 — 所得58万円以下（給与なら123万円）</h2>
+
+<p>扶養控除の対象になる「扶養親族」は、その年の12月31日時点で、次の<b>4つの要件すべて</b>に当てはまる人です。</p>
+
+<ol>
+<li><b>配偶者以外の親族</b>（6親等内の血族・3親等内の姻族）であること。里子や養護を委託された老人も含みます</li>
+<li>納税者と<b>生計を一にしている</b>こと（同居は必須ではありません。仕送りで生活を支えている別居の親や下宿中の子も対象になり得ます）</li>
+<li>年間の<b>合計所得金額が58万円以下</b>であること（<b>給与収入だけなら123万円以下</b>。令和7年分から48万円→58万円に引き上げ）</li>
+<li>青色申告者の事業専従者として給与を受けていない・白色申告者の事業専従者でないこと</li>
+</ol>
+
+<div class="callout">
+<p><b>「103万円以下」は古い情報です — いまは給与収入123万円以下</b></p>
+<p>扶養親族の所得要件は、令和7年度税制改正で<b>合計所得金額48万円以下から58万円以下</b>に引き上げられました（令和7年分から適用）。給与所得控除の最低保障も65万円に上がったため、<b>給与収入だけなら123万円以下（58万円＋65万円）</b>が新しいラインです。「103万円以下」で覚えていた人は更新してください。</p>
+</div>
+
+<p>なお、国外に住む親族（非居住者）を扶養控除の対象にする場合は追加の要件があります。16歳以上30歳未満と70歳以上はそのまま対象ですが、<b>30歳以上70歳未満は、留学で出国した人・障害者・その年に生活費等として38万円以上の送金を受けている人</b>のいずれかに当てはまる場合に限られます。</p>
+
+<h2 id="reidai">課税所得別の節税額の例</h2>
+
+<p>扶養親族1人あたりの年間の節税額は、あなたの課税所得（＝所得税率）で決まります。このツールと同じ速算表で計算した実数です。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>あなたの課税所得</th><th>一般1人（38万/33万円）</th><th>特定1人（63万/45万円）</th></tr>
+</thead>
+<tbody>
+<tr><td>200万円</td><td><b>54,951円</b></td><td>—</td></tr>
+<tr><td>300万円</td><td><b>71,798円</b></td><td><b>109,323円</b></td></tr>
+<tr><td>500万円</td><td><b>110,596円</b></td><td><b>173,646円</b></td></tr>
+<tr><td>700万円</td><td><b>112,127円</b></td><td>—</td></tr>
+<tr><td>900万円</td><td><b>122,235円</b></td><td>—</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>たとえば課税所得500万円の人に大学生の子（特定扶養親族）が1人いると、所得税が126,000円、復興特別所得税が2,646円、住民税が45,000円下がり、<b>年間の節税額は173,646円</b>です。70歳以上の親と同居している場合（同居老親等）は、課税所得400万円で<b>年163,436円</b>になります。扶養控除は掛金のいらない「申告するだけの控除」なので、<b>申告し忘れがそのまま損</b>になります。</p>
+
+<div class="callout">
+<p><b>節税率のめやすは「所得税率＋住民税10%」</b></p>
+<p>所得税の減少は「所得税側の控除額×あなたの税率」が基本で、控除で税率の段をまたぐ場合は少し小さくなります（このツールは速算表の差で厳密に計算します）。住民税の減少は「住民税側の控除額×10%」です。所得税と住民税で控除額が違うため、「38万円×（税率＋10%）」と概算すると住民税分がずれます。</p>
+</div>
+
+<a class="tool-cta" href="../gensen-choshu/">毎月の給与から引かれる源泉所得税を、扶養人数込みで確かめる</a>
+
+<h2 id="taishogai">対象にならないケース — 16歳未満・収入超過・配偶者</h2>
+
+<p>「扶養しているのに控除がない」と迷いやすいケースが3つあります。</p>
+
+<table>
+<thead>
+<tr><th>ケース</th><th>扶養控除</th><th>代わりにあるもの</th></tr>
+</thead>
+<tbody>
+<tr><td><b>16歳未満の子ども</b></td><td>対象外（0円）</td><td>児童手当（高校生年代まで拡充済み）</td></tr>
+<tr><td><b>19〜22歳の子の給与収入が123万円超</b></td><td>対象外（0円）</td><td><b>特定親族特別控除</b>（後述）</td></tr>
+<tr><td><b>配偶者</b></td><td>対象外</td><td>配偶者控除・配偶者特別控除（別の控除）</td></tr>
+</tbody>
+</table>
+
+<p><b>16歳未満の子どもは扶養控除の対象になりません</b>（年少扶養親族）。児童手当の支給対象であるためで、扶養控除の表に16歳未満の欄はそもそもありません。また、扶養控除の対象は条文上「<b>配偶者以外の</b>親族」なので、配偶者はこのツールの対象外です（配偶者控除・配偶者特別控除という別の控除があります）。</p>
+
+<div class="callout">
+<p><b>大学生の子のバイト収入が123万円を超えても、いきなりゼロにはなりません</b></p>
+<p>令和7年分から<b>特定親族特別控除</b>が新設され、19歳以上23歳未満の子の合計所得金額が58万円超123万円以下（給与収入123万円超188万円以下）の間は、親が<b>段階的な控除</b>を受けられます。この段階的な控除額はこのツールでは計算していません（扶養控除の対象になる123万円以下の場合のみ計算します）。</p>
+</div>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 扶養控除で税金はいくら戻りますか？</h3>
+<p>A. 「所得税側の控除額×あなたの所得税率＋住民税側の控除額×10%」がめやすです。たとえば課税所得500万円（所得税率20%）の人なら、一般の扶養親族1人で年110,596円、特定扶養親族（19歳以上23歳未満）1人で年173,646円の節税になります。年末調整で申告していれば毎月の源泉徴収と年末調整で反映されるので「戻る」というより「最初から引かれない」形になります。申告し忘れていた場合は、確定申告（還付申告は5年以内）で取り戻せます。</p>
+
+<h3>Q. 子どものアルバイト収入はいくらまで扶養に入れますか？</h3>
+<p>A. 給与収入だけなら年123万円以下です。令和7年分から扶養親族の所得要件が合計所得金額48万円以下から58万円以下に引き上げられ、給与所得控除の最低保障65万円と合わせて給与収入123万円以下になりました。以前の「103万円以下」は古い情報です。なお19歳以上23歳未満の子が123万円を超えても、188万円以下までは親が特定親族特別控除（段階的な控除）を受けられます。</p>
+
+<h3>Q. 16歳未満の子どもに扶養控除はありますか？</h3>
+<p>A. ありません。16歳未満の子ども（年少扶養親族）は扶養控除の対象外で、代わりに児童手当が支給されます。扶養控除の対象は、その年12月31日時点で16歳以上の扶養親族（控除対象扶養親族）だけです。年末調整の扶養控除等申告書に16歳未満の子どもを書く欄がありますが、これは住民税の計算などに使われるもので、所得税の扶養控除にはつながりません。</p>
+
+<h3>Q. 別居している親でも扶養控除は受けられますか？</h3>
+<p>A. 受けられます。要件は「生計を一にしている」ことで、同居は必須ではありません。仕送りで親の生活費を支えていれば、別居の親（70歳以上なら老人扶養親族48万円）も対象になり得ます。ただし親の合計所得金額が58万円以下（公的年金だけなら公的年金等控除を引いた後の所得で判定）という要件は同じです。なお70歳以上の親と同居している場合は同居老親等として58万円に増えます。病気の入院で別居している間は同居として扱われますが、老人ホームに入所している場合は同居にはなりません。</p>
+
+<h3>Q. 共働きの場合、子どもはどちらの扶養に入れるべきですか？</h3>
+<p>A. 原則として、所得（税率）の高い方に付けるのが有利です。扶養控除は同じ1人をどちらか一方でしか使えず（重複不可）、所得税は超過累進なので、税率の高い方で使った方が減る税額が大きくなります。たとえば所得税率20%の親に付ければ特定扶養親族1人で年17万円強、5%の親なら年11万円弱と、差がつきます。上の計算機に両方の課税所得を入れて比べてみてください。</p>
+
+<section class="related">
+<div class="tool-grid">
+<a class="tool-card" href="../ideco-setsuzei/"><b>iDeCo節税シミュレーター</b><span>掛金の全額所得控除で年間いくら節税になるかを計算します。</span></a>
+<a class="tool-card" href="../gensen-choshu/"><b>源泉徴収税額計算</b><span>令和8年分の月額表から、扶養人数に応じた所得税を求めます。</span></a>
+<a class="tool-card" href="../kabe/"><b>年収の壁シミュレーター</b><span>扶養内で働くときの社会保険・税金の壁を判定します。</span></a>
+<a class="tool-card" href="../juminzei/"><b>住民税 計算</b><span>年収から住民税の所得割・均等割を計算します。</span></a>
+</div>
+</section>
+
+<h2 id="source">出典</h2>
+<ul>
+<li>国税庁「No.1180 扶養控除」[令和7年4月1日現在法令等] — 控除額（一般38万円・特定63万円・老人48万円・同居老親等58万円）、扶養親族の4要件、所得要件は令和7年分から58万円以下、非居住者の追加要件、入院・老人ホームの同居の取り扱い</li>
+<li>所得税法84条（扶養控除）・2条1項34号〜34号の4（扶養親族等の定義）／租税特別措置法41条の16（同居老親等の10万円加算）— e-Gov法令検索で条文を確認。令和8年12月施行の改正法（令和8年法律第12号）反映後の条文とも同一（令和8年分の控除額に変更なし）</li>
+<li>地方税法314条の2第1項11号・第4項 — 住民税の扶養控除額（一般33万円・特定45万円・老人38万円・同居老親等45万円）</li>
+<li>国税庁「No.2260 所得税の税率」— 所得税の速算表（5%〜45%）。本ツールの所得税の減少は、この速算表で控除の前後の税額を計算した差で求めている</li>
+<li>国税庁「No.1410 給与所得控除」[令和7年4月1日現在法令等] — 給与所得控除の最低保障65万円（令和7年分以降・収入190万円まで）。所得要件58万円の給与収入換算123万円の根拠</li>
+<li>復興特別所得税は所得税額の2.1%（令和19年分まで）／住民税所得割の標準税率10%（地方税法）</li>
+</ul>
+
+<p class="note">本ページの解説・計算例は令和8年（2026年）時点の法令にもとづく一般的な情報であり、個別の事案に対する助言ではありません。実際の節税額は、他の所得控除や税額控除、住んでいる市区町村などによって異なります。申告の前に税務署・税理士でご確認ください。</p>
+
+</article>
+</main>
+<footer class="site" style="display:block">
+  計算の出典: 国税庁「No.1180 扶養控除」／所得税法84条・措置法41条の16／地方税法314条の2／国税庁「No.2260 所得税の税率」（速算表）<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { taxSavingSplit, fuyoKojoTotal } from "../assets/setsuzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const man = (n) => (n / 10000).toLocaleString("ja-JP") + "万円";
+let R08 = null;
+
+// 参照データ(控除額・税率)は非同期で届く。**届く前に計算ボタンを押されても await で待つ**。
+// この catch が拾ってよいのは「データが手に入らなかったこと」だけ(飾りの表示は別に処理する)。
+const r08Ready = fetch("../assets/setsuzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { R08 = d; fillKubunRows(d); return true; })
+  .catch(() => false);
+
+// 要件の表示は飾り。ここで転んでも計算は止めない(r08Ready には影響させない)。
+r08Ready.then(ok => { if (ok) showMeta(); }).catch(() => {});
+
+// 区分の行(ラベル・控除額)は参照データが正本。ページに金額を手書きしない。
+function fillKubunRows(d) {
+  const wrap = $("kubun-rows"); wrap.innerHTML = "";
+  for (const k of d.fuyo.kubun) {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex;align-items:center;gap:8px;margin:6px 0";
+    const lab = document.createElement("label");
+    lab.htmlFor = "n-" + k.key;
+    lab.style.cssText = "flex:1;margin:0;font-size:13.5px";
+    lab.innerHTML = `${k.label}<span class="hint" style="display:block">${k.age}（所得税${man(k.shotoku)}・住民税${man(k.jumin)}）</span>`;
+    const sel = document.createElement("select");
+    sel.id = "n-" + k.key;
+    sel.style.cssText = "width:5.5em;flex:none";
+    for (let i = 0; i <= 5; i++) {
+      const o = document.createElement("option");
+      o.value = String(i); o.textContent = i + "人";
+      sel.appendChild(o);
+    }
+    row.appendChild(lab); row.appendChild(sel);
+    wrap.appendChild(row);
+  }
+}
+
+// 所得要件は**データが持っている値**を出す(ページに手書きしない)。
+function showMeta() {
+  if (R08?.fuyo?.income_limit != null) {
+    $("yoken-note").textContent =
+      `※ 対象は生計を一にする配偶者以外の親族で、合計所得金額${man(R08.fuyo.income_limit)}以下（給与収入だけなら${man(R08.fuyo.income_limit_kyuyo)}以下）の人。16歳未満は対象外です。`;
+  }
+  if (R08?._meta?.year) $("src-note").textContent = `（${R08._meta.year}の所得税速算表）`;
+}
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+
+  // 参照データ(控除額・税率)の到着を必ず待つ。これが無いと節税額は答えられない。
+  const ok = await r08Ready;
+  if (!ok || !R08) {
+    box.innerHTML = `<div class="note"><b>控除額・税率データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。控除額や税率が分からない状態で節税額を答えることはできません。</div>`;
+    return;
+  }
+
+  const counts = {};
+  for (const k of R08.fuyo.kubun) counts[k.key] = Number($("n-" + k.key)?.value) || 0;
+  const t = fuyoKojoTotal(counts, R08);
+  if (t.count === 0) {
+    box.innerHTML = `扶養親族の人数を選んでください（16歳未満のお子さんは扶養控除の対象外です）。`;
+    return;
+  }
+
+  const kazei = Number($("kazei").value);
+  if (!kazei || kazei <= 0) {
+    box.innerHTML = `課税される所得金額を入力してください（<b>年収ではなく課税所得</b>です）。`;
+    return;
+  }
+
+  let r;
+  try {
+    r = taxSavingSplit({ kazeiShotoku: kazei, shotokuKojo: t.shotoku, juminKojo: t.jumin }, R08);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  const itemRows = t.items.map(i =>
+    `<tr><td style="padding:6px 8px">${i.label} × ${i.n}人</td>
+      <td style="padding:6px 8px;text-align:right">${yen(i.shotoku)} ／ ${yen(i.jumin)}</td></tr>`).join("");
+
+  let html = `
+    <div class="row">年間の節税額 <span class="big">${yen(r.total)}</span>
+      <span class="hint">（扶養親族 ${t.count}人・控除 所得税${yen(t.shotoku)}／住民税${yen(t.jumin)}）</span></div>
+    <div style="overflow-x:auto;margin-top:10px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr style="background:#e7f3f0"><th style="text-align:left;padding:6px 8px">項目</th>
+        <th style="text-align:right;padding:6px 8px">金額（所得税分 ／ 住民税分）</th></tr>
+      ${itemRows}
+      <tr style="border-top:1px solid #ddd"><td style="padding:6px 8px">所得税の減少（速算表の差）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.shotokuGen)}</td></tr>
+      <tr><td style="padding:6px 8px">復興特別所得税の減少（2.1%）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.fukkoGen)}</td></tr>
+      <tr><td style="padding:6px 8px">住民税の減少（所得割10%・概算）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.juminGen)}</td></tr>
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">年間の節税額</td>
+        <td style="padding:6px 8px;text-align:right">${yen(r.total)}</td></tr>
+    </table></div>`;
+
+  // 課税所得より控除の方が大きいと、控除の一部しか効かない(黙って満額で答えない)。
+  if (r.usedShotoku < t.shotoku) {
+    html += `<div class="note" style="margin-top:10px"><b>課税される所得金額（${yen(kazei)}）が控除額より小さいため、控除の一部しか税金の減少につながっていません。</b>
+      引ききれない控除は切り捨てられます。</div>`;
+  }
+
+  html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ※ 扶養親族の要件（合計所得金額${R08.fuyo.income_limit != null ? man(R08.fuyo.income_limit) : ""}以下・生計一など）を満たしている前提で計算しています。
+      所得税は速算表（超過累進）、住民税は所得割10%で概算しています。
+      ${r.year ? `<span class="hint">（${r.year}の所得税速算表で計算）</span>` : ""}<br>
+      ※ 19歳以上23歳未満で収入が要件を超える場合は、扶養控除でなく特定親族特別控除（段階的・本ツール対象外）になります。本文の「対象にならないケース」を参照してください。</div>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>

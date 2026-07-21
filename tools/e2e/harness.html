@@ -1981,6 +1981,62 @@ SCENES.jutaku_refund_capped = jutakuScene({ kubun: "nintei", year: 2024, zandaka
 //   ＝課税総所得を入れた jutaku_refund_capped（150,000）より多めに出る＝概算だと明示する義務がある。
 SCENES.jutaku_refund_nocap = jutakuScene({ kubun: "nintei", year: 2024, zandaka: 45000000, shotokuzei: 75000 });
 
+// ── 節税シミュレーター(iDeCo・小規模企業共済・扶養控除 — setsuzei_core) ─────────────
+// 期待値は tests/test_setsuzei.mjs / test_fuyo.mjs と同じ「速算表(国税庁No.2260)を手で当てた値」。
+// 加入区分・扶養区分の行は参照データから非同期で描かれるので、現れるまで待ってから操作する。
+const setsuzeiNum = (body, re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+SCENES.ideco = async () => {
+  const doc = await open("/docs/ideco-setsuzei/");
+  await waitFor(() => doc.querySelector('#kubun option[value="kaishain_none"]'), "iDeCo加入区分の読み込み");
+  set(doc, "kubun", "kaishain_none");
+  set(doc, "kazei", "3000000");
+  set(doc, "monthly", "23000");
+  click(doc, "calc");
+  await waitFor(() => { const t = text(doc, "result"); return t && !/計算中/.test(t); }, "iDeCoの計算結果");
+  const body = text(doc, "result");
+  return {
+    total: setsuzeiNum(body, /年間の節税額 ¥([\d,]+)/),
+    shotokuGen: setsuzeiNum(body, /所得税の減少[^¥]*¥([\d,]+)/),
+    juminGen: setsuzeiNum(body, /住民税の減少[^¥]*¥([\d,]+)/),
+    failed: body.includes("読み込めませんでした"),
+  };
+};
+SCENES.shokibo = async () => {
+  const doc = await open("/docs/shokibo-kyosai/");
+  set(doc, "kazei", "5000000");
+  set(doc, "monthly", "70000");
+  click(doc, "calc");
+  await waitFor(() => { const t = text(doc, "result"); return t && !/計算中/.test(t); }, "小規模企業共済の計算結果");
+  const body = text(doc, "result");
+  return {
+    total: setsuzeiNum(body, /年間の節税額 ¥([\d,]+)/),
+    // 所得税の減少の行は補足に課税所得の¥が先に出るので、行の一意な後半(復興・住民)で固定する
+    fukkoGen: setsuzeiNum(body, /復興特別所得税の減少[^¥]*¥([\d,]+)/),
+    juminGen: setsuzeiNum(body, /住民税の減少[^¥]*¥([\d,]+)/),
+    failed: body.includes("読み込めませんでした"),
+  };
+};
+SCENES.fuyo = async () => {
+  const doc = await open("/docs/fuyo-kojo/");
+  await waitFor(() => doc.getElementById("n-ippan"), "扶養区分の行の読み込み");
+  set(doc, "n-ippan", "1");
+  set(doc, "n-tokutei", "1");
+  set(doc, "kazei", "5000000");
+  click(doc, "calc");
+  await waitFor(() => { const t = text(doc, "result"); return t && !/計算中/.test(t); }, "扶養控除の計算結果");
+  const body = text(doc, "result");
+  return {
+    total: setsuzeiNum(body, /年間の節税額 ¥([\d,]+)/),
+    // ★所得税と住民税で控除額が違うことが画面に出ていること(101万/78万)。
+    //   住民税側を所得税の控除額で計算すると78,000が101,000に化けてここで落ちる
+    kojoShotoku: setsuzeiNum(body, /控除 所得税¥([\d,]+)/),
+    kojoJumin: setsuzeiNum(body, /／住民税¥([\d,]+)/),
+    shotokuGen: setsuzeiNum(body, /所得税の減少[^¥]*¥([\d,]+)/),
+    juminGen: setsuzeiNum(body, /住民税の減少[^¥]*¥([\d,]+)/),
+    failed: body.includes("読み込めませんでした"),
+  };
+};
+
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ──────────────────────────────
 // 本体ページと埋め込みウィジェットに**同じ入力**を与え、利用者に見えている見出し値(.big)が
 // 一致することを確かめる。期待値の正しさは本体側の各シーン(一次情報オラクル)が担保して
@@ -2103,6 +2159,13 @@ const EMBED_PARITY = {
   "zengin-kana": { button: "run", result: "out",
     ops: [["set", "names", "株式会社ヤマダ商事"]],
     keyRe: /ｶ\)\S+/ },
+  // 節税シミュレーター3本。入力は本体シーン(ideco/shokibo/fuyo)の正常系と同じ値。
+  // 区分の行は参照データから非同期で描かれるので wait で現れるまで待つ
+  "ideco-setsuzei": { wait: '#kubun option[value="kaishain_none"]',
+    ops: [["set", "kubun", "kaishain_none"], ["set", "kazei", 3000000], ["set", "monthly", 23000]] },
+  "shokibo-kyosai": { ops: [["set", "kazei", 5000000], ["set", "monthly", 70000]] },
+  "fuyo-kojo": { wait: "#n-ippan",
+    ops: [["set", "n-ippan", 1], ["set", "n-tokutei", 1], ["set", "kazei", 5000000]] },
 };
 for (const [t, cfg] of Object.entries(EMBED_PARITY)) SCENES[`embed_${t}`] = embedParityScene(t, cfg);
 

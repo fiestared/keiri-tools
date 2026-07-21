@@ -6,7 +6,9 @@
     "sources": {
       "shotokuzei_sokusan": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
       "shokibo_kyosai": "https://kyosai-web.smrj.go.jp/customer/skyosai/installment/",
-      "ideco_gendogaku": "https://www.mhlw.go.jp/content/10600000/001328784.pdf"
+      "ideco_gendogaku": "https://www.mhlw.go.jp/content/10600000/001328784.pdf",
+      "fuyo_shotokuzei": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1180.htm",
+      "fuyo_juminzei": "https://laws.e-gov.go.jp/law/325AC0000000226"
     }
   },
   "juminzei_shotokuwari_rate": 0.10,
@@ -38,5 +40,20 @@
       { "key": "fuyo",          "label": "専業主婦・主夫（第3号）",        "monthly": 23000, "note": "" }
     ],
     "kaisei_note": "2027年1月から上限引き上げ予定（第1号は月7.5万円、企業年金なしの会社員は月6.2万円）。現行は上記。"
+  },
+  "fuyo": {
+    "note": "扶養控除の額。所得税=所得税法84条(同居老親等の+10万円は租税特別措置法41条の16)、住民税=地方税法314条の2第1項11号・第4項。令和8年12月施行の改正法(令和8年法律第12号)の条文と逐語一致を確認済み(令和8年分の額の変更なし)。扶養親族の所得要件は合計所得金額58万円以下(所得税法2条1項34号・令和7年分以後)＝給与収入だけなら123万円以下(給与所得控除の最低保障65万円)。",
+    "income_limit": 580000,
+    "income_limit_kyuyo": 1230000,
+    "kubun": [
+      { "key": "ippan",       "label": "一般の控除対象扶養親族（16歳以上）",            "shotoku": 380000, "jumin": 330000,
+        "age": "その年12月31日時点で16歳以上（19歳以上23歳未満・70歳以上を除く）" },
+      { "key": "tokutei",     "label": "特定扶養親族（19歳以上23歳未満）",              "shotoku": 630000, "jumin": 450000,
+        "age": "その年12月31日時点で19歳以上23歳未満（大学生の年代）" },
+      { "key": "rojin",       "label": "老人扶養親族（70歳以上・同居老親等以外）",      "shotoku": 480000, "jumin": 380000,
+        "age": "その年12月31日時点で70歳以上（別居の父母など）" },
+      { "key": "dokyo_rojin", "label": "同居老親等（70歳以上・同居している父母・祖父母）", "shotoku": 580000, "jumin": 450000,
+        "age": "その年12月31日時点で70歳以上の直系尊属で、普段同居している人" }
+    ]
   }
 }

@@ -86,3 +86,58 @@ export function taxSavingByMonthly(input, D) {
   const r = taxSaving({ kazeiShotoku: input.kazeiShotoku, annualDeduction: annual }, D);
   return { ...r, monthly, annual, annualLimit: limit, beyondLimit };
 }
+
+/**
+ * 所得税と住民税で控除額が異なる所得控除（扶養控除・配偶者控除など「人的控除」）の節税額。
+ * 扶養控除は所得税38万円に対し住民税33万円のように別額なので、taxSaving（同額前提）を使うと
+ * 住民税の減少を過大に出す。こちらは両方の控除額を受け取る。
+ * @param input { kazeiShotoku, shotokuKojo(所得税の控除額), juminKojo(住民税の控除額) }
+ */
+export function taxSavingSplit(input, D) {
+  if (!D) throw new Error('参照データ（setsuzei_r08.json）が渡されていません');
+  const kazei = yen0(input.kazeiShotoku);
+  const sKojo = yen0(input.shotokuKojo);
+  const jKojo = yen0(input.juminKojo);
+
+  // 控除は課税所得を下回る範囲でしか効かない（住民税側も同じ概算の考え方でクランプする）。
+  const usedShotoku = Math.min(sKojo, kazei);
+  const usedJumin = Math.min(jKojo, kazei);
+
+  const taxBefore = shotokuzei(kazei, D);
+  const taxAfter = shotokuzei(kazei - sKojo, D); // 速算表の差＝超過累進を厳密に反映
+  const shotokuGen = Math.max(0, taxBefore - taxAfter);
+  const fukkoGen = Math.floor(shotokuGen * (D.fukko_rate || 0));
+  const juminGen = Math.floor(usedJumin * (D.juminzei_shotokuwari_rate || 0));
+  const total = shotokuGen + fukkoGen + juminGen;
+
+  return {
+    kazeiShotoku: kazei,
+    shotokuKojo: sKojo, juminKojo: jKojo,
+    usedShotoku, usedJumin,
+    taxBefore, taxAfter,
+    shotokuGen, fukkoGen, juminGen,
+    total,
+    year: D._meta?.year || '',
+  };
+}
+
+/**
+ * 扶養控除: 区分ごとの人数から所得税・住民税の控除額合計を出す（区分の額は参照データが正本）。
+ * @param counts { ippan, tokutei, rojin, dokyo_rojin } 各区分の人数
+ * @returns { shotoku, jumin, count, items: [{key,label,n,shotoku,jumin}] }
+ */
+export function fuyoKojoTotal(counts, D) {
+  if (!D?.fuyo?.kubun) throw new Error('参照データ（setsuzei_r08.json の fuyo）が渡されていません');
+  let shotoku = 0, jumin = 0, count = 0;
+  const items = [];
+  for (const k of D.fuyo.kubun) {
+    const n = Math.floor(Number(counts?.[k.key]));
+    const nn = Number.isFinite(n) && n > 0 ? n : 0;
+    if (!nn) continue;
+    shotoku += k.shotoku * nn;
+    jumin += k.jumin * nn;
+    count += nn;
+    items.push({ key: k.key, label: k.label, n: nn, shotoku: k.shotoku * nn, jumin: k.jumin * nn });
+  }
+  return { shotoku, jumin, count, items };
+}
