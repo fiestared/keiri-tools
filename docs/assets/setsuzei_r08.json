@@ -14,6 +14,11 @@
       "haigu_juminzei": "https://laws.e-gov.go.jp/law/325AC0000000226",
       "kyuyo_shotoku_kojo": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1410.htm",
       "kyuyo_kojo_r8_tokurei": "https://laws.e-gov.go.jp/law/332AC0000000026",
+      "seiho_shotokuzei": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1140.htm",
+      "seiho_joubun": "https://laws.e-gov.go.jp/law/340AC0000000033",
+      "seiho_juminzei": "https://laws.e-gov.go.jp/law/325AC0000000226",
+      "seiho_tokurei_23sai": "https://laws.e-gov.go.jp/law/332AC0000000026",
+      "seiho_hokenryo_kojo_shinkokusho": "https://www.nta.go.jp/taxes/tetsuzuki/shinsei/annai/gensen/pdf/2026bun_04.pdf",
       "teigi_62man_r8": "https://laws.e-gov.go.jp/law/340AC0000000033"
     }
   },
@@ -75,6 +80,62 @@
       { "over": 1250000, "upto": 1300000, "label": "125万円超130万円以下", "kyuyo": "199万円超204万円以下", "shotoku": [ 60000,  40000,  20000], "jumin": [ 60000,  40000,  20000] },
       { "over": 1300000, "upto": 1330000, "label": "130万円超133万円以下", "kyuyo": "204万円超207万円以下", "shotoku": [ 30000,  20000,  10000], "jumin": [ 30000,  20000,  10000] }
     ]
+  },
+  "seiho": {
+    "note": "生命保険料控除。所得税=所得税法76条1項〜4項(e-Gov 令和8年12月1日施行版で逐語確認)、住民税=地方税法314条の2第1項5号の2・5号の3(同)。帯は条文の書き方どおり base+(支払額−minus)/div で持つ。1円未満の端数は切り上げ(国税庁 令和8年分 給与所得者の保険料控除申告書の注記)。★年齢23歳未満の扶養親族がいる場合は、令和8年分・令和9年分に限り**一般の新契約だけ**帯の表が1.5倍になる(租税特別措置法41条の15の5。所法76条1項1号イ〜ニと3号の金額を読み替える規定で、限度額だけでなく帯の境目も1.5倍)。住民税に同じ特例は無く、合計上限(所得税12万円・住民税7万円)も特例で変わらない(76条4項は読替えの対象外)。介護医療保険料は新制度のみで旧契約の区分が無い。",
+    "kubun": [
+      { "key": "ippan",  "label": "一般の生命保険料", "has_kyu": true,  "tokurei": true,
+        "hint": "死亡保険・学資保険・養老保険など" },
+      { "key": "kaigo",  "label": "介護医療保険料",   "has_kyu": false, "tokurei": false,
+        "hint": "医療保険・がん保険・介護保険など（平成24年1月1日以後の契約のみ）" },
+      { "key": "nenkin", "label": "個人年金保険料",   "has_kyu": true,  "tokurei": false,
+        "hint": "「個人年金保険料税制適格特約」が付いたもの" }
+    ],
+    "shotoku": {
+      "shin": [
+        { "upto": 20000, "base": 0,     "minus": 0,     "div": 1 },
+        { "upto": 40000, "base": 20000, "minus": 20000, "div": 2 },
+        { "upto": 80000, "base": 30000, "minus": 40000, "div": 4 },
+        { "upto": null,  "flat": 40000 }
+      ],
+      "shin_tokurei": [
+        { "upto": 30000,  "base": 0,     "minus": 0,     "div": 1 },
+        { "upto": 60000,  "base": 30000, "minus": 30000, "div": 2 },
+        { "upto": 120000, "base": 45000, "minus": 60000, "div": 4 },
+        { "upto": null,   "flat": 60000 }
+      ],
+      "kyu": [
+        { "upto": 25000,  "base": 0,     "minus": 0,     "div": 1 },
+        { "upto": 50000,  "base": 25000, "minus": 25000, "div": 2 },
+        { "upto": 100000, "base": 37500, "minus": 50000, "div": 4 },
+        { "upto": null,   "flat": 50000 }
+      ],
+      "heiyo_max": 40000,
+      "heiyo_max_tokurei": 60000,
+      "total_max": 120000
+    },
+    "jumin": {
+      "shin": [
+        { "upto": 12000, "base": 0,     "minus": 0,     "div": 1 },
+        { "upto": 32000, "base": 12000, "minus": 12000, "div": 2 },
+        { "upto": 56000, "base": 22000, "minus": 32000, "div": 4 },
+        { "upto": null,  "flat": 28000 }
+      ],
+      "kyu": [
+        { "upto": 15000, "base": 0,     "minus": 0,     "div": 1 },
+        { "upto": 40000, "base": 15000, "minus": 15000, "div": 2 },
+        { "upto": 70000, "base": 27500, "minus": 40000, "div": 4 },
+        { "upto": null,  "flat": 35000 }
+      ],
+      "heiyo_max": 28000,
+      "total_max": 70000
+    },
+    "tokurei": {
+      "years": "令和8年分・令和9年分",
+      "age_under": 23,
+      "law": "租税特別措置法41条の15の5",
+      "note": "対象は年齢23歳未満の扶養親族（所得税法2条1項34号）を有する居住者。判定はその年12月31日の現況。16歳未満の年少扶養親族も含む。"
+    }
   },
   "fuyo": {
     "note": "扶養控除の額。所得税=所得税法84条(同居老親等の+10万円は租税特別措置法41条の16)、住民税=地方税法314条の2第1項11号・第4項。令和8年12月施行の改正法(令和8年法律第12号)の条文と逐語一致を確認済み(令和8年分の額の変更なし)。扶養親族の所得要件は令和8年度改正で合計所得金額62万円以下(所得税法2条1項34号・令和8年12月1日施行版で逐語確認・令和8年分以後)＝給与収入だけなら136万円以下(令和8・9年分は措法29条の4により収入220万円以下の給与所得控除が定額74万円)。",

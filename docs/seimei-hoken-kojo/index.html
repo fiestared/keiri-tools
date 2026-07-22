@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生命保険料控除シミュレーター｜控除額と節税額を自動計算</title>
+<meta name="description" content="生命保険料控除の控除額と、実際に安くなる税金（節税額）を自動計算。一般・介護医療・個人年金の3区分、新契約・旧契約の併用、23歳未満の扶養親族がいる場合の6万円特例（令和8年分・令和9年分）にも対応。所得税と住民税で控除額が違う点も正しく反映します。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/seimei-hoken-kojo/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "生命保険料控除シミュレーター",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "一般・介護医療・個人年金の3区分の年間支払保険料から、生命保険料控除の控除額（所得税・住民税）と年間の節税額を計算します。新契約・旧契約の併用、23歳未満の扶養親族がいる場合の特例にも対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "生命保険料控除シミュレーター"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 生命保険料控除は最大でいくら戻りますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 控除額の上限は所得税12万円・住民税7万円で、実際に戻る（安くなる）金額は課税所得500万円の人で年31,504円が上限のめやすです。所得税の減少は「所得税側の控除額×あなたの税率」、住民税の減少は「住民税側の控除額×10%」が基本だからです。課税所得300万円（税率10%）なら3区分上限で年19,504円ほどになります。控除額そのものが戻ってくるわけではない点に注意してください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 控除証明書をなくしました。どうすればいいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 保険会社に再発行を依頼します。多くの保険会社はコールセンターやWebのマイページから即日〜数日で再発行でき、電子的控除証明書（XML）をダウンロードできる会社もあります。年末調整に間に合わない場合は、勤務先の期限までに提出できないことを伝えたうえで、自分で確定申告をすれば控除を受けられます。還付申告は5年以内までさかのぼれるので、過去に申告し忘れた年があっても取り戻せます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 新契約と旧契約の両方があります。どちらで申告すべきですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 有利な方を選べます。旧契約だけで計算すると上限5万円、新契約と合算すると上限4万円なので、所得税では旧契約の保険料が年6万円を超えるなら「旧契約だけ」が有利です。住民税は分かれ目が4万2,000円と違うため、所得税は合算・住民税は旧契約だけ、という組み合わせも実際に起こります。上の計算機は税ごとに有利な方を自動で選び、どちらを採ったかを表示します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 23歳未満の子がいます。夫婦のどちらか一方しか特例を使えませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 両方が使えます。租税特別措置法41条の15の5には「世帯で1人だけ」という制限が無いため、夫婦がそれぞれ一般の生命保険（新契約）を契約していれば、両方がこの特例の計算式を使えます。対象になる扶養親族は所得税法2条1項34号の扶養親族で、16歳未満の年少扶養親族も含みます。判定はその年12月31日の現況です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 学資保険や医療保険も生命保険料控除の対象ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 対象です。学資保険は「一般の生命保険料」、医療保険・がん保険・介護保険は「介護医療保険料」に分類されます。ただし控除の対象になるのは保険金の受取人が本人・配偶者・その他の親族である契約に限られ、財形保険や傷害保険など保険金が身体の傷害のみに基因して支払われる契約は対象外です。個人年金保険は「個人年金保険料税制適格特約」が付いているものだけが個人年金の区分になり、付いていない場合は一般の生命保険料として扱います。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 生命保険料控除シミュレーター</nav>
+
+<section class="hero">
+  <h1>生命保険料控除シミュレーター</h1>
+  <p>控除証明書に書かれた<b>年間の支払保険料</b>を入れるだけで、<b>生命保険料控除の控除額</b>（所得税・住民税）と、実際に安くなる<b>年間の節税額</b>を計算します。<b>新契約と旧契約の併用</b>（どちらで計算した方が得か）や、<b>23歳未満の扶養親族がいる場合の特例</b>にも対応しています。</p>
+</section>
+
+<div class="card">
+  <label>年間の支払保険料<span class="hint">　控除証明書の「申告額」を入れます。加入していない区分は空欄のままで構いません</span></label>
+  <div id="seiho-rows"><p class="hint">読み込み中…</p></div>
+
+  <div style="margin:10px 0">
+    <label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px">
+      <input type="checkbox" id="tokurei" style="width:auto;flex:none">
+      <span id="tokurei-label">年齢23歳未満の扶養親族がいる</span>
+    </label>
+    <p class="hint" id="tokurei-hint" style="margin:4px 0 0 26px"></p>
+  </div>
+
+  <label for="kazei">あなたの課税される所得金額（課税所得・円）<span class="hint">　源泉徴収票や確定申告書の「課税される所得金額」。年収ではありません</span></label>
+  <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000">
+
+  <button class="primary" id="calc">控除額と節税額を計算する</button>
+  <div class="result" id="result"></div>
+  <p class="hint" id="src-hint" style="margin-top:10px"></p>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p>生命保険料控除は、<b>生命保険・医療保険・個人年金保険の保険料を払っている人の所得から、最大12万円（所得税）を差し引く</b>所得控除です。年末調整か確定申告で控除証明書の金額を申告するだけで、所得税と住民税が安くなります。上の計算機で、控除額と実際の節税額が出せます。以下では、<b>3区分の計算式、新契約・旧契約の見分け方と併用のルール、令和8年分・令和9年分だけの「6万円特例」</b>まで、条文と国税庁の様式にもとづいて解説します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+
+<nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#tsukaikata">使い方と注意点</a></li>
+<li><a href="#kubun">3つの区分と上限 — 所得税12万円・住民税7万円</a></li>
+<li><a href="#keisan">控除額の計算式 — 新契約と旧契約で違う</a></li>
+<li><a href="#tokurei">令和8年分・令和9年分の「6万円特例」</a></li>
+<li><a href="#heiyo">新旧を併用しているときの選び方</a></li>
+<li><a href="#reidai">節税額の例</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav>
+
+<h2 id="tsukaikata">使い方と注意点</h2>
+  <div class="callout">
+    <b>入れるのは「支払った保険料」と「課税される所得金額」の2つです</b>
+    保険料は、毎年10〜11月に保険会社から届く<b>控除証明書</b>の「申告額」（その年12月まで払い込んだ場合の見込額）を入れます。節税額のほうは税率で決まり、税率は<b>課税される所得金額</b>で決まります。これは年収ではなく、年収から給与所得控除・基礎控除・社会保険料控除などを<b>すべて引いた後</b>の金額です。源泉徴収票なら「給与所得控除後の金額」から「所得控除の額の合計額」を引いた額、確定申告書なら「課税される所得金額」の欄そのものです。
+  </div>
+  <h3>このツールの前提</h3>
+  <p>控除額は所得税法76条・地方税法314条の2の計算式で求めます。<b>1円未満の端数は切り上げ</b>（国税庁の保険料控除申告書の注記どおり）です。節税額のほうは、所得税を国税庁の<b>所得税の速算表</b>で計算し、控除で税率の段をまたぐ場合も速算表の差をとって<b>超過累進</b>を正しく反映します。住民税の所得割は<b>一律10％</b>として概算します。<b>生命保険料控除は所得税と住民税で控除額が違う</b>（上限が12万円と7万円）ため、住民税の減少は住民税側の控除額で計算します。復興特別所得税（所得税額の2.1％）の減少も含めています。</p>
+  <div class="note">
+    本ツールの結果は目安です。実際の税額は、他の所得控除や税額控除、お住まいの市区町村などによって変わります。申告の前に税務署・税理士でご確認ください。
+  </div>
+
+<h2 id="kubun">3つの区分と上限 — 所得税12万円・住民税7万円</h2>
+
+<p>生命保険料控除は<b>3つの区分</b>に分かれていて、区分ごとに控除額を計算してから合計します。合計には上限があり、<b>所得税は12万円、住民税は7万円</b>です。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>区分</th><th>対象になる保険</th><th>所得税の上限</th><th>住民税の上限</th></tr>
+</thead>
+<tbody>
+<tr><td><b>一般の生命保険料</b></td><td>死亡保険・学資保険・養老保険など</td><td>4万円</td><td>2.8万円</td></tr>
+<tr><td><b>介護医療保険料</b></td><td>医療保険・がん保険・介護保険など</td><td>4万円</td><td>2.8万円</td></tr>
+<tr><td><b>個人年金保険料</b></td><td>「個人年金保険料税制適格特約」が付いたもの</td><td>4万円</td><td>2.8万円</td></tr>
+<tr><td colspan="2" style="text-align:right"><b>3区分の合計（上限）</b></td><td><b>12万円</b></td><td><b>7万円</b></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="note">
+<b>住民税は「2.8万円×3＝8.4万円」になりません。</b>区分ごとの上限は2.8万円ですが、<b>合計の上限は7万円</b>で頭打ちになります（地方税法314条の2第1項5号の2）。3区分すべてを上限まで使っている人は、住民税側で1.4万円分が切り捨てられます。所得税は4万円×3＝12万円がちょうど合計上限に一致するので、この現象は起きません。
+</div>
+
+<figure class="figure">
+<svg viewBox="0 0 640 260" role="img" aria-label="生命保険料控除の3区分と上限。所得税は一般・介護医療・個人年金それぞれ4万円で合計12万円、住民税はそれぞれ2.8万円だが合計は7万円で頭打ち">
+  <text x="20" y="18" font-size="13" fill="currentColor">3区分の控除額と合計の上限</text>
+
+  <text x="20" y="52" font-size="12" fill="currentColor">所得税</text>
+  <rect x="90" y="40" width="150" height="18" fill="var(--accent)" opacity="0.55"/>
+  <text x="100" y="53" font-size="11" fill="currentColor">一般 4万円</text>
+  <rect x="242" y="40" width="150" height="18" fill="var(--accent)" opacity="0.40"/>
+  <text x="252" y="53" font-size="11" fill="currentColor">介護医療 4万円</text>
+  <rect x="394" y="40" width="150" height="18" fill="var(--accent)" opacity="0.25"/>
+  <text x="404" y="53" font-size="11" fill="currentColor">個人年金 4万円</text>
+  <text x="556" y="53" font-size="12" font-weight="bold" fill="currentColor">計12万円</text>
+  <text x="90" y="76" font-size="11" fill="currentColor">3区分の合計上限（12万円）とちょうど一致 — 切り捨ては起きない</text>
+
+  <text x="20" y="126" font-size="12" fill="currentColor">住民税</text>
+  <rect x="90" y="114" width="105" height="18" fill="var(--accent)" opacity="0.55"/>
+  <text x="98" y="127" font-size="11" fill="currentColor">一般 2.8万</text>
+  <rect x="197" y="114" width="105" height="18" fill="var(--accent)" opacity="0.40"/>
+  <text x="203" y="127" font-size="11" fill="currentColor">介護医療 2.8万</text>
+  <rect x="304" y="114" width="105" height="18" fill="var(--accent)" opacity="0.25"/>
+  <text x="312" y="127" font-size="11" fill="currentColor">個人年金 2.8万</text>
+  <rect x="356" y="114" width="53" height="18" fill="none" stroke="currentColor" stroke-dasharray="3 2" opacity="0.7"/>
+  <line x1="356" y1="106" x2="356" y2="140" stroke="currentColor" stroke-width="1.5"/>
+  <text x="356" y="102" font-size="11" font-weight="bold" text-anchor="middle" fill="currentColor">合計7万円</text>
+  <text x="415" y="127" font-size="11" fill="currentColor">← ここから先は切り捨て</text>
+  <text x="90" y="158" font-size="11" fill="currentColor">単純合計8.4万円 − 合計上限7万円 ＝ 1.4万円が使えない</text>
+
+  <line x1="20" y1="196" x2="620" y2="196" stroke="currentColor" opacity="0.25"/>
+  <text x="20" y="218" font-size="12" fill="currentColor">23歳未満の扶養親族がいる場合（令和8年分・令和9年分）</text>
+  <rect x="90" y="228" width="225" height="16" fill="var(--accent)" opacity="0.55"/>
+  <text x="98" y="240" font-size="11" fill="currentColor">一般 6万円（1.5倍）</text>
+  <text x="325" y="240" font-size="11" fill="currentColor">← 一般の「新契約」だけ拡大。合計12万円の上限は据え置き</text>
+</svg>
+<figcaption>住民税だけ「区分ごとの上限×3」と「合計の上限」が一致しない。3区分すべて使うと1.4万円分は切り捨てになる。</figcaption>
+</figure>
+
+<h2 id="keisan">控除額の計算式 — 新契約と旧契約で違う</h2>
+
+<p>控除額は、その保険契約が<b>新契約（平成24年1月1日以後に締結）か旧契約（平成23年12月31日以前）か</b>で計算式が変わります。控除証明書に「新制度」「旧制度」と印字されているので、そこで判断します。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>制度</th><th>年間の支払保険料</th><th>所得税の控除額</th><th>住民税の控除額</th></tr>
+</thead>
+<tbody>
+<tr><td rowspan="4"><b>新契約</b><br>（平成24年1月1日以後）</td><td>2万円以下</td><td>全額</td><td>1.2万円以下は全額</td></tr>
+<tr><td>2万円超 4万円以下</td><td>支払額 × 1/2 ＋ 1万円</td><td>× 1/2 ＋ 6,000円</td></tr>
+<tr><td>4万円超 8万円以下</td><td>支払額 × 1/4 ＋ 2万円</td><td>× 1/4 ＋ 1.4万円</td></tr>
+<tr><td>8万円超</td><td>一律 <b>4万円</b></td><td>一律 2.8万円</td></tr>
+<tr><td rowspan="4"><b>旧契約</b><br>（平成23年12月31日以前）</td><td>2万5,000円以下</td><td>全額</td><td>1.5万円以下は全額</td></tr>
+<tr><td>2万5,000円超 5万円以下</td><td>支払額 × 1/2 ＋ 1万2,500円</td><td>× 1/2 ＋ 7,500円</td></tr>
+<tr><td>5万円超 10万円以下</td><td>支払額 × 1/4 ＋ 2万5,000円</td><td>× 1/4 ＋ 1万7,500円</td></tr>
+<tr><td>10万円超</td><td>一律 <b>5万円</b></td><td>一律 3.5万円</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>住民税の帯（区切りの金額）は所得税と違います。所得税が2万円・4万円・8万円で区切るのに対し、<b>住民税は1.2万円・3.2万円・5.6万円</b>で区切ります（新契約の場合）。所得税の帯を住民税に流用すると答えがずれるため、このツールは税ごとに別の表で計算しています。なお<b>介護医療保険料は新契約しかありません</b>（平成24年に新設された区分なので、旧契約という概念がそもそもありません）。</p>
+
+<h2 id="tokurei">令和8年分・令和9年分の「6万円特例」</h2>
+
+<div class="callout">
+<p><b>23歳未満の扶養親族がいると、一般の生命保険料（新契約）の上限が4万円→6万円に</b></p>
+<p>年齢23歳未満の扶養親族がいる人は、<b>令和8年分と令和9年分に限り</b>、一般の生命保険料の<b>新契約</b>について計算式が1.5倍のものに変わります（租税特別措置法41条の15の5）。<b>上限だけでなく帯の区切りごと1.5倍</b>になる点に注意してください。</p>
+<p>・3万円以下 → 全額／3万円超6万円以下 → 支払額×1/2＋1万5,000円<br>
+・6万円超12万円以下 → 支払額×1/4＋3万円／12万円超 → <b>一律6万円</b></p>
+</div>
+
+<p>この特例には、見落としやすい制限が3つあります。</p>
+
+<ol>
+<li><b>「一般の生命保険料」の「新契約」だけ</b>が対象です。介護医療保険料・個人年金保険料・一般の旧契約は、これまでどおりの計算式のままです</li>
+<li><b>住民税には同じ特例がありません</b>。地方税法に読み替えの規定が無いので、住民税側の上限は2.8万円のままです（このツールは所得税と住民税を別々に計算するので、ここを取り違えません）</li>
+<li><b>3区分の合計上限12万円は据え置き</b>です（所得税法76条4項は読み替えの対象外）。一般で6万円まで使えても、他の区分と合わせて12万円を超える分は切り捨てられます</li>
+</ol>
+
+<p>対象になる「23歳未満の扶養親族」は所得税法2条1項34号の扶養親族で、判定は<b>その年12月31日の現況</b>です。<b>16歳未満の年少扶養親族も含みます</b>（扶養控除の対象は16歳以上ですが、この特例は年齢の下限がありません）。また「世帯で1人だけ」という制限が無いため、<b>共働きの夫婦は両方がこの特例を使えます</b>。</p>
+
+<a class="tool-cta" href="../fuyo-kojo/">扶養親族がいる場合の扶養控除の節税額も計算する</a>
+
+<h2 id="heiyo">新旧を併用しているときの選び方</h2>
+
+<p>同じ区分で新契約と旧契約の両方に入っている場合（たとえば一般の生命保険で古い契約と新しい契約を持っている場合）は、次の<b>2つのうち有利な方</b>を選べます。</p>
+
+<ol>
+<li><b>旧契約だけ</b>で計算する（上限5万円）</li>
+<li><b>新契約と旧契約を合算</b>して計算する（上限4万円）</li>
+</ol>
+
+<p>合算の上限は4万円なのに旧契約だけなら5万円まで使えるため、<b>旧契約の保険料が年6万円を超えるなら「旧契約だけ」の方が得</b>になります（6万円ちょうどならどちらも4万円で同じ）。上の計算機は両方を計算して有利な方を自動で採り、どちらを採ったかを結果に表示します。</p>
+
+<div class="note">
+<b>住民税の分かれ目は6万円ではありません。</b>住民税は合算の上限が2.8万円・旧契約だけなら3.5万円なので、切り替わるのは<b>旧契約の保険料が4万2,000円を超えたとき</b>です。つまり<b>同じ契約でも、所得税は「合算」・住民税は「旧契約だけ」が有利という組み合わせが実際に起こります</b>。税ごとに別々に有利な方を採るのが正しく、このツールはそのように計算します。
+</div>
+
+<h2 id="reidai">節税額の例</h2>
+
+<p>控除額そのものではなく、<b>実際に安くなる税金</b>の例です。このツールと同じ計算式で出した実数です。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>ケース（年間の支払保険料）</th><th>課税所得</th><th>控除額（所得税／住民税）</th><th>年間の節税額</th></tr>
+</thead>
+<tbody>
+<tr><td>一般6万円・介護医療4万円・個人年金8万円</td><td>300万円</td><td>10万5,000円／7万円</td><td><b>17,720円</b></td></tr>
+<tr><td>一般6万円・介護医療4万円・個人年金8万円</td><td>500万円</td><td>10万5,000円／7万円</td><td><b>28,441円</b></td></tr>
+<tr><td>一般（新契約）8万円だけ</td><td>300万円</td><td>4万円／2万8,000円</td><td><b>6,884円</b></td></tr>
+<tr><td>一般（新契約）8万円だけ・<b>23歳未満の子あり</b></td><td>300万円</td><td>5万円／2万8,000円</td><td><b>7,905円</b></td></tr>
+<tr><td>3区分すべて年10万円以上</td><td>500万円</td><td>12万円／7万円</td><td><b>31,504円</b></td></tr>
+</tbody>
+</table>
+</div>
+
+<p>3区分をすべて上限まで使っても、課税所得500万円の人で年<b>31,504円</b>です。掛金の全額が所得控除になる<a href="../ideco-setsuzei/">iDeCo</a>や<a href="../shokibo-kyosai/">小規模企業共済</a>と比べると、生命保険料控除は<b>払った保険料のごく一部しか控除にならない</b>（8万円払って4万円）点が大きな違いです。<b>節税のために保険に入るのは割に合いません</b>が、すでに入っている保険の控除を<b>申告し忘れることは、そのまま損</b>になります。</p>
+
+<div class="callout">
+<p><b>「6万円特例」で増えるのは、控除額で最大2万円分</b></p>
+<p>一般の新契約に年12万円以上払っていて23歳未満の子がいる場合、控除額は4万円→6万円（＋2万円）になります。課税所得500万円（所得税率20％）なら、節税額は10,968円→<b>15,052円</b>で年<b>4,084円</b>の差です。ただし他の区分と合わせて12万円の上限に当たっていると、この上乗せは効きません。</p>
+</div>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 生命保険料控除は最大でいくら戻りますか？</h3>
+<p>A. 控除額の上限は所得税12万円・住民税7万円で、実際に戻る（安くなる）金額は課税所得500万円の人で年31,504円が上限のめやすです。所得税の減少は「所得税側の控除額×あなたの税率」、住民税の減少は「住民税側の控除額×10%」が基本だからです。課税所得300万円（税率10%）なら3区分上限で年19,504円ほどになります。控除額そのものが戻ってくるわけではない点に注意してください。</p>
+
+<h3>Q. 控除証明書をなくしました。どうすればいいですか？</h3>
+<p>A. 保険会社に再発行を依頼します。多くの保険会社はコールセンターやWebのマイページから即日〜数日で再発行でき、電子的控除証明書（XML）をダウンロードできる会社もあります。年末調整に間に合わない場合は、勤務先の期限までに提出できないことを伝えたうえで、自分で確定申告をすれば控除を受けられます。還付申告は5年以内までさかのぼれるので、過去に申告し忘れた年があっても取り戻せます。</p>
+
+<h3>Q. 新契約と旧契約の両方があります。どちらで申告すべきですか？</h3>
+<p>A. 有利な方を選べます。旧契約だけで計算すると上限5万円、新契約と合算すると上限4万円なので、所得税では旧契約の保険料が年6万円を超えるなら「旧契約だけ」が有利です。住民税は分かれ目が4万2,000円と違うため、所得税は合算・住民税は旧契約だけ、という組み合わせも実際に起こります。上の計算機は税ごとに有利な方を自動で選び、どちらを採ったかを表示します。</p>
+
+<h3>Q. 23歳未満の子がいます。夫婦のどちらか一方しか特例を使えませんか？</h3>
+<p>A. 両方が使えます。租税特別措置法41条の15の5には「世帯で1人だけ」という制限が無いため、夫婦がそれぞれ一般の生命保険（新契約）を契約していれば、両方がこの特例の計算式を使えます。対象になる扶養親族は所得税法2条1項34号の扶養親族で、16歳未満の年少扶養親族も含みます。判定はその年12月31日の現況です。</p>
+
+<h3>Q. 学資保険や医療保険も生命保険料控除の対象ですか？</h3>
+<p>A. 対象です。学資保険は「一般の生命保険料」、医療保険・がん保険・介護保険は「介護医療保険料」に分類されます。ただし控除の対象になるのは保険金の受取人が本人・配偶者・その他の親族である契約に限られ、財形保険や傷害保険など保険金が身体の傷害のみに基因して支払われる契約は対象外です。個人年金保険は「個人年金保険料税制適格特約」が付いているものだけが個人年金の区分になり、付いていない場合は一般の生命保険料として扱います。</p>
+
+<section class="related">
+<div class="tool-grid">
+<a class="tool-card" href="../ideco-setsuzei/"><b>iDeCo節税シミュレーター</b><span>掛金の全額所得控除で年間いくら節税になるかを計算します。</span></a>
+<a class="tool-card" href="../fuyo-kojo/"><b>扶養控除シミュレーター</b><span>扶養親族の区分と人数から年間の節税額を計算します。</span></a>
+<a class="tool-card" href="../shokibo-kyosai/"><b>小規模企業共済シミュレーター</b><span>掛金の全額所得控除による節税額を計算します。</span></a>
+<a class="tool-card" href="../gensen-choshu/"><b>源泉徴収税額計算</b><span>令和8年分の月額表から毎月の所得税を求めます。</span></a>
+</div>
+</section>
+
+<h2 id="source">出典</h2>
+<ul>
+<li>国税庁「No.1140 生命保険料控除」— 3区分・新契約と旧契約の計算式・新旧併用の取り扱い（旧契約の保険料が6万円を超えるかで分かれる点）</li>
+<li>所得税法76条1項〜4項 — 新契約（1号）・旧契約（2号）・併用（3号・合計4万円が上限）と、3区分の合計上限12万円（4項）— e-Gov法令検索（令和8年12月1日施行版）で条文を確認</li>
+<li>租税特別措置法41条の15の5（年齢23歳未満の扶養親族を有する場合の生命保険料控除の特例）— 令和8年分・令和9年分について、所得税法76条1項1号イ〜ニと3号の金額を1.5倍に読み替える規定。上限4万円→6万円だけでなく帯の区切りも1.5倍になること、合計上限12万円（4項）は読み替えの対象外であることを条文で確認 — e-Gov法令検索</li>
+<li>地方税法314条の2第1項5号の2 — 住民税の生命保険料控除（新契約1.2万円／3.2万円／5.6万円で区切り上限2.8万円、旧契約1.5万円／4万円／7万円で区切り上限3.5万円、併用の上限2.8万円、3区分の合計上限7万円）— e-Gov法令検索</li>
+<li>国税庁「令和8年分 給与所得者の保険料控除申告書」— 計算式Ⅰ・Ⅱ・Ⅲ、および「控除額の計算において算出した金額に1円未満の端数があるときは、その端数を切り上げます」の注記</li>
+<li>国税庁「No.2260 所得税の税率」— 所得税の速算表（5%〜45%）。本ツールの所得税の減少は、この速算表で控除の前後の税額を計算した差で求めている</li>
+<li>復興特別所得税は所得税額の2.1%（令和19年分まで）／住民税所得割の標準税率10%（地方税法）</li>
+</ul>
+
+<p class="note">本ページの解説・計算例は令和8年（2026年）時点の法令にもとづく一般的な情報であり、個別の事案に対する助言ではありません。実際の節税額は、他の所得控除や税額控除、住んでいる市区町村などによって異なります。申告の前に税務署・税理士でご確認ください。</p>
+
+</article>
+</main>
+<footer class="site" style="display:block">
+  計算の出典: 国税庁「No.1140 生命保険料控除」／所得税法76条／租税特別措置法41条の15の5／地方税法314条の2／国税庁「No.2260 所得税の税率」（速算表）<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { seimeiHokenryoKojo, taxSavingSplit } from "../assets/setsuzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const man = (n) => (n / 10000).toLocaleString("ja-JP") + "万円";
+let R08 = null;
+
+// 参照データ(帯の表・上限・税率)は非同期で届く。**届く前に計算ボタンを押されても await で待つ**。
+// この catch が拾ってよいのは「データが手に入らなかったこと」だけ(飾りの表示は別に処理する)。
+const r08Ready = fetch("../assets/setsuzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { R08 = d; fillRows(d); return true; })
+  .catch(() => false);
+
+// 出典・年分の表示は飾り。ここで転んでも計算は止めない(r08Ready には影響させない)。
+r08Ready.then(ok => { if (ok) showMeta(); }).catch(() => {});
+
+// 区分の行(ラベル・新旧の有無)は参照データが正本。ページに区分を手書きしない。
+function fillRows(d) {
+  const wrap = $("seiho-rows"); wrap.innerHTML = "";
+  for (const k of d.seiho.kubun) {
+    const box = document.createElement("div");
+    box.style.cssText = "margin:10px 0;padding:10px;border:1px solid var(--line,#e3e8e6);border-radius:8px";
+    const head = document.createElement("div");
+    head.style.cssText = "font-size:13.5px;font-weight:600;margin-bottom:6px";
+    head.innerHTML = `${k.label}<span class="hint" style="display:block;font-weight:400">${k.hint}</span>`;
+    box.appendChild(head);
+
+    const fields = k.has_kyu
+      ? [{ id: `${k.key}_shin`, label: "新契約（平成24年1月1日以後）" },
+         { id: `${k.key}_kyu`, label: "旧契約（平成23年12月31日以前）" }]
+      : [{ id: k.key, label: "年間の支払保険料" }];
+
+    for (const f of fields) {
+      const row = document.createElement("div");
+      row.style.cssText = "display:flex;align-items:center;gap:8px;margin:4px 0";
+      const lab = document.createElement("label");
+      lab.htmlFor = f.id;
+      lab.style.cssText = "flex:1;margin:0;font-size:13px";
+      lab.textContent = f.label;
+      const inp = document.createElement("input");
+      inp.type = "number"; inp.id = f.id; inp.min = "0"; inp.step = "1000";
+      inp.placeholder = "円"; inp.inputMode = "numeric";
+      inp.style.cssText = "width:9em;flex:none";
+      row.appendChild(lab); row.appendChild(inp);
+      box.appendChild(row);
+    }
+    wrap.appendChild(box);
+  }
+}
+
+// 特例の説明・年分は**データが持っている値**を出す(ページに手書きしない)。
+function showMeta() {
+  const T = R08?.seiho?.tokurei;
+  if (T) {
+    $("tokurei-label").textContent = `年齢${T.age_under}歳未満の扶養親族がいる`;
+    $("tokurei-hint").textContent =
+      `${T.years}に限り、一般の生命保険料（新契約）の計算式が1.5倍になります（${T.law}）。住民税に同じ特例はありません。`;
+  }
+  if (R08?.seiho?.shotoku?.total_max != null) {
+    $("src-hint").textContent =
+      `※ 控除額の合計の上限は所得税${man(R08.seiho.shotoku.total_max)}・住民税${man(R08.seiho.jumin.total_max)}。1円未満の端数は切り上げます。`;
+  }
+  if (R08?._meta?.year) $("src-note").textContent = `（${R08._meta.year}の所得税速算表）`;
+}
+
+const METHOD_LABEL = {
+  heiyo: "新契約＋旧契約を合算",
+  kyu_only: "旧契約だけで計算（その方が有利）",
+  shin_only: "新契約のみ",
+  none: "—",
+};
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+
+  // 参照データ(帯の表・上限・税率)の到着を必ず待つ。これが無いと控除額は答えられない。
+  const ok = await r08Ready;
+  if (!ok || !R08) {
+    box.innerHTML = `<div class="note"><b>計算式・上限のデータを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。計算式や上限が分からない状態で控除額を答えることはできません。</div>`;
+    return;
+  }
+
+  const num = (id) => Number($(id)?.value) || 0;
+  const input = {
+    ippan_shin: num("ippan_shin"), ippan_kyu: num("ippan_kyu"),
+    kaigo: num("kaigo"),
+    nenkin_shin: num("nenkin_shin"), nenkin_kyu: num("nenkin_kyu"),
+    tokurei: $("tokurei").checked,
+  };
+  const paid = input.ippan_shin + input.ippan_kyu + input.kaigo + input.nenkin_shin + input.nenkin_kyu;
+  if (paid <= 0) {
+    box.innerHTML = `年間の支払保険料を入力してください（控除証明書の「申告額」）。`;
+    return;
+  }
+
+  let k;
+  try {
+    k = seimeiHokenryoKojo(input, R08);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  const rows = k.shotoku.items.map((i, idx) => {
+    const j = k.jumin.items[idx];
+    if (i.paidShin + i.paidKyu <= 0) return "";
+    const note = (i.method === j.method)
+      ? METHOD_LABEL[i.method]
+      : `所得税は${METHOD_LABEL[i.method]}／住民税は${METHOD_LABEL[j.method]}`;
+    return `<tr><td style="padding:6px 8px">${i.label}
+        <span class="hint" style="display:block">${note}</span></td>
+      <td style="padding:6px 8px;text-align:right">${yen(i.amount)} ／ ${yen(j.amount)}</td></tr>`;
+  }).join("");
+
+  let html = `
+    <div class="row">生命保険料控除の額 <span class="big">${yen(k.shotoku.total)}</span>
+      <span class="hint">（所得税の控除額です。住民税の控除額は${yen(k.jumin.total)}）</span></div>
+    <div style="overflow-x:auto;margin-top:10px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr style="background:#e7f3f0"><th style="text-align:left;padding:6px 8px">区分</th>
+        <th style="text-align:right;padding:6px 8px">控除額（所得税 ／ 住民税）</th></tr>
+      ${rows}
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">合計</td>
+        <td style="padding:6px 8px;text-align:right">${yen(k.shotoku.total)} ／ ${yen(k.jumin.total)}</td></tr>
+    </table></div>`;
+
+  // 上限で切られたことは黙らない(単純合計といくら切り捨てになったかを出す)。
+  if (k.shotoku.capped) {
+    html += `<div class="note" style="margin-top:10px"><b>所得税の控除額は合計の上限${man(k.shotoku.totalMax)}で頭打ちになりました。</b>
+      区分ごとの単純合計は${yen(k.shotoku.sum)}で、${yen(k.shotoku.sum - k.shotoku.total)}が切り捨てになっています。</div>`;
+  }
+  if (k.jumin.capped) {
+    html += `<div class="note" style="margin-top:10px"><b>住民税の控除額は合計の上限${man(k.jumin.totalMax)}で頭打ちになりました。</b>
+      区分ごとの単純合計は${yen(k.jumin.sum)}で、${yen(k.jumin.sum - k.jumin.total)}が切り捨てになっています。</div>`;
+  }
+  if (k.tokureiApplied) {
+    html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ※ 年齢${R08.seiho.tokurei.age_under}歳未満の扶養親族がいる場合の特例（${R08.seiho.tokurei.law}・${R08.seiho.tokurei.years}）を、
+      一般の生命保険料の新契約に適用しています。住民税に同じ特例はありません。</div>`;
+  }
+
+  // 節税額は課税所得が要る。入っていなければ控除額だけを出して、その旨を言う(黙って0円と答えない)。
+  const kazei = Number($("kazei").value);
+  if (!kazei || kazei <= 0) {
+    html += `<div class="note" style="margin-top:10px">課税される所得金額を入れると、<b>実際に安くなる税金（節税額）</b>も計算します
+      （<b>年収ではなく課税所得</b>です）。</div>`;
+    box.innerHTML = html;
+    return;
+  }
+
+  const t = taxSavingSplit({ kazeiShotoku: kazei, shotokuKojo: k.shotoku.total, juminKojo: k.jumin.total }, R08);
+  html += `
+    <div class="row" style="margin-top:14px">年間の節税額 <span class="big">${yen(t.total)}</span>
+      <span class="hint">（控除 所得税${yen(k.shotoku.total)}／住民税${yen(k.jumin.total)}）</span></div>
+    <div style="overflow-x:auto;margin-top:10px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr><td style="padding:6px 8px">所得税の減少（速算表の差）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(t.shotokuGen)}</td></tr>
+      <tr><td style="padding:6px 8px">復興特別所得税の減少（2.1%）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(t.fukkoGen)}</td></tr>
+      <tr><td style="padding:6px 8px">住民税の減少（所得割10%・概算）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(t.juminGen)}</td></tr>
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">年間の節税額</td>
+        <td style="padding:6px 8px;text-align:right">${yen(t.total)}</td></tr>
+    </table></div>`;
+
+  // 課税所得より控除の方が大きいと、控除の一部しか効かない(黙って満額で答えない)。
+  if (t.usedShotoku < k.shotoku.total) {
+    html += `<div class="note" style="margin-top:10px"><b>課税される所得金額（${yen(kazei)}）が控除額より小さいため、控除の一部しか税金の減少につながっていません。</b>
+      引ききれない控除は切り捨てられます。</div>`;
+  }
+
+  html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ※ 1円未満の端数は切り上げて計算しています。所得税は速算表（超過累進）、住民税は所得割10%で概算しています。
+      ${t.year ? `<span class="hint">（${t.year}の所得税速算表で計算）</span>` : ""}</div>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>

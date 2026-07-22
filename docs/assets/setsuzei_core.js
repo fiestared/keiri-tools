@@ -169,6 +169,91 @@ export function kyuyoToGokeiShotoku(shunyu, D) {
 }
 
 /**
+ * 生命保険料控除の1区分ぶんの控除額（帯の表は参照データが正本）。
+ * 帯は条文の書き方（「◯円と、合計額から△円を控除した金額のn分の1に相当する金額との合計額」）を
+ * そのまま base + (x − minus) / div で持つ。1円未満の端数は**切り上げ**
+ * （国税庁 令和8年分 給与所得者の保険料控除申告書の注記）。
+ */
+function seihoBand(x, bands) {
+  for (const b of bands) {
+    if (b.upto == null || x <= b.upto) {
+      if (b.flat != null) return b.flat;
+      return Math.ceil(b.base + (x - b.minus) / b.div);
+    }
+  }
+  return 0;
+}
+
+/**
+ * 生命保険料控除の1区分（一般／介護医療／個人年金）の控除額。
+ * 新契約・旧契約の両方を払っている場合は、条文どおり「旧のみで計算した額」と
+ * 「新＋旧の合算（上限あり）」の**大きい方**を採る（所法76条1項1〜3号）。
+ * @param T その税（所得税 or 住民税）の帯データ
+ * @param useTokurei 措法41条の15の5（年齢23歳未満の扶養親族がいる場合の一般の特例）を使うか
+ */
+function seihoCategory(shin, kyu, T, useTokurei) {
+  const bandsShin = useTokurei && T.shin_tokurei ? T.shin_tokurei : T.shin;
+  const heiyoMax = useTokurei && T.heiyo_max_tokurei != null ? T.heiyo_max_tokurei : T.heiyo_max;
+  const dShin = shin > 0 ? seihoBand(shin, bandsShin) : 0;
+  const dKyu = kyu > 0 ? seihoBand(kyu, T.kyu) : 0;
+
+  if (shin > 0 && kyu > 0) {
+    const heiyo = Math.min(dShin + dKyu, heiyoMax);
+    // 旧契約だけで計算した方が大きくなることがある（旧の上限5万円 > 合算の上限4万円）。
+    if (dKyu > heiyo) return { amount: dKyu, method: 'kyu_only', shin: dShin, kyu: dKyu };
+    return { amount: heiyo, method: 'heiyo', shin: dShin, kyu: dKyu };
+  }
+  if (kyu > 0) return { amount: dKyu, method: 'kyu_only', shin: 0, kyu: dKyu };
+  if (shin > 0) return { amount: dShin, method: 'shin_only', shin: dShin, kyu: 0 };
+  return { amount: 0, method: 'none', shin: 0, kyu: 0 };
+}
+
+/**
+ * 生命保険料控除（所得税法76条／地方税法314条の2第1項5号の2・5号の3）。
+ * 3区分（一般・介護医療・個人年金）それぞれの新契約・旧契約の年間支払保険料から、
+ * 所得税・住民税の控除額を出す。介護医療は新制度のみ（旧契約の区分が無い）。
+ *
+ * ★年齢23歳未満の扶養親族がいる場合、令和8年分・令和9年分に限り**一般の新契約だけ**
+ *   帯の表が1.5倍になる（措法41条の15の5。上限4万円→6万円）。住民税に同じ特例は無い。
+ *   合計の上限（所得税12万円・住民税7万円）は特例でも変わらない。
+ *
+ * @param input {
+ *   ippan_shin, ippan_kyu, kaigo, nenkin_shin, nenkin_kyu, // 年間支払保険料（円）
+ *   tokurei // 年齢23歳未満の扶養親族がいるか
+ * }
+ * @returns { shotoku:{items,sum,total,capped}, jumin:{...}, tokureiApplied, year }
+ */
+export function seimeiHokenryoKojo(input, D) {
+  if (!D?.seiho?.shotoku) throw new Error('参照データ（setsuzei_r08.json の seiho）が渡されていません');
+  const S = D.seiho;
+  const tokurei = !!input?.tokurei;
+
+  const pays = {
+    ippan: { shin: yen0(input?.ippan_shin), kyu: yen0(input?.ippan_kyu) },
+    kaigo: { shin: yen0(input?.kaigo), kyu: 0 },
+    nenkin: { shin: yen0(input?.nenkin_shin), kyu: yen0(input?.nenkin_kyu) },
+  };
+
+  const side = (T) => {
+    const items = S.kubun.map((k) => {
+      const p = pays[k.key];
+      const r = seihoCategory(p.shin, p.kyu, T, tokurei && !!k.tokurei);
+      return { key: k.key, label: k.label, paidShin: p.shin, paidKyu: p.kyu, ...r };
+    });
+    const sum = items.reduce((a, i) => a + i.amount, 0);
+    const total = Math.min(sum, T.total_max);
+    return { items, sum, total, capped: sum > T.total_max, totalMax: T.total_max };
+  };
+
+  return {
+    shotoku: side(S.shotoku),
+    jumin: side(S.jumin),
+    tokureiApplied: tokurei,
+    year: D._meta?.year || '',
+  };
+}
+
+/**
  * 扶養控除: 区分ごとの人数から所得税・住民税の控除額合計を出す（区分の額は参照データが正本）。
  * @param counts { ippan, tokutei, rojin, dokyo_rojin } 各区分の人数
  * @returns { shotoku, jumin, count, items: [{key,label,n,shotoku,jumin}] }

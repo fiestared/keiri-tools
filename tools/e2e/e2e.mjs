@@ -680,6 +680,12 @@ const SCENES = [
   { name: "haigusha", expect: (s) =>
       s.total === 110596 && s.shotokuGen === 76000 && s.juminGen === 33000 &&
       s.kojoShotoku === 380000 && s.kojoJumin === 330000 && s.isTokubetsu && !s.failed },
+  // 生命保険料控除: 一般(新6万+旧7万)・介護4万・年金(新8万)・23歳未満の扶養親族あり・課税所得500万。
+  // 所得税=一般60,000(特例つき合算)+介護30,000+年金40,000=130,000 → 上限120,000
+  // 住民税=一般35,000(★旧のみが勝つ)+介護24,000+年金28,000=87,000 → 上限70,000 → 節税31,504
+  { name: "seiho", expect: (s) =>
+      s.kojoShotoku === 120000 && s.kojoJumin === 70000 && s.total === 31504 &&
+      s.juminGen === 7000 && s.showsSplitMethod && s.showsJuminCap && !s.failed },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────
@@ -747,7 +753,8 @@ const server = createServer(async (req, res) => {
 await new Promise((ok) => server.listen(0, "127.0.0.1", ok));
 const port = server.address().port;
 
-const only = process.env.E2E_ONLY;
+// 絞り込みは環境変数でも引数でも指定できる（環境変数を前置きできないシェル向け）。
+const only = process.env.E2E_ONLY || process.argv[2];
 const fails = [];
 const covered = new Map(); // ページ → 正常条件で駆動したシーン名
 

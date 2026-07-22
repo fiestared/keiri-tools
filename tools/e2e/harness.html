@@ -2070,6 +2070,36 @@ SCENES.haigusha = async () => {
   };
 };
 
+// 生命保険料控除: 一般(新6万+旧7万)・介護医療4万・個人年金(新8万)・23歳未満の扶養親族あり。
+// ★このシーンが押さえているのは「税ごとに別々に有利な方を採る」配線 —
+//   一般は所得税では特例つき合算(45,000+42,500→上限60,000)、住民税では旧のみ(35,000)が勝つ。
+//   特例を住民税にも波及させたり、所得税側の判定を住民税に流用すると、ここで落ちる。
+SCENES.seiho = async () => {
+  const doc = await open("/docs/seimei-hoken-kojo/");
+  await waitFor(() => doc.getElementById("ippan_shin"), "生命保険料控除の区分の行の読み込み");
+  set(doc, "ippan_shin", "60000");
+  set(doc, "ippan_kyu", "70000");
+  set(doc, "kaigo", "40000");
+  set(doc, "nenkin_shin", "80000");
+  const cb = doc.getElementById("tokurei");
+  cb.checked = true; cb.dispatchEvent(new doc.defaultView.Event("change", { bubbles: true }));
+  set(doc, "kazei", "5000000");
+  click(doc, "calc");
+  await waitFor(() => { const t = text(doc, "result"); return t && !/計算中/.test(t); }, "生命保険料控除の計算結果");
+  const body = text(doc, "result");
+  return {
+    kojoShotoku: setsuzeiNum(body, /生命保険料控除の額 ¥([\d,]+)/),
+    kojoJumin: setsuzeiNum(body, /住民税の控除額は¥([\d,]+)/),
+    total: setsuzeiNum(body, /年間の節税額 ¥([\d,]+)/),
+    juminGen: setsuzeiNum(body, /住民税の減少[^¥]*¥([\d,]+)/),
+    // ★所得税と住民税で採り方が違うことが画面に出ていること
+    showsSplitMethod: /所得税は新契約＋旧契約を合算／住民税は旧契約だけで計算/.test(body),
+    // 住民税は 35,000(一般)+28,000(介護)+28,000(年金)=91,000 → 上限70,000で切り捨て
+    showsJuminCap: /住民税の控除額は合計の上限7万円で頭打ち/.test(body),
+    failed: body.includes("読み込めませんでした"),
+  };
+};
+
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ──────────────────────────────
 // 本体ページと埋め込みウィジェットに**同じ入力**を与え、利用者に見えている見出し値(.big)が
 // 一致することを確かめる。期待値の正しさは本体側の各シーン(一次情報オラクル)が担保して
