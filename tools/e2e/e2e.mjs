@@ -309,10 +309,12 @@ const SCENES = [
       s.kojo === 200000 && s.ashikiri === 100000 && s.keigen === 40420 && s.showsYear && !s.failed },
   { name: "iryohi_slow", slow: true, expect: (s) =>
       s.kojo === 200000 && s.keigen === 40420 && !s.failed },
-  // ★★低所得の主役: 年収160万・医療費6万 → 足切り47,500(5%側)・控除額12,500。「10万円は下限ではない」。
+  // ★★低所得の主役: 年収160万・医療費6万 → 足切り43,000(5%側)・控除額17,000。「10万円は下限ではない」。
   //   足切りを一律10万に実装していたら控除額0になってここで落ちる（記事の目玉の逆）。
+  //   ★このシーンは令和8年分(措法29条の4・最低保障74万)の錠前も兼ねる: ページが zeisei:"r8" を
+  //     渡さなくなると総所得が95万に戻り足切り47,500・控除12,500になって落ちる（R7規則への黙った後退を捕まえる）。
   { name: "iryohi_lowincome", expect: (s) =>
-      s.ashikiri === 47500 && s.kojo === 12500 && !s.failed },
+      s.ashikiri === 43000 && s.kojo === 17000 && !s.failed },
   // ★通常とセルフメディは選択 → 控除額の大きい②を推奨。控除額88,000。
   { name: "iryohi_selfmed", expect: (s) =>
       s.selfmedKojo === 88000 && s.recommendsSelf && !s.failed },

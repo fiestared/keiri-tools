@@ -27,21 +27,48 @@ const t = (name, fn) => { try { fn(); pass++; console.log('✅ ' + name); }
   catch (e) { fail++; console.log('❌ ' + name + '\n   ' + e.message); } };
 
 // ── 1. 足切りの表（年収 → 総所得金額等 → 足切り）。★5%側が効く低所得を含む ──────────
-// 別表第五の刻み境界の年収を選んだので、記事の速算式表の値とも一致する（独立オラクル）。
+// 別表第五の刻み境界の年収を選んだので、記事の表の値とも一致する（独立オラクル）。
+// ★令和8年分（zeisei:'r8'・措法29条の4＝最低保障74万円）と令和7年分までを**両方**固定する。
+//   改正が効くのは給与収入220万円未満だけ（220万円以上は別表第五が改正前と完全一致）なので、
+//   250万・300万・500万は r7 と r8 で同じ値になるのが正しい。ここが食い違ったら委譲が壊れている。
 const ASHI = [
-  { shunyu: 1600000, soto: 950000,  ashi: 47500,  capped: false },
-  { shunyu: 2500000, soto: 1670000, ashi: 83500,  capped: false },
-  { shunyu: 3000000, soto: 2020000, ashi: 100000, capped: true },
-  { shunyu: 5000000, soto: 3560000, ashi: 100000, capped: true },
+  // shunyu,     r7: 総所得/足切り,        r8: 総所得/足切り,        capped(r8)
+  { shunyu: 1600000, soto: 950000,  ashi: 47500,  sotoR8: 860000,  ashiR8: 43000,  capped: false },
+  { shunyu: 2000000, soto: 1320000, ashi: 66000,  sotoR8: 1260000, ashiR8: 63000,  capped: false },
+  { shunyu: 2500000, soto: 1670000, ashi: 83500,  sotoR8: 1670000, ashiR8: 83500,  capped: false },
+  { shunyu: 3000000, soto: 2020000, ashi: 100000, sotoR8: 2020000, ashiR8: 100000, capped: true },
+  { shunyu: 5000000, soto: 3560000, ashi: 100000, sotoR8: 3560000, ashiR8: 100000, capped: true },
 ];
 for (const a of ASHI) {
-  t(`足切り 年収${a.shunyu} → 総所得${a.soto} → 足切り${a.ashi}${a.capped ? '(10万で頭打ち)' : '(5%側)'}`, () => {
+  t(`足切り[令和7年分まで] 年収${a.shunyu} → 総所得${a.soto} → 足切り${a.ashi}`, () => {
     const r = calcIryohi({ iryohi: 500000, kyuyoShunyu: a.shunyu, shotokuzeiRate: 10 }, refs);
     assert.strictEqual(r.sotoShotoku, a.soto, `総所得 ${r.sotoShotoku} ≠ ${a.soto}`);
     assert.strictEqual(r.ashikiri, a.ashi, `足切り ${r.ashikiri} ≠ ${a.ashi}`);
+  });
+  t(`足切り[令和8年分] 年収${a.shunyu} → 総所得${a.sotoR8} → 足切り${a.ashiR8}${a.capped ? '(10万で頭打ち)' : '(5%側)'}`, () => {
+    const r = calcIryohi({ iryohi: 500000, kyuyoShunyu: a.shunyu, zeisei: 'r8', shotokuzeiRate: 10 }, refs);
+    assert.strictEqual(r.sotoShotoku, a.sotoR8, `総所得 ${r.sotoShotoku} ≠ ${a.sotoR8}`);
+    assert.strictEqual(r.ashikiri, a.ashiR8, `足切り ${r.ashikiri} ≠ ${a.ashiR8}`);
     assert.strictEqual(r.ashikiriCapped, a.capped, '10万円で頭打ちか');
   });
 }
+// ★改正の向きを固定する: 収入220万円未満は「足切りが下がる＝控除額が増える」側にしか動かない。
+//   逆向き（R7のほうが有利）になったら実装か表のどちらかが壊れている。
+t('令和8年分は収入220万円未満の足切りが必ず下がる（＝控除額が増える）', () => {
+  for (const shunyu of [800000, 1200000, 1600000, 2000000, 2190000]) {
+    const r7 = calcIryohi({ iryohi: 500000, kyuyoShunyu: shunyu, shotokuzeiRate: 10 }, refs);
+    const r8 = calcIryohi({ iryohi: 500000, kyuyoShunyu: shunyu, zeisei: 'r8', shotokuzeiRate: 10 }, refs);
+    assert.ok(r8.ashikiri < r7.ashikiri, `年収${shunyu}: R8足切り${r8.ashikiri} は R7${r7.ashikiri} より小さいはず`);
+    assert.ok(r8.normal.kojo > r7.normal.kojo, `年収${shunyu}: R8の控除額が増えるはず`);
+  }
+});
+t('令和8年分でも収入220万円以上は令和7年分と完全に一致する（別表第五は不変）', () => {
+  for (const shunyu of [2200000, 2500000, 2970000, 3000000, 5000000, 8000000]) {
+    const r7 = calcIryohi({ iryohi: 500000, kyuyoShunyu: shunyu, shotokuzeiRate: 10 }, refs);
+    const r8 = calcIryohi({ iryohi: 500000, kyuyoShunyu: shunyu, zeisei: 'r8', shotokuzeiRate: 10 }, refs);
+    assert.strictEqual(r8.sotoShotoku, r7.sotoShotoku, `年収${shunyu}: 総所得が一致しない`);
+  }
+});
 
 // ── 2. 看板の答え: 医療費30万・補填0・年収500万（足切り10万）→ 控除額20万・還付40,420（税率10%） ──
 t('医療費30万・補填0・年収500万 → 控除額20万', () => {
@@ -61,11 +88,13 @@ t('控除額20万・税率20% → 軽減額 60,840', () => {
   assert.strictEqual(r.normal.keigen.total, 60840, `税率20%の軽減 ${r.normal.keigen.total} ≠ 60840`);
 });
 
-// ── 3. ★低所得の主役: 医療費6万・年収160万 → 足切り47,500 → 控除額12,500（10万未満でも使える） ──
-t('医療費6万・年収160万 → 控除額12,500（10万円は下限ではない）', () => {
-  const r = calcIryohi({ iryohi: 60000, kyuyoShunyu: 1600000, shotokuzeiRate: 5 }, refs);
-  assert.strictEqual(r.ashikiri, 47500, '足切りは5%側（47,500）');
-  assert.strictEqual(r.normal.kojo, 12500, '控除額 = 60,000 − 47,500');
+// ── 3. ★低所得の主役: 医療費6万・年収160万 → 足切り43,000 → 控除額17,000（10万未満でも使える） ──
+// ★これは記事とツールのFAQに載せている数値例そのもの。画面の文言と実装をここで固定する。
+t('医療費6万・年収160万[令和8年分] → 控除額17,000（10万円は下限ではない）', () => {
+  const r = calcIryohi({ iryohi: 60000, kyuyoShunyu: 1600000, zeisei: 'r8', shotokuzeiRate: 5 }, refs);
+  assert.strictEqual(r.sotoShotoku, 860000, '総所得は 160万 − 74万 = 86万（措法29条の4）');
+  assert.strictEqual(r.ashikiri, 43000, '足切りは5%側（43,000）');
+  assert.strictEqual(r.normal.kojo, 17000, '控除額 = 60,000 − 43,000');
 });
 
 // ── 4. ★補填金は「その給付の目的となった医療費」を限度に引く（No.1125） ──────────────

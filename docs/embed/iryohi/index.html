@@ -140,6 +140,8 @@ $("calc").addEventListener("click", async () => {
       hoten: Number($("hoten").value) || 0,
       hotenTaisho: htVal !== "" ? Number(htVal) : undefined,
       kyuyoShunyu: shunyu,
+      // ★本体ページと同じ規則で計算する（令和8年分＝措法29条の4）。外すと本体と答えが食い違う。
+      zeisei: "r8",
       shotokuzeiRate: rateSel !== "" ? Number(rateSel) : undefined,
       selfmedPurchase: smVal !== "" ? Number(smVal) : undefined,
     }, { iryohiData: IRYOHI, juminzeiData: JUMIN });
