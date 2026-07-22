@@ -686,6 +686,13 @@ const SCENES = [
   { name: "seiho", expect: (s) =>
       s.kojoShotoku === 120000 && s.kojoJumin === 70000 && s.total === 31504 &&
       s.juminGen === 7000 && s.showsSplitMethod && s.showsJuminCap && !s.failed },
+  // 青色申告特別控除: 事業所得500万・事業/複式簿記/期限内はOK・e-Tax未 → 55万円の区分。
+  // 節税167,310(所得税110,000+復興2,310+住民55,000)。★住民税は控除と同額55万×10%=55,000
+  // (人的控除と違い所得税・住民税で額が変わらない — 地方税法32条2項)。
+  // e-Taxに届いたときの増分30,420円が画面に出ていることも固定する。
+  { name: "aoiro", expect: (s) =>
+      s.kojo === 550000 && s.total === 167310 && s.juminGen === 55000 &&
+      s.showsMissing && s.showsGain && !s.failed },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────

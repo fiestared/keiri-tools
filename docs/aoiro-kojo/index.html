@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>青色申告特別控除シミュレーター｜65万・55万・10万の判定</title>
+<meta name="description" content="青色申告特別控除が65万円・55万円・10万円のどれになるかを要件から判定し、実際に安くなる税金（節税額）を自動計算。所得が控除額より少ないときの限度、赤字を相殺しない合計額のルール、山林所得の扱い、令和9年分からの75万円・55万円廃止の改正にも対応。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/aoiro-kojo/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "青色申告特別控除シミュレーター",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "事業所得・不動産所得の金額と記帳・申告の要件から、青色申告特別控除が65万円・55万円・10万円のどれになるかを判定し、年間の節税額を計算します。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "青色申告特別控除シミュレーター"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "青色申告特別控除65万円は、いくら得になりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "控除額そのものが戻るわけではなく、65万円に税率をかけた分だけ税金が減ります。課税される所得金額が500万円（所得税率20％）の人で年197,730円、課税所得300万円（税率10％）の人なら年約11万円が目安です。青色申告特別控除は住民税にも同額が効くので、所得税率に住民税10％と復興特別所得税0.42％を足した率で効きます。さらに国民健康保険料も所得が下がる分だけ安くなります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "白色申告から青色申告に変えるには、いつまでに何をすればいいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "青色申告をしたい年の3月15日までに「所得税の青色申告承認申請書」を税務署に出します。その年の1月16日以後に開業した場合は、開業の日から2か月以内です。提出だけなら手数料はかからず、e-Taxでも出せます。承認されると、その年分から青色申告特別控除のほか、赤字を3年間繰り越せる純損失の繰越控除や、家族に払う給与を経費にできる青色事業専従者給与も使えるようになります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "複式簿記ができません。10万円しか受けられませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "手で複式簿記を書く必要はなく、市販の会計ソフトに日々の取引を入力すれば、貸借対照表と損益計算書は自動で作られます。国税庁も要件を「正規の簿記の原則（一般的には複式簿記）」と説明しており、簿記の知識より記帳の継続が実質的な条件です。会計ソフトの年間費用は1万円台からで、55万円と10万円の差（課税所得500万円なら年約13.7万円）を大きく下回ります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "期限に1日でも遅れると65万円は受けられませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "受けられず、10万円に下がります。措置法25条の2第6項が、55万円・65万円の控除は確定申告書を「その提出期限までに提出した場合に限り」適用すると定めているためです。e-Taxで65万円を受ける場合も、4項2号が「確定申告書の提出期限までに」送信することを要件にしています。還付になる申告であっても期限は同じで、翌年3月15日を過ぎると65万円は使えません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "事業所得が赤字です。青色申告特別控除は使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "その所得からは引けませんが、他に黒字の不動産所得があれば、そちらから引けます。控除の限度になる「合計額」は損益通算前の黒字だけの合計で、赤字は無いものとして計算するためです。たとえば事業所得が▲200万円で不動産所得が+300万円なら、限度は差引100万円ではなく300万円になり、65万円を満額引けます。なお赤字そのものは、青色申告なら純損失として3年間繰り越せます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "令和9年分から75万円になると聞きました。今年から使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "使えません。75万円が使えるのは令和9年分（2027年の所得・2028年春の申告）からです。令和8年3月31日法律第12号の附則33条が、改正後の措置法25条の2は令和9年分以後の所得税について適用し、令和8年分以前は従前の例によると定めています。いま準備している令和8年分は65万円・55万円・10万円のままです。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 青色申告特別控除シミュレーター</nav>
+
+<section class="hero">
+  <h1>青色申告特別控除シミュレーター</h1>
+  <p>青色申告特別控除が<b>65万円・55万円・10万円のどれになるか</b>を要件から判定し、実際に安くなる<b>年間の節税額</b>を計算します。<b>1つ上の区分にあと何が足りないか</b>と、そこに届いたら<b>いくら得するか</b>も出します。</p>
+</section>
+
+<div class="card">
+  <label>所得の金額（青色申告特別控除を引く前・円）<span class="hint">　赤字の所得はマイナスで入れて構いません。無い所得は空欄のまま</span></label>
+  <div id="income-rows"><p class="hint">読み込み中…</p></div>
+
+  <label style="margin-top:14px">あてはまるものにチェック<span class="hint">　控除の区分はこの要件で決まります</span></label>
+  <div id="req-rows"><p class="hint">読み込み中…</p></div>
+
+  <label for="kazei" style="margin-top:14px">あなたの課税される所得金額（課税所得・円）<span class="hint">　確定申告書の「課税される所得金額」。売上でも所得でもありません</span></label>
+  <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000">
+
+  <button class="primary" id="calc">控除額と節税額を計算する</button>
+  <div class="result" id="result"></div>
+  <p class="hint" id="src-hint" style="margin-top:10px"></p>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p>青色申告特別控除は、<b>青色申告をしている個人事業主・フリーランス・不動産オーナーの所得から、最大65万円を差し引ける</b>制度です（租税特別措置法25条の2）。他の控除と違い<b>所得控除ではなく「所得金額の計算上の控除」</b>なので、<b>住民税にも同額が効きます</b>。上の計算機で、あなたがどの区分になるかと節税額が出せます。以下では、<b>65万円・55万円・10万円の分かれ目、所得が少ないときの限度、そして令和9年分からの大きな改正</b>まで、条文と国税庁の資料にもとづいて解説します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+
+<nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#tsukaikata">使い方と注意点</a></li>
+<li><a href="#kubun">3つの区分と要件 — 65万円・55万円・10万円</a></li>
+<li><a href="#gendo">控除額は「所得の額」が限度 — 赤字は相殺しない</a></li>
+<li><a href="#juminzei">住民税にも同額が効く — 所得控除との違い</a></li>
+<li><a href="#kaisei">令和9年分からの改正 — 55万円が無くなり75万円ができる</a></li>
+<li><a href="#reidai">節税額の例</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav>
+
+<h2 id="tsukaikata">使い方と注意点</h2>
+  <div class="callout">
+    <b>入れるのは「所得の金額」と「課税される所得金額」の2つです</b>
+    所得の金額は<b>青色申告特別控除を引く前</b>の、売上から必要経費を引いた金額です（売上そのものではありません）。節税額のほうは税率で決まり、税率は<b>課税される所得金額</b>で決まります。これは所得から基礎控除・社会保険料控除などを<b>すべて引いた後</b>の金額で、確定申告書の「課税される所得金額」の欄そのものです。
+  </div>
+  <h3>このツールの前提</h3>
+  <p>控除額は租税特別措置法25条の2の要件で判定します。節税額のほうは、所得税を国税庁の<b>所得税の速算表</b>で計算し、控除で税率の段をまたぐ場合も速算表の差をとって<b>超過累進</b>を正しく反映します。住民税の所得割は<b>一律10％</b>として概算します。復興特別所得税（所得税額の2.1％）の減少も含めています。なお青色申告特別控除で所得が下がると<b>国民健康保険料も下がります</b>が、保険料率は市区町村ごとに違うため、この計算には含めていません（実際の手取りへの効果は、ここで出る金額より大きくなります）。</p>
+  <div class="note">
+    本ツールの結果は目安です。実際の税額は、他の所得控除や税額控除、お住まいの市区町村などによって変わります。申告の前に税務署・税理士でご確認ください。
+  </div>
+
+<h2 id="kubun">3つの区分と要件 — 65万円・55万円・10万円</h2>
+
+<p>青色申告特別控除は<b>3つの区分</b>があり、要件を満たす一番大きいものが適用されます。分かれ目は「<b>事業として営んでいるか</b>」「<b>複式簿記で記帳しているか</b>」「<b>期限内に申告するか</b>」「<b>e-Tax で出すか</b>」の4つです。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>控除額</th><th>要件</th><th>対象になる所得</th></tr>
+</thead>
+<tbody>
+<tr><td><b>65万円</b></td><td>55万円の要件すべて＋<b>e-Tax で申告</b>または<b>優良な電子帳簿</b>の保存</td><td>不動産所得・事業所得</td></tr>
+<tr><td><b>55万円</b></td><td><b>事業</b>として営む＋<b>複式簿記</b>で記帳＋貸借対照表等を添付して<b>期限内（翌年3月15日）</b>に申告</td><td>不動産所得・事業所得</td></tr>
+<tr><td><b>10万円</b></td><td>上の要件を満たさない青色申告者（<b>単式簿記でも可</b>）</td><td>不動産所得・事業所得・<b>山林所得</b></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="note">
+<b>10万円の区分だけは山林所得も対象です。</b>65万円・55万円は措置法25条の2第3項の控除で、対象が「不動産所得の金額又は事業所得の金額」に限られており、<b>山林所得は入っていません</b>。10万円は同条第1項の控除で、こちらには山林所得が明記されています。山林所得しかない青色申告者は、どれだけきちんと複式簿記で記帳しても<b>10万円までしか引けません</b>。
+</div>
+
+<div class="callout">
+<b>「事業として営んでいるか」は、とくに不動産所得で問題になります</b>
+55万円・65万円は「不動産所得又は事業所得を生ずべき<b>事業</b>を営むもの」が要件です（措置法25条の2第3項）。不動産貸付けの場合、いわゆる<b>事業的規模</b>（独立家屋おおむね5棟以上、アパート等はおおむね10室以上＝5棟10室基準）に達していないと「事業」と扱われず、<b>10万円の区分になります</b>。ワンルーム1室だけの貸付けで65万円を見込んでいると、申告時に足りなくなります。
+</div>
+
+<div class="note">
+<b>現金主義の特例を選んでいる人は、65万円・55万円を受けられません。</b>前々年分の事業所得・不動産所得の合計が300万円以下の青色申告者は、届出により<b>現金主義</b>（お金の出入りの時点で計上する方法）で計算できますが、この特例を選ぶと措置法25条の2第3項の対象から外れ、<b>10万円のみ</b>になります（同項かっこ書きで所得税法67条1項の適用者を除いています）。
+</div>
+
+<figure class="figure">
+<svg viewBox="0 0 640 300" role="img" aria-label="青色申告特別控除の判定フロー。事業として営み複式簿記で期限内申告なら55万円、さらにe-Taxまたは優良な電子帳簿なら65万円、いずれかを満たさなければ10万円">
+  <text x="20" y="20" font-size="13" fill="currentColor">どの区分になるか（上から順に判定）</text>
+
+  <rect x="20" y="38" width="600" height="34" rx="6" fill="var(--accent)" opacity="0.10"/>
+  <text x="34" y="59" font-size="12" fill="currentColor">① 不動産所得・事業所得を「事業」として営んでいる（不動産は5棟10室が目安）</text>
+
+  <text x="40" y="88" font-size="11" fill="currentColor">はい ↓</text>
+  <text x="300" y="88" font-size="11" fill="currentColor">いいえ →</text>
+
+  <rect x="20" y="96" width="440" height="34" rx="6" fill="var(--accent)" opacity="0.10"/>
+  <text x="34" y="117" font-size="12" fill="currentColor">② 複式簿記で記帳し、貸借対照表を添付して期限内に申告する</text>
+
+  <rect x="480" y="96" width="140" height="86" rx="6" fill="var(--accent)" opacity="0.22"/>
+  <text x="512" y="132" font-size="13" font-weight="bold" fill="currentColor">10万円</text>
+  <text x="496" y="152" font-size="10" fill="currentColor">山林所得も対象</text>
+  <text x="496" y="168" font-size="10" fill="currentColor">単式簿記でも可</text>
+
+  <text x="40" y="146" font-size="11" fill="currentColor">はい ↓</text>
+  <text x="300" y="146" font-size="11" fill="currentColor">いいえ →</text>
+
+  <rect x="20" y="154" width="440" height="34" rx="6" fill="var(--accent)" opacity="0.10"/>
+  <text x="34" y="175" font-size="12" fill="currentColor">③ e-Tax で申告する、または優良な電子帳簿を保存している</text>
+
+  <text x="40" y="204" font-size="11" fill="currentColor">はい ↓</text>
+  <text x="300" y="204" font-size="11" fill="currentColor">いいえ →</text>
+
+  <rect x="20" y="212" width="200" height="52" rx="6" fill="var(--accent)" opacity="0.55"/>
+  <text x="86" y="236" font-size="15" font-weight="bold" fill="currentColor">65万円</text>
+  <text x="52" y="253" font-size="10" fill="currentColor">不動産所得・事業所得のみ</text>
+
+  <rect x="260" y="212" width="200" height="52" rx="6" fill="var(--accent)" opacity="0.35"/>
+  <text x="326" y="236" font-size="15" font-weight="bold" fill="currentColor">55万円</text>
+  <text x="292" y="253" font-size="10" fill="currentColor">不動産所得・事業所得のみ</text>
+
+  <text x="20" y="288" font-size="11" fill="currentColor">※ 現金主義の特例（所得税法67条1項）を選んでいる場合は、②③にかかわらず10万円になります</text>
+</svg>
+<figcaption>青色申告特別控除の判定（令和8年分・租税特別措置法25条の2）</figcaption>
+</figure>
+
+<h2 id="gendo">控除額は「所得の額」が限度 — 赤字は相殺しない</h2>
+
+<p>青色申告特別控除は、<b>所得の額を超えては引けません</b>。所得が30万円しかない人が65万円を引いて所得をマイナス65万円にする、ということはできず、<b>控除は30万円まで</b>になります（措置法25条の2第1項2号・第3項2号）。引ききれなかった分は切り捨てで、翌年に繰り越すこともできません。</p>
+
+<div class="note">
+<b>限度を計算するときの「合計額」は、損益通算前の“黒字だけ”の合計です。</b>国税庁 No.2072 の注記が「この合計額とは<b>損益通算前の黒字の所得金額の合計額</b>をいいますので、いずれかの所得に損失が生じている場合には、<b>その損失をないものとして</b>合計額を計算します」と明記しています。たとえば<b>事業所得が▲200万円・不動産所得が+300万円</b>の人は、差引100万円ではなく<b>300万円</b>が限度になるので、65万円を満額引けます。赤字を差し引いてから限度を考えると、控除を過少に見積もることになります。
+</div>
+
+<h3>引く順番も決まっている</h3>
+<p>控除は<b>不動産所得 → 事業所得</b>（10万円の区分ではさらに → 山林所得）の順に引きます（同条第2項・第5項）。どの所得から引くかで最終的な税額が変わることは通常ありませんが、不動産所得だけを他の計算に使う場面では順番が効いてきます。</p>
+
+<h2 id="juminzei">住民税にも同額が効く — 所得控除との違い</h2>
+
+<p>青色申告特別控除は、生命保険料控除や扶養控除のような<b>所得控除ではありません</b>。「不動産所得の金額・事業所得の金額を<b>いくらとして計算するか</b>」を決める規定で、所得そのものを小さくします。この違いが住民税に効きます。</p>
+
+<div class="callout">
+<b>扶養控除は所得税38万円・住民税33万円のように額が違いますが、青色申告特別控除は所得税も住民税も同じ65万円です</b>
+住民税の所得割の課税標準になる総所得金額は、地方税法32条2項が「<b>所得税法その他の所得税に関する法令の規定による</b>（中略）総所得金額（中略）<b>の計算の例により算定する</b>」と定めています。青色申告特別控除は所得税に関する法令（租税特別措置法）による所得金額の計算そのものなので、住民税にもそのまま流れ込みます。一方、扶養控除などの<b>所得控除は地方税法が自前で額を定めている</b>ため、所得税と住民税で額が食い違うのです。
+</div>
+
+<p>そのため65万円の控除は、所得税率20％の人でおおよそ <b>65万円 ×（20％＋復興特別所得税0.42％＋住民税10％）＝約19.8万円</b> の節税になります。さらに国民健康保険料も所得に応じて下がります。</p>
+
+<h2 id="kaisei">令和9年分からの改正 — 55万円が無くなり75万円ができる</h2>
+
+<p>令和8年度の税制改正（令和8年3月31日法律第12号）で、青色申告特別控除は<b>大きく組み替えられます</b>。ただし適用は<b>令和9年分から</b>です。同法附則33条が「新租税特別措置法第25条の2の規定は、<b>令和9年分以後の所得税について適用</b>し、<b>令和8年分以前の所得税については、なお従前の例による</b>」と定めています。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>年分</th><th>控除額の区分</th><th>おもな要件の変化</th></tr>
+</thead>
+<tbody>
+<tr><td><b>令和8年分まで</b><br>（このツールの計算）</td><td>65万円／55万円／10万円</td><td>65万円は e-Tax または優良な電子帳簿</td></tr>
+<tr><td><b>令和9年分から</b></td><td><b>75万円</b>／<b>65万円</b>／10万円<br>（55万円は廃止）</td><td>65万円が標準になり<b>e-Tax が必須</b>。75万円は優良な電子帳簿など。<b>前々年の総収入金額1,000万円超</b>の事業者は、65万円の要件を満たさないと<b>10万円も受けられない</b></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="note">
+<b>「令和9年分から」は、2027年の1年間の所得＝2028年春に出す申告のことです。</b>いま準備している令和8年分（2026年の所得・2027年3月15日期限の申告）は<b>従来どおり65万円・55万円・10万円</b>で、75万円はまだ使えません。一方で、令和9年分の改正では<b>紙で申告する人の65万円が無くなり</b>、さらに<b>前々年の総収入金額が1,000万円を超える事業者は、複式簿記と e-Tax をそろえないと10万円の控除すら受けられなくなります</b>（新2項）。売上1,000万円前後の事業者にとっては影響が大きいので、令和9年分が始まる前に e-Tax と会計ソフトの準備をしておくのが安全です。
+</div>
+
+<h2 id="reidai">節税額の例</h2>
+
+<p>課税される所得金額が500万円（所得税率20％）の個人事業主の場合です。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>区分</th><th>所得税の減少</th><th>復興特別所得税</th><th>住民税の減少</th><th>年間の節税額</th></tr>
+</thead>
+<tbody>
+<tr><td><b>65万円</b>の控除</td><td>130,000円</td><td>2,730円</td><td>65,000円</td><td><b>197,730円</b></td></tr>
+<tr><td><b>55万円</b>の控除</td><td>110,000円</td><td>2,310円</td><td>55,000円</td><td><b>167,310円</b></td></tr>
+<tr><td><b>10万円</b>の控除</td><td>20,000円</td><td>420円</td><td>10,000円</td><td><b>30,420円</b></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout">
+<b>e-Tax に変えるだけで、この人は年30,420円 得します</b>
+複式簿記で期限内に申告している人が、紙の申告から <b>e-Tax</b> に変えると 55万円 → 65万円 になり、控除が10万円増えます。課税所得500万円なら <b>197,730円 − 167,310円 ＝ 30,420円</b> の差です。会計ソフトの年間費用と同じくらいの額が、申告方法を変えるだけで戻ってくる計算になります。同じ人が複式簿記をやめて10万円の区分になると、節税額は30,420円まで落ちます。
+</div>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>青色申告特別控除65万円は、いくら得になりますか？</h3>
+<p>控除額そのものが戻るわけではなく、65万円に税率をかけた分だけ税金が減ります。課税される所得金額が500万円（所得税率20％）の人で年197,730円、課税所得300万円（税率10％）の人なら年約11万円が目安です。青色申告特別控除は住民税にも同額が効くので、所得税率に住民税10％と復興特別所得税0.42％を足した率で効きます。さらに国民健康保険料も所得が下がる分だけ安くなります。</p>
+
+<h3>白色申告から青色申告に変えるには、いつまでに何をすればいいですか？</h3>
+<p>青色申告をしたい年の3月15日までに「所得税の青色申告承認申請書」を税務署に出します。その年の1月16日以後に開業した場合は、開業の日から2か月以内です。提出だけなら手数料はかからず、e-Taxでも出せます。承認されると、その年分から青色申告特別控除のほか、赤字を3年間繰り越せる純損失の繰越控除や、家族に払う給与を経費にできる青色事業専従者給与も使えるようになります。</p>
+
+<h3>複式簿記ができません。10万円しか受けられませんか？</h3>
+<p>手で複式簿記を書く必要はなく、市販の会計ソフトに日々の取引を入力すれば、貸借対照表と損益計算書は自動で作られます。国税庁も要件を「正規の簿記の原則（一般的には複式簿記）」と説明しており、簿記の知識より記帳の継続が実質的な条件です。会計ソフトの年間費用は1万円台からで、55万円と10万円の差（課税所得500万円なら年約13.7万円）を大きく下回ります。</p>
+
+<h3>期限に1日でも遅れると65万円は受けられませんか？</h3>
+<p>受けられず、10万円に下がります。措置法25条の2第6項が、55万円・65万円の控除は確定申告書を「その提出期限までに提出した場合に限り」適用すると定めているためです。e-Taxで65万円を受ける場合も、4項2号が「確定申告書の提出期限までに」送信することを要件にしています。還付になる申告であっても期限は同じで、翌年3月15日を過ぎると65万円は使えません。</p>
+
+<h3>事業所得が赤字です。青色申告特別控除は使えますか？</h3>
+<p>その所得からは引けませんが、他に黒字の不動産所得があれば、そちらから引けます。控除の限度になる「合計額」は損益通算前の黒字だけの合計で、赤字は無いものとして計算するためです。たとえば事業所得が▲200万円で不動産所得が+300万円なら、限度は差引100万円ではなく300万円になり、65万円を満額引けます。なお赤字そのものは、青色申告なら純損失として3年間繰り越せます。</p>
+
+<h3>令和9年分から75万円になると聞きました。今年から使えますか？</h3>
+<p>使えません。75万円が使えるのは令和9年分（2027年の所得・2028年春の申告）からです。令和8年3月31日法律第12号の附則33条が、改正後の措置法25条の2は令和9年分以後の所得税について適用し、令和8年分以前は従前の例によると定めています。いま準備している令和8年分は65万円・55万円・10万円のままです。</p>
+
+<h2 id="source">出典</h2>
+<ul>
+<li>租税特別措置法25条の2（青色申告特別控除）— <a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">e-Gov法令検索</a>（令和8年12月1日施行版で逐語確認）</li>
+<li>令和8年3月31日法律第12号 附則33条（青色申告特別控除に関する経過措置。新25条の2は令和9年分以後に適用）— <a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">e-Gov法令検索</a></li>
+<li>国税庁 タックスアンサー No.2072 青色申告特別控除 — <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2072.htm" rel="nofollow">nta.go.jp</a></li>
+<li>地方税法32条2項（住民税の総所得金額は所得税に関する法令の計算の例による）— <a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="nofollow">e-Gov法令検索</a></li>
+<li>国税庁 タックスアンサー No.2260 所得税の税率（速算表）— <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm" rel="nofollow">nta.go.jp</a></li>
+</ul>
+
+<h2 id="related">関連ツール・記事</h2>
+<ul>
+<li><a href="../ideco-setsuzei/">iDeCo節税シミュレーター</a> — 掛金の全額所得控除でいくら安くなるか</li>
+<li><a href="../shokibo-kyosai/">小規模企業共済シミュレーター</a> — 個人事業主の退職金づくりと節税</li>
+<li><a href="../seimei-hoken-kojo/">生命保険料控除シミュレーター</a> — 所得税と住民税で控除額が違う控除</li>
+<li><a href="../shohizei/">消費税の計算</a> — 売上1,000万円を超えたときの備え</li>
+</ul>
+
+</article>
+</main>
+<footer class="site">
+  <a href="../">ホーム</a> ・ <a href="../about/">運営者</a> ・ <a href="../privacy/">プライバシー</a> ・ <a href="../contact/">お問い合わせ</a>
+</footer>
+
+<script type="module">
+import { aoiroKojo, taxSaving } from "../assets/setsuzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const man = (n) => (n / 10000).toLocaleString("ja-JP") + "万円";
+let R08 = null;
+
+// 参照データ(区分の額・要件・税率)は非同期で届く。**届く前に計算ボタンを押されても await で待つ**。
+// この catch が拾ってよいのは「データが手に入らなかったこと」だけ(飾りの表示は別に処理する)。
+const r08Ready = fetch("../assets/setsuzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { R08 = d; fillRows(d); return true; })
+  .catch(() => false);
+
+// 出典・年分の表示は飾り。ここで転んでも計算は止めない(r08Ready には影響させない)。
+r08Ready.then(ok => { if (ok) showMeta(); }).catch(() => {});
+
+// 所得の行・要件の行はページに手書きせず、参照データから描く。
+const INCOMES = [
+  { key: "jigyo",   label: "事業所得",   hint: "売上 − 必要経費（青色申告特別控除を引く前）" },
+  { key: "fudosan", label: "不動産所得", hint: "家賃収入 − 必要経費（青色申告特別控除を引く前）" },
+  { key: "sanrin",  label: "山林所得",   hint: "10万円の区分だけが対象です" },
+];
+const REQS = [
+  { key: "jigyoteki",   label: "不動産所得・事業所得を「事業」として営んでいる",
+    hint: "不動産貸付けは事業的規模（5棟10室が目安）が必要です" },
+  { key: "fukushiki",   label: "正規の簿記の原則（複式簿記）で記帳している",
+    hint: "会計ソフトで貸借対照表と損益計算書が作れていればあてはまります" },
+  { key: "kigennai",    label: "貸借対照表等を添付して期限内（翌年3月15日）に申告する",
+    hint: "1日でも遅れると55万円・65万円は受けられません" },
+  { key: "etaxOrYuryo", label: "e-Tax で申告する、または優良な電子帳簿を保存している",
+    hint: "このどちらかで55万円が65万円になります" },
+  { key: "genkinShugi", label: "現金主義の特例（所得税法67条1項）を選んでいる",
+    hint: "選んでいる場合は10万円のみになります。ほとんどの人は該当しません" },
+];
+
+function fillRows(d) {
+  const iw = $("income-rows"); iw.innerHTML = "";
+  for (const it of INCOMES) {
+    const box = document.createElement("div");
+    box.style.margin = "8px 0";
+    box.innerHTML = `<label for="inc-${it.key}" style="font-size:14px;margin:0">${it.label}
+        <span class="hint" style="display:block;font-weight:400">${it.hint}</span></label>
+      <input type="number" id="inc-${it.key}" inputmode="numeric" step="10000" placeholder="0">`;
+    iw.appendChild(box);
+  }
+  const rw = $("req-rows"); rw.innerHTML = "";
+  for (const r of REQS) {
+    const box = document.createElement("div");
+    box.style.margin = "8px 0";
+    box.innerHTML = `<label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px">
+        <input type="checkbox" id="req-${r.key}" style="width:auto;flex:none">
+        <span>${r.label}</span></label>
+      <p class="hint" style="margin:2px 0 0 26px">${r.hint}</p>`;
+    rw.appendChild(box);
+  }
+}
+
+// 年分・区分の額は**データが持っている値**を出す(ページに手書きしない)。
+function showMeta() {
+  const A = R08?.aoiro;
+  if (!A) return;
+  const amounts = A.kubun.map(k => man(k.amount)).join("・");
+  $("src-hint").textContent =
+    `※ ${A.year}の青色申告特別控除（${A.law}）。控除額は${amounts}の3区分です。`
+    + `${A.next_regime ? `${A.next_regime.first_year}以後は${man(A.next_regime.amounts.top)}・${man(A.next_regime.amounts.standard)}・${man(A.next_regime.amounts.base)}に変わります。` : ""}`;
+}
+
+const REQ_LABEL = {
+  jigyoteki: "「事業」として営んでいること（不動産は5棟10室が目安）",
+  fukushiki: "複式簿記での記帳",
+  kigennai: "貸借対照表等の添付と期限内申告",
+  etax_or_yuryo: "e-Tax での申告、または優良な電子帳簿の保存",
+  jigyo: "「事業」として営んでいること（不動産は5棟10室が目安）",
+  genkin_shugi: "現金主義の特例をやめること",
+};
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+
+  // 参照データ(区分の額・要件)の到着を必ず待つ。これが無いと控除額は答えられない。
+  const ok = await r08Ready;
+  if (!ok || !R08) {
+    box.innerHTML = `<div class="note"><b>控除額・要件のデータを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。区分や控除額が分からない状態で答えることはできません。</div>`;
+    return;
+  }
+
+  const num = (id) => Number($(id)?.value) || 0;
+  const input = {
+    jigyo: num("inc-jigyo"), fudosan: num("inc-fudosan"), sanrin: num("inc-sanrin"),
+    jigyoteki: $("req-jigyoteki").checked,
+    fukushiki: $("req-fukushiki").checked,
+    kigennai: $("req-kigennai").checked,
+    etaxOrYuryo: $("req-etaxOrYuryo").checked,
+    genkinShugi: $("req-genkinShugi").checked,
+  };
+  if (input.jigyo <= 0 && input.fudosan <= 0 && input.sanrin <= 0) {
+    box.innerHTML = `黒字の所得の金額を入力してください（青色申告特別控除を引く前の、売上から必要経費を引いた金額です）。`;
+    return;
+  }
+
+  let k;
+  try {
+    k = aoiroKojo(input, R08);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  let html = `
+    <div class="row">あなたの青色申告特別控除 <span class="big">${yen(k.deduction)}</span>
+      <span class="hint">（${k.label}／${k.law}）</span></div>`;
+
+  // 所得が控除額より小さいときは黙って満額と答えない。
+  if (k.capped) {
+    html += `<div class="note" style="margin-top:10px"><b>控除額は所得の額（${yen(k.cap)}）が限度になりました。</b>
+      ${man(k.amount)}の区分ですが、この区分の対象になる黒字の所得の合計が${yen(k.cap)}なので、そこまでしか引けません
+      （引ききれない分は切り捨てで、翌年に繰り越せません）。</div>`;
+  }
+
+  // 1つ上の区分に足りないものを名指しで出す（黙って下の区分で答えない）。
+  if (k.nextKubun && k.missing.length > 0) {
+    const items = k.missing.map(m => `<li>${REQ_LABEL[m] || m}</li>`).join("");
+    html += `<div class="callout" style="margin-top:12px">
+      <b>${man(k.nextKubun.amount)}の区分にあと少しです</b>
+      次を満たすと控除が${yen(Math.min(k.nextKubun.amount, k.cap) - k.deduction)}増えて${man(k.nextKubun.amount)}の区分になります。
+      <ul style="margin:6px 0 0 18px">${items}</ul></div>`;
+  }
+
+  // 節税額は課税所得が要る。入っていなければ控除額だけを出して、その旨を言う(黙って0円と答えない)。
+  const kazei = Number($("kazei").value);
+  if (!kazei || kazei <= 0) {
+    html += `<div class="note" style="margin-top:10px">課税される所得金額を入れると、<b>実際に安くなる税金（節税額）</b>も計算します
+      （<b>売上でも所得でもなく課税所得</b>です）。</div>`;
+    box.innerHTML = html;
+    return;
+  }
+
+  // 青色申告特別控除は所得税・住民税ともに同額が効く（地方税法32条2項）ので taxSaving を使う。
+  const t = taxSaving({ kazeiShotoku: kazei, annualDeduction: k.deduction }, R08);
+  html += `
+    <div class="row" style="margin-top:14px">年間の節税額 <span class="big">${yen(t.total)}</span>
+      <span class="hint">（控除額${yen(k.deduction)}・所得税と住民税の両方に効きます）</span></div>
+    <div style="overflow-x:auto;margin-top:10px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr><td style="padding:6px 8px">所得税の減少（速算表の差）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(t.shotokuGen)}</td></tr>
+      <tr><td style="padding:6px 8px">復興特別所得税の減少（2.1%）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(t.fukkoGen)}</td></tr>
+      <tr><td style="padding:6px 8px">住民税の減少（所得割10%・概算）</td>
+        <td style="padding:6px 8px;text-align:right">${yen(t.juminGen)}</td></tr>
+      <tr style="border-top:2px solid var(--accent);font-weight:700">
+        <td style="padding:6px 8px">年間の節税額</td>
+        <td style="padding:6px 8px;text-align:right">${yen(t.total)}</td></tr>
+    </table></div>`;
+
+  // 1つ上の区分に届いたときの増分を金額で見せる（行動につながる情報）。
+  if (k.nextKubun && k.missing.length > 0) {
+    const up = taxSaving({ kazeiShotoku: kazei, annualDeduction: Math.min(k.nextKubun.amount, k.cap) }, R08);
+    const gain = up.total - t.total;
+    if (gain > 0) {
+      html += `<div class="callout" style="margin-top:12px">
+        <b>${man(k.nextKubun.amount)}の区分に届くと、さらに年${yen(gain)} 安くなります</b>
+        年間の節税額が${yen(t.total)} → ${yen(up.total)}になります。</div>`;
+    }
+  }
+
+  // 課税所得より控除の方が大きいと、控除の一部しか効かない(黙って満額で答えない)。
+  if (t.usedDeduction < k.deduction) {
+    html += `<div class="note" style="margin-top:10px"><b>課税される所得金額（${yen(kazei)}）が控除額より小さいため、控除の一部しか税金の減少につながっていません。</b>
+      引ききれない控除は切り捨てられます。</div>`;
+  }
+
+  html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ※ 所得税は速算表（超過累進）、住民税は所得割10%で概算しています。国民健康保険料の減少は含めていません（市区町村ごとに料率が違うため）。
+      ${t.year ? `<span class="hint">（${t.year}の所得税速算表で計算）</span>` : ""}</div>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>

@@ -254,6 +254,85 @@ export function seimeiHokenryoKojo(input, D) {
 }
 
 /**
+ * 青色申告特別控除（租税特別措置法25条の2）。
+ *
+ * 他の控除と違い**所得控除ではなく「所得金額の計算上の控除」**なので、
+ *  ・地方税法32条2項により**住民税にも同額**が流入する（人的控除のように額が変わらない）
+ *  ・控除額は所得の額が限度（黒字の所得の合計額より大きくは引けない）
+ * という2点が効く。
+ *
+ * ★限度額の「合計額」は**損益通算前の黒字の所得金額の合計額**（国税庁 No.2072 注2）。
+ *   赤字の所得は「無いもの」として合計する（差し引かない）。マイナスで相殺すると控除を過少に出す。
+ * ★55万円・65万円は不動産所得・事業所得だけが対象で**山林所得を含まない**（3項）。
+ *   10万円は山林所得も対象（1項）。
+ *
+ * @param input {
+ *   jigyo, fudosan, sanrin,   // 各所得の金額（青色申告特別控除を引く前・赤字はマイナスで渡してよい）
+ *   jigyoteki,   // 不動産所得/事業所得を生ずべき「事業」を営んでいるか（3項の要件）
+ *   fukushiki,   // 正規の簿記の原則（複式簿記）で記帳しているか
+ *   kigennai,    // 貸借対照表等を添付し期限内(翌年3/15)に申告するか
+ *   etaxOrYuryo, // e-Tax送信 または 優良な電子帳簿（4項1号・2号）
+ *   genkinShugi  // 現金主義の特例（所法67条1項）を選んでいるか
+ * }
+ * @returns { key, amount, cap, deduction, label, law, missing, nextKubun, nextGain, year }
+ */
+export function aoiroKojo(input, D) {
+  if (!D?.aoiro?.kubun) throw new Error('参照データ（setsuzei_r08.json の aoiro）が渡されていません');
+  const A = D.aoiro;
+
+  // 黒字だけを合計する（赤字は0として扱う＝損益通算前）。
+  const plus = (v) => { const n = Math.floor(Number(v)); return Number.isFinite(n) && n > 0 ? n : 0; };
+  const income = { jigyo: plus(input?.jigyo), fudosan: plus(input?.fudosan), sanrin: plus(input?.sanrin) };
+
+  const has = {
+    jigyo: !!input?.jigyoteki,
+    fukushiki: !!input?.fukushiki,
+    kigennai: !!input?.kigennai,
+    etax_or_yuryo: !!input?.etaxOrYuryo,
+  };
+  const genkin = !!input?.genkinShugi;
+
+  const met = (k) => {
+    // 現金主義の特例を選ぶと3項の対象外＝55万・65万は受けられない（所法67条1項・No.2072 注1）。
+    if (genkin && (A.genkin_shugi_excludes || []).includes(k.key)) return false;
+    return (k.requires || []).every((r) => has[r]);
+  };
+
+  // 額の大きい順に並んでいるので、要件を満たす最初の区分を採る。
+  const idx = A.kubun.findIndex(met);
+  const k = idx >= 0 ? A.kubun[idx] : null;
+  if (!k) {
+    return { key: null, amount: 0, cap: 0, deduction: 0, label: '', law: '', missing: [],
+             nextKubun: null, nextGain: 0, year: D._meta?.year || '' };
+  }
+
+  // 限度＝その区分が対象とする所得（黒字のみ）の合計額。
+  const cap = (k.target || []).reduce((a, t) => a + (income[t] || 0), 0);
+  const deduction = Math.min(k.amount, cap);
+
+  // 1つ上の区分に届いていないとき、何が足りないかを申告する（黙って下の区分で答えない）。
+  let missing = [];
+  let nextKubun = null;
+  let nextGain = 0;
+  if (idx > 0) {
+    const up = A.kubun[idx - 1];
+    missing = (up.requires || []).filter((r) => !has[r]);
+    if (genkin && (A.genkin_shugi_excludes || []).includes(up.key)) missing.push('genkin_shugi');
+    const upCap = (up.target || []).reduce((a, t) => a + (income[t] || 0), 0);
+    nextKubun = up;
+    nextGain = Math.max(0, Math.min(up.amount, upCap) - deduction);
+  }
+
+  return {
+    key: k.key, amount: k.amount, cap, deduction,
+    label: k.label, law: k.law,
+    capped: deduction < k.amount,
+    missing, nextKubun, nextGain,
+    year: D._meta?.year || '',
+  };
+}
+
+/**
  * 扶養控除: 区分ごとの人数から所得税・住民税の控除額合計を出す（区分の額は参照データが正本）。
  * @param counts { ippan, tokutei, rojin, dokyo_rojin } 各区分の人数
  * @returns { shotoku, jumin, count, items: [{key,label,n,shotoku,jumin}] }

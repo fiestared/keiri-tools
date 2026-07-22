@@ -178,7 +178,7 @@ const CATEGORIES = [
 const STATIC_PAGES = [
   "", "tedori/", "bonus-tedori/", "genka/", "inshi/", "jidoshazei/", "kabe/", "iryohi/", "sozokuzei/", "zoyozei/", "jutaku/", "furusato/", "shobyo/", "shussan/", "ikuji/", "papa-ikukyu/", "juminzei/", "shakai-hoken/", "gensen-choshu/", "kihonteate/", "taishokukin/", "zangyodai/", "shohizei/", "eigyobi/",
   "yukyu/", "denchoho-index/", "senpou-futan/", "zengin-kana/", "shiharai-site/",
-  "shokibo-kyosai/", "ideco-setsuzei/", "fuyo-kojo/", "haigusha-kojo/", "seimei-hoken-kojo/",
+  "shokibo-kyosai/", "ideco-setsuzei/", "fuyo-kojo/", "haigusha-kojo/", "seimei-hoken-kojo/", "aoiro-kojo/",
   "ext/amazon-receipt/", "column/", "about/", "privacy/", "contact/",
 ];
 

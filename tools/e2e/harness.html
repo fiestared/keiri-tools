@@ -2100,6 +2100,30 @@ SCENES.seiho = async () => {
   };
 };
 
+SCENES.aoiro = async () => {
+  const doc = await open("/docs/aoiro-kojo/");
+  await waitFor(() => doc.getElementById("inc-jigyo"), "青色申告特別控除の入力欄の読み込み");
+  // 事業所得500万・事業/複式簿記/期限内はOK・e-Taxだけ未 → 55万円の区分
+  set(doc, "inc-jigyo", "5000000");
+  for (const k of ["jigyoteki", "fukushiki", "kigennai"]) {
+    const cb = doc.getElementById("req-" + k);
+    cb.checked = true; cb.dispatchEvent(new doc.defaultView.Event("change", { bubbles: true }));
+  }
+  set(doc, "kazei", "5000000");
+  click(doc, "calc");
+  await waitFor(() => { const t = text(doc, "result"); return t && !/計算中/.test(t); }, "青色申告特別控除の計算結果");
+  const body = text(doc, "result");
+  return {
+    kojo: setsuzeiNum(body, /あなたの青色申告特別控除 ¥([\d,]+)/),
+    total: setsuzeiNum(body, /年間の節税額 ¥([\d,]+)/),
+    juminGen: setsuzeiNum(body, /住民税の減少[^¥]*¥([\d,]+)/),
+    // ★1つ上の区分に足りないものを名指しし、届いたときの増分を金額で出していること
+    showsMissing: /e-Tax での申告、または優良な電子帳簿の保存/.test(body),
+    showsGain: /65万円の区分に届くと、さらに年¥30,420 安くなります/.test(body),
+    failed: body.includes("読み込めませんでした"),
+  };
+};
+
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ──────────────────────────────
 // 本体ページと埋め込みウィジェットに**同じ入力**を与え、利用者に見えている見出し値(.big)が
 // 一致することを確かめる。期待値の正しさは本体側の各シーン(一次情報オラクル)が担保して
