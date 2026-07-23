@@ -333,6 +333,99 @@ export function aoiroKojo(input, D) {
 }
 
 /**
+ * 倒産防止共済（経営セーフティ共済・中小企業倒産防止共済法）の「入口と出口の両側」の計算。
+ *
+ * ★掛金は所得控除ではなく**事業所得の必要経費**（措法28条1項2号。事業所得限定＝不動産所得は不可）。
+ *   課税所得を減らす向きの計算は所得控除と同じなので税額は同じ式で出せるが、
+ *   **解約手当金は全額が事業所得の収入金額**（SMRJ公式FAQ ID:22）になる＝**課税の繰延べ**。
+ *   入口の節税額だけを出すと嘘になるので、このコアは必ず出口（解約時の増税）まで返す。
+ *
+ * 前提（画面にも申告する）: 掛金を払う各年の課税所得は一定・解約年は掛金を払わない。
+ * 解約手当金の額 ＝ 掛金総額 × 支給率（納付月数と解約の種類で決まる。施行令4条）。
+ * 納付12か月未満は解約手当金なし（法11条1項）＝掛金全額が掛け捨て。
+ *
+ * @param input {
+ *   kazeiShotoku,        // 掛金を経費にする前の課税所得（拠出する各年で同じと仮定）
+ *   monthly,             // 掛金月額（5,000〜200,000円・5,000円刻み）
+ *   months,              // 掛金を納付する月数
+ *   kaiyakuKazeiShotoku, // 解約年の課税所得（解約手当金を入れる前）。null/undefined なら拠出時と同じ
+ *   kaiyakuType          // 'nini'（既定）| 'minashi' | 'kiko'
+ * }
+ * @returns { monthlyValid, monthsPaid, paidTotal, capReached, years,
+ *            setsuzeiPerYearFirst, setsuzeiTotal,
+ *            rate, rateBand, teate, kakesute,
+ *            zouzei: { shotokuInc, fukkoInc, juminInc, total },
+ *            net, kaiyakuBase, type, year }
+ */
+export function tosanBoshiKyosai(input, D) {
+  if (!D?.tosan?.shikyu_ritsu?.types) throw new Error('参照データ（setsuzei_r08.json の tosan）が渡されていません');
+  const T = D.tosan;
+  const monthly = Math.floor(Number(input?.monthly) || 0);
+  const months = Math.floor(Number(input?.months) || 0);
+
+  // 掛金月額の範囲は法4条2項（5,000円以上・5,000円の整数倍・上限20万円）。範囲外は黙って丸めず申告する。
+  const monthlyValid = monthly >= T.monthly_min && monthly <= T.monthly_max && monthly % T.monthly_step === 0;
+  if (!monthlyValid || months <= 0) {
+    return { monthlyValid, monthsPaid: 0, paidTotal: 0, capReached: false, years: 0,
+             setsuzeiPerYearFirst: 0, setsuzeiTotal: 0, rate: 0, rateBand: null, teate: 0, kakesute: 0,
+             zouzei: { shotokuInc: 0, fukkoInc: 0, juminInc: 0, total: 0 },
+             net: 0, kaiyakuBase: 0, type: null, year: D._meta?.year || '' };
+  }
+
+  // 掛金総額は800万円が限度（法14条3項）。到達後の月は納付できない（掛止め＝納付月数に数えない）。
+  // 最後の月は限度までの残額だけ納付できる（同項は「超えることとなる額につき」納付不可とする）。
+  const capMonths = Math.ceil(T.total_limit / monthly);
+  const monthsPaid = Math.min(months, capMonths);
+  const paidTotal = Math.min(monthly * monthsPaid, T.total_limit);
+  const capReached = monthly * months > T.total_limit;
+
+  // 入口: 各年の掛金（月額×12・最終年は端数）を必要経費にしたときの税の減少を年ごとに積む。
+  // 経費は課税所得を減らす向きなので taxSaving と同じ式（速算表の差＋復興2.1%＋住民10%概算）。
+  const kazei = yen0(input.kazeiShotoku);
+  let setsuzeiTotal = 0;
+  let setsuzeiPerYearFirst = 0;
+  let years = 0;
+  let remaining = paidTotal;
+  while (remaining > 0) {
+    const thisYear = Math.min(monthly * 12, remaining);
+    const s = taxSaving({ kazeiShotoku: kazei, annualDeduction: thisYear }, D).total;
+    if (years === 0) setsuzeiPerYearFirst = s;
+    setsuzeiTotal += s;
+    remaining -= thisYear;
+    years += 1;
+  }
+
+  // 出口: 支給率（施行令4条）。納付12か月未満は不支給（法11条1項）＝支給率0。
+  const type = T.shikyu_ritsu.types.find((t) => t.key === (input?.kaiyakuType || 'nini'));
+  if (!type) throw new Error('解約の種類が不正です');
+  let rate = 0, rateBand = null;
+  if (monthsPaid >= T.min_months_for_teate) {
+    for (const b of type.bands) {
+      if (monthsPaid >= b.from && (b.upto == null || monthsPaid <= b.upto)) { rate = b.rate; rateBand = b; break; }
+    }
+  }
+  const teate = Math.floor(paidTotal * rate);
+  const kakesute = paidTotal - teate;
+
+  // 解約手当金は全額が解約年の事業所得の収入金額。解約年の課税所得に上乗せしたときの増税を出す。
+  const kaiyakuBase = input?.kaiyakuKazeiShotoku == null || input.kaiyakuKazeiShotoku === ''
+    ? kazei : yen0(input.kaiyakuKazeiShotoku);
+  const shotokuInc = Math.max(0, shotokuzei(kaiyakuBase + teate, D) - shotokuzei(kaiyakuBase, D));
+  const fukkoInc = Math.floor(shotokuInc * (D.fukko_rate || 0));
+  const juminInc = Math.floor(teate * (D.juminzei_shotokuwari_rate || 0));
+  const zouzei = { shotokuInc, fukkoInc, juminInc, total: shotokuInc + fukkoInc + juminInc };
+
+  // 差引 ＝ 入口の節税 − 出口の増税 − 掛け捨て。プラスなら得、マイナスなら「節税したつもりで損」。
+  const net = setsuzeiTotal - zouzei.total - kakesute;
+
+  return { monthlyValid, monthsPaid, paidTotal, capReached, years,
+           setsuzeiPerYearFirst, setsuzeiTotal,
+           rate, rateBand, teate, kakesute, zouzei, net, kaiyakuBase,
+           type: { key: type.key, label: type.label },
+           year: D._meta?.year || '' };
+}
+
+/**
  * 扶養控除: 区分ごとの人数から所得税・住民税の控除額合計を出す（区分の額は参照データが正本）。
  * @param counts { ippan, tokutei, rojin, dokyo_rojin } 各区分の人数
  * @returns { shotoku, jumin, count, items: [{key,label,n,shotoku,jumin}] }

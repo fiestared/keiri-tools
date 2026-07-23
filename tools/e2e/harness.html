@@ -2124,6 +2124,31 @@ SCENES.aoiro = async () => {
   };
 };
 
+SCENES.tosan = async () => {
+  const doc = await open("/docs/tosan-boshi-kyosai/");
+  // 解約の種類は参照データから描かれる(施行令4条の3つの号)。3択そろうまで待つ。
+  await waitFor(() => {
+    const sel = doc.getElementById("kaiyaku-type");
+    return sel && sel.options.length >= 3;
+  }, "倒産防止共済の解約種類の読み込み");
+  // 課税所得500万・月10万・40か月・任意解約・解約年の所得は空欄(=同じ)
+  set(doc, "kazei", "5000000");
+  set(doc, "monthly", "100000");
+  set(doc, "months", "40");
+  click(doc, "calc");
+  await waitFor(() => { const t = text(doc, "result"); return t && !/計算中/.test(t); }, "倒産防止共済の計算結果");
+  const body = text(doc, "result");
+  return {
+    setsuzei: setsuzeiNum(body, /掛金40か月の累計節税 ¥([\d,]+)/),
+    teate: setsuzeiNum(body, /解約手当金 ¥([\d,]+)/),
+    rate100: /支給率100%/.test(body),
+    // 出口の増税と差引の逆ざやが**画面に**出ていること(入口の節税だけ見せる型を許さない)
+    showsZouzei: /−¥1,279,591/.test(body),
+    showsGyakuzaya: /節税どころか差引¥62,791の持ち出し/.test(body),
+    failed: body.includes("読み込めませんでした"),
+  };
+};
+
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ──────────────────────────────
 // 本体ページと埋め込みウィジェットに**同じ入力**を与え、利用者に見えている見出し値(.big)が
 // 一致することを確かめる。期待値の正しさは本体側の各シーン(一次情報オラクル)が担保して
