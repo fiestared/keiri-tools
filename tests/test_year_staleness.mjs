@@ -62,6 +62,13 @@ const HISTORICAL_FACTS = [
             "どの年分の税率で計算したかは setsuzei_r08.json の _meta.year から結果欄に描いている" },
   { file: "index.html", snippet: "令和6年10月からの再加入2年ルール",
     reason: "同上(トップのツールカードの説明文)。措法28条2項の適用開始時期＝制度の事実" },
+  { file: "kihonteate/index.html", snippet: "令和9年3月31日",
+    reason: "★雇用保険法附則4条の暫定措置(雇止め→特定受給資格者みなし)の法定期限そのもの＝制度の事実" +
+            "(2026-07-24にe-Gov現行版と未施行版2028-10-01の両方で本文md5一致を逐語確認)。" +
+            "このページのデータ年(令和7年=日額の適用年)とは別の軸の日付で、日額データを令和8年8月版に" +
+            "差し替えても期限は真のまま。機械置換すると法定期限を書き換えて嘘にする。" +
+            "この日付は kihonteate_r07.json の fusoku4_zantei.kigen_wareki が正本で、" +
+            "test_kihonteate_zantei.mjs がページ・記事・coreとの一致とrecheck_afterカナリアを守っている" },
   { file: "shakai-hoken/index.html", snippet: "子ども・子育て支援金（令和8年4月から新設）",
     reason: "新設された時期そのものが事実。令和9年度になっても『令和8年4月に新設』は真" },
   { file: "shakai-hoken/index.html", snippet: "令和8年（2026年）4月分から、",
