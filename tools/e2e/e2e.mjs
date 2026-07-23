@@ -699,6 +699,22 @@ const SCENES = [
   { name: "tosan", expect: (s) =>
       s.setsuzei === 1216800 && s.teate === 4000000 && s.rate100 &&
       s.showsZouzei && s.showsGyakuzaya && !s.failed },
+  // ひとり親控除: 未婚の母・子(所得62万以下)あり・給与収入300万→合計所得202万・課税所得150万。
+  // 未婚でもひとり親35万/30万。節税47,867(17,500+367+30,000)。非課税ラインは67万円超え=参考表示。
+  { name: "hitorioya", expect: (s) =>
+      s.label === "ひとり親控除" && s.total === 47867 && s.juminGen === 30000 &&
+      s.gokei === 2020000 && s.overLine === 670000 && !s.hikazei && !s.failed },
+  // ★非課税135万円: 給与収入190万→所得116万 → 「住民税は全額かかりません」calloutが出て、
+  // 節税額は所得税側だけ(6,126)・住民税の行は「—（下の注）」(非課税なのに合算する型を許さない)。
+  { name: "hitorioya_hikazei", expect: (s) =>
+      s.label === "ひとり親控除" && s.hikazei && s.total === 6126 &&
+      s.juminDash && s.showsNoJuminNote && !s.failed },
+  // 寡婦: 死別・子なし(扶養親族不要=30号ロ)・合計所得の直接入力モード・課税所得250万 → 53,567。
+  { name: "hitorioya_kafu", expect: (s) =>
+      s.label === "寡婦控除" && s.total === 53567 && s.juminGen === 26000 && !s.failed },
+  // 事実婚(住民票の未届記載) → 子がいても対象外。理由の名指しが画面に出ること。
+  { name: "hitorioya_jijitsukon", expect: (s) =>
+      s.label === "対象外" && /未届/.test(s.reason) && !s.failed },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────

@@ -2149,6 +2149,63 @@ SCENES.tosan = async () => {
   };
 };
 
+// ひとり親控除・寡婦控除の共通ドライバ。ラジオ・チェックは**利用者と同じ操作**で選ぶ。
+async function hitorioyaScene(doc, opts) {
+  await waitFor(() => doc.getElementById("marital-rikon"), "ひとり親控除の入力欄の読み込み");
+  if (opts.marital) click(doc, "marital-" + opts.marital);
+  if (opts.sex) click(doc, "sex-" + opts.sex);
+  if (opts.child) click(doc, "child-" + opts.child);
+  if (opts.otherFuyo) click(doc, "other-fuyo");
+  if (opts.jijitsukon) click(doc, "jijitsukon");
+  if (opts.mode) click(doc, "income-mode-" + opts.mode);
+  set(doc, "income", String(opts.income));
+  if (opts.kazei != null) set(doc, "kazei", String(opts.kazei));
+  click(doc, "calc");
+  await waitFor(() => { const t = text(doc, "result"); return t && !/計算中/.test(t); }, "ひとり親控除の判定結果");
+  const body = text(doc, "result");
+  return {
+    label: (body.match(/あなたは\s*(ひとり親控除|寡婦控除)/) || [])[1] || (/判定\s*対象外/.test(body) ? "対象外" : ""),
+    total: setsuzeiNum(body, /年間の節税額 ¥([\d,]+)/),
+    juminGen: setsuzeiNum(body, /住民税の減少[^¥—]*¥([\d,]+)/),
+    gokei: setsuzeiNum(body, /合計所得金額¥([\d,]+)/),
+    overLine: setsuzeiNum(body, /このラインを¥([\d,]+)超えています/),
+    hikazei: /あなたの住民税は全額かかりません/.test(body),
+    juminDash: /住民税の減少（所得割10%・概算）\s*—（下の注）/.test(body),
+    showsNoJuminNote: /控除の出番はありません/.test(body),
+    reason: body,
+    failed: body.includes("読み込めませんでした"),
+  };
+}
+
+// 離婚→未婚に切り替え・女性・子(所得62万円以下)あり・給与収入300万(→合計所得202万)・課税所得150万。
+// 未婚でもひとり親35万/30万(令和2年改正の核心)。節税47,867=17,500+367+30,000。
+// 非課税135万円のラインは67万円超え=「参考」表示になること。
+SCENES.hitorioya = async () => {
+  const doc = await open("/docs/hitorioya-kojo/");
+  return hitorioyaScene(doc, { marital: "mikon", income: 3000000, kazei: 1500000 });
+};
+
+// ★非課税ライン: 給与収入190万(→所得116万≦135万)・課税所得12万。
+// 「住民税は全額かかりません」calloutが出て、節税額は所得税側だけ(6,000+126=6,126)・
+// 住民税の行は「—（下の注）」になること(非課税なのに住民税減少を合算する型を許さない)。
+SCENES.hitorioya_hikazei = async () => {
+  const doc = await open("/docs/hitorioya-kojo/");
+  return hitorioyaScene(doc, { income: 1900000, kazei: 120000 });
+};
+
+// 寡婦: 死別・子なし(30号ロ=扶養親族不要)・合計所得を直接入力(モード切替の配線)・課税所得250万。
+// 寡婦27万/26万・節税53,567=27,000+567+26,000。
+SCENES.hitorioya_kafu = async () => {
+  const doc = await open("/docs/hitorioya-kojo/");
+  return hitorioyaScene(doc, { marital: "shibetsu", child: "none", mode: "gokei", income: 3000000, kazei: 2500000 });
+};
+
+// 事実婚(住民票の未届記載)にチェック → 子がいても対象外。理由が名指しで出ること。
+SCENES.hitorioya_jijitsukon = async () => {
+  const doc = await open("/docs/hitorioya-kojo/");
+  return hitorioyaScene(doc, { jijitsukon: true, income: 2000000 });
+};
+
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ──────────────────────────────
 // 本体ページと埋め込みウィジェットに**同じ入力**を与え、利用者に見えている見出し値(.big)が
 // 一致することを確かめる。期待値の正しさは本体側の各シーン(一次情報オラクル)が担保して

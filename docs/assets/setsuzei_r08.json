@@ -24,7 +24,12 @@
       "tosan_kyosaiho": "https://laws.e-gov.go.jp/law/352AC0000000084",
       "tosan_shikorei": "https://laws.e-gov.go.jp/law/353CO0000000031",
       "tosan_smrj_kakekin": "https://kyosai-web.smrj.go.jp/customer/tkyosai/installment/index.html",
-      "tosan_smrj_kaiyaku": "https://kyosai-web.smrj.go.jp/customer/tkyosai/cancellation/index.html"
+      "tosan_smrj_kaiyaku": "https://kyosai-web.smrj.go.jp/customer/tkyosai/cancellation/index.html",
+      "hitorioya_shotokuzeiho": "https://laws.e-gov.go.jp/law/340AC0000000033",
+      "hitorioya_shorei_11_2": "https://laws.e-gov.go.jp/law/340CO0000000096",
+      "hitorioya_kisoku_jijitsukon": "https://laws.e-gov.go.jp/law/340M50000040011",
+      "hitorioya_chihozeiho": "https://laws.e-gov.go.jp/law/325AC0000000226",
+      "hitorioya_chihorei_7_2_2": "https://laws.e-gov.go.jp/law/325CO0000000245"
     }
   },
   "juminzei_shotokuwari_rate": 0.10,
@@ -234,5 +239,23 @@
           ] }
       ]
     }
+  },
+  "hitorioya": {
+    "note": "ひとり親控除(所法81条・35万円)と寡婦控除(所法80条・27万円)。定義は所法2条1項31号・30号 — e-Govの現行版とR8-12-01施行版で条文md5完全一致(令和8年度改正での変更なし)。ひとり親は性別・未婚を問わない。寡婦は条文が「夫と離婚」「夫と死別」と書くため女性のみで、ひとり親に該当しない者に限る。どちらも本人の合計所得金額(純損失・雑損失の繰越控除前=2条30号イ(2))500万円以下、事実婚の相手(住民票に未届の夫・妻の記載=規則1条の3・1条の4)がいないことが要件。住民税の控除額はひとり親30万円・寡婦26万円(地方税法34条1項8号の2・8号、314条の2第1項8号の2・8号)。★住民税は令和9年度分(令和8年分所得への課税)で判定が所得税側と揃う。",
+    "year": "令和8年分",
+    "jumin_nendo": "令和9年度分",
+    "law": "所得税法80条・81条、2条1項30号・31号",
+    "income_limit": 5000000,
+    "child_income_limit": 620000,
+    "child_income_note": "★令和8年分から62万円(改正前58万円)。所令11条の2第2項のR8-12-01施行版を逐語確認し、令和8年政令93号 附則2条が「令和8年分以後の所得税について適用」と規定(施行日12/1より前に令和8年分の申告をした人は5年以内の更正の請求可=同附則2条2項)。住民税側も地令7条の2の2第2項・46条の2の2第2項(2027-01-01施行版)が62万円で、令和8年政令83号 附則2条・5条が「令和9年度以後の年度分」と規定=令和8年分所得に対する住民税(令和9年度分)から適用。子の判定は総所得金額・退職所得金額・山林所得金額の合計額で、他の者の同一生計配偶者・扶養親族とされている子は除く。",
+    "fuyo_income_limit": 620000,
+    "fuyo_income_note": "扶養親族(寡婦・離婚型の要件)の合計所得要件も令和8年分は62万円以下(所法2条1項34号のR8-12-01施行版)",
+    "kojo": {
+      "hitorioya": { "label": "ひとり親控除", "shotoku": 350000, "jumin": 300000,
+        "jumin_law": "地方税法34条1項8号の2・314条の2第1項8号の2" },
+      "kafu": { "label": "寡婦控除", "shotoku": 270000, "jumin": 260000,
+        "jumin_law": "地方税法34条1項8号・314条の2第1項8号" }
+    },
+    "hikazei_note": "住民税非課税(障害者・未成年者・寡婦・ひとり親で前年の合計所得金額135万円以下=地方税法24条の5第1項2号・295条1項2号)の135万円は juminzei_r08.json の hikazei.shogaisha_goukei_limit が正本(二重に持たない)。ページは juminzei_core の hikazeiHantei を使う。"
   }
 }

@@ -447,3 +447,48 @@ export function fuyoKojoTotal(counts, D) {
   }
   return { shotoku, jumin, count, items };
 }
+
+/**
+ * ひとり親控除・寡婦控除の判定（所得税法2条1項30号・31号、80条・81条）。
+ * 条文の判定順そのまま: 婚姻中／事実婚（規則1条の3・1条の4=住民票の「未届の夫・妻」）／
+ * 合計所得500万円超は対象外 → 生計を一にする子（総所得金額等62万円以下・他の者の
+ * 同一生計配偶者/扶養親族でない=所令11条の2第2項）がいれば**性別・未婚を問わず**ひとり親。
+ * ひとり親に該当しない女性だけが寡婦の判定へ進む（30号柱書き「ひとり親に該当しないもの」）:
+ * 離婚型（30号イ）は扶養親族が必要、死別・夫生死不明型（30号ロ）は扶養親族不要。
+ * 未婚（結婚したことがない）は寡婦のどちらの型にも当たらない。
+ * @param input {
+ *   sex: 'female'|'male',
+ *   marital: 'mikon'|'rikon'|'shibetsu'|'fumei'|'kikon',
+ *   jijitsukon: boolean,           // 住民票に「夫(未届)」「妻(未届)」の記載がある
+ *   child: 'none'|'qualified'|'not_qualified',
+ *     // qualified = 生計を一にする子で所得62万円以下・他の人の扶養にもなっていない
+ *     // not_qualified = 子はいるが所得62万円超、または別れた相手など他の人の扶養になっている
+ *   otherFuyo: boolean,            // 子以外の扶養親族（合計所得62万円以下）がいる
+ *   gokeiShotoku: number,          // 本人の合計所得金額（繰越控除前）
+ * }
+ * @returns { type: 'hitorioya'|'kafu'|'none', reason, label, shotoku, jumin, gokei, year }
+ */
+export function hitorioyaKafu(input, D) {
+  if (!D?.hitorioya?.kojo) throw new Error('参照データ（setsuzei_r08.json の hitorioya）が渡されていません');
+  const H = D.hitorioya;
+  const gokei = yen0(input.gokeiShotoku);
+  const year = H.year || D._meta?.year || '';
+  const none = (reason) => ({ type: 'none', reason, label: '対象外', shotoku: 0, jumin: 0, gokei, year });
+  const hit = (key, reason) => ({ type: key, reason, label: H.kojo[key].label,
+    shotoku: H.kojo[key].shotoku, jumin: H.kojo[key].jumin, gokei, year });
+
+  if (input.marital === 'kikon') return none('kikon');
+  if (input.jijitsukon) return none('jijitsukon');
+  if (gokei > H.income_limit) return none('income_over');
+
+  // ひとり親（31号）: 未婚・離婚・死別・生死不明のすべてが「現に婚姻をしていない者」等に当たる
+  if (input.child === 'qualified') return hit('hitorioya', 'child_qualified');
+
+  // 寡婦（30号）: 条文が「夫と離婚」「夫と死別」— 女性のみ
+  if (input.sex !== 'female') return none('male_no_child');
+  if (input.marital === 'rikon') {
+    return input.otherFuyo ? hit('kafu', 'rikon_fuyo') : none('rikon_no_fuyo');
+  }
+  if (input.marital === 'shibetsu' || input.marital === 'fumei') return hit('kafu', 'shibetsu_or_fumei');
+  return none('mikon_no_child'); // 未婚（結婚したことがない）は寡婦にならない
+}

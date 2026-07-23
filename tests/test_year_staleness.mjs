@@ -39,6 +39,10 @@ const HISTORICAL_FACTS = [
             "どの年分の速算表で計算したかは setsuzei_r08.json の _meta.year から結果欄に描いている" },
   { file: "index.html", snippet: "（令和8年分・令和9年分）",
     reason: "同上(トップのツールカードの説明文)。措法41条の15の5の適用年分＝制度の事実" },
+  { file: "hitorioya-kojo/index.html", snippet: "令和2年分",
+    reason: "★ひとり親控除の創設・寡夫控除の廃止・未婚を含む制度への組み替えが行われた改正の" +
+            "年分の固有名＝制度の事実。データを令和9年分に差し替えても『令和2年分の改正で作られた』" +
+            "は真のまま。どの年分で計算したかは setsuzei_r08.json の hitorioya.year から結果欄に描いている" },
   { file: "aoiro-kojo/index.html", snippet: "令和9年分",
     reason: "★令和8年3月31日法律第12号 附則33条が『新租税特別措置法第二十五条の二の規定は、" +
             "令和九年分以後の所得税について適用し、令和八年分以前の所得税については、なお従前の例による』と" +
