@@ -62,6 +62,12 @@
     <h2>ツール</h2>
     <span class="hint">クリックしてすぐ使えます</span>
   </div>
+  <div class="persona-bar" id="persona-bar">
+    <span class="p-label">あなたに合わせて表示:</span>
+    <button type="button" data-p="kojin" aria-pressed="false">会社員・個人</button>
+    <button type="button" data-p="jigyo" aria-pressed="false">個人事業主・フリーランス</button>
+    <button type="button" data-p="keiri" aria-pressed="false">経理担当</button>
+  </div>
   <nav class="cat-nav" aria-label="ツールのカテゴリ">
     <a href="#t-kyuyo">わたしの給与・手取り（会社員・パート）</a>
     <a href="#t-setsuzei">わたしの節税・控除（会社員・個人）</a>
@@ -355,7 +361,7 @@
     </div>
   </section>
 
-  <div class="section-head">
+  <div class="section-head" id="column-head">
     <h2>経理コラム</h2>
     <span class="hint"><a href="column/" style="color:var(--accent);text-decoration:none">すべて見る →</a></span>
   </div>
@@ -485,6 +491,45 @@ input.addEventListener("input", () => {
 });
 // Enter / 「聞く」で確定（GA4記録）
 form.addEventListener("submit", (ev) => { ev.preventDefault(); clearTimeout(qaTimer); ask(input.value, true); });
+</script>
+<script>
+// 対象者スイッチ: 選んだ対象者の節が上に来るよう .tcat とチップを並べ替え、選択を記憶する。
+// 既定のDOM順(=クローラが見る順)は変えない。localStorage不可(プライベートモード等)でも壊れない。
+(function () {
+  var ORDER = {
+    kojin: ["t-kyuyo", "t-setsuzei", "t-kyufu", "t-kurashi", "t-jigyo", "t-keiri"],
+    jigyo: ["t-jigyo", "t-keiri", "t-setsuzei", "t-kurashi", "t-kyuyo", "t-kyufu"],
+    keiri: ["t-keiri", "t-kyuyo", "t-jigyo", "t-setsuzei", "t-kyufu", "t-kurashi"],
+  };
+  var bar = document.getElementById("persona-bar");
+  var columnHead = document.getElementById("column-head");
+  if (!bar || !columnHead) return;
+  function apply(p, save) {
+    var ids = ORDER[p];
+    if (!ids) return;
+    var parent = columnHead.parentNode;
+    ids.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) parent.insertBefore(el, columnHead); // 順に差し込む=この順で上から並ぶ
+    });
+    var nav = document.querySelector("nav.cat-nav");
+    if (nav) ids.forEach(function (id) {
+      var a = nav.querySelector('a[href="#' + id + '"]');
+      if (a) nav.appendChild(a);
+    });
+    bar.querySelectorAll("button[data-p]").forEach(function (b) {
+      b.setAttribute("aria-pressed", b.getAttribute("data-p") === p ? "true" : "false");
+    });
+    if (save) { try { localStorage.setItem("keiri-persona", p); } catch (e) { /* 記憶できなくても並べ替えは効く */ } }
+  }
+  bar.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest("button[data-p]") : null;
+    if (b) apply(b.getAttribute("data-p"), true);
+  });
+  var saved = null;
+  try { saved = localStorage.getItem("keiri-persona"); } catch (e) {}
+  if (saved && ORDER[saved]) apply(saved, false);
+})();
 </script>
 </body>
 </html>
