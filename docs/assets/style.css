@@ -93,8 +93,9 @@ button.primary:hover { opacity: 0.92; }
   margin-top: 10px;
 }
 section.faq h2 { font-size: 18px; margin-top: 32px; }
-section.faq h3 { font-size: 15px; margin-bottom: 4px; }
-section.faq p { font-size: 14px; color: var(--sub); margin-top: 0; }
+section.faq h3 { font-size: 15.5px; margin-bottom: 4px; }
+/* FAQの答えは本文と同格のコンテンツ(検索にも出る)。灰色で二級扱いしない(2026-07-23) */
+section.faq p { font-size: 15px; color: var(--ink); margin-top: 0; }
 footer.site {
   max-width: 720px;
   margin: 0 auto;
@@ -134,7 +135,8 @@ footer.site nav a { color: var(--sub); }
 .toc ol ol li { font-size: 13px; color: var(--sub); }
 article h2 { font-size: 21px; margin-top: 44px; padding: 8px 0 8px 12px; border-left: 5px solid var(--accent); background: linear-gradient(90deg, var(--accent-soft), transparent); scroll-margin-top: 16px; }
 article h3 { font-size: 16.5px; margin-top: 28px; padding-bottom: 4px; border-bottom: 2px dotted var(--line); scroll-margin-top: 16px; }
-article p, article li { font-size: 15px; line-height: 1.95; }
+/* 本文16px: 読みやすい定番サイトの実測(サルワカ17px・note/Zenn 16px以上)に合わせ15→16px(2026-07-23) */
+article p, article li { font-size: 16px; line-height: 1.95; }
 article table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 16px 0; }
 article th, article td { border: 1px solid var(--line); padding: 9px 11px; text-align: left; }
 article th { background: var(--accent-soft); font-weight: 700; }
@@ -196,7 +198,7 @@ article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-s
 header.site { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 header.site .brand { font-weight: 800; font-size: 16px; color: var(--ink); text-decoration: none; }
 header.site nav { margin-left: auto; display: flex; gap: 16px; }
-header.site nav a { font-size: 14px; color: var(--sub); text-decoration: none; font-weight: 600; }
+header.site nav a { font-size: 14px; color: var(--sub); text-decoration: none; font-weight: 600; padding: 8px 2px; }
 header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent); }
 
 .hero { padding: 28px 0 8px; }
@@ -215,7 +217,13 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .tool-card .ico { flex: 0 0 40px; height: 40px; border-radius: 10px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; }
 .tool-card .ico svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .tool-card .name { font-weight: 700; font-size: 15.5px; margin-bottom: 4px; }
-.tool-card .desc { font-size: 13px; color: var(--sub); line-height: 1.65; }
+/* カード説明は3行でクランプ(一覧の走査性)。全文はDOMに残る=検索は読める。詳細はツールページで(2026-07-23) */
+.tool-card .desc { font-size: 13px; color: var(--sub); line-height: 1.65;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+
+/* トップのツールをカテゴリ節で分ける(35枚のフラット一覧は探せない。2026-07-23) */
+.tcat { margin-top: 26px; scroll-margin-top: 16px; }
+.tcat > h3 { font-size: 16.5px; margin: 0 0 10px; padding: 2px 0 2px 11px; border-left: 4px solid var(--accent); }
 
 .post-list { display: flex; flex-direction: column; }
 .post-list a { display: flex; gap: 12px; align-items: baseline; padding: 14px 4px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }

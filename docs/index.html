@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>経理ミニツールズ｜社会保険料・支払日・電帳法索引簿の無料ツール</title>
-<meta name="description" content="社会保険料の計算（標準報酬月額・都道府県別料率）、電子帳簿保存法の索引簿テンプレート、支払サイトの支払日計算。経理・労務実務のツールを無料・登録不要で。すべてブラウザ内で完結し、入力したデータは送信されません。">
+<title>経理ミニツールズ｜手取り・ふるさと納税・iDeCo節税などの無料計算機</title>
+<meta name="description" content="手取り・ボーナスの計算、ふるさと納税の上限額、iDeCo・小規模企業共済の節税額、扶養控除・配偶者控除、社会保険料——経理・給与・税金の計算機を無料・登録不要で。すべてブラウザ内で完結し、入力したデータは送信されません。">
 <link rel="stylesheet" href="assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/">
 <script type="application/ld+json">
@@ -38,7 +38,7 @@
 <main>
   <section class="hero">
     <h1>経理・労務・税務の計算を、さっと片づける。</h1>
-    <p>社会保険料の計算、電帳法の索引簿づくり、支払日の計算——調べ直すのが面倒な作業を、無料のツールにしました。</p>
+    <p>手取り・ふるさと納税・iDeCoの節税額・社会保険料——調べ直すのが面倒な計算を、無料のツールにしました。</p>
 
     <div class="qa-box">
       <div class="qa-head"><span class="q-ico">Q.</span>経理で困っていること、聞いてください</div>
@@ -62,12 +62,70 @@
     <h2>ツール</h2>
     <span class="hint">クリックしてすぐ使えます</span>
   </div>
-  <div class="tool-grid">
+  <nav class="cat-nav" aria-label="ツールのカテゴリ">
+    <a href="#t-kyuyo">給与・手取り</a>
+    <a href="#t-setsuzei">節税・控除</a>
+    <a href="#t-zeigaku">税額の計算・判定</a>
+    <a href="#t-kyufu">給付金・休暇・退職</a>
+    <a href="#t-jitsumu">経理・振込の実務</a>
+  </nav>
+  <!-- ★新しいツールのカードは、該当カテゴリ(.tcat)の .tool-grid に「需要の大きい順」で追加する。
+       カテゴリを増やすときは cat-nav のチップも足すこと -->
+  <section class="tcat" id="t-kyuyo">
+    <h3>給与・手取り</h3>
+    <div class="tool-grid">
     <a class="tool-card" href="tedori/">
       <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 7h15a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a1 1 0 0 1-1-1V7z"/><path d="M3 7l12-3 1 3"/><path d="M17 13h.01"/></svg></div>
       <div>
         <div class="name">手取り計算機</div>
         <div class="desc">額面の月給から、<b>社会保険料・所得税・住民税を引いた手取り</b>を自動計算。東京都・30歳・扶養なしなら<b>額面30万円で手取り249,610円（83.2%）</b>。<b>社会保険料は等級表の階段</b>で決まるので、額面が1円増えて手取りが2,837円減ることもあります。★<b>住民税は前年の所得で決まるため、新卒1年目は引かれず、2年目の6月から引かれ始めます</b>。概算・給与明細の実額・含めないを選べます。</div>
+      </div>
+    </a>
+    <a class="tool-card" href="bonus-tedori/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 8.7l5.4-.8z"/></svg></div>
+      <div>
+        <div class="name">ボーナス手取り計算機</div>
+        <div class="desc">賞与の額面から、<b>社会保険料と源泉所得税を引いた手取り</b>を自動計算。★賞与の税率は賞与の額ではなく<b>「前月の給与」で決まります</b>（前月給与なし・10倍超の例外計算にも対応）。<b>住民税はボーナスからは天引きされません</b>。厚生年金は1回150万円・健康保険は年度573万円の上限も自動で適用します。</div>
+      </div>
+    </a>
+    <a class="tool-card" href="shakai-hoken/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.4 8.8-8 10-4.6-1.2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+      <div>
+        <div class="name">社会保険料 計算機</div>
+        <div class="desc">給与額から標準報酬月額の等級・健康保険・介護保険・厚生年金を自動計算。令和8年度の都道府県別料率対応。賞与も上限つきで計算。</div>
+      </div>
+    </a>
+    <a class="tool-card" href="gensen-choshu/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg></div>
+      <div>
+        <div class="name">源泉徴収税額 計算機</div>
+        <div class="desc"><b>給与</b>は国税庁の税額表（月額表・令和8年分／甲欄・乙欄）、<b>賞与</b>は算出率の表を引いて計算。扶養親族等の数にも対応。<b>報酬・原稿料・士業</b>への支払い（10.21%）も計算できます。</div>
+      </div>
+    </a>
+    <a class="tool-card" href="zangyodai/">
+      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></div>
+      <div>
+        <div class="name">残業代（割増賃金）計算機</div>
+        <div class="desc">月給と年間所定休日から<b>1時間あたりの単価</b>を求め、時間外25%・<b>1か月60時間超は50%</b>・法定休日35%・深夜は上乗せ25%で残業代を計算。<b>固定残業代を超えた差額</b>も表示。基礎から除ける手当は7つだけ（役職手当・資格手当は<b>入ります</b>）。</div>
+      </div>
+    </a>
+    <a class="tool-card" href="kabe/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20V10M9 20V6M14 20v-8M19 20V4"/><path d="M2 20h20"/></svg></div>
+      <div>
+        <div class="name">年収の壁 手取り逆転シミュレーター</div>
+        <div class="desc">パートの<b>年収</b>を入れると、<b>社会保険の壁</b>（約106万・130万）を超えると手取りがいくら逆転し、<b>年収いくらで元に戻るか</b>を計算。東京都・30歳なら<b>年収129万円（手取り129万円）が、131万円で社会保険に入ると手取り112万2,704円</b>に。<b>元に戻るのは年収150万5,000円</b>。★税金の壁は超えても手取りは逆転しません（減るのは社会保険の壁だけ）。</div>
+      </div>
+    </a>
+    </div>
+  </section>
+  <section class="tcat" id="t-setsuzei">
+    <h3>節税・控除</h3>
+    <div class="tool-grid">
+    <a class="tool-card" href="furusato/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 9h18v11H3z"/><path d="M3 9l2-4h14l2 4M12 9v11"/><path d="M8.5 5.5A2 2 0 0 1 12 9a2 2 0 0 1 3.5-3.5"/></svg></div>
+      <div>
+        <div class="name">ふるさと納税 限度額シミュレーション</div>
+        <div class="desc">年収と家族構成から、<b>自己負担2,000円で収まる寄附額の上限</b>を計算。限度額は<b>住民税の所得割額の20%</b>から逆算します。特例控除の割合は復興特別所得税を織り込んだ<b>84.895%</b>など（本則の85%ではありません）。寄附額を入れると自己負担が2,000円で収まるかも判定。</div>
       </div>
     </a>
     <a class="tool-card" href="ideco-setsuzei/">
@@ -98,13 +156,6 @@
         <div class="desc">配偶者を扶養していると<b>最大38万円（70歳以上は48万円）の控除</b>で税金が下がります。あなたの所得区分と<b>配偶者のパート年収</b>から、配偶者控除・配偶者特別控除のどちらがいくら受けられ、<b>年間いくら節税になるか</b>を計算。例：課税所得500万円・配偶者のパート年収110万円なら<b>年110,596円の節税</b>。令和8年分の新基準（給与136万円・169万円）に対応。</div>
       </div>
     </a>
-    <a class="tool-card" href="aoiro-kojo/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M5 3.5h11l3.5 3.5v13.5H5z"/><path d="M8.5 11h7"/><path d="M8.5 14.5h7"/><path d="M8.5 17.5h4"/></svg></div>
-      <div>
-        <div class="name">青色申告特別控除シミュレーター</div>
-        <div class="desc">青色申告特別控除が<b>65万円・55万円・10万円のどれになるか</b>を要件から判定し、<b>年間の節税額</b>を計算。<b>1つ上の区分にあと何が足りないか</b>も名指しで出します。例：課税所得500万円なら65万円の控除で<b>年197,730円の節税</b>、e-Taxに変えるだけで<b>年30,420円</b>の差。<b>令和9年分からの75万円・55万円廃止</b>の改正にも対応。</div>
-      </div>
-    </a>
     <a class="tool-card" href="seimei-hoken-kojo/">
       <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 20.5s-7-4.2-7-9.3V6.2l7-2.7 7 2.7v5c0 5.1-7 9.3-7 9.3z"/><path d="M9.2 11.6l2 2 3.6-3.9"/></svg></div>
       <div>
@@ -112,11 +163,44 @@
         <div class="desc">生命保険・医療保険・個人年金の保険料は<b>最大12万円（所得税）の所得控除</b>になります。控除証明書の年間支払保険料から<b>控除額と年間の節税額</b>を計算。<b>新契約と旧契約の併用はどちらが得か</b>を税ごとに自動判定し、<b>23歳未満の扶養親族がいる場合の6万円特例</b>（令和8年分・令和9年分）にも対応します。</div>
       </div>
     </a>
-    <a class="tool-card" href="bonus-tedori/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 8.7l5.4-.8z"/></svg></div>
+    <a class="tool-card" href="iryohi/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></div>
       <div>
-        <div class="name">ボーナス手取り計算機</div>
-        <div class="desc">賞与の額面から、<b>社会保険料と源泉所得税を引いた手取り</b>を自動計算。★賞与の税率は賞与の額ではなく<b>「前月の給与」で決まります</b>（前月給与なし・10倍超の例外計算にも対応）。<b>住民税はボーナスからは天引きされません</b>。厚生年金は1回150万円・健康保険は年度573万円の上限も自動で適用します。</div>
+        <div class="name">医療費控除 計算機</div>
+        <div class="desc">1年間の<b>医療費</b>と<b>年収</b>から、<b>控除額</b>と<b>戻ってくる税金</b>（所得税＋復興特別所得税＋住民税）の目安を自動計算。★<b>足切りは「総所得金額等の5%」と「10万円」の低いほう</b>なので、<b>年収およそ297万円以下なら医療費が10万円未満でも使えます</b>（10万円は上限であって下限ではありません）。戻るのは払った医療費ではなく<b>控除額×税率</b>。保険金の差し引き（ひも付いた医療費からだけ引く）・セルフメディケーション税制（12,000円超・88,000円限度）にも対応。</div>
+      </div>
+    </a>
+    <a class="tool-card" href="aoiro-kojo/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M5 3.5h11l3.5 3.5v13.5H5z"/><path d="M8.5 11h7"/><path d="M8.5 14.5h7"/><path d="M8.5 17.5h4"/></svg></div>
+      <div>
+        <div class="name">青色申告特別控除シミュレーター</div>
+        <div class="desc">青色申告特別控除が<b>65万円・55万円・10万円のどれになるか</b>を要件から判定し、<b>年間の節税額</b>を計算。<b>1つ上の区分にあと何が足りないか</b>も名指しで出します。例：課税所得500万円なら65万円の控除で<b>年197,730円の節税</b>、e-Taxに変えるだけで<b>年30,420円</b>の差。<b>令和9年分からの75万円・55万円廃止</b>の改正にも対応。</div>
+      </div>
+    </a>
+    <a class="tool-card" href="jutaku/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M6 20V10l6-5 6 5v10"/><path d="M10 20v-5h4v5"/><path d="M15 9l3 1.5V13"/></svg></div>
+      <div>
+        <div class="name">住宅ローン控除 計算機</div>
+        <div class="desc">住宅ローン控除（住宅借入金等特別控除）の<b>1年あたりの控除額・控除期間・総額のめやす</b>を計算。<b>控除率は0.7％</b>（1％ではありません）。住宅の種類と入居年で借入限度額が変わります。★<b>省エネ基準を満たさない「その他の住宅」を2024・2025年に入居した人は原則ゼロ円</b>。子育て世帯の上乗せ・合計所得2,000万円以下・床面積の要件にも対応。</div>
+      </div>
+    </a>
+    </div>
+  </section>
+  <section class="tcat" id="t-zeigaku">
+    <h3>税額の計算・判定</h3>
+    <div class="tool-grid">
+    <a class="tool-card" href="juminzei/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M6 20V9l6-5 6 5v11"/><path d="M10 20v-6h4v6"/></svg></div>
+      <div>
+        <div class="name">住民税 計算機</div>
+        <div class="desc">年収と家族構成から<b>住民税の年額</b>を計算。<b>所得割・均等割・森林環境税</b>の内訳まで表示します。横浜市・神戸市・神奈川県などの<b>超過課税</b>に対応。<b>非課税限度額は均等割と所得割で別</b>なので「<b>均等割だけかかる人</b>」も判定します。</div>
+      </div>
+    </a>
+    <a class="tool-card" href="shohizei/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h4"/></svg></div>
+      <div>
+        <div class="name">消費税・端数処理 計算機</div>
+        <div class="desc">税込・税抜を8%/10%で相互計算。インボイス（適格請求書）の消費税額を「税率ごとに1回」の端数処理で算出し、認められない明細ごとの端数処理との差額も表示。</div>
       </div>
     </a>
     <a class="tool-card" href="inshi/">
@@ -133,20 +217,6 @@
         <div class="desc"><b>総排気量</b>と<b>初度登録の年月</b>から、自家用乗用車の<b>自動車税（種別割）の年額</b>を自動判定＋<b>税額一覧表</b>。★<b>1.5リットル超2リットル以下なら36,000円</b>（令和元年10月以降の登録・それ以前は39,500円）。<b>13年超で約15%の重課</b>ですが、<b>ハイブリッド車・電気自動車は13年超でも対象外</b>——一律に高くなると考えると誤解します。年度途中に登録したときの<b>月割</b>、軽自動車の<b>10,800円（月割なし）</b>にも対応。</div>
       </div>
     </a>
-    <a class="tool-card" href="genka/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M4 19V9M9 19V6M14 19v-4M19 19v-9"/><path d="M4 9l5-3 5 3 5-3"/></svg></div>
-      <div>
-        <div class="name">減価償却費の計算機（定額法・定率法）</div>
-        <div class="desc"><b>取得価額</b>・<b>耐用年数</b>・<b>償却方法</b>から、減価償却費が<b>毎年いくらか（償却スケジュール）</b>を自動計算。<b>定額法</b>と<b>定率法（200%・250%）</b>に対応し、★定率法の<b>償却保証額・改定償却率の切替</b>（放っておくと償却が終わらない核心）、年の途中で使い始めたときの<b>初年度の月割</b>、最後に残す<b>備忘価額1円</b>まで正しく計算します。<b>事業専用割合</b>を入れれば必要経費算入額も表示。国税庁の償却率表（別表第八〜第十）にもとづく。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="iryohi/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/><path d="M4 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></div>
-      <div>
-        <div class="name">医療費控除 計算機</div>
-        <div class="desc">1年間の<b>医療費</b>と<b>年収</b>から、<b>控除額</b>と<b>戻ってくる税金</b>（所得税＋復興特別所得税＋住民税）の目安を自動計算。★<b>足切りは「総所得金額等の5%」と「10万円」の低いほう</b>なので、<b>年収およそ297万円以下なら医療費が10万円未満でも使えます</b>（10万円は上限であって下限ではありません）。戻るのは払った医療費ではなく<b>控除額×税率</b>。保険金の差し引き（ひも付いた医療費からだけ引く）・セルフメディケーション税制（12,000円超・88,000円限度）にも対応。</div>
-      </div>
-    </a>
     <a class="tool-card" href="sozokuzei/">
       <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9.5 11.5l1.8 1.8 3.4-3.6"/></svg></div>
       <div>
@@ -161,39 +231,16 @@
         <div class="desc">その年に受けた<b>贈与の合計額</b>から、<b>暦年課税</b>の贈与税額を自動計算。★<b>基礎控除は年110万円</b>（もらった人の合計から1回だけ・贈与者ごとではない）で、これ以下なら贈与税は0円・申告不要。<b>直系尊属（父母・祖父母）から18歳以上で受けた贈与は特例税率</b>、それ以外は<b>一般税率</b>で、両方受けた年の<b>按分計算</b>にも対応。父母から500万円なら<b>贈与税48万5,000円</b>（特例税率）。</div>
       </div>
     </a>
-    <a class="tool-card" href="kabe/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20V10M9 20V6M14 20v-8M19 20V4"/><path d="M2 20h20"/></svg></div>
+    </div>
+  </section>
+  <section class="tcat" id="t-kyufu">
+    <h3>給付金・休暇・退職</h3>
+    <div class="tool-grid">
+    <a class="tool-card" href="kihonteate/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 7h18v13H3z"/><path d="M8 7V4h8v3M3 12h18"/></svg></div>
       <div>
-        <div class="name">年収の壁 手取り逆転シミュレーター</div>
-        <div class="desc">パートの<b>年収</b>を入れると、<b>社会保険の壁</b>（約106万・130万）を超えると手取りがいくら逆転し、<b>年収いくらで元に戻るか</b>を計算。東京都・30歳なら<b>年収129万円（手取り129万円）が、131万円で社会保険に入ると手取り112万2,704円</b>に。<b>元に戻るのは年収150万5,000円</b>。★税金の壁は超えても手取りは逆転しません（減るのは社会保険の壁だけ）。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="jutaku/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M6 20V10l6-5 6 5v10"/><path d="M10 20v-5h4v5"/><path d="M15 9l3 1.5V13"/></svg></div>
-      <div>
-        <div class="name">住宅ローン控除 計算機</div>
-        <div class="desc">住宅ローン控除（住宅借入金等特別控除）の<b>1年あたりの控除額・控除期間・総額のめやす</b>を計算。<b>控除率は0.7％</b>（1％ではありません）。住宅の種類と入居年で借入限度額が変わります。★<b>省エネ基準を満たさない「その他の住宅」を2024・2025年に入居した人は原則ゼロ円</b>。子育て世帯の上乗せ・合計所得2,000万円以下・床面積の要件にも対応。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="furusato/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 9h18v11H3z"/><path d="M3 9l2-4h14l2 4M12 9v11"/><path d="M8.5 5.5A2 2 0 0 1 12 9a2 2 0 0 1 3.5-3.5"/></svg></div>
-      <div>
-        <div class="name">ふるさと納税 限度額シミュレーション</div>
-        <div class="desc">年収と家族構成から、<b>自己負担2,000円で収まる寄附額の上限</b>を計算。限度額は<b>住民税の所得割額の20%</b>から逆算します。特例控除の割合は復興特別所得税を織り込んだ<b>84.895%</b>など（本則の85%ではありません）。寄附額を入れると自己負担が2,000円で収まるかも判定。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="ikuji/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/><path d="M9 8.5c.8.6 1.9.9 3 .9s2.2-.3 3-.9"/></svg></div>
-      <div>
-        <div class="name">育児休業給付金 計算機</div>
-        <div class="desc">育休中に<b>毎月いくら振り込まれるか</b>を30日ごとに計算。<b>67%は休業180日まで、181日目からは50%</b>に下がります。<b>上限額は年齢に関係なく賃金日額16,110円</b>（失業保険と違い、45歳以上でも上がりません）。<b>出生後休業支援給付金（＋13%）は、配偶者も14日以上取らないと0円</b>です。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="papa-ikukyu/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M9 10a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/><path d="M2 20v-1.5A3.5 3.5 0 0 1 5.5 15h7A3.5 3.5 0 0 1 16 18.5V20"/><path d="M17 7h5M19.5 4.5v5"/></svg></div>
-      <div>
-        <div class="name">産後パパ育休 給付金 計算機</div>
-        <div class="desc">出生後8週間以内に取る<b>産後パパ育休（最大28日）</b>の給付を計算。<b>67%＋13%＝合計80%</b>。★<b>父親は、妻が育休を1日も取らなくても13%がもらえます</b>（妻が産後休業中のため要件が免除されます）。<b>14日未満だと13%は1円も出ません</b>（13日→14日で24,900円増）。休業中に働いた場合の80%調整にも対応。</div>
+        <div class="name">失業保険（基本手当）計算機</div>
+        <div class="desc">離職時の年齢・給料・勤続年数・退職理由から、1日あたりの基本手当日額・所定給付日数・受け取れる総額の目安・支給が始まる時期を計算。会社都合と自己都合の違い、給付制限にも対応。</div>
       </div>
     </a>
     <a class="tool-card" href="shobyo/">
@@ -210,53 +257,18 @@
         <div class="desc">産休中に健康保険から出る<b>出産手当金</b>を計算。<b>日額は傷病手当金と同じ算式（標準報酬÷30×2/3）</b>ですが、<b>待期3日は無く産休初日から</b>対象です。<b>予定日より遅れて産まれた日数は、そのまま給付が増えます</b>（10日遅れで＋約6.7万円）。<b>多胎は産前98日</b>。給与が出ても差額はもらえます。</div>
       </div>
     </a>
-    <a class="tool-card" href="juminzei/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M6 20V9l6-5 6 5v11"/><path d="M10 20v-6h4v6"/></svg></div>
+    <a class="tool-card" href="ikuji/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/><path d="M9 8.5c.8.6 1.9.9 3 .9s2.2-.3 3-.9"/></svg></div>
       <div>
-        <div class="name">住民税 計算機</div>
-        <div class="desc">年収と家族構成から<b>住民税の年額</b>を計算。<b>所得割・均等割・森林環境税</b>の内訳まで表示します。横浜市・神戸市・神奈川県などの<b>超過課税</b>に対応。<b>非課税限度額は均等割と所得割で別</b>なので「<b>均等割だけかかる人</b>」も判定します。</div>
+        <div class="name">育児休業給付金 計算機</div>
+        <div class="desc">育休中に<b>毎月いくら振り込まれるか</b>を30日ごとに計算。<b>67%は休業180日まで、181日目からは50%</b>に下がります。<b>上限額は年齢に関係なく賃金日額16,110円</b>（失業保険と違い、45歳以上でも上がりません）。<b>出生後休業支援給付金（＋13%）は、配偶者も14日以上取らないと0円</b>です。</div>
       </div>
     </a>
-    <a class="tool-card" href="shohizei/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h4"/></svg></div>
+    <a class="tool-card" href="papa-ikukyu/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M9 10a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/><path d="M2 20v-1.5A3.5 3.5 0 0 1 5.5 15h7A3.5 3.5 0 0 1 16 18.5V20"/><path d="M17 7h5M19.5 4.5v5"/></svg></div>
       <div>
-        <div class="name">消費税・端数処理 計算機</div>
-        <div class="desc">税込・税抜を8%/10%で相互計算。インボイス（適格請求書）の消費税額を「税率ごとに1回」の端数処理で算出し、認められない明細ごとの端数処理との差額も表示。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="shakai-hoken/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.4 8.8-8 10-4.6-1.2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
-      <div>
-        <div class="name">社会保険料 計算機</div>
-        <div class="desc">給与額から標準報酬月額の等級・健康保険・介護保険・厚生年金を自動計算。令和8年度の都道府県別料率対応。賞与も上限つきで計算。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="gensen-choshu/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg></div>
-      <div>
-        <div class="name">源泉徴収税額 計算機</div>
-        <div class="desc"><b>給与</b>は国税庁の税額表（月額表・令和8年分／甲欄・乙欄）、<b>賞与</b>は算出率の表を引いて計算。扶養親族等の数にも対応。<b>報酬・原稿料・士業</b>への支払い（10.21%）も計算できます。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="kihonteate/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 7h18v13H3z"/><path d="M8 7V4h8v3M3 12h18"/></svg></div>
-      <div>
-        <div class="name">失業保険（基本手当）計算機</div>
-        <div class="desc">離職時の年齢・給料・勤続年数・退職理由から、1日あたりの基本手当日額・所定給付日数・受け取れる総額の目安・支給が始まる時期を計算。会社都合と自己都合の違い、給付制限にも対応。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="taishokukin/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 7h18v13H3z"/><path d="M8 7V4h8v3"/><path d="M12 11v6M9.5 12.5h5M9.5 15.5h5"/></svg></div>
-      <div>
-        <div class="name">退職金の税金（退職所得）計算機</div>
-        <div class="desc">退職金の額と勤続年数から、退職所得控除・所得税・住民税・<b>手取り</b>を計算。<b>勤続年数は1年未満を切り上げる</b>ため、退職日が1か月違うだけで税額が数万円変わります。その差額も表示。役員5年以下・勤続5年以下・障害退職にも対応。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="zangyodai/">
-      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg></div>
-      <div>
-        <div class="name">残業代（割増賃金）計算機</div>
-        <div class="desc">月給と年間所定休日から<b>1時間あたりの単価</b>を求め、時間外25%・<b>1か月60時間超は50%</b>・法定休日35%・深夜は上乗せ25%で残業代を計算。<b>固定残業代を超えた差額</b>も表示。基礎から除ける手当は7つだけ（役職手当・資格手当は<b>入ります</b>）。</div>
+        <div class="name">産後パパ育休 給付金 計算機</div>
+        <div class="desc">出生後8週間以内に取る<b>産後パパ育休（最大28日）</b>の給付を計算。<b>67%＋13%＝合計80%</b>。★<b>父親は、妻が育休を1日も取らなくても13%がもらえます</b>（妻が産後休業中のため要件が免除されます）。<b>14日未満だと13%は1円も出ません</b>（13日→14日で24,900円増）。休業中に働いた場合の80%調整にも対応。</div>
       </div>
     </a>
     <a class="tool-card" href="yukyu/">
@@ -266,25 +278,30 @@
         <div class="desc">入社日から付与日数・付与日を自動計算。パートの比例付与、年5日の取得義務の判定にも対応。</div>
       </div>
     </a>
+    <a class="tool-card" href="taishokukin/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 7h18v13H3z"/><path d="M8 7V4h8v3"/><path d="M12 11v6M9.5 12.5h5M9.5 15.5h5"/></svg></div>
+      <div>
+        <div class="name">退職金の税金（退職所得）計算機</div>
+        <div class="desc">退職金の額と勤続年数から、退職所得控除・所得税・住民税・<b>手取り</b>を計算。<b>勤続年数は1年未満を切り上げる</b>ため、退職日が1か月違うだけで税額が数万円変わります。その差額も表示。役員5年以下・勤続5年以下・障害退職にも対応。</div>
+      </div>
+    </a>
+    </div>
+  </section>
+  <section class="tcat" id="t-jitsumu">
+    <h3>経理・振込の実務</h3>
+    <div class="tool-grid">
+    <a class="tool-card" href="genka/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M4 19V9M9 19V6M14 19v-4M19 19v-9"/><path d="M4 9l5-3 5 3 5-3"/></svg></div>
+      <div>
+        <div class="name">減価償却費の計算機（定額法・定率法）</div>
+        <div class="desc"><b>取得価額</b>・<b>耐用年数</b>・<b>償却方法</b>から、減価償却費が<b>毎年いくらか（償却スケジュール）</b>を自動計算。<b>定額法</b>と<b>定率法（200%・250%）</b>に対応し、★定率法の<b>償却保証額・改定償却率の切替</b>（放っておくと償却が終わらない核心）、年の途中で使い始めたときの<b>初年度の月割</b>、最後に残す<b>備忘価額1円</b>まで正しく計算します。<b>事業専用割合</b>を入れれば必要経費算入額も表示。国税庁の償却率表（別表第八〜第十）にもとづく。</div>
+      </div>
+    </a>
     <a class="tool-card" href="eigyobi/">
       <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
       <div>
         <div class="name">日数計算・営業日計算</div>
         <div class="desc">期間の日数、「◯営業日後」の日付、期間内の営業日数を計算。土日・祝日・年末年始に対応。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="ext/amazon-receipt/">
-      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/><path d="M12 8.8h9M9.2 13.6 5 6.5M14.8 13.6l-4.2 7.3"/></svg></div>
-      <div>
-        <div class="name">Amazon領収書 → 電帳法の索引簿<span class="badge">Chrome拡張</span></div>
-        <div class="desc">Amazonの注文履歴から索引簿CSVを1クリックで作成。キャンセル注文は自動で除外します。</div>
-      </div>
-    </a>
-    <a class="tool-card" href="denchoho-index/">
-      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 9v11"/></svg></div>
-      <div>
-        <div class="name">電帳法 索引簿テンプレート（無料DL）</div>
-        <div class="desc">電子帳簿保存法の検索要件を満たす索引簿のCSVテンプレート。記入例つき・書き方の解説つき。</div>
       </div>
     </a>
     <a class="tool-card" href="shiharai-site/">
@@ -294,12 +311,6 @@
         <div class="desc">「月末締め翌月末払い」等から向こう1年の支払日を一覧化。土日祝は営業日調整、カレンダー出力も。</div>
       </div>
     </a>
-  </div>
-
-  <div class="section-head">
-    <h2>そのほかのツール</h2>
-  </div>
-  <div class="tool-grid">
     <a class="tool-card" href="senpou-futan/">
       <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
       <div>
@@ -314,7 +325,22 @@
         <div class="desc">受取人名を半角カナ・法人略語（株式会社→ｶ)）に一括変換。</div>
       </div>
     </a>
-  </div>
+    <a class="tool-card" href="denchoho-index/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16M9 9v11"/></svg></div>
+      <div>
+        <div class="name">電帳法 索引簿テンプレート（無料DL）</div>
+        <div class="desc">電子帳簿保存法の検索要件を満たす索引簿のCSVテンプレート。記入例つき・書き方の解説つき。</div>
+      </div>
+    </a>
+    <a class="tool-card" href="ext/amazon-receipt/">
+      <div class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.2"/><path d="M12 8.8h9M9.2 13.6 5 6.5M14.8 13.6l-4.2 7.3"/></svg></div>
+      <div>
+        <div class="name">Amazon領収書 → 電帳法の索引簿<span class="badge">Chrome拡張</span></div>
+        <div class="desc">Amazonの注文履歴から索引簿CSVを1クリックで作成。キャンセル注文は自動で除外します。</div>
+      </div>
+    </a>
+    </div>
+  </section>
 
   <div class="section-head">
     <h2>経理コラム</h2>
