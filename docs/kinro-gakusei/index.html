@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>勤労学生控除シミュレーター｜バイト163万円までの判定と本当の効き目</title>
+<meta name="description" content="勤労学生控除（所得税27万円・住民税26万円）の対象かを要件から判定。令和8年分から所得要件が89万円（バイト年収163万円）に上がりました。実は基礎控除104万円への引き上げで所得税には効かなくなり、効くのは住民税（年間最大26,500円）と月々の源泉徴収。専門学校の課程要件、親の扶養との違い、未成年の非課税まで計算します。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/kinro-gakusei/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "勤労学生控除シミュレーター",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "学校の種類・バイト年収・その他の所得から勤労学生控除（所得税27万円・住民税26万円）の対象かを判定し、所得税・住民税それぞれで実際にいくら安くなるかを計算します。令和8年分の要件（合計所得89万円＝給与収入163万円以下）に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "勤労学生控除シミュレーター"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "勤労学生控除を使うと、親の扶養から外れますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "外れません。勤労学生控除はあなた自身の税金の計算に使う控除で、親の扶養控除はあなたの所得だけで判定される別の制度です。親の扶養控除の対象になるのはあなたの合計所得が62万円以下（バイト年収136万円以下）の場合で、これはあなたが勤労学生控除を使うかどうかと無関係に決まります。「勤労学生控除を申告したせいで親の税金が増えた」ということは起きませんが、逆に年収136万円を超えていれば、控除を使わなくても親の扶養控除は受けられなくなっています。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "バイトをかけもちしています。年収はいくらまでなら対象ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "すべてのバイト給与を合計して年収163万円以下です（令和8年分）。給与所得の計算は全部の給与を合算してから行うので、1か所ごとではなく合計で判定します。給与のほかにフリーランスの報酬など「自分の働きによる」所得がある場合は、給与所得（年収−74万円）とそれらの所得の合計が89万円以下かで判定します。また、配当など働きによらない所得が10万円を超えると、合計が89万円以下でも対象外です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "所得税が減らないなら、申告する意味はありますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "あります。効き目は2つです。①住民税：令和9年度分の住民税が年間最大26,500円安くなります（バイト年収143万円までなら所得割が0円になります）。②月々の手取り：年末調整の申告書で勤労学生に印を付けると源泉徴収の「扶養親族等の数」が1人増え、毎月の天引きが減ります。逆に、バイト年収119万円以下の人と、18歳未満で年収209万円以下の人は住民税がもともと非課税なので、実益はほぼありません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "専門学校・予備校ですが対象になりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "専門学校（専修学校）や各種学校は、職業に必要な技術を教えること・修業期間が1年以上であることなどの課程の要件（所得税法施行令11条の3）を満たす場合だけ対象です。要件を満たすかどうかは自分で判定する必要はなく、学校の窓口で「勤労学生控除の証明書」を発行してもらえるか確認してください。発行されればその課程は要件を満たしています。予備校は各種学校であっても課程の要件（職業に必要な技術の教授）を満たさないことが多いので、必ず学校に確認を。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "大学院生・通信制でも対象ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "対象です。大学院・短大・高等専門学校・定時制や通信制の高校・放送大学は、いずれも学校教育法1条の学校（またはそこに置かれる課程）なので無条件で対象です。一方、大学の研究生・聴講生・科目等履修生は「学生」に当たらない場合があるため、学校の学生課に確認してください。海外の大学に留学している人は、日本の学校教育法1条の学校に在学していないため原則対象外です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "住民税はいつから安くなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "住民税は前年の所得に対して翌年度に課税されるため、令和8年（2026年）のバイト代に対する住民税は、令和9年度分として2027年6月ごろから払うものです。勤労学生控除の効き目もそこに現れます。2026年に払っている住民税は令和7年（2025年）の所得に対するものなので、今年の申告では変わりません。なお2026年の毎月の給与から引かれる所得税（源泉徴収）は、申告書に印を付ければすぐ減ります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "働きによらない所得10万円とは何ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "合計所得金額のうち「自分の勤労にもとづく給与所得・事業所得・退職所得・雑所得（給与所得等）」以外の部分です。株の配当（申告した場合）、不動産の賃貸収入、仮想通貨の売却益、親から譲り受けた資産の運用益などが典型です。これが10万円を超えると、合計所得が89万円以下でも勤労学生控除は受けられません。「働いて学ぶ学生」のための控除なので、働き以外の収入が多い人を外す趣旨です。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 勤労学生控除シミュレーター</nav>
+
+<section class="hero">
+  <h1>勤労学生控除シミュレーター</h1>
+  <p>働く学生の<b>勤労学生控除（所得税27万円・住民税26万円）の対象になるか</b>を要件から判定し、<b>所得税と住民税それぞれで実際にいくら安くなるか</b>を計算します。令和8年分から所得要件は<b>89万円（バイト年収163万円）</b>に上がりました。対象外のときは<b>どの要件で外れたか</b>を名指しします。</p>
+</section>
+
+<div class="card">
+  <label>学校の種類<span class="hint">　法律が対象と定める3つの区分です</span></label>
+  <div id="school-rows"><p class="hint">読み込み中…</p></div>
+
+  <div id="extra-rows"><p class="hint">読み込み中…</p></div>
+
+  <label for="kyuyo" style="margin-top:14px">バイトなど給与収入（年収・額面・円）</label>
+  <input type="number" id="kyuyo" placeholder="例: 1500000" inputmode="numeric" min="0" step="10000">
+
+  <label for="kinro-sonota" style="margin-top:14px">給与以外の「自分の働きによる」所得（任意・円）<span class="hint">　フリーランス・業務委託・原稿料など、自分の働きで得た事業所得・雑所得（経費を引いた後）。なければ空欄</span></label>
+  <input type="number" id="kinro-sonota" placeholder="例: 0" inputmode="numeric" min="0" step="10000">
+
+  <label for="hikinro" style="margin-top:14px">働きによらない所得（任意・円）<span class="hint">　株の配当・不動産・仮想通貨の売却益など。10万円を超えると対象外になります</span></label>
+  <input type="number" id="hikinro" placeholder="例: 0" inputmode="numeric" min="0" step="10000">
+
+  <label for="shaho" style="margin-top:14px">自分で払った社会保険料（任意・円／年）<span class="hint">　国民年金・国民健康保険など。親の扶養に入っていて本人負担がなければ空欄でOK。学生納付特例で猶予中の分は「払った」に入りません</span></label>
+  <input type="number" id="shaho" placeholder="例: 0" inputmode="numeric" min="0" step="10000">
+
+  <button class="primary" id="calc">対象になるか判定する</button>
+  <div class="result" id="result"></div>
+  <p class="hint" id="src-hint" style="margin-top:10px"></p>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p>勤労学生控除は、<b>働きながら学ぶ学生の所得から27万円（住民税は26万円）を差し引ける</b>所得控除です（所得税法82条）。令和8年分から対象になる所得の上限が<b>合計所得89万円＝バイト年収163万円</b>に上がりました。ただし知っておきたいのは、<b>同じ改正で基礎控除が104万円に上がった結果、この控除は所得税では効かなくなった</b>ことです。要件を満たす人の所得税は、控除がなくても<b>もともと0円</b>。実際に効くのは<b>住民税（年間最大26,500円）</b>と<b>月々の源泉徴収</b>です。上の計算機は、この「本当の効き目」まで含めて計算します。以下では要件・改正・親の扶養との関係を条文にもとづいて解説します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+
+<nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#tsukaikata">使い方と前提</a></li>
+<li><a href="#yoken">勤労学生控除の3つの要件</a></li>
+<li><a href="#kaisei">令和8年分から所得要件は89万円（バイト年収163万円）</a></li>
+<li><a href="#shotokuzei">実は所得税には効かない — 基礎控除104万円が要件89万円を包含</a></li>
+<li><a href="#juminzei">効くのは住民税 — 年間最大26,500円</a></li>
+<li><a href="#fuyo">親の扶養とはまったく別の判定</a></li>
+<li><a href="#shinsei">申告のしかた — 年末調整のC欄か確定申告</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav>
+
+<h2 id="tsukaikata">使い方と前提</h2>
+  <div class="callout">
+    <b>バイトの年収（額面）をそのまま入れてください</b>
+    給与所得への換算は、令和8年分の求め方（給与所得控除の定額74万円）で自動計算します。バイトをかけもちしている人は<b>全部の合計</b>を入れてください。フリーランスの収入や配当などがある人は、それぞれの欄に所得（収入から経費を引いた後）を入れます。
+  </div>
+  <p>判定は所得税法2条1項32号の要件をそのまま使います。住民税は、令和8年分の所得に対する令和9年度分（2027年6月から払う分）を、標準税率・均等割・森林環境税・調整控除まで含めて計算し、控除がある場合とない場合の差を出します。</p>
+  <div class="note">
+    本ツールの結果は目安です。均等割の額など自治体によって少し変わるほか、株式の譲渡益など分離課税の所得は扱いません。申告の前に税務署・学校の窓口・税理士でご確認ください。
+  </div>
+
+<h2 id="yoken">勤労学生控除の3つの要件</h2>
+
+<p>勤労学生控除の対象になるのは、次の<b>3つすべて</b>を満たす人です（所得税法2条1項32号）。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>要件</th><th>内容</th><th>つまずきやすい点</th></tr>
+</thead>
+<tbody>
+<tr><td><b>① 学校の学生・生徒であること</b></td><td>下の表の3区分のどれかに当てはまること</td><td>専修学校・各種学校は<b>課程の要件</b>がある（下の表）</td></tr>
+<tr><td><b>② 働いて得た所得があること</b></td><td>自分の勤労にもとづく給与所得・事業所得・退職所得・雑所得（給与所得等）があること</td><td>奨学金・仕送り・配当だけの人は対象外</td></tr>
+<tr><td><b>③ 所得が少ないこと</b></td><td>合計所得金額<b>89万円以下</b>、かつ働きによらない所得（給与所得等以外）が<b>10万円以下</b></td><td>バイト給与だけなら<b>年収163万円以下</b>。配当などが10万円を超えると、合計が89万円以下でも対象外</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>「学校」の範囲は、条文が次の3区分を列挙しています。</p>
+
+<div class="scroll-wrap">
+<table id="school-range-table">
+<thead>
+<tr><th>区分</th><th>あてはまる学校</th><th>条件</th></tr>
+</thead>
+<tbody>
+<tr><td><b>イ　学校教育法1条の学校</b></td><td>大学・大学院・短大・高等専門学校・高校・中学校など（通信制・定時制・放送大学を含む）</td><td><b>無条件で対象</b></td></tr>
+<tr><td><b>ロ　専修学校・各種学校</b></td><td>専門学校・看護学校・調理師学校など（国・地方公共団体・学校法人などが設置したもの）</td><td><b>課程の要件あり</b>: 職業に必要な技術を教える・修業期間1年以上など（施行令11条の3）。満たすかどうかは<b>学校が発行する証明書</b>で確認できます</td></tr>
+<tr><td><b>ハ　認定職業訓練</b></td><td>職業訓練法人が行う認定職業訓練（職業能力開発促進法）を受ける訓練生</td><td>ロと同様の課程の要件あり</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 id="kaisei">令和8年分から所得要件は89万円（バイト年収163万円）</h2>
+
+<div class="callout">
+<b>所得要件は85万円 → 89万円に上がりました（令和8年分から）</b>
+令和8年度税制改正で、勤労学生の合計所得金額の要件は<b>85万円以下から89万円以下</b>に引き上げられました。バイト給与だけなら、給与所得控除の定額74万円を足した<b>年収163万円以下</b>がこのラインです。改正法の経過措置（令和8年法律第12号 附則2条）が「<b>令和8年分以後の所得税について適用</b>」と定めているので、<b>2026年のバイト代からこの新しいラインで判定</b>されます。施行日（2026年12月1日）より前に令和8年分の申告をした人は、5年以内なら更正の請求で取り戻せます（同附則2条2項）。
+</div>
+
+<p>ネット上の解説には、まだ改正前の「130万円まで」（旧・所得75万円）や令和7年分の「150万円まで」（所得85万円）と書かれたページが多く残っています。<b>令和8年分（2026年）の正しいラインは163万円</b>です。住民税のほうも、地方税法が所得税の定義をそのまま準用しているため（314条の2第9項）、<b>令和8年分の所得に対する令和9年度分から同じ89万円</b>で判定されます。</p>
+
+<h2 id="shotokuzei">実は所得税には効かない — 基礎控除104万円が要件89万円を包含</h2>
+
+<p>ここがこの控除の一番知られていない点です。<b>同じ令和8年度改正で基礎控除が104万円（合計所得489万円以下の人）に上がった</b>結果、次の関係が成り立ちます。</p>
+
+<div class="callout" id="muko-callout">
+<b>勤労学生控除の要件（合計所得89万円以下）を満たす人は、控除がなくても所得税が0円です</b>
+合計所得89万円以下 ＜ 基礎控除104万円 なので、収入がバイト給与など総合課税の所得だけなら、基礎控除を引いた時点で課税所得は必ず0円になります。つまり<b>令和8年分の所得税では、勤労学生控除27万円を足しても引く相手がもうありません</b>。「勤労学生控除で所得税を安くする」という古い解説の図式は、令和8年分からは成り立たなくなりました。
+</div>
+
+<figure class="figure">
+<svg viewBox="0 0 640 300" role="img" aria-label="バイト年収100万円から190万円の数直線上に4つのラインを示した図。119万円で住民税がかかり始め、143万円までは勤労学生控除があれば住民税の所得割が0円のまま、163万円が勤労学生控除の上限、178万円で所得税がかかり始める。勤労学生控除の上限163万円は所得税がかかり始める178万円より内側にあるため、控除は所得税には効かず、効くのは119万円から163万円の帯の住民税だけ">
+  <text x="20" y="24" font-size="13" font-weight="bold" fill="currentColor">バイト年収と「壁」の位置関係（令和8年分）</text>
+
+  <!-- 数直線: 100万〜190万 を x=60〜600 に写像。x = 60 + (v-100)*6 -->
+  <line x1="60" y1="210" x2="600" y2="210" stroke="currentColor" stroke-width="1.5"/>
+  <text x="30" y="240" font-size="11" fill="currentColor">100万円</text>
+  <text x="560" y="240" font-size="11" fill="currentColor">190万円</text>
+
+  <!-- 119万: x=174 -->
+  <line x1="174" y1="60" x2="174" y2="216" stroke="currentColor" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="140" y="236" font-size="11" fill="currentColor">119万円</text>
+  <text x="80" y="52" font-size="11" fill="currentColor">住民税がかかり始める</text>
+
+  <!-- 143万: x=318 -->
+  <line x1="318" y1="90" x2="318" y2="216" stroke="currentColor" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="285" y="236" font-size="11" fill="currentColor">143万円</text>
+  <text x="240" y="82" font-size="11" fill="currentColor">控除があれば所得割0円はここまで</text>
+
+  <!-- 163万: x=438 -->
+  <line x1="438" y1="120" x2="438" y2="216" stroke="var(--accent)" stroke-width="2"/>
+  <text x="405" y="236" font-size="11" font-weight="bold" fill="currentColor">163万円</text>
+  <text x="360" y="112" font-size="11" font-weight="bold" fill="currentColor">勤労学生控除の上限（所得89万円）</text>
+
+  <!-- 178万: x=528 -->
+  <line x1="528" y1="150" x2="528" y2="216" stroke="currentColor" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="498" y="236" font-size="11" fill="currentColor">178万円</text>
+  <text x="470" y="142" font-size="11" fill="currentColor">所得税がかかり始める</text>
+
+  <!-- 効き目の帯: 119万〜163万 (住民税に効く) -->
+  <rect x="174" y="176" width="264" height="22" rx="4" fill="var(--accent)" opacity="0.45"/>
+  <text x="200" y="192" font-size="11.5" font-weight="bold" fill="currentColor">勤労学生控除が効く帯（住民税）</text>
+
+  <!-- 163〜178万: 控除は使えないが所得税0の帯 -->
+  <rect x="438" y="176" width="90" height="22" rx="4" fill="var(--accent)" opacity="0.12"/>
+
+  <text x="20" y="272" font-size="11" fill="currentColor">※ 控除の上限163万円は、所得税がかかり始める178万円より15万円内側 → 対象者は控除がなくても所得税0円</text>
+  <text x="20" y="290" font-size="11" fill="currentColor">※ 住民税は119万円から。勤労学生控除は119万〜163万円の帯で住民税の所得割を減らす（均等割は残る）</text>
+</svg>
+<figcaption>バイト年収の「壁」と勤労学生控除の効き目（令和8年分・成年の単身者。119万円＝住民税非課税ライン45万円＋給与所得控除74万円、163万円＝要件89万円＋74万円、178万円＝基礎控除104万円＋74万円）</figcaption>
+</figure>
+
+<h2 id="juminzei">効くのは住民税 — 年間最大26,500円</h2>
+
+<p>住民税の基礎控除は所得税と違って<b>43万円のまま</b>なので、こちらでは勤労学生控除26万円がしっかり効きます。バイト年収別の効き目です（令和9年度分・標準税率・均等割と森林環境税を含む・成年の単身者・社会保険料の本人負担なしの場合）。</p>
+
+<div class="scroll-wrap">
+<table id="jumin-rei">
+<thead>
+<tr><th>バイト年収</th><th>控除なしの住民税</th><th>勤労学生控除ありの住民税</th><th><b>安くなる額</b></th></tr>
+</thead>
+<tbody>
+<tr><td><b>119万円以下</b></td><td>0円</td><td>0円</td><td><b>0円</b>（もともと非課税）</td></tr>
+<tr><td><b>130万円</b></td><td>15,500円</td><td>5,000円</td><td><b>10,500円</b></td></tr>
+<tr><td><b>143万円</b></td><td>28,500円</td><td>5,000円（均等割のみ）</td><td><b>23,500円</b></td></tr>
+<tr><td><b>150万円</b></td><td>35,500円</td><td>9,000円</td><td><b>26,500円</b></td></tr>
+<tr><td><b>163万円</b></td><td>48,500円</td><td>22,000円</td><td><b>26,500円</b></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="note">
+<b>均等割（年5,000円・森林環境税込み）は減りません。</b>住民税が非課税になるかどうかは、控除を引く<b>前</b>の合計所得45万円以下（給与収入119万円以下）で判定されるためです。勤労学生控除が減らせるのは所得割（10％の部分）だけで、年収143万円までなら所得割を0円にできます。
+</div>
+
+<div class="callout">
+<b>18歳未満（未成年）は、年収209万円まで住民税がそもそも非課税です</b>
+未成年者は前年の合計所得金額135万円以下（給与収入だけなら209万円以下）なら住民税が全額非課税です（地方税法295条1項2号）。この場合、勤労学生控除の出番はありません。基準日は賦課期日（令和9年度分なら2027年1月1日）で、18歳になっているかで判定します。上の計算機は未成年のチェックを入れるとこの非課税も織り込みます。
+</div>
+
+<p>もうひとつの効き目が<b>月々の源泉徴収</b>です。年末調整の「扶養控除等申告書」で勤労学生に印を付けると、給与の源泉徴収の「扶養親族等の数」が<b>1人増え</b>、毎月天引きされる所得税が減ります（<a href="../column/gensen-zeigakuhyo-mikata/">源泉徴収税額表の見方</a>）。どうせ年末調整で戻る税金ですが、先に手取りが増えるのは同じ額でも早い方が便利です。</p>
+
+<h2 id="fuyo">親の扶養とはまったく別の判定</h2>
+
+<p>勤労学生控除で一番多い誤解が「<b>これを使うと親の扶養から外れる／外れない</b>」というものです。2つは<b>別の制度で、別の判定</b>です。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th></th><th>勤労学生控除</th><th>親の扶養控除</th></tr>
+</thead>
+<tbody>
+<tr><td><b>誰の税金が安くなるか</b></td><td><b>あなた自身</b>の住民税</td><td><b>親</b>の所得税・住民税</td></tr>
+<tr><td><b>判定に使う所得</b></td><td>あなたの合計所得<b>89万円以下</b>（年収163万円以下）</td><td>あなたの合計所得<b>62万円以下</b>（年収136万円以下）</td></tr>
+<tr><td><b>超えるとどうなるか</b></td><td>控除が受けられない</td><td>親の扶養控除が受けられなくなる（19〜23歳なら<b>特定親族特別控除</b>で段階的に縮小）</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="note">
+<b>年収136万円を超えた時点で、親の扶養控除（19〜22歳は63万円）の対象からは外れています。</b>勤労学生控除を使うかどうかはこれに影響しません（使っても使わなくても外れるものは外れます）。ただし19歳以上23歳未満なら、親は<b>特定親族特別控除</b>（あなたの所得123万円＝年収197万円まで段階的）を受けられるので、いきなりゼロにはなりません。親側の計算は<a href="../fuyo-kojo/">扶養控除シミュレーター</a>と<a href="../column/fuyo-kojo-shinkokusho/">扶養控除等申告書の書き方</a>で確認できます。また、「130万円の壁」など<b>社会保険の扶養は税金とはさらに別の判定</b>です（<a href="../kabe/">年収の壁シミュレーター</a>）。
+</div>
+
+<h2 id="shinsei">申告のしかた — 年末調整のC欄か確定申告</h2>
+
+<p>バイト先が1か所なら、年末調整だけで完結します。「<a href="../column/fuyo-kojo-shinkokusho/">給与所得者の扶養控除等（異動）申告書</a>」の<b>C欄（障害者、寡婦、ひとり親又は勤労学生）の「勤労学生」に印</b>を付けて出すだけです。住民税に別の手続きは不要で、年末調整の内容が市区町村に送られて令和9年度分の住民税に反映されます。</p>
+
+<ul>
+<li><b>専修学校・各種学校・職業訓練の人は証明書が必要です。</b>課程が要件を満たすことについて、学校（訓練法人）が発行する証明書を申告書に添えます（大学・高校など学校教育法1条の学校は不要）</li>
+<li><b>バイトをかけもちしている人・年の途中で辞めた人</b>は、確定申告（第一表「勤労学生控除」欄）でも受けられます</li>
+<li>申告し忘れて年末調整が終わってしまった場合も、<b>5年以内なら確定申告（還付申告・更正の請求）</b>でさかのぼれます</li>
+</ul>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>勤労学生控除を使うと、親の扶養から外れますか？</h3>
+<p>外れません。勤労学生控除はあなた自身の税金の計算に使う控除で、親の扶養控除はあなたの所得だけで判定される別の制度です。親の扶養控除の対象になるのはあなたの合計所得が62万円以下（バイト年収136万円以下）の場合で、これはあなたが勤労学生控除を使うかどうかと無関係に決まります。「勤労学生控除を申告したせいで親の税金が増えた」ということは起きませんが、逆に年収136万円を超えていれば、控除を使わなくても親の扶養控除は受けられなくなっています。</p>
+
+<h3>バイトをかけもちしています。年収はいくらまでなら対象ですか？</h3>
+<p>すべてのバイト給与を合計して年収163万円以下です（令和8年分）。給与所得の計算は全部の給与を合算してから行うので、1か所ごとではなく合計で判定します。給与のほかにフリーランスの報酬など「自分の働きによる」所得がある場合は、給与所得（年収−74万円）とそれらの所得の合計が89万円以下かで判定します。また、配当など働きによらない所得が10万円を超えると、合計が89万円以下でも対象外です。</p>
+
+<h3>所得税が減らないなら、申告する意味はありますか？</h3>
+<p>あります。効き目は2つです。①住民税：令和9年度分の住民税が年間最大26,500円安くなります（バイト年収143万円までなら所得割が0円になります）。②月々の手取り：年末調整の申告書で勤労学生に印を付けると源泉徴収の「扶養親族等の数」が1人増え、毎月の天引きが減ります。逆に、バイト年収119万円以下の人と、18歳未満で年収209万円以下の人は住民税がもともと非課税なので、実益はほぼありません。</p>
+
+<h3>専門学校・予備校ですが対象になりますか？</h3>
+<p>専門学校（専修学校）や各種学校は、職業に必要な技術を教えること・修業期間が1年以上であることなどの課程の要件（所得税法施行令11条の3）を満たす場合だけ対象です。要件を満たすかどうかは自分で判定する必要はなく、学校の窓口で「勤労学生控除の証明書」を発行してもらえるか確認してください。発行されればその課程は要件を満たしています。予備校は各種学校であっても課程の要件（職業に必要な技術の教授）を満たさないことが多いので、必ず学校に確認を。</p>
+
+<h3>大学院生・通信制でも対象ですか？</h3>
+<p>対象です。大学院・短大・高等専門学校・定時制や通信制の高校・放送大学は、いずれも学校教育法1条の学校（またはそこに置かれる課程）なので無条件で対象です。一方、大学の研究生・聴講生・科目等履修生は「学生」に当たらない場合があるため、学校の学生課に確認してください。海外の大学に留学している人は、日本の学校教育法1条の学校に在学していないため原則対象外です。</p>
+
+<h3>住民税はいつから安くなりますか？</h3>
+<p>住民税は前年の所得に対して翌年度に課税されるため、令和8年（2026年）のバイト代に対する住民税は、令和9年度分として2027年6月ごろから払うものです。勤労学生控除の効き目もそこに現れます。2026年に払っている住民税は令和7年（2025年）の所得に対するものなので、今年の申告では変わりません。なお2026年の毎月の給与から引かれる所得税（源泉徴収）は、申告書に印を付ければすぐ減ります。</p>
+
+<h3>働きによらない所得10万円とは何ですか？</h3>
+<p>合計所得金額のうち「自分の勤労にもとづく給与所得・事業所得・退職所得・雑所得（給与所得等）」以外の部分です。株の配当（申告した場合）、不動産の賃貸収入、仮想通貨の売却益、親から譲り受けた資産の運用益などが典型です。これが10万円を超えると、合計所得が89万円以下でも勤労学生控除は受けられません。「働いて学ぶ学生」のための控除なので、働き以外の収入が多い人を外す趣旨です。</p>
+
+<h2 id="source">出典</h2>
+<ul>
+<li>所得税法82条（勤労学生控除・27万円）・2条1項32号（勤労学生の定義） — <a href="https://laws.e-gov.go.jp/law/340AC0000000033" rel="nofollow">e-Gov法令検索</a>（現行版と令和8年12月1日施行版を逐語比較。差分は合計所得要件85万円→<b>89万円</b>のみ。<b>令和8年法律第12号 附則2条</b>「勤労学生の定義等に関する経過措置」が令和8年分以後に適用と規定・12月1日前に申告した人は5年以内の更正の請求可）</li>
+<li>所得税法施行令11条の3（専修学校・各種学校・認定職業訓練の課程の要件） — <a href="https://laws.e-gov.go.jp/law/340CO0000000096" rel="nofollow">e-Gov法令検索</a>（現行版とR8-12-01施行版で同文）</li>
+<li>所得税法86条・租税特別措置法41条の16の2（令和8年分・令和9年分の基礎控除104万円＝合計所得489万円以下） — <a href="https://laws.e-gov.go.jp/law/340AC0000000033" rel="nofollow">e-Gov法令検索</a></li>
+<li>地方税法34条1項9号・314条の2第1項9号（住民税の勤労学生控除・26万円）、34条9項・314条の2第9項（所得税法2条1項32号の準用＝前年の合計所得金額で判定）、295条1項2号（未成年者の合計所得135万円以下の非課税） — <a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="nofollow">e-Gov法令検索</a>（現行版と2027年1月1日施行版で同文）</li>
+<li>国税庁 タックスアンサー No.1175 勤労学生控除 — <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1175.htm" rel="nofollow">nta.go.jp</a></li>
+<li>国税庁「令和8年4月 源泉所得税の改正のあらまし」（勤労学生 合計所得89万円以下＝給与収入163万円以下の対比表） — <a href="https://www.nta.go.jp/publication/pamph/gensen/2026kaisei.pdf" rel="nofollow">nta.go.jp</a></li>
+</ul>
+
+<h2 id="related">関連ツール・記事</h2>
+<ul>
+<li><a href="../kabe/">年収の壁シミュレーター</a> — 税金・社会保険の壁と手取りの分かれ目</li>
+<li><a href="../juminzei/">住民税シミュレーター</a> — 非課税限度額の判定と住民税の全体計算</li>
+<li><a href="../fuyo-kojo/">扶養控除シミュレーター</a> — 親側の控除がいくら減るか</li>
+<li><a href="../column/fuyo-kojo-shinkokusho/">扶養控除等申告書の書き方</a> — 勤労学生のC欄の記入</li>
+<li><a href="../column/nenshu-no-kabe/">年収の壁 まとめ</a> — 178万円・136万円などの正確な位置</li>
+</ul>
+
+</article>
+</main>
+<footer class="site">
+  <a href="../">ホーム</a> ・ <a href="../about/">運営者</a> ・ <a href="../privacy/">プライバシー</a> ・ <a href="../contact/">お問い合わせ</a>
+</footer>
+
+<script type="module">
+import { kinroGakuseiHantei } from "../assets/setsuzei_core.js";
+import { calc, kyuyoShotokuR8, shotokuzeiKisoKojo } from "../assets/juminzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const man = (n) => (n / 10000).toLocaleString("ja-JP") + "万円";
+let R08 = null;
+let J08 = null;
+
+// 参照データは2つ(要件・控除額=setsuzei / 給与所得換算・住民税計算=juminzei)。
+// **両方届く前に計算ボタンを押されても await で待つ**。
+// この catch が拾ってよいのは「データが手に入らなかったこと」だけ(飾りの表示は別に処理する)。
+const dataReady = Promise.all([
+  fetch("../assets/setsuzei_r08.json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
+  fetch("../assets/juminzei_r08.json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
+]).then(([s, j]) => { R08 = s; J08 = j; fillRows(); return true; })
+  .catch(() => false);
+
+// 出典・年分の表示は飾り。ここで転んでも計算は止めない。
+dataReady.then(ok => { if (ok) showMeta(); }).catch(() => {});
+
+// 学校の種類は法の列挙(イ・ロ・ハ)+「学生ではない」を**全部**画面に出す
+// (「その他」に丸めない。いちばん多い利用者=大学生を既定にする)。
+const SCHOOLS = [
+  { key: "ichijo", checked: true,
+    label: "大学・大学院・短大・高専・高校・中学など（学校教育法1条の学校）",
+    hint: "通信制・定時制・放送大学も含みます。無条件で対象です" },
+  { key: "senshu",
+    label: "専修学校・各種学校（専門学校・看護学校など）",
+    hint: "職業に必要な技術を教える・修業期間1年以上などの課程の要件があります（学校の証明書で確認できます）" },
+  { key: "kunren",
+    label: "職業訓練法人が行う認定職業訓練",
+    hint: "専修学校と同様の課程の要件があります" },
+  { key: "none", label: "学生ではない" },
+];
+
+function radioRow(name, opt) {
+  return `<label style="display:flex;align-items:flex-start;gap:8px;margin:6px 0;font-size:14px;font-weight:400">
+      <input type="radio" name="${name}" id="${name}-${opt.key}" value="${opt.key}" ${opt.checked ? "checked" : ""} style="width:auto;flex:none;margin-top:3px">
+      <span>${opt.label}${opt.hint ? `<span class="hint" style="display:block">${opt.hint}</span>` : ""}</span></label>`;
+}
+
+function fillRows() {
+  $("school-rows").innerHTML = SCHOOLS.map(o => radioRow("school", o)).join("");
+  // 未成年の判定基準日=住民税の賦課期日(その年度の1月1日)。年度はデータ(jumin_nendo)から導く
+  // (「2027年1月1日」を手書きすると、データを翌年度に差し替えたとき画面だけ古い日付を名乗る)。
+  const nendoN = Number((R08.kinro_gakusei.jumin_nendo.match(/令和(\d+)年度/) || [])[1] || 0);
+  const kijunbi = nendoN ? `${2018 + nendoN}年(令和${nendoN}年)1月1日時点で` : "";
+  $("extra-rows").innerHTML = `
+    <label style="display:flex;align-items:flex-start;gap:8px;margin:14px 0 6px;font-size:14px;font-weight:400">
+      <input type="checkbox" id="miseinen" style="width:auto;flex:none;margin-top:3px">
+      <span>${kijunbi}18歳未満（未成年）
+        <span class="hint" style="display:block">未成年者は合計所得${man(J08.hikazei.shogaisha_goukei_limit)}以下まで住民税がそもそも非課税なので、判定に使います</span></span></label>`;
+}
+
+// 年分・額は**データが持っている値**を出す(ページに手書きしない)。
+function showMeta() {
+  const K = R08?.kinro_gakusei;
+  if (!K) return;
+  $("src-hint").textContent =
+    `※ ${K.year}の勤労学生控除(所得税${man(K.kojo.shotoku)}・住民税${man(K.kojo.jumin)})。`
+    + `要件: 合計所得${man(K.income_limit)}以下(給与だけなら${man(K.income_limit + J08.kyuyo_shotoku_r8.flat_kojo)}以下)・`
+    + `働きによらない所得${man(K.hikinro_limit)}以下。${K.law}。`;
+}
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+
+  // 参照データ(要件・控除額・換算)の到着を必ず待つ。無いと判定は答えられない。
+  const ok = await dataReady;
+  if (!ok || !R08 || !J08) {
+    box.innerHTML = `<div class="note"><b>要件・控除額のデータを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。要件や控除額が分からない状態で答えることはできません。</div>`;
+    return;
+  }
+
+  const K = R08.kinro_gakusei;
+  const school = document.querySelector('input[name="school"]:checked')?.value;
+  const kyuyoRaw = Number($("kyuyo").value);
+  if (!$("kyuyo").value || kyuyoRaw < 0 || !Number.isFinite(kyuyoRaw)) {
+    box.innerHTML = `バイトなどの給与収入(年収・額面)を入力してください。給与がない場合は0と入れてください。`;
+    return;
+  }
+  const kinroSonota = Math.max(0, Number($("kinro-sonota").value) || 0);
+  const hikinro = Math.max(0, Number($("hikinro").value) || 0);
+  const shaho = Math.max(0, Number($("shaho").value) || 0);
+  const miseinen = $("miseinen").checked;
+
+  // 給与収入は令和8年分の給与所得の求め方(措法29条の4)で所得に換算する(コアの正本=juminzei_core)。
+  const kyuyoShotoku = kyuyoShotokuR8(kyuyoRaw, J08);
+  const kinro = kyuyoShotoku + kinroSonota;
+
+  let r;
+  try {
+    r = kinroGakuseiHantei({ school, kinroShotoku: kinro, hikinroShotoku: hikinro }, R08);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。(${e.message})</div>`;
+    return;
+  }
+
+  const kyuyoLine = K.income_limit + J08.kyuyo_shotoku_r8.flat_kojo; // 89万+74万=163万
+  const incomeNote = `給与収入${yen(kyuyoRaw)} → 給与所得${yen(kyuyoShotoku)}`
+    + (kinroSonota ? `、働きによる他の所得${yen(kinroSonota)}` : "")
+    + (hikinro ? `、働きによらない所得${yen(hikinro)}` : "")
+    + ` ＝ 合計所得金額${yen(r.gokei)}(${K.year}の給与所得の求め方で換算)`;
+
+  const REASON_TEXT = {
+    not_student: `勤労学生控除は、学校教育法1条の学校の学生・生徒、要件を満たす専修学校・各種学校の生徒、認定職業訓練の訓練生のための控除です。学生でない人は対象になりません。`,
+    no_kinro: `働いて得た所得(バイト給与・自分の事業など)がないため対象外です。条文が「自己の勤労に基づいて得た…所得を有するもの」と定めており、奨学金・仕送り・配当だけでは受けられません(奨学金・仕送りはそもそも所得ではありません)。`,
+    income_over: `合計所得金額が${man(K.income_limit)}を超えているため対象外です(あなたの合計所得: ${yen(r.gokei)})。給与収入だけなら<b>${man(kyuyoLine)}以下</b>がこのラインです(${K.year})。`,
+    hikinro_over: `働きによらない所得(配当・不動産など)が${man(K.hikinro_limit)}を超えているため対象外です(あなた: ${yen(hikinro)})。合計所得が${man(K.income_limit)}以下でも、給与所得等以外の所得が${man(K.hikinro_limit)}を超えると受けられません。`,
+  };
+
+  if (r.type === "none") {
+    // 給与収入はあるが給与所得0円(収入74万円以下は令和8年分の求め方で所得なし)の人には、
+    // 「対象外」と断定せず実益(税金がもともと0円)を答える。
+    if (r.reason === "no_kinro" && (kyuyoRaw > 0 || kinroSonota > 0)) {
+      box.innerHTML = `
+        <div class="row">判定 <span class="big">控除の出番はありません</span></div>
+        <div class="note" style="margin-top:10px">給与収入${yen(kyuyoRaw)}は、${K.year}の求め方では<b>給与所得0円</b>と扱われます
+          (収入${man(J08.kyuyo_shotoku_r8.zero_under)}未満は給与所得なし＝措法29条の4)。所得が0円なので、勤労学生控除を使うまでもなく<b>所得税・住民税とも0円</b>です。</div>
+        <p class="hint" style="margin-top:8px">${incomeNote}</p>`;
+      return;
+    }
+    let html = `
+      <div class="row">判定 <span class="big">対象外</span></div>
+      <div class="note" style="margin-top:10px">${REASON_TEXT[r.reason] || "要件を満たしていません。"}</div>
+      <p class="hint" style="margin-top:8px">${incomeNote}</p>`;
+    if (r.reason === "income_over") {
+      // 基礎控除104万円(令和8年分・合計所得489万円以下)の正本は shotokuzei_kiso_kojo_r8
+      const kisoR8 = shotokuzeiKisoKojo(r.gokei, J08, "r8");
+      html += `<p class="hint">なお、所得税がかかり始めるのは給与収入${man(kisoR8 + J08.kyuyo_shotoku_r8.flat_kojo)}超からです(基礎控除${man(kisoR8)})。くわしくは<a href="../column/nenshu-no-kabe/">年収の壁 まとめ</a>へ。</p>`;
+    }
+    box.innerHTML = html;
+    return;
+  }
+
+  // ── 該当。効き目を所得税・住民税それぞれ実額で出す ──────────────────────
+  // 住民税(令和9年度分=令和8年分所得)は juminzei_core.calc で控除あり/なしを両方計算して差を取る。
+  const famBase = { honninMiseinen: miseinen };
+  const jInput = { kyuyoShunyu: kyuyoRaw, sonotaShotoku: kinroSonota + hikinro, shakaiHoken: shaho,
+                   zeisei: "r8", kyuchi: 1 };
+  const off = calc({ ...jInput, family: { ...famBase, kinroGakusei: false } }, J08);
+  const on = calc({ ...jInput, family: { ...famBase, kinroGakusei: true } }, J08);
+  const saving = off.juminzeiTotal - on.juminzeiTotal;
+
+  // 所得税: 要件(合計所得89万円以下)≦基礎控除104万円なので、総合課税だけなら必ず0円。
+  // 大小関係はデータで確かめて表示する(万一データが崩れたら黙って0円と言わない)。
+  const kiso = shotokuzeiKisoKojo(r.gokei, J08, "r8");
+  const shotokuzeiZero = r.gokei <= kiso;
+
+  let html = `
+    <div class="row">判定 <span class="big">勤労学生控除の対象です</span>
+      <span class="hint">(所得税${man(r.shotoku)}・住民税${man(r.jumin)}の控除)</span></div>
+    <p class="hint" style="margin-top:6px">${incomeNote}</p>`;
+
+  if (r.courseNote) {
+    html += `<div class="note" style="margin-top:10px"><b>専修学校・各種学校・職業訓練は、課程の要件を満たす場合だけ対象です。</b>
+      職業に必要な技術を教えること・修業期間1年以上など(所得税法施行令11条の3)。学校の窓口で
+      「勤労学生控除の証明書」を発行してもらえるか確認してください(発行されれば要件を満たしています。
+      年末調整・確定申告にはその証明書を添えます)。</div>`;
+  }
+
+  html += `<div style="overflow-x:auto;margin-top:14px">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
+      <tr><td style="padding:6px 8px"><b>所得税(${K.year})</b></td>
+        <td style="padding:6px 8px;text-align:right">${shotokuzeiZero
+          ? `<b>0円 → 0円</b><span class="hint">(控除がなくても0円)</span>`
+          : `<span class="hint">分離課税等があるため本ツールでは計算できません</span>`}</td></tr>
+      <tr><td style="padding:6px 8px"><b>住民税(${K.jumin_nendo}・2027年6月〜)</b></td>
+        <td style="padding:6px 8px;text-align:right">${yen(off.juminzeiTotal)} → ${yen(on.juminzeiTotal)}
+          <b>(${saving > 0 ? "▲" + yen(saving) : "変わらず"})</b></td></tr>
+    </table></div>`;
+
+  if (shotokuzeiZero) {
+    html += `<div class="callout" style="margin-top:10px"><b>あなたの所得税は、勤労学生控除がなくても0円です。</b>
+      合計所得${yen(r.gokei)} ≦ 基礎控除${man(kiso)}(${K.year})なので、控除を足しても引く相手がありません。
+      勤労学生控除が実際に効くのは住民税と、月々の源泉徴収(申告書に印を付けると「扶養親族等の数」が1人増えて天引きが減ります)です。</div>`;
+  }
+
+  if (off.juminzeiTotal === 0) {
+    const limit135 = J08.hikazei.shogaisha_goukei_limit;
+    html += miseinen && off.hikazei.jonrei295
+      ? `<div class="callout" style="margin-top:10px"><b>あなたの住民税はもともと全額非課税なので、控除の出番はありません。</b>
+          未成年者は前年の合計所得${man(limit135)}以下(給与収入だけなら${man(limit135 + J08.kyuyo_shotoku_r8.flat_kojo)}以下)なら
+          住民税が非課税です(地方税法295条1項2号)。あなたの合計所得${yen(r.gokei)}はこのライン以下です。</div>`
+      : `<div class="callout" style="margin-top:10px"><b>あなたの住民税はもともと非課税なので、控除の出番はありません。</b>
+          合計所得${man(off.hikazei.shotokuLimit)}以下(給与収入だけなら${man(off.hikazei.shotokuLimit + J08.kyuyo_shotoku_r8.flat_kojo)}以下)は
+          住民税がかかりません。勤労学生控除を申告しても損はしませんが、税額は変わりません。</div>`;
+  } else if (saving > 0 && on.shotokuwariJissai === 0) {
+    html += `<div class="note" style="margin-top:10px">勤労学生控除で<b>所得割は0円</b>になりました。残りの${yen(on.juminzeiTotal)}は
+      均等割・森林環境税です。均等割は、控除を引く前の合計所得で非課税を判定するため、控除では減らせません。</div>`;
+  }
+
+  // 親側の扶養の判定は別物(混同が最多の誤解)。所得62万円のラインとの位置関係を毎回申告する。
+  const fuyoLimit = R08.hitorioya.fuyo_income_limit; // 扶養親族の所得要件62万円(所法2条1項34号)の正本
+  html += r.gokei > fuyoLimit
+    ? `<div class="note" style="margin-top:10px"><b>親の扶養控除の対象からは外れています</b>(あなたの合計所得${yen(r.gokei)} ＞ ${man(fuyoLimit)})。
+        これは勤労学生控除を使うかどうかとは無関係に決まります。19歳以上23歳未満なら、親は特定親族特別控除
+        (あなたの所得123万円まで段階的)を受けられます。親側の計算は<a href="../fuyo-kojo/">扶養控除シミュレーター</a>へ。</div>`
+    : `<p class="hint" style="margin-top:10px">あなたの合計所得${yen(r.gokei)}は${man(fuyoLimit)}以下なので、親の扶養控除(扶養親族)の対象のままです。
+        勤労学生控除と親の扶養控除は両立します。</p>`;
+
+  html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ※ 住民税は標準税率・均等割(森林環境税込み)・調整控除まで含めた概算です。自治体によって均等割などが少し変わります。
+      分離課税の所得(株式の譲渡益など)は扱いません。</div>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>

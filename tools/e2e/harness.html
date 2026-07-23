@@ -2206,6 +2206,63 @@ SCENES.hitorioya_jijitsukon = async () => {
   return hitorioyaScene(doc, { jijitsukon: true, income: 2000000 });
 };
 
+// 勤労学生控除の共通ドライバ。ラジオ・チェックは**利用者と同じ操作**で選ぶ。
+async function kinroGakuseiScene(doc, opts) {
+  await waitFor(() => doc.getElementById("school-ichijo"), "勤労学生の入力欄の読み込み");
+  if (opts.school) click(doc, "school-" + opts.school);
+  if (opts.miseinen) click(doc, "miseinen");
+  set(doc, "kyuyo", String(opts.kyuyo));
+  if (opts.kinroSonota != null) set(doc, "kinro-sonota", String(opts.kinroSonota));
+  if (opts.hikinro != null) set(doc, "hikinro", String(opts.hikinro));
+  if (opts.shaho != null) set(doc, "shaho", String(opts.shaho));
+  click(doc, "calc");
+  await waitFor(() => { const t = text(doc, "result"); return t && !/計算中/.test(t); }, "勤労学生の判定結果");
+  const body = text(doc, "result");
+  return {
+    hantei: /判定\s*勤労学生控除の対象です/.test(body) ? "ok"
+      : /判定\s*対象外/.test(body) ? "none"
+      : /控除の出番はありません/.test(body) ? "noeffect" : "",
+    juminOff: setsuzeiNum(body, /住民税[^)]*\)\s*¥([\d,]+) →/),
+    juminOn: setsuzeiNum(body, /→ ¥([\d,]+)/),
+    saving: setsuzeiNum(body, /▲¥([\d,]+)/),
+    zeroCallout: /あなたの所得税は、勤労学生控除がなくても0円です/.test(body),
+    zeroRow: /0円 → 0円/.test(body),
+    courseNote: /勤労学生控除の証明書/.test(body),
+    hikazeiMiseinen: /もともと全額非課税なので、控除の出番はありません/.test(body),
+    oyaHazure: /親の扶養控除の対象からは外れています/.test(body),
+    reason: body,
+    failed: body.includes("読み込めませんでした"),
+  };
+}
+
+// 大学生(1条校・既定)・給与150万 → 対象。所得税は0→0(もともと0円のcallout)、
+// 住民税は35,500→9,000(▲26,500=単体テストでcalcと一致済みの看板値)。
+// 合計所得76万>62万なので「親の扶養からは外れています」も出ること。
+SCENES.kinro_gakusei = async () => {
+  const doc = await open("/docs/kinro-gakusei/");
+  return kinroGakuseiScene(doc, { kyuyo: 1500000 });
+};
+
+// ★未成年(18歳未満)・給与163万(所得89万≦135万) → 対象だが住民税はもともと非課税(295条1項2号)。
+// 「出番はありません」calloutが出て、住民税は0→0になること(非課税なのに減額を語る型を許さない)。
+SCENES.kinro_gakusei_miseinen = async () => {
+  const doc = await open("/docs/kinro-gakusei/");
+  return kinroGakuseiScene(doc, { miseinen: true, kyuyo: 1630000 });
+};
+
+// 専修学校(ロ)・給与140万 → 対象+課程要件・証明書のnoteが必ず出ること(無条件と言わない)。
+// 住民税25,500→5,000(▲20,500)。
+SCENES.kinro_gakusei_senshu = async () => {
+  const doc = await open("/docs/kinro-gakusei/");
+  return kinroGakuseiScene(doc, { school: "senshu", kyuyo: 1400000 });
+};
+
+// 給与170万(所得96万>89万) → 対象外。理由に163万円のライン、178万円(所得税の壁)の案内が出ること。
+SCENES.kinro_gakusei_over = async () => {
+  const doc = await open("/docs/kinro-gakusei/");
+  return kinroGakuseiScene(doc, { kyuyo: 1700000 });
+};
+
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ──────────────────────────────
 // 本体ページと埋め込みウィジェットに**同じ入力**を与え、利用者に見えている見出し値(.big)が
 // 一致することを確かめる。期待値の正しさは本体側の各シーン(一次情報オラクル)が担保して

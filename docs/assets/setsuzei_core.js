@@ -492,3 +492,41 @@ export function hitorioyaKafu(input, D) {
   if (input.marital === 'shibetsu' || input.marital === 'fumei') return hit('kafu', 'shibetsu_or_fumei');
   return none('mikon_no_child'); // 未婚（結婚したことがない）は寡婦にならない
 }
+
+/**
+ * 勤労学生控除の判定（所得税法2条1項32号・82条）。
+ * 条文の判定順そのまま: 学校の範囲（イ・ロ・ハ）→ 自己の勤労に基づいて得た
+ * 事業所得・給与所得・退職所得・雑所得（給与所得等）を有する → 合計所得金額
+ * 89万円以下（令和8年分から。改正前85万円）→ 給与所得等以外の所得10万円以下。
+ * ★ロ（専修学校・各種学校）・ハ（認定職業訓練）は政令の課程要件（職業に必要な
+ *   技術の教授・修業期間1年以上など＝所令11条の3）を満たす場合だけ対象。
+ *   このコアは課程の中身を判定できないので courseNote を立てて返し、
+ *   画面が「学校の証明書で確認」を必ず申告する（黙って無条件に該当とは言わない）。
+ * @param input {
+ *   school: 'ichijo'|'senshu'|'kunren'|'none',
+ *   kinroShotoku,   // 勤労による所得の合計（給与所得＋自分の働きによる事業・雑所得。所得ベース）
+ *   hikinroShotoku, // 勤労によらない所得（配当・不動産など）
+ * }
+ * @returns { type:'ok'|'none', reason, courseNote, gokei, shotoku, jumin, year }
+ */
+export function kinroGakuseiHantei(input, D) {
+  if (!D?.kinro_gakusei?.kojo) throw new Error('参照データ（setsuzei_r08.json の kinro_gakusei）が渡されていません');
+  const K = D.kinro_gakusei;
+  const kinro = yen0(input.kinroShotoku);
+  const hikinro = yen0(input.hikinroShotoku);
+  const gokei = kinro + hikinro;
+  const year = K.year || D._meta?.year || '';
+  const courseNote = input.school === 'senshu' || input.school === 'kunren';
+  const none = (reason) => ({ type: 'none', reason, courseNote, gokei, shotoku: 0, jumin: 0, year });
+
+  // 32号柱書き「次に掲げる者で」: イ(1条校)・ロ(専修学校・各種学校)・ハ(認定職業訓練)以外は入口で外れる
+  if (input.school !== 'ichijo' && input.school !== 'senshu' && input.school !== 'kunren') return none('not_student');
+  // 「自己の勤労に基づいて得た…給与所得等を有するもの」: 勤労による所得がゼロなら対象外
+  if (kinro <= 0) return none('no_kinro');
+  // 「合計所得金額が89万円以下」
+  if (gokei > K.income_limit) return none('income_over');
+  // 「合計所得金額のうち給与所得等以外の所得に係る部分の金額が10万円以下」
+  if (hikinro > K.hikinro_limit) return none('hikinro_over');
+  return { type: 'ok', reason: 'ok', courseNote, gokei,
+           shotoku: K.kojo.shotoku, jumin: K.kojo.jumin, year };
+}

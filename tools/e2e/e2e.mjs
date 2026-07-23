@@ -715,6 +715,23 @@ const SCENES = [
   // 事実婚(住民票の未届記載) → 子がいても対象外。理由の名指しが画面に出ること。
   { name: "hitorioya_jijitsukon", expect: (s) =>
       s.label === "対象外" && /未届/.test(s.reason) && !s.failed },
+  // 勤労学生控除: 大学生・給与150万 → 対象。所得税0→0(もともと0円callout)・
+  // 住民税35,500→9,000(▲26,500)・所得76万>62万で親の扶養から外れている旨。
+  { name: "kinro_gakusei", expect: (s) =>
+      s.hantei === "ok" && s.zeroCallout && s.zeroRow &&
+      s.juminOff === 35500 && s.juminOn === 9000 && s.saving === 26500 &&
+      s.oyaHazure && !s.courseNote && !s.failed },
+  // ★未成年163万: 対象だが住民税もともと非課税(135万) → 0→0・出番なしcallout。
+  { name: "kinro_gakusei_miseinen", expect: (s) =>
+      s.hantei === "ok" && s.hikazeiMiseinen && s.zeroCallout &&
+      s.juminOff === 0 && s.juminOn === 0 && s.saving == null && !s.failed },
+  // 専修学校140万: 対象+課程要件・証明書noteが必ず出る。住民税25,500→5,000(▲20,500)。
+  { name: "kinro_gakusei_senshu", expect: (s) =>
+      s.hantei === "ok" && s.courseNote &&
+      s.juminOff === 25500 && s.juminOn === 5000 && s.saving === 20500 && !s.failed },
+  // 給与170万(所得96万>89万) → 対象外。163万円のラインと178万円の案内が理由に出ること。
+  { name: "kinro_gakusei_over", expect: (s) =>
+      s.hantei === "none" && /163万円以下/.test(s.reason) && /178万円/.test(s.reason) && !s.failed },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────
