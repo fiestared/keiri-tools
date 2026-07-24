@@ -199,8 +199,23 @@ export function calcGenka(input, D) {
   }
   notes.push('建物・建物附属設備・構築物・ソフトウェア等の無形固定資産は定率法を選べません（定額法のみ）。定率法で計算する場合は対象資産かご確認ください。');
   notes.push('1円未満の端数は切り捨てで計算しています（切り上げも認められます）。');
-  if (cost < 300000) {
-    notes.push('取得価額が10万円未満は消耗品費として一括、20万円未満は一括償却資産（3年均等）、中小企業者等は30万円未満まで少額減価償却資産の特例で全額を経費にできる場合があります（別の取扱い）。');
+  // 少額な資産は減価償却せず別の取扱いができる。金額基準・適用期限は参照データが正本
+  // （中小企業者等の少額特例は令和8年度改正で30万円未満→40万円未満。境界は「取得日」なので acqYm で分ける）
+  const S = D.shogaku_tokurei;
+  if (S) {
+    if (cost < S.ikkatsu_mangan) {
+      notes.push(`取得価額が${S.shogaku_mangan_label}なら消耗品費などで買った年に全額、${S.ikkatsu_mangan_label}なら一括償却資産として${S.ikkatsu_years}年で均等に経費にできます（この計算とは別の取扱いです）。`);
+    }
+    const kakuju = acqYm >= S.chusho_kakuju_start;
+    const chushoMangan = kakuju ? S.chusho_mangan : S.chusho_mangan_kyu;
+    const chushoLabel = kakuju ? S.chusho_mangan_label : S.chusho_mangan_kyu_label;
+    if (cost < chushoMangan) {
+      if (acqYm <= S.chusho_kigen.slice(0, 7)) {
+        notes.push(`青色申告の中小企業者等（常時使用する従業員${S.chusho_jugyoin}人以下）は、この資産を少額減価償却資産の特例（取得価額${chushoLabel}・${S.chusho_nengaku_gendo_label}まで）で買った年に全額経費にできる場合があります（${S.chusho_kigen_label}までに取得したものが対象）。`);
+      } else {
+        notes.push(`少額減価償却資産の特例（中小企業者等・取得価額${chushoLabel}）は${S.chusho_kigen_label}までに取得したものが対象です。それ以後に取得した資産に使えるかは、延長されたかどうかをご確認ください。`);
+      }
+    }
   }
 
   return {

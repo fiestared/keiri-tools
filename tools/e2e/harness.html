@@ -1618,6 +1618,10 @@ SCENES.genka_getsuwari = genkaScene({ method: "teigaku", cost: 1000000, life: 10
 SCENES.genka_ratio = genkaScene({ method: "teigaku", cost: 1000000, life: 10, year: 2015, month: 1, ratio: 60 });
 // ★平成19年3月以前取得（2006年）＝旧法で対象外。新法で答えず断る（fail closed）。
 SCENES.genka_kyuho = genkaScene({ method: "teigaku", cost: 1000000, life: 10, year: 2006, month: 1 });
+// ★少額特例（令和8年度改正で30万円未満→40万円未満）が結果の注記に出るか。単体は core しか見ないので、
+//   ページが notes を描いていない配線ミスはここでしか落ちない。35万円は旧基準では対象外・新基準では対象。
+SCENES.genka_shogaku = genkaScene({ method: "teigaku", cost: 350000, life: 4, year: 2026, month: 4 });
+SCENES.genka_shogaku_kyu = genkaScene({ method: "teigaku", cost: 350000, life: 4, year: 2026, month: 3 });
 // 参照データ配信不可 → 償却費を出さずに断る（fail closed）。
 SCENES.genka_nodata = genkaScene({ method: "teigaku", cost: 1000000, life: 10, year: 2015, month: 1 });
 

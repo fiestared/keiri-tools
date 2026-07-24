@@ -487,6 +487,14 @@ const SCENES = [
   // 参照データ配信不可 → 償却費を出さずに断る（fail closed）。
   { name: "genka_nodata", data404: "genka_rates.json",
     expect: (s) => s.failed && s.firstYear === null },
+  // ★35万円・令和8年4月取得＝改正後の少額特例(40万円未満)の対象。案内が結果に出ること。
+  //   （改正前のコードは cost<300000 で閉じており、この人に特例の存在を一度も告げなかった）
+  { name: "genka_shogaku", expect: (s) =>
+      s.body.includes("少額減価償却資産の特例") && s.body.includes("40万円未満") &&
+      s.body.includes("令和11年3月31日") && s.firstYear === 65625 && !s.failed },
+  // ★同じ35万円でも令和8年3月取得は旧基準(30万円未満)で対象外。案内を出さない（旧取得に新基準を持ち込まない）。
+  { name: "genka_shogaku_kyu", expect: (s) =>
+      !s.body.includes("少額減価償却資産の特例") && s.firstYear === 72916 && !s.failed },
 
   // ── 年収の壁 (/kabe/) ────────────────────────────────────────────────
   // ★合成(壁判定→社保→手取り)とページ配線を見る。独立オラクルは協会けんぽ額表の端数処理で組む。
