@@ -670,12 +670,16 @@ $("calc").addEventListener("click", async () => {
 
   const selfAll = r.selfTotal + k.self;             // 雇用保険を含めた本人負担
   const companyAll = r.companyTotal + k.company;
+  // 厚年の上限はデータを正本にする(ページに額を手書きしない)。無ければ注記を出さないだけ。
+  const CAP = RATES.kosei_grade_cap || null;
 
   let html = `
     <div class="row" style="margin-bottom:10px">
       標準報酬月額 <b>${yen(r.standard)}</b>（健康保険 第${r.grade}級）
       ${r.koseiStandard !== r.standard ? `／厚生年金 <b>${yen(r.koseiStandard)}</b>（上下限で調整）` : ""}
     </div>
+    ${CAP && r.koseiStandard === CAP.current && r.standard > CAP.current ? `
+    <div class="note" id="kosei-cap-note">厚生年金は標準報酬月額 <b>${yen(CAP.current)}</b>（第${CAP.current_grade}級）が上限で、報酬がこれ以上増えても厚生年金保険料は変わりません（健康保険は第${CAP.kenko_max_grade}級 ${yen(CAP.kenko_max)} まで上がります）。${CAP.scheduled?.length ? `<br>なお厚生年金保険法20条の等級表は改正済みで、${CAP.scheduled.map((s) => `${s.from.slice(0, 4)}年${Number(s.from.slice(5, 7))}月に第${s.grade}級 ${yen(s.standard)}`).join("、")}へ段階的に引き上げられます。<b>この計算は現行の上限で出しています。</b>` : ""}</div>` : ""}
     <div class="row">毎月の本人負担 <span class="big">${yen(selfAll)}</span>
       ${RATES._meta?.year ? `<span class="hint">（${RATES._meta.year}の料率）</span>` : ""}</div>
     <div style="overflow-x:auto;margin-top:10px">

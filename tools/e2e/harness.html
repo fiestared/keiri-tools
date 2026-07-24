@@ -673,8 +673,20 @@ const shahoScene = ({ monthly, age, bonus = 0, standard = null, gyoshu = null })
   const std = standard ?? monthly;
   const g = kenpo.grades.find((x) => x.standard === std);
   const kaigo = age >= 40 && age < 65;
+  // ★厚生年金は標準報酬月額650,000円(第32級)で頭打ち。**公式額表でも第36級以上は厚年の欄が無い**
+  //   (fixtureで kosei_grade:null / kosei_half キー自体が無い)。素直に g.kosei_half を読むと
+  //   undefined→NaN になるので、厚年だけは「厚年の欄を持つ最後の等級」から取る。
+  //   これも公式PDF由来＝ツールの KOSEI_MAX を一切通さない独立オラクル。
+  const koseiRow = g && g.kosei_half != null
+    ? g
+    : kenpo.grades.filter((x) => x.kosei_half != null).pop();
+  // ★公式額表の折半額は**50銭を含む**(例 第37級の健保 34,967.5円)。合計してから丸めると
+  //   項目ごとに丸める実際の控除と1円ずれる。端数処理は「50銭以下切捨・50銭超切上」
+  //   (納入告知書の通例)を**項目ごとに**適用する。この規則自体はツールの外側の事実なので、
+  //   ここで独立に書き下す(shaho_core.js を import しない)。
+  const half = (v) => ((v - Math.floor(v)) > 0.5 ? Math.ceil(v) : Math.floor(v));
   const shahoSelf = g
-    ? Math.round((kaigo ? g.kenko_kaigo_half : g.kenko_half) + g.kosodate_half + g.kosei_half)
+    ? half(kaigo ? g.kenko_kaigo_half : g.kenko_half) + half(g.kosodate_half) + half(koseiRow.kosei_half)
     : null;
 
   // ★雇用保険は**標準報酬月額ではなく賃金総額(monthly)**にかかる(徴収法11条1項)。
@@ -701,6 +713,19 @@ const shahoScene = ({ monthly, age, bonus = 0, standard = null, gyoshu = null })
     showsKaigoRow: rowLabels.some((l) => l.includes("介護保険")),
     showsKoyouRow: rowLabels.some((l) => l.includes("雇用保険")),
     showsYear: /令和\d+年度の料率/.test(body), // どの年度の料率で答えたかを申告しているか
+    // 厚年の上限に張り付いた人に、上限であることと今後の段階的引上げを申告しているか。
+    // 注記の額はデータ(kosei_grade_cap)から描く＝ページに手書きしていないことも併せて見る
+    capNote: (() => {
+      const el = doc.querySelector("#kosei-cap-note");
+      if (!el) return null;
+      const t = el.textContent.replace(/\s+/g, "");
+      return {
+        showsCap: t.includes("¥650,000"),
+        showsSchedule: /2027年9月に第33級¥680,000/.test(t) &&
+          /2028年9月に第34級¥710,000/.test(t) && /2029年9月に第35級¥750,000/.test(t),
+        saysCurrent: t.includes("この計算は現行の上限で出しています"),
+      };
+    })(),
     rowLabels,
     failed: body.includes("読み込めませんでした"),
     body,
@@ -724,6 +749,12 @@ SCENES.shaho_kaigo = shahoScene({ monthly: 300000, age: 45 });
 SCENES.shaho_koyou_gaku = shahoScene({ monthly: 305000, age: 30, standard: 300000 });
 // 業種で雇用保険料率が変わること(建設は本人6/1000)。健保・厚年は業種で変わらない
 SCENES.shaho_koyou_kensetsu = shahoScene({ monthly: 300000, age: 30, gyoshu: "construction" });
+// 報酬月額70万 → 健保は第37級(標準報酬月額710,000)だが厚年は650,000で頭打ち。
+// 公式額表(項目ごとに50銭以下切捨): 34,967 + 816 + 59,475(第35級=厚年第32級の欄) = 95,258
+//   + 雇用保険 700,000×5/1000 = 3,500 → 98,758
+// ★standard を明示するのが肝: 報酬月額700,000の等級の**標準報酬月額は710,000**で、
+//   額表を 700,000 で引くと該当なしになる(等級の額と報酬月額は別物)
+SCENES.shaho_cap = shahoScene({ monthly: 700000, age: 30, standard: 710000 });
 
 // ── 失業保険(基本手当) ────────────────────────────────────────────────────────
 // 期待値は**厚労省の公表式をここに書き直したもの**(kihonteate_core.js は一切通さない)。

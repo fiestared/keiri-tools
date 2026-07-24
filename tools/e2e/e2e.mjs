@@ -143,6 +143,13 @@ const SCENES = [
   { name: "shaho_koyou_kensetsu", expect: (s) =>
       s.self === s.expected && s.self === 44370 && s.expectedKoyou === 1800 &&
       s.showsKoyouRow && !s.failed },
+  // ★厚年の上限(650,000円)に張り付く帯。公式額表と1円まで一致することに加え、
+  //   上限であることと**2027-09以降の段階的引上げ**を画面が申告しているか。
+  //   注記の額はデータ(kosei_grade_cap)から描いているので、データを差し替えれば注記も動く
+  //   ＝ページに650,000を手書きしていないことの確認でもある
+  { name: "shaho_cap", expect: (s) =>
+      s.self === s.expected && s.self === 98758 && !s.failed &&
+      s.capNote && s.capNote.showsCap && s.capNote.showsSchedule && s.capNote.saysCurrent },
 
   // ── 失業保険(基本手当) ──────────────────────────────────────────────────
   // 35歳・月30万・勤続12年・自己都合 → 賃金日額10,000円 → 日額6,207円 × 120日 = 744,840円
