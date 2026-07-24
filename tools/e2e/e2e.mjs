@@ -365,6 +365,25 @@ const SCENES = [
   { name: "zoyozei_nodata", data404: "zoyozei_r08.json",
     expect: (s) => s.failed && s.zei === null },
 
+  // ── 生前贈与シミュレーター (/seizen-zoyo/) ─────────────────────────
+  // ★手計算の鎖は tests/test_seizen_zoyo.mjs S1: 1億・配偶者＋子2・110万×10年×2人・相続まで3年
+  //   → 何もしない315万 / 暦年2,413,600(7年加算450万/人・うち帯4年分は100万控除) / 精算課税1,625,000(加算ゼロ)。
+  //   「窓の仕分け→加算つき相続税→判定」の配線が1段でも狂えば落ちる。
+  { name: "seizen_zoyo", expect: (s) =>
+      s.base === 3150000 && s.rek === 2413600 && s.sei === 1625000 &&
+      s.best === "相続時精算課税で贈与" && s.showsYear && !s.failed },
+  { name: "seizen_zoyo_slow", slow: true, expect: (s) =>
+      s.base === 3150000 && s.sei === 1625000 && !s.failed },
+  // ★最後の贈与から8年→7年加算圏外: 暦年が精算課税と同額1,625,000まで下がる(gapの配線を検出)。
+  { name: "seizen_zoyo_gap8", expect: (s) =>
+      s.rek === 1625000 && s.sei === 1625000 && !s.failed },
+  // ★贈与者60歳未満 → 精算課税は「選択できません」を明言(相法21条の9)・暦年の数字は出す。
+  { name: "seizen_zoyo_no60", expect: (s) =>
+      s.seiUnavailable && s.sei === null && s.rek === 2413600 && !s.failed },
+  // 参照データ配信不可 → 比較を出さずに断る(fail closed)。
+  { name: "seizen_zoyo_nodata", data404: "seizen_zoyo_r08.json",
+    expect: (s) => s.failed && s.base === null },
+
   // ── 収入印紙 (/inshi/) ───────────────────────────────────────────────
   // ★No.6925: 税込54,800円・消費税等4,981円区分記載 → 税抜49,819円で判定＝非課税（印紙不要）。
   //   ハーネス側の引き算 54,800−4,981=49,819<50,000 と一致し、一覧表23行（判取帳まで）も描かれること。

@@ -1337,6 +1337,52 @@ SCENES.zoyozei_below = zoyoScene({ tokurei: 100 });
 // 参照データ配信不可 → 税額を出さずに断る（fail closed）。
 SCENES.zoyozei_nodata = zoyoScene({ tokurei: 500 });
 
+// ── 生前贈与シミュレーター (/seizen-zoyo/) ──────────────────────────────────
+// ★「何もしない/暦年課税/相続時精算課税」の3通りの実質負担（贈与税＋相続税−還付）を比較する。
+//   期待値の手計算の鎖は tests/test_seizen_zoyo.mjs の S1〜S3 に全部書いた（条文書き下しオラクルと三重網）。
+//   E2Eは「7年加算の窓→加算つき相続税→贈与税額控除/還付→判定」の配線と、要件外の申告・配信失敗を見る。
+const seizenScene = ({ assets, spouse = true, ko = 2, jyuzo = 2, zogaku, nensu, gap,
+                       adult = true, donor60 = true }) => async () => {
+  const doc = await open("/docs/seizen-zoyo/");
+  set(doc, "assets", String(assets));
+  set(doc, "haiguusha", spouse ? "1" : "0");
+  set(doc, "ko", String(ko));
+  set(doc, "jyuzo", String(jyuzo));
+  set(doc, "zogaku", String(zogaku));
+  set(doc, "nensu", String(nensu));
+  set(doc, "gap", String(gap));
+  doc.getElementById("adult18").checked = adult;
+  doc.getElementById("donor60").checked = donor60;
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /実質の総負担がいちばん小さい|読み込めませんでした|計算できませんでした/.test(text(doc, "result")),
+    "生前贈与の比較結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    base: num(/何もしない ¥([\d,]+)/),
+    rek: num(/暦年課税 ¥([\d,]+)/),
+    sei: num(/相続時精算課税 ¥([\d,]+)/),
+    best: (body.match(/実質の総負担がいちばん小さいのは (何もしない|暦年課税で贈与|相続時精算課税で贈与)/) || [])[1] || null,
+    seiUnavailable: body.includes("相続時精算課税は選択できません"),
+    showsYear: /令和\d+年/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// ★S1（看板例）: 1億・配偶者＋子2人・2人に110万×10年・相続まで3年
+//   → 何もしない315万／暦年2,413,600（加算450万/人）／精算課税1,625,000（加算ゼロ）→ 精算課税が最有利。
+SCENES.seizen_zoyo = seizenScene({ assets: 10000, zogaku: 110, nensu: 10, gap: 3 });
+SCENES.seizen_zoyo_slow = SCENES.seizen_zoyo;   // 800ms遅らせる（モバイル回線）。待って正答すること
+// ★最後の贈与から8年 → 全部7年圏外＝暦年の加算ゼロ。暦年と精算課税が同額（1,625,000）に並ぶ。
+SCENES.seizen_zoyo_gap8 = seizenScene({ assets: 10000, zogaku: 110, nensu: 10, gap: 8 });
+// ★贈与者60歳未満 → 精算課税「選択できません」を明言し、暦年の数字は出す（黙って両方出さない）。
+SCENES.seizen_zoyo_no60 = seizenScene({ assets: 10000, zogaku: 110, nensu: 10, gap: 3, donor60: false });
+// 参照データ配信不可 → 比較を出さずに断る（fail closed）。
+SCENES.seizen_zoyo_nodata = seizenScene({ assets: 10000, zogaku: 110, nensu: 10, gap: 3 });
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。

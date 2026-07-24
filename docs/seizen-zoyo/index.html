@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>生前贈与シミュレーター｜暦年贈与と相続時精算課税どっちが得か比較【令和8年】</title>
+<meta name="description" content="「毎年いくらを・何人の子に・何年間」贈与する計画を入れるだけで、①何もしない ②暦年贈与 ③相続時精算課税 の3通りの「贈与税＋相続税−還付」を比較。暦年課税の7年加算（3年超7年以内は合計100万円控除）・精算課税の年110万円基礎控除と特別控除2,500万円・贈与税の還付まで反映。年110万円以下の贈与も相続開始前7年以内なら相続税に戻ります。令和8年・登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/seizen-zoyo/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "生前贈与シミュレーター（暦年贈与 vs 相続時精算課税）",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "毎年の贈与額・年数・家族構成から、何もしない場合・暦年課税で贈与した場合・相続時精算課税で贈与した場合の「生前の贈与税＋相続時の相続税−還付」を比較します。暦年課税の7年加算・相続時精算課税の年110万円基礎控除に対応。令和8年。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "生前贈与シミュレーター"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 生前贈与は年間いくらまで非課税ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 贈与税は年110万円（基礎控除）まで非課税です。ただし「贈与税がかからない」と「相続税に戻らない」は別で、相続や遺贈で財産を取得する人（子など）への贈与は、110万円以下でも相続開始前7年以内の分は相続税の課税価格に加算されます。贈与税と相続税の両方で残らないのは、贈与から7年を超えて相続が開始した分だけです（国税庁No.4161）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 毎年110万円以下に抑えれば、相続税にも戻りませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 戻ります。生前贈与加算は贈与税がかかったかどうかと無関係で、国税庁は「基礎控除額110万円以下の贈与財産や死亡した年に贈与されている財産の価額も加算することになります」と明示しています（No.4161）。一方、相続時精算課税を選んだ場合の年110万円（精算課税の基礎控除）は相続時に加算されません。ここが令和6年改正後の2方式の最大の違いです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 生前贈与加算の「7年」はいつの贈与から適用されますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 令和6年1月1日以後の贈与からです（令和5年法律3号附則19条）。相続開始が令和8年12月31日までなら従来どおり3年、令和9年〜令和12年は令和6年1月1日以後の贈与だけが対象（実質3〜7年に段階的に延長）、完全に7年分が加算されるのは令和13年1月1日以後に開始した相続からです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 孫への贈与も7年加算の対象ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 原則、対象外です。加算されるのは相続や遺贈で財産を取得した人への贈与だけなので、相続人でない孫への贈与には加算の期間制限が働きません。ただし、代襲相続人になった孫・遺言で財産を受け取った孫・生命保険金の受取人になった孫・相続時精算課税を選んでいた孫は加算の対象になります（相続税法19条1項）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 相続時精算課税を選ぶと、暦年課税の110万円非課税はどうなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. その贈与者（特定贈与者）からの贈与については暦年課税に戻れなくなり、代わりに精算課税の基礎控除（年110万円・相続時に加算されない）を使います。別の贈与者（たとえば母や祖父母）からの贈与は引き続き暦年課税で受けられ、暦年課税の基礎控除110万円も別に使えます。なお同じ年に2人以上の特定贈与者から贈与を受けた場合、精算課税の110万円は贈与額であん分します（国税庁No.4103）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 精算課税で年110万円以下なら、申告は不要ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 贈与税の申告は不要です（基礎控除以下のため）。ただし最初に精算課税を選ぶ年は、贈与を受けた年の翌年2月1日〜3月15日に「相続時精算課税選択届出書」の提出が必要です。また特別控除2,500万円は期限内申告書に記載した場合しか使えないので、110万円を超える年は申告を忘れないでください（国税庁No.4103）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 結局、暦年贈与と相続時精算課税はどちらが得ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 一概には言えません。毎年110万円以下の小口贈与なら精算課税（加算ゼロ）が有利になりやすく、大きな額を若いうちから動かすなら暦年課税×時間（7年経過で加算ゼロ）が効きます。相続開始が近い時期の大口暦年贈与は、ほぼ全額が戻るうえ贈与税だけ残るため「何もしない」より損になることもあります。上のシミュレーターで、贈与額・年数・相続までの年数を変えて実額で比べてください。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 生前贈与シミュレーター</nav>
+
+<section class="hero">
+  <h1>生前贈与シミュレーター（暦年贈与 vs 相続時精算課税）</h1>
+  <p>「毎年いくらを・何人の子に・何年間」贈与する計画を入れるだけで、<b>①何もしない ②暦年課税で贈与 ③相続時精算課税で贈与</b> の3通りの<b>「生前の贈与税 ＋ 相続時の相続税 − 還付」（実質の総負担）</b>を比較します。<b>暦年課税の7年加算</b>（相続開始前3年以内は全額・3年超7年以内は合計100万円を除いて加算）と、<b>精算課税の年110万円基礎控除（加算されない）・特別控除2,500万円・還付</b>まで反映。<b>令和8年</b>。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b>この比較の前提</b>
+    <b>60歳以上の父母・祖父母</b>から、<b>相続人になる子</b>へ、<b>毎年同じ額の現金</b>を贈与する典型形で比べます。残った財産は法定相続分どおりに分け、配偶者は税額軽減の枠内（税額0円）としています。孫への贈与・不動産や株式など評価額が動く財産・住宅取得等資金などの非課税特例は対象外です（詳しくは<a href="#zentei">前提と限界</a>）。
+  </div>
+
+  <label for="assets">現在の財産総額（<b>万円</b>）<span class="hint">　預金・不動産・株式などの評価額の合計。例: 10000 なら1億円</span></label>
+  <input type="number" id="assets" value="10000" min="0" inputmode="numeric" placeholder="例: 10000">
+  <div id="assets-echo" class="hint" style="margin:-6px 0 10px"></div>
+
+  <div class="grid2">
+    <div>
+      <label for="haiguusha">配偶者</label>
+      <select id="haiguusha"><option value="1" selected>いる</option><option value="0">いない</option></select>
+    </div>
+    <div>
+      <label for="ko">子の人数<span class="hint">　全員相続人</span></label>
+      <input type="number" id="ko" value="2" min="1" max="9" inputmode="numeric">
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <label for="jyuzo">贈与する子の人数</label>
+      <input type="number" id="jyuzo" value="2" min="1" max="9" inputmode="numeric">
+    </div>
+    <div>
+      <label for="zogaku">毎年の贈与額（子1人あたり・<b>万円</b>）</label>
+      <input type="number" id="zogaku" value="110" min="1" inputmode="numeric" placeholder="例: 110">
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <label for="nensu">贈与を続ける年数</label>
+      <input type="number" id="nensu" value="10" min="1" max="40" inputmode="numeric">
+    </div>
+    <div>
+      <label for="gap">最後の贈与から相続開始までの年数<span class="hint">　想定</span></label>
+      <input type="number" id="gap" value="3" min="1" max="40" inputmode="numeric">
+    </div>
+  </div>
+  <p class="hint" style="margin:-4px 0 10px">「相続開始までの年数」は誰にも分かりません。<b>1年（直後）と8年（7年加算の圏外）の両方で試す</b>と、暦年贈与の結果がどれだけ動くかが見えます。相続開始と同じ年の贈与は別枠（贈与税がかからず全額加算）のため、1年以上で入力してください。</p>
+
+  <label style="display:block;margin:4px 0"><input type="checkbox" id="adult18" checked> 受贈者（子）は毎年1月1日時点で<b>18歳以上</b><span class="hint">　特例税率・精算課税の要件</span></label>
+  <label style="display:block;margin:4px 0 12px"><input type="checkbox" id="donor60" checked> 贈与者は毎年1月1日時点で<b>60歳以上</b>の父母・祖父母<span class="hint">　精算課税の要件</span></label>
+
+  <button class="primary" id="calc">3通りを比較する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p>上のシミュレーターで、生前贈与の計画ごとに「暦年贈与・相続時精算課税・何もしない」の実質負担を比較できます。以下では、令和6年に大きく変わった<b>7年加算</b>と<b>相続時精算課税の年110万円基礎控除</b>を中心に、その計算のしくみを解説します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+
+<nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#kasan">暦年贈与は「7年分」相続税に戻る — 生前贈与加算</a></li>
+<li><a href="#seisan">相続時精算課税 — 年110万円は戻らない（令和6年改正）</a></li>
+<li><a href="#rei">同じ「毎年110万円×10年」でも、これだけ変わる（計算例）</a></li>
+<li><a href="#erabikata">どちらを選ぶかの考え方</a></li>
+<li><a href="#zentei">このシミュレーターの前提と限界</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav>
+
+<h2 id="kasan">暦年贈与は「7年分」相続税に戻る — 生前贈与加算</h2>
+
+<p>相続や遺贈で財産を取得した人が、亡くなった人（被相続人）から<b>相続開始前7年以内</b>に暦年課税の贈与を受けていた場合、その贈与財産は<b>贈与時の価額で相続税の課税価格に加算</b>されます（相続税法19条・生前贈与加算）。つまり「毎年コツコツ贈与して財産を減らしたつもりでも、<b>直近7年分は相続税の計算に戻ってくる</b>」ということです。</p>
+
+<div class="summary-box">
+<p><b>加算のルール（相続税法19条1項）</b></p>
+<p>・相続開始前<b>3年以内</b>の贈与 …… <b>全額</b>を加算<br>
+・相続開始前<b>3年超7年以内</b>の贈与 …… <b>その合計額から100万円を控除した残額</b>を加算<br>
+・加算された贈与に対応する<b>贈与税は相続税から控除</b>（ただし引き切れなくても<b>還付はない</b>）</p>
+</div>
+
+<div class="callout" id="kasan-110-note">
+<b>★年110万円以下の贈与も、加算される</b>
+<p>生前贈与加算は、<b>贈与税がかかったかどうかとは無関係</b>です。国税庁は「加算対象期間内に贈与されたものであれば贈与税がかかったかどうかに関係なく加算します。したがって、<b>基礎控除額110万円以下の贈与財産</b>や死亡した年に贈与されている財産の価額も<b>加算することになります</b>」と明示しています（No.4161）。「毎年110万円以下に抑えれば相続税に戻らない」は<b>誤り</b>です — 戻らないのは、贈与から相続開始まで<b>7年を超えて生きた場合</b>だけです。</p>
+</div>
+
+<div class="callout" id="kifu-100man">
+<b>100万円の控除は「4年分の合計から1回」</b>
+<p>3年超7年以内（延長された4年間）の贈与に認められる100万円の控除は、<b>年100万円ずつではなく、その4年分の贈与の合計額から1回だけ</b>です（受贈者ごと）。たとえば毎年110万円×4年分（440万円）がこの帯に入る場合、加算されるのは 440万円 − 100万円 ＝ <b>340万円</b>です。</p>
+</div>
+
+<figure class="figure">
+<svg viewBox="0 0 720 250" role="img" aria-label="相続開始前の年数ごとに、贈与が相続税に加算されるかどうかを示す図。相続開始前3年以内は全額加算、3年超7年以内は合計から100万円を控除した残額を加算、7年より前は加算されない">
+  <text x="10" y="18" font-size="13" fill="currentColor">毎年の贈与は、相続開始からさかのぼって何年前かで扱いが変わる（相続税法19条）</text>
+
+  <!-- 帯: x軸は相続開始(右端)から左へ 年数。1年=60px。右端x=660が相続開始 -->
+  <rect x="480" y="40" width="180" height="44" fill="var(--warn-line)" opacity="0.45" stroke="currentColor" stroke-width="1"/>
+  <rect x="240" y="40" width="240" height="44" fill="var(--warn-line)" opacity="0.22" stroke="currentColor" stroke-width="1"/>
+  <rect x="60"  y="40" width="180" height="44" fill="var(--sub)" opacity="0.15" stroke="currentColor" stroke-width="1" stroke-dasharray="4 3"/>
+
+  <text x="570" y="59" font-size="12" fill="currentColor" text-anchor="middle">3年以内</text>
+  <text x="570" y="76" font-size="12" fill="currentColor" text-anchor="middle"><tspan font-weight="bold">全額</tspan> 加算</text>
+  <text x="360" y="59" font-size="12" fill="currentColor" text-anchor="middle">3年超 7年以内</text>
+  <text x="360" y="76" font-size="12" fill="currentColor" text-anchor="middle">合計 −<tspan font-weight="bold">100万円</tspan> を加算</text>
+  <text x="150" y="59" font-size="12" fill="currentColor" text-anchor="middle">7年より前</text>
+  <text x="150" y="76" font-size="12" fill="currentColor" text-anchor="middle"><tspan font-weight="bold">加算されない</tspan></text>
+
+  <!-- 軸と目盛り -->
+  <line x1="40" y1="100" x2="680" y2="100" stroke="currentColor" stroke-width="1.2"/>
+  <line x1="660" y1="94" x2="660" y2="106" stroke="currentColor" stroke-width="1.5"/>
+  <text x="660" y="122" font-size="12" fill="currentColor" text-anchor="middle">相続開始</text>
+  <line x1="480" y1="94" x2="480" y2="106" stroke="currentColor" stroke-width="1"/>
+  <text x="480" y="122" font-size="11" fill="currentColor" text-anchor="middle">3年前</text>
+  <line x1="240" y1="94" x2="240" y2="106" stroke="currentColor" stroke-width="1"/>
+  <text x="240" y="122" font-size="11" fill="currentColor" text-anchor="middle">7年前</text>
+
+  <!-- 毎年110万円×10年の贈与の例（丸）: 3年前〜12年前に1つずつ -->
+  <text x="10" y="152" font-size="12" fill="currentColor">例: 毎年110万円を10年間（最後の贈与は相続開始の3年前）</text>
+  <circle cx="480" cy="172" r="7" fill="var(--warn-line)" opacity="0.9"/>
+  <circle cx="420" cy="172" r="7" fill="var(--warn-line)" opacity="0.55"/>
+  <circle cx="360" cy="172" r="7" fill="var(--warn-line)" opacity="0.55"/>
+  <circle cx="300" cy="172" r="7" fill="var(--warn-line)" opacity="0.55"/>
+  <circle cx="240" cy="172" r="7" fill="var(--warn-line)" opacity="0.55"/>
+  <circle cx="180" cy="172" r="7" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+  <circle cx="120" cy="172" r="7" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+  <circle cx="60"  cy="172" r="7" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+  <text x="30" y="176" font-size="11" fill="currentColor" text-anchor="middle">…</text>
+  <text x="500" y="176" font-size="11" fill="currentColor">← 全額加算（110万円）</text>
+  <text x="248" y="196" font-size="11" fill="currentColor">↑ この4年分 440万円 − 100万円 ＝ 340万円を加算</text>
+  <text x="60" y="220" font-size="11" fill="currentColor">○ ＝ 7年より前の贈与（加算されない）。この例では加算は 110万＋340万 ＝ 450万円</text>
+
+  <text x="10" y="242" font-size="11.5" fill="currentColor">贈与をやめてから7年を超えて相続が開始すれば、加算はゼロになる（＝「早く始めて早くやめる」ほど効く）。</text>
+</svg>
+<figcaption>生前贈与加算のしくみ。相続開始前3年以内の贈与は全額、3年超7年以内は合計から100万円を控除した残額が相続税の課税価格に戻ります。7年より前の贈与は戻りません。</figcaption>
+</figure>
+
+<div class="callout" id="keika-note">
+<b>「7年」への延長は段階的（経過措置）</b>
+<p>7年加算の対象になるのは<b>令和6年1月1日以後の贈与</b>だけです（令和5年法律3号附則19条）。相続開始日ごとの加算対象期間は次のとおりで、<b>相続開始が令和8年12月31日まで</b>の場合は従来どおり<b>「3年」</b>で計算します。<b>完全に7年分が加算されるのは令和13年1月1日以後の相続</b>からです。本シミュレーターは「これから始める贈与の設計用」として<b>7年ルールの完成形</b>で計算しています（2023年以前の過去の贈与を含む検討には使えません）。</p>
+<table class="tbl" style="margin-top:8px">
+<thead><tr><th>相続開始日</th><th>加算対象期間</th></tr></thead>
+<tbody>
+<tr><td>〜令和8年12月31日</td><td>相続開始前<b>3年</b>以内</td></tr>
+<tr><td>令和9年1月1日〜令和12年12月31日</td><td><b>令和6年1月1日以後</b>の贈与（3年超〜7年未満に段階的に延長）</td></tr>
+<tr><td>令和13年1月1日〜</td><td>相続開始前<b>7年</b>以内（完成形）</td></tr>
+</tbody>
+</table>
+</div>
+
+<h2 id="seisan">相続時精算課税 — 年110万円は戻らない（令和6年改正）</h2>
+
+<p><b>相続時精算課税</b>は、60歳以上の父母・祖父母から18歳以上の子・孫への贈与で選べる、もう1つの課税方式です（相続税法21条の9）。「相続時精算」の名のとおり、この制度で受けた贈与は<b>相続時に贈与時の価額で相続財産に加算して相続税で精算</b>します — ただし令和6年1月1日からは、ここに<b>年110万円の基礎控除</b>が加わり、性格が大きく変わりました。</p>
+
+<div class="summary-box">
+<p><b>相続時精算課税のしくみ（令和6年1月1日以後）</b></p>
+<p>・毎年の贈与から<b>基礎控除 年110万円</b>を控除（措法70条の3の2）— <b>この部分は相続時に加算されない</b><br>
+・110万円を超えた部分は<b>累計2,500万円の特別控除</b>（相法21条の12・期限内申告が要件）<br>
+・特別控除も超えた部分に<b>一律20%</b>で贈与税（相法21条の13）<br>
+・相続時は<b>基礎控除後の残額を全額</b>（何年前でも）加算し、納めた贈与税は相続税から控除。<b>引き切れなければ還付</b>（相法33条の2）</p>
+</div>
+
+<p>ポイントは、<b>同じ「毎年110万円」でも扱いが正反対</b>になることです。暦年課税の110万円は「贈与税がかからないだけ」で相続開始前7年以内なら相続税に戻るのに対し、<b>精算課税の110万円は相続税にも戻りません</b>（相法21条の15が「基礎控除をした残額」だけを加算すると定めているためです）。</p>
+
+<div class="callout" id="fukagyaku-note">
+<b>★ただし、一度選ぶと戻れない</b>
+<p>相続時精算課税は「相続時精算課税選択届出書」を提出して選びます。この届出は<b>撤回できず</b>（相法21条の9第6項）、その贈与者からの贈与は<b>その年分以降すべて精算課税になり、二度と暦年課税に戻れません</b>。父からの贈与は精算課税・母からの贈与は暦年課税、のように<b>贈与者ごとに別々に選ぶ</b>ことはできます。特別控除2,500万円は<b>期限内申告書に記載した場合だけ</b>使えます（申告を忘れると20%課税）。</p>
+</div>
+
+<h2 id="rei">同じ「毎年110万円×10年」でも、これだけ変わる（計算例）</h2>
+
+<p>財産1億円・配偶者と子2人の家族で、<b>子2人に毎年110万円ずつ10年間</b>贈与し、最後の贈与から<b>3年後</b>に相続が開始したとします（本シミュレーターの初期値）。贈与税はどの方式でも0円です — それでも実質負担はこれだけ違います。</p>
+
+<table id="rei-hyo" class="tbl">
+<thead><tr><th></th><th>何もしない</th><th>暦年課税で贈与</th><th>相続時精算課税で贈与</th></tr></thead>
+<tbody>
+<tr><td>生前に払う贈与税</td><td>—</td><td>0円</td><td>0円</td></tr>
+<tr><td>相続税に戻る加算額</td><td>—</td><td><b>1人450万円</b><br><span class="hint">3年前の110万円＋4〜7年前の440万円−100万円</span></td><td><b>0円</b><br><span class="hint">年110万円は基礎控除以下</span></td></tr>
+<tr><td>相続税（子2人の合計）</td><td>315万円</td><td>241万3,600円</td><td>162万5,000円</td></tr>
+<tr><td><b>実質の総負担</b></td><td><b>315万円</b></td><td><b>241万3,600円</b></td><td><b>162万5,000円</b></td></tr>
+<tr><td>何もしない場合との差</td><td>—</td><td><b>−73万6,400円</b></td><td><b>−152万5,000円</b></td></tr>
+</tbody>
+</table>
+
+<p>この例では、<b>同じ贈与でも精算課税を選ぶだけで、暦年課税よりさらに約79万円軽く</b>なります。暦年課税は直近7年分（うち4年分は100万円控除後）の450万円×2人が課税価格に戻るのに対し、精算課税は年110万円の基礎控除以下なので<b>1円も戻らない</b>からです。これが令和6年改正後に「毎年110万円の小口贈与なら精算課税」と言われる理由です。</p>
+
+<p class="hint">※ 表の金額は本シミュレーターと同じ計算（残った財産は法定相続分どおり・配偶者は税額軽減で0円・各人の課税価格は千円未満切り捨て・税額は百円未満切り捨て）によります。</p>
+
+<h2 id="erabikata">どちらを選ぶかの考え方</h2>
+
+<p>シミュレーターをいくつかの想定で回すと、だいたい次の構図が見えてきます。</p>
+
+<ul>
+<li><b>毎年110万円以下の小口贈与</b> → <b>精算課税が有利</b>になりやすい（加算ゼロ。暦年は直近7年分が戻る）。ただし下の「戻れない」「申告の手間」との引き換え</li>
+<li><b>大きな額を早めに動かす</b> → <b>暦年課税×時間</b>が効く。贈与をやめてから<b>7年を超えて</b>相続が開始すれば加算はゼロ。特例税率なら410万円までの実効税率は1割弱（<a href="../zoyozei/">贈与税 計算機</a>）</li>
+<li><b>相続開始が近いと見込まれる時期の大口贈与</b> → 暦年課税では<b>ほぼ全額が戻る</b>うえ贈与税だけ残り、<b>「何もしない」より損</b>になることもある（シミュレーターで確かめられます）</li>
+<li><b>値上がりしそうな財産</b>（自社株など）→ 精算課税は<b>贈与時の価額で固定</b>して相続財産に加算するため、値上がり分を相続税から外せる（本ツールは評価額一定の前提なのでこの効果は出ません）。逆に<b>値下がりすると不利</b></li>
+</ul>
+
+<div class="callout" id="mago-note">
+<b>孫への贈与は、そもそも加算されない（原則）</b>
+<p>生前贈与加算の対象は「<b>相続又は遺贈により財産を取得した者</b>」への贈与だけです（相法19条1項）。相続人でない孫は相続で財産を取得しないため、<b>孫への暦年贈与は7年以内でも加算されません</b>。ただし例外があり、次のいずれかに当たる孫は加算の対象になります: ①<b>代襲相続人</b>になった（親である子が先に亡くなった） ②<b>遺言で財産を受け取った</b>（受遺者） ③<b>生命保険金の受取人</b>になった（みなし相続財産の取得） ④<b>相続時精算課税を選んでいた</b>。この4つに当たらない孫への贈与は、加算の期間制限そのものが働きません。</p>
+</div>
+
+<div class="note">
+<b>相続税そのものの試算はこちら。</b>本ツールの相続税部分は<a href="../sozokuzei/">相続税 計算機</a>と同じ計算です（基礎控除3,000万円＋600万円×法定相続人・法定相続分で按分・配偶者の税額軽減）。家族構成だけ変えた相続税の目安は相続税 計算機で確認できます。
+</div>
+
+<h2 id="zentei">このシミュレーターの前提と限界</h2>
+
+<ul>
+<li>贈与は<b>毎年同じ時期に1回・同額</b>、贈与者は1人（父または母）。相続開始は最後の贈与の<b>1年以上あと</b>（相続開始と同じ年の贈与は贈与税がかからず全額加算という別枠のため対象外・相法21条の2第4項）</li>
+<li>「相続開始前○年以内」は年単位の丸めで判定し、<b>境界の年（ちょうど3年前・7年前）は加算に含めます</b>（安全側）</li>
+<li><b>財産は増えも減りもしない</b>前提（生活費での取り崩し・運用益・評価額の変動は反映しません）</li>
+<li>残った財産は<b>法定相続分どおり</b>に分け、<b>配偶者は税額軽減の枠内で税額0円</b>とします（配偶者が多く取るほど、贈与で財産を減らした効果は目減りします — この仮定の影響は小さくありません）</li>
+<li>小規模宅地等の特例（<b>精算課税で贈与した宅地には使えない</b>という重要な論点があります）・生命保険の非課税枠・二次相続・贈与税の非課税特例（住宅取得等資金など）は反映しません</li>
+<li>贈与税額控除の100万円控除帯への按分は価額比の比例計算です（政令の細部の端数処理は反映しません）</li>
+</ul>
+
+<p>金額が大きい判断です。実行前には<b>税理士に相談</b>してください。このツールは「どの方式がどのくらい違いそうか」の当たりを付けるためのものです。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 生前贈与は年間いくらまで非課税ですか？</h3>
+<p>A. 贈与税は年110万円（基礎控除）まで非課税です。ただし「贈与税がかからない」と「相続税に戻らない」は別で、相続や遺贈で財産を取得する人（子など）への贈与は、110万円以下でも相続開始前7年以内の分は相続税の課税価格に加算されます。贈与税と相続税の両方で残らないのは、贈与から7年を超えて相続が開始した分だけです（国税庁No.4161）。</p>
+
+<h3>Q. 毎年110万円以下に抑えれば、相続税にも戻りませんか？</h3>
+<p>A. 戻ります。生前贈与加算は贈与税がかかったかどうかと無関係で、国税庁は「基礎控除額110万円以下の贈与財産や死亡した年に贈与されている財産の価額も加算することになります」と明示しています（No.4161）。一方、相続時精算課税を選んだ場合の年110万円（精算課税の基礎控除）は相続時に加算されません。ここが令和6年改正後の2方式の最大の違いです。</p>
+
+<h3>Q. 生前贈与加算の「7年」はいつの贈与から適用されますか？</h3>
+<p>A. 令和6年1月1日以後の贈与からです（令和5年法律3号附則19条）。相続開始が令和8年12月31日までなら従来どおり3年、令和9年〜令和12年は令和6年1月1日以後の贈与だけが対象（実質3〜7年に段階的に延長）、完全に7年分が加算されるのは令和13年1月1日以後に開始した相続からです。</p>
+
+<h3>Q. 孫への贈与も7年加算の対象ですか？</h3>
+<p>A. 原則、対象外です。加算されるのは相続や遺贈で財産を取得した人への贈与だけなので、相続人でない孫への贈与には加算の期間制限が働きません。ただし、代襲相続人になった孫・遺言で財産を受け取った孫・生命保険金の受取人になった孫・相続時精算課税を選んでいた孫は加算の対象になります（相続税法19条1項）。</p>
+
+<h3>Q. 相続時精算課税を選ぶと、暦年課税の110万円非課税はどうなりますか？</h3>
+<p>A. その贈与者（特定贈与者）からの贈与については暦年課税に戻れなくなり、代わりに精算課税の基礎控除（年110万円・相続時に加算されない）を使います。別の贈与者（たとえば母や祖父母）からの贈与は引き続き暦年課税で受けられ、暦年課税の基礎控除110万円も別に使えます。なお同じ年に2人以上の特定贈与者から贈与を受けた場合、精算課税の110万円は贈与額であん分します（国税庁No.4103）。</p>
+
+<h3>Q. 精算課税で年110万円以下なら、申告は不要ですか？</h3>
+<p>A. 贈与税の申告は不要です（基礎控除以下のため）。ただし最初に精算課税を選ぶ年は、贈与を受けた年の翌年2月1日〜3月15日に「相続時精算課税選択届出書」の提出が必要です。また特別控除2,500万円は期限内申告書に記載した場合しか使えないので、110万円を超える年は申告を忘れないでください（国税庁No.4103）。</p>
+
+<h3>Q. 結局、暦年贈与と相続時精算課税はどちらが得ですか？</h3>
+<p>A. 一概には言えません。毎年110万円以下の小口贈与なら精算課税（加算ゼロ）が有利になりやすく、大きな額を若いうちから動かすなら暦年課税×時間（7年経過で加算ゼロ）が効きます。相続開始が近い時期の大口暦年贈与は、ほぼ全額が戻るうえ贈与税だけ残るため「何もしない」より損になることもあります。上のシミュレーターで、贈与額・年数・相続までの年数を変えて実額で比べてください。</p>
+
+<section class="related">
+<div class="tool-grid">
+<a class="tool-card" href="../zoyozei/"><b>贈与税 計算機</b><span>単年の贈与税額を確認。特例税率・一般税率・按分計算に対応。</span></a>
+<a class="tool-card" href="../sozokuzei/"><b>相続税 計算機</b><span>本ツールの相続税部分と同じ計算。家族構成を変えた目安はこちらで。</span></a>
+<a class="tool-card" href="../column/taishokukin-zeikin/"><b>退職金の税金</b><span>まとまったお金の税金つながり。退職所得控除と2分の1課税。</span></a>
+</div>
+</section>
+
+<h2 id="source">出典</h2>
+<ul>
+<li>相続税法 第19条（相続開始前7年以内に贈与があつた場合の相続税額 — 3年超7年以内の贈与は合計額から100万円を控除・贈与税額控除）、第21条の2第4項（相続開始年分の贈与）、第21条の9（相続時精算課税の選択・60歳以上/18歳以上・届出の撤回不可）、第21条の11の2（精算課税の基礎控除・本則60万円）、第21条の12（特別控除2,500万円・期限内申告要件）、第21条の13（税率20%）、第21条の15・第21条の16（相続時の加算は基礎控除後の残額・贈与税額控除）、第33条の2（精算課税に係る贈与税額の還付）— e-Gov法令検索</li>
+<li>租税特別措置法 第70条の2の4（暦年課税の基礎控除110万円）、第70条の2の5（特例税率）、第70条の2の6（孫への相続時精算課税の準用）、第70条の3の2（精算課税の基礎控除110万円・令和6年1月1日以後）— e-Gov法令検索</li>
+<li>令和5年3月31日法律第3号 附則第19条 — 7年加算・精算課税の基礎控除とも令和6年1月1日以後の贈与から適用。相続開始が令和6年1月1日〜令和8年12月31日の場合は「7年」を「3年」と読む経過措置</li>
+<li>国税庁 タックスアンサー No.4161「贈与財産の加算と税額控除（暦年課税）」— 加算対象期間の表（相続開始日ごと）、基礎控除額110万円以下の贈与財産も加算されること、相続開始前3年以内は全額・それ以外は総額100万円控除</li>
+<li>国税庁 タックスアンサー No.4103「相続時精算課税の選択」— 基礎控除110万円（複数の特定贈与者はあん分）・特別控除2,500万円（期限内申告が要件）・一律20%、暦年課税へ変更できないこと、控除しきれない贈与税相当額の還付</li>
+<li>国税庁 タックスアンサー No.4408「贈与税の計算と税率（暦年課税）」／No.4152・No.4155（相続税の計算・速算表）</li>
+</ul>
+
+<p class="note">この記事は令和8年時点の法令にもとづく一般的な情報であり、個別の事案に対する助言ではありません。生前贈与の設計は財産の種類・評価・家族の事情によって最適解が変わります。実行前に税理士へご相談ください。</p>
+
+</article>
+</main>
+<footer class="site" style="display:block">
+  出典: 相続税法19条・21条の9〜21条の16・33条の2／租税特別措置法70条の2の4〜70条の3の2／国税庁 No.4161・No.4103<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcSeizenZoyo } from "../assets/seizen_zoyo_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const manToWords = (man) => {
+  man = Math.floor(man);
+  if (!Number.isFinite(man) || man <= 0) return "";
+  const oku = Math.floor(man / 10000), rest = man % 10000;
+  return "＝" + (oku ? oku + "億" : "") + (rest ? rest + "万円" : (oku ? "円" : "万円"));
+};
+
+let D = null, DZ = null, DS = null;
+// 参照データは非同期で届く。届く前に計算ボタンを押されても待つ（実ユーザーと同じ経路）。
+// この catch が拾ってよいのは「データが手に入らなかった」ことだけ（飾りの描画は別に処理する）。
+const load = (path) => fetch(path).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+const dataReady = Promise.all([
+  load("../assets/seizen_zoyo_r08.json").then(d => { D = d; }),
+  load("../assets/zoyozei_r08.json").then(d => { DZ = d; }),
+  load("../assets/sozokuzei_r08.json").then(d => { DS = d; }),
+]).then(() => true).catch(() => false);
+
+// 出典の年分表示は飾り。ここで転んでも計算は止めない。
+dataReady.then(() => { $("src-note").textContent = D?._meta?.year ? `（${D._meta.year}）` : ""; }).catch(() => {});
+
+$("assets").addEventListener("input", () => { $("assets-echo").textContent = manToWords(Number($("assets").value)); });
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+  const okData = await dataReady; // 必要な参照データの到着を必ず待つ
+  if (!okData || !D || !DZ || !DS) {
+    box.innerHTML = `<div class="note"><b>データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。データが分からない状態で税額を答えることはできません。</div>`;
+    return;
+  }
+
+  let r;
+  try {
+    r = calcSeizenZoyo({
+      assets: Math.round((Number($("assets").value) || 0) * 10000),
+      hasSpouse: $("haiguusha").value === "1",
+      numChildren: Number($("ko").value) || 0,
+      numRecipients: Number($("jyuzo").value) || 0,
+      annualGift: Math.round((Number($("zogaku").value) || 0) * 10000),
+      giftYears: Number($("nensu").value) || 0,
+      gapYears: Number($("gap").value) || 0,
+      isAdult: $("adult18").checked,
+      donor60: $("donor60").checked,
+    }, D, DZ, DS);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>${e.message}</div>`;
+    return;
+  }
+
+  const yearTag = r.year ? `<span class="hint">（${r.year}のルールで計算）</span>` : "";
+  const bestLabel = { base: "何もしない", rekinen: "暦年課税で贈与", seisan: "相続時精算課税で贈与" }[r.best];
+  const seiOk = r.seisan && !r.seisan.unavailable;
+
+  const diff = (b) => {
+    const d = b - r.base.burden;
+    if (d === 0) return "±0円";
+    return (d < 0 ? "−" : "＋") + yenF(Math.abs(d)).slice(1) + "円";
+  };
+
+  // 比較表
+  const seiCol = seiOk ? {
+    gift: yenF(r.seisan.giftTax),
+    added: yenF(r.seisan.sz.addedTotal) + "<div class='hint'>年110万円の基礎控除以下は加算されない</div>",
+    tax: yenF(r.seisan.souzokuTax),
+    refund: r.seisan.refundTotal > 0 ? "−" + yenF(r.seisan.refundTotal).slice(1) : "—",
+    burden: `<b>${yenF(r.seisan.burden)}</b>`,
+    diff: `<b>${diff(r.seisan.burden)}</b>`,
+  } : null;
+
+  const madoNote = r.rekinen.mado.nFull || r.rekinen.mado.nBand
+    ? `<div class='hint'>3年以内${r.rekinen.mado.nFull}年分 ${yenF(r.rekinen.mado.fullAmt)}＋3年超7年以内${r.rekinen.mado.nBand}年分 ${yenF(r.rekinen.mado.bandTotal)}−100万円`
+      + `${r.rekinen.mado.bandTotal > 0 && r.rekinen.mado.bandTotal <= 1000000 ? "（帯の合計が100万円以下なので0円）" : ""}</div>`
+    : "<div class='hint'>すべて7年より前＝加算なし</div>";
+
+  box.innerHTML = `
+    <div class="row"><b>実質の総負担がいちばん小さいのは</b> <span class="big">${bestLabel}</span></div>
+    <div style="font-size:13px;color:var(--sub);margin:4px 0 10px">
+      何もしない ${yenF(r.base.burden)}／暦年課税 ${yenF(r.rekinen.burden)}／相続時精算課税 ${seiOk ? yenF(r.seisan.burden) : "選択不可"}
+      ${yearTag}</div>
+
+    <div class="scroll-wrap"><table class="tbl" style="margin:0">
+      <thead><tr><th></th><th>何もしない</th><th>暦年課税</th><th>相続時精算課税</th></tr></thead>
+      <tbody>
+        <tr><td>生前に払う贈与税</td><td>—</td><td>${yenF(r.rekinen.giftTax)}<div class="hint">${yenF(r.rekinen.zeiYear)}/年 × ${r.giftYears}年 × ${r.numRecipients}人</div></td>
+            <td>${seiOk ? seiCol.gift : "—"}</td></tr>
+        <tr><td>相続税に戻る加算額（受贈者1人）</td><td>—</td><td>${yenF(r.rekinen.mado.added)}${madoNote}</td>
+            <td>${seiOk ? seiCol.added : "—"}</td></tr>
+        <tr><td>相続税（家族全員・控除後）</td><td>${yenF(r.base.souzokuTax)}</td><td>${yenF(r.rekinen.souzokuTax)}</td>
+            <td>${seiOk ? seiCol.tax : "—"}</td></tr>
+        <tr><td>贈与税の還付</td><td>—</td><td>—<div class="hint">暦年課税は還付なし</div></td><td>${seiOk ? seiCol.refund : "—"}</td></tr>
+        <tr><td><b>実質の総負担</b></td><td><b>${yenF(r.base.burden)}</b></td><td><b>${yenF(r.rekinen.burden)}</b></td>
+            <td>${seiOk ? seiCol.burden : "—"}</td></tr>
+        <tr><td>何もしない場合との差</td><td>—</td><td><b>${diff(r.rekinen.burden)}</b></td><td>${seiOk ? seiCol.diff : "—"}</td></tr>
+      </tbody>
+    </table></div>
+
+    ${seiOk ? "" : `<div class="note" style="margin-top:10px"><b>相続時精算課税は選択できません。</b>${r.seisan.unavailable}。暦年課税との2択になります。</div>`}
+
+    <div style="font-size:12px;color:var(--sub);margin-top:10px">
+      内訳: 贈与合計 ${yenF(r.giftsTotal)}（${r.numRecipients}人×${yenF(r.annualGift)}×${r.giftYears}年）→ 相続開始時の財産 ${yenF(r.estateAfter)}。
+      相続税の基礎控除 ${yenF(r.base.souzoku.kiso)}（法定相続人${r.base.souzoku.houteiCount}人）。
+      ${r.rekinen.credit > 0 ? `暦年課税の贈与税額控除 ${yenF(r.rekinen.credit)}/人（加算された贈与に対応する分・還付なし）。` : ""}
+      ${seiOk && r.seisan.sz.tokubetsuUsed > 0 ? `精算課税の特別控除 ${yenF(r.seisan.sz.tokubetsuUsed)}使用（累計2,500万円まで）。` : ""}</div>
+
+    <div style="font-size:12.5px;color:var(--sub);margin-top:10px">
+      ※ 目安です。残った財産は法定相続分どおり・配偶者は税額軽減で0円の前提。財産の評価変動・小規模宅地等の特例・
+      二次相続は反映していません。精算課税は届出後に暦年課税へ戻れず、特別控除は期限内申告が要件です。
+      経過措置により相続開始が令和8年12月31日までの場合、暦年課税の加算は3年分です。実行前に税理士へ相談してください。</div>`;
+});
+</script>
+</body>
+</html>

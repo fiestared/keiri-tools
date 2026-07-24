@@ -71,6 +71,11 @@ const HISTORICAL_FACTS = [
             "test_kihonteate_zantei.mjs がページ・記事・coreとの一致とrecheck_afterカナリアを守っている" },
   { file: "shakai-hoken/index.html", snippet: "子ども・子育て支援金（令和8年4月から新設）",
     reason: "新設された時期そのものが事実。令和9年度になっても『令和8年4月に新設』は真" },
+  { file: "index.html", snippet: "（令和6年改正）——同じ毎年110万円",
+    reason: "★相続時精算課税の年110万円基礎控除（加算されない）が始まった改正の固有名＝制度の事実" +
+            "(措法70条の3の2『令和六年一月一日以後』を逐語確認)。データを差し替えても" +
+            "『令和6年改正で加算されなくなった』は真のまま(トップの生前贈与カードの説明文)。" +
+            "どの年のルールで計算したかは seizen_zoyo_r08.json の _meta.year から結果欄に描いている" },
   { file: "shakai-hoken/index.html", snippet: "令和8年（2026年）4月分から、",
     reason: "徴収開始時期の事実。将来の年度の料率表に差し替えても変わらない" },
   { file: "shakai-hoken/index.html", snippet: "子ども・子育て支援金は令和8年4月分から",
