@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>相続登記の登録免許税 計算機｜評価額×0.4%・免税措置も判定【令和8年】</title>
+<meta name="description" content="相続する土地・建物の固定資産税評価額と持分を入れるだけで、相続登記の登録免許税（評価額×0.4%）を自動計算。課税標準の1,000円未満切捨て・税額の100円未満切捨て・最低税額1,000円まで正確に処理し、評価額100万円以下の土地の免税措置（令和9年3月31日まで・1筆ごとに判定）も自動判定します。相続登記の申請期限（知った日から3年・過料10万円以下）も計算。令和8年・登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/sozoku-toki-menkyozei/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "相続登記の登録免許税 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "相続する土地・建物の固定資産税評価額と持分から、相続登記の登録免許税（1000分の4）を計算します。課税標準・税額の端数処理、最低税額1,000円、評価額100万円以下の土地の免税措置、相続登記の申請期限に対応。令和8年。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "相続登記の登録免許税 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 相続登記の登録免許税はいくらですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 不動産の価額（固定資産税評価額）の1000分の4＝0.4%です（登録免許税法 別表第一 第一号（二）イ）。土地・建物とも同じ税率です。評価額の合計から1,000円未満を切り捨てて課税標準を出し、0.4%を掛けて100円未満を切り捨てます。計算した額が1,000円未満のときは1,000円です（登録免許税法19条）。たとえば評価額の合計が1,800万円なら72,000円になります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 評価額100万円以下の土地は本当に無料（免税）になりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. なります。個人が令和9年3月31日までに、価額100万円以下の土地について相続による所有権の移転登記（または表題部所有者の相続人が受ける所有権の保存登記）を受ける場合は登録免許税が課されません（租税特別措置法84条の2の2第2項）。判定は土地1筆ごとなので、90万円の土地が3筆あれば合計270万円でも3筆とも免税です。ただし対象は土地だけで、建物には適用がありません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 課税標準に使うのは固定資産税の「評価額」と「課税標準額」のどちらですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 「価格（評価額）」のほうです。固定資産税の課税明細書には評価額と課税標準額の両方が載っていますが、住宅用地には固定資産税の課税標準額を評価額の6分の1などに下げる特例があるため、課税標準額を使うと登録免許税を実際より大幅に少なく計算してしまいます。登録免許税の課税標準は「登記の時における不動産の価額」（登録免許税法10条1項）で、実務上は固定資産課税台帳に登録された価格を使います（同法附則7条）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 共有の持分だけを相続した場合はどう計算しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. その不動産全体の価額に持分の割合を掛けた金額が課税標準になります（登録免許税法10条2項）。たとえば評価額3,000万円の土地の2分の1を相続したなら、課税標準は1,500万円で税額は60,000円です。全体の評価額のまま計算すると税額が倍になってしまうので注意してください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 相続登記をしないとどうなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 令和6年4月1日から相続登記の申請が義務になりました。自己のために相続の開始があったことを知り、かつその不動産の所有権を取得したことを知った日から3年以内に申請する必要があり、正当な理由なく怠ると10万円以下の過料の対象になります（不動産登記法76条の2第1項・164条1項）。令和6年4月1日より前に開始した相続も対象で、その場合は施行日と知った日のいずれか遅い日から3年以内です。間に合わないときは「相続人申告登記」を申し出れば、この申請義務を履行したものとみなされます（同法76条の3）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 登録免許税のほかに費用はかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. かかります。この計算機が出すのは国に納める登録免許税だけです。ほかに戸籍謄本・住民票・固定資産評価証明書などの取得実費、登記事項証明書の手数料がかかり、司法書士に依頼する場合はその報酬が別に必要です。自分で申請する場合でも実費は発生します。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 相続登記の登録免許税 計算機</nav>
+
+<section class="hero">
+  <h1>相続登記の登録免許税 計算機</h1>
+  <p>相続する土地・建物の<b>固定資産税評価額</b>と<b>持分</b>を入れるだけで、相続登記に納める<b>登録免許税（評価額×0.4%）</b>を計算します。<b>課税標準の1,000円未満切捨て・税額の100円未満切捨て・最低税額1,000円</b>まで正確に処理し、<b>評価額100万円以下の土地の免税措置</b>（令和9年3月31日まで・<b>1筆ごとに判定</b>）も自動で判定します。<b>令和8年</b>。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="hyoka-caution">入力するのは「評価額（価格）」です。「課税標準額」ではありません</b>
+    固定資産税の課税明細書には<b>価格（評価額）</b>と<b>課税標準額</b>の両方が載っています。住宅用地には固定資産税の課税標準額を評価額の6分の1などに下げる特例があるため、<b>課税標準額を入れると登録免許税を実際より大幅に少なく計算してしまいます</b>。登録免許税の課税標準は「登記の時における不動産の価額」（登録免許税法10条1項）で、実務上は固定資産課税台帳に登録された<b>価格</b>を使います（同法附則7条）。
+  </div>
+
+  <label>相続する不動産<span class="hint">　土地は1筆ずつ・建物は1棟ずつ行を分けてください（免税の判定が1筆ごとのため）</span></label>
+  <div id="rows"></div>
+  <button id="addrow" type="button" style="margin:4px 0 14px">＋ 不動産を追加</button>
+
+  <div class="grid2">
+    <div>
+      <label for="applyDate">登記を申請する予定日<span class="hint">　免税措置の期限判定に使います</span></label>
+      <input type="date" id="applyDate">
+    </div>
+    <div>
+      <label for="knownDate">相続の開始と取得を知った日<span class="hint">　任意。申請期限を出します</span></label>
+      <input type="date" id="knownDate">
+    </div>
+  </div>
+
+  <button class="primary" id="calc">登録免許税を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<h2 id="shikumi">計算のしくみ — 端数処理が2回あり、それぞれに下限が付く</h2>
+
+<p>相続登記の登録免許税は「評価額×0.4%」で終わりではありません。<b>課税標準と税額で端数の切り捨てが2回</b>あり、そのそれぞれに<b>別の条文で下限</b>が乗っています。ここを飛ばすと、評価額の小さい不動産で答えがずれます。</p>
+
+<figure>
+<svg viewBox="0 0 720 300" width="100%" role="img" aria-labelledby="flow-title">
+  <title id="flow-title">相続登記の登録免許税の計算手順（5段階）</title>
+  <rect x="0" y="0" width="720" height="300" fill="#fff"/>
+
+  <rect x="14" y="24" width="180" height="52" rx="6" fill="#eef4ff" stroke="#3b6fd4"/>
+  <text x="104" y="45" text-anchor="middle" font-size="13" fill="#1b2b4b">① 各不動産の価額</text>
+  <text x="104" y="64" text-anchor="middle" font-size="11" fill="#4a5a78">評価額 × 持分割合</text>
+  <text x="104" y="88" text-anchor="middle" font-size="10" fill="#7a8aa8">登免法10条1項・2項</text>
+
+  <path d="M198 50 L232 50" stroke="#3b6fd4" stroke-width="2" marker-end="url(#ar)"/>
+
+  <rect x="236" y="24" width="188" height="52" rx="6" fill="#fff6e5" stroke="#d08a1e"/>
+  <text x="330" y="45" text-anchor="middle" font-size="13" fill="#5b3d05">② 免税の土地を除く</text>
+  <text x="330" y="64" text-anchor="middle" font-size="11" fill="#7a5a1e">土地・100万円以下・1筆ごと</text>
+  <text x="330" y="88" text-anchor="middle" font-size="10" fill="#a08a5e">措法84条の2の2第2項</text>
+
+  <path d="M428 50 L462 50" stroke="#3b6fd4" stroke-width="2" marker-end="url(#ar)"/>
+
+  <rect x="466" y="24" width="240" height="52" rx="6" fill="#eef4ff" stroke="#3b6fd4"/>
+  <text x="586" y="45" text-anchor="middle" font-size="13" fill="#1b2b4b">③ 合計 → 1,000円未満切捨て</text>
+  <text x="586" y="64" text-anchor="middle" font-size="11" fill="#4a5a78">1,000円未満なら1,000円</text>
+  <text x="586" y="88" text-anchor="middle" font-size="10" fill="#7a8aa8">通則法118条1項／登免法15条</text>
+
+  <path d="M586 96 L586 130" stroke="#3b6fd4" stroke-width="2" marker-end="url(#ar)"/>
+
+  <rect x="466" y="134" width="240" height="52" rx="6" fill="#eef4ff" stroke="#3b6fd4"/>
+  <text x="586" y="155" text-anchor="middle" font-size="13" fill="#1b2b4b">④ × 1000分の4（0.4%）</text>
+  <text x="586" y="174" text-anchor="middle" font-size="11" fill="#4a5a78">相続による移転の登記</text>
+  <text x="586" y="198" text-anchor="middle" font-size="10" fill="#7a8aa8">別表第一 第一号（二）イ</text>
+
+  <path d="M462 160 L428 160" stroke="#3b6fd4" stroke-width="2" marker-end="url(#ar2)"/>
+
+  <rect x="200" y="134" width="224" height="52" rx="6" fill="#e9f7ee" stroke="#2f8b52"/>
+  <text x="312" y="155" text-anchor="middle" font-size="13" fill="#123d24">⑤ 100円未満切捨て</text>
+  <text x="312" y="174" text-anchor="middle" font-size="11" fill="#2c5a3e">ただし1,000円未満なら1,000円</text>
+  <text x="312" y="198" text-anchor="middle" font-size="10" fill="#6a9a7e">通則法119条1項／登免法19条</text>
+
+  <path d="M196 160 L162 160" stroke="#2f8b52" stroke-width="2" marker-end="url(#ar3)"/>
+  <rect x="14" y="134" width="146" height="52" rx="6" fill="#2f8b52"/>
+  <text x="87" y="166" text-anchor="middle" font-size="15" fill="#fff" font-weight="bold">登録免許税額</text>
+
+  <text x="14" y="238" font-size="12" fill="#1b2b4b" font-weight="bold">例: 土地1,234万5,678円＋建物567万8,901円（いずれも持分すべて）</text>
+  <text x="14" y="258" font-size="12" fill="#4a5a78">合計 18,024,579円 → ③ 18,024,000円 → ④ 72,096円 → ⑤ <tspan font-weight="bold" fill="#123d24">72,000円</tspan></text>
+  <text x="14" y="280" font-size="11" fill="#7a8aa8">⑤の下限が効く例: 課税標準249,000円 → ④ 996円（1,000円未満）→ 税額は1,000円</text>
+
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#3b6fd4"/>
+    </marker>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#3b6fd4"/>
+    </marker>
+    <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2f8b52"/>
+    </marker>
+  </defs>
+</svg>
+<figcaption>相続登記の登録免許税の計算手順。切り捨ては②合計後と④税率適用後の2回あり、どちらにも下限（1,000円）が付く。</figcaption>
+</figure>
+
+<h2 id="menzei">2つの免税措置（令和9年3月31日まで）</h2>
+
+<p>租税特別措置法84条の2の2は、相続による土地の登記について<b>2つ</b>の免税措置を定めています。<b>どちらも適用期限は令和9年3月31日</b>です。</p>
+
+<table id="menzei-table">
+  <thead><tr><th>免税措置</th><th>対象</th><th>内容</th></tr></thead>
+  <tbody>
+    <tr id="menzei-row-1">
+      <td><b>① 登記を受ける前に死亡した場合</b><br><span class="hint">措法84条の2の2第1項</span></td>
+      <td>土地のみ</td>
+      <td>相続（<b>相続人に対する遺贈を含む</b>）により土地を取得した個人が、その相続による移転登記を受ける前に死亡した場合、<b>その死亡した個人を登記名義人とするための登記</b>が免税。★免税になるのは<b>1次相続分の登記だけ</b>で、そこから今の相続人への2次相続の移転登記は対象外です。</td>
+    </tr>
+    <tr id="menzei-row-2">
+      <td><b>② 少額の土地</b><br><span class="hint">措法84条の2の2第2項</span></td>
+      <td>土地のみ</td>
+      <td>土地の<b>価額が100万円以下</b>のとき、相続による所有権の移転登記（および表題部所有者の相続人が受ける所有権の保存登記）が免税。★判定は<b>不動産1個（1筆）ごと</b>で、申請全体の合計額ではありません。</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="note" id="menzei-tochi-only">
+  <b>どちらの免税も「土地」だけで、建物には適用がありません。</b>
+  評価額が100万円以下の古い建物でも、登録免許税は課税されます（最低税額の1,000円になることが多い）。
+</div>
+
+<h2 id="gimu">相続登記の申請義務（令和6年4月1日から）と過料</h2>
+
+<p>令和6年4月1日から、相続登記の申請が<b>義務</b>になりました（不動産登記法76条の2）。期限の起算日は<b>相続開始の日ではなく「知った日」</b>です。</p>
+
+<ul id="gimu-list">
+  <li><b>原則</b>: 自己のために相続の開始があったことを知り、<b>かつ</b>その所有権を取得したことを知った日から<b>3年以内</b>に移転登記を申請する（76条の2第1項）。<b>相続人に対する遺贈</b>で取得した人も同じです。</li>
+  <li><b>法定相続分で登記した後に遺産分割をした場合</b>: その<b>遺産分割の日から3年以内</b>に、分割による移転登記を申請する（76条の2第2項）。</li>
+  <li id="gimu-kako"><b>令和6年4月1日より前に開始した相続</b>: 施行日前の相続<b>にも適用</b>されます。この場合は「知った日<b>又は施行日のいずれか遅い日</b>」から3年以内＝<b>令和9年3月31日</b>までが一つの目安です（令和3年法律24号 附則5条6項）。</li>
+  <li id="gimu-moshide"><b>期限に間に合わないとき</b>: 「<b>相続人申告登記</b>」を登記官に申し出れば、上の申請義務を履行したものとみなされます（76条の3第1項・2項）。ただしその後の遺産分割で所有権を取得したときは、<b>分割の日から3年以内</b>に登記が必要です（同4項）。</li>
+  <li id="gimu-karyo"><b>怠った場合</b>: 正当な理由がないのに申請を怠ると<b>10万円以下の過料</b>（164条1項）。なお氏名・住所の変更登記（76条の5）を怠った場合は<b>5万円以下の過料</b>（164条2項）で、額が違います。</li>
+</ul>
+
+<h2 id="machigai">よくある間違い</h2>
+
+<ol id="machigai-list">
+  <li id="mis-hyoka"><b>課税明細書の「課税標準額」を使ってしまう。</b>住宅用地の特例で評価額の6分の1などに下がっているため、税額を大幅に少なく計算します。使うのは<b>価格（評価額）</b>です。</li>
+  <li id="mis-mochibun"><b>持分だけを相続したのに全体の評価額で計算する。</b>課税標準は評価額×持分割合です（登録免許税法10条2項）。2分の1なら税額も半分になります。</li>
+  <li id="mis-goukei"><b>免税（100万円以下）を申請全体の合計で判定する。</b>判定は<b>1筆ごと</b>です。90万円の土地が3筆あれば、合計270万円でも3筆とも免税になります。</li>
+  <li id="mis-tatemono"><b>100万円以下の建物も免税だと思う。</b>免税措置の対象は<b>土地だけ</b>です。</li>
+  <li id="mis-saitei"><b>最低税額1,000円を忘れる。</b>税率を適用した金額が1,000円未満のときは、税額は1,000円です（登録免許税法19条）。評価額20万円の建物なら計算上は800円ですが、納めるのは1,000円です。</li>
+  <li id="mis-kigen"><b>期限を相続開始の日から数える。</b>3年の起算は「<b>知った日</b>」です。さらに令和6年3月31日以前の相続は施行日から数えます。</li>
+</ol>
+
+<h2 id="taishogai">このツールで計算できないもの</h2>
+
+<div class="note" id="scope-note">
+  <b>計算するのは「相続による所有権の移転登記」の登録免許税だけです。</b>
+  <ul>
+    <li><b>登記の原因が相続以外</b>のもの（贈与・売買・交換など）は税率が<b>1000分の20（2%）</b>で5倍違います（別表第一 第一号（二）ハ）。このツールでは扱いません。</li>
+    <li><b>遺贈</b>を原因とする移転登記は、登記の原因が「相続」と異なり、相続人か相続人以外かで扱いが分かれます。<b>税率は登記所（法務局）に確認してください。</b>なお免税措置①と申請義務については、条文が明文で「相続人に対する遺贈を含む」としています。</li>
+    <li><b>抵当権の抹消・住所変更などの他の登記</b>、<b>司法書士報酬</b>、戸籍謄本・評価証明書などの<b>実費</b>は含みません。</li>
+    <li>固定資産課税台帳に価格がない不動産（未評価の私道など）は<b>登記官が認定した価額</b>になるため、管轄の登記所に確認が必要です。</li>
+  </ul>
+</div>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 相続登記の登録免許税はいくらですか？</h3>
+<p>A. 不動産の価額（固定資産税評価額）の1000分の4＝0.4%です（登録免許税法 別表第一 第一号（二）イ）。土地・建物とも同じ税率です。評価額の合計から1,000円未満を切り捨てて課税標準を出し、0.4%を掛けて100円未満を切り捨てます。計算した額が1,000円未満のときは1,000円です（登録免許税法19条）。たとえば評価額の合計が1,800万円なら72,000円になります。</p>
+
+<h3>Q. 評価額100万円以下の土地は本当に無料（免税）になりますか？</h3>
+<p>A. なります。個人が令和9年3月31日までに、価額100万円以下の土地について相続による所有権の移転登記（または表題部所有者の相続人が受ける所有権の保存登記）を受ける場合は登録免許税が課されません（租税特別措置法84条の2の2第2項）。判定は土地1筆ごとなので、90万円の土地が3筆あれば合計270万円でも3筆とも免税です。ただし対象は土地だけで、建物には適用がありません。</p>
+
+<h3>Q. 課税標準に使うのは固定資産税の「評価額」と「課税標準額」のどちらですか？</h3>
+<p>A. 「価格（評価額）」のほうです。固定資産税の課税明細書には評価額と課税標準額の両方が載っていますが、住宅用地には固定資産税の課税標準額を評価額の6分の1などに下げる特例があるため、課税標準額を使うと登録免許税を実際より大幅に少なく計算してしまいます。登録免許税の課税標準は「登記の時における不動産の価額」（登録免許税法10条1項）で、実務上は固定資産課税台帳に登録された価格を使います（同法附則7条）。</p>
+
+<h3>Q. 共有の持分だけを相続した場合はどう計算しますか？</h3>
+<p>A. その不動産全体の価額に持分の割合を掛けた金額が課税標準になります（登録免許税法10条2項）。たとえば評価額3,000万円の土地の2分の1を相続したなら、課税標準は1,500万円で税額は60,000円です。全体の評価額のまま計算すると税額が倍になってしまうので注意してください。</p>
+
+<h3>Q. 相続登記をしないとどうなりますか？</h3>
+<p>A. 令和6年4月1日から相続登記の申請が義務になりました。自己のために相続の開始があったことを知り、かつその不動産の所有権を取得したことを知った日から3年以内に申請する必要があり、正当な理由なく怠ると10万円以下の過料の対象になります（不動産登記法76条の2第1項・164条1項）。令和6年4月1日より前に開始した相続も対象で、その場合は施行日と知った日のいずれか遅い日から3年以内です。間に合わないときは「相続人申告登記」を申し出れば、この申請義務を履行したものとみなされます（同法76条の3）。</p>
+
+<h3>Q. 登録免許税のほかに費用はかかりますか？</h3>
+<p>A. かかります。この計算機が出すのは国に納める登録免許税だけです。ほかに戸籍謄本・住民票・固定資産評価証明書などの取得実費、登記事項証明書の手数料がかかり、司法書士に依頼する場合はその報酬が別に必要です。自分で申請する場合でも実費は発生します。</p>
+
+<h2 id="kanren">関連ツール</h2>
+<ul>
+  <li><a href="../sozokuzei/">相続税の計算機</a> — 遺産総額と家族構成から相続税額を計算します。</li>
+  <li><a href="../seizen-zoyo/">生前贈与シミュレーター</a> — 暦年贈与と相続時精算課税のどちらが有利かを比べます。</li>
+  <li><a href="../zoyozei/">贈与税の計算機</a> — 贈与を受けた額から贈与税を計算します。</li>
+</ul>
+
+<h2 id="shutten">出典</h2>
+<ul>
+  <li><a href="https://laws.e-gov.go.jp/law/342AC0000000035" rel="nofollow">登録免許税法</a>（9条・10条・15条・19条・別表第一 第一号・附則7条）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/337AC0000000066" rel="nofollow">国税通則法</a>（118条1項・119条1項）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">租税特別措置法</a>（84条の2の2）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/416AC0000000123" rel="nofollow">不動産登記法</a>（76条の2・76条の3・164条）</li>
+  <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7191.htm" rel="nofollow">国税庁 No.7191 登録免許税の税額表</a></li>
+  <li><a href="https://www.nta.go.jp/publication/pamph/sonota/0018003-081-01.pdf" rel="nofollow">国税庁「相続による土地の所有権の移転登記等に対する登録免許税の免税措置について」（令和8年4月）</a></li>
+</ul>
+
+</article>
+</main>
+<footer class="site" style="display:block">
+  出典: 登録免許税法9条・10条・15条・19条・別表第一 第一号／国税通則法118条・119条／租税特別措置法84条の2の2／不動産登記法76条の2・164条／国税庁 No.7191<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcTorokuMenkyozei, calcGimuKigen } from "../assets/toroku_menkyo_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const numF = (n) => Math.round(n).toLocaleString("ja-JP");
+
+let D = null;
+// 参照データは非同期で届く。届く前に計算ボタンを押されても待つ（実ユーザーと同じ経路）。
+// この catch が拾ってよいのは「データが手に入らなかった」ことだけ（飾りの描画は別に処理する）。
+const load = (path) => fetch(path).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+const dataReady = load("../assets/toroku_menkyo_r08.json").then(d => { D = d; return true; }).catch(() => false);
+
+// 出典の年分表示は飾り。ここで転んでも計算は止めない。
+dataReady.then(() => { $("src-note").textContent = D?._meta?.year ? `（${D._meta.year}）` : ""; }).catch(() => {});
+
+// --- 入力行 ---
+let rowSeq = 0;
+function addRow(kind, value, num, den) {
+  const i = rowSeq++;
+  const div = document.createElement("div");
+  div.className = "grid2 prow";
+  div.dataset.row = String(i);
+  div.style.cssText = "align-items:end;gap:8px;margin-bottom:8px";
+  div.innerHTML = `
+    <div>
+      <label for="kind${i}" style="font-size:13px">種別</label>
+      <select id="kind${i}" class="p-kind">
+        <option value="land"${kind === "building" ? "" : " selected"}>土地（1筆）</option>
+        <option value="building"${kind === "building" ? " selected" : ""}>建物（1棟）</option>
+      </select>
+    </div>
+    <div>
+      <label for="val${i}" style="font-size:13px">固定資産税評価額（円）</label>
+      <input type="number" id="val${i}" class="p-val" min="0" inputmode="numeric" value="${value ?? ""}" placeholder="例: 12345678">
+    </div>
+    <div>
+      <label for="num${i}" style="font-size:13px">相続する持分</label>
+      <div style="display:flex;align-items:center;gap:6px">
+        <input type="number" id="num${i}" class="p-num" min="1" inputmode="numeric" value="${num ?? 1}" style="width:70px">
+        <span>/</span>
+        <input type="number" id="den${i}" class="p-den" min="1" inputmode="numeric" value="${den ?? 1}" style="width:70px">
+      </div>
+    </div>
+    <div>
+      <button type="button" class="p-del" style="margin-top:4px">この行を削除</button>
+    </div>`;
+  $("rows").appendChild(div);
+  div.querySelector(".p-del").addEventListener("click", () => {
+    if (document.querySelectorAll(".prow").length > 1) div.remove();
+  });
+}
+addRow("land", 12345678, 1, 1);
+addRow("building", 5678901, 1, 1);
+$("addrow").addEventListener("click", () => addRow("land", "", 1, 1));
+
+// 申請予定日の既定はきょう（免税措置の期限を実日付で判定するため）。
+{
+  const t = new Date();
+  const p = (n) => String(n).padStart(2, "0");
+  $("applyDate").value = `${t.getFullYear()}-${p(t.getMonth() + 1)}-${p(t.getDate())}`;
+}
+
+function readRows() {
+  return [...document.querySelectorAll(".prow")].map((row) => ({
+    kind: row.querySelector(".p-kind").value,
+    value: Number(row.querySelector(".p-val").value) || 0,
+    shareNum: Number(row.querySelector(".p-num").value) || 1,
+    shareDen: Number(row.querySelector(".p-den").value) || 1,
+  }));
+}
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+  const okData = await dataReady; // 参照データの到着を必ず待つ
+  if (!okData || !D) {
+    box.innerHTML = `<div class="note"><b>データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。データが分からない状態で税額を答えることはできません。</div>`;
+    return;
+  }
+
+  const props = readRows();
+  let r, g = null;
+  try {
+    r = calcTorokuMenkyozei({ properties: props, applyDate: $("applyDate").value || undefined }, D);
+    if ($("knownDate").value) g = calcGimuKigen($("knownDate").value, D);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>${e.message}</div>`;
+    return;
+  }
+
+  if (!r.hasAnyValue) {
+    box.innerHTML = `<div class="note"><b>評価額を入力してください。</b>
+      固定資産税の課税明細書または固定資産評価証明書の「価格（評価額）」の欄の金額です。</div>`;
+    return;
+  }
+
+  const kindLabel = (k) => (k === "building" ? "建物" : "土地");
+  const rowsHtml = r.items.map((it, i) => {
+    const share = it.shareNum === it.shareDen ? "全部" : `${it.shareNum}/${it.shareDen}`;
+    const badge = it.exempt
+      ? `<b style="color:#2f8b52">免税</b><br><span class="hint">100万円以下の土地</span>`
+      : (it.shareValue > 0 ? numF(it.shareValue) + "円" : "—");
+    return `<tr><td>${i + 1}. ${kindLabel(it.kind)}</td><td style="text-align:right">${numF(it.fullValue)}円</td>
+      <td style="text-align:center">${share}</td><td style="text-align:right">${badge}</td></tr>`;
+  }).join("");
+
+  const expiredNote = r.menzeiExpired
+    ? `<div class="note" id="menzei-expired"><b>免税措置の適用期限（${r.menzeiKigen}）より後の申請日です。</b>
+        このツールは期限後の免税判定を行いません（延長されたかどうかは未確認のため、免税と決めつけずに課税で計算しています）。
+        最新の取扱いを国税庁・法務局で確認してください。</div>`
+    : "";
+
+  const exemptNote = r.exemptCount > 0
+    ? `<p id="exempt-note">うち<b>${r.exemptCount}件</b>は<b>免税</b>（価額100万円以下の土地・措法84条の2の2第2項、適用期限 ${r.menzeiKigen}）。
+        免税がなければ課税標準に ${numF(r.exemptSaved)}円 が加算されていました。</p>`
+    : "";
+
+  const minNote = r.minApplied
+    ? `<p id="min-note">税率を適用した金額は${numF(r.rawTax)}円ですが、<b>1,000円未満のため税額は1,000円</b>になります（登録免許税法19条・定率課税の最低税額）。</p>`
+    : "";
+
+  const gimuHtml = g
+    ? `<div class="callout" id="gimu-result"><b>相続登記の申請期限</b>
+        <b>${g.deadline}</b> まで（${g.usedShikoBi
+          ? `令和6年4月1日より前に知ったため、<b>施行日（${g.start}）から3年</b>。令和3年法律24号 附則5条6項`
+          : `知った日（${g.start}）から3年。不動産登記法76条の2第1項`}）。
+        正当な理由なく怠ると<b>10万円以下の過料</b>（同法164条1項）。間に合わないときは<b>相続人申告登記</b>の申出で申請義務を履行したものとみなされます（同法76条の3）。</div>`
+    : "";
+
+  const calcLine = r.allExempt
+    ? `<p id="calc-line">課税対象になる不動産がないため、<b>登録免許税は課されません</b>。</p>`
+    : `<p id="calc-line">課税標準 <b>${numF(r.kazeiHyojun)}円</b>
+        <span class="hint">（持分適用後の合計 ${numF(r.sumRaw)}円 → 1,000円未満切捨て・通則法118条1項）</span>
+        × ${r.rateLabel} = ${numF(r.rawTax)}円 → 100円未満切捨て（通則法119条1項）</p>`;
+
+  box.innerHTML = `
+    <div class="big" id="tax-amount">${yenF(r.tax)}</div>
+    <p class="hint" style="margin-top:-6px">相続登記の登録免許税（${r.year}のルールで計算）</p>
+    ${expiredNote}
+    <table id="detail-table">
+      <thead><tr><th>不動産</th><th style="text-align:right">評価額</th><th style="text-align:center">持分</th><th style="text-align:right">課税標準への算入</th></tr></thead>
+      <tbody>${rowsHtml}</tbody>
+    </table>
+    ${exemptNote}
+    ${calcLine}
+    ${minNote}
+    ${gimuHtml}
+    <p class="hint">この金額は国に納める登録免許税だけです。戸籍謄本・評価証明書などの実費、司法書士に依頼する場合の報酬は含みません。</p>`;
+});
+</script>
+</body>
+</html>

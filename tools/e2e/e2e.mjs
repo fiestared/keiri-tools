@@ -384,6 +384,39 @@ const SCENES = [
   { name: "seizen_zoyo_nodata", data404: "seizen_zoyo_r08.json",
     expect: (s) => s.failed && s.base === null },
 
+  // ── 相続登記の登録免許税 (/sozoku-toki-menkyozei/) ───────────────────
+  // ★手計算の鎖は tests/test_toroku_menkyo.mjs S1: 土地12,345,678＋建物5,678,901
+  //   → 課税標準18,024,000 → ×0.4%=72,096 → 100円未満切捨て 72,000円。
+  //   「行の読み取り→持分→免税判定→2段の端数処理→描画」の配線が1段でも狂えば落ちる。
+  // ★初期表示も検査する: 入力行と申請予定日はページ内スクリプトが作るので、
+  //   スクショ(file://)では見えず「空の画面」を出していても気づけない。
+  { name: "toroku_menkyo", expect: (s) =>
+      s.tax === 72000 && s.base === 18024000 && s.exemptCount === null &&
+      s.defaultRows === 2 && s.defaultValsFilled &&
+      /^\d{4}-\d{2}-\d{2}$/.test(s.defaultApplyDate) &&
+      s.showsYear && !s.failed },
+  { name: "toroku_menkyo_slow", slow: true, expect: (s) =>
+      s.tax === 72000 && s.base === 18024000 && !s.failed },
+  // ★免税は1筆ごと判定（措法84条の2の2第2項）: 90万×3筆＝合計270万でも全部免税＝0円。
+  //   合計で判定する実装なら 10,800円 になって落ちる。
+  { name: "toroku_menkyo_menzei", expect: (s) =>
+      s.tax === 0 && s.exemptCount === 3 && s.allExempt && !s.failed },
+  // ★持分1/2（登免法10条2項）: 3,000万→課税標準1,500万・60,000円（全体で計算したら120,000円）。
+  { name: "toroku_menkyo_mochibun", expect: (s) =>
+      s.tax === 60000 && s.base === 15000000 && !s.failed },
+  // ★最低税額（登免法19条）: 建物20万→800円だが1,000円。切捨てで0円にしない。
+  { name: "toroku_menkyo_saitei", expect: (s) =>
+      s.tax === 1000 && s.minApplied && !s.failed },
+  // ★申請義務の期限（令和3年法律24号 附則5条6項）: 施行日前に知った→施行日起算で2027-04-01。
+  { name: "toroku_menkyo_kigen", expect: (s) =>
+      s.deadline === "2027-04-01" && s.usedShikoBi && s.tax === 20000 && !s.failed },
+  // ★免税措置の期限後は免税判定しない（期限切れなのに「免税」と答えるのが最も危険な向き）。
+  { name: "toroku_menkyo_expired", expect: (s) =>
+      s.tax === 2000 && s.expired && s.exemptCount === null && !s.failed },
+  // 参照データ配信不可 → 税額を出さずに断る（fail closed）。
+  { name: "toroku_menkyo_nodata", data404: "toroku_menkyo_r08.json",
+    expect: (s) => s.failed && s.tax === null },
+
   // ── 収入印紙 (/inshi/) ───────────────────────────────────────────────
   // ★No.6925: 税込54,800円・消費税等4,981円区分記載 → 税抜49,819円で判定＝非課税（印紙不要）。
   //   ハーネス側の引き算 54,800−4,981=49,819<50,000 と一致し、一覧表23行（判取帳まで）も描かれること。

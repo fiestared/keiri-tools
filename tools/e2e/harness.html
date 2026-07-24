@@ -1383,6 +1383,86 @@ SCENES.seizen_zoyo_no60 = seizenScene({ assets: 10000, zogaku: 110, nensu: 10, g
 // 参照データ配信不可 → 比較を出さずに断る（fail closed）。
 SCENES.seizen_zoyo_nodata = seizenScene({ assets: 10000, zogaku: 110, nensu: 10, gap: 3 });
 
+// ── 相続登記の登録免許税 (/sozoku-toki-menkyozei/) ───────────────────────────
+// ★不動産の行を可変で作るツール。単体（tests/test_toroku_menkyo.mjs）は core しか見ないので、
+//   「行の読み取り→持分→免税判定→2段の端数処理→描画」の配線はここでしか守れない。
+//   期待値の手計算は同テストの S1〜S10（条文書き下しオラクルと全域照合つき）。
+const torokuScene = ({ rows, applyDate = "2026-07-01", knownDate = "" }) => async () => {
+  const doc = await open("/docs/sozoku-toki-menkyozei/");
+  // 既定で2行ある。足りなければ追加、余れば削除する。
+  const nrows = () => doc.querySelectorAll(".prow").length;
+  // ★入力行と申請日の既定値はページ内スクリプトが作る＝file://のスクショでは見えない。
+  //   「利用者が最初に見る画面が空でないこと」はここでしか守れないので機械で確かめる。
+  const defaultRows = nrows();
+  const defaultApplyDate = doc.getElementById("applyDate").value;
+  const defaultVals = [...doc.querySelectorAll(".p-val")].map((e) => e.value);
+  while (nrows() < rows.length) doc.getElementById("addrow").click();
+  while (nrows() > rows.length) doc.querySelectorAll(".prow")[nrows() - 1].querySelector(".p-del").click();
+  [...doc.querySelectorAll(".prow")].forEach((row, i) => {
+    const r = rows[i];
+    const put = (sel, v) => {
+      const el = row.querySelector(sel);
+      el.value = String(v);
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+      el.dispatchEvent(new Event("change", { bubbles: true }));
+    };
+    put(".p-kind", r.kind);
+    put(".p-val", r.value);
+    put(".p-num", r.num ?? 1);
+    put(".p-den", r.den ?? 1);
+  });
+  set(doc, "applyDate", applyDate);
+  set(doc, "knownDate", knownDate);
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /¥|読み込めませんでした|計算できませんでした|評価額を入力してください/.test(text(doc, "result")),
+    "登録免許税の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    defaultRows,
+    defaultApplyDate,
+    defaultValsFilled: defaultVals.length > 0 && defaultVals.every((v) => Number(v) > 0),
+    tax: num(/¥([\d,]+)/),
+    base: num(/課税標準 ([\d,]+)円/),
+    exemptCount: num(/うち([\d,]+)件は免税/),
+    allExempt: body.includes("登録免許税は課されません"),
+    minApplied: body.includes("1,000円未満のため税額は1,000円"),
+    deadline: (body.match(/(\d{4}-\d{2}-\d{2}) まで/) || [])[1] || null,
+    usedShikoBi: body.includes("施行日"),
+    expired: body.includes("免税判定を行いません"),
+    showsYear: /令和\d+年/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// ★看板例（S1）: 土地12,345,678＋建物5,678,901（いずれも全部）
+//   → 合計18,024,579 → 課税標準18,024,000 → ×0.4%=72,096 → 100円未満切捨て 72,000円。
+SCENES.toroku_menkyo = torokuScene({ rows: [
+  { kind: "land", value: 12345678 }, { kind: "building", value: 5678901 },
+] });
+SCENES.toroku_menkyo_slow = SCENES.toroku_menkyo;  // 800ms遅らせる（モバイル回線）。待って正答すること
+// ★免税の1筆ごと判定（S4）: 90万円の土地3筆 → 合計270万でも3筆とも免税＝0円。
+//   合計で判定する実装に変えたら、ここが 10,800円 になって落ちる。
+SCENES.toroku_menkyo_menzei = torokuScene({ rows: [
+  { kind: "land", value: 900000 }, { kind: "land", value: 900000 }, { kind: "land", value: 900000 },
+] });
+// ★持分（S2）＋最低税額（S7）: 土地3,000万の1/2 → 60,000円。建物20万 → 800円だが最低税額1,000円。
+SCENES.toroku_menkyo_mochibun = torokuScene({ rows: [
+  { kind: "land", value: 30000000, num: 1, den: 2 },
+] });
+SCENES.toroku_menkyo_saitei = torokuScene({ rows: [{ kind: "building", value: 200000 }] });
+// ★申請義務の期限（附則5条6項）: 施行日前に知った → 施行日起算で 2027-04-01 まで。
+SCENES.toroku_menkyo_kigen = torokuScene({
+  rows: [{ kind: "land", value: 5000000 }], knownDate: "2010-08-15" });
+// ★免税措置の期限後（措法84条の2の2）: 令和9年4月1日の申請 → 免税判定せず課税で答える（危険な向きを塞ぐ）。
+SCENES.toroku_menkyo_expired = torokuScene({
+  rows: [{ kind: "land", value: 500000 }], applyDate: "2027-04-01" });
+// 参照データ配信不可 → 税額を出さずに断る（fail closed）。
+SCENES.toroku_menkyo_nodata = torokuScene({ rows: [{ kind: "land", value: 12345678 }] });
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。
