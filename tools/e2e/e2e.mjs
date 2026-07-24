@@ -417,6 +417,50 @@ const SCENES = [
   { name: "toroku_menkyo_nodata", data404: "toroku_menkyo_r08.json",
     expect: (s) => s.failed && s.tax === null },
 
+  // ── 遺留分 (/iryubun/) ───────────────────────────────────────────────
+  // ★手計算の鎖は tests/test_iryubun.mjs §6: 遺産1億・配偶者＋子2人
+  //   → 総体的遺留分1/2 → 子の個別的遺留分1/8 → 1,250万円。
+  //   「家族構成の読み取り→割合→金額→侵害額の3項目→描画」の配線が1段でも狂えば落ちる。
+  // ★法定相続分(1/4)と遺留分(1/8)を別の欄に描いていること＝混同したら落ちる。
+  { name: "iryubun", expect: (s) =>
+      s.santei === 100000000 && s.shingai === 12500000 && s.sotai === "2分の1" &&
+      s.rows.length === 2 &&
+      s.rows[1].houtei === "4分の1" && s.rows[1].iryubun === "8分の1" &&
+      s.rows[0].houtei === "2分の1" && s.rows[0].iryubun === "4分の1" &&
+      s.defaultIsan > 0 && /^\d{4}-\d{2}-\d{2}$/.test(s.defaultKaishi) && !s.failed },
+  { name: "iryubun_slow", slow: true, expect: (s) =>
+      s.santei === 100000000 && s.shingai === 12500000 && !s.failed },
+  // ★兄弟姉妹は法定相続分を持つが遺留分は「なし」（1042条1項柱書）。
+  //   両方を同じ値で描く実装なら、ここで houtei と iryubun が一致して落ちる。
+  { name: "iryubun_kyodai", expect: (s) =>
+      s.rows[0].iryubun === "8分の3" && s.kyodaiRow &&
+      s.kyodaiRow.houtei === "8分の1" && s.kyodaiRow.iryubun === "なし" &&
+      s.kyodaiRow.yen === "なし" && s.meNashi && !s.failed },
+  // ★兄弟姉妹だけが相続人 → 遺留分を持つ人が一人もいないと明言する。
+  { name: "iryubun_kyodai_only", expect: (s) =>
+      s.daremoNashi && s.meNashi && !s.failed },
+  // ★贈与の算入（1044条3項）: 遺産6,000万＋特別受益4,000万 → 基礎財産1億・遺留分1,250万。
+  //   贈与を足さない配線なら 750万 になって落ちる。
+  { name: "iryubun_zoyo", expect: (s) =>
+      s.santei === 100000000 && s.shingai === 12500000 && !s.failed },
+  // ★1046条2項: 1,250万 −500万 −1,000万 ＋300万 = 50万円（3号だけが加算）。
+  { name: "iryubun_shingai", expect: (s) =>
+      s.shingai === 500000 && !s.failed },
+  // ★施行日前の相続は計算しない（fail closed）。旧条番号1028条を案内すること。
+  { name: "iryubun_kyuho", expect: (s) =>
+      s.kyuho && s.kyuhoJojo && s.shingai === null && s.santei === null && !s.failed },
+  // ★直系尊属のみ（1042条1項1号）: 総体的遺留分3分の1・父母1人あたり1/6。
+  //   配偶者がいる場合と同じ2分の1で描いたら落ちる。
+  { name: "iryubun_sonzoku", expect: (s) =>
+      s.sotai === "3分の1" && s.rows[0].iryubun === "6分の1" &&
+      s.shingai === 16666666 && !s.failed },
+  // ★時効の目安（1048条）: 知った日2026-05-10＋1年／相続開始2026-04-01＋10年。
+  { name: "iryubun_kigen", expect: (s) =>
+      s.kigen === "2027-05-10" && s.kigen10 === "2036-04-01" && !s.failed },
+  // 参照データ配信不可 → 遺留分を出さずに断る（fail closed）。
+  { name: "iryubun_nodata", data404: "iryubun_r08.json",
+    expect: (s) => s.failed && s.shingai === null },
+
   // ── 収入印紙 (/inshi/) ───────────────────────────────────────────────
   // ★No.6925: 税込54,800円・消費税等4,981円区分記載 → 税抜49,819円で判定＝非課税（印紙不要）。
   //   ハーネス側の引き算 54,800−4,981=49,819<50,000 と一致し、一覧表23行（判取帳まで）も描かれること。

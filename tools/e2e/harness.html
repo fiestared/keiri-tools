@@ -1463,6 +1463,89 @@ SCENES.toroku_menkyo_expired = torokuScene({
 // 参照データ配信不可 → 税額を出さずに断る（fail closed）。
 SCENES.toroku_menkyo_nodata = torokuScene({ rows: [{ kind: "land", value: 12345678 }] });
 
+// ── 遺留分 (/iryubun/) ──────────────────────────────────────────────────────
+// ★単体（tests/test_iryubun.mjs）は core しか見ないので、「家族構成の読み取り→総体的遺留分→
+//   法定相続分→個別的遺留分→侵害額の3項目→描画」の配線はここでしか守れない。
+//   期待値の手計算は同テストの §3・§6（条文書き下しオラクルと全域照合つき）。
+const iryubunScene = (o) => async () => {
+  const doc = await open("/docs/iryubun/");
+  // 既定値もページの一部（利用者が最初に見る画面）。空でないことを機械で確かめる。
+  const defaultIsan = doc.getElementById("isanTotal").value;
+  const defaultKaishi = doc.getElementById("kaishiDate").value;
+  set(doc, "kaishiDate", o.kaishiDate ?? "2026-04-01");
+  set(doc, "shittaDate", o.shittaDate ?? "");
+  set(doc, "isanTotal", o.isan ?? 100000000);
+  set(doc, "saimuTotal", o.saimu ?? 0);
+  set(doc, "zoyoSozokunin", o.zoyoSozokunin ?? 0);
+  set(doc, "zoyoDaisansha", o.zoyoDaisansha ?? 0);
+  set(doc, "zoyoSongaiShiri", o.zoyoSongai ?? 0);
+  set(doc, "hasSpouse", o.spouse ?? "yes");
+  set(doc, "numChildrenReal", o.real ?? 2);
+  set(doc, "numChildrenAdopted", o.adopted ?? 0);
+  set(doc, "numChildrenRenounced", o.renounced ?? 0);
+  set(doc, "numParents", o.parents ?? 0);
+  set(doc, "numSiblings", o.siblings ?? 0);
+  set(doc, "me", o.me ?? "child");
+  set(doc, "meJuizo", o.meJuizo ?? 0);
+  set(doc, "meShutoku", o.meShutoku ?? 0);
+  set(doc, "meSaimu", o.meSaimu ?? 0);
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /¥|読み込めませんでした|計算できませんでした|より前に開始した相続/.test(text(doc, "result")),
+    "遺留分の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  // 表の「1人あたりの遺留分」列を相続人ごとに読む（描画の配線を名指しで確かめる）
+  const rows = [...(doc.querySelectorAll("#kobetsu-table tbody tr") || [])].map((tr) => {
+    const td = [...tr.querySelectorAll("td")].map((e) => e.textContent.trim());
+    return { label: td[0], count: td[1], houtei: td[2], iryubun: td[3], yen: td[4] };
+  });
+  return {
+    defaultIsan: Number(defaultIsan) || 0,
+    defaultKaishi,
+    santei: num(/遺留分を算定するための財産 ¥([\d,]+)/),
+    shingai: num(/あなたが請求できる遺留分侵害額 ¥([\d,]+)/),
+    sotai: (body.match(/総体的遺留分（相続人全体の割合）: (\S+?) /) || [])[1] || null,
+    rows,
+    // 兄弟姉妹の行は「法定相続分はあるが遺留分はなし」になっていること
+    kyodaiRow: rows.find((r) => r.label.includes("兄弟姉妹")) || null,
+    daremoNashi: body.includes("遺留分を持つ相続人が一人もいません"),
+    meNashi: body.includes("あなたには遺留分がありません"),
+    kyuho: /より前に開始した相続のため/.test(body),
+    kyuhoJojo: body.includes("1028条"),
+    kigen: (body.match(/知った日から1年 → (\d{4}-\d{2}-\d{2})/) || [])[1] || null,
+    kigen10: (body.match(/相続開始から10年 → (\d{4}-\d{2}-\d{2})/) || [])[1] || null,
+    saimuChoka: body.includes("債務が財産を上回っています"),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// ★看板例（§6）: 遺産1億・配偶者＋子2人・次男は何も取得しない
+//   → 基礎財産1億 → 子の個別的遺留分1/8 → 1,250万円。法定相続分1/4とは別の欄に出ること。
+SCENES.iryubun = iryubunScene({});
+SCENES.iryubun_slow = SCENES.iryubun;  // 800ms遅らせる（モバイル回線）。待って正答すること
+// ★兄弟姉妹に遺留分はない（1042条1項柱書）: 配偶者＋兄弟姉妹2人
+//   → 配偶者は 1/2×3/4 = 3/8、兄弟姉妹は法定相続分1/8を持つが遺留分は「なし」。
+SCENES.iryubun_kyodai = iryubunScene({ real: 0, siblings: 2, me: "sibling" });
+// ★兄弟姉妹だけ → 遺留分を持つ人が一人もいない（遺言がそのまま通る）。
+SCENES.iryubun_kyodai_only = iryubunScene({ spouse: "no", real: 0, siblings: 3, me: "sibling" });
+// ★生前贈与の算入（1043条・1044条3項）: 遺産6,000万＋相続人への特別受益4,000万
+//   → 基礎財産1億 → 子の遺留分1,250万（贈与を足さなければ750万にしかならない）。
+SCENES.iryubun_zoyo = iryubunScene({ isan: 60000000, zoyoSozokunin: 40000000 });
+// ★1046条2項の3項目: 遺贈500万を受け、遺産1,000万を取得し、債務300万を承継
+//   → 1,250 −500 −1,000 +300 = 50万円。3号を控除に間違えると −250万→0円になって落ちる。
+SCENES.iryubun_shingai = iryubunScene({ meJuizo: 5000000, meShutoku: 10000000, meSaimu: 3000000 });
+// ★施行日前の相続（平成30年法律72号 附則2条）: 2019-06-30 開始 → 計算せず旧1028条を案内する。
+SCENES.iryubun_kyuho = iryubunScene({ kaishiDate: "2019-06-30" });
+// ★直系尊属のみ（1042条1項1号）: 配偶者なし・父母2人 → 総体的遺留分は3分の1、1人あたり1/6。
+SCENES.iryubun_sonzoku = iryubunScene({ spouse: "no", real: 0, parents: 2, me: "parent" });
+// ★時効の目安（1048条）
+SCENES.iryubun_kigen = iryubunScene({ shittaDate: "2026-05-10" });
+// 参照データ配信不可 → 遺留分を出さずに断る（fail closed）。
+SCENES.iryubun_nodata = iryubunScene({});
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。
