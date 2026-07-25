@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>地震保険料控除シミュレーター｜控除額と節税額を自動計算</title>
+<meta name="description" content="地震保険料控除の控除額（所得税・住民税）と、実際に安くなる節税額を自動計算。旧長期損害保険料の経過措置、所得税と住民税で違う計算式（住民税は2分の1・上限2万5千円）、一の契約が両方に該当するときにどちらを選ぶと得かまで計算します。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/jishin-hoken-kojo/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "地震保険料控除シミュレーター",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "年間の地震保険料と旧長期損害保険料から、地震保険料控除の控除額（所得税・住民税）と年間の節税額を計算します。一の契約が両方の区分に該当する場合の有利判定にも対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "地震保険料控除シミュレーター"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 地震保険料控除は最大でいくら戻りますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 控除額の上限は所得税5万円・住民税2万5千円で、実際に戻る（安くなる）金額は課税所得400万円の人で年12,550円ほどが上限のめやすです。所得税の減少は「所得税側の控除額5万円×あなたの税率20%＝10,000円」、復興特別所得税がその2.1%で210円、住民税の減少が「住民税側の控除額2万5千円×10%＝2,500円」という内訳です。控除額の5万円がそのまま戻ってくるわけではありません。税率が10%の人なら年8,105円ほどになります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 住民税の控除額も所得税と同じ5万円ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 違います。住民税は支払った地震保険料の2分の1が控除額になり、上限も2万5千円です。所得税は支払額の全額で上限5万円なので、式も上限も別物です。たとえば年間3万円の地震保険料なら、所得税側の控除額は3万円、住民税側は1万5千円です。所得税の式で住民税を計算すると控除額を2倍に見積もることになるので注意してください。根拠は地方税法34条1項5号の3・314条の2第1項5号の3です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 旧長期損害保険料とは何ですか。まだ使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 平成18年の税制改正で損害保険料控除は廃止されましたが、経過措置として、平成18年12月31日までに締結し、満期返戻金があり保険期間が10年以上で、平成19年1月1日以後に契約を変更していない長期の損害保険契約については、今も地震保険料控除の対象にできます。控除額は所得税で最高1万5千円、住民税で最高1万円です。積立火災保険や積立傷害保険が該当することが多く、控除証明書に「旧長期」と記載されています。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 控除証明書に地震保険料と旧長期損害保険料の両方が書いてあります。どちらで申告しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 一つの契約が両方の区分に該当する場合は、どちらか一方でしか控除を受けられません。納税者が選べますが、どちらが得かは金額しだいです。旧長期は上限が低い（所得税1万5千円）代わりに少額でも控除額が大きくなりやすく、地震保険料は支払額の全額が控除される代わりに上限が5万円と高いという違いがあるためです。上の計算機に両方の金額を入れると、どちらで申告した方が何円得かを計算します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 地震保険料をたくさん払えばそれだけ控除も増えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 増えません。所得税は5万円、住民税は2万5千円で頭打ちになります。しかもこの上限は地震保険料と旧長期損害保険料を合計した後の上限と同じ金額なので、地震保険料だけで5万円に達している人は、旧長期損害保険料の控除証明書を追加で出しても控除額は1円も増えません。複数年分をまとめて払った長期契約の場合は、支払った年に全額を申告するのではなく、保険会社が発行する控除証明書に書かれた「その年分」の金額を申告します。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 地震保険料控除シミュレーター</nav>
+
+<section class="hero">
+  <h1>地震保険料控除シミュレーター</h1>
+  <p>控除証明書の<b>年間の支払保険料</b>を入れるだけで、<b>地震保険料控除の控除額</b>（所得税・住民税）と、実際に安くなる<b>年間の節税額</b>を計算します。<b>旧長期損害保険料の経過措置</b>や、<b>一つの契約が両方の区分に該当するときにどちらを選ぶと得か</b>まで計算します。</p>
+</section>
+
+<div class="card">
+  <label>年間の支払保険料<span class="hint">　控除証明書に書かれた金額です。該当しない欄は空欄のままで構いません</span></label>
+
+  <div style="margin:10px 0;padding:10px;border:1px solid var(--line,#e3e8e6);border-radius:8px">
+    <div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+      <label for="jishin" style="flex:1;margin:0;font-size:13px">地震保険料<span class="hint" style="display:block;font-weight:400">火災保険に付帯する地震保険の保険料</span></label>
+      <input type="number" id="jishin" min="0" step="1000" placeholder="円" inputmode="numeric" style="width:9em;flex:none">
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+      <label for="kyuchoki" style="flex:1;margin:0;font-size:13px">旧長期損害保険料<span class="hint" style="display:block;font-weight:400">平成18年12月31日までに契約した積立型の損害保険</span></label>
+      <input type="number" id="kyuchoki" min="0" step="1000" placeholder="円" inputmode="numeric" style="width:9em;flex:none">
+    </div>
+  </div>
+
+  <div style="margin:10px 0">
+    <label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px">
+      <input type="checkbox" id="both" style="width:auto;flex:none">
+      <span>一つの契約に、地震保険料と旧長期損害保険料の<b>両方</b>が書かれている</span>
+    </label>
+    <p class="hint" id="both-hint" style="margin:4px 0 0 26px"></p>
+    <div id="both-rows" hidden style="margin:8px 0 0 26px">
+      <div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+        <label for="both_jishin" style="flex:1;margin:0;font-size:13px">その契約の 地震保険料</label>
+        <input type="number" id="both_jishin" min="0" step="1000" placeholder="円" inputmode="numeric" style="width:9em;flex:none">
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+        <label for="both_kyuchoki" style="flex:1;margin:0;font-size:13px">その契約の 旧長期損害保険料</label>
+        <input type="number" id="both_kyuchoki" min="0" step="1000" placeholder="円" inputmode="numeric" style="width:9em;flex:none">
+      </div>
+    </div>
+  </div>
+
+  <label for="kazei">あなたの課税される所得金額（課税所得・円）<span class="hint">　源泉徴収票や確定申告書の「課税される所得金額」。年収ではありません</span></label>
+  <input type="number" id="kazei" placeholder="例: 4000000" inputmode="numeric" min="0" step="10000">
+
+  <button class="primary" id="calc">控除額と節税額を計算する</button>
+  <div class="result" id="result"></div>
+  <p class="hint" id="src-hint" style="margin-top:10px"></p>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p>地震保険料控除は、<b>地震保険の保険料を払っている人の所得から、最大5万円（所得税）を差し引く</b>所得控除です。年末調整か確定申告で控除証明書の金額を申告するだけで、所得税と住民税が安くなります。ただし<b>住民税は計算式も上限も所得税と違い</b>、さらに<b>旧長期損害保険料</b>という古い契約向けの経過措置があるため、実際の控除額は思ったより複雑です。上の計算機で正確な控除額と節税額が出せます。以下では、条文と国税庁の様式にもとづいて解説します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+
+<nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#tsukaikata">使い方と注意点</a></li>
+<li><a href="#keisan">控除額の計算式 — 所得税と住民税で3か所違う</a></li>
+<li><a href="#kyu-choki">旧長期損害保険料の経過措置</a></li>
+<li><a href="#choice">一つの契約が両方に該当するとき</a></li>
+<li><a href="#reidai">節税額の例</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav>
+
+<h2 id="tsukaikata">使い方と注意点</h2>
+  <div class="callout">
+    <b>入れるのは「支払った保険料」と「課税される所得金額」の2つです</b>
+    保険料は、毎年10〜11月ごろに損害保険会社から届く<b>控除証明書</b>の金額を入れます。節税額のほうは税率で決まり、税率は<b>課税される所得金額</b>で決まります。これは年収ではなく、年収から給与所得控除・基礎控除・社会保険料控除などを<b>すべて引いた後</b>の金額です。源泉徴収票なら「給与所得控除後の金額」から「所得控除の額の合計額」を引いた額、確定申告書なら「課税される所得金額」の欄そのものです。
+  </div>
+  <h3>このツールの前提</h3>
+  <p>控除額は所得税法77条1項・地方税法34条1項5号の3の計算式で求めます。旧長期損害保険料は平成18年法律第10号 附則10条2項（所得税）・平成18年法律第7号 附則5条5項（住民税）の経過措置によります。<b>1円未満の端数は切り上げ</b>（国税庁の保険料控除申告書の脚注どおり）です。節税額のほうは、所得税を国税庁の<b>所得税の速算表</b>で計算し、控除で税率の段をまたぐ場合も速算表の差をとって<b>超過累進</b>を正しく反映します。住民税の所得割は<b>一律10％</b>として概算します。復興特別所得税（所得税額の2.1％）の減少も含めています。</p>
+  <div class="note">
+    本ツールの結果は目安です。実際の税額は、他の所得控除や税額控除、お住まいの市区町村などによって変わります。申告の前に税務署・税理士でご確認ください。
+  </div>
+
+<h2 id="keisan">控除額の計算式 — 所得税と住民税で3か所違う</h2>
+
+<p>地震保険料控除でいちばん誤解が多いのが、<b>所得税と住民税で計算式が違う</b>点です。違いは次の3か所です。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>違うところ</th><th>所得税</th><th>住民税</th></tr>
+</thead>
+<tbody>
+<tr><td><b>地震保険料の控除額</b></td><td>支払額の<b>全額</b></td><td>支払額の<b>2分の1</b></td></tr>
+<tr><td><b>上限</b></td><td><b>5万円</b></td><td><b>2万5千円</b></td></tr>
+<tr><td><b>旧長期の帯の刻み</b></td><td>1万円・2万円</td><td>5千円・1万5千円</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout" id="sagaku-jumin-shiki">
+<b>住民税は「支払額の二分の一」で、上限は25,000円です。</b>所得税の式（全額・上限50,000円）をそのまま住民税に当てはめると、住民税側の控除額を2倍に見積もることになります。たとえば年間30,000円の地震保険料なら、所得税側の控除額は30,000円ですが、住民税側は15,000円です。根拠は地方税法34条1項5号の3（道府県民税）・314条の2第1項5号の3（市町村民税）です。
+</div>
+
+<figure>
+<figcaption>年間の地震保険料と控除額の関係（所得税・住民税）</figcaption>
+<svg viewBox="0 0 640 300" width="100%" role="img" aria-label="地震保険料の支払額に対する所得税・住民税の控除額のグラフ。所得税は支払額と同額で5万円で頭打ち、住民税は支払額の半分で2万5千円で頭打ちになる。">
+  <rect x="0" y="0" width="640" height="300" fill="#fff"/>
+  <!-- 軸（左の余白は、縦書きの「控除額」と目盛ラベルが重ならない幅を取る） -->
+  <line x1="100" y1="250" x2="600" y2="250" stroke="#333" stroke-width="1.5"/>
+  <line x1="100" y1="250" x2="100" y2="30" stroke="#333" stroke-width="1.5"/>
+  <text x="350" y="285" font-size="13" text-anchor="middle" fill="#333">年間の支払保険料</text>
+  <text x="24" y="140" font-size="13" fill="#333" transform="rotate(-90 24 140)" text-anchor="middle">控除額</text>
+  <!-- 目盛 -->
+  <line x1="350" y1="250" x2="350" y2="255" stroke="#333"/>
+  <text x="350" y="270" font-size="12" text-anchor="middle" fill="#555">5万円</text>
+  <line x1="600" y1="250" x2="600" y2="255" stroke="#333"/>
+  <text x="600" y="270" font-size="12" text-anchor="middle" fill="#555">10万円</text>
+  <line x1="95" y1="50" x2="100" y2="50" stroke="#333"/>
+  <text x="88" y="54" font-size="12" text-anchor="end" fill="#555">5万円</text>
+  <line x1="95" y1="150" x2="100" y2="150" stroke="#333"/>
+  <text x="88" y="154" font-size="12" text-anchor="end" fill="#555">2.5万円</text>
+  <!-- 所得税: 支払額と同額で上がり、5万円で水平になる -->
+  <polyline points="100,250 350,50 600,50" fill="none" stroke="#1f7a5a" stroke-width="3"/>
+  <text x="372" y="42" font-size="13" fill="#1f7a5a" font-weight="600">所得税（全額・上限5万円）</text>
+  <!-- 住民税: 傾きが半分で、2.5万円で水平になる -->
+  <polyline points="100,250 350,150 600,150" fill="none" stroke="#b4652a" stroke-width="3" stroke-dasharray="7 4"/>
+  <text x="372" y="142" font-size="13" fill="#b4652a" font-weight="600">住民税（2分の1・上限2.5万円）</text>
+  <!-- 上限到達の注記 -->
+  <line x1="350" y1="50" x2="350" y2="250" stroke="#999" stroke-width="1" stroke-dasharray="3 3"/>
+  <text x="360" y="235" font-size="12" fill="#666">ここから先はいくら払っても増えない</text>
+</svg>
+</figure>
+
+<div class="note" id="muda-note">
+<b>上限に達した後は、いくら払っても控除額は増えません。</b>しかもこの上限（所得税5万円・住民税2万5千円）は、地震保険料と旧長期損害保険料を<b>合計した後の上限と同じ金額</b>です。<span id="muda-kyu">つまり地震保険料だけですでに5万円に達している人は、旧長期損害保険料の控除証明書を追加で出しても控除額は<b>1円も増えません</b>。</span>
+</div>
+
+<h2 id="kyu-choki">旧長期損害保険料の経過措置</h2>
+
+<p>平成18年の税制改正で損害保険料控除は廃止されました。ただし経過措置として、一定の古い長期契約は今も地震保険料控除の対象にできます。これを<b>旧長期損害保険料</b>といいます。積立火災保険・積立傷害保険などが該当し、控除証明書に「旧長期」と書かれています。</p>
+
+<div class="callout" id="kyu-choki-youken">
+<b>旧長期損害保険料として申告できるのは、次の5つを全部満たす契約だけです。</b>
+<ol style="margin:8px 0 0;padding-left:1.3em">
+<li><b>平成18年12月31日までに締結</b>した契約であること</li>
+<li><b>満期返戻金</b>を支払う旨の特約のある契約（またはこれに準ずる政令で定める契約）であること</li>
+<li>保険期間または共済期間が<b>10年以上</b>であること</li>
+<li>平成19年1月1日以後に、その損害保険契約等の<b>変更をしていない</b>こと</li>
+<li>保険期間または共済期間の<b>始期</b>が平成19年1月1日以後のものでないこと</li>
+</ol>
+<p style="margin:8px 0 0;font-size:13px">※ 5つ目は条文（平成18年法律第10号 附則10条2項の柱書き）のかっこ書きです。国税庁のタックスアンサーは1つ目のかっこ書きに畳んで3要件として示していますが、畳んだ形だけを読むと「契約したのが平成18年中だから対象」と誤読しかねません。<b>契約が平成18年中でも、補償の始まりが平成19年1月1日以後なら対象外</b>です。</p>
+</div>
+
+<div class="scroll-wrap">
+<table id="kyu-choki-shiki">
+<thead>
+<tr><th>年間の旧長期損害保険料</th><th>所得税の控除額</th><th>住民税の控除額</th></tr>
+</thead>
+<tbody>
+<tr><td>5,000円以下</td><td rowspan="2">支払額の全額<br><span class="hint">（10,000円以下のとき）</span></td><td>支払額の全額</td></tr>
+<tr><td>5,000円超 15,000円以下</td><td>支払額×1/2＋2,500円</td></tr>
+<tr><td>10,000円超 20,000円以下</td><td>支払額×1/2＋5,000円</td><td rowspan="2" id="kyu-jumin-max"><b>10,000円</b>（上限）</td></tr>
+<tr><td>20,000円超</td><td id="kyu-shotoku-max"><b>15,000円</b>（上限）</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>所得税の式は、条文（附則10条2項2号ロ）では「<b>1万円と、合計額から1万円を控除した金額の2分の1に相当する金額との合計額</b>」と書かれています。国税庁のタックスアンサーと保険料控除申告書は同じものを「<b>支払金額×1/2＋5,000円</b>」と書いており、どちらも同じ値になります（10,000＋(x−10,000)÷2 ＝ x÷2＋5,000）。</p>
+
+<h2 id="choice">一つの契約が両方に該当するとき</h2>
+
+<p>一つの損害保険契約が、地震保険料と旧長期損害保険料の<b>どちらの区分にも該当する</b>ことがあります。積立火災保険に地震保険を付帯しているようなケースです。このとき、<b>両方を足して申告することはできません</b>。どちらか一方の区分でしか控除を受けられません（所得税＝平成18年法律第10号 附則10条3項、住民税＝平成18年法律第7号 附則5条6項）。</p>
+
+<div class="callout">
+<b>国税庁は「納税者の選択により」と書くだけで、どちらが得かは示しません。</b>どちらが有利かは金額しだいです。旧長期は<b>上限が低い代わりに少額でも控除額が大きくなりやすく</b>（5,000円払えば5,000円まるごと控除）、地震保険料は<b>支払額の全額が控除される代わりに上限が高い</b>（5万円まで）という違いがあるためです。上の計算機のチェックボックスに両方の金額を入れると、どちらで申告した方が何円得かを計算します。
+</div>
+
+<h2 id="reidai">節税額の例</h2>
+
+<p>控除額はそのまま戻ってくる金額ではありません。実際に安くなるのは<b>控除額 × 税率</b>です。課税される所得金額が400万円（所得税の税率20％）の人の例を示します。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>年間の地震保険料</th><th>所得税の控除額</th><th>住民税の控除額</th><th>年間の節税額</th></tr>
+</thead>
+<tbody>
+<tr><td>20,000円</td><td>20,000円</td><td>10,000円</td><td>約5,084円</td></tr>
+<tr><td>30,000円</td><td>30,000円</td><td>15,000円</td><td>約7,626円</td></tr>
+<tr><td>50,000円以上</td><td>50,000円（上限）</td><td>25,000円（上限）</td><td>約12,710円</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout">
+<b>地震保険料30,000円＋旧長期損害保険料24,000円、課税所得400万円の場合</b>
+所得税側の控除額は <span id="kanban-shotoku">30,000円＋15,000円＝<b>45,000円</b></span>、住民税側は <span id="kanban-jumin">15,000円＋10,000円＝35,000円ですが、合計の上限にかかって<b>25,000円</b></span> になります。年間の節税額は <span id="kanban-setsuzei">所得税9,000円＋復興特別所得税189円＋住民税2,500円＝<b>11,689円</b></span> です。
+</div>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 地震保険料控除は最大でいくら戻りますか？</h3>
+<p>A. 控除額の上限は所得税5万円・住民税2万5千円で、実際に戻る（安くなる）金額は課税所得400万円の人で年12,550円ほどが上限のめやすです。所得税の減少は「所得税側の控除額5万円×あなたの税率20%＝10,000円」、復興特別所得税がその2.1%で210円、住民税の減少が「住民税側の控除額2万5千円×10%＝2,500円」という内訳です。控除額の5万円がそのまま戻ってくるわけではありません。税率が10%の人なら年8,105円ほどになります。</p>
+
+<h3>Q. 住民税の控除額も所得税と同じ5万円ですか？</h3>
+<p>A. 違います。住民税は支払った地震保険料の2分の1が控除額になり、上限も2万5千円です。所得税は支払額の全額で上限5万円なので、式も上限も別物です。たとえば年間3万円の地震保険料なら、所得税側の控除額は3万円、住民税側は1万5千円です。所得税の式で住民税を計算すると控除額を2倍に見積もることになるので注意してください。根拠は地方税法34条1項5号の3・314条の2第1項5号の3です。</p>
+
+<h3>Q. 旧長期損害保険料とは何ですか。まだ使えますか？</h3>
+<p>A. 平成18年の税制改正で損害保険料控除は廃止されましたが、経過措置として、平成18年12月31日までに締結し、満期返戻金があり保険期間が10年以上で、平成19年1月1日以後に契約を変更していない長期の損害保険契約については、今も地震保険料控除の対象にできます。控除額は所得税で最高1万5千円、住民税で最高1万円です。積立火災保険や積立傷害保険が該当することが多く、控除証明書に「旧長期」と記載されています。</p>
+
+<h3>Q. 控除証明書に地震保険料と旧長期損害保険料の両方が書いてあります。どちらで申告しますか？</h3>
+<p>A. 一つの契約が両方の区分に該当する場合は、どちらか一方でしか控除を受けられません。納税者が選べますが、どちらが得かは金額しだいです。旧長期は上限が低い（所得税1万5千円）代わりに少額でも控除額が大きくなりやすく、地震保険料は支払額の全額が控除される代わりに上限が5万円と高いという違いがあるためです。上の計算機に両方の金額を入れると、どちらで申告した方が何円得かを計算します。</p>
+
+<h3>Q. 地震保険料をたくさん払えばそれだけ控除も増えますか？</h3>
+<p>A. 増えません。所得税は5万円、住民税は2万5千円で頭打ちになります。しかもこの上限は地震保険料と旧長期損害保険料を合計した後の上限と同じ金額なので、地震保険料だけで5万円に達している人は、旧長期損害保険料の控除証明書を追加で出しても控除額は1円も増えません。複数年分をまとめて払った長期契約の場合は、支払った年に全額を申告するのではなく、保険会社が発行する控除証明書に書かれた「その年分」の金額を申告します。</p>
+
+<h2 id="source">出典</h2>
+<ul>
+<li>所得税法77条1項 — 地震保険料控除（支払った地震保険料の合計額、5万円を超える場合は5万円）— <a href="https://laws.e-gov.go.jp/law/340AC0000000033">e-Gov法令検索</a></li>
+<li>所得税法等の一部を改正する等の法律（平成18年法律第10号）附則10条2項・3項 — 旧長期損害保険料の経過措置（1万円以下は全額、1万円超2万円以下は1万円＋超過分の2分の1、2万円超は1万5千円。一の契約が両方に該当するときはいずれか一方）— <a href="https://laws.e-gov.go.jp/law/340AC0000000033">e-Gov法令検索</a></li>
+<li>地方税法34条1項5号の3・314条の2第1項5号の3 — 住民税の地震保険料控除（合計額の2分の1、2万5千円を超える場合は2万5千円）— <a href="https://laws.e-gov.go.jp/law/325AC0000000226">e-Gov法令検索</a></li>
+<li>地方税法等の一部を改正する法律（平成18年法律第7号）附則5条5項・6項（道府県民税）、11条5項（市町村民税） — 住民税の旧長期損害保険料の経過措置（5千円以下は全額、5千円超は5千円＋超過分（1万円が上限）の2分の1）— <a href="https://laws.e-gov.go.jp/law/325AC0000000226">e-Gov法令検索</a></li>
+<li>国税庁 タックスアンサー <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1145.htm">No.1145 地震保険料控除</a>（控除額の表、旧長期の3要件、一の契約が両方に該当する場合の選択）</li>
+<li>国税庁 <a href="https://www.nta.go.jp/taxes/tetsuzuki/shinsei/annai/gensen/pdf/2026bun_04.pdf">令和8年分 給与所得者の保険料控除申告書</a>（地震保険料控除額の計算欄と、1円未満の端数を切り上げる旨の脚注）</li>
+<li>国税庁 タックスアンサー <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm">No.2260 所得税の税率</a>（節税額の計算に使う速算表）</li>
+</ul>
+
+<h2 id="related">関連するツール・記事</h2>
+<ul>
+<li><a href="../seimei-hoken-kojo/">生命保険料控除シミュレーター</a> — 同じ保険料控除申告書で申告する、生命保険・介護医療・個人年金の控除</li>
+<li><a href="../shakai-hoken/">社会保険料計算ツール</a> — 給与から引かれる社会保険料</li>
+<li><a href="../tedori/">手取り計算ツール</a> — 年収から手取りを計算</li>
+<li><a href="../column/nenmatsu-chosei-kakikata/">年末調整の書き方</a> — 保険料控除申告書のどこに書くか</li>
+</ul>
+
+</article>
+</main>
+<footer class="site">
+  <p><a href="../">経理ミニツールズ</a>｜<a href="../about/">運営者情報</a>｜<a href="../privacy/">プライバシーポリシー</a>｜<a href="../contact/">お問い合わせ</a></p>
+</footer>
+
+<script type="module">
+import { jishinHokenryoKojo, jishinHokenryoBest } from "../assets/setsuzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const man = (n) => (n / 10000).toLocaleString("ja-JP") + "万円";
+let R08 = null;
+
+// 参照データ(帯の表・上限・税率)は非同期で届く。**届く前に計算ボタンを押されても await で待つ**。
+// この catch が拾ってよいのは「データが手に入らなかったこと」だけ(飾りの表示は別に処理する)。
+const r08Ready = fetch("../assets/setsuzei_r08.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { R08 = d; return true; })
+  .catch(() => false);
+
+// 出典・年分の表示は飾り。ここで転んでも計算は止めない(r08Ready には影響させない)。
+r08Ready.then(ok => { if (ok) showMeta(); }).catch(() => {});
+
+function showMeta() {
+  const J = R08?.jishin;
+  if (!J) return;
+  $("src-hint").innerHTML =
+    `※ 控除額の上限は所得税${man(J.shotoku.total_max)}・住民税${man(J.jumin.total_max)}（旧長期損害保険料だけなら所得税${man(J.shotoku.kyu_choki_max)}・住民税${man(J.jumin.kyu_choki_max)}）。1円未満の端数は切り上げます。` +
+    `<span id="year-from-data">対象: ${J.year}の所得税／${J.jumin_nendo}の住民税</span>`;
+  $("both-hint").textContent = J.choice_note || "";
+}
+
+$("both").addEventListener("change", (e) => { $("both-rows").hidden = !e.target.checked; });
+
+$("calc").addEventListener("click", async () => {
+  const out = $("result");
+  out.style.display = "block";   // .result は既定で display:none（見えない結果は答えていないのと同じ）
+  out.textContent = "計算中…";
+  const ready = await r08Ready;              // データを待ってから計算する（fail closed）
+  if (!ready || !R08?.jishin) {
+    out.innerHTML = '<p class="err">計算に必要なデータを読み込めませんでした。通信環境を確認して再読み込みしてください。</p>';
+    return;
+  }
+
+  const num = (id) => Math.max(0, Number($(id).value) || 0);
+  const useBoth = $("both").checked;
+  const input = {
+    jishin: num("jishin"),
+    kyuChoki: num("kyuchoki"),
+    bothJishin: useBoth ? num("both_jishin") : 0,
+    bothKyuChoki: useBoth ? num("both_kyuchoki") : 0,
+    kazeiShotoku: num("kazei"),
+  };
+
+  if (input.jishin + input.kyuChoki + input.bothJishin + input.bothKyuChoki <= 0) {
+    out.innerHTML = '<p class="err">年間の支払保険料を入力してください。</p>';
+    return;
+  }
+
+  const r = jishinHokenryoBest(input, R08);
+  const k = r.best.kojo, s = r.best.saving;
+
+  let html = `<table class="res">
+    <tr><th>所得税の控除額</th><td><b>${yen(k.shotoku.total)}</b>`;
+  if (k.shotoku.capped) html += `<span class="hint">（${yen(k.shotoku.sum)} が上限${yen(k.shotoku.totalMax)}で頭打ち）</span>`;
+  html += `</td></tr>
+    <tr><th>住民税の控除額</th><td><b>${yen(k.jumin.total)}</b>`;
+  if (k.jumin.capped) html += `<span class="hint">（${yen(k.jumin.sum)} が上限${yen(k.jumin.totalMax)}で頭打ち）</span>`;
+  html += `</td></tr>
+    <tr><th>所得税の減少</th><td>${yen(s.shotokuGen)}</td></tr>
+    <tr><th>復興特別所得税の減少</th><td>${yen(s.fukkoGen)}</td></tr>
+    <tr><th>住民税の減少</th><td>${yen(s.juminGen)}</td></tr>
+    <tr><th>年間の節税額</th><td class="big"><b>${yen(s.total)}</b></td></tr>
+  </table>`;
+
+  // 内訳（区分ごと）
+  html += `<p class="hint">内訳: 地震保険料 → 所得税${yen(k.shotoku.jishin)}／住民税${yen(k.jumin.jishin)}、`
+       +  `旧長期損害保険料 → 所得税${yen(k.shotoku.kyuChoki)}／住民税${yen(k.jumin.kyuChoki)}</p>`;
+
+  // 一の契約が両方に該当する場合の有利判定
+  if (r.hasChoice) {
+    const label = r.bestKey === "jishin" ? "地震保険料" : "旧長期損害保険料";
+    const a = r.asJishin.saving.total, b = r.asKyuChoki.saving.total;
+    html += `<div class="callout" style="margin-top:10px"><b>その契約は「${label}」で申告した方が得です。</b>`
+         +  `地震保険料として申告した場合の節税額 ${yen(a)}、旧長期損害保険料として申告した場合 ${yen(b)}`
+         +  (r.diff > 0 ? `で、<b>${yen(r.diff)}</b>の差があります。` : `で、差はありません（どちらでも同じです）。`)
+         +  `一つの契約は、どちらか一方の区分でしか控除を受けられません。</div>`;
+  }
+
+  // 上限に達していて旧長期が効いていないときは、そう申告する
+  if (k.shotoku.capped && k.shotoku.kyuChoki > 0) {
+    html += `<p class="hint">※ 地震保険料だけで上限に達しているため、旧長期損害保険料を足しても所得税の控除額は増えていません。</p>`;
+  }
+
+  out.innerHTML = html;
+});
+</script>
+</body>
+</html>

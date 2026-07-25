@@ -2728,6 +2728,83 @@ const EMBED_PARITY = {
 };
 for (const [t, cfg] of Object.entries(EMBED_PARITY)) SCENES[`embed_${t}`] = embedParityScene(t, cfg);
 
+// ── 地震保険料控除 (/jishin-hoken-kojo/) ───────────────────────────────────
+// ★単体（tests/test_jishin_hoken_kojo.mjs）は core しか見ないので、「地震／旧長期の読み取り→
+//   所得税と住民税を別の式で計算→上限の頭打ち表示→有利判定の描画」の配線はここでしか守れない。
+//   期待値の手計算は同テストの §3・§7（条文書き下しオラクルと全域照合つき）。
+const jishinScene = (o) => async () => {
+  const doc = await open("/docs/jishin-hoken-kojo/");
+  set(doc, "jishin", o.jishin ?? 30000);
+  set(doc, "kyuchoki", o.kyuchoki ?? 24000);
+  set(doc, "kazei", o.kazei ?? 4000000);
+  if (o.both) {
+    doc.getElementById("both").click();
+    set(doc, "both_jishin", o.bothJishin ?? 0);
+    set(doc, "both_kyuchoki", o.bothKyuchoki ?? 0);
+  }
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /¥|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "地震保険料控除の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  const rows = [...(doc.querySelectorAll("#result table tr") || [])].map((tr) =>
+    [...tr.querySelectorAll("th,td")].map((e) => e.textContent.trim()));
+  // ★セル内の数字を全部つなげてはいけない。頭打ちのときは「¥50,000（¥65,000 が上限¥50,000で…）」
+  //   のように1セルに3つの金額が出るので、**最初の ¥ の金額＝その行の答え**だけを読む。
+  const cell = (label) => {
+    const r = rows.find((x) => x[0] === label);
+    if (!r) return null;
+    const m = r[1].match(/¥([\d,]+)/);
+    return m ? Number(m[1].replace(/,/g, "")) : null;
+  };
+  // 出典ノート（データから描く年分・上限）が実際に描かれているか
+  const srcHint = text(doc, "src-hint");
+  return {
+    shotokuKojo: cell("所得税の控除額"),
+    juminKojo: cell("住民税の控除額"),
+    shotokuGen: cell("所得税の減少"),
+    fukkoGen: cell("復興特別所得税の減少"),
+    juminGen: cell("住民税の減少"),
+    setsuzei: cell("年間の節税額"),
+    // 内訳（区分ごと）— 所得税と住民税を別の式で出していることの証拠
+    uchiwakeJishinShotoku: num(/地震保険料 → 所得税¥([\d,]+)/),
+    uchiwakeJishinJumin: num(/地震保険料 → 所得税¥[\d,]+／住民税¥([\d,]+)/),
+    uchiwakeKyuShotoku: num(/旧長期損害保険料 → 所得税¥([\d,]+)/),
+    capNote: /上限に達しているため/.test(body),
+    choiceShown: /で申告した方が得です/.test(body),
+    choiceLabel: (body.match(/その契約は「(.+?)」で申告した方が得です/) || [])[1] || null,
+    choiceDiff: num(/¥([\d,]+)の差があります/),
+    srcHasYear: /令和8年分/.test(srcHint),
+    srcHasMax: /5万円/.test(srcHint) && /2\.5万円|2万5/.test(srcHint),
+    failed: body.includes("読み込めませんでした"),
+    noInput: body.includes("入力してください"),
+    body,
+  };
+};
+// ★看板例（§7）: 地震30,000＋旧長期24,000・課税所得400万
+//   → 所得税 30,000+15,000=45,000 ／ 住民税 15,000+10,000=35,000 だが上限25,000
+//   → 節税額 9,000+189+2,500 = 11,689円。
+//   住民税を所得税と同じ式で描く実装なら juminKojo が 45,000 になって落ちる。
+SCENES.jishin_hoken = jishinScene({});
+SCENES.jishin_hoken_slow = SCENES.jishin_hoken;  // 800ms遅らせる。待って正答すること
+// ★地震だけで上限 → 旧長期を足しても所得税の控除額は増えない（その旨を画面に出すこと）。
+SCENES.jishin_hoken_cap = jishinScene({ jishin: 60000, kyuchoki: 24000 });
+// ★旧長期だけ（所得税15,000/住民税10,000が上限）。所得税の帯を住民税に流用したら落ちる。
+SCENES.jishin_hoken_kyu = jishinScene({ jishin: 0, kyuchoki: 20000 });
+// ★端数の切り上げ: 旧長期15,001円 → 所得税12,501円（切り捨てなら12,500）。
+SCENES.jishin_hoken_hasu = jishinScene({ jishin: 0, kyuchoki: 15001 });
+// ★一の契約が両方に該当 → 有利な方を選ぶ（地震8,000 vs 旧長期20,000 → 旧長期が得）。
+SCENES.jishin_hoken_choice = jishinScene({
+  jishin: 0, kyuchoki: 0, both: true, bothJishin: 8000, bothKyuchoki: 20000,
+});
+// 入力が空 → 答えずに促す
+SCENES.jishin_hoken_empty = jishinScene({ jishin: 0, kyuchoki: 0 });
+// 参照データ配信不可 → 控除額を出さずに断る（fail closed）
+SCENES.jishin_hoken_nodata = jishinScene({});
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };

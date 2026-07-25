@@ -471,6 +471,37 @@ const SCENES = [
   { name: "iryubun_nodata", data404: "iryubun_r08.json",
     expect: (s) => s.failed && s.shingai === null },
 
+  // ── 地震保険料控除 (/jishin-hoken-kojo/) ─────────────────────────────
+  // ★手計算の鎖は tests/test_jishin_hoken_kojo.mjs §7: 地震30,000＋旧長期24,000・課税所得400万
+  //   → 所得税45,000／住民税は35,000が上限25,000で頭打ち → 節税額11,689円。
+  //   住民税を所得税と同じ式（全額・上限5万円）で描く実装なら juminKojo=45,000 で落ちる。
+  { name: "jishin_hoken", expect: (s) =>
+      s.shotokuKojo === 45000 && s.juminKojo === 25000 &&
+      s.shotokuGen === 9000 && s.fukkoGen === 189 && s.juminGen === 2500 &&
+      s.setsuzei === 11689 &&
+      s.uchiwakeJishinShotoku === 30000 && s.uchiwakeJishinJumin === 15000 &&
+      s.srcHasYear && s.srcHasMax && !s.failed },
+  { name: "jishin_hoken_slow", slow: true, expect: (s) =>
+      s.shotokuKojo === 45000 && s.juminKojo === 25000 && s.setsuzei === 11689 && !s.failed },
+  // ★地震だけで上限（50,000）に達している → 旧長期を足しても増えないことを申告する。
+  { name: "jishin_hoken_cap", expect: (s) =>
+      s.shotokuKojo === 50000 && s.juminKojo === 25000 && s.capNote && !s.failed },
+  // ★旧長期だけ20,000円 → 所得税15,000／住民税10,000（住民税の帯は5,000・15,000刻み）。
+  { name: "jishin_hoken_kyu", expect: (s) =>
+      s.shotokuKojo === 15000 && s.juminKojo === 10000 && !s.failed },
+  // ★端数は切り上げ（保険料控除申告書の脚注）。切り捨て実装なら12,500になって落ちる。
+  { name: "jishin_hoken_hasu", expect: (s) =>
+      s.uchiwakeKyuShotoku === 12501 && !s.failed },
+  // ★一の契約が両方に該当 → 有利な方（旧長期15,000＞地震8,000）を選び、差額を出す。
+  { name: "jishin_hoken_choice", expect: (s) =>
+      s.choiceShown && s.choiceLabel === "旧長期損害保険料" &&
+      s.shotokuKojo === 15000 && s.choiceDiff > 0 && !s.failed },
+  // 入力が空 → 答えずに促す
+  { name: "jishin_hoken_empty", expect: (s) => s.noInput && s.setsuzei === null },
+  // 参照データ配信不可 → 控除額を出さずに断る（fail closed）
+  { name: "jishin_hoken_nodata", data404: "setsuzei_r08.json",
+    expect: (s) => s.failed && s.setsuzei === null },
+
   // ── 小規模宅地等の特例 (/shokibo-takuchi/) ───────────────────────────
   // ★手計算の鎖は tests/test_shokibo_takuchi.mjs §4: 事業用400平方メートル8,000万
   //   ＋自宅330平方メートル9,900万＋貸付200平方メートル1億

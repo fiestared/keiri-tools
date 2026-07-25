@@ -211,7 +211,8 @@ function seihoCategory(shin, kyu, T, useTokurei) {
 }
 
 /**
- * 生命保険料控除（所得税法76条／地方税法314条の2第1項5号の2・5号の3）。
+ * 生命保険料控除（所得税法76条／地方税法34条1項5号・314条の2第1項5号）。
+ * ★住民税は「5号」。5号の2は損害保険料控除の廃止跡で「削除」、5号の3は地震保険料控除。
  * 3区分（一般・介護医療・個人年金）それぞれの新契約・旧契約の年間支払保険料から、
  * 所得税・住民税の控除額を出す。介護医療は新制度のみ（旧契約の区分が無い）。
  *
@@ -529,4 +530,90 @@ export function kinroGakuseiHantei(input, D) {
   if (hikinro > K.hikinro_limit) return none('hikinro_over');
   return { type: 'ok', reason: 'ok', courseNote, gokei,
            shotoku: K.kojo.shotoku, jumin: K.kojo.jumin, year };
+}
+
+/**
+ * 地震保険料控除（所得税法77条1項／地方税法34条1項5号の3・314条の2第1項5号の3）と、
+ * 旧長期損害保険料の経過措置（所得税=平18法10 附則10条2項／住民税=平18法7 附則5条5項・11条5項）。
+ *
+ * ★所得税と住民税で式が3か所違う（住民税を所得税の式で出すと必ず過大になる）:
+ *   (1) 地震分  所得税=支払額の全額 ／ 住民税=支払額の2分の1
+ *   (2) 上限    所得税=5万円        ／ 住民税=2万5千円
+ *   (3) 旧長期の帯の刻み  所得税=1万円・2万円 ／ 住民税=5千円・1万5千円
+ * ★合計の上限は「地震分の上限」と同じ（所得税5万円・住民税2万5千円）なので、
+ *   地震保険料だけで上限に達している人は、旧長期を足しても控除額は1円も増えない。
+ * 帯は生命保険料控除と同じ seihoBand（条文の書き方どおり base+(x−minus)/div、1円未満切り上げ）で評価する。
+ *
+ * @param input { jishin(地震保険料の年間合計), kyuChoki(旧長期損害保険料の年間合計) }
+ * @returns { shotoku:{jishin,kyuChoki,sum,total,capped,totalMax}, jumin:{...}, year }
+ */
+export function jishinHokenryoKojo(input, D) {
+  if (!D?.jishin?.shotoku) throw new Error('参照データ（setsuzei_r08.json の jishin）が渡されていません');
+  const J = D.jishin;
+  const jishin = yen0(input?.jishin);
+  const kyuChoki = yen0(input?.kyuChoki);
+
+  const side = (T) => {
+    // 支払いが無い区分は0（帯の先頭が「◯円以下＝全額」なので0を通しても0になるが、意図を明示する）
+    const dJishin = jishin > 0 ? seihoBand(jishin, T.jishin) : 0;
+    const dKyu = kyuChoki > 0 ? seihoBand(kyuChoki, T.kyu_choki) : 0;
+    const sum = dJishin + dKyu;
+    return {
+      jishin: dJishin, kyuChoki: dKyu, sum,
+      total: Math.min(sum, T.total_max),
+      capped: sum > T.total_max,
+      totalMax: T.total_max,
+    };
+  };
+
+  return { shotoku: side(J.shotoku), jumin: side(J.jumin), year: J.year || D._meta?.year || '' };
+}
+
+/**
+ * 一の契約が地震保険料・旧長期損害保険料の**どちらの区分にも該当する**とき、
+ * どちらで申告した方が得かを実額で出す（所得税=平18法10 附則10条3項／住民税=平18法7 附則5条6項。
+ * 国税庁No.1145は「納税者の選択により」と書くだけで、どちらが有利かは示さない）。
+ *
+ * 有利・不利は控除額そのものではなく**節税額**で決まる（所得税は超過累進なので、
+ * 同じ控除額でも課税所得によって効き方が違う）。よって taxSavingSplit で比較する。
+ *
+ * @param input {
+ *   jishin, kyuChoki,          // どちらの区分か確定している分の年間支払額
+ *   bothJishin, bothKyuChoki,  // 両方に該当する一の契約の、証明書に載っている各区分の金額
+ *   kazeiShotoku,
+ * }
+ * @returns { hasChoice, asJishin, asKyuChoki, best, diff }
+ */
+export function jishinHokenryoBest(input, D) {
+  const bothJ = yen0(input?.bothJishin);
+  const bothK = yen0(input?.bothKyuChoki);
+  const base = { jishin: yen0(input?.jishin), kyuChoki: yen0(input?.kyuChoki) };
+  const kazei = yen0(input?.kazeiShotoku);
+
+  const evaluate = (jishin, kyuChoki) => {
+    const kojo = jishinHokenryoKojo({ jishin, kyuChoki }, D);
+    const saving = taxSavingSplit({
+      kazeiShotoku: kazei,
+      shotokuKojo: kojo.shotoku.total,
+      juminKojo: kojo.jumin.total,
+    }, D);
+    return { kojo, saving };
+  };
+
+  if (bothJ <= 0 && bothK <= 0) {
+    const only = evaluate(base.jishin, base.kyuChoki);
+    return { hasChoice: false, asJishin: only, asKyuChoki: null, best: only, diff: 0 };
+  }
+
+  // その一の契約を「地震保険料の契約」として扱う場合 / 「旧長期の契約」として扱う場合
+  const asJishin = evaluate(base.jishin + bothJ, base.kyuChoki);
+  const asKyuChoki = evaluate(base.jishin, base.kyuChoki + bothK);
+  const a = asJishin.saving.total;
+  const b = asKyuChoki.saving.total;
+  const best = a >= b ? asJishin : asKyuChoki;
+  return {
+    hasChoice: true, asJishin, asKyuChoki, best,
+    bestKey: a >= b ? 'jishin' : 'kyu_choki',
+    diff: Math.abs(a - b),
+  };
 }
