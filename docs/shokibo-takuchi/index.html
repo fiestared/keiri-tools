@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>小規模宅地等の特例 計算機｜330㎡・80%減と併用の限度面積</title>
+<meta name="description" content="自宅・事業用・貸付用の土地の面積と評価額を入れるだけで、小規模宅地等の特例（措置法69条の4）で減額される金額を計算。★限度面積の式は「貸付事業用を選ぶかどうか」で入れ替わり、貸付を選ばなければ自宅330㎡＋事業用400㎡＝合計730㎡を完全併用できますが、貸付を1㎡でも選ぶと按分式（200㎡の枠）に切り替わります。どの土地に枠を使うと減額が最大になるかまで自動で配分。無料・登録不要。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/shokibo-takuchi/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "小規模宅地等の特例 減額計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "土地の区分ごとの面積と評価額から、小規模宅地等の特例（租税特別措置法69条の4）で減額される金額を計算します。限度面積の完全併用（730平方メートル）と貸付事業用がある場合の按分式（200平方メートル）を両方解いて、有利な配分を提示します。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "小規模宅地等の特例 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 小規模宅地等の特例で、いくら減額されますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 区分によって違います。特定居住用宅地等（自宅の敷地）は330平方メートルまで80％減、特定事業用宅地等・特定同族会社事業用宅地等は400平方メートルまで80％減、貸付事業用宅地等（アパートや貸駐車場）は200平方メートルまで50％減です。条文はこれを「課税価格に算入すべき価額は百分の二十（貸付事業用は百分の五十）を乗じた金額とする」という書き方で定めています（租税特別措置法69条の4第1項）。限度面積を超える部分には特例は及びません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 自宅と事業用の土地は両方に特例を使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 貸付事業用宅地等を選ばない場合に限り、特定事業用等宅地等400平方メートルと特定居住用宅地等330平方メートルをそれぞれ独立に使えるので、合計730平方メートルまで完全に併用できます（租税特別措置法69条の4第2項1号・2号）。ただし貸付事業用宅地等を1平方メートルでも選ぶと同項3号の按分式に切り替わり、事業用×200/400＋居住用×200/330＋貸付用の合計が200平方メートル以下でなければならなくなります。730平方メートルの併用は使えなくなります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. アパートの土地も特例に入れたほうが得ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 必ずしも得ではありません。貸付事業用宅地等を選んだ瞬間に限度面積の式が按分式に切り替わり、200平方メートルの枠を全区分で分け合うことになるためです。80％減の自宅や事業用の枠を削ってまで50％減の貸付用を入れると、減額の合計はかえって小さくなることがあります。逆に貸付用の土地の1平方メートルあたりの評価額が飛び抜けて高い場合は、貸付用を選んだほうが有利になります。このツールは両方の案を計算して有利な方を提示します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. どの土地から順に限度面積を使うと得ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 按分式のもとでは、1平方メートルが200平方メートルの枠を消費する量が区分ごとに違います。特定事業用等は0.5、特定居住用は約0.606、貸付事業用は1です。したがって枠1単位あたりの減額額は、特定事業用等が1平方メートルあたり評価額の1.6倍、特定居住用が1.32倍、貸付事業用が0.5倍となり、この値が大きい区分から枠を使うのが最大の減額になります。「自宅を優先すればよい」とは限らず、事業用の土地の単価が高ければ事業用が先になります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 相続開始前3年以内に始めた賃貸でも特例は使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 原則として使えません。相続開始前3年以内に新たに貸付事業の用に供された宅地等は貸付事業用宅地等から除かれます（租税特別措置法69条の4第3項4号）。ただし相続開始の日まで3年を超えて引き続き特定貸付事業（事業的規模の貸付け）を行っていた被相続人等のその貸付けの用に供された土地は除外されません。事業用の土地にも同じ3年の縛りがありますが、こちらの例外は「その事業に使う建物・構築物・減価償却資産の価額が宅地等の価額の15％以上」という別の基準です。年数は同じでも例外の中身が違うので取り違えないでください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 老人ホームに入っていた親の家でも自宅として特例が使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 一定の条件を満たせば使えます。被相続人が要介護認定・要支援認定を受けて養護老人ホーム・特別養護老人ホーム・有料老人ホーム・サービス付き高齢者向け住宅などに入居していた場合や、障害支援区分の認定を受けて障害者支援施設等に入所していた場合は、入居直前の居住の用を「被相続人の居住の用」に含めます（租税特別措置法69条の4第1項かっこ書）。ただし空き家になった後にその家を人に貸したり事業に使ったりすると対象から外れます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 特例を使って相続税が0円になれば申告は不要ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 申告が必要です。この特例は「申告書に適用を受けようとする旨を記載し、計算に関する明細書その他の書類を添付した場合に限り適用する」と定められています（租税特別措置法69条の4第7項）。基礎控除以下かどうかの判定はこの特例を適用する前の課税価格で行うため、特例を使って初めて0円になる場合は、期限内に申告して初めて0円が確定します。申告期限は相続の開始があったことを知った日の翌日から10か月以内です。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 小規模宅地等の特例 計算機</nav>
+
+<section class="hero">
+  <h1>小規模宅地等の特例 減額計算機</h1>
+  <p>相続した土地の<b>面積</b>と<b>評価額</b>を区分ごとに入れるだけで、小規模宅地等の特例（措置法69条の4）で<b>減額される金額</b>を計算します。★<b id="hero-heiyo">限度面積の式は「貸付事業用の土地を選ぶかどうか」で入れ替わります</b>。どの土地に枠を使えば減額が最大になるかまで、単価から自動で配分します。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="konsen-caution">「自宅330㎡＋事業用400㎡＝730㎡」が使えるのは、貸付用を選ばないときだけです</b>
+    <span id="heiyo-kanzen">貸付事業用宅地等を1平方メートルも選ばなければ、特定事業用等400㎡と特定居住用330㎡はそれぞれ独立の枠なので、<b>合計730㎡まで完全に併用</b>できます（措置法69条の4第2項1号・2号）。</span>
+    <span id="heiyo-anbun">ところが貸付事業用宅地等を<b>1平方メートルでも選ぶ</b>と同項3号の按分式に切り替わり、<b>事業用×200/400 ＋ 居住用×200/330 ＋ 貸付用 が200㎡以下</b>でなければならなくなります。</span>
+    50％減の貸付用を欲張って入れると、80％減の枠を削って<b>かえって減額が小さくなる</b>ことがあります。
+  </div>
+
+  <label>① 特定居住用宅地等（自宅の敷地）<span class="hint">　限度330㎡・80％減</span></label>
+  <div class="grid2">
+    <div>
+      <label for="jutakuArea" style="font-size:13px">面積（㎡）</label>
+      <input type="number" id="jutakuArea" min="0" step="0.01" inputmode="decimal" value="330">
+    </div>
+    <div>
+      <label for="jutakuValue" style="font-size:13px">評価額（円）</label>
+      <input type="number" id="jutakuValue" min="0" inputmode="numeric" value="99000000">
+    </div>
+  </div>
+
+  <label style="margin-top:14px">② 特定事業用等宅地等（店舗・工場・同族会社の事業用）<span class="hint">　限度400㎡・80％減</span></label>
+  <div class="grid2">
+    <div>
+      <label for="jigyoArea" style="font-size:13px">面積（㎡）</label>
+      <input type="number" id="jigyoArea" min="0" step="0.01" inputmode="decimal" value="400">
+    </div>
+    <div>
+      <label for="jigyoValue" style="font-size:13px">評価額（円）</label>
+      <input type="number" id="jigyoValue" min="0" inputmode="numeric" value="80000000">
+    </div>
+  </div>
+
+  <label style="margin-top:14px">③ 貸付事業用宅地等（アパート・貸家・貸駐車場）<span class="hint">　限度200㎡・50％減</span></label>
+  <div class="grid2">
+    <div>
+      <label for="kashitsukeArea" style="font-size:13px">面積（㎡）</label>
+      <input type="number" id="kashitsukeArea" min="0" step="0.01" inputmode="decimal" value="200">
+    </div>
+    <div>
+      <label for="kashitsukeValue" style="font-size:13px">評価額（円）</label>
+      <input type="number" id="kashitsukeValue" min="0" inputmode="numeric" value="100000000">
+    </div>
+  </div>
+
+  <p class="hint" style="margin-top:10px">※ 特定事業用宅地等と特定同族会社事業用宅地等は<b>400㎡の枠を共有</b>します（措置法69条の4第2項1号が「特定事業用等宅地等」として一つにまとめているため）。合算して②に入れてください。評価額は、その区分の土地のうち<b>特例の対象になる部分（取得した持分に応ずる部分）</b>の相続税評価額です。</p>
+
+  <button class="primary" id="calc" style="margin-top:14px">減額される金額を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<nav class="toc">
+  <b>目次</b>
+  <ol>
+    <li><a href="#heiyo">限度面積の式は「貸付用を選ぶかどうか」で入れ替わる</a></li>
+    <li><a href="#saitekika">どの土地に枠を使うかで、減額の合計が変わる</a></li>
+    <li><a href="#yoken">自宅の敷地で特例を使えるのは誰か</a></li>
+    <li><a href="#sannen">3年以内に始めた事業・貸付は対象から外れる</a></li>
+    <li><a href="#home">老人ホームに入って空き家だった自宅</a></li>
+    <li><a href="#shinkoku">特例で0円になる場合も申告が要る</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ol>
+</nav>
+
+<h2 id="heiyo">限度面積の式は「貸付用を選ぶかどうか」で入れ替わる</h2>
+
+<p>小規模宅地等の特例でいちばん誤解が多いのが、限度面積の併用です。条文（租税特別措置法69条の4第2項）は限度面積要件を<b>3つの号に分けて</b>定めており、どの号が働くかは<b>貸付事業用宅地等を選ぶかどうか</b>で決まります。</p>
+
+<figure>
+<svg viewBox="0 0 720 300" width="100%" role="img" aria-label="貸付事業用を選ばない場合は730平方メートルまで併用でき、選ぶ場合は200平方メートルの枠を按分する図">
+  <rect x="0" y="0" width="720" height="300" fill="#fff"/>
+  <text x="16" y="26" font-size="15" font-weight="bold" fill="#333">① 貸付事業用を選ばない（2項1号・2号）</text>
+  <rect x="16" y="40" width="240" height="46" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="136" y="62" font-size="13" text-anchor="middle" fill="#1e3a8a">特定事業用等</text>
+  <text x="136" y="79" font-size="13" text-anchor="middle" font-weight="bold" fill="#1e3a8a">400㎡・80%減</text>
+  <rect x="264" y="40" width="198" height="46" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="363" y="62" font-size="13" text-anchor="middle" fill="#14532d">特定居住用</text>
+  <text x="363" y="79" font-size="13" text-anchor="middle" font-weight="bold" fill="#14532d">330㎡・80%減</text>
+  <text x="478" y="69" font-size="15" font-weight="bold" fill="#b45309">= 合計 730㎡</text>
+  <text x="16" y="112" font-size="12" fill="#666">それぞれ独立の枠なので、そのまま足せる（完全併用）</text>
+
+  <line x1="16" y1="128" x2="704" y2="128" stroke="#ddd"/>
+
+  <text x="16" y="156" font-size="15" font-weight="bold" fill="#333">② 貸付事業用を1㎡でも選ぶ（2項3号）</text>
+  <text x="16" y="180" font-size="13" fill="#333">事業用 × 200/400 ＋ 居住用 × 200/330 ＋ 貸付用 ≦ 200㎡</text>
+  <rect x="16" y="196" width="446" height="40" fill="#f3f4f6" stroke="#9ca3af"/>
+  <text x="239" y="221" font-size="14" text-anchor="middle" font-weight="bold" fill="#374151">200㎡の枠を全区分で分け合う</text>
+  <text x="478" y="221" font-size="15" font-weight="bold" fill="#b91c1c">730㎡は使えない</text>
+  <text x="16" y="258" font-size="12" fill="#666">枠1単位あたりの減額額 = 事業用 単価×1.6　＞　居住用 単価×1.32　＞　貸付用 単価×0.5</text>
+  <text x="16" y="278" font-size="12" fill="#666">この値が大きい区分から枠を使うのが、減額がいちばん大きくなる配分</text>
+</svg>
+<figcaption>限度面積の判定は、貸付事業用宅地等を選ぶかどうかで式そのものが入れ替わる（措置法69条の4第2項）</figcaption>
+</figure>
+
+<p>3号の式を満たせば、自動的に1号（400㎡以下）と2号（330㎡以下）も満たされます（400×200/400＝200、330×200/330＝200）。つまり<b>貸付用を選んだ時点で、実質の制約は3号ひとつ</b>になります。逆に貸付用を選ばなければ3号は発動しないので、1号と2号が別々の枠として残り、合計730㎡まで使えます。</p>
+
+<h2 id="saitekika">どの土地に枠を使うかで、減額の合計が変わる</h2>
+
+<p>3号の按分式のもとでは、1㎡が200㎡の枠を消費する量が区分ごとに違います。特定事業用等は200/400＝0.5、特定居住用は200/330≒0.606、貸付事業用は1です。ここから<b>枠1単位あたりの減額額</b>を出すと次のようになります。</p>
+
+<table>
+  <thead><tr><th>区分</th><th>減額割合</th><th>枠の消費量</th><th>枠1単位あたりの減額額</th></tr></thead>
+  <tbody>
+    <tr><td>特定事業用等宅地等</td><td>80％</td><td>0.5</td><td>1㎡あたり評価額 × <b>1.6</b></td></tr>
+    <tr><td>特定居住用宅地等</td><td>80％</td><td>約0.606</td><td>1㎡あたり評価額 × <b>1.32</b></td></tr>
+    <tr><td>貸付事業用宅地等</td><td>50％</td><td>1</td><td>1㎡あたり評価額 × <b>0.5</b></td></tr>
+  </tbody>
+</table>
+
+<p>「自宅を優先すればよい」とよく言われますが、<b>正しくは単価しだい</b>です。事業用の土地の1㎡あたりの評価額が自宅の1.32÷1.6＝約0.83倍を超えていれば、事業用に先に枠を使ったほうが減額は大きくなります。このツールは入力された面積と評価額から単価を出し、この順序で機械的に配分したうえで、<b>貸付用を選ばない案</b>とも比較して有利な方を表示します。</p>
+
+<h2 id="yoken">自宅の敷地で特例を使えるのは誰か</h2>
+
+<p>特定居住用宅地等として特例を受けられる取得者は、次の4つのいずれかです（措置法69条の4第3項2号）。<b>誰が取得するか</b>で要件がまったく違います。</p>
+
+<table id="jutaku-shutokusha">
+  <thead><tr><th>取得する人</th><th>その人に課される要件</th></tr></thead>
+  <tbody>
+    <tr><td><b>被相続人の配偶者</b></td><td>取得者ごとの要件はありません（申告期限まで持ち続ける必要も、住み続ける必要もありません）</td></tr>
+    <tr><td><b>被相続人の居住の用に供されていた一棟の建物に居住していた親族（同居親族）</b></td><td>相続開始の直前から相続税の申告期限まで引き続きその建物に居住し、かつ、その宅地等を相続開始時から申告期限まで有していること</td></tr>
+    <tr><td><b>上記以外の親族（いわゆる「家なき子」）</b></td><td>次の6つの要件をすべて満たすこと</td></tr>
+    <tr><td><b>被相続人と生計を一にしていた親族（その親族自身の居住用の敷地）</b></td><td>相続開始前から相続税の申告期限まで引き続きその家屋に居住し、かつ、その宅地等を申告期限まで有していること</td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+  <b id="ienakiko-caution">いわゆる「家なき子」の要件は6つあります。</b>
+  条文（3項2号ロ）が掲げているのは（1）〜（3）の3つだけですが、同号ロの柱書に「被相続人の配偶者又は…居住していた親族で政令で定める者がいない場合に限る」という限定が、さらに取得者について「財務省令で定めるものに限る」という限定が別に置かれています。<b>条文の号数を数えて3つで終えると、配偶者がいるのに家なき子を使えると誤答します。</b>実際に確かめるべき要件は次の6つです。
+  <ol id="ienakiko-list">
+    <li>居住制限納税義務者または非居住制限納税義務者のうち日本国籍を有しない者ではないこと</li>
+    <li>被相続人に配偶者がいないこと</li>
+    <li>相続開始の直前において被相続人の居住の用に供されていた家屋に居住していた被相続人の相続人（相続の放棄があった場合には、その放棄がなかったものとした場合の相続人）がいないこと</li>
+    <li>相続開始前3年以内に日本国内にある取得者・取得者の配偶者・取得者の三親等内の親族・取得者と特別の関係がある一定の法人が所有する家屋（相続開始の直前において被相続人の居住の用に供されていた家屋を除く）に居住したことがないこと</li>
+    <li>相続開始時に、取得者が居住している家屋を相続開始前のいずれの時においても所有していたことがないこと</li>
+    <li>その宅地等を相続開始時から相続税の申告期限まで有していること</li>
+  </ol>
+</div>
+
+<h2 id="sannen">3年以内に始めた事業・貸付は対象から外れる</h2>
+
+<p>相続の直前に土地を買って賃貸を始めれば特例が使える——という節税を封じるため、事業用と貸付用の両方に<b>3年の縛り</b>があります。年数は同じ3年ですが、<b>除外されないための例外がまったく違います</b>。</p>
+
+<p id="sannen-jigyo"><b>特定事業用宅地等</b>（3項1号）— 相続開始前3年以内に新たに事業の用に供された宅地等は対象外です。ただし、その事業に使っていた建物・構築物・減価償却資産の相続開始時の価額の合計額が、その宅地等の相続開始時の価額の<b>15％以上</b>である場合は、対象から外れません。</p>
+
+<p id="sannen-kashitsuke"><b>貸付事業用宅地等</b>（3項4号）— 相続開始前3年以内に新たに貸付事業の用に供された宅地等は対象外です。ただし、相続開始の日まで<b>3年を超えて引き続き特定貸付事業</b>（貸付事業のうち準事業以外のもの＝事業的規模の貸付け）を行っていた被相続人等の、その特定貸付事業の用に供された土地は対象から外れません。<b>15％の基準はこちらには使いません。</b></p>
+
+<h2 id="home">老人ホームに入って空き家だった自宅</h2>
+
+<p>被相続人が老人ホームに入居して、相続開始の直前に自宅が空き家だった場合でも、<b>入居直前の居住の用</b>を「被相続人の居住の用」に含めます（措置法69条の4第1項かっこ書）。次のいずれかに当てはまることが条件です。</p>
+
+<ul id="home-list">
+  <li>介護保険法の要介護認定・要支援認定または介護保険法施行規則140条の62の4第2号に該当していた被相続人が、認知症対応型老人共同生活援助事業が行われる住居・養護老人ホーム・特別養護老人ホーム・軽費老人ホーム・有料老人ホーム・介護老人保健施設・介護医療院・サービス付き高齢者向け住宅に入居または入所していたこと</li>
+  <li>障害支援区分の認定を受けていた被相続人が、障害者支援施設（施設入所支援が行われるもの）または共同生活援助を行う住居に入所または入居していたこと</li>
+</ul>
+
+<p id="home-jogai">ただし、<b>居住の用に供されなくなった後に、その家を事業の用または被相続人等以外の人の居住の用に供した場合は対象外</b>です。空き家のあいだに人に貸すと特例を失います。</p>
+
+<h2 id="shinkoku">特例で0円になる場合も申告が要る</h2>
+
+<p id="shinkoku-hitsuyo">この特例は、<b>申告書に適用を受けようとする旨を記載し、計算に関する明細書その他の書類を添付した場合に限り適用する</b>と定められています（措置法69条の4第7項）。基礎控除以下かどうかの判定は<b>この特例を適用する前の課税価格</b>で行うため（国税庁 No.4205）、<b>特例を使って相続税が0円になる場合も、期限内に申告して初めて0円が確定します</b>。黙って無申告でよいわけではありません。</p>
+
+<p>また、相続税の申告期限までに<b>遺産分割が終わっていない</b>宅地等には特例は使えません（同条4項）。ただし申告期限から3年以内に分割された場合は、更正の請求などにより適用を受けられます。申告期限は相続の開始があったことを知った日の翌日から10か月以内です。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 小規模宅地等の特例で、いくら減額されますか？</h3>
+<p>A. 区分によって違います。特定居住用宅地等（自宅の敷地）は330平方メートルまで80％減、特定事業用宅地等・特定同族会社事業用宅地等は400平方メートルまで80％減、貸付事業用宅地等（アパートや貸駐車場）は200平方メートルまで50％減です。条文はこれを「課税価格に算入すべき価額は百分の二十（貸付事業用は百分の五十）を乗じた金額とする」という書き方で定めています（租税特別措置法69条の4第1項）。限度面積を超える部分には特例は及びません。</p>
+
+<h3>Q. 自宅と事業用の土地は両方に特例を使えますか？</h3>
+<p>A. 貸付事業用宅地等を選ばない場合に限り、特定事業用等宅地等400平方メートルと特定居住用宅地等330平方メートルをそれぞれ独立に使えるので、合計730平方メートルまで完全に併用できます（租税特別措置法69条の4第2項1号・2号）。ただし貸付事業用宅地等を1平方メートルでも選ぶと同項3号の按分式に切り替わり、事業用×200/400＋居住用×200/330＋貸付用の合計が200平方メートル以下でなければならなくなります。730平方メートルの併用は使えなくなります。</p>
+
+<h3>Q. アパートの土地も特例に入れたほうが得ですか？</h3>
+<p>A. 必ずしも得ではありません。貸付事業用宅地等を選んだ瞬間に限度面積の式が按分式に切り替わり、200平方メートルの枠を全区分で分け合うことになるためです。80％減の自宅や事業用の枠を削ってまで50％減の貸付用を入れると、減額の合計はかえって小さくなることがあります。逆に貸付用の土地の1平方メートルあたりの評価額が飛び抜けて高い場合は、貸付用を選んだほうが有利になります。このツールは両方の案を計算して有利な方を提示します。</p>
+
+<h3>Q. どの土地から順に限度面積を使うと得ですか？</h3>
+<p>A. 按分式のもとでは、1平方メートルが200平方メートルの枠を消費する量が区分ごとに違います。特定事業用等は0.5、特定居住用は約0.606、貸付事業用は1です。したがって枠1単位あたりの減額額は、特定事業用等が1平方メートルあたり評価額の1.6倍、特定居住用が1.32倍、貸付事業用が0.5倍となり、この値が大きい区分から枠を使うのが最大の減額になります。「自宅を優先すればよい」とは限らず、事業用の土地の単価が高ければ事業用が先になります。</p>
+
+<h3>Q. 相続開始前3年以内に始めた賃貸でも特例は使えますか？</h3>
+<p>A. 原則として使えません。相続開始前3年以内に新たに貸付事業の用に供された宅地等は貸付事業用宅地等から除かれます（租税特別措置法69条の4第3項4号）。ただし相続開始の日まで3年を超えて引き続き特定貸付事業（事業的規模の貸付け）を行っていた被相続人等のその貸付けの用に供された土地は除外されません。事業用の土地にも同じ3年の縛りがありますが、こちらの例外は「その事業に使う建物・構築物・減価償却資産の価額が宅地等の価額の15％以上」という別の基準です。年数は同じでも例外の中身が違うので取り違えないでください。</p>
+
+<h3>Q. 老人ホームに入っていた親の家でも自宅として特例が使えますか？</h3>
+<p>A. 一定の条件を満たせば使えます。被相続人が要介護認定・要支援認定を受けて養護老人ホーム・特別養護老人ホーム・有料老人ホーム・サービス付き高齢者向け住宅などに入居していた場合や、障害支援区分の認定を受けて障害者支援施設等に入所していた場合は、入居直前の居住の用を「被相続人の居住の用」に含めます（租税特別措置法69条の4第1項かっこ書）。ただし空き家になった後にその家を人に貸したり事業に使ったりすると対象から外れます。</p>
+
+<h3>Q. 特例を使って相続税が0円になれば申告は不要ですか？</h3>
+<p>A. 申告が必要です。この特例は「申告書に適用を受けようとする旨を記載し、計算に関する明細書その他の書類を添付した場合に限り適用する」と定められています（租税特別措置法69条の4第7項）。基礎控除以下かどうかの判定はこの特例を適用する前の課税価格で行うため、特例を使って初めて0円になる場合は、期限内に申告して初めて0円が確定します。申告期限は相続の開始があったことを知った日の翌日から10か月以内です。</p>
+
+<h2 id="shutten">出典</h2>
+<ul id="shutten-list">
+  <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">租税特別措置法（昭和三十二年法律第二十六号）69条の4</a> — 1項1号・2号（課税価格に算入すべき割合は百分の二十・百分の五十）／2項1号〜3号（限度面積要件と按分式）／3項1号〜4号（各区分の定義と3年以内の除外）／4項（未分割の宅地等）／7項（申告書への記載と明細書の添付が適用の要件）</li>
+  <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4124.htm" rel="nofollow">国税庁 タックスアンサー No.4124 相続した事業の用や居住の用の宅地等の価額の特例（小規模宅地等の特例）</a> — 減額される割合等の表（400㎡80％・330㎡80％・200㎡50％）、限度面積の判定式と「両方を選択する場合は合計730㎡」の明文、特定居住用宅地等の取得者ごとの要件（家なき子の6要件）、3年以内事業宅地等の15％算式、老人ホーム入居の要件</li>
+  <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4205.htm" rel="nofollow">国税庁 タックスアンサー No.4205 相続税の申告と納税</a> — 基礎控除以下かどうかの判定は小規模宅地等の特例を適用する前の課税価格で行うこと</li>
+</ul>
+<p class="hint" id="src-note-wrap">条文は e-Gov 法令検索の法令APIから取得して逐語で確認しています<span id="src-note"></span>。このページは一般的な情報提供であり、個別の事案についての税務上の助言ではありません。各区分に該当するかどうかの判断（同居していたか・生計を一にしていたか・事業的規模か）は事実認定を伴うため、実際の申告にあたっては税理士にご相談ください。</p>
+
+<h2 id="kanren">関連ツール</h2>
+<ul>
+  <li><a href="../sozokuzei/">相続税の計算機</a> — 基礎控除と相続税の総額を計算します（この特例で減額した後の課税価格を入れてください）</li>
+  <li><a href="../iryubun/">遺留分計算機</a> — 遺言でも奪えない遺留分の割合と侵害額を計算します</li>
+  <li><a href="../sozoku-toki-menkyozei/">相続登記の登録免許税 計算機</a> — 評価額×0.4％と免税措置を判定します</li>
+  <li><a href="../seizen-zoyo/">生前贈与シミュレーター</a> — 暦年贈与と相続時精算課税を比較します</li>
+</ul>
+
+</article>
+</main>
+<footer>
+  <div>© 経理ミニツールズ</div>
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcShokibo, roundM2 } from "../assets/shokibo_takuchi_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const m2F = (n) => roundM2(n).toLocaleString("ja-JP") + "㎡";
+const num = (id) => Number($(id).value) || 0;
+
+let D = null;
+// 参照データは非同期で届く。届く前に計算ボタンを押されても待つ（実ユーザーと同じ経路）。
+// この catch が拾ってよいのは「データが手に入らなかった」ことだけ（飾りの描画は別に処理する）。
+const load = (path) => fetch(path).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+const dataReady = load("../assets/shokibo_takuchi_r08.json").then(d => { D = d; return true; }).catch(() => false);
+
+// 出典の注記は飾り。ここで転んでも計算は止めない。
+// ★法の列挙（取得者4類型・家なき子6要件・老人ホームの条件）は、実行時に描かず静的HTMLに置いてある。
+//   理由: 列挙の欠落を機械で守るのは tests/test_enumeration_completeness.mjs で、
+//   これは静的HTMLを読む。実行時描画にすると、その保護から黙って外れる。
+//   代わりに tests/test_shokibo_takuchi.mjs §8 が「静的HTML＝データ正本」を1文字ずつ固定する。
+dataReady.then(() => {
+  $("src-note").textContent = D?._meta?.checked ? `（${D._meta.checked} 時点）` : "";
+}).catch(() => {});
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+  const okData = await dataReady; // 参照データの到着を必ず待つ
+  if (!okData || !D) {
+    box.innerHTML = `<div class="note"><b>データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。限度面積と減額割合が分からない状態で減額の金額を答えることはできません。</div>`;
+    return;
+  }
+
+  const r = calcShokibo({
+    jutaku: { area: num("jutakuArea"), value: num("jutakuValue") },
+    jigyo: { area: num("jigyoArea"), value: num("jigyoValue") },
+    kashitsuke: { area: num("kashitsukeArea"), value: num("kashitsukeValue") },
+  }, D);
+
+  if (!r.ok) {
+    box.innerHTML = `<div class="note"><b>面積と評価額を入力してください。</b>
+      少なくとも1つの区分に、面積（㎡）と評価額（円）の両方が必要です。</div>`;
+    return;
+  }
+
+  const yearTag = D._meta?.checked ? `<span class="hint">（${D._meta.checked} 時点の条文で計算）</span>` : "";
+  const K = (key) => D.kubun.find((k) => k.key === key);
+  const patName = r.pattern === "no_rental"
+    ? "貸付事業用を選ばない（2項1号・2号／完全併用）"
+    : "貸付事業用を選ぶ（2項3号／按分式）";
+
+  // 選択した面積の内訳
+  const line = (key, label) => {
+    const sel = r.select[key], lotv = r.lots[key];
+    if (lotv.area <= 0) return "";
+    const pct = K(key).genzoku_pct;
+    return `<tr><td>${label}</td><td>${m2F(lotv.area)}</td><td><b>${m2F(sel)}</b></td>
+      <td>${pct}％</td><td><b id="genkaku-${key}">${yenF(r.breakdown[key])}</b></td></tr>`;
+  };
+
+  const checkLine = r.check.rule === "no_rental"
+    ? `2項1号・2号: 事業用 ${m2F(r.select.jigyo)} ≦ ${K("jigyo").limit_m2}㎡ ／ 居住用 ${m2F(r.select.jutaku)} ≦ ${K("jutaku").limit_m2}㎡`
+    : `2項3号: ${m2F(r.select.jigyo)}×200/400 ＋ ${m2F(r.select.jutaku)}×200/330 ＋ ${m2F(r.select.kashitsuke)} ＝ <b>${roundM2(r.check.value)}</b> ≦ ${D.heiyo.budget_m2}㎡`;
+
+  // ★このツールの中心: 貸付を選ぶ案と選ばない案の比較を必ず出す
+  let hikaku = "";
+  if (r.hasKashitsuke) {
+    const a = r.scenarios.noRental.reduction, b = r.scenarios.withRental.reduction;
+    hikaku = `
+      <div class="note" style="margin-top:12px">
+        <b>限度面積の2つの式を、両方とも計算しました。</b>
+        <table style="margin-top:8px">
+          <thead><tr><th>案</th><th>限度面積のルール</th><th>減額の合計</th></tr></thead>
+          <tbody>
+            <tr><td>① 貸付事業用を<b>選ばない</b></td><td>事業用${K("jigyo").limit_m2}㎡＋居住用${K("jutaku").limit_m2}㎡＝<b>${D.heiyo.kanzen_heiyo_total_m2}㎡</b>まで完全併用</td><td id="hikaku-a"><b>${yenF(a)}</b></td></tr>
+            <tr><td>② 貸付事業用を<b>選ぶ</b></td><td>按分式で<b>${D.heiyo.budget_m2}㎡</b>の枠を分け合う</td><td id="hikaku-b"><b>${yenF(b)}</b></td></tr>
+          </tbody>
+        </table>
+        <div style="margin-top:8px" id="hikaku-judge">${
+          a === b
+            ? "どちらの案でも減額は同じです。枠の制約がゆるい①を採用しました。"
+            : (a > b
+              ? `貸付事業用を特例に入れると<b>${yenF(a - b)} 減額が小さくなります</b>。${D.heiyo.kanzen_heiyo_total_m2}㎡の完全併用が使えなくなるためです。<b>①を選んでください。</b>`
+              : `この土地の組み合わせでは、貸付事業用を入れたほうが<b>${yenF(b - a)} 減額が大きくなります</b>（貸付用の1㎡あたりの評価額が高いため）。<b>②を選んでください。</b>`)
+        }</div>
+      </div>`;
+  }
+
+  box.innerHTML = `
+    <div style="font-size:15px">特例で減額される金額 <b style="font-size:22px">${yenF(r.reduction)}</b></div>
+    <div style="margin-top:6px">特例適用後の宅地等の価額 <b>${yenF(r.afterValue)}</b>（特例前 ${yenF(r.totalValue)}）</div>
+    <div style="margin-top:10px">適用した限度面積のルール: <b id="pattern-name">${patName}</b></div>
+    <table style="margin-top:10px">
+      <thead><tr><th>区分</th><th>持っている面積</th><th>特例を使う面積</th><th>減額割合</th><th>減額される金額</th></tr></thead>
+      <tbody>
+        ${line("jutaku", "特定居住用宅地等（自宅）")}
+        ${line("jigyo", "特定事業用等宅地等")}
+        ${line("kashitsuke", "貸付事業用宅地等")}
+      </tbody>
+    </table>
+    <div class="hint" style="margin-top:8px">限度面積の検算 — ${checkLine}</div>
+    ${hikaku}
+    <div class="note" style="margin-top:12px">
+      <b>この減額は、申告して初めて受けられます。</b>特例を使って相続税が0円になる場合も、期限内（相続の開始を知った日の翌日から10か月以内）の申告が必要です（措置法69条の4第7項）。申告期限までに遺産分割が終わっていない宅地等には使えません（同4項。3年以内に分割されれば適用可）。
+      減額後の課税価格から相続税を出すには<a href="../sozokuzei/">相続税の計算機</a>をお使いください。${yearTag}
+    </div>`;
+});
+</script>
+</body>
+</html>

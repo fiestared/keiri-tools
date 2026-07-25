@@ -468,6 +468,44 @@ const SCENES = [
   { name: "iryubun_nodata", data404: "iryubun_r08.json",
     expect: (s) => s.failed && s.shingai === null },
 
+  // ── 小規模宅地等の特例 (/shokibo-takuchi/) ───────────────────────────
+  // ★手計算の鎖は tests/test_shokibo_takuchi.mjs §4: 事業用400平方メートル8,000万
+  //   ＋自宅330平方メートル9,900万＋貸付200平方メートル1億
+  //   → 貸付を選ばず 400＋330＝730平方メートル を完全併用 → 6,400万＋7,920万＝1億4,320万円。
+  //   3号の按分式を常に使う実装なら 7,920万円 になって落ちる（限度面積の式の取り違え）。
+  { name: "shokibo_takuchi", expect: (s) =>
+      s.reduction === 143200000 && s.before === 279000000 && s.after === 135800000 &&
+      s.genkakuJigyo === 64000000 && s.genkakuJutaku === 79200000 &&
+      /完全併用/.test(s.pattern || "") &&
+      s.hikakuA === 143200000 && s.hikakuB === 79200000 &&
+      /64,000,000|6,400万/.test(s.judge || "") &&
+      // 法の列挙が実際に画面に出ていること（家なき子6要件・取得者4類型・老人ホーム2条件）
+      s.ienakikoCount === 6 && s.ienakikoHasHaigusha &&
+      s.shutokushaRows === 4 && s.homeConds === 2 &&
+      s.defaultJutakuArea > 0 && s.defaultJutakuValue > 0 && !s.failed },
+  { name: "shokibo_takuchi_slow", slow: true, expect: (s) =>
+      s.reduction === 143200000 && s.hikakuA === 143200000 && !s.failed },
+  // ★逆向き: 貸付の単価が高ければ貸付を選んだ方が得（自宅100平方メートル2,000万＋貸付200平方メートル1億2,000万）
+  //   → 貸付200平方メートルで枠を使い切り6,000万円。自宅を常に優先する実装なら1,600万円で落ちる。
+  { name: "shokibo_takuchi_kashitsuke", expect: (s) =>
+      s.reduction === 60000000 && s.genkakuKashitsuke === 60000000 && s.genkakuJutaku === 0 &&
+      /按分式/.test(s.pattern || "") &&
+      s.hikakuA === 16000000 && s.hikakuB === 60000000 && !s.failed },
+  // ★2項3号の按分がちょうど枠200になる混在: 自宅165＋貸付100 → 2,640万＋2,500万＝5,140万円。
+  { name: "shokibo_takuchi_anbun", expect: (s) =>
+      s.reduction === 51400000 && s.genkakuJutaku === 26400000 && s.genkakuKashitsuke === 25000000 &&
+      /200/.test(s.body) && !s.failed },
+  // ★貸付を持っていない人には2案の比較表を出さない（存在しない選択肢を見せない）。
+  { name: "shokibo_takuchi_nokashi", expect: (s) =>
+      s.reduction === 24000000 && s.hikakuA === null && s.hikakuB === null &&
+      /完全併用/.test(s.pattern || "") && !s.failed },
+  // ★入力なし → 0円と答えず入力を促す（fail closed）。
+  { name: "shokibo_takuchi_empty", expect: (s) =>
+      s.noInput && s.reduction === null && !s.failed },
+  // 参照データ配信不可 → 減額額を出さずに断る（fail closed）。
+  { name: "shokibo_takuchi_nodata", data404: "shokibo_takuchi_r08.json",
+    expect: (s) => s.failed && s.reduction === null },
+
   // ── 収入印紙 (/inshi/) ───────────────────────────────────────────────
   // ★No.6925: 税込54,800円・消費税等4,981円区分記載 → 税抜49,819円で判定＝非課税（印紙不要）。
   //   ハーネス側の引き算 54,800−4,981=49,819<50,000 と一致し、一覧表23行（判取帳まで）も描かれること。

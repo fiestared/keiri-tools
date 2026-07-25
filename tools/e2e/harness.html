@@ -1577,6 +1577,88 @@ SCENES.iryubun_kigen = iryubunScene({ shittaDate: "2026-05-10" });
 // 参照データ配信不可 → 遺留分を出さずに断る（fail closed）。
 SCENES.iryubun_nodata = iryubunScene({});
 
+// ── 小規模宅地等の特例 (/shokibo-takuchi/) ─────────────────────────────────
+// ★単体（tests/test_shokibo_takuchi.mjs）は core しか見ないので、「3区分の面積・評価額の読み取り→
+//   2つの限度面積ルールの比較→配分→内訳表と比較表の描画」の配線はここでしか守れない。
+//   期待値の手計算は同テストの §4（条文書き下しオラクルと全域照合つき）。
+const shokiboScene = (o) => async () => {
+  const doc = await open("/docs/shokibo-takuchi/");
+  // 既定値もページの一部（利用者が最初に見る画面）。空でないことを機械で確かめる。
+  const defaultJutakuArea = doc.getElementById("jutakuArea").value;
+  const defaultJutakuValue = doc.getElementById("jutakuValue").value;
+  set(doc, "jutakuArea", o.jutakuArea ?? 330);
+  set(doc, "jutakuValue", o.jutakuValue ?? 99000000);
+  set(doc, "jigyoArea", o.jigyoArea ?? 400);
+  set(doc, "jigyoValue", o.jigyoValue ?? 80000000);
+  set(doc, "kashitsukeArea", o.kashitsukeArea ?? 200);
+  set(doc, "kashitsukeValue", o.kashitsukeValue ?? 100000000);
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /¥|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "小規模宅地等の特例の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  const byId = (id) => { const e = doc.getElementById(id); return e ? e.textContent.trim() : null; };
+  const yen = (id) => { const t = byId(id); return t ? Number(t.replace(/[^\d]/g, "")) : null; };
+  // 内訳表を区分ごとに読む（描画の配線を名指しで確かめる）
+  const rows = [...(doc.querySelectorAll("#result table tbody tr") || [])].map((tr) =>
+    [...tr.querySelectorAll("td")].map((e) => e.textContent.trim()));
+  // 法の列挙が実際に画面に出ているか（静的HTMLだが、E2Eでも「見えていること」を確かめる）
+  const ienakiko = [...(doc.querySelectorAll("#ienakiko-list li") || [])].map((e) => e.textContent.trim());
+  const shutokusha = [...(doc.querySelectorAll("#jutaku-shutokusha tbody tr") || [])].length;
+  const homeConds = [...(doc.querySelectorAll("#home-list li") || [])].length;
+  return {
+    defaultJutakuArea: Number(defaultJutakuArea) || 0,
+    defaultJutakuValue: Number(defaultJutakuValue) || 0,
+    reduction: num(/特例で減額される金額 ¥([\d,]+)/),
+    after: num(/特例適用後の宅地等の価額 ¥([\d,]+)/),
+    before: num(/（特例前 ¥([\d,]+)/),
+    pattern: byId("pattern-name"),
+    genkakuJutaku: yen("genkaku-jutaku"),
+    genkakuJigyo: yen("genkaku-jigyo"),
+    genkakuKashitsuke: yen("genkaku-kashitsuke"),
+    hikakuA: yen("hikaku-a"),
+    hikakuB: yen("hikaku-b"),
+    judge: byId("hikaku-judge"),
+    rows,
+    ienakikoCount: ienakiko.length,
+    ienakikoHasHaigusha: ienakiko.some((s) => s.includes("被相続人に配偶者がいないこと")),
+    shutokushaRows: shutokusha,
+    homeConds,
+    failed: body.includes("読み込めませんでした"),
+    noInput: body.includes("入力してください"),
+    body,
+  };
+};
+// ★看板例（§4）: 事業用400平方メートル8,000万＋自宅330平方メートル9,900万＋貸付200平方メートル1億
+//   → 貸付を選ばず730平方メートルを完全併用して1億4,320万円。
+//   貸付も入れる実装（3号を常に使う）なら7,920万円になって落ちる。
+SCENES.shokibo_takuchi = shokiboScene({});
+SCENES.shokibo_takuchi_slow = SCENES.shokibo_takuchi;  // 800ms遅らせる。待って正答すること
+// ★逆向き: 単価の高い貸付は選んだ方が得（自宅を常に優先する実装なら1,600万円になって落ちる）。
+SCENES.shokibo_takuchi_kashitsuke = shokiboScene({
+  jigyoArea: 0, jigyoValue: 0, jutakuArea: 100, jutakuValue: 20000000,
+  kashitsukeArea: 200, kashitsukeValue: 120000000,
+});
+// ★混在（3号の按分がちょうど200になる）: 自宅165＋貸付100 → 2,640万＋2,500万＝5,140万円。
+SCENES.shokibo_takuchi_anbun = shokiboScene({
+  jigyoArea: 0, jigyoValue: 0, jutakuArea: 165, jutakuValue: 33000000,
+  kashitsukeArea: 100, kashitsukeValue: 50000000,
+});
+// ★貸付を持っていない人には比較表を出さない（存在しない選択肢で迷わせない）。
+SCENES.shokibo_takuchi_nokashi = shokiboScene({
+  jigyoArea: 0, jigyoValue: 0, jutakuArea: 100, jutakuValue: 30000000,
+  kashitsukeArea: 0, kashitsukeValue: 0,
+});
+// ★入力なし → 0円と答えず入力を促す（fail closed）。
+SCENES.shokibo_takuchi_empty = shokiboScene({
+  jigyoArea: 0, jigyoValue: 0, jutakuArea: 0, jutakuValue: 0, kashitsukeArea: 0, kashitsukeValue: 0,
+});
+// 参照データ配信不可 → 減額額を出さずに断る（fail closed）。
+SCENES.shokibo_takuchi_nodata = shokiboScene({});
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。
