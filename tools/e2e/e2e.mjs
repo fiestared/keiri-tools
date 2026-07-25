@@ -323,8 +323,11 @@ const SCENES = [
   { name: "iryohi_lowincome", expect: (s) =>
       s.ashikiri === 43000 && s.kojo === 17000 && !s.failed },
   // ★通常とセルフメディは選択 → 控除額の大きい②を推奨。控除額88,000。
+  //   ★足切り12,000・上限88,000の**表示**がデータ由来であることも固定する（2026-07-25 第5便）。
+  //     ページに直書きしていると、データを差し替えた日に計算と表示が食い違う。
   { name: "iryohi_selfmed", expect: (s) =>
-      s.selfmedKojo === 88000 && s.recommendsSelf && !s.failed },
+      s.selfmedKojo === 88000 && s.recommendsSelf && !s.failed
+      && s.selfmedFloorShown === 12000 && s.selfmedCapShown === 88000 },
   // ★税率未選択 → 軽減額を黙って0円で出さず「税率を選んでください」と言う（控除額は出す）。
   { name: "iryohi_norate", expect: (s) =>
       s.kojo === 200000 && s.keigen === null && s.showsRatePrompt && !s.failed },

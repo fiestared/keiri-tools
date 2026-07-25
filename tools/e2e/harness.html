@@ -1269,6 +1269,10 @@ const iryohiScene = ({ iryohi, hoten = 0, hotenTaisho, shunyu, rate, selfmed, no
     keigen: num(/戻ってくる税金の目安 ¥([\d,]+)/), // 最初の一致＝通常の医療費控除の軽減額
     selfmedKojo: num(/セルフメディケーション税制[\s\S]*?控除額 ¥([\d,]+)/),
     recommendsSelf: /おすすめ：② セルフメディケーション/.test(body),
+    // ★足切り・上限の表示が**データ由来**であることを実行時に固定する（静的HTMLを読む単体テストには
+    //   届かない層）。ページに 12,000 / 88,000 を直書きしていると、データを差し替えた日に画面だけ嘘になる。
+    selfmedFloorShown: num(/購入費 ¥[\d,]+ − ¥([\d,]+)/),
+    selfmedCapShown: num(/上限¥([\d,]+)で頭打ち/),
     showsRatePrompt: /税率）」を選んでください/.test(body),   // 税率未選択のとき軽減額の代わりに出る
     showsYear: /令和\d+年(度|分)/.test(body),
     failed: body.includes("読み込めませんでした"),

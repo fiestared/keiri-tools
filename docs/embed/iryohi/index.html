@@ -176,7 +176,7 @@ $("calc").addEventListener("click", async () => {
       <div class="block2">
         <b>② セルフメディケーション税制</b>（通常の控除とは<b>どちらか一方だけ</b>）
         <div class="row">控除額 <span class="big">${yen(sk.kojo)}</span></div>
-        <div class="hint">（購入費 ${yen(sk.purchase)} − 12,000円${sk.kojo >= 88000 ? " → 上限88,000円で頭打ち" : ""}）</div>
+        <div class="hint">（購入費 ${yen(sk.purchase)} − ${yen(IRYOHI.selfmed.floor)}${sk.kojo >= IRYOHI.selfmed.cap ? ` → 上限${yen(IRYOHI.selfmed.cap)}で頭打ち` : ""}）</div>
         ${keigenRow(sk.keigen)}
       </div>
       <div class="callout"><b>おすすめ：${r.recommended === "selfmed" ? "② セルフメディケーション税制" : "① 通常の医療費控除"}</b> 控除額が大きいほうを選ぶと戻る税金が大きくなります。</div>`;
