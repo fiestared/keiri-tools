@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>住民税非課税世帯 判定シミュレーター｜年金・給与から自動判定</title>
+<meta name="description" content="世帯全員の年金収入・給与収入と年齢を入れるだけで、住民税非課税世帯にあたるかを自動判定。65歳以上は年金155万円まで、65歳未満は105万円まで（1級地・単身）という境界を、公的年金等控除（措置法41条の15の3の110万円）と均等割の非課税限度額から条文どおりに計算します。お住まいの級地（1〜3級地）、子のアルバイト代で世帯が課税になる境界、未成年の135万円特例、扶養の付け方で判定が変わるケースにも対応。無料・登録不要。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/hikazei-setai/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "住民税非課税世帯 判定シミュレーター",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+      "description": "世帯全員の年金収入・給与収入・年齢から、住民税非課税世帯（世帯全員が住民税均等割非課税）にあたるかを判定します。公的年金等控除の65歳以上110万円の特例、級地による限度額の違い、未成年の135万円特例、扶養の付け方による判定の変化に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://keiri-tools.com/" },
+        { "@type": "ListItem", "position": 2, "name": "住民税非課税世帯 判定シミュレーター" }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 住民税非課税世帯とはどういう世帯ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 世帯全員が住民税の均等割を課されない世帯のことです。給付金・高額療養費の自己負担限度額の区分・保育料の減免・大学の修学支援などが使っている定義はこれで、所得割だけが非課税でも該当しません。世帯のうち1人でも均等割を課される人がいれば、その世帯は住民税非課税世帯ではありません。判定は前年の合計所得金額で行い、令和8年度（2026年度）の判定なら令和7年（2025年）1年間の所得を使います。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 年金収入がいくらまでなら住民税非課税ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 1級地に住む単身の人なら、65歳以上は年金収入155万円まで、65歳未満は105万円までです。差が出るのは公的年金等控除の最低保障額で、65歳以上は110万円、65歳未満は60万円だからです（租税特別措置法41条の15の3）。65歳以上かどうかはその年の12月31日の年齢で判定します。2級地は151万5千円まで、3級地は148万円までと、お住まいの市区町村の級地によって境界が変わります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 給与収入だけの単身者はいくらまで非課税ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 1級地なら給与収入110万円までです。均等割の非課税限度額が合計所得45万円（35万円＋10万円）で、給与所得控除の最低保障額が65万円なので、45万円＋65万円＝110万円が境界になります。令和7年分から給与所得控除の最低保障額が55万円から65万円に引き上げられたため、この境界は100万円から110万円に上がりました。所得税がかからない範囲（いわゆる160万円の壁）とは別の基準です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 子どものアルバイト代で世帯が課税になることはありますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. あります。住民税非課税世帯は世帯全員が均等割非課税であることが条件なので、子ども本人が均等割を課されると世帯全体が非課税世帯でなくなります。1級地なら子ども自身の限度額は合計所得45万円（給与収入110万円）です。ただし18歳未満の未成年者は合計所得135万円以下なら非課税になるため（地方税法295条1項2号）、同じ収入でも年齢によって結果が反転します。19歳の子の給与収入115万円は課税、17歳なら非課税です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 級地とは何ですか。自分の市区町村の級地はどこで分かりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 生活保護法8条1項の保護の基準における地域の級地区分のことで、均等割の非課税限度額の基本額がこれによって1.0倍・0.9倍・0.8倍されます（地方税法施行令47条の3、同法施行規則9条の21第2項）。おおよそ東京23区・政令指定都市・県庁所在地などが1級地、中規模の市が2級地、町村が3級地です。政令の額はあくまで参酌基準で、最終的には各市区町村の条例が定めるため、境界に近い場合はお住まいの市区町村の住民税担当窓口でご確認ください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 扶養の付け方で判定が変わることがあるのはなぜですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 均等割の非課税限度額が本人＋同一生計配偶者＋扶養親族の人数で決まるからです。共働きで子どもが複数いる場合、子どもを1人にまとめて扶養させるより1人ずつ分けたほうが、両親それぞれの限度額が上がって世帯全体が非課税になることがあります。たとえば1級地で夫の合計所得100万円・妻60万円・子2人なら、子2人を夫にまとめると妻が課税になりますが、1人ずつ分ければ2人とも非課税になります。本ツールは付け方を全通り試し、非課税になる付け方があればそれを表示します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 障害者や寡婦・ひとり親には別の基準がありますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. あります。障害者・未成年者・寡婦・ひとり親にあたる人は、前年の合計所得金額が135万円以下であれば均等割も所得割も課されません（地方税法295条1項2号）。この判定は人数による限度額の計算より先に効くので、限度額を超えていてもこちらで非課税になることがあります。給与収入だけなら約204万円、65歳以上の年金収入だけなら245万円までが合計所得135万円の目安です。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 住民税非課税世帯 判定シミュレーター</nav>
+
+<section class="hero">
+  <h1>住民税非課税世帯 判定シミュレーター</h1>
+  <p>世帯全員の<b>年金収入・給与収入と年齢</b>を入れるだけで、<b>住民税非課税世帯</b>にあたるかを判定します。<b id="hero-155">65歳以上は年金155万円まで、65歳未満は105万円まで</b>（1級地・単身）という境界を、<b>公的年金等控除</b>と<b>均等割の非課税限度額</b>から条文どおりに計算します。<b>子のアルバイト代で世帯が課税になる境界</b>と、<b>扶養の付け方を変えれば非課税になるケース</b>も出します。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="teigi-callout">「住民税非課税世帯」とは、世帯全員が住民税の均等割を課されない世帯のことです</b>
+    給付金・高額療養費の区分・保育料の減免などが使っているのはこの定義で、<b id="teigi-kintouwari">所得割だけが非課税でも該当しません</b>。世帯のうち<b>1人でも均等割を課される人がいれば</b>、その世帯は非課税世帯ではありません。判定は<b>前年の合計所得金額</b>で行います。
+  </div>
+
+  <div class="grid2">
+    <div>
+      <label for="kyuchi">お住まいの級地<span class="hint">　生活保護法の級地区分</span></label>
+      <select id="kyuchi">
+        <option value="1" selected>1級地（東京23区・政令指定都市・県庁所在地など）</option>
+        <option value="2">2級地（中規模の市など）</option>
+        <option value="3">3級地（町村など）</option>
+      </select>
+    </div>
+    <div>
+      <label for="zeisei">判定する年度<span class="hint">　入れるのは前年1年間の収入</span></label>
+      <select id="zeisei">
+        <option value="r7" selected>令和8年度（令和7年＝2025年の収入）</option>
+        <option value="r8">令和9年度（令和8年＝2026年の収入）</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:14px">
+    <div>
+      <label for="ninzu">世帯の人数<span class="hint">　同じ世帯の全員を入れてください</span></label>
+      <select id="ninzu">
+        <option value="1">1人</option>
+        <option value="2" selected>2人</option>
+        <option value="3">3人</option>
+        <option value="4">4人</option>
+        <option value="5">5人</option>
+        <option value="6">6人</option>
+      </select>
+    </div>
+    <div></div>
+  </div>
+
+  <div id="m1" class="member">
+    <label style="margin-top:14px">1人目</label>
+    <div class="grid2">
+      <div>
+        <label for="m1_zokugara" style="font-size:13px">続柄</label>
+        <select id="m1_zokugara">
+          <option value="self" selected>世帯主・本人</option>
+          <option value="spouse">配偶者</option>
+          <option value="child">子</option>
+          <option value="parent">親</option>
+          <option value="other">その他</option>
+        </select>
+      </div>
+      <div>
+        <label for="m1_age" style="font-size:13px">年齢（12月31日時点）</label>
+        <input type="number" id="m1_age" min="0" max="120" inputmode="numeric" value="70">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m1_nenkin" style="font-size:13px">公的年金等の収入（年・円）</label>
+        <input type="number" id="m1_nenkin" min="0" inputmode="numeric" value="1800000">
+      </div>
+      <div>
+        <label for="m1_kyuyo" style="font-size:13px">給与の収入（年・円）</label>
+        <input type="number" id="m1_kyuyo" min="0" inputmode="numeric" value="0">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m1_sonota" style="font-size:13px">その他の所得（円）<span class="hint">　事業・不動産など</span></label>
+        <input type="number" id="m1_sonota" min="0" inputmode="numeric" value="0">
+      </div>
+      <div>
+        <label for="m1_tokurei" style="font-size:13px">該当するもの<span class="hint">　295条1項2号</span></label>
+        <select id="m1_tokurei">
+          <option value="" selected>なし</option>
+          <option value="shogaisha">障害者</option>
+          <option value="kafu">寡婦</option>
+          <option value="hitorioya">ひとり親</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="m2" class="member">
+    <label style="margin-top:14px">2人目</label>
+    <div class="grid2">
+      <div>
+        <label for="m2_zokugara" style="font-size:13px">続柄</label>
+        <select id="m2_zokugara">
+          <option value="self">世帯主・本人</option>
+          <option value="spouse" selected>配偶者</option>
+          <option value="child">子</option>
+          <option value="parent">親</option>
+          <option value="other">その他</option>
+        </select>
+      </div>
+      <div>
+        <label for="m2_age" style="font-size:13px">年齢（12月31日時点）</label>
+        <input type="number" id="m2_age" min="0" max="120" inputmode="numeric" value="68">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m2_nenkin" style="font-size:13px">公的年金等の収入（年・円）</label>
+        <input type="number" id="m2_nenkin" min="0" inputmode="numeric" value="780000">
+      </div>
+      <div>
+        <label for="m2_kyuyo" style="font-size:13px">給与の収入（年・円）</label>
+        <input type="number" id="m2_kyuyo" min="0" inputmode="numeric" value="0">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m2_sonota" style="font-size:13px">その他の所得（円）</label>
+        <input type="number" id="m2_sonota" min="0" inputmode="numeric" value="0">
+      </div>
+      <div>
+        <label for="m2_tokurei" style="font-size:13px">該当するもの</label>
+        <select id="m2_tokurei">
+          <option value="" selected>なし</option>
+          <option value="shogaisha">障害者</option>
+          <option value="kafu">寡婦</option>
+          <option value="hitorioya">ひとり親</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="m3" class="member">
+    <label style="margin-top:14px">3人目</label>
+    <div class="grid2">
+      <div>
+        <label for="m3_zokugara" style="font-size:13px">続柄</label>
+        <select id="m3_zokugara">
+          <option value="self">世帯主・本人</option>
+          <option value="spouse">配偶者</option>
+          <option value="child" selected>子</option>
+          <option value="parent">親</option>
+          <option value="other">その他</option>
+        </select>
+      </div>
+      <div>
+        <label for="m3_age" style="font-size:13px">年齢（12月31日時点）</label>
+        <input type="number" id="m3_age" min="0" max="120" inputmode="numeric" value="19">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m3_nenkin" style="font-size:13px">公的年金等の収入（年・円）</label>
+        <input type="number" id="m3_nenkin" min="0" inputmode="numeric" value="0">
+      </div>
+      <div>
+        <label for="m3_kyuyo" style="font-size:13px">給与の収入（年・円）</label>
+        <input type="number" id="m3_kyuyo" min="0" inputmode="numeric" value="0">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m3_sonota" style="font-size:13px">その他の所得（円）</label>
+        <input type="number" id="m3_sonota" min="0" inputmode="numeric" value="0">
+      </div>
+      <div>
+        <label for="m3_tokurei" style="font-size:13px">該当するもの</label>
+        <select id="m3_tokurei">
+          <option value="" selected>なし</option>
+          <option value="shogaisha">障害者</option>
+          <option value="kafu">寡婦</option>
+          <option value="hitorioya">ひとり親</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="m4" class="member">
+    <label style="margin-top:14px">4人目</label>
+    <div class="grid2">
+      <div>
+        <label for="m4_zokugara" style="font-size:13px">続柄</label>
+        <select id="m4_zokugara">
+          <option value="self">世帯主・本人</option>
+          <option value="spouse">配偶者</option>
+          <option value="child" selected>子</option>
+          <option value="parent">親</option>
+          <option value="other">その他</option>
+        </select>
+      </div>
+      <div>
+        <label for="m4_age" style="font-size:13px">年齢（12月31日時点）</label>
+        <input type="number" id="m4_age" min="0" max="120" inputmode="numeric" value="15">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m4_nenkin" style="font-size:13px">公的年金等の収入（年・円）</label>
+        <input type="number" id="m4_nenkin" min="0" inputmode="numeric" value="0">
+      </div>
+      <div>
+        <label for="m4_kyuyo" style="font-size:13px">給与の収入（年・円）</label>
+        <input type="number" id="m4_kyuyo" min="0" inputmode="numeric" value="0">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m4_sonota" style="font-size:13px">その他の所得（円）</label>
+        <input type="number" id="m4_sonota" min="0" inputmode="numeric" value="0">
+      </div>
+      <div>
+        <label for="m4_tokurei" style="font-size:13px">該当するもの</label>
+        <select id="m4_tokurei">
+          <option value="" selected>なし</option>
+          <option value="shogaisha">障害者</option>
+          <option value="kafu">寡婦</option>
+          <option value="hitorioya">ひとり親</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="m5" class="member">
+    <label style="margin-top:14px">5人目</label>
+    <div class="grid2">
+      <div>
+        <label for="m5_zokugara" style="font-size:13px">続柄</label>
+        <select id="m5_zokugara">
+          <option value="self">世帯主・本人</option>
+          <option value="spouse">配偶者</option>
+          <option value="child">子</option>
+          <option value="parent" selected>親</option>
+          <option value="other">その他</option>
+        </select>
+      </div>
+      <div>
+        <label for="m5_age" style="font-size:13px">年齢（12月31日時点）</label>
+        <input type="number" id="m5_age" min="0" max="120" inputmode="numeric" value="80">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m5_nenkin" style="font-size:13px">公的年金等の収入（年・円）</label>
+        <input type="number" id="m5_nenkin" min="0" inputmode="numeric" value="0">
+      </div>
+      <div>
+        <label for="m5_kyuyo" style="font-size:13px">給与の収入（年・円）</label>
+        <input type="number" id="m5_kyuyo" min="0" inputmode="numeric" value="0">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m5_sonota" style="font-size:13px">その他の所得（円）</label>
+        <input type="number" id="m5_sonota" min="0" inputmode="numeric" value="0">
+      </div>
+      <div>
+        <label for="m5_tokurei" style="font-size:13px">該当するもの</label>
+        <select id="m5_tokurei">
+          <option value="" selected>なし</option>
+          <option value="shogaisha">障害者</option>
+          <option value="kafu">寡婦</option>
+          <option value="hitorioya">ひとり親</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div id="m6" class="member">
+    <label style="margin-top:14px">6人目</label>
+    <div class="grid2">
+      <div>
+        <label for="m6_zokugara" style="font-size:13px">続柄</label>
+        <select id="m6_zokugara">
+          <option value="self">世帯主・本人</option>
+          <option value="spouse">配偶者</option>
+          <option value="child">子</option>
+          <option value="parent">親</option>
+          <option value="other" selected>その他</option>
+        </select>
+      </div>
+      <div>
+        <label for="m6_age" style="font-size:13px">年齢（12月31日時点）</label>
+        <input type="number" id="m6_age" min="0" max="120" inputmode="numeric" value="50">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m6_nenkin" style="font-size:13px">公的年金等の収入（年・円）</label>
+        <input type="number" id="m6_nenkin" min="0" inputmode="numeric" value="0">
+      </div>
+      <div>
+        <label for="m6_kyuyo" style="font-size:13px">給与の収入（年・円）</label>
+        <input type="number" id="m6_kyuyo" min="0" inputmode="numeric" value="0">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="m6_sonota" style="font-size:13px">その他の所得（円）</label>
+        <input type="number" id="m6_sonota" min="0" inputmode="numeric" value="0">
+      </div>
+      <div>
+        <label for="m6_tokurei" style="font-size:13px">該当するもの</label>
+        <select id="m6_tokurei">
+          <option value="" selected>なし</option>
+          <option value="shogaisha">障害者</option>
+          <option value="kafu">寡婦</option>
+          <option value="hitorioya">ひとり親</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <button class="primary" id="calc" style="margin-top:14px">住民税非課税世帯かどうかを判定する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<nav class="toc">
+  <b>目次</b>
+  <ol>
+    <li><a href="#zenin">「世帯全員が均等割非課税」でなければ非課税世帯ではない</a></li>
+    <li><a href="#nenkin">65歳以上と65歳未満で、境界が50万円違う</a></li>
+    <li><a href="#kyuchi">同じ収入でも、住んでいる市区町村で境界が変わる</a></li>
+    <li><a href="#kodomo">子のアルバイト代が、世帯の非課税を壊すことがある</a></li>
+    <li><a href="#fuyo">扶養の付け方を変えると、非課税になることがある</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ol>
+</nav>
+
+<h2 id="zenin">「世帯全員が均等割非課税」でなければ非課税世帯ではない</h2>
+
+<p>住民税には<b>均等割</b>（定額）と<b>所得割</b>（所得に比例）の2つがあり、非課税の限度額は<b>それぞれ別に定められています</b>。給付金や高額療養費の区分が使う「住民税非課税世帯」は、<b>世帯全員が均等割非課税</b>である世帯を指します。</p>
+
+<table id="kintou-shotoku-table">
+  <thead><tr><th></th><th>均等割の非課税限度額</th><th>所得割の非課税限度額</th></tr></thead>
+  <tbody>
+    <tr id="row-konkyo"><td><b>根拠</b></td><td>地方税法295条3項＋施行令47条の3<br>（政令の基準に従い<b>条例</b>で定める）</td><td>地方税法附則3条の3<br>（<b>法律</b>が直接定める）</td></tr>
+    <tr id="row-kihon"><td><b>基本額</b></td><td>35万円 ×（本人＋同一生計配偶者＋扶養親族）<br>★<b>級地で1.0/0.9/0.8倍される</b></td><td>35万円 ×（同左）<br>全国一律</td></tr>
+    <tr id="row-kasan"><td><b>加算額</b></td><td>10万円 ＋（扶養等がいれば）<b>21万円</b></td><td>10万円 ＋（扶養等がいれば）<b>32万円</b></td></tr>
+  </tbody>
+</table>
+
+<div class="note">
+<b>加算額が21万円と32万円で違うため、「所得割は非課税だが均等割は課税される」帯が生まれます。</b>この帯にいる人は住民税を均等割の分（＋森林環境税1,000円）だけ払うことになり、<b>住民税非課税世帯には該当しません</b>。「住民税がほとんどかかっていないから非課税世帯だろう」という感覚は、この帯でずれます。
+</div>
+
+<h2 id="nenkin">65歳以上と65歳未満で、境界が50万円違う</h2>
+
+<p>年金暮らしの世帯の判定を左右するのは<b>公的年金等控除</b>です。所得税法35条4項が定める最低保障額は60万円ですが、<b>65歳以上はこれが110万円に読み替えられます</b>（租税特別措置法41条の15の3第1項）。住民税の所得計算は「所得税法<b>その他の所得税に関する法令</b>の規定による…計算の例による」と定められているため（地方税法313条2項）、<b>この特例は住民税にも及びます</b>。</p>
+
+<figure>
+<svg viewBox="0 0 720 300" width="100%" role="img" aria-labelledby="nenkin-title">
+  <title id="nenkin-title">年金収入から住民税非課税の境界が決まる仕組み（1級地・単身）</title>
+  <rect x="0" y="0" width="720" height="300" fill="#fff"/>
+
+  <text x="14" y="24" font-size="13" fill="#1b2b4b" font-weight="bold">1級地・単身（扶養なし）の場合</text>
+
+  <!-- 65歳以上 -->
+  <rect x="14" y="40" width="200" height="60" rx="6" fill="#eef4ff" stroke="#3b6fd4"/>
+  <text x="114" y="62" text-anchor="middle" font-size="12" fill="#1b2b4b">年金収入 155万円</text>
+  <text x="114" y="82" text-anchor="middle" font-size="11" fill="#4a5a78">65歳以上</text>
+  <text x="228" y="76" font-size="16" fill="#3b6fd4">−</text>
+  <rect x="248" y="40" width="200" height="60" rx="6" fill="#eef4ff" stroke="#3b6fd4"/>
+  <text x="348" y="62" text-anchor="middle" font-size="12" fill="#1b2b4b">公的年金等控除 110万円</text>
+  <text x="348" y="82" text-anchor="middle" font-size="11" fill="#4a5a78">措法41条の15の3</text>
+  <text x="462" y="76" font-size="16" fill="#3b6fd4">=</text>
+  <rect x="482" y="40" width="224" height="60" rx="6" fill="#2f8b52"/>
+  <text x="594" y="64" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">合計所得 45万円</text>
+  <text x="594" y="84" text-anchor="middle" font-size="11" fill="#dff0e6">＝限度額ちょうど → 非課税</text>
+
+  <!-- 65歳未満 -->
+  <rect x="14" y="118" width="200" height="60" rx="6" fill="#fff6e5" stroke="#d08a1e"/>
+  <text x="114" y="140" text-anchor="middle" font-size="12" fill="#5b3d05">年金収入 105万円</text>
+  <text x="114" y="160" text-anchor="middle" font-size="11" fill="#7a5a1e">65歳未満</text>
+  <text x="228" y="154" font-size="16" fill="#d08a1e">−</text>
+  <rect x="248" y="118" width="200" height="60" rx="6" fill="#fff6e5" stroke="#d08a1e"/>
+  <text x="348" y="140" text-anchor="middle" font-size="12" fill="#5b3d05">公的年金等控除 60万円</text>
+  <text x="348" y="160" text-anchor="middle" font-size="11" fill="#7a5a1e">所法35条4項1号（本則）</text>
+  <text x="462" y="154" font-size="16" fill="#d08a1e">=</text>
+  <rect x="482" y="118" width="224" height="60" rx="6" fill="#2f8b52"/>
+  <text x="594" y="142" text-anchor="middle" font-size="13" fill="#fff" font-weight="bold">合計所得 45万円</text>
+  <text x="594" y="162" text-anchor="middle" font-size="11" fill="#dff0e6">＝限度額ちょうど → 非課税</text>
+
+  <text x="14" y="204" font-size="12" fill="#1b2b4b" font-weight="bold">均等割の非課税限度額（1級地・扶養なし）＝ 35万円 ＋ 10万円 ＝ 45万円</text>
+  <text x="14" y="224" font-size="11" fill="#7a8aa8">同じ「合計所得45万円」でも、そこに届く年金収入は50万円ちがう（＝控除の差そのもの）</text>
+
+  <rect x="14" y="240" width="692" height="46" rx="6" fill="#fff6e5" stroke="#d08a1e"/>
+  <text x="28" y="260" font-size="12" fill="#5b3d05" font-weight="bold">★65歳以上かどうかは「その年12月31日」の年齢で判定する（措法41条の15の3第4項）</text>
+  <text x="28" y="278" font-size="11" fill="#7a5a1e">誕生日を迎えた月からではない。1歳ずれると、年金155万円の人の答えが「非課税」と「課税」で反転する</text>
+</svg>
+<figcaption>65歳以上と65歳未満で公的年金等控除の最低保障額が50万円違うため、非課税でいられる年金収入の境界も50万円ずれる</figcaption>
+</figure>
+
+<h2 id="kyuchi">同じ収入でも、住んでいる市区町村で境界が変わる</h2>
+
+<p>均等割の非課税限度額は<b>「政令で定める基準に従い条例で定める」</b>もので（地方税法295条3項）、その基準となる基本額と加算額が<b>生活保護法の級地区分</b>によって1.0倍・0.9倍・0.8倍されます（同法施行規則9条の21第2項）。所得割の限度額が法律で全国一律なのとは対照的です。</p>
+
+<table id="kyuchi-table">
+  <thead><tr><th>級地</th><th>基本額</th><th>加算額</th><th>単身の限度額</th><th>年金だけなら（65歳以上）</th></tr></thead>
+  <tbody>
+    <tr id="kyuchi-1"><td><b>1級地</b>（東京23区・政令指定都市など）</td><td>35万円</td><td>21万円</td><td><b>45万円</b></td><td><b>155万円</b></td></tr>
+    <tr id="kyuchi-2"><td><b>2級地</b>（中規模の市など）</td><td>31万5千円</td><td>18万9千円</td><td><b>41万5千円</b></td><td><b>151万5千円</b></td></tr>
+    <tr id="kyuchi-3"><td><b>3級地</b>（町村など）</td><td>28万円</td><td>16万8千円</td><td><b>38万円</b></td><td><b>148万円</b></td></tr>
+  </tbody>
+</table>
+
+<p>政令の額はあくまで<b>参酌基準</b>で、最終的に決めるのは各市区町村の条例です。境界に近いときは、お住まいの市区町村の住民税担当窓口で確認してください。</p>
+
+<h2 id="kodomo">子のアルバイト代が、世帯の非課税を壊すことがある</h2>
+
+<p>非課税世帯の条件は<b>世帯全員</b>が均等割非課税であることなので、<b>子ども本人が課税されると世帯全体が該当しなくなります</b>。1級地なら子ども自身の限度額も合計所得45万円＝<b>給与収入110万円</b>です。</p>
+
+<div class="note">
+<b>ただし18歳未満の未成年者は、合計所得135万円以下なら非課税です</b>（地方税法295条1項2号）。この規定は人数による限度額の計算より<b>先に</b>効くので、同じ収入でも年齢によって結果が反転します。たとえば<b id="kodomo-hanten">給与収入115万円の子は、19歳なら課税・17歳なら非課税</b>です。障害者・寡婦・ひとり親にあたる人も同じ135万円の基準が使えます。
+</div>
+
+<h2 id="fuyo">扶養の付け方を変えると、非課税になることがある</h2>
+
+<p>均等割の限度額は<b>本人＋同一生計配偶者＋扶養親族の人数</b>で決まります。したがって共働きで子どもが複数いる世帯では、<b>子どもを誰の扶養に付けるかで世帯の判定が変わることがあります</b>。</p>
+
+<blockquote id="tsukekae-rei">
+1級地で、夫の合計所得100万円・妻60万円・子2人の場合 —
+子2人を<b>夫にまとめる</b>と夫の限度額は136万円になりますが、妻は扶養なしで限度額45万円のため<b>課税</b>になり、世帯は非課税世帯になりません。
+子を<b>1人ずつ分ける</b>と、夫も妻も限度額101万円になって<b>2人とも非課税</b>＝世帯非課税になります。
+</blockquote>
+
+<p>本ツールは扶養の付け方を<b>全通り試し</b>、非課税になる付け方があればそれを使って判定します。「所得が多い人にまとめる」という思い込みで計算すると、この差を取りこぼします。なお<b>夫婦が互いを扶養に数えることはできないもの</b>として計算しています（同じ人を二重に数えないための安全側の扱いです）。</p>
+
+<div class="note">
+<b>16歳未満の子どもも人数に入ります。</b>年少扶養控除は平成24年に廃止されたので<b>所得控除には1円も効きません</b>が、非課税限度額の「扶養親族の数」には入ります（地方税法施行令47条の3第1号が「年齢十六歳未満の者及び…控除対象扶養親族に限る」と明記）。小さな子どもを数え落とすと、1級地なら限度額を35万円過小に出します。
+</div>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 住民税非課税世帯とはどういう世帯ですか？</h3>
+<p>A. <b>世帯全員が住民税の均等割を課されない世帯</b>のことです。給付金・高額療養費の自己負担限度額の区分・保育料の減免・大学の修学支援などが使っている定義はこれで、所得割だけが非課税でも該当しません。世帯のうち1人でも均等割を課される人がいれば、その世帯は住民税非課税世帯ではありません。判定は<b>前年の合計所得金額</b>で行い、令和8年度（2026年度）の判定なら令和7年（2025年）1年間の所得を使います。</p>
+
+<h3>Q. 年金収入がいくらまでなら住民税非課税ですか？</h3>
+<p>A. 1級地に住む単身の人なら、<b>65歳以上は年金収入155万円まで、65歳未満は105万円まで</b>です。差が出るのは公的年金等控除の最低保障額で、65歳以上は110万円、65歳未満は60万円だからです（租税特別措置法41条の15の3）。65歳以上かどうかは<b>その年の12月31日の年齢</b>で判定します。2級地は151万5千円まで、3級地は148万円までと、お住まいの市区町村の級地によって境界が変わります。</p>
+
+<h3>Q. 給与収入だけの単身者はいくらまで非課税ですか？</h3>
+<p>A. 1級地なら<b>給与収入110万円まで</b>です。均等割の非課税限度額が合計所得45万円（35万円＋10万円）で、給与所得控除の最低保障額が65万円なので、45万円＋65万円＝110万円が境界になります。令和7年分から給与所得控除の最低保障額が55万円から65万円に引き上げられたため、この境界は100万円から110万円に上がりました。所得税がかからない範囲（いわゆる160万円の壁）とは別の基準です。</p>
+
+<h3>Q. 子どものアルバイト代で世帯が課税になることはありますか？</h3>
+<p>A. あります。住民税非課税世帯は世帯全員が均等割非課税であることが条件なので、<b>子ども本人が均等割を課されると世帯全体が非課税世帯でなくなります</b>。1級地なら子ども自身の限度額は合計所得45万円（給与収入110万円）です。ただし18歳未満の未成年者は合計所得135万円以下なら非課税になるため（地方税法295条1項2号）、同じ収入でも年齢によって結果が反転します。19歳の子の給与収入115万円は課税、17歳なら非課税です。</p>
+
+<h3>Q. 級地とは何ですか。自分の市区町村の級地はどこで分かりますか？</h3>
+<p>A. <b>生活保護法8条1項の保護の基準における地域の級地区分</b>のことで、均等割の非課税限度額の基本額がこれによって1.0倍・0.9倍・0.8倍されます（地方税法施行令47条の3、同法施行規則9条の21第2項）。おおよそ東京23区・政令指定都市・県庁所在地などが1級地、中規模の市が2級地、町村が3級地です。政令の額はあくまで参酌基準で、最終的には各市区町村の条例が定めるため、境界に近い場合はお住まいの市区町村の住民税担当窓口でご確認ください。</p>
+
+<h3>Q. 扶養の付け方で判定が変わることがあるのはなぜですか？</h3>
+<p>A. 均等割の非課税限度額が<b>本人＋同一生計配偶者＋扶養親族の人数</b>で決まるからです。共働きで子どもが複数いる場合、子どもを1人にまとめて扶養させるより1人ずつ分けたほうが、両親それぞれの限度額が上がって世帯全体が非課税になることがあります。たとえば1級地で夫の合計所得100万円・妻60万円・子2人なら、子2人を夫にまとめると妻が課税になりますが、1人ずつ分ければ2人とも非課税になります。本ツールは付け方を全通り試し、非課税になる付け方があればそれを表示します。</p>
+
+<h3>Q. 障害者や寡婦・ひとり親には別の基準がありますか？</h3>
+<p>A. あります。障害者・未成年者・寡婦・ひとり親にあたる人は、<b>前年の合計所得金額が135万円以下</b>であれば均等割も所得割も課されません（地方税法295条1項2号）。この判定は人数による限度額の計算より先に効くので、限度額を超えていてもこちらで非課税になることがあります。給与収入だけなら約204万円、65歳以上の年金収入だけなら245万円までが合計所得135万円の目安です。</p>
+
+<h2 id="shutten">出典</h2>
+<ul id="shutten-list">
+  <li><a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="nofollow">地方税法（昭和二十五年法律第二百二十六号）</a> — 292条1項7号・9号（同一生計配偶者・扶養親族の合計所得金額58万円以下）／295条1項2号・3項（障害者等の135万円・均等割の非課税限度額）／313条2項（所得の計算は所得税法その他の所得税に関する法令の例による）／附則3条の3（所得割の非課税限度額）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/325CO0000000245" rel="nofollow">地方税法施行令47条の3</a>・<a href="https://laws.e-gov.go.jp/law/329M50000080023" rel="nofollow">地方税法施行規則9条の21第2項</a> — 均等割の非課税限度額の基準額（35万円・21万円）と級地区分による1.0/0.9/0.8倍</li>
+  <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033" rel="nofollow">所得税法35条</a> — 公的年金等控除額（4項1号のイ40万円＋ロ、最低保障60万円）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">租税特別措置法41条の15の3</a> — 65歳以上の最低控除額を110万円に読み替える特例（4項＝年齢は12月31日で判定）／<a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">同41条の3の11第2項</a> — 給与所得と公的年金等雑所得の双方がある場合の所得金額調整控除</li>
+  <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1600.htm" rel="nofollow">国税庁 No.1600 公的年金等の課税関係</a> — 公的年金等に係る雑所得の速算表（本ツールの計算がこの表を全区分で再現することを機械で確認しています）</li>
+</ul>
+<p class="hint" id="src-note-wrap">条文は e-Gov 法令検索の法令APIから取得して逐語で確認しています<span id="src-note"></span>。均等割の非課税限度額は各市区町村の条例で定まるため、境界に近い場合はお住まいの市区町村にご確認ください。このページは一般的な情報提供であり、個別の判定を保証するものではありません。</p>
+
+<h2 id="kanren">関連ツール</h2>
+<ul>
+  <li><a href="../juminzei/">住民税 計算機</a> — 所得割・均等割の実額を計算します</li>
+  <li><a href="../kabe/">年収の壁 手取り逆転シミュレーター</a> — 106万・130万の壁で手取りがどう動くかを見ます</li>
+  <li><a href="../shakai-hoken/">社会保険料 計算機</a> — 健康保険・厚生年金の月額を計算します</li>
+</ul>
+
+</article>
+</main>
+<footer>
+  <div>© 経理ミニツールズ</div>
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcHikazeiSetai, nenkinBorder } from "../assets/hikazei_setai_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const num = (id) => Number($(id).value) || 0;
+const MAX = 6;
+
+let D = null, J = null;
+// 参照データは非同期で届く。届く前に計算ボタンを押されても待つ（実ユーザーと同じ経路）。
+// 2ファイルとも揃わなければ計算しない（片方だけで答えを出すと黙って誤答する）。
+const load = (path) => fetch(path).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+const dataReady = Promise.all([
+  load("../assets/hikazei_setai_r08.json"),
+  load("../assets/juminzei_r08.json"),
+]).then(([d, j]) => { D = d; J = j; return true; }).catch(() => false);
+
+// 出典の注記は飾り。ここで転んでも計算は止めない。
+dataReady.then(() => {
+  $("src-note").textContent = D?._meta?.checked ? `（${D._meta.checked} 時点）` : "";
+}).catch(() => {});
+
+// 世帯人数に合わせて入力欄を出し入れする（表示だけ。値は消さない）
+const syncRows = () => {
+  const n = Number($("ninzu").value) || 1;
+  for (let i = 1; i <= MAX; i++) $(`m${i}`).style.display = i <= n ? "" : "none";
+};
+$("ninzu").addEventListener("change", syncRows);
+syncRows();
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "判定中…";
+  const okData = await dataReady; // 参照データの到着を必ず待つ
+  if (!okData || !D || !J) {
+    box.innerHTML = `<div class="note"><b>データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。非課税限度額が分からない状態で
+      「非課税世帯です」と答えることはできません。</div>`;
+    return;
+  }
+
+  const n = Number($("ninzu").value) || 1;
+  const ZOKU = { self: "世帯主・本人", spouse: "配偶者", child: "子", parent: "親", other: "その他" };
+  const members = [];
+  for (let i = 1; i <= n; i++) {
+    const t = $(`m${i}_tokurei`).value;
+    const z = $(`m${i}_zokugara`).value;
+    members.push({
+      label: `${i}人目（${ZOKU[z] || z}）`,
+      zokugara: z,
+      age: $(`m${i}_age`).value,
+      kyuyoShunyu: num(`m${i}_kyuyo`),
+      nenkinShunyu: num(`m${i}_nenkin`),
+      sonotaShotoku: num(`m${i}_sonota`),
+      shogaisha: t === "shogaisha",
+      kafu: t === "kafu",
+      hitorioya: t === "hitorioya",
+    });
+  }
+
+  let r;
+  try {
+    r = calcHikazeiSetai({
+      kyuchi: Number($("kyuchi").value),
+      zeisei: $("zeisei").value === "r8" ? "r8" : undefined,
+      members,
+    }, D, J);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>判定できませんでした。</b>${e.message}</div>`;
+    return;
+  }
+
+  let html = "";
+  html += r.setaiHikazei
+    ? `<div class="big" id="verdict">この世帯は<b>住民税非課税世帯です</b></div>`
+    : `<div class="big" id="verdict">この世帯は<b>住民税非課税世帯ではありません</b></div>`;
+  html += `<p class="hint" id="verdict-note">${r.zeiseiLabel}・${r.kyuchiLabel}で判定。
+    住民税非課税世帯＝<b>世帯全員が均等割非課税</b>であること。
+    ${r.setaiHikazei ? "" : `課税になる人が<b>${r.kazeiNin}人</b>います。`}</p>`;
+
+  html += `<table id="setai-table"><thead><tr>
+    <th>世帯員</th><th>合計所得金額</th><th>均等割の限度額</th><th>判定</th><th>あといくら</th>
+    </tr></thead><tbody>`;
+  for (const row of r.rows) {
+    html += `<tr><td>${row.label}${row.fuyoSakiLabel ? `<br><span class="hint">${row.fuyoSakiLabel}の扶養</span>` : ""}</td>
+      <td style="text-align:right">${yenF(row.goukeiShotoku)}</td>
+      <td style="text-align:right">${row.jonrei295 ? "—" : yenF(row.kintouLimit)}</td>
+      <td style="text-align:right">${row.hikazei ? "非課税" : "<b>課税</b>"}</td>
+      <td style="text-align:right">${row.hikazei ? "—" : yenF(row.chokaGaku) + " 超過"}</td></tr>`;
+  }
+  html += `</tbody></table>`;
+
+  const j295 = r.rows.filter((x) => x.jonrei295);
+  if (j295.length) {
+    html += `<p class="hint" id="j295-note">${j295.map((x) => x.label).join("・")}は、
+      障害者・未成年者・寡婦・ひとり親で合計所得135万円以下のため非課税です（地方税法295条1項2号）。
+      この判定は人数による限度額より先に効きます。</p>`;
+  }
+
+  if (r.fuyoTsukekaeDeKawaru) {
+    html += `<div class="note" id="tsukekae-note"><b>扶養の付け方を変えることで非課税世帯になります。</b>
+      上の表の「○人目の扶養」の欄が、そのための付け方です。
+      所得が多い人にまとめて扶養させると、もう一方が限度額を超えて課税になります。</div>`;
+  }
+
+  // 年金だけの人の目安（同じ級地・扶養なしの単身で、いくらまでなら非課税か）
+  const b65 = nenkinBorder(70, Number($("kyuchi").value), 0, false, D, J);
+  const bU65 = nenkinBorder(64, Number($("kyuchi").value), 0, false, D, J);
+  html += `<p class="hint" id="border-note">${r.kyuchiLabel}で扶養がいない単身の場合、
+    年金収入だけなら <b>65歳以上は${yenF(b65.shunyuMax)}</b>まで、
+    <b>65歳未満は${yenF(bU65.shunyuMax)}</b>まで非課税です
+    （均等割の限度額 ${yenF(b65.limit)}）。</p>`;
+
+  html += `<p class="hint">このツールは<b>均等割の非課税</b>だけを判定します。
+    均等割の非課税限度額は各市区町村の条例で定まるため（地方税法295条3項）、
+    境界に近いときはお住まいの市区町村にご確認ください。
+    生活保護を受けている方（同項1号）は別途非課税です。</p>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>

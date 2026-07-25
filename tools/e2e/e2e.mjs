@@ -427,6 +427,49 @@ const SCENES = [
   { name: "toroku_menkyo_nodata", data404: "toroku_menkyo_r08.json",
     expect: (s) => s.failed && s.tax === null },
 
+  // ── 住民税非課税世帯 (/hikazei-setai/) ────────────────────────────────
+  // ★手計算の鎖は tests/test_hikazei_setai.mjs §5: 夫70歳 年金180万＋妻68歳 年金78万
+  //   → 夫の合計所得70万（公的年金等控除110万を引く）・限度額101万（妻を扶養）→ 世帯非課税。
+  //   「世帯人数の読み取り→年齢と収入→公的年金等控除→扶養の探索→世帯の判定→表の描画」の
+  //   配線が1段でも狂えば落ちる。既定の入力行が世帯人数どおりに見えていることも見る。
+  { name: "hikazei_setai", expect: (s) =>
+      s.hikazei && !s.kazei && s.rows.length === 2 &&
+      s.rows[0].shotoku === 700000 && s.rows[0].limit === 1010000 && s.rows[0].hantei === "非課税" &&
+      s.rows[1].shotoku === 0 && s.rows[1].hantei === "非課税" &&
+      s.border65 === 1550000 && s.borderU65 === 1050000 &&
+      s.defaultNenkin > 0 && s.defaultAge > 0 && s.visibleRows === 2 && !s.failed },
+  { name: "hikazei_setai_slow", slow: true, expect: (s) =>
+      s.hikazei && s.rows[0].shotoku === 700000 && !s.failed },
+  // ★境界: 年金155万ちょうど＝合計所得45万＝限度額45万 → 非課税（等号を含むこと）。
+  { name: "hikazei_setai_155", expect: (s) =>
+      s.hikazei && s.rows.length === 1 && s.visibleRows === 1 &&
+      s.rows[0].shotoku === 450000 && s.rows[0].limit === 450000 && !s.failed },
+  // ★1万円上は課税。超過額1万円まで描けていること。
+  { name: "hikazei_setai_156", expect: (s) =>
+      s.kazei && !s.hikazei && s.rows[0].shotoku === 460000 && s.rows[0].choka === 10000 && !s.failed },
+  // ★65歳未満は最低保障60万 → 同じ155万でも合計所得887,500円で課税（50万円の差が効く）。
+  { name: "hikazei_setai_64", expect: (s) =>
+      s.kazei && s.rows[0].shotoku === 887500 && s.borderU65 === 1050000 && !s.failed },
+  // ★3級地は限度額38万・年金148万まで。1級地の値を使い回していたら落ちる。
+  { name: "hikazei_setai_kyuchi3", expect: (s) =>
+      s.hikazei && s.rows[0].limit === 380000 && s.border65 === 1480000 && !s.failed },
+  // ★子のアルバイト: 19歳の子が自分で課税 → 世帯は非課税でない（父は非課税のまま）。
+  { name: "hikazei_setai_kodomo", expect: (s) =>
+      s.kazei && s.rows[1].hantei === "課税" && s.rows[1].shotoku === 500000 &&
+      s.rows[0].hantei === "非課税" && !s.failed },
+  // ★同じ収入で17歳なら295条1項2号 → 限度額欄は「—」になり世帯非課税に反転する。
+  { name: "hikazei_setai_miseinen", expect: (s) =>
+      s.hikazei && s.j295 && s.rows[1].limit === null && s.rows[1].hantei === "非課税" && !s.failed },
+  // ★扶養の付け替え: 子を1人ずつ分けて両親とも限度額101万 → 世帯非課税＋付け替えの案内が出る。
+  { name: "hikazei_setai_tsukekae", expect: (s) =>
+      s.hikazei && s.tsukekae && s.rows.length === 4 && s.visibleRows === 4 &&
+      s.rows[0].limit === 1010000 && s.rows[1].limit === 1010000 && !s.failed },
+  // 参照データ配信不可 → 「非課税世帯です」と答えずに断る（2ファイルとも別々に確かめる）。
+  { name: "hikazei_setai_nodata", data404: "hikazei_setai_r08.json",
+    expect: (s) => s.failed && !s.hikazei && s.rows.length === 0 },
+  { name: "hikazei_setai_nodata2", data404: "juminzei_r08.json",
+    expect: (s) => s.failed && !s.hikazei && s.rows.length === 0 },
+
   // ── 遺留分 (/iryubun/) ───────────────────────────────────────────────
   // ★手計算の鎖は tests/test_iryubun.mjs §6: 遺産1億・配偶者＋子2人
   //   → 総体的遺留分1/2 → 子の個別的遺留分1/8 → 1,250万円。

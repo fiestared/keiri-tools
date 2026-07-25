@@ -1581,6 +1581,98 @@ SCENES.iryubun_kigen = iryubunScene({ shittaDate: "2026-05-10" });
 // 参照データ配信不可 → 遺留分を出さずに断る（fail closed）。
 SCENES.iryubun_nodata = iryubunScene({});
 
+// ── 住民税非課税世帯の判定 (/hikazei-setai/) ────────────────────────────────
+// ★単体（tests/test_hikazei_setai.mjs）は core しか見ないので、「世帯人数の読み取り→各人の
+//   収入と年齢→公的年金等控除→扶養の付け方の探索→世帯の判定→表の描画」の配線はここでしか守れない。
+//   期待値の手計算は同テストの §3・§5・§6・§7（国税庁の速算表オラクルと全域照合つき）。
+// ★参照データを2つ（hikazei_setai_r08.json と juminzei_r08.json）待つので、
+//   片方だけ落としたときに黙って答えを出さないことも見る。
+const hikazeiScene = (o) => async () => {
+  const doc = await open("/docs/hikazei-setai/");
+  // 既定値もページの一部（利用者が最初に見る画面）。空でないことを機械で確かめる。
+  const defaultNenkin = doc.getElementById("m1_nenkin").value;
+  const defaultAge = doc.getElementById("m1_age").value;
+  set(doc, "kyuchi", String(o.kyuchi ?? 1));
+  set(doc, "zeisei", o.zeisei ?? "r7");
+  set(doc, "ninzu", String(o.ninzu ?? 2));
+  for (let i = 1; i <= 6; i++) {
+    const m = (o.members || [])[i - 1] || {};
+    if (m.zokugara) set(doc, `m${i}_zokugara`, m.zokugara);
+    if (m.age != null) set(doc, `m${i}_age`, m.age);
+    if (m.nenkin != null) set(doc, `m${i}_nenkin`, m.nenkin);
+    if (m.kyuyo != null) set(doc, `m${i}_kyuyo`, m.kyuyo);
+    if (m.sonota != null) set(doc, `m${i}_sonota`, m.sonota);
+    if (m.tokurei != null) set(doc, `m${i}_tokurei`, m.tokurei);
+  }
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /非課税世帯です|非課税世帯ではありません|読み込めませんでした|判定できませんでした/
+      .test(text(doc, "result")),
+    "住民税非課税世帯の判定結果",
+  );
+  const body = text(doc, "result");
+  const yen = (s) => (s == null ? null : Number(String(s).replace(/[^\d-]/g, "")) || 0);
+  // 世帯員ごとの行を名指しで読む（描画の配線を確かめる。合計だけ見ると1人分の取り違えを見逃す）
+  const rows = [...(doc.querySelectorAll("#setai-table tbody tr") || [])].map((tr) => {
+    const td = [...tr.querySelectorAll("td")].map((e) => e.textContent.trim());
+    return { label: td[0], shotoku: yen(td[1]), limit: td[2] === "—" ? null : yen(td[2]),
+             hantei: td[3], choka: td[4] === "—" ? null : yen(td[4]) };
+  });
+  // 「見えている表示だけ非課税」を検出するため、判定の文言そのものも別に取る。
+  // ★データが届かなかったときは #verdict を描かない（＝断り書きだけ）。null を素通しすると
+  //   例外になって「fail closed を確かめるシーン」自体が動かないので、無い場合は空文字にする。
+  const verdictEl = doc.getElementById("verdict");
+  const verdict = verdictEl ? verdictEl.textContent : "";
+  return {
+    defaultNenkin: Number(defaultNenkin) || 0,
+    defaultAge: Number(defaultAge) || 0,
+    // 既定で見えている入力行の数（世帯人数の連動が死ぬと全行見えたまま／全行消えたままになる）
+    visibleRows: [1, 2, 3, 4, 5, 6].filter((i) =>
+      doc.getElementById(`m${i}`).style.display !== "none").length,
+    hikazei: /非課税世帯です/.test(verdict),
+    kazei: /非課税世帯ではありません/.test(verdict),
+    rows,
+    tsukekae: body.includes("扶養の付け方を変えることで非課税世帯になります"),
+    j295: body.includes("障害者・未成年者・寡婦・ひとり親で合計所得135万円以下"),
+    border65: yen((body.match(/65歳以上は(¥[\d,]+)まで/) || [])[1]),
+    borderU65: yen((body.match(/65歳未満は(¥[\d,]+)まで/) || [])[1]),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// ★看板例（§5）: 1級地・夫70歳 年金180万＋妻68歳 年金78万
+//   → 夫の合計所得70万（180万−公的年金等控除110万）、限度額101万（妻を扶養に数える）→ 非課税世帯。
+//   65歳以上の110万円を落とすと夫の所得は120万になり、課税に転んで落ちる。
+SCENES.hikazei_setai = hikazeiScene({});
+SCENES.hikazei_setai_slow = SCENES.hikazei_setai; // 800ms遅らせる（モバイル回線）。待って正答すること
+// ★境界（§3）: 1級地・単身・65歳以上・年金155万ちょうど → 合計所得45万＝限度額45万 → 非課税。
+SCENES.hikazei_setai_155 = hikazeiScene({ ninzu: 1, members: [{ age: 70, nenkin: 1550000 }] });
+// ★その1万円上（156万）は課税。境界の向きを取り違えていたらここで落ちる。
+SCENES.hikazei_setai_156 = hikazeiScene({ ninzu: 1, members: [{ age: 70, nenkin: 1560000 }] });
+// ★65歳未満は最低保障60万なので、同じ155万でも合計所得88.75万で課税（＝50万円の差が効く）。
+SCENES.hikazei_setai_64 = hikazeiScene({ ninzu: 1, members: [{ age: 64, nenkin: 1550000 }] });
+// ★級地（§4）: 3級地・単身・65歳以上は148万まで。1級地の155万を使い回していたら落ちる。
+SCENES.hikazei_setai_kyuchi3 = hikazeiScene({ kyuchi: 3, ninzu: 1, members: [{ age: 70, nenkin: 1480000 }] });
+// ★子のアルバイト（§6）: 父 給与150万＋19歳の子 給与115万 → 子が自分で課税 → 世帯は非課税でない。
+SCENES.hikazei_setai_kodomo = hikazeiScene({ ninzu: 2, members: [
+  { zokugara: "self", age: 45, nenkin: 0, kyuyo: 1500000 },
+  { zokugara: "child", age: 19, nenkin: 0, kyuyo: 1150000 }] });
+// ★同じ収入でも17歳（未成年）なら295条1項2号で非課税 → 世帯も非課税。年齢で反転すること。
+SCENES.hikazei_setai_miseinen = hikazeiScene({ ninzu: 2, members: [
+  { zokugara: "self", age: 45, nenkin: 0, kyuyo: 1500000 },
+  { zokugara: "child", age: 17, nenkin: 0, kyuyo: 1150000 }] });
+// ★扶養の付け替え（§7）: 夫 その他所得100万・妻60万・子2人 → 子を1人ずつ分ければ世帯非課税。
+//   「所得が多い人にまとめる」決め打ちなら課税になるので、付け替えの案内が出ること。
+SCENES.hikazei_setai_tsukekae = hikazeiScene({ ninzu: 4, members: [
+  { zokugara: "self", age: 50, nenkin: 0, kyuyo: 0, sonota: 1000000 },
+  { zokugara: "other", age: 48, nenkin: 0, kyuyo: 0, sonota: 600000 },
+  { zokugara: "child", age: 10, nenkin: 0, kyuyo: 0 },
+  { zokugara: "child", age: 8, nenkin: 0, kyuyo: 0 }] });
+// 参照データ配信不可 → 「非課税世帯です」と答えずに断る（fail closed）。
+SCENES.hikazei_setai_nodata = hikazeiScene({});
+SCENES.hikazei_setai_nodata2 = hikazeiScene({});
+
 // ── 小規模宅地等の特例 (/shokibo-takuchi/) ─────────────────────────────────
 // ★単体（tests/test_shokibo_takuchi.mjs）は core しか見ないので、「3区分の面積・評価額の読み取り→
 //   2つの限度面積ルールの比較→配分→内訳表と比較表の描画」の配線はここでしか守れない。
