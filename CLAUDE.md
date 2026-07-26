@@ -18,11 +18,11 @@ AI月30万円プロジェクト・柱Aのプロダクト。経理実務の「ち
 ## 記事を書くときの入口
 **型の正本は `tools/ARTICLE_SPEC.md`。書く前に必ず読む。**
 - `python3 tools/keyword_demand.py <語>` — **書く前に需要を測る。月1,000検索未満は書かない**
-- **書いた後の実測(GSC/GA4)はブラウザで直接読む** — Playwright MCP で `search.google.com/search-console` と
-  `analytics.google.com` を開き、安に一度Googleログインしてもらって**UIを読み取る**(食べログ予約と同じ方式)。
-  記事の増補・改稿・AdSense再申請の判断は必ずこの実測を加味する。対象: keiri-tools.com / aitimes.jp
-  ⚠️ **API・gcloud・サービスアカウントは使わない**(ecare-298703 も nice-diorama-453205-u6 も会社のGCP。
-  2026-07-25〜26に2度繋ぎかけて安に止められた)。ログインはブラウザ存命中のみ有効(閉じたら再ログイン依頼)
+- `node tools/analytics_report.mjs` — **書いた後の実測**(GSC検索クエリ/ページ別・GA4ページ/チャネル別。
+  keiri-tools.com / aitimes.jp 両対応)。**記事の増補・改稿・AdSense再申請の判断は必ずこの実測を加味する**。
+  認証は専用GCPプロジェクト `keiri-aitimes-analytics`(yasu@scrumtechnology.jp 名義・2026-07-26新設)の
+  SAキー `~/.keiri-analytics/sa.json`。gcloud設定は `keiri-personal`(分離済み)。
+  ⚠️ **elife系の会社GCP(ecare-298703 / nice-diorama-453205-u6)は使わない**(2度繋ぎかけて安に止められた)
 - `node tests/test_article_structure.mjs` — 型の違反を落とす(canonical/GA4/AdSense/構造化データ/
   目次と全h2の対応/図解(figure内インラインSVG)/FAQ/出典/ツール導線/title 60字/一覧・sitemap掲載/
   **ORDER登録**(需要順)・**CATEGORIES分類**(一覧のカテゴリ。未分類は「その他」に埋もれるので落とす))
