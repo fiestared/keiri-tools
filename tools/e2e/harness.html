@@ -1582,6 +1582,128 @@ SCENES.iryubun_kigen = iryubunScene({ shittaDate: "2026-05-10" });
 SCENES.iryubun_nodata = iryubunScene({});
 
 // ── 住民税非課税世帯の判定 (/hikazei-setai/) ────────────────────────────────
+// ── 不動産売却の税金 (/fudosan-jouto/) ───────────────────────────────────
+// ★単体（tests/test_jouto.mjs）は core しか見ないので、「日付の読み取り→1月1日での所有期間判定→
+//   建物の減価償却→概算取得費との比較→特別控除→税率の選択→端数処理→表の描画」の配線は
+//   ここでしか守れない。期待値は同テストの §1〜§9（国税庁 No.3208 の公表値オラクルつき）。
+// ★建物の構造の選択肢と償却率の表はページ内スクリプトが参照データから描くので、
+//   file:// のスクショでは空に見える。「選択肢が実際に生えているか」も機械で確かめる。
+const joutoScene = (o) => async () => {
+  const doc = await open("/docs/fudosan-jouto/");
+  // 既定値もページの一部（利用者が最初に見る画面）。空でないことを確かめる。
+  const defaultJoutoKagaku = doc.getElementById("joutoKagaku").value;
+  const defaultShutokuBi = doc.getElementById("shutokuBi").value;
+  set(doc, "shutokuBi", o.shutokuBi ?? "2021-05-01");
+  set(doc, "joutoBi", o.joutoBi ?? "2026-07-15");
+  set(doc, "joutoKagaku", String(o.joutoKagaku ?? 50000000));
+  set(doc, "joutoHiyo", String(o.joutoHiyo ?? 1700000));
+  set(doc, "shutokuMode", o.shutokuMode ?? "jitsugaku");
+  set(doc, "tochiShutokuhi", String(o.tochiShutokuhi ?? 20000000));
+  set(doc, "tatemonoShutokuKagaku", String(o.tatemonoShutokuKagaku ?? 15000000));
+  set(doc, "tokureiKey", o.tokureiKey ?? "none");
+  if (o.jigyoYo != null) set(doc, "jigyoYo", o.jigyoYo);
+  if (o.keigenZeiritsu != null) set(doc, "keigenZeiritsu", o.keigenZeiritsu);
+  if (o.sozokuninSu != null) set(doc, "sozokuninSu", String(o.sozokuninSu));
+  // 構造の選択肢は参照データから描かれる。届く前に選ぼうとしても落ちないよう、押す直前に読む。
+  const kozoOptions = doc.querySelectorAll("#kozoKey option").length;
+  if (o.kozoKey) set(doc, "kozoKey", o.kozoKey);
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+
+  await waitFor(
+    () => /税金の合計は|読み込めませんでした|計算できませんでした/.test(text(doc, "result")),
+    "譲渡所得の計算結果",
+  );
+  const body = text(doc, "result");
+  const yen = (s) => (s == null ? null : Number(String(s).replace(/[^\d-]/g, "")) || 0);
+  // ★頭打ちや注記で1つのセルに複数の金額が出ることがあるので、行を名指しして
+  //   その行の最初の ¥ だけを読む（数字を全部連結して別物を作らない）。
+  const rowYen = (id) => {
+    const el = doc.getElementById(id);
+    if (!el) return null;
+    const m = el.textContent.match(/¥[\d,]+/);
+    return m ? yen(m[0]) : null;
+  };
+  const zeigakuEl = doc.getElementById("zeigaku");
+  return {
+    defaultJoutoKagaku: Number(defaultJoutoKagaku) || 0,
+    defaultShutokuBi,
+    kozoOptions,
+    goukei: zeigakuEl ? yen((zeigakuEl.textContent.match(/¥[\d,]+/) || [])[0]) : null,
+    kazei: rowYen("kazei-row"),
+    shotokuZei: rowYen("shotokuzei-row"),
+    juminZei: rowYen("juminzei-row"),
+    kojo: rowYen("kojo-row"),
+    // 区分（短期/長期/軽減）は税率の選択そのもの。文言で読む
+    tanki: /短期譲渡所得/.test(body),
+    choki: /長期譲渡所得/.test(body),
+    keigen: /軽減税率/.test(body),
+    kikanHyoji: (doc.getElementById("kikan-hyoji") || {}).textContent || "",
+    kurikoshi: doc.getElementById("kurikoshi") ? true : false,
+    gaisan: /概算取得費/.test(body),
+    shokyakuNote: (doc.getElementById("shokyaku-note") || {}).textContent || "",
+    akiyaBlocked: (doc.getElementById("akiya-block-note") || {}).textContent || "",
+    showsYear: /令和\d+年/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+// ★看板例: 2021-05-01取得→2026-07-15譲渡（実際は5年2か月持っている）。
+//   2026-01-01時点では4年7か月なので【短期】。建物1,500万・木造の減価償却
+//   15,000,000×0.9×0.031×5年＝2,092,500 → 建物取得費12,907,500＋土地2,000万＝32,907,500。
+//   譲渡所得 50,000,000−32,907,500−1,700,000＝15,392,500 → 課税15,392,000（1,000円未満切捨て）。
+//   所得税30%＝4,617,600／住民税9%＝1,385,280／復興96,969 → 合計6,099,849。
+//   「1月1日で数える」を落として譲渡日で数えると長期になり、税額がおよそ半分になって落ちる。
+SCENES.jouto = joutoScene({});
+SCENES.jouto_slow = SCENES.jouto; // 800ms遅らせる（モバイル回線）。待って正答すること
+// ★外部オラクル（国税庁 No.3208 の具体例）: 1億4,500万・取得費1億・譲渡費用500万・30年前取得
+//   → 課税長期譲渡所得金額4,000万 → 所得税600万・住民税200万（公表値と1円一致すること）。
+SCENES.jouto_choki = joutoScene({
+  shutokuBi: "1996-06-01", joutoBi: "2026-05-20",
+  joutoKagaku: 145000000, joutoHiyo: 5000000,
+  tochiShutokuhi: 100000000, tatemonoShutokuKagaku: 0,
+});
+// ★軽減税率: 1.2億・取得費3,000万・2005年取得（10年超）・マイホーム3,000万控除つき
+//   → 譲渡益9,000万 −3,000万＝課税6,000万ちょうど → 全額が10%＝600万・住民税4%＝240万。
+//   6,000万の判定を控除【前】の9,000万でやると超過分に15%が当たり、落ちる。
+SCENES.jouto_keigen = joutoScene({
+  shutokuBi: "2005-04-01", joutoBi: "2026-07-15",
+  joutoKagaku: 120000000, joutoHiyo: 0,
+  tochiShutokuhi: 30000000, tatemonoShutokuKagaku: 0,
+  tokureiKey: "kyojuyo", keigenZeiritsu: "yes",
+});
+// ★3,000万円控除は【短期】にも効く（措法35条1項2号）。2023年取得→2026年譲渡＝短期。
+//   譲渡益4,000万 −3,000万＝課税1,000万 → 所得税30%＝300万・住民税9%＝90万。
+SCENES.jouto_tanki_kojo = joutoScene({
+  shutokuBi: "2023-04-01", joutoBi: "2026-07-15",
+  joutoKagaku: 60000000, joutoHiyo: 0,
+  tochiShutokuhi: 20000000, tatemonoShutokuKagaku: 0,
+  tokureiKey: "kyojuyo",
+});
+// ★空き家特例で相続人3人以上 → 控除は3,000万でなく2,000万（措法35条4項）。
+SCENES.jouto_akiya3 = joutoScene({
+  shutokuBi: "1990-04-01", joutoBi: "2026-07-15",
+  joutoKagaku: 80000000, joutoHiyo: 0,
+  tochiShutokuhi: 10000000, tatemonoShutokuKagaku: 0,
+  tokureiKey: "akiya", sozokuninSu: 3,
+});
+// ★譲渡対価1億円超は空き家特例そのものが使えない（控除0＋理由を画面に出す）。
+SCENES.jouto_akiya_1oku = joutoScene({
+  shutokuBi: "1990-04-01", joutoBi: "2026-07-15",
+  joutoKagaku: 100000001, joutoHiyo: 0,
+  tochiShutokuhi: 10000000, tatemonoShutokuKagaku: 0,
+  tokureiKey: "akiya", sozokuninSu: 1,
+});
+// ★概算取得費: 実額が分からない → 譲渡価額の5%＝250万が取得費。
+SCENES.jouto_gaisan = joutoScene({ shutokuMode: "gaisan" });
+// ★95%上限: 1980年取得の木造（46年経過）→ 減価償却は取得価額の95%で頭打ち。
+SCENES.jouto_gendo = joutoScene({
+  shutokuBi: "1980-04-01", joutoBi: "2026-07-15",
+  joutoKagaku: 50000000, joutoHiyo: 0,
+  tochiShutokuhi: 10000000, tatemonoShutokuKagaku: 20000000, kozoKey: "mokuzo",
+});
+// 参照データ配信不可 → 税額を出さずに断る（fail closed）。
+SCENES.jouto_nodata = joutoScene({});
+
 // ★単体（tests/test_hikazei_setai.mjs）は core しか見ないので、「世帯人数の読み取り→各人の
 //   収入と年齢→公的年金等控除→扶養の付け方の探索→世帯の判定→表の描画」の配線はここでしか守れない。
 //   期待値の手計算は同テストの §3・§5・§6・§7（国税庁の速算表オラクルと全域照合つき）。

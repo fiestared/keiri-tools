@@ -427,6 +427,50 @@ const SCENES = [
   { name: "toroku_menkyo_nodata", data404: "toroku_menkyo_r08.json",
     expect: (s) => s.failed && s.tax === null },
 
+  // ── 不動産売却の税金 (/fudosan-jouto/) ───────────────────────────────
+  // ★手計算の鎖は tests/test_jouto.mjs §1・§3・§9: 2021-05-01取得→2026-07-15譲渡。
+  //   2026-01-01時点で4年7か月＝短期。建物1,500万木造の減価償却2,092,500 →
+  //   取得費32,907,500 → 譲渡所得15,392,500 → 課税15,392,000 → 合計6,099,849。
+  //   「1月1日で数える」を落として譲渡日で数えると長期になり、税額がおよそ半分になって落ちる。
+  { name: "jouto", expect: (s) =>
+      s.goukei === 6099849 && s.kazei === 15392000 &&
+      s.shotokuZei === 4617600 && s.juminZei === 1385280 &&
+      s.tanki && !s.choki && s.kurikoshi &&
+      /4年7か月/.test(s.kikanHyoji) &&
+      s.kozoOptions >= 7 && s.defaultJoutoKagaku > 0 && s.defaultShutokuBi &&
+      s.showsYear && !s.failed },
+  { name: "jouto_slow", slow: true, expect: (s) =>
+      s.goukei === 6099849 && s.kazei === 15392000 && !s.failed },
+  // ★外部オラクル（国税庁 No.3208 の公表値）: 所得税600万・住民税200万に1円一致すること。
+  { name: "jouto_choki", expect: (s) =>
+      s.kazei === 40000000 && s.shotokuZei === 6000000 && s.juminZei === 2000000 &&
+      s.goukei === 8126000 && s.choki && !s.tanki && !s.kurikoshi && !s.failed },
+  // ★軽減税率: 6,000万の判定は3,000万控除の【後】。全額が10%＝600万・住民税4%＝240万。
+  { name: "jouto_keigen", expect: (s) =>
+      s.kazei === 60000000 && s.kojo === 30000000 &&
+      s.shotokuZei === 6000000 && s.juminZei === 2400000 && s.keigen && !s.failed },
+  // ★3,000万円控除は短期にも効く（長期でないと使えない、は誤り）。
+  { name: "jouto_tanki_kojo", expect: (s) =>
+      s.tanki && s.kojo === 30000000 && s.kazei === 10000000 &&
+      s.shotokuZei === 3000000 && s.juminZei === 900000 && !s.failed },
+  // ★空き家×相続人3人以上 → 控除2,000万（3,000万のままなら課税額が1,000万少なくなって落ちる）。
+  { name: "jouto_akiya3", expect: (s) =>
+      s.kojo === 20000000 && s.kazei === 50000000 && !s.failed },
+  // ★対価1億円超 → 特例そのものが使えない。理由を画面に出す。
+  { name: "jouto_akiya_1oku", expect: (s) =>
+      s.kojo === null && /1億円を超えている/.test(s.akiyaBlocked) && !s.failed },
+  // ★概算取得費5%: 5,000万×5%＝250万が取得費。
+  //   課税＝50,000,000−2,500,000（概算）−1,700,000（譲渡費用）＝45,800,000。
+  { name: "jouto_gaisan", expect: (s) =>
+      s.gaisan && s.kazei === 45800000 &&
+      s.shotokuZei === 13740000 && s.juminZei === 4122000 && !s.failed },
+  // ★95%上限: 46年経過の木造 → 減価償却は取得価額の95%で頭打ちになり、その旨を表示する。
+  { name: "jouto_gendo", expect: (s) =>
+      /95%が限度なので頭打ち/.test(s.shokyakuNote) && s.choki && !s.failed },
+  // 参照データ配信不可 → 税額を出さずに断る（fail closed）。
+  { name: "jouto_nodata", data404: "jouto_r08.json",
+    expect: (s) => s.failed && s.goukei === null && s.kazei === null },
+
   // ── 住民税非課税世帯 (/hikazei-setai/) ────────────────────────────────
   // ★手計算の鎖は tests/test_hikazei_setai.mjs §5: 夫70歳 年金180万＋妻68歳 年金78万
   //   → 夫の合計所得70万（公的年金等控除110万を引く）・限度額101万（妻を扶養）→ 世帯非課税。
@@ -1030,7 +1074,10 @@ const only = process.env.E2E_ONLY || process.argv[2];
 const fails = [];
 const covered = new Map(); // ページ → 正常条件で駆動したシーン名
 
-for (const sc of SCENES.filter((s) => !only || s.name === only)) {
+// 末尾に * を付けると前方一致（1つのツールのシーンだけまとめて回すため）。
+// 例: node tools/e2e/e2e.mjs 'jouto*' → jouto / jouto_slow / jouto_choki … を全部
+const match = (name) => !only || (only.endsWith("*") ? name.startsWith(only.slice(0, -1)) : name === only);
+for (const sc of SCENES.filter((s) => match(s.name))) {
   slowHolidays = !!sc.slow;
   holidayMode = sc.holidays || null;
   data404 = sc.data404 || null;

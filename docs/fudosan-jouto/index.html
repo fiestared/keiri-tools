@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>不動産売却の税金 計算機｜譲渡所得税・住民税をシミュレーション</title>
+<meta name="description" content="土地・建物を売ったときの税金（譲渡所得税・住民税・復興特別所得税）を自動計算。所有期間は「売った年の1月1日」で数えるため、5年経っていても短期39.63%になることがあります。建物の減価償却、概算取得費5%、マイホームの3,000万円特別控除、10年超の軽減税率14.21%、相続空き家の特例にも対応。短期と判定されたときは、翌年に売った場合の差額も出します。無料・登録不要。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/fudosan-jouto/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "不動産売却の税金 計算機（譲渡所得税シミュレーター）",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "土地・建物の譲渡価額・取得費・譲渡費用・取得日・譲渡日から、譲渡所得と所得税・復興特別所得税・住民税を計算します。所有期間の1月1日判定、建物の減価償却費相当額、概算取得費5%、居住用財産の3,000万円特別控除、10年超所有の軽減税率、相続空き家の特別控除に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "不動産売却の税金 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 5年以上持っていたのに短期譲渡と言われました。なぜですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 所有期間を数える基準日が売った日ではなく「売った年の1月1日」だからです（租税特別措置法31条1項「その年一月一日において所有期間が五年を超えるもの」）。2021年5月に取得して2026年7月に売ると、売った時点では5年2か月ですが、2026年1月1日時点では4年7か月なので短期になります。短期は39.63%、長期は20.315%と税率がおよそ2倍違うため、2027年1月1日以後まで待って売れば税額はおよそ半分になります。売却時期を決める前にこの判定をしてください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 建物の取得費は買った金額をそのまま使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 使えません。建物は所有期間中に価値が減るため、減価償却費相当額を差し引いた額が取得費になります（所得税法38条2項）。自宅など事業に使っていなかった建物は「建物の取得価額×0.9×償却率×経過年数」で計算し、償却率は法定耐用年数を1.5倍した年数（1年未満切捨て）に対応する旧定額法の率を使います。木造住宅なら22年×1.5＝33年で0.031です。減価償却費相当額は建物の取得価額の95%が限度なので、建物の取得費が0円になることはありません。土地は減価しないので償却しません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 買ったときの金額が分かりません。どうなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 譲渡価額の5%を取得費とすることができます（措置法31条の4、措置法通達31の4-1）。3,000万円で売ったなら150万円が取得費です。加えて、実際の取得費が分かっていてもそれが譲渡価額の5%を下回るときは5%を使ってかまいません（国税庁 No.3258）。実質は「実額と5%の大きいほう」です。ただし5%で計算すると譲渡所得が大きく出るため、購入時の売買契約書・領収書・住宅ローンの資料などが残っていないかは先に確認してください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 3,000万円特別控除は長期譲渡でないと使えませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 短期譲渡でも使えます。措置法35条1項は1号で長期譲渡の31条1項を、2号で短期譲渡の32条1項を、それぞれ読み替えているためです。10年超の所有が必要なのは軽減税率の特例（31条の3）のほうで、こちらと混同されがちです。ただし3,000万円控除は前年・前々年にこの特例（や居住用財産の買換え特例など）の適用を受けていると使えず、実質3年に1度になります。また配偶者・親子など特別の関係がある人への譲渡には使えません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 3,000万円控除と10年超の軽減税率は両方使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 併用できます。働く場所が違うためで、3,000万円控除（35条）は課税される金額そのものを減らし、軽減税率（31条の3）はその金額に掛ける税率を下げます。順番は「譲渡所得から3,000万円を引く→残った課税長期譲渡所得金額に軽減税率を当てる」です。軽減税率の6,000万円という区切りは、3,000万円を引いた後の金額で判定します。控除前の金額で判定すると税額を過大に計算してしまいます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 税金はいつ払いますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 所得税と復興特別所得税は、売った年の翌年2月16日から3月15日の確定申告で申告・納付します。住民税は売った年の翌年度に課税され、6月ごろに納税通知書が届いて、普通徴収なら年4回に分けて納めます（給与から天引きされている人は翌年6月以降の給与から引かれます）。売った年にすぐ引かれるわけではないので、納税資金を使ってしまわないよう注意してください。なお特別控除を使って税額が0円になる場合でも、特例の適用には確定申告が必要です。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 不動産売却の税金 計算機</nav>
+
+<section class="hero">
+  <h1>不動産売却の税金 計算機</h1>
+  <p>土地・建物を売ったときの<b>譲渡所得税・住民税</b>を計算します。いちばん間違えやすいのは所有期間で、<b id="hero-1jan">数えるのは「売った年の1月1日」時点</b>です。<b id="hero-tanki">実際に5年を超えて持っていても、売った年の1月1日で5年以下なら短期譲渡（39.63%）</b>になり、税額がおよそ2倍になります。<b>建物の減価償却</b>・<b>概算取得費5%</b>・<b>3,000万円特別控除</b>・<b>10年超の軽減税率</b>も含めて計算します。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="kijunbi-callout">所有期間は「譲渡した日」ではなく「譲渡した年の1月1日」で数えます</b>
+    租税特別措置法31条1項が「<b>その年一月一日において所有期間が五年を超えるもの</b>」と定めているためです。<b id="kijunbi-kotoba">2021年5月に買った家を2026年7月に売ると、実際の所有期間は5年2か月ですが、2026年1月1日時点では4年7か月なので短期譲渡になります</b>。売り急がずに年を越すだけで税額が半分になることがあります。
+  </div>
+
+  <div class="grid2">
+    <div>
+      <label for="shutokuBi">取得日（買った日）<span class="hint">　売買契約でなく引渡しの日が原則</span></label>
+      <input type="date" id="shutokuBi" value="2021-05-01">
+    </div>
+    <div>
+      <label for="joutoBi">譲渡日（売った日）<span class="hint">　引渡しの日</span></label>
+      <input type="date" id="joutoBi" value="2026-07-15">
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:14px">
+    <div>
+      <label for="joutoKagaku">譲渡価額（売却代金・円）</label>
+      <input type="number" id="joutoKagaku" min="0" inputmode="numeric" value="50000000">
+    </div>
+    <div>
+      <label for="joutoHiyo">譲渡費用（円）<span class="hint">　仲介手数料・印紙代・取壊し費用など</span></label>
+      <input type="number" id="joutoHiyo" min="0" inputmode="numeric" value="1700000">
+    </div>
+  </div>
+
+  <label style="margin-top:14px" for="shutokuMode">取得費（買ったときの金額）</label>
+  <select id="shutokuMode">
+    <option value="jitsugaku" selected>実額が分かる（購入代金の資料がある）</option>
+    <option value="gaisan">分からない（概算取得費＝譲渡価額の5%で計算）</option>
+  </select>
+
+  <div id="jitsugaku-block">
+    <div class="grid2" style="margin-top:10px">
+      <div>
+        <label for="tochiShutokuhi" style="font-size:13px">土地の取得費（円）<span class="hint">　購入代金＋購入手数料など</span></label>
+        <input type="number" id="tochiShutokuhi" min="0" inputmode="numeric" value="20000000">
+      </div>
+      <div>
+        <label for="tatemonoShutokuKagaku" style="font-size:13px">建物の取得価額（円）<span class="hint">　減価償却する前の金額</span></label>
+        <input type="number" id="tatemonoShutokuKagaku" min="0" inputmode="numeric" value="15000000">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="kozoKey" style="font-size:13px">建物の構造<span class="hint">　減価償却率が変わります</span></label>
+        <select id="kozoKey"></select>
+      </div>
+      <div>
+        <label for="jigyoYo" style="font-size:13px">賃貸に出していた期間</label>
+        <select id="jigyoYo">
+          <option value="no" selected>ない（自宅・別荘など）</option>
+          <option value="yes">ある（賃貸・事業に使っていた）</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <label style="margin-top:14px" for="tokureiKey">使える特別控除</label>
+  <select id="tokureiKey">
+    <option value="none" selected>なし</option>
+    <option value="kyojuyo">マイホーム（居住用財産）の3,000万円特別控除</option>
+    <option value="akiya">相続した空き家の3,000万円特別控除</option>
+  </select>
+
+  <div id="kyojuyo-block" style="display:none;margin-top:10px">
+    <label for="keigenZeiritsu" style="font-size:13px">10年超所有の軽減税率<span class="hint">　1月1日時点で10年超のマイホームのみ</span></label>
+    <select id="keigenZeiritsu">
+      <option value="yes" selected>使う（前年・前々年に使っていない）</option>
+      <option value="no">使わない</option>
+    </select>
+  </div>
+
+  <div id="akiya-block" style="display:none;margin-top:10px">
+    <label for="sozokuninSu" style="font-size:13px">その家屋・敷地を相続で取得した相続人の数<span class="hint">　3人以上だと控除額が2,000万円に下がります</span></label>
+    <input type="number" id="sozokuninSu" min="1" max="20" inputmode="numeric" value="1">
+  </div>
+
+  <button id="calc" style="margin-top:16px">税額を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<h2 id="toc-h">目次</h2>
+<ul id="toc">
+  <li><a href="#shikumi">譲渡所得の税金はどう決まるか</a></li>
+  <li><a href="#kikan">所有期間は「売った年の1月1日」で数える</a></li>
+  <li><a href="#shutokuhi">取得費 — 建物は減価償却する／分からなければ5%</a></li>
+  <li><a href="#kojo">3,000万円特別控除と10年超の軽減税率</a></li>
+  <li><a href="#akiya">相続した空き家を売ったとき</a></li>
+  <li><a href="#faq">よくある質問</a></li>
+  <li><a href="#shutten">出典</a></li>
+  <li><a href="#kanren">関連ツール</a></li>
+</ul>
+
+<h2 id="shikumi">譲渡所得の税金はどう決まるか</h2>
+<p>土地・建物を売った利益は<b>分離課税</b>で、給与などの所得とは合算せずに、それだけで税額を出します。順番は次のとおりです。</p>
+
+<figure>
+<svg viewBox="0 0 720 250" role="img" aria-labelledby="fig1-title" style="max-width:100%;height:auto">
+  <title id="fig1-title">譲渡所得の計算の流れ</title>
+  <rect x="10" y="20" width="150" height="46" rx="6" fill="#e8f0fe" stroke="#4a6fa5"/>
+  <text x="85" y="42" font-size="13" text-anchor="middle" fill="#1a3a5c">譲渡価額</text>
+  <text x="85" y="59" font-size="11" text-anchor="middle" fill="#5a7a9c">売却代金</text>
+
+  <text x="176" y="49" font-size="18" text-anchor="middle" fill="#666">−</text>
+
+  <rect x="192" y="20" width="150" height="46" rx="6" fill="#f0f4f8" stroke="#8aa4bf"/>
+  <text x="267" y="42" font-size="13" text-anchor="middle" fill="#1a3a5c">取得費</text>
+  <text x="267" y="59" font-size="11" text-anchor="middle" fill="#5a7a9c">建物は減価償却後</text>
+
+  <text x="358" y="49" font-size="18" text-anchor="middle" fill="#666">−</text>
+
+  <rect x="374" y="20" width="150" height="46" rx="6" fill="#f0f4f8" stroke="#8aa4bf"/>
+  <text x="449" y="42" font-size="13" text-anchor="middle" fill="#1a3a5c">譲渡費用</text>
+  <text x="449" y="59" font-size="11" text-anchor="middle" fill="#5a7a9c">仲介手数料など</text>
+
+  <text x="540" y="49" font-size="18" text-anchor="middle" fill="#666">=</text>
+
+  <rect x="556" y="20" width="150" height="46" rx="6" fill="#fff4e5" stroke="#d89a3f"/>
+  <text x="631" y="48" font-size="13" text-anchor="middle" fill="#7a5518">譲渡所得</text>
+
+  <line x1="631" y1="66" x2="631" y2="92" stroke="#999" stroke-width="1.5" marker-end="url(#ar)"/>
+  <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L6,3 L0,6 z" fill="#999"/></marker></defs>
+
+  <rect x="374" y="98" width="332" height="46" rx="6" fill="#fff4e5" stroke="#d89a3f"/>
+  <text x="540" y="120" font-size="13" text-anchor="middle" fill="#7a5518">譲渡所得 − 特別控除（最大3,000万円）</text>
+  <text x="540" y="137" font-size="11" text-anchor="middle" fill="#9a7538">＝ 課税譲渡所得金額（1,000円未満切捨て）</text>
+
+  <line x1="540" y1="144" x2="540" y2="170" stroke="#999" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <rect x="120" y="176" width="252" height="58" rx="6" fill="#fde8e8" stroke="#c0504d"/>
+  <text x="246" y="197" font-size="13" text-anchor="middle" fill="#7a2a28">短期（1月1日で5年以下）</text>
+  <text x="246" y="217" font-size="15" text-anchor="middle" font-weight="bold" fill="#a03a37">39.63%</text>
+
+  <rect x="392" y="176" width="252" height="58" rx="6" fill="#e6f4ea" stroke="#3d8b5f"/>
+  <text x="518" y="197" font-size="13" text-anchor="middle" fill="#1e5233">長期（1月1日で5年超）</text>
+  <text x="518" y="217" font-size="15" text-anchor="middle" font-weight="bold" fill="#2a7048">20.315%</text>
+</svg>
+<figcaption>譲渡所得の計算の流れ。税率は「売った年の1月1日」時点の所有期間で決まる。</figcaption>
+</figure>
+
+<p>税率の内訳は<b id="uchiwake-choki">長期が所得税15%＋復興特別所得税＋住民税5%＝20.315%</b>、<b id="uchiwake-tanki">短期が所得税30%＋復興特別所得税＋住民税9%＝39.63%</b>です。復興特別所得税は<b id="fukko-kigen">所得税額の2.1%</b>で、<b id="fukko-until">令和19年（2037年）分まで</b>かかります。住民税には復興特別所得税はかかりません。</p>
+
+<h2 id="kikan">所有期間は「売った年の1月1日」で数える</h2>
+<p>ここがこのツールを作った理由です。租税特別措置法31条1項は長期譲渡所得を「<b>その年一月一日において所有期間が五年を超えるもの</b>」と定めています。<b id="kikan-honmon">基準になるのは譲渡した日ではなく、譲渡した年の1月1日です</b>。</p>
+
+<div class="note">
+  <b id="kikan-note">実際に5年を超えて持っていても、短期譲渡になることがあります。</b>
+  たとえば2021年5月1日に取得した不動産を2026年7月15日に売ると、売った時点の所有期間は5年2か月です。しかし判定するのは2026年1月1日時点で、そのときの所有期間は4年7か月しかありません。したがって<b>短期譲渡（39.63%）</b>になります。<b id="kikan-kosu">同じ物件を2027年1月1日以後に売れば長期譲渡（20.315%）</b>になり、税額はおよそ半分になります。
+</div>
+
+<p>所有期間そのものは「<b>取得をした日の翌日</b>から引き続き所有していた期間」です（同条2項）。1日の違いが税率区分を変えることがあるので、このツールは起算日を画面に出します。10年超の軽減税率（31条の3）も、同じく1月1日で判定します。</p>
+
+<h2 id="shutokuhi">取得費 — 建物は減価償却する／分からなければ5%</h2>
+<p><b id="shutokuhi-tatemono">土地は減価しませんが、建物は買った金額をそのまま取得費にできません。</b>所有期間中の減価償却費相当額を差し引きます（所得税法38条2項）。自宅など事業に使っていなかった建物は次の算式です。</p>
+
+<p style="text-align:center"><b id="shokyaku-shiki">建物の取得価額 × 0.9 × 償却率 × 経過年数 ＝ 減価償却費相当額</b></p>
+
+<p>この償却率は法定耐用年数そのものではなく、<b id="shokyaku-15">法定耐用年数を1.5倍した年数（1年未満切捨て）に対応する旧定額法の償却率</b>を使います（所得税法施行令85条）。木造の住宅なら22年×1.5＝33年で<b id="shokyaku-mokuzo">償却率0.031</b>であって、22年の償却率ではありません。経過年数は<b id="shokyaku-hasu">6か月以上の端数は1年、6か月未満は切り捨て</b>ます。減価償却費相当額は<b id="shokyaku-gendo">建物の取得価額の95%が限度</b>なので、建物の取得費が0円になることはありません。</p>
+
+<table id="kozo-table"><thead><tr><th>構造（住宅用）</th><th>法定耐用年数</th><th>×1.5</th><th>償却率</th></tr></thead>
+<tbody id="kozo-tbody"><tr><td colspan="4" class="hint">読み込み中…</td></tr></tbody></table>
+
+<div class="callout">
+  <b id="gaisan-callout">取得費が分からないときは、譲渡価額の5%を取得費にできます</b>
+  先祖伝来の土地や、買った時期が古くて資料がない場合です。さらに見落とされやすいのですが、<b id="gaisan-shitamawaru">実際の取得費が譲渡価額の5%を下回るときも、5%を使ってかまいません</b>（国税庁 No.3258）。つまり実質は「実額と5%の大きいほう」です。このツールは実額を入れても5%と比べ、有利なほうを自動で採ります。
+</div>
+
+<p class="hint" id="gaisan-tsutatsu">なお条文（措置法31条の4）が5%を認めているのは「昭和27年12月31日以前から引き続き所有していた」ものに限られており、昭和28年1月1日以後に取得したものに同じ扱いが認められているのは措置法通達31の4-1によります。条文だけを読んで「昭和27年以前のものにしか使えない」と考えると誤りです。</p>
+
+<h2 id="kojo">3,000万円特別控除と10年超の軽減税率</h2>
+<p>マイホーム（居住用財産）を売ったときは、譲渡所得から<b id="kojo-3000">最大3,000万円を控除</b>できます（措置法35条1項）。<b id="kojo-tanki">この控除は短期譲渡にも使えます</b>。35条1項2号が短期譲渡の32条1項も読み替えているためで、「長期でないと3,000万円控除は使えない」というのは誤りです。10年超が要るのは軽減税率のほうです。</p>
+
+<p>住まなくなった後でも、<b id="kojo-3nen">住まなくなった日から3年を経過する日の属する年の12月31日まで</b>に売れば使えます。ただし<b id="kojo-renzoku">前年・前々年にこの特例を受けていると使えません</b>（実質3年に1度）。配偶者や親子など特別の関係がある人への譲渡にも使えません。</p>
+
+<p>さらに<b id="keigen-10">1月1日時点で所有期間が10年を超えるマイホーム</b>なら、軽減税率を併用できます（措置法31条の3）。<b id="keigen-ritsu">課税長期譲渡所得金額のうち6,000万円以下の部分が14.21%、超える部分が20.315%</b>です。</p>
+
+<div class="note">
+  <b id="keigen-note">6,000万円かどうかを判定するのは、3,000万円を控除した「後」の金額です。</b>
+  控除前の譲渡益で判定すると税額を過大に出します。たとえば譲渡益9,000万円なら、3,000万円を引いた6,000万円が課税長期譲渡所得金額で、<b>全額が14.21%</b>です。控除前の9,000万円で判定して「6,000万円を超えている」と考えると、超過分に20.315%を当ててしまいます。
+</div>
+
+<h2 id="akiya">相続した空き家を売ったとき</h2>
+<p>相続で取得した被相続人の居住用家屋とその敷地を売った場合にも、3,000万円の特別控除があります（措置法35条3項。いわゆる空き家特例）。ただし条件が細かく、次の2つは金額に直接効きます。</p>
+<ul>
+  <li><b id="akiya-3nin">その家屋・敷地を相続で取得した相続人が3人以上いるときは、控除額が3,000万円ではなく2,000万円になります</b>（35条4項）。人数を数えずに3,000万円で計算すると税額を過少に出します。</li>
+  <li><b id="akiya-1oku">譲渡対価が1億円を超えると、特例そのものが使えません</b>（35条3項かっこ書）。1億円の判定は、分割して売った場合や共有者が別々に売った場合の合計で行います。</li>
+</ul>
+<p>このほか、家屋が<b>昭和56年5月31日以前に建築</b>されたもので区分所有建物でないこと、相続開始の直前に被相続人が1人で住んでいたこと（老人ホーム入所などの例外あり）、相続の時から譲渡の時まで<b>事業・貸付け・居住の用に供されていない</b>ことが必要です。相続の開始があった日から<b>3年を経過する日の属する年の12月31日まで</b>の譲渡に限られます。</p>
+<p class="note" id="akiya-kigen-note">この特例の適用期限は<b>令和9年12月31日</b>（2027年12月31日）です。これより後の譲渡についてこのツールは控除を適用せず、その旨を表示します。延長されるかどうかは改正法が成立してからでないと分からないためです。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 5年以上持っていたのに短期譲渡と言われました。なぜですか？</h3>
+<p>A. 所有期間を数える基準日が<b>売った日ではなく「売った年の1月1日」</b>だからです（租税特別措置法31条1項「その年一月一日において所有期間が五年を超えるもの」）。2021年5月に取得して2026年7月に売ると、売った時点では5年2か月ですが、2026年1月1日時点では4年7か月なので短期になります。短期は39.63%、長期は20.315%と税率がおよそ2倍違うため、2027年1月1日以後まで待って売れば税額はおよそ半分になります。売却時期を決める前にこの判定をしてください。</p>
+
+<h3>Q. 建物の取得費は買った金額をそのまま使えますか？</h3>
+<p>A. 使えません。建物は所有期間中に価値が減るため、<b>減価償却費相当額を差し引いた額</b>が取得費になります（所得税法38条2項）。自宅など事業に使っていなかった建物は「建物の取得価額×0.9×償却率×経過年数」で計算し、償却率は法定耐用年数を1.5倍した年数（1年未満切捨て）に対応する旧定額法の率を使います。木造住宅なら22年×1.5＝33年で0.031です。減価償却費相当額は建物の取得価額の95%が限度なので、建物の取得費が0円になることはありません。土地は減価しないので償却しません。</p>
+
+<h3>Q. 買ったときの金額が分かりません。どうなりますか？</h3>
+<p>A. <b>譲渡価額の5%</b>を取得費とすることができます（措置法31条の4、措置法通達31の4-1）。3,000万円で売ったなら150万円が取得費です。加えて、実際の取得費が分かっていても<b>それが譲渡価額の5%を下回るときは5%を使ってかまいません</b>（国税庁 No.3258）。実質は「実額と5%の大きいほう」です。ただし5%で計算すると譲渡所得が大きく出るため、購入時の売買契約書・領収書・住宅ローンの資料などが残っていないかは先に確認してください。</p>
+
+<h3>Q. 3,000万円特別控除は長期譲渡でないと使えませんか？</h3>
+<p>A. 短期譲渡でも使えます。措置法35条1項は1号で長期譲渡の31条1項を、2号で短期譲渡の32条1項を、それぞれ読み替えているためです。10年超の所有が必要なのは<b>軽減税率の特例（31条の3）</b>のほうで、こちらと混同されがちです。ただし3,000万円控除は前年・前々年にこの特例（や居住用財産の買換え特例など）の適用を受けていると使えず、実質3年に1度になります。また配偶者・親子など特別の関係がある人への譲渡には使えません。</p>
+
+<h3>Q. 3,000万円控除と10年超の軽減税率は両方使えますか？</h3>
+<p>A. 併用できます。働く場所が違うためで、3,000万円控除（35条）は課税される金額そのものを減らし、軽減税率（31条の3）はその金額に掛ける税率を下げます。順番は「譲渡所得から3,000万円を引く→残った課税長期譲渡所得金額に軽減税率を当てる」です。<b>軽減税率の6,000万円という区切りは、3,000万円を引いた後の金額で判定します</b>。控除前の金額で判定すると税額を過大に計算してしまいます。</p>
+
+<h3>Q. 税金はいつ払いますか？</h3>
+<p>A. 所得税と復興特別所得税は、売った年の翌年<b>2月16日から3月15日</b>の確定申告で申告・納付します。<b>住民税は売った年の翌年度に課税</b>され、6月ごろに納税通知書が届いて、普通徴収なら年4回に分けて納めます（給与から天引きされている人は翌年6月以降の給与から引かれます）。売った年にすぐ引かれるわけではないので、納税資金を使ってしまわないよう注意してください。なお特別控除を使って税額が0円になる場合でも、特例の適用には確定申告が必要です。</p>
+
+<h2 id="shutten">出典</h2>
+<ul id="shutten-list">
+  <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">租税特別措置法（昭和三十二年法律第二十六号）</a> — 31条1項（長期譲渡所得＝その年1月1日において所有期間が5年を超えるもの・百分の十五）・31条2項（所有期間は取得の日の翌日から）／32条1項（短期譲渡所得＝百分の三十）／31条の3第1項（10年超の居住用財産＝6千万円以下は百分の十、超える部分は600万円＋百分の十五）／31条の4第1項（概算取得費＝収入金額の百分の五）／35条1項・2項（居住用財産の3千万円特別控除）・3項（空き家特例＝令和9年12月31日まで・対価1億円超を除く）・4項（相続人3人以上は2千万円）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033" rel="nofollow">所得税法33条・38条</a>・<a href="https://laws.e-gov.go.jp/law/340CO0000000096" rel="nofollow">所得税法施行令85条</a> — 譲渡所得の計算と非事業用資産の減価の額（耐用年数の1.5倍・旧定額法・6月以上の端数は1年）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/340M50000040015" rel="nofollow">減価償却資産の耐用年数等に関する省令</a> — 別表第一（住宅用の法定耐用年数）・別表第七（旧定額法の償却率）</li>
+  <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3208.htm" rel="nofollow">国税庁 No.3208 長期譲渡所得の税額の計算</a>・<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3211.htm" rel="nofollow">No.3211 短期譲渡所得の税額の計算</a> — 本ツールは No.3208 の計算例（譲渡価額1億4,500万円・取得費1億円・譲渡費用500万円→所得税600万円・住民税200万円）を1円まで再現することを機械で確認しています</li>
+  <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3258.htm" rel="nofollow">国税庁 No.3258 取得費が分からないとき</a>・<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3261.htm" rel="nofollow">No.3261 建物の取得費の計算</a> — 概算取得費5%と減価償却費相当額の算式・95%限度</li>
+  <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3302.htm" rel="nofollow">国税庁 No.3302 マイホームを売ったときの特例</a>・<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3305.htm" rel="nofollow">No.3305 軽減税率の特例</a>・<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3306.htm" rel="nofollow">No.3306 空き家を売ったときの特例</a></li>
+</ul>
+<p class="hint" id="src-note-wrap">条文は e-Gov 法令検索の法令APIから取得して逐語で確認しています<span id="src-note"></span>。実際の税額は、取得費に含められる費用の範囲・共有持分・買換え特例など個別の事情で変わります。このページは一般的な情報提供であり、申告内容を保証するものではありません。判断に迷う場合は税務署または税理士にご確認ください。</p>
+
+<h2 id="kanren">関連ツール</h2>
+<ul>
+  <li><a href="../inshi/">収入印紙 計算機</a> — 不動産の売買契約書に貼る印紙税を計算します</li>
+  <li><a href="../sozokuzei/">相続税 計算機</a> — 相続した不動産を売る前に、相続税そのものを確認できます</li>
+  <li><a href="../shokibo-takuchi/">小規模宅地等の特例 減額計算機</a> — 相続した宅地の評価額を最大80%減らせるかを計算します</li>
+  <li><a href="../juminzei/">住民税 計算機</a> — 給与などにかかる住民税を計算します</li>
+</ul>
+
+</article>
+</main>
+<footer>
+  <div>© 経理ミニツールズ</div>
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcJouto } from "../assets/jouto_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const num = (id) => Number($(id).value) || 0;
+
+let D = null;
+// 参照データ（税率・償却率・控除額）は非同期で届く。届く前に計算ボタンを押されても待つ。
+// 届かなければ計算しない ── 税率が分からない状態で税額を答えることはできない（fail closed）。
+const dataReady = fetch("../assets/jouto_r08.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { D = d; return true; })
+  .catch(() => false);
+
+// 出典の注記と構造の選択肢・一覧表は「飾り」。ここで転んでも計算は止めない。
+dataReady.then((ok) => {
+  if (!ok || !D) return;
+  $("src-note").textContent = D?._meta?.checked ? `（${D._meta.checked} 時点）` : "";
+  // 構造の選択肢も償却率の表も、ページに手書きせずデータから描く
+  const sel = $("kozoKey");
+  sel.innerHTML = D.shokyaku.kozo
+    .map((k, i) => `<option value="${k.key}"${i === 0 ? " selected" : ""}>${k.name}</option>`).join("");
+  $("kozo-tbody").innerHTML = D.shokyaku.kozo.map((k) => `<tr>
+    <td>${k.name}</td>
+    <td style="text-align:right">${k.taiyo_nensu}年</td>
+    <td style="text-align:right">${k.shokyaku_nensu}年</td>
+    <td style="text-align:right">${k.ritsu}</td></tr>`).join("");
+}).catch(() => {});
+
+const syncBlocks = () => {
+  $("jitsugaku-block").style.display = $("shutokuMode").value === "gaisan" ? "none" : "";
+  const t = $("tokureiKey").value;
+  $("kyojuyo-block").style.display = t === "kyojuyo" ? "" : "none";
+  $("akiya-block").style.display = t === "akiya" ? "" : "none";
+};
+$("shutokuMode").addEventListener("change", syncBlocks);
+$("tokureiKey").addEventListener("change", syncBlocks);
+syncBlocks();
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";          // ★.result は既定 display:none
+  box.innerHTML = "計算中…";
+  const okData = await dataReady;       // 参照データの到着を必ず待つ
+  if (!okData || !D) {
+    box.innerHTML = `<div class="note"><b>データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。税率・償却率が分からない状態で
+      税額をお答えすることはできません。</div>`;
+    return;
+  }
+
+  let r;
+  try {
+    r = calcJouto({
+      joutoKagaku: num("joutoKagaku"),
+      joutoHiyo: num("joutoHiyo"),
+      tochiShutokuhi: num("tochiShutokuhi"),
+      tatemonoShutokuKagaku: num("tatemonoShutokuKagaku"),
+      kozoKey: $("kozoKey").value,
+      shutokuBi: $("shutokuBi").value,
+      joutoBi: $("joutoBi").value,
+      gaisanOnly: $("shutokuMode").value === "gaisan",
+      tokureiKey: $("tokureiKey").value,
+      sozokuninSu: num("sozokuninSu") || 1,
+      keigenZeiritsu: $("keigenZeiritsu").value === "yes",
+      jigyoYo: $("jigyoYo").value === "yes",
+    }, D);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>${e.message}</div>`;
+    return;
+  }
+
+  const k = r.kikan;
+  let html = "";
+  html += `<div class="big" id="zeigaku">税金の合計は <b>${yenF(r.goukei)}</b></div>`;
+  html += `<p class="hint" id="kubun-note">${r.kubun}（${r.zeiritsuLabel}）。
+    ${k.kijunbi} 時点の所有期間は <b id="kikan-hyoji">${k.years}年${k.months}か月</b>
+    （起算日 ${k.startYmd}＝取得日の翌日）。</p>`;
+
+  if (!r.isChoki) {
+    html += `<div class="note" id="tanki-keikoku"><b>短期譲渡です。</b>
+      売った時点の所有期間は${k.joutoJitenYears}年${k.joutoJitenMonths}か月ですが、
+      判定するのは${k.kijunbi}時点なので${k.years}年${k.months}か月として扱われます。`;
+    if (r.kurikoshi) {
+      html += ` <b id="kurikoshi">${r.kurikoshi.year}年1月1日以後に売れば長期譲渡になり、
+        税額は ${yenF(r.kurikoshi.goukei)}（${yenF(r.kurikoshi.sagaku)} 安く）なります。</b>`;
+    }
+    html += `</div>`;
+  }
+
+  html += `<table id="keisan-table"><tbody>
+    <tr><td>譲渡価額</td><td style="text-align:right">${yenF(num("joutoKagaku"))}</td></tr>
+    <tr><td>取得費${r.useGaisan ? "（概算取得費 5%）" : ""}</td><td style="text-align:right">− ${yenF(r.shutokuhi)}</td></tr>
+    <tr><td>譲渡費用</td><td style="text-align:right">− ${yenF(num("joutoHiyo"))}</td></tr>
+    <tr><td><b>譲渡所得</b></td><td style="text-align:right"><b>${yenF(r.joutoShotoku)}</b></td></tr>`;
+  if (r.kojoGaku > 0) {
+    html += `<tr><td>特別控除（${r.kojoName}）</td><td style="text-align:right" id="kojo-row">− ${yenF(r.kojoGaku)}</td></tr>`;
+  }
+  html += `<tr><td><b>課税譲渡所得金額</b><span class="hint">（1,000円未満切捨て）</span></td>
+      <td style="text-align:right"><b id="kazei-row">${yenF(r.kazei)}</b></td></tr>
+    <tr><td>所得税</td><td style="text-align:right" id="shotokuzei-row">${yenF(r.shotokuZei)}</td></tr>
+    <tr><td>復興特別所得税${r.fukkoOn ? "（所得税の2.1%）" : ""}</td><td style="text-align:right">${yenF(r.fukkoZei)}</td></tr>
+    <tr><td>住民税</td><td style="text-align:right" id="juminzei-row">${yenF(r.juminZei)}</td></tr>
+    <tr><td><b>税金の合計</b></td><td style="text-align:right"><b>${yenF(r.goukei)}</b></td></tr>
+    <tr><td>手元に残る額<span class="hint">（譲渡価額−譲渡費用−税金）</span></td>
+      <td style="text-align:right">${yenF(r.tedori)}</td></tr>
+    </tbody></table>`;
+
+  if (r.shokyaku) {
+    const s = r.shokyaku;
+    html += `<p class="hint" id="shokyaku-note">建物の減価償却費相当額 ${yenF(s.gaku)}
+      ＝ 取得価額 × ${s.shikiso} × 償却率 ${s.kozo.ritsu}（${s.kozo.name}：法定耐用年数
+      ${s.kozo.taiyo_nensu}年 × 1.5 ＝ ${s.kozo.shokyaku_nensu}年）× 経過年数 ${s.keikaNensu}年
+      ${s.gendoTekiyo ? "。★取得価額の95%が限度なので頭打ちになっています" : ""}。</p>`;
+  }
+  if (r.akiyaBlocked === "taika") {
+    html += `<div class="note" id="akiya-block-note"><b>空き家特例は使えません。</b>
+      譲渡対価が1億円を超えているためです（措置法35条3項）。</div>`;
+  } else if (r.akiyaBlocked === "kigen") {
+    html += `<div class="note" id="akiya-block-note"><b>空き家特例は使えません。</b>
+      この特例の適用期限は${D.tokubetsu_kojo.akiya.kigen_label}で、それより後の譲渡だからです。
+      延長されたかどうかが確認できるまで、控除を当てずに計算しています。</div>`;
+  }
+  for (const n of r.notes) {
+    html += `<p class="hint">${n}</p>`;
+  }
+  html += `<p class="hint">${r.dataYear}の税率・控除額で計算しています。
+    申告書上は所得税額の100円未満が切り捨てられます。住民税は譲渡した年の翌年度に課税されます。</p>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>
