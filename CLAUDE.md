@@ -20,8 +20,12 @@ AI月30万円プロジェクト・柱Aのプロダクト。経理実務の「ち
 - `python3 tools/keyword_demand.py <語>` — **書く前に需要を測る。月1,000検索未満は書かない**
 - `node tools/analytics_report.mjs` — **書いた後の実測**(GSC検索クエリ/ページ別・GA4ページ/チャネル別。
   keiri-tools.com / aitimes.jp 両対応)。**記事の増補・改稿・AdSense再申請の判断は必ずこの実測を加味する**。
-  認証は専用GCPプロジェクト `keiri-aitimes-analytics`(yasu@scrumtechnology.jp 名義・2026-07-26新設)の
-  SAキー `~/.keiri-analytics/sa.json`。gcloud設定は `keiri-personal`(分離済み)。
+  認証はSA **`ga-reader@keiri-tools.iam.gserviceaccount.com`**(GCPプロジェクト `keiri-tools`・
+  scrumtechnology名義)。キー: このMacは `~/.keiri-analytics/sa.json`、Mac Miniは
+  `~/Scripts/ai-income-daily/ga-sa-key.json`(ai-income-daily の ga_check.py/sc_check.py が毎日使用)。
+  GA4プロパティ: keiri=545217731 / aitimes=545695263。**新しいGCP/SAを作らないこと**
+  (2026-07-26 に知らずに二重構築して即日削除した。既存アクセスの有無は gbrain
+  `keiri-tools/analytics-access` を先に見る)
   ⚠️ **elife系の会社GCP(ecare-298703 / nice-diorama-453205-u6)は使わない**(2度繋ぎかけて安に止められた)
 - `node tests/test_article_structure.mjs` — 型の違反を落とす(canonical/GA4/AdSense/構造化データ/
   目次と全h2の対応/図解(figure内インラインSVG)/FAQ/出典/ツール導線/title 60字/一覧・sitemap掲載/
