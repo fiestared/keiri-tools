@@ -300,13 +300,30 @@ const eraLabel = (y) => `令和${y - 2018}年（${y}年）`;
 // ★入居年の選択肢を**同期で**組み立てる（module実行はiframeのload前に済むので、
 //   E2Eが値をセットする時点で選択肢が存在する）。西暦をvalueに、和暦をラベルに。
 const yearSel = $("year");
-for (const y of [2022, 2023, 2024, 2025, 2026, 2027]) {
-  const o = document.createElement("option");
-  o.value = String(y);
-  o.textContent = eraLabel(y);
-  if (y === 2026) o.selected = true; // 既定は今年の入居（2027年は来年入居の予定を立てる人向け）
-  yearSel.appendChild(o);
-}
+const DEFAULT_YEAR = 2026; // 既定は今年の入居（2027年は来年入居の予定を立てる人向け）
+
+// ★★入居年の**正本は参照データの years**であって、この配列ではない（2026-07-26）。
+//   ここに手書きが残っているのは、データが非同期で届くのに対し、選択肢は**同期で**
+//   存在していなければならないため（E2Eが値をセットする時点で要る）。
+//   → データが届いた時点で下の buildYearOptions() が**データの years から作り直す**ので、
+//     年を足すのはデータ側だけでよい。この配列が古いまま腐らないよう、
+//     tests/test_screen_constants.mjs が「この配列 == データの years」を機械で強制する。
+const FALLBACK_YEARS = [2022, 2023, 2024, 2025, 2026, 2027];
+
+/** 選択肢を作り直す。**いま選ばれている年は保つ**（データ到着で利用者の選択を巻き戻さない） */
+const buildYearOptions = (years) => {
+  const keep = yearSel.value;
+  yearSel.textContent = "";
+  for (const y of years) {
+    const o = document.createElement("option");
+    o.value = String(y);
+    o.textContent = eraLabel(y);
+    if (y === DEFAULT_YEAR) o.selected = true;
+    yearSel.appendChild(o);
+  }
+  if (keep && years.includes(Number(keep))) yearSel.value = keep;
+};
+buildYearOptions(FALLBACK_YEARS);
 
 // 参照データ（借入限度額・控除率・控除期間）は非同期で届く。**これは答えの一部**なので、
 // 届く前にボタンを押されても待つ（回線が遅い人だけ空データで計算される事故を防ぐ）。
@@ -315,6 +332,21 @@ const dataReady = fetch("../assets/jutaku_r07.json")
   .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
   .then((d) => { D = d; return true; })
   .catch(() => false);
+
+// ★入居年の選択肢を**データの years から作り直す**（飾りとは別のPromiseで描く）。
+//   これは飾りではなく**答えの一部**——選択肢に無い年は利用者が選べず、
+//   データに収録されている年でも計算に辿り着けない。だから src-note と同じ then に入れない
+//   （出典表示のバグで選択肢の再構築が飛ぶのを防ぐ・「答えに要るもの」と「飾り」を分ける規律）。
+//   新築と中古で収録年が違っても選べるよう**和集合**を採る。組合せがデータに無ければ
+//   コアが beyondData を立てて申告する（黙って答えない）。
+dataReady.then((ok) => {
+  if (!ok || !D) return; // 読み込めなければ暫定リストのまま（計算側は別途 fail closed）
+  const years = [...new Set([
+    ...Object.keys(D.kubun.nintei.years),
+    ...Object.keys(D.chuko.kubun.nintei.years),
+  ].map(Number))].sort((a, b) => a - b);
+  if (years.length) buildYearOptions(years);
+}).catch(() => {});
 
 // 出典の年度表示は**飾り**。ここで転んでも計算は止めない（別のPromiseで描く）。
 dataReady.then((ok) => {

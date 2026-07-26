@@ -132,10 +132,13 @@ const MUTATIONS = [
     scene: "papa",
     file: PAGE,
     src: () => pageOrig,
+    // ★2026-07-26に spouse の渡し方が変わった（インラインの三項 → const spouseArg に取り出し。
+    //   「あと○日で13%が乗る」の案内でも**同じ配偶者の状況**を使って再計算するため）。
+    //   壊し方を追随させないと、置換が当たらず**錠前が黙って外れる**（実際にこの便で外れた）。
     apply: (s) =>
       s.replace(
-        /      spouse: spouseIsExempt\(\)\n        \? \{ exempt: true \}\n        : \{ exempt: false, days: Number\(\$\("spouseDays"\)\.value\) \|\| 0 \},/,
-        '      spouse: { exempt: false, days: Number($("spouseDays").value) || 0 },',
+        /  const spouseArg = spouseIsExempt\(\)\n    \? \{ exempt: true \}\n    : \{ exempt: false, days: Number\(\$\("spouseDays"\)\.value\) \|\| 0 \};/,
+        '  const spouseArg = { exempt: false, days: Number($("spouseDays").value) || 0 };',
       ),
   },
   {

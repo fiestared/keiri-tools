@@ -557,6 +557,52 @@ SCENES.gensen_kyuyo_slow = SCENES.gensen_kyuyo;        // 800ms遅らせる(モ�
 SCENES.gensen_kyuyo_nodata = SCENES.gensen_kyuyo;      // 配信失敗 → 額を出さず断り書き
 SCENES.gensen_kyuyo_otsu = kyuyoScene(250000, 0, "otsu"); // 乙欄は甲欄より高い
 
+// ═══════════════════════════════════════════════════════════════════════════
+// 報酬・料金の源泉徴収（/gensen-choshu/ の上半分）— 所法204条・所基通204-2
+//
+// ★このページで**E2Eが1つも無かった**部分（2026-07-26に気づいて新設）。給与・賞与だけを
+//   見ていたので、**消費税の区分で源泉徴収の対象額が変わる**という、このページで実務上
+//   いちばん間違えるロジック（所基通204-2）が誰にも触られていなかった。
+// ★期待値は実装を通さず、率と条文から手で積む（外部オラクル）:
+//     報酬100,000円・区分あり → 対象100,000 × 10.21% = **10,210円**
+//     同・区分なし           → 対象は税込110,000 → 110,000 × 10.21% = **11,231円**
+//   ★この差額1,021円が、消費税率を掛けている箇所（RATE_SHOHIZEI）が生きている証拠。
+//     率を0にすれば「区分なし」が10,210円に落ちてこのシーンが赤くなる。
+// ═══════════════════════════════════════════════════════════════════════════
+const houshuScene = (inp) => async () => {
+  const doc = await open("/docs/gensen-choshu/");
+  // ★このページはタブ（給与／賞与／報酬）で、報酬ペインは**初期状態では非表示**。
+  //   タブを押さずに操作すると、text() が「#result は非表示のまま」で throw し続ける
+  //   （＝結果が画面に見えていない状態を、そもそも結果として読まない作り）。
+  click(doc, "tab-hoshu");
+  set(doc, "kind", inp.kind ?? "general");
+  set(doc, "fee", String(inp.fee ?? 100000));
+  // ラジオ（name="tax"）は id が無いので value で名指しして押す
+  doc.querySelector(`input[name="tax"][value="${inp.tax ?? "sep"}"]`).click();
+  click(doc, "calc");
+
+  await waitFor(() => /源泉徴収税額|入力してください/.test(text(doc, "result")), "報酬の計算結果");
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    ...inp,
+    tax: num(/源泉徴収税額\s*¥([\d,]+)/),
+    target: num(/源泉徴収の対象額\s*¥([\d,]+)/),
+    total: num(/請求額（合計）\s*¥([\d,]+)/),
+    // ★消費税の行の**表示ラベル**。率と表示を別々に持つと片方だけ古くなるので、
+    //   画面が名乗る率（"10%"）まで見る（RATE_SHOHIZEI_LABEL から描かれているか）。
+    shohizeiLabel: (body.match(/消費税（([\d.]+%)）/) || [])[1] ?? null,
+    shohizei: num(/消費税（[\d.]+%）\s*¥([\d,]+)/),
+    body,
+  };
+};
+// 区分あり（既定）: 税抜100,000が対象 → 10,210円
+SCENES.gensen_houshu = houshuScene({});
+// ★区分なし: 税込110,000が対象 → 11,231円。**消費税率が計算に効いている唯一の経路**
+SCENES.gensen_houshu_inc = houshuScene({ tax: "inc" });
+// 消費税なし（不課税・免税）: 100,000が対象 → 10,210円。消費税の行は出さない
+SCENES.gensen_houshu_none = houshuScene({ tax: "none" });
+
 // ── 賞与の源泉徴収(算出率の表) ───────────────────────────────────────────────
 // 賞与は月額表ではなく「算出率の表」で**率**を引く。率を決めるのは**前月の給与**。
 // ここでも期待値はハーネス側で生JSONを独立に引いて出す(被検体のcoreを使わない)。
@@ -2397,6 +2443,11 @@ const papaScene = (inp) => async () => {
     // 13%が乗らないときは**なぜ乗らないか**を名指しで言う（黙って0円にしない）
     showsOwnDaysReason: /あなたの休業が14日未満/.test(body),
     showsCliffHint: /13%（約¥18,200）がまるごと乗ります/.test(body),
+    // ★★「延ばせば乗る」を**言ってはいけない場合**（2026-07-26 に本番で誤案内していた）:
+    //   shienKyufu は**自分の日数を先に見て**返すので、配偶者も14日未満の人にも own_days を返す。
+    //   ページがそれをそのまま「あと1日で18,200円乗る」と案内すると、
+    //   **休業を1日延ばしても1円も増えない人**に、職場調整を伴う決断を促すことになる。
+    showsCliffBlocked: /延ばすだけでは、13%は1円も出ません/.test(body),
     showsSpouseReason: /配偶者の育児休業が14日未満/.test(body),
     // ★賃金で67%が減っても13%は減らないことを画面が明示する
     showsWageReduced: /出生後休業支援給付金（13%）は減額されません/.test(body),
@@ -2423,6 +2474,10 @@ SCENES.papa_unpaid = papaScene({ wage: 112000 });
 SCENES.papa_13days = papaScene({ leaveDays: 13 });
 // ★免除に当てはまらない人（子が養子など）は、配偶者が14日以上取らないと13%は0円
 SCENES.papa_no_exempt = papaScene({ spouse: "employed", spouseDays: 0 });
+// ★★自分も配偶者も14日未満（免除なし）。コアは own_days を返すが、
+//   **自分だけ14日にしても配偶者が足りないので13%は0円のまま**。
+//   「あと1日で18,200円乗る」と言ってはいけない場面（2026-07-26の修正）。
+SCENES.papa_13days_no_exempt = papaScene({ leaveDays: 13, spouse: "employed", spouseDays: 10 });
 // ★28日で頭打ち（61条の8第2項2号）＋上限に張りつく人 → 67%: 302,223円 / 13%: 58,640円（厚労省の公表値）
 SCENES.papa_cap = papaScene({ monthly: 600000, leaveDays: 40 });
 // 参照データを配信できないときは、金額を出さずに断る（fail closed）
