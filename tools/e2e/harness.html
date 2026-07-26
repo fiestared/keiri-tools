@@ -1822,6 +1822,50 @@ SCENES.hikazei_setai_156 = hikazeiScene({ ninzu: 1, members: [{ age: 70, nenkin:
 SCENES.hikazei_setai_64 = hikazeiScene({ ninzu: 1, members: [{ age: 64, nenkin: 1550000 }] });
 // ★級地（§4）: 3級地・単身・65歳以上は148万まで。1級地の155万を使い回していたら落ちる。
 SCENES.hikazei_setai_kyuchi3 = hikazeiScene({ kyuchi: 3, ninzu: 1, members: [{ age: 70, nenkin: 1480000 }] });
+
+// ── インボイス登録番号チェック (/invoice-bangou/) ────────────────────────────
+// ★単体（tests/test_invoice_bangou.mjs）は core しか見ない。ページ側の
+//   「貼り付けたテキストの読み取り → 一括判定 → 表の描画」はどのテストも通っていない。
+//   参照データを持たないツールなので fetch 待ちは無いが、**貼った行数ぶん描けているか**が要。
+//   1件だけ描いて残りを黙って捨てる事故（このツールの本命が一括処理なので致命）を捕まえる。
+const invoiceBangouScene = (raw) => async () => {
+  const d = await open("/docs/invoice-bangou/");
+  set(d, "input", raw);
+  click(d, "run");
+  await waitFor(
+    () => /件を確認しました|番号が入力されていません/.test(text(d, "result")),
+    "登録番号の判定結果",
+  );
+  const body = text(d, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1]) : null; };
+  const rows = [...d.querySelectorAll("#result-table tbody tr")].map((tr) => {
+    const td = [...tr.querySelectorAll("td")].map((x) => x.textContent.trim());
+    return { line: Number(td[0]), formatted: td[2], hantei: td[3] };
+  });
+  return {
+    total: num(/(\d+)件を確認しました/),
+    houjin: num(/桁が合う (\d+)件/),
+    notHoujin: num(/法人番号ではない (\d+)件/),
+    format: num(/形式の誤り (\d+)件/),
+    rows,
+    // ★「桁が合う＝実在」と誤解させない注意書きが出ていること（要素を名指しする）
+    hasJitsuzaiNote: !!d.getElementById("jitsuzai-note"),
+    // ★個人事業者の番号を「誤り」と断定していないこと
+    hasKojinHint: !!d.getElementById("kojin-hint"),
+    kojinHintText: d.getElementById("kojin-hint")?.textContent ?? "",
+    empty: !!d.getElementById("empty-note"),
+    body,
+  };
+};
+// ★国税庁自身の法人番号（外部オラクル）＋PDFの計算例＋社名混在＋検査外れ＋桁不足＋全角を一度に。
+//   6行貼って6行描けること、内訳の集計が合うことを見る。
+SCENES.invoice_bangou = invoiceBangouScene(
+  "T7000012050002\n株式会社サンプル\tT8700110005901\nT1234567890123\nT700001205000\n\n\uFF17\uFF10\uFF10\uFF10\uFF10\uFF11\uFF12\uFF10\uFF15\uFF10\uFF10\uFF10\uFF12");
+SCENES.invoice_bangou_slow = SCENES.invoice_bangou; // 800ms遅らせる（モバイル回線）
+// ★空で押しても白い画面にしない（案内が出ること）
+SCENES.invoice_bangou_empty = invoiceBangouScene("");
+// ★先頭0の13桁は法人番号になりえない＝「法人番号ではない」に落ち、断定しない注意書きが出ること
+SCENES.invoice_bangou_zero = invoiceBangouScene("0000012050002");
 // ★子のアルバイト（§6）: 父 給与150万＋19歳の子 給与115万 → 子が自分で課税 → 世帯は非課税でない。
 SCENES.hikazei_setai_kodomo = hikazeiScene({ ninzu: 2, members: [
   { zokugara: "self", age: 45, nenkin: 0, kyuyo: 1500000 },

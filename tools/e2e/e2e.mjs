@@ -484,6 +484,27 @@ const SCENES = [
       s.defaultNenkin > 0 && s.defaultAge > 0 && s.visibleRows === 2 && !s.failed },
   { name: "hikazei_setai_slow", slow: true, expect: (s) =>
       s.hikazei && s.rows[0].shotoku === 700000 && !s.failed },
+
+  // ── インボイス登録番号チェック (/invoice-bangou/) ──────────────────────────
+  // ★このツールの本命は一括処理。6行貼って6行描けることを行数で見る
+  //   （1件だけ描いて残りを黙って捨てる事故が最も痛い）。
+  //   内訳: 桁が合う3件（国税庁の法人番号／PDFの計算例／全角の同一番号）、
+  //   法人番号ではない1件、形式の誤り1件（12桁）、空行は数えない。
+  { name: "invoice_bangou", expect: (s) =>
+      s.total === 5 && s.rows.length === 5 &&
+      s.houjin === 3 && s.notHoujin === 1 && s.format === 1 &&
+      s.rows[0].formatted === "T7000012050002" &&
+      s.rows[1].line === 2 && s.rows[1].formatted === "T8700110005901" &&
+      s.hasJitsuzaiNote && s.hasKojinHint &&
+      // ★個人事業者の番号を「誤り」と断定していないこと（断定語が無いこと）
+      /別の体系/.test(s.kojinHintText) && !/誤りです|不正です|無効です/.test(s.kojinHintText) },
+  { name: "invoice_bangou_slow", slow: true, expect: (s) =>
+      s.total === 5 && s.houjin === 3 },
+  // ★空で押しても白い画面にしない
+  { name: "invoice_bangou_empty", expect: (s) => s.empty && !s.total },
+  // ★先頭0の13桁は法人番号になりえない（検査用数字は1〜9）。断定はしない
+  { name: "invoice_bangou_zero", expect: (s) =>
+      s.total === 1 && s.notHoujin === 1 && s.houjin === 0 && s.hasKojinHint },
   // ★境界: 年金155万ちょうど＝合計所得45万＝限度額45万 → 非課税（等号を含むこと）。
   { name: "hikazei_setai_155", expect: (s) =>
       s.hikazei && s.rows.length === 1 && s.visibleRows === 1 &&
