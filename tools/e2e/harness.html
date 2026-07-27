@@ -1967,6 +1967,79 @@ SCENES.shokibo_takuchi_empty = shokiboScene({
 // 参照データ配信不可 → 減額額を出さずに断る（fail closed）。
 SCENES.shokibo_takuchi_nodata = shokiboScene({});
 
+// ── 固定資産税・都市計画税 (/kotei-shisanzei/) ─────────────────────────────
+// ★単体（tests/test_kotei_shisanzei.mjs）は core しか見ないので、
+//   「戸数・住宅用地の別・新築の区分の読み取り→土地と家屋の按分→内訳表と減額欄の描画」の
+//   配線はここでしか守れない。期待値の手計算は同テストの §3〜§5。
+// ★新築の区分の <select> は SHINCHIKU_KUBUN から**スクリプトで**組み立てているので、
+//   選択肢が0個になる配線事故（＝画面から列挙が消える）もここで捕まえる。
+const koteiScene = (o) => async () => {
+  const doc = await open("/docs/kotei-shisanzei/");
+  const defaultLandValue = doc.getElementById("landValue").value;
+  const shinchikuOptions = [...doc.querySelectorAll("#shinchiku option")].map((e) => e.value);
+  set(doc, "landValue", o.landValue ?? 18000000);
+  set(doc, "landArea", o.landArea ?? 150);
+  set(doc, "isResidential", o.isResidential ?? "1");
+  set(doc, "units", o.units ?? 1);
+  set(doc, "houseValue", o.houseValue ?? 8000000);
+  set(doc, "houseFloorArea", o.houseFloorArea ?? 100);
+  set(doc, "shinchiku", o.shinchiku ?? "none");
+  if (o.koteiRate !== undefined) set(doc, "koteiRate", o.koteiRate);
+  if (o.toshiRate !== undefined) set(doc, "toshiRate", o.toshiRate);
+  // 税率の既定値はコアの定数から描かれる（ページに手書きしない）ので、押す前に読んでおく
+  const rateDefaults = {
+    kotei: Number(doc.getElementById("koteiRate").value),
+    toshi: Number(doc.getElementById("toshiRate").value),
+  };
+  click(doc, "calc");
+
+  await waitFor(
+    () => /¥|入力してください/.test(text(doc, "result")),
+    "固定資産税の計算結果",
+  );
+  const body = text(doc, "result");
+  const byId = (id) => { const e = doc.getElementById(id); return e ? e.textContent.trim() : null; };
+  const yen = (id) => { const t = byId(id); return t ? Number(t.replace(/[^\d]/g, "")) : null; };
+  const rows = [...(doc.querySelectorAll("#result table tbody tr") || [])].map((tr) =>
+    [...tr.querySelectorAll("td")].map((e) => e.textContent.trim()));
+  return {
+    defaultLandValue: Number(defaultLandValue) || 0,
+    shinchikuOptions,
+    rateDefaults,
+    total: yen("total"),
+    koteiTotal: yen("kotei-total"),
+    toshiTotal: yen("toshi-total"),
+    term1: yen("term1"),
+    genkaku: byId("shinchiku-tekiyo"),
+    genkakuGai: byId("shinchiku-gai"),
+    juubaiNote: byId("juubai-note"),
+    rows,
+    noInput: body.includes("入力してください"),
+    body,
+  };
+};
+// ★看板例（§4）: 土地1,800万・150平方メートル（住宅1戸）＋家屋800万・100平方メートル
+//   → 土地 42,000＋18,000／家屋 112,000＋24,000 ＝ 196,000円。
+//   都市計画税を固定資産税と同じ6分の1で計算する実装なら、土地の都計税が9,000円になって落ちる。
+SCENES.kotei_shisanzei = koteiScene({});
+// ★戸数（法349条の3の2第2項2号）: 6戸のアパート・土地600平方メートル6,000万
+//   → 600平方メートル全部が小規模住宅用地 → 固定 1,000万×1.4％＝140,000円。
+//   200平方メートルで一律に切る実装なら 233,300円 になって落ちる。
+SCENES.kotei_shisanzei_apart = koteiScene({
+  landValue: 60000000, landArea: 600, units: 6, houseValue: 0, houseFloorArea: 300,
+});
+// ★新築住宅の減額（法附則15条の6）: 家屋の固定資産税だけが半分になり、都市計画税は変わらない。
+SCENES.kotei_shisanzei_shinchiku = koteiScene({ shinchiku: "ippan" });
+// ★床面積の10倍（令52条の11第2項1号）: 床面積40平方メートルの家に土地1,000平方メートル
+//   → 住宅用地は400平方メートルだけ。10倍で切られたことを画面で申告すること。
+SCENES.kotei_shisanzei_juubai = koteiScene({
+  landValue: 50000000, landArea: 1000, houseValue: 0, houseFloorArea: 40,
+});
+// ★市街化区域外（都市計画税の税率0）→ 都市計画税は0円。
+SCENES.kotei_shisanzei_shigaika = koteiScene({ toshiRate: 0 });
+// ★入力なし → 0円と答えず入力を促す（fail closed）。
+SCENES.kotei_shisanzei_empty = koteiScene({ landValue: 0, houseValue: 0 });
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。

@@ -648,6 +648,37 @@ const SCENES = [
   { name: "shokibo_takuchi_nodata", data404: "shokibo_takuchi_r08.json",
     expect: (s) => s.failed && s.reduction === null },
 
+  // ── 固定資産税・都市計画税 (/kotei-shisanzei/) ───────────────────────
+  // ★手計算の鎖は tests/test_kotei_shisanzei.mjs §4:
+  //   土地1,800万・150平方メートル（住宅1戸）＝固定42,000＋都計18,000／
+  //   家屋800万・100平方メートル＝固定112,000＋都計24,000 → 合計196,000円。
+  //   都市計画税の特例を固定資産税と同じ6分の1で計算する実装なら土地の都計税が9,000円になって落ちる。
+  { name: "kotei_shisanzei", expect: (s) =>
+      s.total === 196000 && s.koteiTotal === 154000 && s.toshiTotal === 42000 &&
+      s.term1 === 49000 &&
+      // 新築の区分の列挙が画面に出ていること（該当しない＋4区分）
+      s.shinchikuOptions.length === 5 &&
+      s.shinchikuOptions.includes("chouki_chukoso") &&
+      // 税率の既定値はコアの定数から描かれている（ページの手書きではない）
+      s.rateDefaults.kotei === 1.4 && s.rateDefaults.toshi === 0.3 &&
+      s.defaultLandValue > 0 && !s.noInput },
+  // ★戸数: 6戸のアパートは200平方メートル×6戸＝1,200平方メートルまで6分の1（一律200で切ると233,300円）
+  { name: "kotei_shisanzei_apart", expect: (s) =>
+      s.koteiTotal === 140000 && s.toshiTotal === 60000 &&
+      s.rows.some((r) => r.join(" ").includes("600㎡")) },
+  // ★新築住宅の減額は固定資産税だけ（家屋 112,000→56,000／都計24,000は据え置き）
+  { name: "kotei_shisanzei_shinchiku", expect: (s) =>
+      s.koteiTotal === 98000 && s.toshiTotal === 42000 &&
+      /56,000/.test(s.genkaku || "") && /都市計画税は減額されません/.test(s.body) },
+  // ★床面積の10倍で切られたことを画面で申告する
+  { name: "kotei_shisanzei_juubai", expect: (s) =>
+      /400㎡/.test(s.juubaiNote || "") && /600㎡/.test(s.juubaiNote || "") },
+  // ★市街化区域外は都市計画税0円（固定資産税だけが残る）
+  { name: "kotei_shisanzei_shigaika", expect: (s) =>
+      s.toshiTotal === 0 && s.koteiTotal === 154000 && s.total === 154000 },
+  // ★入力なし → 0円と答えず入力を促す（fail closed）
+  { name: "kotei_shisanzei_empty", expect: (s) => s.noInput && s.total === null },
+
   // ── 収入印紙 (/inshi/) ───────────────────────────────────────────────
   // ★No.6925: 税込54,800円・消費税等4,981円区分記載 → 税抜49,819円で判定＝非課税（印紙不要）。
   //   ハーネス側の引き算 54,800−4,981=49,819<50,000 と一致し、一覧表23行（判取帳まで）も描かれること。

@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>固定資産税・都市計画税 計算機｜住宅用地1/6と新築の減額</title>
+<meta name="description" content="土地と家屋の固定資産税評価額・面積を入れるだけで、固定資産税と都市計画税の年税額を計算します。★小規模住宅用地の200㎡は「住居1戸あたり」なので、アパートや二世帯住宅は200㎡×戸数まで6分の1になります。住宅用地は家屋の床面積の10倍まで、新築住宅の減額（3年度分・1/2）は固定資産税だけ・居住部分120㎡相当分まで。免税点（土地30万円・家屋20万円）と1,000円未満・100円未満の端数処理、納期ごとの分割まで再現。無料・登録不要。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/kotei-shisanzei/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "固定資産税・都市計画税 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "土地と家屋の固定資産税評価額・面積から、住宅用地の特例（地方税法349条の3の2）と新築住宅の減額（同法附則15条の6）を反映した固定資産税・都市計画税の年税額を計算します。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "固定資産税・都市計画税 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 固定資産税はいくらかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 固定資産税は「課税標準額 × 1.4％」で計算します（地方税法350条1項の標準税率）。住宅の敷地であれば、住居1戸につき200㎡までの部分は課税標準が評価額の6分の1、200㎡を超える部分は3分の1になります（同法349条の3の2）。たとえば評価額1,800万円・150㎡の土地に住宅1戸が建っている場合、課税標準は1,800万円÷6＝300万円となり、固定資産税は300万円×1.4％＝42,000円です。市町村が条例で1.4％と異なる税率を定めている場合はその税率によります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 都市計画税も同じ6分の1で計算していいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. いいえ。都市計画税の住宅用地の特例は、小規模住宅用地が3分の1、一般住宅用地が3分の2で、固定資産税の6分の1・3分の1とは別の条文（地方税法702条の3）が定めた別の割合です。固定資産税と同じ6分の1で計算すると、都市計画税を実際の半分に見積もることになります。なお都市計画税は市街化区域内の土地・家屋にかかる税で、税率は0.3％を超えることができません（同法702条の4）。市街化区域外であればかかりません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 新築した家の固定資産税が4年目に上がったのはなぜですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 新築住宅の減額が終わったためです。一般の新築住宅は新たに固定資産税が課されることとなった年度から3年度分に限り、家屋の固定資産税額の2分の1が減額されます（地方税法附則15条の6第1項）。3階建て以上の中高層耐火建築物は5年度分、認定長期優良住宅は5年度分、認定長期優良住宅かつ中高層耐火建築物は7年度分です。この減額は固定資産税だけで都市計画税には及ばず、減額されるのは居住部分の120㎡相当分までです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. アパートを建てると土地の固定資産税はどうなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 小規模住宅用地の200㎡は住居1戸あたりで判定するため、6戸のアパートなら200㎡×6戸＝1,200㎡までが評価額の6分の1になります（地方税法349条の3の2第2項2号）。ただし住宅用地とされるのは家屋の床面積の10倍までで（同法施行令52条の11第2項1号）、それを超える部分には特例が及びません。土地の税額だけを見れば下がりますが、建てた家屋に新たに固定資産税がかかる点は別に考える必要があります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 評価額が20万円の物置にも固定資産税はかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. かかりません。同一の市町村内に同じ人が持っている家屋の課税標準となるべき額の合計が20万円に満たない場合、固定資産税は課されません（地方税法351条の免税点。土地は30万円、償却資産は150万円）。ただし判定は1棟ごとではなく同一市町村内の合計額で行うため、他に家屋を持っていれば合計して判定します。市町村が財政上その他特別の必要があるとして条例で定めた場合は、免税点未満でも課税されることがあります。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 固定資産税・都市計画税 計算機</nav>
+
+<section class="hero">
+  <h1>固定資産税・都市計画税 計算機</h1>
+  <p>納税通知書に載っている<b>固定資産税評価額</b>と<b>面積</b>を入れるだけで、固定資産税と都市計画税の年税額を計算します。★<b id="hero-kosuu">小規模住宅用地の200㎡は「住居1戸あたり」</b>なので、アパートや二世帯住宅は<b>200㎡×戸数</b>まで6分の1になります。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="honsoku-caution">このツールは本則（評価額×特例の割合）で計算します。負担調整措置は反映していません。</b>
+    <span id="futan-chosei">土地の課税標準額には、評価額が急に上がったときに税負担をなだらかにする<b>負担調整措置</b>（地方税法附則18条）があり、これは<b>前年度の課税標準額</b>が分からないと決まりません。評価替えで評価額が上がった土地では、実際の課税標準額が本則より低いことがあります。</span>
+    正確な額は納税通知書の「課税標準額」欄をご覧ください。<b>本ツールの結果は、上限の目安として使ってください。</b>
+  </div>
+
+  <label>① 土地</label>
+  <div class="grid2">
+    <div>
+      <label for="landValue" style="font-size:13px">固定資産税評価額（円）</label>
+      <input type="number" id="landValue" min="0" inputmode="numeric" value="18000000">
+    </div>
+    <div>
+      <label for="landArea" style="font-size:13px">面積（㎡）</label>
+      <input type="number" id="landArea" min="0" step="0.01" inputmode="decimal" value="150">
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:10px">
+    <div>
+      <label for="isResidential" style="font-size:13px">住宅の敷地か</label>
+      <select id="isResidential">
+        <option value="1" selected>住宅が建っている（住宅用地）</option>
+        <option value="0">住宅が建っていない（更地・駐車場・店舗のみ等）</option>
+      </select>
+    </div>
+    <div>
+      <label for="units" style="font-size:13px">住居の数（戸）</label>
+      <input type="number" id="units" min="1" step="1" inputmode="numeric" value="1">
+    </div>
+  </div>
+
+  <label style="margin-top:14px">② 家屋</label>
+  <div class="grid2">
+    <div>
+      <label for="houseValue" style="font-size:13px">固定資産税評価額（円）</label>
+      <input type="number" id="houseValue" min="0" inputmode="numeric" value="8000000">
+    </div>
+    <div>
+      <label for="houseFloorArea" style="font-size:13px">床面積（㎡）</label>
+      <input type="number" id="houseFloorArea" min="0" step="0.01" inputmode="decimal" value="100">
+    </div>
+  </div>
+
+  <label for="shinchiku" style="margin-top:14px">③ 新築住宅の減額（該当するもの）</label>
+  <select id="shinchiku"></select>
+  <p class="hint" id="shinchiku-hint" style="margin-top:6px"></p>
+
+  <label style="margin-top:14px">④ 税率</label>
+  <div class="grid2">
+    <div>
+      <label for="koteiRate" style="font-size:13px">固定資産税の税率（％）</label>
+      <input type="number" id="koteiRate" min="0" step="0.01" inputmode="decimal">
+    </div>
+    <div>
+      <label for="toshiRate" style="font-size:13px">都市計画税の税率（％）</label>
+      <input type="number" id="toshiRate" min="0" step="0.01" inputmode="decimal">
+    </div>
+  </div>
+  <p class="hint" id="rate-hint" style="margin-top:6px"></p>
+
+  <button class="primary" id="calc" style="margin-top:14px">年税額を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<nav class="toc">
+  <b>目次</b>
+  <ol>
+    <li><a href="#kosuu">小規模住宅用地の200㎡は「1戸あたり」</a></li>
+    <li><a href="#juubai">住宅用地になるのは家屋の床面積の10倍まで</a></li>
+    <li><a href="#warai">固定資産税と都市計画税で特例の割合が違う</a></li>
+    <li><a href="#shinchiku">新築住宅の減額は固定資産税だけ・120㎡まで</a></li>
+    <li><a href="#menzeiten">免税点と端数処理</a></li>
+    <li><a href="#futan">このツールが答えないもの（負担調整措置）</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ol>
+</nav>
+
+<h2 id="kosuu">小規模住宅用地の200㎡は「1戸あたり」</h2>
+
+<p>住宅の敷地になっている土地は、固定資産税の課税標準が大きく下がります。よく知られているのは「200㎡までは6分の1」ですが、条文（地方税法349条の3の2第2項）はこの200㎡を<b>住居の数で割った面積</b>で判定すると定めています。</p>
+
+<figure>
+<svg viewBox="0 0 720 260" width="100%" role="img" aria-label="6戸のアパートでは小規模住宅用地の枠が200平方メートルではなく1200平方メートルになることを示す図">
+  <rect x="0" y="0" width="720" height="260" fill="#fff"/>
+  <text x="16" y="26" font-size="15" font-weight="bold" fill="#333">戸建て（住居1戸）・土地300㎡</text>
+  <rect x="16" y="40" width="200" height="40" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="116" y="65" font-size="13" text-anchor="middle" font-weight="bold" fill="#14532d">小規模 200㎡ → 1/6</text>
+  <rect x="216" y="40" width="100" height="40" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="266" y="65" font-size="13" text-anchor="middle" fill="#1e3a8a">一般 100㎡ → 1/3</text>
+
+  <line x1="16" y1="104" x2="704" y2="104" stroke="#ddd"/>
+
+  <text x="16" y="132" font-size="15" font-weight="bold" fill="#333">6戸のアパート・土地300㎡</text>
+  <rect x="16" y="146" width="300" height="40" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="166" y="171" font-size="13" text-anchor="middle" font-weight="bold" fill="#14532d">全部が小規模住宅用地 → 1/6</text>
+  <text x="330" y="171" font-size="13" fill="#b45309">枠は 200㎡ × 6戸 = 1,200㎡</text>
+  <text x="16" y="212" font-size="12" fill="#666">同じ300㎡・同じ評価額でも、戸数を1戸として計算すると土地の課税標準が約1.4倍になる</text>
+  <text x="16" y="232" font-size="12" fill="#666">二世帯住宅も、独立した住居が2つあれば住居の数は2（認定は市町村の判断・総務省令）</text>
+</svg>
+<figcaption>小規模住宅用地の200㎡は住居1戸あたり。戸数を無視すると集合住宅で大きく誤る（地方税法349条の3の2第2項2号）</figcaption>
+</figure>
+
+<p id="kosuu-jouban">条文は「住宅用地の面積を<b>住居の数</b>で除して得た面積が200㎡以下であるものにあつては当該住宅用地、200㎡を超えるものにあつては<b>200㎡に住居の数を乗じて得た面積</b>に相当する住宅用地」と書いています。つまり6戸のアパートなら1,200㎡までが6分の1です。住居の数の認定は総務省令に委ねられており、実務では独立した玄関・台所・トイレなどで区画された住戸の数で数えます。</p>
+
+<h2 id="juubai">住宅用地になるのは家屋の床面積の10倍まで</h2>
+
+<p id="juubai-honbun">広い土地に小さな家を建てても、土地の全部が住宅用地になるわけではありません。政令は住宅用地を<b>家屋の床面積の10倍の面積まで</b>と定めています（地方税法施行令52条の11第2項1号）。床面積100㎡の家なら1,000㎡までで、これを超える部分には特例が及ばず、評価額がそのまま課税標準になります。</p>
+
+<p>また、住宅用地とされるには家屋のうち<b>居住部分の割合が4分の1以上</b>であることが必要です（同条1項）。1階が店舗で2階が住居といった併用住宅は、居住部分の割合に応じた率を面積に掛けて住宅用地の範囲を出します。</p>
+
+<h2 id="warai">固定資産税と都市計画税で特例の割合が違う</h2>
+
+<p>ここは取り違えが多いところです。<b>住宅用地の特例の割合は、固定資産税と都市計画税で別々に定められていて、値が違います。</b></p>
+
+<table id="warai-table">
+  <thead><tr><th>区分</th><th>固定資産税の課税標準</th><th>都市計画税の課税標準</th></tr></thead>
+  <tbody>
+    <tr><td><b>小規模住宅用地</b>（住居1戸につき200㎡まで）</td><td>評価額 × <b>6分の1</b></td><td>評価額 × <b>3分の1</b></td></tr>
+    <tr><td><b>一般住宅用地</b>（200㎡を超える部分）</td><td>評価額 × <b>3分の1</b></td><td>評価額 × <b>3分の2</b></td></tr>
+    <tr><td>住宅用地以外（更地・駐車場など）</td><td>評価額（特例なし）</td><td>評価額（特例なし）</td></tr>
+  </tbody>
+</table>
+
+<p>固定資産税は349条の3の2、都市計画税は702条の3という<b>別の条文</b>が定めているため、割合が一致しません。都市計画税を固定資産税と同じ6分の1で計算すると、都市計画税を実際の半分に見積もることになります。</p>
+
+<p id="zeiritsu-honbun">税率は、固定資産税が<b>標準税率1.4％</b>（地方税法350条1項）、都市計画税が<b>制限税率0.3％</b>（同702条の4）です。標準税率は市町村が条例で変えられる目安で、制限税率は「これを超えることができない」上限です。<b>市街化区域外の土地・家屋には都市計画税はかかりません</b>ので、その場合は税率を0にしてください。</p>
+
+<h2 id="shinchiku">新築住宅の減額は固定資産税だけ・120㎡まで</h2>
+
+<p id="shinchiku-kotei-nomi">新築の住宅には、一定期間だけ税額を半分にする減額があります。条文は「当該住宅に係る<b>固定資産税額</b>から減額する」と書いており、<b>都市計画税は減額されません</b>（地方税法附則15条の6）。また減額されるのは<b>居住部分の120㎡相当分まで</b>で、それを超える部分の税額はそのまま残ります（同法施行令附則12条4項2号）。</p>
+
+<table id="shinchiku-table">
+  <thead><tr><th>区分</th><th>減額される期間</th><th>減額</th><th>申告</th></tr></thead>
+  <tbody>
+    <tr><td>一般の新築住宅</td><td>新たに課税される年度から<b>3年度分</b></td><td>2分の1</td><td>条文上の要件なし</td></tr>
+    <tr><td>3階建て以上の中高層耐火建築物</td><td><b>5年度分</b></td><td>2分の1</td><td>条文上の要件なし</td></tr>
+    <tr><td>認定長期優良住宅</td><td><b>5年度分</b></td><td>2分の1</td><td><b>申告が要件</b></td></tr>
+    <tr><td>認定長期優良住宅かつ中高層耐火建築物</td><td><b>7年度分</b></td><td>2分の1</td><td><b>申告が要件</b></td></tr>
+  </tbody>
+</table>
+
+<p id="chouki-moushide">★<b>認定長期優良住宅の減額だけは、申告しないと受けられません。</b>条文は「新築された日から新たに固定資産税が課されることとなる年度の初日の属する年の<b>1月31日</b>までに、総務省令で定める書類を添付した申告書の提出がされた場合に限り適用する」と定めています（地方税法附則15条の7第3項）。一般の新築住宅の減額（15条の6）にはこの申告要件が置かれていないので、<b>同じ「新築の減額」でも手続きが違います</b>。期限を過ぎても、やむを得ない理由があると市町村長が認めれば適用できます（同条5項）。</p>
+
+<p id="shinchiku-yoken">床面積の要件は、区分所有以外の住宅で<b>40㎡以上240㎡以下</b>です（地方税法施行令附則12条3項1号。特定都市再生緊急整備地域〔特別区内〕にある貸家以外の住宅は50㎡以上）。共同住宅は1区画ごとに判定します。新築の期限は<b>令和13年3月31日</b>までです（同法附則15条の6・15条の7）。</p>
+
+<h2 id="menzeiten">免税点と端数処理</h2>
+
+<p id="menzeiten-honbun">同じ市町村内に持っている土地・家屋それぞれについて、<b>課税標準となるべき額が土地は30万円、家屋は20万円に満たない場合、固定資産税は課されません</b>（地方税法351条）。この判定は住宅用地の特例を適用した<b>後</b>の額で行います。都市計画税の賦課徴収は固定資産税の例によるため（同702条の8第1項）、固定資産税が免税点未満なら都市計画税もかかりません。</p>
+
+<p id="hasuu">端数処理は地方税法20条の4の2です。<b>課税標準額は1,000円未満を切り捨て</b>（1項）、<b>確定した税額は100円未満を切り捨て</b>（3項）ます。さらに納期ごとに分割するとき、<b>1,000円未満の端数はすべて最初の納期に合算します</b>（6項）。4期に均等割りした額を第1期の額だと思うと、通知書と合いません。</p>
+
+<h2 id="futan">このツールが答えないもの（負担調整措置）</h2>
+
+<p id="futan-honbun">土地の課税標準額には<b>負担調整措置</b>があります（地方税法附則18条）。評価替えで評価額が大きく上がっても税額が急に跳ね上がらないよう、前年度の課税標準額に一定の割合を足して段階的に近づけていく仕組みです。<b>前年度の課税標準額が分からないと計算できない</b>ため、評価額と面積だけを入力するこのツールでは扱えません。</p>
+
+<p>したがって、本ツールが出す土地の税額は<b>本則（評価額×特例の割合）で計算した上限の目安</b>です。評価額が上がり続けている地域では、実際の課税標準額はこれより低く、税額も低くなります。手元に納税通知書があるなら、そこに載っている<b>課税標準額</b>が正解です。家屋には負担調整措置がないため、家屋の税額はそのまま使えます。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 固定資産税はいくらかかりますか？</h3>
+<p>A. 固定資産税は「課税標準額 × 1.4％」で計算します（地方税法350条1項の標準税率）。住宅の敷地であれば、住居1戸につき200㎡までの部分は課税標準が評価額の6分の1、200㎡を超える部分は3分の1になります（同法349条の3の2）。たとえば評価額1,800万円・150㎡の土地に住宅1戸が建っている場合、課税標準は1,800万円÷6＝300万円となり、固定資産税は300万円×1.4％＝42,000円です。市町村が条例で1.4％と異なる税率を定めている場合はその税率によります。</p>
+
+<h3>Q. 都市計画税も同じ6分の1で計算していいですか？</h3>
+<p>A. いいえ。都市計画税の住宅用地の特例は、小規模住宅用地が3分の1、一般住宅用地が3分の2で、固定資産税の6分の1・3分の1とは別の条文（地方税法702条の3）が定めた別の割合です。固定資産税と同じ6分の1で計算すると、都市計画税を実際の半分に見積もることになります。なお都市計画税は市街化区域内の土地・家屋にかかる税で、税率は0.3％を超えることができません（同法702条の4）。市街化区域外であればかかりません。</p>
+
+<h3>Q. 新築した家の固定資産税が4年目に上がったのはなぜですか？</h3>
+<p>A. 新築住宅の減額が終わったためです。一般の新築住宅は新たに固定資産税が課されることとなった年度から3年度分に限り、家屋の固定資産税額の2分の1が減額されます（地方税法附則15条の6第1項）。3階建て以上の中高層耐火建築物は5年度分、認定長期優良住宅は5年度分、認定長期優良住宅かつ中高層耐火建築物は7年度分です。この減額は固定資産税だけで都市計画税には及ばず、減額されるのは居住部分の120㎡相当分までです。</p>
+
+<h3>Q. アパートを建てると土地の固定資産税はどうなりますか？</h3>
+<p>A. 小規模住宅用地の200㎡は住居1戸あたりで判定するため、6戸のアパートなら200㎡×6戸＝1,200㎡までが評価額の6分の1になります（地方税法349条の3の2第2項2号）。ただし住宅用地とされるのは家屋の床面積の10倍までで（同法施行令52条の11第2項1号）、それを超える部分には特例が及びません。土地の税額だけを見れば下がりますが、建てた家屋に新たに固定資産税がかかる点は別に考える必要があります。</p>
+
+<h3>Q. 評価額が20万円の物置にも固定資産税はかかりますか？</h3>
+<p>A. かかりません。同一の市町村内に同じ人が持っている家屋の課税標準となるべき額の合計が20万円に満たない場合、固定資産税は課されません（地方税法351条の免税点。土地は30万円、償却資産は150万円）。ただし判定は1棟ごとではなく同一市町村内の合計額で行うため、他に家屋を持っていれば合計して判定します。市町村が財政上その他特別の必要があるとして条例で定めた場合は、免税点未満でも課税されることがあります。</p>
+
+<h2 id="shutten">出典</h2>
+<ul>
+  <li><a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="nofollow">地方税法（昭和25年法律第226号）</a> — 349条の3の2（住宅用地の課税標準の特例）／350条（税率）／351条（免税点）／702条の3（都市計画税の課税標準の特例）／702条の4（都市計画税の税率）／702条の8（賦課徴収）／20条の4の2（端数計算）／附則15条の6・15条の7（新築住宅・認定長期優良住宅の減額）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/325CO0000000245" rel="nofollow">地方税法施行令（昭和25年政令第245号）</a> — 52条の11（住宅用地の範囲・床面積の10倍）／附則12条（新築住宅の減額の範囲・120㎡・床面積要件）</li>
+  <li><a href="https://www.tax.metro.tokyo.lg.jp/shisan/kotei_tosi.html" rel="nofollow">東京都主税局「固定資産税・都市計画税（土地・家屋）」</a> — 減額の年数・120㎡・免税点の実務上の説明</li>
+</ul>
+<p class="hint">条文は e-Gov 法令API v2 で取得した現行版（地方税法＝2026年6月5日施行版／同施行令＝2026年6月25日施行版）を逐語で確認しています。税率は市町村の条例で異なることがあるため、お住まいの市町村の税率をご確認ください。</p>
+
+<div class="note">
+  <b>関連するツール</b>
+  <div style="margin-top:6px"><a href="../sozokuzei/">相続税の計算機</a>／<a href="../shokibo-takuchi/">小規模宅地等の特例 減額計算機</a>／<a href="../sozoku-toki-menkyozei/">相続登記の登録免許税 計算機</a>／<a href="../jutaku/">住宅ローン控除 計算機</a></div>
+</div>
+
+</article>
+</main>
+<footer>
+  <div>© 経理ミニツールズ</div>
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcKoteiShisanzei, splitByTerms, SEIDO, SHINCHIKU_KUBUN, roundM2 } from "../assets/kotei_shisanzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const m2F = (n) => roundM2(n).toLocaleString("ja-JP") + "㎡";
+const num = (id) => Number($(id).value) || 0;
+
+// ★画面の数字はコアの定数から描く（ページに手書きしない）
+$("koteiRate").value = SEIDO.koteiStandardRate;
+$("toshiRate").value = SEIDO.toshiMaxRate;
+$("rate-hint").innerHTML =
+  `既定値は固定資産税の<b>標準税率${SEIDO.koteiStandardRate}％</b>（地方税法350条1項）と都市計画税の<b>制限税率${SEIDO.toshiMaxRate}％</b>（同702条の4）です。` +
+  `市町村が条例で違う税率を定めていればその値に、<b>市街化区域外で都市計画税がかからない場合は0</b>にしてください。`;
+
+// ★列挙は全部を画面に出す（「など」で丸めない）。既定は「該当しない」。
+for (const k of SHINCHIKU_KUBUN) {
+  const opt = document.createElement("option");
+  opt.value = k.key;
+  opt.textContent = k.years > 0 ? `${k.label}（${k.years}年度分）` : k.label;
+  $("shinchiku").appendChild(opt);
+}
+$("shinchiku-hint").innerHTML =
+  `減額されるのは<b>固定資産税だけ</b>（都市計画税は減額されません）で、<b>居住部分${SEIDO.shinchikuCapM2}㎡相当分まで</b>の税額の${SEIDO.shinchikuRatio === 0.5 ? "2分の1" : SEIDO.shinchikuRatio}です。` +
+  `床面積${SEIDO.shinchikuMinM2}㎡以上${SEIDO.shinchikuMaxM2}㎡以下が要件で、新築の期限は<b>${SEIDO.shinchikuKigen}</b>までです。` +
+  `<b>認定長期優良住宅は申告が要件</b>です（新築から翌年1月31日まで）。`;
+
+$("calc").addEventListener("click", () => {
+  const box = $("result");
+  // ★.result は既定で display:none。ここで表示に切り替えないと、計算は正しいのに
+  //   画面には何も出ない（過去に10ツールで同時に起きた全損の型）。
+  box.style.display = "block";
+  const input = {
+    landValue: num("landValue"),
+    landArea: num("landArea"),
+    isResidential: $("isResidential").value === "1",
+    units: num("units"),
+    houseValue: num("houseValue"),
+    houseFloorArea: num("houseFloorArea"),
+    shinchiku: $("shinchiku").value,
+    koteiRate: num("koteiRate"),
+    toshiRate: num("toshiRate"),
+  };
+  if (input.landValue <= 0 && input.houseValue <= 0) {
+    box.innerHTML = `<div class="note"><b>評価額を入力してください。</b>
+      土地または家屋の固定資産税評価額（納税通知書の「価格」欄）が必要です。</div>`;
+    return;
+  }
+  const r = calcKoteiShisanzei(input);
+  const split = splitByTerms(r.total, 4);
+  const L = r.land;
+
+  const landRows = input.landValue > 0 ? `
+    <tr><td>小規模住宅用地（200㎡×${L.units}戸まで）</td><td>${m2F(L.shoukiboM2)}</td><td>1/6</td><td>1/3</td></tr>
+    <tr><td>一般住宅用地</td><td>${m2F(L.ippanM2)}</td><td>1/3</td><td>2/3</td></tr>
+    <tr><td>住宅用地以外</td><td>${m2F(L.hijutakuM2)}</td><td>特例なし</td><td>特例なし</td></tr>` : "";
+
+  const menzei = [];
+  if (input.landValue > 0 && !r.landTaxable) {
+    menzei.push(`土地の課税標準額が免税点（${yenF(SEIDO.menzeitenLand)}）未満のため、土地には課税されません（地方税法351条）。`);
+  }
+  if (input.houseValue > 0 && !r.houseTaxable) {
+    menzei.push(`家屋の課税標準額が免税点（${yenF(SEIDO.menzeitenHouse)}）未満のため、家屋には課税されません（地方税法351条）。`);
+  }
+
+  let genkakuBlock = "";
+  if (r.shinchiku.kubun.years > 0 && !r.shinchiku.ok) {
+    genkakuBlock = `<div class="note" style="margin-top:12px"><b id="shinchiku-gai">新築住宅の減額は適用していません。</b>${r.shinchiku.reason}</div>`;
+  } else if (r.genkaku > 0) {
+    genkakuBlock = `<div class="note" style="margin-top:12px">
+      <b id="shinchiku-tekiyo">新築住宅の減額 −${yenF(r.genkaku)}</b>（${r.shinchiku.kubun.label}・${r.shinchiku.kubun.years}年度分／${r.shinchiku.kubun.ne}）
+      家屋の固定資産税 ${yenF(r.houseKoteiBefore)} のうち居住部分${SEIDO.shinchikuCapM2}㎡相当分（${Math.round(r.shinchikuShare * 1000) / 10}％）の2分の1を減額しました。
+      <b>都市計画税は減額されません。</b>${r.shinchiku.kubun.moushide ? "この区分は<b>申告が要件</b>です（新築から翌年1月31日まで）。" : ""}
+    </div>`;
+  }
+
+  box.innerHTML = `
+    <div style="font-size:15px">年税額の合計 <b style="font-size:22px" id="total">${yenF(r.total)}</b></div>
+    <div style="margin-top:6px">固定資産税 <b id="kotei-total">${yenF(r.koteiTotal)}</b>　都市計画税 <b id="toshi-total">${yenF(r.toshiTotal)}</b></div>
+    <table style="margin-top:10px">
+      <thead><tr><th></th><th>課税標準額（固定）</th><th>固定資産税</th><th>課税標準額（都計）</th><th>都市計画税</th></tr></thead>
+      <tbody>
+        <tr><td>土地</td><td>${yenF(r.landKoteiBase)}</td><td><b>${yenF(r.landKotei)}</b></td><td>${yenF(r.landToshiBase)}</td><td><b>${yenF(r.landToshi)}</b></td></tr>
+        <tr><td>家屋</td><td>${yenF(r.houseBase)}</td><td><b>${yenF(r.houseKotei)}</b></td><td>${yenF(r.houseBase)}</td><td><b>${yenF(r.houseToshi)}</b></td></tr>
+      </tbody>
+    </table>
+    ${input.isResidential && input.landValue > 0 ? `
+    <table style="margin-top:10px">
+      <thead><tr><th>土地の内訳</th><th>面積</th><th>固定資産税の課税標準</th><th>都市計画税の課税標準</th></tr></thead>
+      <tbody>${landRows}</tbody>
+    </table>` : ""}
+    ${L.cappedByFloorArea ? `<div class="hint" style="margin-top:8px" id="juubai-note">住宅用地とされるのは家屋の床面積の${SEIDO.floorAreaMultiplier}倍（${m2F(L.jutakuM2)}）までです。超える${m2F(L.hijutakuM2)}には特例が及びません（地方税法施行令52条の11第2項1号）。</div>` : ""}
+    ${genkakuBlock}
+    ${menzei.length ? `<div class="note" style="margin-top:12px"><b>免税点</b> ${menzei.join(" ")}</div>` : ""}
+    <div class="hint" style="margin-top:8px" id="hasuu-note">端数処理 — 課税標準額は1,000円未満切捨て、税額は100円未満切捨て（地方税法20条の4の2第1項・3項）。土地と家屋を分けて処理しています（合算の順序は市町村により異なります）。</div>
+    <div style="margin-top:10px">4期に分けた場合 — 第1期 <b id="term1">${yenF(split.first)}</b>／第2〜4期 各 <b>${yenF(split.other)}</b>
+      <span class="hint">1,000円未満の端数は最初の納期に合算します（同条6項）</span></div>
+    <div class="note" style="margin-top:12px">
+      <b>この額は本則で計算した目安です。</b>土地には負担調整措置（地方税法附則18条）があり、前年度の課税標準額によっては実際の額がこれより低くなります。正確な額は納税通知書の「課税標準額」欄でご確認ください。
+    </div>`;
+});
+</script>
+</body>
+</html>
