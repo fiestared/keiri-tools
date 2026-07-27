@@ -679,6 +679,38 @@ const SCENES = [
   // ★入力なし → 0円と答えず入力を促す（fail closed）
   { name: "kotei_shisanzei_empty", expect: (s) => s.noInput && s.total === null },
 
+  // ── 不動産取得税 (/fudosan-shutoku/) ─────────────────────────────────
+  // ★手計算の鎖は tests/test_fudosan_shutoku.mjs §3:
+  //   宅地1,200万・150平方メートル＋新築住宅1,500万・100平方メートル（2026-07-01取得）
+  //   → 家屋90,000円／土地は減額240,000円が税額180,000円を上回り0円 → 合計90,000円。
+  //   減額の単価に宅地1/2の読替えを忘れた実装なら減額が480,000円になって落ちる。
+  { name: "fudosan_shutoku", expect: (s) =>
+      s.total === 90000 && s.houseTax === 90000 && s.landTax === 0 &&
+      /240,000/.test(s.genkaku || "") &&
+      // 宅地1/2の読替えを画面で申告していること（見出しではなく申告文の要素を読む）
+      /1\/2読替え後/.test(s.genkakuHanbun || "") &&
+      // 家屋の区分の列挙が画面に出ていること（土地だけ＋新築＋中古＋住宅以外）
+      s.kindOptions.length === 4 && s.kindOptions.includes("hijutaku") &&
+      // 取得日のヒントはコアの定数から描かれている（ページの手書きではない）
+      /16万|160,000/.test(s.dateHint) && /40㎡/.test(s.dateHint) &&
+      !s.noInput },
+  // ★令和8年度改正の境界: 45平方メートルは改正前なら控除なし＝450,000円
+  { name: "fudosan_shutoku_kaiseimae", expect: (s) =>
+      s.houseTax === 450000 && /50㎡以上/.test(s.dateHint) && /100,000|10万/.test(s.dateHint) },
+  // ★同じ45平方メートルでも改正後は1,200万円の控除が付く＝90,000円
+  { name: "fudosan_shutoku_kaiseigo", expect: (s) =>
+      s.houseTax === 90000 && /40㎡以上/.test(s.dateHint) },
+  // ★住宅以外の家屋は4％（1,500万×4％＝600,000円）。一律3％なら450,000円で落ちる
+  { name: "fudosan_shutoku_hijutaku", expect: (s) => s.houseTax === 600000 },
+  // ★収録範囲外 → 家屋の税額を出さず、合計も金額にしない（fail closed）
+  { name: "fudosan_shutoku_hanigai", expect: (s) =>
+      s.total === null && /出せません/.test(s.uncomputable || "") &&
+      /2017-04-01/.test(s.uncomputableRiyu || "") &&
+      // 土地の計算は範囲内なので出る
+      s.landTax !== null },
+  // ★入力なし → 0円と答えず入力を促す（fail closed）
+  { name: "fudosan_shutoku_empty", expect: (s) => s.noInput && s.total === null },
+
   // ── 収入印紙 (/inshi/) ───────────────────────────────────────────────
   // ★No.6925: 税込54,800円・消費税等4,981円区分記載 → 税抜49,819円で判定＝非課税（印紙不要）。
   //   ハーネス側の引き算 54,800−4,981=49,819<50,000 と一致し、一覧表23行（判取帳まで）も描かれること。

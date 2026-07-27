@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>不動産取得税 計算機｜令和8年改正後の免税点・1,200万円控除</title>
+<meta name="description" content="土地・家屋の固定資産税評価額と床面積を入れるだけで不動産取得税を計算します。★令和8年度改正（2026年4月1日施行）で免税点が土地10万円→16万円・新築家屋23万円→66万円・売買等12万円→34万円に上がり、住宅の床面積要件の下限も50㎡→40㎡になりました。新築住宅の1,200万円控除、宅地の課税標準1/2、住宅用土地の減額（150万円×税率）まで条文どおりに再現。無料・登録不要。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/fudosan-shutoku/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "不動産取得税 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "土地・家屋の固定資産税評価額と床面積から、税率の特例（地方税法附則11条の2）・宅地評価土地の課税標準1/2（同附則11条の5）・新築住宅の1,200万円控除（同法73条の14）・住宅用土地の減額（同法73条の24）を反映した不動産取得税を計算します。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "不動産取得税 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 不動産取得税はいくらかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 「固定資産税評価額 × 税率」です。税率は住宅と土地が3％（地方税法附則11条の2・令和9年3月31日まで）、住宅以外の家屋が4％（同法73条の15）です。評価額は購入価格ではなく固定資産課税台帳に登録された価格で、実勢価格より低いのが通常です。宅地は課税標準が評価額の2分の1になり（同法附則11条の5）、新築住宅は1,200万円が控除されます（同法73条の14第1項）。たとえば評価額1,000万円・床面積100㎡の新築住宅なら、1,000万円－1,200万円＝0円で税額は0円です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 免税点はいくらですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 2026年4月1日以後の取得は、土地16万円・家屋の建築（新築や増改築）66万円・家屋のその他の取得（売買や贈与）34万円です（地方税法73条の15の2）。課税標準となるべき額がこの額に満たなければ不動産取得税は課されません。令和8年度の改正で引き上げられた額で、2026年3月31日までの取得は土地10万円・建築23万円・その他12万円でした。土地は宅地の2分の1特例を適用した後の額で判定します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 中古マンションを買いました。控除は受けられますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 個人が自分で住むために取得し、床面積が40㎡以上240㎡以下で、耐震基準に適合していれば受けられます（地方税法73条の14第3項）。昭和57年1月1日以後に新築された住宅は耐震基準に適合しているものとして扱われます（同法施行令37条の18第3項1号）。控除額はその住宅が新築された時に施行されていた額で、新築年月日によって変わります。賃貸に出す目的で買った場合や法人が取得した場合は、この控除は受けられません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 45,000円が引かれると聞きましたが、本当ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 税率が3％のときに限って45,000円になります。条文が定めているのは金額ではなく「150万円と、土地1㎡当たりの価格×住宅の床面積の2倍（200㎡が上限）を比べて多いほうの金額に、税率を乗じて得た額」を税額から減額するという計算式です（地方税法73条の24第1項）。150万円×3％＝45,000円なので、税率の特例が終わって4％に戻れば60,000円になります。土地の1㎡当たりの価格が高い都市部では、面積で計算したほうが大きくなり45,000円を超えることも珍しくありません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. いつ払うのですか。買ったときに払いますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 不動産取得税は都道府県税で、取得したときに自分で納めるのではなく、後から届く納税通知書で納めます。都道府県が価格を決定して課税するまでに数か月かかるのが通常で、取得から半年ほど経って通知が届くこともあります。住宅や住宅用土地の控除・減額は、都道府県の条例で定めるところにより申告をした場合に適用するのが原則です（地方税法73条の14第4項・73条の24第5項）。ただし申告がなくても要件に該当すると認められれば適用できると定められています（同73条の14第5項・73条の24第6項）。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 不動産取得税 計算機</nav>
+
+<section class="hero">
+  <h1>不動産取得税 計算機</h1>
+  <p>土地・家屋の<b>固定資産税評価額</b>と<b>床面積</b>を入れると、不動産取得税を計算します。★<b id="hero-kaisei">令和8年度改正（2026年4月1日施行）で免税点が上がり、住宅の床面積要件の下限も50㎡から40㎡になりました</b>。改正前の数字で判定している解説がまだ多いので、取得日を入れて確かめてください。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="hyoka-caution">入れるのは購入価格ではなく「固定資産税評価額」です。</b>
+    <span id="hyoka-setsumei">不動産取得税の課税標準は<b>固定資産課税台帳に登録された価格</b>（地方税法73条の13第1項・73条の21）で、売買代金や建築工事費ではありません。評価額は実勢価格より低いのが通常で、土地はおおむね公示価格の7割、家屋は再建築価格をもとに決まります。</span>
+    納税通知書・固定資産評価証明書の「価格」欄の額を入れてください。
+  </div>
+
+  <label for="acquireDate">① 取得日</label>
+  <input type="date" id="acquireDate" value="2026-07-01">
+  <p class="hint" id="date-hint" style="margin-top:6px"></p>
+
+  <label style="margin-top:14px">② 土地</label>
+  <div class="grid2">
+    <div>
+      <label for="landValue" style="font-size:13px">固定資産税評価額（円）</label>
+      <input type="number" id="landValue" min="0" inputmode="numeric" value="12000000">
+    </div>
+    <div>
+      <label for="landArea" style="font-size:13px">面積（㎡）</label>
+      <input type="number" id="landArea" min="0" step="0.01" inputmode="decimal" value="150">
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:10px">
+    <div>
+      <label for="isTakuchi" style="font-size:13px">宅地評価土地か</label>
+      <select id="isTakuchi">
+        <option value="1" selected>宅地・宅地比準土地（課税標準は1/2）</option>
+        <option value="0">それ以外（農地・山林など）</option>
+      </select>
+    </div>
+    <div>
+      <label for="landForHouse" style="font-size:13px">下の住宅の敷地か</label>
+      <select id="landForHouse">
+        <option value="1" selected>住宅の敷地（減額あり）</option>
+        <option value="0">住宅の敷地ではない</option>
+      </select>
+    </div>
+  </div>
+
+  <label for="houseKind" style="margin-top:14px">③ 家屋</label>
+  <select id="houseKind"></select>
+  <div class="grid2" style="margin-top:10px">
+    <div>
+      <label for="houseValue" style="font-size:13px">固定資産税評価額（円）</label>
+      <input type="number" id="houseValue" min="0" inputmode="numeric" value="15000000">
+    </div>
+    <div>
+      <label for="houseFloor" style="font-size:13px">床面積（㎡）</label>
+      <input type="number" id="houseFloor" min="0" step="0.01" inputmode="decimal" value="100">
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:10px" id="chuko-fields">
+    <div>
+      <label for="builtDate" style="font-size:13px">中古住宅の新築年月日</label>
+      <input type="date" id="builtDate" value="2020-04-01">
+    </div>
+    <div>
+      <label for="selfUse" style="font-size:13px">個人の自己居住用か</label>
+      <select id="selfUse">
+        <option value="1" selected>個人が自分で住む</option>
+        <option value="0">賃貸用・法人が取得</option>
+      </select>
+    </div>
+  </div>
+  <p class="hint" id="kaoku-hint" style="margin-top:6px"></p>
+
+  <button class="primary" id="calc" style="margin-top:14px">不動産取得税を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<nav class="toc">
+  <b>目次</b>
+  <ol>
+    <li><a href="#menzeiten">令和8年度改正で免税点が上がった</a></li>
+    <li><a href="#yoken">床面積の下限が50㎡から40㎡になった</a></li>
+    <li><a href="#zeiritsu">税率3％は住宅と土地だけ・住宅以外の家屋は4％</a></li>
+    <li><a href="#shinchiku">新築住宅の1,200万円控除</a></li>
+    <li><a href="#tochi">住宅用土地の減額は「45,000円」ではない</a></li>
+    <li><a href="#chuko">中古住宅の控除額と、このツールが答えない範囲</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ol>
+</nav>
+
+<h2 id="menzeiten">令和8年度改正で免税点が上がった</h2>
+
+<p id="menzeiten-honbun">不動産取得税には<b>免税点</b>があり、課税標準となるべき額がこの線に満たなければ税金はかかりません（地方税法73条の15の2）。<b>この線は令和8年度の改正で引き上げられ、2026年4月1日から新しい額になりました。</b></p>
+
+<table id="menzeiten-table">
+  <thead><tr><th>区分</th><th>2026年3月31日までの取得</th><th><b>2026年4月1日以後の取得</b></th></tr></thead>
+  <tbody>
+    <tr><td><b>土地</b>の取得</td><td>10万円</td><td><b>16万円</b></td></tr>
+    <tr><td><b>家屋</b>の取得のうち建築に係るもの（新築・増改築）</td><td>23万円</td><td><b>66万円</b></td></tr>
+    <tr><td>家屋の取得のうち<b>その他</b>のもの（売買・贈与など）</td><td>12万円</td><td><b>34万円</b></td></tr>
+  </tbody>
+</table>
+
+<p id="menzeiten-kakunin">e-Gov法令APIで施行日ごとの条文を取り出して逐語で比べています。2025年10月1日施行版は「土地の取得にあつては<b>十万円</b>、家屋の取得のうち建築に係るものにあつては一戸につき<b>二十三万円</b>、その他のものにあつては一戸につき<b>十二万円</b>」、2026年4月1日施行版は「<b>十六万円</b>」「<b>六十六万円</b>」「<b>三十四万円</b>」です。改正法は令和8年法律第2号（地方税法等の一部を改正する法律）。</p>
+
+<p>土地の免税点は<b>宅地なら1/2にした後の額</b>で判定します。課税標準そのものが「価格の2分の1」と定められているためです（同法附則11条の5第1項）。評価額32万円の宅地なら課税標準は16万円ちょうどで、免税点未満にはなりません。</p>
+
+<h2 id="yoken">床面積の下限が50㎡から40㎡になった</h2>
+
+<p id="yoken-honbun">住宅の控除（下記）を受けるには床面積の要件があります。<b>同じ令和8年度改正で、この下限が50㎡から40㎡に下がりました</b>（地方税法施行令37条の16第1号・37条の18第1項）。</p>
+
+<figure>
+<svg viewBox="0 0 720 250" width="100%" role="img" aria-label="令和8年度改正で住宅の床面積要件の下限が50平方メートルから40平方メートルに下がり、自己居住用でも40平方メートルから控除を受けられるようになったことを示す図">
+  <rect x="0" y="0" width="720" height="250" fill="#fff"/>
+  <text x="16" y="26" font-size="15" font-weight="bold" fill="#333">改正前（2026年3月31日までの取得）</text>
+  <rect x="16" y="40" width="120" height="38" fill="#fee2e2" stroke="#ef4444"/>
+  <text x="76" y="64" font-size="12" text-anchor="middle" fill="#7f1d1d">40〜50㎡</text>
+  <rect x="136" y="40" width="420" height="38" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="346" y="64" font-size="13" text-anchor="middle" font-weight="bold" fill="#14532d">50㎡ 〜 240㎡ → 控除あり</text>
+  <text x="566" y="64" font-size="12" fill="#7f1d1d">40〜50㎡は貸家のみ</text>
+
+  <line x1="16" y1="100" x2="704" y2="100" stroke="#ddd"/>
+
+  <text x="16" y="128" font-size="15" font-weight="bold" fill="#333">改正後（2026年4月1日以後の取得）</text>
+  <rect x="16" y="142" width="540" height="38" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="286" y="166" font-size="13" text-anchor="middle" font-weight="bold" fill="#14532d">40㎡ 〜 240㎡ → 控除あり（自己居住用も）</text>
+  <text x="566" y="166" font-size="12" fill="#166534">貸家のかっこ書きが消えた</text>
+  <text x="16" y="212" font-size="12" fill="#666">改正前の条文「五十平方メートル（…貸家の用に供するものにあつては、四十平方メートル）以上二百四十平方メートル以下」</text>
+  <text x="16" y="232" font-size="12" fill="#666">改正後の条文「四十平方メートル以上二百四十平方メートル以下」（かっこ書きが削られ、区別がなくなった）</text>
+</svg>
+<figcaption>令和8年度改正で床面積の下限が50㎡→40㎡に。40〜50㎡の住宅は控除の有無が変わる（地方税法施行令37条の16第1号）</figcaption>
+</figure>
+
+<p id="yoken-jouban">改正前の条文は「五十平方メートル（当該住宅が貸家の用に供するものにあつては、四十平方メートル）以上二百四十平方メートル以下」と書かれていて、<b>40㎡台で控除を受けられるのは貸家だけ</b>でした。改正後はこのかっこ書きが消え、<b>自己居住用でも40㎡から</b>控除の対象になります。床面積45㎡のコンパクトマンションを買った人にとっては、1,200万円の控除が付くかどうかという差になります。</p>
+
+<h2 id="zeiritsu">税率3％は住宅と土地だけ・住宅以外の家屋は4％</h2>
+
+<p id="zeiritsu-honbun">不動産取得税の標準税率は<b>4％</b>です（地方税法73条の15）。ただし<b>住宅または土地</b>の取得については、令和9年3月31日までの特例で<b>3％</b>に下がります（同法附則11条の2）。<b>店舗・事務所・倉庫といった住宅以外の家屋は特例の対象外で、4％のまま</b>です。ここを一律3％で計算すると、住宅以外の家屋で税額を25％少なく見積もることになります。</p>
+
+<h2 id="shinchiku">新築住宅の1,200万円控除</h2>
+
+<p id="shinchiku-honbun">新築住宅（新築されてまだ人が住んでいない住宅の購入を含む）は、<b>1戸につき1,200万円を価格から控除</b>して課税標準を出します（地方税法73条の14第1項）。共同住宅は独立して区画された1部分ごとに1,200万円です。評価額1,200万円以下の新築住宅なら、課税標準は0円＝税額も0円になります。</p>
+
+<p>控除の要件は<b>床面積が40㎡以上240㎡以下</b>であることだけで、所得や自己居住用かどうかは問われません（賃貸アパートの新築でも受けられます）。この点は、自己居住用が要件になる中古住宅の控除と違います。</p>
+
+<h2 id="tochi">住宅用土地の減額は「45,000円」ではない</h2>
+
+<p id="tochi-honbun">住宅の敷地になる土地には、<b>税額そのものからの減額</b>があります（地方税法73条の24）。よく「45,000円が引かれる」と書かれますが、条文が定めているのは金額ではなく<b>計算式</b>です。</p>
+
+<blockquote id="tochi-jouban">当該税額から<b>百五十万円</b>（当該土地に係る不動産取得税の課税標準となるべき価格を当該土地の面積の平方メートルで表した数値で除して得た額に…その床面積の<b>二倍</b>の面積…（当該数値が二百を超える場合には、二百とする。）を乗じて得た金額が百五十万円を超えるときは、当該乗じて得た金額）に<b>税率を乗じて得た額</b>を減額する（地方税法73条の24第1項）</blockquote>
+
+<p id="tochi-45000">つまり減額は「<b>150万円と、1㎡単価×床面積の2倍（200㎡上限）を比べて多いほう × 税率</b>」です。150万円×3％＝45,000円なので税率3％のときに45,000円になるだけで、<b>税率が4％に戻れば60,000円</b>になります。金額を覚えていると、税率が変わった年に必ず外します。</p>
+
+<p id="tochi-hanbun">★もうひとつの急所は<b>1㎡単価の出し方</b>です。宅地評価土地は課税標準が価格の1/2になりますが、この読み替えは減額の計算にも及びます。附則11条の5第2項が73条の24の「価格」を「<b>価格の二分の一に相当する額</b>」と読み替えると明記しているためです。評価額を面積で割った素の単価を使うと、<b>減額が2倍</b>になって税額を過小に答えます。</p>
+
+<h2 id="chuko">中古住宅の控除額と、このツールが答えない範囲</h2>
+
+<p id="chuko-honbun">中古住宅（既存住宅）にも控除がありますが、額は一律ではありません。条文は「<b>当該住宅が新築された時において施行されていた</b>地方税法73条の14第1項の規定により控除するものとされていた額」と定めています（同条3項）。つまり<b>新築年月日ごとに控除額が違い</b>、古い住宅ほど小さくなります。要件は、個人が自己の居住の用に供すること・床面積40〜240㎡・耐震基準に適合すること（昭和57年1月1日以後の新築なら適合とみなされます／同法施行令37条の18第3項）です。</p>
+
+<p id="chuko-hani">★<b>本ツールは、新築年月日が2017年4月1日より前の中古住宅について、家屋の税額を出しません。</b>控除額の根拠になる当時の条文を e-Gov法令API で遡って確認できるのが2017年4月1日施行版までで、それより前は<b>推測になるからです</b>。「たぶんこの額だろう」で計算した数字を税額として出すより、範囲外だと申告するほうが役に立つと考えています。その場合は取得した都道府県が公表している「中古住宅の控除額表」をご覧ください（土地の計算は範囲内なので、そのまま表示します）。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 不動産取得税はいくらかかりますか？</h3>
+<p>A. 「固定資産税評価額 × 税率」です。税率は住宅と土地が3％（地方税法附則11条の2・令和9年3月31日まで）、住宅以外の家屋が4％（同法73条の15）です。評価額は購入価格ではなく固定資産課税台帳に登録された価格で、実勢価格より低いのが通常です。宅地は課税標準が評価額の2分の1になり（同法附則11条の5）、新築住宅は1,200万円が控除されます（同法73条の14第1項）。たとえば評価額1,000万円・床面積100㎡の新築住宅なら、1,000万円－1,200万円＝0円で税額は0円です。</p>
+
+<h3>Q. 免税点はいくらですか？</h3>
+<p>A. 2026年4月1日以後の取得は、土地16万円・家屋の建築（新築や増改築）66万円・家屋のその他の取得（売買や贈与）34万円です（地方税法73条の15の2）。課税標準となるべき額がこの額に満たなければ不動産取得税は課されません。令和8年度の改正で引き上げられた額で、2026年3月31日までの取得は土地10万円・建築23万円・その他12万円でした。土地は宅地の2分の1特例を適用した後の額で判定します。</p>
+
+<h3>Q. 中古マンションを買いました。控除は受けられますか？</h3>
+<p>A. 個人が自分で住むために取得し、床面積が40㎡以上240㎡以下で、耐震基準に適合していれば受けられます（地方税法73条の14第3項）。昭和57年1月1日以後に新築された住宅は耐震基準に適合しているものとして扱われます（同法施行令37条の18第3項1号）。控除額はその住宅が新築された時に施行されていた額で、新築年月日によって変わります。賃貸に出す目的で買った場合や法人が取得した場合は、この控除は受けられません。</p>
+
+<h3>Q. 45,000円が引かれると聞きましたが、本当ですか？</h3>
+<p>A. 税率が3％のときに限って45,000円になります。条文が定めているのは金額ではなく「150万円と、土地1㎡当たりの価格×住宅の床面積の2倍（200㎡が上限）を比べて多いほうの金額に、税率を乗じて得た額」を税額から減額するという計算式です（地方税法73条の24第1項）。150万円×3％＝45,000円なので、税率の特例が終わって4％に戻れば60,000円になります。土地の1㎡当たりの価格が高い都市部では、面積で計算したほうが大きくなり45,000円を超えることも珍しくありません。</p>
+
+<h3>Q. いつ払うのですか。買ったときに払いますか？</h3>
+<p>A. 不動産取得税は都道府県税で、取得したときに自分で納めるのではなく、後から届く納税通知書で納めます。都道府県が価格を決定して課税するまでに数か月かかるのが通常で、取得から半年ほど経って通知が届くこともあります。住宅や住宅用土地の控除・減額は、都道府県の条例で定めるところにより申告をした場合に適用するのが原則です（地方税法73条の14第4項・73条の24第5項）。ただし申告がなくても要件に該当すると認められれば適用できると定められています（同73条の14第5項・73条の24第6項）。</p>
+
+<h2 id="shutten">出典</h2>
+<ul>
+  <li><a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="nofollow">地方税法（昭和25年法律第226号）</a> — 73条の13（課税標準）／73条の14（住宅の課税標準の特例・1,200万円控除）／73条の15（税率）／73条の15の2（免税点）／73条の24（住宅用土地の減額）／20条の4の2（端数計算）／附則11条の2（税率の特例3％）／附則11条の5（宅地評価土地の課税標準1/2）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/325CO0000000245" rel="nofollow">地方税法施行令（昭和25年政令第245号）</a> — 37条の16（新築住宅の床面積要件）／37条の18（中古住宅の床面積要件・耐震基準）</li>
+</ul>
+<p class="hint" id="shutten-hint">条文は e-Gov 法令API v2 で取得した現行版（地方税法＝2026年6月5日施行版／同施行令＝2026年6月25日施行版）を逐語で確認しています。改正の有無は2025年10月1日施行版・2026年1月1日施行版との条文比較で確かめました。実際の税額・軽減の適用は取得した都道府県が決定しますので、通知書と異なる場合は都道府県税事務所にご確認ください。</p>
+
+<div class="note">
+  <b>関連するツール</b>
+  <div style="margin-top:6px"><a href="../kotei-shisanzei/">固定資産税・都市計画税の計算機</a>／<a href="../sozoku-toki-menkyozei/">相続登記の登録免許税 計算機</a>／<a href="../jutaku/">住宅ローン控除 計算機</a>／<a href="../fudosan-jouto/">不動産譲渡所得税の計算機</a></div>
+</div>
+
+</article>
+</main>
+<footer>
+  <div>© 経理ミニツールズ</div>
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcFudosanShutoku, SEIDO, KAOKU_KUBUN, menzeitenFor, floorYokenFor, rateFor } from "../assets/fudosan_shutoku_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const num = (id) => Number($(id).value) || 0;
+
+// ★画面の数字はコアの定数から描く（ページに手書きしない）。
+for (const k of KAOKU_KUBUN) {
+  const opt = document.createElement("option");
+  opt.value = k.key;
+  opt.textContent = k.label;
+  $("houseKind").appendChild(opt);
+}
+$("houseKind").value = "shinchiku";
+
+function paintHints() {
+  const d = $("acquireDate").value;
+  const m = menzeitenFor(d);
+  const y = floorYokenFor(d);
+  $("date-hint").innerHTML =
+    `この日の免税点は<b>土地${yenF(m.tochi)}・新築等の家屋${yenF(m.kenchiku)}・売買等の家屋${yenF(m.sonota)}</b>（${m.note}）、` +
+    `住宅の床面積要件は<b>${y.min}㎡以上${y.max}㎡以下</b>（${y.note}）です。` +
+    `税率は住宅・土地が<b>${rateFor("tochi", d)}％</b>、住宅以外の家屋が<b>${SEIDO.honsokuRate}％</b>です。`;
+  $("kaoku-hint").innerHTML =
+    `新築住宅は<b>1戸につき${yenF(SEIDO.shinchikuKojo)}</b>を価格から控除します（地方税法73条の14第1項）。` +
+    `中古住宅の控除額は<b>その住宅が新築された時に施行されていた額</b>で決まるため、新築年月日が要ります（同条3項）。` +
+    `新築年月日が<b>${SEIDO.chukoKojoVerifiedFrom}より前</b>の住宅は、当時の額を条文で確認できる範囲の外なので家屋の税額を出しません。`;
+}
+paintHints();
+$("acquireDate").addEventListener("change", paintHints);
+
+$("calc").addEventListener("click", () => {
+  const box = $("result");
+  // ★.result は既定で display:none。ここで表示に切り替えないと、計算は正しいのに
+  //   画面には何も出ない（過去に10ツールで同時に起きた全損の型）。
+  box.style.display = "block";
+  const input = {
+    acquireDate: $("acquireDate").value,
+    houseKind: $("houseKind").value,
+    houseValue: num("houseValue"),
+    houseFloor: num("houseFloor"),
+    builtDate: $("builtDate").value,
+    selfUse: $("selfUse").value === "1",
+    landValue: num("landValue"),
+    landArea: num("landArea"),
+    isTakuchi: $("isTakuchi").value === "1",
+    landForHouse: $("landForHouse").value === "1",
+  };
+  if (input.landValue <= 0 && input.houseValue <= 0) {
+    box.innerHTML = `<div class="note"><b>固定資産税評価額を入力してください。</b>
+      土地または家屋の評価額（納税通知書・固定資産評価証明書の「価格」欄）が必要です。</div>`;
+    return;
+  }
+  const r = calcFudosanShutoku(input);
+  const H = r.house, L = r.land;
+
+  const notes = [];
+  if (input.landValue > 0 && !L.taxable) {
+    notes.push(`土地の課税標準となるべき額（${yenF(L.kazeiHyojunPrice)}）が免税点${yenF(L.menzeitenLine)}未満のため、土地には課税されません（地方税法73条の15の2）。`);
+  }
+  if (H.kind !== "none" && H.value > 0 && !H.taxable && !H.uncomputable) {
+    notes.push(`家屋の課税標準となるべき額（${yenF(H.value)}）が免税点${yenF(H.menzeitenLine)}未満のため、家屋には課税されません（同条）。`);
+  }
+  if (H.kojoReason) notes.push(H.kojoReason);
+
+  const genkakuLine = L.genkaku > 0
+    ? `<div class="note" style="margin-top:12px"><b id="tochi-genkaku">住宅用土地の減額 −${yenF(L.genkaku)}</b>
+       （${L.genkakuBasis === "menseki"
+          ? `1㎡単価${yenF(L.unitPrice)}×床面積の2倍${Math.min(input.houseFloor * SEIDO.tochiGenkakuMultiplier, SEIDO.tochiGenkakuMaxM2)}㎡`
+          : `定額${yenF(SEIDO.tochiGenkakuBase)}`} × 税率${L.rate}％／地方税法73条の24第1項）
+       ${L.isTakuchi ? `<span id="genkaku-hanbun">★1㎡単価は<b>宅地の1/2読替え後</b>の額で出しています（同法附則11条の5第2項）。</span>` : ""}</div>`
+    : "";
+
+  const uncomp = H.uncomputable
+    ? `<div class="note" style="margin-top:12px"><b id="uncomputable">家屋の税額は出せません（収録範囲外）。</b><span id="uncomputable-riyu">${H.uncomputableReason}</span></div>`
+    : "";
+
+  box.innerHTML = `
+    <div style="font-size:15px">不動産取得税の合計 <b style="font-size:22px" id="total">${r.total === null ? "—（家屋が範囲外）" : yenF(r.total)}</b></div>
+    <table style="margin-top:10px">
+      <thead><tr><th></th><th>価格（評価額）</th><th>控除・特例</th><th>課税標準額</th><th>税率</th><th>税額</th></tr></thead>
+      <tbody>
+        <tr><td>土地</td><td>${yenF(L.value)}</td><td>${L.isTakuchi ? "宅地1/2" : "なし"}</td><td>${yenF(L.base)}</td><td>${L.rate}％</td><td><b id="land-tax">${yenF(L.tax)}</b></td></tr>
+        ${H.kind === "none" || H.value <= 0 ? "" : `
+        <tr><td>家屋</td><td>${yenF(H.value)}</td><td>${H.kojo > 0 ? "−" + yenF(H.kojo) : "なし"}</td><td>${H.uncomputable ? "—" : yenF(H.base)}</td><td>${H.rate}％</td><td><b id="house-tax">${H.uncomputable ? "—" : yenF(H.tax)}</b></td></tr>`}
+      </tbody>
+    </table>
+    ${genkakuLine}
+    ${uncomp}
+    ${notes.length ? `<div class="note" style="margin-top:12px">${notes.join(" ")}</div>` : ""}
+    <div class="hint" style="margin-top:8px" id="hasuu-note">端数処理 — 課税標準額は1,000円未満切捨て、税額は100円未満切捨て（地方税法20条の4の2第1項・3項）。この日の免税点は${r.menzeiten.note}の額（土地${yenF(r.menzeiten.tochi)}・新築等${yenF(r.menzeiten.kenchiku)}・売買等${yenF(r.menzeiten.sonota)}）、床面積要件は${r.yoken.min}㎡以上${r.yoken.max}㎡以下です。</div>
+    <div class="note" style="margin-top:12px">
+      <b>控除・減額は申告が原則です。</b>住宅・住宅用土地の控除と減額は、都道府県の条例で定めるところにより申告した場合に適用するのが条文の原則です（地方税法73条の14第4項・73条の24第5項）。申告がなくても要件に該当すると認められれば適用できます（同73条の14第5項・73条の24第6項）が、通知書が届いたら軽減が反映されているか必ず確認してください。
+    </div>`;
+});
+</script>
+</body>
+</html>

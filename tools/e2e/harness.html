@@ -2040,6 +2040,73 @@ SCENES.kotei_shisanzei_shigaika = koteiScene({ toshiRate: 0 });
 // ★入力なし → 0円と答えず入力を促す（fail closed）。
 SCENES.kotei_shisanzei_empty = koteiScene({ landValue: 0, houseValue: 0 });
 
+// ── 不動産取得税 (/fudosan-shutoku/) ───────────────────────────────────────
+// ★単体（tests/test_fudosan_shutoku.mjs）は core しか見ないので、
+//   「取得日の読み取り→免税点・床面積要件の版の切り替え→家屋の区分の選択→内訳表と減額欄の描画」
+//   の配線はここでしか守れない。期待値の手計算は同テストの §3〜§5。
+// ★家屋の区分の <select> は KAOKU_KUBUN から**スクリプトで**組み立てているので、
+//   選択肢が0個になる配線事故（＝住宅以外の家屋が画面から消えて税率を誤る）もここで捕まえる。
+const fudosanScene = (o) => async () => {
+  const doc = await open("/docs/fudosan-shutoku/");
+  const kindOptions = [...doc.querySelectorAll("#houseKind option")].map((e) => e.value);
+  set(doc, "acquireDate", o.acquireDate ?? "2026-07-01");
+  // 取得日のヒントはコアの定数から描かれる（ページに手書きしない）ので、押す前に読んでおく
+  const dateHint = text(doc, "date-hint");
+  set(doc, "landValue", o.landValue ?? 12000000);
+  set(doc, "landArea", o.landArea ?? 150);
+  set(doc, "isTakuchi", o.isTakuchi ?? "1");
+  set(doc, "landForHouse", o.landForHouse ?? "1");
+  set(doc, "houseKind", o.houseKind ?? "shinchiku");
+  set(doc, "houseValue", o.houseValue ?? 15000000);
+  set(doc, "houseFloor", o.houseFloor ?? 100);
+  set(doc, "builtDate", o.builtDate ?? "2020-04-01");
+  set(doc, "selfUse", o.selfUse ?? "1");
+  click(doc, "calc");
+
+  await waitFor(
+    () => /¥|—|入力してください/.test(text(doc, "result")),
+    "不動産取得税の計算結果",
+  );
+  const body = text(doc, "result");
+  const byId = (id) => { const e = doc.getElementById(id); return e ? e.textContent.trim() : null; };
+  const yen = (id) => { const t = byId(id); return t && /\d/.test(t) ? Number(t.replace(/[^\d]/g, "")) : null; };
+  return {
+    kindOptions,
+    dateHint,
+    total: yen("total"),
+    totalText: byId("total"),
+    landTax: yen("land-tax"),
+    houseTax: yen("house-tax"),
+    genkaku: byId("tochi-genkaku"),
+    // ★主張ごとに別の要素を読む。減額の見出し <b> には1/2読替えの申告が入っていないので、
+    //   見出しだけを見て「1/2読替えが画面に出ている」と判定すると素通しする（規則5）。
+    genkakuHanbun: byId("genkaku-hanbun"),
+    uncomputable: byId("uncomputable"),
+    uncomputableRiyu: byId("uncomputable-riyu"),
+    hasuu: byId("hasuu-note"),
+    noInput: body.includes("入力してください"),
+    body,
+  };
+};
+// ★看板例（§3）: 2026-07-01取得・宅地1,200万/150平方メートル＋新築住宅1,500万/100平方メートル
+//   → 家屋 (1,500万−1,200万)×3％＝90,000円／土地は減額240,000円が税額180,000円を上回り0円。
+//   減額の1平方メートル単価に宅地1/2の読替え（附則11条の5第2項）を忘れた実装なら
+//   単価が80,000円になり、減額欄が480,000円になって落ちる。
+SCENES.fudosan_shutoku = fudosanScene({});
+// ★令和8年度改正（令37条の16）: 床面積45平方メートルは改正前だと控除なし
+//   → 家屋 1,500万×3％＝450,000円。改正を反映し忘れて40平方メートルで判定する実装なら
+//   90,000円になって落ちる。
+SCENES.fudosan_shutoku_kaiseimae = fudosanScene({ acquireDate: "2026-03-31", houseFloor: 45 });
+// ★同じ45平方メートルでも2026-04-01以後の取得なら控除あり → 90,000円。
+SCENES.fudosan_shutoku_kaiseigo = fudosanScene({ acquireDate: "2026-04-01", houseFloor: 45 });
+// ★住宅以外の家屋は税率4％（附則11条の2の対象外）→ 1,500万×4％＝600,000円。
+//   一律3％の実装なら450,000円になって落ちる。
+SCENES.fudosan_shutoku_hijutaku = fudosanScene({ houseKind: "hijutaku", landForHouse: "0" });
+// ★収録範囲外（2017-04-01より前の新築）→ 家屋の税額を出さずに申告する（fail closed）。
+SCENES.fudosan_shutoku_hanigai = fudosanScene({ houseKind: "chuko", builtDate: "1995-06-01" });
+// ★入力なし → 0円と答えず入力を促す（fail closed）。
+SCENES.fudosan_shutoku_empty = fudosanScene({ landValue: 0, houseValue: 0 });
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。
