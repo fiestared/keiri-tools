@@ -11,7 +11,7 @@
  */
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
-import { calcGenka, floorYen, usedMonthsFromStart } from '../docs/assets/genka_core.js';
+import { calcGenka, floorYen, usedMonthsFromStart, chukoTaiyoNensu, formatYm, ASSET_TYPES } from '../docs/assets/genka_core.js';
 
 const ASSETS = new URL('../docs/assets/', import.meta.url);
 const D = JSON.parse(readFileSync(new URL('genka_rates.json', ASSETS)));
@@ -155,6 +155,153 @@ t('全耐用年数2〜50: 償却率が国税庁の式と一致（機械照合）
       assert.strictEqual(D.teiritsu_250[String(n)].rate, round3(2.5 / n), `250 n=${n}`);
     }
   }
+});
+
+// ── 12. ★償却の限度額は資産の種類で変わる（所令134条1項2号イ／ロ）────────────────────
+// イ 有形＝取得価額−1円まで ／ ロ 坑道・無形固定資産＝取得価額に相当する金額まで（1円を残さない）
+t('無形固定資産（ソフトウエア）は1円を残さず取得価額まで償却する（134条1項2号ロ）', () => {
+  const m = calcGenka({ method: 'teigaku', cost: 1000000, life: 5, acqYm: '2015-01', assetType: 'mukei' }, D);
+  const last = m.schedule[m.schedule.length - 1];
+  assert.strictEqual(m.residual, 0, '残す額は0円');
+  assert.strictEqual(last.closeBook, 0, '最終年の期末帳簿価額は0円');
+  assert.strictEqual(m.totalDep, 1000000, '償却費の合計＝取得価額（−1円ではない）');
+  assert.strictEqual(m.totalYears, 5);
+});
+
+t('★対照: 同条件でも有形なら1円が残る（同じ入力で結果が分かれることを固定）', () => {
+  const y = calcGenka({ method: 'teigaku', cost: 1000000, life: 5, acqYm: '2015-01', assetType: 'yukei' }, D);
+  assert.strictEqual(y.residual, 1);
+  assert.strictEqual(y.schedule[y.schedule.length - 1].closeBook, 1);
+  assert.strictEqual(y.totalDep, 999999, '有形は取得価額−1円');
+});
+
+t('坑道も1円を残さない（134条1項2号ロは「坑道及び…無形固定資産」）', () => {
+  const k = calcGenka({ method: 'teigaku', cost: 500000, life: 5, acqYm: '2015-01', assetType: 'kodo' }, D);
+  assert.strictEqual(k.residual, 0);
+  assert.strictEqual(k.schedule[k.schedule.length - 1].closeBook, 0);
+  assert.strictEqual(k.totalDep, 500000);
+});
+
+t('assetType 省略＝有形（既定値。従来の呼び出しの結果を変えない）', () => {
+  const d = calcGenka({ method: 'teigaku', cost: 1000000, life: 10, acqYm: '2015-01' }, D);
+  assert.strictEqual(d.assetType, 'yukei');
+  assert.strictEqual(d.totalDep, teigaku.totalDep);
+});
+
+t('fail closed: 無形固定資産に定率法は選べない（所令120条の2第1項4号）／未知の種類は throw', () => {
+  assert.throws(() => calcGenka({ method: 'teiritsu', cost: 1000000, life: 10, acqYm: '2015-01', assetType: 'mukei' }, D), /定率法/);
+  assert.throws(() => calcGenka({ method: 'teigaku', cost: 1000000, life: 10, acqYm: '2015-01', assetType: 'nazo' }, D), /資産の種類/);
+  // 坑道は鉱業用減価償却資産なので定率法を選べる（同項3号ロ）＝止めてはいけない
+  assert.doesNotThrow(() => calcGenka({ method: 'teiritsu', cost: 1000000, life: 10, acqYm: '2015-01', assetType: 'kodo' }, D));
+});
+
+t('無形の注記は「1円を残さない」と言う／有形の注記と取り違えていない', () => {
+  const m = calcGenka({ method: 'teigaku', cost: 300000, life: 5, acqYm: '2015-01', assetType: 'mukei' }, D);
+  const y = calcGenka({ method: 'teigaku', cost: 300000, life: 5, acqYm: '2015-01', assetType: 'yukei' }, D);
+  assert.ok(m.notes.some((n) => /1円を残しません/.test(n)), '無形: ' + m.notes.join('|'));
+  assert.ok(!m.notes.some((n) => /備忘価額1円を残します/.test(n)), '無形に有形の注記が混ざっている');
+  assert.ok(y.notes.some((n) => /備忘価額1円を残します/.test(n)), '有形: ' + y.notes.join('|'));
+});
+
+// ── 13. ★中古資産の簡便法（耐令3条／外部オラクル No.5404）─────────────────────────────
+t('★オラクル No.5404: 法定30年・経過10年 → 22年（国税庁の公表例を再現）', () => {
+  const r = chukoTaiyoNensu({ houteiLife: 30, keikaYears: 10 });
+  assert.strictEqual(r.unavailable, false);
+  assert.strictEqual(r.years, 22);
+  assert.strictEqual(r.zenbu, false, '一部経過（2号ロ）');
+});
+
+t('全部経過は法定×20%（2号イ）: 法定22年・経過25年 → 4年（22×0.2=4.4→切捨）', () => {
+  const r = chukoTaiyoNensu({ houteiLife: 22, keikaYears: 25 });
+  assert.strictEqual(r.zenbu, true);
+  assert.strictEqual(r.years, 4);
+});
+
+t('経過＝法定ちょうども「全部経過」（境界。22年経過→4年であって22年ではない）', () => {
+  const r = chukoTaiyoNensu({ houteiLife: 22, keikaYears: 22, keikaMonths: 0 });
+  assert.strictEqual(r.zenbu, true);
+  assert.strictEqual(r.years, 4);
+});
+
+t('★経過年数は月まで数える（耐令3条5項「暦に従つて計算し」）: 法定22年・築10年3か月 → 13年', () => {
+  // (264-123)か月 + 123か月×20% = 141 + 24.6 = 165.6か月 = 13.8年 → 13年
+  const r = chukoTaiyoNensu({ houteiLife: 22, keikaYears: 10, keikaMonths: 3 });
+  assert.strictEqual(r.years, 13);
+  assert.strictEqual(r.keikaTotalMonths, 123);
+  assert.ok(Math.abs(r.rawMonths - 165.6) < 1e-9, 'rawMonths=' + r.rawMonths);
+  // ★月を捨てて「10年」で計算すると14年になる＝月を数えないと1年ずれることを固定する
+  assert.strictEqual(chukoTaiyoNensu({ houteiLife: 22, keikaYears: 10 }).years, 14);
+});
+
+t('2年未満は2年（2号かっこ書き）: 法定4年・全部経過 → 0.8年ではなく2年', () => {
+  const r = chukoTaiyoNensu({ houteiLife: 4, keikaYears: 4 });
+  assert.strictEqual(r.years, 2);
+  assert.strictEqual(r.floored, true);
+  assert.ok(r.notes.some((n) => /2年に満たない/.test(n)));
+});
+
+t('経過0か月なら法定耐用年数のまま（新品と同じ。短くならない）', () => {
+  assert.strictEqual(chukoTaiyoNensu({ houteiLife: 6, keikaYears: 0, keikaMonths: 0 }).years, 6);
+});
+
+t('★ただし書: 資本的支出 > 取得価額×50% で簡便法は使えない（耐令3条1項ただし書）', () => {
+  const ng = chukoTaiyoNensu({ houteiLife: 22, keikaYears: 10, cost: 1000000, shihontekiShishutsu: 500001 });
+  assert.strictEqual(ng.unavailable, true);
+  assert.strictEqual(ng.years, null, '使えないのに年数を返してはいけない');
+  assert.ok(/50／|50％/.test(ng.reason) || /50%/.test(ng.reason), ng.reason);
+  assert.ok(/再取得価額/.test(ng.reason), '再取得価額50%超＝法定耐用年数の case を落としていない');
+  // ちょうど50%は「超える」に当たらない＝使える（境界）
+  const ok = chukoTaiyoNensu({ houteiLife: 22, keikaYears: 10, cost: 1000000, shihontekiShishutsu: 500000 });
+  assert.strictEqual(ok.unavailable, false, 'ちょうど50%は使える');
+  assert.strictEqual(ok.years, 14);
+});
+
+t('fail closed: 法定耐用年数<2・経過が負・経過月が12以上は年数を返さない', () => {
+  for (const bad of [{ houteiLife: 1, keikaYears: 0 }, { houteiLife: 22, keikaYears: -1 },
+                     { houteiLife: 22, keikaYears: 0, keikaMonths: 12 }, { houteiLife: NaN, keikaYears: 0 }]) {
+    const r = chukoTaiyoNensu(bad);
+    assert.strictEqual(r.unavailable, true, JSON.stringify(bad));
+    assert.strictEqual(r.years, null, JSON.stringify(bad));
+  }
+});
+
+t('簡便法の年数は必ず 2 以上・法定耐用年数以下（全域スイープ 2〜60年 × 経過0〜80年）', () => {
+  for (let h = 2; h <= 60; h++) {
+    for (let k = 0; k <= 80; k++) {
+      for (const m of [0, 5, 11]) {
+        const r = chukoTaiyoNensu({ houteiLife: h, keikaYears: k, keikaMonths: m });
+        assert.strictEqual(r.unavailable, false, `h=${h} k=${k} m=${m}`);
+        assert.ok(r.years >= 2, `h=${h} k=${k} m=${m} → ${r.years}`);
+        assert.ok(r.years <= Math.max(2, h), `中古なのに法定より長い h=${h} k=${k} m=${m} → ${r.years}`);
+        assert.strictEqual(r.years, Math.floor(r.years), '整数年');
+      }
+    }
+  }
+});
+
+t('簡便法の年数は経過が長いほど短くなる（単調非増加）', () => {
+  for (const h of [4, 6, 22, 30, 47]) {
+    let prev = Infinity;
+    for (let mo = 0; mo <= h * 12 + 24; mo++) {
+      const r = chukoTaiyoNensu({ houteiLife: h, keikaYears: Math.floor(mo / 12), keikaMonths: mo % 12 });
+      assert.ok(r.years <= prev, `h=${h} ${mo}か月で増えた ${prev}→${r.years}`);
+      prev = r.years;
+    }
+  }
+});
+
+t('formatYm: 165.6か月＝13年9.6か月 / 12か月＝1年 / 0は「0か月」', () => {
+  assert.strictEqual(formatYm(165.6), '13年9.6か月');
+  assert.strictEqual(formatYm(12), '1年');
+  assert.strictEqual(formatYm(3), '3か月');
+  assert.strictEqual(formatYm(0), '0か月');
+});
+
+t('ASSET_TYPES はイ／ロの2水準しか持たない（残す額は1円か0円だけ）', () => {
+  const residuals = new Set(Object.values(ASSET_TYPES).map((a) => a.residual));
+  assert.deepStrictEqual([...residuals].sort(), [0, 1]);
+  assert.strictEqual(ASSET_TYPES.mukei.teiritsuOk, false);
+  assert.strictEqual(ASSET_TYPES.kodo.teiritsuOk, true, '坑道は鉱業用＝定率法可');
 });
 
 console.log(`\n${fail ? '❌' : '✓'} 減価償却コア: ${pass} passed, ${fail} failed`);

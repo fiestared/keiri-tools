@@ -2214,9 +2214,10 @@ SCENES.jidoshazei_nodata = jidoshazeiScene({ cc: "le2000", year: 2021 });
 // ★取得価額・耐用年数・償却方法から償却スケジュールを計算。独立オラクル=国税庁 No.2106/別表第十の
 //   公表計算例（100万円・耐用年数10年）。定額法=毎年10万、200%定率法=1年目20万→7年目改定65,536→10年目65,535。
 //   コアは一切通さず、結果表の「償却費」列（<b>）を読み取って公表値と照合する。
-const genkaScene = ({ method = "teigaku", cost = 1000000, life = 10, year = 2015, month = 1, ratio = 100 }) => async () => {
+const genkaScene = ({ method = "teigaku", cost = 1000000, life = 10, year = 2015, month = 1, ratio = 100, assetType = "yukei" }) => async () => {
   const d = await open("/docs/genka/");
   if (method !== "teigaku") set(d, "method", method);
+  if (assetType !== "yukei") set(d, "assettype", assetType);
   set(d, "cost", String(cost));
   set(d, "life", String(life));
   set(d, "acqyear", String(year));
@@ -2238,10 +2239,16 @@ const genkaScene = ({ method = "teigaku", cost = 1000000, life = 10, year = 2015
         return b ? Number(b.textContent.replace(/[^\d]/g, "")) : null;
       })
     : [];
+  // 結果表の最終行の「期末帳簿価額」（＝最後に残る額。有形1円／無形・坑道0円）
+  const lastRow = resultTable ? [...resultTable.querySelectorAll("tbody tr")].pop() : null;
+  const lastCells = lastRow ? [...lastRow.querySelectorAll("td")] : [];
+  const lastCloseBook = lastCells.length
+    ? Number(lastCells[lastCells.length - 1].textContent.replace(/[^\d]/g, "")) : null;
   return {
-    method, cost, life,
+    method, cost, life, assetType,
     firstYear: num(/の償却費\s*¥([\d,]+)/),                 // 初年度の償却費（見出し）
     total: num(/償却費の合計\s*¥([\d,]+)/),                  // 合計＝取得価額−1円
+    lastCloseBook,
     necessary: num(/必要経費に算入できる額（事業専用割合\d+％）＝\s*¥([\d,]+)/), // 事業割合<100のとき
     rows: resultTable ? resultTable.querySelectorAll("tbody tr").length : 0,
     depCol,
@@ -2268,6 +2275,45 @@ SCENES.genka_shogaku = genkaScene({ method: "teigaku", cost: 350000, life: 4, ye
 SCENES.genka_shogaku_kyu = genkaScene({ method: "teigaku", cost: 350000, life: 4, year: 2026, month: 3 });
 // 参照データ配信不可 → 償却費を出さずに断る（fail closed）。
 SCENES.genka_nodata = genkaScene({ method: "teigaku", cost: 1000000, life: 10, year: 2015, month: 1 });
+// ★資産の種類で償却の限度額が変わる（所令134条1項2号）。無形固定資産は1円を残さず0円まで。
+//   単体は core しか見ないので、画面が assetType を渡していない配線ミスはここでしか落ちない。
+SCENES.genka_mukei = genkaScene({ method: "teigaku", cost: 1000000, life: 5, year: 2015, month: 1, assetType: "mukei" });
+SCENES.genka_yukei_taisho = genkaScene({ method: "teigaku", cost: 1000000, life: 5, year: 2015, month: 1, assetType: "yukei" });
+// ★無形固定資産に定率法は選べない（所令120条の2第1項4号）＝黙って計算せず断る（fail closed）。
+SCENES.genka_mukei_teiritsu = genkaScene({ method: "teiritsu", cost: 1000000, life: 5, year: 2015, month: 1, assetType: "mukei" });
+
+// ── 中古資産の簡便法 (/genka/ の2つ目の計算機) ─────────────────────────────────────
+// ★独立オラクル=国税庁 No.5404 の公表例（法定30年・経過10年 → 22年）。
+//   経過年数は「暦に従つて計算」（耐令3条5項）なので月まで数える＝築10年3か月の木造(22年)は13年。
+const genkaChukoScene = ({ houtei = 22, ky = 10, km = 3, shishutsu = 0, cost = null }) => async () => {
+  const d = await open("/docs/genka/");
+  if (cost != null) set(d, "cost", String(cost));
+  set(d, "chuko-houtei", String(houtei));
+  set(d, "chuko-keika-y", String(ky));
+  set(d, "chuko-keika-m", String(km));
+  set(d, "chuko-shishutsu", String(shishutsu));
+  click(d, "chuko-calc");
+  await waitFor(
+    () => /見積耐用年数|出せません/.test(text(d, "chuko-result")),
+    "中古資産の簡便法の計算結果",
+  );
+  const body = text(d, "chuko-result");
+  const m = body.match(/見積耐用年数\s*(\d+)年/);
+  return {
+    houtei, ky, km, shishutsu,
+    years: m ? Number(m[1]) : null,
+    rejected: body.includes("出せません"),
+    body,
+  };
+};
+// ★No.5404 の公表例そのもの。
+SCENES.genka_chuko = genkaChukoScene({ houtei: 30, ky: 10, km: 0 });
+// ★月を数えるか（築10年3か月・法定22年 → 13年。月を捨てると14年になる）。
+SCENES.genka_chuko_tsuki = genkaChukoScene({ houtei: 22, ky: 10, km: 3 });
+// ★2年未満は2年（法定4年・全部経過＝0.8年）。
+SCENES.genka_chuko_min2 = genkaChukoScene({ houtei: 4, ky: 5, km: 0 });
+// ★ただし書: 資本的支出が取得価額の50%超 → 年数を出さずに断る（fail closed）。
+SCENES.genka_chuko_shihonteki = genkaChukoScene({ houtei: 22, ky: 10, km: 0, cost: 1000000, shishutsu: 600000 });
 
 // ── 年収の壁 (/kabe/) ─────────────────────────────────────────────────────
 // ★このツールは shaho_core.calcMonthly の合成。E2Eは「年収→壁判定→社保→手取り」の配線を見る。

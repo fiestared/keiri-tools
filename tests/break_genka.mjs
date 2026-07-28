@@ -32,9 +32,63 @@ const BREAKS = [
    'if (canSwitch && chosei < hoshoGaku) {',
    'if (false) {'],
 
-  ['★備忘価額1円を残さない（帳簿価額が0まで落ちる）', 'core',
-   'if (dep > book - 1) dep = book - 1;',
+  ['★備忘価額1円を残さない（有形の帳簿価額が0まで落ちる）', 'core',
+   'if (dep > book - residual) dep = book - residual;',
    'if (dep > book) dep = book;'],
+
+  // ── 資産の種類による償却の限度額（所令134条1項2号イ／ロ）─────────────────────
+  ['★無形固定資産にも1円を残す（＝この便で直したバグそのもの。ソフトウエアに永久に1円が残る）', 'core',
+   '    residual: 0,\n    kon: \'所令134条1項2号ロ\',\n    // 所令120条の2第1項4号',
+   '    residual: 1,\n    kon: \'所令134条1項2号ロ\',\n    // 所令120条の2第1項4号'],
+
+  ['★坑道にも1円を残す（134条1項2号ロは「坑道及び…無形固定資産」＝坑道も0円まで）', 'core',
+   '    residual: 0,\n    kon: \'所令134条1項2号ロ\',\n    // 坑道は鉱業用減価償却資産',
+   '    residual: 1,\n    kon: \'所令134条1項2号ロ\',\n    // 坑道は鉱業用減価償却資産'],
+
+  ['★資産の種類を無視して常に有形として扱う（選択肢が飾りになる）', 'core',
+   'const residual = AT.residual;',
+   'const residual = 1;'],
+
+  ['★無形固定資産に定率法を許してしまう（所令120条の2第1項4号は定額法のみ）', 'core',
+   'if (i.method === \'teiritsu\' && !AT.teiritsuOk) {',
+   'if (false) {'],
+
+  ['★坑道の定率法まで止めてしまう（正しい入力を拒否する向きの誤り）', 'core',
+   '    // 坑道は鉱業用減価償却資産（所令120条の2第1項3号ロ）＝定率法も選べる\n    teiritsuOk: true,',
+   '    // 坑道は鉱業用減価償却資産（所令120条の2第1項3号ロ）＝定率法も選べる\n    teiritsuOk: false,'],
+
+  // ── 中古資産の簡便法（耐令3条）─────────────────────────────────────────
+  ['★簡便法の割合 20% を 30% にする（見積耐用年数が長くなる＝毎年の償却費が過少）', 'core',
+   'const truncated = Math.floor(rawMonths5 / 60);',
+   'const truncated = Math.floor((rawMonths5 * 3 / 2) / 60);'],
+
+  ['★簡便法の一部経過の式から「経過年数×20%」の加算を落とす（22年→20年に短縮＝過大償却）', 'core',
+   ': (houteiMonths - keikaTotalMonths) * 5 + keikaTotalMonths;',
+   ': (houteiMonths - keikaTotalMonths) * 5;'],
+
+  ['★簡便法の全部経過（イ）と一部経過（ロ）の分岐を逆にする', 'core',
+   'const zenbu = keikaTotalMonths >= houteiMonths;',
+   'const zenbu = keikaTotalMonths < houteiMonths;'],
+
+  ['★簡便法の端数を切上げにする（耐令3条5項は「切り捨てる」・13年が14年に）', 'core',
+   'const truncated = Math.floor(rawMonths5 / 60);',
+   'const truncated = Math.ceil(rawMonths5 / 60);'],
+
+  ['★簡便法の下限2年（2号かっこ書き）を外す（法定4年の全部経過が0年になる）', 'core',
+   'const years = Math.max(2, truncated);',
+   'const years = truncated;'],
+
+  ['★★経過年数の「月」を切り捨てる（築10年3か月が10年扱い＝13年が14年に。耐令3条5項に反する）', 'core',
+   'const keikaTotalMonths = ky * 12 + km;',
+   'const keikaTotalMonths = ky * 12;'],
+
+  ['★★ただし書（資本的支出>取得価額の50%）を外す（使えない人に短い耐用年数を答えて過大償却させる）', 'core',
+   'if (cost > 0 && shishutsu * 2 > cost) {',
+   'if (false) {'],
+
+  ['★ただし書の境界を「50%以上」にする（ちょうど50%の人が使えるのに断られる）', 'core',
+   'if (cost > 0 && shishutsu * 2 > cost) {',
+   'if (cost > 0 && shishutsu * 2 >= cost) {'],
 
   ['★初年度の月割を消す（年の中途取得を年額まるまるで過大に）', 'core',
    'if (year === 1 && usedMonths < 12) dep = floorYen(dep * usedMonths / 12);',

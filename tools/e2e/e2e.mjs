@@ -789,6 +789,27 @@ const SCENES = [
   // ★同じ35万円でも令和8年3月取得は旧基準(30万円未満)で対象外。案内を出さない（旧取得に新基準を持ち込まない）。
   { name: "genka_shogaku_kyu", expect: (s) =>
       !s.body.includes("少額減価償却資産の特例") && s.firstYear === 72916 && !s.failed },
+  // ★資産の種類で償却の限度額が変わる（所令134条1項2号）。無形固定資産＝1円を残さず0円まで。
+  //   100万・5年の定額法なら合計1,000,000（有形の999,999ではない）・最終年の期末帳簿価額0円。
+  { name: "genka_mukei", expect: (s) =>
+      s.total === 1000000 && s.lastCloseBook === 0 && s.body.includes("1円を残しません") && !s.failed },
+  // ★対照: 同条件の有形は 999,999・1円が残る（画面が種類を無視していたらこの対で割れる）。
+  { name: "genka_yukei_taisho", expect: (s) =>
+      s.total === 999999 && s.lastCloseBook === 1 && !s.body.includes("1円を残しません") && !s.failed },
+  // ★無形固定資産に定率法は選べない（所令120条の2第1項4号）→ 黙って計算せず断る。
+  { name: "genka_mukei_teiritsu", expect: (s) =>
+      s.rejected && s.firstYear === null && !s.failed },
+
+  // ── 中古資産の簡便法 (/genka/) ────────────────────────────────────────
+  // ★独立オラクル=国税庁 No.5404 の公表例: 法定30年・経過10年 → 22年。
+  { name: "genka_chuko", expect: (s) => s.years === 22 && !s.rejected },
+  // ★経過年数は月まで数える（耐令3条5項）: 法定22年・築10年3か月 → 13年（月を捨てると14年）。
+  { name: "genka_chuko_tsuki", expect: (s) => s.years === 13 && !s.rejected },
+  // ★2年に満たないときは2年（法定4年・全部経過＝0.8年）。
+  { name: "genka_chuko_min2", expect: (s) => s.years === 2 && !s.rejected },
+  // ★ただし書（資本的支出>取得価額の50%）→ 年数を出さずに断る。使えない人に短い年数を答えない。
+  { name: "genka_chuko_shihonteki", expect: (s) =>
+      s.rejected && s.years === null && s.body.includes("再取得価額") },
 
   // ── 年収の壁 (/kabe/) ────────────────────────────────────────────────
   // ★合成(壁判定→社保→手取り)とページ配線を見る。独立オラクルは協会けんぽ額表の端数処理で組む。
