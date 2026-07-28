@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>国民健康保険料 計算機｜令和8年度から賦課は4区分（子ども・子育て支援金分）</title>
+<meta name="description" content="お住まいの市町村の料率（所得割率・均等割額・平等割額）と世帯の状況を入れると、国民健康保険料（税）を条文どおりに計算します。★令和8年度から賦課区分が3つ→4つになり「子ども・子育て支援納付金賦課額」（限度額3万円）が加わりました。3区分のままの計算機は新設分をまるごと落とします。7割・5割・2割の軽減、未就学児の5割減額、18歳未満の子育て分均等割の全額減額、区分ごとの賦課限度額まで再現。料率は市町村の条例なので推測で埋めません。無料・登録不要。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/kokuho/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "国民健康保険料 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "国民健康保険法施行令29条の7に基づき、医療分・後期高齢者支援金等分・介護分・子ども・子育て支援金分の4区分で国民健康保険料（税）を計算します。軽減判定（7割・5割・2割）、未就学児の5割減額、18歳未満の子ども・子育て支援金分均等割の全額減額、区分ごとの賦課限度額に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "国民健康保険料 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 国民健康保険料は全国共通ではないのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 共通なのは「組み立て方」だけで、料率そのものは市町村がそれぞれ条例で定めます。所得割率・均等割額・平等割額は市町村ごとに違い、平等割を採らない市町村もあります。したがって全国共通の料率という数字は存在しません。この計算機が料率を入力してもらう形になっているのはそのためで、推測の数字で埋めると、それらしい金額が出るのに実際の納付額と合わないという最も困る誤り方をします。料率は納付通知書か市町村のサイトに載っています。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 令和8年度から何が変わったのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 賦課区分が3つから4つになりました。従来の医療分（基礎賦課額・限度額67万円）・後期高齢者支援金等分（26万円）・介護分（17万円）に加えて、子ども・子育て支援納付金賦課額（3万円）が新設されています（国民健康保険法施行令29条の7第1項4号）。限度額の合計は113万円です。世に出回っている解説や計算機は3区分のままのものが多く、その場合は新設分をまるごと落とすことになります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 子どもの分の保険料はどうなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 減額が2つあります。未就学児（6歳に達する日以後の最初の3月31日以前）は、医療分・後期高齢者支援金等分の均等割が5割減額されます（施行令29条の7第6項6号）。7割・5割・2割の軽減に該当する世帯では、その軽減を当てた「後」の額に対して5割を減額します。もう1つは子ども・子育て支援金分で、この区分の均等割は18歳以上の被保険者にだけ賦課され、18歳未満の分は全額減額されます（同項10号・11号、同条5項3号）。所得割は年齢に関係なく全員が対象です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 軽減の判定に使う所得は、確定申告の課税所得ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 違います。軽減判定に使うのは基礎控除43万円を引く「前」の総所得金額等で、社会保険料控除や扶養控除といった所得控除も引きません（施行令29条の7第6項1号）。一方で所得割の課税標準は基礎控除43万円を引いた「後」の額です。同じ43万円という数字が別の役割で2回出てくるため、判定に控除後の額を渡すと軽減が1段階ずつ甘い方へずれます。また判定所得には世帯主（国保に入っていない擬制世帯主でも）と特定同一世帯所属者の所得が加わります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 賦課限度額の113万円を超えたら、そこで頭打ちですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 113万円という上限が1本あるのではなく、医療分67万円・後期高齢者支援金等分26万円・介護分17万円・子ども・子育て支援金分3万円という上限が区分ごとに個別にかかります。113万円はその4つを足した数字にすぎず、条文にその金額があるわけではありません。実際には医療分だけが上限に張り付いて他の区分は届いていない、という世帯がふつうに生じます。合計にだけ上限を当てる実装は、そうした世帯で保険料を過大に出します。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 国民健康保険料 計算機</nav>
+
+<section class="hero">
+  <h1>国民健康保険料 計算機</h1>
+  <p><b id="hero-ryoritsu">料率（所得割率・均等割額・平等割額）は市町村がそれぞれ条例で定めるので、全国共通の値はありません。</b>お手元の<b>納付通知書</b>か市町村のサイトに載っている料率を入れてください。<b id="hero-4kubun">賦課区分は4つ</b>で、<b>子ども・子育て支援金分</b>が加わっています。3区分のままの計算機は、この分をまるごと落とします。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="ryoritsu-caution">この計算機は料率を推測で埋めません。</b>
+    <span id="ryoritsu-setsumei">国民健康保険法施行令29条の7が全国共通で定めているのは<b>賦課の組み立て方</b>（4つの区分・限度額・軽減の判定）であって、<b>料率そのものは市町村の条例</b>です。同じ所得・同じ家族構成でも市町村が違えば保険料は変わりますし、<b>平等割を採らない市町村</b>もあります。</span>
+    それらしい数字を既定値に置くと、実際の納付額と合わない金額をそのまま信じてしまうので、空欄にしてあります。
+  </div>
+
+  <label>① お住まいの市町村の料率（納付通知書・市町村のサイトに載っています）</label>
+  <table class="tbl" id="rate-table" style="margin-top:8px">
+    <thead><tr><th>賦課区分</th><th>所得割率（％）</th><th>均等割（円／人）</th><th>平等割（円／世帯）</th></tr></thead>
+    <tbody>
+      <tr><td><b>医療分</b><br><span class="hint">基礎賦課額</span></td>
+        <td><input type="number" id="iryo_s" min="0" step="0.01" inputmode="decimal" placeholder="例 8.00"></td>
+        <td><input type="number" id="iryo_k" min="0" inputmode="numeric" placeholder="例 50000"></td>
+        <td><input type="number" id="iryo_h" min="0" inputmode="numeric" placeholder="無ければ0"></td></tr>
+      <tr><td><b>後期高齢者支援金等分</b></td>
+        <td><input type="number" id="shien_s" min="0" step="0.01" inputmode="decimal" placeholder="例 2.50"></td>
+        <td><input type="number" id="shien_k" min="0" inputmode="numeric" placeholder="例 16000"></td>
+        <td><input type="number" id="shien_h" min="0" inputmode="numeric" placeholder="無ければ0"></td></tr>
+      <tr><td><b>介護分</b><br><span class="hint">40〜64歳のみ</span></td>
+        <td><input type="number" id="kaigo_s" min="0" step="0.01" inputmode="decimal" placeholder="例 2.00"></td>
+        <td><input type="number" id="kaigo_k" min="0" inputmode="numeric" placeholder="例 17000"></td>
+        <td><input type="number" id="kaigo_h" min="0" inputmode="numeric" placeholder="無ければ0"></td></tr>
+      <tr><td><b>子ども・子育て支援金分</b><br><span class="hint">令和8年度に新設</span></td>
+        <td><input type="number" id="kosodate_s" min="0" step="0.01" inputmode="decimal" placeholder="例 0.30"></td>
+        <td><input type="number" id="kosodate_k" min="0" inputmode="numeric" placeholder="例 2000"></td>
+        <td><input type="number" id="kosodate_h" min="0" inputmode="numeric" placeholder="無ければ0"></td></tr>
+    </tbody>
+  </table>
+  <p class="hint" style="margin-top:6px">
+    <button type="button" id="sample" style="background:none;border:none;padding:0;font:inherit;color:var(--accent);text-decoration:underline;cursor:pointer">記入例（架空の料率）を入れて動きを見る</button>
+    — <b id="sample-caution">これは実在する市町村の料率ではありません。</b>試しに動かすためだけの数字です。
+  </p>
+
+  <label for="ninzu" style="margin-top:16px">② 国保に加入している世帯員</label>
+  <select id="ninzu"></select>
+  <div id="members" style="margin-top:10px"></div>
+  <p class="hint" style="margin-top:6px" id="age-hint"></p>
+
+  <label style="margin-top:16px">③ 世帯主・特定同一世帯所属者</label>
+  <div class="grid2">
+    <div>
+      <label for="setainushiIs" style="font-size:13px">世帯主は国保の被保険者ですか</label>
+      <select id="setainushiIs">
+        <option value="1" selected>はい（世帯主も国保に加入）</option>
+        <option value="0">いいえ（擬制世帯主）</option>
+      </select>
+    </div>
+    <div>
+      <label for="setainushiShotoku" style="font-size:13px">擬制世帯主の総所得金額等（円）</label>
+      <input type="number" id="setainushiShotoku" min="0" inputmode="numeric" value="0">
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:10px">
+    <div>
+      <label for="setainushiKyuyo" style="font-size:13px">擬制世帯主は給与所得者等か</label>
+      <select id="setainushiKyuyo">
+        <option value="0" selected>いいえ</option>
+        <option value="1">はい</option>
+      </select>
+    </div>
+    <div>
+      <label for="tokuteiN" style="font-size:13px">特定同一世帯所属者の人数</label>
+      <input type="number" id="tokuteiN" min="0" max="8" inputmode="numeric" value="0">
+    </div>
+  </div>
+  <div class="grid2" style="margin-top:10px">
+    <div>
+      <label for="tokuteiShotoku" style="font-size:13px">特定同一世帯所属者の総所得金額等の合計（円）</label>
+      <input type="number" id="tokuteiShotoku" min="0" inputmode="numeric" value="0">
+    </div>
+    <div>
+      <label for="tokuteiKyuyo" style="font-size:13px">うち給与所得者等の人数</label>
+      <input type="number" id="tokuteiKyuyo" min="0" max="8" inputmode="numeric" value="0">
+    </div>
+  </div>
+  <p class="hint" style="margin-top:6px" id="tokutei-hint">特定同一世帯所属者＝後期高齢者医療制度に移ったことで国保を抜けた後も、引き続き同じ世帯にいるかた。保険料はかかりませんが、<b>軽減の判定では所得にも人数にも算入します</b>（移った途端に軽減が外れて跳ね上がるのを防ぐ仕組み）。</p>
+
+  <button class="primary" id="calc" style="margin-top:16px">国民健康保険料を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<nav class="toc">
+  <b>目次</b>
+  <ol>
+    <li><a href="#yonkubun">賦課区分が3つから4つになった</a></li>
+    <li><a href="#ryoritsu">料率に全国共通の値は存在しない</a></li>
+    <li><a href="#genkoku">賦課限度額は区分ごとに個別にかかる</a></li>
+    <li><a href="#keigen">軽減されるのは均等割と平等割だけ</a></li>
+    <li><a href="#hantei">判定所得は基礎控除を引く「前」</a></li>
+    <li><a href="#kodomo">未就学児と18歳未満の減額</a></li>
+    <li><a href="#hani">このツールが計算しない範囲</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ol>
+</nav>
+
+<h2 id="yonkubun">賦課区分が3つから4つになった</h2>
+
+<p id="yonkubun-honbun">国民健康保険料（税）は、いくつかの<b>賦課区分</b>ごとに保険料を計算して合算します。長らく<b>医療分・後期高齢者支援金等分・介護分</b>の3つでしたが、<b>令和8年度から「子ども・子育て支援納付金賦課額」が加わって4つ</b>になりました（国民健康保険法施行令29条の7第1項1号〜4号）。</p>
+
+<figure>
+<svg viewBox="0 0 720 260" width="100%" role="img" aria-label="国民健康保険料の賦課区分が従来の医療分・後期高齢者支援金等分・介護分の3つから、子ども・子育て支援金分を加えた4つに増え、賦課限度額の合計が110万円から113万円になったことを示す図">
+  <rect x="0" y="0" width="720" height="260" fill="#fff"/>
+  <text x="16" y="26" font-size="15" font-weight="bold" fill="#333">従来（3区分）</text>
+  <rect x="16" y="40" width="330" height="36" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="181" y="63" font-size="13" text-anchor="middle" fill="#075985">医療分 上限67万円</text>
+  <rect x="346" y="40" width="130" height="36" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="411" y="63" font-size="12" text-anchor="middle" fill="#075985">後期支援 26万</text>
+  <rect x="476" y="40" width="90" height="36" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="521" y="63" font-size="12" text-anchor="middle" fill="#075985">介護 17万</text>
+  <text x="576" y="63" font-size="12" fill="#666">合計 110万円</text>
+
+  <line x1="16" y1="100" x2="704" y2="100" stroke="#ddd"/>
+
+  <text x="16" y="128" font-size="15" font-weight="bold" fill="#333">令和8年度から（4区分）</text>
+  <rect x="16" y="142" width="330" height="36" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="181" y="165" font-size="13" text-anchor="middle" fill="#075985">医療分 上限67万円</text>
+  <rect x="346" y="142" width="130" height="36" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="411" y="165" font-size="12" text-anchor="middle" fill="#075985">後期支援 26万</text>
+  <rect x="476" y="142" width="90" height="36" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="521" y="165" font-size="12" text-anchor="middle" fill="#075985">介護 17万</text>
+  <rect x="566" y="142" width="60" height="36" fill="#fef9c3" stroke="#ca8a04"/>
+  <text x="596" y="159" font-size="11" text-anchor="middle" font-weight="bold" fill="#713f12">子育て</text>
+  <text x="596" y="172" font-size="11" text-anchor="middle" fill="#713f12">3万</text>
+  <text x="636" y="165" font-size="12" fill="#666">合計 113万円</text>
+
+  <text x="16" y="212" font-size="12" fill="#666">★上限は区分ごとに個別にかかる。「合計に113万円の上限が1本」ではない（1区分だけ張り付く世帯がふつうに生じる）</text>
+  <text x="16" y="232" font-size="12" fill="#666">★子ども・子育て支援金分の均等割を負担するのは18歳以上の被保険者だけ（18歳未満の分は全額減額）</text>
+</svg>
+<figcaption>令和8年度からの賦課4区分と限度額（国民健康保険法施行令29条の7第1項・2項〜5項）</figcaption>
+</figure>
+
+<p id="yonkubun-kubetsu">それぞれの区分について<b>所得割</b>（所得に率を掛ける）・<b>均等割</b>（被保険者1人あたり）・<b>平等割</b>（1世帯あたり）を計算します。ただし<b>介護分は40歳以上65歳未満の被保険者だけ</b>が負担し（同項3号）、<b>子ども・子育て支援金分の均等割は18歳以上の被保険者だけ</b>が負担します（同条5項3号）。区分ごとに「誰が負担するか」が違うのが、この制度のいちばん間違えやすいところです。</p>
+
+<h2 id="ryoritsu">料率に全国共通の値は存在しない</h2>
+
+<p id="ryoritsu-honbun">施行令29条の7が全国共通で定めているのは<b>賦課の組み立て方</b>であって、料率そのものではありません。<b>所得割率・均等割額・平等割額は市町村が条例で定めます</b>。都道府県単位化の後も、賦課と徴収を行うのは市町村です。<b>平等割をそもそも採らない市町村もあります</b>（施行令は所得割・被保険者均等割・世帯別平等割・資産割の組み合わせ方を複数認めています）。</p>
+
+<p id="ryoritsu-suisoku">だからこの計算機は、料率を<b>入力してもらう形</b>にしています。それらしい平均値を既定値に置けば見た目は親切ですが、出てくる金額は<b>どの市町村のものでもない数字</b>です。保険料の計算機でいちばん困る誤り方は「もっともらしい額が出るが、納付通知書と合わない」ことなので、空欄のまま計算ボタンを押した場合は金額を出さずに入力を促します。</p>
+
+<h2 id="genkoku">賦課限度額は区分ごとに個別にかかる</h2>
+
+<p id="genkoku-honbun">賦課限度額は<b>医療分67万円・後期高齢者支援金等分26万円・介護分17万円・子ども・子育て支援金分3万円</b>です（施行令29条の7第2項9号・3項・4項・5項）。合計すると113万円になりますが、<b>条文に「113万円」という数字があるわけではありません</b>。あくまで4つの上限を足しただけの数です。</p>
+
+<p id="genkoku-hariduki">この違いは実際の金額に出ます。たとえば所得が高く<b>医療分だけが67万円に張り付き、他の3区分は上限に届いていない</b>世帯を考えると、区分ごとに上限を当てる正しい計算では医療分の超過分だけが切り落とされます。ところが「合計に113万円の上限を1本かける」実装では、合計が113万円に届いていないので<b>上限がまったく働かず</b>、保険料を過大に出します。上限に張り付くのは高所得世帯なので、金額の差も大きくなります。</p>
+
+<h2 id="keigen">軽減されるのは均等割と平等割だけ</h2>
+
+<p id="keigen-honbun">世帯の所得が低い場合、保険料が<b>7割・5割・2割</b>軽減されます（施行令29条の7第6項1号〜3号）。ここで急所になるのは、<b>軽減されるのは均等割額と世帯別平等割額だけで、所得割額は軽減されない</b>ことです。所得割まで7割引にする実装は、低所得世帯の保険料を大きく過小に出します。</p>
+
+<p id="keigen-handan">判定は次の式で行います。基準額は<b>43万円＋（給与所得者等の数−1）×10万円</b>で、この加算は<b>給与所得者等が2人以上のときだけ</b>効きます（0人でも1人でも加算はゼロ）。</p>
+
+<table class="tbl" id="keigen-table">
+  <thead><tr><th>軽減割合</th><th>判定所得がこの額以下なら該当</th></tr></thead>
+  <tbody>
+    <tr><td><b>7割</b>軽減</td><td>基準額</td></tr>
+    <tr><td><b>5割</b>軽減</td><td>基準額 ＋ <b>31万円</b> × （被保険者数＋特定同一世帯所属者数）</td></tr>
+    <tr><td><b>2割</b>軽減</td><td>基準額 ＋ <b>57万円</b> × （被保険者数＋特定同一世帯所属者数）</td></tr>
+  </tbody>
+</table>
+
+<h2 id="hantei">判定所得は基礎控除を引く「前」</h2>
+
+<p id="hantei-honbun">軽減判定に使う所得は<b>基礎控除43万円を引く前</b>の総所得金額等です（施行令29条の7第6項1号）。一方で所得割の課税標準は、同じ43万円を<b>引いた後</b>の額です（同条2項4号）。<b>同じ43万円という数字が、別の役割で2回出てくる</b>のがこの制度の罠で、判定に控除後の額を渡すと軽減が1段階ずつ甘い方へずれます。</p>
+
+<p id="hantei-setainushi">もう1つの急所は<b>誰の所得を数えるか</b>です。判定所得には、被保険者本人だけでなく<b>世帯主の所得</b>と<b>特定同一世帯所属者の所得</b>が入ります。世帯主が国保に加入していない（＝擬制世帯主の）場合<b>でも</b>、その所得は判定に算入されます。被保険者だけで判定すると、軽減が本来より甘く出ます。</p>
+
+<p id="hantei-kiso-kojo">なお、この43万円は<b>地方税法314条の2第2項1号</b>の基礎控除額です。<b>所得税の基礎控除（令和7年分以降は58万円）とは別物</b>なので取り違えないでください。</p>
+
+<h2 id="kodomo">未就学児と18歳未満の減額</h2>
+
+<p id="kodomo-honbun">子どもに関する減額は<b>2つあって、対象も割合も違います</b>。</p>
+
+<ul id="kodomo-list">
+  <li><b>未就学児</b>（6歳に達する日以後の最初の3月31日以前）— 均等割が<b>5割</b>減額（施行令29条の7第6項6号・7号）。★<b>7割・5割・2割の軽減を当てた「後」の額に対して</b>5割を減額します。条文が「その減額後の被保険者均等割額」と明記しているためで、順序を逆にすると7割軽減世帯の未就学児で減額が過大になります。</li>
+  <li><b>18歳未満</b>（18歳に達する日以後の最初の3月31日以前）— <b>子ども・子育て支援金分の均等割が全額</b>減額（同項10号・11号）。この区分の均等割はそもそも「十八歳以上被保険者均等割額」として18歳以上に賦課される建て付けなので（同条5項3号）、結果として<b>この区分の均等割を負担するのは18歳以上だけ</b>になります。</li>
+</ul>
+
+<p id="kodomo-shotokuwari">どちらも<b>均等割の話</b>で、<b>所得割は年齢に関係なく全員が対象</b>です。アルバイト収入のある高校生など、所得のある18歳未満の被保険者には、子ども・子育て支援金分の所得割もかかります。</p>
+
+<h2 id="hani">このツールが計算しない範囲</h2>
+
+<p id="hani-honbun">保険料は最終的に市町村が決定します。このツールは<b>施行令29条の7の本文どおりの計算</b>を行うもので、次のものは<b>計算に入れていません</b>。当てはまるかたは、出てくる金額が実際の納付額と変わります。<b>「およそ当たっているはず」と黙って混ぜるより、入れていないものを名前で挙げるほうが役に立つ</b>と考えています。</p>
+
+<ul id="hani-list">
+  <li><b>産前産後期間の免除</b>（第6項8号・9号）— 出産予定月の前月から翌々月までの<b>4か月分</b>（多胎妊娠は出産予定月の3月前から翌々月までの<b>6か月分</b>）。★他の減額と違って<b>所得割も</b>対象になります。</li>
+  <li><b>非自発的失業者の軽減</b>— 倒産・解雇などで離職したかたの給与所得を100分の30とみなす措置。</li>
+  <li><b>資産割</b>（第2項2号イ）— 固定資産税額に応じた賦課。採用している市町村は少数です。</li>
+  <li><b>市町村の条例による独自の減免</b>（国民健康保険法77条）— 災害・所得の激減などに応じた減免。</li>
+  <li><b>年度途中の資格取得・喪失にともなう月割</b>— このツールは年額（12か月分）を出します。</li>
+  <li><b>期別の割り振り</b>— 実際の納付は8〜10期などに分割され、1期目だけ端数を寄せる市町村が多くあります。</li>
+  <li><b>保険料と保険税の別</b>— 賦課の枠組みは同じですが、根拠が国民健康保険法76条（保険料）か地方税法703条の4（保険税）かで、時効や滞納処分の扱いが変わります。金額の計算はどちらも同じ形です。</li>
+</ul>
+
+<p id="hani-nenkin">★<b>公的年金を受けているかた</b>は、判定所得の取り扱いがこのツールと異なる場合があります。確定した金額は必ず納付通知書か市町村の窓口でご確認ください。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 国民健康保険料は全国共通ではないのですか？</h3>
+<p>A. 共通なのは「組み立て方」だけで、料率そのものは市町村がそれぞれ条例で定めます。所得割率・均等割額・平等割額は市町村ごとに違い、平等割を採らない市町村もあります。したがって全国共通の料率という数字は存在しません。この計算機が料率を入力してもらう形になっているのはそのためで、推測の数字で埋めると、それらしい金額が出るのに実際の納付額と合わないという最も困る誤り方をします。料率は納付通知書か市町村のサイトに載っています。</p>
+
+<h3>Q. 令和8年度から何が変わったのですか？</h3>
+<p>A. 賦課区分が3つから4つになりました。従来の医療分（基礎賦課額・限度額67万円）・後期高齢者支援金等分（26万円）・介護分（17万円）に加えて、子ども・子育て支援納付金賦課額（3万円）が新設されています（国民健康保険法施行令29条の7第1項4号）。限度額の合計は113万円です。世に出回っている解説や計算機は3区分のままのものが多く、その場合は新設分をまるごと落とすことになります。</p>
+
+<h3>Q. 子どもの分の保険料はどうなりますか？</h3>
+<p>A. 減額が2つあります。未就学児（6歳に達する日以後の最初の3月31日以前）は、医療分・後期高齢者支援金等分の均等割が5割減額されます（施行令29条の7第6項6号）。7割・5割・2割の軽減に該当する世帯では、その軽減を当てた「後」の額に対して5割を減額します。もう1つは子ども・子育て支援金分で、この区分の均等割は18歳以上の被保険者にだけ賦課され、18歳未満の分は全額減額されます（同項10号・11号、同条5項3号）。所得割は年齢に関係なく全員が対象です。</p>
+
+<h3>Q. 軽減の判定に使う所得は、確定申告の課税所得ですか？</h3>
+<p>A. 違います。軽減判定に使うのは基礎控除43万円を引く「前」の総所得金額等で、社会保険料控除や扶養控除といった所得控除も引きません（施行令29条の7第6項1号）。一方で所得割の課税標準は基礎控除43万円を引いた「後」の額です。同じ43万円という数字が別の役割で2回出てくるため、判定に控除後の額を渡すと軽減が1段階ずつ甘い方へずれます。また判定所得には世帯主（国保に入っていない擬制世帯主でも）と特定同一世帯所属者の所得が加わります。</p>
+
+<h3>Q. 賦課限度額の113万円を超えたら、そこで頭打ちですか？</h3>
+<p>A. 113万円という上限が1本あるのではなく、医療分67万円・後期高齢者支援金等分26万円・介護分17万円・子ども・子育て支援金分3万円という上限が区分ごとに個別にかかります。113万円はその4つを足した数字にすぎず、条文にその金額があるわけではありません。実際には医療分だけが上限に張り付いて他の区分は届いていない、という世帯がふつうに生じます。合計にだけ上限を当てる実装は、そうした世帯で保険料を過大に出します。</p>
+
+<h2 id="shutten">出典</h2>
+<ul>
+  <li><a href="https://laws.e-gov.go.jp/law/333CO0000000362" rel="nofollow">国民健康保険法施行令（昭和33年政令第362号）</a> — 29条の7（市町村の保険料の賦課に関する基準）。1項1号〜4号（賦課4区分）／2項4号（基礎控除後の総所得金額等）・2項9号（医療分67万円）／3項（後期高齢者支援金等分26万円）／4項（介護分17万円）／5項（子ども・子育て支援金分3万円）・5項3号（十八歳以上被保険者均等割額）／6項1号〜3号（軽減の判定と7割・5割・2割）・6項6号7号（未就学児の5割減額）・6項8号9号（産前産後の免除）・6項10号11号（18歳未満の子ども・子育て支援金分均等割の全額減額）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="nofollow">地方税法（昭和25年法律第226号）</a> — 314条の2第2項1号（基礎控除43万円）／703条の4・703条の5（国民健康保険税の場合の賦課と減額）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/333AC0000000192" rel="nofollow">国民健康保険法（昭和33年法律第192号）</a> — 76条（保険料）／77条（条例による減免）</li>
+</ul>
+<p class="hint" id="shutten-hint">条文は e-Gov 法令API v2 で取得した現行版を逐語で確認しています（施行令＝2026年6月25日施行版／地方税法＝2026年6月5日施行版）。★現行版かどうかは施行日で判定しています（API の <code>current_revision_status</code> は現行版でも <code>PreviousEnforced</code> を返すため）。料率は市町村の条例によりますので、確定した金額は納付通知書または市町村の窓口でご確認ください。</p>
+
+<div class="note">
+  <b>関連するツール</b>
+  <div style="margin-top:6px"><a href="../shakai-hoken/">社会保険料の計算機（協会けんぽ・厚生年金）</a>／<a href="../hikazei-setai/">住民税非課税世帯の判定</a>／<a href="../juminzei/">住民税の計算機</a>／<a href="../tedori/">手取り計算機</a>／<a href="../kogaku/">高額療養費の計算機</a></div>
+</div>
+
+</article>
+</main>
+<footer>
+  <div>© 経理ミニツールズ</div>
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcKokuho, classifyByAge } from "../assets/kokuho_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const man = (n) => (n / 10000).toLocaleString("ja-JP") + "万円";
+const num = (id) => Math.max(0, Number($(id).value) || 0);
+let DATA = null;
+
+// 参照データ（賦課区分・限度額・軽減の閾値）は非同期で届く。**届く前にボタンを押されても await で待つ**。
+// この catch が拾ってよいのは「データが手に入らなかったこと」だけ（飾りの描画は別に処理する）。
+const dataReady = fetch("../assets/kokuho_r08.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { DATA = d; return true; })
+  .catch(() => false);
+
+// 出典・年度の表示は飾り。ここで転んでも計算は止めない（dataReady には影響させない）。
+dataReady.then((ok) => { if (ok) paintMeta(); }).catch(() => {});
+
+const MAX_MEMBERS = 8;
+
+// 人数のプルダウンと世帯員の行は**スクリプトで組み立てる**（ページに人数分の HTML を手書きしない）。
+for (let n = 1; n <= MAX_MEMBERS; n++) {
+  const o = document.createElement("option");
+  o.value = String(n);
+  o.textContent = `${n}人`;
+  $("ninzu").appendChild(o);
+}
+$("ninzu").value = "1";
+
+for (let i = 0; i < MAX_MEMBERS; i++) {
+  const row = document.createElement("div");
+  row.className = "member-row";
+  row.id = `m${i}`;
+  row.style.cssText = "grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:8px";
+  row.innerHTML =
+    `<div><label for="age${i}" style="font-size:13px">${i + 1}人目 年度末の年齢</label>` +
+    `<input type="number" id="age${i}" min="0" max="120" inputmode="numeric" value="${i === 0 ? 45 : 0}"></div>` +
+    `<div><label for="shotoku${i}" style="font-size:13px">総所得金額等（円）</label>` +
+    `<input type="number" id="shotoku${i}" min="0" inputmode="numeric" value="0"></div>` +
+    `<div><label for="kyuyo${i}" style="font-size:13px">給与所得者等か</label>` +
+    `<select id="kyuyo${i}"><option value="0" selected>いいえ</option><option value="1">はい</option></select></div>`;
+  $("members").appendChild(row);
+}
+
+function paintRows() {
+  const n = Number($("ninzu").value) || 1;
+  // ★`hidden` 属性ではなく display を直接切り替える。
+  //   行にはインラインで display を当てているので、**インライン指定が [hidden]{display:none} に勝つ**。
+  //   `hidden = true` にしても8行すべてが出たままになる（実描画して初めて分かった。
+  //   E2Eは id で値を読むだけなので、この見た目の壊れを1つも検出しなかった）。
+  for (let i = 0; i < MAX_MEMBERS; i++) $(`m${i}`).style.display = i >= n ? "none" : "grid";
+}
+paintRows();
+$("ninzu").addEventListener("change", paintRows);
+
+// ★年齢の区切りはコアの classifyByAge が持つ（ページに 40/65/6/18 を手書きしない）。
+//   ここは「どの年齢で何が変わるか」を実際に呼んで確かめた結果を描いている。
+function paintAgeHint() {
+  const probe = (a) => classifyByAge(a);
+  const kaigoFrom = [...Array(121).keys()].find((a) => probe(a).kaigo2);
+  const kaigoTo = [...Array(121).keys()].filter((a) => probe(a).kaigo2).pop();
+  const mishuTo = [...Array(121).keys()].filter((a) => probe(a).mishugakuji).pop();
+  const u18To = [...Array(121).keys()].filter((a) => probe(a).under18).pop();
+  $("age-hint").innerHTML =
+    `年齢は<b>年度末（3月31日）時点</b>で入れてください（法令はいずれも「◯歳に達する日以後の最初の3月31日」で区切ります）。` +
+    `<b>${kaigoFrom}〜${kaigoTo}歳</b>は介護分の対象、<b>${mishuTo}歳以下</b>は未就学児として均等割が5割減額、` +
+    `<b>${u18To}歳以下</b>は子ども・子育て支援金分の均等割がかかりません。`;
+}
+paintAgeHint();
+
+function paintMeta() {
+  // ★出典欄は結果ボックスの中にあるので、計算前はまだ存在しない。
+  //   ここで転ぶと dataReady.then の中から呼ばれた飾りの失敗が計算の失敗に化ける
+  //   （「答えに要るもの」と「飾り」を同じ catch に入れない、の別の顔）。
+  if (!DATA || !$("meta-note")) return;
+  const caps = DATA.kubun.map((k) => `${k.name}${man(k.genkoku_yen)}`).join("・");
+  $("meta-note").innerHTML =
+    `<span id="year-from-data">${DATA._meta.year}</span>の賦課基準で計算しています（${DATA._meta.label}）。` +
+    `賦課限度額は区分ごとに ${caps}（合計${man(DATA.genkoku_total_yen)}）、軽減判定の基準額は${man(DATA.keigen.base_yen)}、` +
+    `所得割の基礎控除は${man(DATA.kiso_kojo_yen)}です。`;
+}
+
+// 記入例。★実在の市町村の料率ではないことを画面で申告する（出典のない数字を事実として見せない）。
+const SAMPLE = {
+  iryo: [8, 50000, 0], shien: [2.5, 16000, 0], kaigo: [2, 17000, 0], kosodate: [0.3, 2000, 0],
+};
+$("sample").addEventListener("click", () => {
+  for (const [key, [s, k, h]] of Object.entries(SAMPLE)) {
+    $(`${key}_s`).value = String(s);
+    $(`${key}_k`).value = String(k);
+    $(`${key}_h`).value = String(h);
+  }
+});
+
+function readRates() {
+  const rates = {};
+  let any = false;
+  for (const key of ["iryo", "shien", "kaigo", "kosodate"]) {
+    const r = { shotokuwari: num(`${key}_s`), kintouwari: num(`${key}_k`), heitouwari: num(`${key}_h`) };
+    if (r.shotokuwari > 0 || r.kintouwari > 0 || r.heitouwari > 0) any = true;
+    rates[key] = r;
+  }
+  return { rates, any };
+}
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  // ★.result は既定で display:none。ここで表示に切り替えないと、計算は正しいのに
+  //   画面には何も出ない（過去に10ツールで同時に起きた全損の型）。
+  box.style.display = "block";
+  box.textContent = "計算中…";
+
+  const ready = await dataReady;      // データを待ってから計算する（fail closed）
+  if (!ready || !DATA) {
+    box.innerHTML = '<p class="err">計算に必要なデータを読み込めませんでした。通信環境を確認して再読み込みしてください。</p>';
+    return;
+  }
+
+  const { rates, any } = readRates();
+  if (!any) {
+    box.innerHTML = `<div class="note"><b id="no-rates">お住まいの市町村の料率を入力してください。</b>
+      料率（所得割率・均等割額・平等割額）は市町村の条例で決まるため全国共通の値がなく、
+      推測で埋めると実際の納付額と合わない金額が出ます。納付通知書か市町村のサイトの値を①に入れてください。</div>`;
+    return;
+  }
+
+  const n = Number($("ninzu").value) || 1;
+  const members = [];
+  for (let i = 0; i < n; i++) {
+    const c = classifyByAge(num(`age${i}`));
+    members.push({
+      shotoku: num(`shotoku${i}`),
+      kaigo2: c.kaigo2,
+      mishugakuji: c.mishugakuji,
+      under18: c.under18,
+      kyuyoShotokusha: $(`kyuyo${i}`).value === "1",
+    });
+  }
+
+  // 特定同一世帯所属者は保険料がかからないので人数と所得だけを持つ。
+  // 判定に効くのは「合計所得」と「人数」と「給与所得者等の数」なので、先頭に所得を寄せて配列にする。
+  const tN = Math.min(num("tokuteiN"), MAX_MEMBERS);
+  const tKyuyo = Math.min(num("tokuteiKyuyo"), tN);
+  const tokuteiDouitsu = [];
+  for (let i = 0; i < tN; i++) {
+    tokuteiDouitsu.push({ shotoku: i === 0 ? num("tokuteiShotoku") : 0, kyuyoShotokusha: i < tKyuyo });
+  }
+
+  const setainushiIsHihokensha = $("setainushiIs").value === "1";
+  const r = calcKokuho({
+    members,
+    tokuteiDouitsu,
+    setainushiIsHihokensha,
+    setainushiShotoku: num("setainushiShotoku"),
+    setainushiKyuyoShotokusha: $("setainushiKyuyo").value === "1",
+    rates,
+  }, DATA);
+
+  const K = r.keigen;
+  const rows = r.kubun.map((k) => `
+    <tr>
+      <td>${k.name}${k.capped ? '<br><span class="hint">限度額適用</span>' : ""}</td>
+      <td>${yenF(k.shotokuwari)}</td>
+      <td>${yenF(k.kintouwari)}${k.mishugakujiGenzoku > 0 ? `<br><span class="hint">未就学児 −${yenF(k.mishugakujiGenzoku)}</span>` : ""}</td>
+      <td>${yenF(k.heitouwari)}</td>
+      <td>${k.kintouwariCount}人</td>
+      <td><b id="kubun-${k.key}">${yenF(k.amount)}</b></td>
+    </tr>`).join("");
+
+  const capped = r.kubun.filter((k) => k.capped);
+  const cappedLine = capped.length
+    ? `<div class="note" style="margin-top:12px"><b id="capped">賦課限度額を適用しました — ${capped.map((k) => `${k.name}（${yenF(k.cap)}）`).join("・")}</b>
+       <span id="capped-hanbun">★限度額は<b>区分ごとに個別に</b>かかります。合計${man(DATA.genkoku_total_yen)}という上限が1本あるのではありません
+       （合計にだけ上限を当てる実装は、1区分だけ張り付くこの世帯で保険料を過大に出します）。</span></div>`
+    : "";
+
+  const keigenLine = K.key
+    ? `<div class="note" style="margin-top:12px"><b id="keigen-name">${K.name}に該当します</b>
+       — 判定所得${yenF(K.hanteiShotoku)} ≤ 基準額${yenF(K.base)}${K.thresholds.find((t) => t.key === K.key).threshold > K.base ? `＋人数分＝${yenF(K.thresholds.find((t) => t.key === K.key).threshold)}` : ""}。
+       <span id="keigen-taisho">★軽減されるのは<b>均等割と平等割だけ</b>で、<b>所得割は軽減されません</b>（施行令29条の7第6項1号）。</span></div>`
+    : `<div class="note" style="margin-top:12px"><b id="keigen-name">軽減には該当しません</b>
+       — 判定所得${yenF(K.hanteiShotoku)} が2割軽減の基準${yenF(K.thresholds[K.thresholds.length - 1].threshold)}を超えています。</div>`;
+
+  box.innerHTML = `
+    <div style="font-size:15px">年間の国民健康保険料 <b style="font-size:22px" id="total">${yenF(r.total)}</b>
+      <span class="hint">（月あたり約${yenF(r.total / 12)}）</span></div>
+    <table class="tbl" style="margin-top:10px">
+      <thead><tr><th>賦課区分</th><th>所得割</th><th>均等割</th><th>平等割</th><th>均等割の対象</th><th>計</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    ${keigenLine}
+    ${cappedLine}
+    <div class="hint" style="margin-top:8px" id="hantei-note">軽減の判定所得は<b>基礎控除${man(r.kisoKojo)}を引く前</b>の総所得金額等の合算（世帯主＋被保険者＋特定同一世帯所属者の${K.headcount}人分）で、所得割の課税標準は<b>引いた後</b>の額です。給与所得者等は${K.kyuyoCount}人として基準額を${yenF(K.base)}にしています（2人以上のときだけ1人あたり${yenF(DATA.keigen.kyuyo_shotokusha_add_yen)}を加算）。</div>
+    <div class="hint" style="margin-top:6px" id="meta-note"></div>
+    <div class="note" style="margin-top:12px">
+      <b>この金額に入れていないもの</b> — 産前産後期間の免除（4か月分・多胎6か月分。所得割も対象）／非自発的失業者の軽減／資産割／市町村の条例による独自の減免／年度途中の資格取得・喪失にともなう月割／期別の割り振り。確定した金額は納付通知書か市町村の窓口でご確認ください。
+    </div>`;
+  paintMeta();
+});
+</script>
+</body>
+</html>

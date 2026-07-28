@@ -711,6 +711,46 @@ const SCENES = [
   // ★入力なし → 0円と答えず入力を促す（fail closed）
   { name: "fudosan_shutoku_empty", expect: (s) => s.noInput && s.total === null },
 
+  // ── 国民健康保険料 (/kokuho/) ────────────────────────────────────────
+  // ★手計算の鎖は tests/test_kokuho.mjs §4（同じ世帯・同じ架空料率）。
+  //   医療380,600／後期支援120,250／介護85,400／子育て11,710 → 合計597,960円。
+  //   介護分を全員に賦課する実装、子育て分の均等割を18歳未満にも掛ける実装は落ちる。
+  { name: "kokuho", expect: (s) =>
+      s.total === 597960 && s.iryo === 380600 && s.shien === 120250 &&
+      s.kaigo === 85400 && s.kosodate === 11710 &&
+      // 軽減なし側であることを名指し（対の片方）
+      /軽減には該当しません/.test(s.keigenName || "") &&
+      // 年齢の区切りはコアから描かれている（ページの手書きではない）
+      /40〜64歳/.test(s.ageHint) && /6歳以下/.test(s.ageHint) && /18歳以下/.test(s.ageHint) &&
+      // ★選んだ人数の分だけ世帯員の行が見えていること（余りは消えていること）。
+      //   値を id で読むだけの検査は「8行すべて出たまま」を検出しない
+      s.visibleRows === s.memberCount &&
+      !s.noRates && !s.failed },
+  // ★対（同じ4人世帯で所得だけ0）→ 7割軽減・80,700円。
+  //   所得を core に渡していない実装は、上の kokuho もこれと同じ軽減を出して落ちる。
+  { name: "kokuho_keigen", expect: (s) =>
+      s.total === 80700 && s.iryo === 52500 &&
+      /7割軽減/.test(s.keigenName || "") &&
+      // 「所得割は軽減されない」は見出しとは別の要素に載っている（規則5）
+      /所得割は軽減されません/.test(s.keigenTaisho || "") },
+  // ★擬制世帯主の所得500万は判定所得に入る → 軽減なし・85,000円
+  { name: "kokuho_gisei", expect: (s) =>
+      s.total === 85000 && /軽減には該当しません/.test(s.keigenName || "") },
+  // ★その対（擬制世帯主なし）→ 7割軽減・25,500円。渡し忘れ実装は両方25,500になって落ちる
+  { name: "kokuho_gisei_nashi", expect: (s) =>
+      s.total === 25500 && /7割軽減/.test(s.keigenName || "") &&
+      // 1人世帯なら見えている世帯員の行も1つだけ（8行出たままの見た目の壊れを落とす）
+      s.visibleRows === 1 },
+  // ★特定同一世帯所属者を人数に算入すると2割軽減に入る（単独なら軽減なし）
+  { name: "kokuho_tokutei", expect: (s) =>
+      s.total === 204960 && /2割軽減/.test(s.keigenName || "") },
+  // ★料率が空 → 0円と答えず入力を促す（推測で埋めない設計が画面まで通っている）
+  { name: "kokuho_norates", expect: (s) =>
+      s.total === null && /料率を入力してください/.test(s.noRates || "") },
+  // ★参照データ配信不可 → 金額を出さずに断る（fail closed）
+  { name: "kokuho_nodata", data404: "kokuho_r08.json", expect: (s) =>
+      s.failed && s.total === null },
+
   // ── 収入印紙 (/inshi/) ───────────────────────────────────────────────
   // ★No.6925: 税込54,800円・消費税等4,981円区分記載 → 税抜49,819円で判定＝非課税（印紙不要）。
   //   ハーネス側の引き算 54,800−4,981=49,819<50,000 と一致し、一覧表23行（判取帳まで）も描かれること。

@@ -2107,6 +2107,106 @@ SCENES.fudosan_shutoku_hanigai = fudosanScene({ houseKind: "chuko", builtDate: "
 // ★入力なし → 0円と答えず入力を促す（fail closed）。
 SCENES.fudosan_shutoku_empty = fudosanScene({ landValue: 0, houseValue: 0 });
 
+// ── 国民健康保険料 (/kokuho/) ───────────────────────────────────────────────
+// ★単体（tests/test_kokuho.mjs）は core しか見ないので、次の配線はここでしか守れない:
+//   「年齢 → classifyByAge → 介護分/未就学児/18歳未満のフラグ」
+//   「料率の12個の入力 → rates の4区分」
+//   「擬制世帯主・特定同一世帯所属者 → 軽減判定の所得と人数」
+//   「4区分の内訳表と軽減欄の描画」
+// ★軽減は独立した入力ではなく所得と人数から導かれるので、**同条件で軽減あり／なしの対**を置く。
+//   片方だけだと「所得を core に渡し忘れている（＝いつも0円扱い＝いつも7割軽減）」配線ミスが
+//   見えない（第4便の教訓: 既定値がある入力軸は既定値でない側も必ず1シーン置く）。
+const kokuhoScene = (o) => async () => {
+  const doc = await open("/docs/kokuho/");
+  // ★料率は既定で空欄（推測で埋めない設計）。空のまま押すシーンのために null を渡せるようにする。
+  if (o.rates !== null) {
+    const R = o.rates ?? { iryo: [8, 50000, 0], shien: [2.5, 16000, 0], kaigo: [2, 17000, 0], kosodate: [0.3, 2000, 0] };
+    for (const [key, [s, k, h]] of Object.entries(R)) {
+      set(doc, `${key}_s`, s); set(doc, `${key}_k`, k); set(doc, `${key}_h`, h);
+    }
+  }
+  const members = o.members ?? [[45, 3000000, "1"]];
+  set(doc, "ninzu", String(members.length));
+  members.forEach(([age, shotoku, kyuyo], i) => {
+    set(doc, `age${i}`, age); set(doc, `shotoku${i}`, shotoku); set(doc, `kyuyo${i}`, kyuyo);
+  });
+  set(doc, "setainushiIs", o.setainushiIs ?? "1");
+  set(doc, "setainushiShotoku", o.setainushiShotoku ?? 0);
+  set(doc, "setainushiKyuyo", o.setainushiKyuyo ?? "0");
+  set(doc, "tokuteiN", o.tokuteiN ?? 0);
+  set(doc, "tokuteiShotoku", o.tokuteiShotoku ?? 0);
+  set(doc, "tokuteiKyuyo", o.tokuteiKyuyo ?? 0);
+  // 年齢のヒントはコアの classifyByAge を実際に呼んで描かれる（ページに 40/65/6/18 を手書きしない）
+  const ageHint = text(doc, "age-hint");
+  // ★人数で余った世帯員の行が**実際に消えているか**を、計算結果とは別に見る。
+  //   id で値を読むだけの検査は「8行すべて出たまま」の見た目の壊れを1つも検出しなかった
+  //   （実描画して初めて分かった。inline の display が [hidden]{display:none} に勝っていた）。
+  const win = doc.defaultView;
+  const visibleRows = [...doc.querySelectorAll(".member-row")]
+    .filter((el) => win.getComputedStyle(el).display !== "none").length;
+  click(doc, "calc");
+
+  await waitFor(
+    () => /¥|入力してください|読み込めませんでした/.test(text(doc, "result")),
+    "国民健康保険料の計算結果",
+  );
+  const body = text(doc, "result");
+  const byId = (id) => { const e = doc.getElementById(id); return e ? e.textContent.trim() : null; };
+  const yen = (id) => { const t = byId(id); return t && /\d/.test(t) ? Number(t.replace(/[^\d]/g, "")) : null; };
+  return {
+    ageHint,
+    visibleRows,
+    memberCount: members.length,
+    total: yen("total"),
+    iryo: yen("kubun-iryo"),
+    shien: yen("kubun-shien"),
+    kaigo: yen("kubun-kaigo"),
+    kosodate: yen("kubun-kosodate"),
+    keigenName: byId("keigen-name"),
+    // ★主張ごとに別の要素を読む。軽減の見出しには「所得割は軽減されない」という別の主張が
+    //   入っていないので、見出しだけを見て判定すると素通しする（規則5）。
+    keigenTaisho: byId("keigen-taisho"),
+    capped: byId("capped"),
+    cappedHanbun: byId("capped-hanbun"),
+    hanteiNote: byId("hantei-note"),
+    noRates: byId("no-rates"),
+    failed: /読み込めませんでした/.test(body),
+    body,
+  };
+};
+// ★看板例（tests/test_kokuho.mjs §4 の手計算の鎖と同じ世帯・同じ料率）:
+//   世帯主45歳（給与・総所得300万）／配偶者42歳／子5歳（未就学児）／子16歳
+//   判定所得300万 > 43万+4人×57万=271万 → 軽減なし
+//   医療380,600／後期支援120,250／介護85,400（40〜64歳の2人だけ）／子育て11,710（18歳以上の2人だけ）
+//   → 合計597,960円。介護分を全員に賦課する実装や、子育て分の均等割を子どもにも掛ける実装は落ちる。
+SCENES.kokuho = kokuhoScene({
+  members: [[45, 3000000, "1"], [42, 0, "0"], [5, 0, "0"], [16, 0, "0"]],
+});
+// ★同じ4人世帯で所得だけ0にした対。判定所得0 ≤ 43万 → 7割軽減。
+//   均等割は3割になり、未就学児はさらに半額（医療分 15,000×3人＋7,500＝52,500円）。
+//   合計80,700円。所得を core に渡し忘れている実装は、上の看板例でも同じ7割軽減を出して落ちる。
+SCENES.kokuho_keigen = kokuhoScene({
+  members: [[45, 0, "0"], [42, 0, "0"], [5, 0, "0"], [16, 0, "0"]],
+});
+// ★擬制世帯主（世帯主が国保の被保険者でない）— 所得500万は判定所得に入るので軽減は外れる。
+//   1人世帯の均等割そのまま＝50,000+16,000+17,000+2,000＝85,000円。
+SCENES.kokuho_gisei = kokuhoScene({
+  members: [[45, 0, "0"]], setainushiIs: "0", setainushiShotoku: 5000000,
+});
+// ★その対（世帯主も被保険者＝擬制世帯主なし）。判定所得0 → 7割軽減で25,500円。
+//   擬制世帯主の所得を判定に渡し忘れている実装は、上のシーンでもこちらと同じ25,500円を出して落ちる。
+SCENES.kokuho_gisei_nashi = kokuhoScene({ members: [[45, 0, "0"]] });
+// ★特定同一世帯所属者は人数にも算入される — 1人増えると2割軽減の閾値が57万円上がる。
+//   45歳・所得150万の1人世帯: 単独なら閾値100万で軽減なし、1人算入すると157万で**2割軽減**に入る。
+//   2割軽減の合計＝125,600+39,550+35,000+4,810＝204,960円。
+SCENES.kokuho_tokutei = kokuhoScene({
+  members: [[45, 1500000, "0"]], tokuteiN: 1, tokuteiShotoku: 0,
+});
+// ★料率が空 → 0円と答えず入力を促す（fail closed。推測で埋めない設計が画面まで通っていること）。
+SCENES.kokuho_norates = kokuhoScene({ rates: null });
+// ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
+SCENES.kokuho_nodata = kokuhoScene({});
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。
