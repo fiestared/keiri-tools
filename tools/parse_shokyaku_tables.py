@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 """耐用年数省令の別表第八・別表第十を e-Gov のレスポンスから機械抽出し、
-減価償却計算機が使う償却率JSONを出す。
+本番の償却率表を照合するための**オラクル（第二の出典）**を出す。
 
     別表第八 = 平成19年4月1日以後に取得をされた減価償却資産の「定額法」の償却率表
     別表第十 = 平成24年4月1日以後に取得をされた減価償却資産の「定率法」の
                償却率・改定償却率・保証率の表（いわゆる200%定率法）
 
+★出力先は docs/assets/ ではない（2026-07-28に訂正）。
+本番 `/genka/` が使う償却率表は `docs/assets/genka_rates.json`（国税庁 No.2106 添付PDF由来）**1本だけ**で、
+ここで作るJSONは**それを照合するためのテスト用フィクスチャ**。出荷物ではない。
+docs/assets/ に置くと同じ表が2本出荷され、どちらが正本か分からなくなる。
+照合は `tests/test_shokyaku_rates_oracle.mjs`（196個の数値を機械で突き合わせる）。
+
 使い方:
-    python3 tools/parse_shokyaku_tables.py /tmp/taiyo.json --out docs/assets/shokyaku_rates_r08.json
+    python3 tools/parse_shokyaku_tables.py /tmp/taiyo.json --out tests/fixtures/shokyaku_rates_r08.json
 
 なぜ機械抽出するか: 耐用年数2〜100年で定額法1列・定率法3列＝計400個の数値がある。
 手で書き写すと転記ミスに気づく経路が無くなる（parse_shokyakuritsu.py と同じ理由）。
