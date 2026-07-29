@@ -201,7 +201,7 @@
   <h2 id="tejun">計算の5ステップ（図解）</h2>
   <p>手計算の手順は、次の流れで固定です。上から順にたどれば必ず答えが出ます。</p>
 
-  <figure class="figure">
+  <figure class="figure fig-wide" style="--figw:760px">
     <svg viewBox="0 0 760 250" role="img" aria-label="給与額から社会保険料の控除額までの計算の流れ図">
       <defs>
         <marker id="ar" markerWidth="9" markerHeight="9" refX="7.5" refY="4.5" orient="auto">
@@ -417,7 +417,7 @@
 
   <h3>退職日が1日違うと、控除される保険料が1か月分変わる</h3>
 
-  <figure class="figure">
+  <figure class="figure fig-wide" style="--figw:760px">
     <svg viewBox="0 0 760 210" role="img" aria-label="3月30日退職と3月31日退職で保険料の負担が1か月分変わることを示す図">
       <text x="297" y="20" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--sub)">2月分の保険料</text>
       <text x="492" y="20" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--sub)">3月分の保険料</text>
@@ -638,7 +638,7 @@ $("calc").addEventListener("click", async () => {
   const monthly = Number($("monthly").value);
   const age = Number($("age").value);
   const pref = $("pref").value;
-  if (!monthly || monthly <= 0) { box.innerHTML = "報酬月額を入力してください。"; return; }
+  if (!monthly || monthly <= 0) { box.innerHTML = '<div class="warn">報酬月額を入力してください。</div>'; return; }
 
   const kRate = RATES.kenko_rates[pref];
   // 料率を引けない都道府県で NaN を答えない(知らないことは知らないと言う)

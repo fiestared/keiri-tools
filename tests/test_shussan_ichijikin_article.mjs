@@ -155,7 +155,7 @@ cmp('回', kai, EXPECT_KAI);
 const rows = [...body.matchAll(/<tr>[\s\S]*?<\/tr>/g)].map(m => m[0]);
 const quotes = [...body.matchAll(/<blockquote>[\s\S]*?<\/blockquote>/g)].map(m => m[0]);
 const callouts = [...body.matchAll(/<div class="callout">[\s\S]*?<\/div>/g)].map(m => m[0]);
-const figs = [...body.matchAll(/<figure class="figure">[\s\S]*?<\/figure>/g)].map(m => m[0]);
+const figs = [...body.matchAll(/<figure class="figure[^"]*"[^>]*>[\s\S]*?<\/figure>/g)].map(m => m[0]);
 if (rows.length < 8) fail(`表の行が読めていない（${rows.length}行）`);
 if (quotes.length < 4) fail(`blockquoteが読めていない（${quotes.length}件）`);
 if (callouts.length < 4) fail(`calloutが読めていない（${callouts.length}件）`);

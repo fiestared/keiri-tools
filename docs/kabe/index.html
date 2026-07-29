@@ -188,7 +188,7 @@ $("calc").addEventListener("click", async () => {
     return;
   }
   const annual = Number($("annual").value);
-  if (!annual || annual <= 0) { box.innerHTML = "現在の年収を入力してください。"; return; }
+  if (!annual || annual <= 0) { box.innerHTML = '<div class="warn">現在の年収を入力してください。</div>'; return; }
   const pref = $("pref").value;
   if (!SHAHO.kenko_rates[pref]) {
     box.innerHTML = `<div class="note"><b>「${pref || "未選択"}」の健康保険料率が見つかりませんでした。</b>
@@ -201,7 +201,7 @@ $("calc").addEventListener("click", async () => {
     r = calcKabe({ annual, age: Number($("age").value), prefecture: pref, wallType: wallType() },
       { thresholds: THRESH, shahoRates: SHAHO });
   } catch (e) {
-    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
     return;
   }
 

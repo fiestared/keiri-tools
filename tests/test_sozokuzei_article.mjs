@@ -98,7 +98,7 @@ function jpToYen(label) {
   }
 
   // 図解(figure)も同じ例を描いている(2,700万円と1,350万円)
-  const fig = slice('<figure class="figure">', "</figure>");
+  const fig = slice('<figure class="figure', "</figure>");  // 幅広の図は class="figure fig-wide"(2026-07-29)
   assert.ok(fig.includes("2,700万円"), "図解に相続税の総額(2,700万円)が無い");
   assert.ok(fig.includes("1,350万円"), "図解に実際の納税額(1,350万円)が無い");
 

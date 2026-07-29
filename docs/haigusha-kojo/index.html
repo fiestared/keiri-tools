@@ -214,7 +214,7 @@
 <p>住民税（地方税法314条の2）では、配偶者の合計所得金額<b>100万円以下の帯の控除額が33万円</b>（あなたの所得900万円超950万円以下なら22万円・950万円超1,000万円以下なら11万円）になります。つまり所得税で38万円・36万円の帯だけ住民税は33万円に頭打ちで、<b>100万円超の帯は所得税と同じ金額</b>です。このツールは住民税の減少を住民税側の控除額で計算しています。</p>
 </div>
 
-<figure class="figure">
+<figure class="figure fig-wide" style="--figw:640px">
 <svg viewBox="0 0 640 260" role="img" aria-label="配偶者の合計所得金額と所得税の控除額（あなたの所得900万円以下の場合）。95万円までは38万円で一定、95万円を超えると階段状に減り、133万円を超えると0円">
   <text x="20" y="16" font-size="13" fill="currentColor">配偶者の所得と控除額（所得税・あなたの合計所得900万円以下）</text>
   <!-- 軸 -->
@@ -413,13 +413,13 @@ $("calc").addEventListener("click", async () => {
 
   const honnin = Number($("honnin").value);
   if (!honnin) {
-    box.innerHTML = `あなたの合計所得金額の区分を選んでください。`;
+    box.innerHTML = `<div class="warn">あなたの合計所得金額の区分を選んでください。</div>`;
     return;
   }
 
   const hincomeRaw = $("hincome").value;
   if (hincomeRaw === "" || Number(hincomeRaw) < 0) {
-    box.innerHTML = `配偶者の収入を入力してください（収入が無い場合は 0 を入れてください）。`;
+    box.innerHTML = `<div class="warn">配偶者の収入を入力してください（収入が無い場合は 0 を入れてください）。</div>`;
     return;
   }
   const hincome = Number(hincomeRaw);
@@ -444,7 +444,7 @@ $("calc").addEventListener("click", async () => {
   try {
     k = haigushaKojo({ honninShotoku: honnin, haiguShotoku, rojin: $("rojin").checked }, R08);
   } catch (e) {
-    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
     return;
   }
 
@@ -460,14 +460,14 @@ $("calc").addEventListener("click", async () => {
 
   const kazei = Number($("kazei").value);
   if (!kazei || kazei <= 0) {
-    box.innerHTML = `あなたの課税される所得金額を入力してください（<b>年収ではなく課税所得</b>です）。`;
+    box.innerHTML = `<div class="warn">あなたの課税される所得金額を入力してください（<b>年収ではなく課税所得</b>です）。</div>`;
     return;
   }
 
   // 区分(合計所得)と課税所得の矛盾は黙って答えない: 課税所得は合計所得から所得控除を引いた後
   // なので、必ず 合計所得 ≧ 課税所得 になる。
   if (kazei > honnin) {
-    box.innerHTML = `<div class="note"><b>課税される所得金額（${yen(kazei)}）が、選んだ合計所得金額の区分（${k.tierLabel}）を超えています。</b>
+    box.innerHTML = `<div class="warn"><b>課税される所得金額（${yen(kazei)}）が、選んだ合計所得金額の区分（${k.tierLabel}）を超えています。</b>
       課税所得は合計所得金額から所得控除を引いた後の金額なので、区分より大きくなることはありません。
       合計所得金額の区分を選び直してください（区分が上がると控除額が変わります）。</div>`;
     return;
@@ -477,7 +477,7 @@ $("calc").addEventListener("click", async () => {
   try {
     r = taxSavingSplit({ kazeiShotoku: kazei, shotokuKojo: k.shotoku, juminKojo: k.jumin }, R08);
   } catch (e) {
-    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
     return;
   }
 

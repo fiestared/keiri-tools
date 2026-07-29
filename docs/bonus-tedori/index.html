@@ -366,11 +366,11 @@ $("calc").addEventListener("click", async () => {
   }
 
   const bonus = Number($("bonus").value);
-  if (!bonus || bonus <= 0) { box.innerHTML = "ボーナスの額面を入力してください。"; return; }
+  if (!bonus || bonus <= 0) { box.innerHTML = '<div class="warn">ボーナスの額面を入力してください。</div>'; return; }
   const paid = zmode() === "paid";
   const zengetsu = Number($("zengetsu").value);
   if (paid && (!zengetsu || zengetsu <= 0)) {
-    box.innerHTML = `<div class="note"><b>前月の額面の月給を入力してください。</b>
+    box.innerHTML = `<div class="warn"><b>前月の額面の月給を入力してください。</b>
       賞与の税率は前月の給与で決まるため、この欄が空だと計算できません。
       前月に給与の支払いがなかった場合は、その選択肢に切り替えてください。</div>`;
     return;
@@ -393,7 +393,7 @@ $("calc").addEventListener("click", async () => {
       yearPaidKenko: Number($("yearpaid").value) || 0,
     }, { shahoRates: SHAHO, shoyoTable: SHOYO, gensenTable: GENSEN });
   } catch (e) {
-    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
     return;
   }
 

@@ -170,7 +170,7 @@
 
 <p><b>特定扶養親族（19歳以上23歳未満・大学生の年代）がいちばん大きく63万円</b>です。学費のかかる年代への配慮で、一般より25万円上乗せされています。<b>同居老親等</b>は、70歳以上の老人扶養親族のうち<b>納税者またはその配偶者の直系の父母・祖父母で、普段同居している人</b>です。48万円に10万円が加算されて58万円になります。病気の治療のため入院して別居している場合は、1年以上の長期でも同居として扱って差し支えないとされていますが、<b>老人ホームに入所している場合は同居にはなりません</b>（この場合は同居老親等以外の48万円）。</p>
 
-<figure class="figure">
+<figure class="figure fig-wide" style="--figw:640px">
 <svg viewBox="0 0 640 250" role="img" aria-label="扶養控除の区分別の控除額。所得税は一般38万円・特定63万円・老人48万円・同居老親等58万円、住民税は33万・45万・38万・45万円">
   <text x="20" y="16" font-size="13" fill="currentColor">扶養親族1人あたりの控除額（■ 所得税 ／ □ 住民税）</text>
 
@@ -385,13 +385,13 @@ $("calc").addEventListener("click", async () => {
   for (const k of R08.fuyo.kubun) counts[k.key] = Number($("n-" + k.key)?.value) || 0;
   const t = fuyoKojoTotal(counts, R08);
   if (t.count === 0) {
-    box.innerHTML = `扶養親族の人数を選んでください（16歳未満のお子さんは扶養控除の対象外です）。`;
+    box.innerHTML = `<div class="warn">扶養親族の人数を選んでください（16歳未満のお子さんは扶養控除の対象外です）。</div>`;
     return;
   }
 
   const kazei = Number($("kazei").value);
   if (!kazei || kazei <= 0) {
-    box.innerHTML = `課税される所得金額を入力してください（<b>年収ではなく課税所得</b>です）。`;
+    box.innerHTML = `<div class="warn">課税される所得金額を入力してください（<b>年収ではなく課税所得</b>です）。</div>`;
     return;
   }
 
@@ -399,7 +399,7 @@ $("calc").addEventListener("click", async () => {
   try {
     r = taxSavingSplit({ kazeiShotoku: kazei, shotokuKojo: t.shotoku, juminKojo: t.jumin }, R08);
   } catch (e) {
-    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
     return;
   }
 

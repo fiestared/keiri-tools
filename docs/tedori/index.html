@@ -208,7 +208,7 @@
 <p>前の3つは<b>標準報酬月額</b>（等級表で丸めた額）にかかりますが、<b>雇用保険だけは「賃金総額」＝実際に支払われた額</b>にかかります（労働保険徴収法11条1項）。だから残業代が増えれば雇用保険料はその月からすぐ増えますが、健康保険料と厚生年金保険料は<b>その月には1円も動きません</b>。この違いが、次に述べる「崖」を生みます。</p>
 </div>
 
-<figure class="figure">
+<figure class="figure fig-wide" style="--figw:640px">
 <svg viewBox="0 0 640 228" role="img" aria-label="額面30万円の内訳。手取り249,610円、社会保険料44,070円、所得税6,320円">
   <text x="0" y="14" font-size="13" fill="currentColor">額面 300,000円（東京都・30歳・扶養なし／住民税を除く）の内わけ　※幅は金額比</text>
 
@@ -243,15 +243,15 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>額面（月）</th><th>標準報酬月額</th><th>社会保険料</th><th>所得税</th><th>手取り</th><th>手取り率</th></tr>
+<tr><th>額面（月）</th><th>手取り</th><th>手取り率</th><th>社会保険料</th><th>所得税</th><th>標準報酬月額</th></tr>
 </thead>
 <tbody>
-<tr><td>200,000円</td><td>200,000円</td><td>29,380円</td><td>3,270円</td><td><b>167,350円</b></td><td>83.7%</td></tr>
-<tr><td>250,000円</td><td>260,000円</td><td>38,144円</td><td>4,770円</td><td><b>207,086円</b></td><td>82.8%</td></tr>
-<tr><td>300,000円</td><td>300,000円</td><td>44,070円</td><td>6,320円</td><td><b>249,610円</b></td><td>83.2%</td></tr>
-<tr><td>350,000円</td><td>360,000円</td><td>52,834円</td><td>7,820円</td><td><b>289,346円</b></td><td>82.7%</td></tr>
-<tr><td>400,000円</td><td>410,000円</td><td>60,178円</td><td>10,750円</td><td><b>329,072円</b></td><td>82.3%</td></tr>
-<tr><td>500,000円</td><td>500,000円</td><td>73,450円</td><td>17,860円</td><td><b>408,690円</b></td><td>81.7%</td></tr>
+<tr><td>200,000円</td><td><b>167,350円</b></td><td>83.7%</td><td>29,380円</td><td>3,270円</td><td>200,000円</td></tr>
+<tr><td>250,000円</td><td><b>207,086円</b></td><td>82.8%</td><td>38,144円</td><td>4,770円</td><td>260,000円</td></tr>
+<tr><td>300,000円</td><td><b>249,610円</b></td><td>83.2%</td><td>44,070円</td><td>6,320円</td><td>300,000円</td></tr>
+<tr><td>350,000円</td><td><b>289,346円</b></td><td>82.7%</td><td>52,834円</td><td>7,820円</td><td>360,000円</td></tr>
+<tr><td>400,000円</td><td><b>329,072円</b></td><td>82.3%</td><td>60,178円</td><td>10,750円</td><td>410,000円</td></tr>
+<tr><td>500,000円</td><td><b>408,690円</b></td><td>81.7%</td><td>73,450円</td><td>17,860円</td><td>500,000円</td></tr>
 </tbody>
 </table>
 </div>
@@ -303,7 +303,7 @@
 
 <p>ここで注目してほしいのは<b>所得税の行が「0円」</b>であることです。ふつう社会保険料が増えれば、その分だけ課税対象（社会保険料等控除後の給与等の金額）が減るので、所得税も下がって<b>損を一部打ち消して</b>くれるはずです。ところが今回は、社会保険料を引いた後の金額が<b>265,879円と263,042円</b>で、どちらも源泉徴収税額表の<b>同じ行（263,000円以上266,000円未満＝6,650円）</b>に収まってしまいます。<b>税額表も3,000円刻みの階段なので、2,838円の差をまるごと飲み込んでしまう</b>のです。結果、社会保険料の増加が1円も相殺されずに手取りの減少になります。</p>
 
-<figure class="figure">
+<figure class="figure fig-wide" style="--figw:640px">
 <svg viewBox="0 0 640 200" role="img" aria-label="報酬月額310,000円の境目で標準報酬月額が20,000円ジャンプし、手取りが2,837円下がる階段のグラフ">
   <text x="0" y="14" font-size="13" fill="currentColor">報酬月額と標準報酬月額（等級表は階段）</text>
 
@@ -596,7 +596,7 @@ $("calc").addEventListener("click", async () => {
   }
 
   const gross = Number($("gross").value);
-  if (!gross || gross <= 0) { box.innerHTML = "額面の月給を入力してください。"; return; }
+  if (!gross || gross <= 0) { box.innerHTML = '<div class="warn">額面の月給を入力してください。</div>'; return; }
   const pref = $("pref").value;
   if (!SHAHO.kenko_rates[pref]) {
     box.innerHTML = `<div class="note"><b>「${pref || "未選択"}」の健康保険料率が見つかりませんでした。</b>
@@ -614,7 +614,7 @@ $("calc").addEventListener("click", async () => {
       juminzeiManual: Number($("jmanual").value) || 0,
     }, { shahoRates: SHAHO, gensenTable: GENSEN, juminzeiData: JUMIN });
   } catch (e) {
-    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
     return;
   }
 

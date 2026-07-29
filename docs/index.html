@@ -577,7 +577,7 @@ async function ask(q, commit) {
   }
   const r = search(QA, q);
   if (r.matched && r.results.length) {
-    box.innerHTML = `<div class="qa-reslist">${r.results.map(card).join("")}</div>`;
+    box.innerHTML = `<p class="qa-status">質問に<b>近い</b>記事・ツールです（答えそのものとは限りません）。</p><div class="qa-reslist">${r.results.map(card).join("")}</div>`;
     if (commit) track(q, true, r.results[0].url);
   } else if (commit) {
     box.innerHTML = `<div class="qa-empty"><b>ぴったりの記事がまだありません。</b>いただいた質問は、記事にするか検討します。<div style="margin-top:8px"><a href="column/">コラム一覧を見る →</a></div></div>`;

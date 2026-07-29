@@ -181,7 +181,7 @@
 <b>住民税は「2.8万円×3＝8.4万円」になりません。</b>区分ごとの上限は2.8万円ですが、<b>合計の上限は7万円</b>で頭打ちになります（地方税法314条の2第1項5号）。3区分すべてを上限まで使っている人は、住民税側で1.4万円分が切り捨てられます。所得税は4万円×3＝12万円がちょうど合計上限に一致するので、この現象は起きません。
 </div>
 
-<figure class="figure">
+<figure class="figure fig-wide" style="--figw:640px">
 <svg viewBox="0 0 640 260" role="img" aria-label="生命保険料控除の3区分と上限。所得税は一般・介護医療・個人年金それぞれ4万円で合計12万円、住民税はそれぞれ2.8万円だが合計は7万円で頭打ち">
   <text x="20" y="18" font-size="13" fill="currentColor">3区分の控除額と合計の上限</text>
 
@@ -450,7 +450,7 @@ $("calc").addEventListener("click", async () => {
   };
   const paid = input.ippan_shin + input.ippan_kyu + input.kaigo + input.nenkin_shin + input.nenkin_kyu;
   if (paid <= 0) {
-    box.innerHTML = `年間の支払保険料を入力してください（控除証明書の「申告額」）。`;
+    box.innerHTML = `<div class="warn">年間の支払保険料を入力してください（控除証明書の「申告額」）。</div>`;
     return;
   }
 
@@ -458,7 +458,7 @@ $("calc").addEventListener("click", async () => {
   try {
     k = seimeiHokenryoKojo(input, R08);
   } catch (e) {
-    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
     return;
   }
 

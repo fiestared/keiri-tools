@@ -157,7 +157,7 @@
 
 <p>ポイントは、<b>節税率が「所得税率＋住民税率10％」でおおよそ決まる</b>ことです。課税所得が高く所得税率が高い人ほど、同じ掛金でも節税額が大きくなります。たとえば課税所得300万円（所得税10％）の会社員が月23,000円（年276,000円）を積み立てると、所得税が27,600円、住民税が27,600円、復興特別所得税が579円軽くなり、<b>年間の節税額は55,779円</b>になります。掛金に対する節税率は約20.2％です。</p>
 
-<figure class="figure">
+<figure class="figure fig-wide" style="--figw:640px">
 <svg viewBox="0 0 640 220" role="img" aria-label="課税所得300万円の会社員が月23,000円を積み立てると、年間の掛金276,000円のうち55,779円が所得税・住民税の減少として戻る図">
   <text x="20" y="16" font-size="13" fill="currentColor">課税所得300万円・会社員が月23,000円を積み立てた場合（年間の掛金 276,000円）</text>
 
@@ -358,17 +358,17 @@ $("calc").addEventListener("click", async () => {
   }
 
   const kubun = R08.ideco.limits.find(l => l.key === $("kubun").value);
-  if (!kubun) { box.innerHTML = `<div class="note">加入区分を選び直してください。</div>`; return; }
+  if (!kubun) { box.innerHTML = `<div class="warn">加入区分を選び直してください。</div>`; return; }
 
   const kazei = Number($("kazei").value);
   if (!kazei || kazei <= 0) {
-    box.innerHTML = `課税される所得金額を入力してください（<b>年収ではなく課税所得</b>です）。`;
+    box.innerHTML = `<div class="warn">課税される所得金額を入力してください（<b>年収ではなく課税所得</b>です）。</div>`;
     return;
   }
   const monthly = Number($("monthly").value);
   const min = R08.ideco.min_monthly;
   if (!monthly || monthly < min) {
-    box.innerHTML = `月額掛金は <b>${yen(min)} 以上</b>で入力してください（iDeCoの最低掛金）。`;
+    box.innerHTML = `<div class="warn">月額掛金は <b>${yen(min)} 以上</b>で入力してください（iDeCoの最低掛金）。</div>`;
     return;
   }
 
@@ -379,7 +379,7 @@ $("calc").addEventListener("click", async () => {
   try {
     raw = taxSavingByMonthly({ kazeiShotoku: kazei, monthly, annualLimit }, R08);
   } catch (e) {
-    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
     return;
   }
 
