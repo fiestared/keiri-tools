@@ -321,6 +321,13 @@ for (const page of pages) {
 
   for (const m of html.matchAll(ERA)) {
     const lit = m[0];
+    // ★「令和7年10月4日」のような**完全な日付**は、データの年の申告ではなく事実の日付。
+    //   最低賃金の発効日のように、データが年度を名乗っていても本文には別の年の日付が並ぶ
+    //   （令和7年度の一覧に令和8年3月31日発効の県がある）。ここを年の申告として数えると、
+    //   47件の発効日が全部「食い違い」になり、正しい商品を落とす検査になる。
+    //   月だけ(「令和8年4月に新設」)は従来どおり見る＝制度の事実は HISTORICAL_FACTS で明示させる。
+    const after = html.slice(m.index + lit.length, m.index + lit.length + 12);
+    if (!/^\s*\d+\s*月/.test(lit) && /^\s*\d+\s*月\s*\d+\s*日/.test(after)) continue;
     // 制度の事実(新設された時期など)は、データを差し替えても真のまま。
     // ページがデータを読んでいるかに関わらず免除する(about ページのような解説にも要る)
     const ex = exemptionAt(rel, html, m.index, lit);

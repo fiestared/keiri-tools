@@ -8,6 +8,7 @@
  */
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { judgeSaitei, monthlyHours, effectiveWage, rankOf, spread } from '../docs/assets/saitei_core.js';
 
 const D = JSON.parse(readFileSync(new URL('../docs/assets/saitei_chingin_r07.json', import.meta.url), 'utf8'));
@@ -111,6 +112,20 @@ eq(D.prefectures.length, 47, '都道府県は47件');
   ok(!('wage' in D.next_revision) && !('up' in D.next_revision),
      '未答申なのに金額を持っていない（推測値を持たせない）');
   ok(D.next_revision.source_url.startsWith('https://www.mhlw.go.jp/'), '出典が厚労省');
+}
+
+// ---- 一覧表の静的HTMLがデータと一致している（生成器を流し忘れて古い表を配信しない） ----
+// 47都道府県の一覧は「事実の表＝コンテンツ」なので、JSでなく静的HTMLに焼いている。
+// 焼き忘れると、画面には古い金額が出たままになり、しかもテストが緑という最悪の形になる。
+{
+  try {
+    execFileSync(process.execPath, [new URL('../tools/gen_saitei_table.mjs', import.meta.url).pathname, '--check'],
+                 { encoding: 'utf8' });
+    n++;
+  } catch (e) {
+    n++;
+    assert.fail('一覧の静的HTMLがデータと不一致。node tools/gen_saitei_table.mjs を実行してコミットすること\n' + (e.stdout || '') + (e.stderr || ''));
+  }
 }
 
 console.log(`✓ 最低賃金コア OK (${n} checks)`);
