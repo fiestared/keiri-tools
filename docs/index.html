@@ -41,10 +41,10 @@
     <p>手取り・ふるさと納税・iDeCoの節税額・社会保険料——調べ直すのが面倒な計算を、無料のツールにしました。</p>
 
     <div class="qa-box">
-      <div class="qa-head"><span class="q-ico">Q.</span>経理で困っていること、聞いてください</div>
+      <div class="qa-head"><span class="q-ico">Q.</span>税金・給与・社会保険で困っていること、聞いてください</div>
       <form class="qa-form" id="qa-form">
         <input id="qa-q" type="text" autocomplete="off" enterkeyhint="search"
-               aria-label="経理・労務の質問を入力"
+               aria-label="税金・給与・社会保険の質問を入力"
                placeholder="例: ボーナスの社会保険料はいくら引かれる？ / ふるさと納税の上限は？">
         <button type="submit" class="qa-submit" id="qa-go">聞く</button>
       </form>
@@ -327,6 +327,13 @@
         <div class="desc">世帯の<b>年齢・所得</b>と、お住まいの市町村の<b>料率</b>から国民健康保険料（税）を計算。★<b>令和8年度から賦課区分が3つ→4つ</b>になり<b>子ども・子育て支援金分</b>（限度額3万円）が加わりました——3区分のままの計算機は新設分をまるごと落とします。<b>限度額は区分ごとに個別</b>（合計113万円という上限が1本あるのではありません）、<b>軽減されるのは均等割と平等割だけで所得割は軽減されません</b>、<b>判定所得は基礎控除43万円を引く「前」</b>。未就学児の5割減額は<b>軽減の「後」</b>に当てます。★料率は市町村の条例なので<b>推測で埋めません</b>。</div>
       </div>
     </a>
+    <a class="tool-card" href="nenkin/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 8v4l3 2"/><path d="M16 3h5v5"/></svg></div>
+      <div>
+        <div class="name">年金の受給見込額 計算機</div>
+        <div class="desc">「ねんきん定期便」の<b>月数と平均標準報酬</b>から、<b>老齢基礎年金＋付加年金＋老齢厚生年金</b>の年額・月額を計算。★<b>免除期間は率を掛けるだけでは足りません</b>——法27条ただし書は<b>号ごとに上限</b>を定め、超えた分は<b>一段低い率で拾われます</b>（全額免除だけは拾う号が無く反映されません）。★<b>繰上げ0.4%・繰下げ0.7%は付加年金にもかかります</b>。★<b>繰下げにだけ120月（84%）の上限</b>があり繰上げには上限の定めがありません。<b>満額は生年月日で2つ</b>、平成15年4月の総報酬制（7.125→5.481）にも対応。加給年金など<b>入れていないものは名前を挙げて申告</b>します。</div>
+      </div>
+    </a>
     <a class="tool-card" href="shokibo-takuchi/">
       <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/><path d="M3 12h9V3"/><path d="M12 12h9"/></svg></div>
       <div>
@@ -573,7 +580,7 @@ async function ask(q, commit) {
     box.innerHTML = `<div class="qa-reslist">${r.results.map(card).join("")}</div>`;
     if (commit) track(q, true, r.results[0].url);
   } else if (commit) {
-    box.innerHTML = `<div class="qa-empty"><b>ぴったりの記事がまだありません。</b>いただいた質問は、記事にするか検討します。<div style="margin-top:8px"><a href="column/">経理コラムの一覧を見る →</a></div></div>`;
+    box.innerHTML = `<div class="qa-empty"><b>ぴったりの記事がまだありません。</b>いただいた質問は、記事にするか検討します。<div style="margin-top:8px"><a href="column/">コラム一覧を見る →</a></div></div>`;
     track(q, false, "");
   } else {
     // 入力中で未一致のときは、案内を出さずに静かに待つ（打ちながらの誤爆を防ぐ）
