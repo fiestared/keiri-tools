@@ -30,6 +30,13 @@ const SCENES = [
   // 手数料(550円) > 請求額(300円) → マイナスの振込額を黙って出さず、警告を出すこと
   { name: "senpou_fee_over", expect: (s) =>
       /振込額がマイナスになります/.test(s.result) && /当方負担/.test(s.result) },
+  // 最低賃金: 47都道府県が描かれ、時給1,100円(東京1,226円)が「下回っている」と出ること
+  { name: "saitei_hourly", expect: (s) =>
+      s.options > 45 && /1226/.test(s.prefBox) && /下回っています/.test(s.out) &&
+      /126/.test(s.out) && s.tableRows === 47 && /答申/.test(s.nextBox) },
+  // 月給196,000円(240日×8h)は東京の最低賃金割れ。「上回っています」と出たら換算の分母が誤り
+  { name: "saitei_monthly", expect: (s) =>
+      /下回っています/.test(s.out) && !/上回っています/.test(s.out) && /160時間/.test(s.out) },
   { name: "zengin", expect: (s) =>
       /ｶ\)ﾔﾏﾀﾞ/.test(s.out) && s.injectedImg === 0 && !s.pwned && s.copyShown },
   // 未変換の行が黙ってクリップボード(=総合振込ファイル)へ流れないこと

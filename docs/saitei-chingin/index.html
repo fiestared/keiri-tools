@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>最低賃金チェッカー｜都道府県別の最低賃金と自分の時給を比較【2026年】</title>
+<meta name="description" content="47都道府県の地域別最低賃金（令和7年度）を一覧で確認し、自分の時給・月給が最低賃金を下回っていないかを判定します。月給は1か月平均所定労働時間で正しく時間額に換算。厚生労働省の公式一覧と照合済み。次年度改定の審議状況も掲載。無料・登録不要。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/saitei-chingin/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "月給制の場合、最低賃金はどうやって比べますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "月給を「1か月平均所定労働時間」で割って時間額に換算し、その額と地域別最低賃金を比べます。1か月平均所定労働時間は「年間所定労働日数 × 1日の所定労働時間 ÷ 12」です。月の暦日数で割るのではない点に注意してください。分母を大きく取ると、実際は最低賃金を下回っているのに「クリア」と誤判定します。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "残業代や通勤手当は最低賃金の計算に含めますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "含めません。最低賃金法4条3項と施行規則1条により、①臨時に支払われる賃金（結婚手当など）②1か月を超える期間ごとに支払われる賃金（賞与など）③時間外・休日・深夜の割増賃金 ④精皆勤手当・通勤手当・家族手当 は最低賃金の対象から除きます。これらを足した額で比べると、違反を見逃します。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "最低賃金はいつから変わりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "都道府県ごとに発効日が違います。令和7年度は2025年10月1日から2026年3月31日まで、都道府県によって半年ほど開きがありました。発効日より前は改定前の額が有効です。このツールは判定日と発効日を比べて、その日に有効な額で判定します。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "最低賃金を下回っていたらどうなりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "最低賃金額より低い賃金の定めは無効となり、最低賃金額と同じ定めをしたものとみなされます（最低賃金法4条2項）。差額の支払いを求めることができます。地域別最低賃金を下回った場合、使用者には50万円以下の罰金の定めがあります（同法40条）。まずは労働基準監督署の総合労働相談コーナーへご相談ください。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "このツールで「クリア」と出れば問題ないですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "地域別最低賃金についてのみの判定です。特定の産業には、地域別より高い特定（産業別）最低賃金が定められている場合があり、その産業で働く方にはそちらが適用されます。ご自身の産業に特定最低賃金があるかは、都道府県労働局のページでご確認ください。"
+      }
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav>
+    <a href="../#tools">ツール</a>
+    <a href="../column/">コラム</a>
+  </nav>
+</header>
+<main>
+  <h1>最低賃金チェッカー（都道府県別・自分の時給と比較）</h1>
+  <p class="lead">お住まい（勤務地）の都道府県を選ぶと、いま有効な<b>地域別最低賃金</b>が出ます。時給や月給を入れれば、最低賃金を下回っていないかを判定します。月給は<b>1か月平均所定労働時間</b>で正しく時間額に換算します。金額は<b>厚生労働省の公式一覧</b>と照合済みです。</p>
+
+  <div class="card">
+    <label for="pref">都道府県（勤務地）</label>
+    <select id="pref" style="width:100%;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px">
+      <option value="">選んでください</option>
+    </select>
+
+    <div id="prefBox" style="margin-top:14px"></div>
+
+    <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+
+    <label>あなたの賃金</label>
+    <div style="margin:6px 0 10px">
+      <label style="font-weight:400;margin-right:14px"><input type="radio" name="wt" value="hourly" checked> 時給</label>
+      <label style="font-weight:400"><input type="radio" name="wt" value="monthly"> 月給</label>
+    </div>
+    <input id="amount" type="number" inputmode="numeric" placeholder="例: 1100"
+           style="width:100%;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px">
+    <p class="note" style="margin-top:6px">残業代・通勤手当・家族手当・精皆勤手当・賞与は<b>含めずに</b>入力してください（最低賃金の計算には算入しません）。</p>
+
+    <div id="monthlyInputs" style="display:none;margin-top:12px">
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div style="flex:1;min-width:150px">
+          <label for="days">年間所定労働日数</label>
+          <input id="days" type="number" inputmode="numeric" value="240"
+                 style="width:100%;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px">
+        </div>
+        <div style="flex:1;min-width:150px">
+          <label for="hpd">1日の所定労働時間</label>
+          <input id="hpd" type="number" inputmode="decimal" step="0.25" value="8"
+                 style="width:100%;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px">
+        </div>
+      </div>
+      <p class="note" style="margin-top:6px">就業規則やカレンダーで確認できます。分からない場合、週休2日・祝日休みならおおむね240日前後です。</p>
+    </div>
+
+    <button class="primary" id="run">最低賃金を下回っていないか判定する</button>
+    <div id="out" style="margin-top:16px"></div>
+  </div>
+
+  <section class="faq">
+    <h2 id="next">次の最低賃金改定はどうなる？</h2>
+    <div id="nextBox"></div>
+  </section>
+
+  <section class="faq">
+    <h2 id="ichiran">都道府県別 最低賃金 一覧</h2>
+    <p>高い順です。括弧内は改定前の額、右端はその金額が発効した日です。</p>
+    <div id="table" style="overflow-x:auto"></div>
+    <p class="note" id="tableNote"></p>
+  </section>
+
+  <section class="faq">
+    <h2>最低賃金の基本（出典つき）</h2>
+    <h3>最低賃金には2種類ある</h3>
+    <p>すべての労働者に適用される<b>地域別最低賃金</b>（都道府県ごと）と、特定の産業に適用される<b>特定（産業別）最低賃金</b>があります。両方が適用される場合は<b>高いほう</b>が適用されます。このツールが判定するのは地域別のほうです。</p>
+    <h3>最低賃金に算入しない賃金</h3>
+    <p>最低賃金法4条3項・同法施行規則1条により、次は最低賃金の対象になりません。①臨時に支払われる賃金（結婚手当など）②1か月を超える期間ごとに支払われる賃金（賞与など）③時間外・休日・深夜の割増賃金 ④精皆勤手当・通勤手当・家族手当。<b>これらを足した額で比べると違反を見逃します。</b></p>
+    <h3>月給制の換算</h3>
+    <p>月給 ÷ 1か月平均所定労働時間 で時間額に直してから比べます（最低賃金法施行規則2条）。1か月平均所定労働時間は「年間所定労働日数 × 1日の所定労働時間 ÷ 12」です。<b>月の暦日数で割るのではありません。</b>分母を大きく取ると、実際は下回っているのに「クリア」と出てしまいます。</p>
+    <h3>下回っていたら</h3>
+    <p>最低賃金額より低い賃金の定めは<b>無効</b>となり、最低賃金額と同じ定めをしたものとみなされます（最低賃金法4条2項）。地域別最低賃金を下回った場合、使用者には50万円以下の罰金の定めがあります（同法40条）。まずはお近くの労働基準監督署・総合労働相談コーナーへご相談ください。</p>
+    <h3>関連するツール・記事</h3>
+    <p><a href="../tedori/">手取り計算</a>／<a href="../kabe/">年収の壁シミュレーター</a>／<a href="../zangyodai/">残業代計算</a>／<a href="../column/nenshu-no-kabe/">年収の壁とは</a>／<a href="../column/kotei-zangyodai/">固定残業代の考え方</a></p>
+  </section>
+
+  <section class="faq">
+    <h2 id="faq">よくある質問</h2>
+    <h3>月給制の場合、最低賃金はどうやって比べますか？</h3>
+    <p>月給を「1か月平均所定労働時間」で割って時間額に換算し、その額と地域別最低賃金を比べます。1か月平均所定労働時間は「年間所定労働日数 × 1日の所定労働時間 ÷ 12」です。月の暦日数で割るのではない点に注意してください。分母を大きく取ると、実際は最低賃金を下回っているのに「クリア」と誤判定します。</p>
+    <h3>残業代や通勤手当は最低賃金の計算に含めますか？</h3>
+    <p>含めません。最低賃金法4条3項と施行規則1条により、①臨時に支払われる賃金（結婚手当など）②1か月を超える期間ごとに支払われる賃金（賞与など）③時間外・休日・深夜の割増賃金 ④精皆勤手当・通勤手当・家族手当 は最低賃金の対象から除きます。これらを足した額で比べると、違反を見逃します。</p>
+    <h3>最低賃金はいつから変わりますか？</h3>
+    <p>都道府県ごとに発効日が違います。令和7年度は2025年10月1日から2026年3月31日まで、都道府県によって半年ほど開きがありました。発効日より前は改定前の額が有効です。このツールは判定日と発効日を比べて、その日に有効な額で判定します。</p>
+    <h3>最低賃金を下回っていたらどうなりますか？</h3>
+    <p>最低賃金額より低い賃金の定めは無効となり、最低賃金額と同じ定めをしたものとみなされます（最低賃金法4条2項）。差額の支払いを求めることができます。地域別最低賃金を下回った場合、使用者には50万円以下の罰金の定めがあります（同法40条）。まずは労働基準監督署の総合労働相談コーナーへご相談ください。</p>
+    <h3>このツールで「クリア」と出れば問題ないですか？</h3>
+    <p>地域別最低賃金についてのみの判定です。特定の産業には、地域別より高い特定（産業別）最低賃金が定められている場合があり、その産業で働く方にはそちらが適用されます。ご自身の産業に特定最低賃金があるかは、都道府県労働局のページでご確認ください。</p>
+  </section>
+</main>
+<footer class="site">
+  <span id="src"></span><br>
+  © 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+<script type="module">
+import { judgeSaitei, rankOf, spread } from "../assets/saitei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
+  (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const yen = (v) => "¥" + Math.round(v).toLocaleString("ja-JP");
+const today = () => new Date().toLocaleDateString("sv-SE"); // YYYY-MM-DD（ローカル日付）
+
+let D = null;
+
+// 参照データは非同期で届く。届く前にボタンを押されても待つ（実ユーザーと同じ経路）。
+// 待たずに判定すると「データが無いので何も起きない」＝黙って答えを出さない事故になる。
+const saiteiReady = fetch("../assets/saitei_chingin_r07.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { D = d; return true; })
+  .catch(() => false);
+
+saiteiReady.then((loaded) => {
+  if (!loaded || !D) {
+    $("out").innerHTML = '<div class="note" style="color:#a33">最低賃金のデータを読み込めませんでした。通信環境を確認して再読み込みしてください。</div>';
+    $("nextBox").innerHTML = '<div class="note">データを読み込めませんでした。</div>';
+    $("table").innerHTML = '<p class="note">一覧を読み込めませんでした。</p>';
+    return;
+  }
+  const data = D;
+  // 都道府県セレクト（地方ごとにまとめる＝47件を平坦に並べない）
+  const sel = $("pref");
+  const regions = [...new Set(D.prefectures.map((p) => p.region))];
+  for (const rg of regions) {
+    const og = document.createElement("optgroup");
+    og.label = rg;
+    for (const p of D.prefectures.filter((x) => x.region === rg)) {
+      const o = document.createElement("option");
+      o.value = p.pref; o.textContent = `${p.full}（${p.wage}円）`;
+      og.appendChild(o);
+    }
+    sel.appendChild(og);
+  }
+  renderTable();
+  renderNext();
+  $("src").innerHTML = `金額の出典: <a href="${esc(data._meta.source_url)}" rel="noopener" target="_blank">厚生労働省「地域別最低賃金の全国一覧」</a>（${esc(data._meta.year)}・${esc(data._meta.checked)}確認）。`;
+}).catch(() => {});
+
+document.querySelectorAll('input[name="wt"]').forEach((el) =>
+  el.addEventListener("change", () => {
+    const monthly = document.querySelector('input[name="wt"]:checked').value === "monthly";
+    $("monthlyInputs").style.display = monthly ? "block" : "none";
+    $("amount").placeholder = monthly ? "例: 200000" : "例: 1100";
+  }));
+
+$("pref").addEventListener("change", () => {
+  const p = D && D.prefectures.find((x) => x.pref === $("pref").value);
+  if (!p) { $("prefBox").innerHTML = ""; return; }
+  const rk = rankOf(p.pref, D);
+  const notYet = today() < p.effective;
+  $("prefBox").innerHTML = `
+    <div style="border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:#f7f9fb">
+      <div style="font-size:13px;color:var(--sub)">${esc(p.full)}の地域別最低賃金（${esc(D._meta.year)}）</div>
+      <div style="font-size:30px;font-weight:700;line-height:1.2">${p.wage}<span style="font-size:16px;font-weight:400">円／時間</span></div>
+      <div style="font-size:13px;color:var(--sub);margin-top:4px">
+        改定前 ${p.prev}円 → <b>+${p.up}円（+${p.rate}%）</b>　発効日 ${esc(p.effective_wa)}
+      </div>
+      <div style="font-size:13px;color:var(--sub);margin-top:4px">全国 ${rk.rank}位 / ${rk.total}　全国加重平均 ${D._meta.national_average.wage}円</div>
+      ${notYet ? `<div class="note" style="margin-top:8px">この額の発効日は${esc(p.effective_wa)}です。それまでは改定前の${p.prev}円が有効です。</div>` : ""}
+    </div>`;
+});
+
+$("run").addEventListener("click", async () => {
+  const loaded = await saiteiReady;
+  if (!loaded || !D) {
+    $("out").innerHTML = '<div class="note" style="color:#a33">最低賃金のデータを読み込めませんでした。通信環境を確認して再読み込みしてください。</div>';
+    return;
+  }
+  const wageType = document.querySelector('input[name="wt"]:checked').value;
+  const r = judgeSaitei({
+    prefCode: $("pref").value, wageType,
+    amount: $("amount").value,
+    daysPerYear: $("days").value, hoursPerDay: $("hpd").value,
+    onDate: today(),
+  }, D);
+
+  if (!r.ok) { $("out").innerHTML = `<div class="note" style="color:#a33">${esc(r.error)}</div>`; return; }
+
+  const head = r.clears
+    ? `<div style="font-size:22px;font-weight:700;color:#1a7a4a">最低賃金を上回っています</div>`
+    : `<div style="font-size:22px;font-weight:700;color:#a33">最低賃金を下回っています</div>`;
+
+  const detail = r.clears
+    ? `<div style="margin-top:6px">${esc(r.pref)}の最低賃金 <b>${r.minWage}円</b> に対し、あなたの時間額は <b>${r.hourlyRounded}円</b>（+${Math.round(r.diff * 100) / 100}円）です。</div>`
+    : `<div style="margin-top:6px">${esc(r.pref)}の最低賃金 <b>${r.minWage}円</b> に対し、あなたの時間額は <b>${r.hourlyRounded}円</b> で、<b>1時間あたり${Math.round(r.shortPerHour * 100) / 100}円</b>不足しています。</div>`
+      + (r.shortPerMonth ? `<div style="margin-top:4px">この所定労働時間なら、月あたり約<b>${yen(r.shortPerMonth)}</b>、年あたり約<b>${yen(r.shortPerYear)}</b>の差になります。</div>` : "")
+      + `<div class="note" style="margin-top:8px">最低賃金額より低い賃金の定めは無効となり、最低賃金額と同じ定めをしたものとみなされます（最低賃金法4条2項）。差額の支払いを求めることができます。お近くの労働基準監督署・総合労働相談コーナーへご相談ください。</div>`;
+
+  const notes = r.notes.map((t) => `<div class="note" style="margin-top:6px">${esc(t)}</div>`).join("");
+
+  $("out").innerHTML = `
+    <div style="border:1px solid var(--line);border-radius:8px;padding:14px;background:${r.clears ? "#f2f9f6" : "#fff7e6"}">
+      ${head}${detail}${notes}
+      <div class="note" style="margin-top:8px">判定は<b>地域別最低賃金のみ</b>です。産業によっては、より高い特定（産業別）最低賃金が適用される場合があります。</div>
+    </div>`;
+});
+
+function renderTable() {
+  const s = spread(D);
+  $("table").innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:14px">
+    <thead><tr>
+      <th style="text-align:left;padding:6px;border-bottom:2px solid var(--line)">都道府県</th>
+      <th style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">時間額</th>
+      <th style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">引上げ</th>
+      <th style="text-align:left;padding:6px;border-bottom:2px solid var(--line)">発効日</th>
+    </tr></thead><tbody>
+    ${D.prefectures.map((p) => `<tr>
+      <td style="padding:6px;border-bottom:1px solid var(--line)">${esc(p.full)}</td>
+      <td style="padding:6px;border-bottom:1px solid var(--line);text-align:right"><b>${p.wage}</b>円 <span style="color:var(--sub);font-size:12px">(${p.prev})</span></td>
+      <td style="padding:6px;border-bottom:1px solid var(--line);text-align:right">+${p.up}円 <span style="color:var(--sub);font-size:12px">+${p.rate}%</span></td>
+      <td style="padding:6px;border-bottom:1px solid var(--line)">${esc(p.effective_wa)}</td>
+    </tr>`).join("")}
+    </tbody></table>`;
+  $("tableNote").innerHTML = `全国加重平均は<b>${D._meta.national_average.wage}円</b>（改定前${D._meta.national_average.prev}円・+${D._meta.national_average.up}円／+${D._meta.national_average.rate}%）。最高は${esc(s.hi.full)}の${s.hi.wage}円、最低は${s.lo.wage}円で、その差は<b>${s.gap}円</b>です。`;
+}
+
+function renderNext() {
+  const n = D.next_revision;
+  // ★fail-closed: 答申が出ていない間は金額を出さない。「まだ決まっていない」と正直に書く。
+  const pending = n.status === "pending";
+  $("nextBox").innerHTML = `
+    <div style="border:1px solid var(--line);border-radius:8px;padding:12px 14px;background:${pending ? "#f7f9fb" : "#f2f9f6"}">
+      <div style="font-weight:700">${esc(n.headline)}</div>
+      <p style="margin:8px 0 0">${esc(n.detail)}</p>
+      ${pending && n.meetings ? `<p class="note" style="margin-top:8px">目安に関する小委員会の開催実績: ${n.meetings.map((m) => `第${m.n}回 ${esc(m.date)}`).join(" ／ ")}（${esc(n.checked)}確認）</p>` : ""}
+      <p class="note" style="margin-top:8px">出典: <a href="${esc(n.source_url)}" rel="noopener" target="_blank">${esc(n.source)}</a></p>
+    </div>`;
+}
+</script>
+</body>
+</html>

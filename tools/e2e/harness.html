@@ -184,6 +184,43 @@ const SCENES = {
     return { result: text(doc, "checkResult") };
   },
 
+  // 最低賃金: 都道府県の選択→判定までが実際に動くか。
+  // コアのテスト(tests/test_saitei.mjs)は純ロジックだけを見ており、
+  // 「セレクトが47件描かれるか」「月給の入力欄が出るか」「判定文が出るか」は無検査だった。
+  async saitei_hourly() {
+    const doc = await open("/docs/saitei-chingin/");
+    await waitFor(() => doc.querySelectorAll("#pref option").length > 40, "都道府県セレクトの描画");
+    set(doc, "pref", "東京");
+    await waitFor(() => text(doc, "prefBox").includes("1226"), "選んだ県の額の表示");
+    set(doc, "amount", "1100");
+    click(doc, "run");
+    await waitFor(() => text(doc, "out").length > 0, "判定結果の描画");
+    return {
+      options: doc.querySelectorAll("#pref option").length,
+      prefBox: text(doc, "prefBox"),
+      out: text(doc, "out"),
+      tableRows: doc.querySelectorAll("#table tbody tr").length,
+      nextBox: text(doc, "nextBox"),
+    };
+  },
+
+  // 月給制: 分母(1か月平均所定労働時間)を使って換算しているか。
+  // 240日×8時間÷12=160時間 → 東京1226円×160=196,160円。196,000円は「割れ」でなければならない。
+  // ここが「月の暦日数×8」等になっていると、同じ月給が「クリア」に化ける。
+  async saitei_monthly() {
+    const doc = await open("/docs/saitei-chingin/");
+    await waitFor(() => doc.querySelectorAll("#pref option").length > 40, "都道府県セレクトの描画");
+    set(doc, "pref", "東京");
+    doc.querySelector('input[name="wt"][value="monthly"]').click();
+    await waitFor(() => doc.getElementById("monthlyInputs").style.display === "block", "月給欄の出現");
+    set(doc, "amount", "196000");
+    set(doc, "days", "240");
+    set(doc, "hpd", "8");
+    click(doc, "run");
+    await waitFor(() => text(doc, "out").length > 0, "判定結果の描画");
+    return { out: text(doc, "out") };
+  },
+
   // 全銀カナ: 変換が描画されるか + 入力のHTMLがエスケープされるか
   async zengin() {
     const doc = await open("/docs/zengin-kana/");
