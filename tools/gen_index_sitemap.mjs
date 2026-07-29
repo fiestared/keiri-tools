@@ -346,7 +346,7 @@ const write = (path, next, label) => {
   return true;
 };
 
-// ---- トップページの「経理コラム」欄(上位6本だけ) ----
+// ---- トップページの「コラム」欄(上位6本だけ) ----
 // 手打ちにしておくと、記事が増えても**古い低需要の記事が居座り続ける**(実際にそうなっていた)
 const topPath = join(DOCS, "index.html");
 let top = readFileSync(topPath, "utf8");

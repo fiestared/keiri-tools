@@ -51,7 +51,7 @@
 <body>
   <header class="site">…共通ナビ…</header>
   <main>
-  <nav class="breadcrumb">ホーム › 経理コラム › <この記事></nav>
+  <nav class="breadcrumb">ホーム › コラム › <この記事></nav>
   <article>
     <h1>…</h1>
     <p class="article-meta">公開日: 2026年7月13日 ／ 〈根拠の出所を一言〉</p>
