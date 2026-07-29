@@ -11,6 +11,14 @@
  *
  * /embed/ は**意図的に**広告・GA4を入れない（他サイトに埋め込む配信面。noindex+canonical）。
  * 意図は EXEMPT に理由つきで書く — 「名前で絞る」のではなく「免除に理由を要求する」形にする。
+ *
+ * ⚠️ **この検査が緑でも、広告が出ているとは限らない**（2026-07-29に判明）。
+ *   ここが見ているのは「AdSenseのコードが在ること」だけ。実際には
+ *   **keiri-tools の AdSense審査は 2026-07-22頃に却下されていて、133ページ全部が緑のまま
+ *   広告は1つも配信されていなかった**（実測 `data-ad-status="unfilled"`）。
+ *   配線の存在は配信の証明ではない（auto-memory verify-behavior-not-artifacts と同じ型）。
+ *   配信されているかは `~/Scripts/ai-income-daily/adsense_serving_check.py` が見る。
+ *   ★それでも ADS_CLIENT の要求は外さない: 再申請時に審査対象ページへコードが要るため。
  */
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
