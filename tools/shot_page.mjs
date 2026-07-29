@@ -9,11 +9,11 @@
  * ★--user-data-dir を必ず渡す: 省略すると既にログイン中のChromeのプロファイルを掴もうとして
  *   無言でハングする（実際に2回踏んだ）。
  */
-import { spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { resolve, join, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
-import { readFile, mkdtemp } from "node:fs/promises";
+import { readFile, mkdtemp, stat, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
@@ -44,13 +44,40 @@ await new Promise((r) => server.listen(0, r));
 const port = server.address().port;
 
 const profile = await mkdtemp(join(tmpdir(), "shot-chrome-"));
-const r = spawnSync(CHROME, [
+const target = resolve(out);
+await rm(target, { force: true });        // 前回の画像が残っていると「撮れた」と誤判定する
+
+// ★Chromeの終了を待ってはいけない(2026-07-29)。--headless=new のChromeは撮り終えても
+//   自分から終了しないことがあり、spawnSync だと timeout の SIGTERM も効かずに永久に待つ
+//   (実測: 240秒超で無出力のままハング。2便続けて図解の目視が落ちた)。
+//   e2e.mjs は同じ挙動を2026-07-13に踏んで「終了を待たずSIGKILL」で解決済みだったが、
+//   こちらには反映されていなかった。→ **成果物(PNG)の出現を待ち、出たら殺す**。
+const p = spawn(CHROME, [
   "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run",
+  "--no-default-browser-check",
   `--user-data-dir=${profile}`,          // ★これが無いと既存プロファイルを掴んでハングする
   "--virtual-time-budget=5000",
-  `--screenshot=${resolve(out)}`, `--window-size=${w},${h}`,
+  `--screenshot=${target}`, `--window-size=${w},${h}`,
   `http://127.0.0.1:${port}/${page}`,
-], { encoding: "utf8", timeout: 90000 });
+], { stdio: "ignore" });
+
+const DEADLINE = 60_000, STEP = 500;
+let size = -1, stable = 0, waited = 0;
+while (waited < DEADLINE) {
+  await new Promise((r) => setTimeout(r, STEP));
+  waited += STEP;
+  const s = await stat(target).catch(() => null);
+  if (!s) continue;
+  // 書き込み途中を掴まないよう、サイズが2回続けて同じになるまで待つ
+  stable = s.size > 0 && s.size === size ? stable + 1 : 0;
+  size = s.size;
+  if (stable >= 2) break;
+}
+p.kill("SIGKILL");
+await new Promise((r) => p.on("exit", r));
+await rm(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 server.close();
-console.log(r.status === 0 ? `✓ ${out}` : `✗ 失敗 (status=${r.status})\n${(r.stderr || "").slice(-800)}`);
-process.exit(r.status ?? 1);
+
+const ok = stable >= 2;
+console.log(ok ? `✓ ${out} (${size} bytes)` : `✗ 失敗: ${DEADLINE / 1000}秒待っても ${out} が出来なかった`);
+process.exit(ok ? 0 : 1);
