@@ -219,6 +219,15 @@ const HISTORICAL_FACTS = [
 // 記事の数字の鮮度は別問題として扱う。
 const SKIP_DIRS = ["column", "assets", "ext", "e2e"];
 
+/**
+ * 「関連する解説」ブロック（tools/gen_tool_related.mjs が生成）を落とす。
+ * 中身は**他のページの見出し・惹句をそのまま引いたもの**で、このページのデータの申告ではない。
+ * 例: /gensen-choshu/（データは令和8年分）に「年末調整の書き方…令和8年分」というコラム見出しが載る。
+ * これを年の申告として数えると、リンク先の年が違うだけで落ちる＝正しい商品を落とす検査になる。
+ * リンク先の年の正しさは、そのページ自身がこの検査を受けることで担保されている。
+ */
+const stripRelBlock = (h) => h.replace(/<section class="faq rel-block">[\s\S]*?<\/section>/g, "");
+
 const ERA = /令和\s*(\d+)\s*年(度|分)?/g;
 
 async function walk(dir) {
@@ -310,7 +319,7 @@ for (const page of pages) {
   const rel = relative(DOCS, page);
   const raw = await readFile(page, "utf8");
   rawByRel.set(rel, raw);
-  const html = stripLdJson(stripArticleBody(stripArticleCards(stripComments(raw))));
+  const html = stripRelBlock(stripLdJson(stripArticleBody(stripArticleCards(stripComments(raw)))));
 
   // このページが fetch している年つきデータ = 名乗ってよい年
   const fetched = [...raw.matchAll(/assets\/([\w.-]+\.json)/g)].map((m) => m[1]);
@@ -319,6 +328,11 @@ for (const page of pages) {
   // トップは全ツールを宣伝するので、全データの年を名乗れる
   if (rel === "index.html") allowed = new Set(years.values());
 
+  // ★「関連する解説」ブロック（tools/gen_tool_related.mjs が生成）は走査から外す。
+  //   中身は**他のページの見出し・惹句をそのまま引いたもの**で、このページのデータの申告ではない。
+  //   例: /gensen-choshu/（データは令和8年分）に「年末調整の書き方…令和8年分」という
+  //   コラム見出しが載る。これを年の申告として数えると、リンク先の年が違うだけで落ちる＝
+  //   正しい商品を落とす検査になる。年の正しさはリンク先ページ自身の検査で担保されている。
   for (const m of html.matchAll(ERA)) {
     const lit = m[0];
     // ★「令和7年10月4日」のような**完全な日付**は、データの年の申告ではなく事実の日付。
