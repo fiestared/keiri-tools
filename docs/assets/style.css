@@ -350,6 +350,9 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 @media (max-width: 480px) {
   .qa-form { flex-wrap: wrap; }
   .qa-submit { flex: 1 0 100%; padding: 12px; }
+  /* 結果表の見出し列(既定は nowrap)。「特例控除の上限（所得割額の20％）」のような長い見出しが
+     折り返せず、表が結果カードの外へ55pxはみ出して画面ごと横スクロールしていた(2026-07-29計測)。 */
+  .result table.res th { white-space: normal; }
 }
 .byline{font-size:13px;color:var(--sub);margin:-2px 0 20px;line-height:1.6}
 .byline a{color:var(--sub)}

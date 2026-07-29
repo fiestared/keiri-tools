@@ -126,11 +126,9 @@
   <p class="hint">1行に1件。社名やタブが混ざっていても、その行から番号だけを取り出します。
   全角、<code>T</code> の有無、ハイフン、空白はこちらで吸収します。</p>
   <label for="input">登録番号・法人番号（改行区切り）</label>
-  <textarea id="input" rows="8" placeholder="T7000012050002
-株式会社サンプル	T8700110005901
-7000012050002"></textarea>
+  <textarea id="input" rows="8" placeholder="請求書からコピーした番号を、1行に1件ずつ貼り付けてください（例: T7000012050002）"></textarea>
   <div class="row">
-    <button id="run" type="button">まとめて確認する</button>
+    <button id="run" type="button" class="primary">まとめて確認する</button>
     <button id="clear" type="button" class="sub">消す</button>
   </div>
   <div id="result" class="result" aria-live="polite"></div>
@@ -325,7 +323,7 @@
       <br><a href="https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html" rel="nofollow">https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html</a></li>
     <li>国税庁 法人番号公表サイト「チェックデジットの計算」（PDF）
       — 13桁＝検査用数字1桁＋基礎番号12桁、算式と計算例
-      <br><a href="https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf" rel="nofollow">https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf</a></li>
+      <br><a href="https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf" rel="nofollow">国税庁「チェックデジットの算式」（PDF）</a></li>
     <li>国税庁 適格請求書発行事業者公表サイト「公表情報ダウンロード」
       — 全件は毎月初日に前月末時点、差分は日次。CSV／XML／JSON。
       氏名等の一部項目について値を削除して提供
@@ -353,8 +351,10 @@
 <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
 
 </main>
-<footer class="site">
-  <p>経理ミニツールズ ｜ <a href="../about/">運営者情報</a> ｜ <a href="../contact/">お問い合わせ</a></p>
+<footer class="site" style="display:block">
+  出典: 国税庁「法人番号公表サイト」／国税庁「適格請求書発行事業者公表サイト」。<br>
+  入力した番号はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
 </footer>
 
 <script type="module">

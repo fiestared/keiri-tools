@@ -60,7 +60,7 @@
 
   <div class="section-head" id="tools">
     <h2>ツール</h2>
-    <span class="hint">クリックしてすぐ使えます</span>
+    <span class="hint">登録不要・すぐ使えます</span>
   </div>
   <div class="persona-bar" id="persona-bar">
     <span class="p-label">あなたに合わせて表示:</span>
@@ -633,7 +633,8 @@ form.addEventListener("submit", (ev) => { ev.preventDefault(); clearTimeout(qaTi
   });
   var saved = null;
   try { saved = localStorage.getItem("keiri-persona"); } catch (e) {}
-  if (saved && ORDER[saved]) apply(saved, false);
+  // 未保存でも既定(会社員・個人)を押下状態にする — どの見え方かが分からないままになるため
+  apply(saved && ORDER[saved] ? saved : "kojin", false);
 })();
 </script>
 </body>
