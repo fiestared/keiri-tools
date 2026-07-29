@@ -32,6 +32,12 @@ AI月30万円プロジェクト・柱Aのプロダクト。経理実務の「ち
   **ORDER登録**(需要順)・**CATEGORIES分類**(一覧のカテゴリ。未分類は「その他」に埋もれるので落とす))
 - `node tools/gen_index_sitemap.mjs` — **sitemap.xml / コラム一覧 / トップの新着6本を生成**(手で足さない)
 - `node tools/gen_faq_jsonld.mjs` — FAQのJSON-LDを**本文から生成**(手で書かない)
+- `node tools/gen_tool_related.mjs` — **ツール末尾の「関連する解説」を生成**(手で書かない)。
+  コラムを足す/そのコラムからツールへリンクを張ったら**必ず流す**(流し忘れると test_tool_related が落ちる)。
+  リンク元はコラム側の実リンクなので、無関係なツールに勝手に並ぶことはない
+- ⚠️ **`.nopublish` は「非公開」ではない**。sitemap・一覧から外れるだけで**配信は続く**。
+  隠したいなら `<meta name="robots" content="noindex,follow">` も入れる(test_nopublish が両方向を見る)。
+  公開したいなら `.nopublish` を消す。**中間状態がいちばん損**(索引はされるが評価は上がらない)
 
 **並列で記事を書かせるときの規律**: 各エージェントは**自分の記事1ファイルだけ**を書く。
 `sitemap.xml` / `column/index.html` / `assets/style.css` は**中央(親)が更新**する。
