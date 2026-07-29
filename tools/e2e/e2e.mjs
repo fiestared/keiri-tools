@@ -758,6 +758,66 @@ const SCENES = [
   { name: "kokuho_nodata", data404: "kokuho_r08.json", expect: (s) =>
       s.failed && s.total === null },
 
+  // ── 老齢年金の受給見込額 (/nenkin/) ──────────────────────────────────
+  // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず出した期待値）。
+  //   基礎656,658／付加12,000／厚生654,426 → 合計1,323,084円・月額110,257円。
+  { name: "nenkin", expect: (s) =>
+      s.total === 1323084 && s.monthly === 110257 &&
+      s.kiso === 656658 && s.fuka === 12000 && s.kosei === 654426 &&
+      // 本来の受給開始（対の片方）であることを名指し
+      /本来の受給開始/.test(s.adjustName || "") &&
+      // 免除区分の行と乗率はデータから描かれている（ページの手書きではない）
+      s.monthRows === 5 && s.preRate === "7.125" && s.postRate === "5.481" &&
+      // 満額は新規裁定（昭和31年4月2日以後生まれ）side
+      /昭和31年4月2日以後/.test(s.mangakuLabel || "") &&
+      !s.noInput && !s.failed },
+  // ★繰上げ60歳＝24%減。付加年金も0.76倍されること（据え置き実装は fuka 12,000 のままで落ちる）。
+  { name: "nenkin_kuriage", expect: (s) =>
+      s.total === 1005544 && s.kiso === 499060 && s.fuka === 9120 && s.kosei === 497364 &&
+      /繰上げ/.test(s.adjustName || "") && /24%/.test(s.adjustRate || "") &&
+      // 「付加年金にもかかる」は見出しとは別の要素に載っている（規則5）
+      /付加年金/.test(s.adjustFuka || "") },
+  // ★繰下げ75歳＝84%増（120月の上限にちょうど当たる）。頭打ちの申告が出ること。
+  { name: "nenkin_kurisage", expect: (s) =>
+      s.total === 2434475 && s.kiso === 1208251 && s.fuka === 22080 && s.kosei === 1204144 &&
+      /繰下げ/.test(s.adjustName || "") && /84%/.test(s.adjustRate || "") &&
+      /120月で頭打ち/.test(s.adjustCapped || "") },
+  // ★★「か月」欄の既定値でない側（70歳6か月＝66月）。か月を捨てる実装は1,878,779円で落ちる。
+  //   上限にも当たらないので、頭打ちの申告が**出ていないこと**もここで固定する。
+  { name: "nenkin_kurisage_tsuki", expect: (s) =>
+      s.total === 1934349 && s.kiso === 960034 && s.fuka === 17544 && s.kosei === 956771 &&
+      /46\.2%/.test(s.adjustRate || "") && /66か月/.test(s.adjustName || "") &&
+      s.adjustCapped === null },
+  // ★★号ごとの上限の急所。上限の基準を「率を掛けたあとの月数」にした実装は845,053円で落ちる。
+  { name: "nenkin_menjo_jogen", expect: (s) =>
+      s.total === 798757 && s.kiso === 798757 && s.fuka === 0 && s.kosei === 0 &&
+      /452\.5月/.test(s.credited || "") &&
+      // 「上限の基準は前の号のもとの月数」は結果欄の別要素で申告している
+      /もとの月数/.test(s.menjoNote || "") },
+  // ★既裁定の満額（844,900円）を使う対。満額を1つしか持たない実装は847,300円で落ちる。
+  { name: "nenkin_kisai", expect: (s) =>
+      s.total === 844900 && s.kiso === 844900 &&
+      /昭和31年4月1日以前/.test(s.mangakuLabel || "") &&
+      /480月/.test(s.credited || "") },
+  // ★その対（同じ生年月日で繰上げ）→ 収録範囲外なので1円も出さない（fail closed）。
+  //   0.4%で黙って計算する実装は642,124円を出して落ちる。
+  { name: "nenkin_hanigai", expect: (s) =>
+      s.total === null && /出せません/.test(s.outOfScope || "") &&
+      /昭和37年4月1日以前/.test(s.outOfScopeList || "") },
+  // ★平成21年3月以前の免除期間 → 反映率が違うので金額を出さない（fail closed）。
+  { name: "nenkin_preh21", expect: (s) =>
+      s.total === null && /出せません/.test(s.outOfScope || "") &&
+      /平成21年3月以前/.test(s.outOfScopeList || "") },
+  // ★月数が1つも無い → 0円と答えず入力を促す（fail closed）。
+  { name: "nenkin_noinput", expect: (s) =>
+      s.total === null && /月数を入力してください/.test(s.noInput || "") },
+  // ★受給開始が範囲外（76歳）→ 制度上請求できないので金額を出さない。
+  { name: "nenkin_hanmugai", expect: (s) =>
+      s.total === null && /範囲で入れてください/.test(s.outOfRange || "") },
+  // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
+  { name: "nenkin_nodata", data404: "nenkin_r08.json", expect: (s) =>
+      s.failed && s.total === null },
+
   // ── 収入印紙 (/inshi/) ───────────────────────────────────────────────
   // ★No.6925: 税込54,800円・消費税等4,981円区分記載 → 税抜49,819円で判定＝非課税（印紙不要）。
   //   ハーネス側の引き算 54,800−4,981=49,819<50,000 と一致し、一覧表23行（判取帳まで）も描かれること。

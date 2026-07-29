@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>年金はいくらもらえる？ 受給見込額 計算機｜繰上げ・繰下げ・免除期間まで条文どおり</title>
+<meta name="description" content="生年月日・国民年金の納付月数・厚生年金の平均標準報酬から、老齢基礎年金＋付加年金＋老齢厚生年金（報酬比例部分）の受給見込額を条文どおりに計算します。★免除期間は率を掛けるだけでは足りず号ごとに上限があり、超えた分は一段低い率で拾います。★繰上げ0.4%・繰下げ0.7%は付加年金にもかかります。★繰下げにだけ120月の上限があります。平成15年4月の総報酬制（7.125→5.481）にも対応。加給年金など計算に入れないものは名前を挙げて申告します。無料・登録不要。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/nenkin/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "老齢年金の受給見込額 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "国民年金法27条・44条、厚生年金保険法43条1項、平成12年改正法附則20条1項、国民年金法施行令4条の5・12条に基づき、老齢基礎年金・付加年金・老齢厚生年金の報酬比例部分の受給見込額を計算します。保険料免除期間の号ごとの上限、繰上げの減額率・繰下げの増額率（付加年金を含む）、平成15年4月の総報酬制による乗率の切替に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "老齢年金の受給見込額 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 保険料を免除してもらった期間は、年金額にどれくらい反映されますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 全額免除なら2分の1、4分の3免除なら8分の5、半額免除なら4分の3、4分の1免除なら8分の7が反映されます（平成21年4月以後の期間）。納めていないのに半分が付くのは、基礎年金の半分が国庫負担でまかなわれているためです。ただし率を掛けるだけでは足りません。国民年金法27条ただし書は納付済月数から順に「480月からそれより前の号の月数を引いた月数」を各号の限度と定めており、限度を超えた分は捨てられるのではなく一段低い率（8分の7に対して8分の3など、ちょうど国庫負担分を除いた率）で拾われます。例外は全額免除で、こちらだけ超過分を拾う号が無いため、限度を超えた全額免除の月数は年金額に一切反映されません。なお学生納付特例と納付猶予の期間は、受給資格期間には入りますが年金額には反映されません（追納すれば納付済月数になります）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 繰上げ・繰下げをすると、付加年金も一緒に増減しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. します。国民年金法施行令12条2項と4条の5第2項が、付加年金の額にも同じ減額率・増額率を乗じると定めています。付加年金だけ200円×月数のまま据え置く計算機をよく見かけますが、条文どおりではありません。老齢厚生年金も同じで、繰上げ・繰下げは老齢基礎年金と同時にしか請求できないため（国民年金法附則9条の2第1項・厚生年金保険法附則7条の3）、この計算機は1つの受給開始月から3つすべてに同じ率を当てます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 繰下げは何歳まで、どれだけ増えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 75歳まで繰り下げられ、1か月あたり0.7%増えます（国民年金法28条2項2号・施行令4条の5第1項）。ここで見落としやすいのが上限で、施行令4条の5第1項のかっこ書が「月数が120を超えるときは120」と定めているため、増額率は最大84%で止まります。一方、繰上げの減額率（1か月0.4%・施行令12条1項）には上限の定めがありません。60歳が請求できる下限なので事実上60月＝24%減が最大になりますが、条文の書き方が繰上げと繰下げで違うので、繰下げに上限を入れ忘れると76歳以降で青天井に増える実装になります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 厚生年金の乗率が2つあるのはなぜですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 平成15年4月に総報酬制が導入され、乗率と、乗率を掛ける相手の意味が同時に変わったためです。平成15年3月以前の期間は「平均標準報酬月額」に1000分の7.125を掛けます（賞与は年金額に反映されません）。平成15年4月以後の期間は賞与を含む「平均標準報酬額」に1000分の5.481を掛けます（厚生年金保険法43条1項・平成12年改正法附則20条1項）。片方の乗率だけで通すと、平成15年をまたいで働いた方の額がずれます。乗率が下がったのは給付の削減ではなく、賞与という分母が入ったことに合わせた調整です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. この計算機の金額は、実際に振り込まれる額と同じですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 違います。この計算機は老齢年金の本体部分（老齢基礎年金・付加年金・老齢厚生年金の報酬比例部分）だけを出します。加給年金額・振替加算・経過的加算・特別支給の老齢厚生年金・在職老齢年金による支給停止・厚生年金基金の代行部分などは入れていません。増える方向のもの（加給年金・経過的加算）と減る方向のもの（在職による支給停止）が両方あるので、多めにも少なめにもずれます。また実際の振込額からは介護保険料・国民健康保険料や所得税・住民税が差し引かれます。確定した額は日本年金機構の「ねんきんネット」か年金事務所でご確認ください。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 老齢年金の受給見込額 計算機</nav>
+
+<section class="hero">
+  <h1>年金はいくらもらえる？ 受給見込額 計算機</h1>
+  <p>「ねんきん定期便」の数字を入れると、<b>老齢基礎年金＋付加年金＋老齢厚生年金（報酬比例部分）</b>の年額・月額を条文どおりに計算します。<b id="hero-menjo">保険料の免除期間は、率を掛けるだけでは足りません</b>——号ごとに上限があり、超えた分は一段低い率で拾われます。<b id="hero-fuka">繰上げ・繰下げの率は付加年金にもかかります</b>。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="hontai-caution">この計算機が出すのは老齢年金の「本体部分」だけです。</b>
+    <span id="hontai-setsumei">加給年金額・振替加算・経過的加算・特別支給の老齢厚生年金・在職老齢年金による支給停止は<b>入れていません</b>。増える方向のものと減る方向のものが両方あるので、<b>多めにも少なめにもずれます</b>。</span>
+    「およそ当たっているはず」と黙って混ぜるより、入れていないものを名前で挙げるほうが役に立つと考えています（下の<a href="#hani">計算しない範囲</a>に全部並べています）。
+  </div>
+
+  <label for="birth">① 生年月日</label>
+  <input type="date" id="birth" value="1975-05-15">
+  <p class="hint" style="margin-top:6px" id="birth-hint"></p>
+
+  <label style="margin-top:16px">② 年金を受け取り始める年齢</label>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
+    <div>
+      <label for="startAge" style="font-size:13px">歳</label>
+      <input type="number" id="startAge" min="60" max="75" inputmode="numeric" value="65">
+    </div>
+    <div>
+      <label for="startMonth" style="font-size:13px">か月（0〜11）</label>
+      <input type="number" id="startMonth" min="0" max="11" inputmode="numeric" value="0">
+    </div>
+  </div>
+  <p class="hint" style="margin-top:6px" id="start-hint"></p>
+
+  <label style="margin-top:16px">③ 国民年金の月数（ねんきん定期便の「国民年金」欄）</label>
+  <table class="tbl" id="months-table" style="margin-top:8px">
+    <thead><tr><th>期間の種類</th><th>月数</th><th>年金額への反映</th></tr></thead>
+    <tbody id="months-body"></tbody>
+  </table>
+  <p class="hint" style="margin-top:6px" id="gakuno-hint"></p>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:16px">
+    <div>
+      <label for="fukaMonths" style="font-size:13px">④ 付加保険料を納めた月数</label>
+      <input type="number" id="fukaMonths" min="0" max="480" inputmode="numeric" value="0">
+    </div>
+    <div>
+      <label for="menjoPreH21" style="font-size:13px">平成21年3月以前の免除期間（月）</label>
+      <input type="number" id="menjoPreH21" min="0" inputmode="numeric" value="0">
+    </div>
+  </div>
+  <p class="hint" style="margin-top:6px" id="fuka-hint"></p>
+
+  <label style="margin-top:16px">⑤ 厚生年金（会社員・公務員だった期間）</label>
+  <table class="tbl" id="kosei-table" style="margin-top:8px">
+    <thead><tr><th>期間</th><th>平均標準報酬（円／月）</th><th>月数</th><th>乗率</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b id="pre-label"></b><br><span class="hint" id="pre-base"></span></td>
+        <td><input type="number" id="preAvg" min="0" inputmode="numeric" value="0" placeholder="例 300000"></td>
+        <td><input type="number" id="preMonths" min="0" inputmode="numeric" value="0"></td>
+        <td><span id="pre-rate"></span></td>
+      </tr>
+      <tr>
+        <td><b id="post-label"></b><br><span class="hint" id="post-base"></span></td>
+        <td><input type="number" id="postAvg" min="0" inputmode="numeric" value="0" placeholder="例 400000"></td>
+        <td><input type="number" id="postMonths" min="0" inputmode="numeric" value="0"></td>
+        <td><span id="post-rate"></span></td>
+      </tr>
+    </tbody>
+  </table>
+  <p class="hint" style="margin-top:6px" id="kosei-hint"></p>
+
+  <p class="hint" style="margin-top:10px">
+    <button type="button" id="sample" style="background:none;border:none;padding:0;font:inherit;color:var(--accent);text-decoration:underline;cursor:pointer">記入例を入れて動きを見る</button>
+    — <b id="sample-caution">実在の誰かの記録ではありません。</b>試しに動かすためだけの数字です。
+  </p>
+
+  <button class="primary" id="calc" style="margin-top:16px">受給見込額を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<nav class="toc">
+  <b>目次</b>
+  <ol>
+    <li><a href="#kumitate">年金額は3つの部品からできている</a></li>
+    <li><a href="#menjo">免除期間は「率を掛ける」だけでは足りない</a></li>
+    <li><a href="#mangaku">満額は生年月日で2つある</a></li>
+    <li><a href="#kosei">平成15年4月で乗率と分母が同時に変わった</a></li>
+    <li><a href="#kuriage">繰上げ・繰下げは付加年金にもかかる</a></li>
+    <li><a href="#joge">繰下げにだけ120月の上限がある</a></li>
+    <li><a href="#hani">このツールが計算しない範囲</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ol>
+</nav>
+
+<h2 id="kumitate">年金額は3つの部品からできている</h2>
+
+<p>老齢年金は1つの数字ではなく、<b>別々の条文で計算された部品の足し算</b>です。この計算機が出すのは次の3つで、それぞれ根拠が違います。</p>
+
+<figure>
+<svg viewBox="0 0 720 260" role="img" aria-label="老齢年金の3つの部品と、繰上げ・繰下げの率が全部にかかることを示す図" style="width:100%;height:auto">
+  <rect x="0" y="0" width="720" height="260" fill="#fff"/>
+  <text x="12" y="24" font-size="14" font-weight="bold" fill="#1f2937">老齢年金の組み立て</text>
+
+  <rect x="12" y="42" width="200" height="58" rx="6" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="24" y="64" font-size="13" font-weight="bold" fill="#075985">老齢基礎年金</text>
+  <text x="24" y="82" font-size="11" fill="#0c4a6e">満額 × 月数 ÷ 480</text>
+  <text x="24" y="95" font-size="10" fill="#0c4a6e">国民年金法27条</text>
+
+  <rect x="12" y="108" width="200" height="52" rx="6" fill="#e0f2fe" stroke="#0284c7"/>
+  <text x="24" y="128" font-size="13" font-weight="bold" fill="#075985">付加年金</text>
+  <text x="24" y="146" font-size="11" fill="#0c4a6e">200円 × 付加納付月数（44条）</text>
+
+  <rect x="12" y="168" width="200" height="62" rx="6" fill="#ede9fe" stroke="#7c3aed"/>
+  <text x="24" y="188" font-size="13" font-weight="bold" fill="#5b21b6">老齢厚生年金</text>
+  <text x="24" y="205" font-size="11" fill="#4c1d95">報酬比例部分（厚年法43条1項）</text>
+  <text x="24" y="220" font-size="10" fill="#4c1d95">平成15年3月以前と以後で乗率が別</text>
+
+  <path d="M218 136 L286 136" stroke="#6b7280" stroke-width="1.6" marker-end="url(#ar)"/>
+  <defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#6b7280"/></marker></defs>
+
+  <rect x="292" y="96" width="176" height="80" rx="6" fill="#fef3c7" stroke="#d97706"/>
+  <text x="304" y="118" font-size="13" font-weight="bold" fill="#92400e">繰上げ／繰下げの率</text>
+  <text x="304" y="137" font-size="11" fill="#78350f">★3つ<tspan font-weight="bold">すべて</tspan>に同じ率が</text>
+  <text x="304" y="152" font-size="11" fill="#78350f">かかる（付加年金も）</text>
+  <text x="304" y="167" font-size="10" fill="#78350f">施行令12条2項・4条の5第2項</text>
+
+  <path d="M474 136 L542 136" stroke="#6b7280" stroke-width="1.6" marker-end="url(#ar)"/>
+
+  <rect x="548" y="96" width="160" height="80" rx="6" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="560" y="118" font-size="13" font-weight="bold" fill="#166534">受給見込額</text>
+  <text x="560" y="137" font-size="11" fill="#14532d">年額 → ÷12 で月額</text>
+  <text x="560" y="155" font-size="10" fill="#14532d">端数は1円単位の四捨五入</text>
+  <text x="560" y="169" font-size="10" fill="#14532d">（国民年金法17条1項）</text>
+</svg>
+<figcaption class="hint">老齢年金は3つの部品の足し算で、繰上げ・繰下げの率は<b>そのすべて</b>にかかる（付加年金だけ据え置く実装は条文どおりではない）。</figcaption>
+</figure>
+
+<p id="kumitate-hasu">端数処理は<b>1円単位の四捨五入</b>です（国民年金法17条1項が「50銭未満は切り捨て、50銭以上1円未満は1円に切り上げ」と定めています）。切り捨てで実装すると毎年わずかに少なく出ます。</p>
+
+<h2 id="menjo">免除期間は「率を掛ける」だけでは足りない</h2>
+
+<p id="menjo-honbun">保険料を免除してもらった期間も、一定の割合で年金額に反映されます。納めていないのに反映されるのは、<b>基礎年金の半分が国庫負担でまかなわれている</b>ためです。ここまでは多くの解説に書かれていますが、<b>国民年金法27条ただし書には、率のほかに「号ごとの上限」がある</b>ことはあまり書かれていません。</p>
+
+<p id="menjo-jogen">条文は納付済月数から順に、それぞれの号について<b>「480月から、それより前の号の月数を引いた月数」を限度</b>と定めます。そして<b id="menjo-choka">限度を超えた分は捨てられるのではなく、一段低い率で拾われます</b>——8分の7に対して8分の3、4分の3に対して4分の1というように、<b>ちょうど国庫負担の2分の1を除いた率</b>です。</p>
+
+<div class="note">
+  <b id="menjo-zenmen">例外は全額免除です。</b>
+  <span id="menjo-zenmen-why">27条8号には上限を超えた分を拾う号が<b>ありません</b>。保険料を1円も納めていないので、国庫負担分だけを拾うという考え方が成り立たないためです。つまり<b>限度を超えた全額免除の月数は、年金額に一切反映されません</b>。</span>
+</div>
+
+<p id="menjo-motono">★もう1つの急所は、上限の計算に使う月数です。条文は「保険料四分の一免除期間の月数」と書いており、<b>限度を適用したあとの月数とは書いていません</b>。つまり上限を消費していくのは<b>各号の「もとの」月数</b>です。ここを「実際に採用された月数」で計算すると、<b>免除期間の長い方の年金額が過大に出ます</b>。</p>
+
+<p id="menjo-gakuno">なお<b>学生納付特例と納付猶予</b>の期間は、全額免除の一種ではありますが<b>年金額には反映されません</b>（27条8号のかっこ書が90条の3第1項の期間を除いています）。受給資格期間の10年には算入されるので「カウントされている」と誤解しやすいところです。追納すれば納付済月数になります。</p>
+
+<h2 id="mangaku">満額は生年月日で2つある</h2>
+
+<p id="mangaku-honbun">老齢基礎年金の満額は、国民年金法27条本文の<b>78万900円</b>に、その年度の<b>改定率</b>を乗じた額です。この改定率が<b>新規裁定者（65歳になったばかりの方）と既裁定者（すでに受けている方）で別</b>に設定されるため、<b>満額は同じ年度に2つ存在します</b>。境目は<b>昭和31年4月2日</b>で、これより後に生まれた方が新規裁定者の額になります。</p>
+
+<p id="mangaku-hitotsu">満額を1つしか持たない実装は、<b>どちらかの利用者に必ず誤った額を出します</b>。この計算機は生年月日から該当する満額を選び、<b>どちらを使ったかを結果に表示</b>します。</p>
+
+<div class="note">
+  <b id="mangaku-alt">★数字が画像で書かれているページの注意</b>
+  <span id="mangaku-alt-why">日本年金機構の年金額のページは、満額の計算式が<b>画像</b>で置かれています。2026年7月29日に確認した時点で、本文の見出しと注記は令和8年度の額なのに、<b>画像の alt 属性だけが令和6年度の816,000円のまま</b>残っていました。alt 属性やページ内のテキストだけを転記すると、<b>2年古い数字を「公式で確認した」と称して載せてしまいます</b>。この計算機の満額は、画像そのものを読んだうえで、78万900円×改定率という条文の算式で別経路から検算して一致を確かめています。</span>
+</div>
+
+<h2 id="kosei">平成15年4月で乗率と分母が同時に変わった</h2>
+
+<p id="kosei-honbun">老齢厚生年金の報酬比例部分は「平均標準報酬 × 乗率 × 月数」で出しますが、<b>平成15年4月の総報酬制の導入で、乗率と、乗率を掛ける相手の意味が同時に変わりました</b>。</p>
+
+<ul id="kosei-list">
+  <li><b>平成15年3月以前</b>の期間 — <b>平均標準報酬月額</b>（賞与は年金額に反映されない）× 1000分の<b>7.125</b>（平成12年改正法附則20条1項1号）</li>
+  <li><b>平成15年4月以後</b>の期間 — 賞与を含む<b>平均標準報酬額</b> × 1000分の<b>5.481</b>（厚生年金保険法43条1項）</li>
+</ul>
+
+<p id="kosei-naze">乗率が下がったのは給付の削減ではなく、<b>賞与という分母が加わったことに合わせた調整</b>です。片方の乗率だけで通すと、<b>平成15年をまたいで働いた方ほど誤差が大きくなります</b>。ねんきん定期便でも、この2つの期間は分けて記載されています。</p>
+
+<h2 id="kuriage">繰上げ・繰下げは付加年金にもかかる</h2>
+
+<p id="kuriage-honbun">受け取り始める時期を早めれば1か月あたり<b>0.4%</b>減り（国民年金法施行令12条1項）、遅らせれば1か月あたり<b>0.7%</b>増えます（同令4条の5第1項）。ここで見落とされやすいのが<b id="kuriage-fuka">付加年金にも同じ率がかかる</b>ことです。施行令12条2項と4条の5第2項が、法44条の額に減額率・増額率を乗じると明記しています。付加年金だけ200円×月数のまま据え置く計算機をよく見かけますが、条文どおりではありません。</p>
+
+<p id="kuriage-doji">また<b>老齢厚生年金は、繰上げでも繰下げでも老齢基礎年金と同時にしか請求できません</b>（国民年金法附則9条の2第1項・厚生年金保険法附則7条の3）。「基礎だけ繰り下げる」という入力は制度上ありえないので、この計算機は<b>1つの受給開始月から3つすべてを計算します</b>。</p>
+
+<h2 id="joge">繰下げにだけ120月の上限がある</h2>
+
+<p id="joge-honbun">繰上げと繰下げは対称に見えますが、<b>条文の書き方が違います</b>。施行令4条の5第1項には<b id="joge-kakko">「月数が120を超えるときは120」というかっこ書があり</b>、繰下げの増額率は<b>最大84%で止まります</b>。一方、<b>繰上げの減額率（12条1項）には上限の定めがありません</b>——60歳が請求できる下限なので事実上60月＝24%減が最大になる、という形で決まっています。</p>
+
+<p id="joge-jisso">この非対称を実装に写し損なうと、<b>76歳以降の繰下げで増額率が青天井に増える</b>計算機になります。繰下げの上限年齢そのものは75歳（国民年金法28条2項2号）なので、上限を入れ忘れても入力の範囲では見えにくく、<b>境界を跨いだときだけ静かに誤る</b>ところです。</p>
+
+<h2 id="hani">このツールが計算しない範囲</h2>
+
+<p id="hani-honbun">年金額は最終的に日本年金機構が決定します。このツールは<b>老齢年金の本体部分だけ</b>を条文どおりに計算するもので、次のものは<b>計算に入れていません</b>。当てはまるかたは、出てくる金額が実際の額と変わります。<b>「およそ当たっているはず」と黙って混ぜるより、入れていないものを名前で挙げるほうが役に立つ</b>と考えています。</p>
+
+<ul id="hani-list">
+  <li><b>加給年金額</b>（厚年法44条）— 厚生年金の被保険者期間が20年以上あり、65歳未満の配偶者や18歳年度末までの子がいる場合の加算。生計維持関係の判定が要るため入力だけでは確定できません。<b>増える方向</b>です。</li>
+  <li><b>振替加算</b>— 配偶者の加給年金が終わったあと、大正15年4月2日〜昭和41年4月1日生まれの方の老齢基礎年金に加算されます。生年月日ごとに額が細かく決まっています。<b>増える方向</b>です。</li>
+  <li><b>経過的加算（差額加算）</b>— 厚生年金の加入期間のうち20歳前・60歳以後の期間などが老齢基礎年金に反映されない分を、老齢厚生年金に上乗せして埋める仕組み（昭和60年改正法附則59条）。<b>増える方向</b>です。</li>
+  <li><b>特別支給の老齢厚生年金（60代前半の年金）</b>— 男性は昭和36年4月1日以前、女性は昭和41年4月1日以前に生まれた方が、生年月日に応じて60〜64歳から受け取れます。支給開始年齢が1歳刻みで違います。</li>
+  <li><b>在職老齢年金による支給停止</b>（厚年法46条）— 年金を受けながら厚生年金に加入して働くと、基本月額と総報酬月額相当額の合計が支給停止調整額を超えた分の半額が止まります。止まるのは報酬比例部分だけで、老齢基礎年金は止まりません。<b>減る方向</b>です。</li>
+  <li><b>平成21年3月以前の保険料免除期間</b>— 当時の国庫負担は3分の1だったため反映率が違います（全額免除は2分の1でなく3分の1、4分の3免除は2分の1、半額免除は3分の2、4分の1免除は6分の5）。★このツールは<b>入力があれば金額を出さずに申告します</b>。</li>
+  <li><b>昭和37年4月1日以前生まれの方の繰上げ</b>— 減額率が1か月0.5%（改正前）で、このツールが使う0.4%と異なります。★<b>生年月日から機械的に判定して金額を出しません</b>。</li>
+  <li><b>昭和27年4月1日以前生まれの方の繰下げ</b>— 上限が70歳（最大60月・42%増）で、このツールが使う75歳（120月・84%増）と異なります。★<b>同じく判定して金額を出しません</b>。</li>
+  <li><b>昭和16年4月1日以前生まれの方の加入可能年数</b>— 40年より短く（昭和60年改正法附則8条）、分母が480月になりません。★<b>同じく判定して金額を出しません</b>。</li>
+  <li><b>第3種被保険者（坑内員・船員）の特例</b>— 被保険者期間を3分の4倍・5分の6倍する期間があり、乗率の読替えも入ります。</li>
+  <li><b>厚生年金基金の代行部分</b>— 基金に加入していた期間は報酬比例部分の一部を基金が支給するため、国から受け取る額はその分少なくなります。<b>減る方向</b>です。</li>
+  <li><b>合算対象期間（カラ期間）</b>— 受給資格期間の10年には算入されますが、<b>年金額の計算には一切入りません</b>。</li>
+</ul>
+
+<p id="hani-tedori">★また、実際に振り込まれる額からは<b>介護保険料・国民健康保険料（または後期高齢者医療保険料）と、所得税・住民税</b>が差し引かれます。このツールが出すのは<b>差し引く前の年金額</b>です。</p>
+
+<p id="hani-shikaku">★<b>受給資格期間（10年）を満たしているかどうかはこのツールでは判定していません</b>。満たしていない場合は、月数を入れれば金額が出ますが、実際には支給されません。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 保険料を免除してもらった期間は、年金額にどれくらい反映されますか？</h3>
+<p>A. 全額免除なら2分の1、4分の3免除なら8分の5、半額免除なら4分の3、4分の1免除なら8分の7が反映されます（平成21年4月以後の期間）。納めていないのに半分が付くのは、基礎年金の半分が国庫負担でまかなわれているためです。ただし率を掛けるだけでは足りません。国民年金法27条ただし書は納付済月数から順に「480月からそれより前の号の月数を引いた月数」を各号の限度と定めており、限度を超えた分は捨てられるのではなく一段低い率（8分の7に対して8分の3など、ちょうど国庫負担分を除いた率）で拾われます。例外は全額免除で、こちらだけ超過分を拾う号が無いため、限度を超えた全額免除の月数は年金額に一切反映されません。なお学生納付特例と納付猶予の期間は、受給資格期間には入りますが年金額には反映されません（追納すれば納付済月数になります）。</p>
+
+<h3>Q. 繰上げ・繰下げをすると、付加年金も一緒に増減しますか？</h3>
+<p>A. します。国民年金法施行令12条2項と4条の5第2項が、付加年金の額にも同じ減額率・増額率を乗じると定めています。付加年金だけ200円×月数のまま据え置く計算機をよく見かけますが、条文どおりではありません。老齢厚生年金も同じで、繰上げ・繰下げは老齢基礎年金と同時にしか請求できないため（国民年金法附則9条の2第1項・厚生年金保険法附則7条の3）、この計算機は1つの受給開始月から3つすべてに同じ率を当てます。</p>
+
+<h3>Q. 繰下げは何歳まで、どれだけ増えますか？</h3>
+<p>A. 75歳まで繰り下げられ、1か月あたり0.7%増えます（国民年金法28条2項2号・施行令4条の5第1項）。ここで見落としやすいのが上限で、施行令4条の5第1項のかっこ書が「月数が120を超えるときは120」と定めているため、増額率は最大84%で止まります。一方、繰上げの減額率（1か月0.4%・施行令12条1項）には上限の定めがありません。60歳が請求できる下限なので事実上60月＝24%減が最大になりますが、条文の書き方が繰上げと繰下げで違うので、繰下げに上限を入れ忘れると76歳以降で青天井に増える実装になります。</p>
+
+<h3>Q. 厚生年金の乗率が2つあるのはなぜですか？</h3>
+<p>A. 平成15年4月に総報酬制が導入され、乗率と、乗率を掛ける相手の意味が同時に変わったためです。平成15年3月以前の期間は「平均標準報酬月額」に1000分の7.125を掛けます（賞与は年金額に反映されません）。平成15年4月以後の期間は賞与を含む「平均標準報酬額」に1000分の5.481を掛けます（厚生年金保険法43条1項・平成12年改正法附則20条1項）。片方の乗率だけで通すと、平成15年をまたいで働いた方の額がずれます。乗率が下がったのは給付の削減ではなく、賞与という分母が入ったことに合わせた調整です。</p>
+
+<h3>Q. この計算機の金額は、実際に振り込まれる額と同じですか？</h3>
+<p>A. 違います。この計算機は老齢年金の本体部分（老齢基礎年金・付加年金・老齢厚生年金の報酬比例部分）だけを出します。加給年金額・振替加算・経過的加算・特別支給の老齢厚生年金・在職老齢年金による支給停止・厚生年金基金の代行部分などは入れていません。増える方向のもの（加給年金・経過的加算）と減る方向のもの（在職による支給停止）が両方あるので、多めにも少なめにもずれます。また実際の振込額からは介護保険料・国民健康保険料や所得税・住民税が差し引かれます。確定した額は日本年金機構の「ねんきんネット」か年金事務所でご確認ください。</p>
+
+<h2 id="shutten">出典</h2>
+<ul>
+  <li><a href="https://laws.e-gov.go.jp/law/334AC0000000141" rel="nofollow">国民年金法（昭和34年法律第141号）</a> — 27条（老齢基礎年金の額＝78万900円×改定率、ただし書1号〜8号の反映率と号ごとの上限）／44条（付加年金＝200円×付加保険料納付済月数）／17条1項（1円単位の四捨五入）／28条2項2号（繰下げの上限75歳）／附則9条の2第1項（繰上げは老齢厚生年金と同時請求）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/334CO0000000184" rel="nofollow">国民年金法施行令（昭和34年政令第184号）</a> — 4条の5第1項（繰下げの増額率＝千分の七×月数。<b>120を超えるときは120</b>）・2項（付加年金も同じ増額率）／12条1項（繰上げの減額率＝千分の四×月数。<b>上限の定めなし</b>）・2項（付加年金も同じ減額率）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/329AC0000000115" rel="nofollow">厚生年金保険法（昭和29年法律第115号）</a> — 43条1項（報酬比例部分＝平均標準報酬額×1000分の5.481×月数）／44条（加給年金額）／46条（在職老齢年金の支給停止）／附則7条の3（繰上げの同時請求）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/412AC0000000018" rel="nofollow">平成12年改正法（平成12年法律第18号）</a> — 附則20条1項（平成15年4月1日前の期間は平均標準報酬<b>月額</b>×1000分の<b>7.125</b>、同日以後は平均標準報酬額×1000分の5.481）</li>
+  <li><a href="https://www.nenkin.go.jp/service/jukyu/seido/roureinenkin/jukyu-yoken/20150401-02.html" rel="nofollow">日本年金機構「老齢基礎年金の受給要件・支給開始時期・年金額」</a> — 満額の実額（令和8年4月分から）。★計算式が画像で置かれており、<b>img の alt 属性は令和6年度の額のまま</b>だったため、画像そのものを読み、78万900円×改定率で別経路から検算しています。</li>
+</ul>
+<p class="hint" id="shutten-hint">条文は e-Gov 法令API v2 で取得した現行版を逐語で確認しています（2026年7月29日確認）。★現行版かどうかは<b>施行日</b>で判定しています（API の <code>current_revision_status</code> は現行版でも <code>PreviousEnforced</code> を返すため）。満額は毎年度の改定率で変わるので、毎年4月に取り直す前提のデータにしてあります。確定した年金額は日本年金機構の「ねんきんネット」または年金事務所でご確認ください。</p>
+
+<div class="note">
+  <b>関連するツール</b>
+  <div style="margin-top:6px"><a href="../shakai-hoken/">社会保険料の計算機（協会けんぽ・厚生年金）</a>／<a href="../kokuho/">国民健康保険料の計算機</a>／<a href="../tedori/">手取り計算機</a>／<a href="../juminzei/">住民税の計算機</a>／<a href="../hikazei-setai/">住民税非課税世帯の判定</a></div>
+</div>
+
+</article>
+</main>
+<footer>
+  <div>© 経理ミニツールズ</div>
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcNenkin, calcAdjust, pickMangaku } from "../assets/nenkin_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const num = (id) => Math.max(0, Number($(id).value) || 0);
+const pct = (r) => (r * 100).toFixed(1).replace(/\.0$/, "") + "%";
+let DATA = null;
+
+// 参照データ（満額・乗率・繰上げ繰下げの率）は非同期で届く。**届く前にボタンを押されても await で待つ**。
+// この catch が拾ってよいのは「データが手に入らなかったこと」だけ（飾りの描画は別に処理する）。
+const dataReady = fetch("../assets/nenkin_r08.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { DATA = d; return true; })
+  .catch(() => false);
+
+// 入力欄のラベル・乗率の表示は飾り。ここで転んでも計算は止めない（dataReady には影響させない）。
+dataReady.then((ok) => { if (ok) paintInputs(); }).catch(() => {});
+
+// ★免除の行も、乗率も、年齢の範囲も**すべてデータから描く**。
+//   ページに 0.875 や 5.481 や 60〜75 を手書きすると、データを差し替えた年に画面だけが古い数字を名乗る。
+function paintInputs() {
+  const K = DATA.kiso;
+  $("months-body").innerHTML = K.menjo.map((m) => {
+    const over = m.excess_rate != null
+      ? `上限超過分は${frac(m.excess_rate)}`
+      : (m.key === "menjo_full" ? "<b>上限超過分は反映されない</b>" : "—");
+    return `<tr>
+      <td><b>${m.label}</b><br><span class="hint">27条${m.go}号</span></td>
+      <td><input type="number" id="${m.key}" min="0" max="${K.kanyu_kano_months}" inputmode="numeric" value="0"></td>
+      <td>${frac(m.rate)}<br><span class="hint">${over}</span></td>
+    </tr>`;
+  }).join("");
+
+  $("gakuno-hint").innerHTML = `合計の上限は<b>${K.kanyu_kano_months}月</b>（40年）です。`
+    + `★号ごとにも「${K.kanyu_kano_months}月 − それより前の号の月数」という上限があり、`
+    + `超えた分は一段低い率で拾われます（全額免除だけは拾う号が無く反映されません）。`
+    + `<b>学生納付特例・納付猶予</b>の期間は年金額に反映されないので、ここには入れないでください。`;
+
+  $("fuka-hint").innerHTML = `付加年金は<b>${yenF(DATA.fuka.yen_per_month)}×付加保険料を納めた月数</b>（国民年金法44条）で、`
+    + `繰上げ・繰下げの率が<b>付加年金にもかかります</b>。`
+    + `右欄は<b>平成21年3月以前の免除期間</b>——当時は国庫負担が3分の1で反映率が違うため、`
+    + `<b>入力があると金額を出さずに申告します</b>（黙って別の率で計算しません）。`;
+
+  const [pre, post] = [DATA.kosei.joritsu.find((j) => j.key === "pre_h15"), DATA.kosei.joritsu.find((j) => j.key === "post_h15")];
+  $("pre-label").textContent = pre.label;
+  $("pre-base").textContent = pre.base;
+  $("pre-rate").innerHTML = `1000分の<b id="pre-rate-v">${pre.rate_per_mille}</b>`;
+  $("post-label").textContent = post.label;
+  $("post-base").textContent = post.base;
+  $("post-rate").innerHTML = `1000分の<b id="post-rate-v">${post.rate_per_mille}</b>`;
+  $("kosei-hint").innerHTML = DATA.kosei.note.replace(/^★/, "★");
+
+  $("start-hint").innerHTML = `<b>${DATA.kuriage.min_age}歳〜${DATA.kurisage.max_age}歳</b>の範囲で入れてください。`
+    + `65歳より早めると1か月あたり<b>${pct(DATA.kuriage.rate_per_month)}</b>減り、`
+    + `遅らせると1か月あたり<b>${pct(DATA.kurisage.rate_per_month)}</b>増えます。`
+    + `★繰下げの増額率には<b>${DATA.kurisage.max_months}月の上限</b>がありますが、繰上げの減額率に上限の定めはありません。`;
+
+  paintBirthHint();
+}
+
+// 分数での表示（0.875 → 8分の7）。データの率をそのまま小数で見せると条文と突き合わせにくい。
+function frac(r) {
+  const table = { 1: "全額", 0.875: "8分の7", 0.75: "4分の3", 0.625: "8分の5", 0.5: "2分の1",
+                  0.375: "8分の3", 0.25: "4分の1", 0.125: "8分の1" };
+  return table[r] ?? String(r);
+}
+
+// ★生年月日で満額が変わることを、実際に core を呼んで確かめた結果として描く（境界を手書きしない）。
+function paintBirthHint() {
+  if (!DATA) return;
+  const m = pickMangaku($("birth").value, DATA);
+  $("birth-hint").innerHTML = `満額は生年月日で2つあります。この生年月日は<b id="birth-mangaku">${m.label}（${yenF(m.yen)}）</b>に当たります。`
+    + `★繰上げの減額率0.4%・繰下げの上限75歳は生年月日によって異なる場合があり、当てはまる方には金額を出さずに申告します。`;
+}
+$("birth").addEventListener("change", paintBirthHint);
+
+// 記入例。★実在の誰かの記録ではないことを画面で申告する。
+$("sample").addEventListener("click", () => {
+  $("birth").value = "1975-05-15";
+  $("startAge").value = "65";
+  $("startMonth").value = "0";
+  for (const m of (DATA ? DATA.kiso.menjo : [])) $(m.key).value = "0";
+  if (DATA) { $("paid").value = "360"; $("menjo_full").value = "24"; }
+  $("fukaMonths").value = "60";
+  $("preAvg").value = "300000"; $("preMonths").value = "60";
+  $("postAvg").value = "400000"; $("postMonths").value = "240";
+  paintBirthHint();
+});
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  // ★.result は既定で display:none。ここで表示に切り替えないと、計算は正しいのに
+  //   画面には何も出ない（過去に10ツールで同時に起きた全損の型）。
+  box.style.display = "block";
+  box.textContent = "計算中…";
+
+  const ready = await dataReady;      // データを待ってから計算する（fail closed）
+  if (!ready || !DATA) {
+    box.innerHTML = '<p class="err">計算に必要なデータを読み込めませんでした。通信環境を確認して再読み込みしてください。</p>';
+    return;
+  }
+
+  const months = {};
+  let anyMonths = 0;
+  for (const m of DATA.kiso.menjo) { months[m.key] = num(m.key); anyMonths += months[m.key]; }
+  const koseiMonths = num("preMonths") + num("postMonths");
+
+  if (anyMonths === 0 && koseiMonths === 0 && num("fukaMonths") === 0) {
+    box.innerHTML = `<div class="note"><b id="no-input">加入期間の月数を入力してください。</b>
+      月数が1つも入っていないので、<b>年金額を0円とは答えません</b>。
+      お手元の「ねんきん定期便」の国民年金の月数（③）と厚生年金の月数（⑤）を入れてください。</div>`;
+    return;
+  }
+
+  // 受給開始年齢の範囲もデータから見る（ページに 60/75 を手書きしない）。
+  const age = num("startAge");
+  const mon = num("startMonth");
+  if (age < DATA.kuriage.min_age || age > DATA.kurisage.max_age || mon > 11
+      || (age === DATA.kurisage.max_age && mon > 0)) {
+    box.innerHTML = `<div class="note"><b id="out-of-range">受給開始は${DATA.kuriage.min_age}歳0か月〜${DATA.kurisage.max_age}歳0か月の範囲で入れてください。</b>
+      範囲の外は制度上請求できないため、金額を出しません。</div>`;
+    return;
+  }
+
+  // ★65歳を0とした前後の月数に直す。繰上げが負・繰下げが正（符号を逆にすると
+  //   減るはずの額が増える＝もっとも大きく誤る向き。E2Eで繰上げ・繰下げの両側を固定している）。
+  const offsetMonths = (age - 65) * 12 + mon;
+
+  const r = calcNenkin({
+    birthDate: $("birth").value,
+    offsetMonths,
+    months,
+    fukaMonths: num("fukaMonths"),
+    menjoPreH21Months: num("menjoPreH21"),
+    kosei: {
+      preAvgYen: num("preAvg"), preMonths: num("preMonths"),
+      postAvgYen: num("postAvg"), postMonths: num("postMonths"),
+    },
+  }, DATA);
+
+  // ★収録範囲外に当たるときは金額を1円も出さない（0.4%で黙って計算しない＝fail closed）。
+  if (!r.ok) {
+    box.innerHTML = `<div class="note"><b id="out-of-scope">このツールでは金額を出せません。</b>
+      入力された生年月日・条件が、当ツールの収録範囲の外に当たります。
+      <ul id="out-of-scope-list" style="margin:8px 0 0">${r.outOfScope.map((o) =>
+        `<li><b>${o.label}</b> — ${o.why}</li>`).join("")}</ul>
+      <span id="out-of-scope-why">別の率・別の算式で計算する必要があるため、<b>それらしい金額を出すより出さないほうが安全</b>だと考えています。年金事務所か「ねんきんネット」でご確認ください。</span></div>`;
+    return;
+  }
+
+  const A = r.adjust;
+  const adjName = A.kind === "kuriage" ? `繰上げ（${A.months}か月早める）`
+                : A.kind === "kurisage" ? `繰下げ（${A.months}か月遅らせる）`
+                : "本来の受給開始（65歳）";
+  const adjLine = A.kind === "normal"
+    ? `<div class="note" style="margin-top:12px"><b id="adjust-name">${adjName}</b>
+       — 減額も増額もありません。</div>`
+    : `<div class="note" style="margin-top:12px"><b id="adjust-name">${adjName}</b>
+       — ${A.kind === "kuriage" ? "減額率" : "増額率"} <b id="adjust-rate">${pct(A.rate)}</b>
+       （1か月${pct(A.kind === "kuriage" ? DATA.kuriage.rate_per_month : DATA.kurisage.rate_per_month)} × ${A.months}か月）。
+       <span id="adjust-fuka">★この率は<b>老齢基礎年金・付加年金・老齢厚生年金のすべて</b>にかかります（付加年金も含みます）。</span>
+       ${A.kind === "kurisage" && A.months === DATA.kurisage.max_months
+         ? `<span id="adjust-capped">★増額率は<b>${DATA.kurisage.max_months}月で頭打ち</b>です（施行令4条の5第1項のかっこ書）。</span>` : ""}</div>`;
+
+  const menjoRows = r.detail.kiso.breakdown.map((b) => `
+    <tr>
+      <td>${b.label}</td>
+      <td>${b.rawMonths}月</td>
+      <td>${b.withinMonths}月 × ${frac(b.rate)}${b.overMonths > 0
+        ? `<br><span class="hint">超過 ${b.overMonths}月 × ${b.excessRate != null ? frac(b.excessRate) : "<b>反映なし</b>"}</span>` : ""}</td>
+      <td>${Math.round(b.creditedMonths * 1000) / 1000}月</td>
+    </tr>`).join("");
+
+  box.innerHTML = `
+    <div style="font-size:15px">年金の見込額（年額） <b style="font-size:22px" id="total">${yenF(r.yearly)}</b>
+      <span class="hint">（月あたり約<b id="monthly">${yenF(r.monthly)}</b>）</span></div>
+    <table class="tbl" style="margin-top:10px">
+      <thead><tr><th>年金の種類</th><th>調整前（年額）</th><th>調整後（年額）</th></tr></thead>
+      <tbody>
+        <tr><td><b>老齢基礎年金</b><br><span class="hint">満額 ${yenF(r.mangaku.yen)} × ${Math.round(r.detail.kiso.creditedMonths * 1000) / 1000}月 ÷ ${DATA.kiso.kanyu_kano_months}月</span></td>
+          <td>${yenF(r.before.kiso)}</td><td><b id="kiso">${yenF(r.kiso)}</b></td></tr>
+        <tr><td><b>付加年金</b><br><span class="hint">${yenF(DATA.fuka.yen_per_month)} × ${num("fukaMonths")}月</span></td>
+          <td>${yenF(r.before.fuka)}</td><td><b id="fuka">${yenF(r.fuka)}</b></td></tr>
+        <tr><td><b>老齢厚生年金</b><br><span class="hint">報酬比例部分（${r.detail.kosei.months}月）</span></td>
+          <td>${yenF(r.before.kosei)}</td><td><b id="kosei">${yenF(r.kosei)}</b></td></tr>
+      </tbody>
+    </table>
+    ${adjLine}
+    <div class="hint" style="margin-top:10px" id="mangaku-note">老齢基礎年金の満額は<b id="mangaku-label">${r.mangaku.label}</b>の
+      <b>${yenF(r.mangaku.yen)}</b>を使いました（満額は生年月日で2つあります）。
+      反映された月数は<b id="credited">${Math.round(r.detail.kiso.creditedMonths * 1000) / 1000}月</b>
+      ／${DATA.kiso.kanyu_kano_months}月${r.detail.kiso.capped ? "（<b id=\"kiso-capped\">合計の上限480月を適用しました</b>）" : ""}。</div>
+    ${menjoRows ? `<table class="tbl" style="margin-top:10px">
+      <thead><tr><th>期間の種類</th><th>入力した月数</th><th>反映のしかた</th><th>反映月数</th></tr></thead>
+      <tbody>${menjoRows}</tbody></table>
+      <div class="hint" style="margin-top:6px" id="menjo-note">★号ごとの上限は「${DATA.kiso.kanyu_kano_months}月 − <b>それより前の号のもとの月数</b>」で、率を掛けたあとの月数ではありません（施行令ではなく法27条ただし書）。超過分は一段低い率で拾われますが、<b>全額免除だけは拾う号が無く反映されません</b>。</div>` : ""}
+    <div class="hint" style="margin-top:6px" id="kosei-breakdown">老齢厚生年金の内訳（調整前）— 平成15年3月以前 ${yenF(r.detail.kosei.preYen)}（1000分の${DATA.kosei.joritsu[0].rate_per_mille}）／平成15年4月以後 ${yenF(r.detail.kosei.postYen)}（1000分の${DATA.kosei.joritsu[1].rate_per_mille}）。</div>
+    <div class="hint" style="margin-top:6px" id="meta-note"></div>
+    <div class="note" style="margin-top:12px">
+      <b>この金額に入れていないもの</b> — 加給年金額／振替加算／経過的加算／特別支給の老齢厚生年金／在職老齢年金による支給停止／第3種被保険者の特例／厚生年金基金の代行部分／合算対象期間。<b>増える方向のものと減る方向のものが両方あります</b>。また実際の振込額からは介護保険料・国民健康保険料と所得税・住民税が差し引かれます。確定した額は「ねんきんネット」か年金事務所でご確認ください。
+    </div>`;
+  paintMeta();
+});
+
+function paintMeta() {
+  // ★出典欄は結果ボックスの中にあるので、計算前はまだ存在しない。
+  //   ここで転ぶと飾りの失敗が計算の失敗に化ける（「答えに要るもの」と「飾り」を同じ catch に入れない）。
+  if (!DATA || !$("meta-note")) return;
+  const m = DATA.kiso.mangaku_yen.map((x) => `${x.label} ${yenF(x.yen)}`).join("／");
+  $("meta-note").innerHTML =
+    `<span id="year-from-data">${DATA._meta.year}</span>の年金額で計算しています。`
+    + `満額は ${m}（国民年金法27条本文の${yenF(DATA.kiso.hongaku_yen)}に改定率を乗じた額）、`
+    + `付加年金は月あたり${yenF(DATA.fuka.yen_per_month)}、`
+    + `繰上げ${pct(DATA.kuriage.rate_per_month)}／繰下げ${pct(DATA.kurisage.rate_per_month)}（1か月あたり）です。`;
+}
+</script>
+</body>
+</html>

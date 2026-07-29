@@ -2244,6 +2244,126 @@ SCENES.kokuho_norates = kokuhoScene({ rates: null });
 // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
 SCENES.kokuho_nodata = kokuhoScene({});
 
+// ── 老齢年金の受給見込額 (/nenkin/) ─────────────────────────────────────────
+// ★単体（tests/test_nenkin.mjs）は core しか見ないので、次の配線はここでしか守れない:
+//   「歳＋か月 → 65歳を0とした offsetMonths（★符号を逆にすると減るはずの額が増える）」
+//   「生年月日 → pickMangaku（満額は2つある。1つしか渡さない実装は片方の利用者に誤答）」
+//   「免除5区分の入力 → months の5キー」「厚生年金の4つの入力 → pre/post の対」
+//   「収録範囲外の判定 → 金額を1円も出さない」
+// ★免除の行・乗率・年齢の範囲は**データから描かれる**ので、③の入力欄は dataReady のあとに現れる。
+//   だから設定の前に待つ（nodata シーンは永久に現れないので待たない）。
+const nenkinScene = (o) => async () => {
+  const doc = await open("/docs/nenkin/");
+  if (!o.nodata) {
+    await waitFor(() => doc.getElementById("paid"), "免除区分の入力欄（データから描かれる）");
+  }
+  set(doc, "birth", o.birth ?? "1975-05-15");
+  set(doc, "startAge", o.startAge ?? 65);
+  set(doc, "startMonth", o.startMonth ?? 0);
+  if (!o.nodata) {
+    const M = o.months ?? { paid: 360, menjo_full: 24 };
+    for (const key of ["paid", "menjo_1_4", "menjo_half", "menjo_3_4", "menjo_full"]) {
+      set(doc, key, M[key] ?? 0);
+    }
+  }
+  set(doc, "fukaMonths", o.fukaMonths ?? 60);
+  set(doc, "menjoPreH21", o.menjoPreH21 ?? 0);
+  const K = o.kosei ?? [300000, 60, 400000, 240];
+  set(doc, "preAvg", K[0]); set(doc, "preMonths", K[1]);
+  set(doc, "postAvg", K[2]); set(doc, "postMonths", K[3]);
+  // ★免除の行がデータの区分数どおりに描かれているか（ページに5行を手書きしていないこと）。
+  const monthRows = doc.querySelectorAll("#months-body tr").length;
+  // 乗率もデータから描かれる（ページに 7.125 / 5.481 を手書きしていないこと）。
+  const byId = (id) => { const e = doc.getElementById(id); return e ? e.textContent.trim() : null; };
+  const preRate = byId("pre-rate-v");
+  const postRate = byId("post-rate-v");
+  const birthMangaku = byId("birth-mangaku");
+  const startHint = text(doc, "start-hint");
+  click(doc, "calc");
+
+  await waitFor(
+    () => /¥|入力してください|読み込めませんでした|出せません|範囲で入れて/.test(text(doc, "result")),
+    "年金の受給見込額の計算結果",
+  );
+  const body = text(doc, "result");
+  const yen = (id) => { const t = byId(id); return t && /\d/.test(t) ? Number(t.replace(/[^\d]/g, "")) : null; };
+  return {
+    monthRows, preRate, postRate, birthMangaku, startHint,
+    total: yen("total"),
+    monthly: yen("monthly"),
+    kiso: yen("kiso"),
+    fuka: yen("fuka"),
+    kosei: yen("kosei"),
+    // ★主張ごとに別の要素を読む（規則5）。繰上げ・繰下げの見出しと、
+    //   「付加年金にもかかる」「120月で頭打ち」は別の要素に載っている。
+    adjustName: byId("adjust-name"),
+    adjustRate: byId("adjust-rate"),
+    adjustFuka: byId("adjust-fuka"),
+    adjustCapped: byId("adjust-capped"),
+    mangakuLabel: byId("mangaku-label"),
+    credited: byId("credited"),
+    menjoNote: byId("menjo-note"),
+    noInput: byId("no-input"),
+    outOfScope: byId("out-of-scope"),
+    outOfScopeList: byId("out-of-scope-list"),
+    outOfRange: byId("out-of-range"),
+    failed: /読み込めませんでした/.test(body),
+    body,
+  };
+};
+// ★看板例（期待値はコアを通さず手計算の鎖で出し、tools/tmp_nenkin_e2e_0729.mjs で一致を確認済み）:
+//   昭和50年生・65歳0か月・納付済360月＋全額免除24月・付加60月・厚生(30万×60月／40万×240月)
+//   基礎 847,300×(360+24×1/2)/480 = 847,300×372/480 = 656,658
+//   付加 200×60 = 12,000
+//   厚生 300,000×7.125/1000×60 = 128,250 ＋ 400,000×5.481/1000×240 = 526,176 → 654,426
+//   合計 1,323,084円（月額 110,257円）
+SCENES.nenkin = nenkinScene({});
+// ★繰上げ（60歳0か月＝60月早める）→ 減額率 0.4%×60 = 24%・factor 0.76。
+//   ★符号を逆に実装すると繰下げになって額が増えるので、この対で符号を固定する。
+//   基礎 656,658×0.76=499,060／付加 12,000×0.76=9,120／厚生 654,426×0.76=497,364 → 1,005,544円
+//   ★付加年金を据え置く実装（12,000のまま）は合計が 1,008,424 になって落ちる。
+SCENES.nenkin_kuriage = nenkinScene({ startAge: 60, startMonth: 0 });
+// ★繰下げ（75歳0か月＝120月遅らせる）→ 増額率 0.7%×120 = 84%・factor 1.84。
+//   基礎 1,208,251／付加 22,080／厚生 1,204,144 → 2,434,475円
+//   ★120月の上限に**ちょうど当たる**点なので、上限を入れ忘れた実装もここでは同じ額になる。
+//   だから上限そのものは「頭打ちの申告（adjustCapped）」の有無で見る。
+SCENES.nenkin_kurisage = nenkinScene({ startAge: 75, startMonth: 0 });
+// ★★「か月」欄の既定値でない側（70歳**6**か月＝66月遅らせる）→ 0.7%×66 = 46.2%。
+//   ★他のシーンは全部 0か月なので、**か月を無視する実装（+ mon を + 0 にする類）は
+//   このシーンが無いと1つも落ちない**（既定値がある入力軸は既定値でない側も必ず置く）。
+//   基礎 960,034／付加 17,544／厚生 956,771 → 1,934,349円（か月を捨てると1,878,779円）
+SCENES.nenkin_kurisage_tsuki = nenkinScene({ startAge: 70, startMonth: 6 });
+// ★★号ごとの上限の急所: 4分の1免除500月＋半額100月。
+//   1号(納付済0) → 2号は限度480月まで 8分の7、超過20月は3号の 8分の3 → 420＋7.5=427.5月
+//   4号(半額100月)は限度が「480 − **前の号のもとの月数500**」= 0 なので全部が5号の 4分の1 → 25月
+//   合計 452.5月 → 847,300×452.5/480 = 798,757円
+//   ★上限の基準を「率を掛けたあとの月数(427.5)」にした誤り実装は 478.75月＝845,053円になって落ちる。
+SCENES.nenkin_menjo_jogen = nenkinScene({
+  months: { paid: 0, menjo_1_4: 500, menjo_half: 100 },
+  fukaMonths: 0, kosei: [0, 0, 0, 0],
+});
+// ★既裁定（昭和31年4月1日以前生まれ）の満額を使う対。納付済480月ちょうど＝満額そのまま。
+//   844,900円。★満額を1つしか持たない実装は新規裁定の847,300円を出して落ちる。
+SCENES.nenkin_kisai = nenkinScene({
+  birth: "1955-01-01", months: { paid: 480 }, fukaMonths: 0, kosei: [0, 0, 0, 0],
+});
+// ★その対（同じ生年月日で繰上げ）→ 昭和37年4月1日以前生まれの繰上げは減額率0.5%で収録範囲外。
+//   **金額を1円も出さず**、どれに当たったかを名前で申告する（fail closed）。
+//   ★0.4%で黙って計算する実装は 642,124円 を出して落ちる。
+SCENES.nenkin_hanigai = nenkinScene({
+  birth: "1955-01-01", startAge: 60, months: { paid: 480 }, fukaMonths: 0, kosei: [0, 0, 0, 0],
+});
+// ★平成21年3月以前の免除期間が入力された → 反映率が違うので金額を出さない（fail closed）。
+SCENES.nenkin_preh21 = nenkinScene({ menjoPreH21: 12 });
+// ★月数が1つも入っていない → 0円と答えず入力を促す（fail closed）。
+SCENES.nenkin_noinput = nenkinScene({
+  months: { paid: 0 }, fukaMonths: 0, kosei: [0, 0, 0, 0],
+});
+// ★受給開始が範囲外（76歳）→ 制度上請求できないので金額を出さない。
+SCENES.nenkin_hanmugai = nenkinScene({ startAge: 76 });
+// ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
+SCENES.nenkin_nodata = nenkinScene({ nodata: true });
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。
