@@ -2364,6 +2364,146 @@ SCENES.nenkin_hanmugai = nenkinScene({ startAge: 76 });
 // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
 SCENES.nenkin_nodata = nenkinScene({ nodata: true });
 
+// ── 不動産の登録免許税 (/toroku-menkyozei/) ────────────────────────────────
+// ★単体（tests/test_toroku_jutaku.mjs）は core しか見ないので、次の配線はここでしか守れない:
+//   「1つの『取得の原因』を genin と tochiGenin の**両方**に渡す（土地と建物で要件が違う）」
+//   「登記を受ける日 → tokiBi（渡し忘れると期限を過ぎた日に軽減を当ててしまう）」
+//   「抵当権に saikenGaku を渡す（tatemonoKagaku を渡すと評価額で計算される）」
+//   「持分・月数・建築日などの軸を1つも落としていない」
+//   「出せない条件では金額を1円も出さない」
+// ★期限・要件の表示はデータから描かれるので、入力の設定前にその出現を待つ
+//   （nodata シーンは永久に現れないので待たない）。
+const torokuJutakuScene = (o) => async () => {
+  const doc = await open("/docs/toroku-menkyozei/");
+  if (!o.nodata) {
+    await waitFor(() => {
+      const e = doc.getElementById("kigen-jutaku");
+      return e && e.textContent.trim().length > 0;
+    }, "期限の表示（データから描かれる）");
+  }
+  set(doc, "tokiBi", o.tokiBi ?? "2026-07-01");
+  set(doc, "tokiShurui", o.tokiShurui ?? "iten");
+  set(doc, "genin", o.genin ?? "売買");
+  set(doc, "tochiKagaku", o.tochiKagaku ?? 15000000);
+  set(doc, "tochiMochibun", o.tochiMochibun ?? 1);
+  set(doc, "tatemonoKagaku", o.tatemonoKagaku ?? 10000000);
+  set(doc, "tatemonoMochibun", o.tatemonoMochibun ?? 1);
+  set(doc, "kojinKyoju", o.kojinKyoju ?? "1");
+  set(doc, "yukamenseki", o.yukamenseki ?? 80);
+  set(doc, "tokiMadeMonths", o.tokiMadeMonths ?? 3);
+  set(doc, "chuko", o.chuko ?? "0");
+  set(doc, "kenchikuBi", o.kenchikuBi ?? "2000-01-01");
+  set(doc, "taishinTekigo", o.taishinTekigo ?? "0");
+  set(doc, "nintei", o.nintei ?? "none");
+  set(doc, "kodate", o.kodate ?? "1");
+  set(doc, "kaitoriHanbai", o.kaitoriHanbai ?? "0");
+  set(doc, "saikenGaku", o.saikenGaku ?? 35000000);
+  // 期限・要件はデータから描かれる（ページに令和9年・50㎡・1年を手書きしていないこと）。
+  const byId = (id) => { const e = doc.getElementById(id); return e ? e.textContent.trim() : null; };
+  const kigenJutaku = byId("kigen-jutaku");
+  const kigenTochi = byId("kigen-tochi");
+  const chukoKijun = byId("chuko-kijun");
+  click(doc, "calc");
+
+  await waitFor(
+    () => /¥|入力してください|読み込めませんでした|出せません/.test(text(doc, "result")),
+    "登録免許税の計算結果",
+  );
+  const body = text(doc, "result");
+  const yen = (id) => { const t = byId(id); return t && /\d/.test(t) ? Number(t.replace(/[^\d]/g, "")) : null; };
+  return {
+    kigenJutaku, kigenTochi, chukoKijun,
+    total: yen("total"),
+    tochi: yen("tax-tochi"),
+    tatemono: yen("tax-tatemono"),
+    teitoken: yen("tax-teitoken"),
+    // ★主張ごとに別の要素を読む（規則5）。
+    rows: doc.querySelectorAll("#result table.res tbody tr").length,
+    saikenBase: byId("saiken-base"),
+    keigenNashi: byId("keigen-nashi"),
+    keigenRiyu: byId("keigen-riyu"),
+    keirakuNote: byId("keiraku-note"),
+    bubun: byId("bubun"),
+    bubunRiyu: byId("bubun-riyu"),
+    outOfScope: byId("out-of-scope"),
+    outOfScopeRiyu: byId("out-of-scope-riyu"),
+    noInput: byId("no-input"),
+    // 見出しと理由は別要素（規則5）。理由はコアが返した文言をそのまま出している。
+    noInputRiyu: byId("no-input-riyu"),
+    loadFailed: byId("load-failed"),
+    failed: /読み込めませんでした/.test(body),
+    body,
+  };
+};
+// ★看板例（期待値はコアを通さず条文の税率から手で出した鎖）:
+//   土地 15,000,000×1.5% = 225,000／建物（住宅用家屋の移転）10,000,000×0.3% = 30,000
+//   抵当権 35,000,000×0.1% = 35,000 → 合計 290,000円
+SCENES.toroku = torokuJutakuScene({});
+// ★保存登記（新築を自分で建てた）→ 建物は 0.15%＝15,000。合計 275,000円。
+//   単体テストの「看板例」と同じ額なので、ページの配線が正しければ一致する。
+SCENES.toroku_hozon = torokuJutakuScene({ tokiShurui: "hozon" });
+// ★対（原因だけ差し替える）: 贈与は軽減が全部落ちる（措令42条3項）。
+//   土地 2%=300,000／建物 2%=200,000／抵当権 0.4%=140,000 → 640,000円
+SCENES.toroku_zoyo = torokuJutakuScene({ genin: "贈与" });
+// ★★土地と建物で結論が分かれる対: 競落は**建物だけ**軽減が使える。
+//   土地 2%=300,000（措法72条は「売買」限定）／建物 0.3%=30,000／抵当権 0.1%=35,000 → 365,000円
+//   ★genin と tochiGenin を同じ扱いにした実装は土地も0.3%側になって落ちる。
+SCENES.toroku_keiraku = torokuJutakuScene({ genin: "競落" });
+// ★★長期優良と低炭素の対（同条件・一戸建ての移転）。建物だけを入れて差を裸にする。
+//   長期優良は74条2項かっこ書きで 0.2%＝20,000円。
+SCENES.toroku_chouki_kodate = torokuJutakuScene({
+  nintei: "chouki", kodate: "1", tochiKagaku: 0, saikenGaku: 0,
+});
+// 低炭素は同じ一戸建ての移転でも 0.1%＝10,000円（74条の2第2項にかっこ書きが無い）。
+SCENES.toroku_teitanso_kodate = torokuJutakuScene({
+  nintei: "teitanso", kodate: "1", tochiKagaku: 0, saikenGaku: 0,
+});
+// ★中古の建築日の対（昭和56年12月31日／昭和57年1月1日）。築年数ではなく建築日で切る。
+//   昭和56年は軽減が落ちて本則 2%＝200,000円。
+SCENES.toroku_chuko_s56 = torokuJutakuScene({
+  chuko: "1", kenchikuBi: "1981-12-31", tochiKagaku: 0, saikenGaku: 0,
+});
+// 昭和57年1月1日は通る＝0.3%＝30,000円（境界は「以後」なので当日は通る側）。
+SCENES.toroku_chuko_s57 = torokuJutakuScene({
+  chuko: "1", kenchikuBi: "1982-01-01", tochiKagaku: 0, saikenGaku: 0,
+});
+// ★★抵当権の課税標準が債権金額であること。評価額2,000万・借入3,000万で食い違わせる。
+//   建物 20,000,000×0.3%=60,000／抵当権 30,000,000×0.1%=30,000 → 90,000円
+//   ★評価額を渡す実装は抵当権が20,000になり合計80,000で落ちる。
+SCENES.toroku_saiken = torokuJutakuScene({
+  tatemonoKagaku: 20000000, saikenGaku: 30000000, tochiKagaku: 0,
+});
+// ★持分（既定値1でない側）。2,000万×0.5=1,000万 → 1.5%＝150,000円。
+//   持分を渡し忘れる実装は300,000円になって落ちる。
+SCENES.toroku_mochibun = torokuJutakuScene({
+  tochiKagaku: 20000000, tochiMochibun: 0.5, tatemonoKagaku: 0, saikenGaku: 0,
+});
+// ★登記までの月数（既定値3でない側）。13か月＝1年超で軽減が落ちて 2%＝200,000円。
+//   月数を渡し忘れる実装は30,000円のままで落ちる。
+SCENES.toroku_1nen_choka = torokuJutakuScene({
+  tokiMadeMonths: 13, tochiKagaku: 0, saikenGaku: 0,
+});
+// ★★期限の境界の対。住宅用家屋の軽減の最終日（令和9年3月31日）は通る＝看板例と同じ290,000円。
+SCENES.toroku_kigen_kyokai = torokuJutakuScene({ tokiBi: "2027-03-31" });
+// その翌日 → 建物と抵当権は出せず、土地だけ出す（期限が別の制度だから）。
+//   ★tokiBi を渡し忘れる実装は290,000円を出して落ちる。
+SCENES.toroku_kigen_gai = torokuJutakuScene({ tokiBi: "2027-04-01" });
+// ★同じ日でも土地だけなら全部出せる（土地は令和11年3月31日まで）＝225,000円・一部の申告なし。
+SCENES.toroku_kigen_tochi = torokuJutakuScene({
+  tokiBi: "2027-04-01", tatemonoKagaku: 0, saikenGaku: 0,
+});
+// ★収録範囲より前の日（令和8年3月31日）→ 1円も出さない。
+SCENES.toroku_kako = torokuJutakuScene({ tokiBi: "2026-03-31" });
+// ★相続・遺贈は税率そのものが別（0.4%）→ 計算せず専用ツールへ案内する。
+//   「軽減の使えない移転」として2%を当てる実装は640,000円を出して落ちる。
+SCENES.toroku_sozoku = torokuJutakuScene({ genin: "相続" });
+// ★評価額も借入額も0 → 0円と答えず入力を促す（fail closed）。
+SCENES.toroku_noinput = torokuJutakuScene({
+  tochiKagaku: 0, tatemonoKagaku: 0, saikenGaku: 0,
+});
+// ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
+SCENES.toroku_nodata = torokuJutakuScene({ nodata: true });
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。

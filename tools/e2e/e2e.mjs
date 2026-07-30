@@ -818,6 +818,81 @@ const SCENES = [
   { name: "nenkin_nodata", data404: "nenkin_r08.json", expect: (s) =>
       s.failed && s.total === null },
 
+  // ── 不動産の登録免許税 (/toroku-menkyozei/) ──────────────────────────
+  // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず条文の税率から出した期待値）。
+  { name: "toroku", expect: (s) =>
+      s.total === 290000 && s.tochi === 225000 && s.tatemono === 30000 && s.teitoken === 35000 &&
+      s.rows === 3 &&
+      // 期限は2つともデータから描かれている（ページの手書きではない）
+      /令和9年3月31日/.test(s.kigenJutaku || "") && /令和11年3月31日/.test(s.kigenTochi || "") &&
+      /昭和57年1月1日/.test(s.chukoKijun || "") &&
+      // 軽減が通っているので「本則で計算した」の断り書きは出ない
+      s.keigenNashi === null && s.bubun === null && !s.failed },
+  // 保存登記＝建物0.15%。単体テストの看板例と同じ275,000円になる。
+  { name: "toroku_hozon", expect: (s) =>
+      s.total === 275000 && s.tochi === 225000 && s.tatemono === 15000 && s.teitoken === 35000 },
+  // ★対: 贈与は軽減が全部落ちる。理由が名指しで出ていること（規則5＝見出しと別の要素）。
+  { name: "toroku_zoyo", expect: (s) =>
+      s.total === 640000 && s.tochi === 300000 && s.tatemono === 200000 && s.teitoken === 140000 &&
+      /本則/.test(s.keigenNashi || "") && /売買・競落/.test(s.keigenRiyu || "") },
+  // ★★競落＝建物だけ軽減。土地と建物で結論が分かれることを別要素で申告している。
+  { name: "toroku_keiraku", expect: (s) =>
+      s.total === 365000 && s.tochi === 300000 && s.tatemono === 30000 && s.teitoken === 35000 &&
+      /土地は本則/.test(s.keirakuNote || "") &&
+      // 建物の軽減は通っているので「軽減なし」は出ない
+      s.keigenNashi === null },
+  // ★★長期優良（一戸建ての移転）は0.2%。
+  { name: "toroku_chouki_kodate", expect: (s) =>
+      s.total === 20000 && s.tatemono === 20000 && s.rows === 1 },
+  // ★★その対。低炭素は同条件でも0.1%（かっこ書きが無い）。
+  { name: "toroku_teitanso_kodate", expect: (s) =>
+      s.total === 10000 && s.tatemono === 10000 && s.rows === 1 },
+  // ★中古の建築日の対。昭和56年は軽減が落ちる。
+  { name: "toroku_chuko_s56", expect: (s) =>
+      s.total === 200000 && s.tatemono === 200000 && /昭和57年1月1日/.test(s.keigenRiyu || "") },
+  // 昭和57年1月1日ちょうどは通る（境界は「以後」）。
+  { name: "toroku_chuko_s57", expect: (s) =>
+      s.total === 30000 && s.tatemono === 30000 && s.keigenNashi === null },
+  // ★★抵当権の課税標準は債権金額。評価額を渡す実装は合計80,000で落ちる。
+  { name: "toroku_saiken", expect: (s) =>
+      s.total === 90000 && s.tatemono === 60000 && s.teitoken === 30000 &&
+      /債権金額/.test(s.saikenBase || "") },
+  // ★持分（既定値でない側）。渡し忘れる実装は300,000で落ちる。
+  { name: "toroku_mochibun", expect: (s) =>
+      s.total === 150000 && s.tochi === 150000 && s.rows === 1 },
+  // ★登記までの月数（既定値でない側）。渡し忘れる実装は30,000で落ちる。
+  { name: "toroku_1nen_choka", expect: (s) =>
+      s.total === 200000 && s.tatemono === 200000 && /12か月/.test(s.keigenRiyu || "") },
+  // ★★期限の境界の対。最終日は通る（条文の「まで」は当日を含む）。
+  { name: "toroku_kigen_kyokai", expect: (s) =>
+      s.total === 290000 && s.tatemono === 30000 && s.bubun === null },
+  // その翌日は建物と抵当権を出さない。★tokiBi を渡し忘れる実装は290,000を出して落ちる。
+  { name: "toroku_kigen_gai", expect: (s) =>
+      s.total === 225000 && s.tochi === 225000 && s.tatemono === null && s.teitoken === null &&
+      s.rows === 1 && /一部だけ/.test(s.bubun || "") &&
+      // 「期限が別の制度」であることは見出しと別の要素に載っている
+      /令和11年3月31日/.test(s.bubunRiyu || "") },
+  // ★同じ日でも土地だけなら一部ではない（全部出せている）。
+  { name: "toroku_kigen_tochi", expect: (s) =>
+      s.total === 225000 && s.rows === 1 && s.bubun === null && s.outOfScope === null },
+  // ★収録範囲より前の日 → 1円も出さない。
+  { name: "toroku_kako", expect: (s) =>
+      s.total === null && /出せません/.test(s.outOfScope || "") &&
+      /令和8年4月1日/.test(s.outOfScopeRiyu || "") },
+  // ★相続は税率が別（0.4%）→ 計算せず案内する。2%を当てる実装は640,000を出して落ちる。
+  { name: "toroku_sozoku", expect: (s) =>
+      s.total === null && /出せません/.test(s.outOfScope || "") &&
+      /1000分の4/.test(s.outOfScopeRiyu || "") },
+  // ★入力が空 → 0円と答えず入力を促す。理由はコアの文言なので別要素で読む（規則5）。
+  { name: "toroku_noinput", expect: (s) =>
+      s.total === null && /入力してください/.test(s.noInputRiyu || "") &&
+      // 「データが読めなかった」と混ざっていないこと（原因を取り違えると利用者の次の一手が変わる）
+      !s.failed && s.loadFailed === null },
+  // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
+  //   ★入力不足と**別の要素**で申告する（同じ文言に丸めると、原因の違いが利用者に伝わらない）。
+  { name: "toroku_nodata", data404: "toroku_jutaku_r08.json", expect: (s) =>
+      s.failed && s.total === null && s.loadFailed !== null && s.noInput === null },
+
   // ── 収入印紙 (/inshi/) ───────────────────────────────────────────────
   // ★No.6925: 税込54,800円・消費税等4,981円区分記載 → 税抜49,819円で判定＝非課税（印紙不要）。
   //   ハーネス側の引き算 54,800−4,981=49,819<50,000 と一致し、一覧表23行（判取帳まで）も描かれること。

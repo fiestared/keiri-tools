@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>不動産の登録免許税 計算機｜土地1.5%は令和11年まで・住宅の軽減は令和9年まで</title>
+<meta name="description" content="家を買う・建てるときの登録免許税（土地の売買による移転・建物の保存・建物の移転・住宅ローンの抵当権設定）を計算します。★軽減の期限は2つ別々にあります——土地の売買の1.5%は令和8年度改正で令和11年3月31日まで延長済み、住宅用家屋の軽減は令和9年3月31日まで。国税庁のタックスアンサーは「令和7年4月1日現在」で土地を令和8年3月31日までと書いたままです。★抵当権の課税標準は家の評価額ではなく借入額。長期優良は一戸建ての移転だけ0.2%、低炭素は一戸建てでも0.1%。無料・登録不要。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/toroku-menkyozei/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "不動産の登録免許税 計算機（売買・新築）",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "土地の売買による所有権移転・建物の所有権保存（新築）・建物の所有権移転・住宅ローンの抵当権設定について、租税特別措置法72条（土地1.5%）・72条の2（住宅の保存0.15%）・73条（住宅の移転0.3%）・74条（長期優良）・74条の2（低炭素）・74条の3（買取再販）・75条（抵当権0.1%）の軽減と、登録免許税法別表第一 第一号の本則税率を、登記を受ける日ごとに判定して計算します。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "不動産の登録免許税 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 家を買うと登録免許税はいくらかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 登記ごとに税率が違うので、足し合わせた額になります。土地の売買による所有権移転は固定資産税評価額の1.5％（租税特別措置法72条）、住宅用家屋の所有権移転は0.3％（同73条）、新築の所有権保存は0.15％（同72条の2）、住宅ローンの抵当権設定は借入額の0.1％（同75条）です。たとえば土地の評価額1,500万円・建物1,000万円・ローン3,500万円の中古住宅なら、225,000円＋30,000円＋35,000円＝290,000円です。これは登録免許税だけの額で、司法書士報酬や登記事項証明書の実費は含みません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 抵当権設定の登録免許税は、家の評価額で計算するのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. いいえ、借入額（債権金額）で計算します。登録免許税法別表第一 第一号（五）が課税標準を「債権金額、極度金額又は不動産工事費用の予算金額」と定めているためです。不動産の価額を課税標準にするのは所有権の保存・移転の登記で、抵当権の設定は別です。評価額2,000万円の家に3,000万円のローンを組んだ場合、抵当権の課税標準は3,000万円で、税額は3,000万円×0.1％＝30,000円です。頭金を多く入れて借入額が小さいほど、抵当権の登録免許税も小さくなります。根抵当権のときは極度金額で計算します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 土地の1.5％はいつまでですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 令和11年3月31日までです。令和8年度の改正（令和8年法律第12号・2026年4月1日施行）で3年延長されました。国税庁のタックスアンサーNo.7191は「令和7年4月1日現在法令等」と自ら日付を名乗っており、令和8年3月31日までと書いたままなので注意してください。★住宅用家屋の軽減（住宅の保存0.15％・移転0.3％・抵当権0.1％）は期限が別で、令和9年3月31日までです。同じ日に切れると思って計算すると、令和9年4月以降の土地を本則2％と誤ります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 親から譲ってもらった家の名義変更にも軽減はありますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 贈与にはありません。住宅用家屋の軽減が使える取得の原因は「売買又は競落」だけと定められているためです（租税特別措置法施行令42条3項）。贈与・交換・財産分与による所有権移転は本則の2％になります。評価額1,000万円の家なら、売買なら30,000円、贈与なら200,000円で、差は170,000円です。相続・遺贈による移転は税率そのものが別で0.4％なので、相続登記の登録免許税 計算機をお使いください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 認定長期優良住宅なら一戸建てでも0.1％ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 移転登記は0.2％です。租税特別措置法74条2項が「一戸建ての特定認定長期優良住宅にあつては、千分の二」というかっこ書きを置いているためで、マンション等が0.1％、一戸建ては0.2％になります。保存登記にはこの区別がなく一律0.1％です。認定低炭素住宅（同74条の2第2項）には当該かっこ書きが無いので、移転登記でも一戸建てでも0.1％です。両者を同じ表で説明している解説が多く、取り違えると一戸建てで税額が2倍または半分になります。どちらの特例も新築または建築後使用されたことのない住宅に限られ、中古の長期優良住宅は0.3％までです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 中古住宅は築何年までなら軽減を受けられますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 築年数の要件は令和4年度改正で廃止されました。今は「昭和57年1月1日以後に建築されたもの」であること、またはそれ以前でも耐震基準に適合する証明があることが要件です（租税特別措置法施行令42条1項2号）。かつての「木造20年・耐火25年以内」で説明している解説がまだ残っていますが、その基準は現在の条文にありません。築40年の住宅でも昭和57年1月以後の建築なら軽減を受けられます。ほかに、個人が自分の住まいとして使うこと・登記簿上の床面積が50㎡以上であること・新築や取得から1年以内に登記を受けることが必要です。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 不動産の登録免許税 計算機</nav>
+
+<section class="hero">
+  <h1>不動産の登録免許税 計算機（売買・新築）</h1>
+  <p>家を<b>買う・建てる</b>ときの登記にかかる登録免許税を計算します。土地の売買による所有権移転／建物の所有権保存（新築）／建物の所有権移転／住宅ローンの抵当権設定の4つを、<b>登記ごとの税率で別々に</b>出します。★<b id="hero-kigen">軽減の期限は2つ別々にあります</b>——土地の売買の1.5%は<b>令和11年3月31日</b>まで、住宅用家屋の軽減は<b>令和9年3月31日</b>までです。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="hyoka-caution">入れるのは購入価格ではなく「固定資産税評価額」です。</b>
+    <span id="hyoka-setsumei">課税標準は登記の時における不動産の価額（登録免許税法10条1項）で、当分の間、<b>固定資産課税台帳に登録された価格</b>を基礎とすることができると定められています（同法附則7条）。売買代金や建築工事費ではありません。</span>
+    固定資産税の課税明細では、住宅用地の特例で小さくなった「課税標準額」ではなく<b>「価格（評価額）」欄</b>の額を使ってください。新築の建物はまだ評価額が無いので、法務局の<b>新築建物課税標準価格認定基準表</b>による認定価格を入れます。
+  </div>
+
+  <label for="tokiBi">① 登記を受ける日（登記申請日）</label>
+  <input type="date" id="tokiBi" value="2026-07-01">
+  <p class="hint" id="kigen-hint" style="margin-top:6px"></p>
+
+  <label for="tokiShurui" style="margin-top:14px">② 建物の登記の種類</label>
+  <select id="tokiShurui">
+    <option value="iten" selected>所有権の移転（建売・中古住宅を買った／マンションを買った）</option>
+    <option value="hozon">所有権の保存（自分で新築して最初に登記する）</option>
+  </select>
+
+  <label for="genin" style="margin-top:14px">③ 取得の原因</label>
+  <select id="genin">
+    <option value="売買" selected>売買</option>
+    <option value="競落">競落（競売で落札した）</option>
+    <option value="贈与">贈与</option>
+    <option value="交換・財産分与">交換・財産分与</option>
+    <option value="相続">相続・遺贈</option>
+  </select>
+  <p class="hint" id="genin-hint" style="margin-top:6px"></p>
+
+  <label style="margin-top:14px">④ 土地</label>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+    <div>
+      <label for="tochiKagaku" style="font-size:13px">固定資産税評価額（円）</label>
+      <input type="number" id="tochiKagaku" min="0" inputmode="numeric" value="15000000">
+    </div>
+    <div>
+      <label for="tochiMochibun" style="font-size:13px">持分（1＝全部・0.5＝2分の1）</label>
+      <input type="number" id="tochiMochibun" min="0" max="1" step="0.0001" inputmode="decimal" value="1">
+    </div>
+  </div>
+
+  <label style="margin-top:14px">⑤ 建物</label>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+    <div>
+      <label for="tatemonoKagaku" style="font-size:13px">固定資産税評価額・認定価格（円）</label>
+      <input type="number" id="tatemonoKagaku" min="0" inputmode="numeric" value="10000000">
+    </div>
+    <div>
+      <label for="tatemonoMochibun" style="font-size:13px">持分（1＝全部）</label>
+      <input type="number" id="tatemonoMochibun" min="0" max="1" step="0.0001" inputmode="decimal" value="1">
+    </div>
+  </div>
+
+  <label style="margin-top:14px">⑥ 建物が住宅用家屋の軽減を受けられるか</label>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+    <div>
+      <label for="kojinKyoju" style="font-size:13px">個人が自分の住まいに使うか</label>
+      <select id="kojinKyoju">
+        <option value="1" selected>個人が自分で住む</option>
+        <option value="0">法人が取得・別荘・投資用の賃貸</option>
+      </select>
+    </div>
+    <div>
+      <label for="yukamenseki" style="font-size:13px">登記簿上の床面積（㎡）</label>
+      <input type="number" id="yukamenseki" min="0" step="0.01" inputmode="decimal" value="80">
+    </div>
+    <div>
+      <label for="tokiMadeMonths" style="font-size:13px">新築・取得から登記までの月数</label>
+      <input type="number" id="tokiMadeMonths" min="0" max="600" inputmode="numeric" value="3">
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px">
+    <div>
+      <label for="chuko" style="font-size:13px">新築か中古か</label>
+      <select id="chuko">
+        <option value="0" selected>新築・建築後使用されたことがない</option>
+        <option value="1">中古（建築後に人が住んだことがある）</option>
+      </select>
+    </div>
+    <div>
+      <label for="kenchikuBi" style="font-size:13px">中古住宅の建築年月日</label>
+      <input type="date" id="kenchikuBi" value="2000-01-01">
+    </div>
+    <div>
+      <label for="taishinTekigo" style="font-size:13px">耐震基準適合証明があるか</label>
+      <select id="taishinTekigo">
+        <option value="0" selected>ない</option>
+        <option value="1">ある</option>
+      </select>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px">
+    <div>
+      <label for="nintei" style="font-size:13px">認定住宅か</label>
+      <select id="nintei">
+        <option value="none" selected>認定を受けていない</option>
+        <option value="chouki">特定認定長期優良住宅</option>
+        <option value="teitanso">認定低炭素住宅</option>
+      </select>
+    </div>
+    <div>
+      <label for="kodate" style="font-size:13px">一戸建てかマンションか</label>
+      <select id="kodate">
+        <option value="1" selected>一戸建て</option>
+        <option value="0">マンション等（区分所有）</option>
+      </select>
+    </div>
+    <div>
+      <label for="kaitoriHanbai" style="font-size:13px">買取再販住宅か</label>
+      <select id="kaitoriHanbai">
+        <option value="0" selected>いいえ</option>
+        <option value="1">宅建業者が増改築した中古住宅を買った</option>
+      </select>
+    </div>
+  </div>
+  <p class="hint" id="yoken-hint" style="margin-top:6px"></p>
+
+  <label for="saikenGaku" style="margin-top:14px">⑦ 住宅ローンの借入額（抵当権設定の課税標準）</label>
+  <input type="number" id="saikenGaku" min="0" inputmode="numeric" value="35000000">
+  <p class="hint" id="saiken-hint" style="margin-top:6px"></p>
+
+  <button class="primary" id="calc" style="margin-top:14px">登録免許税を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<nav class="toc">
+  <b>目次</b>
+  <ol>
+    <li><a href="#kigen">軽減の期限は2つ別々にある（土地は令和11年・住宅は令和9年）</a></li>
+    <li><a href="#teitoken">抵当権の課税標準は「借入額」で、家の評価額ではない</a></li>
+    <li><a href="#genin">軽減が使えるのは「売買」と「競落」だけ</a></li>
+    <li><a href="#nintei">長期優良と低炭素で「一戸建て0.2%」の有無が違う</a></li>
+    <li><a href="#chuko">中古の築年数要件は廃止済み（今は昭和57年1月1日）</a></li>
+    <li><a href="#hasu">税率が違う登記は別々に端数処理する</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ol>
+</nav>
+
+<h2 id="kigen">軽減の期限は2つ別々にある（土地は令和11年・住宅は令和9年）</h2>
+
+<p id="kigen-honbun">登録免許税の軽減は、<b>土地の売買</b>に係るもの（租税特別措置法72条）と<b>住宅用家屋</b>に係るもの（同72条の2・73・74・74条の2・74条の3・75）が別の条文にあり、<b>適用期限も別々</b>です。土地の1.5%は<b>令和11年3月31日</b>まで、住宅用家屋の軽減は<b>令和9年3月31日</b>までで、<b>2年ずれています</b>。</p>
+
+<figure>
+<svg viewBox="0 0 720 260" width="100%" role="img" aria-label="登録免許税の軽減の適用期限が2つに分かれていることを示す時間軸の図。住宅用家屋の軽減は令和9年3月31日まで、土地の売買の1.5パーセントは令和11年3月31日まで続き、その間の2年間は土地だけ軽減が使える">
+  <rect x="0" y="0" width="720" height="260" fill="#fff"/>
+
+  <text x="16" y="26" font-size="15" font-weight="bold" fill="#333">軽減の適用期限（令和8年度改正後）</text>
+
+  <!-- 住宅用家屋の帯 -->
+  <text x="16" y="66" font-size="13" fill="#333">住宅用家屋</text>
+  <text x="16" y="84" font-size="11" fill="#666">保存0.15% / 移転0.3% / 抵当権0.1%</text>
+  <rect x="150" y="52" width="300" height="34" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="300" y="74" font-size="12" text-anchor="middle" font-weight="bold" fill="#14532d">軽減あり</text>
+  <rect x="450" y="52" width="230" height="34" fill="#fee2e2" stroke="#ef4444"/>
+  <text x="565" y="74" font-size="12" text-anchor="middle" fill="#7f1d1d">令和9年度改正で決まる（未定）</text>
+
+  <!-- 土地の帯 -->
+  <text x="16" y="136" font-size="13" fill="#333">土地の売買</text>
+  <text x="16" y="154" font-size="11" fill="#666">移転1.5%（措法72条）</text>
+  <rect x="150" y="122" width="530" height="34" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="415" y="144" font-size="12" text-anchor="middle" font-weight="bold" fill="#14532d">軽減あり（令和8年度改正で3年延長された）</text>
+
+  <!-- 時間軸 -->
+  <line x1="150" y1="180" x2="700" y2="180" stroke="#999"/>
+  <line x1="450" y1="46" x2="450" y2="188" stroke="#ef4444" stroke-dasharray="4 3"/>
+  <line x1="680" y1="116" x2="680" y2="188" stroke="#999" stroke-dasharray="4 3"/>
+  <text x="150" y="200" font-size="11" text-anchor="middle" fill="#666">令和8年4月</text>
+  <text x="450" y="200" font-size="11" text-anchor="middle" font-weight="bold" fill="#b91c1c">令和9年3月31日</text>
+  <text x="680" y="200" font-size="11" text-anchor="middle" fill="#666">令和11年3月31日</text>
+
+  <!-- 2年のずれ -->
+  <line x1="450" y1="222" x2="680" y2="222" stroke="#2563eb"/>
+  <line x1="450" y1="217" x2="450" y2="227" stroke="#2563eb"/>
+  <line x1="680" y1="217" x2="680" y2="227" stroke="#2563eb"/>
+  <text x="565" y="240" font-size="11" text-anchor="middle" fill="#1d4ed8">この2年間は「土地だけ軽減」</text>
+</svg>
+<figcaption>住宅用家屋の軽減は令和9年3月31日まで、土地の売買の1.5%は令和11年3月31日まで。同じ日に切れると思うと令和9年4月以降の土地を本則2%と誤る</figcaption>
+</figure>
+
+<p id="kigen-nta">★<b>国税庁のタックスアンサー No.7191（登録免許税の税額表）は、土地の期限を「令和8年3月31日まで」と書いたままです。</b>同ページは冒頭に「令和7年4月1日現在法令等」と自ら日付を名乗っており、<b>令和8年度改正（令和8年法律第12号・2026年4月1日施行）の3年延長が反映されていません</b>。e-Gov法令APIで措法72条の版を比べると、2026年4月1日施行の令和八年法律第五号までは「令和八年三月三十一日」で、<b>同第十二号から「令和十一年三月三十一日」</b>になっています。評価額1,500万円の土地なら、1.5%（225,000円）と本則2%（300,000円）で<b>75,000円の差</b>です。</p>
+
+<p>本ツールは<b>①登記を受ける日</b>を入力に取り、その日に使える軽減だけを当てます。住宅用家屋の期限を過ぎた日を入れると、<b>建物と抵当権の税額は出しません</b>（延長されるか本則に戻るかが決まっていないため）。<b>土地の税額は出します</b>——期限が別の制度だからです。</p>
+
+<h2 id="teitoken">抵当権の課税標準は「借入額」で、家の評価額ではない</h2>
+
+<p id="teitoken-honbun">所有権の保存・移転の課税標準は不動産の価額ですが、<b>抵当権の設定だけは違います</b>。登録免許税法 別表第一 第一号（五）が課税標準を次のように定めています。</p>
+
+<blockquote id="teitoken-jouban">先取特権の保存、質権若しくは抵当権の設定、処分の制限又は転質の登記又は登録　<b>債権金額、極度金額又は不動産工事費用の予算金額</b></blockquote>
+
+<p id="teitoken-imi">つまり<b>住宅ローンの借入額</b>（根抵当権なら極度金額）が課税標準です。評価額2,000万円の家に3,000万円のローンを組んだなら、抵当権の課税標準は<b>3,000万円</b>で、税額は3,000万円×0.1%＝<b>30,000円</b>です。家の評価額で計算すると20,000円になり、<b>頭金の分だけ額がずれます</b>。逆に、頭金を多く入れて借入額を小さくすれば抵当権の登録免許税も小さくなります。</p>
+
+<h2 id="genin">軽減が使えるのは「売買」と「競落」だけ</h2>
+
+<p id="genin-honbun">住宅用家屋の軽減が使える取得の原因は、<b>売買又は競落に限られています</b>（租税特別措置法施行令42条3項）。<b>贈与・交換・財産分与</b>による所有権移転には軽減がなく、本則の2%です。「マイホームだから軽減されるはず」と考えると、親から贈与を受けた人に誤って0.3%を出します。評価額1,000万円の家なら、売買の30,000円に対し贈与は<b>200,000円</b>です。</p>
+
+<p id="genin-hitaisho">★ここに<b>土地と建物で食い違う点</b>があります。<b>競落（競売での落札）は、建物の軽減は使えますが、土地の1.5%は使えません。</b>措法72条が対象を「土地の<b>売買</b>による所有権の移転の登記」と書いていて、競落は売買ではないためです。競売で土地付きの家を落札した場合、建物は0.3%・土地は本則2%になります。</p>
+
+<div class="note">
+  <b id="sozoku-annai">相続・遺贈による移転は、このツールでは計算しません。</b>
+  <span id="sozoku-zeiritsu">税率そのものが別で、別表第一 第一号（二）イの<b>1000分の4（0.4%）</b>です。本ツールが使う「その他の原因による移転」の1000分の20を当てると<b>5倍</b>の額になります。</span>
+  <a href="../sozoku-toki-menkyozei/">相続登記の登録免許税 計算機</a>をお使いください（免税措置や義務化された申請期限もそちらで扱っています）。
+</div>
+
+<h2 id="nintei">長期優良と低炭素で「一戸建て0.2%」の有無が違う</h2>
+
+<p id="nintei-honbun">認定住宅には0.1%まで下がる特例がありますが、<b>特定認定長期優良住宅の移転登記だけ、一戸建てが0.2%</b>です。措法74条2項がかっこ書きで「<b>一戸建ての特定認定長期優良住宅にあつては、千分の二</b>」と定めているためです。<b>認定低炭素住宅（同74条の2第2項）にはこのかっこ書きが無く、一戸建てでも0.1%</b>です。</p>
+
+<table id="nintei-table">
+  <thead><tr><th>認定の種類</th><th>保存（新築）</th><th>移転・マンション等</th><th>移転・<b>一戸建て</b></th></tr></thead>
+  <tbody>
+    <tr><td><b>特定認定長期優良住宅</b>（74条）</td><td>0.1%</td><td>0.1%</td><td><b>0.2%</b></td></tr>
+    <tr><td><b>認定低炭素住宅</b>（74条の2）</td><td>0.1%</td><td>0.1%</td><td><b>0.1%</b></td></tr>
+  </tbody>
+</table>
+
+<p id="nintei-shinchiku">★どちらの特例も<b>「新築又は建築後使用されたことのない」</b>住宅に限られます（74条1項2項・74条の2第1項2項）。<b>中古の長期優良住宅は0.3%まで</b>で、それ以上は下がりません。中古住宅で0.1%になる経路は<b>買取再販</b>（宅建業者が増改築した中古住宅を個人が買う場合・74条の3）だけです。</p>
+
+<h2 id="chuko">中古の築年数要件は廃止済み（今は昭和57年1月1日）</h2>
+
+<p id="chuko-honbun">中古住宅の要件は、<b>①建築基準法施行令の耐震基準に適合すること、又は②昭和57年1月1日以後に建築されたものであること</b>です（租税特別措置法施行令42条1項2号）。<b>かつての「木造20年・耐火25年以内」という築年数の要件は令和4年度改正で廃止されました。</b>古い解説のまま築年数で切ると、<b>要件を満たす人に「軽減なし」と答えます</b>。築40年の家でも昭和57年1月以後の建築なら軽減の対象です。</p>
+
+<p>ほかに共通の要件として、<b>個人が自分の住まいとして使うこと</b>（措法72条の2・73）、<b>登記簿上の床面積が50㎡以上</b>であること（措令41条）、<b>新築・取得から1年以内に登記を受けること</b>があります。★マンションの登記簿は<b>内法（うちのり）面積</b>で、パンフレットの壁芯面積より小さいので、50㎡前後の物件は要件を満たさないことがあります。軽減を受けるには市町村長が発行する<b>住宅用家屋証明書</b>を登記申請書に添付する必要があり、<b>登記の後から還付は受けられません</b>。</p>
+
+<h2 id="hasu">税率が違う登記は別々に端数処理する</h2>
+
+<p id="hasu-honbun">端数処理は<b>同じ税率が適用される登記ごとに1回</b>行います。①その税率の不動産の価額（持分適用後）を合計 → ②<b>1,000円未満を切り捨て</b>（国税通則法118条1項。全額が1,000円未満なら1,000円＝登録免許税法15条） → ③税率を掛ける → ④<b>100円未満を切り捨て</b>（同119条1項。税率適用後が1,000円未満なら税額1,000円＝登録免許税法19条）の順です。土地1.5%・建物0.3%・抵当権0.1%を<b>足してから丸めると、切捨てが1回しか効かず額がずれます</b>。</p>
+
+<p id="hasu-saitei">★<b>最低税額1,000円の判定は、100円未満を切り捨てる「前」の額で行います。</b>登録免許税法19条が「税率を適用して計算した金額」と書いているためです。課税標準50万円×0.15%＝750円なら税額は1,000円で、750円を切り捨てて700円にしてから判定するのではありません。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 家を買うと登録免許税はいくらかかりますか？</h3>
+<p>A. 登記ごとに税率が違うので、足し合わせた額になります。土地の売買による所有権移転は固定資産税評価額の1.5％（租税特別措置法72条）、住宅用家屋の所有権移転は0.3％（同73条）、新築の所有権保存は0.15％（同72条の2）、住宅ローンの抵当権設定は借入額の0.1％（同75条）です。たとえば土地の評価額1,500万円・建物1,000万円・ローン3,500万円の中古住宅なら、225,000円＋30,000円＋35,000円＝290,000円です。これは登録免許税だけの額で、司法書士報酬や登記事項証明書の実費は含みません。</p>
+
+<h3>Q. 抵当権設定の登録免許税は、家の評価額で計算するのですか？</h3>
+<p>A. いいえ、借入額（債権金額）で計算します。登録免許税法別表第一 第一号（五）が課税標準を「債権金額、極度金額又は不動産工事費用の予算金額」と定めているためです。不動産の価額を課税標準にするのは所有権の保存・移転の登記で、抵当権の設定は別です。評価額2,000万円の家に3,000万円のローンを組んだ場合、抵当権の課税標準は3,000万円で、税額は3,000万円×0.1％＝30,000円です。頭金を多く入れて借入額が小さいほど、抵当権の登録免許税も小さくなります。根抵当権のときは極度金額で計算します。</p>
+
+<h3>Q. 土地の1.5％はいつまでですか？</h3>
+<p>A. 令和11年3月31日までです。令和8年度の改正（令和8年法律第12号・2026年4月1日施行）で3年延長されました。国税庁のタックスアンサーNo.7191は「令和7年4月1日現在法令等」と自ら日付を名乗っており、令和8年3月31日までと書いたままなので注意してください。★住宅用家屋の軽減（住宅の保存0.15％・移転0.3％・抵当権0.1％）は期限が別で、令和9年3月31日までです。同じ日に切れると思って計算すると、令和9年4月以降の土地を本則2％と誤ります。</p>
+
+<h3>Q. 親から譲ってもらった家の名義変更にも軽減はありますか？</h3>
+<p>A. 贈与にはありません。住宅用家屋の軽減が使える取得の原因は「売買又は競落」だけと定められているためです（租税特別措置法施行令42条3項）。贈与・交換・財産分与による所有権移転は本則の2％になります。評価額1,000万円の家なら、売買なら30,000円、贈与なら200,000円で、差は170,000円です。相続・遺贈による移転は税率そのものが別で0.4％なので、相続登記の登録免許税 計算機をお使いください。</p>
+
+<h3>Q. 認定長期優良住宅なら一戸建てでも0.1％ですか？</h3>
+<p>A. 移転登記は0.2％です。租税特別措置法74条2項が「一戸建ての特定認定長期優良住宅にあつては、千分の二」というかっこ書きを置いているためで、マンション等が0.1％、一戸建ては0.2％になります。保存登記にはこの区別がなく一律0.1％です。認定低炭素住宅（同74条の2第2項）には当該かっこ書きが無いので、移転登記でも一戸建てでも0.1％です。両者を同じ表で説明している解説が多く、取り違えると一戸建てで税額が2倍または半分になります。どちらの特例も新築または建築後使用されたことのない住宅に限られ、中古の長期優良住宅は0.3％までです。</p>
+
+<h3>Q. 中古住宅は築何年までなら軽減を受けられますか？</h3>
+<p>A. 築年数の要件は令和4年度改正で廃止されました。今は「昭和57年1月1日以後に建築されたもの」であること、またはそれ以前でも耐震基準に適合する証明があることが要件です（租税特別措置法施行令42条1項2号）。かつての「木造20年・耐火25年以内」で説明している解説がまだ残っていますが、その基準は現在の条文にありません。築40年の住宅でも昭和57年1月以後の建築なら軽減を受けられます。ほかに、個人が自分の住まいとして使うこと・登記簿上の床面積が50㎡以上であること・新築や取得から1年以内に登記を受けることが必要です。</p>
+
+<h2 id="shutten">出典</h2>
+<ul>
+  <li><a href="https://laws.e-gov.go.jp/law/342AC0000000035" rel="nofollow">登録免許税法（昭和42年法律第35号）</a> — 9条（課税標準及び税率）／10条1項2項（不動産の価額・持分）／15条（課税標準の最低額）／19条（定率課税の最低税額）／別表第一 第一号（一）保存・（二）ハ その他の移転・（五）抵当権の設定／附則7条（固定資産課税台帳の登録価格）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">租税特別措置法（昭和32年法律第26号）</a> — 72条（土地の売買1.5%）／72条の2（住宅用家屋の保存）／73条（住宅用家屋の移転）／74条（特定認定長期優良住宅）／74条の2（認定低炭素住宅）／74条の3（買取再販住宅）／75条（住宅取得資金の抵当権設定）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/332CO0000000043" rel="nofollow">租税特別措置法施行令（昭和32年政令第43号）</a> — 41条（住宅用家屋の範囲・床面積50㎡以上）／42条1項2号（中古住宅の耐震要件）／42条3項（取得の原因は売買又は競落）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/337AC0000000066" rel="nofollow">国税通則法（昭和37年法律第66号）</a> — 118条1項（課税標準の1,000円未満切捨て）／119条1項（確定金額の100円未満切捨て）</li>
+  <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7191.htm" rel="nofollow">国税庁 タックスアンサー No.7191 登録免許税の税額表</a> — 税率の照合に使用。★同ページは「令和7年4月1日現在法令等」で、土地の売買の軽減の期限が令和8年3月31日のままです</li>
+</ul>
+<p class="hint" id="shutten-hint">条文は e-Gov 法令API v2 で取得した現行版（登録免許税法＝2026年7月23日施行版／租税特別措置法＝2026年6月25日施行版／同施行令＝2026年5月22日施行版）を逐語で確認しています。税率は国税庁の税額表10行と全行一致し、食い違ったのは土地の売買の軽減の期限1箇所だけでした。実際の税額は登記官が算出しますので、申請前に法務局または司法書士にご確認ください。</p>
+
+<div class="note">
+  <b>関連するツール</b>
+  <div style="margin-top:6px"><a href="../sozoku-toki-menkyozei/">相続登記の登録免許税 計算機</a>／<a href="../fudosan-shutoku/">不動産取得税 計算機</a>／<a href="../kotei-shisanzei/">固定資産税・都市計画税の計算機</a>／<a href="../jutaku/">住宅ローン控除 計算機</a>／<a href="../inshi/">収入印紙 計算機</a></div>
+</div>
+
+</article>
+</main>
+<footer>
+  <div>© 経理ミニツールズ</div>
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcTorokuJutaku } from "../assets/toroku_jutaku_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const num = (id) => Math.max(0, Number($(id).value) || 0);
+const pct = (r) => (r * 100).toFixed(2).replace(/\.?0+$/, "") + "%";
+let DATA = null;
+
+// 参照データ（税率・要件・期限）は非同期で届く。**届く前にボタンを押されても await で待つ**。
+// この catch が拾ってよいのは「データが手に入らなかったこと」だけ（飾りの描画は別に処理する）。
+const dataReady = fetch("../assets/toroku_jutaku_r08.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { DATA = d; return true; })
+  .catch(() => false);
+
+// 出典・期限・要件の表示は飾り。ここで転んでも計算は止めない（dataReady には影響させない）。
+dataReady.then((ok) => { if (ok) paintMeta(); }).catch(() => {});
+
+// ★画面に出す期限・要件はすべてデータから描く（期限・床面積・月数をページに手書きしない）。
+function paintMeta() {
+  if (!DATA) return;
+  const K = DATA.keigen, Y = DATA.yoken, M = DATA._meta;
+  $("kigen-hint").innerHTML =
+    `<span id="year-from-data">${M.year}</span>時点の税率で計算します。` +
+    `住宅用家屋の軽減（保存${K.jutaku_hozon.hyoji}／移転${K.jutaku_iten.hyoji}／抵当権${K.jutaku_teitoken.hyoji}）は` +
+    `<b id="kigen-jutaku">${K.jutaku_kigen_hyoji}</b>まで、` +
+    `土地の売買の軽減（${K.tochi_baibai.hyoji}）は<b id="kigen-tochi">${K.tochi_baibai.kigen_hyoji}</b>まで（期限が別の制度です）。` +
+    `本ツールが答えられるのは<b>${M.applies_from_hyoji}以後</b>に受ける登記です。`;
+  $("genin-hint").innerHTML =
+    `軽減が使える取得の原因は<b>${Y.gen_in.join("・")}</b>だけです（措令42条3項）。` +
+    `★<span id="keiraku-hint">競落は建物の軽減は使えますが、土地の1.5%は使えません</span>` +
+    `（措法72条の対象が「土地の<b>売買</b>による所有権の移転」なので競落は入りません）。`;
+  $("yoken-hint").innerHTML =
+    `床面積は<b>${Y.yukamenseki_min}㎡以上</b>（措令41条・登記簿上の面積）、` +
+    `登記は新築・取得から<b>${Y.toki_kigen_months}か月以内</b>。` +
+    `中古は<b id="chuko-kijun">${Y.chuko_kenchiku_kijun_hyoji}以後の建築</b>` +
+    `または耐震基準適合の証明が必要です（★築年数の要件は令和4年度改正で廃止されています）。` +
+    `<span id="nintei-hint">認定住宅の特例は新築・未使用に限られ、一戸建ての移転は長期優良${pct(K.chouki_yuryo.iten_kodate_ritsu)}・低炭素${pct(K.tei_tanso.iten_ritsu)}です。</span>`;
+  $("saiken-hint").innerHTML =
+    `★<span id="saiken-hint-honbun">抵当権の課税標準は<b>債権金額（借入額）</b>で、家の評価額ではありません</span>` +
+    `（登録免許税法 別表第一 第一号（五）＝「${DATA.honsoku.teitoken.kazei_hyojun}」）。根抵当権なら極度金額を入れてください。`;
+}
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  // ★.result は既定で display:none。ここで表示に切り替えないと、計算は正しいのに
+  //   画面には何も出ない（過去に10ツールで同時に起きた全損の型）。
+  box.style.display = "block";
+  box.textContent = "計算中…";
+
+  const ready = await dataReady;      // データを待ってから計算する（fail closed）
+  if (!ready || !DATA) {
+    // ★`class="err"` は style.css に定義が無い（既存ページが使っているが素の段落で出る）。
+    //   枠ごと注意色に落ちる `.warn` を使う。
+    box.innerHTML = '<div class="warn"><b id="load-failed">計算に必要なデータを読み込めませんでした。</b>'
+      + '通信環境を確認して再読み込みしてください。誤った税額を出さないため、計算は行いません。</div>';
+    return;
+  }
+
+  const genin = $("genin").value;
+  const input = {
+    tokiBi: $("tokiBi").value,
+    tokiShurui: $("tokiShurui").value,
+    // ★土地と建物で軽減の要件が違う（土地は売買だけ・建物は売買と競落）ので、
+    //   同じ選択を別のキーで渡す。コア側が別々に判定する。
+    genin,
+    tochiGenin: genin,
+    tochiKagaku: num("tochiKagaku"),
+    tochiMochibun: Number($("tochiMochibun").value) || 0,
+    tatemonoKagaku: num("tatemonoKagaku"),
+    tatemonoMochibun: Number($("tatemonoMochibun").value) || 0,
+    kojinKyoju: $("kojinKyoju").value === "1",
+    yukamenseki: Number($("yukamenseki").value) || 0,
+    tokiMadeMonths: num("tokiMadeMonths"),
+    chuko: $("chuko").value === "1",
+    kenchikuBi: $("kenchikuBi").value,
+    taishinTekigo: $("taishinTekigo").value === "1",
+    nintei: $("nintei").value,
+    kodate: $("kodate").value === "1",
+    kaitoriHanbai: $("kaitoriHanbai").value === "1",
+    saikenGaku: num("saikenGaku"),
+  };
+
+  const r = calcTorokuJutaku(input, DATA);
+
+  if (!r.ok) {
+    // ★「入力が足りない」と「範囲外・別制度」を別の要素で申告する（利用者の次の一手が違う）。
+    if (r.hanigai) {
+      const link = r.betsuTool
+        ? ` <a href="..${r.betsuTool}">相続登記の登録免許税 計算機へ</a>`
+        : "";
+      box.innerHTML = `<div class="warn"><b id="out-of-scope">この条件では税額を出せません。</b>
+        <span id="out-of-scope-riyu">${r.riyu}</span>${link}</div>`;
+    } else {
+      // ★コアが返した理由をそのまま出す。自分で決めた文言だけを出すと、
+      //   別の理由（データ不備など）で ok:false になったときに「入力不足」と誤って伝える。
+      box.innerHTML = `<div class="warn"><b id="no-input">計算できませんでした。</b>
+        <span id="no-input-riyu">${r.riyu}</span>
+        <span>土地・建物の固定資産税評価額（納税通知書や固定資産評価証明書の「価格」欄）、
+        住宅ローンの借入額のいずれかが必要です。</span></div>`;
+    }
+    return;
+  }
+
+  const rows = r.meisai.map((m) => `
+    <tr>
+      <td>${m.name}</td>
+      <td>${yenF(m.kazeiHyojun)}${m.saikenBase ? '<br><span class="hint" id="saiken-base">債権金額</span>' : ""}</td>
+      <td>${m.ritsuHyoji}</td>
+      <td><b id="tax-${m.key}">${yenF(m.zeigaku)}</b></td>
+    </tr>`).join("");
+
+  const konkyo = r.meisai.map((m) => `${m.name}＝${m.konkyo}`).join("／");
+
+  const keigenNashi = r.keigenRiyu.length
+    ? `<div class="note" style="margin-top:12px"><b id="keigen-nashi">住宅用家屋の軽減は使えません（本則の税率で計算しました）。</b>
+       <ul id="keigen-riyu" style="margin:6px 0 0">${r.keigenRiyu.map((x) => `<li>${x}</li>`).join("")}</ul></div>`
+    : "";
+
+  // 競落は建物だけ軽減が使える＝土地と建物で結論が分かれることを名指しで申告する。
+  const tochiRow = r.meisai.find((m) => m.key === "tochi");
+  const keirakuNote = tochiRow && genin === "競落"
+    ? `<div class="note" style="margin-top:12px"><b id="keiraku-note">競落なので土地は本則${DATA.honsoku.iten_sonota.hyoji}です。</b>
+       措法72条の対象は「土地の<b>売買</b>による所有権の移転の登記」で、競落は含まれません（建物の軽減は使えます）。</div>`
+    : "";
+
+  const bubun = r.bubun
+    ? `<div class="note" style="margin-top:12px"><b id="bubun">下の合計は一部だけの額です（${r.kigenGai.join("・")}を含みません）。</b>
+       <span id="bubun-riyu">${r.kigenGaiRiyu}</span></div>`
+    : "";
+
+  box.innerHTML = `
+    <div style="font-size:15px">${r.bubun ? "出せる分の登録免許税" : "登録免許税の合計"}
+      <b style="font-size:22px" id="total">${yenF(r.gokei)}</b></div>
+    <table class="res" style="margin-top:10px">
+      <thead><tr><th>登記</th><th>課税標準</th><th>税率</th><th>税額</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    ${bubun}
+    ${keigenNashi}
+    ${keirakuNote}
+    <div class="hint" style="margin-top:8px" id="hasuu-note">端数処理 —
+      税率が違う登記は<b>別々に</b>、課税標準の1,000円未満切捨て（国税通則法118条1項）→ 税率 →
+      100円未満切捨て（同119条1項）の順で計算しています。最低税額1,000円の判定は切り捨てる<b>前</b>の額で行います（登録免許税法19条）。
+      根拠条文: ${konkyo}。</div>
+    <div class="note" style="margin-top:12px">
+      <b>この額は登録免許税だけです。</b>司法書士報酬・登記事項証明書の実費・不動産取得税（<a href="../fudosan-shutoku/">計算機</a>）・
+      売買契約書の印紙税（<a href="../inshi/">計算機</a>）は含みません。軽減を受けるには市町村長が発行する<b>住宅用家屋証明書</b>を
+      登記申請書に添付する必要があり、<b>登記の後から還付は受けられません</b>（措令41条・42条1項）。
+    </div>`;
+});
+</script>
+</body>
+</html>
