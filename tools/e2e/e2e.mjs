@@ -818,6 +818,44 @@ const SCENES = [
   { name: "nenkin_nodata", data404: "nenkin_r08.json", expect: (s) =>
       s.failed && s.total === null },
 
+  // ── 仲介手数料 (/chukai-tesuryo/) ────────────────────────────────────
+  // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず告示の割合から出した期待値）。
+  { name: "chukai", expect: (s) =>
+      s.jogen === 1056000 && s.kijunGokei === 1056000 && s.daikin === 30000000 &&
+      s.rows === 4 && /96万|960,000/.test(s.sokusan || "") &&
+      // 「上限であって料金表ではない」は毎回出る（画面の言葉も実装の一部）
+      /上限額です/.test(s.jogenNote || "") && !s.failed },
+  // ★★建物の消費税の対（総額は同じ4,000万円）。
+  { name: "chukai_kojin", expect: (s) => s.jogen === 1386000 && s.daikin === 40000000 },
+  { name: "chukai_shohizei", expect: (s) =>
+      s.jogen === 1320000 && s.daikin === 38000000 },
+  // ★代理は媒介の2倍。
+  { name: "chukai_dairi", expect: (s) => s.jogen === 2112000 && s.kijunGokei === 1056000 },
+  // ★★低廉な空家等の特例の対。合意がなければ上がらない。
+  { name: "chukai_akiya_nashi", expect: (s) => s.jogen === 231000 },
+  { name: "chukai_akiya", expect: (s) => s.jogen === 330000 && s.kijunGokei === 231000 },
+  // ★★賃貸（居住用）。合計と一方は別の額で、別の要素に出ている。
+  { name: "chukai_chintai", expect: (s) =>
+      s.gokeiJogen === 110000 && s.ippoJogen === 55000 && s.jogen === 55000 &&
+      /0\.55/.test(s.ippoRiyu || "") },
+  { name: "chukai_chintai_shodaku", expect: (s) =>
+      s.gokeiJogen === 110000 && s.ippoJogen === 110000 },
+  // ★店舗は借賃から消費税を除く（税込11万→税抜10万）。
+  { name: "chukai_tenpo", expect: (s) =>
+      s.yachinNuki === 100000 && s.gokeiJogen === 110000 && s.ippoJogen === 110000 },
+  // ★★権利金の特例が借賃基準を上回る。
+  { name: "chukai_kenrikin", expect: (s) =>
+      s.ippoJogen === 154000 && /154,000/.test(s.kenrikinNote || "") },
+  // ★改正前の契約 → 1円も出さない。理由が「範囲外」の要素に出る。
+  { name: "chukai_kako", expect: (s) =>
+      s.jogen === null && /令和6年7月1日/.test(s.kikanGai || "") && s.miNyuryoku === null },
+  // ★入力が空 → 0円と答えず入力を促す。「範囲外」と混ざっていないこと。
+  { name: "chukai_noinput", expect: (s) =>
+      s.jogen === null && /入力してください/.test(s.miNyuryoku || "") && s.kikanGai === null },
+  // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
+  { name: "chukai_nodata", data404: "chukai_r08.json", expect: (s) =>
+      s.failed && s.jogen === null && s.loadFailed !== null },
+
   // ── 不動産の登録免許税 (/toroku-menkyozei/) ──────────────────────────
   // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず条文の税率から出した期待値）。
   { name: "toroku", expect: (s) =>

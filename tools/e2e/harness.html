@@ -2504,6 +2504,101 @@ SCENES.toroku_noinput = torokuJutakuScene({
 // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
 SCENES.toroku_nodata = torokuJutakuScene({ nodata: true });
 
+// ── 仲介手数料 (/chukai-tesuryo/) ─────────────────────────────────────────
+// ★単体（tests/test_chukai.mjs）は core しか見ないので、次の配線はここでしか守れない:
+//   「取引の種類で入力欄が入れ替わり、そちら側の値がコアに渡る」
+//   「建物の価格（税込）を渡す＝渡し忘れると新築で上限が過大になる」
+//   「用途・承諾のチェックを渡す＝渡し忘れると居住用が常に0.55（または常に1.1）になる」
+//   「媒介契約の日を渡す＝渡し忘れると改正前の契約にも今の告示を当てる」
+//   「出せない条件では金額を1円も出さない」
+const chukaiScene = (o) => async () => {
+  const doc = await open("/docs/chukai-tesuryo/");
+  const check = (id, v) => {
+    const el = doc.getElementById(id);
+    if (el.checked !== !!v) el.click();
+  };
+  set(doc, "torihiki", o.torihiki ?? "baibai");
+  if ((o.torihiki ?? "baibai") === "taishaku") {
+    set(doc, "yachin", o.yachin ?? 100000);
+    set(doc, "youto", o.youto ?? "kyoju");
+    set(doc, "tachibaT", o.tachibaT ?? "baikai");
+    set(doc, "kenrikin", o.kenrikin ?? 0);
+    set(doc, "hidzukeT", o.hidzukeT ?? "2026-07-30");
+    check("shodaku", o.shodaku ?? false);
+  } else {
+    set(doc, "sogaku", o.sogaku ?? 30000000);
+    set(doc, "tatemono", o.tatemono ?? 0);
+    set(doc, "tachiba", o.tachiba ?? "baikai");
+    set(doc, "hidzuke", o.hidzuke ?? "2026-07-30");
+    check("akiya", o.akiya ?? false);
+    check("aiteHoshu", o.aiteHoshu ?? false);
+  }
+  click(doc, "calc");
+
+  await waitFor(
+    () => /¥|入力してください|読み込めませんでした|出せません/.test(text(doc, "result")),
+    "仲介手数料の計算結果",
+  );
+  const body = text(doc, "result");
+  const byId = (id) => { const e = doc.getElementById(id); return e ? e.textContent.trim() : null; };
+  const yen = (id) => { const t = byId(id); return t && /\d/.test(t) ? Number(t.replace(/[^\d]/g, "")) : null; };
+  return {
+    // ★主張ごとに別の要素を読む（規則5）。
+    jogen: yen("jogen-gaku"),
+    kijunGokei: yen("kijun-gokei"),
+    daikin: yen("daikin-hyoji"),
+    gokeiJogen: yen("gokei-jogen"),
+    ippoJogen: yen("ippo-jogen"),
+    yachinNuki: yen("yachin-nuki"),
+    rows: doc.querySelectorAll("#uchiwake-table tbody tr").length,
+    sokusan: byId("sokusan-note"),
+    ippoRiyu: byId("ippo-riyu"),
+    kenrikinNote: byId("kenrikin-note"),
+    kikanGai: byId("fuka-kikan_gai"),
+    miNyuryoku: byId("fuka-mi_nyuryoku"),
+    fuka: byId("fuka-note"),
+    loadFailed: byId("load-failed"),
+    jogenNote: byId("jogen-note"),
+    failed: /読み込めませんでした/.test(body),
+    body,
+  };
+};
+// ★看板例（期待値はコアを通さず告示の割合から手で出した鎖）:
+//   200万×5.5%=110,000／200万×4.4%=88,000／2,600万×3.3%=858,000 → 合計 1,056,000円
+//   速算式でも 3,000万×3%+6万=96万（本体）→ ×1.1 = 1,056,000円 で一致する。
+SCENES.chukai = chukaiScene({});
+// ★★建物に消費税が乗る対（総額は同じ4,000万円）。
+//   個人間売買: 4,000万 → 110,000+88,000+3,600万×3.3%=1,188,000 → 1,386,000円
+SCENES.chukai_kojin = chukaiScene({ sogaku: 40000000, tatemono: 0 });
+//   業者売主（建物 税込2,200万＝消費税200万）: 代金3,800万 → 1,320,000円。66,000円 安くなる。
+//   ★tatemono を渡し忘れる実装は 1,386,000円 を出して落ちる。
+SCENES.chukai_shohizei = chukaiScene({ sogaku: 40000000, tatemono: 22000000 });
+// ★代理は媒介の2倍（告示 第三）＝2,112,000円。
+SCENES.chukai_dairi = chukaiScene({ tachiba: "dairi" });
+// ★★低廉な空家等の特例の対（代金500万円）。原則は 110,000+88,000+100万×3.3%=33,000 → 231,000円。
+SCENES.chukai_akiya_nashi = chukaiScene({ sogaku: 5000000, akiya: false });
+//   合意している場合だけ 330,000円まで上がる。★チェックを渡し忘れる実装は常に330,000で落ちる。
+SCENES.chukai_akiya = chukaiScene({ sogaku: 5000000, akiya: true });
+// ★★賃貸（居住用・承諾なし）＝合計110,000円・一方55,000円。
+//   ★用途と承諾を渡し忘れる実装は一方も110,000を出して落ちる。
+SCENES.chukai_chintai = chukaiScene({ torihiki: "taishaku", yachin: 100000, youto: "kyoju" });
+//   その対: 依頼を受けるにあたって承諾がある場合は一方から110,000円まで。合計は110,000円のまま。
+SCENES.chukai_chintai_shodaku = chukaiScene({
+  torihiki: "taishaku", yachin: 100000, youto: "kyoju", shodaku: true,
+});
+// ★店舗（居住用以外）は借賃が税込。税込11万円＝税抜10万円で計算し、一方からでも110,000円まで。
+SCENES.chukai_tenpo = chukaiScene({ torihiki: "taishaku", yachin: 110000, youto: "jigyo" });
+// ★★権利金の特例（告示 第六）: 権利金300万円 → 110,000+44,000=154,000円 が借賃基準を上回る。
+SCENES.chukai_kenrikin = chukaiScene({
+  torihiki: "taishaku", yachin: 110000, youto: "jigyo", kenrikin: 3000000,
+});
+// ★改正前（令和6年6月30日）に締結した媒介契約 → 1円も出さない。
+SCENES.chukai_kako = chukaiScene({ hidzuke: "2024-06-30" });
+// ★代金が空 → 0円と答えず入力を促す（fail closed）。理由は「範囲外」と別の要素で読む。
+SCENES.chukai_noinput = chukaiScene({ sogaku: 0 });
+// ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
+SCENES.chukai_nodata = chukaiScene({});
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。

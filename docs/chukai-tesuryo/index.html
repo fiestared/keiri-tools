@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>仲介手数料 計算機｜売買・賃貸の上限額を自動計算（告示どおり）</title>
+<meta name="description" content="不動産の仲介手数料の上限を、国土交通省の告示（昭和45年建設省告示第1552号・令和6年改正）どおりに計算します。売買は200万円以下5.5%・400万円以下4.4%・それ超3.3%の区分合計、賃貸は貸主と借主の合計で1.1か月分（居住用は承諾がなければ一方0.55か月分）。新築や業者売主のとき代金から消費税を除くこと、800万円以下の売買で上限が33万円まで上がる低廉な空家等の特例にも対応。無料・登録不要。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/chukai-tesuryo/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "仲介手数料 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "不動産の売買・賃貸の仲介手数料の上限額を、宅地建物取引業法46条に基づく国土交通省の告示どおりに計算します。売買の区分計算と速算式、代金からの消費税等相当額の除外、低廉な空家等の特例（800万円以下・上限33万円）、賃貸の1.1か月分と居住用の0.55か月分、権利金の特例に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "仲介手数料 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 仲介手数料の「3％＋6万円」に消費税はかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. かかります。「3％＋6万円」は本体の額なので、実際に支払う上限はこれに1.1を掛けた額です。3,000万円の物件なら本体96万円、税込105万6,000円になります。国土交通省の告示は消費税等相当額を含んだ割合（5.5％・4.4％・3.3％）で書かれているので、3.3％で計算した額にさらに1.1を掛けると消費税を二重に乗せることになります。どちらの式で計算しても、正しく使えば答えは同じです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 新築マンションを買うとき、仲介手数料は物件価格そのままで計算しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. いいえ。告示は「代金の額（消費税等相当額を含まない）」と定めているので、建物価格に含まれる消費税を除いた額で計算します。売主が不動産会社などの課税事業者のときは建物に消費税が乗っています。たとえば総額4,000万円のうち建物が税込2,200万円なら、消費税200万円を除いた3,800万円が計算のもとになり、上限は税込総額で計算した場合より66,000円下がります。土地は消費税が非課税なので、個人が売主で土地だけを買う場合は総額のままです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 800万円以下の中古住宅を買うと、仲介手数料は33万円になるのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 33万円が上限になるだけで、自動的にその額になるわけではありません。告示 第七の低廉な空家等の特例は「当該媒介に要する費用を勘案して」原則の上限を超えて受け取れるという規定で、30万円の1.1倍＝33万円がその天井です。国土交通省の通達（宅地建物取引業法の解釈・運用の考え方）は、媒介契約の締結に際してあらかじめ報酬額を依頼者に説明し、合意する必要があると明記しています。なお代金800万円ちょうどのときは原則の計算額もちょうど33万円なので、特例で上限が上がるのは800万円未満のときです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 空き家でなくても低廉な空家等の特例は使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 使えます。国土交通省の通達改正（令和6年7月1日施行）は、売買・交換の特例に係る「低廉な空家等」について、価格800万円以下の宅地・建物であれば使用の状態は不問と明記しています。名前に「空家」とありますが、人が住んでいる家でも、800万円以下であれば対象です。一方、賃貸の特例（長期の空家等）のほうは、1年を超えるような期間にわたり居住者が不在であることなどが必要で、判断の基準が異なります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 賃貸の仲介手数料は家賃1か月分＋消費税が普通ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 告示の上限は、貸主と借主の双方から受ける報酬の「合計額」で借賃1か月分の1.1倍です。居住用の建物では、媒介の依頼を受けるにあたって承諾を得ている場合を除き、一方から受け取れるのは0.55か月分までと定められています（告示 第四）。借主が1.1か月分を払う慣行は、この承諾があることを前提にしたものです。承諾は「媒介の依頼を受けるにあたって」得るものなので、物件を紹介された後や契約時に同意を求められても、依頼の時点で承諾していなければ上限は0.55か月分のままです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 代理を頼むと仲介手数料は必ず2倍になりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. なりません。告示 第三は代理の報酬を媒介の2倍以内としていますが、ただし書で、業者が取引の相手方からも媒介の報酬を受け取る場合は、その合計が媒介の2倍を超えてはならないと定めています。相手方から媒介の報酬を満額受け取るのであれば、代理を依頼した人から受け取れるのは残りの1倍分までです。賃貸の代理はそもそも2倍にはならず、借賃1か月分の1.1倍が上限です（告示 第五）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 仲介手数料のほかに業者へ払うお金はありますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 告示 第十一①は、この告示による報酬のほかに報酬を受けることを禁じていますが、依頼者の依頼によって行う広告の料金に相当する額だけは例外としています。したがって、依頼していない広告費や「事務手数料」「書類作成料」といった名目での上乗せは、報酬規制の潜脱にあたります。なお登記費用（登録免許税・司法書士報酬）、印紙税、不動産取得税、火災保険料などは業者への報酬ではなく別の費用です。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 仲介手数料 計算機</nav>
+
+<section class="hero">
+  <h1>仲介手数料 計算機</h1>
+  <p>不動産の仲介手数料の<b>上限額</b>を、国土交通省の告示どおりに計算します。売買は<b>区分ごとの合計</b>（200万円以下5.5%・400万円以下4.4%・それを超える部分3.3%）、賃貸は<b id="hero-taishaku">貸主と借主の合計で借賃1か月分の1.1倍</b>。<b>新築・業者売主のときに代金から消費税を除く</b>こと、<b>800万円以下の売買で上限が33万円まで上がる特例</b>にも対応します。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="jogen-caution">出るのは「上限」であって、決まった料金ではありません</b>
+    宅地建物取引業法46条に基づく告示は、報酬の額を<b id="jogen-inai">すべて「〜以内」「超えてはならない」</b>と定めています。上限どおりに請求されることが多いのは事実ですが、それは慣行であって法定の料金ではありません。<b>値引きの交渉は自由</b>です。
+  </div>
+
+  <label for="torihiki">取引の種類</label>
+  <select id="torihiki">
+    <option value="baibai" selected>売買・交換（家や土地を買う・売る）</option>
+    <option value="taishaku">貸借（部屋・店舗を借りる・貸す）</option>
+  </select>
+
+  <div id="pane-baibai">
+    <div class="grid2" style="margin-top:14px">
+      <div>
+        <label for="sogaku" style="font-size:13px">売買代金の総額（円）<span class="hint">　実際に支払う額</span></label>
+        <input type="number" id="sogaku" min="0" inputmode="numeric" value="30000000">
+      </div>
+      <div>
+        <label for="tatemono" style="font-size:13px">うち建物の価格（税込・円）<span class="hint">　売主が個人／土地だけなら0</span></label>
+        <input type="number" id="tatemono" min="0" inputmode="numeric" value="0">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="tachiba" style="font-size:13px">依頼のしかた</label>
+        <select id="tachiba">
+          <option value="baikai" selected>媒介（ふつうの仲介）</option>
+          <option value="dairi">代理</option>
+        </select>
+      </div>
+      <div>
+        <label for="hidzuke" style="font-size:13px">媒介契約の日<span class="hint">　令和6年7月1日以後</span></label>
+        <input type="date" id="hidzuke" value="2026-07-30">
+      </div>
+    </div>
+    <div style="margin-top:10px">
+      <label style="font-size:13px"><input type="checkbox" id="akiya"> 低廉な空家等の特例（800万円以下）について、媒介に要する費用を勘案した報酬額に<b>合意している</b></label>
+      <label style="font-size:13px"><input type="checkbox" id="aiteHoshu"> 代理のとき、業者が<b>取引の相手方からも媒介の報酬</b>を受け取る</label>
+    </div>
+  </div>
+
+  <div id="pane-taishaku" hidden>
+    <div class="grid2" style="margin-top:14px">
+      <div>
+        <label for="yachin" style="font-size:13px">借賃の1か月分（円）<span class="hint">　実際に払う額</span></label>
+        <input type="number" id="yachin" min="0" inputmode="numeric" value="100000">
+      </div>
+      <div>
+        <label for="youto" style="font-size:13px">建物の用途</label>
+        <select id="youto">
+          <option value="kyoju" selected>居住用（住まい）</option>
+          <option value="jigyo">居住用以外（店舗・事務所・土地）</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="tachibaT" style="font-size:13px">依頼のしかた</label>
+        <select id="tachibaT">
+          <option value="baikai" selected>媒介（ふつうの仲介）</option>
+          <option value="dairi">代理</option>
+        </select>
+      </div>
+      <div>
+        <label for="kenrikin" style="font-size:13px">権利金（返還されない額・税抜）<span class="hint">　居住用以外のみ</span></label>
+        <input type="number" id="kenrikin" min="0" inputmode="numeric" value="0">
+      </div>
+    </div>
+    <div class="grid2">
+      <div>
+        <label for="hidzukeT" style="font-size:13px">媒介契約の日</label>
+        <input type="date" id="hidzukeT" value="2026-07-30">
+      </div>
+      <div>
+        <label style="font-size:13px;margin-top:22px;display:block"><input type="checkbox" id="shodaku"> 居住用で、<b>媒介の依頼を受けるにあたって</b>承諾を得ている</label>
+      </div>
+    </div>
+  </div>
+
+  <button class="primary" id="calc" style="margin-top:14px">上限額を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<nav class="toc">
+  <b>目次</b>
+  <ol>
+    <li><a href="#jogen">仲介手数料は「上限」であって料金表ではない</a></li>
+    <li><a href="#keisan">上限額の計算式（区分の合計と速算式）</a></li>
+    <li><a href="#shohizei">新築・業者売主は「消費税を除いた代金」で計算する</a></li>
+    <li><a href="#akiya">800万円以下の売買は上限が33万円まで上がる</a></li>
+    <li><a href="#chintai">賃貸の上限は「貸主と借主の合計で1.1か月分」</a></li>
+    <li><a href="#hanigai">このツールが計算しないもの</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+    <li><a href="#kanren">関連ツール</a></li>
+  </ol>
+</nav>
+
+<h2 id="jogen">仲介手数料は「上限」であって料金表ではない</h2>
+
+<p>宅地建物取引業法46条1項は、宅建業者が受け取れる報酬の額について「国土交通大臣の定める額を<b>超えて</b>報酬を受けてはならない」と定めています。その額を定めているのが「宅地建物取引業者が宅地又は建物の売買等に関して受けることができる報酬の額」（昭和45年建設省告示第1552号、最終改正 令和6年国土交通省告示第949号）です。</p>
+
+<p>この告示の各項は、<b>すべて「〜以内」「超えてはならない」という書き方</b>をしています。つまり計算で出るのは<b>天井</b>であって、その金額を請求しなければならないという意味ではありません。実務では上限どおりの請求が一般的ですが、それは商慣行です。</p>
+
+<div class="callout">
+  <b>「半額」「無料」の広告が違法にならない理由</b>
+  告示が定めているのは上限だけなので、下げる方向は自由です。仲介手数料を半額にしたり、貸主から受け取ることで借主を無料にしたりする業者があるのはこのためです。ただし賃貸では<b>双方から受け取る額の合計にも上限がある</b>ので、「借主が無料」は貸主が多く払っていることを意味します。
+</div>
+
+<h2 id="keisan">上限額の計算式（区分の合計と速算式）</h2>
+
+<p>売買・交換の媒介で、依頼者の一方から受け取れる上限は、代金の額を次の3つに区分し、それぞれに割合を掛けた金額の合計です（告示 第二）。表の割合は<b>消費税等相当額を含んだ割合</b>です。</p>
+
+<table>
+  <thead><tr><th>代金の額の区分</th><th>割合（税込）</th><th>本体</th></tr></thead>
+  <tbody id="ritsu-table">
+    <tr><td>200万円以下の金額</td><td>5.5%</td><td>5%</td></tr>
+    <tr><td>200万円を超え400万円以下の金額</td><td>4.4%</td><td>4%</td></tr>
+    <tr><td>400万円を超える金額</td><td>3.3%</td><td>3%</td></tr>
+  </tbody>
+</table>
+
+<p>よく見る<b id="sokusan-shiki">「代金の額×3％＋6万円」は本体（税抜）の額</b>で、400万円を超えるときだけ使える近道です。加算する6万円の正体は、200万円以下の部分の差（5%−3%＝2%×200万円＝4万円）と、200万円超400万円以下の部分の差（4%−3%＝1%×200万円＝2万円）の合計です。<b>実際に支払う額はこれに1.1を掛けた額</b>になります。税込の割合3.3%で計算した額にさらに1.1を掛けると、消費税を二重に乗せることになります。</p>
+
+<figure>
+<svg viewBox="0 0 800 360" role="img" aria-labelledby="fig1-title" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#fff">
+  <title id="fig1-title">物件価格と仲介手数料の上限額（税込）の関係。200万円で11万円、400万円で19万8千円、800万円で33万円。800万円以下は低廉な空家等の特例で33万円まで上げられる。</title>
+  <!-- 軸 -->
+  <line x1="60" y1="300" x2="770" y2="300" stroke="#333" stroke-width="1.5"/>
+  <line x1="60" y1="300" x2="60" y2="30" stroke="#333" stroke-width="1.5"/>
+  <text x="770" y="348" text-anchor="end" font-size="13" fill="#333">代金の額（消費税を除く）</text>
+  <text x="66" y="26" font-size="13" fill="#333">上限額（税込）</text>
+  <!-- 目盛 -->
+  <line x1="200" y1="300" x2="200" y2="305" stroke="#333"/><text x="200" y="320" text-anchor="middle" font-size="12" fill="#555">200万</text>
+  <line x1="340" y1="300" x2="340" y2="305" stroke="#333"/><text x="340" y="320" text-anchor="middle" font-size="12" fill="#555">400万</text>
+  <line x1="620" y1="300" x2="620" y2="305" stroke="#333"/><text x="620" y="320" text-anchor="middle" font-size="12" fill="#555">800万</text>
+  <!-- 原則の折れ線 -->
+  <polyline points="60,300 200,228.5 340,171.3 620,85.5 760,42.6" fill="none" stroke="#2e7d32" stroke-width="2.5"/>
+  <circle cx="200" cy="228.5" r="4" fill="#2e7d32"/>
+  <circle cx="340" cy="171.3" r="4" fill="#2e7d32"/>
+  <circle cx="620" cy="85.5" r="4" fill="#2e7d32"/>
+  <text x="208" y="248" font-size="12" fill="#2e7d32">11万円</text>
+  <text x="348" y="191" font-size="12" fill="#2e7d32">19万8千円</text>
+  <text x="630" y="70" font-size="12" fill="#2e7d32">33万円（＝30万円×1.1）</text>
+  <!-- 区分のラベル -->
+  <text x="130" y="290" text-anchor="middle" font-size="12" fill="#555">5.5%</text>
+  <text x="270" y="290" text-anchor="middle" font-size="12" fill="#555">4.4%</text>
+  <text x="480" y="290" text-anchor="middle" font-size="12" fill="#555">3.3%</text>
+  <!-- 特例の上限 -->
+  <line x1="60" y1="85.5" x2="620" y2="85.5" stroke="#c62828" stroke-width="2" stroke-dasharray="7 5"/>
+  <text x="66" y="78" font-size="12.5" fill="#c62828">低廉な空家等の特例の上限　33万円（800万円以下のとき）</text>
+  <!-- 特例で上乗せできる領域を指す矢印。★下端は「原則の線の上の点」に合わせる
+       （x=300 は代金 約342.8万円。折れ線の 200万→400万 の区間を内分して y=187.6）。
+       ここを目分量にすると矢印が線から浮いて、何と何の差なのか分からない図になる。 -->
+  <line x1="300" y1="140" x2="300" y2="89" stroke="#c62828" stroke-width="1.5" marker-end="url(#ar)"/>
+  <line x1="300" y1="140" x2="300" y2="185.6" stroke="#c62828" stroke-width="1.5" marker-end="url(#ar)"/>
+  <text x="312" y="136" font-size="12" fill="#c62828">合意があれば、この幅まで上げられる</text>
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#c62828"/>
+    </marker>
+  </defs>
+</svg>
+<figcaption>物件価格と上限額（税込）の関係。区分ごとに割合が下がるので、線は右へ行くほどゆるやかになります。800万円ちょうどで原則の額と特例の上限（33万円）が一致します。</figcaption>
+</figure>
+
+<h2 id="shohizei">新築・業者売主は「消費税を除いた代金」で計算する</h2>
+
+<p>告示 第二は、計算のもとになる金額を<b>「当該売買に係る代金の額（当該売買に係る消費税等相当額を含まないものとする。）」</b>と定めています。売主が不動産会社などの課税事業者である場合、<b>建物の価格には消費税が乗っています</b>。土地の譲渡は非課税なので、消費税が乗るのは建物部分だけです。</p>
+
+<div class="callout">
+  <b id="shohizei-rei">総額4,000万円・建物が税込2,200万円のとき</b>
+  建物に含まれる消費税は200万円（2,200万円×10/110）です。計算のもとになる代金の額は<b>3,800万円</b>で、上限は<b id="shohizei-kekka">132万円</b>（税込）。総額4,000万円のまま計算すると138万6,000円になり、<b>66,000円 過大</b>になります。売買契約書には建物の消費税額が記載されているので、そこから逆算できます。
+</div>
+
+<p>個人が売主の中古住宅（いわゆる個人間売買）では建物にも消費税がかからないため、総額がそのまま計算のもとになります。この欄を0のままにしておけば、その計算になります。</p>
+
+<h2 id="akiya">800万円以下の売買は上限が33万円まで上がる</h2>
+
+<p>令和6年6月21日の告示改正（同年7月1日施行）で、<b>低廉な空家等</b>の特例が拡大されました。代金の額が<b>800万円以下</b>の宅地・建物の売買・交換の媒介については、媒介に要する費用を勘案して、原則の上限を超えて報酬を受け取れます。その天井が<b>30万円の1.1倍＝33万円</b>です（告示 第七）。代理の場合はその2倍が上限です（同 第八）。改正前は「400万円以下・18万円（本体）」だったので、対象も金額も広がりました。</p>
+
+<div class="callout">
+  <b id="akiya-goi">自動的に33万円になるわけではない</b>
+  告示の書き方は「第二の規定により算出した金額を超えて報酬を受けることができる」＋「三十万円の一・一倍に相当する金額を超えてはならない」です。国土交通省は通達（宅地建物取引業法の解釈・運用の考え方）の改正で、<b>媒介契約の締結に際してあらかじめ、報酬額について依頼者に説明し、合意する必要がある</b>ことを明記しました。合意がないまま上限額を請求できるものではありません。
+</div>
+
+<p>名前に「空家」とありますが、国土交通省の資料は、売買・交換特例に係る低廉な空家等について<b id="shiyo-fumon">価格800万円以下の宅地・建物であれば使用の状態は不問</b>としています。人が住んでいる家でも、800万円以下なら対象です。</p>
+
+<p>なお<b>代金800万円ちょうどのとき、原則の計算額もちょうど33万円</b>になります（11万円＋8万8千円＋13万2千円）。特例で上限が実際に上がるのは、代金が800万円未満のときだけです。</p>
+
+<h2 id="chintai">賃貸の上限は「貸主と借主の合計で1.1か月分」</h2>
+
+<p>貸借の媒介で受け取れる報酬は、<b id="chintai-gokei">依頼者の双方から受ける報酬の合計額が借賃の1か月分の1.1倍以内</b>です（告示 第四）。借主と貸主がそれぞれ1.1か月分を払うのではありません。</p>
+
+<p>さらに<b>居住用の建物</b>については、<b id="chintai-shodaku">媒介の依頼を受けるにあたって依頼者の承諾を得ている場合を除き、一方から受け取れるのは借賃の1か月分の0.55倍以内</b>と定められています。借主が1.1か月分を払う慣行は、この承諾があることを前提にしたものです。承諾のタイミングが<b>「媒介の依頼を受けるにあたって」</b>と条文に書かれている点が重要で、物件を紹介された後や契約の直前に同意を求められても、依頼の時点で承諾していなければ上限は0.55か月分のままです。</p>
+
+<p>居住用以外（店舗・事務所・土地）では0.55倍の制限がないため、合計1.1か月分の範囲でどちらがいくら負担するかは自由です。また居住用以外では、返還されない<b>権利金</b>があるときに限り、権利金の額を売買代金とみなして売買の計算式を使うことができます（告示 第六）。借賃基準の額と比べて<b>高いほうを選べる</b>規定です。この特例は<b id="kenrikin-jogai">居住用の建物には使えない</b>ので、敷金・礼金を権利金として売買の式に当てはめることはできません。</p>
+
+<p>借賃についても、告示は「消費税等相当額を含まない」と定めています。居住用の家賃は消費税が非課税ですが、<b>店舗・事務所の賃料には消費税が上乗せされている</b>ので、税抜に直してから計算します。</p>
+
+<h2 id="hanigai">このツールが計算しないもの</h2>
+
+<p>次のものは、金額を出さずに範囲外として申告します。<b>分からないことを、それらしい数字で埋めない</b>ためです。</p>
+
+<ul id="hanigai-list">
+  <li><b>長期の空家等の貸借の特例（告示 第九・第十）</b> — 令和6年改正で新設され、双方から受ける報酬の合計額を借賃1か月分の2.2倍まで受け取れます。国土交通省の資料によれば上乗せできるのは<b>貸主である依頼者から受ける分</b>なので、借主が払う上限はこのツールの計算どおりで変わりません。貸主側の上乗せ額は「媒介に要する費用を勘案して」個別に決まるため計算しません。</li>
+  <li><b>免税事業者である業者の報酬（同 第十一②）</b> — 課税事業者と計算式が異なり、仕入れに係る消費税等相当額の算定が告示本文では定まらないため計算しません。宅建業者のほとんどは課税事業者です。</li>
+  <li><b>依頼者の依頼による広告の料金・遠隔地への出張旅費</b> — 告示 第十一①ただし書により報酬とは別に請求できる実費です。上限額には含みません。</li>
+  <li><b>令和6年7月1日より前に締結した媒介契約</b> — 改正前の告示によるため、日付を入れると計算を止めます。</li>
+  <li><b>登記費用・印紙税・不動産取得税・固定資産税の精算金・火災保険料</b> — 業者への報酬ではないので別の費用です（それぞれ関連ツールで計算できます）。</li>
+</ul>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 仲介手数料の「3％＋6万円」に消費税はかかりますか？</h3>
+<p>A. かかります。「3％＋6万円」は本体の額なので、実際に支払う上限はこれに1.1を掛けた額です。3,000万円の物件なら本体96万円、税込105万6,000円になります。国土交通省の告示は消費税等相当額を含んだ割合（5.5％・4.4％・3.3％）で書かれているので、3.3％で計算した額にさらに1.1を掛けると消費税を二重に乗せることになります。どちらの式で計算しても、正しく使えば答えは同じです。</p>
+
+<h3>Q. 新築マンションを買うとき、仲介手数料は物件価格そのままで計算しますか？</h3>
+<p>A. いいえ。告示は「代金の額（消費税等相当額を含まない）」と定めているので、建物価格に含まれる消費税を除いた額で計算します。売主が不動産会社などの課税事業者のときは建物に消費税が乗っています。たとえば総額4,000万円のうち建物が税込2,200万円なら、消費税200万円を除いた3,800万円が計算のもとになり、上限は税込総額で計算した場合より66,000円下がります。土地は消費税が非課税なので、個人が売主で土地だけを買う場合は総額のままです。</p>
+
+<h3>Q. 800万円以下の中古住宅を買うと、仲介手数料は33万円になるのですか？</h3>
+<p>A. 33万円が上限になるだけで、自動的にその額になるわけではありません。告示 第七の低廉な空家等の特例は「当該媒介に要する費用を勘案して」原則の上限を超えて受け取れるという規定で、30万円の1.1倍＝33万円がその天井です。国土交通省の通達（宅地建物取引業法の解釈・運用の考え方）は、媒介契約の締結に際してあらかじめ報酬額を依頼者に説明し、合意する必要があると明記しています。なお代金800万円ちょうどのときは原則の計算額もちょうど33万円なので、特例で上限が上がるのは800万円未満のときです。</p>
+
+<h3>Q. 空き家でなくても低廉な空家等の特例は使えますか？</h3>
+<p>A. 使えます。国土交通省の通達改正（令和6年7月1日施行）は、売買・交換の特例に係る「低廉な空家等」について、価格800万円以下の宅地・建物であれば使用の状態は不問と明記しています。名前に「空家」とありますが、人が住んでいる家でも、800万円以下であれば対象です。一方、賃貸の特例（長期の空家等）のほうは、1年を超えるような期間にわたり居住者が不在であることなどが必要で、判断の基準が異なります。</p>
+
+<h3>Q. 賃貸の仲介手数料は家賃1か月分＋消費税が普通ですか？</h3>
+<p>A. 告示の上限は、貸主と借主の双方から受ける報酬の「合計額」で借賃1か月分の1.1倍です。居住用の建物では、媒介の依頼を受けるにあたって承諾を得ている場合を除き、一方から受け取れるのは0.55か月分までと定められています（告示 第四）。借主が1.1か月分を払う慣行は、この承諾があることを前提にしたものです。承諾は「媒介の依頼を受けるにあたって」得るものなので、物件を紹介された後や契約時に同意を求められても、依頼の時点で承諾していなければ上限は0.55か月分のままです。</p>
+
+<h3>Q. 代理を頼むと仲介手数料は必ず2倍になりますか？</h3>
+<p>A. なりません。告示 第三は代理の報酬を媒介の2倍以内としていますが、ただし書で、業者が取引の相手方からも媒介の報酬を受け取る場合は、その合計が媒介の2倍を超えてはならないと定めています。相手方から媒介の報酬を満額受け取るのであれば、代理を依頼した人から受け取れるのは残りの1倍分までです。賃貸の代理はそもそも2倍にはならず、借賃1か月分の1.1倍が上限です（告示 第五）。</p>
+
+<h3>Q. 仲介手数料のほかに業者へ払うお金はありますか？</h3>
+<p>A. 告示 第十一①は、この告示による報酬のほかに報酬を受けることを禁じていますが、依頼者の依頼によって行う広告の料金に相当する額だけは例外としています。したがって、依頼していない広告費や「事務手数料」「書類作成料」といった名目での上乗せは、報酬規制の潜脱にあたります。なお登記費用（登録免許税・司法書士報酬）、印紙税、不動産取得税、火災保険料などは業者への報酬ではなく別の費用です。</p>
+
+<h2 id="shutten">出典</h2>
+<ul id="shutten-list">
+  <li><a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/content/001750143.pdf" rel="nofollow">宅地建物取引業者が宅地又は建物の売買等に関して受けることができる報酬の額（昭和45年10月23日建設省告示第1552号、最終改正 令和6年6月21日国土交通省告示第949号）</a> — 第二（売買・交換の媒介）／第三（代理）／第四・第五（貸借）／第六（権利金）／第七・第八（低廉な空家等）／第九・第十（長期の空家等）／第十一（報酬の受領の禁止）</li>
+  <li><a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/content/001749923.pdf" rel="nofollow">国土交通省「空き家等に係る媒介報酬規制の見直し」</a> — 上限額の水準（200万円で10万円×1.1・400万円で18万円×1.1・800万円で30万円×1.1）と、長期の空家等の特例が貸主から受ける分の上乗せであること</li>
+  <li><a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/content/001750144.pdf" rel="nofollow">国土交通省「宅地建物取引業法の解釈・運用の考え方（通達）の改正」（令和6年7月1日施行）</a> — 媒介契約の締結に際しあらかじめ報酬額を説明し合意する必要があること、低廉な空家等は使用の状態を不問とすること</li>
+  <li><a href="https://laws.e-gov.go.jp/law/327AC1000000176" rel="nofollow">宅地建物取引業法（昭和二十七年法律第百七十六号）46条</a> — 国土交通大臣の定める額を超えて報酬を受けてはならない旨</li>
+</ul>
+<p class="hint" id="src-note-wrap">告示は国土交通省が公表している全文で逐語確認しています<span id="src-note"></span>。このページは一般的な情報提供であり、個別の取引についての助言ではありません。</p>
+
+<h2 id="kanren">関連ツール</h2>
+<ul>
+  <li><a href="../toroku-menkyozei/">不動産の登録免許税 計算機</a> — 買ったときの登記にかかる税金を計算します</li>
+  <li><a href="../fudosan-shutoku/">不動産取得税 計算機</a> — 取得後に都道府県から課される税金です</li>
+  <li><a href="../inshi/">収入印紙の金額 早見表</a> — 売買契約書に貼る印紙税を調べます</li>
+  <li><a href="../fudosan-jouto/">不動産の譲渡所得税 計算機</a> — 売ったときの税金（仲介手数料は譲渡費用に入ります）</li>
+</ul>
+
+</article>
+</main>
+<footer>
+  <div>© 経理ミニツールズ</div>
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calc } from "../assets/chukai_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const num = (id) => Number($(id).value) || 0;
+
+let D = null;
+// 参照データは非同期で届く。届く前に計算ボタンを押されても待つ（実ユーザーと同じ経路）。
+// この catch が拾ってよいのは「データが手に入らなかった」ことだけ（飾りの描画は別に処理する）。
+const load = (path) => fetch(path).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+const dataReady = load("../assets/chukai_r08.json").then(d => { D = d; return true; }).catch(() => false);
+
+// 出典の注記は飾り。ここで転んでも計算は止めない。
+dataReady.then(() => {
+  $("src-note").textContent = D?._meta?.checked ? `（${D._meta.checked} 時点）` : "";
+}).catch(() => {});
+
+// 取引の種類で入力欄を出し分ける。
+// ★display を直接切り替える（hidden 属性だけだと、インラインの display に負けて消えないことがある）
+const paneB = $("pane-baibai"), paneT = $("pane-taishaku");
+const syncPane = () => {
+  const t = $("torihiki").value;
+  paneB.style.display = t === "taishaku" ? "none" : "";
+  paneT.style.display = t === "taishaku" ? "" : "none";
+  paneB.hidden = t === "taishaku";
+  paneT.hidden = t !== "taishaku";
+};
+$("torihiki").addEventListener("change", syncPane);
+syncPane();
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+  const okData = await dataReady; // 参照データの到着を必ず待つ
+  if (!okData || !D) {
+    box.innerHTML = `<div class="note" id="load-failed"><b>データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。告示の内容が分からない状態で上限額を答えることはできません。</div>`;
+    return;
+  }
+
+  const taishaku = $("torihiki").value === "taishaku";
+  const input = taishaku
+    ? {
+        torihiki: "taishaku",
+        yachinZeikomi: num("yachin"),
+        isKyojuyo: $("youto").value === "kyoju",
+        shodaku: $("shodaku").checked,
+        tachiba: $("tachibaT").value,
+        kenrikin: num("kenrikin"),
+        hidzuke: $("hidzukeT").value || undefined,
+      }
+    : {
+        torihiki: "baibai",
+        sogakuZeikomi: num("sogaku"),
+        tatemonoZeikomi: num("tatemono"),
+        tachiba: $("tachiba").value,
+        akiyaTekiyo: $("akiya").checked,
+        aiteHoshu: $("aiteHoshu").checked,
+        hidzuke: $("hidzuke").value || undefined,
+      };
+
+  let r;
+  try {
+    r = calc(input, D);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>${e.message}</div>`;
+    return;
+  }
+
+  if (!r.ok) {
+    // ★見出しと理由は別の要素にする（同じ要素だと、理由を消しても見出しが検査を素通しさせる）。
+    // 理由の要素idに code を入れて、「範囲外」と「未入力」を取り違えないようにする。
+    box.innerHTML = `<div class="note" id="fuka-note"><b>金額を出せません。</b></div>
+      <p class="hint" id="fuka-${r.code}">${r.riyu}</p>`;
+    return;
+  }
+
+  let html = "";
+
+  if (r.shurui === "baibai") {
+    html += `<div class="big" id="jogen-gaku">仲介手数料の上限（税込）　${yenF(r.jogen)}</div>`;
+    html += `<p class="hint">本体 ${yenF(r.jogenHontai)} ＋ 消費税等相当額。根拠: ${r.konkyo}</p>`;
+    html += `<table id="uchiwake-table"><thead><tr><th>代金の額の区分</th><th>この区分の金額</th><th>割合</th><th>報酬（税込）</th></tr></thead><tbody>`;
+    for (const u of r.uchiwake) {
+      html += `<tr><td>${u.label}</td><td style="text-align:right">${yenF(u.taishoGaku)}</td>
+        <td style="text-align:right">${(u.ritsu * 100).toFixed(1)}%</td>
+        <td style="text-align:right">${yenF(u.gaku)}</td></tr>`;
+    }
+    html += `<tr><td colspan="3"><b>合計（原則の上限・告示 第二）</b></td>
+      <td style="text-align:right" id="kijun-gokei"><b>${yenF(r.kijunGaku)}</b></td></tr>`;
+    html += `</tbody></table>`;
+    html += `<p class="hint">計算のもとになる代金の額: <b id="daikin-hyoji">${yenF(r.daikin)}</b>
+      （総額 ${yenF(r.sogaku)}${r.shohizeiBun > 0 ? ` − 建物の消費税 ${yenF(r.shohizeiBun)}` : ""}）</p>`;
+    if (r.sokusan) {
+      html += `<p class="hint" id="sokusan-note">速算式でも同じです: ${yenF(r.daikin)} × 3％ ＋ 60,000円 ＝ 本体 ${yenF(r.sokusan.hontai)} → 税込 ${yenF(r.sokusan.zeikomi)}</p>`;
+    }
+  } else {
+    html += `<div class="big" id="jogen-gaku">あなたが払う上限（税込）　${yenF(r.ippoJogen)}</div>`;
+    html += `<p class="hint" id="ippo-riyu">${r.ippoRiyu} 根拠: ${r.konkyo}</p>`;
+    html += `<table id="uchiwake-table"><tbody>
+      <tr><td>借賃の1か月分（消費税を除く）</td><td style="text-align:right" id="yachin-nuki">${yenF(r.yachin)}</td></tr>
+      <tr><td><b>貸主と借主の合計の上限（1.1か月分）</b></td><td style="text-align:right" id="gokei-jogen"><b>${yenF(r.gokeiJogen)}</b></td></tr>
+      <tr><td>うち、依頼者の一方から受け取れる上限</td><td style="text-align:right" id="ippo-jogen">${yenF(r.ippoJogen)}</td></tr>
+      </tbody></table>`;
+    if (r.kenrikin) {
+      html += `<p class="hint" id="kenrikin-note">権利金を売買代金とみなした場合の額（告示 第六）: ${yenF(r.kenrikin.jogen)}</p>`;
+    }
+  }
+
+  for (const c of r.chuui) {
+    html += `<div class="note">${c}</div>`;
+  }
+
+  html += `<div class="note" id="jogen-note"><b>これは上限額です。</b>告示は報酬の額を「〜以内」と定めているだけなので、
+    この金額を必ず払わなければならないわけではありません（宅地建物取引業法46条1項）。</div>`;
+
+  html += `<p class="hint">このツールは業者が受け取れる報酬の上限だけを計算します。
+    登記費用・印紙税・不動産取得税・火災保険料などは含みません。範囲外の取扱いは
+    <a href="#hanigai">このツールが計算しないもの</a>をご覧ください。</p>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>
