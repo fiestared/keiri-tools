@@ -856,6 +856,54 @@ const SCENES = [
   { name: "chukai_nodata", data404: "chukai_r08.json", expect: (s) =>
       s.failed && s.jogen === null && s.loadFailed !== null },
 
+  // ── 遺族年金 (/izoku/) ──────────────────────────────────────────────────
+  // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず条文から出した期待値）。
+  { name: "izoku", expect: (s) =>
+      s.total === 1704868 && s.gokei === 1704868 && s.monthly === 142072 &&
+      s.kiso === 1334900 && s.kosei === 369968 && s.chukorei === 0 &&
+      // 短期要件なのでみなしが立ち、その申告が出ている（額を見ても分からないため）
+      /300月とみなして/.test(s.minashi || "") && s.minashiNashi === null &&
+      // 子がいるあいだ加算が止まる理由は、0円という数字では伝わらない
+      /支給停止/.test(s.ckKiso || "") &&
+      // 年度はデータから描かれている（ページの手書きではない）
+      /令和8年度/.test(s.nendo || "") && s.hanigai === 7 &&
+      /概算額/.test(s.gaisanNote || "") && !s.failed },
+  // ★★子の有無の対。子0人で遺族基礎が消え、中高齢寡婦加算が立つ。
+  { name: "izoku_konashi", expect: (s) =>
+      s.total === 1005468 && s.kiso === 0 && s.kosei === 369968 && s.chukorei === 635500 &&
+      /支給されません/.test(s.kisoNashi || "") &&
+      // 加算が付いているので「付きません」の要素は出ない
+      s.ckKiso === null && s.ckAge === null && s.ckNotWife === null },
+  // ★★300月みなしの対。長期要件は実月数のまま＝2.5分の1になる。
+  { name: "izoku_choki", expect: (s) =>
+      s.total === 147987 && s.kosei === 147987 && s.chukorei === 0 &&
+      s.minashi === null && /実際の\s*120月/.test((s.minashiNashi || "").replace(/\s+/g, " ")) &&
+      /240月/.test(s.ckChokiMonths || "") },
+  // その対: 長期要件でも240月あれば加算が付く。
+  { name: "izoku_choki_240", expect: (s) =>
+      s.total === 931474 && s.kosei === 295974 && s.chukorei === 635500 &&
+      s.ckChokiMonths === null },
+  // ★子の加算の段（3人目は81,300円）。全員を243,800円で足す実装は落ちる。
+  { name: "izoku_ko3", expect: (s) =>
+      // 内訳の行: 遺族基礎／うち1・2人目／うち3人目以降／遺族厚生／中高齢寡婦／合計 ＝ 6行
+      s.total === 1786168 && s.kiso === 1416200 && s.rows === 6 },
+  // ★夫には中高齢寡婦加算が付かない。落ちた門が名指しで出ていること。
+  { name: "izoku_otto", expect: (s) =>
+      s.total === 369968 && s.chukorei === 0 &&
+      /妻/.test(s.ckNotWife || "") && s.ckChokiMonths === null && s.ckAge === null },
+  // ★★65歳以降の併給。2号が選ばれ、上乗せ額が別の要素に出ている。
+  { name: "izoku_65", expect: (s) =>
+      s.total === 396645 && s.kosei === 396645 && s.uwanose === 96645 &&
+      s.heikyuGo2 !== null && s.heikyuGo1 === null &&
+      // 65歳になったので中高齢寡婦加算は年齢の門で落ちる
+      /40歳以上65歳未満/.test(s.ckAge || "") },
+  // ★加入も子も0 → 0円と答えず入力を促す（fail closed）。
+  { name: "izoku_noinput", expect: (s) =>
+      s.total === null && /入力してください/.test(s.miNyuryoku || "") },
+  // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
+  { name: "izoku_nodata", data404: "izoku_r08.json", expect: (s) =>
+      s.failed && s.total === null && s.loadFailed !== null },
+
   // ── 不動産の登録免許税 (/toroku-menkyozei/) ──────────────────────────
   // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず条文の税率から出した期待値）。
   { name: "toroku", expect: (s) =>

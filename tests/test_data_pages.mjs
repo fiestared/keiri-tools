@@ -33,11 +33,21 @@ function pages(dir, out = []) {
 
 // assets配下のJSONをfetchしているページ = 「非同期で届く参照データ」を使うページ。
 // データファイル名では絞らない(絞ると新しい参照データが検査から漏れる。実際に漏れた)。
-const FETCH_JSON = /fetch\(\s*["'][^"']*assets\/([\w.-]+\.json)["']/g;
+//
+// ★★2026-07-31: **fetch() の引数そのものを見る形にも同じ穴があった**。
+//   `const load = (path) => fetch(path).then(...)` という**取得を1行のヘルパーに畳んだ書き方**
+//   だと、`fetch("../assets/x.json")` という文字列は**どこにも現れない**。
+//   この形のページが本番に**6本**あり(chukai-tesuryo / hikazei-setai / iryubun / seizen-zoyo /
+//   shokibo-takuchi / sozoku-toki-menkyozei)、**全部この検査の外側にいた**。
+//   壊しテスト(tests/break_izoku_page.mjs)で「await を外す」壊しが素通しして発覚した。
+//   ＝ 検査は緑だったが、守っていたつもりのページを1行も見ていなかった。
+//   → **呼び出しの形ではなく「assets配下のJSONのパスを持っていて、fetchを使うページ」**で拾う。
+//     ヘルパーに畳もうが、変数に入れようが、パス文字列はページのどこかに必ず在る。
+const ASSET_JSON = /["'][^"']*assets\/([\w.-]+\.json)["']/g;
 const users = pages(DOCS)
   .map((p) => ({ p, src: readFileSync(p, "utf8") }))
-  .map(({ p, src }) => ({ p, src, data: [...src.matchAll(FETCH_JSON)].map((m) => m[1]) }))
-  .filter(({ data }) => data.length > 0);
+  .map(({ p, src }) => ({ p, src, data: [...new Set([...src.matchAll(ASSET_JSON)].map((m) => m[1]))] }))
+  .filter(({ src, data }) => data.length > 0 && /\bfetch\s*\(/.test(src));
 
 ok(users.length >= 3, `参照データを使うページを検出: ${users.length}件`);
 

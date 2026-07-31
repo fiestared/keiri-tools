@@ -2599,6 +2599,96 @@ SCENES.chukai_noinput = chukaiScene({ sogaku: 0 });
 // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
 SCENES.chukai_nodata = chukaiScene({});
 
+// ── 遺族年金 (/izoku/) ───────────────────────────────────────────────────────
+// ★単体（tests/test_izoku.mjs）は core しか見ないので、次の配線はここでしか守れない:
+//   「短期／長期の選択がコアに渡る＝渡し忘れると加入の短い人に常に300月みなしが効く」
+//   「子の人数が渡る＝渡し忘れると子のある世帯に遺族基礎年金が出ない（または常に出る）」
+//   「妻／夫と年齢が渡る＝渡し忘れると中高齢寡婦加算が夫にも65歳以降にも付く」
+//   「平成15年3月以前と4月以後を別々に渡す＝混ぜると乗率が片方に寄る」
+//   「65歳のときだけ自分の老齢厚生年金を使う」
+//   「出せない条件では金額を1円も出さない」
+const izokuScene = (o) => async () => {
+  const doc = await open("/docs/izoku/");
+  set(doc, "yoken", o.yoken ?? "tanki");
+  set(doc, "koCount", o.koCount ?? 2);
+  set(doc, "uketori", o.uketori ?? "tsuma");
+  set(doc, "age", o.age ?? 45);
+  set(doc, "postAvg", o.postAvg ?? 300000);
+  set(doc, "postMonths", o.postMonths ?? 120);
+  set(doc, "preAvg", o.preAvg ?? 0);
+  set(doc, "preMonths", o.preMonths ?? 0);
+  set(doc, "ownRourei", o.ownRourei ?? 0);
+  click(doc, "calc");
+
+  await waitFor(
+    () => /¥|入力してください|読み込めませんでした|出せません/.test(text(doc, "result")),
+    "遺族年金の計算結果",
+  );
+  const body = text(doc, "result");
+  const byId = (id) => { const e = doc.getElementById(id); return e ? e.textContent.trim() : null; };
+  const yen = (id) => { const t = byId(id); return t && /\d/.test(t) ? Number(t.replace(/[^\d]/g, "")) : null; };
+  return {
+    // ★主張ごとに別の要素を読む（規則5）。合計は見出しと表の2箇所に出るので両方読み、
+    //   食い違ったら（別々に計算する実装に戻ったら）落ちるようにする。
+    total: yen("izoku-total"),
+    gokei: yen("gokei-yen"),
+    monthly: yen("izoku-monthly"),
+    kiso: yen("kiso-yen"),
+    kosei: yen("kosei-yen"),
+    chukorei: yen("chukorei-yen"),
+    rows: doc.querySelectorAll("#uchiwake-table tbody tr").length,
+    kisoNashi: byId("kiso-nashi"),
+    minashi: byId("minashi-note"),
+    minashiNashi: byId("minashi-nashi"),
+    // 中高齢寡婦加算が落ちた門は id に載っている（どの門かを取り違えないため）
+    ckNotWife: byId("chukorei-not_wife"),
+    ckAge: byId("chukorei-age"),
+    ckKiso: byId("chukorei-kiso"),
+    ckChokiMonths: byId("chukorei-choki_months"),
+    heikyuGo1: byId("heikyu-go1"),
+    heikyuGo2: byId("heikyu-go2"),
+    uwanose: yen("uwanose-yen"),
+    nendo: byId("nendo-hyoji"),
+    hanigai: doc.querySelectorAll("#hanigai-list-data li").length,
+    gaisanNote: byId("gaisan-note"),
+    miNyuryoku: byId("fuka-mi_nyuryoku"),
+    loadFailed: byId("load-failed"),
+    failed: /読み込めませんでした/.test(body),
+    body,
+  };
+};
+// ★看板例（期待値はコアを通さず条文から手で出した鎖）:
+//   遺族基礎 = 780,900×1.085→847,300 ＋ 子の加算 243,800×2 = 1,334,900円
+//   遺族厚生 = 300,000×5.481/1000×300月（短期要件のみなし）= 493,290 → ×3/4 = 369,968円
+//   中高齢寡婦加算 = 遺族基礎を受けているので支給停止（厚年法65条）= 0円
+//   合計 1,704,868円／月あたり 142,072円（切捨て）
+SCENES.izoku = izokuScene({});
+// ★★子の有無の対（同じ妻45歳・同じ加入）。子0人だと遺族基礎が消え、代わりに
+//   中高齢寡婦加算 635,500円 が立つ → 369,968＋635,500 = 1,005,468円。
+//   ★koCount を渡し忘れる実装は、こちらでも遺族基礎を出して落ちる。
+SCENES.izoku_konashi = izokuScene({ koCount: 0 });
+// ★★300月みなしの対（子0人・加入120月）。長期要件は実月数のまま:
+//   300,000×5.481/1000×120 = 197,316 → ×3/4 = 147,987円。
+//   中高齢寡婦加算は長期要件で240月未満なので付かない（62条1項かっこ書）。
+//   ★yokenKey を渡し忘れる実装は 1,005,468円 を出して落ちる。
+SCENES.izoku_choki = izokuScene({ koCount: 0, yoken: "choki" });
+// その対: 長期要件でも240月あれば加算が付く。
+//   300,000×5.481/1000×240 = 394,632 → ×3/4 = 295,974 ＋ 635,500 = 931,474円
+SCENES.izoku_choki_240 = izokuScene({ koCount: 0, yoken: "choki", postMonths: 240 });
+// ★子の加算の段（3人目は安い）。1,334,900 ＋ 81,300 = 1,416,200 ＋ 369,968 = 1,786,168円。
+//   ★全員を243,800円で足す実装は 1,948,668円 を出して落ちる。
+SCENES.izoku_ko3 = izokuScene({ koCount: 3 });
+// ★夫には中高齢寡婦加算が付かない（62条1項は「妻」）。理由が名指しの要素に出ること。
+SCENES.izoku_otto = izokuScene({ koCount: 0, uketori: "otto" });
+// ★★65歳以降の併給（60条1項2号）。①369,968 と ②369,968×2/3＋300,000×1/2＝396,645 の多いほう。
+//   自分の老齢厚生年金は全額出るので、上乗せは 396,645−300,000 = 96,645円。
+//   ★ownRourei を渡し忘れる実装は 369,968円（①のまま）を出して落ちる。
+SCENES.izoku_65 = izokuScene({ koCount: 0, age: 65, ownRourei: 300000 });
+// ★加入月数も子も0 → 0円と答えず入力を促す（fail closed）。
+SCENES.izoku_noinput = izokuScene({ koCount: 0, postMonths: 0 });
+// ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
+SCENES.izoku_nodata = izokuScene({});
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>遺族年金 計算機｜遺族基礎・遺族厚生・中高齢寡婦加算をまとめて計算</title>
+<meta name="description" content="遺族年金（遺族基礎年金・遺族厚生年金・中高齢寡婦加算）の年額を、条文どおりに計算します。子の加算は2人目までと3人目以降で額が違い、300月みなしは短期要件のときだけ効きます。中高齢寡婦加算は遺族基礎年金を受け取っているあいだ支給停止で、長期要件では厚生年金の加入が240月以上ないと付きません。令和8年度の額（改定率1.085）で計算。無料・登録不要・入力は送信しません。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/izoku/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "遺族年金 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "遺族基礎年金（国民年金法38条・39条1項）、遺族厚生年金（厚生年金保険法60条1項）、中高齢寡婦加算（同法62条1項）の年額をまとめて計算します。子の加算の段、短期要件のときだけ効く300月みなし、遺族基礎年金を受けているあいだの中高齢寡婦加算の支給停止、65歳以降に自分の老齢厚生年金がある場合の併給に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "遺族年金 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 子どもがいない妻でも遺族年金は受け取れますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 遺族厚生年金は受け取れますが、遺族基礎年金は受け取れません。遺族基礎年金は「子のある配偶者」または「子」に支給されるもので（国民年金法37条の2第1項）、ここでいう子は18歳に達する日以後の最初の3月31日までの間にある子（または20歳未満で障害等級1級・2級の子）です。この要件に当たる子が1人もいない配偶者には支給されません。そのかわり、亡くなった方が厚生年金の被保険者だった場合は遺族厚生年金が支給され、妻が40歳以上65歳未満であれば中高齢寡婦加算が上乗せされます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 厚生年金の加入が短くても遺族厚生年金は300月で計算されますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 短期要件のときだけです。厚生年金保険法60条1項1号のただし書は、58条1項1号から3号まで（在職中の死亡、初診日から5年以内の死亡、障害厚生年金1級・2級の受給権者の死亡）に該当して支給される遺族厚生年金について、被保険者期間が300月に満たないときは300月として計算すると定めています。老齢厚生年金の受給権者などが亡くなった長期要件（58条1項4号）にはこのみなしがなく、実際の加入月数で計算します。同じ加入期間でも、どちらの要件かで額が大きく変わります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 子の加算は3人目からなぜ安くなるのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 国民年金法39条1項が、子1人につき7万4,900円に改定率を掛けた額を加算すると定めたうえで、かっこ書で「そのうち二人までについては、それぞれ二十二万四千七百円に改定率を乗じて得た額」と読み替えているためです。つまり本文が定める低い額が原則で、2人までだけが高い額に読み替えられる構造です。令和8年度は1人目・2人目が各24万3,800円、3人目以降が各8万1,300円になります。全員を高い額で足すと3人目以降で過大な金額が出ます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 中高齢寡婦加算は子どもがいるあいだも受け取れますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 受け取れません。厚生年金保険法65条により、遺族基礎年金を受けられるあいだは中高齢寡婦加算が支給停止になります。子が18歳到達年度の末日を過ぎて遺族基礎年金が終わったあと、妻が65歳になるまでのあいだ加算されます。つまり両方を同時に受け取ることはなく、子がいるあいだは遺族基礎年金、子が卒業したあとは中高齢寡婦加算、という順に切り替わります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 中高齢寡婦加算が付かないと言われました。なぜですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 中高齢寡婦加算には4つの条件があり、どれか1つでも欠けると付きません。①受け取るのが妻であること、②40歳以上65歳未満であること、③遺族基礎年金を受けていないこと（厚生年金保険法65条）、④長期要件で支給される遺族厚生年金の場合は、厚生年金の被保険者期間が240月（20年）以上あること（同法62条1項かっこ書）です。とくに④は見落としやすく、自営業の期間が長かった方が老齢厚生年金の受給権者として亡くなった場合、加入が240月に届かず加算されないことがあります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 65歳になって自分の老齢厚生年金が出ると、遺族厚生年金は止まりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 止まりませんが、額の決め方が変わります。厚生年金保険法60条1項2号により、老齢厚生年金の受給権がある配偶者の遺族厚生年金は、①報酬比例の4分の3の額と、②その3分の2に自分の老齢厚生年金の2分の1を足した額の、いずれか多い額になります。そのうえで自分の老齢厚生年金は全額支給され、その差額が遺族厚生年金として上乗せされます。したがって受け取る合計額は、自分の老齢厚生年金が増えても遺族厚生年金の分だけ単純に足し算されるわけではありません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 遺族年金に税金はかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. かかりません。国民年金法25条と厚生年金保険法41条2項が、給付として支給を受けた金銭には租税その他の公課を課することができないと定めており（老齢給付は除かれます）、遺族年金は所得税も住民税も非課税です。相続税もかかりません。したがって確定申告に含める必要はなく、扶養の判定に使う合計所得金額にも入りません。ただし国民健康保険料や高額療養費の区分では、自治体によって遺族年金を判定材料に含める制度があるため、窓口で確認してください。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 遺族年金 計算機</nav>
+
+<section class="hero">
+  <h1>遺族年金 計算機</h1>
+  <p>亡くなった方に生計を維持されていた配偶者が受け取る<b>遺族基礎年金・遺族厚生年金・中高齢寡婦加算</b>の年額を、条文どおりに計算します。<b id="hero-kasan">子の加算は2人目までと3人目以降で額が違い</b>、<b id="hero-minashi">300月みなしは短期要件のときだけ</b>効きます。<b id="hero-teishi">中高齢寡婦加算は、遺族基礎年金を受け取っているあいだは支給停止</b>です。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="gaisan-caution">出るのは制度の式による概算額です</b>
+    実際の決定額は、亡くなった方の記録（標準報酬の全期間）にもとづいて日本年金機構が計算します。<b id="gaisan-heikin">このツールは平均標準報酬額を入力してもらう形</b>なので、記録どおりの1円単位の額とは差が出ます。<b>受給できるかどうか（保険料納付要件・生計維持要件）の判定はしません。</b>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <label for="yoken">亡くなった方がどれに当たるか</label>
+      <select id="yoken">
+        <option value="tanki" selected>短期要件（在職中／初診日から5年以内／障害厚生年金1級・2級の受給権者の死亡）</option>
+        <option value="choki">長期要件（老齢厚生年金の受給権者／受給資格期間を満たした方の死亡）</option>
+      </select>
+    </div>
+    <div>
+      <label for="koCount">18歳年度末までの子の人数<span class="hint">　20歳未満で障害1級2級の子を含む</span></label>
+      <input type="number" id="koCount" min="0" max="10" inputmode="numeric" value="2">
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <label for="uketori" style="font-size:13px">受け取る方</label>
+      <select id="uketori">
+        <option value="tsuma" selected>妻</option>
+        <option value="otto">夫</option>
+      </select>
+    </div>
+    <div>
+      <label for="age" style="font-size:13px">受け取る方の年齢<span class="hint">　中高齢寡婦加算と65歳以降の判定に使います</span></label>
+      <input type="number" id="age" min="0" max="120" inputmode="numeric" value="45">
+    </div>
+  </div>
+
+  <div class="grid2" style="margin-top:14px">
+    <div>
+      <label for="postAvg" style="font-size:13px">平均標準報酬<b>額</b>（平成15年4月以後・円）<span class="hint">　賞与込みの月あたり平均</span></label>
+      <input type="number" id="postAvg" min="0" inputmode="numeric" value="300000">
+    </div>
+    <div>
+      <label for="postMonths" style="font-size:13px">その期間の月数</label>
+      <input type="number" id="postMonths" min="0" inputmode="numeric" value="120">
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <label for="preAvg" style="font-size:13px">平均標準報酬<b>月額</b>（平成15年3月以前・円）<span class="hint">　該当がなければ0</span></label>
+      <input type="number" id="preAvg" min="0" inputmode="numeric" value="0">
+    </div>
+    <div>
+      <label for="preMonths" style="font-size:13px">その期間の月数</label>
+      <input type="number" id="preMonths" min="0" inputmode="numeric" value="0">
+    </div>
+  </div>
+
+  <div style="margin-top:10px">
+    <label for="ownRourei" style="font-size:13px">受け取る方自身の老齢厚生年金の年額（円）<span class="hint">　65歳以上のときだけ使います。無ければ0</span></label>
+    <input type="number" id="ownRourei" min="0" inputmode="numeric" value="0">
+  </div>
+
+  <button class="primary" id="calc" style="margin-top:14px">遺族年金を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<nav class="toc">
+  <b>目次</b>
+  <ol>
+    <li><a href="#nidan">遺族年金は2階建て — どちらが出るかで額が変わる</a></li>
+    <li><a href="#kiso">遺族基礎年金は「18歳年度末までの子」がいないと出ない</a></li>
+    <li><a href="#kosei">遺族厚生年金と、短期要件のときだけ効く300月みなし</a></li>
+    <li><a href="#chukorei">中高齢寡婦加算は4つの門を全部通らないと付かない</a></li>
+    <li><a href="#age65">65歳以降は自分の老齢厚生年金との組み合わせで決まる</a></li>
+    <li><a href="#hanigai">このツールが計算しないもの</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+    <li><a href="#kanren">関連ツール</a></li>
+  </ol>
+</nav>
+
+<h2 id="nidan">遺族年金は2階建て — どちらが出るかで額が変わる</h2>
+
+<p>遺族年金と呼ばれているものは、国民年金から出る<b>遺族基礎年金</b>と、厚生年金から出る<b>遺族厚生年金</b>の2つです。亡くなった方が会社員・公務員だった場合は両方の対象になり、自営業などで国民年金だけだった場合は遺族基礎年金だけになります。</p>
+
+<p>この2つは<b>支給される条件がまったく違います</b>。遺族基礎年金は「子のある配偶者」または「子」にしか支給されません。一方の遺族厚生年金には子の要件がなく、配偶者であれば受け取れます。そのため、同じ配偶者でも<b>子がいるかどうかで受け取る種類と額が大きく変わります</b>。</p>
+
+<div class="callout">
+  <b id="nidan-junjo">子が卒業したときに、受け取るものが入れ替わる</b>
+  子がいるあいだは遺族基礎年金＋遺族厚生年金、子が18歳到達年度の末日を過ぎると遺族基礎年金が終わり、かわりに（妻が40歳以上65歳未満なら）中高齢寡婦加算が始まります。<b>両方を同時に受け取ることはありません</b>（厚生年金保険法65条）。年額が段階的に変わるので、子の年齢を変えて2回計算してみると、これから起きることが見えます。
+</div>
+
+<h2 id="kiso">遺族基礎年金は「18歳年度末までの子」がいないと出ない</h2>
+
+<p>遺族基礎年金の額は、国民年金法38条が定める<b>78万900円に改定率を掛けた額</b>（100円単位に丸め）に、39条1項の<b>子の加算</b>を足したものです。子の加算は1人につき7万4,900円に改定率を掛けた額が原則ですが、<b id="kasan-kakko">かっこ書きで「そのうち二人までについては」22万4,700円に改定率を掛けた額に読み替え</b>られます。</p>
+
+<p>つまり<b>低い額が本文の原則で、2人までだけが高い額に読み替えられている</b>という構造です。全員を高い額で足す実装は、子が3人以上の世帯に過大な金額を出します。</p>
+
+<table>
+  <thead><tr><th>項目</th><th>本則の額</th><th>令和8年度の額</th></tr></thead>
+  <tbody id="kiso-table">
+    <tr><td>基本額（国民年金法38条）</td><td>780,900円</td><td>847,300円</td></tr>
+    <tr><td>子の加算 1人目・2人目（39条1項かっこ書）</td><td>各 224,700円</td><td>各 243,800円</td></tr>
+    <tr><td>子の加算 3人目以降（39条1項本文）</td><td>各 74,900円</td><td>各 81,300円</td></tr>
+    <tr><td>中高齢寡婦加算（厚生年金保険法62条1項）</td><td>基本額の4分の3</td><td>635,500円</td></tr>
+  </tbody>
+</table>
+
+<p><b id="ko-teigi">ここでいう「子」は、18歳に達する日以後の最初の3月31日までの間にある子</b>（または20歳未満で障害等級1級・2級に該当する子）です。高校を卒業する年の3月31日で終わるため、大学生の子は数に入りません。この要件に当たる子が1人もいない配偶者には、遺族基礎年金は<b>1円も支給されません</b>。</p>
+
+<figure>
+<svg viewBox="0 0 800 340" role="img" aria-labelledby="fig1-title" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#fff">
+  <title id="fig1-title">子が2人いる妻（40歳・短期要件）の年金額が、子の卒業と65歳で3段階に変わる様子。子がいるあいだは遺族基礎年金と子の加算、子の卒業後は中高齢寡婦加算に入れ替わり、65歳で加算が終わる。</title>
+  <line x1="70" y1="280" x2="770" y2="280" stroke="#333" stroke-width="1.5"/>
+  <line x1="70" y1="280" x2="70" y2="30" stroke="#333" stroke-width="1.5"/>
+  <text x="770" y="316" text-anchor="end" font-size="13" fill="#333">妻の年齢</text>
+  <text x="76" y="26" font-size="13" fill="#333">年額</text>
+  <!-- 目盛（時期の区切り） -->
+  <line x1="300" y1="280" x2="300" y2="286" stroke="#333"/><text x="300" y="300" text-anchor="middle" font-size="12" fill="#555">子が卒業</text>
+  <line x1="600" y1="280" x2="600" y2="286" stroke="#333"/><text x="600" y="300" text-anchor="middle" font-size="12" fill="#555">65歳</text>
+  <text x="185" y="300" text-anchor="middle" font-size="12" fill="#555">40歳〜</text>
+  <!-- 第1期: 遺族厚生 + 遺族基礎(基本額+加算2人) -->
+  <rect x="90" y="230" width="200" height="50" fill="#2e7d32" opacity="0.85"/>
+  <rect x="90" y="150" width="200" height="80" fill="#66bb6a" opacity="0.85"/>
+  <rect x="90" y="100" width="200" height="50" fill="#a5d6a7" opacity="0.9"/>
+  <text x="190" y="262" text-anchor="middle" font-size="12" fill="#fff">遺族厚生年金</text>
+  <text x="190" y="196" text-anchor="middle" font-size="12" fill="#fff">遺族基礎年金 基本額</text>
+  <text x="190" y="130" text-anchor="middle" font-size="12" fill="#1b5e20">子の加算 2人分</text>
+  <!-- 第2期: 遺族厚生 + 中高齢寡婦加算 -->
+  <rect x="310" y="230" width="280" height="50" fill="#2e7d32" opacity="0.85"/>
+  <rect x="310" y="170" width="280" height="60" fill="#c62828" opacity="0.8"/>
+  <text x="450" y="262" text-anchor="middle" font-size="12" fill="#fff">遺族厚生年金</text>
+  <text x="450" y="206" text-anchor="middle" font-size="12" fill="#fff">中高齢寡婦加算</text>
+  <!-- 第3期: 遺族厚生のみ -->
+  <rect x="610" y="230" width="150" height="50" fill="#2e7d32" opacity="0.85"/>
+  <text x="685" y="262" text-anchor="middle" font-size="12" fill="#fff">遺族厚生年金</text>
+  <text x="685" y="216" text-anchor="middle" font-size="12" fill="#555">＋自分の老齢年金</text>
+  <!-- 入れ替わりの注記。★矢印の両端は、実際の帯の上辺・下辺に合わせる
+       （左は第1期の遺族基礎の帯の上端 y=150 の少し上、右は第2期の中高齢寡婦加算の帯 y=170）。
+       目分量で置くと「何と何が入れ替わるのか」が図から読めなくなる。 -->
+  <path d="M255 140 C 275 110, 335 110, 355 165" fill="none" stroke="#c62828" stroke-width="1.5" marker-end="url(#arw)"/>
+  <text x="305" y="100" text-anchor="middle" font-size="12" fill="#c62828">同時には出ない（厚年法65条）</text>
+  <line x1="600" y1="170" x2="600" y2="280" stroke="#555" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="612" y="150" font-size="12" fill="#555">加算はここで終わる</text>
+  <defs>
+    <marker id="arw" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#c62828"/>
+    </marker>
+  </defs>
+</svg>
+<figcaption>子が2人いる妻が40歳で受給を始めた場合の年額の移り変わり。遺族基礎年金と中高齢寡婦加算は入れ替わりで、重なりません。帯の高さは額の大きさのイメージで、正確な比率ではありません。</figcaption>
+</figure>
+
+<h2 id="kosei">遺族厚生年金と、短期要件のときだけ効く300月みなし</h2>
+
+<p>遺族厚生年金の額は、厚生年金保険法60条1項1号により<b>亡くなった方の報酬比例部分の4分の3</b>です。報酬比例部分は、平成15年3月以前が「平均標準報酬<b>月額</b>×7.125/1000×月数」、平成15年4月以後が「平均標準報酬<b>額</b>×5.481/1000×月数」で計算します（平成15年4月から賞与も年金額に反映されるようになったため、平均のとり方と乗率が変わりました）。</p>
+
+<p>ここでいちばん間違えやすいのが<b id="minashi-shugo">300月みなしの適用範囲</b>です。60条1項1号のただし書は、<b>「第五十八条第一項第一号から第三号までのいずれかに該当することにより支給される遺族厚生年金については」</b>と主語を絞ったうえで、被保険者期間が300月に満たないときは300月として計算すると定めています。</p>
+
+<div class="callout">
+  <b id="yoken-hikaku">同じ加入10年でも、要件によって額が2.5倍違う</b>
+  平均標準報酬額30万円・加入120月の方が亡くなった場合、短期要件なら300月として計算するので年額<b id="yoken-tanki-gaku">369,968円</b>、長期要件なら実際の120月で計算するので年額<b id="yoken-choki-gaku">147,987円</b>です。長期要件にも300月みなしを効かせる実装は、加入期間の短い方に<b>2.5倍の過大な金額</b>を出します。
+</div>
+
+<p>亡くなった方がどちらに当たるかは、厚生年金保険法58条1項が4つの号で定めています。<b>いずれか1つに当たれば遺族厚生年金の対象</b>で、1号から3号が短期要件、4号が長期要件です。</p>
+
+<ul id="yoken-list">
+  <li><b>1号 在職中の死亡</b> — 厚生年金の被保険者であるあいだに亡くなったとき（短期要件）</li>
+  <li><b>2号 資格喪失後の死亡</b> — 被保険者であった間に初診日がある病気・けがで、初診日から5年以内に亡くなったとき（短期要件）</li>
+  <li><b>3号 障害厚生年金の受給権者の死亡</b> — 障害等級1級・2級の障害厚生年金を受け取れる方が亡くなったとき（短期要件）</li>
+  <li><b>4号 老齢厚生年金の受給権者等の死亡</b> — 老齢厚生年金の受給権者、または受給資格期間（保険料納付済期間等が10年以上）を満たしている方が亡くなったとき（長期要件）</li>
+</ul>
+
+<h2 id="chukorei">中高齢寡婦加算は4つの門を全部通らないと付かない</h2>
+
+<p>中高齢寡婦加算は、厚生年金保険法62条1項により<b>遺族基礎年金の額の4分の3</b>が遺族厚生年金に上乗せされるものです。令和8年度は年額635,500円と大きいので、付くか付かないかで生活設計が変わります。条件は次の4つで、<b>どれか1つでも欠けると付きません</b>。</p>
+
+<ul id="chukorei-list">
+  <li><b>受け取るのが妻であること</b> — 62条1項は「妻」に加算すると定めています。夫には加算されません</li>
+  <li><b>40歳以上65歳未満であること</b> — 権利取得時に40歳以上だったか、40歳に達した当時に18歳年度末までの子と生計を同じくしていた妻が対象で、65歳になると終わります</li>
+  <li><b id="chukorei-teishi">遺族基礎年金を受けていないこと</b> — 受けているあいだは支給停止です（厚生年金保険法65条）。子が卒業して遺族基礎年金が終わってから始まります</li>
+  <li><b id="chukorei-240">長期要件のときは被保険者期間が240月以上あること</b> — 62条1項かっこ書が、58条1項4号で支給されるもののうち被保険者期間が240月未満のものを除いています。短期要件にはこの制限がありません</li>
+</ul>
+
+<p>4つ目は特に見落とされます。自営業の期間が長く、厚生年金の加入が20年に届かないまま老齢厚生年金の受給権者として亡くなった場合、遺族厚生年金は出ても<b>中高齢寡婦加算だけが付かない</b>ことになります。このツールは、付かない場合に<b>どの条件で落ちたのかを名指しで表示</b>します。</p>
+
+<h2 id="age65">65歳以降は自分の老齢厚生年金との組み合わせで決まる</h2>
+
+<p>受け取る方が65歳になり、自分自身の老齢厚生年金の受給権を持つと、遺族厚生年金の額の決め方が変わります。厚生年金保険法60条1項2号は、次の2つのうち<b>いずれか多い額</b>とすると定めています。</p>
+
+<ul>
+  <li><b>①</b> 1号で計算した額（報酬比例の4分の3）</li>
+  <li><b>②</b> ①の額の3分の2 ＋ 自分の老齢厚生年金の額の2分の1</li>
+</ul>
+
+<p>そのうえで、<b id="age65-uwanose">自分の老齢厚生年金は全額支給され、上の額との差額だけが遺族厚生年金として上乗せ</b>されます。したがって自分の年金が多い方ほど、遺族厚生年金として実際に増える分は小さくなります。なお同項ただし書により、<b>遺族基礎年金を受けているあいだは①の額</b>になります。</p>
+
+<h2 id="hanigai">このツールが計算しないもの</h2>
+
+<p>次のものは、金額を出さずに範囲外として申告します。<b>分からないことを、それらしい数字で埋めない</b>ためです。画面の結果欄にも同じ一覧を出しています。</p>
+
+<ul id="hanigai-list">
+  <li><b>受給できるかどうかの判定</b> — 保険料納付要件（死亡日の前々月までの1年間に未納がない等）と生計維持要件（原則として前年収入850万円未満）は、入力だけでは確定できません</li>
+  <li><b>寡婦年金・死亡一時金</b> — 国民年金の第1号被保険者が亡くなり遺族基礎年金が出ないときの給付（国民年金法49条・52条の2）で、別の納付要件の判定が要ります</li>
+  <li><b>経過的寡婦加算</b> — 中高齢寡婦加算が65歳で終わったあと、昭和31年4月1日以前生まれの妻に加算されるもので、生年月日ごとに額が決まっています</li>
+  <li><b>子自身が受け取る遺族基礎年金</b> — 配偶者が受け取れない場合は子が受給権者になり、加算の構造が変わります（国民年金法39条の2）</li>
+  <li><b>30歳未満で子のない妻の5年有期</b> — 年額は同じですが、受給できる期間が5年で終わります（厚生年金保険法63条1項5号）</li>
+  <li><b>令和10年4月施行の遺族厚生年金の見直し</b> — 令和7年の年金制度改正法により、20代から50代の配偶者が新たに受け取る遺族厚生年金は原則5年間の有期給付になり、夫にも同じ要件で支給されるようになります（中高齢寡婦加算も段階的に縮小）。施行は令和10年4月1日で、令和8年度の額には影響しませんが、これから受給が始まる方には関わります</li>
+  <li><b>障害年金・老齢基礎年金との併給調整</b> — 組み合わせによって一方を選ぶ必要があります（国民年金法20条）</li>
+</ul>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 子どもがいない妻でも遺族年金は受け取れますか？</h3>
+<p>A. 遺族厚生年金は受け取れますが、遺族基礎年金は受け取れません。遺族基礎年金は「子のある配偶者」または「子」に支給されるもので（国民年金法37条の2第1項）、ここでいう子は18歳に達する日以後の最初の3月31日までの間にある子（または20歳未満で障害等級1級・2級の子）です。この要件に当たる子が1人もいない配偶者には支給されません。そのかわり、亡くなった方が厚生年金の被保険者だった場合は遺族厚生年金が支給され、妻が40歳以上65歳未満であれば中高齢寡婦加算が上乗せされます。</p>
+
+<h3>Q. 厚生年金の加入が短くても遺族厚生年金は300月で計算されますか？</h3>
+<p>A. 短期要件のときだけです。厚生年金保険法60条1項1号のただし書は、58条1項1号から3号まで（在職中の死亡、初診日から5年以内の死亡、障害厚生年金1級・2級の受給権者の死亡）に該当して支給される遺族厚生年金について、被保険者期間が300月に満たないときは300月として計算すると定めています。老齢厚生年金の受給権者などが亡くなった長期要件（58条1項4号）にはこのみなしがなく、実際の加入月数で計算します。同じ加入期間でも、どちらの要件かで額が大きく変わります。</p>
+
+<h3>Q. 子の加算は3人目からなぜ安くなるのですか？</h3>
+<p>A. 国民年金法39条1項が、子1人につき7万4,900円に改定率を掛けた額を加算すると定めたうえで、かっこ書で「そのうち二人までについては、それぞれ二十二万四千七百円に改定率を乗じて得た額」と読み替えているためです。つまり本文が定める低い額が原則で、2人までだけが高い額に読み替えられる構造です。令和8年度は1人目・2人目が各24万3,800円、3人目以降が各8万1,300円になります。全員を高い額で足すと3人目以降で過大な金額が出ます。</p>
+
+<h3>Q. 中高齢寡婦加算は子どもがいるあいだも受け取れますか？</h3>
+<p>A. 受け取れません。厚生年金保険法65条により、遺族基礎年金を受けられるあいだは中高齢寡婦加算が支給停止になります。子が18歳到達年度の末日を過ぎて遺族基礎年金が終わったあと、妻が65歳になるまでのあいだ加算されます。つまり両方を同時に受け取ることはなく、子がいるあいだは遺族基礎年金、子が卒業したあとは中高齢寡婦加算、という順に切り替わります。</p>
+
+<h3>Q. 中高齢寡婦加算が付かないと言われました。なぜですか？</h3>
+<p>A. 中高齢寡婦加算には4つの条件があり、どれか1つでも欠けると付きません。①受け取るのが妻であること、②40歳以上65歳未満であること、③遺族基礎年金を受けていないこと（厚生年金保険法65条）、④長期要件で支給される遺族厚生年金の場合は、厚生年金の被保険者期間が240月（20年）以上あること（同法62条1項かっこ書）です。とくに④は見落としやすく、自営業の期間が長かった方が老齢厚生年金の受給権者として亡くなった場合、加入が240月に届かず加算されないことがあります。</p>
+
+<h3>Q. 65歳になって自分の老齢厚生年金が出ると、遺族厚生年金は止まりますか？</h3>
+<p>A. 止まりませんが、額の決め方が変わります。厚生年金保険法60条1項2号により、老齢厚生年金の受給権がある配偶者の遺族厚生年金は、①報酬比例の4分の3の額と、②その3分の2に自分の老齢厚生年金の2分の1を足した額の、いずれか多い額になります。そのうえで自分の老齢厚生年金は全額支給され、その差額が遺族厚生年金として上乗せされます。したがって受け取る合計額は、自分の老齢厚生年金が増えても遺族厚生年金の分だけ単純に足し算されるわけではありません。</p>
+
+<h3>Q. 遺族年金に税金はかかりますか？</h3>
+<p>A. かかりません。国民年金法25条と厚生年金保険法41条2項が、給付として支給を受けた金銭には租税その他の公課を課することができないと定めており（老齢給付は除かれます）、遺族年金は所得税も住民税も非課税です。相続税もかかりません。したがって確定申告に含める必要はなく、扶養の判定に使う合計所得金額にも入りません。ただし国民健康保険料や高額療養費の区分では、自治体によって遺族年金を判定材料に含める制度があるため、窓口で確認してください。</p>
+
+<h2 id="shutten">出典</h2>
+<ul id="shutten-list">
+  <li><a href="https://laws.e-gov.go.jp/law/334AC0000000141" rel="nofollow">国民年金法（昭和三十四年法律第百四十一号）</a> — 37条の2第1項（受給権者の範囲）／38条（遺族基礎年金の額・100円単位の丸め）／39条1項（子の加算と「二人まで」のかっこ書）／25条（公課の禁止）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/329AC0000000115" rel="nofollow">厚生年金保険法（昭和二十九年法律第百十五号）</a> — 58条1項（短期要件・長期要件の4号）／60条1項1号（4分の3と300月みなしのただし書）／60条1項2号（65歳以降の併給）／62条1項（中高齢寡婦加算と240月のかっこ書）／65条（遺族基礎年金を受けるあいだの支給停止）／41条2項（公課の禁止）</li>
+  <li><a href="https://www.nenkin.go.jp/service/jukyu/izoku-nenkin/jukyu-yoken/20150401-01.html" rel="nofollow">日本年金機構「遺族年金」</a> — 令和7年度の公表額（遺族基礎年金 831,700円／子の加算 239,300円・79,800円／中高齢寡婦加算 623,800円）。このツールは同じ式・同じ丸めに令和7年度の改定率を通してこの4つを1円まで再現できることを検算しています</li>
+</ul>
+<p class="hint" id="src-note-wrap">条文は e-Gov 法令検索の法令データで逐語確認しています<span id="src-note"></span>。このページは一般的な情報提供であり、個別の受給についての助言ではありません。実際の受給額・受給可否は年金事務所にご確認ください。</p>
+
+<h2 id="kanren">関連ツール</h2>
+<ul>
+  <li><a href="../nenkin/">年金受給額 計算機</a> — 自分自身の老齢基礎年金・老齢厚生年金の見込み額を計算します</li>
+  <li><a href="../sozokuzei/">相続税 計算機</a> — 遺族年金は相続税の対象外ですが、他の財産にはかかります</li>
+  <li><a href="../kokuho/">国民健康保険料 計算機</a> — 遺族年金は所得に入りませんが、自治体の判定材料になることがあります</li>
+  <li><a href="../shobyo/">傷病手当金 計算機</a> — 療養中に受け取れる健康保険の給付です</li>
+</ul>
+
+</article>
+</main>
+<footer>
+  <div>© 経理ミニツールズ</div>
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcIzoku } from "../assets/izoku_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const num = (id) => Number($(id).value) || 0;
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+let D = null;
+// 参照データは非同期で届く。届く前に計算ボタンを押されても待つ（実ユーザーと同じ経路）。
+// この catch が拾ってよいのは「データが手に入らなかった」ことだけ（飾りの描画は別に処理する）。
+const load = (path) => fetch(path).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+const dataReady = load("../assets/izoku_r08.json").then(d => { D = d; return true; }).catch(() => false);
+
+// 出典の注記は飾り。ここで転んでも計算は止めない。
+dataReady.then(() => {
+  $("src-note").textContent = D?._meta?.checked ? `（${D._meta.checked} 時点）` : "";
+}).catch(() => {});
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+  const okData = await dataReady; // 参照データの到着を必ず待つ
+  if (!okData || !D) {
+    box.innerHTML = `<div class="note" id="load-failed"><b>データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。令和何年度の額なのか分からない状態で
+      年金額を答えることはできません。</div>`;
+    return;
+  }
+
+  const input = {
+    koCount: num("koCount"),
+    isWife: $("uketori").value === "tsuma",
+    age: num("age"),
+    yokenKey: $("yoken").value,
+    preAvgYen: num("preAvg"),
+    preMonths: num("preMonths"),
+    postAvgYen: num("postAvg"),
+    postMonths: num("postMonths"),
+    ownRoureiYen: num("ownRourei"),
+  };
+
+  // ★入力が空のときに 0円 と答えない（fail closed）。厚生年金の加入が無く子もいなければ、
+  //   このツールが出せる給付は1つも無い。「0円」は答えではなく、入力を促すべき状態。
+  if (input.postMonths + input.preMonths <= 0 && input.koCount <= 0) {
+    box.innerHTML = `<div class="note" id="fuka-note"><b>金額を出せません。</b></div>
+      <p class="hint" id="fuka-mi_nyuryoku">厚生年金の加入月数か、18歳年度末までの子の人数を入力してください。
+      どちらも0だと、このツールが計算できる給付がありません（寡婦年金・死亡一時金は
+      <a href="#hanigai">範囲外</a>です）。</p>`;
+    return;
+  }
+
+  let r;
+  try {
+    r = calcIzoku(input, D);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>${esc(e.message)}</div>`;
+    return;
+  }
+
+  // ★見出しも表も、この1つの結果 r からだけ描く（別々に計算すると食い違う）。
+  let html = "";
+  html += `<div class="big" id="izoku-total">遺族年金の年額　${yenF(r.totalYen)}</div>`;
+  html += `<p class="hint">月あたり <b id="izoku-monthly">${yenF(r.monthlyYen)}</b>
+    （実際の支払いは2か月ごと）。<span id="nendo-hyoji">${esc(D._meta.year)}</span>の額
+    ・改定率 ${D.kaiteiritsu.value} で計算しています。</p>`;
+
+  html += `<table id="uchiwake-table"><thead><tr><th>内訳</th><th>年額</th></tr></thead><tbody>`;
+  html += `<tr><td>遺族基礎年金（国民年金法38条・39条1項）</td>
+    <td style="text-align:right" id="kiso-yen">${yenF(r.kiso.yen)}</td></tr>`;
+  for (const b of r.kiso.breakdown.filter((x) => x.label !== "基本額")) {
+    html += `<tr><td style="padding-left:1.5em">うち ${esc(b.label)} × ${b.count}人
+      （各 ${yenF(b.unitYen)}）</td>
+      <td style="text-align:right">${yenF(b.yen)}</td></tr>`;
+  }
+  html += `<tr><td>遺族厚生年金（厚生年金保険法60条1項）</td>
+    <td style="text-align:right" id="kosei-yen">${yenF(r.koseiYen)}</td></tr>`;
+  html += `<tr><td>中高齢寡婦加算（同法62条1項）</td>
+    <td style="text-align:right" id="chukorei-yen">${yenF(r.chukorei.yen)}</td></tr>`;
+  html += `<tr><td><b>合計</b></td><td style="text-align:right" id="gokei-yen"><b>${yenF(r.totalYen)}</b></td></tr>`;
+  html += `</tbody></table>`;
+
+  // ★遺族基礎年金が出ない理由は、0円という数字だけでは伝わらない（規則5: 別の要素で名指し）。
+  if (!r.kiso.eligible) {
+    html += `<p class="hint" id="kiso-nashi">18歳年度末までの子がいないため、遺族基礎年金は支給されません
+      （国民年金法37条の2第1項）。遺族厚生年金だけになります。</p>`;
+  }
+
+  // ★300月みなしが効いたかどうかは、額を見ても分からない。効いた／効かないを両方申告する。
+  if (r.kosei.minimumApplied) {
+    html += `<p class="hint" id="minashi-note">短期要件のため、被保険者期間
+      ${r.kosei.months}月を<b>300月とみなして</b>計算しました（厚生年金保険法60条1項1号ただし書）。</p>`;
+  } else if (r.kosei.months > 0 && r.kosei.months < 300) {
+    html += `<p class="hint" id="minashi-nashi">長期要件のため、300月みなしは適用せず、実際の
+      ${r.kosei.months}月で計算しました（60条1項1号ただし書は58条1項1号〜3号にだけ適用されます）。</p>`;
+  }
+
+  // ★中高齢寡婦加算が付かない理由は、どの門で落ちたかを id に載せて名指しする
+  //   （「妻でない」と「240月未満」を取り違えないため）。
+  if (!r.chukorei.eligible) {
+    html += `<p class="hint" id="chukorei-${r.chukorei.reasonKey}">中高齢寡婦加算は付きません:
+      ${esc(r.chukorei.reason)}</p>`;
+  }
+
+  // ★65歳以降の併給は、どちらの号で決まったかで意味がまるで違う。
+  if (r.is65plus && r.heikyu.applied) {
+    html += `<p class="hint" id="heikyu-${r.heikyu.chosenKey}">65歳以降のため、厚生年金保険法60条1項2号で
+      ①${yenF(r.heikyu.go1Yen)} と ②${yenF(r.heikyu.go2Yen)}（①の3分の2＋自分の老齢厚生年金の2分の1）を
+      比べ、<b>多いほう</b>を採りました。自分の老齢厚生年金は全額支給されるので、遺族厚生年金として
+      上乗せされるのは <b id="uwanose-yen">${yenF(r.heikyu.uwanoseYen)}</b> です。</p>`;
+  }
+
+  html += `<div class="note" id="gaisan-note"><b>これは制度の式による概算額です。</b>
+    実際の決定額は、亡くなった方の標準報酬の全記録にもとづいて日本年金機構が計算します。
+    受給できるかどうか（保険料納付要件・生計維持要件）はこのツールでは判定していません。</div>`;
+
+  // ★収録範囲はデータに持たせる（ページに手書きすると、データを増やしたときに嘘になる）。
+  html += `<p class="hint"><b>このツールが計算しないもの</b></p><ul id="hanigai-list-data">`;
+  for (const o of D.out_of_scope) {
+    html += `<li>${esc(o.label)} — ${esc(o.why)}</li>`;
+  }
+  html += `</ul>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>
