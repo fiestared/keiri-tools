@@ -904,6 +904,58 @@ const SCENES = [
   { name: "izoku_nodata", data404: "izoku_r08.json", expect: (s) =>
       s.failed && s.total === null && s.loadFailed !== null },
 
+  // ── 在職老齢年金 (/zaishoku/) ────────────────────────────────────────────
+  // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず条文から出した期待値）。
+  { name: "zaishoku", expect: (s) =>
+      s.kihon === 100000 && s.sohoshu === 600000 && s.goukei === 700000 &&
+      s.teishiGetsu === 25000 && s.shikyuGetsu === 75000 && s.shikyuNen === 900000 &&
+      // 老齢基礎年金は1円も止まらない（847,300 ÷ 12 = 70,608 に丸め）
+      s.kisoGetsu === 70608 && s.total === 1747300 &&
+      // 一部停止であって全額停止ではない
+      s.ichibu !== null && s.zengaku === null && s.nashiKanai === null && s.nashiTaishoku === null &&
+      // 基準額・年度はデータから描かれている（ページの手書きではない）
+      s.kijun === 650000 && /令和8年度/.test(s.nendo || "") &&
+      // ★改正比較が本計算と同じ入力から描かれている（現行行が見出しと一致すること）
+      s.curTotal === 1747300 && s.oldTotal === 907300 && s.oldTeishi === 1140000 &&
+      /840,000/.test(s.zoka || "") && s.henkaNashi === null &&
+      s.hanigai === 5 && /概算額/.test(s.gaisanNote || "") && !s.failed },
+  // ★★賞与の対。賞与を落とすと合計が 600,000 になり1円も止まらない。
+  { name: "zaishoku_shoyo_nashi", expect: (s) =>
+      s.sohoshu === 500000 && s.goukei === 600000 && s.teishiGetsu === 0 &&
+      s.shikyuNen === 1200000 && s.total === 2047300 &&
+      /超えていない/.test(s.nashiKanai || "") && s.ichibu === null && s.zengaku === null },
+  // ★境界: ちょうど65万は「超える」に当たらないので全額支給。改正前なら年84万止まっていた。
+  { name: "zaishoku_choudo", expect: (s) =>
+      s.goukei === 650000 && s.teishiGetsu === 0 && s.total === 2047300 &&
+      s.nashiKanai !== null && s.oldTeishi === 840000 && s.oldTotal === 1207300 &&
+      /840,000/.test(s.zoka || "") },
+  // ★★全額支給停止の頭打ち。負の年金額を出さず、加給年金も一緒に止まる。
+  { name: "zaishoku_zengaku", expect: (s) =>
+      s.shikyuGetsu === 0 && s.shikyuNen === 0 && s.teishiGetsu === 50000 &&
+      // 式が出す支給停止基準額（月70万）が本文に出ていて、頭打ちだと分かる
+      /700,000/.test(s.zengaku || "") && s.ichibu === null &&
+      // 加給年金も止まる／老齢基礎年金だけが残る
+      s.kakyuTeishi !== null && s.kakyuShikyu === null && s.total === 847300 },
+  // ★加給年金は判定に入れない（停止額は看板と同じ）が、受取総額には足される。
+  { name: "zaishoku_kakyu", expect: (s) =>
+      s.teishiGetsu === 25000 && s.shikyuNen === 900000 && s.total === 2155400 &&
+      s.kakyuShikyu !== null && s.kakyuTeishi === null },
+  // ★★働き方の対。退職済みなら同じ収入でも1円も止まらない。
+  { name: "zaishoku_taishoku", expect: (s) =>
+      s.teishiGetsu === 0 && s.shikyuNen === 1200000 && s.total === 2047300 &&
+      /在職していない/.test(s.nashiTaishoku || "") && s.nashiKanai === null &&
+      // 改正前後で差が出ない（そもそも止まっていない）
+      s.oldTotal === 2047300 && s.henkaNashi !== null && s.zoka === null },
+  // ★70歳以上で適用事業所勤務は対象（46条1項かっこ書）。看板と同じだけ止まる。
+  { name: "zaishoku_over70", expect: (s) =>
+      s.teishiGetsu === 25000 && s.shikyuNen === 900000 && s.nashiTaishoku === null },
+  // ★老齢厚生年金が0 → 0円と答えず入力を促す（fail closed）。
+  { name: "zaishoku_noinput", expect: (s) =>
+      s.shikyuNen === null && s.total === null && /入力してください/.test(s.miNyuryoku || "") },
+  // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
+  { name: "zaishoku_nodata", data404: "zaishoku_r08.json", expect: (s) =>
+      s.failed && s.total === null && s.loadFailed !== null },
+
   // ── 不動産の登録免許税 (/toroku-menkyozei/) ──────────────────────────
   // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず条文の税率から出した期待値）。
   { name: "toroku", expect: (s) =>

@@ -2689,6 +2689,112 @@ SCENES.izoku_noinput = izokuScene({ koCount: 0, postMonths: 0 });
 // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
 SCENES.izoku_nodata = izokuScene({});
 
+// ── 在職老齢年金 (/zaishoku/) ────────────────────────────────────────────────
+// ★単体（tests/test_zaishoku.mjs）は core しか見ないので、次の配線はここでしか守れない:
+//   「標準賞与額の欄がコアに渡る＝渡し忘れると停止額を過小に出す（賞与÷12を落とす）」
+//   「働き方の選択が渡る＝渡し忘れると退職済みの人にも停止額を出す」
+//   「加給年金の欄が渡る＝渡し忘れると全額停止のときに止まらないことになる」
+//   「老齢基礎年金の欄が渡る＝受取総額が基礎年金の分だけずれる」
+//   「改正前後の比較が、本計算と同じ入力から描かれている（別々に計算すると食い違う）」
+//   「出せない条件では金額を1円も出さない」
+const zaishokuScene = (o) => async () => {
+  const doc = await open("/docs/zaishoku/");
+  set(doc, "hatarakikata", o.hatarakikata ?? "hihokensha");
+  set(doc, "koseiNenkin", o.koseiNenkin ?? 1200000);
+  set(doc, "kisoNenkin", o.kisoNenkin ?? 847300);
+  set(doc, "hyojunHoshu", o.hyojunHoshu ?? 500000);
+  set(doc, "shoyoTotal", o.shoyoTotal ?? 1200000);
+  set(doc, "kakyu", o.kakyu ?? 0);
+  click(doc, "calc");
+
+  await waitFor(
+    () => /¥|入力してください|読み込めませんでした|出せません/.test(text(doc, "result")),
+    "在職老齢年金の計算結果",
+  );
+  const body = text(doc, "result");
+  const byId = (id) => { const e = doc.getElementById(id); return e ? e.textContent.trim() : null; };
+  const yen = (id) => { const t = byId(id); return t && /\d/.test(t) ? Number(t.replace(/[^\d]/g, "")) : null; };
+  // 改正比較表の行から受取総額（3列目）を読む。★本計算と同じ入力から描かれていることを、
+  //   現行年度の行と見出しの額が一致するかで確かめる（別々に計算する実装に戻ったら落ちる）。
+  const rowYen = (rowId, col) => {
+    const tr = doc.getElementById(rowId);
+    if (!tr) return null;
+    const td = tr.querySelectorAll("td")[col];
+    return td && /\d/.test(td.textContent) ? Number(td.textContent.replace(/[^\d]/g, "")) : null;
+  };
+  return {
+    shikyuGetsu: yen("zaishoku-shikyu"),
+    shikyuNen: yen("zaishoku-shikyu-nen"),
+    total: yen("zaishoku-total"),
+    kihon: yen("kihon-getsugaku"),
+    sohoshu: yen("sohoshu-getsugaku"),
+    goukei: yen("goukei-getsugaku"),
+    teishiGetsu: yen("teishi-getsugaku"),
+    kisoGetsu: yen("kiso-getsugaku"),
+    kijun: yen("kijun-hyoji"),
+    nendo: byId("nendo-hyoji"),
+    // 止まらない理由は「0円」では伝わらない。退職と基準額以下を別の要素で分ける。
+    nashiTaishoku: byId("teishi-nashi-taishoku"),
+    nashiKanai: byId("teishi-nashi-kanai"),
+    // 全額停止と一部停止も、額だけでは区別がつかない。
+    zengaku: byId("zengaku-teishi"),
+    ichibu: byId("ichibu-teishi"),
+    kakyuTeishi: byId("kakyu-teishi"),
+    kakyuShikyu: byId("kakyu-shikyu"),
+    // 改正前後の比較（現行行・改正前行の受取総額）
+    curTotal: rowYen("kaisei-row-current", 2),
+    oldTotal: rowYen("kaisei-row-old", 2),
+    oldTeishi: rowYen("kaisei-row-old", 1),
+    zoka: byId("kaisei-zoka"),
+    henkaNashi: byId("kaisei-henka-nashi"),
+    hanigai: doc.querySelectorAll("#hanigai-list-data li").length,
+    gaisanNote: byId("gaisan-note"),
+    miNyuryoku: byId("fuka-mi_nyuryoku"),
+    loadFailed: byId("load-failed"),
+    failed: /読み込めませんでした/.test(body),
+    body,
+  };
+};
+// ★看板例（期待値はコアを通さず条文から手で出した鎖。厚年法46条1項）:
+//   基本月額 = 1,200,000 ÷ 12 = 100,000円（加給年金額を除く）
+//   総報酬月額相当額 = 500,000 ＋ 1,200,000 ÷ 12 = 600,000円
+//   合計 700,000 > 650,000（令和8年度の支給停止調整額）→ 超過 50,000
+//   支給停止 = 50,000 ÷ 2 = 25,000円/月 → 年 300,000円
+//   受け取る老齢厚生年金 = 1,200,000 − 300,000 = 900,000円（月 75,000円）
+//   老齢基礎年金 847,300円は止まらない → 受取総額 1,747,300円
+//   改正前（51万円）なら 超過 190,000 → 停止 95,000/月＝年 1,140,000 → 厚生 60,000
+//     → 総額 907,300円。差は 840,000円（月 70,000＝14万円の半分＝改正の最大効果）
+SCENES.zaishoku = zaishokuScene({});
+// ★★賞与の対（同じ標準報酬月額・同じ年金）。賞与を0にすると総報酬が 500,000 になり、
+//   合計 600,000 ≦ 650,000 で1円も止まらない。
+//   ★shoyoTotal を渡し忘れる実装は、看板シーンでもこちらの結果（停止0）を出して落ちる。
+SCENES.zaishoku_shoyo_nashi = zaishokuScene({ shoyoTotal: 0 });
+// ★境界: 合計がちょうど 650,000。条文は「超えるとき」なので1円も止まらない。
+//   基本月額 100,000 ＋ 総報酬 550,000 = 650,000。
+//   一方、改正前の 510,000 では 140,000 超過 → 停止 70,000/月＝年 840,000。
+SCENES.zaishoku_choudo = zaishokuScene({ hyojunHoshu: 550000, shoyoTotal: 0 });
+// ★★全額支給停止の頭打ち（46条1項ただし書）。式は年 8,400,000 を出すが、
+//   老齢厚生年金は 600,000 しかないので、止まるのは 600,000 まで。
+//   基本月額 50,000 ＋ 総報酬 2,000,000 = 2,050,000 → 超過 1,400,000 → 式は 700,000/月。
+//   ★頭打ちが無い実装は「▲7,800,000円受け取る」という負の額を出して落ちる。
+//   ★加給年金 408,100 も一緒に止まる → 受取総額は老齢基礎年金 847,300 だけ。
+SCENES.zaishoku_zengaku = zaishokuScene({ koseiNenkin: 600000, hyojunHoshu: 2000000, shoyoTotal: 0, kakyu: 408100 });
+// ★加給年金の対（看板と同じ入力＋加給年金 408,100）。判定には入れないので停止額は
+//   看板と同じ 300,000 のまま、加給年金は満額支給 → 総額 1,747,300 ＋ 408,100 = 2,155,400。
+//   ★加給年金を基本月額に足す実装は、停止額が 470,050 に増えて落ちる。
+SCENES.zaishoku_kakyu = zaishokuScene({ kakyu: 408100 });
+// ★★働き方の対（看板と同じ収入で退職済み）。46条1項は在職している月に適用されるので、
+//   1円も止まらない → 厚生 1,200,000 ＋ 基礎 847,300 = 2,047,300。
+//   ★hatarakikata を渡し忘れる実装は、退職者に 300,000 の停止を出して落ちる。
+SCENES.zaishoku_taishoku = zaishokuScene({ hatarakikata: "taishoku" });
+// ★70歳以上で適用事業所に勤めている場合は、被保険者でなくても支給停止の対象（46条1項かっこ書）。
+//   看板と同じ 300,000 が止まる。
+SCENES.zaishoku_over70 = zaishokuScene({ hatarakikata: "over70" });
+// ★老齢厚生年金が0 → 0円と答えず入力を促す（fail closed）。
+SCENES.zaishoku_noinput = zaishokuScene({ koseiNenkin: 0 });
+// ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
+SCENES.zaishoku_nodata = zaishokuScene({});
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>在職老齢年金 計算機｜令和8年4月から基準額65万円（51万円から引き上げ）</title>
+<meta name="description" content="働きながら老齢厚生年金を受け取ると、いくら支給停止されるかを計算します。令和7年年金制度改正法により、令和8年4月から基準額が月51万円から65万円に引き上げられました。改正前といくら変わるかを並べて表示します。老齢基礎年金は止まりません。無料・登録不要・入力は送信しません。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/zaishoku/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "在職老齢年金 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "厚生年金保険法46条による在職老齢年金の支給停止額を計算します。令和8年4月から支給停止調整額が月51万円から65万円へ引き上げられたため、改正前後の受取額を並べて比較できます。標準賞与額の按分、加給年金額の扱い、全額支給停止の頭打ち、老齢基礎年金が止まらないことに対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "在職老齢年金 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 在職老齢年金の基準額は今いくらですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 令和8年度は月65万円です。令和7年年金制度改正法（令和7年法律第74号）により、令和8年4月分から、それまでの月51万円が65万円に引き上げられました。なお厚生年金保険法46条3項の条文本則は「六十二万円」ですが、これは毎年度の改定前の額で、実際に適用されるのは改定後の65万円です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 改正で私の年金はいくら増えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 基準額が14万円上がったので、停止されていた方は最大で月7万円（14万円の2分の1）ぶん支給停止が減ります。基本月額10万円の方の場合、全額支給となる総報酬月額相当額の上限が41万円から55万円へ上がります。もともと停止されていなかった方は変わりません。このページの計算機が、改正前後の差額を表示します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 老齢基礎年金も支給停止されますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. されません。止まるのは老齢厚生年金の報酬比例部分だけで、老齢基礎年金と経過的加算額は全額支給されます。老齢厚生年金が全額支給停止になった方でも、老齢基礎年金は満額受け取れます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 加給年金額は基本月額に含めますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 含めません。厚生年金保険法46条1項が明文で除いています。ただし全額支給停止になる場合は、加給年金額も含めて全額が止まります。判定には入れないが、全部止まるときは一緒に止まるという関係です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. ボーナスは在職老齢年金の計算に入りますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 入ります。総報酬月額相当額は「その月の標準報酬月額」＋「その月以前1年間の標準賞与額の合計 ÷ 12」です。標準報酬月額45万円・年間賞与120万円なら55万円になります。賞与を忘れると停止額を少なく見積もることになります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 70歳を過ぎて働いている場合はどうなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 70歳以上は厚生年金保険の被保険者ではなくなり保険料の負担もなくなりますが、厚生年金の適用事業所に勤めている場合は支給停止の対象になります（46条1項の「七十歳以上の使用される者」）。計算式は同じです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 退職したら支給停止はいつなくなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 退職して1か月を経過すると、退職した翌月分の年金から全額支給に戻ります（退職改定）。ただし1か月以内に再就職して厚生年金に加入した場合は年金額の再計算は行われません。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 在職老齢年金 計算機</nav>
+
+<section class="hero">
+  <h1>在職老齢年金 計算機</h1>
+  <p>働きながら老齢厚生年金を受け取ると、給与と年金の合計額に応じて年金の一部が支給停止されます。<b id="hero-kaisei">令和8年4月から、その基準額が月51万円から65万円に引き上げられました</b>（令和7年年金制度改正法）。<b id="hero-kiso">止まるのは老齢厚生年金だけで、老齢基礎年金は1円も減りません。</b>改正前といくら変わるかも並べて出します。</p>
+</section>
+
+<div class="card">
+  <div class="callout" style="margin-bottom:12px">
+    <b id="gaisan-caution">出るのは制度の式による概算額です</b>
+    実際の支給停止額は、日本年金機構が記録している標準報酬月額・標準賞与額にもとづいて決定されます。<b id="gaisan-nyuryoku">このツールは年金額と標準報酬をご自分で入力してもらう形</b>なので、年金振込通知書の額とは差が出ることがあります。<b>厚生年金基金に加入していた期間がある方は、基本月額の出し方が変わるため当てはまりません</b>（<a href="#hanigai">範囲外</a>）。
+  </div>
+
+  <div style="margin-bottom:10px">
+    <label for="hatarakikata">いまの働き方<span class="hint">　在職していなければ支給停止は起きません</span></label>
+    <select id="hatarakikata">
+      <option value="hihokensha" selected>厚生年金の被保険者として在職している（70歳未満）</option>
+      <option value="over70">70歳以上で、厚生年金の適用事業所に勤めている</option>
+      <option value="taishoku">在職していない（退職済み・自営業など）</option>
+    </select>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <label for="koseiNenkin">老齢厚生年金（報酬比例部分）の年額<span class="hint">　円・加給年金額を除く</span></label>
+      <input type="number" id="koseiNenkin" min="0" inputmode="numeric" value="1200000">
+    </div>
+    <div>
+      <label for="kisoNenkin">老齢基礎年金＋経過的加算の年額<span class="hint">　円・止まりませんが受取総額に使います</span></label>
+      <input type="number" id="kisoNenkin" min="0" inputmode="numeric" value="847300">
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div>
+      <label for="hyojunHoshu">標準報酬月額<span class="hint">　円・等級表の額（手取りではありません）</span></label>
+      <input type="number" id="hyojunHoshu" min="0" inputmode="numeric" value="500000">
+    </div>
+    <div>
+      <label for="shoyoTotal">直近1年間の標準賞与額の合計<span class="hint">　円・無ければ0</span></label>
+      <input type="number" id="shoyoTotal" min="0" inputmode="numeric" value="1200000">
+    </div>
+  </div>
+
+  <div style="margin-top:10px">
+    <label for="kakyu" style="font-size:13px">加給年金額の年額（円）<span class="hint">　判定には使いませんが、全額支給停止のときは一緒に止まります。無ければ0</span></label>
+    <input type="number" id="kakyu" min="0" inputmode="numeric" value="0">
+  </div>
+
+  <button class="primary" id="calc" style="margin-top:14px">支給停止額を計算する</button>
+  <div class="result" id="result"></div>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<nav class="toc">
+  <b>目次</b>
+  <ol>
+    <li><a href="#kaisei">令和8年4月に基準額が51万円から65万円へ上がった</a></li>
+    <li><a href="#shiki">計算式は1本だけ — 超えた額の半分が止まる</a></li>
+    <li><a href="#sohoshu">総報酬月額相当額はボーナスを12で割って足す</a></li>
+    <li><a href="#tomaranai">止まらないもの — 老齢基礎年金・経過的加算・加給年金</a></li>
+    <li><a href="#itsu">いつ止まり、いつ戻るか</a></li>
+    <li><a href="#hanigai">このツールが計算しないもの</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+    <li><a href="#kanren">関連ツール</a></li>
+  </ol>
+</nav>
+
+<h2 id="kaisei">令和8年4月に基準額が51万円から65万円へ上がった</h2>
+
+<p>在職老齢年金は、老齢厚生年金を受け取りながら厚生年金に加入して働いている方の年金を、収入に応じて一部止めるしくみです。この「止まり始める境目」を<b>支給停止調整額（基準額）</b>と呼びます。</p>
+
+<p><b id="kaisei-honbun">令和7年年金制度改正法（令和7年法律第74号）により、令和8年4月分から、この基準額が月51万円から65万円に引き上げられました。</b>日本年金機構は改正の趣旨を「平均寿命・健康寿命が延びる中で、働き続けることを希望する高齢者の方の活躍を後押しし、より働きやすい仕組みとすること」と説明しています。</p>
+
+<div class="callout">
+  <b id="kaisei-koka">基本月額10万円なら、全額支給の上限が総報酬41万円→55万円に上がった</b>
+  日本年金機構の「在職老齢年金早見表」が例に挙げているとおりです。基準額が14万円上がったので、これまで止まっていた方は<b>最大で月7万円</b>（14万円の2分の1）ぶん支給停止が減ります。もともと止まっていなかった方の額は変わりません。
+</div>
+
+<div class="callout">
+  <b id="jouhou-chui">条文の「62万円」をそのまま使ってはいけない</b>
+  厚生年金保険法46条3項の本則は「第一項の支給停止調整額は、六十二万円とする」ですが、同項ただし書が毎年度の改定（物価変動率などを乗じて1万円単位に丸める）を定めており、<b>令和8年度に実際に適用されるのは65万円</b>です。条文の数字だけを見ると3万円低い基準で計算することになり、停止額を過大に出します。
+</div>
+
+<h2 id="shiki">計算式は1本だけ — 超えた額の半分が止まる</h2>
+
+<p>令和4年4月以降、65歳未満と65歳以上の式は統一され、次の1本だけになりました（厚生年金保険法46条1項）。</p>
+
+<table>
+  <thead><tr><th>状態</th><th>その月の老齢厚生年金</th></tr></thead>
+  <tbody id="shiki-table">
+    <tr><td>基本月額 ＋ 総報酬月額相当額 ≦ 基準額</td><td>全額支給</td></tr>
+    <tr><td>基本月額 ＋ 総報酬月額相当額 ＞ 基準額</td><td>基本月額 －（基本月額 ＋ 総報酬月額相当額 － 基準額）÷ 2</td></tr>
+  </tbody>
+</table>
+
+<p><b id="koeru-chui">条文は「超えるとき」であって「以上」ではありません。</b>合計がちょうど65万円のときは1円も止まりません。1円でも超えたところから、超えた額の2分の1が止まり始めます。</p>
+
+<p>ここでいう<b>基本月額</b>は、加給年金額を除いた老齢厚生年金（報酬比例部分）の月額です。年金証書に書かれた年額を12で割った額と考えてください。</p>
+
+<figure>
+<svg viewBox="0 0 800 360" role="img" aria-labelledby="fig1-title" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;background:#fff">
+  <title id="fig1-title">基本月額10万円の人が受け取る老齢厚生年金の額が、総報酬月額相当額に応じてどう減るか。改正前は総報酬41万円から減り始めて51万円で全額停止、改正後は55万円から減り始めて65万円で全額停止する。</title>
+  <!-- 軸 -->
+  <line x1="80" y1="290" x2="770" y2="290" stroke="#333" stroke-width="1.5"/>
+  <line x1="80" y1="290" x2="80" y2="40" stroke="#333" stroke-width="1.5"/>
+  <text x="770" y="326" text-anchor="end" font-size="13" fill="#333">総報酬月額相当額（万円）</text>
+  <text x="86" y="36" font-size="13" fill="#333">受け取る老齢厚生年金（月額）</text>
+  <!-- 縦軸の目盛: 0 と 10万 -->
+  <line x1="74" y1="290" x2="80" y2="290" stroke="#333"/><text x="70" y="295" text-anchor="end" font-size="12" fill="#555">0</text>
+  <line x1="74" y1="90" x2="80" y2="90" stroke="#333"/><text x="70" y="95" text-anchor="end" font-size="12" fill="#555">10万</text>
+  <line x1="80" y1="90" x2="770" y2="90" stroke="#ccc" stroke-dasharray="3 3"/>
+  <!-- 横軸の目盛: 30 41 51 55 65 万円 → x = 80 + (man-30)*17.25 -->
+  <line x1="80" y1="290" x2="80" y2="296" stroke="#333"/><text x="80" y="312" text-anchor="middle" font-size="12" fill="#555">30</text>
+  <line x1="269.75" y1="290" x2="269.75" y2="296" stroke="#333"/><text x="269.75" y="312" text-anchor="middle" font-size="12" fill="#c62828">41</text>
+  <line x1="442.25" y1="290" x2="442.25" y2="296" stroke="#333"/><text x="442.25" y="312" text-anchor="middle" font-size="12" fill="#c62828">51</text>
+  <line x1="511.25" y1="290" x2="511.25" y2="296" stroke="#333"/><text x="511.25" y="312" text-anchor="middle" font-size="12" fill="#1565c0">55</text>
+  <line x1="683.75" y1="290" x2="683.75" y2="296" stroke="#333"/><text x="683.75" y="312" text-anchor="middle" font-size="12" fill="#1565c0">65</text>
+  <!-- 改正前（基準51万）: 41万まで10万、51万で0 -->
+  <path d="M80 90 L269.75 90 L442.25 290" fill="none" stroke="#c62828" stroke-width="2.5"/>
+  <!-- 改正後（基準65万）: 55万まで10万、65万で0 -->
+  <path d="M80 90 L511.25 90 L683.75 290" fill="none" stroke="#1565c0" stroke-width="2.5"/>
+  <!-- 差の帯: 41〜51万のあいだで、赤は下がっているが青はまだ10万のまま -->
+  <rect x="269.75" y="90" width="172.5" height="200" fill="#1565c0" opacity="0.10"/>
+  <!-- ★注記と凡例は、2本の折れ線が通らない空白にだけ置く。
+       帯(x 269.75〜442.25)の中は赤い線が斜めに横切るので文字を置けない（実際に重なった）。
+       注記は帯の**上**（y<85 は線が無い）に置き、矢印で帯の中を指す。
+       凡例は左下（x 90〜260・y 230〜280。赤い線はこの高さでは x≧399 なので当たらない）。 -->
+  <text x="356" y="50" text-anchor="middle" font-size="12" fill="#1565c0">この区間は全額</text>
+  <text x="356" y="68" text-anchor="middle" font-size="12" fill="#1565c0">もらえるようになった</text>
+  <path d="M356 76 L356 128" fill="none" stroke="#1565c0" stroke-width="1.2" marker-end="url(#arwz)"/>
+  <line x1="100" y1="240" x2="130" y2="240" stroke="#c62828" stroke-width="2.5"/>
+  <text x="138" y="245" font-size="13" fill="#c62828">改正前 51万円</text>
+  <line x1="100" y1="268" x2="130" y2="268" stroke="#1565c0" stroke-width="2.5"/>
+  <text x="138" y="273" font-size="13" fill="#1565c0">改正後 65万円</text>
+  <defs>
+    <!-- ★orient="auto" は線の向き（真下＝90°）ぶんマーカーを回すので、下向きに描いた三角が
+         **左向きになる**（実際にそう出た）。真下を指させたいので回転させない（orient="0"）。 -->
+    <marker id="arwz" markerWidth="8" markerHeight="8" refX="4" refY="7" orient="0">
+      <path d="M0,0 L8,0 L4,8 z" fill="#1565c0"/>
+    </marker>
+  </defs>
+  <!-- 全額停止の点に注記。★線の終点（y=290＝0円）に合わせる -->
+  <circle cx="442.25" cy="290" r="4" fill="#c62828"/>
+  <circle cx="683.75" cy="290" r="4" fill="#1565c0"/>
+  <text x="442.25" y="342" text-anchor="middle" font-size="12" fill="#c62828">ここで全額停止だった</text>
+  <text x="683.75" y="342" text-anchor="middle" font-size="12" fill="#1565c0">全額停止はここまで後退</text>
+</svg>
+<figcaption>基本月額10万円（老齢厚生年金の年額120万円）の方の例。横軸が総報酬月額相当額、縦軸が実際に受け取る老齢厚生年金の月額です。改正で折れ曲がりの位置が右に14万円ずれました。老齢基礎年金はこの図の外側で、どちらの線でも全額支給されます。</figcaption>
+</figure>
+
+<h2 id="sohoshu">総報酬月額相当額はボーナスを12で割って足す</h2>
+
+<p>判定に使う収入は月給だけではありません。<b>総報酬月額相当額 ＝ その月の標準報酬月額 ＋ その月以前1年間の標準賞与額の合計 ÷ 12</b> です（厚生年金保険法46条1項）。</p>
+
+<p><b id="shoyo-chui">ボーナスを忘れると、停止額を実際より少なく見積もることになります。</b>たとえば標準報酬月額45万円・年間賞与120万円の方は、45万円＋10万円＝<b>55万円</b>が総報酬月額相当額です。基本月額20万円なら合計75万円で、基準額65万円を10万円超えるため、その半分の月5万円が止まります。賞与を0で計算すると「合計65万円ちょうどで全額支給」という誤った結論になります。</p>
+
+<p>また、ここでいう標準報酬月額は<b>厚生年金保険の等級表上の額</b>であって、手取り額でも年収を12で割った額でもありません。給与明細の控除欄や「ねんきん定期便」で確認できます。</p>
+
+<h2 id="tomaranai">止まらないもの — 老齢基礎年金・経過的加算・加給年金</h2>
+
+<p>在職老齢年金で止まるのは<b>老齢厚生年金の報酬比例部分だけ</b>です。日本年金機構は留意事項で「老齢基礎年金および経過的加算額は全額支給となります」と明記しています。老齢厚生年金が全額支給停止になった方でも、老齢基礎年金は満額受け取れます。</p>
+
+<p>加給年金額の扱いは少し複雑で、<b>2つの別々の規律</b>があります。</p>
+
+<ul id="kakyu-list">
+  <li><b>判定には入れない</b> — 46条1項が「第四十四条第一項に規定する加給年金額……を除く」と明文で除いています。加給年金額を足した額で基本月額を出すと、停止額が過大になります。</li>
+  <li><b>全部止まるときは一緒に止まる</b> — 計算の結果、年金支給月額がマイナスになる場合は、老齢厚生年金は<b>加給年金額を含めて</b>全額支給停止になります（日本年金機構「在職老齢年金の計算方法」留意事項）。</li>
+</ul>
+
+<div class="callout">
+  <b id="hayamihyo-chui">早見表の数字は「止まる額の上限」ではない</b>
+  日本年金機構が公表している早見表は、基本月額と総報酬月額相当額から式をそのまま引いた額（支給停止基準額）を載せています。たとえば「基本月額5万円・総報酬月額相当額66万円で停止額10万円」という欄がありますが、<b>5万円しかない年金から10万円は止まりません</b>。46条1項ただし書により、実際に止まるのは老齢厚生年金の額までで、そこで全額支給停止になります。このツールは両方を表示します。
+</div>
+
+<h2 id="itsu">いつ止まり、いつ戻るか</h2>
+
+<p>支給停止は、基本月額と総報酬月額相当額の合計が基準額を超えている<b>期間</b>について行われます。停止額が変わるのは、総報酬月額相当額が変わった月、または退職日の翌月です。</p>
+
+<ul id="itsu-list">
+  <li><b>退職改定</b> — 退職して1か月を経過すると、退職した翌月分の年金から支給停止がなくなり全額支給に戻ります。あわせて、退職までの厚生年金加入期間を追加して年金額そのものが再計算されます。ただし退職して1か月以内に再就職して厚生年金に加入した場合（転職など）は再計算されません。</li>
+  <li><b>在職定時改定</b> — 65歳以上70歳未満で9月1日に厚生年金の被保険者である方は、翌月の10月分から年金額が見直されます。前年9月から当年8月までの加入期間が年金額に追加されるため、年金額が増え、結果として停止額が変わることがあります。</li>
+  <li><b>70歳到達</b> — 70歳に達した翌月分から年金額が見直されます。70歳以降は保険料の負担がなくなりますが、適用事業所に勤めている限り<b>支給停止は続きます</b>。</li>
+</ul>
+
+<h2 id="hanigai">このツールが計算しないもの</h2>
+
+<p>次のものは範囲外です。計算結果の下にもデータから同じ一覧を表示しています。</p>
+
+<ul id="hanigai-list">
+  <li><b>老齢厚生年金そのものの額</b> — このツールは「いくら止まるか」だけを出します。年金額の見込みは<a href="../nenkin/">年金受給見込額 計算機</a>へ。</li>
+  <li><b>高年齢雇用継続給付との調整</b> — 60歳台前半に高年齢雇用継続給付を受けると、在職老齢年金とは別にさらに標準報酬月額の一定割合が支給停止されます（厚年法附則11条の6）。</li>
+  <li><b>厚生年金基金に加入していた期間がある場合</b> — 代行部分を国が支払うべき年金額とみなして基本月額を出し直すため、年金証書の額をそのまま入れると基本月額が実際より小さくなります。</li>
+  <li><b>令和4年3月以前の65歳未満の在職老齢年金（低在老）</b> — 基準額28万円・総報酬47万円で4分岐した旧制度です。令和4年4月に現在の式へ統一されたため、現在の受給額の計算には使いません。</li>
+</ul>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 在職老齢年金の基準額は今いくらですか？</h3>
+<p>A. 令和8年度は<b>月65万円</b>です。令和7年年金制度改正法（令和7年法律第74号）により、令和8年4月分から、それまでの月51万円が65万円に引き上げられました。なお厚生年金保険法46条3項の条文本則は「六十二万円」ですが、これは毎年度の改定前の額で、実際に適用されるのは改定後の65万円です。</p>
+
+<h3>Q. 改正で私の年金はいくら増えますか？</h3>
+<p>A. 基準額が14万円上がったので、停止されていた方は<b>最大で月7万円</b>（14万円の2分の1）ぶん支給停止が減ります。基本月額10万円の方の場合、全額支給となる総報酬月額相当額の上限が41万円から55万円へ上がります。もともと停止されていなかった方は変わりません。このページの計算機が、改正前後の差額を表示します。</p>
+
+<h3>Q. 老齢基礎年金も支給停止されますか？</h3>
+<p>A. されません。止まるのは老齢厚生年金の報酬比例部分だけで、<b>老齢基礎年金と経過的加算額は全額支給</b>されます。老齢厚生年金が全額支給停止になった方でも、老齢基礎年金は満額受け取れます。</p>
+
+<h3>Q. 加給年金額は基本月額に含めますか？</h3>
+<p>A. 含めません。厚生年金保険法46条1項が明文で除いています。ただし全額支給停止になる場合は、加給年金額も含めて全額が止まります。<b>判定には入れないが、全部止まるときは一緒に止まる</b>という関係です。</p>
+
+<h3>Q. ボーナスは在職老齢年金の計算に入りますか？</h3>
+<p>A. 入ります。総報酬月額相当額は「その月の標準報酬月額」＋「その月以前1年間の標準賞与額の合計 ÷ 12」です。標準報酬月額45万円・年間賞与120万円なら55万円になります。<b>賞与を忘れると停止額を少なく見積もることになります。</b></p>
+
+<h3>Q. 70歳を過ぎて働いている場合はどうなりますか？</h3>
+<p>A. 70歳以上は厚生年金保険の被保険者ではなくなり保険料の負担もなくなりますが、<b>厚生年金の適用事業所に勤めている場合は支給停止の対象になります</b>（46条1項の「七十歳以上の使用される者」）。計算式は同じです。</p>
+
+<h3>Q. 退職したら支給停止はいつなくなりますか？</h3>
+<p>A. 退職して1か月を経過すると、退職した翌月分の年金から全額支給に戻ります（退職改定）。ただし1か月以内に再就職して厚生年金に加入した場合は年金額の再計算は行われません。</p>
+
+<h2 id="shutten">出典</h2>
+
+<ul id="shutten-list">
+  <li><a href="https://laws.e-gov.go.jp/law/329AC0000000115" rel="nofollow">厚生年金保険法46条（e-Gov法令検索）</a> — 支給停止のしくみ、総報酬月額相当額と基本月額の定義、2分の1の式、ただし書の全額支給停止、3項の支給停止調整額（本則62万円と毎年度の改定）</li>
+  <li><a href="https://www.nenkin.go.jp/service/jukyu/seido/roureinenkin/zaishoku/20150401-01.html" rel="nofollow">日本年金機構「在職老齢年金の計算方法」</a> — 令和8年度の支給停止調整額65万円、令和8年4月の改正（51万円→65万円・令和7年法律第74号）、老齢基礎年金と経過的加算が止まらないこと、在職定時改定・退職改定</li>
+  <li><a href="https://www.nenkin.go.jp/service/jukyu/seido/roureinenkin/zaishoku/20150401-01.files/hayamihyo.pdf" rel="nofollow">日本年金機構「在職老齢年金早見表」（PDF）</a> — 改正前後の停止額の数表。このツールの計算はこの表を再現できることで検算しています</li>
+</ul>
+<p class="hint">条文はe-Gov法令API v2で逐語確認し、令和8年度の額は日本年金機構のページで確認しました<span id="src-note"></span>。</p>
+
+<h2 id="kanren">関連ツール</h2>
+<ul>
+  <li><a href="../nenkin/">年金受給見込額 計算機</a> — 老齢厚生年金・老齢基礎年金がそれぞれいくらになるかを先に出せます（このツールの入力に使えます）</li>
+  <li><a href="../shakai-hoken/">社会保険料 計算機</a> — 標準報酬月額から健康保険・厚生年金の保険料を計算します</li>
+  <li><a href="../izoku/">遺族年金 計算機</a> — 遺族基礎年金・遺族厚生年金・中高齢寡婦加算をまとめて計算します</li>
+  <li><a href="../tedori/">手取り計算機</a> — 在職中の給与の手取りを計算します</li>
+</ul>
+
+</article>
+</main>
+<footer>
+  <div>© 経理ミニツールズ</div>
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcZaishoku, compareKijun } from "../assets/zaishoku_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const num = (id) => Number($(id).value) || 0;
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+let D = null;
+// 参照データは非同期で届く。届く前に計算ボタンを押されても待つ（実ユーザーと同じ経路）。
+// この catch が拾ってよいのは「データが手に入らなかった」ことだけ（飾りの描画は別に処理する）。
+const load = (path) => fetch(path).then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+const dataReady = load("../assets/zaishoku_r08.json").then(d => { D = d; return true; }).catch(() => false);
+
+// 出典の注記は飾り。ここで転んでも計算は止めない。
+dataReady.then(() => {
+  $("src-note").textContent = D?._meta?.checked ? `（${D._meta.checked} 時点）` : "";
+}).catch(() => {});
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+  const okData = await dataReady; // 参照データの到着を必ず待つ
+  if (!okData || !D) {
+    box.innerHTML = `<div class="note" id="load-failed"><b>データを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。令和何年度の基準額なのか分からない状態で
+      支給停止額を答えることはできません。</div>`;
+    return;
+  }
+
+  const input = {
+    koseiNenkinYen: num("koseiNenkin"),
+    kisoNenkinYen: num("kisoNenkin"),
+    hyojunHoshuYen: num("hyojunHoshu"),
+    shoyoTotalYen: num("shoyoTotal"),
+    kakyuYen: num("kakyu"),
+    hatarakikata: $("hatarakikata").value,
+  };
+
+  // ★老齢厚生年金が0なら、止まるものが無い。0円と答えるのではなく入力を促す（fail closed）。
+  if (input.koseiNenkinYen <= 0) {
+    box.innerHTML = `<div class="note" id="fuka-note"><b>金額を出せません。</b></div>
+      <p class="hint" id="fuka-mi_nyuryoku">老齢厚生年金（報酬比例部分）の年額を入力してください。
+      在職老齢年金で止まるのは老齢厚生年金だけなので、この額が無いと計算できません。
+      見込額が分からない場合は<a href="../nenkin/">年金受給見込額 計算機</a>で先に出せます。</p>`;
+    return;
+  }
+
+  let r, comp;
+  try {
+    r = calcZaishoku(input, D);
+    comp = compareKijun(input, D);
+  } catch (e) {
+    box.innerHTML = `<div class="note"><b>計算できませんでした。</b>${esc(e.message)}</div>`;
+    return;
+  }
+
+  // ★見出しも表も比較も、この1つの結果 r / comp からだけ描く（別々に計算すると食い違う）。
+  let html = "";
+  html += `<div class="big" id="zaishoku-shikyu">受け取る老齢厚生年金　月 ${yenF(r.shikyuKoseiGetsugaku)}</div>`;
+  html += `<p class="hint">年額 <b id="zaishoku-shikyu-nen">${yenF(r.shikyuKoseiYen)}</b>
+    ／老齢基礎年金などを含めた受取総額は年 <b id="zaishoku-total">${yenF(r.totalYen)}</b>（月 ${yenF(r.totalGetsugaku)}）。
+    <span id="nendo-hyoji">${esc(D._meta.year)}</span>の支給停止調整額
+    <b id="kijun-hyoji">${yenF(r.kijun.yen)}</b>で計算しています。</p>`;
+
+  html += `<table id="uchiwake-table"><thead><tr><th>内訳</th><th>月額</th></tr></thead><tbody>`;
+  html += `<tr><td>基本月額（老齢厚生年金 ÷ 12・加給年金額を除く）</td>
+    <td style="text-align:right" id="kihon-getsugaku">${yenF(r.kihonGetsugaku)}</td></tr>`;
+  html += `<tr><td>総報酬月額相当額（標準報酬月額 ＋ 賞与 ÷ 12）</td>
+    <td style="text-align:right" id="sohoshu-getsugaku">${yenF(r.sohoshuGetsugaku)}</td></tr>`;
+  html += `<tr><td><b>合計（この額が基準額を超えると止まる）</b></td>
+    <td style="text-align:right" id="goukei-getsugaku"><b>${yenF(r.goukeiGetsugaku)}</b></td></tr>`;
+  html += `<tr><td>支給停止額</td>
+    <td style="text-align:right" id="teishi-getsugaku">${r.teishiYen > 0 ? "－" : ""}${yenF(r.teishiGetsugaku)}</td></tr>`;
+  html += `<tr><td>老齢基礎年金・経過的加算（止まりません）</td>
+    <td style="text-align:right" id="kiso-getsugaku">${yenF(r.kisoYen / 12)}</td></tr>`;
+  html += `</tbody></table>`;
+
+  // ★止まっていないことは「0円」だけでは伝わらない。なぜ止まらないのかを名指しする（規則5）。
+  if (!r.zaishoku) {
+    html += `<p class="hint" id="teishi-nashi-taishoku">在職していないため、在職老齢年金による支給停止は
+      ありません（厚生年金保険法46条1項は、被保険者である日・70歳以上の使用される者である日が属する月に
+      ついて適用されます）。<b>退職して1か月経つと、退職した翌月分から全額支給に戻ります。</b></p>`;
+  } else if (!r.over) {
+    html += `<p class="hint" id="teishi-nashi-kanai">合計 ${yenF(r.goukeiGetsugaku)} は
+      支給停止調整額 ${yenF(r.kijun.yen)} を超えていないため、<b>1円も支給停止されません</b>。
+      条文は「超えるとき」なので、ちょうど同額でも全額支給です。</p>`;
+  }
+
+  // ★全額支給停止と一部停止は、額を見ても区別がつかない。どちらなのかを別のidで申告する。
+  if (r.zengakuTeishi) {
+    html += `<p class="hint" id="zengaku-teishi">計算上の支給停止基準額は年
+      ${yenF(r.teishiKijunYen)}（月 ${yenF(r.teishiKijunGetsugaku)}）で、老齢厚生年金の額を超えています。
+      このため<b>老齢厚生年金は全額支給停止</b>です（46条1項ただし書）。
+      止まるのは年金額までで、それ以上は止まりません。</p>`;
+  } else if (r.over) {
+    html += `<p class="hint" id="ichibu-teishi">合計が支給停止調整額を
+      ${yenF(r.goukeiGetsugaku - r.kijun.yen)} 超えているため、その2分の1にあたる
+      月 ${yenF(r.teishiGetsugaku)} が支給停止されます。</p>`;
+  }
+
+  // ★加給年金は「判定に入れない」と「全部止まるときは一緒に止まる」が別の規律。両方を申告する。
+  if (input.kakyuYen > 0) {
+    if (r.zengakuTeishi) {
+      html += `<p class="hint" id="kakyu-teishi">加給年金額 ${yenF(input.kakyuYen)} も、
+        全額支給停止のため<b>あわせて止まります</b>（日本年金機構「在職老齢年金の計算方法」留意事項）。</p>`;
+    } else {
+      html += `<p class="hint" id="kakyu-shikyu">加給年金額 ${yenF(input.kakyuYen)} は
+        基本月額に含めずに判定し（46条1項）、<b>全額支給されます</b>。上の受取総額に含めています。</p>`;
+    }
+  }
+
+  // ★このツールの見どころ: 令和8年4月の改正で、同じ収入でいくら変わったか。
+  const cur = comp.find((c) => c.kijun.current) ?? comp[0];
+  const old = comp.find((c) => !c.kijun.current);
+  if (old) {
+    const sa = cur.result.totalYen - old.result.totalYen;
+    html += `<p class="hint" style="margin-top:14px"><b>令和8年4月の改正（51万円→65万円）でどう変わったか</b></p>`;
+    html += `<table id="kaisei-hikaku"><thead><tr><th>支給停止調整額</th><th>支給停止額（年）</th><th>受取総額（年）</th></tr></thead><tbody>`;
+    for (const c of comp) {
+      html += `<tr${c.kijun.current ? ' id="kaisei-row-current"' : ' id="kaisei-row-old"'}>
+        <td>${esc(c.kijun.label)}　${yenF(c.kijun.yen)}</td>
+        <td style="text-align:right">${yenF(c.result.teishiYen)}</td>
+        <td style="text-align:right">${yenF(c.result.totalYen)}</td></tr>`;
+    }
+    html += `</tbody></table>`;
+    if (sa > 0) {
+      html += `<p class="hint" id="kaisei-zoka">この条件では、改正により年
+        <b>${yenF(sa)}</b>（月 ${yenF(sa / 12)}）多く受け取れるようになりました。</p>`;
+    } else {
+      html += `<p class="hint" id="kaisei-henka-nashi">この条件では、改正の前後で受取額は変わりません
+        （改正前の基準額でも支給停止が発生していなかったためです）。</p>`;
+    }
+  }
+
+  html += `<div class="note" id="gaisan-note"><b>これは制度の式による概算額です。</b>
+    実際の支給停止額は、日本年金機構が記録している標準報酬月額・標準賞与額にもとづいて決定されます。
+    厚生年金基金の加入期間がある方、高年齢雇用継続給付を受けている方は、別の調整が入ります。</div>`;
+
+  // ★収録範囲はデータに持たせる（ページに手書きすると、データを増やしたときに嘘になる）。
+  html += `<p class="hint"><b>このツールが計算しないもの</b></p><ul id="hanigai-list-data">`;
+  for (const o of D.out_of_scope) {
+    html += `<li>${esc(o.label)} — ${esc(o.why)}</li>`;
+  }
+  html += `</ul>`;
+
+  box.innerHTML = html;
+});
+</script>
+</body>
+</html>
