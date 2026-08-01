@@ -845,7 +845,7 @@ SCENES.shaho_cap = shahoScene({ monthly: 700000, age: 30, standard: 710000 });
 //   https://www.mhlw.go.jp/content/001520033.pdf
 //   30〜44歳: 5,340円以上13,140円以下 → y = 0.8w − 0.3{(w−5340)/(13140−5340)}w、1円未満切捨
 // 所定給付日数も雇用保険法22条・23条の表からここに直接書く。
-const KIHON_DAILY_INDEP = (w) => Math.floor(0.8 * w - 0.3 * ((w - 5340) / (13140 - 5340)) * w);
+const KIHON_DAILY_INDEP = (w) => Math.floor(0.8 * w - 0.3 * ((w - 5480) / (13490 - 5480)) * w);
 
 const kihonScene = ({ age, monthly, period, reason }) => async () => {
   const doc = await open("/docs/kihonteate/");
@@ -876,7 +876,7 @@ const kihonScene = ({ age, monthly, period, reason }) => async () => {
 };
 
 // 35歳・月30万・勤続12年。賃金日額 = 300,000×6÷180 = 10,000円(逓減帯)
-// → 日額 6,207円 / 自己都合は22条1項で120日 / 給付制限1か月
+// → 日額 6,307円 / 自己都合は22条1項で120日 / 給付制限1か月
 SCENES.kihonteate = kihonScene({ age: 35, monthly: 300000, period: "y10_20", reason: "jiko" });
 // ★同じ人が会社都合で辞めると: **日額は1円も変わらず**、日数だけ120→240日(23条)、給付制限は消える。
 //   ページが離職理由を日額のほうに効かせてしまっていたら、ここで落ちる。

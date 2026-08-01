@@ -28,16 +28,16 @@ const pay = (nichigaku, rem, tenths) => Math.floor(nichigaku * rem * tenths / 10
 const CAP_U60 = Math.floor(D.band_taper_upper * 50 / 100);
 const CAP_60_64 = Math.floor(D.band_taper_upper_60_64 * 45 / 100);
 
-// 厚労省の公表値(令和7年8月1日〜)と噛み合うこと ＝ 条文の読み違いをしていない証拠
-ok(CAP_U60 === 6570, `導出した上限(60歳未満)=${CAP_U60} が厚労省公表の6,570円と一致しない`);
-ok(CAP_60_64 === 5310, `導出した上限(60-64歳)=${CAP_60_64} が厚労省公表の5,310円と一致しない`);
+// 厚労省の公表値(令和8年8月1日〜・LL080731保01)と噛み合うこと ＝ 条文の読み違いをしていない証拠
+ok(CAP_U60 === 6745, `導出した上限(60歳未満)=${CAP_U60} が厚労省公表の6,745円と一致しない`);
+ok(CAP_60_64 === 5454, `導出した上限(60-64歳)=${CAP_60_64} が厚労省公表の5,454円と一致しない`);
 
 // ── オラクル2: 例1(35歳/月30万/勤続12年/自己都合)を本番coreで再計算 ──────────
 const w1 = C.wageDaily(300000 * 6);
 const d1 = C.benefitDaily(w1, 35, D);
 const days1 = C.prescribedDays(35, "y10_20", "self", false);
 ok(w1 === 10000, `賃金日額=${w1}`);
-ok(d1 === 6207, `基本手当日額=${d1}（記事は6,207円と書いている）`);
+ok(d1 === 6307, `基本手当日額=${d1}（記事は6,307円と書いている）`);
 ok(days1 === 120, `所定給付日数=${days1}`);
 ok(d1 <= CAP_U60, `例1の日額${d1}は上限${CAP_U60}以下のはず（上限で削られない例として使っている）`);
 
@@ -51,13 +51,13 @@ const E1 = {
 const gake = E1.rem80 - E1.rem79;      // 3分の2の崖
 const netLoss = gake - d1;             // 1日待って基本手当1日分を得る代わりに失う額
 
-ok(E1.rem120 === 521388, `残120日×70% = ${E1.rem120}（記事は521,388円）`);
-ok(E1.rem80 === 347592, `残80日×70% = ${E1.rem80}（記事は347,592円）`);
-ok(E1.rem79 === 294211, `残79日×60% = ${E1.rem79}（記事は294,211円）`);
-ok(E1.rem40 === 148968, `残40日×60% = ${E1.rem40}（記事は148,968円）`);
-ok(E1.total === 744840, `満額総額 = ${E1.total}（記事は744,840円・失業保険の記事と同じ値）`);
-ok(gake === 53381, `3分の2の崖 = ${gake}（記事は53,381円）`);
-ok(netLoss === 47174, `差引の損 = ${netLoss}（記事は47,174円）`);
+ok(E1.rem120 === 529788, `残120日×70% = ${E1.rem120}（記事は529,788円）`);
+ok(E1.rem80 === 353192, `残80日×70% = ${E1.rem80}（記事は353,192円）`);
+ok(E1.rem79 === 298951, `残79日×60% = ${E1.rem79}（記事は298,951円）`);
+ok(E1.rem40 === 151368, `残40日×60% = ${E1.rem40}（記事は151,368円）`);
+ok(E1.total === 756840, `満額総額 = ${E1.total}（記事は756,840円・失業保険の記事と同じ値）`);
+ok(gake === 54241, `3分の2の崖 = ${gake}（記事は54,241円）`);
+ok(netLoss === 47934, `差引の損 = ${netLoss}（記事は47,934円）`);
 
 // 境目そのもの: 120日の3分の2 = 80日 / 3分の1 = 40日
 ok(days1 * 2 / 3 === 80, "120日の3分の2は80日");
@@ -73,11 +73,11 @@ ok(d2 > CAP_U60, `例2は上限${CAP_U60}を超える日額であること（超
 
 const capped = pay(CAP_U60, 150, 7);
 const uncapped = pay(d2, 150, 7);
-ok(capped === 689850, `上限適用後 = ${capped}（記事は689,850円）`);
+ok(capped === 708225, `上限適用後 = ${capped}（記事は708,225円）`);
 ok(uncapped === 1050000, `上限が無ければ = ${uncapped}（記事は1,050,000円）`);
-ok(uncapped - capped === 360150, `差 = ${uncapped - capped}（記事は360,150円）`);
-ok(pay(CAP_U60, 150, 2) === 197100, `就業促進定着手当の上限20% = ${pay(CAP_U60, 150, 2)}（記事は197,100円）`);
-ok(pay(CAP_U60, 150, 4) === 394200, `旧ルール40%なら = ${pay(CAP_U60, 150, 4)}（記事は394,200円）`);
+ok(uncapped - capped === 341775, `差 = ${uncapped - capped}（記事は341,775円）`);
+ok(pay(CAP_U60, 150, 2) === 202350, `就業促進定着手当の上限20% = ${pay(CAP_U60, 150, 2)}（記事は202,350円）`);
+ok(pay(CAP_U60, 150, 4) === 404700, `旧ルール40%なら = ${pay(CAP_U60, 150, 4)}（記事は404,700円）`);
 
 // ── 記事が「その数字を、その場所に」印字しているか ────────────────────────
 // ★オラクルが保証するのはツールの正しさであって、記事が正しく引き写しているかではない(規則7)
@@ -170,8 +170,10 @@ ok(!!capBox, "上限額のsummary-boxが無い");
 if (capBox) {
   const t = capBox.replace(/<[^>]+>/g, " ");
   // ★規則4: 「6,570円」が本文のどこかにある、では守れない。年齢の区分と組で見る
-  ok(/60歳未満[^0-9]*6,570円/.test(t), "60歳未満と6,570円が結びついていない（年齢を取り違えている）");
-  ok(/60歳以上65歳未満[^0-9]*5,310円/.test(t), "60歳以上65歳未満と5,310円が結びついていない");
+  ok(new RegExp(`60歳未満[^0-9]*${yen(CAP_U60)}円`).test(t),
+     `60歳未満と${yen(CAP_U60)}円が結びついていない（年齢を取り違えている）`);
+  ok(new RegExp(`60歳以上65歳未満[^0-9]*${yen(CAP_60_64)}円`).test(t),
+     `60歳以上65歳未満と${yen(CAP_60_64)}円が結びついていない`);
 }
 
 // 導出のcallout: 13,140 × 50% = 6,570 / 11,800 × 45% = 5,310 を記事が示していること
@@ -180,10 +182,10 @@ const derivBox = callouts.find((c) => c.includes("どこから来るのか"));
 ok(!!derivBox, "上限の導出を説明するcalloutが無い");
 if (derivBox) {
   const t = derivBox.replace(/<[^>]+>/g, " ");
-  ok(t.includes(`${D.band_taper_upper.toLocaleString("en-US")}円 × 50% = 6,570円`),
-     "導出式(13,140円 × 50% = 6,570円)が料率JSONの値と一致しない");
-  ok(t.includes(`${D.band_taper_upper_60_64.toLocaleString("en-US")}円 × 45% = 5,310円`),
-     "導出式(11,800円 × 45% = 5,310円)が料率JSONの値と一致しない");
+  ok(t.includes(`${yen(D.band_taper_upper)}円 × 50% = ${yen(CAP_U60)}円`),
+     `導出式(${yen(D.band_taper_upper)}円 × 50% = ${yen(CAP_U60)}円)が料率JSONの値と一致しない`);
+  ok(t.includes(`${yen(D.band_taper_upper_60_64)}円 × 45% = ${yen(CAP_60_64)}円`),
+     `導出式(${yen(D.band_taper_upper_60_64)}円 × 45% = ${yen(CAP_60_64)}円)が料率JSONの値と一致しない`);
   ok(t.includes("12,090円"), "原型の12,090円(法16条1項)に触れていない");
   ok(/毎年8月1日/.test(t), "毎年8月1日に改定されることを書いていない");
 }
@@ -254,7 +256,10 @@ ok(/三分の二以上である者にあつては、\s*十分の七/.test(quote.
 const money = new Set((text.match(/\d{1,3}(,\d{3})+/g) || []));
 const mustHave = [yen(E1.rem120), yen(E1.rem80), yen(E1.rem79), yen(E1.rem40), yen(E1.total),
                   yen(gake), yen(netLoss), yen(capped), yen(uncapped), yen(uncapped - capped),
-                  "6,570", "5,310", "6,207", "10,000", "13,140", "11,800", "12,090", "197,100", "394,200"];
+                  yen(CAP_U60), yen(CAP_60_64), yen(d1), "10,000",
+                  yen(D.band_taper_upper), yen(D.band_taper_upper_60_64),
+                  "12,090",  // 法16条1項の原型（18条で変更される前の額＝制度の事実なので固定）
+                  yen(pay(CAP_U60, 150, 2)), yen(pay(CAP_U60, 150, 4))];
 for (const m of mustHave) ok(money.has(m), `本文に ${m} が見当たらない`);
 
 // ★②の網（ホワイトリスト）: 記事に出るカンマ区切りの金額は、すべて「私が導出した値」か
@@ -263,7 +268,7 @@ const ALLOWED = new Set([
   ...mustHave,
   yen(pay(CAP_U60, 150, 4)),  // 394,200（旧40%ルールの額）
   "6,395", "5,170",           // 令和6年度の旧上限（古い額として言及する）
-  "8,870",                    // 45〜59歳の基本手当日額の上限（比較のため）
+  yen(D.kihon_nichigaku_max.age45_59),  // 45〜59歳の基本手当日額の上限（比較のため）
   "300,000", "600,000",       // 例の月給
 ]);
 for (const m of money) {
@@ -286,8 +291,8 @@ const desc = (html.match(/<meta name="description" content="([^"]*)"/) || [])[1]
 ok(title.length <= 60, `titleが60字超: ${title.length}字`);
 ok(title.includes("再就職手当"), "titleに主キーワードが無い");
 ok(desc.length >= 60, `meta descriptionが短い: ${desc.length}字`);
-ok(desc.includes("521,388円"), "meta descriptionに主要な金額が無い");
-ok(desc.includes("6,570円"), "meta descriptionに上限額が無い");
+ok(desc.includes(`${yen(E1.rem120)}円`), "meta descriptionに主要な金額が無い");
+ok(desc.includes(`${yen(CAP_U60)}円`), "meta descriptionに上限額が無い");
 // ★descriptionの数字が本文と食い違っていないか（属性値はタグ剥がしで消えるので別に見る）
 for (const m of (desc.match(/\d{1,3}(,\d{3})+/g) || [])) {
   ok(money.has(m), `meta descriptionの ${m} が本文に無い（食い違い）`);

@@ -123,7 +123,7 @@ $("calc").addEventListener("click", async () => {
 
   const ready = await dataReady;
   if (!ready || !D) {
-    box.innerHTML = `<div class="warn"><b>賃金日額の上限額・下限額を読み込めませんでした。</b>通信環境を確認して再読み込みしてください。上限額（16,110円）が分からないまま金額を答えると、上限に張りつく方に実際より高い額を信じさせてしまうため、計算を止めています。</div>`;
+    box.innerHTML = `<div class="warn"><b>賃金日額の上限額・下限額を読み込めませんでした。</b>通信環境を確認して再読み込みしてください。上限額（16,540円）が分からないまま金額を答えると、上限に張りつく方に実際より高い額を信じさせてしまうため、計算を止めています。</div>`;
     postHeight(); return;
   }
 
@@ -150,7 +150,7 @@ $("calc").addEventListener("click", async () => {
   }
 
   const capNote = r.capped
-    ? `<div class="callout">★賃金日額が上限（${yen(r.max)}）に張りついています。この上限は<b>年齢に関係なく同じ</b>です（45歳以上でも17,740円にはなりません）。</div>`
+    ? `<div class="callout">★賃金日額が上限（${yen(r.max)}）に張りついています。この上限は<b>年齢に関係なく同じ</b>です（45歳以上でも18,220円にはなりません）。</div>`
     : r.floored
       ? `<div class="callout">★賃金日額が下限（${yen(r.min)}）まで引き上げられています（17条4項1号）。</div>`
       : "";

@@ -242,8 +242,14 @@ inElement("被保険者期間のcallout", "div", ["12か月」は在籍した月
 inElement("古いページへの注意", "p", ["雇用保険の具体的な手続き"], ["2か月間", "原則1か月"]);
 
 // 8月1日改定（この記事でいちばん賞味期限に効く主張）
-inElement("改定のnote", "p", ["条文だけを読んで計算すると"], ["2026年8月1日"]);
-check("記事の改定日はデータの _meta.next_revision と一致", D._meta.next_revision === "2026-08-01");
+// ★期待値をデータから作る（手打ちしない）。ここを "2026年8月1日" と直書きしていたため、
+//   2026-08-01 の改定で **記事とデータを揃えて直したのに検査だけが古い年を要求する** 状態になった。
+//   自動変更対象額は毎年8月1日に改定される＝この日付は毎年動くので、次回改定日は D から引く。
+const NEXT_REV = D._meta.next_revision;                       // 例 "2027-08-01"
+const [nrY, nrM, nrD] = NEXT_REV.split("-").map(Number);
+inElement("改定のnote", "p", ["条文だけを読んで計算すると"], [`${nrY}年${nrM}月${nrD}日`]);
+check("データの次回改定日は8月1日（雇用保険法18条の自動変更）", /^\d{4}-08-01$/.test(NEXT_REV));
+check("次回改定日は適用開始日より後", NEXT_REV > D._meta.applies_from);
 
 // 上限で頭打ち＝月給50万と60万で日額が同じ、という主張をcoreで確かめてから記事を見る
 const m50 = K.calcKihonteate({ age: 35, monthly: 500000, period: "y5_10", reason: "jiko" }, D);

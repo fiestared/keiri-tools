@@ -78,10 +78,10 @@ eq(eligibility("y1_5", "jiko").ok, true, "1年以上あれば自己都合でも�
 
 // --- 9. 17条: 賃金日額は「6か月の総額 ÷ 180」。上限・下限を当てる ---
 eq(wageDaily(1800000), 10000, "月30万円×6か月＝賃金日額10,000円");
-eq(applyWageCaps(20000, 25, D).value, 14510, "29歳以下は14,510円で頭打ち");
+eq(applyWageCaps(20000, 25, D).value, 14900, "29歳以下は14,900円で頭打ち");
 eq(applyWageCaps(20000, 25, D).capped, "max", "上限に当たったことを申告する");
-eq(applyWageCaps(20000, 50, D).value, 17740, "45〜59歳の上限は17,740円");
-eq(applyWageCaps(1000, 30, D).value, 3014, "下限は全年齢3,014円");
+eq(applyWageCaps(20000, 50, D).value, 18220, "45〜59歳の上限は18,220円");
+eq(applyWageCaps(1000, 30, D).value, 3203, "下限は全年齢3,203円");
 eq(applyWageCaps(1000, 30, D).capped, "min", "下限に当たったことを申告する");
 
 // --- 10. 総合計算 ---
@@ -90,7 +90,7 @@ const r1 = calcKihonteate({ age: 35, monthly: 300000, period: "y10_20", reason: 
 eq(r1.wageDaily, 10000, "賃金日額");
 eq(r1.days, 120, "所定給付日数");
 eq(r1.restrictionMonths, 1, "給付制限1か月");
-eq(r1.daily, Math.floor(10000 * (0.8 - 0.3 * ((10000 - 5340) / (13140 - 5340)))), "基本手当日額");
+eq(r1.daily, Math.floor(10000 * (0.8 - 0.3 * ((10000 - 5480) / (13490 - 5480)))), "基本手当日額");
 eq(r1.total, r1.daily * 120, "総額＝日額×日数");
 eq(r1.receivePeriodDays, 365, "受給期間1年");
 
@@ -118,9 +118,9 @@ n++;
 // 上限に当たる人（45〜59歳・月80万円）
 const r5 = calcKihonteate({ age: 50, monthly: 800000, period: "y20", reason: "kaisha" }, D);
 eq(r5.capped, "max", "賃金日額が上限に当たる");
-eq(r5.daily, 8870, "45〜59歳の基本手当日額の上限＝8,870円");
+eq(r5.daily, 9110, "45〜59歳の基本手当日額の上限＝9,110円");
 eq(r5.days, 330, "45〜59歳・20年以上・会社都合＝330日");
-eq(r5.total, 8870 * 330, "総額（最長ケース）");
+eq(r5.total, 9110 * 330, "総額（最長ケース）");
 eq(r5.receivePeriodDays, 395, "330日の人は受給期間が1年＋30日");
 
 console.log(`✅ test_kihonteate: ${n} checks`);
