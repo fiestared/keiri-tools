@@ -3342,7 +3342,7 @@ const ikujiScene = (inp) => async () => {
     showsSpouseReason: /配偶者の出生後休業が14日未満/.test(body),
     showsSpouseHint: /配偶者が14日以上の育児休業を取れば、13%（最大28日分）が上乗せされます/.test(body),
     // ★上限は年齢で変わらない（61条の7第6項＝17条4項2号ハ）
-    showsCap: /賃金日額が上限（¥16,110）に張りついています/.test(body),
+    showsCap: /賃金日額が上限（¥16,540）に張りついています/.test(body),
     // ★★支給単位期間が**実際の日付**で出ていること（＝ページが startDate をコアに渡している証拠）。
     //   渡し忘れればコアが例外を投げるので、そもそもここまで来ない（構造的な錠前）。
     unit1: num(/1回目2026-04-01〜2026-04-30¥([\d,]+)/),
@@ -3378,9 +3378,9 @@ SCENES.ikuji_feb = ikujiScene({ startDate: "2026-02-01" });
 SCENES.ikuji_shien = ikujiScene({ shienSpouseDays: 28 });
 // ★ひとり親等は配偶者要件が免除される（61条の10第2項）→ 配偶者0日でも13%が乗る
 SCENES.ikuji_hitorioya = ikujiScene({ shienSpouseDays: 0, spouseExempt: true });
-// ★上限に張りつく人（月給60万 → 賃金日額20,000円だが16,110円で頭打ち）。
+// ★上限に張りつく人（月給60万 → 賃金日額20,000円だが16,540円で頭打ち）。
 //   ★★45歳以上でも17,740円にならない・30歳未満でも14,510円に下げられない（年齢を聞いていない）
-//   67%の上限 = 16,110 × 30 × 0.67 = **323,811円/月**（厚労省の公表する支給限度額そのもの）
+//   67%の上限 = 16,540 × 30 × 0.67 = **332,454円/月**（厚労省の公表する支給限度額そのもの）
 SCENES.ikuji_cap = ikujiScene({ monthly: 600000, leaveDays: 180 });
 // 参照データを配信できない → 金額を出さずに断ること（fail closed）。
 // ★黙って答えると、上限に張りつく人に**上限を無視した高い額**を信じさせる（月30万円以上ずれる）
@@ -3437,7 +3437,7 @@ const papaScene = (inp) => async () => {
     showsWageReduced: /出生後休業支援給付金（13%）は減額されません/.test(body),
     // ★★80%以上working → 67%不支給。**13%も道連れで消える**（条文に無い規則・厚労省5頁）
     showsUnpaidBoth: /出生後休業支援給付金（13%）も\s*支給されません/.test(body),
-    showsCap: /賃金日額が上限（¥16,110）に張りついています/.test(body),
+    showsCap: /賃金日額が上限（¥16,540）に張りついています/.test(body),
     showsDaysCap: /支給の対象は28日までです/.test(body),
     failed: body.includes("読み込めませんでした"),
     body,
