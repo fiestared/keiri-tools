@@ -199,6 +199,33 @@ const SCENES = [
   { name: "saishushoku_nodata", data404: "kihonteate_r07.json",
     expect: (s) => s.failed && s.amount === null && s.dailyUsed === null },
 
+  // ── 高額療養費 ────────────────────────────────────────────────────────
+  // ★期待値は**協会けんぽ／自サイトの記事が公表している実額**。区分ウ・医療費100万 → 87,430円。
+  //   基準額80,100・起点26.7万・1%・50銭の四捨五入の**どれか1つでも間違っていたらこの額にならない**。
+  { name: "kogaku", expect: (s) =>
+      s.kubun === "ウ" && s.declaredStd === 300000 &&
+      s.limit === 87430 && s.limit === s.expectedLimit &&
+      s.refund === 212570 && s.refund === s.expectedRefund &&
+      s.totalSelf === 300000 && s.finalBurden === 87430 &&
+      s.manyLimit === 44400 && s.excludedCount === null && !s.failed },
+  // ★世帯合算の21,000円未満は1円も拾わない。**外れた行は医療費の側にも入れない**
+  //   (入れると限度額が87,930円になり支給額が500円過大)。画面が外れた行を名指しすること。
+  { name: "kogaku_gassan", expect: (s) =>
+      s.totalMedical === 1000000 && s.totalMedical === s.expectedMedical &&
+      s.limit === 87430 && s.limit === s.expectedLimit &&
+      s.excludedCount === 1 && s.excludedSelf === 15000 &&
+      s.finalBurden === 87430 + 15000 && !s.failed },
+  // ★1%の起点の読替え。医療費10万の月でも限度額は80,100円ちょうど(78,430円ではない)
+  { name: "kogaku_small", expect: (s) =>
+      s.limit === 80100 && s.limit === s.expectedLimit &&
+      s.totalSelf === 30000 && s.refund === 0 && !s.failed },
+  // ★70歳以上は表が別。額を出さずに断る(fail closed)
+  { name: "kogaku_over70", expect: (s) =>
+      s.saysOver70 && s.limit === null && s.refund === null && !s.failed },
+  // 限度額の表が配信できないときは、額を出さずに断る(fail closed)
+  { name: "kogaku_nodata", data404: "kogaku_r08.json",
+    expect: (s) => s.failed && s.limit === null && s.refund === null },
+
   // ── 退職金の税金(退職所得) ──────────────────────────────────────────────
   // ★期待値は**国税庁 No.2732 の計算例(実額)**。退職金800万円・勤続10年2か月 → 91,890円。
   //   控除440万・1年未満切上げ(11年)・1/2・千円未満切捨・超過累進・102.1%の**どれか1つでも

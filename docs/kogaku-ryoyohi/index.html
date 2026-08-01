@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>高額療養費 計算機｜自己負担限度額といくら戻るかを自動計算</title>
+<meta name="description" content="ひと月の医療費が高額になったとき、いくらまで自分が払い、いくら戻ってくるのかを計算します。★限度額の区分を決めるのは「年収」ではなく療養のあった月の標準報酬月額です。月給が1円違って等級が1つ上がるだけで、医療費100万円の月の自己負担が87,430円から171,820円へ84,390円変わります。世帯合算（21,000円以上のものだけ）・多数回該当（直近12か月で4回目から）にも対応。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/kogaku-ryoyohi/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "高額療養費 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "健康保険の高額療養費について、ひと月の自己負担限度額と払い戻される額を計算します。区分は健康保険法施行令42条1項が定める標準報酬月額で判定し、世帯合算（21,000円以上のものに限る）と多数回該当にも対応します。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "高額療養費 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "高額療養費の限度額は年収で決まりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "いいえ。健康保険法施行令42条1項が判定に使うのは「療養のあった月の標準報酬月額」で、条文に年収も報酬月額も出てきません。標準報酬月額は等級表の階段なので、月給が1円増えて等級が1つ上がるだけで区分が変わります。報酬月額514,999円なら標準報酬月額50万円で区分ウ、515,000円なら53万円で区分イとなり、医療費100万円の月の限度額は87,430円と171,820円で84,390円違います。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "家族の医療費は合算できますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "70歳未満は、ひとつの病院等・ひとり・ひと月あたりの自己負担が21,000円以上のものだけを合算できます（施行令41条1項1号かっこ書き）。21,000円を超えた部分だけを足すのではなく、21,000円未満の自己負担はまるごと対象外です。家族3人が別の病院で20,000円ずつ払っても、合算される額は0円になります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "医療費が少ない月でも限度額は下がりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "下がりません。条文は1%を計算する費用の額について「その額が二十六万七千円に満たないときは、二十六万七千円」と読み替えるよう定めているため、医療費が起点額に満たない月の1%部分は0円になります。区分ウなら医療費が10万円でも限度額は80,100円のままで、80,100円を下回ることはありません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "多数回該当はいつから適用されますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "暦年ではなく、その月から遡って直近12か月の中で高額療養費が支給された月が3か月以上あるとき、つまり4回目にあたる月からです（施行令42条1項各号ただし書）。区分ウは80,100円＋1%から44,400円へ、区分エは57,600円から44,400円へ下がり、この2つの区分は多数回該当では同額になります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "差額ベッド代や食事代も高額療養費の対象になりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "なりません。入院時の食事療養・生活療養の自己負担は施行令41条1項が明文で除いており、差額ベッド代・先進医療の技術料・診断書料など保険がきかない費用も対象外です。窓口で払った総額をそのまま入れると、戻ってくる額が実際より多く出ます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "70歳以上の限度額もこの計算機で出せますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "出せません。70歳以上は健康保険法施行令42条3項が定める世帯単位の限度額に加えて、同条5項の「外来だけを個人ごとに見る上限」とその年間の上限があり、表そのものが70歳未満と別です。70歳未満の表を当てはめると誤った額になるため、この計算機は70歳以上を選ぶと額を出さずに断ります。加入先の健康保険にご確認ください。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 高額療養費 計算機</nav>
+
+<section class="hero">
+  <h1>高額療養費 計算機</h1>
+  <p>ひと月の医療費が高額になったとき、<b>いくらまでが自分の負担で、いくら戻ってくるのか</b>を計算します。<b>限度額の区分を決めるのは年収ではなく「療養のあった月の標準報酬月額」</b>です（健康保険法施行令42条1項）。世帯合算と多数回該当にも対応します。</p>
+</section>
+
+<div class="card">
+  <label for="agegroup">療養を受けた方の年齢</label>
+  <select id="agegroup">
+    <option value="under70" selected>70歳未満</option>
+    <option value="over70">70歳以上</option>
+  </select>
+  <p class="hint">70歳以上は<b>限度額の表そのものが別</b>です（施行令42条3項・5項）。世帯単位の限度額に加えて、外来だけを個人ごとに見る上限とその年間上限があるため、<b>このツールは70歳以上の額を出しません</b>。</p>
+
+  <label for="mode" style="margin-top:14px">区分の決め方</label>
+  <select id="mode">
+    <option value="hoshu" selected>毎月の給料（報酬月額）から標準報酬月額を求める</option>
+    <option value="std">標準報酬月額が分かっているので直接選ぶ</option>
+  </select>
+
+  <div id="row-hoshu">
+    <label for="monthly">毎月の給料（報酬月額・円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　通勤手当・残業代を含む総支給額</span></label>
+    <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
+    <p class="hint">給与明細の「標準報酬月額」が分かる方は、上の選択を切り替えて直接選ぶほうが正確です。<a href="../shakai-hoken/">社会保険料計算ツール</a>でも等級を確認できます。</p>
+  </div>
+
+  <div id="row-std" style="display:none">
+    <label for="std">療養のあった月の標準報酬月額</label>
+    <select id="std"></select>
+  </div>
+
+  <label style="font-weight:400;display:block;margin-top:10px">
+    <input type="checkbox" id="hikazei"> 市町村民税が非課税の世帯である（区分オ。<b>標準報酬月額より優先します</b>）
+  </label>
+
+  <label style="font-weight:400;display:block">
+    <input type="checkbox" id="tasukai"> <b>多数回該当</b>：この月より前の12か月のうち、すでに3か月以上 高額療養費が支給されている（＝今回が4回目以降）
+  </label>
+
+  <hr style="margin:18px 0;border:0;border-top:1px solid var(--line)">
+
+  <p style="margin:0 0 10px"><b>ひと月にかかった医療費</b>　<span style="font-weight:400;font-size:13px;color:var(--sub)">同じ月・同じ人・同じ病院ごとに1行。医療費は<b>保険がきいた分の10割（窓口で払った額ではありません）</b>を入れます。</span></p>
+
+  <div class="fee-pair">
+    <div>
+      <label for="medical1">① 医療費（10割・円）</label>
+      <input type="number" id="medical1" value="1000000" placeholder="例: 1000000" inputmode="numeric">
+    </div>
+    <div>
+      <label for="ratio1">① 窓口の負担割合</label>
+      <select id="ratio1">
+        <option value="0.3" selected>3割（70歳未満の原則）</option>
+        <option value="0.2">2割（小学校入学前の子ども）</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:12px">
+    <p style="margin:0 0 8px"><b>世帯合算（任意）</b>　同じ月に、ほかの病院にかかった分・家族が別の病院にかかった分があれば足してください。<b>ひとつの病院等・ひとり・ひと月あたりの自己負担が21,000円以上のものだけが合算できます</b>（施行令41条1項1号かっこ書き）。</p>
+    <div class="fee-pair">
+      <div>
+        <label for="medical2">② 医療費（10割・円）</label>
+        <input type="number" id="medical2" value="" placeholder="例: 200000" inputmode="numeric">
+      </div>
+      <div>
+        <label for="ratio2">② 窓口の負担割合</label>
+        <select id="ratio2">
+          <option value="0.3" selected>3割</option>
+          <option value="0.2">2割（小学校入学前の子ども）</option>
+        </select>
+      </div>
+    </div>
+    <div class="fee-pair">
+      <div>
+        <label for="medical3">③ 医療費（10割・円）</label>
+        <input type="number" id="medical3" value="" placeholder="例: 80000" inputmode="numeric">
+      </div>
+      <div>
+        <label for="ratio3">③ 窓口の負担割合</label>
+        <select id="ratio3">
+          <option value="0.3" selected>3割</option>
+          <option value="0.2">2割（小学校入学前の子ども）</option>
+        </select>
+      </div>
+    </div>
+    <div class="fee-pair">
+      <div>
+        <label for="medical4">④ 医療費（10割・円）</label>
+        <input type="number" id="medical4" value="" placeholder="例: 60000" inputmode="numeric">
+      </div>
+      <div>
+        <label for="ratio4">④ 窓口の負担割合</label>
+        <select id="ratio4">
+          <option value="0.3" selected>3割</option>
+          <option value="0.2">2割（小学校入学前の子ども）</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="note" id="not-covered">
+    <p style="margin:0 0 8px"><b>★ 高額療養費の対象にならない費用</b>　医療費に含めないでください（含めると戻る額が実際より多く出ます）。</p>
+    <ul style="margin:0;padding-left:20px" id="not-covered-list"></ul>
+  </div>
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+  <p class="hint" id="src-note"></p>
+</div>
+
+<section class="card">
+  <h2>この計算機が答えていること</h2>
+  <p><b>区分を決めるのは年収ではありません。</b>健康保険法施行令42条1項2号〜4号が判定に使うのは「療養のあった月の<b>標準報酬月額</b>」で、条文に「年収」も「報酬月額」も出てきません。標準報酬月額は等級表の階段なので、<b>報酬月額が1円増えて等級が1つ上がるだけで区分が変わります</b>。報酬月額514,999円なら区分ウ、515,000円なら区分イで、医療費100万円の月の自己負担は<b>87,430円と171,820円</b>——<b>84,390円</b>違います。給料の差は1円です。</p>
+  <p><b>世帯合算は21,000円未満を1円も拾いません。</b>「21,000円を超えた部分だけを合算する」ではなく、21,000円未満の自己負担は<b>まるごと対象外</b>になります（施行令41条1項1号かっこ書き）。家族3人が別々の病院で20,000円ずつ、合計6万円払っていても、合算される額は0円です。この計算機は、<b>どの行が合算され、どの行が外れたのか</b>を1行ずつ表示します。</p>
+  <p><b>医療費が少ない月でも限度額は基準額を下回りません。</b>条文は1%を計算する費用の額を「その額が二十六万七千円に満たないときは、二十六万七千円」と読み替えます。素直に「（医療費−267,000円）×1%」と計算すると、医療費が少ない月に限度額が80,100円より低く出てしまいます。</p>
+  <a class="tool-cta" href="../column/kogaku-ryoyohi/">解説を読む：高額療養費の自己負担限度額と、区分が標準報酬月額で決まる仕組み</a>
+</section>
+
+<section class="card">
+<h2>よくある質問</h2>
+
+<h3>高額療養費の限度額は年収で決まりますか？</h3>
+<p>いいえ。健康保険法施行令42条1項が判定に使うのは「療養のあった月の標準報酬月額」で、条文に年収も報酬月額も出てきません。標準報酬月額は等級表の階段なので、月給が1円増えて等級が1つ上がるだけで区分が変わります。報酬月額514,999円なら標準報酬月額50万円で区分ウ、515,000円なら53万円で区分イとなり、医療費100万円の月の限度額は87,430円と171,820円で84,390円違います。</p>
+
+<h3>家族の医療費は合算できますか？</h3>
+<p>70歳未満は、ひとつの病院等・ひとり・ひと月あたりの自己負担が21,000円以上のものだけを合算できます（施行令41条1項1号かっこ書き）。21,000円を超えた部分だけを足すのではなく、21,000円未満の自己負担はまるごと対象外です。家族3人が別の病院で20,000円ずつ払っても、合算される額は0円になります。</p>
+
+<h3>医療費が少ない月でも限度額は下がりますか？</h3>
+<p>下がりません。条文は1%を計算する費用の額について「その額が二十六万七千円に満たないときは、二十六万七千円」と読み替えるよう定めているため、医療費が起点額に満たない月の1%部分は0円になります。区分ウなら医療費が10万円でも限度額は80,100円のままで、80,100円を下回ることはありません。</p>
+
+<h3>多数回該当はいつから適用されますか？</h3>
+<p>暦年ではなく、その月から遡って直近12か月の中で高額療養費が支給された月が3か月以上あるとき、つまり4回目にあたる月からです（施行令42条1項各号ただし書）。区分ウは80,100円＋1%から44,400円へ、区分エは57,600円から44,400円へ下がり、この2つの区分は多数回該当では同額になります。</p>
+
+<h3>差額ベッド代や食事代も高額療養費の対象になりますか？</h3>
+<p>なりません。入院時の食事療養・生活療養の自己負担は施行令41条1項が明文で除いており、差額ベッド代・先進医療の技術料・診断書料など保険がきかない費用も対象外です。窓口で払った総額をそのまま入れると、戻ってくる額が実際より多く出ます。</p>
+
+<h3>70歳以上の限度額もこの計算機で出せますか？</h3>
+<p>出せません。70歳以上は健康保険法施行令42条3項が定める世帯単位の限度額に加えて、同条5項の「外来だけを個人ごとに見る上限」とその年間の上限があり、表そのものが70歳未満と別です。70歳未満の表を当てはめると誤った額になるため、この計算機は70歳以上を選ぶと額を出さずに断ります。加入先の健康保険にご確認ください。</p>
+</section>
+<section class="faq rel-block">
+<h2>関連する解説</h2>
+<!--rel:S--><ul class="rel-list"><li><a href="../column/kogaku-ryoyohi/">高額療養費の自己負担限度額【令和8年】区分は年収でなく標準報酬月額で決まる</a><span class="rel-desc">限度額の区分を決めるのは年収ではなく標準報酬月額。報酬月額が1円違うだけで等級が上がり、医療費100万円のときの自己負担が87,430円から</span></li></ul><!--rel:E-->
+</section>
+</main>
+
+<footer class="site">
+  <a href="../about/">このサイトについて</a> · <a href="../contact/">お問い合わせ</a>
+</footer>
+
+<script type="module">
+import { calcKogaku } from "../assets/kogaku_core.js";
+import { KENKO_GRADES, kenkoGrade } from "../assets/shaho_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+// 限度額の表は非同期で届く。**届く前に押されても待つ**。
+// 限度額が分からないまま「いくら戻る」と答えると、戻らない額を戻ると言うことになる。
+let DATA = null;
+const dataReady = fetch("../assets/kogaku_r08.json")
+  .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then((d) => { DATA = d; return true; })
+  .catch(() => false);
+
+// 出典・対象外の費用の表示は飾り。ここで転んでも計算は止めない（規律: catch が拾ってよいのは
+// 「データが手に入らなかったこと」だけ。飾りのバグをデータ取得の失敗に化けさせない）。
+dataReady.then((ok) => {
+  if (!ok || !DATA) return;
+  $("src-note").textContent = `限度額の出典：${DATA._meta.label}（e-Gov法令検索・${DATA._meta.enforced_from} 施行の条文で確認）`;
+  $("not-covered-list").innerHTML = DATA.not_covered.map((s) => `<li>${s}</li>`).join("");
+}).catch(() => {});
+
+// 標準報酬月額のプルダウンは等級表から作る（等級表を二重実装しない）
+$("std").innerHTML = KENKO_GRADES.map(([g, s]) =>
+  `<option value="${s}"${s === 300000 ? " selected" : ""}>第${g}級　${s.toLocaleString("ja-JP")}円</option>`).join("");
+
+const syncMode = () => {
+  const m = $("mode").value;
+  $("row-hoshu").style.display = m === "hoshu" ? "" : "none";
+  $("row-std").style.display = m === "std" ? "" : "none";
+};
+$("mode").addEventListener("change", syncMode);
+syncMode();
+
+const rows = () => [1, 2, 3, 4]
+  .map((i) => ({ label: "①②③④"[i - 1], medical: Number($("medical" + i).value), ratio: Number($("ratio" + i).value) }))
+  .filter((r) => r.medical > 0);
+
+$("calc").addEventListener("click", async () => {
+  const ready = await dataReady;      // ← 到着を待つ。回線が遅い人だけ空データで計算される事故を防ぐ
+  const box = $("result");
+  box.style.display = "block";        // .result は既定 display:none (style.css)
+  box.innerHTML = "計算中…";
+  if (!ready || !DATA) {
+    box.innerHTML = `<div class="callout"><b>限度額の表を読み込めませんでした。</b>` +
+      `通信環境を確認して、ページを再読み込みしてください。自己負担限度額が分からないまま` +
+      `「いくら戻るか」を答えると、実際には戻らない額をお見せすることになるため、計算を止めています。</div>`;
+    return;
+  }
+
+  const items = rows();
+  if (items.length === 0) {
+    box.innerHTML = `<div class="callout">ひと月にかかった医療費（10割）を入力してください。</div>`;
+    return;
+  }
+
+  const standardMonthly = $("mode").value === "std"
+    ? Number($("std").value)
+    : kenkoGrade(Number($("monthly").value)).standard;
+
+  const r = calcKogaku({
+    ageGroup: $("agegroup").value,
+    hikazei: $("hikazei").checked,
+    standardMonthly: Number($("monthly").value) > 0 || $("mode").value === "std" ? standardMonthly : null,
+    tasukai: $("tasukai").checked,
+    items,
+  }, DATA);
+
+  if (!r.supported) {
+    box.innerHTML = `<div class="callout"><b>この計算機の対象外です。</b>${r.message}</div>`;
+    return;
+  }
+  if (!r.determined) {
+    box.innerHTML = `<div class="callout"><b>区分が決まりません。</b>${r.message}</div>`;
+    return;
+  }
+
+  const k = r.kubun;
+  const excess = k.threshold ? Math.max(0, r.totalMedical - k.threshold) : 0;
+  const formula = k.threshold
+    ? `${yen(k.base)} ＋（${yen(r.totalMedical)} − ${yen(k.threshold)}）× 1% ＝ ${yen(r.limit)}`
+    : `${yen(k.base)}（この区分は医療費の額にかかわらず定額です）`;
+
+  const rowHtml = r.rows.map((row) =>
+    `<tr><td>${row.label} 医療費 ${yen(row.medical)}（${Math.round(row.ratio * 10)}割）</td>` +
+    `<td>自己負担 ${yen(row.self)}</td>` +
+    `<td><b>${row.counted ? "合算する" : "合算しない"}</b>${row.counted ? "" : `（${yen(r.gassanMin)}未満）`}</td></tr>`
+  ).join("");
+
+  box.innerHTML = `
+    <p style="margin:0 0 6px">あなたの区分は <b>区分${k.label}</b>（${k.criteria}）です。<span style="font-size:12px;color:var(--sub)">${k.item}</span></p>
+    <p style="margin:0 0 12px;font-size:13px;color:var(--sub)">${$("hikazei").checked ? "市町村民税非課税のため、標準報酬月額にかかわらず区分オで判定しました。" : `判定に使った標準報酬月額：${standardMonthly.toLocaleString("ja-JP")}円`}</p>
+
+    <table class="tbl"><tbody>
+      <tr><td>合算した医療費（10割）</td><td><b>${yen(r.totalMedical)}</b></td></tr>
+      <tr><td>合算した窓口の自己負担</td><td><b>${yen(r.totalSelf)}</b></td></tr>
+      <tr><td>自己負担限度額</td><td><b>${yen(r.limit)}</b></td></tr>
+      <tr><td>高額療養費として支給される額</td><td><b style="font-size:20px">${yen(r.refund)}</b></td></tr>
+      <tr><td>最終的に自分が負担する額</td><td><b>${yen(r.finalBurden)}</b></td></tr>
+    </tbody></table>
+
+    <p style="margin:12px 0 4px"><b>限度額の計算</b></p>
+    <p style="margin:0 0 12px;font-family:ui-monospace,monospace;font-size:13px">${r.tasukai ? `多数回該当 ${yen(r.limit)}（この区分は定額）` : formula}</p>
+
+    <p style="margin:12px 0 4px"><b>合算の内訳</b></p>
+    <table class="tbl"><tbody>${rowHtml}</tbody></table>
+    ${r.excluded.length
+      ? `<div class="callout" style="margin-top:10px"><b>${r.excluded.length}件が合算されませんでした。</b>` +
+        `70歳未満は、ひとつの病院等・ひとり・ひと月あたりの自己負担が<b>${yen(r.gassanMin)}以上</b>のものだけを合算できます` +
+        `（施行令41条1項1号かっこ書き）。${yen(r.gassanMin)}を超えた部分だけを足すのではなく、` +
+        `<b>${yen(r.gassanMin)}未満の自己負担はまるごと対象外</b>です。この${r.excluded.length}件の自己負担 ` +
+        `<b>${yen(r.excludedSelf)}</b> は戻ってきません。</div>`
+      : ""}
+
+    ${r.tasukai
+      ? `<p style="margin:12px 0 0;font-size:13px">多数回該当のため定額 ${yen(r.limit)} で計算しました。多数回該当でなければ ${yen(r.limitNormal)} でした。</p>`
+      : `<div class="callout" style="margin-top:12px"><b>この先も治療が続く場合</b>：直近12か月で高額療養費が支給された月が3か月以上になると、` +
+        `<b>4回目の月から限度額が ${yen(r.limitIfTasukai)} に下がります</b>（多数回該当・施行令42条1項各号ただし書）。` +
+        `今回の ${yen(r.limit)} と比べて <b>${yen(Math.max(0, r.limit - r.limitIfTasukai))}</b> 軽くなります。暦年ではなく、その月から遡って12か月で数えます。</div>`}
+
+    <p class="hint" style="margin-top:12px">${excess > 0 ? "" : "医療費が1%の起点額に満たないため、1%部分は0円です（条文が「その額が起点額に満たないときは起点額とする」と読み替えているため、限度額が基準額を下回ることはありません）。"}</p>
+  `;
+});
+</script>
+</body>
+</html>

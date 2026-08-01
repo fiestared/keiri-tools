@@ -992,6 +992,102 @@ SCENES.saishushoku_unmet = saiScene({ age: 35, monthly: 300000, period: "y10_20"
 // 上限が分からないまま答えると、給料の高い人に数十万円の過大な額を見せる。
 SCENES.saishushoku_nodata = SCENES.saishushoku;
 
+// ── 高額療養費 ────────────────────────────────────────────────────────────
+// 期待値は**健康保険法施行令42条1項の式をここに書き直したもの**(kogaku_core.js は通さない)。
+//   限度額 = 基準額 + (合算対象の医療費[10割] − 起点額) × 1%   ← 1%部分は50銭で四捨五入
+//   ★条文は「その額が◯円に満たないときは、◯円」と読み替えるので、**excess は負にならない**。
+//     素直に (医療費 − 起点) と書くと、医療費が少ない月に限度額が基準額を下回る(kogaku_small で踏む)。
+//   ★1%を掛ける医療費は**合算対象になった行だけ**の合計。21,000円未満で外れた行は
+//     自己負担にも医療費にも入れない(kogaku_gassan で踏む)。
+const KOGAKU_TABLE = {   // 施行令42条1項1〜5号の実額をここに直に置く(データJSONは読まない)
+  a: { base: 252600, th: 842000, many: 140100 },
+  i: { base: 167400, th: 558000, many: 93000 },
+  u: { base:  80100, th: 267000, many:  44400 },
+  e: { base:  57600, th: null,   many:  44400 },
+  o: { base:  35400, th: null,   many:  24600 },
+};
+const KOGAKU_INDEP = (std, hikazei, meds, tasukai) => {
+  const key = hikazei ? "o" : std >= 830000 ? "a" : std >= 530000 ? "i" : std >= 280000 ? "u" : "e";
+  const t = KOGAKU_TABLE[key];
+  const rows = meds.map(([m, ratio]) => ({ m, self: Math.round(m * ratio) }));
+  const counted = rows.filter((r) => r.self >= 21000);          // 「二万千円以上のものに限る」
+  const totalMedical = counted.reduce((s, r) => s + r.m, 0);
+  const totalSelf = counted.reduce((s, r) => s + r.self, 0);
+  const limit = tasukai ? t.many
+    : t.th === null ? t.base
+    : t.base + Math.floor(Math.max(0, totalMedical - t.th) * 0.01 + 0.5);
+  return { key, limit, totalMedical, totalSelf, refund: Math.max(0, totalSelf - limit) };
+};
+
+const kogakuScene = ({ ageGroup = "under70", monthly = 300000, hikazei = false, tasukai = false,
+                      meds = [[1000000, 0.3]] }) => async () => {
+  const doc = await open("/docs/kogaku-ryoyohi/");
+  set(doc, "agegroup", ageGroup);
+  set(doc, "monthly", String(monthly));
+  if (hikazei) doc.getElementById("hikazei").click();
+  if (tasukai) doc.getElementById("tasukai").click();
+  meds.forEach(([m, ratio], i) => {
+    set(doc, "medical" + (i + 1), String(m));
+    set(doc, "ratio" + (i + 1), String(ratio));
+  });
+  for (let i = meds.length; i < 4; i++) set(doc, "medical" + (i + 1), "");
+  click(doc, "calc");   // ← 限度額JSONの到着を待たずに押す(実ユーザーと同じ)
+
+  await waitFor(
+    () => /自己負担限度額|読み込めませんでした|対象外|区分が決まりません/.test(text(doc, "result")),
+    "高額療養費の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  // 標準報酬月額は等級表を通る。ページと同じ表を harness に持たない代わりに、
+  // 画面が申告した標準報酬月額を読み取って独立計算の入力にする(等級表そのものは shaho のシーンが見ている)。
+  const declaredStd = num(/判定に使った標準報酬月額：([\d,]+)円/);
+  const expected = declaredStd || hikazei
+    ? KOGAKU_INDEP(declaredStd || 0, hikazei, meds, tasukai) : null;
+
+  return {
+    ageGroup, monthly, hikazei, tasukai,
+    declaredStd,
+    expectedLimit: expected ? expected.limit : null,
+    expectedRefund: expected ? expected.refund : null,
+    expectedMedical: expected ? expected.totalMedical : null,
+    kubun: (body.match(/あなたの区分は\s*区分([アイウエオ])/) || [])[1] || null,
+    limit: num(/自己負担限度額\s*¥([\d,]+)/),
+    refund: num(/高額療養費として支給される額\s*¥([\d,]+)/),
+    totalMedical: num(/合算した医療費（10割）\s*¥([\d,]+)/),
+    totalSelf: num(/合算した窓口の自己負担\s*¥([\d,]+)/),
+    finalBurden: num(/最終的に自分が負担する額\s*¥([\d,]+)/),
+    excludedCount: num(/(\d+)件が合算されませんでした/),
+    excludedSelf: num(/この\d+件の自己負担\s*¥([\d,]+)\s*は戻ってきません/),
+    manyLimit: num(/4回目の月から限度額が\s*¥([\d,]+)\s*に下がります/),
+    saysOver70: /70歳以上の方は自己負担限度額の表が別です/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+
+// 報酬月額30万 → 標準報酬月額30万(区分ウ)・医療費100万・3割。
+// 80,100 +(1,000,000−267,000)×1% = 87,430円。窓口30万との差 212,570円が戻る。
+// (協会けんぽ・自サイトの記事が公表している実額と一致する)
+SCENES.kogaku = kogakuScene({});
+
+// ★このツールの看板その1: 世帯合算は21,000円**未満**を1円も拾わない。
+//   100万(自己負担30万・対象) + 5万(自己負担1.5万・対象外) → 限度額の1%は100万だけで計算する。
+//   対象外の医療費まで混ぜると限度額が87,930円になり、支給額が500円過大になる。
+SCENES.kogaku_gassan = kogakuScene({ meds: [[1000000, 0.3], [50000, 0.3]] });
+
+// ★このツールの看板その2: 医療費が1%の起点(26.7万)に満たない月。
+//   条文の読替えを落とすと 80,100−(267,000−100,000)×1% = 78,430円と低く出る。正しくは80,100円。
+SCENES.kogaku_small = kogakuScene({ meds: [[100000, 0.3]] });
+
+// ★70歳以上は表が別(施行令42条3項・5項)。**額を出さずに断る**(fail closed)。
+//   70歳未満の表を当てはめると、区分ウの人で80,100円と57,600円がずれる。
+SCENES.kogaku_over70 = kogakuScene({ ageGroup: "over70" });
+
+// 限度額の表を配信できない → 額を出さず申告すること(fail closed)。
+// 限度額が分からないまま「いくら戻る」と答えると、戻らない額を戻ると言うことになる。
+SCENES.kogaku_nodata = SCENES.kogaku;
+
 // ── 退職金の税金(退職所得) ──────────────────────────────────────────────────
 // 期待値は**国税庁が実額で公表している計算例そのもの**をここに書き写す(taishoku_core.js は一切通さない)。
 //   出典: 国税庁 No.2732「退職金に対する源泉徴収」の計算例
