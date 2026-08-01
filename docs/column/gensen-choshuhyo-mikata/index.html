@@ -182,6 +182,7 @@
       <li><a href="#yotsu">見るべきは、左に並んだ4つの数字だけ</a></li>
       <li><a href="#nagare">4つの数字は1本の式でつながっている（図解）</a></li>
       <li><a href="#kensan">「給与所得控除後の金額」と「所得控除の額の合計額」を検算する</a></li>
+      <li><a href="#kensan-tool">③を検算する（入力すると差額の内訳が出ます）</a></li>
       <li><a href="#ran">欄ごとの意味・早見表</a></li>
       <li><a href="#tsukaimichi">実務での使いどころ（年収の証明・確定申告・転職）</a></li>
       <li><a href="#itsu">いつもらえる？なくした・もらえないときは（交付時期と再発行）</a></li>
@@ -464,6 +465,45 @@
     ・<b>所得金額調整控除は③ではなく②で引かれています。</b>③に足そうとすると二重に引くことになります（記載要領④）
   </div>
 
+  <h2 id="kensan-tool">③を検算する（入力すると差額の内訳が出ます）</h2>
+  <p>上の手順をそのまま計算にしたものです。票に<b>印字されている額</b>と<b>人数だけの欄</b>を入れると、③との差額がどの控除なのかを出します。<b>入力した数字はどこにも送信されません</b>（すべてブラウザの中だけで計算します）。</p>
+
+  <div class="callout" style="margin-bottom:14px">
+    <b>入れる前に1つだけ。</b>「老人」「特別」の欄は、<b>点線の左側に同居ぶんが内書き</b>されています。
+    下の欄は<b>区分ごとに分けた人数</b>を入れてください（同居老親等が1人なら、「老人扶養親族」は<b>その人を除いた</b>人数）。
+  </div>
+
+  <div class="card" id="kensan-form">
+    <p style="font-weight:700;margin:0 0 2px">A. 票に印字されている額（円）</p>
+    <div class="kensan-grid">
+      <div><label for="k-shakai">社会保険料等の金額</label><input type="number" id="k-shakai" inputmode="numeric" min="0" step="1" placeholder="750000"></div>
+      <div><label for="k-seimei">生命保険料の控除額</label><input type="number" id="k-seimei" inputmode="numeric" min="0" step="1" placeholder="40000"></div>
+      <div><label for="k-jishin">地震保険料の控除額</label><input type="number" id="k-jishin" inputmode="numeric" min="0" step="1" placeholder="20000"></div>
+      <div><label for="k-haigusha">配偶者（特別）控除の額</label><input type="number" id="k-haigusha" inputmode="numeric" min="0" step="1" placeholder="380000"></div>
+      <div><label for="k-shinzoku">特定親族特別控除の額</label><input type="number" id="k-shinzoku" inputmode="numeric" min="0" step="1" placeholder="0"></div>
+      <div><label for="k-kiso">基礎控除の額</label><input type="number" id="k-kiso" inputmode="numeric" min="0" step="1" placeholder="580000"></div>
+    </div>
+    <p class="hint" style="margin:6px 0 0">※ <b>住宅借入金等特別控除の額はここに入れないでください。</b>③には含まれません（税額控除です）。</p>
+
+    <p style="font-weight:700;margin:16px 0 2px">B. 人数だけの欄（人）</p>
+    <div class="kensan-grid">
+      <div><label for="k-tokutei">特定扶養親族</label><input type="number" id="k-tokutei" inputmode="numeric" min="0" step="1" placeholder="0"></div>
+      <div><label for="k-ippan">その他の扶養親族</label><input type="number" id="k-ippan" inputmode="numeric" min="0" step="1" placeholder="0"></div>
+      <div><label for="k-rojin">老人扶養親族（同居老親等を除く）</label><input type="number" id="k-rojin" inputmode="numeric" min="0" step="1" placeholder="0"></div>
+      <div><label for="k-dokyorojin">同居老親等（内書き）</label><input type="number" id="k-dokyorojin" inputmode="numeric" min="0" step="1" placeholder="0"></div>
+      <div><label for="k-shogai">障害者（その他）</label><input type="number" id="k-shogai" inputmode="numeric" min="0" step="1" placeholder="0"></div>
+      <div><label for="k-tokubetsu">特別障害者（同居以外）</label><input type="number" id="k-tokubetsu" inputmode="numeric" min="0" step="1" placeholder="0"></div>
+      <div><label for="k-dokyotoku">同居特別障害者（内書き）</label><input type="number" id="k-dokyotoku" inputmode="numeric" min="0" step="1" placeholder="0"></div>
+    </div>
+
+    <label for="k-san" style="margin-top:16px">C. ③所得控除の額の合計額（円）</label>
+    <input type="number" id="k-san" inputmode="numeric" min="0" step="1" placeholder="2780000">
+
+    <button class="primary" id="k-calc" type="button" style="margin-top:14px">③を検算する</button>
+    <p class="hint" id="k-src" style="margin:8px 0 0"></p>
+    <div id="k-result" style="display:none;margin-top:14px"></div>
+  </div>
+
   <h2 id="ran">欄ごとの意味・早見表</h2>
   <p>4つの数字が分かったら、あとは内訳です。よく質問される欄だけまとめます。</p>
   <div class="scroll-wrap">
@@ -691,5 +731,86 @@
 <footer class="site" style="display:block">© 経理ミニツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../../contact/" style="color:var(--sub)">お問い合わせ</a></div>
 </footer>
+
+<script type="module">
+import { checkSanKojo } from "../../assets/gensen_kojo_check_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yenF = (n) => (n < 0 ? "−¥" : "¥") + Math.abs(Math.round(n)).toLocaleString("ja-JP");
+const num = (id) => Number($(id).value) || 0;
+
+let D = null;
+// 参照データは非同期で届く。届く前にボタンを押されても待つ（実ユーザーと同じ経路）。
+// 控除の額が分からない状態で「合っています／合っていません」と答えることはできない。
+const load = (path) => fetch(path).then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+const dataReady = load("../../assets/gensen_kojo_r07.json").then((d) => { D = d; return true; }).catch(() => false);
+
+// 出典の注記は飾り。ここで転んでも検算は止めない。
+dataReady.then(() => {
+  if (D?._meta) $("k-src").textContent = `${D._meta.year}の控除額で計算します（${D._meta.checked} 時点・国税庁タックスアンサーで確認）。`;
+}).catch(() => {});
+
+$("k-calc").addEventListener("click", async () => {
+  const box = $("k-result");
+  box.style.display = "block";
+  box.innerHTML = "計算中…";
+
+  const okData = await dataReady; // 参照データの到着を必ず待つ
+  if (!okData || !D) {
+    box.innerHTML = `<div class="callout" id="k-load-failed"><b>控除額のデータを読み込めませんでした。</b>
+      通信環境を確認して再読み込みしてください。1人あたりの控除額が分からない状態で、
+      ③が合っているかどうかを答えることはできません。</div>`;
+    return;
+  }
+
+  const r = checkSanKojo({
+    san: num("k-san"),
+    printed: {
+      shakaiHoken: num("k-shakai"), seimeiHoken: num("k-seimei"), jishinHoken: num("k-jishin"),
+      haigusha: num("k-haigusha"), tokuteiShinzoku: num("k-shinzoku"), kisoKojo: num("k-kiso"),
+    },
+    counts: {
+      tokutei: num("k-tokutei"), ippan: num("k-ippan"), rojin: num("k-rojin"), dokyo_rojin: num("k-dokyorojin"),
+      shogaisha: num("k-shogai"), tokubetsu: num("k-tokubetsu"), dokyo_tokubetsu: num("k-dokyotoku"),
+    },
+  }, D);
+
+  if (!r.ok) {
+    box.innerHTML = `<div class="callout" id="k-mi-nyuryoku"><b>③「所得控除の額の合計額」を入れてください。</b>
+      票の上段の右から2番目の欄です。ここが空欄のままだと、何と突き合わせるのかが決まりません
+      （空欄の票なら、年末調整をしていない可能性があります）。</div>`;
+    return;
+  }
+
+  const lines = [];
+  for (const it of r.printed.items) if (it.amount) lines.push(`<div class="k-line"><span>${it.label}</span><b>${yenF(it.amount)}</b></div>`);
+  for (const it of r.counted.items) lines.push(`<div class="k-line"><span>${it.label} × ${it.n}人</span><b>${yenF(it.amount)}</b></div>`);
+  lines.push(`<div class="k-line k-total"><span>ここまでの合計</span><b id="k-accounted">${yenF(r.accounted)}</b></div>`);
+  lines.push(`<div class="k-line k-total"><span>③所得控除の額の合計額</span><b id="k-san-out">${yenF(r.san)}</b></div>`);
+  lines.push(`<div class="k-line k-total"><span>差額</span><b id="k-remainder">${yenF(r.remainder)}</b></div>`);
+
+  let verdict;
+  if (r.matched) {
+    verdict = `<div class="callout" id="k-matched"><b>ぴったり合いました。</b>③は、入力した欄だけで最後まで説明できています。</div>`;
+  } else if (r.overshoot) {
+    verdict = `<div class="callout" id="k-overshoot"><b>③より ${yenF(-r.remainder)} 多く積んでいます。</b>
+      ③に入らないものを足している可能性が高いです。</div>`;
+  } else if (r.explains.length) {
+    const cand = r.explains.map((e) => `<li>${e.labels.join(" ＋ ")}（合計 ${yenF(e.total)}）</li>`).join("");
+    verdict = `<div class="callout" id="k-explains"><b>差額 ${yenF(r.remainder)} は、票に金額が出ない控除で説明できます。</b>
+      次のどれかに当てはまりませんか。<ul style="margin:6px 0 0" id="k-explain-list">${cand}</ul></div>`;
+  } else {
+    verdict = `<div class="callout" id="k-unexplained"><b>差額 ${yenF(r.remainder)} が残りました。</b>
+      印字欄と人数欄では説明しきれていません。</div>`;
+  }
+
+  const notes = r.notes.length
+    ? `<ul style="font-size:13px;margin-top:10px" id="k-notes">${r.notes.map((n) => `<li data-note="${n.key}">${n.text}</li>`).join("")}</ul>`
+    : "";
+
+  box.innerHTML = verdict + `<div style="margin-top:10px">${lines.join("")}</div>` + notes +
+    `<p class="hint" style="margin-top:10px">${r.year}の控除額で計算しました。差が残る場合でも、票が間違っているとは限りません（票に金額が印字されない控除があるためです）。</p>`;
+});
+</script>
 </body>
 </html>

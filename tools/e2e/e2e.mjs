@@ -904,6 +904,30 @@ const SCENES = [
   { name: "izoku_nodata", data404: "izoku_r08.json", expect: (s) =>
       s.failed && s.total === null && s.loadFailed !== null },
 
+  // ── 源泉徴収票③の検算 (/column/gensen-choshuhyo-mikata/) ──────────────────
+  // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず票の欄から積んだ期待値）。
+  { name: "gensen_kojo", expect: (s) =>
+      s.accounted === 2780000 && s.san === 2780000 && s.remainder === 0 &&
+      s.matched !== null && s.overshoot === null && s.explains === null && s.unexplained === null &&
+      // 年分はデータから描かれている（ページの手書きではない）
+      /令和7年分/.test(s.nendo || "") && !s.failed },
+  // ★★票に金額が出ない控除の対。差額35万をひとり親控除で説明できること。
+  { name: "gensen_kojo_hitorioya", expect: (s) =>
+      s.remainder === 350000 && s.matched === null && s.explains !== null &&
+      s.explainCount === 1 && /ひとり親/.test(s.explains || "") && s.unexplained === null },
+  // ★★最重要: ③より多く積んだときにマイナスを0へ丸めず、「合っています」と答えないこと。
+  { name: "gensen_kojo_overshoot", expect: (s) =>
+      s.remainder === -200000 && s.overshoot !== null && s.matched === null &&
+      s.explains === null &&
+      // 住宅ローン控除・所得金額調整控除の2つを名指しで案内する
+      /jutaku/.test(s.notes || "") && /chosei/.test(s.notes || "") },
+  // ★③未入力 → 0円と答えず入力を促す（fail closed）。
+  { name: "gensen_kojo_nosan", expect: (s) =>
+      s.remainder === null && s.matched === null && /入れてください/.test(s.miNyuryoku || "") },
+  // ★参照データ配信不可 → 合否を答えない（fail closed）。
+  { name: "gensen_kojo_nodata", data404: "gensen_kojo_r07.json", expect: (s) =>
+      s.failed && s.remainder === null && s.matched === null && s.loadFailed !== null },
+
   // ── 在職老齢年金 (/zaishoku/) ────────────────────────────────────────────
   // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず条文から出した期待値）。
   { name: "zaishoku", expect: (s) =>

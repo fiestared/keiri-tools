@@ -2795,6 +2795,72 @@ SCENES.zaishoku_noinput = zaishokuScene({ koseiNenkin: 0 });
 // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
 SCENES.zaishoku_nodata = zaishokuScene({});
 
+// ── 源泉徴収票③の検算 (/column/gensen-choshuhyo-mikata/) ──────────────────
+// ★これは「計算ツール」ではなく「利用者の票が合っているかを申告する検算器」なので、
+//   守る向きは1つに絞れる: **合っていないのに『合っています』と答えないこと**。
+const gensenKojoScene = (o) => async () => {
+  const doc = await open("/docs/column/gensen-choshuhyo-mikata/");
+  set(doc, "k-shakai", o.shakai ?? 750000);
+  set(doc, "k-seimei", o.seimei ?? 40000);
+  set(doc, "k-jishin", o.jishin ?? 20000);
+  set(doc, "k-haigusha", o.haigusha ?? 380000);
+  set(doc, "k-shinzoku", o.shinzoku ?? 0);
+  set(doc, "k-kiso", o.kiso ?? 580000);
+  set(doc, "k-tokutei", o.tokutei ?? 1);
+  set(doc, "k-ippan", o.ippan ?? 1);
+  set(doc, "k-rojin", o.rojin ?? 0);
+  set(doc, "k-dokyorojin", o.dokyoRojin ?? 0);
+  set(doc, "k-shogai", o.shogai ?? 0);
+  set(doc, "k-tokubetsu", o.tokubetsu ?? 0);
+  set(doc, "k-dokyotoku", o.dokyoToku ?? 0);
+  set(doc, "k-san", o.san ?? 2780000);
+  click(doc, "k-calc");
+
+  await waitFor(
+    () => /¥|入れてください|読み込めませんでした/.test(text(doc, "k-result")),
+    "③の検算結果",
+  );
+  const body = text(doc, "k-result");
+  const byId = (id) => { const e = doc.getElementById(id); return e ? e.textContent.trim() : null; };
+  const yen = (id) => {
+    const t = byId(id);
+    if (!t || !/\d/.test(t)) return null;
+    const n = Number(t.replace(/[^\d]/g, ""));
+    return /^−/.test(t) ? -n : n;   // ★マイナスの差額を符号ごと読む（0に化けたら落とす）
+  };
+  return {
+    accounted: yen("k-accounted"),
+    san: yen("k-san-out"),
+    remainder: yen("k-remainder"),
+    matched: byId("k-matched"),
+    overshoot: byId("k-overshoot"),
+    explains: byId("k-explains"),
+    explainCount: doc.querySelectorAll("#k-explain-list li").length,
+    unexplained: byId("k-unexplained"),
+    miNyuryoku: byId("k-mi-nyuryoku"),
+    loadFailed: byId("k-load-failed"),
+    notes: [...doc.querySelectorAll("#k-notes li")].map((li) => li.getAttribute("data-note")).join(","),
+    nendo: byId("k-src"),
+    failed: /読み込めませんでした/.test(body),
+    body,
+  };
+};
+// ★看板例（期待値はコアを通さず、票の欄から手で積んだ鎖）:
+//   印字ぶん = 750,000＋40,000＋20,000＋380,000＋580,000 = 1,770,000
+//   人数ぶん = 特定1人 630,000 ＋ その他1人 380,000     = 1,010,000
+//   合計 2,780,000 ＝ ③ → 差額0でぴったり合う
+SCENES.gensen_kojo = gensenKojoScene({});
+// ★★票に金額が出ない控除の対。③だけ 350,000 多い＝ひとり親控除（81条）で説明できる。
+//   「差が残った＝入力ミス」と決めつける実装は、ここで説明候補を出せずに落ちる。
+SCENES.gensen_kojo_hitorioya = gensenKojoScene({ san: 3130000 });
+// ★★最重要の対。住宅借入金等特別控除 200,000 を基礎控除の欄に足してしまった票。
+//   ③より 200,000 多い → 差額は −200,000。**0に丸めて「合っています」と答えたら落ちる。**
+SCENES.gensen_kojo_overshoot = gensenKojoScene({ kiso: 780000 });
+// ★③が空欄 → 0円と答えず入力を促す（fail closed）。
+SCENES.gensen_kojo_nosan = gensenKojoScene({ san: 0 });
+// ★参照データ配信不可 → 控除額を知らないまま合否を答えない（fail closed）。
+SCENES.gensen_kojo_nodata = gensenKojoScene({});
+
 // ── 収入印紙 (/inshi/) ──────────────────────────────────────────────────────
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。
