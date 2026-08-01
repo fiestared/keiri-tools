@@ -219,9 +219,51 @@ const SCENES = [
   { name: "kogaku_small", expect: (s) =>
       s.limit === 80100 && s.limit === s.expectedLimit &&
       s.totalSelf === 30000 && s.refund === 0 && !s.failed },
-  // ★70歳以上は表が別。額を出さずに断る(fail closed)
+  // ★70歳以上の目玉: 外来(通院)だけの人に**世帯上限を当てない**。一般区分・自己負担3万円 →
+  //   外来上限22,000円で頭打ち → 8,000円戻る。世帯上限61,500円を当てると「支給0円」と答える。
+  //   足切り21,000円が70歳未満だけの規律であることも画面が言っていること。
   { name: "kogaku_over70", expect: (s) =>
-      s.saysOver70 && s.limit === null && s.refund === null && !s.failed },
+      s.kubunLabel === "一般" && s.gairaiLimit === 22000 && s.gairaiLimit === s.expectedGairaiLimit &&
+      s.limit === 61500 && s.limit === s.expectedLimit &&
+      s.refund === 8000 && s.refund === s.expectedRefund &&
+      s.finalBurden === 22000 && s.finalBurden === s.expectedBurden &&
+      s.totalSelf === 30000 && s.saysNoFloor &&
+      /令和8年8月/.test(s.tableLabel || "") && !s.failed },
+  // ★二段階の両方が効く: ①外来8,000 ＋ ②世帯20,500 ＝ 28,500円。内訳を画面に出すこと
+  //   (出さないと、外来だけで戻った分が世帯上限のせいに見える)。
+  { name: "kogaku_over70_nyuin", expect: (s) =>
+      s.gairaiRefund === 8000 && s.gairaiRefund === s.expectedGairaiRefund &&
+      s.householdRefund === 20500 && s.householdRefund === s.expectedHouseholdRefund &&
+      s.refund === 28500 && s.refund === s.expectedRefund &&
+      s.finalBurden === 61500 && s.finalBurden === s.expectedBurden && !s.failed },
+  // ★外来上限は個人ごと。本人3万＋配偶者3万 → 各自22,000で頭打ち → 世帯44,000(<61,500)。
+  //   世帯でまとめて1回だけ当てると戻る額が過大になる。ここは世帯上限が効かないので、
+  //   ①を落とすと**支給0円**になる = 二段階の順序そのものの錠前。
+  { name: "kogaku_over70_kojin", expect: (s) =>
+      s.refund === 16000 && s.refund === s.expectedRefund &&
+      s.finalBurden === 44000 && s.finalBurden === s.expectedBurden &&
+      s.totalSelf === 60000 && s.totalSelf < s.limit && !s.failed },
+  // ★現役並みには外来特例が無い(41条の2ただし書)。85,800＋(100万−28.6万)×1% = 92,940円
+  { name: "kogaku_over70_geneki", expect: (s) =>
+      s.kubunLabel === "現役並みⅠ" && s.gairaiLimit === null && s.saysGenekinamiNoGairai &&
+      s.limit === 92940 && s.limit === s.expectedLimit &&
+      s.refund === 207060 && s.refund === s.expectedRefund && !s.failed },
+  // ★低所得者Ⅰに多数回該当は無い。黙って据え置かず画面で申告する(限度額は15,700円のまま)
+  { name: "kogaku_over70_teisho1", expect: (s) =>
+      s.kubunLabel === "低所得者Ⅰ" && s.limit === 15700 && s.limit === s.expectedLimit &&
+      s.saysNoTasukai && s.gairaiLimit === 8000 && !s.failed },
+  // ★一般で標報15万円以下 → 世帯の年間上限が41万円。標報の入力欄を隠すと辿り着けなくなる箇所
+  { name: "kogaku_over70_nenkan", expect: (s) =>
+      s.declaredStd !== null && s.declaredStd <= 150000 &&
+      s.hAnnual === 410000 && s.hAnnual === s.expectedHAnnual &&
+      s.gAnnual === 216000 && s.limit === 61500 && !s.failed },
+  // ★7月診療分は旧表(外来18,000／世帯57,600)。新表を当てると 12,000円 が 8,000円 になる
+  { name: "kogaku_over70_old", expect: (s) =>
+      s.gairaiLimit === 18000 && s.gairaiLimit === s.expectedGairaiLimit &&
+      s.limit === 57600 && s.limit === s.expectedLimit &&
+      s.refund === 12000 && s.refund === s.expectedRefund &&
+      s.gAnnual === 144000 && s.hAnnual === null &&
+      /令和8年7月/.test(s.tableLabel || "") && !s.failed },
   // 限度額の表が配信できないときは、額を出さずに断る(fail closed)
   { name: "kogaku_nodata", data404: "kogaku_r08.json",
     expect: (s) => s.failed && s.limit === null && s.refund === null },

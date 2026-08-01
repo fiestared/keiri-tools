@@ -87,7 +87,7 @@
           "name": "70歳以上の限度額もこの計算機で出せますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "出せません。70歳以上は健康保険法施行令42条3項が定める世帯単位の限度額に加えて、同条5項の「外来だけを個人ごとに見る上限」とその年間の上限があり、表そのものが70歳未満と別です。70歳未満の表を当てはめると誤った額になるため、この計算機は70歳以上を選ぶと額を出さずに断ります。加入先の健康保険にご確認ください。"
+            "text": "出せます。「療養を受けた方の年齢」で70歳以上を選ぶと、健康保険法施行令42条3項の世帯単位の限度額と、同条5項の「外来（通院）だけを個人ごとに見る上限」の二段階で計算します。まず外来の自己負担をその人ごとに外来上限で頭打ちにし、そのあとで入院分と合わせて世帯の限度額と比べます。適用した表と両方の上限額は結果画面に表示します。70歳以上には21,000円の足切りがなく、自己負担をすべて合算できる点も70歳未満と違います。なお現役並み所得者には外来だけの上限がありません。"
           }
         }
       ]
@@ -129,13 +129,28 @@
     <option value="under70" selected>70歳未満</option>
     <option value="over70">70歳以上</option>
   </select>
-  <p class="hint">70歳以上は<b>限度額の表そのものが別</b>です（施行令42条3項・5項）。世帯単位の限度額に加えて、外来だけを個人ごとに見る上限とその年間上限があるため、<b>このツールは70歳以上の額を出しません</b>。</p>
+  <p class="hint">70歳以上は<b>限度額の表そのものが別</b>です（施行令42条3項・5項）。世帯単位の限度額に加えて、<b>外来（通院）だけを個人ごとに見る上限</b>があり、<b>21,000円の足切りがありません</b>（自己負担をすべて合算できます）。<span id="over70-note"></span></p>
 
-  <label for="mode" style="margin-top:14px">区分の決め方</label>
-  <select id="mode">
-    <option value="hoshu" selected>毎月の給料（報酬月額）から標準報酬月額を求める</option>
-    <option value="std">標準報酬月額が分かっているので直接選ぶ</option>
-  </select>
+  <div id="row-over70" style="display:none">
+    <label for="kubun70">70歳以上の所得区分</label>
+    <select id="kubun70">
+      <option value="ippan" selected>一般（標準報酬月額26万円以下）</option>
+      <option value="genekinami">現役並み所得者（3割負担）</option>
+      <option value="teishotoku2">低所得者Ⅱ（住民税非課税の世帯）</option>
+      <option value="teishotoku1">低所得者Ⅰ（住民税非課税＋世帯全員の所得が一定以下）</option>
+    </select>
+    <p class="hint">★<b>標準報酬月額が28万円以上でも、自動的に現役並みになるわけではありません。</b>収入の合計額が<b>520万円未満（1人世帯の場合は383万円未満）</b>であれば、申請により<b>一般</b>の扱いになります（厚労省の表の※2）。加入先から届いている「高齢受給者証」の負担割合でご確認ください。現役並みを選んだ場合だけ、下の標準報酬月額で3つの区分に分かれます。</p>
+    <p class="hint">一般区分を選んだ場合、標準報酬月額は<b>年間上限の判定だけ</b>に使います（<b>15万円以下</b>であることが確認できた方は、世帯の年間上限が53万円ではなく<b>41万円</b>になります）。月ごとの限度額は標準報酬月額では変わりません。</p>
+    <p class="hint">この表は<b>健康保険（協会けんぽ）の70歳以上＝70〜74歳の高齢受給者</b>のものです。75歳以上の方は後期高齢者医療制度に移りますが、<b>月ごとの限度額の額は同じ表</b>です（区分の判定が標準報酬月額ではなく課税所得になります）。</p>
+  </div>
+
+  <div id="row-mode">
+    <label for="mode" style="margin-top:14px">区分の決め方</label>
+    <select id="mode">
+      <option value="hoshu" selected>毎月の給料（報酬月額）から標準報酬月額を求める</option>
+      <option value="std">標準報酬月額が分かっているので直接選ぶ</option>
+    </select>
+  </div>
 
   <div id="row-hoshu">
     <label for="monthly">毎月の給料（報酬月額・円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　通勤手当・残業代を含む総支給額</span></label>
@@ -148,9 +163,11 @@
     <select id="std"></select>
   </div>
 
-  <label style="font-weight:400;display:block;margin-top:10px">
-    <input type="checkbox" id="hikazei"> 市町村民税が非課税の世帯である（区分オ。<b>標準報酬月額より優先します</b>）
-  </label>
+  <div id="row-hikazei">
+    <label style="font-weight:400;display:block;margin-top:10px">
+      <input type="checkbox" id="hikazei"> 市町村民税が非課税の世帯である（区分オ。<b>標準報酬月額より優先します</b>）
+    </label>
+  </div>
 
   <label style="font-weight:400;display:block">
     <input type="checkbox" id="tasukai"> <b>多数回該当</b>：この月より前の12か月のうち、すでに3か月以上 高額療養費が支給されている（＝今回が4回目以降）
@@ -169,7 +186,26 @@
       <label for="ratio1">① 窓口の負担割合</label>
       <select id="ratio1">
         <option value="0.3" selected>3割（70歳未満の原則）</option>
-        <option value="0.2">2割（小学校入学前の子ども）</option>
+        <option value="0.2">2割（小学校入学前の子ども／70〜74歳の一般・低所得）</option>
+        <option value="0.1">1割（75歳以上の一般・低所得）</option>
+      </select>
+    </div>
+  </div>
+  <div class="fee-pair over70-only" style="display:none">
+    <div>
+      <label for="kind1">① 外来（通院）か入院か</label>
+      <select id="kind1">
+        <option value="gairai" selected>外来（通院）</option>
+        <option value="nyuin">入院</option>
+      </select>
+    </div>
+    <div>
+      <label for="person1">① どなたの分か</label>
+      <select id="person1">
+        <option value="本人" selected>本人</option>
+        <option value="配偶者・家族①">配偶者・家族①</option>
+        <option value="家族②">家族②</option>
+        <option value="家族③">家族③</option>
       </select>
     </div>
   </div>
@@ -185,7 +221,26 @@
         <label for="ratio2">② 窓口の負担割合</label>
         <select id="ratio2">
           <option value="0.3" selected>3割</option>
-          <option value="0.2">2割（小学校入学前の子ども）</option>
+          <option value="0.2">2割（小学校入学前の子ども／70〜74歳の一般・低所得）</option>
+        <option value="0.1">1割（75歳以上の一般・低所得）</option>
+        </select>
+      </div>
+    </div>
+    <div class="fee-pair over70-only" style="display:none">
+      <div>
+        <label for="kind2">② 外来（通院）か入院か</label>
+        <select id="kind2">
+          <option value="gairai" selected>外来（通院）</option>
+          <option value="nyuin">入院</option>
+        </select>
+      </div>
+      <div>
+        <label for="person2">② どなたの分か</label>
+        <select id="person2">
+          <option value="本人" selected>本人</option>
+          <option value="配偶者・家族①">配偶者・家族①</option>
+          <option value="家族②">家族②</option>
+          <option value="家族③">家族③</option>
         </select>
       </div>
     </div>
@@ -198,7 +253,26 @@
         <label for="ratio3">③ 窓口の負担割合</label>
         <select id="ratio3">
           <option value="0.3" selected>3割</option>
-          <option value="0.2">2割（小学校入学前の子ども）</option>
+          <option value="0.2">2割（小学校入学前の子ども／70〜74歳の一般・低所得）</option>
+        <option value="0.1">1割（75歳以上の一般・低所得）</option>
+        </select>
+      </div>
+    </div>
+    <div class="fee-pair over70-only" style="display:none">
+      <div>
+        <label for="kind3">③ 外来（通院）か入院か</label>
+        <select id="kind3">
+          <option value="gairai" selected>外来（通院）</option>
+          <option value="nyuin">入院</option>
+        </select>
+      </div>
+      <div>
+        <label for="person3">③ どなたの分か</label>
+        <select id="person3">
+          <option value="本人" selected>本人</option>
+          <option value="配偶者・家族①">配偶者・家族①</option>
+          <option value="家族②">家族②</option>
+          <option value="家族③">家族③</option>
         </select>
       </div>
     </div>
@@ -211,7 +285,26 @@
         <label for="ratio4">④ 窓口の負担割合</label>
         <select id="ratio4">
           <option value="0.3" selected>3割</option>
-          <option value="0.2">2割（小学校入学前の子ども）</option>
+          <option value="0.2">2割（小学校入学前の子ども／70〜74歳の一般・低所得）</option>
+        <option value="0.1">1割（75歳以上の一般・低所得）</option>
+        </select>
+      </div>
+    </div>
+    <div class="fee-pair over70-only" style="display:none">
+      <div>
+        <label for="kind4">④ 外来（通院）か入院か</label>
+        <select id="kind4">
+          <option value="gairai" selected>外来（通院）</option>
+          <option value="nyuin">入院</option>
+        </select>
+      </div>
+      <div>
+        <label for="person4">④ どなたの分か</label>
+        <select id="person4">
+          <option value="本人" selected>本人</option>
+          <option value="配偶者・家族①">配偶者・家族①</option>
+          <option value="家族②">家族②</option>
+          <option value="家族③">家族③</option>
         </select>
       </div>
     </div>
@@ -254,7 +347,7 @@
 <p>なりません。入院時の食事療養・生活療養の自己負担は施行令41条1項が明文で除いており、差額ベッド代・先進医療の技術料・診断書料など保険がきかない費用も対象外です。窓口で払った総額をそのまま入れると、戻ってくる額が実際より多く出ます。</p>
 
 <h3>70歳以上の限度額もこの計算機で出せますか？</h3>
-<p>出せません。70歳以上は健康保険法施行令42条3項が定める世帯単位の限度額に加えて、同条5項の「外来だけを個人ごとに見る上限」とその年間の上限があり、表そのものが70歳未満と別です。70歳未満の表を当てはめると誤った額になるため、この計算機は70歳以上を選ぶと額を出さずに断ります。加入先の健康保険にご確認ください。</p>
+<p>出せます。「療養を受けた方の年齢」で70歳以上を選ぶと、健康保険法施行令42条3項の世帯単位の限度額と、同条5項の「外来（通院）だけを個人ごとに見る上限」の二段階で計算します。まず外来の自己負担をその人ごとに外来上限で頭打ちにし、そのあとで入院分と合わせて世帯の限度額と比べます。適用した表と両方の上限額は結果画面に表示します。70歳以上には21,000円の足切りがなく、自己負担をすべて合算できる点も70歳未満と違います。なお現役並み所得者には外来だけの上限がありません。</p>
 </section>
 <section class="faq rel-block">
 <h2>関連する解説</h2>
@@ -305,15 +398,132 @@ $("std").innerHTML = KENKO_GRADES.map(([g, s]) =>
 
 const syncMode = () => {
   const m = $("mode").value;
-  $("row-hoshu").style.display = m === "hoshu" ? "" : "none";
-  $("row-std").style.display = m === "std" ? "" : "none";
+  // 70歳以上で現役並み以外なら、標準報酬月額そのものが要らない（区分は所得区分で決まる）
+  const need = needStd();   // ← 呼ばれるのは needStd 定義後（末尾の syncAge()）
+  $("row-mode").style.display = need ? "" : "none";
+  $("row-hoshu").style.display = need && m === "hoshu" ? "" : "none";
+  $("row-std").style.display = need && m === "std" ? "" : "none";
 };
 $("mode").addEventListener("change", syncMode);
-syncMode();
+
+// 70歳以上は入力そのものが違う（外来/入院・誰の分・所得区分）ので、画面を切り替える
+const isOver70 = () => $("agegroup").value === "over70";
+// 対応している診療年月・70歳以上の外来上限は**データに持たせて画面に出す**（ページに手書きしない）
+dataReady.then((ok) => {
+  if (!ok || !DATA || !DATA.over70) return;
+  const t = DATA.over70.tables[DATA.over70.tables.length - 1];
+  const ip = t.kubun.find((x) => x.key === "ippan");
+  $("over70-note").innerHTML = `いまは<b>${t.label}</b>で計算します（一般区分なら外来 <b>${ip.gairai.toLocaleString("ja-JP")}円</b>／世帯 <b>${ip.base.toLocaleString("ja-JP")}円</b>）。`;
+}).catch(() => {});
+const syncAge = () => {
+  const o = isOver70();
+  $("row-over70").style.display = o ? "" : "none";
+  document.querySelectorAll(".over70-only").forEach((el) => { el.style.display = o ? "" : "none"; });
+  // 70歳未満だけの入力を隠す（非課税チェックは70歳以上では低所得者Ⅱ・Ⅰが受け持つ）
+  $("row-hikazei").style.display = o ? "none" : "";
+  syncMode();
+};
+// 標報が要るのは「70歳未満」「70歳以上の現役並み」（3区分の切り分け）、
+// そして「70歳以上の一般」（★標報15万円以下だと年間上限が53万円→41万円に下がるため）。
+// 低所得者Ⅱ・Ⅰは標報を使わないので隠す。
+// ★一般で隠してしまうと、41万円の軽減に**利用者が辿り着けなくなる**（単体テストは入力を
+//   自分で与えるので、この穴を原理的に検査しない）。
+const needStd = () => !isOver70() || ["genekinami", "ippan"].includes($("kubun70").value);
+$("agegroup").addEventListener("change", syncAge);
+$("kubun70").addEventListener("change", syncAge);
+syncAge();
 
 const rows = () => [1, 2, 3, 4]
-  .map((i) => ({ label: "①②③④"[i - 1], medical: Number($("medical" + i).value), ratio: Number($("ratio" + i).value) }))
+  .map((i) => ({
+    label: "①②③④"[i - 1],
+    medical: Number($("medical" + i).value),
+    ratio: Number($("ratio" + i).value),
+    kind: $("kind" + i).value,
+    person: $("person" + i).value,
+  }))
   .filter((r) => r.medical > 0);
+
+// ★70歳以上は二段階（①個人ごとの外来を頭打ち → ②世帯合算して頭打ち）。
+//   どちらの段でいくら戻ったのかを画面に出す。出さないと、外来だけの人が
+//   「世帯上限に届いていないから0円」と誤解する（実際は外来上限で戻っている）。
+function renderOver70(box, r) {
+  const k = r.kubun;
+  const formula = k.threshold
+    ? `${yen(k.base)} ＋（${yen(r.totalMedical)} − ${yen(k.threshold)}）× 1% ＝ ${yen(r.limit)}`
+    : `${yen(k.base)}（この区分は医療費の額にかかわらず定額です）`;
+
+  const rowHtml = r.rows.map((row) =>
+    `<tr><td>${row.label} ${row.person}・<b>${row.kind === "nyuin" ? "入院" : "外来"}</b></td>` +
+    `<td>医療費 ${yen(row.medical)}（${Math.round(row.ratio * 10)}割）</td>` +
+    `<td>自己負担 ${yen(row.self)}</td></tr>`
+  ).join("");
+
+  const personHtml = r.persons.map((p) =>
+    `<tr><td>${p.person} の外来</td><td>${yen(p.gairaiSelf)}</td>` +
+    `<td>${p.capped ? `<b>${yen(p.gairaiCapped)} に頭打ち</b>（${yen(p.refund)} が戻る）` : "上限に届いていません"}</td></tr>`
+  ).join("");
+
+  const gairaiHtml = r.gairaiLimit != null
+    ? `<p style="margin:12px 0 4px"><b>① 外来（通院）だけを個人ごとに見る上限：${yen(r.gairaiLimit)}／人・月</b>
+       <span style="font-size:12px;color:var(--sub)">（施行令42条5項）</span></p>
+       <table class="tbl"><tbody>${personHtml || `<tr><td colspan="3">外来の受診がありません</td></tr>`}</tbody></table>`
+    : `<div class="callout" style="margin-top:12px"><b>現役並み所得者には外来だけの上限（外来特例）がありません。</b>
+       外来も入院もまとめて、下の世帯単位の限度額だけで判定します。</div>`;
+
+  const ann = r.annual;
+  const annHtml = ann ? `
+    <div class="callout" style="margin-top:12px"><b>年間上限：あとから申請すると戻る場合があります</b>
+    <p style="margin:8px 0 0;font-size:13px">1年の区切りは<b>${ymJa(ann.period.from)} 診療分 〜 ${ymJa(ann.period.through)} 診療分</b>です（暦年でも年度でもありません。施行令41条の2の「計算期間」）。</p>
+    ${ann.gairai != null ? `<p style="margin:8px 0 0;font-size:13px">・<b>外来の年間上限：${yen(ann.gairai)}</b>（個人ごと・外来だけの合計）</p>` : ""}
+    ${ann.household != null ? `<p style="margin:4px 0 0;font-size:13px">・<b>世帯の年間上限：${yen(ann.household)}</b>${ann.householdReduced ? "（標準報酬月額15万円以下のため軽減後の額です。保険者が確認できた場合）" : ""}</p>` : ""}
+    <p style="margin:8px 0 0;font-size:13px">★<b>これは窓口で引かれる仕組みではありません。</b>窓口では上の月額の限度額（${yen(r.limit)}）まで払い、
+    <b>1年が終わったあとに保険者へ申請して払い戻し（償還払い）を受けます</b>。申請しないと戻りません。</p>
+    <p style="margin:8px 0 0;font-size:12px;color:var(--sub)">このツールは<b>上限額と期間をお知らせするだけで、あなたの年間累計は計算していません</b>。加入先の健康保険にご確認ください。</p>
+    </div>` : "";
+
+  box.innerHTML = `
+    <p style="margin:0 0 6px">あなたの区分は <b>${k.label}</b>（${k.criteria}）です。<span style="font-size:12px;color:var(--sub)">${k.item}</span></p>
+    <p style="margin:0 0 6px;font-size:13px;color:var(--sub)">適用した表：${r.table.label}</p>
+    ${needStd() ? `<p style="margin:0 0 6px;font-size:13px;color:var(--sub)">判定に使った標準報酬月額：${Number($("mode").value === "std" ? $("std").value : kenkoGrade(Number($("monthly").value)).standard).toLocaleString("ja-JP")}円</p>` : ""}
+    <p style="margin:0 0 12px;font-size:13px;color:var(--sub)">70歳以上は<b>21,000円の足切りがなく、自己負担をすべて合算できます</b>（70歳未満だけの規律です）。</p>
+
+    <table class="tbl"><tbody>
+      <tr><td>合算した医療費（10割）</td><td><b>${yen(r.totalMedical)}</b></td></tr>
+      <tr><td>窓口で払った自己負担の合計</td><td><b>${yen(r.totalSelf)}</b></td></tr>
+      <tr><td>高額療養費として支給される額</td><td><b style="font-size:20px">${yen(r.refund)}</b></td></tr>
+      <tr><td>最終的に自分が負担する額</td><td><b>${yen(r.finalBurden)}</b></td></tr>
+    </tbody></table>
+
+    <p style="margin:12px 0 4px"><b>受診の内訳</b></p>
+    <table class="tbl"><tbody>${rowHtml}</tbody></table>
+
+    ${gairaiHtml}
+
+    <p style="margin:12px 0 4px"><b>② 世帯単位の限度額（入院を含む）：${yen(r.limit)}</b>
+      <span style="font-size:12px;color:var(--sub)">（施行令42条3項）</span></p>
+    <p style="margin:0 0 8px;font-family:ui-monospace,monospace;font-size:13px">${r.tasukaiApplied ? `多数回該当 ${yen(r.limit)}` : formula}</p>
+    <table class="tbl"><tbody>
+      <tr><td>①のあとの外来分</td><td>${yen(r.gairaiSelfCapped)}</td></tr>
+      <tr><td>入院分</td><td>${yen(r.nyuinSelf)}</td></tr>
+      <tr><td>世帯で合算した額</td><td><b>${yen(r.householdBase)}</b></td></tr>
+      <tr><td>②で戻る額</td><td><b>${yen(r.householdRefund)}</b></td></tr>
+    </tbody></table>
+    ${r.gairaiRefund > 0 ? `<p style="margin:8px 0 0;font-size:13px">支給額の内訳：<b>①外来 ${yen(r.gairaiRefund)}</b> ＋ <b>②世帯 ${yen(r.householdRefund)}</b> ＝ ${yen(r.refund)}</p>` : ""}
+
+    ${r.tasukai && !r.tasukaiAvailable
+      ? `<div class="callout" style="margin-top:12px"><b>この区分には多数回該当がありません。</b>
+         ${k.label}の限度額には多数回該当の軽減が定められていないため（施行令42条3項${k.key === "teishotoku1" ? "6" : "5"}号にただし書がありません）、
+         多数回該当にチェックがあっても限度額は ${yen(r.limit)} のままです。</div>`
+      : ""}
+    ${!r.tasukai && r.tasukaiAvailable
+      ? `<div class="callout" style="margin-top:12px"><b>この先も治療が続く場合</b>：直近12か月で高額療養費が支給された月が3か月以上になると、
+         <b>4回目の月から世帯単位の限度額が ${yen(r.limitIfTasukai)} に下がります</b>（多数回該当）。
+         なお<b>外来だけの上限で受けた回数は、この月数に数えません</b>（協会けんぽ）。</div>`
+      : ""}
+
+    ${annHtml}
+  `;
+}
 
 $("calc").addEventListener("click", async () => {
   const ready = await dataReady;      // ← 到着を待つ。回線が遅い人だけ空データで計算される事故を防ぐ
@@ -342,6 +552,7 @@ $("calc").addEventListener("click", async () => {
     shinryoYM: $("shinryo").value,
     hikazei: $("hikazei").checked,
     standardMonthly: Number($("monthly").value) > 0 || $("mode").value === "std" ? standardMonthly : null,
+    incomeKind: isOver70() ? $("kubun70").value : null,
     tasukai: $("tasukai").checked,
     items,
   }, DATA);
@@ -354,6 +565,8 @@ $("calc").addEventListener("click", async () => {
     box.innerHTML = `<div class="callout"><b>区分が決まりません。</b>${r.message}</div>`;
     return;
   }
+
+  if (r.ageGroup === "over70") { renderOver70(box, r); return; }
 
   const k = r.kubun;
   const excess = k.threshold ? Math.max(0, r.totalMedical - k.threshold) : 0;

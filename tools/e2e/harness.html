@@ -1105,9 +1105,143 @@ SCENES.kogaku_gassan = kogakuScene({ meds: [[1000000, 0.3], [50000, 0.3]] });
 //   条文の読替えを落とすと 80,100−(267,000−100,000)×1% = 78,430円と低く出る。正しくは80,100円。
 SCENES.kogaku_small = kogakuScene({ meds: [[100000, 0.3]] });
 
-// ★70歳以上は表が別(施行令42条3項・5項)。**額を出さずに断る**(fail closed)。
-//   70歳未満の表を当てはめると、区分ウの人で80,100円と57,600円がずれる。
-SCENES.kogaku_over70 = kogakuScene({ ageGroup: "over70" });
+// ★70歳以上(施行令42条3項・5項)。**二段階**で計算する:
+//   ① 外来(通院)だけを**個人ごと**に外来上限で頭打ち(5項)
+//   ② ①のあとの外来分＋入院分を**世帯合算**して世帯上限で頭打ち(3項)
+//   期待値はここに書き直した独立実装(kogaku_core.js は通さない)。額は施行令42条3項・5項の実額と、
+//   令和8年8月からは協会けんぽ「70歳以上の方の区分(令和8年8月〜令和9年7月)」の公表表から直に書き写す。
+//   ★70歳以上に**21,000円の足切りは無い**(協会けんぽ「自己負担額をすべて合算できます」)。
+const KOGAKU70_OLD = {   // ～令和8年7月診療分: 施行令42条3項1〜6号・5項1〜2号・10項の実額
+  genekinami3: { base: 252600, th: 842000, many: 140100, gairai: null,  gAnnual: null,   hAnnual: null },
+  genekinami2: { base: 167400, th: 558000, many:  93000, gairai: null,  gAnnual: null,   hAnnual: null },
+  genekinami1: { base:  80100, th: 267000, many:  44400, gairai: null,  gAnnual: null,   hAnnual: null },
+  ippan:       { base:  57600, th: null,   many:  44400, gairai: 18000, gAnnual: 144000, hAnnual: null },
+  teishotoku2: { base:  24600, th: null,   many:   null, gairai:  8000, gAnnual: null,   hAnnual: null },
+  teishotoku1: { base:  15000, th: null,   many:   null, gairai:  8000, gAnnual: null,   hAnnual: null },
+};
+const KOGAKU70_R0808 = {  // 令和8年8月〜令和9年7月診療分: 協会けんぽ・厚労省の公表表
+  genekinami3: { base: 270300, th: 901000, many: 140100, gairai: null,  gAnnual: null,   hAnnual: 1680000 },
+  genekinami2: { base: 179100, th: 597000, many:  93000, gairai: null,  gAnnual: null,   hAnnual: 1110000 },
+  genekinami1: { base:  85800, th: 286000, many:  44400, gairai: null,  gAnnual: null,   hAnnual:  530000 },
+  ippan:       { base:  61500, th: null,   many:  44400, gairai: 22000, gAnnual: 216000, hAnnual:  530000 },
+  teishotoku2: { base:  25700, th: null,   many:  24600, gairai: 11000, gAnnual:  96000, hAnnual:  290000 },
+  teishotoku1: { base:  15700, th: null,   many:   null, gairai:  8000, gAnnual: null,   hAnnual:  180000 },
+};
+// meds: [医療費, 割合, "gairai"|"nyuin", 誰の分]
+// 現役並みは標準報酬月額で3つに分かれる(83万/53万)。画面が申告した標報を読んで割り当てる
+// (等級表そのものは shaho のシーンが見ている。ここでは条文の境界だけを書く)。
+const KOGAKU70_KEY = (kubunKey, declaredStd) =>
+  kubunKey !== "genekinami" ? kubunKey
+  : declaredStd >= 830000 ? "genekinami3" : declaredStd >= 530000 ? "genekinami2" : "genekinami1";
+const KOGAKU70_INDEP = (kubunKey, meds, tasukai, shinryo, declaredStd) => {
+  const t = (shinryo >= "2026-08" ? KOGAKU70_R0808 : KOGAKU70_OLD)[KOGAKU70_KEY(kubunKey, declaredStd)];
+  const rows = meds.map(([m, ratio, kind, person]) =>
+    ({ m, self: Math.round(m * ratio), kind: kind || "gairai", person: person || "本人" }));
+  const totalMedical = rows.reduce((s, r) => s + r.m, 0);       // ★足切り無し
+  const totalSelf = rows.reduce((s, r) => s + r.self, 0);
+  // ① 外来を個人ごとに頭打ち
+  let gairaiRefund = 0, gairaiCapped = 0;
+  const gairaiRows = rows.filter((r) => r.kind === "gairai");
+  if (t.gairai === null) {
+    gairaiCapped = gairaiRows.reduce((s, r) => s + r.self, 0);
+  } else {
+    const names = [...new Set(gairaiRows.map((r) => r.person))];
+    for (const n of names) {
+      const before = gairaiRows.filter((r) => r.person === n).reduce((s, r) => s + r.self, 0);
+      const after = Math.min(before, t.gairai);
+      gairaiRefund += before - after;
+      gairaiCapped += after;
+    }
+  }
+  // ② 世帯合算
+  const nyuinSelf = rows.filter((r) => r.kind === "nyuin").reduce((s, r) => s + r.self, 0);
+  const householdBase = gairaiCapped + nyuinSelf;
+  const limit = (tasukai && t.many !== null) ? t.many
+    : t.th === null ? t.base
+    : t.base + Math.floor(Math.max(0, totalMedical - t.th) * 0.01 + 0.5);
+  const householdRefund = Math.max(0, householdBase - limit);
+  // ★一般区分は標準報酬月額15万円以下だと世帯の年間上限が53万円→41万円(協会けんぽ※5・厚労省※6)
+  const hAnnual = (kubunKey === "ippan" && t.hAnnual !== null && declaredStd !== null && declaredStd <= 150000)
+    ? 410000 : t.hAnnual;
+  return { limit, gairaiLimit: t.gairai, totalMedical, totalSelf, gairaiRefund, householdRefund,
+           refund: gairaiRefund + householdRefund, finalBurden: Math.min(householdBase, limit),
+           householdBase, gAnnual: t.gAnnual, hAnnual };
+};
+
+const kogaku70Scene = ({ kubun70 = "ippan", monthly = 300000, tasukai = false,
+                         meds = [[100000, 0.3, "gairai", "本人"]], shinryo = "2026-08" }) => async () => {
+  const doc = await open("/docs/kogaku-ryoyohi/");
+  set(doc, "shinryo", shinryo);
+  set(doc, "agegroup", "over70");
+  set(doc, "kubun70", kubun70);
+  set(doc, "monthly", String(monthly));
+  if (tasukai) doc.getElementById("tasukai").click();
+  meds.forEach(([m, ratio, kind, person], i) => {
+    set(doc, "medical" + (i + 1), String(m));
+    set(doc, "ratio" + (i + 1), String(ratio));
+    set(doc, "kind" + (i + 1), kind || "gairai");
+    set(doc, "person" + (i + 1), person || "本人");
+  });
+  for (let i = meds.length; i < 4; i++) set(doc, "medical" + (i + 1), "");
+  click(doc, "calc");
+
+  await waitFor(
+    () => /世帯単位の限度額|読み込めませんでした|対象外|区分が決まりません/.test(text(doc, "result")),
+    "高額療養費(70歳以上)の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  const declaredStd = num(/判定に使った標準報酬月額：([\d,]+)円/);
+  const e = KOGAKU70_INDEP(kubun70, meds, tasukai, shinryo, declaredStd);
+
+  return {
+    kubun70, shinryo, declaredStd,
+    expectedLimit: e.limit, expectedRefund: e.refund, expectedBurden: e.finalBurden,
+    expectedGairaiLimit: e.gairaiLimit, expectedGairaiRefund: e.gairaiRefund,
+    expectedHouseholdRefund: e.householdRefund, expectedMedical: e.totalMedical,
+    expectedGAnnual: e.gAnnual, expectedHAnnual: e.hAnnual,
+    kubunLabel: (body.match(/あなたの区分は\s*(現役並みⅠ|現役並みⅡ|現役並みⅢ|一般|低所得者Ⅱ|低所得者Ⅰ)/) || [])[1] || null,
+    limit: num(/世帯単位の限度額（入院を含む）：¥([\d,]+)/),
+    gairaiLimit: num(/外来（通院）だけを個人ごとに見る上限：¥([\d,]+)／人・月/),
+    refund: num(/高額療養費として支給される額\s*¥([\d,]+)/),
+    finalBurden: num(/最終的に自分が負担する額\s*¥([\d,]+)/),
+    totalMedical: num(/合算した医療費（10割）\s*¥([\d,]+)/),
+    totalSelf: num(/窓口で払った自己負担の合計\s*¥([\d,]+)/),
+    householdRefund: num(/②で戻る額\s*¥([\d,]+)/),
+    gairaiRefund: num(/支給額の内訳：①外来\s*¥([\d,]+)/),
+    gAnnual: num(/外来の年間上限：¥([\d,]+)/),
+    hAnnual: num(/世帯の年間上限：¥([\d,]+)/),
+    annualPeriod: (body.match(/1年の区切りは(\d{4}年\d+月 診療分 〜 \d{4}年\d+月 診療分)です/) || [])[1] || null,
+    tableLabel: (body.match(/適用した表：(.+?)\s*70歳以上は/) || [])[1] || null,
+    saysNoFloor: /21,000円の足切りがなく/.test(body),
+    saysGenekinamiNoGairai: /現役並み所得者には外来だけの上限（外来特例）がありません/.test(body),
+    saysNoTasukai: /この区分には多数回該当がありません/.test(body),
+    saysRetrospective: /窓口で引かれる仕組みではありません/.test(body) && /償還払い/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+
+// ★このツールの目玉: **外来だけの人に世帯上限を当てない**。
+//   一般区分・外来のみ・医療費10万円3割＝自己負担3万円 → 外来上限22,000円で頭打ち → 8,000円戻る。
+//   世帯上限61,500円を当てると「支給0円・負担30,000円」と答える(実際の負担の1.36倍)。
+SCENES.kogaku_over70 = kogaku70Scene({});
+// ★二段階の両方が効くケース: 外来3万(→22,000)＋入院6万 → 世帯82,000 > 61,500
+//   → ①8,000 ＋ ②20,500 ＝ 28,500円が戻り、負担は61,500円。
+SCENES.kogaku_over70_nyuin = kogaku70Scene({ meds: [[100000, 0.3, "gairai", "本人"], [200000, 0.3, "nyuin", "本人"]] });
+// ★外来上限は**個人ごと**。本人3万＋配偶者3万 → 各自22,000に頭打ち → 世帯44,000(<61,500)。
+//   世帯でまとめて1回だけ当てると、戻る額が過大になる。
+SCENES.kogaku_over70_kojin = kogaku70Scene({ meds: [[100000, 0.3, "gairai", "本人"], [100000, 0.3, "gairai", "配偶者・家族①"]] });
+// ★現役並みには外来特例が無い。医療費100万3割 → 85,800＋(100万−28.6万)×1% ＝ 92,940円。
+SCENES.kogaku_over70_geneki = kogaku70Scene({ kubun70: "genekinami", meds: [[1000000, 0.3, "gairai", "本人"]] });
+// ★低所得者Ⅰには多数回該当が無い(3項6号にただし書が無い)。黙って据え置かず、画面で申告する。
+SCENES.kogaku_over70_teisho1 = kogaku70Scene({ kubun70: "teishotoku1", tasukai: true, meds: [[500000, 0.3, "nyuin", "本人"]] });
+// ★7月診療分は**旧表**(外来18,000／世帯57,600)。新表を当てると答えが変わる。
+SCENES.kogaku_over70_old = kogaku70Scene({ shinryo: "2026-07" });
+// ★一般区分で標準報酬月額15万円以下 → 世帯の年間上限が53万円ではなく**41万円**。
+//   一般では標報の入力欄を隠したくなるが、隠すと**利用者がこの軽減に辿り着けない**
+//   (単体テストは入力を自分で与えるので、この穴を原理的に検査しない)。
+SCENES.kogaku_over70_nenkan = kogaku70Scene({ monthly: 130000 });
 
 // 限度額の表を配信できない → 額を出さず申告すること(fail closed)。
 // 限度額が分からないまま「いくら戻る」と答えると、戻らない額を戻ると言うことになる。

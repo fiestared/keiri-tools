@@ -138,11 +138,13 @@ ok(K.calcKogaku({ ageGroup: "under70", shinryoYM: YM, standardMonthly: 300000, t
 const cmp = run({ standardMonthly: 300000 });
 ok(cmp.limitNormal === 87430 && cmp.limitIfTasukai === 44400, "通常月と多数回の両方を返していない");
 
-// ── 10. ★70歳以上は額を出さない（fail closed）──────────────────────────
-const old = K.calcKogaku({ ageGroup: "over70", shinryoYM: YM, standardMonthly: 300000, items: one(1000000) }, D);
-ok(old.supported === false, "70歳以上に70歳未満の表で答えてしまっている");
-ok(old.limit === undefined, "70歳以上なのに限度額を返している");
-ok(/70歳以上/.test(old.message), "70歳以上であることを利用者に申告していない");
+// ── 10. ★70歳以上に70歳未満の表を当ててしまわないこと ────────────────────
+// （70歳以上は §13 で本格的に見る。ここでは「同じ入力で答えが違う」ことだけを固定する）
+const o70 = K.calcKogaku({ ageGroup: "over70", shinryoYM: YM, incomeKind: "ippan", items: one(1000000) }, D);
+const u70 = run({ standardMonthly: 300000 });
+ok(o70.determined === true, "70歳以上の一般区分に答えられていない");
+ok(o70.limit !== u70.limit, "70歳以上と70歳未満が同じ限度額になっている（表を取り違えている）");
+ok(o70.kubun.label === "一般", "70歳以上の区分が一般になっていない");
 
 // ── 11. 支給額と、最後に残る負担 ──────────────────────────────────
 const r = run({ standardMonthly: 300000 });
@@ -251,6 +253,169 @@ for (const k of ["a", "i", "u", "o"]) {
   const ratio = CAPS[k] / (REV[k].tasukai * 12);
   ok(ratio > 0.95 && ratio <= 1.0, `区分${k} の年間上限が「多数回該当×12」から外れている（比 ${ratio.toFixed(3)}）`);
 }
+
+// ══════════════ 13. ★70歳以上（施行令42条3項・5項）══════════════════════
+//
+// オラクルの作り方（実装と別ルート）:
+//  - 額 …… **e-Gov の施行令42条3項の6つの号・5項の2つの号・10項**を直に書き写した値（～令和8年7月）と、
+//           **協会けんぽ／厚労省の公表表**を直に書き写した値（令和8年8月～）。両者は別々の資料。
+//  - 手順 …… 支給額は「①個人ごとの外来を頭打ち → ②世帯合算して頭打ち」を**テスト側で手計算**して置く。
+//           core を通した値ではないので、二段階の順序を入れ替えると落ちる。
+const YM70_OLD = "2026-07";     // 旧表
+const YM70_NEW = "2026-08";     // 新表（＝いまの月）
+const O = D.over70;
+const t70 = (id) => O.tables.find((t) => t.id === id);
+const k70 = (id, key) => t70(id).kubun.find((k) => k.key === key);
+const run70 = (o) => K.calcKogaku({ ageGroup: "over70", shinryoYM: YM70_NEW, ...o }, D);
+/** 行の作りかた: 人ごと・外来/入院ごとに1行 */
+const row = (medical, kind, person = "本人", ratio = 0.3) => ({ medical, ratio, kind, person });
+
+// 13-1. データが**条文**の額を持っていること（～令和8年7月）
+const OLD70 = "over70_before_2026_08";
+ok(k70(OLD70, "ippan").base === 57600 && k70(OLD70, "ippan").tasukai === 44400, "3項1号（一般 57,600／多数回 44,400）と違う");
+ok(k70(OLD70, "genekinami3").base === 252600 && k70(OLD70, "genekinami3").threshold === 842000 && k70(OLD70, "genekinami3").tasukai === 140100, "3項2号と違う");
+ok(k70(OLD70, "genekinami2").base === 167400 && k70(OLD70, "genekinami2").threshold === 558000 && k70(OLD70, "genekinami2").tasukai === 93000, "3項3号と違う");
+ok(k70(OLD70, "genekinami1").base === 80100 && k70(OLD70, "genekinami1").threshold === 267000 && k70(OLD70, "genekinami1").tasukai === 44400, "3項4号と違う");
+ok(k70(OLD70, "teishotoku2").base === 24600, "3項5号（低所得Ⅱ 24,600）と違う");
+ok(k70(OLD70, "teishotoku1").base === 15000, "3項6号（低所得Ⅰ 15,000）と違う");
+ok(k70(OLD70, "ippan").gairai === 18000, "5項1号（一般の外来 18,000）と違う");
+ok(k70(OLD70, "teishotoku2").gairai === 8000 && k70(OLD70, "teishotoku1").gairai === 8000,
+   "5項2号（低所得Ⅱ・Ⅰとも外来 8,000）と違う ★協会けんぽの表では rowspan で1セルに畳まれている箇所");
+ok(k70(OLD70, "ippan").gairai_annual === 144000, "42条10項（外来の年間上限 144,000）と違う");
+// 現役並みには外来特例が無い（41条の2ただし書が74条1項3号の者を除いている）
+for (const g of ["genekinami1", "genekinami2", "genekinami3"]) {
+  ok(k70(OLD70, g).gairai === null, `${g} に外来特例が付いている（現役並みには無い）`);
+  ok(k70(OLD70, g).gairai_annual === null, `${g} に外来の年間上限が付いている`);
+}
+// 低所得者には多数回該当が無い（3項5号・6号にただし書が無い）
+ok(k70(OLD70, "teishotoku2").tasukai === null && k70(OLD70, "teishotoku1").tasukai === null,
+   "旧表の低所得者に多数回該当が付いている（条文にただし書が無い）");
+// 旧表に年間上限（世帯）は無い＝令和8年8月の新設
+for (const k of t70(OLD70).kubun) ok(k.household_annual === null, `旧表の${k.label}に世帯の年間上限が付いている（8月新設のはず）`);
+
+// 13-2. データが**公表表**の額を持っていること（令和8年8月～令和9年7月）
+const NEW70 = "over70_from_2026_08";
+ok(k70(NEW70, "genekinami3").base === 270300 && k70(NEW70, "genekinami3").threshold === 901000 && k70(NEW70, "genekinami3").household_annual === 1680000, "新表の現役並みⅢと違う");
+ok(k70(NEW70, "genekinami2").base === 179100 && k70(NEW70, "genekinami2").threshold === 597000 && k70(NEW70, "genekinami2").household_annual === 1110000, "新表の現役並みⅡと違う");
+ok(k70(NEW70, "genekinami1").base === 85800 && k70(NEW70, "genekinami1").threshold === 286000 && k70(NEW70, "genekinami1").household_annual === 530000, "新表の現役並みⅠと違う");
+ok(k70(NEW70, "ippan").base === 61500 && k70(NEW70, "ippan").gairai === 22000 && k70(NEW70, "ippan").gairai_annual === 216000 && k70(NEW70, "ippan").household_annual === 530000, "新表の一般と違う");
+ok(k70(NEW70, "ippan").household_annual_reduced === 410000 && k70(NEW70, "ippan").household_annual_reduced_if_std_max === 150000, "新表の一般の軽減（標報15万以下→41万）と違う");
+ok(k70(NEW70, "teishotoku2").base === 25700 && k70(NEW70, "teishotoku2").gairai === 11000 && k70(NEW70, "teishotoku2").gairai_annual === 96000 && k70(NEW70, "teishotoku2").tasukai === 24600 && k70(NEW70, "teishotoku2").household_annual === 290000, "新表の低所得者Ⅱと違う");
+ok(k70(NEW70, "teishotoku1").base === 15700 && k70(NEW70, "teishotoku1").gairai === 8000 && k70(NEW70, "teishotoku1").gairai_annual === null && k70(NEW70, "teishotoku1").household_annual === 180000, "新表の低所得者Ⅰと違う");
+// 現役並みは70歳未満の新表と同額（別々の資料が噛み合うこと＝外部オラクル）
+const NEWU = D.tables.find((t) => t.id === "from_2026_08");
+for (const [g, u] of [["genekinami3", "a"], ["genekinami2", "i"], ["genekinami1", "u"]]) {
+  const a = k70(NEW70, g), b = NEWU.kubun.find((k) => k.key === u);
+  ok(a.base === b.base && a.threshold === b.threshold && a.tasukai === b.tasukai,
+     `現役並み(${g}) が70歳未満(${u})と食い違う（公表表では同額のはず）`);
+}
+
+// 13-3. ★外来だけの人に世帯上限を当てないこと（このツールの目玉・落とすと2.8倍の負担を答える）
+// 一般・外来のみ・医療費100,000円3割＝自己負担30,000円。外来上限22,000円（新表）
+//   → 支給 8,000円 / 手元に残る負担 22,000円。世帯上限61,500円を当てると支給0円になる
+const g1 = run70({ incomeKind: "ippan", items: [row(100000, "gairai")] });
+ok(g1.gairaiLimit === 22000, "外来上限（個人ごと）が22,000円になっていない");
+ok(g1.totalSelf === 30000, "窓口負担が30,000円になっていない");
+ok(g1.refund === 8000, `外来だけの支給額=${g1.refund}（30,000−22,000＝8,000円のはず）`);
+ok(g1.finalBurden === 22000, `外来だけの負担=${g1.finalBurden}（外来上限22,000円のはず）`);
+ok(g1.limit === 61500, "世帯上限が61,500円になっていない");
+
+// 13-4. 外来上限は**個人ごと**（世帯でまとめて1回だけ当てない）
+// 本人30,000＋配偶者30,000 → 各自22,000に頭打ち → 世帯44,000（<61,500）→ 支給16,000
+const g2 = run70({ incomeKind: "ippan", items: [row(100000, "gairai", "本人"), row(100000, "gairai", "配偶者")] });
+ok(g2.persons.length === 2, "外来の頭打ちを人ごとに出していない");
+ok(g2.gairaiRefund === 16000, `外来分の支給=${g2.gairaiRefund}（22,000×2で16,000円のはず）`);
+ok(g2.householdBase === 44000, `世帯合算の元=${g2.householdBase}（頭打ち後の22,000×2＝44,000円のはず）`);
+ok(g2.refund === 16000 && g2.finalBurden === 44000, "個人ごとの頭打ちのあと世帯上限が効いてしまっている");
+
+// 13-5. ★二段階（外来を頭打ちしてから世帯合算）— 順序を逆にすると答えが変わる
+// 本人: 外来 self 30,000（→22,000へ頭打ち）＋ 入院 self 60,000 → 世帯82,000 > 61,500
+//   → 支給 = 8,000（外来）+ 20,500（世帯）= 28,500 / 負担 61,500
+const g3 = run70({ incomeKind: "ippan", items: [row(100000, "gairai"), row(200000, "nyuin")] });
+ok(g3.gairaiRefund === 8000, `①外来の頭打ち=${g3.gairaiRefund}（8,000円のはず）`);
+ok(g3.householdBase === 82000, `②世帯合算の元=${g3.householdBase}（22,000＋60,000＝82,000円のはず）`);
+ok(g3.householdRefund === 20500, `②世帯の支給=${g3.householdRefund}（82,000−61,500＝20,500円のはず）`);
+ok(g3.refund === 28500, `合計の支給=${g3.refund}（8,000＋20,500＝28,500円のはず）`);
+ok(g3.finalBurden === 61500, `手元に残る負担=${g3.finalBurden}（世帯上限61,500円のはず）`);
+// ★このケースは**合計では①の有無を見分けられない**（世帯上限が効いているので、
+//   頭打ちを飛ばしても 90,000−61,500＝28,500円 と同じ額になる）。
+//   ①を落としたことが合計に出るのは「頭打ち後が世帯上限を下回る」ケースで、それは 13-3・13-4 が押さえている。
+//   ここで守るべきは**内訳**（外来分8,000／世帯分20,500）＝画面が二段階を正しく説明できること。
+ok(g3.totalSelf === 90000, "窓口負担の合計が90,000円になっていない");
+ok(g3.refund === g3.gairaiRefund + g3.householdRefund, "支給額の内訳が合計と合っていない");
+ok(g3.gairaiRefund > 0 && g3.householdRefund > 0, "二段階の両方で支給が出るケースなのに片方が0になっている");
+// 13-4 との対比で、①を落とすと**合計が変わる**ことを固定する（g2 は世帯上限が効かないケース）
+ok(g2.finalBurden === 44000 && g2.totalSelf === 60000 && g2.totalSelf < g2.limit,
+   "①を落とすと支給0円になるはずのケース（g2）が、そうなっていない＝順序の錠前が効いていない");
+
+// 13-6. ★21,000円の足切りは70歳以上には無い（協会けんぽ「すべて合算できます」）
+// 入院 self 20,000 ＋ 入院 self 50,000 = 70,000 > 61,500 → 支給 8,500
+// 70歳未満の足切りを流用すると20,000円の行が落ち、50,000円だけになって支給0円になる
+const g4 = run70({ incomeKind: "ippan", items: [row(66667, "nyuin"), row(166667, "nyuin", "配偶者")] });
+ok(g4.totalSelf === 70000, `合算後の自己負担=${g4.totalSelf}（20,000＋50,000＝70,000円のはず）`);
+ok(g4.refund === 8500, `支給額=${g4.refund}（70,000−61,500＝8,500円。21,000円の足切りを流用すると0円になる）`);
+ok(g4.rows.length === 2, "21,000円未満の行が落ちている（70歳以上に足切りは無い）");
+
+// 13-7. 現役並みには外来特例が無い（外来だけでも世帯上限が当たる）
+// 現役並みⅠ・医療費100万円3割＝30万円 → 85,800＋(1,000,000−286,000)×1% ＝ 92,940円
+const g5 = run70({ incomeKind: "genekinami", standardMonthly: 300000, items: [row(1000000, "gairai")] });
+ok(g5.kubun.key === "genekinami1", "標報30万円が現役並みⅠになっていない");
+ok(g5.gairaiLimit === null, "現役並みに外来特例が付いている");
+ok(g5.limit === 92940, `現役並みⅠの限度額=${g5.limit}（85,800＋7,140＝92,940円のはず）`);
+ok(g5.refund === 207060, `支給額=${g5.refund}（300,000−92,940＝207,060円のはず）`);
+
+// 13-8. ★標準報酬月額だけで現役並みに落とさない（収入要件で一般扱いの人がいる）
+// 同じ標報30万円でも incomeKind が ippan なら一般（61,500円）でなければならない
+const g6 = run70({ incomeKind: "ippan", standardMonthly: 300000, items: [row(1000000, "nyuin")] });
+ok(g6.kubun.key === "ippan", "標報28万円以上を機械的に現役並みへ落としている（収入要件で一般の人がいる）");
+ok(g6.limit === 61500, `一般の限度額=${g6.limit}（61,500円のはず。85,800＋1%ではない）`);
+
+// 13-9. 区分が決められないときは額を出さない（fail closed）
+const g7 = run70({ incomeKind: "genekinami", items: [row(1000000, "nyuin")] });   // 標報なし
+ok(g7.determined === false && g7.limit === undefined, "現役並みなのに標報なしで額を出している");
+const g8 = run70({ items: [row(1000000, "nyuin")] });                              // 区分なし
+ok(g8.determined === false && g8.limit === undefined, "区分を選ばずに額を出している");
+ok(/15,700円から 270,300円/.test(g8.message), "区分で額が大きく変わることを申告していない");
+
+// 13-10. 多数回該当が無い区分で、黙って据え置かない
+const g9 = run70({ incomeKind: "teishotoku1", tasukai: true, items: [row(1000000, "nyuin")] });
+ok(g9.tasukaiAvailable === false, "低所得者Ⅰに多数回該当があることになっている");
+ok(g9.tasukaiApplied === false && g9.limit === 15700, `低所得者Ⅰの限度額=${g9.limit}（多数回を選んでも15,700円のはず）`);
+ok(Number.isFinite(g9.limit), "多数回該当が無い区分で限度額が NaN / null になっている");
+// 低所得者Ⅱは令和8年8月から多数回該当が付いた
+const g10 = run70({ incomeKind: "teishotoku2", tasukai: true, items: [row(1000000, "nyuin")] });
+ok(g10.tasukaiApplied === true && g10.limit === 24600, `低所得者Ⅱの多数回=${g10.limit}（24,600円のはず）`);
+const g10old = K.calcKogaku({ ageGroup: "over70", shinryoYM: YM70_OLD, incomeKind: "teishotoku2", tasukai: true, items: [row(1000000, "nyuin")] }, D);
+ok(g10old.tasukaiAvailable === false && g10old.limit === 24600, "旧表の低所得者Ⅱに多数回該当が付いている（条文には無い）");
+
+// 13-11. ★表の切替（診療年月で選ぶ）。両方向に入れ替えると落ちる
+const oldIppan = K.calcKogaku({ ageGroup: "over70", shinryoYM: YM70_OLD, incomeKind: "ippan", items: [row(100000, "gairai")] }, D);
+ok(oldIppan.gairaiLimit === 18000 && oldIppan.limit === 57600, `7月診療分=${oldIppan.gairaiLimit}/${oldIppan.limit}（18,000／57,600円のはず）`);
+ok(g1.gairaiLimit === 22000 && g1.limit === 61500, "8月診療分に旧表が当たっている");
+ok(oldIppan.refund === 12000, `7月診療分の支給=${oldIppan.refund}（30,000−18,000＝12,000円のはず）`);
+ok(/令和8年7月/.test(oldIppan.table.label) && /令和8年8月/.test(g1.table.label), "適用した表の名乗りが期間を示していない");
+// 境目の両側1か月
+ok(K.tableFor70("2026-07", D).id === OLD70 && K.tableFor70("2026-08", D).id === NEW70, "表の境目（2026-07／2026-08）がずれている");
+
+// 13-12. 年間上限（世帯・外来）。★月額の限度額には影響しない（償還払い）
+ok(g1.annual.household === 530000 && g1.annual.gairai === 216000, "一般の年間上限（世帯53万／外来21.6万）が違う");
+ok(g1.annual.period.from === "2026-08" && g1.annual.period.through === "2027-07", "年間の区切りが8月〜翌7月になっていない");
+ok(g1.annual.settlement === "retrospective", "年間上限が償還払いだと申告していない");
+const red = run70({ incomeKind: "ippan", standardMonthly: 150000, items: [row(100000, "gairai")] });
+ok(red.annual.household === 410000 && red.annual.householdReduced === true, "標報15万円以下の軽減（41万円）が効いていない");
+const red2 = run70({ incomeKind: "ippan", standardMonthly: 150001, items: [row(100000, "gairai")] });
+ok(red2.annual.household === 530000, "標報15万円**超**にまで軽減を当てている（境目の外側）");
+// 年間上限を月額に混ぜていないこと（÷12 の誤読）
+ok(g1.limit === 61500 && g1.finalBurden === 22000, "年間上限を月額の限度額に混ぜている");
+// 旧表には年間上限（世帯）が無く、外来だけ144,000円
+ok(oldIppan.annual.household === null && oldIppan.annual.gairai === 144000, "旧表の年間上限（世帯なし・外来144,000）が違う");
+
+// 13-13. 令和9年8月以降は70歳以上でも額を出さない（fail closed）
+const g11 = K.calcKogaku({ ageGroup: "over70", shinryoYM: "2027-08", incomeKind: "ippan", items: [row(100000, "gairai")] }, D);
+ok(g11.supported === false && g11.reason === "period", "令和9年8月診療分に70歳以上の額を出している");
+// 診療年月が無いときも同じ
+const g12 = K.calcKogaku({ ageGroup: "over70", incomeKind: "ippan", items: [row(100000, "gairai")] }, D);
+ok(g12.supported === false && g12.reason === "no_shinryo_ym", "診療年月なしで70歳以上の額を出している");
 
 console.log(fail === 0 ? `✅ 高額療養費 ${checks}件 すべて一致` : `❌ ${fail}/${checks}件 不一致`);
 process.exit(fail === 0 ? 0 : 1);
