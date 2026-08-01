@@ -122,7 +122,7 @@
 <div class="card">
   <label for="shinryo">診療を受けた年月</label>
   <input type="month" id="shinryo">
-  <p class="hint">高額療養費は<b>「療養のあった月」の表</b>で決まります（申請した月でも支給された月でもありません）。<span id="period-note">このツールが対応している診療年月には上限があります。</span>それより後の月を指定すると、厚生労働省・全国健康保険協会が公表している<b>別の限度額</b>があるため、<b>額を出さずに止めます</b>。<a href="../column/kogaku-ryoyohi/#kaisei">なぜ止めるのか</a></p>
+  <p class="hint">高額療養費は<b>「療養のあった月」の表</b>で決まります（申請した月でも支給された月でもありません）。<b>令和8年8月診療分から限度額が上がった</b>ので、月をまたぐと答えが変わります（区分ウ・医療費100万円の月で 87,430円 → 92,940円）。<span id="period-note">このツールが対応している診療年月には上限があります。</span>それより後の月は<b>額を出さずに止めます</b>。<a href="../column/kogaku-ryoyohi/#kaisei">令和8年8月の改正について</a></p>
 
   <label for="agegroup" style="margin-top:14px">療養を受けた方の年齢</label>
   <select id="agegroup">
@@ -272,6 +272,8 @@ import { KENKO_GRADES, kenkoGrade } from "../assets/shaho_core.js";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+// "2026-08" → "2026年8月"（月の先頭の0を落とす。padStart したまま出すと「2026年08月」になる）
+const ymJa = (ym) => `${ym.slice(0, 4)}年${Number(ym.slice(5, 7))}月`;
 
 // 限度額の表は非同期で届く。**届く前に押されても待つ**。
 // 限度額が分からないまま「いくら戻る」と答えると、戻らない額を戻ると言うことになる。
@@ -285,7 +287,7 @@ const dataReady = fetch("../assets/kogaku_r08.json")
 // 「データが手に入らなかったこと」だけ。飾りのバグをデータ取得の失敗に化けさせない）。
 dataReady.then((ok) => {
   if (!ok || !DATA) return;
-  $("src-note").textContent = `限度額の出典：${DATA._meta.label}（e-Gov法令検索・${DATA._meta.enforced_from} 施行の条文で確認）`;
+  $("src-note").textContent = `限度額の出典：${DATA._meta.label}`;
   // 対応期間は**データに持たせて画面に出す**（ページに年を手書きすると、表を差し替えた日に画面だけが古い期間を名乗る）
   if (DATA.supported_through) {
     const [y, m] = DATA.supported_through.split("-");
@@ -365,8 +367,24 @@ $("calc").addEventListener("click", async () => {
     `<td><b>${row.counted ? "合算する" : "合算しない"}</b>${row.counted ? "" : `（${yen(r.gassanMin)}未満）`}</td></tr>`
   ).join("");
 
+  // ★年間上限は「あとから申請して戻る」もので、この月の限度額は下がらない。
+  //   だから限度額の表には入れず、別の枠で出す（混ぜると窓口で払う額を過小に答える）。
+  const ann = r.annual;
+  const annHtml = ann ? `
+    <div class="callout" style="margin-top:12px"><b>年間上限（令和8年8月診療分から新設）：あなたの区分は ${yen(ann.cap)}／年</b>
+    ${ann.reduced ? `<br><span style="font-size:13px">標準報酬月額が15万円以下のため、53万円ではなく<b>${yen(ann.cap)}</b>が上限です（保険者が確認できた場合）。</span>` : ""}
+    <p style="margin:8px 0 0;font-size:13px">1年の区切りは<b>${ymJa(ann.period.from)} 診療分 〜 ${ymJa(ann.period.through)} 診療分</b>です（暦年でも年度でもありません）。
+    この1年でのあなたの自己負担の合計が ${yen(ann.cap)} を超えたときは、超えた分が戻ります。</p>
+    <p style="margin:8px 0 0;font-size:13px">★<b>これは窓口で引かれる仕組みではありません。</b>窓口では上の月額の限度額（${yen(r.limit)}）まで払い、
+    <b>1年が終わったあとに保険者へ申請して払い戻し（償還払い）を受けます</b>。申請しないと戻りません。
+    協会けんぽの場合は「年間の高額療養費支給申請書兼自己負担額証明書交付申請書」です。</p>
+    <p style="margin:8px 0 0;font-size:12px;color:var(--sub)">なお、年間の合計を数える単位（世帯か個人か）と、合計に入る自己負担の範囲は、
+    公表資料からまだ確定できていません。このツールは<b>上限額と期間をお知らせするだけで、あなたの年間累計は計算していません</b>。加入先の健康保険にご確認ください。</p>
+    </div>` : "";
+
   box.innerHTML = `
     <p style="margin:0 0 6px">あなたの区分は <b>区分${k.label}</b>（${k.criteria}）です。<span style="font-size:12px;color:var(--sub)">${k.item}</span></p>
+    <p style="margin:0 0 6px;font-size:13px;color:var(--sub)">適用した表：${r.table.label}</p>
     <p style="margin:0 0 12px;font-size:13px;color:var(--sub)">${$("hikazei").checked ? "市町村民税非課税のため、標準報酬月額にかかわらず区分オで判定しました。" : `判定に使った標準報酬月額：${standardMonthly.toLocaleString("ja-JP")}円`}</p>
 
     <table class="tbl"><tbody>
@@ -395,6 +413,8 @@ $("calc").addEventListener("click", async () => {
       : `<div class="callout" style="margin-top:12px"><b>この先も治療が続く場合</b>：直近12か月で高額療養費が支給された月が3か月以上になると、` +
         `<b>4回目の月から限度額が ${yen(r.limitIfTasukai)} に下がります</b>（多数回該当・施行令42条1項各号ただし書）。` +
         `今回の ${yen(r.limit)} と比べて <b>${yen(Math.max(0, r.limit - r.limitIfTasukai))}</b> 軽くなります。暦年ではなく、その月から遡って12か月で数えます。</div>`}
+
+    ${annHtml}
 
     <p class="hint" style="margin-top:12px">${excess > 0 ? "" : "医療費が1%の起点額に満たないため、1%部分は0円です（条文が「その額が起点額に満たないときは起点額とする」と読み替えているため、限度額が基準額を下回ることはありません）。"}</p>
   `;

@@ -225,9 +225,19 @@ const SCENES = [
   // 限度額の表が配信できないときは、額を出さずに断る(fail closed)
   { name: "kogaku_nodata", data404: "kogaku_r08.json",
     expect: (s) => s.failed && s.limit === null && s.refund === null },
-  // ★令和8年8月診療分から限度額が上がる(厚労省・協会けんぽが公表)。
-  //   旧表で答えると87,430円と92,940円で5,510円ずれるので、額を出さずに断り、
-  //   画面で実際の額(85,800円＋1%)の存在を知らせる。
+  // ★令和8年8月診療分から限度額が上がる(厚労省・協会けんぽが公表)。診療年月で表を選び分けること。
+  //   旧表のままだと87,430円が出る。**5,510円 低い誤答**なので、ここは実額で固定する。
+  //   あわせて、年間上限53万円(8月〜翌7月・あとから申請して償還払い)を画面が出していること
+  //   ——年間上限は月額の限度額を下げないので、92,940円が下がっていないことも同時に見る。
+  { name: "kogaku_r0808", expect: (s) =>
+      s.kubun === "ウ" && s.limit === 92940 && s.limit === s.expectedLimit &&
+      s.refund === 207060 && s.refund === s.expectedRefund &&
+      /令和8年8月/.test(s.tableLabel || "") &&
+      s.annualCap === 530000 && s.annualCap === s.expectedAnnualCap &&
+      s.annualPeriod === "2026年8月 診療分 〜 2027年7月 診療分" &&
+      s.saysRetrospective && !s.failed },
+  // ★令和9年8月診療分から所得区分が5段階→13段階に細分化される。いまの境界を流用すると
+  //   標報44万円の人に85,800円＋1%(正しくは110,400円＋1%)と答えるので、額を出さずに断る。
   { name: "kogaku_period", expect: (s) =>
       s.saysPeriod && s.saysNewAmount && s.limit === null && s.refund === null && !s.failed },
 

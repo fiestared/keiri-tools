@@ -999,16 +999,29 @@ SCENES.saishushoku_nodata = SCENES.saishushoku;
 //     素直に (医療費 − 起点) と書くと、医療費が少ない月に限度額が基準額を下回る(kogaku_small で踏む)。
 //   ★1%を掛ける医療費は**合算対象になった行だけ**の合計。21,000円未満で外れた行は
 //     自己負担にも医療費にも入れない(kogaku_gassan で踏む)。
-const KOGAKU_TABLE = {   // 施行令42条1項1〜5号の実額をここに直に置く(データJSONは読まない)
+//   ★令和8年8月診療分から**表が変わる**。診療年月で選び分ける(選び間違えると区分ウ・医療費100万で
+//     87,430円と92,940円＝5,510円ずれる)。新表の実額は厚労省 001726232.pdf と協会けんぽの
+//     「70歳未満の方の区分(令和8年8月〜令和9年7月)」から直に書き写す(データJSONは読まない)。
+const KOGAKU_TABLE = {   // ～令和8年7月診療分: 施行令42条1項1〜5号の実額
   a: { base: 252600, th: 842000, many: 140100 },
   i: { base: 167400, th: 558000, many: 93000 },
   u: { base:  80100, th: 267000, many:  44400 },
   e: { base:  57600, th: null,   many:  44400 },
   o: { base:  35400, th: null,   many:  24600 },
 };
-const KOGAKU_INDEP = (std, hikazei, meds, tasukai) => {
+const KOGAKU_TABLE_R0808 = {   // 令和8年8月〜令和9年7月診療分: 厚労省・協会けんぽの公表表
+  a: { base: 270300, th: 901000, many: 140100 },
+  i: { base: 179100, th: 597000, many: 93000 },
+  u: { base:  85800, th: 286000, many:  44400 },
+  e: { base:  61500, th: null,   many:  44400 },
+  o: { base:  36900, th: null,   many:  24600 },
+};
+// 年間上限(令和8年8月新設)。**月額の限度額には効かない**(1年終了後の償還払い)ので、
+// ここでも limit の計算には一切混ぜない。画面が出しているかどうかだけを見る。
+const KOGAKU_ANNUAL_R0808 = { a: 1680000, i: 1110000, u: 530000, e: 530000, o: 290000 };
+const KOGAKU_INDEP = (std, hikazei, meds, tasukai, shinryo) => {
   const key = hikazei ? "o" : std >= 830000 ? "a" : std >= 530000 ? "i" : std >= 280000 ? "u" : "e";
-  const t = KOGAKU_TABLE[key];
+  const t = (shinryo >= "2026-08" ? KOGAKU_TABLE_R0808 : KOGAKU_TABLE)[key];
   const rows = meds.map(([m, ratio]) => ({ m, self: Math.round(m * ratio) }));
   const counted = rows.filter((r) => r.self >= 21000);          // 「二万千円以上のものに限る」
   const totalMedical = counted.reduce((s, r) => s + r.m, 0);
@@ -1016,7 +1029,8 @@ const KOGAKU_INDEP = (std, hikazei, meds, tasukai) => {
   const limit = tasukai ? t.many
     : t.th === null ? t.base
     : t.base + Math.floor(Math.max(0, totalMedical - t.th) * 0.01 + 0.5);
-  return { key, limit, totalMedical, totalSelf, refund: Math.max(0, totalSelf - limit) };
+  return { key, limit, totalMedical, totalSelf, refund: Math.max(0, totalSelf - limit),
+           annualCap: shinryo >= "2026-08" ? KOGAKU_ANNUAL_R0808[key] : null };
 };
 
 const kogakuScene = ({ ageGroup = "under70", monthly = 300000, hikazei = false, tasukai = false,
@@ -1046,7 +1060,7 @@ const kogakuScene = ({ ageGroup = "under70", monthly = 300000, hikazei = false, 
   // 画面が申告した標準報酬月額を読み取って独立計算の入力にする(等級表そのものは shaho のシーンが見ている)。
   const declaredStd = num(/判定に使った標準報酬月額：([\d,]+)円/);
   const expected = declaredStd || hikazei
-    ? KOGAKU_INDEP(declaredStd || 0, hikazei, meds, tasukai) : null;
+    ? KOGAKU_INDEP(declaredStd || 0, hikazei, meds, tasukai, shinryo) : null;
 
   return {
     ageGroup, monthly, hikazei, tasukai,
@@ -1065,7 +1079,13 @@ const kogakuScene = ({ ageGroup = "under70", monthly = 300000, hikazei = false, 
     manyLimit: num(/4回目の月から限度額が\s*¥([\d,]+)\s*に下がります/),
     saysOver70: /70歳以上の方は自己負担限度額の表が別です/.test(body),
     saysPeriod: /この計算機が持っている自己負担限度額の表は/.test(body),
-    saysNewAmount: /85,800/.test(body),
+    saysNewAmount: /110,400/.test(body),
+    // 適用した表を画面が名乗っているか(名乗らないと、利用者は新旧どちらで計算されたか分からない)
+    tableLabel: (body.match(/適用した表：(.+?)\s*(?:判定に使った|市町村民税非課税のため)/) || [])[1] || null,
+    expectedAnnualCap: expected ? expected.annualCap : null,
+    annualCap: num(/年間上限（令和8年8月診療分から新設）：あなたの区分は\s*¥([\d,]+)／年/),
+    annualPeriod: (body.match(/1年の区切りは(\d{4}年\d+月 診療分 〜 \d{4}年\d+月 診療分)です/) || [])[1] || null,
+    saysRetrospective: /窓口で引かれる仕組みではありません/.test(body) && /償還払い/.test(body),
     failed: body.includes("読み込めませんでした"),
     body,
   };
@@ -1092,8 +1112,11 @@ SCENES.kogaku_over70 = kogakuScene({ ageGroup: "over70" });
 // 限度額の表を配信できない → 額を出さず申告すること(fail closed)。
 // 限度額が分からないまま「いくら戻る」と答えると、戻らない額を戻ると言うことになる。
 SCENES.kogaku_nodata = SCENES.kogaku;
-// ★令和8年8月診療分は、厚労省・協会けんぽが別の表を公表している。旧表で答えない(fail closed)。
-SCENES.kogaku_period = kogakuScene({ shinryo: "2026-08" });
+// ★令和8年8月診療分は表が変わる。**旧表で答えたら92,940円にならない**(87,430円になる)。
+//   あわせて年間上限(53万円・8月〜翌7月・償還払い)を画面が出していること。
+SCENES.kogaku_r0808 = kogakuScene({ shinryo: "2026-08" });
+// ★令和9年8月診療分から区分が13段階に細分化される。**境界を流用して答えない**(fail closed)。
+SCENES.kogaku_period = kogakuScene({ shinryo: "2027-08" });
 
 // ── 退職金の税金(退職所得) ──────────────────────────────────────────────────
 // 期待値は**国税庁が実額で公表している計算例そのもの**をここに書き写す(taishoku_core.js は一切通さない)。
