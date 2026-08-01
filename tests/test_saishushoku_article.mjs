@@ -35,7 +35,7 @@ ok(CAP_60_64 === 5454, `導出した上限(60-64歳)=${CAP_60_64} が厚労省�
 // ── オラクル2: 例1(35歳/月30万/勤続12年/自己都合)を本番coreで再計算 ──────────
 const w1 = C.wageDaily(300000 * 6);
 const d1 = C.benefitDaily(w1, 35, D);
-const days1 = C.prescribedDays(35, "y10_20", "self", false);
+const days1 = C.prescribedDays(35, "y10_20", "jiko", false);
 ok(w1 === 10000, `賃金日額=${w1}`);
 ok(d1 === 6307, `基本手当日額=${d1}（記事は6,307円と書いている）`);
 ok(days1 === 120, `所定給付日数=${days1}`);
@@ -64,20 +64,25 @@ ok(days1 * 2 / 3 === 80, "120日の3分の2は80日");
 ok(days1 / 3 === 40, "120日の3分の1は40日");
 
 // ── オラクル3: 例2(45歳/月60万/勤続20年+/会社都合) = 上限で削られる人 ──────────
-const w2 = C.wageDaily(600000 * 6);
+// ★ページと同じ経路で出す: 賃金日額に17条4項の上限を当ててから日額にする。
+//   ここを通さないと 20,000円のまま 0.5倍して 10,000円 になり、**45歳では存在しえない日額**で
+//   記事の実額を作ってしまう（2026-08-01まで実際にそうなっていた。上限は9,110円）。
+const w2 = C.applyWageCaps(C.wageDaily(600000 * 6), 45, D).value;
 const d2 = C.benefitDaily(w2, 45, D);
-const days2 = C.prescribedDays(45, "y20", "company", false);
-ok(d2 === 10000, `例2の基本手当日額=${d2}`);
-ok(days2 === 150, `例2の所定給付日数=${days2}`);
+const days2 = C.prescribedDays(45, "y20", "kaisha", false);
+ok(w2 === 18220, `例2の賃金日額=${w2}（17条4項で18,220円に頭打ち）`);
+ok(d2 === 9110, `例2の基本手当日額=${d2}（45〜59歳の上限9,110円）`);
+ok(days2 === 330, `例2の所定給付日数=${days2}（23条1項・45〜59歳・20年以上＝330日）`);
 ok(d2 > CAP_U60, `例2は上限${CAP_U60}を超える日額であること（超えないと「削られる例」にならない）`);
 
-const capped = pay(CAP_U60, 150, 7);
-const uncapped = pay(d2, 150, 7);
-ok(capped === 708225, `上限適用後 = ${capped}（記事は708,225円）`);
-ok(uncapped === 1050000, `上限が無ければ = ${uncapped}（記事は1,050,000円）`);
-ok(uncapped - capped === 341775, `差 = ${uncapped - capped}（記事は341,775円）`);
-ok(pay(CAP_U60, 150, 2) === 202350, `就業促進定着手当の上限20% = ${pay(CAP_U60, 150, 2)}（記事は202,350円）`);
-ok(pay(CAP_U60, 150, 4) === 404700, `旧ルール40%なら = ${pay(CAP_U60, 150, 4)}（記事は404,700円）`);
+// 日数は上で導出した days2 を使う（150日と手打ちすると、日数が直っても検査が古いままになる）
+const capped = pay(CAP_U60, days2, 7);
+const uncapped = pay(d2, days2, 7);
+ok(capped === 1558095, `上限適用後 = ${capped}（記事は1,558,095円）`);
+ok(uncapped === 2104410, `上限が無ければ = ${uncapped}（記事は2,104,410円）`);
+ok(uncapped - capped === 546315, `差 = ${uncapped - capped}（記事は546,315円）`);
+ok(pay(CAP_U60, days2, 2) === 445170, `就業促進定着手当の上限20% = ${pay(CAP_U60, days2, 2)}（記事は445,170円）`);
+ok(pay(CAP_U60, days2, 4) === 890340, `旧ルール40%なら = ${pay(CAP_U60, days2, 4)}（記事は890,340円）`);
 
 // ── 記事が「その数字を、その場所に」印字しているか ────────────────────────
 // ★オラクルが保証するのはツールの正しさであって、記事が正しく引き写しているかではない(規則7)
@@ -109,7 +114,7 @@ ok(!!row39 && cells(row39).join(" | ").includes("1円も出ない"), "残39日�
 ok(!!row39 && cells(row39).join(" | ").includes("3分の1を下回る"), "残39日の行が3分の1を下回ることを書いていない");
 
 // 上限の表: 「上限を知らずに」の行と「正しくは上限の」の行が、それぞれ正しい額を持つ
-const capRowWrong = rows.find((r) => cells(r)[0] && cells(r)[0].includes("10,000円で計算"));
+const capRowWrong = rows.find((r) => cells(r)[0] && cells(r)[0].includes("9,110円で計算"));
 const capRowRight = rows.find((r) => cells(r)[0] && cells(r)[0].includes("正しくは上限の"));
 ok(!!capRowWrong && cells(capRowWrong).join(" | ").includes(yen(uncapped)), `上限を知らない行に${yen(uncapped)}円が無い`);
 ok(!!capRowRight && cells(capRowRight).join(" | ").includes(yen(capped)), `上限適用後の行に${yen(capped)}円が無い`);
@@ -256,17 +261,17 @@ ok(/三分の二以上である者にあつては、\s*十分の七/.test(quote.
 const money = new Set((text.match(/\d{1,3}(,\d{3})+/g) || []));
 const mustHave = [yen(E1.rem120), yen(E1.rem80), yen(E1.rem79), yen(E1.rem40), yen(E1.total),
                   yen(gake), yen(netLoss), yen(capped), yen(uncapped), yen(uncapped - capped),
-                  yen(CAP_U60), yen(CAP_60_64), yen(d1), "10,000",
+                  yen(CAP_U60), yen(CAP_60_64), yen(d1),
                   yen(D.band_taper_upper), yen(D.band_taper_upper_60_64),
                   "12,090",  // 法16条1項の原型（18条で変更される前の額＝制度の事実なので固定）
-                  yen(pay(CAP_U60, 150, 2)), yen(pay(CAP_U60, 150, 4))];
+                  yen(pay(CAP_U60, days2, 2)), yen(pay(CAP_U60, days2, 4))];
 for (const m of mustHave) ok(money.has(m), `本文に ${m} が見当たらない`);
 
 // ★②の網（ホワイトリスト）: 記事に出るカンマ区切りの金額は、すべて「私が導出した値」か
 //   「一次情報が名乗る既知の定数」でなければならない。1文字でも書き間違えると未知の値になって落ちる。
 const ALLOWED = new Set([
   ...mustHave,
-  yen(pay(CAP_U60, 150, 4)),  // 394,200（旧40%ルールの額）
+  yen(pay(CAP_U60, days2, 4)),  // 旧40%ルールの額
   "6,395", "5,170",           // 令和6年度の旧上限（古い額として言及する）
   yen(D.kihon_nichigaku_max.age45_59),  // 45〜59歳の基本手当日額の上限（比較のため）
   "300,000", "600,000",       // 例の月給
