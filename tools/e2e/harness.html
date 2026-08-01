@@ -1020,8 +1020,11 @@ const KOGAKU_INDEP = (std, hikazei, meds, tasukai) => {
 };
 
 const kogakuScene = ({ ageGroup = "under70", monthly = 300000, hikazei = false, tasukai = false,
-                      meds = [[1000000, 0.3]] }) => async () => {
+                      meds = [[1000000, 0.3]], shinryo = "2026-07" }) => async () => {
   const doc = await open("/docs/kogaku-ryoyohi/");
+  // ★診療年月を必ず明示する。既定は「今月」なので、指定しないと実行月によって
+  //   通ったり落ちたりするシーンになる(E2Eは過去の固定日で書く規律)。
+  set(doc, "shinryo", shinryo);
   set(doc, "agegroup", ageGroup);
   set(doc, "monthly", String(monthly));
   if (hikazei) doc.getElementById("hikazei").click();
@@ -1061,6 +1064,8 @@ const kogakuScene = ({ ageGroup = "under70", monthly = 300000, hikazei = false, 
     excludedSelf: num(/この\d+件の自己負担\s*¥([\d,]+)\s*は戻ってきません/),
     manyLimit: num(/4回目の月から限度額が\s*¥([\d,]+)\s*に下がります/),
     saysOver70: /70歳以上の方は自己負担限度額の表が別です/.test(body),
+    saysPeriod: /この計算機が持っている自己負担限度額の表は/.test(body),
+    saysNewAmount: /85,800/.test(body),
     failed: body.includes("読み込めませんでした"),
     body,
   };
@@ -1087,6 +1092,8 @@ SCENES.kogaku_over70 = kogakuScene({ ageGroup: "over70" });
 // 限度額の表を配信できない → 額を出さず申告すること(fail closed)。
 // 限度額が分からないまま「いくら戻る」と答えると、戻らない額を戻ると言うことになる。
 SCENES.kogaku_nodata = SCENES.kogaku;
+// ★令和8年8月診療分は、厚労省・協会けんぽが別の表を公表している。旧表で答えない(fail closed)。
+SCENES.kogaku_period = kogakuScene({ shinryo: "2026-08" });
 
 // ── 退職金の税金(退職所得) ──────────────────────────────────────────────────
 // 期待値は**国税庁が実額で公表している計算例そのもの**をここに書き写す(taishoku_core.js は一切通さない)。

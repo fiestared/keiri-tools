@@ -120,7 +120,11 @@
 </section>
 
 <div class="card">
-  <label for="agegroup">療養を受けた方の年齢</label>
+  <label for="shinryo">診療を受けた年月</label>
+  <input type="month" id="shinryo">
+  <p class="hint">高額療養費は<b>「療養のあった月」の表</b>で決まります（申請した月でも支給された月でもありません）。<span id="period-note">このツールが対応している診療年月には上限があります。</span>それより後の月を指定すると、厚生労働省・全国健康保険協会が公表している<b>別の限度額</b>があるため、<b>額を出さずに止めます</b>。<a href="../column/kogaku-ryoyohi/#kaisei">なぜ止めるのか</a></p>
+
+  <label for="agegroup" style="margin-top:14px">療養を受けた方の年齢</label>
   <select id="agegroup">
     <option value="under70" selected>70歳未満</option>
     <option value="over70">70歳以上</option>
@@ -282,8 +286,16 @@ const dataReady = fetch("../assets/kogaku_r08.json")
 dataReady.then((ok) => {
   if (!ok || !DATA) return;
   $("src-note").textContent = `限度額の出典：${DATA._meta.label}（e-Gov法令検索・${DATA._meta.enforced_from} 施行の条文で確認）`;
+  // 対応期間は**データに持たせて画面に出す**（ページに年を手書きすると、表を差し替えた日に画面だけが古い期間を名乗る）
+  if (DATA.supported_through) {
+    const [y, m] = DATA.supported_through.split("-");
+    $("period-note").innerHTML = `<b>このツールが持っているのは ${y}年${Number(m)}月 診療分までの表です。</b>`;
+  }
   $("not-covered-list").innerHTML = DATA.not_covered.map((s) => `<li>${s}</li>`).join("");
 }).catch(() => {});
+
+// 診療年月の既定は「今月」。★JST固定（toISOString はUTCなので月初の未明に前月へずれる）
+$("shinryo").value = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }).slice(0, 7);
 
 // 標準報酬月額のプルダウンは等級表から作る（等級表を二重実装しない）
 $("std").innerHTML = KENKO_GRADES.map(([g, s]) =>
@@ -325,6 +337,7 @@ $("calc").addEventListener("click", async () => {
 
   const r = calcKogaku({
     ageGroup: $("agegroup").value,
+    shinryoYM: $("shinryo").value,
     hikazei: $("hikazei").checked,
     standardMonthly: Number($("monthly").value) > 0 || $("mode").value === "std" ? standardMonthly : null,
     tasukai: $("tasukai").checked,

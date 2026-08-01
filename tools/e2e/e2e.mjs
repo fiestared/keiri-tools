@@ -225,6 +225,11 @@ const SCENES = [
   // 限度額の表が配信できないときは、額を出さずに断る(fail closed)
   { name: "kogaku_nodata", data404: "kogaku_r08.json",
     expect: (s) => s.failed && s.limit === null && s.refund === null },
+  // ★令和8年8月診療分から限度額が上がる(厚労省・協会けんぽが公表)。
+  //   旧表で答えると87,430円と92,940円で5,510円ずれるので、額を出さずに断り、
+  //   画面で実際の額(85,800円＋1%)の存在を知らせる。
+  { name: "kogaku_period", expect: (s) =>
+      s.saysPeriod && s.saysNewAmount && s.limit === null && s.refund === null && !s.failed },
 
   // ── 退職金の税金(退職所得) ──────────────────────────────────────────────
   // ★期待値は**国税庁 No.2732 の計算例(実額)**。退職金800万円・勤続10年2か月 → 91,890円。

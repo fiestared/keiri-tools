@@ -18,8 +18,12 @@ const D = JSON.parse(readFileSync(new URL("../docs/assets/kogaku_r08.json", impo
 let fail = 0, checks = 0;
 const ok = (cond, msg) => { checks++; if (!cond) { console.log("  ✗ " + msg); fail++; } };
 
+// 診療年月。この表が使えるのは令和8年7月診療分まで（D.supported_through）なので、
+// 通常のケースはすべてその範囲内の月で回す。期間の外は §12 で別に見る。
+const YM = "2026-07";
+
 const one = (medical, ratio = 0.3) => [{ medical, ratio }];
-const run = (o) => K.calcKogaku({ ageGroup: "under70", items: one(1000000), ...o }, D);
+const run = (o) => K.calcKogaku({ ageGroup: "under70", shinryoYM: YM, items: one(1000000), ...o }, D);
 
 // ── 1. データが条文の12個の額を持っていること（JSONの差し替え事故の網）────────────
 // 出典: 施行令42条1項（八万百円・二十五万二千六百円・十六万七千四百円・五万七千六百円・三万五千四百円、
@@ -52,7 +56,7 @@ ok(run({ standardMonthly: 830000 }).limit === 254180, "区分ア・医療費100�
 // ── 3. ★1%の起点は「下限としての読替え」。医療費が起点未満でも基準額を下回らない ────
 // 条文「その額が二十六万七千円に満たないときは、二十六万七千円」。
 // 素直に (医療費−267,000)×1% と書くと 100,000円の月に 80,100−1,670=78,430円 と低く出る。
-const small = K.calcKogaku({ ageGroup: "under70", standardMonthly: 300000, items: one(100000) }, D);
+const small = K.calcKogaku({ ageGroup: "under70", shinryoYM: YM, standardMonthly: 300000, items: one(100000) }, D);
 ok(small.limit === 80100, `医療費10万円の月の限度額=${small.limit}（80,100円ちょうどのはず。1%部分は0以上）`);
 ok(K.limitFor(byKey.u, 0, false) === 80100, "医療費0でも基準額を下回ってはいけない");
 ok(K.limitFor(byKey.u, 266999, false) === 80100, "起点の1円手前で1%部分がマイナスになっている");
@@ -95,7 +99,7 @@ ok(kenkoGrade(800000).standard === 790000, "報酬月額80万円は標準報酬�
 // ── 7. 世帯合算は21,000円**未満**を1円も拾わない（両側1円）──────────────────
 // 自己負担21,000円ちょうど = 医療費70,000円×3割
 const g = (meds) => K.calcKogaku(
-  { ageGroup: "under70", standardMonthly: 300000, items: meds.map((m) => ({ medical: m, ratio: 0.3 })) }, D);
+  { ageGroup: "under70", shinryoYM: YM, standardMonthly: 300000, items: meds.map((m) => ({ medical: m, ratio: 0.3 })) }, D);
 ok(g([70000]).counted.length === 1, "自己負担21,000円ちょうどが合算されていない（「以上」のはず）");
 ok(g([69990]).counted.length === 0, "自己負担20,997円が合算されてしまっている");
 // 記事の例: 家族3人が別の病院で20,000円ずつ → 合算される額は0円
@@ -119,21 +123,21 @@ ok(two.limit > mix.limit, "合算対象が増えたのに限度額が上がっ�
 
 // ── 9. 多数回該当（直近12か月で4回目から）───────────────────────────
 const t = (std, hikazei = false) =>
-  K.calcKogaku({ ageGroup: "under70", standardMonthly: std, hikazei, tasukai: true, items: one(1000000) }, D);
+  K.calcKogaku({ ageGroup: "under70", shinryoYM: YM, standardMonthly: std, hikazei, tasukai: true, items: one(1000000) }, D);
 ok(t(300000).limit === 44400, "区分ウの多数回該当が44,400円でない");
 ok(t(200000).limit === 44400, "区分エの多数回該当が44,400円でない");
 ok(t(830000).limit === 140100, "区分アの多数回該当が140,100円でない");
 ok(t(530000).limit === 93000, "区分イの多数回該当が93,000円でない");
 ok(t(200000, true).limit === 24600, "区分オの多数回該当が24,600円でない");
 // 多数回該当は定額（医療費が増えても1%が乗らない）
-ok(K.calcKogaku({ ageGroup: "under70", standardMonthly: 300000, tasukai: true, items: one(9000000) }, D).limit === 44400,
+ok(K.calcKogaku({ ageGroup: "under70", shinryoYM: YM, standardMonthly: 300000, tasukai: true, items: one(9000000) }, D).limit === 44400,
    "多数回該当に1%部分が乗ってしまっている");
 // 通常月と多数回の**両方**を画面に出せること（比較が記事の目玉）
 const cmp = run({ standardMonthly: 300000 });
 ok(cmp.limitNormal === 87430 && cmp.limitIfTasukai === 44400, "通常月と多数回の両方を返していない");
 
 // ── 10. ★70歳以上は額を出さない（fail closed）──────────────────────────
-const old = K.calcKogaku({ ageGroup: "over70", standardMonthly: 300000, items: one(1000000) }, D);
+const old = K.calcKogaku({ ageGroup: "over70", shinryoYM: YM, standardMonthly: 300000, items: one(1000000) }, D);
 ok(old.supported === false, "70歳以上に70歳未満の表で答えてしまっている");
 ok(old.limit === undefined, "70歳以上なのに限度額を返している");
 ok(/70歳以上/.test(old.message), "70歳以上であることを利用者に申告していない");
@@ -144,11 +148,53 @@ ok(r.totalSelf === 300000, "窓口負担3割が30万円になっていない");
 ok(r.refund === 212570, `支給額=${r.refund}（300,000−87,430=212,570円のはず）`);
 ok(r.finalBurden === 87430, "最後に残る負担が限度額と一致しない");
 // 限度額に届かない月は支給されない（負の支給額を出さない）
-const under = K.calcKogaku({ ageGroup: "under70", standardMonthly: 300000, items: one(200000) }, D);
+const under = K.calcKogaku({ ageGroup: "under70", shinryoYM: YM, standardMonthly: 300000, items: one(200000) }, D);
 ok(under.refund === 0, `限度額未満の月の支給額=${under.refund}（0円のはず。負の額を出さない）`);
 ok(under.finalBurden === 60000, "限度額未満の月は窓口負担がそのまま残るはず");
 // 合算対象外がある月は、その分だけ手元の負担が増える
 ok(mix.finalBurden === 87430 + 15000, "合算対象外の自己負担が手元の負担に足されていない");
+
+// ── 12. ★表の「使える期間」— 令和8年8月診療分から額を出さない（fail closed）─────────
+// 高額療養費は「療養のあった月」の表で決まる。厚労省・協会けんぽがそろって
+// 令和8年8月診療分から別の表（区分ウ 85,800円＋1%・起点286,000円）を公表しているので、
+// 旧表で答えると医療費100万円の月で 87,430円 と 92,940円（5,510円）ずれる。
+const p = (ym) => K.calcKogaku({ ageGroup: "under70", shinryoYM: ym, standardMonthly: 300000, items: one(1000000) }, D);
+ok(D.supported_through === "2026-07", `supported_through=${D.supported_through}（2026-07のはず）`);
+ok(p("2026-07").supported === true && p("2026-07").limit === 87430, "令和8年7月診療分が計算できなくなっている（境界の内側）");
+ok(p("2026-08").supported === false, "★令和8年8月診療分に旧表で答えてしまっている");
+ok(p("2026-08").limit === undefined, "期間外なのに限度額を返している");
+ok(p("2026-08").reason === "period", `期間外の理由が period でない: ${p("2026-08").reason}`);
+ok(/85,800/.test(p("2026-08").message), "8月以降の実際の額（85,800円）を利用者に知らせていない");
+ok(p("2027-03").supported === false, "さらに先の診療年月にも答えてしまっている");
+// 診療年月そのものが無い／壊れている場合も答えない（黙って手元の表で計算しない）
+for (const bad of [null, undefined, "", "2026-7", "2026/07", "2026-13", "令和8年7月", 202607]) {
+  const b = K.calcKogaku({ ageGroup: "under70", shinryoYM: bad, standardMonthly: 300000, items: one(1000000) }, D);
+  ok(b.supported === false && b.reason === "no_shinryo_ym", `診療年月 ${JSON.stringify(bad)} で計算してしまっている`);
+}
+ok(K.isYearMonth("2026-07") === true && K.isYearMonth("2026-00") === false, "isYearMonth の判定が甘い");
+
+// ── 13. 新表（令和8年8月〜）のデータが厚労省・協会けんぽの公表値と一致していること ────────
+// ★まだ計算には使っていない（年間上限の仕組みを一次情報で読めていないため）。
+//   だが「いつか実装する数字」を持っている以上、転記ミスはここで落とす。
+//   外部オラクル: 厚労省の国民向けページ「医療費100万円 → 自己負担は約9.3万円」
+const REV = Object.fromEntries(D.revision_2026_08.kubun.map((k) => [k.key, k]));
+ok(D.revision_2026_08.status === "not_implemented", "新表が実装済みを名乗っている（計算に使うなら期間判定を外すこと）");
+ok(REV.a.base === 270300 && REV.a.threshold === 901000 && REV.a.tasukai === 140100, "新表 区分アが公表値と違う");
+ok(REV.i.base === 179100 && REV.i.threshold === 597000 && REV.i.tasukai === 93000, "新表 区分イが公表値と違う");
+ok(REV.u.base === 85800 && REV.u.threshold === 286000 && REV.u.tasukai === 44400, "新表 区分ウが公表値と違う");
+ok(REV.e.base === 61500 && REV.e.tasukai === 44400, "新表 区分エが公表値と違う");
+ok(REV.o.base === 36900 && REV.o.tasukai === 24600, "新表 区分オが公表値と違う");
+// 多数回該当は据え置き＝旧表と同じ（厚労省が「維持」と明記）
+for (const k of ["a", "i", "u", "e", "o"]) {
+  ok(REV[k].tasukai === byKey[k].tasukai, `新表 区分${byKey[k].label} の多数回該当が据え置きになっていない`);
+}
+// 年間上限（新設）。まだ計算には使わないが、値は持っておく
+ok(REV.a.annual_cap === 1680000 && REV.i.annual_cap === 1110000 && REV.u.annual_cap === 530000
+   && REV.e.annual_cap === 530000 && REV.o.annual_cap === 290000, "新表の年間上限が公表値と違う");
+// ★外部オラクル: 厚労省「医療費100万円 → 約9.3万円」を新表の式で再現する
+const newU = REV.u.base + K.roundPercentPart(Math.max(0, 1000000 - REV.u.threshold) * REV.u.rate);
+ok(newU === 92940, `新表 区分ウ・医療費100万円=${newU}円（85,800+714,000×1%=92,940円。厚労省の「約9.3万円」と一致するはず）`);
+ok(newU - 87430 === 5510, "旧表との差が5,510円になっていない（どちらかの表の転記ミス）");
 
 console.log(fail === 0 ? `✅ 高額療養費 ${checks}件 すべて一致` : `❌ ${fail}/${checks}件 不一致`);
 process.exit(fail === 0 ? 0 : 1);

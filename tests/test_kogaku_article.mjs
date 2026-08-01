@@ -229,14 +229,87 @@ for (const [hoshu, want] of [[514999, CLIFF[514999]], [515000, CLIFF[515000]]]) 
   else ok('認定証: 資格確認書の人は今も事前申請が必要（両側を書いている）');
 }
 
-// ───────── 7. 令和8年8月1日改正で限度額は変わらない（未施行リビジョンの確認） ─────────
+// ───────── 7. ★令和8年8月診療分から限度額が上がる（2026-08-02 訂正） ─────────
+// この記事は「7月診療分までの表」と「8月診療分からの表」の**2つ**を載せる。
+// 最大の危険は規則7そのもの＝**どちらの額がどちらの期間か**の入れ替え
+// （87,430 と 92,940 は両方とも本文に出るので、金額の集合は入れ替えても変わらない）。
+// → 新表は **kaisei節の中だけ**を見て、区分セルで行を名指しする（規則4: find は最初の一致を返す。
+//   早見表にも <td><b>ア</b></td> があるので、節に切ってから探さないと早見表の行が当たる）。
+const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月）」＋協会けんぽの同名の表（両者一致）
+  ア: { base: 270300, start: 901000, tasuukai: 140100, nenkan: '168万円' },
+  イ: { base: 179100, start: 597000, tasuukai: 93000,  nenkan: '111万円' },
+  ウ: { base: 85800,  start: 286000, tasuukai: 44400,  nenkan: '53万円' },
+  エ: { base: 61500,  start: null,   tasuukai: 44400,  nenkan: '53万円' },
+  オ: { base: 36900,  start: null,   tasuukai: 24600,  nenkan: '29万円' },
+};
 {
   const sec = body.slice(body.indexOf('id="kaisei"'), body.indexOf('id="faq"'));
   const t = strip(sec);
-  const need = ['令和8年8月1日', '令和8年政令第219号', '1円も変わりません', '公的年金等控除の読替額'];
+
+  // 7-1. 訂正したことを読者に申告しているか（黙って書き換えない）
+  if (!t.includes('誤りでしたので訂正します')) fail('改正の節に、前日の記述が誤りだった旨の訂正の申告が無い');
+  else ok('改正: 「変わらない」と書いていたのは誤りだったと明示して訂正している');
+
+  // 7-2. 新表の5行を、節の中で区分セルを名指しして照合（規則4・5）
+  const secRows = [...sec.matchAll(/<tr>[\s\S]*?<\/tr>/g)].map(m => m[0]);
+  for (const [k, v] of Object.entries(SHINPYO)) {
+    const r = secRows.find(x => x.includes(`<td><b>${k}</b></td>`));
+    if (!r) { fail(`8月からの表に区分${k}の行が無い`); continue; }
+    const rt = strip(r);
+    const need = [`${v.base.toLocaleString()}円`, `${v.tasuukai.toLocaleString()}円`, v.nenkan];
+    if (v.start) need.push(`${v.start.toLocaleString()}円`);
+    const miss = need.filter(n => !rt.includes(n));
+    // ★旧表の額がこの行に紛れ込んでいたら落とす（期間の入れ替えの検出）
+    const oldBase = SEIREI[k].flat != null ? SEIREI[k].flat : SEIREI[k].base;
+    if (miss.length) fail(`8月からの表 区分${k}の行に ${miss} が無い: ${rt}`);
+    else if (rt.includes(`${oldBase.toLocaleString()}円`)) fail(`8月からの表 区分${k}の行に7月までの額 ${oldBase} が混入: ${rt}`);
+    else ok(`8月からの表 区分${k}: ${v.base.toLocaleString()}円${v.start ? `＋起点${v.start.toLocaleString()}円` : ''} ／多数回 ${v.tasuukai.toLocaleString()}円／年間上限 ${v.nenkan}`);
+  }
+
+  // 7-3. 多数回該当は据え置き＝旧表と同じであること（厚労省が「維持」と明記）
+  for (const k of Object.keys(SHINPYO)) {
+    if (SHINPYO[k].tasuukai !== SEIREI[k].tasuukai) fail(`前提が壊れている: 区分${k}の多数回該当が新旧で違う`);
+  }
+  ok('8月からの表: 多数回該当（140,100/93,000/44,400/24,600）は据え置き＝7月までと同額');
+
+  // 7-4. ★87,430（7月まで）と 92,940（8月から）の**紐付け**。差5,510円
+  //     金額の網では入れ替えを検出できないので、同じ文の中で照合する（規則7）
+  const cliffP = [...sec.matchAll(/<p>[\s\S]*?<\/p>/g)].map(m => strip(m[0]))
+    .find(p => p.includes('87,430円') && p.includes('92,940円'));
+  if (!cliffP) fail('7月診療分87,430円と8月診療分92,940円を並べて比べた段落が無い');
+  else if (!/7月診療分[^。]*87,430円/.test(cliffP) || !/8月診療分[^。]*92,940円/.test(cliffP)) {
+    fail(`87,430円と92,940円がどちらの診療月か、同じ文で結び付いていない: ${cliffP}`);
+  } else if (!cliffP.includes('5,510円')) fail('差額5,510円が段落に無い');
+  else ok('比較: 7月診療分87,430円 → 8月診療分92,940円（差5,510円）が同じ段落で結び付いている');
+
+  // 7-5. 外部オラクル: 新表の式が厚労省の「約9.3万円」を再現するか（自分の算数ではなく公表値と照合）
+  const u = SHINPYO.ウ;
+  const recomputed = u.base + Math.floor(Math.max(0, 1000000 - u.start) * 0.01 + 0.5);
+  if (recomputed !== 92940) fail(`新表 区分ウの再計算が92,940円にならない: ${recomputed}`);
+  else ok('外部オラクル: 85,800＋(100万−28.6万)×1%＝92,940円 ＝ 厚労省の「約9.3万円」と一致');
+  if (!t.includes('約9.3万円')) fail('厚労省の公表値「約9.3万円」との突き合わせが本文に無い');
+
+  // 7-6. e-Gov の条文にはまだ無い、という食い違いを隠さず開示しているか
+  const need = ['令和8年政令第219号', '公的年金等控除の読替額', '205,762字', '協会けんぽ'];
   const miss = need.filter(n => !t.includes(n));
   if (miss.length) fail(`改正の節に ${miss} が無い`);
-  else ok('改正: 令和8年政令第219号（8/1施行）でも限度額は不変・変わるのは70歳以上の所得計算');
+  else ok('改正: e-Govの条文にまだ載っていないことと、協会けんぽが8月から新表を掲げていることの両方を開示');
+  if (!t.includes('証明にはなりません')) fail('「e-Govに無い＝存在しない ではない」という限界の明示が無い');
+  else ok('改正: 「e-Govに反映されていない＝改正が無い の証明にはならない」と明記');
+
+  // 7-7. ★早見表（7月まで）の側に、8月からの額が漏れ出していないこと（逆向きの入れ替え）
+  const hayami = body.slice(body.indexOf('id="hayami"'), body.indexOf('id="kubun"'));
+  const leaked = Object.values(SHINPYO).map(v => v.base).filter(n => strip(hayami).includes(n.toLocaleString() + '円'));
+  if (leaked.length) fail(`7月までの早見表に8月からの額が混入: ${leaked}`);
+  else ok('7月までの早見表に、8月からの額は入っていない');
+  // ★見出しの要素そのものを名指しする（規則3: 「節のどこかに在る」で見ると、
+  //   目次の同じ文言が節の外から救ってしまい、見出しを壊しても緑になる）
+  const h2 = (body.match(/<h2 id="hayami">([^<]*)<\/h2>/) || [])[1] || '';
+  if (!h2.includes('令和8年7月診療分まで')) fail(`早見表のh2が期間を名乗っていない: ${h2}`);
+  else ok('早見表のh2が「令和8年7月診療分まで」と期間を名乗っている');
+  // 目次も見出しと一致していること（片方だけ直すと目次が古い期間を名乗る）
+  if (!body.includes(`<a href="#hayami">${h2}</a>`)) fail('目次の早見表の項目が、h2の文言と一致していない');
+  else ok('目次と早見表のh2が一致');
 }
 
 // ───────── 8. 端数規則（施行令42条が明記）— 節を名指し ─────────
@@ -269,12 +342,22 @@ for (const [hoshu, want] of [[514999, CLIFF[514999]], [515000, CLIFF[515000]]]) 
     7330,                          // 80,100＋(100万−26.7万)×1% の1%部分
     514999, 515000, 485000, 545000, 500000, 530000, 790000, 830000,  // 等級表の境目
     10000,                         // 差額ベッド代の例（1日1万円）
+    // ★令和8年8月診療分からの表（厚労省PDF＋協会けんぽ。2026-08-02追加）
+    270300, 179100, 85800, 61500, 36900,   // 基準額
+    901000, 597000, 286000,                // 1%の起点
+    92940, 5510,                           // 区分ウ・医療費100万円の新旧比較と差額
+    806700, 826500,                        // 政令219号が実際に変えた公的年金等控除の読替額（出典欄）
+    205762,                                // e-Gov条文の全文字数（新額が1件も無いことの根拠）
   ]);
   const extra = [...found].filter(n => !allow.has(n));
   const missing = KYOKAI_KENPO.filter(n => !found.has(n));
+  // 新表の金額も「欠けたら落ちる」側に入れる（片方の表だけ消される事故を防ぐ）
+  const SHINPYO_MONEY = [270300, 179100, 85800, 61500, 36900, 901000, 597000, 286000, 92940];
+  const missNew = SHINPYO_MONEY.filter(n => !found.has(n));
   if (extra.length) fail(`本文に想定外のカンマ金額がある（誤記の疑い）: ${extra}`);
-  else if (missing.length) fail(`政令の金額が本文から欠けている: ${missing}`);
-  else ok(`金額の網: カンマ金額 ${found.size}種すべてが想定内・政令の12個すべてが本文にある`);
+  else if (missing.length) fail(`政令の金額（7月まで）が本文から欠けている: ${missing}`);
+  else if (missNew.length) fail(`8月からの表の金額が本文から欠けている: ${missNew}`);
+  else ok(`金額の網: カンマ金額 ${found.size}種すべてが想定内・新旧2つの表の金額がすべて本文にある`);
 }
 
 // ───────── 11. 網: 等級（カンマが無く金額の網に入らない） ─────────
