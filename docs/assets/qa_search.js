@@ -90,8 +90,40 @@ export function tokenize(s) {
  * ★4.5 は「一般語1つ(方法 等)がタイトルにも載ったときの上限(約4.5)」の紙一重上だったため、
  *   文書を1件足すだけで IDF がわずかに動いて無関係クエリが閾値を跨いだ(86件目で実際に起きた)。
  *   正例の最弱は 5.8(「産休 手当」)なので、両側にマージンを取って 5.0 に置く。
+ * ★★ その 5.0 も 106件目で跨がれた(2026-08-01・再就職手当ツールの追加)。
+ *   「宇宙旅行の予約方法」が 5.007 で matched になり、内訳は**「方法」ただ1語**(df=12)だった。
+ *   閾値を上げるのは同じ穴の先送りにしかならない ── **文書が増えるたびに IDF が動く**ので、
+ *   紙一重で立っている閾値は原理的に、いつかまた跨がれる。
+ *   → 数を動かすのをやめ、**質の門**を足した(下の isGeneric / matched の条件)。
  */
 export const MATCH_MIN = 5.0;
+
+/**
+ * 一般語の判定。索引の 5% を超えるエントリに出る語は「その語だけでは答えを特定できない」。
+ * 割合で持つのは、**件数で持つと索引が育つたびに意味が変わる**ため
+ * (df=12 は 106件なら一般語だが、1,000件なら十分に特徴的)。
+ */
+const GENERIC_DF_RATIO = 0.05;
+
+/**
+ * 「クエリの大半が索引に無く、当たったのは一般語1語だけ」なら、
+ * スコアが閾値を超えていても matched にしない。
+ *
+ * ★これは精度のための足切りではなく、**再現率を落とさずに穴だけを塞ぐ門**。
+ *   見ているのは「1語しか当たっていない」ことではなく、
+ *   **クエリが多くのトークンに分かれたのに、そのうち1語(しかも一般語)しか当たらなかった**こと。
+ *   「宇宙旅行の予約方法」は 15 トークンに分かれて当たったのは「方法」だけ ＝ 中身は何も無い。
+ *
+ * ★ MIN_QTOKENS を置かずに「1語だけなら弱い」と書くと、**短い本物の質問を殺す**。
+ *   「扶養」はトークンが「扶養」1つしかなく、1/1 が当たっている(＝完全に理解できている)のに
+ *   一般語判定だけで落ちた ── 実際にこの実装で踏んだ。**分母を見ないと精度と再現を取り違える。**
+ */
+const MIN_QTOKENS = 3;
+function isWeakMatch(matchedTokens, qtokens, df, N) {
+  if (qtokens.length < MIN_QTOKENS) return false; // 短いクエリは分母が無い＝この門の適用外
+  if (matchedTokens.length !== 1) return false;
+  return df.get(matchedTokens[0]) > N * GENERIC_DF_RATIO;
+}
 
 /**
  * 1エントリの採点。df(そのトークンを含むエントリ数)から IDF 重みを掛ける。
@@ -135,10 +167,14 @@ export function search(index, query, limit = 3) {
     .sort((a, b) => b.s - a.s || (b.e.tool ? 1 : 0) - (a.e.tool ? 1 : 0));
   const top = scored.slice(0, limit);
   const best = scored.length ? scored[0].s : 0;
+  // 最上位のエントリが、クエリのどのトークンで当たったか(質の門に使う)
+  const bestTokens = scored.length
+    ? qtokens.filter((t) => (scored[0].e.terms || "").includes(t))
+    : [];
   return {
     results: top.map((x) => x.e),
     best,
-    matched: best >= MATCH_MIN,
+    matched: best >= MATCH_MIN && !isWeakMatch(bestTokens, qtokens, df, N),
     scores: top.map((x) => Math.round(x.s * 100) / 100),
   };
 }

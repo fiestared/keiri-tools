@@ -171,6 +171,34 @@ const SCENES = [
   { name: "kihonteate_nodata", data404: "kihonteate_r07.json",
     expect: (s) => s.failed && s.daily === null && s.total === null },
 
+  // ── 再就職手当(就業促進手当) ────────────────────────────────────────────
+  // 35歳・月30万・勤続12年・自己都合 → 日額6,307円/120日。残90日は3分の2(80日)以上なので70%。
+  // 6,307 × 90 × 7/10 = 397,341円。定着手当の上限は同じ日額×残日数×2/10 = 113,526円。
+  { name: "saishushoku", expect: (s) =>
+      s.amount === 397341 && s.amount === s.expectedAmount &&
+      s.dailyUsed === 6307 && s.dailyUsed === s.expectedDailyUsed &&
+      s.prescribed === 120 && s.rate === 70 &&
+      s.teichaku === 113526 && s.saysNotCapped && !s.saysCapped && !s.failed },
+  // ★上限が効く例＝このツールの存在理由。45歳・月60万・会社都合・勤続20年以上(330日)。
+  //   基本手当日額9,110円が**6,745円で頭打ち**になり、1,558,095円。上限を無視すると2,104,410円。
+  //   ★同時に「給付制限が無い人に紹介要件を課していない」ことの検査でもある
+  //   (会社都合なので cond-introduced は無効のまま＝チェックせずに金額が出ること)。
+  { name: "saishushoku_cap", expect: (s) =>
+      s.amount === 1558095 && s.amount === s.expectedAmount &&
+      s.dailyUsed === 6745 && s.dailyUsed === s.expectedDailyUsed &&
+      s.prescribed === 330 && s.rate === 70 &&
+      s.saysCapped && !s.failed },
+  // ★支給残日数が3分の1未満(120日の3分の1=40日に対し39日) → 1円も出さない。
+  //   金額を出してしまう実装なら amount が拾えるので、null であることが検査になる。
+  { name: "saishushoku_toofew", expect: (s) =>
+      s.saysTooFew && s.amount === null && s.rate === null && !s.failed },
+  // ★要件を1つもチェックしていない = 不明。「満たしている」と読み替えて確定させないこと。
+  { name: "saishushoku_unmet", expect: (s) =>
+      s.saysUnmet && s.amount === null && !s.failed },
+  // 上限額が配信できないときは、額を出さずに断る(fail closed)
+  { name: "saishushoku_nodata", data404: "kihonteate_r07.json",
+    expect: (s) => s.failed && s.amount === null && s.dailyUsed === null },
+
   // ── 退職金の税金(退職所得) ──────────────────────────────────────────────
   // ★期待値は**国税庁 No.2732 の計算例(実額)**。退職金800万円・勤続10年2か月 → 91,890円。
   //   控除440万・1年未満切上げ(11年)・1/2・千円未満切捨・超過累進・102.1%の**どれか1つでも

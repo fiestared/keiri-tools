@@ -884,6 +884,114 @@ SCENES.kihonteate_kaisha = kihonScene({ age: 35, monthly: 300000, period: "y10_2
 // 上限額・下限額を配信できない → 額を出さず申告すること(fail closed)
 SCENES.kihonteate_nodata = SCENES.kihonteate;
 
+// ── 再就職手当(就業促進手当) ────────────────────────────────────────────────
+// 期待値は**雇用保険法56条の3第3項1号の式をここに書き直したもの**(saishushoku_core.js は通さない)。
+//   支給額 = 基本手当日額(再就職手当の上限で頭打ち) × 支給残日数 × 十分の六
+//            (支給残日数が所定給付日数の三分の二以上なら十分の七)
+// ★上限額(59歳以下 6,745円 / 60〜64歳 5,454円)は**厚労省 LL080731保01 の公表値**をここに直に置く。
+//   ページは条文の率(百分の五十)からデータ経由で導くので、両者の一致＝条文の読み方が正しい証拠。
+const SAI_CAP_INDEP = (age) => (age >= 60 && age < 65 ? 5454 : 6745);
+const SAI_INDEP = (daily, age, rem, prescribed) => {
+  const d = Math.min(daily, SAI_CAP_INDEP(age));
+  const t = rem * 3 < prescribed ? 0 : rem * 3 >= prescribed * 2 ? 7 : 6;
+  return t === 0 ? 0 : Math.floor((d * rem * t) / 10);
+};
+
+// 要件のチェックは**全部入れないと金額が出ない**(fail closed)。既定はすべて未チェック。
+// ★"introduced"(紹介による就職)は**給付制限がある人にしかかからない**。ページが無効化していれば
+//   クリックしないので、会社都合のシーンは「余計な要件を課していない」ことの検査にもなっている。
+const SAI_CONDS = ["afterWaiting", "overOneYear", "notPrevEmployer",
+                   "noRecentBenefit", "notPreArranged", "insured", "introduced"];
+
+// prescribedIndep = 所定給付日数を**シーン側に書き写す**(22条/23条の表そのものは kihonteate の
+// シーンが既に一次情報と照合しているので、ここで表をもう一組持つと二重管理になる)。
+// ページが違う日数を出したら s.prescribed との比較で落ちる。
+const saiScene = ({ age, monthly, period, reason, remaining, prescribedIndep, conds = SAI_CONDS }) => async () => {
+  const doc = await open("/docs/saishushoku/");
+  set(doc, "age", String(age));
+  set(doc, "monthly", String(monthly));
+  set(doc, "period", period);
+  set(doc, "reason", reason);
+  set(doc, "remaining", String(remaining));
+  for (const c of conds) {
+    const el = doc.getElementById("cond-" + c);
+    if (el && !el.disabled) el.click();
+  }
+  click(doc, "calc"); // ← 上限額JSONの到着を待たずに押す(実ユーザーと同じ)
+
+  await waitFor(
+    () => /計算に使う日額|読み込めませんでした|対象外|受給資格/.test(text(doc, "result")),
+    "再就職手当の計算結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+
+  // 独立計算の期待値。**基本手当日額そのものも公表式からここで出す**(ページのcoreは通さない)。
+  //   賃金日額 = 月給×6÷180 → 17条4項の年齢別上限で頭打ち → 帯ごとの率で基本手当日額。
+  // ★率は**帯で3本に分かれる**(規則28条の3第1項)。逓減の式は帯の中でしか成り立たない:
+  //     w <  5,480          … 80%
+  //     5,480 ≤ w ≤ 13,490  … y = 0.8w − 0.3{(w−5,480)/(13,490−5,480)}w   ← 逓減
+  //     w >  13,490         … 50%   (60〜64歳は帯の上端が12,120・逓減係数0.35・上端超は45%)
+  //   逓減の式を帯の外まで延長すると、**帯の上を大きく超えた高給の人ほど過少になる**
+  //   (45歳・賃金日額18,220円なら 9,110円が 5,882円になる)。ここで実際に踏んだ。
+  const band = age < 30 ? "under30" : age < 45 ? "age30_44" : age < 60 ? "age45_59" : "age60_64";
+  const senior = age >= 60 && age < 65;
+  const w = Math.min((monthly * 6) / 180,
+    { under30: 14900, age30_44: 16540, age45_59: 18220, age60_64: 17400 }[band]);
+  const A = 5480, B = senior ? 12120 : 13490, K = senior ? 0.35 : 0.30;
+  let rawIndep;
+  if (w < A) rawIndep = 0.8 * w;
+  else if (w <= B) {
+    rawIndep = 0.8 * w - K * ((w - A) / (B - A)) * w;
+    // 規則28条の3第2項のかっこ書き(60〜64歳だけ計算式が2本ある)
+    if (senior) rawIndep = Math.min(rawIndep, 0.05 * w + 0.40 * B);
+  } else rawIndep = (senior ? 0.45 : 0.50) * w;
+  const dailyIndep = Math.min(Math.floor(rawIndep + 1e-9),
+    { under30: 7450, age30_44: 8270, age45_59: 9110, age60_64: 7830 }[band]);
+
+  return {
+    age, monthly, period, reason, remaining,
+    expectedDailyUsed: Math.min(dailyIndep, SAI_CAP_INDEP(age)),
+    expectedAmount: SAI_INDEP(dailyIndep, age, remaining, prescribedIndep),
+    amount: num(/再就職手当\s*¥([\d,]+)/),
+    dailyUsed: num(/計算に使う日額\s*¥([\d,]+)/),
+    prescribed: num(/所定給付日数\s*(\d+)日/),
+    rate: (body.match(/支給率\s*(\d+)%/) || [])[1] ? Number(body.match(/支給率\s*(\d+)%/)[1]) : null,
+    teichaku: num(/就業促進定着手当\s*上限\s*¥([\d,]+)/),
+    saysCapped: /上限\s*¥[\d,]+\s*が適用されました/.test(body),
+    saysNotCapped: /上限に当たっていません/.test(body),
+    saysTooFew: /3分の1に届いていません/.test(body),
+    saysUnmet: /チェックが入っていないため/.test(body),
+    cliffLoss: num(/差し引いても\s*¥([\d,]+)\s*の損/),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+
+// 35歳・月30万・勤続12年・自己都合 → 日額6,307円 / 所定給付日数120日。
+// 残90日 = 120日の3分の2(80日)以上なので70% → 6307×90×0.7 = 397,341円。上限6,745円には当たらない。
+SCENES.saishushoku = saiScene({ age: 35, monthly: 300000, period: "y10_20", reason: "jiko",
+                                remaining: 90, prescribedIndep: 120 });
+
+// ★このツールの存在理由。45歳・月給60万・会社都合・勤続20年以上 → 基本手当日額は9,110円だが、
+//   再就職手当の計算では**6,745円で頭打ち**。上限を無視すると546,315円も過大になる。
+//   (賃金日額も17条4項で18,220円に頭打ち。ここを通さないと45歳では存在しえない日額10,000円が出る)
+SCENES.saishushoku_cap = saiScene({ age: 45, monthly: 600000, period: "y20", reason: "kaisha",
+                                    remaining: 330, prescribedIndep: 330 });
+
+// ★支給残日数が3分の1未満 → 要件そのものを満たさないので**1円も出さない**。
+//   120日の3分の1は40日。残39日は不支給で、あと1日足りないことを画面が言うこと。
+SCENES.saishushoku_toofew = saiScene({ age: 35, monthly: 300000, period: "y10_20", reason: "jiko",
+                                       remaining: 39, prescribedIndep: 120 });
+
+// ★要件を1つもチェックしていない＝**不明**。「満たしている」と読み替えて金額を確定しないこと。
+SCENES.saishushoku_unmet = saiScene({ age: 35, monthly: 300000, period: "y10_20", reason: "jiko",
+                                      remaining: 90, prescribedIndep: 120, conds: [] });
+
+// 上限額を配信できない → 額を出さず申告すること(fail closed)。
+// 上限が分からないまま答えると、給料の高い人に数十万円の過大な額を見せる。
+SCENES.saishushoku_nodata = SCENES.saishushoku;
+
 // ── 退職金の税金(退職所得) ──────────────────────────────────────────────────
 // 期待値は**国税庁が実額で公表している計算例そのもの**をここに書き写す(taishoku_core.js は一切通さない)。
 //   出典: 国税庁 No.2732「退職金に対する源泉徴収」の計算例

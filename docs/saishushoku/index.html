@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>再就職手当 計算機｜いくらもらえる・60%と70%の分かれ目を自動計算</title>
+<meta name="description" content="早く再就職したときにもらえる再就職手当を、離職時の年齢・給料・勤続年数・退職理由・支給残日数から自動計算。★計算に使う基本手当日額には失業保険そのものとは別の低い上限があり、給料が高い人ほど削られます。支給率が60%から70%に上がる分かれ目（所定給付日数の3分の2）と、就職を1日遅らせると失う額も表示。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/saishushoku/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "再就職手当 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "雇用保険の再就職手当（就業促進手当）について、支給額・支給率（60%／70%）・支給の可否・就業促進定着手当の上限を計算します。再就職手当の計算に使う基本手当日額の上限は、厚生労働省が毎年8月1日に改定する額に対応。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "再就職手当 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "再就職手当はいくらもらえますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "「基本手当日額 × 支給残日数 × 60%」が基本で、支給残日数が所定給付日数の3分の2以上あれば70%に上がります（雇用保険法56条の3第3項1号）。ただしこの式に使う基本手当日額には再就職手当専用の上限があり、給料が高い人はそこで頭打ちになります。所定給付日数120日・基本手当日額6,307円の人が120日まるごと残して就職した場合は529,788円です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "60%と70%の分かれ目はどこですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "支給残日数が所定給付日数の3分の2以上かどうかです。所定給付日数120日なら80日、90日なら60日が分かれ目で、ちょうど3分の2の日は70%です（条文が「3分の2以上」と書いているため）。1日遅らせて境目を下回ると支給率が60%に落ち、失業保険を1日ぶん多く受け取れることを差し引いても損になることがあります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "給付制限中に就職しても再就職手当はもらえますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "もらえます。ただし待期満了後1か月の期間内に就職した場合は、ハローワークまたは許可・届出のある職業紹介事業者の紹介による就職であることが必要です（施行規則82条1項2号かっこ書き）。1か月を過ぎていれば、自分で見つけた就職でもかまいません。教育訓練を受けて給付制限が解除された場合も、この紹介の要件は外れません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "自分で会社を作った・フリーランスになった場合はもらえますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "もらえます。事業を開始した場合は「1年を超えて引き続き事業を行うことができると認められること」が要件になり（施行規則82条の2）、雇用保険の被保険者になる要件はかかりません。ただし待期7日間が満了した後に開業の準備・開始をしていることが必要です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "前の会社に戻った場合はどうなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "支給されません。離職前の事業主に再び雇用されたときは対象外で、資本・資金・人事・取引で関係のある「関連事業主」に雇用された場合も同じです（施行規則82条1項3号）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "過去に再就職手当をもらったことがある場合は？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "就職日前3年以内の就職について再就職手当または常用就職支度手当を受けていると、今回は支給されません（雇用保険法56条の3第2項・施行規則82条1項4号）。3年より前であれば、あらためて対象になります。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 再就職手当 計算機</nav>
+
+<section class="hero">
+  <h1>再就職手当 計算機</h1>
+  <p>失業保険（基本手当）を残したまま再就職したときにもらえる<b>再就職手当</b>の額を計算します。<b>支給残日数が所定給付日数の3分の2以上なら70%、3分の1以上なら60%</b>。<b>3分の1に届かないと1円も出ません</b>。支給要件も1つずつ確認できます。</p>
+</section>
+
+<div class="card">
+  <div class="fee-pair">
+    <div>
+      <label for="age">離職時の年齢</label>
+      <input type="number" id="age" value="35" min="15" max="70" inputmode="numeric">
+    </div>
+    <div>
+      <label for="monthly">毎月の給料（総支給・円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　賞与は含めない</span></label>
+      <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
+    </div>
+  </div>
+
+  <label for="period">雇用保険に入っていた期間（算定基礎期間）</label>
+  <select id="period">
+    <option value="under1">1年未満</option>
+    <option value="y1_5">1年以上5年未満</option>
+    <option value="y5_10">5年以上10年未満</option>
+    <option value="y10_20" selected>10年以上20年未満</option>
+    <option value="y20">20年以上</option>
+  </select>
+
+  <label for="reason">退職の理由</label>
+  <select id="reason">
+    <option value="jiko" selected>自己都合（転職・独立など）</option>
+    <option value="kaisha">会社都合＝特定受給資格者（倒産・解雇・パワハラ・長時間労働など）</option>
+    <option value="keiyaku">契約期間が満了し、更新されなかった</option>
+    <option value="seito">正当な理由のある自己都合（病気・介護・配偶者の転勤など）</option>
+    <option value="teinen">定年退職</option>
+  </select>
+  <p class="hint">退職の理由は<b>所定給付日数</b>（＝分母）を決めます。分母が変われば「3分の2」「3分の1」の位置も動くので、支給率が変わります。<a href="../kihonteate/">失業保険（基本手当）計算機</a>で日数の内訳を確認できます。</p>
+
+  <label style="font-weight:400;display:block;margin-top:12px">
+    <input type="checkbox" id="repeated"> 離職日から5年間で、自己都合の退職が3回目以上
+  </label>
+  <label style="font-weight:400;display:block">
+    <input type="checkbox" id="training"> 離職日前1年以内に教育訓練を受けた／受給中に受ける（給付制限が解除されます）
+  </label>
+  <label style="font-weight:400;display:block">
+    <input type="checkbox" id="konnan"> 障害者手帳をお持ちなど、就職が困難な方
+  </label>
+
+  <label for="remaining" style="margin-top:14px">支給残日数（就職日の<b>前日</b>時点で、まだ受け取っていない日数）</label>
+  <input type="number" id="remaining" value="90" min="0" max="360" inputmode="numeric">
+  <p class="hint">ハローワークの「雇用保険受給資格者証」で確認できます。<b>まだ1日も受け取っていない（給付制限中に就職した）場合は、所定給付日数がそのまま残日数</b>です。</p>
+
+  <div class="note" id="youken-list">
+    <p style="margin:0 0 8px"><b>★ 支給要件（すべて満たす必要があります）</b>　当てはまるものにチェックしてください。<b>1つでも欠けると支給されません</b>（雇用保険法56条の3、施行規則82条・82条の2）。</p>
+    <label style="font-weight:400;display:block"><input type="checkbox" id="cond-afterWaiting"> <b>待期7日間が満了した後</b>に就職・事業開始した（法21条・規則82条1項2号）</label>
+    <label style="font-weight:400;display:block"><input type="checkbox" id="cond-overOneYear"> <b>1年を超えて引き続き雇用されることが確実</b>である（自営業を始めた場合は、事業により自立できると認められること。規則82条の2）</label>
+    <label style="font-weight:400;display:block"><input type="checkbox" id="cond-notPrevEmployer"> <b>離職前の事業主（関連事業主を含む）に再び雇用されたものではない</b>（規則82条1項3号）</label>
+    <label style="font-weight:400;display:block"><input type="checkbox" id="cond-noRecentBenefit"> 就職日前<b>3年以内</b>の就職について、<b>再就職手当・常用就職支度手当を受けていない</b>（法56条の3第2項・規則82条1項4号）</label>
+    <label style="font-weight:400;display:block"><input type="checkbox" id="cond-notPreArranged"> <b>受給資格の決定（求職申込み）より前から採用が内定していた事業主ではない</b>（規則82条1項5号）</label>
+    <label style="font-weight:400;display:block"><input type="checkbox" id="cond-insured"> 再就職先で<b>雇用保険の被保険者になる</b>（自営業を始めた場合はこの要件はかかりません。規則82条1項1号）</label>
+    <label style="font-weight:400;display:block" id="cond-introduced-row"><input type="checkbox" id="cond-introduced"> <b>【給付制限がある方のみ】</b>給付制限中の就職が、<b>待期満了後1か月の期間内</b>であれば、<b>ハローワークまたは許可・届出のある職業紹介事業者の紹介</b>による就職である（1か月を過ぎていればこの要件はかかりません。規則82条1項2号かっこ書き）</label>
+    <p class="hint" style="margin:8px 0 0">★<b>教育訓練で給付制限が解除された場合も、この紹介の要件は外れません。</b>「制限が消えたのだから紹介も不要」と読むと、支給されない就職の仕方をしてしまいます。</p>
+  </div>
+
+  <button class="primary" id="calc">計算する</button>
+  <div class="result" id="result"></div>
+
+  <div class="note" id="cliff-note">
+    <b>★ 1日遅く就職すると、基本手当1日分より大きな額を失うことがあります</b>
+    支給率は<b>支給残日数が所定給付日数の3分の2以上かどうか</b>で70%と60%に分かれます（雇用保険法56条の3第3項1号）。この境目をまたぐと、<b>残日数が1日減っただけで再就職手当が大きく落ちます</b>。失業保険を1日ぶん多く受け取れることを差し引いても損になる幅があり、上の計算結果に<b>その差引の損</b>を表示します。就職日を決められる立場なら、この境目の手前に寄せてください。
+  </div>
+
+  <div class="note" id="teichaku-note">
+    <b>再就職手当をもらった後、給料が下がっていたら「就業促進定着手当」があります</b>
+    再就職手当を受け取った人が、同じ事業主のもとで<b>6か月以上雇用され</b>、その6か月の<b>賃金日額が離職前より低かった</b>ときは、その差額分が<b>就業促進定着手当</b>として追加で支給されます（雇用保険法56条の3第3項1号かっこ書き）。
+    この計算機が出せるのは<b>上限額（基本手当日額 × 支給残日数 × 10分の2）</b>だけです。実際の支給額は「（離職前の賃金日額 − 再就職後6か月の賃金日額）× 賃金支払基礎日数」で決まり、<b>再就職後の賃金が下がっていなければ0円</b>です。手元にない数字を推測で埋めることはしません。
+  </div>
+</div>
+
+<section class="faq">
+  <h2>この計算機の見方</h2>
+  <h3>★ 再就職手当の計算に使う「基本手当日額」には、失業保険とは別の低い上限があります</h3>
+  <p>いちばん間違えやすいのがここです。再就職手当の額は「<b>基本手当日額 × 支給残日数 × 60%（または70%）</b>」ですが、この式の基本手当日額には<b>再就職手当専用の上限</b>がかかります（雇用保険法56条の3第3項1号かっこ書き）。たとえば45〜59歳の基本手当日額の上限は<span id="cap-compare-kihon">—</span>ですが、再就職手当の計算では<span id="cap-compare-sai">—</span>で頭打ちになります。<b>この上限を知らずに計算すると、給料が高い人ほど大きく過大に見積もります</b>（45歳・月給60万円・会社都合・勤続20年以上なら、約55万円の差が出ます）。</p>
+  <h3>「3分の1以上」を満たさないと1円も出ません</h3>
+  <p>再就職手当は、就職日の前日の<b>支給残日数が所定給付日数の3分の1以上</b>ある人だけが対象です（雇用保険法56条の3第1項1号）。所定給付日数90日なら30日、120日なら40日が下限です。<b>「以上」なので、ちょうど3分の1の日はもらえます</b>。ここに届かないときは、あと何日残して就職する必要があったかを表示します。</p>
+  <h3>上限額は毎年8月1日に変わります</h3>
+  <p>再就職手当の上限額は、失業保険の賃金日額の上限額（雇用保険法18条の<b>自動変更対象額</b>）から導かれるため、<b>毎年8月1日に一緒に改定</b>されます。この計算機は<span id="src-label">厚生労働省が公表している最新の額</span>で計算しています。</p>
+  <div class="callout">
+    <b>ご注意</b>
+    この計算機の結果は目安です。実際の支給の可否と金額は、ハローワークが「再就職手当支給申請書」と事業主の証明をもとに決定します。申請には期限（就職日の翌日から1か月以内）があります。
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3>再就職手当はいくらもらえますか？</h3>
+  <p>「基本手当日額 × 支給残日数 × 60%」が基本で、<b>支給残日数が所定給付日数の3分の2以上あれば70%</b>に上がります（雇用保険法56条の3第3項1号）。ただしこの式に使う基本手当日額には<b>再就職手当専用の上限</b>があり、給料が高い人はそこで頭打ちになります。所定給付日数120日・基本手当日額6,307円の人が120日まるごと残して就職した場合は529,788円です。</p>
+  <h3>60%と70%の分かれ目はどこですか？</h3>
+  <p><b>支給残日数が所定給付日数の3分の2以上</b>かどうかです。所定給付日数120日なら80日、90日なら60日が分かれ目で、<b>ちょうど3分の2の日は70%</b>です（条文が「3分の2以上」と書いているため）。1日遅らせて境目を下回ると支給率が60%に落ち、失業保険を1日ぶん多く受け取れることを差し引いても損になることがあります。</p>
+  <h3>給付制限中に就職しても再就職手当はもらえますか？</h3>
+  <p>もらえます。ただし<b>待期満了後1か月の期間内に就職した場合は、ハローワークまたは許可・届出のある職業紹介事業者の紹介による就職であること</b>が必要です（施行規則82条1項2号かっこ書き）。1か月を過ぎていれば、自分で見つけた就職でもかまいません。<b>教育訓練を受けて給付制限が解除された場合も、この紹介の要件は外れません。</b></p>
+  <h3>自分で会社を作った・フリーランスになった場合はもらえますか？</h3>
+  <p>もらえます。事業を開始した場合は「1年を超えて引き続き事業を行うことができると認められること」が要件になり（施行規則82条の2）、雇用保険の被保険者になる要件はかかりません。ただし<b>待期7日間が満了した後に開業の準備・開始をしていること</b>が必要です。</p>
+  <h3>前の会社に戻った場合はどうなりますか？</h3>
+  <p>支給されません。<b>離職前の事業主に再び雇用されたときは対象外</b>で、資本・資金・人事・取引で関係のある「関連事業主」に雇用された場合も同じです（施行規則82条1項3号）。</p>
+  <h3>過去に再就職手当をもらったことがある場合は？</h3>
+  <p>就職日前<b>3年以内</b>の就職について再就職手当または常用就職支度手当を受けていると、今回は支給されません（雇用保険法56条の3第2項・施行規則82条1項4号）。3年より前であれば、あらためて対象になります。</p>
+</section>
+<section class="faq rel-block">
+<h2>関連する解説</h2>
+<!--rel:S--><ul class="rel-list"><li><a href="../column/saishushoku-teate/">再就職手当はいくらもらえる？計算方法と支給条件【令和8年度】</a><span class="rel-desc">再就職手当＝基本手当日額×支給残日数×60%（残日数が所定給付日数の3分の2以上なら70%）。日額には6,745円の上限があり高給の人ほど削</span></li></ul><!--rel:E-->
+</section>
+</main>
+<footer class="site" style="display:block">
+  出典: 雇用保険法56条の3・同法施行規則82条・82条の2／厚生労働省「雇用保険の基本手当（失業給付）を受給される皆さまへ」<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+</footer>
+
+<script type="module">
+import { calcKihonteate, REASONS, restrictionMonths } from "../assets/kihonteate_core.js";
+import { calcSaishushoku, saishushokuCap, cliffAt, CONDITIONS, RESTRICTED_CONDITION } from "../assets/saishushoku_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+// 上限額（自動変更対象額から導く）は非同期で届く。**届く前に押されても待つ**。
+// 上限が分からないまま再就職手当の額を答えると、給料の高い人に数十万円の過大な額を見せる。
+let DATA = null;
+const dataReady = fetch("../assets/kihonteate_r07.json")
+  .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  .then(d => { DATA = d; return true; })
+  .catch(() => false);
+
+// 出典・上限額の表示は飾り。ここで転んでも計算は止めない。
+// ★本文に額を手書きせず、データから導いた値を差し込む（毎年8月1日の改定に自動で追随する）
+dataReady.then(ok => {
+  if (!ok || !DATA) return;
+  $("src-note").textContent = `（${DATA._meta.label}）`;
+  $("src-label").textContent = DATA._meta.label;
+  $("cap-compare-kihon").textContent = yen(DATA.kihon_nichigaku_max.age45_59);
+  $("cap-compare-sai").textContent = yen(saishushokuCap(45, DATA));
+}).catch(() => {});
+
+// 給付制限がある人にだけ「紹介による就職」の要件がかかる。無い人に課すと
+// 「もらえない」と誤答するので、画面のほうでも当てはまらないことを申告する。
+// ★教育訓練による解除（33条1項ただし書）では紹介の要件は外れないので、
+//   training を渡さずに判定する（解除されても給付制限がある人であることは変わらない）。
+const hasRestriction = () => restrictionMonths($("reason").value, $("repeated").checked, false) > 0;
+const syncRestrictionRow = () => {
+  const on = hasRestriction();
+  $("cond-introduced-row").style.opacity = on ? "1" : "0.5";
+  $("cond-introduced").disabled = !on;
+};
+$("reason").addEventListener("change", syncRestrictionRow);
+$("repeated").addEventListener("change", syncRestrictionRow);
+syncRestrictionRow();
+
+$("calc").addEventListener("click", async () => {
+  const ready = await dataReady;
+  const box = $("result");
+  box.style.display = "block";   // .result は既定 display:none(style.css)
+  box.innerHTML = "計算中…";
+  if (!ready || !DATA) {
+    box.innerHTML = `<div class="callout"><b>上限額を読み込めませんでした。</b>` +
+      `通信環境を確認して、ページを再読み込みしてください。再就職手当の計算に使う` +
+      `基本手当日額の上限が分からないまま額を答えると、給料の高い方に大きく過大な額を` +
+      `お見せすることになるため、計算を止めています。</div>`;
+    return;
+  }
+
+  const age = Number($("age").value);
+  const monthly = Number($("monthly").value);
+  const remaining = Number($("remaining").value);
+  if (!(monthly > 0)) {
+    box.innerHTML = `<div class="callout">毎月の給料（総支給額）を入力してください。</div>`;
+    return;
+  }
+  if (!(remaining >= 0)) {
+    box.innerHTML = `<div class="callout">支給残日数を入力してください。</div>`;
+    return;
+  }
+
+  // 基本手当日額と所定給付日数は、失業保険と同じコアで出す（二重実装しない）
+  const k = calcKihonteate({
+    age, monthly,
+    period: $("period").value,
+    reason: $("reason").value,
+    konnan: $("konnan").checked,
+    repeated: $("repeated").checked,
+    training: $("training").checked,
+  }, DATA);
+
+  if (!k.supported) {
+    box.innerHTML = `<div class="callout"><b>この計算機の対象外です。</b>${k.message}</div>`;
+    return;
+  }
+  if (!k.eligible) {
+    box.innerHTML = `<div class="callout"><b>失業保険（基本手当）の受給資格を満たさない可能性が高いです。</b>` +
+      `再就職手当は基本手当の受給資格がある方への給付なので、額を出していません。${k.eligibilityMessage}</div>`;
+    return;
+  }
+
+  if (remaining > k.days) {
+    box.innerHTML = `<div class="callout"><b>支給残日数が所定給付日数（${k.days}日）を超えています。</b>` +
+      `残日数は最大でも所定給付日数までです。入力を確認してください。</div>`;
+    return;
+  }
+
+  const restricted = hasRestriction();
+  // 要件は画面のチェックから読む。**未チェック（＝不明）を「満たしている」と読み替えない**
+  const conditions = {};
+  for (const c of CONDITIONS) conditions[c.key] = $("cond-" + c.key).checked;
+  conditions[RESTRICTED_CONDITION.key] = restricted && $("cond-" + RESTRICTED_CONDITION.key).checked;
+
+  const r = calcSaishushoku(
+    { daily: k.daily, age, prescribed: k.days, remaining, conditions, hasRestriction: restricted },
+    DATA,
+  );
+
+  const base = `
+    <table class="res">
+      <tr><th>基本手当日額</th><td>${yen(k.daily)}／日（所定給付日数 <b>${k.days}日</b>・${REASONS[$("reason").value]}）</td></tr>
+      <tr><th>計算に使う日額</th><td><b>${yen(r.dailyUsed)}</b>${r.cappedApplied ? `（上限 ${yen(r.cap)} が適用されました）` : "（上限に当たっていません）"}</td></tr>
+      <tr><th>支給残日数</th><td>${r.remaining}日（所定給付日数 ${r.prescribed}日 の
+        ${r.prescribed > 0 ? Math.floor((r.remaining / r.prescribed) * 1000) / 10 : 0}％）</td></tr>
+      <tr><th>支給率</th><td><b>${r.rateLabel}</b>${r.tenths ? `（10分の${r.tenths}）` : ""}</td></tr>
+    </table>`;
+
+  // ① 支給残日数が3分の1に届かない ＝ 要件そのものを満たさない
+  if (r.tooFewDays) {
+    box.innerHTML = `
+      <div class="big">再就職手当は支給されません</div>
+      ${base}
+      <div class="callout"><b>支給残日数が所定給付日数の3分の1に届いていません。</b>
+      再就職手当は「就職日の前日の支給残日数が所定給付日数の3分の1以上」であることが要件です
+      （雇用保険法56条の3第1項1号）。${r.prescribed}日の3分の1は<b>${r.needForAny}日</b>で、
+      あと<b>${r.needForAny - r.remaining}日</b>足りません。</div>`;
+    return;
+  }
+
+  // ② 日数は足りているが、要件のチェックが欠けている
+  if (!r.eligible) {
+    box.innerHTML = `
+      <div class="big">要件を満たすと ${yen(Math.floor((r.dailyUsed * r.remaining * r.tenths) / 10))}</div>
+      ${base}
+      <div class="callout"><b>次の要件にチェックが入っていないため、金額を確定していません。</b>
+      再就職手当は<b>すべての要件を満たした人だけ</b>が対象で、1つでも欠けると支給されません。
+      <ul style="margin:8px 0 0">${r.unmet.map((c) => `<li>${c.label}<span style="color:var(--sub)">（${c.law}）</span></li>`).join("")}</ul></div>`;
+    return;
+  }
+
+  const capNote = r.cappedApplied
+    ? `<div class="hint">★基本手当日額は${yen(r.daily)}ですが、再就職手当の計算では<b>上限${yen(r.cap)}</b>が適用されました（雇用保険法56条の3第3項1号かっこ書き）。
+       上限を知らずに${yen(r.daily)}で計算すると<b>${yen(Math.floor((r.daily * r.remaining * r.tenths) / 10))}</b>となり、
+       <b>${yen(Math.floor((r.daily * r.remaining * r.tenths) / 10) - r.amount)}の過大</b>になります。</div>`
+    : "";
+
+  // ★70%の崖。境目の手前に就職日を寄せれば得になる額を、実額で出す
+  const cl = cliffAt(r.dailyUsed, r.prescribed);
+  const cliffNote = (r.tenths === 6 && cl && cl.netLoss > 0 && r.shortOf70 > 0)
+    ? `<div class="callout"><b>あと${r.shortOf70}日ぶん残して就職できていれば、支給率が70%になります。</b>
+       残${cl.threshold}日なら<b>${yen(cl.above)}</b>（70%）、残${cl.threshold - 1}日なら<b>${yen(cl.below)}</b>（60%）で、
+       境目をまたぐと<b>${yen(cl.gap)}</b>の差がつきます。失業保険を1日ぶん多く受け取れること（${yen(r.dailyUsed)}）を
+       差し引いても<b>${yen(cl.netLoss)}の損</b>です。就職日を選べるなら、この境目より手前に寄せてください。</div>`
+    : (r.tenths === 7 && cl)
+    ? `<div class="hint">70%が適用される下限は残<b>${cl.threshold}日</b>（所定給付日数の3分の2）で、
+       ${r.remaining - cl.threshold}日ぶんの余裕があります。ここを下回ると60%に落ち、${yen(cl.gap)}下がります。</div>`
+    : "";
+
+  box.innerHTML = `
+    <div class="big">再就職手当　${yen(r.amount)}</div>
+    ${base}
+    <table class="res">
+      <tr><th>支給額</th><td>${yen(r.dailyUsed)} × ${r.remaining}日 × 10分の${r.tenths} ＝ <b>${yen(r.amount)}</b></td></tr>
+      <tr><th>就業促進定着手当</th><td>上限 <b>${yen(r.teichakuCap)}</b>（実額は再就職後6か月の賃金の下がり方で決まります）</td></tr>
+    </table>
+    ${capNote}
+    ${cliffNote}
+    <div class="hint">申請期限は<b>就職日の翌日から1か月以内</b>です（施行規則82条の3）。事業主の証明が要るので、早めに再就職先へ依頼してください。</div>`;
+});
+</script>
+</body>
+</html>

@@ -167,6 +167,38 @@ const bad = (msg) => problems.push(msg);
   }
 }
 
+// ── §4 トップページの再就職手当カードが名指ししている2つの額 ─────────────────────
+// ★トップは静的HTMLなので、ツールのページと違って**データから描けない**。だから額を書くなら
+//   「書いてよい代わりに、改定日に必ず赤くする」錠前が要る。
+//   この2つ（45〜59歳の基本手当日額の上限 / 再就職手当の計算に使う日額の上限）は
+//   **毎年8月1日に一緒に改定される**ので、放置すると**トップだけが古い額を名乗る**。
+//   カードの主張は「9,110円が6,745円で頭打ち」という**対比そのもの**なので、
+//   片方だけ古くなると主張が壊れる（両方を正本と突き合わせる）。
+{
+  const html = await read("docs/index.html");
+  const D = JSON.parse(await read("docs/assets/kihonteate_r07.json"));
+  const { saishushokuCap } = await import("../docs/assets/saishushoku_core.js");
+
+  // カードの中だけを見る（規則3: 本文のどこかに在る、では素通しする）
+  const card = html.match(/<a class="tool-card" href="saishushoku\/">[\s\S]*?<\/a>/)?.[0];
+  checks++;
+  if (!card) {
+    bad("docs/index.html: 再就職手当のツールカードが見つからない（カードを消したなら、この§も消すこと）。");
+  } else {
+    const yen = (n) => n.toLocaleString("ja-JP");
+    for (const [label, want] of [
+      ["45〜59歳の基本手当日額の上限", D.kihon_nichigaku_max.age45_59],
+      ["再就職手当の計算に使う日額の上限（59歳以下）", saishushokuCap(45, D)],
+    ]) {
+      checks++;
+      if (!card.includes(yen(want))) {
+        bad(`docs/index.html の再就職手当カード: ${label}が正本と一致しない（正本 ${yen(want)} 円が` +
+            `カードに書かれていない）。毎年8月1日に改定される額なので、カードの文言を書き換えること。`);
+      }
+    }
+  }
+}
+
 if (problems.length) {
   console.error(`✗ test_screen_constants: ${problems.length}件`);
   for (const p of problems) console.error("  - " + p);
