@@ -126,6 +126,58 @@ function isWeakMatch(matchedTokens, qtokens, df, N) {
 }
 
 /**
+ * ★**質問のうち、どれだけを実際に理解できたか**(内容文字の被覆)。
+ *
+ * 上の isWeakMatch は「**1語だけ**当たった場合」しか止めないので、
+ * **一般語や文法の断片が2語当たると素通りする**。2026-08-02 に無関係な質問21問で実測したところ
+ * **12問が答えを返していた**(「カレーの作り方の方法」→ 電帳法の検索要件 など)。
+ *
+ * 原因は df ではない。犯人は **`の方法` `り方` `え方` `的な` のような、語の切れ目をまたいだ n-gram**で、
+ * これらは索引に1件しか出ない(df=1)ため **IDF が「きわめて特徴的な語」として最大の重みを与える**。
+ * df を見る門は、この「珍しいが意味の無い断片」を原理的に見分けられない。
+ *
+ * → 見るものを変える。**当たった語が、質問の何割を覆っているか**を見る。
+ *   「カレーの作り方の方法」で覆えたのは `方法` の2文字だけ＝**質問の中身は何も分かっていない**。
+ *
+ * ★**分母はひらがなを除いた「内容文字」(漢字・カタカナ・英数)にする。**
+ *   生の文字数を分母にすると「〜を教えてください」「〜のでしょうか」のような**丁寧語の尻尾が
+ *   分母を膨らませ、本物の質問を殺す**(実測: 「残業代の正しい計算のしかたを教えてください」は
+ *   生の文字被覆だと 29% まで落ちる。内容文字なら 71%)。
+ *
+ * ★**閾値 0.6 の根拠(2026-08-02 実測)**: 本物の質問66問の最小が **60%**、
+ *   無関係な質問の最大が **50%**(「おすすめの映画の見方」)。両側に10ポイントの余裕。
+ *   MATCH_MIN と違い**この値は索引が増えても勝手に動かない** — 被覆は質問の側の量なので、
+ *   跨がれるとしたら「新しい記事が本当にその質問の語を大半含んでいた」ときだけ(＝妥当な一致)。
+ */
+const MIN_CONTENT_COVERAGE = 0.6;
+const HIRAGANA = /[ぁ-ゖ]/;
+
+/** 正規化済みクエリのうち、内容文字(ひらがな以外)の位置。空なら分母が無い＝この門は適用外。 */
+function contentPositions(nq) {
+  const idx = [];
+  for (let i = 0; i < nq.length; i++) if (!HIRAGANA.test(nq[i])) idx.push(i);
+  return idx;
+}
+
+/** entry が当たった語で、内容文字のうち何割を覆えたか。分母が無いときは 1(素通し)。 */
+function contentCoverage(entry, qtokens, nq, contentIdx) {
+  if (contentIdx.length === 0) return 1;
+  const terms = entry.terms || "";
+  const covered = new Set();
+  for (const t of qtokens) {
+    if (!terms.includes(t)) continue;
+    let i = nq.indexOf(t);
+    while (i !== -1) {
+      for (let k = i; k < i + t.length; k++) covered.add(k);
+      i = nq.indexOf(t, i + 1);
+    }
+  }
+  let hit = 0;
+  for (const i of contentIdx) if (covered.has(i)) hit++;
+  return hit / contentIdx.length;
+}
+
+/**
  * 1エントリの採点。df(そのトークンを含むエントリ数)から IDF 重みを掛ける。
  * 「方法」「計算」のように多くのエントリに出る一般語は軽く、「産休」「離職票」のように
  * 少数にしか出ない語は重く効く ── これで一般語だけの誤ヒット(例: 宇宙旅行の"方法")を抑える。
@@ -161,9 +213,15 @@ export function search(index, query, limit = 3) {
     for (const e of index) if ((e.terms || "").includes(t)) c++;
     df.set(t, c);
   }
+  // ★被覆は「最後の門」ではなく**候補の絞り込み**に使う。matched を落とすだけだと、
+  //   助詞・丁寧語だけで釣れたエントリが**上位に居座ったまま**になり、その下にいる
+  //   正しい記事が押し出される(実測: 「育休はいくらもらえるの？」が再就職手当を返していた)。
+  //   先に外せば、正しい記事が繰り上がって matched のまま返せる。
+  const nq = normalize(query).replace(/ /g, "");
+  const contentIdx = contentPositions(nq);
   const scored = index
     .map((e) => ({ e, s: scoreEntry(e, qtokens, df, N) }))
-    .filter((x) => x.s > 0)
+    .filter((x) => x.s > 0 && contentCoverage(x.e, qtokens, nq, contentIdx) >= MIN_CONTENT_COVERAGE)
     .sort((a, b) => b.s - a.s || (b.e.tool ? 1 : 0) - (a.e.tool ? 1 : 0));
   const top = scored.slice(0, limit);
   const best = scored.length ? scored[0].s : 0;

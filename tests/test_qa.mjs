@@ -106,11 +106,86 @@ for (const [q, expect] of QUERIES) {
      `「${q}」→ 上位に ${expect[0]} 等 [best=${r.best.toFixed(1)}] 実際=${urls.join(" ") || "(なし)"}`);
 }
 
+// ---- (2b) 丁寧な長文の質問(★精度の門を足すとき、ここが再現率のブレーキになる) ----
+// 短い質問だけを並べていると「無関係な質問を止める門」を強くしたときに、
+// **助詞と丁寧語で薄まった本物の質問**を殺したことに気づけない。
+// 2026-08-02 に内容文字の被覆(MIN_CONTENT_COVERAGE)を足したとき、生の文字数を分母にする実装だと
+// この形の質問が 29% まで落ちて全滅した。分母を内容文字に変えて通した ── その線をここで固定する。
+const POLITE = [
+  ["源泉徴収票の見方を教えてください", ["/column/gensen-choshuhyo-mikata/"]],
+  ["アルバイトでも有給休暇はもらえるのでしょうか", ["/column/part-yukyu/", "/yukyu/"]],
+  ["電子帳簿保存法の索引簿の作り方を教えてください", ["/denchoho-index/", "/column/denchoho-kensaku-yoken/"]],
+  ["医療費控除はいくらから使えるのでしょうか", ["/column/iryohi-kojo-ikura-kara/", "/iryohi/"]],
+  ["残業代の正しい計算のしかたを教えてください", ["/column/zangyodai-keisan/", "/zangyodai/"]],
+  ["出産育児一時金はいくらもらえますか", ["/column/shussan-ikuji-ichijikin/"]],
+  ["振込手数料の勘定科目は何になりますか", ["/column/furikomi-tesuryo-kanjo-kamoku/"]],
+  ["失業保険はいくらもらえるのか計算したい", ["/column/shitsugyo-hoken-keisan/", "/kihonteate/"]],
+  ["固定資産税の計算方法を教えてください", ["/kotei-shisanzei/"]],
+  ["小規模企業共済の節税効果を知りたいです", ["/shokibo-kyosai/"]],
+  ["高額療養費はいくら戻ってくるのでしょうか", ["/kogaku-ryoyohi/", "/column/kogaku-ryoyohi/"]],
+  ["相続税はいくらかかるのか知りたい", ["/sozokuzei/"]],
+  ["印紙税はいくら貼ればいいですか", ["/inshi/"]],
+  ["iDeCoの節税額はどれくらいですか", ["/ideco-setsuzei/"]],
+  ["ふるさと納税はいくらまでできるのか教えてください", ["/furusato/", "/column/furusato-nozei-keisan/"]],
+  ["育児休業給付金はいくらもらえるのか教えて", ["/column/ikuji-kyugyo-kyufukin/", "/ikuji/", "/papa-ikukyu/"]],
+  ["育休はいくらもらえるの？", ["/column/ikuji-kyugyo-kyufukin/", "/ikuji/", "/papa-ikukyu/"]],
+  ["通勤手当は非課税になるのでしょうか", ["/column/tsukin-teate-hikazei/"]],
+  ["青色申告特別控除はいくらになりますか", ["/aoiro-kojo/"]],
+  ["社会保険料はいつから引かれるのでしょうか", ["/column/kaigo-hokenryo-itsukara/", "/shakai-hoken/"]],
+  ["扶養に入れる条件を教えてほしい", ["/column/shakai-hoken-fuyo-joken/", "/kabe/"]],
+  ["確定申告が必要なのはどんな人ですか", ["/column/fukugyo-20man-kakutei-shinkoku/"]],
+  ["産休中にもらえる手当について教えてほしいです", ["/shussan/", "/column/shussan-teate-kin/"]],
+  ["退職金にかかる税金の計算方法を知りたいのですが", ["/column/taishokukin-zeikin/", "/taishokukin/"]],
+  ["年収の壁について詳しく知りたいのですが", ["/column/nenshu-no-kabe/", "/kabe/"]],
+  ["住民税はいくらぐらいになるのか知りたいです", ["/juminzei/", "/column/juminzei-tokubetsu-choshu/"]],
+  ["ボーナスの手取りが知りたい", ["/bonus-tedori/", "/tedori/"]],
+];
+for (const [q, expect] of POLITE) {
+  const r = search(index, q);
+  const urls = r.results.map((e) => e.url);
+  ok(r.matched && expect.some((u) => urls.includes(u)),
+     `丁寧な長文「${q}」→ 上位に ${expect[0]} 等 [best=${r.best.toFixed(1)}] 実際=${urls.join(" ") || "(なし)"}`);
+}
+
 // ---- (3) 無関係な質問は matched:false(答えられない質問として記録される) ----
-const NO_MATCH = ["今日の天気", "おすすめの映画", "旅行の予約", "宇宙旅行の予約方法", "カレーの作り方"];
+// ★2026-08-02: ここが5例しか無かったせいで、**21例中12例が答えを返している**状態を
+//   テストは何も知らせなかった(「カレーの作り方の方法」→ 電帳法の検索要件)。
+//   犯人は df の大きい一般語ではなく、`の方法` `り方` `え方` `的な` のような
+//   **語の切れ目をまたいだ n-gram**(索引に1件しか出ないので IDF が最大の重みを与える)。
+//   → qa_search.js に内容文字の被覆の門を足して塞いだ。以下はその実測ケース全部。
+const NO_MATCH = [
+  "今日の天気", "おすすめの映画", "旅行の予約", "宇宙旅行の予約方法", "カレーの作り方",
+  "カレーの作り方の方法", "おすすめの映画の見方", "引っ越しの方法を教えて",
+  "英会話の勉強の方法", "筋トレの効果的なやり方", "ダイエットの方法を教えてください",
+  "引っ越しの見積もりの取り方", "スマホの機種変更の方法", "車の保険の選び方",
+  "犬のしつけの仕方", "ゲームの攻略方法", "髪型の変え方", "家の掃除のコツ",
+  "結婚式の準備の進め方", "資格の勉強時間の目安",
+  "野球の試合の結果を教えて", "恋愛の相談にのってください", "英語の勉強のやり方を知りたい",
+  "ラーメンのおいしい店の探し方",
+];
 for (const q of NO_MATCH) {
   const r = search(index, q);
   ok(!r.matched, `無関係「${q}」は matched:false [best=${r.best.toFixed(1)}]`);
+}
+
+// ---- (3b) まだ直っていない穴(★失敗にはしないが、黙らせない) ----
+// 赤にすると push が止まるので警告として出す。**直したら上の正式な一覧へ移すこと。**
+// ここに残す条件: 実測で確認してあり、次に何をすればよいかが書いてあること。
+const KNOWN_GAPS = [
+  { q: "パソコンの選び方を教えて", want: false,
+    why: "「パソコン」は少額減価償却の記事に実在する語なので被覆86%で通る。df でも被覆でも切れない。"
+       + "同義語辞書側で『買い方/選び方』のような購買意図の語を負に効かせるしかない" },
+  { q: "みなし残業代の仕組みが分かりません", want: true, expect: "/column/kotei-zangyodai/",
+    why: "順位の誤り。上位に /column/teiji-kettei/ が来て正解が3件から押し出される。"
+       + "「みなし残業→固定残業代」の同義語は効いているが『仕組み』が定時決定側に強く当たる" },
+];
+for (const g of KNOWN_GAPS) {
+  const r = search(index, g.q);
+  const urls = r.results.map((e) => e.url);
+  const nowOk = g.want === false ? !r.matched : (r.matched && urls.includes(g.expect));
+  console.log(nowOk
+    ? `🎉 既知の穴が塞がった: 「${g.q}」 → KNOWN_GAPS から正式な一覧へ移すこと`
+    : `⚠️ 既知の穴(未修理): 「${g.q}」 実際=${urls.join(" ") || "(なし)"}\n     ${g.why}`);
 }
 
 // ---- (4) 生成器 --check(索引が記事の現状と一致しているか) ----
