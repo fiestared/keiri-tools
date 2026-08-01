@@ -243,7 +243,9 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
   オ: { base: 36900,  start: null,   tasuukai: 24600,  nenkan: '29万円' },
 };
 {
-  const sec = body.slice(body.indexOf('id="kaisei"'), body.indexOf('id="faq"'));
+  // ★節の終わりは id="over70"（70歳以上の節）まで。id="faq" まで取ると、70歳以上の表が
+  //   この節の検査に混ざり、kaisei の主張を壊しても新しい節が救ってしまう（規則3）。
+  const sec = body.slice(body.indexOf('id="kaisei"'), body.indexOf('id="over70"'));
   const t = strip(sec);
 
   // 7-1. 訂正したことを読者に申告しているか（黙って書き換えない）
@@ -397,6 +399,133 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
   else ok('令和9年8月: 計算機は令和9年7月診療分までだと明記');
 }
 
+// ───────── 13. ★70歳以上（施行令42条3項・5項）2026-08-02追加 ─────────
+// 外部オラクル: 本番ツールが読んでいる docs/assets/kogaku_r08.json の over70 と、記事の表を
+// **セル単位**で突き合わせる。記事とツールが食い違えば、必ずどちらかが利用者に嘘をついている。
+// 規則4: <b>現役並みⅢ</b> は新旧2つの表に出るので、必ず h3 で節に切ってから行を探す。
+// 規則5: 行に含まれるだけでは**列の入れ替え**（外来の上限を世帯の欄に書く等）を見逃すので、
+//        セルの位置まで下ろして見る。外来22,000と世帯61,500を入れ替えても行の金額集合は同じ。
+const OVER70 = JSON.parse(fs.readFileSync('docs/assets/kogaku_r08.json', 'utf8')).over70;
+const OVER70_MONEY = [];
+for (const t of OVER70.tables) for (const k of t.kubun) {
+  for (const f of ['base', 'threshold', 'tasukai', 'gairai', 'gairai_annual']) if (k[f] != null) OVER70_MONEY.push(k[f]);
+}
+{
+  const yen = n => n.toLocaleString() + '円';
+  const afterMark = mark => { const i = body.indexOf(mark); return i < 0 ? '' : body.slice(i); };
+  const firstP = frag => strip((frag.match(/<p>([\s\S]*?)<\/p>/) || [])[1] || '');
+  const LABEL = { genekinami3: '現役並みⅢ', genekinami2: '現役並みⅡ', genekinami1: '現役並みⅠ',
+                  ippan: '一般', teishotoku2: '低所得者Ⅱ', teishotoku1: '低所得者Ⅰ' };
+  const SECT = { over70_from_2026_08: 'over70-new', over70_before_2026_08: 'over70-old' };
+
+  // 13-1. 2つの表を、データJSONとセル単位で照合
+  for (const tbl of OVER70.tables) {
+    const id = SECT[tbl.id];
+    const start = body.indexOf(`<h3 id="${id}">`);
+    if (start < 0) { fail(`70歳以上: 節 #${id} が記事に無い（${tbl.label}）`); continue; }
+    const next = body.indexOf('<h3 id="', start + 8);
+    const sec = body.slice(start, next < 0 ? body.length : next);
+    const secRows = [...sec.matchAll(/<tr>[\s\S]*?<\/tr>/g)].map(m => m[0]);
+    const hasNenkan = tbl.id === 'over70_from_2026_08';   // 年間上限の列は8月からの表だけ
+    for (const k of tbl.kubun) {
+      const label = LABEL[k.key];
+      const r = secRows.find(x => x.includes(`<b>${label}</b>`));
+      if (!r) { fail(`70歳以上[${tbl.label}] ${label} の行が無い`); continue; }
+      const cells = [...r.matchAll(/<td>([\s\S]*?)<\/td>/g)].map(m => strip(m[1]).trim());
+      const wantCols = hasNenkan ? 5 : 4;
+      if (cells.length !== wantCols) { fail(`70歳以上[${label}] 列数が${cells.length}（期待${wantCols}）: ${cells}`); continue; }
+      const [, gairai, setai, tasu, nenkan] = cells;
+      const bad = [];
+      // 外来（個人ごと）— null は「上限が無い」ことを画面に書かせる（空欄で黙らない）
+      if (k.gairai == null) { if (!gairai.includes('外来の上限なし')) bad.push(`外来セルが「外来の上限なし」を名乗っていない: ${gairai}`); }
+      else if (!gairai.includes(yen(k.gairai))) bad.push(`外来セルに ${yen(k.gairai)} が無い: ${gairai}`);
+      if (k.gairai_annual != null && !gairai.includes(`年間${yen(k.gairai_annual)}`)) bad.push(`外来の年間上限 ${yen(k.gairai_annual)} が外来セルに無い: ${gairai}`);
+      // 世帯（入院を含む）— 外来の額がここに紛れ込んでいたら列の入れ替え
+      if (!setai.includes(yen(k.base))) bad.push(`世帯セルに ${yen(k.base)} が無い: ${setai}`);
+      if (k.rate > 0 && !setai.includes(yen(k.threshold))) bad.push(`世帯セルに1%の起点 ${yen(k.threshold)} が無い: ${setai}`);
+      if (k.gairai != null && setai.includes(yen(k.gairai))) bad.push(`世帯セルに外来の額 ${yen(k.gairai)} が混入: ${setai}`);
+      // 多数回該当 — null（低所得者Ⅰ）は「無い」と書かせる。黙って据え置くと4か月目以降を軽く見せる
+      if (k.tasukai == null) { if (!tasu.includes('多数回該当なし')) bad.push(`多数回セルが「多数回該当なし」を名乗っていない: ${tasu}`); }
+      else if (!tasu.includes(yen(k.tasukai))) bad.push(`多数回セルに ${yen(k.tasukai)} が無い: ${tasu}`);
+      // 年間上限（8月からの表だけ）
+      if (hasNenkan) {
+        if (!nenkan.includes(`${k.household_annual / 10000}万円`)) bad.push(`年間上限セルが ${k.household_annual / 10000}万円 でない: ${nenkan}`);
+        if (k.household_annual_reduced != null && !nenkan.includes(`${k.household_annual_reduced / 10000}万円`)) {
+          bad.push(`標報15万円以下の軽減（${k.household_annual_reduced / 10000}万円）が年間上限セルに無い: ${nenkan}`);
+        }
+      }
+      if (bad.length) fail(`70歳以上[${tbl.label}] ${label}: ${bad.join(' / ')}`);
+      else ok(`70歳以上[${hasNenkan ? '8月から' : '7月まで'}] ${label}: 外来${k.gairai == null ? 'なし' : yen(k.gairai)}／世帯${yen(k.base)}／多数回${k.tasukai == null ? 'なし' : yen(k.tasukai)}${hasNenkan ? `／年間${k.household_annual / 10000}万円` : ''}`);
+    }
+  }
+
+  // 13-2. ★二段階の順序（この節の核心）。callout の p を名指しする（規則3・5）
+  {
+    const p = firstP(afterMark('<b>70歳以上は「①外来だけを個人ごとに」→「②世帯で合算して」の二段階で計算します</b>'));
+    const need = [['外来（通院）だけ', '①が外来だけを見ること'], ['ひとりずつ', '①が個人単位であること'],
+                  ['施行令42条5項', '①の条文'], ['世帯で合算', '②が世帯単位であること'], ['同42条3項', '②の条文'],
+                  ['現役並み所得者には外来の上限がありません', '現役並みは①を飛ばすこと']];
+    const miss = need.filter(([n]) => !p.includes(n));
+    if (!p) fail('二段階の callout が記事に無い');
+    else if (miss.length) fail(`二段階の説明に ${miss.map(m => m[1])} が無い: ${p}`);
+    else ok('70歳以上: ①外来を個人ごと(42条5項)→②世帯で合算(42条3項)の順序と、現役並みの例外を明記');
+  }
+
+  // 13-3. ★①を飛ばした場合との比較表（セル単位。金額の入れ替えを落とす）
+  {
+    const rowRight = rowBy('<b>①外来を個人ごとに見る</b>'), rowWrong = rowBy('<b>①を飛ばして世帯の上限だけ当てる</b>');
+    if (!rowRight || !rowWrong) fail('①を飛ばした場合との比較表の行が無い');
+    else {
+      const cR = [...rowRight.matchAll(/<td>([\s\S]*?)<\/td>/g)].map(m => strip(m[1]).trim());
+      const cW = [...rowWrong.matchAll(/<td>([\s\S]*?)<\/td>/g)].map(m => strip(m[1]).trim());
+      const bad = [];
+      if (!cR[1].includes('22,000円') || !cR[2].includes('22,000円') || !cR[3].includes('58,000円')) bad.push(`正しい側: ${cR}`);
+      if (!cW[1].includes('61,500円') || !cW[2].includes('61,500円') || !cW[3].includes('18,500円')) bad.push(`誤りの側: ${cW}`);
+      if (cR[2].includes('61,500円')) bad.push('正しい側の自己負担に世帯の上限が混入');
+      if (bad.length) fail(`①を飛ばした比較表: ${bad.join(' / ')}`);
+      else ok('70歳以上: ①を飛ばすと自己負担が22,000円→61,500円（戻る額 58,000円→18,500円）');
+    }
+    // 2.8倍と39,500円は同じ段落で結び付いていること（別々に書くと入れ替えが黙る・規則7）
+    const p = [...body.matchAll(/<p>[\s\S]*?<\/p>/g)].map(m => strip(m[0])).find(x => x.includes('2.8倍') && x.includes('39,500円'));
+    if (!p) fail('「2.8倍」と差額「39,500円」を並べた段落が無い');
+    else if (!p.includes('①の有無が答えを変えるのは、頭打ちしたあとの合計が世帯の上限に届かない月')) {
+      fail('①が効く条件（合計が世帯の上限に届かない月）の限定が無い＝常に2.8倍ずれると読めてしまう');
+    } else ok('70歳以上: 2.8倍・39,500円と、①が効く条件の限定が同じ段落にある');
+  }
+
+  // 13-4. 70歳未満の規律を持ち込む3つの誤り（それぞれ callout の p を名指し）
+  for (const [mark, need, name] of [
+    ['<b>21,000円の足切りは、70歳未満だけの規律です</b>', '70歳以上の方は自己負担額をすべて合算できます', '21,000円の足切りは70歳未満だけ（協会けんぽの逐語）'],
+    ['<b>現役並み所得者かどうかは、標準報酬月額だけでは決まりません</b>', '収入の合計額が520万円未満（1人世帯の場合は383万円未満）', '現役並みは標報だけで決まらない（520万/383万の収入要件）'],
+    ['<b>低所得者Ⅰには、多数回該当がありません</b>', '6号にはただし書がなく', '低所得者Ⅰに多数回該当が無い根拠（6号にただし書が無い）'],
+  ]) {
+    const p = firstP(afterMark(mark));
+    if (!p) fail(`70歳以上の落とし穴の callout が無い: ${name}`);
+    else if (!p.includes(need)) fail(`${name} の根拠が本文に無い: ${p}`);
+    else ok(`70歳以上: ${name}`);
+  }
+
+  // 13-5. 外来だけの年間上限（41条の2の計算期間）。窓口では引かれないことも書く
+  {
+    const p = [...body.matchAll(/<p>[\s\S]*?<\/p>/g)].map(m => strip(m[0])).find(x => x.includes('施行令41条の2'));
+    const need = ['毎年8月1日から翌年7月31日までの期間', '216,000円', '144,000円', '96,000円', '窓口で引かれるのではなく'];
+    if (!p) fail('外来の年間上限（41条の2）の段落が無い');
+    else {
+      const miss = need.filter(n => !p.includes(n));
+      if (miss.length) fail(`外来の年間上限の段落に ${miss} が無い`);
+      else ok('70歳以上: 外来の年間上限（41条の2・8/1〜翌7/31・216,000/144,000/96,000円・事後の償還払い）');
+    }
+  }
+
+  // 13-6. 目次と h2 の一致（片方だけ直すと目次が古い見出しを名乗る）
+  {
+    const h2 = (body.match(/<h2 id="over70">([^<]*)<\/h2>/) || [])[1] || '';
+    if (!h2.includes('70歳以上')) fail(`70歳以上のh2が見出しを名乗っていない: ${h2}`);
+    else if (!body.includes(`<a href="#over70">${h2}</a>`)) fail('目次の70歳以上の項目が、h2の文言と一致していない');
+    else ok('目次と70歳以上のh2が一致');
+  }
+}
+
 // ───────── 10. 網: カンマ金額の集合一致（過不足の両方を落とす） ─────────
 {
   // 網の外に出るもの: 等級(第30級)・1円・1%・条文番号 → 上で要素名指し済み
@@ -422,16 +551,23 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
     //（「342,000＋1%」と書くと網の外に落ちて、誤記が黙って通る）。
     342000, 303000, 209400, 194400, 110400, 98100, 69600, 65400, 34500,
     140000, 44200, 24200,          // 年間上限に併記された「月額平均」（≒多数回該当×12 の設計）
+    // ★70歳以上（施行令42条3項・5項＋協会けんぽ/厚労省の公表表。2026-08-02追加）
+    // 手打ちせず**データJSONから引く**（データを直したのに記事を直し忘れると、この網が落ちる）
+    ...OVER70_MONEY,
+    80000, 30000, 52000, 58000, 18500, 39500,   // ①を飛ばした場合の比較と図解（一般・窓口2割の例）
   ]);
   const extra = [...found].filter(n => !allow.has(n));
   const missing = KYOKAI_KENPO.filter(n => !found.has(n));
   // 新表の金額も「欠けたら落ちる」側に入れる（片方の表だけ消される事故を防ぐ）
   const SHINPYO_MONEY = [270300, 179100, 85800, 61500, 36900, 901000, 597000, 286000, 92940];
   const missNew = SHINPYO_MONEY.filter(n => !found.has(n));
+  // 70歳以上の表の金額も「欠けたら落ちる」側に入れる（表をまるごと消す事故を落とす）
+  const missOver70 = [...new Set(OVER70_MONEY)].filter(n => !found.has(n));
   if (extra.length) fail(`本文に想定外のカンマ金額がある（誤記の疑い）: ${extra}`);
   else if (missing.length) fail(`政令の金額（7月まで）が本文から欠けている: ${missing}`);
   else if (missNew.length) fail(`8月からの表の金額が本文から欠けている: ${missNew}`);
-  else ok(`金額の網: カンマ金額 ${found.size}種すべてが想定内・新旧2つの表の金額がすべて本文にある`);
+  else if (missOver70.length) fail(`70歳以上の表の金額が本文から欠けている: ${missOver70}`);
+  else ok(`金額の網: カンマ金額 ${found.size}種すべてが想定内・70歳未満(新旧)と70歳以上(新旧)の金額がすべて本文にある`);
 }
 
 // ───────── 11. 網: 等級（カンマが無く金額の網に入らない） ─────────
