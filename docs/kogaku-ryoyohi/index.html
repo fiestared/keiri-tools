@@ -446,7 +446,7 @@ const rows = () => [1, 2, 3, 4]
 // ★70歳以上は二段階（①個人ごとの外来を頭打ち → ②世帯合算して頭打ち）。
 //   どちらの段でいくら戻ったのかを画面に出す。出さないと、外来だけの人が
 //   「世帯上限に届いていないから0円」と誤解する（実際は外来上限で戻っている）。
-function renderOver70(box, r) {
+function renderOver70(box, r, plannedNote = "") {
   const k = r.kubun;
   const formula = k.threshold
     ? `${yen(k.base)} ＋（${yen(r.totalMedical)} − ${yen(k.threshold)}）× 1% ＝ ${yen(r.limit)}`
@@ -482,6 +482,7 @@ function renderOver70(box, r) {
     </div>` : "";
 
   box.innerHTML = `
+    ${plannedNote}
     <p style="margin:0 0 6px">あなたの区分は <b>${k.label}</b>（${k.criteria}）です。<span style="font-size:12px;color:var(--sub)">${k.item}</span></p>
     <p style="margin:0 0 6px;font-size:13px;color:var(--sub)">適用した表：${r.table.label}</p>
     ${needStd() ? `<p style="margin:0 0 6px;font-size:13px;color:var(--sub)">判定に使った標準報酬月額：${Number($("mode").value === "std" ? $("std").value : kenkoGrade(Number($("monthly").value)).standard).toLocaleString("ja-JP")}円</p>` : ""}
@@ -566,9 +567,21 @@ $("calc").addEventListener("click", async () => {
     return;
   }
 
-  if (r.ageGroup === "over70") { renderOver70(box, r); return; }
+  // 10b. まだ政令で確認できていない表（enacted:false）で計算したときは、額を出す前に必ず断る。
+  //      ★これを消すと「予定の額」が確定額の顔をして出る。core の planned とセットで意味を持つ。
+  const plannedNote = r.planned
+    ? `<div class="note" id="planned-note"><b>これは「予定」の限度額です。</b>` +
+      `${r.table.label}は、厚生労働省が公表した見直し後の表にもとづく額です。` +
+      `健康保険法施行令（政令）ではまだ確認できていないため、実際にはこのとおりにならないことがあります。` +
+      `加入先の健康保険が公表する表で必ずご確認ください。</div>`
+    : "";
+
+  if (r.ageGroup === "over70") { renderOver70(box, r, plannedNote); return; }
 
   const k = r.kubun;
+  // 区分名は表によって形が違う（令和8年8月までは「ア」〜「オ」、令和9年8月からは「標報44万〜50万円」）。
+  // 「区分」を機械的に前置すると「区分標報44万〜50万円」になるので、1文字の記号のときだけ前置する。
+  const kubunName = /^[アイウエオ]$/.test(k.label) ? `区分${k.label}` : k.label;
   const excess = k.threshold ? Math.max(0, r.totalMedical - k.threshold) : 0;
   const formula = k.threshold
     ? `${yen(k.base)} ＋（${yen(r.totalMedical)} − ${yen(k.threshold)}）× 1% ＝ ${yen(r.limit)}`
@@ -596,9 +609,10 @@ $("calc").addEventListener("click", async () => {
     </div>` : "";
 
   box.innerHTML = `
-    <p style="margin:0 0 6px">あなたの区分は <b>区分${k.label}</b>（${k.criteria}）です。<span style="font-size:12px;color:var(--sub)">${k.item}</span></p>
+    ${plannedNote}
+    <p style="margin:0 0 6px">あなたの区分は <b>${kubunName}</b>（${k.criteria}）です。<span style="font-size:12px;color:var(--sub)">${k.item}</span></p>
     <p style="margin:0 0 6px;font-size:13px;color:var(--sub)">適用した表：${r.table.label}</p>
-    <p style="margin:0 0 12px;font-size:13px;color:var(--sub)">${$("hikazei").checked ? "市町村民税非課税のため、標準報酬月額にかかわらず区分オで判定しました。" : `判定に使った標準報酬月額：${standardMonthly.toLocaleString("ja-JP")}円`}</p>
+    <p style="margin:0 0 12px;font-size:13px;color:var(--sub)">${$("hikazei").checked ? `市町村民税非課税のため、標準報酬月額にかかわらず${kubunName}で判定しました。` : `判定に使った標準報酬月額：${standardMonthly.toLocaleString("ja-JP")}円`}</p>
 
     <table class="tbl"><tbody>
       <tr><td>合算した医療費（10割）</td><td><b>${yen(r.totalMedical)}</b></td></tr>

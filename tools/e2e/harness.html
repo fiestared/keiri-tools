@@ -1019,9 +1019,34 @@ const KOGAKU_TABLE_R0808 = {   // 令和8年8月〜令和9年7月診療分: 厚�
 // 年間上限(令和8年8月新設)。**月額の限度額には効かない**(1年終了後の償還払い)ので、
 // ここでも limit の計算には一切混ぜない。画面が出しているかどうかだけを見る。
 const KOGAKU_ANNUAL_R0808 = { a: 1680000, i: 1110000, u: 530000, e: 530000, o: 290000 };
+// 令和9年8月診療分〜: 厚労省の公表表(13区分)。★このハーネスの区分けは**実装とは別ルート**で書く。
+// 実装は JSON の std_min/std_max を引くので、こちらは「標報の下限の降順に最初に当たったもの」で決める。
+// (2026-08-02: 実装の classify が旧5区分の3本の境界を持っていた頃、この独立オラクルも同じ3本を
+//  持っていた＝**オラクルが実装と同じ間違いに倒れる**形だった。13区分はここで別に書き直す。)
+const KOGAKU_TABLE_R0908 = {
+  s127: { min: 1270000, base: 342000, th: 1140000, many: 140100, annual: 1680000 },
+  s103: { min: 1030000, base: 303000, th: 1010000, many: 140100, annual: 1680000 },
+  s83:  { min:  830000, base: 270300, th:  901000, many: 140100, annual: 1680000 },
+  s71:  { min:  710000, base: 209400, th:  698000, many:  93000, annual: 1110000 },
+  s62:  { min:  620000, base: 194400, th:  648000, many:  93000, annual: 1110000 },
+  s53:  { min:  530000, base: 179100, th:  597000, many:  93000, annual: 1110000 },
+  s44:  { min:  440000, base: 110400, th:  368000, many:  44400, annual:  530000 },
+  s36:  { min:  360000, base:  98100, th:  327000, many:  44400, annual:  530000 },
+  s28:  { min:  280000, base:  85800, th:  286000, many:  44400, annual:  530000 },
+  s20:  { min:  200000, base:  69600, th:    null, many:  44400, annual:  530000 },
+  s16:  { min:  160000, base:  65400, th:    null, many:  44400, annual:  530000 },
+  s15:  { min:       0, base:  61500, th:    null, many:  34500, annual:  410000 },
+  hikazei: { min: null, base: 36900, th: null, many: 24600, annual: 290000 },
+};
 const KOGAKU_INDEP = (std, hikazei, meds, tasukai, shinryo) => {
-  const key = hikazei ? "o" : std >= 830000 ? "a" : std >= 530000 ? "i" : std >= 280000 ? "u" : "e";
-  const t = (shinryo >= "2026-08" ? KOGAKU_TABLE_R0808 : KOGAKU_TABLE)[key];
+  const r9 = shinryo >= "2027-08";
+  const key = r9
+    ? (hikazei ? "hikazei"
+       : Object.keys(KOGAKU_TABLE_R0908).filter((k) => k !== "hikazei")
+           .sort((a, b) => KOGAKU_TABLE_R0908[b].min - KOGAKU_TABLE_R0908[a].min)
+           .find((k) => std >= KOGAKU_TABLE_R0908[k].min))
+    : (hikazei ? "o" : std >= 830000 ? "a" : std >= 530000 ? "i" : std >= 280000 ? "u" : "e");
+  const t = (r9 ? KOGAKU_TABLE_R0908 : shinryo >= "2026-08" ? KOGAKU_TABLE_R0808 : KOGAKU_TABLE)[key];
   const rows = meds.map(([m, ratio]) => ({ m, self: Math.round(m * ratio) }));
   const counted = rows.filter((r) => r.self >= 21000);          // 「二万千円以上のものに限る」
   const totalMedical = counted.reduce((s, r) => s + r.m, 0);
@@ -1030,7 +1055,8 @@ const KOGAKU_INDEP = (std, hikazei, meds, tasukai, shinryo) => {
     : t.th === null ? t.base
     : t.base + Math.floor(Math.max(0, totalMedical - t.th) * 0.01 + 0.5);
   return { key, limit, totalMedical, totalSelf, refund: Math.max(0, totalSelf - limit),
-           annualCap: shinryo >= "2026-08" ? KOGAKU_ANNUAL_R0808[key] : null };
+           annualCap: shinryo >= "2027-08" ? t.annual
+                    : shinryo >= "2026-08" ? KOGAKU_ANNUAL_R0808[key] : null };
 };
 
 const kogakuScene = ({ ageGroup = "under70", monthly = 300000, hikazei = false, tasukai = false,
@@ -1069,6 +1095,11 @@ const kogakuScene = ({ ageGroup = "under70", monthly = 300000, hikazei = false, 
     expectedRefund: expected ? expected.refund : null,
     expectedMedical: expected ? expected.totalMedical : null,
     kubun: (body.match(/あなたの区分は\s*区分([アイウエオ])/) || [])[1] || null,
+    // 令和9年8月からの13区分は「区分ア」のような記号を持たない(標報の帯が区分名)。
+    // ★記号の正規表現だけだと、13区分の画面が区分を一切名乗らなくても null で素通りする。
+    kubunLabel13: (body.match(/あなたの区分は\s*(標報[^（(]+)/) || [])[1] || null,
+    // ★まだ政令で確認できていない表で計算したことを画面が断っているか
+    saysPlanned: /これは「予定」の限度額です/.test(body) && /健康保険法施行令（政令）ではまだ確認できていない/.test(body),
     limit: num(/自己負担限度額\s*¥([\d,]+)/),
     refund: num(/高額療養費として支給される額\s*¥([\d,]+)/),
     totalMedical: num(/合算した医療費（10割）\s*¥([\d,]+)/),
@@ -1104,6 +1135,12 @@ SCENES.kogaku_gassan = kogakuScene({ meds: [[1000000, 0.3], [50000, 0.3]] });
 // ★このツールの看板その2: 医療費が1%の起点(26.7万)に満たない月。
 //   条文の読替えを落とすと 80,100−(267,000−100,000)×1% = 78,430円と低く出る。正しくは80,100円。
 SCENES.kogaku_small = kogakuScene({ meds: [[100000, 0.3]] });
+
+// ★令和9年8月からの13区分(2026-08-02実装)。**旧5区分の境界を流用していたら必ずここで落ちる**:
+//   報酬月額44万 → 標準報酬月額44万は、旧表なら区分ウ(85,800＋1%)で 92,940円、
+//   新表では s44(110,400＋1%)で 116,720円。差23,780円。
+//   あわせて、まだ政令で確認できていない表であることを画面が断っているかも見る。
+SCENES.kogaku_r0908 = kogakuScene({ monthly: 440000, shinryo: "2027-08" });
 
 // ★70歳以上(施行令42条3項・5項)。**二段階**で計算する:
 //   ① 外来(通院)だけを**個人ごと**に外来上限で頭打ち(5項)
@@ -1249,8 +1286,10 @@ SCENES.kogaku_nodata = SCENES.kogaku;
 // ★令和8年8月診療分は表が変わる。**旧表で答えたら92,940円にならない**(87,430円になる)。
 //   あわせて年間上限(53万円・8月〜翌7月・償還払い)を画面が出していること。
 SCENES.kogaku_r0808 = kogakuScene({ shinryo: "2026-08" });
-// ★令和9年8月診療分から区分が13段階に細分化される。**境界を流用して答えない**(fail closed)。
-SCENES.kogaku_period = kogakuScene({ shinryo: "2027-08" });
+// ★収録範囲の外は額を出さない(fail closed)。令和9年8月の13区分を実装した(2026-08-02)ので、
+//   この境界は2027-08から **supported_through の外側(2028-08)** へ移した。
+//   ★公表表に終期が無いからといって無期限に信用しない、という規律をここで固定する。
+SCENES.kogaku_period = kogakuScene({ shinryo: "2028-08" });
 
 // ── 退職金の税金(退職所得) ──────────────────────────────────────────────────
 // 期待値は**国税庁が実額で公表している計算例そのもの**をここに書き写す(taishoku_core.js は一切通さない)。

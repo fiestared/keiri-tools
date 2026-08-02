@@ -219,6 +219,17 @@ const SCENES = [
   { name: "kogaku_small", expect: (s) =>
       s.limit === 80100 && s.limit === s.expectedLimit &&
       s.totalSelf === 30000 && s.refund === 0 && !s.failed },
+  // ★令和9年8月からの13区分。標報44万は旧5区分だと区分ウ(92,940円)に落ちるので、
+  //   境界を流用したままなら limit が 92,940 になってここで落ちる。正しくは 116,720円。
+  //   ★enacted:false の表なので、画面が「予定」と断っていること(断らなければ予定額が確定額の顔で出る)。
+  { name: "kogaku_r0908", expect: (s) =>
+      s.declaredStd === 440000 &&
+      s.kubunLabel13 === "標報44万〜50万円" && s.kubun === null &&
+      s.limit === 116720 && s.limit === s.expectedLimit &&
+      s.refund === 300000 - 116720 && s.refund === s.expectedRefund &&
+      s.finalBurden === 116720 && s.manyLimit === 44400 &&
+      s.annualCap === 530000 && s.annualCap === s.expectedAnnualCap &&
+      s.saysPlanned && !s.failed },
   // ★70歳以上の目玉: 外来(通院)だけの人に**世帯上限を当てない**。一般区分・自己負担3万円 →
   //   外来上限22,000円で頭打ち → 8,000円戻る。世帯上限61,500円を当てると「支給0円」と答える。
   //   足切り21,000円が70歳未満だけの規律であることも画面が言っていること。
@@ -278,10 +289,11 @@ const SCENES = [
       s.annualCap === 530000 && s.annualCap === s.expectedAnnualCap &&
       s.annualPeriod === "2026年8月 診療分 〜 2027年7月 診療分" &&
       s.saysRetrospective && !s.failed },
-  // ★令和9年8月診療分から所得区分が5段階→13段階に細分化される。いまの境界を流用すると
-  //   標報44万円の人に85,800円＋1%(正しくは110,400円＋1%)と答えるので、額を出さずに断る。
+  // ★収録範囲(supported_through)の外は額を出さずに断る。令和9年8月の表には終期が公表されて
+  //   いないので、実装の1年先で切ってある。近い期間の表で代用した額を出さないこと。
   { name: "kogaku_period", expect: (s) =>
-      s.saysPeriod && s.saysNewAmount && s.limit === null && s.refund === null && !s.failed },
+      s.saysPeriod && s.limit === null && s.refund === null &&
+      s.kubun === null && s.kubunLabel13 === null && !s.failed },
 
   // ── 退職金の税金(退職所得) ──────────────────────────────────────────────
   // ★期待値は**国税庁 No.2732 の計算例(実額)**。退職金800万円・勤続10年2か月 → 91,890円。

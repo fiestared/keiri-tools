@@ -163,7 +163,7 @@ ok(mix.finalBurden === 87430 + 15000, "合算対象外の自己負担が手元�
 // 令和8年8月診療分から別の表（区分ウ 85,800円＋1%・起点286,000円）を公表しているので、
 // 旧表で答えると医療費100万円の月で 87,430円 と 92,940円（5,510円）ずれる。
 const p = (ym, o = {}) => K.calcKogaku({ ageGroup: "under70", shinryoYM: ym, standardMonthly: 300000, items: one(1000000), ...o }, D);
-ok(D.supported_through === "2027-07", `supported_through=${D.supported_through}（2027-07のはず）`);
+ok(D.supported_through === "2028-07", `supported_through=${D.supported_through}（2028-07のはず）`);
 // ★境界の両側1円（＝1か月）。ここが1つずれると全利用者に間違った表を当てる
 ok(p("2026-07").limit === 87430, `令和8年7月診療分=${p("2026-07").limit}（旧表 87,430円のはず）`);
 ok(p("2026-08").limit === 92940, `令和8年8月診療分=${p("2026-08").limit}（新表 92,940円のはず）`);
@@ -171,18 +171,25 @@ ok(p("2026-08").limit - p("2026-07").limit === 5510, "7月と8月の差が5,510�
 ok(p("2026-08").table.id === "from_2026_08", `8月に選ばれた表=${p("2026-08").table.id}`);
 ok(p("2026-07").table.id === "before_2026_08", `7月に選ばれた表=${p("2026-07").table.id}`);
 ok(p("2027-07").supported === true && p("2027-07").limit === 92940, "令和9年7月診療分（新表の最終月）が計算できない");
-// ★令和9年8月からは区分が13段階に細分化される。境界を流用して答えない（fail closed）
-ok(p("2027-08").supported === false, "★令和9年8月診療分に、細分化前の区分で答えてしまっている");
-ok(p("2027-08").limit === undefined, "期間外なのに限度額を返している");
-ok(p("2027-08").reason === "period", `期間外の理由が period でない: ${p("2027-08").reason}`);
-ok(/110,400/.test(p("2027-08").message), "令和9年8月からの細分化（110,400円＋1%）を利用者に知らせていない");
+// ★令和9年8月からは区分が13段階に細分化される（2026-08-02 に実装）。
+//   標報30万円の人は区分ウ（85,800＋1%）→ s28（同額）なので、この p() では額が変わらない。
+//   **額が変わらないことを「表が切り替わった証拠」にしてはいけない** ので、表のidで見る。
+ok(p("2027-08").supported === true, "令和9年8月診療分が計算できない（13区分を実装済みのはず）");
+ok(p("2027-08").table.id === "from_2027_08", `令和9年8月に選ばれた表=${p("2027-08").table.id}`);
+ok(p("2027-08").kubun.key === "s28", `標報30万円の令和9年8月の区分=${p("2027-08").kubun.key}（s28のはず）`);
+// ★まだ政令で確認できていない表なので「予定」と申告すること（黙って確定額として出さない）
+ok(p("2027-08").planned === true, "★令和9年8月の表は enacted:false なのに planned を立てていない");
+ok(p("2027-07").planned === false, "令和9年7月（施行済みの表）にまで planned を立てている");
+// ★実装した表の1年先より後は、やはり答えない（終期の無い表を無期限に信用しない）
+ok(p("2028-08").supported === false, "supported_through（2028-07）を超えた診療分に答えている");
+ok(p("2028-08").limit === undefined, "期間外なのに限度額を返している");
+ok(p("2028-08").reason === "period", `期間外の理由が period でない: ${p("2028-08").reason}`);
 ok(p("2030-01").supported === false, "さらに先の診療年月にも答えてしまっている");
-ok(D.revision_2027_08.status === "not_implemented", "令和9年8月の表が実装済みを名乗っている");
+ok(D.revision_2027_08.status === "implemented_under70_only", "revision_2027_08 の status が実態と違う");
 // 表そのものの期間指定が壊れていないこと（重なり・空白があると tableFor が null を返す＝答えない）
-for (const ym of ["2020-01", "2026-07", "2026-08", "2027-07"]) {
+for (const ym of ["2020-01", "2026-07", "2026-08", "2027-07", "2027-08", "2028-07"]) {
   ok(K.tableFor(ym, D) !== null, `${ym} に当たる表が無い（tables の期間に穴がある）`);
 }
-ok(K.tableFor("2027-08", D) === null, "supported_through の外なのに表が当たってしまう");
 // 診療年月そのものが無い／壊れている場合も答えない（黙って手元の表で計算しない）
 for (const bad of [null, undefined, "", "2026-7", "2026/07", "2026-13", "令和8年7月", 202607]) {
   const b = K.calcKogaku({ ageGroup: "under70", shinryoYM: bad, standardMonthly: 300000, items: one(1000000) }, D);
@@ -411,11 +418,96 @@ ok(g1.limit === 61500 && g1.finalBurden === 22000, "年間上限を月額の限�
 ok(oldIppan.annual.household === null && oldIppan.annual.gairai === 144000, "旧表の年間上限（世帯なし・外来144,000）が違う");
 
 // 13-13. 令和9年8月以降は70歳以上でも額を出さない（fail closed）
+// ★70歳未満の13区分を実装して supported_through を2028-07へ延ばしたので、70歳以上が
+//   止まる理由は period（期間の外）から no_table（その期間の表を持っていない）へ移った。
+//   **止まること自体は変えない** — over70 の令和9年8月表は未実装だから（外来特例の対象年齢が未確定）。
 const g11 = K.calcKogaku({ ageGroup: "over70", shinryoYM: "2027-08", incomeKind: "ippan", items: [row(100000, "gairai")] }, D);
-ok(g11.supported === false && g11.reason === "period", "令和9年8月診療分に70歳以上の額を出している");
+ok(g11.supported === false && g11.reason === "no_table70", `令和9年8月診療分の70歳以上=${g11.reason}（no_table70のはず。額を出してはいけない）`);
+ok(g11.limit === undefined, "70歳以上の表が無いのに限度額を返している");
+ok(K.tableFor70("2027-08", D) === null, "over70 に令和9年8月の表が無いはずなのに当たっている");
 // 診療年月が無いときも同じ
 const g12 = K.calcKogaku({ ageGroup: "over70", incomeKind: "ippan", items: [row(100000, "gairai")] }, D);
 ok(g12.supported === false && g12.reason === "no_shinryo_ym", "診療年月なしで70歳以上の額を出している");
+
+// ── 14. 令和9年8月からの13区分（2026-08-02 実装）─────────────────────────────
+// 期待値の作り方（規則: オラクルは実装と別ルートで作る）:
+//  - 13行の額は**厚労省PDFの表から手で書き写した定数**をここに置く（JSONを読んで比べない）。
+//    JSONを読んで比べると「JSONが正しいこと」を一度も確かめないまま緑になる。
+//  - さらに base ÷ 0.3 === threshold を**独立の算術オラクル**として全行に当てる。
+//    1%の起点は「基礎額を3割で割り戻した額」という設計なので、転記を1桁誤ると必ず崩れる。
+const TBL_R9 = D.tables.find((t) => t.id === "from_2027_08");
+ok(!!TBL_R9, "令和9年8月の表（from_2027_08）が無い");
+ok(TBL_R9.enacted === false, "★令和9年8月の表が enacted:true を名乗っている（政令では確認できていない）");
+
+// 厚労省 001726232.pdf『患者負担割合及び高額療養費自己負担限度額（令和９年８月～）』70歳未満の欄。
+// [標報の下限, 標報の上限(未満), 基礎額, 1%の起点, 多数回該当, 年間上限]
+const R9_ROWS = [
+  ["s127", 1270000, null,    342000, 1140000, 140100, 1680000],
+  ["s103", 1030000, 1270000, 303000, 1010000, 140100, 1680000],
+  ["s83",   830000, 1030000, 270300,  901000, 140100, 1680000],
+  ["s71",   710000,  830000, 209400,  698000,  93000, 1110000],
+  ["s62",   620000,  710000, 194400,  648000,  93000, 1110000],
+  ["s53",   530000,  620000, 179100,  597000,  93000, 1110000],
+  ["s44",   440000,  530000, 110400,  368000,  44400,  530000],
+  ["s36",   360000,  440000,  98100,  327000,  44400,  530000],
+  ["s28",   280000,  360000,  85800,  286000,  44400,  530000],
+  ["s20",   200000,  280000,  69600,    null,  44400,  530000],
+  ["s16",   160000,  200000,  65400,    null,  44400,  530000],
+  ["s15",        0,  160000,  61500,    null,  34500,  410000],
+];
+ok(TBL_R9.kubun.length === 13, `令和9年8月の区分が${TBL_R9.kubun.length}個（13のはず＝12区分＋住民税非課税）`);
+const r9 = Object.fromEntries(TBL_R9.kubun.map((k) => [k.key, k]));
+for (const [key, min, max, base, th, tas, cap] of R9_ROWS) {
+  const k = r9[key];
+  ok(!!k, `区分 ${key} が無い`);
+  if (!k) continue;
+  ok(k.std_min === min && k.std_max === max, `${key} の標報の範囲が違う（${k.std_min}〜${k.std_max}）`);
+  ok(k.base === base && k.threshold === th && k.tasukai === tas, `${key} の3値が公表表と違う（${k.base}/${k.threshold}/${k.tasukai}）`);
+  // 独立オラクル: 1%の起点＝基礎額を3割で割り戻した額（定額の区分には起点が無い）
+  if (th !== null) ok(Math.round(base / 0.3) === th, `${key} の起点が base÷0.3 と合わない（転記ミスの疑い）`);
+  ok(K.annualCapFor(key, null, "2027-08", D).cap === cap, `${key} の年間上限が違う（${K.annualCapFor(key, null, "2027-08", D).cap}）`);
+}
+// 非課税は標報にかかわらず優先し、額は 36,900 / 24,600 / 290,000
+ok(r9.hikazei.base === 36900 && r9.hikazei.tasukai === 24600, "令和9年8月の住民税非課税の額が違う");
+ok(K.annualCapFor("hikazei", null, "2027-08", D).cap === 290000, "令和9年8月の住民税非課税の年間上限が違う");
+
+// 14-2. ★区分の境目を両側1円で見る（13区分＝境界が12本ある。1本ずれると隣の額を答える）
+const k9 = (std, hikazei = false) => {
+  const r = K.classify({ standardMonthly: std, hikazei }, TBL_R9);
+  return r ? r.key : null;
+};
+// 最下位区分の std_min は0だが、健康保険の標準報酬月額は第1級=58,000円が下限で、
+// classify は std<=0 を「不明」として突き返す（黙って最下位に落とさない）。実在する下限で見る。
+for (const [key, min, max] of R9_ROWS) {
+  const lo = min > 0 ? min : 58000;
+  ok(k9(lo) === key, `標報${lo}円ちょうどが ${key} でない（${k9(lo)}）＝「以上」の側がずれている`);
+  if (max !== null) ok(k9(max - 1) === key, `標報${max - 1}円が ${key} でない（${k9(max - 1)}）＝「未満」の側がずれている`);
+  if (max !== null) ok(k9(max) !== key, `標報${max}円が ${key} のまま（上の区分へ移っていない）`);
+}
+ok(k9(200000, true) === "hikazei", "非課税なのに標報の区分に落ちている（非課税が優先のはず）");
+ok(k9(1500000, true) === "hikazei", "非課税なのに最上位区分に落ちている");
+ok(K.classify({ standardMonthly: null, hikazei: false }, TBL_R9) === null, "標報不明を黙って区分に落としている（13区分）");
+
+// 14-3. ★旧5区分の境界を流用していたら落ちること（revision_2027_08 が名指しで警告していた穴）
+// 標報44万円は旧表なら区分ウ（85,800＋1%・起点286,000）で 92,940円。
+// 令和9年8月表では s44（110,400＋1%・起点368,000）で 116,720円。差 23,780円。
+const r9_44 = K.calcKogaku({ ageGroup: "under70", shinryoYM: "2027-08", standardMonthly: 440000, items: one(1000000) }, D);
+const r8_44 = K.calcKogaku({ ageGroup: "under70", shinryoYM: "2027-07", standardMonthly: 440000, items: one(1000000) }, D);
+ok(r9_44.kubun.key === "s44", `標報44万円の令和9年8月の区分=${r9_44.kubun.key}（s44のはず）`);
+ok(r9_44.limit === 116720, `標報44万円・医療費100万円の令和9年8月＝${r9_44.limit}円（116,720円のはず）`);
+ok(r8_44.limit === 92940, `同じ人の令和9年7月＝${r8_44.limit}円（92,940円のはず）`);
+ok(r9_44.limit - r8_44.limit === 23780, "★旧5区分の境界を流用している（標報44万円で額が変わっていない）");
+
+// 14-4. 定額区分に1%を付けてしまわないこと（起点が null の3区分）
+for (const [key, min] of R9_ROWS.filter((r) => r[4] === null)) {
+  const r = K.calcKogaku({ ageGroup: "under70", shinryoYM: "2027-08", standardMonthly: min > 0 ? min : 58000, items: one(3000000) }, D);
+  ok(r.limit === r9[key].base, `${key} は定額のはずなのに医療費300万円で額が動いた（${r.limit}）`);
+}
+
+// 14-5. 多数回該当の 44,400 が及ぶ範囲（PDFの結合セルは縦中央に1回しか印字されない＝
+//       行数を数えないと下2区分〔標報20万〜26万・16万〜19万〕を取りこぼす）
+ok(r9.s20.tasukai === 44400 && r9.s16.tasukai === 44400, "★44,400 の結合セルを読み違えて下2区分に別の額を入れている");
+ok(r9.s15.tasukai === 34500, "標報15万円以下に新設された多数回該当34,500円が入っていない");
 
 console.log(fail === 0 ? `✅ 高額療養費 ${checks}件 すべて一致` : `❌ ${fail}/${checks}件 不一致`);
 process.exit(fail === 0 ? 0 : 1);
