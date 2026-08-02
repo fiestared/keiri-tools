@@ -269,12 +269,24 @@ for (const m of mustHave) ok(money.has(m), `本文に ${m} が見当たらない
 
 // ★②の網（ホワイトリスト）: 記事に出るカンマ区切りの金額は、すべて「私が導出した値」か
 //   「一次情報が名乗る既知の定数」でなければならない。1文字でも書き間違えると未知の値になって落ちる。
+// 早見表に載せている月給。生成側 tools/gen_saishushoku_table.mjs の WAGES と同じ値を意図して二重に持つ
+// （生成側を import すると、生成側が壊れたとき検査も一緒に壊れて「常に一致する」空虚な検査になる）
+const HAYAMIHYO_WAGES = [150000, 175000, 200000, 225000, 250000, 275000, 300000,
+  325000, 350000, 375000, 400000, 425000, 450000, 500000];
+
 const ALLOWED = new Set([
   ...mustHave,
   yen(pay(CAP_U60, days2, 4)),  // 旧40%ルールの額
   "6,395", "5,170",           // 令和6年度の旧上限（古い額として言及する）
   yen(D.kihon_nichigaku_max.age45_59),  // 45〜59歳の基本手当日額の上限（比較のため）
   "300,000", "600,000",       // 例の月給
+  // ── 月給別の早見表（tools/gen_saishushoku_table.mjs が生成）──
+  // ★率は分数で掛ける。小数(x*0.7)は1,000〜7,000円のうち127通りで1円落ちる（上の pay() と同じ規律）
+  ...HAYAMIHYO_WAGES.flatMap((mw) => {
+    const used = Math.min(C.benefitDaily(C.wageDaily(mw * 6), 35, D), CAP_U60);
+    return [yen(mw), yen(used), yen(Math.floor(used * 7 / 10)), yen(Math.floor(used * 6 / 10))];
+  }),
+  "404,760",                  // 上限に達する月給（二分探索でコアから導出。表の刻みの値ではない）
 ]);
 for (const m of money) {
   ok(ALLOWED.has(m), `本文に見覚えのない金額 ${m} 円がある（書き間違いか、私の導出漏れ）`);
