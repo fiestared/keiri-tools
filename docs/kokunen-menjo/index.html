@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>国民年金の免除・納付猶予 判定シミュレーター｜前年所得から</title>
+<meta name="description" content="国民年金保険料の全額免除・4分の3免除・半額免除・4分の1免除・納付猶予・学生納付特例のどれに該当するかを、前年所得から判定します。★親と同居していると全額免除は世帯主の所得で落ちますが、納付猶予は世帯主を見ないので通ります。全額免除だけ社会保険料控除を引かない（施行令6条の11）という条文どおりの違いにも対応。将来の老齢基礎年金がいくら下がるかも計算。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/kokunen-menjo/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "国民年金の免除・納付猶予 判定シミュレーター",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "国民年金保険料の免除・納付猶予・学生納付特例について、前年所得から該当する区分を判定します。本人・世帯主・配偶者のうち誰が基準を満たさなかったかを名指しで示し、毎月納める保険料と、将来の老齢基礎年金への影響も計算します。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "国民年金の免除・納付猶予 判定シミュレーター"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 収入がゼロなら必ず全額免除になりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. なりません。免除は本人・世帯主・配偶者の全員が所得基準を満たす必要があるためです。実家で親と同居していて親が世帯主なら、あなたの所得がゼロでも親の所得が基準を超えていれば全額免除は承認されません。ただしその場合でも、50歳未満なら納付猶予は世帯主の所得を見ないので該当する可能性があります。学生の方は学生納付特例が本人の所得だけで判定されます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 納付猶予と全額免除は、どちらも0円なら同じですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 毎月の支払いはどちらも0円ですが、将来の年金額がまったく違います。全額免除の期間は老齢基礎年金の2分の1が受け取れますが、納付猶予の期間は1円も反映されません。どちらも受給資格期間（10年）には算入され、障害基礎年金・遺族基礎年金の納付要件にも算入されるので未納よりは有利ですが、老齢年金の額という点では納付猶予は未納と同じです。全額免除に該当するなら全額免除を選んでください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 学生ですが、親の所得が高いと学生納付特例は受けられませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 受けられます。学生納付特例は学生本人の前年所得だけで判定し、世帯主（親）や配偶者の所得は見ません（国民年金法90条の3第1項）。基準は128万円＋扶養親族等控除額＋社会保険料控除額等です。アルバイト収入だけなら、給与所得控除を引いた後の所得で判定するので、年収がおよそ194万円までは該当します。なお学生の方は免除・納付猶予の対象外なので、この制度で申請します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 失業して収入がなくなりました。前年の所得が高いと免除は受けられませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 失業等による特例免除があります。失業・倒産・事業の廃止の事実を確認できたときは、失業した方の前年所得にかかわらず免除・納付猶予を受けられます（国民年金法90条1項2号）。雇用保険受給資格者証や離職票などを添えて申請してください。このツールは所得基準だけを見るので、この特例には対応していません。前年所得が高くて「該当なし」と表示された方でも、失業した方は窓口でご相談ください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 免除を受けた期間は、あとから納められますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. できます。免除・納付猶予の承認を受けた期間の保険料は、10年以内であれば追納できます（国民年金法94条）。追納すれば老齢基礎年金の額を満額に近づけられます。ただし承認を受けた年度の翌年度から起算して3年度目以降に追納する場合は加算額が付きます。なお、未納のまま2年を過ぎた期間は追納できず、年金額にも受給資格期間にも一切算入されません。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav><a href="../#tools">ツール</a><a href="../column/">コラム</a></nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../">ホーム</a> › 国民年金の免除・納付猶予 判定シミュレーター</nav>
+
+<section class="hero">
+  <h1>国民年金の免除・納付猶予 判定シミュレーター</h1>
+  <p><b>前年の所得</b>を入れるだけで、国民年金保険料の<b>全額免除・4分の3免除・半額免除・4分の1免除・納付猶予・学生納付特例</b>のどれに該当するかを判定します。<b>本人・世帯主・配偶者のうち誰が基準を超えたか</b>を名指しで示し、毎月納める保険料と、将来の<b>老齢基礎年金がいくら下がるか</b>まで計算します。</p>
+</section>
+
+<div class="card">
+  <div style="margin:10px 0">
+    <label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px">
+      <input type="checkbox" id="student" style="width:auto;flex:none">
+      <span>私は<b>学生</b>です（大学・大学院・短大・高校・高専・専修学校など）</span>
+    </label>
+    <p class="hint" style="margin:4px 0 0 26px">学生の方は免除・納付猶予の対象外で、かわりに<b>学生納付特例</b>で判定します。</p>
+  </div>
+
+  <label for="age">あなたの年齢<span class="hint">　納付猶予は50歳未満の方が対象なので、判定に必要です</span></label>
+  <input type="number" id="age" min="20" max="59" step="1" placeholder="例: 25" inputmode="numeric">
+
+  <label for="shotoku">あなたの前年の所得（円）<span class="hint">　<b>収入ではなく所得</b>です。給与だけなら源泉徴収票の「給与所得控除後の金額」、事業なら売上−必要経費</span></label>
+  <input type="number" id="shotoku" min="0" step="10000" placeholder="例: 800000" inputmode="numeric">
+
+  <label for="kojo">あなたの社会保険料控除額など（円）<span class="hint">　国民健康保険料・国民年金保険料・介護保険料などの支払額の合計。空欄でも構いません</span></label>
+  <input type="number" id="kojo" min="0" step="10000" placeholder="例: 200000" inputmode="numeric">
+
+  <label>扶養している家族の人数<span class="hint">　いない場合は空欄のままで構いません</span></label>
+  <div style="margin:6px 0 10px;padding:10px;border:1px solid var(--line,#e3e8e6);border-radius:8px">
+    <div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+      <label for="f_ippan" style="flex:1;margin:0;font-size:13px">一般の扶養親族等<span class="hint" style="display:block;font-weight:400">16歳以上18歳以下・23歳以上69歳以下など</span></label>
+      <input type="number" id="f_ippan" min="0" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none">
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+      <label for="f_tokutei" style="flex:1;margin:0;font-size:13px">特定扶養親族等<span class="hint" style="display:block;font-weight:400">19歳以上22歳以下（大学生の子など）</span></label>
+      <input type="number" id="f_tokutei" min="0" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none">
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+      <label for="f_rojin" style="flex:1;margin:0;font-size:13px">同一生計配偶者・老人扶養親族<span class="hint" style="display:block;font-weight:400">収入の少ない配偶者・70歳以上の扶養親族</span></label>
+      <input type="number" id="f_rojin" min="0" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none">
+    </div>
+  </div>
+
+  <label>あてはまるものにチェック<span class="hint">　障害者・寡婦・ひとり親の方は所得135万円以下で全額免除に該当します</span></label>
+  <div style="margin:6px 0 10px">
+    <label style="display:flex;align-items:center;gap:8px;margin:2px 0;font-size:14px"><input type="checkbox" id="c_shogaisha" style="width:auto;flex:none"><span>障害者</span></label>
+    <label style="display:flex;align-items:center;gap:8px;margin:2px 0;font-size:14px"><input type="checkbox" id="c_toku_shogaisha" style="width:auto;flex:none"><span>特別障害者</span></label>
+    <label style="display:flex;align-items:center;gap:8px;margin:2px 0;font-size:14px"><input type="checkbox" id="c_kafu" style="width:auto;flex:none"><span>寡婦</span></label>
+    <label style="display:flex;align-items:center;gap:8px;margin:2px 0;font-size:14px"><input type="checkbox" id="c_hitorioya" style="width:auto;flex:none"><span>ひとり親</span></label>
+    <label style="display:flex;align-items:center;gap:8px;margin:2px 0;font-size:14px"><input type="checkbox" id="c_kinro_gakusei" style="width:auto;flex:none"><span>勤労学生</span></label>
+  </div>
+
+  <div style="margin:10px 0">
+    <label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px">
+      <input type="checkbox" id="has_setainushi" style="width:auto;flex:none">
+      <span><b>世帯主が別にいる</b>（親と同居しているなど。あなた自身が世帯主なら不要）</span>
+    </label>
+    <div id="row_setainushi" hidden style="margin:8px 0 0 26px">
+      <label for="s_shotoku" style="font-size:13px">世帯主の前年の所得（円）</label>
+      <input type="number" id="s_shotoku" min="0" step="10000" placeholder="例: 3000000" inputmode="numeric">
+    </div>
+  </div>
+
+  <div style="margin:10px 0">
+    <label style="display:flex;align-items:center;gap:8px;margin:0;font-size:14px">
+      <input type="checkbox" id="has_haigusha" style="width:auto;flex:none">
+      <span><b>配偶者がいる</b></span>
+    </label>
+    <div id="row_haigusha" hidden style="margin:8px 0 0 26px">
+      <label for="h_shotoku" style="font-size:13px">配偶者の前年の所得（円）</label>
+      <input type="number" id="h_shotoku" min="0" step="10000" placeholder="例: 1000000" inputmode="numeric">
+    </div>
+  </div>
+
+  <button class="primary" id="calc">免除・猶予に該当するか判定する</button>
+  <div class="result" id="result"></div>
+  <p class="hint" id="src-hint" style="margin-top:10px"></p>
+</div>
+
+<article>
+
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p>収入が減って国民年金保険料（令和8年度は月額<b>17,920円</b>）を払うのが難しいときは、<b>申請して承認されれば免除または納付猶予</b>を受けられます。手続きをせず未納にした場合と違い、免除を受けた期間は<b>受給資格期間（10年）に算入され、全額免除なら老齢基礎年金の2分の1が受け取れます</b>。障害基礎年金・遺族基礎年金の保険料納付要件にも算入されます。上の判定機は、前年の所得から該当する区分を判定します。以下では条文にもとづいて、間違えやすい3点を解説します（一般的な説明であり、個別の相談ではありません）。</p>
+
+<nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#tsukaikata">使い方と注意点</a></li>
+<li><a href="#kijun">6つの区分と所得の基準</a></li>
+<li><a href="#dare">誰の所得を見るか — 親と同居していると答えが変わる</a></li>
+<li><a href="#kojo">全額免除だけ、社会保険料控除を引かない</a></li>
+<li><a href="#nenkin">将来の年金はいくら下がるか</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav>
+
+<h2 id="tsukaikata">使い方と注意点</h2>
+<div class="callout">
+  <b>入れるのは「所得」であって「収入」ではありません。</b>
+  給与だけの方なら、源泉徴収票の<b>「給与所得控除後の金額」</b>が所得です。年収ではありません。事業をしている方は<b>売上から必要経費を引いた額</b>です。年収300万円の会社員の所得はおよそ202万円なので、収入の数字をそのまま入れると判定が厳しい方へずれます。
+</div>
+<p>判定に使うのは<b>前年の所得</b>です（1月から6月までに申請する場合は前々年の所得）。申請できるのは、保険料の納付期限から2年を経過していない期間です。</p>
+<div class="note">
+  このツールは<b>所得の基準だけ</b>を見ます。<b>失業・倒産・事業の廃止</b>による特例免除（失業した方の前年所得を除外して判定する）、<b>法定免除</b>（生活保護の生活扶助・障害年金1級2級）、<b>産前産後期間の免除</b>には対応していません。特に<b>産前産後期間の免除は納付済期間として年金額に満額反映される</b>ので、該当する方はそちらが有利です。判定結果は目安です。実際の承認は年金事務所・市区町村の窓口で行われます。
+</div>
+
+<h2 id="kijun">6つの区分と所得の基準</h2>
+<p>所得の基準は国民年金法施行令が定めています。<b>全額免除と納付猶予は「頭数」だけを使う式</b>、<b>一部免除と学生納付特例は「扶養親族等控除額」を加算する式</b>で、そもそも形が違います。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>区分</th><th>前年所得の基準</th><th>毎月納める額（令和8年度）</th><th>年金額への反映</th></tr>
+</thead>
+<tbody>
+<tr><td><b>全額免除</b></td><td>（扶養親族等の数+1）×35万円＋32万円</td><td>0円</td><td>2分の1</td></tr>
+<tr><td><b>4分の3免除</b></td><td>88万円＋扶養親族等控除額＋社会保険料控除額等</td><td>4,480円</td><td>8分の5</td></tr>
+<tr><td><b>半額免除</b></td><td>128万円＋扶養親族等控除額＋社会保険料控除額等</td><td>8,960円</td><td>8分の6</td></tr>
+<tr><td><b>4分の1免除</b></td><td>168万円＋扶養親族等控除額＋社会保険料控除額等</td><td>13,440円</td><td>8分の7</td></tr>
+<tr><td><b>納付猶予</b>（50歳未満）</td><td>（扶養親族等の数+1）×35万円＋32万円</td><td>0円</td><td><b>なし</b></td></tr>
+<tr><td><b>学生納付特例</b></td><td>128万円＋扶養親族等控除額＋社会保険料控除額等</td><td>0円</td><td><b>なし</b></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout" id="fuyo-kojo-gaku">
+<b>「扶養親族等控除額」は1人につき38万円が基本で、同一生計配偶者・老人扶養親族は48万円、特定扶養親族等は63万円です。</b>大学生の子（19歳以上22歳以下）が1人いる世帯の半額免除の基準額は、128万円ではなく<b>191万円</b>になります。一般の38万円で計算すると25万円ぶん低く見積もることになります。根拠は国民年金法施行令6条の8の2・6条の9・6条の9の2です。
+</div>
+
+<p>また、<b>障害者・寡婦・ひとり親</b>の方は、扶養親族等の数にかかわらず<b>前年所得135万円以下で全額免除</b>に該当します（国民年金法90条1項3号・施行令6条の8）。この基準は定額で扶養加算を持たないので、上の式と比べて<b>有利なほう</b>で判定します。</p>
+
+<h2 id="dare">誰の所得を見るか — 親と同居していると答えが変わる</h2>
+<p>ここが実務でいちばん多い取り違えです。<b>見る人の範囲が区分ごとに違います。</b></p>
+
+<div class="scroll-wrap">
+<table>
+<thead>
+<tr><th>区分</th><th>本人</th><th>世帯主</th><th>配偶者</th></tr>
+</thead>
+<tbody>
+<tr><td>免除（全額・4分の3・半額・4分の1）</td><td>見る</td><td><b>見る</b></td><td>見る</td></tr>
+<tr><td>納付猶予</td><td>見る</td><td><b>見ない</b></td><td>見る</td></tr>
+<tr><td>学生納付特例</td><td>見る</td><td><b>見ない</b></td><td><b>見ない</b></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout" id="setainushi-yuyo">
+<b>納付猶予が「世帯主を見ない」ことが、この制度の存在理由そのものです。</b>実家で親と同居している20代の方は、自分の所得がゼロでも、<b>世帯主である親の所得で全額免除に落ちます</b>（国民年金法90条1項ただし書は「世帯主又は配偶者のいずれかが各号のいずれにも該当しないとき」は免除しないと定めています）。一方、納付猶予は本人と配偶者だけで判定するので、同じ人が納付猶予には通ります。上の判定機で「世帯主が別にいる」にチェックを入れると、<b>どの区分を誰が落としたか</b>が名指しで表示されます。
+</div>
+
+<p>ただし納付猶予は<b>年金額に1円も反映されません</b>。全額免除の「2分の1もらえる」と混同しないでください。受給資格期間には算入されるので未納よりは確実に有利ですが、<b>額の話では未納と同じ</b>です。</p>
+
+<h2 id="kojo">全額免除だけ、社会保険料控除を引かない</h2>
+<div class="callout" id="kojo-asymmetry">
+<b>全額免除の判定では、社会保険料控除などを所得から引きません。一部免除と学生納付特例では引きます。</b>国民年金法施行令<b>6条の11</b>（全額免除）は総所得金額等の合計額をそのまま所得とし、控除を引く規定を持ちません。これに対し施行令<b>6条の12第2項</b>（一部免除・学生納付特例）だけが、雑損・医療費・社会保険料・小規模企業共済等掛金・配偶者特別・特定親族特別の各控除額と、障害者27万円（特別障害者40万円）・寡婦27万円・ひとり親35万円・勤労学生27万円を控除すると定めています。日本年金機構のページが全額免除の式にだけ「＋社会保険料控除額等」を書いていないのは、省略ではなく条文どおりです。
+</div>
+<p>この違いは答えを反転させます。たとえば<b>前年所得70万円・社会保険料控除20万円・扶養なし</b>の方の場合、全額免除の基準額は67万円なので<b>所得70万円では該当しません</b>。一方4分の3免除は、70万円から20万円を引いた50万円で判定するので88万円以下となり<b>該当します</b>。6つの区分すべてに社会保険料控除を引いてしまうと、50万円≦67万円となって「全額免除されます」と誤って答えることになります。</p>
+
+<h2 id="nenkin">将来の年金はいくら下がるか</h2>
+<p>老齢基礎年金は<b>40年（480か月）納付して満額847,300円</b>（令和8年度・昭和31年4月2日以後生まれ）です。免除を受けた期間は、国民年金法27条が定める割合で年金額に反映されます。<b>40年すべて全額免除だった場合は423,650円</b>と、ちょうど半分になります（国庫負担の2分の1が残るため）。上の判定機は、その区分で1年間過ごした場合に満額納付と比べていくら下がるかを計算します。</p>
+<p>免除・猶予を受けた期間の保険料は、<b>10年以内なら追納</b>できます（国民年金法94条。承認から3年度目以降は加算額が付きます）。追納すれば年金額を満額に近づけられます。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3>Q. 収入がゼロなら必ず全額免除になりますか？</h3>
+<p>A. なりません。免除は本人・世帯主・配偶者の<b>全員</b>が所得基準を満たす必要があるためです。実家で親と同居していて親が世帯主なら、あなたの所得がゼロでも親の所得が基準を超えていれば全額免除は承認されません。ただしその場合でも、50歳未満なら<b>納付猶予</b>は世帯主の所得を見ないので該当する可能性があります。学生の方は学生納付特例が本人の所得だけで判定されます。</p>
+
+<h3>Q. 納付猶予と全額免除は、どちらも0円なら同じですか？</h3>
+<p>A. 毎月の支払いはどちらも0円ですが、<b>将来の年金額がまったく違います</b>。全額免除の期間は老齢基礎年金の<b>2分の1</b>が受け取れますが、納付猶予の期間は<b>1円も反映されません</b>。どちらも受給資格期間（10年）には算入され、障害基礎年金・遺族基礎年金の納付要件にも算入されるので未納よりは有利ですが、老齢年金の額という点では納付猶予は未納と同じです。全額免除に該当するなら全額免除を選んでください。</p>
+
+<h3>Q. 学生ですが、親の所得が高いと学生納付特例は受けられませんか？</h3>
+<p>A. 受けられます。学生納付特例は<b>学生本人の前年所得だけ</b>で判定し、世帯主（親）や配偶者の所得は見ません（国民年金法90条の3第1項）。基準は128万円＋扶養親族等控除額＋社会保険料控除額等です。アルバイト収入だけなら、給与所得控除を引いた後の所得で判定するので、年収がおよそ194万円までは該当します。なお学生の方は免除・納付猶予の対象外なので、この制度で申請します。</p>
+
+<h3>Q. 失業して収入がなくなりました。前年の所得が高いと免除は受けられませんか？</h3>
+<p>A. <b>失業等による特例免除</b>があります。失業・倒産・事業の廃止の事実を確認できたときは、失業した方の前年所得にかかわらず免除・納付猶予を受けられます（国民年金法90条1項2号）。雇用保険受給資格者証や離職票などを添えて申請してください。<b>このツールは所得基準だけを見るので、この特例には対応していません</b>。前年所得が高くて「該当なし」と表示された方でも、失業した方は窓口でご相談ください。</p>
+
+<h3>Q. 免除を受けた期間は、あとから納められますか？</h3>
+<p>A. できます。免除・納付猶予の承認を受けた期間の保険料は、<b>10年以内であれば追納</b>できます（国民年金法94条）。追納すれば老齢基礎年金の額を満額に近づけられます。ただし承認を受けた年度の翌年度から起算して<b>3年度目以降に追納する場合は加算額</b>が付きます。なお、未納のまま2年を過ぎた期間は追納できず、年金額にも受給資格期間にも一切算入されません。</p>
+
+<h2 id="source">出典</h2>
+<ul>
+<li>国民年金法 第90条第1項（全額免除）・第90条の2（4分の3・半額・4分の1免除）・第90条の3（学生納付特例）・第27条（老齢基礎年金の額）・第94条（追納） — <a href="https://laws.e-gov.go.jp/law/334AC0000000141" rel="nofollow">e-Gov法令検索</a></li>
+<li>国民年金法施行令 第6条の7（全額免除の額）・第6条の8（障害者等の135万円）・第6条の8の2（88万円）・第6条の9（128万円）・第6条の9の2（168万円）・<b>第6条の11（全額免除の所得の額の計算方法）</b>・<b>第6条の12（一部免除・学生納付特例の所得の額の計算方法と控除）</b> — <a href="https://laws.e-gov.go.jp/law/334CO0000000184" rel="nofollow">e-Gov法令検索</a></li>
+<li>日本年金機構「国民年金保険料の免除制度・納付猶予制度」（保険料額・年金額への反映・1年で受け取れる年金額のめやす） — <a href="https://www.nenkin.go.jp/service/kokunen/menjo/20150428.html" rel="nofollow">日本年金機構</a></li>
+</ul>
+
+</article>
+</main>
+<footer class="site">
+  <a href="../about/">このサイトについて</a>・<a href="../privacy/">プライバシーポリシー</a>・<a href="../contact/">お問い合わせ</a>
+  <p>© 経理ミニツールズ</p>
+</footer>
+
+<script type="module">
+import { hantei, getsugakuHokenryo, nenkinEizoku } from '../assets/kokunen_menjo_core.js';
+
+const $ = (id) => document.getElementById(id);
+const num = (id) => { const v = $(id).value; return v === '' ? 0 : Number(v); };
+const yen = (n) => Number(n).toLocaleString('ja-JP') + '円';
+
+// ★参照データは「答えの一部」なので、待ってから計算する（回線が遅い人だけ空データで計算される事故を防ぐ）。
+// catch が拾ってよいのは「データが手に入らなかったこと」だけ。出典の描画はここに入れない。
+let DATA = null, NENKIN = null;
+const ready = Promise.all([
+  fetch('../assets/kokunen_menjo_r08.json').then((r) => { if (!r.ok) throw new Error('http ' + r.status); return r.json(); }),
+  fetch('../assets/nenkin_r08.json').then((r) => { if (!r.ok) throw new Error('http ' + r.status); return r.json(); }),
+]).then(([a, b]) => { DATA = a; NENKIN = b; return true; }).catch(() => false);
+
+// 出典・年度は「飾り」なので別に描く。ここで転んでも計算は止めない。
+ready.then((ok) => {
+  if (!ok) return;
+  $('src-hint').textContent =
+    `${DATA._meta.year}の基準で判定しています（${DATA._meta.label}）。保険料は月額${yen(DATA.hokenryo.monthly_yen)}。`;
+});
+
+for (const [cb, row] of [['has_setainushi', 'row_setainushi'], ['has_haigusha', 'row_haigusha']]) {
+  $(cb).addEventListener('change', () => { $(row).hidden = !$(cb).checked; });
+}
+
+function person(prefix) {
+  return {
+    shotoku: num(prefix + 'shotoku'),
+    kojo: num('kojo'),
+    fuyo: { ippan: num('f_ippan'), tokutei: num('f_tokutei'), rojin: num('f_rojin') },
+    shogaisha: $('c_shogaisha').checked,
+    tokuBetsuShogaisha: $('c_toku_shogaisha').checked,
+    kafu: $('c_kafu').checked,
+    hitorioya: $('c_hitorioya').checked,
+    kinroGakusei: $('c_kinro_gakusei').checked,
+  };
+}
+
+$('calc').addEventListener('click', async () => {
+  const out = $('result');
+  out.style.display = 'block';   // .result は既定 display:none (style.css)
+  const ok = await ready;
+  if (!ok) {
+    out.innerHTML = '<div class="note"><b>基準額のデータを読み込めませんでした。</b>通信環境を確認して、ページを再読み込みしてください。データが無い状態では判定しません。</div>';
+    return;
+  }
+
+  const input = {
+    honnin: person(''),
+    setainushi: $('has_setainushi').checked ? { shotoku: num('s_shotoku'), fuyo: {}, kojo: 0 } : null,
+    haigusha: $('has_haigusha').checked ? { shotoku: num('h_shotoku'), fuyo: {}, kojo: 0 } : null,
+    age: $('age').value === '' ? null : Number($('age').value),
+    isStudent: $('student').checked,
+  };
+  const r = hantei(input, DATA);
+
+  let html = '';
+  if (r.best) {
+    const pay = getsugakuHokenryo(r.best.def, DATA);
+    html += `<p class="big">該当する可能性がいちばん高いのは<b>${r.best.label}</b>です</p>`;
+    html += `<p>毎月納める保険料は <b>${yen(pay)}</b>`;
+    html += pay === 0 ? '（納める必要がありません）</p>' : `（免除がなければ${yen(DATA.hokenryo.monthly_yen)}）</p>`;
+    const nen = nenkinEizoku(r.best.def, 12, NENKIN, '1990-01-01');
+    if (nen) {
+      html += nen.reflects
+        ? `<p>この区分で1年間過ごすと、将来の老齢基礎年金は満額納付より年 <b>${yen(nen.diffYen)}</b> 少なくなります（1年ぶんの反映額は${yen(nen.menjoYen)}）。</p>`
+        : `<p class="note"><b>${r.best.label}の期間は、老齢基礎年金の額に1円も反映されません。</b>受給資格期間（10年）には算入されるので未納より有利ですが、額の話では未納と同じです。1年ぶんで年 <b>${yen(nen.diffYen)}</b> の差が出ます。10年以内なら追納できます。</p>`;
+    }
+  } else {
+    html += '<p class="big">所得の基準では<b>どの区分にも該当しませんでした</b></p>';
+    html += '<p class="note">ただし<b>失業・倒産・事業の廃止</b>があった方は、前年所得にかかわらず免除を受けられる特例（国民年金法90条1項2号）があります。このツールは所得基準だけを見るので、その特例には対応していません。離職票などを持って年金事務所・市区町村の窓口へご相談ください。</p>';
+  }
+
+  html += '<div class="scroll-wrap"><table><thead><tr><th>区分</th><th>判定</th><th>理由</th></tr></thead><tbody>';
+  for (const x of r.results) {
+    let mark, reason;
+    if (x.pass) {
+      mark = '<b>該当</b>';
+      reason = (x.people || []).map((p) => `${p.label} ${yen(p.shotoku)} ≦ 基準 ${yen(p.kijun)}`).join('／');
+    } else if (x.blocked) {
+      mark = '—';
+      reason = x.reason;
+    } else {
+      mark = '該当なし';
+      reason = (x.failed || []).map((p) => `<b>${p.label}</b>の所得 ${yen(p.shotoku)} が基準 ${yen(p.kijun)} を超えています`).join('／');
+    }
+    html += `<tr><td>${x.label}</td><td>${mark}</td><td>${reason}</td></tr>`;
+  }
+  html += '</tbody></table></div>';
+  html += '<p class="hint">判定は前年の所得（1月〜6月の申請は前々年）によります。結果は目安で、実際の承認は年金事務所・市区町村の窓口で行われます。</p>';
+  out.innerHTML = html;
+});
+</script>
+</body>
+</html>

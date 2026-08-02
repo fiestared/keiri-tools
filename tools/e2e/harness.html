@@ -4465,6 +4465,88 @@ SCENES.jishin_hoken_empty = jishinScene({ jishin: 0, kyuchoki: 0 });
 // 参照データ配信不可 → 控除額を出さずに断る（fail closed）
 SCENES.jishin_hoken_nodata = jishinScene({});
 
+// ── 国民年金の免除・納付猶予 ───────────────────────────────────────────
+// ★期待値の基準額は**施行令の条文から手で書き起こしたもの**（データJSONもコアも通さない）:
+//   全額免除・納付猶予 = (扶養親族等の数+1)×35万+32万（6条の7）
+//   4分の3=88万 / 半額=128万 / 4分の1=168万 + 扶養親族等控除額（6条の8の2・6条の9・6条の9の2）
+// ★所得から控除を引くのは**一部免除と学生納付特例だけ**（6条の12第2項）。
+//   全額免除・納付猶予は引かない（6条の11に減算規定が無い）。この非対称を実装が守っているかを見る。
+const KOKUNEN_INDEP = ({ shotoku, kojo = 0, fuyoNinzu = 0, age, isStudent = false, setainushi = null }) => {
+  const zenKijun = (fuyoNinzu + 1) * 350000 + 320000;
+  const hikigo = Math.max(0, shotoku - kojo);
+  const ok = [];
+  if (isStudent) {
+    if (hikigo <= 1280000) ok.push("学生納付特例");
+    return ok;
+  }
+  // 免除は世帯主も見る。納付猶予は見ない。
+  const zenPass = shotoku <= zenKijun && (setainushi == null || setainushi <= zenKijun);
+  if (zenPass) ok.push("全額免除");
+  for (const [label, base] of [["4分の3免除", 880000], ["半額免除", 1280000], ["4分の1免除", 1680000]]) {
+    if (hikigo <= base && (setainushi == null || setainushi <= base)) ok.push(label);
+  }
+  if (age != null && age < 50 && shotoku <= zenKijun) ok.push("納付猶予");
+  return ok;
+};
+
+const kokunenScene = ({ shotoku = 600000, kojo = "", age = 30, fuyo = {}, isStudent = false,
+                        setainushi = null, data404 = null } = {}) => async () => {
+  const doc = await open("/docs/kokunen-menjo/", { data404 });
+  if (isStudent) doc.getElementById("student").click();
+  set(doc, "age", String(age));
+  set(doc, "shotoku", String(shotoku));
+  set(doc, "kojo", String(kojo));
+  set(doc, "f_ippan", String(fuyo.ippan || ""));
+  set(doc, "f_tokutei", String(fuyo.tokutei || ""));
+  set(doc, "f_rojin", String(fuyo.rojin || ""));
+  if (setainushi != null) {
+    doc.getElementById("has_setainushi").click();
+    set(doc, "s_shotoku", String(setainushi));
+  }
+  click(doc, "calc");   // ← 基準額JSONの到着を待たずに押す(実ユーザーと同じ)
+
+  await waitFor(
+    () => /該当する可能性|どの区分にも該当しませんでした|読み込めませんでした/.test(text(doc, "result")),
+    "免除・納付猶予の判定結果",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  const fuyoNinzu = (fuyo.ippan || 0) + (fuyo.tokutei || 0) + (fuyo.rojin || 0);
+  return {
+    shotoku, kojo, age, isStudent, setainushi,
+    expectedAvailable: data404 ? null : KOKUNEN_INDEP({ shotoku, kojo: Number(kojo) || 0, fuyoNinzu, age, isStudent, setainushi }),
+    best: (body.match(/該当する可能性がいちばん高いのは(.+?)です/) || [])[1] || null,
+    // 表の各行が「該当」と言っているか（best だけ見ると、他の区分の判定が壊れていても気づけない）
+    available: [...body.matchAll(/(全額免除|4分の3免除|半額免除|4分の1免除|納付猶予|学生納付特例)\s*該当(?!なし)/g)].map((m) => m[1]),
+    monthlyPay: num(/毎月納める保険料は\s*([\d,]+)円/),
+    // ★誰が落としたのかを画面が名指ししているか（このツールの看板）
+    blamesSetainushi: /<b>世帯主<\/b>の所得|世帯主の所得/.test(body) || /世帯主/.test(body),
+    saysNoReflect: /老齢基礎年金の額に1円も反映されません/.test(body),
+    nenkinDiff: num(/年\s*([\d,]+)円\s*少なくなります/),
+    noneMatched: /どの区分にも該当しませんでした/.test(body),
+    saysShitsugyo: /失業・倒産・事業の廃止/.test(body),
+    failed: /読み込めませんでした/.test(body),
+  };
+};
+
+// 正常系: 前年所得60万・単身・30歳 → 全額免除(基準67万)。納める保険料は0円。
+SCENES.kokunen = kokunenScene({});
+
+// ★このツールの看板その1: 親と同居していると全額免除は世帯主で落ちるが、納付猶予は通る。
+//   世帯主を見ない区分を実装が取り違えていたら、ここで available が変わる。
+SCENES.kokunen_setainushi = kokunenScene({ shotoku: 0, age: 25, setainushi: 3000000 });
+
+// ★このツールの看板その2: 全額免除だけ社会保険料控除を引かない(施行令6条の11)。
+//   所得70万・社保控除20万・扶養0 → 全額免除は「所得70万 > 基準67万」で該当しない。
+//   6区分に一律で控除を引く実装だと、50万 ≦ 67万 となって「全額免除」と誤答する。
+SCENES.kokunen_kojo = kokunenScene({ shotoku: 700000, kojo: 200000 });
+
+// ★学生は免除・納付猶予の対象外。学生納付特例だけが出る(親の所得は見ない)。
+SCENES.kokunen_gakusei = kokunenScene({ shotoku: 1200000, age: 20, isStudent: true, setainushi: 9000000 });
+
+// 基準額のデータが配信できないときは、判定を出さずに断る(fail closed)
+SCENES.kokunen_nodata = kokunenScene({ data404: "kokunen_menjo_r08.json" });
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };

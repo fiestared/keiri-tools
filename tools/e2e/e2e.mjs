@@ -1600,6 +1600,47 @@ const SCENES = [
   // 給与170万(所得96万>89万) → 対象外。163万円のラインと178万円の案内が理由に出ること。
   { name: "kinro_gakusei_over", expect: (s) =>
       s.hantei === "none" && /163万円以下/.test(s.reason) && /178万円/.test(s.reason) && !s.failed },
+
+  // ── 国民年金の免除・納付猶予 (/kokunen-menjo/) ───────────────────────
+  // 正常系: 前年所得60万・単身・30歳。基準67万を下回るので全額免除、納める額は0円。
+  // ★expectedAvailable は harness 側の独立実装（施行令の条文から手で起こした基準額）。
+  { name: "kokunen", expect: (s) =>
+      s.best === "全額免除" && s.monthlyPay === 0 &&
+      s.available.includes("全額免除") &&
+      s.available.length === s.expectedAvailable.length &&
+      s.expectedAvailable.every((x) => s.available.includes(x)) &&
+      s.nenkinDiff > 0 && !s.failed && !s.noneMatched },
+
+  // ★看板その1: 本人の所得0でも、世帯主(親)が300万なら全額免除も一部免除も落ちる。
+  //   納付猶予だけが通る（世帯主を見ないため）。区分ごとに見る人の範囲を揃えていたらここで落ちる。
+  { name: "kokunen_setainushi", expect: (s) =>
+      s.best === "納付猶予" && s.monthlyPay === 0 &&
+      !s.available.includes("全額免除") && !s.available.includes("4分の3免除") &&
+      s.available.includes("納付猶予") &&
+      s.expectedAvailable.every((x) => s.available.includes(x)) &&
+      // どの人が落としたのかを画面が名指ししていること
+      s.blamesSetainushi &&
+      // 納付猶予は年金額に反映されない＝そう断っていること（全額免除の1/2と混同させない）
+      s.saysNoReflect && !s.failed },
+
+  // ★看板その2: 全額免除だけ社会保険料控除を引かない（施行令6条の11）。
+  //   所得70万・社保控除20万 → 全額免除は該当せず、4分の3免除が最上位になる。
+  //   6区分に一律で控除を引く実装なら best が「全額免除」になってここで落ちる。
+  { name: "kokunen_kojo", expect: (s) =>
+      s.best === "4分の3免除" && s.monthlyPay === 4480 &&
+      !s.available.includes("全額免除") &&
+      s.available.includes("4分の3免除") &&
+      s.expectedAvailable.every((x) => s.available.includes(x)) && !s.failed },
+
+  // ★学生は免除・納付猶予の対象外。世帯主が900万でも学生納付特例は本人だけで判定する。
+  { name: "kokunen_gakusei", expect: (s) =>
+      s.best === "学生納付特例" && s.monthlyPay === 0 &&
+      s.available.length === 1 && s.available[0] === "学生納付特例" &&
+      s.saysNoReflect && !s.failed },
+
+  // 基準額のデータが配信できないときは、判定を出さずに断る（fail closed）
+  { name: "kokunen_nodata", data404: "kokunen_menjo_r08.json",
+    expect: (s) => s.failed && s.best === null },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────
