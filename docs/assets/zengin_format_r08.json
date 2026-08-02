@@ -1,0 +1,79 @@
+{
+  "_meta": {
+    "title": "全銀協制定ファイルフォーマット（総合振込・固定長120バイト）",
+    "source_name": "群馬銀行「全銀協制定ファイルフォーマット【総合振込】」",
+    "source_url": "https://www.gunmabank.co.jp/hojin/biznb/service/pdf/z_format1.pdf",
+    "verified_at": "2026-08-02",
+    "how_verified": "curl でPDFを取得し pdftotext -layout で本文を読み、全4レコードの桁数合計が各120になることを確認した（WebFetch等の要約器は使っていない）",
+    "record_length": 120,
+    "newline_note": "改行コード(CRLF)を付ける場合は後付けで122バイト（出典PDFの記載）",
+    "charset": "JISコード（コード区分 0）。EBCDICを使う銀行もある",
+    "padding": "数字項目(N)は右詰め・残りを0で埋める。カタカナ・英大文字項目(C)は左詰め・残りをスペース",
+    "caution": "★これは特定の1行（群馬銀行）が公開している仕様書を基準に再構成したもの。全銀協規定に準拠する一般的な構成だが、必須/省略可・改行の有無・文字コード・固定値・未使用項目の扱いは銀行ごとに差がある。実際にファイルを作るときは必ず取引銀行の最新の仕様書を優先すること"
+  },
+  "records": [
+    {
+      "name": "ヘッダー・レコード",
+      "kubun": "1",
+      "role": "依頼人（委託者）側の情報。1ファイルに1行",
+      "fields": [
+        { "no": 1, "name": "データ区分", "type": "N", "len": 1, "content": "1（ヘッダー・レコード）", "scope": "common" },
+        { "no": 2, "name": "種別コード", "type": "N", "len": 2, "content": "21（総合振込）", "scope": "common" },
+        { "no": 3, "name": "コード区分", "type": "N", "len": 1, "content": "0（JISコード）", "scope": "bank" },
+        { "no": 4, "name": "振込依頼人コード", "type": "N", "len": 10, "content": "銀行の定める委託者コード", "scope": "bank" },
+        { "no": 5, "name": "振込依頼人名", "type": "C", "len": 40, "content": "振込依頼人の名称（カナ）", "scope": "common" },
+        { "no": 6, "name": "振込指定日", "type": "N", "len": 4, "content": "振込日を月日(MMDD)。銀行営業日", "scope": "common" },
+        { "no": 7, "name": "仕向銀行番号", "type": "N", "len": 4, "content": "取引銀行の統一金融機関番号（出典PDFでは0128＝群馬銀行）", "scope": "bank" },
+        { "no": 8, "name": "仕向銀行名", "type": "C", "len": 15, "content": "取引銀行名（カナ）", "scope": "bank" },
+        { "no": 9, "name": "仕向支店番号", "type": "N", "len": 3, "content": "取引支店番号", "scope": "bank" },
+        { "no": 10, "name": "仕向支店名", "type": "C", "len": 15, "content": "取引支店名（カナ）", "scope": "bank" },
+        { "no": 11, "name": "預金種目", "type": "N", "len": 1, "content": "振込依頼人の預金科目。1（普通）2（当座）9（その他）", "scope": "bank" },
+        { "no": 12, "name": "口座番号", "type": "N", "len": 7, "content": "振込依頼人の口座番号", "scope": "common" },
+        { "no": 13, "name": "ダミー", "type": "C", "len": 17, "content": "スペース", "scope": "common" }
+      ]
+    },
+    {
+      "name": "データ・レコード",
+      "kubun": "2",
+      "role": "振込1件ごとに1行。振込先と金額を収容",
+      "fields": [
+        { "no": 1, "name": "データ区分", "type": "N", "len": 1, "content": "2（データ・レコード）", "scope": "common" },
+        { "no": 2, "name": "被仕向銀行番号", "type": "N", "len": 4, "content": "振込先銀行番号（統一金融機関番号）", "scope": "common" },
+        { "no": 3, "name": "被仕向銀行名", "type": "C", "len": 15, "content": "振込先銀行名（カナ）", "scope": "common" },
+        { "no": 4, "name": "被仕向支店番号", "type": "N", "len": 3, "content": "振込先支店番号（統一店番号）", "scope": "common" },
+        { "no": 5, "name": "被仕向支店名", "type": "C", "len": 15, "content": "振込先支店名（カナ）", "scope": "common" },
+        { "no": 6, "name": "手形交換所番号", "type": "N", "len": 4, "content": "未使用（0とする）", "scope": "bank" },
+        { "no": 7, "name": "預金種目", "type": "N", "len": 1, "content": "受取人の預金科目。1（普通）2（当座）4（貯蓄）9（その他）", "scope": "common" },
+        { "no": 8, "name": "口座番号", "type": "N", "len": 7, "content": "受取人の口座番号。ハイフン等は入れない", "scope": "common" },
+        { "no": 9, "name": "受取人名", "type": "C", "len": 30, "content": "受取人の預金者名（カナ）。★「名義は30文字まで」の正体がこの桁数", "scope": "common" },
+        { "no": 10, "name": "振込金額", "type": "N", "len": 10, "content": "振込金額（円単位）", "scope": "common" },
+        { "no": 11, "name": "新規コード", "type": "N", "len": 1, "content": "未使用（0とする）", "scope": "bank" },
+        { "no": 12, "name": "顧客番号1", "type": "C", "len": 10, "content": "振込依頼人が定めた受取人識別のためのコード", "scope": "common" },
+        { "no": 13, "name": "顧客番号2", "type": "C", "len": 10, "content": "同上。★項番15に「Y」を付した場合、項番12・13の20桁が「EDI情報」になる", "scope": "common" },
+        { "no": 14, "name": "振込指定区分", "type": "N", "len": 1, "content": "7（電信振込）", "scope": "bank" },
+        { "no": 15, "name": "識別表示", "type": "C", "len": 1, "content": "「Y」またはスペース。Yのとき項番12・13はEDI情報", "scope": "common" },
+        { "no": 16, "name": "ダミー", "type": "C", "len": 7, "content": "スペース", "scope": "common" }
+      ]
+    },
+    {
+      "name": "トレーラ・レコード",
+      "kubun": "8",
+      "role": "合計件数と合計金額。取込時の検算に使われる。1ファイルに1行",
+      "fields": [
+        { "no": 1, "name": "データ区分", "type": "N", "len": 1, "content": "8（トレーラ・レコード）", "scope": "common" },
+        { "no": 2, "name": "合計件数", "type": "N", "len": 6, "content": "データ・レコードの合計件数", "scope": "common" },
+        { "no": 3, "name": "合計金額", "type": "N", "len": 12, "content": "データ・レコードの合計金額", "scope": "common" },
+        { "no": 4, "name": "ダミー", "type": "C", "len": 101, "content": "スペース", "scope": "common" }
+      ]
+    },
+    {
+      "name": "エンド・レコード",
+      "kubun": "9",
+      "role": "ファイルの終端。1ファイルに1行",
+      "fields": [
+        { "no": 1, "name": "データ区分", "type": "N", "len": 1, "content": "9（エンド・レコード）", "scope": "common" },
+        { "no": 2, "name": "ダミー", "type": "C", "len": 119, "content": "スペース", "scope": "common" }
+      ]
+    }
+  ]
+}

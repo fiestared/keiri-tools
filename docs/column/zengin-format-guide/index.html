@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>全銀フォーマットとは｜使用可能文字・振込名義の書き方・法人略語一覧（カ）ユ）ド）</title>
-<meta name="description" content="全銀フォーマット（全銀協規定形式）は総合振込ファイルの標準仕様。ヘッダー・データ・トレーラ・エンドの120バイト固定長レコード構造から、受取人名に使える文字（半角カナ・英大文字・数字・記号4種）、株式会社=カ、有限会社=ユなど法人略語の位置で変わる書き方、30文字制限まで実例つきで解説します。">
+<title>全銀フォーマットとは｜120バイトのレコードレイアウト・使用可能文字・法人略語</title>
+<meta name="description" content="全銀フォーマット（全銀協規定形式）は総合振込ファイルの標準仕様。ヘッダー・データ・トレーラ・エンドの4レコードの全項目を、何バイト目に何が入るかまで一覧にしました（出典の銀行仕様書と確認日つき）。あわせて、受取人名に使える文字（半角カナ・英大文字・数字・記号4種）、株式会社=カ、有限会社=ユなど法人略語の位置で変わる書き方、30文字制限まで実例つきで解説します。">
 <meta name="card-desc" content="株式会社＝カ、有限会社＝ユ、合同会社＝ド。先頭・末尾・中間で変わる括弧の付け方と、使える文字の範囲を一覧に。">
 <link rel="stylesheet" href="../../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/column/zengin-format-guide/">
@@ -14,7 +14,7 @@
   "@graph": [
     {
       "@type": "Article",
-      "headline": "全銀フォーマットとは｜使用可能文字・振込名義の書き方・法人略語一覧",
+      "headline": "全銀フォーマットとは｜120バイトのレコードレイアウト・使用可能文字・法人略語",
       "datePublished": "2026-07-12",
       "dateModified": "2026-07-26",
       "author": {
@@ -139,6 +139,7 @@
     <div class="toc-title">目次</div>
     <ol>
       <li><a href="#kozo">全銀フォーマットとは — 総合振込ファイルの構造（120バイト固定長）</a></li>
+      <li><a href="#layout">レコードレイアウト（全4種・バイト位置つき）</a></li>
       <li><a href="#moji">使用できる文字</a>
         <ol><li><a href="#okikae">よくある置き換え</a></li></ol>
       </li>
@@ -217,6 +218,76 @@
   </div>
 
   <p class="note">レコード長120バイト・4種類のレコード構成・種別コード21などの骨格は共通ですが、<b>項目の省略可否など細部は銀行ごとに差があります</b>。実際にファイルを作るときは、必ず利用する銀行が公開しているレコードフォーマット仕様書を確認してください。</p>
+
+<!-- ZENGIN_LAYOUT:START 自動生成。手で編集しない。tools/gen_zengin_layout.mjs -->
+  <h2 id="layout">レコードレイアウト（全4種・バイト位置つき）</h2>
+  <p>4種類のレコードの全項目を、<b>ファイルの何バイト目に何が入るか</b>まで並べたものです。位置は桁数の累計から出しており、<b>各レコードの合計が120バイトに一致することを機械で確認</b>しています（合わなければ表を出さない作りです）。</p>
+  <div class="callout">
+    <p>★<b>出典は特定の1行の公開仕様書です。</b>群馬銀行「全銀協制定ファイルフォーマット【総合振込】」（<a href="https://www.gunmabank.co.jp/hojin/biznb/service/pdf/z_format1.pdf" rel="nofollow">PDF</a>・2026-08-02確認）を基準に再構成しました。全銀協規定に準拠する一般的な構成ですが、<b>必須／省略可・改行の有無・文字コード・固定値・未使用項目の扱いは銀行ごとに差があります。実際にファイルを作るときは、必ず取引銀行の最新の仕様書を優先してください。</b></p>
+    <p>表の「区分」列は、<b>共通</b>＝複数の仕様で共通している骨格、<b>要確認</b>＝銀行や契約サービスで差が出やすい項目、という意味です。</p>
+  </div>
+  <p>文字コードはJISコード（コード区分 0）。EBCDICを使う銀行もある。1行120バイト（改行コード(CRLF)を付ける場合は後付けで122バイト（出典PDFの記載））。数字項目(N)は右詰め・残りを0で埋める。カタカナ・英大文字項目(C)は左詰め・残りをスペース。</p>
+  <h3 id="layout-1">ヘッダー・レコード（データ区分 1）</h3>
+  <p>依頼人（委託者）側の情報。1ファイルに1行。</p>
+  <table>
+    <tr><th>No</th><th>項目</th><th>位置<br>(バイト)</th><th>桁数・型</th><th>区分</th><th>内容</th></tr>
+    <tr><td>1</td><td>データ区分</td><td>1</td><td>N(1)</td><td>共通</td><td>1（ヘッダー・レコード）</td></tr>
+    <tr><td>2</td><td>種別コード</td><td>2〜3</td><td>N(2)</td><td>共通</td><td>21（総合振込）</td></tr>
+    <tr><td>3</td><td>コード区分</td><td>4</td><td>N(1)</td><td>要確認</td><td>0（JISコード）</td></tr>
+    <tr><td>4</td><td>振込依頼人コード</td><td>5〜14</td><td>N(10)</td><td>要確認</td><td>銀行の定める委託者コード</td></tr>
+    <tr><td>5</td><td>振込依頼人名</td><td>15〜54</td><td>C(40)</td><td>共通</td><td>振込依頼人の名称（カナ）</td></tr>
+    <tr><td>6</td><td>振込指定日</td><td>55〜58</td><td>N(4)</td><td>共通</td><td>振込日を月日(MMDD)。銀行営業日</td></tr>
+    <tr><td>7</td><td>仕向銀行番号</td><td>59〜62</td><td>N(4)</td><td>要確認</td><td>取引銀行の統一金融機関番号（出典PDFでは0128＝群馬銀行）</td></tr>
+    <tr><td>8</td><td>仕向銀行名</td><td>63〜77</td><td>C(15)</td><td>要確認</td><td>取引銀行名（カナ）</td></tr>
+    <tr><td>9</td><td>仕向支店番号</td><td>78〜80</td><td>N(3)</td><td>要確認</td><td>取引支店番号</td></tr>
+    <tr><td>10</td><td>仕向支店名</td><td>81〜95</td><td>C(15)</td><td>要確認</td><td>取引支店名（カナ）</td></tr>
+    <tr><td>11</td><td>預金種目</td><td>96</td><td>N(1)</td><td>要確認</td><td>振込依頼人の預金科目。1（普通）2（当座）9（その他）</td></tr>
+    <tr><td>12</td><td>口座番号</td><td>97〜103</td><td>N(7)</td><td>共通</td><td>振込依頼人の口座番号</td></tr>
+    <tr><td>13</td><td>ダミー</td><td>104〜120</td><td>C(17)</td><td>共通</td><td>スペース</td></tr>
+    <tr><td colspan="2"><b>合計</b></td><td><b>1〜120</b></td><td colspan="3"><b>120バイト</b></td></tr>
+  </table>
+  <h3 id="layout-2">データ・レコード（データ区分 2）</h3>
+  <p>振込1件ごとに1行。振込先と金額を収容。</p>
+  <table>
+    <tr><th>No</th><th>項目</th><th>位置<br>(バイト)</th><th>桁数・型</th><th>区分</th><th>内容</th></tr>
+    <tr><td>1</td><td>データ区分</td><td>1</td><td>N(1)</td><td>共通</td><td>2（データ・レコード）</td></tr>
+    <tr><td>2</td><td>被仕向銀行番号</td><td>2〜5</td><td>N(4)</td><td>共通</td><td>振込先銀行番号（統一金融機関番号）</td></tr>
+    <tr><td>3</td><td>被仕向銀行名</td><td>6〜20</td><td>C(15)</td><td>共通</td><td>振込先銀行名（カナ）</td></tr>
+    <tr><td>4</td><td>被仕向支店番号</td><td>21〜23</td><td>N(3)</td><td>共通</td><td>振込先支店番号（統一店番号）</td></tr>
+    <tr><td>5</td><td>被仕向支店名</td><td>24〜38</td><td>C(15)</td><td>共通</td><td>振込先支店名（カナ）</td></tr>
+    <tr><td>6</td><td>手形交換所番号</td><td>39〜42</td><td>N(4)</td><td>要確認</td><td>未使用（0とする）</td></tr>
+    <tr><td>7</td><td>預金種目</td><td>43</td><td>N(1)</td><td>共通</td><td>受取人の預金科目。1（普通）2（当座）4（貯蓄）9（その他）</td></tr>
+    <tr><td>8</td><td>口座番号</td><td>44〜50</td><td>N(7)</td><td>共通</td><td>受取人の口座番号。ハイフン等は入れない</td></tr>
+    <tr><td>9</td><td>受取人名</td><td>51〜80</td><td>C(30)</td><td>共通</td><td>受取人の預金者名（カナ）。★「名義は30文字まで」の正体がこの桁数</td></tr>
+    <tr><td>10</td><td>振込金額</td><td>81〜90</td><td>N(10)</td><td>共通</td><td>振込金額（円単位）</td></tr>
+    <tr><td>11</td><td>新規コード</td><td>91</td><td>N(1)</td><td>要確認</td><td>未使用（0とする）</td></tr>
+    <tr><td>12</td><td>顧客番号1</td><td>92〜101</td><td>C(10)</td><td>共通</td><td>振込依頼人が定めた受取人識別のためのコード</td></tr>
+    <tr><td>13</td><td>顧客番号2</td><td>102〜111</td><td>C(10)</td><td>共通</td><td>同上。★項番15に「Y」を付した場合、項番12・13の20桁が「EDI情報」になる</td></tr>
+    <tr><td>14</td><td>振込指定区分</td><td>112</td><td>N(1)</td><td>要確認</td><td>7（電信振込）</td></tr>
+    <tr><td>15</td><td>識別表示</td><td>113</td><td>C(1)</td><td>共通</td><td>「Y」またはスペース。Yのとき項番12・13はEDI情報</td></tr>
+    <tr><td>16</td><td>ダミー</td><td>114〜120</td><td>C(7)</td><td>共通</td><td>スペース</td></tr>
+    <tr><td colspan="2"><b>合計</b></td><td><b>1〜120</b></td><td colspan="3"><b>120バイト</b></td></tr>
+  </table>
+  <h3 id="layout-8">トレーラ・レコード（データ区分 8）</h3>
+  <p>合計件数と合計金額。取込時の検算に使われる。1ファイルに1行。</p>
+  <table>
+    <tr><th>No</th><th>項目</th><th>位置<br>(バイト)</th><th>桁数・型</th><th>区分</th><th>内容</th></tr>
+    <tr><td>1</td><td>データ区分</td><td>1</td><td>N(1)</td><td>共通</td><td>8（トレーラ・レコード）</td></tr>
+    <tr><td>2</td><td>合計件数</td><td>2〜7</td><td>N(6)</td><td>共通</td><td>データ・レコードの合計件数</td></tr>
+    <tr><td>3</td><td>合計金額</td><td>8〜19</td><td>N(12)</td><td>共通</td><td>データ・レコードの合計金額</td></tr>
+    <tr><td>4</td><td>ダミー</td><td>20〜120</td><td>C(101)</td><td>共通</td><td>スペース</td></tr>
+    <tr><td colspan="2"><b>合計</b></td><td><b>1〜120</b></td><td colspan="3"><b>120バイト</b></td></tr>
+  </table>
+  <h3 id="layout-9">エンド・レコード（データ区分 9）</h3>
+  <p>ファイルの終端。1ファイルに1行。</p>
+  <table>
+    <tr><th>No</th><th>項目</th><th>位置<br>(バイト)</th><th>桁数・型</th><th>区分</th><th>内容</th></tr>
+    <tr><td>1</td><td>データ区分</td><td>1</td><td>N(1)</td><td>共通</td><td>9（エンド・レコード）</td></tr>
+    <tr><td>2</td><td>ダミー</td><td>2〜120</td><td>C(119)</td><td>共通</td><td>スペース</td></tr>
+    <tr><td colspan="2"><b>合計</b></td><td><b>1〜120</b></td><td colspan="3"><b>120バイト</b></td></tr>
+  </table>
+  <p>受取人名がC(30)＝30桁と決まっているために、<a href="#moji">使用できる文字</a>と<a href="#ryakugo">法人略語</a>のルールが要ります。名義を実際に変換するなら<a href="../../zengin-kana/">振込名義カナ変換ツール</a>が使えます。</p>
+<!-- ZENGIN_LAYOUT:END -->
 
   <h2 id="moji">使用できる文字</h2>
   <table>
