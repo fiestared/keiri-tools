@@ -384,19 +384,94 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
   else ok('年間上限: 年間累計を計算していないことを申告している');
 }
 
-// ───────── 9c. ★令和9年8月からの13区分（実装していない将来の表）─────────
-// 実装していないものを「対応している」と読ませないこと。かつ、額の転記が正しいこと。
+// ───────── 9c. ★令和9年8月からの13区分（2026-08-02に表を掲載）─────────
+// 外部オラクル: 本番ツールが読んでいる docs/assets/kogaku_r08.json の from_2027_08 と
+// annual.caps を、記事の表と**セル単位**で突き合わせる（13の over70 と同じ規律）。
+// 規則5: 行に含まれるだけでは列の入れ替え（多数回該当を年間上限の欄に書く等）を見逃すので、
+//        セルの位置まで下ろして見る。44,400円 と 53万円 は5行に繰り返し出るので、
+//        「記事のどこかに在る」では位置ずれが黙って通る（規則7）。
+// ★数字を手打ちしない。データを直したのに記事を直し忘れたら、この網が落ちる。
 {
-  const sec = strip(body.slice(body.indexOf('<h3 id="r09">'), body.indexOf('<h3>なぜ「変わらない」')));
-  for (const [n, why] of [['13段階', '細分化後の区分数'], ['110,400円＋1％', '標報44万〜50万円'],
-                          ['98,100円＋1％', '標報36万〜41万円'], ['85,800円＋1％', '標報28万〜34万円'],
-                          ['34,500円', '標報15万円以下の多数回該当（新設）']]) {
-    if (!sec.includes(n)) fail(`令和9年8月の節に ${n}（${why}）が無い`);
-    else ok(`令和9年8月: ${n}（${why}）`);
+  const DATA = JSON.parse(fs.readFileSync('docs/assets/kogaku_r08.json', 'utf8'));
+  const T27 = DATA.tables.find(t => t.id === 'from_2027_08');
+  const CAPS = Object.fromEntries(DATA.annual.caps.map(c => [c.key, c]));
+  const secHtml = body.slice(body.indexOf('<h3 id="r09">'), body.indexOf('<h3>なぜ「変わらない」'));
+  const sec = strip(secHtml);
+  const yen = n => n.toLocaleString() + '円';
+
+  if (!T27) fail('kogaku_r08.json に from_2027_08 の表が無い');
+  else {
+    // 9c-1. 13区分をセル単位で照合（区分ラベルのセルで行を特定する・規則4）
+    const secRows = [...secHtml.matchAll(/<tr>[\s\S]*?<\/tr>/g)].map(m => m[0]);
+    if (T27.kubun.length !== 13) fail(`from_2027_08 の区分数が ${T27.kubun.length}（13段階のはず）`);
+    for (const k of T27.kubun) {
+      const r = secRows.find(x => x.includes(`<b>${k.label}</b>`));
+      if (!r) { fail(`令和9年8月: 区分「${k.label}」の行が記事の表に無い`); continue; }
+      const cells = [...r.matchAll(/<td>([\s\S]*?)<\/td>/g)].map(m => strip(m[1]).trim());
+      if (cells.length !== 4) { fail(`令和9年8月[${k.label}] 列数が${cells.length}（期待4）: ${cells}`); continue; }
+      const [, gendo, tasu, nenkan] = cells;
+      const cap = CAPS[k.key];
+      const bad = [];
+      if (!gendo.includes(yen(k.base))) bad.push(`限度額セルに ${yen(k.base)} が無い: ${gendo}`);
+      // 1%の起点は rate>0 の区分だけ。定額区分に「＋（医療費－…）」が紛れ込んでいたら落とす
+      if (k.rate > 0) {
+        if (!gendo.includes(yen(k.threshold))) bad.push(`限度額セルに1%の起点 ${yen(k.threshold)} が無い: ${gendo}`);
+        if (!gendo.includes('×1％')) bad.push(`限度額セルに ×1％ が無い: ${gendo}`);
+      } else if (/医療費－/.test(gendo)) bad.push(`定額の区分なのに1%の式が書かれている: ${gendo}`);
+      // 多数回該当 — 44,400円は5行に出るので、行を特定したうえで**セルの位置**で見る
+      if (!tasu.includes(yen(k.tasukai))) bad.push(`多数回セルに ${yen(k.tasukai)} が無い: ${tasu}`);
+      if (tasu.includes(yen(k.base))) bad.push(`多数回セルに月の限度額 ${yen(k.base)} が混入: ${tasu}`);
+      // 年間上限
+      if (!cap) bad.push(`annual.caps に区分 ${k.key} が無い`);
+      else if (!nenkan.includes(`${cap.cap / 10000}万円`)) bad.push(`年間上限セルが ${cap.cap / 10000}万円 でない: ${nenkan}`);
+      if (bad.length) fail(`令和9年8月[${k.label}]: ${bad.join(' / ')}`);
+      else ok(`令和9年8月 ${k.label}: ${yen(k.base)}${k.rate > 0 ? '＋1％' : ''}／多数回${yen(k.tasukai)}／年間${cap.cap / 10000}万円`);
+    }
+    // 9c-2. 13段階であることの明示。★「本文のどこかに13段階がある」では守れない（規則7）:
+    //       この主張は h3 と直後の p の2箇所に出るので、片方を12段階に壊しても集合には残る。
+    //       → 要素を名指しし、区分数はデータ（from_2027_08 の行数）から引く（手打ちしない）。
+    {
+      const dan = `${T27.kubun.length}段階`;
+      const h3 = (secHtml.match(/<h3 id="r09">([^<]*)<\/h3>/) || [])[1] || '';
+      const p1 = strip((secHtml.match(/<p>([\s\S]*?)<\/p>/) || [])[1] || '');
+      if (!h3.includes(dan)) fail(`令和9年8月の見出しが「${dan}」を名乗っていない: ${h3}`);
+      else ok(`令和9年8月: 見出しが ${dan} を名乗っている`);
+      if (!p1.includes(dan)) fail(`令和9年8月の導入段落に「${dan}」が無い（表の行数はデータで ${T27.kubun.length}）`);
+      else ok(`令和9年8月: 導入段落の区分数がデータの行数（${T27.kubun.length}）と一致`);
+      if (!p1.includes('区分の切り方そのものが別物になる'))
+        fail('「段差が細かくなるだけでなく区分の切り方が変わる」ことが導入段落に無い＝いまの境界を流用できると読まれる');
+      else ok('令和9年8月: 区分の切り方そのものが変わることを導入段落が断定している');
+    }
   }
-  if (!sec.includes('令和9年7月診療分まで'))
-    fail('計算機の対応が令和9年7月診療分までであることが書かれていない');
-  else ok('令和9年8月: 計算機は令和9年7月診療分までだと明記');
+
+  // 9c-3. ★計算機の対応範囲は、データの supported_through と一致していなければならない。
+  //       記事が実際より狭い範囲を名乗ると、使える人を追い返す（実際に令和9年7月と書いてあった）。
+  {
+    const [sy, sm] = DATA.supported_through.split('-');   // "2028-07"
+    const wareki = Number(sy) - 2018;                      // 2028 → 令和10
+    const want = `令和${wareki}年${Number(sm)}月診療分まで`;
+    if (!sec.includes(want)) fail(`計算機の対応範囲（70歳未満＝${want}）が記事に無い＝データと食い違っている`);
+    else ok(`令和9年8月: 計算機の対応範囲が supported_through と一致（70歳未満 ${want}）`);
+    // 70歳以上は令和9年8月からの表を持っていない＝額を出さない。これを黙ると「対応済み」と読まれる
+    const over70Last = DATA.over70.tables.map(t => t.applies_through).filter(Boolean).sort().pop(); // "2027-07"
+    const [oy, om] = over70Last.split('-');
+    const wantOver = `70歳以上が令和${Number(oy) - 2018}年${Number(om)}月診療分まで`;
+    if (!sec.includes(wantOver)) fail(`70歳以上の対応範囲（${wantOver}）の申告が無い`);
+    else ok(`令和9年8月: 70歳以上の対応範囲（${wantOver}）を申告している`);
+    if (!sec.includes('令和9年8月以降の70歳以上は額を出しません'))
+      fail('70歳以上について「額を出さない」ことの断定が無い（fail closed の申告）');
+    else ok('令和9年8月: 70歳以上は額を出さないことを断定している');
+  }
+
+  // 9c-4. ★enacted:false ＝「予定」であることを画面で申告しているか
+  if (T27 && T27.enacted === false) {
+    const p = [...secHtml.matchAll(/<p class="note">[\s\S]*?<\/p>/g)].map(m => strip(m[0]))
+      .find(x => x.includes('この表は「予定」です'));
+    if (!p) fail('from_2027_08 は enacted:false なのに、記事が「予定」であることを申告していない');
+    else if (!p.includes('施行されている政令の条文として確かめたものではありません'))
+      fail(`「予定」の中身（条文で確かめていないこと）が書かれていない: ${p}`);
+    else ok('令和9年8月: enacted:false を「予定・条文未確認」として画面で申告している');
+  }
 }
 
 // ───────── 13. ★70歳以上（施行令42条3項・5項）2026-08-02追加 ─────────
@@ -526,6 +601,23 @@ for (const t of OVER70.tables) for (const k of t.kubun) {
   }
 }
 
+// ───────── 9d. 網に渡す「令和9年8月表」の金額を、データJSONから組み立てる ─────────
+// ★手打ちしないこと。記事の表は from_2027_08 の転記なので、データを直したら記事も直る必要がある。
+// 記事の比較例（標報44万・医療費100万）も**JSONから独立に再計算**する（自分の算数を信じない）。
+const R9_DATA = JSON.parse(fs.readFileSync('docs/assets/kogaku_r08.json', 'utf8'));
+const R9_TABLE = R9_DATA.tables.find(t => t.id === 'from_2027_08');
+const R9_MONEY = [];
+for (const k of R9_TABLE.kubun) for (const f of ['base', 'threshold', 'tasukai']) if (k[f] != null) R9_MONEY.push(k[f]);
+// 施行令42条と同じ端数処理（50銭未満切捨・50銭以上切上）。実装をimportせず独立に書く
+const gendoOf = (k, iryohi) => {
+  if (!(k.rate > 0)) return k.base;
+  const pct = Math.max(0, iryohi - k.threshold) * k.rate;
+  return k.base + Math.floor(pct) + (pct - Math.floor(pct) >= 0.5 ? 1 : 0);
+};
+const R9_REI_GENDO = gendoOf(R9_TABLE.kubun.find(k => k.key === 's44'), 1000000);        // 116,720円
+const R9_REI_SA = R9_REI_GENDO - gendoOf(
+  R9_DATA.tables.find(t => t.id === 'from_2026_08').kubun.find(k => k.key === 'u'), 1000000);  // 23,780円
+
 // ───────── 10. 網: カンマ金額の集合一致（過不足の両方を落とす） ─────────
 {
   // 網の外に出るもの: 等級(第30級)・1円・1%・条文番号 → 上で要素名指し済み
@@ -544,12 +636,11 @@ for (const t of OVER70.tables) for (const k of t.kubun) {
     92940, 5510,                           // 区分ウ・医療費100万円の新旧比較と差額
     806700, 826500,                        // 政令219号が実際に変えた公的年金等控除の読替額（出典欄）
     205762,                                // e-Gov条文の全文字数（新額が1件も無いことの根拠）
-    // ★令和9年8月診療分からの13区分（厚労省PDF「令和９年８月～」の表。2026-08-02追加）
-    // まだ実装していない将来の表なので「欠けたら落ちる」側には入れない
-    //（節ごと消したら落ちる検査は §9c で要素を名指ししてある）。
-    // ただし**出典欄の13区分の転記ミスはこの網で落とす**ので、必ず「円」を付けて書くこと
-    //（「342,000＋1%」と書くと網の外に落ちて、誤記が黙って通る）。
-    342000, 303000, 209400, 194400, 110400, 98100, 69600, 65400, 34500,
+    // ★令和9年8月診療分からの13区分（厚労省PDF「令和９年８月～」の表）。
+    // 2026-08-02の第12便で記事に表として掲載したので、**手打ちをやめてデータJSONから引く**
+    //（データを直したのに記事を直し忘れたら、この網が落ちる）。
+    // 必ず「円」を付けて書くこと（「342,000＋1%」と書くと網の外に落ちて誤記が黙って通る）。
+    ...R9_MONEY, R9_REI_GENDO, R9_REI_SA,
     140000, 44200, 24200,          // 年間上限に併記された「月額平均」（≒多数回該当×12 の設計）
     // ★70歳以上（施行令42条3項・5項＋協会けんぽ/厚労省の公表表。2026-08-02追加）
     // 手打ちせず**データJSONから引く**（データを直したのに記事を直し忘れると、この網が落ちる）
@@ -563,11 +654,15 @@ for (const t of OVER70.tables) for (const k of t.kubun) {
   const missNew = SHINPYO_MONEY.filter(n => !found.has(n));
   // 70歳以上の表の金額も「欠けたら落ちる」側に入れる（表をまるごと消す事故を落とす）
   const missOver70 = [...new Set(OVER70_MONEY)].filter(n => !found.has(n));
+  // ★令和9年8月の13区分も「欠けたら落ちる」側へ（2026-08-02の第12便で記事に掲載したので、
+  //   もう「将来の表だから任意」ではない。表を消したら・1行落としたらここで落ちる）
+  const missR9 = [...new Set(R9_MONEY)].filter(n => !found.has(n));
   if (extra.length) fail(`本文に想定外のカンマ金額がある（誤記の疑い）: ${extra}`);
   else if (missing.length) fail(`政令の金額（7月まで）が本文から欠けている: ${missing}`);
   else if (missNew.length) fail(`8月からの表の金額が本文から欠けている: ${missNew}`);
   else if (missOver70.length) fail(`70歳以上の表の金額が本文から欠けている: ${missOver70}`);
-  else ok(`金額の網: カンマ金額 ${found.size}種すべてが想定内・70歳未満(新旧)と70歳以上(新旧)の金額がすべて本文にある`);
+  else if (missR9.length) fail(`令和9年8月の13区分の金額が本文から欠けている: ${missR9}`);
+  else ok(`金額の網: カンマ金額 ${found.size}種すべてが想定内・70歳未満(旧/R8.8/R9.8の13区分)と70歳以上(新旧)の金額がすべて本文にある`);
 }
 
 // ───────── 11. 網: 等級（カンマが無く金額の網に入らない） ─────────
