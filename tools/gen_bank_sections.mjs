@@ -1,11 +1,16 @@
 /**
- * `/column/furikomi-tesuryo-hikaku/` に「銀行別」セクションを、**記事内の比較表から生成**する。
+ * `/column/furikomi-tesuryo-hikaku/` に「銀行別」セクションを、**fee_table.json から生成**する。
  *
  * ★なぜ生成なのか（手で書いてはいけない理由）:
- *   この記事の本体は「各行の公式ページを実際に読んで確認した28区分の実測」であり、
- *   **比較表が一次情報の唯一の正本**。銀行別セクションを手書きすると同じ数字が2箇所に増え、
- *   料金改定のたびに片方だけ直る（＝表と本文が食い違う）。それは資産の毀損そのもの。
- *   → 表をパースして生成し、`tests/test_furikomi_bank_sections.mjs` が両者の一致を機械で守る。
+ *   この記事の本体は「各行の公式ページを実際に読んで確認した28区分の実測」。
+ *   銀行別セクションを手書きすると同じ数字が2箇所に増え、料金改定のたびに片方だけ直る。
+ *
+ * ★正本は `docs/assets/fee_table.json`（2026-08-02訂正）:
+ *   初版はこの生成器が「記事の比較表をパースする」作りだった。**それは誤りで**、
+ *   正本は前から fee_table.json にあり、`tests/test_fee_article.mjs` が
+ *   JSON→記事の一致を既に守っていた（`/senpou-futan/` のプリセットも同じJSONを読む）。
+ *   記事HTMLを読むと「JSON→記事→銀行別」と鎖が1本長くなるうえ、
+ *   **JSONが行ごとに持っている出典URL・照合日を使えない**。よってJSONを直読みに変更した。
  *
  * ★なぜ足すのか（2026-08-02 のBing実測）:
  *   銀行名を含むクエリが**個別に表示を持っている**のに、受け皿が総合ページ1本しかなかった:
@@ -30,28 +35,26 @@ const END = '<!-- BANK_SECTIONS:END -->';
 
 const strip = (s) => s.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').trim();
 
-/** 記事から比較表を読む。返り値は [{name, kubun, under, over, boundary}] */
-export function parseTables(htmlText) {
-  const rows = [];
-  // 「個人口座（15区分）」「法人口座（13区分）」の2つの表だけを対象にする
-  for (const [anchor, kubun] of [['kojin', '個人'], ['hojin', '法人']]) {
-    const head = htmlText.indexOf(`id="${anchor}"`);
-    if (head < 0) throw new Error(`表の見出し id="${anchor}" が見つかりません`);
-    const tStart = htmlText.indexOf('<table', head);
-    const tEnd = htmlText.indexOf('</table>', tStart);
-    if (tStart < 0 || tEnd < 0) throw new Error(`id="${anchor}" の直後に表がありません`);
-    const table = htmlText.slice(tStart, tEnd);
-    for (const tr of table.match(/<tr>[\s\S]*?<\/tr>/g) || []) {
-      const cells = (tr.match(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/g) || []).map(strip);
-      if (cells.length < 4 || cells[0] === '銀行・サービス') continue;
-      rows.push({
-        name: cells[0], kubun,
-        under: cells[1], over: cells[2],
-        boundary: cells[3] === '境界あり',
-      });
+export const DATA = join(root, 'docs/assets/fee_table.json');
+
+/** 正本(fee_table.json)から28区分を読む。返り値は [{name, kubun, under, over, boundary, source, verifiedAt}] */
+export function loadBanks() {
+  const D = JSON.parse(readFileSync(DATA, 'utf8'));
+  const rows = (D.banks || []).map((b) => {
+    if (typeof b.under30k !== 'number' || typeof b.over30k !== 'number') {
+      throw new Error(`${b.name} の金額が数値ではありません（fee_table.json が壊れている）`);
     }
-  }
-  if (rows.length !== 28) throw new Error(`28区分のはずが ${rows.length} 行でした（表の構造が変わった可能性）`);
+    return {
+      name: b.name,
+      kubun: b.name.includes('法人') ? '法人' : '個人',
+      under: `${b.under30k}円`,
+      over: `${b.over30k}円`,
+      boundary: b.under30k !== b.over30k,
+      source: b.source || null,
+      verifiedAt: b.verified_date || null,
+    };
+  });
+  if (rows.length !== 28) throw new Error(`28区分のはずが ${rows.length} 行でした（fee_table.json の構造が変わった可能性）`);
   return rows;
 }
 
@@ -98,7 +101,7 @@ export function buildSections(rows) {
   const out = [];
   out.push(START);
   out.push('  <h2 id="ginkobetsu">銀行別の振込手数料（他行宛）</h2>');
-  out.push('  <p>上の一覧を銀行ごとに並べ替えたものです。<b>同じ表の数字をそのまま出しています</b>（別々に管理していないので食い違いません）。個人と法人の両方がある銀行は並べて示します。</p>');
+  out.push('  <p>上の一覧を銀行ごとに並べ替えたものです。<b>上の表と同じデータ（fee_table.json）から作っています</b>ので食い違いません。個人と法人の両方がある銀行は並べて示します。行ごとに、最後に公式ページを実読して確認した日を付けています。</p>');
   for (const [base, list] of sorted) {
     const kojin = list.find((x) => x.kubun === '個人');
     const hojin = list.find((x) => x.kubun === '法人');
@@ -121,6 +124,16 @@ export function buildSections(rows) {
       ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）`
       : '金額にかかわらず<b>定額</b>');
     out.push(`  <p>${notes.join('。')}。</p>`);
+
+    // ★出典は行ごとに出す。未照合の行は「未照合」と書く（黙って伏せない）
+    const srcs = [...new Set(list.filter((x) => x.source).map((x) => x.source))];
+    const dates = [...new Set(list.filter((x) => x.verifiedAt).map((x) => x.verifiedAt))].sort();
+    if (srcs.length) {
+      const links = srcs.map((u) => `<a href="${u}" rel="nofollow">公式ページ</a>`).join('・');
+      out.push(`  <p class="src">出典: ${links}（${dates.join('・')}に実読して確認）</p>`);
+    } else {
+      out.push('  <p class="src">出典: ★この行はまだ一次情報での再照合が済んでいません（表全体の確認日のみ）。</p>');
+    }
   }
   out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」があるのは10区分だけ</a>に書いています。</p>');
   out.push(END);
@@ -131,7 +144,7 @@ export function buildSections(rows) {
 //   直接実行された時だけ書き込む（import で記事が書き換わると、テストが副作用を持つ）。
 if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
   const html = readFileSync(ARTICLE, 'utf-8');
-  const section = buildSections(parseTables(html));
+  const section = buildSections(loadBanks());
 
   if (process.argv.includes('--dry')) {
     console.log(section);

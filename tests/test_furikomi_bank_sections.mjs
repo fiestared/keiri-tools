@@ -15,7 +15,7 @@
  */
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
-import { parseTables, baseName, bankId, ARTICLE } from '../tools/gen_bank_sections.mjs';
+import { loadBanks, baseName, bankId, ARTICLE } from '../tools/gen_bank_sections.mjs';
 
 const html = readFileSync(ARTICLE, 'utf-8');
 const strip = (s) => s.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').trim();
@@ -27,9 +27,11 @@ assert.ok(start >= 0 && end > start,
   '銀行別セクションが記事にありません。node tools/gen_bank_sections.mjs を実行してください');
 const section = html.slice(start, end);
 
-// --- 2. 表の全28区分が、銀行別セクションに同じ金額で現れること ---------------
-const rows = parseTables(html);
-assert.strictEqual(rows.length, 28, '比較表が28区分ではありません');
+// --- 2. 正本(fee_table.json)の全28区分が、銀行別セクションに同じ金額で現れること ---
+// ★2026-08-02訂正: 以前は記事の比較表をパースしていたが、正本は fee_table.json。
+//   JSON→記事は tests/test_fee_article.mjs が守っているので、こちらは JSON→銀行別 を守る。
+const rows = loadBanks();
+assert.strictEqual(rows.length, 28, 'fee_table.json が28区分ではありません');
 
 const banks = new Map();
 for (const r of rows) {
@@ -53,20 +55,34 @@ for (const [base, list] of banks) {
       .map((t) => (t.match(/<td[^>]*>([\s\S]*?)<\/td>/g) || []).map(strip))
       .find((c) => c[0] === r.name);
     assert.ok(tr, `「${r.name}」の行が ${base} のブロックにありません`);
-    assert.strictEqual(tr[1], r.under, `${r.name} の3万円未満が表(${r.under})と銀行別(${tr[1]})で食い違っています`);
-    assert.strictEqual(tr[2], r.over, `${r.name} の3万円以上が表(${r.over})と銀行別(${tr[2]})で食い違っています`);
+    assert.strictEqual(tr[1], r.under, `${r.name} の3万円未満が fee_table.json(${r.under})と銀行別(${tr[1]})で食い違っています`);
+    assert.strictEqual(tr[2], r.over, `${r.name} の3万円以上が fee_table.json(${r.over})と銀行別(${tr[2]})で食い違っています`);
     checked++;
   }
 }
 assert.strictEqual(checked, 28, `照合できたのは ${checked}/28 区分です`);
 
-// --- 3. 銀行別セクションに、表に無い金額が紛れていないこと -------------------
-// 「1.7倍」等の比率や年額は本文にもあるので、円の金額だけを見る。
+// --- 3. 銀行別セクションに、正本に無い金額が紛れていないこと -------------------
 const known = new Set(rows.flatMap((r) => [r.under, r.over]));
 for (const m of section.matchAll(/(\d{2,6})円/g)) {
   const yen = `${m[1]}円`;
   assert.ok(known.has(yen),
-    `銀行別セクションに、比較表のどこにも無い金額「${yen}」があります（手書きが混ざった疑い）`);
+    `銀行別セクションに、fee_table.json のどこにも無い金額「${yen}」があります（手書きが混ざった疑い）`);
+}
+
+// --- 3b. 出典と照合日が行ごとに出ていること -----------------------------------
+// ★この表の売りは「各行の公式ページを実読して確認した」こと。出典を落とすと売りが消える。
+const verified = rows.filter((r) => r.source);
+assert.ok(verified.length >= 20,
+  `fee_table.json で出典が付いている行が ${verified.length}/28 しかありません（ワーカーの照合作業が退行した疑い）`);
+for (const r of verified) {
+  assert.ok(section.includes(r.source),
+    `${r.name} の出典URL（${r.source}）が銀行別セクションに出ていません`);
+}
+const unverified = rows.filter((r) => !r.source);
+if (unverified.length) {
+  assert.ok(section.includes('まだ一次情報での再照合が済んでいません'),
+    `未照合の行が ${unverified.length} あるのに、そのことがページ上に書かれていません（黙って伏せない）`);
 }
 
 // --- 4. 目次から辿れること（孤児の見出しを作らない） -------------------------

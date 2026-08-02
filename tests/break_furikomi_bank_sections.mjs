@@ -20,6 +20,7 @@ import { join, dirname } from 'node:path';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ARTICLE = join(root, 'docs/column/furikomi-tesuryo-hikaku/index.html');
+const DATA = join(root, 'docs/assets/fee_table.json');
 const run = () => spawnSync(process.execPath, ['tests/test_furikomi_bank_sections.mjs'], { cwd: root, encoding: 'utf8' });
 
 let pass = 0, fail = 0;
@@ -29,6 +30,8 @@ const t = (name, ok, detail) => {
 };
 
 const original = readFileSync(ARTICLE, 'utf-8');
+const originalData = readFileSync(DATA, 'utf-8');
+const restore = () => { writeFileSync(ARTICLE, original); writeFileSync(DATA, originalData); };
 
 // ── ベースライン ────────────────────────────────────────────────────────────
 const base = run();
@@ -50,19 +53,48 @@ const withBreak = (label, mutate, expectInOutput) => {
         '赤にはなったが、何が食い違ったのか出力から分からない（診断にならない）');
     }
   } finally {
-    writeFileSync(ARTICLE, original);
+    restore();
   }
 };
 
-// ── 壊し1: 比較表の金額だけを改定する（銀行別が古いまま）──────────────────────
-// 三菱UFJ銀行（法人）の 3万円以上 660円 → 770円。表側だけ動かす。
-withBreak('壊し1: 表だけ料金改定すると赤になる', (s) => {
-  const i = s.indexOf('三菱UFJ銀行（法人・BizSTATION）');
-  const j = s.indexOf('</tr>', i);
-  return s.slice(0, i) + s.slice(i, j).replace('660円', '770円') + s.slice(j);
+/** 正本(fee_table.json)側を壊すケース。★JSONはパースして値を書き換える:
+ *  文字列 replace はインデントの想定違いで静かに空振りし、「壊したのに緑」＝
+ *  検査が弱いという誤った結論を出す（実際に踏んだ。インデントは6スペースだった）。 */
+const withDataBreak = (label, mutate, expectInOutput) => {
+  try {
+    const next = mutate(JSON.parse(originalData));
+    const nextText = JSON.stringify(next, null, 2);
+    t(`  （前提）壊し方が実際にデータを変えている: ${label}`,
+      nextText !== JSON.stringify(JSON.parse(originalData), null, 2),
+      '★壊せていない＝この後の判定は無意味');
+    writeFileSync(DATA, nextText);
+    const r = run();
+    t(label, r.status !== 0, '壊したのに緑のまま＝この検査は食い違いを捕まえられていない');
+    if (expectInOutput) {
+      const out = (r.stdout || '') + (r.stderr || '');
+      t(`  └ 落ちたときに理由を名指しする（${expectInOutput}）`, out.includes(expectInOutput),
+        '赤にはなったが、何が食い違ったのか出力から分からない');
+    }
+  } finally {
+    restore();
+  }
+};
+
+// ── 壊し1: 正本(fee_table.json)だけ料金改定する（銀行別セクションが古いまま）──────
+// ★2026-08-02: 正本を記事HTMLから fee_table.json に変えたので、壊す場所もJSON側にした。
+withDataBreak('壊し1: 正本のJSONだけ料金改定すると赤になる', (d) => {
+  const b = d.banks.find((x) => x.name.includes('BizSTATION'));
+  b.over30k = 770;
+  return d;
 }, '食い違って');
 
-// ── 壊し2: 銀行別セクションを手で直す（表が古いまま）────────────────────────
+// ── 壊し1b: 出典URLが正本から消える（＝この表の売りが消える）────────────────
+withDataBreak('壊し1b: 出典URLが銀行別に出ていないと赤になる', (d) => {
+  for (const b of d.banks) if (b.source && b.source.includes('bk.mufg.jp')) b.source = 'https://example.com/changed';
+  return d;
+}, '出典URL');
+
+// ── 壊し2: 銀行別セクションを手で直す（正本が古いまま）──────────────────────
 withBreak('壊し2: 銀行別セクションだけ手で直すと赤になる', (s) => {
   const i = s.indexOf('id="bank-mufg"');
   const j = s.indexOf('</table>', i);
@@ -88,7 +120,8 @@ withBreak('壊し5: 目次リンクを外すと赤になる', (s) =>
   '目次');
 
 // ── 後始末の確認: 記事が元通りであること ────────────────────────────────────
-t('壊しテストの後、記事が元のまま', readFileSync(ARTICLE, 'utf-8') === original,
+t('壊しテストの後、記事と正本JSONが元のまま',
+  readFileSync(ARTICLE, 'utf-8') === original && readFileSync(DATA, 'utf-8') === originalData,
   '★記事が書き換わったまま残っている。このまま push すると本番が壊れる');
 
 console.log(`\n${fail === 0 ? '✅' : '❌'} ${pass} passed, ${fail} failed`);
