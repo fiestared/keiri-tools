@@ -4304,12 +4304,26 @@ const bigsIn = (doc, id) => {
   return [...root.querySelectorAll(".big")].filter((el) => visibleEl(doc, el))
     .map((el) => el.textContent.replace(/\s+/g, " ").trim());
 };
-// 見出し値の正規化: 「¥239,610」と「239,610円」は同じ数なので**最初の数値トークン**で比べる
-// (本体の見出しは「¥2,105,900（〜2027-03-31・365日）」のように補足を同じ要素に含むことがあり、
-// 数字の全連結だと本体とembedの補足の差で偽赤になる)。数字の無い見出し(「扶養内」等)はそのまま
-const normVal = (t) => {
-  const m = t.match(/\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?/);
-  return m ? m[0] : t;
+// 見出し値の取り出し: 「¥239,610」と「239,610円」は同じ数なので数値トークンで比べる。
+// 数字の全連結にしないのは、本体の見出しが「¥2,105,900（〜2027-03-31・365日）」のように
+// **embedには無い補足**を同じ要素に含むことがあり、偽赤になるため。
+//
+// ★2026-08-03: 「最初の数値トークン」で取ると**飾りの数字を値だと思い込む**。
+//   `控除額（1年あたり・上限）¥315,000` の先頭トークンは**ラベルの「1」**で、
+//   embed の金額を ¥315,001 に壊しても "1"==="1" で**緑のまま**だった(実測)。
+//   → 値は**通貨記号で名指しする**(規則3)。¥ があれば¥の付いた数だけを、無ければ「N円」を、
+//     どちらも無い見出し(「10日」「18日」)だけ先頭トークンに落とす。
+//   1要素に複数の金額がある見出し(`手取り ¥14,371,778　（税金 ¥628,222）`)も**全部**返すので、
+//   2つ目の金額(税金)だけがずれる型も捕まる。
+const NUM = String.raw`\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?`;
+const valsOf = (t) => {
+  const pick = (re) => [...t.matchAll(re)].map((m) => m[1]);
+  const yen = pick(new RegExp(String.raw`[¥￥]\s*(${NUM})`, "g"));
+  if (yen.length) return yen;
+  const en = pick(new RegExp(String.raw`(${NUM})\s*円`, "g"));
+  if (en.length) return en;
+  const m = t.match(new RegExp(NUM));
+  return [m ? m[0] : t];   // 数字の無い見出し(「扶養内」等)はそのまま
 };
 
 const embedParityScene = (tool, cfg) => async () => {
@@ -4327,23 +4341,28 @@ const embedParityScene = (tool, cfg) => async () => {
     await waitFor(() => { const t = text(doc, resultId); return t && !/計算中|判定中|読み込み中/.test(t); },
       `${path} の結果`);
     const body = text(doc, resultId);
-    // keyRe 指定(表・カナ変換など .big の無いページ)はそれを、無ければ可視 .big の先頭を読む
-    let val, bigs = null;
+    // keyRe 指定(表・カナ変換など .big の無いページ)はそれを、無ければ可視 .big **全部**を読む。
+    // ★先頭の .big しか読まないと、2本目以降の見出しが丸ごと無検査になる
+    //   (iryohi/kabe/shakai-hoken/sozokuzei の4本が該当。実際に shakai-hoken の
+    //    「賞与の本人負担」を ¥189,041→¥189,042 に壊しても緑だった)。
+    let val, vals = null, bigs = null;
     if (cfg.keyRe) {
       const m = body.match(cfg.keyRe);
       val = m ? (cfg.keyRe.global ? m.join("|") : (m[1] ?? m[0])) : null;
+      vals = val == null ? null : [val];
     } else {
       bigs = bigsIn(doc, resultId);
-      val = bigs && bigs.length ? normVal(bigs[0]) : null;
+      vals = bigs && bigs.length ? bigs.flatMap(valsOf) : null;
+      val = vals && vals.length ? vals[0] : null;
     }
-    return { val, bigs, body: body.slice(0, 260) };
+    return { val, vals, bigs, body: body.slice(0, 260) };
   };
   const ops = cfg.ops || [];
   const main = await drive(`/docs/${tool}/`, [...ops, ...(cfg.mainOps || [])],
     cfg.mainResult || cfg.result || "result");
   const emb = await drive(`/docs/embed/${tool}/`, [...ops, ...(cfg.embedOps || [])],
     cfg.result || "result");
-  return { mainVal: main.val, embedVal: emb.val,
+  return { mainVal: main.val, embedVal: emb.val, mainVals: main.vals, embedVals: emb.vals,
            mainBigs: main.bigs, embedBigs: emb.bigs, mainBody: main.body, embedBody: emb.body };
 };
 
@@ -4364,9 +4383,8 @@ const EMBED_PARITY = {
   // ★賞与も入れる。賞与を入れないと**賞与ブロックが1行も描かれない**ので、本体だけ直して
   //   embed に古い実装が残った状態(2026-08-03: 健保の年度累計573万円上限がembedだけ効かず
   //   ¥114,409の過大)を、このパリティ検査は素通しした。年度累計も入れて上限の枝を通す。
-  //   ⚠ この検査が見ているのは**可視 .big の先頭**＝月額の見出しだけなので、賞与の額そのものは
-  //     まだ突き合わせていない(下の bigs は取得済みだが expect が bigs[0] しか使わない)。
-  //     ここで守れるのは「賞与の枝を通しても embed が落ちない」ことまで。
+  //   ★2026-08-03: 賞与の見出し(2本目の .big)も突き合わせるようになった(valsOf/vals)。
+  //     この入力は健保の年度累計573万円上限の枝を通るので、上限の適用差もここで赤くなる。
   "shakai-hoken": { ops: [["set", "monthly", 300000], ["set", "age", 30],
                           ["set", "bonus", 3000000], ["set", "yearpaid", 5000000]] },
   "gensen-choshu": { button: "calcK", result: "resultK",

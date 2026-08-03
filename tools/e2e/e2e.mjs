@@ -1666,9 +1666,22 @@ const EMBED_TOOLS = [
   "senpou-futan", "shakai-hoken", "shiharai-site", "shobyo", "shohizei", "shokibo-kyosai",
   "shussan", "sozokuzei", "taishokukin", "tedori", "yukyu", "zangyodai", "zengin-kana", "zoyozei",
 ];
+// ★2026-08-03: 以前は「先頭の見出し1つ」しか比べておらず、次の3種を素通ししていた(全て実測):
+//   ① 2本目以降の .big が丸ごと無検査  … shakai-hoken の賞与を ¥189,041→¥189,042 にしても緑
+//   ② 同じ要素の中の2つ目の金額が無検査 … taishokukin の（税金 ¥628,222）を +1 しても緑
+//   ③ 飾りの数字を値と取り違えて空回り  … jutaku は「1年あたり」の"1"を比べていたので、
+//                                        ¥315,000→¥315,001 にしても緑("1"==="1")
+// → 可視 .big **全部**の、¥で名指しした金額**全部**を順序どおり突き合わせる(harness の valsOf)。
+//   個数の不一致も赤にする(embed が見出しを1本落とす = §46 全損の型そのもの)。
 for (const t of EMBED_TOOLS)
-  SCENES.push({ name: `embed_${t}`, expect: (s) =>
-    s.mainVal != null && s.mainVal !== "" && s.mainVal !== "0" && s.mainVal === s.embedVal });
+  SCENES.push({ name: `embed_${t}`, expect: (s) => {
+    // 先頭値の縮退ガードは従来どおり(全損時に 0 や空で緑にしない)
+    if (s.mainVal == null || s.mainVal === "" || s.mainVal === "0") return false;
+    const a = s.mainVals, b = s.embedVals;
+    // 値が1つも取れていないなら、それ自体を赤にする。**「0件だから相違なし」で満点を出さない**
+    if (!Array.isArray(a) || !Array.isArray(b) || a.length === 0) return false;
+    return a.length === b.length && a.every((v, i) => v === b[i]);
+  } });
 
 const MIME = { ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
                ".json": "application/json; charset=utf-8", ".css": "text/css; charset=utf-8" };
