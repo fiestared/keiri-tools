@@ -660,7 +660,7 @@ const SCENES = [
   { name: "hikazei_setai_tsukekae", expect: (s) =>
       s.hikazei && s.tsukekae && s.rows.length === 4 && s.visibleRows === 4 &&
       s.rows[0].limit === 1010000 && s.rows[1].limit === 1010000 && !s.failed },
-  // 参照データ配信不可 → 「非課税世帯です」と答えずに断る（2ファイルとも別々に確かめる）。
+  // 参照データ配信不可 → 「非課税世帯にあたります」と答えずに断る（2ファイルとも別々に確かめる）。
   { name: "hikazei_setai_nodata", data404: "hikazei_setai_r08.json",
     expect: (s) => s.failed && !s.hikazei && s.rows.length === 0 },
   { name: "hikazei_setai_nodata2", data404: "juminzei_r08.json",

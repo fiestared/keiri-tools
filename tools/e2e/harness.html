@@ -2219,7 +2219,7 @@ const hikazeiScene = (o) => async () => {
   click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
 
   await waitFor(
-    () => /非課税世帯です|非課税世帯ではありません|読み込めませんでした|判定できませんでした/
+    () => /非課税世帯にあたります|非課税世帯にあたりません|読み込めませんでした|判定できませんでした/
       .test(text(doc, "result")),
     "住民税非課税世帯の判定結果",
   );
@@ -2242,10 +2242,10 @@ const hikazeiScene = (o) => async () => {
     // 既定で見えている入力行の数（世帯人数の連動が死ぬと全行見えたまま／全行消えたままになる）
     visibleRows: [1, 2, 3, 4, 5, 6].filter((i) =>
       doc.getElementById(`m${i}`).style.display !== "none").length,
-    hikazei: /非課税世帯です/.test(verdict),
-    kazei: /非課税世帯ではありません/.test(verdict),
+    hikazei: /非課税世帯にあたります/.test(verdict),
+    kazei: /非課税世帯にあたりません/.test(verdict),
     rows,
-    tsukekae: body.includes("扶養の付け方を変えることで非課税世帯になります"),
+    tsukekae: body.includes("扶養の付け方の仮定を変えると"),
     j295: body.includes("障害者・未成年者・寡婦・ひとり親で合計所得135万円以下"),
     border65: yen((body.match(/65歳以上は(¥[\d,]+)まで/) || [])[1]),
     borderU65: yen((body.match(/65歳未満は(¥[\d,]+)まで/) || [])[1]),
@@ -2325,7 +2325,7 @@ SCENES.hikazei_setai_tsukekae = hikazeiScene({ ninzu: 4, members: [
   { zokugara: "other", age: 48, nenkin: 0, kyuyo: 0, sonota: 600000 },
   { zokugara: "child", age: 10, nenkin: 0, kyuyo: 0 },
   { zokugara: "child", age: 8, nenkin: 0, kyuyo: 0 }] });
-// 参照データ配信不可 → 「非課税世帯です」と答えずに断る（fail closed）。
+// 参照データ配信不可 → 「非課税世帯にあたります」と答えずに断る（fail closed）。
 SCENES.hikazei_setai_nodata = hikazeiScene({});
 SCENES.hikazei_setai_nodata2 = hikazeiScene({});
 
