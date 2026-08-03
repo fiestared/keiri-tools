@@ -6,7 +6,7 @@
   - Chromeウェブストアには 1280x800 のスクリーンショットが要る。しかし**実注文履歴の
     スクショは使えない**(Masahiroの購入履歴=個人データを公開することになる)。
   - これまでのテストは node 上の単体テストだけで、content.js(パネルUI・巡回ループ・
-    領収書保存)を**ブラウザで動かしたことが一度も無かった**。license.js が manifest から
+    領収書保存)を**ブラウザで動かしたことが一度も無かった**。lib の1本が manifest から
     漏れていた事故(v0.2で発見)はこの層が無かったせいで見逃されていた。
 
   何をしているか:
@@ -15,10 +15,10 @@
   - 実際にボタンを押して、パネル・巡回・領収書保存・CSVを**本物の経路**で動かす
   → 出てくる画面がそのままスクショになり、同時に結合テストになっている。
 
-  scene=free      無料版: このページをスキャンした状態
+  scene=free      このページをスキャンした状態
   scene=csv       生成された索引簿CSVの中身(実出力をテーブル表示)
-  scene=pro       Pro版: 全ページ巡回(4ページ・重複で自動停止)
-  scene=receipts  Pro版: 領収書の一括保存(ファイル名規約つき)
+  scene=pro       全ページ巡回(4ページ・重複で自動停止)
+  scene=receipts  領収書の一括保存(ファイル名規約つき)
 -->
 <html lang="ja">
 <head>
@@ -197,18 +197,17 @@ const scene = new URLSearchParams(location.search).get("scene") || "free";
 const CAPTIONS = {
   free:     ["注文履歴を開いて、1クリック。", "その場で索引簿ができます。キャンセル注文は自動で除外、金額が取れない注文は領収書ページから自動補完。"],
   csv:      ["電子帳簿保存法の検索要件を満たすCSV。", "取引年月日・取引先・取引金額の3要素を1行1取引で出力。Excelでそのまま開けます（UTF-8 BOM付き）。"],
-  pro:      ["Pro：全ページを自動で巡回。", "1年分の注文をまとめて索引簿に。最後のページまで来たら自動で停止します。"],
-  receipts: ["Pro：領収書ページを一括保存。", "「日付_取引先_金額_注文番号」の電帳法ファイル名規約で保存。索引簿CSVの行と1対1で対応します。"],
+  pro:      ["全ページを自動で巡回。", "1年分の注文をまとめて索引簿に。最後のページまで来たら自動で停止します。"],
+  receipts: ["領収書ページを一括保存。", "「日付_取引先_金額_注文番号」のファイル名規約で保存。索引簿CSVの行と1対1で対応します。"],
 };
 document.querySelector("#cap h1").textContent = CAPTIONS[scene][0];
 document.querySelector("#cap p").textContent  = CAPTIONS[scene][1];
-if (scene === "pro" || scene === "receipts") store.license = { pro: true, source: "dev" };
 </script>
 
 <!-- ここから下は拡張の実コード(1文字も変えない) -->
 <script src="../../extension/amazon-receipt/src/lib/scrape.js"></script>
 <script src="../../extension/amazon-receipt/src/lib/csv.js"></script>
-<script src="../../extension/amazon-receipt/src/lib/license.js"></script>
+
 <script src="../../extension/amazon-receipt/src/content.js"></script>
 
 <script>

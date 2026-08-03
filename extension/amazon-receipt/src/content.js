@@ -20,7 +20,6 @@
     return;
   }
   let selectors = resp.data;
-  let license = await ktGetLicense();
   let lastResult = null;
   let busy = false;
 
@@ -39,7 +38,6 @@
   panel.innerHTML = `
     <div style="display:flex;align-items:center;gap:7px;margin-bottom:3px">
       <div style="font-weight:700;font-size:15px">領収書の一覧表メーカー</div>
-      <span id="kt-plan" style="font-size:11px;color:#6b7280"></span>
       <button id="kt-min" title="小さくする" style="margin-left:auto;cursor:pointer;border:0;background:none;color:#9ca3af;font-size:16px;line-height:1;padding:2px 4px">−</button>
     </div>
     <div id="kt-body">
@@ -49,7 +47,7 @@
 
       <button id="kt-go" style="width:100%;cursor:pointer;padding:12px;border:0;
         background:#1f6f5c;color:#fff;border-radius:9px;font-size:15px;font-weight:700">
-        一覧表をつくる
+        一覧表をつくる（全ページ分）
       </button>
 
       <div id="kt-progress" style="display:none;margin-top:10px;color:#374151;font-size:13px"></div>
@@ -66,18 +64,15 @@
 
       <div id="kt-done" style="display:none;margin-top:12px"></div>
 
-      <!-- Proの目玉機能。ここに置く。
-           以前は <details>「詳しい操作」の中に隠していたため、**¥1,480払った人が、買った機能の
-           ボタンを見つけられなかった**(2026-07-14にMasahiroが実際に踏んだ)。
-           有料機能を折りたたみの中に入れてはいけない。 -->
-      <div id="kt-proacts" style="display:none;margin-top:9px">
+      <!-- 目玉機能。ここに置く。以前は <details>「詳しい操作」の中に隠していたため、
+           **利用者がこのボタンを見つけられなかった**(2026-07-14にMasahiroが実際に踏んだ)。
+           主要機能を折りたたみの中に入れてはいけない。 -->
+      <div id="kt-proacts" style="margin-top:9px">
         <button id="kt-receipts" style="width:100%;cursor:pointer;padding:9px;border:1px solid #1f6f5c;
           background:#fff;color:#1f6f5c;border-radius:8px;font-size:13.5px;font-weight:700">
           領収書もまとめて保存する
         </button>
       </div>
-
-      <div id="kt-pro" style="margin-top:10px"></div>
 
       <details id="kt-adv" style="margin-top:12px">
         <summary style="cursor:pointer;color:#6b7280;font-size:12px;outline:none">詳しい操作</summary>
@@ -94,12 +89,6 @@
   const $ = id => panel.querySelector(id);
   const yen = n => "¥" + Math.round(n).toLocaleString("ja-JP");
 
-  $("#kt-plan").textContent = license.pro ? "Pro" : "";
-  if (license.pro) {
-    // 買った機能が主ボタンで手に入ることを、文言で明示する
-    $("#kt-go").textContent = "一覧表をつくる（全ページ分）";
-    $("#kt-proacts").style.display = "block";
-  }
   $("#kt-ver").textContent = `読み取りルール ${resp.version || "?"}（${resp.source}）`;
 
   // 最小化（じゃまなときに畳める）
@@ -130,65 +119,6 @@
     busy = v;
     $("#kt-go").disabled = v;
     $("#kt-go").style.opacity = v ? ".6" : "1";
-  }
-
-  /** Pro機能のガード。
-   *  **押した時点でライセンスを取り直す。**
-   *  以前はパネル生成時の1回しか見ていなかったため、**Amazonのページを開いたまま購入した人は
-   *  そのページがずっと「無料版」のまま**だった(再読込しないとProにならない)。
-   *  買った直後に使えないのは、商品として致命的。 */
-  async function refreshLicense() {
-    try {
-      const fresh = await ktGetLicense();
-      if (fresh && fresh.pro && !license.pro) {
-        license = fresh;
-        $("#kt-plan").textContent = "Pro";
-        $("#kt-go").textContent = "一覧表をつくる（全ページ分）";
-        $("#kt-proacts").style.display = "block";
-        $("#kt-pro").innerHTML = "";
-      }
-    } catch (e) { console.warn("[電帳法索引簿] ライセンスの再確認に失敗", e); }
-    return license.pro;
-  }
-
-  function requirePro(featureName) {
-    if (license.pro) return true;
-    $("#kt-done").style.display = "block";
-    $("#kt-done").innerHTML = `
-      <div style="background:#fff7e6;border:1px solid #e6c47a;border-radius:8px;padding:10px;font-size:12.5px">
-        <b>「${featureName}」は Pro版の機能です。</b><br>
-        無料版では、いま開いているページの注文（10件）まで一覧表にできます。
-      </div>`;
-    renderProCta(lastResult ? lastResult.orders : []);
-    return false;
-  }
-
-  /**
-   * 「このページだけでは足りない人」にだけPro版を案内する（押し売りしない）。
-   * 次のページがある = 続きの注文がある = 1年分を作りたい人。
-   */
-  function renderProCta(orders) {
-    const box = $("#kt-pro");
-    if (!box) return;
-    if (license.pro) { box.innerHTML = ""; return; }
-    const list = orders || [];
-    const nextUrl = ktFindNextPageUrl(document, location.href,
-      (selectors.orderHistory && selectors.orderHistory.pagination) || {});
-    const hasMore = !!nextUrl || list.length >= 10;
-    if (!hasMore) { box.innerHTML = ""; return; }
-    box.innerHTML = `
-      <div style="background:#f6faf9;border:1px solid #bcd9d1;border-radius:9px;padding:11px">
-        <div style="font-weight:700;font-size:13px;margin-bottom:4px">まだ続きの注文があります</div>
-        <div style="font-size:12.5px;color:#4b5563;line-height:1.7">
-          Pro版にすると、<b>次のページ以降も自動でめくって</b>、1年分をまとめて1つの一覧表にできます。
-          <b>領収書のファイルもまとめて保存</b>できます。
-        </div>
-        <button id="kt-buy" style="margin-top:9px;width:100%;cursor:pointer;padding:9px;
-          border:0;background:#b45309;color:#fff;border-radius:7px;font-weight:700;font-size:13.5px">
-          Pro版にする（¥1,480・1回きりの支払い）
-        </button>
-      </div>`;
-    $("#kt-buy").addEventListener("click", ktOpenPayment);
   }
 
   /** 結果を「ふつうの日本語」で見せる */
@@ -332,13 +262,34 @@
 
       clearProgress();
       renderDone(orders, name, pages);
-      renderProCta(orders);
     } catch (e) {
       renderError(e);
     } finally { setBusy(false); }
   }
 
-  /** ★ 主役のボタン(無料版 / 「この画面に出ている分だけ」): 表示中のページだけ。 */
+  /** このページの注文を読む。★自己修復つき。
+   *  0件のときは Amazon の画面変更でセレクタが全滅した可能性がある。24時間キャッシュを飛ばして
+   *  最新のセレクタ定義を取り直し、**版が変わっていれば**1回だけ再読み取りする。
+   *  = 我々が selectors.json を直して push すれば、この利用者は最大24時間待たずに即回復する
+   *  (定義が同じなら再読み取りしても無駄なので版で判定。取得失敗時は元の結果のまま続行)。
+   *
+   *  **1ページ目だけの読み取りにも、全ページ巡回にも同じものが要る**。以前は単ページ側にしか
+   *  無く、主ボタン(巡回)からは自己修復が効かなかった。 */
+  async function parseOrdersHere() {
+    let orders = ktParseOrderHistory(document, selectors.orderHistory).orders;
+    if (orders.length === 0) {
+      try {
+        const fresh = await chrome.runtime.sendMessage({ type: "getSelectors", forceRefresh: true });
+        if (fresh && fresh.data && fresh.data.version !== (selectors && selectors.version)) {
+          selectors = fresh.data;
+          orders = ktParseOrderHistory(document, selectors.orderHistory).orders;
+        }
+      } catch (e) { /* オフライン等: 元の結果のまま続行する */ }
+    }
+    return orders;
+  }
+
+  /** 「この画面に出ている分だけ」: 表示中のページだけ。巡回の失敗時の受け皿でもある。 */
   async function build() {
     if (busy) return;
     setBusy(true);
@@ -346,20 +297,7 @@
     try {
       progress("この画面の注文を読み取っています…");
       await sleep(150);
-      let orders = ktParseOrderHistory(document, selectors.orderHistory).orders;
-      // ★自己修復: 0件のときは Amazon の画面変更でセレクタが全滅した可能性がある。
-      //   24時間キャッシュを飛ばして最新のセレクタ定義を取り直し、**版が変わっていれば**1回だけ再読み取りする。
-      //   = 我々が selectors.json を直して push すれば、この利用者は最大24時間待たずに即回復する
-      //   (定義が同じなら再読み取りしても無駄なので版で判定。取得失敗時は元の結果のまま続行)。
-      if (orders.length === 0) {
-        try {
-          const fresh = await chrome.runtime.sendMessage({ type: "getSelectors", forceRefresh: true });
-          if (fresh && fresh.data && fresh.data.version !== (selectors && selectors.version)) {
-            selectors = fresh.data;
-            orders = ktParseOrderHistory(document, selectors.orderHistory).orders;
-          }
-        } catch (e) { /* オフライン等: 元の結果のまま続行する */ }
-      }
+      const orders = await parseOrdersHere();
       await finishUp(orders, 1);          // finishUp が setBusy(false) まで見る
     } catch (e) {
       renderError(e);
@@ -367,7 +305,7 @@
     }
   }
 
-  // ══ Pro: 全ページ巡回 ══════════════════════════════════════════
+  // ══ 全ページ巡回 ══════════════════════════════════════════════
   //
   // **裏からfetchする方式は捨てた**(v0.3まで)。Amazonに通用しない — 実測(2026-07-14):
   // 3ページ目のURLを fetch すると10件返るが**全部が既出**(＝別ページの中身が返っている)。
@@ -418,9 +356,13 @@
     const pag = (selectors.orderHistory && selectors.orderHistory.pagination) || {};
     let r;
     try {
-      const parsed = ktParseOrderHistory(document, selectors.orderHistory);
+      // 1ページ目が0件なら、セレクタ全滅を疑って定義を取り直す(parseOrdersHere が面倒を見る)。
+      // 2ページ目以降の0件は「もう続きが無い」の正常な合図なので、取り直さない。
+      const orders = (state.pages || 0) === 0
+        ? await parseOrdersHere()
+        : ktParseOrderHistory(document, selectors.orderHistory).orders;
       const next = ktFindNextPageUrl(document, location.href, pag);
-      r = ktCrawlAdvance(state, { url: location.href, orders: parsed.orders, nextUrl: next },
+      r = ktCrawlAdvance(state, { url: location.href, orders, nextUrl: next },
                          { now: Date.now() });
       console.log("[電帳法索引簿] 巡回", { page: r.state.pages, 新規: r.added,
         累計: r.state.orders.length, 次: r.action, 理由: r.reason, url: r.nextUrl });
@@ -474,10 +416,9 @@
     await finishUp(orders, (st && st.pages) || 1);
   });
 
-  $("#kt-go").addEventListener("click", async () => {
+  $("#kt-go").addEventListener("click", () => {
     if (busy) return;
-    await refreshLicense();          // 買った直後でも、再読込なしでProになる
-    if (license.pro) startCrawl(); else build();
+    startCrawl();
   });
   $("#kt-one").addEventListener("click", () => build());
 
@@ -491,14 +432,13 @@
     if (ktCrawlIsStale(saved, Date.now())) { await clearCrawl(); return; }
     const mine = myRunId();
     if (mine !== null && !ktCrawlIsOwnRun(saved, mine)) return;  // 別タブの巡回。触らない
-    if (!license.pro) { await clearCrawl(); return; }            // Proでない人は巡回しない
     await runCrawlStep(saved);
   })();
 
-  // ── Pro: 領収書をまとめて保存 ────────────────────────────────
+  // ── 領収書をまとめて保存 ──────────────────────────────────────
   // AmazonはPDFの領収書を配信していない。保存できるのは領収書ページのHTML
   $("#kt-receipts").addEventListener("click", async () => {
-    if (busy || !requirePro("領収書をまとめて保存する")) return;
+    if (busy) return;
     if (!lastResult) {
       $("#kt-done").style.display = "block";
       $("#kt-done").innerHTML = `<div style="font-size:12.5px;color:#b45309">
@@ -550,13 +490,6 @@
     try {
       const fresh = await chrome.runtime.sendMessage({ type: "getSelectors", forceRefresh: true });
       if (fresh && fresh.data) selectors = fresh.data;
-      license = await ktGetLicense();
-      $("#kt-plan").textContent = license.pro ? "Pro" : "";
-      if (license.pro) {
-        // 買った機能が主ボタンで手に入ることを、文言で明示する
-        $("#kt-go").textContent = "一覧表をつくる（全ページ分）";
-        $("#kt-proacts").style.display = "block";
-      }
       $("#kt-ver").textContent = `読み取りルール ${fresh.version || "?"}（${fresh.source}）`;
     } catch (e) {
       $("#kt-ver").textContent = "更新できませんでした。時間をおいてもう一度お試しください";

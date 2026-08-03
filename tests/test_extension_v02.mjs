@@ -10,13 +10,12 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const extDir = join(root, "extension/amazon-receipt");
 
 // background.js は読み込み時に chrome.* を触るので最小スタブを与える。
-// importScripts は MV3 service worker のグローバル(Nodeには無い)。ExtPay を差し替えるのではなく、
-// 実際のworkerと同じく「同じグローバルへ読み込む」形で再現する — スタブで置き換えてしまうと、
-// 決済層が壊れていてもこのテストは緑のままになる。
+// importScripts は MV3 service worker のグローバル(Nodeには無い)。2026-08-03 に決済層(ExtPay)を
+// 削除したので現在 background.js は importScripts を呼ばないが、**呼んだら気づけるように**
+// スタブは残す(黙って外部スクリプトが復活しないための番人)。
 const sandbox = {
   TextEncoder, btoa, atob, URL,
   console,
-  // ExtPay同梱のbrowser-polyfillが読み込み時に runtime.id を見る
   chrome: {
     runtime: {
       id: "test-extension-id",
@@ -28,9 +27,11 @@ const sandbox = {
   fetch: async () => { throw new Error("fetch: テスト中にネットワークへ出ようとした"); },
 };
 vm.createContext(sandbox);
-sandbox.self = sandbox; // service worker のグローバル別名(ExtPayが参照する)
+sandbox.self = sandbox; // service worker のグローバル別名
+const imported = [];
 sandbox.importScripts = (...paths) => {
   for (const p of paths) {
+    imported.push(p);
     // background.js からの相対パス(実行時のworkerと同じ解決)
     const f = join(extDir, "src", p);
     vm.runInContext(readFileSync(f, "utf-8"), sandbox, { filename: p });
@@ -40,10 +41,20 @@ for (const f of ["src/lib/scrape.js", "src/lib/csv.js", "src/background.js"]) {
   vm.runInContext(readFileSync(join(extDir, f), "utf-8"), sandbox, { filename: f });
 }
 
-// importScripts が実際にExtPayを読み込めたことを確認する(空実装で通り抜けていないか)。
-// ここが緑でないと、以下の全テストが「決済層ごと消えた別物」を見ていることになる。
-if (typeof sandbox.ExtPay !== "function") {
-  console.error("FAIL importScripts が ExtPay を読み込めていない(決済層が未検証のまま)");
+// background.js が本当に評価されたことを確認する(空のサンドボックスを見て以下が全部緑、を防ぐ)。
+if (typeof sandbox.ktSafeDownloadPath !== "function") {
+  console.error("FAIL background.js が読み込めていない(以下のテストが対象を見ていない)");
+  process.exit(1);
+}
+// 決済層の撤去(2026-08-03)を守る番人。Pro版は廃止し全機能を無料にしたので、
+// ExtPay も extensionpay.com への権限も戻ってきてはいけない。
+if (typeof sandbox.ExtPay !== "undefined" || imported.length) {
+  console.error(`FAIL 決済層(ExtPay)が復活している: importScripts=${JSON.stringify(imported)}`);
+  process.exit(1);
+}
+const mf = JSON.parse(readFileSync(join(extDir, "manifest.json"), "utf-8"));
+if (JSON.stringify(mf).includes("extensionpay")) {
+  console.error("FAIL manifest.json に extensionpay の参照が残っている");
   process.exit(1);
 }
 const selectors = JSON.parse(readFileSync(join(extDir, "selectors.default.json"), "utf-8"));

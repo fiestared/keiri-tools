@@ -22,15 +22,12 @@ trap 'rm -rf "$STAGE"' EXIT
 mkdir -p "$STAGE/src/lib" "$STAGE/icons"
 cp "$SRC/manifest.json" "$SRC/selectors.default.json" "$STAGE/"
 cp "$SRC/src/background.js" "$SRC/src/content.js" "$STAGE/src/"
-# ExtPay.js を忘れないこと: background.js が importScripts で読み込むので、
-# 入れ忘れると**service workerが起動時に落ちて拡張が丸ごと死ぬ**(セレクタ取得・ライセンス・
-# ダウンロードが全滅する)。2026-07-14までZIPから漏れていた(下の検証が捕まえた)
-cp "$SRC/src/lib/scrape.js" "$SRC/src/lib/crawl.js" "$SRC/src/lib/csv.js" \
-   "$SRC/src/lib/license.js" "$SRC/src/lib/ExtPay.js" "$STAGE/src/lib/"
+# 2026-08-03: 有料版の廃止で license.js / ExtPay.js は削除した(同梱しない)。
+cp "$SRC/src/lib/scrape.js" "$SRC/src/lib/crawl.js" "$SRC/src/lib/csv.js" "$STAGE/src/lib/"
 cp "$SRC/icons/icon16.png" "$SRC/icons/icon48.png" "$SRC/icons/icon128.png" "$STAGE/icons/"
 
 # ── 検証: manifestが参照するファイルがZIPに全部入っているか ──────────────
-# (v0.2で license.js がmanifestから漏れてPro境界が丸ごと死んでいた事故があった。
+# (v0.2で lib の1本がmanifestから漏れて機能が丸ごと死んでいた事故があった。
 #  逆向き=「manifestに書いてあるのにZIPに無い」も同じくらい静かに壊れるので機械で見る)
 node - "$STAGE" <<'JS'
 const fs = require("fs"), path = require("path");

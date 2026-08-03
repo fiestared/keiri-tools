@@ -338,7 +338,7 @@ check("runIdの無い状態(旧形式)は自分のものとして扱う",
 // 配線は content.js にあり、機械の目が一度も通っていなかった。
 // ここでは content.js の実コードを jsdom に読み込み、**location.href への代入を捕まえて
 // 次のページを読み込み直す** = ブラウザのページ移動そのものを再現する。
-const LIBS = ["src/lib/scrape.js", "src/lib/crawl.js", "src/lib/csv.js", "src/lib/license.js"];
+const LIBS = ["src/lib/scrape.js", "src/lib/crawl.js", "src/lib/csv.js"];
 const CONTENT = readFileSync(EXT + "src/content.js", "utf8");
 
 const waitFor = (fn, ms = 5000) => new Promise((ok, ng) => {
@@ -352,7 +352,7 @@ const waitFor = (fn, ms = 5000) => new Promise((ok, ng) => {
   })();
 });
 
-async function driveContent({ serve, startUrl = pageUrl(0), pro = true, preset = null,
+async function driveContent({ serve, startUrl = pageUrl(0), preset = null,
                               session = {}, quiet = false, abortOnPage = 0, maxLoads = 10,
                               refreshSelectors = null }) {
   const storage = {};        // chrome.storage.local(ページ移動をまたいで残る)
@@ -395,7 +395,6 @@ async function driveContent({ serve, startUrl = pageUrl(0), pro = true, preset =
               }
               return { source: "test", data: selectors, version: selectors.version };
             }
-            if (msg.type === "getLicense") return { pro, email: null };
             return null;
           },
         },
@@ -456,10 +455,17 @@ const csvRows = csv => csv.text.replace(/^﻿/, "").trim().split("\r\n").slice(1
     Object.keys(r.storage).filter(k => k === "kt_crawl"), []);
 }
 {
-  // 無料版: **巡回しない**(買っていない機能を動かさない)。表示中の10件だけ
-  const r = await driveContent({ serve: makeSite({ pageCount: 3 }), pro: false });
-  check("[content.js] 無料版はページを移動しない",
-    [r.navigations.length, csvRows(r.csv).length], [0, 10]);
+  // 2026-08-03: Pro版を廃止し全機能を無料にした。**主ボタンは誰でも全ページ巡回する**。
+  // 課金ゲートが黙って戻ってこないよう、ソースを名指しで守る(文言だけで消えない錠前)。
+  const src = readFileSync(EXT + "src/content.js", "utf8");
+  const gate = ["license", "requirePro", "ExtPay", "extensionpay", "1480", "Pro版"]
+    .filter(w => src.includes(w));
+  check("[content.js] 課金ゲートが復活していない", gate, []);
+}
+{
+  // 「この画面に出ている分だけ」は残っている(巡回が転んだときの受け皿)
+  const src = readFileSync(EXT + "src/content.js", "utf8");
+  check("[content.js] 単ページ取得の逃げ道が残っている", src.includes("kt-one"), true);
 }
 
 // ══ 11. Amazonの画面変更(セレクタ全滅)で黙って死なない ═══════════════
@@ -470,7 +476,7 @@ const csvRows = csv => csv.text.replace(/^﻿/, "").trim().split("\r\n").slice(1
 {
   // (a) 0件のとき: 報告への導線を出し、最新のセレクタ定義を取り直そうとする
   const serveEmpty = () => "<html><body><div id='ordersContainer'></div></body></html>";
-  const r = await driveContent({ serve: serveEmpty, pro: false });
+  const r = await driveContent({ serve: serveEmpty });
   check("[content.js] 0件でも黙らず「画面仕様が変わった可能性」と報告先を出す",
     /変わった可能性/.test(r.done) && /お知らせ/.test(r.done), true);
   check("[content.js] 0件のときは最新のセレクタ定義を取り直す(即回復のため)",
@@ -489,7 +495,7 @@ const csvRows = csv => csv.text.replace(/^﻿/, "").trim().split("\r\n").slice(1
   // 前提の確認: 既定のセレクタ**だけ**では0件になる(=壊し方が本物である)
   const parsedByDefault = ctx.ktParseOrderHistory(new JSDOM(driftPage()).window.document, HIST).orders;
   check("[content.js] 前提: 既定セレクタでは新レイアウトを読めない(0件)", parsedByDefault.length, 0);
-  const r = await driveContent({ serve: driftPage, pro: false, refreshSelectors: refreshSel });
+  const r = await driveContent({ serve: driftPage, refreshSelectors: refreshSel });
   check("[content.js] 定義を取り直して新レイアウトを読み、10件を救う",
     [r.selectorRefreshes >= 1, csvRows(r.csv).length], [true, 10]);
 }
@@ -513,11 +519,11 @@ const csvRows = csv => csv.text.replace(/^﻿/, "").trim().split("\r\n").slice(1
   check("[content.js] 古い状態は捨てられる", "kt_crawl" in r.storage, false);
 }
 {
-  // 無料版: 巡回中の状態が残っていても**再開しない**(買っていない機能は動かさない)
+  // 逆側の錠前: 新しい・自分の巡回状態なら**ちゃんと再開する**。
+  // (上の「動かない」検査だけだと、常に何もしない実装でも全部緑になってしまう)
   const st = ctx.ktCrawlStart({ now: Date.now(), maxPages: 30, runId: "" });
-  const r = await driveContent({ serve: makeSite({ pageCount: 3 }), preset: st, pro: false, quiet: true });
-  check("[content.js] 無料版は巡回中の状態があっても再開しない", r.navigations, []);
-  check("[content.js] 無料版では巡回の状態を残さない", "kt_crawl" in r.storage, false);
+  const r = await driveContent({ serve: makeSite({ pageCount: 3 }), preset: st });
+  check("[content.js] 中断した巡回は再開してページを移動する", r.navigations.length > 0, true);
 }
 {
   // 別のタブで注文履歴を開いただけ(sessionStorageに印が無い) → そのタブは動かない。
