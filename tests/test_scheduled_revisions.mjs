@@ -33,31 +33,48 @@ const today = todayJst();
 const planned = D._meta?.scheduled_revisions || [];
 let due = 0;
 for (const r of planned) {
-  for (const k of ['bank', 'effective_date', 'current', 'after', 'source']) {
+  // ★`fields` は必須。改定が「どの料金欄に効くか」をデータ側に言わせる。
+  //   これが無いと欄を1つ決め打ちで見るしかなく、**見ていない欄が黙って古いまま残る**
+  //   （実際 GMOあおぞら（法人）は under30k/over30k とも130円の一律で、over30k だけ見る検査は
+  //    「over30k だけ100に直して under30k は130のまま」を緑で通した。2026-08-03 に実測で確認）。
+  for (const k of ['bank', 'effective_date', 'current', 'after', 'source', 'fields']) {
     assert.ok(r[k] !== undefined, `scheduled_revisions に ${k} がありません: ${JSON.stringify(r)}`);
   }
   assert.ok(/^\d{4}-\d{2}-\d{2}$/.test(r.effective_date),
     `effective_date の形式が YYYY-MM-DD ではありません: ${r.effective_date}`);
+  assert.ok(Array.isArray(r.fields) && r.fields.length > 0,
+    `${r.bank} の fields は「改定が効く料金欄」の配列にしてください（例 ["under30k","over30k"]）`);
 
   const bank = D.banks.find((b) => b.name === r.bank);
   assert.ok(bank, `scheduled_revisions の「${r.bank}」が banks に見つかりません（名前の変更漏れ）`);
 
+  // 欄名の打ち間違いを落とす（undefined どうしの比較で素通しさせない）
+  for (const f of r.fields) {
+    assert.ok(typeof bank[f] === 'number',
+      `${r.bank} に料金欄「${f}」がありません（fields の綴りを確認してください）`);
+  }
+
   if (r.effective_date <= today) {
     due++;
-    // ★施行日が来た。表が新しい額になっていなければ落とす。
-    assert.strictEqual(bank.over30k, r.after,
-      `★改定日が過ぎています（${r.effective_date}・本日${today}）。\n` +
-      `  ${r.bank} は ${r.current}円 → ${r.after}円 のはずですが、表は ${bank.over30k}円 のままです。\n` +
-      `  出典を実読して docs/assets/fee_table.json を更新し、\n` +
-      `  反映したら scheduled_revisions から該当行を消してください。\n` +
-      `  出典: ${r.source}`);
+    // ★施行日が来た。**fields の全欄**が新しい額になっていなければ落とす。
+    for (const f of r.fields) {
+      assert.strictEqual(bank[f], r.after,
+        `★改定日が過ぎています（${r.effective_date}・本日${today}）。\n` +
+        `  ${r.bank} の「${f}」は ${r.current}円 → ${r.after}円 のはずですが、表は ${bank[f]}円 のままです。\n` +
+        `  ★対象の欄は ${r.fields.join(' / ')} です。**1つだけ直して終わりにしないこと。**\n` +
+        `  出典を実読して docs/assets/fee_table.json を更新し、\n` +
+        `  反映したら scheduled_revisions から該当行を消してください。\n` +
+        `  出典: ${r.source}`);
+    }
     assert.fail(
       `★${r.bank} の改定（${r.effective_date}）は反映済みのようですが、\n` +
       `  scheduled_revisions に予定が残ったままです。反映したら消してください。`);
   } else {
-    // まだ来ていない場合は、現在値が current と一致していること
-    assert.strictEqual(bank.over30k, r.current,
-      `${r.bank} の現在値が ${bank.over30k}円 で、scheduled_revisions の current(${r.current}円) と食い違っています`);
+    // まだ来ていない場合は、fields の全欄が current と一致していること
+    for (const f of r.fields) {
+      assert.strictEqual(bank[f], r.current,
+        `${r.bank} の「${f}」が ${bank[f]}円 で、scheduled_revisions の current(${r.current}円) と食い違っています`);
+    }
   }
 }
 
