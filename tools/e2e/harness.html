@@ -4361,7 +4361,14 @@ const EMBED_PARITY = {
     ops: [["set", "pref", "東京都"], ["set", "age", 30], ["set", "bonus", 500000],
           ["set", "dependents", 0], ["set", "zengetsu", 300000]],
   },
-  "shakai-hoken": { ops: [["set", "monthly", 300000], ["set", "age", 30]] },
+  // ★賞与も入れる。賞与を入れないと**賞与ブロックが1行も描かれない**ので、本体だけ直して
+  //   embed に古い実装が残った状態(2026-08-03: 健保の年度累計573万円上限がembedだけ効かず
+  //   ¥114,409の過大)を、このパリティ検査は素通しした。年度累計も入れて上限の枝を通す。
+  //   ⚠ この検査が見ているのは**可視 .big の先頭**＝月額の見出しだけなので、賞与の額そのものは
+  //     まだ突き合わせていない(下の bigs は取得済みだが expect が bigs[0] しか使わない)。
+  //     ここで守れるのは「賞与の枝を通しても embed が落ちない」ことまで。
+  "shakai-hoken": { ops: [["set", "monthly", 300000], ["set", "age", 30],
+                          ["set", "bonus", 3000000], ["set", "yearpaid", 5000000]] },
   "gensen-choshu": { button: "calcK", result: "resultK",
     ops: [["set", "amount", 250000], ["set", "fuyo", 2]] },
   "eigyobi": { ops: [["set", "from", "2026-05-01"], ["set", "to", "2026-05-10"]] },
