@@ -144,6 +144,9 @@
   <label for="bonus">賞与額（円・任意）<span style="font-weight:400;font-size:12px;color:var(--sub)">　入力すると賞与の保険料も計算します</span></label>
   <input type="number" id="bonus" placeholder="例: 500000" inputmode="numeric">
 
+  <label for="yearpaid">今年度すでに支給された賞与の合計（円・任意）<span style="font-weight:400;font-size:12px;color:var(--sub)">　健康保険の上限（年度累計573万円）の判定に使います。ふつうは空欄のままで大丈夫です</span></label>
+  <input type="number" id="yearpaid" placeholder="例: 0" inputmode="numeric">
+
   <button class="primary" id="calc">計算する</button>
   <div class="result" id="result"></div>
 </div>
@@ -722,8 +725,12 @@ $("calc").addEventListener("click", async () => {
 
   const bonus = Number($("bonus").value);
   if (bonus > 0) {
+    // ★年度累計を 0 固定にすると、2回目以降の賞与で健保の573万円上限が効かず**保険料を過大に出す**。
+    // (実測: 既払500万・当該賞与300万で本人負担が288,450円 → 正しくは174,041円。114,409円の過大)
+    // 「上限を適用」と表示しながら上限判定に必要な値を渡さない状態だったので、入力欄から受け取る。
+    const yearPaid = Number($("yearpaid").value) || 0;
     const b = calcBonus(bonus, kRate, RATES.kaigo_rate, age,
-                        RATES.kosei_nenkin_rate, 0, RATES.kosodate_rate);
+                        RATES.kosei_nenkin_rate, yearPaid, RATES.kosodate_rate);
     // 賞与にも雇用保険はかかる。**標準賞与額(1,000円未満切捨)ではなく賞与の実額**にかかり、
     // 健保の573万円・厚年の150万円のような**上限も無い**(徴収法2条2項が賞与を賃金に含める)。
     const bk = calcKoyou(bonus, gy.total_permille, gy.jigyo2_permille);

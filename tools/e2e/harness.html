@@ -730,13 +730,14 @@ SCENES.gensen_shoyo_otsu = shoyoScene({ shoyo: 500000, shoyoIns: 0, zengetsu: 30
 //   (ツールは total と 二事業 から (13.5-3.5)/2 と**導出**する。導出が壊れればここと合わなくなる)
 const KOYOU_WORKER_PERMILLE = { general: 5, agri_sake: 6, construction: 6 };
 
-const shahoScene = ({ monthly, age, bonus = 0, standard = null, gyoshu = null }) => async () => {
+const shahoScene = ({ monthly, age, bonus = 0, yearPaid = 0, standard = null, gyoshu = null }) => async () => {
   const doc = await open("/docs/shakai-hoken/");
   const kenpo = await (await fetch("/tests/fixtures/kyoukaikenpo_tokyo_r08.json?raw=1")).json();
 
   set(doc, "monthly", String(monthly));
   set(doc, "age", String(age));
   if (bonus > 0) set(doc, "bonus", String(bonus));
+  if (yearPaid > 0) set(doc, "yearpaid", String(yearPaid));
   // 業種を変えるシーンだけは、選択肢が描かれるのを待ってから選ぶ(選択肢は料率JSONから作られる)。
   // 既定(一般の事業)のシーンは待たずに押す ＝ 実ユーザーと同じ「到着前に押す」経路を残す
   if (gyoshu) {
@@ -780,6 +781,28 @@ const shahoScene = ({ monthly, age, bonus = 0, standard = null, gyoshu = null })
   const koyouSelf = (raw - Math.floor(raw)) > 0.5 ? Math.ceil(raw) : Math.floor(raw);
   const expectedSelf = shahoSelf === null ? null : shahoSelf + koyouSelf;
 
+  // ★賞与の本人負担。**単体テストでは絶対に捕まらないページのバグ**を狙う(雇用保険と同型):
+  //   ページが calcBonus の年度累計引数を 0 で固定していても、core のテストは全部緑のまま
+  //   (core は年度累計を正しく扱えるので)。実測では既払500万・賞与300万で114,409円の過大だった。
+  //   料率は公式額表(fixture)の折半額から導出する ＝ shaho_core.js を一切通さない独立オラクル。
+  const rateOf = (key) => {
+    const base = kenpo.grades.find((x) => x.standard === 300000);
+    return base[key] / 300000; // 全額(労使合計)ベースの率
+  };
+  const stdBonus = Math.floor(bonus / 1000) * 1000;
+  // 健保は**年度累計573万円**が上限(健保法45条1項)、厚年は**1回150万円**(厚年法24条の4第1項)
+  const kenkoStdBonus = Math.min(stdBonus, Math.max(0, 5730000 - yearPaid));
+  const koseiStdBonus = Math.min(stdBonus, 1500000);
+  const expectedBonusSelf = bonus > 0
+    ? half(kenkoStdBonus * rateOf(kaigo ? "kenko_kaigo_total" : "kenko_total") / 2)
+      + half(kenkoStdBonus * rateOf("kosodate_total") / 2)
+      + half(koseiStdBonus * rateOf("kosei_total") / 2)
+      // 雇用保険は賞与の**実額**にかかり、1,000円未満切捨も上限も無い(徴収法2条2項)
+      + (() => { const r = bonus * (KOYOU_WORKER_PERMILLE[gyoshu ?? "general"] / 1000);
+                 return (r - Math.floor(r)) > 0.5 ? Math.ceil(r) : Math.floor(r); })()
+    : null;
+  const bm = body.match(/賞与の本人負担\s*¥([\d,]+)/);
+
   const m = body.match(/毎月の本人負担\s*¥([\d,]+)/);
   // 「介護保険料の行が出ているか」は**本文への正規表現で見てはいけない**。画面は
   // 「30歳のため介護保険料はかかりません」という**否定文**にも同じ語を含むので、
@@ -792,6 +815,8 @@ const shahoScene = ({ monthly, age, bonus = 0, standard = null, gyoshu = null })
     self: m ? Number(m[1].replace(/,/g, "")) : null,
     expected: expectedSelf,          // ← 公式PDF+厚労省公表値由来。ツールのコードを一切通っていない
     expectedKoyou: koyouSelf,
+    bonusSelf: bm ? Number(bm[1].replace(/,/g, "")) : null,
+    expectedBonusSelf,               // ← 同上。年度累計の上限も条文どおりここで独立に当てている
     kaigoApplies: kaigo,
     showsKaigoRow: rowLabels.some((l) => l.includes("介護保険")),
     showsKoyouRow: rowLabels.some((l) => l.includes("雇用保険")),
@@ -838,6 +863,13 @@ SCENES.shaho_koyou_kensetsu = shahoScene({ monthly: 300000, age: 30, gyoshu: "co
 // ★standard を明示するのが肝: 報酬月額700,000の等級の**標準報酬月額は710,000**で、
 //   額表を 700,000 で引くと該当なしになる(等級の額と報酬月額は別物)
 SCENES.shaho_cap = shahoScene({ monthly: 700000, age: 30, standard: 710000 });
+
+// ★2回目以降の賞与。年度内に既に500万円払っていれば、健保の枠は残り73万円しかない。
+//   賞与300万でも健保・支援金は**73万円分しかかからない**(厚年は1回150万円上限で頭打ち)。
+//   年度累計を渡し忘れると健保が300万円満額にかかり、本人負担が114,409円過大になる。
+SCENES.shaho_bonus_yearcap = shahoScene({ monthly: 300000, age: 30, bonus: 3000000, yearPaid: 5000000 });
+// 対照: 同じ賞与でも年度内が初回なら、健保は標準賞与額300万円に満額かかる(上限に当たらない)
+SCENES.shaho_bonus_first = shahoScene({ monthly: 300000, age: 30, bonus: 3000000 });
 
 // ── 失業保険(基本手当) ────────────────────────────────────────────────────────
 // 期待値は**厚労省の公表式をここに書き直したもの**(kihonteate_core.js は一切通さない)。

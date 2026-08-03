@@ -158,6 +158,16 @@ const SCENES = [
       s.self === s.expected && s.self === 98758 && !s.failed &&
       s.capNote && s.capNote.showsCap && s.capNote.showsSchedule && s.capNote.saysCurrent },
 
+  // ★健保の年度累計573万円上限。ページが calcBonus に年度累計を渡していないと、
+  //   core が正しくてもここだけが落ちる(単体テストでは緑のまま通ってしまう型のバグ)。
+  //   既払500万 → 健保の残枠73万。賞与300万の本人負担は 174,041 + 雇用保険15,000 = 189,041円。
+  //   渡し忘れていた頃は 303,450円(114,409円の過大)を出していた。
+  { name: "shaho_bonus_yearcap", expect: (s) =>
+      s.bonusSelf === s.expectedBonusSelf && s.bonusSelf === 189041 && !s.failed },
+  // 対照シーン: 初回賞与なら上限に当たらず満額。上の値と必ず違う額になる
+  { name: "shaho_bonus_first", expect: (s) =>
+      s.bonusSelf === s.expectedBonusSelf && s.bonusSelf === 303450 && !s.failed },
+
   // ── 失業保険(基本手当) ──────────────────────────────────────────────────
   // 35歳・月30万・勤続12年・自己都合 → 賃金日額10,000円 → 日額6,307円 × 120日 = 756,840円
   { name: "kihonteate", expect: (s) =>

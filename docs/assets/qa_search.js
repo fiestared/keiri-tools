@@ -191,6 +191,12 @@ function scoreEntry(entry, qtokens, df, N) {
     if (!terms.includes(t)) continue;
     const idf = Math.log((N + 1) / (df.get(t) + 0.5)); // 平滑化。常に正
     let w = t.length >= 3 ? 1.6 : 1; // 3-gram 一致は 2-gram より強い
+    // ★ただし2-gramでも df が極端に小さい語は「実務の略語」(月変・消込・年調・任継…)であって
+    //   ノイズではない。2-gram を一律 w=1 にすると idf の上限が約4.3で、単独では MATCH_MIN(5.0)に
+    //   構造的に届かず、**正解を1位に並べたまま「ありません」と答える**(実測: 「月変になる？」
+    //   → 随時改定が1位で best=4.54 → matched:false)。稀少な2-gramは3-gram同格に扱う。
+    //   一般的な2-gram(「いくら」「方法」等)は df が大きいのでこの枝に入らない。
+    if (t.length === 2 && df.get(t) <= 2) w = 1.6;
     if (title.includes(t)) w += t.length >= 3 ? 1.8 : 1.2; // タイトル一致は重く
     s += w * idf;
   }
