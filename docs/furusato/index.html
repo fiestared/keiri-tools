@@ -735,24 +735,37 @@ function renderJutakuAdj(r, shakai, family) {
   const zei = shotokuzei(kazei, Z);
   const k = juminzeiKoujo(koujo, zei, kazei, JT);
 
-  const shotokuwariAfter = Math.max(0, r.shotokuwari - k.juminzeiKoujoGaku);
-  const ritsu = r.tokureiRitsu.pct_x1000 / 100000;
-  const gendoAfter = shotokuwariAfter > 0 ? Math.floor((shotokuwariAfter * 0.2) / ritsu) + 2000 : 2000;
-  const sagaku = r.furusatoGendo - gendoAfter;
+  // ★ここで「所得割 − 住宅ローン控除 → ×20%」としてはいけない（2026-08-04 のレビューで判明）。
+  //   地方税法37条の2第11項の20%上限の母体は「第三十五条及び前条（調整控除）の規定を適用した
+  //   場合の所得割の額」で、**住宅ローン控除（附則5条の4の2）は入らない**。
+  //   このコア自身が同じ読みを juminzei_core.js のコメントで明記している
+  //   （超過課税・減税は限度額を1円も動かさない＝税額控除は母体を動かさない）。
+  //   したがって限度額そのものは下がらない。実際に起きうる不利益は別の経路なので、そちらを書く。
+  const juminzeiKojoLimit = Math.max(0, r.shotokuwari - k.juminzeiKoujoGaku);
+  const kifuKojoGokei = Math.max(0, Math.floor((r.furusatoGendo - 2000) * ritsuPct(r)) );
 
   box.innerHTML = `
     <div class="callout" style="margin-top:12px">
-      <b>住宅ローン控除を考慮した限度額は ${yen(gendoAfter)}</b>
-      （考慮しない場合 ${yen(r.furusatoGendo)} から <b>${yen(sagaku)} 下がります</b>）<br>
+      <b>住宅ローン控除があっても、限度額 ${yen(r.furusatoGendo)} は変わりません。</b><br>
       <span class="hint">
+      ふるさと納税の特例控除の上限は「<b>調整控除まで適用した所得割額</b>の20％」と定められていて
+      （地方税法37条の2第11項）、そのあとに引かれる住宅ローン控除は<b>この母体を動かしません</b>。<br>
       控除可能額 ${yen(k.koujoKanou)} のうち、所得税から ${yen(k.shotokuzeiKoujo)}、
       住民税から ${yen(k.juminzeiKoujoGaku)}（上限 ${yen(k.juminzeiCapB)}）が引かれます。
-      住民税の所得割が ${yen(r.shotokuwari)} → ${yen(shotokuwariAfter)} に下がるぶん、
-      特例控除の枠（所得割の20％）も小さくなります。
-      ${k.kirisute > 0 ? `なお ${yen(k.kirisute)} はどちらの税からも引けず切り捨てになります。` : ""}
+      ${k.kirisute > 0 ? `${yen(k.kirisute)} はどちらの税からも引けず切り捨てです。` : ""}
       </span>
+      <div class="hint" style="margin-top:8px">
+        ★<b>気をつけるのは限度額ではなく、確定申告をする場合の「食い合い」です。</b>
+        確定申告ではふるさと納税の所得税分（寄附金控除）が先に所得税を減らすため、
+        住宅ローン控除で引ける所得税が減り、その分が住民税へ回りきらないと自己負担が
+        2,000円を超えることがあります。<b>ワンストップ特例なら所得税は動かないので、この問題は起きません</b>
+        （住宅ローン控除の初年度など確定申告が必要な年は、ワンストップは使えません）。
+      </div>
     </div>`;
 }
+
+/** 特例控除の割合（小数）。r.tokureiRitsu.pct_x1000 は 79790 のような値 */
+function ritsuPct(r) { return r.tokureiRitsu.pct_x1000 / 100000; }
 </script>
 </body>
 </html>

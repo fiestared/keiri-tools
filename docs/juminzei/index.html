@@ -468,15 +468,24 @@ function renderHandoff(r, shakai, family) {
   const unsupported = family.shogaiIppan || family.honninShogai || family.kafu
     || family.hitorioyaHaha || family.hitorioyaChichi || family.kinroGakusei;
 
-  const kiso = shotokuzeiKisoKojo(r.goukeiShotoku, D);
+  // ★年分を受け側とそろえる（2026-08-04 のレビューで判明）。
+  //   引き継ぎ先の節税ツールは全て**令和8年分**（setsuzei_r08）で計算する。
+  //   ここを令和7年分の規則で出すと、基礎控除が68万 vs 104万で36万円ずれ、税率帯が1段変わる。
+  //   給与所得控除も改正後の規則になるので、calc をもう一度 zeisei:'r8' で呼ぶ。
+  const r8 = calc({
+    kyuyoShunyu: Number($("shunyu").value), shakaiHoken: shakai,
+    sonotaKojo: Number($("sonotaKojo").value), sonotaShotoku: Number($("sonotaShotoku").value),
+    family, jichitai: $("jichitai").value, kyuchi: $("kyuchi").value, zeisei: "r8",
+  }, D);
+  const kiso = shotokuzeiKisoKojo(r8.goukeiShotoku, D, "r8");
   const haigu = family.haigusha === "none" ? { shotoku: 0 }
-    : haigushaKojo({ honninShotoku: r.goukeiShotoku, haiguShotoku: 0, rojin: family.haigusha === "rojin" }, Z);
+    : haigushaKojo({ honninShotoku: r8.goukeiShotoku, haiguShotoku: 0, rojin: family.haigusha === "rojin" }, Z);
   const fuyo = fuyoKojoTotal({
     ippan: family.fuyoIppan, tokutei: family.fuyoTokutei,
     rojin: family.fuyoRojin, dokyo_rooya: family.fuyoDokyoRooya,
   }, Z);
   const kojoGokei = shakai + Number($("sonotaKojo").value || 0) + kiso + (haigu.shotoku || 0) + fuyo.shotoku;
-  const kazei = Math.max(0, Math.floor((r.goukeiShotoku - kojoGokei) / 1000) * 1000);
+  const kazei = Math.max(0, Math.floor((r8.goukeiShotoku - kojoGokei) / 1000) * 1000);
 
   const links = [
     ["ideco-setsuzei", "iDeCoの節税額"],
@@ -503,7 +512,7 @@ function renderHandoff(r, shakai, family) {
   box.innerHTML = `
     <div class="callout" style="margin-top:14px">
       <b>所得税の課税所得は ${yen(kazei)}</b>（住民税の課税所得 ${yen(r.kazeiSoShotoku)} とは控除額が違うので一致しません）<br>
-      <span class="hint">合計所得 ${yen(r.goukeiShotoku)} − 社会保険料 ${yen(shakai)} − 基礎控除 ${yen(kiso)}
+      <span class="hint">令和8年分（2026年）の所得税ベース。合計所得 ${yen(r8.goukeiShotoku)} − 社会保険料 ${yen(shakai)} − 基礎控除 ${yen(kiso)}
       ${haigu.shotoku ? "− 配偶者控除 " + yen(haigu.shotoku) + " " : ""}${fuyo.shotoku ? "− 扶養控除 " + yen(fuyo.shotoku) + " " : ""}
       − その他の所得控除 ${yen(Number($("sonotaKojo").value || 0))}</span>
       <div style="margin-top:8px">この課税所得で試す: ${links}</div>
