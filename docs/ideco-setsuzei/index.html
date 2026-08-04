@@ -456,18 +456,26 @@ function renderCompare(kazei, annualLimit, monthlyA) {
     return;
   }
 
-  const a = taxSavingByMonthly({ kazeiShotoku: kazei, monthly: monthlyA, annualLimit }, R08);
-  const b = taxSavingByMonthly({ kazeiShotoku: kazei, monthly: monthlyB, annualLimit }, R08);
+  // ★本線（上の結果）は上限超過を上限額で試算し直している。比較側だけ生の額で計算すると
+  //   同じ画面で違う前提の数字が並ぶ（2026-08-04 レビュー指摘）。同じ丸め方をする。
+  const limitMonthly = Math.floor(annualLimit / 12);
+  const calcCapped = (m) => {
+    const raw = taxSavingByMonthly({ kazeiShotoku: kazei, monthly: m, annualLimit }, R08);
+    if (!raw.beyondLimit) return { ...raw, requested: m, capped: false };
+    return { ...taxSavingByMonthly({ kazeiShotoku: kazei, monthly: limitMonthly, annualLimit }, R08), requested: m, capped: true };
+  };
+  const a = calcCapped(monthlyA);
+  const b = calcCapped(monthlyB);
   const hi = a.total >= b.total ? a : b;
   const row = (label, f) => `<tr><th>${label}</th><td>${f(a)}</td><td>${f(b)}</td></tr>`;
-  const warn = (x) => x.beyondLimit
-    ? `<div class="hint">★${yen(x.monthly)}／月は年間上限 ${yen(x.annualLimit)} を超えています（超えた分は控除できません）。</div>` : "";
+  const warn = (x) => x.capped
+    ? `<div class="hint">★希望額 ${yen(x.requested)}／月は年間上限 ${yen(x.annualLimit)}（月 ${yen(limitMonthly)}）を超えるため、<b>上限額で試算しています</b>。</div>` : "";
 
   box.innerHTML = `
     <div class="card" style="margin-top:14px">
       <b>2案の比較</b>
       <table class="res" style="margin-top:8px">
-        <tr><th></th><th>案A ${yen(monthlyA)}／月</th><th>案B ${yen(monthlyB)}／月</th></tr>
+        <tr><th></th><th>案A ${yen(a.monthly)}／月${a.capped ? "<br><small>（希望 " + yen(a.requested) + "）</small>" : ""}</th><th>案B ${yen(b.monthly)}／月${b.capped ? "<br><small>（希望 " + yen(b.requested) + "）</small>" : ""}</th></tr>
         ${row("年間の掛金", (x) => yen(x.annual))}
         ${row("控除に使えた額", (x) => yen(x.usedDeduction))}
         ${row("所得税の減少", (x) => yen(x.shotokuGen + x.fukkoGen))}
