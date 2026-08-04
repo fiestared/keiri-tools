@@ -136,6 +136,32 @@
   <input type="number" id="isan" placeholder="例: 10000（＝1億円）" inputmode="numeric" min="0">
   <div id="isan-echo" class="hint" style="margin:-6px 0 10px"></div>
 
+<details style="margin-top:12px" id="isan-builder">
+  <summary>正味の遺産額（課税価格）を作る — 生命保険金・退職金の非課税枠を自動で引きます</summary>
+  <div style="margin-top:10px">
+    <p class="hint" style="margin-top:0">
+      上の「遺産の総額」に入れる金額を、内訳から組み立てます。<b>生命保険金と死亡退職金には
+      それぞれ「500万円 × 法定相続人の数」の非課税枠</b>があり（相続税法12条1項5号・6号）、
+      枠を超えた分だけが課税価格に入ります。★先に下の<b>家族構成</b>を選んでから使ってください
+      （法定相続人の数で枠が変わります）。
+    </p>
+    <label for="bPlus">プラスの財産（不動産・預貯金・有価証券など・万円）</label>
+    <input type="number" id="bPlus" placeholder="例: 8000" inputmode="numeric" min="0">
+    <label for="bHoken" style="margin-top:10px">生命保険金の受取額（万円）</label>
+    <input type="number" id="bHoken" placeholder="例: 2000" inputmode="numeric" min="0">
+    <label for="bTaishoku" style="margin-top:10px">死亡退職金の受取額（万円）</label>
+    <input type="number" id="bTaishoku" placeholder="例: 0" inputmode="numeric" min="0">
+    <label for="bSaimu" style="margin-top:10px">借入金・未払金（万円）</label>
+    <input type="number" id="bSaimu" placeholder="例: 500" inputmode="numeric" min="0">
+    <label for="bSoshiki" style="margin-top:10px">葬式費用（万円）</label>
+    <input type="number" id="bSoshiki" placeholder="例: 200" inputmode="numeric" min="0">
+    <button id="bCalc" class="tool-cta" style="margin-top:12px;background:#5b6b7b">正味の遺産額を出して上に入れる</button>
+    <div id="bResult" class="result" style="display:none"></div>
+  </div>
+</details>
+
+
+
   <label for="haiguusha">配偶者（夫・妻）<span class="hint">　いる場合は税額軽減で配偶者の負担が大きく下がります</span></label>
   <select id="haiguusha">
     <option value="1">いる</option>
@@ -467,7 +493,7 @@
 </footer>
 
 <script type="module">
-import { calcSozokuzei } from "../assets/sozokuzei_core.js";
+import { calcSozokuzei, houteiSozokunin } from "../assets/sozokuzei_core.js";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
@@ -574,6 +600,52 @@ $("calc").addEventListener("click", async () => {
     </div>
     <div style="font-size:12.5px;color:var(--sub);margin-top:12px">
       ※ 小規模宅地等の特例・生命保険金の非課税枠・各種税額控除などは反映していない<b>目安</b>です。②は「配偶者が法定相続分を取得する典型的な分け方」を前提にしており、実際の分け方で各人の負担は変わります。正確な税額は税理士・国税庁の申告書等作成コーナーで確認してください。相続税の申告・納付は相続開始を知った日の翌日から<b>10か月以内</b>。${yearTag}</div>`;
+});
+
+/* ---------- 正味の遺産額ビルダー ---------- */
+$("bCalc")?.addEventListener("click", () => {
+  const box = $("bResult");
+  box.style.display = "block";
+  if (!SOZOKU) { box.innerHTML = "参照データを読み込めていません。ページを再読み込みしてください。"; return; }
+  const W = SOZOKU.hikazei_waku;
+  if (!W) { box.innerHTML = "非課税枠のデータがありません。"; return; }
+
+  const man = (id) => Math.max(0, Number($(id).value) || 0);
+  const family = {
+    hasSpouse: $("haiguusha").value === "1",
+    numChildrenReal: Number($("koReal").value) || 0,
+    numChildrenAdopted: Number($("koYoshi").value) || 0,
+    numParents: Number($("oya").value) || 0,
+    numSiblings: Number($("kyodai").value) || 0,
+  };
+  const h = houteiSozokunin(family, SOZOKU);
+  const ninzu = h.count ?? h.ninzu ?? 0;
+  if (!(ninzu > 0)) {
+    box.innerHTML = "<b>先に家族構成を選んでください。</b>法定相続人の数が決まらないと非課税枠を計算できません。";
+    return;
+  }
+
+  const wakuHoken = (W.seimei_hoken_per_person_yen / 10000) * ninzu;      // 万円
+  const wakuTaishoku = (W.taishokukin_per_person_yen / 10000) * ninzu;    // 万円
+  const hokenKazei = Math.max(0, man("bHoken") - wakuHoken);
+  const taishokuKazei = Math.max(0, man("bTaishoku") - wakuTaishoku);
+  const total = Math.max(0, man("bPlus") + hokenKazei + taishokuKazei - man("bSaimu") - man("bSoshiki"));
+
+  $("isan").value = String(Math.round(total));
+  $("isan").dispatchEvent(new Event("input", { bubbles: true }));
+
+  const m2 = (v) => v.toLocaleString("ja-JP") + "万円";
+  box.innerHTML = `
+    <div class="row">正味の遺産額 <span class="big">${m2(Math.round(total))}</span></div>
+    <table class="res" style="margin-top:8px">
+      <tr><th>プラスの財産</th><td>${m2(man("bPlus"))}</td></tr>
+      <tr><th>生命保険金</th><td>${m2(man("bHoken"))} − 非課税枠 ${m2(wakuHoken)}（500万×${ninzu}人）→ <b>${m2(hokenKazei)}</b></td></tr>
+      <tr><th>死亡退職金</th><td>${m2(man("bTaishoku"))} − 非課税枠 ${m2(wakuTaishoku)}（500万×${ninzu}人）→ <b>${m2(taishokuKazei)}</b></td></tr>
+      <tr><th>借入金・未払金</th><td>− ${m2(man("bSaimu"))}</td></tr>
+      <tr><th>葬式費用</th><td>− ${m2(man("bSoshiki"))}</td></tr>
+    </table>
+    <div class="hint" style="margin-top:8px">上の「遺産の総額」に入れました。
+    ★小規模宅地等の特例・生前贈与加算・相続時精算課税などは含みません（このツールの範囲外）。</div>`;
 });
 </script>
 </body>
