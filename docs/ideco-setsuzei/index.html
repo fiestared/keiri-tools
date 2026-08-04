@@ -117,8 +117,13 @@
   <label for="monthly">月額掛金（円）<span class="hint">　5,000円以上・1,000円単位。<span id="limit-hint"></span></span></label>
   <input type="number" id="monthly" placeholder="例: 23000" inputmode="numeric" min="5000" step="1000">
 
+  <label for="monthlyB" style="margin-top:10px">比べる月額掛金（円・任意）
+    <span class="hint">　「月2万と月2万3千でどれだけ違うか」を並べて見ます</span></label>
+  <input type="number" id="monthlyB" placeholder="例: 20000" inputmode="numeric" min="0" step="1000">
+
   <button class="primary" id="calc">節税額を計算する</button>
   <div class="result" id="result"></div>
+  <div id="compare"></div>
   <p class="hint" id="kaisei-note" style="margin-top:10px"></p>
 </div>
 
@@ -380,6 +385,8 @@ $("calc").addEventListener("click", async () => {
   const limitMonthly = kubun.monthly;
   const annualLimit = limitMonthly * 12;
 
+  renderCompare(kazei, annualLimit, monthly);
+
   let raw;
   try {
     raw = taxSavingByMonthly({ kazeiShotoku: kazei, monthly, annualLimit }, R08);
@@ -436,6 +443,45 @@ $("calc").addEventListener("click", async () => {
 /* ---------- 他のツールから課税所得を受け取る（共通部品） ---------- */
 import { applyPrefill } from "../assets/prefill.js";
 applyPrefill({ inputId: "kazei", key: "kazei" });
+
+/* ---------- 2案比較（コアは純関数なので2回呼ぶだけ） ---------- */
+function renderCompare(kazei, annualLimit, monthlyA) {
+  const box = $("compare");
+  if (!box) return;
+  box.innerHTML = "";
+  const monthlyB = Number($("monthlyB").value) || 0;
+  if (!(monthlyB > 0) || !R08) return;
+  if (monthlyB === monthlyA) {
+    box.innerHTML = `<div class="hint" style="margin-top:8px">比べる掛金が同じ額です。違う額を入れると差が出ます。</div>`;
+    return;
+  }
+
+  const a = taxSavingByMonthly({ kazeiShotoku: kazei, monthly: monthlyA, annualLimit }, R08);
+  const b = taxSavingByMonthly({ kazeiShotoku: kazei, monthly: monthlyB, annualLimit }, R08);
+  const hi = a.total >= b.total ? a : b;
+  const row = (label, f) => `<tr><th>${label}</th><td>${f(a)}</td><td>${f(b)}</td></tr>`;
+  const warn = (x) => x.beyondLimit
+    ? `<div class="hint">★${yen(x.monthly)}／月は年間上限 ${yen(x.annualLimit)} を超えています（超えた分は控除できません）。</div>` : "";
+
+  box.innerHTML = `
+    <div class="card" style="margin-top:14px">
+      <b>2案の比較</b>
+      <table class="res" style="margin-top:8px">
+        <tr><th></th><th>案A ${yen(monthlyA)}／月</th><th>案B ${yen(monthlyB)}／月</th></tr>
+        ${row("年間の掛金", (x) => yen(x.annual))}
+        ${row("控除に使えた額", (x) => yen(x.usedDeduction))}
+        ${row("所得税の減少", (x) => yen(x.shotokuGen + x.fukkoGen))}
+        ${row("住民税の減少", (x) => yen(x.juminGen))}
+        ${row("節税額の合計", (x) => `<b>${yen(x.total)}</b>`)}
+        ${row("掛金に対する節税率", (x) => (x.effectiveRate * 100).toFixed(1) + "％")}
+      </table>
+      <p style="margin-top:8px">節税額の差は <b>${yen(Math.abs(a.total - b.total))}</b>／年、
+      掛金の差は <b>${yen(Math.abs(a.annual - b.annual))}</b>／年です。
+      節税額が大きいのは<b>${hi === a ? "案A" : "案B"}</b>ですが、
+      <b>掛金は60歳まで引き出せません</b>。節税額だけで決める話ではありません。</p>
+      ${warn(a)}${warn(b)}
+    </div>`;
+}
 </script>
 </body>
 </html>
