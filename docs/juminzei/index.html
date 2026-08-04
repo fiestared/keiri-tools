@@ -378,6 +378,11 @@ $("calc").addEventListener("click", async () => {
     family,
     jichitai: $("jichitai").value,
     kyuchi: $("kyuchi").value,
+    // ★令和8年分の所得の規則で計算する（給与所得控除74万・所得税の基礎控除104万）。
+    //   渡さないと令和7年分の規則になり、画面の「令和8年分の所得にもとづく計算」と食い違う。
+    //   実測: 年収115万で 5,000円 → 非課税、200万で 59,900円 → 53,900円 変わる（2026-08-04 レビュー指摘）。
+    //   姉妹ツール /furusato/ も zeisei:"r8" で計算しており、そちらと年分がそろう。
+    zeisei: "r8",
   }, D);
 
   const J = r.jichitai;
@@ -441,7 +446,7 @@ $("calc").addEventListener("click", async () => {
 
   box.innerHTML = `
     <div class="big">住民税 ${yen(r.juminzeiTotal)}<span style="font-size:15px;font-weight:600">／年</span></div>
-    <div class="hint" style="margin-bottom:10px">所得割 <b>${yen(r.shotokuwariJissai)}</b> ＋ 均等割・森林環境税 <b>${yen(r.kintouwari.total)}</b>（${D._meta.year}の所得にもとづく計算）</div>
+    <div class="hint" style="margin-bottom:10px">所得割 <b>${yen(r.shotokuwariJissai)}</b> ＋ 均等割・森林環境税 <b>${yen(r.kintouwari.total)}</b>（${D._meta.year}の所得にもとづく計算＝<b>令和9年度に納める住民税</b>）</div>
     ${kintouOnlyNote}
     <table class="res">
       <tr><th>給与所得</th><td>${yen(r.kyuyoShotoku)}（給与収入 ${yen(shunyu)} − 給与所得控除）</td></tr>
@@ -472,20 +477,16 @@ function renderHandoff(r, shakai, family) {
   //   引き継ぎ先の節税ツールは全て**令和8年分**（setsuzei_r08）で計算する。
   //   ここを令和7年分の規則で出すと、基礎控除が68万 vs 104万で36万円ずれ、税率帯が1段変わる。
   //   給与所得控除も改正後の規則になるので、calc をもう一度 zeisei:'r8' で呼ぶ。
-  const r8 = calc({
-    kyuyoShunyu: Number($("shunyu").value), shakaiHoken: shakai,
-    sonotaKojo: Number($("sonotaKojo").value), sonotaShotoku: Number($("sonotaShotoku").value),
-    family, jichitai: $("jichitai").value, kyuchi: $("kyuchi").value, zeisei: "r8",
-  }, D);
-  const kiso = shotokuzeiKisoKojo(r8.goukeiShotoku, D, "r8");
+  // ★本体の計算が令和8年分になったので、ここで計算し直す必要はない（r をそのまま使う）
+  const kiso = shotokuzeiKisoKojo(r.goukeiShotoku, D, "r8");
   const haigu = family.haigusha === "none" ? { shotoku: 0 }
-    : haigushaKojo({ honninShotoku: r8.goukeiShotoku, haiguShotoku: 0, rojin: family.haigusha === "rojin" }, Z);
+    : haigushaKojo({ honninShotoku: r.goukeiShotoku, haiguShotoku: 0, rojin: family.haigusha === "rojin" }, Z);
   const fuyo = fuyoKojoTotal({
     ippan: family.fuyoIppan, tokutei: family.fuyoTokutei,
     rojin: family.fuyoRojin, dokyo_rooya: family.fuyoDokyoRooya,
   }, Z);
   const kojoGokei = shakai + Number($("sonotaKojo").value || 0) + kiso + (haigu.shotoku || 0) + fuyo.shotoku;
-  const kazei = Math.max(0, Math.floor((r8.goukeiShotoku - kojoGokei) / 1000) * 1000);
+  const kazei = Math.max(0, Math.floor((r.goukeiShotoku - kojoGokei) / 1000) * 1000);
 
   const links = [
     ["ideco-setsuzei", "iDeCoの節税額"],
@@ -511,7 +512,7 @@ function renderHandoff(r, shakai, family) {
   box.innerHTML = `
     <div class="callout" style="margin-top:14px">
       <b>所得税の課税所得は ${yen(kazei)}</b>（住民税の課税所得 ${yen(r.kazeiSoShotoku)} とは控除額が違うので一致しません）<br>
-      <span class="hint">令和8年分（2026年）の所得税ベース。合計所得 ${yen(r8.goukeiShotoku)} − 社会保険料 ${yen(shakai)} − 基礎控除 ${yen(kiso)}
+      <span class="hint">令和8年分（2026年）の所得税ベース。合計所得 ${yen(r.goukeiShotoku)} − 社会保険料 ${yen(shakai)} − 基礎控除 ${yen(kiso)}
       ${haigu.shotoku ? "− 配偶者控除 " + yen(haigu.shotoku) + " " : ""}${fuyo.shotoku ? "− 扶養控除 " + yen(fuyo.shotoku) + " " : ""}
       − その他の所得控除 ${yen(Number($("sonotaKojo").value || 0))}</span>
       <div style="margin-top:8px">この課税所得で試す: ${links}</div>
