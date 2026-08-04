@@ -209,6 +209,7 @@
 
   <button class="primary" id="calc">住民税を計算する</button>
   <div class="result" id="result"></div>
+  <div id="handoff"></div>
 </div>
 
 <section class="faq">
@@ -279,6 +280,9 @@
 
 <script type="module">
 import { calc, shakaiHokenGaisan } from "../assets/juminzei_core.js";
+import { shotokuzeiKisoKojo } from "../assets/juminzei_core.js";
+import { haigushaKojo, fuyoKojoTotal } from "../assets/setsuzei_core.js";
+import { handoffUrl } from "../assets/prefill.js";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
@@ -286,11 +290,13 @@ const pct = (x1000) => (x1000 / 1000).toLocaleString("ja-JP", { maximumFractionD
 
 // 税率・控除額・社会保険料率は非同期で届く。**どちらも答えの一部**なので、届く前に押されても待つ
 // （回線が遅い人だけ空データで計算され、税額が過小に出る事故を防ぐ = fail closed）。
-let D = null, S = null;
+let D = null, S = null, Z = null;
 const dataReady = Promise.all([
   fetch("../assets/juminzei_r08.json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
   fetch("../assets/shaho_rates_r08.json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
-]).then(([d, s]) => { D = d; S = s; return true; }).catch(() => false);
+  // 所得税の課税所得を出すために要る（控除額が住民税と違う）。★これだけ失敗しても住民税の計算は止めない
+  fetch("../assets/setsuzei_r08.json").then(r => r.ok ? r.json() : null).catch(() => null),
+]).then(([d, s, z]) => { D = d; S = s; Z = z; return true; }).catch(() => false);
 
 // 自治体・級地・都道府県のプルダウンと出典表示は**飾り**。ここで転んでも計算は止めない
 // （飾りのバグをデータ取得の失敗に化けさせない）。
@@ -377,6 +383,12 @@ $("calc").addEventListener("click", async () => {
   const J = r.jichitai;
   const H = r.hikazei;
 
+  // ── 所得税の課税所得（節税系ツールが要求するのはこちら）─────────────────
+  // ★住民税の課税所得とは控除額が違うので、そのまま渡してはいけない。
+  //   r.jintekiSaGokei（調整控除に使う法定の差額）で引き算するのも誤り。
+  //   あれは基礎控除の差を一律5万円として扱う値で、実際の差（令和8年分は25万円）とは別物。
+  renderHandoff(r, shakai, family);
+
   const shakaiNote = useGaisan
     ? `<div class="hint"><b>社会保険料 ${yen(gaisan.total)} は概算です</b>（賞与なしとして年収を12等分し、
         協会けんぽ ${$("ken").value}［${gaisan.kenkoRate}％］${gaisan.kaigoApplies ? "＋介護保険" : ""}
@@ -441,6 +453,62 @@ $("calc").addEventListener("click", async () => {
     ${shakaiNote}
     ${jichitaiNote}`;
 });
+
+/**
+ * 節税系ツールへ「所得税の課税所得」を引き継ぐ。
+ * ★対応できない控除（障害者・寡婦・ひとり親・勤労学生）が選ばれているときは**引き継がない**。
+ *   足りない控除のぶんだけ課税所得を多く見せ、節税額を過大に出すことになるため（fail closed）。
+ */
+function renderHandoff(r, shakai, family) {
+  const box = $("handoff");
+  if (!box) return;
+  box.innerHTML = "";
+  if (!Z) return;   // 参照データが無ければ黙って出さない
+
+  const unsupported = family.shogaiIppan || family.honninShogai || family.kafu
+    || family.hitorioyaHaha || family.hitorioyaChichi || family.kinroGakusei;
+
+  const kiso = shotokuzeiKisoKojo(r.goukeiShotoku, D);
+  const haigu = family.haigusha === "none" ? { shotoku: 0 }
+    : haigushaKojo({ honninShotoku: r.goukeiShotoku, haiguShotoku: 0, rojin: family.haigusha === "rojin" }, Z);
+  const fuyo = fuyoKojoTotal({
+    ippan: family.fuyoIppan, tokutei: family.fuyoTokutei,
+    rojin: family.fuyoRojin, dokyo_rooya: family.fuyoDokyoRooya,
+  }, Z);
+  const kojoGokei = shakai + Number($("sonotaKojo").value || 0) + kiso + (haigu.shotoku || 0) + fuyo.shotoku;
+  const kazei = Math.max(0, Math.floor((r.goukeiShotoku - kojoGokei) / 1000) * 1000);
+
+  const links = [
+    ["ideco-setsuzei", "iDeCoの節税額"],
+    ["furusato", "ふるさと納税の上限"],
+    ["seimei-hoken-kojo", "生命保険料控除"],
+    ["shokibo-kyosai", "小規模企業共済"],
+    ["jishin-hoken-kojo", "地震保険料控除"],
+  ].map(([p, label]) => `<a href="../${handoffUrl(p + "/", kazei).replace(/^/, "")}">${label}</a>`).join("　/　");
+
+  // ★対応できない控除があるときは、金額そのものを出さない。
+  //   「不正確です」と書き添えても、太字の数字は独り歩きする。
+  if (unsupported) {
+    box.innerHTML = `
+      <div class="callout" style="margin-top:14px">
+        <b>この条件では所得税の課税所得を出していません。</b>
+        障害者・寡婦・ひとり親・勤労学生の控除は、所得税と住民税で控除額が違い、この画面では
+        所得税側を計算していません。<b>足りない控除のぶんだけ課税所得を多く見せ、節税額を
+        過大に出すことになる</b>ので、数字を出さずに止めています。
+        源泉徴収票の「課税される所得金額」を各ツールに直接入力してください。
+      </div>`;
+    return;
+  }
+
+  box.innerHTML = `
+    <div class="callout" style="margin-top:14px">
+      <b>所得税の課税所得は ${yen(kazei)}</b>（住民税の課税所得 ${yen(r.kazeiSoShotoku)} とは控除額が違うので一致しません）<br>
+      <span class="hint">合計所得 ${yen(r.goukeiShotoku)} − 社会保険料 ${yen(shakai)} − 基礎控除 ${yen(kiso)}
+      ${haigu.shotoku ? "− 配偶者控除 " + yen(haigu.shotoku) + " " : ""}${fuyo.shotoku ? "− 扶養控除 " + yen(fuyo.shotoku) + " " : ""}
+      − その他の所得控除 ${yen(Number($("sonotaKojo").value || 0))}</span>
+      <div style="margin-top:8px">この課税所得で試す: ${links}</div>
+    </div>`;
+}
 </script>
 </body>
 </html>
