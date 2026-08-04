@@ -238,6 +238,49 @@
 </div>
 
 <section class="card">
+  <h2 id="hikaku" style="margin-top:0">4. 本則・簡易・2割特例で比べる</h2>
+  <p style="margin-top:0;font-size:14px;color:var(--sub)">
+    納める消費税は、<b>どの方式を選ぶか</b>で変わります。<b>本則課税</b>だけが実際の仕入れで決まり、
+    <b>簡易課税・2割特例・3割特例</b>は<b>売上だけ</b>で決まります（経費がいくらでも動きません）。
+    自分の数字を入れて、4つを並べて比べます。<b>どれを選ぶかは届出を伴う申告上の選択</b>で、
+    本ツールが推奨するものではありません。
+  </p>
+
+  <label for="h-sales">課税売上（税込・1年分・10%対象）</label>
+  <input type="number" id="h-sales" placeholder="例: 11000000" inputmode="numeric">
+
+  <label for="h-purchase" style="margin-top:12px">課税仕入れ（税込・1年分・10%対象）</label>
+  <input type="number" id="h-purchase" placeholder="例: 5500000" inputmode="numeric">
+  <div class="hint" style="font-size:12.5px;margin-top:5px">
+    本則課税の計算だけに使います。給与・法定福利費・家賃（非課税）などは課税仕入れに含めません。
+  </div>
+
+  <label for="h-kubun" style="margin-top:12px">事業区分（簡易課税のみなし仕入率）</label>
+  <select id="h-kubun"></select>
+  <div class="hint" id="h-kubun-note" style="font-size:12.5px;margin-top:5px"></div>
+
+  <label style="margin-top:12px">事業者の区分</label>
+  <div class="radio-row">
+    <label><input type="radio" name="h-kojin" value="kojin" checked>個人事業者</label>
+    <label><input type="radio" name="h-kojin" value="houjin">法人</label>
+  </div>
+  <div class="hint" style="font-size:12.5px;margin-top:5px">
+    3割特例は<b>個人事業者だけ</b>の措置なので、法人を選ぶと比較から外します。
+  </div>
+
+  <button id="h-calc" class="tool-cta" style="margin-top:14px">4方式を比較する</button>
+  <div id="h-result" class="result" style="display:none"></div>
+
+  <div class="note" style="margin-top:12px">
+    <b>この試算の前提</b>：税率10%のみ・課税売上高が簡易課税や各特例の適用要件を満たしている・
+    中間納付なし・貸倒れや返還等なし。<b>適用できるかどうかの判定は含みません</b>
+    （基準期間の課税売上高、届出の提出状況などで決まります）。<br>
+    みなし仕入率は<b>消費税法施行令57条5項</b>、2割特例は<b>平成28年改正法附則51条の2</b>、
+    3割特例は<b>令和8年度税制改正</b>によります。
+  </div>
+</section>
+
+<section class="card">
   <h2 id="rules" data-faq>消費税の端数処理のルール</h2>
 
   <h3 id="rule-invoice">インボイスの消費税額は明細ごとに計算してもよいですか？</h3>
@@ -340,6 +383,7 @@
 
 <script type="module">
 import { RATES, ROUNDINGS, convert, calcInvoice, compareDeclarationMethods, yen } from "../assets/shohizei_core.js";
+import { MINASHI, compareMethods } from "../assets/kani_hikaku_core.js";
 
 const $ = (id) => document.getElementById(id);
 const radio = (name) => document.querySelector(`input[name="${name}"]:checked`).value;
@@ -579,6 +623,61 @@ $("dec-calc").addEventListener("click", () => {
       <b>売上=積上げ × 仕入=割戻し は認められない</b>ため、比較には含めていません（No.6391）。
     </div>`;
 });
+
+/* ---------- 4. 本則・簡易・2割・3割の比較 ---------- */
+const kubunSel = $("h-kubun");
+for (const [k, v] of Object.entries(MINASHI)) {
+  const o = document.createElement("option");
+  o.value = k;
+  o.textContent = `${v.label}　みなし仕入率${v.rate * 100}%`;
+  kubunSel.appendChild(o);
+}
+kubunSel.value = "5";
+const showKubunNote = () => { $("h-kubun-note").textContent = MINASHI[kubunSel.value].note; };
+kubunSel.addEventListener("change", showKubunNote);
+showKubunNote();
+
+$("h-calc").addEventListener("click", () => {
+  const box = $("h-result");
+  box.style.display = "block";
+  const salesIncTax = Number($("h-sales").value);
+  if (!(salesIncTax > 0)) { box.innerHTML = "課税売上（税込）を入力してください。"; return; }
+  const purchaseIncTax = Number($("h-purchase").value) || 0;
+  const isIndividual = radio("h-kojin") === "kojin";
+  const r = compareMethods({
+    salesIncTax, purchaseIncTax, kubun: Number(kubunSel.value), isIndividual,
+  });
+
+  const rows = r.methods.map((m) => {
+    const off = m.available === false;
+    const isBest = !off && m.key === r.best.key;
+    return `<tr${isBest ? ' style="font-weight:700;background:var(--hl,#fff8e1)"' : ""}>
+      <td>${m.label}${off ? "<br><small>（法人は使えません）</small>" : ""}</td>
+      <td><small>${m.formula}</small></td>
+      <td style="text-align:right">${off ? "—" : yen(m.amount)}</td>
+    </tr>`;
+  }).join("");
+
+  const ratio = Math.round(r.purchaseRatio * 1000) / 10;
+  const kaniRate = r.minashiRate * 100;
+  const judge = purchaseIncTax === 0
+    ? "課税仕入れが0のときは、売上だけで決まる方式が有利になります。"
+    : (ratio < kaniRate
+      ? `経費率 <b>${ratio}%</b> ＜ みなし仕入率 <b>${kaniRate}%</b> なので、<b>本則より簡易課税のほうが小さくなります</b>。`
+      : ratio > kaniRate
+        ? `経費率 <b>${ratio}%</b> ＞ みなし仕入率 <b>${kaniRate}%</b> なので、<b>簡易より本則課税のほうが小さくなります</b>。`
+        : `経費率がみなし仕入率と<b>ちょうど一致</b>しているので、本則と簡易は同額になります。`);
+
+  box.innerHTML = `
+    <p style="margin-top:0">売上税額 <b>${yen(r.salesTax)}</b>／仕入税額 <b>${yen(r.purchaseTax)}</b></p>
+    <table><tr><th>方式</th><th>計算</th><th style="text-align:right">納める消費税</th></tr>${rows}</table>
+    <p>${judge}</p>
+    <p>本則と簡易が一致するのは、課税仕入れ（税込）が <b>${yen(r.breakEvenPurchaseIncTax)}</b> のときです。
+    これより経費が少なければ簡易、多ければ本則が小さくなります。</p>
+    <p style="font-size:13px;color:var(--sub)">※ 金額の小さい行を強調していますが、
+    <b>選択には届出と適用要件の確認が必要</b>です。簡易課税は原則として2年間継続します。</p>`;
+});
+
 </script>
 </body>
 </html>
