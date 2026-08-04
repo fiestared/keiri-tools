@@ -149,6 +149,7 @@
 
   <button class="primary" id="calc">計算する</button>
   <div class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <article>
@@ -748,6 +749,10 @@ $("calc").addEventListener("click", async () => {
   }
   box.innerHTML = html;
 });
+
+/* ---------- 結果をコピー（共通部品） ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
 </body>
 </html>

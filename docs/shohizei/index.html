@@ -230,6 +230,7 @@
 
   <button id="dec-calc" class="tool-cta" style="margin-top:14px">3通りを比較する</button>
   <div id="dec-result" class="result" style="display:none"></div>
+  <button id="copy-dec" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
   <div class="note" style="margin-top:12px">
     <b>この試算の前提</b>：本則課税・全額控除（課税売上割合95%以上）・中間納付なし・
@@ -270,6 +271,7 @@
 
   <button id="h-calc" class="tool-cta" style="margin-top:14px">4方式を比較する</button>
   <div id="h-result" class="result" style="display:none"></div>
+  <button id="copy-h" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
   <div class="note" style="margin-top:12px">
     <b>この試算の前提</b>：税率10%のみ・課税売上高が簡易課税や各特例の適用要件を満たしている・
@@ -678,6 +680,11 @@ $("h-calc").addEventListener("click", () => {
     <b>選択には届出と適用要件の確認が必要</b>です。簡易課税は原則として2年間継続します。</p>`;
 });
 
+
+/* ---------- 結果をコピー（共通部品） ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton($("copy-h"), $("h-result"));
+attachCopyButton($("copy-dec"), $("dec-result"));
 </script>
 </body>
 </html>

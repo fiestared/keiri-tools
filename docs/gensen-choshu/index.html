@@ -187,6 +187,7 @@
 
     <button class="primary" id="calcK">計算する</button>
     <div class="result" id="resultK"></div>
+    <button id="copy-k" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
   <!-- ── 賞与（算出率の表） ───────────────────────────── -->
@@ -247,6 +248,7 @@
 
     <button class="primary" id="calcS">計算する</button>
     <div class="result" id="resultS"></div>
+    <button id="copy-s" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
   <!-- ── 報酬・料金 ───────────────────────────────────── -->
@@ -267,6 +269,7 @@
 
     <button class="primary" id="calc">計算する</button>
     <div class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 </div>
 
@@ -680,8 +683,34 @@ $("calc").addEventListener("click", () => {
     <div class="note" style="margin-top:10px">
       <b>計算式</b>: ${r.formula}<br>
       ${t.explain}
+    </div>
+    <div style="margin-top:12px">
+      <b>仕訳例（支払う側・税抜経理）</b>
+      <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px;margin-top:6px">
+        <tr><th style="padding:6px 8px;text-align:left">借方</th><th style="padding:6px 8px;text-align:right">金額</th>
+            <th style="padding:6px 8px;text-align:left">貸方</th><th style="padding:6px 8px;text-align:right">金額</th></tr>
+        <tr><td style="padding:6px 8px">支払手数料（外注費など）</td><td style="padding:6px 8px;text-align:right">${yen(fee)}</td>
+            <td style="padding:6px 8px">普通預金</td><td style="padding:6px 8px;text-align:right">${yen(t.total - r.tax)}</td></tr>
+        ${rate > 0 ? `<tr><td style="padding:6px 8px">仮払消費税</td><td style="padding:6px 8px;text-align:right">${yen(t.total - fee)}</td>
+            <td style="padding:6px 8px">預り金（源泉所得税）</td><td style="padding:6px 8px;text-align:right">${yen(r.tax)}</td></tr>`
+          : `<tr><td style="padding:6px 8px"></td><td></td>
+            <td style="padding:6px 8px">預り金（源泉所得税）</td><td style="padding:6px 8px;text-align:right">${yen(r.tax)}</td></tr>`}
+      </table></div>
+      <div class="note" style="margin-top:8px">
+        納付するときは <b>（借）預り金 ${yen(r.tax)} ／（貸）普通預金 ${yen(r.tax)}</b>。
+        原則として<b>支払った月の翌月10日まで</b>に納付します（納期の特例の承認を受けている場合は年2回）。
+        勘定科目は自社の科目体系に合わせてください。<b>一般的な処理の例であり、個別の税務相談ではありません。</b>
+      </div>
     </div>`;
 });
+
+/* ---------- 結果をコピー（共通部品） ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+const gid = (x) => document.getElementById(x);
+attachCopyButton(gid("copy-result"), gid("result"));
+attachCopyButton(gid("copy-k"), gid("resultK"));
+attachCopyButton(gid("copy-s"), gid("resultS"));
 </script>
 </body>
 </html>
