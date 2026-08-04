@@ -67,6 +67,7 @@ const ORDER = [
   "nenshu-no-kabe",
   "shakai-hoken-fuyo-joken",
   "yukyu-kaitori",
+  "juminzei-hikazei-border",     // 住民税非課税のボーダー（2026-08-05 新規）
   "juminzei-tokubetsu-choshu",
   "zangyodai-keisan",
   "invoice-2wari-tokurei",
@@ -131,7 +132,7 @@ const CATEGORIES = [
     desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務。",
     slugs: [
       "tedori-keisan", "zangyodai-keisan", "kotei-zangyodai", "tsukin-teate-hikazei",
-      "juminzei-tokubetsu-choshu",
+      "juminzei-tokubetsu-choshu", "juminzei-hikazei-border",
     ],
   },
   {
