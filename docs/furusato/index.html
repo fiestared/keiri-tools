@@ -186,7 +186,7 @@
   <div class="hint"><b>16歳未満の子は扶養控除が1円もつきません</b>（平成24年に廃止）が、<b>入力してください</b>。<b>住民税の非課税限度額の「扶養親族の数」には入る</b>ので、所得が低い方は<b>子どもの有無で「そもそも所得割が非課税＝限度額0円」に変わることがあります</b>（地方税法附則3条の3）。所得割がかかる方は限度額は変わりません。</div>
 
   <details style="margin-top:12px">
-    <summary>その他の控除（生命保険料・ひとり親・障害者・給与以外の所得など）</summary>
+    <summary>その他の控除（<b>住宅ローン控除</b>・生命保険料・ひとり親・障害者・給与以外の所得など）</summary>
     <div style="margin-top:10px">
       <label for="sonotaKojo">その他の所得控除（円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　生命保険料控除・地震保険料控除・iDeCoの掛金など</span></label>
       <input type="number" id="sonotaKojo" value="0" min="0" inputmode="numeric">
@@ -198,6 +198,12 @@
         <label for="fuyoDokyoRooya">同居老親等（70歳以上・同居）</label>
         <input type="number" id="fuyoDokyoRooya" value="0" min="0" max="20" inputmode="numeric">
       </div>
+  <label for="jutakuKoujo" style="margin-top:12px">住宅ローン控除の年間控除額（円・分かる場合）</label>
+  <input type="number" id="jutakuKoujo" placeholder="例: 200000" inputmode="numeric">
+  <div class="hint" style="font-size:12.5px;margin-top:5px">
+    年末残高×0.7％など、その年に使える控除額。<b>入れると限度額への影響を計算します</b>
+    （所得税で引ききれない分が住民税の所得割を減らし、その分だけふるさと納税の限度額も下がります）。
+  </div>
 
       <label style="font-weight:400;display:block;margin-top:10px">
         <input type="checkbox" id="hitorioya"> ひとり親
@@ -230,6 +236,7 @@
 
   <button class="primary" id="calc">限度額を計算する</button>
   <div class="result" id="result"></div>
+  <div id="jutaku-adj"></div>
 </div>
 
 <article>
@@ -520,6 +527,9 @@
 
 <script type="module">
 import { calc, shakaiHokenGaisan } from "../assets/juminzei_core.js";
+import { shotokuzeiKisoKojo } from "../assets/juminzei_core.js";
+import { shotokuzei, haigushaKojo, fuyoKojoTotal } from "../assets/setsuzei_core.js";
+import { juminzeiKoujo } from "../assets/jutaku_core.js";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
@@ -527,11 +537,13 @@ const pct = (x1000) => (x1000 / 1000).toLocaleString("ja-JP", { maximumFractionD
 
 // 税率・控除額・社会保険料率は非同期で届く。**どちらも答えの一部**なので、届く前に押されても待つ
 // （回線が遅い人だけ空データで計算され、限度額が過大に出る事故を防ぐ = fail closed）。
-let D = null, S = null;
+let D = null, S = null, Z = null, JT = null;
 const dataReady = Promise.all([
   fetch("../assets/juminzei_r08.json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
   fetch("../assets/shaho_rates_r08.json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }),
-]).then(([d, s]) => { D = d; S = s; return true; }).catch(() => false);
+  fetch("../assets/setsuzei_r08.json").then(r => r.ok ? r.json() : null).catch(() => null),
+  fetch("../assets/jutaku_r07.json").then(r => r.ok ? r.json() : null).catch(() => null),
+]).then(([d, s, z, jt]) => { D = d; S = s; Z = z; JT = jt; return true; }).catch(() => false);
 
 // 都道府県プルダウンと出典表示は飾り。ここで転んでも計算は止めない
 dataReady.then(ok => {
@@ -609,6 +621,8 @@ $("calc").addEventListener("click", async () => {
     zeisei: "r8",
   }, D);
 
+  renderJutakuAdj(r, shakai, family);
+
   if (r.shotokuwari <= 0) {
     // ★所得割が0円になる理由は2つあり、**画面に出す説明を取り違えてはいけない**。
     //   (a) 非課税限度額以下 … 課税総所得は0でないのに、法が所得割を課さない（附則3条の3）
@@ -680,6 +694,64 @@ function renderKifu(r, kifu) {
       <tr><th>控除の合計</th><td><b>${yen(k.total)}</b></td></tr>
       <tr><th>実質の自己負担</th><td><b>${yen(k.jikoFutan)}</b>（寄附額 ${yen(kifu)} − 控除 ${yen(k.total)}）</td></tr>
     </table>`;
+}
+
+/**
+ * 住宅ローン控除がふるさと納税の限度額をどれだけ下げるかを出す。
+ * ★仕組み: 所得税で引ききれなかった住宅ローン控除は住民税の所得割から引かれる。
+ *   ふるさと納税の特例控除の上限は「所得割額の20％」なので、所得割が減れば限度額も減る。
+ * ★対応できない控除（障害者・寡婦・ひとり親・勤労学生）があるときは数字を出さない。
+ */
+function renderJutakuAdj(r, shakai, family) {
+  const box = $("jutaku-adj");
+  if (!box) return;
+  box.innerHTML = "";
+  const koujo = Number($("jutakuKoujo").value || 0);
+  if (!(koujo > 0)) return;
+  if (!Z || !JT) {
+    box.innerHTML = `<div class="callout" style="margin-top:12px">住宅ローン控除の参照データを読み込めなかったため、影響を計算していません。</div>`;
+    return;
+  }
+  const unsupported = family.shogaiIppan || family.honninShogai || family.kafu
+    || family.hitorioyaHaha || family.hitorioyaChichi || family.kinroGakusei;
+  if (unsupported) {
+    box.innerHTML = `<div class="callout" style="margin-top:12px">
+      <b>障害者・寡婦・ひとり親・勤労学生の控除があるため、住宅ローン控除の影響は計算していません。</b>
+      これらは所得税と住民税で控除額が違い、この画面では所得税側を計算していないため、
+      所得税額を実際より多く見積もって<b>限度額を過大に出すおそれ</b>があります。</div>`;
+    return;
+  }
+
+  // 所得税の課税所得 →（適用前の）所得税額
+  const kiso = shotokuzeiKisoKojo(r.goukeiShotoku, D, "r8");
+  const haigu = family.haigusha === "none" ? { shotoku: 0 }
+    : haigushaKojo({ honninShotoku: r.goukeiShotoku, haiguShotoku: 0, rojin: family.haigusha === "rojin" }, Z);
+  const fuyo = fuyoKojoTotal({
+    ippan: family.fuyoIppan, tokutei: family.fuyoTokutei,
+    rojin: family.fuyoRojin, dokyo_rooya: family.fuyoDokyoRooya,
+  }, Z);
+  const kazei = Math.max(0, Math.floor((r.goukeiShotoku
+    - (shakai + Number($("sonotaKojo").value || 0) + kiso + (haigu.shotoku || 0) + fuyo.shotoku)) / 1000) * 1000);
+  const zei = shotokuzei(kazei, Z);
+  const k = juminzeiKoujo(koujo, zei, kazei, JT);
+
+  const shotokuwariAfter = Math.max(0, r.shotokuwari - k.juminzeiKoujoGaku);
+  const ritsu = r.tokureiRitsu.pct_x1000 / 100000;
+  const gendoAfter = shotokuwariAfter > 0 ? Math.floor((shotokuwariAfter * 0.2) / ritsu) + 2000 : 2000;
+  const sagaku = r.furusatoGendo - gendoAfter;
+
+  box.innerHTML = `
+    <div class="callout" style="margin-top:12px">
+      <b>住宅ローン控除を考慮した限度額は ${yen(gendoAfter)}</b>
+      （考慮しない場合 ${yen(r.furusatoGendo)} から <b>${yen(sagaku)} 下がります</b>）<br>
+      <span class="hint">
+      控除可能額 ${yen(k.koujoKanou)} のうち、所得税から ${yen(k.shotokuzeiKoujo)}、
+      住民税から ${yen(k.juminzeiKoujoGaku)}（上限 ${yen(k.juminzeiCapB)}）が引かれます。
+      住民税の所得割が ${yen(r.shotokuwari)} → ${yen(shotokuwariAfter)} に下がるぶん、
+      特例控除の枠（所得割の20％）も小さくなります。
+      ${k.kirisute > 0 ? `なお ${yen(k.kirisute)} はどちらの税からも引けず切り捨てになります。` : ""}
+      </span>
+    </div>`;
 }
 </script>
 </body>
