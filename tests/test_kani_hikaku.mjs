@@ -53,8 +53,15 @@ assert.equal(TOKUREI.sanwari.individualOnly, true);
 
 // ── 端と異常系 ──────────────────────────────────────────────────
 assert.equal(compareMethods({ salesIncTax: 0, kubun: 5 }).best.amount, 0);
-// 仕入税額が売上税額を超えても納付額は負にしない（還付は別の話なので0で止める）
-assert.equal(amountOf(compareMethods({ salesIncTax: 1_100_000, purchaseIncTax: 3_300_000, kubun: 5 }), "honsoku"), 0);
+// ★仕入税額が売上税額を超える年（設備投資・輸出免税）は本則が還付になる。0で潰さない。
+//   簡易・2割・3割では還付は生じないので、この非対称が比較の核心（2026-08-04 レビュー指摘）
+{
+  const x = compareMethods({ salesIncTax: 1_100_000, purchaseIncTax: 3_300_000, kubun: 5 });
+  assert.equal(amountOf(x, "honsoku"), -200_000, "売上税額10万 − 仕入税額30万 = △20万（還付）");
+  assert.equal(x.methods.find((m) => m.key === "honsoku").refund, true);
+  assert.equal(amountOf(x, "kani"), 50_000, "簡易は還付にならない");
+  assert.equal(x.best.key, "honsoku", "還付が出る年は本則が最小");
+}
 assert.throws(() => compareMethods({ salesIncTax: 1000, kubun: 7 }), /事業区分/);
 assert.throws(() => compareMethods({ salesIncTax: -1, kubun: 5 }), /0以上/);
 

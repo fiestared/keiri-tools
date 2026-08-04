@@ -489,7 +489,6 @@ function renderHandoff(r, shakai, family) {
 
   const links = [
     ["ideco-setsuzei", "iDeCoの節税額"],
-    ["furusato", "ふるさと納税の上限"],
     ["seimei-hoken-kojo", "生命保険料控除"],
     ["shokibo-kyosai", "小規模企業共済"],
     ["jishin-hoken-kojo", "地震保険料控除"],
@@ -516,6 +515,12 @@ function renderHandoff(r, shakai, family) {
       ${haigu.shotoku ? "− 配偶者控除 " + yen(haigu.shotoku) + " " : ""}${fuyo.shotoku ? "− 扶養控除 " + yen(fuyo.shotoku) + " " : ""}
       − その他の所得控除 ${yen(Number($("sonotaKojo").value || 0))}</span>
       <div style="margin-top:8px">この課税所得で試す: ${links}</div>
+      <div class="hint" style="margin-top:6px">
+        ★<a href="../furusato/">ふるさと納税の上限</a>は課税所得ではなく<b>年収と家族構成</b>から計算するので、
+        この数字は渡していません（このページと同じ条件をあちらでも入力してください）。<br>
+        「その他の所得控除」は所得税ベースの額として扱っています。生命保険料控除・地震保険料控除は
+        住民税では上限が小さい（生保7万・地震2.5万）ため、住民税側の結果はやや控えめに出ます。
+      </div>
     </div>`;
 }
 </script>

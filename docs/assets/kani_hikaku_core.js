@@ -63,7 +63,10 @@ export function compareMethods(input) {
     {
       key: "honsoku",
       label: "本則課税",
-      amount: round(Math.max(0, salesTax - purchaseTax)),
+      // ★0で潰さない。仕入税額が売上税額を超える年（設備投資・輸出免税など）は還付になる。
+      //   簡易課税・2割特例では還付が生じないので、この非対称こそ比較の核心になる。
+      amount: round(salesTax - purchaseTax),
+      refund: salesTax - purchaseTax < 0,
       formula: "売上税額 − 仕入税額",
       dependsOnPurchase: true,
     },
