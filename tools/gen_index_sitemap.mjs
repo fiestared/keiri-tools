@@ -182,7 +182,17 @@ const STATIC_PAGES = [
   "shokibo-kyosai/", "ideco-setsuzei/", "fuyo-kojo/", "haigusha-kojo/", "seimei-hoken-kojo/", "aoiro-kojo/", "tosan-boshi-kyosai/", "hitorioya-kojo/", "kinro-gakusei/", "seizen-zoyo/", "sozoku-toki-menkyozei/", "iryubun/", "shokibo-takuchi/", "jishin-hoken-kojo/", "hikazei-setai/", "fudosan-jouto/", "invoice-bangou/", "kotei-shisanzei/", "fudosan-shutoku/", "kokuho/", "nenkin/", "toroku-menkyozei/", "chukai-tesuryo/", "izoku/", "zaishoku/", "saishushoku/", "kogaku-ryoyohi/", "kokunen-menjo/",
   // "ext/amazon-receipt/" は 2026-08-03 に提供終了(ストア掲載削除済み)。ページごと削除したので載せない
   "column/", "about/", "privacy/", "contact/", "embed/",
+  "nenshu/",
 ];
+
+/** 年収別ページ（tools/gen_nenshu_pages.mjs が生成）。★固定リストにせず実体を走査する。
+ *  刻みや範囲を変えたときに、ここを直し忘れて sitemap から漏れるのを防ぐ。 */
+const NENSHU_PAGES = existsSync(join(DOCS, "nenshu"))
+  ? readdirSync(join(DOCS, "nenshu"))
+      .filter((n) => statSync(join(DOCS, "nenshu", n)).isDirectory()
+        && existsSync(join(DOCS, "nenshu", n, "index.html")))
+      .map((n) => `nenshu/${n}/`)
+  : [];
 
 const strip = (s) => s.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
@@ -251,7 +261,7 @@ const lastmodOf = (file) => {
 };
 
 const urls = [
-  ...STATIC_PAGES.map((p) => ({ loc: `https://keiri-tools.com/${p}`, file: join(DOCS, p, "index.html") })),
+  ...[...STATIC_PAGES, ...NENSHU_PAGES].map((p) => ({ loc: `https://keiri-tools.com/${p}`, file: join(DOCS, p, "index.html") })),
   ...articles.map((a) => ({ loc: `https://keiri-tools.com/column/${a.slug}/`,
                             file: join(COLUMN, a.slug, "index.html") })),
 ];
