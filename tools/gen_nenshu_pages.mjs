@@ -101,8 +101,16 @@ ${noindex ? '<meta name="googlebot" content="noindex, follow">' : ""}
 <header class="site"><a href="../../">経理ミニツールズ</a><nav><a href="../../#tools">ツール</a><a href="../../column/">コラム</a></nav></header>
 <main>`;
 
+// ★X への導線をここに持つ（2026-08-06）。
+//   元は無く、`tools/gen_x_link.mjs` を後から流して足す運用になっていた。
+//   そのため**このファイルを再生成するたびに導線が消え、test_x_link が赤になる**。
+//   実測: 生成 → test_x_link 緑 → 再生成 → 赤、を確認して直した。
+//   x-link:auto の印は gen_x_link.mjs が「既に入っている」と判定するための目印なので必ず残す
+//   （消すと二重に挿入される）。
 const FOOT = `</main>
-<footer class="site"><div><a href="../../about/">運営者</a>／<a href="../../privacy/">プライバシー</a>／<a href="../../contact/">お問い合わせ</a></div><div class="copy">© 経理ミニツールズ</div></footer>
+<footer class="site"><div><a href="../../about/">運営者</a>／<a href="../../privacy/">プライバシー</a>／<a href="../../contact/">お問い合わせ</a></div><div class="copy">© 経理ミニツールズ</div>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
 </body>
 </html>
 `;
