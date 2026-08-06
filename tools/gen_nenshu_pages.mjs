@@ -55,7 +55,24 @@ function figures(shunyu) {
 const rows = INCOMES.map(figures);
 const byIncome = new Map(rows.map((f) => [f.shunyu, f]));
 
-const HEAD = (title, desc, canonical) => `<!DOCTYPE html>
+/**
+ * @param noindex **Googleにだけ**索引させないか。個別50ページは true、一覧は false。
+ *
+ * ★なぜ Google だけ外すか（2026-08-06）
+ *   このディレクトリは同一テンプレで数字だけが違う50ページで、Googleの
+ *   「スケールされたコンテンツの悪用」の型に当てはまる。2026-07-22 の AdSense 却下
+ *   （有用性の低いコンテンツ）で挙がった原因のひとつがこのパターンだった。
+ *   ★実測(GSC 2026-07-06〜08-03): **この50ページは1ページも表示を獲得していない。**
+ *     Googleは既にクロールしたうえで索引していない＝Google向けには何も生んでいない。
+ *     外しても失うものが無い一方、審査では不利に働く。
+ *   ★Bingは主要な流入元（keiri-tools の流入はBing主力）なので絶対に止めない。
+ *     だから `robots` ではなく `googlebot` 指定。**robots 全体に noindex を付けないこと。**
+ *   ★一覧（/nenshu/）は残す。50行を1枚で比較できる実データのページで、薄い個別ページとは別物。
+ *     ここを一緒に外すと、このディレクトリで唯一Googleに出す価値のあるページまで消える。
+ *
+ *   厚くする／1ページに統合する等で価値が出せたら、この指定を消して再度Googleに出す。
+ */
+const HEAD = (title, desc, canonical, noindex = true) => `<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="utf-8">
@@ -66,6 +83,7 @@ const HEAD = (title, desc, canonical) => `<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
+${noindex ? '<meta name="googlebot" content="noindex, follow">' : ""}
 <link rel="stylesheet" href="../../assets/style.css">
 <link rel="canonical" href="${canonical}">
 <!-- Google Analytics (GA4) -->
@@ -241,6 +259,7 @@ const indexHtml = HEAD(
   "年収別の手取り・住民税の早見表｜経理ミニツールズ",
   "年収200万円から800万円まで25万円刻みで、手取り（社会保険料・住民税を引いた額）と住民税の内訳を計算しました。東京都・40歳・独身の条件で、前後の年収との差も出しています。",
   "https://keiri-tools.com/nenshu/",
+  false,   // ★一覧はGoogleにも出す（50行を1枚で比較できる実データ。薄い個別ページとは別物）
 ).replace('href="../../', 'href="../').replace(/href="\.\.\/\.\.\//g, 'href="../') + `
 <nav class="breadcrumb">ホーム › 年収別</nav>
 <article>
