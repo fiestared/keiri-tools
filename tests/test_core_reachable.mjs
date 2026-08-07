@@ -100,6 +100,30 @@ t('どのページからも辿り着けない *_core.js が無い', () => {
     + '\n   ★同じ機能のツールが既に公開されていないか先に確かめること（重複は共食いする）。');
 });
 
+// ★2026-08-07 追加: **そのページが自分のコアを読んでいるか**を見る。
+//   上の孤児検査は「**どこかのページから**辿れるか」しか見ない。だから
+//   `/nenkin/` が nenkin_core を読むのをやめて別のコアを読むように壊しても、
+//   nenkin_core が他から辿れている限り**緑のまま**だった
+//   （break_nenkin_page が「素通し・検査に穴がある」と報告していた 12/13）。
+//   ページが自分の計算コアを失えば、そのツールは黙って別物の答えを出すか、動かなくなる。
+//   規約: `docs/<名前>/` に対して `<名前>_core.js`（ハイフンはアンダースコアに）が存在するなら、
+//   そのページはそれを読んでいること。★実測で 32/32 成立している規約なので検査にできる。
+t('ディレクトリ名と同名のコアがあるページは、そのコアを読んでいる', () => {
+  const broken = [];
+  for (const page of htmlFiles) {
+    const rel = page.slice(docs.length + 1);              // 例: nenkin/index.html
+    const parts = rel.split('/');
+    if (parts.length !== 2 || parts[1] !== 'index.html') continue;   // 直下のツールだけ見る
+    const expect = parts[0].replace(/-/g, '_') + '_core.js';
+    if (!coreFiles.includes(expect)) continue;            // 同名のコアが無いページは対象外
+    if (!readFileSync(page, 'utf8').includes(expect)) broken.push(`${rel} → ${expect}`);
+  }
+  assert.strictEqual(broken.length, 0,
+    `自分の名前のコアを読んでいないページが ${broken.length} 個ある:\n   `
+    + broken.map((b) => `- ${b}`).join('\n   ')
+    + '\n   → ページが計算コアを失うと、黙って別物の答えを出すか動かなくなる。');
+});
+
 t('EXEMPT に書いた免除が、実際には到達できてしまう状態で残っていない', () => {
   const stale = Object.keys(EXEMPT).filter((c) => reached.has(c) || !coreFiles.includes(c));
   assert.strictEqual(stale.length, 0,

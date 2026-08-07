@@ -16,6 +16,26 @@
 set -uo pipefail
 cd "$(dirname "$0")"
 
+# ★同時に2つ走らせない（2026-08-07 追加）。
+#   壊しテストは本番ファイルを一時的に書き換えて元に戻す。2つ同時に走ると
+#   互いの復元を潰し、**作業ツリーが汚れたまま残る**。この repo は自律ワーカーと
+#   共有していて、ワーカーがその汚れをそのまま commit する事故が実際に起きている。
+#   ★「気をつける」では守れなかった。同じ日に2回、自分で並行実行して踏んだので
+#     ランナー自身に排他を持たせる。
+LOCK=".run_tests.lock"
+if [ -d "$LOCK" ]; then
+  OWNER="$(cat "$LOCK/pid" 2>/dev/null)"
+  if [ -n "$OWNER" ] && kill -0 "$OWNER" 2>/dev/null; then
+    echo "★別の run_tests.sh が実行中（pid $OWNER）。同時実行は作業ツリーを汚すので中止します。"
+    exit 2
+  fi
+  echo "★残骸ロック（pid ${OWNER:-不明} は不在）を掃除して続行します。"
+  rm -rf "$LOCK"
+fi
+mkdir "$LOCK" 2>/dev/null || { echo "★ロックを取れませんでした。中止します。"; exit 2; }
+echo $$ > "$LOCK/pid"
+trap 'rm -rf "$LOCK"' EXIT
+
 QUIET=""
 [ "${1:-}" = "-q" ] && { QUIET=1; shift; }
 FILTER="${1:-}"

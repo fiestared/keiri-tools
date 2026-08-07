@@ -315,6 +315,38 @@ for (const m of (desc.match(/\d{1,3}(,\d{3})+/g) || [])) {
   ok(money.has(m), `meta descriptionの ${m} が本文に無い（食い違い）`);
 }
 
+// ── オラクル: 「毎年N月N日に改定」がデータの改定日と一致するか ──────────────
+// ★2026-08-07 追加。壊しテストが「毎年8月1日に改定 → 毎年4月1日に改定」を
+//   **素通しする**と報告していた（33/34捕捉）。金額は全部照合していたのに、
+//   **いつ変わるか**を誰も見ていなかった。
+//   改定日を間違えると、読者は「まだ古い額でいい」「もう変わったはず」を逆に判断する。
+//   料率JSONの applies_from（例 2026-08-01）と next_revision（2027-08-01）から
+//   月日を取り、記事の文言と突き合わせる。データが変われば検査も自動で追随する。
+{
+  const md = (iso) => {
+    const m = /^\d{4}-(\d{2})-(\d{2})$/.exec(iso || "");
+    return m ? { m: +m[1], d: +m[2] } : null;
+  };
+  const from = md(D._meta?.applies_from);
+  const next = md(D._meta?.next_revision);
+  ok(from, `料率JSONに applies_from が無い（改定日を検証できない）`);
+  if (from) {
+    // 記事が名乗っている「毎年N月N日に改定」を全部拾って、データと一致するか見る
+    const claims = [...text.matchAll(/毎年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*日\s*に\s*改定/g)]
+      .map((x) => ({ m: +x[1], d: +x[2] }));
+    ok(claims.length > 0, "記事に「毎年N月N日に改定」の記述が無い（改定日の説明が消えた）");
+    for (const c of claims) {
+      ok(c.m === from.m && c.d === from.d,
+        `記事の改定日「毎年${c.m}月${c.d}日」がデータと食い違う（applies_from=${D._meta.applies_from}）`);
+    }
+    // next_revision も同じ月日であるべき（毎年同じ日に改定される制度なので）
+    if (next) {
+      ok(next.m === from.m && next.d === from.d,
+        `料率JSONの applies_from と next_revision の月日が食い違う（${D._meta.applies_from} / ${D._meta.next_revision}）`);
+    }
+  }
+}
+
 console.log(fail === 0
   ? `✓ 再就職手当の記事: ${checks} checks 全て一致（上限は料率JSON×条文の率から導出）`
   : `✗ 再就職手当の記事: ${fail}/${checks} 件が不一致`);
