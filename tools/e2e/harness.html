@@ -1573,6 +1573,11 @@ const juminzeiScene = (inp) => async () => {
     kintouwari: num(/均等割・森林環境税 ¥([\d,]+)/),
     // ★「均等割だけ課税される帯」に入った人に、画面がそれを名指しで言うこと
     showsKintouOnly: /この方は「均等割だけ」がかかります/.test(body),
+    // ★令和8・9年は措法29条の4で給与所得控除が定額74万円（収入220万円以下）。
+    //   これで所得が下がり、年少扶養のシーンは「均等割のみ」から「全部非課税」に変わった。
+    //   どちらの結論なのかを別々の項目で持つ（total===0 だけだと理由が分からない）。
+    hikazei: /住民税 ¥0（非課税）/.test(body),
+    kintouGendo: (body.match(/均等割の非課税限度額\s*¥([\d,]+)/) || [])[1] || null,
     // ★森林環境税を内訳として名乗ること（「復興特別税1,000円」ではない）
     showsShinrin: /森林環境税（国税）¥1,000/.test(body),
     failed: body.includes("読み込めませんでした"),
@@ -1587,6 +1592,12 @@ SCENES.juminzei = juminzeiScene({ shunyu: 5000000, shakai: 700000 });
 SCENES.juminzei_nensho = juminzeiScene({ shunyu: 1700000, shakai: 240000, fuyoNensho: 1, kyuchi: 1 });
 // ↑の対照: 同じ所得で子がいなければ所得割も課税され 40,500円になる
 SCENES.juminzei_nensho_nashi = juminzeiScene({ shunyu: 1700000, shakai: 240000, fuyoNensho: 0, kyuchi: 1 });
+// ★「均等割だけかかる」帯を残すために足したシーン（2026-08-08）。
+//   措法29条の4で所得が下がった結果、上の nensho は非課税に変わり、
+//   **均等割のみの経路を誰も見ていない状態**になった。
+//   収入180万・扶養1人 → 所得 1,800,000−740,000＝1,060,000。
+//   均等割の非課税限度額1,010,000は超え、所得割の非課税限度額1,120,000は超えない帯。
+SCENES.juminzei_kintou_nomi = juminzeiScene({ shunyu: 1800000, shakai: 240000, fuyoNensho: 1, kyuchi: 1 });
 // ★超過課税: 横浜市は市民税均等割3,900＋県民税1,300＋森林環境税1,000 = 6,200円（横浜市の公表額）
 //   所得割も指定都市の8%:2%＋神奈川県の超過課税0.025%が効く
 SCENES.juminzei_yokohama = juminzeiScene({ shunyu: 5000000, shakai: 700000, jichitai: "yokohama" });
