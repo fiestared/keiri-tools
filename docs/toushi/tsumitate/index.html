@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>積立シミュレーター｜信託報酬の差とNISA・特定口座の税金まで計算</title>
+<meta name="description" content="毎月の積立額・年数・想定利回りから将来の評価額を計算します。信託報酬を年率で差し引いた差額も同時に表示（0.09%と0.5%の差は月3万・20年・年5%で535,298円）。年利を12で割らず月次の複利で計算します。NISAの枠に収まるか、特定口座なら税金がいくらかも表示。登録不要・無料。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/toushi/tsumitate/">
+<!-- ogp:auto -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="積立シミュレーター｜信託報酬の差とNISA・特定口座の税金まで計算">
+<meta property="og:description" content="毎月の積立額・年数・想定利回りから将来の評価額を計算します。信託報酬を年率で差し引いた差額も同時に表示（0.09%と0.5%の差は月3万・20年・年5%で535,298円）。年利を12で割らず月次の複利で計算します。NISAの枠に収まるか、特定口座なら税金がいくらかも表示。登録不要・無料。">
+<meta property="og:url" content="https://keiri-tools.com/toushi/tsumitate/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="経理ミニツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Q. 想定利回りは何%にすればいいですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 当サイトでは推奨値を置いていません。過去の指数の実績を参考にする方が多いですが、過去の成績は将来を保証しません。複数の値を入れて、幅で見ることをおすすめします。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 信託報酬0.1%の差はそんなに大きいですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 月3万円・20年・年5%の前提では、0.09%と0.5%で535,298円の差になります。率の差は小さく見えても、積立額と年数が大きいほど効きます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. NISAの枠を使い切ったらどうなりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. それ以上は課税口座（特定口座など）での購入になり、利益に20.315%がかかります。なお、NISAで保有していた商品を売却すると、翌年以降にその簿価分の枠が復活します。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 元本割れしたときも税金はかかりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. かかりません。課税されるのは利益（評価額−元本）だけで、利益がゼロ以下なら税額もゼロです。このツールも同じ計算をしています。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 積立は月の初めと終わり、どちらで計算していますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 期初（その月の頭に買う）で統一しています。期末で計算すると1か月分だけ運用期間が短くなるため、他のシミュレーターと数字が少し違うことがあります。"
+      }
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../../">経理ミニツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../column/">コラム</a>
+    <a href="../">資産形成</a>
+  </nav>
+</header>
+<main>
+  <nav class="breadcrumb">ホーム › <a href="../">資産形成</a> › 積立シミュレーター</nav>
+  <h1>積立シミュレーター</h1>
+  <p class="lead">毎月の積立額と年数、それに<b>あなたが想定する利回り</b>を入れると、将来の評価額を計算します。<b>信託報酬が削る額</b>と、<b>出すときの税金</b>まで同時に出します。</p>
+
+  <div class="card">
+    <div class="fee-pair">
+      <div>
+        <label for="monthly">毎月の積立額（円）</label>
+        <input type="number" id="monthly" value="30000" min="0" step="1000" inputmode="numeric">
+      </div>
+      <div>
+        <label for="years">積立年数</label>
+        <input type="number" id="years" value="20" min="1" max="60" step="1" inputmode="numeric">
+      </div>
+    </div>
+    <div class="fee-pair">
+      <div>
+        <label for="rate">想定する年利回り（%）</label>
+        <input type="number" id="rate" value="5" min="0" max="30" step="0.1" inputmode="decimal">
+        <p class="hint">★この数字は<b>あなたが決める前提</b>です。当サイトは推奨値を置きません。</p>
+      </div>
+      <div>
+        <label for="fee">信託報酬（年率%）</label>
+        <input type="number" id="fee" value="0.09" min="0" max="5" step="0.01" inputmode="decimal">
+        <p class="hint">目論見書の「運用管理費用（信託報酬）」の年率です。</p>
+      </div>
+    </div>
+    <div class="result" id="result" aria-live="polite"></div>
+  </div>
+
+  <div class="toc-title">目次</div>
+  <ul class="toc">
+    <li><a href="#fukuri">年利を12で割ると数字がずれる</a></li>
+    <li><a href="#shintaku">信託報酬は「年率」でも毎日引かれている</a></li>
+    <li><a href="#zeikin">出すときの税金 — 利益にだけかかる</a></li>
+    <li><a href="#nisa">NISAの枠は「買った値段」で数える</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ul>
+
+  <h2 id="fukuri">年利を12で割ると数字がずれる</h2>
+  <p>年5%を月0.41667%（＝5÷12）として計算しているシミュレーターがあります。複利では正しくは <b>(1+年利)<sup>1/12</sup> − 1 ＝ 月0.40741%</b> です。</p>
+  <div class="callout">
+    <p>月3万円・20年・年5%で比べると、<b>12分割だと 12,382,389円</b>、<b>月次複利だと 12,223,733円</b>。<b>158,656円</b>ずれます。このツールは月次複利で計算しています。</p>
+  </div>
+
+  <h2 id="shintaku">信託報酬は「年率」でも毎日引かれている</h2>
+  <p>信託報酬は年率で表示されますが、実際は日割りで基準価額から差し引かれます。年に1回まとめて引く計算にすると複利のかかり方が変わるため、このツールは<b>月次に直して毎月差し引いて</b>います。</p>
+  <div class="callout">
+    <p>月3万円・20年・年5%の前提で、<b>信託報酬0.09%と0.5%の差は 535,298円</b>。率の差は0.41ポイントでも、20年の複利で効きます。</p>
+  </div>
+
+  <h2 id="zeikin">出すときの税金 — 利益にだけかかる</h2>
+  <p>特定口座（源泉徴収あり）で利益が出た場合、<b>利益に対して20.315%</b>（所得税15%＋復興特別所得税0.315%＋住民税5%）がかかります。<b>元本には税金はかかりません。</b></p>
+  <div class="callout">
+    <p>評価額1,000万円・元本720万円なら、課税されるのは利益の280万円だけで税額は<b>568,820円</b>です。評価額全体に20.315%を掛けると2,031,500円になり、<b>3.6倍の過大</b>になります。</p>
+  </div>
+
+  <h2 id="nisa">NISAの枠は「買った値段」で数える</h2>
+  <p>条文（租税特別措置法37条の14）は枠を<b>「取得対価の額の合計額」</b>で数えると書いています。つまり<b>買った値段</b>であり、値上がりしても枠は減りません。</p>
+  <div class="scroll-wrap">
+  <table id="nisa-hyo">
+    <tr><th>枠</th><th>金額</th></tr>
+    <tr><td>生涯の非課税投資枠</td><td><b>1,800万円</b></td></tr>
+    <tr><td>うち成長投資枠（生涯）</td><td><b>1,200万円</b></td></tr>
+    <tr><td>つみたて投資枠（年間）</td><td>120万円</td></tr>
+    <tr><td>成長投資枠（年間）</td><td>240万円</td></tr>
+  </table>
+  </div>
+  <p class="note">★「1,200万円」は<b>成長投資枠の生涯上限</b>であって年間の上限ではありません（年間は240万円）。混同すると5年分の見込みがずれます。</p>
+
+<section class="faq">
+<h2 id="faq">よくある質問</h2>
+<h3>Q. 想定利回りは何%にすればいいですか？</h3>
+<p>A. 当サイトでは推奨値を置いていません。過去の指数の実績を参考にする方が多いですが、<b>過去の成績は将来を保証しません</b>。複数の値を入れて、幅で見ることをおすすめします。</p>
+
+<h3>Q. 信託報酬0.1%の差はそんなに大きいですか？</h3>
+<p>A. 月3万円・20年・年5%の前提では、<b>0.09%と0.5%で535,298円</b>の差になります。率の差は小さく見えても、積立額と年数が大きいほど効きます。</p>
+
+<h3>Q. NISAの枠を使い切ったらどうなりますか？</h3>
+<p>A. それ以上は課税口座（特定口座など）での購入になり、利益に<b>20.315%</b>がかかります。なお、NISAで保有していた商品を売却すると、<b>翌年以降にその簿価分の枠が復活</b>します。</p>
+
+<h3>Q. 元本割れしたときも税金はかかりますか？</h3>
+<p>A. かかりません。課税されるのは<b>利益（評価額−元本）</b>だけで、利益がゼロ以下なら税額もゼロです。このツールも同じ計算をしています。</p>
+
+<h3>Q. 積立は月の初めと終わり、どちらで計算していますか？</h3>
+<p>A. <b>期初</b>（その月の頭に買う）で統一しています。期末で計算すると1か月分だけ運用期間が短くなるため、他のシミュレーターと数字が少し違うことがあります。</p>
+</section>
+
+<h2 id="shutten">出典</h2>
+<p class="note"><a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">租税特別措置法</a> 37条の14（非課税口座内の少額上場株式等に係る配当所得及び譲渡所得等の非課税＝NISAの枠）・37条の10（上場株式等の譲渡所得等）。地方税法（住民税5%）。復興財源確保法13条（復興特別所得税＝所得税額の2.1%）。条文は e-Gov 法令API v2 で実読しています（2026-08-08 確認）。</p>
+
+<section class="faq rel-block">
+<h2>関連する解説</h2>
+<!--rel:S--><!--rel:E-->
+</section>
+</main>
+<footer class="site">
+  計算結果は入力した前提での試算です。投資には元本割れの可能性があり、将来の成果を保証するものではありません。当サイトは金融商品取引業者ではなく、特定の商品の取得を勧めるものではありません。データはブラウザの外へ送信されません。<br>
+  © 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script type="module">
+import { simulate, afterTax, nisaRoom } from "../../assets/tsumitate_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+// ★参照データ（NISAの枠・税率）は非同期で届く。**届く前に計算しない**。
+//   待たずに描くと、回線が遅い人だけが枠や税率を知らないまま答えを見る。
+let D = null;
+const dataReady = fetch("../../assets/tsumitate_r08.json")
+  .then((r) => r.json())
+  .then((d) => { D = d; return true; })
+  .catch(() => false);
+
+async function render() {
+  const arrived = await dataReady;
+  if (!arrived || !D) {
+    $("result").innerHTML = '<p class="hint">NISAの枠と税率のデータを<b>読み込めませんでした</b>。'
+      + '通信環境をご確認のうえ再読み込みしてください。読み込めていない状態では計算しません。</p>';
+    return;
+  }
+  const monthlyYen = Number($("monthly").value) || 0;
+  const years = Number($("years").value) || 0;
+  const annualPct = Number($("rate").value) || 0;
+  const feePct = Number($("fee").value) || 0;
+
+  const s = simulate({ monthlyYen, years, annualPct, feePct });
+  const t = afterTax(s.net, s.principal, D);
+  const room = nisaRoom({ monthlyYen, years }, D);
+
+  const overLine = room.overShogai
+    ? `<div class="note" style="margin-top:10px"><b id="over-shogai">生涯の非課税投資枠1,800万円を超えます</b> — この条件だと${room.yearsToFill}年で埋まる計算です（枠は<b>買った値段</b>で数えます）。超えた分は課税口座での購入になります。</div>`
+    : "";
+  const overTsumitate = room.overTsumitate
+    ? `<div class="note" style="margin-top:10px"><b id="over-tsumitate">年間${yen(room.yearlyYen)}はつみたて投資枠（年120万円）を超えます</b> — 超える分は成長投資枠（年240万円）を使う形になります。</div>`
+    : "";
+
+  $("result").innerHTML = `
+    <div class="big">${yen(s.net)}<span style="font-size:15px;font-weight:600">（${years}年後の評価額）</span></div>
+    <div class="hint" style="margin-bottom:10px">信託報酬${feePct}%を差し引いた場合。月次の複利・期初積立で計算しています。</div>
+    <table class="res">
+      <tr><th>積み立てた元本</th><td id="principal">${yen(s.principal)}</td></tr>
+      <tr><th>運用で増えた分</th><td>${yen(s.net - s.principal)}</td></tr>
+      <tr><th>★信託報酬が削った額</th><td id="fee-cost"><b>${yen(s.feeCost)}</b>（信託報酬0%なら ${yen(s.gross)}）</td></tr>
+    </table>
+    <table class="res" style="margin-top:10px">
+      <tr><th>NISA（非課税）の手取り</th><td><b id="nisa-net">${yen(t.nisa)}</b></td></tr>
+      <tr><th>特定口座の手取り</th><td id="tokutei-net">${yen(t.tokuteiKouza)}</td></tr>
+      <tr><th>税額（利益 ${yen(t.gain)} × ${D.kazei.goukei_pct}%）</th><td id="tax">${yen(t.tax)}</td></tr>
+    </table>
+    ${overLine}${overTsumitate}
+    <div class="note" style="margin-top:12px">
+      ★これは入力した前提での<b>計算例</b>です。実際の運用成績・分配金の扱い・売却のタイミング・
+      為替・購入時手数料は含んでいません。投資には元本割れの可能性があり、将来の成果を保証するものではありません。
+      当サイトは金融商品取引業者ではなく、特定の商品を勧めるものではありません。
+    </div>`;
+}
+
+for (const id of ["monthly", "years", "rate", "fee"]) {
+  $(id).addEventListener("input", render);
+  $(id).addEventListener("change", render);
+}
+render();
+</script>
+</body>
+</html>

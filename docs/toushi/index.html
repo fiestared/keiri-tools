@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>資産形成の計算ツール｜積立・NISA・信託報酬・出口の税金</title>
+<meta name="description" content="毎月いくら積み立てると将来いくらになるか、信託報酬0.1%の差が20年でいくらになるか、NISAと特定口座で手取りがどれだけ変わるかを計算します。銘柄の推奨はしません。数字は租税特別措置法37条の14などの条文から取り、計算はブラウザ内で完結します。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/toushi/">
+<!-- ogp:auto -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="資産形成の計算ツール｜積立・NISA・信託報酬・出口の税金">
+<meta property="og:description" content="毎月いくら積み立てると将来いくらになるか、信託報酬0.1%の差が20年でいくらになるか、NISAと特定口座で手取りがどれだけ変わるかを計算します。銘柄の推奨はしません。数字は租税特別措置法37条の14などの条文から取り、計算はブラウザ内で完結します。">
+<meta property="og:url" content="https://keiri-tools.com/toushi/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="経理ミニツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav>
+    <a href="../#tools">ツール</a>
+    <a href="../column/">コラム</a>
+    <a href="./" aria-current="page">資産形成</a>
+  </nav>
+</header>
+<main>
+  <h1>資産形成の計算ツール</h1>
+  <p class="lead">給与から毎月いくら回せて、それが将来いくらになり、<b>出すときにいくら税金がかかるか</b>を計算します。このセクションは<b>算数と条文だけ</b>で作っていて、商品の推奨はしません。</p>
+
+  <div class="callout" id="stance">
+    <p><b>このセクションでやらないこと</b></p>
+    <ul>
+      <li><b>銘柄・商品を勧めません。</b>「どのファンドを買うべきか」は書きません</li>
+      <li><b>利回りはあなたが入力します。</b>こちらで「年◯%」と置きません（過去の実績は将来を保証しません）</li>
+      <li><b>あなたの資産や家族構成に合わせた提案はしません。</b>入力した前提での計算例だけを出します</li>
+      <li><b>有料化・会員登録・個別相談はしません。</b>入力値はブラウザの外へ出ません</li>
+    </ul>
+    <p class="note">当サイトは金融商品取引業者ではありません。投資には元本割れの可能性があり、計算結果は将来の成果を保証するものではありません。</p>
+  </div>
+
+  <div class="section-head" id="tools"><h2>ツール</h2></div>
+  <div class="tool-grid">
+    <a class="tool-card" href="tsumitate/">
+      <div class="ico"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M6 21V9"/><path d="M11 21V5"/><path d="M16 21v-8"/><path d="M21 21V3"/></svg></div>
+      <div>
+        <div class="name">積立シミュレーター（信託報酬つき）</div>
+        <div class="desc">毎月の積立額・年数・<b>あなたが想定する利回り</b>から将来の評価額を計算します。★<b>信託報酬を年率で差し引いた場合の差額</b>も同時に出します（0.09%と0.5%の差は月3万・20年・年5%の前提で<b>535,298円</b>）。★年利を12で割らずに<b>月次の複利</b>で計算します（12分割だと同じ条件で158,656円ずれます）。NISAの枠に収まるか、特定口座なら税金がいくらかも表示。</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="section-head"><h2>このセクションの数字の出どころ</h2></div>
+  <p>NISAの枠は<b>租税特別措置法37条の14</b>を e-Gov 法令API で実読しています（生涯1,800万円・うち成長投資枠1,200万円・年間はつみたて120万円と成長240万円）。譲渡益の税率20.315%は同法37条の10・地方税法・復興財源確保法13条によります。<a href="../about/">このサイトについて</a>に検証のやり方を書いています。</p>
+
+  <div class="callout">
+    <p><b>枠は「買った値段」で数えます。</b>値上がりしても枠は減りません（条文が「取得対価の額の合計額」と書いているため）。時価で数える計算は、上がった人ほど枠を少なく見せます。</p>
+  </div>
+
+  <div class="section-head"><h2>税金・社会保険のツールもあります</h2></div>
+  <p>毎月いくら回せるかは、手取りが分からないと決まりません。<a href="../tedori/">手取り計算機</a>・<a href="../ideco-setsuzei/">iDeCo節税シミュレーター</a>・<a href="../furusato/">ふるさと納税の限度額</a>・<a href="../taishokukin/">退職金の税金</a>もあわせてお使いください。</p>
+</main>
+<footer class="site">
+  計算結果は入力した前提での試算です。投資には元本割れの可能性があり、将来の成果を保証するものではありません。当サイトは金融商品取引業者ではなく、特定の商品の取得を勧めるものではありません。データはブラウザの外へ送信されません。<br>
+  © 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+</body>
+</html>
