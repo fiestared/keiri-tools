@@ -140,27 +140,96 @@ export function buildSections(rows) {
   return out.join('\n');
 }
 
+// ---------------------------------------------------------------------------
+// 金額から銀行を引く「逆引き」表
+// ---------------------------------------------------------------------------
+
+export const AMT_START = '<!-- AMOUNT_INDEX:START 自動生成。手で編集しない。tools/gen_bank_sections.mjs -->';
+export const AMT_END = '<!-- AMOUNT_INDEX:END -->';
+
+/**
+ * 金額(円) → その金額になる区分の一覧。**同じ fee_table.json から作る**。
+ * ★3万円未満と以上が同額の区分は「金額不問」として1件にまとめる
+ *   （2行に割ると、定額の銀行が同じ金額の欄に二重に出て読みにくいだけで、情報が増えない）。
+ */
+export function amountMap(rows) {
+  const yen = (s) => Number(String(s).replace(/[^0-9]/g, ''));
+  const m = new Map();
+  const add = (v, name, range) => {
+    if (!Number.isFinite(v) || v <= 0) throw new Error(`${name} の金額を数値にできません（fee_table.json が壊れている）`);
+    if (!m.has(v)) m.set(v, []);
+    m.get(v).push({ name, range });
+  };
+  for (const r of rows) {
+    if (!r.boundary) add(yen(r.under), r.name, '金額不問');
+    else { add(yen(r.under), r.name, '3万円未満'); add(yen(r.over), r.name, '3万円以上'); }
+  }
+  return new Map([...m.entries()].sort((a, b) => a[0] - b[0]));
+}
+
+/**
+ * ★なぜ足すのか（2026-08-08 のBing実測）:
+ *   「金額から銀行を探す」意図のクエリが**両方の観測窓に出ている**のに、受け皿が
+ *   銀行名で並んだ表しか無かった（利用者は銀行が分からないから金額で引いている）:
+ *     旧窓(ラベル07-31) 8クエリ63表示 …「振込手数料 605円」17表示7位 /「振込手数料 484円」14表示 ほか
+ *     新窓(ラベル08-07) 4クエリ 7表示 …「振込手数料 660円 どこ」実SERP**3位** /「385 円どこの銀行」7位2クリック
+ *   ★実測で観測されている9つの金額のうち **7つ（605/484/145/660/385/495/330）は正本に答えがある**。
+ *   ★この型（意図ごとに分ける）は 08-02 の銀行別セクションで唯一効いた型
+ *   （「三菱ufj銀行 振込手数料 一覧」8位→5位）。論点を足すだけの改稿は動かなかった。
+ *
+ * ★収録範囲の申告を必ず出す（fail-closed）:
+ *   実測の9金額のうち 995円・395円 は**この表に無い**。無い金額に当てずっぽうで答えると
+ *   「他行宛28区分」という前提を黙って踏み越える。**答えないことを画面に書く。**
+ */
+export function buildAmountIndex(rows) {
+  const m = amountMap(rows);
+  const out = [];
+  out.push(AMT_START);
+  out.push('  <h2 id="gyakubiki">この金額はどこの銀行？（金額から逆引き）</h2>');
+  out.push('  <p>通帳や請求書で見た手数料の金額から、その金額になる銀行を引く表です。<b>上の一覧と同じデータ（fee_table.json）から作っています</b>ので食い違いません。「3万円未満／以上で同じ額」の区分は「金額不問」と書いています。</p>');
+  out.push('  <table>');
+  out.push('    <tr><th>振込手数料</th><th>この金額になる区分</th></tr>');
+  for (const [amount, list] of m) {
+    const cells = list.map((x) => `${x.name}（${x.range}）`).join('<br>');
+    out.push(`    <tr><td><b>${amount}円</b></td><td>${cells}</td></tr>`);
+  }
+  out.push('  </table>');
+  out.push('  <p class="note">この表が扱うのは<b>他行宛・28区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後・他行宛以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。分からない金額を推測で当てはめないでください。</p>');
+  out.push(AMT_END);
+  return out.join('\n');
+}
+
 // ★このファイルは tests/test_furikomi_bank_sections.mjs から import される。
 //   直接実行された時だけ書き込む（import で記事が書き換わると、テストが副作用を持つ）。
 if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
-  const html = readFileSync(ARTICLE, 'utf-8');
-  const section = buildSections(loadBanks());
+  const rows = loadBanks();
+  const section = buildSections(rows);
+  const amountIndex = buildAmountIndex(rows);
 
   if (process.argv.includes('--dry')) {
     console.log(section);
+    console.log(amountIndex);
   } else {
-    let next;
-    if (html.includes(START)) {
-      const a = html.indexOf(START);
-      const b = html.indexOf(END) + END.length;
-      next = html.slice(0, a) + section + html.slice(b);
-    } else {
-      // 初回は「法人は銀行選びで年6万円変わる」の直前に入れる（表の直後）
-      const at = html.indexOf('  <h2 id="gap">');
-      if (at < 0) throw new Error('挿入位置（<h2 id="gap">）が見つかりません');
-      next = html.slice(0, at) + section + '\n\n' + html.slice(at);
-    }
-    writeFileSync(ARTICLE, next);
-    console.log(`銀行別セクションを書き込みました（${(section.match(/<h3 /g) || []).length}行分の見出し）`);
+    let html = readFileSync(ARTICLE, 'utf-8');
+
+    /** マーカー区間を差し替える。無ければ anchor の直前に新規挿入する */
+    const put = (src, s, e, body, anchor) => {
+      if (src.includes(s)) {
+        const a = src.indexOf(s);
+        const b = src.indexOf(e) + e.length;
+        return src.slice(0, a) + body + src.slice(b);
+      }
+      const at = src.indexOf(anchor);
+      if (at < 0) throw new Error(`挿入位置（${anchor.trim()}）が見つかりません`);
+      return src.slice(0, at) + body + '\n\n' + src.slice(at);
+    };
+
+    // 銀行別は「法人は銀行選びで年6万円変わる」の直前（＝比較表の直後）
+    html = put(html, START, END, section, '  <h2 id="gap">');
+    // 逆引きは銀行別のさらに前。銀行名が分からない人向けなので、銀行別より先に置く
+    html = put(html, AMT_START, AMT_END, amountIndex, START);
+
+    writeFileSync(ARTICLE, html);
+    console.log(`銀行別セクション ${(section.match(/<h3 /g) || []).length}見出し / 逆引き ${(amountIndex.match(/<tr><td><b>/g) || []).length}金額 を書き込みました`);
   }
 }
