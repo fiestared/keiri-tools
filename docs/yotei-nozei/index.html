@@ -269,6 +269,9 @@ const yoteiReady = fetch("../assets/yotei_nozei_r08.json")
 async function render() {
   const arrived = await yoteiReady;
   if (!arrived || !D) {
+    // ★.result は style.css で既定 display:none。表示に切り替えないと
+    //   計算は正しいのに画面には何も出ない（textContent では気づけない）。
+    $("result").style.display = "block";
     $("result").innerHTML = '<p class="hint">条文の金額と期限のデータを<b>読み込めませんでした</b>。'
       + '通信環境をご確認のうえ再読み込みしてください。読み込めていない状態では計算しません。</p>';
     return;
@@ -283,6 +286,9 @@ async function render() {
   const k = kigaku(kijun, D);
 
   if (!hitsuyo) {
+    // ★.result は style.css で既定 display:none。表示に切り替えないと
+    //   計算は正しいのに画面には何も出ない（textContent では気づけない）。
+    $("result").style.display = "block";
     $("result").innerHTML = `
       <div class="big" id="nashi">予定納税は生じません</div>
       <table class="res">
@@ -299,6 +305,9 @@ async function render() {
   const after = shoninGoKigaku(mitsumori, D);
   const label = ki === "ki1" ? "第1期・第2期の両方" : "第2期のみ";
 
+  // ★.result は style.css で既定 display:none。表示に切り替えないと
+  //   計算は正しいのに画面には何も出ない（textContent では気づけない）。
+  $("result").style.display = "block";
   $("result").innerHTML = `
     <div class="big">第1期 ${yen(k.ki1)}／第2期 ${yen(k.ki2)}</div>
     <div class="hint" style="margin-bottom:10px">予定納税基準額 <b id="res-kijun">${yen(kijun)}</b> の3分の1ずつ（100円未満切り捨て・104条3項）</div>

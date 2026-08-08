@@ -261,6 +261,9 @@ const HINT = {
 async function render() {
   const arrived = await dataReady;
   if (!arrived || !D) {
+    // ★.result は style.css で既定 display:none。表示に切り替えないと
+    //   計算は正しいのに画面には何も出ない（textContent では気づけない）。
+    $("result").style.display = "block";
     $("result").innerHTML = '<p class="hint">料率データを<b>読み込めませんでした</b>。'
       + '通信環境をご確認のうえ再読み込みしてください。読み込めていない状態では計算しません。</p>';
     $("menseki-note").textContent = "";
@@ -299,6 +302,9 @@ async function render() {
   }
 
   const sagaku = kazeiSagaku(total, uketori);
+  // ★.result は style.css で既定 display:none。表示に切り替えないと
+  //   計算は正しいのに画面には何も出ない（textContent では気づけない）。
+  $("result").style.display = "block";
   $("result").innerHTML = `
     <div class="big">賃貸料相当額 ${yen(total)}<span style="font-size:15px;font-weight:600">／月</span></div>
     <div class="hint" style="margin-bottom:10px">この額以上を役員から受け取っていれば、給与としての課税は生じません。</div>

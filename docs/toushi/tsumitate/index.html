@@ -210,6 +210,9 @@ const dataReady = fetch("../../assets/tsumitate_r08.json")
 async function render() {
   const arrived = await dataReady;
   if (!arrived || !D) {
+    // ★.result は style.css で既定 display:none。表示に切り替えないと
+    //   計算は正しいのに画面には何も出ない（textContent では気づけない）。
+    $("result").style.display = "block";
     $("result").innerHTML = '<p class="hint">NISAの枠と税率のデータを<b>読み込めませんでした</b>。'
       + '通信環境をご確認のうえ再読み込みしてください。読み込めていない状態では計算しません。</p>';
     return;
@@ -230,6 +233,9 @@ async function render() {
     ? `<div class="note" style="margin-top:10px"><b id="over-tsumitate">年間${yen(room.yearlyYen)}はつみたて投資枠（年120万円）を超えます</b> — 超える分は成長投資枠（年240万円）を使う形になります。</div>`
     : "";
 
+  // ★.result は style.css で既定 display:none。表示に切り替えないと
+  //   計算は正しいのに画面には何も出ない（textContent では気づけない）。
+  $("result").style.display = "block";
   $("result").innerHTML = `
     <div class="big">${yen(s.net)}<span style="font-size:15px;font-weight:600">（${years}年後の評価額）</span></div>
     <div class="hint" style="margin-bottom:10px">信託報酬${feePct}%を差し引いた場合。月次の複利・期初積立で計算しています。</div>
