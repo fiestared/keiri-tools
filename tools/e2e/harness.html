@@ -4806,6 +4806,54 @@ SCENES.hojinzei_daihojin = hojinzeiScene({ shotoku: 8000000, chusho: false });
 // ★6か月なら軽減の枠は400万円・高額の線は5億円
 SCENES.hojinzei_6kagetsu = hojinzeiScene({ shotoku: 8000000, tsukisu: 6 });
 
+// ───────── 法定福利費（会社負担） ─────────
+// ★見るもの: ①労災と子育て拠出金は全額事業主 ②雇用保険は労使で率が違う
+//            ③社会保険は標準報酬月額・労働保険は賃金総額（ベースが別）
+//            ④53業種のセレクトがデータから組まれている（HTMLに書き写していない）
+const fukuriScene = ({ hyojun = 300000, chingin = 320000, ken = "東京都",
+                       koyou = "general", gyoshu = "その他の各種事業", kaigo = false } = {}) => async () => {
+  const doc = await open("/docs/hotei-fukuri/");
+  // ★セレクトはデータ到着後に作られるので、選択肢が並ぶのを待ってから操作する
+  await waitFor(() => doc.querySelectorAll("#gyoshu option").length > 0, "業種のセレクト");
+  set(doc, "hyojun", String(hyojun));
+  set(doc, "chingin", String(chingin));
+  set(doc, "ken", ken);
+  set(doc, "koyou", koyou);
+  set(doc, "gyoshu", gyoshu);
+  check(doc, "kaigo", kaigo);
+  await waitFor(() => /会社の負担|読み込めませんでした/.test(text(doc, "result")), "会社の負担");
+  const body = text(doc, "result");
+  const yenId = (id) => {
+    const el = doc.getElementById(id);
+    if (!el) return null;
+    const m = el.textContent.match(/([\d,]+)/);
+    return m ? Number(m[1].replace(/,/g, "")) : null;
+  };
+  return {
+    hyojun, chingin, ken, koyou, gyoshu, kaigo,
+    // ★選択肢がデータから作られているか（53業種・8分類・47都道府県）
+    gyoshuCount: doc.querySelectorAll("#gyoshu option").length,
+    optgroupCount: doc.querySelectorAll("#gyoshu optgroup").length,
+    kenCount: doc.querySelectorAll("#ken option").length,
+    kenko: yenId("kenko"), kosei: yenId("kosei"), kosodate: yenId("kosodate"),
+    koyouBun: yenId("koyou-bun"), rousai: yenId("rousai"),
+    total: yenId("total"), honnin: yenId("honnin"), zengaku: yenId("zengaku"),
+    kaigoBun: /なし（40歳未満/.test(doc.getElementById("kaigo-bun")?.textContent || "") ? 0 : yenId("kaigo-bun"),
+    // 「全額事業主」「折半ではありません」を画面が名指ししているか
+    saysZengaku: /全額事業主/.test(body),
+    saysOrikanNot: /折半ではありません/.test(body),
+    failed: /読み込めませんでした/.test(body),
+  };
+};
+// 標報30万・賃金32万（通勤手当2万）・東京・その他の各種事業（労災3/1000）
+SCENES.hotei_fukuri = fukuriScene({});
+// ★同じ給与でも林業（52/1000）なら会社負担が月15,680円増える
+SCENES.hotei_fukuri_ringyo = fukuriScene({ gyoshu: "林業" });
+// ★40歳以上65歳未満は介護保険が乗る
+SCENES.hotei_fukuri_kaigo = fukuriScene({ kaigo: true });
+// ★建設の事業は雇用保険の事業主負担が10.5/1000
+SCENES.hotei_fukuri_kensetsu = fukuriScene({ koyou: "construction", gyoshu: "既設建築物設備工事業" });
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };

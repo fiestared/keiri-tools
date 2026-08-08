@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>法定福利費の計算｜会社が負担する社会保険料・労働保険料（折半でないものが3つ）</title>
+<meta name="description" content="給与から、会社が負担する法定福利費（健康保険・介護保険・厚生年金・子ども子育て拠出金・雇用保険・労災保険）を計算します。★労災保険と子ども子育て拠出金は全額事業主負担、雇用保険は労使で率が違います。★社会保険は標準報酬月額、労働保険は賃金総額と課税ベースが違います。★労災保険率は業種で2.5〜88／1000と35倍の開き。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/hotei-fukuri/">
+<!-- ogp:auto -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="法定福利費の計算｜会社が負担する社会保険料・労働保険料（折半でないものが3つ）">
+<meta property="og:description" content="給与から、会社が負担する法定福利費（健康保険・介護保険・厚生年金・子ども子育て拠出金・雇用保険・労災保険）を計算します。★労災保険と子ども子育て拠出金は全額事業主負担、雇用保険は労使で率が違います。★社会保険は標準報酬月額、労働保険は賃金総額と課税ベースが違います。★労災保険率は業種で2.5〜88／1000と35倍の開き。登録不要・無料。">
+<meta property="og:url" content="https://keiri-tools.com/hotei-fukuri/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="経理ミニツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Q. 社会保険料は労使折半ではないのですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 健康保険・介護保険・厚生年金は折半です。ただし子ども・子育て拠出金は全額事業主負担（本人負担はありません）、労災保険も全額事業主負担、雇用保険は労使で率が違います。この3つを折半として計算すると、会社の負担を過少に見積もります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 雇用保険はなぜ会社のほうが高いのですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 事業主だけが雇用保険二事業（雇用安定事業・能力開発事業）の分を負担するためです（徴収法31条1項1号）。令和8年度の一般の事業なら、本人5／1000に対して事業主8.5／1000で、差の3.5／1000がその分です。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 労災保険料は給与から引かれますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 引かれません。全額が事業主負担です。徴収法31条は雇用保険の被保険者負担額だけを定めており、労災保険には対応する規定がありません。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 法定福利費は給与の何%くらいですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 業種によります。その他の各種事業（労災3／1000）なら給与の15%前後ですが、労災保険率は業種で2.5／1000〜88／1000と35倍の開きがあるため、建設・林業・鉱業ではもっと高くなります。上の欄で業種を選んで計算してください。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 標準報酬月額と賃金総額のどちらを入れればよいですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 両方です。健保・厚年・子育て拠出金は標準報酬月額、雇用保険と労災は賃金総額（実際の支払額）にかかるためです。標準報酬月額は算定基礎届の計算で出せます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 介護保険料はいつからいつまでかかりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 40歳以上65歳未満（介護保険第2号被保険者）の期間です。65歳になると第1号被保険者になり、給与からの控除ではなく年金からの特別徴収などに変わります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. メリット制で労災保険率が下がっている場合はどうすればよいですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. このツールは別表第1の率（メリット制適用前）で計算します。メリット制の増減率は事業ごとに労働局から通知されるので、その率で計算し直してください。"
+      }
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav>
+    <a href="../#tools">ツール</a>
+    <a href="../column/">コラム</a>
+    <a href="../toushi/">資産形成</a>
+  </nav>
+</header>
+<main>
+  <nav class="breadcrumb">ホーム › 法定福利費の計算</nav>
+  <h1>法定福利費の計算</h1>
+  <p class="lead">従業員1人あたり、会社が給与に<b>上乗せして</b>負担している額を出します。★<b>折半でないものが3つあります</b> — 労災保険と子ども・子育て拠出金は<b>全額事業主負担</b>、雇用保険は労使で率が違います。</p>
+
+  <div class="callout" id="base">
+    <p><b>課税ベースが2種類あります。</b>健康保険・介護保険・厚生年金・子ども子育て拠出金は<b>標準報酬月額</b>（等級表の額）、雇用保険と労災保険は<b>賃金総額</b>（通勤手当・残業代を含む実際の支払額。徴収法11条1項）にかかります。全部を標準報酬月額で計算すると、通勤手当の多い人の労働保険料が過少に出ます。</p>
+  </div>
+
+  <div class="card">
+    <div class="fee-pair">
+      <div>
+        <label for="hyojun">標準報酬月額（円）</label>
+        <input type="number" id="hyojun" value="300000" min="0" step="1000" inputmode="numeric">
+        <p class="hint">健保・厚年・子育て拠出金のベース。<a href="../shaho/">社会保険料の計算</a>で等級が出せます。</p>
+      </div>
+      <div>
+        <label for="chingin">賃金総額（円／月）</label>
+        <input type="number" id="chingin" value="320000" min="0" step="1000" inputmode="numeric">
+        <p class="hint">★雇用保険・労災のベース。通勤手当・残業代を含む実際の支払額。</p>
+      </div>
+    </div>
+
+    <div class="fee-pair">
+      <div>
+        <label for="ken">都道府県（健康保険料率）</label>
+        <select id="ken"></select>
+      </div>
+      <div>
+        <label for="koyou">雇用保険の事業の種類</label>
+        <select id="koyou"></select>
+      </div>
+    </div>
+
+    <label for="gyoshu">労災保険の事業の種類</label>
+    <select id="gyoshu"></select>
+    <p class="hint" id="gyoshu-hint"></p>
+
+    <label><input type="checkbox" id="kaigo"> 介護保険第2号被保険者（<b>40歳以上65歳未満</b>）</label>
+
+    <div class="result" id="result" aria-live="polite"></div>
+  </div>
+
+  <div class="toc-title">目次</div>
+  <ul class="toc">
+    <li><a href="#orikan">折半でないものが3つ</a></li>
+    <li><a href="#base-setsu">標準報酬月額と賃金総額</a></li>
+    <li><a href="#gyoshu-setsu">労災保険率は業種で35倍違う</a></li>
+    <li><a href="#dekinai">このツールが計算しないこと</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ul>
+
+  <h2 id="orikan">折半でないものが3つ</h2>
+  <div class="scroll-wrap">
+  <table id="orikan-hyo">
+    <tr><th>保険料</th><th>負担のしかた</th><th>ベース</th></tr>
+    <tr><td>健康保険</td><td>労使折半</td><td>標準報酬月額</td></tr>
+    <tr><td>介護保険（40〜64歳）</td><td>労使折半</td><td>標準報酬月額</td></tr>
+    <tr><td>厚生年金</td><td>労使折半</td><td>標準報酬月額</td></tr>
+    <tr><td><b>子ども・子育て拠出金</b></td><td><b>全額事業主</b>（本人負担なし）</td><td>標準報酬月額</td></tr>
+    <tr><td><b>雇用保険</b></td><td><b>労使で率が違う</b>（事業主だけが二事業分を負担）</td><td><b>賃金総額</b></td></tr>
+    <tr><td><b>労災保険</b></td><td><b>全額事業主</b></td><td><b>賃金総額</b></td></tr>
+  </table>
+  </div>
+  <div class="callout">
+    <p><b>雇用保険を「折半」と書くと会社の負担を過少に見せます。</b>一般の事業なら本人5／1000・事業主8.5／1000で、差の3.5／1000が<b>雇用保険二事業</b>（雇用安定事業・能力開発事業）の分です（徴収法31条1項1号）。</p>
+  </div>
+
+  <h2 id="base-setsu">標準報酬月額と賃金総額</h2>
+  <p>社会保険（健保・介護・厚年）の保険料は<b>標準報酬月額</b>という等級表の額にかかります。実際の給与そのものではありません。一方、労働保険（雇用・労災）は<b>賃金総額</b>＝実際に支払った額にかかります（徴収法11条1項）。</p>
+  <div class="callout">
+    <p>通勤手当が月2万円ある人なら、雇用保険と労災の課税ベースだけが2万円多くなります。ここを揃えてしまうと、会社の負担が毎月わずかに過少に出続けます。</p>
+  </div>
+
+  <h2 id="gyoshu-setsu">労災保険率は業種で35倍違う</h2>
+  <p>労災保険率は徴収法施行規則の<b>別表第1（労災保険率表）</b>に53の事業の種類ごとに定められています。<b>最小2.5／1000</b>（通信・放送・新聞・出版、金融・保険・不動産）から<b>最大88／1000</b>（金属鉱業・非金属鉱業・石炭鉱業）まで、<b>35倍</b>の開きがあります。</p>
+  <div class="callout">
+    <p>「法定福利費はだいたい給与の15%」という目安は、<b>その他の各種事業</b>（3／1000）を前提にしたものです。建設・林業・鉱業では労災だけで数%上乗せになるため、この目安は使えません。上の欄で実際の業種を選んでください。</p>
+  </div>
+
+  <h2 id="dekinai">このツールが計算しないこと</h2>
+  <div class="callout" id="dekinai-note">
+    <p>このツールは<b>入力した前提での月額の計算例</b>で、次はしていません。</p>
+    <ul>
+      <li><b>メリット制</b> — 継続事業では労災の収支率に応じて労災保険率が最大±40%増減しますが（徴収法12条3項）、適用の有無と増減率は個別に決まります</li>
+      <li><b>賞与にかかる保険料</b> — 標準賞与額には上限（健保は年度累計573万円、厚年は1回150万円）があり、別に計算します</li>
+      <li><b>建設業の請負金額×労務費率</b>による賃金総額の特例（徴収法11条3項・施行規則13条・別表第2）</li>
+      <li><b>健康保険組合・厚生年金基金</b>の独自料率 — ここは協会けんぽの都道府県料率で計算します</li>
+      <li><b>年度更新の申告額</b> — 概算・確定の精算はこのツールの外です</li>
+      <li><b>法定外福利費</b>（住宅手当・健康診断・慶弔見舞金など）</li>
+    </ul>
+    <p>当サイトは社会保険労務士ではありません。実際の申告は年金事務所・労働局または顧問の社会保険労務士にご確認ください。</p>
+  </div>
+
+<section class="faq">
+<h2 id="faq">よくある質問</h2>
+<h3>Q. 社会保険料は労使折半ではないのですか？</h3>
+<p>A. 健康保険・介護保険・厚生年金は折半です。ただし<b>子ども・子育て拠出金は全額事業主負担</b>（本人負担はありません）、<b>労災保険も全額事業主負担</b>、<b>雇用保険は労使で率が違います</b>。この3つを折半として計算すると、会社の負担を過少に見積もります。</p>
+
+<h3>Q. 雇用保険はなぜ会社のほうが高いのですか？</h3>
+<p>A. 事業主だけが<b>雇用保険二事業</b>（雇用安定事業・能力開発事業）の分を負担するためです（徴収法31条1項1号）。令和8年度の一般の事業なら、本人5／1000に対して事業主8.5／1000で、差の3.5／1000がその分です。</p>
+
+<h3>Q. 労災保険料は給与から引かれますか？</h3>
+<p>A. <b>引かれません。全額が事業主負担</b>です。徴収法31条は雇用保険の被保険者負担額だけを定めており、労災保険には対応する規定がありません。</p>
+
+<h3>Q. 法定福利費は給与の何%くらいですか？</h3>
+<p>A. <b>業種によります。</b>その他の各種事業（労災3／1000）なら給与の15%前後ですが、労災保険率は業種で2.5／1000〜88／1000と35倍の開きがあるため、建設・林業・鉱業ではもっと高くなります。上の欄で業種を選んで計算してください。</p>
+
+<h3>Q. 標準報酬月額と賃金総額のどちらを入れればよいですか？</h3>
+<p>A. <b>両方です。</b>健保・厚年・子育て拠出金は標準報酬月額、雇用保険と労災は賃金総額（実際の支払額）にかかるためです。標準報酬月額は<a href="../santei/">算定基礎届の計算</a>で出せます。</p>
+
+<h3>Q. 介護保険料はいつからいつまでかかりますか？</h3>
+<p>A. <b>40歳以上65歳未満</b>（介護保険第2号被保険者）の期間です。65歳になると第1号被保険者になり、給与からの控除ではなく年金からの特別徴収などに変わります。</p>
+
+<h3>Q. メリット制で労災保険率が下がっている場合はどうすればよいですか？</h3>
+<p>A. このツールは<b>別表第1の率</b>（メリット制適用前）で計算します。メリット制の増減率は事業ごとに労働局から通知されるので、その率で計算し直してください。</p>
+</section>
+
+<h2 id="shutten">出典</h2>
+<p class="note"><a href="https://laws.e-gov.go.jp/law/347M50002000008" rel="nofollow">労働保険の保険料の徴収等に関する法律施行規則</a> 別表第1（労災保険率表。53の事業の種類と率を e-Gov 法令API v2 のレスポンスから機械抽出。手で書き写していません）。<a href="https://laws.e-gov.go.jp/law/344AC0000000084" rel="nofollow">労働保険の保険料の徴収等に関する法律</a> 11条1項（賃金総額）・12条3項（メリット制）・31条1項1号（雇用保険の被保険者負担＝労災には対応する規定が無い）。健康保険・介護保険・厚生年金・子ども子育て拠出金の料率と雇用保険料率は<a href="../about/">このサイトについて</a>に出典を書いています（協会けんぽ・厚生労働省の公表値）。条文は 2026-08-08 に確認しています。</p>
+
+</main>
+<footer class="site">
+  計算結果は入力した前提での月額の試算です。メリット制・賞与・健康保険組合の独自料率は含みません。当サイトは社会保険労務士ではありません。実際の申告は年金事務所・労働局または顧問の社会保険労務士にご確認ください。データはブラウザの外へ送信されません。<br>
+  © 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script type="module">
+import { jigyonushiFutan, rousaiRate, nenganAndRatio } from "../assets/hoteifukuri_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+// ★料率は非同期で届く。**届く前に計算しない**。選択肢もデータから作る（HTMLに書き写さない）。
+let R = null, S = null;
+const fukuriReady = Promise.all([
+  fetch("../assets/rousai_r08.json").then((r) => r.json()),
+  fetch("../assets/shaho_rates_r08.json").then((r) => r.json()),
+]).then(([r, s]) => {
+  R = r; S = s;
+  // 労災の業種（別表第1の53行をそのまま。分類ごとに optgroup でまとめる）
+  let group = null, parent = $("gyoshu");
+  for (const x of R.rates) {
+    if (x.bunrui && x.bunrui !== group) {
+      group = x.bunrui;
+      const g = document.createElement("optgroup");
+      g.label = group;
+      parent.appendChild(g);
+    }
+    const o = document.createElement("option");
+    o.value = x.shurui;
+    o.textContent = `${x.shurui}（${x.sen}／1000）`;
+    if (x.shurui === "その他の各種事業") o.selected = true;
+    (parent.lastElementChild?.tagName === "OPTGROUP" ? parent.lastElementChild : parent).appendChild(o);
+  }
+  // 都道府県（健康保険料率）
+  for (const [ken, pct] of Object.entries(S.kenko_rates)) {
+    const o = document.createElement("option");
+    o.value = ken;
+    o.textContent = `${ken}（${pct}%）`;
+    if (ken === "東京都") o.selected = true;
+    $("ken").appendChild(o);
+  }
+  // 雇用保険の事業の種類
+  for (const [key, t] of Object.entries(S.koyou.types)) {
+    const o = document.createElement("option");
+    o.value = key;
+    o.textContent = `${t.label}（事業主 ${t.employer_permille}／1000）`;
+    $("koyou").appendChild(o);
+  }
+  return true;
+}).catch(() => false);
+
+async function render() {
+  const arrived = await fukuriReady;
+  // ★.result は style.css で既定 display:none。表示に切り替えないと
+  //   計算は正しいのに画面には何も出ない。
+  $("result").style.display = "block";
+  if (!arrived || !R || !S) {
+    $("result").innerHTML = '<p class="hint">保険料率のデータを<b>読み込めませんでした</b>。'
+      + '通信環境をご確認のうえ再読み込みしてください。読み込めていない状態では計算しません。</p>';
+    return;
+  }
+  const gyoshu = $("gyoshu").value;
+  const sen = rousaiRate(gyoshu, R);
+  const kenkoPct = S.kenko_rates[$("ken").value];
+  const r = jigyonushiFutan({
+    hyojun: $("hyojun").value, chingin: $("chingin").value,
+    kenkoPct, kaigo: $("kaigo").checked, koyouType: $("koyou").value, rousaiSen: sen,
+  }, S);
+  const n = nenganAndRatio(r);
+
+  $("gyoshu-hint").innerHTML = sen == null
+    ? "★この業種の労災保険率が見つかりません。労災の分は計算しません。"
+    : `労災保険率 <b>${sen}／1000</b>（徴収法施行規則 別表第1）。最小2.5／最大88なので、業種の選択で会社の負担は大きく変わります。`;
+
+  $("result").innerHTML = `
+    <div class="big">会社の負担 ${yen(r.total)}<span style="font-size:15px;font-weight:600">／月</span></div>
+    <div class="hint" style="margin-bottom:10px">年 <b id="nengan">${yen(n.nengan)}</b>　賃金総額の <b id="ritsu">${n.ritsu.toFixed(1)}%</b> が上乗せになります</div>
+    <table class="res">
+      <tr><th>健康保険（折半）</th><td id="kenko">${yen(r.kenko)}</td></tr>
+      <tr><th>介護保険（折半）</th><td id="kaigo-bun">${r.kaigo ? yen(r.kaigo) : "なし（40歳未満または65歳以上）"}</td></tr>
+      <tr><th>厚生年金（折半）</th><td id="kosei">${yen(r.kosei)}</td></tr>
+      <tr><th>子ども・子育て拠出金</th><td id="kosodate"><b>${yen(r.kosodate)}</b>　★全額事業主（本人負担なし）</td></tr>
+      <tr><th>雇用保険</th><td id="koyou-bun"><b>${yen(r.koyou)}</b>　★本人は ${yen(r.koyouWorker)}（折半ではありません）</td></tr>
+      <tr><th>労災保険</th><td id="rousai">${r.rousai == null ? "率が分からないため計算していません" : `<b>${yen(r.rousai)}</b>　★全額事業主`}</td></tr>
+      <tr><th>会社の負担 合計</th><td><b id="total">${yen(r.total)}</b></td></tr>
+      <tr><th>本人が引かれる額（対照）</th><td id="honnin">${yen(r.honninTotal)}</td></tr>
+      <tr><th>★全額事業主負担の分</th><td id="zengaku">${yen(r.zengakuJigyonushi)}（子育て拠出金＋労災）</td></tr>
+    </table>
+    <div class="note" style="margin-top:12px">
+      ★<b>メリット制・賞与・健康保険組合の独自料率は含んでいません</b>。
+      社会保険は標準報酬月額、労働保険は賃金総額にかかるので、入力欄が2つに分かれています。
+      当サイトは社会保険労務士ではありません。
+    </div>`;
+}
+
+for (const id of ["hyojun", "chingin", "ken", "koyou", "gyoshu", "kaigo"]) {
+  $(id).addEventListener("input", render);
+  $(id).addEventListener("change", render);
+}
+render();
+</script>
+</body>
+</html>
