@@ -205,6 +205,30 @@
 
   <button class="primary" id="calc" style="margin-top:16px">国民健康保険料を計算する</button>
   <div class="result" id="result"></div>
+
+  <!-- ★退職直後の人は「国保か任意継続か」を必ず選ぶ。ここで両方出せば料率の入力が1回で済む。
+       別ページにすると「比べるためにもう一度自分の市の料率を調べる」二度手間になる。 -->
+  <details id="nini-block" style="margin-top:18px">
+    <summary style="cursor:pointer;font-weight:600">退職して国保に入る方へ — 健康保険の「任意継続」と比べる</summary>
+    <p class="hint" style="margin-top:8px">会社を辞めた後の健康保険は、国保か、それまでの健康保険を続ける<b>任意継続</b>かを選べます（申出は<b>資格喪失日から20日以内</b>・健康保険法37条）。任意継続の保険料は<b>労使折半ではなく全額自己負担</b>ですが、計算に使う標準報酬月額に<b>上限</b>があるため「在職中の2倍」になるとは限りません。</p>
+    <div class="fee-pair" style="margin-top:10px">
+      <div>
+        <label for="niniTodofuken">健康保険料率の都道府県（協会けんぽ）</label>
+        <select id="niniTodofuken"></select>
+      </div>
+      <div>
+        <label for="niniHyojun">退職時の標準報酬月額（円）</label>
+        <input type="number" id="niniHyojun" min="0" step="1000" inputmode="numeric" value="410000">
+      </div>
+    </div>
+    <div class="fee-pair">
+      <div>
+        <label for="niniAge">年齢（介護保険料の要否）</label>
+        <input type="number" id="niniAge" min="0" max="120" inputmode="numeric" value="45">
+      </div>
+    </div>
+    <div class="result" id="nini-result" style="margin-top:12px"></div>
+  </details>
 </div>
 
 <article>
@@ -376,6 +400,10 @@
 
 <script type="module">
 import { calcKokuho, classifyByAge } from "../assets/kokuho_core.js";
+// ★任意継続との比較（2026-08-08）。退職直後の人は必ずこの二択に当たるのに、
+//   記事（column/kenko-hoken-nini-keizoku）とツールが分断されていた。
+//   料率の入力を再利用できるので、別ページにせずここに置く。
+import { calcNiniKeizoku, compare } from "../assets/nini_keizoku_core.js";
 
 const $ = (id) => document.getElementById(id);
 const yenF = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
@@ -558,6 +586,10 @@ $("calc").addEventListener("click", async () => {
     : `<div class="note" style="margin-top:12px"><b id="keigen-name">軽減には該当しません</b>
        — 判定所得${yenF(K.hanteiShotoku)} が2割軽減の基準${yenF(K.thresholds[K.thresholds.length - 1].threshold)}を超えています。</div>`;
 
+  // ★任意継続との比較に渡す（比較側で国保を計算し直さない。二重計算は必ずズレる）
+  lastKokuhoYearly = r.total;
+  paintNini();
+
   box.innerHTML = `
     <div style="font-size:15px">年間の国民健康保険料 <b style="font-size:22px" id="total">${yenF(r.total)}</b>
       <span class="hint">（月あたり約${yenF(r.total / 12)}）</span></div>
@@ -574,6 +606,93 @@ $("calc").addEventListener("click", async () => {
     </div>`;
   paintMeta();
 });
+
+/* ── 任意継続との比較 ───────────────────────────────────────────
+   ★健保料率は都道府県別・介護保険料率と子ども子育て支援金は全国一律。
+     いずれも shaho_rates_r08.json から読む（ページに率を書かない）。
+   ★国保の年額は上の計算結果をそのまま使う。任意継続コアは国保を計算しない
+     （市町村ごとに条例で違い、ここで推測すると必ず誤るため）。 */
+let SHAHO = null;
+const shahoReady = fetch("../assets/shaho_rates_r08.json")
+  .then((r) => r.json())
+  .then((d) => { SHAHO = d; return true; })
+  .catch(() => false);   // ★失敗を黙って通さない。下で「読み込めませんでした」と出す
+
+let lastKokuhoYearly = null;   // 上の計算が出した国保の年額
+
+async function paintNini() {
+  const box = document.getElementById("nini-result");
+  if (!box) return;
+  const arrived = await shahoReady;
+  if (!arrived || !SHAHO) {
+    box.innerHTML = '<p class="hint">健康保険料率のデータを<b>読み込めませんでした</b>。再読み込みしてください。読み込めていない状態では計算しません。</p>';
+    return;
+  }
+  const sel = document.getElementById("niniTodofuken");
+  if (sel && !sel.options.length) {
+    for (const k of Object.keys(SHAHO.kenko_rates)) {
+      const o = document.createElement("option");
+      o.value = k; o.textContent = `${k}（${SHAHO.kenko_rates[k]}%）`;
+      if (k === "東京都") o.selected = true;
+      sel.appendChild(o);
+    }
+  }
+  const pref = sel.value || "東京都";
+  const hyojun = Number(document.getElementById("niniHyojun").value) || 0;
+  const age = Number(document.getElementById("niniAge").value) || 0;
+
+  const n = calcNiniKeizoku({
+    hyojunHoshu: hyojun, age,
+    kenkoRate: SHAHO.kenko_rates[pref],
+    kaigoRate: SHAHO.kaigo_rate,
+    kosodateRate: SHAHO.kosodate_rate,
+    capYen: SHAHO.nini_keizoku.hyojun_cap_yen,
+  });
+
+  const capLine = n.capped
+    ? `<div class="note" style="margin-top:8px"><b id="nini-capped">標準報酬月額は上限の${yenF(SHAHO.nini_keizoku.hyojun_cap_yen)}で頭打ちです</b> — 全被保険者の平均額（${yenF(SHAHO.nini_keizoku.heikin_hyojun_yen)}・${SHAHO.nini_keizoku.heikin_as_of}時点）が属する等級。★<b>毎年度動きます</b>。入力した${yenF(hyojun)}のままでは計算しません（健康保険法47条）。</div>`
+    : "";
+
+  let cmp = "";
+  if (lastKokuhoYearly != null) {
+    const c = compare(n.total, lastKokuhoYearly);
+    const label = c.cheaper === "same" ? "どちらも同額です"
+      : c.cheaper === "nini" ? `<b id="nini-cheaper">任意継続</b>のほうが年 ${yenF(c.diffYearly)} 少ない計算です`
+      : `<b id="nini-cheaper">国民健康保険</b>のほうが年 ${yenF(c.diffYearly)} 少ない計算です`;
+    cmp = `<table class="tbl" style="margin-top:10px">
+      <thead><tr><th>　</th><th>月額</th><th>年額</th></tr></thead>
+      <tbody>
+        <tr><td>任意継続</td><td>${yenF(n.total)}</td><td id="nini-yearly">${yenF(c.niniYearly)}</td></tr>
+        <tr><td>国民健康保険（上の計算）</td><td>${yenF(Math.round(c.kokuhoYearly / 12))}</td><td>${yenF(c.kokuhoYearly)}</td></tr>
+      </tbody></table>
+      <div class="note" style="margin-top:10px">この条件では ${label}。</div>`;
+  } else {
+    cmp = '<p class="hint" style="margin-top:8px">先に上の「国民健康保険料を計算する」を押すと、年額を並べて比べられます。</p>';
+  }
+
+  box.innerHTML = `
+    <div style="font-size:15px">任意継続の保険料 <b style="font-size:22px" id="nini-total">${yenF(n.total)}</b>
+      <span class="hint">／月（全額自己負担）</span></div>
+    <table class="tbl" style="margin-top:10px">
+      <tbody>
+        <tr><td>計算に使う標準報酬月額</td><td>${yenF(n.standard)}</td></tr>
+        <tr><td>健康保険（${pref} ${SHAHO.kenko_rates[pref]}%）</td><td>${yenF(n.kenko)}</td></tr>
+        <tr><td>介護保険（${SHAHO.kaigo_rate}%・40〜64歳）</td><td>${n.kaigo ? yenF(n.kaigoAmt) : "対象外"}</td></tr>
+        <tr><td>子ども・子育て支援金（${SHAHO.kosodate_rate}%）</td><td>${yenF(n.kosodate)}</td></tr>
+      </tbody></table>
+    ${capLine}
+    ${cmp}
+    <div class="note" style="margin-top:12px">
+      <b>この比較に入れていないもの</b> — 厚生年金は任意継続では続きません（別途<a href="../kokunen-menjo/">国民年金</a>に加入します）。会社都合の退職なら国保側に軽減があります（国民健康保険法施行令29条の7の2）。健保組合は規約で退職時の標準報酬月額を使えるため、上限の扱いが協会けんぽと異なります。詳しくは<a href="../column/kenko-hoken-nini-keizoku/">任意継続の解説</a>をご覧ください。
+    </div>`;
+}
+
+for (const id of ["niniTodofuken", "niniHyojun", "niniAge"]) {
+  const el = document.getElementById(id);
+  if (el) { el.addEventListener("input", paintNini); el.addEventListener("change", paintNini); }
+}
+const niniBlock = document.getElementById("nini-block");
+if (niniBlock) niniBlock.addEventListener("toggle", () => { if (niniBlock.open) paintNini(); });
 </script>
 </body>
 </html>

@@ -77,8 +77,30 @@ for (const { p, src, data } of users) {
   if (exempt) {
     console.log(`⏭  ${rel}: 表示専用のため await 免除 — ${exempt}`);
   } else {
-    ok(/await\s+\w*[Rr]eady\b/.test(src),
-       `${rel}: 計算前にデータを待っている (await …Ready) [${data.join(", ")}]`);
+    // ★★2026-08-08: 「どこかに1つでも await …Ready があれば合格」に穴があった。
+    //   **1ページが複数の参照データを読む場合、片方の待ちを壊しても素通しする。**
+    //   /kokuho/ に任意継続の比較を足して `await shahoReady` が増えた結果、
+    //   本来の `await dataReady` を壊しても緑のままになり、
+    //   break_kokuho_page が「素通し」と報告して発覚した（＝壊しテストが検査の劣化を捕まえた）。
+    //   → **fetch から作った Promise のすべてが await されていること**を名前ごとに見る。
+    // ★`const ready = await dataReady;` の左辺は「待った結果」であって Promise ではない。
+    //   除外の先読みは `=(?!\s*await\b)` の形で書く。`=\s*(?!await\b)` だと `\s*` が
+    //   ゼロ幅に戻って ` await` を通してしまい、79ページが誤って落ちる（実際にやった）。
+    const declared = [...src.matchAll(/const\s+(\w*[Rr]eady)\s*=(?!\s*await\b)/g)].map((m) => m[1]);
+    ok(declared.length > 0,
+       `${rel}: ready を表す Promise（<なにか>Ready）が宣言されていない [${data.join(", ")}]`);
+    // ★待ち方は `await x` だけではない。`await Promise.all([a, b])` も正しい待ち方。
+    //   名前だけで見ると gensen-choshu（2つのデータを Promise.all で待つ）を誤って落とす
+    //   （2026-08-08 に実際に誤検出した。**検査の期待値の方が壊れている**ことがある）。
+    const awaitedInAll = new Set(
+      [...src.matchAll(/await\s+Promise\.all\s*\(\s*\[([^\]]*)\]/g)]
+        .flatMap((m) => m[1].split(',').map((s) => s.trim())),
+    );
+    const notAwaited = declared.filter((n) =>
+      !new RegExp(`await\\s+${n}\\b`).test(src) && !awaitedInAll.has(n));
+    ok(notAwaited.length === 0,
+       `${rel}: 宣言した ${notAwaited.join(", ")} を計算前に await していない`
+       + `（回線が遅い人だけがそのデータを知らないまま答えを見る）[${data.join(", ")}]`);
   }
 
   // 2) 読み込み失敗を黙って通していないか。**これは表示専用でも要る** —

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>役員社宅の賃貸料相当額 計算ツール｜いくら受け取れば給与課税されないか</title>
+<meta name="description" content="役員に社宅を貸したときの「賃貸料相当額」を、固定資産税の課税標準額と床面積から計算します。小規模な住宅（36-41）・自社所有・借上（36-40）の3通りに対応。借上は「家賃の50%」と「固定資産税ベース」の多い方が正解で、50%だけで組むと過小になります。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/yakuin-shataku/">
+<!-- ogp:auto -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="役員社宅の賃貸料相当額 計算ツール｜いくら受け取れば給与課税されないか">
+<meta property="og:description" content="役員に社宅を貸したときの「賃貸料相当額」を、固定資産税の課税標準額と床面積から計算します。小規模な住宅（36-41）・自社所有・借上（36-40）の3通りに対応。借上は「家賃の50%」と「固定資産税ベース」の多い方が正解で、50%だけで組むと過小になります。登録不要・無料。">
+<meta property="og:url" content="https://keiri-tools.com/yakuin-shataku/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="経理ミニツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Q. 「会社が払う家賃の50%」を受け取れば大丈夫ですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 小規模な住宅にあたらない借上社宅では、50%と固定資産税ベースの額のいずれか多い金額が賃貸料相当額です。固定資産税ベースが上回る場合、50%では足りず差額が給与課税されます。小規模な住宅にあたる場合は別の算式で、50%とは無関係です。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 小規模な住宅とはどのくらいの広さですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 法定耐用年数が30年以下の建物は132㎡以下、30年を超える建物は99㎡以下です。区分所有の建物は共用部分の床面積をあん分し、専用部分に加えて判定します。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 住宅手当を現金で払うのではだめですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 現金支給の住宅手当や、入居者が直接契約している家賃の負担は社宅の貸与と認められず全額が給与課税されます。会社が借りて役員に貸す形にしていることが前提です。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 固定資産税の課税標準額はどこで分かりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 市区町村から届く固定資産税の課税明細書に載っています。借上で自社が所有していない場合は、所有者の同意を得て市区町村に固定資産課税台帳の閲覧を申請する方法があります。評価額と課税標準額は別の欄なので取り違えに注意してください。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 賃貸料相当額より多く受け取ったらどうなりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 給与課税される差額は生じません（マイナスにはなりません）。受け取った家賃は会社の収入になります。"
+      }
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578" crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav>
+    <a href="../#tools">ツール</a>
+    <a href="../column/">コラム</a>
+  </nav>
+</header>
+<main>
+  <h1>役員社宅の賃貸料相当額 計算ツール</h1>
+  <p class="lead">役員に社宅を貸すとき、<b>いくら家賃を受け取れば給与として課税されないか</b>（賃貸料相当額）を計算します。所得税基本通達36-40・36-41の算式どおりに計算し、入力値はブラウザの外へ送信されません。</p>
+
+  <div class="card">
+    <label for="kubun">社宅の区分</label>
+    <select id="kubun">
+      <option value="shokibo" selected>小規模な住宅（36-41）</option>
+      <option value="jisha">小規模でない・自社所有（36-40）</option>
+      <option value="karikage">小規模でない・借上（36-40）</option>
+    </select>
+    <p class="hint" id="kubun-hint" style="margin-top:6px"></p>
+
+    <div class="fee-pair">
+      <div>
+        <label for="tatemono">建物の固定資産税の課税標準額（円）</label>
+        <input type="number" id="tatemono" value="5000000" min="0" step="1000" inputmode="numeric">
+      </div>
+      <div>
+        <label for="shikichi">敷地の固定資産税の課税標準額（円）</label>
+        <input type="number" id="shikichi" value="8000000" min="0" step="1000" inputmode="numeric">
+      </div>
+    </div>
+
+    <div class="fee-pair">
+      <div id="menseki-wrap">
+        <label for="menseki">建物の総床面積（㎡）</label>
+        <input type="number" id="menseki" value="66" min="0" step="0.01" inputmode="decimal">
+      </div>
+      <div>
+        <label for="nensu">建物の法定耐用年数（年）</label>
+        <input type="number" id="nensu" value="47" min="1" step="1" inputmode="numeric">
+        <p class="hint">鉄筋コンクリート造の住宅は47年、木造は22年が目安です。</p>
+      </div>
+    </div>
+
+    <div class="fee-pair">
+      <div id="yachin-wrap" hidden>
+        <label for="yachin">会社が家主に支払う家賃（月額・円）</label>
+        <input type="number" id="yachin" value="300000" min="0" step="1000" inputmode="numeric">
+      </div>
+      <div>
+        <label for="uketori">役員から実際に受け取る家賃（月額・円）</label>
+        <input type="number" id="uketori" value="0" min="0" step="1000" inputmode="numeric">
+      </div>
+    </div>
+
+    <div class="result" id="result" aria-live="polite"></div>
+    <p class="note" id="menseki-note"></p>
+  </div>
+
+  <div class="toc-title">目次</div>
+  <ul class="toc">
+    <li><a href="#keisan">賃貸料相当額の計算式（3通り）</a></li>
+    <li><a href="#karikage">借上社宅は「家賃の50%」だけでは足りないことがある</a></li>
+    <li><a href="#kazei">給与として課税される範囲</a></li>
+    <li><a href="#dekinai">このツールが判定しないこと</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ul>
+
+  <h2 id="keisan">賃貸料相当額の計算式（3通り）</h2>
+  <p>役員に社宅を貸したとき、役員から1か月あたり一定額の家賃（賃貸料相当額）を受け取っていれば給与として課税されません。算式は<b>床面積による区分</b>で分かれます。</p>
+
+  <div class="scroll-wrap">
+  <table id="keisan-hyo">
+    <tr><th>区分</th><th>算式（月額）</th></tr>
+    <tr>
+      <td>小規模な住宅</td>
+      <td>①建物の固定資産税の課税標準額 × <b>0.2%</b><br>＋②<b>12円 × 総床面積㎡ ÷ 3.3</b><br>＋③敷地の固定資産税の課税標準額 × <b>0.22%</b></td>
+    </tr>
+    <tr>
+      <td>小規模でない・自社所有</td>
+      <td>（イ 建物の課税標準額 × <b>12%</b>［耐用年数30年超は<b>10%</b>］<br>＋ロ 敷地の課税標準額 × <b>6%</b>）<b>÷ 12</b></td>
+    </tr>
+    <tr>
+      <td>小規模でない・借上</td>
+      <td>上の自社所有の算式で出した額と、<b>会社が支払う家賃の50%</b>の<b>いずれか多い金額</b></td>
+    </tr>
+  </table>
+  </div>
+
+  <div class="callout">
+    <p><b>②は「坪あたり12円」です。</b>床面積は㎡で入れて3.3で割り、坪に直してから12円を掛けます。㎡のまま12円を掛けると3.3倍になります。</p>
+  </div>
+
+  <p>小規模な住宅かどうかは床面積で分かれます。法定耐用年数が<b>30年以下</b>の建物は<b>132㎡以下</b>、<b>30年を超える</b>建物は<b>99㎡以下</b>が小規模な住宅です。耐用年数は<b>この床面積の境目</b>と<b>自社所有の場合の率（12%／10%）</b>の2か所に効きます。</p>
+
+  <h2 id="karikage">借上社宅は「家賃の50%」だけでは足りないことがある</h2>
+  <p>借上社宅で最もよくある誤解が「会社が払う家賃の半分を役員から受け取れば足りる」というものです。通達は<b>50%と固定資産税ベースの額のいずれか多い金額</b>としているので、固定資産税ベースが上回る物件では50%では足りません。</p>
+  <div class="callout">
+    <p>足りない分は<b>差額が役員給与として課税</b>されます。源泉徴収漏れの方向の誤りなので、あとから指摘されると本税に加えて不納付加算税・延滞税の話になります。上のツールは両方を計算して、<b>どちらが採用されたか</b>を表示します。</p>
+  </div>
+
+  <h2 id="kazei">給与として課税される範囲</h2>
+  <div class="scroll-wrap">
+  <table id="kazei-hyo">
+    <tr><th>状況</th><th>給与として課税される額</th></tr>
+    <tr><td>無償で貸与する</td><td>賃貸料相当額の<b>全額</b></td></tr>
+    <tr><td>賃貸料相当額より低い家賃を受け取っている</td><td>賃貸料相当額と受け取っている家賃との<b>差額</b></td></tr>
+    <tr><td>現金で住宅手当を支給する／入居者が直接契約している家賃を負担する</td><td><b>全額</b>（社宅の貸与と認められないため）</td></tr>
+  </table>
+  </div>
+  <p class="note">3つ目が見落とされやすいところです。同じ金額を負担していても、<b>会社が借りて役員に貸す</b>形になっていなければ社宅の扱いになりません。</p>
+
+  <h2 id="dekinai">このツールが判定しないこと</h2>
+  <div class="callout" id="dekinai-note">
+    <p>このツールは<b>入力した条件での計算例</b>を出すもので、次の判定はしていません。</p>
+    <ul>
+      <li><b>いわゆる豪華社宅にあたるか</b> — 床面積240㎡超のうち、取得価額・支払賃貸料・内外装の状況等を総合勘案して判定します。240㎡以下でもプール等の設備や役員個人のし好を著しく反映した設備があれば該当することがあります。該当する場合は通達の算式を使えず、通常支払うべき使用料が賃貸料相当額になります。</li>
+      <li><b>区分所有の建物の小規模判定</b> — 共用部分の床面積をあん分し、専用部分に加えたところで判定します。このツールは入力された床面積をそのまま使います。</li>
+      <li><b>使用人（従業員）への貸与</b> — 別の取扱い（No.2597）です。このツールは役員への貸与を前提にしています。</li>
+    </ul>
+    <p>当サイトは税理士・社会保険労務士ではありません。実際の取扱いは顧問の税理士または所轄の税務署にご確認ください。</p>
+  </div>
+
+<section class="faq">
+<h2 id="faq">よくある質問</h2>
+<h3>Q. 「会社が払う家賃の50%」を受け取れば大丈夫ですか？</h3>
+<p>A. 小規模な住宅にあたらない借上社宅では、<b>50%と固定資産税ベースの額のいずれか多い金額</b>が賃貸料相当額です。固定資産税ベースが上回る場合、50%では足りず差額が給与課税されます。小規模な住宅にあたる場合は別の算式で、50%とは無関係です。</p>
+
+<h3>Q. 小規模な住宅とはどのくらいの広さですか？</h3>
+<p>A. 法定耐用年数が30年以下の建物は<b>132㎡以下</b>、30年を超える建物は<b>99㎡以下</b>です。区分所有の建物は共用部分の床面積をあん分し、専用部分に加えて判定します。</p>
+
+<h3>Q. 住宅手当を現金で払うのではだめですか？</h3>
+<p>A. 現金支給の住宅手当や、入居者が直接契約している家賃の負担は<b>社宅の貸与と認められず全額が給与課税</b>されます。会社が借りて役員に貸す形にしていることが前提です。</p>
+
+<h3>Q. 固定資産税の課税標準額はどこで分かりますか？</h3>
+<p>A. 市区町村から届く<b>固定資産税の課税明細書</b>に載っています。借上で自社が所有していない場合は、所有者の同意を得て市区町村に固定資産課税台帳の閲覧を申請する方法があります。<b>評価額と課税標準額は別の欄</b>なので取り違えに注意してください。</p>
+
+<h3>Q. 賃貸料相当額より多く受け取ったらどうなりますか？</h3>
+<p>A. 給与課税される差額は生じません（マイナスにはなりません）。受け取った家賃は会社の収入になります。</p>
+</section>
+
+<h2 id="shutten">出典</h2>
+<p class="note">国税庁 タックスアンサー <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2600.htm" rel="nofollow">No.2600 役員に社宅などを貸したとき</a>（令和7年4月1日現在法令等）。根拠法令等: 所得税法36条、所得税法施行令84条の2、所得税基本通達36-15・36-40〜41、平7課法8-1外。関連: <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2597.htm" rel="nofollow">No.2597 使用人に社宅や寮などを貸したとき</a>。</p>
+
+</main>
+<footer class="site">
+  賃貸料相当額は所得税基本通達36-40・36-41の算式から計算した目安です。豪華社宅の判定・区分所有のあん分は行っていません。実際の取扱いは顧問の税理士または所轄の税務署にご確認ください。データはブラウザの外へ送信されません。<br>
+  © 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script type="module">
+import {
+  calcShokibo, calcHiShokiboJisha, calcHiShokiboKarikage,
+  kazeiSagaku, meetsShokiboMenseki, shokiboMensekiMax,
+} from "../assets/shataku_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+// ★参照データは非同期で届く。**届く前に計算しない**（率を知らないまま答えるのを避ける）。
+//   回線が速いと再現しないので、この待ちを外すと遅い人だけが誤った額を見る。
+let D = null;
+const dataReady = fetch("../assets/shataku_r08.json")
+  .then((r) => r.json())
+  .then((d) => { D = d; return true; })
+  .catch(() => false);   // ★失敗を黙って通さない。下で断り書きを出す
+
+const HINT = {
+  shokibo: "法定耐用年数30年以下なら床面積132㎡以下、30年超なら99㎡以下の住宅です。",
+  jisha: "会社が所有している建物を役員に貸す場合です。",
+  karikage: "会社が借りた物件を役員に貸す場合です。家賃の50%と固定資産税ベースの多い方になります。",
+};
+
+/**
+ * ★計算する前に必ずデータの到着を待つ（await dataReady）。
+ *   待たずに描くと、回線が遅い人だけが率を知らないまま答えを見る（速い回線では再現しない）。
+ */
+async function render() {
+  const arrived = await dataReady;
+  if (!arrived || !D) {
+    $("result").innerHTML = '<p class="hint">料率データを<b>読み込めませんでした</b>。'
+      + '通信環境をご確認のうえ再読み込みしてください。読み込めていない状態では計算しません。</p>';
+    $("menseki-note").textContent = "";
+    return;
+  }
+  const kubun = $("kubun").value;
+  const tatemono = Number($("tatemono").value) || 0;
+  const shikichi = Number($("shikichi").value) || 0;
+  const menseki = Number($("menseki").value) || 0;
+  const nensu = Number($("nensu").value) || 1;
+  const yachin = Number($("yachin").value) || 0;
+  const uketori = Number($("uketori").value) || 0;
+
+  let total = 0, uchiwake = "";
+  if (kubun === "shokibo") {
+    const r = calcShokibo({ tatemonoKazeiHyojun: tatemono, shikichiKazeiHyojun: shikichi, mensekiM2: menseki }, D);
+    total = r.total;
+    uchiwake = `<tr><th>①建物（課税標準額×0.2%）</th><td>${yen(r.tatemono)}</td></tr>`
+      + `<tr><th>②床面積（12円×${menseki}㎡÷3.3）</th><td>${yen(r.yuka)}</td></tr>`
+      + `<tr><th>③敷地（課税標準額×0.22%）</th><td>${yen(r.shikichi)}</td></tr>`;
+  } else if (kubun === "jisha") {
+    const r = calcHiShokiboJisha({ tatemonoKazeiHyojun: tatemono, shikichiKazeiHyojun: shikichi, taiyoNensu: nensu }, D);
+    total = r.total;
+    uchiwake = `<tr><th>イ 建物（課税標準額×${r.tatemonoPct}%・年額）</th><td>${yen(r.tatemonoYearly)}</td></tr>`
+      + `<tr><th>ロ 敷地（課税標準額×6%・年額）</th><td>${yen(r.shikichiYearly)}</td></tr>`
+      + `<tr><th>（イ＋ロ）÷12</th><td>${yen(r.total)}</td></tr>`;
+  } else {
+    const r = calcHiShokiboKarikage({
+      tatemonoKazeiHyojun: tatemono, shikichiKazeiHyojun: shikichi, taiyoNensu: nensu,
+      kaishaShiharaiYachin: yachin,
+    }, D);
+    total = r.total;
+    const mark = (k) => (r.adopted === k ? " <b>← 多い方（採用）</b>" : "");
+    uchiwake = `<tr><th>固定資産税ベース</th><td>${yen(r.jishaKijun)}${mark("kotei_shisanzei")}</td></tr>`
+      + `<tr><th>会社が払う家賃の50%</th><td>${yen(r.yachinHalf)}${mark("yachin_half")}</td></tr>`;
+  }
+
+  const sagaku = kazeiSagaku(total, uketori);
+  $("result").innerHTML = `
+    <div class="big">賃貸料相当額 ${yen(total)}<span style="font-size:15px;font-weight:600">／月</span></div>
+    <div class="hint" style="margin-bottom:10px">この額以上を役員から受け取っていれば、給与としての課税は生じません。</div>
+    <table class="res">${uchiwake}
+      <tr><th>役員から受け取る家賃</th><td>${yen(uketori)}</td></tr>
+      <tr><th>給与として課税される額（月）</th><td><b>${yen(sagaku)}</b>${sagaku === 0 ? "（課税なし）" : ""}</td></tr>
+      <tr><th>同（年）</th><td>${yen(sagaku * 12)}</td></tr>
+    </table>`;
+
+  // 床面積の要件だけ、参考として出す（★区分の当てはめは断定しない）
+  const max = shokiboMensekiMax(nensu, D);
+  const meets = meetsShokiboMenseki(menseki, nensu, D);
+  $("menseki-note").innerHTML = kubun === "shokibo"
+    ? `入力した耐用年数${nensu}年では、小規模な住宅の床面積は<b>${max}㎡以下</b>です。入力した${menseki}㎡は${meets ? "この要件を満たします" : "<b>この要件を満たしません</b>（小規模でない区分の算式をご確認ください）"}。区分所有の共用部分のあん分は行っていません。`
+    : `参考: 耐用年数${nensu}年の小規模な住宅の床面積は${max}㎡以下です。`;
+}
+
+function syncFields() {
+  const k = $("kubun").value;
+  $("kubun-hint").textContent = HINT[k];
+  $("yachin-wrap").hidden = k !== "karikage";
+  $("menseki-wrap").hidden = false;
+  render();          // ★中で await dataReady している
+}
+
+for (const id of ["kubun", "tatemono", "shikichi", "menseki", "nensu", "yachin", "uketori"]) {
+  $(id).addEventListener("input", render);
+  $(id).addEventListener("change", syncFields);
+}
+syncFields();
+</script>
+</body>
+</html>
