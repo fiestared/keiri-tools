@@ -285,16 +285,16 @@
 
 <h2 id="ichiran">自動車税の排気量別 早見表（令和8年度＝2026年度）</h2>
 
-<p>自家用乗用車（登録車）の自動車税（種別割）の年額です（<span id="hyo-year">読み込み中…</span>・標準税率）。電気自動車は1リットル以下と同額で、重課の対象外です。</p>
+<p>自家用乗用車（登録車）の自動車税（種別割）の年額です（<span id="hyo-year">令和8年度</span>・標準税率）。電気自動車は1リットル以下と同額で、重課の対象外です。</p>
 
 <div class="scroll-wrap">
 <table class="tbl" id="zeigaku-table">
   <thead><tr><th>総排気量</th><th>新税率<br><span class="hint">令和元年10月1日以後の初度登録</span></th><th>旧税率<br><span class="hint">令和元年9月30日以前の初度登録</span></th><th>13年超の重課<br><span class="hint">ガソリン・LPG／ディーゼル11年超</span></th></tr></thead>
-  <tbody><tr><td colspan="4">読み込み中…</td></tr></tbody>
+  <tbody><tr><td>電気自動車（燃料電池車を含む）</td><td>¥25,000</td><td>¥29,500</td><td>—（対象外）</td></tr><tr><td>1リットル（1,000cc）以下</td><td>¥25,000</td><td>¥29,500</td><td>¥33,900</td></tr><tr><td>1リットル超 1.5リットル以下</td><td>¥30,500</td><td>¥34,500</td><td>¥39,600</td></tr><tr><td>1.5リットル超 2リットル以下</td><td>¥36,000</td><td>¥39,500</td><td>¥45,400</td></tr><tr><td>2リットル超 2.5リットル以下</td><td>¥43,500</td><td>¥45,000</td><td>¥51,700</td></tr><tr><td>2.5リットル超 3リットル以下</td><td>¥50,000</td><td>¥51,000</td><td>¥58,600</td></tr><tr><td>3リットル超 3.5リットル以下</td><td>¥57,000</td><td>¥58,000</td><td>¥66,700</td></tr><tr><td>3.5リットル超 4リットル以下</td><td>¥65,500</td><td>¥66,500</td><td>¥76,400</td></tr><tr><td>4リットル超 4.5リットル以下</td><td>¥75,500</td><td>¥76,500</td><td>¥87,900</td></tr><tr><td>4.5リットル超 6リットル以下</td><td>¥87,000</td><td>¥88,000</td><td>¥101,200</td></tr><tr><td>6リットル超</td><td>¥110,000</td><td>¥111,000</td><td>¥127,600</td></tr></tbody>
 </table>
 </div>
 
-<p class="hint" id="kei-line">読み込み中…</p>
+<p class="hint" id="kei-line">軽自動車（自家用乗用・660cc以下）の軽自動車税（種別割）＝ 平成27年4月1日以後 最初の新規検査 <b>¥10,800</b>／以前 <b>¥7,200</b>／13年超の重課 <b>¥12,900</b>（市区町村税・月割なし）。</p>
 
 <div class="callout">
 <b>令和8年4月から名称が「自動車税」に戻りました</b>
@@ -350,7 +350,7 @@
 </section>
 </main>
 <footer class="site" style="display:block">
-  出典: 東京都主税局「自動車税」税率表・重課の月割税額表・「自動車税のグリーン化」／大阪市「軽自動車税の税率」<span id="src-note"></span>。<br>
+  出典: 東京都主税局「自動車税」税率表・重課の月割税額表・「自動車税のグリーン化」／大阪市「軽自動車税の税率」<span id="src-note">（令和8年度・標準税率）</span>。<br>
   入力した内容はブラウザの外へ送信されません。<br>© 経理ミニツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
@@ -385,10 +385,12 @@ const dataReady = fetch("../assets/jidoshazei_r08.json")
 // 年・一覧表の描画は飾り＋一覧表。ここで転んでも判定は止めない。
 dataReady.then((ok) => {
   if (!ok || !DATA) {
-    $("hyo-year").textContent = "（読み込めませんでした）";
-    $("kei-line").textContent = "";
-    $("zeigaku-table").querySelector("tbody").innerHTML =
-      '<tr><td colspan="4">一覧表のデータを読み込めませんでした。通信環境を確認して再読み込みしてください。</td></tr>';
+    // ★一覧表・軽の行・年度は、正本から静的HTMLに書き出してある
+    //   （tools/gen_jidoshazei_table.mjs）。取得に失敗しても、そこに出ている数字は
+    //   正本そのものなので**消さない**。消すと、正しい表を「読み込めませんでした」で
+    //   上書きすることになる。
+    //   fail-closed が要るのは「これから計算する」側だけで、そちらは calc 側が
+    //   データ未到着なら税額を答えないまま止まる（下の click ハンドラ）。
     return;
   }
   const m = DATA._meta || {};
