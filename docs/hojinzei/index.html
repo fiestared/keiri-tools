@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>法人税の簡易計算｜軽減税率15%は「年800万円以下の部分」だけ</title>
+<meta name="description" content="所得金額から法人税と地方法人税を計算します。★軽減税率15%がかかるのは年800万円以下の部分だけで、超えた部分は23.2%。所得全体に15%を掛けると過少になります。★所得が年10億円を超える事業年度は15%でなく17%。★適用除外事業者・通算法人は19%のまま。★地方法人税の課税標準は所得ではなく法人税額。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/hojinzei/">
+<!-- ogp:auto -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="法人税の簡易計算｜軽減税率15%は「年800万円以下の部分」だけ">
+<meta property="og:description" content="所得金額から法人税と地方法人税を計算します。★軽減税率15%がかかるのは年800万円以下の部分だけで、超えた部分は23.2%。所得全体に15%を掛けると過少になります。★所得が年10億円を超える事業年度は15%でなく17%。★適用除外事業者・通算法人は19%のまま。★地方法人税の課税標準は所得ではなく法人税額。登録不要・無料。">
+<meta property="og:url" content="https://keiri-tools.com/hojinzei/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="経理ミニツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Q. 中小企業の法人税は15%ではないのですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 年800万円以下の部分だけが15%です（措置法42条の3の2）。800万円を超える部分には原則の23.2%がかかります（法人税法66条1項）。所得全体に15%を掛けると税額が大きく過少に出ます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 15%が17%になるのはどういう場合ですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 所得の金額が年10億円を超える事業年度です（措置法42条の3の2第1項）。令和7年度改正で入りました。判定は所得全体で行い、率が変わるのは800万円以下の部分です。10億円ちょうどは15%のままです（条文は「超える」）。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 資本金1億円以下なら必ず軽減税率が使えますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. いいえ。適用除外事業者（前3事業年度の所得の平均が15億円超）、通算法人、資本金5億円以上の大法人による完全支配関係がある普通法人などは使えず19%のままです。大法人の100%子会社が見落とされがちです。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 地方法人税の税率10.3%は所得に掛けるのですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. いいえ。課税標準は法人税額です（地方法人税法10条1項）。法人税120万円なら地方法人税は123,600円で、所得に掛けると6.7倍の過大になります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 事業年度が1年未満のときはどうなりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 年800万円と年10億円を「12で除して事業年度の月数を乗じた金額」に読み替えます（法人税法66条4項・措置法42条の3の2第3項）。月数は暦に従って計算し、1月に満たない端数は1月とします（同条4項）。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. この特例はいつまでですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 令和9年3月31日までに開始する事業年度までの時限措置です（措置法42条の3の2第1項）。延長されてきた経緯がありますが、条文上の期限はこの日です。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 実効税率はいくらですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. このツールでは出しません。実効税率には法人住民税・法人事業税・特別法人事業税が入り、これらは自治体と資本金・所得の区分で率が違うためです。国税だけの計算例としてお使いください。"
+      }
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav>
+    <a href="../#tools">ツール</a>
+    <a href="../column/">コラム</a>
+    <a href="../toushi/">資産形成</a>
+  </nav>
+</header>
+<main>
+  <nav class="breadcrumb">ホーム › 法人税の簡易計算</nav>
+  <h1>法人税の簡易計算</h1>
+  <p class="lead">所得金額から<b>法人税</b>と<b>地方法人税</b>（どちらも国税）を計算します。★<b>軽減税率15%がかかるのは年800万円以下の部分だけ</b>で、超えた部分は23.2%です（法人税法66条2項）。</p>
+
+  <div class="callout" id="handan">
+    <p><b>「中小企業だから15%」ではありません。</b>条文の当てはめは3段階です。①資本金1億円以下かどうかで<b>軽減の枠</b>ができる（66条2項・19%）②措置法42条の3の2でその19%が<b>15%</b>に読み替わる ③ただし<b>所得が年10億円を超える事業年度は17%</b>。さらに適用除外事業者・通算法人などは②が使えず<b>19%のまま</b>です。</p>
+  </div>
+
+  <div class="card">
+    <div class="fee-pair">
+      <div>
+        <label for="shotoku">その事業年度の所得金額（円）</label>
+        <input type="number" id="shotoku" value="20000000" min="0" step="100000" inputmode="numeric">
+        <p class="hint">別表四で計算した所得金額（繰越欠損金を控除した後）。</p>
+      </div>
+      <div>
+        <label for="tsukisu">事業年度の月数</label>
+        <input type="number" id="tsukisu" value="12" min="1" max="12" step="1" inputmode="numeric">
+        <p class="hint">★1年未満なら800万円・10億円を按分します。</p>
+      </div>
+    </div>
+
+    <fieldset id="kubun-set">
+      <legend>法人の区分</legend>
+      <label><input type="checkbox" id="chusho" checked> 各事業年度終了の時の<b>資本金・出資金が1億円以下</b>（または資本・出資を有しない）</label>
+      <label><input type="checkbox" id="tokurei" checked> 措置法42条の3の2の<b>特例が使える</b>（適用除外事業者・通算法人・66条5項各号のいずれにも当たらない）</label>
+    </fieldset>
+
+    <div class="result" id="result" aria-live="polite"></div>
+  </div>
+
+  <div class="toc-title">目次</div>
+  <ul class="toc">
+    <li><a href="#han">税率の当てはめは3段階</a></li>
+    <li><a href="#kabe">10億円を超えると15%が17%になる</a></li>
+    <li><a href="#jogai">特例が使えない法人</a></li>
+    <li><a href="#chiho">地方法人税は「法人税額」にかかる</a></li>
+    <li><a href="#dekinai">このツールが計算しないこと</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ul>
+
+  <h2 id="han">税率の当てはめは3段階</h2>
+  <div class="scroll-wrap">
+  <table id="rate-hyo">
+    <tr><th>所得の部分</th><th>資本金1億円以下＋特例あり</th><th>特例が使えない</th><th>資本金1億円超</th></tr>
+    <tr><td><b>年800万円以下</b></td><td><b>15%</b>（10億円超の年は17%）</td><td>19%</td><td>23.2%</td></tr>
+    <tr><td>年800万円を超える部分</td><td>23.2%</td><td>23.2%</td><td>23.2%</td></tr>
+  </table>
+  </div>
+  <div class="callout">
+    <p><b>所得全体に15%を掛けるのが、いちばん多い誤りです。</b>所得2,000万円なら、正しくは 800万×15% ＋ 1,200万×23.2% ＝ <b>3,984,000円</b>。全額15%だと3,000,000円で、<b>984,000円の過少</b>になります。</p>
+  </div>
+
+  <h2 id="kabe">10億円を超えると15%が17%になる</h2>
+  <p>措置法42条の3の2第1項は「百分の十五（<b>所得の金額が年十億円を超える事業年度については、百分の十七</b>）」と書いています。令和7年度改正で入りました。</p>
+  <div class="callout">
+    <p>★判定は<b>所得全体</b>で行い、率が変わるのは<b>800万円以下の部分</b>です。10億円ちょうどは15%のまま（条文は「超える」）で、1円超えると800万円以下の部分の税額が<b>160,000円</b>（800万×2%）増えます。</p>
+  </div>
+
+  <h2 id="jogai">特例が使えない法人</h2>
+  <p>資本金1億円以下でも、次に当たると15%・17%が使えず<b>19%のまま</b>です（措置法42条の3の2第1項の括弧書き）。</p>
+  <ul>
+    <li><b>適用除外事業者</b> — 前3事業年度の所得金額の平均が<b>15億円を超える</b>法人（措置法42条の4第19項8号）</li>
+    <li><b>通算法人</b>（グループ通算制度を適用している法人）</li>
+    <li><b>法人税法66条5項各号の法人</b> — 相互会社、<b>資本金5億円以上の大法人による完全支配関係がある普通法人</b>、投資法人、特定目的会社、受託法人など</li>
+  </ul>
+  <div class="callout">
+    <p>★とくに<b>大法人の100%子会社</b>は見落とされがちです。自社の資本金が1億円以下でも、親会社の資本金が5億円以上で完全支配関係があれば、軽減税率そのものが使えません（66条5項2号）。</p>
+  </div>
+
+  <h2 id="chiho">地方法人税は「法人税額」にかかる</h2>
+  <p>地方法人税法10条1項は「<b>課税標準法人税額</b>に百分の十・三の税率を乗じて計算した金額」と書いています。<b>所得に10.3%を掛けるのではありません。</b></p>
+  <div class="callout">
+    <p>所得800万円・法人税120万円の場合、地方法人税は 1,200,000×10.3% ＝ <b>123,600円</b>。所得に掛けると824,000円になり、<b>6.7倍</b>の過大になります。</p>
+  </div>
+
+  <h2 id="dekinai">このツールが計算しないこと</h2>
+  <div class="callout" id="dekinai-note">
+    <p>このツールは<b>国税（法人税・地方法人税）だけ</b>を、入力した所得金額から計算します。次はしていません。</p>
+    <ul>
+      <li><b>法人住民税・法人事業税・特別法人事業税</b> — 自治体と資本金・所得の区分で率が違うので扱いません。<b>実効税率も出しません</b></li>
+      <li><b>所得金額そのものの計算</b> — 益金・損金・別表調整・繰越欠損金の控除は別です。ここには計算後の所得を入れてください</li>
+      <li><b>税額控除</b>（措置法42条の4の試験研究費、賃上げ促進税制ほか）</li>
+      <li><b>特定同族会社の留保金課税</b>（法人税法67条）</li>
+      <li><b>適用除外事業者かどうかの判定</b> — 前3年の所得の平均はご自身でご確認ください。チェックボックスの入力をそのまま使います</li>
+    </ul>
+    <p>当サイトは税理士ではありません。実際の申告は顧問の税理士または所轄の税務署にご確認ください。</p>
+  </div>
+
+<section class="faq">
+<h2 id="faq">よくある質問</h2>
+<h3>Q. 中小企業の法人税は15%ではないのですか？</h3>
+<p>A. <b>年800万円以下の部分だけ</b>が15%です（措置法42条の3の2）。800万円を超える部分には原則の23.2%がかかります（法人税法66条1項）。所得全体に15%を掛けると税額が大きく過少に出ます。</p>
+
+<h3>Q. 15%が17%になるのはどういう場合ですか？</h3>
+<p>A. <b>所得の金額が年10億円を超える事業年度</b>です（措置法42条の3の2第1項）。令和7年度改正で入りました。判定は所得全体で行い、率が変わるのは800万円以下の部分です。10億円<b>ちょうど</b>は15%のままです（条文は「超える」）。</p>
+
+<h3>Q. 資本金1億円以下なら必ず軽減税率が使えますか？</h3>
+<p>A. いいえ。<b>適用除外事業者</b>（前3事業年度の所得の平均が15億円超）、<b>通算法人</b>、<b>資本金5億円以上の大法人による完全支配関係がある普通法人</b>などは使えず19%のままです。大法人の100%子会社が見落とされがちです。</p>
+
+<h3>Q. 地方法人税の税率10.3%は所得に掛けるのですか？</h3>
+<p>A. いいえ。<b>課税標準は法人税額</b>です（地方法人税法10条1項）。法人税120万円なら地方法人税は123,600円で、所得に掛けると6.7倍の過大になります。</p>
+
+<h3>Q. 事業年度が1年未満のときはどうなりますか？</h3>
+<p>A. 年800万円と年10億円を<b>「12で除して事業年度の月数を乗じた金額」</b>に読み替えます（法人税法66条4項・措置法42条の3の2第3項）。月数は暦に従って計算し、<b>1月に満たない端数は1月</b>とします（同条4項）。</p>
+
+<h3>Q. この特例はいつまでですか？</h3>
+<p>A. <b>令和9年3月31日までに開始する事業年度</b>までの時限措置です（措置法42条の3の2第1項）。延長されてきた経緯がありますが、条文上の期限はこの日です。</p>
+
+<h3>Q. 実効税率はいくらですか？</h3>
+<p>A. <b>このツールでは出しません。</b>実効税率には法人住民税・法人事業税・特別法人事業税が入り、これらは自治体と資本金・所得の区分で率が違うためです。国税だけの計算例としてお使いください。</p>
+</section>
+
+<h2 id="shutten">出典</h2>
+<p class="note"><a href="https://laws.e-gov.go.jp/law/340AC0000000034" rel="nofollow">法人税法</a> 66条（1項＝23.2%、2項＝資本金1億円以下の年800万円以下は19%、4項＝1年未満の按分、5項＝軽減を適用しない法人）。<a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">租税特別措置法</a> 42条の3の2（中小企業者等の法人税率の特例＝19%を15%に読み替え。所得が年10億円を超える事業年度は17%。適用除外事業者・通算法人は対象外。令和9年3月31日までに開始する事業年度）。<a href="https://laws.e-gov.go.jp/law/426AC0000000011" rel="nofollow">地方法人税法</a> 10条1項（課税標準法人税額に10.3%）。条文は e-Gov 法令API v2 で実読しています（2026-08-08 確認）。</p>
+
+</main>
+<footer class="site">
+  計算結果は入力した所得金額での試算です。法人住民税・法人事業税・特別法人事業税は含みません（実効税率も出していません）。当サイトは税理士ではありません。実際の申告は顧問の税理士または所轄の税務署にご確認ください。データはブラウザの外へ送信されません。<br>
+  © 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script type="module">
+import { calc } from "../assets/hojinzei_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+// ★税率と金額のしきい値は非同期で届く。**届く前に計算しない**。
+let D = null;
+const hojinzeiReady = fetch("../assets/hojinzei_r08.json")
+  .then((r) => r.json()).then((d) => { D = d; return true; }).catch(() => false);
+
+async function render() {
+  const arrived = await hojinzeiReady;
+  // ★.result は style.css で既定 display:none。表示に切り替えないと
+  //   計算は正しいのに画面には何も出ない。
+  $("result").style.display = "block";
+  if (!arrived || !D) {
+    $("result").innerHTML = '<p class="hint">税率のデータを<b>読み込めませんでした</b>。'
+      + '通信環境をご確認のうえ再読み込みしてください。読み込めていない状態では計算しません。</p>';
+    return;
+  }
+  const shotoku = Number($("shotoku").value) || 0;
+  const tsukisu = Number($("tsukisu").value) || 12;
+  const chusho = $("chusho").checked;
+  const tokureiTsukaeru = $("tokurei").checked;
+  const r = calc({ shotoku, chusho, tokureiTsukaeru, tsukisu }, D);
+
+  // ★所得全体に軽減税率を掛けた場合との差（このツールの看板）
+  const zenbuKeigen = r.keigenRate === null ? null
+    : Math.floor(Math.floor(shotoku * r.keigenRate / 100) / 100) * 100;
+
+  $("result").innerHTML = `
+    <div class="big">法人税＋地方法人税 ${yen(r.total)}</div>
+    <div class="hint" style="margin-bottom:10px">所得 ${yen(r.shotoku)}${tsukisu < 12 ? `／事業年度 ${tsukisu}か月` : ""}</div>
+    <table class="res">
+      <tr><th>年800万円以下の部分</th><td id="keigen">${r.keigenRate === null
+        ? "軽減の枠がありません（資本金1億円超）"
+        : `${yen(r.keigenBase)} × <b>${r.keigenRate}%</b> = ${yen(r.keigenBun)}`}${
+        r.kogakuTekiyo ? "　<b>★所得が年10億円を超えるため17%</b>" : ""}</td></tr>
+      <tr><th>それを超える部分</th><td id="honsoku">${yen(r.honsokuBase)} × ${D.hojinzei.honsoku_pct}% = ${yen(r.honsokuBun)}</td></tr>
+      <tr><th>法人税額</th><td><b id="hojinzei">${yen(r.hojinzei)}</b>（100円未満切捨）</td></tr>
+      <tr><th>地方法人税</th><td><b id="res-chiho">${yen(r.chiho)}</b>　法人税額 × ${D.chiho_hojinzei.pct}%（★所得に掛けるのではありません）</td></tr>
+      <tr><th>国税の合計</th><td><b id="total">${yen(r.total)}</b></td></tr>
+      ${tsukisu < 12 ? `<tr><th>按分後のしきい値</th><td id="anbun">軽減の枠 ${yen(r.line)}／高額の線 ${yen(r.kogakuLine)}</td></tr>` : ""}
+      ${zenbuKeigen !== null && r.honsokuBase > 0
+        ? `<tr><th>★所得全体に${r.keigenRate}%を掛けた場合</th><td id="hikaku">${yen(zenbuKeigen)} — <b>${yen(r.hojinzei - zenbuKeigen)}の過少</b>になります</td></tr>`
+        : ""}
+    </table>
+    <div class="note" style="margin-top:12px">
+      ★<b>法人住民税・法人事業税・特別法人事業税は含んでいません</b>（自治体で率が違うため。実効税率も出していません）。
+      所得金額そのものの計算・税額控除・留保金課税も対象外です。当サイトは税理士ではありません。
+    </div>`;
+}
+
+for (const id of ["shotoku", "tsukisu", "chusho", "tokurei"]) {
+  $(id).addEventListener("input", render);
+  $(id).addEventListener("change", render);
+}
+render();
+</script>
+</body>
+</html>

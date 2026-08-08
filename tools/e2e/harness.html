@@ -4753,6 +4753,59 @@ SCENES.yakuin_shataku = shatakuScene({});
 // ★賃貸料相当額以上を受け取っていれば課税は生じない
 SCENES.yakuin_shataku_kazei_nashi = shatakuScene({ uketori: 500000 });
 
+// ───────── 法人税・地方法人税 ─────────
+// ★見るもの: ①軽減15%は年800万円以下の部分だけ ②10億円超は17%（10億円ちょうどは15%）
+//            ③特例が使えないと19%のまま ④地方法人税は所得でなく法人税額に10.3%
+//            ⑤事業年度1年未満は800万・10億を按分
+const hojinzeiScene = ({ shotoku = 20000000, chusho = true, tokurei = true, tsukisu = 12 } = {}) => async () => {
+  const doc = await open("/docs/hojinzei/");
+  set(doc, "shotoku", String(shotoku));
+  set(doc, "tsukisu", String(tsukisu));
+  check(doc, "chusho", chusho);
+  check(doc, "tokurei", tokurei);
+  await waitFor(
+    () => /法人税＋地方法人税|読み込めませんでした/.test(text(doc, "result")),
+    "法人税額",
+  );
+  const body = text(doc, "result");
+  const yenId = (id) => {
+    const el = doc.getElementById(id);
+    if (!el) return null;
+    const m = el.textContent.match(/([\d,]+)/);
+    return m ? Number(m[1].replace(/,/g, "")) : null;
+  };
+  return {
+    shotoku, chusho, tokurei, tsukisu,
+    // 軽減の行に出ている税率（軽減の枠が無い分岐では null）
+    keigenRate: (() => {
+      const t = doc.getElementById("keigen")?.textContent || "";
+      const m = t.match(/×\s*(\d+)%/);
+      return m ? Number(m[1]) : null;
+    })(),
+    keigenNashi: /軽減の枠がありません/.test(doc.getElementById("keigen")?.textContent || ""),
+    hojinzei: yenId("hojinzei"),
+    chiho: yenId("res-chiho"),
+    total: yenId("total"),
+    // ★「所得全体に軽減税率を掛けた場合」との差を出しているか（このツールの看板）
+    hikaku: yenId("hikaku"),
+    kogaku: /所得が年10億円を超えるため17%/.test(body),
+    anbun: doc.getElementById("anbun")?.textContent?.replace(/\s+/g, " ").trim() || null,
+    failed: /読み込めませんでした/.test(body),
+  };
+};
+// 所得2,000万 → 800万×15%＋1,200万×23.2%＝3,984,000（全額15%だと3,000,000で984,000の過少）
+SCENES.hojinzei = hojinzeiScene({});
+// ★10億円ちょうどは15%のまま（条文は「超える」）
+SCENES.hojinzei_10oku_choudo = hojinzeiScene({ shotoku: 1000000000 });
+// ★1円超えると17%。800万円以下の部分の税額が160,000円増える
+SCENES.hojinzei_10oku_koe = hojinzeiScene({ shotoku: 1000000001 });
+// ★特例が使えない（適用除外事業者・通算法人・66条5項各号）→ 19%のまま
+SCENES.hojinzei_tokurei_nashi = hojinzeiScene({ shotoku: 8000000, tokurei: false });
+// 資本金1億円超 → 軽減の枠そのものが無い
+SCENES.hojinzei_daihojin = hojinzeiScene({ shotoku: 8000000, chusho: false });
+// ★6か月なら軽減の枠は400万円・高額の線は5億円
+SCENES.hojinzei_6kagetsu = hojinzeiScene({ shotoku: 8000000, tsukisu: 6 });
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };

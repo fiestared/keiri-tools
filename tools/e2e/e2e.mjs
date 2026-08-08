@@ -1711,6 +1711,30 @@ const SCENES = [
   { name: "santei_taishogai", expect: (s) =>
       s.taishogai && s.hoshu === null && !s.failed },
 
+  // ─── 法人税・地方法人税（法人税法66条／措置法42条の3の2／地方法人税法10条）───
+  // ★★このツールの看板。所得2,000万 → 800万×15%＋1,200万×23.2%＝3,984,000。
+  //   所得全体に15%を掛ける実装は3,000,000＝984,000円の過少。比較行も出ること。
+  //   地方法人税は 3,984,000×10.3%＝410,300（所得に掛けると2,060,000で5倍の過大）。
+  { name: "hojinzei", expect: (s) =>
+      s.keigenRate === 15 && s.hojinzei === 3984000 && s.chiho === 410300 &&
+      s.total === 4394300 && s.hikaku === 3000000 && !s.kogaku && !s.failed },
+  // ★10億円「ちょうど」は15%のまま（条文は「年十億円を超える」）
+  { name: "hojinzei_10oku_choudo", expect: (s) =>
+      s.keigenRate === 15 && !s.kogaku && !s.failed },
+  // ★★1円超えると17%。800万円以下の部分だけが 1,200,000→1,360,000 に増える（差160,000）
+  { name: "hojinzei_10oku_koe", expect: (s) =>
+      s.keigenRate === 17 && s.kogaku && s.hojinzei === 231504000 && !s.failed },
+  // ★特例が使えない法人は19%のまま（15%を当てる実装はここで落ちる）
+  { name: "hojinzei_tokurei_nashi", expect: (s) =>
+      s.keigenRate === 19 && s.hojinzei === 1520000 && s.chiho === 156500 && !s.failed },
+  // 資本金1億円超 → 軽減の枠そのものが無く、全額23.2%
+  { name: "hojinzei_daihojin", expect: (s) =>
+      s.keigenNashi && s.keigenRate === null && s.hojinzei === 1856000 && !s.failed },
+  // ★事業年度6か月 → 軽減の枠400万円・高額の線5億円。按分しない実装は1,200,000で落ちる
+  { name: "hojinzei_6kagetsu", expect: (s) =>
+      s.hojinzei === 1528000 && /¥4,000,000/.test(s.anbun || "") &&
+      /¥500,000,000/.test(s.anbun || "") && !s.failed },
+
   // ─── 役員社宅の賃貸料相当額（所得税基本通達36-40〜36-41）───
   { name: "yakuin_shataku", expect: (s) =>
       s.total === 64327 && s.kazei === 34327 && !s.kazeiNashi && !s.failed },
