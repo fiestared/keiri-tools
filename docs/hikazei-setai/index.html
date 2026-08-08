@@ -136,8 +136,8 @@
 
   <div class="grid2">
     <div>
-      <label for="kyuchi">お住まいの級地<span class="hint">　生活保護法の級地区分</span></label>
-      <select id="kyuchi">
+      <label for="in-kyuchi">お住まいの級地<span class="hint">　生活保護法の級地区分</span></label>
+      <select id="in-kyuchi">
         <option value="1" selected>1級地（東京23区・政令指定都市・県庁所在地など）</option>
         <option value="2">2級地（中規模の市など）</option>
         <option value="3">3級地（町村など）</option>
@@ -683,7 +683,7 @@ $("calc").addEventListener("click", async () => {
   let r;
   try {
     r = calcHikazeiSetai({
-      kyuchi: Number($("kyuchi").value),
+      kyuchi: Number($("in-kyuchi").value),
       zeisei: $("zeisei").value === "r8" ? "r8" : undefined,
       members,
     }, D, J);
@@ -731,8 +731,8 @@ $("calc").addEventListener("click", async () => {
   }
 
   // 年金だけの人の目安（同じ級地・扶養なしの単身で、いくらまでなら非課税か）
-  const b65 = nenkinBorder(70, Number($("kyuchi").value), 0, false, D, J);
-  const bU65 = nenkinBorder(64, Number($("kyuchi").value), 0, false, D, J);
+  const b65 = nenkinBorder(70, Number($("in-kyuchi").value), 0, false, D, J);
+  const bU65 = nenkinBorder(64, Number($("in-kyuchi").value), 0, false, D, J);
   html += `<p class="hint" id="border-note">${r.kyuchiLabel}で扶養がいない単身の場合、
     年金収入だけなら <b>65歳以上は${yenF(b65.shunyuMax)}</b>まで、
     <b>65歳未満は${yenF(bU65.shunyuMax)}</b>まで非課税です

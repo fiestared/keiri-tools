@@ -150,8 +150,8 @@
     <option value="hozon">所有権の保存（自分で新築して最初に登記する）</option>
   </select>
 
-  <label for="genin" style="margin-top:14px">③ 取得の原因</label>
-  <select id="genin">
+  <label for="in-genin" style="margin-top:14px">③ 取得の原因</label>
+  <select id="in-genin">
     <option value="売買" selected>売買</option>
     <option value="競落">競落（競売で落札した）</option>
     <option value="贈与">贈与</option>
@@ -204,8 +204,8 @@
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px">
     <div>
-      <label for="chuko" style="font-size:13px">新築か中古か</label>
-      <select id="chuko">
+      <label for="in-chuko" style="font-size:13px">新築か中古か</label>
+      <select id="in-chuko">
         <option value="0" selected>新築・建築後使用されたことがない</option>
         <option value="1">中古（建築後に人が住んだことがある）</option>
       </select>
@@ -224,8 +224,8 @@
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px">
     <div>
-      <label for="nintei" style="font-size:13px">認定住宅か</label>
-      <select id="nintei">
+      <label for="in-nintei" style="font-size:13px">認定住宅か</label>
+      <select id="in-nintei">
         <option value="none" selected>認定を受けていない</option>
         <option value="chouki">特定認定長期優良住宅</option>
         <option value="teitanso">認定低炭素住宅</option>
@@ -470,7 +470,7 @@ $("calc").addEventListener("click", async () => {
     return;
   }
 
-  const genin = $("genin").value;
+  const genin = $("in-genin").value;
   const input = {
     tokiBi: $("tokiBi").value,
     tokiShurui: $("tokiShurui").value,
@@ -485,10 +485,10 @@ $("calc").addEventListener("click", async () => {
     kojinKyoju: $("kojinKyoju").value === "1",
     yukamenseki: Number($("yukamenseki").value) || 0,
     tokiMadeMonths: num("tokiMadeMonths"),
-    chuko: $("chuko").value === "1",
+    chuko: $("in-chuko").value === "1",
     kenchikuBi: $("kenchikuBi").value,
     taishinTekigo: $("taishinTekigo").value === "1",
-    nintei: $("nintei").value,
+    nintei: $("in-nintei").value,
     kodate: $("kodate").value === "1",
     kaitoriHanbai: $("kaitoriHanbai").value === "1",
     saikenGaku: num("saikenGaku"),

@@ -169,8 +169,8 @@
     </div>
   </div>
 
-  <label for="shinchiku" style="margin-top:14px">③ 新築住宅の減額（該当するもの）</label>
-  <select id="shinchiku"></select>
+  <label for="in-shinchiku" style="margin-top:14px">③ 新築住宅の減額（該当するもの）</label>
+  <select id="in-shinchiku"></select>
   <p class="hint" id="shinchiku-hint" style="margin-top:6px"></p>
 
   <label style="margin-top:14px">④ 税率</label>
@@ -346,7 +346,7 @@ for (const k of SHINCHIKU_KUBUN) {
   const opt = document.createElement("option");
   opt.value = k.key;
   opt.textContent = k.years > 0 ? `${k.label}（${k.years}年度分）` : k.label;
-  $("shinchiku").appendChild(opt);
+  $("in-shinchiku").appendChild(opt);
 }
 $("shinchiku-hint").innerHTML =
   `減額されるのは<b>固定資産税だけ</b>（都市計画税は減額されません）で、<b>居住部分${SEIDO.shinchikuCapM2}㎡相当分まで</b>の税額の${SEIDO.shinchikuRatio === 0.5 ? "2分の1" : SEIDO.shinchikuRatio}です。` +
@@ -365,7 +365,7 @@ $("calc").addEventListener("click", () => {
     units: num("units"),
     houseValue: num("houseValue"),
     houseFloorArea: num("houseFloorArea"),
-    shinchiku: $("shinchiku").value,
+    shinchiku: $("in-shinchiku").value,
     koteiRate: num("koteiRate"),
     toshiRate: num("toshiRate"),
   };

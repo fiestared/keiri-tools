@@ -95,7 +95,7 @@ const MUTATIONS = [
     // ★中古かどうかを渡し忘れる（昭和56年建築でも軽減が通る・200,000→30,000）。
     name: "★中古かどうかを渡し忘れる（昭和56年建築でも軽減を通す）",
     scene: "toroku_chuko_s56",
-    apply: (s) => s.replace('    chuko: $("chuko").value === "1",', "    chuko: false,"),
+    apply: (s) => s.replace('    chuko: $("in-chuko").value === "1",', "    chuko: false,"),
   },
   {
     // ★中古の建築年月日を渡し忘れる（判定できないので軽減が落ちる・30,000→200,000）。
@@ -114,7 +114,7 @@ const MUTATIONS = [
     // ★認定住宅の種類を渡し忘れる（0.2%→0.3%）。
     name: "★認定住宅の種類を渡し忘れる",
     scene: "toroku_chouki_kodate",
-    apply: (s) => s.replace('    nintei: $("nintei").value,', '    nintei: "none",'),
+    apply: (s) => s.replace('    nintei: $("in-nintei").value,', '    nintei: "none",'),
   },
   {
     // ★床面積を渡し忘れる（要件を満たすのに軽減が落ちる）。
