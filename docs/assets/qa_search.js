@@ -144,12 +144,27 @@ function isWeakMatch(matchedTokens, qtokens, df, N) {
  *   分母を膨らませ、本物の質問を殺す**(実測: 「残業代の正しい計算のしかたを教えてください」は
  *   生の文字被覆だと 29% まで落ちる。内容文字なら 71%)。
  *
+ * ★**被覆に数えない語がある(2026-08-08 追加)。** 生成器 gen_qa_index.mjs は口語の同義語を
+ *   terms に足す(「アルバイト」の記事に「バイト」など)。これは**届かせる**ために要るので
+ *   被覆にも数える。しかし `いくら どのくらい いくらぐらい 金額 目安` の行だけは
+ *   「計算」を含む全ページに付くため、実測で **114件中80件が「目安」を持つ**(本文にあるのは3件)。
+ *   これを「理解できた」と数えると、**中身が1語も合っていない質問が門を通る**
+ *   (実測: 「資格の勉強時間の目安」→ /santei/ が被覆67%で通った。当たったのは
+ *   `資格`(資格取得の意味)と、生成器が撒いた`目安`だけ)。
+ *   → **本文(title+answer)に無く、かつ索引の大半に出る語**を被覆の分子から外す。
+ *   条件を2つ重ねるのが要点。★df だけで切ると「計算」まで落ちて
+ *   「手取り 計算」「固定資産税の計算方法を教えてください」が答えなくなる(2026-08-08 実測)。
+ *   「計算」は df が高くても**本文に書いてある内容語**なので①で残り、
+ *   話題を特定する同義語(バイト/ボーナス/失業保険)は df が小さいので②で残る。
+ *
  * ★**閾値 0.6 の根拠(2026-08-02 実測)**: 本物の質問66問の最小が **60%**、
  *   無関係な質問の最大が **50%**(「おすすめの映画の見方」)。両側に10ポイントの余裕。
  *   MATCH_MIN と違い**この値は索引が増えても勝手に動かない** — 被覆は質問の側の量なので、
  *   跨がれるとしたら「新しい記事が本当にその質問の語を大半含んでいた」ときだけ(＝妥当な一致)。
  */
 const MIN_CONTENT_COVERAGE = 0.6;
+/** ★被覆の分子から外す語の df 割合。索引の4割超に出る語は話題を特定しない(実測: 目安 70%)。 */
+const COVERAGE_STOPWORD_DF_RATIO = 0.4;
 const HIRAGANA = /[ぁ-ゖ]/;
 
 /** 正規化済みクエリのうち、内容文字(ひらがな以外)の位置。空なら分母が無い＝この門は適用外。 */
@@ -160,12 +175,21 @@ function contentPositions(nq) {
 }
 
 /** entry が当たった語で、内容文字のうち何割を覆えたか。分母が無いときは 1(素通し)。 */
-function contentCoverage(entry, qtokens, nq, contentIdx) {
+function contentCoverage(entry, qtokens, nq, contentIdx, df, N) {
   if (contentIdx.length === 0) return 1;
   const terms = entry.terms || "";
+  // ★エントリ自身が書いている文。生成器が足した同義語は入らない。
+  const honbun = (entry.title || "") + " " + (entry.answer || "");
   const covered = new Set();
   for (const t of qtokens) {
     if (!terms.includes(t)) continue;
+    // ★生成器が撒いた汎用語を「理解できた」と数えない。
+    //   条件は2つとも満たしたときだけ外す:
+    //     ① そのエントリ自身の本文(title+answer)に無い ＝ 同義語として足された語
+    //     ② 索引の大半に出る          ＝ 話題を特定しない
+    //   「計算」のように本文にある語は①で残る(df が高くても内容語なので数える)。
+    //   「バイト」のような話題を特定する同義語は②で残る(df が小さい)。
+    if (df && N && !honbun.includes(t) && df.get(t) > N * COVERAGE_STOPWORD_DF_RATIO) continue;
     let i = nq.indexOf(t);
     while (i !== -1) {
       for (let k = i; k < i + t.length; k++) covered.add(k);
@@ -227,7 +251,7 @@ export function search(index, query, limit = 3) {
   const contentIdx = contentPositions(nq);
   const scored = index
     .map((e) => ({ e, s: scoreEntry(e, qtokens, df, N) }))
-    .filter((x) => x.s > 0 && contentCoverage(x.e, qtokens, nq, contentIdx) >= MIN_CONTENT_COVERAGE)
+    .filter((x) => x.s > 0 && contentCoverage(x.e, qtokens, nq, contentIdx, df, N) >= MIN_CONTENT_COVERAGE)
     .sort((a, b) => b.s - a.s || (b.e.tool ? 1 : 0) - (a.e.tool ? 1 : 0));
   const top = scored.slice(0, limit);
   const best = scored.length ? scored[0].s : 0;
