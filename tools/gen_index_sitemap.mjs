@@ -181,7 +181,7 @@ const STATIC_PAGES = [
   "yukyu/", "denchoho-index/", "senpou-futan/", "zengin-kana/", "shiharai-site/", "saitei-chingin/",
   "shokibo-kyosai/", "ideco-setsuzei/", "fuyo-kojo/", "haigusha-kojo/", "seimei-hoken-kojo/", "aoiro-kojo/", "tosan-boshi-kyosai/", "hitorioya-kojo/", "kinro-gakusei/", "seizen-zoyo/", "sozoku-toki-menkyozei/", "iryubun/", "shokibo-takuchi/", "jishin-hoken-kojo/", "hikazei-setai/", "fudosan-jouto/", "invoice-bangou/", "kotei-shisanzei/", "fudosan-shutoku/", "kokuho/", "nenkin/", "toroku-menkyozei/", "chukai-tesuryo/", "izoku/", "zaishoku/", "saishushoku/", "kogaku-ryoyohi/", "kokunen-menjo/", "yakuin-shataku/",
   // ★資産形成セクション（2026-08-08 新設）。column/ と並ぶ独立カテゴリ
-  "toushi/", "toushi/tsumitate/", "toushi/ideco-deguchi/",
+  "toushi/", "toushi/tsumitate/", "toushi/ideco-deguchi/", "yotei-nozei/",
   // "ext/amazon-receipt/" は 2026-08-03 に提供終了(ストア掲載削除済み)。ページごと削除したので載せない
   "column/", "about/", "privacy/", "contact/", "embed/",
   "nenshu/",
