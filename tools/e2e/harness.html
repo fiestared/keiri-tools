@@ -2236,7 +2236,7 @@ const hikazeiScene = (o) => async () => {
   // 既定値もページの一部（利用者が最初に見る画面）。空でないことを機械で確かめる。
   const defaultNenkin = doc.getElementById("m1_nenkin").value;
   const defaultAge = doc.getElementById("m1_age").value;
-  set(doc, "kyuchi", String(o.kyuchi ?? 1));
+  set(doc, "in-kyuchi", String(o.kyuchi ?? 1));
   set(doc, "zeisei", o.zeisei ?? "r7");
   set(doc, "ninzu", String(o.ninzu ?? 2));
   for (let i = 1; i <= 6; i++) {
@@ -2452,14 +2452,14 @@ SCENES.shokibo_takuchi_nodata = shokiboScene({});
 const koteiScene = (o) => async () => {
   const doc = await open("/docs/kotei-shisanzei/");
   const defaultLandValue = doc.getElementById("landValue").value;
-  const shinchikuOptions = [...doc.querySelectorAll("#shinchiku option")].map((e) => e.value);
+  const shinchikuOptions = [...doc.querySelectorAll("#in-shinchiku option")].map((e) => e.value);
   set(doc, "landValue", o.landValue ?? 18000000);
   set(doc, "landArea", o.landArea ?? 150);
   set(doc, "isResidential", o.isResidential ?? "1");
   set(doc, "units", o.units ?? 1);
   set(doc, "houseValue", o.houseValue ?? 8000000);
   set(doc, "houseFloorArea", o.houseFloorArea ?? 100);
-  set(doc, "shinchiku", o.shinchiku ?? "none");
+  set(doc, "in-shinchiku", o.shinchiku ?? "none");
   if (o.koteiRate !== undefined) set(doc, "koteiRate", o.koteiRate);
   if (o.toshiRate !== undefined) set(doc, "toshiRate", o.toshiRate);
   // 税率の既定値はコアの定数から描かれる（ページに手書きしない）ので、押す前に読んでおく
@@ -2732,7 +2732,7 @@ const nenkinScene = (o) => async () => {
     monthly: yen("monthly"),
     kiso: yen("kiso"),
     fuka: yen("fuka"),
-    kosei: yen("kosei"),
+    kosei: yen("res-kosei"),
     // ★主張ごとに別の要素を読む（規則5）。繰上げ・繰下げの見出しと、
     //   「付加年金にもかかる」「120月で頭打ち」は別の要素に載っている。
     adjustName: byId("adjust-name"),
@@ -2822,7 +2822,7 @@ const torokuJutakuScene = (o) => async () => {
   }
   set(doc, "tokiBi", o.tokiBi ?? "2026-07-01");
   set(doc, "tokiShurui", o.tokiShurui ?? "iten");
-  set(doc, "genin", o.genin ?? "売買");
+  set(doc, "in-genin", o.genin ?? "売買");
   set(doc, "tochiKagaku", o.tochiKagaku ?? 15000000);
   set(doc, "tochiMochibun", o.tochiMochibun ?? 1);
   set(doc, "tatemonoKagaku", o.tatemonoKagaku ?? 10000000);
@@ -2830,10 +2830,10 @@ const torokuJutakuScene = (o) => async () => {
   set(doc, "kojinKyoju", o.kojinKyoju ?? "1");
   set(doc, "yukamenseki", o.yukamenseki ?? 80);
   set(doc, "tokiMadeMonths", o.tokiMadeMonths ?? 3);
-  set(doc, "chuko", o.chuko ?? "0");
+  set(doc, "in-chuko", o.chuko ?? "0");
   set(doc, "kenchikuBi", o.kenchikuBi ?? "2000-01-01");
   set(doc, "taishinTekigo", o.taishinTekigo ?? "0");
-  set(doc, "nintei", o.nintei ?? "none");
+  set(doc, "in-nintei", o.nintei ?? "none");
   set(doc, "kodate", o.kodate ?? "1");
   set(doc, "kaitoriHanbai", o.kaitoriHanbai ?? "0");
   set(doc, "saikenGaku", o.saikenGaku ?? 35000000);
@@ -2969,7 +2969,7 @@ const chukaiScene = (o) => async () => {
     set(doc, "tatemono", o.tatemono ?? 0);
     set(doc, "tachiba", o.tachiba ?? "baikai");
     set(doc, "hidzuke", o.hidzuke ?? "2026-07-30");
-    check("akiya", o.akiya ?? false);
+    check("in-akiya", o.akiya ?? false);
     check("aiteHoshu", o.aiteHoshu ?? false);
   }
   click(doc, "calc");
@@ -4103,7 +4103,7 @@ SCENES.seiho = async () => {
   set(doc, "ippan_kyu", "70000");
   set(doc, "kaigo", "40000");
   set(doc, "nenkin_shin", "80000");
-  const cb = doc.getElementById("tokurei");
+  const cb = doc.getElementById("in-tokurei");
   cb.checked = true; cb.dispatchEvent(new doc.defaultView.Event("change", { bubbles: true }));
   set(doc, "kazei", "5000000");
   click(doc, "calc");
@@ -4552,7 +4552,7 @@ const kokunenScene = ({ shotoku = 600000, kojo = "", age = 30, fuyo = {}, isStud
   if (isStudent) doc.getElementById("student").click();
   set(doc, "age", String(age));
   set(doc, "shotoku", String(shotoku));
-  set(doc, "kojo", String(kojo));
+  set(doc, "in-kojo", String(kojo));
   set(doc, "f_ippan", String(fuyo.ippan || ""));
   set(doc, "f_tokutei", String(fuyo.tokutei || ""));
   set(doc, "f_rojin", String(fuyo.rojin || ""));
@@ -4603,6 +4603,144 @@ SCENES.kokunen_gakusei = kokunenScene({ shotoku: 1200000, age: 20, isStudent: tr
 
 // 基準額のデータが配信できないときは、判定を出さずに断る(fail closed)
 SCENES.kokunen_nodata = kokunenScene({ data404: "kokunen_menjo_r08.json" });
+
+// ───────── 予定納税の減額申請 ─────────
+// ★見るもの: ①各期は「3分の1にしてから100円未満切捨」(104条3項)
+//            ②承認が義務になる10分の7の線(113条2項2号)。ちょうど10分の7は「以下」＝義務
+//            ③1号の事由(医療費の支払など)は10分の7を超えていても義務
+//            ④通知が6/15より後なら申請期限が延びる(111条3項)
+const yoteiScene = ({ zennen = 500000, gensen = 100000, mitsumori = 250000,
+                      ki = "ki1", jiyu = [], tsuchi = "", year = 2026 } = {}) => async () => {
+  const doc = await open("/docs/yotei-nozei/");
+  set(doc, "zennen", String(zennen));
+  set(doc, "gensen", String(gensen));
+  set(doc, "mitsumori", String(mitsumori));
+  set(doc, "ki", ki);
+  set(doc, "year", String(year));
+  if (tsuchi) set(doc, "tsuchi", tsuchi);
+  for (const el of doc.querySelectorAll(".jiyu")) {
+    if (el.checked !== jiyu.includes(el.value)) el.click();
+  }
+  await waitFor(
+    () => /第1期|予定納税は生じません|読み込めませんでした/.test(text(doc, "result")),
+    "予定納税額の判定",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    zennen, gensen, mitsumori, ki, jiyu, tsuchi,
+    kijun: num(/予定納税基準額 ¥([\d,]+)/) ?? num(/予定納税基準額\s*¥([\d,]+)/),
+    ki1: num(/第1期 ¥([\d,]+)/),
+    ki2: num(/第2期 ¥([\d,]+)/),
+    line: num(/¥([\d,]+) 以下なら承認義務/),
+    hantei: (body.match(/(承認が義務づけられます|申請はできます（承認は税務署長の判断）|要件を満たしません)/) || [])[1] || null,
+    kigen: (body.match(/(\d{4}-\d{2}-\d{2}) まで/) || [])[1] || null,
+    encho: /通知が遅れたため延長されています/.test(body),
+    iryohi: /医療費/.test(body),
+    nashi: /予定納税は生じません/.test(body),
+    failed: /読み込めませんでした/.test(body),
+  };
+};
+// 基準額40万・見積25万(62.5%)＝10分の7以下 → 承認義務。各期は400,000÷3=133,333→133,300
+SCENES.yotei_nozei = yoteiScene({});
+// 見積281,000(70.25%)＝10分の7を超える → 申請はできるが義務ではない
+SCENES.yotei_nozei_nanawari_gai = yoteiScene({ mitsumori: 281000 });
+// ★同じ70.25%でも、医療費の支払(113条2項1号)なら承認義務になる
+SCENES.yotei_nozei_iryohi = yoteiScene({ mitsumori: 281000, jiyu: ["医療費の支払"] });
+// ★通知が6/25発送 → 申請期限は7/15ではなく7/25(111条3項)
+SCENES.yotei_nozei_encho = yoteiScene({ tsuchi: "2026-06-25" });
+// 基準額10万(15万円未満) → 予定納税は生じない
+SCENES.yotei_nozei_nashi = yoteiScene({ zennen: 200000, gensen: 100000 });
+
+// ───────── 算定基礎届（定時決定） ─────────
+// ★見るもの: ①17日未満の月を除き、**残った月数**で割る(41条1項)。3で割った場合との差も出す
+//            ②短時間労働者は11日(施行規則24条の2)
+//            ③6/1〜7/1の資格取得はその年は対象外(41条3項)
+//            ④全月が不足なら金額を出さない(保険者等が決定する領域)
+const santeiScene = ({ h4 = 300000, n4 = 20, h5 = 100000, n5 = 10, h6 = 300000, n6 = 20,
+                       tanjikan = false, zuiji = false, shutoku = "", year = 2026 } = {}) => async () => {
+  const doc = await open("/docs/santei/");
+  set(doc, "year", String(year));
+  if (shutoku) set(doc, "shutoku", shutoku);
+  check(doc, "tanjikan", tanjikan);
+  check(doc, "zuiji", zuiji);
+  for (const [id, v] of [["h4", h4], ["n4", n4], ["h5", h5], ["n5", n5], ["h6", h6], ["n6", n6]]) {
+    set(doc, id, String(v));
+  }
+  await waitFor(
+    () => /標準報酬月額|算定できる月がありません|定時決定の対象外|読み込めませんでした/.test(text(doc, "result")),
+    "標準報酬月額の決定",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  // ★「報酬月額」は「標準報酬月額」の部分文字列なので、本文の正規表現では別の数字を掴む
+  //   （既定のシーンは両方300,000で一致してしまい、santei_zengetsu で初めて露見した）。
+  //   金額は要素の id から直接読む。要素が無い分岐（対象外・算定不可）では null。
+  const yenId = (id) => {
+    const el = doc.getElementById(id);
+    if (!el) return null;
+    const m = el.textContent.match(/([\d,]+)/);
+    return m ? Number(m[1].replace(/,/g, "")) : null;
+  };
+  return {
+    h4, n4, h5, n5, h6, n6, tanjikan, zuiji, shutoku,
+    hoshu: yenId("hoshu"),
+    tsukisu: yenId("tsukisu"),
+    hitsuyo: num(/必要日数 (\d+)日/),
+    kenkoGrade: num(/健保 第(\d+)級/),
+    kenko: num(/第\d+級・¥([\d,]+)/),
+    kikan: (body.match(/(\d{4}年9月 〜 \d{4}年8月)/) || [])[1] || null,
+    // ★3で割った場合との比較が出ているか（このツールの看板）
+    hikaku: num(/3で割った場合[^¥]*¥([\d,]+)/),
+    saysGradeChanges: /等級が変わります/.test(body),
+    // ★随時改定なら要件を満たさないことを名指ししているか
+    saysZuijiNG: /随時改定なら[^。]*要件を満たしません/.test(body),
+    taishogai: /定時決定の対象外/.test(body),
+    fuka: /算定できる月がありません/.test(body),
+    failed: /読み込めませんでした/.test(body),
+  };
+};
+// 5月が10日で除かれ、600,000÷2＝300,000（3で割ると233,333で等級が下がる）
+SCENES.santei = santeiScene({});
+// 全月17日以上 → 分母3。700,000÷3＝233,333
+SCENES.santei_zengetsu = santeiScene({ n5: 17 });
+// ★短時間労働者は11日でよいので、12日の月が除かれない
+SCENES.santei_tanjikan = santeiScene({ h4: 120000, n4: 12, h5: 120000, n5: 12, h6: 120000, n6: 12, tanjikan: true });
+// ★同じ12日でも一般なら全月が除かれて算定不可になる
+SCENES.santei_nissu_fusoku = santeiScene({ h4: 120000, n4: 12, h5: 120000, n5: 12, h6: 120000, n6: 12 });
+// ★6月15日に資格取得 → その年は対象外(41条3項)
+SCENES.santei_taishogai = santeiScene({ shutoku: "2026-06-15" });
+
+// ───────── 役員社宅の賃貸料相当額 ─────────
+// ★見るもの: 受け取っている家賃が賃貸料相当額以上なら給与課税が生じないこと
+const shatakuScene = ({ kubun = "shokibo", tatemono = 10000000, shikichi = 20000000,
+                        menseki = 90, nensu = 47, yachin = 200000, uketori = 30000 } = {}) => async () => {
+  const doc = await open("/docs/yakuin-shataku/");
+  set(doc, "kubun", kubun);
+  set(doc, "nensu", String(nensu));
+  set(doc, "menseki", String(menseki));
+  set(doc, "tatemono", String(tatemono));
+  set(doc, "shikichi", String(shikichi));
+  if (kubun === "karikage") set(doc, "yachin", String(yachin));
+  set(doc, "uketori", String(uketori));
+  await waitFor(
+    () => /賃貸料相当額|読み込めませんでした/.test(text(doc, "result")),
+    "賃貸料相当額",
+  );
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    kubun, tatemono, shikichi, menseki, nensu, uketori,
+    total: num(/賃貸料相当額 ¥([\d,]+)/),
+    kazei: num(/給与として課税される額（月）\s*¥([\d,]+)/),
+    kazeiNashi: /（課税なし）/.test(body),
+    mensekiNote: text(doc, "menseki-note"),
+    failed: /読み込めませんでした/.test(body),
+  };
+};
+SCENES.yakuin_shataku = shatakuScene({});
+// ★賃貸料相当額以上を受け取っていれば課税は生じない
+SCENES.yakuin_shataku_kazei_nashi = shatakuScene({ uketori: 500000 });
 
 let state;
 try {

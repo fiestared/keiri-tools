@@ -1651,6 +1651,59 @@ const SCENES = [
   // 基準額のデータが配信できないときは、判定を出さずに断る（fail closed）
   { name: "kokunen_nodata", data404: "kokunen_menjo_r08.json",
     expect: (s) => s.failed && s.best === null },
+  // ─── 予定納税の減額申請（所得税法104条・111条・113条）───
+  // 基準額400,000 → 各期 400,000÷3=133,333.33 → ★100円未満切捨で133,300（104条3項）
+  // 見積250,000は基準額の62.5%＝10分の7(280,000)以下 → ★承認義務（113条2項2号）
+  { name: "yotei_nozei", expect: (s) =>
+      s.kijun === 400000 && s.ki1 === 133300 && s.ki2 === 133300 &&
+      s.line === 280000 && s.hantei === "承認が義務づけられます" &&
+      s.kigen === "2026-07-15" && !s.encho && !s.nashi && !s.failed },
+  // ★見積281,000は70.25%＝10分の7を「超える」。申請はできるが承認は義務ではない。
+  //   ここが「以下」と「未満」の境目を守っているかの本番（281,000 vs 280,000）。
+  { name: "yotei_nozei_nanawari_gai", expect: (s) =>
+      s.line === 280000 && s.hantei === "申請はできます（承認は税務署長の判断）" && !s.failed },
+  // ★★同じ281,000でも、医療費の支払(113条2項1号)なら承認義務に変わる。
+  //   1号を実装していない/事由を無視する版は上と同じ答えを返して落ちる。
+  { name: "yotei_nozei_iryohi", expect: (s) =>
+      s.hantei === "承認が義務づけられます" && s.iryohi && !s.failed },
+  // ★通知が6/25発送 → 申請期限は7/15ではなく「1月を経過した日」＝7/25（111条3項）
+  { name: "yotei_nozei_encho", expect: (s) =>
+      s.kigen === "2026-07-25" && s.encho && !s.failed },
+  // 基準額100,000は15万円未満 → 予定納税は生じない（104条1項）
+  { name: "yotei_nozei_nashi", expect: (s) =>
+      s.nashi && s.kijun === 100000 && s.ki1 === null && !s.failed },
+
+  // ─── 算定基礎届（健康保険法41条／厚生年金保険法21条）───
+  // ★★このツールの看板。5月は10日で除かれ、600,000÷**2**＝300,000（第22級）。
+  //   常に3で割る実装は 233,333（第19級）を出す＝等級が1つ下がる。比較行も出ること。
+  { name: "santei", expect: (s) =>
+      s.hoshu === 300000 && s.tsukisu === 2 && s.hitsuyo === 17 &&
+      s.kenkoGrade === 22 && s.kenko === 300000 &&
+      s.hikaku === 233333 && s.saysGradeChanges &&
+      // ★同じ入力でも随時改定なら要件を満たさないことを名指ししている（43条1項）
+      s.saysZuijiNG &&
+      s.kikan === "2026年9月 〜 2027年8月" && !s.fuka && !s.taishogai && !s.failed },
+  // 全月17日以上 → 分母3。700,000÷3＝233,333 → 第19級240,000。
+  // ★報酬月額と標準報酬月額が違う値になる唯一のシーン（両者を取り違える実装をここで殺す）。
+  { name: "santei_zengetsu", expect: (s) =>
+      s.hoshu === 233333 && s.tsukisu === 3 && s.kenko === 240000 && s.kenkoGrade === 19 &&
+      s.hikaku === null && !s.saysGradeChanges && !s.failed },
+  // ★短時間労働者は11日でよい（施行規則24条の2）。12日の月が除かれず3か月とも使う。
+  { name: "santei_tanjikan", expect: (s) =>
+      s.hitsuyo === 11 && s.tsukisu === 3 && s.hoshu === 120000 && s.kenko === 118000 && !s.failed },
+  // ★★同じ12日でも一般なら全月が除かれる。17日/11日を取り違える実装はここで落ちる。
+  { name: "santei_nissu_fusoku", expect: (s) =>
+      s.hitsuyo === 17 && s.fuka && s.hoshu === null && !s.failed },
+  // ★6月15日に資格取得 → その年は定時決定の対象外（41条3項）。金額を出さないこと。
+  { name: "santei_taishogai", expect: (s) =>
+      s.taishogai && s.hoshu === null && !s.failed },
+
+  // ─── 役員社宅の賃貸料相当額（所得税基本通達36-40〜36-41）───
+  { name: "yakuin_shataku", expect: (s) =>
+      s.total === 64327 && s.kazei === 34327 && !s.kazeiNashi && !s.failed },
+  // ★賃貸料相当額以上を受け取っていれば給与課税は生じない（このツールの結論そのもの）
+  { name: "yakuin_shataku_kazei_nashi", expect: (s) =>
+      s.total === 64327 && s.kazei === 0 && s.kazeiNashi && !s.failed },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────
