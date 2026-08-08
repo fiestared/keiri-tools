@@ -4854,6 +4854,59 @@ SCENES.hotei_fukuri_kaigo = fukuriScene({ kaigo: true });
 // ★建設の事業は雇用保険の事業主負担が10.5/1000
 SCENES.hotei_fukuri_kensetsu = fukuriScene({ koyou: "construction", gyoshu: "既設建築物設備工事業" });
 
+// ───────── 源泉徴収票の書き方 ─────────
+// ★見るもの: ①令和8年分・9年分は220万円未満の②欄を別表第五で引かない（措法29条の4）
+//            ②下限が無いこと（支払70万でも②欄は0） ③年末調整なしは②③が「空欄」で0ではない
+//            ④④欄の100円未満の端数を指摘する
+const gensenHyoScene = ({ shiharai = 1700000, nencho = true, zeigaku = 0,
+                          shakai = 250000, kiso = 580000, seimei = 0, jishin = 0, jinteki = 0 } = {}) => async () => {
+  const doc = await open("/docs/gensen-hyo/");
+  check(doc, "nencho", nencho);
+  set(doc, "shiharai", String(shiharai));
+  set(doc, "zeigaku", String(zeigaku));
+  if (nencho) {
+    for (const [id, v] of [["shakai", shakai], ["kiso", kiso], ["seimei", seimei],
+                            ["jishin", jishin], ["jinteki", jinteki]]) {
+      set(doc, id, String(v));
+    }
+  }
+  await waitFor(() => /給与所得控除後|空欄|読み込めませんでした/.test(text(doc, "result")), "②欄");
+  const body = text(doc, "result");
+  const yenId = (id) => {
+    const el = doc.getElementById(id);
+    if (!el) return null;
+    const t = el.textContent.trim();
+    if (/空欄/.test(t)) return "空欄";      // ★0円と区別する
+    const m = t.match(/([\d,]+)/);
+    return m ? Number(m[1].replace(/,/g, "")) : null;
+  };
+  return {
+    shiharai, nencho, zeigaku,
+    ni: yenId("res-ni"), san: yenId("res-san"), nokori: yenId("nokori"),
+    // どの規定で計算したかを画面が名乗っているか
+    kubun: doc.getElementById("kubun")?.textContent?.trim() || null,
+    tokurei: /措置法29条の4/.test(doc.getElementById("kubun")?.textContent || ""),
+    // ★別表第五で引いた場合との差を出しているか（このツールの看板）
+    hikaku: (() => {
+      const t = doc.getElementById("hikaku")?.textContent || "";
+      const m = t.match(/¥([\d,]+)/);
+      return m ? Number(m[1].replace(/,/g, "")) : null;
+    })(),
+    warns: doc.getElementById("warns")?.textContent?.replace(/\s+/g, " ").trim() || null,
+    failed: /読み込めませんでした/.test(body),
+  };
+};
+// ★支払170万 → 特例で960,000（別表第五なら1,050,000。90,000円の差）
+SCENES.gensen_hyo = gensenHyoScene({});
+// ★★支払70万でも特例が効く（下限は無い）。②欄は0で、別表第五なら50,000
+SCENES.gensen_hyo_teigaku = gensenHyoScene({ shiharai: 700000 });
+// 支払300万は特例の外 → 別表第五
+SCENES.gensen_hyo_beppyo5 = gensenHyoScene({ shiharai: 3000000 });
+// ★年末調整をしていない → ②③欄は「空欄」（0ではない）
+SCENES.gensen_hyo_kuran = gensenHyoScene({ shiharai: 3000000, nencho: false });
+// ★④欄に100円未満の端数があれば指摘する
+SCENES.gensen_hyo_hasu = gensenHyoScene({ shiharai: 3000000, zeigaku: 50350 });
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };

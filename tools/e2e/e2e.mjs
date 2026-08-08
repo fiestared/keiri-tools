@@ -1761,6 +1761,28 @@ const SCENES = [
   //   雇用保険を一般の事業で固定する実装は2,720で落ちる。
   { name: "hotei_fukuri_kensetsu", expect: (s) =>
       s.koyouBun === 3360 && s.rousai === 3840 && s.total === 50115 && !s.failed },
+  // ─── 源泉徴収票の書き方（措置法29条の4／所得税法190条・226条・別表第五）───
+  // ★★このツールの看板。支払170万 → 1,700,000−740,000＝960,000。
+  //   別表第五で引くと1,050,000で90,000円の差。去年と同じ気持ちで引くとこの帯だけ狂う。
+  { name: "gensen_hyo", expect: (s) =>
+      s.ni === 960000 && s.tokurei && s.hikaku === 1050000 &&
+      s.san === 830000 && s.nokori === 130000 && !s.failed },
+  // ★★支払70万でも特例が効く（1項は「220万円以下」で下限が無い）。②欄は0。
+  //   「69.1万円以上から」と下限を置く実装は、ここで別表第五の50,000を出して落ちる。
+  { name: "gensen_hyo_teigaku", expect: (s) =>
+      s.ni === 0 && s.tokurei && s.hikaku === 50000 && !s.failed },
+  // 支払300万は特例の帯の外 → 別表第五（比較行は出さない）
+  { name: "gensen_hyo_beppyo5", expect: (s) =>
+      s.ni === 2020000 && !s.tokurei && s.hikaku === null &&
+      /別表第五/.test(s.kubun || "") && !s.failed },
+  // ★★年末調整をしていない人の②③欄は「空欄」。**0円ではない**（0と書くと別の意味になる）
+  { name: "gensen_hyo_kuran", expect: (s) =>
+      s.ni === "空欄" && s.san === "空欄" && s.nokori === "空欄" &&
+      /毎月徴収した税額の合計/.test(s.warns || "") && !s.failed },
+  // ★④欄の100円未満の端数を指摘する（国税通則法119条1項）
+  { name: "gensen_hyo_hasu", expect: (s) =>
+      /100円未満/.test(s.warns || "") && !s.failed },
+
   // ─── 役員社宅の賃貸料相当額（所得税基本通達36-40〜36-41）───
   { name: "yakuin_shataku", expect: (s) =>
       s.total === 64327 && s.kazei === 34327 && !s.kazeiNashi && !s.failed },
