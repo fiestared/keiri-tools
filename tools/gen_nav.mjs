@@ -26,8 +26,8 @@ const DOCS = join(ROOT, 'docs');
 // ★ナビの項目。ここだけを直せば全ページに反映される。
 //   href はサイトルートからのパス。相対パスは深さから計算する。
 const ITEMS = [
-  { href: 'hojokin/', label: '補助金' },
   { href: '#tools', label: 'ツール', rootOnly: true },   // トップの #tools アンカー
+  { href: 'hojokin/', label: '補助金' },
   { href: 'column/', label: 'コラム' },
   { href: 'toushi/', label: '資産形成' },
 ];
