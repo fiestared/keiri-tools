@@ -105,7 +105,6 @@
   .hj-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
   .hj-chip { font-size: 13px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--ink); border-radius: 99px; padding: 6px 12px; cursor: pointer; }
   .hj-chip-clear { border-color: var(--line); background: #fff; color: var(--sub); }
-  .hj-facet { color: var(--sub); font-size: 12px; }
   .radio-row label:has(input:disabled) { opacity: .45; cursor: default; }
   .hj-empty { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 10px; padding: 14px 16px; margin: 10px 0; font-size: 14px; }
   .hj-inline { display: flex; gap: 6px; align-items: center; font-weight: 400; font-size: 13px; margin: 8px 0 0; }
@@ -136,22 +135,22 @@
     <summary id="hj-fold-summary">絞り込み <span class="hint" id="hj-fold-hint"></span></summary>
     <label>目的</label>
     <div class="radio-row" id="hj-purpose">
-      <label><input type="radio" name="purpose" value="" checked>すべて <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="設備整備・IT導入をしたい">設備・IT導入 <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="新たな事業を行いたい">新規事業 <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="販路拡大・海外展開をしたい">販路拡大・海外展開 <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="雇用・職場環境を改善したい">雇用・職場環境 <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="エコ・SDGs活動支援がほしい">エコ・SDGs <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="研究開発・実証事業を行いたい">研究開発・実証 <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="安全・防災対策支援がほしい">安全・防災 <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="人材育成を行いたい">人材育成 <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="資金繰りを改善したい">資金繰り <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="まちづくり・地域振興支援がほしい">まちづくり・地域振興 <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="イベント・事業運営支援がほしい">イベント・事業運営 <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="災害（自然災害、感染症等）支援がほしい">災害支援 <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="事業を引き継ぎたい">事業承継 <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="教育・子育て・少子化支援がほしい">教育・子育て <span class="hj-facet"></span></label>
-      <label><input type="radio" name="purpose" value="スポーツ・文化支援がほしい">スポーツ・文化 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="" checked>すべて</label>
+      <label><input type="radio" name="purpose" value="設備整備・IT導入をしたい">設備・IT導入</label>
+      <label><input type="radio" name="purpose" value="新たな事業を行いたい">新規事業</label>
+      <label><input type="radio" name="purpose" value="販路拡大・海外展開をしたい">販路拡大・海外展開</label>
+      <label><input type="radio" name="purpose" value="雇用・職場環境を改善したい">雇用・職場環境</label>
+      <label><input type="radio" name="purpose" value="エコ・SDGs活動支援がほしい">エコ・SDGs</label>
+      <label><input type="radio" name="purpose" value="研究開発・実証事業を行いたい">研究開発・実証</label>
+      <label><input type="radio" name="purpose" value="安全・防災対策支援がほしい">安全・防災</label>
+      <label><input type="radio" name="purpose" value="人材育成を行いたい">人材育成</label>
+      <label><input type="radio" name="purpose" value="資金繰りを改善したい">資金繰り</label>
+      <label><input type="radio" name="purpose" value="まちづくり・地域振興支援がほしい">まちづくり・地域振興</label>
+      <label><input type="radio" name="purpose" value="イベント・事業運営支援がほしい">イベント・事業運営</label>
+      <label><input type="radio" name="purpose" value="災害（自然災害、感染症等）支援がほしい">災害支援</label>
+      <label><input type="radio" name="purpose" value="事業を引き継ぎたい">事業承継</label>
+      <label><input type="radio" name="purpose" value="教育・子育て・少子化支援がほしい">教育・子育て</label>
+      <label><input type="radio" name="purpose" value="スポーツ・文化支援がほしい">スポーツ・文化</label>
     </div>
     <div class="fee-pair">
       <div>
@@ -342,10 +341,13 @@ function chipsHTML(cond, suffix = '✕') {
 }
 
 function updateFacets(cond, today) {
+  // ★件数バッジは出さない（2026-08-12 削除・ユーザー指摘）。
+  //   「(298)」のような数字が並んでも、何の数字なのかが伝わらない。
+  //   ただし**0件の目的は選べないようにする**（押しても0件になるだけの選択肢を残さない）。
+  //   これは数字を見せずに同じ目的を果たす。
   const base = { ...cond, purpose: '' };
   for (const input of purposeInputs) {
     const n = filterRows(D.subsidies, { ...base, purpose: input.value }, today).length;
-    input.closest('label').querySelector('.hj-facet').textContent = `(${n})`;
     input.disabled = n === 0 && !input.checked;
   }
   // ★都道府県のセレクトに件数バッジを出さない（2026-08-12 に削除）。
