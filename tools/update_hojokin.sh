@@ -70,14 +70,21 @@ if git diff --quiet -- docs/assets/hojokin_jgrants.json docs/assets/hojokin_sche
   exit 0
 fi
 
+# ★カードを焼き直す。制度名が変わっていたら生成が落ちるので、そこで気づける
+if ! node tools/gen_hojokin_cards.mjs >> "$LOG" 2>&1; then
+  say "★カードの生成に失敗（制度名が変わった可能性）。データを差し戻して中止する"
+  git checkout -- docs/assets/ 2>/dev/null
+  exit 1
+fi
+
 # 検査を通してから push（壊れたデータを本番へ出さない）
-if ! node tests/test_hojokin.mjs >> "$LOG" 2>&1 || ! node tests/test_hojokin_sources.mjs >> "$LOG" 2>&1; then
+if ! node tests/test_hojokin.mjs >> "$LOG" 2>&1 || ! node tests/test_hojokin_sources.mjs >> "$LOG" 2>&1 || ! node tests/test_hojokin_cards.mjs >> "$LOG" 2>&1; then
   say "★test_hojokin が赤。差し戻す"
   git checkout -- docs/assets/hojokin_jgrants.json
   exit 1
 fi
 
-git add docs/assets/hojokin_jgrants.json docs/assets/hojokin_schedule.json docs/assets/koyou_joseikin.json
+git add docs/assets/hojokin_jgrants.json docs/assets/hojokin_schedule.json docs/assets/koyou_joseikin.json docs/column
 git commit -q -m "補助金データを更新（${n}件・jGrants公開APIの掃引）
 
 出典：Jグランツ（編集・加工しています）
