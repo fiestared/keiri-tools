@@ -4958,6 +4958,11 @@ const hojokinScene = ({ area = '', maxdays = '', keyword = '', employees = '' } 
     })(),
     schedRows: doc.querySelectorAll('#hj-sched-body tr').length,
     koyouLinks: doc.querySelectorAll('#hj-koyou-body a').length,
+    // ★3つの入口（2026-08-12）。性格の違う3データが同居しているので、
+    //   最初に違いを説明して行き来できるようにしないと、下に何があるか分からない。
+    //   実測: 375pxで雇用助成金まで18画面ぶん・ページ内リンク0本だった。
+    entries: doc.querySelectorAll('.hj-entry a').length,
+    inPageLinks: doc.querySelectorAll('main a[href^="#"]').length,
     // ★出典表示（jGrants Web-API利用規約の義務）
     attribution: /出典：Jグランツ/.test(body),
     henshu: /編集|加工/.test(body),

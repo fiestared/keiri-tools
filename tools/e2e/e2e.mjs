@@ -1798,6 +1798,8 @@ const SCENES = [
       s.attribution && s.henshu && s.saysNotExhaustive && s.freshness &&
       // ★jGrants に無い2系統が出ていること（これが無いと外部を取る意味が消える）
       s.schedRows > 5 && s.koyouLinks > 20 &&
+      // ★3つの入口が在ること。無いと下の2セクションに到達できない
+      s.entries === 3 && s.inPageLinks >= 3 &&
       // ★公募スケジュールは受付中が上・終了が下
       s.schedOrder && !s.failed },
   // ★都道府県で絞っても「全国」の補助金は残る。0件になったら絞りすぎか実装の誤り。
