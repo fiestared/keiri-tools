@@ -130,6 +130,14 @@
   <nav class="breadcrumb">ホーム › 補助金の検索</nav>
   <h1>補助金の検索</h1>
 
+  <!-- ★jGrants に載らない制度（デジタル化・AI導入／省力化投資／新事業進出）と、
+       回と回の間で公募中が0件になる制度（持続化・事業承継など）をここで補う。
+       検索結果より上に置く: 「持続化補助金」で来た人が最初に見る場所だから。 -->
+  <details id="hj-sched" class="card">
+    <summary><b>国の主要な補助金の公募スケジュール</b> <span class="hint" id="hj-sched-n"></span></summary>
+    <div id="hj-sched-body"></div>
+  </details>
+
   <section class="card" id="hj-filter">
     <details id="hj-filter-fold" open>
     <summary id="hj-fold-summary">絞り込み <span class="hint" id="hj-fold-hint"></span></summary>
@@ -208,6 +216,14 @@
     </details>
   </section>
   <section class="result" id="result"></section>
+
+<!-- ★雇用関係助成金は「補助金の検索」と混ぜない。
+     公募型のような単一の締切が無く（雇入れの日や支給対象期で決まる）、
+     締切順の一覧に流し込むと嘘になる。制度名と公式URLだけを別の枠で出す。 -->
+<details id="hj-koyou" class="card">
+  <summary><b>雇用関係助成金（厚生労働省）</b> <span class="hint" id="hj-koyou-n"></span></summary>
+  <div id="hj-koyou-body"></div>
+</details>
 
 <section class="faq">
 <h2 id="faq">よくある質問</h2>
@@ -434,6 +450,64 @@ $("result").addEventListener('click', (event) => {
   if (event.target.closest('#hj-more')) { shown += PAGE_SIZE; render(); }
 });
 render();
+
+// ── jGrants 以外の2つのデータ源 ──────────────────────────────────
+// ★どちらも軽い（gzip 1KB / 2KB）ので、補助金の一覧と同じページで読む。
+//   ★片方が読めなくても、もう片方と検索本体は動かす（枠ごと隠すだけ）。
+async function paintSource(url, boxId, countId, build) {
+  const box = $(boxId), count = $(countId);
+  try {
+    const d = await (await fetch(url)).json();
+    const html = build(d);
+    if (!html) throw new Error('中身が空');
+    box.innerHTML = html;
+    count.textContent = `${d._meta.count}件・${d._meta.captured_jst.slice(0, 10)}取得`;
+  } catch (e) {
+    // ★読めないときは黙って空欄を見せない。枠ごと隠す（0件と見分けがつかなくなる）
+    document.getElementById(boxId.replace('-body', '')).hidden = true;
+  }
+}
+
+// 国の主要な補助金の公募スケジュール（ミラサポplus）
+paintSource("../assets/hojokin_schedule.json", "hj-sched-body", "hj-sched-n", (d) => {
+  if (!Array.isArray(d.schedule) || !d.schedule.length) return '';
+  const rows = d.schedule.map((r) => {
+    // ★「第23次受付終了」「随時受付中」も原文のまま出す（日付に潰さない）
+    const owari = /終了/.test(r.period);
+    return `<tr>
+      <td>${r.url ? `<a href="${esc(r.url)}" rel="nofollow noopener" target="_blank">${esc(r.name)}</a>` : esc(r.name)}</td>
+      <td${owari ? ' class="hint"' : ''}>${esc(r.period)}</td></tr>`;
+  }).join('');
+  return `<p class="hint">jGrants に載らない制度（デジタル化・AI導入／省力化投資／新事業進出）と、
+    いま公募していない制度の次回日程です。上の検索結果には出てきません。</p>
+    <div class="scroll-wrap"><table class="res">
+      <tr><th>補助金</th><th>申請受付期間</th></tr>${rows}</table></div>
+    <p class="note">${esc(d._meta.attribution)}　最新の日程は各リンク先の公式ページでご確認ください。</p>`;
+});
+
+// 雇用関係助成金（厚生労働省）
+paintSource("../assets/koyou_joseikin.json", "hj-koyou-body", "hj-koyou-n", (d) => {
+  if (!Array.isArray(d.joseikin) || !d.joseikin.length) return '';
+  // 制度名の頭（「キャリアアップ助成金（…）」の前半）でまとめると読みやすい
+  const groups = new Map();
+  for (const r of d.joseikin) {
+    const key = r.name.split('（')[0];
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(r);
+  }
+  const items = [...groups].map(([key, rs]) => rs.length === 1
+    ? `<li><a href="${esc(rs[0].url)}" rel="nofollow noopener" target="_blank">${esc(rs[0].name)}</a></li>`
+    : `<li>${esc(key)}<ul>${rs.map((r) => {
+        const sub = r.name.slice(key.length).replace(/^（|）$/g, '') || r.name;
+        return `<li><a href="${esc(r.url)}" rel="nofollow noopener" target="_blank">${esc(sub)}</a></li>`;
+      }).join('')}</ul></li>`).join('');
+  return `<p class="hint">★<b>これらは上の検索には含まれていません</b>（jGrants に載らないため）。
+    ★雇用関係助成金には公募型のような<b>単一の締切がありません</b>。雇入れの日や支給対象期に応じて
+    申請期限が決まるので、金額・要件・期限は必ず各リンク先の公式ページでご確認ください。</p>
+    <ul class="hj-koyou-list">${items}</ul>
+    <p class="note">${esc(d._meta.attribution)}　この一覧に無い制度もあります
+    （例: 業務改善助成金は労働基準局の所管で、この一覧には掲載されていません）。</p>`;
+});
 </script>
 </body>
 </html>

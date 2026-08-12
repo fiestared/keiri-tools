@@ -48,6 +48,15 @@ if ! "$PY" tools/fetch_jgrants.py >> "$LOG" 2>&1; then
   exit 1
 fi
 
+# ★jGrants 以外の2つ。**失敗しても本体は続ける**（片方が落ちても補助金の一覧は出す）。
+#   どちらもスクリプト側に件数ガードがあり、痩せたら自分で書き出しを止める。
+for extra in fetch_kokunai_schedule fetch_koyou_joseikin; do
+  if ! "$PY" "tools/${extra}.py" >> "$LOG" 2>&1; then
+    say "★${extra} が失敗した（前回のデータを残して続行する）"
+    git checkout -- docs/assets/hojokin_schedule.json docs/assets/koyou_joseikin.json 2>/dev/null
+  fi
+done
+
 # ★件数が極端に減っていたら push しない。APIの一時不調で中身を空にしないため。
 n="$("$PY" -c "import json;print(len(json.load(open('docs/assets/hojokin_jgrants.json'))['subsidies']))" 2>/dev/null || echo 0)"
 if [ "${n:-0}" -lt 50 ]; then
@@ -56,19 +65,19 @@ if [ "${n:-0}" -lt 50 ]; then
   exit 1
 fi
 
-if git diff --quiet -- docs/assets/hojokin_jgrants.json; then
+if git diff --quiet -- docs/assets/hojokin_jgrants.json docs/assets/hojokin_schedule.json docs/assets/koyou_joseikin.json; then
   say "変化なし（${n}件）"
   exit 0
 fi
 
 # 検査を通してから push（壊れたデータを本番へ出さない）
-if ! node tests/test_hojokin.mjs >> "$LOG" 2>&1; then
+if ! node tests/test_hojokin.mjs >> "$LOG" 2>&1 || ! node tests/test_hojokin_sources.mjs >> "$LOG" 2>&1; then
   say "★test_hojokin が赤。差し戻す"
   git checkout -- docs/assets/hojokin_jgrants.json
   exit 1
 fi
 
-git add docs/assets/hojokin_jgrants.json
+git add docs/assets/hojokin_jgrants.json docs/assets/hojokin_schedule.json docs/assets/koyou_joseikin.json
 git commit -q -m "補助金データを更新（${n}件・jGrants公開APIの掃引）
 
 出典：Jグランツ（編集・加工しています）
