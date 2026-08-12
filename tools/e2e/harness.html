@@ -32,9 +32,14 @@ async function waitFor(fn, label, timeout = 8000) {
 }
 
 /** ツールのページをiframeで開く。load後は「ユーザーが見ている状態」 */
-let openedPage = null; // どのページを実際に開いたか(E2Eの網羅チェックに使う。下の coverage 参照)
+// 開いたページを**すべて**記録する(E2Eの網羅チェックに使う。下の coverage 参照)。
+// ★2026-08-13: ここを「最後に開いた1本」の上書きにしていたため、複数ページを開くシーン
+//   (/hojokin/ を3ページに分割した回)で、**最初に開いた本体のカバレッジが黙って消えた**。
+//   網羅チェックは「看板ツールにシーンが1つも無く本番で全損した」教訓で入った検査なので、
+//   シーンが実際に触ったページは1本残らず数える。
+let openedPages = [];
 function open(path) {
-  openedPage = path;
+  openedPages.push(path);
   const f = document.getElementById("f");
   return new Promise((ok, ng) => {
     f.addEventListener("load", () => ok(f.contentDocument), { once: true });
@@ -4931,6 +4936,16 @@ const hojokinScene = ({ area = '', maxdays = '', keyword = '', employees = '' } 
     const m = t.match(/あと(\d+)日/);
     return m ? Number(m[1]) : null;
   });
+  // ★②③は別URL。各ページを開き、焼き込み済みの初期DOMを数える。
+  const schedDoc = await open("/docs/hojokin/schedule/");
+  const schedRows = [...schedDoc.querySelectorAll('#hj-sched-table tr')].slice(1);
+  const schedOrder = (() => {
+    const owari = schedRows.map((tr) => /終了/.test(tr.cells[1]?.textContent || ''));
+    let seen = false;
+    for (const ended of owari) { if (ended) seen = true; else if (seen) return false; }
+    return schedRows.length > 0;
+  })();
+  const koyouDoc = await open("/docs/hojokin/koyou/");
   return {
     area, maxdays, keyword,
     count: num("count"),
@@ -4946,23 +4961,10 @@ const hojokinScene = ({ area = '', maxdays = '', keyword = '', employees = '' } 
     //   表示のためにデータの識別子を書き換えてはいけない。
     areaValuesClean: [...doc.querySelectorAll('#area option')]
       .every((o) => o.value === '' || /^[^（(]+$/.test(o.value)),
-    // 実際に県で絞ったときに0件にならないか（valueが壊れると全滅する）
-    // ★公募スケジュール: 受付中が上・終了が下（いま出せるものを先に見せる）
-    schedOrder: (() => {
-      const rows = [...doc.querySelectorAll('#hj-sched-body tr')].slice(1);
-      const owari = rows.map((t) => /終了/.test(t.cells[1] ? t.cells[1].textContent : ''));
-      // 一度 true になったあとに false が出たら並びが崩れている
-      let seen = false;
-      for (const o of owari) { if (o) seen = true; else if (seen) return false; }
-      return rows.length > 0;
-    })(),
-    schedRows: doc.querySelectorAll('#hj-sched-body tr').length,
-    koyouLinks: doc.querySelectorAll('#hj-koyou-body a').length,
-    // ★3つの入口（2026-08-12）。性格の違う3データが同居しているので、
-    //   最初に違いを説明して行き来できるようにしないと、下に何があるか分からない。
-    //   実測: 375pxで雇用助成金まで18画面ぶん・ページ内リンク0本だった。
-    entries: doc.querySelectorAll('.hj-entry a').length,
-    inPageLinks: doc.querySelectorAll('main a[href^="#"]').length,
+    schedOrder,
+    schedRows: schedRows.length,
+    koyouLinks: koyouDoc.querySelectorAll('#hj-koyou-list a').length,
+    tabs: doc.querySelectorAll('.hj-tabs a').length,
     // ★出典表示（jGrants Web-API利用規約の義務）
     attribution: /出典：Jグランツ/.test(body),
     henshu: /編集|加工/.test(body),
@@ -5027,9 +5029,9 @@ SCENES.hojokin_zeimu_capped = hojokinZeimuScene({ hojokin: 12000000 });
 
 let state;
 try {
-  state = { scene, ...(await SCENES[scene]()), page: openedPage };
+  state = { scene, ...(await SCENES[scene]()), page: openedPages[0] || null, pages: openedPages };
 } catch (e) {
-  state = { scene, error: String(e && e.message || e), page: openedPage };
+  state = { scene, error: String(e && e.message || e), page: openedPages[0] || null, pages: openedPages };
 }
 window.__state = state; // 手で開いたとき devtools から見る用
 await fetch("/__state", { method: "POST", body: JSON.stringify(state) }).catch(() => {});

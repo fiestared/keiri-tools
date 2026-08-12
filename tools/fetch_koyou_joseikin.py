@@ -45,6 +45,7 @@ PAGES = [('index_00058.html', '対象者別'), ('index_00059.html', '取組内�
 UA = {'User-Agent': 'keiri-tools/1.0 (+https://keiri-tools.com)'}
 JST = timezone(timedelta(hours=9))
 OUT = Path(__file__).resolve().parent.parent / 'docs' / 'assets' / 'koyou_joseikin.json'
+HTML_OUT = Path(__file__).resolve().parent.parent / 'docs' / 'hojokin' / 'koyou' / 'index.html'
 MIN_ITEMS = 30        # ★実測47件。これを下回ったらHTML変更を疑って止める
 
 TAG = re.compile(r'<[^>]+>')
@@ -77,6 +78,60 @@ def parse(doc, page_url):
             continue
         out.append({'name': name, 'url': url})
     return out
+
+
+def render_html(doc):
+    """制度名の頭でまとめ、初期HTMLへ公式リンク一覧を焼き込む。"""
+    groups = {}
+    for row in doc['joseikin']:
+        groups.setdefault(row['name'].split('（')[0], []).append(row)
+    lis = []
+    for key, rows in groups.items():
+        if len(rows) == 1:
+            row = rows[0]
+            lis.append(f'    <li><a href="{html_mod.escape(row["url"], quote=True)}" '
+                       f'rel="nofollow noopener" target="_blank">{html_mod.escape(row["name"])}</a></li>')
+            continue
+        subs = []
+        for row in rows:
+            sub = row['name'][len(key):]
+            sub = re.sub(r'^（|）$', '', sub) or row['name']
+            subs.append(f'<li><a href="{html_mod.escape(row["url"], quote=True)}" '
+                        f'rel="nofollow noopener" target="_blank">{html_mod.escape(sub)}</a></li>')
+        lis.append(f'    <li>{html_mod.escape(key)}<ul>{"".join(subs)}</ul></li>')
+    meta = doc['_meta']
+    captured = html_mod.escape(meta['captured_jst'], quote=True)
+    day = html_mod.escape(meta['captured_jst'][:10])
+    attribution = html_mod.escape(meta['attribution'])
+    count = len(doc['joseikin'])
+    return f'''<!--koyou:S-->
+  <p class="hint">{count}制度・{day}取得。これらは<a href="../">補助金の検索</a>には含まれていません（jGrants に載らないため）。
+  ★雇用関係助成金には公募型のような<b>単一の締切がありません</b>。雇入れの日や支給対象期に応じて申請期限が決まるので、
+  金額・要件・期限は必ず各リンク先の公式ページでご確認ください。</p>
+  <ul class="hj-koyou-list" id="hj-koyou-list">
+{chr(10).join(lis)}
+  </ul>
+  <p class="note" id="koyou-fresh" data-captured="{captured}">{attribution}　この一覧に無い制度もあります
+  （例: 業務改善助成金は労働基準局の所管で、この一覧には掲載されていません）。</p>
+<!--koyou:E-->'''
+
+
+def bake_html(doc):
+    source = HTML_OUT.read_text(encoding='utf-8')
+    marker = re.compile(r'<!--koyou:S-->[\s\S]*?<!--koyou:E-->')
+    if len(marker.findall(source)) != 1:
+        raise RuntimeError(f'{HTML_OUT}: koyou マーカーが1組見つからない')
+    source = marker.sub(lambda _: render_html(doc), source)
+    count_marker = re.compile(r'(<span class="hj-tab-n" id="hj-tab-n3">)[^<]*(</span>)')
+    if len(count_marker.findall(source)) != 1:
+        raise RuntimeError(f'{HTML_OUT}: hj-tab-n3 が1個見つからない')
+    HTML_OUT.write_text(count_marker.sub(rf'\g<1>{len(doc["joseikin"])}制度\g<2>', source), encoding='utf-8')
+
+    sibling = HTML_OUT.parent.parent / 'schedule' / 'index.html'
+    sibling_source = sibling.read_text(encoding='utf-8')
+    if len(count_marker.findall(sibling_source)) != 1:
+        raise RuntimeError(f'{sibling}: hj-tab-n3 が1個見つからない')
+    sibling.write_text(count_marker.sub(rf'\g<1>{len(doc["joseikin"])}制度\g<2>', sibling_source), encoding='utf-8')
 
 
 def main():
@@ -122,7 +177,13 @@ def main():
         'joseikin': sorted(items.values(), key=lambda x: x['name']),
     }
     OUT.write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding='utf-8')
+    try:
+        bake_html(doc)
+    except Exception as e:
+        print(f'★HTMLの焼き込みに失敗: {type(e).__name__}: {e}', file=sys.stderr)
+        return 1
     print(f'✓ {OUT.name} に書き出しました（{len(items)}制度）', file=sys.stderr)
+    print(f'✓ {HTML_OUT} に焼き込みました', file=sys.stderr)
     return 0
 
 

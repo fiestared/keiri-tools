@@ -47,7 +47,7 @@
       "name": "Q. ここに載っていない補助金もありますか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A. あります。データ元の jGrants 公開APIは検索キーワードが必須で「全件」を要求できないため、50語の和集合で近似しています。自治体が独自に出しているものなど、jGrants に載っていない補助金もあります。網羅は約束していません。"
+        "text": "A. あります。データ元の jGrants 公開APIは検索キーワードが必須で「全件」を要求できないため、50語の和集合で近似しています。自治体が独自に出しているものなど、jGrants に載っていない補助金もあります。網羅は約束していません。国の主要制度の受付状況と雇用関係助成金は別ページにまとめています。"
       }
     },
     {
@@ -94,14 +94,6 @@
   .hj-meta { font-size: 13px; color: var(--sub, #667); display: flex; flex-wrap: wrap; gap: 4px 14px; }
   .hj-days { font-weight: 700; }
   .hj-soon { color: #c0392b; }
-  /* ★3つの入口。既存の .tool-card と同じ見た目に寄せる（新しいCSSファイルは作らない） */
-  .hj-entry { display: grid; gap: 8px; margin: 14px 0 18px; }
-  @media (min-width: 720px) { .hj-entry { grid-template-columns: repeat(3, 1fr); } }
-  .hj-entry a { display: block; padding: 12px 14px; border: 1px solid var(--line, #e3e8ee);
-    border-radius: 10px; background: #fff; text-decoration: none; color: inherit; }
-  .hj-entry a:hover { border-color: var(--accent, #2a6df4); }
-  .hj-entry b { display: block; font-size: 14px; margin-bottom: 3px; }
-  .hj-entry span { font-size: 12px; color: var(--sub, #667); line-height: 1.5; }
   .hj-warn { background: var(--warn-bg, #fffdf7); border: 1px solid var(--warn-line, #f0d9a0); border-radius: 8px; padding: 10px 12px; margin: 10px 0; font-size: 13px; }
   .hj-item h3 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
   .hj-desc { font-size: 13px; color: var(--sub); margin: 0 0 6px; line-height: 1.6; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
@@ -138,25 +130,13 @@
   <nav class="breadcrumb">ホーム › 補助金の検索</nav>
   <h1>補助金の検索</h1>
 
-  <!-- ★3つの入口（2026-08-12 追加）。
-       このページには**性格の違う3つのデータ**が同居している:
-         ① jGrants の公募（締切がある・地域や目的で絞れる）
-         ② 国の看板制度の受付状況（jGrantsに無い制度＋回と回の間で0件になる制度）
-         ③ 雇用関係助成金（**単一の締切が無い**ので①に混ぜられない）
-       違いを最初に言わないと、下に何があるか分からないまま帰る。
-       ★実測（375px）: ③まで**18画面ぶん**スクロールが必要で、
-         ページ内リンクは**0本**だった。「キャリアアップ助成金」を探しに来た人は
-         ①で1件（自治体の別制度）しか見つからず、本家47制度が下にあることに気づけない。 -->
-  <nav class="hj-entry" aria-label="このページの3つの入口">
-    <a href="#hj-filter"><b>公募中の補助金を探す</b><span>締切が近い順。地域・目的・従業員数で絞れます</span></a>
-    <a href="#hj-sched"><b>国の主要な補助金の受付状況</b><span>ものづくり・持続化・IT導入など。次回の受付日程</span></a>
-    <a href="#hj-koyou"><b>雇用関係助成金を見る</b><span>キャリアアップ・両立支援など。締切ではなく要件で決まります</span></a>
+  <nav class="hj-tabs" aria-label="補助金のデータの種類">
+    <a href="./" aria-current="page"><b>公募中を探す</b><span class="hj-tab-n" id="hj-tab-n1"></span></a>
+    <a href="schedule/"><b>主要制度の受付状況</b><span class="hj-tab-n" id="hj-tab-n2"></span></a>
+    <a href="koyou/"><b>雇用関係助成金</b><span class="hj-tab-n" id="hj-tab-n3"></span></a>
   </nav>
-
-  <details id="hj-sched" class="card">
-    <summary><b>国の主要な補助金の公募スケジュール</b> <span class="hint" id="hj-sched-n"></span></summary>
-    <div id="hj-sched-body"></div>
-  </details>
+  <p class="hint hj-tab-desc">締切が近い順。地域・目的・従業員数・金額で絞り込めます。
+  国の主要制度の日程と雇用関係助成金は上のタブから。</p>
 
   <section class="card" id="hj-filter">
     <details id="hj-filter-fold" open>
@@ -237,14 +217,6 @@
   </section>
   <section class="result" id="result"></section>
 
-<!-- ★雇用関係助成金は「補助金の検索」と混ぜない。
-     公募型のような単一の締切が無く（雇入れの日や支給対象期で決まる）、
-     締切順の一覧に流し込むと嘘になる。制度名と公式URLだけを別の枠で出す。 -->
-<details id="hj-koyou" class="card">
-  <summary><b>雇用関係助成金（厚生労働省）</b> <span class="hint" id="hj-koyou-n"></span></summary>
-  <div id="hj-koyou-body"></div>
-</details>
-
 <section class="faq">
 <h2 id="faq">よくある質問</h2>
 <h3>Q. 会員登録や電話番号の入力は必要ですか？</h3>
@@ -254,7 +226,7 @@
 <p>A. <b>出しません。</b>表示のたびに今日の日付と突き合わせて外しています。ただし<b>当日が締切のものは残します</b>。締切の記載が無いものは落とさず、並びの最後に置いています。</p>
 
 <h3>Q. ここに載っていない補助金もありますか？</h3>
-<p>A. <b>あります。</b>データ元の jGrants 公開APIは検索キーワードが必須で「全件」を要求できないため、50語の和集合で近似しています。自治体が独自に出しているものなど、jGrants に載っていない補助金もあります。<b>網羅は約束していません。</b></p>
+<p>A. <b>あります。</b>データ元の jGrants 公開APIは検索キーワードが必須で「全件」を要求できないため、50語の和集合で近似しています。自治体が独自に出しているものなど、jGrants に載っていない補助金もあります。<b>網羅は約束していません。</b>国の主要制度の受付状況と雇用関係助成金は別ページにまとめています。</p>
 
 <h3>Q. 都道府県を選ぶと、全国の補助金は消えますか？</h3>
 <p>A. <b>消えません。</b>「全国」が対象の補助金は、都道府県を選んでも表示されます。複数県が対象の補助金（「茨城県 / 栃木県 / …」）も、その中に選んだ県が含まれていれば表示されます。</p>
@@ -421,6 +393,7 @@ async function render() {
     return;
   }
   const today = new Date();
+  $("hj-tab-n1").textContent = `${filterRows(D.subsidies, defaults, today).length}件`;
   const f = freshness(D._meta, today);
   const cond = conditions();
   const hit = sortRows(filterRows(D.subsidies, cond, today), $("sort").value, today);
@@ -455,7 +428,7 @@ async function render() {
     ${koyouHit.length ? `<div class="hj-warn" id="hj-koyou-hint">
       ★入力した語は<b>雇用関係助成金</b>にも当てはまります（${koyouHit.length}件）。
       これらは締切ではなく要件で決まるため、上の検索結果には入っていません →
-      <a href="#hj-koyou">雇用関係助成金を見る</a>
+      <a href="koyou/">雇用関係助成金の一覧を見る</a>
       <br><span class="hint">${koyouHit.slice(0, 3).map(esc).join('／')}${koyouHit.length > 3 ? ' ほか' : ''}</span>
     </div>` : ''}
     ${hit.length && active ? `<div class="hj-chips" id="hj-active">${active}</div>` : ''}
@@ -480,63 +453,8 @@ $("result").addEventListener('click', (event) => {
 });
 render();
 
-// ★#hj-sched / #hj-koyou へ飛んだとき、<details> が閉じていると
-//   着いても中身が見えない（実測: 15,328px スクロールした先が閉じたまま）。
-//   ハッシュで来たとき・入口を押したときは開く。
-function openTarget(hash) {
-  const el = hash && document.querySelector(hash);
-  if (el && el.tagName === 'DETAILS') {
-    el.open = true;
-    // 開いてから位置を取り直す（開く前の座標だとズレる）
-    requestAnimationFrame(() => el.scrollIntoView({ block: 'start' }));
-  }
-}
-document.addEventListener('click', (e) => {
-  const a = e.target.closest('a[href^="#"]');
-  if (a) openTarget(a.getAttribute('href'));
-});
-if (location.hash) openTarget(location.hash);
-
-// ── jGrants 以外の2つのデータ源 ──────────────────────────────────
-// ★どちらも軽い（gzip 1KB / 2KB）ので、補助金の一覧と同じページで読む。
-//   ★片方が読めなくても、もう片方と検索本体は動かす（枠ごと隠すだけ）。
-async function paintSource(url, boxId, countId, build) {
-  const box = $(boxId), count = $(countId);
-  try {
-    const d = await (await fetch(url)).json();
-    const html = build(d);
-    if (!html) throw new Error('中身が空');
-    box.innerHTML = html;
-    count.textContent = `${d._meta.count}件・${d._meta.captured_jst.slice(0, 10)}取得`;
-  } catch (e) {
-    // ★読めないときは黙って空欄を見せない。枠ごと隠す（0件と見分けがつかなくなる）
-    document.getElementById(boxId.replace('-body', '')).hidden = true;
-  }
-}
-
-// 国の主要な補助金の公募スケジュール（ミラサポplus）
-paintSource("../assets/hojokin_schedule.json", "hj-sched-body", "hj-sched-n", (d) => {
-  if (!Array.isArray(d.schedule) || !d.schedule.length) return '';
-  // ★いま応募できるものを上に。「第23次受付終了」は下げる。
-  //   次回日程は公式にも未定なので書けない（書けないことは書かない）が、
-  //   並び順なら「いま出せるもの」を先に見せられる。
-  const owariP = (r) => /終了/.test(r.period);
-  const sorted = [...d.schedule].sort((a, b) => (owariP(a) ? 1 : 0) - (owariP(b) ? 1 : 0));
-  const openN = sorted.filter((r) => !owariP(r)).length;
-  const rows = sorted.map((r) => {
-    // ★「第23次受付終了」「随時受付中」も原文のまま出す（日付に潰さない）
-    const owari = /終了/.test(r.period);
-    return `<tr>
-      <td>${r.url ? `<a href="${esc(r.url)}" rel="nofollow noopener" target="_blank">${esc(r.name)}</a>` : esc(r.name)}</td>
-      <td${owari ? ' class="hint"' : ''}>${esc(r.period)}</td></tr>`;
-  }).join('');
-  return `<p class="hint">jGrants に載らない制度（デジタル化・AI導入／省力化投資／新事業進出）を含みます。
-    上の検索結果には出てきません。★<b>いま受付中は${openN}件</b>で、
-    受付が終わった回は下に並べています（次回の日程は公式に発表されるまで分かりません）。</p>
-    <div class="scroll-wrap"><table class="res">
-      <tr><th>補助金</th><th>申請受付期間</th></tr>${rows}</table></div>
-    <p class="note">${esc(d._meta.attribution)}　最新の日程は各リンク先の公式ページでご確認ください。</p>`;
-});
+if (location.hash === '#hj-koyou') location.replace('koyou/');
+else if (location.hash === '#hj-sched') location.replace('schedule/');
 
 // ★キーワードが雇用関係助成金に当たったとき、下の枠へ誘導するために名前を持っておく。
 //   実測（2026-08-12）: 「キャリアアップ」で検索すると jGrants 側は1件（自治体の別制度）だけで、
@@ -544,31 +462,12 @@ paintSource("../assets/hojokin_schedule.json", "hj-sched-body", "hj-sched-n", (d
 //   375pxではそこまで18画面ぶんスクロールが必要で、気づける導線が無い。
 let KOYOU_NAMES = [];
 
-// 雇用関係助成金（厚生労働省）
-paintSource("../assets/koyou_joseikin.json", "hj-koyou-body", "hj-koyou-n", (d) => {
+// 雇用関係助成金の名前は、検索語が該当したときの別ページへの誘導にだけ使う。
+fetch("../assets/koyou_joseikin.json").then((r) => r.json()).then((d) => {
   KOYOU_NAMES = (d.joseikin || []).map((r) => r.name);
+  $("hj-tab-n3").textContent = `${KOYOU_NAMES.length}制度`;
   requestAnimationFrame(() => render());   // 名前が届いたら誘導を出し直す
-  if (!Array.isArray(d.joseikin) || !d.joseikin.length) return '';
-  // 制度名の頭（「キャリアアップ助成金（…）」の前半）でまとめると読みやすい
-  const groups = new Map();
-  for (const r of d.joseikin) {
-    const key = r.name.split('（')[0];
-    if (!groups.has(key)) groups.set(key, []);
-    groups.get(key).push(r);
-  }
-  const items = [...groups].map(([key, rs]) => rs.length === 1
-    ? `<li><a href="${esc(rs[0].url)}" rel="nofollow noopener" target="_blank">${esc(rs[0].name)}</a></li>`
-    : `<li>${esc(key)}<ul>${rs.map((r) => {
-        const sub = r.name.slice(key.length).replace(/^（|）$/g, '') || r.name;
-        return `<li><a href="${esc(r.url)}" rel="nofollow noopener" target="_blank">${esc(sub)}</a></li>`;
-      }).join('')}</ul></li>`).join('');
-  return `<p class="hint">★<b>これらは上の検索には含まれていません</b>（jGrants に載らないため）。
-    ★雇用関係助成金には公募型のような<b>単一の締切がありません</b>。雇入れの日や支給対象期に応じて
-    申請期限が決まるので、金額・要件・期限は必ず各リンク先の公式ページでご確認ください。</p>
-    <ul class="hj-koyou-list">${items}</ul>
-    <p class="note">${esc(d._meta.attribution)}　この一覧に無い制度もあります
-    （例: 業務改善助成金は労働基準局の所管で、この一覧には掲載されていません）。</p>`;
-});
+}).catch(() => {});
 </script>
 </body>
 </html>

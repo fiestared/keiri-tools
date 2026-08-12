@@ -1798,8 +1798,8 @@ const SCENES = [
       s.attribution && s.henshu && s.saysNotExhaustive && s.freshness &&
       // ★jGrants に無い2系統が出ていること（これが無いと外部を取る意味が消える）
       s.schedRows > 5 && s.koyouLinks > 20 &&
-      // ★3つの入口が在ること。無いと下の2セクションに到達できない
-      s.entries === 3 && s.inPageLinks >= 3 &&
+      // ★3つの別URLへ移動するリンク実体のタブが在ること
+      s.tabs === 3 &&
       // ★公募スケジュールは受付中が上・終了が下
       s.schedOrder && !s.failed },
   // ★都道府県で絞っても「全国」の補助金は残る。0件になったら絞りすぎか実装の誤り。
@@ -1985,9 +1985,13 @@ for (const sc of SCENES.filter((s) => match(s.name))) {
   // 「正常条件で正しい答えが出た」シーンだけを網羅とみなす(下の coverage 参照)。
   // 配信失敗・遅延を再現するシーンは、壊れたツールでも通ってしまうので数えない
   const normal = !sc.data404 && !sc.holidays && !sc.slow;
+  // ★シーンが開いたページは全部数える(s.pages)。1シーンが複数ページを開くことがあり
+  //   (/hojokin/ の3ページ分割)、最後の1本だけ数えると本体の網羅が黙って消える
   if (ok && normal && s.page) {
-    if (!covered.has(s.page)) covered.set(s.page, []);
-    covered.get(s.page).push(sc.name);
+    for (const p of (Array.isArray(s.pages) && s.pages.length ? s.pages : [s.page])) {
+      if (!covered.has(p)) covered.set(p, []);
+      covered.get(p).push(sc.name);
+    }
   }
   console.log(`${ok ? "✅" : "❌"} ${sc.name}`);
   // E2E_DUMP=1 で成功時も状態を見る(緑が「何を読んで緑なのか」を確かめる用)

@@ -67,6 +67,38 @@ ok(K.joseikin.every((r) => !('deadline' in r) && !('acceptance_end_datetime' in 
   '★★締切の項目を持っていない（単一の締切が存在しない制度なので、持つと嘘になる）');
 ok(K._meta._note.includes('締切'), '★締切を持たない理由がデータに書いてある');
 
+// ── ★別URLの初期HTMLへ焼き込まれていること ─────────────────────
+console.log('★静的HTMLへの焼き込みとタブ');
+const pages = [
+  ['../docs/hojokin/index.html', 'https://keiri-tools.com/hojokin/'],
+  ['../docs/hojokin/schedule/index.html', 'https://keiri-tools.com/hojokin/schedule/'],
+  ['../docs/hojokin/koyou/index.html', 'https://keiri-tools.com/hojokin/koyou/'],
+].map(([path, url]) => ({ html: readFileSync(new URL(path, import.meta.url), 'utf8'), url }));
+const [searchPage, schedulePage, koyouPage] = pages;
+const between = (source, start, end) => source.match(new RegExp(`${start}([\\s\\S]*?)${end}`))?.[1] || '';
+const scheduleBlock = between(schedulePage.html, '<!--sched:S-->', '<!--sched:E-->');
+const koyouBlock = between(koyouPage.html, '<!--koyou:S-->', '<!--koyou:E-->');
+ok((schedulePage.html.match(/<!--sched:[SE]-->/g) || []).length === 2 && scheduleBlock.trim(),
+  'schedule のマーカーが1組あり、間が空でない');
+ok((koyouPage.html.match(/<!--koyou:[SE]-->/g) || []).length === 2 && koyouBlock.trim(),
+  'koyou のマーカーが1組あり、間が空でない');
+ok((scheduleBlock.match(/<tr>/g) || []).length - 1 >= 5,
+  'schedule の焼き込み行数が MIN_ROWS 以上');
+ok((koyouBlock.match(/rel="nofollow noopener"/g) || []).length >= 30,
+  'koyou の焼き込み制度数が MIN_ITEMS 以上');
+ok(!/href="#hj-(?:sched|koyou)"/.test(searchPage.html) &&
+   !/id="hj-(?:sched|koyou)(?:-body)?"/.test(searchPage.html),
+  '検索ページに旧ブロックや旧アンカーへのリンクが残っていない');
+for (const page of pages) {
+  const tabs = page.html.match(/<nav class="hj-tabs"[\s\S]*?<\/nav>/)?.[0] || '';
+  const hrefs = [...tabs.matchAll(/<a href="([^"]+)"/g)].map((m) => new URL(m[1], page.url).href);
+  ok(JSON.stringify(hrefs) === JSON.stringify([
+    'https://keiri-tools.com/hojokin/',
+    'https://keiri-tools.com/hojokin/schedule/',
+    'https://keiri-tools.com/hojokin/koyou/',
+  ]), `${page.url} のタブ3本が正しい相対URLへ解決する`);
+}
+
 // ── ★混ぜないこと ────────────────────────────────────────
 console.log('★混ざっていないか');
 {

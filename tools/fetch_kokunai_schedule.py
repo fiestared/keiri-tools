@@ -41,6 +41,7 @@ SRC = 'https://mirasapo-plus.go.jp/'
 UA = {'User-Agent': 'keiri-tools/1.0 (+https://keiri-tools.com)'}
 JST = timezone(timedelta(hours=9))
 OUT = Path(__file__).resolve().parent.parent / 'docs' / 'assets' / 'hojokin_schedule.json'
+HTML_OUT = Path(__file__).resolve().parent.parent / 'docs' / 'hojokin' / 'schedule' / 'index.html'
 MIN_ROWS = 5          # ★これを下回ったら異常とみなす（HTML変更の検知）
 
 TAG = re.compile(r'<[^>]+>')
@@ -76,6 +77,52 @@ def parse(doc):
             })
         return out
     return []
+
+
+def render_html(doc):
+    """受付中を上にして、初期HTMLへそのまま読める表を焼き込む。"""
+    rows = sorted(doc['schedule'], key=lambda r: bool(re.search(r'終了', r['period'])))
+    open_n = sum(not re.search(r'終了', r['period']) for r in rows)
+    trs = []
+    for row in rows:
+        name = html_mod.escape(row['name'])
+        if row.get('url'):
+            name = (f'<a href="{html_mod.escape(row["url"], quote=True)}" '
+                    f'rel="nofollow noopener" target="_blank">{name}</a>')
+        cls = ' class="hint"' if re.search(r'終了', row['period']) else ''
+        trs.append(f'      <tr><td>{name}</td><td{cls}>{html_mod.escape(row["period"])}</td></tr>')
+    meta = doc['_meta']
+    captured = html_mod.escape(meta['captured_jst'], quote=True)
+    day = html_mod.escape(meta['captured_jst'][:10])
+    attribution = html_mod.escape(meta['attribution'])
+    return f'''<!--sched:S-->
+  <p class="hint">jGrants に載らない制度（デジタル化・AI導入／省力化投資／新事業進出）を含みます。
+  <a href="../">補助金の検索</a>には出てきません。★<b>いま受付中は{open_n}件</b>で、受付が終わった回は下に並べています
+  （次回の日程は公式に発表されるまで分かりません）。</p>
+  <div class="scroll-wrap"><table class="res" id="hj-sched-table">
+    <tr><th>補助金</th><th>申請受付期間</th></tr>
+{chr(10).join(trs)}
+  </table></div>
+  <p class="note" id="sched-fresh" data-captured="{captured}">{attribution}　{day} 取得。最新の日程は各リンク先の公式ページでご確認ください。</p>
+<!--sched:E-->'''
+
+
+def bake_html(doc):
+    source = HTML_OUT.read_text(encoding='utf-8')
+    marker = re.compile(r'<!--sched:S-->[\s\S]*?<!--sched:E-->')
+    if len(marker.findall(source)) != 1:
+        raise RuntimeError(f'{HTML_OUT}: sched マーカーが1組見つからない')
+    source = marker.sub(lambda _: render_html(doc), source)
+    count_marker = re.compile(r'(<span class="hj-tab-n" id="hj-tab-n2">)[^<]*(</span>)')
+    if len(count_marker.findall(source)) != 1:
+        raise RuntimeError(f'{HTML_OUT}: hj-tab-n2 が1個見つからない')
+    HTML_OUT.write_text(count_marker.sub(rf'\g<1>{len(doc["schedule"])}件\g<2>', source), encoding='utf-8')
+
+    sibling = HTML_OUT.parent.parent / 'koyou' / 'index.html'
+    sibling_source = sibling.read_text(encoding='utf-8')
+    if len(count_marker.findall(sibling_source)) != 1:
+        raise RuntimeError(f'{sibling}: hj-tab-n2 が1個見つからない')
+    sibling.write_text(count_marker.sub(rf'\g<1>{len(doc["schedule"])}件\g<2>', sibling_source), encoding='utf-8')
 
 
 def main():
@@ -116,7 +163,13 @@ def main():
         'schedule': rows,
     }
     OUT.write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding='utf-8')
+    try:
+        bake_html(doc)
+    except Exception as e:
+        print(f'★HTMLの焼き込みに失敗: {type(e).__name__}: {e}', file=sys.stderr)
+        return 1
     print(f'✓ {OUT.name} に書き出しました（{len(rows)}行）', file=sys.stderr)
+    print(f'✓ {HTML_OUT} に焼き込みました', file=sys.stderr)
     return 0
 
 
