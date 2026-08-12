@@ -26,6 +26,7 @@
 import argparse
 import json
 import sys
+import re
 import time
 import urllib.parse
 import urllib.request
@@ -46,12 +47,41 @@ KEYWORDS = [
     '高齢', '防災', '感染', '賃上げ', '生産性', '省力化', 'ロボット', '知財', '特許', 'ブランド',
 ]
 
-# ページで使う項目だけ残す（詳細PDFの base64 まで持つと数十MBになり、配信できない）
+# ページで使う項目だけ残す（詳細PDFの base64 まで持つと1件3MB・全体900MBになり配信できない）
 KEEP = [
-    'id', 'title', 'subsidy_catch_phrase', 'target_area_search', 'target_number_of_employees',
-    'subsidy_max_limit', 'subsidy_rate', 'acceptance_start_datetime', 'acceptance_end_datetime',
-    'use_purpose', 'industry', 'front_subsidy_detail_page_url',
+    'id', 'title', 'subsidy_catch_phrase', 'target_area_search', 'target_area_detail',
+    'target_number_of_employees', 'subsidy_max_limit', 'subsidy_rate',
+    'acceptance_start_datetime', 'acceptance_end_datetime', 'project_end_deadline',
+    'use_purpose', 'industry', 'front_subsidy_detail_page_url', 'institution_name',
+    'request_reception_presence', 'is_enable_multiple_request', 'summary',
 ]
+
+# ★一覧APIが返すのは9項目だけ。次は**詳細APIを叩かないと取れない**（2026-08-12 実測）:
+#     subsidy_rate（補助率）／use_purpose（目的）／industry（業種）／
+#     subsidy_catch_phrase／detail（概要本文）／front_subsidy_detail_page_url（公式ページ）
+#   ★これを知らずに一覧APIの結果だけを保存していたため、**307件すべてで公式ページへの
+#     リンクが href="" になり、補助率も出ていなかった**（本番で実測して発覚）。
+#   → 1件ずつ詳細を取る。307件で約5分（間隔0.12秒・規約は1秒10回まで）。
+DETAIL = 'https://api.jgrants-portal.go.jp/exp/v1/public/subsidies/id/'
+TAG_RE = re.compile(r'<[^>]+>')
+WS_RE = re.compile(r'\s+')
+
+
+def fetch_detail(sid):
+    """1件の詳細。★添付PDFのbase64は捨てる（1件3MB。持ち帰ると配信できない）"""
+    with urllib.request.urlopen(urllib.request.Request(DETAIL + sid, headers=UA), timeout=90) as r:
+        res = json.loads(r.read()).get('result') or []
+    return res[0] if res else None
+
+
+def plain(html, limit=220):
+    """detail は HTML。★そのまま画面に入れない（styleつきのタグが混ざる）。テキストにして要約に使う"""
+    if not html:
+        return None
+    t = WS_RE.sub(' ', TAG_RE.sub('', html)).strip()
+    if not t:
+        return None
+    return t[:limit] + ('…' if len(t) > limit else '')
 
 
 def fetch(keyword, acceptance=1):
@@ -77,10 +107,53 @@ def sweep(verbose=False):
     return seen, growth, failed
 
 
+# ★jGrants には「新規に応募するもの」以外の手続き用フォームが混ざる（2026-08-12 実測で8件）。
+#   例: 「［第十三回］事業再構築補助金（交付申請等）」「女性活躍情報公開促進奨励金 撤回届」
+#   これらは既に採択された人が使うもので、探している人が応募できるものではない。
+#   一覧に「撤回届」が並ぶと、一覧そのものの信頼が落ちる。
+#   ★タイトルで除外する。除いた件数は _meta.excluded で申告する（黙って減らさない）。
+JUNK_RE = re.compile(r'交付申請|実績報告|変更申請|撤回届|廃止申請|中止申請')
+
+
+def is_junk(row):
+    return bool(JUNK_RE.search(row.get('title') or ''))
+
+
 def trim(row):
     out = {k: row.get(k) for k in KEEP}
     # 数値・日時はそのまま持ち、表示の整形はページ側でやる（データに表示を混ぜない）
     return out
+
+
+def enrich(seen, verbose=False):
+    """一覧で拾ったIDについて詳細を取り、一覧に無い項目を埋める。
+
+    ★失敗しても一覧の情報は残す（詳細が取れないからといって行ごと消さない）。
+      取れなかった件数は _meta.detail_failed で申告する。
+    """
+    filled, failed = 0, []
+    total = len(seen)
+    for i, (sid, row) in enumerate(seen.items(), 1):
+        try:
+            det = fetch_detail(sid)
+        except Exception as e:
+            failed.append({'id': sid, 'error': f'{type(e).__name__}: {e}'})
+            continue
+        if not det:
+            failed.append({'id': sid, 'error': 'result が空'})
+            continue
+        for k, v in det.items():
+            if k in ('outline_of_grant', 'application_form', 'application_guidelines'):
+                continue                       # ★添付のbase64。1件3MBあるので持ち帰らない
+            if k == 'detail':
+                row['summary'] = plain(v)      # HTMLはテキストにして要約に使う
+                continue
+            row[k] = v
+        filled += 1
+        if verbose and i % 25 == 0:
+            print(f'  詳細 {i}/{total}', file=sys.stderr)
+        time.sleep(0.12)                       # 規約は1秒10回まで
+    return filled, failed
 
 
 def main():
@@ -91,6 +164,9 @@ def main():
     seen, growth, failed = sweep(verbose=True)
     tail = (growth[-1] - growth[-11]) if len(growth) > 11 else None
     converged = tail is not None and tail < 15 and not failed
+
+    # ★一覧APIは9項目しか返さない。補助率・目的・業種・公式ページURLは詳細を叩く
+    filled, det_failed = (0, []) if args.check else enrich(seen, verbose=True)
 
     doc = {
         '_meta': {
@@ -105,13 +181,21 @@ def main():
             'keywords': len(KEYWORDS),
             'count': len(seen),
             'failed_keywords': failed,
+            'detail_filled': filled,
+            'detail_failed': det_failed,
             'tail_growth_last10': tail,
             'converged': converged,
             '_note': ('★keyword 必須のAPIなので全件を要求できない。語彙の和集合で近似している。'
                       'converged=false のときは取りこぼしがある前提で扱うこと。'),
         },
-        'subsidies': [trim(r) for r in seen.values()],
+        'subsidies': [trim(r) for r in seen.values() if not is_junk(r)],
     }
+    # ★何を除いたかを申告する（件数だけ減っていると原因が追えない）
+    doc['_meta']['excluded'] = [
+        {'id': r['id'], 'title': r['title'], 'reason': '応募用ではない手続きフォーム'}
+        for r in seen.values() if is_junk(r)
+    ]
+    doc['_meta']['count'] = len(doc['subsidies'])
 
     print(f"\n{len(seen)}件 / 語彙{len(KEYWORDS)} / 失敗{len(failed)} / 収束={converged}", file=sys.stderr)
     if failed:
