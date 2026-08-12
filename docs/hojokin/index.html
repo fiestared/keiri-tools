@@ -103,6 +103,26 @@
   .hj-days { font-weight: 700; }
   .hj-soon { color: #c0392b; }
   .hj-warn { background: var(--warn-bg, #fffdf7); border: 1px solid var(--warn-line, #f0d9a0); border-radius: 8px; padding: 10px 12px; margin: 10px 0; font-size: 13px; }
+  .hj-item h3 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+  .hj-desc { font-size: 13px; color: var(--sub); margin: 0 0 6px; line-height: 1.6; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+  .hj-status { margin: 0 0 4px; font-size: 13px; display: flex; gap: 10px; align-items: baseline; }
+  .hj-near { color: #a8641b; }
+  .hj-yet { font-size: 11px; color: var(--sub); border: 1px solid var(--line); border-radius: 99px; padding: 1px 8px; }
+  .hj-amount b { color: var(--accent); }
+  .hj-approx { color: var(--sub); }
+  .hj-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+  .hj-chip { font-size: 13px; border: 1px solid var(--accent); background: var(--accent-soft); color: var(--ink); border-radius: 99px; padding: 6px 12px; cursor: pointer; }
+  .hj-chip-clear { border-color: var(--line); background: #fff; color: var(--sub); }
+  .hj-facet { color: var(--sub); font-size: 12px; }
+  .radio-row label:has(input:disabled) { opacity: .45; cursor: default; }
+  .hj-empty { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 10px; padding: 14px 16px; margin: 10px 0; font-size: 14px; }
+  .hj-inline { display: flex; gap: 6px; align-items: center; font-weight: 400; font-size: 13px; margin: 8px 0 0; }
+  .hj-inline input { width: auto; }
+  @media (min-width: 720px) { #hj-filter-fold > summary { display: none; } }
+  @media (max-width: 719px) {
+    #hj-fold-summary { cursor: pointer; font-weight: 700; }
+    .fee-pair { flex-direction: column; gap: 0; }
+  }
 </style>
 </head>
 <body>
@@ -124,12 +144,43 @@
     <p><b>このページは補助金を「探す」ところまでです。</b>申請の代行も相談の受付もしていません（<a href="#dekinai">理由</a>）。もらった後の<b>経理と税金</b>は別のページにあります → <a href="../hojokin-zeimu/">補助金の経理・税務</a></p>
   </div>
 
-  <div class="card">
+  <section class="card" id="hj-filter">
+    <details id="hj-filter-fold" open>
+    <summary id="hj-fold-summary">絞り込み <span class="hint" id="hj-fold-hint"></span></summary>
+    <label>目的</label>
+    <div class="radio-row" id="hj-purpose">
+      <label><input type="radio" name="purpose" value="" checked>すべて <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="設備整備・IT導入をしたい">設備・IT導入 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="新たな事業を行いたい">新規事業 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="販路拡大・海外展開をしたい">販路拡大・海外展開 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="雇用・職場環境を改善したい">雇用・職場環境 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="エコ・SDGs活動支援がほしい">エコ・SDGs <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="研究開発・実証事業を行いたい">研究開発・実証 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="安全・防災対策支援がほしい">安全・防災 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="人材育成を行いたい">人材育成 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="資金繰りを改善したい">資金繰り <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="まちづくり・地域振興支援がほしい">まちづくり・地域振興 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="イベント・事業運営支援がほしい">イベント・事業運営 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="災害（自然災害、感染症等）支援がほしい">災害支援 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="事業を引き継ぎたい">事業承継 <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="教育・子育て・少子化支援がほしい">教育・子育て <span class="hj-facet"></span></label>
+      <label><input type="radio" name="purpose" value="スポーツ・文化支援がほしい">スポーツ・文化 <span class="hj-facet"></span></label>
+    </div>
     <div class="fee-pair">
       <div>
         <label for="area">都道府県</label>
-        <select id="area"><option value="">指定しない</option></select>
-        <p class="hint">★「全国」の補助金は、都道府県を選んでも表示されます。</p>
+        <select id="area">
+          <option value="">指定しない</option><option value="全国">全国対象のみ</option>
+          <optgroup label="北海道"><option>北海道</option></optgroup>
+          <optgroup label="東北"><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option><option>山形県</option><option>福島県</option></optgroup>
+          <optgroup label="関東・甲信越"><option>茨城県</option><option>栃木県</option><option>群馬県</option><option>埼玉県</option><option>千葉県</option><option>東京都</option><option>神奈川県</option><option>新潟県</option><option>山梨県</option><option>長野県</option></optgroup>
+          <optgroup label="東海・北陸"><option>富山県</option><option>石川県</option><option>福井県</option><option>岐阜県</option><option>静岡県</option><option>愛知県</option><option>三重県</option></optgroup>
+          <optgroup label="近畿"><option>滋賀県</option><option>京都府</option><option>大阪府</option><option>兵庫県</option><option>奈良県</option><option>和歌山県</option></optgroup>
+          <optgroup label="中国"><option>鳥取県</option><option>島根県</option><option>岡山県</option><option>広島県</option><option>山口県</option></optgroup>
+          <optgroup label="四国"><option>徳島県</option><option>香川県</option><option>愛媛県</option><option>高知県</option></optgroup>
+          <optgroup label="九州・沖縄"><option>福岡県</option><option>佐賀県</option><option>長崎県</option><option>熊本県</option><option>大分県</option><option>宮崎県</option><option>鹿児島県</option><option>沖縄県</option></optgroup>
+        </select>
+        <label class="hj-inline"><input type="checkbox" id="include-national" checked>全国対象の補助金も表示する</label>
       </div>
       <div>
         <label for="employees">従業員数（自社）</label>
@@ -149,25 +200,28 @@
         </select>
       </div>
       <div>
-        <label for="minamount">補助上限額がこれ以上（円）</label>
-        <input type="number" id="minamount" value="" min="0" step="100000" placeholder="例: 1000000" inputmode="numeric">
+        <label for="minamount">補助上限額がこれ以上</label>
+        <select id="minamount"><option value="">指定しない</option><option value="1000000">100万円以上</option><option value="5000000">500万円以上</option><option value="10000000">1,000万円以上</option><option value="100000000">1億円以上</option></select>
+        <p class="hint">金額の記載が無い補助金（83件前後）はこの条件で外れます。</p>
       </div>
     </div>
     <div class="fee-pair">
       <div>
-        <label for="keyword">キーワード（名称に含む）</label>
+        <label for="keyword">キーワード</label>
         <input type="text" id="keyword" value="" placeholder="例: 省エネ">
       </div>
       <div>
         <label for="sort">並べ替え</label>
         <select id="sort">
           <option value="deadline" selected>締切が近い順</option>
+          <option value="new">新着順</option>
           <option value="amount">補助上限額が大きい順</option>
         </select>
       </div>
     </div>
-    <div class="result" id="result" aria-live="polite"></div>
-  </div>
+    </details>
+  </section>
+  <section class="result" id="result"></section>
 
   <div class="toc-title">目次</div>
   <ul class="toc">
@@ -240,27 +294,132 @@
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
 </footer>
 <script type="module">
-import { filterRows, sortRows, daysLeft, freshness, areaOptions, notStarted, SOURCE_NOTICE }
+import { filterRows, sortRows, freshness, notStarted, employeeCap, fmtAmount, areaLabel,
+  descOf, fmtDeadline, PAGE_SIZE, PURPOSES, PREF_GROUPS, SOURCE_NOTICE }
   from "../assets/hojokin_core.js";
 
 const $ = (id) => document.getElementById(id);
-const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fold = $("hj-filter-fold");
+if (matchMedia('(max-width:719px)').matches) fold.removeAttribute('open');
+
+const purposeInputs = [...document.querySelectorAll('input[name="purpose"]')];
+const prefByCode = new Map(PREF_GROUPS.flatMap((g) => g.prefs.map((p) => [p.code, p.name])));
+const codeByPref = new Map([...prefByCode].map(([code, name]) => [name, code]));
+const allowedDays = new Set(['7', '14', '30', '90']);
+const allowedAmounts = new Set(['1000000', '5000000', '10000000', '100000000']);
+
+// ★URLから戻す値は許可リストで検証し、不正値を検索条件にしない。
+const params = new URLSearchParams(location.search);
+const pref = params.get('pref');
+if (pref === 'zenkoku') $("area").value = '全国';
+else if (prefByCode.has(pref)) $("area").value = prefByCode.get(pref);
+if (params.get('nat') === '0') $("include-national").checked = false;
+const purpose = PURPOSES.find((p) => p.slug === params.get('purpose'));
+if (purpose) purposeInputs.find((input) => input.value === purpose.value).checked = true;
+const emp = params.get('emp');
+if (/^[1-9]\d*$/.test(emp || '')) $("employees").value = emp;
+if (allowedDays.has(params.get('days'))) $("maxdays").value = params.get('days');
+if (allowedAmounts.has(params.get('min'))) $("minamount").value = params.get('min');
+if (params.has('kw')) $("keyword").value = params.get('kw');
+if (['new', 'amount'].includes(params.get('sort'))) $("sort").value = params.get('sort');
 
 // ★補助金のデータは非同期で届く。**届く前に一覧を描かない**（0件と見分けがつかなくなる）。
 let D = null;
 const hojokinReady = fetch("../assets/hojokin_jgrants.json")
-  .then((r) => r.json()).then((d) => {
-    D = d;
-    for (const a of areaOptions(D.subsidies)) {
-      const o = document.createElement("option");
-      o.value = a; o.textContent = a;
-      $("area").appendChild(o);
-    }
-    return true;
-  }).catch(() => false);
+  .then((r) => r.json()).then((d) => { D = d; return true; }).catch(() => false);
+let shown = PAGE_SIZE;
 
-const LIMIT = 60;   // ★1画面に出す上限。全部描くと重い。省いた件数は必ず言う
+function conditions() {
+  return {
+    area: $("area").value, employees: $("employees").value,
+    maxDays: $("maxdays").value, minAmount: $("minamount").value,
+    keyword: $("keyword").value, purpose: purposeInputs.find((x) => x.checked).value,
+    includeNational: $("include-national").checked,
+  };
+}
+
+function syncURL(cond) {
+  const p = new URLSearchParams();
+  if (cond.area === '全国') p.set('pref', 'zenkoku');
+  else if (codeByPref.has(cond.area)) p.set('pref', codeByPref.get(cond.area));
+  if (!cond.includeNational) p.set('nat', '0');
+  const purpose = PURPOSES.find((x) => x.value === cond.purpose);
+  if (purpose) p.set('purpose', purpose.slug);
+  if (/^[1-9]\d*$/.test(cond.employees)) p.set('emp', cond.employees);
+  if (allowedDays.has(cond.maxDays)) p.set('days', cond.maxDays);
+  if (allowedAmounts.has(cond.minAmount)) p.set('min', cond.minAmount);
+  if (cond.keyword.trim()) p.set('kw', cond.keyword.trim());
+  if (['new', 'amount'].includes($("sort").value)) p.set('sort', $("sort").value);
+  history.replaceState(null, '', location.pathname + (p.size ? `?${p}` : '') + location.hash);
+}
+
+const defaults = { area: '', purpose: '', employees: '', maxDays: '', minAmount: '', keyword: '', includeNational: true };
+function removeCondition(key) {
+  if (key === 'area') $("area").value = '';
+  else if (key === 'purpose') purposeInputs[0].checked = true;
+  else if (key === 'employees') $("employees").value = '';
+  else if (key === 'maxDays') $("maxdays").value = '';
+  else if (key === 'minAmount') $("minamount").value = '';
+  else if (key === 'keyword') $("keyword").value = '';
+  else if (key === 'includeNational') $("include-national").checked = true;
+}
+
+function resetAll() {
+  for (const key of Object.keys(defaults)) removeCondition(key);
+  $("sort").value = 'deadline';
+}
+
+function chipData(cond) {
+  const result = [];
+  if (cond.area) result.push(['area', cond.area === '全国' ? '全国対象のみ' : cond.area]);
+  const purpose = PURPOSES.find((p) => p.value === cond.purpose);
+  if (purpose) result.push(['purpose', `目的: ${purpose.label}`]);
+  if (cond.employees !== '') result.push(['employees', `従業員${cond.employees}名`]);
+  if (cond.maxDays !== '') result.push(['maxDays', `締切${cond.maxDays}日以内`]);
+  if (cond.minAmount !== '') result.push(['minAmount', `上限${Number(cond.minAmount) / 10000 >= 10000 ? Number(cond.minAmount) / 100000000 + '億円' : (Number(cond.minAmount) / 10000).toLocaleString('ja-JP') + '万円'}以上`]);
+  if (cond.keyword.trim()) result.push(['keyword', `「${cond.keyword.trim()}」`]);
+  if (cond.area && cond.area !== '全国' && !cond.includeNational) result.push(['includeNational', '全国を除く']);
+  return result;
+}
+
+function chipsHTML(cond, suffix = '✕') {
+  const chips = chipData(cond).map(([key, text]) => `<button class="hj-chip" data-remove="${key}">${esc(text)} ${suffix}</button>`).join('');
+  return chips ? `${chips}<button class="hj-chip hj-chip-clear" data-reset>すべてリセット</button>` : '';
+}
+
+function updateFacets(cond, today) {
+  const base = { ...cond, purpose: '' };
+  for (const input of purposeInputs) {
+    const n = filterRows(D.subsidies, { ...base, purpose: input.value }, today).length;
+    input.closest('label').querySelector('.hj-facet').textContent = `(${n})`;
+    input.disabled = n === 0 && !input.checked;
+  }
+  const selected = $("area").value;
+  for (const option of $("area").options) {
+    const value = option.value;
+    const n = filterRows(D.subsidies, { ...cond, area: value }, today).length;
+    const label = value === '' ? '指定しない' : value === '全国' ? '全国対象のみ' : value;
+    option.textContent = `${label}（${n}）`;
+  }
+  $("area").value = selected;
+}
+
+function itemHTML(r, today) {
+  const deadline = fmtDeadline(r, today);
+  const amount = fmtAmount(r.subsidy_max_limit);
+  const desc = descOf(r);
+  const cap = employeeCap(r.target_number_of_employees);
+  const href = r.front_subsidy_detail_page_url || `https://www.jgrants-portal.go.jp/subsidy/${encodeURIComponent(r.id)}`;
+  return `<article class="hj-item">
+    <p class="hj-status"><span class="hj-days${deadline.cls ? ` ${deadline.cls}` : ''}">${esc(deadline.text)}</span>${notStarted(r, today) ? '<span class="hj-yet">受付開始前</span>' : ''}</p>
+    <h3><a href="${esc(href)}" rel="nofollow noopener" target="_blank">${esc(r.title)}</a></h3>
+    ${desc ? `<p class="hj-desc">${esc(desc)}</p>` : ''}
+    <p class="hj-meta"><span>${esc(areaLabel(r.target_area_search))}</span>
+      ${amount ? `<span class="hj-amount">上限 <b>${esc(amount.text)}</b>${amount.budget ? '<span class="hj-approx">※</span>' : ''}</span>` : ''}
+      ${r.subsidy_rate ? `<span>補助率 ${esc(r.subsidy_rate)}</span>` : ''}${cap !== null ? `<span>従業員${cap}名以下</span>` : ''}</p>
+  </article>`;
+}
 
 async function render() {
   const arrived = await hojokinReady;
@@ -273,50 +432,53 @@ async function render() {
   }
   const today = new Date();
   const f = freshness(D._meta, today);
-  const cond = {
-    area: $("area").value, employees: $("employees").value,
-    maxDays: $("maxdays").value, minAmount: $("minamount").value,
-    keyword: $("keyword").value,
-  };
+  const cond = conditions();
   const hit = sortRows(filterRows(D.subsidies, cond, today), $("sort").value, today);
-  const shown = hit.slice(0, LIMIT);
+  const visible = hit.slice(0, shown);
+  const rest = Math.max(0, hit.length - visible.length);
+  const items = visible.map((r) => itemHTML(r, today)).join('');
+  const hasBudget = visible.some((r) => fmtAmount(r.subsidy_max_limit)?.budget);
+  const active = chipsHTML(cond);
+  updateFacets(cond, today);
+  $("hj-fold-hint").textContent = `（いま ${hit.length}件）`;
 
-  const items = shown.map((r) => {
-    const n = daysLeft(r, today);
-    const soon = n !== null && n <= 7;
-    const yet = notStarted(r, today);
-    return `<div class="hj-item">
-      <h3><a href="${esc(r.front_subsidy_detail_page_url)}" rel="nofollow noopener" target="_blank">${esc(r.title)}</a></h3>
-      <div class="hj-meta">
-        <span class="hj-days${soon ? " hj-soon" : ""}">${n === null ? "締切の記載なし"
-          : n === 0 ? "本日締切" : `あと${n}日`}</span>
-        ${yet ? '<span>受付開始前</span>' : ""}
-        <span>${esc(r.target_area_search) || "地域の記載なし"}</span>
-        ${Number.isFinite(Number(r.subsidy_max_limit)) && Number(r.subsidy_max_limit) > 0
-          ? `<span>上限 ${yen(r.subsidy_max_limit)}</span>` : ""}
-        ${r.subsidy_rate ? `<span>補助率 ${esc(r.subsidy_rate)}</span>` : ""}
-        ${r.target_number_of_employees ? `<span>${esc(r.target_number_of_employees)}</span>` : ""}
-      </div>
-    </div>`;
-  }).join("");
+  let body;
+  if (hit.length) {
+    body = `<div class="hj-list" id="hj-list">${items}</div>
+      ${rest ? `<button class="primary" id="hj-more">さらに${Math.min(PAGE_SIZE, rest)}件を表示（残り${rest}件）</button>` : ''}`;
+  } else {
+    const suggestions = chipData(cond).map(([key, text]) => {
+      const relaxed = { ...cond, [key]: defaults[key] };
+      const n = filterRows(D.subsidies, relaxed, today).length;
+      return { key, text, n };
+    }).filter((x) => x.n > 0).sort((a, b) => b.n - a.n);
+    body = `<div class="hj-empty" id="hj-empty"><p><b>条件に合う補助金が見つかりませんでした。</b></p><div class="hj-chips">${active}</div>
+      ${suggestions.length ? `<p class="hint">条件を1つ外すと:</p><div class="hj-chips">${suggestions.map((x) => `<button class="hj-chip" data-remove="${x.key}">${esc(x.text)}を外す → ${x.n}件</button>`).join('')}</div>` : ''}</div>`;
+  }
 
   $("result").innerHTML = `
     ${f.stale ? `<div class="hj-warn" id="stale">★<b>${esc(f.text)}</b>。締切はその後に変わっている可能性があります。応募の前に必ず公式ページでご確認ください。</div>` : ""}
-    <div class="big"><span id="count">${hit.length}</span>件</div>
-    <div class="hint" id="fresh">${esc(f.text)}（${esc(D._meta.captured_jst || "")}）／${esc(D._meta.attribution || SOURCE_NOTICE)}</div>
-    ${hit.length > LIMIT ? `<div class="hint" id="omitted">★このうち${LIMIT}件を表示しています（残り${hit.length - LIMIT}件は条件を絞ってください）。</div>` : ""}
-    <div class="hj-list">${items || '<p class="hint">条件に合う補助金がありませんでした。条件をゆるめてみてください。</p>'}</div>
+    <div id="hj-status" aria-live="polite"><div class="big"><span id="count">${hit.length}</span>件</div>${rest ? `<p class="hint" id="hj-shown">うち${visible.length}件を表示中（残り${rest}件）</p>` : ''}</div>
+    ${hit.length && active ? `<div class="hj-chips" id="hj-active">${active}</div>` : ''}
+    <p class="hint" id="fresh">${esc(f.text)}（${esc(D._meta.captured_jst || "")}）／${esc(D._meta.attribution || SOURCE_NOTICE)}</p>
+    ${body}
     <div class="note" style="margin-top:12px">
       ★掲載は取得時点のもので、<b>網羅を約束するものではありません</b>（データ元のAPIが全件取得に対応していないため、50語の検索の和集合です）。
       締切・要件は変更されることがあります。<b>応募の前に必ず公式ページでご確認ください。</b>
-      当サイトは申請の支援を行っていません。
+      当サイトは申請の支援を行っていません。${hasBudget ? '※印の金額は制度全体の予算規模が登録されている場合があります。1社あたりの上限は必ずリンク先でご確認ください。' : ''}
     </div>`;
+  syncURL(cond);
 }
 
-for (const id of ["area", "employees", "maxdays", "minamount", "keyword", "sort"]) {
-  $(id).addEventListener("input", render);
-  $(id).addEventListener("change", render);
+for (const id of ["area", "employees", "maxdays", "minamount", "keyword", "sort", "include-national", "hj-purpose"]) {
+  for (const event of ['input', 'change']) $(id).addEventListener(event, () => { shown = PAGE_SIZE; render(); });
 }
+$("result").addEventListener('click', (event) => {
+  const remove = event.target.closest('[data-remove]');
+  if (remove) { removeCondition(remove.dataset.remove); shown = PAGE_SIZE; render(); return; }
+  if (event.target.closest('[data-reset]')) { resetAll(); shown = PAGE_SIZE; render(); return; }
+  if (event.target.closest('#hj-more')) { shown += PAGE_SIZE; render(); }
+});
 render();
 </script>
 </body>

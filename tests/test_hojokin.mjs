@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 import {
   daysLeft, isOpen, notStarted, employeeCap, filterRows, sortRows,
   freshness, areaOptions, parseDt, STALE_DAYS, SOURCE_NOTICE,
+  fmtAmount, areaLabel, descOf, fmtDeadline,
 } from '../docs/assets/hojokin_core.js';
 
 const D = JSON.parse(readFileSync(new URL('../docs/assets/hojokin_jgrants.json', import.meta.url), 'utf8'));
@@ -38,6 +39,8 @@ ok(Array.isArray(D._meta.failed_keywords), '取得に失敗した語を申告し
 ok(D.subsidies.every((r) => r.id && r.title), '全行に id とタイトルがある');
 ok(D.subsidies.every((r) => !('application_form' in r)),
   '★申請様式のbase64を持ち込んでいない（配信できない大きさになる）');
+ok(D.subsidies.every((r) => !/（交付申請等）|撤回届/.test(r.title)), 'ジャンク公募が除外されている');
+ok(Array.isArray(D._meta.excluded), '除外結果を配列で申告している');
 
 // ── ★締切の境界 ──────────────────────────────────────────────
 console.log('★締切');
@@ -104,6 +107,18 @@ eq(filterRows([row({ subsidy_max_limit: 500000 }), row({ subsidy_max_limit: 5000
   { minAmount: 1000000 }, T).length, 1, '金額で絞れる');
 eq(filterRows([row({ title: 'IT導入補助金' }), row({ title: '省エネ補助金' })],
   { keyword: 'IT' }, T).length, 1, 'タイトルで絞れる');
+eq(filterRows([row({ use_purpose: 'A / B' })], { purpose: 'B' }, T).length, 1, '複数目的の要素一致');
+eq(filterRows([row({ use_purpose: 'A / B' })], { purpose: 'C' }, T).length, 0, '目的は部分一致しない');
+eq(filterRows([row({ use_purpose: 'A / B' })], { purpose: '' }, T).length, 1, '目的の空指定は絞らない');
+eq(filterRows([row({ target_area_search: '関東・甲信越地方' })], { area: '東京都' }, T).length, 1, '地方ブロックを県に展開する');
+eq(filterRows([row({ target_area_search: '関東・甲信越地方' })], { area: '大阪府' }, T).length, 0, '別ブロックは外れる');
+{
+  const rows = [row({ target_area_search: '全国' }), row({ target_area_search: '東京都' }), row({ target_area_search: '関東・甲信越地方' })];
+  eq(filterRows(rows, { area: '東京都', includeNational: false }, T).length, 2, '全国OFFで県とブロックだけ残る');
+  eq(filterRows(rows, { area: '東京都' }, T).length, 3, 'includeNational未指定はtrue');
+}
+eq(filterRows([row({ title: '無関係', summary: '本文だけの語' })], { keyword: '本文だけ' }, T).length, 1, '本文もキーワード対象');
+eq(filterRows([row({ subsidy_max_limit: 9999999999 })], { minAmount: 1000000 }, T).length, 0, '金額プレースホルダを除外');
 // ★締切超過はどの条件でも出てこない
 eq(filterRows([row({ acceptance_end_datetime: '2026-08-01T08:00:00.000Z' })], {}, T).length, 0,
   '★締切を過ぎたものは絞り込みの時点で消える');
@@ -121,6 +136,30 @@ console.log('★並べ替え');
 }
 eq(sortRows([row({ id: 'small', subsidy_max_limit: 100 }), row({ id: 'big', subsidy_max_limit: 999 })],
   'amount', T).map((r) => r.id).join(','), 'big,small', '金額の大きい順');
+eq(sortRows([row({ id: 'old', acceptance_start_datetime: '2026-01-01' }), row({ id: 'new', acceptance_start_datetime: '2026-08-01' }), row({ id: 'none', acceptance_start_datetime: null })], 'new', T).map((r) => r.id).join(','), 'new,old,none', '新着順で日時なしは最後');
+eq(sortRows([row({ id: 'placeholder', subsidy_max_limit: 9999999999 }), row({ id: 'real', subsidy_max_limit: 100 })], 'amount', T)[0].id, 'real', 'プレースホルダが金額順の先頭に来ない');
+
+// ── 表示用整形 ────────────────────────────────
+console.log('★表示用整形');
+eq(fmtAmount(3000000).text, '300万円', '300万円表示');
+eq(fmtAmount(50000000).text, '5,000万円', '5,000万円表示');
+eq(fmtAmount(5500000000).text, '55億円', '55億円表示');
+ok(fmtAmount(5500000000).budget, '10億円以上は予算規模注記');
+eq(fmtAmount(155000000).text, '1.5億円', '億円の小数は切り捨て');
+ok(!fmtAmount(155000000).budget, '10億円未満は予算規模注記なし');
+eq(fmtAmount(11850).text, '11,850円', '万円で割れない額は円表示');
+ok(fmtAmount(9999999999) === null && fmtAmount(0) === null && fmtAmount('abc') === null, '無効な金額は表示しない');
+eq(areaLabel('全国'), '全国', '全国表示');
+eq(areaLabel('茨城県 / 栃木県 / 群馬県 / 東京都'), '茨城県など4地域', '4地域以上を要約');
+eq(areaLabel('東京都 / 大阪府'), '東京都・大阪府', '3地域以下を中黒で連結');
+eq(areaLabel(''), '地域の記載なし', '地域空欄');
+eq(descOf({ summary: '■目的・概要ABC■補助率1/2' }), 'ABC', '見出しを除いて概要を抜き出す');
+eq(descOf({ summary: '■参照ホームページhttps://x', subsidy_catch_phrase: 'C' }), 'C', '参照URL型はキャッチフレーズ');
+eq(descOf({ summary: '', subsidy_catch_phrase: '' }), '', '説明がなければ空');
+ok(fmtDeadline(row({ acceptance_end_datetime: '2026-08-12T08:00:00.000Z' }), T).text.includes('本日') && fmtDeadline(row({ acceptance_end_datetime: '2026-08-12T08:00:00.000Z' }), T).cls === 'hj-soon', '当日締切は赤');
+eq(fmtDeadline(row({ acceptance_end_datetime: '2026-08-19T08:00:00.000Z' }), T).cls, 'hj-near', '7日後は橙');
+eq(fmtDeadline(row({ acceptance_end_datetime: '2026-08-20T08:00:00.000Z' }), T).cls, '', '8日後は無色');
+eq(fmtDeadline(row({ acceptance_end_datetime: null }), T).text, '締切の記載なし', '締切記載なし');
 
 // ── ★鮮度 ────────────────────────────────────────────────
 console.log('★鮮度');
