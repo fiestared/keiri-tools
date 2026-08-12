@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>補助金の検索｜締切が近い順・登録不要（jGrants のデータ）</title>
+<meta name="description" content="いま公募中の補助金を、締切が近い順で探せます。都道府県・従業員数・締切までの日数・補助上限額で絞り込み。★締切を過ぎたものは表示しません。★会員登録も電話番号も不要で、営業の連絡はしません。データは国のjGrants公開APIから取得し、取得日時を画面に出しています。出典：Jグランツ（編集・加工しています）。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/hojokin/">
+<!-- ogp:auto -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="補助金の検索｜締切が近い順・登録不要（jGrants のデータ）">
+<meta property="og:description" content="いま公募中の補助金を、締切が近い順で探せます。都道府県・従業員数・締切までの日数・補助上限額で絞り込み。★締切を過ぎたものは表示しません。★会員登録も電話番号も不要で、営業の連絡はしません。データは国のjGrants公開APIから取得し、取得日時を画面に出しています。出典：Jグランツ（編集・加工しています）。">
+<meta property="og:url" content="https://keiri-tools.com/hojokin/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="経理ミニツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Q. 会員登録や電話番号の入力は必要ですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. いりません。入力した条件はブラウザの外へ出ませんし、こちらから営業の連絡をすることもありません。このサイトは広告だけで運営しています。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 締切が過ぎた補助金も出てきますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 出しません。表示のたびに今日の日付と突き合わせて外しています。ただし当日が締切のものは残します。締切の記載が無いものは落とさず、並びの最後に置いています。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. ここに載っていない補助金もありますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. あります。データ元の jGrants 公開APIは検索キーワードが必須で「全件」を要求できないため、50語の和集合で近似しています。自治体が独自に出しているものなど、jGrants に載っていない補助金もあります。網羅は約束していません。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 都道府県を選ぶと、全国の補助金は消えますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 消えません。「全国」が対象の補助金は、都道府県を選んでも表示されます。複数県が対象の補助金（「茨城県 / 栃木県 / …」）も、その中に選んだ県が含まれていれば表示されます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 従業員数を入れると何が変わりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 「300名以下」のように人数の上限がある補助金のうち、入力した人数を超えるものが外れます。人数の記載が無いものは落としません（制限が無い可能性があるためです）。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 補助金をもらった後の経理はどうすればよいですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 圧縮記帳・受贈益の計上時期・消費税の扱いという論点があります。補助金の経理・税務で条文にあたって説明しています。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 申請を手伝ってもらえますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. していません。報酬を得て官公署に提出する書類を業として作成することは行政書士の業務です（行政書士法1条の3・19条）。このサイトは情報の提供までです。"
+      }
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<style>
+  .hj-list { margin-top: 14px; }
+  .hj-item { border: 1px solid var(--line, #e3e8ee); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; background: #fff; }
+  .hj-item h3 { font-size: 15px; margin: 0 0 6px; line-height: 1.5; }
+  .hj-meta { font-size: 13px; color: var(--sub, #667); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .hj-days { font-weight: 700; }
+  .hj-soon { color: #c0392b; }
+  .hj-warn { background: var(--warn-bg, #fffdf7); border: 1px solid var(--warn-line, #f0d9a0); border-radius: 8px; padding: 10px 12px; margin: 10px 0; font-size: 13px; }
+</style>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav>
+    <a href="../hojokin/" aria-current="page">補助金</a>
+    <a href="../#tools">ツール</a>
+    <a href="../column/">コラム</a>
+    <a href="../toushi/">資産形成</a>
+  </nav>
+</header>
+<main>
+  <nav class="breadcrumb">ホーム › 補助金の検索</nav>
+  <h1>補助金の検索</h1>
+  <p class="lead">いま公募中の補助金を<b>締切が近い順</b>で探せます。★<b>締切を過ぎたものは表示しません。</b>★<b>会員登録も電話番号も要りません</b>し、こちらから営業の連絡をすることもありません。</p>
+
+  <div class="callout" id="tachiba">
+    <p><b>このページは補助金を「探す」ところまでです。</b>申請の代行も相談の受付もしていません（<a href="#dekinai">理由</a>）。もらった後の<b>経理と税金</b>は別のページにあります → <a href="../hojokin-zeimu/">補助金の経理・税務</a></p>
+  </div>
+
+  <div class="card">
+    <div class="fee-pair">
+      <div>
+        <label for="area">都道府県</label>
+        <select id="area"><option value="">指定しない</option></select>
+        <p class="hint">★「全国」の補助金は、都道府県を選んでも表示されます。</p>
+      </div>
+      <div>
+        <label for="employees">従業員数（自社）</label>
+        <input type="number" id="employees" value="" min="0" step="1" placeholder="例: 20" inputmode="numeric">
+        <p class="hint">人数の上限がある補助金だけを絞ります。</p>
+      </div>
+    </div>
+    <div class="fee-pair">
+      <div>
+        <label for="maxdays">締切まで</label>
+        <select id="maxdays">
+          <option value="">指定しない</option>
+          <option value="7">7日以内</option>
+          <option value="14">14日以内</option>
+          <option value="30">30日以内</option>
+          <option value="90">90日以内</option>
+        </select>
+      </div>
+      <div>
+        <label for="minamount">補助上限額がこれ以上（円）</label>
+        <input type="number" id="minamount" value="" min="0" step="100000" placeholder="例: 1000000" inputmode="numeric">
+      </div>
+    </div>
+    <div class="fee-pair">
+      <div>
+        <label for="keyword">キーワード（名称に含む）</label>
+        <input type="text" id="keyword" value="" placeholder="例: 省エネ">
+      </div>
+      <div>
+        <label for="sort">並べ替え</label>
+        <select id="sort">
+          <option value="deadline" selected>締切が近い順</option>
+          <option value="amount">補助上限額が大きい順</option>
+        </select>
+      </div>
+    </div>
+    <div class="result" id="result" aria-live="polite"></div>
+  </div>
+
+  <div class="toc-title">目次</div>
+  <ul class="toc">
+    <li><a href="#shimekiri">締切を過ぎたものを出さない</a></li>
+    <li><a href="#moura">「すべての補助金」とは書きません</a></li>
+    <li><a href="#dekinai">このページがしないこと</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ul>
+
+  <h2 id="shimekiri">締切を過ぎたものを出さない</h2>
+  <p>補助金の一覧は、放っておくと<b>締切の過ぎたものが「公募中」のまま残ります</b>。このページは表示のたびに今日の日付と突き合わせ、締切を過ぎたものを外しています。<b>当日が締切のものは残します</b>（今日出す人が一番困るため）。</p>
+  <div class="callout">
+    <p>データがいつ取得されたものかも画面に出しています。取得から日が経っていれば、件数より先にそれをお伝えします。<b>締切は動くことがあります</b>（災害等で公募期間が延長された例があります）。応募の前に必ず公式ページで最終確認してください。</p>
+  </div>
+
+  <h2 id="moura">「すべての補助金」とは書きません</h2>
+  <p>データは国の<b>jGrants 公開API</b>から取得しています。このAPIは検索キーワードが必須で、「全件ください」という要求ができません。そのため<b>50語の検索語で集めた和集合</b>を掲載しています。</p>
+  <div class="callout">
+    <p>実測では50語で件数が止まり、最後の20語では1件も増えませんでした。ただしこれは<b>今の語彙で増えない</b>という意味でしかなく、新しい制度の固有名は取りこぼす可能性があります。<b>網羅は約束しません。</b>自治体独自の補助金など、jGrants に載っていないものもあります。</p>
+  </div>
+
+  <h2 id="dekinai">このページがしないこと</h2>
+  <div class="callout" id="dekinai-note">
+    <p>このサイトは広告だけで運営しています。<b>申請の支援で収益を得ていません。</b>そのため次はしていません。</p>
+    <ul>
+      <li><b>申請書類の作成・代行</b> — 報酬を得て官公署に提出する書類を業として作成することは行政書士の業務です（行政書士法1条の3・19条）</li>
+      <li><b>「あなたはこれが使えます」という判定</b> — 対象になるかは公募要領を読んで決まります。ここでは条件での絞り込みだけです</li>
+      <li><b>相談の受付・専門家への送客</b> — 会員登録も電話番号の入力もありません。営業の連絡はしません</li>
+      <li><b>締切や要件の保証</b> — 公式ページが正です。必ずそちらでご確認ください</li>
+    </ul>
+  </div>
+
+<section class="faq">
+<h2 id="faq">よくある質問</h2>
+<h3>Q. 会員登録や電話番号の入力は必要ですか？</h3>
+<p>A. <b>いりません。</b>入力した条件はブラウザの外へ出ませんし、こちらから営業の連絡をすることもありません。このサイトは広告だけで運営しています。</p>
+
+<h3>Q. 締切が過ぎた補助金も出てきますか？</h3>
+<p>A. <b>出しません。</b>表示のたびに今日の日付と突き合わせて外しています。ただし<b>当日が締切のものは残します</b>。締切の記載が無いものは落とさず、並びの最後に置いています。</p>
+
+<h3>Q. ここに載っていない補助金もありますか？</h3>
+<p>A. <b>あります。</b>データ元の jGrants 公開APIは検索キーワードが必須で「全件」を要求できないため、50語の和集合で近似しています。自治体が独自に出しているものなど、jGrants に載っていない補助金もあります。<b>網羅は約束していません。</b></p>
+
+<h3>Q. 都道府県を選ぶと、全国の補助金は消えますか？</h3>
+<p>A. <b>消えません。</b>「全国」が対象の補助金は、都道府県を選んでも表示されます。複数県が対象の補助金（「茨城県 / 栃木県 / …」）も、その中に選んだ県が含まれていれば表示されます。</p>
+
+<h3>Q. 従業員数を入れると何が変わりますか？</h3>
+<p>A. 「300名以下」のように<b>人数の上限がある補助金</b>のうち、入力した人数を超えるものが外れます。人数の記載が無いものは<b>落としません</b>（制限が無い可能性があるためです）。</p>
+
+<h3>Q. 補助金をもらった後の経理はどうすればよいですか？</h3>
+<p>A. <b>圧縮記帳・受贈益の計上時期・消費税の扱い</b>という論点があります。<a href="../hojokin-zeimu/">補助金の経理・税務</a>で条文にあたって説明しています。</p>
+
+<h3>Q. 申請を手伝ってもらえますか？</h3>
+<p>A. <b>していません。</b>報酬を得て官公署に提出する書類を業として作成することは行政書士の業務です（行政書士法1条の3・19条）。このサイトは情報の提供までです。</p>
+</section>
+
+<h2 id="shutten">出典</h2>
+<p class="note" id="shutten-note"><b>出典：Jグランツ（編集・加工しています）</b>　データは<a href="https://www.jgrants-portal.go.jp/" rel="nofollow">jGrants</a>（デジタル庁）の<a href="https://developers.digital.go.jp/documents/jgrants/api/" rel="nofollow">公開API</a>から取得し、当サイトで絞り込み・並べ替えができる形に加工しています。<a href="https://fs2.jgrants-portal.go.jp/API%E5%88%A9%E7%94%A8%E8%A6%8F%E7%B4%84.pdf" rel="nofollow">Web-API利用規約</a>に基づく表示です。取得日時は上の結果欄に出しています。<b>各補助金の正式な内容・締切は、必ず公式ページでご確認ください。</b>行政書士法の条文は <a href="https://laws.e-gov.go.jp/law/326AC1000000004" rel="nofollow">e-Gov法令検索</a>（1条の3・19条）によります。</p>
+
+<section class="faq rel-block">
+<h2>関連する解説</h2>
+<!--rel:S--><ul class="rel-list"><li><a href="../column/nenmatsu-chosei-kakikata/">年末調整の書き方｜令和8年分・4種類の書類はどの欄に何を書くか</a><span class="rel-desc">令和8年分の年末調整で会社に出す書類は4種類。扶養控除等申告書・基礎控除申告書・保険料控除申告書・住宅ローン控除申告書について、誰が出すか、</span></li><li><a href="../column/kogaku-ryoyohi/">高額療養費の自己負担限度額【令和8年】区分は年収でなく標準報酬月額で決まる</a><span class="rel-desc">限度額の区分を決めるのは年収ではなく標準報酬月額。報酬月額が1円違うだけで等級が上がり、医療費100万円のときの自己負担が87,430円から</span></li><li><a href="../column/ikuji-kyugyo-kyufukin/">育児休業給付金はいくら？67%＋13%の計算と「手取り10割」の条件</a><span class="rel-desc">育児休業給付金は賃金日額の67%（181日目以降50%）。出生後休業支援給付金13%を足すと80%＝手取り10割相当だが、母親側はこの13%</span></li><li><a href="../column/shitsugyo-hoken-keisan/">失業保険はいくらもらえる？計算方法と自己都合・会社都合の違い</a><span class="rel-desc">失業保険の日額は離職理由では1円も変わらない。変わるのは所定給付日数と開始時期で、35歳・月30万・勤続12年なら自己都合756,840円・</span></li><li><a href="../column/saishushoku-teate/">再就職手当はいくらもらえる？計算方法と支給条件【令和8年度】</a><span class="rel-desc">再就職手当＝基本手当日額×支給残日数×60%（残日数が所定給付日数の3分の2以上なら70%）。日額には6,745円の上限があり高給の人ほど削</span></li></ul><!--rel:E-->
+</section>
+</main>
+<footer class="site">
+  掲載内容は取得時点のもので、網羅を約束するものではありません。締切・要件は変更されることがあります。応募の前に必ず公式ページでご確認ください。当サイトは行政書士でも税理士でもなく、申請の支援は行っていません。入力した条件はブラウザの外へ送信されません。<br>
+  © 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script type="module">
+import { filterRows, sortRows, daysLeft, freshness, areaOptions, notStarted, SOURCE_NOTICE }
+  from "../assets/hojokin_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+// ★補助金のデータは非同期で届く。**届く前に一覧を描かない**（0件と見分けがつかなくなる）。
+let D = null;
+const hojokinReady = fetch("../assets/hojokin_jgrants.json")
+  .then((r) => r.json()).then((d) => {
+    D = d;
+    for (const a of areaOptions(D.subsidies)) {
+      const o = document.createElement("option");
+      o.value = a; o.textContent = a;
+      $("area").appendChild(o);
+    }
+    return true;
+  }).catch(() => false);
+
+const LIMIT = 60;   // ★1画面に出す上限。全部描くと重い。省いた件数は必ず言う
+
+async function render() {
+  const arrived = await hojokinReady;
+  // ★.result は style.css で既定 display:none。表示に切り替えないと画面に何も出ない。
+  $("result").style.display = "block";
+  if (!arrived || !D) {
+    $("result").innerHTML = '<p class="hint">補助金のデータを<b>読み込めませんでした</b>。'
+      + '通信環境をご確認のうえ再読み込みしてください。読み込めていない状態では一覧を出しません。</p>';
+    return;
+  }
+  const today = new Date();
+  const f = freshness(D._meta, today);
+  const cond = {
+    area: $("area").value, employees: $("employees").value,
+    maxDays: $("maxdays").value, minAmount: $("minamount").value,
+    keyword: $("keyword").value,
+  };
+  const hit = sortRows(filterRows(D.subsidies, cond, today), $("sort").value, today);
+  const shown = hit.slice(0, LIMIT);
+
+  const items = shown.map((r) => {
+    const n = daysLeft(r, today);
+    const soon = n !== null && n <= 7;
+    const yet = notStarted(r, today);
+    return `<div class="hj-item">
+      <h3><a href="${esc(r.front_subsidy_detail_page_url)}" rel="nofollow noopener" target="_blank">${esc(r.title)}</a></h3>
+      <div class="hj-meta">
+        <span class="hj-days${soon ? " hj-soon" : ""}">${n === null ? "締切の記載なし"
+          : n === 0 ? "本日締切" : `あと${n}日`}</span>
+        ${yet ? '<span>受付開始前</span>' : ""}
+        <span>${esc(r.target_area_search) || "地域の記載なし"}</span>
+        ${Number.isFinite(Number(r.subsidy_max_limit)) && Number(r.subsidy_max_limit) > 0
+          ? `<span>上限 ${yen(r.subsidy_max_limit)}</span>` : ""}
+        ${r.subsidy_rate ? `<span>補助率 ${esc(r.subsidy_rate)}</span>` : ""}
+        ${r.target_number_of_employees ? `<span>${esc(r.target_number_of_employees)}</span>` : ""}
+      </div>
+    </div>`;
+  }).join("");
+
+  $("result").innerHTML = `
+    ${f.stale ? `<div class="hj-warn" id="stale">★<b>${esc(f.text)}</b>。締切はその後に変わっている可能性があります。応募の前に必ず公式ページでご確認ください。</div>` : ""}
+    <div class="big"><span id="count">${hit.length}</span>件</div>
+    <div class="hint" id="fresh">${esc(f.text)}（${esc(D._meta.captured_jst || "")}）／${esc(D._meta.attribution || SOURCE_NOTICE)}</div>
+    ${hit.length > LIMIT ? `<div class="hint" id="omitted">★このうち${LIMIT}件を表示しています（残り${hit.length - LIMIT}件は条件を絞ってください）。</div>` : ""}
+    <div class="hj-list">${items || '<p class="hint">条件に合う補助金がありませんでした。条件をゆるめてみてください。</p>'}</div>
+    <div class="note" style="margin-top:12px">
+      ★掲載は取得時点のもので、<b>網羅を約束するものではありません</b>（データ元のAPIが全件取得に対応していないため、50語の検索の和集合です）。
+      締切・要件は変更されることがあります。<b>応募の前に必ず公式ページでご確認ください。</b>
+      当サイトは申請の支援を行っていません。
+    </div>`;
+}
+
+for (const id of ["area", "employees", "maxdays", "minamount", "keyword", "sort"]) {
+  $(id).addEventListener("input", render);
+  $(id).addEventListener("change", render);
+}
+render();
+</script>
+</body>
+</html>

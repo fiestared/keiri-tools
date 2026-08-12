@@ -18,6 +18,13 @@
  * 前提（ページにも明記する）: 東京都・40歳・独身・扶養なし・給与収入のみ・
  * 社会保険料は協会けんぽ東京都の料率による概算。令和8年分の所得。
  */
+// ★ナビは tools/gen_nav.mjs が唯一の出所。ここに直書きすると、この生成器を
+//   流すたびにナビが古い形へ戻る（X導線で同じ事故が起きている。下のコメント参照）。
+import { buildHeader } from './gen_nav.mjs';
+
+// ★年収別ページはすべて nenshu/<slug>/ で深さが同じなので、ナビは1つで足りる。
+//   代表の slug で作る（現在地の印は「ツール」も「コラム」も付かない階層）。
+const NENSHU_HEADER = buildHeader('nenshu/x');
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
@@ -98,7 +105,7 @@ ${noindex ? '<meta name="googlebot" content="noindex, follow">' : ""}
      crossorigin="anonymous"></script>
 </head>
 <body>
-<header class="site"><a href="../../">経理ミニツールズ</a><nav><a href="../../#tools">ツール</a><a href="../../column/">コラム</a></nav></header>
+${NENSHU_HEADER}
 <main>`;
 
 // ★X への導線をここに持つ（2026-08-06）。

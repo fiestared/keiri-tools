@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>補助金の経理・税務｜圧縮記帳の計算と仕訳（42条・43条・44条の分かれ目）</title>
+<meta name="description" content="補助金をもらったときの圧縮限度額・仕訳・減価償却を計算します。★分かれ目は「返還を要しないことが期末までに確定したか」。確定していなければ圧縮記帳ではなく特別勘定です（法人税法43条）。★圧縮記帳は非課税の制度ではなく課税の繰延べです。★直接減額方式と積立金方式で減価償却費が変わります。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/hojokin-zeimu/">
+<!-- ogp:auto -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="補助金の経理・税務｜圧縮記帳の計算と仕訳（42条・43条・44条の分かれ目）">
+<meta property="og:description" content="補助金をもらったときの圧縮限度額・仕訳・減価償却を計算します。★分かれ目は「返還を要しないことが期末までに確定したか」。確定していなければ圧縮記帳ではなく特別勘定です（法人税法43条）。★圧縮記帳は非課税の制度ではなく課税の繰延べです。★直接減額方式と積立金方式で減価償却費が変わります。登録不要・無料。">
+<meta property="og:url" content="https://keiri-tools.com/hojokin-zeimu/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="経理ミニツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Q. 補助金をもらったら圧縮記帳をすればよいのですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 返還を要しないことが期末までに確定している場合だけです。確定していなければ、圧縮記帳ではなく特別勘定を設けます（法人税法43条1項）。確定した年度に、あらためて圧縮記帳します（44条1項）。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 圧縮記帳をすれば補助金に税金はかからなくなりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. かからなくなるわけではありません。補助金は益金に入り（法人税法22条2項）、圧縮記帳は同額を損金に立てて課税を繰り延べる制度です。圧縮した分だけ以後の減価償却費が小さくなるので、後の年度に課税されます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 直接減額方式と積立金方式はどちらが得ですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 税額の総額は変わりません。違うのは損益計算書の見え方です。直接減額方式は簿価が下がるので減価償却費も下がり、積立金方式は簿価が下がらないので償却費は変わりません（申告調整で処理します）。決算書を金融機関等に見せる場面での見え方が判断材料になります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 補助金が固定資産の取得価額より大きい場合は？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 圧縮限度額は取得価額を超えられません。帳簿価額を減額する処理なので、価額より大きくは減らせないためです。超えた部分はそのまま益金に残ります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 補助金に消費税はかかりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. かかりません（不課税）。対価性が無いためです。ただし多くの交付要綱に「消費税及び地方消費税に係る仕入控除税額」を返還する定めがあり、これは消費税法ではなく補助金側のルールです。要綱をご確認ください。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 補助金はいつ収益に計上しますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 実務上は交付決定の通知を受けた日の属する事業年度が原則で、入金日ではありません。ただし個別の事情により異なることがあるため、このツールでは判定していません。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 個人事業主でも同じですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 条文が別です。所得税にも同趣旨の規定がありますが、要件も異なります。このツールは法人税法42条〜44条を前提にしています。"
+      }
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+</head>
+<body>
+<header class="site">
+  <a class="brand" href="../">経理ミニツールズ</a>
+  <nav>
+    <a href="../hojokin/" aria-current="page">補助金</a>
+    <a href="../#tools">ツール</a>
+    <a href="../column/">コラム</a>
+    <a href="../toushi/">資産形成</a>
+  </nav>
+</header>
+<main>
+  <nav class="breadcrumb">ホーム › 補助金の経理・税務</nav>
+  <h1>補助金の経理・税務</h1>
+  <p class="lead">補助金をもらったときの<b>圧縮限度額・仕訳・減価償却</b>を計算します。★分かれ目は「補助金をもらったか」ではなく<b>「返還を要しないことが期末までに確定したか」</b>です。</p>
+
+  <div class="callout" id="wakaremichi">
+    <p><b>確定していなければ、圧縮記帳ではありません。</b>法人税法43条1項は「返還を要しないことが当該事業年度終了の時までに<b>確定していない場合に限る</b>」として、<b>特別勘定</b>を設ける処理を定めています。「補助金をもらったから圧縮記帳」と進めると、確定していない年度に損金を立てることになります。</p>
+  </div>
+
+  <div class="card">
+    <fieldset id="joken-set">
+      <legend>状況</legend>
+      <label><input type="checkbox" id="kakutei" checked> 返還を要しないことが<b>期末までに確定</b>している</label>
+      <label><input type="checkbox" id="shutoku" checked> 交付の目的に適合した<b>固定資産を期末までに取得・改良</b>した</label>
+      <label><input type="checkbox" id="tokubetsu"> すでに<b>特別勘定</b>を設けている（前期以前に43条で処理した）</label>
+    </fieldset>
+
+    <div class="fee-pair">
+      <div>
+        <label for="hojokin">補助金の額（円）</label>
+        <input type="number" id="hojokin" value="3000000" min="0" step="100000" inputmode="numeric">
+      </div>
+      <div>
+        <label for="shutoku-kagaku">固定資産の取得価額（円）</label>
+        <input type="number" id="shutoku-kagaku" value="10000000" min="0" step="100000" inputmode="numeric">
+      </div>
+    </div>
+
+    <div class="fee-pair">
+      <div>
+        <label for="houshiki">圧縮記帳の方式</label>
+        <select id="houshiki">
+          <option value="chokusetsu" selected>直接減額方式（帳簿価額を減らす）</option>
+          <option value="tsumitate">積立金方式（剰余金の処分で積む）</option>
+        </select>
+      </div>
+      <div>
+        <label for="ritsu">定額法の償却率</label>
+        <input type="number" id="ritsu" value="0.1" min="0" max="1" step="0.001" inputmode="decimal">
+        <p class="hint">耐用年数10年なら 0.100、5年なら 0.200。</p>
+      </div>
+    </div>
+
+    <div class="fee-pair">
+      <div>
+        <label for="tsukisu">事業供用からの月数</label>
+        <input type="number" id="tsukisu" value="12" min="0" max="12" step="1" inputmode="numeric">
+      </div>
+    </div>
+
+    <div class="result" id="result" aria-live="polite"></div>
+  </div>
+
+  <div class="toc-title">目次</div>
+  <ul class="toc">
+    <li><a href="#san-bunki">42条・43条・44条の分かれ目</a></li>
+    <li><a href="#kurinobe">圧縮記帳は非課税ではありません</a></li>
+    <li><a href="#houshiki-setsu">2つの方式で減価償却が変わる</a></li>
+    <li><a href="#shouhizei">消費税の「仕入控除税額の返還」</a></li>
+    <li><a href="#dekinai">このツールが判定しないこと</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ul>
+
+  <h2 id="san-bunki">42条・43条・44条の分かれ目</h2>
+  <div class="scroll-wrap">
+  <table id="bunki-hyo">
+    <tr><th>状況</th><th>条文</th><th>処理</th></tr>
+    <tr><td>返還不要が<b>期末までに確定</b>し、対象資産も取得済み</td><td>法人税法<b>42条</b>1項</td><td>圧縮記帳（直接減額／積立金）</td></tr>
+    <tr><td>返還不要が期末までに<b>確定していない</b></td><td>法人税法<b>43条</b>1項</td><td><b>特別勘定</b>を設けて損金算入</td></tr>
+    <tr><td>特別勘定を持っていて、<b>あとで確定</b>した</td><td>法人税法<b>44条</b>1項</td><td>その確定した日の属する事業年度に圧縮記帳</td></tr>
+  </table>
+  </div>
+  <div class="callout">
+    <p>確定していても、<b>交付の目的に適合した固定資産をまだ取得・改良していなければ</b>42条の圧縮記帳はできません。42条1項は「当該事業年度終了の時までに取得又は改良をしたその交付の目的に適合した固定資産につき」と書いています。</p>
+  </div>
+
+  <h2 id="kurinobe">圧縮記帳は非課税ではありません</h2>
+  <p>補助金は原則としてその事業年度の<b>益金</b>に入ります（法人税法22条2項）。圧縮記帳は、同額を損金に立てて<b>課税を繰り延べる</b>制度です。圧縮した分だけ以後の減価償却費が小さくなるので、後の年度に課税されます。</p>
+  <div class="callout">
+    <p><b>「補助金には税金がかからない」は誤りです。</b>払う時期が動くだけで、税額の総額が消えるわけではありません。</p>
+  </div>
+
+  <h2 id="houshiki-setsu">2つの方式で減価償却が変わる</h2>
+  <p>42条1項は2つの方法を認めています。<b>帳簿価額を損金経理により減額する</b>（直接減額方式）か、<b>積立金として積み立てる</b>（積立金方式）かです。</p>
+  <div class="callout">
+    <p>直接減額方式は簿価が下がるので<b>減価償却費も下がります</b>。積立金方式は簿価が下がらないので償却費は変わらず、積立金の取崩しで申告調整します。<b>税額の総額は同じでも、損益計算書の見え方が変わります</b>（上の計算欄で差額を出しています）。</p>
+  </div>
+
+  <h2 id="shouhizei">消費税の「仕入控除税額の返還」</h2>
+  <p>補助金そのものは対価性が無いので<b>消費税の課税対象外（不課税）</b>です。一方で、補助金を充てて行った課税仕入れの仕入税額控除は原則どおり受けられます。</p>
+  <div class="callout">
+    <p>★多くの補助金の交付要綱には「消費税及び地方消費税に係る仕入控除税額」を確定時に報告し、返還する定めがあります。これは<b>消費税法の規定ではなく、交付要綱に基づく補助金側の返還義務</b>です。金額は課税売上割合・個別対応方式か一括比例配分方式か・補助対象経費のうち課税仕入れの額で変わるため、<b>このツールでは計算しません</b>。交付要綱の条文をご確認ください。</p>
+  </div>
+
+  <h2 id="dekinai">このツールが判定しないこと</h2>
+  <div class="callout" id="dekinai-note">
+    <p>このツールは<b>入力した前提での計算例</b>で、次はしていません。</p>
+    <ul>
+      <li><b>どの分岐に当たるか</b> — 返還不要が確定したかどうかは事実認定です。チェックボックスの入力をそのまま使います</li>
+      <li><b>その補助金が国庫補助金等に当たるか</b> — 42条は「国又は地方公共団体の補助金又は給付金その他政令で定めるこれらに準ずるもの」と定めています</li>
+      <li><b>消費税の仕入控除税額の返還額</b>（上記のとおり交付要綱と申告内容によります）</li>
+      <li><b>個人事業主の場合</b> — 所得税法にも同趣旨の規定がありますが条文も要件も別です</li>
+      <li><b>措置法の圧縮記帳</b>（収用等・特定資産の買換えなど）</li>
+      <li><b>受贈益の計上時期の最終判断</b> — 実務上は交付決定の通知を受けた日の属する事業年度が原則ですが、個別の事情で異なりえます</li>
+    </ul>
+    <p>当サイトは税理士ではありません。実際の処理は顧問の税理士または所轄の税務署にご確認ください。</p>
+  </div>
+
+<section class="faq">
+<h2 id="faq">よくある質問</h2>
+<h3>Q. 補助金をもらったら圧縮記帳をすればよいのですか？</h3>
+<p>A. <b>返還を要しないことが期末までに確定している場合だけです。</b>確定していなければ、圧縮記帳ではなく<b>特別勘定</b>を設けます（法人税法43条1項）。確定した年度に、あらためて圧縮記帳します（44条1項）。</p>
+
+<h3>Q. 圧縮記帳をすれば補助金に税金はかからなくなりますか？</h3>
+<p>A. <b>かからなくなるわけではありません。</b>補助金は益金に入り（法人税法22条2項）、圧縮記帳は同額を損金に立てて<b>課税を繰り延べる</b>制度です。圧縮した分だけ以後の減価償却費が小さくなるので、後の年度に課税されます。</p>
+
+<h3>Q. 直接減額方式と積立金方式はどちらが得ですか？</h3>
+<p>A. <b>税額の総額は変わりません。</b>違うのは損益計算書の見え方です。直接減額方式は簿価が下がるので減価償却費も下がり、積立金方式は簿価が下がらないので償却費は変わりません（申告調整で処理します）。決算書を金融機関等に見せる場面での見え方が判断材料になります。</p>
+
+<h3>Q. 補助金が固定資産の取得価額より大きい場合は？</h3>
+<p>A. 圧縮限度額は<b>取得価額を超えられません</b>。帳簿価額を減額する処理なので、価額より大きくは減らせないためです。超えた部分はそのまま益金に残ります。</p>
+
+<h3>Q. 補助金に消費税はかかりますか？</h3>
+<p>A. <b>かかりません（不課税）。</b>対価性が無いためです。ただし多くの交付要綱に「消費税及び地方消費税に係る仕入控除税額」を返還する定めがあり、これは消費税法ではなく<b>補助金側のルール</b>です。要綱をご確認ください。</p>
+
+<h3>Q. 補助金はいつ収益に計上しますか？</h3>
+<p>A. 実務上は<b>交付決定の通知を受けた日</b>の属する事業年度が原則で、入金日ではありません。ただし個別の事情により異なることがあるため、このツールでは判定していません。</p>
+
+<h3>Q. 個人事業主でも同じですか？</h3>
+<p>A. <b>条文が別です。</b>所得税にも同趣旨の規定がありますが、要件も異なります。このツールは法人税法42条〜44条を前提にしています。</p>
+</section>
+
+<h2 id="shutten">出典</h2>
+<p class="note"><a href="https://laws.e-gov.go.jp/law/340AC0000000034" rel="nofollow">法人税法</a> 42条（国庫補助金等で取得した固定資産等の圧縮額の損金算入＝返還を要しないことが当該事業年度終了の時までに確定した場合に限る／帳簿価額を損金経理により減額する方法・積立金として積み立てる方法）／43条（国庫補助金等に係る特別勘定の金額の損金算入＝確定していない場合に限る）／44条（特別勘定を設けた場合の圧縮額の損金算入）／22条2項（益金の額）。条文は e-Gov 法令API v2 で実読しています（law_revision_id 340AC0000000034_20260723_508AC0000000064・2026-08-12 確認）。補助金を探す場合は <a href="../hojokin/">補助金の検索</a>をご覧ください。</p>
+
+</main>
+<footer class="site">
+  計算結果は入力した前提での試算です。どの分岐に当たるか・その補助金が国庫補助金等に当たるかは判定していません。当サイトは税理士ではありません。実際の処理は顧問の税理士または所轄の税務署にご確認ください。データはブラウザの外へ送信されません。<br>
+  © 経理ミニツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script type="module">
+import { bunki, assyukuGendo, shoukyaku, shiwake, BUNKI } from "../assets/hojokin_zeimu_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+
+// ★条文の分岐データは非同期で届く。**届く前に計算しない**。
+let D = null;
+const zeimuReady = fetch("../assets/hojokin_zeimu_r08.json")
+  .then((r) => r.json()).then((d) => { D = d; return true; }).catch(() => false);
+
+async function render() {
+  const arrived = await zeimuReady;
+  // ★.result は style.css で既定 display:none。表示に切り替えないと画面に何も出ない。
+  $("result").style.display = "block";
+  if (!arrived || !D) {
+    $("result").innerHTML = '<p class="hint">条文の分岐データを<b>読み込めませんでした</b>。'
+      + '通信環境をご確認のうえ再読み込みしてください。読み込めていない状態では計算しません。</p>';
+    return;
+  }
+  const hojokin = Number($("hojokin").value) || 0;
+  const shutokuKagaku = Number($("shutoku-kagaku").value) || 0;
+  const houshiki = $("houshiki").value;
+  const b = bunki({
+    kakuteiZumi: $("kakutei").checked,
+    shutokuZumi: $("shutoku").checked,
+    tokubetsuArii: $("tokubetsu").checked,
+  }, D);
+  const assyuku = b.key === BUNKI.MIKAKUTEI ? { gendo: 0, capped: false }
+    : assyukuGendo(hojokin, shutokuKagaku);
+  const sh = { shutokuKagaku, gendo: assyuku.gendo, shoukyakuRitsu: Number($("ritsu").value) || 0,
+    tsukisu: Number($("tsukisu").value) || 0 };
+  const c = shoukyaku({ ...sh, houshiki: "chokusetsu" });
+  const t = shoukyaku({ ...sh, houshiki: "tsumitate" });
+  const mine = houshiki === "chokusetsu" ? c : t;
+  const rows = shiwake({ bunkiKey: b.key, hojokin, gendo: assyuku.gendo, houshiki });
+
+  const shiwakeHtml = rows.map((r) => `<tr>
+      <td>${r.when}</td>
+      <td>（借）${r.dr} ${yen(r.drAmt)}<br>（貸）${r.cr} ${yen(r.crAmt)}</td>
+      <td class="hint">${r.note}</td></tr>`).join("");
+
+  $("result").innerHTML = `
+    <div class="big" id="jobun">${b.jobun}</div>
+    <div class="hint" style="margin-bottom:10px" id="shori">${b.shori}</div>
+    <table class="res">
+      <tr><th>条文の要件</th><td id="youken">${b.youken}</td></tr>
+      ${b._note ? `<tr><th>注意</th><td id="bunki-note">${b._note}</td></tr>` : ""}
+      ${b.key === BUNKI.MIKAKUTEI ? "" : `
+      <tr><th>圧縮限度額</th><td><b id="gendo">${yen(assyuku.gendo)}</b>${
+        assyuku.capped ? "　★<b>取得価額で頭打ち</b>（帳簿価額より大きくは減らせません）" : ""}</td></tr>
+      <tr><th>償却の基礎になる価額</th><td id="base">${yen(mine.base)}（${houshiki === "chokusetsu" ? "圧縮後" : "取得価額のまま"}）</td></tr>
+      <tr><th>当期の減価償却費</th><td><b id="genka">${yen(mine.genka)}</b></td></tr>
+      <tr><th>★もう一方の方式なら</th><td id="hikaku">${houshiki === "chokusetsu"
+        ? `積立金方式: 償却の基礎 ${yen(t.base)} ／ 減価償却費 ${yen(t.genka)}`
+        : `直接減額方式: 償却の基礎 ${yen(c.base)} ／ 減価償却費 ${yen(c.genka)}`} — 当期の差 <b>${yen(Math.abs(t.genka - c.genka))}</b></td></tr>`}
+    </table>
+    <div class="toc-title" style="margin-top:14px">仕訳</div>
+    <div class="scroll-wrap"><table class="res" id="shiwake-hyo">
+      <tr><th>時点</th><th>仕訳</th><th>注意</th></tr>${shiwakeHtml}
+    </table></div>
+    <div class="note" style="margin-top:12px">
+      ★<b>圧縮記帳は課税を繰り延べる制度で、非課税にする制度ではありません</b>（法人税法22条2項）。
+      どの分岐に当たるか・その補助金が国庫補助金等に当たるかは判定していません。
+      消費税の仕入控除税額の返還額も計算していません（交付要綱によります）。
+      当サイトは税理士ではありません。
+    </div>`;
+}
+
+for (const id of ["kakutei", "shutoku", "tokubetsu", "hojokin", "shutoku-kagaku", "houshiki", "ritsu", "tsukisu"]) {
+  $(id).addEventListener("input", render);
+  $(id).addEventListener("change", render);
+}
+render();
+</script>
+</body>
+</html>

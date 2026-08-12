@@ -1783,6 +1783,58 @@ const SCENES = [
   { name: "gensen_hyo_hasu", expect: (s) =>
       /100円未満/.test(s.warns || "") && !s.failed },
 
+  // ─── 補助金の検索（jGrants 公開API）───
+  // ★★件数をベタ書きしない。データは毎日変わる（締切が過ぎ、掃引で入れ替わる）。
+  //   固定すると、明日には赤くなる検査になり、誰も直さなくなる。
+  //   ここで固定するのは**不変条件**だけ:
+  //     ・締切を過ぎたものが1件も出ていない（minDay >= 0）＝このツールの看板
+  //     ・締切順に並んでいる
+  //     ・出典表示と編集・加工の明示（jGrants Web-API利用規約の義務）
+  //     ・網羅を約束していないと書いてある（API が全件取得に対応していないため）
+  //     ・データの鮮度を画面に出している
+  { name: "hojokin", expect: (s) =>
+      s.count > 0 && s.items > 0 && s.items <= 60 && s.areaOptions > 10 &&
+      s.minDay >= 0 && s.sorted &&
+      s.attribution && s.henshu && s.saysNotExhaustive && s.freshness && !s.failed },
+  // ★都道府県で絞っても「全国」の補助金は残る。0件になったら絞りすぎか実装の誤り。
+  //   件数は全体より減るが、全国分があるので相当数が残るはず。
+  { name: "hojokin_area", expect: (s) =>
+      s.count > 0 && s.minDay >= 0 && s.sorted && s.attribution && !s.failed },
+  // ★7日以内で絞ったら、表示されている残り日数が全部7日以内であること
+  { name: "hojokin_soon", expect: (s) =>
+      s.days.filter((d) => d !== null).every((d) => d >= 0 && d <= 7) &&
+      s.sorted && s.attribution && !s.failed },
+  // 条件に合わないときは0件。★それでも出典表示と鮮度は出し続ける
+  { name: "hojokin_zero", expect: (s) =>
+      s.count === 0 && s.items === 0 && s.attribution && s.freshness && !s.failed },
+
+  // ─── 補助金の経理・税務（法人税法42条・43条・44条）───
+  // ★★分かれ目は「返還を要しないことが期末までに確定したか」。
+  //   補助金3,000,000・取得価額10,000,000・償却率0.1・12か月。
+  { name: "hojokin_zeimu", expect: (s) =>
+      s.jobun === "法人税法42条1項" && s.gendo === 3000000 &&
+      s.genka === 700000 &&                       // ★直接減額は圧縮後700万で償却
+      s.assyukuShiwake && !s.tokubetsuShiwake && !s.tsumitateShiwake &&
+      s.saysKurinobe && !s.failed },               // ★課税の繰延べだと言っている
+  // ★同じ条件でも積立金方式なら簿価が下がらないので償却費は1,000,000（差300,000）
+  { name: "hojokin_zeimu_tsumitate", expect: (s) =>
+      s.jobun === "法人税法42条1項" && s.genka === 1000000 &&
+      s.tsumitateShiwake && !s.assyukuShiwake && !s.failed },
+  // ★★返還不要が未確定 → 43条の特別勘定。**圧縮記帳の仕訳を出してはいけない**。
+  //   「補助金をもらった＝圧縮記帳」と実装するとここで落ちる。
+  { name: "hojokin_zeimu_mikakutei", expect: (s) =>
+      s.jobun === "法人税法43条1項" && s.gendo === null &&
+      s.tokubetsuShiwake && !s.assyukuShiwake && !s.tsumitateShiwake && !s.failed },
+  // ★確定していても、対象の固定資産を取得していなければ42条では処理できない
+  { name: "hojokin_zeimu_mishutoku", expect: (s) =>
+      s.jobun === "法人税法43条1項" && s.gendo === null && !s.assyukuShiwake && !s.failed },
+  // ★特別勘定を持っていて確定 → 44条。特別勘定の取崩しと圧縮記帳が両方出る
+  { name: "hojokin_zeimu_atode", expect: (s) =>
+      s.jobun === "法人税法44条1項" && s.gendo === 3000000 &&
+      s.tokubetsuShiwake && s.assyukuShiwake && !s.failed },
+  // ★補助金12,000,000 > 取得価額10,000,000 → 取得価額で頭打ち（帳簿価額を負にできない）
+  { name: "hojokin_zeimu_capped", expect: (s) =>
+      s.gendo === 10000000 && s.capped && s.genka === 0 && !s.failed },
   // ─── 役員社宅の賃貸料相当額（所得税基本通達36-40〜36-41）───
   { name: "yakuin_shataku", expect: (s) =>
       s.total === 64327 && s.kazei === 34327 && !s.kazeiNashi && !s.failed },

@@ -4907,6 +4907,100 @@ SCENES.gensen_hyo_kuran = gensenHyoScene({ shiharai: 3000000, nencho: false });
 // ★④欄に100円未満の端数があれば指摘する
 SCENES.gensen_hyo_hasu = gensenHyoScene({ shiharai: 3000000, zeigaku: 50350 });
 
+// ───────── 補助金の検索（jGrants） ─────────
+// ★見るもの: ①締切を過ぎたものが出ない（当日締切は残す）②全国が都道府県で消えない
+//            ③出典表示（規約上の義務）④鮮度の申告
+const hojokinScene = ({ area = '', maxdays = '', keyword = '', employees = '' } = {}) => async () => {
+  const doc = await open("/docs/hojokin/");
+  await waitFor(() => doc.querySelectorAll("#area option").length > 1, "都道府県の選択肢");
+  if (area) set(doc, "area", area);
+  if (maxdays) set(doc, "maxdays", maxdays);
+  if (keyword) set(doc, "keyword", keyword);
+  if (employees) set(doc, "employees", String(employees));
+  await waitFor(() => /件|読み込めませんでした/.test(text(doc, "result")), "件数");
+  const body = text(doc, "result");
+  const num = (id) => {
+    const el = doc.getElementById(id);
+    const m = el && el.textContent.match(/([\d,]+)/);
+    return m ? Number(m[1].replace(/,/g, "")) : null;
+  };
+  // ★画面に出ている「あとN日」を全部読んで、負のものが無いことを確かめる
+  const days = [...doc.querySelectorAll(".hj-days")].map((e) => {
+    const t = e.textContent.trim();
+    if (/本日締切/.test(t)) return 0;
+    const m = t.match(/あと(\d+)日/);
+    return m ? Number(m[1]) : null;
+  });
+  return {
+    area, maxdays, keyword,
+    count: num("count"),
+    items: doc.querySelectorAll(".hj-item").length,
+    areaOptions: doc.querySelectorAll("#area option").length,
+    days,
+    minDay: days.filter((d) => d !== null).length ? Math.min(...days.filter((d) => d !== null)) : null,
+    sorted: days.filter((d) => d !== null).every((d, i, a) => i === 0 || a[i - 1] <= d),
+    // ★出典表示（jGrants Web-API利用規約の義務）
+    attribution: /出典：Jグランツ/.test(body),
+    henshu: /編集|加工/.test(body),
+    // ★網羅を約束していないことを言っているか
+    saysNotExhaustive: /網羅を約束/.test(body),
+    freshness: /取得したデータです/.test(body),
+    failed: /読み込めませんでした/.test(body),
+  };
+};
+SCENES.hojokin = hojokinScene({});
+// ★都道府県を選んでも「全国」が消えないこと（消すと全国の補助金を取りこぼす）
+SCENES.hojokin_area = hojokinScene({ area: '東京都' });
+// ★7日以内で絞る
+SCENES.hojokin_soon = hojokinScene({ maxdays: '7' });
+// 条件に合わないとき
+SCENES.hojokin_zero = hojokinScene({ keyword: 'ぜったいに存在しない語' });
+
+// ───────── 補助金の経理・税務（圧縮記帳） ─────────
+// ★見るもの: 42条/43条/44条の分岐と、取得価額での頭打ち、2方式の減価償却の差
+const hojokinZeimuScene = ({ kakutei = true, shutoku = true, tokubetsu = false,
+                             hojokin = 3000000, kagaku = 10000000,
+                             houshiki = 'chokusetsu' } = {}) => async () => {
+  const doc = await open("/docs/hojokin-zeimu/");
+  check(doc, "kakutei", kakutei);
+  check(doc, "shutoku", shutoku);
+  check(doc, "tokubetsu", tokubetsu);
+  set(doc, "hojokin", String(hojokin));
+  set(doc, "shutoku-kagaku", String(kagaku));
+  set(doc, "houshiki", houshiki);
+  await waitFor(() => /法人税法|読み込めませんでした/.test(text(doc, "result")), "条文の判定");
+  const body = text(doc, "result");
+  const yenId = (id) => {
+    const el = doc.getElementById(id);
+    if (!el) return null;
+    const m = el.textContent.match(/([\d,]+)/);
+    return m ? Number(m[1].replace(/,/g, "")) : null;
+  };
+  return {
+    kakutei, shutoku, tokubetsu, hojokin, kagaku, houshiki,
+    jobun: doc.getElementById("jobun")?.textContent?.trim() || null,
+    gendo: yenId("gendo"),
+    genka: yenId("genka"),
+    capped: /取得価額で頭打ち/.test(body),
+    // ★特別勘定の仕訳が出ているか（未確定なら圧縮の仕訳を出してはいけない）
+    tokubetsuShiwake: /国庫補助金等特別勘定/.test(body),
+    assyukuShiwake: /固定資産圧縮損/.test(body),
+    tsumitateShiwake: /圧縮積立金/.test(body),
+    saysKurinobe: /繰り延べ|繰延/.test(body),
+    failed: /読み込めませんでした/.test(body),
+  };
+};
+SCENES.hojokin_zeimu = hojokinZeimuScene({});
+SCENES.hojokin_zeimu_tsumitate = hojokinZeimuScene({ houshiki: 'tsumitate' });
+// ★返還不要が未確定 → 43条の特別勘定（圧縮記帳ではない）
+SCENES.hojokin_zeimu_mikakutei = hojokinZeimuScene({ kakutei: false });
+// ★確定していても資産未取得なら42条では処理できない
+SCENES.hojokin_zeimu_mishutoku = hojokinZeimuScene({ shutoku: false });
+// ★特別勘定を持っていて確定 → 44条
+SCENES.hojokin_zeimu_atode = hojokinZeimuScene({ tokubetsu: true });
+// ★補助金が取得価額を超える → 取得価額で頭打ち
+SCENES.hojokin_zeimu_capped = hojokinZeimuScene({ hojokin: 12000000 });
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPage };
