@@ -1795,7 +1795,11 @@ const SCENES = [
   { name: "hojokin", expect: (s) =>
       s.count > 0 && s.items > 0 && s.items <= 60 && s.areaOptions > 10 &&
       s.minDay >= 0 && s.sorted &&
-      s.attribution && s.henshu && s.saysNotExhaustive && s.freshness && !s.failed },
+      s.attribution && s.henshu && s.saysNotExhaustive && s.freshness &&
+      // ★jGrants に無い2系統が出ていること（これが無いと外部を取る意味が消える）
+      s.schedRows > 5 && s.koyouLinks > 20 &&
+      // ★公募スケジュールは受付中が上・終了が下
+      s.schedOrder && !s.failed },
   // ★都道府県で絞っても「全国」の補助金は残る。0件になったら絞りすぎか実装の誤り。
   //   件数は全体より減るが、全国分があるので相当数が残るはず。
   // ★★県で絞って0件にならないこと。2026-08-12 に、件数バッジの処理が

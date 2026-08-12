@@ -4947,6 +4947,17 @@ const hojokinScene = ({ area = '', maxdays = '', keyword = '', employees = '' } 
     areaValuesClean: [...doc.querySelectorAll('#area option')]
       .every((o) => o.value === '' || /^[^（(]+$/.test(o.value)),
     // 実際に県で絞ったときに0件にならないか（valueが壊れると全滅する）
+    // ★公募スケジュール: 受付中が上・終了が下（いま出せるものを先に見せる）
+    schedOrder: (() => {
+      const rows = [...doc.querySelectorAll('#hj-sched-body tr')].slice(1);
+      const owari = rows.map((t) => /終了/.test(t.cells[1] ? t.cells[1].textContent : ''));
+      // 一度 true になったあとに false が出たら並びが崩れている
+      let seen = false;
+      for (const o of owari) { if (o) seen = true; else if (seen) return false; }
+      return rows.length > 0;
+    })(),
+    schedRows: doc.querySelectorAll('#hj-sched-body tr').length,
+    koyouLinks: doc.querySelectorAll('#hj-koyou-body a').length,
     // ★出典表示（jGrants Web-API利用規約の義務）
     attribution: /出典：Jグランツ/.test(body),
     henshu: /編集|加工/.test(body),

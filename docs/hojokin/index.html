@@ -471,15 +471,22 @@ async function paintSource(url, boxId, countId, build) {
 // 国の主要な補助金の公募スケジュール（ミラサポplus）
 paintSource("../assets/hojokin_schedule.json", "hj-sched-body", "hj-sched-n", (d) => {
   if (!Array.isArray(d.schedule) || !d.schedule.length) return '';
-  const rows = d.schedule.map((r) => {
+  // ★いま応募できるものを上に。「第23次受付終了」は下げる。
+  //   次回日程は公式にも未定なので書けない（書けないことは書かない）が、
+  //   並び順なら「いま出せるもの」を先に見せられる。
+  const owariP = (r) => /終了/.test(r.period);
+  const sorted = [...d.schedule].sort((a, b) => (owariP(a) ? 1 : 0) - (owariP(b) ? 1 : 0));
+  const openN = sorted.filter((r) => !owariP(r)).length;
+  const rows = sorted.map((r) => {
     // ★「第23次受付終了」「随時受付中」も原文のまま出す（日付に潰さない）
     const owari = /終了/.test(r.period);
     return `<tr>
       <td>${r.url ? `<a href="${esc(r.url)}" rel="nofollow noopener" target="_blank">${esc(r.name)}</a>` : esc(r.name)}</td>
       <td${owari ? ' class="hint"' : ''}>${esc(r.period)}</td></tr>`;
   }).join('');
-  return `<p class="hint">jGrants に載らない制度（デジタル化・AI導入／省力化投資／新事業進出）と、
-    いま公募していない制度の次回日程です。上の検索結果には出てきません。</p>
+  return `<p class="hint">jGrants に載らない制度（デジタル化・AI導入／省力化投資／新事業進出）を含みます。
+    上の検索結果には出てきません。★<b>いま受付中は${openN}件</b>で、
+    受付が終わった回は下に並べています（次回の日程は公式に発表されるまで分かりません）。</p>
     <div class="scroll-wrap"><table class="res">
       <tr><th>補助金</th><th>申請受付期間</th></tr>${rows}</table></div>
     <p class="note">${esc(d._meta.attribution)}　最新の日程は各リンク先の公式ページでご確認ください。</p>`;
