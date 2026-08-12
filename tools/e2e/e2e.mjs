@@ -1798,8 +1798,13 @@ const SCENES = [
       s.attribution && s.henshu && s.saysNotExhaustive && s.freshness && !s.failed },
   // ★都道府県で絞っても「全国」の補助金は残る。0件になったら絞りすぎか実装の誤り。
   //   件数は全体より減るが、全国分があるので相当数が残るはず。
+  // ★★県で絞って0件にならないこと。2026-08-12 に、件数バッジの処理が
+  //   option.value まで書き換えたせいで「北海道（124）」が value になり、
+  //   データ側の「北海道」と一致せず**全県で0件**になっていた（本番で発生）。
+  //   count>0 と areaValuesClean の両方で押さえる。
   { name: "hojokin_area", expect: (s) =>
-      s.count > 0 && s.minDay >= 0 && s.sorted && s.attribution && !s.failed },
+      s.count > 0 && s.areaValuesClean &&
+      s.minDay >= 0 && s.sorted && s.attribution && !s.failed },
   // ★7日以内で絞ったら、表示されている残り日数が全部7日以内であること
   { name: "hojokin_soon", expect: (s) =>
       s.days.filter((d) => d !== null).every((d) => d >= 0 && d <= 7) &&

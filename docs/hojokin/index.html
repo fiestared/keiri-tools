@@ -348,14 +348,13 @@ function updateFacets(cond, today) {
     input.closest('label').querySelector('.hj-facet').textContent = `(${n})`;
     input.disabled = n === 0 && !input.checked;
   }
-  const selected = $("area").value;
-  for (const option of $("area").options) {
-    const value = option.value;
-    const n = filterRows(D.subsidies, { ...cond, area: value }, today).length;
-    const label = value === '' ? '指定しない' : value === '全国' ? '全国対象のみ' : value;
-    option.textContent = `${label}（${n}）`;
-  }
-  $("area").value = selected;
+  // ★都道府県のセレクトに件数バッジを出さない（2026-08-12 に削除）。
+  //   理由は2つ:
+  //   ① 47県ぶんの括弧つき数字は、自分の県を目で探すときの妨げになる（ユーザー指摘）
+  //   ② ★実装が option.value まで書き換えていて、2回目の描画で
+  //      value が「北海道（124）」になり、データ側の「北海道」と一致せず
+  //      **都道府県で絞り込めなくなっていた**（本番で実測）。
+  //      表示のためにデータの識別子を書き換えてはいけない。
 }
 
 function itemHTML(r, today) {

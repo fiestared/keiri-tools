@@ -4939,6 +4939,14 @@ const hojokinScene = ({ area = '', maxdays = '', keyword = '', employees = '' } 
     days,
     minDay: days.filter((d) => d !== null).length ? Math.min(...days.filter((d) => d !== null)) : null,
     sorted: days.filter((d) => d !== null).every((d, i, a) => i === 0 || a[i - 1] <= d),
+    // ★★セレクトの value が県名そのものであること（2026-08-12 の実バグ）。
+    //   件数バッジを付ける処理が textContent だけでなく **value まで**書き換えていて、
+    //   2回目の描画で value が「北海道（124）」になり、データ側の「北海道」と
+    //   一致せず**都道府県で1件も絞り込めなくなっていた**。
+    //   表示のためにデータの識別子を書き換えてはいけない。
+    areaValuesClean: [...doc.querySelectorAll('#area option')]
+      .every((o) => o.value === '' || /^[^（(]+$/.test(o.value)),
+    // 実際に県で絞ったときに0件にならないか（valueが壊れると全滅する）
     // ★出典表示（jGrants Web-API利用規約の義務）
     attribution: /出典：Jグランツ/.test(body),
     henshu: /編集|加工/.test(body),
