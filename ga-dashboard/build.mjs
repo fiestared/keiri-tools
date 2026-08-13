@@ -150,6 +150,19 @@ async function fetchAll() {
       const ymd = `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`;
       hmap.set(`${ymd}|${r.dimensionValues[1].value}`, Number(r.metricValues[0].value));
     }
+
+    // 当日データがどこまで入っているか（＝GA4が公開している最新の分）。
+    // GA4のintradayは実測で1時間以上遅れる（2026-08-13 14:18時点で最新13:01＝77分遅れ）。
+    // これを見ずに現在時刻で切ると、遅れている今日を「完全な先週」と比べることになり
+    // 増減が常に大幅マイナスに出る。比較の締めは必ずこの cutoff に合わせる。
+    const cut = await runReport(token, s.property, {
+      dateRanges: [{ startDate: "today", endDate: "today" }],
+      dimensions: [{ name: "dateHourMinute" }], metrics: [{ name: "sessions" }],
+      orderBys: [{ dimension: { dimensionName: "dateHourMinute" }, desc: true }], limit: 1,
+    });
+    const raw = cut.rows?.[0]?.dimensionValues?.[0]?.value ?? null; // YYYYMMDDHHMM
+    const cutoff = raw ? `${raw.slice(8, 10)}:${raw.slice(10, 12)}` : null;
+    const cutoffHour = raw ? Number(raw.slice(8, 10)) : Number(now.hour);
     // 欠測日（セッション0の日は行ごと返ってこない）を0で埋める
     const days = [];
     for (let i = FETCH_DAYS - 1; i >= 0; i--) {
@@ -162,11 +175,14 @@ async function fetchAll() {
       for (let h = 0; h <= hh; h++) n += hmap.get(`${date}|${String(h).padStart(2, "0")}`) ?? 0;
       return n;
     };
+    // 比較は「今の時刻まで」ではなく「GA4がデータを出しているところまで」で切る。
+    // さらに cutoff の時間帯そのものは今日だけ途中（例: 13:01 なら13時台は1分ぶん）なので、
+    // 完全に経過した時間帯（0〜cutoffHour-1）だけを両日から取る。
+    const lastFull = cutoffHour - 1;
     sites.push({
-      ...s, days,
-      hour: Number(now.hour),
-      todayCum: cumToHour(today, Number(now.hour)),
-      prevWeekCum: cumToHour(addDays(today, -7), Number(now.hour)),
+      ...s, days, cutoff, cutoffHour, cmpHour: lastFull,
+      todayCum: lastFull >= 0 ? cumToHour(today, lastFull) : 0,
+      prevWeekCum: lastFull >= 0 ? cumToHour(addDays(today, -7), lastFull) : 0,
     });
   }
   return { fetchedAt: new Date().toISOString(), today, sites };
@@ -193,7 +209,13 @@ function model(data) {
       const last7 = sum(d.slice(n - 8, n - 1).map((x) => x.sessions));   // 昨日までの7日
       const prev7 = sum(d.slice(n - 15, n - 8).map((x) => x.sessions));  // その前の7日
       const yesterday = d[n - 2], yPrevWeek = d[n - 9];
+      // 取得時刻とデータ末端の差＝GA4の当日データの遅れ（実測で60〜80分ある）
+      const f = jstFields(new Date(data.fetchedAt));
+      const lagMin = s.cutoff
+        ? (Number(f.hour) * 60 + Number(f.minute)) - (Number(s.cutoff.slice(0, 2)) * 60 + Number(s.cutoff.slice(3, 5)))
+        : null;
       return {
+        lagMin: lagMin !== null && lagMin >= 0 ? lagMin : null,
         ...s, shown, last7, prev7,
         yesterday: yesterday.sessions, yesterdayWd: WD[weekdayIdx(yesterday.date)],
         yesterdayPrev: yPrevWeek.sessions,
@@ -296,7 +318,7 @@ function table(site) {
 
 // primary の1サイトだけヒーロー数字（1画面に1つ）を持つ
 function sitePanel(site, primary) {
-  const hh = String(site.hour).padStart(2, "0");
+  const hh = String(site.cmpHour).padStart(2, "0");
   return `
 <section class="panel">
   <header class="phead">
@@ -307,9 +329,11 @@ function sitePanel(site, primary) {
 
   <div class="tiles">
     <div class="tile${primary ? " hero" : ""}">
-      <div class="label">今日 <span class="badge">途中</span></div>
+      <div class="label">今日 <span class="badge">${site.cutoff ? `${esc(site.cutoff)}まで` : "途中"}</span></div>
       <div class="value">${site.today.toLocaleString("ja-JP")}</div>
-      ${delta(site.todayCum, site.prevWeekCum, `先週${esc(site.todayWd)} 0〜${hh}時比`)}
+      ${site.cmpHour >= 0
+        ? delta(site.todayCum, site.prevWeekCum, `先週${esc(site.todayWd)} 0:00〜${hh}:59 比`)
+        : `<span class="delta flat">— <span class="dnote">比較できる時間帯がまだ無い</span></span>`}
     </div>
     <div class="tile">
       <div class="label">昨日（${esc(site.yesterdayWd)}）</div>
@@ -323,6 +347,9 @@ function sitePanel(site, primary) {
     </div>
   </div>
 
+  ${site.cutoff ? `<p class="lag">GA4が当日ぶんを出しているのは <b>${esc(site.cutoff)}</b> まで${
+      site.lagMin !== null ? `（<b>${site.lagMin}分</b>遅れ）` : ""
+    }。それ以降の訪問はまだこの数字に入っていない。取りに行く頻度を上げても、この遅れは縮まらない。</p>` : ""}
   ${chart(site)}
   ${table(site)}
 </section>`;
@@ -401,6 +428,12 @@ h1{font-size:20px; font-weight:650; margin:0; letter-spacing:.01em}
 .delta{font-size:12px; font-weight:600; display:block; margin-top:3px}
 .delta.up{color:var(--up)} .delta.down{color:var(--down)} .delta.flat{color:var(--muted)}
 .dnote{font-weight:400; color:var(--muted)}
+
+.lag{
+  margin:-6px 0 16px; font-size:12.5px; line-height:1.6; color:var(--ink2);
+  border-left:3px solid var(--axis); padding-left:10px;
+}
+.lag b{color:var(--ink); font-variant-numeric:tabular-nums}
 
 .chart{margin:0 0 6px}
 /* 横スクロールはSVGだけに効かせる。figcaption まで一緒に流れると読めなくなる */
