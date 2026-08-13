@@ -52,4 +52,16 @@ assert.ok(
   `年120件の差額 ${annual.toLocaleString("en-US")}円 が本文に無い`,
 );
 
+// 4. リードの逆引き導線が例示している金額が、正本に**実在する**こと
+//    (2026-08-13 追加。Bing実測で「振込手数料 605円」「振込手数料 660円 どこ」= 金額から
+//     銀行を探すクエリが実在したのでリードに導線を置いた。その例示は手打ちなので、
+//     料金改定でその金額が消えると**存在しない金額で読者を呼び込む**ことになる)
+const leadAmount = HTML.match(/この(\d+)円はどこの銀行/)?.[1];
+assert.ok(leadAmount, "リードの「この◯◯円はどこの銀行？」導線が見つからない");
+const allAmounts = new Set(FEES.banks.flatMap((b) => [b.under30k, b.over30k]));
+assert.ok(
+  allAmounts.has(Number(leadAmount)),
+  `リードが例示する ${leadAmount}円 は fee_table.json のどの区分にも無い(改定で消えた金額を例示している)`,
+);
+
 console.log(`all fee article tests passed (${rows.size} banks, ${step} with 30k step)`);
