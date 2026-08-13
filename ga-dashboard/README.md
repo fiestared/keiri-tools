@@ -12,6 +12,11 @@ file:///Users/masahiroyasu/Scripts/keiri-tools/ga-dashboard/index.html
 ブラウザにブックマークしておく。開きっぱなしのタブは65秒ごとに自分で読み直すので、
 放っておいても数字が古いままにはならない。
 
+**旧パス `~/Scripts/ga-dashboard/` もそのまま使える。** 2026-08-13 にこのリポジトリ配下へ
+移した際、既存のブックマークが切れたのでシンボリックリンクを張った（`ls -l ~/Scripts/ga-dashboard`）。
+今後もし置き場を動かすなら、**リンクの張り替えも一緒にやること** — 動かした瞬間に
+ブックマークだけが黙って死ぬ。
+
 ## 更新
 
 launchd `com.masahiro.ga-dashboard` が **1分ごと**に `build.mjs` を回して `index.html` を作り直す。
