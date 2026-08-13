@@ -149,7 +149,13 @@ article h2 { font-size: 21px; margin-top: 44px; padding: 8px 0 8px 12px; border-
 article h3 { font-size: 16.5px; margin-top: 28px; padding-bottom: 4px; border-bottom: 2px dotted var(--line); scroll-margin-top: 16px; }
 /* 本文16px: 読みやすい定番サイトの実測(サルワカ17px・note/Zenn 16px以上)に合わせ15→16px(2026-07-23) */
 article p, article li { font-size: 16px; line-height: 1.95; }
-article a, article b { overflow-wrap: anywhere; }
+/* ★長いURL・法令ID（例 340AC0000000034_20260723_508AC0000000064）は折り返せず、
+   ページ全体を横スクロールさせる。2026-08-13 実測: 出典リストと .note が犯人で、
+   /column/hojokin-shiwake/ は 478px、/gensen-hyo/ は 385px まで横に伸びていた。
+   ★`article` だけに当てると**ツールページ（article を持たない）が漏れる**ので main 全体に当てる。
+   break-word は「収まらないときだけ」折るので、通常の日本語・英単語の見た目は変わらない。 */
+main { overflow-wrap: break-word; }
+main a, main b, main code { overflow-wrap: anywhere; }
 article table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 16px 0; }
 article th, article td { border: 1px solid var(--line); padding: 9px 11px; text-align: left; }
 article th { background: var(--accent-soft); font-weight: 700; }
