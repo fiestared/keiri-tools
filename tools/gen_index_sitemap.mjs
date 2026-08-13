@@ -78,6 +78,7 @@ const ORDER = [
   "sentan-setsubi-dounyu-keikaku", // 先端設備等導入計画 4,400/月 ＋「等」なしの別称 先端設備導入計画 880 ＝クラスタ 5,280
   "miharai-hiyo-miharaikin", // 買掛金 未払金 違い 2,900/月 ＋ 未払金 2,400・未払費用 1,300・未払金 仕訳 1,000・未払金 未払費用 違い 720・未払費用 仕訳 480・未払費用 未払金 違い 210・未払金 とは 50・未払費用 決算 50 ＝クラスタ 9,110
   "urikake-mishunyukin-mishushueki", // 売掛金 9,900/月 ＋ 未収入金 1,900・売掛金 仕訳 1,900・未収金 1,600・未収収益 590・売掛金 未収入金 違い 480・未収入金 仕訳 480・売掛金 とは 390・売掛金 未収金 違い 110・未収収益 仕訳 110・未収入金 とは 70・未収入金 未収収益 違い 40 ＝クラスタ 17,570
+  "tanaoroshi-hyoka-hoho", // 移動平均法 4,400/月 ＋ 棚卸資産 3,600・総平均法 1,600・低価法 1,300・棚卸資産 評価方法 880・最終仕入原価法 880・棚卸 仕訳 480・棚卸資産 評価損 390・棚卸資産 とは 260 ＝クラスタ 13,790
   "furikomi-tesuryo-kanjo-kamoku", // 振込手数料 勘定科目 1,523/月
   "nenmatsu-chosei-itsumade",
   "denchoho-wakariyasuku",
@@ -218,6 +219,7 @@ const CATEGORIES = [
       "maebarai-hiyo",
       "miharai-hiyo-miharaikin",
       "urikake-mishunyukin-mishushueki",
+      "tanaoroshi-hyoka-hoho",
       "shunyu-inshi-warihan", "kashidaore-hikiatekin",
       "ai-keiri-hanjidoka",
       "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "hojokin-shohizei", "assyuku-kicho-houshiki",
