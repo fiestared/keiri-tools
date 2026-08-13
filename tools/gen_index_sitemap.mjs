@@ -63,6 +63,7 @@ const ORDER = [
   "shunyu-inshi-warihan",       // 収入印紙 割印 4,188/月（収入印紙 貼り方 3,426・消印 676 も同記事で受ける）
   "taiyo-nensu",                // 減価償却 耐用年数 2,791/月（耐用年数表 1,861 も同記事で受ける）
   "tsukin-teate-hikazei",       // 通勤手当 非課税 2,791/月
+  "yakuin-hoshu-kimekata",      // 役員報酬 決め方 2,284/月（事前確定届出給与 2,791・定期同額給与 1,015・変更タイミング 550 も同記事で受ける＝クラスタ 6,894）
   "furikomi-tesuryo-kanjo-kamoku", // 振込手数料 勘定科目 1,523/月
   "nenmatsu-chosei-itsumade",
   "denchoho-wakariyasuku",
@@ -194,7 +195,7 @@ const CATEGORIES = [
     slugs: [
       "furikomi-tesuryo-hikaku", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "zengin-format-guide", "eigyobi-kazoekata", "shogaku-genka-shokyaku",
-      "taiyo-nensu",
+      "taiyo-nensu", "yakuin-hoshu-kimekata",
       "shunyu-inshi-warihan", "kashidaore-hikiatekin",
       "ai-keiri-hanjidoka",
       "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "hojokin-shohizei", "assyuku-kicho-houshiki",
