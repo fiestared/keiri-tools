@@ -53,6 +53,7 @@ const ORDER = [
   "shussan-ikuji-ichijikin",    // 出産育児一時金 11,464/月
   "koyou-hokenryo-ritsu",       // 雇用保険料率 11,464/月
   "shakai-hokenryo-kojo",       // 社会保険料控除 9,390/月
+  "shiharai-chosho",            // 支払調書 9,390/月
   "yukyu-fuyo-nissu",           // 有給休暇 付与日数 7,656/月
   "shobyo-teate-kin",           // 傷病手当金 6,260/月
   "zuiji-kaitei",               // 随時改定・月額変更届 4,652/月
@@ -137,7 +138,7 @@ const CATEGORIES = [
       "furusato-nozei-keisan",
       "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin",
       "fuyo-kojo-shinkokusho", "gensen-choshuhyo-mikata", "gensen-zeigakuhyo-mikata",
-      "hoteichosho-goukeihyo", "shakai-hokenryo-kojo", "iryohi-kojo-ikura-kara",
+      "hoteichosho-goukeihyo", "shiharai-chosho", "shakai-hokenryo-kojo", "iryohi-kojo-ikura-kara",
       "taishokukin-zeikin", "fukugyo-20man-kakutei-shinkoku",
     ],
   },
