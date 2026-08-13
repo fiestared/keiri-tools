@@ -56,6 +56,7 @@ const ORDER = [
   "shiharai-chosho",            // 支払調書 9,390/月
   "yukyu-fuyo-nissu",           // 有給休暇 付与日数 7,656/月
   "shobyo-teate-kin",           // 傷病手当金 6,260/月
+  "kashidaore-hikiatekin",      // 貸倒引当金 5,119/月
   "zuiji-kaitei",               // 随時改定・月額変更届 4,652/月
   "kotei-zangyodai",            // 固定残業代 4,188/月
   "kenko-hoken-nini-keizoku",   // 健康保険 任意継続 4,188/月
@@ -192,7 +193,7 @@ const CATEGORIES = [
     slugs: [
       "furikomi-tesuryo-hikaku", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "zengin-format-guide", "eigyobi-kazoekata", "shogaku-genka-shokyaku",
-      "shunyu-inshi-warihan",
+      "shunyu-inshi-warihan", "kashidaore-hikiatekin",
       "ai-keiri-hanjidoka",
       "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "hojokin-shohizei", "assyuku-kicho-houshiki",
       "hojokin-kojin-jigyonushi", "hojokin-asshuku-gendogaku", "hojokin-koteishisan-genka-shokyaku",
