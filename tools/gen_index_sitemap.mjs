@@ -76,6 +76,7 @@ const ORDER = [
   "jigyo-shokei-zeisei",  // 事業承継税制 6,600/月 ＋ 先端設備等導入計画は別・特例事業承継税制 480・事業承継税制 特例措置 140・非上場株式 納税猶予 110 ＝クラスタ 7,330
   "maebarai-hiyo",        // 前払費用 2,400/月 ＋ 短期前払費用 1,600・長期前払費用 1,600・前払費用 消費税 590・前払費用 仕訳 480・前払金 前払費用 違い 70 ＝クラスタ 6,740
   "sentan-setsubi-dounyu-keikaku", // 先端設備等導入計画 4,400/月 ＋「等」なしの別称 先端設備導入計画 880 ＝クラスタ 5,280
+  "miharai-hiyo-miharaikin", // 買掛金 未払金 違い 2,900/月 ＋ 未払金 2,400・未払費用 1,300・未払金 仕訳 1,000・未払金 未払費用 違い 720・未払費用 仕訳 480・未払費用 未払金 違い 210・未払金 とは 50・未払費用 決算 50 ＝クラスタ 9,110
   "furikomi-tesuryo-kanjo-kamoku", // 振込手数料 勘定科目 1,523/月
   "nenmatsu-chosei-itsumade",
   "denchoho-wakariyasuku",
@@ -214,6 +215,7 @@ const CATEGORIES = [
       "jigyo-shokei-zeisei",
       "sentan-setsubi-dounyu-keikaku",
       "maebarai-hiyo",
+      "miharai-hiyo-miharaikin",
       "shunyu-inshi-warihan", "kashidaore-hikiatekin",
       "ai-keiri-hanjidoka",
       "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "hojokin-shohizei", "assyuku-kicho-houshiki",
