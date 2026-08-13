@@ -46,6 +46,25 @@ const CASES = [
     expectRed: true,
   },
   {
+    name: "ツールページの track.js を消す",
+    file: new URL("../docs/yukyu/index.html", import.meta.url).pathname,
+    mutate: (s) => s.replace('<script src="../assets/track.js" defer></script>\n', ""),
+    expectRed: true,
+  },
+  {
+    // ★深さ違いは404になり、コンソール以外どこにも出ない。「語が在る」検査では素通しする方向
+    name: "track.js の相対パスの深さを1つ深くする（404になる＝計測が黙って死ぬ）",
+    file: new URL("../docs/senpou-futan/index.html", import.meta.url).pathname,
+    mutate: (s) => s.replace('src="../assets/track.js"', 'src="../../assets/track.js"'),
+    expectRed: true,
+  },
+  {
+    name: "記事(2階層)の track.js を消す",
+    file: new URL("../docs/column/furikomi-tesuryo-hikaku/index.html", import.meta.url).pathname,
+    mutate: (s) => s.replace('<script src="../../assets/track.js" defer></script>\n', ""),
+    expectRed: true,
+  },
+  {
     name: "免除中のembedのGA4を消しても緑のまま（正しいものを落とさない・規則1）",
     file: new URL("../docs/embed/inshi/index.html", import.meta.url).pathname,
     mutate: (s) => s.replace("<head>", "<head><!-- touched -->"),

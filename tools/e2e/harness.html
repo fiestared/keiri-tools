@@ -5027,6 +5027,78 @@ SCENES.hojokin_zeimu_atode = hojokinZeimuScene({ tokubetsu: true });
 // ★補助金が取得価額を超える → 取得価額で頭打ち
 SCENES.hojokin_zeimu_capped = hojokinZeimuScene({ hojokin: 12000000 });
 
+// ── ツール利用の計測(assets/track.js) ──────────────────────────────────────
+// ★静的な検査(tests/test_measurement_wiring.mjs)が見ているのは
+//   「script タグが在ること」だけで、**イベントが実際に飛ぶかは1行も見ていない**
+//   （AdSenseで踏んだ「配線の存在は配信の証明ではない」と同じ型）。
+//   gtag のローダーは外部ホストなのでE2Eでは読み込まれないが、ページ内インラインの
+//   function gtag(){dataLayer.push(arguments)} は必ず定義されるため、
+//   dataLayer に積まれた実イベントを読めば実ブラウザで送出を確かめられる。
+const gaEvents = (doc) => {
+  const win = doc.defaultView;
+  return Array.from(win.dataLayer || [])
+    .map((a) => Array.from(a))
+    .filter((a) => a[0] === "event")
+    .map((a) => ({ name: a[1], params: a[2] || {} }));
+};
+const gaNames = (doc) => gaEvents(doc).map((e) => e.name);
+
+// 使った(入力→計算)ときに tool_input と tool_result が1回ずつ飛ぶこと
+SCENES.track_used = async () => {
+  const doc = await open("/docs/senpou-futan/");
+  const onOpen = gaNames(doc); // ★開いただけの時点で鳴っていないこと(誤発火の基準線)
+  pickRadio(doc, "method", "sueoki");
+  set(doc, "feeUnder", "110");
+  set(doc, "feeOver", "330");
+  set(doc, "invoice", "50000");
+  click(doc, "calc");
+  await waitFor(() => text(doc, "result").length > 0, "結果の描画");
+  await waitFor(() => gaNames(doc).includes("tool_result"), "tool_result の送出");
+  const ev = gaEvents(doc);
+  return {
+    onOpen,
+    names: gaNames(doc),
+    // 1ページ1回に絞れているか(操作のたびに送ると水増しになり、利用者数が読めなくなる)
+    inputCount: ev.filter((e) => e.name === "tool_input").length,
+    resultCount: ev.filter((e) => e.name === "tool_result").length,
+    tool: (ev.find((e) => e.name === "tool_result") || {}).params.tool,
+  };
+};
+
+// ★規則1の逆側: 「鳴るべきときに鳴る」だけでなく「鳴るべきでないときに鳴らない」を見る。
+//   開いて放置しただけで tool_result が飛ぶなら、それは page_view の別名で計器として無価値
+SCENES.track_idle = async () => {
+  const doc = await open("/docs/senpou-futan/");
+  await sleep(1200); // 自動計算や遅延描画がある場合はこの間に走る
+  return { names: gaNames(doc), resultText: doc.getElementById("result").textContent.trim() };
+};
+
+// 記事 → ツールへの送客が数えられること(内部リンクはGA4の自動計測に出ない)
+SCENES.track_link_click = async () => {
+  const doc = await open("/docs/column/furikomi-tesuryo-hikaku/");
+  const win = doc.defaultView;
+  // ★本文(article内・目次nav外)のリンクを選ぶ。ヘッダのブランドリンクを拾うと
+  //   「ナビが押されたか」を測るだけになる（最初に書いたとき実際に href="../../" を拾った）
+  const link = Array.from(doc.querySelectorAll("article a[href]")).find((el) => {
+    if (el.closest("nav")) return false;
+    const u = new win.URL(el.getAttribute("href"), win.location.href);
+    return u.origin === win.location.origin &&
+      u.pathname.indexOf("/column/") === -1 &&
+      u.pathname !== win.location.pathname &&
+      // 本物のツールページを選ぶ（トップ・案内ページでは送客の検証にならない）
+      u.pathname !== "/docs/" && u.pathname !== "/" &&
+      !/\/(about|privacy|contact)\/?$/.test(u.pathname);
+  });
+  if (!link) throw new Error("記事本文からツールへ出るリンクが1本も無い");
+  // capture で拾う track.js は先に走るので、遷移だけ止めれば送出は観測できる
+  link.addEventListener("click", (e) => e.preventDefault());
+  const href = link.getAttribute("href");
+  link.click();
+  await waitFor(() => gaNames(doc).includes("tool_link_click"), "tool_link_click の送出");
+  const ev = gaEvents(doc).find((e) => e.name === "tool_link_click");
+  return { href, names: gaNames(doc), tool: ev.params.tool, from: ev.params.from };
+};
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPages[0] || null, pages: openedPages };

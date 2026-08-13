@@ -1852,6 +1852,26 @@ const SCENES = [
   // ★賃貸料相当額以上を受け取っていれば給与課税は生じない（このツールの結論そのもの）
   { name: "yakuin_shataku_kazei_nashi", expect: (s) =>
       s.total === 64327 && s.kazei === 0 && s.kazeiNashi && !s.failed },
+
+  // ─── ツール利用の計測（assets/track.js）───
+  // ★noCoverage: これらは「計測が飛ぶか」を見るシーンで、**答えの正しさは検査していない**。
+  //   網羅チェックに数えると「正常条件で正しい答えを出すシーンが1つある」という要求を
+  //   これが肩代わりしてしまい、本物のシーンを消しても緑になる（＝自分で網を薄くする）。
+  { name: "track_used", noCoverage: true, expect: (s) =>
+      // 開いた時点では鳴っていない → 操作して初めて2段が1回ずつ飛ぶ
+      !s.onOpen.includes("tool_input") && !s.onOpen.includes("tool_result") &&
+      s.names.includes("tool_input") && s.names.includes("tool_result") &&
+      s.inputCount === 1 && s.resultCount === 1 &&
+      s.tool === "docs/senpou-futan" },
+  // 開いて放置しただけで結果イベントが飛ぶなら page_view の別名＝計器として無価値（規則1の逆側）
+  { name: "track_idle", noCoverage: true, expect: (s) =>
+      !s.names.includes("tool_result") && !s.names.includes("tool_input") },
+  // 記事→ツールの送客が数えられること（内部リンクはGA4の自動計測に出ない）
+  { name: "track_link_click", noCoverage: true, expect: (s) =>
+      s.names.includes("tool_link_click") &&
+      s.from === "docs/column/furikomi-tesuryo-hikaku" &&
+      typeof s.tool === "string" && s.tool.length > 0 &&
+      s.tool.indexOf("column") === -1 },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────
@@ -1984,7 +2004,8 @@ for (const sc of SCENES.filter((s) => match(s.name))) {
   const ok = !s.error && sc.expect(s);
   // 「正常条件で正しい答えが出た」シーンだけを網羅とみなす(下の coverage 参照)。
   // 配信失敗・遅延を再現するシーンは、壊れたツールでも通ってしまうので数えない
-  const normal = !sc.data404 && !sc.holidays && !sc.slow;
+  // noCoverage は「答えの正しさを見ていないシーン」(計測の検証など)。数えると網が薄くなる
+  const normal = !sc.data404 && !sc.holidays && !sc.slow && !sc.noCoverage;
   // ★シーンが開いたページは全部数える(s.pages)。1シーンが複数ページを開くことがあり
   //   (/hojokin/ の3ページ分割)、最後の1本だけ数えると本体の網羅が黙って消える
   if (ok && normal && s.page) {

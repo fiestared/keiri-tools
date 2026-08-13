@@ -12,6 +12,12 @@
  * /embed/ は**意図的に**広告・GA4を入れない（他サイトに埋め込む配信面。noindex+canonical）。
  * 意図は EXEMPT に理由つきで書く — 「名前で絞る」のではなく「免除に理由を要求する」形にする。
  *
+ * 2026-08-13 に **track.js（ツール利用の計測）** を検査対象に追加した。
+ *   GA4 の page_view は「客が来たか」しか答えず、**ツールが実際に使われたかは測っていなかった**
+ *   （28日で click 9件・file_download 5件だけ＝ツール操作の計器が無い状態）。
+ *   ★相対パスの深さまで見る: `../assets/track.js` を `../../` の階層に書くと **404 になり、
+ *   エラーはコンソールにしか出ないので計測だけが黙って死ぬ**（ページは正常に見える）。
+ *
  * ⚠️ **この検査が緑でも、広告が出ているとは限らない**（2026-07-29に判明）。
  *   ここが見ているのは「AdSenseのコードが在ること」だけ。実際には
  *   **keiri-tools の AdSense審査は 2026-07-22頃に却下されていて、133ページ全部が緑のまま
@@ -21,7 +27,7 @@
  *   ★それでも ADS_CLIENT の要求は外さない: 再申請時に審査対象ページへコードが要るため。
  */
 import { readFileSync, existsSync, readdirSync, statSync } from "node:fs";
-import { join, relative } from "node:path";
+import { join, relative, dirname } from "node:path";
 
 const DOCS = new URL("../docs/", import.meta.url).pathname;
 const GA_ID = "G-E742DSDHPD";
@@ -33,9 +39,15 @@ const EXEMPT = [
     prefix: "embed/",
     reason:
       "他サイトへ埋め込む配信面。広告なし・noindex（親サイト側の計測に任せる設計）。auto-memory keiri-embed-widgets",
-    skip: { ga: true, ads: true },
+    skip: { ga: true, ads: true, track: true },
   },
 ];
+
+/** そのページから見た track.js の正しい相対パス（深さを間違えると404で計測が黙って死ぬ） */
+function expectedTrackPath(rel) {
+  const depth = dirname(rel) === "." ? 0 : dirname(rel).split("/").length;
+  return depth === 0 ? "assets/track.js" : "../".repeat(depth) + "assets/track.js";
+}
 
 function walk(dir, out = []) {
   for (const name of readdirSync(dir)) {
@@ -57,7 +69,7 @@ let checked = 0;
 for (const { path, rel } of pages) {
   const raw = readFileSync(path, "utf8");
   const ex = EXEMPT.find((e) => rel.startsWith(e.prefix));
-  const want = { ga: !ex?.skip.ga, ads: !ex?.skip.ads, canon: true };
+  const want = { ga: !ex?.skip.ga, ads: !ex?.skip.ads, canon: true, track: !ex?.skip.track };
   // ★GA_ID と "gtag/js" を**別々に**探すと素通しする（2026-07-27 の壊しテストで露呈・規則3）:
   //   ローダーの id を消しても gtag('config','G-…') 側に同じIDが残るので、両方の条件が別個に成立してしまう。
   //   → ローダーは「gtag/js?id=<ID>」という**1つの文字列**として要求し、config呼び出しも別に要求する。
@@ -67,15 +79,29 @@ for (const { path, rel } of pages) {
       new RegExp(`gtag\\(\\s*['"]config['"]\\s*,\\s*['"]${GA_ID}['"]`).test(raw),
     ads: raw.includes(ADS_CLIENT),
     canon: /rel="canonical"/.test(raw),
+    // ★「track.js という語が在る」では見ない。**そのページから届く深さの src** として要求する
+    //   （深さ違いは404になり、計測だけが黙って死ぬ。ページは正常に見えるので気づけない）
+    track: raw.includes(`<script src="${expectedTrackPath(rel)}"`),
   };
-  for (const key of ["ga", "ads", "canon"]) {
+  for (const key of ["ga", "ads", "canon", "track"]) {
     if (!want[key]) continue;
     checked++;
     if (!has[key]) {
-      const label = { ga: "GA4(gtag)", ads: "AdSense", canon: "canonical" }[key];
+      const label = {
+        ga: "GA4(gtag)",
+        ads: "AdSense",
+        canon: "canonical",
+        track: `ツール利用の計測 <script src="${expectedTrackPath(rel)}" defer></script>`,
+      }[key];
       failures.push(`/${rel.replace(/index\.html$/, "")} … ${label} が無い`);
     }
   }
+}
+
+// 実体が無ければ全ページの src が404になる（配線だけ緑になっても意味が無い）
+if (!existsSync(join(DOCS, "assets/track.js"))) {
+  console.error("✗ docs/assets/track.js が存在しない＝全ページの計測が404");
+  process.exit(1);
 }
 
 // 通るべきものが通ることの確認（規則1）: 免除が全ページに効いてしまっていないか
