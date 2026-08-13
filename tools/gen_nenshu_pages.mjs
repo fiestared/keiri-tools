@@ -115,7 +115,7 @@ ${NENSHU_HEADER}
 //   x-link:auto の印は gen_x_link.mjs が「既に入っている」と判定するための目印なので必ず残す
 //   （消すと二重に挿入される）。
 const FOOT = `</main>
-<footer class="site"><div><a href="../../about/">運営者</a>／<a href="../../privacy/">プライバシー</a>／<a href="../../contact/">お問い合わせ</a></div><div class="copy">© 経理ミニツールズ</div>
+<footer class="site"><div><a href="../../about/">運営者</a>／<a href="../../privacy/">プライバシー</a>／<a href="../../contact/">お問い合わせ</a></div><div class="copy">© 税金・経理・補助金ツールズ</div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
 </footer>
 </body>
@@ -271,7 +271,7 @@ for (const f of rows) {
 
 // 一覧ページ（回遊とクロールの入口。sitemap にも載せる）
 const indexHtml = HEAD(
-  "年収別の手取り・住民税の早見表｜経理ミニツールズ",
+  "年収別の手取り・住民税の早見表｜税金・経理・補助金ツールズ",
   "年収200万円から800万円まで25万円刻みで、手取り（社会保険料・住民税を引いた額）と住民税の内訳を計算しました。東京都・40歳・独身の条件で、前後の年収との差も出しています。",
   "https://keiri-tools.com/nenshu/",
   false,   // ★一覧はGoogleにも出す（50行を1枚で比較できる実データ。薄い個別ページとは別物）

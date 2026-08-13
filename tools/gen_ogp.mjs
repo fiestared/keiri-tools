@@ -23,7 +23,7 @@ import { join } from "node:path";
 const DOCS = new URL("../docs/", import.meta.url).pathname;
 const CHECK = process.argv.includes("--check");
 const IMAGE = "https://keiri-tools.com/ogp.png";
-const SITE = "経理ミニツールズ";
+const SITE = "税金・経理・補助金ツールズ";
 
 /** docs 配下の index.html を集める（embed は SNS 共有の対象外なので除く） */
 function pages(dir = DOCS, out = []) {
@@ -49,7 +49,7 @@ for (const file of pages()) {
   if (!canonical) { skipped.push(file.replace(DOCS, "")); continue; }
 
   const rawTitle = html.match(/<title>([\s\S]*?)<\/title>/)?.[1]?.trim() ?? "";
-  // 「〜｜経理ミニツールズ」の接尾辞は og:title では冗長（og:site_name で出す）
+  // 「〜｜税金・経理・補助金ツールズ」の接尾辞は og:title では冗長（og:site_name で出す）
   const title = rawTitle.replace(new RegExp(`[｜|]\\s*${SITE}\\s*$`), "").trim();
   const desc = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? "";
   if (!title || !desc) { skipped.push(file.replace(DOCS, "") + "（title/descriptionが無い）"); continue; }

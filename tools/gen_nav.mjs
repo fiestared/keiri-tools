@@ -76,7 +76,7 @@ export function buildHeader(pageDir) {
     const cur = isCurrent(pageDir, it.href) ? ' aria-current="page"' : '';
     return `    <a href="${href}"${cur}>${it.label}</a>`;
   }).join('\n');
-  return `<header class="site">\n  <a class="brand" href="${up}">経理ミニツールズ</a>\n  <nav>\n${links}\n  </nav>\n</header>`;
+  return `<header class="site">\n  <a class="brand" href="${up}">税金・経理・補助金ツールズ</a>\n  <nav>\n${links}\n  </nav>\n</header>`;
 }
 
 const HEADER_RE = /<header class="site">[\s\S]*?<\/header>/;
