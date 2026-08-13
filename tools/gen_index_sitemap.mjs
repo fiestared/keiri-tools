@@ -71,6 +71,7 @@ const ORDER = [
                                //   以下この行より上の数値コメントは**旧計器**の値なので、新しい候補と直接比べないこと。
                                //   決算賞与とは 6,600/月・決算賞与 4,400・要件 390・いつ 390・損金算入 260・社会保険料 170・税金 140 ＝クラスタ 12,350
   "kurikoshi-kessonkin",        // 繰越欠損金 3,600/月（期限 1,300・とは 720・何年 480・別表 110・利用制限 40 も同記事で受ける＝クラスタ 6,250）※修正後の計器の値
+  "chinage-sokushin-zeisei",    // 所得拡大促進税制 12,100/月（★旧称のほうが新称の3.4倍多い）＋賃上げ促進税制 3,600・雇用者給与等支給額 480・賃上げ促進税制 中小企業 320・教育訓練費 税額控除 170 ＝クラスタ 16,670
   "furikomi-tesuryo-kanjo-kamoku", // 振込手数料 勘定科目 1,523/月
   "nenmatsu-chosei-itsumade",
   "denchoho-wakariyasuku",
@@ -204,7 +205,7 @@ const CATEGORIES = [
       "zengin-format-guide", "eigyobi-kazoekata", "shogaku-genka-shokyaku",
       "taiyo-nensu", "yakuin-hoshu-kimekata", "kosaihi-kaigihi-chigai",
       "shuzenhi-shihonteki-shishutsu", "shutcho-nittou-ryohi-kitei",
-      "kessan-shoyo", "kurikoshi-kessonkin",
+      "kessan-shoyo", "kurikoshi-kessonkin", "chinage-sokushin-zeisei",
       "shunyu-inshi-warihan", "kashidaore-hikiatekin",
       "ai-keiri-hanjidoka",
       "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "hojokin-shohizei", "assyuku-kicho-houshiki",
