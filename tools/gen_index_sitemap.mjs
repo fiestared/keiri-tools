@@ -58,6 +58,7 @@ const ORDER = [
   "zuiji-kaitei",               // 随時改定・月額変更届 4,652/月
   "kotei-zangyodai",            // 固定残業代 4,188/月
   "kenko-hoken-nini-keizoku",   // 健康保険 任意継続 4,188/月
+  "shunyu-inshi-warihan",       // 収入印紙 割印 4,188/月（収入印紙 貼り方 3,426・消印 676 も同記事で受ける）
   "tsukin-teate-hikazei",       // 通勤手当 非課税 2,791/月
   "furikomi-tesuryo-kanjo-kamoku", // 振込手数料 勘定科目 1,523/月
   "nenmatsu-chosei-itsumade",
@@ -190,6 +191,7 @@ const CATEGORIES = [
     slugs: [
       "furikomi-tesuryo-hikaku", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "zengin-format-guide", "eigyobi-kazoekata", "shogaku-genka-shokyaku",
+      "shunyu-inshi-warihan",
       "ai-keiri-hanjidoka",
       "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "hojokin-shohizei", "assyuku-kicho-houshiki",
       "hojokin-kojin-jigyonushi", "hojokin-asshuku-gendogaku", "hojokin-koteishisan-genka-shokyaku",
