@@ -77,6 +77,14 @@ if ! node tools/gen_hojokin_cards.mjs >> "$LOG" 2>&1; then
   exit 1
 fi
 
+# ★タブの件数（3ページ×3タブ）を焼き直す。データが動けば件数も動くので、ここで必ず一緒に更新する。
+#   忘れると「昨日の件数がタブに出たまま」になり、検索結果の件数と食い違う（2026-08-13 追加）
+if ! node tools/gen_hojokin_tabs.mjs >> "$LOG" 2>&1; then
+  say "★タブ件数の焼き込みに失敗（タブバーの構造が変わった可能性）。データを差し戻して中止する"
+  git checkout -- docs/assets/ 2>/dev/null
+  exit 1
+fi
+
 # 検査を通してから push（壊れたデータを本番へ出さない）
 if ! node tests/test_hojokin.mjs >> "$LOG" 2>&1 || ! node tests/test_hojokin_sources.mjs >> "$LOG" 2>&1 || ! node tests/test_hojokin_cards.mjs >> "$LOG" 2>&1; then
   say "★test_hojokin が赤。差し戻す"

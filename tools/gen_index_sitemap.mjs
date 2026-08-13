@@ -93,6 +93,21 @@ const ORDER = [
   "hojokin-shiwake",           // 補助金の仕訳と計上時期
   "assyuku-kicho-houshiki",    // 圧縮記帳の直接減額方式と積立金方式
   "hojokin-kojin-jigyonushi",  // 個人事業主の補助金（所得税法42条・43条）
+  "hojokin-asshuku-gendogaku",         // 圧縮限度額は取得価額で頭打ち
+  "hojokin-koteishisan-genka-shokyaku",// 圧縮後の減価償却
+  "kyuyo-keisan-yarikata",             // 給与計算のやり方(ハブ)
+  "kekkin-kojo-keisan",                // 欠勤控除の計算
+  "tsukitochu-nyusha-taishoku-kyuyo",  // 月途中入社・退職の日割り
+  "chingin-daicho",                    // 賃金台帳
+  "kyuyo-keisan-machigai-teisei",      // 給与計算の訂正
+  "rodo-hoken-nendo-koshin",           // 労働保険の年度更新
+  "gensen-shotokuzei-noki-tokurei",    // 源泉所得税の納期の特例
+  "shoyo-gensen-shotokuzei",           // 賞与の源泉所得税
+  "shakai-hokenryo-choshu-jiki",       // 社会保険料の徴収時期
+  "kyuyo-kojo-dekirumono",             // 給与から控除できるもの
+  "hotei-fukurihi-keisan",             // 法定福利費の計算
+  "kyushoku-shakai-hokenryo",          // 休職中の社会保険料
+  "keiri-nenkan-schedule",             // 経理の年間スケジュール(ハブ)
 ];
 
 /**
@@ -176,7 +191,12 @@ const CATEGORIES = [
       "zengin-format-guide", "eigyobi-kazoekata", "shogaku-genka-shokyaku",
       "ai-keiri-hanjidoka",
       "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "assyuku-kicho-houshiki",
-      "hojokin-kojin-jigyonushi",
+      "hojokin-kojin-jigyonushi", "hojokin-asshuku-gendogaku", "hojokin-koteishisan-genka-shokyaku",
+      "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
+      "chingin-daicho", "kyuyo-keisan-machigai-teisei", "rodo-hoken-nendo-koshin",
+      "gensen-shotokuzei-noki-tokurei", "shoyo-gensen-shotokuzei", "shakai-hokenryo-choshu-jiki",
+      "kyuyo-kojo-dekirumono", "hotei-fukurihi-keisan", "kyushoku-shakai-hokenryo",
+      "keiri-nenkan-schedule",
     ],
   },
 ];
