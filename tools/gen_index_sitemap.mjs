@@ -67,6 +67,9 @@ const ORDER = [
   "kosaihi-kaigihi-chigai",     // 接待交際費 2,791/月（交際費 会議費 違い 1,523・会議費 交際費 676・交際費 損金不算入 676・交際費 上限 550・交際費 経費 250 も同記事で受ける＝クラスタ 約6,100）
   "shuzenhi-shihonteki-shishutsu", // 修繕費とは 1,523/月（資本的支出とは 550・修繕費 資本的支出 423・修繕費 60万円 72・資本的支出 減価償却 59・修繕費 20万円 38 も同記事で受ける＝クラスタ 2,669）
   "shutcho-nittou-ryohi-kitei",  // 出張手当 相場 1,226/月（出張旅費規程 550・出張 日当 423・日当 非課税 203・旅費規程 節税 110 も同記事で受ける＝クラスタ 2,512）
+  "kessan-shoyo",               // ★2026-08-13 22時に計器を修正（旧値は月間推定検索数の42.3%だった）。
+                               //   以下この行より上の数値コメントは**旧計器**の値なので、新しい候補と直接比べないこと。
+                               //   決算賞与とは 6,600/月・決算賞与 4,400・要件 390・いつ 390・損金算入 260・社会保険料 170・税金 140 ＝クラスタ 12,350
   "furikomi-tesuryo-kanjo-kamoku", // 振込手数料 勘定科目 1,523/月
   "nenmatsu-chosei-itsumade",
   "denchoho-wakariyasuku",
@@ -200,6 +203,7 @@ const CATEGORIES = [
       "zengin-format-guide", "eigyobi-kazoekata", "shogaku-genka-shokyaku",
       "taiyo-nensu", "yakuin-hoshu-kimekata", "kosaihi-kaigihi-chigai",
       "shuzenhi-shihonteki-shishutsu", "shutcho-nittou-ryohi-kitei",
+      "kessan-shoyo",
       "shunyu-inshi-warihan", "kashidaore-hikiatekin",
       "ai-keiri-hanjidoka",
       "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "hojokin-shohizei", "assyuku-kicho-houshiki",

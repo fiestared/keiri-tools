@@ -9,7 +9,15 @@
   python3 tools/keyword_demand.py --suggest 源泉徴収   # サジェスト展開だけ
 
 出力: TSV (keyword, google/month, yahoo/month, total)
-aramakijake.jp の推定値。絶対値の精度は粗いが、**候補どうしの序列**を見るには十分。
+aramakijake.jp の**月間推定検索数**。絶対値の精度は粗いが、**候補どうしの序列**を見るには十分。
+
+🔴 2026-08-13(第22便): ここは長らく**別の表**を読んでいた。aramakijake の1ページには
+   ①月間推定検索数 と ②月間検索アクセス予測数（その順位を取ったときのアクセス数）の2つがあり、
+   旧実装は②の**1位の行**を拾っていた。値はすべて実際の **42.3%** で、日報も「需要 N件/月」と
+   その値で書いていた。倍率が一定なので**序列は狂っていない**が、絶対値と言葉は誤りだった。
+   → parse_volume_html() の docstring と tests/test_keyword_demand_volume.mjs を参照。
+⚠️ yahoo 列は google のちょうど **1/4** の派生値（実測 n=8 で全件一致）。**独立した2つの情報源ではない**。
+   total は実質 google×1.25。「Google と Yahoo を合わせた需要」と読まないこと。
 """
 
 import argparse
@@ -87,6 +95,38 @@ def winnability(kw):
     return min(score, 100)
 
 
+def parse_volume_html(html):
+    """aramakijake.jp のページから **月間推定検索数** (google, yahoo) を取る。
+
+    🔴 2026-08-13 第22便で修正。このページには数字の表が**2つ**ある:
+        ① <p class="result">        … 月間推定検索数              （決算賞与: Yahoo 880 / Google 3,520）
+        ② 「月間検索アクセス予測数」 … その順位を取ったときのアクセス数（1位: Google 1,489 / Yahoo 372）
+      旧実装は「ページ最初の <td> の数字を2つ」拾っており、**②の1位の行**を読んでいた。
+      関数名も docstring も日報も「月間推定検索数 / 需要」と名乗っていたので、
+      数週間ぶんの需要値が**すべて実際の 42.3%** だった（4,400 を 1,861 と報告していた）。
+      ★倍率は一定（実測 n=8 で 42.3%）なので候補の**序列**は狂っていない。狂ったのは絶対値と言葉。
+
+    ★①は Yahoo が先・②は Google が先で **並び順が逆**。位置で読まず `alt` で判別する。
+    ★Yahoo の値は Google のちょうど **1/4** の派生値（実測 n=8 で全件一致）。
+      2つの独立した情報源ではないので、足した数を「需要」と呼ぶと Google 単独の 1.25 倍になる。
+    取れなければ (None, None)。0 は返さない（「ゼロ件」と「測れず」を混ぜない）。
+    """
+    # コメントを先に剥がす（コメント内の <p class="result"> を本文と読み違えるため）
+    html = re.sub(r"<!--.*?-->", "", html, flags=re.S)
+    block = re.search(r'<p class="result">(.*?)</p>', html, re.S)
+    if not block:
+        return None, None
+    vals = {}
+    for alt, num in re.findall(
+            r'<img[^>]*\balt="([^"]*)"[^>]*>\s*<span>\s*([\d,]+)\s*</span>', block.group(1)):
+        key = "google" if "google" in alt.lower() else "yahoo" if "yahoo" in alt.lower() else None
+        if key:
+            vals[key] = int(num.replace(",", ""))
+    if "google" in vals and "yahoo" in vals:
+        return vals["google"], vals["yahoo"]
+    return None, None
+
+
 def volume(kw):
     """aramakijake.jp の月間推定検索数 (google, yahoo)。取れなければ (None, None)。"""
     url = "https://aramakijake.jp/keyword/index.php?keyword=" + urllib.parse.quote(kw)
@@ -94,12 +134,7 @@ def volume(kw):
         html = _get(url).decode("utf-8", "ignore")
     except Exception:
         return None, None
-    # 「月間推定検索数」テーブルの数値を拾う
-    nums = re.findall(r'<td[^>]*>\s*([\d,]+)\s*</td>', html)
-    vals = [int(n.replace(",", "")) for n in nums if n.replace(",", "").isdigit()]
-    if len(vals) >= 2:
-        return vals[0], vals[1]
-    return None, None
+    return parse_volume_html(html)
 
 
 def _text(html):
@@ -261,7 +296,15 @@ def main():
                          "『ニッチだけどボリュームが出そう』を機械的に発見する")
     ap.add_argument("--min-vol", type=int, default=300,
                     help="--niche で、この検索数(google+yahoo)未満は捨てる(既定300)")
+    ap.add_argument("--parse-html", metavar="FILE",
+                    help="保存済みHTMLから (google, yahoo) を取って TSV で出す。通信しない（検査用）")
     a = ap.parse_args()
+
+    if a.parse_html:
+        html = Path(a.parse_html).read_text(encoding="utf-8", errors="ignore")
+        g, y = parse_volume_html(html)
+        print(f"{g if g is not None else '-'}\t{y if y is not None else '-'}")
+        return
 
     if a.suggest:
         for s in suggest(a.suggest):
