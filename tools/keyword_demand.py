@@ -349,25 +349,33 @@ def main():
               file=sys.stderr)
         return
 
-    if a.check_dupes:
-        warn_existing(list(a.keywords), machine=True)
-        return
-
+    # ★キーワードの組み立ては**分岐より前に、1か所で**行う（2026-08-13 第23便）。
+    #   旧実装は `--check-dupes` が `a.keywords`（位置引数）だけを渡して**早期 return**しており、
+    #   `--file` の読み込みはその**14行あと**にあった。＝ `--check-dupes --file X` は
+    #   239ページを走査して**キーワードを1つも検査せず**、SCANNED 行だけ出して終わっていた。
+    #   ★出力が「重複なし」と**完全に同じ形**なので、便からは成功に見える
+    #     ＝ このプロジェクトが繰り返す「測定失敗が"該当なし"に化ける」型。
+    #   しかも申し送り399 が「重複チェックが先・需要測定はあと」と定めた入口そのもの。
+    #   分岐ごとに組み立てると、また別の分岐で同じ取り残しが起きる → **入口で1回だけ**作る。
     kws = list(a.keywords)
+    if a.file:
+        kws += [l.strip() for l in open(a.file) if l.strip()
+                and not l.startswith("#")]
+
+    if a.check_dupes:
+        warn_existing(kws, machine=True)
+        return
 
     # ⚠️ 引用符の付け忘れを検知する（2026-07-14に実際に踏んだ）。
     #   python3 keyword_demand.py コンビニ 新商品   → シェルが2語に分割し、**別々のキーワード**として測る
     #   → 「コンビニ」単体の巨大な検索数を見て、桁を読み違える。
     # フレーズを測るつもりなら引用符が要る。複数語を渡されたら必ず警告する。
-    if len(kws) > 1 and not a.file:
-        print("⚠️  複数のキーワードとして測ります:", " / ".join(f"「{k}」" for k in kws),
+    if len(a.keywords) > 1 and not a.file:
+        print("⚠️  複数のキーワードとして測ります:", " / ".join(f"「{k}」" for k in a.keywords),
               file=sys.stderr)
         print("    フレーズ（例: コンビニ 新商品）を測りたいなら、"
               "**引用符で囲む**こと → \"コンビニ 新商品\"", file=sys.stderr)
         print(file=sys.stderr)
-    if a.file:
-        kws += [l.strip() for l in open(a.file) if l.strip()
-                and not l.startswith("#")]
 
     if a.expand:
         expanded = []

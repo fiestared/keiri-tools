@@ -23,9 +23,10 @@
  *   → ディスク側の期待値も **docs 配下を再帰**で数える(母集合の申告そのものを検査する)。
  */
 import { execFileSync } from "node:child_process";
-import { readdirSync, existsSync } from "node:fs";
+import { readdirSync, existsSync, writeFileSync, rmSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
+import { tmpdir } from "node:os";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const run = (...kws) =>
@@ -106,6 +107,48 @@ for (const kw of ["バナナ 輸入 関税", "犬 しつけ"]) {
   const hits = run(kw).filter((r) => !r[0].startsWith("SCANNED"));
   ok(hits.length === 0, `無関係な「${kw}」で誤爆した: ${JSON.stringify(hits)}`);
 }
+
+// --- ③ ★--file で渡した語も検査されること(2026-08-13 第23便) -----------------
+// `--check-dupes` は `a.keywords`(位置引数)だけを渡して **早期 return** しており、
+// `--file` の読み込みはその**14行あと**にあった。＝ `--check-dupes --file X` は
+// 239ページを走査して**キーワードを1つも検査せず**、SCANNED 行だけを出して終わる。
+// ★出力は「重複なし」と**完全に同じ形**なので、便からは成功に見える。
+//   申し送り399 が「重複チェックが先・需要測定はそのあと」と定めた入口そのものなので、
+//   ここが黙って素通りすると **重複記事を書き切ってから気づく**（＝第22便の事故が戻る）。
+// ＝ このプロジェクトが繰り返す「測定失敗が"該当なし"に化ける」型。
+//   既存の検査が位置引数でしか run() を呼んでいなかったため、5日間だれも踏まなかった。
+const runFile = (...kws) => {
+  const tmp = join(tmpdir(), `kwdemand_test_${process.pid}.txt`);
+  writeFileSync(tmp, kws.join("\n") + "\n");
+  try {
+    return execFileSync("python3",
+                        ["tools/keyword_demand.py", "--check-dupes", "--file", tmp],
+                        { cwd: root, encoding: "utf8" })
+      .trim().split("\n").filter(Boolean).map((l) => l.split("\t"));
+  } finally { rmSync(tmp, { force: true }); }
+};
+
+// 位置引数と --file は**同じ語なら同じ結果**でなければならない。
+const viaArgs = run("随時改定").filter((r) => !r[0].startsWith("SCANNED"));
+const viaFile = runFile("随時改定").filter((r) => !r[0].startsWith("SCANNED"));
+ok(viaFile.length > 0,
+   `★--file で渡した語が検査されていない(重複0件として素通り)。`
+   + `位置引数では ${viaArgs.length} 件検出できている`);
+ok(JSON.stringify(viaFile) === JSON.stringify(viaArgs),
+   `--file と位置引数で結果が違う:\n     --file: ${JSON.stringify(viaFile)}\n`
+   + `     位置引数: ${JSON.stringify(viaArgs)}`);
+
+// --file と位置引数の**併用**でも両方が検査されること(片方が消えない)。
+const both = execFileSync(
+  "python3", ["tools/keyword_demand.py", "--check-dupes", "随時改定", "--file",
+              (() => { const p = join(tmpdir(), `kwdemand_both_${process.pid}.txt`);
+                       writeFileSync(p, "倒産防止共済\n"); return p; })()],
+  { cwd: root, encoding: "utf8" }).trim().split("\n").map((l) => l.split("\t"));
+ok(both.some((r) => r[0] === "TITLE" && r[2] === "zuiji-kaitei"),
+   "--file 併用時に**位置引数**の語が検査されていない");
+ok(both.some((r) => r[0] === "TITLE" && r[PATH] === "/tosan-boshi-kyosai/"),
+   "--file 併用時に**ファイル**の語が検査されていない");
+rmSync(join(tmpdir(), `kwdemand_both_${process.pid}.txt`), { force: true });
 
 if (fail.length) {
   console.error("✘ test_keyword_demand");
