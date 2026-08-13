@@ -92,6 +92,7 @@ const ORDER = [
   "hojokin-tokubetsu-kanjo",   // 補助金の特別勘定（法人税法43条）
   "hojokin-shiwake",           // 補助金の仕訳と計上時期
   "assyuku-kicho-houshiki",    // 圧縮記帳の直接減額方式と積立金方式
+  "hojokin-kojin-jigyonushi",  // 個人事業主の補助金（所得税法42条・43条）
 ];
 
 /**
@@ -175,6 +176,7 @@ const CATEGORIES = [
       "zengin-format-guide", "eigyobi-kazoekata", "shogaku-genka-shokyaku",
       "ai-keiri-hanjidoka",
       "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "assyuku-kicho-houshiki",
+      "hojokin-kojin-jigyonushi",
     ],
   },
 ];
