@@ -62,6 +62,22 @@ const weekdayIdx = (ymd) => {
   return new Date(Date.UTC(y, m - 1, d)).getUTCDay();
 };
 
+// 毎分叩くと `fetch failed`（ネットワーク層の一過性エラー）が実測で1割ほど出る。
+// 1回きりの失敗で画面に警告バナーを出さないよう、短い間隔で数回だけ粘る。
+// 恒久的な失敗（キーが無い・権限が無い）は何度やっても同じなので、そのまま呼び出し元へ投げる。
+async function fetchRetry(url, init, tries = 3) {
+  let last;
+  for (let i = 0; i < tries; i++) {
+    try {
+      const r = await fetch(url, init);
+      if (r.status < 500 || i === tries - 1) return r;
+      last = new Error(`HTTP ${r.status}`);
+    } catch (e) { last = e; }
+    await new Promise((res) => setTimeout(res, 700 * 2 ** i));
+  }
+  throw last;
+}
+
 // ---------- 認証（依存ゼロ: JWT自作 → access_token） ----------
 async function accessToken() {
   const sa = JSON.parse(readFileSync(SA_PATH, "utf8"));
@@ -75,7 +91,7 @@ async function accessToken() {
       aud: sa.token_uri, iat, exp: iat + 3600,
     });
   const sig = createSign("RSA-SHA256").update(unsigned).sign(sa.private_key, "base64url");
-  const r = await fetch(sa.token_uri, {
+  const r = await fetchRetry(sa.token_uri, {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams({
@@ -88,7 +104,7 @@ async function accessToken() {
 }
 
 const runReport = (token, property, body) =>
-  fetch(`https://analyticsdata.googleapis.com/v1beta/${property}:runReport`, {
+  fetchRetry(`https://analyticsdata.googleapis.com/v1beta/${property}:runReport`, {
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({ dateRanges: [{ startDate: `${FETCH_DAYS - 1}daysAgo`, endDate: "today" }], ...body }),
