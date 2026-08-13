@@ -26,7 +26,11 @@ LOCK=".run_tests.lock"
 if [ -d "$LOCK" ]; then
   OWNER="$(cat "$LOCK/pid" 2>/dev/null)"
   if [ -n "$OWNER" ] && kill -0 "$OWNER" 2>/dev/null; then
-    echo "★別の run_tests.sh が実行中（pid $OWNER）。同時実行は作業ツリーを汚すので中止します。"
+    # ★`${}` で必ず囲む。macOS の bash 3.2 は `$OWNER）` の全角括弧を**変数名の一部として読む**ため、
+    #   `set -u` 下で「OWNER）: unbound variable」で落ちる。＝ロックが効いた時（＝他が実行中の時）に
+    #   **必ずクラッシュし、この親切なメッセージが出ないまま exit 1 になる**。
+    #   「同時実行だから中止した」が「テストが落ちた」に化ける（2026-08-13 に実際に踏んだ）。
+    echo "★別の run_tests.sh が実行中（pid ${OWNER}）。同時実行は作業ツリーを汚すので中止します。"
     exit 2
   fi
   echo "★残骸ロック（pid ${OWNER:-不明} は不在）を掃除して続行します。"
@@ -47,8 +51,11 @@ files=(tests/*.mjs)
 if [ -n "$FILTER" ]; then
   keep=()
   for f in "${files[@]}"; do [[ "$f" == *"$FILTER"* ]] && keep+=("$f"); done
+  # ★空判定は**配列を展開する前**に行う。macOS の bash 3.2 は空配列の "${keep[@]}" を
+  #   `set -u` で unbound variable として落とすので、順序が逆だと「一致が無い」を伝える前に
+  #   line 54 のエラーで死ぬ（＝下の親切なメッセージに到達しない）。
+  (( ${#keep[@]} )) || { echo "★ 「${FILTER}」に一致するテストが無い"; exit 2; }  # ${} 必須（上と同じ理由）
   files=("${keep[@]}")
-  (( ${#files[@]} )) || { echo "★ 「$FILTER」に一致するテストが無い"; exit 2; }
 fi
 
 red=()

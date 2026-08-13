@@ -86,7 +86,13 @@ if (unverified.length) {
 }
 
 // --- 4. 目次から辿れること（孤児の見出しを作らない） -------------------------
-assert.ok(html.includes('href="#ginkobetsu"'),
+// ★「HTMLのどこかに href="#ginkobetsu" が在る」で見てはいけない（規則3）。
+//   2026-08-13、リード文に同じアンカーへの導線を1行足したところ、**目次から外しても緑のまま**に
+//   なった（break_furikomi_bank_sections の「壊し5: 目次リンクを外すと赤になる」が素通しを報告）。
+//   ＝記事に導線を足す作業が、そのまま検査の網を薄くしていた。名指しを目次まで下ろす。
+const toc = html.match(/<nav class="toc">[\s\S]*?<\/nav>/)?.[0] ?? "";
+assert.ok(toc, "目次(nav.toc)が見つかりません");
+assert.ok(toc.includes('href="#ginkobetsu"'),
   '目次に銀行別セクション（#ginkobetsu）へのリンクがありません');
 
 console.log(`✓ test_furikomi_bank_sections: ${banks.size}銀行 / ${checked}区分が比較表と一致`);
