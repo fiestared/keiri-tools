@@ -74,6 +74,7 @@ const ORDER = [
   "chinage-sokushin-zeisei",    // 所得拡大促進税制 12,100/月（★旧称のほうが新称の3.4倍多い）＋賃上げ促進税制 3,600・雇用者給与等支給額 480・賃上げ促進税制 中小企業 320・教育訓練費 税額控除 170 ＝クラスタ 16,670
   "chusho-keiei-kyoka-zeisei",  // 経営力向上計画 8,100/月 ＋ 中小企業経営強化税制 4,400・即時償却 1,900・経営力向上計画 認定 210・A類型 110 ＝クラスタ 14,720
   "jigyo-shokei-zeisei",  // 事業承継税制 6,600/月 ＋ 先端設備等導入計画は別・特例事業承継税制 480・事業承継税制 特例措置 140・非上場株式 納税猶予 110 ＝クラスタ 7,330
+  "sentan-setsubi-dounyu-keikaku", // 先端設備等導入計画 4,400/月 ＋「等」なしの別称 先端設備導入計画 880 ＝クラスタ 5,280
   "furikomi-tesuryo-kanjo-kamoku", // 振込手数料 勘定科目 1,523/月
   "nenmatsu-chosei-itsumade",
   "denchoho-wakariyasuku",
@@ -210,6 +211,7 @@ const CATEGORIES = [
       "kessan-shoyo", "kurikoshi-kessonkin", "chinage-sokushin-zeisei",
       "chusho-keiei-kyoka-zeisei",
       "jigyo-shokei-zeisei",
+      "sentan-setsubi-dounyu-keikaku",
       "shunyu-inshi-warihan", "kashidaore-hikiatekin",
       "ai-keiri-hanjidoka",
       "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "hojokin-shohizei", "assyuku-kicho-houshiki",
