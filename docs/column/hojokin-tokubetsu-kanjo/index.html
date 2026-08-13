@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<!-- favicon:auto --><link rel="icon" href="/favicon.ico" sizes="any"><link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>補助金が期末までに未確定なら特別勘定｜法人税法43条</title>
+<meta name="description" content="補助金500万円を受けても、返還不要が期末までに確定していなければ42条の圧縮記帳ではなく43条の特別勘定です。後日確定した年度に44条で圧縮する流れを仕訳・時系列・800万円の機械の例で解説します。">
+<meta name="card-desc" content="分かれ目は入金ではなく、返還不要が期末までに確定したか。43条から44条への処理を実数で整理。">
+<link rel="stylesheet" href="../../assets/style.css"><link rel="canonical" href="https://keiri-tools.com/column/hojokin-tokubetsu-kanjo/">
+<!-- ogp:auto --><meta property="og:type" content="article"><meta property="og:title" content="補助金が期末までに未確定なら特別勘定｜法人税法43条"><meta property="og:description" content="返還不要が期末までに確定していなければ、圧縮記帳ではなく特別勘定。42条・43条・44条の境界を解説します。"><meta property="og:url" content="https://keiri-tools.com/column/hojokin-tokubetsu-kanjo/"><meta property="og:image" content="https://keiri-tools.com/ogp.png"><meta property="og:site_name" content="税金・経理・補助金ツールズ"><meta property="og:locale" content="ja_JP"><meta name="twitter:card" content="summary_large_image"><!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "補助金が期末までに確定していないときの処理｜特別勘定（法人税法43条）",
+      "datePublished": "2026-08-13",
+      "dateModified": "2026-08-13",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/hojokin-tokubetsu-kanjo/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "補助金の特別勘定"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 補助金が入金済みなら42条の圧縮記帳ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. いいえ。分かれ目は入金ではなく、返還を要しないことが期末までに確定したかです。未確定なら43条の特別勘定の検討になります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 特別勘定は引当金と同じですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 同じものとして扱いません。43条が定める国庫補助金等に係る特別勘定であり、返還不要が後日確定した場合は44条の処理へつながります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 翌期に返還不要が確定したら、前期を修正しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 43条の特別勘定を設けた前提では、44条により確定した日の属する事業年度で圧縮記帳する流れです。この記事は個別案件の修正要否までは判定しません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 補助金500万円、機械800万円ならいくら圧縮できますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 単純化した例で要件を満たし全額を充てたなら500万円で、圧縮後は300万円です。実際の圧縮限度額は対象資産との対応や条文上の計算を確認します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 圧縮記帳をすると補助金が非課税になりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. なりません。補助金は益金に入り、圧縮額を損金に算入して課税を繰り延べる仕組みです。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-E742DSDHPD');</script><script src="../../assets/track.js" defer></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578" crossorigin="anonymous"></script>
+</head><body>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+</header>
+<main><nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 補助金の特別勘定</nav><article>
+<h1>補助金が期末までに確定していないときの処理｜特別勘定（法人税法43条）</h1>
+<p class="article-meta">公開日: 2026年8月13日 ／ 法人税法42条・43条・44条（令和8年8月時点）に基づいて作成</p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p>結論から言うと、圧縮記帳できるかの分かれ目は<b>補助金を受け取ったかではありません</b>。法人税法42条1項が見るのは、<b>返還を要しないことが当該事業年度終了の時までに確定したか</b>です。</p>
+<p>入金済みでも返還不要が未確定のまま期末を迎えた場合、一般に42条の圧縮記帳ではなく、43条の<b>国庫補助金等特別勘定</b>を設けます。その後に返還不要が確定し、固定資産の取得等の要件を満たしたときは、44条により<b>確定した日の属する事業年度</b>で圧縮記帳へ進みます。</p>
+<p>この記事は法人の国庫補助金等を前提に、補助金500万円・機械800万円の例で、決算をまたぐ処理を整理します。個人事業主は所得税法42条・43条という<b>別の条文で要件も異なります</b>。</p>
+<nav class="toc"><div class="toc-title">目次</div><ol><li><a href="#kekka">結論：期末時点の「確定」で3分岐</a></li><li><a href="#jobun">42条と43条の境界</a></li><li><a href="#jirei">500万円の時系列と仕訳例</a></li><li><a href="#kakuteigo">後日確定したら44条</a></li><li><a href="#otoshiana">実務で混同しやすい点</a></li><li><a href="#kurinobe">圧縮記帳は課税の繰延べ</a></li><li><a href="#faq">よくある質問</a></li></ol></nav>
+<a class="tool-cta" href="../../hojokin-zeimu/"><b>無料ツール：補助金の圧縮記帳・仕訳計算</b><span>返還不要の確定状況、補助金額、固定資産の取得価額を入力すると、42条・43条・44条の分岐と仕訳例を表示します。</span></a>
+<h2 id="kekka">結論：期末時点の「確定」で3分岐</h2>
+<div class="scroll-wrap"><table><tr><th>期末までの状態</th><th>条文</th><th>一般的な処理</th></tr><tr><td>返還不要が確定し、目的に適合する固定資産も取得・改良済み</td><td>法人税法42条1項</td><td>圧縮限度額の範囲で圧縮記帳</td></tr><tr><td>返還不要が未確定</td><td>法人税法43条1項</td><td>特別勘定を設け、その金額を損金算入</td></tr><tr><td>特別勘定を持ち、後日返還不要が確定</td><td>法人税法44条1項</td><td>確定日の属する事業年度に圧縮記帳</td></tr></table></div>
+<figure class="figure"><svg viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="期末までに返還不要が確定したかによる42条と43条の分岐、その後44条へ進む流れ"><rect class="fg-box" x="240" y="18" width="240" height="50" rx="8"/><text class="fg-lb" x="360" y="48" text-anchor="middle">期末までに返還不要が確定？</text><path class="fg-axis" d="M240 43H110V105M480 43H610V105"/><text class="fg-s" x="165" y="36">はい</text><text class="fg-s" x="535" y="36">いいえ</text><rect class="fg-box-a" x="30" y="105" width="210" height="62" rx="8"/><text class="fg-lb" x="135" y="132" text-anchor="middle">42条：圧縮記帳</text><text class="fg-s" x="135" y="153" text-anchor="middle">資産の取得等も確認</text><rect class="fg-box-w" x="480" y="105" width="210" height="62" rx="8"/><text class="fg-lb" x="585" y="132" text-anchor="middle">43条：特別勘定</text><text class="fg-s" x="585" y="153" text-anchor="middle">入金済みでもこちら</text><path class="fg-axis" d="M585 167V218"/><text class="fg-s" x="600" y="199">後日確定</text><rect class="fg-box-a" x="480" y="218" width="210" height="62" rx="8"/><text class="fg-lb" x="585" y="245" text-anchor="middle">44条：圧縮記帳</text><text class="fg-s" x="585" y="266" text-anchor="middle">確定日の属する年度</text></svg><figcaption>入金日ではなく、各事業年度終了時点の「返還不要の確定」が入口の分岐になる</figcaption></figure>
+<h2 id="jobun">42条と43条の境界は鏡写し</h2>
+<p>42条1項は、国庫補助金等の交付を受けた場合について、括弧書きで「<b>その国庫補助金等の返還を要しないことが当該事業年度終了の時までに確定した場合に限る</b>」と限定しています。さらに、その年度終了時までに取得または改良した、交付目的に適合する固定資産が対象です。</p>
+<p>これに対し43条1項は、「<b>返還を要しないことが当該事業年度終了の時までに確定していない場合に限る</b>」と定めます。つまり「入金済みだから42条」「まだ入金されていないから43条」という分け方ではありません。両条の境界は、期末までに返還不要が確定したかという一つの事実です。</p>
+<div class="callout"><b>確認資料は名前より内容を見る</b><br>交付決定通知、額の確定通知、実績報告の審査結果など、制度ごとに書類名と効果は異なります。個別案件がどの時点で「返還を要しないことが確定」に当たるかは、交付要綱・通知書・付された条件を照合する事実認定です。この記事は書類名だけでその分岐を判定しません。</div>
+<h2 id="jirei">500万円の時系列と仕訳例</h2>
+<p>3月決算法人が、交付目的に適合する機械を<b>800万円</b>で取得し、補助金<b>500万円</b>を受け取ったとします。3月31日時点では実績報告の審査中で、返還不要が確定していません。この前提なら、期末の分岐は43条です。</p>
+<div class="summary-box"><div class="t">未確定年度の仕訳イメージ</div><ul><li>入金時：現金預金 500万円 ／ 補助金収入 500万円</li><li>決算時：国庫補助金等特別勘定繰入額 500万円 ／ 国庫補助金等特別勘定 500万円</li></ul></div>
+<p>この例では補助金収入500万円を計上し、それと対応する特別勘定繰入額500万円を損金側に置くため、当年度の所得への影響を繰り延べます。勘定科目名は会計ソフトや会社の科目設計で異なり得ますが、<b>未確定年度に機械の帳簿価額を直接500万円減らす処理とは区別</b>します。</p>
+<p>機械800万円に対して補助金500万円なので、後に要件を満たして全額を圧縮する例では、圧縮後の基礎となる金額は<b>800万円−500万円＝300万円</b>です。ただし43条の年度では、まだこの圧縮を先取りしません。</p>
+<h2 id="kakuteigo">後日確定したら44条で圧縮記帳</h2>
+<p>翌事業年度の6月に返還不要が確定したとします。43条の特別勘定を持つ法人が、固定資産を取得または改良し、そこに充てた国庫補助金等の返還不要が確定した場合、44条1項により<b>6月を含む事業年度</b>で圧縮記帳を行う流れです。</p>
+<div class="summary-box"><div class="t">確定年度の処理イメージ</div><ul><li>特別勘定の取崩し：国庫補助金等特別勘定 500万円 ／ 特別勘定取崩益 500万円</li><li>直接減額方式の例：固定資産圧縮損 500万円 ／ 機械装置 500万円</li><li>結果：機械の帳簿価額は800万円から300万円へ</li></ul></div>
+<p>42条・44条はいずれも、条文上の圧縮限度額の範囲内で経理します。補助金が500万円でも、対象資産との対応、実際に圧縮する金額、過年度取得の減価償却資産に関する計算などで結果が変わり得ます。数字を機械的に補助金額だけで決めず、条文と申告書別表の対応を確認する場面です。</p>
+<h2 id="otoshiana">実務で混同しやすい4つの点</h2>
+<h3>1. 「交付決定」と「返還不要の確定」は同じ語ではない</h3><p>収益計上時期の検討で見る交付決定と、42条・43条の分岐で見る返還不要の確定は、別の問いです。一つの通知が両方の意味を持つ制度もあり得ますが、常に同じ日になるとは限りません。</p>
+<h3>2. 資産取得済みでも未確定なら43条</h3><p>機械が納品され、代金も支払い、補助金も入金されたという三つが揃っても、返還不要が期末までに確定していなければ43条の側です。物の動きや資金の動きだけでは決まりません。</p>
+<h3>3. 確定済みでも対象資産が無ければ直ちに42条ではない</h3><p>42条1項は、期末までに取得または改良した、交付目的に適合する固定資産について定めています。「確定済み」という一条件だけを満たしても、資産側の要件を飛ばせません。</p>
+<h3>4. 個人事業主と法人を混ぜない</h3><p>この記事は法人税法42条から44条の説明です。個人事業主には所得税法42条・43条という別条文があり、要件も異なります。法人の仕訳例をそのまま個人の所得計算に移す説明はしません。</p>
+<h2 id="kurinobe">圧縮記帳は課税の繰延べで、非課税ではない</h2>
+<p>補助金は原則として法人税法22条2項の収益として益金に入ります。圧縮記帳は<b>補助金を益金にしない制度ではありません</b>。圧縮損等を損金に算入し、その時点の課税を後へ送る制度です。</p>
+<p>直接減額方式で機械800万円を500万円圧縮すると、以後の減価償却の基礎は300万円になります。圧縮しなかった場合より将来の減価償却費が小さくなり、その差を通じて後の年度に所得が現れます。特別勘定も同様に、未確定年度で税額そのものを永久に消す仕組みではありません。</p>
+<h2 id="faq">よくある質問</h2>
+<h3>Q. 補助金が入金済みなら42条の圧縮記帳ですか？</h3><p>A. いいえ。分かれ目は入金ではなく、<b>返還を要しないことが期末までに確定したか</b>です。未確定なら43条の特別勘定の検討になります。</p>
+<h3>Q. 特別勘定は引当金と同じですか？</h3><p>A. 同じものとして扱いません。43条が定める国庫補助金等に係る特別勘定であり、返還不要が後日確定した場合は44条の処理へつながります。</p>
+<h3>Q. 翌期に返還不要が確定したら、前期を修正しますか？</h3><p>A. 43条の特別勘定を設けた前提では、44条により<b>確定した日の属する事業年度</b>で圧縮記帳する流れです。この記事は個別案件の修正要否までは判定しません。</p>
+<h3>Q. 補助金500万円、機械800万円ならいくら圧縮できますか？</h3><p>A. 単純化した例で要件を満たし全額を充てたなら500万円で、圧縮後は300万円です。実際の圧縮限度額は対象資産との対応や条文上の計算を確認します。</p>
+<h3>Q. 圧縮記帳をすると補助金が非課税になりますか？</h3><p>A. なりません。補助金は益金に入り、圧縮額を損金に算入して<b>課税を繰り延べる</b>仕組みです。</p>
+<section class="related"><h2>関連記事・ツール</h2><div class="tool-grid"><a class="tool-card" href="../../hojokin-zeimu/"><div><div class="name">補助金の圧縮記帳・仕訳計算</div><div class="desc">42条・43条・44条の分岐と金額を計算。</div></div></a><a class="tool-card" href="../hojokin-shiwake/"><div><div class="name">補助金の仕訳と計上時期</div><div class="desc">交付決定と入金が決算をまたぐ場合を整理。</div></div></a><a class="tool-card" href="../assyuku-kicho-houshiki/"><div><div class="name">圧縮記帳の2方式</div><div class="desc">直接減額方式と積立金方式の違い。</div></div></a></div></section>
+<h2>出典</h2><ul><li><a href="https://laws.e-gov.go.jp/law/340AC0000000034" rel="nofollow">e-Gov法令検索「法人税法」</a>22条2項、42条1項、43条1項・2項、44条1項</li><li>e-Gov法令API v2「法人税法」law_revision_id: 340AC0000000034_20260723_508AC0000000064（2026年8月12日確認）</li><li>国税庁「国庫補助金等で取得した固定資産等の圧縮額の損金算入」関係資料</li></ul>
+<p class="note">本記事は一般的な情報提供を目的としたものです。個別の判断は税理士または所轄の税務署にご確認ください。</p>
+</article></main><footer class="site" style="display:block">© 税金・経理・補助金ツールズ<div style="margin-top:8px;font-size:12px"><a href="../../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../../contact/" style="color:var(--sub)">お問い合わせ</a></div><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div></footer></body></html>

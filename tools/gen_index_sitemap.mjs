@@ -89,6 +89,9 @@ const ORDER = [
   "zengin-format-guide",
   "fukugyo-20man-kakutei-shinkoku", // 副業 確定申告 20万円
   "ai-keiri-hanjidoka",         // AIで経理を半自動化(E-E-A-T・実務経験)
+  "hojokin-tokubetsu-kanjo",   // 補助金の特別勘定（法人税法43条）
+  "hojokin-shiwake",           // 補助金の仕訳と計上時期
+  "assyuku-kicho-houshiki",    // 圧縮記帳の直接減額方式と積立金方式
 ];
 
 /**
@@ -171,6 +174,7 @@ const CATEGORIES = [
       "furikomi-tesuryo-hikaku", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "zengin-format-guide", "eigyobi-kazoekata", "shogaku-genka-shokyaku",
       "ai-keiri-hanjidoka",
+      "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "assyuku-kicho-houshiki",
     ],
   },
 ];
