@@ -6,16 +6,26 @@
  *   第24便: そのチェックが「随時改定」で既存記事を**1本も名指ししなかった**。実際には
  *           `teiji-kettei` に h3「給与が大きく変わったとき(随時改定)」という節があり本文7回言及。
  *           **タイトルとslugしか見ていなかった**(=網の外)。重複は記事単位でなく【節単位】で起きる。
+ *   ★第21便(2026-08-13): 母集合が **docs/column の78本だけ**で、**ツール67本が網の外**だった。
+ *     その日の需要1位「倒産防止共済 9,390件/月」・2位「経営セーフティ共済 4,188件/月」で
+ *     チェッカは**沈黙した**(=重複なしと読める出力)。実体は `docs/tosan-boshi-kyosai/` が
+ *     **title に主題を持ち・本文38回**で既に保有しており、便が自分で本文grepを当てなければ
+ *     **最大クラスタで自サイトの共食いを作っていた**。
+ *     ＝「78本を走査」と正直に名乗っているのに、読む側が『サイト全体を見た』と受け取る型。
+ *     重複は **記事↔記事**だけでなく **記事↔ツール**でも起きる。母集合は docs 配下の全ページ。
  *
  * ★両方向を見る(このリポで4回、正しい商品を落とす検査を書いた):
- *   ① 落ちるべきものが落ちる … 既知の重複3件を名指しできること
+ *   ① 落ちるべきものが落ちる … 既知の重複を名指しできること(コラム・ツールの両方)
  *   ② 通るべきものが通る     … 無関係な語で誤爆しないこと
  * ★走査した本数をassertする(第18便: 検査が対象の一部しか見ていなくても出力は「緑」になる。
  *   docs/column のパスを間違えて0本を走査したら、重複は永遠に検出されず全て緑になる)
+ *   ★第21便: その本数assertは**column だけを数えていた**ので、ツールが丸ごと欠けていても緑だった。
+ *   → ディスク側の期待値も **docs 配下を再帰**で数える(母集合の申告そのものを検査する)。
  */
 import { execFileSync } from "node:child_process";
 import { readdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const run = (...kws) =>
@@ -26,14 +36,36 @@ const run = (...kws) =>
 const fail = [];
 const ok = (cond, msg) => { if (!cond) fail.push(msg); };
 
-// --- 走査カバレッジ: ディスク上の公開記事を全部読んでいるか ---
-const onDisk = readdirSync(new URL("../docs/column", import.meta.url), { withFileTypes: true })
-  .filter((d) => d.isDirectory()
-    && existsSync(new URL(`../docs/column/${d.name}/index.html`, import.meta.url))
-    && !existsSync(new URL(`../docs/column/${d.name}/.nopublish`, import.meta.url))).length;
-const scanned = Number(run("ダミー").find((r) => r[0] === "SCANNED")[1]);
-ok(scanned === onDisk, `走査本数 ${scanned} ≠ ディスク上の公開記事 ${onDisk} 本`);
-ok(scanned >= 30, `走査本数が少なすぎる(${scanned}本)。パスを見失っている疑い`);
+// --- 走査カバレッジ: docs 配下の公開ページを全部読んでいるか(コラムだけではない) ---
+// ディスク側を独立に数える。実装と同じ関数を呼ぶと「2つとも同じ間違い」で緑になる。
+const docs = join(root, "docs");
+function pagesOnDisk(dir) {
+  let n = 0;
+  for (const d of readdirSync(dir, { withFileTypes: true })) {
+    if (!d.isDirectory()) continue;
+    const sub = join(dir, d.name);
+    if (existsSync(join(sub, ".nopublish"))) continue;   // 本番に出ない=重複相手でない
+    if (existsSync(join(sub, "index.html"))) n++;
+    n += pagesOnDisk(sub);
+  }
+  return n;
+}
+const onDisk = pagesOnDisk(docs) + (existsSync(join(docs, "index.html")) ? 1 : 0);
+
+const dummy = run("ダミー");
+const scanned = Number(dummy.find((r) => r[0] === "SCANNED")[1]);
+ok(scanned === onDisk, `走査本数 ${scanned} ≠ ディスク上の公開ページ ${onDisk} 件`);
+ok(scanned >= 150, `走査本数が少なすぎる(${scanned}件)。母集合を見失っている疑い`);
+
+// 内訳を申告すること。総数だけだと「column だけ数え直した」と区別がつかない。
+const kinds = Object.fromEntries(
+  dummy.filter((r) => r[0] === "SCANNED_KIND").map((r) => [r[1], Number(r[2])]));
+ok(Object.keys(kinds).length > 0, "走査対象の内訳(SCANNED_KIND)を申告していない");
+ok((kinds.column ?? 0) >= 70, `コラムの走査が少なすぎる(${kinds.column})`);
+ok((kinds.tool ?? 0) >= 50,
+   `★ツールを走査していない(${kinds.tool ?? 0}件)。第21便の穴が再発している`);
+ok(Object.values(kinds).reduce((a, b) => a + b, 0) === scanned,
+   `内訳の合計 ${Object.values(kinds).reduce((a, b) => a + b, 0)} が総数 ${scanned} と合わない`);
 
 // --- ① 落ちるべきものが落ちる ---
 // 第24便に見逃した実例。teiji-kettei の「節」として拾えなければ、この検査は無意味。
@@ -51,9 +83,27 @@ ok(run("賞与", "社会保険料").some((r) => r[0] === "TITLE" && r[2] === "sh
 ok(run("固定的賃金").some((r) => r[0] === "BODY" && Number(r[3]) >= 3),
    "本文でのみ繰り返し扱われているテーマをBODYとして拾えていない");
 
+// ★第21便の実例。**ツール側**が主題として保有しているのを名指しできること。
+// これが落ちると、需要最大のクラスタで自サイトの共食いを作る。
+const PATH = 5;   // 行の末尾に **パス** を出す(slug だけでは指せない。下の衝突参照)
+for (const kw of ["倒産防止共済", "経営セーフティ共済"]) {
+  const hits = run(kw);
+  ok(hits.some((r) => r[0] === "TITLE" && r[PATH] === "/tosan-boshi-kyosai/"),
+     `★「${kw}」で**ツール** /tosan-boshi-kyosai/ をTITLEとして名指しできていない`
+     + `(第21便の穴: 母集合が docs/column だけ)`);
+}
+
+// slug は一意ではない。`kogaku-ryoyohi` は **コラムとツールの両方**に実在する。
+// slug だけを出すと、どちらを指しているのか読む側に分からない。
+const kogaku = run("高額療養費").filter((r) => r[2] === "kogaku-ryoyohi");
+ok(new Set(kogaku.map((r) => r[PATH])).size === 2,
+   `slug衝突 kogaku-ryoyohi をパスで区別できていない: ${JSON.stringify(kogaku.map((r) => r[PATH]))}`);
+ok(kogaku.every((r) => (r[PATH] ?? "").startsWith("/") && r[PATH].endsWith("/")),
+   `パスが URL の形になっていない: ${JSON.stringify(kogaku.map((r) => r[PATH]))}`);
+
 // --- ② 通るべきものが通る(誤爆しない) ---
 for (const kw of ["バナナ 輸入 関税", "犬 しつけ"]) {
-  const hits = run(kw).filter((r) => r[0] !== "SCANNED");
+  const hits = run(kw).filter((r) => !r[0].startsWith("SCANNED"));
   ok(hits.length === 0, `無関係な「${kw}」で誤爆した: ${JSON.stringify(hits)}`);
 }
 
@@ -62,4 +112,6 @@ if (fail.length) {
   for (const f of fail) console.error("   - " + f);
   process.exit(1);
 }
-console.log(`✔ test_keyword_demand (${scanned}本を走査・重複3件を検出・誤爆なし)`);
+console.log(`✔ test_keyword_demand (${scanned}件を走査`
+  + `[コラム${kinds.column}/ツール${kinds.tool}/その他${kinds.other ?? 0}]`
+  + `・コラム重複3件+ツール重複2件を検出・slug衝突をパスで区別・誤爆なし)`);

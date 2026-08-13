@@ -18,6 +18,7 @@ import re
 import sys
 import time
 import urllib.parse
+from collections import Counter
 from pathlib import Path
 import urllib.request
 
@@ -105,30 +106,56 @@ def _text(html):
     return re.sub(r"\s+", " ", re.sub(r"<[^>]+>", "", html)).strip()
 
 
+def _page_kind(rel):
+    """docs からの相対パス(PosixPath)を column / tool / other に分ける。
+
+    内訳を申告するためだけのラベル。**重複の判定には使わない**
+    (どの種別でも検索結果では同じ1枠を奪い合うので、扱いは対等)。
+    """
+    parts = rel.parts
+    if parts[0] == "column" and len(parts) == 3:
+        return "column"
+    if len(parts) == 2:                      # docs/<slug>/index.html
+        return "tool"
+    return "other"                           # トップ・/nenshu/・/embed/ など
+
+
 def existing_articles():
-    """公開済みコラムを {slug,title,headings,body} で返す。
+    """公開済みページを {slug,path,kind,title,headings,body} で返す。
 
     ★見出しと本文まで読む(2026-07-13 第25便)。第24便まではタイトルとslugしか
     見ておらず、「随時改定」が `teiji-kettei` の**節**(h3「給与が大きく変わったとき
     (随時改定)」・本文7回)で既に扱われていたのを1本も名指しできなかった。
     テーマの重複は**記事の単位ではなく節の単位**で起きる。
+
+    ★母集合は docs 配下の**全ページ**(2026-08-13 第21便)。それまでは `docs/column`
+    しか見ておらず、**ツール67本が網の外**だった。その日の需要1位「倒産防止共済
+    9,390件/月」・2位「経営セーフティ共済 4,188件/月」でこの関数は**何も返さず**、
+    実体は `docs/tosan-boshi-kyosai/`(title に主題・本文38回)が保有していた。
+    ＝ 便が自分で本文grepを当てなければ、最大クラスタで自サイトの共食いを作っていた。
+    **重複は記事↔記事だけでなく記事↔ツールでも起きる。**
     """
-    col = Path(__file__).resolve().parent.parent / "docs" / "column"
+    docs = Path(__file__).resolve().parent.parent / "docs"
     out = []
-    if not col.is_dir():
+    if not docs.is_dir():
         return out
-    for d in sorted(col.iterdir()):
-        f = d / "index.html"
-        if not f.is_file() or d.name == "index.html":
-            continue
-        if (d / ".nopublish").exists():   # 本番に出ない記事は重複相手でない
+    for f in sorted(docs.rglob("index.html")):
+        d = f.parent
+        rel = f.relative_to(docs)
+        # 本番に出ないものは重複相手でない。祖先のどこかに置かれていても効かせる
+        if any((p / ".nopublish").exists()
+               for p in [d, *d.parents] if docs in p.parents or p == docs):
             continue
         html = f.read_text(encoding="utf-8", errors="replace")
         m = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S)
         if not m:
             continue
         out.append({
-            "slug": d.name,
+            # ★slug は一意ではない(`kogaku-ryoyohi` はコラムとツールの両方に実在する)。
+            #   人にも検査にも **path** を見せること。
+            "slug": d.name if d != docs else "",
+            "path": "/" + ("" if d == docs else str(rel.parent) + "/"),
+            "kind": _page_kind(rel),
             "title": _text(m.group(1)),
             "headings": [_text(h) for h in
                          re.findall(r"<h[23][^>]*>(.*?)</h[23]>", html, re.S)],
@@ -153,15 +180,15 @@ def dupe_hits(kw, arts):
         return hits
     for a in arts:
         if all(t in a["title"] or t in a["slug"] for t in toks):
-            hits["title"].append((a["slug"], a["title"], 0))
+            hits["title"].append((a["slug"], a["title"], 0, a["path"]))
             continue
         heads = [h for h in a["headings"] if all(t in h for t in toks)]
         if heads:
-            hits["section"].append((a["slug"], heads[0], len(heads)))
+            hits["section"].append((a["slug"], heads[0], len(heads), a["path"]))
             continue
         n = min(a["body"].count(t) for t in toks)
         if n >= BODY_MENTION_MIN:
-            hits["body"].append((a["slug"], a["title"], n))
+            hits["body"].append((a["slug"], a["title"], n, a["path"]))
     return hits
 
 
@@ -177,34 +204,43 @@ def warn_existing(keywords, machine=False):
     """
     arts = existing_articles()
     out = sys.stdout if machine else sys.stderr
+    kinds = Counter(a["kind"] for a in arts)
+    # ★内訳まで申告する(2026-08-13 第21便)。総数だけだと「column を数え直しただけ」と
+    #   区別がつかない。「78本を走査」と正直に名乗っていても、読む側は『サイト全体を
+    #   見た』と受け取る——**母集合の申告が見出しの中に埋まっていると、判断の時に効かない**。
+    breakdown = (f"コラム{kinds['column']} / ツール{kinds['tool']} / "
+                 f"その他{kinds['other']}")
     if machine:
         print(f"SCANNED\t{len(arts)}")     # 読んだ本数を出す(0本を緑と見分ける)
+        for k in ("column", "tool", "other"):
+            print(f"SCANNED_KIND\t{k}\t{kinds[k]}")
     if not arts:
         return
     if not machine:
-        print(f"\n=== 既存記事との重複チェック({len(arts)}本を走査) ===", file=out)
+        print(f"\n=== 自サイトとの重複チェック"
+              f"(docs配下の全{len(arts)}ページを走査: {breakdown}) ===", file=out)
     hit = False
     for kw in keywords:
         h = dupe_hits(kw, arts)
         if machine:
             for tier in ("title", "section", "body"):
-                for slug, where, n in h[tier]:
-                    print(f"{tier.upper()}\t{kw}\t{slug}\t{n}\t{where}")
+                for slug, where, n, path in h[tier]:
+                    print(f"{tier.upper()}\t{kw}\t{slug}\t{n}\t{where}\t{path}")
             continue
         if h["title"]:
             hit = True
-            print(f"⚠️  「{kw}」は記事として既に書かれている可能性が高い:", file=out)
-            for slug, title, _ in h["title"]:
-                print(f"      /column/{slug}/  {title}", file=out)
+            print(f"⚠️  「{kw}」は既に主題として保有されている可能性が高い:", file=out)
+            for _, title, _, path in h["title"]:
+                print(f"      {path}  {title}", file=out)
         if h["section"]:
             hit = True
-            print(f"⚠️  「{kw}」は既存記事の**節**で扱われている"
+            print(f"⚠️  「{kw}」は既存ページの**節**で扱われている"
                   f"(節を書き直す/その節を縮めて新記事へ誘導する を検討):", file=out)
-            for slug, head, _ in h["section"]:
-                print(f"      /column/{slug}/  見出し「{head}」", file=out)
+            for _, head, _, path in h["section"]:
+                print(f"      {path}  見出し「{head}」", file=out)
         if h["body"]:
-            print(f"・「{kw}」に言及済みの記事: "
-                  + ", ".join(f"{s}({n}回)" for s, _, n in
+            print(f"・「{kw}」に言及済みのページ: "
+                  + ", ".join(f"{p}({n}回)" for _, _, n, p in
                               sorted(h["body"], key=lambda x: -x[2])[:5]), file=out)
     if hit:
         print("→ 新規に書かず、既存記事を深く書き直すことを検討する"
@@ -245,14 +281,16 @@ def main():
             time.sleep(1.0)
             if tot < a.min_vol:
                 continue
-            # 既存記事との重なりを4段階で判定（seed一致で全部「既存」にしない）
+            # 自サイトとの重なりを4段階で判定（seed一致で全部「既存」にしない）
+            # ★参照は slug でなく **path**（slug は一意でない: `kogaku-ryoyohi` は
+            #   コラムとツールの両方に実在する）
             h = dupe_hits(p, arts)
             if h["title"]:
-                dup, ref = "重複", h["title"][0][0]       # 記事まるごとある→押し上げ対象
+                dup, ref = "重複", h["title"][0][3]       # 主題として保有→押し上げ対象
             elif h["section"]:
-                dup, ref = "節あり", h["section"][0][0]   # 節で扱い済→深掘りの余地
+                dup, ref = "節あり", h["section"][0][3]   # 節で扱い済→深掘りの余地
             elif h["body"]:
-                dup, ref = "言及", h["body"][0][0]        # 触れてるだけ→新規の芽
+                dup, ref = "言及", h["body"][0][3]        # 触れてるだけ→新規の芽
             else:
                 dup, ref = "★未開拓", ""                  # どこにも無い＝狙い目
             w = winnability(p)
@@ -261,7 +299,7 @@ def main():
         rows.sort(key=lambda r: -r[3])
         print(f"\n{'スコア':>6} {'検索数':>7} {'勝て度':>5}  区分     参照/狙い    キーワード")
         for p, tot, w, sc, dup, ref in rows[:40]:
-            print(f"{sc:>6} {tot:>7,} {w:>5}  {dup:<6} {ref:<12} {p}")
+            print(f"{sc:>6} {tot:>7,} {w:>5}  {dup:<6} {ref:<30} {p}")
         print(f"\n→ ★未開拓 かつ 上位＝**ニッチだけどボリュームがある空白**。ここから新記事。",
               file=sys.stderr)
         print(f"→ 言及/節あり＝既存記事に節を足して深掘り。重複＝sc_check.py の押し上げ対象。",
