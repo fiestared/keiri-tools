@@ -27,7 +27,11 @@ const b = html.indexOf('<!-- ZENGIN_LAYOUT:END -->');
 assert.ok(a >= 0 && b > a,
   'レコードレイアウトがありません。node tools/gen_zengin_layout.mjs を実行してください');
 const section = html.slice(a, b);
-assert.ok(html.includes('href="#layout"'),
+// ★HTML全体で見ると、記事のどこか(リード等)に同じアンカーへの導線を1行足しただけで
+//   **目次から外しても緑**になる(2026-08-13 に furikomi で実際に起きた)。名指しを目次まで下ろす。
+const toc = html.slice(html.indexOf('<nav class="toc">'), html.indexOf('</nav>', html.indexOf('<nav class="toc">')));
+assert.ok(toc, '目次(nav.toc)が見つかりません');
+assert.ok(toc.includes('href="#layout"'),
   '目次にレコードレイアウト（#layout）へのリンクがありません');
 
 // --- 2. 桁数合計が120であること（fail closed の要）---------------------------

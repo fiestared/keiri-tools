@@ -24,7 +24,11 @@ const b = html.indexOf('<!-- YUKYU_QUICK:END -->');
 assert.ok(a >= 0 && b > a,
   '冒頭の「まず早見表」がありません。node tools/gen_yukyu_quick.mjs を実行してください');
 const section = html.slice(a, b);
-assert.ok(html.includes('href="#hayamihyo"'),
+// ★HTML全体で見ると、記事のどこか(リード等)に同じアンカーへの導線を1行足しただけで
+//   **目次から外しても緑**になる(2026-08-13 に furikomi で実際に起きた)。名指しを目次まで下ろす。
+const toc = html.slice(html.indexOf('<nav class="toc">'), html.indexOf('</nav>', html.indexOf('<nav class="toc">')));
+assert.ok(toc, '目次(nav.toc)が見つかりません');
+assert.ok(toc.includes('href="#hayamihyo"'),
   '目次に「まず早見表」（#hayamihyo）へのリンクがありません（孤児の見出しを作らない）');
 
 // --- 2. 冒頭にあること（後ろに埋もれていたら意味がない）----------------------

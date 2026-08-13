@@ -28,7 +28,11 @@ const b = html.indexOf('<!-- KAITORI_TABLE:END -->');
 assert.ok(a >= 0 && b > a,
   '買取単価の早見表がありません。node tools/gen_kaitori_table.mjs を実行してください');
 const section = html.slice(a, b);
-assert.ok(html.includes('href="#hayamihyo"'),
+// ★HTML全体で見ると、記事のどこか(リード等)に同じアンカーへの導線を1行足しただけで
+//   **目次から外しても緑**になる(2026-08-13 に furikomi で実際に起きた)。名指しを目次まで下ろす。
+const toc = html.slice(html.indexOf('<nav class="toc">'), html.indexOf('</nav>', html.indexOf('<nav class="toc">')));
+assert.ok(toc, '目次(nav.toc)が見つかりません');
+assert.ok(toc.includes('href="#hayamihyo"'),
   '目次に早見表（#hayamihyo）へのリンクがありません');
 
 // --- 2. ★外部オラクル: 記事に前からある手書きの設例を再現できること ------------
