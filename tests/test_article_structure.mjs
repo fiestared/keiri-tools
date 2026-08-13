@@ -45,6 +45,7 @@ for (const slug of slugs) {
   // --- 計測・収益の土台(1ページでも欠けると、そのページだけ収益ゼロ・計測不能になる) ---
   if (!html.includes(GA_ID)) fail(slug, `GA4タグ(${GA_ID})が無い`);
   if (!html.includes(ADSENSE)) fail(slug, `AdSenseスニペット(${ADSENSE})が無い`);
+  if (!/<meta\b(?=[^>]*\bname=["']viewport["'])[^>]*>/i.test(html)) fail(slug, 'viewport が無い');
   if (!html.includes(`rel="canonical"`)) fail(slug, "canonical が無い");
   const canon = html.match(/rel="canonical"\s+href="([^"]+)"/)?.[1];
   const want = `https://keiri-tools.com/column/${slug}/`;
