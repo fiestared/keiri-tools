@@ -35,6 +35,7 @@ const ORDER = [
   "36-kyotei",                  // 36協定 74,000/月（特別条項 9,900・わかりやすく 4,400・三六協定 4,400・届出 1,900 も同記事で受ける）
   "nenmatsu-chosei-kakikata",   // 年末調整 書き方 57,105/月
   "kogaku-ryoyohi",             // 高額療養費制度 38,281/月（限度額適用認定証 31,302 も同記事で受ける）
+  "flextime",                   // フレックスタイム制 33,100/月（フレックスタイム制とは 12,100・デメリット 1,600・フレックスタイム制度 880・コアタイム 720・残業 720・労使協定 390・メリット 320・フレックスタイム制度とは 210・法定労働時間 90 ＝クラスタ 50,130）
   "ikuji-kyugyo-kyufukin",      // 育児休業給付金 31,302/月
   "roudou-joken-tsuchisho",     // 雇用契約書 27,100/月（労働条件通知書 22,200・雇用契約書 ない 4,400・労働条件通知書とは 3,600・雇用契約書とは 2,900 ほかクラスタ計 64,670 も同記事で受ける）
   "tedori-keisan",              // 手取り計算 25,591/月（手取り20万 9,390・手取り30万 7,656 も同記事で受ける）
@@ -175,9 +176,9 @@ const CATEGORIES = [
   {
     id: "kyuyo",
     name: "給与計算・手取り",
-    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、入社時に明示すべき労働条件。",
+    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、入社時に明示すべき労働条件。",
     slugs: [
-      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "zangyodai-keisan", "kotei-zangyodai", "tsukin-teate-hikazei",
+      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "flextime", "zangyodai-keisan", "kotei-zangyodai", "tsukin-teate-hikazei",
       "juminzei-tokubetsu-choshu", "juminzei-hikazei-border",
     ],
   },
