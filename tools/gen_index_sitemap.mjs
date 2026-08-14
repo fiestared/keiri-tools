@@ -33,6 +33,7 @@ const CHECK = process.argv.includes("--check");
 const ORDER = [
   "furusato-nozei-keisan",      // ふるさと納税 計算 85,023/月（ふるさと納税 シミュレーション 57,105 も同記事で受ける）
   "36-kyotei",                  // 36協定 74,000/月（特別条項 9,900・わかりやすく 4,400・三六協定 4,400・届出 1,900 も同記事で受ける）
+  "kibiki-keicho-kyuka",        // 忌引き休暇 60,500/月（忌引き 49,500・忌引きとは 33,100・慶弔休暇 18,100・忌引き 何日 5,400・慶弔休暇とは 4,400・忌引き 祖父母 4,400・慶弔費 3,600・忌引き 証明書 2,400・忌引き 給料 2,400・慶弔見舞金 1,900・慶弔休暇 有給 260・慶弔休暇 日数 170・慶弔休暇 無給 50 ＝クラスタ 186,180。★別称の忌引き系3語だけで143,100＝慶弔系の5.5倍。引き継ぎ候補は「慶弔休暇 18,100」だったので頭の語を取り違えると1/3に見誤る）
   "nenmatsu-chosei-kakikata",   // 年末調整 書き方 57,105/月
   "kaigyo-todoke",              // 開業届 40,500/月（開業届 個人事業主 33,100・必要なもの 4,400・書き方 4,400・e-tax 2,900・ダウンロード 2,400・出し方 1,300・オンライン 1,300・開業届とは 1,000・住所変更 590 ＝クラスタ 91,890）
   "kogaku-ryoyohi",             // 高額療養費制度 38,281/月（限度額適用認定証 31,302 も同記事で受ける）
@@ -190,9 +191,9 @@ const CATEGORIES = [
   {
     id: "kyuyo",
     name: "給与計算・手取り",
-    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、1か月・1年・1週間の3つに分かれる変形労働時間制、裁量労働制のみなし時間、入社時に明示すべき労働条件、22時以降の深夜手当、会社都合で休ませたときの休業手当、予告なしで解雇するときの解雇予告手当、休日出勤の振替休日と代休の違い、6時間・8時間で切り替わる休憩時間の下限、常時10人以上で義務になる就業規則の作成・届出・周知。",
+    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、1か月・1年・1週間の3つに分かれる変形労働時間制、裁量労働制のみなし時間、入社時に明示すべき労働条件、22時以降の深夜手当、会社都合で休ませたときの休業手当、予告なしで解雇するときの解雇予告手当、休日出勤の振替休日と代休の違い、6時間・8時間で切り替わる休憩時間の下限、常時10人以上で義務になる就業規則の作成・届出・周知、労働基準法に定めがなく会社が日数を決める忌引き休暇（慶弔休暇）と香典・祝金の経理。",
     slugs: [
-      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "flextime", "henkei-roudou-jikan", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "kyukei-jikan", "shugyo-kisoku", "tsukin-teate-hikazei",
+      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "flextime", "henkei-roudou-jikan", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "kyukei-jikan", "shugyo-kisoku", "kibiki-keicho-kyuka", "tsukin-teate-hikazei",
       "juminzei-tokubetsu-choshu", "juminzei-hikazei-border",
     ],
   },

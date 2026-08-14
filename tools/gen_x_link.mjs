@@ -48,8 +48,14 @@ export function withLink(html) {
   if (html.includes(MARK)) {
     // 冪等: 既にあるものを差し替える（行を増やさない）
     const a = html.indexOf(MARK);
-    const end = html.indexOf('</div>', a) + '</div>'.length;
-    return html.slice(0, a) + LINE + html.slice(end);
+    const close = html.indexOf('</div>', a);
+    // ★マーカーだけ置いて中身が無いページ（新規記事の手書きテンプレ）では close が -1 になる。
+    //   旧実装は -1 + 6 = 5 を「終端」として扱い、html.slice(5) を後ろに繋いでいたので
+    //   **文書全体が黙って2回書き込まれた**（<!DOC だけ欠けた2つ目の複製ができる）。
+    //   検査は落ちるが「id が重複」としか言わないので、原因がここだと分かるまで遠い。
+    //   中身が無い＝差し替える対象が無いだけなので、マーカーを LINE に置き換えれば足りる。
+    if (close < 0) return html.slice(0, a) + LINE + html.slice(a + MARK.length);
+    return html.slice(0, a) + LINE + html.slice(close + '</div>'.length);
   }
   const close = html.lastIndexOf('</footer>');
   if (close < 0) throw new Error('</footer> が見つかりません');
