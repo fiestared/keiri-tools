@@ -53,6 +53,7 @@ const ORDER = [
   "gensen-choshuhyo-mikata",    // 源泉徴収票 見方 17,131/月
   "sozokuzei-ikura",            // 相続税 いくらから 17,131/月
   "zoyozei-ikura",              // 贈与税 いくらから 17,131/月
+  "kaisha-setsuritsu",          // 会社設立 14,800/月（費用 3,600・税理士 2,900・流れ 2,400・必要書類 880・設立日 320・登記申請日 70 ＝クラスタ 24,970）
   "gensen-zeigakuhyo-mikata",   // 源泉徴収税額表 14,001/月
   "iryohi-kojo-ikura-kara",     // 医療費控除 いくらから 11,464/月（計算9,390・明細書7,656も同記事で受ける）
   "shussan-teate-kin",          // 出産手当金 11,464/月
@@ -256,9 +257,9 @@ const CATEGORIES = [
   {
     id: "hojinzei-kessan",
     name: "法人税・決算の実務",
-    desc: "法人税の税率と防衛特別法人税、役員報酬・交際費・決算賞与・繰越欠損金・引当金・経過勘定と、賃上げ促進税制などの優遇措置。",
+    desc: "会社設立後の税務届出と法人税の税率、役員報酬・交際費・決算賞与・繰越欠損金・引当金・経過勘定と、賃上げ促進税制などの優遇措置。",
     slugs: [
-      "hojinzei-ritsu",
+      "kaisha-setsuritsu", "hojinzei-ritsu",
       "yakuin-hoshu-kimekata", "kosaihi-kaigihi-chigai", "shutcho-nittou-ryohi-kitei",
       "kessan-shoyo", "kurikoshi-kessonkin", "chinage-sokushin-zeisei",
       "chusho-keiei-kyoka-zeisei", "jigyo-shokei-zeisei", "sentan-setsubi-dounyu-keikaku",
