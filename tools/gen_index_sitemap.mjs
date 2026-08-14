@@ -32,6 +32,7 @@ const CHECK = process.argv.includes("--check");
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
   "furusato-nozei-keisan",      // ふるさと納税 計算 85,023/月（ふるさと納税 シミュレーション 57,105 も同記事で受ける）
+  "36-kyotei",                  // 36協定 74,000/月（特別条項 9,900・わかりやすく 4,400・三六協定 4,400・届出 1,900 も同記事で受ける）
   "nenmatsu-chosei-kakikata",   // 年末調整 書き方 57,105/月
   "kogaku-ryoyohi",             // 高額療養費制度 38,281/月（限度額適用認定証 31,302 も同記事で受ける）
   "ikuji-kyugyo-kyufukin",      // 育児休業給付金 31,302/月
@@ -173,9 +174,9 @@ const CATEGORIES = [
   {
     id: "kyuyo",
     name: "給与計算・手取り",
-    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務。",
+    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限。",
     slugs: [
-      "tedori-keisan", "zangyodai-keisan", "kotei-zangyodai", "tsukin-teate-hikazei",
+      "tedori-keisan", "36-kyotei", "zangyodai-keisan", "kotei-zangyodai", "tsukin-teate-hikazei",
       "juminzei-tokubetsu-choshu", "juminzei-hikazei-border",
     ],
   },
