@@ -56,6 +56,7 @@ const ORDER = [
   "zoyozei-ikura",              // 贈与税 いくらから 17,131/月
   "kaisha-setsuritsu",          // 会社設立 14,800/月（費用 3,600・税理士 2,900・流れ 2,400・必要書類 880・設立日 320・登記申請日 70 ＝クラスタ 24,970）
   "gensen-zeigakuhyo-mikata",   // 源泉徴収税額表 14,001/月
+  "kaigo-kyugyo-kyufukin",      // 介護休業給付金 12,100/月（必要書類 1,300・支給申請書 720・対象者 720・添付書類 260・条件 260・申請 170・要件 90・上限 90・退職 20 ＝クラスタ 15,730）
   "iryohi-kojo-ikura-kara",     // 医療費控除 いくらから 11,464/月（計算9,390・明細書7,656も同記事で受ける）
   "shussan-teate-kin",          // 出産手当金 11,464/月
   "shussan-ikuji-ichijikin",    // 出産育児一時金 11,464/月
@@ -190,11 +191,11 @@ const CATEGORIES = [
   {
     id: "kyufu",
     name: "健康保険・雇用保険の給付",
-    desc: "医療費が高額になったとき、病気・出産・育児で働けないとき、失業したときに受け取れるお金。",
+    desc: "医療費が高額になったとき、病気・出産・育児・家族の介護で働けないとき、失業したときに受け取れるお金。",
     slugs: [
       "kogaku-ryoyohi", "shobyo-teate-kin", "shussan-teate-kin", "shussan-ikuji-ichijikin",
-      "ikuji-kyugyo-kyufukin", "shitsugyo-hoken-keisan", "saishushoku-teate",
-      "rishokuhyo",
+      "ikuji-kyugyo-kyufukin", "kaigo-kyugyo-kyufukin", "shitsugyo-hoken-keisan",
+      "saishushoku-teate", "rishokuhyo",
     ],
   },
   {
