@@ -55,6 +55,7 @@ const ORDER = [
   "taishokukin-zeikin",
   "hojinzei-ritsu",             // 法人税率 18,100/月（推移 590・実効税率 260・中小企業 210・日本 210・改正 110・国税庁 50・大企業 30・中小企業 実効税率 10 ＝クラスタ 19,570）
   "cash-flow-keisansho",        // キャッシュフロー計算書 18,100/月（作り方 2,400・間接法 1,300・とは 1,000・ひな形 720・見方 590・直接法 390・作り方 エクセル 210・cs 50 ＝クラスタ 24,760。英語 210 は除外）
+  "shiyo-kikan",                // 試用期間とは 18,100/月（試用期間 解雇 14,800・試用期間 9,900・試用期間 退職 9,900・試用期間 クビ 4,400・試用期間中の解雇 1,600・試用期間 社会保険 1,600・試用期間 給料 1,000・試用期間 有給 880・試用期間 本採用拒否 320・試用期間 長さ 70 ＝クラスタ 62,570。「試用期間 英語」は別意図なので除外）
   "gensen-choshuhyo-mikata",    // 源泉徴収票 見方 17,131/月
   "sozokuzei-ikura",            // 相続税 いくらから 17,131/月
   "zoyozei-ikura",              // 贈与税 いくらから 17,131/月
@@ -191,9 +192,9 @@ const CATEGORIES = [
   {
     id: "kyuyo",
     name: "給与計算・手取り",
-    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、1か月・1年・1週間の3つに分かれる変形労働時間制、裁量労働制のみなし時間、入社時に明示すべき労働条件、22時以降の深夜手当、会社都合で休ませたときの休業手当、予告なしで解雇するときの解雇予告手当、休日出勤の振替休日と代休の違い、6時間・8時間で切り替わる休憩時間の下限、常時10人以上で義務になる就業規則の作成・届出・周知、労働基準法に定めがなく会社が日数を決める忌引き休暇（慶弔休暇）と香典・祝金の経理。",
+    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、1か月・1年・1週間の3つに分かれる変形労働時間制、裁量労働制のみなし時間、入社時に明示すべき労働条件、22時以降の深夜手当、会社都合で休ませたときの休業手当、予告なしで解雇するときの解雇予告手当、休日出勤の振替休日と代休の違い、6時間・8時間で切り替わる休憩時間の下限、常時10人以上で義務になる就業規則の作成・届出・周知、労働基準法に定めがなく会社が日数を決める忌引き休暇（慶弔休暇）と香典・祝金の経理、予告なしの解雇が14日までに限られる試用期間。",
     slugs: [
-      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "flextime", "henkei-roudou-jikan", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "kyukei-jikan", "shugyo-kisoku", "kibiki-keicho-kyuka", "tsukin-teate-hikazei",
+      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "flextime", "henkei-roudou-jikan", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "kyukei-jikan", "shugyo-kisoku", "kibiki-keicho-kyuka", "shiyo-kikan", "tsukin-teate-hikazei",
       "juminzei-tokubetsu-choshu", "juminzei-hikazei-border",
     ],
   },
