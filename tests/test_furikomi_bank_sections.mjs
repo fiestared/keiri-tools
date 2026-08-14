@@ -81,7 +81,10 @@ for (const r of verified) {
 }
 const unverified = rows.filter((r) => !r.source);
 if (unverified.length) {
-  assert.ok(section.includes('まだ一次情報での再照合が済んでいません'),
+  // ★2026-08-14: 文言を読者向けに変えた（旧「★この行はまだ一次情報での再照合が
+  //   済んでいません」は編集メモがそのまま公開に出ていた）。守りたいのは文言ではなく
+  //   **「未照合であることを黙って伏せない」**なので、意味で見る。
+  assert.ok(section.includes('公式ページで個別に確認できていません'),
     `未照合の行が ${unverified.length} あるのに、そのことがページ上に書かれていません（黙って伏せない）`);
 }
 

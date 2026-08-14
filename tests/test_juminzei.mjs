@@ -524,5 +524,22 @@ console.log('\n■ ★★令和8年分（zeisei:"r8"）— 令和8年度税制�
   ok(threw2, '★shotokuzei_kiso_kojo_r8 が無いデータで zeisei:r8 → 例外（同上）');
 }
 
+// ★★「住民税はいくらから」の断定に**所得の年分**が付いていること（2026-08-14 追加）。
+//   実際に起きていた: /juminzei/ のFAQが「給与収入なら110万円」と**年の限定なしで断定**し、
+//   同じページの計算機は令和8年分ベース、他ページ（kinro-gakusei 等）は119万円と書いていた。
+//   ＝サイト横断で**9万円違う2つの答え**が年の説明なしに並んでいた。
+//   どちらも年分を付ければ正しい（令和7年分=110万円／令和8年分=119万円。措置法29条の4で
+//   給与所得控除の最低額が65万→74万）。年を落とした断定だけが誤り。
+{
+  const html = readFileSync(new URL('../docs/juminzei/index.html', import.meta.url), 'utf8');
+  const t = html.replace(/<[^>]+>/g, ' ');
+  // ★正規表現を凝らない。`[^）]*?` は閉じ括弧を跨げず、実際に検知に失敗した（2026-08-14）。
+  //   狙いは「年分の説明なしに110万円と断定していないか」なので、素の文字列で見る。
+  const bare = t.includes('（給与収入なら110万円）を超えると住民税');
+  checks++; if (bare) { failed++; console.log('  ❌ /juminzei/ が「給与収入なら110万円」と年分の限定なしで断定している'); }
+  const both = /令和7年分[^。]{0,40}110万円/.test(t) && /令和8年分[^。]{0,40}119万円/.test(t);
+  checks++; if (!both) { failed++; console.log('  ❌ /juminzei/ に「令和7年分=110万円 / 令和8年分=119万円」の年分併記が無い'); }
+}
+
 console.log(`\n${failed === 0 ? '✅' : '❌'} test_juminzei: ${checks - failed}/${checks} checks passed`);
 if (failed > 0) process.exit(1);
