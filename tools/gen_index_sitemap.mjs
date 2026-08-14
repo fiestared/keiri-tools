@@ -36,6 +36,7 @@ const ORDER = [
   "nenmatsu-chosei-kakikata",   // 年末調整 書き方 57,105/月
   "kogaku-ryoyohi",             // 高額療養費制度 38,281/月（限度額適用認定証 31,302 も同記事で受ける）
   "ikuji-kyugyo-kyufukin",      // 育児休業給付金 31,302/月
+  "roudou-joken-tsuchisho",     // 雇用契約書 27,100/月（労働条件通知書 22,200・雇用契約書 ない 4,400・労働条件通知書とは 3,600・雇用契約書とは 2,900 ほかクラスタ計 64,670 も同記事で受ける）
   "tedori-keisan",              // 手取り計算 25,591/月（手取り20万 9,390・手取り30万 7,656 も同記事で受ける）
   "shitsugyo-hoken-keisan",     // 失業保険 計算 25,591/月（失業保険 自己都合 25,591・失業保険 期間 11,464 も同記事で受ける）
   "saishushoku-teate",          // 再就職手当 25,591/月
@@ -174,9 +175,9 @@ const CATEGORIES = [
   {
     id: "kyuyo",
     name: "給与計算・手取り",
-    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限。",
+    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、入社時に明示すべき労働条件。",
     slugs: [
-      "tedori-keisan", "36-kyotei", "zangyodai-keisan", "kotei-zangyodai", "tsukin-teate-hikazei",
+      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "zangyodai-keisan", "kotei-zangyodai", "tsukin-teate-hikazei",
       "juminzei-tokubetsu-choshu", "juminzei-hikazei-border",
     ],
   },
