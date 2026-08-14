@@ -45,6 +45,7 @@ const ORDER = [
   "koyou-hoken-kanyu-joken",    // 雇用保険 加入条件 25,591/月
   "rishokuhyo",                 // 離職票 25,591/月（離職票 書き方 2,284・離職票 いつもらえる 1,226 も同記事で受ける）
   "sairyo-roudou",              // 裁量労働制 22,200/月（裁量労働制とは 5,400・残業代 1,600・職種 480・36協定 260・フレックス 210・休日出勤 140・半休 70 ＝クラスタ 30,370）
+  "kyukei-jikan",               // 休憩時間 労働基準法 22,200/月（休憩時間 法律 12,100・休憩時間 9,900・6時間 6,600・8時間 880・5時間 480・法定 390・8時間以上 320 ＝クラスタ 52,870。「休憩時間 英語」1,300 は別意図なので除外）
   "invoice-wakariyasuku",
   "shakai-hoken-kanyu-joken",
   "shakai-hokenryo-keisan",
@@ -186,9 +187,9 @@ const CATEGORIES = [
   {
     id: "kyuyo",
     name: "給与計算・手取り",
-    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、裁量労働制のみなし時間、入社時に明示すべき労働条件、22時以降の深夜手当、会社都合で休ませたときの休業手当、予告なしで解雇するときの解雇予告手当、休日出勤の振替休日と代休の違い。",
+    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、裁量労働制のみなし時間、入社時に明示すべき労働条件、22時以降の深夜手当、会社都合で休ませたときの休業手当、予告なしで解雇するときの解雇予告手当、休日出勤の振替休日と代休の違い、6時間・8時間で切り替わる休憩時間の下限。",
     slugs: [
-      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "flextime", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "tsukin-teate-hikazei",
+      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "flextime", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "kyukei-jikan", "tsukin-teate-hikazei",
       "juminzei-tokubetsu-choshu", "juminzei-hikazei-border",
     ],
   },
