@@ -34,6 +34,7 @@ const ORDER = [
   "furusato-nozei-keisan",      // ふるさと納税 計算 85,023/月（ふるさと納税 シミュレーション 57,105 も同記事で受ける）
   "36-kyotei",                  // 36協定 74,000/月（特別条項 9,900・わかりやすく 4,400・三六協定 4,400・届出 1,900 も同記事で受ける）
   "nenmatsu-chosei-kakikata",   // 年末調整 書き方 57,105/月
+  "kaigyo-todoke",              // 開業届 40,500/月（開業届 個人事業主 33,100・必要なもの 4,400・書き方 4,400・e-tax 2,900・ダウンロード 2,400・出し方 1,300・オンライン 1,300・開業届とは 1,000・住所変更 590 ＝クラスタ 91,890）
   "kogaku-ryoyohi",             // 高額療養費制度 38,281/月（限度額適用認定証 31,302 も同記事で受ける）
   "flextime",                   // フレックスタイム制 33,100/月（フレックスタイム制とは 12,100・デメリット 1,600・フレックスタイム制度 880・コアタイム 720・残業 720・労使協定 390・メリット 320・フレックスタイム制度とは 210・法定労働時間 90 ＝クラスタ 50,130）
   "ikuji-kyugyo-kyufukin",      // 育児休業給付金 31,302/月
@@ -159,13 +160,13 @@ const CATEGORIES = [
   {
     id: "nenmatsu-gensen",
     name: "年末調整・源泉徴収・控除",
-    desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、医療費控除・ふるさと納税など各種控除と確定申告。",
+    desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、医療費控除・ふるさと納税など各種控除と確定申告。開業届と青色申告承認申請の期限もここ。",
     slugs: [
       "furusato-nozei-keisan", "kifukin-kojo",
       "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin",
       "fuyo-kojo-shinkokusho", "gensen-choshuhyo-mikata", "gensen-zeigakuhyo-mikata",
       "hoteichosho-goukeihyo", "shiharai-chosho", "shakai-hokenryo-kojo", "iryohi-kojo-ikura-kara",
-      "taishokukin-zeikin", "fukugyo-20man-kakutei-shinkoku",
+      "taishokukin-zeikin", "fukugyo-20man-kakutei-shinkoku", "kaigyo-todoke",
     ],
   },
   {
