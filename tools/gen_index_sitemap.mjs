@@ -50,6 +50,7 @@ const ORDER = [
   "shakai-hokenryo-keisan",
   "taishokukin-zeikin",
   "hojinzei-ritsu",             // 法人税率 18,100/月（推移 590・実効税率 260・中小企業 210・日本 210・改正 110・国税庁 50・大企業 30・中小企業 実効税率 10 ＝クラスタ 19,570）
+  "cash-flow-keisansho",        // キャッシュフロー計算書 18,100/月（作り方 2,400・間接法 1,300・とは 1,000・ひな形 720・見方 590・直接法 390・作り方 エクセル 210・cs 50 ＝クラスタ 24,760。英語 210 は除外）
   "gensen-choshuhyo-mikata",    // 源泉徴収票 見方 17,131/月
   "sozokuzei-ikura",            // 相続税 いくらから 17,131/月
   "zoyozei-ikura",              // 贈与税 いくらから 17,131/月
@@ -257,9 +258,9 @@ const CATEGORIES = [
   {
     id: "hojinzei-kessan",
     name: "法人税・決算の実務",
-    desc: "会社設立後の税務届出と法人税の税率、役員報酬・交際費・決算賞与・繰越欠損金・引当金・経過勘定と、賃上げ促進税制などの優遇措置。",
+    desc: "会社設立後の税務届出と法人税の税率、キャッシュフロー計算書、役員報酬・交際費・決算賞与・繰越欠損金・引当金・経過勘定と、賃上げ促進税制などの優遇措置。",
     slugs: [
-      "kaisha-setsuritsu", "hojinzei-ritsu",
+      "kaisha-setsuritsu", "hojinzei-ritsu", "cash-flow-keisansho",
       "yakuin-hoshu-kimekata", "kosaihi-kaigihi-chigai", "shutcho-nittou-ryohi-kitei",
       "kessan-shoyo", "kurikoshi-kessonkin", "chinage-sokushin-zeisei",
       "chusho-keiei-kyoka-zeisei", "jigyo-shokei-zeisei", "sentan-setsubi-dounyu-keikaku",
