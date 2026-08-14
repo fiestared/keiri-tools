@@ -46,6 +46,7 @@ const ORDER = [
   "rishokuhyo",                 // 離職票 25,591/月（離職票 書き方 2,284・離職票 いつもらえる 1,226 も同記事で受ける）
   "sairyo-roudou",              // 裁量労働制 22,200/月（裁量労働制とは 5,400・残業代 1,600・職種 480・36協定 260・フレックス 210・休日出勤 140・半休 70 ＝クラスタ 30,370）
   "kyukei-jikan",               // 休憩時間 労働基準法 22,200/月（休憩時間 法律 12,100・休憩時間 9,900・6時間 6,600・8時間 880・5時間 480・法定 390・8時間以上 320 ＝クラスタ 52,870。「休憩時間 英語」1,300 は別意図なので除外）
+  "kounenrei-koyou-keizoku",    // 高年齢雇用継続給付金 22,200/月（高年齢雇用継続給付 6,600・高年齢再就職給付金 1,600・高年齢雇用継続基本給付金 720・上限 480・とは 390・計算 260・高年齢雇用継続給付 計算 110・支給限度額 30・申請 20・いつまで 10 ＝クラスタ 32,420）
   "shugyo-kisoku",              // 就業規則 18,100/月（就業規則とは 4,400・変更届 3,600・届出 1,600・意見書 1,300・10人未満 1,300・絶対的記載事項 1,000・不利益変更 880・作成義務 320・周知 260 ＝クラスタ 32,760。「就業規則 英語」は別意図なので除外）
   "invoice-wakariyasuku",
   "shakai-hoken-kanyu-joken",
@@ -197,11 +198,11 @@ const CATEGORIES = [
   {
     id: "kyufu",
     name: "健康保険・雇用保険の給付",
-    desc: "医療費が高額になったとき、病気・出産・育児・家族の介護で働けないとき、失業したときに受け取れるお金。",
+    desc: "医療費が高額になったとき、病気・出産・育児・家族の介護で働けないとき、失業したとき、60歳以後に賃金が下がった状態で働き続けるときに受け取れるお金。",
     slugs: [
       "kogaku-ryoyohi", "shobyo-teate-kin", "shussan-teate-kin", "shussan-ikuji-ichijikin",
       "ikuji-kyugyo-kyufukin", "kaigo-kyugyo-kyufukin", "shitsugyo-hoken-keisan",
-      "saishushoku-teate", "rishokuhyo",
+      "saishushoku-teate", "rishokuhyo", "kounenrei-koyou-keizoku",
     ],
   },
   {
