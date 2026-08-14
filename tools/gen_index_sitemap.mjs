@@ -57,6 +57,7 @@ const ORDER = [
   "kaisha-setsuritsu",          // 会社設立 14,800/月（費用 3,600・税理士 2,900・流れ 2,400・必要書類 880・設立日 320・登記申請日 70 ＝クラスタ 24,970）
   "gensen-zeigakuhyo-mikata",   // 源泉徴収税額表 14,001/月
   "kaigo-kyugyo-kyufukin",      // 介護休業給付金 12,100/月（必要書類 1,300・支給申請書 720・対象者 720・添付書類 260・条件 260・申請 170・要件 90・上限 90・退職 20 ＝クラスタ 15,730）
+  "kyugyo-teate",               // 休業手当 9,900/月（とは 2,400・条件 1,900・計算 1,300・会社都合 720・計算方法 390・休業補償 違い 390・期間 390・労働基準法 260 ＝クラスタ 17,650）
   "iryohi-kojo-ikura-kara",     // 医療費控除 いくらから 11,464/月（計算9,390・明細書7,656も同記事で受ける）
   "shussan-teate-kin",          // 出産手当金 11,464/月
   "shussan-ikuji-ichijikin",    // 出産育児一時金 11,464/月
@@ -182,9 +183,9 @@ const CATEGORIES = [
   {
     id: "kyuyo",
     name: "給与計算・手取り",
-    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、裁量労働制のみなし時間、入社時に明示すべき労働条件。",
+    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、裁量労働制のみなし時間、入社時に明示すべき労働条件、会社都合で休ませたときの休業手当。",
     slugs: [
-      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "flextime", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "tsukin-teate-hikazei",
+      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "flextime", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "kyugyo-teate", "tsukin-teate-hikazei",
       "juminzei-tokubetsu-choshu", "juminzei-hikazei-border",
     ],
   },
