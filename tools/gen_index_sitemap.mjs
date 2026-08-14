@@ -79,6 +79,7 @@ const ORDER = [
   "miharai-hiyo-miharaikin", // 買掛金 未払金 違い 2,900/月 ＋ 未払金 2,400・未払費用 1,300・未払金 仕訳 1,000・未払金 未払費用 違い 720・未払費用 仕訳 480・未払費用 未払金 違い 210・未払金 とは 50・未払費用 決算 50 ＝クラスタ 9,110
   "urikake-mishunyukin-mishushueki", // 売掛金 9,900/月 ＋ 未収入金 1,900・売掛金 仕訳 1,900・未収金 1,600・未収収益 590・売掛金 未収入金 違い 480・未収入金 仕訳 480・売掛金 とは 390・売掛金 未収金 違い 110・未収収益 仕訳 110・未収入金 とは 70・未収入金 未収収益 違い 40 ＝クラスタ 17,570
   "karibaraikin-kariukekin", // 仮払金 2,900/月 ＋ 控除対象外消費税 2,900・仮受金 1,900・仮払消費税 1,600・仮受消費税 1,000・仮払金 仕訳 720・仮受金 仕訳 260 ＝クラスタ 11,280
+  "shueki-ninshiki-kijun", // 収益認識基準 4,400/月 ＋ 収益認識に関する会計基準 1,900・売上計上基準 880・検収基準 390・収益認識 5ステップ 210・出荷基準 210・収益認識基準 中小企業 110・売上 計上時期 90 ＝クラスタ 8,190
   "tanaoroshi-hyoka-hoho", // 移動平均法 4,400/月 ＋ 棚卸資産 3,600・総平均法 1,600・低価法 1,300・棚卸資産 評価方法 880・最終仕入原価法 880・棚卸 仕訳 480・棚卸資産 評価損 390・棚卸資産 とは 260 ＝クラスタ 13,790
   "furikomi-tesuryo-kanjo-kamoku", // 振込手数料 勘定科目 1,523/月
   "nenmatsu-chosei-itsumade",
@@ -222,6 +223,7 @@ const CATEGORIES = [
       "urikake-mishunyukin-mishushueki",
       "tanaoroshi-hyoka-hoho",
       "karibaraikin-kariukekin",
+      "shueki-ninshiki-kijun",
       "shunyu-inshi-warihan", "kashidaore-hikiatekin",
       "ai-keiri-hanjidoka",
       "hojokin-tokubetsu-kanjo", "hojokin-shiwake", "hojokin-shohizei", "assyuku-kicho-houshiki",
