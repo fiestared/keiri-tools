@@ -57,8 +57,18 @@ for (const slug of readdirSync(COLUMN)) {
   const h1 = html.match(/<h1>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]+>/g, "").trim() ?? slug;
   const card = html.match(/<meta name="card-desc" content="([^"]*)"/)?.[1]
             ?? html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? "";
+  // ★★<main> の中だけを見る（2026-08-14 修正）。
+  //   以前は html 全体を走査しており、**共通ヘッダのグローバルナビ**
+  //   （../../hojokin/ ../../toushi/ ../../column/）を「本文がそのツールを参照している」と
+  //   誤認していた。全コラムがヘッダを持つので、結果として
+  //   **/hojokin/ と /toushi/ の「関連する解説」が、主題と無関係な記事で埋まっていた**
+  //   （実測: /hojokin/ の関連5本が年末調整・高額療養費・育児休業給付金…で、
+  //    補助金の記事7本は1本も入っていなかった）。
+  //   この生成器の設計は「リンク元はコラム側の実リンク」なので、
+  //   ヘッダ・フッタの定型リンクを数えた時点で前提が壊れている。
+  const main = html.match(/<main[^>]*>([\s\S]*?)<\/main>/)?.[1] ?? html;
   const refs = new Set();
-  for (const m of html.matchAll(/href="\.\.\/\.\.\/([\w-]+)\//g)) refs.add(m[1]);
+  for (const m of main.matchAll(/href="\.\.\/\.\.\/([\w-]+)\//g)) refs.add(m[1]);
   columns.set(slug, { h1, card, refs });
 }
 

@@ -110,5 +110,20 @@ console.log('★混ざっていないか');
     '★補助金側は全行が締切の項目を持つ（持たないデータを混ぜていない）');
 }
 
+// ── ★生成物が最新か（流し忘れの検知）────────────────────────────
+// ★2026-08-14 追加。gen_hojokin_tabs / gen_hojokin_after は cron と手作業の両方で流すが、
+//   流し忘れても画面は「古いまま普通に見える」ので気づけない。--check を検査に通す。
+console.log('★生成物が最新か');
+{
+  const { execFileSync } = await import('node:child_process');
+  const root = new URL('../', import.meta.url).pathname;
+  for (const g of ['gen_hojokin_tabs', 'gen_hojokin_after']) {
+    let green = true;
+    try { execFileSync('node', [`tools/${g}.mjs`, '--check'], { cwd: root, stdio: 'pipe' }); }
+    catch { green = false; }
+    ok(green, `★${g}.mjs --check が緑（赤なら node tools/${g}.mjs を流してコミットする）`);
+  }
+}
+
 console.log(`\n${fail ? '✗' : '✓'} test_hojokin_sources: ${checks} checks, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -85,6 +85,13 @@ if ! node tools/gen_hojokin_tabs.mjs >> "$LOG" 2>&1; then
   exit 1
 fi
 
+# ★「もらった後の経理・税務」への導線。記事がrename/削除されたら生成が落ちて気づける（2026-08-14 追加）
+if ! node tools/gen_hojokin_after.mjs >> "$LOG" 2>&1; then
+  say "★『もらった後』導線の生成に失敗（記事が消えたかrenameされた可能性）。中止する"
+  git checkout -- docs/assets/ 2>/dev/null
+  exit 1
+fi
+
 # 検査を通してから push（壊れたデータを本番へ出さない）
 if ! node tests/test_hojokin.mjs >> "$LOG" 2>&1 || ! node tests/test_hojokin_sources.mjs >> "$LOG" 2>&1 || ! node tests/test_hojokin_cards.mjs >> "$LOG" 2>&1; then
   say "★test_hojokin が赤。差し戻す"
@@ -92,7 +99,10 @@ if ! node tests/test_hojokin.mjs >> "$LOG" 2>&1 || ! node tests/test_hojokin_sou
   exit 1
 fi
 
-git add docs/assets/hojokin_jgrants.json docs/assets/hojokin_schedule.json docs/assets/koyou_joseikin.json docs/column
+# ★docs/hojokin も add する（2026-08-14 修正）。gen_hojokin_tabs / gen_hojokin_after は
+#   docs/hojokin/*/index.html を書き換えるのに add の対象外で、**生成しても永久に
+#   コミットされず、作業ツリーを汚したまま**だった（タブの件数が本番で更新されない）。
+git add docs/assets/hojokin_jgrants.json docs/assets/hojokin_schedule.json docs/assets/koyou_joseikin.json docs/column docs/hojokin
 git commit -q -m "補助金データを更新（${n}件・jGrants公開APIの掃引）
 
 出典：Jグランツ（編集・加工しています）
