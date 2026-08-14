@@ -81,6 +81,7 @@ const ORDER = [
   "karibaraikin-kariukekin", // 仮払金 2,900/月 ＋ 控除対象外消費税 2,900・仮受金 1,900・仮払消費税 1,600・仮受消費税 1,000・仮払金 仕訳 720・仮受金 仕訳 260 ＝クラスタ 11,280
   "shueki-ninshiki-kijun", // 収益認識基準 4,400/月 ＋ 収益認識に関する会計基準 1,900・売上計上基準 880・検収基準 390・収益認識 5ステップ 210・出荷基準 210・収益認識基準 中小企業 110・売上 計上時期 90 ＝クラスタ 8,190
   "shokyaku-shisanzei", // 償却資産税 6,600/月 ＋ 償却資産税 計算 1,900・償却資産税 免税点 1,000・償却資産申告 880・固定資産税 償却資産 880・償却資産税 いくらから 90 ＝クラスタ 11,350
+  "kifukin-kojo", // 寄付金控除 14,800/月 ＋ 寄付金 5,400・寄付金税額控除額 2,400・寄付金受領証明書 2,400・寄付金控除 上限 1,600・寄付金 勘定科目 720・寄付金 消費税 720・寄付金控除とは 480 ＝クラスタ 28,520（ふるさと納税向けの 寄付金控除 ふるさと納税 1,900 は /furusato/ が受けるので除外）
   "tanaoroshi-hyoka-hoho", // 移動平均法 4,400/月 ＋ 棚卸資産 3,600・総平均法 1,600・低価法 1,300・棚卸資産 評価方法 880・最終仕入原価法 880・棚卸 仕訳 480・棚卸資産 評価損 390・棚卸資産 とは 260 ＝クラスタ 13,790
   "furikomi-tesuryo-kanjo-kamoku", // 振込手数料 勘定科目 1,523/月
   "nenmatsu-chosei-itsumade",
@@ -156,7 +157,7 @@ const CATEGORIES = [
     name: "年末調整・源泉徴収・控除",
     desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、医療費控除・ふるさと納税など各種控除と確定申告。",
     slugs: [
-      "furusato-nozei-keisan",
+      "furusato-nozei-keisan", "kifukin-kojo",
       "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin",
       "fuyo-kojo-shinkokusho", "gensen-choshuhyo-mikata", "gensen-zeigakuhyo-mikata",
       "hoteichosho-goukeihyo", "shiharai-chosho", "shakai-hokenryo-kojo", "iryohi-kojo-ikura-kara",
