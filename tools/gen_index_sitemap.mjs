@@ -59,6 +59,7 @@ const ORDER = [
   "kaigo-kyugyo-kyufukin",      // 介護休業給付金 12,100/月（必要書類 1,300・支給申請書 720・対象者 720・添付書類 260・条件 260・申請 170・要件 90・上限 90・退職 20 ＝クラスタ 15,730）
   "kyugyo-teate",               // 休業手当 9,900/月（とは 2,400・条件 1,900・計算 1,300・会社都合 720・計算方法 390・休業補償 違い 390・期間 390・労働基準法 260 ＝クラスタ 17,650）
   "shinya-teate",               // 深夜手当 8,100/月（計算 3,600・何時から 590・いくら 320・とは 210・何時から何時まで 170・法律 170・計算方法 110／深夜割増 720・深夜労働 720 ＝クラスタ 14,710）
+  "furikae-kyujitsu-daikyu",    // 振替休日 8,100/月（振替休日 代休 違い 5,400・代休 4,400・代休 振休 違い 590・振替休日 割増賃金 210・代休 時間単位 110・代休 いつまでに取得 90・代休 給与計算 70・代休 有給 違い 30 ＝クラスタ 19,000）
   "kaiko-yokoku-teate",         // 解雇予告手当 6,600/月（とは 2,400・計算方法 1,000・アルバイト 590・計算 480・所得税 480・退職所得 170・支払日 110・手当金 70・退職金 50／解雇予告 1,600・解雇予告通知書 1,600・解雇予告除外認定 720・30日 20 ＝クラスタ 15,890）
   "iryohi-kojo-ikura-kara",     // 医療費控除 いくらから 11,464/月（計算9,390・明細書7,656も同記事で受ける）
   "shussan-teate-kin",          // 出産手当金 11,464/月
@@ -185,9 +186,9 @@ const CATEGORIES = [
   {
     id: "kyuyo",
     name: "給与計算・手取り",
-    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、裁量労働制のみなし時間、入社時に明示すべき労働条件、22時以降の深夜手当、会社都合で休ませたときの休業手当、予告なしで解雇するときの解雇予告手当。",
+    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、裁量労働制のみなし時間、入社時に明示すべき労働条件、22時以降の深夜手当、会社都合で休ませたときの休業手当、予告なしで解雇するときの解雇予告手当、休日出勤の振替休日と代休の違い。",
     slugs: [
-      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "flextime", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kyugyo-teate", "kaiko-yokoku-teate", "tsukin-teate-hikazei",
+      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "flextime", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "tsukin-teate-hikazei",
       "juminzei-tokubetsu-choshu", "juminzei-hikazei-border",
     ],
   },
