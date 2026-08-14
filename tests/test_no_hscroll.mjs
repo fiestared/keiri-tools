@@ -97,7 +97,18 @@ const server = createServer(async (req, res) => {
   } catch { res.writeHead(404); res.end('nf'); }
 });
 
-await new Promise((ok) => server.listen(PORT, ok));
+// ★listen できない環境（サンドボックス等）では**測らずに降りる**。
+//   2026-08-14: codex の検査環境で EPERM になり、テスト一式が赤になった。
+//   測れないことと壊れていることは別物なので、赤にせず「測っていない」と申告する。
+const listened = await new Promise((ok) => {
+  server.once('error', (e) => ok({ err: e }));
+  server.listen(PORT, '127.0.0.1', () => ok({ err: null }));
+});
+if (listened.err) {
+  console.log(`↷ ローカルHTTPを立てられないので測定を飛ばします（${listened.err.code}）。`);
+  console.log('   ★これは「横スクロールが無い」という意味ではない。測っていないだけ。');
+  process.exit(0);
+}
 const profile = await mkdtemp(join(tmpdir(), 'hscroll-'));
 const chrome = spawn(CHROME, [
   '--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
