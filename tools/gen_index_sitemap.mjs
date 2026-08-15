@@ -73,6 +73,7 @@ const ORDER = [
   "shussan-teate-kin",          // 出産手当金 11,464/月
   "shussan-ikuji-ichijikin",    // 出産育児一時金 11,464/月
   "koyou-hokenryo-ritsu",       // 雇用保険料率 11,464/月
+  "rosai-hokenryoritsu",        // 労災保険料率 5,400/月（労災保険料 2,400・労災保険率 390 ＝クラスタ 8,190）。法令上の名前は「労災保険率」で"料"が入らない
   "kyuyo-shiharai-hokokusho",   // 給与支払報告書 18,100/月（書き方 3,600・総括表 2,400・提出先 1,300・eltax 1,300・提出期限 880・退職者 880・普通徴収 210 ＝副意図クラスタ 10,570）
   "shikaku-kakuninsho",         // 資格確認書・資格情報のお知らせ（資格確認書 165,000/月・資格確認書 いつ届く 22,200・資格情報のお知らせ 22,200）。法令上の名前は「資格情報通知書」（健保則51条の3）
   "kenko-shindan",              // 健康診断 会社 9,900/月（義務 4,400・費用 3,600・勘定科目 1,600・費用 会社負担 390 ＝クラスタ 19,890）
@@ -178,7 +179,8 @@ const CATEGORIES = [
       "shakai-hoken-kanyu-joken", "shakai-hokenryo-keisan", "hyojun-hoshu-gakuhyo",
       "teiji-kettei", "zuiji-kaitei", "sanzen-sango-kyugyo", "shoyo-shakaihoken", "kaigo-hokenryo-itsukara",
       "kodomo-kosodate-shienkin", "shakai-hoken-fuyo-joken", "nenshu-no-kabe",
-      "koyou-hoken-kanyu-joken", "koyou-hokenryo-ritsu", "kenko-hoken-nini-keizoku",
+      "koyou-hoken-kanyu-joken", "koyou-hokenryo-ritsu", "rosai-hokenryoritsu",
+      "kenko-hoken-nini-keizoku",
       "shikaku-kakuninsho",
     ],
   },
