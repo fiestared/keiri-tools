@@ -148,6 +148,7 @@ const ORDER = [
   "zengin-format-guide",
   "fukugyo-20man-kakutei-shinkoku", // 副業 確定申告 20万円
   "ai-keiri-hanjidoka",         // AIで経理を半自動化(E-E-A-T・実務経験)
+  "career-up-joseikin",        // キャリアアップ助成金の支給額 33,100/月（正社員化コース 6,600 ほかクラスタ計 40,370）
   "hojokin-tokubetsu-kanjo",   // 補助金の特別勘定（法人税法43条）
   "hojokin-shiwake",           // 補助金の仕訳と計上時期
   "hojokin-shohizei",          // 補助金と消費税（不課税・仕入控除税額の返還）
@@ -268,8 +269,9 @@ const CATEGORIES = [
   {
     id: "hojokin-keiri",
     name: "補助金の経理・税務",
-    desc: "補助金を受け取った後の処理。仕訳と計上時期、圧縮記帳と特別勘定（法人税法42〜44条）、消費税、個人事業主の場合。",
+    desc: "補助金を受け取った後の処理。仕訳と計上時期、圧縮記帳と特別勘定（法人税法42〜44条）、消費税、個人事業主の場合。雇用保険法施行規則118条の2が定めるキャリアアップ助成金の6コースと支給額、正社員化コースの額が通算勤続5年を境に4分の1へ下がること、本則の短時間労働者労働時間延長コースが附則で適用停止になっていることもここ。",
     slugs: [
+      "career-up-joseikin",
       "hojokin-shiwake", "hojokin-tokubetsu-kanjo", "assyuku-kicho-houshiki",
       "hojokin-asshuku-gendogaku", "hojokin-koteishisan-genka-shokyaku", "hojokin-shohizei",
       "hojokin-kojin-jigyonushi",
