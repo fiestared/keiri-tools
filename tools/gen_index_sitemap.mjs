@@ -41,6 +41,7 @@ const ORDER = [
   "flextime",                   // フレックスタイム制 33,100/月（フレックスタイム制とは 12,100・デメリット 1,600・フレックスタイム制度 880・コアタイム 720・残業 720・労使協定 390・メリット 320・フレックスタイム制度とは 210・法定労働時間 90 ＝クラスタ 50,130）
   "ikuji-kyugyo-kyufukin",      // 育児休業給付金 31,302/月
   "roudou-joken-tsuchisho",     // 雇用契約書 27,100/月（労働条件通知書 22,200・雇用契約書 ない 4,400・労働条件通知書とは 3,600・雇用契約書とは 2,900 ほかクラスタ計 64,670 も同記事で受ける）
+  "chutaikyo",                  // 中退共 27,100/月（中小企業退職金共済 12,100・中退共 掛金 2,400・中退共 退職金 計算 1,900・中小企業退職金共済 掛金 320・中退共 デメリット 140 ＝クラスタ 43,960。★「中退共」「中小企業退職金共済」とも全285ページで0ヒットの完全な空白だった（/shokibo-kyosai/ と /tosan-boshi-kyosai/ ＝経営者側の共済は持っていたのに、従業員側の退職金制度だけ無かった）。踏み込みは①12月未満は不支給・23月以下は「掛金総額を下回る額」と法10条2項1号が明記＝元本割れは運用結果ではなく制度設計 ②ただし死亡退職は同号かっこ書きで掛金総額相当額＝元本割れしない ③解約手当金は法16条1項で「被共済者に」支給＝事業主に戻る経路が条文上存在しない ④所得税法施行令72条3項2号は法10条1項等を列挙するが16条の解約手当金は入っていない（対して小規模企業共済は同項3号ロ・ハで解約手当金を明示列挙）
   "tedori-keisan",              // 手取り計算 25,591/月（手取り20万 9,390・手取り30万 7,656 も同記事で受ける）
   "shitsugyo-hoken-keisan",     // 失業保険 計算 25,591/月（失業保険 自己都合 25,591・失業保険 期間 11,464 も同記事で受ける）
   "saishushoku-teate",          // 再就職手当 25,591/月
@@ -254,13 +255,13 @@ const CATEGORIES = [
   {
     id: "kyuyo-jitsumu",
     name: "給与計算の実務（会社側）",
-    desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。",
+    desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務、掛金納付月数によって退職金が3段階に変わること、解約しても解約手当金が事業主ではなく従業員に支払われることもここ。",
     slugs: [
       "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
       "chingin-daicho", "roudousha-meibo", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
       "shakai-hokenryo-choshu-jiki", "kyushoku-shakai-hokenryo", "shoyo-gensen-shotokuzei",
       "gensen-shotokuzei-noki-tokurei", "hotei-fukurihi-keisan", "rodo-hoken-nendo-koshin",
-      "keiri-nenkan-schedule",
+      "keiri-nenkan-schedule", "chutaikyo",
     ],
   },
   {
