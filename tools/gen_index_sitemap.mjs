@@ -57,6 +57,7 @@ const ORDER = [
   "hojinzei-ritsu",             // 法人税率 18,100/月（推移 590・実効税率 260・中小企業 210・日本 210・改正 110・国税庁 50・大企業 30・中小企業 実効税率 10 ＝クラスタ 19,570）
   "cash-flow-keisansho",        // キャッシュフロー計算書 18,100/月（作り方 2,400・間接法 1,300・とは 1,000・ひな形 720・見方 590・直接法 390・作り方 エクセル 210・cs 50 ＝クラスタ 24,760。英語 210 は除外）
   "shiyo-kikan",                // 試用期間とは 18,100/月（試用期間 解雇 14,800・試用期間 9,900・試用期間 退職 9,900・試用期間 クビ 4,400・試用期間中の解雇 1,600・試用期間 社会保険 1,600・試用期間 給料 1,000・試用期間 有給 880・試用期間 本採用拒否 320・試用期間 長さ 70 ＝クラスタ 62,570。「試用期間 英語」は別意図なので除外）
+  "tokutei-shinzoku-tokubetsu-kojo", // 特定親族特別控除 18,100/月（特定扶養親族 5,400 ＝クラスタ 23,500。★受け皿の /fuyo-kojo/ ツールは「段階的な控除額はこのツールでは計算していません」と自分で明言しており、記事も無かった＝片肺。所得税法84条の2の9段階を条文から導出したのがこの記事）
   "gensen-choshuhyo-mikata",    // 源泉徴収票 見方 17,131/月
   "sozokuzei-ikura",            // 相続税 いくらから 17,131/月
   "zoyozei-ikura",              // 贈与税 いくらから 17,131/月
@@ -188,7 +189,7 @@ const CATEGORIES = [
     slugs: [
       "furusato-nozei-keisan", "kifukin-kojo",
       "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin",
-      "fuyo-kojo-shinkokusho", "gensen-choshuhyo-mikata", "gensen-zeigakuhyo-mikata",
+      "fuyo-kojo-shinkokusho", "tokutei-shinzoku-tokubetsu-kojo", "gensen-choshuhyo-mikata", "gensen-zeigakuhyo-mikata",
       "hoteichosho-goukeihyo", "kyuyo-shiharai-hokokusho", "shiharai-chosho", "shakai-hokenryo-kojo", "iryohi-kojo-ikura-kara",
       "taishokukin-zeikin", "fukugyo-20man-kakutei-shinkoku", "kaigyo-todoke",
     ],
