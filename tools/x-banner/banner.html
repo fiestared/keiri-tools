@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>@keiri_tools ヘッダー 1500×500（推奨案A）</title>
+<!--
+  描画:
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
+      --force-device-scale-factor=1 --window-size=1500,500 \
+      --screenshot=/path/to/banner.png "file:///path/to/banner.html"
+  配色は current.png の実測値: 地 #1f6f5c / グリッド線 #367e6d (50px間隔・1px) / サブ #cfe9e1 /
+  バッジ 白地・緑 #1f6f5c・強調 #a8641b。
+  安全域: 縦 y≈100–370 に収める(Xのプロフィールは上下が切れる)。左下 約400×200 はアイコンが重なるので空ける。
+-->
+<style>
+  html, body { margin: 0; padding: 0; }
+  body {
+    width: 1500px; height: 500px; overflow: hidden;
+    background-color: #1f6f5c;
+    /* 50px グリッド。線は x=0,50,100… / y=0,50,100… (現物と同じ位置) */
+    background-image:
+      linear-gradient(to right,  #367e6d 1px, transparent 1px),
+      linear-gradient(to bottom, #367e6d 1px, transparent 1px);
+    background-size: 50px 50px;
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
+    color: #fff;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+  /* 左端 x=420 / 上端 y=112 に固定(現物のブロック左端 430 とほぼ同じ)。
+     ブロックを厳密中央にすると左下のアイコン重なり域(x<375, y>333)にバッジ1が入るので、意図的に右へ寄せる。 */
+  .wrap {
+    position: absolute; left: 420px; top: 112px;
+    display: inline-flex; flex-direction: column; align-items: flex-start;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 14px;
+    font-size: 28px; font-weight: 600; letter-spacing: 0.04em; line-height: 1;
+    color: #ffffff;
+  }
+  .brand .rule { display: inline-block; width: 8px; height: 30px; background: #ffffff; border-radius: 2px; }
+  .brand .dom { color: #cfe9e1; font-weight: 500; letter-spacing: 0.02em; margin-left: 6px; }
+  .brand .dom::before { content: "｜"; color: #7fb5a7; margin-right: 6px; }
+  h1 {
+    margin: 22px 0 0 0;
+    font-size: 58px; font-weight: 800; line-height: 1.15; letter-spacing: 0.01em;
+    color: #ffffff;
+  }
+  .sub {
+    margin-top: 16px;
+    font-size: 26px; font-weight: 500; line-height: 1.4; letter-spacing: 0.02em;
+    color: #cfe9e1;
+  }
+  .badges { display: flex; gap: 14px; margin-top: 30px; }
+  .badge {
+    display: inline-flex; align-items: center; height: 48px; padding: 0 22px;
+    border-radius: 24px; background: #ffffff; color: #1f6f5c;
+    font-size: 22px; font-weight: 700; letter-spacing: 0.02em; white-space: nowrap;
+  }
+  .badge b { color: #a8641b; font-weight: 800; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="brand"><span class="rule"></span>税金・経理・補助金ツールズ<span class="dom">keiri-tools.com</span></div>
+    <h1>条文を、毎回ひきなおす。</h1>
+    <div class="sub">税金・給与・社会保険の計算と、補助金の検索・受付状況・経理税務。</div>
+    <div class="badges">
+      <span class="badge">法令API で<b>逐語照合</b></span>
+      <span class="badge">出典と<b>確認日</b>つき</span>
+      <span class="badge">改定は<b>施行日</b>に反映</span>
+    </div>
+  </div>
+</body>
+</html>
