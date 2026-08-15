@@ -73,6 +73,7 @@ const ORDER = [
   "shussan-teate-kin",          // 出産手当金 11,464/月
   "shussan-ikuji-ichijikin",    // 出産育児一時金 11,464/月
   "koyou-hokenryo-ritsu",       // 雇用保険料率 11,464/月
+  "yotei-nozei-toha",           // 予定納税 11,840/月（減額申請 1,040・払えない 312・予定納税基準額 256 ＝クラスタ 13,448）。基準額は譲渡・一時・雑・臨時所得を除いて作る（所法104条1項1号）
   "rosai-hokenryoritsu",        // 労災保険料率 5,400/月（労災保険料 2,400・労災保険率 390 ＝クラスタ 8,190）。法令上の名前は「労災保険率」で"料"が入らない
   "kyuyo-shiharai-hokokusho",   // 給与支払報告書 18,100/月（書き方 3,600・総括表 2,400・提出先 1,300・eltax 1,300・提出期限 880・退職者 880・普通徴収 210 ＝副意図クラスタ 10,570）
   "shikaku-kakuninsho",         // 資格確認書・資格情報のお知らせ（資格確認書 165,000/月・資格確認書 いつ届く 22,200・資格情報のお知らせ 22,200）。法令上の名前は「資格情報通知書」（健保則51条の3）
@@ -193,7 +194,7 @@ const CATEGORIES = [
       "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin",
       "fuyo-kojo-shinkokusho", "tokutei-shinzoku-tokubetsu-kojo", "gensen-choshuhyo-mikata", "gensen-zeigakuhyo-mikata",
       "hoteichosho-goukeihyo", "kyuyo-shiharai-hokokusho", "shiharai-chosho", "shakai-hokenryo-kojo", "iryohi-kojo-ikura-kara",
-      "taishokukin-zeikin", "fukugyo-20man-kakutei-shinkoku", "kaigyo-todoke",
+      "taishokukin-zeikin", "fukugyo-20man-kakutei-shinkoku", "kaigyo-todoke", "yotei-nozei-toha",
     ],
   },
   {
