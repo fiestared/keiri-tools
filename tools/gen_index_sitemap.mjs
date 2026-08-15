@@ -71,6 +71,7 @@ const ORDER = [
   "shussan-teate-kin",          // 出産手当金 11,464/月
   "shussan-ikuji-ichijikin",    // 出産育児一時金 11,464/月
   "koyou-hokenryo-ritsu",       // 雇用保険料率 11,464/月
+  "tsukin-saigai",              // 通勤災害 3,600/月（通勤労災 1,600・休業補償 880・様式 390・とは 170・寄り道 90・第三者行為 90・認定 50／通勤中の事故 720・労災 通勤中 1,000・通勤災害 16号の3 480・通勤中 事故 労災 210・業務災害 通勤災害 違い 70・通勤途中 怪我 労災 50・マイカー通勤 労災 30・給付 20 ＝クラスタ 9,450）
   "shakai-hokenryo-kojo",       // 社会保険料控除 9,390/月
   "shiharai-chosho",            // 支払調書 9,390/月
   "yukyu-fuyo-nissu",           // 有給休暇 付与日数 7,656/月
@@ -201,11 +202,11 @@ const CATEGORIES = [
   },
   {
     id: "kyufu",
-    name: "健康保険・雇用保険の給付",
-    desc: "医療費が高額になったとき、病気・出産・育児・家族の介護で働けないとき、失業したとき、60歳以後に賃金が下がった状態で働き続けるときに受け取れるお金。",
+    name: "健康保険・雇用保険・労災保険の給付",
+    desc: "医療費が高額になったとき、病気・出産・育児・家族の介護で働けないとき、通勤中にケガをしたとき、失業したとき、60歳以後に賃金が下がった状態で働き続けるときに受け取れるお金。",
     slugs: [
       "kogaku-ryoyohi", "shobyo-teate-kin", "shussan-teate-kin", "shussan-ikuji-ichijikin",
-      "ikuji-kyugyo-kyufukin", "kaigo-kyugyo-kyufukin", "shitsugyo-hoken-keisan",
+      "ikuji-kyugyo-kyufukin", "kaigo-kyugyo-kyufukin", "tsukin-saigai", "shitsugyo-hoken-keisan",
       "saishushoku-teate", "rishokuhyo", "kounenrei-koyou-keizoku",
     ],
   },
