@@ -171,7 +171,14 @@ function snippet(slug, name){
     + 'addEventListener("message",function(e){if(e.data&&e.data.type==="keiri-embed"){'
     + 'document.querySelectorAll(\'iframe[src*="keiri-tools.com/embed/"]\').forEach(function(f){'
     + 'if(f.contentWindow===e.source)f.style.height=e.data.height+"px";});}});\n'
-    + '<\/script>';
+    + '<\/script>\n'
+    // ★親ページ側に出典の <a> を1本置く（2026-08-15 追加）。
+    //   ウィジェット内のクレジットは **iframe の中**なので、設置されても被リンクとして働かない。
+    //   出典表示は設置側にとっても「どこの計算か」を読者に示すもので、
+    //   こちらにとっては設置が増えるほど正当な被リンクが増える。
+    + '<p style="font-size:12px;margin:6px 0 0"><a href="https://keiri-tools.com/'+slug+'/" '
+    + 'target="_blank" rel="noopener">'+name+'（計算の根拠と詳しい解説）</a> by '
+    + '<a href="https://keiri-tools.com/" target="_blank" rel="noopener">税金・経理・補助金ツールズ</a></p>';
 }
 for (var gid in TOOLS){
   var box = document.getElementById(gid), html = "";
