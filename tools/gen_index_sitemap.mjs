@@ -75,6 +75,7 @@ const ORDER = [
   "shiharai-chosho",            // 支払調書 9,390/月
   "yukyu-fuyo-nissu",           // 有給休暇 付与日数 7,656/月
   "shobyo-teate-kin",           // 傷病手当金 6,260/月
+  "roudousha-meibo",            // 労働者名簿 5,400/月（テンプレート 2,900・書き方 1,000・とは 720・記入例 720・必須項目 480・記載事項 110・様式 90・項目 40／法定三帳簿 590・法定三帳簿 エクセル 20 ＝クラスタ 12,070）
   "kashidaore-hikiatekin",      // 貸倒引当金 5,119/月
   "zuiji-kaitei",               // 随時改定・月額変更届 4,652/月
   "kotei-zangyodai",            // 固定残業代 4,188/月
@@ -238,10 +239,10 @@ const CATEGORIES = [
   {
     id: "kyuyo-jitsumu",
     name: "給与計算の実務（会社側）",
-    desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・訂正・社会保険料の徴収時期・法定福利費・年度更新。",
+    desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。",
     slugs: [
       "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
-      "chingin-daicho", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
+      "chingin-daicho", "roudousha-meibo", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
       "shakai-hokenryo-choshu-jiki", "kyushoku-shakai-hokenryo", "shoyo-gensen-shotokuzei",
       "gensen-shotokuzei-noki-tokurei", "hotei-fukurihi-keisan", "rodo-hoken-nendo-koshin",
       "keiri-nenkan-schedule",
