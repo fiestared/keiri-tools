@@ -35,6 +35,7 @@ const ORDER = [
   "36-kyotei",                  // 36協定 74,000/月（特別条項 9,900・わかりやすく 4,400・三六協定 4,400・届出 1,900 も同記事で受ける）
   "kibiki-keicho-kyuka",        // 忌引き休暇 60,500/月（忌引き 49,500・忌引きとは 33,100・慶弔休暇 18,100・忌引き 何日 5,400・慶弔休暇とは 4,400・忌引き 祖父母 4,400・慶弔費 3,600・忌引き 証明書 2,400・忌引き 給料 2,400・慶弔見舞金 1,900・慶弔休暇 有給 260・慶弔休暇 日数 170・慶弔休暇 無給 50 ＝クラスタ 186,180。★別称の忌引き系3語だけで143,100＝慶弔系の5.5倍。引き継ぎ候補は「慶弔休暇 18,100」だったので頭の語を取り違えると1/3に見誤る）
   "nenmatsu-chosei-kakikata",   // 年末調整 書き方 57,105/月
+  "sanzen-sango-kyugyo",        // 産休 いつから 49,500/月（産休 期間 5,400・産前産後休業 4,400・産休 社会保険料 免除 1,300・産後休業 210 ＝クラスタ 60,810。★自サイトは出産手当金＝給付の側だけを持っており、労働基準法65条（産前は請求制／産後は強制）を主題にした記事は無かった。shussan-teate-kin は労働基準法の言及が0回）
   "kaigyo-todoke",              // 開業届 40,500/月（開業届 個人事業主 33,100・必要なもの 4,400・書き方 4,400・e-tax 2,900・ダウンロード 2,400・出し方 1,300・オンライン 1,300・開業届とは 1,000・住所変更 590 ＝クラスタ 91,890）
   "kogaku-ryoyohi",             // 高額療養費制度 38,281/月（限度額適用認定証 31,302 も同記事で受ける）
   "flextime",                   // フレックスタイム制 33,100/月（フレックスタイム制とは 12,100・デメリット 1,600・フレックスタイム制度 880・コアタイム 720・残業 720・労使協定 390・メリット 320・フレックスタイム制度とは 210・法定労働時間 90 ＝クラスタ 50,130）
@@ -174,7 +175,7 @@ const CATEGORIES = [
     desc: "加入の条件、保険料の決まり方(標準報酬月額・定時決定・随時改定)、扶養と年収の壁。",
     slugs: [
       "shakai-hoken-kanyu-joken", "shakai-hokenryo-keisan", "hyojun-hoshu-gakuhyo",
-      "teiji-kettei", "zuiji-kaitei", "shoyo-shakaihoken", "kaigo-hokenryo-itsukara",
+      "teiji-kettei", "zuiji-kaitei", "sanzen-sango-kyugyo", "shoyo-shakaihoken", "kaigo-hokenryo-itsukara",
       "kodomo-kosodate-shienkin", "shakai-hoken-fuyo-joken", "nenshu-no-kabe",
       "koyou-hoken-kanyu-joken", "koyou-hokenryo-ritsu", "kenko-hoken-nini-keizoku",
       "shikaku-kakuninsho",
