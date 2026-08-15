@@ -71,6 +71,7 @@ const ORDER = [
   "shussan-teate-kin",          // 出産手当金 11,464/月
   "shussan-ikuji-ichijikin",    // 出産育児一時金 11,464/月
   "koyou-hokenryo-ritsu",       // 雇用保険料率 11,464/月
+  "kyuyo-shiharai-hokokusho",   // 給与支払報告書 18,100/月（書き方 3,600・総括表 2,400・提出先 1,300・eltax 1,300・提出期限 880・退職者 880・普通徴収 210 ＝副意図クラスタ 10,570）
   "kenko-shindan",              // 健康診断 会社 9,900/月（義務 4,400・費用 3,600・勘定科目 1,600・費用 会社負担 390 ＝クラスタ 19,890）
   "kanri-kantokusha",           // 管理監督者 4,400/月（とは 1,600・残業代 720・要件 390・定義 320・休日出勤 260・36協定 170・欠勤控除 170／名ばかり管理職 1,600 ＝クラスタ 9,630）
   "tsukin-saigai",              // 通勤災害 3,600/月（通勤労災 1,600・休業補償 880・様式 390・とは 170・寄り道 90・第三者行為 90・認定 50／通勤中の事故 720・労災 通勤中 1,000・通勤災害 16号の3 480・通勤中 事故 労災 210・業務災害 通勤災害 違い 70・通勤途中 怪我 労災 50・マイカー通勤 労災 30・給付 20 ＝クラスタ 9,450）
@@ -178,12 +179,12 @@ const CATEGORIES = [
   {
     id: "nenmatsu-gensen",
     name: "年末調整・源泉徴収・控除",
-    desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、医療費控除・ふるさと納税など各種控除と確定申告。開業届と青色申告承認申請の期限もここ。",
+    desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、医療費控除・ふるさと納税など各種控除と確定申告。税務署へ出す法定調書合計表と、市区町村へ1月31日までに出す給与支払報告書（30万円以下で省略できるのは退職者だけ）の違いもここ。開業届と青色申告承認申請の期限もここ。",
     slugs: [
       "furusato-nozei-keisan", "kifukin-kojo",
       "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin",
       "fuyo-kojo-shinkokusho", "gensen-choshuhyo-mikata", "gensen-zeigakuhyo-mikata",
-      "hoteichosho-goukeihyo", "shiharai-chosho", "shakai-hokenryo-kojo", "iryohi-kojo-ikura-kara",
+      "hoteichosho-goukeihyo", "kyuyo-shiharai-hokokusho", "shiharai-chosho", "shakai-hokenryo-kojo", "iryohi-kojo-ikura-kara",
       "taishokukin-zeikin", "fukugyo-20man-kakutei-shinkoku", "kaigyo-todoke",
     ],
   },
