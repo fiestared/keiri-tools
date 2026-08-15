@@ -99,6 +99,7 @@ const ORDER = [
   "chinage-sokushin-zeisei",    // 所得拡大促進税制 12,100/月（★旧称のほうが新称の3.4倍多い）＋賃上げ促進税制 3,600・雇用者給与等支給額 480・賃上げ促進税制 中小企業 320・教育訓練費 税額控除 170 ＝クラスタ 16,670
   "chusho-keiei-kyoka-zeisei",  // 経営力向上計画 8,100/月 ＋ 中小企業経営強化税制 4,400・即時償却 1,900・経営力向上計画 認定 210・A類型 110 ＝クラスタ 14,720
   "jigyo-shokei-zeisei",  // 事業承継税制 6,600/月 ＋ 先端設備等導入計画は別・特例事業承継税制 480・事業承継税制 特例措置 140・非上場株式 納税猶予 110 ＝クラスタ 7,330
+  "ikuji-jitan-kyufukin",  // 育児時短就業給付金 2,400/月（2025-04創設。育児 時短 給付金 50・時短勤務 手当 30 ＝クラスタ 2,480。自サイトの言及は ikuji-kyugyo-kyufukin の1回のみ＝実質未保有だった）
   "maebarai-hiyo",        // 前払費用 2,400/月 ＋ 短期前払費用 1,600・長期前払費用 1,600・前払費用 消費税 590・前払費用 仕訳 480・前払金 前払費用 違い 70 ＝クラスタ 6,740
   "sentan-setsubi-dounyu-keikaku", // 先端設備等導入計画 4,400/月 ＋「等」なしの別称 先端設備導入計画 880 ＝クラスタ 5,280
   "miharai-hiyo-miharaikin", // 買掛金 未払金 違い 2,900/月 ＋ 未払金 2,400・未払費用 1,300・未払金 仕訳 1,000・未払金 未払費用 違い 720・未払費用 仕訳 480・未払費用 未払金 違い 210・未払金 とは 50・未払費用 決算 50 ＝クラスタ 9,110
@@ -211,7 +212,7 @@ const CATEGORIES = [
     desc: "医療費が高額になったとき、病気・出産・育児・家族の介護で働けないとき、通勤中にケガをしたとき、失業したとき、60歳以後に賃金が下がった状態で働き続けるときに受け取れるお金。",
     slugs: [
       "kogaku-ryoyohi", "shobyo-teate-kin", "shussan-teate-kin", "shussan-ikuji-ichijikin",
-      "ikuji-kyugyo-kyufukin", "kaigo-kyugyo-kyufukin", "tsukin-saigai", "shitsugyo-hoken-keisan",
+      "ikuji-kyugyo-kyufukin", "ikuji-jitan-kyufukin", "kaigo-kyugyo-kyufukin", "tsukin-saigai", "shitsugyo-hoken-keisan",
       "saishushoku-teate", "rishokuhyo", "kounenrei-koyou-keizoku",
     ],
   },
