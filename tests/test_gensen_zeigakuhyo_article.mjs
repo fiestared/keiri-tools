@@ -114,6 +114,10 @@ add(cells, same);                                             // 5,080 / 1,171
 add(Math.abs(dmin), dmax);                                    // 310 は3桁なのでカンマ網に入らない/120も同様
 // 記事が明記する「検証の条件」もオラクルの前提から導く（手打ちを許さない）
 add(LO, HI - STEP, STEP);                                     // 105,000円〜739,000円を1,000円刻み
+// ★記事に月額表そのもの（甲欄0〜3人・乙欄）を全区分掲載しているので、
+//   その全セルをオラクル（税額表JSON）から期待値に加える。手打ち・生成漏れは過不足で落ちる。
+for (const r of TBL.rows) add(r.min, r.max, r.kou[0], r.kou[1], r.kou[2], r.kou[3], r.otsu);
+add(TBL.tableMax, TBL.kouSegments[0].upto);                   // 740,000 / 790,000（表の外の算式の説明）
 const got = new Set((text.match(/\d{1,3}(?:,\d{3})+/g) || []).map(s => Number(s.replace(/,/g, ''))));
 const expComma = new Set([...EX].filter(n => n >= 1000));     // カンマが付くのは4桁以上
 const missing = [...expComma].filter(n => !got.has(n));
@@ -308,6 +312,30 @@ const coRange = callouts.find(c => strip(c).includes('特例が使えるのは')
 if (coRange && /乙欄・丙欄・日額表・賞与/.test(strip(coRange)) && /適用されません/.test(strip(coRange)))
   ok('callout: 特例は月額表の甲欄だけ（乙欄・丙欄・日額表・賞与には使えない）');
 else fail('特例の適用範囲（月額表の甲欄限定）の注意が無い');
+
+// ───────── 早見表（記事に埋め込んだ月額表）の位置照合 ─────────
+// ★上のカンマ網は**集合**なので、列を入れ替えても（1人と2人を逆に出しても）緑のまま通る。
+//   → 行・列の**位置**をJSONと1セルずつ突き合わせる。生成器の取り違えはここで落ちる。
+const hayami = (html.split('<h2 id="hayami">')[1] || '').split('<h2 id="densanki">')[0];
+const hayamiTrs = (hayami.match(/<tr>[\s\S]*?<\/tr>/g) || []).filter(t => t.includes('<td>'));
+if (hayamiTrs.length !== TBL.rows.length) fail(`早見表の行数が表データと違う: 記事${hayamiTrs.length} / JSON${TBL.rows.length}`);
+else {
+  let bad = 0, firstBad = '';
+  for (let i = 0; i < hayamiTrs.length; i++) {
+    const tds = [...hayamiTrs[i].matchAll(/<td>([^<]*)<\/td>/g)].map(m => m[1]);
+    const r = TBL.rows[i];
+    const want = [
+      `${r.min.toLocaleString()}円以上 ${r.max.toLocaleString()}円未満`,
+      r.kou[0].toLocaleString(), r.kou[1].toLocaleString(),
+      r.kou[2].toLocaleString(), r.kou[3].toLocaleString(), r.otsu.toLocaleString(),
+    ];
+    if (tds.length !== 6 || want.some((w, j) => w !== tds[j])) {
+      bad++; if (!firstBad) firstBad = `行${i + 1}: 期待[${want.join('|')}] 実際[${tds.join('|')}]`;
+    }
+  }
+  if (bad) fail(`早見表が表データと一致しないセルがある: ${bad}行 / 最初の不一致 ${firstBad}`);
+  else ok(`早見表の全${hayamiTrs.length}行×6列が税額表JSONと位置まで一致`);
+}
 
 // ───────── 出典 ─────────
 const src = (html.split('<h2 id="source">')[1] || '').split('</ul>')[0];
