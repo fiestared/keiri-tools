@@ -418,7 +418,10 @@ const bulkCommits = new Set();
   let hash = null;
   let n = 0;
   const flush = () => { if (hash && n >= BULK_FILES) bulkCommits.add(hash); };
-  for (const line of git("log", "--format=@@%H", "--name-only", "--", "docs").split("\n")) {
+  // ★`git()` は **cwd が DOCS** なので、パス指定は `.`（docs 配下）にする。
+  //   ここを `docs` と書くと docs/docs を見に行き、**黙って空を返す**（実測。
+  //   単体では動くのに生成器の中だけ効かない、という形で1回踏んだ）。
+  for (const line of git("log", "--format=@@%H", "--name-only", "--", ".").split("\n")) {
     if (line.startsWith("@@")) { flush(); hash = line.slice(2); n = 0; }
     else if (line.trim()) n++;
   }

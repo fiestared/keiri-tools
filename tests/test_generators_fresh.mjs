@@ -61,4 +61,23 @@ assert.ok(between.includes('x-share:auto'),
   + '共有ブロックが消えると検査そのものが意味を失います');
 // ここまで来た＝「他の生成物が挟まった状態で --check が通った」＝回帰していない
 
-console.log(`✓ test_generators_fresh: ${CHECKABLE.length}個の生成器が最新 / 終端は明示マーカー`);
+// --- ★sitemap の lastmod が1日に潰れていないこと -----------------------------
+// 2026-08-16 実測: 全ページ末尾に1行足しただけの一括コミットで、
+// **270本中267本（99%）の lastmod が同じ日に潰れた**。
+// Google は lastmod を "consistently and verifiably accurate" な場合にだけ使い、
+// "the last significant update" と定義している。全ページが毎日「今日更新した」と
+// 名乗ると、**Google が lastmod を当てにしなくなり、本当に改定した日を伝える手段を失う**。
+// → 生成器は20ファイル以上を触る一括コミットを更新日に数えない。ここはその回帰を捕まえる。
+const sitemap = readFileSync(join(ROOT, 'docs/sitemap.xml'), 'utf-8');
+const mods = [...sitemap.matchAll(/<lastmod>([\d-]+)<\/lastmod>/g)].map((m) => m[1]);
+assert.ok(mods.length > 100, `sitemap の lastmod が ${mods.length} 件しかありません`);
+const byDay = new Map();
+for (const d of mods) byDay.set(d, (byDay.get(d) ?? 0) + 1);
+const [topDay, topN] = [...byDay.entries()].sort((a, b) => b[1] - a[1])[0];
+const share = topN / mods.length;
+assert.ok(share < 0.5,
+  `sitemap の lastmod が ${topDay} に集中しています（${topN}/${mods.length} = ${(share * 100).toFixed(0)}%）。`
+  + '一括コミットが全ページの更新日を巻き上げていないか確認すること');
+
+console.log(`✓ test_generators_fresh: ${CHECKABLE.length}個の生成器が最新 / 終端は明示マーカー`
+  + ` / lastmod は ${byDay.size}日に分散（最大 ${(share * 100).toFixed(0)}%）`);
