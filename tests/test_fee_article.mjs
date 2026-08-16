@@ -9,17 +9,28 @@ const FEES = JSON.parse(readFileSync(new URL("../docs/assets/fee_table.json", im
 const HTML = readFileSync(new URL("../docs/column/furikomi-tesuryo-hikaku/index.html", import.meta.url), "utf8");
 
 // 表から <tr><td>銀行名</td><td>N円</td><td>M円</td>... を拾う
-const rows = new Map();
+//
+// ★2026-08-17: ここは **Map に set していた**（後勝ち）。記事には同じ銀行の行が
+//   複数の表に出る（冒頭の比較表・銀行別セクション・年間試算）。銀行別セクションは
+//   gen_bank_sections.mjs が生成するので改定時に自動で新しくなるが、**冒頭の比較表は手管理**。
+//   後勝ちの Map だと「生成された新しい行」が「手管理の古い行」を黙って上書きするので、
+//   **読者が最初に見る表が130円のまま**でも検査は緑だった（GMOあおぞら 130→100 の改定で実際に起きた）。
+//   → **出現ごとに全件突き合わせる**。CLAUDE.md 規則4「名指しは一意でなければ効かない」の同型。
+const occurrences = [];
 for (const m of HTML.matchAll(/<tr><td>([^<]+)<\/td><td>(\d+)円<\/td><td>(\d+)円<\/td>/g)) {
-  rows.set(m[1], { under30k: Number(m[2]), over30k: Number(m[3]) });
+  occurrences.push({ name: m[1], under30k: Number(m[2]), over30k: Number(m[3]) });
 }
+const rows = new Map(occurrences.map((o) => [o.name, o]));
 
-// 1. 掲載漏れ・数字ズレが無いこと
+// 1. 掲載漏れ・数字ズレが無いこと（★1行でも古ければ落とす）
 for (const bank of FEES.banks) {
-  const row = rows.get(bank.name);
-  assert.ok(row, `記事に未掲載の銀行: ${bank.name}`);
-  assert.equal(row.under30k, bank.under30k, `${bank.name} の3万円未満が不一致`);
-  assert.equal(row.over30k, bank.over30k, `${bank.name} の3万円以上が不一致`);
+  const hits = occurrences.filter((o) => o.name === bank.name);
+  assert.ok(hits.length > 0, `記事に未掲載の銀行: ${bank.name}`);
+  hits.forEach((row, i) => {
+    const where = hits.length > 1 ? `（${hits.length}箇所中${i + 1}番目の表）` : "";
+    assert.equal(row.under30k, bank.under30k, `${bank.name} の3万円未満が不一致${where}`);
+    assert.equal(row.over30k, bank.over30k, `${bank.name} の3万円以上が不一致${where}`);
+  });
 }
 
 // 2. fee_table.json に無い銀行を記事が載せていないこと(出典の無い数字を書かない)
@@ -41,7 +52,12 @@ const step = FEES.banks.filter((b) => b.under30k !== b.over30k).length;
 
 assert.ok(HTML.includes(`${cMin}円〜${cMax}円`), `法人のレンジ ${cMin}円〜${cMax}円 が本文に無い`);
 assert.ok(HTML.includes(`${pMin}円〜${pMax}円`), `個人のレンジ ${pMin}円〜${pMax}円 が本文に無い`);
-assert.equal(cMax / cMin >= 5 && cMax / cMin < 5.2, true, "法人の倍率が5.1倍から外れた(本文の記述を要更新)");
+// ★2026-08-17: 旧実装は `>= 5 && < 5.2` という**帯**で「5.1倍から外れたら人が直せ」と促すだけで、
+//   本文が実際に正しい倍率を名乗っているかは見ていなかった（帯の中なら本文が何倍と書いていても緑）。
+//   → **データから出した倍率が本文に書かれていること**を直接見る（帯の手直しも要らなくなる）。
+const ratio = (cMax / cMin).toFixed(1);
+assert.ok(HTML.includes(`${ratio}倍`),
+  `法人の倍率 ${ratio}倍（${cMax}円 ÷ ${cMin}円）が本文に無い。料金改定で倍率が動いたら本文・meta の記述も直すこと`);
 assert.ok(HTML.includes(`${FEES.banks.length}区分`), "本文の区分数が件数と不一致");
 assert.ok(HTML.includes(`${step}区分だけ`) || HTML.includes(`中${step}区分`), `3万円境界の件数(${step})が本文と不一致`);
 
