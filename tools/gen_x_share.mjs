@@ -35,7 +35,15 @@ import { pathToFileURL } from 'node:url';
 import { pages, DOCS, HANDLE } from './gen_x_link.mjs';
 
 export { DOCS, HANDLE, pages };
+// ★マーカーは**対**で持つ（2026-08-16 修正）。
+//   最初は開始マーカーだけを置き、終端を `indexOf('</div>', a)` で探していた。
+//   これは「マーカーだけあって中身が無いページ」で**後続の無関係な div を丸ごと削る**。
+//   実際に再現した（`<!-- x-share:auto -->` の次にある別の div が消えた）。
+//   ★gen_x_link.mjs が 2026-08-xx に文書を二重化した事故と**同じ族**。
+//     そのコメントを読んで書いたのに、同じ穴を別の形で作った。
+//     → 終端を**探さない**。自分で書いた終端マーカーの位置しか信じない。
 export const MARK = '<!-- x-share:auto -->';
+export const END = '<!-- /x-share:auto -->';
 export const LABEL = 'この内容をXで共有';
 
 /** 共有する意味が無いページ（法務・問い合わせ）。canonical のパスで見る */
@@ -115,27 +123,37 @@ export function shareHref(html) {
 export function block(href) {
   return `${MARK}<div style="margin:20px 0 4px;font-size:13px">`
     + `<a href="${href.replace(/&/g, '&amp;')}" target="_blank" rel="noopener" style="color:var(--sub)">`
-    + `${LABEL}</a></div>`;
+    + `${LABEL}</a></div>${END}`;
+}
+
+/**
+ * 既存ブロックの範囲 `[開始, 終了)` を返す。無ければ null。
+ * ★**終端は自分で書いた END しか信じない。** `</div>` を探しに行くと、
+ *   マーカーだけ置かれたページで**後続の無関係な div を巻き込んで削る**（実際に再現した）。
+ * ★片方だけある＝人が手で壊した状態。**推測して直さず例外で止める。**
+ *   黙って直すと、何が消えたか誰にも分からないまま全ページに広がる。
+ */
+export function blockRange(html) {
+  const a = html.indexOf(MARK);
+  const b = html.indexOf(END);
+  if (a < 0 && b < 0) return null;
+  if (a < 0 || b < 0 || b < a) {
+    throw new Error(
+      `共有ブロックのマーカーが壊れています（開始=${a} 終端=${b}）。`
+      + '手で直すか、両方のマーカーを消してから流し直してください');
+  }
+  return [a, b + END.length];
 }
 
 /** `</main>` の直前に入れる。既にあれば差し替える（行を増やさない） */
 export function withShare(html) {
   const href = shareHref(html);
-  const a = html.indexOf(MARK);
+  const range = blockRange(html);
   if (!href) {
     // ★作れなくなったら**消す**。古い共有文が残り続ける方が悪い（説明と中身がずれる）
-    if (a < 0) return html;
-    const close = html.indexOf('</div>', a);
-    return close < 0 ? html.slice(0, a) + html.slice(a + MARK.length)
-      : html.slice(0, a) + html.slice(close + '</div>'.length);
+    return range ? html.slice(0, range[0]) + html.slice(range[1]) : html;
   }
-  if (a >= 0) {
-    const close = html.indexOf('</div>', a);
-    // ★マーカーだけあって中身が無い場合、close は別の要素の </div> を拾いうる。
-    //   gen_x_link.mjs が -1 で文書を二重化した事故と同じ形なので、同じ守り方をする。
-    if (close < 0) return html.slice(0, a) + block(href) + html.slice(a + MARK.length);
-    return html.slice(0, a) + block(href) + html.slice(close + '</div>'.length);
-  }
+  if (range) return html.slice(0, range[0]) + block(href) + html.slice(range[1]);
   const close = html.lastIndexOf('</main>');
   if (close < 0) return html;                 // <main> を持たないページは対象外
   return html.slice(0, close) + block(href) + '\n' + html.slice(close);

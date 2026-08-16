@@ -13,8 +13,8 @@ import assert from 'node:assert';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  targets, DOCS, MARK, HANDLE, LABEL, SKIP,
-  shareText, shareHref, descOf, titleOf, canonicalOf, weighted,
+  targets, DOCS, MARK, END, HANDLE, LABEL, SKIP,
+  shareText, shareHref, descOf, titleOf, canonicalOf, weighted, withShare, blockRange,
 } from '../tools/gen_x_share.mjs';
 
 const list = targets();
@@ -80,5 +80,46 @@ for (const s of SKIP) {
   assert.ok(!html.includes(MARK), `${s} は共有の対象外のはずですが、リンクが入っています`);
 }
 
+// --- ⑧ ★★無関係な要素を巻き込まないこと ------------------------------------
+// 2026-08-16: 終端を `indexOf('</div>', 開始)` で探していたため、
+// 「マーカーだけあって中身が無いページ」で**後続の無関係な div を丸ごと削っていた**。
+// gen_x_link.mjs が文書を二重化した事故と同じ族。**終端は自分で書いた END しか信じない。**
+const page = (inner) => '<html><head><title>T</title>'
+  + '<link rel="canonical" href="https://keiri-tools.com/x/">'
+  + '<meta name="description" content="本文です。"></head><body><main>'
+  + inner + '</main><footer>f</footer></body></html>';
+
+// 開始マーカーだけ＝人が手で壊した状態。**推測して直さず例外で止める**
+assert.throws(() => withShare(page(`${MARK}\n<div class="keep">保持されるべき</div>`)),
+  /マーカーが壊れています/,
+  '開始マーカーだけのページで例外にならない（後続の div を削る危険）');
+assert.throws(() => withShare(page(`<div>x</div>${END}`)), /マーカーが壊れています/,
+  '終端マーカーだけのページで例外にならない');
+
+// 正常系: 無関係な div を巻き込まない・冪等
+const once = withShare(page('<p>本文</p><div class="keep">保持</div>'));
+assert.ok(once.includes('保持'), '初回生成で無関係な div が消えた');
+const twice = withShare(once);
+assert.strictEqual(once, twice, '2回流すと変わる（冪等でない）');
+assert.ok(twice.includes('保持'), '再生成で無関係な div が消えた');
+assert.strictEqual((once.match(/x-share:auto/g) || []).length, 2,
+  'マーカーが開始+終端の2つになっていない');
+
+// 作れなくなったら消す。そのとき本文を巻き添えにしない
+const removed = withShare(once.replace(/<link rel="canonical"[^>]*>/, ''));
+assert.ok(!removed.includes('x-share:auto'), '作れないのにブロックが残っている');
+assert.ok(removed.includes('本文') && removed.includes('保持'), '削除時に本文まで消えた');
+
+assert.strictEqual(blockRange(page('<p>x</p>')), null, 'マーカーが無いのに範囲を返した');
+
+// --- ⑨ 本番の全ページが対のマーカーを持っていること -------------------------
+const unpaired = list.filter((p) => {
+  const h = readFileSync(p, 'utf-8');
+  return (h.split(MARK).length - 1) !== (h.split(END).length - 1);
+});
+assert.strictEqual(unpaired.length, 0,
+  `開始と終端の数が合わないページが ${unpaired.length}件: `
+  + unpaired.slice(0, 3).map((p) => p.replace(DOCS, '')).join(', '));
+
 console.log(`✓ test_x_share: 対象${list.length}ページに共有リンク / 埋め込み${embeds.length}件には無し`
-  + ' / 共有文は meta 由来 / X換算280以内');
+  + ' / 共有文は meta 由来 / X換算280以内 / マーカーは対・無関係要素を巻き込まない');
