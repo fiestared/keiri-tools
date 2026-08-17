@@ -66,12 +66,19 @@ for (const file of pages()) {
   ].join("\n");
 
   const marked = `<!-- ogp:auto -->\n${block}\n<!-- /ogp:auto -->`;
+  const BLOCK_RE = /<!-- ogp:auto -->[\s\S]*?<!-- \/ogp:auto -->/;
   let next;
-  if (html.includes("<!-- ogp:auto -->")) {
-    next = html.replace(/<!-- ogp:auto -->[\s\S]*?<!-- \/ogp:auto -->/, marked);
+  if (BLOCK_RE.test(html)) {
+    next = html.replace(BLOCK_RE, marked);
   } else {
+    // ★開始マーカーだけが残っているページがある（2026-08-17 実測で14本）。
+    //   旧実装は includes("<!-- ogp:auto -->") だけで「処理済み」と判定していたため、
+    //   終了マーカーが無いと置換が空振りし、next === html となって**無変更のまま静かに通過**した。
+    //   結果 --check も緑のまま、OGPを1枚も持たない記事が公開され続けていた
+    //   （Xに貼ってもリンクカードが出ない）。孤立した開始マーカーは捨てて入れ直す。
+    const cleaned = html.replace(/<!-- ogp:auto -->\n?/g, "");
     // canonical の直後に入れる（head の中であることが保証される位置）
-    next = html.replace(/(<link rel="canonical" href="[^"]+">)/, `$1\n${marked}`);
+    next = cleaned.replace(/(<link rel="canonical" href="[^"]+">)/, `$1\n${marked}`);
   }
   if (next !== html) {
     if (CHECK) {
