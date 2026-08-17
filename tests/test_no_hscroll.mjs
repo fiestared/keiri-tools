@@ -73,6 +73,36 @@ const INJECT = (next) => `<script>
 })();
 </script>`;
 
+/**
+ * 外部の計測ビーコンを配信時に潰す。
+ *
+ * ★なぜ要るか（2026-08-17 実測）:
+ *   この検査は**全305ページをブラウザで開く**。HTMLをそのまま配信していたので
+ *   **ページのGA4タグが発火し、GA4に hostName=localhost として入っていた**。
+ *   2026-08-14 は実測 keiri-tools.com 71PV に対し **localhost 450PV**。
+ *   セッションは1件しか増えないが**PVが6倍に膨らみ**、PV基準の見積もり（AdSenseの
+ *   期待収益など）が壊れる。「検査が本番の計器を汚す」型。
+ *
+ * ★本番のHTMLは触らない。**配信するときだけ**書き換える。
+ * ★gtag.js が読めなければ `gtag()` は dataLayer に積むだけで送信しない。
+ *   だから src を潰すだけで足り、インラインの設定は消さなくてよい。
+ */
+const BEACON_HOSTS = [
+  'www.googletagmanager.com',        // GA4
+  'pagead2.googlesyndication.com',   // AdSense
+];
+// ★差し替え先は **data: URL**（中身が空のJS）。
+//   最初 `//127.0.0.1:0/__blocked/` に差し替えたが、**ポート0は接続の扱いが特殊**で
+//   e2e の jouto シーンが落ちた（変更なしでは通る、を実測して切り分けた）。
+//   data: なら**ネットワークに一切出ず、即座に空で読み込まれる**ので副作用が無い。
+const DEAD_SRC = "data:text/javascript,";
+function stripBeacons(html) {
+  return html.replace(
+    /(<script[^>]*\ssrc=")(https?:)?\/\/(www\.googletagmanager\.com|pagead2\.googlesyndication\.com)\/[^"]*(")/gi,
+    (_m, a, _p, _h, z) => a + DEAD_SRC + z,
+  );
+}
+
 const server = createServer(async (req, res) => {
   if (req.url === '/__m' && req.method === 'POST') {
     let b = ''; for await (const c of req) b += c;
@@ -89,7 +119,7 @@ const server = createServer(async (req, res) => {
     const type = MIME[extname(p)] || 'application/octet-stream';
     if (isPage) {
       idx++;
-      const html = buf.toString('utf8') + INJECT(list[idx] || null);
+      const html = stripBeacons(buf.toString('utf8')) + INJECT(list[idx] || null);
       res.writeHead(200, { 'Content-Type': type }); res.end(html);
     } else {
       res.writeHead(200, { 'Content-Type': type }); res.end(buf);

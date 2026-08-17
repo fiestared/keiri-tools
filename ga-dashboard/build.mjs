@@ -123,14 +123,25 @@ async function fetchAll() {
 
   for (const s of SITES) {
     // 日次（正）: この数字を画面に出す
+    // ★自ドメイン以外を数えない（2026-08-17 実測）。
+    //   `test_no_hscroll` が全305ページをローカルHTTPで開くと**ページのGA4タグが発火し**、
+    //   hostName=localhost として GA4 に入っていた。08-14 は実71PVに対し localhost 450PV。
+    //   セッションは1件しか増えないが**PVは6倍に膨らむ**ので、PV基準の見積もりが壊れる。
+    const hostFilter = {
+      filter: { fieldName: "hostName", stringFilter: { matchType: "EXACT", value: new URL(s.url).host } },
+    };
     const daily = await runReport(token, s.property, {
+      dimensionFilter: hostFilter,
       dimensions: [{ name: "date" }],
-      metrics: [{ name: "sessions" }, { name: "activeUsers" }],
+      // ★PV も取る。AdSense の見込み収益は「1000PVあたり」で決まるので、
+      //   PV/セッションを**その場で実測する**（係数を焼き込むと古くなる）。
+      metrics: [{ name: "sessions" }, { name: "activeUsers" }, { name: "screenPageViews" }],
       orderBys: [{ dimension: { dimensionName: "date" } }],
       limit: 200,
     });
     // 時間帯別: 「今日の同時刻まで」比較にだけ使う（日次と別集計なので混ぜない）
     const hourly = await runReport(token, s.property, {
+      dimensionFilter: hostFilter,
       dimensions: [{ name: "date" }, { name: "hour" }],
       metrics: [{ name: "sessions" }],
       limit: 2000,
@@ -142,6 +153,7 @@ async function fetchAll() {
       dmap.set(`${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`, {
         sessions: Number(r.metricValues[0].value),
         users: Number(r.metricValues[1].value),
+        pageviews: Number(r.metricValues[2]?.value ?? 0),
       });
     }
     const hmap = new Map(); // "YYYY-MM-DD|HH" -> sessions
@@ -157,6 +169,7 @@ async function fetchAll() {
     // 増減が常に大幅マイナスに出る。比較の締めは必ずこの cutoff に合わせる。
     const cut = await runReport(token, s.property, {
       dateRanges: [{ startDate: "today", endDate: "today" }],
+      dimensionFilter: hostFilter,
       dimensions: [{ name: "dateHourMinute" }], metrics: [{ name: "sessions" }],
       orderBys: [{ dimension: { dimensionName: "dateHourMinute" }, desc: true }], limit: 1,
     });
@@ -472,6 +485,12 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
   box-shadow:0 4px 16px rgba(0,0,0,.14); z-index:9; font-variant-numeric:tabular-nums;
 }
 .foot{font-size:12px; color:var(--muted); line-height:1.7}
+.adsense{margin:18px 0 4px}
+.adsense>summary{cursor:pointer; font-size:13px; color:var(--muted); padding:6px 0}
+.adsense-t{border-collapse:collapse; font-size:13px; margin-top:8px}
+.adsense-t th,.adsense-t td{border:1px solid var(--line,#e3e8ee); padding:5px 9px; text-align:left}
+.adsense-t th{background:rgba(127,127,127,.08); font-weight:600; font-size:12px}
+.adsense-t .n{text-align:right; font-variant-numeric:tabular-nums}
 `;
 
 const JS = `
@@ -502,6 +521,72 @@ const JS = `
 })();
 `;
 
+/**
+ * AdSense が通った場合の見込み日次収益。
+ *
+ * ★まだ一度も承認されていないので、**RPMの実測値がこのサイトには存在しない**。
+ *   よってこれは推定であり、幅で出す。単一の数字にすると独り歩きする。
+ * ★PV/セッションは**その場で実測する**（焼き込まない）。
+ *   このサイトは「計算して離脱」が正常な使われ方で PV/セッションが約1.04しかなく、
+ *   記事メディア（3〜4）の1/3。相場のRPMで掛けると**3倍過大に見積もる**ので、
+ *   セッションではなく必ずPVから計算する。
+ * ★直近7日（昨日まで）で均す。当日は集計途中なので入れない。
+ */
+function adsenseEstimate(site) {
+  const d = site.days ?? [];
+  const week = d.slice(Math.max(0, d.length - 8), d.length - 1); // 昨日までの7日
+  const sessions = week.reduce((a, x) => a + (x.sessions || 0), 0);
+  const pv = week.reduce((a, x) => a + (x.pageviews || 0), 0);
+  if (!week.length || !pv) return null;
+  return {
+    days: week.length,
+    pvPerSession: sessions ? pv / sessions : null,
+    pvPerDay: pv / week.length,
+    // RPM（1000PVあたりの収益）の幅。日本語の実務系サイトで見かける範囲を置いている（推定）
+    low: (pv / week.length) / 1000 * 200,
+    mid: (pv / week.length) / 1000 * 500,
+    high: (pv / week.length) / 1000 * 1000,
+  };
+}
+
+const yen0 = (n) => `${Math.round(n).toLocaleString("ja-JP")}円`;
+
+/** ★重要度は低いので画面の一番下。数字より**前提**が見えることを優先する */
+function adsenseBlock(m) {
+  const rows = m.sites.map((s) => {
+    const e = adsenseEstimate(s);
+    if (!e) return "";
+    return `<tr><td>${esc(s.label)}</td>`
+      + `<td class="n">${e.pvPerDay.toFixed(0)}</td>`
+      + `<td class="n">${e.pvPerSession ? e.pvPerSession.toFixed(2) : "—"}</td>`
+      + `<td class="n">${yen0(e.low)}</td>`
+      + `<td class="n"><b>${yen0(e.mid)}</b></td>`
+      + `<td class="n">${yen0(e.high)}</td></tr>`;
+  }).join("");
+  if (!rows) return "";
+  return `
+  <details class="adsense">
+    <summary>AdSense が通った場合の見込み日次収益（推定）</summary>
+    <table class="adsense-t">
+      <tr><th>サイト</th><th class="n">1日PV</th><th class="n">PV/セッション</th>
+          <th class="n">RPM200円</th><th class="n">RPM500円</th><th class="n">RPM1000円</th></tr>
+      ${rows}
+    </table>
+    <p class="foot" style="margin-top:8px">
+      ★<b>これは推定</b>。keiri-tools.com は AdSense に未承認（2026-07-25・2026-08-17 に
+      「有用性の低いコンテンツ」で却下）なので、<b>このサイトのRPM実測値は存在しない</b>。
+      上の3列は「RPMがいくらだったら」の仮定を3つ置いたもの。<br>
+      ★AdSenseは<b>1000PVあたり</b>の課金なので、セッションではなくPVから計算している。
+      このサイトは「計算して離脱」が正常な使われ方でPV/セッションが小さく（上の列が実測値。
+      記事メディアの3〜4に対して1前後）、セッション基準の相場で見積もると<b>3倍過大</b>になる。<br>
+      ★数字は<b>自ドメイン（keiri-tools.com）だけ</b>。検査がローカルで全ページを開くと
+      GA4に hostName=localhost として入るため、除外している（2026-08-14 に実71PVに対し
+      localhost 450PV が混ざっていた）。<br>
+      ★直近7日（昨日まで）の平均。当日は集計途中なので含めていない。
+    </p>
+  </details>`;
+}
+
 // live=true: ローカルの index.html（30分ごとに作り直され、開いたタブも読み直す）
 // live=false: Artifact 公開用。作った時点で固まるので「スナップショット」と正直に書く
 function body(m, err, live) {
@@ -517,6 +602,7 @@ function body(m, err, live) {
   </div>
   ${err ? `<div class="alert"><span>⚠</span><div><b>今回の取得に失敗した。</b>下の数字は ${stamp} JST 時点のもの。<br><code>${esc(err)}</code></div></div>` : ""}
   ${m.sites.map((s, i) => sitePanel(s, i === 0)).join("")}
+  ${adsenseBlock(m)}
   <p class="foot">
     セッション数は GA4 Data API（プロパティのタイムゾーンは Asia/Tokyo）から取得。日付はすべてJST。<br>
     当日ぶんは集計途中で、流入元の割り当ても未確定（GA4上で Unassigned に見えるのは処理待ちで、翌日には Organic に吸収される）。
