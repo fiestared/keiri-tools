@@ -24,7 +24,26 @@ mkdir -p "$(dirname "$LOG")"
 
 say() { echo "$(date '+%Y-%m-%d %H:%M:%S') $*" >> "$LOG"; }
 
+# ★その日に成功していたら、何もしないで降りる（2026-08-17 追加）。
+#   下のワーカー回避と対で必要。1日に複数回起動するようにしたので、
+#   これが無いと同じ日に何度も fetch して push する。
+STAMP="$DIR/logs/.hojokin_last_success"
+TODAY="$(TZ=Asia/Tokyo date '+%Y-%m-%d')"
+if [ -r "$STAMP" ] && [ "$(cat "$STAMP")" = "$TODAY" ]; then
+  exit 0
+fi
+
 # ★ワーカーが動いていたら降りる（同じ repo を同時に触ると片方の変更が消える）
+#
+# ★★2026-08-17 修正: ここは**降りたら終わり**だったため、4日間データが止まっていた。
+#   実測: ワーカーは毎時0分に起動して22〜95分かかる（中央値30分）。
+#   この便は 7:20 の1回だけだったので、**毎日必ずワーカーと被って永久にスキップ**していた。
+#     08-13 07:25 ✓ 更新して push
+#     08-14〜08-17 07:20 「ワーカーが作業中。今回は見送る」×4日
+#   → 1日3回（7:50 / 12:50 / 18:50）に増やし、上の「その日に成功したら降りる」で
+#     重複を防ぐ。**1回でも通れば良い**設計にする。
+#   ★「見送る」を作るときは、必ず**次にいつ試すか**を決めること。
+#     再試行の無い skip は、条件が毎回成立すると永久停止になる。
 if [ -d "$LOCK" ]; then
   pid="$(cat "$LOCK/pid" 2>/dev/null || echo '')"
   if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
@@ -67,6 +86,7 @@ fi
 
 if git diff --quiet -- docs/assets/hojokin_jgrants.json docs/assets/hojokin_schedule.json docs/assets/koyou_joseikin.json; then
   say "変化なし（${n}件）"
+  echo "$TODAY" > "$STAMP"   # ★取得は成功している＝今日の確認は済み
   exit 0
 fi
 
@@ -111,6 +131,7 @@ tools/update_hojokin.sh による自動更新。締切が過ぎたものは表�
 
 if git push -q origin main >> "$LOG" 2>&1; then
   say "✓ ${n}件で更新して push した ($before → $(git rev-parse --short HEAD))"
+  echo "$TODAY" > "$STAMP"   # ★今日は成功。同日の後続の起動は先頭で降りる
 else
   say "★push に失敗した（コミットは残っている）"
   exit 1

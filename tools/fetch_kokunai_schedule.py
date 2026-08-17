@@ -34,6 +34,7 @@ import json
 import re
 import sys
 import urllib.request
+from urllib.parse import urljoin
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
@@ -69,11 +70,15 @@ def parse(doc):
             if len(cells) < 3 or cells[0] in ('補助金名', ''):
                 continue                       # 見出し行と空行を飛ばす
             link = re.search(r'href="([^"]+)"', row)
+            # ★先方は絶対URLと相対URLを混ぜてくる（2026-08-17 実測: 22行中1行が
+            #   `/subsidy/shinjigyoumanufacturing/` の相対リンクで、検査
+            #   「URLは絶対URL」が赤になり、補助金データの更新が丸ごと止まった）。
+            #   href をそのまま持たない。**取得した時点で絶対URLに解決する。**
             out.append({
                 'name': cells[0],
                 'start': cells[1],             # ★「2026/7/1」も「第23次受付終了」も原文のまま
                 'period': cells[2],
-                'url': link.group(1) if link else None,
+                'url': urljoin(SRC, link.group(1)) if link else None,
             })
         return out
     return []
