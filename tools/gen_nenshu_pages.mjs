@@ -1,22 +1,37 @@
 /**
- * 年収別のページを生成する（手取り25本 + 住民税25本 = 50本）。
+ * 年収別の手取り**早見表を1枚**生成する（/nenshu/）。
  *
- * なぜ作るか（2026-08-05 の競合リサーチ）:
- * 新規ドメインの keisanbox.jp が、年収別の静的ページ群で「住民税 計算」等に露出していた。
- * 検索は「年収500万 手取り」のように**具体的な数字つき**で来るのに、
- * 当サイトは計算機1本で受けていて、その語で受ける面が無かった。
+ * ═══ 2026-08-17 全面改訂: 個別50ページを廃止し、一覧1枚に統合した ═══
  *
- * ★薄いページを量産しない。1ページごとに**実際に違う答え**を載せる:
- *   - その年収の手取り／住民税を、計算コアからその場で算出する
- *   - **前後の年収との差**（50万円増えると手取りはいくら増えるか）を出す。ここが1ページ1答え
- *   - 内訳（所得税・住民税・健康保険・厚生年金・雇用保険）まで出す
+ * ★なぜ統合したか（実測）:
+ *   元は「手取り25本＋住民税25本＝50本」を生成していた。同一テンプレで数字だけが違い、
+ *   実測すると **数字を伏せた本文の類似度は中央値100.0%**（隣り合うページどうし）。
+ *   これは Google の「スケールされたコンテンツの悪用」の型そのもの。
+ *   2026-07-25 と 2026-08-17 の AdSense 却下は**2回とも「有用性の低いコンテンツ」**で、
+ *   50ページ全部に AdSense コードが入ったまま配信されていた。
+ *   ★`googlebot` に noindex を付けてあったが、**AdSense の審査は検索の索引とは別物**で、
+ *     ページは配信され続ける。noindex では審査対策にならない。
+ *
+ * ★消して失うものが無いことを先に確かめた（2026-08-17 実測）:
+ *   - Google: GSC で 50ページとも表示ゼロ（googlebot に noindex なので当然）
+ *   - Bing  : ページ統計・GetPageQueryStats のどちらにも `/nenshu/<年収>man-*` は**1本も無い**
+ *     （`column/nenshu-no-kabe` は別ページ）
+ *   → 流入実績ゼロ。統合による損失は無い。
+ *
+ * ★★一覧は「差引」ではなく**本物の手取り**を出す（2026-08-17 変更）:
+ *   旧実装の「差引」は 年収 −（社会保険料＋住民税）で、**所得税を引いていなかった**。
+ *   それを「手取り」と呼ぶと読者の期待とずれる。
+ *   → `tedori_core.js` の `calcTedori()` を使い、所得税まで含めた手取りを出す。
+ *   ★`calcTedori` は**月給**を取るので、年収を12等分して渡す（＝賞与なしの前提）。
+ *     この前提はページ本文にも明記する。数字だけ出して前提を書かない、をやらない。
+ *
  * 数字はこのファイルにベタ書きしない。すべて docs/assets の計算コアから計算する。
  *
  *   node tools/gen_nenshu_pages.mjs           生成
  *   node tools/gen_nenshu_pages.mjs --check   差分があれば失敗（CI/テスト用）
  *
- * 前提（ページにも明記する）: 東京都・40歳・独身・扶養なし・給与収入のみ・
- * 社会保険料は協会けんぽ東京都の料率による概算。令和8年分の所得。
+ * 前提（ページにも明記する）: 東京都・40歳・独身・扶養なし・給与収入のみ・賞与なし
+ * （年収を12等分）・社会保険料は協会けんぽ東京都の料率・令和8年分の所得。
  */
 // ★ナビは tools/gen_nav.mjs が唯一の出所。ここに直書きすると、この生成器を
 //   流すたびにナビが古い形へ戻る（X導線で同じ事故が起きている。下のコメント参照）。
@@ -25,7 +40,7 @@ import { buildHeader } from './gen_nav.mjs';
 // ★年収別ページはすべて nenshu/<slug>/ で深さが同じなので、ナビは1つで足りる。
 //   代表の slug で作る（現在地の印は「ツール」も「コラム」も付かない階層）。
 const NENSHU_HEADER = buildHeader('nenshu/x');
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 const DOCS = new URL("../docs/", import.meta.url).pathname;
@@ -56,6 +71,31 @@ function figures(shunyu) {
     juminzei: r.juminzeiTotal, shotokuwari: r.shotokuwariJissai, kintouwari: r.kintouwari.total,
     kyuyoShotoku: r.kyuyoShotoku, kazei: r.kazeiSoShotoku,
     hikazei: r.hikazei.kintouwariHikazei && r.hikazei.shotokuwariHikazei,
+  };
+}
+
+const { calcTedori } = await import(join(DOCS, "assets/tedori_core.js"));
+const GENSEN = JSON.parse(readFileSync(join(DOCS, "assets/gensen_getsugaku_r08.json"), "utf8"));
+
+/**
+ * 本物の手取り（所得税・住民税・社会保険料を全部引いたもの）。
+ * ★`calcTedori` は**月給**を取る。年収を12等分して渡す＝**賞与なしの前提**。
+ *   賞与があると源泉の計算が別（賞与の源泉徴収税額表）になるので、同じ表には混ぜられない。
+ *   この前提はページ本文に明記する。
+ */
+function tedoriFull(shunyu) {
+  const gross = Math.round(shunyu / 12);
+  const r = calcTedori({
+    gross, age: AGE, prefecture: KEN, dependents: 0, juminzeiMode: "estimate",
+  }, { shahoRates: S, gensenTable: GENSEN, juminzeiData: D });
+  return {
+    shunyu, gross,
+    tedoriMonth: r.tedori,
+    tedoriYear: r.tedori * 12,
+    rate: r.tedoriRate,
+    shotokuzeiYear: r.shotokuzei * 12,
+    juminzeiYear: r.juminzeiAnnual ?? r.juminzeiMonthly * 12,
+    shahoYear: r.shakaiHoken.self * 12,
   };
 }
 
@@ -253,43 +293,71 @@ ${next ? `<p>年収が25万円増えると、住民税は<b>${yen(next.juminzei 
 }
 
 let written = 0;
-const slugs = [];
-for (const f of rows) {
-  for (const [suffix, html] of [["tedori", pageTedori(f)], ["juminzei", pageJuminzei(f)]]) {
-    const slug = `${f.shunyu / 10000}man-${suffix}`;
-    slugs.push(slug);
-    const dir = join(DOCS, "nenshu", slug);
-    const file = join(dir, "index.html");
-    const before = existsSync(file) ? readFileSync(file, "utf8") : null;
-    if (before === html) continue;
-    if (CHECK) { console.error(`✗ 年収別ページが最新ではない: nenshu/${slug}/`); process.exit(1); }
-    mkdirSync(dir, { recursive: true });
-    writeFileSync(file, html);
-    written++;
-  }
-}
+const T = INCOMES.map(tedoriFull);
+const pct = (x) => `${(x * 100).toFixed(1)}%`;
 
-// 一覧ページ（回遊とクロールの入口。sitemap にも載せる）
+// ── 一覧1枚だけを作る（個別50ページは 2026-08-17 に廃止。ヘッダのコメント参照）──
 const indexHtml = HEAD(
-  "年収別の手取り・住民税の早見表｜税金・経理・補助金ツールズ",
-  "年収200万円から800万円まで25万円刻みで、手取り（社会保険料・住民税を引いた額）と住民税の内訳を計算しました。東京都・40歳・独身の条件で、前後の年収との差も出しています。",
+  "年収別の手取り早見表｜200万〜800万を25万円刻み（令和8年・東京都）",
+  "年収200万円から800万円まで25万円刻みで、所得税・住民税・社会保険料を引いた手取りを"
+  + "月額と年額で一覧にしました。手取り率と内訳つき。東京都・40歳・独身・賞与なしの条件で、"
+  + "当サイトの計算コアから算出しています。",
   "https://keiri-tools.com/nenshu/",
-  false,   // ★一覧はGoogleにも出す（50行を1枚で比較できる実データ。薄い個別ページとは別物）
-).replace('href="../../', 'href="../').replace(/href="\.\.\/\.\.\//g, 'href="../') + `
-<nav class="breadcrumb">ホーム › 年収別</nav>
+  false,   // ★一覧はGoogleにも出す
+).replace(/href="\.\.\/\.\.\//g, 'href="../') + `
+<nav class="breadcrumb">ホーム › 年収別の手取り早見表</nav>
 <article>
-<h1>年収別の手取り・住民税</h1>
-<p class="article-meta">令和8年分の所得・東京都・40歳・独身（扶養なし）・給与収入のみで計算</p>
-<p>年収200万円から800万円まで25万円刻みで、<b>社会保険料と住民税を引いた差引額</b>と<b>住民税の内訳</b>を計算しました。数字はすべて当サイトの計算コアから算出しています。</p>
+<h1>年収別の手取り早見表</h1>
+<p class="article-meta">令和8年分・東京都・40歳・独身（扶養なし）・給与収入のみ・賞与なし（年収を12等分）</p>
+<p>年収200万円から800万円まで25万円刻みで、<b>所得税・住民税・社会保険料を引いた手取り</b>を計算しました。
+数字はすべて当サイトの計算コアから算出しています（表にベタ書きしていません）。</p>
+
 <div class="scroll-wrap">
-<table>
-<tr><th>年収</th><th style="text-align:right">社会保険料</th><th style="text-align:right">住民税</th><th style="text-align:right">差引</th><th>ページ</th></tr>
-${rows.map((f) => `<tr><td>${man(f.shunyu)}</td><td style="text-align:right">${yen(f.shakai)}円</td><td style="text-align:right">${yen(f.juminzei)}円</td><td style="text-align:right">${yen(tedoriOf(f))}円</td><td><a href="${f.shunyu / 10000}man-tedori/">手取り</a>／<a href="${f.shunyu / 10000}man-juminzei/">住民税</a></td></tr>`).join("\n")}
+<table class="data-table">
+<tr>
+  <th>年収</th>
+  <th style="text-align:right">手取り（月）</th>
+  <th style="text-align:right">手取り（年）</th>
+  <th style="text-align:right">手取り率</th>
+  <th style="text-align:right">所得税（年）</th>
+  <th style="text-align:right">住民税（年）</th>
+  <th style="text-align:right">社会保険料（年）</th>
+</tr>
+${T.map((x) => `<tr><td>${man(x.shunyu)}</td>`
+  + `<td style="text-align:right">${yen(x.tedoriMonth)}円</td>`
+  + `<td style="text-align:right"><b>${yen(x.tedoriYear)}円</b></td>`
+  + `<td style="text-align:right">${pct(x.rate)}</td>`
+  + `<td style="text-align:right">${yen(x.shotokuzeiYear)}円</td>`
+  + `<td style="text-align:right">${yen(x.juminzeiYear)}円</td>`
+  + `<td style="text-align:right">${yen(x.shahoYear)}円</td></tr>`).join("\n")}
 </table>
 </div>
-<p class="note">所得税は含めていません（扶養や控除で人により変わるため）。所得税まで含めた計算は<a href="../tedori/">手取り計算機</a>をお使いください。</p>
+
+<h2>年収が25万円増えると、手取りはいくら増えるか</h2>
+<p>額面の増分25万円のうち、実際に手元に残るのはこれだけです。残りは税と社会保険料に消えます。</p>
+<div class="scroll-wrap">
+<table class="data-table">
+<tr><th>年収</th><th style="text-align:right">手取りの増分（年）</th><th style="text-align:right">25万円のうち残る割合</th></tr>
+${T.slice(1).map((x, i) => {
+  const d = x.tedoriYear - T[i].tedoriYear;
+  return `<tr><td>${man(T[i].shunyu)} → ${man(x.shunyu)}</td>`
+    + `<td style="text-align:right">${yen(d)}円</td>`
+    + `<td style="text-align:right">${pct(d / 250_000)}</td></tr>`;
+}).join("\n")}
+</table>
+</div>
+
+<h2>この表の前提</h2>
+<ul>
+<li><b>賞与なし</b>として、年収を12等分した額を毎月の給与として計算しています。賞与があると源泉徴収の計算式が別（賞与の税額表）になるため、同じ表には混ぜられません。</li>
+<li>東京都・40歳・独身（扶養なし）・給与収入のみ。健康保険は協会けんぽ東京都の料率、介護保険料を含みます。</li>
+<li>所得税は毎月の源泉徴収額（甲欄）で、年末調整や各種控除は反映していません。</li>
+<li>住民税はこの年収が前年も続いた場合の概算です（住民税は前年の所得で決まります）。</li>
+</ul>
+<p class="note">扶養・年齢・都道府県・賞与を自分の条件で入れて計算したい場合は<a href="../tedori/">手取り計算機</a>をお使いください。住民税だけを詳しく見るなら<a href="../juminzei/">住民税の計算</a>があります。</p>
 </article>
 ` + FOOT;
+
 const idxFile = join(DOCS, "nenshu", "index.html");
 if (!existsSync(idxFile) || readFileSync(idxFile, "utf8") !== indexHtml) {
   if (CHECK) { console.error("✗ 年収別の一覧が最新ではない"); process.exit(1); }
@@ -298,4 +366,14 @@ if (!existsSync(idxFile) || readFileSync(idxFile, "utf8") !== indexHtml) {
   written++;
 }
 
-console.log(CHECK ? "✓ 年収別ページは最新" : `✓ 年収別ページを生成: ${written}ファイル（${slugs.length}ページ＋一覧）`);
+// ★廃止した個別ページが残っていたら知らせる（黙って残すと配信され続ける）
+const stale = existsSync(join(DOCS, "nenshu"))
+  ? readdirSync(join(DOCS, "nenshu")).filter((d) => /^\d+man-(tedori|juminzei)$/.test(d))
+  : [];
+if (stale.length) {
+  console.error(`✗ 廃止した個別ページが ${stale.length} 件残っています（例: ${stale[0]}）。`);
+  console.error("  rm -rf docs/nenshu/*man-tedori docs/nenshu/*man-juminzei");
+  process.exit(1);
+}
+
+console.log(CHECK ? "✓ 年収別の早見表は最新" : `✓ 年収別の早見表を生成: ${written}ファイル（一覧1枚）`);
