@@ -119,6 +119,32 @@
       true
     );
 
+    /* ---------- 4. PR（アフィリエイト）リンクが押された ----------
+       ★なぜ「どこに置いたか」まで持つか:
+         PR枠は置き場所で効きがまるで変わる（本文の途中／結果の直後／記事の末尾）。
+         押された数だけ数えると「どの枠が効いたか」が永久に分からず、
+         増やすか外すかの判断ができない。競合(money-keisan.com)がCTA部位別に測っている理由。
+       ★1ページ1回に絞らない。どの枠が押されたかを取りこぼさないため。
+       ★遷移を邪魔しない（preventDefault しない・同期処理を挟まない）。 */
+    document.addEventListener(
+      "click",
+      function (e) {
+        try {
+          var a = e.target && e.target.closest ? e.target.closest("a[data-pr]") : null;
+          if (!a) return;
+          if (typeof window.gtag !== "function") return;
+          window.gtag("event", "pr_click", {
+            offer: a.getAttribute("data-pr") || "(unknown)",   // どの案件か
+            slot: a.getAttribute("data-pr-slot") || "(unknown)", // ページのどこに置いた枠か
+            from: toolId(),
+          });
+        } catch (err) {
+          /* 計測の失敗でリンクの遷移を邪魔しない */
+        }
+      },
+      true
+    );
+
     /* ---------- 2. 結果が画面に出た ---------- */
     function visibleWithText(el) {
       if (!el) return false;
