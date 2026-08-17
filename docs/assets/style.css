@@ -16,11 +16,24 @@ body {
   background: var(--bg);
   line-height: 1.7;
 }
+/* ★ヘッダーは追随させる（2026-08-17）。
+   ヘッダーの「ツール」はトップの #tools へ飛ぶアンカーで、飛んだあとヘッダーが
+   画面外へ流れてしまい、**戻る手段が無くなっていた**（Masahiro 実測の指摘）。
+   ★sticky にすると「飛び先がヘッダーの下に隠れる」問題が同時に起きるので、
+   下の scroll-margin-top と必ずセットで直す。片方だけだと別の壊れ方をする。 */
 header.site {
   background: #fff;
   border-bottom: 1px solid var(--line);
   padding: 10px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
+
+/* ★アンカーで飛んだ先が、追随するヘッダーの下に潜らないようにする。
+   実測のヘッダー高さ: 1280px/560px で 61px、375px では**折り返して104px**。
+   その高さぶん + 少し余白を空ける。 */
+[id] { scroll-margin-top: 72px; }
 header.site a { color: var(--ink); text-decoration: none; font-weight: 700; }
 header.site .tag { color: var(--sub); font-size: 12px; margin-left: 8px; }
 main { max-width: 720px; margin: 0 auto; padding: 20px 16px 60px; }
@@ -230,6 +243,14 @@ article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-s
 
 /* ---- サイトナビ / トップページ ---- */
 header.site { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+/* ★狭い画面ではヘッダーが2段に折り返して104pxになる（実測）。
+   追随させたまま縦を食いすぎないよう詰め、飛び先の余白もその高さに合わせる。 */
+@media (max-width: 560px) {
+  header.site { padding: 8px 14px; gap: 8px 14px; }
+  header.site nav { gap: 14px; }
+  header.site nav a { padding: 4px 2px; }
+  [id] { scroll-margin-top: 108px; }
+}
 header.site .brand { font-weight: 800; font-size: 16px; color: var(--ink); text-decoration: none; }
 header.site nav { margin-left: auto; display: flex; gap: 16px; }
 header.site nav a { font-size: 14px; color: var(--sub); text-decoration: none; font-weight: 600; padding: 8px 2px; }
