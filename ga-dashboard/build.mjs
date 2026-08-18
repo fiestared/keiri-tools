@@ -221,6 +221,13 @@ function model(data) {
       });
       const last7 = sum(d.slice(n - 8, n - 1).map((x) => x.sessions));   // 昨日までの7日
       const prev7 = sum(d.slice(n - 15, n - 8).map((x) => x.sessions));  // その前の7日
+      // ★PV も出す（2026-08-18 Masahiro依頼）。グラフは要らないので数字だけ。
+      //   ★このサイトは「計算して離脱」が正常な使われ方で **PV/セッションが1前後**。
+      //     記事メディアの3〜4とは別物なので、PVを見るときは必ずセッションと並べる
+      //     （PV単独だと記事メディアの相場と比べてしまう）。
+      const pv = (x) => x?.pageviews ?? 0;
+      const last7pv = sum(d.slice(n - 8, n - 1).map(pv));
+      const prev7pv = sum(d.slice(n - 15, n - 8).map(pv));
       const yesterday = d[n - 2], yPrevWeek = d[n - 9];
       // 取得時刻とデータ末端の差＝GA4の当日データの遅れ（実測で60〜80分ある）
       const f = jstFields(new Date(data.fetchedAt));
@@ -232,6 +239,8 @@ function model(data) {
         ...s, shown, last7, prev7,
         yesterday: yesterday.sessions, yesterdayWd: WD[weekdayIdx(yesterday.date)],
         yesterdayPrev: yPrevWeek.sessions,
+        last7pv, prev7pv,
+        yesterdayPv: pv(yesterday), todayPv: pv(d[n - 1]),
         today: d[n - 1].sessions, todayWd: WD[weekdayIdx(d[n - 1].date)],
         max: Math.max(1, ...shown.map((x) => x.sessions)),
       };
@@ -330,6 +339,18 @@ function table(site) {
 }
 
 // primary の1サイトだけヒーロー数字（1画面に1つ）を持つ
+/**
+ * タイルに添える PV の1行。
+ * ★セッションと必ず並べる。このサイトは「計算して離脱」が正常な使われ方で
+ *   **PV/セッションが1前後**（記事メディアは3〜4）。PVだけ見せると相場と比べて誤読する。
+ */
+const pvLine = (pv, sessions) => {
+  if (pv == null) return "";
+  const ratio = sessions ? (pv / sessions).toFixed(2) : "—";
+  return `<div class="pv">PV ${pv.toLocaleString("ja-JP")}`
+    + `<span class="pvr">（${ratio} /セッション）</span></div>`;
+};
+
 function sitePanel(site, primary) {
   const hh = String(site.cmpHour).padStart(2, "0");
   return `
@@ -344,6 +365,7 @@ function sitePanel(site, primary) {
     <div class="tile${primary ? " hero" : ""}">
       <div class="label">今日 <span class="badge">${site.cutoff ? `${esc(site.cutoff)}まで` : "途中"}</span></div>
       <div class="value">${site.today.toLocaleString("ja-JP")}</div>
+      ${pvLine(site.todayPv, site.today)}
       ${site.cmpHour >= 0
         ? delta(site.todayCum, site.prevWeekCum, `先週${esc(site.todayWd)} 0:00〜${hh}:59 比`)
         : `<span class="delta flat">— <span class="dnote">比較できる時間帯がまだ無い</span></span>`}
@@ -351,11 +373,13 @@ function sitePanel(site, primary) {
     <div class="tile">
       <div class="label">昨日（${esc(site.yesterdayWd)}）</div>
       <div class="value">${site.yesterday.toLocaleString("ja-JP")}</div>
+      ${pvLine(site.yesterdayPv, site.yesterday)}
       ${delta(site.yesterday, site.yesterdayPrev, "前週同曜日比")}
     </div>
     <div class="tile">
       <div class="label">直近7日（昨日まで）</div>
       <div class="value">${site.last7.toLocaleString("ja-JP")}</div>
+      ${pvLine(site.last7pv, site.last7)}
       ${delta(site.last7, site.prev7, "その前の7日比")}
     </div>
   </div>
@@ -485,6 +509,8 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
   box-shadow:0 4px 16px rgba(0,0,0,.14); z-index:9; font-variant-numeric:tabular-nums;
 }
 .foot{font-size:12px; color:var(--muted); line-height:1.7}
+.pv{font-size:12px; color:var(--muted); margin:2px 0 4px; font-variant-numeric:tabular-nums}
+.pv .pvr{margin-left:4px; opacity:.8}
 .adsense{margin:18px 0 4px}
 .adsense>summary{cursor:pointer; font-size:13px; color:var(--muted); padding:6px 0}
 .adsense-t{border-collapse:collapse; font-size:13px; margin-top:8px}
@@ -532,20 +558,49 @@ const JS = `
  *   セッションではなく必ずPVから計算する。
  * ★直近7日（昨日まで）で均す。当日は集計途中なので入れない。
  */
+/**
+ * AdSense の見込みは「1日あたり何PVか」で決まる。ここは**平均を使わない**。
+ *
+ * ★なぜ（2026-08-18 実測）:
+ *   利用者の使われ方は「1ページで計算して離脱」なので PV/セッションは 1.0 前後。
+ *   ところが 08-12/08-13 だけ 1.56/1.43 に跳ねた。内訳を割ると
+ *   **Direct×desktop が 29セッション→118PV（4.07）**、同じ日の検索流入は 1.02。
+ *   ＝サイトを作りながら本番ドメインを自分で回遊したぶん。
+ *   7日平均に入れると PV/セッションが 1.16 に見え、**見込みが約17%水増しされる**。
+ *
+ * ★閾値で「その日を捨てる」のは効かない。日合計まで薄まると 1.56 止まりで、
+ *   本物の良い日（1.2前後）と見分けがつかない。実際 2.0 でも 1.3 でも取りこぼす。
+ *   → **PV/セッションは取得できた全日の中央値**を使う。2日跳ねても中央値は動かない。
+ *   → PV/日 ＝（直近7日の1日あたりセッション）×（その中央値）
+ *
+ * ★セッション側は水増しされていない（跳ねた2日のDirectは29件で、平常日の21件と同じ桁）。
+ *   だから分母はセッションに寄せるのが安全。
+ */
 function adsenseEstimate(site) {
   const d = site.days ?? [];
   const week = d.slice(Math.max(0, d.length - 8), d.length - 1); // 昨日までの7日
-  const sessions = week.reduce((a, x) => a + (x.sessions || 0), 0);
-  const pv = week.reduce((a, x) => a + (x.pageviews || 0), 0);
-  if (!week.length || !pv) return null;
+  if (!week.length) return null;
+
+  const ratios = d.filter((x) => x.sessions > 0 && x.pageviews != null)
+    .map((x) => x.pageviews / x.sessions).sort((p, q) => p - q);
+  if (!ratios.length) return null;
+  const mid = ratios.length >> 1;
+  const pvPerSession = ratios.length % 2 ? ratios[mid] : (ratios[mid - 1] + ratios[mid]) / 2;
+
+  const sessionsPerDay = week.reduce((a, x) => a + (x.sessions || 0), 0) / week.length;
+  const pvPerDay = sessionsPerDay * pvPerSession;
+  if (!pvPerDay) return null;
+
+  // 参考: 素の平均（水増しがどれだけ乗っていたかを画面で見せるため）
+  const rawPv = week.reduce((a, x) => a + (x.pageviews || 0), 0) / week.length;
+
   return {
-    days: week.length,
-    pvPerSession: sessions ? pv / sessions : null,
-    pvPerDay: pv / week.length,
+    days: week.length, sessionsPerDay, pvPerSession, pvPerDay, rawPv,
+    ratioDays: ratios.length,
     // RPM（1000PVあたりの収益）の幅。日本語の実務系サイトで見かける範囲を置いている（推定）
-    low: (pv / week.length) / 1000 * 200,
-    mid: (pv / week.length) / 1000 * 500,
-    high: (pv / week.length) / 1000 * 1000,
+    low: pvPerDay / 1000 * 200,
+    mid: pvPerDay / 1000 * 500,
+    high: pvPerDay / 1000 * 1000,
   };
 }
 
@@ -558,7 +613,8 @@ function adsenseBlock(m) {
     if (!e) return "";
     return `<tr><td>${esc(s.label)}</td>`
       + `<td class="n">${e.pvPerDay.toFixed(0)}</td>`
-      + `<td class="n">${e.pvPerSession ? e.pvPerSession.toFixed(2) : "—"}</td>`
+      + `<td class="n">${e.sessionsPerDay.toFixed(0)}</td>`
+      + `<td class="n">${e.pvPerSession.toFixed(2)}</td>`
       + `<td class="n">${yen0(e.low)}</td>`
       + `<td class="n"><b>${yen0(e.mid)}</b></td>`
       + `<td class="n">${yen0(e.high)}</td></tr>`;
@@ -568,7 +624,8 @@ function adsenseBlock(m) {
   <details class="adsense">
     <summary>AdSense が通った場合の見込み日次収益（推定）</summary>
     <table class="adsense-t">
-      <tr><th>サイト</th><th class="n">1日PV</th><th class="n">PV/セッション</th>
+      <tr><th>サイト</th><th class="n">1日PV</th><th class="n">1日セッション</th>
+          <th class="n">PV/セッション<br><span style="font-weight:400">中央値</span></th>
           <th class="n">RPM200円</th><th class="n">RPM500円</th><th class="n">RPM1000円</th></tr>
       ${rows}
     </table>
@@ -582,7 +639,12 @@ function adsenseBlock(m) {
       ★数字は<b>自ドメイン（keiri-tools.com）だけ</b>。検査がローカルで全ページを開くと
       GA4に hostName=localhost として入るため、除外している（2026-08-14 に実71PVに対し
       localhost 450PV が混ざっていた）。<br>
-      ★直近7日（昨日まで）の平均。当日は集計途中なので含めていない。
+      ★直近7日（昨日まで）のセッションの平均。当日は集計途中なので含めていない。<br>
+      ★1日PVは<b>平均PVではなく「1日セッション × PV/セッションの中央値」</b>。
+      運営者が本番サイトを自分で回遊した日にPVだけ跳ねるため（2026-08-18 実測: 08-12/13 は
+      Direct×desktop が 29セッション→118PV＝4.07、同日の検索流入は1.02）。
+      素の7日平均だと ${(m.sites.map((s2) => adsenseEstimate(s2)).find(Boolean)?.rawPv ?? 0).toFixed(0)}PV/日 に見えるが、
+      これは<b>水増し</b>。中央値は2日跳ねても動かないので、そちらを使っている。
     </p>
   </details>`;
 }
