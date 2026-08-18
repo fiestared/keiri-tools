@@ -77,6 +77,19 @@ function figures(shunyu) {
 const { calcTedori } = await import(join(DOCS, "assets/tedori_core.js"));
 const GENSEN = JSON.parse(readFileSync(join(DOCS, "assets/gensen_getsugaku_r08.json"), "utf8"));
 
+// ★年は**データに名乗らせる**。ページに手書きすると、データを差し替えたとき
+//   画面だけ古い年のまま残って利用者に嘘をつく（test_year_staleness の趣旨）。
+//   juminzei は「令和8年分」、shaho_rates は「令和8年度」と軸が違うので、
+//   所得の年分は juminzei から取る（この早見表が名乗るのは所得の年分）。
+const YEAR_INCOME = D?._meta?.year ?? D?.year;
+if (!YEAR_INCOME) throw new Error("juminzei_r08.json が年(_meta.year)を名乗っていません");
+
+// ★この表がどのデータから作られたかを機械にも見える形で残す。
+//   ビルド時に焼き込む作りなので、ページ側にはデータへの参照が1つも残らない。
+//   それだと「年つきデータを読んでいないのに年を名乗っている」ページと区別がつかない。
+const BUILT_FROM = ["juminzei_r08.json", "shaho_rates_r08.json", "gensen_getsugaku_r08.json"];
+const BUILT_FROM_NOTE = `<!-- built-from: ${BUILT_FROM.map((f) => `assets/${f}`).join(", ")} -->`;
+
 /**
  * 本物の手取り（所得税・住民税・社会保険料を全部引いたもの）。
  * ★`calcTedori` は**月給**を取る。年収を12等分して渡す＝**賞与なしの前提**。
@@ -143,6 +156,9 @@ ${noindex ? '<meta name="googlebot" content="noindex, follow">' : ""}
 </script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
      crossorigin="anonymous"></script>
+<!-- ★ツールが実際に使われたかの計測。他の全ページと同じ配線（test_measurement_wiring が見ている）。
+     2026-08-17 に50ページを1枚の早見表へ作り替えたとき、これだけ落としていた -->
+<script src="../assets/track.js" defer></script>
 </head>
 <body>
 ${NENSHU_HEADER}
@@ -298,7 +314,7 @@ const pct = (x) => `${(x * 100).toFixed(1)}%`;
 
 // ── 一覧1枚だけを作る（個別50ページは 2026-08-17 に廃止。ヘッダのコメント参照）──
 const indexHtml = HEAD(
-  "年収別の手取り早見表｜200万〜800万を25万円刻み（令和8年・東京都）",
+  `年収別の手取り早見表｜200万〜800万を25万円刻み（${YEAR_INCOME}・東京都）`,
   "年収200万円から800万円まで25万円刻みで、所得税・住民税・社会保険料を引いた手取りを"
   + "月額と年額で一覧にしました。手取り率と内訳つき。東京都・40歳・独身・賞与なしの条件で、"
   + "当サイトの計算コアから算出しています。",
@@ -308,7 +324,8 @@ const indexHtml = HEAD(
 <nav class="breadcrumb">ホーム › 年収別の手取り早見表</nav>
 <article>
 <h1>年収別の手取り早見表</h1>
-<p class="article-meta">令和8年分・東京都・40歳・独身（扶養なし）・給与収入のみ・賞与なし（年収を12等分）</p>
+<p class="article-meta">${YEAR_INCOME}・東京都・40歳・独身（扶養なし）・給与収入のみ・賞与なし（年収を12等分）</p>
+${BUILT_FROM_NOTE}
 <p>年収200万円から800万円まで25万円刻みで、<b>所得税・住民税・社会保険料を引いた手取り</b>を計算しました。
 数字はすべて当サイトの計算コアから算出しています（表にベタ書きしていません）。</p>
 
