@@ -204,6 +204,7 @@ const ORDER = [
   "hotei-fukurihi-keisan",             // 法定福利費の計算
   "kyushoku-shakai-hokenryo",          // 休職中の社会保険料
   "keiri-nenkan-schedule",             // 経理の年間スケジュール(ハブ)
+  "zeinuki-zeikomi-keiri",             // 税抜経理 260/月（消費税 経理処理 50 も同クラスタ。keyword_demand.py で実測）。★需要は小さい＝空白だった理由が需要の小ささである可能性が高い（着手後に測った。順序を誤った）。★着手時、全274ページで「税抜経理」「税込経理」を title/h1 に持つページは0だったが、**節としては3記事が保有**（karibaraikin-kariukekin「仮払消費税等・仮受消費税等」「控除対象外消費税額等」、kosaihi-kaigihi-chigai「税抜経理か税込経理かで1万円判定が動く」、shogaku-genka-shokyaku 本文6回）。★食い合いを避けるため役割を分けた＝この記事は**方式の選択そのもの**（選べるのは誰か・仕訳の対比・納付税額の計上時期・判定金額が動くこと）、控除対象外消費税額等の実数計算は karibaraikin-kariukekin へ、4つの選択肢の使い分けは shogaku-genka-shokyaku へリンクで譲る。★踏み込みは①免税事業者は「税抜経理方式で経理をしている場合であっても」税込経理で所得計算（No.6375）＝会計ソフトの入力とは別②判定金額が経理方式で動く根拠は No.5403 の質疑応答（107,800円のパソコンの設例・Shift_JIS ページ）③壁は10万/20万/40万で、税込経理だと税抜換算で約9%手前に閉じる（90,908/181,817/363,635円）④措置法67条の5は令和11年3月31日まで・年300万円・明細書の添付が適用要件⑤税込経理の納付税額の計上時期は原則「申告書が提出された日の属する事業年度」だが損金経理により未払金計上すればその期（No.6901）⑥★No.6921は全額損金の要件を3つとして紹介するが、法人税法施行令139条の4第2項には**特定課税仕入れ**という4つ目がある⑦同条1項の割合は条文上「課税売上割合に準ずる割合として財務省令で定めるところにより計算した割合」
 ];
 
 /**
@@ -277,7 +278,7 @@ const CATEGORIES = [
     id: "shohizei",
     name: "消費税・インボイス",
     desc: "インボイス制度の基本と2割特例・簡易課税、課税売上割合と仕入税額控除、消費税の端数処理、中間申告。",
-    slugs: ["invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "kazei-uriage-wariai", "shohizei-hasu-shori", "chukan-shinkoku"],
+    slugs: ["invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "kazei-uriage-wariai", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri"],
   },
   {
     id: "denchoho",
