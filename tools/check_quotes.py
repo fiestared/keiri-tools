@@ -21,6 +21,17 @@
     python3 tools/check_quotes.py <article.html> --law /tmp/sotokuho.json [--law ...]
 
 exit code: 0=全一致 / 1=不一致あり / 2=測定不能(コーパスが小さすぎる等)
+
+🔴 この検査が言えることと言えないこと(check_figures と同じ二層。混ぜて読まない):
+  【①②】blockquote の逐語照合 …… **完全一致の判定なので確定する**。
+        ただし blockquote **だけ**を見る。条文を td や li に置くと見ない。
+  【③】括弧書き飛ばしの候補 …… **候補であって確定ではない。exit code に影響しない。**
+        本文(blockquote の外)に、素の条文には無く括弧書きを外すと一致する断片が
+        あれば挙げる。2026-08-19 第6便の実害を捕まえるために入れた
+        (財規75条1項1号「商品又は製品（半製品、副産物、作業くず等を含む…）の期首棚卸高」を
+         「商品又は製品の期首棚卸高」と書き、"条文の項目"という見出しの表に置いていた)。
+        ⚠️ 全170記事での実測は **真陽性1 : 候補10**。落ちたのは地の文の言い換えと、
+           「……」で省略を明示した正しい引用。**目で見るまで欠陥として報告しないこと。**
 """
 
 import argparse
@@ -88,6 +99,60 @@ def fragments(html):
     return out
 
 
+def strip_parens(s):
+    """条文から（…）を取り除く。入れ子があるので変化しなくなるまで繰り返す。"""
+    prev = None
+    while prev != s:
+        prev = s
+        s = re.sub(r"（[^（）]*）", "", s)
+    return s
+
+
+# 括弧書き飛ばしの検出に使う最小の断片長。
+# 実測(2026-08-19 第6便)の実害は「商品又は製品の期首棚卸高」＝12字だったので
+# それを捕まえられる長さにする。短くすると偶然一致が増えるので、
+# 下げるときは必ず全記事で誤検知数を測り直すこと。
+MIN_SPAN = 10
+
+
+def body_spans(html):
+    """blockquote の**外**にある本文を、照合単位に切って返す。
+
+    条文を td や li に置いたときは check_quotes が一度も見ていなかった
+    (2026-08-19 第6便で実害。財規75条1項1号の括弧書きを飛ばした引用が、
+     「条文の項目」という見出しの表に入ったまま通過しかけた)。
+    """
+    body = re.search(r"<article>(.*?)</article>", html, re.S)
+    html = body.group(1) if body else html
+    html = re.sub(r"<blockquote>.*?</blockquote>", " ", html, flags=re.S)
+    html = re.sub(r"<svg.*?</svg>", " ", html, flags=re.S)
+    html = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", html, flags=re.S)
+    out = []
+    for cell in re.split(r"<[^>]+>", html):
+        cell = squash(cell.replace("&quot;", '"').replace("&amp;", "&")
+                          .replace("&lt;", "<").replace("&gt;", ">"))
+        for part in re.split(r"[。、！？「」『』…]", cell):
+            if len(part) >= MIN_SPAN:
+                out.append(part)
+    return out
+
+
+def scan_elided_parens(html_paths, corpus):
+    """「条文の括弧書きを飛ばした引用」だけを検出する。
+
+    判定は素の条文には無く、括弧書きを外した条文には**完全一致**で在ること。
+    ふつうの地の文はこの条件を満たさない(条文そのものの語順で10字以上並ぶ必要がある)。
+    """
+    bare = strip_parens(corpus)
+    hits = []
+    for p in html_paths:
+        with open(p, encoding="utf-8") as f:
+            for span in body_spans(f.read()):
+                if span not in corpus and span in bare:
+                    hits.append((p, span))
+    return hits
+
+
 def tamper(frag):
     m = len(frag) // 2
     ch = TAMPER_ALT if frag[m] == TAMPER_CHAR else TAMPER_CHAR
@@ -144,9 +209,21 @@ def check(html_paths, law_paths):
         if idx >= 0:
             print(f"   条文側: {corpus[idx:idx + 56]}")
 
+    elided = scan_elided_parens(html_paths, corpus)
+    print(f"③ [candidate] 括弧書きを飛ばした引用の候補 … "
+          f"{'なし' if not elided else str(len(elided)) + '件'}")
+    for path, span in elided:
+        print(f"   ? {path}: {span}")
+    if elided:
+        print("   ★ これは**候補であって欠陥の確定ではない**(check_figures の [estimate] と同じ扱い)。")
+        print("     素の条文には無く括弧書きを外すと一致する、という形の一致にすぎないので、")
+        print("     地の文の言い換えや「……」で省略を明示した引用も同じ形で当たる。")
+        print("     実測(2026-08-19 第6便・全170記事): 真陽性1に対し候補10。**目で見るまで欠陥と呼ばない**。")
+        print("     見るべきは「逐語のつもりで（…）だけ落ちていないか」の1点。")
+
     if bad or survived:
         return 1
-    print("✓ 全一致（コーパス非空・素は当たる・改ざんは落ちる の3点そろい）")
+    print("✓ 全一致（コーパス非空・素は当たる・改ざんは落ちる）")
     return 0
 
 
