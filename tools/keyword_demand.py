@@ -202,6 +202,57 @@ def existing_articles():
 BODY_MENTION_MIN = 3   # 本文でこれ以上言及されていたら「もう扱っている」と疑う
 
 
+# ★過去の便が下した「この語は取らない」という判断は、日報ではなく
+#   gen_index_sitemap.mjs の ORDER コメントに残っている(そこが唯一の恒久記録)。
+#   実害(2026-08-20 第5便): 需要18,100で最大だった「請求書 書き方」を第一候補に選び、
+#   一次情報(消費税法57条の4・施行令70条の9〜12)まで取得したところで、たまたま ORDER を
+#   grep して「同日の第一候補だった『請求書 書き方 18,100』は捨てた＝手順3の③」という
+#   **過去の便による却下記録**を見つけた。被覆調査をまるごと2度やるところだった。
+#   → 被覆(docs)と同時に、決定履歴(ORDER コメント)も機械が出す。
+# 🔴 却下語は**同じ文の中**でだけ効かせる(2026-08-20 第5便で自作の偽陽性を実測して修正)。
+#   最初の実装はコメント全体に却下語が在るかで判定していたので、
+#   **採用した「貸借対照表 見方」まで REJECTED と表示した**——同じコメントの別の文が
+#   「請求書 書き方…は捨てた」と書いていたため。放置すれば次の便に
+#   「その語は却下済み」と嘘をつき、実在する打ち手を捨てさせるところだった。
+#   ＝ このプロジェクトが繰り返す「計器の言葉遣いが便の判断を歪める」型そのもの。
+REJECT_WORDS = ("捨てた", "見送", "取らない", "取らず", "取らなかった",
+                "やめた", "対象外とした")
+
+
+def decision_hits(kw, order_lines):
+    """ORDER コメントの中に kw への言及があれば (slug, 抜粋, 却下か) を返す。
+
+    ★「無い」を結論にしないための注意: ここが空でも「検討されたことが無い」の証明ではない。
+      ORDER コメントに書かれなかった判断は残っていない。あくまで**在るものを見せる**道具。
+    """
+    toks = [t for t in re.split(r"[\s　]+", kw) if t]
+    out = []
+    for slug, comment in order_lines:
+        if not comment or not all(t in comment for t in toks):
+            continue
+        # 文単位で見る。抜粋も「その文」を返す——読む側が理由まで見られるように。
+        for sent in re.split(r"(?<=。)", comment):
+            if not all(t in sent for t in toks):
+                continue
+            rejected = any(w in sent for w in REJECT_WORDS)
+            out.append((slug, sent.strip()[:180], rejected))
+            break
+    return out
+
+
+def order_comments():
+    """gen_index_sitemap.mjs の ORDER 行から (slug, 行末コメント) を取り出す。"""
+    src = Path(__file__).resolve().parent / "gen_index_sitemap.mjs"
+    if not src.is_file():
+        return []
+    rows = []
+    for line in src.read_text(encoding="utf-8", errors="replace").split("\n"):
+        m = re.match(r'^  "([a-z0-9-]+)",\s*(?://\s*(.*))?$', line)
+        if m:
+            rows.append((m.group(1), m.group(2) or ""))
+    return rows
+
+
 def dupe_hits(kw, arts):
     """キーワード kw と既存記事の重なりを 3 段階で返す。
 
@@ -292,6 +343,7 @@ def warn_existing(keywords, machine=False):
         print(f"\n=== 自サイトとの重複チェック"
               f"(docs配下の全{len(arts)}ページを走査: {breakdown}) ===", file=out)
     hit = False
+    orders = order_comments()
     for kw in keywords:
         h = dupe_hits(kw, arts)
         empty = not (h["title"] or h["section"] or h["body"])
@@ -302,6 +354,13 @@ def warn_existing(keywords, machine=False):
                     print(f"{tier.upper()}\t{kw}\t{slug}\t{n}\t{where}\t{path}")
             for slug, title, split, path in partial:
                 print(f"PARTIAL\t{kw}\t{slug}\t{split}\t{title}\t{path}")
+            for slug, excerpt, rejected in decision_hits(kw, orders):
+                # ★列の並び: slug を3列目に置かない。既存の被覆行(TITLE/SECTION/BODY)は
+                #   3列目が slug・6列目がパスで、そこに別種の行を混ぜると
+                #   `filter(r[2] === slug)` している検査が DECISION 行まで拾って壊れる
+                #   （2026-08-20 第5便で実測: test_keyword_demand.mjs が赤になった）。
+                print(f"DECISION\t{kw}\t"
+                      f"{'REJECTED' if rejected else 'MENTIONED'}\t{slug}\t{excerpt}")
             continue
         if h["title"]:
             hit = True
@@ -323,6 +382,9 @@ def warn_existing(keywords, machine=False):
             print(f"・「{kw}」に言及済みのページ: "
                   + ", ".join(f"{p}({n}回)" for _, _, n, p in
                               sorted(h["body"], key=lambda x: -x[2])[:5]), file=out)
+        for slug, excerpt, rejected in decision_hits(kw, orders):
+            mark = "🔴 過去の便が**却下**している" if rejected else "★ 過去の便が言及している"
+            print(f"{mark}（ORDER コメント / {slug}）: …{excerpt}…", file=out)
     if hit:
         print("→ 新規に書かず、既存記事を深く書き直すことを検討する"
               "(重複記事は検索で互いを食い合う)", file=out)
