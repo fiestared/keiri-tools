@@ -28,6 +28,10 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 /** `--check` を持つ生成器は、全部ここに並べる（増えたら足す） */
 const CHECKABLE = [
   ['tools/gen_index_sitemap.mjs', ['--check']],
+  // ★2026-08-19 追加。dateModified は ARTICLE_SPEC に書いてあるだけで生成器が無く、
+  //   **192本中176本が datePublished と同じ日のまま**だった。
+  //   実害: 08-15 に月額表231区分を足した記事が、Bing の検索結果に「2026年7月14日」と出ていた。
+  ['tools/gen_datemodified.mjs', ['--check']],
 ];
 
 for (const [script, args] of CHECKABLE) {
