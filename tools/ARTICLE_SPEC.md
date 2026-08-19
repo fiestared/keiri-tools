@@ -121,6 +121,34 @@
 `docs/column/<slug>/index.html` の1ファイルだけを作る。
 **sitemap.xml / column/index.html / assets/style.css は触らない**（親が中央で更新する。競合するため）。
 
+## 書き終えたら流す生成器（順序つき。ここが抜けるとテストが赤くなる）
+
+記事の HTML を書き、`gen_index_sitemap.mjs` の `ORDER` と `CATEGORIES` に slug を登録したら、
+**この順で流す**。最後に `node tools/run_tests.mjs` を緑にしてから終わる。
+
+```
+node tools/gen_faq_jsonld.mjs      # h2#faq の Q/A から FAQPage を焼く
+node tools/gen_qa_index.mjs        # ★docs/assets/qa_index.json。FAQを持つ記事を足したら必須
+node tools/gen_tool_related.mjs    # 関連リンク（他ページ側にも被リンクが入る）
+node tools/gen_ogp.mjs             # og:title/og:description（title を触ったときも必要）
+node tools/gen_x_share.mjs && node tools/gen_x_link.mjs
+node tools/gen_datemodified.mjs    # dateModified を git 履歴から焼く
+node tools/gen_index_sitemap.mjs   # ★下記のとおり --check が緑になるまで繰り返す
+```
+
+🔴 **`gen_qa_index.mjs` を忘れやすい。** FAQ を持つ記事を足すと `tests/test_qa.mjs` が
+`gen_qa_index.mjs --check` で落ちる。他の生成器と違って**記事側の HTML を書き換えない**ので、
+「HTML に差分が出ないから流さなくてよい」と誤解しやすい。実際に忘れて赤にした（2026-08-20）。
+
+🔴 **`gen_index_sitemap.mjs` は「最後に1回」ではない。** `--check` が緑になるまで回す。
+sitemap の実行自体が `docs/column/index.html` を書き換えるので**2周目が要る**し、
+そのあとに `docs/**.html` を触る生成器を1つでも動かしたら**やり直し**になる。
+
+⚠️ **`gen_datemodified.mjs` の差分は、原因を作った回では出せない。** HTML の日付を **git の履歴**と
+突き合わせる検査なので、commit 前は古い日付どうしで一致してしまう。
+＝ **前回のコミットが触ったファイルの分が、次に記事を書くときに出てくる**のが正常。
+🚫 「前回テストが緑だった」を「前回に問題が無かった」の根拠にしない。
+
 ## 型（テストが見ている）
 
 ```
