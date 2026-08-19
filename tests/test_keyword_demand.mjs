@@ -150,6 +150,32 @@ ok(both.some((r) => r[0] === "TITLE" && r[PATH] === "/tosan-boshi-kyosai/"),
    "--file 併用時に**ファイル**の語が検査されていない");
 rmSync(join(tmpdir(), `kwdemand_both_${process.pid}.txt`), { force: true });
 
+// --- ④ ★語を割ると当たる重複を候補として拾えること(2026-08-19 第13便) -----------
+// 候補「出張日当」(需要1,000/月)に対し、3段階の重複チェックは **警告ゼロ** を返した。
+// 実体は /column/shutcho-nittou-ryohi-kitei/ が title で主題を保有している。
+// 語が site 側で「出張旅費規程と**日当**」と分かれているため、連続文字列では当たらない。
+// ★沈黙が「空白」と読める形なので、そのまま重複記事を書き切るところだった。
+//   申し送り925(法令が「按分」を「あん分」とかな書きする)と同じ型で、出る場所が違うだけ。
+const PARTIAL_SPLIT = 3, PARTIAL_PATH = 5;
+const nittou = run("出張日当").filter((r) => r[0] === "PARTIAL");
+ok(nittou.some((r) => r[PARTIAL_PATH] === "/column/shutcho-nittou-ryohi-kitei/"),
+   "★「出張日当」で /column/shutcho-nittou-ryohi-kitei/ を部分一致の候補として拾えていない"
+   + "(連続文字列でしか探していない＝第13便の穴が再発)");
+ok(nittou.some((r) => r[PARTIAL_SPLIT] === "出張／日当"),
+   `どこで割って当たったのかを出していない: ${JSON.stringify(nittou.map((r) => r[PARTIAL_SPLIT]))}`);
+
+// ★発火しない側も固定する。候補が出すぎると「読まれない警告」になり、沈黙と同じになる。
+//   ①無関係な語では出ない ②直接の重複が既に見つかっている語では出ない(重ねて騒がない)
+for (const kw of ["犬しつけ", "バナナ輸入関税"]) {
+  ok(run(kw).filter((r) => r[0] === "PARTIAL").length === 0,
+     `無関係な「${kw}」で部分一致が誤爆した`);
+}
+ok(run("随時改定").filter((r) => r[0] === "PARTIAL").length === 0,
+   "TITLE/SECTION で既に検出済みの語にまで部分一致を重ねている(候補が増えすぎる)");
+// 1〜2文字の断片は何にでも当たるので割らない。
+ok(run("有給").filter((r) => r[0] === "PARTIAL").length === 0,
+   "短すぎる語(2文字)まで割っている。断片1文字は何にでも当たる");
+
 if (fail.length) {
   console.error("✘ test_keyword_demand");
   for (const f of fail) console.error("   - " + f);
@@ -157,4 +183,5 @@ if (fail.length) {
 }
 console.log(`✔ test_keyword_demand (${scanned}件を走査`
   + `[コラム${kinds.column}/ツール${kinds.tool}/その他${kinds.other ?? 0}]`
-  + `・コラム重複3件+ツール重複2件を検出・slug衝突をパスで区別・誤爆なし)`);
+  + `・コラム重複3件+ツール重複2件を検出・slug衝突をパスで区別`
+  + `・部分一致で「出張日当」を捕捉・誤爆なし)`);

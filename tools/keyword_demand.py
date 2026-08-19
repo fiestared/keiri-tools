@@ -227,6 +227,43 @@ def dupe_hits(kw, arts):
     return hits
 
 
+# 部分一致の探索でこれ未満の断片は見ない（1文字だと何にでも当たる）
+PARTIAL_MIN_PART = 2
+
+
+def partial_hits(kw, arts):
+    """連続文字列としては当たらないが、**語を割ると当たる**ページを候補として返す。
+
+    🔴 なぜ要るか（2026-08-19 第13便で実害の一歩手前）:
+      候補「出張日当」（需要1,000/月）に対し dupe_hits は **警告ゼロ** を返した。
+      だが実体は `/column/shutcho-nittou-ryohi-kitei/`（title「出張旅費規程と日当の相場
+      ｜非課税の判定基準とインボイス不要の特例」）が**主題として保有していた**。
+      dupe_hits は空白で区切ったトークンを**連続文字列**として探すので、
+      「出張日当」が site 側で「出張旅費規程と**日当**」と分かれていると当たらない。
+
+      ★これは申し送り925（法令が「按分」を「あん分」とかな書きする）と**同じ型**で、
+        出る場所が違うだけ。しかも被覆チェック側のほうが危ない ——
+        **沈黙が「空白」と読める**からで、ARTICLE_SPEC 手順0 が防ごうとしている
+        「書き上げてから重複に気づく」に直行する。
+
+      ✅ ここが返すのは**候補**であって重複の証明ではない。judgement は人が下す。
+         誤爆を抑えるため ①kw が空白を含まない1語 ②長さ3以上
+         ③dupe_hits が3段階とも空 のときだけ発火し、
+         ④探す先も **title と見出し**に限る（本文まで見ると当たりすぎる）。
+    """
+    if " " in kw or len(kw) < 3:
+        return []
+    out = []
+    for a in arts:
+        hay = a["title"] + " " + " ".join(a["headings"])
+        for i in range(PARTIAL_MIN_PART, len(kw) - PARTIAL_MIN_PART + 1):
+            head, tail = kw[:i], kw[i:]
+            if head in hay and tail in hay:
+                out.append((a["slug"], a["title"], f"{head}／{tail}", a["path"]))
+                break
+    return out
+
+
 def warn_existing(keywords, machine=False):
     """既存記事との重複を警告する。**タイトルだけでなく見出し・本文まで見る**。
 
@@ -257,10 +294,14 @@ def warn_existing(keywords, machine=False):
     hit = False
     for kw in keywords:
         h = dupe_hits(kw, arts)
+        empty = not (h["title"] or h["section"] or h["body"])
+        partial = partial_hits(kw, arts) if empty else []
         if machine:
             for tier in ("title", "section", "body"):
                 for slug, where, n, path in h[tier]:
                     print(f"{tier.upper()}\t{kw}\t{slug}\t{n}\t{where}\t{path}")
+            for slug, title, split, path in partial:
+                print(f"PARTIAL\t{kw}\t{slug}\t{split}\t{title}\t{path}")
             continue
         if h["title"]:
             hit = True
@@ -273,6 +314,11 @@ def warn_existing(keywords, machine=False):
                   f"(節を書き直す/その節を縮めて新記事へ誘導する を検討):", file=out)
             for _, head, _, path in h["section"]:
                 print(f"      {path}  見出し「{head}」", file=out)
+        if partial:
+            print(f"❓ 「{kw}」は連続では当たらないが、**語を割ると当たる**ページがある"
+                  f"（★候補であって重複の証明ではない。目で見て判断する）:", file=out)
+            for _, title, split, path in partial[:5]:
+                print(f"      {path}  [{split}]  {title}", file=out)
         if h["body"]:
             print(f"・「{kw}」に言及済みのページ: "
                   + ", ".join(f"{p}({n}回)" for _, _, n, p in
