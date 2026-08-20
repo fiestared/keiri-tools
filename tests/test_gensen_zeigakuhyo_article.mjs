@@ -81,6 +81,17 @@ else fail(`オラクル: 一致率 ${pct.toFixed(1)}% ≠ 記事の ${CLAIM.pct}
 if (dmin === CLAIM.dmin && dmax === CLAIM.dmax) ok(`オラクル: 差の範囲 ${dmin}〜+${dmax}円 が記事の主張と一致`);
 else fail(`オラクル: 差の範囲 ${dmin}〜${dmax} ≠ 記事の ${CLAIM.dmin}〜${CLAIM.dmax}`);
 
+// ★上の照合は「再計算 vs テスト内の定数」であって、記事の文言はまだ一度も読んでいない。
+//   同じ数字が本文・表・FAQ・JSON-LDの4箇所に出るので（規則7）、記事側の「N通り」を
+//   全数拾い、どの出現も再計算値（cells か same）と一致することを要求する。
+const toriClaims = [...html.matchAll(/([\d,]+)通り/g)].map(m => Number(m[1].replace(/,/g, '')));
+if (toriClaims.length === 0) fail('記事に「N通り」の主張が1つも無い（目玉の統計が消えている）');
+const toriBad = toriClaims.filter(n => n !== cells && n !== same);
+if (toriBad.length === 0) ok(`記事の「N通り」全${toriClaims.length}箇所がオラクル（${cells}/${same}）と一致`);
+else fail(`記事の「N通り」に再計算と合わない値がある: ${toriBad.join(', ')}（オラクルは ${cells}/${same}）`);
+if (!toriClaims.includes(cells)) fail(`記事のどこにも比較セル数 ${cells}通り が無い`);
+if (!toriClaims.includes(same)) fail(`記事のどこにも完全一致 ${same}通り が無い`);
+
 // ───────── 記事のテキスト（title・meta descriptionも含める） ─────────
 const pick = re => (html.match(re) || [])[1] || '';
 const strip = s => s.replace(/<[^>]+>/g, ' ');
