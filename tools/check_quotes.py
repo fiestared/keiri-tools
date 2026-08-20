@@ -205,6 +205,87 @@ def longest_prefix(frag, corpus):
     return lo
 
 
+
+# ④ 地の文（blockquote の外）の鉤括弧を全数照合するための道具。
+#
+# 🔴 なぜ足したか(2026-08-20 第11便): ARTICLE_SPEC は「地の文の鉤括弧も全数コーパスに
+#   当てる」ことを要求しているのに、**その照合だけが毎便 /tmp の書き捨てスクリプトに
+#   戻っていた**。このファイルの docstring が冒頭で戒めているのと同じ状態が、
+#   blockquote の外側にだけ残っていた（第7〜11便の5回連続で手書きしている）。
+#   実際この families の誤りは4便連続で出ており（「二月」→「2月」/「五日以内」→「5日以内」/
+#   算用数字＋動詞短縮/括弧記号の書き換え）、第11便では**同じ1か所に括弧書きの脱落と
+#   算用数字化が同時に**出た。手で書くたびに抽出範囲が変わるので、見落ちも毎回変わる。
+#
+# ⚠️ ③ と同じく **candidate であって欠陥の確定ではない**。地の文の鉤括弧は大半が
+#   筆者自身の言葉（「領収書の代わり」「何を書くか」等）で、条文に無くて当たり前。
+#   そこで「条文の逐語を名乗っていそうか」を文語の目印で切り分けて出す。
+#   実測(第11便・本記事): 鉤括弧40種のうち MISS 21件、そのうち高リスクは4件で、
+#   4件すべてが実際に直すべき非逐語だった。
+VERBATIM_MARKERS = (
+    "つた", "つて", "及び", "又は", "若しくは", "なければならない",
+    "ものとする", "することができる", "に限る", "を除く", "に規定する",
+    "掲げる", "当該", "その他これらに準ずる",
+)
+VERBATIM_MIN_LEN = 20
+
+
+def prose_quotes(html):
+    """blockquote・script・head を除いた地の文から「…」を取り出す。"""
+    body = re.sub(r"<blockquote>.*?</blockquote>", "", html, flags=re.S)
+    body = re.sub(r"<script.*?</script>", "", body, flags=re.S)
+    body = re.sub(r"<head>.*?</head>", "", body, flags=re.S)
+    text = strip_tags(body)
+    # 『…』も拾う。第10便の誤りは「」の中の『』だったので外側で捕まえられたが、
+    # 単独の『…』で条文を引くと ④ の網から完全に漏れる（第11便の検査で判明）。
+    return sorted(set(re.findall(r"「([^「」]{4,})」", text)
+                      + re.findall(r"『([^『』]{4,})』", text)))
+
+
+# 「ほとんど条文なのに1か所だけ書き換えた」を捕まえるための正規化。
+# この families の誤りは実測で毎回この形をしている（第7便「二月」→「2月」/
+# 第8便「五日以内」→「5日以内」/ 第10便「」→『』/ 第11便「及び」→「および」）。
+# 正規化して初めて当たるなら、それは**逐語のつもりで書いた証拠**なので高リスクに寄せる。
+NEAR_MISS_SUBS = [
+    ("0", "〇"), ("1", "一"), ("2", "二"), ("3", "三"), ("4", "四"),
+    ("5", "五"), ("6", "六"), ("7", "七"), ("8", "八"), ("9", "九"),
+    ("『", "「"), ("』", "」"),
+    ("および", "及び"), ("または", "又は"), ("もしくは", "若しくは"),
+    ("ならびに", "並びに"), ("かつ", "且つ"),
+]
+
+
+def normalize_near(q):
+    for a, b in NEAR_MISS_SUBS:
+        q = q.replace(a, b)
+    return q
+
+
+def looks_verbatim(q, corpus=None):
+    """条文の逐語を名乗っていそうか。
+
+    ①長い ②文語の目印を含む ③**軽い正規化で当たるようになる（near-miss）**
+    のどれか。③は単独でも決定的なので、短くて目印が無くても拾う。
+    """
+    if corpus is not None:
+        n = normalize_near(q)
+        if n != q and squash(n) in corpus:
+            return True
+    return len(q) >= VERBATIM_MIN_LEN or any(m in q for m in VERBATIM_MARKERS)
+
+
+def scan_prose(html_paths, corpus):
+    """(path, quote, high_risk) を MISS だけ返す。省略記号では ③ と同様に分割する。"""
+    out = []
+    for p in html_paths:
+        with open(p, encoding="utf-8") as f:
+            for q in prose_quotes(f.read()):
+                parts = [x for x in q.replace("……", "…").split("…") if x.strip()]
+                if all(squash(x) in corpus for x in parts):
+                    continue
+                out.append((p, q, looks_verbatim(q, corpus)))
+    return out
+
+
 def check(html_paths, law_paths):
     corpus = build_corpus(law_paths)
     print(f"コーパス {len(corpus):,}字（{len(law_paths)}法令）")
@@ -255,6 +336,21 @@ def check(html_paths, law_paths):
         print("     地の文の言い換えや「……」で省略を明示した引用も同じ形で当たる。")
         print("     実測(2026-08-19 第6便・全170記事): 真陽性1に対し候補10。**目で見るまで欠陥と呼ばない**。")
         print("     見るべきは「逐語のつもりで（…）だけ落ちていないか」の1点。")
+
+    prose = scan_prose(html_paths, corpus)
+    high = [r for r in prose if r[2]]
+    print(f"④ [candidate] 地の文の鉤括弧でコーパスに無いもの … "
+          f"{len(prose)}件（うち逐語を名乗っていそうなもの {len(high)}件）")
+    for path, q, risk in prose:
+        if risk:
+            print(f"   ★ {path}: 「{q}」")
+    if high:
+        print("   ★ ★印は**長いか文語の目印を含む**＝条文の逐語のつもりで書いた疑いがあるもの。")
+        print("     見るべきは①括弧書きを無印で落としていないか②漢数字を算用数字に直していないか")
+        print("     ③引用を入れ子にして鉤括弧の種類を変えていないか。逐語でないなら鉤括弧をやめるか")
+        print("     「……」で省略を明示する。★印の無いものは筆者自身の言葉なので、当たらなくて正常。")
+    elif prose:
+        print("   （すべて筆者自身の言葉と判定。条文の逐語を名乗るものは無い）")
 
     if bad or survived:
         return 1
