@@ -148,6 +148,17 @@
 ## ファイルの場所
 
 `docs/column/<slug>/index.html` の1ファイルだけを作る。
+
+🔴 **相対パスで `mkdir` しない。必ず絶対パスで作る**（2026-08-20 第12便で実害）。
+Bash の作業ディレクトリは `cd /tmp` を挟むと **`~/Scripts` に戻される**ことがあり、
+そのまま `mkdir -p docs/column/<slug>` を打つと **`~/Scripts/docs/column/<slug>/`**
+という repo の外に記事ができる。テストも生成器も repo の中しか見ないので、
+**何も警告が出ないまま「書いたはずの記事が無い」状態**になる。
+★これは**初犯ではない**: 掃除のとき `~/Scripts/docs/column/mitsumorisho-kakikata/` という
+**空ディレクトリが既に在った**＝過去の便が同じ所で滑って、痕跡だけ残していた。
+✅ `mkdir -p /Users/masahiroyasu/Scripts/keiri-tools/docs/column/<slug>` と絶対で打つ。
+✅ 記事を書いたら `git status --short` に **`A docs/column/<slug>/index.html` が出ることを確かめる**
+   （出ないなら repo の外に書いている）。
 **sitemap.xml / column/index.html / assets/style.css は触らない**（親が中央で更新する。競合するため）。
 
 ## 書き終えたら流す生成器（順序つき。ここが抜けるとテストが赤くなる）
