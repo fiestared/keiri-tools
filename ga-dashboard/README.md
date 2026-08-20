@@ -1,13 +1,21 @@
 # ga-dashboard
 
-keiri-tools.com の**今日を含む過去14日のセッション数**をHTMLに焼き直すだけの小さな道具。
-GAを毎回開いて当日のセッション数を見に行く手間をなくすために作った。
+keiri-tools.com の**今日を含む過去14日のセッション数**と、**時間帯別（今日 vs 前日）**を
+HTMLに焼き直すだけの小さな道具。GAを毎回開いて当日のセッション数を見に行く手間をなくすために作った。
 
 ## 見る
+
+手元（Mac）:
 
 ```
 file:///Users/masahiroyasu/Scripts/keiri-tools/ga-dashboard/index.html
 ```
+
+外から（スマホなど）: **payment-manager（資産管理アプリ）の `/ga`**。
+🔴 **このリポジトリは公開なのでURLは書かない。** URL は `payment-manager/.env` の
+`PM_API_URL`、または payment-manager の README にある。Cloudflare Access の内側なので
+URLを知られただけで中身が見えるわけではないが、個人の資産管理アプリの所在を
+公開リポジトリに置く必要は無い。
 
 ブラウザにブックマークしておく。開きっぱなしのタブは65秒ごとに自分で読み直すので、
 放っておいても数字が古いままにはならない。
@@ -17,12 +25,46 @@ file:///Users/masahiroyasu/Scripts/keiri-tools/ga-dashboard/index.html
 今後もし置き場を動かすなら、**リンクの張り替えも一緒にやること** — 動かした瞬間に
 ブックマークだけが黙って死ぬ。
 
+## 外から見る（/ga）
+
+**payment-manager（資産管理アプリ）の Worker に間借りしている。** 認証は payment-manager と
+同じ Cloudflare Access（ワンタイムPIN）なので、本人以外には開けない。ここに置いたのは、
+Access が既にあって「本人だけが外から見られる場所」がそれしか無かったから。
+
+**Worker は GA4 を叩かない。** Mac 側が焼いた HTML を丸ごと預けて、`/ga` はそれをそのまま返すだけ。
+
+```
+[Mac] run.sh → build.mjs  ── 毎分 ──▶  POST /api/ga-push (Bearer + CF Access サービストークン)
+                                              │  D1 テーブル ga_snapshot（常に1行）
+                                              ▼
+                                         GET /ga  ← ブラウザ
+```
+
+こうした理由は2つ。**GA4のサービスアカウント秘密鍵を Cloudflare 側に置かなくて済む**ことと、
+**描画のコードが Mac 側の1箇所にしか無い**こと（Worker に複製すると必ずズレる）。
+
+その代わり **Mac が止まれば `/ga` の数字も止まる**。外から見ている側にはそれが分からないので、
+最後に届いてから **10分以上**空いたら画面の一番上に「Macからの更新が N分 止まっている」と出す。
+この経路は D1 の `pushed_ms` を1時間巻き戻して実際に確認済み。
+
+- 取得に**失敗した回は送らない**。失敗バナー付きのHTMLで上書きすると、Worker 側が
+  「新しく届いた」状態になり、**Macが止まっている事実が隠れる**ため
+- 送信に失敗しても**ローカルの `index.html` は作られる**（手元の画面は送信と独立）。
+  失敗は `logs/launchd.out.log` と `logs/last-run.txt` に出る
+- トークンは `payment-manager/.env` を `run.sh` が読む（`PM_API_URL` / `PM_COLLECTOR_TOKEN` /
+  `CF_ACCESS_CLIENT_*`）。**わざと同じ .env を共有している** — 2箇所に置くと必ず片方だけ古くなる。
+  `/ga` を出しているのは payment-manager の Worker なので、認証も payment-manager のものを使う
+- Worker 側の実装は `payment-manager/src/index.js` の `/api/ga-push` と `/ga`、
+  テーブルは `payment-manager/schema-ga.sql`
+
 ## 更新
 
-launchd `com.masahiro.ga-dashboard` が **1分ごと**に `build.mjs` を回して `index.html` を作り直す。
+launchd `com.masahiro.ga-dashboard` が **1分ごと**に `run.sh`（→ `build.mjs`）を回して
+`index.html` を作り直し、同じHTMLを `/ga` へ送る。
 
 ```bash
-node build.mjs              # 手で1回まわす
+./run.sh                    # 手で1回まわす（/ga への送信込み）
+node build.mjs              # 送信せず index.html だけ作る
 node build.mjs --artifact   # Artifact公開用の断片 artifact.html も出す
 node build.mjs --offline    # APIを叩かず data.json から描き直すだけ（見た目をいじる時）
 
@@ -65,6 +107,12 @@ gbrain `keiri-tools/analytics-access` にある。
 - **当日ぶんは集計途中。** 棒は斜線で描いてある。前日までの棒と高さを直接比べない
 - 「今日」タイルの増減は**先週同曜日の同じ時刻まで**との比較（0時〜現在時）。
   途中の数字を丸一日の数字と比べないためにこうしてある
+- **時間帯別チャートの今日の棒は cutoff で終わる。** その先が空白なのは「0件」ではなく
+  「GA4がまだ出していない」。前日の**合計**とではなく、同じ時間帯どうしで比べること
+- 🔴 **GA4 の `hour` ディメンションはゼロ埋めされない**（`"0"` / `"8"` / `"13"` が返る）。
+  2桁に揃えてから引かないと **0〜9時が丸ごと抜ける**。2026-08-20 まで「今日」タイルの
+  前週同曜日比がずっと「—」だったのはこれ（cutoffが午前だと比較区間が全部0〜9時になり、
+  両日とも0になっていた）。数字が0でなく「—」に見えるので、壊れていることに気づきにくい
 - 日次の数字と時間帯別の数字は GA4 の別集計なので、合計が数件ずれることがある。
   画面に出す日次の値は日次レポート側を正としている
 - セッション0の日はAPIが行ごと返さないので、0で埋めてから描いている

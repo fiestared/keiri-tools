@@ -39,6 +39,12 @@ const FETCH_DAYS = 21;    // 前週同曜日比を14日分すべて出すため1
 // 1回のビルドで消費するGA4クォータは約1トークン（上限は日20万）なので毎分でも余る。
 const INTERVAL_SEC = 60;
 
+// 外から見る用に payment-manager（Cloudflare Worker）へ焼いたHTMLを預ける。
+// 未設定なら送らない＝ローカルの index.html だけ作る（この2つは独立して動く）。
+// 値は payment-manager/.env に入っている（run.sh がそこから読んで渡す）。
+const PUSH_URL = process.env.GA_PUSH_URL || null;
+const PUSH_TOKEN = process.env.GA_PUSH_TOKEN || null;
+
 const args = process.argv.slice(2);
 const WANT_ARTIFACT = args.includes("--artifact");
 const OFFLINE = args.includes("--offline");
@@ -160,7 +166,12 @@ async function fetchAll() {
     for (const r of hourly.rows ?? []) {
       const raw = r.dimensionValues[0].value;
       const ymd = `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`;
-      hmap.set(`${ymd}|${r.dimensionValues[1].value}`, Number(r.metricValues[0].value));
+      // ★GA4 の `hour` は**ゼロ埋めされない**（"0" / "8" / "13" が返る）。
+      //   ここで2桁に揃えずに `padStart(2,"0")` で引くと午前の 0〜9時が丸ごと外れる。
+      //   2026-08-20 まで「今日」タイルの前週同曜日比が常に「—」だったのはこれが原因
+      //   （cutoff が午前なら比較区間が全部 0〜9時なので、両日とも 0 になっていた）。
+      const hh = String(r.dimensionValues[1].value).padStart(2, "0");
+      hmap.set(`${ymd}|${hh}`, Number(r.metricValues[0].value));
     }
 
     // 当日データがどこまで入っているか（＝GA4が公開している最新の分）。
@@ -183,11 +194,11 @@ async function fetchAll() {
       const hit = dmap.get(date) ?? { sessions: 0, users: 0 };
       days.push({ date, ...hit });
     }
-    const cumToHour = (date, hh) => {
-      let n = 0;
-      for (let h = 0; h <= hh; h++) n += hmap.get(`${date}|${String(h).padStart(2, "0")}`) ?? 0;
-      return n;
-    };
+    // 24時間ぶんの配列。欠測（その時間帯のセッションが0）は行が返らないので0で埋める
+    const hoursOf = (date) =>
+      Array.from({ length: 24 }, (_, h) => hmap.get(`${date}|${String(h).padStart(2, "0")}`) ?? 0);
+    const cumToHour = (date, hh) => hoursOf(date).slice(0, hh + 1).reduce((a, b) => a + b, 0);
+    const yDate = addDays(today, -1), pwDate = addDays(today, -7);
     // 比較は「今の時刻まで」ではなく「GA4がデータを出しているところまで」で切る。
     // さらに cutoff の時間帯そのものは今日だけ途中（例: 13:01 なら13時台は1分ぶん）なので、
     // 完全に経過した時間帯（0〜cutoffHour-1）だけを両日から取る。
@@ -195,7 +206,9 @@ async function fetchAll() {
     sites.push({
       ...s, days, cutoff, cutoffHour, cmpHour: lastFull,
       todayCum: lastFull >= 0 ? cumToHour(today, lastFull) : 0,
-      prevWeekCum: lastFull >= 0 ? cumToHour(addDays(today, -7), lastFull) : 0,
+      prevWeekCum: lastFull >= 0 ? cumToHour(pwDate, lastFull) : 0,
+      // 時間帯別チャート用。画面に出す3日ぶんだけ持つ（21日×24 を全部持つと data.json が10倍になる）
+      hours: { [today]: hoursOf(today), [yDate]: hoursOf(yDate), [pwDate]: hoursOf(pwDate) },
     });
   }
   return { fetchedAt: new Date().toISOString(), today, sites };
@@ -229,6 +242,12 @@ function model(data) {
       const last7pv = sum(d.slice(n - 8, n - 1).map(pv));
       const prev7pv = sum(d.slice(n - 15, n - 8).map(pv));
       const yesterday = d[n - 2], yPrevWeek = d[n - 9];
+      // 時間帯別（今日 vs 前日）。古い data.json（hours を持たない）でも落ちないよう null で通す。
+      const hToday = s.hours?.[d[n - 1].date] ?? null;
+      const hYest = s.hours?.[yesterday.date] ?? null;
+      // 「同じ時間帯まで」で切った累計。cmpHour は完全に経過した最後の時間帯（GA4の遅れ込み）
+      const cumTo = (arr) => (arr && s.cmpHour >= 0
+        ? arr.slice(0, s.cmpHour + 1).reduce((a, b) => a + b, 0) : null);
       // 取得時刻とデータ末端の差＝GA4の当日データの遅れ（実測で60〜80分ある）
       const f = jstFields(new Date(data.fetchedAt));
       const lagMin = s.cutoff
@@ -243,6 +262,9 @@ function model(data) {
         yesterdayPv: pv(yesterday), todayPv: pv(d[n - 1]),
         today: d[n - 1].sessions, todayWd: WD[weekdayIdx(d[n - 1].date)],
         max: Math.max(1, ...shown.map((x) => x.sessions)),
+        hToday, hYest,
+        hourMax: Math.max(1, ...(hToday ?? []), ...(hYest ?? [])),
+        hCumToday: cumTo(hToday), hCumYest: cumTo(hYest),
       };
     }),
   };
@@ -260,6 +282,12 @@ function delta(cur, base, note) {
   return `<span class="delta ${cls}">${arrow} ${p > 0 ? "+" : ""}${p}% <span class="dnote">${esc(note)}</span></span>`;
 }
 
+// Y軸の目盛りをきれいな数に丸める（日次・時間帯別の両方で使う）
+const niceStep = (m) => {
+  const p = 10 ** Math.floor(Math.log10(m / 3 || 1));
+  return [1, 2, 2.5, 5, 10].map((k) => k * p).find((v) => m / v <= 4) ?? p * 10;
+};
+
 // 縦棒チャート（1系列なので凡例は置かない。タイトルが系列名を兼ねる）
 function chart(site) {
   const W = 720, H = 240, PAD = { t: 16, r: 12, b: 40, l: 44 };
@@ -267,9 +295,7 @@ function chart(site) {
   const band = iw / site.shown.length;
   // 24px上限。SVGは横幅いっぱいに拡大されるので、その拡大率(約1.15倍)を見込んで20で切る
   const bw = Math.min(20, band - 2);           // 2px の面ギャップを残す
-  // Y軸の目盛りはきれいな数に丸める
-  const step = (m) => { const p = 10 ** Math.floor(Math.log10(m / 3 || 1)); return [1, 2, 2.5, 5, 10].map((k) => k * p).find((v) => m / v <= 4) ?? p * 10; };
-  const st = step(site.max), top = Math.ceil(site.max / st) * st;
+  const st = niceStep(site.max), top = Math.ceil(site.max / st) * st;
   const y = (v) => PAD.t + ih - (v / top) * ih;
 
   const ticks = [];
@@ -313,6 +339,133 @@ function chart(site) {
   </div>
   <figcaption>直近${WINDOW_DAYS}日のセッション数（JST）。<span class="swatch-hatch"></span> は当日ぶんで、まだ増える。</figcaption>
 </figure>`;
+}
+
+/**
+ * 時間帯別のセッション数（今日 vs 前日）。
+ *
+ * ★形は「強調」。今日が主役で、前日はそれを読むための背景（＝2色を対等に並べない）。
+ *   今日＝青の実棒、前日＝灰の階段シルエット。色に加えて**形でも違う**ので、
+ *   色覚に依らず見分けられる。
+ * ★今日は cutoff より後の時間帯を**描かない**。0で描くと「その時間帯は誰も来なかった」
+ *   に見えるが、実際は「GA4がまだ出していない」。斜線の棒が cutoff の時間帯＝まだ増える。
+ * ★日次チャートと同じく、当日ぶんの数字は途中。前日の同じ時間帯と比べるためのもので、
+ *   前日の**合計**と比べるためのものではない。
+ */
+function hourChart(site) {
+  if (!site.hToday || !site.hYest) return "";   // hours を持たない古い data.json
+  const W = 720, H = 210, PAD = { t: 18, r: 12, b: 34, l: 44 };
+  const iw = W - PAD.l - PAD.r, ih = H - PAD.t - PAD.b;
+  const band = iw / 24;
+  const bw = Math.min(18, band - 8);            // 面ギャップを広めに取る（棒が24本並ぶので）
+  const st = niceStep(site.hourMax), top = Math.ceil(site.hourMax / st) * st;
+  const y = (v) => PAD.t + ih - (v / top) * ih;
+  const x0 = (hh) => PAD.l + band * hh;
+
+  const ticks = [];
+  for (let v = 0; v <= top + 1e-9; v += st) ticks.push(v);
+
+  // 前日＝階段のシルエット。塗りと線を別パスにして、底辺に線が入らないようにする
+  let stepPath = "";
+  site.hYest.forEach((v, hh) => {
+    stepPath += (hh === 0 ? `M${x0(hh).toFixed(1)} ${y(v).toFixed(1)}` : ` L${x0(hh).toFixed(1)} ${y(v).toFixed(1)}`)
+      + ` L${(x0(hh) + band).toFixed(1)} ${y(v).toFixed(1)}`;
+  });
+  const fillPath = `${stepPath} L${(PAD.l + iw).toFixed(1)} ${y(0).toFixed(1)} L${PAD.l} ${y(0).toFixed(1)} Z`;
+
+  // 今日＝実棒。cutoff の時間帯は途中なので斜線、それより後は描かない
+  const bars = site.hToday.map((v, hh) => ({ v, hh })).filter((b) => b.hh <= site.cutoffHour).map((b) => {
+    const x = x0(b.hh) + (band - bw) / 2;
+    const h = Math.max(b.v > 0 ? 2 : 0, (b.v / top) * ih);
+    const yy = PAD.t + ih - h;
+    const r = Math.min(4, bw / 2, h);
+    return {
+      ...b, x, yy, h, cx: x0(b.hh) + band / 2,
+      path: h <= 0 ? "" :
+        `M${x.toFixed(1)} ${(yy + h).toFixed(1)} L${x.toFixed(1)} ${(yy + r).toFixed(1)} Q${x.toFixed(1)} ${yy.toFixed(1)} ${(x + r).toFixed(1)} ${yy.toFixed(1)} L${(x + bw - r).toFixed(1)} ${yy.toFixed(1)} Q${(x + bw).toFixed(1)} ${yy.toFixed(1)} ${(x + bw).toFixed(1)} ${(yy + r).toFixed(1)} L${(x + bw).toFixed(1)} ${(yy + h).toFixed(1)} Z`,
+      partial: b.hh === site.cutoffHour,
+    };
+  });
+
+  // 直値ラベルは1つだけ。**完全に経過した最後の時間帯**に置く（斜線の棒は途中なので置かない）
+  const lab = bars.find((b) => b.hh === site.cmpHour && b.h > 0);
+  const hh2 = (n) => String(n).padStart(2, "0");
+  const cum = site.hCumToday !== null && site.hCumYest !== null
+    ? `0:00〜${hh2(site.cmpHour)}:59 の累計は <b>今日 ${site.hCumToday.toLocaleString("ja-JP")}</b> / 前日 ${site.hCumYest.toLocaleString("ja-JP")} ${
+        site.hCumYest > 0
+          ? (() => { const p = pct(site.hCumToday, site.hCumYest);
+                     return `<span class="${p > 0 ? "up" : p < 0 ? "down" : ""}">（${p > 0 ? "+" : ""}${p}%）</span>`; })()
+          : "（前日が0なので比較しない）"}`
+    : "比較できる時間帯がまだ無い";
+
+  return `
+<figure class="chart hourly">
+  <figcaption class="chart-title">時間帯別のセッション数 — 今日と前日（${esc(site.yesterdayWd)}）</figcaption>
+  <div class="legend">
+    <span><i class="sw sw-today"></i>今日</span>
+    <span><i class="sw sw-part"></i>途中の時間帯（${site.cutoff ? `${esc(site.cutoff)}まで` : "—"}）</span>
+    <span><i class="sw sw-yest"></i>前日</span>
+  </div>
+  <div class="chart-scroll">
+  <svg viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet"
+       aria-label="${esc(site.label)} の時間帯別セッション数。今日と前日の比較。数値は下の表にあります。">
+    <defs>
+      <pattern id="hatch-h-${site.key}" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+        <rect width="6" height="6" fill="var(--series-wash)"/>
+        <rect width="2.5" height="6" fill="var(--series-1)"/>
+      </pattern>
+    </defs>
+    ${ticks.map((v) => `<line x1="${PAD.l}" x2="${W - PAD.r}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"
+        stroke="${v === 0 ? "var(--axis)" : "var(--grid)"}" stroke-width="1" shape-rendering="crispEdges"/>`).join("")}
+    ${ticks.map((v) => `<text x="${PAD.l - 8}" y="${(y(v) + 4).toFixed(1)}" class="tick" text-anchor="end">${v.toLocaleString("ja-JP")}</text>`).join("")}
+    <path d="${fillPath}" fill="var(--series-2-wash)"/>
+    <path d="${stepPath}" fill="none" stroke="var(--series-2)" stroke-width="1.5" stroke-linejoin="round"/>
+    ${bars.map((b) => b.path
+      ? `<path d="${b.path}" fill="${b.partial ? `url(#hatch-h-${site.key})` : "var(--series-1)"}"
+              stroke="var(--surface)" stroke-width="2" paint-order="stroke"/>` : "").join("")}
+    ${[0, 3, 6, 9, 12, 15, 18, 21].map((hh) =>
+      `<text x="${(x0(hh) + band / 2).toFixed(1)}" y="${H - PAD.b + 18}" class="xlab" text-anchor="middle">${hh}</text>`).join("")}
+    <text x="${(PAD.l + iw / 2).toFixed(1)}" y="${H - PAD.b + 31}" class="xsub" text-anchor="middle">時（JST）</text>
+    ${lab ? `<text x="${lab.cx.toFixed(1)}" y="${(lab.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${lab.v.toLocaleString("ja-JP")}</text>` : ""}
+    ${site.hToday.map((v, hh) => {
+      const drawn = hh <= site.cutoffHour;
+      const yv = site.hYest[hh];
+      const tip = `${hh}時台 — 今日 ${drawn ? `${v.toLocaleString("ja-JP")}${hh === site.cutoffHour ? "（途中）" : ""}` : "まだ集計されていない"}`
+        + ` / 前日 ${yv.toLocaleString("ja-JP")}`
+        + (drawn && hh !== site.cutoffHour && yv > 0 ? `（${pct(v, yv) > 0 ? "+" : ""}${pct(v, yv)}%）` : "");
+      return `<rect class="hit" x="${x0(hh).toFixed(1)}" y="${PAD.t}" width="${band.toFixed(1)}" height="${ih}"
+        fill="transparent" data-tip="${esc(tip)}"></rect>`;
+    }).join("")}
+  </svg>
+  </div>
+  <figcaption>${cum}。<b>今日の棒は ${site.cutoff ? esc(site.cutoff) : "現在"} で終わっている</b>のが正常で、
+    その先は「0件」ではなく<b>GA4がまだ出していない</b>。前日の合計とではなく、同じ時間帯どうしで比べること。</figcaption>
+  ${hourTable(site)}
+</figure>`;
+}
+
+// チャートは色と形で読ませているので、数値そのものはここで担保する（マウスを使えない場合の経路）
+function hourTable(site) {
+  const rows = site.hToday.map((v, hh) => {
+    const drawn = hh <= site.cutoffHour;
+    const yv = site.hYest[hh];
+    const p = drawn && hh !== site.cutoffHour ? pct(v, yv) : null;
+    return `<tr${hh === site.cutoffHour ? ' class="is-today"' : ""}>
+      <td>${hh}時台${hh === site.cutoffHour ? " <span class='badge'>途中</span>" : ""}</td>
+      <td class="num strong">${drawn ? v.toLocaleString("ja-JP") : "—"}</td>
+      <td class="num">${yv.toLocaleString("ja-JP")}</td>
+      <td class="num ${p === null ? "" : p > 0 ? "up" : p < 0 ? "down" : ""}">${
+        p === null ? "—" : `${p > 0 ? "+" : ""}${p}%`}</td>
+    </tr>`;
+  }).join("");
+  return `
+<details class="tbl">
+  <summary>表で見る（時間帯別の数値）</summary>
+  <div class="tbl-scroll"><table>
+    <thead><tr><th>時間帯</th><th class="num">今日</th><th class="num">前日</th><th class="num">比</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>
+</details>`;
 }
 
 function table(site) {
@@ -389,6 +542,7 @@ function sitePanel(site, primary) {
     }。それ以降の訪問はまだこの数字に入っていない。取りに行く頻度を上げても、この遅れは縮まらない。</p>` : ""}
   ${chart(site)}
   ${table(site)}
+  ${hourChart(site)}
 </section>`;
 }
 
@@ -399,6 +553,8 @@ const CSS = `
   --ink:#0b0b0b; --ink2:#52514e; --muted:#898781;
   --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10);
   --series-1:#2a78d6; --series-wash:rgba(42,120,214,.13);
+  /* 前日＝背景に置く参照系列。主役（今日）を埋もれさせないよう彩度を持たせない */
+  --series-2:#8a8580; --series-2-wash:rgba(138,133,128,.15);
   --up:#006300; --down:#d03b3b; --warn:#fab219;
 }
 @media (prefers-color-scheme: dark){
@@ -408,6 +564,7 @@ const CSS = `
     --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781;
     --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
     --series-1:#3987e5; --series-wash:rgba(57,135,229,.18);
+    --series-2:#8f8b85; --series-2-wash:rgba(143,139,133,.20);
     --up:#0ca30c; --down:#e66767;
   }
 }
@@ -417,6 +574,7 @@ const CSS = `
   --ink:#ffffff; --ink2:#c3c2b7; --muted:#898781;
   --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
   --series-1:#3987e5; --series-wash:rgba(57,135,229,.18);
+  --series-2:#8f8b85; --series-2-wash:rgba(143,139,133,.20);
   --up:#0ca30c; --down:#e66767;
 }
 
@@ -487,6 +645,20 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
   display:inline-block; width:11px; height:11px; vertical-align:-1px; border-radius:2px;
   background:repeating-linear-gradient(45deg,var(--series-1) 0 2.5px,var(--series-wash) 2.5px 6px);
 }
+
+/* 時間帯別チャート。日次の表の下に置く（主役は日次なので、こちらは従） */
+.chart.hourly{margin-top:18px; border-top:1px solid var(--border); padding-top:14px}
+.chart-title{font-size:13px; font-weight:650; color:var(--ink); margin:0 0 8px}
+.legend{display:flex; flex-wrap:wrap; gap:4px 16px; font-size:11.5px; color:var(--ink2); margin-bottom:8px}
+.legend span{display:inline-flex; align-items:center; gap:5px}
+.sw{display:inline-block; width:11px; height:11px; border-radius:2px}
+.sw-today{background:var(--series-1)}
+.sw-part{background:repeating-linear-gradient(45deg,var(--series-1) 0 2.5px,var(--series-wash) 2.5px 6px)}
+.sw-yest{height:8px; background:var(--series-2-wash); border-top:1.5px solid var(--series-2); border-radius:0}
+.chart.hourly figcaption b{color:var(--ink)}
+.chart.hourly .tbl{margin-top:10px}
+.chart.hourly figcaption .up{color:var(--up); font-weight:650}
+.chart.hourly figcaption .down{color:var(--down); font-weight:650}
 
 .tbl{margin-top:12px; border-top:1px solid var(--border); padding-top:10px}
 .tbl summary{font-size:13px; color:var(--ink2); cursor:pointer; list-style:revert}
@@ -662,6 +834,7 @@ function body(m, err, live) {
       ? `データ取得 <b>${stamp}</b> JST（<span id="age" data-at="${esc(m.fetchedAt)}">—</span>）・${INTERVAL_SEC < 60 ? `${INTERVAL_SEC}秒` : `${INTERVAL_SEC / 60}分`}ごとに更新`
       : `<b>${stamp}</b> JST 時点のスナップショット（このページは自動では更新されない）`}</div>
   </div>
+  ${live ? "<!--GA_STALE-->" : ""}
   ${err ? `<div class="alert"><span>⚠</span><div><b>今回の取得に失敗した。</b>下の数字は ${stamp} JST 時点のもの。<br><code>${esc(err)}</code></div></div>` : ""}
   ${m.sites.map((s, i) => sitePanel(s, i === 0)).join("")}
   ${adsenseBlock(m)}
@@ -690,6 +863,29 @@ const fragment = (m, err) => `<title>keiri-tools のセッション</title>
 ${body(m, err, false)}
 <script>${JS}</script>`;
 
+/**
+ * 焼いたHTMLを Worker に預ける。Worker は /ga でこれをそのまま返す。
+ *
+ * ★ここが失敗してもローカルの index.html は正。だから呼び出し側で握りつぶし、
+ *   ログにだけ残す（外に出す経路が落ちたせいで手元の画面まで消えるのは本末転倒）。
+ * ★Worker は Cloudflare Access の内側にいる。人間のログインを迂回する正規手段は
+ *   サービストークンだけなので、無いと 302 で締め出される（本文ではなくステータスで判る）。
+ */
+async function pushToWorker(html, fetchedAt) {
+  const headers = { "content-type": "application/json", authorization: `Bearer ${PUSH_TOKEN}` };
+  if (process.env.CF_ACCESS_CLIENT_ID) {
+    headers["CF-Access-Client-Id"] = process.env.CF_ACCESS_CLIENT_ID;
+    headers["CF-Access-Client-Secret"] = process.env.CF_ACCESS_CLIENT_SECRET;
+  }
+  const res = await fetchRetry(`${PUSH_URL.replace(/\/$/, "")}/api/ga-push`, {
+    method: "POST", redirect: "manual", headers, body: JSON.stringify({ html, fetchedAt }),
+  });
+  if (res.status === 301 || res.status === 302) {
+    throw new Error("Cloudflare Access に弾かれた（302）。CF_ACCESS_CLIENT_ID/SECRET が無いか、Access のポリシーに Service Auth が入っていない");
+  }
+  if (!res.ok) throw new Error(`HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
+}
+
 // ---------- main ----------
 // 前回の数字を先に控える（標準出力を「変化があった時だけ」にするため）
 const prevSummary = existsSync(DATA_PATH)
@@ -707,13 +903,23 @@ if (!data) {
 }
 
 const m = model(data);
-writeFileSync(OUT_HTML, standalone(m, err));
+const html = standalone(m, err);
+writeFileSync(OUT_HTML, html);
 if (WANT_ARTIFACT) writeFileSync(OUT_ARTIFACT, fragment(m, err));
+
+// 外から見る用に送る。取得に失敗した回は送らない（Worker 側の数字を古いまま保ち、
+// 「Macからの更新が止まっている」と正しく出させる。失敗バナー付きHTMLで上書きしない）
+let pushErr = null;
+if (PUSH_URL && PUSH_TOKEN && !err) {
+  try { await pushToWorker(html, m.fetchedAt); }
+  catch (e) { pushErr = e.message; }
+}
 
 const f = jstFields(new Date(m.fetchedAt));
 const stamp = `${f.year}-${f.month}-${f.day} ${f.hour}:${f.minute}`;
 const nums = m.sites.map((s) => `${s.label} 今日=${s.today} 昨日=${s.yesterday} 直近7日=${s.last7}`).join(" / ");
-const summary = `${stamp} JST ${err ? "FAIL" : "OK"} ${nums}${err ? ` — ${err}` : ""}`;
+const summary = `${stamp} JST ${err ? "FAIL" : "OK"} ${nums}`
+  + `${err ? ` — ${err}` : ""}${pushErr ? ` — /ga への送信に失敗: ${pushErr}` : ""}`;
 
 // 毎回上書きする1行。ログが伸びていなくても、これを見れば最後に走った時刻が分かる
 mkdirSync(dirname(LAST_RUN), { recursive: true });
@@ -721,5 +927,5 @@ writeFileSync(LAST_RUN, summary + "\n");
 
 // 標準出力（＝launchdのログ）は変化した時とエラー時だけ。毎分走るので無変化は黙る
 const changed = prevSummary === null || prevSummary !== m.sites.map((s) => s.today).join(",");
-if (err || changed) console.log(summary);
+if (err || pushErr || changed) console.log(summary);
 if (err) process.exit(1);
