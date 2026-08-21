@@ -101,7 +101,10 @@ async function resolveProperties() {
   return cache;
 }
 
-async function ga4Report(property) {
+async function ga4Report(property, domain) {
+  const productionHost = {
+    filter: { fieldName: "hostName", stringFilter: { matchType: "EXACT", value: domain } },
+  };
   const run = (body) =>
     api(`https://analyticsdata.googleapis.com/v1beta/${property}:runReport`, {
       dateRanges: [{ startDate: start, endDate: end }],
@@ -111,12 +114,22 @@ async function ga4Report(property) {
     dimensions: [{ name: "pagePath" }],
     metrics: [{ name: "screenPageViews" }, { name: "activeUsers" }],
     orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }],
+    dimensionFilter: {
+      andGroup: { expressions: [
+        productionHost,
+        { notExpression: { filter: {
+          fieldName: "pagePath",
+          stringFilter: { matchType: "EXACT", value: "(not set)" },
+        } } },
+      ] },
+    },
     limit: 30,
   });
   const channels = await run({
     dimensions: [{ name: "sessionDefaultChannelGroup" }],
     metrics: [{ name: "sessions" }, { name: "activeUsers" }],
     orderBys: [{ metric: { metricName: "sessions" }, desc: true }],
+    dimensionFilter: productionHost,
   });
   return { pages, channels };
 }
@@ -202,7 +215,7 @@ for (const t of targets) {
   const prop = props[t.measurementId];
   if (prop) {
     try {
-      const { pages, channels } = await ga4Report(prop);
+      const { pages, channels } = await ga4Report(prop, t.domain);
       console.log(`\n## GA4 ページ別 TOP30 (pagePath\tpageviews\tusers)`);
       console.log(fmtRows(pages.rows, (r) => [
         r.dimensionValues[0].value, r.metricValues[0].value, r.metricValues[1].value,

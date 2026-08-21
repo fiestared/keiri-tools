@@ -5099,6 +5099,24 @@ SCENES.track_link_click = async () => {
   return { href, names: gaNames(doc), tool: ev.params.tool, from: ev.params.from };
 };
 
+// 記事 → 関連記事も明示的に数えられること（GA4の自動clickは外部リンクのみ）
+SCENES.track_internal_link_click = async () => {
+  const doc = await open("/docs/column/seikyusho-kakikata/");
+  const win = doc.defaultView;
+  const link = Array.from(doc.querySelectorAll("article a[href]")).find((el) => {
+    if (el.closest("nav")) return false;
+    const u = new win.URL(el.getAttribute("href"), win.location.href);
+    return u.origin === win.location.origin &&
+      u.pathname.indexOf("/column/furikomi-tesuryo-hikaku/") !== -1;
+  });
+  if (!link) throw new Error("対象の関連記事リンクが見つからない");
+  link.addEventListener("click", (e) => e.preventDefault());
+  link.click();
+  await waitFor(() => gaNames(doc).includes("internal_link_click"), "internal_link_click の送出");
+  const ev = gaEvents(doc).find((e) => e.name === "internal_link_click");
+  return { names: gaNames(doc), linkUrl: ev.params.link_url, linkText: ev.params.link_text };
+};
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPages[0] || null, pages: openedPages };

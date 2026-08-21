@@ -8,10 +8,11 @@
  *   「使われた」が区別できず、ツールを伸ばすか畳むかの判断材料が取れない。
  *   （＝ page_view は「客が来たか」しか答えない。「商品が機能したか」は別の計器が要る）
  *
- * 測るのは3段。段で持つのは、落ちている場所を特定するため:
+ * 測るのは次の導線。段で持つのは、落ちている場所を特定するため:
  *   1. tool_input      … 入力欄に触った（＝使おうとした）
  *   2. tool_result     … 触ったあとに結果が画面に出た（＝計算まで到達した）
  *   3. tool_link_click … 記事からツールへのリンクを踏んだ（＝記事が送客できたか）
+ *   4. internal_link_click … 記事から関連記事へのリンクを踏んだ
  *
  *   PV → tool_input → tool_result の目減りが、そのまま改善すべき場所になる。
  *
@@ -101,8 +102,17 @@
           if (location.pathname.indexOf("/column/") === -1) return; // 記事から出る分だけ数える
           var url = new URL(a.getAttribute("href"), location.href);
           if (url.origin !== location.origin) return; // 外部リンクは自動計測に任せる
-          if (url.pathname.indexOf("/column/") !== -1) return; // 記事→記事は送客ではない
           if (url.pathname === location.pathname) return; // ページ内アンカー
+          if (url.pathname.indexOf("/column/") !== -1) {
+            // GA4標準のリンク項目を使う。カスタムディメンション登録なしで遷移先を読める。
+            if (typeof window.gtag === "function") {
+              window.gtag("event", "internal_link_click", {
+                link_url: url.href,
+                link_text: (a.textContent || "").trim().slice(0, 100),
+              });
+            }
+            return;
+          }
           // 案内ページは「ツールへの送客」ではない（数に混ぜると導線の効きが読めなくなる）
           if (/\/(about|privacy|contact)\/?$/.test(url.pathname)) return;
           // ★ここは1ページ1回に絞らない: どのツールへ出たかを取りこぼさないため

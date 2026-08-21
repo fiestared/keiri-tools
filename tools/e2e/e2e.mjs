@@ -1872,6 +1872,11 @@ const SCENES = [
       s.from === "docs/column/furikomi-tesuryo-hikaku" &&
       typeof s.tool === "string" && s.tool.length > 0 &&
       s.tool.indexOf("column") === -1 },
+  // 記事→関連記事も、遷移先とアンカー文言をGA4標準項目で読めること
+  { name: "track_internal_link_click", noCoverage: true, expect: (s) =>
+      s.names.includes("internal_link_click") &&
+      s.linkUrl.includes("/column/furikomi-tesuryo-hikaku/") &&
+      s.linkText.includes("振込手数料") },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────
