@@ -5,6 +5,11 @@
     python3 tools/egov_elm.py <json-file> [--md5]
     python3 tools/egov_elm.py <json-file> --items 17          # 第17条第1項の号を数える
     python3 tools/egov_elm.py <json-file> --items 17 --para 2 # 第2項の号を数える
+    python3 tools/egov_elm.py <json-file> --article 229 [229 151 ...]  # 条単位ダンプ（項・号つき）
+        条番号は属性 Num（"229" / "42_3_2"）でも ArticleTitle（"第二百二十九条" / "二百二十九"）でも引ける。
+        🔴 2026-08-21 第8便で道具化（3回ルール）: 同じ /tmp/art.py を 08-20 第7便・08-21 第7便・第8便と
+        3回続けて必要とし、うち2回は書き捨てが消えて作り直していた。漢数字でしか引けない・本則/附則の
+        区別が無い、という書き捨て版の欠点もここで直す（本則を先に、附則は〔附則〕と明示）。
 
 e-Gov の返りは JSON エンベロープで、本文は law_full_text に木構造で入っている。
 再帰的に文字列化して条文テキストを組み立てる（版どうしの比較は md5 で行う）。
@@ -135,6 +140,71 @@ def item_titles(path, article_num, para_index=1):
     return titles, len(paras), provision
 
 
+def dump_article(path, wanted):
+    """条単位ダンプ。wanted は属性 Num（"229"・"42_3_2"）か ArticleTitle（"第二百二十九条"・"二百二十九"）。
+
+    返り値は [(title, caption, provision, text)] を、本則→附則の順に並べたもの。
+    見つからなければ空。**黙って別の条を返さない**（articles_by_num と同じ規律）。
+    """
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    want = str(wanted)
+    core = want.replace("第", "").replace("条", "")   # "四十二の三の二" / "二百二十九"
+    if "の" in core:   # 枝番号: ArticleTitle は「第四十二条の三の二」の形（条が先頭の数字の直後に入る）
+        head, rest = core.split("の", 1)
+        want_title = "第" + head + "条の" + rest
+    else:
+        want_title = "第" + core + "条"
+    found = []
+
+    def title_of(a, tag):
+        out = []
+        for c in a.get("children", []):
+            if isinstance(c, dict) and c.get("tag") == tag:
+                walk(c.get("children"), out)
+        return "".join(out)
+
+    def rec(node, provision=None):
+        if isinstance(node, dict):
+            tag = node.get("tag")
+            if tag in ("MainProvision", "SupplProvision"):
+                provision = tag
+            if tag == "Article":
+                num = str(node.get("attr", {}).get("Num", ""))
+                t = title_of(node, "ArticleTitle")
+                if num == want or t == want_title:
+                    found.append((node, provision or "MainProvision"))
+            if "children" in node:
+                rec(node["children"], provision)
+        elif isinstance(node, list):
+            for x in node:
+                rec(x, provision)
+
+    rec(data.get("law_full_text"))
+    found.sort(key=lambda ap: 0 if ap[1] == "MainProvision" else 1)
+    res = []
+    for art, provision in found:
+        lines = []
+        for para in find_tag(art.get("children"), "Paragraph", []):
+            pn, body = [], []
+            for cc in para.get("children", []):
+                if not isinstance(cc, dict):
+                    continue
+                if cc.get("tag") == "ParagraphNum":
+                    walk(cc.get("children"), pn)
+                elif cc.get("tag") == "Item":
+                    it = []
+                    walk(cc.get("children"), it)
+                    body.append("\n    " + "".join(it))
+                else:
+                    walk(cc.get("children"), body)
+            head = ("【" + "".join(pn) + "】") if "".join(pn) else ""
+            lines.append(head + "".join(body))
+        res.append((title_of(art, "ArticleTitle"), title_of(art, "ArticleCaption"),
+                    provision, "\n".join(lines)))
+    return res
+
+
 def extract(path):
     with open(path, encoding="utf-8") as f:
         data = json.load(f)
@@ -149,6 +219,25 @@ def main():
         sys.exit(2)
     text = extract(sys.argv[1])
     argv = sys.argv
+    if "--article" in argv:
+        nums = argv[argv.index("--article") + 1:]
+        nums = [n for n in nums if not n.startswith("--")]
+        if not nums:
+            print("✗ --article の後に条番号を1つ以上書いてください（例: --article 229 151）")
+            sys.exit(2)
+        missing = 0
+        for n in nums:
+            hits = dump_article(sys.argv[1], n)
+            if not hits:
+                print("=== 第%s条: 本則にも附則にも見つかりません ===" % n)
+                missing += 1
+                continue
+            for title, caption, provision, text in hits:
+                label = "" if provision == "MainProvision" else "〔附則〕"
+                print("=== %s %s%s ===" % (title, caption, label))
+                print(text)
+                print()
+        sys.exit(1 if missing else 0)
     if "--items" in argv:
         num = argv[argv.index("--items") + 1]
         para = int(argv[argv.index("--para") + 1]) if "--para" in argv else 1
