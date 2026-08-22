@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>減価償却累計額とは｜負債ではなく資産の控除項目。間接法が原則で直接法が例外</title>
+<meta name="description" content="減価償却累計額とは、これまでに計上した減価償却費の累計を、資産のマイナスとして貸借対照表に置いた項目のこと。貸方に立つので負債と誤解されますが、条文は「控除項目」と呼んでおり、負債の部を列挙した会社計算規則75条2項には入っていません。負債と読み違えると、自己資本比率70.0%の会社が59.3%に見えます（本文の設例）。さらに、実務で使う「間接法」「直接法」という呼び名は、会社法・法人税法・所得税法・会社計算規則・財務諸表等規則など8法令 約441万字を全文で数えて0回でした。条文は方式に名前を与えず、形だけを書き分けています。しかも原則と例外は多くの人の感覚と逆で、控除項目として示す方が「しなければならない」、直接減らす方が「できる」です。有形固定資産・無形固定資産・繰延資産で選べる範囲が違うこと、直接法にしたとき金融商品取引法の開示だけ注記が残ること、減損損失累計額が合算されている場合があること、そして方式を変えても法人税額は1円も変わらない理由まで、条文で確かめます。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/genka-shokyaku-ruikeigaku/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="減価償却累計額とは｜負債ではなく資産の控除項目。間接法が原則で直接法が例外">
+<meta property="og:description" content="減価償却累計額とは、これまでに計上した減価償却費の累計を、資産のマイナスとして貸借対照表に置いた項目のこと。貸方に立つので負債と誤解されますが、条文は「控除項目」と呼んでおり、負債の部を列挙した会社計算規則75条2項には入っていません。負債と読み違えると、自己資本比率70.0%の会社が59.3%に見えます（本文の設例）。さらに、実務で使う「間接法」「直接法」という呼び名は、会社法・法人税法・所得税法・会社計算規則・財務諸表等規則など8法令 約441万字を全文で数えて0回でした。条文は方式に名前を与えず、形だけを書き分けています。しかも原則と例外は多くの人の感覚と逆で、控除項目として示す方が「しなければならない」、直接減らす方が「できる」です。有形固定資産・無形固定資産・繰延資産で選べる範囲が違うこと、直接法にしたとき金融商品取引法の開示だけ注記が残ること、減損損失累計額が合算されている場合があること、そして方式を変えても法人税額は1円も変わらない理由まで、条文で確かめます。">
+<meta property="og:url" content="https://keiri-tools.com/column/genka-shokyaku-ruikeigaku/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "減価償却累計額とは｜負債ではなく資産の控除項目。間接法が原則で直接法が例外",
+      "datePublished": "2026-08-22",
+      "dateModified": "2026-08-22",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/genka-shokyaku-ruikeigaku/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "減価償却累計額とは",
+          "item": "https://keiri-tools.com/column/genka-shokyaku-ruikeigaku/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 減価償却累計額は負債ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 負債ではありません。会社計算規則79条1項は、減価償却累計額を「当該各有形固定資産の項目に対する控除項目として」表示すると定めており、資産の部の中で資産を減らす項目として位置づけています。負債の部に属するものを列挙した会社計算規則75条2項にも、減価償却累計額は挙げられていません。仕訳で貸方に立つため負債に見えますが、身分は資産のマイナスです。同じ構造の項目として、資産に係る引当金である貸倒引当金が78条1項に置かれています。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 減価償却累計額の勘定科目としての区分は何ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 資産の評価勘定（控除項目）です。貸借対照表では有形固定資産の各科目の下に「減価償却累計額」として置き、マイナスで示します。会社計算規則79条1項ただし書は、資産ごとではなく有形固定資産に対する控除項目として一括して表示することも認めています。なお、この行が立つのは有形固定資産だけです。無形固定資産は会社計算規則81条・財務諸表等規則30条により、繰延資産は会社計算規則84条により、いずれも直接控除して残高だけを示すことが義務づけられています。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 間接法と直接法は、どちらが正しいのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. どちらも認められていますが、条文の建て付けでは控除項目として示す方（通称 間接法）が原則です。会社計算規則79条1項と財務諸表等規則25条が「表示しなければならない」「掲記しなければならない」と定め、直接控除する方（通称 直接法）は会社計算規則79条2項・財務諸表等規則26条に「することができる」として置かれています。なお「間接法」「直接法」という呼び名自体は、会社法・会社計算規則・財務諸表等規則・法人税法・同施行令・同施行規則・所得税法・商法の本文合計4,412,173字を数えて0回で、法令上の用語ではありません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 直接法にすると、減価償却累計額は開示されなくなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. どの規則が適用されるかで変わります。財務諸表等規則26条1項は、直接控除した場合に「当該減価償却累計額は、当該各資産の資産科目別に、又は一括して注記しなければならない」と定めているため、金融商品取引法にもとづく財務諸表では注記に残ります。一方、会社法にもとづく計算書類を規律する会社計算規則79条2項には、これに対応する注記の定めがありません。したがって計算書類で直接控除を採ると、減価償却累計額はどこにも表示されないことになります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 減価償却累計額に減損損失が含まれていることはありますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. あります。会社計算規則80条3項は、減価償却累計額と減損損失累計額をいずれも控除項目として表示する場合に、減損損失累計額を減価償却累計額に合算して減価償却累計額の項目で表示することを認めています。財務諸表等規則26条の2第3項にも同じ扱いがあり、こちらは同条第4項で「減価償却累計額に減損損失累計額が含まれている旨を注記しなければならない」とされています。会社計算規則にはこの注記の定めがないため、計算書類だけを見て中身を判別することはできません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 間接法と直接法で、支払う法人税は変わりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 変わりません。法人税法2条25号は損金経理を「法人がその確定した決算において費用又は損失として経理することをいう」と定義しており、費用として計上したかどうかだけを問い、相手方の科目には触れていません。法人税法31条1項が損金算入の限度としているのも「その償却費として損金経理をした金額」のうち償却限度額までであり、どちらの方式でも損益計算書に計上される減価償却費は同額です。したがって申告調整も生じません。なお「減価償却累計額」という語は法人税法・同施行令・同施行規則の本文に一度も出てきません。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-E742DSDHPD');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578" crossorigin="anonymous"></script>
+<script src="../../assets/track.js" defer></script>
+</head><body>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 減価償却累計額とは</nav>
+<article>
+  <h1>減価償却累計額とは｜負債ではなく資産の控除項目。間接法が原則で直接法が例外</h1>
+  <p class="article-meta">公開日: 2026年8月22日 ／ 会社計算規則・財務諸表等規則・会社法・法人税法などの条文（e-Gov法令検索のAPIで取得した本文全文）を実際に読み、語の出現回数も全文で数えて整理</p>
+  <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+  <p>結論から言うと、<b>減価償却累計額とは、その資産についてこれまでに計上した減価償却費の合計額を、資産のマイナスとして貸借対照表に置いた項目</b>です。仕訳では貸方に立つので負債のように見えますが、<b>負債ではありません。</b>条文はこれを「控除項目」と呼んでおり、負債の部に何を並べるかを列挙した会社計算規則75条2項のどこにも入っていません。</p>
+
+  <p>この違いは見た目の話では終わりません。累計額を負債と読み違えると、<b>自己資本比率70.0%の会社が59.3%に見えます</b>（後述の設例）。しかも<b>誤った読み方でも貸借は一致してしまう</b>ので、数字が合っていることは何の安全装置にもなりません。</p>
+
+  <p>そしてもう一つ。実務で誰もが使う<b>「間接法」「直接法」という呼び名は、法令に一度も出てきません。</b>会社法・会社計算規則・財務諸表等規則・法人税法・同施行令・同施行規則・所得税法・商法の本文をすべて取得して数えたところ、<b>合計 4,412,173字に対して0回</b>でした。条文は方式に名前を与えず、<b>形だけを書き分けている</b>のです。そして原則と例外は、多くの人の感覚とは逆向きに書かれています。</p>
+
+  <nav class="toc"><div class="toc-title">目次</div><ol>
+    <li><a href="#ketsuron">貸方に立つが、負債ではない — 条文は「控除項目」と呼んでいる</a></li>
+    <li><a href="#hiritsu">負債と読み違えると、自己資本比率が10.7ポイント狂う</a></li>
+    <li><a href="#zero">「間接法」「直接法」は、どの法令にも1回も出てこない</a></li>
+    <li><a href="#joubun">名前を与えているのは省令2本 — 税法には0回</a></li>
+    <li><a href="#gensoku">原則と例外は逆 — 控除項目が「しなければならない」</a></li>
+    <li><a href="#chuki">直接法にすると、累計額はどこへ行くのか</a></li>
+    <li><a href="#mukei">無形固定資産と繰延資産は、方式を選べない</a></li>
+    <li><a href="#genson">「減価償却累計額」に減損が混ざっていることがある</a></li>
+    <li><a href="#setsurei">設例 — 機械600万円、3年目の貸借対照表と売却</a></li>
+    <li><a href="#zeimu">方式を変えても、法人税額は1円も変わらない</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+  </ol></nav>
+
+  <h2 id="ketsuron">貸方に立つが、負債ではない — 条文は「控除項目」と呼んでいる</h2>
+
+  <p>減価償却の仕訳を間接法で書くと、こうなります。</p>
+
+  <div class="scroll-wrap">
+  <table>
+    <tr><th>借方</th><th>金額</th><th>貸方</th><th>金額</th></tr>
+    <tr><td>減価償却費</td><td style="text-align:right">600,000</td><td>減価償却累計額</td><td style="text-align:right">600,000</td></tr>
+  </table>
+  </div>
+
+  <p>貸方に立ち、期を追うごとに残高が増えていく。ここまでは負債とまったく同じ動き方です。だから「これは負債なのか」という疑問が出ます。<b>答えは、条文がどこに置いているかで決まります。</b></p>
+
+  <p>会社計算規則は、貸借対照表を資産・負債・純資産の3つの部に分け（73条1項）、負債の部に属するものを75条2項で列挙しています。そこに並ぶのは支払手形・買掛金・前受金・引当金・未払費用・前受収益・リース負債・資産除去債務・社債・長期借入金・退職給付引当金・繰延税金負債・のれんなどで、<b>減価償却累計額はここに1つも出てきません。</b></p>
+
+  <p>では、どこに書かれているのか。<b>資産の側です。</b>減価償却累計額の表示を定めているのは79条で、貸借対照表の「資産」を扱う一連の条文（74条以下）の中に置かれています。条文の言葉はこうです。</p>
+
+  <blockquote>各有形固定資産に対する減価償却累計額は、次項の規定による場合のほか、当該各有形固定資産の項目に対する控除項目として、減価償却累計額の項目をもって表示しなければならない。</blockquote>
+
+  <p>「当該各有形固定資産の項目に対する<b>控除項目</b>として」。つまりこの科目の身分は、<b>資産のマイナス</b>です。負債ではなく、資産の部の中で資産を減らす役をしています。</p>
+
+  <div class="callout">
+  <b>同じ棚に置かれているのは、貸倒引当金</b><br>
+  一つ前の78条1項は、貸倒引当金について同じ構文で書かれています。<br>
+  <blockquote>各資産に係る引当金は、次項の規定による場合のほか、当該各資産の項目に対する控除項目として、貸倒引当金その他当該引当金の設定目的を示す名称を付した項目をもって表示しなければならない。</blockquote>
+  「引当金」という名前が付いていても、<b>資産に係る引当金は負債ではなく控除項目</b>です。会社計算規則75条2項1号ニ・2号ハが、負債に属する引当金からわざわざ「資産に係る引当金」を除いているのは、そのためです。減価償却累計額は、この貸倒引当金と同じ棚にあります。
+  </div>
+
+  <h2 id="hiritsu">負債と読み違えると、自己資本比率が10.7ポイント狂う</h2>
+
+  <p>「表示上の分類の話でしょう」と流せない理由が、ここにあります。取得価額6,000,000円・累計額1,800,000円の機械だけを持つ会社を考えます。ほかの資産が5,800,000円、負債が3,000,000円、純資産が7,000,000円だとします。</p>
+
+  <div class="scroll-wrap">
+  <table>
+    <tr><th></th><th>正しい読み方<br>（資産の控除項目）</th><th>誤った読み方<br>（負債として足す）</th></tr>
+    <tr><td>機械装置</td><td style="text-align:right">4,200,000</td><td style="text-align:right">6,000,000</td></tr>
+    <tr><td>その他の資産</td><td style="text-align:right">5,800,000</td><td style="text-align:right">5,800,000</td></tr>
+    <tr><td><b>資産合計</b></td><td style="text-align:right"><b>10,000,000</b></td><td style="text-align:right"><b>11,800,000</b></td></tr>
+    <tr><td>負債（累計額を含めるか）</td><td style="text-align:right">3,000,000</td><td style="text-align:right">4,800,000</td></tr>
+    <tr><td>純資産</td><td style="text-align:right">7,000,000</td><td style="text-align:right">7,000,000</td></tr>
+    <tr><td><b>自己資本比率</b></td><td style="text-align:right"><b>70.0%</b></td><td style="text-align:right"><b>59.3%</b></td></tr>
+  </table>
+  </div>
+
+  <p><b>同じ会社が、70.0%にも59.3%にも見えます。差は10.7ポイント。</b>融資や取引先の与信でこの水準の差は小さくありません。</p>
+
+  <div class="callout">
+  <b>いちばん怖いのは、誤った側でも貸借が一致すること</b><br>
+  誤った読み方でも、負債4,800,000＋純資産7,000,000＝11,800,000で資産合計と一致します。<b>「貸借が合っているから正しい」は、この誤りに対して何の検算にもなりません。</b>累計額を資産から引いても負債に足しても、差額はどちらも同じ1,800,000だからです。検算するなら、<b>資産合計が簿価ベースになっているか</b>を直接見るしかありません。
+  </div>
+
+  <figure class="figure">
+  <svg viewBox="0 0 640 330" width="100%" role="img" aria-label="間接法と直接法で貸借対照表の見え方がどう変わるかの図">
+    <text x="8" y="20" font-size="14" font-weight="bold" fill="currentColor">同じ機械（取得600万円・累計180万円）の見え方</text>
+
+    <rect x="8" y="40" width="290" height="130" fill="none" stroke="currentColor" stroke-width="1"/>
+    <text x="20" y="62" font-size="13" font-weight="bold" fill="var(--accent)">控除項目として示す（通称 間接法）</text>
+    <text x="20" y="86" font-size="13" fill="currentColor">機械装置</text>
+    <text x="286" y="86" font-size="13" text-anchor="end" fill="currentColor">6,000,000</text>
+    <text x="20" y="108" font-size="13" fill="currentColor">減価償却累計額</text>
+    <text x="286" y="108" font-size="13" text-anchor="end" fill="currentColor">△1,800,000</text>
+    <line x1="20" y1="118" x2="286" y2="118" stroke="currentColor" stroke-width="1"/>
+    <text x="20" y="138" font-size="13" fill="currentColor">差引</text>
+    <text x="286" y="138" font-size="13" text-anchor="end" font-weight="bold" fill="currentColor">4,200,000</text>
+    <text x="20" y="160" font-size="11" fill="var(--sub)">取得原価と使い減りの両方が見える</text>
+
+    <rect x="342" y="40" width="290" height="130" fill="none" stroke="currentColor" stroke-width="1"/>
+    <text x="354" y="62" font-size="13" font-weight="bold" fill="var(--sub)">直接控除する（通称 直接法）</text>
+    <text x="354" y="86" font-size="13" fill="currentColor">機械装置</text>
+    <text x="620" y="86" font-size="13" text-anchor="end" font-weight="bold" fill="currentColor">4,200,000</text>
+    <text x="354" y="120" font-size="11" fill="var(--sub)">取得原価も累計額も表からは消える</text>
+    <text x="354" y="140" font-size="11" fill="var(--warn-line)">財規なら注記で残る／計規なら残らない</text>
+    <text x="354" y="160" font-size="11" fill="var(--sub)">（本文「直接法にすると…」参照）</text>
+
+    <line x1="8" y1="196" x2="632" y2="196" stroke="currentColor" stroke-width="1"/>
+    <text x="8" y="222" font-size="13" font-weight="bold" fill="currentColor">どちらでも資産合計は 4,200,000 で同じ</text>
+    <text x="8" y="246" font-size="12" fill="currentColor">控除項目は資産の部の中で資産を減らすので、総資産は増えない。</text>
+    <text x="8" y="268" font-size="12" fill="var(--warn-line)">もし負債だったら、総資産は 6,000,000 のまま・負債が 1,800,000 増える。</text>
+    <text x="8" y="290" font-size="12" fill="var(--warn-line)">＝ 自己資本比率が 70.0% から 59.3% に見える（10.7ポイントの差）。</text>
+    <text x="8" y="316" font-size="12" fill="var(--sub)">条文の言葉は「控除項目」（会社計算規則79条1項）。負債の部を列挙した75条2項には無い。</text>
+  </svg>
+  <figcaption>控除項目として示すか直接控除するかで、資産合計は変わらない。変わるのは「取得原価と使い減りが読めるかどうか」。負債と読み違えたときだけ、総資産と自己資本比率が動く。</figcaption>
+  </figure>
+
+  <h2 id="zero">「間接法」「直接法」は、どの法令にも1回も出てこない</h2>
+
+  <p>ここからは条文の側を見ます。まず実測から示します。e-Gov法令検索のAPIで各法令の本文全文を取得し、語の出現回数を数えました。</p>
+
+  <div class="scroll-wrap">
+  <table>
+    <tr><th>法令</th><th>種別</th><th>本文の字数</th><th>減価償却<br>累計額</th><th>間接法</th><th>直接法</th></tr>
+    <tr><td>会社法</td><td>法律</td><td style="text-align:right">472,180</td><td style="text-align:right"><b>0回</b></td><td style="text-align:right">0回</td><td style="text-align:right">0回</td></tr>
+    <tr><td>商法</td><td>法律</td><td style="text-align:right">87,116</td><td style="text-align:right"><b>0回</b></td><td style="text-align:right">0回</td><td style="text-align:right">0回</td></tr>
+    <tr><td>法人税法</td><td>法律</td><td style="text-align:right">611,879</td><td style="text-align:right"><b>0回</b></td><td style="text-align:right">0回</td><td style="text-align:right">0回</td></tr>
+    <tr><td>法人税法施行令</td><td>政令</td><td style="text-align:right">1,202,804</td><td style="text-align:right"><b>0回</b></td><td style="text-align:right">0回</td><td style="text-align:right">0回</td></tr>
+    <tr><td>法人税法施行規則</td><td>省令</td><td style="text-align:right">555,972</td><td style="text-align:right"><b>0回</b></td><td style="text-align:right">0回</td><td style="text-align:right">0回</td></tr>
+    <tr><td>所得税法</td><td>法律</td><td style="text-align:right">1,186,087</td><td style="text-align:right"><b>0回</b></td><td style="text-align:right">0回</td><td style="text-align:right">0回</td></tr>
+    <tr><td><b>会社計算規則</b></td><td>省令</td><td style="text-align:right">116,933</td><td style="text-align:right"><b>16回</b></td><td style="text-align:right">0回</td><td style="text-align:right">0回</td></tr>
+    <tr><td><b>財務諸表等規則</b></td><td>省令</td><td style="text-align:right">179,202</td><td style="text-align:right"><b>22回</b></td><td style="text-align:right">0回</td><td style="text-align:right">0回</td></tr>
+    <tr><td><b>合計</b></td><td></td><td style="text-align:right"><b>4,412,173</b></td><td style="text-align:right"><b>38回</b></td><td style="text-align:right"><b>0回</b></td><td style="text-align:right"><b>0回</b></td></tr>
+  </table>
+  </div>
+
+  <p>簿記の教科書にも、会計ソフトの画面にも、税理士との会話にも出てくる「間接法」「直接法」という呼び名は、<b>441万字を数えて1回も出てきません。</b>「控除形式」という言い方も0回でした。</p>
+
+  <p>これは言葉遊びではなく、<b>読み方の指針になります。</b>条文は方式に名前を付けず、<b>やり方だけを二通り書き分けている</b>。だから「うちは間接法だが法令上どうか」と条番号を探しても見つかりません。探すべきは名前ではなく、<b>控除項目として表示することを義務づけた文（会社計算規則79条1項・財務諸表等規則25条）と、直接控除を認めた文（同79条2項・同26条1項）の2か所</b>です。</p>
+
+  <h2 id="joubun">名前を与えているのは省令2本 — 税法には0回</h2>
+
+  <p>上の表がもう一つ示しているのは、<b>減価償却累計額という科目に名前を与えているのが省令2本だけ</b>だということです。会社法にも商法にも0回。法人税法にも、その施行令・施行規則にも、所得税法にも0回です。</p>
+
+  <div class="scroll-wrap">
+  <table>
+    <tr><th></th><th>会社計算規則</th><th>財務諸表等規則</th></tr>
+    <tr><td>根拠</td><td>会社法（計算書類）</td><td>金融商品取引法（財務諸表）</td></tr>
+    <tr><td>適用される会社</td><td>株式会社・持分会社</td><td>有価証券報告書などを提出する会社</td></tr>
+    <tr><td>有形固定資産の累計額</td><td>79条</td><td>25条・26条</td></tr>
+    <tr><td>無形固定資産の累計額</td><td>81条</td><td>30条</td></tr>
+    <tr><td>繰延資産の償却累計額</td><td>84条</td><td>—</td></tr>
+    <tr><td>減損損失累計額</td><td>80条</td><td>26条の2</td></tr>
+  </table>
+  </div>
+
+  <p><b>ふだんの中小企業の決算書に効くのは、左の会社計算規則です。</b>財務諸表等規則は上場会社などが金融商品取引法にもとづいて提出する財務諸表の規則で、両者は似ていますが、後述のとおり<b>注記の要否が違います</b>。</p>
+
+  <div class="callout">
+  <b>2本の条文を引き写すときの注意</b><br>
+  会社計算規則は「もって」、財務諸表等規則は「もつて」と書きます。財務諸表等規則は昭和38年の省令で、当時の公用文の表記が残っているためです。無形固定資産の条文も、会社計算規則81条が「当該各無形固定資産の金額から」、財務諸表等規則30条が「当該無形固定資産の金額から」と、<b>「各」の有無が違います。</b>逐語で引くつもりなら、どちらの条文かを確かめてから写してください。
+  </div>
+
+  <h2 id="gensoku">原則と例外は逆 — 控除項目が「しなければならない」</h2>
+
+  <p>ここが、この記事でいちばんお伝えしたい点です。<b>多くの人の感覚とは逆で、条文の原則は控除項目として示すこと（通称 間接法）です。</b></p>
+
+  <p>会社計算規則79条1項は、先に引いたとおり「<b>表示しなければならない</b>」と書いています。ただし書で、資産ごとではなく一括して示すことも認めています。</p>
+
+  <blockquote>ただし、これらの有形固定資産に対する控除項目として一括して表示することを妨げない。</blockquote>
+
+  <p>これに対して、直接減らす方（通称 直接法）は次の項に、<b>「できる」</b>として置かれています。</p>
+
+  <blockquote>各有形固定資産に対する減価償却累計額は、当該各有形固定資産の金額から直接控除し、その控除残高を当該各有形固定資産の金額として表示することができる。</blockquote>
+
+  <p>財務諸表等規則も同じ構造です。25条が原則で「掲記しなければならない」、26条が例外で「表示することができる」。</p>
+
+  <blockquote>第二十三条第一項各号に掲げる建物、構築物、機械及び装置、船舶、車両及びその他の陸上運搬具、工具、器具及び備品、使用権資産又はその他の有形固定資産に対する減価償却累計額は、次条の規定による場合のほか、当該各資産科目に対する控除科目として、減価償却累計額の科目をもつて掲記しなければならない。</blockquote>
+
+  <blockquote>第二十三条第一項各号に掲げる建物、構築物、機械及び装置、船舶、車両及びその他の陸上運搬具、工具、器具及び備品、使用権資産又はその他の有形固定資産に対する減価償却累計額は、当該各資産の金額から直接控除し、その控除残高を当該各資産の金額として表示することができる。</blockquote>
+
+  <p>つまり<b>条文の建て付けでは、累計額を見せるのが原則で、消すのは認められた例外</b>ということです。取得原価がいくらで、そのうちどれだけ使い減ったのかという情報を、規則は既定では残そうとしています。</p>
+
+  <div class="callout">
+  <b>「原則だから直接法は不適切」ではありません</b><br>
+  79条2項・26条は正面から認められた選択肢です。ここで言っているのは<b>優劣ではなく、条文の書き方の向き</b>です。実務では固定資産台帳を別に持っているため直接法でも困らない場面が多く、実際に直接法を採る会社もあります。ただし<b>「直接法が普通で、間接法が丁寧なやり方」という理解は条文と逆</b>で、この向きを取り違えると次の注記の話も逆に読んでしまいます。
+  </div>
+
+  <h2 id="chuki">直接法にすると、累計額はどこへ行くのか</h2>
+
+  <p>直接控除すると、貸借対照表の表からは累計額が消えます。では情報も消えるのか。<b>ここで会社計算規則と財務諸表等規則が分かれます。</b></p>
+
+  <p>財務諸表等規則26条1項は、直接控除を認める文のすぐ後に、こう続けています。</p>
+
+  <blockquote>この場合においては、当該減価償却累計額は、当該各資産の資産科目別に、又は一括して注記しなければならない。</blockquote>
+
+  <p><b>表から消しても、注記には書け</b>ということです。さらに2項で、連結財務諸表を作っている会社は個別の側でこの記載を要しないとしています。</p>
+
+  <blockquote>前項に規定する事項は、財務諸表提出会社が連結財務諸表を作成している場合には、記載することを要しない。</blockquote>
+
+  <p>いっぽう<b>会社計算規則79条2項には、この注記の定めがありません。</b>先に引いた条文をもう一度見てください。「直接控除し、その控除残高を当該各有形固定資産の金額として表示することができる。」で文が終わっており、注記を求める文が続いていません。</p>
+
+  <div class="scroll-wrap">
+  <table>
+    <tr><th></th><th>控除項目として示す</th><th>直接控除する</th></tr>
+    <tr><td>会社計算規則（計算書類）</td><td>原則（79条1項）</td><td>できる（79条2項）／<b>注記の定めなし</b></td></tr>
+    <tr><td>財務諸表等規則（財務諸表）</td><td>原則（25条）</td><td>できる（26条1項前段）／<b>注記しなければならない</b>（同項後段）</td></tr>
+  </table>
+  </div>
+
+  <p>結果として、<b>会社法にもとづく計算書類で直接法を採ると、減価償却累計額はどこにも出てこなくなります。</b>その会社の固定資産が新しいのか、ほとんど償却し終えた古い資産なのかは、計算書類の表面からは読めません。取引先の決算書を見て「固定資産が3,000万円ある」と分かっても、<b>それが取得価額なのか償却後の残高なのかは、方式が分からなければ確定できない</b>ということです。</p>
+
+  <figure class="figure">
+  <svg viewBox="0 0 640 300" width="100%" role="img" aria-label="資産の区分ごとに表示方式を選べるかどうかの判定図">
+    <text x="8" y="20" font-size="14" font-weight="bold" fill="currentColor">その資産は、表示方式を選べるか</text>
+
+    <rect x="8" y="36" width="150" height="46" fill="none" stroke="currentColor" stroke-width="1"/>
+    <text x="83" y="56" font-size="13" text-anchor="middle" fill="currentColor">有形固定資産</text>
+    <text x="83" y="74" font-size="11" text-anchor="middle" fill="var(--sub)">建物・機械・車両など</text>
+
+    <rect x="8" y="102" width="150" height="46" fill="none" stroke="currentColor" stroke-width="1"/>
+    <text x="83" y="122" font-size="13" text-anchor="middle" fill="currentColor">無形固定資産</text>
+    <text x="83" y="140" font-size="11" text-anchor="middle" fill="var(--sub)">ソフトウエア・のれんなど</text>
+
+    <rect x="8" y="168" width="150" height="46" fill="none" stroke="currentColor" stroke-width="1"/>
+    <text x="83" y="188" font-size="13" text-anchor="middle" fill="currentColor">繰延資産</text>
+    <text x="83" y="206" font-size="11" text-anchor="middle" fill="var(--sub)">創立費・開業費など</text>
+
+    <line x1="158" y1="59" x2="200" y2="59" stroke="currentColor" stroke-width="1"/>
+    <line x1="158" y1="125" x2="200" y2="125" stroke="currentColor" stroke-width="1"/>
+    <line x1="158" y1="191" x2="200" y2="191" stroke="currentColor" stroke-width="1"/>
+
+    <rect x="200" y="36" width="432" height="46" fill="none" stroke="var(--accent)" stroke-width="1"/>
+    <text x="212" y="56" font-size="12" fill="var(--accent)" font-weight="bold">選べる。控除項目が原則、直接控除は「できる」</text>
+    <text x="212" y="74" font-size="11" fill="var(--sub)">計規79条1項・2項／財規25条・26条　※財規で直接控除するなら注記が要る</text>
+
+    <rect x="200" y="102" width="432" height="46" fill="none" stroke="var(--warn-line)" stroke-width="1"/>
+    <text x="212" y="122" font-size="12" fill="var(--warn-line)" font-weight="bold">選べない。直接控除して残高だけを示す</text>
+    <text x="212" y="140" font-size="11" fill="var(--sub)">計規81条・財規30条　いずれも「しなければならない」</text>
+
+    <rect x="200" y="168" width="432" height="46" fill="none" stroke="var(--warn-line)" stroke-width="1"/>
+    <text x="212" y="188" font-size="12" fill="var(--warn-line)" font-weight="bold">選べない。直接控除して残高だけを示す</text>
+    <text x="212" y="206" font-size="11" fill="var(--sub)">計規84条　「しなければならない」</text>
+
+    <line x1="8" y1="234" x2="632" y2="234" stroke="currentColor" stroke-width="1"/>
+    <text x="8" y="258" font-size="12" fill="currentColor">つまり貸借対照表に「減価償却累計額」の行が立つのは、有形固定資産だけ。</text>
+    <text x="8" y="280" font-size="12" fill="var(--sub)">ソフトウエアの累計額を控除項目で並べた決算書は、条文の側から見ると誤り。</text>
+  </svg>
+  <figcaption>方式を選べるのは有形固定資産だけ。無形固定資産と繰延資産は、条文が直接控除を「しなければならない」と定めている。</figcaption>
+  </figure>
+
+  <h2 id="mukei">無形固定資産と繰延資産は、方式を選べない</h2>
+
+  <p>ここは実務でよく取り違えられる点です。<b>「間接法か直接法か」を選べるのは、有形固定資産だけ</b>です。</p>
+
+  <p>会社計算規則81条は、無形固定資産についてこう定めています。</p>
+
+  <blockquote>各無形固定資産に対する減価償却累計額及び減損損失累計額は、当該各無形固定資産の金額から直接控除し、その控除残高を当該各無形固定資産の金額として表示しなければならない。</blockquote>
+
+  <p>財務諸表等規則30条も同じです。</p>
+
+  <blockquote>各無形固定資産に対する減価償却累計額及び減損損失累計額は、当該無形固定資産の金額から直接控除し、その控除残高を各無形固定資産の金額として表示しなければならない。</blockquote>
+
+  <p>どちらも「できる」ではなく<b>「しなければならない」</b>。選択の余地がありません。繰延資産も同様で、会社計算規則84条が直接控除を求めています。</p>
+
+  <blockquote>各繰延資産に対する償却累計額は、当該各繰延資産の金額から直接控除し、その控除残高を各繰延資産の金額として表示しなければならない。</blockquote>
+
+  <p>したがって、<b>ソフトウエアやのれんに「減価償却累計額」の行を立てるのは、条文の側から見ると誤り</b>です。ソフトウエアは残高だけを示します。会計ソフトの設定で全資産を一律に間接法にしていると、無形固定資産まで累計額が立ってしまうことがあるので、決算書を出す前に区分ごとに確かめてください。</p>
+
+  <a class="tool-cta" href="../../genka/">定額法・定率法の償却費を計算する</a>
+
+  <h2 id="genson">「減価償却累計額」に減損が混ざっていることがある</h2>
+
+  <p>もう一つ、決算書を読む側が知っておきたい仕掛けがあります。<b>貸借対照表に「減価償却累計額」と書いてあっても、その中身が減価償却だけとは限りません。</b></p>
+
+  <p>会社計算規則80条3項は、こう定めています。</p>
+
+  <blockquote>前条第一項及び前項の規定により減価償却累計額及び減損損失累計額を控除項目として表示する場合には、減損損失累計額を減価償却累計額に合算して、減価償却累計額の項目をもって表示することができる。</blockquote>
+
+  <p>減損損失累計額を<b>減価償却累計額に合算して、減価償却累計額という名前で表示してよい</b>ということです。減損は使い減りではなく、投資額を回収できる見込みがなくなったことによる帳簿価額の切り下げで、原因がまったく違います。それが同じ行にまとめられます。</p>
+
+  <p>そしてここでも、<b>財務諸表等規則には注記の定めがあり、会社計算規則にはありません。</b>財務諸表等規則26条の2第4項はこう書いています。</p>
+
+  <blockquote>前項の場合には、減価償却累計額に減損損失累計額が含まれている旨を注記しなければならない。</blockquote>
+
+  <div class="callout">
+  <b>同じ非対称が2度出てくる</b><br>
+  ① 直接控除して累計額を表から消すとき、② 減損損失累計額を減価償却累計額に混ぜるとき。<b>どちらも、情報が減る場面です。</b>財務諸表等規則はそのたびに注記で補わせ、会社計算規則は補わせません。<b>会社法の計算書類は、金融商品取引法の財務諸表より情報が落ちうる</b>——これは条文を並べて初めて見える差で、決算書を読むときの前提になります。
+  </div>
+
+  <p>ですから、取引先の計算書類で固定資産が急に減っていても、それだけでは<b>売却したのか、償却が進んだのか、減損したのかは区別できません。</b>会社計算規則の世界では、減損は「減価償却累計額」という名前の中に入っていることがあります。減損そのものの扱いは<a href="../genson-sonshitsu/">減損損失とは</a>で扱っています。</p>
+
+  <h2 id="setsurei">設例 — 機械600万円、3年目の貸借対照表と売却</h2>
+
+  <p>取得価額6,000,000円の機械を、定額法・耐用年数10年で償却するとします。平成19年4月1日以後に取得した資産の定額法の償却率は「1÷耐用年数」で求まるので、耐用年数10年なら0.100、1年あたりの償却費は600,000円です（この導き方は<a href="../genka-shokyaku-toha/">減価償却とは</a>で扱っています）。</p>
+
+  <p><b>毎期の仕訳</b>は、方式によって貸方が変わるだけです。</p>
+
+  <div class="scroll-wrap">
+  <table>
+    <tr><th>方式</th><th>借方</th><th>金額</th><th>貸方</th><th>金額</th></tr>
+    <tr><td>控除項目（間接法）</td><td>減価償却費</td><td style="text-align:right">600,000</td><td>減価償却累計額</td><td style="text-align:right">600,000</td></tr>
+    <tr><td>直接控除（直接法）</td><td>減価償却費</td><td style="text-align:right">600,000</td><td>機械装置</td><td style="text-align:right">600,000</td></tr>
+  </table>
+  </div>
+
+  <p><b>3年経過した時点の貸借対照表</b>（累計額は600,000×3＝1,800,000円）は、次のようになります。</p>
+
+  <div class="scroll-wrap">
+  <table>
+    <tr><th></th><th>控除項目（間接法）</th><th>直接控除（直接法）</th></tr>
+    <tr><td>機械装置</td><td style="text-align:right">6,000,000</td><td style="text-align:right">4,200,000</td></tr>
+    <tr><td>減価償却累計額</td><td style="text-align:right">△1,800,000</td><td style="text-align:right">—（財規なら注記）</td></tr>
+    <tr><td><b>固定資産の帳簿価額</b></td><td style="text-align:right"><b>4,200,000</b></td><td style="text-align:right"><b>4,200,000</b></td></tr>
+  </table>
+  </div>
+
+  <p><b>4年目の期首に3,500,000円で売却した</b>場合の仕訳も見ておきます。帳簿価額4,200,000円に対して3,500,000円なので、売却損は700,000円です。</p>
+
+  <div class="scroll-wrap">
+  <table>
+    <tr><th>方式</th><th>借方</th><th>金額</th><th>貸方</th><th>金額</th></tr>
+    <tr><td rowspan="3">控除項目（間接法）</td><td>現金預金</td><td style="text-align:right">3,500,000</td><td rowspan="3">機械装置</td><td rowspan="3" style="text-align:right">6,000,000</td></tr>
+    <tr><td>減価償却累計額</td><td style="text-align:right">1,800,000</td></tr>
+    <tr><td>固定資産売却損</td><td style="text-align:right">700,000</td></tr>
+    <tr><td rowspan="2">直接控除（直接法）</td><td>現金預金</td><td style="text-align:right">3,500,000</td><td rowspan="2">機械装置</td><td rowspan="2" style="text-align:right">4,200,000</td></tr>
+    <tr><td>固定資産売却損</td><td style="text-align:right">700,000</td></tr>
+  </table>
+  </div>
+
+  <p><b>売却損は、どちらも700,000円で同じです。</b>間接法では累計額を借方で取り崩して資産を取得価額のまま落とし、直接法では簿価をそのまま落とす。<b>行数は違いますが、損益に出る金額は1円も変わりません。</b></p>
+
+  <div class="callout">
+  <b>間接法で消し忘れると、資産が残り続ける</b><br>
+  間接法の落とし穴は、売却・除却のときに<b>累計額の取り崩しを忘れる</b>ことです。上の仕訳で減価償却累計額1,800,000円の行を落とすと貸借が合わなくなるのですぐ気づきますが、<b>複数の資産の累計額を一括表示している場合</b>は、どの資産にいくら対応していたかが帳簿上あいまいになりがちです。会社計算規則79条1項ただし書は一括表示を認めていますが、<b>固定資産台帳の側では資産ごとに累計額を持っておく</b>必要があります。
+  </div>
+
+  <h2 id="zeimu">方式を変えても、法人税額は1円も変わらない</h2>
+
+  <p>最後に税務です。<b>結論から言うと、間接法にしても直接法にしても、法人税の計算は同じです。</b>理由は損金経理の定義にあります。法人税法2条25号は、こう定めています。</p>
+
+  <blockquote>法人がその確定した決算において費用又は損失として経理することをいう。</blockquote>
+
+  <p>この定義が求めているのは<b>「費用又は損失として経理すること」だけ</b>で、<b>相手方の科目には一言も触れていません。</b>減価償却費というかたちで費用に計上してあれば、その貸方が減価償却累計額であろうと機械装置であろうと、損金経理の要件は同じように満たします。</p>
+
+  <p>そして法人税法31条1項は、損金に算入できる金額を「その償却費として損金経理をした金額」のうち償却限度額に達するまで、と定めています。上の設例なら損金経理額は600,000円、償却限度額も600,000円で、<b>どちらの方式でも申告調整はゼロ</b>です。</p>
+
+  <div class="scroll-wrap">
+  <table>
+    <tr><th></th><th>控除項目（間接法）</th><th>直接控除（直接法）</th></tr>
+    <tr><td>損益計算書の減価償却費</td><td style="text-align:right">600,000</td><td style="text-align:right">600,000</td></tr>
+    <tr><td>損金経理額（法法31条1項）</td><td style="text-align:right">600,000</td><td style="text-align:right">600,000</td></tr>
+    <tr><td>償却限度額</td><td style="text-align:right">600,000</td><td style="text-align:right">600,000</td></tr>
+    <tr><td><b>申告調整（加算）</b></td><td style="text-align:right"><b>0</b></td><td style="text-align:right"><b>0</b></td></tr>
+  </table>
+  </div>
+
+  <p>先に見たとおり、法人税法にも同施行令にも同施行規則にも「減価償却累計額」は0回でした。<b>税法はこの科目を知りません。</b>税法が見ているのは<b>費用に計上した金額</b>であって、貸借対照表での見せ方ではないからです。</p>
+
+  <div class="callout">
+  <b>だからこそ、方式は「読み手のため」に選ぶ</b><br>
+  税額が変わらない以上、方式の選択は税務上の有利不利で決める話ではありません。決めるべき基準は<b>誰がその決算書を読むか</b>です。金融機関や取引先に固定資産の状態を見せたいなら控除項目として示す（条文の原則でもある）、社内で固定資産台帳を精緻に持っていて決算書を簡潔にしたいなら直接控除する、という選び方になります。<b>なお、期の途中で方式を変えるのは会計方針の変更に当たります。</b>毎期同じ方式で通すのが基本です。
+  </div>
+
+  <h2 id="faq">よくある質問</h2>
+
+  <h3>Q. 減価償却累計額は負債ですか？</h3>
+  <p>A. 負債ではありません。会社計算規則79条1項は、減価償却累計額を「当該各有形固定資産の項目に対する控除項目として」表示すると定めており、資産の部の中で資産を減らす項目として位置づけています。負債の部に属するものを列挙した会社計算規則75条2項にも、減価償却累計額は挙げられていません。仕訳で貸方に立つため負債に見えますが、身分は資産のマイナスです。同じ構造の項目として、資産に係る引当金である貸倒引当金が78条1項に置かれています。</p>
+
+  <h3>Q. 減価償却累計額の勘定科目としての区分は何ですか？</h3>
+  <p>A. 資産の評価勘定（控除項目）です。貸借対照表では有形固定資産の各科目の下に「減価償却累計額」として置き、マイナスで示します。会社計算規則79条1項ただし書は、資産ごとではなく有形固定資産に対する控除項目として一括して表示することも認めています。なお、この行が立つのは有形固定資産だけです。無形固定資産は会社計算規則81条・財務諸表等規則30条により、繰延資産は会社計算規則84条により、いずれも直接控除して残高だけを示すことが義務づけられています。</p>
+
+  <h3>Q. 間接法と直接法は、どちらが正しいのですか？</h3>
+  <p>A. どちらも認められていますが、条文の建て付けでは控除項目として示す方（通称 間接法）が原則です。会社計算規則79条1項と財務諸表等規則25条が「表示しなければならない」「掲記しなければならない」と定め、直接控除する方（通称 直接法）は会社計算規則79条2項・財務諸表等規則26条に「することができる」として置かれています。なお「間接法」「直接法」という呼び名自体は、会社法・会社計算規則・財務諸表等規則・法人税法・同施行令・同施行規則・所得税法・商法の本文合計4,412,173字を数えて0回で、法令上の用語ではありません。</p>
+
+  <h3>Q. 直接法にすると、減価償却累計額は開示されなくなりますか？</h3>
+  <p>A. どの規則が適用されるかで変わります。財務諸表等規則26条1項は、直接控除した場合に「当該減価償却累計額は、当該各資産の資産科目別に、又は一括して注記しなければならない」と定めているため、金融商品取引法にもとづく財務諸表では注記に残ります。一方、会社法にもとづく計算書類を規律する会社計算規則79条2項には、これに対応する注記の定めがありません。したがって計算書類で直接控除を採ると、減価償却累計額はどこにも表示されないことになります。</p>
+
+  <h3>Q. 減価償却累計額に減損損失が含まれていることはありますか？</h3>
+  <p>A. あります。会社計算規則80条3項は、減価償却累計額と減損損失累計額をいずれも控除項目として表示する場合に、減損損失累計額を減価償却累計額に合算して減価償却累計額の項目で表示することを認めています。財務諸表等規則26条の2第3項にも同じ扱いがあり、こちらは同条第4項で「減価償却累計額に減損損失累計額が含まれている旨を注記しなければならない」とされています。会社計算規則にはこの注記の定めがないため、計算書類だけを見て中身を判別することはできません。</p>
+
+  <h3>Q. 間接法と直接法で、支払う法人税は変わりますか？</h3>
+  <p>A. 変わりません。法人税法2条25号は損金経理を「法人がその確定した決算において費用又は損失として経理することをいう」と定義しており、費用として計上したかどうかだけを問い、相手方の科目には触れていません。法人税法31条1項が損金算入の限度としているのも「その償却費として損金経理をした金額」のうち償却限度額までであり、どちらの方式でも損益計算書に計上される減価償却費は同額です。したがって申告調整も生じません。なお「減価償却累計額」という語は法人税法・同施行令・同施行規則の本文に一度も出てきません。</p>
+
+  <section class="related"><h2>関連記事・ツール</h2><div class="tool-grid">
+    <a class="tool-card" href="../genka-shokyaku-toha/"><div><div class="name">減価償却とは</div><div class="desc">償却率と償却限度額の基本。法人は任意、個人は強制。</div></div></a>
+    <a class="tool-card" href="../taishaku-taishohyo-mikata/"><div><div class="name">貸借対照表の見方</div><div class="desc">規則が資産・負債・純資産をどう割っているか。</div></div></a>
+    <a class="tool-card" href="../genson-sonshitsu/"><div><div class="name">減損損失とは</div><div class="desc">累計額に合算されることがあるもう一つの切り下げ。</div></div></a>
+    <a class="tool-card" href="../kensetsu-karikanjo/"><div><div class="name">建設仮勘定</div><div class="desc">償却が始まらない有形固定資産。</div></div></a>
+    <a class="tool-card" href="../kurinobe-shisan/"><div><div class="name">繰延資産とは</div><div class="desc">償却累計額を直接控除する区分。</div></div></a>
+    <a class="tool-card" href="../../genka/"><div><div class="name">減価償却計算</div><div class="desc">定額法・定率法の償却費を計算。</div></div></a>
+  </div></section>
+
+  <h2>出典</h2>
+  <ul style="font-size:13px;color:var(--sub)">
+    <li>e-Gov法令検索 <a href="https://laws.e-gov.go.jp/law/418M60000010013">会社計算規則（平成十八年法務省令第十三号）</a> — 第73条（貸借対照表等の区分）、第74条（資産の部の区分）、第75条第2項（負債の部の区分）、第78条（貸倒引当金等の表示）、第79条（有形固定資産に対する減価償却累計額の表示）、第80条（有形固定資産に対する減損損失累計額の表示）、第81条（無形固定資産の表示）、第84条（繰延資産の表示）</li>
+    <li>e-Gov法令検索 <a href="https://laws.e-gov.go.jp/law/338M50000040059">財務諸表等の用語、様式及び作成方法に関する規則（昭和三十八年大蔵省令第五十九号）</a> — 第23条第1項（有形固定資産の区分表示）、第25条・第26条（減価償却累計額の表示）、第26条の2（減損損失累計額の表示）、第27条・第28条（無形固定資産の範囲・区分表示）、第30条（無形固定資産の減価償却累計額の表示）</li>
+    <li>e-Gov法令検索 <a href="https://laws.e-gov.go.jp/law/340AC0000000034">法人税法（昭和四十年法律第三十四号）</a> — 第2条第25号（損金経理の定義）、第31条第1項（減価償却資産の償却費の計算及びその償却の方法）</li>
+    <li>e-Gov法令検索 <a href="https://laws.e-gov.go.jp/law/417AC0000000086">会社法（平成十七年法律第八十六号）</a>／<a href="https://laws.e-gov.go.jp/law/132AC0000000048">商法（明治三十二年法律第四十八号）</a>／<a href="https://laws.e-gov.go.jp/law/340CO0000000097">法人税法施行令（昭和四十年政令第九十七号）</a>／<a href="https://laws.e-gov.go.jp/law/340M50000040012">法人税法施行規則（昭和四十年大蔵省令第十二号）</a>／<a href="https://laws.e-gov.go.jp/law/340AC0000000033">所得税法（昭和四十年法律第三十三号）</a> — 本文中の語の計数に使用</li>
+  </ul>
+  <p style="font-size:13px;color:var(--sub)">条文の計数は、e-Gov法令検索のAPIで取得した各法令の本文全文（本則および附則を含む）に対して、令和8年8月22日時点で行ったものです。設例の取得価額・耐用年数・売却価額は説明のための仮定です。減価償却の方法の選定・届出や、資産ごとの耐用年数は本記事の範囲外です。</p>
+  <p style="font-size:13px;color:var(--sub)">本記事は一般的な情報提供を目的としたものです。個別の判断は税務署・税理士にご確認ください。</p>
+</article>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E6%B8%9B%E4%BE%A1%E5%84%9F%E5%8D%B4%E7%B4%AF%E8%A8%88%E9%A1%8D%E3%81%A8%E3%81%AF%E3%80%81%E3%81%93%E3%82%8C%E3%81%BE%E3%81%A7%E3%81%AB%E8%A8%88%E4%B8%8A%E3%81%97%E3%81%9F%E6%B8%9B%E4%BE%A1%E5%84%9F%E5%8D%B4%E8%B2%BB%E3%81%AE%E7%B4%AF%E8%A8%88%E3%82%92%E3%80%81%E8%B3%87%E7%94%A3%E3%81%AE%E3%83%9E%E3%82%A4%E3%83%8A%E3%82%B9%E3%81%A8%E3%81%97%E3%81%A6%E8%B2%B8%E5%80%9F%E5%AF%BE%E7%85%A7%E8%A1%A8%E3%81%AB%E7%BD%AE%E3%81%84%E3%81%9F%E9%A0%85%E7%9B%AE%E3%81%AE%E3%81%93%E3%81%A8%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fgenka-shokyaku-ruikeigaku%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site" style="display:block">© 税金・経理・補助金ツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+</body>
+</html>
