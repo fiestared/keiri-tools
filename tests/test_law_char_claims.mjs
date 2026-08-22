@@ -67,6 +67,7 @@ const TAIL = "(?:の(?:(?!合計)[^（()）0-9]){0,14})?\\s*(?:[（(]\\s*)?(?:�
 const bad = [];
 const seen = new Set();                // 照合できた「slug+位置」
 let checked = 0;
+let tableChecked = 0;
 
 const files = walk(join(root, "docs"));
 for (const file of files) {
@@ -91,6 +92,34 @@ for (const file of files) {
       if (rec.chars !== got) {
         bad.push(`${slug}: ${disp}（${got.toLocaleString()}字）… 台帳は ${rec.chars.toLocaleString()}字 [${rec.law_revision_id}]`);
       }
+    }
+  }
+}
+
+// ★表の行も照合する（名前と数字が別のセルに入る形）。
+//   🔴 実測: docs/column/genka-shokyaku-ruikeigaku/ は「法令｜種別｜本文の字数」の表を持ち、
+//     名前と数字が <td> で隔てられているため、**隣接を前提にした上の正規表現には
+//     1行も当たらなかった**。地の文の合計だけを直した結果、
+//     「行の合計 4,412,173 ≠ 合計行 4,253,426」という**記事内で矛盾した状態**を作りかけた。
+//   ＝ 隣接を仮定した検査は、表の中を素通りする。
+for (const file of files) {
+  const html = readFileSync(file, "utf8");
+  const slug = file.replace(join(root, "docs") + "/", "").replace("/index.html", "");
+  for (const tr of html.matchAll(/<tr>([\s\S]*?)<\/tr>/g)) {
+    const cells = [...tr[1].matchAll(/<t[dh][^>]*>([\s\S]*?)<\/t[dh]>/g)]
+      .map((c) => c[1].replace(/<[^>]+>/g, "").trim());
+    if (cells.length < 2) continue;
+    const rec = ledger.laws[names.get(cells[0]) || ""];
+    if (!rec) continue;
+    for (const c of cells.slice(1)) {
+      if (!/^[0-9]{1,3}(,[0-9]{3})+$/.test(c)) continue;   // 字数らしいセルだけ見る
+      const got = Number(c.replace(/,/g, ""));
+      if (got < 1000) continue;
+      tableChecked++;
+      if (rec.chars !== got) {
+        bad.push(`${slug}: [表] ${cells[0]} = ${got.toLocaleString()}字 … 台帳は ${rec.chars.toLocaleString()}字 [${rec.law_revision_id}]`);
+      }
+      break;                                               // 行の最初の字数セルだけ
     }
   }
 }
@@ -121,4 +150,4 @@ if (bad.length) {
   process.exit(1);
 }
 
-console.log(`✓ 法令の字数 ${checked}件が台帳と一致（方法=${ledger.method}・測定日=${ledger.measured}）`);
+console.log(`✓ 法令の字数 ${checked}件（うち表の行 ${tableChecked}件は別途）が台帳と一致（方法=${ledger.method}・測定日=${ledger.measured}）`);
