@@ -88,7 +88,7 @@ export function buildTable() {
   out.push('  <h3 id="hayamihyo">月給別の買取単価 早見表（3方式）</h3>');
   out.push(`  <p>同じ人・同じ有給でも、どの方式で計算するかで<b>1日あたりの単価は1.5倍以上変わります</b>。月給別に並べたものが下の表です。<b>前提は上の設例と同じ</b>で、①は<b>直前3か月の暦日数を${TOTAL_DAYS}日</b>（4〜6月）、②は<b>月の所定労働日数を${WORK_DAYS}日</b>としています。</p>`);
   out.push('  <table>');
-  out.push(`    <tr><th>月給（額面）</th><th>① 平均賃金<br>（暦${TOTAL_DAYS}日）</th><th>③ 標準報酬日額<br>（÷30）</th><th>② 通常の賃金<br>（所定${WORK_DAYS}日）</th></tr>`);
+  out.push(`    <tr><th scope="col">月給（額面）</th><th scope="col">① 平均賃金<br>（暦${TOTAL_DAYS}日）</th><th scope="col">③ 標準報酬日額<br>（÷30）</th><th scope="col">② 通常の賃金<br>（所定${WORK_DAYS}日）</th></tr>`);
   for (const r of rows) {
     out.push(`    <tr><td>${r.wage.toLocaleString('ja-JP')}円</td><td>${fmtSen(r.heikin)}</td><td>${fmt(r.hyojun)}</td><td>${fmt(r.tsujo)}</td></tr>`);
   }

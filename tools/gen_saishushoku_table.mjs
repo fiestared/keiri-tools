@@ -94,7 +94,7 @@ export function buildTable(D) {
   out.push('  <h3 id="hayamihyo">月給別の早見表（30歳以上45歳未満の場合）</h3>');
   out.push(`  <p>再就職手当は <b>計算に使う日額 × 支給残日数 × 支給率（70%または60%）</b> で決まります。支給残日数は人によって全く違うので、ここでは<b>「残り1日あたりいくら生まれるか」</b>を出しました。自分の支給残日数を掛ければ総額になります。<b>この表は<a href="../../saishushoku/">再就職手当 計算機</a>と同じ計算で作っています</b>（別々に持っていないので食い違いません）。</p>`);
   out.push('  <table>');
-  out.push('    <tr><th>月給（額面）</th><th>計算に使う日額<br>（上限適用後）</th><th>70%のとき<br>残1日あたり</th><th>60%のとき<br>残1日あたり</th></tr>');
+  out.push('    <tr><th scope="col">月給（額面）</th><th scope="col">計算に使う日額<br>（上限適用後）</th><th scope="col">70%のとき<br>残1日あたり</th><th scope="col">60%のとき<br>残1日あたり</th></tr>');
   for (const r of rows) {
     const mark = r.capped ? ' <b>※上限</b>' : '';
     out.push(`    <tr><td>${fmt(r.wage)}円${mark}</td><td>${fmt(r.used)}円</td><td>${fmt(r.per70)}円</td><td>${fmt(r.per60)}円</td></tr>`);

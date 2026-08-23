@@ -54,7 +54,7 @@ export function buildQuick() {
   out.push('  <h2 id="hayamihyo">まず早見表：6か月後に何日もらえるか</h2>');
   out.push('  <p><b>パートでもアルバイトでも、条件も日数も同じです</b>（労基法39条は雇用形態で区別していません）。週に何日働くかで決まります。</p>');
   out.push('  <table>');
-  out.push('    <tr><th>働き方</th><th>6か月後にもらえる日数</th></tr>');
+  out.push('    <tr><th scope="col">働き方</th><th scope="col">6か月後にもらえる日数</th></tr>');
   for (const r of rows) {
     out.push(`    <tr><td>${r.label}</td><td><b>${r.days}日</b></td></tr>`);
   }

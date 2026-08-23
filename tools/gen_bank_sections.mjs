@@ -107,7 +107,7 @@ export function buildSections(rows) {
     const hojin = list.find((x) => x.kubun === '法人');
     out.push(`  <h3 id="${bankId(base)}">${base}の振込手数料</h3>`);
     out.push('  <table>');
-    out.push('    <tr><th>区分</th><th>3万円未満</th><th>3万円以上</th></tr>');
+    out.push('    <tr><th scope="col">区分</th><th scope="col">3万円未満</th><th scope="col">3万円以上</th></tr>');
     for (const r of [kojin, hojin]) {
       if (!r) continue;
       out.push(`    <tr><td>${r.name}</td><td>${r.under}</td><td>${r.over}</td></tr>`);
@@ -193,7 +193,7 @@ export function buildAmountIndex(rows) {
   out.push('  <h2 id="gyakubiki">この金額はどこの銀行？（金額から逆引き）</h2>');
   out.push('  <p>通帳や請求書で見た手数料の金額から、その金額になる銀行を引く表です。<b>上の一覧と同じデータ（fee_table.json）から作っています</b>ので食い違いません。「3万円未満／以上で同じ額」の区分は「金額不問」と書いています。</p>');
   out.push('  <table>');
-  out.push('    <tr><th>振込手数料</th><th>この金額になる区分</th></tr>');
+  out.push('    <tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th></tr>');
   for (const [amount, list] of m) {
     const cells = list.map((x) => `${x.name}（${x.range}）`).join('<br>');
     out.push(`    <tr><td><b>${amount}円</b></td><td>${cells}</td></tr>`);

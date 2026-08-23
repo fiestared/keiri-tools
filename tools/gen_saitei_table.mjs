@@ -41,10 +41,10 @@ const m = D._meta, na = m.national_average;
 
 const table = `<table style="width:100%;border-collapse:collapse;font-size:14px">
 <thead><tr>
-<th style="text-align:left;padding:6px;border-bottom:2px solid var(--line)">都道府県</th>
-<th style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">時間額</th>
-<th style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">引上げ</th>
-<th style="text-align:left;padding:6px;border-bottom:2px solid var(--line)">発効日</th>
+<th scope="col" style="text-align:left;padding:6px;border-bottom:2px solid var(--line)">都道府県</th>
+<th scope="col" style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">時間額</th>
+<th scope="col" style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">引上げ</th>
+<th scope="col" style="text-align:left;padding:6px;border-bottom:2px solid var(--line)">発効日</th>
 </tr></thead><tbody>
 ${rows.map((p) => `<tr>` +
   `<td style="padding:6px;border-bottom:1px solid var(--line)">${esc(p.full)}の最低賃金</td>` +

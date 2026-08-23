@@ -71,7 +71,7 @@ export function buildLayout(D) {
     out.push(`  <h3 id="layout-${rec.kubun}">${esc(rec.name)}（データ区分 ${esc(rec.kubun)}）</h3>`);
     out.push(`  <p>${esc(rec.role)}。</p>`);
     out.push('  <table>');
-    out.push('    <tr><th>No</th><th>項目</th><th>位置<br>(バイト)</th><th>桁数・型</th><th>区分</th><th>内容</th></tr>');
+    out.push('    <tr><th scope="col">No</th><th scope="col">項目</th><th scope="col">位置<br>(バイト)</th><th scope="col">桁数・型</th><th scope="col">区分</th><th scope="col">内容</th></tr>');
     for (const f of fields) {
       const scope = f.scope === 'bank' ? '要確認' : '共通';
       const pos = f.from === f.to ? `${f.from}` : `${f.from}〜${f.to}`;

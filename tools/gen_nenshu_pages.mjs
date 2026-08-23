@@ -207,7 +207,7 @@ function pageTedori(f) {
 年収からこの2つを引くと<b>約${yen(t)}円</b>になります（所得税は別途かかります）。</p>
 
 <table>
-<tr><th>項目</th><th style="text-align:right">年額</th></tr>
+<tr><th scope="col">項目</th><th scope="col" style="text-align:right">年額</th></tr>
 <tr><td>給与収入</td><td style="text-align:right">${yen(f.shunyu)}円</td></tr>
 <tr><td>健康保険・介護保険・子ども子育て拠出</td><td style="text-align:right">− ${yen(f.kenkoKaigo)}円</td></tr>
 <tr><td>厚生年金</td><td style="text-align:right">− ${yen(f.kosei)}円</td></tr>
@@ -224,7 +224,7 @@ ${next ? `<p>年収を${man(f.shunyu)}から<b>${man(next.shunyu)}</b>に上げ�
 ${prev ? `<p>逆に${man(prev.shunyu)}と比べると、差引額は<b>${yen(t - tedoriOf(prev))}円</b>多くなっています。</p>` : ""}
 
 <table>
-<tr><th>年収</th><th style="text-align:right">社会保険料</th><th style="text-align:right">住民税</th><th style="text-align:right">差引</th></tr>
+<tr><th scope="col">年収</th><th scope="col" style="text-align:right">社会保険料</th><th scope="col" style="text-align:right">住民税</th><th scope="col" style="text-align:right">差引</th></tr>
 ${[prev, f, next].filter(Boolean).map((x) => `<tr${x.shunyu === f.shunyu ? ' style="font-weight:700;background:#eef6f3"' : ""}><td>${man(x.shunyu)}</td><td style="text-align:right">${yen(x.shakai)}円</td><td style="text-align:right">${yen(x.juminzei)}円</td><td style="text-align:right">${yen(tedoriOf(x))}円</td></tr>`).join("\n")}
 </table>
 
@@ -268,7 +268,7 @@ ${f.hikazei
   : `<p>年収${man(f.shunyu)}（東京都23区・40歳・独身）の住民税は、<b>年 ${yen(f.juminzei)}円</b>です。月あたりにすると約 ${yen(f.juminzei / 12)}円になります。</p>`}
 
 <table>
-<tr><th>項目</th><th style="text-align:right">金額</th></tr>
+<tr><th scope="col">項目</th><th scope="col" style="text-align:right">金額</th></tr>
 <tr><td>給与収入</td><td style="text-align:right">${yen(f.shunyu)}円</td></tr>
 <tr><td>給与所得（給与所得控除後）</td><td style="text-align:right">${yen(f.kyuyoShotoku)}円</td></tr>
 <tr><td>社会保険料控除（概算）</td><td style="text-align:right">− ${yen(f.shakai)}円</td></tr>
@@ -280,7 +280,7 @@ ${f.hikazei
 
 <h2>前後の年収と比べる</h2>
 <table>
-<tr><th>年収</th><th style="text-align:right">課税総所得</th><th style="text-align:right">住民税</th></tr>
+<tr><th scope="col">年収</th><th scope="col" style="text-align:right">課税総所得</th><th scope="col" style="text-align:right">住民税</th></tr>
 ${[prev, f, next].filter(Boolean).map((x) => `<tr${x.shunyu === f.shunyu ? ' style="font-weight:700;background:#eef6f3"' : ""}><td>${man(x.shunyu)}</td><td style="text-align:right">${yen(x.kazei)}円</td><td style="text-align:right">${yen(x.juminzei)}円</td></tr>`).join("\n")}
 </table>
 ${next ? `<p>年収が25万円増えると、住民税は<b>${yen(next.juminzei - f.juminzei)}円</b>増えます。住民税の所得割は原則10%なので、増えた課税所得のおよそ1割が住民税の増加になります。</p>` : ""}
@@ -332,13 +332,13 @@ ${BUILT_FROM_NOTE}
 <div class="scroll-wrap">
 <table class="data-table">
 <tr>
-  <th>年収</th>
-  <th style="text-align:right">手取り（月）</th>
-  <th style="text-align:right">手取り（年）</th>
-  <th style="text-align:right">手取り率</th>
-  <th style="text-align:right">所得税（年）</th>
-  <th style="text-align:right">住民税（年）</th>
-  <th style="text-align:right">社会保険料（年）</th>
+  <th scope="col">年収</th>
+  <th scope="col" style="text-align:right">手取り（月）</th>
+  <th scope="col" style="text-align:right">手取り（年）</th>
+  <th scope="col" style="text-align:right">手取り率</th>
+  <th scope="col" style="text-align:right">所得税（年）</th>
+  <th scope="col" style="text-align:right">住民税（年）</th>
+  <th scope="col" style="text-align:right">社会保険料（年）</th>
 </tr>
 ${T.map((x) => `<tr><td>${man(x.shunyu)}</td>`
   + `<td style="text-align:right">${yen(x.tedoriMonth)}円</td>`
@@ -354,7 +354,7 @@ ${T.map((x) => `<tr><td>${man(x.shunyu)}</td>`
 <p>額面の増分25万円のうち、実際に手元に残るのはこれだけです。残りは税と社会保険料に消えます。</p>
 <div class="scroll-wrap">
 <table class="data-table">
-<tr><th>年収</th><th style="text-align:right">手取りの増分（年）</th><th style="text-align:right">25万円のうち残る割合</th></tr>
+<tr><th scope="col">年収</th><th scope="col" style="text-align:right">手取りの増分（年）</th><th scope="col" style="text-align:right">25万円のうち残る割合</th></tr>
 ${T.slice(1).map((x, i) => {
   const d = x.tedoriYear - T[i].tedoriYear;
   return `<tr><td>${man(T[i].shunyu)} → ${man(x.shunyu)}</td>`

@@ -66,7 +66,7 @@ export function buildTable(D) {
   out.push('  <h3 id="hayamihyo">月給別の早見表（毎月いくら）</h3>');
   out.push(`  <p>額面の月給から、<b>67%の時期の1か月（30日）あたり</b>と<b>50%の時期の1か月あたり</b>を出したものです。${D?._meta?.label ?? ''}。<b>この表の数字は、このサイトの<a href="../../ikuji/">育児休業給付金 計算機</a>と同じ計算で作っています</b>（別々に持っていないので食い違いません）。出生後休業支援給付金の13%は条件つきなので含めていません（<a href="#haigusha">13%の条件</a>を参照）。</p>`);
   out.push('  <table>');
-  out.push('    <tr><th>月給（額面）</th><th>67%の時期<br>1か月あたり</th><th>50%の時期<br>1か月あたり</th></tr>');
+  out.push('    <tr><th scope="col">月給（額面）</th><th scope="col">67%の時期<br>1か月あたり</th><th scope="col">50%の時期<br>1か月あたり</th></tr>');
   for (const r of rows) {
     const mark = r.capped ? '<b>※上限</b>' : r.floored ? '<b>※下限</b>' : '';
     out.push(`    <tr><td>${fmt(r.wage)}円${mark ? ' ' + mark : ''}</td><td>${fmt(r.m67)}円</td><td>${fmt(r.m50)}円</td></tr>`);

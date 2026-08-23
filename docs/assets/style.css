@@ -5,13 +5,16 @@
   --accent: #1f6f5c;
   --accent-soft: #e7f3f0;
   --warn-bg: #fff7e6;
-  --warn-line: #e6c47a;
+  --warn-line: #e6c47a;          /* 装飾の枠線専用。文字には使わない（白上1.57:1） */
+  --warn-line-strong: #a8641b;   /* 状態を示す枠線用。結果背景上 4.58:1 */
+  --warn-ink: #96560f;           /* 注意の文字色。warn-bg上 5.42:1 / 白上 5.78:1 */
+  --line-strong: #84939f;        /* フォーム部品の境界。白上 3.16:1（SC 1.4.11） */
   --bg: #f7f9fb;
 }
 * { box-sizing: border-box; }
 body {
   margin: 0;
-  font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif;
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", "YuGothic", "Meiryo", "Noto Sans JP", system-ui, sans-serif;
   color: var(--ink);
   background: var(--bg);
   line-height: 1.7;
@@ -36,7 +39,8 @@ header.site {
 [id] { scroll-margin-top: 72px; }
 header.site a { color: var(--ink); text-decoration: none; font-weight: 700; }
 header.site .tag { color: var(--sub); font-size: 12px; margin-left: 8px; }
-main { max-width: 720px; margin: 0 auto; padding: 20px 16px 60px; }
+/* 行長: 内容幅 640px ÷ 16px = 全角40字。JLReq 横組の上限・WCAG 1.4.8 の CJK 40 と一致 */
+main { max-width: 672px; margin: 0 auto; padding: 20px 16px 60px; }
 h1 { font-size: 24px; line-height: 1.4; margin: 16px 0 8px; }
 .lead { color: var(--sub); font-size: 14px; margin-bottom: 20px; }
 .card {
@@ -51,7 +55,7 @@ input[type="number"], input[type="text"], input[type="email"], input[type="date"
   width: 100%;
   font-size: 18px;
   padding: 10px 12px;
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: 8px;
   background: #fff;
 }
@@ -116,20 +120,21 @@ button.primary:hover { opacity: 0.92; }
   font-size: 14.5px;
 }
 .warn > b:first-child { display: block; margin-bottom: 4px; }
-.result:has(> .warn) { border-color: var(--warn-line); background: #fffdf7; padding: 6px; }
+.result:has(> .warn) { border-color: var(--warn-line-strong); background: #fffdf7; padding: 6px; }
 section.faq h2 { font-size: 18px; margin-top: 32px; }
 section.faq h3 { font-size: 15.5px; margin-bottom: 4px; }
 /* FAQの答えは本文と同格のコンテンツ(検索にも出る)。灰色で二級扱いしない(2026-07-23) */
 section.faq p { font-size: 15px; color: var(--ink); margin-top: 0; }
 footer.site {
-  max-width: 720px;
+  max-width: 672px;
   margin: 0 auto;
   padding: 20px 16px 40px;
   color: var(--sub);
-  font-size: 12px;
+  font-size: 13px;
 }
 footer.site nav { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px 16px; }
-footer.site nav a { color: var(--sub); }
+/* リンクの当たり判定を 24px 以上にする（SC 2.5.8）。文字は13pxのまま */
+footer.site a { color: var(--sub); padding: 6px 0; display: inline-block; }
 .tool-list a {
   display: block;
   background: #fff;
@@ -158,8 +163,8 @@ footer.site nav a { color: var(--sub); }
 .toc a:hover { color: var(--accent); text-decoration: underline; }
 .toc ol ol { margin-top: 4px; }
 .toc ol ol li { font-size: 13px; color: var(--sub); }
-article h2 { font-size: 21px; margin-top: 44px; padding: 8px 0 8px 12px; border-left: 5px solid var(--accent); background: linear-gradient(90deg, var(--accent-soft), transparent); scroll-margin-top: 16px; }
-article h3 { font-size: 16.5px; margin-top: 28px; padding-bottom: 4px; border-bottom: 2px dotted var(--line); scroll-margin-top: 16px; }
+article h2 { font-size: 21px; margin-top: 44px; padding: 8px 0 8px 12px; border-left: 5px solid var(--accent); background: linear-gradient(90deg, var(--accent-soft), transparent); }
+article h3 { font-size: 16.5px; margin-top: 28px; padding-bottom: 4px; border-bottom: 2px dotted var(--line); }
 /* 本文16px: 読みやすい定番サイトの実測(サルワカ17px・note/Zenn 16px以上)に合わせ15→16px(2026-07-23) */
 article p, article li { font-size: 16px; line-height: 1.95; }
 /* ★長いURL・法令ID（例 340AC0000000034_20260723_508AC0000000064）は折り返せず、
@@ -215,15 +220,15 @@ article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-s
 /* ---- 記事の図解（インラインSVG）の共通クラス。記事内 <style> は書かない ----
    本文色に追従させるため、地の文にあたる文字は fill: currentColor を使う。
    色は CSS変数（--accent / --sub / --line / --warn-*）に寄せる。 */
-.figure svg text { font-family: "Hiragino Kaku Gothic ProN", "Noto Sans JP", system-ui, sans-serif; }
+.figure svg text { font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic Medium", "YuGothic", "Meiryo", "Noto Sans JP", system-ui, sans-serif; }
 .figure svg .fg-t { font-size: 12px; fill: var(--sub); }
 .figure svg .fg-s { font-size: 11px; fill: var(--sub); }
-.figure svg .fg-mute { font-size: 11px; fill: #93a1ad; }
+.figure svg .fg-mute { font-size: 11px; fill: var(--sub); }
 .figure svg .fg-lb { font-size: 12px; font-weight: 600; fill: currentColor; }
 .figure svg .fg-v { font-size: 12.5px; font-weight: 600; fill: currentColor; }
 .figure svg .fg-m { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; fill: currentColor; }
 .figure svg .fg-accent { font-size: 12.5px; font-weight: 600; fill: var(--accent); }
-.figure svg .fg-warn { font-size: 12.5px; font-weight: 600; fill: #a8641b; }
+.figure svg .fg-warn { font-size: 12.5px; font-weight: 600; fill: var(--warn-ink); }
 .figure svg .fg-tag { font-size: 11px; font-weight: 600; fill: #fff; }
 .figure svg .fg-big { font-size: 17px; font-weight: 700; fill: var(--accent); }
 .figure svg .fg-axis { stroke: #c9d1d8; stroke-width: 1; }
@@ -285,7 +290,7 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .persona-bar button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 /* トップのツールをカテゴリ節で分ける(35枚のフラット一覧は探せない。2026-07-23) */
-.tcat { margin-top: 26px; scroll-margin-top: 16px; }
+.tcat { margin-top: 26px; }
 .tcat > h3 { font-size: 16.5px; margin: 0 0 10px; padding: 2px 0 2px 11px; border-left: 4px solid var(--accent); }
 
 .post-list { display: flex; flex-direction: column; }
@@ -293,7 +298,8 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .post-list a:hover .p-title { color: var(--accent); text-decoration: underline; }
 .post-list .p-date { flex: 0 0 84px; font-size: 12px; color: var(--sub); }
 .post-list .p-title { font-size: 15px; font-weight: 600; }
-.post-list .p-desc { font-size: 13px; color: var(--sub); margin-top: 3px; }
+.post-list .p-desc { font-size: 13px; color: var(--sub); margin-top: 3px;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
 
 /* ---- コラム一覧: 検索 + カテゴリ分け ----
    絞り込みは hidden 属性で行う。.post-list a は display:flex なので、
@@ -308,7 +314,7 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
   background-repeat: no-repeat; background-position: 18px center; background-size: 22px 22px;
 }
 .col-search input:focus {
-  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
+  border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft);
 }
 .q-status { font-size: 12.5px; color: var(--sub); margin: 7px 2px 0; }
 .col-empty {
@@ -329,7 +335,7 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .cat-nav a span { font-size: 11px; font-weight: 400; color: var(--sub); }
 .cat-nav a:hover span { color: var(--accent); }
 
-.cat { margin-top: 34px; scroll-margin-top: 16px; }
+.cat { margin-top: 34px; }
 .cat h2 {
   display: flex; align-items: center; gap: 8px; font-size: 18px; margin: 0;
   padding: 4px 0 4px 11px; border-left: 5px solid var(--accent);
@@ -341,7 +347,7 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .fee-table td:nth-child(2), .fee-table td:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .fee-table td:nth-child(4) { font-size: 12px; white-space: nowrap; }
 .fee-table .flat { color: var(--sub); }
-.fee-table .step { color: #a8641b; font-weight: 700; background: var(--warn-bg); }
+.fee-table .step { color: var(--warn-ink); font-weight: 700; background: var(--warn-bg); }
 
 /* ---- タブ切替（複数の計算モードを1ページに載せるツール） ---- */
 .tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
@@ -375,7 +381,7 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
   flex: 1; min-width: 0; padding: 14px 16px; font-size: 16px; color: var(--ink);
   border: 2px solid var(--line); border-radius: 10px; background: #fff;
 }
-.qa-form input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.qa-form input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .qa-submit { flex: 0 0 auto; font-size: 15px; font-weight: 700; color: #fff; background: var(--accent);
   border: 0; border-radius: 10px; padding: 0 20px; cursor: pointer; }
 .qa-submit:hover { opacity: .92; }
@@ -434,3 +440,68 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
   border-color: var(--accent); }
 .hj-tabs b { display: block; font-size: 13px; }
 .hj-tabs .hj-tab-n { font-size: 11px; color: var(--sub); }
+
+/* ================================================================
+   UI/UX ガイドライン適用（2026-08-23）
+   根拠: ~/.claude/skills/ui-ux-guidelines/ ／ レビューは tools/uiux-review/
+   ================================================================ */
+
+/* ---- フォーカス表示の統一（SC 2.4.7）----
+   操作要素ごとにバラバラだと「今どこにいるか」が分からない。
+   outline は #1f6f5c（白上6.02:1）。offset を取ってstickyヘッダーに埋もれないようにする。 */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ---- プレースホルダの色を明示（UA任せにしない）----
+   opacity:1 は Firefox の既定減光の打ち消し。--sub は白上5.48:1。
+   ★プレースホルダはラベルの代わりにしない。ここは色だけの規定。 */
+::placeholder { color: var(--sub); opacity: 1; }
+
+/* ---- 数値列は右揃え＋等幅（桁を目で比較できるようにする）---- */
+th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ---- 本文へ移動（SC 2.4.1）----
+   キーボード利用者がヘッダーのリンク群を毎ページ読み飛ばせるようにする。
+   通常は画面外、フォーカス時だけ左上に出す。 */
+.skip-link {
+  position: absolute; left: -9999px; top: 0;
+  background: var(--accent); color: #fff;
+  padding: 10px 16px; border-radius: 0 0 8px 0;
+  text-decoration: none; font-weight: 700; z-index: 100;
+}
+.skip-link:focus { left: 0; }
+main:focus { outline: none; }
+
+/* ---- .tool-card の略式マークアップ（<b>/<span> 直下）を正規形に寄せる ----
+   HTML 449箇所を書き換えるのではなく、CSS で見た目を1系統に統一する。 */
+.tool-card > b { font-weight: 700; font-size: 15.5px; display: block; }
+.tool-card > span {
+  font-size: 13px; color: var(--sub); line-height: 1.65; display: -webkit-box;
+  -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+}
+
+/* ---- 印刷（業務では計算結果を紙・PDFにして稟議や証憑に添える）----
+   読者は会社PCの業務利用者。画面用の装飾を落として、本文・表・出典だけ残す。 */
+@media print {
+  @page { margin: 14mm; }
+  body { background: #fff; color: #000; line-height: 1.6; }
+  header.site, footer.site nav, .skip-link, .tabs, .persona-bar,
+  .qa-box, .cat-nav, button, .tool-list, .tool-card, .post-list { display: none !important; }
+  main { max-width: none; padding: 0; }
+  .card, .result { border: 1px solid #000; break-inside: avoid; }
+  article table { break-inside: avoid; font-size: 11pt; }
+  article th { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  article h2, article h3 { break-after: avoid; margin-top: 18px; }
+  .figure { break-inside: avoid; }
+  /* リンクは紙では踏めない。出典のURLを見えるようにする */
+  article a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #333; word-break: break-all; }
+}
+
+/* トップの質問欄のヒント。プレースホルダをラベル・説明の代わりにしない（入力すると消えるため） */
+.qa-hint { font-size: 12.5px; color: var(--sub); margin: 8px 2px 0; line-height: 1.6; }
+
+/* エラーへフォーカスを移したときに、どこにいるか分かるようにする（a11y_error.js と対） */
+.warn:focus-visible { outline: 3px solid var(--warn-line-strong); outline-offset: 2px; }
