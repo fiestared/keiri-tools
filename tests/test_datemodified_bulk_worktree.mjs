@@ -120,4 +120,36 @@ const dateModifiedOf = (dir, i) =>
     '触っていない記事の日付を動かしてはいけない（本文改稿の履歴が無いので公開日）');
 }
 
-console.log('✓ gen_datemodified: 一括変更の除外が作業ツリー側にも効いている（両側から確認）');
+
+// ── ③ 一括のさなかに生まれた**新規ページ**は、日付を奪われない ──────
+//   ★2026-08-23 に実際に出した回帰の再発防止。gen_index_sitemap 側で
+//   「BULK_WORKTREE なら dirty を無視」を素直に書いたら、**まだ一度もコミットされて
+//   いない新規ページ**は git 履歴も無いので lastmod が丸ごと空になった。
+//   一括を弾く目的は「中身が変わっていない既存ページが今日を名乗ること」の防止であって、
+//   本当に今日生まれたページから日付を奪うことではない。
+//   gen_datemodified 側は datePublished への丸めで救われるが、それを検査で固定しておく。
+{
+  const { dir } = makeRepo(25);
+  touchBulk(dir, 25);
+  // 新規記事を1本足す（未追跡・git履歴なし・公開日は今日）
+  const nd = join(dir, 'docs', 'column', 'brandnew');
+  mkdirSync(nd, { recursive: true });
+  const today = todayJST();
+  writeFileSync(join(nd, 'index.html'),
+    `<!doctype html><html lang="ja"><head>
+<script type="application/ld+json">{"@type":"Article","headline":"brandnew",
+"datePublished":"${today}","dateModified":"${today}"}</script></head>
+<body><p class="article-meta">公開日: ${ja(today)}</p>
+<main><h1>brandnew</h1><p>本文</p></main></body></html>`);
+  run(dir);
+  const got = readFileSync(join(nd, 'index.html'), 'utf8')
+    .match(/"dateModified":"(\d{4}-\d{2}-\d{2})"/)[1];
+  assert.equal(got, today,
+    `一括のさなかでも、今日生まれた新規ページの dateModified は今日のままにすること。実際: ${got}`);
+  // 公開日と同じ日なので、可視の「更新日」は出さない
+  const html = readFileSync(join(nd, 'index.html'), 'utf8');
+  assert.ok(!html.includes('更新日:'),
+    '公開初日の記事に可視の「更新日」を出してはいけない');
+}
+
+console.log('✓ gen_datemodified: 一括変更の除外が作業ツリー側にも効いている（両側＋新規ページで確認）');

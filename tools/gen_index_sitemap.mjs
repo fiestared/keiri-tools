@@ -245,6 +245,7 @@ const ORDER = [
   "part-yukyu",
   "hoteichosho-goukeihyo",
   "kani-kazei",
+  "shohizei-kanpu",           // 消費税の還付 — 消費税 還付 2,900/月 ＋ 還付加算金 2,400・課税事業者選択届出書 1,900・輸出免税 1,000・消費税 還付 いつ 880・消費税 還付申告に関する明細書 70 ＝クラスタ約9,150（keyword_demand.py 2026-08-23 第12便 実測。同時に測って落とした候補: 一括償却資産 9,900 は /column/shogaku-genka-shokyaku/ が title/h1 に「少額減価償却資産と一括償却資産」で主題保有・中古資産 耐用年数 1,900 は /genka/ が節保有／固定資産 除却 1,000／固定資産 売却 仕訳 590／未払法人税等 260／別表四 110 は需要または被覆で見送り）。★被覆調査: title に「還付」を持つのは kakutei-shinkoku-itsumade（還付は5年）と nenmatsu-chosei-kanpukin（年末調整の還付金）の2件だけで、どちらも消費税の還付ではない。SECTION は kani-kazei ただ1つで、そこは「簡易課税では構造上還付が出ない」という**対比としてのみ**使っており主題を持っていない＝ARTICLE_SPEC §0.3 の②（譲られている側）。核は ①★★★**免税事業者は還付にたどり着く入口が条文上どこにも無い**＝46条1項・45条1項・52条1項がそろって「第九条第一項本文の規定により消費税を納める義務が免除される事業者」を除外している ②★★★**還付申告は早く出しても還付加算金が増えない**＝52条2項3号が起算日を「提出があつた日の属する月の末日」とし、課税期間の末日の翌日から二月を経過する日**前**に出した場合は「当該二月を経過する日」に固定するので、起算日は2月経過日より前に来ない ③★★★**通則法58条1項の「他の国税に関する法律に別段の定めがある場合には、その定める期間」がフックで、消費税法52条2項がまさにその別段の定め**＝一般法と特別法が条文上で噛み合っている ④★★★**還付加算金特例基準割合は令和8年に1.3%へ上がった**（令和4〜7年は0.9%で4年据え置き。国税庁「延滞税の割合」を Shift_JIS で取得して実測。同じ告示で延滞税も2.4→2.8%）。根拠は通則法58条1項の年7.3%を措置法95条が読み替える構造 ⑤★★★**45条1項ただし書が括弧書きで輸出免税を除いている**ため、輸出だけの事業者は確定申告の義務が無く、46条の還付申告（語尾は「提出することができる」＝権利）に乗る＝**出さなければ1円も戻らない** ⑥★★**措置法86条の4の3月31日特例は45条1項の申告書だけが対象**で、46条の還付申告は文言に入っていない ⑦★★**中間納付の還付(53条)は起算日の考え方が違う**＝53条3項は「納付の日」基準（52条は申告書の提出基準）。さらに53条5項が、併せて還付される延滞税には還付加算金を付さないと明記 ⑧★★**9条6項の2年縛り→9条7項の3年縛り→33条の第3年度調整**が一続きの仕掛けで、賃貸建物の還付は通算課税売上割合の低下で相当部分を取り戻される ⑨通則法120条は基礎額を1万円未満切捨て・確定額を100円未満切捨てと**単位が違う**。設例は税込売上2,200万/仕入3,300万で国税分△78万＋地方22万＝100万還付、還付加算金は780,000×1.3%×76/365＝2,111→2,100円。blockquote 8本を3コーパス（消費税法・国税通則法・租税特別措置法）で check_quotes 照合。譲った隣接: 簡易課税=kani-kazei／仕入税額控除の要件=invoice-wakariyasuku／税率と国税地方の内訳=shohizei-zeiritsu／課税売上割合=kazei-uriage-wariai
   "shohizei-hasu-shori",
   "denchoho-kensaku-yoken",
   "hyojun-hoshu-gakuhyo",
@@ -359,7 +360,7 @@ const CATEGORIES = [
     id: "shohizei",
     name: "消費税・インボイス",
     desc: "インボイス制度の基本と2割特例・簡易課税、課税売上割合と仕入税額控除、消費税の端数処理、中間申告。",
-    slugs: ["shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "kazei-uriage-wariai", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri"],
+    slugs: ["shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-kanpu", "kazei-uriage-wariai", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri"],
   },
   {
     id: "denchoho",
@@ -575,12 +576,19 @@ const lastmodOf = (file) => {
   if (!BULK_WORKTREE && dirty.has(file)) return TODAY;
   // 一括コミットを飛ばして、そのファイル自身の「意味のある更新」を探す
   const log = git("log", "--format=%H %cs", "--", file).split("\n").filter(Boolean);
+  // ★★ 履歴がまったく無い＝**まだ一度もコミットされていない新規ページ**。
+  //   このときは BULK_WORKTREE でも TODAY を返す（2026-08-23 実測で回帰を1件出した）。
+  //   一括を弾く目的は「中身が変わっていない既存ページが今日を名乗ること」の防止であって、
+  //   本当に今日生まれたページから lastmod を奪うことではない。落とすと、
+  //   **lastmod がいちばん要る新規ページだけが黙って lastmod 無しで出る**
+  //   （このファイルが 2026-07-14 の /juminzei/ で踏んだ事故と同じ結果になる）。
+  if (!log.length) return TODAY;
   for (const line of log) {
     const [hash, date] = [line.slice(0, 40), line.slice(41)];
     if (!bulkCommits.has(hash)) return date;
   }
   // 一括コミットしか無い＝新規ページが一括の中で生まれた場合。最古の日付を使う
-  return log.length ? log[log.length - 1].slice(41) : "";
+  return log[log.length - 1].slice(41);
 };
 
 const urls = [
