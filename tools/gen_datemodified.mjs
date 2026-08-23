@@ -96,14 +96,35 @@ const lastContentCommit = new Map();
 //   --check が永久に赤になり、冪等でなくなる。
 //   → 差分が **dateModified と article-meta の行しか無い** ファイルは変更とみなさない。
 const DATE_LINE = /"dateModified"|class="article-meta"|公開日:|更新日:/;
-const dirty = new Set();
+//
+// ★★★ 一括変更の除外は、コミット済みだけでなく**作業ツリーにも**効かせること
+//   （2026-08-23 実測）。上の lastContentCommit は `files.length < BULK_FILES` で
+//   一括コミットを弾いているのに、こちら側には同じ門が無かった。
+//   結果、**未コミットの一括変更は門を素通りして全件が「今日更新」になる**。
+//   実測: サイト全体に skip-link を足す 355ファイルの未コミット変更があったとき、
+//   この生成器は **232本の記事に「更新日: 2026年8月23日」を焼こうとした**。
+//   本文は1文字も変わっていない。これはこのファイル冒頭が
+//   「読者への嘘」「偽の鮮度信号」と名指しして禁じているもの、そのものだった。
+//   ＝ 同じ規則が**片方の枝にしか無い**という、このリポジトリが繰り返している型。
+//   🚫 ここに独自の閾値を作らない。コミット側と**同じ BULK_FILES** を使う（基準を2つ持たない）。
+//
+//   ★新規ページは救われる: 一括判定で dirty から外れても datePublished が今日なので
+//     `date < pub` の丸めで今日になる。可視の「更新日」は eff === pub のとき出さない
+//     ＝ 公開初日の記事が「更新済み」を名乗ることもない。
+const dirtyCandidates = new Set();
 for (const rel of git(['status', '--porcelain', '-uall', '--', 'docs']).split('\n').filter(Boolean)
        .map((l) => l.slice(3).split(' -> ').pop().replace(/^"|"$/g, ''))) {
   const diff = git(['diff', 'HEAD', '--no-color', '-U0', '--', rel]);
-  if (!diff) { dirty.add(rel); continue; }          // 未追跡（新規ページ）
+  if (!diff) { dirtyCandidates.add(rel); continue; }          // 未追跡（新規ページ）
   const body = diff.split('\n').filter((x) => (x[0] === '+' || x[0] === '-')
     && !x.startsWith('+++') && !x.startsWith('---'));
-  if (body.some((x) => !DATE_LINE.test(x))) dirty.add(rel);
+  if (body.some((x) => !DATE_LINE.test(x))) dirtyCandidates.add(rel);
+}
+const BULK_WORKTREE = dirtyCandidates.size >= BULK_FILES;
+const dirty = BULK_WORKTREE ? new Set() : dirtyCandidates;
+if (BULK_WORKTREE && !CHECK) {
+  console.log(`  ⚠️  未コミットの本文変更が ${dirtyCandidates.size} 件（>= ${BULK_FILES}）= 一括変更とみなし、`);
+  console.log('     「今日更新」を焼きません。コミット済み履歴の日付を使います（偽の鮮度信号を出さないため）。');
 }
 
 let changed = 0, skipped = 0, noPub = 0;

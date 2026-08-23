@@ -556,8 +556,23 @@ const bulkCommits = new Set();
   flush();
 }
 
+// ★★★ 一括の除外を**作業ツリー側にも**効かせる（2026-08-23 実測）。
+//   下の bulkCommits は「20ファイル以上のコミット」を弾いているのに、
+//   `dirty`（未コミット）は素通りで TODAY を返していた＝**同じ規則が片方の枝にしか無い**。
+//   実測: サイト全体に skip-link を足す 355ファイルの未コミット変更があったとき、
+//   sitemap の lastmod が **317/318 = 100% 今日**に潰れた（tests/test_generators_fresh.mjs が検知）。
+//   これは上のコメントが 2026-08-16 の事故として書き残しているもの（267/270）と**同じ形**で、
+//   そのとき直したのはコミット側だけだった。
+//   Google は lastmod を "consistently and verifiably accurate" なときだけ使うと明記している。
+//   🚫 独自の閾値を作らない。コミット側と同じ BULK_FILES を使う（基準を2つ持たない）。
+const BULK_WORKTREE = dirty.size >= BULK_FILES;
+if (BULK_WORKTREE) {
+  console.log(`  ⚠️  未コミットの変更が ${dirty.size} 件（>= ${BULK_FILES}）= 一括変更とみなし、`);
+  console.log("     lastmod を今日に塗り替えません（コミット済み履歴の日付を使います）。");
+}
+
 const lastmodOf = (file) => {
-  if (dirty.has(file)) return TODAY;
+  if (!BULK_WORKTREE && dirty.has(file)) return TODAY;
   // 一括コミットを飛ばして、そのファイル自身の「意味のある更新」を探す
   const log = git("log", "--format=%H %cs", "--", file).split("\n").filter(Boolean);
   for (const line of log) {
