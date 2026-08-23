@@ -98,6 +98,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -107,7 +109,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 有給休暇の付与日数 計算機</nav>
 
 <section class="hero">
@@ -140,7 +142,8 @@
   </div>
 
   <button class="primary" id="calc">計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <section class="faq">
@@ -149,14 +152,14 @@
   <h3>付与のルール（労働基準法39条）</h3>
   <p>入社から<b>6か月継続勤務し、全労働日の8割以上出勤</b>すると10日付与されます。以後は1年ごとに付与され、<b>6年6か月以降は年20日</b>で上限です。</p>
   <table>
-    <tr><th>勤続年数</th><th>6か月</th><th>1年6か月</th><th>2年6か月</th><th>3年6か月</th><th>4年6か月</th><th>5年6か月</th><th>6年6か月〜</th></tr>
+    <tr><th scope="col">勤続年数</th><th scope="col">6か月</th><th scope="col">1年6か月</th><th scope="col">2年6か月</th><th scope="col">3年6か月</th><th scope="col">4年6か月</th><th scope="col">5年6か月</th><th scope="col">6年6か月〜</th></tr>
     <tr><td>付与日数</td><td>10日</td><td>11日</td><td>12日</td><td>14日</td><td>16日</td><td>18日</td><td><b>20日</b></td></tr>
   </table>
 
   <h3>パート・アルバイトの比例付与</h3>
   <p>週の所定労働日数が<b>4日以下 かつ 週30時間未満</b>の場合、所定労働日数に応じて比例付与されます。</p>
   <table>
-    <tr><th>週の日数</th><th>6か月</th><th>1年6か月</th><th>2年6か月</th><th>3年6か月</th><th>4年6か月</th><th>5年6か月</th><th>6年6か月〜</th></tr>
+    <tr><th scope="col">週の日数</th><th scope="col">6か月</th><th scope="col">1年6か月</th><th scope="col">2年6か月</th><th scope="col">3年6か月</th><th scope="col">4年6か月</th><th scope="col">5年6か月</th><th scope="col">6年6か月〜</th></tr>
     <tr><td>週4日</td><td>7日</td><td>8日</td><td>9日</td><td>10日</td><td>12日</td><td>13日</td><td>15日</td></tr>
     <tr><td>週3日</td><td>5日</td><td>6日</td><td>6日</td><td>8日</td><td>9日</td><td>10日</td><td>11日</td></tr>
     <tr><td>週2日</td><td>3日</td><td>4日</td><td>4日</td><td>5日</td><td>6日</td><td>6日</td><td>7日</td></tr>
@@ -258,10 +261,10 @@ $("calc").addEventListener("click", () => {
       <div style="overflow-x:auto;margin-top:14px">
       <table style="width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border-radius:8px">
         <tr style="background:#e7f3f0">
-          <th style="text-align:left;padding:6px 8px">付与日</th>
-          <th style="text-align:left;padding:6px 8px">勤続</th>
-          <th style="text-align:right;padding:6px 8px">付与日数</th>
-          <th style="text-align:center;padding:6px 8px">年5日義務</th></tr>
+          <th scope="col" style="text-align:left;padding:6px 8px">付与日</th>
+          <th scope="col" style="text-align:left;padding:6px 8px">勤続</th>
+          <th scope="col" style="text-align:right;padding:6px 8px">付与日数</th>
+          <th scope="col" style="text-align:center;padding:6px 8px">年5日義務</th></tr>
         ${rows.map(r => {
           const past = r.date <= today;   // 文字列比較（new Date("YYYY-MM-DD")はUTC扱いで当日の朝に狂う）
           return `<tr style="${past ? "" : "color:var(--sub)"}">
@@ -278,6 +281,11 @@ $("calc").addEventListener("click", () => {
   }
   box.innerHTML = html;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

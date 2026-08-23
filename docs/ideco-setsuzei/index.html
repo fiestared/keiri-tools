@@ -106,6 +106,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -115,7 +117,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › iDeCo節税シミュレーター</nav>
 
 <section class="hero">
@@ -138,7 +140,8 @@
   <input type="number" id="monthlyB" placeholder="例: 20000" inputmode="numeric" min="0" step="1000">
 
   <button class="primary" id="calc">節税額を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   <div id="compare"></div>
   <p class="hint" id="kaisei-note" style="margin-top:10px"></p>
 </div>
@@ -211,7 +214,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>加入区分</th><th>月額の上限</th><th>年額の上限</th><th>備考</th></tr>
+<tr><th scope="col">加入区分</th><th scope="col">月額の上限</th><th scope="col">年額の上限</th><th scope="col">備考</th></tr>
 </thead>
 <tbody>
 <tr><td>自営業・フリーランス（第1号）</td><td><b>68,000円</b></td><td>816,000円</td><td>国民年金基金・付加保険料と合算した上限</td></tr>
@@ -235,7 +238,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>課税される所得金額</th><th>年間の掛金</th><th>年間の節税額</th><th>掛金に対する節税率</th></tr>
+<tr><th scope="col">課税される所得金額</th><th scope="col">年間の掛金</th><th scope="col">年間の節税額</th><th scope="col">掛金に対する節税率</th></tr>
 </thead>
 <tbody>
 <tr><td>150万円</td><td>276,000円</td><td><b>41,689円</b></td><td>15.1%</td></tr>
@@ -262,7 +265,7 @@
 
 <table>
 <thead>
-<tr><th>受け取り方</th><th>所得の種類</th><th>使える控除</th></tr>
+<tr><th scope="col">受け取り方</th><th scope="col">所得の種類</th><th scope="col">使える控除</th></tr>
 </thead>
 <tbody>
 <tr><td><b>一時金</b>（まとめて受け取る）</td><td>退職所得</td><td>退職所得控除</td></tr>
@@ -439,8 +442,8 @@ $("calc").addEventListener("click", async () => {
       <span class="hint">（掛金 年${yen(r.annual)}・節税率 ${(r.effectiveRate * 100).toFixed(1)}%）</span></div>
     <div style="overflow-x:auto;margin-top:10px">
     <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
-      <tr style="background:#e7f3f0"><th style="text-align:left;padding:6px 8px">項目</th>
-        <th style="text-align:right;padding:6px 8px">年額</th></tr>
+      <tr style="background:#e7f3f0"><th scope="col" style="text-align:left;padding:6px 8px">項目</th>
+        <th scope="col" style="text-align:right;padding:6px 8px">年額</th></tr>
       <tr><td style="padding:6px 8px">月額掛金 × 12</td>
         <td style="padding:6px 8px;text-align:right">${yen(effMonthly)} × 12 ＝ ${yen(r.annual)}</td></tr>
       <tr><td style="padding:6px 8px">所得税の減少</td>
@@ -508,7 +511,7 @@ function renderCompare(kazei, annualLimit, monthlyA) {
     <div class="card" style="margin-top:14px">
       <b>2案の比較</b>
       <table class="res" style="margin-top:8px">
-        <tr><th></th><th>案A ${yen(a.monthly)}／月${a.capped ? "<br><small>（希望 " + yen(a.requested) + "）</small>" : ""}</th><th>案B ${yen(b.monthly)}／月${b.capped ? "<br><small>（希望 " + yen(b.requested) + "）</small>" : ""}</th></tr>
+        <tr><th></th><th scope="col">案A ${yen(a.monthly)}／月${a.capped ? "<br><small>（希望 " + yen(a.requested) + "）</small>" : ""}</th><th scope="col">案B ${yen(b.monthly)}／月${b.capped ? "<br><small>（希望 " + yen(b.requested) + "）</small>" : ""}</th></tr>
         ${row("年間の掛金", (x) => yen(x.annual))}
         ${row("控除に使えた額", (x) => yen(x.usedDeduction))}
         ${row("所得税の減少", (x) => yen(x.shotokuGen + x.fukkoGen))}
@@ -523,6 +526,11 @@ function renderCompare(kazei, annualLimit, monthlyA) {
       ${warn(a)}${warn(b)}
     </div>`;
 }
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

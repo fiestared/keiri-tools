@@ -98,6 +98,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -107,8 +109,8 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
-  <nav class="breadcrumb">ホーム › 法人税の簡易計算</nav>
+<main id="main" tabindex="-1">
+  <nav class="breadcrumb"><a href="../">ホーム</a> › 法人税の簡易計算</nav>
   <h1>法人税の簡易計算</h1>
   <p class="lead">所得金額から<b>法人税</b>と<b>地方法人税</b>（どちらも国税）を計算します。★<b>軽減税率15%がかかるのは年800万円以下の部分だけ</b>で、超えた部分は23.2%です（法人税法66条2項）。</p>
 
@@ -137,10 +139,10 @@
     </fieldset>
 
     <div class="result" id="result" aria-live="polite"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
-  <div class="toc-title">目次</div>
-  <ul class="toc">
+  <nav class="toc"><div class="toc-title">目次</div><ol>
     <li><a href="#han">税率の当てはめは3段階</a></li>
     <li><a href="#kabe">10億円を超えると15%が17%になる</a></li>
     <li><a href="#jogai">特例が使えない法人</a></li>
@@ -148,12 +150,12 @@
     <li><a href="#dekinai">このツールが計算しないこと</a></li>
     <li><a href="#faq">よくある質問</a></li>
     <li><a href="#shutten">出典</a></li>
-  </ul>
+  </ol></nav>
 
   <h2 id="han">税率の当てはめは3段階</h2>
   <div class="scroll-wrap">
   <table id="rate-hyo">
-    <tr><th>所得の部分</th><th>資本金1億円以下＋特例あり</th><th>特例が使えない</th><th>資本金1億円超</th></tr>
+    <tr><th scope="col">所得の部分</th><th scope="col">資本金1億円以下＋特例あり</th><th scope="col">特例が使えない</th><th scope="col">資本金1億円超</th></tr>
     <tr><td><b>年800万円以下</b></td><td><b>15%</b>（10億円超の年は17%）</td><td>19%</td><td>23.2%</td></tr>
     <tr><td>年800万円を超える部分</td><td>23.2%</td><td>23.2%</td><td>23.2%</td></tr>
   </table>
@@ -272,17 +274,17 @@ async function render() {
     <div class="big">法人税＋地方法人税 ${yen(r.total)}</div>
     <div class="hint" style="margin-bottom:10px">所得 ${yen(r.shotoku)}${tsukisu < 12 ? `／事業年度 ${tsukisu}か月` : ""}</div>
     <table class="res">
-      <tr><th>年800万円以下の部分</th><td id="keigen">${r.keigenRate === null
+      <tr><th scope="row">年800万円以下の部分</th><td id="keigen">${r.keigenRate === null
         ? "軽減の枠がありません（資本金1億円超）"
         : `${yen(r.keigenBase)} × <b>${r.keigenRate}%</b> = ${yen(r.keigenBun)}`}${
         r.kogakuTekiyo ? "　<b>★所得が年10億円を超えるため17%</b>" : ""}</td></tr>
-      <tr><th>それを超える部分</th><td id="honsoku">${yen(r.honsokuBase)} × ${D.hojinzei.honsoku_pct}% = ${yen(r.honsokuBun)}</td></tr>
-      <tr><th>法人税額</th><td><b id="hojinzei">${yen(r.hojinzei)}</b>（100円未満切捨）</td></tr>
-      <tr><th>地方法人税</th><td><b id="res-chiho">${yen(r.chiho)}</b>　法人税額 × ${D.chiho_hojinzei.pct}%（★所得に掛けるのではありません）</td></tr>
-      <tr><th>国税の合計</th><td><b id="total">${yen(r.total)}</b></td></tr>
-      ${tsukisu < 12 ? `<tr><th>按分後のしきい値</th><td id="anbun">軽減の枠 ${yen(r.line)}／高額の線 ${yen(r.kogakuLine)}</td></tr>` : ""}
+      <tr><th scope="row">それを超える部分</th><td id="honsoku">${yen(r.honsokuBase)} × ${D.hojinzei.honsoku_pct}% = ${yen(r.honsokuBun)}</td></tr>
+      <tr><th scope="row">法人税額</th><td><b id="hojinzei">${yen(r.hojinzei)}</b>（100円未満切捨）</td></tr>
+      <tr><th scope="row">地方法人税</th><td><b id="res-chiho">${yen(r.chiho)}</b>　法人税額 × ${D.chiho_hojinzei.pct}%（★所得に掛けるのではありません）</td></tr>
+      <tr><th scope="row">国税の合計</th><td><b id="total">${yen(r.total)}</b></td></tr>
+      ${tsukisu < 12 ? `<tr><th scope="row">按分後のしきい値</th><td id="anbun">軽減の枠 ${yen(r.line)}／高額の線 ${yen(r.kogakuLine)}</td></tr>` : ""}
       ${zenbuKeigen !== null && r.honsokuBase > 0
-        ? `<tr><th>★所得全体に${r.keigenRate}%を掛けた場合</th><td id="hikaku">${yen(zenbuKeigen)} — <b>${yen(r.hojinzei - zenbuKeigen)}の過少</b>になります</td></tr>`
+        ? `<tr><th scope="row">★所得全体に${r.keigenRate}%を掛けた場合</th><td id="hikaku">${yen(zenbuKeigen)} — <b>${yen(r.hojinzei - zenbuKeigen)}の過少</b>になります</td></tr>`
         : ""}
     </table>
     <div class="note" style="margin-top:12px">
@@ -296,6 +298,11 @@ for (const id of ["shotoku", "tsukisu", "chusho", "tokurei"]) {
   $(id).addEventListener("change", render);
 }
 render();
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

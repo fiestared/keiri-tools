@@ -106,6 +106,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -115,7 +117,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 傷病手当金 計算機</nav>
 
 <section class="hero">
@@ -193,7 +195,8 @@
   </details>
 
   <button class="primary" id="calc">傷病手当金を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <section class="faq">
@@ -419,16 +422,21 @@ $("calc").addEventListener("click", async () => {
     ${capNote}
     ${choseiNote}
     <table class="res">
-      <tr><th>1日あたりの金額（日額）</th><td><b>${yen(r.paidNichigaku)}</b>${adj.deduct > 0 ? `（調整前 ${yen(adj.amount)}）` : ""}</td></tr>
-      <tr><th>標準報酬月額の平均 ÷ 30</th><td>${yen(r.base)}（10円未満を四捨五入）</td></tr>
+      <tr><th scope="row">1日あたりの金額（日額）</th><td><b>${yen(r.paidNichigaku)}</b>${adj.deduct > 0 ? `（調整前 ${yen(adj.amount)}）` : ""}</td></tr>
+      <tr><th scope="row">標準報酬月額の平均 ÷ 30</th><td>${yen(r.base)}（10円未満を四捨五入）</td></tr>
       ${taikiNote}
-      <tr><th>支給される日数</th><td>${r.days}日</td></tr>
+      <tr><th scope="row">支給される日数</th><td>${r.days}日</td></tr>
       ${kikanRow}
-      <tr><th>合計（支給額）</th><td><b>${yen(r.total)}</b></td></tr>
+      <tr><th scope="row">合計（支給額）</th><td><b>${yen(r.total)}</b></td></tr>
     </table>
     ${estimatedNote}
     <div class="hint">★<b>休職中に退職する予定の方へ:</b> 退職日に挨拶や引き継ぎで<b>出社すると、その日は労務不能でなくなり、退職後の傷病手当金が受けられなくなります</b>（健康保険法104条）。荷物や挨拶は<b>退職日を避けて</b>ください。</div>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

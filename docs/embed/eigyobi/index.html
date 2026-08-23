@@ -55,12 +55,12 @@
   <p class="lead">期間の日数、「◯営業日後」、休業日の調整を、土日・祝日・年末年始に対応して計算します。</p>
 
   <div class="tabs" role="tablist">
-    <button id="tab-diff" role="tab" aria-selected="true">期間の日数</button>
-    <button id="tab-add" role="tab" aria-selected="false">◯営業日後</button>
-    <button id="tab-adj" role="tab" aria-selected="false">休業日を調整</button>
+    <button id="tab-diff" role="tab" aria-controls="pane-diff" aria-selected="true">期間の日数</button>
+    <button id="tab-add" role="tab" aria-controls="pane-add" aria-selected="false">◯営業日後</button>
+    <button id="tab-adj" role="tab" aria-controls="pane-adj" aria-selected="false">休業日を調整</button>
   </div>
 
-  <div class="pane" id="pane-diff" data-active>
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-diff" id="pane-diff" data-active>
     <div class="grid">
       <div><label for="from">開始日</label><input type="date" id="from"></div>
       <div><label for="to">終了日</label><input type="date" id="to"></div>
@@ -71,7 +71,7 @@
     </div>
   </div>
 
-  <div class="pane" id="pane-add">
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-add" id="pane-add">
     <div class="grid">
       <div><label for="base">基準日</label><input type="date" id="base"></div>
       <div><label for="n">営業日数</label><input type="number" id="n" value="3" inputmode="numeric"></div>
@@ -79,7 +79,7 @@
     <div class="hint" style="margin-top:6px">マイナスを入れると「◯営業日前」を計算します。</div>
   </div>
 
-  <div class="pane" id="pane-adj">
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-adj" id="pane-adj">
     <label for="target">対象の日付</label>
     <input type="date" id="target">
     <div class="radios">
@@ -98,7 +98,8 @@
 
   <button id="calc" type="button">計算する</button>
 
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
   <div class="brand">
     🧮 <a href="https://keiri-tools.com/eigyobi/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
@@ -221,6 +222,34 @@ $("calc").addEventListener("click", async () => {
   postHeight();
 });
 </script>
-<script src="../../assets/embed_beacon.js" defer></script>
+<script src="../../assets/embed_beacon.js" defer>
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
+</script>
+<script>
+/* タブのキーボード操作（WAI-ARIA APG: Tabs）。2026-08-23 追加。
+   role="tab" は「矢印キーで移動できる」と支援技術に案内するのに実装が無かった。
+   ★左右/Home/End は複合ウィジェット内の操作＝SC 2.1.4（単一文字ショートカット）の対象外。 */
+(function () {
+  var list = document.querySelector('[role="tablist"]');
+  if (!list) return;
+  var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+  function sync() { tabs.forEach(function (t) { t.tabIndex = t.getAttribute("aria-selected") === "true" ? 0 : -1; }); }
+  sync();
+  tabs.forEach(function (t) { t.addEventListener("click", function () { setTimeout(sync, 0); }); });
+  list.addEventListener("keydown", function (e) {
+    var i = tabs.indexOf(document.activeElement), j = null;
+    if (i < 0) return;
+    if (e.key === "ArrowRight") j = (i + 1) % tabs.length;
+    else if (e.key === "ArrowLeft") j = (i - 1 + tabs.length) % tabs.length;
+    else if (e.key === "Home") j = 0;
+    else if (e.key === "End") j = tabs.length - 1;
+    if (j === null) return;
+    e.preventDefault(); tabs[j].click(); tabs[j].focus();
+  });
+})();
+</script>
+<script src="../../assets/a11y_error.js" defer></script>
 </body>
 </html>

@@ -106,6 +106,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -115,7 +117,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 育児休業給付金 計算機</nav>
 
 <section class="hero">
@@ -169,7 +171,8 @@
   </fieldset>
 
   <button class="primary" id="calc">育児休業給付金を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <section class="faq">
@@ -197,8 +200,8 @@
   <h3 id="why-start">★★なぜ「開始日」が要るのか — 支給日数（30日）と休業日数（暦）は別物です</h3>
   <p>ここが育児休業給付でいちばん間違えられるところです。<b>2つの「日数」が、別々の数え方で動いています</b>。</p>
   <table class="tbl">
-    <tr><th>支給日数（いくら払うかを決める日数）</th><td>終了月<b>以外</b>の支給単位期間は<b>一律30日</b>（61条の7第6項1号）。<b>暦が31日の月でも30日、暦28日の2月でも30日</b>です。終了月だけは実日数（同項2号）</td></tr>
-    <tr><th>休業日数（67%が50%に下がる境目）</th><td><b>暦の通算日数</b>（同項本文）。180日目＝<b>休業開始日＋179日</b></td></tr>
+    <tr><th scope="row">支給日数（いくら払うかを決める日数）</th><td>終了月<b>以外</b>の支給単位期間は<b>一律30日</b>（61条の7第6項1号）。<b>暦が31日の月でも30日、暦28日の2月でも30日</b>です。終了月だけは実日数（同項2号）</td></tr>
+    <tr><th scope="row">休業日数（67%が50%に下がる境目）</th><td><b>暦の通算日数</b>（同項本文）。180日目＝<b>休業開始日＋179日</b></td></tr>
   </table>
   <div class="note">
     <b>暦31日の月でも支給日数は30日しか進まないのに、休業日数は31日進みます</b>
@@ -408,9 +411,9 @@ $("calc").addEventListener("click", async () => {
     ${capNote}
     ${shienNote}
     <table class="res">
-      <tr><th>育児休業給付金（67%／50%）</th><td><b>${yen(r.ikujiTotal)}</b></td></tr>
+      <tr><th scope="row">育児休業給付金（67%／50%）</th><td><b>${yen(r.ikujiTotal)}</b></td></tr>
       ${shienRow}
-      <tr><th>合計</th><td><b>${yen(r.total)}</b></td></tr>
+      <tr><th scope="row">合計</th><td><b>${yen(r.total)}</b></td></tr>
     </table>
     <h3 style="font-size:15px;margin:16px 0 6px">支給単位期間ごとに、いつ・いくら</h3>
     <table class="res">${rows}</table>
@@ -420,6 +423,11 @@ $("calc").addEventListener("click", async () => {
       <b>暦の休業日数${r.leaveDays}日とは一致しません</b>。
       <b>賞与は1円も計算に入りません</b>（17条1項）。</div>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

@@ -106,6 +106,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -115,7 +117,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 日数計算・営業日計算</nav>
 
 <section class="hero">
@@ -125,12 +127,12 @@
 
 <div class="card">
   <div class="tabs" role="tablist">
-    <button id="tab-diff" role="tab" aria-selected="true">期間の日数を数える</button>
-    <button id="tab-add" role="tab" aria-selected="false">◯営業日後を計算</button>
-    <button id="tab-adj" role="tab" aria-selected="false">休業日なら前後にずらす</button>
+    <button id="tab-diff" role="tab" aria-controls="pane-diff" aria-selected="true">期間の日数を数える</button>
+    <button id="tab-add" role="tab" aria-controls="pane-add" aria-selected="false">◯営業日後を計算</button>
+    <button id="tab-adj" role="tab" aria-controls="pane-adj" aria-selected="false">休業日なら前後にずらす</button>
   </div>
 
-  <div class="pane" id="pane-diff" data-active>
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-diff" id="pane-diff" data-active>
     <div class="fee-pair">
       <div><label for="from">開始日</label><input type="date" id="from"></div>
       <div><label for="to">終了日</label><input type="date" id="to"></div>
@@ -141,7 +143,7 @@
     </div>
   </div>
 
-  <div class="pane" id="pane-add">
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-add" id="pane-add">
     <div class="fee-pair">
       <div><label for="base">基準日</label><input type="date" id="base"></div>
       <div><label for="n">営業日数</label><input type="number" id="n" value="3" inputmode="numeric"></div>
@@ -149,7 +151,7 @@
     <div style="font-size:12.5px;color:var(--sub);margin-top:6px">マイナスを入れると「◯営業日前」を計算します。</div>
   </div>
 
-  <div class="pane" id="pane-adj">
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-adj" id="pane-adj">
     <label for="target">対象の日付</label>
     <input type="date" id="target">
     <div class="opts">
@@ -167,7 +169,8 @@
   </div>
 
   <button class="primary" id="calc">計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <section class="faq">
@@ -310,6 +313,34 @@ $("calc").addEventListener("click", async () => {
       ${disclaimer(holidaysOk, isBeyond(t, r), o)}`;
   }
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script>
+/* タブのキーボード操作（WAI-ARIA APG: Tabs）。2026-08-23 追加。
+   role="tab" は「矢印キーで移動できる」と支援技術に案内するのに実装が無かった。
+   ★左右/Home/End は複合ウィジェット内の操作＝SC 2.1.4（単一文字ショートカット）の対象外。 */
+(function () {
+  var list = document.querySelector('[role="tablist"]');
+  if (!list) return;
+  var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+  function sync() { tabs.forEach(function (t) { t.tabIndex = t.getAttribute("aria-selected") === "true" ? 0 : -1; }); }
+  sync();
+  tabs.forEach(function (t) { t.addEventListener("click", function () { setTimeout(sync, 0); }); });
+  list.addEventListener("keydown", function (e) {
+    var i = tabs.indexOf(document.activeElement), j = null;
+    if (i < 0) return;
+    if (e.key === "ArrowRight") j = (i + 1) % tabs.length;
+    else if (e.key === "ArrowLeft") j = (i - 1 + tabs.length) % tabs.length;
+    else if (e.key === "Home") j = 0;
+    else if (e.key === "End") j = tabs.length - 1;
+    if (j === null) return;
+    e.preventDefault(); tabs[j].click(); tabs[j].focus();
+  });
+})();
+</script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

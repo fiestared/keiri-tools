@@ -98,6 +98,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -107,8 +109,8 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
-  <nav class="breadcrumb">ホーム › 予定納税の減額申請</nav>
+<main id="main" tabindex="-1">
+  <nav class="breadcrumb"><a href="../">ホーム</a> › 予定納税の減額申請</nav>
   <h1>予定納税の減額申請</h1>
   <p class="lead">前年の所得税額から源泉徴収税額を引いた額（<b>予定納税基準額</b>）が15万円以上だと、7月と11月にその<b>3分の1ずつ</b>を前払いします。今年の見込みが下がっているなら減額申請ができます。★<b>見積額が基準額の10分の7以下なら、税務署長は承認「しなければならない」</b>（所得税法113条2項2号）。</p>
 
@@ -167,10 +169,10 @@
     </div>
 
     <div class="result" id="result" aria-live="polite"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
-  <div class="toc-title">目次</div>
-  <ul class="toc">
+  <nav class="toc"><div class="toc-title">目次</div><ol>
     <li><a href="#kijun">予定納税基準額の出しかた</a></li>
     <li><a href="#nozoku">前年に株を売った人は基準額が下がる</a></li>
     <li><a href="#nanawari">承認が義務になる「10分の7」</a></li>
@@ -178,7 +180,7 @@
     <li><a href="#dekinai">このツールが判定しないこと</a></li>
     <li><a href="#faq">よくある質問</a></li>
     <li><a href="#shutten">出典</a></li>
-  </ul>
+  </ol></nav>
 
   <h2 id="kijun">予定納税基準額の出しかた</h2>
   <p><b>予定納税基準額＝前年分の課税総所得金額に係る所得税額 − その基礎となった各種所得につき源泉徴収された（されるべきであった）所得税額</b>（所得税法104条1項）。これが<b>15万円以上</b>だと納付義務が生じます。15万円ちょうども対象です。</p>
@@ -196,7 +198,7 @@
   <p>113条2項は、次のいずれかに該当するとき税務署長は承認を<b>「しなければならない」</b>と書いています。裁量ではありません。</p>
   <div class="scroll-wrap">
   <table id="gimu-hyo">
-    <tr><th>号</th><th>要件</th><th>10分の7を超えていても効くか</th></tr>
+    <tr><th scope="col">号</th><th scope="col">要件</th><th scope="col">10分の7を超えていても効くか</th></tr>
     <tr><td>2項1号</td><td>廃業・休業・転換・失業、災害・盗難・横領による損害、<b>医療費の支払</b>により、見積額が基準額に満たなくなると認められる場合</td><td><b>効く</b></td></tr>
     <tr><td>2項2号</td><td>見積額が基準額（承認済みならその見積額）の<b>10分の7に相当する金額以下</b>となると認められる場合</td><td>—</td></tr>
   </table>
@@ -299,8 +301,8 @@ async function render() {
     $("result").innerHTML = `
       <div class="big" id="nashi">予定納税は生じません</div>
       <table class="res">
-        <tr><th>予定納税基準額</th><td><b id="res-kijun">${yen(kijun)}</b></td></tr>
-        <tr><th>納付義務が生じる額</th><td>${yen(D.kijun.shikii_yen)}以上（104条1項）</td></tr>
+        <tr><th scope="row">予定納税基準額</th><td><b id="res-kijun">${yen(kijun)}</b></td></tr>
+        <tr><th scope="row">納付義務が生じる額</th><td>${yen(D.kijun.shikii_yen)}以上（104条1項）</td></tr>
       </table>
       <div class="note" style="margin-top:12px">★前年に譲渡所得・一時所得・雑所得・臨時所得があった方は、
         それに係る税額を<b>除いた</b>額を入力してください（104条1項1号の括弧書き）。</div>`;
@@ -319,15 +321,15 @@ async function render() {
     <div class="big">第1期 ${yen(k.ki1)}／第2期 ${yen(k.ki2)}</div>
     <div class="hint" style="margin-bottom:10px">予定納税基準額 <b id="res-kijun">${yen(kijun)}</b> の3分の1ずつ（100円未満切り捨て・104条3項）</div>
     <table class="res">
-      <tr><th>納付する時期</th><td>第1期 7月1日〜7月31日／第2期 11月1日〜11月30日</td></tr>
-      <tr><th>今年の見積額</th><td>${yen(mitsumori)}（基準額の <b id="wariai">${(g.wariai * 100).toFixed(1)}%</b>）</td></tr>
-      <tr><th>10分の7の線</th><td id="line">${yen(g.line)} 以下なら承認義務（113条2項2号）</td></tr>
-      <tr><th>減額申請</th><td><b id="hantei">${g.moshikomeru ? (g.shoninGimu ? "承認が義務づけられます" : "申請はできます（承認は税務署長の判断）") : "要件を満たしません"}</b></td></tr>
-      <tr><th>理由</th><td id="riyu">${g.riyu}</td></tr>
+      <tr><th scope="row">納付する時期</th><td>第1期 7月1日〜7月31日／第2期 11月1日〜11月30日</td></tr>
+      <tr><th scope="row">今年の見積額</th><td>${yen(mitsumori)}（基準額の <b id="wariai">${(g.wariai * 100).toFixed(1)}%</b>）</td></tr>
+      <tr><th scope="row">10分の7の線</th><td id="line">${yen(g.line)} 以下なら承認義務（113条2項2号）</td></tr>
+      <tr><th scope="row">減額申請</th><td><b id="hantei">${g.moshikomeru ? (g.shoninGimu ? "承認が義務づけられます" : "申請はできます（承認は税務署長の判断）") : "要件を満たしません"}</b></td></tr>
+      <tr><th scope="row">理由</th><td id="riyu">${g.riyu}</td></tr>
       ${g.moshikomeru ? `
-      <tr><th>減額の対象</th><td>${label}</td></tr>
-      <tr><th>${kg.genkyo}の現況で申請</th><td><b id="res-kigen">${kg.kigen} まで</b>${kg.encho ? '　<b>★通知が遅れたため延長されています（111条3項）</b>' : ""}</td></tr>
-      <tr><th>承認された場合</th><td id="after">${after.total ? `第1期 ${yen(after.ki1)}／第2期 ${yen(after.ki2)}` : "予定納税は生じません（見積額が15万円未満）"}</td></tr>` : ""}
+      <tr><th scope="row">減額の対象</th><td>${label}</td></tr>
+      <tr><th scope="row">${kg.genkyo}の現況で申請</th><td><b id="res-kigen">${kg.kigen} まで</b>${kg.encho ? '　<b>★通知が遅れたため延長されています（111条3項）</b>' : ""}</td></tr>
+      <tr><th scope="row">承認された場合</th><td id="after">${after.total ? `第1期 ${yen(after.ki1)}／第2期 ${yen(after.ki2)}` : "予定納税は生じません（見積額が15万円未満）"}</td></tr>` : ""}
     </table>
     <div class="note" style="margin-top:12px">
       ★実際に納付する額は税務署長の通知（106条1項）によります。承認された場合の額も税務署長が通知します（113条3項）。
@@ -341,6 +343,11 @@ for (const id of ["zennen", "gensen", "mitsumori", "ki", "tsuchi", "year"]) {
 }
 for (const e of document.querySelectorAll(".jiyu")) e.addEventListener("change", render);
 render();
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

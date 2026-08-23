@@ -122,6 +122,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -131,7 +133,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 不動産売却の税金 計算機</nav>
 
 <section class="hero">
@@ -220,7 +222,8 @@
   </div>
 
   <button id="calc" style="margin-top:16px">税額を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <article>
@@ -304,7 +307,7 @@
 
 <p>この償却率は法定耐用年数そのものではなく、<b id="shokyaku-15">法定耐用年数を1.5倍した年数（1年未満切捨て）に対応する旧定額法の償却率</b>を使います（所得税法施行令85条）。木造の住宅なら22年×1.5＝33年で<b id="shokyaku-mokuzo">償却率0.031</b>であって、22年の償却率ではありません。経過年数は<b id="shokyaku-hasu">6か月以上の端数は1年、6か月未満は切り捨て</b>ます。減価償却費相当額は<b id="shokyaku-gendo">建物の取得価額の95%が限度</b>なので、建物の取得費が0円になることはありません。</p>
 
-<table id="kozo-table"><thead><tr><th>構造（住宅用）</th><th>法定耐用年数</th><th>×1.5</th><th>償却率</th></tr></thead>
+<table id="kozo-table"><thead><tr><th scope="col">構造（住宅用）</th><th scope="col">法定耐用年数</th><th scope="col">×1.5</th><th scope="col">償却率</th></tr></thead>
 <tbody id="kozo-tbody"><tr><td colspan="4" class="hint">読み込み中…</td></tr></tbody></table>
 
 <div class="callout">
@@ -519,6 +522,11 @@ $("calc").addEventListener("click", async () => {
 
   box.innerHTML = html;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

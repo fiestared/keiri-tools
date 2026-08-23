@@ -138,6 +138,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -147,7 +149,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 源泉徴収税額 計算機</nav>
 
 <section class="hero">
@@ -157,13 +159,13 @@
 
 <div class="card">
   <div class="tabs" role="tablist">
-    <button id="tab-kyuyo" role="tab" aria-selected="true">給与（月額表）</button>
-    <button id="tab-shoyo" role="tab" aria-selected="false">賞与（算出率の表）</button>
-    <button id="tab-hoshu" role="tab" aria-selected="false">報酬・料金（10.21%）</button>
+    <button id="tab-kyuyo" role="tab" aria-controls="pane-kyuyo" aria-selected="true">給与（月額表）</button>
+    <button id="tab-shoyo" role="tab" aria-controls="pane-shoyo" aria-selected="false">賞与（算出率の表）</button>
+    <button id="tab-hoshu" role="tab" aria-controls="pane-hoshu" aria-selected="false">報酬・料金（10.21%）</button>
   </div>
 
   <!-- ── 給与（月額表） ────────────────────────────────── -->
-  <div class="pane" id="pane-kyuyo" data-active>
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-kyuyo" id="pane-kyuyo" data-active>
     <label for="amount">その月の社会保険料等控除後の給与等の金額</label>
     <input type="number" id="amount" placeholder="例: 250000" inputmode="numeric">
     <div class="hint">
@@ -202,12 +204,12 @@
     </div>
 
     <button class="primary" id="calcK">計算する</button>
-    <div class="result" id="resultK"></div>
+    <div role="status" aria-live="polite" class="result" id="resultK"></div>
     <button id="copy-k" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
   <!-- ── 賞与（算出率の表） ───────────────────────────── -->
-  <div class="pane" id="pane-shoyo">
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-shoyo" id="pane-shoyo">
     <div class="note" style="margin-bottom:14px">
       賞与は<b>月額表では計算しません</b>。「賞与に対する源泉徴収税額の算出率の表」で
       <b>率</b>を引き、賞与に掛けて求めます。率を決めるのは<b>前月の給与</b>です（賞与の額ではありません）。
@@ -263,12 +265,12 @@
     <div class="hint">通常は「6か月以内」のままで結構です。前月に給与がない場合や10倍を超える場合の<b>例外計算のときだけ</b>効きます。</div>
 
     <button class="primary" id="calcS">計算する</button>
-    <div class="result" id="resultS"></div>
+    <div role="status" aria-live="polite" class="result" id="resultS"></div>
     <button id="copy-s" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
   <!-- ── 報酬・料金 ───────────────────────────────────── -->
-  <div class="pane" id="pane-hoshu">
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-hoshu" id="pane-hoshu">
     <label for="kind">報酬の種類</label>
     <select id="kind"></select>
     <div id="kind-note" style="font-size:12.5px;color:var(--sub);margin-top:5px"></div>
@@ -284,7 +286,7 @@
     </div>
 
     <button class="primary" id="calc">計算する</button>
-    <div class="result" id="result"></div>
+    <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 </div>
@@ -316,7 +318,7 @@
 
   <h3>計算式（原稿料・弁護士・税理士など一般のケース）</h3>
   <table>
-    <tr><th>支払金額（A）</th><th>源泉徴収税額</th></tr>
+    <tr><th scope="col">支払金額（A）</th><th scope="col">源泉徴収税額</th></tr>
     <tr><td>100万円以下</td><td>A × <b>10.21%</b></td></tr>
     <tr><td>100万円超</td><td>（A − 100万円）× <b>20.42%</b> ＋ 102,100円</td></tr>
   </table>
@@ -705,8 +707,8 @@ $("calc").addEventListener("click", () => {
       <b>仕訳例（支払う側・税抜経理）</b>
       <div style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px;margin-top:6px">
-        <tr><th style="padding:6px 8px;text-align:left">借方</th><th style="padding:6px 8px;text-align:right">金額</th>
-            <th style="padding:6px 8px;text-align:left">貸方</th><th style="padding:6px 8px;text-align:right">金額</th></tr>
+        <tr><th scope="col" style="padding:6px 8px;text-align:left">借方</th><th scope="col" style="padding:6px 8px;text-align:right">金額</th>
+            <th scope="col" style="padding:6px 8px;text-align:left">貸方</th><th scope="col" style="padding:6px 8px;text-align:right">金額</th></tr>
         <tr><td style="padding:6px 8px">支払手数料（外注費など）</td><td style="padding:6px 8px;text-align:right">${yen(fee)}</td>
             <td style="padding:6px 8px">普通預金</td><td style="padding:6px 8px;text-align:right">${yen(t.total - r.tax)}</td></tr>
         ${rate > 0 ? `<tr><td style="padding:6px 8px">仮払消費税</td><td style="padding:6px 8px;text-align:right">${yen(t.total - fee)}</td>
@@ -729,5 +731,29 @@ attachCopyButton(gid("copy-result"), gid("result"));
 attachCopyButton(gid("copy-k"), gid("resultK"));
 attachCopyButton(gid("copy-s"), gid("resultS"));
 </script>
+<script>
+/* タブのキーボード操作（WAI-ARIA APG: Tabs）。2026-08-23 追加。
+   role="tab" は「矢印キーで移動できる」と支援技術に案内するのに実装が無かった。
+   ★左右/Home/End は複合ウィジェット内の操作＝SC 2.1.4（単一文字ショートカット）の対象外。 */
+(function () {
+  var list = document.querySelector('[role="tablist"]');
+  if (!list) return;
+  var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+  function sync() { tabs.forEach(function (t) { t.tabIndex = t.getAttribute("aria-selected") === "true" ? 0 : -1; }); }
+  sync();
+  tabs.forEach(function (t) { t.addEventListener("click", function () { setTimeout(sync, 0); }); });
+  list.addEventListener("keydown", function (e) {
+    var i = tabs.indexOf(document.activeElement), j = null;
+    if (i < 0) return;
+    if (e.key === "ArrowRight") j = (i + 1) % tabs.length;
+    else if (e.key === "ArrowLeft") j = (i - 1 + tabs.length) % tabs.length;
+    else if (e.key === "Home") j = 0;
+    else if (e.key === "End") j = tabs.length - 1;
+    if (j === null) return;
+    e.preventDefault(); tabs[j].click(); tabs[j].focus();
+  });
+})();
+</script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

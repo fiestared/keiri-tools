@@ -114,6 +114,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -123,7 +125,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 国民年金の免除・納付猶予 判定シミュレーター</nav>
 
 <section class="hero">
@@ -197,7 +199,8 @@
   </div>
 
   <button class="primary" id="calc">免除・猶予に該当するか判定する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   <p class="hint" id="src-hint" style="margin-top:10px"></p>
 </div>
 
@@ -233,7 +236,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>区分</th><th>前年所得の基準</th><th>毎月納める額（令和8年度）</th><th>年金額への反映</th></tr>
+<tr><th scope="col">区分</th><th scope="col">前年所得の基準</th><th scope="col">毎月納める額（令和8年度）</th><th scope="col">年金額への反映</th></tr>
 </thead>
 <tbody>
 <tr><td><b>全額免除</b></td><td>（扶養親族等の数+1）×35万円＋32万円</td><td>0円</td><td>2分の1</td></tr>
@@ -258,7 +261,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>区分</th><th>本人</th><th>世帯主</th><th>配偶者</th></tr>
+<tr><th scope="col">区分</th><th scope="col">本人</th><th scope="col">世帯主</th><th scope="col">配偶者</th></tr>
 </thead>
 <tbody>
 <tr><td>免除（全額・4分の3・半額・4分の1）</td><td>見る</td><td><b>見る</b></td><td>見る</td></tr>
@@ -391,7 +394,7 @@ $('calc').addEventListener('click', async () => {
     html += '<p class="note">ただし<b>失業・倒産・事業の廃止</b>があった方は、前年所得にかかわらず免除を受けられる特例（国民年金法90条1項2号）があります。このツールは所得基準だけを見るので、その特例には対応していません。離職票などを持って年金事務所・市区町村の窓口へご相談ください。</p>';
   }
 
-  html += '<div class="scroll-wrap"><table><thead><tr><th>区分</th><th>判定</th><th>理由</th></tr></thead><tbody>';
+  html += '<div class="scroll-wrap"><table><thead><tr><th scope="col">区分</th><th scope="col">判定</th><th scope="col">理由</th></tr></thead><tbody>';
   for (const x of r.results) {
     let mark, reason;
     if (x.pass) {
@@ -410,6 +413,11 @@ $('calc').addEventListener('click', async () => {
   html += '<p class="hint">判定は前年の所得（1月〜6月の申請は前々年）によります。結果は目安で、実際の承認は年金事務所・市区町村の窓口で行われます。</p>';
   out.innerHTML = html;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

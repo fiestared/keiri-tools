@@ -121,6 +121,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -130,7 +132,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › インボイス登録番号チェック</nav>
 
 <section class="hero">
@@ -152,13 +154,14 @@
     <button id="clear" type="button" class="sub">消す</button>
   </div>
   <div id="result" class="result" aria-live="polite"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </section>
 
 <section>
   <h2 id="kousei">登録番号の構成 — 「T」＋13桁</h2>
   <p>登録番号は、事業者の種類によって<b>13桁の中身が違います</b>。国税庁の公表サイトはこう定めています。</p>
   <table id="kousei-table">
-    <thead><tr><th>事業者</th><th>登録番号</th><th>13桁の中身</th><th>この検査が使えるか</th></tr></thead>
+    <thead><tr><th scope="col">事業者</th><th scope="col">登録番号</th><th scope="col">13桁の中身</th><th scope="col">この検査が使えるか</th></tr></thead>
     <tbody>
       <tr>
         <td><b>法人番号を有する課税事業者</b></td>
@@ -186,7 +189,7 @@
   検査用数字は国税庁が算式を公表しています。国税庁自身の資料にある計算例で追うと、こうなります。</p>
   <p class="hint">基礎番号を <code>700110005901</code> と仮定した場合（国税庁の資料の例）</p>
   <table id="cd-table">
-    <thead><tr><th>手順</th><th>計算</th><th>結果</th></tr></thead>
+    <thead><tr><th scope="col">手順</th><th scope="col">計算</th><th scope="col">結果</th></tr></thead>
     <tbody>
       <tr><td>① 最下位から<b>偶数</b>桁の和</td><td>0＋5＋0＋1＋0＋7</td><td><b>13</b></td></tr>
       <tr><td>② 最下位から<b>奇数</b>桁の和</td><td>1＋9＋0＋0＋1＋0</td><td><b>11</b></td></tr>
@@ -207,7 +210,7 @@
   1桁だけ書き換えて変化量が±9になるのは <b>0と9の入れ替えだけ</b>です
   （偶数桁は重みが2ですが、2と9に共通の約数がないため同じ結論になります）。</p>
   <table id="genkai-table">
-    <thead><tr><th>打ち間違いの種類</th><th>検出できるか</th></tr></thead>
+    <thead><tr><th scope="col">打ち間違いの種類</th><th scope="col">検出できるか</th></tr></thead>
     <tbody>
       <tr><td>1桁を別の数字に間違えた（0↔9 以外）</td><td><b>できる</b></td></tr>
       <tr><td><b>基礎番号の 0 を 9 に、9 を 0 に間違えた</b></td><td><b>できない</b></td></tr>
@@ -230,7 +233,7 @@
   <p>混同されやすいところです。<b>法人番号は登録の有無に関係なく、すべての法人に指定されます。</b>
   一方、登録番号は<b>登録を受けた事業者にだけ</b>あります。</p>
   <table id="houjin-table">
-    <thead><tr><th>ケース</th><th>法人番号</th><th>登録番号</th><th>関係</th></tr></thead>
+    <thead><tr><th scope="col">ケース</th><th scope="col">法人番号</th><th scope="col">登録番号</th><th scope="col">関係</th></tr></thead>
     <tbody>
       <tr><td>登録した法人</td><td>ある</td><td>ある</td><td><b>「T」＋法人番号</b>＝13桁は同じ数字</td></tr>
       <tr><td>登録していない法人（免税事業者など）</td><td><b>ある</b></td><td><b>ない</b></td><td>法人番号があっても登録番号にはならない</td></tr>
@@ -262,7 +265,7 @@
   <p>件数が増えると、確認のやり方を変える必要があります。国税庁が用意している手段はこの3つです。</p>
   <table id="hikaku-table">
     <thead><tr>
-      <th>方法</th><th>1回に確認できる件数</th><th>氏名・名称</th><th>申請</th><th>更新</th>
+      <th scope="col">方法</th><th scope="col">1回に確認できる件数</th><th scope="col">氏名・名称</th><th scope="col">申請</th><th scope="col">更新</th>
     </tr></thead>
     <tbody>
       <tr>
@@ -417,7 +420,7 @@ $("run").addEventListener("click", () => {
     （<b>桁が合う ${s.houjin}件</b> ／ 法人番号ではない ${s.notHoujin}件 ／ 形式の誤り ${s.format}件）</div>`;
 
   html += `<table id="result-table"><thead><tr>
-    <th>行</th><th>入力</th><th>整形</th><th>判定</th><th>内容</th>
+    <th scope="col">行</th><th scope="col">入力</th><th scope="col">整形</th><th scope="col">判定</th><th scope="col">内容</th>
     </tr></thead><tbody>`;
   for (const r of rows) {
     const [icon, label] = LABEL[r.status] || ["×", "判定不能"];
@@ -455,6 +458,11 @@ $("run").addEventListener("click", () => {
 
   box.innerHTML = html;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

@@ -106,6 +106,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -115,7 +117,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 失業保険（基本手当）計算機</nav>
 
 <section class="hero">
@@ -214,7 +216,8 @@
   </label>
 
   <button class="primary" id="calc">計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
   <div class="note" id="jukyu-kikan-encho">
     <b>「受給期間は1年」であきらめないで — 最大4年まで延ばせます</b>
@@ -358,14 +361,14 @@ $("calc").addEventListener("click", async () => {
   box.innerHTML = `
     <div class="big">総額の目安　${yen(r.total)}</div>
     <table class="res">
-      <tr><th>賃金日額</th><td>${yen(r.wageDaily)}（6か月の賃金総額 ${yen(r.total6m)} ÷ 180）</td></tr>
-      <tr><th>給付率</th><td>${(r.rate * 100).toFixed(1)}％</td></tr>
-      <tr><th>基本手当日額</th><td><b>${yen(r.daily)}</b>／日</td></tr>
-      <tr><th>所定給付日数</th><td><b>${r.days}日</b>（${REASONS[input.reason]}${input.konnan ? "・就職困難" : ""}）</td></tr>
-      <tr><th>総額の目安</th><td>${yen(r.daily)} × ${r.days}日 ＝ <b>${yen(r.total)}</b></td></tr>
-      <tr><th>待期</th><td>7日（雇用保険法21条）</td></tr>
+      <tr><th scope="row">賃金日額</th><td>${yen(r.wageDaily)}（6か月の賃金総額 ${yen(r.total6m)} ÷ 180）</td></tr>
+      <tr><th scope="row">給付率</th><td>${(r.rate * 100).toFixed(1)}％</td></tr>
+      <tr><th scope="row">基本手当日額</th><td><b>${yen(r.daily)}</b>／日</td></tr>
+      <tr><th scope="row">所定給付日数</th><td><b>${r.days}日</b>（${REASONS[input.reason]}${input.konnan ? "・就職困難" : ""}）</td></tr>
+      <tr><th scope="row">総額の目安</th><td>${yen(r.daily)} × ${r.days}日 ＝ <b>${yen(r.total)}</b></td></tr>
+      <tr><th scope="row">待期</th><td>7日（雇用保険法21条）</td></tr>
       ${restriction}
-      <tr><th>受給期間</th><td>離職日の翌日から<b>${r.receivePeriodDays === 365 ? "1年" : `1年＋${r.receivePeriodDays - 365}日`}</b>（この期間を過ぎると、残っていても受け取れません）</td></tr>
+      <tr><th scope="row">受給期間</th><td>離職日の翌日から<b>${r.receivePeriodDays === 365 ? "1年" : `1年＋${r.receivePeriodDays - 365}日`}</b>（この期間を過ぎると、残っていても受け取れません）</td></tr>
     </table>
     ${capNote}
     ${trainingNote}
@@ -373,6 +376,11 @@ $("calc").addEventListener("click", async () => {
     ${r.eligibilityMessage ? `<div class="hint">${r.eligibilityMessage}</div>` : ""}
   `;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

@@ -122,6 +122,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -131,7 +133,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 不動産の登録免許税 計算機</nav>
 
 <section class="hero">
@@ -259,7 +261,8 @@
   <p class="hint" id="saiken-hint" style="margin-top:6px"></p>
 
   <button class="primary" id="calc" style="margin-top:14px">登録免許税を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <article>
@@ -352,7 +355,7 @@
 <p id="nintei-honbun">認定住宅には0.1%まで下がる特例がありますが、<b>特定認定長期優良住宅の移転登記だけ、一戸建てが0.2%</b>です。措法74条2項がかっこ書きで「<b>一戸建ての特定認定長期優良住宅にあつては、千分の二</b>」と定めているためです。<b>認定低炭素住宅（同74条の2第2項）にはこのかっこ書きが無く、一戸建てでも0.1%</b>です。</p>
 
 <table id="nintei-table">
-  <thead><tr><th>認定の種類</th><th>保存（新築）</th><th>移転・マンション等</th><th>移転・<b>一戸建て</b></th></tr></thead>
+  <thead><tr><th scope="col">認定の種類</th><th scope="col">保存（新築）</th><th scope="col">移転・マンション等</th><th scope="col">移転・<b>一戸建て</b></th></tr></thead>
   <tbody>
     <tr><td><b>特定認定長期優良住宅</b>（74条）</td><td>0.1%</td><td>0.1%</td><td><b>0.2%</b></td></tr>
     <tr><td><b>認定低炭素住宅</b>（74条の2）</td><td>0.1%</td><td>0.1%</td><td><b>0.1%</b></td></tr>
@@ -557,7 +560,7 @@ $("calc").addEventListener("click", async () => {
     <div style="font-size:15px">${r.bubun ? "出せる分の登録免許税" : "登録免許税の合計"}
       <b style="font-size:22px" id="total">${yenF(r.gokei)}</b></div>
     <table class="res" style="margin-top:10px">
-      <thead><tr><th>登記</th><th>課税標準</th><th>税率</th><th>税額</th></tr></thead>
+      <thead><tr><th scope="col">登記</th><th scope="col">課税標準</th><th scope="col">税率</th><th scope="col">税額</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
     ${bubun}
@@ -573,6 +576,11 @@ $("calc").addEventListener("click", async () => {
       登記申請書に添付する必要があり、<b>登記の後から還付は受けられません</b>（措令41条・42条1項）。
     </div>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

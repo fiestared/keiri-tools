@@ -65,13 +65,13 @@
   <p class="lead">給与は月額表、賞与は算出率の表を引いて計算します。報酬・料金（原稿料・士業など）の10.21%も同じ画面で計算できます。</p>
 
   <div class="tabs" role="tablist">
-    <button id="tab-kyuyo" role="tab" aria-selected="true">給与（月額表）</button>
-    <button id="tab-shoyo" role="tab" aria-selected="false">賞与（算出率）</button>
-    <button id="tab-hoshu" role="tab" aria-selected="false">報酬（10.21%）</button>
+    <button id="tab-kyuyo" role="tab" aria-controls="pane-kyuyo" aria-selected="true">給与（月額表）</button>
+    <button id="tab-shoyo" role="tab" aria-controls="pane-shoyo" aria-selected="false">賞与（算出率）</button>
+    <button id="tab-hoshu" role="tab" aria-controls="pane-hoshu" aria-selected="false">報酬（10.21%）</button>
   </div>
 
   <!-- ── 給与（月額表） ── -->
-  <div class="pane" id="pane-kyuyo" data-active>
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-kyuyo" id="pane-kyuyo" data-active>
     <label for="amount">その月の社会保険料等控除後の給与等の金額</label>
     <input type="number" id="amount" placeholder="例: 250000" inputmode="numeric">
     <div class="hint"><b>総支給額ではありません。</b>社会保険料等を差し引いた後の金額です。</div>
@@ -104,11 +104,11 @@
     </div>
 
     <button class="primary" id="calcK" type="button">計算する</button>
-    <div class="result" id="resultK"></div>
+    <div role="status" aria-live="polite" class="result" id="resultK"></div>
   </div>
 
   <!-- ── 賞与（算出率の表） ── -->
-  <div class="pane" id="pane-shoyo">
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-shoyo" id="pane-shoyo">
     <div class="note" style="margin-bottom:8px">賞与は月額表では計算しません。「算出率の表」で率を引き、賞与に掛けます。率を決めるのは<b>前月の給与</b>です。</div>
 
     <label for="shoyoAmt">賞与の支給額</label>
@@ -151,11 +151,11 @@
     </select>
 
     <button class="primary" id="calcS" type="button">計算する</button>
-    <div class="result" id="resultS"></div>
+    <div role="status" aria-live="polite" class="result" id="resultS"></div>
   </div>
 
   <!-- ── 報酬・料金 ── -->
-  <div class="pane" id="pane-hoshu">
+  <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-hoshu" id="pane-hoshu">
     <label for="kind">報酬の種類</label>
     <select id="kind"></select>
     <div id="kind-note" class="hint" style="margin-top:5px"></div>
@@ -171,7 +171,8 @@
     </div>
 
     <button class="primary" id="calc" type="button">計算する</button>
-    <div class="result" id="result"></div>
+    <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
   <div class="brand">
@@ -435,6 +436,34 @@ $("calc").addEventListener("click", () => {
   postHeight();
 });
 </script>
-<script src="../../assets/embed_beacon.js" defer></script>
+<script src="../../assets/embed_beacon.js" defer>
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
+</script>
+<script>
+/* タブのキーボード操作（WAI-ARIA APG: Tabs）。2026-08-23 追加。
+   role="tab" は「矢印キーで移動できる」と支援技術に案内するのに実装が無かった。
+   ★左右/Home/End は複合ウィジェット内の操作＝SC 2.1.4（単一文字ショートカット）の対象外。 */
+(function () {
+  var list = document.querySelector('[role="tablist"]');
+  if (!list) return;
+  var tabs = Array.prototype.slice.call(list.querySelectorAll('[role="tab"]'));
+  function sync() { tabs.forEach(function (t) { t.tabIndex = t.getAttribute("aria-selected") === "true" ? 0 : -1; }); }
+  sync();
+  tabs.forEach(function (t) { t.addEventListener("click", function () { setTimeout(sync, 0); }); });
+  list.addEventListener("keydown", function (e) {
+    var i = tabs.indexOf(document.activeElement), j = null;
+    if (i < 0) return;
+    if (e.key === "ArrowRight") j = (i + 1) % tabs.length;
+    else if (e.key === "ArrowLeft") j = (i - 1 + tabs.length) % tabs.length;
+    else if (e.key === "Home") j = 0;
+    else if (e.key === "End") j = tabs.length - 1;
+    if (j === null) return;
+    e.preventDefault(); tabs[j].click(); tabs[j].focus();
+  });
+})();
+</script>
+<script src="../../assets/a11y_error.js" defer></script>
 </body>
 </html>

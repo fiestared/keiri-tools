@@ -117,6 +117,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -126,7 +128,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 住民税非課税世帯 判定シミュレーター</nav>
 
 <section class="hero">
@@ -444,7 +446,8 @@
   </div>
 
   <button class="primary" id="calc" style="margin-top:14px">住民税非課税世帯かどうかを判定する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <article>
@@ -469,7 +472,7 @@
 <p>住民税には<b>均等割</b>（定額）と<b>所得割</b>（所得に比例）の2つがあり、非課税の限度額は<b>それぞれ別に定められています</b>。給付金や高額療養費の区分が使う「住民税非課税世帯」は、<b>世帯全員が均等割非課税</b>である世帯を指します。</p>
 
 <table id="kintou-shotoku-table">
-  <thead><tr><th></th><th>均等割の非課税限度額</th><th>所得割の非課税限度額</th></tr></thead>
+  <thead><tr><th></th><th scope="col">均等割の非課税限度額</th><th scope="col">所得割の非課税限度額</th></tr></thead>
   <tbody>
     <tr id="row-konkyo"><td><b>根拠</b></td><td>地方税法295条3項＋施行令47条の3<br>（政令の基準に従い<b>条例</b>で定める）</td><td>地方税法附則3条の3<br>（<b>法律</b>が直接定める）</td></tr>
     <tr id="row-kihon"><td><b>基本額</b></td><td>35万円 ×（本人＋同一生計配偶者＋扶養親族）<br>★<b>級地で1.0/0.9/0.8倍される</b></td><td>35万円 ×（同左）<br>全国一律</td></tr>
@@ -533,7 +536,7 @@
 <p>均等割の非課税限度額は<b>「政令で定める基準に従い条例で定める」</b>もので（地方税法295条3項）、その基準となる基本額と加算額が<b>生活保護法の級地区分</b>によって1.0倍・0.9倍・0.8倍されます（同法施行規則9条の21第2項）。所得割の限度額が法律で全国一律なのとは対照的です。</p>
 
 <table id="kyuchi-table">
-  <thead><tr><th>級地</th><th>基本額</th><th>加算額</th><th>単身の限度額</th><th>年金だけなら（65歳以上）</th></tr></thead>
+  <thead><tr><th scope="col">級地</th><th scope="col">基本額</th><th scope="col">加算額</th><th scope="col">単身の限度額</th><th scope="col">年金だけなら（65歳以上）</th></tr></thead>
   <tbody>
     <tr id="kyuchi-1"><td><b>1級地</b>（東京23区・政令指定都市など）</td><td>35万円</td><td>21万円</td><td><b>45万円</b></td><td><b>155万円</b></td></tr>
     <tr id="kyuchi-2"><td><b>2級地</b>（中規模の市など）</td><td>31万5千円</td><td>18万9千円</td><td><b>41万5千円</b></td><td><b>151万5千円</b></td></tr>
@@ -711,7 +714,7 @@ $("calc").addEventListener("click", async () => {
     給付の申請や扶養の選択をこの結果だけで判断しないでください。</p>`;
 
   html += `<table id="setai-table"><thead><tr>
-    <th>世帯員</th><th>合計所得金額</th><th>均等割の限度額</th><th>判定</th><th>あといくら</th>
+    <th scope="col">世帯員</th><th scope="col">合計所得金額</th><th scope="col">均等割の限度額</th><th scope="col">判定</th><th scope="col">あといくら</th>
     </tr></thead><tbody>`;
   for (const row of r.rows) {
     html += `<tr><td>${row.label}${row.fuyoSakiLabel ? `<br><span class="hint">${row.fuyoSakiLabel}の扶養</span>` : ""}</td>
@@ -752,6 +755,11 @@ $("calc").addEventListener("click", async () => {
 
   box.innerHTML = html;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

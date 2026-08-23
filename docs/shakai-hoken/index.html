@@ -122,6 +122,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -131,7 +133,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 社会保険料 計算機</nav>
 
 <section class="hero">
@@ -164,7 +166,7 @@
   <input type="number" id="yearpaid" placeholder="例: 0" inputmode="numeric">
 
   <button class="primary" id="calc">計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
@@ -300,7 +302,7 @@
   <p>実際に最後まで通します。報酬月額300,000円は、健康保険の <b>第22等級</b>・厚生年金の <b>第19等級</b> に当てはまり、<b>標準報酬月額は300,000円</b> です（たまたま給与額と同額になるケース）。</p>
 
   <table>
-    <tr><th>保険</th><th>料率</th><th>全額（会社＋本人）</th><th>本人負担（÷2）</th></tr>
+    <tr><th scope="col">保険</th><th scope="col">料率</th><th scope="col">全額（会社＋本人）</th><th scope="col">本人負担（÷2）</th></tr>
     <tr><td>健康保険</td><td>9.85%</td><td>29,550円</td><td><b>14,775円</b></td></tr>
     <tr><td>子ども・子育て支援金</td><td>0.23%</td><td>690円</td><td><b>345円</b></td></tr>
     <tr><td>厚生年金</td><td>18.3%</td><td>54,900円</td><td><b>27,450円</b></td></tr>
@@ -316,7 +318,7 @@
   <h3>40〜64歳の場合（介護保険料が加わる）</h3>
   <p>同じ条件で年齢だけを <b>42歳</b> にすると、介護保険料（全国一律1.62%）が加わります。</p>
   <table>
-    <tr><th>保険</th><th>料率</th><th>全額</th><th>本人負担</th></tr>
+    <tr><th scope="col">保険</th><th scope="col">料率</th><th scope="col">全額</th><th scope="col">本人負担</th></tr>
     <tr><td>健康保険＋介護保険（合算）</td><td>11.47%</td><td>34,410円</td><td><b>17,205円</b></td></tr>
     <tr><td>子ども・子育て支援金</td><td>0.23%</td><td>690円</td><td><b>345円</b></td></tr>
     <tr><td>厚生年金</td><td>18.3%</td><td>54,900円</td><td><b>27,450円</b></td></tr>
@@ -326,7 +328,7 @@
 
   <h3>月給別の早見表（東京都・令和8年度・本人負担）</h3>
   <table>
-    <tr><th>月給（報酬月額）</th><th>標準報酬月額（等級）</th><th>40歳未満</th><th>40〜64歳</th></tr>
+    <tr><th scope="col">月給（報酬月額）</th><th scope="col">標準報酬月額（等級）</th><th scope="col">40歳未満</th><th scope="col">40〜64歳</th></tr>
     <tr><td>200,000円</td><td>200,000円（第17級）</td><td>28,380円</td><td>30,000円</td></tr>
     <tr><td>250,000円</td><td><b>260,000円</b>（第20級）</td><td>36,894円</td><td>39,000円</td></tr>
     <tr><td>300,000円</td><td>300,000円（第22級）</td><td>42,570円</td><td>45,000円</td></tr>
@@ -343,7 +345,7 @@
 
   <h3>実際にズレる例：東京都・標準報酬月額134,000円（第10等級）・45歳</h3>
   <table>
-    <tr><th></th><th>やり方</th><th>計算</th><th>結果</th></tr>
+    <tr><th></th><th scope="col">やり方</th><th scope="col">計算</th><th scope="col">結果</th></tr>
     <tr><td rowspan="3">✗ 誤</td><td>健康保険だけ先に</td><td>134,000円 × 9.85% = 13,199円 → 折半 6,599.50円 → 50銭以下は切捨</td><td>6,599円</td></tr>
     <tr><td>介護保険だけ先に</td><td>134,000円 × 1.62% = 2,170.80円 → 折半 1,085.40円 → 切捨</td><td>1,085円</td></tr>
     <tr><td>足す</td><td>6,599円 + 1,085円</td><td><b>7,684円</b></td></tr>
@@ -361,7 +363,7 @@
   <h3>端数処理のルール（法律の根拠）</h3>
   <p>1円未満の端数は「通貨の単位及び貨幣の発行等に関する法律」の規定にならい、次のように扱います。<b>給与天引きの場合と、本人が現金で納める場合で、境界がズレる</b>のがポイントです。</p>
   <table>
-    <tr><th>ケース</th><th>切り捨てる</th><th>切り上げる</th></tr>
+    <tr><th scope="col">ケース</th><th scope="col">切り捨てる</th><th scope="col">切り上げる</th></tr>
     <tr><td><b>給与から控除する</b>（通常の給与天引き）</td><td>50銭<b>以下</b></td><td>50銭を<b>超える</b></td></tr>
     <tr><td>本人が現金で事業主に支払う</td><td>50銭<b>未満</b></td><td>50銭<b>以上</b></td></tr>
   </table>
@@ -373,7 +375,7 @@
 
   <h3>令和8年度の健康保険料率（高い順・低い順）</h3>
   <table>
-    <tr><th>順位</th><th>高い都道府県</th><th>料率</th><th></th><th>低い都道府県</th><th>料率</th></tr>
+    <tr><th scope="col">順位</th><th scope="col">高い都道府県</th><th scope="col">料率</th><th></th><th scope="col">低い都道府県</th><th scope="col">料率</th></tr>
     <tr><td>1</td><td><b>佐賀県</b></td><td><b>10.55%</b></td><td></td><td><b>新潟県</b></td><td><b>9.21%</b></td></tr>
     <tr><td>2</td><td>北海道</td><td>10.28%</td><td></td><td>沖縄県</td><td>9.44%</td></tr>
     <tr><td>3</td><td>徳島県</td><td>10.24%</td><td></td><td>福島県</td><td>9.50%</td></tr>
@@ -384,7 +386,7 @@
 
   <p>最も高い <b>佐賀県（10.55%）</b> と最も低い <b>新潟県（9.21%）</b> の差は <b>1.34ポイント</b>。月給30万円・35歳で比べると、本人負担はこれだけ変わります。</p>
   <table>
-    <tr><th>勤務先</th><th>健康保険（本人）</th><th>社会保険料 合計（本人）</th><th>年間</th></tr>
+    <tr><th scope="col">勤務先</th><th scope="col">健康保険（本人）</th><th scope="col">社会保険料 合計（本人）</th><th scope="col">年間</th></tr>
     <tr><td>佐賀県（10.55%）</td><td>15,825円</td><td><b>43,620円</b></td><td>523,440円</td></tr>
     <tr><td>新潟県（9.21%）</td><td>13,815円</td><td><b>41,610円</b></td><td>499,320円</td></tr>
     <tr style="font-weight:700;border-top:2px solid var(--accent)"><td>差</td><td>2,010円</td><td>2,010円／月</td><td>24,120円／年</td></tr>
@@ -403,7 +405,7 @@
   <p>大事なのは <b>上限</b> です。厚生年金の等級表は健康保険より短く、<b>32等級・標準報酬月額650,000円で打ち止め</b>になります。</p>
 
   <table>
-    <tr><th></th><th>健康保険</th><th>厚生年金</th></tr>
+    <tr><th></th><th scope="col">健康保険</th><th scope="col">厚生年金</th></tr>
     <tr><td>等級の数</td><td>50等級</td><td><b>32等級</b></td></tr>
     <tr><td>下限</td><td>58,000円（第1級）</td><td>88,000円（第1級）</td></tr>
     <tr><td>上限</td><td>1,390,000円（第50級）</td><td><b>650,000円（第32級）</b></td></tr>
@@ -421,7 +423,7 @@
   <h3>会社はもう一つ「子ども・子育て拠出金」を全額負担している</h3>
   <p>混同しやすいので整理します。名前がよく似た2つの負担があり、<b>まったく別物</b>です。</p>
   <table>
-    <tr><th></th><th>子ども・子育て<b>支援金</b></th><th>子ども・子育て<b>拠出金</b></th></tr>
+    <tr><th></th><th scope="col">子ども・子育て<b>支援金</b></th><th scope="col">子ども・子育て<b>拠出金</b></th></tr>
     <tr><td>率（令和8年度）</td><td><b>0.23%</b></td><td><b>0.36%</b></td></tr>
     <tr><td>誰が払う</td><td><b>労使折半</b>（本人も払う）</td><td><b>事業主が全額負担</b>（本人負担なし）</td></tr>
     <tr><td>いつから</td><td>令和8年4月分から<b>新設</b></td><td>従来からある</td></tr>
@@ -715,10 +717,10 @@ $("calc").addEventListener("click", async () => {
     <div style="overflow-x:auto;margin-top:10px">
     <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
       <tr style="background:#e7f3f0">
-        <th style="text-align:left;padding:6px 8px">項目</th>
-        <th style="text-align:right;padding:6px 8px">本人負担</th>
-        <th style="text-align:right;padding:6px 8px">会社負担</th>
-        <th style="text-align:right;padding:6px 8px">合計</th></tr>
+        <th scope="col" style="text-align:left;padding:6px 8px">項目</th>
+        <th scope="col" style="text-align:right;padding:6px 8px">本人負担</th>
+        <th scope="col" style="text-align:right;padding:6px 8px">会社負担</th>
+        <th scope="col" style="text-align:right;padding:6px 8px">合計</th></tr>
       ${row(kenkoLabel, r.kenkoKaigo)}
       ${row(`子ども・子育て支援金（${r.kosodate.rate.toFixed(2)}%）`, r.kosodate)}
       ${row(`厚生年金（${r.kosei.rate.toFixed(1)}%）`, r.kosei)}
@@ -771,5 +773,6 @@ $("calc").addEventListener("click", async () => {
 import { attachCopyButton } from "../assets/copy_result.js";
 attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

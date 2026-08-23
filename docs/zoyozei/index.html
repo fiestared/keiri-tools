@@ -138,6 +138,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -147,7 +149,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 贈与税 計算機</nav>
 
 <section class="hero">
@@ -170,7 +172,8 @@
   <div id="ippan-echo" class="hint" style="margin:-6px 0 10px"></div>
 
   <button class="primary" id="calc">計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <article>
@@ -205,7 +208,7 @@
   <h3>特例贈与財産用の速算表（令和8年・国税庁 No.4408）</h3>
   <p class="hint" style="margin:2px 0 8px">直系尊属（父母・祖父母）から、受け取った年の1月1日に18歳以上で受けた贈与</p>
   <table id="sokusanhyo-tokurei" class="tbl">
-    <thead><tr><th>基礎控除後の課税価格</th><th>税率</th><th>控除額</th></tr></thead>
+    <thead><tr><th scope="col">基礎控除後の課税価格</th><th scope="col">税率</th><th scope="col">控除額</th></tr></thead>
     <tbody>
       <tr><td>200万円以下</td><td>10%</td><td>—</td></tr>
       <tr><td>200万円超 400万円以下</td><td>15%</td><td>10万円</td></tr>
@@ -221,7 +224,7 @@
   <h3>一般贈与財産用の速算表（令和8年・国税庁 No.4408）</h3>
   <p class="hint" style="margin:2px 0 8px">直系尊属以外（配偶者・兄弟姉妹・他人など）から、または18歳未満で受けた贈与</p>
   <table id="sokusanhyo-ippan" class="tbl">
-    <thead><tr><th>基礎控除後の課税価格</th><th>税率</th><th>控除額</th></tr></thead>
+    <thead><tr><th scope="col">基礎控除後の課税価格</th><th scope="col">税率</th><th scope="col">控除額</th></tr></thead>
     <tbody>
       <tr><td>200万円以下</td><td>10%</td><td>—</td></tr>
       <tr><td>200万円超 300万円以下</td><td>15%</td><td>10万円</td></tr>
@@ -278,7 +281,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>基礎控除後の課税価格</th><th>税率</th><th>控除額</th></tr>
+<tr><th scope="col">基礎控除後の課税価格</th><th scope="col">税率</th><th scope="col">控除額</th></tr>
 </thead>
 <tbody>
 <tr><td>200万円以下</td><td>10％</td><td>0円</td></tr>
@@ -298,7 +301,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>基礎控除後の課税価格</th><th>税率</th><th>控除額</th></tr>
+<tr><th scope="col">基礎控除後の課税価格</th><th scope="col">税率</th><th scope="col">控除額</th></tr>
 </thead>
 <tbody>
 <tr><td>200万円以下</td><td>10％</td><td>0円</td></tr>
@@ -322,7 +325,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>1年間にもらった合計</th><th>特例税率<br><span class="hint">（親・祖父母 → 18歳以上）</span></th><th>一般税率<br><span class="hint">（夫婦間・兄弟間・18歳未満など）</span></th></tr>
+<tr><th scope="col">1年間にもらった合計</th><th scope="col">特例税率<br><span class="hint">（親・祖父母 → 18歳以上）</span></th><th scope="col">一般税率<br><span class="hint">（夫婦間・兄弟間・18歳未満など）</span></th></tr>
 </thead>
 <tbody>
 <tr><td><b>110万円</b>以下</td><td>0円</td><td>0円</td></tr>
@@ -398,7 +401,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>もらったもの</th><th>贈与税は</th><th>条件</th></tr>
+<tr><th scope="col">もらったもの</th><th scope="col">贈与税は</th><th scope="col">条件</th></tr>
 </thead>
 <tbody>
 <tr><td><b>生活費・教育費の仕送り</b>（夫婦・親子・兄弟姉妹などの扶養義務者から）</td><td><b>かからない</b></td><td>通常必要と認められる範囲で、<b>必要な都度</b>直接充てるもの</td></tr>
@@ -596,6 +599,11 @@ $("calc").addEventListener("click", async () => {
     <div style="font-size:12.5px;color:var(--sub);margin-top:12px">
       ※ 暦年課税の目安です。相続時精算課税（別制度）・住宅取得等資金などの非課税の特例は反映していません。正確な税額は税理士・国税庁の申告書等作成コーナーで確認してください。贈与税の申告・納付は、贈与を受けた年の翌年の<b>2月1日〜3月15日</b>。${yearTag}</div>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

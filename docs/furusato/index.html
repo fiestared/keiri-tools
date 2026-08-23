@@ -130,6 +130,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -139,7 +141,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › ふるさと納税 限度額シミュレーション</nav>
 
 <section class="hero">
@@ -251,7 +253,8 @@
   <input type="number" id="kifu" placeholder="例: 60000" inputmode="numeric">
 
   <button class="primary" id="calc">限度額を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   <div id="jutaku-adj"></div>
 </div>
 
@@ -375,7 +378,7 @@
   <h3>実数で最後まで：年収500万・独身（令和8年分・当ツールの計算）</h3>
   <p>当サイトのツールで、年収500万円・独身・40歳・東京都（社会保険料は概算762,988円）を通すと、こうなります。</p>
   <table>
-    <tr><th>項目</th><th>金額</th></tr>
+    <tr><th scope="col">項目</th><th scope="col">金額</th></tr>
     <tr><td>給与所得（500万 − 給与所得控除）</td><td>3,560,000円</td></tr>
     <tr><td>所得控除の合計（基礎43万＋社保762,988＋…）</td><td>1,192,988円</td></tr>
     <tr><td>課税総所得金額（1,000円未満切捨）</td><td>2,367,000円</td></tr>
@@ -390,7 +393,7 @@
   <p>下表は、<b>当サイトのツールで計算した上限額の目安</b>です（40歳・東京都・賞与なしの概算社会保険料・令和8年分〔令和8年度税制改正を反映〕・寄附者本人にほかの控除がない前提）。<b>あくまで目安</b>で、実際は社会保険料の額や下の注意点で変わります。<b>正確な額は、源泉徴収票の「社会保険料等の金額」を入れてツールで出してください。</b></p>
   <div class="scroll-wrap">
   <table>
-    <tr><th>給与収入</th><th>独身・共働き</th><th>夫婦（配偶者控除）</th><th>＋子1人（高校生）</th><th>＋子2人（大学生＋高校生）</th></tr>
+    <tr><th scope="col">給与収入</th><th scope="col">独身・共働き</th><th scope="col">夫婦（配偶者控除）</th><th scope="col">＋子1人（高校生）</th><th scope="col">＋子2人（大学生＋高校生）</th></tr>
     <tr><td>300万円</td><td>27,490円</td><td>19,127円</td><td>10,266円</td><td><b>0円</b></td></tr>
     <tr><td>400万円</td><td>41,413円</td><td>33,050円</td><td>24,686円</td><td>11,400円</td></tr>
     <tr><td>500万円</td><td>57,174円</td><td>49,246円</td><td>40,447円</td><td>27,725円</td></tr>
@@ -415,7 +418,7 @@
   <p>先ほどの<b>年収500万・独身（上限57,174円）</b>の人が、勢いで80,000円を寄附した場合を見ます。</p>
   <div class="scroll-wrap">
   <table>
-    <tr><th>寄附額</th><th>① 所得税</th><th>② 住民税基本分</th><th>③ 住民税特例分</th><th>控除の合計</th><th>自己負担</th></tr>
+    <tr><th scope="col">寄附額</th><th scope="col">① 所得税</th><th scope="col">② 住民税基本分</th><th scope="col">③ 住民税特例分</th><th scope="col">控除の合計</th><th scope="col">自己負担</th></tr>
     <tr><td>55,000円（上限内）</td><td>2,705円</td><td>5,300円</td><td>44,995円</td><td>53,000円</td><td><b>2,000円</b></td></tr>
     <tr style="border-top:2px solid var(--accent)"><td>80,000円（上限超え）</td><td>3,981円</td><td>7,800円</td><td><b>46,840円</b>（天井）</td><td>58,621円</td><td><b>21,379円</b></td></tr>
   </table>
@@ -430,7 +433,7 @@
   <p>控除を受ける手続きには、<b>確定申告</b>と、それを省ける<b>ワンストップ特例</b>の2つがあります。どちらでも最終的な控除の総額（寄附額−2,000円）は同じですが、<b>使える条件と期限、控除の出方</b>が違います。</p>
   <div class="scroll-wrap">
   <table>
-    <tr><th></th><th>ワンストップ特例</th><th>確定申告</th></tr>
+    <tr><th></th><th scope="col">ワンストップ特例</th><th scope="col">確定申告</th></tr>
     <tr><td>使える人</td><td>もともと<b>確定申告が不要</b>な給与所得者など</td><td>誰でも（自営業・医療費控除がある人など）</td></tr>
     <tr><td>寄附先の数</td><td><b>5自治体まで</b></td><td>制限なし</td></tr>
     <tr><td>手続き</td><td>寄附ごとに各自治体へ申請書を提出</td><td>翌年に税務署へ申告</td></tr>
@@ -677,14 +680,14 @@ $("calc").addEventListener("click", async () => {
     <div class="big">限度額 ${yen(r.furusatoGendo)}</div>
     <div class="hint" style="margin-bottom:10px">この額までの寄附なら、<b>自己負担は2,000円だけ</b>で済みます（${D._meta.year}の所得にもとづく計算）。</div>
     <table class="res">
-      <tr><th>給与所得</th><td>${yen(r.kyuyoShotoku)}（給与収入 ${yen(shunyu)} − 給与所得控除）</td></tr>
-      <tr><th>所得控除の合計</th><td>${yen(r.shotokuKojoGokei)}（基礎控除 ${yen(r.kisoKojo)} ＋ 社会保険料 ${yen(shakai)} ＋ 人的控除 ${yen(r.jintekiKojo)} ほか）</td></tr>
-      <tr><th>課税総所得金額</th><td>${yen(r.kazeiSoShotoku)}（1,000円未満切捨）</td></tr>
-      <tr><th>調整控除</th><td>${yen(r.choseiKojo.total)}</td></tr>
-      <tr><th>住民税の所得割額</th><td><b>${yen(r.shotokuwari)}</b>（課税総所得 × 10％ − 調整控除）</td></tr>
-      <tr><th>特例控除の上限（所得割額の20％）</th><td>${yen(r.tokureiCap)}</td></tr>
-      <tr><th>特例控除額の割合</th><td><b>${pct(r.tokureiRitsu.pct_x1000)}</b>（本則${r.tokureiRitsu.honsoku_pct}％を附則5条の6が読み替えた値）</td></tr>
-      <tr><th>限度額</th><td><b>${yen(r.furusatoGendo)}</b>（${yen(r.tokureiCap)} ÷ ${pct(r.tokureiRitsu.pct_x1000)} ＋ 2,000円）</td></tr>
+      <tr><th scope="row">給与所得</th><td>${yen(r.kyuyoShotoku)}（給与収入 ${yen(shunyu)} − 給与所得控除）</td></tr>
+      <tr><th scope="row">所得控除の合計</th><td>${yen(r.shotokuKojoGokei)}（基礎控除 ${yen(r.kisoKojo)} ＋ 社会保険料 ${yen(shakai)} ＋ 人的控除 ${yen(r.jintekiKojo)} ほか）</td></tr>
+      <tr><th scope="row">課税総所得金額</th><td>${yen(r.kazeiSoShotoku)}（1,000円未満切捨）</td></tr>
+      <tr><th scope="row">調整控除</th><td>${yen(r.choseiKojo.total)}</td></tr>
+      <tr><th scope="row">住民税の所得割額</th><td><b>${yen(r.shotokuwari)}</b>（課税総所得 × 10％ − 調整控除）</td></tr>
+      <tr><th scope="row">特例控除の上限（所得割額の20％）</th><td>${yen(r.tokureiCap)}</td></tr>
+      <tr><th scope="row">特例控除額の割合</th><td><b>${pct(r.tokureiRitsu.pct_x1000)}</b>（本則${r.tokureiRitsu.honsoku_pct}％を附則5条の6が読み替えた値）</td></tr>
+      <tr><th scope="row">限度額</th><td><b>${yen(r.furusatoGendo)}</b>（${yen(r.tokureiCap)} ÷ ${pct(r.tokureiRitsu.pct_x1000)} ＋ 2,000円）</td></tr>
     </table>
     ${shakaiNote}
     ${kifuBlock}`;
@@ -704,12 +707,12 @@ function renderKifu(r, kifu) {
 
   return `${head}
     <table class="res">
-      <tr><th>寄附額</th><td>${yen(kifu)}</td></tr>
-      <tr><th>所得税からの控除</th><td>${yen(k.shotokuzei)}（（寄附額 − 2,000円）× ${r.tokureiRitsu.shotokuzei_pct}％ × 1.021）</td></tr>
-      <tr><th>住民税・基本分</th><td>${yen(k.kihon)}（（寄附額 − 2,000円）× 10％）</td></tr>
-      <tr><th>住民税・特例分</th><td>${yen(k.tokurei)}${k.tokureiCapped ? "（<b>所得割額の20％の上限に達しています</b>）" : ""}</td></tr>
-      <tr><th>控除の合計</th><td><b>${yen(k.total)}</b></td></tr>
-      <tr><th>実質の自己負担</th><td><b>${yen(k.jikoFutan)}</b>（寄附額 ${yen(kifu)} − 控除 ${yen(k.total)}）</td></tr>
+      <tr><th scope="row">寄附額</th><td>${yen(kifu)}</td></tr>
+      <tr><th scope="row">所得税からの控除</th><td>${yen(k.shotokuzei)}（（寄附額 − 2,000円）× ${r.tokureiRitsu.shotokuzei_pct}％ × 1.021）</td></tr>
+      <tr><th scope="row">住民税・基本分</th><td>${yen(k.kihon)}（（寄附額 − 2,000円）× 10％）</td></tr>
+      <tr><th scope="row">住民税・特例分</th><td>${yen(k.tokurei)}${k.tokureiCapped ? "（<b>所得割額の20％の上限に達しています</b>）" : ""}</td></tr>
+      <tr><th scope="row">控除の合計</th><td><b>${yen(k.total)}</b></td></tr>
+      <tr><th scope="row">実質の自己負担</th><td><b>${yen(k.jikoFutan)}</b>（寄附額 ${yen(kifu)} − 控除 ${yen(k.total)}）</td></tr>
     </table>`;
 }
 
@@ -783,6 +786,11 @@ function renderJutakuAdj(r, shakai, family) {
 
 /** 特例控除の割合（小数）。r.tokureiRitsu.pct_x1000 は 79790 のような値 */
 function ritsuPct(r) { return r.tokureiRitsu.pct_x1000 / 100000; }
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

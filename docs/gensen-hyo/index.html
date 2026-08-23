@@ -98,6 +98,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -107,8 +109,8 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
-  <nav class="breadcrumb">ホーム › 源泉徴収票の書き方</nav>
+<main id="main" tabindex="-1">
+  <nav class="breadcrumb"><a href="../">ホーム</a> › 源泉徴収票の書き方</nav>
   <h1>源泉徴収票の書き方</h1>
   <p class="lead">給与所得の源泉徴収票の<b>①支払金額</b>から<b>②給与所得控除後の金額</b>を出し、③④の書き方をチェックします。★<b>令和8年分・令和9年分は、支払金額220万円未満の人の②欄を別表第五で引きません</b>（措置法29条の4）。</p>
 
@@ -163,10 +165,10 @@
     </div>
 
     <div class="result" id="result" aria-live="polite"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
-  <div class="toc-title">目次</div>
-  <ul class="toc">
+  <nav class="toc"><div class="toc-title">目次</div><ol>
     <li><a href="#ni">②欄は令和8年分・令和9年分だけ計算が違う</a></li>
     <li><a href="#kuran">空欄にする欄がある</a></li>
     <li><a href="#san">③欄には基礎控除も入る</a></li>
@@ -174,14 +176,14 @@
     <li><a href="#dekinai">このツールが計算しないこと</a></li>
     <li><a href="#faq">よくある質問</a></li>
     <li><a href="#shutten">出典</a></li>
-  </ul>
+  </ol></nav>
 
   <p class="hint">このページは<b>源泉徴収票を作る側（会社・経理担当者）</b>向けに、各欄に何を書くかを扱います。受け取った票の見方（どの数字が年収か、何を確かめればよいか）は<a href="../column/gensen-choshuhyo-mikata/">源泉徴収票の見方</a>にあります。</p>
 <h2 id="ni">②欄は令和8年分・令和9年分だけ計算が違う</h2>
   <p>租税特別措置法29条の4は、令和8年または令和9年について、給与等の収入金額が<b>220万円以下</b>の場合の給与所得控除額を<b>74万円</b>（収入が74万円に満たない場合は収入相当額）としています。第4項で、年末調整（所得税法190条2号）にもこれを使うと定めています。</p>
   <div class="scroll-wrap">
   <table id="tai-hyo">
-    <tr><th>支払金額</th><th>②欄（令和8年分・令和9年分）</th><th>別表第五で引いた場合</th></tr>
+    <tr><th scope="col">支払金額</th><th scope="col">②欄（令和8年分・令和9年分）</th><th scope="col">別表第五で引いた場合</th></tr>
     <tr><td>70万円</td><td><b>0円</b></td><td>50,000円</td></tr>
     <tr><td>170万円</td><td><b>960,000円</b>（収入−74万円）</td><td>1,050,000円</td></tr>
     <tr><td>219.2万円</td><td><b>1,451,000円</b>（量子化の帯）</td><td>—</td></tr>
@@ -302,13 +304,13 @@ async function render() {
     <div class="big">② ${ni.value == null ? "空欄" : yen(ni.value)}</div>
     <div class="hint" style="margin-bottom:10px" id="kubun">${ni.kubun}</div>
     <table class="res">
-      <tr><th>① 支払金額</th><td id="res-ichi">${yen(shiharai)}</td></tr>
-      <tr><th>② 給与所得控除後の金額</th><td><b id="res-ni">${ni.value == null ? kuran : yen(ni.value)}</b></td></tr>
-      <tr><th>③ 所得控除の額の合計額</th><td><b id="res-san">${san.value == null ? kuran : yen(san.value)}</b>${
+      <tr><th scope="row">① 支払金額</th><td id="res-ichi">${yen(shiharai)}</td></tr>
+      <tr><th scope="row">② 給与所得控除後の金額</th><td><b id="res-ni">${ni.value == null ? kuran : yen(ni.value)}</b></td></tr>
+      <tr><th scope="row">③ 所得控除の額の合計額</th><td><b id="res-san">${san.value == null ? kuran : yen(san.value)}</b>${
         san.uchiwake ? `<br><span class="hint">社会保険料等 ${yen(san.uchiwake.shakai)}／生命保険料 ${yen(san.uchiwake.seimei)}／地震保険料 ${yen(san.uchiwake.jishin)}／人的控除 ${yen(san.uchiwake.jinteki)}／基礎控除 ${yen(san.uchiwake.kiso)}</span>` : ""}</td></tr>
-      <tr><th>④ 源泉徴収税額</th><td id="res-yon">${yen(zeigaku)}</td></tr>
-      <tr><th>②−③</th><td id="nokori">${nokori == null ? kuran : yen(nokori)}</td></tr>
-      ${beppyo5 != null ? `<tr><th>★別表第五で引いた場合</th><td id="hikaku">${yen(beppyo5)} — <b>${yen(Math.abs(beppyo5 - ni.value))}の差</b>が出ます（令和8年分・令和9年分は措置法29条の4が優先します）</td></tr>` : ""}
+      <tr><th scope="row">④ 源泉徴収税額</th><td id="res-yon">${yen(zeigaku)}</td></tr>
+      <tr><th scope="row">②−③</th><td id="nokori">${nokori == null ? kuran : yen(nokori)}</td></tr>
+      ${beppyo5 != null ? `<tr><th scope="row">★別表第五で引いた場合</th><td id="hikaku">${yen(beppyo5)} — <b>${yen(Math.abs(beppyo5 - ni.value))}の差</b>が出ます（令和8年分・令和9年分は措置法29条の4が優先します）</td></tr>` : ""}
     </table>
     ${warns.length ? `<div class="note" style="margin-top:12px" id="warns">${
       warns.map((w) => `${w.level === "error" ? "★<b>誤りの可能性</b>" : "注意"}: ${w.text}`).join("<br>")}</div>` : ""}
@@ -323,6 +325,11 @@ for (const id of ["nencho", "shiharai", "zeigaku", "shakai", "seimei", "jishin",
   $(id).addEventListener("change", render);
 }
 render();
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

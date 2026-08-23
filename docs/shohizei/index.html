@@ -138,6 +138,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -147,7 +149,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 消費税計算（税込・税抜・端数処理）</nav>
 
 <section class="hero">
@@ -181,7 +183,8 @@
   <div id="mode-note" class="hint" style="font-size:12.5px;margin-top:5px"></div>
 
   <button id="calc" class="tool-cta" style="margin-top:14px">計算する</button>
-  <div id="result" class="result" style="display:none"></div>
+  <div role="status" aria-live="polite" id="result" class="result" style="display:none"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <!-- ============ 2. インボイスの端数処理 ============ -->
@@ -206,7 +209,7 @@
   <select id="inv-mode"></select>
 
   <button id="inv-calc" class="tool-cta" style="margin-top:14px">請求書の消費税額を計算する</button>
-  <div id="inv-result" class="result" style="display:none"></div>
+  <div role="status" aria-live="polite" id="inv-result" class="result" style="display:none"></div>
 </div>
 
 <!-- ============ 3. 申告: 割戻し計算 / 積上げ計算 ============ -->
@@ -245,7 +248,7 @@
   <input type="number" id="p-inv" placeholder="例: 500000" inputmode="numeric">
 
   <button id="dec-calc" class="tool-cta" style="margin-top:14px">3通りを比較する</button>
-  <div id="dec-result" class="result" style="display:none"></div>
+  <div role="status" aria-live="polite" id="dec-result" class="result" style="display:none"></div>
   <button id="copy-dec" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
   <div class="note" style="margin-top:12px">
@@ -286,7 +289,7 @@
   </div>
 
   <button id="h-calc" class="tool-cta" style="margin-top:14px">4方式を比較する</button>
-  <div id="h-result" class="result" style="display:none"></div>
+  <div role="status" aria-live="polite" id="h-result" class="result" style="display:none"></div>
   <button id="copy-h" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
   <div class="note" style="margin-top:12px">
@@ -618,10 +621,10 @@ $("dec-calc").addEventListener("click", () => {
     <div style="overflow-x:auto;margin-top:12px">
     <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
       <tr style="background:#f2f5f4">
-        <th style="padding:6px 8px;text-align:left">組み合わせ</th>
-        <th style="padding:6px 8px;text-align:right">売上税額</th>
-        <th style="padding:6px 8px;text-align:right">仕入税額</th>
-        <th style="padding:6px 8px;text-align:right">納付税額</th></tr>
+        <th scope="col" style="padding:6px 8px;text-align:left">組み合わせ</th>
+        <th scope="col" style="padding:6px 8px;text-align:right">売上税額</th>
+        <th scope="col" style="padding:6px 8px;text-align:right">仕入税額</th>
+        <th scope="col" style="padding:6px 8px;text-align:right">納付税額</th></tr>
       ${rows}
     </table></div>
     <div class="row" style="margin-top:12px">組み合わせによる差額
@@ -690,7 +693,7 @@ $("h-calc").addEventListener("click", () => {
 
   box.innerHTML = `
     <p style="margin-top:0">売上税額 <b>${yen(r.salesTax)}</b>／仕入税額 <b>${yen(r.purchaseTax)}</b></p>
-    <table><tr><th>方式</th><th>計算</th><th style="text-align:right">納める消費税</th></tr>${rows}</table>
+    <table><tr><th scope="col">方式</th><th scope="col">計算</th><th scope="col" style="text-align:right">納める消費税</th></tr>${rows}</table>
     <p>${judge}</p>
     <p>本則と簡易が一致するのは、課税仕入れ（税込）が <b>${yen(r.breakEvenPurchaseIncTax)}</b> のときです。
     これより経費が少なければ簡易、多ければ本則が小さくなります。</p>
@@ -703,6 +706,11 @@ $("h-calc").addEventListener("click", () => {
 import { attachCopyButton } from "../assets/copy_result.js";
 attachCopyButton($("copy-h"), $("h-result"));
 attachCopyButton($("copy-dec"), $("dec-result"));
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

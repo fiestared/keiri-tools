@@ -81,6 +81,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -90,7 +92,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
   <h1>役員社宅の賃貸料相当額 計算ツール</h1>
   <p class="lead">役員に社宅を貸すとき、<b>いくら家賃を受け取れば給与として課税されないか</b>（賃貸料相当額）を計算します。所得税基本通達36-40・36-41の算式どおりに計算し、入力値はブラウザの外へ送信されません。</p>
 
@@ -138,25 +140,25 @@
     </div>
 
     <div class="result" id="result" aria-live="polite"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
     <p class="note" id="menseki-note"></p>
   </div>
 
-  <div class="toc-title">目次</div>
-  <ul class="toc">
+  <nav class="toc"><div class="toc-title">目次</div><ol>
     <li><a href="#keisan">賃貸料相当額の計算式（3通り）</a></li>
     <li><a href="#karikage">借上社宅は「家賃の50%」だけでは足りないことがある</a></li>
     <li><a href="#kazei">給与として課税される範囲</a></li>
     <li><a href="#dekinai">このツールが判定しないこと</a></li>
     <li><a href="#faq">よくある質問</a></li>
     <li><a href="#shutten">出典</a></li>
-  </ul>
+  </ol></nav>
 
   <h2 id="keisan">賃貸料相当額の計算式（3通り）</h2>
   <p>役員に社宅を貸したとき、役員から1か月あたり一定額の家賃（賃貸料相当額）を受け取っていれば給与として課税されません。算式は<b>床面積による区分</b>で分かれます。</p>
 
   <div class="scroll-wrap">
   <table id="keisan-hyo">
-    <tr><th>区分</th><th>算式（月額）</th></tr>
+    <tr><th scope="col">区分</th><th scope="col">算式（月額）</th></tr>
     <tr>
       <td>小規模な住宅</td>
       <td>①建物の固定資産税の課税標準額 × <b>0.2%</b><br>＋②<b>12円 × 総床面積㎡ ÷ 3.3</b><br>＋③敷地の固定資産税の課税標準額 × <b>0.22%</b></td>
@@ -187,7 +189,7 @@
   <h2 id="kazei">給与として課税される範囲</h2>
   <div class="scroll-wrap">
   <table id="kazei-hyo">
-    <tr><th>状況</th><th>給与として課税される額</th></tr>
+    <tr><th scope="col">状況</th><th scope="col">給与として課税される額</th></tr>
     <tr><td>無償で貸与する</td><td>賃貸料相当額の<b>全額</b></td></tr>
     <tr><td>賃貸料相当額より低い家賃を受け取っている</td><td>賃貸料相当額と受け取っている家賃との<b>差額</b></td></tr>
     <tr><td>現金で住宅手当を支給する／入居者が直接契約している家賃を負担する</td><td><b>全額</b>（社宅の貸与と認められないため）</td></tr>
@@ -317,9 +319,9 @@ async function render() {
     <div class="big">賃貸料相当額 ${yen(total)}<span style="font-size:15px;font-weight:600">／月</span></div>
     <div class="hint" style="margin-bottom:10px">この額以上を役員から受け取っていれば、給与としての課税は生じません。</div>
     <table class="res">${uchiwake}
-      <tr><th>役員から受け取る家賃</th><td>${yen(uketori)}</td></tr>
-      <tr><th>給与として課税される額（月）</th><td><b>${yen(sagaku)}</b>${sagaku === 0 ? "（課税なし）" : ""}</td></tr>
-      <tr><th>同（年）</th><td>${yen(sagaku * 12)}</td></tr>
+      <tr><th scope="row">役員から受け取る家賃</th><td>${yen(uketori)}</td></tr>
+      <tr><th scope="row">給与として課税される額（月）</th><td><b>${yen(sagaku)}</b>${sagaku === 0 ? "（課税なし）" : ""}</td></tr>
+      <tr><th scope="row">同（年）</th><td>${yen(sagaku * 12)}</td></tr>
     </table>`;
 
   // 床面積の要件だけ、参考として出す（★区分の当てはめは断定しない）
@@ -343,6 +345,11 @@ for (const id of ["kubun", "tatemono", "shikichi", "menseki", "nensu", "yachin",
   $(id).addEventListener("change", syncFields);
 }
 syncFields();
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

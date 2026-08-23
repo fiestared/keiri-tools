@@ -114,6 +114,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -123,7 +125,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 生命保険料控除シミュレーター</nav>
 
 <section class="hero">
@@ -147,7 +149,8 @@
   <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000">
 
   <button class="primary" id="calc">控除額と節税額を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   <p class="hint" id="src-hint" style="margin-top:10px"></p>
 </div>
 
@@ -186,7 +189,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>区分</th><th>対象になる保険</th><th>所得税の上限</th><th>住民税の上限</th></tr>
+<tr><th scope="col">区分</th><th scope="col">対象になる保険</th><th scope="col">所得税の上限</th><th scope="col">住民税の上限</th></tr>
 </thead>
 <tbody>
 <tr><td><b>一般の生命保険料</b></td><td>死亡保険・学資保険・養老保険など</td><td>4万円</td><td>2.8万円</td></tr>
@@ -244,7 +247,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>制度</th><th>年間の支払保険料</th><th>所得税の控除額</th><th>住民税の控除額</th></tr>
+<tr><th scope="col">制度</th><th scope="col">年間の支払保険料</th><th scope="col">所得税の控除額</th><th scope="col">住民税の控除額</th></tr>
 </thead>
 <tbody>
 <tr><td rowspan="4"><b>新契約</b><br>（平成24年1月1日以後）</td><td>2万円以下</td><td>全額</td><td>1.2万円以下は全額</td></tr>
@@ -304,7 +307,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>ケース（年間の支払保険料）</th><th>課税所得</th><th>控除額（所得税／住民税）</th><th>年間の節税額</th></tr>
+<tr><th scope="col">ケース（年間の支払保険料）</th><th scope="col">課税所得</th><th scope="col">控除額（所得税／住民税）</th><th scope="col">年間の節税額</th></tr>
 </thead>
 <tbody>
 <tr><td>一般6万円・介護医療4万円・個人年金8万円</td><td>300万円</td><td>10万5,000円／7万円</td><td><b>17,720円</b></td></tr>
@@ -500,8 +503,8 @@ $("calc").addEventListener("click", async () => {
       <span class="hint">（所得税の控除額です。住民税の控除額は${yen(k.jumin.total)}）</span></div>
     <div style="overflow-x:auto;margin-top:10px">
     <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
-      <tr style="background:#e7f3f0"><th style="text-align:left;padding:6px 8px">区分</th>
-        <th style="text-align:right;padding:6px 8px">控除額（所得税 ／ 住民税）</th></tr>
+      <tr style="background:#e7f3f0"><th scope="col" style="text-align:left;padding:6px 8px">区分</th>
+        <th scope="col" style="text-align:right;padding:6px 8px">控除額（所得税 ／ 住民税）</th></tr>
       ${rows}
       <tr style="border-top:2px solid var(--accent);font-weight:700">
         <td style="padding:6px 8px">合計</td>
@@ -565,6 +568,11 @@ $("calc").addEventListener("click", async () => {
 /* ---------- 他のツールから課税所得を受け取る（共通部品） ---------- */
 import { applyPrefill } from "../assets/prefill.js";
 applyPrefill({ inputId: "kazei", key: "kazei" });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

@@ -141,6 +141,8 @@
      crossorigin="anonymous"></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -150,7 +152,7 @@
     <a href="../../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › ファクタリングとは</nav>
 <article>
   <h1>ファクタリングとは？ 消費税はかからない — ただし「買い戻し」が付いた瞬間、法律上は借入になる</h1>
@@ -223,11 +225,11 @@
       <text x="150" y="199" font-size="11" fill="var(--accent)">債権を売る</text>
       <line x1="266" y1="222" x2="134" y2="222" stroke="var(--accent)" stroke-width="1.2"/>
       <text x="150" y="236" font-size="11" fill="var(--accent)">代金（額面−手数料）</text>
-      <text x="470" y="217" font-size="11" fill="var(--warn-line)">通知しない</text>
+      <text x="470" y="217" font-size="11" fill="var(--warn-ink)">通知しない</text>
       <line x1="520" y1="252" x2="134" y2="252" stroke="currentColor" stroke-width="1.2"/>
       <text x="230" y="248" font-size="11" fill="currentColor">期日に売主へ支払う（売掛先は譲渡を知らない）</text>
       <line x1="134" y1="272" x2="266" y2="272" stroke="var(--warn-line)" stroke-width="1.2"/>
-      <text x="150" y="288" font-size="11" fill="var(--warn-line)">売主が受け取って業者へ送金する ← ここが論点になる</text>
+      <text x="150" y="288" font-size="11" fill="var(--warn-ink)">売主が受け取って業者へ送金する ← ここが論点になる</text>
     </svg>
     <figcaption>3社間は債務者に通知して対抗要件を備え、債務者が業者へ直接支払う。2社間は通知せず、売主がいったん受け取って業者へ送金する。この「売主の手を経由する」構造が、後述の実質判断で論点になる。</figcaption>
   </figure>
@@ -278,7 +280,7 @@
   <p>また4条1項が「みなす」のは<b>債務者以外の第三者</b>に対する関係だけで、債務者本人には及びません。債務者に主張するには、同条2項のとおり登記事項証明書を交付して通知するか、債務者の承諾が必要です。<b>登記したから債務者に請求できる、ではない</b>点は取り違えやすいところです。</p>
 
   <table>
-    <thead><tr><th>方法</th><th>債務者に対抗</th><th>第三者に対抗</th><th>使える人</th></tr></thead>
+    <thead><tr><th scope="col">方法</th><th scope="col">債務者に対抗</th><th scope="col">第三者に対抗</th><th scope="col">使える人</th></tr></thead>
     <tbody>
       <tr><td>通知・承諾（確定日付なし）</td><td>できる</td><td>できない</td><td>誰でも</td></tr>
       <tr><td>確定日付のある通知・承諾</td><td>できる</td><td>できる</td><td>誰でも</td></tr>
@@ -322,7 +324,7 @@
   <p>額面100万円の売掛金を、手数料5万円で売却し95万円が入金された場合を考えます。</p>
 
   <table>
-    <thead><tr><th>時点</th><th>借方</th><th>貸方</th></tr></thead>
+    <thead><tr><th scope="col">時点</th><th scope="col">借方</th><th scope="col">貸方</th></tr></thead>
     <tbody>
       <tr><td>債権を譲渡し代金を受け取った</td><td>普通預金 950,000<br>売上債権売却損 50,000</td><td>売掛金 1,000,000</td></tr>
       <tr><td>（2社間で売掛先から入金があった）</td><td>普通預金 1,000,000</td><td>預り金 1,000,000</td></tr>
@@ -353,7 +355,7 @@
   <p>同じページに、実際の裁判例が判断の向き別に並んでいます。整理するとこうなります。</p>
 
   <table>
-    <thead><tr><th>判断</th><th>裁判例</th><th>決め手として挙げられた事情</th></tr></thead>
+    <thead><tr><th scope="col">判断</th><th scope="col">裁判例</th><th scope="col">決め手として挙げられた事情</th></tr></thead>
     <tbody>
       <tr><td rowspan="2">貸金業法の適用<b>なし</b>（真正な売買）</td><td>東京地裁 令和2年9月18日判決</td><td>業者に償還請求権がなく買戻しも予定されていない／対抗要件は業者の判断で具備可能だった／手数料が担保目的を推認させるほど大幅でない</td></tr>
       <tr><td>東京高裁 令和4年6月15日判決</td><td>回収できなかった額を売主が負担する定めがない／無資力の危険が業者に移転している／手数料が多額でない</td></tr>
@@ -381,11 +383,11 @@
       <text x="36" y="200" font-size="11" fill="currentColor">・手数料が担保目的を推認させない</text>
       <text x="36" y="216" font-size="11" fill="var(--accent)">→ 真正な債権の売買</text>
       <rect x="370" y="122" width="250" height="100" rx="4" fill="none" stroke="var(--warn-line)" stroke-width="1.2"/>
-      <text x="386" y="144" font-size="12" fill="var(--warn-line)" font-weight="bold">売主が損をする</text>
+      <text x="386" y="144" font-size="12" fill="var(--warn-ink)" font-weight="bold">売主が損をする</text>
       <text x="386" y="164" font-size="11" fill="currentColor">・買戻し特約がある</text>
       <text x="386" y="182" font-size="11" fill="currentColor">・売主の自己資金で支払う定め</text>
       <text x="386" y="200" font-size="11" fill="currentColor">・不払いの兆候なしを表明保証</text>
-      <text x="386" y="216" font-size="11" fill="var(--warn-line)">→ 貸付けに該当するおそれ</text>
+      <text x="386" y="216" font-size="11" fill="var(--warn-ink)">→ 貸付けに該当するおそれ</text>
     </svg>
     <figcaption>金融庁が挙げる判断の軸は「不払いのリスクが実際に業者へ移転しているか」の一点。契約書の書きぶりではなく、売掛先が払わなかったときに誰が損をするかで決まる。ノンリコースと書いてあっても、表明保証で実質的に売主が負っていれば貸付けと評価された例がある（東京地裁 令和4年3月4日判決）。</figcaption>
   </figure>
@@ -410,7 +412,7 @@
 
   <div class="scroll-wrap">
   <table>
-    <thead><tr><th>手数料率</th><th>期日まで30日</th><th>期日まで60日</th><th>期日まで90日</th></tr></thead>
+    <thead><tr><th scope="col">手数料率</th><th scope="col">期日まで30日</th><th scope="col">期日まで60日</th><th scope="col">期日まで90日</th></tr></thead>
     <tbody>
       <tr><td>1%</td><td>年12.2%</td><td>年6.1%</td><td>年4.1%</td></tr>
       <tr><td>2%</td><td>年24.3%</td><td>年12.2%</td><td>年8.1%</td></tr>

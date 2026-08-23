@@ -85,6 +85,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -94,7 +96,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 年収の壁 手取り逆転シミュレーター</nav>
 
 <section class="hero">
@@ -124,7 +126,8 @@
   <input type="number" id="annual" placeholder="例: 1290000" inputmode="numeric">
 
   <button class="primary" id="calc">壁を超えるといくら減るか計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <section class="faq">
@@ -299,6 +302,11 @@ $("calc").addEventListener("click", async () => {
       ※ 手取り＝年収 − 社会保険料（本人・健保＋介護＋子育て支援金＋厚年）。社会保険料は年収を12で割った月額を標準報酬月額として計算しています。
       ${r.year ? `<span class="hint">（${r.year}の基準・協会けんぽ${SHAHO?._meta?.year || ""}の料率）</span>` : ""}</div>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

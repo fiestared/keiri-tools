@@ -114,6 +114,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -123,7 +125,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 地震保険料控除シミュレーター</nav>
 
 <section class="hero">
@@ -167,7 +169,8 @@
   <input type="number" id="kazei" placeholder="例: 4000000" inputmode="numeric" min="0" step="10000">
 
   <button class="primary" id="calc">控除額と節税額を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   <p class="hint" id="src-hint" style="margin-top:10px"></p>
 </div>
 
@@ -205,7 +208,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>違うところ</th><th>所得税</th><th>住民税</th></tr>
+<tr><th scope="col">違うところ</th><th scope="col">所得税</th><th scope="col">住民税</th></tr>
 </thead>
 <tbody>
 <tr><td><b>地震保険料の控除額</b></td><td>支払額の<b>全額</b></td><td>支払額の<b>2分の1</b></td></tr>
@@ -272,7 +275,7 @@
 <div class="scroll-wrap">
 <table id="kyu-choki-shiki">
 <thead>
-<tr><th>年間の旧長期損害保険料</th><th>所得税の控除額</th><th>住民税の控除額</th></tr>
+<tr><th scope="col">年間の旧長期損害保険料</th><th scope="col">所得税の控除額</th><th scope="col">住民税の控除額</th></tr>
 </thead>
 <tbody>
 <tr><td>5,000円以下</td><td rowspan="2">支払額の全額<br><span class="hint">（10,000円以下のとき）</span></td><td>支払額の全額</td></tr>
@@ -300,7 +303,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>年間の地震保険料</th><th>所得税の控除額</th><th>住民税の控除額</th><th>年間の節税額</th></tr>
+<tr><th scope="col">年間の地震保険料</th><th scope="col">所得税の控除額</th><th scope="col">住民税の控除額</th><th scope="col">年間の節税額</th></tr>
 </thead>
 <tbody>
 <tr><td>20,000円</td><td>20,000円</td><td>10,000円</td><td>約5,084円</td></tr>
@@ -421,16 +424,16 @@ $("calc").addEventListener("click", async () => {
   const k = r.best.kojo, s = r.best.saving;
 
   let html = `<table class="res">
-    <tr><th>所得税の控除額</th><td><b>${yen(k.shotoku.total)}</b>`;
+    <tr><th scope="row">所得税の控除額</th><td><b>${yen(k.shotoku.total)}</b>`;
   if (k.shotoku.capped) html += `<span class="hint">（${yen(k.shotoku.sum)} が上限${yen(k.shotoku.totalMax)}で頭打ち）</span>`;
   html += `</td></tr>
-    <tr><th>住民税の控除額</th><td><b>${yen(k.jumin.total)}</b>`;
+    <tr><th scope="row">住民税の控除額</th><td><b>${yen(k.jumin.total)}</b>`;
   if (k.jumin.capped) html += `<span class="hint">（${yen(k.jumin.sum)} が上限${yen(k.jumin.totalMax)}で頭打ち）</span>`;
   html += `</td></tr>
-    <tr><th>所得税の減少</th><td>${yen(s.shotokuGen)}</td></tr>
-    <tr><th>復興特別所得税の減少</th><td>${yen(s.fukkoGen)}</td></tr>
-    <tr><th>住民税の減少</th><td>${yen(s.juminGen)}</td></tr>
-    <tr><th>年間の節税額</th><td class="big"><b>${yen(s.total)}</b></td></tr>
+    <tr><th scope="row">所得税の減少</th><td>${yen(s.shotokuGen)}</td></tr>
+    <tr><th scope="row">復興特別所得税の減少</th><td>${yen(s.fukkoGen)}</td></tr>
+    <tr><th scope="row">住民税の減少</th><td>${yen(s.juminGen)}</td></tr>
+    <tr><th scope="row">年間の節税額</th><td class="big"><b>${yen(s.total)}</b></td></tr>
   </table>`;
 
   // 内訳（区分ごと）
@@ -458,6 +461,11 @@ $("calc").addEventListener("click", async () => {
 /* ---------- 他のツールから課税所得を受け取る（共通部品） ---------- */
 import { applyPrefill } from "../assets/prefill.js";
 applyPrefill({ inputId: "kazei", key: "kazei" });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

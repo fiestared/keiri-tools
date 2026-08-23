@@ -82,6 +82,8 @@
 <script src="../../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -91,8 +93,8 @@
     <a href="../../toushi/" aria-current="page">資産形成</a>
   </nav>
 </header>
-<main>
-  <nav class="breadcrumb">ホーム › <a href="../">資産形成</a> › 積立シミュレーター</nav>
+<main id="main" tabindex="-1">
+  <nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">資産形成</a> › 積立シミュレーター</nav>
   <h1>積立シミュレーター</h1>
   <p class="lead">毎月の積立額と年数、それに<b>あなたが想定する利回り</b>を入れると、将来の評価額を計算します。<b>信託報酬が削る額</b>と、<b>出すときの税金</b>まで同時に出します。</p>
 
@@ -120,17 +122,17 @@
       </div>
     </div>
     <div class="result" id="result" aria-live="polite"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
-  <div class="toc-title">目次</div>
-  <ul class="toc">
+  <nav class="toc"><div class="toc-title">目次</div><ol>
     <li><a href="#fukuri">年利を12で割ると数字がずれる</a></li>
     <li><a href="#shintaku">信託報酬は「年率」でも毎日引かれている</a></li>
     <li><a href="#zeikin">出すときの税金 — 利益にだけかかる</a></li>
     <li><a href="#nisa">NISAの枠は「買った値段」で数える</a></li>
     <li><a href="#faq">よくある質問</a></li>
     <li><a href="#shutten">出典</a></li>
-  </ul>
+  </ol></nav>
 
   <h2 id="fukuri">年利を12で割ると数字がずれる</h2>
   <p>年5%を月0.41667%（＝5÷12）として計算しているシミュレーターがあります。複利では正しくは <b>(1+年利)<sup>1/12</sup> − 1 ＝ 月0.40741%</b> です。</p>
@@ -154,7 +156,7 @@
   <p>条文（租税特別措置法37条の14）は枠を<b>「取得対価の額の合計額」</b>で数えると書いています。つまり<b>買った値段</b>であり、値上がりしても枠は減りません。</p>
   <div class="scroll-wrap">
   <table id="nisa-hyo">
-    <tr><th>枠</th><th>金額</th></tr>
+    <tr><th scope="col">枠</th><th scope="col">金額</th></tr>
     <tr><td>生涯の非課税投資枠</td><td><b>1,800万円</b></td></tr>
     <tr><td>うち成長投資枠（生涯）</td><td><b>1,200万円</b></td></tr>
     <tr><td>つみたて投資枠（年間）</td><td>120万円</td></tr>
@@ -243,14 +245,14 @@ async function render() {
     <div class="big">${yen(s.net)}<span style="font-size:15px;font-weight:600">（${years}年後の評価額）</span></div>
     <div class="hint" style="margin-bottom:10px">信託報酬${feePct}%を差し引いた場合。月次の複利・期初積立で計算しています。</div>
     <table class="res">
-      <tr><th>積み立てた元本</th><td id="principal">${yen(s.principal)}</td></tr>
-      <tr><th>運用で増えた分</th><td>${yen(s.net - s.principal)}</td></tr>
-      <tr><th>★信託報酬が削った額</th><td id="fee-cost"><b>${yen(s.feeCost)}</b>（信託報酬0%なら ${yen(s.gross)}）</td></tr>
+      <tr><th scope="row">積み立てた元本</th><td id="principal">${yen(s.principal)}</td></tr>
+      <tr><th scope="row">運用で増えた分</th><td>${yen(s.net - s.principal)}</td></tr>
+      <tr><th scope="row">★信託報酬が削った額</th><td id="fee-cost"><b>${yen(s.feeCost)}</b>（信託報酬0%なら ${yen(s.gross)}）</td></tr>
     </table>
     <table class="res" style="margin-top:10px">
-      <tr><th>NISA（非課税）の手取り</th><td><b id="nisa-net">${yen(t.nisa)}</b></td></tr>
-      <tr><th>特定口座の手取り</th><td id="tokutei-net">${yen(t.tokuteiKouza)}</td></tr>
-      <tr><th>税額（利益 ${yen(t.gain)} × ${D.kazei.goukei_pct}%）</th><td id="tax">${yen(t.tax)}</td></tr>
+      <tr><th scope="row">NISA（非課税）の手取り</th><td><b id="nisa-net">${yen(t.nisa)}</b></td></tr>
+      <tr><th scope="row">特定口座の手取り</th><td id="tokutei-net">${yen(t.tokuteiKouza)}</td></tr>
+      <tr><th scope="row">税額（利益 ${yen(t.gain)} × ${D.kazei.goukei_pct}%）</th><td id="tax">${yen(t.tax)}</td></tr>
     </table>
     ${overLine}${overTsumitate}
     <div class="note" style="margin-top:12px">
@@ -265,6 +267,11 @@ for (const id of ["monthly", "years", "rate", "fee"]) {
   $(id).addEventListener("change", render);
 }
 render();
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../../assets/a11y_error.js" defer></script>
 </body>
 </html>

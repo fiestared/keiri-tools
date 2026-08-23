@@ -114,6 +114,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -123,7 +125,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 不動産取得税 計算機</nav>
 
 <section class="hero">
@@ -198,7 +200,8 @@
   <p class="hint" id="kaoku-hint" style="margin-top:6px"></p>
 
   <button class="primary" id="calc" style="margin-top:14px">不動産取得税を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <article>
@@ -224,7 +227,7 @@
 <p id="menzeiten-honbun">不動産取得税には<b>免税点</b>があり、課税標準となるべき額がこの線に満たなければ税金はかかりません（地方税法73条の15の2）。<b>この線は令和8年度の改正で引き上げられ、2026年4月1日から新しい額になりました。</b></p>
 
 <table id="menzeiten-table">
-  <thead><tr><th>区分</th><th>2026年3月31日までの取得</th><th><b>2026年4月1日以後の取得</b></th></tr></thead>
+  <thead><tr><th scope="col">区分</th><th scope="col">2026年3月31日までの取得</th><th scope="col"><b>2026年4月1日以後の取得</b></th></tr></thead>
   <tbody>
     <tr><td><b>土地</b>の取得</td><td>10万円</td><td><b>16万円</b></td></tr>
     <tr><td><b>家屋</b>の取得のうち建築に係るもの（新築・増改築）</td><td>23万円</td><td><b>66万円</b></td></tr>
@@ -413,7 +416,7 @@ $("calc").addEventListener("click", () => {
   box.innerHTML = `
     <div style="font-size:15px">不動産取得税の合計 <b style="font-size:22px" id="total">${r.total === null ? "—（家屋が範囲外）" : yenF(r.total)}</b></div>
     <table style="margin-top:10px">
-      <thead><tr><th></th><th>価格（評価額）</th><th>控除・特例</th><th>課税標準額</th><th>税率</th><th>税額</th></tr></thead>
+      <thead><tr><th></th><th scope="col">価格（評価額）</th><th scope="col">控除・特例</th><th scope="col">課税標準額</th><th scope="col">税率</th><th scope="col">税額</th></tr></thead>
       <tbody>
         <tr><td>土地</td><td>${yenF(L.value)}</td><td>${L.isTakuchi ? "宅地1/2" : "なし"}</td><td>${yenF(L.base)}</td><td>${L.rate}％</td><td><b id="land-tax">${yenF(L.tax)}</b></td></tr>
         ${H.kind === "none" || H.value <= 0 ? "" : `
@@ -428,6 +431,11 @@ $("calc").addEventListener("click", () => {
       <b>控除・減額は申告が原則です。</b>住宅・住宅用土地の控除と減額は、都道府県の条例で定めるところにより申告した場合に適用するのが条文の原則です（地方税法73条の14第4項・73条の24第5項）。申告がなくても要件に該当すると認められれば適用できます（同73条の14第5項・73条の24第6項）が、通知書が届いたら軽減が反映されているか必ず確認してください。
     </div>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

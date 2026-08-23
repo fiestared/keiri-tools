@@ -130,6 +130,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -139,7 +141,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 遺留分計算機</nav>
 
 <section class="hero">
@@ -255,7 +257,8 @@
   </div>
 
   <button class="primary" id="calc" style="margin-top:14px">遺留分を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <article>
@@ -339,7 +342,7 @@
 <p>遺留分は、亡くなった時に残っていた財産だけでは計算しません。<b>生前に贈与された財産を足し戻して</b>から割合を掛けます（民法1043条1項）。足し戻す範囲は、<b>贈与の相手が相続人かどうか</b>で変わります。</p>
 
 <table id="zoyo-table">
-  <thead><tr><th>贈与の相手</th><th>さかのぼる期間</th><th>対象になる贈与</th><th>条文</th></tr></thead>
+  <thead><tr><th scope="col">贈与の相手</th><th scope="col">さかのぼる期間</th><th scope="col">対象になる贈与</th><th scope="col">条文</th></tr></thead>
   <tbody>
     <tr id="zoyo-sozokunin"><td><b>相続人</b>（子・配偶者など）</td><td><b>10年</b></td><td>婚姻・養子縁組のため、又は生計の資本として受けた贈与（＝特別受益）に限る</td><td>民法1044条3項</td></tr>
     <tr id="zoyo-daisansha"><td><b>相続人以外</b>（第三者・法人など）</td><td><b>1年</b></td><td>期間内の贈与すべて</td><td>民法1044条1項前段</td></tr>
@@ -366,7 +369,7 @@
 <p>同じ家族構成でも、<a href="../sozokuzei/">相続税の計算</a>と遺留分の計算では<b>相続人の数え方が違います</b>。しかも2つのルールは<b>向きが逆</b>です。</p>
 
 <table>
-  <thead><tr><th>論点</th><th>遺留分（民法）</th><th>相続税（相続税法）</th></tr></thead>
+  <thead><tr><th scope="col">論点</th><th scope="col">遺留分（民法）</th><th scope="col">相続税（相続税法）</th></tr></thead>
   <tbody>
     <tr id="taihi-youshi"><td><b>養子の数</b></td><td>制限なし。何人でも全員が相続人（809条・887条1項）</td><td>実子がいれば1人まで、いなければ2人まで（15条3項）</td></tr>
     <tr id="taihi-houki"><td><b>相続放棄</b></td><td>反映する。放棄した人は初めから相続人でない（939条）</td><td>無視する。放棄がなかったものとした数で数える（15条2項）</td></tr>
@@ -529,7 +532,7 @@ $("calc").addEventListener("click", async () => {
       ? "直系尊属のみが相続人 → 民法1042条1項1号"
       : "民法1042条1項2号（直系尊属のみの場合以外）"}</span></p>`;
 
-  html += `<table id="kobetsu-table"><thead><tr><th>相続人</th><th>人数</th><th>法定相続分</th><th>遺留分の割合</th><th>1人あたりの遺留分</th></tr></thead><tbody>`;
+  html += `<table id="kobetsu-table"><thead><tr><th scope="col">相続人</th><th scope="col">人数</th><th scope="col">法定相続分</th><th scope="col">遺留分の割合</th><th scope="col">1人あたりの遺留分</th></tr></thead><tbody>`;
   for (const row of r.rows) {
     html += `<tr><td>${row.label}</td><td style="text-align:right">${row.count}人</td>
       <td style="text-align:right">${fracF(row.houtei)}</td>
@@ -569,6 +572,11 @@ $("calc").addEventListener("click", async () => {
 
   box.innerHTML = html;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

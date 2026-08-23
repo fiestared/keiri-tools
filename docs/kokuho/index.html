@@ -114,6 +114,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -123,7 +125,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 国民健康保険料 計算機</nav>
 
 <section class="hero">
@@ -140,7 +142,7 @@
 
   <label>① お住まいの市町村の料率（納付通知書・市町村のサイトに載っています）</label>
   <table class="tbl" id="rate-table" style="margin-top:8px">
-    <thead><tr><th>賦課区分</th><th>所得割率（％）</th><th>均等割（円／人）</th><th>平等割（円／世帯）</th></tr></thead>
+    <thead><tr><th scope="col">賦課区分</th><th scope="col">所得割率（％）</th><th scope="col">均等割（円／人）</th><th scope="col">平等割（円／世帯）</th></tr></thead>
     <tbody>
       <tr><td><b>医療分</b><br><span class="hint">基礎賦課額</span></td>
         <td><input type="number" id="iryo_s" min="0" step="0.01" inputmode="decimal" placeholder="例 8.00"></td>
@@ -210,7 +212,8 @@
   <p class="hint" style="margin-top:6px" id="tokutei-hint">特定同一世帯所属者＝後期高齢者医療制度に移ったことで国保を抜けた後も、引き続き同じ世帯にいるかた。保険料はかかりませんが、<b>軽減の判定では所得にも人数にも算入します</b>（移った途端に軽減が外れて跳ね上がるのを防ぐ仕組み）。</p>
 
   <button class="primary" id="calc" style="margin-top:16px">国民健康保険料を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
   <!-- ★退職直後の人は「国保か任意継続か」を必ず選ぶ。ここで両方出せば料率の入力が1回で済む。
        別ページにすると「比べるためにもう一度自分の市の料率を調べる」二度手間になる。 -->
@@ -233,7 +236,7 @@
         <input type="number" id="niniAge" min="0" max="120" inputmode="numeric" value="45">
       </div>
     </div>
-    <div class="result" id="nini-result" style="margin-top:12px"></div>
+    <div role="status" aria-live="polite" class="result" id="nini-result" style="margin-top:12px"></div>
   </details>
 </div>
 
@@ -313,7 +316,7 @@
 <p id="keigen-handan">判定は次の式で行います。基準額は<b>43万円＋（給与所得者等の数−1）×10万円</b>で、この加算は<b>給与所得者等が2人以上のときだけ</b>効きます（0人でも1人でも加算はゼロ）。</p>
 
 <table class="tbl" id="keigen-table">
-  <thead><tr><th>軽減割合</th><th>判定所得がこの額以下なら該当</th></tr></thead>
+  <thead><tr><th scope="col">軽減割合</th><th scope="col">判定所得がこの額以下なら該当</th></tr></thead>
   <tbody>
     <tr><td><b>7割</b>軽減</td><td>基準額</td></tr>
     <tr><td><b>5割</b>軽減</td><td>基準額 ＋ <b>31万円</b> × （被保険者数＋特定同一世帯所属者数）</td></tr>
@@ -601,7 +604,7 @@ $("calc").addEventListener("click", async () => {
     <div style="font-size:15px">年間の国民健康保険料 <b style="font-size:22px" id="total">${yenF(r.total)}</b>
       <span class="hint">（月あたり約${yenF(r.total / 12)}）</span></div>
     <table class="tbl" style="margin-top:10px">
-      <thead><tr><th>賦課区分</th><th>所得割</th><th>均等割</th><th>平等割</th><th>均等割の対象</th><th>計</th></tr></thead>
+      <thead><tr><th scope="col">賦課区分</th><th scope="col">所得割</th><th scope="col">均等割</th><th scope="col">平等割</th><th scope="col">均等割の対象</th><th scope="col">計</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
     ${keigenLine}
@@ -667,7 +670,7 @@ async function paintNini() {
       : c.cheaper === "nini" ? `<b id="nini-cheaper">任意継続</b>のほうが年 ${yenF(c.diffYearly)} 少ない計算です`
       : `<b id="nini-cheaper">国民健康保険</b>のほうが年 ${yenF(c.diffYearly)} 少ない計算です`;
     cmp = `<table class="tbl" style="margin-top:10px">
-      <thead><tr><th>　</th><th>月額</th><th>年額</th></tr></thead>
+      <thead><tr><th>　</th><th scope="col">月額</th><th scope="col">年額</th></tr></thead>
       <tbody>
         <tr><td>任意継続</td><td>${yenF(n.total)}</td><td id="nini-yearly">${yenF(c.niniYearly)}</td></tr>
         <tr><td>国民健康保険（上の計算）</td><td>${yenF(Math.round(c.kokuhoYearly / 12))}</td><td>${yenF(c.kokuhoYearly)}</td></tr>
@@ -700,6 +703,11 @@ for (const id of ["niniTodofuken", "niniHyojun", "niniAge"]) {
 }
 const niniBlock = document.getElementById("nini-block");
 if (niniBlock) niniBlock.addEventListener("toggle", () => { if (niniBlock.open) paintNini(); });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

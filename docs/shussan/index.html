@@ -106,6 +106,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -115,7 +117,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 出産手当金 計算機</nav>
 
 <section class="hero">
@@ -184,7 +186,8 @@
   </details>
 
   <button class="primary" id="calc">出産手当金を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <section class="faq">
@@ -414,18 +417,23 @@ $("calc").addEventListener("click", async () => {
     ${capNote}
     ${choseiNote}
     <table class="res">
-      <tr><th>1日あたりの金額（日額）</th><td><b>${yen(r.paidNichigaku)}</b>${adj.deduct > 0 ? `（調整前 ${yen(adj.amount)}）` : ""}</td></tr>
-      <tr><th>標準報酬月額の平均 ÷ 30</th><td>${yen(r.base)}（10円未満を四捨五入）</td></tr>
-      <tr><th>産前${tataiLabel}</th><td>${k.sanzen}日${k.delay > 0 ? `（基準${k.sanzenBase}日＋遅れ${k.delay}日）` : k.delay < 0 ? `（基準${k.sanzenBase}日−早産${-k.delay}日）` : `（基準${k.sanzenBase}日）`}</td></tr>
-      <tr><th>産後</th><td>${k.sango}日</td></tr>
-      <tr><th>支給される日数</th><td><b>${r.days}日</b></td></tr>
-      <tr><th>支給期間</th><td>${jp(k.startDate)} 〜 ${jp(k.endDate)}</td></tr>
-      <tr><th>合計（支給額）</th><td><b>${yen(r.total)}</b></td></tr>
+      <tr><th scope="row">1日あたりの金額（日額）</th><td><b>${yen(r.paidNichigaku)}</b>${adj.deduct > 0 ? `（調整前 ${yen(adj.amount)}）` : ""}</td></tr>
+      <tr><th scope="row">標準報酬月額の平均 ÷ 30</th><td>${yen(r.base)}（10円未満を四捨五入）</td></tr>
+      <tr><th scope="row">産前${tataiLabel}</th><td>${k.sanzen}日${k.delay > 0 ? `（基準${k.sanzenBase}日＋遅れ${k.delay}日）` : k.delay < 0 ? `（基準${k.sanzenBase}日−早産${-k.delay}日）` : `（基準${k.sanzenBase}日）`}</td></tr>
+      <tr><th scope="row">産後</th><td>${k.sango}日</td></tr>
+      <tr><th scope="row">支給される日数</th><td><b>${r.days}日</b></td></tr>
+      <tr><th scope="row">支給期間</th><td>${jp(k.startDate)} 〜 ${jp(k.endDate)}</td></tr>
+      <tr><th scope="row">合計（支給額）</th><td><b>${yen(r.total)}</b></td></tr>
     </table>
     ${yoteiNote}
     ${estimatedNote}
     <div class="hint">★<b>産後57日目からは育児休業給付金</b>に切り替わり、<b>月額332,454円で頭打ち</b>になります。高収入の方ほど金額が下がるので、産休中の金額で家計を組まないでください。</div>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

@@ -70,7 +70,8 @@
 
   <button id="calc" type="button">計算する</button>
 
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
   <div class="brand">
     🧮 <a href="https://keiri-tools.com/taishokukin/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
@@ -142,11 +143,11 @@ $("calc").addEventListener("click", async () => {
     box.innerHTML = `
       <div class="big">税金は0円　手取り ${yen(r.tedori)}</div>
       <table>
-        <tr><th>勤続年数</th><td>${r.nensu}年</td></tr>
-        <tr><th>退職所得控除額</th><td><b>${yen(r.kojo)}</b>${r.disabled ? "（障害退職のため+100万円）" : ""}</td></tr>
-        <tr><th>課税退職所得金額</th><td><b>0円</b>（退職金が控除の範囲に収まっています）</td></tr>
-        <tr><th>所得税・住民税</th><td><b>0円</b></td></tr>
-        <tr><th>手取り</th><td><b>${yen(r.tedori)}</b>（満額）</td></tr>
+        <tr><th scope="row">勤続年数</th><td>${r.nensu}年</td></tr>
+        <tr><th scope="row">退職所得控除額</th><td><b>${yen(r.kojo)}</b>${r.disabled ? "（障害退職のため+100万円）" : ""}</td></tr>
+        <tr><th scope="row">課税退職所得金額</th><td><b>0円</b>（退職金が控除の範囲に収まっています）</td></tr>
+        <tr><th scope="row">所得税・住民税</th><td><b>0円</b></td></tr>
+        <tr><th scope="row">手取り</th><td><b>${yen(r.tedori)}</b>（満額）</td></tr>
       </table>
       ${kinzokuNote}${cta}`;
     postHeight(); return;
@@ -156,10 +157,10 @@ $("calc").addEventListener("click", async () => {
     box.innerHTML = `
       <div class="big">手取り ${yen(r.tedori)}　（税金 ${yen(r.total)}）</div>
       <table>
-        <tr><th>所得税・復興特別所得税</th><td><b>${yen(r.incomeTax)}</b>（支給額 ${yen(r.amount)} × 20.42％）</td></tr>
-        <tr><th>住民税</th><td><b>${yen(r.juminzei)}</b>（市町村民税 ${yen(r.shichoson)} ＋ 道府県民税 ${yen(r.dofuken)}）</td></tr>
-        <tr><th>合計</th><td><b>${yen(r.total)}</b></td></tr>
-        <tr><th>手取り</th><td><b>${yen(r.tedori)}</b></td></tr>
+        <tr><th scope="row">所得税・復興特別所得税</th><td><b>${yen(r.incomeTax)}</b>（支給額 ${yen(r.amount)} × 20.42％）</td></tr>
+        <tr><th scope="row">住民税</th><td><b>${yen(r.juminzei)}</b>（市町村民税 ${yen(r.shichoson)} ＋ 道府県民税 ${yen(r.dofuken)}）</td></tr>
+        <tr><th scope="row">合計</th><td><b>${yen(r.total)}</b></td></tr>
+        <tr><th scope="row">手取り</th><td><b>${yen(r.tedori)}</b></td></tr>
       </table>
       <div class="callout"><b>「退職所得の受給に関する申告書」を出さないと、退職所得控除も2分の1課税も使われません。</b>支給額そのものに一律20.42％がかかります（所得税法201条3項）。申告書を出した場合の所得税は<b>${yen(calcTaishoku({ ...input, filed: true }, DATA).incomeTax)}</b>です。</div>${cta}`;
     postHeight(); return;
@@ -174,13 +175,13 @@ $("calc").addEventListener("click", async () => {
   box.innerHTML = `
     <div class="big">手取り ${yen(r.tedori)}　（税金 ${yen(r.total)}）</div>
     <table>
-      <tr><th>勤続年数</th><td>${r.nensu}年（${r.kindLabel}）</td></tr>
-      <tr><th>退職所得控除額</th><td><b>${yen(r.kojo)}</b>${r.disabled ? "（障害退職のため+100万円）" : ""}</td></tr>
-      <tr><th>課税退職所得金額</th><td><b>${yen(r.taxable)}</b>${r.halfApplied ? `（（${yen(r.amount)} − ${yen(r.kojo)}）× 1/2・1,000円未満切捨）` : "（1,000円未満切捨）"}</td></tr>
-      <tr><th>所得税＋復興特別所得税</th><td><b>${yen(r.incomeTax)}</b>（× 102.1％）</td></tr>
-      <tr><th>住民税</th><td><b>${yen(r.juminzei)}</b>（市町村民税6％ ${yen(r.shichoson)} ＋ 道府県民税4％ ${yen(r.dofuken)}）</td></tr>
-      <tr><th>税金の合計</th><td><b>${yen(r.total)}</b></td></tr>
-      <tr><th>手取り</th><td><b>${yen(r.tedori)}</b>（${yen(r.amount)} − ${yen(r.total)}）</td></tr>
+      <tr><th scope="row">勤続年数</th><td>${r.nensu}年（${r.kindLabel}）</td></tr>
+      <tr><th scope="row">退職所得控除額</th><td><b>${yen(r.kojo)}</b>${r.disabled ? "（障害退職のため+100万円）" : ""}</td></tr>
+      <tr><th scope="row">課税退職所得金額</th><td><b>${yen(r.taxable)}</b>${r.halfApplied ? `（（${yen(r.amount)} − ${yen(r.kojo)}）× 1/2・1,000円未満切捨）` : "（1,000円未満切捨）"}</td></tr>
+      <tr><th scope="row">所得税＋復興特別所得税</th><td><b>${yen(r.incomeTax)}</b>（× 102.1％）</td></tr>
+      <tr><th scope="row">住民税</th><td><b>${yen(r.juminzei)}</b>（市町村民税6％ ${yen(r.shichoson)} ＋ 道府県民税4％ ${yen(r.dofuken)}）</td></tr>
+      <tr><th scope="row">税金の合計</th><td><b>${yen(r.total)}</b></td></tr>
+      <tr><th scope="row">手取り</th><td><b>${yen(r.tedori)}</b>（${yen(r.amount)} − ${yen(r.total)}）</td></tr>
     </table>
     ${kinzokuNote}
     ${halfNote}
@@ -188,6 +189,11 @@ $("calc").addEventListener("click", async () => {
   postHeight();
 });
 </script>
-<script src="../../assets/embed_beacon.js" defer></script>
+<script src="../../assets/embed_beacon.js" defer>
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
+</script>
+<script src="../../assets/a11y_error.js" defer></script>
 </body>
 </html>

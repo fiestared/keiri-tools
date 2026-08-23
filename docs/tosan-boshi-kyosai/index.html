@@ -122,6 +122,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -131,7 +133,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 倒産防止共済（経営セーフティ共済）節税シミュレーター</nav>
 
 <section class="hero">
@@ -156,7 +158,8 @@
   <input type="number" id="kaiyaku-kazei" placeholder="空欄＝掛金を払う年と同じ" inputmode="numeric" min="0" step="10000">
 
   <button class="primary" id="calc">入口と出口の両方を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   <p class="hint" id="src-hint" style="margin-top:10px"></p>
 </div>
 
@@ -206,7 +209,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>　</th><th>倒産防止共済（必要経費）</th><th>iDeCo・小規模企業共済（所得控除）</th></tr>
+<tr><th>　</th><th scope="col">倒産防止共済（必要経費）</th><th scope="col">iDeCo・小規模企業共済（所得控除）</th></tr>
 </thead>
 <tbody>
 <tr><td>所得税・住民税</td><td>下がる</td><td>下がる</td></tr>
@@ -236,7 +239,7 @@
 <div class="scroll-wrap">
 <table id="kurinobe-table">
 <thead>
-<tr><th>　</th><th>① 同じ所得のまま一括解約</th><th>② 課税所得0円の年（廃業・赤字）に解約</th></tr>
+<tr><th>　</th><th scope="col">① 同じ所得のまま一括解約</th><th scope="col">② 課税所得0円の年（廃業・赤字）に解約</th></tr>
 </thead>
 <tbody>
 <tr><td>入口: 掛金40か月の累計節税</td><td>+1,216,800円</td><td>+1,216,800円</td></tr>
@@ -289,7 +292,7 @@
 <div class="scroll-wrap">
 <table id="kaiyaku-shurui-table">
 <thead>
-<tr><th>掛金納付月数</th><th>任意解約<br><span class="hint">自分の意思で解約</span></th><th>みなし解約<br><span class="hint">個人事業主の死亡・法人の解散・分割・事業の全部譲渡</span></th><th>機構解約<br><span class="hint">12か月分以上の掛金滞納・不正受給による解除</span></th></tr>
+<tr><th scope="col">掛金納付月数</th><th scope="col">任意解約<br><span class="hint">自分の意思で解約</span></th><th scope="col">みなし解約<br><span class="hint">個人事業主の死亡・法人の解散・分割・事業の全部譲渡</span></th><th scope="col">機構解約<br><span class="hint">12か月分以上の掛金滞納・不正受給による解除</span></th></tr>
 </thead>
 <tbody>
 <tr><td>1〜11か月</td><td>0%</td><td>0%</td><td>0%</td></tr>
@@ -517,6 +520,11 @@ $("calc").addEventListener("click", async () => {
 /* ---------- 他のツールから課税所得を受け取る（共通部品） ---------- */
 import { applyPrefill } from "../assets/prefill.js";
 applyPrefill({ inputId: "kaiyaku-kazei", key: "kazei" });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

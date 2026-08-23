@@ -118,6 +118,8 @@
 </style>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -127,8 +129,8 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
-  <nav class="breadcrumb">ホーム › 補助金の検索</nav>
+<main id="main" tabindex="-1">
+  <nav class="breadcrumb"><a href="../">ホーム</a> › 補助金の検索</nav>
   <h1>補助金の検索</h1>
 
   <nav class="hj-tabs" aria-label="補助金のデータの種類">
@@ -216,7 +218,8 @@
     </div>
     </details>
   </section>
-  <section class="result" id="result"></section>
+  <section role="status" aria-live="polite" class="result" id="result"></section>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
 <section class="faq">
 <h2 id="faq">よくある質問</h2>
@@ -488,6 +491,11 @@ fetch("../assets/koyou_joseikin.json").then((r) => r.json()).then((d) => {
   $("hj-tab-n3").textContent = `${KOYOU_NAMES.length}制度`;
   requestAnimationFrame(() => render());   // 名前が届いたら誘導を出し直す
 }).catch(() => {});
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

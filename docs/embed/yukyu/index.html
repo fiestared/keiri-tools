@@ -73,7 +73,8 @@
 
   <button id="calc" type="button">計算する</button>
 
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
   <div class="brand">
     🧮 <a href="https://keiri-tools.com/yukyu/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
@@ -132,7 +133,7 @@ $("calc").addEventListener("click", () => {
         : `<div class="hint" style="margin-top:8px">付与日数が10日未満のため、年5日の取得義務の対象外です。</div>`}
       ${g.next ? `<div style="font-size:13.5px;margin-top:10px">次回の付与: <b>${g.next.date.replaceAll("-", "/")}</b>（${g.next.days}日）</div>` : ""}
       <div style="overflow-x:auto"><table>
-        <tr><th>付与日</th><th>勤続</th><th style="text-align:right">付与日数</th><th style="text-align:center">年5日義務</th></tr>
+        <tr><th scope="col">付与日</th><th scope="col">勤続</th><th scope="col" style="text-align:right">付与日数</th><th scope="col" style="text-align:center">年5日義務</th></tr>
         ${rows.map(r => {
           const past = r.date <= today; // 文字列比較（new Date("YYYY-MM-DD")はUTC扱いで当日の朝に狂う）
           return `<tr style="${past ? "" : "color:var(--sub)"}">
@@ -149,6 +150,11 @@ $("calc").addEventListener("click", () => {
   postHeight();
 });
 </script>
-<script src="../../assets/embed_beacon.js" defer></script>
+<script src="../../assets/embed_beacon.js" defer>
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
+</script>
+<script src="../../assets/a11y_error.js" defer></script>
 </body>
 </html>

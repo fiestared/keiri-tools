@@ -114,6 +114,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -123,7 +125,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 老齢年金の受給見込額 計算機</nav>
 
 <section class="hero">
@@ -157,7 +159,7 @@
 
   <label style="margin-top:16px">③ 国民年金の月数（ねんきん定期便の「国民年金」欄）</label>
   <table class="tbl" id="months-table" style="margin-top:8px">
-    <thead><tr><th>期間の種類</th><th>月数</th><th>年金額への反映</th></tr></thead>
+    <thead><tr><th scope="col">期間の種類</th><th scope="col">月数</th><th scope="col">年金額への反映</th></tr></thead>
     <tbody id="months-body"></tbody>
   </table>
   <p class="hint" style="margin-top:6px" id="gakuno-hint"></p>
@@ -177,7 +179,7 @@
   <label style="margin-top:16px">⑤ 厚生年金（会社員・公務員だった期間）</label>
   <p class="hint" style="margin-top:4px">平均標準報酬は「ねんきん定期便」やねんきんネットの記録から確認できます（平成15年3月以前は賞与を含まない月額、平成15年4月以後は賞与を含む額）。</p>
   <table class="tbl" id="kosei-table" style="margin-top:8px">
-    <thead><tr><th>期間</th><th>平均標準報酬（円／月）</th><th>月数</th><th>乗率</th></tr></thead>
+    <thead><tr><th scope="col">期間</th><th scope="col">平均標準報酬（円／月）</th><th scope="col">月数</th><th scope="col">乗率</th></tr></thead>
     <tbody>
       <tr>
         <td><b id="pre-label"></b><br><span class="hint" id="pre-base"></span></td>
@@ -201,7 +203,8 @@
   </p>
 
   <button class="primary" id="calc" style="margin-top:16px">受給見込額を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <article>
@@ -563,7 +566,7 @@ $("calc").addEventListener("click", async () => {
     <div style="font-size:15px">年金の見込額（年額） <b style="font-size:22px" id="total">${yenF(r.yearly)}</b>
       <span class="hint">（月あたり約<b id="monthly">${yenF(r.monthly)}</b>）</span></div>
     <table class="tbl" style="margin-top:10px">
-      <thead><tr><th>年金の種類</th><th>調整前（年額）</th><th>調整後（年額）</th></tr></thead>
+      <thead><tr><th scope="col">年金の種類</th><th scope="col">調整前（年額）</th><th scope="col">調整後（年額）</th></tr></thead>
       <tbody>
         <tr><td><b>老齢基礎年金</b><br><span class="hint">満額 ${yenF(r.mangaku.yen)} × ${Math.round(r.detail.kiso.creditedMonths * 1000) / 1000}月 ÷ ${DATA.kiso.kanyu_kano_months}月</span></td>
           <td>${yenF(r.before.kiso)}</td><td><b id="kiso">${yenF(r.kiso)}</b></td></tr>
@@ -579,7 +582,7 @@ $("calc").addEventListener("click", async () => {
       反映された月数は<b id="credited">${Math.round(r.detail.kiso.creditedMonths * 1000) / 1000}月</b>
       ／${DATA.kiso.kanyu_kano_months}月${r.detail.kiso.capped ? "（<b id=\"kiso-capped\">合計の上限480月を適用しました</b>）" : ""}。</div>
     ${menjoRows ? `<table class="tbl" style="margin-top:10px">
-      <thead><tr><th>期間の種類</th><th>入力した月数</th><th>反映のしかた</th><th>反映月数</th></tr></thead>
+      <thead><tr><th scope="col">期間の種類</th><th scope="col">入力した月数</th><th scope="col">反映のしかた</th><th scope="col">反映月数</th></tr></thead>
       <tbody>${menjoRows}</tbody></table>
       <div class="hint" style="margin-top:6px" id="menjo-note">★号ごとの上限は「${DATA.kiso.kanyu_kano_months}月 − <b>それより前の号のもとの月数</b>」で、率を掛けたあとの月数ではありません（施行令ではなく法27条ただし書）。超過分は一段低い率で拾われますが、<b>全額免除だけは拾う号が無く反映されません</b>。</div>` : ""}
     <div class="hint" style="margin-top:6px" id="kosei-breakdown">老齢厚生年金の内訳（調整前）— 平成15年3月以前 ${yenF(r.detail.kosei.preYen)}（1000分の${DATA.kosei.joritsu[0].rate_per_mille}）／平成15年4月以後 ${yenF(r.detail.kosei.postYen)}（1000分の${DATA.kosei.joritsu[1].rate_per_mille}）。</div>
@@ -601,6 +604,11 @@ function paintMeta() {
     + `付加年金は月あたり${yenF(DATA.fuka.yen_per_month)}、`
     + `繰上げ${pct(DATA.kuriage.rate_per_month)}／繰下げ${pct(DATA.kurisage.rate_per_month)}（1か月あたり）です。`;
 }
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

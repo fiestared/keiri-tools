@@ -130,6 +130,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -139,7 +141,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 勤労学生控除シミュレーター</nav>
 
 <section class="hero">
@@ -166,7 +168,8 @@
   <input type="number" id="shaho" placeholder="例: 0" inputmode="numeric" min="0" step="10000">
 
   <button class="primary" id="calc">対象になるか判定する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   <p class="hint" id="src-hint" style="margin-top:10px"></p>
 </div>
 
@@ -205,7 +208,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>要件</th><th>内容</th><th>つまずきやすい点</th></tr>
+<tr><th scope="col">要件</th><th scope="col">内容</th><th scope="col">つまずきやすい点</th></tr>
 </thead>
 <tbody>
 <tr><td><b>① 学校の学生・生徒であること</b></td><td>下の表の3区分のどれかに当てはまること</td><td>専修学校・各種学校は<b>課程の要件</b>がある（下の表）</td></tr>
@@ -220,7 +223,7 @@
 <div class="scroll-wrap">
 <table id="school-range-table">
 <thead>
-<tr><th>区分</th><th>あてはまる学校</th><th>条件</th></tr>
+<tr><th scope="col">区分</th><th scope="col">あてはまる学校</th><th scope="col">条件</th></tr>
 </thead>
 <tbody>
 <tr><td><b>イ　学校教育法1条の学校</b></td><td>大学・大学院・短大・高等専門学校・高校・中学校など（通信制・定時制・放送大学を含む）</td><td><b>無条件で対象</b></td></tr>
@@ -297,7 +300,7 @@
 <div class="scroll-wrap">
 <table id="jumin-rei">
 <thead>
-<tr><th>バイト年収</th><th>控除なしの住民税</th><th>勤労学生控除ありの住民税</th><th><b>安くなる額</b></th></tr>
+<tr><th scope="col">バイト年収</th><th scope="col">控除なしの住民税</th><th scope="col">勤労学生控除ありの住民税</th><th scope="col"><b>安くなる額</b></th></tr>
 </thead>
 <tbody>
 <tr><td><b>119万円以下</b></td><td>0円</td><td>0円</td><td><b>0円</b>（もともと非課税）</td></tr>
@@ -327,7 +330,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th></th><th>勤労学生控除</th><th>親の扶養控除</th></tr>
+<tr><th></th><th scope="col">勤労学生控除</th><th scope="col">親の扶養控除</th></tr>
 </thead>
 <tbody>
 <tr><td><b>誰の税金が安くなるか</b></td><td><b>あなた自身</b>の住民税</td><td><b>親</b>の所得税・住民税</td></tr>
@@ -617,6 +620,11 @@ $("calc").addEventListener("click", async () => {
 
   box.innerHTML = html;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

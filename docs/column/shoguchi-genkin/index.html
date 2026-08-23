@@ -147,6 +147,8 @@ gtag('config', 'G-E742DSDHPD');
 <script src="../../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -156,7 +158,7 @@ gtag('config', 'G-E742DSDHPD');
     <a href="../../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 小口現金とは</nav>
 <article>
   <h1>小口現金とは — 条を割いた法令は1本だけ。定額資金前渡法と現金過不足の実務</h1>
@@ -199,7 +201,7 @@ gtag('config', 'G-E742DSDHPD');
   <p>e-Gov法令API v2 の全法令キーワード検索で「小口現金」を検索すると、返ってくるのは<b>15センテンス・3法令</b>です。内訳は次のとおりでした。</p>
 
   <table>
-    <thead><tr><th>法令</th><th>件数</th><th>出てくる場所</th></tr></thead>
+    <thead><tr><th scope="col">法令</th><th scope="col">件数</th><th scope="col">出てくる場所</th></tr></thead>
     <tbody>
       <tr><td>地方公務員等共済組合法施行規程</td><td>10</td><td>条の見出し1か所（54条の3）＋ 別表の勘定科目表</td></tr>
       <tr><td>地方公務員等共済組合法施行規則</td><td>4</td><td>別表の勘定科目表のみ</td></tr>
@@ -222,7 +224,7 @@ gtag('config', 'G-E742DSDHPD');
   <p>同じ規程の他の条を並べると、実務で決めるべきことがそのまま条文の形で出てきます。</p>
 
   <table>
-    <thead><tr><th>実務で決めること</th><th>条</th><th>条文が定めていること</th></tr></thead>
+    <thead><tr><th scope="col">実務で決めること</th><th scope="col">条</th><th scope="col">条文が定めていること</th></tr></thead>
     <tbody>
       <tr><td>誰が持つか</td><td>18条1項</td><td>会計単位の長が<b>出納主任を任命</b>し、取引の遂行・資産の保管・帳簿と証ひょう書類の保存をつかさどらせる</td></tr>
       <tr><td>手元にいくら置くか</td><td>54条の3</td><td><b>主務大臣が定める金額の範囲内</b>（＝上限をあらかじめ決めておく）</td></tr>
@@ -289,7 +291,7 @@ gtag('config', 'G-E742DSDHPD');
   <p>定額を<b>50,000円</b>として、8月の1か月を追ってみます。</p>
 
   <table>
-    <thead><tr><th>日付</th><th>内容</th><th>支出</th><th>残高</th></tr></thead>
+    <thead><tr><th scope="col">日付</th><th scope="col">内容</th><th scope="col">支出</th><th scope="col">残高</th></tr></thead>
     <tbody>
       <tr><td>8/1</td><td>前渡（定額）</td><td>—</td><td>50,000</td></tr>
       <tr><td>8/4</td><td>郵便切手</td><td>2,100</td><td>47,900</td></tr>
@@ -305,7 +307,7 @@ gtag('config', 'G-E742DSDHPD');
   <p>補給の仕訳は、支払の中身を科目ごとに振り分けたうえで、相手科目を当座預金などにします。</p>
 
   <table>
-    <thead><tr><th>借方</th><th>金額</th><th>貸方</th><th>金額</th></tr></thead>
+    <thead><tr><th scope="col">借方</th><th scope="col">金額</th><th scope="col">貸方</th><th scope="col">金額</th></tr></thead>
     <tbody>
       <tr><td>通信費（切手）</td><td>2,100</td><td rowspan="5">当座預金</td><td rowspan="5">17,620</td></tr>
       <tr><td>会議費（茶菓）</td><td>3,240</td></tr>
@@ -342,7 +344,7 @@ gtag('config', 'G-E742DSDHPD');
   <p>ただ、その勘定科目表の置き方が示唆的でした。保健・医療・宿泊・物資の4つの経理について科目表が用意されているのですが、<b>そのどれもが、同じ表の中で「現金過不足」を2回、借方と貸方の両方に置いています</b>（表の各行を木構造から取り出して列位置を判定したもので、目で読んだものではありません）。</p>
 
   <table>
-    <thead><tr><th>側</th><th>大項目</th><th>科目の位置</th><th>意味</th></tr></thead>
+    <thead><tr><th scope="col">側</th><th scope="col">大項目</th><th scope="col">科目の位置</th><th scope="col">意味</th></tr></thead>
     <tbody>
       <tr><td>借方</td><td>経常費用</td><td>中項目「現金過不足」</td><td>実査が帳簿より<b>少ない</b>（不足）ときの受け皿</td></tr>
       <tr><td>貸方</td><td>経常収益</td><td>中項目「現金過不足」</td><td>実査が帳簿より<b>多い</b>（過剰）ときの受け皿</td></tr>
@@ -382,7 +384,7 @@ gtag('config', 'G-E742DSDHPD');
   <p>先ほどの設例で、8月末の帳簿残高が32,380円のところ、実査したら<b>32,000円</b>だった場合を考えます。差額は<b>380円の不足</b>です。</p>
 
   <table>
-    <thead><tr><th>場面</th><th>借方</th><th>貸方</th></tr></thead>
+    <thead><tr><th scope="col">場面</th><th scope="col">借方</th><th scope="col">貸方</th></tr></thead>
     <tbody>
       <tr><td>① 差額を認識したとき</td><td>現金過不足 380</td><td>小口現金 380</td></tr>
       <tr><td>② 原因が判明（電車代380円の記帳漏れ）</td><td>旅費交通費 380</td><td>現金過不足 380</td></tr>
@@ -415,7 +417,7 @@ gtag('config', 'G-E742DSDHPD');
   <p><b>3号には「債務の確定」という条件がありません。</b> 現金がなくなったという事実は、誰かに対する債務が確定したから生じるものではありません。相手方がいない以上、2号の債務確定要件を満たしようがない——だから<b>費用ではなく損失として3号に入る</b>、という筋道になります。</p>
 
   <table>
-    <thead><tr><th></th><th>2号（費用）</th><th>3号（損失）</th></tr></thead>
+    <thead><tr><th></th><th scope="col">2号（費用）</th><th scope="col">3号（損失）</th></tr></thead>
     <tbody>
       <tr><td>対象</td><td>販売費、一般管理費その他の費用</td><td>損失の額（資本等取引以外）</td></tr>
       <tr><td>債務確定の要件</td><td><b>あり</b>（償却費を除く）</td><td><b>条文に無い</b></td></tr>
@@ -448,7 +450,7 @@ gtag('config', 'G-E742DSDHPD');
   <p>ここに続くイ〜ニで、船舶・バス（一般乗合旅客自動車運送事業）・鉄道・軌道による<b>旅客の運送</b>が挙げられています。上の設例でいえば、電車代1,480円はこの特例に乗りますが、<b>タクシー代4,200円は乗りません</b>。タクシーは一般乗合旅客自動車運送事業ではないためです。金額が3万円未満でも、領収書（適格請求書）が要ります。</p>
 
   <table>
-    <thead><tr><th>設例の支出</th><th>領収書が無くても控除できるか</th><th>理由</th></tr></thead>
+    <thead><tr><th scope="col">設例の支出</th><th scope="col">領収書が無くても控除できるか</th><th scope="col">理由</th></tr></thead>
     <tbody>
       <tr><td>電車代 1,480円</td><td>できる（帳簿の保存のみ）</td><td>公共交通機関特例（3万円未満）</td></tr>
       <tr><td>タクシー代 4,200円</td><td>公共交通機関特例では<b>できない</b></td><td>乗合ではないため同特例の対象外。ただし出張に伴うものなら別の道がある（下記）</td></tr>
@@ -470,7 +472,7 @@ gtag('config', 'G-E742DSDHPD');
   <p>小口現金を廃止し、法人カードや立替精算に切り替える会社は増えています。判断材料を整理します。</p>
 
   <table>
-    <thead><tr><th></th><th>小口現金を置く</th><th>廃止して法人カード・立替精算</th></tr></thead>
+    <thead><tr><th></th><th scope="col">小口現金を置く</th><th scope="col">廃止して法人カード・立替精算</th></tr></thead>
     <tbody>
       <tr><td>手元の現金</td><td>ある（盗難・紛失の損害額の上限になる）</td><td>無い</td></tr>
       <tr><td>実査</td><td>必要（差額が出ると原因調査）</td><td>不要</td></tr>

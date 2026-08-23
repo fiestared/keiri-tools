@@ -98,6 +98,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -107,8 +109,8 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
-  <nav class="breadcrumb">ホーム › 補助金の経理・税務</nav>
+<main id="main" tabindex="-1">
+  <nav class="breadcrumb"><a href="../">ホーム</a> › 補助金の経理・税務</nav>
   <h1>補助金の経理・税務</h1>
   <p class="lead">補助金をもらったときの<b>圧縮限度額・仕訳・減価償却</b>を計算します。★分かれ目は「補助金をもらったか」ではなく<b>「返還を要しないことが期末までに確定したか」</b>です。</p>
 
@@ -158,10 +160,10 @@
     </div>
 
     <div class="result" id="result" aria-live="polite"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
-  <div class="toc-title">目次</div>
-  <ul class="toc">
+  <nav class="toc"><div class="toc-title">目次</div><ol>
     <li><a href="#san-bunki">42条・43条・44条の分かれ目</a></li>
     <li><a href="#kurinobe">圧縮記帳は非課税ではありません</a></li>
     <li><a href="#houshiki-setsu">2つの方式で減価償却が変わる</a></li>
@@ -169,12 +171,12 @@
     <li><a href="#dekinai">このツールが判定しないこと</a></li>
     <li><a href="#faq">よくある質問</a></li>
     <li><a href="#shutten">出典</a></li>
-  </ul>
+  </ol></nav>
 
   <h2 id="san-bunki">42条・43条・44条の分かれ目</h2>
   <div class="scroll-wrap">
   <table id="bunki-hyo">
-    <tr><th>状況</th><th>条文</th><th>処理</th></tr>
+    <tr><th scope="col">状況</th><th scope="col">条文</th><th scope="col">処理</th></tr>
     <tr><td>返還不要が<b>期末までに確定</b>し、対象資産も取得済み</td><td>法人税法<b>42条</b>1項</td><td>圧縮記帳（直接減額／積立金）</td></tr>
     <tr><td>返還不要が期末までに<b>確定していない</b></td><td>法人税法<b>43条</b>1項</td><td><b>特別勘定</b>を設けて損金算入</td></tr>
     <tr><td>特別勘定を持っていて、<b>あとで確定</b>した</td><td>法人税法<b>44条</b>1項</td><td>その確定した日の属する事業年度に圧縮記帳</td></tr>
@@ -301,20 +303,20 @@ async function render() {
     <div class="big" id="jobun">${b.jobun}</div>
     <div class="hint" style="margin-bottom:10px" id="shori">${b.shori}</div>
     <table class="res">
-      <tr><th>条文の要件</th><td id="youken">${b.youken}</td></tr>
-      ${b._note ? `<tr><th>注意</th><td id="bunki-note">${b._note}</td></tr>` : ""}
+      <tr><th scope="row">条文の要件</th><td id="youken">${b.youken}</td></tr>
+      ${b._note ? `<tr><th scope="row">注意</th><td id="bunki-note">${b._note}</td></tr>` : ""}
       ${b.key === BUNKI.MIKAKUTEI ? "" : `
-      <tr><th>圧縮限度額</th><td><b id="gendo">${yen(assyuku.gendo)}</b>${
+      <tr><th scope="row">圧縮限度額</th><td><b id="gendo">${yen(assyuku.gendo)}</b>${
         assyuku.capped ? "　★<b>取得価額で頭打ち</b>（帳簿価額より大きくは減らせません）" : ""}</td></tr>
-      <tr><th>償却の基礎になる価額</th><td id="base">${yen(mine.base)}（${houshiki === "chokusetsu" ? "圧縮後" : "取得価額のまま"}）</td></tr>
-      <tr><th>当期の減価償却費</th><td><b id="genka">${yen(mine.genka)}</b></td></tr>
-      <tr><th>★もう一方の方式なら</th><td id="hikaku">${houshiki === "chokusetsu"
+      <tr><th scope="row">償却の基礎になる価額</th><td id="base">${yen(mine.base)}（${houshiki === "chokusetsu" ? "圧縮後" : "取得価額のまま"}）</td></tr>
+      <tr><th scope="row">当期の減価償却費</th><td><b id="genka">${yen(mine.genka)}</b></td></tr>
+      <tr><th scope="row">★もう一方の方式なら</th><td id="hikaku">${houshiki === "chokusetsu"
         ? `積立金方式: 償却の基礎 ${yen(t.base)} ／ 減価償却費 ${yen(t.genka)}`
         : `直接減額方式: 償却の基礎 ${yen(c.base)} ／ 減価償却費 ${yen(c.genka)}`} — 当期の差 <b>${yen(Math.abs(t.genka - c.genka))}</b></td></tr>`}
     </table>
     <div class="toc-title" style="margin-top:14px">仕訳</div>
     <div class="scroll-wrap"><table class="res" id="shiwake-hyo">
-      <tr><th>時点</th><th>仕訳</th><th>注意</th></tr>${shiwakeHtml}
+      <tr><th scope="col">時点</th><th scope="col">仕訳</th><th scope="col">注意</th></tr>${shiwakeHtml}
     </table></div>
     <div class="note" style="margin-top:12px">
       ★<b>圧縮記帳は課税を繰り延べる制度で、非課税にする制度ではありません</b>（法人税法22条2項）。
@@ -329,6 +331,11 @@ for (const id of ["kakutei", "shutoku", "tokubetsu", "hojokin", "shutoku-kagaku"
   $(id).addEventListener("change", render);
 }
 render();
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

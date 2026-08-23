@@ -122,6 +122,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -131,7 +133,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 再就職手当 計算機</nav>
 
 <section class="hero">
@@ -197,7 +199,8 @@
   </div>
 
   <button class="primary" id="calc">計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
   <div class="note" id="cliff-note">
     <b>★ 1日遅く就職すると、基本手当1日分より大きな額を失うことがあります</b>
@@ -356,11 +359,11 @@ $("calc").addEventListener("click", async () => {
 
   const base = `
     <table class="res">
-      <tr><th>基本手当日額</th><td>${yen(k.daily)}／日（所定給付日数 <b>${k.days}日</b>・${REASONS[$("reason").value]}）</td></tr>
-      <tr><th>計算に使う日額</th><td><b>${yen(r.dailyUsed)}</b>${r.cappedApplied ? `（上限 ${yen(r.cap)} が適用されました）` : "（上限に当たっていません）"}</td></tr>
-      <tr><th>支給残日数</th><td>${r.remaining}日（所定給付日数 ${r.prescribed}日 の
+      <tr><th scope="row">基本手当日額</th><td>${yen(k.daily)}／日（所定給付日数 <b>${k.days}日</b>・${REASONS[$("reason").value]}）</td></tr>
+      <tr><th scope="row">計算に使う日額</th><td><b>${yen(r.dailyUsed)}</b>${r.cappedApplied ? `（上限 ${yen(r.cap)} が適用されました）` : "（上限に当たっていません）"}</td></tr>
+      <tr><th scope="row">支給残日数</th><td>${r.remaining}日（所定給付日数 ${r.prescribed}日 の
         ${r.prescribed > 0 ? Math.floor((r.remaining / r.prescribed) * 1000) / 10 : 0}％）</td></tr>
-      <tr><th>支給率</th><td><b>${r.rateLabel}</b>${r.tenths ? `（10分の${r.tenths}）` : ""}</td></tr>
+      <tr><th scope="row">支給率</th><td><b>${r.rateLabel}</b>${r.tenths ? `（10分の${r.tenths}）` : ""}</td></tr>
     </table>`;
 
   // ① 支給残日数が3分の1に届かない ＝ 要件そのものを満たさない
@@ -408,13 +411,18 @@ $("calc").addEventListener("click", async () => {
     <div class="big">再就職手当　${yen(r.amount)}</div>
     ${base}
     <table class="res">
-      <tr><th>支給額</th><td>${yen(r.dailyUsed)} × ${r.remaining}日 × 10分の${r.tenths} ＝ <b>${yen(r.amount)}</b></td></tr>
-      <tr><th>就業促進定着手当</th><td>上限 <b>${yen(r.teichakuCap)}</b>（実額は再就職後6か月の賃金の下がり方で決まります）</td></tr>
+      <tr><th scope="row">支給額</th><td>${yen(r.dailyUsed)} × ${r.remaining}日 × 10分の${r.tenths} ＝ <b>${yen(r.amount)}</b></td></tr>
+      <tr><th scope="row">就業促進定着手当</th><td>上限 <b>${yen(r.teichakuCap)}</b>（実額は再就職後6か月の賃金の下がり方で決まります）</td></tr>
     </table>
     ${capNote}
     ${cliffNote}
     <div class="hint">申請期限は<b>就職日の翌日から1か月以内</b>です（施行規則82条の3）。事業主の証明が要るので、早めに再就職先へ依頼してください。</div>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

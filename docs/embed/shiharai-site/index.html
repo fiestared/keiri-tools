@@ -88,7 +88,8 @@
 
   <button id="calc" type="button">向こう12ヶ月の支払日を計算</button>
 
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 
   <div class="brand">
     🧮 <a href="https://keiri-tools.com/shiharai-site/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
@@ -162,13 +163,18 @@ $("calc").addEventListener("click", async () => {
   box.innerHTML = `
     <div class="cond">${condLabel(c)}</div>
     <div style="overflow-x:auto"><table>
-      <tr><th>締め期間</th><th>支払予定日</th><th>備考</th></tr>
+      <tr><th scope="col">締め期間</th><th scope="col">支払予定日</th><th scope="col">備考</th></tr>
       ${body}</table></div>
     ${note}
     <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 取引先ごとの保存・.ics出力を見る</a></div>`;
   postHeight();
 });
 </script>
-<script src="../../assets/embed_beacon.js" defer></script>
+<script src="../../assets/embed_beacon.js" defer>
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
+</script>
+<script src="../../assets/a11y_error.js" defer></script>
 </body>
 </html>

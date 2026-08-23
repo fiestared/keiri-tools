@@ -133,6 +133,8 @@
      crossorigin="anonymous"></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -142,7 +144,7 @@
     <a href="../../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 手形とは</nav>
 <article>
   <h1>手形とは？ 1つ欠ければ無効、裏書しても債務は消えない — でんさいとの違いまで</h1>
@@ -202,7 +204,7 @@
       <text x="300" y="176" font-size="11" fill="var(--accent)">⑤ 救済なし</text>
       <text x="34" y="206" font-size="12" fill="currentColor">振出日・振出地</text>
       <text x="160" y="206" font-size="12" fill="currentColor">令和8年8月31日／東京</text>
-      <text x="330" y="206" font-size="11" fill="var(--warn-line)">⑥ 地は補えるが「日」は補えない</text>
+      <text x="330" y="206" font-size="11" fill="var(--warn-ink)">⑥ 地は補えるが「日」は補えない</text>
       <text x="34" y="234" font-size="12" fill="currentColor">振出人</text>
       <text x="160" y="234" font-size="12" fill="currentColor">株式会社△△　代表取締役 印</text>
       <text x="380" y="234" font-size="11" fill="var(--accent)">⑦ 救済なし</text>
@@ -239,7 +241,7 @@
 
   <div class="scroll-wrap">
   <table>
-    <thead><tr><th>場面</th><th>借方</th><th>貸方</th></tr></thead>
+    <thead><tr><th scope="col">場面</th><th scope="col">借方</th><th scope="col">貸方</th></tr></thead>
     <tbody>
       <tr><td>受取：売掛金の回収として手形を受け取った</td><td>受取手形 1,200,000</td><td>売掛金 1,200,000</td></tr>
       <tr><td>受取：期日に当座へ入金された</td><td>当座預金 1,200,000</td><td>受取手形 1,200,000</td></tr>
@@ -259,7 +261,7 @@
 
   <div class="scroll-wrap">
   <table>
-    <thead><tr><th>場面</th><th>借方</th><th>貸方</th></tr></thead>
+    <thead><tr><th scope="col">場面</th><th scope="col">借方</th><th scope="col">貸方</th></tr></thead>
     <tbody>
       <tr><td>割引：銀行で割り引いて入金された（割引料15,000）</td><td>当座預金 1,185,000<br>手形売却損 15,000</td><td>受取手形 1,200,000</td></tr>
       <tr><td>裏書：仕入先への買掛金の支払に充てた</td><td>買掛金 1,200,000</td><td>受取手形 1,200,000</td></tr>
@@ -288,7 +290,7 @@
 
   <div class="scroll-wrap">
   <table>
-    <thead><tr><th>場面</th><th>借方</th><th>貸方</th></tr></thead>
+    <thead><tr><th scope="col">場面</th><th scope="col">借方</th><th scope="col">貸方</th></tr></thead>
     <tbody>
       <tr><td>不渡りになった（償還請求費用3,000を立替）</td><td>不渡手形 1,203,000</td><td>受取手形 1,200,000<br>現金 3,000</td></tr>
       <tr><td>裏書譲渡した手形が不渡りになり、遡求を受けて支払った</td><td>不渡手形 1,200,000</td><td>当座預金 1,200,000</td></tr>
@@ -329,10 +331,10 @@
       <text x="366" y="45" font-size="11" fill="var(--sub)">責任は残らない</text>
       <rect x="200" y="77" width="150" height="36" rx="5" fill="none" stroke="currentColor" stroke-width="1"/>
       <text x="275" y="100" font-size="12" text-anchor="middle" fill="currentColor">銀行で割引</text>
-      <text x="366" y="100" font-size="11" fill="var(--warn-line)">遡求義務が残る（43条）</text>
+      <text x="366" y="100" font-size="11" fill="var(--warn-ink)">遡求義務が残る（43条）</text>
       <rect x="200" y="132" width="150" height="36" rx="5" fill="none" stroke="currentColor" stroke-width="1"/>
       <text x="275" y="155" font-size="12" text-anchor="middle" fill="currentColor">裏書譲渡</text>
-      <text x="366" y="155" font-size="11" fill="var(--warn-line)">遡求義務が残る（43条）</text>
+      <text x="366" y="155" font-size="11" fill="var(--warn-ink)">遡求義務が残る（43条）</text>
       <rect x="200" y="187" width="150" height="36" rx="5" fill="none" stroke="currentColor" stroke-width="1"/>
       <text x="275" y="210" font-size="12" text-anchor="middle" fill="currentColor">不渡り</text>
       <text x="366" y="203" font-size="11" fill="var(--accent)">不渡手形へ振替。取引停止</text>
@@ -357,7 +359,7 @@
 
   <div class="scroll-wrap">
   <table>
-    <thead><tr><th></th><th>約束手形</th><th>でんさい（電子記録債権）</th></tr></thead>
+    <thead><tr><th></th><th scope="col">約束手形</th><th scope="col">でんさい（電子記録債権）</th></tr></thead>
     <tbody>
       <tr><td>根拠法</td><td>手形法（昭和7年法律第20号）</td><td>電子記録債権法（平成19年法律第102号）</td></tr>
       <tr><td>権利が生まれる時</td><td>7項目を記載した証券を交付したとき（75条）</td><td>発生記録をしたとき（15条）</td></tr>

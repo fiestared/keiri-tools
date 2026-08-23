@@ -114,6 +114,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -123,7 +125,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 小規模企業共済 節税シミュレーター</nav>
 
 <section class="hero">
@@ -139,7 +141,8 @@
   <input type="number" id="monthly" value="30000" min="1000" max="70000" step="500" inputmode="numeric">
 
   <button class="primary" id="calc">節税額を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <article>
@@ -192,7 +195,7 @@
 
 <table>
 <thead>
-<tr><th>項目</th><th>内容</th></tr>
+<tr><th scope="col">項目</th><th scope="col">内容</th></tr>
 </thead>
 <tbody>
 <tr><td>掛金月額</td><td><b>1,000円〜70,000円</b>の範囲で、<b>500円単位</b></td></tr>
@@ -215,7 +218,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>課税される所得金額</th><th>月1万円<br>（年12万円）</th><th>月3万円<br>（年36万円）</th><th>月5万円<br>（年60万円）</th><th>月7万円<br>（年84万円・上限）</th></tr>
+<tr><th scope="col">課税される所得金額</th><th scope="col">月1万円<br>（年12万円）</th><th scope="col">月3万円<br>（年36万円）</th><th scope="col">月5万円<br>（年60万円）</th><th scope="col">月7万円<br>（年84万円・上限）</th></tr>
 </thead>
 <tbody>
 <tr><td>195万円</td><td>18,126円<br>（15.1%）</td><td>54,378円<br>（15.1%）</td><td>90,630円<br>（15.1%）</td><td>126,882円<br>（15.1%）</td></tr>
@@ -268,7 +271,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>課税される所得金額</th><th>税率</th><th>控除額</th></tr>
+<tr><th scope="col">課税される所得金額</th><th scope="col">税率</th><th scope="col">控除額</th></tr>
 </thead>
 <tbody>
 <tr><td>1,000円 〜 194万9,000円</td><td>5%</td><td>0円</td></tr>
@@ -290,7 +293,7 @@
 
 <table>
 <thead>
-<tr><th>受け取り方</th><th>税金の扱い</th></tr>
+<tr><th scope="col">受け取り方</th><th scope="col">税金の扱い</th></tr>
 </thead>
 <tbody>
 <tr><td>一括で受け取る</td><td><b>退職所得</b>扱い（退職所得控除が使える）</td></tr>
@@ -443,8 +446,8 @@ $("calc").addEventListener("click", async () => {
       <span class="hint">（掛金 年${yen(r.annual)} の ${(r.effectiveRate * 100).toFixed(1)}%）</span></div>
     <div style="overflow-x:auto;margin-top:10px">
     <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
-      <tr style="background:#e7f3f0"><th style="text-align:left;padding:6px 8px">内わけ</th>
-        <th style="text-align:right;padding:6px 8px">年額</th></tr>
+      <tr style="background:#e7f3f0"><th scope="col" style="text-align:left;padding:6px 8px">内わけ</th>
+        <th scope="col" style="text-align:right;padding:6px 8px">年額</th></tr>
       ${trow("所得税の減少", r.shotokuGen, `課税所得 ${yen(r.kazeiShotoku)} → ${yen(Math.max(0, r.kazeiShotoku - r.usedDeduction))}（速算表の差）`)}
       ${trow("復興特別所得税の減少", r.fukkoGen, "所得税の減少 × 2.1%")}
       ${trow("住民税の減少（概算）", r.juminGen, "所得割 一律10%で概算")}
@@ -480,6 +483,11 @@ $("calc").addEventListener("click", async () => {
 /* ---------- 他のツールから課税所得を受け取る（共通部品） ---------- */
 import { applyPrefill } from "../assets/prefill.js";
 applyPrefill({ inputId: "kazei", key: "kazei" });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

@@ -138,6 +138,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -147,7 +149,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 減価償却費の計算機</nav>
 
 <section class="hero">
@@ -198,7 +200,8 @@
   <input id="ratio" type="number" inputmode="numeric" min="1" max="100" step="1" placeholder="100" value="100">
 
   <button class="primary" id="calc">減価償却費を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <div class="card">
@@ -222,7 +225,7 @@
   <p class="hint" style="margin:-4px 0 10px">※ 50％の判定には、上の計算機の<b>取得価額</b>を使います。</p>
 
   <button class="primary" id="chuko-calc">簡便法で耐用年数を計算する</button>
-  <div class="result" id="chuko-result"></div>
+  <div role="status" aria-live="polite" class="result" id="chuko-result"></div>
 </div>
 
 <article>
@@ -326,7 +329,7 @@
 
 <div class="scroll-wrap">
 <table class="tbl" id="gendo-table">
-<thead><tr><th>区分</th><th>資産</th><th>償却の限度額（帳簿に残る額）</th></tr></thead>
+<thead><tr><th scope="col">区分</th><th scope="col">資産</th><th scope="col">償却の限度額（帳簿に残る額）</th></tr></thead>
 <tbody>
 <tr id="gendo-i"><td>イ</td><td>建物・建物附属設備・構築物・機械装置・船舶・航空機・車両運搬具・工具器具備品・<b>生物</b>（坑道とハを除く）</td><td>取得価額から<b>1円を控除した金額</b>（＝<b>1円が残る</b>）</td></tr>
 <tr id="gendo-ro"><td>ロ</td><td><b>坑道</b>および<b>無形固定資産</b>（ソフトウエア・特許権・営業権・水道施設利用権など）</td><td><b>その取得価額に相当する金額</b>（＝<b>1円を残さず0円まで</b>）</td></tr>
@@ -370,7 +373,7 @@
 
 <div class="scroll-wrap">
 <table class="tbl" id="ritsu-table">
-  <thead><tr><th>耐用年数</th><th>定額法<br><span class="hint">償却率</span></th><th>定率法200%<br><span class="hint">償却率</span></th><th>改定償却率</th><th>保証率</th></tr></thead>
+  <thead><tr><th scope="col">耐用年数</th><th scope="col">定額法<br><span class="hint">償却率</span></th><th scope="col">定率法200%<br><span class="hint">償却率</span></th><th scope="col">改定償却率</th><th scope="col">保証率</th></tr></thead>
   <tbody><tr><td colspan="5">読み込み中…</td></tr></tbody>
 </table>
 </div>
@@ -604,6 +607,11 @@ $("chuko-calc").addEventListener("click", () => {
     <div style="font-size:12.5px;color:var(--sub);margin-top:10px">
       ※ この年数を上の計算機の「耐用年数」に入れると、毎年の償却費が出ます。</div>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

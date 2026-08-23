@@ -106,6 +106,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -115,7 +117,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 住民税 計算機</nav>
 
 <section class="hero">
@@ -224,7 +226,8 @@
   </details>
 
   <button class="primary" id="calc">住民税を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   <div id="handoff"></div>
 </div>
 
@@ -248,7 +251,7 @@
   <h3>★非課税限度額は、均等割と所得割で別々に決まります</h3>
   <p>「住民税が非課税になるライン」は1本ではありません。<b>均等割と所得割で、根拠も金額も別</b>です。</p>
   <table class="res" style="margin-top:12px">
-    <tr><th></th><th>均等割</th><th>所得割</th></tr>
+    <tr><th></th><th scope="col">均等割</th><th scope="col">所得割</th></tr>
     <tr><td><b>根拠</b></td><td>地方税法295条3項＋施行令47条の3＋<b>各自治体の条例</b></td><td>地方税法附則3条の3（<b>法律で直接</b>）</td></tr>
     <tr><td><b>級地による差</b></td><td><b>あり</b>（1.0／0.9／0.8倍）</td><td><b>なし・全国一律</b></td></tr>
     <tr><td><b>扶養家族がいる場合の加算額</b></td><td><b>21万円</b></td><td><b>32万円</b></td></tr>
@@ -442,10 +445,10 @@ $("calc").addEventListener("click", async () => {
         ${H.jonrei295 ? "" : `合計所得金額 <b>${yen(r.goukeiShotoku)}</b> は、均等割の非課税限度額
         <b>${yen(H.kintouLimit)}</b>（${H.kyuchiLabel}・扶養等${H.ninzu - 1}人）以下です。`}</div>
       <table class="res">
-        <tr><th>給与所得</th><td>${yen(r.kyuyoShotoku)}（給与収入 ${yen(shunyu)} − 給与所得控除）</td></tr>
-        <tr><th>合計所得金額</th><td>${yen(r.goukeiShotoku)}</td></tr>
-        <tr><th>均等割の非課税限度額</th><td>${yen(H.kintouLimit)}</td></tr>
-        <tr><th>所得割の非課税限度額</th><td>${yen(H.shotokuLimit)}</td></tr>
+        <tr><th scope="row">給与所得</th><td>${yen(r.kyuyoShotoku)}（給与収入 ${yen(shunyu)} − 給与所得控除）</td></tr>
+        <tr><th scope="row">合計所得金額</th><td>${yen(r.goukeiShotoku)}</td></tr>
+        <tr><th scope="row">均等割の非課税限度額</th><td>${yen(H.kintouLimit)}</td></tr>
+        <tr><th scope="row">所得割の非課税限度額</th><td>${yen(H.shotokuLimit)}</td></tr>
       </table>
       ${jichitaiNote}`;
     return;
@@ -478,11 +481,11 @@ $("calc").addEventListener("click", async () => {
     <div class="hint" style="margin-bottom:10px">所得割 <b>${yen(r.shotokuwariJissai)}</b> ＋ 均等割・森林環境税 <b>${yen(r.kintouwari.total)}</b>（${D._meta.year}の所得にもとづく計算＝<b>${nouzeiNendo()}に納める住民税</b>）</div>
     ${kintouOnlyNote}
     <table class="res">
-      <tr><th>給与所得</th><td>${yen(r.kyuyoShotoku)}（給与収入 ${yen(shunyu)} − 給与所得控除）</td></tr>
-      <tr><th>所得控除の合計</th><td>${yen(r.shotokuKojoGokei)}（基礎控除 ${yen(r.kisoKojo)} ＋ 社会保険料 ${yen(shakai)} ＋ 人的控除 ${yen(r.jintekiKojo)} ほか）</td></tr>
+      <tr><th scope="row">給与所得</th><td>${yen(r.kyuyoShotoku)}（給与収入 ${yen(shunyu)} − 給与所得控除）</td></tr>
+      <tr><th scope="row">所得控除の合計</th><td>${yen(r.shotokuKojoGokei)}（基礎控除 ${yen(r.kisoKojo)} ＋ 社会保険料 ${yen(shakai)} ＋ 人的控除 ${yen(r.jintekiKojo)} ほか）</td></tr>
       ${shotokuRows}
       ${kintouRows}
-      <tr><th>住民税の合計</th><td><b>${yen(r.juminzeiTotal)}</b></td></tr>
+      <tr><th scope="row">住民税の合計</th><td><b>${yen(r.juminzeiTotal)}</b></td></tr>
     </table>
     ${shakaiNote}
     ${jichitaiNote}`;
@@ -553,6 +556,11 @@ function renderHandoff(r, shakai, family) {
       </div>
     </div>`;
 }
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

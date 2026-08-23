@@ -114,6 +114,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -123,7 +125,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 固定資産税・都市計画税 計算機</nav>
 
 <section class="hero">
@@ -193,7 +195,8 @@
   <p class="hint" id="rate-hint" style="margin-top:6px"></p>
 
   <button class="primary" id="calc" style="margin-top:14px">年税額を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <article>
@@ -252,7 +255,7 @@
 <p>ここは取り違えが多いところです。<b>住宅用地の特例の割合は、固定資産税と都市計画税で別々に定められていて、値が違います。</b></p>
 
 <table id="warai-table">
-  <thead><tr><th>区分</th><th>固定資産税の課税標準</th><th>都市計画税の課税標準</th></tr></thead>
+  <thead><tr><th scope="col">区分</th><th scope="col">固定資産税の課税標準</th><th scope="col">都市計画税の課税標準</th></tr></thead>
   <tbody>
     <tr><td><b>小規模住宅用地</b>（住居1戸につき200㎡まで）</td><td>評価額 × <b>6分の1</b></td><td>評価額 × <b>3分の1</b></td></tr>
     <tr><td><b>一般住宅用地</b>（200㎡を超える部分）</td><td>評価額 × <b>3分の1</b></td><td>評価額 × <b>3分の2</b></td></tr>
@@ -269,7 +272,7 @@
 <p id="shinchiku-kotei-nomi">新築の住宅には、一定期間だけ税額を半分にする減額があります。条文は「当該住宅に係る<b>固定資産税額</b>から減額する」と書いており、<b>都市計画税は減額されません</b>（地方税法附則15条の6）。また減額されるのは<b>居住部分の120㎡相当分まで</b>で、それを超える部分の税額はそのまま残ります（同法施行令附則12条4項2号）。</p>
 
 <table id="shinchiku-table">
-  <thead><tr><th>区分</th><th>減額される期間</th><th>減額</th><th>申告</th></tr></thead>
+  <thead><tr><th scope="col">区分</th><th scope="col">減額される期間</th><th scope="col">減額</th><th scope="col">申告</th></tr></thead>
   <tbody>
     <tr><td>一般の新築住宅</td><td>新たに課税される年度から<b>3年度分</b></td><td>2分の1</td><td>条文上の要件なし</td></tr>
     <tr><td>3階建て以上の中高層耐火建築物</td><td><b>5年度分</b></td><td>2分の1</td><td>条文上の要件なし</td></tr>
@@ -417,7 +420,7 @@ $("calc").addEventListener("click", () => {
     <div style="font-size:15px">年税額の合計 <b style="font-size:22px" id="total">${yenF(r.total)}</b></div>
     <div style="margin-top:6px">固定資産税 <b id="kotei-total">${yenF(r.koteiTotal)}</b>　都市計画税 <b id="toshi-total">${yenF(r.toshiTotal)}</b></div>
     <table style="margin-top:10px">
-      <thead><tr><th></th><th>課税標準額（固定）</th><th>固定資産税</th><th>課税標準額（都計）</th><th>都市計画税</th></tr></thead>
+      <thead><tr><th></th><th scope="col">課税標準額（固定）</th><th scope="col">固定資産税</th><th scope="col">課税標準額（都計）</th><th scope="col">都市計画税</th></tr></thead>
       <tbody>
         <tr><td>土地</td><td>${yenF(r.landKoteiBase)}</td><td><b>${yenF(r.landKotei)}</b></td><td>${yenF(r.landToshiBase)}</td><td><b>${yenF(r.landToshi)}</b></td></tr>
         <tr><td>家屋</td><td>${yenF(r.houseBase)}</td><td><b>${yenF(r.houseKotei)}</b></td><td>${yenF(r.houseBase)}</td><td><b>${yenF(r.houseToshi)}</b></td></tr>
@@ -425,7 +428,7 @@ $("calc").addEventListener("click", () => {
     </table>
     ${input.isResidential && input.landValue > 0 ? `
     <table style="margin-top:10px">
-      <thead><tr><th>土地の内訳</th><th>面積</th><th>固定資産税の課税標準</th><th>都市計画税の課税標準</th></tr></thead>
+      <thead><tr><th scope="col">土地の内訳</th><th scope="col">面積</th><th scope="col">固定資産税の課税標準</th><th scope="col">都市計画税の課税標準</th></tr></thead>
       <tbody>${landRows}</tbody>
     </table>` : ""}
     ${L.cappedByFloorArea ? `<div class="hint" style="margin-top:8px" id="juubai-note">住宅用地とされるのは家屋の床面積の${SEIDO.floorAreaMultiplier}倍（${m2F(L.jutakuM2)}）までです。超える${m2F(L.hijutakuM2)}には特例が及びません（地方税法施行令52条の11第2項1号）。</div>` : ""}
@@ -438,6 +441,11 @@ $("calc").addEventListener("click", () => {
       <b>この額は本則で計算した目安です。</b>土地には負担調整措置（地方税法附則18条）があり、前年度の課税標準額によっては実際の額がこれより低くなります。正確な額は納税通知書の「課税標準額」欄でご確認ください。
     </div>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

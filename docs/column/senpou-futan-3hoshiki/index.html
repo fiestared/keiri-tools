@@ -121,6 +121,8 @@
 <script src="../../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -130,7 +132,7 @@
     <a href="../../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 振込手数料の先方負担「3方式」</nav>
 <article>
   <h1>振込手数料の先方負担｜差引額の計算方法「3方式」の違いと実務</h1>
@@ -175,7 +177,7 @@
   <h2 id="3man">前提：振込手数料は「3万円」を境に変わる</h2>
   <p>多くの銀行では、他行宛の振込手数料が<b>振込金額3万円未満／3万円以上</b>の2段階に分かれています。</p>
   <table>
-    <tr><th>銀行・チャネル</th><th>3万円未満</th><th>3万円以上</th></tr>
+    <tr><th scope="col">銀行・チャネル</th><th scope="col">3万円未満</th><th scope="col">3万円以上</th></tr>
     <tr><td>三菱UFJ銀行（個人IB）</td><td>154円</td><td>220円</td></tr>
     <tr><td>三菱UFJ銀行（法人・BizSTATION）</td><td>484円</td><td>660円</td></tr>
     <tr><td>三井住友銀行（法人・Web21エキスパート等）</td><td>495円</td><td>660円</td></tr>
@@ -191,7 +193,7 @@
   <p>北陸銀行が公開しているビジネスIBの利用者ガイドには、先方負担の計算方法として次の3方式が明記されています。群馬銀行、スルガ銀行なども同様の選択肢を持っており、<b>どの方式を使うかは支払側の会社が設定で決めます</b>。</p>
 
   <table>
-    <tr><th>方式</th><th>3万円判定に使う基準額</th><th>特徴</th></tr>
+    <tr><th scope="col">方式</th><th scope="col">3万円判定に使う基準額</th><th scope="col">特徴</th></tr>
     <tr><td><b>据置型</b><br><span style="font-size:12px;color:var(--sub)">（差引前基準）</span></td><td>30,000円</td><td>請求額をそのまま3万円と比較。多くの銀行の初期設定。<b>支払側に有利</b></td></tr>
     <tr><td><b>未満手数料加算型</b></td><td>30,000円＋<br>3万円未満の手数料</td><td>中間的な方式</td></tr>
     <tr><td><b>以上手数料加算型</b><br><span style="font-size:12px;color:var(--sub)">（差引後基準）</span></td><td>30,000円＋<br>3万円以上の手数料</td><td>差し引いた後の額で判定する運用に相当。<b>受取側に有利</b></td></tr>
@@ -245,7 +247,7 @@
   <h3 id="rei">具体例：請求30,300円で220円ズレる</h3>
   <p>請求額 <b>30,300円</b>、手数料「3万円未満220円／3万円以上440円」のケースで計算してみます。</p>
   <table>
-    <tr><th>方式</th><th>基準額との比較</th><th>差引額</th><th>振込額</th></tr>
+    <tr><th scope="col">方式</th><th scope="col">基準額との比較</th><th scope="col">差引額</th><th scope="col">振込額</th></tr>
     <tr><td>据置型</td><td>30,300 ≧ 30,000 → 3万円以上</td><td>440円</td><td><b>29,860円</b></td></tr>
     <tr><td>未満加算型</td><td>30,300 ＜ 30,220? → いいえ…3万円以上</td><td>440円</td><td>29,860円</td></tr>
     <tr><td>以上加算型</td><td>30,300 ＜ 30,440 → 3万円未満</td><td>220円</td><td><b>30,080円</b></td></tr>
@@ -270,7 +272,7 @@
 
   <p><b>方法1: 支払手数料として処理する</b></p>
   <table>
-    <tr><th>借方</th><th>金額</th><th>貸方</th><th>金額</th></tr>
+    <tr><th scope="col">借方</th><th scope="col">金額</th><th scope="col">貸方</th><th scope="col">金額</th></tr>
     <tr><td>普通預金</td><td>109,560</td><td>売掛金</td><td>110,000</td></tr>
     <tr><td>支払手数料</td><td>440</td><td></td><td></td></tr>
   </table>
@@ -278,7 +280,7 @@
 
   <p><b>方法2: 売上値引きとして処理する</b></p>
   <table>
-    <tr><th>借方</th><th>金額</th><th>貸方</th><th>金額</th></tr>
+    <tr><th scope="col">借方</th><th scope="col">金額</th><th scope="col">貸方</th><th scope="col">金額</th></tr>
     <tr><td>普通預金</td><td>109,560</td><td>売掛金</td><td>110,000</td></tr>
     <tr><td>売上値引</td><td>440</td><td></td><td></td></tr>
   </table>
@@ -294,7 +296,7 @@
   <h3 id="shiwake-harai">支払側の仕訳</h3>
   <p>先方負担なので、支払側は<b>手数料を負担していません</b>。差し引いた額をそのまま支払として処理します。</p>
   <table>
-    <tr><th>借方</th><th>金額</th><th>貸方</th><th>金額</th></tr>
+    <tr><th scope="col">借方</th><th scope="col">金額</th><th scope="col">貸方</th><th scope="col">金額</th></tr>
     <tr><td>買掛金</td><td>110,000</td><td>普通預金</td><td>109,560</td></tr>
     <tr><td></td><td></td><td>雑収入（または仕入値引）</td><td>440</td></tr>
   </table>

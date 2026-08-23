@@ -109,6 +109,8 @@
      crossorigin="anonymous"></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -118,7 +120,7 @@
     <a href="../../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 営業日の数え方</nav>
 <article>
   <h1>「3営業日前」「3営業日以内」はいつ？営業日の数え方</h1>
@@ -165,7 +167,7 @@
   <h2 id="inai">「3営業日以内」はいつまでか（曜日別の早見表）</h2>
   <p>祝日がない週の場合、依頼した曜日ごとに次のようになります。</p>
   <table>
-    <tr><th>依頼した曜日</th><th>1営業日目</th><th>2営業日目</th><th>3営業日目（＝期限）</th></tr>
+    <tr><th scope="col">依頼した曜日</th><th scope="col">1営業日目</th><th scope="col">2営業日目</th><th scope="col">3営業日目（＝期限）</th></tr>
     <tr><td>月曜</td><td>火</td><td>水</td><td><b>木曜</b></td></tr>
     <tr><td>火曜</td><td>水</td><td>木</td><td><b>金曜</b></td></tr>
     <tr><td>水曜</td><td>木</td><td>金</td><td><b>翌週の月曜</b></td></tr>
@@ -245,7 +247,7 @@
   </div>
   <p>祝日がない週の場合、基準日の曜日ごとに次のようになります。</p>
   <table id="mae-table">
-    <tr><th>基準日（開催日・締切日）</th><th>1営業日前</th><th>2営業日前</th><th>3営業日前（＝期限）</th></tr>
+    <tr><th scope="col">基準日（開催日・締切日）</th><th scope="col">1営業日前</th><th scope="col">2営業日前</th><th scope="col">3営業日前（＝期限）</th></tr>
     <tr><td><b>月曜</b></td><td>前週 金</td><td>前週 木</td><td><b>前週の水曜</b></td></tr>
     <tr><td><b>火曜</b></td><td>月</td><td>前週 金</td><td><b>前週の木曜</b></td></tr>
     <tr><td><b>水曜</b></td><td>火</td><td>月</td><td><b>前週の金曜</b></td></tr>
@@ -266,7 +268,7 @@
 
   <h2 id="chigai">「3営業日後」と「3日後」の違い</h2>
   <table>
-    <tr><th></th><th>3営業日後</th><th>3日後（暦日）</th></tr>
+    <tr><th></th><th scope="col">3営業日後</th><th scope="col">3日後（暦日）</th></tr>
     <tr><td>土日祝</td><td><b>数えない</b></td><td>数える</td></tr>
     <tr><td>金曜に依頼した場合</td><td><b>翌週の水曜</b></td><td>翌週の月曜</td></tr>
     <tr><td>使われる場面</td><td>納期・処理期間・振込の着金</td><td>契約期間・保管期間</td></tr>
@@ -276,7 +278,7 @@
   <h2 id="dai-n">「第3営業日」は「3営業日後」とは違う</h2>
   <p>よく似た言葉ですが、<b>「第3営業日」</b>と<b>「3営業日後」</b>は指す日が違います。給与や支払日の規定で使われるのは前者で、こちらは<b>その月の1日から数えます</b>。</p>
   <table>
-    <tr><th></th><th>第3営業日</th><th>3営業日後</th></tr>
+    <tr><th></th><th scope="col">第3営業日</th><th scope="col">3営業日後</th></tr>
     <tr><td>数え始め</td><td><b>その月の1日</b></td><td><b>基準日の翌営業日</b></td></tr>
     <tr><td>意味</td><td>月初から数えて3番目の営業日</td><td>基準日から3営業日進んだ日</td></tr>
     <tr><td>何で変わるか</td><td>月ごとに変わる</td><td>基準日ごとに変わる</td></tr>
@@ -288,7 +290,7 @@
   </div>
   <p>月初に土日や祝日が重なるほど、後ろにずれます。2026年の同じ「第3営業日」で比べると次のとおりです。</p>
   <table>
-    <tr><th>月</th><th>1日の曜日</th><th>第3営業日</th></tr>
+    <tr><th scope="col">月</th><th scope="col">1日の曜日</th><th scope="col">第3営業日</th></tr>
     <tr><td>2026年6月</td><td>月曜</td><td>6月3日（水）</td></tr>
     <tr><td>2026年8月</td><td>土曜</td><td>8月5日（水）</td></tr>
     <tr><td>2026年5月</td><td>金曜（直後にGW）</td><td><b>5月8日（金）</b></td></tr>
@@ -308,7 +310,7 @@
     WORKDAY関数が自動で除くのは<b>土曜と日曜だけ</b>です。国民の祝日は、第3引数に<b>祝日の一覧を自分で渡さないと除かれません</b>。渡し忘れると、祝日を1営業日として数えてしまいます。
   </div>
   <table>
-    <tr><th>基準日が 2026/11/6（金）のときの「3営業日前」</th><th>結果</th></tr>
+    <tr><th scope="col">基準日が 2026/11/6（金）のときの「3営業日前」</th><th scope="col">結果</th></tr>
     <tr><td><code>=WORKDAY(A1, -3)</code>　祝日を渡していない</td><td>11月3日（火）＝<b>文化の日。誤り</b></td></tr>
     <tr><td><code>=WORKDAY(A1, -3, 祝日リスト)</code></td><td><b>11月2日（月）</b>＝正しい</td></tr>
   </table>

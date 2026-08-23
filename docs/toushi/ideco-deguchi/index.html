@@ -82,6 +82,8 @@
 <script src="../../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -91,8 +93,8 @@
     <a href="../../toushi/" aria-current="page">資産形成</a>
   </nav>
 </header>
-<main>
-  <nav class="breadcrumb">ホーム › <a href="../">資産形成</a> › iDeCoの出口の税金</nav>
+<main id="main" tabindex="-1">
+  <nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">資産形成</a> › iDeCoの出口の税金</nav>
   <h1>iDeCoの出口の税金</h1>
   <p class="lead">iDeCoを<b>一時金</b>で受け取ると退職所得になります。会社の退職金と受け取る時期が近いと、<b>勤続期間の重複</b>で退職所得控除が減ります。★<b>令和8年1月1日以後に受け取るiDeCo一時金は「10年ルール」</b>に変わりました（従来は5年）。</p>
 
@@ -139,23 +141,23 @@
     </div>
 
     <div class="result" id="result" aria-live="polite"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
-  <div class="toc-title">目次</div>
-  <ul class="toc">
+  <nav class="toc"><div class="toc-title">目次</div><ol>
     <li><a href="#nen">遡る年数は「向き」で違う</a></li>
     <li><a href="#keisan">重複調整は「年数」で計算する</a></li>
     <li><a href="#nenkin">年金で受け取る場合</a></li>
     <li><a href="#dekinai">このツールが判定しないこと</a></li>
     <li><a href="#faq">よくある質問</a></li>
     <li><a href="#shutten">出典</a></li>
-  </ul>
+  </ol></nav>
 
   <h2 id="nen">遡る年数は「向き」で違う</h2>
   <p>施行令70条1項2号は、前に受け取った退職手当等との勤続期間の重複を調整します。<b>どちらを先に受け取ったかで遡る年数が違います。</b></p>
   <div class="scroll-wrap">
   <table id="nen-hyo">
-    <tr><th>順番</th><th>条文の遡及期間</th><th>実務での言い方</th></tr>
+    <tr><th scope="col">順番</th><th scope="col">条文の遡及期間</th><th scope="col">実務での言い方</th></tr>
     <tr><td>退職金 → 退職金</td><td>その年の前年以前<b>4年内</b></td><td>5年空ければ影響しない</td></tr>
     <tr><td><b>iDeCo一時金 → 退職金</b>（令和8年1月1日以後の受取）</td><td>その年の前年以前<b>9年内</b></td><td><b>10年</b>空けないと影響する</td></tr>
     <tr><td>iDeCo一時金 → 退職金（令和8年1月1日前の受取）</td><td>その年の前年以前4年内</td><td>5年（経過措置）</td></tr>
@@ -271,11 +273,11 @@ async function render() {
     <div class="big">退職所得 ${yen(shotoku)}</div>
     <div class="hint" style="margin-bottom:10px">${label}／条文の遡及期間は<b>その年の前年以前${nen}年内</b>（実質${nen + 1}年）</div>
     <table class="res">
-      <tr><th>重複調整の対象か</th><td><b id="hits">${hits ? `対象です（${aki}年空きは${nen}年内）` : `対象外です（${aki}年空きは${nen}年内を超えています）`}</b></td></tr>
-      <tr><th>勤続${nensu}年の退職所得控除</th><td id="kojo-full">${yen(k.full)}</td></tr>
-      <tr><th>重複${chofuku}年ぶんの控除（差し引く額）</th><td id="kojo-dup">${chofuku ? "−" + yen(k.dup) : "なし"}</td></tr>
-      <tr><th>調整後の退職所得控除</th><td><b id="kojo-after">${yen(k.after)}</b></td></tr>
-      <tr><th>退職所得（（収入−控除）÷2）</th><td><b id="shotoku">${yen(shotoku)}</b></td></tr>
+      <tr><th scope="row">重複調整の対象か</th><td><b id="hits">${hits ? `対象です（${aki}年空きは${nen}年内）` : `対象外です（${aki}年空きは${nen}年内を超えています）`}</b></td></tr>
+      <tr><th scope="row">勤続${nensu}年の退職所得控除</th><td id="kojo-full">${yen(k.full)}</td></tr>
+      <tr><th scope="row">重複${chofuku}年ぶんの控除（差し引く額）</th><td id="kojo-dup">${chofuku ? "−" + yen(k.dup) : "なし"}</td></tr>
+      <tr><th scope="row">調整後の退職所得控除</th><td><b id="kojo-after">${yen(k.after)}</b></td></tr>
+      <tr><th scope="row">退職所得（（収入−控除）÷2）</th><td><b id="shotoku">${yen(shotoku)}</b></td></tr>
     </table>
     ${hits && k.dup > 0 ? `<div class="note" style="margin-top:10px"><b id="sa">重複調整がなければ退職所得は ${yen(shotokuFull)} でした</b> — 差は ${yen(shotoku - shotokuFull)} です。</div>` : ""}
     <div class="note" style="margin-top:12px">
@@ -290,6 +292,11 @@ for (const id of ["order", "paid", "aki", "nensu", "chofuku", "shunyu"]) {
   $(id).addEventListener("change", render);
 }
 render();
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../../assets/a11y_error.js" defer></script>
 </body>
 </html>

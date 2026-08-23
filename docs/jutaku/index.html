@@ -130,6 +130,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -139,7 +141,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 住宅ローン控除 計算機</nav>
 
 <section class="hero">
@@ -214,7 +216,8 @@
   </details>
 
   <button class="primary" id="calc">控除額を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <section class="faq">
@@ -531,11 +534,11 @@ $("calc").addEventListener("click", async () => {
     refundBlock = `
       <div class="big" style="margin-top:16px">実際に戻る税額（この年の実質の軽減）${yen(j.jitsuGenzei)}</div>
       <table class="res">
-        <tr><th>この年の控除枠（控除可能額）</th><td>${yen(j.koujoKanou)}</td></tr>
-        <tr><th>所得税から引かれる額</th><td>${yen(j.shotokuzeiKoujo)}（所得税額${yen(j.shotokuzeiGaku)}が上限）</td></tr>
-        <tr><th>住民税から引かれる額</th><td>${yen(j.juminzeiKoujoGaku)}（上限${yen(j.juminzeiCapB)}）</td></tr>
+        <tr><th scope="row">この年の控除枠（控除可能額）</th><td>${yen(j.koujoKanou)}</td></tr>
+        <tr><th scope="row">所得税から引かれる額</th><td>${yen(j.shotokuzeiKoujo)}（所得税額${yen(j.shotokuzeiGaku)}が上限）</td></tr>
+        <tr><th scope="row">住民税から引かれる額</th><td>${yen(j.juminzeiKoujoGaku)}（上限${yen(j.juminzeiCapB)}）</td></tr>
         ${kirisuteRow}
-        <tr><th>実際に戻る税額（合計）</th><td><b>${yen(j.jitsuGenzei)}</b></td></tr>
+        <tr><th scope="row">実際に戻る税額（合計）</th><td><b>${yen(j.jitsuGenzei)}</b></td></tr>
       </table>
       ${jitsuMsg}
       ${capUnknownNote}`;
@@ -554,12 +557,12 @@ $("calc").addEventListener("click", async () => {
     ${taikaNote}
     ${cappedNote}
     <table class="res">
-      <tr><th>年間の控除額（上限）</th><td><b>${yen(r.nenkanKoujo)}</b></td></tr>
-      <tr><th>控除の対象になる借入残高</th><td>${yen(r.koujoTaisho)}（＝年末残高・取得対価・借入限度額のうち最も小さい額）</td></tr>
-      <tr><th>借入限度額</th><td>${man(r.shakunyuGendoEn)}</td></tr>
-      <tr><th>控除率</th><td>${r.koujoRitsuPct}％</td></tr>
-      <tr><th>控除期間</th><td>${r.kikan}年</td></tr>
-      <tr><th>総控除額（上限のめやす）</th><td><b>${yen(r.soKoujoGaisan)}</b></td></tr>
+      <tr><th scope="row">年間の控除額（上限）</th><td><b>${yen(r.nenkanKoujo)}</b></td></tr>
+      <tr><th scope="row">控除の対象になる借入残高</th><td>${yen(r.koujoTaisho)}（＝年末残高・取得対価・借入限度額のうち最も小さい額）</td></tr>
+      <tr><th scope="row">借入限度額</th><td>${man(r.shakunyuGendoEn)}</td></tr>
+      <tr><th scope="row">控除率</th><td>${r.koujoRitsuPct}％</td></tr>
+      <tr><th scope="row">控除期間</th><td>${r.kikan}年</td></tr>
+      <tr><th scope="row">総控除額（上限のめやす）</th><td><b>${yen(r.soKoujoGaisan)}</b></td></tr>
     </table>
     <div class="note">
       <b>★この金額は「上限のめやす」です。そのまま戻る金額ではありません。</b>
@@ -569,6 +572,11 @@ $("calc").addEventListener("click", async () => {
     ${refundBlock}
     <div class="hint">各年の控除額は<b>100円未満を切り捨て</b>ています（借入残高 × 0.7％）。初年度は<b>確定申告</b>が必要です（2年目以降は年末調整で受けられます）。実際に戻る税額はその年の<b>所得税額</b>で決まるので、上の「くわしく計算する」で所得税額を入れると内訳が出ます。</div>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

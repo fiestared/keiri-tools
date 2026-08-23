@@ -98,6 +98,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -107,8 +109,8 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
-  <nav class="breadcrumb">ホーム › 法定福利費の計算</nav>
+<main id="main" tabindex="-1">
+  <nav class="breadcrumb"><a href="../">ホーム</a> › 法定福利費の計算</nav>
   <h1>法定福利費の計算</h1>
   <p class="lead">従業員1人あたり、会社が給与に<b>上乗せして</b>負担している額を出します。★<b>折半でないものが3つあります</b> — 労災保険と子ども・子育て拠出金は<b>全額事業主負担</b>、雇用保険は労使で率が違います。</p>
 
@@ -148,22 +150,22 @@
     <label><input type="checkbox" id="kaigo"> 介護保険第2号被保険者（<b>40歳以上65歳未満</b>）</label>
 
     <div class="result" id="result" aria-live="polite"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
-  <div class="toc-title">目次</div>
-  <ul class="toc">
+  <nav class="toc"><div class="toc-title">目次</div><ol>
     <li><a href="#orikan">折半でないものが3つ</a></li>
     <li><a href="#base-setsu">標準報酬月額と賃金総額</a></li>
     <li><a href="#gyoshu-setsu">労災保険率は業種で35倍違う</a></li>
     <li><a href="#dekinai">このツールが計算しないこと</a></li>
     <li><a href="#faq">よくある質問</a></li>
     <li><a href="#shutten">出典</a></li>
-  </ul>
+  </ol></nav>
 
   <h2 id="orikan">折半でないものが3つ</h2>
   <div class="scroll-wrap">
   <table id="orikan-hyo">
-    <tr><th>保険料</th><th>負担のしかた</th><th>ベース</th></tr>
+    <tr><th scope="col">保険料</th><th scope="col">負担のしかた</th><th scope="col">ベース</th></tr>
     <tr><td>健康保険</td><td>労使折半</td><td>標準報酬月額</td></tr>
     <tr><td>介護保険（40〜64歳）</td><td>労使折半</td><td>標準報酬月額</td></tr>
     <tr><td>厚生年金</td><td>労使折半</td><td>標準報酬月額</td></tr>
@@ -314,15 +316,15 @@ async function render() {
     <div class="big">会社の負担 ${yen(r.total)}<span style="font-size:15px;font-weight:600">／月</span></div>
     <div class="hint" style="margin-bottom:10px">年 <b id="nengan">${yen(n.nengan)}</b>　賃金総額の <b id="ritsu">${n.ritsu.toFixed(1)}%</b> が上乗せになります</div>
     <table class="res">
-      <tr><th>健康保険（折半）</th><td id="kenko">${yen(r.kenko)}</td></tr>
-      <tr><th>介護保険（折半）</th><td id="kaigo-bun">${r.kaigo ? yen(r.kaigo) : "なし（40歳未満または65歳以上）"}</td></tr>
-      <tr><th>厚生年金（折半）</th><td id="kosei">${yen(r.kosei)}</td></tr>
-      <tr><th>子ども・子育て拠出金</th><td id="kosodate"><b>${yen(r.kosodate)}</b>　★全額事業主（本人負担なし）</td></tr>
-      <tr><th>雇用保険</th><td id="koyou-bun"><b>${yen(r.koyou)}</b>　★本人は ${yen(r.koyouWorker)}（折半ではありません）</td></tr>
-      <tr><th>労災保険</th><td id="rousai">${r.rousai == null ? "率が分からないため計算していません" : `<b>${yen(r.rousai)}</b>　★全額事業主`}</td></tr>
-      <tr><th>会社の負担 合計</th><td><b id="total">${yen(r.total)}</b></td></tr>
-      <tr><th>本人が引かれる額（対照）</th><td id="honnin">${yen(r.honninTotal)}</td></tr>
-      <tr><th>★全額事業主負担の分</th><td id="zengaku">${yen(r.zengakuJigyonushi)}（子育て拠出金＋労災）</td></tr>
+      <tr><th scope="row">健康保険（折半）</th><td id="kenko">${yen(r.kenko)}</td></tr>
+      <tr><th scope="row">介護保険（折半）</th><td id="kaigo-bun">${r.kaigo ? yen(r.kaigo) : "なし（40歳未満または65歳以上）"}</td></tr>
+      <tr><th scope="row">厚生年金（折半）</th><td id="kosei">${yen(r.kosei)}</td></tr>
+      <tr><th scope="row">子ども・子育て拠出金</th><td id="kosodate"><b>${yen(r.kosodate)}</b>　★全額事業主（本人負担なし）</td></tr>
+      <tr><th scope="row">雇用保険</th><td id="koyou-bun"><b>${yen(r.koyou)}</b>　★本人は ${yen(r.koyouWorker)}（折半ではありません）</td></tr>
+      <tr><th scope="row">労災保険</th><td id="rousai">${r.rousai == null ? "率が分からないため計算していません" : `<b>${yen(r.rousai)}</b>　★全額事業主`}</td></tr>
+      <tr><th scope="row">会社の負担 合計</th><td><b id="total">${yen(r.total)}</b></td></tr>
+      <tr><th scope="row">本人が引かれる額（対照）</th><td id="honnin">${yen(r.honninTotal)}</td></tr>
+      <tr><th scope="row">★全額事業主負担の分</th><td id="zengaku">${yen(r.zengakuJigyonushi)}（子育て拠出金＋労災）</td></tr>
     </table>
     <div class="note" style="margin-top:12px">
       ★<b>メリット制・賞与・健康保険組合の独自料率は含んでいません</b>。
@@ -336,6 +338,11 @@ for (const id of ["hyojun", "chingin", "ken", "koyou", "gyoshu", "kaigo"]) {
   $(id).addEventListener("change", render);
 }
 render();
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

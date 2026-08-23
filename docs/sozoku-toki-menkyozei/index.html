@@ -122,6 +122,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -131,7 +133,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 相続登記の登録免許税 計算機</nav>
 
 <section class="hero">
@@ -161,7 +163,8 @@
   </div>
 
   <button class="primary" id="calc">登録免許税を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
 </div>
 
 <article>
@@ -238,7 +241,7 @@
 <p>租税特別措置法84条の2の2は、相続による土地の登記について<b>2つ</b>の免税措置を定めています。<b>どちらも適用期限は令和9年3月31日</b>です。</p>
 
 <table id="menzei-table">
-  <thead><tr><th>免税措置</th><th>対象</th><th>内容</th></tr></thead>
+  <thead><tr><th scope="col">免税措置</th><th scope="col">対象</th><th scope="col">内容</th></tr></thead>
   <tbody>
     <tr id="menzei-row-1">
       <td><b>① 登記を受ける前に死亡した場合</b><br><span class="hint">措法84条の2の2第1項</span></td>
@@ -487,7 +490,7 @@ $("calc").addEventListener("click", async () => {
     <p class="hint" style="margin-top:-6px">相続登記の登録免許税（${r.year}のルールで計算）</p>
     ${expiredNote}
     <table id="detail-table">
-      <thead><tr><th>不動産</th><th style="text-align:right">評価額</th><th style="text-align:center">持分</th><th style="text-align:right">課税標準への算入</th></tr></thead>
+      <thead><tr><th scope="col">不動産</th><th scope="col" style="text-align:right">評価額</th><th scope="col" style="text-align:center">持分</th><th scope="col" style="text-align:right">課税標準への算入</th></tr></thead>
       <tbody>${rowsHtml}</tbody>
     </table>
     ${exemptNote}
@@ -496,6 +499,11 @@ $("calc").addEventListener("click", async () => {
     ${gimuHtml}
     <p class="hint">この金額は国に納める登録免許税だけです。戸籍謄本・評価証明書などの実費、司法書士に依頼する場合の報酬は含みません。</p>`;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

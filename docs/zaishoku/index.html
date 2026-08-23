@@ -130,6 +130,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -139,7 +141,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 在職老齢年金 計算機</nav>
 
 <section class="hero">
@@ -190,7 +192,8 @@
   </div>
 
   <button class="primary" id="calc" style="margin-top:14px">支給停止額を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   <div class="callout" style="margin-top:12px">
     <b>ご注意</b>
     本ツールの結果は制度の式による目安です。<b>実際の支給停止額・受給の可否は、日本年金機構が決定した標準報酬月額と年金額にもとづいて決まります</b>。このページは一般的な情報提供であり、個別の受給についての助言ではありません。実際の金額は年金事務所または社会保険労務士にご確認ください。
@@ -237,7 +240,7 @@
 <p>令和4年4月以降、65歳未満と65歳以上の式は統一され、次の1本だけになりました（厚生年金保険法46条1項）。</p>
 
 <table>
-  <thead><tr><th>状態</th><th>その月の老齢厚生年金</th></tr></thead>
+  <thead><tr><th scope="col">状態</th><th scope="col">その月の老齢厚生年金</th></tr></thead>
   <tbody id="shiki-table">
     <tr><td>基本月額 ＋ 総報酬月額相当額 ≦ 基準額</td><td>全額支給</td></tr>
     <tr><td>基本月額 ＋ 総報酬月額相当額 ＞ 基準額</td><td>基本月額 －（基本月額 ＋ 総報酬月額相当額 － 基準額）÷ 2</td></tr>
@@ -463,7 +466,7 @@ $("calc").addEventListener("click", async () => {
     <span id="nendo-hyoji">${esc(D._meta.year)}</span>の支給停止調整額
     <b id="kijun-hyoji">${yenF(r.kijun.yen)}</b>で計算しています。</p>`;
 
-  html += `<table id="uchiwake-table"><thead><tr><th>内訳</th><th>月額</th></tr></thead><tbody>`;
+  html += `<table id="uchiwake-table"><thead><tr><th scope="col">内訳</th><th scope="col">月額</th></tr></thead><tbody>`;
   html += `<tr><td>基本月額（老齢厚生年金 ÷ 12・加給年金額を除く）</td>
     <td style="text-align:right" id="kihon-getsugaku">${yenF(r.kihonGetsugaku)}</td></tr>`;
   html += `<tr><td>総報酬月額相当額（標準報酬月額 ＋ 賞与 ÷ 12）</td>
@@ -516,7 +519,7 @@ $("calc").addEventListener("click", async () => {
   if (old) {
     const sa = cur.result.totalYen - old.result.totalYen;
     html += `<p class="hint" style="margin-top:14px"><b>令和8年4月の改正（51万円→65万円）でどう変わったか</b></p>`;
-    html += `<table id="kaisei-hikaku"><thead><tr><th>支給停止調整額</th><th>支給停止額（年）</th><th>受取総額（年）</th></tr></thead><tbody>`;
+    html += `<table id="kaisei-hikaku"><thead><tr><th scope="col">支給停止調整額</th><th scope="col">支給停止額（年）</th><th scope="col">受取総額（年）</th></tr></thead><tbody>`;
     for (const c of comp) {
       html += `<tr${c.kijun.current ? ' id="kaisei-row-current"' : ' id="kaisei-row-old"'}>
         <td>${esc(c.kijun.label)}　${yenF(c.kijun.yen)}</td>
@@ -546,6 +549,11 @@ $("calc").addEventListener("click", async () => {
 
   box.innerHTML = html;
 });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

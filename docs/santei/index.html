@@ -98,6 +98,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -107,8 +109,8 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
-  <nav class="breadcrumb">ホーム › 算定基礎届の書き方</nav>
+<main id="main" tabindex="-1">
+  <nav class="breadcrumb"><a href="../">ホーム</a> › 算定基礎届の書き方</nav>
   <h1>算定基礎届（定時決定）</h1>
   <p class="lead">7月1日に在籍している被保険者について、<b>4月・5月・6月</b>に受けた報酬から標準報酬月額を決め直します。決まった等級は<b>その年の9月から翌年8月まで</b>使われます。★<b>支払基礎日数が17日未満の月は除き、残った月数で割ります</b>（健康保険法41条1項）。</p>
 
@@ -169,10 +171,10 @@
     </div>
 
     <div class="result" id="result" aria-live="polite"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   </div>
 
-  <div class="toc-title">目次</div>
-  <ul class="toc">
+  <nav class="toc"><div class="toc-title">目次</div><ol>
     <li><a href="#nissu">17日未満の月を「除く」</a></li>
     <li><a href="#tanjikan-setsu">11日でよいのは誰か</a></li>
     <li><a href="#taishogai">その年は出さなくてよい人</a></li>
@@ -180,7 +182,7 @@
     <li><a href="#dekinai">このツールが判定しないこと</a></li>
     <li><a href="#faq">よくある質問</a></li>
     <li><a href="#shutten">出典</a></li>
-  </ul>
+  </ol></nav>
 
   <h2 id="nissu">17日未満の月を「除く」</h2>
   <p>健康保険法41条1項（厚生年金保険法21条1項も同文）は、7月1日に現に使用される事業所において<b>同日前3月間</b>に受けた報酬の総額を、<b>その期間の月数で除して得た額</b>を報酬月額とする、と書いています。この3月間には2つの括弧書きがついています。</p>
@@ -202,7 +204,7 @@
   <p>41条3項は、次の人にはその年に限り定時決定を適用しないと書いています。</p>
   <div class="scroll-wrap">
   <table id="taishogai-hyo">
-    <tr><th>対象外になる人</th><th>条文</th><th>どうなるか</th></tr>
+    <tr><th scope="col">対象外になる人</th><th scope="col">条文</th><th scope="col">どうなるか</th></tr>
     <tr><td><b>6月1日から7月1日までの間に資格を取得した人</b></td><td>41条3項</td><td>資格取得時に決定した標準報酬月額が翌年8月まで続く</td></tr>
     <tr><td><b>7月から9月までのいずれかの月から標準報酬月額を改定され、または<u>改定されるべき</u>人</b></td><td>41条3項</td><td>随時改定（月額変更届）のほうで決まる</td></tr>
   </table>
@@ -215,7 +217,7 @@
   <p>同じ17日でも、定時決定と随時改定（43条1項）では条文の書きぶりが逆です。</p>
   <div class="scroll-wrap">
   <table id="zuiji-hyo">
-    <tr><th></th><th>定時決定（41条1項）</th><th>随時改定（43条1項）</th></tr>
+    <tr><th></th><th scope="col">定時決定（41条1項）</th><th scope="col">随時改定（43条1項）</th></tr>
     <tr><td>17日の扱い</td><td>17日未満の月を<b>除く</b></td><td>各月とも17日以上で<b>なければならない</b></td></tr>
     <tr><td>1か月欠けたら</td><td>残りの月で算定する</td><td><b>随時改定にならない</b></td></tr>
     <tr><td>分母</td><td>残った月数</td><td>3で固定</td></tr>
@@ -330,7 +332,7 @@ async function render() {
     $("result").innerHTML = `
       <div class="big" id="fuka">算定できる月がありません</div>
       <div class="hint" style="margin-bottom:10px">必要日数 <b>${r.hitsuyo}日</b>（${tanjikan ? "短時間労働者" : "一般"}）</div>
-      <table class="res"><tr><th>各月</th><td id="meisai">${meisai}</td></tr></table>
+      <table class="res"><tr><th scope="row">各月</th><td id="meisai">${meisai}</td></tr></table>
       <div class="note" style="margin-top:12px">★4月・5月・6月のいずれもが必要日数に満たないため、条文上は割る対象の月がありません。
         この場合は<b>保険者等が決定します</b>（従前の標準報酬月額によるのが実務の取扱い）。
         金額はこのツールでは出しません。</div>`;
@@ -348,12 +350,12 @@ async function render() {
     <div class="big">標準報酬月額 ${yen(kg.standard)}（健保 第${kg.grade}級）</div>
     <div class="hint" style="margin-bottom:10px">報酬月額 <b id="hoshu">${yen(r.hoshuGetsugaku)}</b>　＝　${yen(r.sokei)} ÷ <b id="tsukisu">${r.tsukisu}</b>か月（必要日数 ${r.hitsuyo}日）</div>
     <table class="res">
-      <tr><th>各月</th><td id="meisai">${meisai}</td></tr>
-      <tr><th>健康保険</th><td><b id="kenko">第${kg.grade}級・${yen(kg.standard)}</b></td></tr>
-      <tr><th>厚生年金</th><td><b id="kosei">${yen(ks)}</b>${ks === 650000 && r.hoshuGetsugaku > 650000 ? "（上限で頭打ち）" : ""}</td></tr>
-      <tr><th>使う期間</th><td id="kikan">${k.from} 〜 ${k.to}（41条2項）</td></tr>
-      ${r.excluded.length ? `<tr><th>★3で割った場合</th><td id="hikaku">${yen(bunbo3)}（健保 第${kenkoGrade(bunbo3).grade}級・${yen(kenkoGrade(bunbo3).standard)}）— <b>${kenkoGrade(bunbo3).grade !== kg.grade ? "等級が変わります" : "同じ等級ですが金額の根拠が違います"}</b></td></tr>` : ""}
-      ${!z.mitasu ? `<tr><th>随時改定との違い</th><td id="zuiji-note">★同じ入力でも随時改定なら、${z.kaketaTsuki.map((m) => m.name).join("・")}が17日未満のため<b>要件を満たしません</b>（43条1項は「各月とも17日以上でなければならない」）。</td></tr>` : ""}
+      <tr><th scope="row">各月</th><td id="meisai">${meisai}</td></tr>
+      <tr><th scope="row">健康保険</th><td><b id="kenko">第${kg.grade}級・${yen(kg.standard)}</b></td></tr>
+      <tr><th scope="row">厚生年金</th><td><b id="kosei">${yen(ks)}</b>${ks === 650000 && r.hoshuGetsugaku > 650000 ? "（上限で頭打ち）" : ""}</td></tr>
+      <tr><th scope="row">使う期間</th><td id="kikan">${k.from} 〜 ${k.to}（41条2項）</td></tr>
+      ${r.excluded.length ? `<tr><th scope="row">★3で割った場合</th><td id="hikaku">${yen(bunbo3)}（健保 第${kenkoGrade(bunbo3).grade}級・${yen(kenkoGrade(bunbo3).standard)}）— <b>${kenkoGrade(bunbo3).grade !== kg.grade ? "等級が変わります" : "同じ等級ですが金額の根拠が違います"}</b></td></tr>` : ""}
+      ${!z.mitasu ? `<tr><th scope="row">随時改定との違い</th><td id="zuiji-note">★同じ入力でも随時改定なら、${z.kaketaTsuki.map((m) => m.name).join("・")}が17日未満のため<b>要件を満たしません</b>（43条1項は「各月とも17日以上でなければならない」）。</td></tr>` : ""}
     </table>
     <div class="note" style="margin-top:12px">
       ★保険者算定（年間平均等）・報酬に何を含めるかは判定していません。これは入力した前提での<b>計算例</b>です。
@@ -366,6 +368,11 @@ for (const id of ["year", "shutoku", "tanjikan", "zuiji", "h4", "n4", "h5", "n5"
   $(id).addEventListener("change", render);
 }
 render();
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>

@@ -122,6 +122,8 @@
 <script src="../assets/track.js" defer></script>
 </head>
 <body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
 <header class="site">
   <a class="brand" href="../">税金・経理・補助金ツールズ</a>
   <nav>
@@ -131,7 +133,7 @@
     <a href="../toushi/">資産形成</a>
   </nav>
 </header>
-<main>
+<main id="main" tabindex="-1">
 <nav class="breadcrumb"><a href="../">ホーム</a> › 青色申告特別控除シミュレーター</nav>
 
 <section class="hero">
@@ -150,7 +152,8 @@
   <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000">
 
   <button class="primary" id="calc">控除額と節税額を計算する</button>
-  <div class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="tool-cta" style="display:none;margin-top:10px;background:#5b6b7b">結果をコピー</button>
   <p class="hint" id="src-hint" style="margin-top:10px"></p>
 </div>
 
@@ -189,7 +192,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>控除額</th><th>要件</th><th>対象になる所得</th></tr>
+<tr><th scope="col">控除額</th><th scope="col">要件</th><th scope="col">対象になる所得</th></tr>
 </thead>
 <tbody>
 <tr><td><b>65万円</b></td><td>55万円の要件すべて＋<b>e-Tax で申告</b>または<b>優良な電子帳簿</b>の保存</td><td>不動産所得・事業所得</td></tr>
@@ -281,7 +284,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>年分</th><th>控除額の区分</th><th>おもな要件の変化</th></tr>
+<tr><th scope="col">年分</th><th scope="col">控除額の区分</th><th scope="col">おもな要件の変化</th></tr>
 </thead>
 <tbody>
 <tr><td><b>令和8年分まで</b><br>（このツールの計算）</td><td>65万円／55万円／10万円</td><td>65万円は e-Tax または優良な電子帳簿</td></tr>
@@ -301,7 +304,7 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th>区分</th><th>所得税の減少</th><th>復興特別所得税</th><th>住民税の減少</th><th>年間の節税額</th></tr>
+<tr><th scope="col">区分</th><th scope="col">所得税の減少</th><th scope="col">復興特別所得税</th><th scope="col">住民税の減少</th><th scope="col">年間の節税額</th></tr>
 </thead>
 <tbody>
 <tr><td><b>65万円</b>の控除</td><td>130,000円</td><td>2,730円</td><td>65,000円</td><td><b>197,730円</b></td></tr>
@@ -552,6 +555,11 @@ $("calc").addEventListener("click", async () => {
 /* ---------- 他のツールから課税所得を受け取る（共通部品） ---------- */
 import { applyPrefill } from "../assets/prefill.js";
 applyPrefill({ inputId: "kazei", key: "kazei" });
+
+/* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
+<script src="../assets/a11y_error.js" defer></script>
 </body>
 </html>
