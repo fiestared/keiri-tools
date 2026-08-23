@@ -25,3 +25,9 @@ __pycache__/
 # ★実行ログはコミットしない（2026-08-12 追加。tools/update_hojokin.sh の出力）
 logs/
 tools/embed-beacon-worker/.wrangler/
+
+# ★図の目視用に作る一時ビューア（2026-08-23 追加）。docs/ 配下なので、
+# 誤って `git add -A` するとデバッグ用のページがそのまま本番に出る。
+# 実際に 2 本（_figview.html / _figview_toshi.html）が未追跡のまま残っていた。
+# ★`rm` が許可外の環境で作られるので「後で消す」が効かない。無視する側で止める。
+docs/_figview*.html
