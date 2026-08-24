@@ -375,10 +375,10 @@ function fillKubunRows(d) {
   const wrap = $("kubun-rows"); wrap.innerHTML = "";
   for (const k of d.fuyo.kubun) {
     const row = document.createElement("div");
-    row.style.cssText = "display:flex;align-items:center;gap:8px;margin:6px 0";
+    row.style.cssText = "margin:14px 0 0";
     const lab = document.createElement("label");
     lab.htmlFor = "n-" + k.key;
-    lab.style.cssText = "flex:1;margin:0;font-size:13.5px";
+    lab.style.cssText = "margin:0 0 4px";
     lab.innerHTML = `${k.label}<span class="hint" style="display:block">${k.age}（所得税${man(k.shotoku)}・住民税${man(k.jumin)}）</span>`;
     const sel = document.createElement("select");
     sel.id = "n-" + k.key;
