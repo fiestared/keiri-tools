@@ -32,6 +32,12 @@ const CHECKABLE = [
   //   **192本中176本が datePublished と同じ日のまま**だった。
   //   実害: 08-15 に月額表231区分を足した記事が、Bing の検索結果に「2026年7月14日」と出ていた。
   ['tools/gen_datemodified.mjs', ['--check']],
+  // ★2026-08-24 追加。ツールページの信頼表示は **コラムにしか無く、ツール側だけ丸ごと抜けていた**
+  //   （実測: dateModified コラム260/261 に対しツール1/72、免責1/72、執筆者1/72）。
+  ['tools/gen_trust_footer.mjs', ['--check']],
+  // ★2026-08-24 追加。参照データの適用時期・出典・確認日は `_meta` に38本ぶん揃っていたのに、
+  //   **JavaScript でしか描画していなかった**（静的HTMLに「令和8年8月1日」0回・厚労省リンク0回）。
+  ['tools/gen_data_source_note.mjs', ['--check']],
 ];
 
 for (const [script, args] of CHECKABLE) {

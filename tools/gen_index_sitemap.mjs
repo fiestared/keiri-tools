@@ -468,6 +468,8 @@ const STATIC_PAGES = [
   "toushi/", "toushi/tsumitate/", "toushi/ideco-deguchi/", "yotei-nozei/", "santei/", "hojinzei/", "hotei-fukuri/", "gensen-hyo/", "hojokin/", "hojokin/schedule/", "hojokin/koyou/", "hojokin-zeimu/",
   // "ext/amazon-receipt/" は 2026-08-03 に提供終了(ストア掲載削除済み)。ページごと削除したので載せない
   "column/", "about/", "privacy/", "contact/", "embed/",
+  // ★編集ポリシー・収益化方針（2026-08-24 新設）。YMYL の信頼要素で、全ツールのフッターから張っている
+  "policy/editorial/", "policy/disclosure/",
   "nenshu/",
 ];
 
