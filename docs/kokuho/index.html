@@ -144,25 +144,26 @@
   </div>
 
   <label>① お住まいの市町村の料率（納付通知書・市町村のサイトに載っています）</label>
+  <p class="hint" id="ryoritsu-hint">例: 所得割率は 8.00（医療分）・2.50（支援金分）・2.00（介護分）、均等割は 50000・16000・17000、平等割は無ければ 0。子育て支援金分は 0.30／2000 のような値です。</p>
   <table class="tbl" id="rate-table" style="margin-top:8px">
     <thead><tr><th scope="col">賦課区分</th><th scope="col">所得割率（％）</th><th scope="col">均等割（円／人）</th><th scope="col">平等割（円／世帯）</th></tr></thead>
     <tbody>
       <tr><td><b>医療分</b><br><span class="hint">基礎賦課額</span></td>
-        <td><input type="number" id="iryo_s" min="0" step="0.01" inputmode="decimal" placeholder="例 8.00"></td>
-        <td><input type="number" id="iryo_k" min="0" inputmode="numeric" placeholder="例 50000"></td>
-        <td><input type="number" id="iryo_h" min="0" inputmode="numeric" placeholder="無ければ0"></td></tr>
+        <td><input type="number" id="iryo_s" min="0" step="0.01" inputmode="decimal" aria-describedby="ryoritsu-hint"></td>
+        <td><input type="number" id="iryo_k" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td>
+        <td><input type="number" id="iryo_h" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td></tr>
       <tr><td><b>後期高齢者支援金等分</b></td>
-        <td><input type="number" id="shien_s" min="0" step="0.01" inputmode="decimal" placeholder="例 2.50"></td>
-        <td><input type="number" id="shien_k" min="0" inputmode="numeric" placeholder="例 16000"></td>
-        <td><input type="number" id="shien_h" min="0" inputmode="numeric" placeholder="無ければ0"></td></tr>
+        <td><input type="number" id="shien_s" min="0" step="0.01" inputmode="decimal" aria-describedby="ryoritsu-hint"></td>
+        <td><input type="number" id="shien_k" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td>
+        <td><input type="number" id="shien_h" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td></tr>
       <tr><td><b>介護分</b><br><span class="hint">40〜64歳のみ</span></td>
-        <td><input type="number" id="kaigo_s" min="0" step="0.01" inputmode="decimal" placeholder="例 2.00"></td>
-        <td><input type="number" id="kaigo_k" min="0" inputmode="numeric" placeholder="例 17000"></td>
-        <td><input type="number" id="kaigo_h" min="0" inputmode="numeric" placeholder="無ければ0"></td></tr>
+        <td><input type="number" id="kaigo_s" min="0" step="0.01" inputmode="decimal" aria-describedby="ryoritsu-hint"></td>
+        <td><input type="number" id="kaigo_k" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td>
+        <td><input type="number" id="kaigo_h" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td></tr>
       <tr><td><b>子ども・子育て支援金分</b><br><span class="hint">令和8年度に新設</span></td>
-        <td><input type="number" id="kosodate_s" min="0" step="0.01" inputmode="decimal" placeholder="例 0.30"></td>
-        <td><input type="number" id="kosodate_k" min="0" inputmode="numeric" placeholder="例 2000"></td>
-        <td><input type="number" id="kosodate_h" min="0" inputmode="numeric" placeholder="無ければ0"></td></tr>
+        <td><input type="number" id="kosodate_s" min="0" step="0.01" inputmode="decimal" aria-describedby="ryoritsu-hint"></td>
+        <td><input type="number" id="kosodate_k" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td>
+        <td><input type="number" id="kosodate_h" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td></tr>
     </tbody>
   </table>
   <p class="hint" style="margin-top:6px">
