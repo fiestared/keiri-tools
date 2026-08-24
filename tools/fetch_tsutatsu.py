@@ -106,12 +106,21 @@ def main():
                     help="1ページがこれ未満なら取得失敗とみなして落とす(既定200)")
     ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--base", default=DEFAULT_BASE)
+    ap.add_argument("--path", action="store_true",
+                    help="pages を『章を挟まない相対パス』として、そのまま base に continuate する"
+                         "（所得税・消費税の基本通達は <章>/<節>.htm で、法人税の "
+                         "<章>/<章>_<節>_<款>.htm と作りが違う）")
     a = ap.parse_args()
 
     body, seen = [], set()
     for p in a.pages:
         if p.startswith("http"):
             url = p
+        elif a.path:
+            # ★所得税基本通達は shotoku/04/04.htm（第30条関係）のように
+            #   ファイル名が章番号を含まない。章を機械的に挟むと 04/04/04.htm を叩き、
+            #   国税庁は HTTP 200 でエラーページを返す＝黙って壊れる。
+            url = f"{a.base}{p}.htm"
         else:
             chap = p.split("_")[0]          # 05_01_01 → 05
             url = f"{a.base}{chap}/{p}.htm"
