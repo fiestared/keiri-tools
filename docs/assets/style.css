@@ -239,6 +239,13 @@ article h2 { font-size: 21px; margin-top: 44px; padding: 8px 0 8px 12px; border-
 article h3 { font-size: 16.5px; margin-top: 28px; padding-bottom: 4px; border-bottom: 2px dotted var(--line); }
 /* 本文16px: 読みやすい定番サイトの実測(サルワカ17px・note/Zenn 16px以上)に合わせ15→16px(2026-07-23) */
 article p, article li { font-size: 16px; line-height: 1.95; }
+/* ★段落の切れ目が1行の半分しか無かった（2026-08-24 実測）。
+   <p> にマージン指定が無く、ブラウザ既定の 1em=16px。行の高さは 31px なので
+   段落間は **0.52行ぶん** しかなく、段落同士が視覚的に融合していた。
+   全263記事で同じ。依頼主の「文字がめっちゃ詰まってる」の実体はこれ。
+   26px = 0.84行ぶんに広げる（class を持つ .article-meta / .byline は
+   より詳細度の高い各自のルールが勝つので影響しない）。 */
+article p { margin: 0 0 1.6em; }
 /* ★長いURL・法令ID（例 340AC0000000034_20260723_508AC0000000064）は折り返せず、
    ページ全体を横スクロールさせる。2026-08-13 実測: 出典リストと .note が犯人で、
    /column/hojokin-shiwake/ は 478px、/gensen-hyo/ は 385px まで横に伸びていた。
