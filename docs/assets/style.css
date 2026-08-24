@@ -58,6 +58,10 @@ label { display: block; font-weight: 700; font-size: 14px; margin: 20px 0 4px; }
    14px はデジタル庁DADSの下限。--sub は白地 5.48:1 で SC 1.4.3 適合。
    font-weight:400 は label 内で使われたときに 700 を継承しないため。 */
 .hint { font-size: 14px; font-weight: 400; color: var(--sub); line-height: 1.6; margin: 0 0 6px; }
+/* ★ラベルの中に置かれたヒント（<span class="hint">）は inline のままだと
+   ラベルと同じ行から始まり、幅が尽きた所で折れて**先頭1文字だけがラベル右端に残る**
+   （aoiro-kojo で実際に発生）。ラベルの下に1行として置く。 */
+label > .hint { display: block; margin: 2px 0 0; font-weight: 400; }
 
 /* 任意項目の印（GOV.UK 方式: 必須にアスタリスクを付けず、任意側に印を付ける） */
 .field-optional { font-weight: 400; font-size: 14px; color: var(--sub); }
@@ -117,6 +121,9 @@ label.check input[type="checkbox"] {
    操作ターゲットはラップする label 全体で44px以上あり SC 2.5.8 は元から満たしている）。 */
 input[type="checkbox"], input[type="radio"] {
   width: 20px; height: 20px; min-height: 0; accent-color: var(--accent);
+  /* ★flex コンテナ（.opts label 等）の中では width:20px だけだと縮む。
+     実測で 13x20px に潰れていた（幅だけ旧サイズのまま）。 */
+  flex: 0 0 auto;
   /* ★13px→20px にしたとき vertical-align を指定せず、ベースライン揃えのままだったので
      箱が文字より 5.0px 高い位置に浮いていた（2026-08-24 に実際に崩した）。
      ラベルは <b> とテキストノードが混在するので flex 化はできない
