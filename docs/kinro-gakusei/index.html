@@ -451,7 +451,7 @@ const SCHOOLS = [
 ];
 
 function radioRow(name, opt) {
-  return `<label style="display:flex;align-items:flex-start;gap:8px;margin:6px 0;font-size:14px;font-weight:400">
+  return `<label style="display:flex;align-items:flex-start;gap:8px;margin:6px 0;font-weight:400">
       <input type="radio" name="${name}" id="${name}-${opt.key}" value="${opt.key}" ${opt.checked ? "checked" : ""} style="width:auto;flex:none;margin-top:3px">
       <span>${opt.label}${opt.hint ? `<span class="hint" style="display:block">${opt.hint}</span>` : ""}</span></label>`;
 }
@@ -463,7 +463,7 @@ function fillRows() {
   const nendoN = Number((R08.kinro_gakusei.jumin_nendo.match(/令和(\d+)年度/) || [])[1] || 0);
   const kijunbi = nendoN ? `${2018 + nendoN}年(令和${nendoN}年)1月1日時点で` : "";
   $("extra-rows").innerHTML = `
-    <label style="display:flex;align-items:flex-start;gap:8px;margin:14px 0 6px;font-size:14px;font-weight:400">
+    <label style="display:flex;align-items:flex-start;gap:8px;margin:14px 0 6px;font-weight:400">
       <input type="checkbox" id="miseinen" style="width:auto;flex:none;margin-top:3px">
       <span>${kijunbi}18歳未満（未成年）
         <span class="hint" style="display:block">未成年者は合計所得${man(J08.hikazei.shogaisha_goukei_limit)}以下まで住民税がそもそも非課税なので、判定に使います</span></span></label>`;

@@ -176,39 +176,39 @@
   <p class="hint" style="margin-top:6px" id="age-hint"></p>
 
   <label style="margin-top:16px">③ 世帯主・特定同一世帯所属者</label>
-  <div class="grid2">
+  <div>
     <div>
-      <label for="setainushiIs" style="font-size:13px">世帯主は国保の被保険者ですか</label>
+      <label for="setainushiIs">世帯主は国保の被保険者ですか</label>
       <select id="setainushiIs">
         <option value="1" selected>はい（世帯主も国保に加入）</option>
         <option value="0">いいえ（擬制世帯主）</option>
       </select>
     </div>
     <div>
-      <label for="setainushiShotoku" style="font-size:13px">擬制世帯主の総所得金額等（円）</label>
+      <label for="setainushiShotoku">擬制世帯主の総所得金額等（円）</label>
       <input type="number" id="setainushiShotoku" min="0" inputmode="numeric" value="0">
     </div>
   </div>
-  <div class="grid2" style="margin-top:10px">
+  <div style="margin-top:10px">
     <div>
-      <label for="setainushiKyuyo" style="font-size:13px">擬制世帯主は給与所得者等か</label>
+      <label for="setainushiKyuyo">擬制世帯主は給与所得者等か</label>
       <select id="setainushiKyuyo">
         <option value="0" selected>いいえ</option>
         <option value="1">はい</option>
       </select>
     </div>
     <div>
-      <label for="tokuteiN" style="font-size:13px">特定同一世帯所属者の人数</label>
+      <label for="tokuteiN">特定同一世帯所属者の人数</label>
       <input type="number" id="tokuteiN" min="0" max="8" inputmode="numeric" value="0">
     </div>
   </div>
-  <div class="grid2" style="margin-top:10px">
+  <div style="margin-top:10px">
     <div>
-      <label for="tokuteiShotoku" style="font-size:13px">特定同一世帯所属者の総所得金額等の合計（円）</label>
+      <label for="tokuteiShotoku">特定同一世帯所属者の総所得金額等の合計（円）</label>
       <input type="number" id="tokuteiShotoku" min="0" inputmode="numeric" value="0">
     </div>
     <div>
-      <label for="tokuteiKyuyo" style="font-size:13px">うち給与所得者等の人数</label>
+      <label for="tokuteiKyuyo">うち給与所得者等の人数</label>
       <input type="number" id="tokuteiKyuyo" min="0" max="8" inputmode="numeric" value="0">
     </div>
   </div>
@@ -453,11 +453,11 @@ for (let i = 0; i < MAX_MEMBERS; i++) {
   row.id = `m${i}`;
   row.style.cssText = "grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:8px";
   row.innerHTML =
-    `<div><label for="age${i}" style="font-size:13px">${i + 1}人目 年度末の年齢</label>` +
+    `<div><label for="age${i}">${i + 1}人目 年度末の年齢</label>` +
     `<input type="number" id="age${i}" min="0" max="120" inputmode="numeric" value="${i === 0 ? 45 : 0}"></div>` +
-    `<div><label for="shotoku${i}" style="font-size:13px">総所得金額等（円）</label>` +
+    `<div><label for="shotoku${i}">総所得金額等（円）</label>` +
     `<input type="number" id="shotoku${i}" min="0" inputmode="numeric" value="0"></div>` +
-    `<div><label for="kyuyo${i}" style="font-size:13px">給与所得者等か</label>` +
+    `<div><label for="kyuyo${i}">給与所得者等か</label>` +
     `<select id="kyuyo${i}"><option value="0" selected>いいえ</option><option value="1">はい</option></select></div>`;
   $("members").appendChild(row);
 }
