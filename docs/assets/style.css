@@ -246,6 +246,10 @@ article p, article li { font-size: 16px; line-height: 1.95; }
    26px = 0.84行ぶんに広げる（class を持つ .article-meta / .byline は
    より詳細度の高い各自のルールが勝つので影響しない）。 */
 article p { margin: 0 0 1.6em; }
+/* ★リストの項目が 0〜5px でくっついていた（行の高さは31px）。段落と同じ理由。 */
+article ul, article ol { margin: 1.2em 0; }
+article li { margin: 0 0 0.6em; }
+article li:last-child { margin-bottom: 0; }
 /* ★長いURL・法令ID（例 340AC0000000034_20260723_508AC0000000064）は折り返せず、
    ページ全体を横スクロールさせる。2026-08-13 実測: 出典リストと .note が犯人で、
    /column/hojokin-shiwake/ は 478px、/gensen-hyo/ は 385px まで横に伸びていた。
@@ -271,7 +275,22 @@ article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-s
 .callout { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 10px; padding: 14px 16px; margin: 20px 0; font-size: 14.5px; }
 /* calloutの「先頭の<b>」だけが見出し。文中の<b>まで block にすると、強調のたびに改行されて
    文章がバラバラになる(2026-07-13に95箇所で発生。`b` 全部を対象にしていたのが原因)。 */
-.callout > b:first-child { display: block; margin-bottom: 4px; }
+.callout > b:first-child { display: block; margin-bottom: 8px; }
+/* 囲みの中の要素同士も、外の段落と同じだけ離す */
+.callout > p { margin: 0 0 0.8em; }
+.callout > p:last-child { margin-bottom: 0; }
+
+/* ★引用。147記事で <blockquote> を使っているのに**共有CSSに定義が無く**、
+   本文との違いが「左右がすこし狭い」だけだった（2026-08-24 実測: border 0 /
+   背景なし / padding 0）。条文や通達の逐語引用がこのサイトの要なので、
+   引用だと分かる手掛かりを付ける。色は既存トークンのみで新色を足さない。 */
+article blockquote {
+  margin: 1.4em 0;
+  padding: 2px 0 2px 16px;
+  border-left: 3px solid var(--line-strong);
+  color: var(--ink);
+}
+article blockquote p:last-child { margin-bottom: 0; }
 .summary-box { background: var(--accent-soft); border: 1px solid var(--accent); border-radius: 12px; padding: 18px 22px; margin: 24px 0; }
 .summary-box .t { font-weight: 700; color: var(--accent); margin-bottom: 8px; }
 .summary-box ul { margin: 0; padding-left: 20px; }
