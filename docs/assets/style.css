@@ -50,11 +50,22 @@ h1 { font-size: 24px; line-height: 1.4; margin: 16px 0 8px; }
   padding: 20px;
   margin-bottom: 20px;
 }
-label { display: block; font-weight: 700; font-size: 14px; margin: 14px 0 4px; }
+label { display: block; font-weight: 700; font-size: 14px; margin: 20px 0 4px; }
+
+/* ヒント（2026-08-24 新設）。★これまで .hint は **共有CSSに定義が無く**、
+   792箇所すべてが本文と同じ 16px・同じ色で出ていた（＝ラベルと入力欄の説明が
+   本文と見分けられない）。長すぎるのではなく、階層が無かった。
+   14px はデジタル庁DADSの下限。--sub は白地 5.48:1 で SC 1.4.3 適合。
+   font-weight:400 は label 内で使われたときに 700 を継承しないため。 */
+.hint { font-size: 14px; font-weight: 400; color: var(--sub); line-height: 1.6; margin: 0 0 6px; }
+
+/* 任意項目の印（GOV.UK 方式: 必須にアスタリスクを付けず、任意側に印を付ける） */
+.field-optional { font-weight: 400; font-size: 14px; color: var(--sub); }
 input[type="number"], input[type="text"], input[type="email"], input[type="date"], select, textarea {
   width: 100%;
   font-size: 18px;
-  padding: 10px 12px;
+  padding: 12px;
+  min-height: 48px;
   border: 1px solid var(--line-strong);
   border-radius: 8px;
   background: #fff;
@@ -78,6 +89,30 @@ input[type="number"], input[type="text"], input[type="email"], input[type="date"
 .radio-row input { margin-right: 6px; }
 .fee-pair { display: flex; gap: 12px; }
 .fee-pair > div { flex: 1; min-width: 0; }
+/* ★1カラムが原則（NN/g: 準拠フォームの初回成功率78% / 違反42%）。
+   .fee-pair にはメディアクエリが無く、390pxでも2カラムのままだった。
+   正本が認める例外（続柄＋年齢のような「短い組」）だけ --short で2カラムを維持する。 */
+@media (max-width: 560px) {
+  .fee-pair:not(.fee-pair--short) { flex-direction: column; gap: 0; }
+}
+.fee-pair--short { display: flex; gap: 12px; }
+.fee-pair--short > div { flex: 1; min-width: 0; }
+
+/* チェックボックス。UA既定の 13px は視認・操作の両方で小さい
+   （ラップする label 全体が44px以上あるので SC 2.5.8 違反ではないが、
+   Apple 44pt・freee「Webモバイル44×44」に対して見た目が不足していた）。 */
+label.check {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-weight: 400; font-size: 15px;
+  padding: 10px 0; margin: 8px 0 0; cursor: pointer;
+}
+label.check input[type="checkbox"] {
+  width: 24px; height: 24px; flex: 0 0 24px; margin: 0; accent-color: var(--accent);
+}
+
+/* 反復ブロック（「N人目」など）。見出しを legend に持たせて境界を作る */
+fieldset.member { border: 0; border-top: 1px solid var(--line); margin: 24px 0 0; padding: 4px 0 0; }
+fieldset.member legend { font-weight: 700; font-size: 15px; padding: 0 0 2px; }
 input[type="date"] { min-width: 0; }
 button.primary {
   width: 100%;
