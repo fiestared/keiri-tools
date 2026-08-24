@@ -117,6 +117,12 @@ label.check input[type="checkbox"] {
    操作ターゲットはラップする label 全体で44px以上あり SC 2.5.8 は元から満たしている）。 */
 input[type="checkbox"], input[type="radio"] {
   width: 20px; height: 20px; min-height: 0; accent-color: var(--accent);
+  /* ★13px→20px にしたとき vertical-align を指定せず、ベースライン揃えのままだったので
+     箱が文字より 5.0px 高い位置に浮いていた（2026-08-24 に実際に崩した）。
+     ラベルは <b> とテキストノードが混在するので flex 化はできない
+     （<b> が独立した flex item になって段が割れる）。行内での位置だけを直す。
+     -0.35em で実測ずれ 5.0px → 0.3px。 */
+  vertical-align: -0.35em;
 }
 
 /* 反復ブロック（「N人目」など）。見出しを legend に持たせて境界を作る */
