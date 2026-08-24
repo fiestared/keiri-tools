@@ -509,7 +509,7 @@ function renderCompare(kazei, annualLimit, monthlyA) {
   const hi = a.total >= b.total ? a : b;
   const row = (label, f) => `<tr><th>${label}</th><td>${f(a)}</td><td>${f(b)}</td></tr>`;
   const warn = (x) => x.capped
-    ? `<div class="hint">★希望額 ${yen(x.requested)}／月は年間上限 ${yen(x.annualLimit)}（月 ${yen(limitMonthly)}）を超えるため、<b>上限額で試算しています</b>。</div>` : "";
+    ? `<div class="hint">希望額 ${yen(x.requested)}／月は年間上限 ${yen(x.annualLimit)}（月 ${yen(limitMonthly)}）を超えるため、<b>上限額で試算しています</b>。</div>` : "";
 
   box.innerHTML = `
     <div class="card" style="margin-top:14px">

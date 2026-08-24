@@ -59,7 +59,7 @@
 
   <label for="shussanbi">実際の出産日<span style="font-weight:400">　まだの方は空欄でOK</span></label>
   <input id="shussanbi" type="date" value="">
-  <div class="hint">★予定日より遅れると、遅れた日数ぶん給付が増えます（早いと減ります）。空欄なら予定日どおりの見込みで計算します。</div>
+  <div class="hint">予定日より遅れると、遅れた日数ぶん給付が増えます（早いと減ります）。空欄なら予定日どおりの見込みで計算します。</div>
 
   <label class="chk"><input id="tatai" type="checkbox"> <span><b>多胎妊娠</b>（双子以上）である（産前が42日→<b>98日</b>になります）</span></label>
 
@@ -69,7 +69,7 @@
 
   <label for="months">健康保険の被保険者期間（加入している月数）</label>
   <input id="months" type="number" inputmode="numeric" value="12" min="1" max="600">
-  <div class="hint">★12か月未満の方は上限がかかります（99条2項ただし書）。</div>
+  <div class="hint">12か月未満の方は上限がかかります（99条2項ただし書）。</div>
 
   <label class="chk"><input id="ninnikeizoku" type="checkbox"> <span><b>任意継続被保険者</b>である（退職後に健康保険を任意継続している）</span></label>
   <label class="chk"><input id="taishokugo" type="checkbox"> <span><b>退職する前から</b>産前休業に入っていた＝<b>資格喪失後の継続給付</b>（104条）</span></label>
@@ -78,7 +78,7 @@
     <summary>産休中に給与が出る場合／標準報酬月額を月ごとに入れる／健保組合の方</summary>
     <label for="hoshuNichigaku">産休中に受けられる給与の日額（円）</label>
     <input id="hoshuNichigaku" type="number" inputmode="numeric" value="0" min="0">
-    <div class="hint">★給与が出ていても、日額が出産手当金より少なければ差額が支給されます（108条2項ただし書）。</div>
+    <div class="hint">給与が出ていても、日額が出産手当金より少なければ差額が支給されます（108条2項ただし書）。</div>
     <label for="standards">標準報酬月額を月ごとに（カンマ区切り・古い月→新しい月／円）</label>
     <input id="standards" type="text" placeholder="例: 160000,160000,180000,180000,180000,180000" inputmode="numeric">
     <div class="hint">昇給・降給があった方は直近12か月を入れると正確です（入れた場合は上の月給より優先）。</div>
@@ -179,21 +179,21 @@ $("calc").addEventListener("click", async () => {
   const k = r.kikan;
 
   const keizokuNote = r.via104
-    ? `<div class="callout">これは「資格喪失後の継続給付」（健康保険法104条）として計算しています。退職する前から産前休業に入っていた方は、任意継続でも受け続けられます。★退職日に出社すると受けられなくなります。</div>`
+    ? `<div class="callout">これは「資格喪失後の継続給付」（健康保険法104条）として計算しています。退職する前から産前休業に入っていた方は、任意継続でも受け続けられます。退職日に出社すると受けられなくなります。</div>`
     : "";
   const delayNote = (!k.shussanbiEstimated && k.delay !== 0)
     ? (k.delay > 0
-        ? `<div class="callout">★出産が予定日より ${k.delay}日 遅れたため、産前が ${k.delay}日 延びています（+${yen(r.paidNichigaku * k.delay)}）。産前の起点が予定日に固定されるためです（102条1項）。</div>`
-        : `<div class="callout">★出産が予定日より ${-k.delay}日 早かったため、産前が ${-k.delay}日 短くなっています。</div>`)
+        ? `<div class="callout">出産が予定日より ${k.delay}日 遅れたため、産前が ${k.delay}日 延びています（+${yen(r.paidNichigaku * k.delay)}）。産前の起点が予定日に固定されるためです（102条1項）。</div>`
+        : `<div class="callout">出産が予定日より ${-k.delay}日 早かったため、産前が ${-k.delay}日 短くなっています。</div>`)
     : "";
   const capNote = r.capped
-    ? `<div class="callout">★被保険者期間が${r.months}か月（12か月未満）のため、上限（1日 ${yen(r.cap)}）にかかっています。ご自身の平均から出した ${yen(r.own)} ではなく、全被保険者の平均標準報酬月額 ${yen(r.heikin)}（${r.heikinLabel}）から出した額の少ないほうで計算されます（99条2項ただし書）。</div>`
+    ? `<div class="callout">被保険者期間が${r.months}か月（12か月未満）のため、上限（1日 ${yen(r.cap)}）にかかっています。ご自身の平均から出した ${yen(r.own)} ではなく、全被保険者の平均標準報酬月額 ${yen(r.heikin)}（${r.heikinLabel}）から出した額の少ないほうで計算されます（99条2項ただし書）。</div>`
     : "";
   let choseiNote = "";
   if (adj.deduct > 0) {
     choseiNote = adj.zero
-      ? `<div class="callout">★給与の日額 ${yen(adj.deduct)} が出産手当金の日額 ${yen(adj.amount)} 以上のため、出産手当金は支給されません（108条2項）。</div>`
-      : `<div class="callout">★給与が出ていても差額が支給されます。日額 ${yen(adj.amount)} − 給与 ${yen(adj.deduct)} ＝ <b>${yen(adj.paid)}</b>／日（108条2項ただし書）。</div>`;
+      ? `<div class="callout">給与の日額 ${yen(adj.deduct)} が出産手当金の日額 ${yen(adj.amount)} 以上のため、出産手当金は支給されません（108条2項）。</div>`
+      : `<div class="callout">給与が出ていても差額が支給されます。日額 ${yen(adj.amount)} − 給与 ${yen(adj.deduct)} ＝ <b>${yen(adj.paid)}</b>／日（108条2項ただし書）。</div>`;
   }
   const yoteiNote = k.shussanbiEstimated
     ? `<div class="hint">実際の出産日が未入力のため、予定日どおりの見込みで計算しています。遅れて産まれるとその日数ぶん増えます。</div>`
@@ -220,7 +220,7 @@ $("calc").addEventListener("click", async () => {
     </table>
     ${yoteiNote}
     ${estimatedNote}
-    <div class="note">★産後57日目からは育児休業給付金に切り替わり、月額332,454円で頭打ちになります。産休中の金額で家計を組まないでください。</div>
+    <div class="note">産後57日目からは育児休業給付金に切り替わり、月額332,454円で頭打ちになります。産休中の金額で家計を組まないでください。</div>
     <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
   postHeight();
 });

@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>高額療養費 計算機｜自己負担限度額といくら戻るかを自動計算</title>
-<meta name="description" content="ひと月の医療費が高額になったとき、いくらまで自分が払い、いくら戻ってくるのかを計算します。★限度額の区分を決めるのは「年収」ではなく療養のあった月の標準報酬月額です。月給が1円違って等級が1つ上がるだけで、医療費100万円の月の自己負担が87,430円から171,820円へ84,390円変わります。世帯合算（21,000円以上のものだけ）・多数回該当（直近12か月で4回目から）にも対応。登録不要・無料。">
+<meta name="description" content="ひと月の医療費が高額になったとき、いくらまで自分が払い、いくら戻ってくるのかを計算します。限度額の区分を決めるのは「年収」ではなく療養のあった月の標準報酬月額です。月給が1円違って等級が1つ上がるだけで、医療費100万円の月の自己負担が87,430円から171,820円へ84,390円変わります。世帯合算（21,000円以上のものだけ）・多数回該当（直近12か月で4回目から）にも対応。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/kogaku-ryoyohi/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="高額療養費 計算機｜自己負担限度額といくら戻るかを自動計算">
-<meta property="og:description" content="ひと月の医療費が高額になったとき、いくらまで自分が払い、いくら戻ってくるのかを計算します。★限度額の区分を決めるのは「年収」ではなく療養のあった月の標準報酬月額です。月給が1円違って等級が1つ上がるだけで、医療費100万円の月の自己負担が87,430円から171,820円へ84,390円変わります。世帯合算（21,000円以上のものだけ）・多数回該当（直近12か月で4回目から）にも対応。登録不要・無料。">
+<meta property="og:description" content="ひと月の医療費が高額になったとき、いくらまで自分が払い、いくら戻ってくるのかを計算します。限度額の区分を決めるのは「年収」ではなく療養のあった月の標準報酬月額です。月給が1円違って等級が1つ上がるだけで、医療費100万円の月の自己負担が87,430円から171,820円へ84,390円変わります。世帯合算（21,000円以上のものだけ）・多数回該当（直近12か月で4回目から）にも対応。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/kogaku-ryoyohi/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -164,7 +164,7 @@
       <option value="teishotoku2">低所得者Ⅱ（住民税非課税の世帯）</option>
       <option value="teishotoku1">低所得者Ⅰ（住民税非課税＋世帯全員の所得が一定以下）</option>
     </select>
-    <p class="hint">★<b>標準報酬月額が28万円以上でも、自動的に現役並みになるわけではありません。</b>収入の合計額が<b>520万円未満（1人世帯の場合は383万円未満）</b>であれば、申請により<b>一般</b>の扱いになります（厚労省の表の※2）。加入先から届いている「高齢受給者証」の負担割合でご確認ください。現役並みを選んだ場合だけ、下の標準報酬月額で3つの区分に分かれます。</p>
+    <p class="hint"><b>標準報酬月額が28万円以上でも、自動的に現役並みになるわけではありません。</b>収入の合計額が<b>520万円未満（1人世帯の場合は383万円未満）</b>であれば、申請により<b>一般</b>の扱いになります（厚労省の表の※2）。加入先から届いている「高齢受給者証」の負担割合でご確認ください。現役並みを選んだ場合だけ、下の標準報酬月額で3つの区分に分かれます。</p>
     <p class="hint">一般区分を選んだ場合、標準報酬月額は<b>年間上限の判定だけ</b>に使います（<b>15万円以下</b>であることが確認できた方は、世帯の年間上限が53万円ではなく<b>41万円</b>になります）。月ごとの限度額は標準報酬月額では変わりません。</p>
     <p class="hint">この表は<b>健康保険（協会けんぽ）の70歳以上＝70〜74歳の高齢受給者</b>のものです。75歳以上の方は後期高齢者医療制度に移りますが、<b>月ごとの限度額の額は同じ表</b>です（区分の判定が標準報酬月額ではなく課税所得になります）。</p>
   </div>
@@ -336,7 +336,7 @@
   </div>
 
   <div class="note" id="not-covered">
-    <p style="margin:0 0 8px"><b>★ 高額療養費の対象にならない費用</b>　医療費に含めないでください（含めると戻る額が実際より多く出ます）。</p>
+    <p style="margin:0 0 8px"><b>高額療養費の対象にならない費用</b>　医療費に含めないでください（含めると戻る額が実際より多く出ます）。</p>
     <ul style="margin:0;padding-left:20px" id="not-covered-list"></ul>
   </div>
 
@@ -506,7 +506,7 @@ function renderOver70(box, r, plannedNote = "") {
     <p style="margin:8px 0 0;font-size:13px">1年の区切りは<b>${ymJa(ann.period.from)} 診療分 〜 ${ymJa(ann.period.through)} 診療分</b>です（暦年でも年度でもありません。施行令41条の2の「計算期間」）。</p>
     ${ann.gairai != null ? `<p style="margin:8px 0 0;font-size:13px">・<b>外来の年間上限：${yen(ann.gairai)}</b>（個人ごと・外来だけの合計）</p>` : ""}
     ${ann.household != null ? `<p style="margin:4px 0 0;font-size:13px">・<b>世帯の年間上限：${yen(ann.household)}</b>${ann.householdReduced ? "（標準報酬月額15万円以下のため軽減後の額です。保険者が確認できた場合）" : ""}</p>` : ""}
-    <p style="margin:8px 0 0;font-size:13px">★<b>これは窓口で引かれる仕組みではありません。</b>窓口では上の月額の限度額（${yen(r.limit)}）まで払い、
+    <p style="margin:8px 0 0;font-size:13px"><b>これは窓口で引かれる仕組みではありません。</b>窓口では上の月額の限度額（${yen(r.limit)}）まで払い、
     <b>1年が終わったあとに保険者へ申請して払い戻し（償還払い）を受けます</b>。申請しないと戻りません。</p>
     <p style="margin:8px 0 0;font-size:12px;color:var(--sub)">このツールは<b>上限額と期間をお知らせするだけで、あなたの年間累計は計算していません</b>。加入先の健康保険にご確認ください。</p>
     </div>` : "";
@@ -631,7 +631,7 @@ $("calc").addEventListener("click", async () => {
     ${ann.reduced ? `<br><span style="font-size:13px">標準報酬月額が15万円以下のため、53万円ではなく<b>${yen(ann.cap)}</b>が上限です（保険者が確認できた場合）。</span>` : ""}
     <p style="margin:8px 0 0;font-size:13px">1年の区切りは<b>${ymJa(ann.period.from)} 診療分 〜 ${ymJa(ann.period.through)} 診療分</b>です（暦年でも年度でもありません）。
     この1年でのあなたの自己負担の合計が ${yen(ann.cap)} を超えたときは、超えた分が戻ります。</p>
-    <p style="margin:8px 0 0;font-size:13px">★<b>これは窓口で引かれる仕組みではありません。</b>窓口では上の月額の限度額（${yen(r.limit)}）まで払い、
+    <p style="margin:8px 0 0;font-size:13px"><b>これは窓口で引かれる仕組みではありません。</b>窓口では上の月額の限度額（${yen(r.limit)}）まで払い、
     <b>1年が終わったあとに保険者へ申請して払い戻し（償還払い）を受けます</b>。申請しないと戻りません。
     協会けんぽの場合は「年間の高額療養費支給申請書兼自己負担額証明書交付申請書」です。</p>
     <p style="margin:8px 0 0;font-size:12px;color:var(--sub)">なお、年間の合計を数える単位（世帯か個人か）と、合計に入る自己負担の範囲は、

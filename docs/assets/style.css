@@ -211,7 +211,22 @@ article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-s
 .tbl th { background: var(--accent-soft); font-weight: 700; }
 
 /* ---- 横長の表を包む（スクロール＋固定ヘッダ） ---- */
-.scroll-wrap { max-height: 640px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; }
+/* 枠の内側に表を「ぴたり」と置く（2026-08-24）。
+   article table / .tbl の margin:16px が .scroll-wrap の内側でも効いてしまい、
+   角丸の枠と表のあいだに上下17pxの帯ができて**枠が二重に見えていた**。
+   外側の余白は枠が持ち、表の周囲の罫線は枠線と重ねない（重なると2px幅の線に見える）。 */
+.scroll-wrap { max-height: 640px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; margin: 16px 0; }
+.scroll-wrap > table { margin: 0; }
+.scroll-wrap > table th:first-child,
+.scroll-wrap > table td:first-child { border-left: 0; }
+.scroll-wrap > table th:last-child,
+.scroll-wrap > table td:last-child { border-right: 0; }
+.scroll-wrap > table tr:first-child th,
+.scroll-wrap > table tr:first-child td { border-top: 0; }
+.scroll-wrap > table tr:last-child th,
+.scroll-wrap > table tr:last-child td { border-bottom: 0; }
+/* .result table.res は後方でより強く margin-top:12px を当てているので、上書きする */
+.result .scroll-wrap > table.res { margin: 0; }
 .data-table { font-size: 13px; }
 .data-table th { position: sticky; top: 0; background: var(--accent-soft); z-index: 1; font-size: 12px; padding: 7px 6px; }
 .data-table td { padding: 5px 6px; }

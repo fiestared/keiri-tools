@@ -601,7 +601,7 @@ $("dec-calc").addEventListener("click", () => {
   const rows = usable.map((r) => {
     const isBest = r === best;
     return `<tr style="${isBest ? "background:#e7f3f0;font-weight:700" : ""}">
-      <td style="padding:6px 8px">${r.label}${isBest ? " ★" : ""}<br>
+      <td style="padding:6px 8px">${r.label}${isBest ? " " : ""}<br>
         <small style="font-weight:400;color:var(--sub)">${r.note}</small></td>
       <td style="padding:6px 8px;text-align:right">${yen(r.sales.tax)}</td>
       <td style="padding:6px 8px;text-align:right">${yen(r.purchase.tax)}</td>
@@ -701,7 +701,7 @@ $("h-calc").addEventListener("click", () => {
     <p>${judge}</p>
     <p>本則と簡易が一致するのは、課税仕入れ（税込）が <b>${yen(r.breakEvenPurchaseIncTax)}</b> のときです。
     これより経費が少なければ簡易、多ければ本則が小さくなります。</p>
-    <p style="font-size:13px;color:var(--sub)">★<b>2割特例と3割特例は使える年が重なりません</b>（2割は令和8年9月30日を含む課税期間まで、3割は令和9年分・令和10年分の個人）。同じ表に並べていますが、ある年に選べるのはどちらか一方です。<br>※ 金額の小さい行を強調していますが、
+    <p style="font-size:13px;color:var(--sub)"><b>2割特例と3割特例は使える年が重なりません</b>（2割は令和8年9月30日を含む課税期間まで、3割は令和9年分・令和10年分の個人）。同じ表に並べていますが、ある年に選べるのはどちらか一方です。<br>※ 金額の小さい行を強調していますが、
     <b>選択には届出と適用要件の確認が必要</b>です。簡易課税は原則として2年間継続します。</p>`;
 });
 
