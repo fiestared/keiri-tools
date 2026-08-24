@@ -6,8 +6,7 @@ import { readFileSync } from "node:fs";
 // 記事の一覧は「ツールのプリセットと同じ数字である」ことがこのページの売りなので、ここは崩せない。
 
 const FEES = JSON.parse(readFileSync(new URL("../docs/assets/fee_table.json", import.meta.url)));
-const HTML = readFileSync(new URL("../docs/column/furikomi-tesuryo-hikaku/index.html", import.meta.url), "utf8");
-
+const HTML = readFileSync(new URL("../docs/column/furikomi-tesuryo-hikaku/index.html", import.meta.url), "utf8").replace(/<td class="num">/g, "<td>");
 // 表から <tr><td>銀行名</td><td>N円</td><td>M円</td>... を拾う
 //
 // ★2026-08-17: ここは **Map に set していた**（後勝ち）。記事には同じ銀行の行が

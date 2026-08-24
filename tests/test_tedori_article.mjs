@@ -18,7 +18,7 @@ import { calcMonthly, calcKoyou, kenkoGrade, koseiStandard, KOSEI_MAX, KENKO_GRA
 import { kouTax } from '../docs/assets/gensen_kyuyo_core.js';
 
 const FILE = process.env.ARTICLE_FILE || 'docs/column/tedori-keisan/index.html';
-const html = fs.readFileSync(FILE, 'utf8');
+const html = fs.readFileSync(FILE, 'utf8').replace(/<td class="num">/g, "<td>");
 let ng = 0;
 const fail = m => { console.error('  ✗ ' + m); ng++; };
 const ok = m => console.log('  ✓ ' + m);

@@ -32,9 +32,10 @@ const t = (name, ok, detail) => {
   else { fail++; console.log('❌ ' + name + (detail ? '\n   ' + detail : '')); }
 };
 
-const originalPage = readFileSync(PAGE, 'utf-8');
+const rawOriginalPage = readFileSync(PAGE, 'utf-8');
+const originalPage = rawOriginalPage.replace(/<td class="num">/g, '<td>');
 const originalData = readFileSync(DATA, 'utf-8');
-const restore = () => { writeFileSync(PAGE, originalPage); writeFileSync(DATA, originalData); };
+const restore = () => { writeFileSync(PAGE, rawOriginalPage); writeFileSync(DATA, originalData); };
 
 // ── ベースライン ────────────────────────────────────────────────────────────
 const base = run();

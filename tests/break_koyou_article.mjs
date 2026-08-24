@@ -11,7 +11,7 @@ import fs from 'node:fs';
 
 const SRC = 'docs/column/koyou-hokenryo-ritsu/index.html';
 const TMP = '/tmp/koyou_broken.html';
-const orig = fs.readFileSync(SRC, 'utf8');
+const orig = fs.readFileSync(SRC, 'utf8').replace(/<td class="num">/g, '<td>');
 
 const BREAKS = [
   // ── ★端数規則: 集合一致では絶対に捕まらない壊し方 ──

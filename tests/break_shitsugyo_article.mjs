@@ -18,7 +18,7 @@ import { execFileSync } from "node:child_process";
 
 const SRC = "docs/column/shitsugyo-hoken-keisan/index.html";
 const TMP = "docs/column/shitsugyo-hoken-keisan/.break.html";
-const orig = fs.readFileSync(SRC, "utf8");
+const orig = fs.readFileSync(SRC, "utf8").replace(/<td class="num">/g, "<td>");
 
 const run = (file) => {
   try {

@@ -20,7 +20,7 @@ import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
 import { PAGE, loadData, buildRows, buildKeiLine } from '../tools/gen_jidoshazei_table.mjs';
 
-const html = readFileSync(PAGE, 'utf-8');
+const html = readFileSync(PAGE, 'utf-8').replace(/<td class="num">/g, "<td>");
 /** ★JS の中の文字列を数えないため、script を落としたものを母集合にする */
 const visible = html.replace(/<script[\s\S]*?<\/script>/g, '');
 const D = loadData();

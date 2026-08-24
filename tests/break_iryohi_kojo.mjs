@@ -20,7 +20,7 @@ import { execFileSync } from 'node:child_process';
 const SRC = 'docs/column/iryohi-kojo-ikura-kara/index.html';
 const TMP = '/tmp/break_iryohi_kojo.html';
 const CHECKER = 'tests/test_iryohi_kojo_article.mjs';
-const orig = fs.readFileSync(SRC, 'utf8');
+const orig = fs.readFileSync(SRC, 'utf8').replace(/<td class="num">/g, '<td>');
 
 const run = file => {
   try {
