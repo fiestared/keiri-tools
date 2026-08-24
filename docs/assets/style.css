@@ -105,6 +105,15 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type=
 .fee-pair--short { display: flex; gap: 12px; }
 .fee-pair--short > div { flex: 1; min-width: 0; }
 
+/* ★入力欄の幅を期待値に合わせる（正本: 郵便番号の欄が氏名と同じ幅なのは情報の嘘）。
+   デスクトップ1357pxで年収の入力欄が 598px あり、桁数に対して過大だった。
+   幅が意味を持たない number/date/month にだけ上限を置く。
+   select は選択肢の文言（都道府県など）に幅が要るので対象外。
+   閲覧の95%がデスクトップなので、狭い画面には効かせない。 */
+@media (min-width: 700px) {
+  input[type="number"], input[type="date"], input[type="month"] { max-width: 20em; }
+}
+
 /* チェックボックス。UA既定の 13px は視認・操作の両方で小さい
    （ラップする label 全体が44px以上あるので SC 2.5.8 違反ではないが、
    Apple 44pt・freee「Webモバイル44×44」に対して見た目が不足していた）。 */
@@ -359,8 +368,12 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .tool-card .ico svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .tool-card .name { font-weight: 700; font-size: 15.5px; margin-bottom: 4px; }
 /* カード説明は3行でクランプ(一覧の走査性)。全文はDOMに残る=検索は読める。詳細はツールページで(2026-07-23) */
-.tool-card .desc { font-size: 13px; color: var(--sub); line-height: 1.65;
-  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+/* ★3行clampをやめる（2026-08-24）。カード文を短縮したあとも 65枚中19枚が
+   デスクトップ1357pxで切れており、必要行数は最大9行だった。そのうえ
+   test_screen_constants が「トップだけが古い額を名乗らないため」に守っている
+   9,110円 / 6,745円 のような**年に紐づく事実が、clampで読者から隠れていた**。
+   切るのではなく全部出す。ページ全高は +643px（実測 7,745→8,388px）。 */
+.tool-card .desc { font-size: 13px; color: var(--sub); line-height: 1.65; }
 
 /* 対象者スイッチ(2026-07-23): 選ぶと節とチップが並び替わり選択を記憶。既定DOM順は不変=SEO非影響 */
 .persona-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 14px 0 2px; }
