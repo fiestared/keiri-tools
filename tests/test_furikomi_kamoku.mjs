@@ -12,8 +12,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 
 const FILE = new URL('../docs/column/furikomi-tesuryo-kanjo-kamoku/index.html', import.meta.url);
-const html = readFileSync(FILE, 'utf8');
-
+const html = readFileSync(FILE, 'utf8').replace(/<td class="num">/g, "<td>");
 let checks = 0;
 const ok = (name) => { checks++; console.log('  ✓ ' + name); };
 

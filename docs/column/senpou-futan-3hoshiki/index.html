@@ -248,9 +248,9 @@
   <p>請求額 <b>30,300円</b>、手数料「3万円未満220円／3万円以上440円」のケースで計算してみます。</p>
   <table>
     <tr><th scope="col">方式</th><th scope="col">基準額との比較</th><th scope="col">差引額</th><th scope="col">振込額</th></tr>
-    <tr><td>据置型</td><td>30,300 ≧ 30,000 → 3万円以上</td><td>440円</td><td><b>29,860円</b></td></tr>
-    <tr><td>未満加算型</td><td>30,300 ＜ 30,220? → いいえ…3万円以上</td><td>440円</td><td>29,860円</td></tr>
-    <tr><td>以上加算型</td><td>30,300 ＜ 30,440 → 3万円未満</td><td>220円</td><td><b>30,080円</b></td></tr>
+    <tr><td>据置型</td><td>30,300 ≧ 30,000 → 3万円以上</td><td class="num">440円</td><td class="num"><b>29,860円</b></td></tr>
+    <tr><td>未満加算型</td><td>30,300 ＜ 30,220? → いいえ…3万円以上</td><td class="num">440円</td><td class="num">29,860円</td></tr>
+    <tr><td>以上加算型</td><td>30,300 ＜ 30,440 → 3万円未満</td><td class="num">220円</td><td class="num"><b>30,080円</b></td></tr>
   </table>
   <p>同じ請求額なのに、方式によって振込額が <b>220円</b> 変わります。受取側からすると「入金が請求より220円足りない」という状態になり、消込が合いません。滋賀銀行のFAQでは、この境界帯で生じた差額を雑益・雑損で処理する例が示されています。</p>
 
@@ -273,16 +273,16 @@
   <p><b>方法1: 支払手数料として処理する</b></p>
   <table>
     <tr><th scope="col">借方</th><th scope="col">金額</th><th scope="col">貸方</th><th scope="col">金額</th></tr>
-    <tr><td>普通預金</td><td>109,560</td><td>売掛金</td><td>110,000</td></tr>
-    <tr><td>支払手数料</td><td>440</td><td></td><td></td></tr>
+    <tr><td>普通預金</td><td class="num">109,560</td><td>売掛金</td><td>110,000</td></tr>
+    <tr><td>支払手数料</td><td class="num">440</td><td></td><td></td></tr>
   </table>
   <p style="font-size:13.5px">支払手数料を<b>課税仕入れ</b>として処理します。ただし、銀行から役務提供を受けたのは支払側であって受取側ではないため、実態に合わないという指摘があります。</p>
 
   <p><b>方法2: 売上値引きとして処理する</b></p>
   <table>
     <tr><th scope="col">借方</th><th scope="col">金額</th><th scope="col">貸方</th><th scope="col">金額</th></tr>
-    <tr><td>普通預金</td><td>109,560</td><td>売掛金</td><td>110,000</td></tr>
-    <tr><td>売上値引</td><td>440</td><td></td><td></td></tr>
+    <tr><td>普通預金</td><td class="num">109,560</td><td>売掛金</td><td>110,000</td></tr>
+    <tr><td>売上値引</td><td class="num">440</td><td></td><td></td></tr>
   </table>
   <p style="font-size:13.5px"><b>売上に係る対価の返還等</b>として扱います。</p>
 
@@ -297,8 +297,8 @@
   <p>先方負担なので、支払側は<b>手数料を負担していません</b>。差し引いた額をそのまま支払として処理します。</p>
   <table>
     <tr><th scope="col">借方</th><th scope="col">金額</th><th scope="col">貸方</th><th scope="col">金額</th></tr>
-    <tr><td>買掛金</td><td>110,000</td><td>普通預金</td><td>109,560</td></tr>
-    <tr><td></td><td></td><td>雑収入（または仕入値引）</td><td>440</td></tr>
+    <tr><td>買掛金</td><td>110,000</td><td>普通預金</td><td class="num">109,560</td></tr>
+    <tr><td></td><td></td><td>雑収入（または仕入値引）</td><td class="num">440</td></tr>
   </table>
   <p style="font-size:13.5px">「一律550円を差し引いたが、実際の手数料は440円だった」というように<b>差額が出た場合は、その差額（110円）を雑収入</b>で処理します。</p>
 

@@ -244,6 +244,7 @@ sitemap の実行自体が `docs/column/index.html` を書き換えるので**2�
 `.callout`（注意ボックス／`<b>`が見出しになる）・`.figure`＋`figcaption`・`.tool-cta`（ツールへのCTA）・
 `.tool-grid`＋`.tool-card`（関連カード）・`.summary-box`・`.note`・`.scroll-wrap`（横長の表を包む）・
 `.article-meta`・`.toc`・`.breadcrumb`・`.related`。表は素の `<table>` でよい。
+金額・率を行同士で比較する列の `<td>` には `class="num"` を付ける（「項目名: 金額」の2列表は除く）。
 
 ## 中身の質（ここで差がつく）
 

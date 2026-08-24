@@ -25,8 +25,9 @@ const run = () => {
   }
 };
 
-const orig = { page: fs.readFileSync(PAGE, "utf8"), data: fs.readFileSync(DATA, "utf8") };
-const restore = () => { fs.writeFileSync(PAGE, orig.page); fs.writeFileSync(DATA, orig.data); };
+const rawOrig = { page: fs.readFileSync(PAGE, "utf8"), data: fs.readFileSync(DATA, "utf8") };
+const orig = { ...rawOrig, page: rawOrig.page.replace(/<td class="num">/g, "<td>") };
+const restore = () => { fs.writeFileSync(PAGE, rawOrig.page); fs.writeFileSync(DATA, rawOrig.data); };
 
 const base = run();
 if (!base.green) {

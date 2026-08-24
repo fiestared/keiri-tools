@@ -22,7 +22,8 @@ const t = (name, ok, detail) => {
   else { fail++; console.log('❌ ' + name + (detail ? '\n   ' + detail : '')); }
 };
 
-const original = readFileSync(ARTICLE, 'utf-8');
+const rawOriginal = readFileSync(ARTICLE, 'utf-8');
+const original = rawOriginal.replace(/<td class="num">/g, '<td>');
 const base = run();
 if (base.status !== 0) {
   console.log('❌ ベースラインが赤。壊しテストは意味を成さないので中止する。');
@@ -51,7 +52,7 @@ const withBreak = (label, mutate, expect) => {
         '赤にはなったが、何が壊れたのか出力から分からない');
     }
   } finally {
-    writeFileSync(ARTICLE, original);
+    writeFileSync(ARTICLE, rawOriginal);
   }
 };
 
@@ -97,7 +98,7 @@ withBreak('壊し9: 目次リンクを外すと赤になる',
   (s) => s.replace('      <li><a href="#hayamihyo">月給別の買取単価 早見表（3方式）</a></li>\n', ''),
   '目次');
 
-t('壊しテストの後、記事が元のまま', readFileSync(ARTICLE, 'utf-8') === original,
+t('壊しテストの後、記事が元のまま', readFileSync(ARTICLE, 'utf-8') === rawOriginal,
   '★記事が書き換わったまま残っている。このまま push すると本番が壊れる');
 
 console.log(`\n${fail === 0 ? '✅' : '❌'} ${pass} passed, ${fail} failed`);

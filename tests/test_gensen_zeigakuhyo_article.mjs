@@ -16,7 +16,7 @@ import fs from 'node:fs';
 
 const FILE = process.env.ARTICLE_FILE || 'docs/column/gensen-zeigakuhyo-mikata/index.html';
 const TBL = JSON.parse(fs.readFileSync('docs/assets/gensen_getsugaku_r08.json', 'utf8'));
-const html = fs.readFileSync(FILE, 'utf8');
+const html = fs.readFileSync(FILE, 'utf8').replace(/<td class="num">/g, "<td>");
 let ng = 0;
 const fail = m => { console.error('  ✗ ' + m); ng++; };
 const ok = m => console.log('  ✓ ' + m);

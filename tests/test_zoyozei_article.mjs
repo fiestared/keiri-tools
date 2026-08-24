@@ -8,8 +8,7 @@ import { calcZoyozei } from "../docs/assets/zoyozei_core.js";
 // 規則3: 「本文のどこかに在る」ではなく、その主張が載っている要素(表・summary-box・ol)を名指しする。
 
 const D = JSON.parse(readFileSync(new URL("../docs/assets/zoyozei_r08.json", import.meta.url)));
-const HTML = readFileSync(new URL("../docs/column/zoyozei-ikura/index.html", import.meta.url), "utf8");
-
+const HTML = readFileSync(new URL("../docs/column/zoyozei-ikura/index.html", import.meta.url), "utf8").replace(/<td class="num">/g, "<td>");
 /** マーカー間のHTMLを切り出す(見つからなければ落とす — 黙って空を返すと検査が消える) */
 function slice(from, to) {
   const i = HTML.indexOf(from);
