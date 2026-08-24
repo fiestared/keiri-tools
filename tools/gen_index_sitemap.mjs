@@ -296,6 +296,7 @@ const ORDER = [
   "kyuyo-keisan-machigai-teisei",      // 給与計算の訂正
   "rodo-hoken-nendo-koshin",           // 労働保険の年度更新
   "gensen-shotokuzei-noki-tokurei",    // 源泉所得税の納期の特例
+  "gensen-shotokuzei-nofusho",         // 所得税徴収高計算書（源泉所得税の納付書）4,400/月 ＋ 源泉所得税 納付書 2,900・所得税徴収高計算書 書き方 1,300・納付書 書き方 880 ＝クラスタ 約9,480（keyword_demand.py で実測）。★被覆調査: 全374ページで「所得税徴収高計算書」を title/h1 に持つページ0件・言及は gensen-shotokuzei-noki-tokurei の本文4回のみ。⚠️ 納期の特例と重なるため ARTICLE_SPEC 手順3の②を適用し、承認要件と「常時10人未満」の判定は noki-tokurei に譲り、本記事は**用紙そのもの（法的構造・種類・欄・0円・遅れたとき・様式変更）に徹する**。踏み込みは①★★★**「納付書」と「所得税徴収高計算書」は法令上べつの書類**＝通則法34条1項は「金銭に納付書を添えて」（添える向きが逆）・所法220条はその納付書に「財務省令で定める計算書を添附」＝金銭→納付書→計算書の三段の入れ子。国税庁の事務運営指針の表題自体が「納付書兼所得税徴収高計算書」②★★**所規80条の別表第三は木構造から機械計数して6枝なのに、国税庁の様式は別紙1〜10の10種類**＝指針が根拠に所規80条・107条に加え措置法施行規則18条の13の6・19条の4を挙げている＝納付書の種類は所得税法施行規則だけでは決まっていない ③★所規104条が国税庁長官に「所要の事項を付記すること又は一部の事項を削ること」を認めている＝手元の紙と別表が違っても誤りではない ④★★**土曜日は通則法10条2項の本文に無い**（日曜・祝日・一般の休日まで）＝施行令2条2項が「土曜日又は十二月二十九日、同月三十日若しくは同月三十一日」を足している ⑤★★**「人員」の数え方が欄ごとに違う**＝俸給給料等は実人員・納期特例は実人員の合計数・日雇労務者（丙欄）は延べ人員 ⑥★★**用紙を分ける場面が4つ**（支払確定年月が違う／1年経過役員賞与＝所法183条2項／租税条約適用分／誤納額充当）⑦★★★**「税理士等の報酬」欄の21士業は法律12＋政令9**＝所法204条1項2号の名指し12と所令320条2項の9を機械計数して12+9=21が記載要領の21と一致。行政書士は列挙に無い ⑧★司法書士・土地家屋調査士・海事代理士だけ摘要欄に別書き＝所法205条2号＋所令322条の1万円控除で税額の計算式が違うため ⑨★**0円でも提出**（e-Tax FAQ 令和6年5月20日）＝0円になるのは納付書の役割だけで計算書の役割は消えない ⑩★★★**不納付加算税がゼロになる条件**＝通則法67条3項＋施行令27条の2第2項で、見る1年の終点が「法定納期限の属する月の**前月の末日**」＝今回の遅れ自体は判定に入らない。さらに118条3項（基礎税額1万円未満切捨）と119条4項（加算税5,000円未満切捨）で自主納付5%なら本税10万円未満は結果0円 ⑪★★**令和8年9月24日に様式変更**（整理番号8桁→お問い合わせ番号13桁／元号欄／郵便番号とフリガナ／A4三つ折り複写式→A4単票式＝**各片に3回記載**／現行様式は令和10年9月頃まで使用可／年末調整時期の送付分は複写式のまま／2次元コードは内部手続用で納付不可／**令和8年12月以前の所得は「防衛特別所得税」を含まないので読み替え**）⑫延滞税は令和8年が2.8%・9.1%（令和7年の2.4%・8.7%から引上げ・国税庁の表で実測）
   "shoyo-gensen-shotokuzei",           // 賞与の源泉所得税
   "shakai-hokenryo-choshu-jiki",       // 社会保険料の徴収時期
   "kyuyo-kojo-dekirumono",             // 給与から控除できるもの
@@ -415,7 +416,7 @@ const CATEGORIES = [
       "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
       "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
       "shakai-hokenryo-choshu-jiki", "kyushoku-shakai-hokenryo", "shoyo-gensen-shotokuzei",
-      "gensen-shotokuzei-noki-tokurei", "gaichuhi-kyuyo-kubun", "hotei-fukurihi-keisan", "rodo-hoken-nendo-koshin",
+      "gensen-shotokuzei-noki-tokurei", "gensen-shotokuzei-nofusho", "gaichuhi-kyuyo-kubun", "hotei-fukurihi-keisan", "rodo-hoken-nendo-koshin",
       "keiri-nenkan-schedule", "chutaikyo", "shataku-chintairyo", "fukuri-koseihi",
     ],
   },
