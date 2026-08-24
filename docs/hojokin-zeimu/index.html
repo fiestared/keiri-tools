@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>補助金の経理・税務｜圧縮記帳の計算と仕訳（42条・43条・44条の分かれ目）</title>
-<meta name="description" content="補助金をもらったときの圧縮限度額・仕訳・減価償却を計算します。★分かれ目は「返還を要しないことが期末までに確定したか」。確定していなければ圧縮記帳ではなく特別勘定です（法人税法43条）。★圧縮記帳は非課税の制度ではなく課税の繰延べです。★直接減額方式と積立金方式で減価償却費が変わります。登録不要・無料。">
+<meta name="description" content="補助金をもらったときの圧縮限度額・仕訳・減価償却を計算します。分かれ目は「返還を要しないことが期末までに確定したか」。確定していなければ圧縮記帳ではなく特別勘定です（法人税法43条）。圧縮記帳は非課税の制度ではなく課税の繰延べです。直接減額方式と積立金方式で減価償却費が変わります。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/hojokin-zeimu/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="補助金の経理・税務｜圧縮記帳の計算と仕訳（42条・43条・44条の分かれ目）">
-<meta property="og:description" content="補助金をもらったときの圧縮限度額・仕訳・減価償却を計算します。★分かれ目は「返還を要しないことが期末までに確定したか」。確定していなければ圧縮記帳ではなく特別勘定です（法人税法43条）。★圧縮記帳は非課税の制度ではなく課税の繰延べです。★直接減額方式と積立金方式で減価償却費が変わります。登録不要・無料。">
+<meta property="og:description" content="補助金をもらったときの圧縮限度額・仕訳・減価償却を計算します。分かれ目は「返還を要しないことが期末までに確定したか」。確定していなければ圧縮記帳ではなく特別勘定です（法人税法43条）。圧縮記帳は非課税の制度ではなく課税の繰延べです。直接減額方式と積立金方式で減価償却費が変わります。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/hojokin-zeimu/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -112,7 +112,7 @@
 <main id="main" tabindex="-1">
   <nav class="breadcrumb"><a href="../">ホーム</a> › 補助金の経理・税務</nav>
   <h1>補助金の経理・税務</h1>
-  <p class="lead">補助金をもらったときの<b>圧縮限度額・仕訳・減価償却</b>を計算します。★分かれ目は「補助金をもらったか」ではなく<b>「返還を要しないことが期末までに確定したか」</b>です。</p>
+  <p class="lead">補助金をもらったときの<b>圧縮限度額・仕訳・減価償却</b>を計算します。分かれ目は「補助金をもらったか」ではなく<b>「返還を要しないことが期末までに確定したか」</b>です。</p>
 
   <div class="callout" id="wakaremichi">
     <p><b>確定していなければ、圧縮記帳ではありません。</b>法人税法43条1項は「返還を要しないことが当該事業年度終了の時までに<b>確定していない場合に限る</b>」として、<b>特別勘定</b>を設ける処理を定めています。「補助金をもらったから圧縮記帳」と進めると、確定していない年度に損金を立てることになります。</p>
@@ -201,7 +201,7 @@
   <h2 id="shouhizei">消費税の「仕入控除税額の返還」</h2>
   <p>補助金そのものは対価性が無いので<b>消費税の課税対象外（不課税）</b>です。一方で、補助金を充てて行った課税仕入れの仕入税額控除は原則どおり受けられます。</p>
   <div class="callout">
-    <p>★多くの補助金の交付要綱には「消費税及び地方消費税に係る仕入控除税額」を確定時に報告し、返還する定めがあります。これは<b>消費税法の規定ではなく、交付要綱に基づく補助金側の返還義務</b>です。金額は課税売上割合・個別対応方式か一括比例配分方式か・補助対象経費のうち課税仕入れの額で変わるため、<b>このツールでは計算しません</b>。交付要綱の条文をご確認ください。</p>
+    <p>多くの補助金の交付要綱には「消費税及び地方消費税に係る仕入控除税額」を確定時に報告し、返還する定めがあります。これは<b>消費税法の規定ではなく、交付要綱に基づく補助金側の返還義務</b>です。金額は課税売上割合・個別対応方式か一括比例配分方式か・補助対象経費のうち課税仕入れの額で変わるため、<b>このツールでは計算しません</b>。交付要綱の条文をご確認ください。</p>
   </div>
 
   <h2 id="dekinai">このツールが判定しないこと</h2>
@@ -308,10 +308,10 @@ async function render() {
       ${b._note ? `<tr><th scope="row">注意</th><td id="bunki-note">${b._note}</td></tr>` : ""}
       ${b.key === BUNKI.MIKAKUTEI ? "" : `
       <tr><th scope="row">圧縮限度額</th><td><b id="gendo">${yen(assyuku.gendo)}</b>${
-        assyuku.capped ? "　★<b>取得価額で頭打ち</b>（帳簿価額より大きくは減らせません）" : ""}</td></tr>
+        assyuku.capped ? "　<b>取得価額で頭打ち</b>（帳簿価額より大きくは減らせません）" : ""}</td></tr>
       <tr><th scope="row">償却の基礎になる価額</th><td id="base">${yen(mine.base)}（${houshiki === "chokusetsu" ? "圧縮後" : "取得価額のまま"}）</td></tr>
       <tr><th scope="row">当期の減価償却費</th><td><b id="genka">${yen(mine.genka)}</b></td></tr>
-      <tr><th scope="row">★もう一方の方式なら</th><td id="hikaku">${houshiki === "chokusetsu"
+      <tr><th scope="row">もう一方の方式なら</th><td id="hikaku">${houshiki === "chokusetsu"
         ? `積立金方式: 償却の基礎 ${yen(t.base)} ／ 減価償却費 ${yen(t.genka)}`
         : `直接減額方式: 償却の基礎 ${yen(c.base)} ／ 減価償却費 ${yen(c.genka)}`} — 当期の差 <b>${yen(Math.abs(t.genka - c.genka))}</b></td></tr>`}
     </table>
@@ -320,7 +320,7 @@ async function render() {
       <tr><th scope="col">時点</th><th scope="col">仕訳</th><th scope="col">注意</th></tr>${shiwakeHtml}
     </table></div>
     <div class="note" style="margin-top:12px">
-      ★<b>圧縮記帳は課税を繰り延べる制度で、非課税にする制度ではありません</b>（法人税法22条2項）。
+      <b>圧縮記帳は課税を繰り延べる制度で、非課税にする制度ではありません</b>（法人税法22条2項）。
       どの分岐に当たるか・その補助金が国庫補助金等に当たるかは判定していません。
       消費税の仕入控除税額の返還額も計算していません（交付要綱によります）。
       当サイトは税理士ではありません。

@@ -136,7 +136,7 @@ $("calc").addEventListener("click", async () => {
 
   // 「あと1か月勤めたら」の差額。年数が切り上がるときだけ意味がある
   const laterNote = (o.kojoUp > 0 && o.saved > 0)
-    ? `<div class="callout"><b>★あと1か月勤めると、税金が${yen(o.saved)}安くなります。</b>退職日が1か月ずれると勤続年数が<b>${r.nensu}年→${o.later.nensu}年</b>に切り上がり、退職所得控除が<b>${yen(o.kojoUp)}</b>増えるためです（税額 ${yen(r.total)} → ${yen(o.later.total)}）。</div>`
+    ? `<div class="callout"><b>あと1か月勤めると、税金が${yen(o.saved)}安くなります。</b>退職日が1か月ずれると勤続年数が<b>${r.nensu}年→${o.later.nensu}年</b>に切り上がり、退職所得控除が<b>${yen(o.kojoUp)}</b>増えるためです（税額 ${yen(r.total)} → ${yen(o.later.total)}）。</div>`
     : "";
 
   if (r.taxFree) {

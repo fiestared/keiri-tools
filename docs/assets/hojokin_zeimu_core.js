@@ -102,19 +102,19 @@ export function shiwake({ bunkiKey, hojokin, gendo, houshiki }) {
   const g = Math.floor(Number(gendo) || 0);
   const rows = [];
   rows.push({ when: '交付決定・入金', dr: '現金預金', drAmt: h, cr: '国庫補助金収入（特別利益）', crAmt: h,
-    note: '★補助金は益金に入ります（法人税法22条2項）。圧縮記帳は非課税にする制度ではありません。' });
+    note: '補助金は益金に入ります（法人税法22条2項）。圧縮記帳は非課税にする制度ではありません。' });
   if (bunkiKey === BUNKI.MIKAKUTEI) {
     rows.push({ when: '期末（返還不要が未確定）', dr: '国庫補助金等特別勘定繰入額', drAmt: h,
       cr: '国庫補助金等特別勘定', crAmt: h,
-      note: '★返還を要しないことが期末までに確定していないので、圧縮記帳ではなく特別勘定です（43条1項）。' });
+      note: '返還を要しないことが期末までに確定していないので、圧縮記帳ではなく特別勘定です（43条1項）。' });
     return rows;
   }
   if (houshiki === 'chokusetsu') {
     rows.push({ when: '圧縮記帳（直接減額方式）', dr: '固定資産圧縮損', drAmt: g, cr: '（対象の固定資産）', crAmt: g,
-      note: '★帳簿価額を直接減らすので、以後の減価償却費も下がります。' });
+      note: '帳簿価額を直接減らすので、以後の減価償却費も下がります。' });
   } else {
     rows.push({ when: '圧縮記帳（積立金方式）', dr: '繰越利益剰余金', drAmt: g, cr: '圧縮積立金', crAmt: g,
-      note: '★剰余金の処分で積み立てます。帳簿価額は下がらないので減価償却費は変わらず、積立金の取崩しで申告調整します。' });
+      note: '剰余金の処分で積み立てます。帳簿価額は下がらないので減価償却費は変わらず、積立金の取崩しで申告調整します。' });
   }
   if (bunkiKey === BUNKI.ATODE) {
     rows.push({ when: '同時に特別勘定を取り崩す', dr: '国庫補助金等特別勘定', drAmt: h,

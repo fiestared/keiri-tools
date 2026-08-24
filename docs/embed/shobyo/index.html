@@ -71,7 +71,7 @@
       <input id="restDays" type="number" inputmode="numeric" value="30" min="0" max="600">
     </div>
   </div>
-  <div class="hint">★被保険者期間が12か月未満の方は上限がかかります（99条2項ただし書）。休んだ日数は土日祝も含む暦の日数。</div>
+  <div class="hint">被保険者期間が12か月未満の方は上限がかかります（99条2項ただし書）。休んだ日数は土日祝も含む暦の日数。</div>
 
   <label class="chk"><input id="taikiDone" type="checkbox"> <span>すでに<b>待期3日</b>が完成している（受給中で、続きの分を計算したい）</span></label>
   <label class="chk"><input id="ninnikeizoku" type="checkbox"> <span><b>任意継続被保険者</b>である（退職後に健康保険を任意継続している）</span></label>
@@ -81,7 +81,7 @@
     <summary>給与・年金を受け取っている場合／標準報酬月額を月ごとに入れる／健保組合の方</summary>
     <label for="hoshuNichigaku">休んでいる間に受けられる給与の日額（円）</label>
     <input id="hoshuNichigaku" type="number" inputmode="numeric" value="0" min="0">
-    <div class="hint">★給与が出ていても、日額が傷病手当金より少なければ差額が支給されます（108条1項ただし書）。</div>
+    <div class="hint">給与が出ていても、日額が傷病手当金より少なければ差額が支給されます（108条1項ただし書）。</div>
     <div class="grid">
       <div>
         <label for="shogaiNenkin">障害厚生年金＋障害基礎年金（年額）</label>
@@ -192,14 +192,14 @@ $("calc").addEventListener("click", async () => {
     ? `<div class="callout">これは「資格喪失後の継続給付」（健康保険法104条）として計算しています。退職する前から傷病手当金を受けていた方は、任意継続でも受け続けられます（支給を始めた日から通算1年6か月まで）。</div>`
     : "";
   const capNote = r.capped
-    ? `<div class="callout">★被保険者期間が${r.months}か月（12か月未満）のため、上限（1日 ${yen(adj.amount)}）にかかっています。ご自身の平均から出した ${yen(r.own)} ではなく、全被保険者の平均標準報酬月額 ${yen(r.heikin)}（${r.heikinLabel}）から出した額の少ないほうで計算されます（99条2項ただし書）。</div>`
+    ? `<div class="callout">被保険者期間が${r.months}か月（12か月未満）のため、上限（1日 ${yen(adj.amount)}）にかかっています。ご自身の平均から出した ${yen(r.own)} ではなく、全被保険者の平均標準報酬月額 ${yen(r.heikin)}（${r.heikinLabel}）から出した額の少ないほうで計算されます（99条2項ただし書）。</div>`
     : "";
   let choseiNote = "";
   if (adj.deduct > 0) {
     const src = adj.reason === "hoshu" ? "給与（報酬）" : adj.reason === "shogai" ? "障害厚生年金" : "老齢・退職を事由とする年金";
     choseiNote = adj.zero
-      ? `<div class="callout">★${src}の日額 ${yen(adj.deduct)} が傷病手当金の日額 ${yen(adj.amount)} 以上のため、傷病手当金は支給されません（108条）。</div>`
-      : `<div class="callout">★${src}を受けていても差額が支給されます。日額 ${yen(adj.amount)} − ${src} ${yen(adj.deduct)} ＝ <b>${yen(adj.paid)}</b>／日（108条1項ただし書）。</div>`;
+      ? `<div class="callout">${src}の日額 ${yen(adj.deduct)} が傷病手当金の日額 ${yen(adj.amount)} 以上のため、傷病手当金は支給されません（108条）。</div>`
+      : `<div class="callout">${src}を受けていても差額が支給されます。日額 ${yen(adj.amount)} − ${src} ${yen(adj.deduct)} ＝ <b>${yen(adj.paid)}</b>／日（108条1項ただし書）。</div>`;
   }
   const estimatedNote = r.estimated
     ? `<div class="hint">標準報酬月額は月給 ${yen(monthly)} から等級表を引いて概算しました。昇給・降給があった方は詳細欄で実額を入れると正確になります。</div>`
@@ -226,7 +226,7 @@ $("calc").addEventListener("click", async () => {
       <tr class="tot"><td>合計</td><td class="n">${yen(r.total)}</td></tr>
     </table>
     ${estimatedNote}
-    <div class="note">★休職中に退職する予定の方は、退職日に出社すると労務不能でなくなり、退職後の傷病手当金が受けられなくなります（104条）。挨拶や荷物は退職日を避けてください。</div>
+    <div class="note">休職中に退職する予定の方は、退職日に出社すると労務不能でなくなり、退職後の傷病手当金が受けられなくなります（104条）。挨拶や荷物は退職日を避けてください。</div>
     <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
   postHeight();
 });

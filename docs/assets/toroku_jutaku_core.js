@@ -123,7 +123,7 @@ export function jutakuKeigenOk(j, data) {
     if (!j.kenchikuBi) {
       riyu.push("中古住宅の建築年月日が未入力のため、新耐震基準（昭和57年1月1日以後の建築）を満たすか判定できません。");
     } else if (j.kenchikuBi < Y.chuko_kenchiku_kijun_bi) {
-      riyu.push(`中古住宅で、昭和57年1月1日より前の建築かつ耐震基準適合の証明もない（措令42条1項2号）。★築年数（木造20年・耐火25年）の要件は令和4年度改正で廃止済みです。`);
+      riyu.push(`中古住宅で、昭和57年1月1日より前の建築かつ耐震基準適合の証明もない（措令42条1項2号）。築年数（木造20年・耐火25年）の要件は令和4年度改正で廃止済みです。`);
     }
   }
   return { ok: riyu.length === 0, riyu };
@@ -334,7 +334,7 @@ export function calcTorokuJutaku(inp, data) {
     : `${data.keigen.jutaku_kigen_hyoji}より後に受ける登記なので、${kigenGai.join("と")}の税額は出せません。`
       + `住宅用家屋の軽減（措法72条の2・73・74・74条の2・75）の適用期限がその日までで、`
       + `延長されるか本則に戻るかは令和9年度税制改正で決まります。`
-      + `★土地の売買の軽減は${data.keigen.tochi_baibai.kigen_hyoji}までなので、そちらは出せます（期限が別の制度です）。`;
+      + `土地の売買の軽減は${data.keigen.tochi_baibai.kigen_hyoji}までなので、そちらは出せます（期限が別の制度です）。`;
 
   if (meisai.length === 0) {
     return kigenGaiRiyu

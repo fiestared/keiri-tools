@@ -274,7 +274,7 @@ function renderKifu(r, kifu) {
   const k = r.kifu;
   const over = kifu > r.furusatoGendo;
   const head = over
-    ? `<div class="warn" style="margin-top:8px"><b>★この寄附額は限度額を ${yen(kifu - r.furusatoGendo)} 超えています。</b>自己負担は2,000円ではなく <b>${yen(k.jikoFutan)}</b> になります（超えた分は税金から引かれません）。</div>`
+    ? `<div class="warn" style="margin-top:8px"><b>この寄附額は限度額を ${yen(kifu - r.furusatoGendo)} 超えています。</b>自己負担は2,000円ではなく <b>${yen(k.jikoFutan)}</b> になります（超えた分は税金から引かれません）。</div>`
     : `<div class="note"><b>この寄附額なら自己負担は ${yen(k.jikoFutan)} です。</b>限度額（${yen(r.furusatoGendo)}）の範囲内なので、寄附額のうち2,000円を除いた全額が所得税と住民税から引かれます。</div>`;
   return `${head}
     <table>

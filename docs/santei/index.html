@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>算定基礎届の書き方｜4〜6月の平均から標準報酬月額を決める（分母は3で固定ではない）</title>
-<meta name="description" content="4月・5月・6月の報酬と支払基礎日数から、9月からの標準報酬月額（健保・厚年の等級）を計算します。★支払基礎日数17日未満の月は除き、残った月数で割ります（分母は3で固定ではない・健康保険法41条1項）。★短時間労働者は11日。★6月1日〜7月1日に資格取得した人はその年は対象外。登録不要・無料。">
+<meta name="description" content="4月・5月・6月の報酬と支払基礎日数から、9月からの標準報酬月額（健保・厚年の等級）を計算します。支払基礎日数17日未満の月は除き、残った月数で割ります（分母は3で固定ではない・健康保険法41条1項）。短時間労働者は11日。6月1日〜7月1日に資格取得した人はその年は対象外。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/santei/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="算定基礎届の書き方｜4〜6月の平均から標準報酬月額を決める（分母は3で固定ではない）">
-<meta property="og:description" content="4月・5月・6月の報酬と支払基礎日数から、9月からの標準報酬月額（健保・厚年の等級）を計算します。★支払基礎日数17日未満の月は除き、残った月数で割ります（分母は3で固定ではない・健康保険法41条1項）。★短時間労働者は11日。★6月1日〜7月1日に資格取得した人はその年は対象外。登録不要・無料。">
+<meta property="og:description" content="4月・5月・6月の報酬と支払基礎日数から、9月からの標準報酬月額（健保・厚年の等級）を計算します。支払基礎日数17日未満の月は除き、残った月数で割ります（分母は3で固定ではない・健康保険法41条1項）。短時間労働者は11日。6月1日〜7月1日に資格取得した人はその年は対象外。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/santei/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -112,7 +112,7 @@
 <main id="main" tabindex="-1">
   <nav class="breadcrumb"><a href="../">ホーム</a> › 算定基礎届の書き方</nav>
   <h1>算定基礎届（定時決定）</h1>
-  <p class="lead">7月1日に在籍している被保険者について、<b>4月・5月・6月</b>に受けた報酬から標準報酬月額を決め直します。決まった等級は<b>その年の9月から翌年8月まで</b>使われます。★<b>支払基礎日数が17日未満の月は除き、残った月数で割ります</b>（健康保険法41条1項）。</p>
+  <p class="lead">7月1日に在籍している被保険者について、<b>4月・5月・6月</b>に受けた報酬から標準報酬月額を決め直します。決まった等級は<b>その年の9月から翌年8月まで</b>使われます。<b>支払基礎日数が17日未満の月は除き、残った月数で割ります</b>（健康保険法41条1項）。</p>
 
   <div class="callout" id="bunbo">
     <p><b>分母は3で固定ではありません。</b>条文は「報酬支払の基礎となった日数が十七日…未満である月があるときは、<b>その月を除く</b>」とした上で「<b>その期間の月数で除して得た額</b>」と書いています。3か月の合計を機械的に3で割ると、日数の足りない月がある人の報酬月額が<b>低く</b>出て、等級が下がります。</p>
@@ -127,7 +127,7 @@
       <div>
         <label for="shutoku">資格取得日（分かれば）</label>
         <input type="date" id="shutoku" value="">
-        <p class="hint">★6月1日〜7月1日ならその年は対象外です。</p>
+        <p class="hint">6月1日〜7月1日ならその年は対象外です。</p>
       </div>
     </div>
 
@@ -210,7 +210,7 @@
   </table>
   </div>
   <div class="callout">
-    <p>★条文は「改定され<b>るべき</b>被保険者」と書いています。<b>月額変更届をまだ出していなくても、該当していれば定時決定の対象から外れます。</b>「出していないから定時決定でよい」ではありません。</p>
+    <p>条文は「改定され<b>るべき</b>被保険者」と書いています。<b>月額変更届をまだ出していなくても、該当していれば定時決定の対象から外れます。</b>「出していないから定時決定でよい」ではありません。</p>
   </div>
 
   <h2 id="zuiji-setsu">随時改定は17日の使い方が逆</h2>
@@ -334,7 +334,7 @@ async function render() {
       <div class="big" id="fuka">算定できる月がありません</div>
       <div class="hint" style="margin-bottom:10px">必要日数 <b>${r.hitsuyo}日</b>（${tanjikan ? "短時間労働者" : "一般"}）</div>
       <table class="res"><tr><th scope="row">各月</th><td id="meisai">${meisai}</td></tr></table>
-      <div class="note" style="margin-top:12px">★4月・5月・6月のいずれもが必要日数に満たないため、条文上は割る対象の月がありません。
+      <div class="note" style="margin-top:12px">4月・5月・6月のいずれもが必要日数に満たないため、条文上は割る対象の月がありません。
         この場合は<b>保険者等が決定します</b>（従前の標準報酬月額によるのが実務の取扱い）。
         金額はこのツールでは出しません。</div>`;
     return;
@@ -355,11 +355,11 @@ async function render() {
       <tr><th scope="row">健康保険</th><td><b id="kenko">第${kg.grade}級・${yen(kg.standard)}</b></td></tr>
       <tr><th scope="row">厚生年金</th><td><b id="kosei">${yen(ks)}</b>${ks === 650000 && r.hoshuGetsugaku > 650000 ? "（上限で頭打ち）" : ""}</td></tr>
       <tr><th scope="row">使う期間</th><td id="kikan">${k.from} 〜 ${k.to}（41条2項）</td></tr>
-      ${r.excluded.length ? `<tr><th scope="row">★3で割った場合</th><td id="hikaku">${yen(bunbo3)}（健保 第${kenkoGrade(bunbo3).grade}級・${yen(kenkoGrade(bunbo3).standard)}）— <b>${kenkoGrade(bunbo3).grade !== kg.grade ? "等級が変わります" : "同じ等級ですが金額の根拠が違います"}</b></td></tr>` : ""}
-      ${!z.mitasu ? `<tr><th scope="row">随時改定との違い</th><td id="zuiji-note">★同じ入力でも随時改定なら、${z.kaketaTsuki.map((m) => m.name).join("・")}が17日未満のため<b>要件を満たしません</b>（43条1項は「各月とも17日以上でなければならない」）。</td></tr>` : ""}
+      ${r.excluded.length ? `<tr><th scope="row">3で割った場合</th><td id="hikaku">${yen(bunbo3)}（健保 第${kenkoGrade(bunbo3).grade}級・${yen(kenkoGrade(bunbo3).standard)}）— <b>${kenkoGrade(bunbo3).grade !== kg.grade ? "等級が変わります" : "同じ等級ですが金額の根拠が違います"}</b></td></tr>` : ""}
+      ${!z.mitasu ? `<tr><th scope="row">随時改定との違い</th><td id="zuiji-note">同じ入力でも随時改定なら、${z.kaketaTsuki.map((m) => m.name).join("・")}が17日未満のため<b>要件を満たしません</b>（43条1項は「各月とも17日以上でなければならない」）。</td></tr>` : ""}
     </table>
     <div class="note" style="margin-top:12px">
-      ★保険者算定（年間平均等）・報酬に何を含めるかは判定していません。これは入力した前提での<b>計算例</b>です。
+      保険者算定（年間平均等）・報酬に何を含めるかは判定していません。これは入力した前提での<b>計算例</b>です。
       当サイトは社会保険労務士ではありません。
     </div>`;
 }

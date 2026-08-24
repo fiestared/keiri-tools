@@ -61,7 +61,7 @@
 
   <label for="leaveDays">産後パパ育休の日数（暦の日数）</label>
   <input id="leaveDays" type="number" inputmode="numeric" value="28" min="1" max="60">
-  <div class="hint">上限は28日（61条の8第2項2号）。★14日以上でないと13%は1円も出ません。</div>
+  <div class="hint">上限は28日（61条の8第2項2号）。14日以上でないと13%は1円も出ません。</div>
 
   <label for="wage">休業中に会社から支払われる賃金（円）</label>
   <input id="wage" type="number" inputmode="numeric" value="0" min="0">
@@ -71,7 +71,7 @@
     <legend>配偶者の状況（13%が乗るかどうかが決まります）</legend>
     <label for="spouse">配偶者は、子の出生日の翌日にどの状態でしたか？</label>
     <select id="spouse">
-      <option value="postpartum" selected>配偶者が出産した（＝産後休業中）★父親のほとんどはこれ</option>
+      <option value="postpartum" selected>配偶者が出産した（＝産後休業中）父親のほとんどはこれ</option>
       <option value="jobless">配偶者が無業者（働いていない）</option>
       <option value="selfemployed">配偶者が自営業・フリーランスなど、雇用される労働者でない</option>
       <option value="nospouse">配偶者がいない／ひとり親／配偶者が行方不明</option>
@@ -80,7 +80,7 @@
       <option value="other_exempt">その他、配偶者が育児休業を取得できない事由がある</option>
       <option value="employed">配偶者は会社員などで、上のどれにも当てはまらない（例: 子が養子）</option>
     </select>
-    <div class="hint">★「配偶者が出産した」を選べば、妻が育休を取らなくても13%が乗ります（61条の10第2項3号）。</div>
+    <div class="hint">「配偶者が出産した」を選べば、妻が育休を取らなくても13%が乗ります（61条の10第2項3号）。</div>
     <div id="spouseDaysWrap" style="display:none">
       <label for="spouseDays">配偶者が取得する育児休業の日数</label>
       <input id="spouseDays" type="number" inputmode="numeric" value="0" min="0" max="112">
@@ -159,13 +159,13 @@ $("calc").addEventListener("click", async () => {
   }
 
   const capNote = r.capped
-    ? `<div class="callout">★賃金日額が上限（${yen(r.max)}）に張りついています。この上限は<b>年齢に関係なく同じ</b>です（45歳以上でも18,220円にはなりません）。</div>`
+    ? `<div class="callout">賃金日額が上限（${yen(r.max)}）に張りついています。この上限は<b>年齢に関係なく同じ</b>です（45歳以上でも18,220円にはなりません）。</div>`
     : r.floored
-      ? `<div class="callout">★賃金日額が下限（${yen(r.min)}）まで引き上げられています（17条4項1号）。</div>`
+      ? `<div class="callout">賃金日額が下限（${yen(r.min)}）まで引き上げられています（17条4項1号）。</div>`
       : "";
 
   const daysNote = r.cappedDays
-    ? `<div class="callout">★${r.leaveDays}日と入力されましたが、支給の対象は<b>28日まで</b>です（61条の8第2項2号）。28日を超える分は支給されません。</div>`
+    ? `<div class="callout">${r.leaveDays}日と入力されましたが、支給の対象は<b>28日まで</b>です（61条の8第2項2号）。28日を超える分は支給されません。</div>`
     : "";
 
   const s = r.shien;
@@ -174,19 +174,19 @@ $("calc").addEventListener("click", async () => {
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">${yen(s.amount)}</td></tr>`;
   } else if (s.reason === "shusshoji_unpaid") {
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">¥0</td></tr>`;
-    shienNote = `<div class="callout">★休業中の賃金（${yen(r.shusshoji.wage)}）が80%相当額（${yen(r.shusshoji.cap)}）以上のため、給付金は1円も出ません。67%が不支給になると13%も道連れで消えます。</div>`;
+    shienNote = `<div class="callout">休業中の賃金（${yen(r.shusshoji.wage)}）が80%相当額（${yen(r.shusshoji.cap)}）以上のため、給付金は1円も出ません。67%が不支給になると13%も道連れで消えます。</div>`;
   } else if (s.reason === "own_days") {
     const need = 14 - r.payDays;
     const wouldGet = Math.floor(r.daily * 14 * 0.13);
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">¥0</td></tr>`;
-    shienNote = `<div class="callout">★<b>あと${need}日 延ばすと、13%（約${yen(wouldGet)}）がまるごと乗ります。</b>いまは${r.payDays}日で14日未満のため0円です（61条の10第1項2号）。</div>`;
+    shienNote = `<div class="callout"><b>あと${need}日 延ばすと、13%（約${yen(wouldGet)}）がまるごと乗ります。</b>いまは${r.payDays}日で14日未満のため0円です（61条の10第1項2号）。</div>`;
   } else {
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">¥0</td></tr>`;
-    shienNote = `<div class="callout">★<b>配偶者が14日以上の育児休業を取れば、13%が上乗せ</b>されます。配偶者が産後休業中なら要件は免除されるので、上で「配偶者が出産した（＝産後休業中）」を選び直してください（同条2項3号）。</div>`;
+    shienNote = `<div class="callout"><b>配偶者が14日以上の育児休業を取れば、13%が上乗せ</b>されます。配偶者が産後休業中なら要件は免除されるので、上で「配偶者が出産した（＝産後休業中）」を選び直してください（同条2項3号）。</div>`;
   }
 
   const wageNote = r.shusshoji.reduced && !r.shusshoji.unpaid
-    ? `<div class="callout">★休業中の賃金により、出生時育児休業給付金が減額されています（80%相当額 ${yen(r.shusshoji.cap)} − 賃金 ${yen(r.shusshoji.wage)}）。13%は減額されません。</div>`
+    ? `<div class="callout">休業中の賃金により、出生時育児休業給付金が減額されています（80%相当額 ${yen(r.shusshoji.cap)} − 賃金 ${yen(r.shusshoji.wage)}）。13%は減額されません。</div>`
     : "";
 
   box.innerHTML = `

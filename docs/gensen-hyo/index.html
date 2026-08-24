@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>源泉徴収票の書き方｜②「給与所得控除後の金額」の出し方と空欄にする欄</title>
-<meta name="description" content="給与所得の源泉徴収票の①支払金額から②給与所得控除後の金額を計算し、③④の書き方と間違いをチェックします。★令和8年分・令和9年分は支払金額220万円未満の人の②欄を別表第五で引きません（措置法29条の4）。★年末調整をしていない人の②③欄は空欄で、0円ではありません。★③欄には基礎控除も入ります。登録不要・無料。">
+<meta name="description" content="給与所得の源泉徴収票の①支払金額から②給与所得控除後の金額を計算し、③④の書き方と間違いをチェックします。令和8年分・令和9年分は支払金額220万円未満の人の②欄を別表第五で引きません（措置法29条の4）。年末調整をしていない人の②③欄は空欄で、0円ではありません。③欄には基礎控除も入ります。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/gensen-hyo/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="源泉徴収票の書き方｜②「給与所得控除後の金額」の出し方と空欄にする欄">
-<meta property="og:description" content="給与所得の源泉徴収票の①支払金額から②給与所得控除後の金額を計算し、③④の書き方と間違いをチェックします。★令和8年分・令和9年分は支払金額220万円未満の人の②欄を別表第五で引きません（措置法29条の4）。★年末調整をしていない人の②③欄は空欄で、0円ではありません。★③欄には基礎控除も入ります。登録不要・無料。">
+<meta property="og:description" content="給与所得の源泉徴収票の①支払金額から②給与所得控除後の金額を計算し、③④の書き方と間違いをチェックします。令和8年分・令和9年分は支払金額220万円未満の人の②欄を別表第五で引きません（措置法29条の4）。年末調整をしていない人の②③欄は空欄で、0円ではありません。③欄には基礎控除も入ります。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/gensen-hyo/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -112,7 +112,7 @@
 <main id="main" tabindex="-1">
   <nav class="breadcrumb"><a href="../">ホーム</a> › 源泉徴収票の書き方</nav>
   <h1>源泉徴収票の書き方</h1>
-  <p class="lead">給与所得の源泉徴収票の<b>①支払金額</b>から<b>②給与所得控除後の金額</b>を出し、③④の書き方をチェックします。★<b>令和8年分・令和9年分は、支払金額220万円未満の人の②欄を別表第五で引きません</b>（措置法29条の4）。</p>
+  <p class="lead">給与所得の源泉徴収票の<b>①支払金額</b>から<b>②給与所得控除後の金額</b>を出し、③④の書き方をチェックします。<b>令和8年分・令和9年分は、支払金額220万円未満の人の②欄を別表第五で引きません</b>（措置法29条の4）。</p>
 
   <div class="callout" id="kaisei">
     <p><b>去年と同じ気持ちで別表第五を引くと、この帯の人だけ②欄が狂います。</b>措置法29条の4第4項は、所得税法190条2号（別表第五を含む）に<b>かかわらず</b>同条2項を適用した金額を使うと書いています。支払金額170万円なら②欄は<b>960,000円</b>で、別表第五だと1,050,000円。<b>90,000円</b>違います。</p>
@@ -143,7 +143,7 @@
         <div>
           <label for="kiso">基礎控除（円）</label>
           <input type="number" id="kiso" value="580000" min="0" step="10000" inputmode="numeric">
-          <p class="hint">★③欄には基礎控除も入ります。</p>
+          <p class="hint">③欄には基礎控除も入ります。</p>
         </div>
       </div>
       <div class="fee-pair">
@@ -311,12 +311,12 @@ async function render() {
         san.uchiwake ? `<br><span class="hint">社会保険料等 ${yen(san.uchiwake.shakai)}／生命保険料 ${yen(san.uchiwake.seimei)}／地震保険料 ${yen(san.uchiwake.jishin)}／人的控除 ${yen(san.uchiwake.jinteki)}／基礎控除 ${yen(san.uchiwake.kiso)}</span>` : ""}</td></tr>
       <tr><th scope="row">④ 源泉徴収税額</th><td id="res-yon">${yen(zeigaku)}</td></tr>
       <tr><th scope="row">②−③</th><td id="nokori">${nokori == null ? kuran : yen(nokori)}</td></tr>
-      ${beppyo5 != null ? `<tr><th scope="row">★別表第五で引いた場合</th><td id="hikaku">${yen(beppyo5)} — <b>${yen(Math.abs(beppyo5 - ni.value))}の差</b>が出ます（令和8年分・令和9年分は措置法29条の4が優先します）</td></tr>` : ""}
+      ${beppyo5 != null ? `<tr><th scope="row">別表第五で引いた場合</th><td id="hikaku">${yen(beppyo5)} — <b>${yen(Math.abs(beppyo5 - ni.value))}の差</b>が出ます（令和8年分・令和9年分は措置法29条の4が優先します）</td></tr>` : ""}
     </table>
     ${warns.length ? `<div class="note" style="margin-top:12px" id="warns">${
-      warns.map((w) => `${w.level === "error" ? "★<b>誤りの可能性</b>" : "注意"}: ${w.text}`).join("<br>")}</div>` : ""}
+      warns.map((w) => `${w.level === "error" ? "<b>誤りの可能性</b>" : "注意"}: ${w.text}`).join("<br>")}</div>` : ""}
     <div class="note" style="margin-top:12px">
-      ★年税額そのもの・所得金額調整控除・住宅借入金等特別控除・定額減税は計算していません。
+      年税額そのもの・所得金額調整控除・住宅借入金等特別控除・定額減税は計算していません。
       これは入力した前提での<b>計算例</b>です。当サイトは税理士ではありません。
     </div>`;
 }

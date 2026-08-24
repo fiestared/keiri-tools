@@ -75,7 +75,7 @@
 
   <label for="night">深夜労働（22時〜5時・時間／月）</label>
   <input type="number" id="night" value="0" min="0" step="0.5" inputmode="decimal">
-  <div class="hint">★時間外・休日と<b>重ねて数えて構いません</b>。深夜は上乗せ25%だけを足すので二重には払われません。</div>
+  <div class="hint">時間外・休日と<b>重ねて数えて構いません</b>。深夜は上乗せ25%だけを足すので二重には払われません。</div>
 
   <label for="fixed">固定残業代・みなし残業手当（円／月・もらっていれば）</label>
   <input type="number" id="fixed" value="0" min="0" inputmode="numeric">
@@ -156,13 +156,13 @@ $("calc").addEventListener("click", async () => {
 
   // ★60時間を超えたことは、画面で必ず名指しする（率が上がったことに気づかない人が多い）
   const over60Note = r.hasOver60
-    ? `<div class="callout"><b>★1か月60時間を超えた${hrs(r.over60Hours)}時間は、割増率が50%になります。</b>（労働基準法37条1項ただし書。<b>2023年4月1日から中小企業にも適用</b>。）25%のままだとこの分だけで<b>${yen(r.over60Extra)}</b>不足します。</div>`
+    ? `<div class="callout"><b>1か月60時間を超えた${hrs(r.over60Hours)}時間は、割増率が50%になります。</b>（労働基準法37条1項ただし書。<b>2023年4月1日から中小企業にも適用</b>。）25%のままだとこの分だけで<b>${yen(r.over60Extra)}</b>不足します。</div>`
     : "";
 
   // ★固定残業代の差額は、この計算機のいちばん実利のある答え
   const fixedNote = r.fixed > 0
     ? (r.fixedIsShort
-      ? `<div class="callout"><b>★固定残業代 ${yen(r.fixed)} では ${yen(r.shortfall)} 足りません。</b>実際の割増賃金は<b>${yen(r.total)}</b>なので、差額<b>${yen(r.shortfall)}</b>を固定残業代とは<b>別に</b>支払う必要があります。</div>`
+      ? `<div class="callout"><b>固定残業代 ${yen(r.fixed)} では ${yen(r.shortfall)} 足りません。</b>実際の割増賃金は<b>${yen(r.total)}</b>なので、差額<b>${yen(r.shortfall)}</b>を固定残業代とは<b>別に</b>支払う必要があります。</div>`
       : `<div class="hint" style="margin-top:8px">固定残業代 ${yen(r.fixed)} は、この月の割増賃金 ${yen(r.total)} を満たしています（差額の支払いは不要です）。</div>`)
     : "";
 
