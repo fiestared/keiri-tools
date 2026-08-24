@@ -65,7 +65,10 @@ label > .hint { display: block; margin: 2px 0 0; font-weight: 400; }
 
 /* 任意項目の印（GOV.UK 方式: 必須にアスタリスクを付けず、任意側に印を付ける） */
 .field-optional { font-weight: 400; font-size: 14px; color: var(--sub); }
-input[type="number"], input[type="text"], input[type="email"], input[type="date"], select, textarea {
+/* ★型を列挙する方式は漏れる。実際に month と search が漏れていて、
+   kogaku-ryoyohi の診療年月だけ 21px(UA既定) で描画されていた（2026-08-24 codex の目視で発覚）。
+   checkbox/radio だけを除いた否定形にして、新しい型が増えても落ちないようにする。 */
+input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type="submit"]):not([type="button"]), select, textarea {
   width: 100%;
   font-size: 18px;
   padding: 12px;
