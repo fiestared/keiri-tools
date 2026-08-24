@@ -152,8 +152,8 @@
   </div>
 
   <label for="tokiBi">① 登記を受ける日（登記申請日）</label>
-  <input type="date" id="tokiBi" value="2026-07-01">
-  <p class="hint" id="kigen-hint" style="margin-top:6px"></p>
+    <p class="hint" id="kigen-hint" style="margin-top:6px"></p>
+    <input aria-describedby="kigen-hint" type="date" id="tokiBi" value="2026-07-01">
 
   <label for="tokiShurui" style="margin-top:14px">② 建物の登記の種類</label>
   <select id="tokiShurui">
@@ -174,11 +174,11 @@
   <label style="margin-top:14px">④ 土地</label>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
     <div>
-      <label for="tochiKagaku" style="font-size:13px">固定資産税評価額（円）</label>
+      <label for="tochiKagaku">固定資産税評価額（円）</label>
       <input type="number" id="tochiKagaku" min="0" inputmode="numeric" value="15000000">
     </div>
     <div>
-      <label for="tochiMochibun" style="font-size:13px">持分（1＝全部・0.5＝2分の1）</label>
+      <label for="tochiMochibun">持分（1＝全部・0.5＝2分の1）</label>
       <input type="number" id="tochiMochibun" min="0" max="1" step="0.0001" inputmode="decimal" value="1">
     </div>
   </div>
@@ -186,11 +186,11 @@
   <label style="margin-top:14px">⑤ 建物</label>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
     <div>
-      <label for="tatemonoKagaku" style="font-size:13px">固定資産税評価額・認定価格（円）</label>
+      <label for="tatemonoKagaku">固定資産税評価額・認定価格（円）</label>
       <input type="number" id="tatemonoKagaku" min="0" inputmode="numeric" value="10000000">
     </div>
     <div>
-      <label for="tatemonoMochibun" style="font-size:13px">持分（1＝全部）</label>
+      <label for="tatemonoMochibun">持分（1＝全部）</label>
       <input type="number" id="tatemonoMochibun" min="0" max="1" step="0.0001" inputmode="decimal" value="1">
     </div>
   </div>
@@ -198,35 +198,35 @@
   <label style="margin-top:14px">⑥ 建物が住宅用家屋の軽減を受けられるか</label>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
     <div>
-      <label for="kojinKyoju" style="font-size:13px">個人が自分の住まいに使うか</label>
+      <label for="kojinKyoju">個人が自分の住まいに使うか</label>
       <select id="kojinKyoju">
         <option value="1" selected>個人が自分で住む</option>
         <option value="0">法人が取得・別荘・投資用の賃貸</option>
       </select>
     </div>
     <div>
-      <label for="yukamenseki" style="font-size:13px">登記簿上の床面積（㎡）</label>
+      <label for="yukamenseki">登記簿上の床面積（㎡）</label>
       <input type="number" id="yukamenseki" min="0" step="0.01" inputmode="decimal" value="80">
     </div>
     <div>
-      <label for="tokiMadeMonths" style="font-size:13px">新築・取得から登記までの月数</label>
+      <label for="tokiMadeMonths">新築・取得から登記までの月数</label>
       <input type="number" id="tokiMadeMonths" min="0" max="600" inputmode="numeric" value="3">
     </div>
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px">
     <div>
-      <label for="in-chuko" style="font-size:13px">新築か中古か</label>
+      <label for="in-chuko">新築か中古か</label>
       <select id="in-chuko">
         <option value="0" selected>新築・建築後使用されたことがない</option>
         <option value="1">中古（建築後に人が住んだことがある）</option>
       </select>
     </div>
     <div>
-      <label for="kenchikuBi" style="font-size:13px">中古住宅の建築年月日</label>
+      <label for="kenchikuBi">中古住宅の建築年月日</label>
       <input type="date" id="kenchikuBi" value="2000-01-01">
     </div>
     <div>
-      <label for="taishinTekigo" style="font-size:13px">耐震基準適合証明があるか</label>
+      <label for="taishinTekigo">耐震基準適合証明があるか</label>
       <select id="taishinTekigo">
         <option value="0" selected>ない</option>
         <option value="1">ある</option>
@@ -235,7 +235,7 @@
   </div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:10px">
     <div>
-      <label for="in-nintei" style="font-size:13px">認定住宅か</label>
+      <label for="in-nintei">認定住宅か</label>
       <select id="in-nintei">
         <option value="none" selected>認定を受けていない</option>
         <option value="chouki">特定認定長期優良住宅</option>
@@ -243,14 +243,14 @@
       </select>
     </div>
     <div>
-      <label for="kodate" style="font-size:13px">一戸建てかマンションか</label>
+      <label for="kodate">一戸建てかマンションか</label>
       <select id="kodate">
         <option value="1" selected>一戸建て</option>
         <option value="0">マンション等（区分所有）</option>
       </select>
     </div>
     <div>
-      <label for="kaitoriHanbai" style="font-size:13px">買取再販住宅か</label>
+      <label for="kaitoriHanbai">買取再販住宅か</label>
       <select id="kaitoriHanbai">
         <option value="0" selected>いいえ</option>
         <option value="1">宅建業者が増改築した中古住宅を買った</option>
@@ -260,8 +260,8 @@
   <p class="hint" id="yoken-hint" style="margin-top:6px"></p>
 
   <label for="saikenGaku" style="margin-top:14px">⑦ 住宅ローンの借入額（抵当権設定の課税標準）</label>
-  <input type="number" id="saikenGaku" min="0" inputmode="numeric" value="35000000">
-  <p class="hint" id="saiken-hint" style="margin-top:6px"></p>
+    <p class="hint" id="saiken-hint" style="margin-top:6px"></p>
+    <input aria-describedby="saiken-hint" type="number" id="saikenGaku" min="0" inputmode="numeric" value="35000000">
 
   <button class="primary" id="calc" style="margin-top:14px">登録免許税を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>

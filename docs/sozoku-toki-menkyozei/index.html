@@ -154,7 +154,7 @@
   <div id="rows"></div>
   <button id="addrow" type="button" style="margin:4px 0 14px">＋ 不動産を追加</button>
 
-  <div class="grid2">
+  <div>
     <div>
       <label for="applyDate">登記を申請する予定日<span class="hint">　免税措置の期限判定に使います</span></label>
       <input type="date" id="applyDate">
@@ -373,23 +373,23 @@ let rowSeq = 0;
 function addRow(kind, value, num, den) {
   const i = rowSeq++;
   const div = document.createElement("div");
-  div.className = "grid2 prow";
+  div.className = "prow";
   div.dataset.row = String(i);
   div.style.cssText = "align-items:end;gap:8px;margin-bottom:8px";
   div.innerHTML = `
     <div>
-      <label for="kind${i}" style="font-size:13px">種別</label>
+      <label for="kind${i}">種別</label>
       <select id="kind${i}" class="p-kind">
         <option value="land"${kind === "building" ? "" : " selected"}>土地（1筆）</option>
         <option value="building"${kind === "building" ? " selected" : ""}>建物（1棟）</option>
       </select>
     </div>
     <div>
-      <label for="val${i}" style="font-size:13px">固定資産税評価額（円）</label>
+      <label for="val${i}">固定資産税評価額（円）</label>
       <input type="number" id="val${i}" class="p-val" min="0" inputmode="numeric" value="${value ?? ""}" placeholder="例: 12345678">
     </div>
     <div>
-      <label for="num${i}" style="font-size:13px">相続する持分</label>
+      <label for="num${i}">相続する持分</label>
       <div style="display:flex;align-items:center;gap:6px">
         <input type="number" id="num${i}" class="p-num" min="1" inputmode="numeric" value="${num ?? 1}" style="width:70px">
         <span>/</span>

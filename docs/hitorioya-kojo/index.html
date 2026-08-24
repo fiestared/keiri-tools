@@ -428,7 +428,7 @@ const SEX = [
 ];
 
 function radioRow(name, opt, hint) {
-  return `<label style="display:flex;align-items:flex-start;gap:8px;margin:6px 0;font-size:14px;font-weight:400">
+  return `<label style="display:flex;align-items:flex-start;gap:8px;margin:6px 0;font-weight:400">
       <input type="radio" name="${name}" id="${name}-${opt.key}" value="${opt.key}" ${opt.checked ? "checked" : ""} style="width:auto;flex:none;margin-top:3px">
       <span>${opt.label}${hint ? `<span class="hint" style="display:block">${hint}</span>` : ""}</span></label>`;
 }
@@ -451,11 +451,11 @@ function fillRows() {
   ];
   $("child-rows").innerHTML = CHILD.map(o => radioRow("child", o, o.hint)).join("");
   $("extra-rows").innerHTML = `
-    <label style="display:flex;align-items:flex-start;gap:8px;margin:14px 0 6px;font-size:14px;font-weight:400">
+    <label style="display:flex;align-items:flex-start;gap:8px;margin:14px 0 6px;font-weight:400">
       <input type="checkbox" id="other-fuyo" style="width:auto;flex:none;margin-top:3px">
       <span>子以外に扶養親族がいる（親・祖父母・孫などで、合計所得${man(H.fuyo_income_limit)}以下・生計を一にしている）
         <span class="hint" style="display:block">離婚のときの寡婦控除は、扶養親族がいることが要件です</span></span></label>
-    <label style="display:flex;align-items:flex-start;gap:8px;margin:6px 0;font-size:14px;font-weight:400">
+    <label style="display:flex;align-items:flex-start;gap:8px;margin:6px 0;font-weight:400">
       <input type="checkbox" id="jijitsukon" style="width:auto;flex:none;margin-top:3px">
       <span>住民票に「夫（未届）」「妻（未届）」の記載がある（事実婚のパートナーがいる）
         <span class="hint" style="display:block">記載があると、どちらの控除も受けられません</span></span></label>`;

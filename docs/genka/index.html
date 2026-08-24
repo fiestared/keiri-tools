@@ -223,9 +223,8 @@
   </div>
 
   <label for="chuko-shishutsu">資本的支出の額（円）<span class="hint">　使えるようにするための改良・改造費。<b>取得価額の50％を超えると簡便法は使えません</b>（耐令3条1項ただし書）。無ければ0</span></label>
-  <input id="chuko-shishutsu" type="number" inputmode="numeric" min="0" step="1" placeholder="0" value="0">
-
-  <p class="hint" style="margin:-4px 0 10px">※ 50％の判定には、上の計算機の<b>取得価額</b>を使います。</p>
+    <p class="hint" style="margin:-4px 0 10px" id="chuko-shishutsu-hint">※ 50％の判定には、上の計算機の<b>取得価額</b>を使います。</p>
+    <input aria-describedby="chuko-shishutsu-hint" id="chuko-shishutsu" type="number" inputmode="numeric" min="0" step="1" placeholder="0" value="0">
 
   <button class="primary" id="chuko-calc">簡便法で耐用年数を計算する</button>
   <div role="status" aria-live="polite" class="result" id="chuko-result"></div>

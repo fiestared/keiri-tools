@@ -146,8 +146,8 @@
 
 <div class="card">
   <label for="shinryo">診療を受けた年月</label>
-  <input type="month" id="shinryo">
-  <p class="hint">高額療養費は<b>「療養のあった月」の表</b>で決まります（申請した月でも支給された月でもありません）。<b>令和8年8月診療分から限度額が上がった</b>ので、月をまたぐと答えが変わります（区分ウ・医療費100万円の月で 87,430円 → 92,940円）。<span id="period-note">このツールが対応している診療年月には上限があります。</span>それより後の月は<b>額を出さずに止めます</b>。<a href="../column/kogaku-ryoyohi/#kaisei">令和8年8月の改正について</a></p>
+    <p class="hint" id="shinryo-hint">高額療養費は<b>「療養のあった月」の表</b>で決まります（申請した月でも支給された月でもありません）。<b>令和8年8月診療分から限度額が上がった</b>ので、月をまたぐと答えが変わります（区分ウ・医療費100万円の月で 87,430円 → 92,940円）。<span id="period-note">このツールが対応している診療年月には上限があります。</span>それより後の月は<b>額を出さずに止めます</b>。<a href="../column/kogaku-ryoyohi/#kaisei">令和8年8月の改正について</a></p>
+    <input aria-describedby="shinryo-hint" type="month" id="shinryo">
 
   <label for="agegroup" style="margin-top:14px">療養を受けた方の年齢</label>
   <select id="agegroup">
@@ -179,8 +179,8 @@
 
   <div id="row-hoshu">
     <label for="monthly">毎月の給料（報酬月額・円）<span style="font-weight:400;font-size:12px;color:var(--sub)">　通勤手当・残業代を含む総支給額</span></label>
-    <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
-    <p class="hint">給与明細の「標準報酬月額」が分かる方は、上の選択を切り替えて直接選ぶほうが正確です。<a href="../shakai-hoken/">社会保険料計算ツール</a>でも等級を確認できます。</p>
+    <p class="hint" id="monthly-hint">給与明細の「標準報酬月額」が分かる方は、上の選択を切り替えて直接選ぶほうが正確です。<a href="../shakai-hoken/">社会保険料計算ツール</a>でも等級を確認できます。</p>
+    <input aria-describedby="monthly-hint" type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
   </div>
 
   <div id="row-std" style="display:none">
