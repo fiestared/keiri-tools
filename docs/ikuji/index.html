@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-15",
-  "dateModified": "2026-08-15",
+  "dateModified": "2026-08-24",
       "name": "育児休業給付金 計算機",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -124,7 +124,7 @@
 
 <section class="hero">
   <h1>育児休業給付金 計算機</h1>
-  <p class="article-meta">公開日: 2026年7月15日（更新日: 2026年8月15日）</p>
+  <p class="article-meta">公開日: 2026年7月15日（更新日: 2026年8月24日）</p>
   <p>育児休業中に雇用保険から出る<b>育児休業給付金</b>を計算します。<b>支給単位期間ごとに、いつ・いくら振り込まれるか</b>を実際の日付で出し、<b>67%が終わって50%に下がる回（日割りになります）</b>も表示します。2025年4月に始まった<b>出生後休業支援給付金（＋13%）</b>にも対応しています。</p>
 </section>
 
@@ -351,6 +351,11 @@ $("calc").addEventListener("click", async () => {
       //   （省略を「対象外」と読むと、渡し忘れたときに13%＝最大60,205円が黙って消える。
       //   /furusato/ の fuyoNensho・/shobyo/ の startDate と同じ事故の型）。
       //   このページは3つの入力を**必ず画面で聞く**ので、null を渡す道はない。
+      shien: {
+        ownDays: Number($("shienOwnDays").value),
+        spouseDays: Number($("shienSpouseDays").value),
+        spouseExempt: $("spouseExempt").checked,
+      },
     }, D);
   } catch (e) {
     box.innerHTML = `<div class="callout"><b>計算できませんでした。</b>${e.message}</div>`;

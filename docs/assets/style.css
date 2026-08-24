@@ -110,6 +110,15 @@ label.check input[type="checkbox"] {
   width: 24px; height: 24px; flex: 0 0 24px; margin: 0; accent-color: var(--accent);
 }
 
+/* ★チェックボックス/ラジオは 119個あり、うち20個は .opts の中にいる。
+   ラベル側にクラスを足して回ると .opts label（後方でより強い）と競合して
+   大きさが混在するので、箱そのものを一律に上げる。
+   UA既定 13px → 20px（Apple 44pt/freee 44×44 に対する見た目の不足を埋める。
+   操作ターゲットはラップする label 全体で44px以上あり SC 2.5.8 は元から満たしている）。 */
+input[type="checkbox"], input[type="radio"] {
+  width: 20px; height: 20px; min-height: 0; accent-color: var(--accent);
+}
+
 /* 反復ブロック（「N人目」など）。見出しを legend に持たせて境界を作る */
 fieldset.member { border: 0; border-top: 1px solid var(--line); margin: 24px 0 0; padding: 4px 0 0; }
 fieldset.member legend { font-weight: 700; font-size: 15px; padding: 0 0 2px; }
