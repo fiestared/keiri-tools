@@ -621,7 +621,7 @@ main:focus { outline: none; }
   @page { margin: 14mm; }
   body { background: #fff; color: #000; line-height: 1.6; }
   header.site, footer.site nav, .skip-link, .tabs, .persona-bar,
-  .qa-box, .cat-nav, button, .tool-list, .tool-card, .post-list { display: none !important; }
+  .qa-box, .cat-nav, button, .tool-list, .tool-card, .post-list, .toc { display: none !important; }
   main { max-width: none; padding: 0; }
   .card, .result { border: 1px solid #000; break-inside: avoid; }
   article table { break-inside: avoid; font-size: 11pt; }
@@ -645,4 +645,18 @@ main a { color: var(--accent); text-underline-offset: 3px; }
   border: 1px solid var(--line);
   border-left: 3px solid var(--line-strong);
   border-radius: 0 8px 8px 0;
+}
+
+@media (min-width: 1200px) {
+  .toc {
+    position: fixed;
+    top: 84px;
+    left: calc(50% + 352px);
+    width: 236px;
+    max-height: calc(100vh - 104px);
+    overflow-y: auto;
+    margin: 0;
+    padding: 14px 16px;
+  }
+  .toc li { font-size: 13px; }
 }
