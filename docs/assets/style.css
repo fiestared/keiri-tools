@@ -292,8 +292,13 @@ article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-s
    引用だと分かる手掛かりを付ける。色は既存トークンのみで新色を足さない。 */
 article blockquote {
   margin: 1.4em 0;
-  padding: 2px 0 2px 16px;
+  padding: 10px 16px;
   border-left: 3px solid var(--line-strong);
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0 8px 8px 0;
+  background: #fff;
   color: var(--ink);
 }
 article blockquote p:last-child { margin-bottom: 0; }
@@ -634,3 +639,10 @@ main:focus { outline: none; }
 .warn:focus-visible { outline: 3px solid var(--warn-line-strong); outline-offset: 2px; }
 
 main a { color: var(--accent); text-underline-offset: 3px; }
+
+#shutten + .note {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line-strong);
+  border-radius: 0 8px 8px 0;
+}
