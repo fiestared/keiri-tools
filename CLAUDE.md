@@ -321,6 +321,17 @@ title・meta・JSON-LDはSEOのため静的HTMLに書くしかないので、
 - ローカル確認: `cd docs && python3 -m http.server 18923`(ESモジュールのため file:// 不可)
 - デプロイ: GitHub Pages(push で自動)。**push してテストが緑でも「本番に出た」とは限らない** —
   デプロイの成否と本番HTTPを見る。**詰まったCIは、次のpushで押し流せる**(Pagesはツリー全体をデプロイする)
+- 🔴 **push の前に必ず `git fetch origin && git merge --ff-only origin/main`。**
+  このリポジトリには**あなた以外にも push する主体が居る** —
+  他マシンの対話セッション・自律ワーカー・そして
+  **定時ジョブ `tools/update_hojokin.sh`(1日3回・専用クローン `~/Scripts/keiri-tools-autodata` から直接 push)**。
+  なので `~/Scripts/keiri-tools` のローカル main は**日常的に origin より遅れる**。
+  ★これを踏むと `! [rejected] main -> main (fetch first)` になる。**人なら pull すれば済む。
+  問題は定時ジョブで、pull を挟まない push は一度弾かれると以後ずっと弾かれる。**
+  実害: 2026-08-23〜08-26 に補助金データが3日止まり、新しい公募13件がサイトに出なかった
+  (うち1件は締切2日後)。`launchctl list` は `- 1 com.masahiro.hojokin-update` を出していたが
+  **exit 1 を誰も見ていなかった**。→ 直した(fa26821)。**同じ形の定時ジョブを新しく作るときは、
+  push が弾かれた場合の追いつきを最初から入れること。**
 - **`git add -A` は「未追跡にしてある」という意図を知らない** — `.nopublish` 付きの重複記事を巻き込んで
   本番にpushした(一覧・sitemapには載らないが**URLは生きる**＝重複記事は検索で互いを食い合う)。
   → 記事のコミットは**足すファイルを明示**するか、`git status` を見てから add する。
