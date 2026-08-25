@@ -37,6 +37,22 @@ check_quotes.py がそのまま読める e-Gov 形式の JSON コーパスに変
 
   引数はページ番号（既定は法人税基本通達 = /law/tsutatsu/kihon/hojin/）。
   --base で他の通達（消費税・所得税など）のディレクトリに向けられる。
+  pages には**フルURLをそのまま渡せる**（`p.startswith("http")` の枝）。ディレクトリの作りが
+  法人税と違う通達は、こちらのほうが早い。
+
+🔴 **通達のディレクトリ名を推測しない。/law/index.htm → /law/tsutatsu/menu.htm のリンクをたどる**
+   （2026-08-25 第23便で確立）。前便（第22便）は相続税法基本通達を取りに行き、
+   `kihon/sisan/sozoku/` `kihon/sozoku/` など**7通りを推測して全滅**し、記事に
+   「通達原文は取得できなかった」と書いて出した。正解は **`kihon/sisan/sozoku2/`**
+   （末尾の 2 は推測では出ない）。menu.htm を1回引けば1発で出る:
+   ```
+   相続税法      /law/tsutatsu/kihon/sisan/sozoku2/01.htm   ← 01.htm が目次。配下は 01/06.htm 等
+   財産評価      /law/tsutatsu/kihon/sisan/hyoka_new/01.htm
+   ```
+   ⚠️ menu.htm は **UTF-8**、通達本文は **Shift_JIS**。同じサイト内で混在するので、
+      charset を見ずに decode すると「取得できているのに0ヒット」になる（実際に踏んだ）。
+   ★対照実験は `kihon/hojin/09/09_03.htm`（200・約24,000字）。ここが取れるなら取得系は生きている
+      ＝「404が返る」は「取得系が壊れている」ではなく「そのツリーが無い」。
 
 ⚠️ 国税庁のページは **Shift_JIS**。ディレクトリで決め打たず meta charset を見ること
    （同じ nta.go.jp 配下で UTF-8 と Shift_JIS が混在する。ARTICLE_SPEC 参照）。
