@@ -293,6 +293,14 @@ const ORDER = [
   "shoyo-shakaihoken",
   "teiji-kettei",
   "kodomo-kosodate-shienkin",
+  // 子ども・子育て拠出金: 需要6,600/月・主題として被覆ゼロ（shienkin は本人負担側なので別主題）。
+  // 目玉は「支援法には『負担』の条文が1つも無く、あるのは69条2項の納付義務だけ」＝厚年法82条が
+  // 1項(折半)と2項(納付義務)を書き分けているのとの対比。上限は令和7年4月に0.45%→0.40%へ引下げ済み。
+  // 同時に測って落とした候補: 算定基礎届 14,800／給与支払報告書 18,100／青色申告 40,500／開業届 40,500／
+  // 事前確定届出給与 6,600／外形標準課税 4,400／繰延資産 4,400／資産除去債務 3,600／貸倒損失 3,600／
+  // 賞与支払届 6,600／源泉徴収簿 5,400／労働者死傷病報告 2,900 は**いずれも主題保有**。
+  // 残る空白は 連結決算 1,600／減損会計 1,600／マイナンバー 収集 1,900／為替差損益 1,000（いずれも需要が小さい）。
+  "kodomo-kosodate-kyoshutsukin",
   "yukyu-nen5ka",
   "eigyobi-kazoekata",
   "furikomi-tesuryo-hikaku",
@@ -346,7 +354,7 @@ const CATEGORIES = [
     slugs: [
       "shakai-hoken-kanyu-joken", "shakai-hokenryo-keisan", "hyojun-hoshu-gakuhyo",
       "teiji-kettei", "zuiji-kaitei", "sanzen-sango-kyugyo", "sango-papa-ikukyu", "shoyo-shakaihoken", "shoyo-shiharaitodoke", "kaigo-hokenryo-itsukara",
-      "kodomo-kosodate-shienkin", "shakai-hoken-fuyo-joken", "hifuyosha-ido-todoke", "nenshu-no-kabe",
+      "kodomo-kosodate-shienkin", "kodomo-kosodate-kyoshutsukin", "shakai-hoken-fuyo-joken", "hifuyosha-ido-todoke", "nenshu-no-kabe",
       "yakuin-shakai-hoken",
       "koyou-hoken-kanyu-joken", "koyou-hoken-hihokenshasho", "koyou-hokenryo-ritsu", "rosai-hokenryoritsu", "hitori-oyakata-rosai",
       "yakuin-koyou-hoken",
