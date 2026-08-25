@@ -12,53 +12,81 @@
 #
 # ★push 先は明示する。このリポジトリは origin = fiestared/keiri-tools。
 #
-# ★自律ワーカー（ai-income-daily）も同じリポジトリを触る。競合を避けるため、
-#   ワーカーのロックが在るときは何もしないで降りる。
+# ★自律ワーカー（ai-income-daily）も同じリポジトリを触るが、この仕事は**専用クローン**で
+#   完結するのでぶつからない（2026-08-26。旧: ワーカーのロックを見て見送る設計だった）。
 set -u
 
-DIR="/Users/masahiroyasu/Scripts/keiri-tools"
+# ─────────────────────────────────────────────────────────────────────────────
+# ★★2026-08-26: **この仕事専用のクローンで回す**（DIR ではもう作業しない）
+#
+# 直した事故（2つ。どちらも「データが黙って止まる」で同じ実害）:
+#
+#  (1) **push の前に origin へ追いつかない。** ← 今回の停止の原因。
+#      このリポジトリには MBP / MacBook Air / 自律ワーカー の3者が push する。
+#      誰かが先に push した瞬間、`git push` は
+#        ! [rejected] main -> main (fetch first)
+#      で落ちる。STAMP は成功時しか書かないので毎回やり直すが、**毎回同じ理由で落ちる**。
+#      実測: MBP の logs/hojokin_update.log
+#        2026-08-25 18:55:36 ★push に失敗した（コミットは残っている）
+#      → データは **2026-08-23 07:54 で止まり、新しい公募13件が3日間サイトに出なかった**
+#        （うち1件は締切2日後）。launchctl は `- 1 com.masahiro.hojokin-update` を出していたが、
+#        exit 1 は誰も見ていなかった。
+#
+#  (2) **共有チェックアウトで作業していた。** ワーカーのロックを見て「見送る」設計だったが、
+#      2026-08-14〜08-17 に**毎日ぶつかって4日間永久スキップ**した前科がある（下の旧コメント参照）。
+#      1日3回に増やして緩和したが、根っこは「同じファイルを複数の主体が触ること」。
+#      CLAUDE.md の結論はこうだ: **守るかどうかに依存しない形にする＝ファイルを共有しない。**
+#
+# → この2つをまとめて消す。**専用クローン $WORK で完結させる。**
+#   ・毎回 origin/main に `reset --hard` してから始める（前回 push に失敗した残骸も自動で消える＝自己修復）
+#   ・$WORK は誰も手で触らないので、rebase も reset も安全
+#   ・ワーカーのロックを見る必要が無くなった（ファイルを共有していないので、ぶつかりようがない）
+
+DIR="/Users/masahiroyasu/Scripts/keiri-tools"                 # ★参照専用。ここにはもう書かない
+WORK="/Users/masahiroyasu/Scripts/keiri-tools-autodata"       # ★この仕事だけのクローン
+REMOTE="https://github.com/fiestared/keiri-tools.git"
 PY="/opt/homebrew/bin/python3.14"
-LOCK="/Users/masahiroyasu/Scripts/ai-income-daily/data/.worker.lock"
 LOG="$DIR/logs/hojokin_update.log"
 mkdir -p "$(dirname "$LOG")"
 
 say() { echo "$(date '+%Y-%m-%d %H:%M:%S') $*" >> "$LOG"; }
 
 # ★その日に成功していたら、何もしないで降りる（2026-08-17 追加）。
-#   下のワーカー回避と対で必要。1日に複数回起動するようにしたので、
-#   これが無いと同じ日に何度も fetch して push する。
+#   1日に3回起動するので、これが無いと同じ日に何度も fetch して push する。
 STAMP="$DIR/logs/.hojokin_last_success"
 TODAY="$(TZ=Asia/Tokyo date '+%Y-%m-%d')"
 if [ -r "$STAMP" ] && [ "$(cat "$STAMP")" = "$TODAY" ]; then
   exit 0
 fi
 
-# ★ワーカーが動いていたら降りる（同じ repo を同時に触ると片方の変更が消える）
-#
-# ★★2026-08-17 修正: ここは**降りたら終わり**だったため、4日間データが止まっていた。
-#   実測: ワーカーは毎時0分に起動して22〜95分かかる（中央値30分）。
-#   この便は 7:20 の1回だけだったので、**毎日必ずワーカーと被って永久にスキップ**していた。
-#     08-13 07:25 ✓ 更新して push
-#     08-14〜08-17 07:20 「ワーカーが作業中。今回は見送る」×4日
-#   → 1日3回（7:50 / 12:50 / 18:50）に増やし、上の「その日に成功したら降りる」で
-#     重複を防ぐ。**1回でも通れば良い**設計にする。
-#   ★「見送る」を作るときは、必ず**次にいつ試すか**を決めること。
-#     再試行の無い skip は、条件が毎回成立すると永久停止になる。
-if [ -d "$LOCK" ]; then
-  pid="$(cat "$LOCK/pid" 2>/dev/null || echo '')"
-  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
-    say "ワーカーが作業中（pid ${pid}）。今回は見送る"
-    exit 0
+# ★専用クローンが無ければ作る。ローカルから複製してから origin を GitHub に向け直す
+#   （ネットワークから 82MB を引き直さない）。
+if [ ! -d "$WORK/.git" ]; then
+  say "専用クローンを作る: $WORK"
+  if ! git clone -q "$DIR" "$WORK" >> "$LOG" 2>&1; then
+    say "★クローンに失敗した"
+    exit 1
   fi
-  say "ロックが残っているが持ち主(pid $pid)は居ない。続行する"
+  git -C "$WORK" remote set-url origin "$REMOTE"
 fi
 
-cd "$DIR" || { say "★$DIR に入れない"; exit 1; }
+cd "$WORK" || { say "★$WORK に入れない"; exit 1; }
 
-# ★未コミットの変更がある状態で走らせない（人の作業中に巻き込むため）
-if [ -n "$(git status --porcelain -- docs/assets/hojokin_jgrants.json)" ]; then
-  say "★補助金データに未コミットの変更がある。人が触っている可能性があるので見送る"
-  exit 0
+# ★毎回 origin/main から始める。前回 push に失敗した残骸もここで消える（自己修復）。
+#   ★reset --hard を許せるのは **$WORK が この仕事の専用クローンだから**。
+#     🚫 共有チェックアウトで同じことをしたら、他人の作業を消す。
+if ! git fetch -q origin main >> "$LOG" 2>&1; then
+  say "★origin から fetch できない（ネットワークか認証）"
+  exit 1
+fi
+git reset -q --hard origin/main >> "$LOG" 2>&1
+git clean -qfd >> "$LOG" 2>&1
+
+# ★ここは reset --hard の直後なので必ず綺麗なはず。汚れていたら前提が崩れている
+#   （$WORK を人が触った等）。黙って続けず、気づけるように落とす。
+if [ -n "$(git status --porcelain)" ]; then
+  say "★reset --hard の直後なのに $WORK が汚れている。人が触った可能性。中止する"
+  exit 1
 fi
 
 before="$(git rev-parse HEAD)"
@@ -129,10 +157,25 @@ git commit -q -m "補助金データを更新（${n}件・jGrants公開APIの掃
 tools/update_hojokin.sh による自動更新。締切が過ぎたものは表示側でも外しているが、
 新しく始まった公募を載せるためデータ自体を取り直している。" >> "$LOG" 2>&1
 
-if git push -q origin main >> "$LOG" 2>&1; then
-  say "✓ ${n}件で更新して push した ($before → $(git rev-parse --short HEAD))"
-  echo "$TODAY" > "$STAMP"   # ★今日は成功。同日の後続の起動は先頭で降りる
-else
-  say "★push に失敗した（コミットは残っている）"
-  exit 1
+# ★★push は「押せなかったら諦める」にしない（2026-08-26。これが3日停止の原因）。
+#   取得〜commit の間に誰かが push していると rejected になる。1回だけ追いついて押し直す。
+#   それでも駄目なら次の起動（1日3回）が reset --hard からやり直す＝自己修復するので、
+#   ここで残骸を抱えたまま終わらない。
+push_once() { git push -q origin main >> "$LOG" 2>&1; }
+
+if ! push_once; then
+  say "push が弾かれた。origin に追いついてもう一度試す"
+  if ! git fetch -q origin main >> "$LOG" 2>&1 || ! git rebase -q origin/main >> "$LOG" 2>&1; then
+    git rebase --abort >/dev/null 2>&1
+    say "★追いつけなかった。次の起動でやり直す（$WORK は次回 reset --hard で綺麗になる）"
+    exit 1
+  fi
+  if ! push_once; then
+    say "★追いついても push できなかった（認証かネットワークを疑う）"
+    exit 1
+  fi
+  say "  ✓ 追いついて push した"
 fi
+
+say "✓ ${n}件で更新して push した ($before → $(git rev-parse --short HEAD))"
+echo "$TODAY" > "$STAMP"   # ★今日は成功。同日の後続の起動は先頭で降りる

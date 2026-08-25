@@ -223,6 +223,21 @@ export function sortRows(rows, how = 'deadline', today = new Date()) {
   });
 }
 
+/** 取得時刻を人が読む形にする。`2026-08-26T02:10:52+09:00` → `2026-08-26 02:10`
+ *
+ * ★なぜ在るか（2026-08-26）: このページは取得時刻を **ISO のまま**画面に出していた
+ *   （「2日前に取得したデータです（2026-08-23T07:54:51+09:00）」）。
+ *   `T` とオフセットは機械のための表記で、読み手には読みづらいだけ。
+ *   ★同じ値を data-captured 属性に持たせるのは今まで通りで良い（あれは機械が読む）。
+ *   画面に出す時だけこれを通す。
+ */
+export function capturedLabel(s) {
+  const d = parseDt(s);
+  if (!d) return '';
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
 /** データの鮮度。★古ければ件数より先にこれを言う */
 export function freshness(meta, today = new Date()) {
   const cap = parseDt(meta && meta.captured_jst);
