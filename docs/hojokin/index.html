@@ -135,7 +135,7 @@
   <h1>補助金の検索</h1>
 
   <nav class="hj-tabs" aria-label="補助金のデータの種類">
-    <a href="./" aria-current="page"><b>公募中を探す</b><span class="hj-tab-n" id="hj-tab-n1">302件</span></a>
+    <a href="./" aria-current="page"><b>公募中を探す</b><span class="hj-tab-n" id="hj-tab-n1">315件</span></a>
     <a href="schedule/"><b>国の主要補助金</b><span class="hj-tab-n" id="hj-tab-n2">22件</span></a>
     <a href="koyou/"><b>雇用関係助成金</b><span class="hj-tab-n" id="hj-tab-n3">47制度</span></a>
   </nav>
@@ -278,7 +278,7 @@
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
 </footer>
 <script type="module">
-import { filterRows, sortRows, freshness, notStarted, employeeCap, fmtAmount, areaLabel,
+import { filterRows, sortRows, freshness, capturedLabel, notStarted, employeeCap, fmtAmount, areaLabel,
   descOf, fmtDeadline, PAGE_SIZE, PURPOSES, PREF_GROUPS, SOURCE_NOTICE }
   from "../assets/hojokin_core.js";
 
@@ -456,7 +456,7 @@ async function render() {
       <br><span class="hint">${koyouHit.slice(0, 3).map(esc).join('／')}${koyouHit.length > 3 ? ' ほか' : ''}</span>
     </div>` : ''}
     ${hit.length && active ? `<div class="hj-chips" id="hj-active">${active}</div>` : ''}
-    <p class="hint" id="fresh">${esc(f.text)}（${esc(D._meta.captured_jst || "")}）／${esc(D._meta.attribution || SOURCE_NOTICE)}</p>
+    <p class="hint" id="fresh">${esc(f.text)}（${esc(capturedLabel(D._meta.captured_jst))}）／${esc(D._meta.attribution || SOURCE_NOTICE)}</p>
     ${body}
     <div class="note" style="margin-top:12px">
       掲載は取得時点のもので、<b>網羅を約束するものではありません</b>（データ元のAPIが全件取得に対応していないため、50語の検索の和集合です）。
