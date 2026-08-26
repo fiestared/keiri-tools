@@ -44,7 +44,10 @@ set -u
 
 DIR="/Users/masahiroyasu/Scripts/keiri-tools"                 # ★参照専用。ここにはもう書かない
 WORK="/Users/masahiroyasu/Scripts/keiri-tools-autodata"       # ★この仕事だけのクローン
-REMOTE="https://github.com/fiestared/keiri-tools.git"
+# ★SSH で持つ（2026-08-26）。HTTPS だと GitHub トークンの失効で無言で死ぬ —
+#   実際 MBP のトークンが切れて private リポジトリの同期が4時間止まり、
+#   誰も気づかなかった。鍵は失効しない。
+REMOTE="git@github.com:fiestared/keiri-tools.git"
 PY="/opt/homebrew/bin/python3.14"
 LOG="$DIR/logs/hojokin_update.log"
 mkdir -p "$(dirname "$LOG")"
