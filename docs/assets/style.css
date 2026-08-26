@@ -61,9 +61,24 @@ main { max-width: 1152px; margin: 0 auto; padding: 20px 16px 60px; }
    絞り込みカードと結果カードが 304px から始まっていた（Masahiro の指摘「ずれてる」）。
    右端は要素ごとに違ってよい（672 か 1120）。左端が1本なら整って見える。 */
 main > * { max-width: 672px; margin-left: 0; margin-right: auto; }
-/* シェル幅を使うのは「一覧・グリッドの器」だけ。読ませるテキストは 672px のまま。 */
-main > .section-head, main > .persona-bar, main > .cat-nav,
-main > .tcat, main > .cat, main > .col-search, main > .col-empty { max-width: 1120px; }
+/* シェル幅を使うのは「一覧・グリッドの器」だけ。読ませるテキストは 672px のまま。
+   ★.post-list をここに入れ忘れて、トップの「新着コラム」だけ 672px で残っていた
+   （2026-08-27 の指摘）。ツール一覧が 1120px、その直下の節が 672px で右端が食い違う。
+   **節見出し（.section-head）とその節の中身は必ず同じ幅にする** — test_section_width が見る。 */
+main > .persona-bar, main > .cat-nav, main > .tcat, main > .cat,
+main > .post-list, main > .tool-grid,
+main > .col-search, main > .col-empty { max-width: 1120px; }
+/* ★節見出しの幅は「その節の中身」に合わせる。
+   一律に 1120px にしていたら、中身がテキストの節（/toushi/ の「このセクションの数字の
+   出どころ」）でも見出しだけ 1120px に伸び、右端が 448px 食い違っていた。
+   次の兄弟が広い器のときだけ広げる。 */
+main > .section-head { max-width: 672px; }
+main > .section-head:has(+ .tool-grid),
+main > .section-head:has(+ .post-list),
+main > .section-head:has(+ .tcat),
+main > .section-head:has(+ .persona-bar),
+main > .section-head:has(+ .cat-nav),
+main > .section-head:has(+ .col-search) { max-width: 1120px; }
 /* hero をシェル幅にするのは一覧系だけ。記事・ツールの hero は 672px のまま
    （.article-meta の下罫線が 1120px に伸びて本文と食い違うのを避ける）。 */
 main:has(.tcat) > .hero, main:has(.cat) > .hero { max-width: 1120px; }
