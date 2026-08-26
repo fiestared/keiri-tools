@@ -28,7 +28,9 @@ body {
 header.site {
   background: #fff;
   border-bottom: 1px solid var(--line);
-  padding: 10px 16px;
+  /* ★白地と下境界線は全幅のまま、中身だけ main と同じ 1120px に収める（2026-08-27）。
+     内側ラッパを足すと全427ページの HTML を触ることになるので padding で寄せる。 */
+  padding: 10px max(16px, calc((100% - 1120px) / 2));
   position: sticky;
   top: 0;
   z-index: 50;
@@ -40,8 +42,27 @@ header.site {
 [id] { scroll-margin-top: 72px; }
 header.site a { color: var(--ink); text-decoration: none; font-weight: 700; }
 header.site .tag { color: var(--sub); font-size: 12.5px; margin-left: 8px; }
-/* 行長: 内容幅 640px ÷ 16px = 全角40字。JLReq 横組の上限・WCAG 1.4.8 の CJK 40 と一致 */
-main { max-width: 672px; margin: 0 auto; padding: 20px 16px 60px; }
+/* ★版面（2026-08-27 改）。行長40字は**本文にしか効かない**。
+   ここには元々「WCAG 1.4.8 の CJK 40 と一致」と書いてあったが、原典に当たると
+   **SC 1.4.8 は AAA で、しかも「40字で読める手段が利用できること」を求める条項**であって、
+   既定表示を40字に固定せよとは書いていない。JLReq の40字も**横組本文**の上限で、
+   版面が広いときは段を分けて行を短くする方向を示している。
+   → **本文の列は 672px（内容640px＝全角40字）に据え置き、外側のシェルだけ 1120px に広げる。**
+   広げるのはツール一覧・カテゴリナビ・ペルソナ切替だけ（表は .scroll-wrap が別に見る）。
+   根拠: 閲覧の 99.5% がデスクトップ（2026-08-25 GA4 全数・desktop 393 / mobile 2）。
+   1280px 画面で使えていたのは幅の 52.5% だけだった。 */
+main { max-width: 1120px; margin: 0 auto; padding: 20px 16px 60px; }
+main > * { max-width: 672px; margin-left: auto; margin-right: auto; }
+main > .section-head, main > .persona-bar, main > .cat-nav,
+main > .tcat, main > .col-search, main > .col-empty { max-width: 1120px; }
+/* ★ワイド要素を持つページ（トップ=.tcat / コラム一覧=.cat）だけ左端を1本に揃える。
+   本文だけのページ（記事・ツール）は中央のまま — ≥1200px の固定目次が
+   `left: calc(50% + 352px)` と**画面中央**を基準にしているので、そこを動かさない。 */
+main:has(.tcat) > *, main:has(.cat) > * { margin-left: 0; margin-right: auto; }
+main:has(.tcat) > .hero, main:has(.cat) > .hero { max-width: 1120px; }
+main:has(.tcat) > .hero > *, main:has(.cat) > .hero > * { max-width: 672px; }
+/* ★コラム一覧の記事リストは広げない。タイトルと説明は「読ませる」テキストなので、
+   1120px まで伸ばすと行長が全角60字を超える。広げて得なのはカテゴリのチップ列だけ。 */
 h1 { font-size: 24px; line-height: 1.4; margin: 16px 0 8px; }
 .lead { color: var(--sub); font-size: 14px; margin-bottom: 20px; }
 .card {
@@ -157,7 +178,7 @@ button.primary {
   color: #fff;
   background: var(--accent);
   border: 0;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 14px;
   cursor: pointer;
 }
@@ -191,18 +212,23 @@ button.primary:hover { opacity: 0.92; }
 }
 .warn > b:first-child { display: block; margin-bottom: 4px; }
 .result:has(> .warn) { border-color: var(--warn-line-strong); background: #fffdf7; padding: 6px; }
+/* ★左アクセントバー＋グラデーションを廃止（2026-08-27）。
+   gbrain design/ui-no-left-accent-border-cards（2026-08-26 の恒久方針）が
+   「border-left を強調用途で使わない」「グラデーションを抑える」と定めており、
+   代替として「文字サイズ・ウェイト・余白・下罫線で階層化」を指定している。 */
 section.faq h2 {
-  font-size: 18px;
-  margin-top: 32px;
-  padding: 6px 0 6px 12px;
-  border-left: 5px solid var(--accent);
-  background: linear-gradient(90deg, var(--accent-soft), transparent);
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 1.45;
+  margin: 48px 0 16px;
+  padding: 0 0 8px;
+  border-bottom: 1px solid var(--line);
 }
 section.faq h3 { font-size: 15px; margin-bottom: 4px; }
 /* FAQの答えは本文と同格のコンテンツ(検索にも出る)。灰色で二級扱いしない(2026-07-23) */
 section.faq p { font-size: 15px; color: var(--ink); margin-top: 0; }
 footer.site {
-  max-width: 672px;
+  max-width: 1120px;
   margin: 0 auto;
   padding: 20px 16px 40px;
   color: var(--sub);
@@ -242,7 +268,8 @@ footer.site a { color: var(--sub); padding: 6px 0; display: inline-block; }
 .toc a:hover { color: var(--accent); text-decoration: underline; }
 .toc ol ol { margin-top: 4px; }
 .toc ol ol li { font-size: 13px; color: var(--sub); }
-article h2, main > h2 { font-size: 21px; margin-top: 56px; padding: 8px 0 8px 12px; border-left: 5px solid var(--accent); background: linear-gradient(90deg, var(--accent-soft), transparent); }
+/* ★同上。記事の h2 は 263記事×複数見出しで最多出現＝事実上サイトの顔だった。 */
+article h2, main > h2 { font-size: 21px; font-weight: 700; line-height: 1.45; margin: 64px 0 16px; padding: 0 0 8px; border-bottom: 1px solid var(--line); }
 article h3 { font-size: 18px; margin-top: 40px; padding-bottom: 4px; border-bottom: 2px dotted var(--line); }
 /* 本文16px: 読みやすい定番サイトの実測(サルワカ17px・note/Zenn 16px以上)に合わせ15→16px(2026-07-23) */
 article p, article li { font-size: 16px; line-height: 1.95; }
@@ -279,7 +306,10 @@ article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-s
   .figure.fig-wide figcaption { position: sticky; left: 0; }
 }
 .figure figcaption { font-size: 12.5px; color: var(--sub); margin-top: 6px; }
-.callout { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 10px; padding: 14px 16px; margin: 20px 0; font-size: 14px; }
+/* ★角丸は 8px（部品）/ 12px（囲み・カード）/ 999px（ピル）の3種に剪定（2026-08-27）。
+   従来は 4/8/10/12/14/99px の6種あり、大きさの差が意味に対応していなかった。
+   例外は inline の <code>（4px）と .skip-link（0 0 8px 0）だけ。 */
+.callout { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 12px; padding: 14px 16px; margin: 20px 0; font-size: 14px; }
 /* calloutの「先頭の<b>」だけが見出し。文中の<b>まで block にすると、強調のたびに改行されて
    文章がバラバラになる(2026-07-13に95箇所で発生。`b` 全部を対象にしていたのが原因)。 */
 .callout > b:first-child { display: block; margin-bottom: 8px; }
@@ -389,49 +419,67 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 
 .hero { padding: 28px 0 8px; }
 .hero h1 { font-size: 27px; line-height: 1.45; margin: 0 0 10px; }
-.hero p { color: var(--sub); font-size: 15px; margin: 0; }
+.hero p { color: var(--sub); font-size: 16px; margin: 0; }
 /* ★ツールページの .article-meta は .hero の中にあり、上の `.hero p { margin: 0 }` が
    詳細度で勝って margin が消えていた（h1直下10px の正体。記事ページは22px効いていた）。 */
 .hero .article-meta { margin: 22px 0 20px; font-size: 12.5px; }
 .hero .badges { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
 .hero .badges span { font-size: 12.5px; background: #fff; border: 1px solid var(--line); border-radius: 99px; padding: 4px 12px; color: var(--sub); }
 
-.section-head { display: flex; align-items: baseline; gap: 10px; margin: 36px 0 14px; }
+/* ★間隔は 8/16/24/32/48/64 のスケールに寄せる（2026-08-27）。
+   従来は 9/10/11/12/14/18/22/26/34/36/56px が混在し、近接関係を共通の物差しで
+   説明できなかった（＝運用規範。規格ではない）。
+   機能上の値（scroll-margin-top の 72px / 108px など）はスケール統一の対象外。 */
+.section-head { display: flex; align-items: baseline; gap: 8px; margin: 48px 0 16px; }
 .section-head h2 { font-size: 18px; margin: 0; }
-.section-head .hint { font-size: 13px; color: var(--sub); background: none; border: 0; padding: 0; }
+.section-head .hint { font-size: 14px; color: var(--sub); background: none; border: 0; padding: 0; }
 
-.tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
-.tool-card { display: flex; gap: 12px; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px; text-decoration: none; color: var(--ink); transition: border-color .15s, transform .15s; }
-.tool-card:hover { border-color: var(--accent); transform: translateY(-1px); }
-.tool-card .ico { flex: 0 0 40px; height: 40px; border-radius: 10px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; }
-.tool-card .ico svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.tool-card .name { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+/* ★カードの並列をやめ、上下罫線のリスト行にする（2026-08-27）。
+   恒久方針（gbrain design/ui-no-left-accent-border-cards）の標準方向
+   「カードを大量に並べる見た目ではなく、タイポグラフィと余白中心のエディトリアル」
+   「リンク導線はカードではなく、上下罫線のリスト行と矢印」に従う。
+   シェルが 1120px になったので2列に載り、**トップの全高は 8,261px → 6,574px（−20.4%）**
+   （1280px・実描画で計測）。行全体がリンクで当たり判定は行の高さぶん（48px以上）。 */
+/* ★minmax の最小値は `min(500px, 100%)` にする。素の `minmax(500px, 1fr)` だと
+   コンテナが 500px 未満のとき列が縮めず、**ページごと横に溢れる**
+   （2026-08-27、test_no_hscroll が 375px 検査で全ページ 16px の横スクロールを検出。
+     記事末尾の「関連ツール」にも .tool-grid があるので全ページに出た）。 */
+.tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(500px, 100%), 1fr)); gap: 0 40px; }
+.tool-card { display: flex; align-items: flex-start; gap: 14px; background: none; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 16px 8px; text-decoration: none; color: var(--ink); transition: background-color .15s; }
+.tool-card:hover { background: #fff; }
+.tool-card:hover .name, .tool-card:hover > b { color: var(--accent); text-decoration: underline; }
+/* 矢印は「行がリンクである」ことの形の手掛かり（色だけに頼らない）。 */
+.tool-card::after { content: "→"; margin-left: auto; align-self: center; padding-left: 12px; color: var(--sub); font-size: 15px; }
+.tool-card:hover::after { color: var(--accent); }
+.tool-card .ico { flex: 0 0 24px; height: 24px; border-radius: 0; background: none; margin-top: 2px; display: flex; align-items: center; justify-content: center; }
+.tool-card .ico svg { width: 22px; height: 22px; stroke: var(--sub); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tool-card .name { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
 /* カード説明は3行でクランプ(一覧の走査性)。全文はDOMに残る=検索は読める。詳細はツールページで(2026-07-23) */
 /* ★3行clampをやめる（2026-08-24）。カード文を短縮したあとも 65枚中19枚が
    デスクトップ1357pxで切れており、必要行数は最大9行だった。そのうえ
    test_screen_constants が「トップだけが古い額を名乗らないため」に守っている
    9,110円 / 6,745円 のような**年に紐づく事実が、clampで読者から隠れていた**。
    切るのではなく全部出す。ページ全高は +643px（実測 7,745→8,388px）。 */
-.tool-card .desc { font-size: 13px; color: var(--sub); line-height: 1.65; }
+.tool-card .desc { font-size: 14px; color: var(--sub); line-height: 1.6; }
 
 /* 対象者スイッチ(2026-07-23): 選ぶと節とチップが並び替わり選択を記憶。既定DOM順は不変=SEO非影響 */
-.persona-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 14px 0 2px; }
-.persona-bar .p-label { font-size: 13px; color: var(--sub); font-weight: 600; }
-.persona-bar button { font-size: 13px; font-weight: 700; color: var(--sub); background: #fff;
+.persona-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 16px 0 0; }
+.persona-bar .p-label { font-size: 14px; color: var(--sub); font-weight: 600; }
+.persona-bar button { font-size: 14px; font-weight: 700; color: var(--sub); background: #fff;
   border: 1.5px solid var(--line); border-radius: 99px; padding: 7px 14px; cursor: pointer; }
 .persona-bar button:hover { border-color: var(--accent); color: var(--accent); }
 .persona-bar button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
 
 /* トップのツールをカテゴリ節で分ける(35枚のフラット一覧は探せない。2026-07-23) */
-.tcat { margin-top: 26px; }
-.tcat > h3 { font-size: 16px; margin: 0 0 10px; padding: 2px 0 2px 11px; border-left: 4px solid var(--accent); }
+.tcat { margin-top: 48px; }
+.tcat > h3 { font-size: 18px; margin: 0 0 12px; padding: 0 0 8px; border-bottom: 1px solid var(--line); }
 
 .post-list { display: flex; flex-direction: column; }
-.post-list a { display: flex; gap: 12px; align-items: baseline; padding: 14px 4px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+.post-list a { display: flex; gap: 12px; align-items: baseline; padding: 16px 8px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
 .post-list a:hover .p-title { color: var(--accent); text-decoration: underline; }
 .post-list .p-date { flex: 0 0 84px; font-size: 12.5px; color: var(--sub); }
-.post-list .p-title { font-size: 15px; font-weight: 600; }
-.post-list .p-desc { font-size: 13px; color: var(--sub); margin-top: 3px;
+.post-list .p-title { font-size: 16px; font-weight: 600; }
+.post-list .p-desc { font-size: 14px; color: var(--sub); margin-top: 3px;
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
 
 /* ---- コラム一覧: 検索 + カテゴリ分け ----
@@ -442,7 +490,11 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .col-search { margin: 22px 0 4px; }
 .col-search input {
   width: 100%; padding: 18px 18px 18px 54px; font-size: 18px; color: var(--ink);
-  border: 2px solid var(--line); border-radius: 12px; background-color: #fff;
+  /* ★境界を --line(白上 1.28:1) から --line-strong(3.16:1) へ（2026-08-27）。
+     SC 1.4.11 は非テキストの識別に 3:1 を求める。この CSS 自身が
+     「--line-strong = フォーム部品の境界」と宣言しているのに、検索欄2箇所だけ
+     装飾用の --line を使っていた（＝規格以前に自分の規約に違反していた）。 */
+  border: 2px solid var(--line-strong); border-radius: 12px; background-color: #fff;
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%235b6b7b" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20.5 20.5l-4.2-4.2"/></svg>');
   background-repeat: no-repeat; background-position: 18px center; background-size: 22px 22px;
 }
@@ -459,7 +511,7 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 /* カテゴリはページ内リンク。ペルソナ切替の「ボタン」と同じピルに見えていたので、
    リンクらしい見た目に分ける(2026-07-29)。 */
 .cat-nav a {
-  display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px; font-size: 14px; font-weight: 600;
   color: var(--accent); text-decoration: underline; text-underline-offset: 3px;
   background: none; border: 0; padding: 3px 2px;
 }
@@ -468,17 +520,17 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .cat-nav a span { font-size: 12.5px; font-weight: 400; color: var(--sub); }
 .cat-nav a:hover span { color: var(--accent); }
 
-.cat { margin-top: 34px; }
+.cat { margin-top: 48px; }
 .cat h2 {
   display: flex; align-items: center; gap: 8px; font-size: 18px; margin: 0;
-  padding: 4px 0 4px 11px; border-left: 5px solid var(--accent);
+  padding: 0 0 8px; border-bottom: 1px solid var(--line);
 }
 .cat h2 .badge { margin-left: 0; flex: none; }
-.cat-desc { font-size: 13px; color: var(--sub); margin: 8px 0 2px; padding-left: 16px; }
+.cat-desc { font-size: 14px; color: var(--sub); margin: 8px 0 2px; padding-left: 16px; }
 
 /* ---- 銀行別手数料一覧テーブル ---- */
 .fee-table td:nth-child(2), .fee-table td:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.fee-table td:nth-child(4) { font-size: 12px; white-space: nowrap; }
+.fee-table td:nth-child(4) { font-size: 12.5px; white-space: nowrap; }
 .fee-table .flat { color: var(--sub); }
 .fee-table .step { color: var(--warn-ink); font-weight: 700; background: var(--warn-bg); }
 
@@ -486,7 +538,11 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .tabs { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
 .tabs button { flex: 1 1 140px; padding: 10px; border: 1px solid var(--line); background: #fff;
   border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--sub); }
+/* ★選択状態を色だけで示さない（2026-08-27）。aria 属性は元からあるので支援技術には
+   伝わっていたが、見た目の手掛かりが背景色・枠色・文字色だけだった。 */
 .tabs button[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.tabs button[aria-selected="true"]::before,
+.persona-bar button[aria-pressed="true"]::before { content: "✓ "; }
 .pane { display: none; }
 .pane[data-active] { display: block; }
 .opts { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; }
@@ -495,7 +551,7 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 /* Chromeウェブストアへの導線(拡張のLP) */
 .store-cta { display: inline-flex; align-items: center; gap: 10px; margin-top: 20px;
   background: var(--accent); color: #fff; text-decoration: none; font-weight: 700;
-  font-size: 16px; padding: 14px 24px; border-radius: 10px; }
+  font-size: 16px; padding: 14px 24px; border-radius: 8px; }
 .store-cta:hover { opacity: .93; }
 .store-cta svg { flex: none; }
 
@@ -506,23 +562,23 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 
 /* ---- トップの「経理で困ったら聞ける」質問欄(hero 内) ----
    LLM を呼ばず、質問を検証済みの記事/ツールに橋渡しするクライアントサイド検索。 */
-.qa-box { margin: 18px 0 4px; background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 18px 18px 16px; }
+.qa-box { margin: 16px 0 8px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 16px; }
 .qa-head { font-weight: 700; font-size: 16px; margin-bottom: 10px; }
 .qa-head .q-ico { color: var(--accent); margin-right: 6px; }
 .qa-form { display: flex; gap: 8px; }
 .qa-form input {
   flex: 1; min-width: 0; padding: 14px 16px; font-size: 16px; color: var(--ink);
-  border: 2px solid var(--line); border-radius: 10px; background: #fff;
+  border: 2px solid var(--line-strong); border-radius: 8px; background: #fff;
 }
 .qa-form input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .qa-submit { flex: 0 0 auto; font-size: 15px; font-weight: 700; color: #fff; background: var(--accent);
-  border: 0; border-radius: 10px; padding: 0 20px; cursor: pointer; }
+  border: 0; border-radius: 8px; padding: 0 20px; cursor: pointer; }
 .qa-submit:hover { opacity: .92; }
 .qa-note { font-size: 12.5px; color: var(--sub); margin: 10px 2px 0; line-height: 1.6; }
 .qa-results { margin-top: 14px; }
 .qa-status { font-size: 13px; color: var(--sub); margin: 4px 2px; }
 .qa-reslist { display: flex; flex-direction: column; gap: 10px; }
-.qa-card { border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; background: var(--bg); }
+.qa-card { border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; background: var(--bg); }
 .qa-tag { display: inline-block; font-size: 12.5px; font-weight: 700; color: var(--sub);
   background: #fff; border: 1px solid var(--line); border-radius: 99px; padding: 1px 9px; margin-bottom: 6px; }
 .qa-tag.is-tool { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
@@ -533,7 +589,7 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .qa-links a { font-size: 13px; font-weight: 700; color: var(--accent); text-decoration: none; }
 .qa-links a:hover { text-decoration: underline; }
 .qa-tool-link { padding: 3px 10px; background: var(--accent-soft); border-radius: 8px; }
-.qa-empty { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 10px;
+.qa-empty { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 8px;
   padding: 14px 16px; font-size: 14px; line-height: 1.7; }
 .qa-empty a { color: var(--accent); font-weight: 700; text-decoration: none; }
 .qa-empty a:hover { text-decoration: underline; }
@@ -610,10 +666,18 @@ main:focus { outline: none; }
 
 /* ---- .tool-card の略式マークアップ（<b>/<span> 直下）を正規形に寄せる ----
    HTML 449箇所を書き換えるのではなく、CSS で見た目を1系統に統一する。 */
-.tool-card > b { font-weight: 700; font-size: 15px; display: block; }
+/* ★略式は <b> と <span> が**同じ flex 行に並んでいた**（2026-08-26 実測: トップの
+   「年収別の手取り・住民税」が隣のセルに重なって描画されていた）。縦に積む。
+   ★flex-basis:100% だけでは足りない — 既定の nowrap では折り返さずに縮むので wrap とセット。
+   ★あわせて 3行 clamp を落とす。2026-08-24 に「切るのではなく全部出す」と決めて
+   .tool-card .desc からは外したのに、**この略式側にだけ残っていた**
+   （9,110円 / 6,745円 のような年に紐づく事実がここで隠れうる）。 */
+.tool-card:has(> b) { flex-wrap: wrap; }
+.tool-card:has(> b)::after { order: 1; align-self: flex-start; }
+.tool-card > b { flex: 1 0 100%; font-weight: 700; font-size: 16px; display: block; }
 .tool-card > span {
-  font-size: 13px; color: var(--sub); line-height: 1.65; display: -webkit-box;
-  -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden;
+  order: 2; flex: 1 0 100%;
+  font-size: 14px; color: var(--sub); line-height: 1.6; display: block; overflow: visible;
 }
 
 /* ---- 印刷（業務では計算結果を紙・PDFにして稟議や証憑に添える）----
@@ -650,16 +714,20 @@ button.btn-outline {
   color: var(--accent);
   background: #fff;
   border: 1.5px solid var(--accent);
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
 }
 button.btn-outline:hover { background: var(--accent-soft); }
 
+/* ★注記の左3px強調線を廃止し、四辺均一の1px枠へ（2026-08-27）。
+   恒久方針が「注意・警告は淡い全面色＋四辺均一の1px枠」を代替に指定している。
+   （article blockquote の左線は**残す**。あれは強調ではなく引用の範囲を示す構造線で、
+     方針が認める「情報構造上の意味を持つ線」の例外に当たる。禁止対象の列挙
+     — 結論・要約・注意・警告・選択状態・ナビ・KPIの強調 — に引用は入っていない。） */
 #shutten + .note {
   background: #fff;
   border: 1px solid var(--line);
-  border-left: 3px solid var(--line-strong);
-  border-radius: 0 8px 8px 0;
+  border-radius: 12px;
 }
 
 @media (min-width: 1200px) {
