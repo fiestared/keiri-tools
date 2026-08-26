@@ -51,14 +51,21 @@ header.site .tag { color: var(--sub); font-size: 12.5px; margin-left: 8px; }
    広げるのはツール一覧・カテゴリナビ・ペルソナ切替だけ（表は .scroll-wrap が別に見る）。
    根拠: 閲覧の 99.5% がデスクトップ（2026-08-25 GA4 全数・desktop 393 / mobile 2）。
    1280px 画面で使えていたのは幅の 52.5% だけだった。 */
-main { max-width: 1120px; margin: 0 auto; padding: 20px 16px 60px; }
-main > * { max-width: 672px; margin-left: auto; margin-right: auto; }
+/* ★内容幅を 1120px にする（max-width 1152 = 1120 + padding 16×2）。
+   header.site の中身も 1120px に寄せてあるので、**本文とヘッダーの左端が一致する**。
+   1120 のままだと main の内容は 1088px になり、ヘッダーと 16px ずれる。 */
+main { max-width: 1152px; margin: 0 auto; padding: 20px 16px 60px; }
+/* ★左端は全ページで1本に揃える（＝常に左寄せ。中央寄せにしない）。
+   2026-08-27 初版では既定を中央寄せにし、左寄せをトップとコラム一覧だけの特例にした。
+   その結果 **同じページに左端が2つできた** — /hojokin/ では h1・タブが 80px から、
+   絞り込みカードと結果カードが 304px から始まっていた（Masahiro の指摘「ずれてる」）。
+   右端は要素ごとに違ってよい（672 か 1120）。左端が1本なら整って見える。 */
+main > * { max-width: 672px; margin-left: 0; margin-right: auto; }
+/* シェル幅を使うのは「一覧・グリッドの器」だけ。読ませるテキストは 672px のまま。 */
 main > .section-head, main > .persona-bar, main > .cat-nav,
 main > .tcat, main > .cat, main > .col-search, main > .col-empty { max-width: 1120px; }
-/* ★ワイド要素を持つページ（トップ=.tcat / コラム一覧=.cat）だけ左端を1本に揃える。
-   本文だけのページ（記事・ツール）は中央のまま — ≥1200px の固定目次が
-   `left: calc(50% + 352px)` と**画面中央**を基準にしているので、そこを動かさない。 */
-main:has(.tcat) > *, main:has(.cat) > * { margin-left: 0; margin-right: auto; }
+/* hero をシェル幅にするのは一覧系だけ。記事・ツールの hero は 672px のまま
+   （.article-meta の下罫線が 1120px に伸びて本文と食い違うのを避ける）。 */
 main:has(.tcat) > .hero, main:has(.cat) > .hero { max-width: 1120px; }
 /* ★hero の見出し・リードには 672px を掛けない（2026-08-27 修正）。
    40字上限は**本文の行長**の規範であって、1〜2行の見出しとリード文には効かせない。
@@ -566,7 +573,11 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 
 /* ---- トップの「経理で困ったら聞ける」質問欄(hero 内) ----
    LLM を呼ばず、質問を検証済みの記事/ツールに橋渡しするクライアントサイド検索。 */
-.qa-box { margin: 16px 0 8px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 16px; }
+/* ★シェルを 1120px に広げたとき、この箱も一緒に伸びて input の内寸が全角58字ぶんに
+   なっていた（＝「長文を書け」という情報の嘘。想定入力はヒントの実例で11〜19字）。
+   本文列と同じ 672px に載せる＝内寸 全角31字で、最長の例の1.6倍の余裕。
+   規範: 入力欄の幅は期待される入力の長さに合わせる（NN/g・GOV.UK の幅クラス・DADS）。 */
+.qa-box { margin: 16px 0 8px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 16px; max-width: 672px; }
 .qa-head { font-weight: 700; font-size: 16px; margin-bottom: 10px; }
 .qa-head .q-ico { color: var(--accent); margin-right: 6px; }
 .qa-form { display: flex; gap: 8px; }
@@ -576,7 +587,9 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 }
 .qa-form input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
 .qa-submit { flex: 0 0 auto; font-size: 15px; font-weight: 700; color: #fff; background: var(--accent);
-  border: 0; border-radius: 8px; padding: 0 20px; cursor: pointer; }
+  border: 0; border-radius: 8px; padding: 0 20px; cursor: pointer;
+  /* 実測70px で DADS のボタン最小寸法（Small 80×36）を割っていた */
+  min-width: 80px; }
 .qa-submit:hover { opacity: .92; }
 .qa-note { font-size: 12.5px; color: var(--sub); margin: 10px 2px 0; line-height: 1.6; }
 .qa-results { margin-top: 14px; }
@@ -678,9 +691,11 @@ main:focus { outline: none; }
    （9,110円 / 6,745円 のような年に紐づく事実がここで隠れうる）。 */
 /* ★<b> は 100% を取らない（flex:1 1 auto）。100% にすると矢印が2行目、説明が3行目に落ちて
    「見出しと説明が離れた1行だけ違う行」になる（2026-08-27 に実際にそう出た）。
-   ★アイコンを持たないぶん左端が他の行と揃わないので、アイコン幅(24px)+gap(14px) を padding で補う。 */
-/* row-gap は 4px（既定の gap:14px が**行間にも効く**ので、見出しと説明が離れる）。 */
-.tool-card:has(> b) { flex-wrap: wrap; padding-left: 46px; row-gap: 4px; }
+   ★row-gap は 4px（既定の gap:14px が**行間にも効く**ので、見出しと説明が離れる）。
+   ★アイコン幅ぶんの左余白は入れない。この略式は**記事末尾の「関連ツール」670枚**で使われ、
+     そこはアイコン付きが1枚も混ざらない（全290記事で混在ゼロを実測）。
+     混ざっていたのはトップの1枚だけで、そちらは HTML を正規形に直した。 */
+.tool-card:has(> b) { flex-wrap: wrap; row-gap: 4px; }
 .tool-card:has(> b)::after { order: 1; align-self: center; }
 .tool-card > b { flex: 1 1 auto; font-weight: 700; font-size: 16px; }
 .tool-card > span {
@@ -742,7 +757,10 @@ button.btn-outline:hover { background: var(--accent-soft); }
   .toc {
     position: fixed;
     top: 84px;
-    left: calc(50% + 352px);
+    /* ★本文が左寄せになったので基準を引き直す（2026-08-27）。
+       シェル左端 = 50% − 576px、内容左端 = 50% − 560px、本文右端 = 50% + 112px。
+       そこから 48px 空けた位置に置く。 */
+    left: calc(50% + 160px);
     width: 236px;
     max-height: calc(100vh - 104px);
     overflow-y: auto;
