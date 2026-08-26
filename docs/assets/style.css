@@ -54,15 +54,19 @@ header.site .tag { color: var(--sub); font-size: 12.5px; margin-left: 8px; }
 main { max-width: 1120px; margin: 0 auto; padding: 20px 16px 60px; }
 main > * { max-width: 672px; margin-left: auto; margin-right: auto; }
 main > .section-head, main > .persona-bar, main > .cat-nav,
-main > .tcat, main > .col-search, main > .col-empty { max-width: 1120px; }
+main > .tcat, main > .cat, main > .col-search, main > .col-empty { max-width: 1120px; }
 /* ★ワイド要素を持つページ（トップ=.tcat / コラム一覧=.cat）だけ左端を1本に揃える。
    本文だけのページ（記事・ツール）は中央のまま — ≥1200px の固定目次が
    `left: calc(50% + 352px)` と**画面中央**を基準にしているので、そこを動かさない。 */
 main:has(.tcat) > *, main:has(.cat) > * { margin-left: 0; margin-right: auto; }
 main:has(.tcat) > .hero, main:has(.cat) > .hero { max-width: 1120px; }
-main:has(.tcat) > .hero > *, main:has(.cat) > .hero > * { max-width: 672px; }
-/* ★コラム一覧の記事リストは広げない。タイトルと説明は「読ませる」テキストなので、
-   1120px まで伸ばすと行長が全角60字を超える。広げて得なのはカテゴリのチップ列だけ。 */
+/* ★hero の見出し・リードには 672px を掛けない（2026-08-27 修正）。
+   40字上限は**本文の行長**の規範であって、1〜2行の見出しとリード文には効かせない。
+   掛けると hero だけ右端が 767px で終わり、下のツール一覧（1200px）と段が食い違う
+   ＝「冒頭の折り返しが下より狭い」という実際の指摘になった。 */
+/* ★コラム一覧の記事リストも 1120px に載せる。ただし1列のまま伸ばすと行長が全角70字に
+   なるので、**トップのツール一覧と同じ2列**にして1列あたりを 500px 前後に保つ
+   （＝行長は据え置きのまま、右端が検索欄・カテゴリと揃う）。 */
 h1 { font-size: 24px; line-height: 1.4; margin: 16px 0 8px; }
 .lead { color: var(--sub); font-size: 14px; margin-bottom: 20px; }
 .card {
@@ -474,7 +478,7 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .tcat { margin-top: 48px; }
 .tcat > h3 { font-size: 18px; margin: 0 0 12px; padding: 0 0 8px; border-bottom: 1px solid var(--line); }
 
-.post-list { display: flex; flex-direction: column; }
+.post-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(480px, 100%), 1fr)); gap: 0 40px; }
 .post-list a { display: flex; gap: 12px; align-items: baseline; padding: 16px 8px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
 .post-list a:hover .p-title { color: var(--accent); text-decoration: underline; }
 .post-list .p-date { flex: 0 0 84px; font-size: 12.5px; color: var(--sub); }
@@ -672,9 +676,13 @@ main:focus { outline: none; }
    ★あわせて 3行 clamp を落とす。2026-08-24 に「切るのではなく全部出す」と決めて
    .tool-card .desc からは外したのに、**この略式側にだけ残っていた**
    （9,110円 / 6,745円 のような年に紐づく事実がここで隠れうる）。 */
-.tool-card:has(> b) { flex-wrap: wrap; }
-.tool-card:has(> b)::after { order: 1; align-self: flex-start; }
-.tool-card > b { flex: 1 0 100%; font-weight: 700; font-size: 16px; display: block; }
+/* ★<b> は 100% を取らない（flex:1 1 auto）。100% にすると矢印が2行目、説明が3行目に落ちて
+   「見出しと説明が離れた1行だけ違う行」になる（2026-08-27 に実際にそう出た）。
+   ★アイコンを持たないぶん左端が他の行と揃わないので、アイコン幅(24px)+gap(14px) を padding で補う。 */
+/* row-gap は 4px（既定の gap:14px が**行間にも効く**ので、見出しと説明が離れる）。 */
+.tool-card:has(> b) { flex-wrap: wrap; padding-left: 46px; row-gap: 4px; }
+.tool-card:has(> b)::after { order: 1; align-self: center; }
+.tool-card > b { flex: 1 1 auto; font-weight: 700; font-size: 16px; }
 .tool-card > span {
   order: 2; flex: 1 0 100%;
   font-size: 14px; color: var(--sub); line-height: 1.6; display: block; overflow: visible;
