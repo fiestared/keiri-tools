@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-14",
-  "dateModified": "2026-08-24",
+  "dateModified": "2026-08-26",
       "name": "失業保険（基本手当）計算機",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -124,7 +124,7 @@
 
 <section class="hero">
   <h1>失業保険（基本手当）計算機</h1>
-  <p class="article-meta">公開日: 2026年7月14日（更新日: 2026年8月24日）</p>
+  <p class="article-meta">公開日: 2026年7月14日（更新日: 2026年8月26日）</p>
   <p>離職時の年齢・給料・勤続年数・退職理由を入れるだけで、<b>1日あたりの金額（基本手当日額）</b>・<b>もらえる日数</b>・<b>総額の目安</b>・<b>いつから支給が始まるか</b>を計算します。厚生労働省の最新の上限額・下限額に対応。</p>
 </section>
 
@@ -341,7 +341,11 @@ $("calc").addEventListener("click", async () => {
   const r = calcKihonteate(input, DATA);
 
   if (!r.supported) {
-    box.innerHTML = `<div class="callout"><b>この計算機の対象外です。</b>${r.message}</div>`;
+    // 65歳以上のときだけ行き先を出す。年齢が読めなかっただけの人に別制度の記事を勧めない
+    const go = r.outOfRange === "age_over"
+      ? `<br><a href="/column/kounenrei-kyushokusha-kyufukin/">高年齢求職者給付金（65歳以上の失業給付）のしくみと金額を読む</a>`
+      : "";
+    box.innerHTML = `<div class="callout"><b>この計算機の対象外です。</b>${r.message}${go}</div>`;
     return;
   }
   if (!r.eligible) {

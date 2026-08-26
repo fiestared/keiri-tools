@@ -237,11 +237,29 @@ export function eligibility(period, reason) {
 export function calcKihonteate(input, D) {
   const { age, period, reason, konnan = false, repeated = false, training = false } = input;
 
-  if (!(age >= 15) || age >= 65) {
+  if (age >= 65) {
     return {
       supported: false,
+      outOfRange: "age_over",
       message:
         "65歳以上で離職した方は、基本手当ではなく「高年齢求職者給付金」（一時金）の対象です（雇用保険法37条の4）。この計算機の対象外です。",
+    };
+  }
+  /**
+   * ★ 年齢が読めない／低すぎる場合に「65歳以上です」と言ってはいけない（2026-08-26）。
+   *   ページは `Number(input.value)` をそのまま渡すので、**入力欄を空にすると 0 が来る**。
+   *   旧実装は `!(age >= 15) || age >= 65` を1本の枝にまとめており、
+   *   空欄・NaN・15歳未満のすべてに **「65歳以上で離職した方は」** という
+   *   事実と異なる理由を返していた（＝答えは拒んでいるが、拒んだ理由のほうが嘘）。
+   *   金額を間違える欠陥ではないが、CLAUDE.md「収録範囲を超えた入力に黙って答えない」は
+   *   **正しい理由で申告すること**まで含む。理由が違えば利用者は直し方が分からない。
+   */
+  if (!(age >= 15)) {
+    return {
+      supported: false,
+      outOfRange: "age_under",
+      message:
+        "離職時の年齢を15歳以上65歳未満の数値で入力してください。この計算機の対象外です。",
     };
   }
 

@@ -113,7 +113,31 @@ n++;
 const r4 = calcKihonteate({ age: 65, monthly: 300000, period: "y20", reason: "teinen" }, D);
 eq(r4.supported, false, "★65歳以上は基本手当の対象外。黙って計算しない");
 assert.ok(r4.message.includes("高年齢求職者給付金"), "正しい制度名を案内する");
+eq(r4.outOfRange, "age_over", "★どちら向きに範囲外かをページが判別できる形で返す");
 n++;
+
+/**
+ * ★ 年齢が読めない／低すぎる入力に「65歳以上です」と言わない（2026-08-26）。
+ *   ページは `Number($("age").value)` を渡すので、**入力欄を空にすると 0 が来る**＝実際に踏める。
+ *   旧実装は `!(age >= 15) || age >= 65` の1本の枝で、空欄にも15歳未満にも
+ *   「65歳以上で離職した方は」と返していた（拒みはするが、拒んだ理由が嘘）。
+ *   ★規則7の型: 「範囲外を申告する」という主張は、**どちらの向きの範囲外か**まで見ないと守れない。
+ */
+for (const [age, label] of [[0, "空欄（Number(\"\")＝0）"], [10, "15歳未満"], [NaN, "数値にならない入力"]]) {
+  const r = calcKihonteate({ age, monthly: 300000, period: "y20", reason: "kaisha" }, D);
+  eq(r.supported, false, `${label} は対象外`);
+  eq(r.outOfRange, "age_under", `★${label} を「65歳以上」と誤って分類しない`);
+  assert.ok(!r.message.includes("65歳以上で離職"), `★${label} に「65歳以上で離職した方は」と言わない`);
+  assert.ok(r.message.includes("15歳以上65歳未満"), `${label} に入力し直す範囲を伝える`);
+  n += 4;
+}
+
+// 通るべきものは通る（規則1）。境界の64歳は今までどおり計算する
+const r4b = calcKihonteate({ age: 64, monthly: 300000, period: "y20", reason: "kaisha" }, D);
+eq(r4b.supported, true, "★64歳は対象内。範囲チェックを足して正しい商品を壊していない");
+eq(r4b.outOfRange, undefined, "対象内なら outOfRange は立たない");
+eq(r4b.days, 240, "60〜64歳・20年以上・会社都合＝240日");
+n += 3;
 
 // 上限に当たる人（45〜59歳・月80万円）
 const r5 = calcKihonteate({ age: 50, monthly: 800000, period: "y20", reason: "kaisha" }, D);
