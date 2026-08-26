@@ -11,6 +11,9 @@
   --danger-ink: #c0392b;         /* 緊急状態の文字色。白上 5.44:1（AA適合） */
   --line-strong: #84939f;        /* フォーム部品の境界。白上 3.16:1（SC 1.4.11） */
   --bg: #f7f9fb;
+  /* 版面の内容幅。既定は 1120px（一覧2列＝500px×2＋gap40 が載る幅）。
+     右カラムも一覧グリッドも持たないページだけ下で 672px に落とす。 */
+  --shell: 1120px;
 }
 * { box-sizing: border-box; }
 body {
@@ -30,7 +33,7 @@ header.site {
   border-bottom: 1px solid var(--line);
   /* ★白地と下境界線は全幅のまま、中身だけ main と同じ 1120px に収める（2026-08-27）。
      内側ラッパを足すと全427ページの HTML を触ることになるので padding で寄せる。 */
-  padding: 10px max(16px, calc((100% - 1120px) / 2));
+  padding: 10px max(16px, calc((100% - var(--shell)) / 2));
   position: sticky;
   top: 0;
   z-index: 50;
@@ -54,7 +57,7 @@ header.site .tag { color: var(--sub); font-size: 12.5px; margin-left: 8px; }
 /* ★内容幅を 1120px にする（max-width 1152 = 1120 + padding 16×2）。
    header.site の中身も 1120px に寄せてあるので、**本文とヘッダーの左端が一致する**。
    1120 のままだと main の内容は 1088px になり、ヘッダーと 16px ずれる。 */
-main { max-width: 1152px; margin: 0 auto; padding: 20px 16px 60px; }
+main { max-width: calc(var(--shell) + 32px); margin: 0 auto; padding: 20px 16px 60px; }
 /* ★左端は全ページで1本に揃える（＝常に左寄せ。中央寄せにしない）。
    2026-08-27 初版では既定を中央寄せにし、左寄せをトップとコラム一覧だけの特例にした。
    その結果 **同じページに左端が2つできた** — /hojokin/ では h1・タブが 80px から、
@@ -79,6 +82,19 @@ main > .section-head:has(+ .tcat),
 main > .section-head:has(+ .persona-bar),
 main > .section-head:has(+ .cat-nav),
 main > .section-head:has(+ .col-search) { max-width: 1120px; }
+/* ★右カラムも一覧グリッドも持たないページ（ツール・hojokin・about など63ページ）は、
+   **器ごと本文幅に落とす**（2026-08-27）。1120px の器に 672px しか入らず、
+   1280px 画面で 左80 : 本文672 : 右528 と左に寄って見えていた。
+   器を狭めると main も header も footer も同じ計算で中央に寄るので、
+   **ヘッダーとコンテンツの左端が一致したまま**、右の間延びだけが消える。
+   ★将来ここに広告レール（.side-rail）を置くときは、**この条件に既に入れてある**ので
+     その要素を持つページは自動で 1120px の器に戻る。CSS を書き換えなくてよい。 */
+@media (min-width: 1200px) {
+  body:not(:has(main nav.toc)):not(:has(main .tcat)):not(:has(main .cat)):not(:has(main .tool-grid)):not(:has(main .post-list)):not(:has(main .side-rail)) {
+    --shell: 672px;
+  }
+}
+
 /* hero をシェル幅にするのは一覧系だけ。記事・ツールの hero は 672px のまま
    （.article-meta の下罫線が 1120px に伸びて本文と食い違うのを避ける）。 */
 main:has(.tcat) > .hero, main:has(.cat) > .hero { max-width: 1120px; }
@@ -254,7 +270,7 @@ section.faq h3 { font-size: 15px; margin-bottom: 4px; }
 /* FAQの答えは本文と同格のコンテンツ(検索にも出る)。灰色で二級扱いしない(2026-07-23) */
 section.faq p { font-size: 15px; color: var(--ink); margin-top: 0; }
 footer.site {
-  max-width: 1120px;
+  max-width: var(--shell);
   margin: 0 auto;
   padding: 20px 16px 40px;
   color: var(--sub);
