@@ -392,6 +392,7 @@ const ORDER = [
   "shokyaku-shisanzei", // 償却資産税 6,600/月 ＋ 償却資産税 計算 1,900・償却資産税 免税点 1,000・償却資産申告 880・固定資産税 償却資産 880・償却資産税 いくらから 90 ＝クラスタ 11,350
   "kifukin-kojo", // 寄付金控除 14,800/月 ＋ 寄付金 5,400・寄付金税額控除額 2,400・寄付金受領証明書 2,400・寄付金控除 上限 1,600・寄付金 勘定科目 720・寄付金 消費税 720・寄付金控除とは 480 ＝クラスタ 28,520（ふるさと納税向けの 寄付金控除 ふるさと納税 1,900 は /furusato/ が受けるので除外）
   "tanaoroshi-hyoka-hoho", // 移動平均法 4,400/月 ＋ 棚卸資産 3,600・総平均法 1,600・低価法 1,300・棚卸資産 評価方法 880・最終仕入原価法 880・棚卸 仕訳 480・棚卸資産 評価損 390・棚卸資産 とは 260 ＝クラスタ 13,790
+  "tanaoroshi-kaitenritsu", // 棚卸資産回転期間 2,400/月 ＋ 棚卸資産回転率 1,900 ＝クラスタ 4,300（keyword_demand.py --niche 棚卸 2026-08-27 第20便に実測。どちらも★未開拓）。★被覆調査: 全397ページで「回転率」1件・「回転期間」1件のみで、どちらも別主題への付随言及（gyomu-kaizen-joseikin の「顧客回転率」＝同音異義／urikake-mishunyukin-mishushueki の「売上債権回転期間のような指標を見るときに分母が濁ります」の1行）＝主題としても節としても空白。★同じ便で先に着手しかけて却下した候補: 社会保険 20時間超えたり超えなかったり 2,900（★未開拓と出たが、shakai-hoken-kanyu-joken が「実際の労働時間が連続する2月において週20時間以上」「3月目の初日」と機構Q&Aの核をそのまま節保有していた＝ARTICLE_SPEC 手順0の「h1/titleのgrepだけで空白と判定しない」に正面から該当。企業規模要件の縮小スケジュール 1,016円/36人/21人/11人/保険料調整制度 も nenshu-no-kabe と shakai-hoken-kanyu-joken の両方が既に保有）／社会保険加入条件 90,500・社会保険加入要件 12,100・社会保険 入る条件 3,600・社会保険 加入義務 4,400（すべて「社会保険 加入条件」の分かち書き違いで shakai-hoken-kanyu-joken が主題保有＝申し送り1835 の「道具が同じ主題を2つの語として二重に数える」の再発）／棚卸しとは 22,200・棚卸とは 22,200・棚卸資産とは 6,600（定義語。tanaoroshi-hyoka-hoho の守備範囲と重なる）／棚卸し 英語 2,900・棚卸し 羽生 1,000（非経理の意図）。★核は「分子と分母の物差しをそろえる」＝棚卸資産は取得価額で評価される（法人税法29条1項を blockquote で逐語引用）のに対し売上高は売価なので、売上高ベースの回転率は粗利率の変化を拾う。設例で、在庫も販売数量も動かさず粗利率を30%→40%にしただけで売上高ベースが 8.57回→10.0回（+17%）に「改善」する一方、原価ベースは 6.0回で不動であることを四則演算で検算できる形で示した。★踏み込み: ①分母を期末残高にするか期首期末平均にするかで同じ期でも 5.25回 vs 6.0回（0.75回差）＝他社比較は相手の式を確かめないと成立しない ②回転率と回転期間は逆数（365÷6.0＝60.8日、棚卸資産÷1日あたり売上原価でも同値）③月商ベースと年商ベースの混在は単位を落とすと30倍ずれる ④★回転が速すぎるのも欠品のサイン＝回転期間が仕入リードタイムを下回ると構造的に欠品する（片側だけの指標として使わない）⑤★全社合計の回転期間は滞留在庫と回転しすぎる在庫を足して平均するので両方の問題を同時に隠す＝商品別に分解すると分布が二山になる。★役割分担: 評価方法6種は tanaoroshi-hyoka-hoho に、売上債権側は urikake-mishunyukin-mishushueki に譲り、本記事は「在庫の回り方をどう測るか」だけを担当。CTA は支払サイト（回転期間と支払サイトで運転資金が決まるため）
   "furikomi-tesuryo-kanjo-kamoku", // 振込手数料 勘定科目 1,523/月
   "nenmatsu-chosei-itsumade",
   "denchoho-wakariyasuku",
@@ -640,7 +641,7 @@ const CATEGORIES = [
       "kashidaore-hikiatekin", "kashidaore-sonshitsu", "minashi-haito", "uketori-haito-ekikin-fusannyu", "dozoku-kaisha", "stock-option-zeikin", "shueki-ninshiki-kijun", "maebarai-hiyo",
       "kensetsugyo-kyoka", "keiei-jiko-shinsa", "group-hojin-zeisei", "kaisha-seisan",
       "kessan-seiri-shiwake",
-      "miharai-hiyo-miharaikin", "urikake-mishunyukin-mishushueki", "tanaoroshi-hyoka-hoho",
+      "miharai-hiyo-miharaikin", "urikake-mishunyukin-mishushueki", "tanaoroshi-hyoka-hoho", "tanaoroshi-kaitenritsu",
       "kanjo-kamoku-ichiran",
       "sozei-koka",
       "zatsushunyu",
