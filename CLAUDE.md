@@ -24,6 +24,14 @@ AI月30万円プロジェクト・柱Aのプロダクト。経理実務の「ち
   `node tools/e2e/e2e.mjs` (1シーンだけなら `E2E_ONLY=payday_slow node tools/e2e/e2e.mjs`)。
   実行すると `tools/e2e/.chrome-<scene>/` が出来る。**.gitignore済み — 絶対にコミットしない**(4千ファイル・69MB)
 
+## 🧠 決めたこと・実行したことは gbrain に書く
+
+**規範の正本は `~/Scripts/CLAUDE.md`（全プロジェクト共通）。** 要点だけ再掲する:
+方針を決めた／**禁止を解除した**／外向きの操作を打った／**判定日を約束した**ときは、
+**その場で `gbrain put`**（「後で書く」は書かない）。このファイルは実行時に毎回要る規則だけを置く。
+実例: gbrain `learnings/growth-design-2026-08-27`（Bingへの投稿の禁止を条件つきで解除し、
+09-03 に決着させる約束と、失敗したときの書き戻し方まで書いてある）。
+
 ## 記事を書くときの入口
 **型の正本は `tools/ARTICLE_SPEC.md`。書く前に必ず読む。**
 - `python3 tools/keyword_demand.py <語>` — **書く前に需要を測る。月1,000検索未満は書かない**
