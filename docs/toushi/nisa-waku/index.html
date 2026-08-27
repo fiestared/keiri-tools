@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NISA残り枠計算機｜売却した簿価が翌年いくら復活するか</title>
+<meta name="description" content="新NISAの今年使える残り枠と、売却した商品を買った値段（簿価）が翌年いくら再利用できるかを計算します。年間360万円、生涯1,800万円、成長投資枠1,200万円を別々に判定。時価や売却額では数えません。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/toushi/nisa-waku/">
+<!-- ogp:auto -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="NISA残り枠計算機｜売却した簿価が翌年いくら復活するか">
+<meta property="og:description" content="新NISAの今年使える残り枠と、売却した商品を買った値段（簿価）が翌年いくら再利用できるかを計算します。年間360万円、生涯1,800万円、成長投資枠1,200万円を別々に判定。時価や売却額では数えません。">
+<meta property="og:url" content="https://keiri-tools.com/toushi/nisa-waku/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+  "datePublished": "2026-08-27",
+  "dateModified": "2026-08-27",
+      "name": "NISA残り枠計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "資産形成",
+          "item": "https://keiri-tools.com/toushi/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "NISA残り枠計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 売却益を含む売却代金が翌年の枠になりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. いいえ。再利用できるのは売却した商品の取得価額、つまり買った値段です。値上がり分は枠に含めません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 今年売却したら、今年中に同じ金額を買い直せますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 売却で復活するのは翌年以後の生涯枠です。今年の年間投資枠は復活しません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 旧NISAで保有している分も1,800万円に含みますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 含みません。2023年までの旧NISAで保有する商品は、新NISAの非課税保有限度額1,800万円の外枠です。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578" crossorigin="anonymous"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-E742DSDHPD');</script>
+<script src="../../assets/track.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/">コラム</a>
+    <a href="../../toushi/" aria-current="page">資産形成</a>
+  </nav>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">資産形成</a> › NISA残り枠計算機</nav>
+<section class="hero">
+  <h1>NISA残り枠計算機</h1>
+  <p class="article-meta">公開日: 2026年8月27日</p>
+  <p>今年あといくら買えるかと、今年売った商品の<b>取得価額（買った値段）</b>が翌年いくら再利用できるかを分けて計算します。売却した年の年間枠は戻りません。</p>
+</section>
+
+<div class="card">
+  <h2>今年の利用額</h2>
+  <label for="used-tsumitate">つみたて投資枠で今年買った金額（円）</label>
+  <input id="used-tsumitate" inputmode="numeric" value="600000">
+  <label for="used-seicho">成長投資枠で今年買った金額（円）</label>
+  <input id="used-seicho" inputmode="numeric" value="1000000">
+
+  <h2>今年の初めに保有していた簿価</h2>
+  <p class="hint">評価額や売却額ではなく、買った値段の合計を入れます</p>
+  <label for="held-tsumitate">つみたて投資枠の簿価（円）</label>
+  <input id="held-tsumitate" inputmode="numeric" value="3000000">
+  <label for="held-seicho">成長投資枠の簿価（円）</label>
+  <input id="held-seicho" inputmode="numeric" value="4000000">
+
+  <h2>今年売った商品の簿価（任意）</h2>
+  <p class="hint">売却代金ではなく、その商品を買ったときの金額です</p>
+  <label for="sold-tsumitate">つみたて投資枠で売った商品の簿価（円）</label>
+  <input id="sold-tsumitate" inputmode="numeric" value="200000">
+  <label for="sold-seicho">成長投資枠で売った商品の簿価（円）</label>
+  <input id="sold-seicho" inputmode="numeric" value="800000">
+
+  <button class="primary" id="calc">残り枠を計算する</button>
+  <div class="result" id="result" role="status" aria-live="polite"></div>
+</div>
+
+<article>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<h2 id="how">計算している4つの上限</h2>
+<div class="scroll-wrap"><table><thead><tr><th scope="col">枠</th><th scope="col">上限</th><th scope="col">数え方</th></tr></thead><tbody>
+<tr><td>つみたて投資枠</td><td class="num">年1,200,000円</td><td>今年の取得価額</td></tr>
+<tr><td>成長投資枠</td><td class="num">年2,400,000円</td><td>今年の取得価額</td></tr>
+<tr><td>生涯の非課税保有限度額</td><td class="num">18,000,000円</td><td>保有商品の取得価額</td></tr>
+<tr><td>うち成長投資枠</td><td class="num">12,000,000円</td><td>成長投資枠で保有する取得価額</td></tr>
+</tbody></table></div>
+
+<figure class="figure"><svg viewBox="0 0 640 190" role="img" aria-label="NISAで売却した商品の簿価は売却した年ではなく翌年に再利用できる図"><rect x="20" y="28" width="170" height="54" rx="6" fill="var(--accent)" opacity=".14" stroke="var(--accent)"/><text x="105" y="52" text-anchor="middle" font-size="13" fill="currentColor">今年100万円で購入</text><text x="105" y="70" text-anchor="middle" font-size="12" fill="currentColor">取得価額100万円</text><path d="M195 55h105" stroke="var(--accent)" stroke-width="2"/><path d="M290 47l12 8-12 8" fill="none" stroke="var(--accent)" stroke-width="2"/><rect x="305" y="28" width="140" height="54" rx="6" fill="var(--accent)" opacity=".14" stroke="var(--accent)"/><text x="375" y="52" text-anchor="middle" font-size="13" fill="currentColor">今年売却</text><text x="375" y="70" text-anchor="middle" font-size="12" fill="currentColor">同年の枠は戻らない</text><path d="M450 55h85" stroke="var(--accent)" stroke-width="2"/><path d="M525 47l12 8-12 8" fill="none" stroke="var(--accent)" stroke-width="2"/><rect x="540" y="28" width="80" height="54" rx="6" fill="var(--accent)" opacity=".28" stroke="var(--accent)"/><text x="580" y="52" text-anchor="middle" font-size="13" fill="currentColor">翌年</text><text x="580" y="70" text-anchor="middle" font-size="12" fill="currentColor">100万円復活</text><text x="20" y="125" font-size="13" fill="currentColor">時価150万円で売れても、戻るのは買った値段の100万円です。</text><text x="20" y="151" font-size="13" fill="currentColor">年間投資枠は別なので、翌年も年120万円・240万円の上限内で使います。</text></svg><figcaption>売却で再利用できるのは取得価額の分。再利用は売却した年ではなく翌年から。</figcaption></figure>
+
+<div class="callout"><p><b>今年の残り枠と、翌年に戻る枠は別です</b></p><p>今年すでに年間枠を使い切っていれば、商品を売っても今年の残りは0円です。売却した商品の簿価は翌年以後の生涯枠として再利用できます。</p></div>
+
+<h2 id="faq">よくある質問</h2>
+<h3>Q. 売却益を含む売却代金が翌年の枠になりますか？</h3><p>A. いいえ。再利用できるのは売却した商品の取得価額、つまり買った値段です。値上がり分は枠に含めません。</p>
+<h3>Q. 今年売却したら、今年中に同じ金額を買い直せますか？</h3><p>A. 売却で復活するのは翌年以後の生涯枠です。今年の年間投資枠は復活しません。</p>
+<h3>Q. 旧NISAで保有している分も1,800万円に含みますか？</h3><p>A. 含みません。2023年までの旧NISAで保有する商品は、新NISAの非課税保有限度額1,800万円の外枠です。</p>
+
+<section class="related"><h2>関連する計算と解説</h2><div class="tool-grid"><a class="tool-card" href="../tsumitate/"><div><div class="name">積立シミュレーター</div><div class="desc">毎月の積立額から将来額とNISA・課税口座の差を計算します。</div></div></a><a class="tool-card" href="../../column/nisa-kakutei-shinkoku/"><div><div class="name">NISAと確定申告</div><div class="desc">配当の受取方法や損失など、非課税から外れる場面を確認します。</div></div></a></div></section>
+
+<h2 id="source">出典</h2><ul><li><a href="https://laws.e-gov.go.jp/law/332AC0000000026">e-Gov法令検索「租税特別措置法」37条の14</a></li><li><a href="https://www.fsa.go.jp/policy/nisa2/know/index.html">金融庁「NISAを知る」</a></li></ul>
+<p class="note">この計算機は入力した取得価額に基づく一般的な計算例です。個別の商品や売買時期を推奨するものではありません。金融機関の表示と異なる場合は、取引先の金融機関へご確認ください。</p>
+</article>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E6%96%B0NISA%E3%81%AE%E4%BB%8A%E5%B9%B4%E4%BD%BF%E3%81%88%E3%82%8B%E6%AE%8B%E3%82%8A%E6%9E%A0%E3%81%A8%E3%80%81%E5%A3%B2%E5%8D%B4%E3%81%97%E3%81%9F%E5%95%86%E5%93%81%E3%82%92%E8%B2%B7%E3%81%A3%E3%81%9F%E5%80%A4%E6%AE%B5%EF%BC%88%E7%B0%BF%E4%BE%A1%EF%BC%89%E3%81%8C%E7%BF%8C%E5%B9%B4%E3%81%84%E3%81%8F%E3%82%89%E5%86%8D%E5%88%A9%E7%94%A8%E3%81%A7%E3%81%8D%E3%82%8B%E3%81%8B%E3%82%92%E8%A8%88%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E5%B9%B4%E9%96%93360%E4%B8%87%E5%86%86%E3%80%81%E7%94%9F%E6%B6%AF1%2C800%E4%B8%87%E5%86%86%E3%80%81%E6%88%90%E9%95%B7%E6%8A%95%E8%B3%87%E6%9E%A01%2C200%E4%B8%87%E5%86%86%E3%82%92%E5%88%A5%E3%80%85%E3%81%AB%E5%88%A4%E5%AE%9A%E3%80%82%E6%99%82%E4%BE%A1%E3%82%84%E5%A3%B2%E5%8D%B4%E9%A1%8D%E3%81%A7%E3%81%AF%E6%95%B0%E3%81%88%E3%81%BE%E3%81%9B%E3%82%93%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Ftoushi%2Fnisa-waku%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site">計算結果は入力した前提での試算です。投資には元本割れの可能性があり、将来の成果を保証するものではありません。当サイトは金融商品取引業者ではなく、特定の商品の取得を勧めるものではありません。データはブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ<div style="margin-top:8px;font-size:12px"><a href="../../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../../contact/" style="color:var(--sub)">お問い合わせ</a></div>  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
+  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
+</footer>
+<script type="module">
+import { nisaAllowance } from '../../assets/tsumitate_core.js';
+const yen = (id) => Number(String(document.getElementById(id).value).replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/[^0-9]/g,'')) || 0;
+const fmt = (n) => `${n.toLocaleString('ja-JP')}円`;
+const dataReady = fetch('../../assets/tsumitate_r08.json').then(r=>{if(!r.ok)throw new Error();return r.json()});
+document.getElementById('calc').addEventListener('click', async () => {
+  const out = document.getElementById('result');
+  out.style.display = 'block';
+  try {
+    const D = await dataReady;
+    const r = nisaAllowance({usedTsumitateYear:yen('used-tsumitate'),usedSeichoYear:yen('used-seicho'),heldTsumitateBook:yen('held-tsumitate'),heldSeichoBook:yen('held-seicho'),soldTsumitateBook:yen('sold-tsumitate'),soldSeichoBook:yen('sold-seicho')},D);
+    if (r.exceedsAnnual || r.exceedsLifetime) {
+      out.innerHTML='<p><b>入力額が制度上限を超えています。</b></p><p>今年の利用額と、今年初めの簿価を金融機関の画面で確認してください。</p>';
+      return;
+    }
+    out.innerHTML=`<p><b>今年使える残り枠: ${fmt(r.thisYearTotalRemaining)}</b></p><table><tr><th>つみたて投資枠</th><td class="num">${fmt(r.thisYearTsumitateRemaining)}</td></tr><tr><th>成長投資枠</th><td class="num">${fmt(r.thisYearSeichoRemaining)}</td></tr><tr><th>生涯枠の残り</th><td class="num">${fmt(r.lifetimeRemaining)}</td></tr><tr><th>翌年に再利用できる売却簿価</th><td class="num">${fmt(r.nextYearReusableBook)}</td></tr></table><p class="hint">売却分は今年の残り枠には加えていません。</p>`;
+  } catch {
+    out.innerHTML='<p><b>計算データを読み込めませんでした。</b></p><p>通信環境を確認して再読み込みしてください。</p>';
+  }
+});
+</script>
+</body>
+</html>

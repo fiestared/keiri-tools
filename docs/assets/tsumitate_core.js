@@ -101,3 +101,53 @@ export function nisaRoom({ monthlyYen, years }, D) {
     yearsToFill,
   };
 }
+
+/**
+ * 新NISAの今年の残り枠と、売却により翌年に再利用できる簿価を計算する。
+ * ★枠は時価ではなく取得対価（簿価）で数える。
+ * ★今年売った分は今年の枠へ戻さない。再利用できるのは翌年以後。
+ */
+export function nisaAllowance(input, D) {
+  const n = D.nisa;
+  const yen = (v) => Math.max(0, Math.floor(Number(v) || 0));
+  const usedTsumitateYear = yen(input.usedTsumitateYear);
+  const usedSeichoYear = yen(input.usedSeichoYear);
+  const heldTsumitateBook = yen(input.heldTsumitateBook);
+  const heldSeichoBook = yen(input.heldSeichoBook);
+  const soldTsumitateBook = yen(input.soldTsumitateBook);
+  const soldSeichoBook = yen(input.soldSeichoBook);
+
+  // 年初保有分に今年の購入分を足す。年間枠だけ引いて生涯枠へ足し忘れると、
+  // 今年買った額だけ生涯残りを過大に出す。
+  const currentTsumitateBook = heldTsumitateBook + usedTsumitateYear;
+  const currentSeichoBook = heldSeichoBook + usedSeichoYear;
+  const heldTotalBook = currentTsumitateBook + currentSeichoBook;
+  const lifetimeRemaining = Math.max(0, n.shogai_gendo_yen - heldTotalBook);
+  const seichoLifetimeRemaining = Math.max(0, n.seicho_shogai_gendo_yen - currentSeichoBook);
+  const annualTsumitateRemaining = Math.max(0, n.tsumitate_nenkan_yen - usedTsumitateYear);
+  const annualSeichoRemaining = Math.max(0, n.seicho_nenkan_yen - usedSeichoYear);
+
+  const thisYearTsumitateRemaining = Math.min(annualTsumitateRemaining, lifetimeRemaining);
+  const thisYearSeichoRemaining = Math.min(
+    annualSeichoRemaining,
+    lifetimeRemaining,
+    seichoLifetimeRemaining,
+  );
+
+  const reusableTsumitate = Math.min(soldTsumitateBook, currentTsumitateBook);
+  const reusableSeicho = Math.min(soldSeichoBook, currentSeichoBook);
+  return {
+    thisYearTsumitateRemaining,
+    thisYearSeichoRemaining,
+    thisYearTotalRemaining: Math.min(
+      lifetimeRemaining,
+      thisYearTsumitateRemaining + thisYearSeichoRemaining,
+    ),
+    lifetimeRemaining,
+    seichoLifetimeRemaining,
+    nextYearReusableBook: reusableTsumitate + reusableSeicho,
+    nextYearReusableSeichoBook: reusableSeicho,
+    exceedsAnnual: usedTsumitateYear > n.tsumitate_nenkan_yen || usedSeichoYear > n.seicho_nenkan_yen,
+    exceedsLifetime: heldTotalBook > n.shogai_gendo_yen || currentSeichoBook > n.seicho_shogai_gendo_yen,
+  };
+}
