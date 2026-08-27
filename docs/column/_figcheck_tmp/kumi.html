@@ -1,0 +1,44 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="../../assets/style.css"></head><body><main><article><figure class="figure">
+    <svg viewBox="0 0 640 250" role="img" aria-label="振込の流れと、取り消せる領域・組戻しになる領域を示した時系列図">
+      <line x1="40" y1="70" x2="600" y2="70" stroke="currentColor" stroke-width="1.5"/>
+      <circle cx="80" cy="70" r="5" fill="var(--accent)"/>
+      <circle cx="300" cy="70" r="5" fill="var(--accent)"/>
+      <circle cx="540" cy="70" r="5" fill="var(--accent)"/>
+      <text x="80" y="55" font-size="13" fill="currentColor" text-anchor="middle">振込を依頼</text>
+      <text x="300" y="55" font-size="13" fill="currentColor" text-anchor="middle">銀行が発信</text>
+      <text x="540" y="55" font-size="13" fill="currentColor" text-anchor="middle">受取人の口座に入金</text>
+
+      <rect x="60" y="95" width="300" height="42" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="210" y="112" font-size="13" fill="currentColor" text-anchor="middle">依頼人と銀行の話</text>
+      <text x="210" y="129" font-size="12" fill="var(--sub)" text-anchor="middle">処理を止められる余地がある</text>
+
+      <rect x="380" y="95" width="220" height="42" fill="none" stroke="var(--warn-line)" stroke-width="1.5"/>
+      <text x="490" y="112" font-size="13" fill="currentColor" text-anchor="middle">受取人と銀行の話</text>
+      <text x="490" y="129" font-size="12" fill="var(--sub)" text-anchor="middle">承諾がなければ動かせない</text>
+
+      <line x1="370" y1="88" x2="370" y2="200" stroke="var(--warn-line)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text x="370" y="218" font-size="12" fill="var(--sub)" text-anchor="middle">この線がどこに引かれるかは各行の振込規定による</text>
+
+      <text x="40" y="170" font-size="13" fill="currentColor">組戻し＝右側の領域で、受取人に返してもらう手続き</text>
+      <text x="40" y="190" font-size="12" fill="var(--sub)">左側で止まれば「取り消し」に近い扱いになるが、止まる保証はない</text>
+    </svg>
+    <figcaption>振込の途中で、当事者の組み合わせが入れ替わる。組戻しは入れ替わったあとの手続きなので、受取人の承諾なしには完結しない。線が引かれる時点は各行の振込規定によるため、この図では位置を特定していない。</figcaption>
+  </figure><figure class="figure">
+    <svg viewBox="0 0 640 200" role="img" aria-label="振込を間違えたときの手数料の内訳を、金額に比例した長さの帯で示した図">
+      <text x="20" y="30" font-size="13" fill="currentColor">1回で済んだ場合</text>
+      <rect x="60" y="42" width="54" height="26" fill="var(--accent)"/>
+      <text x="126" y="60" font-size="13" fill="currentColor">154円</text>
+
+      <text x="20" y="105" font-size="13" fill="currentColor">間違えて組戻し、振り込み直した場合</text>
+      <rect x="60" y="117" width="54" height="26" fill="var(--accent)"/>
+      <rect x="114" y="117" width="308" height="26" fill="var(--warn-line)"/>
+      <rect x="422" y="117" width="54" height="26" fill="var(--accent)"/>
+      <text x="488" y="135" font-size="13" fill="currentColor">合計 1,188円</text>
+
+      <text x="87" y="163" font-size="11" fill="var(--sub)" text-anchor="middle">154</text>
+      <text x="268" y="163" font-size="11" fill="var(--sub)" text-anchor="middle">組戻 880</text>
+      <text x="449" y="163" font-size="11" fill="var(--sub)" text-anchor="middle">154</text>
+      <text x="20" y="188" font-size="12" fill="var(--sub)">帯の長さは金額に比例（1円＝0.35px）。組戻手数料880円が費用の大半を占める。</text>
+    </svg>
+    <figcaption>三菱UFJ銀行・個人のインターネットバンキングで他行あて3万円未満を振り込んだ場合の実額。組戻手数料が全体の約74%を占める。</figcaption>
+  </figure></article></main></body></html>

@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// build.mjs — GA4 のセッション数（今日を含む過去14日）をダッシュボードHTMLに焼き込む。
+// build.mjs — GA4 のセッション数（今日を含む過去21日）をダッシュボードHTMLに焼き込む。
 //
 //   node build.mjs                 # data.json を更新して index.html を生成
 //   node build.mjs --artifact      # 追加で artifact.html（body断片・Artifact公開用）も出す
@@ -33,8 +33,11 @@ const SITES = [
     url: "https://keiri-tools.com" },
 ];
 
-const WINDOW_DAYS = 14;   // 画面に出す日数（今日を含む）
-const FETCH_DAYS = 21;    // 前週同曜日比を14日分すべて出すため1週間ぶん多く取る
+const WINDOW_DAYS = 21;   // 画面に出す日数（今日を含む）★2026-08-25に14→21
+// ★必ず WINDOW_DAYS + 7 にすること。画面の各日には「前週同曜日」を出しているので、
+//   一番古い日のさらに7日前まで取れていないと、先頭7日ぶんの比が丸ごと「—」になる。
+//   （WINDOW_DAYS だけ増やして FETCH_DAYS を据え置くと、この壊れ方をする）
+const FETCH_DAYS = WINDOW_DAYS + 7;
 // launchd の StartInterval と揃える。画面の文言と、開いたタブの読み直し間隔にも使う。
 // 1回のビルドで消費するGA4クォータは約1トークン（上限は日20万）なので毎分でも余る。
 const INTERVAL_SEC = 60;
@@ -242,9 +245,11 @@ function model(data) {
       const last7pv = sum(d.slice(n - 8, n - 1).map(pv));
       const prev7pv = sum(d.slice(n - 15, n - 8).map(pv));
       const yesterday = d[n - 2], yPrevWeek = d[n - 9];
-      // 時間帯別（今日 vs 前日）。古い data.json（hours を持たない）でも落ちないよう null で通す。
+      // 時間帯別（今日 vs 前日 vs 先週同曜日）。古い data.json（hours を持たない）でも落ちないよう null で通す。
       const hToday = s.hours?.[d[n - 1].date] ?? null;
       const hYest = s.hours?.[yesterday.date] ?? null;
+      const prevWeekDay = d[n - 8];
+      const hPrevWeek = s.hours?.[prevWeekDay.date] ?? null;
       // 「同じ時間帯まで」で切った累計。cmpHour は完全に経過した最後の時間帯（GA4の遅れ込み）
       const cumTo = (arr) => (arr && s.cmpHour >= 0
         ? arr.slice(0, s.cmpHour + 1).reduce((a, b) => a + b, 0) : null);
@@ -262,9 +267,9 @@ function model(data) {
         yesterdayPv: pv(yesterday), todayPv: pv(d[n - 1]),
         today: d[n - 1].sessions, todayWd: WD[weekdayIdx(d[n - 1].date)],
         max: Math.max(1, ...shown.map((x) => x.sessions)),
-        hToday, hYest,
-        hourMax: Math.max(1, ...(hToday ?? []), ...(hYest ?? [])),
-        hCumToday: cumTo(hToday), hCumYest: cumTo(hYest),
+        hToday, hYest, hPrevWeek, prevWeekWd: WD[weekdayIdx(prevWeekDay.date)],
+        hourMax: Math.max(1, ...(hToday ?? []), ...(hYest ?? []), ...(hPrevWeek ?? [])),
+        hCumToday: cumTo(hToday), hCumYest: cumTo(hYest), hCumPrevWeek: cumTo(hPrevWeek),
       };
     }),
   };
@@ -342,10 +347,10 @@ function chart(site) {
 }
 
 /**
- * 時間帯別のセッション数（今日 vs 前日）。
+ * 時間帯別のセッション数（今日 vs 前日 vs 先週同曜日）。
  *
  * ★形は「強調」。今日が主役で、前日はそれを読むための背景（＝2色を対等に並べない）。
- *   今日＝青の実棒、前日＝灰の階段シルエット。色に加えて**形でも違う**ので、
+ *   今日＝青の実棒、前日＝灰の階段シルエット、先週＝橙の破線。色に加えて**形でも違う**ので、
  *   色覚に依らず見分けられる。
  * ★今日は cutoff より後の時間帯を**描かない**。0で描くと「その時間帯は誰も来なかった」
  *   に見えるが、実際は「GA4がまだ出していない」。斜線の棒が cutoff の時間帯＝まだ増える。
@@ -373,6 +378,11 @@ function hourChart(site) {
   });
   const fillPath = `${stepPath} L${(PAD.l + iw).toFixed(1)} ${y(0).toFixed(1)} L${PAD.l} ${y(0).toFixed(1)} Z`;
 
+  // 先週同曜日＝橙の破線。面を増やさず、前日の階段とも形で区別する
+  const prevWeekPath = site.hPrevWeek
+    ? site.hPrevWeek.map((v, hh) => `${hh === 0 ? "M" : "L"}${(x0(hh) + band / 2).toFixed(1)} ${y(v).toFixed(1)}`).join(" ")
+    : "";
+
   // 今日＝実棒。cutoff の時間帯は途中なので斜線、それより後は描かない
   const bars = site.hToday.map((v, hh) => ({ v, hh })).filter((b) => b.hh <= site.cutoffHour).map((b) => {
     const x = x0(b.hh) + (band - bw) / 2;
@@ -396,19 +406,25 @@ function hourChart(site) {
           ? (() => { const p = pct(site.hCumToday, site.hCumYest);
                      return `<span class="${p > 0 ? "up" : p < 0 ? "down" : ""}">（${p > 0 ? "+" : ""}${p}%）</span>`; })()
           : "（前日が0なので比較しない）"}`
+        + (site.hCumPrevWeek !== null ? ` / 先週${esc(site.prevWeekWd)} ${site.hCumPrevWeek.toLocaleString("ja-JP")} ${
+          site.hCumPrevWeek > 0
+            ? (() => { const p = pct(site.hCumToday, site.hCumPrevWeek);
+                       return `<span class="${p > 0 ? "up" : p < 0 ? "down" : ""}">（${p > 0 ? "+" : ""}${p}%）</span>`; })()
+            : "（先週が0なので比較しない）"}` : "")
     : "比較できる時間帯がまだ無い";
 
   return `
 <figure class="chart hourly">
-  <figcaption class="chart-title">時間帯別のセッション数 — 今日と前日（${esc(site.yesterdayWd)}）</figcaption>
+  <figcaption class="chart-title">時間帯別のセッション数 — 今日・前日・先週同曜日</figcaption>
   <div class="legend">
     <span><i class="sw sw-today"></i>今日</span>
     <span><i class="sw sw-part"></i>途中の時間帯（${site.cutoff ? `${esc(site.cutoff)}まで` : "—"}）</span>
     <span><i class="sw sw-yest"></i>前日</span>
+    ${site.hPrevWeek ? `<span><i class="sw sw-prevweek"></i>先週同曜日（${esc(site.prevWeekWd)}）</span>` : ""}
   </div>
   <div class="chart-scroll">
   <svg viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet"
-       aria-label="${esc(site.label)} の時間帯別セッション数。今日と前日の比較。数値は下の表にあります。">
+       aria-label="${esc(site.label)} の時間帯別セッション数。今日、前日、先週同曜日の比較。数値は下の表にあります。">
     <defs>
       <pattern id="hatch-h-${site.key}" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
         <rect width="6" height="6" fill="var(--series-wash)"/>
@@ -420,6 +436,8 @@ function hourChart(site) {
     ${ticks.map((v) => `<text x="${PAD.l - 8}" y="${(y(v) + 4).toFixed(1)}" class="tick" text-anchor="end">${v.toLocaleString("ja-JP")}</text>`).join("")}
     <path d="${fillPath}" fill="var(--series-2-wash)"/>
     <path d="${stepPath}" fill="none" stroke="var(--series-2)" stroke-width="1.5" stroke-linejoin="round"/>
+    ${prevWeekPath ? `<path d="${prevWeekPath}" fill="none" stroke="var(--series-3)" stroke-width="2.25"
+      stroke-dasharray="7 5" stroke-linecap="round" stroke-linejoin="round"/>` : ""}
     ${bars.map((b) => b.path
       ? `<path d="${b.path}" fill="${b.partial ? `url(#hatch-h-${site.key})` : "var(--series-1)"}"
               stroke="var(--surface)" stroke-width="2" paint-order="stroke"/>` : "").join("")}
@@ -430,8 +448,10 @@ function hourChart(site) {
     ${site.hToday.map((v, hh) => {
       const drawn = hh <= site.cutoffHour;
       const yv = site.hYest[hh];
+      const pwv = site.hPrevWeek?.[hh];
       const tip = `${hh}時台 — 今日 ${drawn ? `${v.toLocaleString("ja-JP")}${hh === site.cutoffHour ? "（途中）" : ""}` : "まだ集計されていない"}`
         + ` / 前日 ${yv.toLocaleString("ja-JP")}`
+        + (pwv === undefined ? "" : ` / 先週${site.prevWeekWd} ${pwv.toLocaleString("ja-JP")}`)
         + (drawn && hh !== site.cutoffHour && yv > 0 ? `（${pct(v, yv) > 0 ? "+" : ""}${pct(v, yv)}%）` : "");
       return `<rect class="hit" x="${x0(hh).toFixed(1)}" y="${PAD.t}" width="${band.toFixed(1)}" height="${ih}"
         fill="transparent" data-tip="${esc(tip)}"></rect>`;
@@ -449,20 +469,25 @@ function hourTable(site) {
   const rows = site.hToday.map((v, hh) => {
     const drawn = hh <= site.cutoffHour;
     const yv = site.hYest[hh];
+    const pwv = site.hPrevWeek?.[hh];
     const p = drawn && hh !== site.cutoffHour ? pct(v, yv) : null;
+    const pWeek = drawn && hh !== site.cutoffHour && pwv !== undefined ? pct(v, pwv) : null;
     return `<tr${hh === site.cutoffHour ? ' class="is-today"' : ""}>
       <td>${hh}時台${hh === site.cutoffHour ? " <span class='badge'>途中</span>" : ""}</td>
       <td class="num strong">${drawn ? v.toLocaleString("ja-JP") : "—"}</td>
       <td class="num">${yv.toLocaleString("ja-JP")}</td>
+      ${site.hPrevWeek ? `<td class="num">${pwv.toLocaleString("ja-JP")}</td>` : ""}
       <td class="num ${p === null ? "" : p > 0 ? "up" : p < 0 ? "down" : ""}">${
         p === null ? "—" : `${p > 0 ? "+" : ""}${p}%`}</td>
+      ${site.hPrevWeek ? `<td class="num ${pWeek === null ? "" : pWeek > 0 ? "up" : pWeek < 0 ? "down" : ""}">${
+        pWeek === null ? "—" : `${pWeek > 0 ? "+" : ""}${pWeek}%`}</td>` : ""}
     </tr>`;
   }).join("");
   return `
 <details class="tbl">
   <summary>表で見る（時間帯別の数値）</summary>
   <div class="tbl-scroll"><table>
-    <thead><tr><th>時間帯</th><th class="num">今日</th><th class="num">前日</th><th class="num">比</th></tr></thead>
+    <thead><tr><th>時間帯</th><th class="num">今日</th><th class="num">前日</th>${site.hPrevWeek ? `<th class="num">先週${esc(site.prevWeekWd)}</th>` : ""}<th class="num">前日比</th>${site.hPrevWeek ? `<th class="num">先週比</th>` : ""}</tr></thead>
     <tbody>${rows}</tbody>
   </table></div>
 </details>`;
@@ -521,6 +546,11 @@ function sitePanel(site, primary) {
       ${pvLine(site.todayPv, site.today)}
       ${site.cmpHour >= 0
         ? delta(site.todayCum, site.prevWeekCum, `先週${esc(site.todayWd)} 0:00〜${hh}:59 比`)
+          // ★昨日比も出す（2026-08-25 Masahiro依頼）。先週同曜日比の下に置いているのは
+          //   このサイトが土日で3〜4割まで落ちるため、月曜の「昨日比」が日曜との比較になり
+          //   単独で見ると必ず大幅プラスに見えるから。曜日を必ずラベルに出して誤読を防ぐ。
+          + (site.hCumYest === null ? ""
+            : delta(site.todayCum, site.hCumYest, `昨日${esc(site.yesterdayWd)} 0:00〜${hh}:59 比`))
         : `<span class="delta flat">— <span class="dnote">比較できる時間帯がまだ無い</span></span>`}
     </div>
     <div class="tile">
@@ -555,6 +585,8 @@ const CSS = `
   --series-1:#2a78d6; --series-wash:rgba(42,120,214,.13);
   /* 前日＝背景に置く参照系列。主役（今日）を埋もれさせないよう彩度を持たせない */
   --series-2:#8a8580; --series-2-wash:rgba(138,133,128,.15);
+  /* 先週同曜日＝破線で他の2系列と区別する */
+  --series-3:#a55400;
   --up:#006300; --down:#d03b3b; --warn:#fab219;
 }
 @media (prefers-color-scheme: dark){
@@ -565,6 +597,7 @@ const CSS = `
     --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
     --series-1:#3987e5; --series-wash:rgba(57,135,229,.18);
     --series-2:#8f8b85; --series-2-wash:rgba(143,139,133,.20);
+    --series-3:#f0a24a;
     --up:#0ca30c; --down:#e66767;
   }
 }
@@ -575,6 +608,7 @@ const CSS = `
   --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10);
   --series-1:#3987e5; --series-wash:rgba(57,135,229,.18);
   --series-2:#8f8b85; --series-2-wash:rgba(143,139,133,.20);
+  --series-3:#f0a24a;
   --up:#0ca30c; --down:#e66767;
 }
 
@@ -655,6 +689,7 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
 .sw-today{background:var(--series-1)}
 .sw-part{background:repeating-linear-gradient(45deg,var(--series-1) 0 2.5px,var(--series-wash) 2.5px 6px)}
 .sw-yest{height:8px; background:var(--series-2-wash); border-top:1.5px solid var(--series-2); border-radius:0}
+.sw-prevweek{height:0; width:16px; border-top:2px dashed var(--series-3); border-radius:0}
 .chart.hourly figcaption b{color:var(--ink)}
 .chart.hourly .tbl{margin-top:10px}
 .chart.hourly figcaption .up{color:var(--up); font-weight:650}
