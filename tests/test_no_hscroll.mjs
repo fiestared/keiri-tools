@@ -34,7 +34,10 @@ const ROOT = new URL('../', import.meta.url).pathname;
 const DOCS = join(ROOT, 'docs');
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const PORT = 8931;
-const WIDTH = 375;
+const WIDTH = Number(process.argv[2] || 375);
+if (!Number.isFinite(WIDTH) || WIDTH < 320 || WIDTH > 1280) {
+  throw new Error('幅は320〜1280の数値で指定してください');
+}
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript',
   '.json': 'application/json', '.css': 'text/css', '.png': 'image/png', '.svg': 'image/svg+xml',
   '.ico': 'image/x-icon', '.webmanifest': 'application/manifest+json', '.txt': 'text/plain', '.xml': 'application/xml' };
@@ -44,15 +47,15 @@ if (!existsSync(CHROME)) {
   process.exit(0);
 }
 
-async function collect() {
-  const out = ['/'];
-  for (const d of await readdir(DOCS, { withFileTypes: true })) {
-    if (!d.isDirectory() || d.name === 'assets' || d.name === 'embed') continue; // 埋め込みは他サイトの幅に従う
-    if (existsSync(join(DOCS, d.name, 'index.html'))) out.push(`/${d.name}/`);
+async function collect(dir = DOCS, prefix = '') {
+  const out = [];
+  for (const d of await readdir(dir, { withFileTypes: true })) {
+    if (!d.isDirectory() || d.name === 'assets' || d.name === 'figcheck') continue;
+    const childPrefix = `${prefix}/${d.name}`;
+    if (existsSync(join(dir, d.name, 'index.html'))) out.push(`${childPrefix}/`);
+    out.push(...await collect(join(dir, d.name), childPrefix));
   }
-  for (const d of await readdir(join(DOCS, 'column'), { withFileTypes: true })) {
-    if (d.isDirectory() && existsSync(join(DOCS, 'column', d.name, 'index.html'))) out.push(`/column/${d.name}/`);
-  }
+  if (!prefix) out.unshift('/');
   return out;
 }
 
@@ -62,15 +65,17 @@ let idx = 0;
 let done;
 const finished = new Promise((r) => { done = r; });
 
-// ★測定→報告→次へ、をページ側で回す。Chrome は1つだけ起動する
-const INJECT = (next) => `<script>
-(function(){
-  window.scrollTo(9999,0); var x = window.scrollX; window.scrollTo(0,0);
-  var body = JSON.stringify({ path: location.pathname, x: x, sw: document.documentElement.scrollWidth });
-  fetch('/__m', { method:'POST', body: body }).then(function(){
-    ${next ? `location.href = ${JSON.stringify(next)};` : `fetch('/__done',{method:'POST'});`}
+// ★Chromeの最小レイアウト幅は500px。375px固定の同一オリジンiframe内で測ることで、
+//   実際に375pxのメディアクエリと折返しを発火させる。
+const FRAME = (i) => `<!doctype html><meta charset="utf-8"><style>*{box-sizing:border-box}html,body{margin:0}iframe{display:block;border:0;width:${WIDTH}px;height:800px}</style>
+<iframe id="f" src="${list[i]}"></iframe><script>
+f.onload=function(){setTimeout(function(){
+  var w=f.contentWindow,d=f.contentDocument.documentElement;
+  w.scrollTo(9999,0);var x=w.scrollX;w.scrollTo(0,0);
+  fetch('/__m',{method:'POST',body:JSON.stringify({path:${JSON.stringify(list[i])},x:x,sw:d.scrollWidth,iw:w.innerWidth})}).then(function(){
+    ${i + 1 < list.length ? `location.href='/__frame?i=${i + 1}'` : `fetch('/__done',{method:'POST'})`};
   });
-})();
+},120)};
 </script>`;
 
 /**
@@ -111,6 +116,13 @@ const server = createServer(async (req, res) => {
   }
   if (req.url === '/__done') { res.writeHead(200); res.end('ok'); done(); return; }
 
+  if (req.url.startsWith('/__frame')) {
+    const i = Number(new URL(req.url, `http://127.0.0.1:${PORT}`).searchParams.get('i')) || 0;
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(FRAME(i));
+    return;
+  }
+
   let p = decodeURIComponent(req.url.split('?')[0]);
   const isPage = p.endsWith('/');
   if (isPage) p += 'index.html';
@@ -118,8 +130,7 @@ const server = createServer(async (req, res) => {
     const buf = await readFile(join(DOCS, p));
     const type = MIME[extname(p)] || 'application/octet-stream';
     if (isPage) {
-      idx++;
-      const html = stripBeacons(buf.toString('utf8')) + INJECT(list[idx] || null);
+      const html = stripBeacons(buf.toString('utf8'));
       res.writeHead(200, { 'Content-Type': type }); res.end(html);
     } else {
       res.writeHead(200, { 'Content-Type': type }); res.end(buf);
@@ -143,7 +154,7 @@ const profile = await mkdtemp(join(tmpdir(), 'hscroll-'));
 const chrome = spawn(CHROME, [
   '--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
   `--user-data-dir=${profile}`, `--window-size=${WIDTH},800`,
-  `http://localhost:${PORT}${list[0]}`,
+  `http://localhost:${PORT}/__frame?i=0`,
 ], { stdio: 'ignore' });
 
 const timeout = setTimeout(() => done(), 1000 * 60 * 8);
@@ -153,11 +164,15 @@ chrome.kill();
 server.close();
 await rm(profile, { recursive: true, force: true }).catch(() => {});
 
+const wrongViewport = results.filter((r) => r.iw !== WIDTH);
 const bad = results.filter((r) => r.x > 0);
 const seen = new Set(results.map((r) => r.path));
 const missed = list.filter((p) => !seen.has(p));
 
-if (bad.length || missed.length > list.length * 0.1) {
+if (bad.length || wrongViewport.length || missed.length > list.length * 0.1) {
+  if (wrongViewport.length) {
+    console.error(`✗ ${WIDTH}pxで測れていないページ ${wrongViewport.length}件`);
+  }
   if (bad.length) {
     console.error(`✗ ${WIDTH}px で横スクロールするページ ${bad.length}件（測定 ${results.length}/${list.length}）:`);
     for (const b of bad) console.error(`  - ${b.path} … ${b.x}px 横に動く（scrollWidth=${b.sw}）`);

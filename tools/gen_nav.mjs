@@ -91,9 +91,14 @@ function main() {
     if (relPath.startsWith('embed/')) { skipped++; continue; }
     const html = readFileSync(fp, 'utf8');
     if (!HEADER_RE.test(html)) { skipped++; continue; }
-    // ★about/privacy/contact は独自のナビ（運営者情報など）を持つ。上書きしない
+    // ★案内ページだけは独自ナビを保つ。リンク文言で判定すると、同じリンクを含む
+    //   古い記事ナビまで対象外になり、全体ナビの更新から取り残される。
+    if (['about/index.html', 'privacy/index.html', 'contact/index.html'].includes(relPath)) {
+      skipped++;
+      continue;
+    }
+
     const cur = html.match(HEADER_RE)[0];
-    if (/運営者情報|プライバシーポリシー/.test(cur)) { skipped++; continue; }
 
     const pageDir = dirname(relPath) === '.' ? '' : dirname(relPath);
     const want = buildHeader(pageDir);

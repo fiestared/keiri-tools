@@ -101,7 +101,10 @@ main.hub-page > * { max-width: var(--shell); }
 
 /* hero をシェル幅にするのは一覧系だけ。記事・ツールの hero は 672px のまま
    （.article-meta の下罫線が 1120px に伸びて本文と食い違うのを避ける）。 */
-main:has(.tcat) > .hero, main:has(.cat) > .hero { max-width: 1120px; }
+main:has(.tcat) > .hero,
+main:has(.cat) > .hero,
+main:has(> .tool-grid) > .hero,
+main:has(> .post-list) > .hero { max-width: 1120px; }
 /* ★hero の見出し・リードには 672px を掛けない（2026-08-27 修正）。
    40字上限は**本文の行長**の規範であって、1〜2行の見出しとリード文には効かせない。
    掛けると hero だけ右端が 767px で終わり、下のツール一覧（1200px）と段が食い違う
@@ -654,6 +657,10 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 }
 .byline{font-size:13px;color:var(--sub);margin:-2px 0 20px;line-height:1.6}
 .byline a{color:var(--sub)}
+
+/* 仕訳例は内容を改行せず、狭い画面ではコード枠の中だけを横に動かす。 */
+pre { max-width: 100%; overflow-x: auto; white-space: pre; }
+pre code { white-space: inherit; }
 
 /* ツールページ末尾の「関連する解説」（tools/gen_tool_related.mjs が生成）。
    コラム→ツールの一方通行89組を双方向にするための導線（2026-07-29追加）。 */

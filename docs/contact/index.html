@@ -90,7 +90,7 @@
     <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
 
     <button class="primary" type="submit">送信する</button>
-    <div id="form-status" style="margin-top:12px"></div>
+    <div id="form-status" role="status" aria-live="polite" aria-atomic="true" style="margin-top:12px"></div>
   </form>
 </div>
 
@@ -125,6 +125,7 @@ form.addEventListener("submit", async (e) => {
       headers: { Accept: "application/json" },
     });
     if (res.ok) {
+      status.setAttribute("role", "status");
       form.style.display = "none";
       status.innerHTML = '<div class="summary-box"><div class="t">送信しました</div>' +
         '<p style="margin:0">お問い合わせありがとうございます。内容を確認いたします。' +
@@ -133,6 +134,7 @@ form.addEventListener("submit", async (e) => {
       throw new Error("送信に失敗しました");
     }
   } catch (err) {
+    status.setAttribute("role", "alert");
     status.innerHTML = '<div class="note">送信できませんでした。入力内容はこの画面に残っています。通信状況をご確認のうえ、時間をおいてもう一度「送信する」を押してください。</div>';
     btn.disabled = false;
     btn.textContent = "送信する";

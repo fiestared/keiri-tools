@@ -139,6 +139,7 @@
 
   <button class="primary" id="calc">残り枠を計算する</button>
   <div class="result" id="result" role="status" aria-live="polite"></div>
+  <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
 </div>
 
 <article>
@@ -173,6 +174,7 @@
 </footer>
 <script type="module">
 import { nisaAllowance } from '../../assets/tsumitate_core.js';
+import { attachCopyButton } from '../../assets/copy_result.js';
 const yen = (id) => Number(String(document.getElementById(id).value).replace(/[０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/[^0-9]/g,'')) || 0;
 const fmt = (n) => `${n.toLocaleString('ja-JP')}円`;
 const dataReady = fetch('../../assets/tsumitate_r08.json').then(r=>{if(!r.ok)throw new Error();return r.json()});
@@ -191,6 +193,7 @@ document.getElementById('calc').addEventListener('click', async () => {
     out.innerHTML='<p><b>計算データを読み込めませんでした。</b></p><p>通信環境を確認して再読み込みしてください。</p>';
   }
 });
+attachCopyButton(document.getElementById('copy-result'), document.getElementById('result'));
 </script>
 </body>
 </html>

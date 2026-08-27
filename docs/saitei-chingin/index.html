@@ -133,7 +133,8 @@
     </div>
 
     <button class="primary" id="run">最低賃金を下回っていないか判定する</button>
-    <div id="out" style="margin-top:16px"></div>
+    <div id="out" role="status" aria-live="polite" aria-atomic="true" style="margin-top:16px"></div>
+    <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
   </div>
 
   <section class="faq">
@@ -244,6 +245,7 @@
 </footer>
 <script type="module">
 import { judgeSaitei, rankOf } from "../assets/saitei_core.js";
+import { attachCopyButton } from "../assets/copy_result.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
@@ -358,6 +360,7 @@ function renderNext() {
       <p class="note" style="margin-top:8px">出典: <a href="${esc(n.source_url)}" rel="noopener" target="_blank">${esc(n.source)}</a></p>
     </div>`;
 }
+attachCopyButton($("copy-result"), $("out"));
 </script>
 </body>
 </html>

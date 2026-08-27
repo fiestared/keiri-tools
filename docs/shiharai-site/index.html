@@ -136,8 +136,9 @@
       <button class="primary" id="ics" style="background:#5b6b7b;flex:1;display:none">カレンダー(.ics)</button>
       <button class="primary" id="csv" style="background:#5b6b7b;flex:1;display:none">CSVコピー</button>
     </div>
-    <div id="saved" style="margin-top:12px"></div>
-    <div id="out" style="margin-top:16px"></div>
+    <div id="saved" role="status" aria-live="polite" aria-atomic="true" style="margin-top:12px"></div>
+    <div id="out" role="status" aria-live="polite" aria-atomic="true" style="margin-top:16px"></div>
+    <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
   </div>
 
   <section class="faq">
@@ -165,6 +166,7 @@
 </footer>
 <script type="module">
 import { schedule, toICS, DOW_JA } from "../assets/payday_core.js";
+import { attachCopyButton } from "../assets/copy_result.js";
 
 const $ = (id) => document.getElementById(id);
 let HOLIDAYS = {};
@@ -289,6 +291,7 @@ function renderSaved() {
     }));
 }
 renderSaved();
+attachCopyButton($("copy-result"), $("out"));
 </script>
 </body>
 </html>

@@ -8,21 +8,22 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>無料の計算ウィジェット31種（埋め込み）｜keiri-tools</title>
-<meta name="description" content="手取り・住民税・ふるさと納税・相続税・失業保険など27種の計算機を、あなたのサイト・ブログに無料で埋め込めます。コピペするだけ。登録不要・改変不要。keiri-tools 提供。">
+<meta name="description" content="手取り・住民税・ふるさと納税・相続税・失業保険など31種の計算機を、あなたのサイト・ブログに無料で埋め込めます。コピペするだけ。登録不要・改変不要。keiri-tools 提供。">
 <link rel="canonical" href="https://keiri-tools.com/embed/">
 <style>
-  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --accent:#0d9488; --accent2:#e7f3f0; }
+  :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --control:#84939f; --accent:#1f6f5c; --accent2:#e7f3f0; }
   *{ box-sizing:border-box; }
-  body{ font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  body{ font-family:-apple-system,BlinkMacSystemFont,"Yu Gothic Medium","YuGothic","Meiryo","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
     color:var(--ink); line-height:1.75; margin:0; padding:0 16px; }
   .wrap{ max-width:860px; margin:0 auto; padding:28px 0 60px; }
   a{ color:var(--accent); }
   h1{ font-size:25px; margin:0 0 6px; } h2{ font-size:18px; margin:34px 0 10px; }
   .lead{ color:var(--sub); }
   .tag{ display:inline-block; background:var(--accent2); color:var(--accent); font-size:12px; font-weight:700; padding:2px 8px; border-radius:6px; }
-  .row{ display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; margin-top:8px; }
+  .row{ display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:24px; align-items:start; margin-top:8px; }
+  .row > *{ min-width:0; }
   @media(max-width:680px){ .row{ grid-template-columns:1fr; } }
-  pre{ background:#0f172a; color:#e2e8f0; padding:14px; border-radius:10px; overflow-x:auto; max-width:100%; font-size:12.5px; line-height:1.6; }
+  pre{ background:#0f172a; color:#e2e8f0; padding:14px; border-radius:10px; overflow-x:auto; max-width:100%; white-space:pre-wrap; overflow-wrap:anywhere; font-size:12.5px; line-height:1.6; }
   .card-preview{ border:1px solid var(--line); border-radius:12px; overflow:hidden; }
   .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:10px; }
   .card{ border:1px solid var(--line); border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:6px; }
@@ -43,9 +44,9 @@
 </head>
 <body>
 <div class="wrap">
-  <span class="tag">無料・登録不要・27種</span>
+  <span class="tag">無料・登録不要・31種</span>
   <h1>計算ウィジェットを、あなたのサイトに埋め込む</h1>
-  <p class="lead">手取り・住民税・ふるさと納税・相続税・失業保険…など<b>27種の計算機</b>を、記事やブログにそのまま設置できます。コピペするだけ。サーバー処理なし・データ送信なし（計算は閲覧者のブラウザ内で完結）。料率・税額表はこちらで最新に保ちます。</p>
+  <p class="lead">手取り・住民税・ふるさと納税・相続税・失業保険…など<b>31種の計算機</b>を、記事やブログにそのまま設置できます。コピペするだけ。サーバー処理なし・データ送信なし（計算は閲覧者のブラウザ内で完結）。料率・税額表はこちらで最新に保ちます。</p>
 
   <div class="row">
     <div>
@@ -142,7 +143,7 @@ addEventListener("message",function(e){
   </ul>
 
   <footer>
-    🧮 <a href="https://keiri-tools.com/?utm_source=embed_page">keiri-tools</a> — 経理・給与・税金のミニ計算ツール。
+    <a href="https://keiri-tools.com/?utm_source=embed_page">keiri-tools</a> — 経理・給与・税金のミニ計算ツール。
     要望・不具合は <a href="https://keiri-tools.com/contact/">お問い合わせ</a>まで。
     <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
 </footer>
@@ -194,6 +195,7 @@ for (var gid in TOOLS){
   box.innerHTML = html;
 }
 document.querySelectorAll(".copy").forEach(function(b){
+  b.setAttribute("aria-live", "polite");
   b.addEventListener("click", function(){
     var code = snippet(b.dataset.slug, b.dataset.name);
     var done = function(){ var o=b.textContent; b.textContent="コピーしました✓"; setTimeout(function(){b.textContent=o;},1500); };

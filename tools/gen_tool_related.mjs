@@ -34,7 +34,8 @@ const MAX = 5;
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
   (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-const SKIP = new Set(["column", "assets", "embed", "ext", "about", "privacy", "contact"]);
+// 一覧ハブは自前のコラム一覧を持つため、同じリンクを「関連する解説」として重ねない。
+const SKIP = new Set(["column", "assets", "embed", "ext", "about", "privacy", "contact", "toushi"]);
 const tools = readdirSync(DOCS).filter((d) => {
   const p = join(DOCS, d);
   return statSync(p).isDirectory() && !SKIP.has(d) && existsSync(join(p, "index.html"));

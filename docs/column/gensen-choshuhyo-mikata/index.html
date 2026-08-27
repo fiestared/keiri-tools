@@ -524,7 +524,8 @@
 
     <button class="primary" id="k-calc" type="button" style="margin-top:14px">③を検算する</button>
     <p class="hint" id="k-src" style="margin:8px 0 0"></p>
-    <div id="k-result" style="display:none;margin-top:14px"></div>
+    <div id="k-result" role="status" aria-live="polite" aria-atomic="true" style="display:none;margin-top:14px"></div>
+    <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
   </div>
 
   <h2 id="ran">欄ごとの意味・早見表</h2>
@@ -761,6 +762,7 @@
 
 <script type="module">
 import { checkSanKojo } from "../../assets/gensen_kojo_check_core.js";
+import { attachCopyButton } from "../../assets/copy_result.js";
 
 const $ = (id) => document.getElementById(id);
 const yenF = (n) => (n < 0 ? "−¥" : "¥") + Math.abs(Math.round(n)).toLocaleString("ja-JP");
@@ -838,6 +840,7 @@ $("k-calc").addEventListener("click", async () => {
   box.innerHTML = verdict + `<div style="margin-top:10px">${lines.join("")}</div>` + notes +
     `<p class="hint" style="margin-top:10px">${r.year}の控除額で計算しました。差が残る場合でも、票が間違っているとは限りません（票に金額が印字されない控除があるためです）。</p>`;
 });
+attachCopyButton($("copy-result"), $("k-result"));
 </script>
 </body>
 </html>
