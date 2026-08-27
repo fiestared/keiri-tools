@@ -10,8 +10,8 @@
  *   ★左端は 80px で揃っていたので、test_left_edge は**素通りさせた**。
  *     「左端が1本」だけでは足りない。**節の器と中身の幅が合っているか**も見る。
  *
- * ★右端そのものを一律に揃える検査にはしない。672px と 1120px の混在は設計として正しい
- *   （読ませるテキストは狭く、一覧・グリッドは広く）。見るのは「同じ節の中で食い違っていないか」。
+ * ★通常ページでは右端そのものを一律に揃えない。672px と 1120px の混在は設計として正しい。
+ *   ただし `.hub-page` は一覧・説明・コラムを一続きの版面として見せるため、直下要素を同幅にする。
  */
 import { createServer } from 'node:http';
 import { readFile, readdir, mkdtemp, rm } from 'node:fs/promises';
@@ -65,6 +65,20 @@ const INJECT = (next) => `<script>
                  body: body.tagName.toLowerCase() + (body.className ? '.' + String(body.className).trim().split(/\\s+/)[0] : ''), bw: wb });
     }
   });
+  var hub = document.querySelector('main.hub-page');
+  if (hub) {
+    var style = getComputedStyle(hub);
+    var expected = Math.round(hub.getBoundingClientRect().width
+      - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight));
+    Array.from(hub.children).forEach(function(el){
+      if (el.getBoundingClientRect().height === 0) return;
+      var width = W(el);
+      if (Math.abs(width - expected) > ${TOL}) {
+        out.push({ head: 'ハブページ全体', hw: expected,
+                   body: el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).trim().split(/\\s+/)[0] : ''), bw: width });
+      }
+    });
+  }
   fetch('/__m', { method:'POST', body: JSON.stringify({ path: location.pathname, bad: out }) })
     .then(function(){ ${next ? `location.href = ${JSON.stringify(next)};` : `fetch('/__done',{method:'POST'});`} });
 })();

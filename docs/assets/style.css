@@ -82,6 +82,10 @@ main > .section-head:has(+ .tcat),
 main > .section-head:has(+ .persona-bar),
 main > .section-head:has(+ .cat-nav),
 main > .section-head:has(+ .col-search) { max-width: 1120px; }
+/* 一覧と説明を交互に見せるハブページは、ページ内で器の幅を切り替えない。
+   本文ページの読み幅（672px）は維持し、明示したハブだけシェル幅に揃える。
+   section-head の局所指定より後に置き、ハブでは全セクションを同じ器にする。 */
+main.hub-page > * { max-width: var(--shell); }
 /* ★右カラムも一覧グリッドも持たないページ（ツール・hojokin・about など63ページ）は、
    **器ごと本文幅に落とす**（2026-08-27）。1120px の器に 672px しか入らず、
    1280px 画面で 左80 : 本文672 : 右528 と左に寄って見えていた。
