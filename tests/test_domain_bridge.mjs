@@ -37,8 +37,13 @@ for (const page of MAP.pages) {
 }
 
 const top = readFileSync(join(DOCS, "index.html"), "utf8");
-ok(/<nav class="domain-nav" data-bridge="top-strip" data-from="\(top\)"[^>]+aria-label=/.test(top), "トップの計測属性");
-ok((top.match(/class="db-card"/g) || []).length >= 3, "トップ3領域");
+ok(/<h2 id="domains-h">分野から記事・ツールを探す<\/h2>[\s\S]{0,200}?<nav class="domain-nav" data-bridge="top-strip" data-from="\(top\)" aria-labelledby="domains-h">/.test(top), "トップ3領域の見出しとラベル");
+const topStrip = top.match(/<nav class="domain-nav" data-bridge="top-strip"[\s\S]*?<\/nav>/)?.[0] || "";
+ok((topStrip.match(/class="db-card"/g) || []).length === 3, "トップ3領域");
+for (const domain of ["keiri", "shisan", "hojokin"]) {
+  ok(new RegExp(`<a class="db-card"[^>]+data-domain="${domain}"`).test(topStrip), `トップ3領域のクリック配線: ${domain}`);
+}
+ok((topStrip.match(/<span class="db-go">この分野を見る →<\/span>/g) || []).length === 3, "トップ3領域の遷移ラベル");
 
 const toushi = readFileSync(join(DOCS, "toushi/index.html"), "utf8");
 ok(/class="domain-bridge" data-bridge="hub-out" data-from="shisan"/.test(toushi), "資産形成の逆橋");
