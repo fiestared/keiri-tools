@@ -67,7 +67,7 @@ export const baseName = (name) => name.replace(/（.*$/, '').trim();
  * ★未知の銀行は fail-closed で落とす: 黙って壊れたidを吐くより、足すべき1行を教えて止まる方がよい。
  */
 const BANK_SLUG = {
-  'GMOあおぞらネット銀行': 'gmo-aozora', '住信SBIネット銀行': 'sbi-net', 'auじぶん銀行': 'au-jibun',
+  'GMOあおぞらネット銀行': 'gmo-aozora', 'ドコモSMTBネット銀行': 'sbi-net', 'auじぶん銀行': 'au-jibun',
   'PayPay銀行': 'paypay', '楽天銀行': 'rakuten', 'イオン銀行': 'aeon', 'みずほ銀行': 'mizuho',
   'ゆうちょ銀行': 'yucho', 'りそな銀行': 'resona', '埼玉りそな銀行': 'saitama-resona',
   '三井住友銀行': 'smbc', '三菱UFJ銀行': 'mufg', '横浜銀行': 'yokohama',
@@ -140,7 +140,7 @@ export function buildSections(rows) {
         + '金額は表全体の調査時点のものです。<b>お手続き前に各行の公式ページでご確認ください。</b></p>');
     }
   }
-  out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」があるのは10区分だけ</a>に書いています。</p>');
+  out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」があるのは11区分だけ</a>に書いています。</p>');
   out.push(END);
   return out.join('\n');
 }
