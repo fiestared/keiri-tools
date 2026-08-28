@@ -24,6 +24,8 @@ const OFFER = {
   lead: '他行宛の振込手数料が安いネット銀行を比べる',
   cta: '法人口座の手数料を比較する',
   url: 'https://px.a8.net/svt/ejp?a8mat=DEMO',
+  banner: { src: 'https://image.moshimo.com/demo.png', width: 320, height: 100, alt: 'デモ広告' },
+  impression: 'https://i.moshimo.com/af/i/impression?a_id=1&p_id=2&pc_id=3&pl_id=4',
   note: '当サイトは提携先から紹介料を受け取ります。',
   pages: ['column/furikomi-tesuryo-hikaku'],
 };
@@ -40,13 +42,30 @@ assert.ok(sneaky.includes(`>${PR_LABEL}<`), '設定でPRラベルを消せてし
 assert.ok(REL.split(/\s+/).includes('sponsored'),
   'rel に sponsored がありません（Googleがアフィリエイト/有料リンクに推奨）');
 assert.ok(h.includes(`rel="${REL}"`), '生成されたリンクに rel が付いていません');
+assert.strictEqual((h.match(new RegExp(`rel="${REL}"`, 'g')) || []).length, 2,
+  'テキストCTAとバナーの両方に rel が必要です');
+assert.strictEqual((h.match(/referrerpolicy="no-referrer-when-downgrade"/g) || []).length, 2,
+  '公式の referrerpolicy が全リンクにありません');
+assert.strictEqual((h.match(/ attributionsrc/g) || []).length, 2,
+  '公式の attributionsrc が全リンクにありません');
+assert.ok(PR_LABEL.includes('広告'), 'PRラベルが広告であることを明示していません');
 
 // --- ③ 計測の属性（どの案件が・どの枠で押されたか）------------------------------
 assert.ok(h.includes(`data-pr="${OFFER.id}"`), 'data-pr が無い（どの案件か測れない）');
-assert.ok(h.includes(`data-pr-slot="${OFFER.slot}"`), 'data-pr-slot が無い（どの枠か測れない）');
+assert.ok(h.includes('data-pr-slot='), 'data-pr-slot が無い（どの枠か測れない）');
+assert.ok(h.includes(`${OFFER.slot}:text`) && h.includes(`${OFFER.slot}:banner`),
+  'テキストCTAとバナーを計測上区別できません');
+assert.ok(h.includes(OFFER.banner.src) && h.includes(OFFER.impression.replaceAll('&', '&amp;')),
+  '公式バナーまたはインプレッションURLがありません');
+assert.ok(h.includes('width="320"') && h.includes('height="100"')
+  && h.includes('max-width:100%;height:auto') && h.includes('loading="lazy"'),
+  'バナーの寸法予約・レスポンシブ・遅延読み込みが揃っていません');
 const track = readFileSync(join(DOCS, 'assets/track.js'), 'utf-8');
 assert.ok(track.includes('pr_click') && track.includes('a[data-pr]'),
   'track.js が PRリンクのクリックを拾っていません');
+assert.ok(track.includes('pr_exposure') && track.includes('watchPrExposure')
+  && track.includes('intersectionRatio >= 0.5') && track.includes('}, 1000)'),
+  'PR枠の50%・1秒露出を計測できません');
 
 // --- ④ 設定が空なら1枠も出ない -------------------------------------------------
 const page = '<html><body><article><h1>x</h1><p>本文</p></article></body></html>';
@@ -74,6 +93,7 @@ assert.ok(off.includes('保持') && off.includes('本文'), '撤去時に本文�
 
 // --- ⑦ 本番のページに、設定外のPR枠が残っていないこと ----------------------------
 const plan = planFrom(loadOffers());
+assert.strictEqual(plan.size, 23, `PR枠の対象が23ページではありません: ${plan.size}`);
 const all = [];
 (function walk(dir) {
   for (const f of readdirSync(dir)) {
@@ -88,6 +108,14 @@ const stray = all.filter((p) => {
 });
 assert.strictEqual(stray.length, 0,
   `設定に無いのにPR枠があるページ ${stray.length}件: ${stray.slice(0, 3).join(', ')}`);
+
+for (const [rel, offer] of plan) {
+  const html = readFileSync(join(DOCS, rel, 'index.html'), 'utf-8');
+  assert.ok(html.includes(MARK), `${rel}: PR枠が生成されていません`);
+  assert.strictEqual((html.match(/<aside class="pr-block"/g) || []).length, 1, `${rel}: PR枠が1件ではありません`);
+  assert.ok(html.indexOf(MARK) < html.search(/<h2[^>]*(?:id="faq"|data-faq)/i), `${rel}: PR枠がFAQより後です`);
+  assert.ok(html.includes(offer.banner.src) && html.includes(offer.impression.replaceAll('&', '&amp;')), `${rel}: 公式素材が欠落しています`);
+}
 
 console.log(`✓ test_pr_blocks: PR明示あり / rel=${REL} / 計測あり / 設定 ${plan.size}ページ`
   + ` / 設定外の残留 0（全${all.length}ページ走査）`);

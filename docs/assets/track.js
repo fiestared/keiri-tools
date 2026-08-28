@@ -82,6 +82,35 @@
       true
     );
 
+    /* PR枠を実際に見た人を分母にする。50%以上が1秒続いた時だけ1回送る。 */
+    function watchPrExposure() {
+      if (typeof window.IntersectionObserver !== "function") return;
+      var timers = new Map();
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var el = entry.target;
+          var link = el.querySelector("a[data-pr]");
+          if (!link) return;
+          var offer = link.getAttribute("data-pr") || "(unknown)";
+          var slot = (link.getAttribute("data-pr-slot") || "(unknown)").replace(/:(?:text|banner)$/, "");
+          var key = "pr_exposure:" + offer + ":" + slot + ":" + toolId();
+          if (entry.intersectionRatio >= 0.5) {
+            if (sent[key] || timers.has(el)) return;
+            timers.set(el, setTimeout(function () {
+              timers.delete(el);
+              sent[key] = true;
+              if (typeof window.gtag !== "function") return;
+              window.gtag("event", "pr_exposure", { offer: offer, slot: slot, from: toolId() });
+            }, 1000));
+          } else if (timers.has(el)) {
+            clearTimeout(timers.get(el));
+            timers.delete(el);
+          }
+        });
+      }, { threshold: [0, 0.5] });
+      document.querySelectorAll(".pr-block").forEach(function (el) { observer.observe(el); });
+    }
+
     /* ---------- 領域をまたぐ導線 ----------
        qualified exposure = 50%以上が1秒継続して見えた配置。判定は article-end のみ。
        hub-out と top-strip は観察用、global-nav は分母が無いため判定に混ぜない。 */
@@ -250,10 +279,11 @@
     }
 
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", function () { watchResults(); watchDomainExposure(); });
+      document.addEventListener("DOMContentLoaded", function () { watchResults(); watchDomainExposure(); watchPrExposure(); });
     } else {
       watchResults();
       watchDomainExposure();
+      watchPrExposure();
     }
   } catch (err) {
     /* 計測はツールの機能ではない。ここで転んでもページは動き続ける */

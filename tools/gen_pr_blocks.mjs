@@ -39,7 +39,7 @@ export const CONFIG = join(ROOT, 'tools/pr_offers.json');
 export const MARK = '<!-- pr-block:auto -->';
 export const END = '<!-- /pr-block:auto -->';
 /** ★法令上の義務。設定から変えられないよう、ここに固定で持つ */
-export const PR_LABEL = 'PR';
+export const PR_LABEL = 'PR（広告）';
 export const REL = 'sponsored nofollow noopener';
 
 const esc = (s) => String(s)
@@ -53,15 +53,19 @@ export function loadOffers(path = CONFIG) {
 
 /** 1案件ぶんのHTML。★ラベルと rel は必ず付く（引数で消せない） */
 export function block(offer) {
-  const slot = offer.slot || 'article-end';
-  return `${MARK}<aside class="pr-block" style="margin:24px 0;padding:14px 16px;`
-    + `border:1px solid var(--line);border-radius:8px;background:#fbfcfd">`
-    + `<div style="font-size:11px;color:var(--sub);letter-spacing:.08em">${PR_LABEL}</div>`
-    + `<div style="margin-top:6px;font-size:14px">${esc(offer.lead || '')}</div>`
-    + `<a href="${esc(offer.url)}" rel="${REL}" target="_blank"`
-    + ` data-pr="${esc(offer.id)}" data-pr-slot="${esc(slot)}"`
-    + ` style="display:inline-block;margin-top:10px;font-size:14px">${esc(offer.cta)}</a>`
-    + (offer.note ? `<div style="margin-top:6px;font-size:12px;color:var(--sub)">${esc(offer.note)}</div>` : '')
+  const slot = offer.slot || 'before-faq';
+  const attrs = `href="${esc(offer.url)}" rel="${REL}" target="_blank"`
+    + ` referrerpolicy="no-referrer-when-downgrade" attributionsrc`;
+  const banner = offer.banner || {};
+  return `${MARK}<aside class="pr-block" aria-label="広告">`
+    + `<div class="pr-label">${PR_LABEL}</div>`
+    + `<p class="pr-lead">${esc(offer.lead || '')}</p>`
+    + `<a class="pr-cta" ${attrs} data-pr="${esc(offer.id)}" data-pr-slot="${esc(slot)}:text">${esc(offer.cta)}</a>`
+    + `<a class="pr-banner" ${attrs} data-pr="${esc(offer.id)}" data-pr-slot="${esc(slot)}:banner">`
+    + `<img src="${esc(banner.src || '')}" width="${esc(banner.width || '')}" height="${esc(banner.height || '')}"`
+    + ` alt="${esc(banner.alt || '')}" loading="lazy" decoding="async" style="border:none;max-width:100%;height:auto"></a>`
+    + (offer.note ? `<p class="pr-note">${esc(offer.note)}</p>` : '')
+    + `<img class="pr-impression" src="${esc(offer.impression || '')}" width="1" height="1" alt="" loading="lazy" style="border:none">`
     + `</aside>${END}`;
 }
 
@@ -82,7 +86,11 @@ export function withBlock(html, offer) {
   const range = blockRange(html);
   if (!offer) return range ? html.slice(0, range[0]) + html.slice(range[1]) : html;
   if (range) return html.slice(0, range[0]) + block(offer) + html.slice(range[1]);
-  const close = html.lastIndexOf('</article>');
+  let close = -1;
+  if ((offer.slot || 'before-faq') === 'before-faq') {
+    close = html.search(/<h2[^>]*(?:id="faq"|data-faq)[^>]*>/i);
+  }
+  if (close < 0) close = html.lastIndexOf('</article>');
   if (close < 0) return html;                 // <article> を持たないページは対象外
   return html.slice(0, close) + block(offer) + '\n' + html.slice(close);
 }
@@ -94,8 +102,9 @@ const fileOf = (p) => join(DOCS, p, 'index.html');
 export function planFrom(offers) {
   const plan = new Map();
   for (const o of offers) {
-    for (const p of o.pages || []) {
-      if (!plan.has(p)) plan.set(p, o);
+    for (const item of o.pages || []) {
+      const p = typeof item === 'string' ? item : item.path;
+      if (!plan.has(p)) plan.set(p, { ...o, ...(typeof item === 'string' ? {} : item), pages: undefined, path: undefined });
     }
   }
   return plan;

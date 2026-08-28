@@ -105,7 +105,8 @@ for (const slug of slugs) {
     if (!figs.some((f) => f[0].includes("<svg"))) fail(slug, "<figure> はあるが中にインラインSVGが無い");
     if (!figs.some((f) => /<figcaption/.test(f[0]))) fail(slug, "<figure> に figcaption が無い");
   }
-  if (/<img\s[^>]*src="https?:/.test(body)) fail(slug, "外部画像を使っている(インラインSVGにする)");
+  const bodyWithoutPr = body.replace(/<!-- pr-block:auto -->[\s\S]*?<!-- \/pr-block:auto -->/g, '');
+  if (/<img\s[^>]*src="(?:https?:|\/\/)/.test(bodyWithoutPr)) fail(slug, "外部画像を使っている(インラインSVGにする)");
 
   // --- FAQ(構造化データは本文から生成される。本文側の型を守らせる) ---
   if (!/<h2[^>]*\bid="faq"|<h2[^>]*data-faq/.test(body)) fail(slug, "FAQブロック(h2#faq)が無い");
