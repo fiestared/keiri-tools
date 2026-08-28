@@ -38,6 +38,7 @@ const CHECKABLE = [
   // ★2026-08-24 追加。参照データの適用時期・出典・確認日は `_meta` に38本ぶん揃っていたのに、
   //   **JavaScript でしか描画していなかった**（静的HTMLに「令和8年8月1日」0回・厚労省リンク0回）。
   ['tools/gen_data_source_note.mjs', ['--check']],
+  ['tools/gen_domain_bridge.mjs', ['--check']],
 ];
 
 for (const [script, args] of CHECKABLE) {

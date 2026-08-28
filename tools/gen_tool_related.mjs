@@ -67,7 +67,11 @@ for (const slug of readdirSync(COLUMN)) {
   //    補助金の記事7本は1本も入っていなかった）。
   //   この生成器の設計は「リンク元はコラム側の実リンク」なので、
   //   ヘッダ・フッタの定型リンクを数えた時点で前提が壊れている。
-  const main = html.match(/<main[^>]*>([\s\S]*?)<\/main>/)?.[1] ?? html;
+  let main = html.match(/<main[^>]*>([\s\S]*?)<\/main>/)?.[1] ?? html;
+  // 領域橋は主題上の参照ではない。ここを除かないと /hojokin/ と
+  // /hojokin-zeimu/ の関連解説が無関係な勝ち記事で埋まる。
+  // 2026-08-14 の「共通ヘッダを本文参照と誤認」と同じ失敗を防ぐ。
+  main = main.replace(/<!--domain-bridge:S-->[\s\S]*?<!--domain-bridge:E-->/g, "");
   const refs = new Set();
   for (const m of main.matchAll(/href="\.\.\/\.\.\/([\w-]+)\//g)) refs.add(m[1]);
   columns.set(slug, { h1, card, refs });

@@ -56,10 +56,10 @@ function block(depth) {
       + `<br><span class="hint">${esc(h1)}</span></li>`;
   });
   return `${S}
-<section class="faq" id="hojokin-after">
-<h2>補助金を受け取った後の経理・税務</h2>
+<section class="faq domain-bridge" id="hojokin-after" data-bridge="hub-out" data-from="hojokin" aria-labelledby="hojokin-after-title">
+<h2 id="hojokin-after-title">補助金を受け取った後の経理・税務</h2>
 <p class="hint">採択・入金のあとに必要になる処理です。法人税法42条〜44条の分岐と、消費税の扱いを扱っています。
-金額を試算するときは<a href="${up}hojokin-zeimu/">補助金の圧縮記帳・仕訳の計算ツール</a>もあります。</p>
+金額を試算するときは<a data-domain="keiri" href="${up}hojokin-zeimu/">補助金の圧縮記帳・仕訳の計算ツール</a>もあります。</p>
 <ul>
 ${lis.join('\n')}
 </ul>

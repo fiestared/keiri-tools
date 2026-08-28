@@ -82,6 +82,63 @@
       true
     );
 
+    /* ---------- 領域をまたぐ導線 ----------
+       qualified exposure = 50%以上が1秒継続して見えた配置。判定は article-end のみ。
+       hub-out と top-strip は観察用、global-nav は分母が無いため判定に混ぜない。 */
+    function domainParams(el) {
+      var box = el.closest ? el.closest(".domain-bridge, .domain-nav") : null;
+      return {
+        bridge: box ? (box.getAttribute("data-bridge") || "(unknown)") : "global-nav",
+        from_domain: box ? (box.getAttribute("data-from") || "(unknown)") : "(nav)",
+        tool: toolId(),
+      };
+    }
+
+    document.addEventListener("click", function (e) {
+      try {
+        var a = e.target && e.target.closest ? e.target.closest("a[data-domain]") : null;
+        if (!a || typeof window.gtag !== "function") return;
+        var p = domainParams(a);
+        var url = new URL(a.getAttribute("href"), location.href);
+        window.gtag("event", "domain_click", {
+          bridge: p.bridge,
+          from_domain: p.from_domain,
+          to_domain: a.getAttribute("data-domain"),
+          to: url.pathname,
+          tool: p.tool,
+        });
+      } catch (_) { /* 計測で遷移を止めない */ }
+    }, true);
+
+    function watchDomainExposure() {
+      if (typeof window.IntersectionObserver !== "function") return;
+      var timers = new Map();
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          var el = entry.target;
+          var bridge = el.getAttribute("data-bridge") || "(unknown)";
+          var key = "domain_exposure:" + bridge;
+          if (entry.intersectionRatio >= 0.5) {
+            if (sent[key] || timers.has(el)) return;
+            timers.set(el, setTimeout(function () {
+              timers.delete(el);
+              sent[key] = true;
+              if (typeof window.gtag !== "function") return;
+              window.gtag("event", "domain_exposure", {
+                bridge: bridge,
+                from_domain: el.getAttribute("data-from") || "(unknown)",
+                tool: toolId(),
+              });
+            }, 1000));
+          } else if (timers.has(el)) {
+            clearTimeout(timers.get(el));
+            timers.delete(el);
+          }
+        });
+      }, { threshold: [0, 0.5] });
+      document.querySelectorAll(".domain-bridge, .domain-nav").forEach(function (el) { observer.observe(el); });
+    }
+
     /* ---------- 3. 記事 → ツールへの送客 ---------- */
     // 内部リンクは GA4 が自動で測らない（自動計測の click は外部リンクのみ）。
     // 記事(/column/)からツールへ出て行くリンクだけを数える。
@@ -193,9 +250,10 @@
     }
 
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", watchResults);
+      document.addEventListener("DOMContentLoaded", function () { watchResults(); watchDomainExposure(); });
     } else {
       watchResults();
+      watchDomainExposure();
     }
   } catch (err) {
     /* 計測はツールの機能ではない。ここで転んでもページは動き続ける */
