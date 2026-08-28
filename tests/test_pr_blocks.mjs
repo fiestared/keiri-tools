@@ -93,7 +93,7 @@ assert.ok(off.includes('保持') && off.includes('本文'), '撤去時に本文�
 
 // --- ⑦ 本番のページに、設定外のPR枠が残っていないこと ----------------------------
 const plan = planFrom(loadOffers());
-assert.strictEqual(plan.size, 24, `PR枠の対象が24ページではありません: ${plan.size}`);
+assert.strictEqual(plan.size, 25, `PR枠の対象が25ページではありません: ${plan.size}`);
 const all = [];
 (function walk(dir) {
   for (const f of readdirSync(dir)) {
