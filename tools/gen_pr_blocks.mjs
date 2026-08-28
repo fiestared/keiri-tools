@@ -57,13 +57,14 @@ export function block(offer) {
   const attrs = `href="${esc(offer.url)}" rel="${REL}" target="_blank"`
     + ` referrerpolicy="no-referrer-when-downgrade" attributionsrc`;
   const banner = offer.banner || {};
+  const bannerHtml = banner.src ? `<a class="pr-banner" ${attrs} data-pr="${esc(offer.id)}" data-pr-slot="${esc(slot)}:banner">`
+    + `<img src="${esc(banner.src)}" width="${esc(banner.width || '')}" height="${esc(banner.height || '')}"`
+    + ` alt="${esc(banner.alt || '')}" loading="lazy" decoding="async" style="border:none;max-width:100%;height:auto"></a>` : '';
   return `${MARK}<aside class="pr-block" aria-label="広告">`
     + `<div class="pr-label">${PR_LABEL}</div>`
     + `<p class="pr-lead">${esc(offer.lead || '')}</p>`
     + `<a class="pr-cta" ${attrs} data-pr="${esc(offer.id)}" data-pr-slot="${esc(slot)}:text">${esc(offer.cta)}</a>`
-    + `<a class="pr-banner" ${attrs} data-pr="${esc(offer.id)}" data-pr-slot="${esc(slot)}:banner">`
-    + `<img src="${esc(banner.src || '')}" width="${esc(banner.width || '')}" height="${esc(banner.height || '')}"`
-    + ` alt="${esc(banner.alt || '')}" loading="lazy" decoding="async" style="border:none;max-width:100%;height:auto"></a>`
+    + bannerHtml
     + (offer.note ? `<p class="pr-note">${esc(offer.note)}</p>` : '')
     + `<img class="pr-impression" src="${esc(offer.impression || '')}" width="1" height="1" alt="" loading="lazy" style="border:none">`
     + `</aside>${END}`;
