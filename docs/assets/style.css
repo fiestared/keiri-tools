@@ -769,6 +769,7 @@ main:focus { outline: none; }
 .pr-banner img{display:block}
 .pr-note{margin:8px 0 0;font-size:12px;color:var(--sub)}
 .pr-impression{position:absolute;width:1px;height:1px}
+.side-rail>.pr-block{margin-bottom:12px}
 @media print{.pr-block{display:none!important}}
 
 /* トップの質問欄のヒント。プレースホルダをラベル・説明の代わりにしない（入力すると消えるため） */
@@ -843,4 +844,31 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
     padding: 14px 16px;
   }
   .toc li { font-size: 13px; }
+  .side-rail {
+    position: fixed;
+    top: 84px;
+    left: calc(50% + 160px);
+    width: 300px;
+    max-height: calc(100vh - 104px);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .side-rail > .pr-block {
+    flex: 0 0 auto;
+    margin: 0;
+    padding: 14px 16px;
+  }
+  .side-rail > .pr-block .pr-lead { font-size: 13px; line-height: 1.65; }
+  .side-rail > .pr-block .pr-cta { font-size: 13px; }
+  .side-rail > .pr-block .pr-note { font-size: 11px; line-height: 1.5; }
+  .side-rail > .toc {
+    position: static;
+    width: auto;
+    max-height: none;
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    margin: 0;
+  }
 }

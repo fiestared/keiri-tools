@@ -53,7 +53,7 @@ export function loadOffers(path = CONFIG) {
 
 /** 1案件ぶんのHTML。★ラベルと rel は必ず付く（引数で消せない） */
 export function block(offer) {
-  const slot = offer.slot || 'before-faq';
+  const slot = offer.slot || 'rail-before-toc';
   const attrs = `href="${esc(offer.url)}" rel="${REL}" target="_blank"`
     + ` referrerpolicy="no-referrer-when-downgrade" attributionsrc`;
   const banner = offer.banner || {};
@@ -78,21 +78,46 @@ export function blockRange(html) {
     throw new Error(`PR枠のマーカーが壊れています（開始=${a} 終端=${b}）。`
       + '両方のマーカーを消してから流し直してください');
   }
-  return [a, b + END.length];
+  let start = a;
+  const lineStart = html.lastIndexOf('\n', a - 1) + 1;
+  if (/^[\t ]*$/.test(html.slice(lineStart, a))) start = lineStart;
+  let end = b + END.length;
+  // 生成時にブロック直後へ足す改行も一緒に外し、再生成を完全に冪等にする。
+  if (html.startsWith('\r\n', end)) end += 2;
+  else if (html[end] === '\n') end += 1;
+  return [start, end];
 }
 
-/** `</article>` の直前に入れる。offer が無ければ**消す** */
+/** 目次の上に入れる。デスクトップでは .side-rail 全体が追従する。 */
 export function withBlock(html, offer) {
   const range = blockRange(html);
-  if (!offer) return range ? html.slice(0, range[0]) + html.slice(range[1]) : html;
-  if (range) return html.slice(0, range[0]) + block(offer) + html.slice(range[1]);
+  const base = range ? html.slice(0, range[0]) + html.slice(range[1]) : html;
+  if (!offer) return base;
+
+  if ((offer.slot || 'rail-before-toc') === 'rail-before-toc') {
+    const rail = base.indexOf('<div class="side-rail">');
+    if (rail >= 0) {
+      const openEnd = base.indexOf('>', rail) + 1;
+      return base.slice(0, openEnd) + block(offer) + '\n' + base.slice(openEnd);
+    }
+    const tocStart = base.search(/<nav class="toc"[\s>]/i);
+    if (tocStart >= 0) {
+      const tocEnd = base.indexOf('</nav>', tocStart);
+      if (tocEnd >= 0) {
+        const afterToc = tocEnd + '</nav>'.length;
+        const wrapped = `<div class="side-rail">${block(offer)}\n`
+          + base.slice(tocStart, afterToc) + `</div>`;
+        return base.slice(0, tocStart) + wrapped + base.slice(afterToc);
+      }
+    }
+  }
   let close = -1;
   if ((offer.slot || 'before-faq') === 'before-faq') {
-    close = html.search(/<h2[^>]*(?:id="faq"|data-faq)[^>]*>/i);
+    close = base.search(/<h2[^>]*(?:id="faq"|data-faq)[^>]*>/i);
   }
-  if (close < 0) close = html.lastIndexOf('</article>');
-  if (close < 0) return html;                 // <article> を持たないページは対象外
-  return html.slice(0, close) + block(offer) + '\n' + html.slice(close);
+  if (close < 0) close = base.lastIndexOf('</article>');
+  if (close < 0) return base;                 // <article> を持たないページは対象外
+  return base.slice(0, close) + block(offer) + '\n' + base.slice(close);
 }
 
 /** ページのパス（"column/foo" 形式）→ ファイル */

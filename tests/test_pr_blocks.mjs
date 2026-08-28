@@ -113,7 +113,8 @@ for (const [rel, offer] of plan) {
   const html = readFileSync(join(DOCS, rel, 'index.html'), 'utf-8');
   assert.ok(html.includes(MARK), `${rel}: PR枠が生成されていません`);
   assert.strictEqual((html.match(/<aside class="pr-block"/g) || []).length, 1, `${rel}: PR枠が1件ではありません`);
-  assert.ok(html.indexOf(MARK) < html.search(/<h2[^>]*(?:id="faq"|data-faq)/i), `${rel}: PR枠がFAQより後です`);
+  assert.ok(html.includes('<div class="side-rail">'), `${rel}: PR枠と目次の右レールがありません`);
+  assert.ok(html.indexOf(MARK) < html.indexOf('<nav class="toc"'), `${rel}: PR枠が目次の上にありません`);
   assert.ok(html.includes(offer.banner.src) && html.includes(offer.impression.replaceAll('&', '&amp;')), `${rel}: 公式素材が欠落しています`);
 }
 
