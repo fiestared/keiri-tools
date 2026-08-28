@@ -12,7 +12,8 @@
  *   （右端は 672 と 1120 が混在してよい。左端が割れると壊れて見える）。
  *
  * ★測るのは main 直下の要素だけ。入れ子の中身は親の位置に従うので数えない。
- * ★ヘッダーのブランドとも揃っていることまで見る（帯の中身と本文の左端は一致させる）。
+ * ★共通ヘッダーはページ本文とは別の1120pxシェル。ページを移動しても位置が動かないことを
+ *   全ページ横断で確かめる（本文が672pxのページでもヘッダーを狭めない）。
  * ★file:// では開かない（モジュールJSが読めず「全ページ壊れている」ように見える）。HTTP 越しに開く。
  */
 import { createServer } from 'node:http';
@@ -55,7 +56,6 @@ const INJECT = (next) => `<script>
   function L(el){ return Math.round(el.getBoundingClientRect().left); }
   var edges = {};
   var brand = document.querySelector('header.site .brand');
-  if (brand) edges[L(brand)] = ['header.brand'];
   var m = document.querySelector('main');
   if (m) Array.prototype.forEach.call(m.children, function(el){
     var r = el.getBoundingClientRect();
@@ -65,7 +65,7 @@ const INJECT = (next) => `<script>
     var name = el.tagName.toLowerCase() + (el.className && typeof el.className === 'string' ? '.' + el.className.trim().split(/\\s+/)[0] : '');
     (edges[k] = edges[k] || []).push(name);
   });
-  fetch('/__m', { method:'POST', body: JSON.stringify({ path: location.pathname, edges: edges }) })
+  fetch('/__m', { method:'POST', body: JSON.stringify({ path: location.pathname, edges: edges, header: brand ? L(brand) : null }) })
     .then(function(){ ${next ? `location.href = ${JSON.stringify(next)};` : `fetch('/__done',{method:'POST'});`} });
 })();
 </script>`;
@@ -120,10 +120,14 @@ for (const r of results) {
   }
   if (groups.length > 1) bad.push({ path: r.path, groups });
 }
+const headerEdges = [...new Set(results.map((r) => r.header).filter((x) => x !== null))];
 const seen = new Set(results.map((r) => r.path));
 const missed = list.filter((p) => !seen.has(p));
 
-if (bad.length || missed.length > list.length * 0.1) {
+if (bad.length || headerEdges.length > 1 || missed.length > list.length * 0.1) {
+  if (headerEdges.length > 1) {
+    console.error(`✗ 共通ヘッダーの左端がページ間で動いている: ${headerEdges.join(', ')}px`);
+  }
   if (bad.length) {
     console.error(`✗ ${WIDTH}px で左端が割れているページ ${bad.length}件（測定 ${results.length}/${list.length}）:`);
     for (const b of bad.slice(0, 12)) {
