@@ -91,6 +91,17 @@ const SYNONYMS = [
   { when: ["甲欄", "乙欄"], add: ["甲欄 乙欄", "扶養控除申告書 出してない"] },
 ];
 
+/**
+ * 特定ページだけに足す検索補助語。
+ *
+ * SYNONYMS は同じ用語を持つ全ページへ広がるため、曖昧な短語の順位調整には使わない。
+ * たとえば「銀行振込」は振込方法・反映時間・手数料のどれとも読めるが、トップ検索では
+ * 3候補を併記できる。そのため代表的な入口だけ完全一致を持たせ、他候補は落とさない。
+ */
+const ENTRY_ALIASES = new Map([
+  ["furikomi-tesuryo-hikaku", ["銀行振込"]],
+]);
+
 /** gen_index_sitemap.mjs の CATEGORIES から slug→カテゴリ名を拾う(単一の正本を再利用)。 */
 function loadCategories() {
   const map = new Map();
@@ -145,7 +156,7 @@ for (const slug of readdirSync(COLUMN)) {
   const tool = ctaHref ? ctaHref.replace(/^(\.\.\/)+/, "/") : null;
   const category = catOf.get(slug) || "";
   const base = `${title} ${answer}`;
-  const terms = buildTerms(title, answer, category, ...synonymsFor(base));
+  const terms = buildTerms(title, answer, category, ...synonymsFor(base), ...(ENTRY_ALIASES.get(slug) || []));
   entries.push({ type: "article", url: `/column/${slug}/`, title, answer, tool, terms });
 }
 

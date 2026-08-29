@@ -81,6 +81,58 @@ export function tokenize(s) {
   return tokens;
 }
 
+// 質問の「何について」と「何をしたい」を分ける。
+// n-gram だけでは、タイトル末尾に同じ語がある記事と、その語を主題にした記事が同点になるため。
+const INTENT_PATTERNS = {
+  definition: /(?:とは|ってなに|って何|なに|何ですか|仕組み|わかりやすく)/,
+  amount: /(?:いくら|どのくらい|金額|計算して|計算したい|シミュレーション|引かれる|引かれ)/,
+  selection: /(?:選び方|選ぶ|おすすめ)/,
+};
+const TOPIC_NOISE = /(?:とは|ってなに|って何|なに|何ですか|仕組み|わかりやすく|いくら|どのくらい|金額|計算して|計算したい|計算方法|シミュレーション|引かれる|引かれ|選び方|選ぶ|おすすめ|教えてください|教えて|知りたい|分かりません|わかりません|ください|ですか|でしょうか)/g;
+
+function queryProfile(query) {
+  const nq = normalize(query);
+  const compact = nq.replace(/ /g, "");
+  const topic = compact.replace(TOPIC_NOISE, "");
+  return {
+    definition: INTENT_PATTERNS.definition.test(compact),
+    amount: INTENT_PATTERNS.amount.test(compact),
+    selection: INTENT_PATTERNS.selection.test(compact),
+    topic,
+    topicTokens: [...tokenize(topic)],
+  };
+}
+
+// 「｜」「—」より前はタイトルが宣言している主題。後半の関連語より強く扱う。
+function titleLead(entry) {
+  return (entry.title || "").toLowerCase().split(/[｜|—]/, 1)[0];
+}
+
+function leadTopicRatio(entry, profile) {
+  if (!profile.topicTokens.length) return 0;
+  const lead = titleLead(entry);
+  const hit = profile.topicTokens.filter((t) => lead.includes(t)).length;
+  return hit / profile.topicTokens.length;
+}
+
+const CONTENT_CHAR = /[^ぁ-ゖのをはがも]/g;
+function contentChars(s) {
+  return [...normalize(s).replace(/ /g, "").matchAll(CONTENT_CHAR)].map((m) => m[0]);
+}
+
+function leadCharCoverage(entry, profile) {
+  const topic = contentChars(profile.topic);
+  if (!topic.length) return 0;
+  const lead = titleLead(entry);
+  return topic.filter((c) => lead.includes(c)).length / topic.length;
+}
+
+function leadPrecision(entry, profile) {
+  const topicN = new Set(contentChars(profile.topic)).size;
+  const leadN = new Set(contentChars(titleLead(entry))).size;
+  return topicN && leadN ? Math.min(1, topicN / leadN) : 0;
+}
+
 /**
  * このスコア以上を「関連する答えが見つかった(matched)」とみなす閾値。
  * この機能の肝は「答えられない質問を matched:false で記録し、需要の実データにする」こと。
@@ -232,7 +284,7 @@ function contentCoverage(entry, qtokens, nq, contentIdx, df, N) {
  * 「方法」「計算」のように多くのエントリに出る一般語は軽く、「産休」「離職票」のように
  * 少数にしか出ない語は重く効く ── これで一般語だけの誤ヒット(例: 宇宙旅行の"方法")を抑える。
  */
-function scoreEntry(entry, qtokens, df, N) {
+function scoreEntry(entry, qtokens, df, N, profile) {
   const terms = entry.terms || "";
   if (entry._tl === undefined) entry._tl = (entry.title || "").toLowerCase();
   const title = entry._tl;
@@ -251,6 +303,13 @@ function scoreEntry(entry, qtokens, df, N) {
     s += w * idf;
   }
   if (entry.tool) s *= 1.06; // 関連ツールがあるものを優先的に見せる
+  // 同じ語がタイトル後半に出るだけの記事より、その語を主題として掲げるページを優先する。
+  const leadRatio = leadTopicRatio(entry, profile);
+  s *= 1 + leadRatio * 1.2;
+  s *= 1 + leadPrecision(entry, profile) * 0.35;
+  // 定義質問は「とは・わかりやすく」を主題部に持つ記事、金額質問は計算ツールが自然な入口。
+  if (profile.definition && /(?:とは|わかりやす)/.test(titleLead(entry))) s *= 1.18;
+  if (profile.amount && entry.type === "tool") s *= 1.22;
   return s;
 }
 
@@ -261,6 +320,7 @@ function scoreEntry(entry, qtokens, df, N) {
 export function search(index, query, limit = 3) {
   const qtokens = [...tokenize(query)];
   if (qtokens.length === 0) return { results: [], best: 0, matched: false, scores: [] };
+  const profile = queryProfile(query);
   const N = index.length;
   // 各クエリ・トークンの df(そのトークンを含むエントリ数)を索引から数える。
   const df = new Map();
@@ -273,11 +333,15 @@ export function search(index, query, limit = 3) {
   //   助詞・丁寧語だけで釣れたエントリが**上位に居座ったまま**になり、その下にいる
   //   正しい記事が押し出される(実測: 「育休はいくらもらえるの？」が再就職手当を返していた)。
   //   先に外せば、正しい記事が繰り上がって matched のまま返せる。
-  const nq = normalize(query).replace(/ /g, "");
+  // 意図語（「なに」「仕組み」「いくら」等）は全候補が本文に持つ必要はない。
+  // 被覆の分母も主題側に寄せ、意図語をたまたま持つ別主題の記事が居座るのを防ぐ。
+  const nq = profile.topic || normalize(query).replace(/ /g, "");
   const contentIdx = contentPositions(nq);
   const scored = index
-    .map((e) => ({ e, s: scoreEntry(e, qtokens, df, N) }))
+    .map((e) => ({ e, s: scoreEntry(e, qtokens, df, N, profile), leadCoverage: leadCharCoverage(e, profile) }))
     .filter((x) => x.s > 0 && contentCoverage(x.e, qtokens, nq, contentIdx, df, N) >= MIN_CONTENT_COVERAGE)
+    // 「◯◯の選び方」は、◯◯を主題にしていない記事へ偶然「選び方」が刺さっても返さない。
+    .filter((x) => !profile.selection || x.leadCoverage >= 0.8)
     .sort((a, b) => b.s - a.s || (b.e.tool ? 1 : 0) - (a.e.tool ? 1 : 0));
   const top = scored.slice(0, limit);
   const best = scored.length ? scored[0].s : 0;

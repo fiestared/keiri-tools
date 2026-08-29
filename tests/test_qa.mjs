@@ -106,6 +106,36 @@ for (const [q, expect] of QUERIES) {
      `「${q}」→ 上位に ${expect[0]} 等 [best=${r.best.toFixed(1)}] 実際=${urls.join(" ") || "(なし)"}`);
 }
 
+// 曖昧な短語は候補を消さず、代表的な入口だけを先頭にする。
+// 以前は3記事が完全同点で、URL順により「振込と振替の違い」が偶然1位になっていた。
+for (const q of ["銀行振込"]) {
+  const r = search(index, q);
+  ok(r.matched && r.results[0]?.url === "/column/furikomi-tesuryo-hikaku/",
+     `「${q}」→ 振込手数料一覧が1位 [実際=${r.results.map((e) => e.url).join(" ") || "(なし)"}]`);
+  ok(r.results.some((e) => e.url === "/column/furikomi-hanei-jikan/")
+     && r.results.some((e) => e.url === "/column/furikomi-furikae-chigai/"),
+     `「${q}」→ 反映時間・振込と振替の違いも候補に残る`);
+}
+
+// 1位精度: 「正解が3件内にある」だけでは見逃していた、主題と検索意図の順位を固定する。
+const TOP_ONE = [
+  ["インボイスってなに", "/column/invoice-wakariyasuku/"],
+  ["ボーナスの社会保険料はいくら引かれる？", "/column/shoyo-shakaihoken/"],
+  ["住民税 いくら", "/juminzei/"],
+  ["みなし残業代の仕組みが分かりません", "/column/kotei-zangyodai/"],
+];
+for (const [q, expected] of TOP_ONE) {
+  const r = search(index, q);
+  ok(r.matched && r.results[0]?.url === expected,
+     `1位精度「${q}」→ ${expected} [実際=${r.results.map((e) => e.url).join(" ") || "(なし)"}]`);
+}
+
+{
+  const q = "パソコンの選び方を教えて";
+  const r = search(index, q);
+  ok(!r.matched, `主題のない選び方「${q}」は matched:false`);
+}
+
 // ---- (2b) 丁寧な長文の質問(★精度の門を足すとき、ここが再現率のブレーキになる) ----
 // 短い質問だけを並べていると「無関係な質問を止める門」を強くしたときに、
 // **助詞と丁寧語で薄まった本物の質問**を殺したことに気づけない。
@@ -172,12 +202,6 @@ for (const q of NO_MATCH) {
 // 赤にすると push が止まるので警告として出す。**直したら上の正式な一覧へ移すこと。**
 // ここに残す条件: 実測で確認してあり、次に何をすればよいかが書いてあること。
 const KNOWN_GAPS = [
-  { q: "パソコンの選び方を教えて", want: false,
-    why: "「パソコン」は少額減価償却の記事に実在する語なので被覆86%で通る。df でも被覆でも切れない。"
-       + "同義語辞書側で『買い方/選び方』のような購買意図の語を負に効かせるしかない" },
-  { q: "みなし残業代の仕組みが分かりません", want: true, expect: "/column/kotei-zangyodai/",
-    why: "順位の誤り。上位に /column/teiji-kettei/ が来て正解が3件から押し出される。"
-       + "「みなし残業→固定残業代」の同義語は効いているが『仕組み』が定時決定側に強く当たる" },
 ];
 for (const g of KNOWN_GAPS) {
   const r = search(index, g.q);
