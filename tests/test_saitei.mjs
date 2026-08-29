@@ -106,11 +106,14 @@ eq(D.prefectures.length, 47, '都道府県は47件');
   ok(s.gap > 0, '差は正');
 }
 
-// ---- 令和8年度は fail-closed（推測を出さない） ----
+// ---- 令和8年度の目安（答申済み・発効はまだ） ----
 {
-  eq(D.next_revision.status, 'pending', '令和8年度は未答申として持っている');
-  ok(!('wage' in D.next_revision) && !('up' in D.next_revision),
-     '未答申なのに金額を持っていない（推測値を持たせない）');
+  eq(D.next_revision.status, 'announced', '目安は答申済み。都道府県表はまだ令和7年度');
+  eq(D.next_revision.guideline.A, 54, 'Ａランク目安');
+  eq(D.next_revision.guideline.B, 56, 'Ｂランク目安');
+  eq(D.next_revision.guideline.C, 56, 'Ｃランク目安');
+  eq(D.next_revision.guideline.national_average_if_followed, 1176, '目安どおりの加重平均');
+  ok(!('wage' in D.next_revision), '目安を現行の時間額として持たない');
   ok(D.next_revision.source_url.startsWith('https://www.mhlw.go.jp/'), '出典が厚労省');
 }
 
