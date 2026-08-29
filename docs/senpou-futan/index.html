@@ -124,7 +124,10 @@
 
     <button class="primary" id="calc">計算する</button>
     <div role="status" aria-live="polite" class="result" id="result"></div>
-  <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
+    <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
+    <button id="copy-invoice-line" class="btn-outline invoice-line-share" style="display:none">請求書に貼る1行をコピー</button>
+    <p id="invoice-line-help" class="invoice-line-help" style="display:none">請求額・手数料・振込予定額と、この計算ページへのリンクを1行でコピーします。</p>
+    <p id="invoice-line-status" class="invoice-line-status" role="status" aria-live="polite"></p>
   </div>
 
   <div class="card">
@@ -385,9 +388,20 @@
 </footer>
 <script type="module">
 import { calc, calcFlat, METHODS, methodsDisagree, explainShortfall } from "../assets/senpou_core.js";
+import { attachInvoiceLineShare } from "../assets/invoice_line_share.js";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => n.toLocaleString("ja-JP") + " 円";
+const invoiceLineShare = attachInvoiceLineShare($("copy-invoice-line"), $("invoice-line-status"));
+
+const hideInvoiceLineShare = () => {
+  invoiceLineShare.hide();
+  $("invoice-line-help").style.display = "none";
+};
+const showInvoiceLineShare = (result) => {
+  invoiceLineShare.show(result);
+  $("invoice-line-help").style.display = "";
+};
 
 // 銀行プリセット。
 // これは**手数料の入力欄を埋めるだけ**の候補リストで、計算そのものには使わない
@@ -432,12 +446,14 @@ $("calc").addEventListener("click", () => {
   const method = document.querySelector('input[name="method"]:checked').value;
   const box = $("result");
   box.style.display = "block";
+  hideInvoiceLineShare();
   if (!invoice || invoice <= 0) { box.innerHTML = "請求額を入力してください。"; return; }
 
   if (method === "flat") {
     const flatFee = Number($("flatFee").value) || 0;
     const r = calcFlat(invoice, flatFee);
     box.innerHTML = render(invoice, r.fee, r.transfer);
+    if (r.transfer > 0) showInvoiceLineShare({ invoice, fee: r.fee, transfer: r.transfer });
     return;
   }
   const feeTable = { under30k: Number($("feeUnder").value), over30k: Number($("feeOver").value) };
@@ -454,6 +470,7 @@ $("calc").addEventListener("click", () => {
     html += `<div class="note">この請求額は3万円境界の付近で、<b>方式によって差引額が変わります</b>。取引先の規程を確認してください。<br>${rows.join("<br>")}</div>`;
   }
   box.innerHTML = html;
+  if (r.transfer > 0) showInvoiceLineShare({ invoice, fee: r.fee, transfer: r.transfer });
 });
 
 function render(invoice, fee, transfer, methodLabel) {

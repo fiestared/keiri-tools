@@ -189,6 +189,35 @@ const SCENES = {
     return { result: text(doc, "checkResult") };
   },
 
+  // 請求書用1行は、有効な計算後だけ現れ、金額をURLへ載せず、成功時だけ計測する。
+  async senpou_invoice_line() {
+    const doc = await open("/docs/senpou-futan/");
+    const win = doc.defaultView;
+    const writes = [];
+    Object.defineProperty(win.navigator, "clipboard", {
+      configurable: true,
+      value: { writeText: async (t) => { writes.push(t); } },
+    });
+    const before = doc.getElementById("copy-invoice-line").style.display;
+    pickRadio(doc, "method", "flat");
+    set(doc, "invoice", "110000");
+    set(doc, "flatFee", "550");
+    click(doc, "calc");
+    const shown = doc.getElementById("copy-invoice-line").style.display !== "none";
+    const buttonHeight = doc.getElementById("copy-invoice-line").getBoundingClientRect().height;
+    click(doc, "copy-invoice-line");
+    await waitFor(() => writes.length === 1, "請求書用1行のコピー");
+    await waitFor(() => gaNames(doc).includes("copy_invoice_line"), "copy_invoice_line の送出");
+    return {
+      before,
+      shown,
+      buttonHeight,
+      copied: writes[0],
+      status: text(doc, "invoice-line-status"),
+      eventCount: gaNames(doc).filter((name) => name === "copy_invoice_line").length,
+    };
+  },
+
   // 最低賃金: 都道府県の選択→判定までが実際に動くか。
   // コアのテスト(tests/test_saitei.mjs)は純ロジックだけを見ており、
   // 「セレクトが47件描かれるか」「月給の入力欄が出るか」「判定文が出るか」は無検査だった。

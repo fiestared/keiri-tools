@@ -30,6 +30,11 @@ const SCENES = [
   // 手数料(550円) > 請求額(300円) → マイナスの振込額を黙って出さず、警告を出すこと
   { name: "senpou_fee_over", expect: (s) =>
       /振込額がマイナスになります/.test(s.result) && /当方負担/.test(s.result) },
+  { name: "senpou_invoice_line", expect: (s) =>
+      s.before === "none" && s.shown && s.buttonHeight >= 48 &&
+      /請求額 110,000円/.test(s.copied) && /振込予定額 109,450円/.test(s.copied) &&
+      /utm_source=invoice_line/.test(s.copied) && !/[?&](invoice|fee|transfer)=/.test(s.copied) &&
+      /コピーしました/.test(s.status) && s.eventCount === 1 },
   // 最低賃金: 47都道府県が描かれ、時給1,100円(東京1,226円)が「下回っている」と出ること
   { name: "saitei_hourly", expect: (s) =>
       s.options > 45 && /1226/.test(s.prefBox) && /下回っています/.test(s.out) &&
