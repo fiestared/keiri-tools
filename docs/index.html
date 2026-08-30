@@ -749,9 +749,9 @@ form.addEventListener("submit", (ev) => { ev.preventDefault(); clearTimeout(qaTi
 // 既定のDOM順(=クローラが見る順)は変えない。localStorage不可(プライベートモード等)でも壊れない。
 (function () {
   var ORDER = {
-    kojin: ["t-kyuyo", "t-setsuzei", "t-kyufu", "t-kurashi", "t-jigyo", "t-keiri"],
-    jigyo: ["t-jigyo", "t-keiri", "t-setsuzei", "t-kurashi", "t-kyuyo", "t-kyufu"],
-    keiri: ["t-keiri", "t-kyuyo", "t-jigyo", "t-setsuzei", "t-kyufu", "t-kurashi"],
+    kojin: ["t-kyuyo", "t-setsuzei", "t-kyufu", "t-kurashi", "t-hojokin", "t-jigyo", "t-keiri"],
+    jigyo: ["t-jigyo", "t-keiri", "t-hojokin", "t-setsuzei", "t-kurashi", "t-kyuyo", "t-kyufu"],
+    keiri: ["t-keiri", "t-kyuyo", "t-jigyo", "t-hojokin", "t-setsuzei", "t-kyufu", "t-kurashi"],
   };
   var bar = document.getElementById("persona-bar");
   var columnHead = document.getElementById("column-head");
@@ -764,10 +764,17 @@ form.addEventListener("submit", (ev) => { ev.preventDefault(); clearTimeout(qaTi
       var el = document.getElementById(id);
       if (el) parent.insertBefore(el, columnHead); // 順に差し込む=この順で上から並ぶ
     });
+    // 将来カテゴリを足してORDERへの登録を忘れても、先頭へ浮上させず末尾に置く。
+    document.querySelectorAll("section.tcat[id]").forEach(function (el) {
+      if (ids.indexOf(el.id) === -1) parent.insertBefore(el, columnHead);
+    });
     var nav = document.querySelector("nav.cat-nav");
     if (nav) ids.forEach(function (id) {
       var a = nav.querySelector('a[href="#' + id + '"]');
       if (a) nav.appendChild(a);
+    });
+    if (nav) nav.querySelectorAll('a[href^="#t-"]').forEach(function (a) {
+      if (ids.indexOf(a.getAttribute("href").slice(1)) === -1) nav.appendChild(a);
     });
     bar.querySelectorAll("button[data-p]").forEach(function (b) {
       b.setAttribute("aria-pressed", b.getAttribute("data-p") === p ? "true" : "false");
