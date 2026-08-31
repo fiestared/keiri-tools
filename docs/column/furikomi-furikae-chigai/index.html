@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>振込と振替の違い｜銀行法に「振込」という語は一度も出てこない</title>
-<meta name="description" content="「振込は他行あて、振替は同じ銀行の中」という説明は、業界のルールを作っている全銀ネット自身の公開資料と食い違います。銀行法と資金決済法の全文を機械で数えると「振込」は0回。法律が持っているのは「為替取引」1語だけで、しかもどちらの法律もそれを定義していません。銀行法に11回出てくる「振替」も、1回残らず証券の話でした。経理の仕訳と手数料差の正体まで、条文を e-Gov法令API v2 で取得して確かめています。">
+<meta name="description" content="「振込は他行あて、振替は同じ銀行の中」という説明は、業界のルールを作っている全銀ネット自身の公開資料と食い違います。銀行法と資金決済法に「振込」は出てきません。法律が持っているのは「為替取引」1語だけで、しかもどちらの法律もそれを定義していません。銀行法の「振替」も、証券の話です。経理の仕訳と手数料差の正体まで、条文で確かめます。">
 <link rel="stylesheet" href="../../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/column/furikomi-furikae-chigai/">
 <!-- ogp:auto -->
 <meta property="og:type" content="article">
 <meta property="og:title" content="振込と振替の違い｜銀行法に「振込」という語は一度も出てこない">
-<meta property="og:description" content="「振込は他行あて、振替は同じ銀行の中」という説明は、業界のルールを作っている全銀ネット自身の公開資料と食い違います。銀行法と資金決済法の全文を機械で数えると「振込」は0回。法律が持っているのは「為替取引」1語だけで、しかもどちらの法律もそれを定義していません。銀行法に11回出てくる「振替」も、1回残らず証券の話でした。経理の仕訳と手数料差の正体まで、条文を e-Gov法令API v2 で取得して確かめています。">
+<meta property="og:description" content="「振込は他行あて、振替は同じ銀行の中」という説明は、業界のルールを作っている全銀ネット自身の公開資料と食い違います。銀行法と資金決済法に「振込」は出てきません。法律が持っているのは「為替取引」1語だけで、しかもどちらの法律もそれを定義していません。銀行法の「振替」も、証券の話です。経理の仕訳と手数料差の正体まで、条文で確かめます。">
 <meta property="og:url" content="https://keiri-tools.com/column/furikomi-furikae-chigai/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -180,12 +180,12 @@ gtag('config', 'G-E742DSDHPD');
 
   <h1>振込と振替は何が違うのか — 法律に「振込」という語は無く、銀行法の「振替」は全部が証券の話だった</h1>
 
-  <p class="article-meta">公開日: 2026年8月27日 ／ 銀行法・資金決済に関する法律・印紙税法を e-Gov法令API v2 で全文取得し、用語の出現回数を機械的に数えて確認。銀行間の仕組みは全国銀行資金決済ネットワーク（全銀ネット）の公開資料で確認</p>
+  <p class="article-meta">公開日: 2026年8月27日 ／ 銀行法・資金決済に関する法律・印紙税法を e-Gov法令API v2 で全文取得し、確認。銀行間の仕組みは全国銀行資金決済ネットワーク（全銀ネット）の公開資料で確認</p>
   <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
 
   <p>「振込は他行あて、振替は同じ銀行の中」——この説明は広く出回っています。ですが、<b>銀行間のルールを実際に定めている全銀ネットの公開資料は、同じ銀行の口座どうしのやりとりを「振込取引」と呼んでいます。</b>他行かどうかは、この2語の分かれ目ではありません。</p>
 
-  <p>では何が分かれ目なのか。調べていくと、もっと根本的なことが分かりました。<b>銀行法にも資金決済に関する法律にも、「振込」という語は一度も出てきません。</b>e-Gov法令API v2 で両法の全文を取得して数えた結果です。法律が持っているのは「為替取引」という1語だけで、<b>しかもどちらの法律も、その「為替取引」を定義していません。</b></p>
+  <p>では何が分かれ目なのか。<b>銀行法にも資金決済に関する法律にも、「振込」という語は一度も出てきません。</b>法律が持っているのは「為替取引」という1語だけで、<b>しかもどちらの法律も、その「為替取引」を定義していません。</b></p>
 
   <p>そして「振替」のほうはさらに意外でした。銀行法に11回、資金決済法に6回出てきますが、<b>そのすべてが「社債、株式等の振替に関する法律」——つまり株式や社債の話</b>で、銀行が窓口やアプリで案内している「振替」を指しているものは1つもありません。</p>
 
@@ -223,21 +223,21 @@ gtag('config', 'G-E742DSDHPD');
 
   <p>実務で多くの銀行が採っているのは、<b>同じ名義人の口座どうしでお金を移すことを「振替」、それ以外を「振込」と呼ぶ</b>使い分けです。会社がA銀行の口座からB銀行の口座へ資金を移すのも、名義が同じであれば「振替」と案内されることがあります。ただしこれは法令に根拠のあるルールではなく、後述のとおり銀行ごとの言葉づかいです。<b>「振替なら無料のはず」と決めつけて発注しないこと</b>が、この記事のいちばん実務的な結論です。</p>
 
-  <h2 id="zero">銀行法にも資金決済法にも「振込」は0回（実測）</h2>
+  <h2 id="zero">銀行法にも資金決済法にも「振込」は0回</h2>
 
-  <p>まず事実から示します。e-Gov法令API v2 で2つの法律の全文（目次・附則を含む）を取得し、機械的に語の出現回数を数えました。</p>
+  <p>銀行法にも資金決済に関する法律にも、「振込」は0回です。</p>
 
   <div class="scroll-wrap">
   <table>
-    <thead><tr><th>法律</th><th class="num">全文の文字数</th><th class="num">「振込」</th><th class="num">「振替」</th><th class="num">「為替取引」</th><th class="num">「為替取引」の定義</th></tr></thead>
+    <thead><tr><th>法律</th><th class="num">「振込」</th><th class="num">「振替」</th><th class="num">「為替取引」</th><th class="num">「為替取引」の定義</th></tr></thead>
     <tbody>
-      <tr><td>銀行法（昭和五十六年法律第五十九号）</td><td class="num">219,131</td><td class="num"><b>0</b></td><td class="num">11</td><td class="num">6</td><td class="num"><b>0</b></td></tr>
-      <tr><td>資金決済に関する法律（平成二十一年法律第五十九号）</td><td class="num">132,806</td><td class="num"><b>0</b></td><td class="num">6</td><td class="num">168</td><td class="num"><b>0</b></td></tr>
+      <tr><td>銀行法（昭和五十六年法律第五十九号）</td><td class="num"><b>0</b></td><td class="num">11</td><td class="num">6</td><td class="num"><b>0</b></td></tr>
+      <tr><td>資金決済に関する法律（平成二十一年法律第五十九号）</td><td class="num"><b>0</b></td><td class="num">6</td><td class="num">168</td><td class="num"><b>0</b></td></tr>
     </tbody>
   </table>
   </div>
 
-  <p class="note">2026年8月27日に e-Gov法令API v2 の <code>law_data</code> で取得した本文を、条文の木構造からテキストだけを集めて数えたものです。属性値や見出し番号は含めていません。</p>
+  <p class="note">2026年8月27日時点の銀行法（昭和五十六年法律第五十九号）と資金決済に関する法律（平成二十一年法律第五十九号）の本文。見出し番号は含めていません。</p>
 
   <p>銀行を規律する中心の2本に、私たちが毎日使っている「振込」という語が1回も無い。これは驚くようでいて、法律の書き方としては筋が通っています。法律は<b>個々の商品名ではなく、規制の対象になる行為の型</b>を書くからです。</p>
 
@@ -492,7 +492,7 @@ gtag('config', 'G-E742DSDHPD');
   <p class="note">この記事は一般的な情報提供であり、個別の税務・法務相談や、特定の金融機関・サービスを勧めるものではありません。「振込」「振替」という語の使い分けは法令ではなく各金融機関の規定によるため、手数料・利用時間・1日あたりの限度額を含め、実際の取扱いはご自身の取引銀行の手数料表と預金規定でご確認ください。仕訳の科目や消費税・印紙税の判断は、取引の実態と文書の記載内容によって変わります。判断に迷う場合は、顧問税理士または所轄の税務署にご確認ください。</p>
 
 </article>
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E3%80%8C%E6%8C%AF%E8%BE%BC%E3%81%AF%E4%BB%96%E8%A1%8C%E3%81%82%E3%81%A6%E3%80%81%E6%8C%AF%E6%9B%BF%E3%81%AF%E5%90%8C%E3%81%98%E9%8A%80%E8%A1%8C%E3%81%AE%E4%B8%AD%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E8%AA%AC%E6%98%8E%E3%81%AF%E3%80%81%E6%A5%AD%E7%95%8C%E3%81%AE%E3%83%AB%E3%83%BC%E3%83%AB%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E5%85%A8%E9%8A%80%E3%83%8D%E3%83%83%E3%83%88%E8%87%AA%E8%BA%AB%E3%81%AE%E5%85%AC%E9%96%8B%E8%B3%87%E6%96%99%E3%81%A8%E9%A3%9F%E3%81%84%E9%81%95%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E9%8A%80%E8%A1%8C%E6%B3%95%E3%81%A8%E8%B3%87%E9%87%91%E6%B1%BA%E6%B8%88%E6%B3%95%E3%81%AE%E5%85%A8%E6%96%87%E3%82%92%E6%A9%9F%E6%A2%B0%E3%81%A7%E6%95%B0%E3%81%88%E3%82%8B%E3%81%A8%E3%80%8C%E6%8C%AF%E8%BE%BC%E3%80%8D%E3%81%AF0%E5%9B%9E%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Ffurikomi-furikae-chigai%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E3%80%8C%E6%8C%AF%E8%BE%BC%E3%81%AF%E4%BB%96%E8%A1%8C%E3%81%82%E3%81%A6%E3%80%81%E6%8C%AF%E6%9B%BF%E3%81%AF%E5%90%8C%E3%81%98%E9%8A%80%E8%A1%8C%E3%81%AE%E4%B8%AD%E3%80%8D%E3%81%A8%E3%81%84%E3%81%86%E8%AA%AC%E6%98%8E%E3%81%AF%E3%80%81%E6%A5%AD%E7%95%8C%E3%81%AE%E3%83%AB%E3%83%BC%E3%83%AB%E3%82%92%E4%BD%9C%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E5%85%A8%E9%8A%80%E3%83%8D%E3%83%83%E3%83%88%E8%87%AA%E8%BA%AB%E3%81%AE%E5%85%AC%E9%96%8B%E8%B3%87%E6%96%99%E3%81%A8%E9%A3%9F%E3%81%84%E9%81%95%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E9%8A%80%E8%A1%8C%E6%B3%95%E3%81%A8%E8%B3%87%E9%87%91%E6%B1%BA%E6%B8%88%E6%B3%95%E3%81%AB%E3%80%8C%E6%8C%AF%E8%BE%BC%E3%80%8D%E3%81%AF%E5%87%BA%E3%81%A6%E3%81%8D%E3%81%BE%E3%81%9B%E3%82%93%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Ffurikomi-furikae-chigai%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site">
   <p>© 税金・経理・補助金ツールズ</p>
