@@ -79,11 +79,12 @@ if (cap) {
   }
   ok(cap.includes('雇用保険料は含めない'), 'figcaptionが社保の範囲(雇用保険を含めない)を明示する');
 }
-// meta description(規則9): 約53,700円/約30,200円 はオラクルの100円丸め
+// meta description: 看板の実数を figcaption と同じ桁で出す（53,740 / 30,200）
 const meta = HTML.match(/<meta name="description" content="([^"]*)"/)[1];
-ok(Math.round((withheld500 - tax500r8) / 100) * 100 === 53_700, '約53,700のオラクル一致');
-ok(meta.includes('約53,700円'), 'meta descriptionの約53,700円');
-ok(meta.includes('約30,200円'), 'meta descriptionの約30,200円');
+ok(withheld500 - tax500r8 === 53_740, '還付53,740のオラクル一致');
+ok(meta.includes('53,740円'), 'meta descriptionの53,740円');
+ok(meta.includes('30,200円'), 'meta descriptionの30,200円');
+ok(!meta.includes('約53,700'), 'meta は100円丸めを出さない');
 
 console.log('== B. 基礎控除の帯表(新旧・コア照合) ==');
 // 帯の値: [所得境界内の代表値, 旧, 新]
