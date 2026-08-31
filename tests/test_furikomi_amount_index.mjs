@@ -62,7 +62,7 @@ assert.ok(toc.includes('href="#gyakubiki"'),
 const note = block.slice(block.indexOf('<p class="note">'), block.indexOf('</p>', block.indexOf('<p class="note">')));
 assert.ok(note.includes('他行宛') && note.includes('28区分'),
   '逆引き表の収録範囲の申告（他行宛・28区分だけを扱う旨）が消えています');
-assert.ok(note.includes('推測で当てはめないでください'),
-  '「分からない金額を推測で当てはめない」の注意が消えています');
+assert.ok(note.includes('この表に当てはめず') && note.includes('銀行の料金ページでご確認ください'),
+  '未収録の金額を表に当てはめず、公式料金を確認する案内が消えています');
 
 console.log(`✓ 逆引き表 ${got.size}金額 が fee_table.json と一致（目次・収録範囲の申告も確認）`);

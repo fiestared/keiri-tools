@@ -34,6 +34,10 @@ const START = '<!-- BANK_SECTIONS:START 自動生成。手で編集しない。t
 const END = '<!-- BANK_SECTIONS:END -->';
 
 const strip = (s) => s.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').trim();
+const formatJapaneseDate = (s) => {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
+  return match ? `${match[1]}年${Number(match[2])}月${Number(match[3])}日` : s;
+};
 
 export const DATA = join(root, 'docs/assets/fee_table.json');
 
@@ -101,7 +105,7 @@ export function buildSections(rows) {
   const out = [];
   out.push(START);
   out.push('  <h2 id="ginkobetsu">銀行別の振込手数料（他行宛）</h2>');
-  out.push('  <p>上の一覧を銀行ごとに並べ替えたものです。<b>上の表と同じデータ（fee_table.json）から作っています</b>ので食い違いません。個人と法人の両方がある銀行は並べて示します。行ごとに、最後に公式ページを実読して確認した日を付けています。</p>');
+  out.push('  <p>上の一覧を銀行ごとに並べ替えたものです。<b>数字は上の一覧と同一の調査結果に基づいています</b>ので食い違いません。個人と法人の両方がある銀行は並べて示します。行ごとに、最後に公式ページで確認した日を付けています。</p>');
   for (const [base, list] of sorted) {
     const kojin = list.find((x) => x.kubun === '個人');
     const hojin = list.find((x) => x.kubun === '法人');
@@ -130,7 +134,7 @@ export function buildSections(rows) {
     const dates = [...new Set(list.filter((x) => x.verifiedAt).map((x) => x.verifiedAt))].sort();
     if (srcs.length) {
       const links = srcs.map((u) => `<a href="${u}" rel="nofollow">公式ページ</a>`).join('・');
-      out.push(`  <p class="src">出典: ${links}（${dates.join('・')}に実読して確認）</p>`);
+      out.push(`  <p class="src">出典: ${links}（${dates.map(formatJapaneseDate).join('・')}確認）</p>`);
     } else {
       // ★2026-08-14: 文言を読者向けに直した。旧文「★この行はまだ一次情報での再照合が
       //   済んでいません（表全体の確認日のみ）。」は**編集メモがそのまま公開に出ていた**もので、
@@ -191,7 +195,7 @@ export function buildAmountIndex(rows) {
   const out = [];
   out.push(AMT_START);
   out.push('  <h2 id="gyakubiki">この金額はどこの銀行？（金額から逆引き）</h2>');
-  out.push('  <p>通帳や請求書で見た手数料の金額から、その金額になる銀行を引く表です。<b>上の一覧と同じデータ（fee_table.json）から作っています</b>ので食い違いません。「3万円未満／以上で同じ額」の区分は「金額不問」と書いています。</p>');
+  out.push('  <p>通帳や請求書で見た手数料の金額から、その金額になる銀行を引く表です。<b>上の一覧と同じ調査結果から機械的に並べ替えています</b>ので、金額が食い違うことはありません。「3万円未満／以上で同じ額」の区分は「金額不問」と書いています。</p>');
   out.push('  <table>');
   out.push('    <tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th></tr>');
   for (const [amount, list] of m) {
@@ -199,7 +203,7 @@ export function buildAmountIndex(rows) {
     out.push(`    <tr><td><b>${amount}円</b></td><td>${cells}</td></tr>`);
   }
   out.push('  </table>');
-  out.push('  <p class="note">この表が扱うのは<b>他行宛・28区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後・他行宛以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。分からない金額を推測で当てはめないでください。</p>');
+  out.push('  <p class="note">この表が扱うのは<b>他行宛・28区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後・他行宛以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。この表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
   out.push(AMT_END);
   return out.join('\n');
 }
