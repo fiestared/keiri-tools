@@ -116,7 +116,8 @@ for (const [rel, offer] of plan) {
   assert.ok(html.includes('<div class="side-rail">'), `${rel}: PR枠と目次の右レールがありません`);
   assert.ok(html.indexOf(MARK) < html.indexOf('<nav class="toc"'), `${rel}: PR枠が目次の上にありません`);
   assert.ok(html.includes(offer.impression.replaceAll('&', '&amp;')), `${rel}: 公式インプレッションが欠落しています`);
-  if (offer.banner?.src) assert.ok(html.includes(offer.banner.src), `${rel}: 公式バナーが欠落しています`);
+  if (offer.banner?.src) assert.ok(html.includes(offer.banner.src.replaceAll('&', '&amp;')),
+    `${rel}: 公式バナーが欠落しています`);
 }
 
 console.log(`✓ test_pr_blocks: PR明示あり / rel=${REL} / 計測あり / 設定 ${plan.size}ページ`
