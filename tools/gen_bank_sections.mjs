@@ -203,7 +203,7 @@ export function buildAmountIndex(rows) {
     out.push(`    <tr><td><b>${amount}円</b></td><td>${cells}</td></tr>`);
   }
   out.push('  </table>');
-  out.push('  <p class="note">この表が扱うのは<b>他行宛・28区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後・他行宛以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。この表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
+  out.push('  <p class="note">この表が扱うのは<b>他行宛・28区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後の料金や、振込以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。この表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
   out.push(AMT_END);
   return out.join('\n');
 }
