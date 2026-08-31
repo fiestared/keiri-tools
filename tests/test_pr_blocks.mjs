@@ -37,6 +37,9 @@ assert.ok(h.includes(`>${PR_LABEL}<`), 'PRラベルが出ていません（景�
 assert.ok(!('label' in OFFER) || true, '');
 const sneaky = block({ ...OFFER, label: '', PR_LABEL: '', lead: '' });
 assert.ok(sneaky.includes(`>${PR_LABEL}<`), '設定でPRラベルを消せてしまいます');
+const emphasized = block({ ...OFFER, lead: '手数料119円、月額0円', leadStrong: ['119円', '0円'] });
+assert.ok(emphasized.includes('手数料<strong>119円</strong>、月額<strong>0円</strong>'),
+  '説明文の指定語だけを安全に強調できません');
 
 // --- ② rel="sponsored" ---------------------------------------------------------
 assert.ok(REL.split(/\s+/).includes('sponsored'),

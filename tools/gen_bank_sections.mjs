@@ -2,7 +2,7 @@
  * `/column/furikomi-tesuryo-hikaku/` に「銀行別」セクションを、**fee_table.json から生成**する。
  *
  * ★なぜ生成なのか（手で書いてはいけない理由）:
- *   この記事の本体は「各行の公式ページを実際に読んで確認した28区分の実測」。
+ *   この記事の本体は「各行の公式ページを実際に読んで確認した29区分の実測」。
  *   銀行別セクションを手書きすると同じ数字が2箇所に増え、料金改定のたびに片方だけ直る。
  *
  * ★正本は `docs/assets/fee_table.json`（2026-08-02訂正）:
@@ -34,6 +34,8 @@ const START = '<!-- BANK_SECTIONS:START 自動生成。手で編集しない。t
 const END = '<!-- BANK_SECTIONS:END -->';
 
 const strip = (s) => s.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').trim();
+const esc = (s) => String(s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const formatJapaneseDate = (s) => {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s);
   return match ? `${match[1]}年${Number(match[2])}月${Number(match[3])}日` : s;
@@ -41,7 +43,7 @@ const formatJapaneseDate = (s) => {
 
 export const DATA = join(root, 'docs/assets/fee_table.json');
 
-/** 正本(fee_table.json)から28区分を読む。返り値は [{name, kubun, under, over, boundary, source, verifiedAt}] */
+/** 正本(fee_table.json)から29区分を読む。返り値は [{name, kubun, under, over, boundary, source, verifiedAt}] */
 export function loadBanks() {
   const D = JSON.parse(readFileSync(DATA, 'utf8'));
   const rows = (D.banks || []).map((b) => {
@@ -56,9 +58,10 @@ export function loadBanks() {
       boundary: b.under30k !== b.over30k,
       source: b.source || null,
       verifiedAt: b.verified_date || null,
+      publicNote: b.public_note || null,
     };
   });
-  if (rows.length !== 28) throw new Error(`28区分のはずが ${rows.length} 行でした（fee_table.json の構造が変わった可能性）`);
+  if (rows.length !== 29) throw new Error(`29区分のはずが ${rows.length} 行でした（fee_table.json の構造が変わった可能性）`);
   return rows;
 }
 
@@ -72,6 +75,7 @@ export const baseName = (name) => name.replace(/（.*$/, '').trim();
  */
 const BANK_SLUG = {
   'GMOあおぞらネット銀行': 'gmo-aozora', 'ドコモSMTBネット銀行': 'sbi-net', 'auじぶん銀行': 'au-jibun',
+  'ラクスルバンク': 'raksul-bank',
   'PayPay銀行': 'paypay', '楽天銀行': 'rakuten', 'イオン銀行': 'aeon', 'みずほ銀行': 'mizuho',
   'ゆうちょ銀行': 'yucho', 'りそな銀行': 'resona', '埼玉りそな銀行': 'saitama-resona',
   '三井住友銀行': 'smbc', '三菱UFJ銀行': 'mufg', '横浜銀行': 'yokohama',
@@ -128,6 +132,9 @@ export function buildSections(rows) {
       ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）`
       : '金額にかかわらず<b>定額</b>');
     out.push(`  <p>${notes.join('。')}。</p>`);
+    for (const note of [...new Set(list.filter((x) => x.publicNote).map((x) => x.publicNote))]) {
+      out.push(`  <p>${esc(note)}。</p>`);
+    }
 
     // ★出典は行ごとに出す。未照合の行は「未照合」と書く（黙って伏せない）
     const srcs = [...new Set(list.filter((x) => x.source).map((x) => x.source))];
@@ -188,7 +195,7 @@ export function amountMap(rows) {
  *
  * ★収録範囲の申告を必ず出す（fail-closed）:
  *   実測の9金額のうち 995円・395円 は**この表に無い**。無い金額に当てずっぽうで答えると
- *   「他行宛28区分」という前提を黙って踏み越える。**答えないことを画面に書く。**
+ *   「他行宛29区分」という前提を黙って踏み越える。**答えないことを画面に書く。**
  */
 export function buildAmountIndex(rows) {
   const m = amountMap(rows);
@@ -203,7 +210,7 @@ export function buildAmountIndex(rows) {
     out.push(`    <tr><td><b>${amount}円</b></td><td>${cells}</td></tr>`);
   }
   out.push('  </table>');
-  out.push('  <p class="note">この表が扱うのは<b>他行宛・28区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後の料金や、振込以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。この表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
+  out.push('  <p class="note">この表が扱うのは<b>他行宛・29区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後の料金や、振込以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。この表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
   out.push(AMT_END);
   return out.join('\n');
 }

@@ -60,8 +60,8 @@ assert.ok(toc.includes('href="#gyakubiki"'),
 // ★これは飾りではなく fail-closed の本体。実測された9金額のうち 995円・395円 はこの表に無く、
 //   注意書きが無いと「載っていない＝存在しない」と読ませてしまう。
 const note = block.slice(block.indexOf('<p class="note">'), block.indexOf('</p>', block.indexOf('<p class="note">')));
-assert.ok(note.includes('他行宛') && note.includes('28区分'),
-  '逆引き表の収録範囲の申告（他行宛・28区分だけを扱う旨）が消えています');
+assert.ok(note.includes('他行宛') && note.includes('29区分'),
+  '逆引き表の収録範囲の申告（他行宛・29区分だけを扱う旨）が消えています');
 assert.ok(note.includes('この表に当てはめず') && note.includes('銀行の料金ページでご確認ください'),
   '未収録の金額を表に当てはめず、公式料金を確認する案内が消えています');
 

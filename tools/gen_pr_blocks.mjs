@@ -45,6 +45,16 @@ export const REL = 'sponsored nofollow noopener';
 const esc = (s) => String(s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+/** 信頼済み設定の指定語だけを強調する。lead 全体をHTMLとして許可しない。 */
+const leadHtml = (offer) => {
+  let html = esc(offer.lead || '');
+  for (const term of offer.leadStrong || []) {
+    const safe = esc(term);
+    if (safe) html = html.split(safe).join(`<strong>${safe}</strong>`);
+  }
+  return html;
+};
+
 export function loadOffers(path = CONFIG) {
   if (!existsSync(path)) return [];
   const d = JSON.parse(readFileSync(path, 'utf8'));
@@ -62,7 +72,7 @@ export function block(offer) {
     + ` alt="${esc(banner.alt || '')}" loading="lazy" decoding="async" style="border:none;max-width:100%;height:auto"></a>` : '';
   return `${MARK}<aside class="pr-block" aria-label="広告">`
     + `<div class="pr-label">${PR_LABEL}</div>`
-    + `<p class="pr-lead">${esc(offer.lead || '')}</p>`
+    + `<p class="pr-lead">${leadHtml(offer)}</p>`
     + `<a class="pr-cta" ${attrs} data-pr="${esc(offer.id)}" data-pr-slot="${esc(slot)}:text">${esc(offer.cta)}</a>`
     + bannerHtml
     + (offer.note ? `<p class="pr-note">${esc(offer.note)}</p>` : '')
