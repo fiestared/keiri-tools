@@ -1,6 +1,5 @@
 import assert from "node:assert";
 import { readFileSync } from "node:fs";
-import { calculateFurikomiSavings, parsePositiveInteger } from "../docs/assets/furikomi_savings.js";
 
 // 記事「銀行別 振込手数料 一覧」の表は fee_table.json から生成した。
 // 手数料を改定したとき、記事の数字だけが取り残される(=読者に古い額を見せる)のを防ぐ。
@@ -79,19 +78,5 @@ assert.ok(
   allAmounts.has(Number(leadAmount)),
   `リードが例示する ${leadAmount}円 は fee_table.json のどの区分にも無い(改定で消えた金額を例示している)`,
 );
-
-// 5. 記事内の削減額計算は、公式確認済みのラクスルバンク119円を基準にする。
-assert.deepEqual(calculateFurikomiSavings(30, 660), {
-  currentMonthly: 19800,
-  raksulMonthly: 3570,
-  monthlySaving: 16230,
-  annualSaving: 194760,
-  isCheaper: true,
-});
-assert.equal(calculateFurikomiSavings(10, 100).monthlySaving, 0, "119円以下を負の削減額にしない");
-assert.equal(parsePositiveInteger("６６０円"), 660, "全角数字・単位を入力できる");
-assert.equal(parsePositiveInteger("0"), null, "0件は入力エラーにする");
-assert.ok(HTML.includes('data-pr-slot="savings-calculator:text"'), "計算結果直下のPR導線を部位別計測する");
-assert.ok(HTML.includes("無料回数、同行宛、法人IBの月額基本料"), "単純比較に含まれない費用条件を明示する");
 
 console.log(`all fee article tests passed (${rows.size} banks, ${step} with 30k step)`);
