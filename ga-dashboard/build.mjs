@@ -41,6 +41,7 @@ const FETCH_DAYS = WINDOW_DAYS + 7;
 // launchd の StartInterval と揃える。画面の文言と、開いたタブの読み直し間隔にも使う。
 // 1回のビルドで消費するGA4クォータは約1トークン（上限は日20万）なので毎分でも余る。
 const INTERVAL_SEC = 60;
+const FEE_ARTICLE_PATH = "/column/furikomi-tesuryo-hikaku/";
 
 // 外から見る用に payment-manager（Cloudflare Worker）へ焼いたHTMLを預ける。
 // 未設定なら送らない＝ローカルの index.html だけ作る（この2つは独立して動く）。
@@ -139,6 +140,10 @@ async function fetchAll() {
     const hostFilter = {
       filter: { fieldName: "hostName", stringFilter: { matchType: "EXACT", value: new URL(s.url).host } },
     };
+    const andFilter = (...expressions) => ({ andGroup: { expressions } });
+    const exactFilter = (fieldName, value) => ({
+      filter: { fieldName, stringFilter: { matchType: "EXACT", value } },
+    });
     const daily = await runReport(token, s.property, {
       dimensionFilter: hostFilter,
       dimensions: [{ name: "date" }],
@@ -154,6 +159,33 @@ async function fetchAll() {
       dimensions: [{ name: "date" }, { name: "hour" }],
       metrics: [{ name: "sessions" }],
       limit: 2000,
+    });
+    // ページ名は月次更新で変わるため、集計キーは pagePath に固定する。
+    // pageTitle は画面で人が識別するためだけに使い、同じ path の行は後段で合算する。
+    const pages = await runReport(token, s.property, {
+      dimensionFilter: hostFilter,
+      dimensions: [{ name: "date" }, { name: "pagePath" }, { name: "pageTitle" }],
+      metrics: [{ name: "screenPageViews" }],
+      orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }],
+      limit: 10000,
+    });
+    const feeViews = await runReport(token, s.property, {
+      dimensionFilter: andFilter(hostFilter, exactFilter("pagePath", FEE_ARTICLE_PATH)),
+      dimensions: [{ name: "date" }],
+      metrics: [{ name: "screenPageViews" }],
+      limit: 200,
+    });
+    // 対象記事内の広告リンクは track.js が pr_click を明示送信している。
+    // GA4の自動 click は外部リンク全般なので、広告成果の数字には混ぜない。
+    const feeClicks = await runReport(token, s.property, {
+      dimensionFilter: andFilter(
+        hostFilter,
+        exactFilter("pagePath", FEE_ARTICLE_PATH),
+        exactFilter("eventName", "pr_click"),
+      ),
+      dimensions: [{ name: "date" }],
+      metrics: [{ name: "eventCount" }],
+      limit: 200,
     });
 
     const dmap = new Map();
@@ -175,6 +207,23 @@ async function fetchAll() {
       //   （cutoff が午前なら比較区間が全部 0〜9時なので、両日とも 0 になっていた）。
       const hh = String(r.dimensionValues[1].value).padStart(2, "0");
       hmap.set(`${ymd}|${hh}`, Number(r.metricValues[0].value));
+    }
+    const ymdOf = (raw) => `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`;
+    const pageRows = (pages.rows ?? []).map((r) => ({
+      date: ymdOf(r.dimensionValues[0].value),
+      path: r.dimensionValues[1].value,
+      title: r.dimensionValues[2].value,
+      pageviews: Number(r.metricValues[0].value),
+    }));
+    const feeMap = new Map();
+    for (const r of feeViews.rows ?? []) {
+      feeMap.set(ymdOf(r.dimensionValues[0].value), { pageviews: Number(r.metricValues[0].value), clicks: 0 });
+    }
+    for (const r of feeClicks.rows ?? []) {
+      const date = ymdOf(r.dimensionValues[0].value);
+      const hit = feeMap.get(date) ?? { pageviews: 0, clicks: 0 };
+      hit.clicks = Number(r.metricValues[0].value);
+      feeMap.set(date, hit);
     }
 
     // 当日データがどこまで入っているか（＝GA4が公開している最新の分）。
@@ -207,7 +256,9 @@ async function fetchAll() {
     // 完全に経過した時間帯（0〜cutoffHour-1）だけを両日から取る。
     const lastFull = cutoffHour - 1;
     sites.push({
-      ...s, days, cutoff, cutoffHour, cmpHour: lastFull,
+      ...s, days, pageRows,
+      feeDays: days.map(({ date }) => ({ date, ...(feeMap.get(date) ?? { pageviews: 0, clicks: 0 }) })),
+      cutoff, cutoffHour, cmpHour: lastFull,
       todayCum: lastFull >= 0 ? cumToHour(today, lastFull) : 0,
       prevWeekCum: lastFull >= 0 ? cumToHour(pwDate, lastFull) : 0,
       // 時間帯別チャート用。画面に出す3日ぶんだけ持つ（21日×24 を全部持つと data.json が10倍になる）
@@ -258,6 +309,28 @@ function model(data) {
       const lagMin = s.cutoff
         ? (Number(f.hour) * 60 + Number(f.minute)) - (Number(s.cutoff.slice(0, 2)) * 60 + Number(s.cutoff.slice(3, 5)))
         : null;
+      const feeDays = s.feeDays ?? [];
+      const feeToday = feeDays.at(-1) ?? { pageviews: 0, clicks: 0 };
+      const feeYesterday = feeDays.at(-2) ?? { pageviews: 0, clicks: 0 };
+      const feeLast7Rows = feeDays.slice(-8, -1);
+      const feeLast7 = {
+        pageviews: sum(feeLast7Rows.map((x) => x.pageviews ?? 0)),
+        clicks: sum(feeLast7Rows.map((x) => x.clicks ?? 0)),
+      };
+      const pageMap = new Map();
+      for (const row of s.pageRows ?? []) {
+        const item = pageMap.get(row.path) ?? { path: row.path, title: row.title, titleDate: "", today: 0, last7: 0 };
+        // 同一pathでtitleが分かれても合算し、表示名には最新日のtitleを採る。
+        // 月初に前月titleのPVが多くても、画面には現在のページ名を出すため。
+        if (row.date >= item.titleDate) { item.title = row.title; item.titleDate = row.date; }
+        if (row.date === d.at(-1).date) item.today += row.pageviews;
+        if (row.date >= d.at(-8).date && row.date <= d.at(-2).date) item.last7 += row.pageviews;
+        pageMap.set(row.path, item);
+      }
+      const pageBreakdown = [...pageMap.values()]
+        .sort((a, b) => (b.last7 + b.today) - (a.last7 + a.today))
+        .slice(0, 12);
+      const pageLast7Total = sum([...pageMap.values()].map((x) => x.last7));
       return {
         lagMin: lagMin !== null && lagMin >= 0 ? lagMin : null,
         ...s, shown, last7, prev7,
@@ -270,6 +343,8 @@ function model(data) {
         hToday, hYest, hPrevWeek, prevWeekWd: WD[weekdayIdx(prevWeekDay.date)],
         hourMax: Math.max(1, ...(hToday ?? []), ...(hYest ?? []), ...(hPrevWeek ?? [])),
         hCumToday: cumTo(hToday), hCumYest: cumTo(hYest), hCumPrevWeek: cumTo(hPrevWeek),
+        fee: { today: feeToday, yesterday: feeYesterday, last7: feeLast7 },
+        pageBreakdown, pageLast7Total,
       };
     }),
   };
@@ -529,6 +604,56 @@ const pvLine = (pv, sessions) => {
     + `<span class="pvr">（${ratio} /セッション）</span></div>`;
 };
 
+const feeMetric = (label, x, partial = false) => `
+  <div class="insight-metric">
+    <div class="label">${esc(label)}${partial ? ' <span class="badge">途中</span>' : ""}</div>
+    <div class="click-value">${(x?.clicks ?? 0).toLocaleString("ja-JP")}<span>クリック</span></div>
+    <div class="metric-sub">記事 ${(x?.pageviews ?? 0).toLocaleString("ja-JP")} PV</div>
+  </div>`;
+
+function insights(site) {
+  if (!site.fee || !site.pageBreakdown) return "";
+  const titleOf = (row) => {
+    const t = (row.title || "").replace(/\s*[|｜]\s*経理・税金・補助金ツールズ.*$/, "").trim();
+    return t && t !== "(not set)" ? t : row.path;
+  };
+  const rows = site.pageBreakdown.map((row) => {
+    const share = site.pageLast7Total > 0 ? row.last7 / site.pageLast7Total * 100 : 0;
+    return `<tr>
+      <td><a href="${esc(new URL(row.path, site.url).href)}" target="_blank" rel="noopener">${esc(titleOf(row))}</a><small>${esc(row.path)}</small></td>
+      <td class="num strong">${row.today.toLocaleString("ja-JP")}</td>
+      <td class="num">${row.last7.toLocaleString("ja-JP")}</td>
+      <td class="num">${share.toFixed(1)}%</td>
+    </tr>`;
+  }).join("");
+  return `
+  <section class="insights" aria-labelledby="insights-${esc(site.key)}">
+    <h3 id="insights-${esc(site.key)}">記事クリックとアクセスページ</h3>
+    <div class="insight-grid">
+      <div class="insight-card fee-card">
+        <div class="insight-head">
+          <div><span class="eyebrow">振込手数料の記事</span><h4>広告リンクのクリック数</h4></div>
+          <a href="${esc(new URL(FEE_ARTICLE_PATH, site.url).href)}" target="_blank" rel="noopener">記事を開く ↗</a>
+        </div>
+        <div class="metric-grid">
+          ${feeMetric("今日", site.fee.today, true)}
+          ${feeMetric(`昨日（${site.yesterdayWd}）`, site.fee.yesterday)}
+          ${feeMetric("直近7日（昨日まで）", site.fee.last7)}
+        </div>
+        <p>記事内の広告リンクが送る <code>pr_click</code>。通常の外部リンククリックは含めていない。</p>
+      </div>
+      <div class="insight-card pages-card">
+        <div class="insight-head"><div><span class="eyebrow">上位12ページ</span><h4>アクセスページの内訳</h4></div></div>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>ページ</th><th class="num">今日</th><th class="num">直近7日</th><th class="num">構成比</th></tr></thead>
+          <tbody>${rows || '<tr><td colspan="4">まだページ閲覧データがない</td></tr>'}</tbody>
+        </table></div>
+        <p>PVを <code>pagePath</code> 単位で合算。直近7日は昨日までの完了した7日間、構成比は全ページ合計に対する割合。</p>
+      </div>
+    </div>
+  </section>`;
+}
+
 function sitePanel(site, primary) {
   const hh = String(site.cmpHour).padStart(2, "0");
   return `
@@ -570,6 +695,7 @@ function sitePanel(site, primary) {
   ${site.cutoff ? `<p class="lag">GA4が当日ぶんを出しているのは <b>${esc(site.cutoff)}</b> まで${
       site.lagMin !== null ? `（<b>${site.lagMin}分</b>遅れ）` : ""
     }。それ以降の訪問はまだこの数字に入っていない。取りに行く頻度を上げても、この遅れは縮まらない。</p>` : ""}
+  ${insights(site)}
   ${chart(site)}
   ${table(site)}
   ${hourChart(site)}
@@ -664,6 +790,30 @@ h1{font-size:20px; font-weight:650; margin:0; letter-spacing:.01em}
 }
 .lag b{color:var(--ink); font-variant-numeric:tabular-nums}
 
+.insights{margin:20px 0 24px; border-top:1px solid var(--border); padding-top:18px}
+.insights>h3{font-size:15px; margin:0 0 12px; font-weight:650}
+.insight-grid{display:grid; grid-template-columns:minmax(0,1fr); gap:12px}
+.insight-card{border:1px solid var(--border); border-radius:10px; padding:14px; background:var(--plane)}
+.insight-head{display:flex; justify-content:space-between; gap:12px; align-items:flex-start; margin-bottom:12px}
+.insight-head h4{font-size:14px; line-height:1.35; margin:2px 0 0}
+.insight-head>a{font-size:12px; color:var(--muted); white-space:nowrap; min-height:24px}
+.eyebrow{display:block; font-size:10.5px; color:var(--muted); letter-spacing:.04em}
+.metric-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
+.insight-metric{padding:10px; border-left:2px solid var(--series-1); background:var(--surface)}
+.insight-metric .label{font-size:11px; color:var(--ink2); white-space:nowrap}
+.click-value{font-size:25px; font-weight:650; line-height:1.2; font-variant-numeric:tabular-nums}
+.click-value span{font-size:10.5px; font-weight:500; color:var(--muted); margin-left:4px}
+.metric-sub{font-size:11px; color:var(--muted); font-variant-numeric:tabular-nums}
+.insight-card>p{font-size:11.5px; color:var(--muted); margin:10px 0 0}
+.pages-card table{width:100%; border-collapse:collapse; font-size:12px}
+.pages-card th,.pages-card td{padding:7px 8px; border-bottom:1px solid var(--grid); text-align:left; vertical-align:top}
+.pages-card th{font-size:11px; color:var(--muted); font-weight:600; white-space:nowrap}
+.pages-card .num{text-align:right; white-space:nowrap; font-variant-numeric:tabular-nums}
+.pages-card .strong{font-weight:650}
+.pages-card a{color:var(--ink); text-decoration:none}
+.pages-card a:hover{text-decoration:underline}
+.pages-card small{display:block; color:var(--muted); max-width:54ch; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+
 .chart{margin:0 0 6px}
 /* 横スクロールはSVGだけに効かせる。figcaption まで一緒に流れると読めなくなる */
 .chart-scroll{overflow-x:auto}
@@ -707,7 +857,12 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
 .tbl .up{color:var(--up)} .tbl .down{color:var(--down)}
 .tbl tr.is-today td{background:var(--series-wash)}
 .tbl-scroll{overflow-x:auto}
-@media (max-width:520px){ .tile.hero .value{font-size:38px} }
+@media (max-width:520px){
+  .tile.hero .value{font-size:38px}
+  .metric-grid{grid-template-columns:1fr}
+  .insight-metric{display:grid; grid-template-columns:minmax(90px,1fr) auto; align-items:center; column-gap:8px}
+  .insight-metric .metric-sub{grid-column:1/-1}
+}
 
 #tip{
   position:fixed; pointer-events:none; opacity:0; transition:opacity .09s;
