@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-15",
-  "dateModified": "2026-08-28",
+  "dateModified": "2026-09-03",
       "name": "育児休業給付金 計算機",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -124,22 +124,22 @@
 
 <section class="hero">
   <h1>育児休業給付金 計算機</h1>
-  <p class="article-meta">公開日: 2026年7月15日（更新日: 2026年8月28日）</p>
+  <p class="article-meta">公開日: 2026年7月15日（更新日: 2026年9月3日）</p>
   <p>育児休業中に雇用保険から出る<b>育児休業給付金</b>を計算します。<b>支給単位期間ごとに、いつ・いくら振り込まれるか</b>を実際の日付で出し、<b>67%が終わって50%に下がる回（日割りになります）</b>も表示します。2025年4月に始まった<b>出生後休業支援給付金（＋13%）</b>にも対応しています。</p>
 </section>
 
 <div class="card">
   <label for="monthly">月給（額面・<b>賞与を除く</b>／円）</label>
   <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
-  <div class="hint">通勤手当・残業代・役職手当を<b>含む</b>額面の月給です。<b>賞与（ボーナス）は1円も入りません</b>（雇用保険法17条1項）。年収を12で割った額を入れると<b>必ず多く出ます</b>。</div>
+  <div class="hint">通勤手当・残業代・役職手当を<b>含む</b>額面の月給です。給与が月ごとに変わる方は、下の「<a href="#which-salary">どの6か月の給与を使うか</a>」を確認してください。<b>賞与（ボーナス）は入りません</b>。</div>
 
   <label for="startDate" style="margin-top:12px">育児休業を開始する日</label>
   <input type="date" id="startDate" value="2026-04-01">
-  <div class="hint"><b>支給単位期間は、この日の「応当日」で1か月ごとに区切られます</b>（雇用保険法61条の7第5項）。たとえば4月1日開始なら「4/1〜4/30」「5/1〜5/31」…です。<b>開始日が違えば、同じ日数・同じ月給でも合計額が変わります</b>（下の「なぜ開始日が要るのか」を参照）。</div>
+  <div class="hint"><b>母親は原則、産後休業が終わった翌日</b>、父親は勤務先に申し出た育休の初日です。分からない方は、厚生労働省の<a href="https://www.bosei-navi.mhlw.go.jp/leave/" rel="noopener">産休・育休期間の計算</a>で確認できます。支給単位期間は、この日の「応当日」で1か月ごとに区切られます。</div>
 
   <label for="leaveDays" style="margin-top:12px">育児休業の日数</label>
-  <input type="number" id="leaveDays" value="365" min="1" max="1095" inputmode="numeric">
-  <div class="hint">土日祝を含む<b>暦の日数</b>です（1年なら365日、6か月なら180日、1歳6か月まで延長するなら約547日）。</div>
+  <input type="number" id="leaveDays" value="307" min="1" max="1095" inputmode="numeric">
+  <div class="hint">土日祝を含む<b>暦の日数</b>です。初期値の307日は、母親が産後休業から続けて育休に入り、子どもが1歳になるまで休む一般例です。給付は原則として<b>1歳の誕生日の前々日まで</b>。父親、延長、分割取得の方は実際の開始日と終了日を数えて入力してください。厚生労働省の<a href="https://shussan.ikukyu-simu.mhlw.go.jp/" rel="noopener">公式試算ツール</a>でも期間を確認できます。</div>
 
   <fieldset style="margin-top:16px;border:1px solid var(--line);border-radius:8px;padding:12px">
     <legend style="font-weight:700;font-size:14px;padding:0 6px">出生後休業支援給付金（＋13%）の判定</legend>
@@ -180,6 +180,13 @@
 
 <section class="faq">
   <h2>この計算機の見方</h2>
+
+  <h3 id="which-salary">どの6か月の給与を入力するか</h3>
+  <p>計算の土台は、原則として<b>育休開始前の直近6か月に支払われた賃金</b>です。母親が産前産後休業から続けて育休に入る場合は、<b>原則として産休開始前の6か月</b>を使います。通勤手当や残業代などは含み、賞与は除きます。</p>
+  <div class="note">
+    <b>給与が毎月違う方、欠勤月がある方</b>
+    賃金支払基礎日数が<b>11日未満の月は、原則として6か月から除きます</b>。育休開始前2年間に11日以上の月が6か月ない場合は、<b>80時間以上</b>の月を使えることがあります。単純な6か月平均にならないため、給与明細だけで判断せず、勤務先が作る「休業開始時賃金月額証明書」を確認してください。
+  </div>
 
   <h3>計算のしかた（雇用保険法61条の7第6項）</h3>
   <div class="callout">
@@ -266,6 +273,7 @@
 <section class="faq">
   <h2>関連するツール・記事</h2>
   <p>
+    <a href="../shussan/">出産手当金 計算機</a>（産休中の給付。出産予定日と実際の出産日から計算）<br>
     <a href="../papa-ikukyu/">産後パパ育休 給付金 計算機</a>（出生後8週間以内・最大28日。<b>父親は妻が育休を取らなくても13%がもらえます</b>）<br>
     <a href="../column/ikuji-kyugyo-kyufukin/">育児休業給付金とは？いくら・いつまで・申請の流れ</a>（制度の解説記事）<br>
     <a href="../shakai-hoken/">社会保険料計算機</a>（育休中に免除される保険料を確認する）<br>
