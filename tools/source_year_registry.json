@@ -1,0 +1,70 @@
+{
+  "_doc": "年度が刻印された自社ページと、その一次資料の『次の年度版』のURLパターン。check_source_year.py が読む。",
+  "_why": "2026-09-07の実害: 国税庁が令和9年分 源泉徴収税額表を令和8年8月31日に公表していたのに、こちらは9月7日まで気づかなかった。競合は改正が決まった4月から書いている（mt-tax.com 2026-04-23）。原因は『需要を測ってから書く』という選定規則で、年度刻印の語は需要が立つ前に書かないと間に合わないのに、規則が逆を強制していたこと。加えて一次資料の更新を見る計器が無かった。",
+  "_howto": "entries に足す。url は {y} を西暦(int)で置換する。covers は自社ページが現在カバーしている西暦。probe_next=true なら covers+1 の存在を毎回確かめる。URLパターンが不明なものは url を null にして note に理由を書く（未調査と未公表を混同しないため）。",
+  "entries": [
+    {
+      "slug": "gensen-zeigakuhyo-mikata",
+      "name": "源泉徴収税額表（月額表）",
+      "source": "国税庁",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo{y}/01.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "令和N年分 = 西暦N+2018。令和9年分=2027。2026-08-31に令和9年分が公表され、7日間気づかなかった"
+    },
+    {
+      "slug": "gensen-zeigakuhyo-r09",
+      "name": "源泉徴収税額表（月額表・令和9年分）",
+      "source": "国税庁",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo{y}/01.htm",
+      "covers": 2027,
+      "probe_next": true,
+      "note": "2026-09-07公開。次は令和10年分（2028）の公表を待つ"
+    },
+    {
+      "slug": "gensen-choshu",
+      "name": "源泉徴収税額 計算機",
+      "source": "国税庁",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo{y}/01.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "計算機。税額表が変わったら data も差し替える必要がある"
+    },
+    {
+      "slug": "hyojun-hoshu-gakuhyo",
+      "name": "標準報酬月額表",
+      "source": "全国健康保険協会",
+      "url": null,
+      "covers": 2026,
+      "probe_next": false,
+      "note": "★未調査。協会けんぽの都道府県別料率は年度ごとにURLが変わる。3,938表示/週あるので優先して調べる"
+    },
+    {
+      "slug": "jidoshazei",
+      "name": "自動車税",
+      "source": "総務省・各都道府県",
+      "url": null,
+      "covers": 2026,
+      "probe_next": false,
+      "note": "★未調査。3,407表示/週。ただしCTR実験の対照ページなので2026-10-04までは変更しない"
+    },
+    {
+      "slug": "rosai-hokenryoritsu",
+      "name": "労災保険料率",
+      "source": "厚生労働省",
+      "url": null,
+      "covers": 2026,
+      "probe_next": false,
+      "note": "★未調査。3年ごとの改定（直近は令和6年度）。次は令和9年度の見込み"
+    },
+    {
+      "slug": "koyou-hokenryo-ritsu",
+      "name": "雇用保険料率",
+      "source": "厚生労働省",
+      "url": null,
+      "covers": 2026,
+      "probe_next": false,
+      "note": "★未調査。年度ごとに改定される"
+    }
+  ]
+}
