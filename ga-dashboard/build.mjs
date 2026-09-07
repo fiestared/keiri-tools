@@ -30,7 +30,7 @@ const LAST_RUN = join(DIR, "logs", "last-run.txt");
 // サイトを足したい時はここに1行足す（aitimes.jp = properties/545695263 は 2026-08-13 に外した）
 const SITES = [
   { key: "keiri-tools", label: "keiri-tools.com", property: "properties/545217731",
-    url: "https://keiri-tools.com" },
+    url: "https://keiri-tools.com", gscSite: "sc-domain:keiri-tools.com" },
 ];
 
 const WINDOW_DAYS = 21;   // 画面に出す日数（今日を含む）★2026-08-25に14→21
@@ -42,6 +42,23 @@ const FETCH_DAYS = WINDOW_DAYS + 7;
 // 1回のビルドで消費するGA4クォータは約1トークン（上限は日20万）なので毎分でも余る。
 const INTERVAL_SEC = 60;
 const FEE_ARTICLE_PATH = "/column/furikomi-tesuryo-hikaku/";
+
+// ---------- 目標と Google トラック KPI（2026-09-07 Masahiro「日1万セッション狙おうぜ」） ----------
+// ★日1万は Bing だけでは届かない（Bing の表示は平日1.9万/日で頭打ち。全部1〜3位でも天井は約1,800/日）。
+//   日本の検索シェアは Google が Bing の6〜8倍なので、この目標は実質「Google で Bing 並みの順位を取る」。
+//   だから全体のセッションとは別に **Google のクリック/日** を独立の KPI として持つ。
+// ★Google クリックは GA4 ではなく Search Console から取る（GA4 の sessionSource=google は
+//   Discover や参照を含み、順位・表示が見えない）。同じSA ga-reader@keiri-tools が
+//   sc-domain:keiri-tools.com の閲覧権限を持っている（keiri-tools/analytics-access）。
+// ★通過点は 2026-09-07 の分析で置いた仮の値。外れたら方針ごと見直す（数字だけ動かさない）。
+const SESSION_GOAL = 10000;                       // 1日セッション（直近7日平均）
+const GOOGLE_KPI = [                              // Google クリック/日（GSC・7日平均）の通過点
+  { by: "2026-10-31", target: 30 },
+  { by: "2026-12-31", target: 100 },
+  { by: "2027-03-31", target: 1000 },
+];
+// GSC は日次が2〜3日遅れて届き、末端の1〜2日は後から増える。28日取って7日平均×2本を作る
+const GSC_FETCH_DAYS = 28;
 
 // 外から見る用に payment-manager（Cloudflare Worker）へ焼いたHTMLを預ける。
 // 未設定なら送らない＝ローカルの index.html だけ作る（この2つは独立して動く）。
@@ -97,7 +114,8 @@ async function accessToken() {
     b64({ alg: "RS256", typ: "JWT" }) + "." +
     b64({
       iss: sa.client_email,
-      scope: "https://www.googleapis.com/auth/analytics.readonly",
+      // GA4 と Search Console を同じトークンで読む（両方 readonly）
+      scope: "https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/webmasters.readonly",
       aud: sa.token_uri, iat, exp: iat + 3600,
     });
   const sig = createSign("RSA-SHA256").update(unsigned).sign(sa.private_key, "base64url");
@@ -118,6 +136,18 @@ const runReport = (token, property, body) =>
     method: "POST",
     headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
     body: JSON.stringify({ dateRanges: [{ startDate: `${FETCH_DAYS - 1}daysAgo`, endDate: "today" }], ...body }),
+  }).then(async (r) => {
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d?.error?.message ?? `HTTP ${r.status}`);
+    return d;
+  });
+
+// Search Console（日次のクリック・表示・順位）。siteUrl は sc-domain:… を URL エンコードして path に置く
+const searchAnalytics = (token, siteUrl, body) =>
+  fetchRetry(`https://searchconsole.googleapis.com/webmasters/v3/sites/${encodeURIComponent(siteUrl)}/searchAnalytics/query`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
   }).then(async (r) => {
     const d = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(d?.error?.message ?? `HTTP ${r.status}`);
@@ -188,6 +218,26 @@ async function fetchAll() {
       limit: 200,
     });
 
+    // Google トラック KPI 用（Search Console）。★GA4 が取れて GSC だけ落ちた回でも画面全体は殺さない。
+    //   失敗は gsc.error に入れて KPI 欄にだけ出す（数字が黙って古くなるのは避ける）。
+    let gsc = null;
+    if (s.gscSite) {
+      try {
+        const r = await searchAnalytics(token, s.gscSite, {
+          startDate: addDays(today, -(GSC_FETCH_DAYS - 1)), endDate: today,
+          dimensions: ["date"], rowLimit: 100,
+        });
+        gsc = {
+          fetchedAt: new Date().toISOString(),
+          rows: (r.rows ?? []).map((x) => ({
+            date: x.keys[0], clicks: x.clicks, impressions: x.impressions, ctr: x.ctr, position: x.position,
+          })).sort((a, b) => a.date.localeCompare(b.date)),
+        };
+      } catch (e) {
+        gsc = { error: e.message, rows: [] };
+      }
+    }
+
     const dmap = new Map();
     for (const r of daily.rows ?? []) {
       const raw = r.dimensionValues[0].value; // YYYYMMDD
@@ -256,7 +306,7 @@ async function fetchAll() {
     // 完全に経過した時間帯（0〜cutoffHour-1）だけを両日から取る。
     const lastFull = cutoffHour - 1;
     sites.push({
-      ...s, days, pageRows,
+      ...s, days, pageRows, gsc,
       feeDays: days.map(({ date }) => ({ date, ...(feeMap.get(date) ?? { pageviews: 0, clicks: 0 }) })),
       cutoff, cutoffHour, cmpHour: lastFull,
       todayCum: lastFull >= 0 ? cumToHour(today, lastFull) : 0,
@@ -331,7 +381,9 @@ function model(data) {
         .sort((a, b) => (b.last7 + b.today) - (a.last7 + a.today))
         .slice(0, 12);
       const pageLast7Total = sum([...pageMap.values()].map((x) => x.last7));
+      const goal = goalModel(s, data.today, last7);
       return {
+        goal,
         lagMin: lagMin !== null && lagMin >= 0 ? lagMin : null,
         ...s, shown, last7, prev7,
         yesterday: yesterday.sessions, yesterdayWd: WD[weekdayIdx(yesterday.date)],
@@ -349,6 +401,55 @@ function model(data) {
     }),
   };
 }
+
+/**
+ * 目標（日1万セッション）と Google トラック KPI の数字を作る。
+ *
+ * ★Google クリックの7日平均は「GSC がデータを出している末端の日」で締める（今日ではない）。
+ *   GSC は2〜3日遅れなので、今日で締めると末尾がゼロ埋めされて平均が必ず下振れする。
+ * ★末端の1〜2日は後から増えることがある。画面に「末端の日付」と「何日遅れか」を必ず出す。
+ * ★セッション0の日は GSC も行を返さない。0で埋めてから平均する（ゼロ日を飛ばすと上振れ）。
+ * ★古い data.json（gsc を持たない）でも落ちない。その場合 google は null で「取得前」と出す。
+ */
+function goalModel(s, today, last7Sessions) {
+  const sessionsPerDay = last7Sessions / 7;
+  const sessionPct = sessionsPerDay / SESSION_GOAL * 100;
+  const g = s.gsc;
+  if (!g || g.error || !(g.rows ?? []).length) {
+    return { sessionsPerDay, sessionPct, google: null, error: g?.error ?? null, milestones: GOOGLE_KPI.map((k) => ({ ...k, pct: null, daysLeft: daysBetween(today, k.by) })) };
+  }
+  const byDate = new Map(g.rows.map((r) => [r.date, r]));
+  const end = g.rows.at(-1).date;                         // GSC がデータを出している末端
+  const lagDays = daysBetween(end, today);
+  const dayRow = (d) => byDate.get(d) ?? { date: d, clicks: 0, impressions: 0, ctr: 0, position: null };
+  const win = (from, to) => Array.from({ length: to - from + 1 }, (_, i) => dayRow(addDays(end, -(to - i))));
+  const last7 = win(0, 6), prev7 = win(7, 13);            // end を含む7日 / その前の7日
+  const avg = (rows, k) => rows.reduce((a, r) => a + (r[k] || 0), 0) / rows.length;
+  // 順位は表示で重みづけ（表示0の日は順位が無い）
+  const wpos = (rows) => {
+    const imp = rows.reduce((a, r) => a + (r.impressions || 0), 0);
+    return imp ? rows.reduce((a, r) => a + (r.position || 0) * (r.impressions || 0), 0) / imp : null;
+  };
+  const clicksPerDay = avg(last7, "clicks"), prevClicksPerDay = avg(prev7, "clicks");
+  const series = win(0, GSC_FETCH_DAYS - 1 - lagDays);    // 取得範囲のうち GSC が出している日だけ（末端まで）
+  return {
+    sessionsPerDay, sessionPct, error: null,
+    google: {
+      end, lagDays, clicksPerDay, prevClicksPerDay,
+      impressionsPerDay: avg(last7, "impressions"), prevImpressionsPerDay: avg(prev7, "impressions"),
+      position: wpos(last7), prevPosition: wpos(prev7),
+      last7Clicks: last7.reduce((a, r) => a + r.clicks, 0),
+      series,
+    },
+    milestones: GOOGLE_KPI.map((k) => ({
+      ...k, pct: clicksPerDay / k.target * 100, daysLeft: daysBetween(today, k.by),
+    })),
+  };
+}
+const daysBetween = (fromYmd, toYmd) => {
+  const [a, b] = [fromYmd, toYmd].map((s) => { const [y, m, d] = s.split("-").map(Number); return Date.UTC(y, m - 1, d); });
+  return Math.round((b - a) / 864e5);
+};
 
 // ---------- 描画 ----------
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
@@ -654,6 +755,119 @@ function insights(site) {
   </section>`;
 }
 
+const n1 = (v) => (v == null ? "—" : (Math.round(v * 10) / 10).toLocaleString("ja-JP", { minimumFractionDigits: 1, maximumFractionDigits: 1 }));
+const n0 = (v) => (v == null ? "—" : Math.round(v).toLocaleString("ja-JP"));
+const mmdd = (ymd) => ymd.slice(5).replace("-", "/");
+
+// Google クリック/日の小さな棒グラフ（GSC の末端まで。表示は同じ枠に薄い線で重ねる）
+function googleChart(g, key) {
+  const W = 720, H = 120, PAD = { t: 14, r: 44, b: 26, l: 36 };
+  const iw = W - PAD.l - PAD.r, ih = H - PAD.t - PAD.b;
+  const rows = g.series;
+  if (!rows.length) return "";
+  const band = iw / rows.length, bw = Math.min(18, band - 2);
+  const cmax = Math.max(1, ...rows.map((r) => r.clicks));
+  const imax = Math.max(1, ...rows.map((r) => r.impressions));
+  const cst = niceStep(cmax), ctop = Math.ceil(cmax / cst) * cst;
+  const ist = niceStep(imax), itop = Math.ceil(imax / ist) * ist;
+  const yc = (v) => PAD.t + ih - (v / ctop) * ih;
+  const yi = (v) => PAD.t + ih - (v / itop) * ih;
+  const cticks = []; for (let v = 0; v <= ctop + 1e-9; v += cst) cticks.push(v);
+  const line = rows.map((r, i) => `${i ? "L" : "M"}${(PAD.l + band * i + band / 2).toFixed(1)} ${yi(r.impressions).toFixed(1)}`).join(" ");
+  const bars = rows.map((r, i) => {
+    const x = PAD.l + band * i + (band - bw) / 2, h = Math.max(r.clicks > 0 ? 2 : 0, (r.clicks / ctop) * ih);
+    return `<rect x="${x.toFixed(1)}" y="${(PAD.t + ih - h).toFixed(1)}" width="${bw.toFixed(1)}" height="${h.toFixed(1)}" rx="2" fill="var(--series-1)"/>`;
+  }).join("");
+  // 末端から7日おきに日付を打つ（末端＝一番新しい日は必ず打つ）
+  const labels = rows.map((r, i) => ((rows.length - 1 - i) % 7 === 0)
+    ? `<text x="${(PAD.l + band * i + band / 2).toFixed(1)}" y="${H - PAD.b + 16}" class="xsub" text-anchor="middle">${mmdd(r.date)}</text>` : "").join("");
+  const hits = rows.map((r, i) => `<rect class="hit" x="${(PAD.l + band * i).toFixed(1)}" y="${PAD.t}" width="${band.toFixed(1)}" height="${ih}" fill="transparent"
+      data-tip="${esc(`${r.date}(${WD[weekdayIdx(r.date)]}) — Google クリック ${r.clicks} / 表示 ${r.impressions.toLocaleString("ja-JP")} / 順位 ${r.position == null ? "—" : r.position.toFixed(1)}`)}"></rect>`).join("");
+  return `
+  <div class="chart-scroll">
+  <svg viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet"
+       aria-label="Google からの1日クリック数（棒）と表示回数（線）。表は下にあります。">
+    ${cticks.map((v) => `<line x1="${PAD.l}" x2="${W - PAD.r}" y1="${yc(v).toFixed(1)}" y2="${yc(v).toFixed(1)}" stroke="${v === 0 ? "var(--axis)" : "var(--grid)"}" stroke-width="1" shape-rendering="crispEdges"/>
+      <text x="${PAD.l - 6}" y="${(yc(v) + 4).toFixed(1)}" class="tick" text-anchor="end">${v}</text>`).join("")}
+    <text x="${W - PAD.r + 6}" y="${(yi(itop) + 4).toFixed(1)}" class="tick">${itop.toLocaleString("ja-JP")}</text>
+    <text x="${W - PAD.r + 6}" y="${(yi(0) + 4).toFixed(1)}" class="tick">0</text>
+    ${bars}
+    <path d="${line}" fill="none" stroke="var(--series-3)" stroke-width="1.75" stroke-linejoin="round"/>
+    ${labels}
+    ${hits}
+  </svg>
+  </div>
+  <div class="legend"><span><i class="sw sw-today"></i>クリック（左軸）</span><span><i class="sw sw-imp"></i>表示（右軸）</span></div>`;
+}
+
+/**
+ * 目標（日1万セッション）と Google トラック KPI。タイルの直下＝画面の上のほうに置く。
+ * ★数字より「どの日で締めたか」「何日遅れか」が見えることを優先する。GSC は末端が動くため。
+ */
+function goalBlock(site) {
+  const g = site.goal;
+  if (!g) return "";
+  const G = g.google;
+  const bar = (pct) => `<div class="bar" role="img" aria-label="達成率 ${n1(pct)}%"><i style="width:${Math.max(0.5, Math.min(100, pct || 0))}%"></i></div>`;
+  const msRows = g.milestones.map((k) => `<tr>
+      <td>${esc(k.by)}<small>${k.daysLeft >= 0 ? `あと${k.daysLeft}日` : `${-k.daysLeft}日超過`}</small></td>
+      <td class="num">${n0(k.target)}</td>
+      <td class="num">${G ? n1(G.clicksPerDay) : "—"}</td>
+      <td class="num">${k.pct == null ? "—" : `${n1(k.pct)}%`}</td>
+      <td class="barcell">${k.pct == null ? "" : bar(k.pct)}</td>
+    </tr>`).join("");
+  const googleCard = G ? `
+      <div class="goal-card">
+        <div class="insight-head"><div><span class="eyebrow">Google トラック（Search Console）</span><h4>Google クリック/日 <small>7日平均・${esc(mmdd(G.end))}まで</small></h4></div></div>
+        <div class="goal-value">${n1(G.clicksPerDay)}<span>クリック/日</span></div>
+        ${delta(G.last7Clicks, G.prevClicksPerDay * 7, "その前の7日比")}
+        <div class="metric-sub">表示 <b>${n0(G.impressionsPerDay)}</b>/日（前 ${n0(G.prevImpressionsPerDay)}）・掲載順位 <b>${n1(G.position)}</b>（前 ${n1(G.prevPosition)}）</div>
+        <div class="metric-sub">GSC のデータ末端は <b>${esc(G.end)}</b>（${G.lagDays}日遅れ）。末端の1〜2日は後から増える。</div>
+      </div>` : `
+      <div class="goal-card">
+        <div class="insight-head"><div><span class="eyebrow">Google トラック（Search Console）</span><h4>Google クリック/日</h4></div></div>
+        <div class="goal-value">—</div>
+        <div class="metric-sub">${g.error ? `⚠ GSC の取得に失敗: <code>${esc(g.error)}</code>` : "まだ GSC を取得していない（次の更新で入る）"}</div>
+      </div>`;
+  return `
+  <section class="goal" aria-labelledby="goal-${esc(site.key)}">
+    <h3 id="goal-${esc(site.key)}">目標: 日 ${SESSION_GOAL.toLocaleString("ja-JP")} セッション</h3>
+    <div class="goal-grid">
+      <div class="goal-card">
+        <div class="insight-head"><div><span class="eyebrow">全体（GA4）</span><h4>1日セッション <small>直近7日平均・昨日まで</small></h4></div></div>
+        <div class="goal-value">${n0(g.sessionsPerDay)}<span>/ ${SESSION_GOAL.toLocaleString("ja-JP")}</span></div>
+        ${bar(g.sessionPct)}
+        <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>。いまの流入は9割が Bing で、Bing だけの天井は約1,800/日（表示1.9万/日が全部1〜3位でも）。残りは Google で取る。</div>
+      </div>
+      ${googleCard}
+    </div>
+    <div class="goal-ms">
+      <div class="chart-title">Google クリック/日の通過点（7日平均で判定）</div>
+      <div class="tbl-scroll"><table class="goal-t">
+        <thead><tr><th>期日</th><th class="num">目標</th><th class="num">現在</th><th class="num">達成率</th><th></th></tr></thead>
+        <tbody>${msRows}</tbody>
+      </table></div>
+    </div>
+    ${G ? `<figure class="chart google">
+      <div class="chart-title">Google からの1日クリック（棒）と表示（線）— ${esc(G.series[0]?.date ?? "")} 〜 ${esc(G.end)}</div>
+      ${googleChart(G, site.key)}
+      <details class="tbl"><summary>日別の数字</summary>
+        <div class="tbl-scroll"><table>
+          <thead><tr><th>日付</th><th class="num">クリック</th><th class="num">表示</th><th class="num">CTR</th><th class="num">順位</th></tr></thead>
+          <tbody>${[...G.series].reverse().map((r) => `<tr><td>${esc(r.date)}(${WD[weekdayIdx(r.date)]})</td><td class="num strong">${r.clicks}</td><td class="num">${r.impressions.toLocaleString("ja-JP")}</td><td class="num">${(r.ctr * 100).toFixed(2)}%</td><td class="num">${r.position == null ? "—" : r.position.toFixed(1)}</td></tr>`).join("")}</tbody>
+        </table></div>
+      </details>
+    </figure>` : ""}
+    <p class="foot">
+      ★日1万は Bing では届かない。Bing の表示は平日1.9万/日で頭打ち、日本の検索シェアは Google が Bing の6〜8倍。
+      だから <b>Google のクリック/日</b> を全体とは別の KPI として持つ。表示と順位はクリックより先に動く先行指標。<br>
+      ★通過点（10月末 30 / 12月末 100 / 2027-03末 1,000）は 2026-09-07 の分析で置いた仮の値。
+      外れたら数字だけ動かさず方針ごと見直す。Google 側の壁は索引ではなく、ドメイン年齢・YMYL・E-E-A-T・量産パターン（2026-08-24 全数測定）。<br>
+      ★Google クリックは GA4 ではなく Search Console の値。GSC は2〜3日遅れで届くので、7日平均は「今日」ではなく <b>GSC の末端の日</b> で締めている。
+    </p>
+  </section>`;
+}
+
 function sitePanel(site, primary) {
   const hh = String(site.cmpHour).padStart(2, "0");
   return `
@@ -695,6 +909,7 @@ function sitePanel(site, primary) {
   ${site.cutoff ? `<p class="lag">GA4が当日ぶんを出しているのは <b>${esc(site.cutoff)}</b> まで${
       site.lagMin !== null ? `（<b>${site.lagMin}分</b>遅れ）` : ""
     }。それ以降の訪問はまだこの数字に入っていない。取りに行く頻度を上げても、この遅れは縮まらない。</p>` : ""}
+  ${goalBlock(site)}
   ${insights(site)}
   ${chart(site)}
   ${table(site)}
@@ -857,6 +1072,29 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
 .tbl .up{color:var(--up)} .tbl .down{color:var(--down)}
 .tbl tr.is-today td{background:var(--series-wash)}
 .tbl-scroll{overflow-x:auto}
+
+/* 目標と Google トラック KPI */
+.goal{margin:20px 0 24px; border-top:1px solid var(--border); padding-top:18px}
+.goal>h3{font-size:15px; margin:0 0 12px; font-weight:650}
+.goal-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px}
+.goal-card{border:1px solid var(--border); border-radius:10px; padding:12px 14px; background:var(--plane)}
+.goal-card h4 small{font-size:11px; font-weight:400; color:var(--muted); margin-left:6px}
+.goal-value{font-size:30px; font-weight:650; line-height:1.15; letter-spacing:-.015em; font-variant-numeric:tabular-nums; margin:4px 0 2px}
+.goal-value span{font-size:12px; font-weight:500; color:var(--muted); margin-left:6px; letter-spacing:0}
+.goal-card .metric-sub{margin-top:4px; white-space:normal; line-height:1.5}
+.goal-card .metric-sub b{color:var(--ink)}
+.bar{height:8px; border-radius:999px; background:var(--series-wash); overflow:hidden; margin:6px 0 4px}
+.bar i{display:block; height:100%; background:var(--series-1); border-radius:999px; min-width:2px}
+.goal-ms{margin-top:14px}
+.goal-t{width:100%; border-collapse:collapse; font-size:13px}
+.goal-t th,.goal-t td{padding:5px 8px; border-bottom:1px solid var(--grid); text-align:left; white-space:nowrap}
+.goal-t th{font-size:11.5px; font-weight:600; color:var(--muted)}
+.goal-t .num{text-align:right; font-variant-numeric:tabular-nums}
+.goal-t td small{display:block; font-size:10.5px; color:var(--muted)}
+.goal-t .barcell{width:34%; min-width:120px}
+.goal-t .barcell .bar{margin:0}
+.chart.google{margin-top:14px}
+.sw-imp{height:0; width:16px; border-top:2px solid var(--series-3); border-radius:0}
 @media (max-width:520px){
   .tile.hero .value{font-size:38px}
   .metric-grid{grid-template-columns:1fr}
