@@ -60,6 +60,65 @@ ANCHORS = {
     (446_000, 8): None,     # 7人超はロジック側で検算するのでここでは使わない
 }
 
+# ---------------------------------------------------------------------------
+# 年度別の定数（2026-09-07 追加）
+#
+# 上の定数は令和8年分のもの。**値は1つも変えていない**（R08 がそれを参照する）。
+# 令和9年分は国税庁 zeigakuhyo2027/data/01-07.pdf を pdftotext -layout で読み、
+# 算式・備考・基点行から**直接**書き取った。手で計算した値は1つも入れていない。
+#
+# 令和8年分との差（実測）:
+#   - 乙欄3.063%帯の上限   105,000 → 111,000
+#   - 算式区分の境界       1,710,000 → 1,720,000
+#   - 740,000円の乙欄基点  259,200 → 259,000
+#   - 1,72x,xxx円の乙欄基点 655,400 → 659,300
+#   - 税率（20.42/23.483/33.693/40.84/45.945/3.063%）と7人超控除1,610円は**据え置き**
+#   - 令和9年分から所得税・防衛特別所得税・復興特別所得税を併せて源泉徴収する
+# ---------------------------------------------------------------------------
+YEARS = {
+    "r08": {
+        "label": "令和8年分",
+        "source": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf",
+        "table_max": TABLE_MAX,
+        "otsu_low_max": OTSU_LOW_MAX,
+        "otsu_low_rate": OTSU_LOW_RATE,
+        "over7_deduction": OVER7_DEDUCTION,
+        "kou_segments": KOU_SEGMENTS,
+        "otsu_segments": OTSU_SEGMENTS,
+        "anchors": ANCHORS,
+    },
+    "r09": {
+        "label": "令和9年分",
+        "source": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2027/data/01-07.pdf",
+        "table_max": 740_000,
+        "otsu_low_max": 111_000,
+        "otsu_low_rate": 0.03063,
+        "over7_deduction": 1_610,
+        "kou_segments": [
+            {"from": 740_000, "upto": 790_000, "rate": 0.2042},
+            {"from": 790_000, "upto": 960_000, "rate": 0.23483},
+            {"from": 960_000, "upto": 1_720_000, "rate": 0.33693},
+            {"from": 1_720_000, "upto": 2_130_000, "rate": 0.4084},
+            {"from": 2_130_000, "upto": 2_170_000, "rate": 0.4084},
+            {"from": 2_170_000, "upto": 2_210_000, "rate": 0.4084},
+            {"from": 2_210_000, "upto": 2_250_000, "rate": 0.4084},
+            {"from": 2_250_000, "upto": 3_500_000, "rate": 0.4084},
+            {"from": 3_500_000, "upto": None, "rate": 0.45945},
+        ],
+        "otsu_segments": [
+            {"from": 740_000, "base": 259_000, "rate": 0.4084},
+            {"from": 1_720_000, "base": 659_300, "rate": 0.45945},
+        ],
+        # 目視で確認した既知の値。(給与, 人数) -> 甲欄税額
+        "anchors": {
+            (111_000, 0): 140,        # 表の先頭行 111,000以上113,000未満
+            (175_000, 1): 1_690,      # 175,000以上177,000未満・扶養1人
+            (446_000, 2): 12_770,     # 446,000以上449,000未満・扶養2人
+            (740_000, 3): 51_600,     # 740,000円の基点行・扶養3人
+        },
+    },
+}
+
 ROW_RE = re.compile(
     r"^\s*([\d,]+)\s+([\d,]+)\s+"      # 以上 未満
     r"((?:[\d,]+\s+){8})"              # 甲欄 0〜7人
@@ -153,10 +212,25 @@ def verify(rows, anchors_740k):
 
 
 def main():
+    global TABLE_MAX, OTSU_LOW_MAX, OTSU_LOW_RATE, OVER7_DEDUCTION
+    global KOU_SEGMENTS, OTSU_SEGMENTS, ANCHORS
+
     ap = argparse.ArgumentParser()
     ap.add_argument("pdf")
     ap.add_argument("-o", "--out", required=True)
+    ap.add_argument("--year", choices=sorted(YEARS), default="r08",
+                    help="どの年分の定数で検算するか（既定 r08。値は YEARS に実測で書いてある）")
     args = ap.parse_args()
+
+    y = YEARS[args.year]
+    TABLE_MAX = y["table_max"]
+    OTSU_LOW_MAX = y["otsu_low_max"]
+    OTSU_LOW_RATE = y["otsu_low_rate"]
+    OVER7_DEDUCTION = y["over7_deduction"]
+    KOU_SEGMENTS = y["kou_segments"]
+    OTSU_SEGMENTS = y["otsu_segments"]
+    ANCHORS = y["anchors"]
+    print(f"年分: {y['label']}", file=sys.stderr)
 
     rows = extract(args.pdf)
     print(f"抽出: {len(rows)}行 ({rows[0]['min']:,}〜{rows[-1]['max']:,}円)", file=sys.stderr)
@@ -197,10 +271,9 @@ def main():
         sys.exit(1)
 
     data = {
-        "_source": "国税庁 給与所得の源泉徴収税額表（令和8年分）月額表 "
-                   "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf",
+        "_source": f"国税庁 給与所得の源泉徴収税額表（{y['label']}）月額表 {y['source']}",
         "_generated_by": "tools/extract_gensen_table.py（手で書き換えないこと）",
-        "year": "令和8年分",
+        "year": y["label"],
         "tableMax": TABLE_MAX,
         "over7Deduction": OVER7_DEDUCTION,
         "otsuLowMax": OTSU_LOW_MAX,
