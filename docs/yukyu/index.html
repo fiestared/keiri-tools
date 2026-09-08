@@ -146,7 +146,20 @@
 
   <button class="primary" id="calc">計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
-  <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
+  <div id="memo-actions" style="display:none;margin-top:8px">
+    <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
+    <button id="memo-save" class="btn-outline" type="button">この端末に覚えておく</button>
+  </div>
+</div>
+
+<div class="card" id="memo-card" style="display:none">
+  <h2 style="font-size:16px;margin:0 0 2px">覚えている条件（次の付与日が近い順）</h2>
+  <p style="font-size:12.5px;color:var(--sub);margin:0 0 10px">
+    この端末のブラウザにだけ保存しています。<b>サーバーへは送信していません</b>。
+    別のPCやブラウザには引き継がれません。
+  </p>
+  <div id="memo-list"></div>
+  <button id="memo-clear" class="btn-outline" type="button" style="margin-top:10px">すべて消す</button>
 </div>
 
 <section class="faq">
@@ -213,6 +226,9 @@
 
 <script type="module">
 import { needsFiveDays, currentGrant, todayISO } from "../assets/yukyu_core.js";
+import {
+  todayJst, addMemo, removeMemo, isRevisit, sortByNext, daysUntil, makeStore, sendOnce,
+} from "../assets/tool_memo.js";
 
 const $ = (id) => document.getElementById(id);
 const t0 = new Date();
@@ -284,11 +300,108 @@ $("calc").addEventListener("click", () => {
       </div>`;
   }
   box.innerHTML = html;
+  $("memo-actions").style.display = "block";
 });
 
 /* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
 import { attachCopyButton } from "../assets/copy_result.js";
 attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
+
+/* ---------- この端末に覚えておく（再訪の装置）2026-09-08 ----------
+ * ★狙い: 有給は「次回付与日」という未来の日付を持つ数少ないツール。
+ *   付与日が近い順に並べておけば、別の営業日にまた開く理由になる。
+ *   検索順位を動かさずにセッションを増やせるか、これで測る。
+ * ★測定: 別日に開いて復元されたときだけ tool_revisit を鳴らす（同日は鳴らさない）。 */
+const store = makeStore("yukyu_memo_v1");
+const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+/** 覚えている1件から「次回付与日」を求める。日付の計算は必ず core に投げる */
+function nextDateOf(m) {
+  try {
+    const g = currentGrant(m.hire, Number(m.wdays), Number(m.whours), todayISO());
+    return g.next ? g.next.date : (g.rows && g.rows[0] ? g.rows[0].date : "");
+  } catch { return ""; }
+}
+
+function labelOf(m) {
+  const wd = Number(m.wdays);
+  return (m.label && String(m.label).trim())
+    || `${m.hire.replaceAll("-", "/")} 入社・週${wd}日`;
+}
+
+function renderMemos() {
+  const list = store.read();
+  $("memo-card").style.display = list.length ? "block" : "none";
+  if (!list.length) { $("memo-list").innerHTML = ""; return; }
+  const today = todayISO();
+  const sorted = sortByNext(list, nextDateOf);
+  $("memo-list").innerHTML = sorted.map((m) => {
+    const idx = list.indexOf(m);
+    const d = nextDateOf(m);
+    const left = d ? daysUntil(d, today) : null;
+    const when = d
+      ? `次回付与 <b>${d.replaceAll("-", "/")}</b>` + (left === null ? "" : left >= 0 ? `（あと${left}日）` : "（経過）")
+      : "計算できません";
+    const soon = left !== null && left >= 0 && left <= 31;
+    return `<div style="display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line)">
+      <button type="button" data-load="${idx}" class="btn-outline" style="flex:1;text-align:left;padding:6px 10px">
+        ${esc(labelOf(m))}<br><span style="font-size:12.5px;color:${soon ? "#b35c00" : "var(--sub)"}">${when}</span>
+      </button>
+      <button type="button" data-del="${idx}" aria-label="${esc(labelOf(m))} を消す"
+        style="border:0;background:none;color:#c33;font-size:18px;cursor:pointer;padding:4px 8px">×</button>
+    </div>`;
+  }).join("");
+}
+
+$("memo-list").addEventListener("click", (e) => {
+  const load = e.target.closest("[data-load]");
+  const del = e.target.closest("[data-del]");
+  if (load) {
+    const m = store.read()[Number(load.dataset.load)];
+    if (!m) return;
+    $("hire").value = m.hire;
+    $("wdays").value = String(m.wdays);
+    $("whours").value = String(m.whours);
+    $("calc").click();
+    $("result").scrollIntoView({ block: "nearest" });
+  } else if (del) {
+    store.write(removeMemo(store.read(), Number(del.dataset.del)));
+    renderMemos();
+  }
+});
+
+$("memo-clear").addEventListener("click", () => {
+  store.write([]);
+  renderMemos();
+});
+
+$("memo-save").addEventListener("click", () => {
+  const hire = $("hire").value;
+  if (!hire) return;
+  const entry = {
+    hire,
+    wdays: Number($("wdays").value),
+    whours: Number($("whours").value) || 0,
+    savedAt: todayJst(),
+  };
+  const ok = store.write(addMemo(store.read(), entry));
+  if (!ok) {
+    $("memo-save").textContent = "この端末では保存できません";
+    return;
+  }
+  sendOnce("tool_save", { tool: "yukyu" });
+  $("memo-save").textContent = "覚えました";
+  setTimeout(() => { $("memo-save").textContent = "この端末に覚えておく"; }, 2000);
+  renderMemos();
+});
+
+/* 初期表示。★別日に戻ってきたときだけ鳴らす（同日の再計算は鳴らさない） */
+(function initMemos() {
+  if (!store.usable()) { $("memo-save").style.display = "none"; }
+  const list = store.read();
+  if (isRevisit(list, todayJst())) sendOnce("tool_revisit", { tool: "yukyu" });
+  renderMemos();
+})();
 </script>
 <script src="../assets/a11y_error.js" defer></script>
 </body>
