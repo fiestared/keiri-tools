@@ -101,10 +101,17 @@ const dateModifiedOf = (dir, i) =>
   // ★ここは「更新日が無いこと」ではない: a0 は OLD に本物の加筆履歴があるので
   //   「更新日: 2026年2月20日」と出るのが正しい。禁じたいのは**今日に化けること**。
   const html = readFileSync(join(dir, 'docs/column/a0/index.html'), 'utf8');
-  assert.ok(!html.includes(`更新日: ${ja(todayJST())}`),
+  // ★可視の日付は <time datetime="ISO"> で包まれている（2026-09-09 に機械可読化した）。
+  //   素の「更新日: 2026年2月20日」では一致しないので、タグを剥いでから見る。
+  //   検査の意図は変えない: 「今日に化けないこと」と「本物の改稿日が残ること」。
+  const plain = html.replace(/<[^>]+>/g, '');
+  assert.ok(!plain.includes(`更新日: ${ja(todayJST())}`),
     `本文が変わっていないのに可視の「更新日」を今日(${ja(todayJST())})にしてはいけない`);
-  assert.ok(html.includes(`更新日: ${ja(OLD)}`),
+  assert.ok(plain.includes(`更新日: ${ja(OLD)}`),
     `本物の改稿履歴(${OLD})は可視の更新日として残すこと`);
+  // datetime 属性が ISO で入っていること（機械可読の担保）
+  assert.ok(html.includes(`<time datetime="${OLD}">`),
+    `更新日に datetime="${OLD}" が付いていること`);
 }
 
 // ── ② 少数（3件 < 20）→ 今日を焼く（門が広すぎないことの確認）────────

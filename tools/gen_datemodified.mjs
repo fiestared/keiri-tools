@@ -48,6 +48,36 @@ const git = (args) => execFileSync('git', args, { cwd: ROOT, encoding: 'utf8', m
 // 日付はすべて JST。toISOString は UTC 固定なので使わない。
 const todayJST = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
 const ja = (ymd) => { const [y, m, d] = ymd.split('-').map(Number); return `${y}年${m}月${d}日`; };
+// 和文の日付 → ISO(YYYY-MM-DD)。ゼロ埋めする（datetime 属性は ISO でないと機械が読めない）。
+const iso = (y, m, d) => `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+/**
+ * article-meta の中の日付を <time datetime="ISO"> で包む。
+ *
+ * ★なぜ要るか（2026-09-09 の実測）:
+ *   /column/furikomi-tesuryo-hikaku/ は dateModified 2026-09-03・title に「【2026年9月更新】」・
+ *   本文にも「最終更新: 2026年9月3日」があるのに、**Bing の検索結果には「2026年7月13日」（公開日）が出ていた**。
+ *   同じ画面で3位・4位の競合は 8月17日・8月19日 を出しており、**順位は上なのに日付だけ古く見える**状態だった。
+ *   可視の日付は素のテキストで、公開日と更新日のどちらがどちらかを機械が区別できる形になっていない。
+ *   → datetime 属性を付けて、機械可読にする。
+ *
+ * ★捏造しない: 日付の値は一切変えない。既にある文字列を包むだけ。
+ *   更新していない記事に「更新日」を作らないという上の方針はそのまま。
+ * ★冪等: 既に <time> で包まれているものは触らない。
+ */
+function withTimeTags(html) {
+  const meta = html.match(/<p class="article-meta">([\s\S]*?)<\/p>/);
+  if (!meta) return html;
+  let m = meta[1];
+  if (/<time\b/.test(m)) return html;            // 既に包んである
+  // 「公開日:」「更新日:」「最終更新:」の直後に来る和文日付だけを包む。
+  // 本文中の他の日付（例: 「2026年8月28日に公式ページで確認」）は対象外。
+  m = m.replace(
+    /((?:公開日|更新日|最終更新)\s*[:：]\s*)(\d{4})年(\d{1,2})月(\d{1,2})日/g,
+    (_, label, y, mo, d) => `${label}<time datetime="${iso(y, mo, d)}">${y}年${mo}月${d}日</time>`
+  );
+  return m === meta[1] ? html : html.replace(meta[0], `<p class="article-meta">${m}</p>`);
+}
 
 // 対象: docs 配下で dateModified を持つ index.html
 const files = [];
@@ -95,7 +125,7 @@ const lastContentCommit = new Map();
 //   「未コミット＝今日」と読んで日付を今日に塗り替える、という自家中毒を起こした。
 //   --check が永久に赤になり、冪等でなくなる。
 //   → 差分が **dateModified と article-meta の行しか無い** ファイルは変更とみなさない。
-const DATE_LINE = /"dateModified"|class="article-meta"|公開日:|更新日:/;
+const DATE_LINE = /"dateModified"|class="article-meta"|公開日:|更新日:|<time datetime=/;
 //
 // ★★★ 一括変更の除外は、コミット済みだけでなく**作業ツリーにも**効かせること
 //   （2026-08-23 実測）。上の lastContentCommit は `files.length < BULK_FILES` で
@@ -163,6 +193,9 @@ for (const fp of files) {
       out = out.replace(meta[0], `<p class="article-meta">${m}</p>`);
     }
   }
+
+  // 可視の日付を機械可読にする（値は変えない・冪等）
+  out = withTimeTags(out);
 
   if (out !== s) {
     changed++; changedList.push(`${rel.replace('docs/', '')} → ${eff}`);
