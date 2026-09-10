@@ -68,9 +68,12 @@ tools/wt.sh done <名前> # main に取り込んで畳む
   対話セッション(人が開いたペイン・Orca 含む)は**ここで書かない**。
 - 作業場は同じ `.git` を共有するので履歴は1本。`package.json` が無いので**作った直後から
   test も生成器も動く**(追加セットアップ不要)。
-- 分岐元は**ローカル `main`**。🚫 `origin/main` から切らない —
-  push は運用者判断なのでローカルが先行しているのが常態で、
-  origin から切ると**他セッションの変更が欠けた作業場が黙って出来る**(2026-08-24 に実際に踏んだ)。
+- 通常の分岐元は**ローカル `main`**。`wt.sh new` は fetch して ahead/behind を数え、
+  **behind があれば作業場を作らずに止まる**。共有 `main` の整理は統合担当の仕事で、子セッションはやらない。
+  1件だけを公開したいときは、最新 `origin/main` から専用ブランチを切る
+  (`git worktree add -b publish/<名前> ~/Scripts/keiri-tools-<名前> origin/main`)。
+  その作業場にはローカル `main` 固有の変更が入らないので、**差分が対象ファイルだけであることを確かめてから** push する。
+  push は運用者か権限を持つワーカーの判断。
 
 ★**なぜ規律ではなく構造にしたか(2026-08-24 の実害)**:
 以前ここには「並列中は子に全ページ生成器を流させない」という**規律**だけが書いてあった。
@@ -329,7 +332,10 @@ title・meta・JSON-LDはSEOのため静的HTMLに書くしかないので、
 - ローカル確認: `cd docs && python3 -m http.server 18923`(ESモジュールのため file:// 不可)
 - デプロイ: GitHub Pages(push で自動)。**push してテストが緑でも「本番に出た」とは限らない** —
   デプロイの成否と本番HTTPを見る。**詰まったCIは、次のpushで押し流せる**(Pagesはツリー全体をデプロイする)
-- 🔴 **push の前に必ず `git fetch origin && git merge --ff-only origin/main`。**
+- 🔴 **push の前に必ず `git fetch origin`。** 早送りできるなら `git merge --ff-only origin/main`。
+  **分岐していたら ff-only は通らない** — そのときは最新 `origin/main` から専用作業場を作って
+  対象コミットだけを取り込み直し、検査からやり直す。`git merge-base --is-ancestor origin/main <公開SHA>`
+  が通ることを push の直前に確かめる。**force push はしない。**
   このリポジトリには**あなた以外にも push する主体が居る** —
   他マシンの対話セッション・自律ワーカー・そして
   **定時ジョブ `tools/update_hojokin.sh`(1日3回・専用クローン `~/Scripts/keiri-tools-autodata` から直接 push)**。

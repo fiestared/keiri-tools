@@ -62,15 +62,25 @@ cmd_new() {
   [ -e "$dir" ] && die "既にある: $dir"
   git show-ref --verify --quiet "refs/heads/$br" && die "ブランチが既にある: ${br}（tools/wt.sh done $name で畳むか、別名を使う）"
 
-  # ★分岐元は必ず**ローカル main**。origin/main にしてはいけない（2026-08-24 実測）。
-  #   このリポジトリは push が運用者判断なので、ローカル main が origin より先行している
-  #   のが常態（実測: 2コミット先行）。origin/main から切ると、
-  #   **他セッションが入れたばかりの変更が欠けた作業場が黙って出来る**。
-  #   最初にそう書いて実際に踏んだ: 作った作業場に gen_trust_footer.mjs が無く、
-  #   --check がエラーで落ちた。エラーの形が「テストが赤い」と見分けにくい。
-  local base="main"
-  local ahead; ahead=$(git rev-list --count origin/main..main 2>/dev/null || echo 0)
-  [ "${ahead:-0}" -gt 0 ] && echo "  （main は origin より ${ahead} コミット先行。ローカル main から切る）"
+  # ★通常の分岐元はローカル main。ただし**公開済み履歴を欠くなら作らない**。
+  #   もとは「ローカル main が先行しているのが常態」と書いてあった。それは片側しか見ていない。
+  #   このリポジトリには他マシン・自律ワーカー・定時ジョブ tools/update_hojokin.sh（専用クローンから
+  #   直接 push）も push するので、ローカル main は**日常的に origin より遅れる**（運用節に既出）。
+  #   実測 2026-09-10: ahead 4 / behind 26。しかも git cherry で見ると先行3件は
+  #   **同等パッチが公開側にある**ので、先行の数は「未公開の変更の数」ですらない。
+  #   遅れたまま切ると、**公開済みの変更が欠けた作業場が黙って出来る**（先行のときと同じ実害が
+  #   反対向きに出る）。エラーにならないので気づけない。→ 数えて、遅れていたら止める。
+  local base ahead behind counts
+  git fetch origin || die "origin の取得に失敗。分岐元が公開側から遅れていないか確認できない"
+  base=$(git rev-parse --verify refs/heads/main) || die "main が無い"
+  counts=$(git rev-list --left-right --count "${base}...refs/remotes/origin/main") \
+    || die "main と origin/main を比較できない"
+  read -r ahead behind <<< "$counts"
+  echo "  main: ahead ${ahead} / behind ${behind}（fetch 時点）"
+  [ "$behind" -eq 0 ] || die "main が公開側より ${behind} コミット遅れている。共有 main は触らず統合担当へ渡すこと。
+  この1件だけを公開したいなら、origin/main から専用ブランチを切る:
+    git worktree add -b publish/<名前> ${WTPREFIX}<名前> origin/main"
+  # ★SHA で固定する。比較のあとに main が動いても、確かめた分岐元から作れる。
   git worktree add -b "$br" "$dir" "$base" || die "worktree の作成に失敗した"
   echo
   echo "✓ 作業場を作った"
