@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import { mkdtempSync, mkdirSync, copyFileSync, writeFileSync, appendFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { productionGuard } from './production-guard.mjs';
+const root = mkdtempSync(join(tmpdir(), 'ga-guard-test-'));
+const dir = join(root, 'ga-dashboard');
+mkdirSync(dir);
+const git = (...args) => execFileSync('/usr/bin/git', ['-C', root, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+try {
+  git('init'); git('config', 'user.name', 'Test'); git('config', 'user.email', 'test@example.invalid');
+  for (const f of ['build.mjs', 'run.sh', 'production-guard.mjs']) copyFileSync(new URL(f, import.meta.url), join(dir, f));
+  writeFileSync(join(dir, '.gitignore'), 'data.json\nindex.html\nlogs/\n');
+  git('add', '.'); git('commit', '-m', 'fixture');
+  const guard = productionGuard(dir);
+  writeFileSync(join(dir, 'data.json'), '{}');
+  assert.equal(guard.verify(), git('rev-parse', 'HEAD'));
+  appendFileSync(join(dir, 'build.mjs'), '\n// dirty\n');
+  assert.throws(() => productionGuard(dir), /未コミット/);
+  assert.throws(() => guard.verify(), /未コミット/);
+  git('add', '.');
+  assert.throws(() => productionGuard(dir), /未コミット/);
+  git('commit', '-m', 'changed during run');
+  assert.throws(() => guard.verify(), /コミット変更/);
+  const clean = productionGuard(dir);
+  writeFileSync(join(root, '.git', 'MERGE_HEAD'), git('rev-parse', 'HEAD'));
+  assert.throws(() => clean.verify(), /統合作業中/);
+  rmSync(join(root, '.git', 'MERGE_HEAD'));
+  writeFileSync(join(dir, 'untracked.mjs'), '// pending');
+  assert.throws(() => clean.verify(), /未コミット/);
+  rmSync(join(dir, 'untracked.mjs'));
+  git('update-index', '--assume-unchanged', 'ga-dashboard/build.mjs');
+  appendFileSync(join(dir, 'build.mjs'), '\n// hidden dirty\n');
+  assert.throws(() => clean.verify(), /一致しません/);
+  console.log('PASS: clean/ignored runtime, unstaged, staged, mid-run commit, merge, untracked, hidden dirty');
+} finally { rmSync(root, { recursive: true, force: true }); }

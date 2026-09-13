@@ -11,6 +11,8 @@ set -uo pipefail
 
 cd "$(dirname "$0")"
 
+/opt/homebrew/bin/node ./production-guard.mjs --check || exit 1
+
 PM_ENV="$HOME/Scripts/payment-manager/.env"
 if [[ -f "$PM_ENV" ]]; then
   set -a

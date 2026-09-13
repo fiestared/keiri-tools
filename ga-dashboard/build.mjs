@@ -15,6 +15,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { productionGuard } from "./production-guard.mjs";
 import { createSign } from "node:crypto";
 
 const DIR = dirname(fileURLToPath(import.meta.url));
@@ -27,10 +28,29 @@ const OUT_ARTIFACT = join(DIR, "artifact.html");
 // （＝ログが伸びていない ≠ 動いていない。見るのはこのファイル）
 const LAST_RUN = join(DIR, "logs", "last-run.txt");
 
-// サイトを足したい時はここに1行足す（aitimes.jp = properties/545695263 は 2026-08-13 に外した）
+// サイトを足したい時はここに1行足す（aitimes.jp = properties/545695263 は 2026-08-13 に外した）。
+// feeArticlePath / sessionGoal / googleKpi / adsense は keiri-tools 専用。無いサイトは出さない。
+const GOOGLE_KPI_KEIRI = [                        // Google クリック/日（GSC・7日平均）の通過点
+  { by: "2026-10-31", target: 10 },
+  { by: "2026-12-31", target: 30 },
+  { by: "2027-03-31", target: 100 },
+];
 const SITES = [
-  { key: "keiri-tools", label: "keiri-tools.com", property: "properties/545217731",
-    url: "https://keiri-tools.com", gscSite: "sc-domain:keiri-tools.com" },
+  {
+    key: "keiri-tools", label: "keiri-tools.com", property: "properties/545217731",
+    url: "https://keiri-tools.com", gscSite: "sc-domain:keiri-tools.com",
+    feeArticlePath: "/column/furikomi-tesuryo-hikaku/",
+    sessionGoal: 2400,
+    goalBy: "2027-03-31",
+    googleKpi: GOOGLE_KPI_KEIRI,
+    titleSuffix: /\s*[|｜]\s*経理・税金・補助金ツールズ.*$/,
+    adsense: true,
+  },
+  {
+    key: "pachisloshirube", label: "パチスロ店道しるべ", property: "properties/551973871",
+    url: "https://pachisloshirube.jp", gscSite: "sc-domain:pachisloshirube.jp",
+    titleSuffix: /\s*[|｜]\s*(?:パチスロ店)?道しるべ.*$/,
+  },
 ];
 
 const WINDOW_DAYS = 21;   // 画面に出す日数（今日を含む）★2026-08-25に14→21
@@ -41,48 +61,14 @@ const FETCH_DAYS = WINDOW_DAYS + 7;
 // launchd の StartInterval と揃える。画面の文言と、開いたタブの読み直し間隔にも使う。
 // 1回のビルドで消費するGA4クォータは約1トークン（上限は日20万）なので毎分でも余る。
 const INTERVAL_SEC = 60;
-const FEE_ARTICLE_PATH = "/column/furikomi-tesuryo-hikaku/";
 
 // ---------- 目標と Google トラック KPI ----------
-// ★2026-09-10 Masahiro承認で「日1万セッション」（2026-09-07 設定）から置き直した。
-//   日1万は長期の方向としては残すが、今期の事業目標からは下ろした。達成年数は置かない。
-//   根拠: Fable/Astra の独立分析と実測（gbrain learnings/keiri-tools-10k-sessions-analysis-2026-09-08、
-//   ai-income-daily の .orca/reports/growth-10k/ 一式）。正本は prompt.md と growth_ledger.md G-007。
-//
-// ★Bing の到達シナリオ: 表示15,000/日 × CTR10% ＝ 約1,500クリック/日。
-//   ★これは**シナリオであって在庫から確定した天井ではない**（2026-09-12 に表現を弱めた）。
-//      上位一部クエリのCTRを全クエリへ移せる根拠は無い。1〜3位帯のCTRは最新ラベルで 9.47%→8.06%。
-//   🚫 BWT の `pages` / `queries` は**週次バケットでラベルは週の終了日**。1ファイルに約6ラベル
-//      入っており、**全行を足すと約6週ぶん**になる。sum(全行) を7で割らない。
-//      2026-09-08 に外部モデルが pages 全行 265,649 を「7日」として割り、天井を3,800/日と
-//      2.5倍過大に出した（6バケット合計だった）。
-//      同じ週で揃えると pages は traffic の 0.93〜0.98＝ほぼ完全で、重複計上ではない。
-//      queries は 0.33〜0.39 の上位N抜粋なのでサイト全体の分母に代用しない。
-//      サイト全体の分母は **traffic**。gbrain メモ bing-snapshot-weekly-buckets。
-//
-// ★BING_GOAL 2,000 は上の天井1,500を**超えている**。表示自体が 15,113→20,000/日 へ
-//   増えることが前提で、表示増は外部要因＝自力レバーではない。だから中間確認を置く:
-//   **2026-12-31 に表示7日平均が18,000/日に届いていなければ、Bing目標を1,500へ下げる。**
-//   数字だけ動かさず、そのとき方針ごと見直す。
-//
-// ★日本の検索シェアは Google が Bing の6〜8倍。全体のセッションとは別に
-//   **Google のクリック/日** を独立の KPI として持つ。
-// ★Google クリックは GA4 ではなく Search Console から取る（GA4 の sessionSource=google は
-//   Discover や参照を含み、順位・表示が見えない）。同じSA ga-reader@keiri-tools が
-//   sc-domain:keiri-tools.com の閲覧権限を持っている（keiri-tools/analytics-access）。
-// ★通過点は 2026-09-07 の分析で置いた仮の値。外れたら方針ごと見直す（数字だけ動かさない）。
-const SESSION_GOAL = 2400;                        // 1日セッション（直近7日平均）。期日 2027-03-31
-//   内訳: Bing 2,000 ＋ Google 100 ＋ 非検索 300。2026-09-10 時点の実測は合計 約486/日
-//   （Bing クリック430 / Google 2.9 / 非検索 約30）。
-const BING_GOAL = 2000;                           // Bing クリック/日（BWT traffic・7日平均）
-const NONSEARCH_GOAL = 300;                       // 非検索セッション/日（GA4・AIアシスタント＋Direct＋Referral）
-const BING_CEILING_NOW = 1500;                    // 12-31 の分岐で下方修正する場合の値。天井ではなくシナリオ値
-const GOOGLE_KPI = [                              // Google クリック/日（GSC・7日平均）の通過点
-  { by: "2026-10-31", target: 10 },               // 現在2.9からの実現的な刻みへ置き直した
-  { by: "2026-12-31", target: 30 },
-  { by: "2027-03-31", target: 100 },
-];
-// GSC は日次が2〜3日遅れて届き、末端の1〜2日は後から増える。28日取って7日平均×2本を作る
+// 2026-09-10承認: keiriのみ日2,400（7日平均）、期日2027-03-31。日1万は長期の方向。
+// 内訳はBing 2,000クリック・GSC 100クリック・非検索300セッション。
+// 2026-09-12承認: 年末休業前の完成7日と平日平均を併記し、4指標の等率線で中間確認。
+// 旧「表示18,000未満なら下方修正」は廃止。正本: growth_ledger.md G-007。
+// BWT pages/queriesは週次バケット。全ラベルを合計して7で割らない。全体の分母はtraffic。
+// GSCは同じSAで両サイトを読む。7日平均は取得末端で締め、取得失敗は欄内に表示する。
 const GSC_FETCH_DAYS = 28;
 
 // 外から見る用に payment-manager（Cloudflare Worker）へ焼いたHTMLを預ける。
@@ -94,6 +80,7 @@ const PUSH_TOKEN = process.env.GA_PUSH_TOKEN || null;
 const args = process.argv.slice(2);
 const WANT_ARTIFACT = args.includes("--artifact");
 const OFFLINE = args.includes("--offline");
+const production = PUSH_URL && PUSH_TOKEN && !OFFLINE ? productionGuard(DIR) : null;
 
 // ---------- JST ----------
 const jstFields = (d = new Date()) => {
@@ -224,24 +211,29 @@ async function fetchAll() {
       orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }],
       limit: 10000,
     });
-    const feeViews = await runReport(token, s.property, {
-      dimensionFilter: andFilter(hostFilter, exactFilter("pagePath", FEE_ARTICLE_PATH)),
-      dimensions: [{ name: "date" }],
-      metrics: [{ name: "screenPageViews" }],
-      limit: 200,
-    });
-    // 対象記事内の広告リンクは track.js が pr_click を明示送信している。
-    // GA4の自動 click は外部リンク全般なので、広告成果の数字には混ぜない。
-    const feeClicks = await runReport(token, s.property, {
-      dimensionFilter: andFilter(
-        hostFilter,
-        exactFilter("pagePath", FEE_ARTICLE_PATH),
-        exactFilter("eventName", "pr_click"),
-      ),
-      dimensions: [{ name: "date" }],
-      metrics: [{ name: "eventCount" }],
-      limit: 200,
-    });
+    // 広告クリックは keiri-tools の振込手数料記事だけ。他サイトは取らない。
+    let feeViews = { rows: [] };
+    let feeClicks = { rows: [] };
+    if (s.feeArticlePath) {
+      feeViews = await runReport(token, s.property, {
+        dimensionFilter: andFilter(hostFilter, exactFilter("pagePath", s.feeArticlePath)),
+        dimensions: [{ name: "date" }],
+        metrics: [{ name: "screenPageViews" }],
+        limit: 200,
+      });
+      // 対象記事内の広告リンクは track.js が pr_click を明示送信している。
+      // GA4の自動 click は外部リンク全般なので、広告成果の数字には混ぜない。
+      feeClicks = await runReport(token, s.property, {
+        dimensionFilter: andFilter(
+          hostFilter,
+          exactFilter("pagePath", s.feeArticlePath),
+          exactFilter("eventName", "pr_click"),
+        ),
+        dimensions: [{ name: "date" }],
+        metrics: [{ name: "eventCount" }],
+        limit: 200,
+      });
+    }
 
     // Google トラック KPI 用（Search Console）。★GA4 が取れて GSC だけ落ちた回でも画面全体は殺さない。
     //   失敗は gsc.error に入れて KPI 欄にだけ出す（数字が黙って古くなるのは避ける）。
@@ -330,8 +322,10 @@ async function fetchAll() {
     // さらに cutoff の時間帯そのものは今日だけ途中（例: 13:01 なら13時台は1分ぶん）なので、
     // 完全に経過した時間帯（0〜cutoffHour-1）だけを両日から取る。
     const lastFull = cutoffHour - 1;
+    // titleSuffix は RegExp なので data.json に載せない（描画時に SITES から引き直す）
+    const { titleSuffix: _titleSuffix, ...cfg } = s;
     sites.push({
-      ...s, days, pageRows, gsc,
+      ...cfg, days, pageRows, gsc,
       feeDays: days.map(({ date }) => ({ date, ...(feeMap.get(date) ?? { pageviews: 0, clicks: 0 }) })),
       cutoff, cutoffHour, cmpHour: lastFull,
       todayCum: lastFull >= 0 ? cumToHour(today, lastFull) : 0,
@@ -406,10 +400,7 @@ function model(data) {
         .sort((a, b) => (b.last7 + b.today) - (a.last7 + a.today))
         .slice(0, 12);
       const pageLast7Total = sum([...pageMap.values()].map((x) => x.last7));
-      // ★平日5日平均も出す（2026-09-12 Masahiro承認）。読者は平日日中の会社PCで、
-      //   土日は平日の1/6。7日平均は土日希釈を含むので、判定の分岐は平日基準で行う。
-      const last7Rows = d.slice(n - 8, n - 1);
-      const goal = goalModel(s, data.today, last7, last7Rows);
+      const goal = goalModel(s, data.today, last7, d.slice(n - 8, n - 1));
       return {
         goal,
         lagMin: lagMin !== null && lagMin >= 0 ? lagMin : null,
@@ -439,16 +430,22 @@ function model(data) {
  * ★セッション0の日は GSC も行を返さない。0で埋めてから平均する（ゼロ日を飛ばすと上振れ）。
  * ★古い data.json（gsc を持たない）でも落ちない。その場合 google は null で「取得前」と出す。
  */
+function siteConf(s) {
+  return SITES.find((x) => x.key === s.key) ?? {};
+}
+
 function goalModel(s, today, last7Sessions, last7Rows = []) {
   const sessionsPerDay = last7Sessions / 7;
-  // 平日＝月〜金（JST）。土日は読者がいないので、7日平均と必ず並べる。
   const wdRows = last7Rows.filter((x) => { const w = weekdayIdx(x.date); return w >= 1 && w <= 5; });
   const weekdaySessionsPerDay = wdRows.length ? wdRows.reduce((a, x) => a + x.sessions, 0) / wdRows.length : null;
   const weekdayN = wdRows.length;
-  const sessionPct = sessionsPerDay / SESSION_GOAL * 100;
+  const conf = siteConf(s);
+  const sessionGoal = conf.sessionGoal ?? null;
+  const googleKpi = conf.googleKpi ?? [];
+  const sessionPct = sessionGoal ? sessionsPerDay / sessionGoal * 100 : null;
   const g = s.gsc;
   if (!g || g.error || !(g.rows ?? []).length) {
-    return { sessionsPerDay, weekdaySessionsPerDay, weekdayN, sessionPct, google: null, error: g?.error ?? null, milestones: GOOGLE_KPI.map((k) => ({ ...k, pct: null, daysLeft: daysBetween(today, k.by) })) };
+    return { sessionsPerDay, weekdaySessionsPerDay, weekdayN, sessionPct, google: null, error: g?.error ?? null, milestones: googleKpi.map((k) => ({ ...k, pct: null, daysLeft: daysBetween(today, k.by) })) };
   }
   const byDate = new Map(g.rows.map((r) => [r.date, r]));
   const end = g.rows.at(-1).date;                         // GSC がデータを出している末端
@@ -473,7 +470,7 @@ function goalModel(s, today, last7Sessions, last7Rows = []) {
       last7Clicks: last7.reduce((a, r) => a + r.clicks, 0),
       series,
     },
-    milestones: GOOGLE_KPI.map((k) => ({
+    milestones: googleKpi.map((k) => ({
       ...k, pct: clicksPerDay / k.target * 100, daysLeft: daysBetween(today, k.by),
     })),
   };
@@ -745,9 +742,12 @@ const feeMetric = (label, x, partial = false) => `
   </div>`;
 
 function insights(site) {
-  if (!site.fee || !site.pageBreakdown) return "";
+  if (!site.pageBreakdown) return "";
+  const conf = siteConf(site);
   const titleOf = (row) => {
-    const t = (row.title || "").replace(/\s*[|｜]\s*経理・税金・補助金ツールズ.*$/, "").trim();
+    const re = conf.titleSuffix;
+    const stripped = re ? (row.title || "").replace(re, "") : (row.title || "");
+    const t = stripped.trim();
     return t && t !== "(not set)" ? t : row.path;
   };
   const rows = site.pageBreakdown.map((row) => {
@@ -759,22 +759,25 @@ function insights(site) {
       <td class="num">${share.toFixed(1)}%</td>
     </tr>`;
   }).join("");
-  return `
-  <section class="insights" aria-labelledby="insights-${esc(site.key)}">
-    <h3 id="insights-${esc(site.key)}">記事クリックとアクセスページ</h3>
-    <div class="insight-grid">
+  const feePath = site.feeArticlePath ?? conf.feeArticlePath;
+  const feeCard = feePath ? `
       <div class="insight-card fee-card">
         <div class="insight-head">
           <div><span class="eyebrow">振込手数料の記事</span><h4>広告リンクのクリック数</h4></div>
-          <a href="${esc(new URL(FEE_ARTICLE_PATH, site.url).href)}" target="_blank" rel="noopener">記事を開く ↗</a>
+          <a href="${esc(new URL(feePath, site.url).href)}" target="_blank" rel="noopener">記事を開く ↗</a>
         </div>
         <div class="metric-grid">
-          ${feeMetric("今日", site.fee.today, true)}
-          ${feeMetric(`昨日（${site.yesterdayWd}）`, site.fee.yesterday)}
-          ${feeMetric("直近7日（昨日まで）", site.fee.last7)}
+          ${feeMetric("今日", site.fee?.today, true)}
+          ${feeMetric(`昨日（${site.yesterdayWd}）`, site.fee?.yesterday)}
+          ${feeMetric("直近7日（昨日まで）", site.fee?.last7)}
         </div>
         <p>記事内の広告リンクが送る <code>pr_click</code>。通常の外部リンククリックは含めていない。</p>
-      </div>
+      </div>` : "";
+  return `
+  <section class="insights" aria-labelledby="insights-${esc(site.key)}">
+    <h3 id="insights-${esc(site.key)}">${feePath ? "記事クリックとアクセスページ" : "アクセスページ"}</h3>
+    <div class="insight-grid">
+      ${feeCard}
       <div class="insight-card pages-card">
         <div class="insight-head"><div><span class="eyebrow">上位12ページ</span><h4>アクセスページの内訳</h4></div></div>
         <div class="tbl-scroll"><table>
@@ -840,8 +843,9 @@ function goalBlock(site) {
   const g = site.goal;
   if (!g) return "";
   const G = g.google;
+  const sessionGoal = siteConf(site).sessionGoal ?? null;
   const bar = (pct) => `<div class="bar" role="img" aria-label="達成率 ${n1(pct)}%"><i style="width:${Math.max(0.5, Math.min(100, pct || 0))}%"></i></div>`;
-  const msRows = g.milestones.map((k) => `<tr>
+  const msRows = (g.milestones ?? []).map((k) => `<tr>
       <td>${esc(k.by)}<small>${k.daysLeft >= 0 ? `あと${k.daysLeft}日` : `${-k.daysLeft}日超過`}</small></td>
       <td class="num">${n0(k.target)}</td>
       <td class="num">${G ? n1(G.clicksPerDay) : "—"}</td>
@@ -861,29 +865,50 @@ function goalBlock(site) {
         <div class="goal-value">—</div>
         <div class="metric-sub">${g.error ? `⚠ GSC の取得に失敗: <code>${esc(g.error)}</code>` : "まだ GSC を取得していない（次の更新で入る）"}</div>
       </div>`;
-  return `
-  <section class="goal" aria-labelledby="goal-${esc(site.key)}">
-    <h3 id="goal-${esc(site.key)}">目標: 日 ${SESSION_GOAL.toLocaleString("ja-JP")} セッション <small>2027-03-31まで</small></h3>
-    <div class="goal-grid">
+  const sessionCard = sessionGoal ? `
       <div class="goal-card">
         <div class="insight-head"><div><span class="eyebrow">全体（GA4）</span><h4>1日セッション <small>直近7日平均・昨日まで</small></h4></div></div>
-        <div class="goal-value">${n0(g.sessionsPerDay)}<span>/ ${SESSION_GOAL.toLocaleString("ja-JP")}</span></div>
-        ${g.weekdaySessionsPerDay == null ? "" : `<div class="metric-sub">平日${g.weekdayN}日平均 <b>${n0(g.weekdaySessionsPerDay)}</b>/日（土日を除く）。<b>判定の分岐は平日基準で行う</b> — 読者は平日日中の会社PCで、土日は平日の約1/6。</div>`}
+        <div class="goal-value">${n0(g.sessionsPerDay)}<span>/ ${sessionGoal.toLocaleString("ja-JP")}</span></div>
+        ${g.weekdaySessionsPerDay == null ? "" : `<div class="metric-sub">平日${g.weekdayN}日平均 <b>${n0(g.weekdaySessionsPerDay)}</b>/日（土日を除く）。目標は7日平均、進捗の判断には平日平均も使う。</div>`}
         ${bar(g.sessionPct)}
-        <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>。内訳の目標は Bing ${n0(BING_GOAL)} ＋ Google ${n0(GOOGLE_KPI.at(-1).target)} ＋ 非検索 ${n0(NONSEARCH_GOAL)}。</div>
-        <div class="metric-sub">⚠ <b>折れるのは表示ではなく CTR</b>（2026-09-12 更新）。Bing の平日表示は既に <b>21,042/日</b>あり（7日平均16,535は土日希釈）、現CTR 2.675% のまま ${n0(BING_GOAL)} クリックに届くには表示 <b>74,772/日</b> が要る。</div>
-        <div class="metric-sub"><b>2026-12-31 の中間確認は再設計した</b>。判定窓は年末休業前の完成7日（候補 native 12-18〜24）。旧「表示7日平均18,000未満なら下げる」は、native 12-25〜31 が実質JSTで12-26(土)〜<b>2027-01-01(元日)</b>に落ちるため使わない。分岐は4指標の等率線と比べる（12-31目安: Bing 1,014 / Google 20.3 / 非検索 89.5 / GA4 1,201）。正本は growth_ledger.md G-007。</div>
-        <div class="metric-sub">🚫 BWT の <b>pages / queries は週次バケット</b>（ラベルは週の終了日・1ファイルに約6ラベル）。<b>sum(全行) を7で割らない</b>。同じ週なら pages は traffic の0.93〜0.98でほぼ完全、queries は0.33〜0.39の抜粋。サイト全体の分母は <b>traffic</b>。</div>
-      </div>
-      ${googleCard}
-    </div>
+        <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>。内訳の目標は Bing 2,000 ＋ Google 100 ＋ 非検索 300。</div>
+        <div class="metric-sub">2026-12-31に中間確認。年末休業前の完成7日（候補: Bingの日付で12/18〜24）と平日平均で進捗を見る。表示18,000/日だけでは判定しない。</div>
+        <div class="metric-sub">12月末の進捗目安: Bing 1,014 / Google 20.3 / 非検索 89.5 / GA4 1,201。目標まで一定率で伸びた場合の目安で、予測値ではない。</div>
+      </div>` : `
+      <div class="goal-card">
+        <div class="insight-head"><div><span class="eyebrow">全体（GA4）</span><h4>1日セッション <small>直近7日平均・昨日まで</small></h4></div></div>
+        <div class="goal-value">${n0(g.sessionsPerDay)}<span>/日</span></div>
+        <div class="metric-sub">目標の通過点はまだ置いていない。数字の見方は keiri-tools と同じ（昨日までの7日平均。当日は途中なので含めない）。</div>
+      </div>`;
+  const heading = sessionGoal
+    ? `目標: 日 ${sessionGoal.toLocaleString("ja-JP")} セッション <small>${esc(siteConf(site).goalBy)}まで</small>`
+    : "セッションと Google トラック";
+  const milestones = msRows ? `
     <div class="goal-ms">
       <div class="chart-title">Google クリック/日の通過点（7日平均で判定）</div>
       <div class="tbl-scroll"><table class="goal-t">
         <thead><tr><th>期日</th><th class="num">目標</th><th class="num">現在</th><th class="num">達成率</th><th></th></tr></thead>
         <tbody>${msRows}</tbody>
       </table></div>
+    </div>` : "";
+  const keiriFoot = sessionGoal ? `
+    <p class="foot">
+      日1万セッションは長期の方向とし、今期は2027-03-31までに日2,400を目指す。<br>
+      Googleの通過点は10月末10 / 12月末30 / 2027-03末100クリック/日。外れた場合は方針も見直す。<br>
+      ★Google クリックは GA4 ではなく Search Console の値。GSC は2〜3日遅れで届くので、7日平均は「今日」ではなく <b>GSC の末端の日</b> で締めている。
+    </p>` : `
+    <p class="foot">
+      ★Google クリックは GA4 ではなく Search Console の値。GSC は2〜3日遅れで届くので、7日平均は「今日」ではなく <b>GSC の末端の日</b> で締めている。
+      表示と順位はクリックより先に動く先行指標。
+    </p>`;
+  return `
+  <section class="goal" aria-labelledby="goal-${esc(site.key)}">
+    <h3 id="goal-${esc(site.key)}">${heading}</h3>
+    <div class="goal-grid">
+      ${sessionCard}
+      ${googleCard}
     </div>
+    ${milestones}
     ${G ? `<figure class="chart google">
       <div class="chart-title">Google からの1日クリック（棒）と表示（線）— ${esc(G.series[0]?.date ?? "")} 〜 ${esc(G.end)}</div>
       ${googleChart(G, site.key)}
@@ -894,20 +919,27 @@ function goalBlock(site) {
         </table></div>
       </details>
     </figure>` : ""}
-    <p class="foot">
-      ★日1万は Bing では届かない。Bing の表示は平日1.9万/日で頭打ち、日本の検索シェアは Google が Bing の6〜8倍。
-      だから <b>Google のクリック/日</b> を全体とは別の KPI として持つ。表示と順位はクリックより先に動く先行指標。<br>
-      ★通過点（10月末 30 / 12月末 100 / 2027-03末 1,000）は 2026-09-07 の分析で置いた仮の値。
-      外れたら数字だけ動かさず方針ごと見直す。Google 側の壁は索引ではなく、ドメイン年齢・YMYL・E-E-A-T・量産パターン（2026-08-24 全数測定）。<br>
-      ★Google クリックは GA4 ではなく Search Console の値。GSC は2〜3日遅れで届くので、7日平均は「今日」ではなく <b>GSC の末端の日</b> で締めている。
-    </p>
+    ${keiriFoot}
   </section>`;
 }
 
-function sitePanel(site, primary) {
+function siteTabs(sites, selectedKey) {
+  if (sites.length < 2) return "";
+  return `<div class="sitetabs" role="tablist" aria-label="サイト">${sites.map((s) => {
+    const on = s.key === selectedKey;
+    return `<button type="button" role="tab" id="tab-${esc(s.key)}"
+      aria-controls="site-${esc(s.key)}" aria-selected="${on ? "true" : "false"}"
+      tabindex="${on ? "0" : "-1"}" data-site="${esc(s.key)}">${esc(s.label)}</button>`;
+  }).join("")}</div>`;
+}
+
+function sitePanel(site, primary, extra = "", selected = true, asTab = false) {
   const hh = String(site.cmpHour).padStart(2, "0");
+  const tabAttrs = asTab
+    ? ` role="tabpanel" aria-labelledby="tab-${esc(site.key)}"${selected ? "" : " hidden"}`
+    : "";
   return `
-<section class="panel">
+<section class="panel" id="site-${esc(site.key)}"${tabAttrs}>
   <header class="phead">
     <h2><a href="${esc(site.url)}" target="_blank" rel="noopener">${esc(site.label)}</a></h2>
     <a class="ga" target="_blank" rel="noopener"
@@ -950,6 +982,7 @@ function sitePanel(site, primary) {
   ${chart(site)}
   ${table(site)}
   ${hourChart(site)}
+  ${extra}
 </section>`;
 }
 
@@ -999,6 +1032,25 @@ body{
 
 .top{display:flex; flex-wrap:wrap; gap:8px 16px; align-items:baseline; justify-content:space-between; margin-bottom:22px}
 h1{font-size:20px; font-weight:650; margin:0; letter-spacing:.01em}
+.sitetabs{
+  display:flex; margin:0 0 18px; border:1px solid var(--border); border-radius:10px;
+  overflow:hidden; background:var(--plane);
+}
+.sitetabs button{
+  flex:1; margin:0; padding:10px 12px; border:0; border-right:1px solid var(--border);
+  background:transparent; color:var(--ink2); cursor:pointer;
+  font:inherit; font-size:13.5px; font-weight:600; line-height:1.3;
+}
+.sitetabs button:last-child{border-right:0}
+.sitetabs button[aria-selected="true"]{
+  background:var(--surface); color:var(--ink);
+  box-shadow:inset 0 -2px 0 var(--series-1);
+}
+.sitetabs button:hover:not([aria-selected="true"]){color:var(--ink)}
+.sitetabs button:focus-visible{outline:2px solid var(--series-1); outline-offset:-2px; z-index:1}
+@media (max-width:520px){
+  .sitetabs button{font-size:12.5px; padding:9px 8px}
+}
 .meta{font-size:12.5px; color:var(--muted); font-variant-numeric:tabular-nums}
 .meta b{color:var(--ink2); font-weight:600}
 
@@ -1157,8 +1209,57 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
 
 const JS = `
 (function(){
-  // 狭い画面ではチャートが横スクロールになる。肝心の「今日」は右端なので初期位置を右端にする
-  document.querySelectorAll(".chart-scroll").forEach(function(c){ c.scrollLeft = c.scrollWidth; });
+  var KEY="ga.site";
+  var tabs=[].slice.call(document.querySelectorAll(".sitetabs [role=tab]"));
+  var keys=tabs.map(function(t){ return t.getAttribute("data-site"); });
+  function pinCharts(root){
+    // 狭い画面ではチャートが横スクロールになる。肝心の「今日」は右端なので初期位置を右端にする
+    // hidden のパネルは scrollWidth が 0 なので、表示した直後にもう一度やる
+    (root || document).querySelectorAll(".chart-scroll").forEach(function(c){ c.scrollLeft = c.scrollWidth; });
+  }
+  function show(key, pushHash){
+    if(keys.length && keys.indexOf(key) < 0) key = keys[0];
+    tabs.forEach(function(tab){
+      var on = tab.getAttribute("data-site") === key;
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+      tab.tabIndex = on ? 0 : -1;
+      var panel = document.getElementById(tab.getAttribute("aria-controls"));
+      if(panel) panel.hidden = !on;
+    });
+    try { localStorage.setItem(KEY, key); } catch(e) {}
+    if(pushHash && keys.length > 1){
+      var want = "#" + key;
+      if(location.hash !== want) history.replaceState(null, "", want);
+    }
+    var panel = document.getElementById("site-" + key);
+    if(panel && !panel.hidden) pinCharts(panel);
+  }
+  function fromHash(){
+    var h = (location.hash || "").replace(/^#/, "").replace(/^site-/, "");
+    if(keys.indexOf(h) >= 0) return h;
+    try { var ls = localStorage.getItem(KEY); if(keys.indexOf(ls) >= 0) return ls; } catch(e) {}
+    return keys[0];
+  }
+  if(tabs.length){
+    show(fromHash(), false);
+    tabs.forEach(function(tab){
+      tab.addEventListener("click", function(){ show(tab.getAttribute("data-site"), true); });
+    });
+    document.querySelector(".sitetabs").addEventListener("keydown", function(e){
+      var i = keys.indexOf(fromHash());
+      var next = e.key === "ArrowRight" || e.key === "ArrowDown" ? i + 1
+        : e.key === "ArrowLeft" || e.key === "ArrowUp" ? i - 1 : i;
+      if(next === i) return;
+      e.preventDefault();
+      var key = keys[(next + keys.length) % keys.length];
+      show(key, true);
+      var btn = document.getElementById("tab-" + key);
+      if(btn) btn.focus();
+    });
+    window.addEventListener("hashchange", function(){ show(fromHash(), false); });
+  } else {
+    pinCharts(document);
+  }
   var tip=document.getElementById("tip");
   document.querySelectorAll(".hit").forEach(function(el){
     el.addEventListener("mouseenter",function(){ tip.textContent=el.dataset.tip; tip.style.opacity=1; });
@@ -1170,6 +1271,7 @@ const JS = `
   });
   // 開きっぱなしのタブが生成に追随するよう、生成間隔+5秒ごとに読み直す
   // （スナップショット版は読み直しても中身が変わらないのでやらない）
+  // 選んでいるサイトは location.hash に残るので、reload しても戻らない
   var w=document.querySelector(".wrap[data-live]");
   if(w) setTimeout(function(){ location.reload(); }, (Number(w.dataset.live)+5)*1000);
   var el=document.getElementById("age"), t=el && Date.parse(el.dataset.at);
@@ -1213,6 +1315,7 @@ const JS = `
  *   だから分母はセッションに寄せるのが安全。
  */
 function adsenseEstimate(site) {
+  if (!(site.adsense ?? siteConf(site).adsense)) return null;
   const d = site.days ?? [];
   const week = d.slice(Math.max(0, d.length - 8), d.length - 1); // 昨日までの7日
   if (!week.length) return null;
@@ -1300,8 +1403,13 @@ function body(m, err, live) {
   </div>
   ${live ? "<!--GA_STALE-->" : ""}
   ${err ? `<div class="alert"><span>⚠</span><div><b>今回の取得に失敗した。</b>下の数字は ${stamp} JST 時点のもの。<br><code>${esc(err)}</code></div></div>` : ""}
-  ${m.sites.map((s, i) => sitePanel(s, i === 0)).join("")}
-  ${adsenseBlock(m)}
+  ${siteTabs(m.sites, m.sites[0]?.key)}
+  ${m.sites.map((s, i) => sitePanel(
+    s, true,
+    (s.adsense ?? siteConf(s).adsense) ? adsenseBlock(m) : "",
+    i === 0,
+    m.sites.length > 1,
+  )).join("")}
   <p class="foot">
     セッション数は GA4 Data API（プロパティのタイムゾーンは Asia/Tokyo）から取得。日付はすべてJST。<br>
     当日ぶんは集計途中で、流入元の割り当ても未確定（GA4上で Unassigned に見えるのは処理待ちで、翌日には Organic に吸収される）。
@@ -1313,6 +1421,7 @@ function body(m, err, live) {
 const standalone = (m, err) => `<!doctype html>
 <html lang="ja"><head>
 <meta charset="utf-8">
+${production ? `<meta name="ga-source-commit" content="${production.head}">` : ""}
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>セッション数 — 過去${WINDOW_DAYS}日</title>
 <style>${CSS}</style>
@@ -1336,6 +1445,7 @@ ${body(m, err, false)}
  *   サービストークンだけなので、無いと 302 で締め出される（本文ではなくステータスで判る）。
  */
 async function pushToWorker(html, fetchedAt) {
+  production.verify();
   const headers = { "content-type": "application/json", authorization: `Bearer ${PUSH_TOKEN}` };
   if (process.env.CF_ACCESS_CLIENT_ID) {
     headers["CF-Access-Client-Id"] = process.env.CF_ACCESS_CLIENT_ID;
@@ -1374,7 +1484,7 @@ if (WANT_ARTIFACT) writeFileSync(OUT_ARTIFACT, fragment(m, err));
 // 外から見る用に送る。取得に失敗した回は送らない（Worker 側の数字を古いまま保ち、
 // 「Macからの更新が止まっている」と正しく出させる。失敗バナー付きHTMLで上書きしない）
 let pushErr = null;
-if (PUSH_URL && PUSH_TOKEN && !err) {
+if (production && !err) {
   try { await pushToWorker(html, m.fetchedAt); }
   catch (e) { pushErr = e.message; }
 }
@@ -1392,4 +1502,4 @@ writeFileSync(LAST_RUN, summary + "\n");
 // 標準出力（＝launchdのログ）は変化した時とエラー時だけ。毎分走るので無変化は黙る
 const changed = prevSummary === null || prevSummary !== m.sites.map((s) => s.today).join(",");
 if (err || pushErr || changed) console.log(summary);
-if (err) process.exit(1);
+if (err || pushErr) process.exit(1);
