@@ -961,7 +961,7 @@ if (uncategorized.length) {
 }
 
 const catNav = groups.map((g) =>
-  `    <a href="#cat-${g.id}">${esc(g.name)}<span>(${g.items.length})</span></a>`).join("\n");
+  `    <a href="#cat-${g.id}"><span class="cat-label">${g.name === "健康保険・雇用保険・労災保険の給付" ? g.name.split("・").map((part, i) => `<span class="keep-phrase">${esc(part)}${i < 2 ? "・" : ""}</span>`).join("") : esc(g.name)}</span><span class="cat-count">(${g.items.length})</span></a>`).join("\n");
 
 const sections = groups.map((g) => `  <section class="cat" id="cat-${g.id}" data-cat>
     <h2>${esc(g.name)}<span class="cat-n">(${g.items.length})</span></h2>

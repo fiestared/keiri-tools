@@ -563,6 +563,12 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .category-index:has(> nav[hidden]) { display: none; }
 .category-index > .cat-nav { margin-top: 8px; }
 .keep-phrase { display: inline-block; }
+/* Keep long category phrases together while the label itself can reflow. */
+.category-index .cat-nav a { align-items: baseline; max-width: 100%; }
+.category-index .cat-label { min-width: 0; }
+.category-index .cat-label .keep-phrase { white-space: nowrap; }
+/* Only the three-gate comparison needs a wider local scroll surface. */
+.transfer-gates > table { min-width: 480px; }
 .tool-jump { margin: 16px 0; }
 .tool-jump a { display: inline-flex; align-items: center; min-height: 48px; }
 .section-head > a { display: inline-flex; align-items: center; min-height: 32px; }
@@ -580,8 +586,8 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 }
 .cat-nav a::before { content: "#"; color: var(--sub); font-weight: 400; }
 .cat-nav a:hover { color: var(--ink); }
-.cat-nav a span { flex: 0 0 auto; white-space: nowrap; font-size: 12.5px; font-weight: 400; color: var(--sub); }
-.cat-nav a:hover span { color: var(--accent); }
+.cat-nav a > span:not(.cat-label) { flex: 0 0 auto; white-space: nowrap; font-size: 12.5px; font-weight: 400; color: var(--sub); }
+.cat-nav a:hover > span:not(.cat-label) { color: var(--accent); }
 
 .cat { margin-top: 48px; }
 .cat h2 {

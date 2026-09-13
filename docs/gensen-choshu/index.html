@@ -156,7 +156,7 @@
 
 <section class="hero">
   <h1>源泉徴収税額 計算機</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-09-13">2026年9月13日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time><span class="keep-phrase">（更新日: <time datetime="2026-09-13">2026年9月13日</time>）</span></p>
   <p><b>給与</b>は国税庁の<b>税額表（月額表・令和8年分）</b>、<b>賞与</b>は<b>算出率の表</b>を引いて計算します。甲欄・乙欄、扶養親族等の数、障害者・寡婦・ひとり親の加算に対応。PDFの表を目で追う必要はありません。<b>報酬・料金</b>（原稿料・士業など）の10.21%も同じページで計算できます。</p>
 </section>
 
@@ -519,7 +519,7 @@ $("calcK").addEventListener("click", async () => {
 
   box.dataset.resultState = "success";
   box.innerHTML = `
-    <div class="row">源泉徴収税額（${TABLE.year}・月額表 ${isKou ? "甲欄" : "乙欄"}）
+    <div class="row">源泉徴収税額（${TABLE.year}・月額表 <span class="keep-phrase">${isKou ? "甲欄" : "乙欄"}）</span>
       <span class="big">${yen(tax)}</span></div>
     <div style="overflow-x:auto;margin-top:12px">
     <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
