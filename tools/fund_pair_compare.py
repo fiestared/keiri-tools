@@ -32,6 +32,23 @@ def read_text(src):
 
 
 def load_nav(src):
+    # ★アセットマネジメントOne はCSVを公開しておらず、チャートが読む JSON しか無い（2026-09-13 実測）。
+    #   https://www.am-one.co.jp/chart_data/<ファンドコード>/dat.json
+    #   standard_price=基準価額 / standard_price2=分配金再投資基準価額 / dividend=分配金。
+    #   いずれも [エポックミリ秒, 値] の配列。分配金が無いファンドでは price と price2 が一致する。
+    if src.endswith(".json") or "chart_data" in src:
+        d = json.loads(read_text(src))
+        series = d.get("standard_price2") or d.get("standard_price")
+        if not series:
+            sys.exit(f"基準価額の系列が無い: {src} キー={list(d)[:8]}")
+        out = {}
+        for t, v in series:
+            if v is None:
+                continue
+            out[dt.datetime.fromtimestamp(t / 1000).date()] = float(v)
+        if len(out) < 60:
+            sys.exit(f"日次データが少なすぎる（{len(out)}日）: {src}")
+        return out
     rows = [r for r in csv.reader(read_text(src).splitlines()) if r]
     h = next((i for i, r in enumerate(rows) if r[0].strip().startswith("基準日")), None)
     if h is None:
@@ -50,8 +67,11 @@ def load_nav(src):
     return out
 
 
-def compare(a, b):
-    c = sorted(set(a) & set(b))
+def compare(a, b, since=None, until=None):
+    # ★期間を明示できるようにする（2026-09-13 追加）。3本目を足すとき、既存記事と
+    #   同じ窓に揃えないと「同じ期間で並べた」という前提が崩れる。
+    c = sorted(d for d in (set(a) & set(b))
+               if (since is None or d >= since) and (until is None or d <= until))
     if len(c) < 60:
         sys.exit(f"共通の日が少なすぎる（{len(c)}日）")
     d0, d1 = c[0], c[-1]; yrs = (d1 - d0).days / 365.25
@@ -84,8 +104,12 @@ def main():
     ap.add_argument("a"); ap.add_argument("b")
     ap.add_argument("--name-a", default="A"); ap.add_argument("--name-b", default="B")
     ap.add_argument("--json")
+    ap.add_argument("--from", dest="since", help="開始日 YYYY-MM-DD（既存記事と窓を揃えるとき）")
+    ap.add_argument("--to", dest="until", help="終了日 YYYY-MM-DD")
     x = ap.parse_args()
-    r = compare(load_nav(x.a), load_nav(x.b))
+    r = compare(load_nav(x.a), load_nav(x.b),
+                dt.date.fromisoformat(x.since) if x.since else None,
+                dt.date.fromisoformat(x.until) if x.until else None)
     print(f"{x.name_a} vs {x.name_b}  {r['起点']}〜{r['終点']}（{r['年数']:.2f}年・{r['共通営業日']}日・同日相関{r['同日相関']:.4f}）")
     print(f"  累積 {r['A累積']*100:.2f}% / {r['B累積']*100:.2f}%  年率差 {r['年率差']*100:+.3f}pt  100万円の差 {r['100万円の差']:+,.0f}円")
     for q in r["起点をずらした年率差"]:
