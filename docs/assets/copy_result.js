@@ -49,23 +49,36 @@ export function attachCopyButton(btn, resultEl, opts = {}) {
   const title = opts.title || document.title.split("｜")[0].trim();
   const url = opts.url || location.href.split("#")[0];
 
+  // Explicit states opt in to success-only copy. Legacy tools retain their contract,
+  // except that a direct .warn is an error, never a calculated result.
+  const canCopy = () => cleanResultText(resultEl.innerText).length > 0
+    && resultEl.style.display !== "none"
+    && (!resultEl.hasAttribute("data-result-state") || resultEl.dataset.resultState === "success")
+    && !resultEl.querySelector(":scope > .warn");
+  const label = btn.textContent;
+  let resetTimer;
   const sync = () => {
-    const has = cleanResultText(resultEl.innerText).length > 0
-      && resultEl.style.display !== "none";
+    const has = canCopy();
+    if (!has) {
+      clearTimeout(resetTimer);
+      if (btn.textContent !== label) btn.textContent = label;
+    }
     btn.style.display = has ? "" : "none";
+    btn.disabled = !has;
   };
   sync();
   new MutationObserver(sync).observe(resultEl, {
-    childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["style"],
+    childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["style", "data-result-state"],
   });
 
   btn.addEventListener("click", async () => {
+    if (!canCopy()) return;
     const text = buildCopyText({ title, url, body: resultEl.innerText, dateJst: todayJst() });
     try {
       await navigator.clipboard.writeText(text);
-      const before = btn.textContent;
+      if (!canCopy()) return;
       btn.textContent = "コピーしました ✓";
-      setTimeout(() => { btn.textContent = before; }, 1800);
+      resetTimer = setTimeout(() => { btn.textContent = label; }, 1800);
     } catch {
       // ★失敗を黙らせない。クリップボードは権限やHTTPSの条件で普通に失敗する
       btn.textContent = "コピーできませんでした（手動で選択してください）";
