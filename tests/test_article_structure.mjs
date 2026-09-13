@@ -90,10 +90,14 @@ for (const slug of slugs) {
   for (const id of h2s) {
     if (!toc.includes(`#${id}`)) fail(slug, `目次に #${id} が無い`);
   }
-  // id の無い h2 は「出典」「関連記事・ツール」だけ許す(目次に載せない見出し)
+  // id の無い h2 は「出典」「関連記事・ツール」「次に読む」だけ許す(目次に載せない見出し)
+  // ★「次に読む」は tools/gen_article_next_read.mjs が全記事の本文の後ろに足す生成ナビ。
+  //   記事の内容ではないので目次には載せない。「出典」「関連記事・ツール」と同じ扱い。
+  //   （2026-09-13: 生成器の導入で394記事が一斉に赤くなったため、許可リストへ追加した。
+  //     id を振って全記事の目次に足す案は、目次が内容の地図でなくなるので採らない）
   const bareH2 = [...body.matchAll(/<h2(?![^>]*\bid=)[^>]*>([^<]*)<\/h2>/g)].map((m) => m[1].trim());
   for (const t of bareH2) {
-    if (!["出典", "関連記事・ツール"].includes(t)) fail(slug, `h2「${t}」に id が無い(目次に載らない)`);
+    if (!["出典", "関連記事・ツール", "次に読む"].includes(t)) fail(slug, `h2「${t}」に id が無い(目次に載らない)`);
   }
   if (h2s.length < 3) fail(slug, `h2 が ${h2s.length} 個しかない(内容が薄い)`);
 
