@@ -43,19 +43,44 @@ const FETCH_DAYS = WINDOW_DAYS + 7;
 const INTERVAL_SEC = 60;
 const FEE_ARTICLE_PATH = "/column/furikomi-tesuryo-hikaku/";
 
-// ---------- 目標と Google トラック KPI（2026-09-07 Masahiro「日1万セッション狙おうぜ」） ----------
-// ★日1万は Bing だけでは届かない（Bing の表示は平日1.9万/日で頭打ち。全部1〜3位でも天井は約1,800/日）。
-//   日本の検索シェアは Google が Bing の6〜8倍なので、この目標は実質「Google で Bing 並みの順位を取る」。
-//   だから全体のセッションとは別に **Google のクリック/日** を独立の KPI として持つ。
+// ---------- 目標と Google トラック KPI ----------
+// ★2026-09-10 Masahiro承認で「日1万セッション」（2026-09-07 設定）から置き直した。
+//   日1万は長期の方向としては残すが、今期の事業目標からは下ろした。達成年数は置かない。
+//   根拠: Fable/Astra の独立分析と実測（gbrain learnings/keiri-tools-10k-sessions-analysis-2026-09-08、
+//   ai-income-daily の .orca/reports/growth-10k/ 一式）。正本は prompt.md と growth_ledger.md G-007。
+//
+// ★Bing の到達シナリオ: 表示15,000/日 × CTR10% ＝ 約1,500クリック/日。
+//   ★これは**シナリオであって在庫から確定した天井ではない**（2026-09-12 に表現を弱めた）。
+//      上位一部クエリのCTRを全クエリへ移せる根拠は無い。1〜3位帯のCTRは最新ラベルで 9.47%→8.06%。
+//   🚫 BWT の `pages` / `queries` は**週次バケットでラベルは週の終了日**。1ファイルに約6ラベル
+//      入っており、**全行を足すと約6週ぶん**になる。sum(全行) を7で割らない。
+//      2026-09-08 に外部モデルが pages 全行 265,649 を「7日」として割り、天井を3,800/日と
+//      2.5倍過大に出した（6バケット合計だった）。
+//      同じ週で揃えると pages は traffic の 0.93〜0.98＝ほぼ完全で、重複計上ではない。
+//      queries は 0.33〜0.39 の上位N抜粋なのでサイト全体の分母に代用しない。
+//      サイト全体の分母は **traffic**。gbrain メモ bing-snapshot-weekly-buckets。
+//
+// ★BING_GOAL 2,000 は上の天井1,500を**超えている**。表示自体が 15,113→20,000/日 へ
+//   増えることが前提で、表示増は外部要因＝自力レバーではない。だから中間確認を置く:
+//   **2026-12-31 に表示7日平均が18,000/日に届いていなければ、Bing目標を1,500へ下げる。**
+//   数字だけ動かさず、そのとき方針ごと見直す。
+//
+// ★日本の検索シェアは Google が Bing の6〜8倍。全体のセッションとは別に
+//   **Google のクリック/日** を独立の KPI として持つ。
 // ★Google クリックは GA4 ではなく Search Console から取る（GA4 の sessionSource=google は
 //   Discover や参照を含み、順位・表示が見えない）。同じSA ga-reader@keiri-tools が
 //   sc-domain:keiri-tools.com の閲覧権限を持っている（keiri-tools/analytics-access）。
 // ★通過点は 2026-09-07 の分析で置いた仮の値。外れたら方針ごと見直す（数字だけ動かさない）。
-const SESSION_GOAL = 10000;                       // 1日セッション（直近7日平均）
+const SESSION_GOAL = 2400;                        // 1日セッション（直近7日平均）。期日 2027-03-31
+//   内訳: Bing 2,000 ＋ Google 100 ＋ 非検索 300。2026-09-10 時点の実測は合計 約486/日
+//   （Bing クリック430 / Google 2.9 / 非検索 約30）。
+const BING_GOAL = 2000;                           // Bing クリック/日（BWT traffic・7日平均）
+const NONSEARCH_GOAL = 300;                       // 非検索セッション/日（GA4・AIアシスタント＋Direct＋Referral）
+const BING_CEILING_NOW = 1500;                    // 12-31 の分岐で下方修正する場合の値。天井ではなくシナリオ値
 const GOOGLE_KPI = [                              // Google クリック/日（GSC・7日平均）の通過点
-  { by: "2026-10-31", target: 30 },
-  { by: "2026-12-31", target: 100 },
-  { by: "2027-03-31", target: 1000 },
+  { by: "2026-10-31", target: 10 },               // 現在2.9からの実現的な刻みへ置き直した
+  { by: "2026-12-31", target: 30 },
+  { by: "2027-03-31", target: 100 },
 ];
 // GSC は日次が2〜3日遅れて届き、末端の1〜2日は後から増える。28日取って7日平均×2本を作る
 const GSC_FETCH_DAYS = 28;
@@ -381,7 +406,10 @@ function model(data) {
         .sort((a, b) => (b.last7 + b.today) - (a.last7 + a.today))
         .slice(0, 12);
       const pageLast7Total = sum([...pageMap.values()].map((x) => x.last7));
-      const goal = goalModel(s, data.today, last7);
+      // ★平日5日平均も出す（2026-09-12 Masahiro承認）。読者は平日日中の会社PCで、
+      //   土日は平日の1/6。7日平均は土日希釈を含むので、判定の分岐は平日基準で行う。
+      const last7Rows = d.slice(n - 8, n - 1);
+      const goal = goalModel(s, data.today, last7, last7Rows);
       return {
         goal,
         lagMin: lagMin !== null && lagMin >= 0 ? lagMin : null,
@@ -403,7 +431,7 @@ function model(data) {
 }
 
 /**
- * 目標（日1万セッション）と Google トラック KPI の数字を作る。
+ * 目標（日2,400セッション・2027-03-31）と Google トラック KPI の数字を作る。
  *
  * ★Google クリックの7日平均は「GSC がデータを出している末端の日」で締める（今日ではない）。
  *   GSC は2〜3日遅れなので、今日で締めると末尾がゼロ埋めされて平均が必ず下振れする。
@@ -411,12 +439,16 @@ function model(data) {
  * ★セッション0の日は GSC も行を返さない。0で埋めてから平均する（ゼロ日を飛ばすと上振れ）。
  * ★古い data.json（gsc を持たない）でも落ちない。その場合 google は null で「取得前」と出す。
  */
-function goalModel(s, today, last7Sessions) {
+function goalModel(s, today, last7Sessions, last7Rows = []) {
   const sessionsPerDay = last7Sessions / 7;
+  // 平日＝月〜金（JST）。土日は読者がいないので、7日平均と必ず並べる。
+  const wdRows = last7Rows.filter((x) => { const w = weekdayIdx(x.date); return w >= 1 && w <= 5; });
+  const weekdaySessionsPerDay = wdRows.length ? wdRows.reduce((a, x) => a + x.sessions, 0) / wdRows.length : null;
+  const weekdayN = wdRows.length;
   const sessionPct = sessionsPerDay / SESSION_GOAL * 100;
   const g = s.gsc;
   if (!g || g.error || !(g.rows ?? []).length) {
-    return { sessionsPerDay, sessionPct, google: null, error: g?.error ?? null, milestones: GOOGLE_KPI.map((k) => ({ ...k, pct: null, daysLeft: daysBetween(today, k.by) })) };
+    return { sessionsPerDay, weekdaySessionsPerDay, weekdayN, sessionPct, google: null, error: g?.error ?? null, milestones: GOOGLE_KPI.map((k) => ({ ...k, pct: null, daysLeft: daysBetween(today, k.by) })) };
   }
   const byDate = new Map(g.rows.map((r) => [r.date, r]));
   const end = g.rows.at(-1).date;                         // GSC がデータを出している末端
@@ -433,7 +465,7 @@ function goalModel(s, today, last7Sessions) {
   const clicksPerDay = avg(last7, "clicks"), prevClicksPerDay = avg(prev7, "clicks");
   const series = win(0, GSC_FETCH_DAYS - 1 - lagDays);    // 取得範囲のうち GSC が出している日だけ（末端まで）
   return {
-    sessionsPerDay, sessionPct, error: null,
+    sessionsPerDay, weekdaySessionsPerDay, weekdayN, sessionPct, error: null,
     google: {
       end, lagDays, clicksPerDay, prevClicksPerDay,
       impressionsPerDay: avg(last7, "impressions"), prevImpressionsPerDay: avg(prev7, "impressions"),
@@ -801,7 +833,7 @@ function googleChart(g, key) {
 }
 
 /**
- * 目標（日1万セッション）と Google トラック KPI。タイルの直下＝画面の上のほうに置く。
+ * 目標（日2,400セッション・2027-03-31）と Google トラック KPI。タイルの直下＝画面の上のほうに置く。
  * ★数字より「どの日で締めたか」「何日遅れか」が見えることを優先する。GSC は末端が動くため。
  */
 function goalBlock(site) {
@@ -831,13 +863,17 @@ function goalBlock(site) {
       </div>`;
   return `
   <section class="goal" aria-labelledby="goal-${esc(site.key)}">
-    <h3 id="goal-${esc(site.key)}">目標: 日 ${SESSION_GOAL.toLocaleString("ja-JP")} セッション</h3>
+    <h3 id="goal-${esc(site.key)}">目標: 日 ${SESSION_GOAL.toLocaleString("ja-JP")} セッション <small>2027-03-31まで</small></h3>
     <div class="goal-grid">
       <div class="goal-card">
         <div class="insight-head"><div><span class="eyebrow">全体（GA4）</span><h4>1日セッション <small>直近7日平均・昨日まで</small></h4></div></div>
         <div class="goal-value">${n0(g.sessionsPerDay)}<span>/ ${SESSION_GOAL.toLocaleString("ja-JP")}</span></div>
+        ${g.weekdaySessionsPerDay == null ? "" : `<div class="metric-sub">平日${g.weekdayN}日平均 <b>${n0(g.weekdaySessionsPerDay)}</b>/日（土日を除く）。<b>判定の分岐は平日基準で行う</b> — 読者は平日日中の会社PCで、土日は平日の約1/6。</div>`}
         ${bar(g.sessionPct)}
-        <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>。いまの流入は9割が Bing で、Bing だけの天井は約1,800/日（表示1.9万/日が全部1〜3位でも）。残りは Google で取る。</div>
+        <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>。内訳の目標は Bing ${n0(BING_GOAL)} ＋ Google ${n0(GOOGLE_KPI.at(-1).target)} ＋ 非検索 ${n0(NONSEARCH_GOAL)}。</div>
+        <div class="metric-sub">⚠ <b>折れるのは表示ではなく CTR</b>（2026-09-12 更新）。Bing の平日表示は既に <b>21,042/日</b>あり（7日平均16,535は土日希釈）、現CTR 2.675% のまま ${n0(BING_GOAL)} クリックに届くには表示 <b>74,772/日</b> が要る。</div>
+        <div class="metric-sub"><b>2026-12-31 の中間確認は再設計した</b>。判定窓は年末休業前の完成7日（候補 native 12-18〜24）。旧「表示7日平均18,000未満なら下げる」は、native 12-25〜31 が実質JSTで12-26(土)〜<b>2027-01-01(元日)</b>に落ちるため使わない。分岐は4指標の等率線と比べる（12-31目安: Bing 1,014 / Google 20.3 / 非検索 89.5 / GA4 1,201）。正本は growth_ledger.md G-007。</div>
+        <div class="metric-sub">🚫 BWT の <b>pages / queries は週次バケット</b>（ラベルは週の終了日・1ファイルに約6ラベル）。<b>sum(全行) を7で割らない</b>。同じ週なら pages は traffic の0.93〜0.98でほぼ完全、queries は0.33〜0.39の抜粋。サイト全体の分母は <b>traffic</b>。</div>
       </div>
       ${googleCard}
     </div>
