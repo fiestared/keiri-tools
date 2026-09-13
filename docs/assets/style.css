@@ -68,7 +68,7 @@ main > * { max-width: 672px; margin-left: 0; margin-right: auto; }
    ★.post-list をここに入れ忘れて、トップの「新着コラム」だけ 672px で残っていた
    （2026-08-27 の指摘）。ツール一覧が 1120px、その直下の節が 672px で右端が食い違う。
    **節見出し（.section-head）とその節の中身は必ず同じ幅にする** — test_section_width が見る。 */
-main > .persona-bar, main > .cat-nav, main > .tcat, main > .cat,
+main > .persona-bar, main > .category-index, main > .cat-nav, main > .tcat, main > .cat,
 main > .post-list, main > .tool-grid,
 main > .col-search, main > .col-empty { max-width: 1120px; }
 /* ★節見出しの幅は「その節の中身」に合わせる。
@@ -556,6 +556,20 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
   padding: 14px 16px; font-size: 14px; margin: 16px 0 0;
 }
 
+/* Native disclosure remains keyboard-operable and usable without JavaScript. */
+.category-index { margin: 16px 0 4px; }
+.category-index > summary { cursor: pointer; padding: 12px 0; font-size: 14px; font-weight: 600; color: var(--accent); }
+.category-index[open] > summary { border-bottom: 1px solid var(--line); }
+.category-index:has(> nav[hidden]) { display: none; }
+.category-index > .cat-nav { margin-top: 8px; }
+.keep-phrase { display: inline-block; }
+.tool-jump { margin: 16px 0; }
+.tool-jump a { display: inline-flex; align-items: center; min-height: 48px; }
+.section-head > a { display: inline-flex; align-items: center; min-height: 32px; }
+@media (max-width: 600px) {
+  .post-list a { flex-direction: column; align-items: stretch; gap: 4px; }
+  .post-list .p-date { flex-basis: auto; font-size: 14px; }
+}
 .cat-nav { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 4px; }
 /* カテゴリはページ内リンク。ペルソナ切替の「ボタン」と同じピルに見えていたので、
    リンクらしい見た目に分ける(2026-07-29)。 */
@@ -566,7 +580,7 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 }
 .cat-nav a::before { content: "#"; color: var(--sub); font-weight: 400; }
 .cat-nav a:hover { color: var(--ink); }
-.cat-nav a span { font-size: 12.5px; font-weight: 400; color: var(--sub); }
+.cat-nav a span { flex: 0 0 auto; white-space: nowrap; font-size: 12.5px; font-weight: 400; color: var(--sub); }
 .cat-nav a:hover span { color: var(--accent); }
 
 .cat { margin-top: 48px; }
@@ -611,13 +625,15 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 
 /* ---- トップの「経理で困ったら聞ける」質問欄(hero 内) ----
    LLM を呼ばず、質問を検証済みの記事/ツールに橋渡しするクライアントサイド検索。 */
-/* ★シェルを 1120px に広げたとき、この箱も一緒に伸びて input の内寸が全角58字ぶんに
-   なっていた（＝「長文を書け」という情報の嘘。想定入力はヒントの実例で11〜19字）。
-   本文列と同じ 672px に載せる＝内寸 全角31字で、最長の例の1.6倍の余裕。
-   規範: 入力欄の幅は期待される入力の長さに合わせる（NN/g・GOV.UK の幅クラス・DADS）。 */
-.qa-box { margin: 16px 0 8px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 18px 18px 16px; max-width: 672px; }
-.qa-head { font-weight: 700; font-size: 16px; margin-bottom: 10px; }
-.qa-head .q-ico { color: var(--accent); margin-right: 6px; }
+/* The search region fills the shell; the label occupies a separate column on desktop
+   so the short-query input stays proportionate rather than stretching to 1120px. */
+.qa-box { margin: 16px 0 8px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.qa-head { display: block; font-weight: 700; font-size: 16px; margin: 0 0 16px; line-height: 1.6; }
+@media (min-width: 960px) {
+  .qa-box { display: grid; grid-template-columns: 256px minmax(0, 1fr); gap: 16px; align-items: center; padding: 24px; }
+  .qa-head { margin: 0; }
+  .qa-results { grid-column: 1 / -1; }
+}
 .qa-form { display: flex; gap: 8px; }
 .qa-form input {
   flex: 1; min-width: 0; padding: 14px 16px; font-size: 16px; color: var(--ink);
@@ -751,7 +767,7 @@ main:focus { outline: none; }
   @page { margin: 14mm; }
   body { background: #fff; color: #000; line-height: 1.6; }
   header.site, footer.site nav, .skip-link, .tabs, .persona-bar,
-  .qa-box, .cat-nav, button, .tool-list, .tool-card, .post-list, .toc { display: none !important; }
+  .qa-box, .category-index, .cat-nav, button, .tool-list, .tool-card, .post-list, .toc { display: none !important; }
   main { max-width: none; padding: 0; }
   .card, .result { border: 1px solid #000; break-inside: avoid; }
   article table { break-inside: avoid; font-size: 11pt; }

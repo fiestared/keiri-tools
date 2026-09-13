@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-17",
-  "dateModified": "2026-09-12",
+  "dateModified": "2026-09-13",
       "name": "収入印紙の金額 判定機（印紙税額一覧表）",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -155,8 +155,9 @@
 <nav class="breadcrumb"><a href="../">ホーム</a> › 収入印紙の金額 判定機</nav>
 
 <section class="hero">
-  <h1>収入印紙の金額 判定機＋印紙税額一覧表（全20号）</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-17">2026年7月17日</time>（更新日: <time datetime="2026-08-26">2026年8月26日</time>）</p>
+  <h1>収入印紙の金額 判定機＋<span class="keep-phrase">印紙税額一覧表</span><span class="keep-phrase">（全20号）</span></h1>
+  <p class="tool-jump"><a href="#inshi-calculator">金額を判定する ↓</a></p>
+  <p class="article-meta">公開日: <time datetime="2026-07-17">2026年7月17日</time>（更新日: <time datetime="2026-09-13">2026年9月13日</time>）</p>
   <p><b>文書の種類</b>と<b>記載金額</b>を選ぶだけで、その文書1通に必要な<b>収入印紙の額</b>を判定します。<b>領収書は5万円未満なら非課税（印紙不要）</b>、5万円以上100万円以下は200円。<b>消費税額等が区分記載されていれば税抜金額で判定</b>（No.6925）、不動産売買・建設工事請負の<b>軽減税率</b>（No.7108）にも対応。ページ下部に<b>第1号〜第20号文書の印紙税額一覧表</b>。</p>
 </section>
 
@@ -192,7 +193,7 @@
 </section>
 <!-- /receipt-table:auto -->
 
-<div class="card">
+<div class="card" id="inshi-calculator" tabindex="-1" aria-label="収入印紙の金額判定">
   <div class="callout" style="margin-bottom:12px">
     <b>紙の文書だけが対象です</b>
     印紙税が課されるのは<b>紙で作成した課税文書</b>だけ。<b>電子契約・PDFで送る請求書や領収書・電子交付</b>は課税文書の「作成」に当たらず、<b>収入印紙は不要</b>です（福岡国税局 文書回答事例・平成20年10月24日）。
@@ -256,7 +257,7 @@
   </div>
 
   <button class="primary" id="calc">収入印紙の金額を判定する</button>
-  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <div role="status" aria-live="polite" class="result" data-result-state="initial" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
 </div>
 
@@ -555,10 +556,12 @@ $("amount").addEventListener("input", () => { $("amount-echo").textContent = enT
 $("calc").addEventListener("click", async () => {
   const box = $("result");
   box.style.display = "block";
+  box.dataset.resultState = "pending";
   box.innerHTML = "判定中…";
   const ok = await inshiReady; // 必要な参照データの到着を必ず待つ
   if (!ok || !INSHI) {
-    box.innerHTML = `<div class="note"><b>データを読み込めませんでした。</b>
+    box.dataset.resultState = "error";
+    box.innerHTML = `<div class="warn"><b>データを読み込めませんでした。</b>
       通信環境を確認して再読み込みしてください。印紙税額の一覧表が読めない状態で印紙の額を答えることはできません。</div>`;
     return;
   }
@@ -568,7 +571,7 @@ $("calc").addEventListener("click", async () => {
   const noamount = !isFixed && $("noamount").checked;
   const amount = Number($("amount").value) || 0;
   if (!isFixed && !noamount && amount <= 0) {
-    box.innerHTML = "記載金額（円）を入力するか、「金額の記載がない文書」にチェックしてください。"; return;
+    box.dataset.resultState = "error"; box.innerHTML = '<div class="warn"><b>入力を確認してください</b>記載金額（円）を入力するか、「金額の記載がない文書」にチェックしてください。</div>'; return;
   }
 
   let r;
@@ -583,7 +586,8 @@ $("calc").addEventListener("click", async () => {
       ichiranbarai: doc === "k3" && $("ichiranbarai").checked,
     }, INSHI);
   } catch (e) {
-    box.innerHTML = `<div class="note"><b>判定できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    box.dataset.resultState = "error";
+    box.innerHTML = `<div class="warn"><b>判定できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
     return;
   }
 
@@ -592,6 +596,7 @@ $("calc").addEventListener("click", async () => {
     ? `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">${r.notes.map((n) => "※ " + n).join("<br>")}</div>` : "";
 
   if (!r.taxable) {
+    box.dataset.resultState = "success";
     box.innerHTML = `
       <div class="row">収入印紙は不要です（非課税） <span class="big">¥0</span></div>
       <div style="font-size:13px;color:var(--sub);margin-top:6px">
@@ -602,6 +607,7 @@ $("calc").addEventListener("click", async () => {
     return;
   }
 
+  box.dataset.resultState = "success";
   box.innerHTML = `
     <div class="row"><b>必要な収入印紙${r.perYear ? "（1年ごとに）" : ""}</b> <span class="big">${yen(r.tax)}</span></div>
     <div style="font-size:13px;color:var(--sub);margin-top:6px">

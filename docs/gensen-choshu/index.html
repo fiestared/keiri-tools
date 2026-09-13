@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-13",
-  "dateModified": "2026-09-08",
+  "dateModified": "2026-09-13",
       "name": "源泉徴収税額 計算機",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -156,7 +156,7 @@
 
 <section class="hero">
   <h1>源泉徴収税額 計算機</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-09-08">2026年9月8日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-09-13">2026年9月13日</time>）</p>
   <p><b>給与</b>は国税庁の<b>税額表（月額表・令和8年分）</b>、<b>賞与</b>は<b>算出率の表</b>を引いて計算します。甲欄・乙欄、扶養親族等の数、障害者・寡婦・ひとり親の加算に対応。PDFの表を目で追う必要はありません。<b>報酬・料金</b>（原稿料・士業など）の10.21%も同じページで計算できます。</p>
 </section>
 
@@ -170,11 +170,11 @@
   <!-- ── 給与（月額表） ────────────────────────────────── -->
   <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-kyuyo" id="pane-kyuyo" data-active>
     <label for="amount">その月の社会保険料等控除後の給与等の金額</label>
-    <input type="number" id="amount" placeholder="例: 250000" inputmode="numeric">
-    <div class="hint">
+    <div class="hint" id="salary-amount-help">
       <b>総支給額ではありません。</b>課税支給額（通勤手当などの非課税分を除く）から、健康保険・厚生年金・雇用保険などの<b>社会保険料等を差し引いた後</b>の金額です。
       社会保険料の額は<a href="../shakai-hoken/">社会保険料 計算機</a>で計算できます。
     </div>
+    <input type="number" id="amount" placeholder="例: 250000" inputmode="numeric" aria-describedby="salary-amount-help">
 
     <label>税額表の欄</label>
     <div class="radio-row">
@@ -207,7 +207,7 @@
     </div>
 
     <button class="primary" id="calcK">計算する</button>
-    <div role="status" aria-live="polite" class="result" id="resultK"></div>
+    <div role="status" aria-live="polite" class="result" data-result-state="initial" id="resultK"></div>
     <button id="copy-k" class="btn-outline" style="display:none">結果をコピー</button>
   </div>
 
@@ -268,7 +268,7 @@
     <div class="hint">通常は「6か月以内」のままで結構です。前月に給与がない場合や10倍を超える場合の<b>例外計算のときだけ</b>効きます。</div>
 
     <button class="primary" id="calcS">計算する</button>
-    <div role="status" aria-live="polite" class="result" id="resultS"></div>
+    <div role="status" aria-live="polite" class="result" data-result-state="initial" id="resultS"></div>
     <button id="copy-s" class="btn-outline" style="display:none">結果をコピー</button>
   </div>
 
@@ -289,7 +289,7 @@
     </div>
 
     <button class="primary" id="calc">計算する</button>
-    <div role="status" aria-live="polite" class="result" id="result"></div>
+    <div role="status" aria-live="polite" class="result" data-result-state="initial" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
   </div>
 </div>
@@ -458,13 +458,15 @@ for (const r of document.querySelectorAll('input[name="ran"]')) {
 $("calcK").addEventListener("click", async () => {
   const box = $("resultK");
   box.style.display = "block";
+  box.dataset.resultState = "pending";
   const A = Number($("amount").value);
-  if (!A || A <= 0) { box.innerHTML = "社会保険料等控除後の給与等の金額を入力してください。"; return; }
+  if (!A || A <= 0) { box.dataset.resultState = "error"; box.innerHTML = '<div class="warn"><b>入力を確認してください</b>社会保険料等控除後の給与等の金額を入力してください。</div>'; return; }
 
   box.innerHTML = "計算中…";
   const loaded = await tableReady;           // ← 表の到着を必ず待つ
   if (!loaded || !TABLE) {
-    box.innerHTML = `<div class="note"><b>税額表を読み込めませんでした。</b>
+    box.dataset.resultState = "error";
+    box.innerHTML = `<div class="warn"><b>税額表を読み込めませんでした。</b>
       通信環境を確認して再読み込みしてください。表を引けない状態で税額を答えることはできません。</div>`;
     return;
   }
@@ -515,6 +517,7 @@ $("calcK").addEventListener("click", async () => {
          <td style="padding:6px 8px;text-align:right">${yen(denshi)}</td></tr>`
     : "";
 
+  box.dataset.resultState = "success";
   box.innerHTML = `
     <div class="row">源泉徴収税額（${TABLE.year}・月額表 ${isKou ? "甲欄" : "乙欄"}）
       <span class="big">${yen(tax)}</span></div>
@@ -555,14 +558,16 @@ $("zenPaid").addEventListener("change", () => {
 $("calcS").addEventListener("click", async () => {
   const box = $("resultS");
   box.style.display = "block";
+  box.dataset.resultState = "pending";
   const shoyo = Number($("shoyoAmt").value);
-  if (!shoyo || shoyo <= 0) { box.innerHTML = "賞与の支給額を入力してください。"; return; }
+  if (!shoyo || shoyo <= 0) { box.dataset.resultState = "error"; box.innerHTML = '<div class="warn"><b>入力を確認してください</b>賞与の支給額を入力してください。</div>'; return; }
 
   box.innerHTML = "計算中…";
   // 算出率の表と月額表の**両方**を待つ（例外計算に入ると月額表を引くため）
   const [okS, okM] = await Promise.all([shoyoReady, tableReady]);
   if (!okS || !okM || !SHOYO || !TABLE) {
-    box.innerHTML = `<div class="note"><b>税額表を読み込めませんでした。</b>
+    box.dataset.resultState = "error";
+    box.innerHTML = `<div class="warn"><b>税額表を読み込めませんでした。</b>
       通信環境を確認して再読み込みしてください。表を引けない状態で税額を答えることはできません。</div>`;
     return;
   }
@@ -608,6 +613,7 @@ $("calcS").addEventListener("click", async () => {
     const band = b.min == null ? `${b.max}千円未満`
       : b.max == null ? `${b.min}千円以上`
       : `${b.min}千円以上 ${b.max}千円未満`;
+    box.dataset.resultState = "success";
     box.innerHTML = `
       <div class="row">賞与の源泉徴収税額（${SHOYO.year}・${isKou ? "甲欄" : "乙欄"}）
         <span class="big">${yen(r.tax)}</span></div>
@@ -636,6 +642,7 @@ $("calcS").addEventListener("click", async () => {
   if (r.method === "getsugaku") {
     const s = r.steps;
     const noPrev = r.reason === "no_prev";
+    box.dataset.resultState = "success";
     box.innerHTML = `
       <div class="row">賞与の源泉徴収税額（${SHOYO.year}・月額表による例外計算）
         <span class="big">${yen(r.tax)}</span></div>
@@ -664,7 +671,8 @@ $("calcS").addEventListener("click", async () => {
     return;
   }
 
-  box.innerHTML = `<div class="note">計算できませんでした。入力を確認してください。</div>`;
+  box.dataset.resultState = "error";
+  box.innerHTML = `<div class="warn"><b>計算できませんでした</b>入力を確認してください。</div>`;
 });
 
 // ── 報酬・料金 ────────────────────────────────────────
@@ -682,8 +690,9 @@ showNote();
 $("calc").addEventListener("click", () => {
   const box = $("result");
   box.style.display = "block";
+  box.dataset.resultState = "pending";
   const fee = Number($("fee").value);
-  if (!fee || fee <= 0) { box.innerHTML = "報酬額を入力してください。"; return; }
+  if (!fee || fee <= 0) { box.dataset.resultState = "error"; box.innerHTML = '<div class="warn"><b>入力を確認してください</b>報酬額を入力してください。</div>'; return; }
 
   const taxMode = document.querySelector('input[name="tax"]:checked').value;
   // ★税率はコアの定数から取る（ページに 0.1 を書くと、率が変わった日に画面だけ古い率で計算する）
@@ -691,6 +700,7 @@ $("calc").addEventListener("click", () => {
   const t = withholdingTarget(fee, rate, taxMode === "sep");
   const r = calcWithholding(t.target, sel.value);
 
+  box.dataset.resultState = "success";
   box.innerHTML = `
     <div class="row">源泉徴収税額 <span class="big">${yen(r.tax)}</span></div>
     <div class="row" style="margin-top:6px">お支払い額（差引後） <b>${yen(t.total - r.tax)}</b></div>

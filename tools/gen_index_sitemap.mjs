@@ -784,7 +784,15 @@ const NENSHU_PAGES = existsSync(join(DOCS, "nenshu"))
       .map((n) => `nenshu/${n}/`)
   : [];
 
-const strip = (s) => s.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+// HTML source is encoded; decode once after stripping tags, then escape at output.
+// A single replacement pass preserves intentionally literal text such as &amp;lt;.
+const decode = (s) => s.replace(/&(amp|lt|gt|quot|apos|nbsp|#\d+|#x[\da-f]+);/gi, (entity, key) => {
+  const named = {amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " "};
+  if (key[0] !== "#") return named[key.toLowerCase()];
+  const n = key[1].toLowerCase() === "x" ? parseInt(key.slice(2), 16) : Number(key.slice(1));
+  return n > 0 && n <= 0x10ffff && !(n >= 0xd800 && n <= 0xdfff) ? String.fromCodePoint(n) : entity;
+});
+const strip = (s) => decode(s.replace(/<[^>]+>/g, "")).replace(/\s+/g, " ").trim();
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
                     .replace(/"/g, "&quot;");
 
@@ -806,7 +814,7 @@ for (const slug of readdirSync(COLUMN)) {
     console.error(`✗ ${slug}: h1 か datePublished が読めない`);
     process.exit(1);
   }
-  articles.push({ slug, title, desc, ymd: `${date[1]}.${date[2]}.${date[3]}`,
+  articles.push({ slug, title, desc: decode(desc), ymd: `${date[1]}.${date[2]}.${date[3]}`,
                   iso: `${date[1]}-${date[2]}-${date[3]}` });
 }
 
@@ -963,9 +971,12 @@ ${g.items.map((a) => card(a, "      ")).join("\n")}
     </div>
   </section>`).join("\n");
 
-const colBlock = `  <nav class="cat-nav" id="cat-nav">
+const colBlock = `  <details class="category-index">
+    <summary>記事のカテゴリから探す</summary>
+    <nav class="cat-nav" id="cat-nav" aria-label="記事のカテゴリ">
 ${catNav}
-  </nav>
+    </nav>
+  </details>
 
 ${sections}`;
 
