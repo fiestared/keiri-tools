@@ -31,6 +31,8 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "orcan-sp500-holding-period",
+  "orcan-sp500-recovery-days",
   "orcan-hikaku",               // 楽天オルカン 7,920/月（頭語 オルカン 240,800。keyword_demand.py 2026-09-13 実測・Google推定）。★被覆0件。選定は楽天証券 週間買付金額ランキング（2026-09-07〜09-11）の1位と3位＝同じ指数・同じヘッジ条件。★核: 両社公開の日次基準価額（分配金再投資）を同じ期間で並べると、信託報酬は楽天・プラスが安いのに累積はeMAXIS Slimが上（2023-10-27〜2026-09-11で年率差+0.224pt・起点をずらしても残る）。総経費率が売買委託手数料等を含まない旨を両社の交付目論見書で確認。楽天のベンチマークは配当の扱いを明記しないため、かい離の横並びはしない。★数字は scratchpad の perfcalc.py で計算し、HTMLへ直接差し込み（手で写さない）。金商法: 推奨・順位・買付リンクなし
   "sp500-hikaku",               // emaxis slim 米国株式 1,920/月（「S&P500」は記号で keyword_demand が測れない）。★同じ方法で S&P500 の2位と4位。年率差+0.031ptで「ほぼ同じ」と書く。段階制で総経費率0.07953%が上限の信託報酬0.0814%より低い点、eMAXIS Slim が5期連続でベンチマークを上回った点（理由は書類に無い＝品貸料は書類記載の要因としてのみ言及）
   "fang-leverage-cost",         // FANG+ 160,800/月（「iFreeレバレッジ」800・「レバレッジナスダック」576 は単独で門未達のため、1倍型 iFreeNEXT FANG+ を比較相手に入れて FANG+ の意図に答える）。2026-09-13 Masahiro 指示「FANG+レバと au の NASDAQ100レバ 為替ヘッジなしの見えないコストの違い」。★核: auAM ヘッジあり/無しは総経費率が同じ0.44%なのに、為替（FRB H.10）を日次で除くと年+3.80ptの差が残り、日米短期金利差 年3.57ptとほぼ一致。3本を「同じ指数の1倍型×2」と日次で比べた差は FANG+レバ -8.01 / auヘッジあり -7.56 / auヘッジ無し -4.84 pt/年。★FRBの為替は公表遅れがあるため、為替がそろう日までで期間を切った（未確認の日を0と扱わない）
@@ -554,7 +556,7 @@ const CATEGORIES = [
     id: "shisan",
     name: "資産形成・投資",
     desc: "インデックス投資の考え方と、費用・分散・元本割れの扱い。具体的な商品名で投資信託を比較し、費用と同期間の実績、投資対象の違いを示します。特定の商品を勧めるものではありません。",
-    slugs: ["index-toushi", "dollar-cost-heikin", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold"],
+    slugs: ["index-toushi", "dollar-cost-heikin", "orcan-sp500-holding-period", "orcan-sp500-recovery-days", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold"],
   },
   {
     id: "shakai-hoken",
