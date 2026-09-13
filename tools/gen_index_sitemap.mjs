@@ -907,20 +907,6 @@ const lastmodOf = (file) => {
   return log[log.length - 1].slice(41);
 };
 
-const urls = [
-  ...[...STATIC_PAGES, ...NENSHU_PAGES].map((p) => ({ loc: `https://keiri-tools.com/${p}`, file: join(DOCS, p, "index.html") })),
-  ...articles.map((a) => ({ loc: `https://keiri-tools.com/column/${a.slug}/`,
-                            file: join(COLUMN, a.slug, "index.html") })),
-];
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(({ loc, file }) => {
-  const d = lastmodOf(file);
-  return `  <url><loc>${loc}</loc>${d ? `<lastmod>${d}</lastmod>` : ""}</url>`;
-}).join("\n")}
-</urlset>
-`;
-
 // ---- column/index.html の記事リスト(カテゴリ別セクション) ----
 // CATEGORIES の記述ミス(存在しない記事・同じ記事を2つのカテゴリに登録)は黙って通すと
 // 「一覧に2回出る」「カテゴリの件数が合わない」になる。ここで落とす。
@@ -1034,9 +1020,49 @@ if (tOpen === -1 || tEnd === -1) {
 }
 top = top.slice(0, tStart) + "\n" + topCards + "\n  </div>" + top.slice(tEnd);
 
+// ---- 資産形成ハブの新着。カテゴリ登録と公開日の正本を一覧と共有する ----
+// 新着は需要順ではなく公開日降順。同日のみ既存ORDERの順を使う。
+const hubPath = join(DOCS, "toushi/index.html");
+let hub = readFileSync(hubPath, "utf8");
+const hubArticles = articles.filter((a) => catOf.get(a.slug) === "shisan")
+  .sort((a, b) => b.iso.localeCompare(a.iso));
+const hubLatest = hubArticles.slice(0, 6);
+const hubOpen = "<!-- GEN:TOUSHI-LATEST -->";
+const hubClose = "<!-- /GEN:TOUSHI-LATEST -->";
+const hOpen = hub.indexOf(hubOpen), hClose = hub.indexOf(hubClose);
+if (hOpen === -1 || hClose < hOpen || hub.indexOf(hubOpen, hOpen + 1) !== -1
+    || hub.indexOf(hubClose, hClose + 1) !== -1) {
+  throw new Error("toushi/index.html の新着マーカーが欠落・重複しています");
+}
+const hubBlock = `
+  <div class="section-head" id="latest"><h2>新着コラム</h2><span class="hint">公開日の新しい${hubLatest.length}本</span></div>
+  <div class="post-list">
+${hubLatest.map((a) => card(a, "    ").replace(`href="${a.slug}/"`, `href="../column/${a.slug}/"`)).join("\n")}
+  </div>
+  <p><a href="../column/#cat-shisan">投資信託の比較・投資の基本の記事をすべて読む（${hubArticles.length}本） →</a></p>
+  `;
+hub = hub.slice(0, hOpen + hubOpen.length) + hubBlock + hub.slice(hClose);
+
+// 新着生成で本文が変わる場合は、この実行でハブのlastmodも更新する。
+const hubChanged = hub !== readFileSync(hubPath, "utf8");
+const urls = [
+  ...[...STATIC_PAGES, ...NENSHU_PAGES].map((p) => ({ loc: `https://keiri-tools.com/${p}`, file: join(DOCS, p, "index.html") })),
+  ...articles.map((a) => ({ loc: `https://keiri-tools.com/column/${a.slug}/`,
+                            file: join(COLUMN, a.slug, "index.html") })),
+];
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(({ loc, file }) => {
+  const d = file === hubPath && hubChanged ? TODAY : lastmodOf(file);
+  return `  <url><loc>${loc}</loc>${d ? `<lastmod>${d}</lastmod>` : ""}</url>`;
+}).join("\n")}
+</urlset>
+`;
+
 const a = write(join(DOCS, "sitemap.xml"), sitemap, "sitemap.xml");
 const b = write(colPath, col, "column/index.html");
 const c = write(topPath, top, "index.html（トップの新着6本）");
+const d = write(hubPath, hub, "toushi/index.html（資産形成の新着6本）");
 // 黙って落とさない。外した記事は必ず名指しで報告する(「全部載った」と誤読させない)
 for (const slug of skipped) console.log(`  ⚠️  除外(.nopublish): ${slug} — sitemap・一覧に載せていない`);
 
@@ -1050,4 +1076,4 @@ if (uncategorized.length) {
 }
 
 const counts = groups.map((g) => `${g.name} ${g.items.length}`).join(" / ");
-console.log(`✓ 記事 ${articles.length}本${a || b || c ? "" : "（変更なし）"}  [${counts}]`);
+console.log(`✓ 記事 ${articles.length}本${a || b || c || d ? "" : "（変更なし）"}  [${counts}]`);

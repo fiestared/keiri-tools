@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+const read = (path) => readFileSync(new URL('../docs/' + path, import.meta.url), 'utf8');
+const hub = read('toushi/index.html');
+const category = read('column/index.html').match(/<section[^>]*id="cat-shisan"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+assert.ok(category, '投資カテゴリが存在する');
+const candidates = [...category.matchAll(/<a href="([^"/]+)\/"/g)].map((m) => {
+  const html = read(`column/${m[1]}/index.html`);
+  return { slug: m[1], date: html.match(/"datePublished":\s*"([^"]+)"/)[1] };
+});
+const latest = hub.match(/<!-- GEN:TOUSHI-LATEST -->([\s\S]*?)<!-- \/GEN:TOUSHI-LATEST -->/)?.[1];
+assert.ok(latest, '新着欄が存在する');
+const listed = [...latest.matchAll(/href="\.\.\/column\/([^"/]+)\/"/g)].map((m) => m[1]);
+assert.equal(listed.length, Math.min(6, candidates.length), '新着を6本表示する');
+assert.equal(new Set(listed).size, listed.length, '新着の重複がない');
+const dates = listed.map((slug) => {
+  const item = candidates.find((a) => a.slug === slug);
+  assert.ok(item, `${slug}: 投資カテゴリの記事である`);
+  return item.date;
+});
+for (let i = 1; i < dates.length; i++) assert.ok(dates[i - 1] >= dates[i], '公開日降順');
+const oldest = dates.at(-1);
+assert.ok(candidates.filter((a) => !listed.includes(a.slug)).every((a) => a.date <= oldest), '新しい記事を落として古い記事を載せない');
+assert.match(latest, new RegExp(`すべて読む（${candidates.length}本）`));
+assert.match(latest, /href="\.\.\/column\/#cat-shisan"/);
+assert.ok(hub.indexOf('id="latest"') < hub.indexOf('id="tools"'), '記事が計算ツールより先に現れる');
+assert.match(hub, /<title>[^<]*コラム[^<]*計算ツール<\/title>/);
+assert.match(hub, /<h1>資産形成<\/h1>/);
+assert.match(hub, /href="#tools"/, '計算ツールへ直接移動できる');
+assert.match(hub, /id="tax"/, '既存の税金記事への入口も残る');
+console.log(`✓ 資産形成ハブ: 新着${listed.length}本、カテゴリ全${candidates.length}本への導線・日付順・記事優先を確認`);
