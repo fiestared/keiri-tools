@@ -39,7 +39,11 @@ function pages(dir = DOCS, out = []) {
   return out;
 }
 
-const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+// ★<title> や description の中身は HTML の文字列なので、既に「S&amp;P500」のように実体参照を含む。
+//   そのまま esc すると og:title が「S&amp;amp;P500」に二重化する（2026-09-13 に S&P500 の記事で実際に出た）。
+//   先に実体参照を戻してから1回だけエスケープする。
+const unesc = (s) => s.replace(/&quot;/g, '"').replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+const esc = (s) => unesc(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
 let changed = 0;
 const skipped = [];
