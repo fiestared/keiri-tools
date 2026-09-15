@@ -37,6 +37,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from '
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, relative } from 'node:path';
+import { loadNavExperiment, navOnlyCommitFiles, worktreeNavOnly } from './nav_experiment.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = join(ROOT, 'docs');
@@ -101,16 +102,20 @@ const BULK_FILES = 20;
 // 一括コミットを除いた「本文が変わった最後のコミット日」を、git log の1パスで作る。
 const lastContentCommit = new Map();
 {
-  const out = git(['log', '--date=format-local:%Y-%m-%d', '--format=%x01%ad', '--name-only', '--', 'docs']);
-  let date = null, files = [];
+  // ★導線（次に読む・右レール）の行しか変えていないファイルは、そのコミットで本文が変わったと数えない。
+  //   判定は nav_experiment.mjs に1つだけ持つ（gen_index_sitemap.mjs と同じ関数・同じ基点）。
+  const navOnly = navOnlyCommitFiles(loadNavExperiment().base);
+  const out = git(['log', '--date=format-local:%Y-%m-%d', '--format=%x01%H %ad', '--name-only', '--', 'docs']);
+  let date = null, hash = null, files = [];
   const flush = () => {
     if (date && files.length && files.length < BULK_FILES) {
-      for (const f of files) if (!lastContentCommit.has(f)) lastContentCommit.set(f, date);
+      const skip = navOnly.get(hash);
+      for (const f of files) if (!lastContentCommit.has(f) && !(skip && skip.has(f))) lastContentCommit.set(f, date);
     }
     files = [];
   };
   for (const line of out.split('\n')) {
-    if (line.startsWith('\x01')) { flush(); date = line.slice(1); }
+    if (line.startsWith('\x01')) { flush(); [hash, date] = line.slice(1).split(' '); }
     else if (line.trim()) files.push(line.trim());
   }
   flush();
@@ -148,7 +153,8 @@ for (const rel of git(['status', '--porcelain', '-uall', '--', 'docs']).split('\
   if (!diff) { dirtyCandidates.add(rel); continue; }          // 未追跡（新規ページ）
   const body = diff.split('\n').filter((x) => (x[0] === '+' || x[0] === '-')
     && !x.startsWith('+++') && !x.startsWith('---'));
-  if (body.some((x) => !DATE_LINE.test(x))) dirtyCandidates.add(rel);
+  // 更新日の行を除いて導線だけの変更（nav_experiment.mjs）なら、本文は変わっていない
+  if (body.some((x) => !DATE_LINE.test(x)) && !worktreeNavOnly(rel, DATE_LINE)) dirtyCandidates.add(rel);
 }
 const BULK_WORKTREE = dirtyCandidates.size >= BULK_FILES;
 const dirty = BULK_WORKTREE ? new Set() : dirtyCandidates;

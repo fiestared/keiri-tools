@@ -22,7 +22,8 @@
  * 黙って埋もれさせないため、未分類は test_article_structure.mjs が落とす。
  */
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
-import { join } from "node:path";
+import { join, relative } from "node:path";
+import { loadNavExperiment, navOnlyCommitFiles, worktreeNavOnly } from "./nav_experiment.mjs";
 import { execFileSync } from "node:child_process";
 
 const DOCS = new URL("../docs/", import.meta.url).pathname;
@@ -848,11 +849,15 @@ const root = git("rev-parse", "--show-toplevel");
 //   git log にも履歴が無い(まだコミット前)ため **lastmod が丸ごと落ちる**。
 //   = **新しく作ったページ**、つまり lastmod がいちばん要るページだけが黙って lastmod 無しで出る。
 //   実際に /juminzei/ を lastmod 無しで本番へ出した(2026-07-14 第23便)。
+// ★導線（次に読む・右レール）の行しか変わっていないファイルは dirty に数えない（2026-09-16）。
+//   判定は nav_experiment.mjs に1つだけ持つ（gen_datemodified.mjs と同じ関数・同じ基点）。
 const dirty = new Set(
   git("status", "--porcelain", "-uall", "--", DOCS).split("\n").filter(Boolean)
     .map((l) => l.slice(3).split(" -> ").pop().replace(/^"|"$/g, ""))
+    .filter((p) => !worktreeNavOnly(p))
     .map((p) => join(root, p)),
 );
+const navOnlyCommits = navOnlyCommitFiles(loadNavExperiment().base);
 // ★サイト全体の一括変更は「更新日」に数えない（2026-08-16 追加）。
 //   実測: 2026-08-16 に全ページ末尾へ「Xで共有」リンクを1行足しただけで、
 //   **sitemap 270本中267本の lastmod が同じ日に潰れた**。
@@ -911,7 +916,7 @@ const lastmodOf = (file) => {
   if (!log.length) return TODAY;
   for (const line of log) {
     const [hash, date] = [line.slice(0, 40), line.slice(41)];
-    if (!bulkCommits.has(hash)) return date;
+    if (!bulkCommits.has(hash) && !navOnlyCommits.get(hash)?.has(relative(root, file))) return date;
   }
   // 一括コミットしか無い＝新規ページが一括の中で生まれた場合。最古の日付を使う
   return log[log.length - 1].slice(41);

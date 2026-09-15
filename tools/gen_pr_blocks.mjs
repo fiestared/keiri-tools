@@ -26,7 +26,7 @@
  *   終端は自分で書いたものしか信じない。片方だけなら例外で止める。
  *
  * usage:
- *   node tools/gen_pr_blocks.mjs [--dry]
+ *   node tools/gen_pr_blocks.mjs [--dry | --check]   --check は書かずに、差分があれば exit 1
  */
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -106,7 +106,9 @@ export function withBlock(html, offer) {
   if (!offer) return base;
 
   if ((offer.slot || 'rail-before-toc') === 'rail-before-toc') {
-    const rail = base.indexOf('<div class="side-rail">');
+    // ★回遊の実験（gen_article_next_read.mjs）が目次を <div class="side-rail" data-nav-exp="wrap"> で包むページがある。
+    //   属性つきも「既にレールがある」と読む（読まないと目次を二重に包む）。
+    const rail = base.search(/<div class="side-rail"[\s>]/);
     if (rail >= 0) {
       const openEnd = base.indexOf('>', rail) + 1;
       return base.slice(0, openEnd) + block(offer) + '\n' + base.slice(openEnd);
@@ -149,7 +151,12 @@ export function planFrom(offers) {
 if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
   const offers = loadOffers();
   const plan = planFrom(offers);
-  const dry = process.argv.includes('--dry');
+  // ★未知の引数で止める（2026-09-16）。以前は --dry しか読まず、`--check` を渡すと**黙って書き込んでいた**。
+  const KNOWN = new Set(['--dry', '--check']);
+  const unknown = process.argv.slice(2).filter((a) => !KNOWN.has(a));
+  if (unknown.length) { console.error(`✗ 未知の引数: ${unknown.join(' ')}（使えるのは --dry / --check）`); process.exit(2); }
+  const check = process.argv.includes('--check');
+  const dry = process.argv.includes('--dry') || check;
 
   if (!offers.length) {
     console.log('設定に案件がありません（tools/pr_offers.json の offers が空）。');
@@ -181,7 +188,11 @@ if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
     console.error(`✗ 設定にあるが存在しないページ: ${missing.join(', ')}`);
     process.exit(1);
   }
-  console.log(`${dry ? '（--dry）' : ''}PR枠: 設置 ${put} / 撤去 ${removed}（案件 ${offers.length}件）`);
+  if (check && (put || removed)) {
+    console.error(`✗ PR枠が設定と食い違う: 設置 ${put} / 撤去 ${removed}。node tools/gen_pr_blocks.mjs を流すこと`);
+    process.exit(1);
+  }
+  console.log(`${check ? '（--check）' : dry ? '（--dry）' : ''}PR枠: 設置 ${put} / 撤去 ${removed}（案件 ${offers.length}件）`);
 }
 
 // --- 小道具（walk 用）---

@@ -911,3 +911,30 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
     margin: 0;
   }
 }
+
+/* ---- 回遊の局所改修（2026-09-16・名簿は tools/nav_experiment.json） ----
+   ★当たるのは生成器が印を付けたページだけ: .rail-next と data-nav-exp は対象15本、.table-cue は標準報酬月額表の記事。
+     それ以外のページの見た目は1pxも変えない（対照群・進行中の検定を動かさないため）。
+   ★右レールの関連: 目次と同じ白地・罫線の箱。PC（1200px以上）で目次の下に追従する。
+     1200px 未満はレールが本文の流れ（記事の冒頭）に入るので出さない。末尾に手作り関連と次に読むがある。
+     画面の高さが800px未満でPR枠のあるページは、目次が約90pxに潰れるので出さない（PRは動かさない）。
+     1536×864 では目次が約200px残る（2026-09-16 実測）ので出す。 */
+.rail-next { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+.rail-next-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.rail-next ul { list-style: none; margin: 0; padding: 0; }
+.rail-next li { border-top: 1px solid var(--line); }
+.rail-next li:first-child { border-top: 0; }
+.rail-next a { display: block; padding: 8px 0; font-size: 14px; line-height: 1.5; color: var(--ink); text-decoration: none; }
+.rail-next a:hover { color: var(--accent); text-decoration: underline; }
+@media (min-width: 1200px) { .side-rail > .rail-next { flex: 0 0 auto; margin: 0; } }
+@media (min-width: 1200px) and (max-height: 799.98px) { .side-rail:has(.pr-block) > .rail-next { display: none; } }
+@media (max-width: 1199.98px) { .rail-next { display: none; } }
+@media print { .rail-next { display: none !important; } }
+/* 標準報酬月額表: 表が枠（640px）の中で続くことの合図と、全行を広げる操作。印刷では枠の高さで切らない */
+.table-cue { font-size: 14px; color: var(--sub); margin: 8px 0 0; line-height: 1.7; }
+.table-cue a[role=button] { display: block; width: max-content; max-width: 100%; margin-top: 2px; padding: 2px 0; font-weight: 700; }
+.table-cue ~ .scroll-wrap.is-expanded { max-height: none; }
+@media print {
+  .table-cue ~ .scroll-wrap { max-height: none !important; overflow: visible !important; }
+  .table-cue { display: none; }
+}
