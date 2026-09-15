@@ -147,7 +147,17 @@ const grams = (t) => {
 };
 const gramCache = new Map();
 const gramsOf = (s) => { if (!gramCache.has(s)) { const p = articles.get(s); gramCache.set(s, grams(`${p.h1} ${p.desc}`)); } return gramCache.get(s); };
-const sim = (A, B) => { let n = 0; for (const g of A) if (B.has(g)) n++; return n / Math.sqrt((A.size || 1) * (B.size || 1)); };
+/** 2-gram の重み: 多くの記事に出る語（「とは」「法律」など）ほど軽くする（log(N/df)）。
+ *  ★重みなしだと高額療養費の次に「高年齢求職者給付金」「教育訓練給付金」が来た（2026-09-16 Grok レビュー）。 */
+const idf = new Map();
+{
+  const df = new Map();
+  for (const s of articles.keys()) for (const g of gramsOf(s)) df.set(g, (df.get(g) || 0) + 1);
+  for (const [g, n] of df) idf.set(g, Math.log(articles.size / n));
+}
+const weight = (G) => { let w = 0; for (const g of G) w += (idf.get(g) ?? Math.log(articles.size)) ** 2; return Math.sqrt(w) || 1; };
+const BACKLINK_BONUS = 0.05;
+const sim = (A, B) => { let n = 0; for (const g of A) if (B.has(g)) n += (idf.get(g) ?? 0) ** 2; return n / (weight(A) * weight(B)); };
 
 /** 対象ページの導線を取り外した素の HTML（何度流しても同じ出力にするため） */
 function stripNav(html) {
@@ -179,15 +189,24 @@ function buildTreatment(slug, a) {
   const seen = new Set(related);
   const picks = [];
   const push = (p) => { if (p && !banned(p) && !seen.has(p) && picks.length < 3) { seen.add(p); picks.push(p); } };
+  // 人が固定したページ（nav_experiment.json の nextReadPins）はそれだけを使う
+  const pinned = exp.pins[slug];
+  if (pinned) {
+    for (const s of pinned) { if (!articles.has(s)) throw new Error(`${slug}: 固定した次に読む ${s} が公開コラムに無い`); push(`/column/${s}/`); }
+    if (picks.length !== 3) throw new Error(`${slug}: 固定した次に読むが手作り関連と重なって3件にならない`);
+  }
   for (const p of hrefs(body).map(resolveLink)) push(p);
-  // 本文のリンクで足りなければ、この記事を手作り関連に挙げている記事（人が主題が近いと判断したもの）
-  for (const s of backlinks.get(self) || []) push(`/column/${s}/`);
-  // それでも足りなければ、タイトル・説明文の近さ（文字2-gram の重なり）。同カテゴリを先に
+  // 本文のリンクで足りなければ、「この記事を手作り関連に挙げている記事」と「同カテゴリの記事」を合わせて、
+  // タイトル・説明文の近さ（重みつき文字2-gram）の順に取る。逆引きは近さに少し上乗せする。
+  // ★逆引きをそのまま先に入れると、高額療養費の次に高年齢求職者給付金が来た（逆引きにも主題の遠いものが混ざる。2026-09-16）
   const mine = grams(`${a.h1} ${a.desc}`);
-  const bySim = (pool) => pool.filter((s) => s !== slug)
-    .map((s) => [s, sim(mine, gramsOf(s))]).sort((x, y) => y[1] - x[1] || rank(x[0]) - rank(y[0])).map((x) => x[0]);
-  for (const s of bySim(byCategory.get(a.category) || [])) push(`/column/${s}/`);
-  for (const s of bySim([...articles.keys()])) push(`/column/${s}/`);
+  const back = new Set(backlinks.get(self) || []);
+  const pool = new Set([...back, ...(byCategory.get(a.category) || [])]);
+  const ranked = (list, bonus) => list.filter((s) => s !== slug)
+    .map((s) => [s, sim(mine, gramsOf(s)) + (bonus && back.has(s) ? BACKLINK_BONUS : 0)])
+    .sort((x, y) => y[1] - x[1] || rank(x[0]) - rank(y[0])).map((x) => x[0]);
+  for (const s of ranked([...pool], true)) push(`/column/${s}/`);
+  for (const s of ranked([...articles.keys()], false)) push(`/column/${s}/`);
   if (picks.length < 3) throw new Error(`${slug}: 次に読むが3件そろわない`);
 
   const railItems = [];

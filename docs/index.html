@@ -718,15 +718,15 @@ async function ask(q, commit) {
   if (!qaLoaded) box.innerHTML = `<p class="qa-status">探しています…</p>`;
   await qaReady;
   if (qaFailed) {
-    box.innerHTML = `<div class="qa-empty">質問の索引を読み込めませんでした。通信環境を確認して、ページを再読み込みしてください。</div>`;
+    box.innerHTML = `<div class="qa-empty">検索の索引を読み込めませんでした。通信環境を確認して、ページを再読み込みしてください。</div>`;
     return;
   }
   const r = search(QA, q);
   if (r.matched && r.results.length) {
-    box.innerHTML = `<p class="qa-status">質問に<b>近い</b>記事・ツールです（答えそのものとは限りません）。</p><div class="qa-reslist">${r.results.map(card).join("")}</div>`;
+    box.innerHTML = `<p class="qa-status">入力した言葉に<b>近い</b>記事・ツールです。</p><div class="qa-reslist">${r.results.map(card).join("")}</div>`;
     if (commit) track(q, true, r.results[0].url);
   } else if (commit) {
-    box.innerHTML = `<div class="qa-empty"><b>ぴったりの記事がまだありません。</b>いただいた質問は、記事にするか検討します。<div style="margin-top:8px"><a href="column/">コラム一覧を見る →</a></div></div>`;
+    box.innerHTML = `<div class="qa-empty"><b>ぴったりの記事がまだありません。</b>検索した言葉は、記事にするか検討します。<div style="margin-top:8px"><a href="column/">コラム一覧を見る →</a></div></div>`;
     track(q, false, "");
   } else {
     // 入力中で未一致のときは、案内を出さずに静かに待つ（打ちながらの誤爆を防ぐ）

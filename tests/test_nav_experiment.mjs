@@ -55,6 +55,8 @@ export function checkPages(pages, exp = loadNavExperiment()) {
     if (nrLinks.length !== 3 || nrLinks.some((p) => !p)) errs.push(`${slug}: 次に読むが記事・ツール3件でない`);
     for (const p of nrLinks) if (p && banned(p)) errs.push(`${slug}: 次に読むが禁止先 ${p} へリンク`);
     if (new Set(nrLinks).size !== nrLinks.length) errs.push(`${slug}: 次に読むに重複`);
+    const pin = exp.pins?.[slug];
+    if (pin && nrLinks.join() !== pin.map((s) => `/column/${s}/`).join()) errs.push(`${slug}: 固定した次に読む（nextReadPins）と違う`);
     const rail = html.match(/<!--rail-next:S-->([\s\S]*?)<!--rail-next:E-->/g) || [];
     if (rail.length !== 1) { errs.push(`${slug}: 右レールの関連が ${rail.length} 個`); continue; }
     const railLinks = hrefsIn(rail[0]).map(toPath);

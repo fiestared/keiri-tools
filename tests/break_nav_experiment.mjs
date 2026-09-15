@@ -37,6 +37,7 @@ const cases = [
   ["対照に実験の印が紛れた", (m) => m.set(C0, m.get(C0).replace('<section class="next-read">', '<section class="next-read" data-nav-exp="t">'))],
   ["目印の形が崩れた", (m) => m.set(T0, m.get(T0).replace("<!--next-read:E-->", "<!--next-read:E"))],
   ["次に読むから対象の印を外した", (m) => m.set(T0, m.get(T0).replace('<section class="next-read" data-nav-exp="t">', '<section class="next-read">'))],
+  ["固定した次に読むを差し替えた", (m) => m.set("kogaku-ryoyohi", m.get("kogaku-ryoyohi").replace('<a class="tool-card" href="../maina-hokensho/">', '<a class="tool-card" href="../kounenrei-kyushokusha-kyufukin/">'))],
   ["記事内に <style> を足した", (m) => m.set(T0, m.get(T0).replace("<!--next-read:E-->", "<!--next-read:E--><style>.x{}</style>"))],
 ];
 const tableCases = [

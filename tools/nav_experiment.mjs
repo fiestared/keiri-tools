@@ -48,8 +48,17 @@ export function loadNavExperiment(path = CONFIG_PATH) {
     if (F.has(p)) errors.push(`対象が表の施策と重なる: ${p}`);
   }
   for (const p of C) if (P.has(p) || F.has(p)) errors.push(`対照が保護対象・表の施策と重なる: ${p}`);
+  const pins = c.nextReadPins || {};
+  for (const [slug, list] of Object.entries(pins)) {
+    if (!T.has(col(slug))) errors.push(`nextReadPins: 対象ではないページ ${slug}`);
+    if (!Array.isArray(list) || list.length !== 3 || new Set(list).size !== 3) errors.push(`nextReadPins.${slug}: 重複なしの3本でない`);
+    else for (const s of list) {
+      const p = col(s);
+      if (s === slug || C.has(p) || P.has(p)) errors.push(`nextReadPins.${slug}: 自分・対照・保護対象は指定できない（${s}）`);
+    }
+  }
   if (errors.length) throw new Error(`nav_experiment.json: ${errors.join(" / ")}`);
-  return { base: c.base, T, C, P, F, treatment: c.treatment, control: c.control, tableFix: c.tableFix };
+  return { base: c.base, T, C, P, F, treatment: c.treatment, control: c.control, tableFix: c.tableFix, pins };
 }
 
 /** 1行から導線の部分（生成器が書いたもの）だけを取り除く。gen_article_next_read.mjs の stripNav と同じ規則 */
