@@ -1,7 +1,7 @@
 {
   "_doc": "年度が刻印された自社ページと、その一次資料の『次の年度版』のURLパターン。check_source_year.py が読む。",
   "_why": "2026-09-07の実害: 国税庁が令和9年分 源泉徴収税額表を令和8年8月31日に公表していたのに、こちらは9月7日まで気づかなかった。競合は改正が決まった4月から書いている（mt-tax.com 2026-04-23）。原因は『需要を測ってから書く』という選定規則で、年度刻印の語は需要が立つ前に書かないと間に合わないのに、規則が逆を強制していたこと。加えて一次資料の更新を見る計器が無かった。",
-  "_howto": "entries に足す。url は {y} を西暦(int)で置換する。covers は自社ページが現在カバーしている西暦。probe_next=true なら covers+1 の存在を毎回確かめる。URLパターンが不明なものは url を null にして note に理由を書く（未調査と未公表を混同しないため）。",
+  "_howto": "entries に足す。url は {y} を西暦(int)、{r} を令和年(int)で置換する。資料見出しが『令和N年度』なら year_label_suffix を『度』にする（既定は『分』）。covers は自社ページが現在カバーしている西暦。probe_next=true なら covers+1 の存在を毎回確かめる。URLパターンが不明なものは url を null にして note に理由を書く（未調査と未公表を混同しないため）。",
   "entries": [
     {
       "slug": "gensen-zeigakuhyo-mikata",
@@ -52,10 +52,11 @@
       "slug": "rosai-hokenryoritsu",
       "name": "労災保険料率",
       "source": "厚生労働省",
-      "url": null,
+      "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/rousai/rousaihoken{r:02d}/rousai_hokenritsu_kaitei.html",
       "covers": 2026,
-      "probe_next": false,
-      "note": "★未調査。3年ごとの改定（直近は令和6年度）。次は令和9年度の見込み"
+      "probe_next": true,
+      "year_label_suffix": "度",
+      "note": "令和8年度の現行ページ rousaihoken06 はHTTP 200・本文の年度一致を実測。次回改定見込みの令和9年度は rousaihoken09 を監視し、2026-09-16時点でHTTP 404"
     },
     {
       "slug": "koyou-hokenryo-ritsu",

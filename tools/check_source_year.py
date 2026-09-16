@@ -86,6 +86,11 @@ def wareki(y: int) -> str:
     return f"令和{y - 2018}年"
 
 
+def source_url(pattern: str, year: int) -> str:
+    """西暦 {y} と令和年 {r} のどちらの URL パターンも扱う。"""
+    return pattern.format(y=year, r=year - 2018)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--json", action="store_true")
@@ -110,8 +115,9 @@ def main():
         if not e.get("probe_next", True):
             results.append({**e, "next_year": nxt, "state": "skipped", "detail": "probe_next=false"})
             continue
-        url = e["url"].format(y=nxt)
-        state, detail = probe(url, f"{wareki(nxt)}分")
+        url = source_url(e["url"], nxt)
+        suffix = e.get("year_label_suffix", "分")
+        state, detail = probe(url, f"{wareki(nxt)}{suffix}")
         results.append({**e, "next_year": nxt, "probe_url": url, "state": state, "detail": detail})
 
     if args.json:
@@ -122,11 +128,13 @@ def main():
         absent = [r for r in results if r["state"] == "absent"]
         for r in found:
             print(f"🔴 次の年度版が出ている: {r['name']}（{r['source']}）")
-            print(f"     自社は {wareki(r['covers'])}分をカバー / 一次資料は {wareki(r['next_year'])}分を公表済み")
+            suffix = r.get("year_label_suffix", "分")
+            print(f"     自社は {wareki(r['covers'])}{suffix}をカバー / 一次資料は {wareki(r['next_year'])}{suffix}を公表済み")
             print(f"     {r['probe_url']}")
             print(f"     対象ページ: /{'column/' if not r['slug'].endswith(('choshu',)) else ''}{r['slug']}/")
         for r in absent:
-            print(f"✅ まだ未公表: {r['name']} — {wareki(r['next_year'])}分は {r['detail']}")
+            suffix = r.get("year_label_suffix", "分")
+            print(f"✅ まだ未公表: {r['name']} — {wareki(r['next_year'])}{suffix}は {r['detail']}")
         for r in unknown:
             print(f"⚠️  確認できていない: {r['name']} — {r['detail']}")
         print()

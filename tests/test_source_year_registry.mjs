@@ -34,8 +34,11 @@ for (const e of reg.entries) {
   if (typeof e.covers !== "number" || e.covers < 2020 || e.covers > 2100) {
     errs.push(`${at}: covers は西暦の数値であること（今: ${JSON.stringify(e.covers)}）`);
   }
-  if (e.url !== null && typeof e.url === "string" && !e.url.includes("{y}")) {
-    errs.push(`${at}: url に {y} が無い（年度で置換できない）`);
+  if (e.url !== null && typeof e.url === "string" && !e.url.includes("{y}") && !e.url.includes("{r")) {
+    errs.push(`${at}: url に {y} または {r} が無い（年度で置換できない）`);
+  }
+  if (e.year_label_suffix !== undefined && !["分", "度"].includes(e.year_label_suffix)) {
+    errs.push(`${at}: year_label_suffix は「分」または「度」であること`);
   }
   // ★未調査を「監視できている」と見せない。url が null なら note に理由を書かせる
   if (e.url === null && !(e.note || "").includes("未調査")) {
