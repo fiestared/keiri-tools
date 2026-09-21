@@ -253,6 +253,20 @@ async function fetchAll() {
       metrics: [{ name: "activeUsers" }, { name: "sessions" }],
       limit: 50,
     });
+    // ★1リクエストに渡せる dateRanges は**4本まで**（5本目を足すと 400
+    //   "Requests are limited to 4 dateRanges."。2026-09-21 実測）。月の窓は別リクエストで取る。
+    // ★月は30日ではなく**28日＝4週ちょうど**にする。このサイトは土日で平日の3〜4割まで落ちるので、
+    //   30日窓だと窓ごとに土日の本数が変わり、前の28日との差が曜日の偏りで動いてしまう。
+    const nvrMonth = await runReport(token, s.property, {
+      dateRanges: [
+        { startDate: "28daysAgo", endDate: "yesterday", name: "last28" },
+        { startDate: "56daysAgo", endDate: "29daysAgo", name: "prev28" },
+      ],
+      dimensionFilter: hostFilter,
+      dimensions: [{ name: "newVsReturning" }],
+      metrics: [{ name: "activeUsers" }, { name: "sessions" }],
+      limit: 50,
+    });
 
     // Google トラック KPI 用（Search Console）。★GA4 が取れて GSC だけ落ちた回でも画面全体は殺さない。
     //   失敗は gsc.error に入れて KPI 欄にだけ出す（数字が黙って古くなるのは避ける）。
@@ -276,8 +290,8 @@ async function fetchAll() {
 
     // newVsReturning を窓ごとに畳む。判別できない行（"" と "(not set)"）は unknown に寄せ、
     // 率の分母（新規＋リピート）には入れない。件数は画面に出す（黙って落とすと穴が見えない）。
-    const retention = { today: {}, yesterday: {}, last7: {}, prev7: {} };
-    for (const r of nvr.rows ?? []) {
+    const retention = { today: {}, yesterday: {}, last7: {}, prev7: {}, last28: {}, prev28: {} };
+    for (const r of [...(nvr.rows ?? []), ...(nvrMonth.rows ?? [])]) {
       const kind = r.dimensionValues[0].value;
       const bucket = retention[r.dimensionValues[1].value];
       if (!bucket) continue;
@@ -873,19 +887,28 @@ const retMetric = (label, x, partial = false) => {
 function retentionBlock(site) {
   const r = site.retention;
   if (!r) return "";                                  // 古い data.json では出さない
-  const l7 = r.last7, p7 = r.prev7;
-  const pp = l7?.rate !== null && p7?.rate != null && l7?.rate != null ? l7.rate - p7.rate : null;
-  const cmp = p7
-    ? `<div class="metric-sub">その前の7日は <b>${p7.rate === null ? "—" : n1(p7.rate) + "%"}</b>`
-      + `（新規 ${p7.newUsers.toLocaleString("ja-JP")}人 / リピート ${p7.returningUsers.toLocaleString("ja-JP")}人）`
-      + `${pp === null ? "" : `。差は <b>${pp >= 0 ? "+" : "−"}${n1(Math.abs(pp))}ポイント</b>`}。</div>`
-    : "";
+  const l7 = r.last7, p7 = r.prev7, l28 = r.last28, p28 = r.prev28;
+  // 1つ前の同じ長さの窓との比較。★その窓に訪問が1件も無い時は「0%」ではなく「取れていない」。
+  //   道しるべは公開が2026-09-07なので、前の4週には行そのものが返ってこない。
+  const cmpLine = (label, cur, prev) => {
+    if (!prev) return "";
+    if (prev.users === 0 && prev.unknownSessions === 0) {
+      return `<div class="metric-sub">${esc(label)}は<b>まだ取れていない</b>（その期間の訪問が無い）。</div>`;
+    }
+    const pp = cur?.rate != null && prev.rate != null ? cur.rate - prev.rate : null;
+    return `<div class="metric-sub">${esc(label)}は <b>${prev.rate === null ? "—" : n1(prev.rate) + "%"}</b>`
+      + `（新規 ${prev.newUsers.toLocaleString("ja-JP")}人 / リピート ${prev.returningUsers.toLocaleString("ja-JP")}人）`
+      + `${pp === null ? "" : `。差は <b>${pp >= 0 ? "+" : "−"}${n1(Math.abs(pp))}ポイント</b>`}。</div>`;
+  };
+  const cmp = cmpLine("その前の7日", l7, p7) + cmpLine("その前の4週", l28, p28);
   // リピーター1人あたりのセッション数。ここが極端に大きい時は少人数が何度も開いている＝
   // 自分の確認アクセスやブックマーク常連。率だけ見ると読者が定着したように見えるので必ず併記する。
-  const spr = l7?.sessionsPerReturning
-    ? `<div class="metric-sub">直近7日のリピーターは <b>${l7.returningUsers.toLocaleString("ja-JP")}人</b>で`
-      + ` <b>${l7.returningSessions.toLocaleString("ja-JP")}セッション</b>（1人あたり ${n1(l7.sessionsPerReturning)}）。`
-      + `1人あたりが極端に大きい時は、少人数が何度も開いている（自分の確認アクセスを含む）。</div>`
+  const sprOf = (x) => (x?.sessionsPerReturning ? n1(x.sessionsPerReturning) : null);
+  const spr = (sprOf(l7) || sprOf(l28))
+    ? `<div class="metric-sub">リピーター1人あたりのセッション数は`
+      + ` 直近7日 <b>${sprOf(l7) ?? "—"}</b>（${l7.returningUsers.toLocaleString("ja-JP")}人で ${l7.returningSessions.toLocaleString("ja-JP")}セッション）`
+      + ` / 直近4週 <b>${sprOf(l28) ?? "—"}</b>（${l28.returningUsers.toLocaleString("ja-JP")}人で ${l28.returningSessions.toLocaleString("ja-JP")}セッション）。`
+      + `ここが極端に大きい時は、少人数が何度も開いている（自分の確認アクセスを含む）。</div>`
     : "";
   return `
   <section class="insights" aria-labelledby="ret-${esc(site.key)}">
@@ -893,10 +916,11 @@ function retentionBlock(site) {
     <div class="insight-grid">
       <div class="insight-card">
         <div class="insight-head"><div><span class="eyebrow">GA4 newVsReturning・人数基準</span><h4>リピーター率</h4></div></div>
-        <div class="metric-grid">
+        <div class="metric-grid four">
           ${retMetric("今日", r.today, true)}
           ${retMetric(`昨日（${site.yesterdayWd}）`, r.yesterday)}
           ${retMetric("直近7日（昨日まで）", r.last7)}
+          ${retMetric("直近4週（28日・昨日まで）", r.last28)}
         </div>
         ${cmp}
         ${spr}
@@ -905,7 +929,9 @@ function retentionBlock(site) {
         日別の人数は足せない）。判別は<b>その端末の Cookie</b>で行う — 別の端末・別のブラウザ・
         Cookie を消した再訪は新規に戻り、自分の確認アクセスはリピーター側に入る。
         「判別なし」は当日まだ判別が付いていないぶんと <code>(not set)</code> の合計で、
-        率の分母には入れていない。当日はこれが多いので「今日」は途中の数字。</p>
+        率の分母には入れていない。当日はこれが多いので「今日」は途中の数字。
+        月の窓を30日ではなく<b>28日（4週ちょうど）</b>にしてあるのは、30日だと窓ごとに
+        土日の本数が変わり、前の窓との差が曜日の偏りで動いてしまうため。</p>
       </div>
     </div>
   </section>`;
@@ -1224,6 +1250,8 @@ h1{font-size:20px; font-weight:650; margin:0; letter-spacing:.01em}
 .insight-head>a{font-size:12px; color:var(--muted); white-space:nowrap; min-height:24px}
 .eyebrow{display:block; font-size:10.5px; color:var(--muted); letter-spacing:.04em}
 .metric-grid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px}
+/* 新規とリピーターは窓が4つ（今日・昨日・直近7日・直近4週）。狭い画面では下の media で1列に戻す */
+.metric-grid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
 .insight-metric{padding:10px; border-left:2px solid var(--series-1); background:var(--surface)}
 .insight-metric .label{font-size:11px; color:var(--ink2); white-space:nowrap}
 .click-value{font-size:25px; font-weight:650; line-height:1.2; font-variant-numeric:tabular-nums}
@@ -1307,7 +1335,7 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
 .sw-imp{height:0; width:16px; border-top:2px solid var(--series-3); border-radius:0}
 @media (max-width:520px){
   .tile.hero .value{font-size:38px}
-  .metric-grid{grid-template-columns:1fr}
+  .metric-grid, .metric-grid.four{grid-template-columns:1fr}
   .insight-metric{display:grid; grid-template-columns:minmax(90px,1fr) auto; align-items:center; column-gap:8px}
   .insight-metric .metric-sub{grid-column:1/-1}
 }
