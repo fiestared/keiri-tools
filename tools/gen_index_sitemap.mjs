@@ -1044,7 +1044,23 @@ const hubPath = join(DOCS, "toushi/index.html");
 let hub = readFileSync(hubPath, "utf8");
 const hubArticles = articles.filter((a) => catOf.get(a.slug) === "shisan")
   .sort((a, b) => b.iso.localeCompare(a.iso));
-const hubLatest = hubArticles.slice(0, 6);
+// ★基礎解説はハブに固定する（2026-09-22）。
+//   新着は公開日降順の6本だけなので、09-13に比較32本を同時公開した時点で
+//   基礎の2本がハブから押し出され、ハブからの内部リンクが消えていた。
+//   実測: /column/index-toushi/ は GSC の URL 検査で「検出 - インデックス未登録」、
+//   lastCrawlTime が null（Googleが一度もクロールしていない）、referringUrls も null。
+//   同じ日に出した /column/orcan-hikaku/ は 09-14 にクロール済み・登録済み。
+//   差は被リンクの位置だけ（あちらはハブの新着6本に入っていた）。
+//   需要順ORDERにも一覧にも載っているが、400本超の一覧の1行では辿られない。
+const HUB_PINNED = ["index-toushi", "dollar-cost-heikin"];
+const hubPinned = HUB_PINNED.map((slug) => {
+  const a = hubArticles.find((x) => x.slug === slug);
+  // 固定対象が消えたら黙って落とさない。生成を止める（登録忘れは気づけない）
+  if (!a) throw new Error(`HUB_PINNED の ${slug} が資産形成カテゴリに見つかりません`);
+  return a;
+});
+const pinnedSet = new Set(HUB_PINNED);
+const hubLatest = hubArticles.filter((a) => !pinnedSet.has(a.slug)).slice(0, 6);
 const hubOpen = "<!-- GEN:TOUSHI-LATEST -->";
 const hubClose = "<!-- /GEN:TOUSHI-LATEST -->";
 const hOpen = hub.indexOf(hubOpen), hClose = hub.indexOf(hubClose);
@@ -1053,6 +1069,10 @@ if (hOpen === -1 || hClose < hOpen || hub.indexOf(hubOpen, hOpen + 1) !== -1
   throw new Error("toushi/index.html の新着マーカーが欠落・重複しています");
 }
 const hubBlock = `
+  <div class="section-head" id="basics"><h2>投資の基本</h2><span class="hint">はじめに読む${hubPinned.length}本</span></div>
+  <div class="post-list">
+${hubPinned.map((a) => card(a, "    ").replace(`href="${a.slug}/"`, `href="../column/${a.slug}/"`)).join("\n")}
+  </div>
   <div class="section-head" id="latest"><h2>新着コラム</h2><span class="hint">公開日の新しい${hubLatest.length}本</span></div>
   <div class="post-list">
 ${hubLatest.map((a) => card(a, "    ").replace(`href="${a.slug}/"`, `href="../column/${a.slug}/"`)).join("\n")}
