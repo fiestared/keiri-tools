@@ -1069,10 +1069,12 @@ if (hOpen === -1 || hClose < hOpen || hub.indexOf(hubOpen, hOpen + 1) !== -1
   throw new Error("toushi/index.html の新着マーカーが欠落・重複しています");
 }
 const hubBlock = `
+  <!-- GEN:TOUSHI-PINNED -->
   <div class="section-head" id="basics"><h2>投資の基本</h2><span class="hint">はじめに読む${hubPinned.length}本</span></div>
   <div class="post-list">
 ${hubPinned.map((a) => card(a, "    ").replace(`href="${a.slug}/"`, `href="../column/${a.slug}/"`)).join("\n")}
   </div>
+  <!-- /GEN:TOUSHI-PINNED -->
   <div class="section-head" id="latest"><h2>新着コラム</h2><span class="hint">公開日の新しい${hubLatest.length}本</span></div>
   <div class="post-list">
 ${hubLatest.map((a) => card(a, "    ").replace(`href="${a.slug}/"`, `href="../column/${a.slug}/"`)).join("\n")}
