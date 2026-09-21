@@ -235,6 +235,25 @@ async function fetchAll() {
       });
     }
 
+    // 新規とリピーター（newVsReturning）。★窓ごとに別々のクエリで取る。
+    //   人数（activeUsers）は窓の中で重複排除されるので、日別の人数を足すと
+    //   同じ人を日跨ぎで二重に数える（gbrain keiri-tools/x-referral-ga4-baseline-2026-08-28）。
+    //   dateRanges を4つ渡すと GA4 が dateRange 次元を自動で足して返す（値は name）。
+    // ★当日は判別が付いていない行（次元値が空）が出る。2026-09-21 実測で keiri は
+    //   今日71セッション中28が空、昨日以前は空ゼロ。だから今日の率は「途中」として出す。
+    const nvr = await runReport(token, s.property, {
+      dateRanges: [
+        { startDate: "today", endDate: "today", name: "today" },
+        { startDate: "yesterday", endDate: "yesterday", name: "yesterday" },
+        { startDate: "7daysAgo", endDate: "yesterday", name: "last7" },
+        { startDate: "14daysAgo", endDate: "8daysAgo", name: "prev7" },
+      ],
+      dimensionFilter: hostFilter,
+      dimensions: [{ name: "newVsReturning" }],
+      metrics: [{ name: "activeUsers" }, { name: "sessions" }],
+      limit: 50,
+    });
+
     // Google トラック KPI 用（Search Console）。★GA4 が取れて GSC だけ落ちた回でも画面全体は殺さない。
     //   失敗は gsc.error に入れて KPI 欄にだけ出す（数字が黙って古くなるのは避ける）。
     let gsc = null;
@@ -253,6 +272,20 @@ async function fetchAll() {
       } catch (e) {
         gsc = { error: e.message, rows: [] };
       }
+    }
+
+    // newVsReturning を窓ごとに畳む。判別できない行（"" と "(not set)"）は unknown に寄せ、
+    // 率の分母（新規＋リピート）には入れない。件数は画面に出す（黙って落とすと穴が見えない）。
+    const retention = { today: {}, yesterday: {}, last7: {}, prev7: {} };
+    for (const r of nvr.rows ?? []) {
+      const kind = r.dimensionValues[0].value;
+      const bucket = retention[r.dimensionValues[1].value];
+      if (!bucket) continue;
+      const key = kind === "new" || kind === "returning" ? kind : "unknown";
+      const cur = bucket[key] ?? { users: 0, sessions: 0 };
+      cur.users += Number(r.metricValues[0].value);
+      cur.sessions += Number(r.metricValues[1].value);
+      bucket[key] = cur;
     }
 
     const dmap = new Map();
@@ -325,7 +358,7 @@ async function fetchAll() {
     // titleSuffix は RegExp なので data.json に載せない（描画時に SITES から引き直す）
     const { titleSuffix: _titleSuffix, ...cfg } = s;
     sites.push({
-      ...cfg, days, pageRows, gsc,
+      ...cfg, days, pageRows, gsc, retention,
       feeDays: days.map(({ date }) => ({ date, ...(feeMap.get(date) ?? { pageviews: 0, clicks: 0 }) })),
       cutoff, cutoffHour, cmpHour: lastFull,
       todayCum: lastFull >= 0 ? cumToHour(today, lastFull) : 0,
@@ -338,6 +371,37 @@ async function fetchAll() {
 }
 
 // ---------- モデル ----------
+/**
+ * 新規とリピーターの比（GA4 `newVsReturning`）。
+ *
+ * ★人数（activeUsers）基準で出す。マーケで言う「リピーター率」は人数の比で、
+ *   セッション基準とは別物（リピーターは1人で何セッションも作るので必ず高く出る）。
+ * ★窓ごとに GA4 側で重複排除された数字をそのまま使う。**日別の人数を足さないこと** —
+ *   同じ人が翌日また来れば2人に数えられる。
+ * ★分母は 新規＋リピート。判別が付かない行（当日の途中＝空の次元値、および "(not set)"）は
+ *   分母から外し、件数だけ unknown に持って画面に出す。
+ */
+function retentionModel(raw) {
+  if (!raw) return null;                                   // 古い data.json（retention を持たない）
+  const out = {};
+  for (const [key, b] of Object.entries(raw)) {
+    const nu = b.new?.users ?? 0, ru = b.returning?.users ?? 0;
+    const ns = b.new?.sessions ?? 0, rs = b.returning?.sessions ?? 0;
+    const known = nu + ru;
+    out[key] = {
+      newUsers: nu, returningUsers: ru,
+      newSessions: ns, returningSessions: rs,
+      unknownUsers: b.unknown?.users ?? 0, unknownSessions: b.unknown?.sessions ?? 0,
+      users: known,
+      // リピーター率。分母0（その窓に誰も来ていない）は「—」にする
+      rate: known > 0 ? (ru / known) * 100 : null,
+      // リピーター1人あたりのセッション数。自分の確認アクセスが混じると極端に大きくなる
+      sessionsPerReturning: ru > 0 ? rs / ru : null,
+    };
+  }
+  return out;
+}
+
 function model(data) {
   const sum = (a) => a.reduce((x, y) => x + y, 0);
   return {
@@ -416,6 +480,7 @@ function model(data) {
         hCumToday: cumTo(hToday), hCumYest: cumTo(hYest), hCumPrevWeek: cumTo(hPrevWeek),
         fee: { today: feeToday, yesterday: feeYesterday, last7: feeLast7 },
         pageBreakdown, pageLast7Total,
+        retention: retentionModel(s.retention),
       };
     }),
   };
@@ -790,6 +855,62 @@ function insights(site) {
   </section>`;
 }
 
+// ---------- 新規とリピーター ----------
+// 数字の作り方と注意は retentionModel() のコメントに書いた（人数基準・窓ごとに取得・分母は新規＋リピート）。
+const retMetric = (label, x, partial = false) => {
+  if (!x) return "";
+  const unknown = (x.unknownUsers > 0 || x.unknownSessions > 0)
+    ? `<br>判別なし ${x.unknownUsers.toLocaleString("ja-JP")}人 / ${x.unknownSessions.toLocaleString("ja-JP")}セッション`
+    : "";
+  return `
+  <div class="insight-metric">
+    <div class="label">${esc(label)}${partial ? ' <span class="badge">途中</span>' : ""}</div>
+    <div class="click-value">${x.rate === null ? "—" : n1(x.rate)}<span>${x.rate === null ? "" : "%"}</span></div>
+    <div class="metric-sub">新規 ${x.newUsers.toLocaleString("ja-JP")}人 / リピート ${x.returningUsers.toLocaleString("ja-JP")}人${unknown}</div>
+  </div>`;
+};
+
+function retentionBlock(site) {
+  const r = site.retention;
+  if (!r) return "";                                  // 古い data.json では出さない
+  const l7 = r.last7, p7 = r.prev7;
+  const pp = l7?.rate !== null && p7?.rate != null && l7?.rate != null ? l7.rate - p7.rate : null;
+  const cmp = p7
+    ? `<div class="metric-sub">その前の7日は <b>${p7.rate === null ? "—" : n1(p7.rate) + "%"}</b>`
+      + `（新規 ${p7.newUsers.toLocaleString("ja-JP")}人 / リピート ${p7.returningUsers.toLocaleString("ja-JP")}人）`
+      + `${pp === null ? "" : `。差は <b>${pp >= 0 ? "+" : "−"}${n1(Math.abs(pp))}ポイント</b>`}。</div>`
+    : "";
+  // リピーター1人あたりのセッション数。ここが極端に大きい時は少人数が何度も開いている＝
+  // 自分の確認アクセスやブックマーク常連。率だけ見ると読者が定着したように見えるので必ず併記する。
+  const spr = l7?.sessionsPerReturning
+    ? `<div class="metric-sub">直近7日のリピーターは <b>${l7.returningUsers.toLocaleString("ja-JP")}人</b>で`
+      + ` <b>${l7.returningSessions.toLocaleString("ja-JP")}セッション</b>（1人あたり ${n1(l7.sessionsPerReturning)}）。`
+      + `1人あたりが極端に大きい時は、少人数が何度も開いている（自分の確認アクセスを含む）。</div>`
+    : "";
+  return `
+  <section class="insights" aria-labelledby="ret-${esc(site.key)}">
+    <h3 id="ret-${esc(site.key)}">新規とリピーター</h3>
+    <div class="insight-grid">
+      <div class="insight-card">
+        <div class="insight-head"><div><span class="eyebrow">GA4 newVsReturning・人数基準</span><h4>リピーター率</h4></div></div>
+        <div class="metric-grid">
+          ${retMetric("今日", r.today, true)}
+          ${retMetric(`昨日（${site.yesterdayWd}）`, r.yesterday)}
+          ${retMetric("直近7日（昨日まで）", r.last7)}
+        </div>
+        ${cmp}
+        ${spr}
+        <p>分母は「新規＋リピート」の人数。窓ごとに GA4 から別々に取っているので、
+        <b>今日と昨日を足しても直近7日にはならない</b>（同じ人が翌日また来れば2人に数えられるため、
+        日別の人数は足せない）。判別は<b>その端末の Cookie</b>で行う — 別の端末・別のブラウザ・
+        Cookie を消した再訪は新規に戻り、自分の確認アクセスはリピーター側に入る。
+        「判別なし」は当日まだ判別が付いていないぶんと <code>(not set)</code> の合計で、
+        率の分母には入れていない。当日はこれが多いので「今日」は途中の数字。</p>
+      </div>
+    </div>
+  </section>`;
+}
+
 const n1 = (v) => (v == null ? "—" : (Math.round(v * 10) / 10).toLocaleString("ja-JP", { minimumFractionDigits: 1, maximumFractionDigits: 1 }));
 const n0 = (v) => (v == null ? "—" : Math.round(v).toLocaleString("ja-JP"));
 const mmdd = (ymd) => ymd.slice(5).replace("-", "/");
@@ -978,6 +1099,7 @@ function sitePanel(site, primary, extra = "", selected = true, asTab = false) {
       site.lagMin !== null ? `（<b>${site.lagMin}分</b>遅れ）` : ""
     }。それ以降の訪問はまだこの数字に入っていない。取りに行く頻度を上げても、この遅れは縮まらない。</p>` : ""}
   ${goalBlock(site)}
+  ${retentionBlock(site)}
   ${insights(site)}
   ${chart(site)}
   ${table(site)}
