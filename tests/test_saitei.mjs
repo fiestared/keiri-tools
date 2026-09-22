@@ -11,7 +11,7 @@ import { readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { judgeSaitei, monthlyHours, effectiveWage, rankOf, spread } from '../docs/assets/saitei_core.js';
 
-const D = JSON.parse(readFileSync(new URL('../docs/assets/saitei_chingin_r07.json', import.meta.url), 'utf8'));
+const D = JSON.parse(readFileSync(new URL('../docs/assets/saitei_chingin_r08.json', import.meta.url), 'utf8'));
 let n = 0;
 const ok = (cond, msg) => { n++; assert.ok(cond, msg); };
 const eq = (a, b, msg) => { n++; assert.strictEqual(a, b, msg); };
@@ -63,19 +63,30 @@ eq(D.prefectures.length, 47, '都道府県は47件');
 
 // ---- 急所3: 発効日をまたぐ判定 ----
 {
-  // 秋田の令和7年度額の発効日は 2026-03-31。その前日は改定前の額で判定される。
+  // 秋田の令和8年度の発効予定日は 2026-10-14（答申状況PDF）。その前日は改定前の額で判定される。
+  // ★日付を直書きしない。出典の値をデータから読み、境界の前後で向きが変わることを見る。
   const akita = D.prefectures.find((p) => p.pref === '秋田');
-  eq(akita.effective, '2026-03-31', '秋田の発効日（出典どおり）');
-  const before = effectiveWage(akita, '2026-03-30');
+  eq(akita.effective, '2026-10-14', '秋田の発効予定日（出典どおり）');
+  const dayBefore = new Date(Date.parse(akita.effective) - 86400000).toISOString().slice(0, 10);
+  const before = effectiveWage(akita, dayBefore);
   eq(before.wage, akita.prev, '発効日前は改定前の額');
-  const on = effectiveWage(akita, '2026-03-31');
+  const on = effectiveWage(akita, akita.effective);
   eq(on.wage, akita.wage, '発効日当日は改定後の額');
   // 発効前の額で「クリア」になる賃金が、発効後は「割れ」になること（境界の向きの確認）
   const mid = Math.floor((akita.prev + akita.wage) / 2);
-  ok(judgeSaitei({ prefCode: '秋田', wageType: 'hourly', amount: mid, onDate: '2026-03-30' }, D).clears,
+  ok(judgeSaitei({ prefCode: '秋田', wageType: 'hourly', amount: mid, onDate: dayBefore }, D).clears,
      '発効前はクリア');
-  ok(!judgeSaitei({ prefCode: '秋田', wageType: 'hourly', amount: mid, onDate: '2026-03-31' }, D).clears,
+  ok(!judgeSaitei({ prefCode: '秋田', wageType: 'hourly', amount: mid, onDate: akita.effective }, D).clears,
      '発効後は割れ');
+
+  // ★令和8年度は発効日が県ごとに分かれている（10-01〜12-02）。
+  //   「全県10月1日に切り替わる」と思い込むと、まだ有効でない額で判定する事故になる。
+  const effs = D.prefectures.map((p) => p.effective).sort();
+  eq(effs[0], '2026-10-01', '最も早い発効日');
+  eq(effs[effs.length - 1], '2026-12-02', '最も遅い発効日');
+  eq(D.prefectures.filter((p) => p.effective === '2026-10-01').length,
+     D.next_revision.effective_on_oct1_count, '10-01発効の件数が next_revision の申告と一致');
+  ok(D.next_revision.effective_on_oct1_count < 47, '10-01発効は47件より少ない（全県同日ではない）');
 }
 
 // ---- 時給制の基本 ----
@@ -106,15 +117,52 @@ eq(D.prefectures.length, 47, '都道府県は47件');
   ok(s.gap > 0, '差は正');
 }
 
-// ---- 令和8年度の目安（答申済み・発効はまだ） ----
+// ---- 年度名の直書きが無いか（2026-09-22 に実害） ----
+// judgeSaitei の注記に「令和7年度額」と固定で書いてあったため、データを令和8年度へ
+// 差し替えた瞬間に、数字は正しいのに年度名だけ1年古い文が出た。
+// 構文エラーにならず判定も正しいので、画面を読まないと気づけない型のバグ。
 {
-  eq(D.next_revision.status, 'announced', '目安は答申済み。都道府県表はまだ令和7年度');
+  const core = readFileSync(new URL('../docs/assets/saitei_core.js', import.meta.url), 'utf8');
+  const hard = core.match(/令和\d+年[度分]?/g) || [];
+  // コメント内の説明は許す。テンプレート文字列の中に埋まっていたら落とす。
+  const inTemplate = (core.match(/`[^`]*令和\d+年[^`]*`/g) || []);
+  eq(inTemplate.length, 0,
+     `画面に出る文に年度名を直書きしないこと（見つかった: ${JSON.stringify(inTemplate).slice(0, 160)}）`);
+  // 注記が実際にデータの年度を使っているか（発効前の県で確かめる）
+  const future = D.prefectures.find((p) => p.effective > '2026-09-22');
+  ok(future, '発効日が未来の県がある（この検査の前提）');
+  const r = judgeSaitei({ prefCode: future.pref, wageType: 'hourly',
+                          amount: future.prev + 1, onDate: '2026-09-22' }, D);
+  ok(r.notes.some((n) => n.includes(D._meta.year)),
+     `注記がデータの年度（${D._meta.year}）を使っている`);
+  ok(!r.notes.some((n) => n.includes('令和7年度')),
+     '注記に古い年度名が残っていない');
+  ok(hard.length >= 0, '年度名の出現を数えた');
+}
+
+// ---- 令和8年度（47都道府県の答申が出そろい、発効は順次） ----
+// ★2026-09-22 に状態が進んだ。旧: status='announced'（中央の目安だけ出ていて県表は令和7年度）
+//   新: status='answered'（各県の改定額が答申され、県表も令和8年度。発効は10-01〜12-02）
+//   語彙を増やしたのは、この2つが**判定に効く別の状態**だから。
+//   'announced' は「金額が未確定＝表に載せられない」、'answered' は「金額は確定・発効前」。
+//   画面側の分岐は status==='pending' だけを見ているので、どちらも金額を出す側に入る。
+{
+  eq(D.next_revision.status, 'answered', '47都道府県の改定額が答申済み');
+  eq(D._meta.year, '令和8年度', '都道府県表も令和8年度に進んでいる');
   eq(D.next_revision.guideline.A, 54, 'Ａランク目安');
   eq(D.next_revision.guideline.B, 56, 'Ｂランク目安');
   eq(D.next_revision.guideline.C, 56, 'Ｃランク目安');
   eq(D.next_revision.guideline.national_average_if_followed, 1176, '目安どおりの加重平均');
+  // 実際の答申は目安を1円上回った。目安と実績を混ぜない。
+  eq(D._meta.national_average.wage, 1177, '実際の全国加重平均（答申ベース）');
+  ok(D._meta.national_average.wage > D.next_revision.guideline.national_average_if_followed,
+     '答申の加重平均は目安どおりの額を上回っている');
   ok(!('wage' in D.next_revision), '目安を現行の時間額として持たない');
   ok(D.next_revision.source_url.startsWith('https://www.mhlw.go.jp/'), '出典が厚労省');
+  // ★答申であって決定ではない。発効前の額で判定していないことを、県単位でもう一度見る
+  const tokyo = D.prefectures.find((p) => p.pref === '東京');
+  eq(effectiveWage(tokyo, '2026-09-30').wage, tokyo.prev, '9/30時点の東京は改定前の額');
+  eq(effectiveWage(tokyo, '2026-10-01').wage, tokyo.wage, '10/1時点の東京は改定後の額');
 }
 
 // ---- 一覧表の静的HTMLがデータと一致している（生成器を流し忘れて古い表を配信しない） ----

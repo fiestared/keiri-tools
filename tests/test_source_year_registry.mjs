@@ -34,8 +34,25 @@ for (const e of reg.entries) {
   if (typeof e.covers !== "number" || e.covers < 2020 || e.covers > 2100) {
     errs.push(`${at}: covers は西暦の数値であること（今: ${JSON.stringify(e.covers)}）`);
   }
-  if (e.url !== null && typeof e.url === "string" && !e.url.includes("{y}") && !e.url.includes("{r")) {
-    errs.push(`${at}: url に {y} または {r} が無い（年度で置換できない）`);
+  // ★監視先には2つの型がある（2026-09-22 に最低賃金で2つ目が出た）。
+  //   "year_templated"（既定）… 年度ごとに別URLが生える型。URLに {y} / {r} が要る。
+  //                              プレースホルダ忘れは事故なので、既定では必ず弾く。
+  //   "in_place"            … 同じURLの中身が毎年差し替わる型（厚労省の全国一覧など）。
+  //                              置換できないのが正しいので {y}/{r} を要求しない。
+  //   型は**明示させる**。URLに置換子が無いことから推測すると、
+  //   本当の「置換子の書き忘れ」が黙って in_place 扱いになる。
+  const kind = e.url_kind ?? "year_templated";
+  if (!["year_templated", "in_place"].includes(kind)) {
+    errs.push(`${at}: url_kind は "year_templated" か "in_place"（今: ${JSON.stringify(e.url_kind)}）`);
+  }
+  if (e.url !== null && typeof e.url === "string" && kind === "year_templated"
+      && !e.url.includes("{y}") && !e.url.includes("{r")) {
+    errs.push(`${at}: url に {y} または {r} が無い（年度で置換できない）。`
+              + `同じURLの中身が差し替わる型なら url_kind:"in_place" を明示すること`);
+  }
+  if (kind === "in_place" && !(e.note || "").includes("in_place")
+      && !(e.note || "").includes("年度で変わらない")) {
+    errs.push(`${at}: url_kind=in_place の理由が note に無い`);
   }
   if (e.year_label_suffix !== undefined && !["分", "度"].includes(e.year_label_suffix)) {
     errs.push(`${at}: year_label_suffix は「分」または「度」であること`);
