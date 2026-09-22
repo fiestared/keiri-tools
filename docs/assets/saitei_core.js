@@ -55,7 +55,7 @@ export function effectiveWage(pref, onDate) {
  *   amount    … 時給、または月給（※急所2の除外後の金額）
  *   daysPerYear, hoursPerDay … 月給制のときだけ使う
  *   onDate    … 判定日 "YYYY-MM-DD"（省略時は発効日を考慮せず現行額で判定）
- * D … saitei_chingin_r07.json
+ * D … saitei_chingin_r08.json
  */
 export function judgeSaitei(input, D) {
   const notes = [];

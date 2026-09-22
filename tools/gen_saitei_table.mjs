@@ -1,5 +1,5 @@
 /**
- * 最低賃金の47都道府県一覧を、saitei_chingin_r07.json から **静的HTMLとして焼き込む**。
+ * 最低賃金の47都道府県一覧を、saitei_chingin_r08.json から **静的HTMLとして焼き込む**。
  *
  * なぜ焼くか（2026-07-28にAI TIMESで実測した教訓の適用）:
  *   このサイトのツールは計算機なので JS 描画で構わない。**入力が無ければ答えも無い**からだ。
@@ -22,7 +22,7 @@ import { dirname, join } from "node:path";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const PAGE = join(ROOT, "docs/saitei-chingin/index.html");
-const DATA = join(ROOT, "docs/assets/saitei_chingin_r07.json");
+const DATA = join(ROOT, "docs/assets/saitei_chingin_r08.json");
 const CHECK = process.argv.includes("--check");
 
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
@@ -55,9 +55,21 @@ ${rows.map((p) => `<tr>` +
 
 const hi = rows.reduce((a, b) => (b.wage > a.wage ? b : a));
 const lo = rows.reduce((a, b) => (b.wage < a.wage ? b : a));
-const note = `全国加重平均は<b>${na.wage}円</b>（改定前${na.prev}円・+${na.up}円／+${na.rate}%）。` +
+// ★出典の名前を状態で変える（2026-09-22）。
+//   status="answered" のときの正本は「答申状況」の別紙で、**公式一覧（全国一覧のページ）はまだ前年度のまま**。
+//   ここを「公式一覧と照合しました」と固定で書くと、確かめていない資料を出典として名乗ることになる。
+//   発効日が県ごとに分かれている状態も、表の読み方に直接効くので本文に出す。
+const answered = m.status === "answered";
+const effs = rows.map((r) => r.effective).sort();
+const oct1 = rows.filter((r) => r.effective === effs[0]).length;
+const note = `全国加重平均は<b>${na.wage}円</b>（改定前${na.prev}円・+${na.up}円／+${na.rate.toFixed(1)}%）。` +
   `最高は${esc(hi.full)}の${hi.wage}円、最低は${lo.wage}円で、その差は<b>${hi.wage - lo.wage}円</b>です。` +
-  `金額は${esc(m.year)}のもので、${esc(m.checked)}に厚生労働省の公式一覧と照合しました。`;
+  (answered
+    ? `金額は${esc(m.year)}の<b>答申額</b>で、発効日は都道府県ごとに${esc(rows.find((r) => r.effective === effs[0]).effective_wa)}から`
+      + `${esc(rows.find((r) => r.effective === effs[effs.length - 1]).effective_wa)}まで分かれています`
+      + `（もっとも早い日に発効するのは${oct1}都道府県）。<b>自分の県の発効日が来るまでは改定前の額が有効です。</b>`
+      + `${esc(m.checked)}に厚生労働省の答申状況（別紙）と照合しました。`
+    : `金額は${esc(m.year)}のもので、${esc(m.checked)}に厚生労働省の公式一覧と照合しました。`);
 
 let html = readFileSync(PAGE, "utf8");
 const before = html;

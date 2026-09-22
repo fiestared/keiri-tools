@@ -67,6 +67,17 @@
       "covers": 2026,
       "probe_next": false,
       "note": "★未調査。年度ごとに改定される"
+    },
+    {
+      "slug": "saitei-chingin",
+      "name": "地域別最低賃金 全国一覧",
+      "source": "厚生労働省",
+      "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/minimumichiran/",
+      "url_kind": "in_place",
+      "covers": 2025,
+      "probe_next": true,
+      "year_label_suffix": "度",
+      "note": "★covers は「監視先のページが現に載せている年度」。2026-09-22 時点で全国一覧は**まだ令和7年度**（直接取得して確認）。一方このページが表示している金額は令和8年度の**答申額**で、出典は別紙『令和8年度 地域別最低賃金 答申状況』（https://www.mhlw.go.jp/content/11302000/001745621.pdf ）。この監視が found になったら＝全国一覧が令和8年度に差し替わったら、docs/assets/saitei_chingin_r08.json の _meta.status を answered→confirmed に上げ、出典を全国一覧に戻し、covers を 2026 にする。発効日は県ごとに令和8年10月1日〜12月2日に分かれる（10月1日は15都道府県だけ）ので、暦の1日で一斉に切り替わると考えない。判定は saitei_core.js の effectiveWage が県別に切り替える。URLは年度で変わらない型なので {r} を含まない（probe は本文の「令和N年度」一致で判定する）。"
     }
   ]
 }

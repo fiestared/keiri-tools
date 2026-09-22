@@ -51,11 +51,34 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def probe(url: str, expect: str, timeout: int = 20):
+# ★数字の全角／半角をそろえる（2026-09-22 に実害が判明）
+#   官公庁は同じ「令和8年度」を役所ごとに違う字で書く。実測:
+#     国税庁 No.2665            … 「令和8年」半角のみ（全角0回）
+#     厚労省 地域別最低賃金一覧   … 「令和７年度」全角のみ（半角0回）
+#     厚労省 労災保険率のページ   … 「令和８年度」全角8回・半角0回
+#   監視器は半角の「令和N年」だけを探していたので、**厚労省の登録は公表されても
+#   永久に found にならない**（2026-09-16 に登録した労災がその状態だった）。
+#   ページが更新されても鳴らない監視は、無いより悪い（監視しているつもりになる）。
+_W2H = str.maketrans("０１２３４５６７８９", "0123456789")
+
+
+def norm_digits(s: str) -> str:
+    return s.translate(_W2H)
+
+
+def probe(url: str, expect: str, timeout: int = 20, kind: str = "year_templated"):
     """(state, detail) を返す。state は 'found' / 'absent' / 'unknown'。
 
     expect（例「令和9年分」）が本文に現れることまで確かめる。
     存在するだけでは 'found' にしない（ソフト404・案内ページを掴むため）。
+
+    ★kind で「200だが本文にラベルが無い」の意味が変わる（2026-09-22）:
+      year_templated … 年度ごとに別URLが生える型。そのURLで200が返って
+                       ラベルが無いなら**別ページを掴んだ疑い**＝unknown（要調査）。
+      in_place       … 同じURLの中身が毎年差し替わる型（厚労省の全国一覧など）。
+                       200でラベルが無いのは**まだ差し替わっていない**＝absent（未公表）。
+                       ここを unknown にすると毎回「確認不能・URLを調べろ」と鳴り続け、
+                       本当に調査が要る登録に紛れて読まれなくなる。
     """
     req = urllib.request.Request(url, headers={"User-Agent": UA}, method="GET")
     opener = urllib.request.build_opener(NoRedirect)
@@ -68,9 +91,12 @@ def probe(url: str, expect: str, timeout: int = 20):
             head = raw[:2048].decode("ascii", "ignore").lower()
             if "utf-8" in head:
                 enc = "utf-8"
-            text = raw.decode(enc, "replace")
+            text = norm_digits(raw.decode(enc, "replace"))
+            expect = norm_digits(expect)
             if expect in text:
                 return "found", f"HTTP 200 / 本文に「{expect}」あり"
+            if kind == "in_place":
+                return "absent", f"HTTP 200 だが本文に「{expect}」が無い（同じURLがまだ差し替わっていない＝未公表）"
             return "unknown", f"HTTP 200 だが本文に「{expect}」が無い（別ページの可能性）"
     except urllib.error.HTTPError as e:
         if e.code in (301, 302, 303, 307, 308):
@@ -117,7 +143,7 @@ def main():
             continue
         url = source_url(e["url"], nxt)
         suffix = e.get("year_label_suffix", "分")
-        state, detail = probe(url, f"{wareki(nxt)}{suffix}")
+        state, detail = probe(url, f"{wareki(nxt)}{suffix}", kind=e.get("url_kind", "year_templated"))
         results.append({**e, "next_year": nxt, "probe_url": url, "state": state, "detail": detail})
 
     if args.json:
