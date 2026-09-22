@@ -117,6 +117,29 @@ eq(D.prefectures.length, 47, '都道府県は47件');
   ok(s.gap > 0, '差は正');
 }
 
+// ---- 年度名の直書きが無いか（2026-09-22 に実害） ----
+// judgeSaitei の注記に「令和7年度額」と固定で書いてあったため、データを令和8年度へ
+// 差し替えた瞬間に、数字は正しいのに年度名だけ1年古い文が出た。
+// 構文エラーにならず判定も正しいので、画面を読まないと気づけない型のバグ。
+{
+  const core = readFileSync(new URL('../docs/assets/saitei_core.js', import.meta.url), 'utf8');
+  const hard = core.match(/令和\d+年[度分]?/g) || [];
+  // コメント内の説明は許す。テンプレート文字列の中に埋まっていたら落とす。
+  const inTemplate = (core.match(/`[^`]*令和\d+年[^`]*`/g) || []);
+  eq(inTemplate.length, 0,
+     `画面に出る文に年度名を直書きしないこと（見つかった: ${JSON.stringify(inTemplate).slice(0, 160)}）`);
+  // 注記が実際にデータの年度を使っているか（発効前の県で確かめる）
+  const future = D.prefectures.find((p) => p.effective > '2026-09-22');
+  ok(future, '発効日が未来の県がある（この検査の前提）');
+  const r = judgeSaitei({ prefCode: future.pref, wageType: 'hourly',
+                          amount: future.prev + 1, onDate: '2026-09-22' }, D);
+  ok(r.notes.some((n) => n.includes(D._meta.year)),
+     `注記がデータの年度（${D._meta.year}）を使っている`);
+  ok(!r.notes.some((n) => n.includes('令和7年度')),
+     '注記に古い年度名が残っていない');
+  ok(hard.length >= 0, '年度名の出現を数えた');
+}
+
 // ---- 令和8年度（47都道府県の答申が出そろい、発効は順次） ----
 // ★2026-09-22 に状態が進んだ。旧: status='announced'（中央の目安だけ出ていて県表は令和7年度）
 //   新: status='answered'（各県の改定額が答申され、県表も令和8年度。発効は10-01〜12-02）

@@ -64,7 +64,12 @@ export function judgeSaitei(input, D) {
 
   const eff = effectiveWage(pref, input.onDate);
   if (eff.applied === "previous") {
-    notes.push(`${pref.full}の令和7年度額（${pref.wage}円）の発効日は${pref.effective_wa}です。判定日はそれより前のため、改定前の${pref.prev}円で判定しました。`);
+    // ★年度名をここに直書きしない（2026-09-22 に実害）。
+    //   「令和7年度額」と固定で書いてあったため、データを令和8年度に差し替えた瞬間に
+    //   **数字は正しいのに年度名だけ1年古い**文が出た。構文エラーにならず、
+    //   判定結果も正しいので、読まないと気づけない。年度はデータから読む。
+    const y = D._meta && D._meta.year ? D._meta.year : "改定後";
+    notes.push(`${pref.full}の${y}額（${pref.wage}円）の発効日は${pref.effective_wa}です。判定日はそれより前のため、改定前の${pref.prev}円で判定しました。`);
   }
   const minWage = eff.wage;
 
