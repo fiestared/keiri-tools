@@ -37,7 +37,7 @@ import { readFileSync, writeFileSync, readdirSync, existsSync, statSync } from '
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, relative } from 'node:path';
-import { loadNavExperiment, navOnlyCommitFiles, worktreeNavOnly } from './nav_experiment.mjs';
+import { loadNavExperiment, navOnlyCommitFiles, worktreeNavOnly, DATE_LINE } from './nav_experiment.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = join(ROOT, 'docs');
@@ -99,12 +99,13 @@ const files = [];
 //   140本が一律その日になり、中身を1文字も変えていない記事が「更新済み」を名乗る。
 const BULK_FILES = 20;
 
+
 // 一括コミットを除いた「本文が変わった最後のコミット日」を、git log の1パスで作る。
 const lastContentCommit = new Map();
 {
   // ★導線（次に読む・右レール）の行しか変えていないファイルは、そのコミットで本文が変わったと数えない。
   //   判定は nav_experiment.mjs に1つだけ持つ（gen_index_sitemap.mjs と同じ関数・同じ基点）。
-  const navOnly = navOnlyCommitFiles(loadNavExperiment().base);
+  const navOnly = navOnlyCommitFiles(loadNavExperiment().base, DATE_LINE);
   const out = git(['log', '--date=format-local:%Y-%m-%d', '--format=%x01%H %ad', '--name-only', '--', 'docs']);
   let date = null, hash = null, files = [];
   const flush = () => {
@@ -130,7 +131,7 @@ const lastContentCommit = new Map();
 //   「未コミット＝今日」と読んで日付を今日に塗り替える、という自家中毒を起こした。
 //   --check が永久に赤になり、冪等でなくなる。
 //   → 差分が **dateModified と article-meta の行しか無い** ファイルは変更とみなさない。
-const DATE_LINE = /"dateModified"|class="article-meta"|公開日:|更新日:|<time datetime=/;
+// DATE_LINE（更新日の行）は nav_experiment.mjs に1つだけ持つ。コミット側の判定（navOnlyCommitFiles）にも同じものを渡す
 //
 // ★★★ 一括変更の除外は、コミット済みだけでなく**作業ツリーにも**効かせること
 //   （2026-08-23 実測）。上の lastContentCommit は `files.length < BULK_FILES` で
