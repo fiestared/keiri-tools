@@ -44,17 +44,34 @@ export function pages(dir = DOCS, acc = []) {
   return acc;
 }
 
+/** 生成器が管理する favicon 系の link（ルート絶対の3種）。印の外に手書きで置かれたものもこれで拾う */
+const OWN_LINK = /<link rel="(?:icon|apple-touch-icon)"[^>]*href="\/(?:favicon\.ico|favicon-32\.png|apple-touch-icon\.png)"[^>]*>\n?/g;
+
 export function withLinks(html) {
-  if (html.includes(MARK)) {
-    // 既にある場合は中身を差し替える（冪等・タグを増やさない）
-    const a = html.indexOf(MARK);
-    const end = html.indexOf('\n', html.lastIndexOf('apple-touch-icon.png">', a + 400));
-    return html.slice(0, a) + LINKS + html.slice(end < 0 ? a + MARK.length : end);
+  // ★2026-09-23 修正: 以前は「印の後ろの apple-touch-icon 行」を lastIndexOf で探していた。
+  //   印だけ残って link が無いページ（53本あった）では -1 が返り、indexOf('\n', -1) が
+  //   **ファイル先頭の改行**を指して <html><head> から印までを二重に書き込んでいた。
+  //   また印の無い手書きのページ（link が charset と同じ行にある）では link が二重になる。
+  //   → 位置を推測しない。<head> の中から印と生成器の link（手書きのものも）を全部取り除き、
+  //     印があった位置（無ければ <meta charset> の直後）に1組だけ入れ直す。冪等。
+  const head = html.search(/<\/head>/i);
+  const cut = head < 0 ? html.length : head;
+  const h = html.slice(0, cut);
+  const rest = html.slice(cut);
+  const hadMark = h.indexOf(MARK);
+  // 置き場所の目印を1つだけ残して、印と link を消す
+  const PH = '\u0000FAVICON\u0000';
+  let x = hadMark >= 0 ? h.slice(0, hadMark) + PH + h.slice(hadMark + MARK.length) : h;
+  x = x.split(MARK).join('').replace(OWN_LINK, '');
+  if (hadMark < 0) {
+    const m = x.match(/<meta charset="[^"]*">/i);
+    if (!m) throw new Error('<meta charset> が見つかりません（挿入位置が決められない）');
+    const at = x.indexOf(m[0]) + m[0].length;
+    x = x.slice(0, at) + '\n' + PH + (x[at] === '\n' ? '' : '\n') + x.slice(at);
+  } else if (x[x.indexOf(PH) + PH.length] !== '\n') {
+    x = x.replace(PH, PH + '\n');
   }
-  const m = html.match(/<meta charset="[^"]*">/i);
-  if (!m) throw new Error('<meta charset> が見つかりません（挿入位置が決められない）');
-  const at = html.indexOf(m[0]) + m[0].length;
-  return html.slice(0, at) + '\n' + LINKS + html.slice(at);
+  return x.replace(PH, LINKS) + rest;
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
