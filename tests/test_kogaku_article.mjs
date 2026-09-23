@@ -300,13 +300,43 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
   else ok('外部オラクル: 85,800＋(100万−28.6万)×1%＝92,940円 ＝ 厚労省の「約9.3万円」と一致');
   if (!t.includes('約9.3万円')) fail('厚労省の公表値「約9.3万円」との突き合わせが本文に無い');
 
-  // 7-6. e-Gov の条文にはまだ無い、という食い違いを隠さず開示しているか
-  const need = ['令和8年政令第219号', '公的年金等控除の読替額', '205,762字', '協会けんぽ'];
+  // 7-6. 8月からの額の根拠は政令そのもの（2026-09-23 書き直し）。
+  //   旧版は「e-Govの現行版（令和8年政令第219号）には新しい額が出ていない」「裏づけは公表資料で条文ではない」と書き、
+  //   この検査もそれ（205,762字・証明にはなりません）を要求していた。しかし e-Gov には 2026-08-12 に
+  //   令和8年政令第240号による改正後の版（215IO0000000243_20260801_508CO0000000240・8/1施行）が載り、
+  //   第42条第1項が「八万五千八百円」「二十八万六千円」「二十七万三百円」「九十万千円」…を定めている。
+  const need = ['令和8年政令第240号', '令和8年政令第219号', '公的年金等控除の読替額', '協会けんぽ'];
   const miss = need.filter(n => !t.includes(n));
   if (miss.length) fail(`改正の節に ${miss} が無い`);
-  else ok('改正: e-Govの条文にまだ載っていないことと、協会けんぽが8月から新表を掲げていることの両方を開示');
-  if (!t.includes('証明にはなりません')) fail('「e-Govに無い＝存在しない ではない」という限界の明示が無い');
-  else ok('改正: 「e-Govに反映されていない＝改正が無い の証明にはならない」と明記');
+  else ok('改正: 8月からの額は令和8年政令第240号（219号は読替額だけ）と明記し、協会けんぽの表とも照合');
+  // 記事が引いた条文の漢数字を数に直し、SHINPYO（＝計算機の表と同じ額）と突き合わせる
+  const kan = w => { const D = { 一:1,二:2,三:3,四:4,五:5,六:6,七:7,八:8,九:9 }; let man = 0, cur = 0, n = 0;
+    for (const ch of w) { if (D[ch]) n = D[ch]; else if (ch === '十') { cur += (n || 1) * 10; n = 0; }
+      else if (ch === '百') { cur += (n || 1) * 100; n = 0; } else if (ch === '千') { cur += (n || 1) * 1000; n = 0; }
+      else if (ch === '万') { man = (cur + n) * 10000; cur = 0; n = 0; } }
+    return man + cur + n; };
+  const quoteP = [...sec.matchAll(/<p>[\s\S]*?<\/p>/g)].map(m => strip(m[0])).find(x => x.includes('令和8年政令第240号'));
+  if (!quoteP) fail('改正の節に、政令第240号の条文を引いた段落が無い');
+  else {
+    const pairs = [[/「\s*([一二三四五六七八九十百千万]+円)\s*と、…療養に要した費用の額（その額が\s*([一二三四五六七八九十百千万]+円)\s*に満たない/, SHINPYO.ウ, '第1号（区分ウ）'],
+                   [/第2号（区分ア）を「\s*([一二三四五六七八九十百千万]+円)\s*と、…（その額が\s*([一二三四五六七八九十百千万]+円)\s*に満たない/, SHINPYO.ア, '第2号（区分ア）']];
+    for (const [re, v, label] of pairs) {
+      const m = quoteP.match(re);
+      if (!m) { fail(`政令第240号の${label}の引用が見つからない`); continue; }
+      const b = kan(m[1]), st = kan(m[2]);
+      if (b !== v.base || st !== v.start) fail(`★政令の引用（${label}）が表の額と一致しない: ${m[1]}=${b} / ${m[2]}=${st}（表 ${v.base} / ${v.start}）`);
+      else ok(`改正: 政令第240号 ${label} の引用 ${m[1]}・${m[2]} ＝ 表の ${v.base.toLocaleString()}円・${v.start.toLocaleString()}円`);
+    }
+  }
+  // ★旧主張が戻ったら赤（ページ全体）
+  {
+    const all = strip(html);
+    const bad = ['には、「二十七万三百円」（270,300円）も「八万五千八百円」（85,800円）も出ていません', '条文そのものではありません',
+      'e-Govの条文が更新されしだい', '施行令の本文ではなく保険者の表が先に動いた', '施行令の本文に新しい限度額が出てこない',
+      'e-Gov 現行版には、後掲の新しい額', 'その公表表で新たに置かれたもの'].filter(x => all.includes(x));
+    if (bad.length) fail(`★e-Govに載った政令第240号と食い違う旧主張が残っている: ${bad.join(' / ')}`);
+    else ok('改正: 「e-Govの条文にはまだ無い」系の旧主張がページに無い');
+  }
 
   // 7-7. ★早見表（7月まで）の側に、8月からの額が漏れ出していないこと（逆向きの入れ替え）
   const hayami = body.slice(body.indexOf('id="hayami"'), body.indexOf('id="kubun"'));
@@ -404,7 +434,10 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
   const DATA = JSON.parse(fs.readFileSync('docs/assets/kogaku_r08.json', 'utf8'));
   const T27 = DATA.tables.find(t => t.id === 'from_2027_08');
   const CAPS = Object.fromEntries(DATA.annual.caps.map(c => [c.key, c]));
-  const secHtml = body.slice(body.indexOf('<h3 id="r09">'), body.indexOf('<h3>なぜ「変わらない」'));
+  // 節の終わりは r09 の次の <h3>。旧版は '<h3>なぜ「変わらない」' で切っていたが、その h3 は e105e1ad で消え、
+  // indexOf=-1 のため body の末尾近くまで取っていた（別の節が検査を救える状態）。
+  const r09At = body.indexOf('<h3 id="r09">');
+  const secHtml = body.slice(r09At, body.indexOf('<h3', r09At + 1));
   const sec = strip(secHtml);
   const yen = n => n.toLocaleString() + '円';
 
@@ -472,14 +505,37 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
     else ok('令和9年8月: 70歳以上は額を出さないことを断定している');
   }
 
-  // 9c-4. ★enacted:false ＝「予定」であることを画面で申告しているか
-  if (T27 && T27.enacted === false) {
-    const p = [...secHtml.matchAll(/<p class="note">[\s\S]*?<\/p>/g)].map(m => strip(m[0]))
-      .find(x => x.includes('この表は「予定」です'));
-    if (!p) fail('from_2027_08 は enacted:false なのに、記事が「予定」であることを申告していない');
-    else if (!p.includes('施行されている政令の条文として確かめたものではありません'))
-      fail(`「予定」の中身（条文で確かめていないこと）が書かれていない: ${p}`);
-    else ok('令和9年8月: enacted:false を「予定・条文未確認」として画面で申告している');
+  // 9c-4. 令和9年8月の表の根拠（2026-09-23 書き直し）
+  //   旧版は「この表は『予定』です…政令の条文として確かめたものではありません」。しかし令和8年政令第240号の
+  //   令和9年8月1日施行版（215IO0000000243_20270801_508CO0000000240・未施行）が e-Gov に登録済みで、
+  //   第42条第1項 第1号「三十四万二千円と…百十四万円…」〜第13号「三万六千九百円」、第11項第4号
+  //   「標準報酬月額が十六万円未満の被保険者　四十一万円」が from_2027_08 と一致する。
+  //   データの enacted:false は計算機の画面表示（「予定の表で計算しています」）を決めているので、
+  //   記事はその表示を正直に書いたうえで、額が政令と同じであることを言う。
+  {
+    const notes = [...secHtml.matchAll(/<p class="note">[\s\S]*?<\/p>/g)].map(m => strip(m[0]));
+    const p = notes.find(x => x.includes('この表は政令で決まっています'));
+    if (!p) fail('令和9年8月の表が政令で決まっていること（令和8年政令第240号）の申告が無い');
+    else {
+      const need = ['令和9年8月1日施行', '令和8年政令第240号', '未施行版', '三十四万二千円', '百十四万円', '三万六千九百円', '41万円'];
+      const miss = need.filter(n => !p.includes(n));
+      if (miss.length) fail(`令和9年8月の注記に ${miss} が無い: ${p}`);
+      else ok('令和9年8月: 令和8年政令第240号（2027-08-01施行・e-Gov未施行版）で決まっていると申告');
+      const s127 = T27.kubun.find(k => k.key === 's127'), hz = T27.kubun.find(k => k.key === 'hikazei');
+      if (s127.base !== 342000 || s127.threshold !== 1140000 || hz.base !== 36900 || CAPS.s15.cap !== 410000)
+        fail('from_2027_08 の額が、注記が引く政令の額（342,000・1,140,000・36,900・41万円）と一致しない');
+      else ok('令和9年8月: 注記が引く政令の額 ＝ from_2027_08（計算機の表）');
+      const saysYotei = p.includes('「予定の表で計算しています」と表示します');
+      if (T27.enacted === false && !saysYotei) fail('計算機はまだ「予定の表」と表示するのに（enacted:false）、記事がそれを書いていない');
+      else if (T27.enacted !== false && saysYotei) fail('データは enacted になったのに、記事が「予定の表」と表示すると書いている');
+      else ok('令和9年8月: 計算機の表示（enacted）と記事の説明が一致');
+    }
+    // ★旧主張が戻ったら赤
+    const oldP = notes.find(x => x.includes('この表は「予定」です') || x.includes('政令の条文として確かめたものではありません'));
+    if (oldP) fail(`★政令で決まっている表を「予定・条文未確認」と書いている: ${oldP}`);
+    else ok('令和9年8月: 「予定・条文未確認」の旧主張が無い');
+    if (/<th[^>]*>[^<]*予定[^<]*<\/th>/.test(secHtml)) fail('★令和9年8月の表の見出しがまだ「予定」を名乗っている');
+    else ok('令和9年8月: 表の見出しに「予定」が無い');
   }
 }
 
