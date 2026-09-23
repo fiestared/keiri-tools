@@ -12,7 +12,16 @@ import { readFileSync } from "fs";
 const S = JSON.parse(readFileSync(new URL("./fixtures/koyou_kanyu_statutes.json", import.meta.url), "utf8"));
 // 壊しテスト(break_kanyu_article.mjs)が、嘘を注入した複製を指して同じ検査を流す
 const ARTICLE = process.env.ARTICLE_FILE || "docs/column/koyou-hoken-kanyu-joken/index.html";
-const html = readFileSync(new URL("../" + ARTICLE, import.meta.url), "utf8");
+// 「次に読む」（<!--next-read:S-->〜<!--next-read:E-->）は 12a5b3b2（2026-09-13）で全コラムに生成された
+// 他記事へのカードで、中身は**リンク先の記事**の要約（月給30万円・35歳、32,256円、181日目 など）。
+// この記事の主張ではないので網から外す。値の正しさはリンク先の記事の検査が持つ。
+// ただし外す範囲がカード以外（本文の見出し・段落・表）を飲み込んでいたら検査ごと止める（黙って穴を開けない）。
+const dropNextRead = (src) => src.replace(/<!--next-read:S-->([\s\S]*?)<!--next-read:E-->/g, (all, inner) => {
+  const t = inner.trim();
+  if (!/^<section class="next-read"[\s>]/.test(t) || /<(h2|h3|p|table|blockquote|li)[\s>]/.test(t.replace('<h2>次に読む</h2>', ''))) throw new Error('next-read の範囲にカード以外の本文要素がある: 除外範囲を確かめること');
+  return ' ';
+});
+const html = dropNextRead(readFileSync(new URL("../" + ARTICLE, import.meta.url), "utf8"));
 const body = html.slice(html.indexOf("<article>"));
 const strip = (s) => s.replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 const text = strip(body);
@@ -227,9 +236,15 @@ ok(a17_28.includes("千二百三十円"), "未施行17条4項1号（1,230円）"
 
 // ★オラクルは「条文が10時間であること」しか見ていない。**記事がそれを正しく引き写しているか**は別の検査。
 //   （第11便と同型の穴。fixtureが緑でも、記事が「十五時間」と書いていたら誰も気づかない）
-const diffPara = pick(/<p>e-Gov法令検索の未施行リビジョン[\s\S]*?<\/p>/, "未施行リビジョンとのdiffの段落");
+// 段落の書き出しは ef2adc25（2026-08-31「工程語を直す」）で「e-Gov法令検索の未施行リビジョン…を機械的に突き合わせると」
+// から「令和10年10月1日施行版では」に言い換えられた。主張（二十時間未満→十時間未満）は同じ。
+// 一次資料: e-Gov法令API v2 law_data/349AC0000000116_20281001_506AC0000000026 の6条1号
+//   「一週間の所定労働時間が十時間未満である者」（現行 _20260513_ は「二十時間未満」）
+const DIFF_RE = /<p>令和10年10月1日施行版では[\s\S]*?<\/p>/;
+const diffPara = pick(DIFF_RE, "未施行リビジョンとのdiffの段落");
+const diffRaw = (body.match(DIFF_RE) || [""])[0];
 ok(/二十時間未満/.test(diffPara), "diffの段落から改正前（二十時間未満）が消えている");
-ok(/<b>十時間未満<\/b>|「十時間未満」/.test(body.match(/<p>e-Gov法令検索の未施行リビジョン[\s\S]*?<\/p>/)[0]),
+ok(/<b>十時間未満<\/b>|「十時間未満」/.test(diffRaw),
   "★diffの段落の改正後が「十時間未満」でない（条文は十時間未満）");
 ok(!/十五時間|三十時間/.test(diffPara), "★diffの段落に条文に無い時間数（十五時間など）が書かれている");
 
@@ -379,7 +394,11 @@ ok(/20時間/.test(title) && /31日/.test(title), "title に加入条件（20時
 ok(/20時間以上/.test(desc), "meta description に「20時間以上」が無い");
 ok(/31日以上/.test(desc), "meta description に「31日以上」が無い");
 // ★meta descriptionは検索結果に出る＝公開された主張（規則9）。学生の結論を誤ったまま出さない
-ok(/除外されるのは昼間学生だけ/.test(desc), "★meta description の「除外は昼間学生だけ」が壊れている");
+// 5ebd00e5（2026-09 r5レビュー）で「除外されるのは昼間学生だけ」→「学生は昼間学生だけが除外」に直された。
+// 旧文は「適用除外は学生だけ」と読めたため。雇用保険法6条は1〜6号（20時間未満・31日見込みなし・季節・学生・船員・公務員等）
+// （e-Gov法令API v2 law_data/349AC0000000116_20260513_507AC0000000032 第6条の号数=6）。
+ok(/学生は昼間学生だけが除外/.test(desc), "★meta description の「除外は昼間学生だけ」が壊れている");
+ok(/適用除外は6条に6号/.test(desc), "meta description から「適用除外は6条に6号」が消えている（学生だけが除外と読める）");
 ok(/夜間学部・定時制/.test(desc), "meta description から夜間学部・定時制が消えている");
 ok(/社会人大学院生/.test(desc) && /通信制/.test(desc), "★meta description から社会人大学院生・通信制が消えている");
 ok(!/懲役/.test(text) || /拘禁刑/.test(text), "本文が「懲役」とだけ書いている（現行は拘禁刑）");
