@@ -20,6 +20,12 @@ import { execFileSync } from "node:child_process";
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const CONFIG_PATH = join(ROOT, "tools/nav_experiment.json");
 
+/**
+ * 生成器（gen_datemodified.mjs）が書く更新日の行。この行だけの差分は本文の改稿と数えない。
+ * gen_datemodified.mjs（dateModified）と gen_index_sitemap.mjs（lastmod）が同じ定義を使う（基準を2つ持たない）。
+ */
+export const DATE_LINE = /"dateModified"|class="article-meta"|公開日:|更新日:|<time datetime=/;
+
 /** 導線の目印。生成器が書くブロックは必ず1行に収め、この目印を同じ行に持つ */
 export const NAV_LINE = /<!--(?:next-read|rail-next|nav-exp)\b[^>]*-->/;
 
@@ -115,7 +121,7 @@ const gitAt = (args) => execFileSync("git", args, { cwd: ROOT, encoding: "utf8",
  * base より後のコミットで「導線の行しか変えていない」ファイル。Map<コミットhash, Set<リポジトリ相対パス>>
  * base が履歴に無い（別リポジトリ・浅いクローン）ときは空を返す＝従来どおりの判定になる。
  */
-export function navOnlyCommitFiles(base) {
+export function navOnlyCommitFiles(base, extra = null) {
   const map = new Map();
   let patch;
   try { patch = gitAt(["log", "--format=%x01%H", "-U0", "-p", `${base}..HEAD`, "--", "docs"]); }
@@ -124,10 +130,24 @@ export function navOnlyCommitFiles(base) {
     const nl = chunk.indexOf("\n");
     const hash = chunk.slice(0, nl).trim();
     const files = new Set();
-    for (const [f, d] of changedLinesByFile(chunk.slice(nl + 1))) if (isNavOnlyDiff(d.removed, d.added)) files.add(f);
+    for (const [f, d] of changedLinesByFile(chunk.slice(nl + 1))) if (isNavOrExtraOnly(d, extra)) files.add(f);
     if (files.size) map.set(hash, files);
   }
   return map;
+}
+
+/**
+ * 差分が「導線だけ」か、extra（生成器ごとに見逃してよい行。更新日の行など）だけか。
+ * ★作業ツリー側（worktreeNavOnly と gen_datemodified の DATE_LINE 判定）と同じ規則をコミット側にも効かせる（2026-09-23）。
+ *   以前はコミット側に extra が無く、**生成器が書いた dateModified だけのコミット**が「本文の改稿」に数えられ、
+ *   次の実行で日付がそのコミット日に動いた（生成器を流し忘れた後の追いつきコミットが必ず自家中毒する）。
+ */
+function isNavOrExtraOnly(d, extra) {
+  if (!extra) return isNavOnlyDiff(d.removed, d.added);
+  const keep = (l) => !extra.test(l);
+  const removed = d.removed.filter(keep), added = d.added.filter(keep);
+  if (removed.length === 0 && added.length === 0) return d.removed.length + d.added.length > 0;
+  return isNavOnlyDiff(removed, added);
 }
 
 /** 作業ツリーの未コミット変更が導線だけか（extra は生成器ごとに見逃してよい行。更新日の行など） */

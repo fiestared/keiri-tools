@@ -23,7 +23,7 @@
  */
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
-import { loadNavExperiment, navOnlyCommitFiles, worktreeNavOnly } from "./nav_experiment.mjs";
+import { loadNavExperiment, navOnlyCommitFiles, worktreeNavOnly, DATE_LINE } from "./nav_experiment.mjs";
 import { execFileSync } from "node:child_process";
 
 const DOCS = new URL("../docs/", import.meta.url).pathname;
@@ -857,7 +857,9 @@ const dirty = new Set(
     .filter((p) => !worktreeNavOnly(p))
     .map((p) => join(root, p)),
 );
-const navOnlyCommits = navOnlyCommitFiles(loadNavExperiment().base);
+// ★更新日の行だけのコミット（gen_datemodified の追いつき）も本文の改稿に数えない（2026-09-23）。
+//   数えると dateModified と lastmod が食い違う（/yukyu/ で dateModified 09-19・lastmod 09-23 になった）。
+const navOnlyCommits = navOnlyCommitFiles(loadNavExperiment().base, DATE_LINE);
 // ★サイト全体の一括変更は「更新日」に数えない（2026-08-16 追加）。
 //   実測: 2026-08-16 に全ページ末尾へ「Xで共有」リンクを1行足しただけで、
 //   **sitemap 270本中267本の lastmod が同じ日に潰れた**。

@@ -12,7 +12,7 @@
 import assert from 'node:assert';
 import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { pages, DOCS, ASSETS, MARK } from '../tools/gen_favicon_links.mjs';
+import { pages, DOCS, ASSETS, MARK, LINKS, withLinks } from '../tools/gen_favicon_links.mjs';
 
 const list = pages();
 assert.ok(list.length > 100, `ページを ${list.length} 件しか拾えていません（走査が壊れている疑い）`);
@@ -21,10 +21,34 @@ assert.ok(list.length > 100, `ページを ${list.length} 件しか拾えてい�
 const missing = [];
 for (const p of list) {
   const html = readFileSync(p, 'utf-8');
-  if (!html.includes(MARK)) missing.push(p.replace(DOCS, ''));
+  // ★印だけでは足りない（2026-09-23）: 印だけ残って link が1本も無いページが53本あり、
+  //   印の有無しか見ていなかったこの検査は緑のままだった。link の組そのものを見る。
+  if (!html.includes(LINKS)) missing.push(p.replace(DOCS, ''));
 }
 assert.strictEqual(missing.length, 0,
   `favicon の link が無いページが ${missing.length}件: ${missing.slice(0, 5).join(', ')}`);
+
+// --- ①' 生成器が冪等で、印・<html> が1つずつであること ------------------------
+// 旧生成器は印だけのページで <html><head> から印までを二重に書き込んでいた（本番に1本出ていた）
+const dupes = [];
+for (const p of list) {
+  const html = readFileSync(p, 'utf-8');
+  if (html.split(MARK).length !== 2 || (html.match(/<html[\s>]/gi) || []).length !== 1
+      || withLinks(html) !== html) dupes.push(p.replace(DOCS, ''));
+}
+assert.strictEqual(dupes.length, 0,
+  `favicon の印・<html> が重複しているか、生成器を流すと変わるページが ${dupes.length}件: ${dupes.slice(0, 5).join(', ')}`);
+
+// 旧生成器の壊れ方を再現する見本で、生成器が二重化しないことを確かめる
+{
+  const onlyMark = `<!DOCTYPE html>\n<html lang="ja">\n<head>\n<meta charset="utf-8">\n${MARK}\n<meta name="viewport" content="x">\n</head><body></body></html>`;
+  const out = withLinks(onlyMark);
+  assert.ok(out.includes(LINKS) && (out.match(/<html[\s>]/g) || []).length === 1, '印だけのページで生成器が head を二重化した');
+  const inline = `<!DOCTYPE html>\n<html lang="ja"><head><meta charset="utf-8"><link rel="icon" href="/favicon.ico" sizes="any"><title>t</title></head><body></body></html>`;
+  const out2 = withLinks(inline);
+  assert.strictEqual(out2.split('href="/favicon.ico"').length, 2, '手書きの link があるページで生成器が link を二重化した');
+  assert.strictEqual(withLinks(out2), out2, '生成器が冪等でない');
+}
 
 // --- ② 参照先の実体が在ること -------------------------------------------------
 for (const f of ASSETS) {
