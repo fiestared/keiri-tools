@@ -14,15 +14,21 @@
  *      第24便はこれに無自覚で、等級を壊しても緑だった。→ 載っている要素を名指しして見る。
  */
 import { readFileSync } from "node:fs";
+import { stripNextRead } from "./lib/next_read.mjs";
 import { kenkoGrade } from "../docs/assets/shaho_core.js";
 
-const html = readFileSync(new URL("../docs/column/shobyo-teate-kin/index.html", import.meta.url), "utf8");
+// ★「次に読む」（生成された導線）はリンク先の記事の説明文の写しで、この記事の主張ではない。
+//   網から外す前に、形とリンク先との一致を tests/lib/next_read.mjs が検査する（2026-09-23）
+const NR = stripNextRead(readFileSync(new URL("../docs/column/shobyo-teate-kin/index.html", import.meta.url), "utf8"));
+const html = NR.html;
 // JSON-LD は本文の写しなので除く(二重に数えない)
 const body = html.replace(/<script[\s\S]*?<\/script>/g, "");
 const text = body.replace(/<[^>]+>/g, " ");
 
 const fail = [];
 const ok = (c, m) => { if (!c) fail.push(m); };
+for (const e of NR.errors) fail.push(e);
+ok(NR.cards > 0, "次に読むのカードを1件も検査していない（目印の形が変わった？）");
 const yen = (n) => n.toLocaleString("en-US");
 
 // ── 健康保険法99条2項の端数処理 ──────────────────────────────
