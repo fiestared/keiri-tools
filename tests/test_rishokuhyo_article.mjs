@@ -16,7 +16,16 @@ const S = JSON.parse(readFileSync(new URL("./fixtures/rishokuhyo_statutes.json",
 const HOU = S.hou, KIS = S.kis;
 // 壊しテスト(break_rishokuhyo_article.mjs)が、嘘を注入した複製を指して同じ検査を流す
 const ARTICLE = process.env.ARTICLE_FILE || "docs/column/rishokuhyo/index.html";
-const html = readFileSync(new URL("../" + ARTICLE, import.meta.url), "utf8");
+// 「次に読む」（<!--next-read:S-->〜<!--next-read:E-->）は 12a5b3b2（2026-09-13）で全コラムに生成された
+// 他記事へのカードで、中身は**リンク先の記事**の要約（月給30万円・35歳、32,256円、181日目 など）。
+// この記事の主張ではないので網から外す。値の正しさはリンク先の記事の検査が持つ。
+// ただし外す範囲がカード以外（本文の見出し・段落・表）を飲み込んでいたら検査ごと止める（黙って穴を開けない）。
+const dropNextRead = (src) => src.replace(/<!--next-read:S-->([\s\S]*?)<!--next-read:E-->/g, (all, inner) => {
+  const t = inner.trim();
+  if (!/^<section class="next-read"[\s>]/.test(t) || /<(h2|h3|p|table|blockquote|li)[\s>]/.test(t.replace('<h2>次に読む</h2>', ''))) throw new Error('next-read の範囲にカード以外の本文要素がある: 除外範囲を確かめること');
+  return ' ';
+});
+const html = dropNextRead(readFileSync(new URL("../" + ARTICLE, import.meta.url), "utf8"));
 const head = html.slice(0, html.indexOf("<body"));
 const body = html.slice(html.indexOf("<article>"));
 const strip = (s) => s.replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();

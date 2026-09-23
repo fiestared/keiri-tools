@@ -16,7 +16,16 @@ import fs from 'node:fs';
 
 const FILE = process.env.ARTICLE_FILE || 'docs/column/gensen-zeigakuhyo-mikata/index.html';
 const TBL = JSON.parse(fs.readFileSync('docs/assets/gensen_getsugaku_r08.json', 'utf8'));
-const html = fs.readFileSync(FILE, 'utf8').replace(/<td class="num">/g, "<td>");
+// 「次に読む」（<!--next-read:S-->〜<!--next-read:E-->）は 12a5b3b2（2026-09-13）で全コラムに生成された
+// 他記事へのカードで、中身は**リンク先の記事**の要約（月給30万円・35歳、32,256円、181日目 など）。
+// この記事の主張ではないので網から外す。値の正しさはリンク先の記事の検査が持つ。
+// ただし外す範囲がカード以外（本文の見出し・段落・表）を飲み込んでいたら検査ごと止める（黙って穴を開けない）。
+const dropNextRead = (src) => src.replace(/<!--next-read:S-->([\s\S]*?)<!--next-read:E-->/g, (all, inner) => {
+  const t = inner.trim();
+  if (!/^<section class="next-read"[\s>]/.test(t) || /<(h2|h3|p|table|blockquote|li)[\s>]/.test(t.replace('<h2>次に読む</h2>', ''))) throw new Error('next-read の範囲にカード以外の本文要素がある: 除外範囲を確かめること');
+  return ' ';
+});
+const html = dropNextRead(fs.readFileSync(FILE, 'utf8')).replace(/<td class="num">/g, "<td>");
 let ng = 0;
 const fail = m => { console.error('  ✗ ' + m); ng++; };
 const ok = m => console.log('  ✓ ' + m);

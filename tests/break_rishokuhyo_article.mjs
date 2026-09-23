@@ -263,6 +263,10 @@ const MUTATIONS = [
 
   // ══ meta description（規則9: 検索結果に出る＝公開された主張）══
   // ※ head を触るので mutate() ではなく直接置換する（下で個別に流す）
+  // 「次に読む」は他記事のカードとして網から外している。外す範囲に本文の段落が紛れたら検査が止まること（黙って穴を開けない）
+  ["★次に読むの枠内に本文の段落を紛れ込ませる（除外範囲の監視）",
+    "<section class=\"next-read\"><h2>次に読む</h2>",
+    "<section class=\"next-read\"><h2>次に読む</h2><p>離職票は会社が発行します。</p>"],
 ];
 
 let caught = 0, missed = 0, offTarget = 0;
