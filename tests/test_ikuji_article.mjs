@@ -18,8 +18,12 @@
  *     永久に緑になるため(第25便)。
  */
 import { readFileSync } from "node:fs";
+import { stripNextRead } from "./lib/next_read.mjs";
 
-const html = readFileSync(new URL("../docs/column/ikuji-kyugyo-kyufukin/index.html", import.meta.url), "utf8");
+// ★「次に読む」（生成された導線）はリンク先の記事の説明文の写しで、この記事の主張ではない。
+//   網から外す前に、形とリンク先との一致を tests/lib/next_read.mjs が検査する（2026-09-23）
+const NR = stripNextRead(readFileSync(new URL("../docs/column/ikuji-kyugyo-kyufukin/index.html", import.meta.url), "utf8"));
+const html = NR.html;
 // JSON-LD(head)は本文の写しなので除く。図解のSVGは本文の一部なので【残す】
 // (第23便: 同じ数字がSVGにもあり、そちらが当たって壊しても緑になった)
 const body = html.replace(/<script[\s\S]*?<\/script>/g, "");
@@ -32,6 +36,8 @@ const text = body.replace(/<[^>]+>/g, " ") + " " + title + " " + metaDesc + " " 
 
 const fail = [];
 const ok = (c, m) => { if (!c) fail.push(m); };
+for (const e of NR.errors) fail.push(e);
+ok(NR.cards > 0, "次に読むのカードを1件も検査していない（目印の形が変わった？）");
 const yen = (n) => n.toLocaleString("en-US");
 
 // ── 雇用保険法61条の7第6項・61条の10第6項の計算式 ───────────────

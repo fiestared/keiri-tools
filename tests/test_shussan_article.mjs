@@ -10,12 +10,19 @@
 import fs from 'node:fs';
 import { KENKO_GRADES, calcMonthly } from '../docs/assets/shaho_core.js';
 import { kouTax } from '../docs/assets/gensen_kyuyo_core.js';
+import { stripNextRead } from './lib/next_read.mjs';
 
 const FILE = 'docs/column/shussan-teate-kin/index.html';
-const html = fs.readFileSync(FILE, 'utf8');
+// ★「次に読む」（生成された導線）はリンク先の記事の説明文の写しで、この記事の主張ではない。
+//   網から外す前に、形とリンク先との一致を tests/lib/next_read.mjs が検査する（2026-09-23）
+const NR = stripNextRead(fs.readFileSync(FILE, 'utf8'));
+const html = NR.html;
 let ng = 0;
 const fail = m => { console.error('  ✗ ' + m); ng++; };
 const ok = m => console.log('  ✓ ' + m);
+if (NR.errors.length) NR.errors.forEach(fail);
+else if (!NR.cards) fail('次に読むのカードを1件も検査していない（目印の形が変わった？）');
+else ok(`次に読む（${NR.cards}件）はリンク先の見出し・説明文の写し — 網から外して別途検査`);
 
 // ───────── 前提（一次情報。ここだけが手打ちを許される） ─────────
 const RATES = JSON.parse(fs.readFileSync('docs/assets/shaho_rates_r08.json', 'utf8'));

@@ -14,12 +14,19 @@
 //  - 正しさの根拠は自分の算数でなく一次情報に置く
 //    → 産科医療補償制度の公表値（準備一時金600万＋分割金120万×20回）から総額3,000万円を再現する
 import fs from 'node:fs';
+import { stripNextRead } from './lib/next_read.mjs';
 
 const FILE = process.env.ARTICLE_FILE || 'docs/column/shussan-ikuji-ichijikin/index.html';
-const html = fs.readFileSync(FILE, 'utf8');
+// ★「次に読む」（生成された導線）はリンク先の記事の説明文の写しで、この記事の主張ではない。
+//   網から外す前に、形とリンク先との一致を tests/lib/next_read.mjs が検査する（2026-09-23）
+const NR = stripNextRead(fs.readFileSync(FILE, 'utf8'));
+const html = NR.html;
 let ng = 0;
 const fail = m => { console.error('  ✗ ' + m); ng++; };
 const ok = m => console.log('  ✓ ' + m);
+if (NR.errors.length) NR.errors.forEach(fail);
+else if (!NR.cards) fail('次に読むのカードを1件も検査していない（目印の形が変わった？）');
+else ok(`次に読む（${NR.cards}件）はリンク先の見出し・説明文の写し — 網から外して別途検査`);
 
 // ───────── 前提（一次情報。ここだけが手打ちを許される） ─────────
 // 健康保険法施行令36条: 政令が定める額と、加算の上限
