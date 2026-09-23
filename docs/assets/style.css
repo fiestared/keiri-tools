@@ -738,6 +738,14 @@ pre code { white-space: inherit; }
 
 /* ---- 数値列は右揃え＋等幅（桁を目で比較できるようにする）---- */
 th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
+/* 金額の「円」だけが次の行に落ちるのを止める。全表に当てると390pxで144表がはみ出す（2026-09-23 実測）ので、
+   改行禁止でも収まると測った表にだけ class を付ける */
+.num-nowrap th.num, .num-nowrap td.num { white-space: nowrap; }
+/* 見出しは語の途中で割らず <wbr> の位置だけで折る（数字列を詰めた分、見出しが「信託報/酬（年/率）」に割れたため） */
+.num-nowrap thead th { word-break: keep-all; }
+@media (max-width: 480px) { .num-nowrap th, .num-nowrap td { padding-left: 5px; padding-right: 5px; } }
+/* 360px未満では詰めても収まらない。枠内の横スクロールより折り返しの方がまし */
+@media (max-width: 359px) { .num-nowrap th.num, .num-nowrap td.num { white-space: normal; } .num-nowrap thead th { word-break: normal; } }
 
 /* ---- 本文へ移動（SC 2.4.1）----
    キーボード利用者がヘッダーのリンク群を毎ページ読み飛ばせるようにする。
