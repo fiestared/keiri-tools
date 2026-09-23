@@ -33,7 +33,14 @@ import { join, extname } from 'node:path';
 const ROOT = new URL('../', import.meta.url).pathname;
 const DOCS = join(ROOT, 'docs');
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const PORT = 8931;
+// ★ポートは固定しない・開くURLは listen と同じ 127.0.0.1（2026-09-23）。
+//   以前は 8931 固定で 127.0.0.1 に listen し、Chrome には `localhost:8931` を開かせていた。
+//   別のセッションが `python -m http.server 8931`（IPv6 の *:8931）を立てていたため、
+//   localhost が ::1 に解決されて**その別サーバのページを開き**、測定の報告が1件も届かず
+//   「測定できなかったページが 510件（全510）」になっていた。
+//   また固定ポートは並行実行（別の worktree の run_tests.sh）とぶつかり EADDRINUSE → 「測らずに降りる」になる。
+//   → OSに空きポートを選ばせ、同じアドレスを開く。
+let PORT = 0;
 const WIDTH = Number(process.argv[2] || 375);
 if (!Number.isFinite(WIDTH) || WIDTH < 320 || WIDTH > 1280) {
   throw new Error('幅は320〜1280の数値で指定してください');
@@ -117,7 +124,7 @@ const server = createServer(async (req, res) => {
   if (req.url === '/__done') { res.writeHead(200); res.end('ok'); done(); return; }
 
   if (req.url.startsWith('/__frame')) {
-    const i = Number(new URL(req.url, `http://127.0.0.1:${PORT}`).searchParams.get('i')) || 0;
+    const i = Number(new URL(req.url, 'http://127.0.0.1').searchParams.get('i')) || 0;
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(FRAME(i));
     return;
@@ -143,7 +150,7 @@ const server = createServer(async (req, res) => {
 //   測れないことと壊れていることは別物なので、赤にせず「測っていない」と申告する。
 const listened = await new Promise((ok) => {
   server.once('error', (e) => ok({ err: e }));
-  server.listen(PORT, '127.0.0.1', () => ok({ err: null }));
+  server.listen(0, '127.0.0.1', () => { PORT = server.address().port; ok({ err: null }); });
 });
 if (listened.err) {
   console.log(`↷ ローカルHTTPを立てられないので測定を飛ばします（${listened.err.code}）。`);
@@ -154,7 +161,7 @@ const profile = await mkdtemp(join(tmpdir(), 'hscroll-'));
 const chrome = spawn(CHROME, [
   '--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
   `--user-data-dir=${profile}`, `--window-size=${WIDTH},800`,
-  `http://localhost:${PORT}/__frame?i=0`,
+  `http://127.0.0.1:${PORT}/__frame?i=0`,
 ], { stdio: 'ignore' });
 
 const timeout = setTimeout(() => done(), 1000 * 60 * 8);
