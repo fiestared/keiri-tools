@@ -18,6 +18,7 @@
 //   免除が外れて落ちる(=腐らない。fail closed)。
 
 import { readFile, readdir } from "node:fs/promises";
+import { readFileSync as readFileSyncForSched } from "node:fs";
 import { join, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -374,6 +375,33 @@ const stripRelBlock = (h) => h.replace(/<section class="faq rel-block">[\s\S]*?<
 
 const ERA = /令和\s*(\d+)\s*年(度|分)?/g;
 
+/**
+ * 国の主要補助金の日程表（/hojokin/schedule/ の <!--sched:S-->〜<!--sched:E-->。
+ * tools/fetch_kokunai_schedule.py が docs/assets/hojokin_schedule.json から焼く）の制度名に入った
+ * **災害の名称**の年号だけを外す。
+ * ★なぜ要るか（2026-09-23）: 2026-09-10 の定時更新から、中小企業庁（ミラサポplus）の制度名
+ *   「小規模事業者持続化補助金 一般型 災害支援枠 （令和6年能登半島地震・能登豪雨）」
+ *   「同 （令和8年熊本地震）」がそのまま載り、この検査が「年つきデータを読んでいないのに年を名乗る」で
+ *   落ち続けていた。これは公的な制度名・災害名の引用で、このページのデータの年の申告ではない
+ *   （一次: https://mirasapo-plus.go.jp/subsidy/jizokuka/ に「一般型 災害支援枠(令和8年熊本地震)」
+ *    「一般型 災害支援枠(令和6年能登半島地震・能登豪雨)」の表記で掲載。2026-09-23 取得）。
+ *   制度名は毎日の自動更新で入れ替わるので、HISTORICAL_FACTS の文言免除だと回が終わるたびに
+ *   「免除が当たらない」で落ちる＝正しい更新を落とす検査になる。
+ * ★外す範囲は狭く取る: (1) 日程表の目印の中の <a> で、(2) 文字がデータの name と**完全一致**し、
+ *   (3) 年号の直後が災害の名称（〜地震・豪雨・大雨・台風・噴火・水害・災害）であるものだけ。
+ *   データに無い手書きの制度名や、「令和8年度補正」のような年度の申告は従来どおり落とす。
+ */
+const SCHED_NAMES = new Set((() => {
+  try { return JSON.parse(readFileSyncForSched(join(DOCS, "assets", "hojokin_schedule.json"))).schedule.map((x) => x.name); }
+  catch { return []; }
+})());
+const DISASTER_ERA = /令和\s*\d+\s*年(?=[^\s（）()<>、。]{0,12}?(?:地震|豪雨|大雨|台風|噴火|水害|災害))/g;
+function stripScheduleDisasterNames(html) {
+  return html.replace(/<!--sched:S-->[\s\S]*?<!--sched:E-->/g, (blk) =>
+    blk.replace(/(<a\b[^>]*>)([^<]*)(<\/a>)/g, (all, a, name, e) =>
+      SCHED_NAMES.has(name) ? a + name.replace(DISASTER_ERA, "〔災害名〕") + e : all));
+}
+
 async function walk(dir) {
   const out = [];
   for (const e of await readdir(dir, { withFileTypes: true })) {
@@ -463,7 +491,7 @@ for (const page of pages) {
   const rel = relative(DOCS, page);
   const raw = await readFile(page, "utf8");
   rawByRel.set(rel, raw);
-  const html = stripRelBlock(stripLdJson(stripArticleBody(stripArticleCards(stripComments(raw)))));
+  const html = stripScheduleDisasterNames(stripRelBlock(stripLdJson(stripArticleBody(stripArticleCards(stripComments(raw))))));
 
   // このページが fetch している年つきデータ = 名乗ってよい年
   const fetched = [...raw.matchAll(/assets\/([\w.-]+\.json)/g)].map((m) => m[1]);
