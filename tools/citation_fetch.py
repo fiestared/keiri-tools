@@ -39,6 +39,7 @@ def _fetch_one(url: str, *, opener, timeout: float, now: Callable[[], str]) -> d
         "final_url": None,
         "redirected": False,
         "body_sha256": None,
+        "body_text": None,
         "error": None,
     }
     try:
@@ -49,6 +50,7 @@ def _fetch_one(url: str, *, opener, timeout: float, now: Callable[[], str]) -> d
                 final_url=response.geturl(),
                 redirected=response.geturl() != url,
                 body_sha256=hashlib.sha256(body).hexdigest(),
+                body_text=body.decode("utf-8", errors="replace"),
             )
     except urllib.error.HTTPError as exc:
         record.update(
