@@ -87,13 +87,13 @@ export function buildTable() {
   const out = [START];
   out.push('  <h3 id="hayamihyo">月給別の買取単価 早見表（3方式）</h3>');
   out.push(`  <p>同じ人・同じ有給でも、どの方式で計算するかで<b>1日あたりの単価は1.5倍以上変わります</b>。月給別に並べたものが下の表です。<b>前提は上の設例と同じ</b>で、①は<b>直前3か月の暦日数を${TOTAL_DAYS}日</b>（4〜6月）、②は<b>月の所定労働日数を${WORK_DAYS}日</b>としています。</p>`);
-  out.push('  <table>');
+  out.push('  <table class="num-nowrap">');
   out.push(`    <tr><th scope="col">月給（額面）</th><th scope="col">① 平均賃金<br>（暦${TOTAL_DAYS}日）</th><th scope="col">③ 標準報酬日額<br>（÷30）</th><th scope="col">② 通常の賃金<br>（所定${WORK_DAYS}日）</th></tr>`);
   for (const r of rows) {
-    out.push(`    <tr><td>${r.wage.toLocaleString('ja-JP')}円</td><td>${fmtSen(r.heikin)}</td><td>${fmt(r.hyojun)}</td><td>${fmt(r.tsujo)}</td></tr>`);
+    out.push(`    <tr><td class="num">${r.wage.toLocaleString('ja-JP')}円</td><td>${fmtSen(r.heikin)}</td><td class="num">${fmt(r.hyojun)}</td><td class="num">${fmt(r.tsujo)}</td></tr>`);
   }
   out.push('  </table>');
-  out.push(`  <p>★<b>この表の前提が変われば金額も変わります。</b>①の平均賃金は退職月によって暦日数が89〜92日と動き（2月を含む3か月なら短くなるので単価は上がります）、②は月の所定労働日数で割るので、所定が${WORK_DAYS}日でない会社では変わります。③は「標準報酬月額＝月給」と置いた概算です（標準報酬月額は等級で決まるため、実際には月給と一致しないことがあります）。</p>`);
+  out.push(`  <p><b>この表の前提が変われば金額も変わります。</b>①の平均賃金は退職月によって暦日数が89〜92日と動き（2月を含む3か月なら短くなるので単価は上がります）、②は月の所定労働日数で割るので、所定が${WORK_DAYS}日でない会社では変わります。③は「標準報酬月額＝月給」と置いた概算です（標準報酬月額は等級で決まるため、実際には月給と一致しないことがあります）。</p>`);
   out.push('  <p>どの方式を使うかは<b>就業規則等の定め</b>によります（③は労使協定が必要）。買取そのものが法定外の取扱いなので、会社に買取の義務はありません。まず<a href="../../yukyu/">有給休暇の付与日数 計算機</a>で「何日残っているか」を確定させてください。</p>');
   out.push(END);
   return out.join('\n');

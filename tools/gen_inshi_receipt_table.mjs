@@ -15,7 +15,7 @@ if (doc.type !== 'bracket' || !doc.brackets.length || !data._meta.url2) throw ne
 const block = `<!-- receipt-table:auto -->
 <section class="card" aria-label="領収書の収入印紙早見表">
   <div class="scroll-wrap">
-  <table class="tbl" id="receipt-tax-table">
+  <table class="tbl num-nowrap" id="receipt-tax-table">
     <caption>売上代金の領収書（第17号文書）の収入印紙</caption>
     <thead><tr><th scope="col">記載された受取金額</th><th scope="col" class="num">印紙税額（1通）</th></tr></thead>
     <tbody>

@@ -330,7 +330,7 @@ ${BUILT_FROM_NOTE}
 数字はすべて当サイトの計算コアから算出しています（表にベタ書きしていません）。</p>
 
 <div class="scroll-wrap">
-<table class="data-table">
+<table class="data-table num-nowrap-sm">
 <tr>
   <th scope="col">年収</th>
   <th scope="col" style="text-align:right">手取り（月）</th>
