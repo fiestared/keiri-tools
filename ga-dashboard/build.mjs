@@ -100,6 +100,25 @@ const weekdayIdx = (ymd) => {
   const [y, m, d] = ymd.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d)).getUTCDay();
 };
+// ★休日は土日だけでなく祝日と年末年始も（2026-09-25 Masahiro「祝日も考慮してね、土日だけだと意味ないよ」）。
+//   読者は平日の会社PC。祝日は土日と同じく落ちる（2026-09-21〜23 の連休で実測）。
+//   祝日表は毎朝の司令塔便（keiri-commander/pace.py）が内閣府の CSV から取って保存しているものを読む。
+//   ga-dashboard の中に置くと未追跡ファイルになり production-guard が本番送信を止めるので、外を読む。
+const HOLIDAYS = (() => {
+  try {
+    const p = join(homedir(), "Scripts/keiri-commander/holidays.json");
+    return JSON.parse(readFileSync(p, "utf8"));
+  } catch { return null; }
+})();
+const offDayName = (ymd) => {
+  const w = weekdayIdx(ymd);
+  if (w === 0 || w === 6) return WD[w] + "曜";
+  if (HOLIDAYS && HOLIDAYS[ymd]) return HOLIDAYS[ymd];
+  const md = ymd.slice(5);
+  if (md >= "12-29" || md <= "01-03") return "年末年始";
+  return null;
+};
+const isOffDay = (ymd) => offDayName(ymd) !== null;
 
 // 毎分叩くと `fetch failed`（ネットワーク層の一過性エラー）が実測で1割ほど出る。
 // 1回きりの失敗で画面に警告バナーを出さないよう、短い間隔で数回だけ粘る。
@@ -428,7 +447,8 @@ function model(data) {
         return {
           ...x,
           wd: WD[weekdayIdx(x.date)],
-          weekend: [0, 6].includes(weekdayIdx(x.date)),
+          weekend: isOffDay(x.date),
+          offName: offDayName(x.date),
           today: i === arr.length - 1,
           prev: prev ? prev.sessions : null,
         };
@@ -515,7 +535,8 @@ function siteConf(s) {
 
 function goalModel(s, today, last7Sessions, last7Rows = []) {
   const sessionsPerDay = last7Sessions / 7;
-  const wdRows = last7Rows.filter((x) => { const w = weekdayIdx(x.date); return w >= 1 && w <= 5; });
+  const wdRows = last7Rows.filter((x) => !isOffDay(x.date));
+  const offInWindow = last7Rows.filter((x) => isOffDay(x.date) && ![0, 6].includes(weekdayIdx(x.date))).map((x) => `${x.date.slice(5).replace("-", "/")} ${offDayName(x.date)}`);
   const weekdaySessionsPerDay = wdRows.length ? wdRows.reduce((a, x) => a + x.sessions, 0) / wdRows.length : null;
   const weekdayN = wdRows.length;
   const conf = siteConf(s);
@@ -524,7 +545,7 @@ function goalModel(s, today, last7Sessions, last7Rows = []) {
   const sessionPct = sessionGoal ? sessionsPerDay / sessionGoal * 100 : null;
   const g = s.gsc;
   if (!g || g.error || !(g.rows ?? []).length) {
-    return { sessionsPerDay, weekdaySessionsPerDay, weekdayN, sessionPct, google: null, error: g?.error ?? null, milestones: googleKpi.map((k) => ({ ...k, pct: null, daysLeft: daysBetween(today, k.by) })) };
+    return { sessionsPerDay, weekdaySessionsPerDay, weekdayN, offInWindow, sessionPct, google: null, error: g?.error ?? null, milestones: googleKpi.map((k) => ({ ...k, pct: null, daysLeft: daysBetween(today, k.by) })) };
   }
   const byDate = new Map(g.rows.map((r) => [r.date, r]));
   const end = g.rows.at(-1).date;                         // GSC がデータを出している末端
@@ -541,7 +562,7 @@ function goalModel(s, today, last7Sessions, last7Rows = []) {
   const clicksPerDay = avg(last7, "clicks"), prevClicksPerDay = avg(prev7, "clicks");
   const series = win(0, GSC_FETCH_DAYS - 1 - lagDays);    // 取得範囲のうち GSC が出している日だけ（末端まで）
   return {
-    sessionsPerDay, weekdaySessionsPerDay, weekdayN, sessionPct, error: null,
+    sessionsPerDay, weekdaySessionsPerDay, weekdayN, offInWindow, sessionPct, error: null,
     google: {
       end, lagDays, clicksPerDay, prevClicksPerDay,
       impressionsPerDay: avg(last7, "impressions"), prevImpressionsPerDay: avg(prev7, "impressions"),
@@ -1016,7 +1037,7 @@ function goalBlock(site) {
       <div class="goal-card">
         <div class="insight-head"><div><span class="eyebrow">全体（GA4）</span><h4>1日セッション <small>直近7日平均・昨日まで</small></h4></div></div>
         <div class="goal-value">${n0(g.sessionsPerDay)}<span>/ ${sessionGoal.toLocaleString("ja-JP")}</span></div>
-        ${g.weekdaySessionsPerDay == null ? "" : `<div class="metric-sub">平日${g.weekdayN}日平均 <b>${n0(g.weekdaySessionsPerDay)}</b>/日（土日を除く）。目標は7日平均、進捗の判断には平日平均も使う。</div>`}
+        ${g.weekdaySessionsPerDay == null ? "" : `<div class="metric-sub">平日${g.weekdayN}日平均 <b>${n0(g.weekdaySessionsPerDay)}</b>/日（${HOLIDAYS ? "土日・祝日・年末年始を除く" : "土日を除く。★祝日表を読めなかったので祝日は含んだまま"}）${g.offInWindow && g.offInWindow.length ? `。この7日の祝日: ${esc(g.offInWindow.join("・"))}` : ""}。目標は7日平均、進捗の判断には平日平均も使う。</div>`}
         ${bar(g.sessionPct)}
         <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>。内訳の目標は Bing 2,000 ＋ Google 100 ＋ 非検索 300。</div>
         <div class="metric-sub">2026-12-31に中間確認。年末休業前の完成7日（候補: Bingの日付で12/18〜24）と平日平均で進捗を見る。表示18,000/日だけでは判定しない。</div>
