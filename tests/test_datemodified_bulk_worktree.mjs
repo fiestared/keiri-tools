@@ -54,6 +54,7 @@ function makeRepo(n) {
 
   mkdirSync(join(dir, 'tools'), { recursive: true });
   copyFileSync(join(ROOT, 'tools/gen_datemodified.mjs'), join(dir, 'tools/gen_datemodified.mjs'));
+  copyFileSync(join(ROOT, 'tools/verified_content_dates.mjs'), join(dir, 'tools/verified_content_dates.mjs'));
   // 導線だけの変更を数えない判定（2026-09-16）を生成器が読む。基点が無い使い捨てリポジトリでは従来どおりの判定になる
   copyFileSync(join(ROOT, 'tools/nav_experiment.mjs'), join(dir, 'tools/nav_experiment.mjs'));
   copyFileSync(join(ROOT, 'tools/nav_experiment.json'), join(dir, 'tools/nav_experiment.json'));

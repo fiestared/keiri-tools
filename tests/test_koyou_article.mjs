@@ -35,7 +35,7 @@ const MHLW = {
 const HASU_GENSEN = { under: '50銭以下', over: '50銭1厘以上' };  // 賃金から源泉控除する場合
 const HASU_GENKIN = { under: '50銭未満', over: '50銭以上' };     // 事業主へ現金で支払う場合
 // 健保・厚年の上限（この記事は「雇用保険にはこれが無い」と主張するので前提として要る）
-const KOSEI_SHOYO_JOGEN = '150万円';   // 厚年 賞与1回あたり
+const KOSEI_SHOYO_JOGEN = '150万円';   // 厚年 賞与は同月合算
 const KENPO_SHOYO_JOGEN = '573万円';   // 健保 年度累計
 
 // ───────── ★外部オラクル: 公表2値から労働者負担率が導出できるか ─────────
@@ -236,6 +236,7 @@ if (!shoyoRow) fail('比較表に「賞与の上限」の行が無い');
 else {
   const t = strip(shoyoRow);
   if (!t.includes(KOSEI_SHOYO_JOGEN) || !t.includes(KENPO_SHOYO_JOGEN)) fail(`比較表[賞与の上限]: 健保${KENPO_SHOYO_JOGEN}／厚年${KOSEI_SHOYO_JOGEN} が無い`);
+  else if (!t.includes('厚年は1か月150万円')) fail('比較表[賞与の上限]: 厚年は同月合算の月150万円上限でなければならない');
   else if (!/なし/.test(t)) fail('★比較表[賞与の上限]: 雇用保険が「なし」になっていない（記事の核心）');
   else ok(`比較表[賞与の上限]: 健保${KENPO_SHOYO_JOGEN}／厚年${KOSEI_SHOYO_JOGEN} ⇔ 雇用保険は なし`);
 }
