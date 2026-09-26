@@ -46,10 +46,13 @@
   .warn{ font-size:13px; color:#b4232a; }
   .scroll{ overflow-x:auto; }
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","dateModified":"2026-09-26"}</script>
 </head>
 <body>
 <div class="w">
   <h1>社会保険料 計算</h1>
+<p class="article-meta">更新日: <time datetime="2026-09-26">2026年9月26日</time></p>
+<p class="note">この計算機は賞与が同じ月に1回支給される前提で試算します。同月に複数回支給する場合、厚生年金は合算した標準賞与額に月150万円の上限を適用するため、各回を別々に計算した結果は使えません。</p>
   <p class="lead">報酬月額から、標準報酬月額の等級・健康保険・介護保険・厚生年金・雇用保険の本人負担と会社負担を概算します。</p>
 
   <div class="grid">
@@ -199,7 +202,7 @@ $("calc").addEventListener("click", async () => {
       <div class="note" style="margin-top:12px;padding-top:10px;border-top:1px solid var(--line)">
         <div class="row" style="color:var(--ink)">賞与の本人負担 <span class="big">${yen(b.selfTotal + bk.self)}</span></div>
         健康保険・厚生年金・支援金 ${yen(b.selfTotal)}（標準賞与額 ${yen(b.standardBonus)}）
-        ${b.capped.kosei ? "／厚年は1回150万円の上限を適用" : ""}${b.capped.kenko ? "／健保は年度573万円の上限を適用" : ""}
+        ${b.capped.kosei ? "／厚年は1か月150万円の上限を適用" : ""}${b.capped.kenko ? "／健保は年度573万円の上限を適用" : ""}
         <br>雇用保険 ${yen(bk.self)}（賞与の実額 ${yen(bonus)} にそのままかかります）
       </div>`;
   }

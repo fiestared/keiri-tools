@@ -50,10 +50,13 @@
   .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
   .warn{ font-size:13px; color:#b4232a; }
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","dateModified":"2026-09-26"}</script>
 </head>
 <body>
 <div class="w">
   <h1>ボーナス手取り計算</h1>
+<p class="article-meta">更新日: <time datetime="2026-09-26">2026年9月26日</time></p>
+<p class="note">この計算機は賞与が同じ月に1回支給される前提で試算します。同月に複数回支給する場合、厚生年金は合算した標準賞与額に月150万円の上限を適用するため、各回を別々に計算した結果は使えません。</p>
   <p class="lead">賞与の額面から、社会保険料・源泉所得税を引いた手取りを概算します。税率は賞与の額ではなく「前月の給与」で決まります。</p>
 
   <label for="bonus">ボーナスの額面（円）</label>
@@ -215,7 +218,7 @@ $("calc").addEventListener("click", async () => {
     notes += `<div class="note"><b>算出率の表は使えないため、月額表による例外計算（国税庁 No.2523）で計算しました。</b>理由: ${r.shoyo.detail}。</div>`;
   }
   if (sh.capped.kenko) notes += `<div class="note">健康保険の年度上限（累計573万円）を適用（対象 ${yen(sh.kenkoStandard)}）。</div>`;
-  if (sh.capped.kosei) notes += `<div class="note">厚生年金の上限（1回150万円）を適用（対象 ${yen(sh.koseiStandard)}）。</div>`;
+  if (sh.capped.kosei) notes += `<div class="note">厚生年金の上限（1か月150万円）を適用（対象 ${yen(sh.koseiStandard)}）。</div>`;
 
   box.innerHTML = `
     <div>ボーナスの手取り <span class="big">${yen(r.tedori)}</span> <span class="hint">（額面の ${(r.tedoriRate*100).toFixed(1)}%）</span></div>
