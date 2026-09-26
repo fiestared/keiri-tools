@@ -40,6 +40,7 @@
   .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
   .warn{ font-size:13px; color:#b4232a; }
 </style>
+<link rel="stylesheet" href="/assets/embed-layout.css">
 </head>
 <body>
 <div class="w">
@@ -82,14 +83,16 @@
   </select>
 
   <div id="amount-block">
-    <label for="amount">記載金額（円）<span class="hint" id="amount-unit">　文書に記載された受取金額</span></label>
-    <input type="number" id="amount" min="0" inputmode="numeric" placeholder="例: 54800">
+    <label for="amount">記載金額（円）</label>
+    <input type="number" id="amount" min="0" inputmode="numeric" placeholder="例: 54800" aria-describedby="amount-unit">
+      <span class="hint" id="amount-unit">　文書に記載された受取金額</span>
     <label class="chk"><input type="checkbox" id="noamount"> 金額の記載がない文書</label>
   </div>
 
   <div id="tax-block">
-    <label for="taxpart">うち消費税額等（円）<span class="hint">　「うち消費税額等◯円」などの区分記載がある場合だけ</span></label>
-    <input type="number" id="taxpart" value="0" min="0" inputmode="numeric" placeholder="例: 4981">
+    <label for="taxpart">うち消費税額等（円）</label>
+    <input type="number" id="taxpart" value="0" min="0" inputmode="numeric" placeholder="例: 4981" aria-describedby="taxpart-hint">
+      <span id="taxpart-hint" class="hint">　「うち消費税額等◯円」などの区分記載がある場合だけ</span>
     <label class="chk"><input type="checkbox" id="menzei"> 作成者は消費税の<b>免税事業者</b>（区分記載しても税込で判定）</label>
   </div>
 

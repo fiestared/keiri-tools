@@ -83,7 +83,7 @@ const noteFor = (names) => {
   }).filter(Boolean);
   if (!rows.length) return '';
   return `<!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">`
-    + `<ul style="margin:0;padding-left:1.2em;list-style:disc">${rows.join('')}</ul>`
+    + `<ul style="margin:0">${rows.join('')}</ul>`
     + `</div><!-- /datasrc:auto -->`;
 };
 

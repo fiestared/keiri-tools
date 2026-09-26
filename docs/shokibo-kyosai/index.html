@@ -137,11 +137,13 @@
 </section>
 
 <div class="card">
-  <label for="kazei">課税される所得金額（円）<span class="hint">　確定申告書の「課税される所得金額」。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」。年収や売上ではありません</span></label>
-  <input type="number" id="kazei" placeholder="例: 5000000" inputmode="numeric" min="0" step="10000">
+  <label for="kazei">課税される所得金額（円）</label>
+  <input type="number" id="kazei" placeholder="例: 5000000" inputmode="numeric" min="0" step="10000" aria-describedby="kazei-hint">
+      <span id="kazei-hint" class="hint">　確定申告書の「課税される所得金額」。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」。年収や売上ではありません</span>
 
-  <label for="monthly">月額掛金（円）<span class="hint">　1,000〜70,000円の範囲・500円きざみ。加入後も月1回まで増減できます</span></label>
-  <input type="number" id="monthly" value="30000" min="1000" max="70000" step="500" inputmode="numeric">
+  <label for="monthly">月額掛金（円）</label>
+  <input type="number" id="monthly" value="30000" min="1000" max="70000" step="500" inputmode="numeric" aria-describedby="monthly-hint">
+      <span id="monthly-hint" class="hint">　1,000〜70,000円の範囲・500円きざみ。加入後も月1回まで増減できます</span>
 
   <button class="primary" id="calc">節税額を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -196,7 +198,7 @@
 
 <p>掛金月額は<b>1,000円から70,000円まで、500円単位</b>で設定できます。年間では最大<b>84万円</b>（70,000円×12か月）を所得控除にできます。掛金のルールは次のとおりです（中小機構）。</p>
 
-<table>
+<div class="scroll-wrap"><table>
 <thead>
 <tr><th scope="col">項目</th><th scope="col">内容</th></tr>
 </thead>
@@ -207,7 +209,7 @@
 <tr><td>振替日</td><td>毎月<b>18日</b>（土日祝なら翌営業日）</td></tr>
 <tr><td>前納</td><td><b>1年以内の前納掛金も</b>、その年の所得控除にできる</td></tr>
 </tbody>
-</table>
+</table></div>
 
 <div class="callout">
 <p><b>「増やして節税、苦しい年は減らす」ができる</b></p>
@@ -221,7 +223,7 @@
 <div class="scroll-wrap">
 <table class="num-nowrap-sm">
 <thead>
-<tr><th scope="col">課税される所得金額</th><th scope="col">月1万円<br>（年12万円）</th><th scope="col">月3万円<br>（年36万円）</th><th scope="col">月5万円<br>（年60万円）</th><th scope="col">月7万円<br>（年84万円・上限）</th></tr>
+<tr><th scope="col" class="num">課税される所得金額</th><th scope="col">月1万円<br>（年12万円）</th><th scope="col">月3万円<br>（年36万円）</th><th scope="col">月5万円<br>（年60万円）</th><th scope="col">月7万円<br>（年84万円・上限）</th></tr>
 </thead>
 <tbody>
 <tr><td class="num">195万円</td><td>18,126円<br>（15.1%）</td><td>54,378円<br>（15.1%）</td><td>90,630円<br>（15.1%）</td><td>126,882円<br>（15.1%）</td></tr>
@@ -274,16 +276,16 @@
 <div class="scroll-wrap">
 <table class="num-nowrap">
 <thead>
-<tr><th scope="col">課税される所得金額</th><th scope="col">税率</th><th scope="col">控除額</th></tr>
+<tr><th scope="col">課税される所得金額</th><th scope="col" class="num">税率</th><th scope="col" class="num">控除額</th></tr>
 </thead>
 <tbody>
-<tr><td>1,000円 〜 194万9,000円</td><td class="num">5%</td><td class="num">0円</td></tr>
-<tr><td>195万円 〜 329万9,000円</td><td class="num">10%</td><td class="num">97,500円</td></tr>
-<tr><td>330万円 〜 694万9,000円</td><td class="num">20%</td><td class="num">427,500円</td></tr>
-<tr><td>695万円 〜 899万9,000円</td><td class="num">23%</td><td class="num">636,000円</td></tr>
-<tr><td>900万円 〜 1,799万9,000円</td><td class="num">33%</td><td class="num">1,536,000円</td></tr>
-<tr><td>1,800万円 〜 3,999万9,000円</td><td class="num">40%</td><td class="num">2,796,000円</td></tr>
-<tr><td>4,000万円 以上</td><td class="num">45%</td><td class="num">4,796,000円</td></tr>
+<tr><td><span class="numeric-token">1,000円</span> 〜 194万<span class="numeric-token">9,000円</span></td><td class="num"><span class="numeric-token">5%</span></td><td class="num"><span class="numeric-token">0円</span></td></tr>
+<tr><td>195万円 〜 329万<span class="numeric-token">9,000円</span></td><td class="num"><span class="numeric-token">10%</span></td><td class="num"><span class="numeric-token">97,500円</span></td></tr>
+<tr><td>330万円 〜 694万<span class="numeric-token">9,000円</span></td><td class="num"><span class="numeric-token">20%</span></td><td class="num"><span class="numeric-token">427,500円</span></td></tr>
+<tr><td>695万円 〜 899万<span class="numeric-token">9,000円</span></td><td class="num"><span class="numeric-token">23%</span></td><td class="num"><span class="numeric-token">636,000円</span></td></tr>
+<tr><td>900万円 〜 1,799万<span class="numeric-token">9,000円</span></td><td class="num"><span class="numeric-token">33%</span></td><td class="num"><span class="numeric-token">1,536,000円</span></td></tr>
+<tr><td>1,800万円 〜 3,999万<span class="numeric-token">9,000円</span></td><td class="num"><span class="numeric-token">40%</span></td><td class="num"><span class="numeric-token">2,796,000円</span></td></tr>
+<tr><td>4,000万円 以上</td><td class="num"><span class="numeric-token">45%</span></td><td class="num"><span class="numeric-token">4,796,000円</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -294,7 +296,7 @@
 
 <p>節税で得をしても「受け取るときに課税されて相殺されるのでは」と気になるところです。結論として、<b>共済金の受け取りには、通常の所得より軽い課税の仕組みが用意されています</b>（中小機構）。</p>
 
-<table>
+<div class="scroll-wrap"><table>
 <thead>
 <tr><th scope="col">受け取り方</th><th scope="col">税金の扱い</th></tr>
 </thead>
@@ -303,7 +305,7 @@
 <tr><td>分割で受け取る</td><td><b>公的年金等の雑所得</b>扱い（公的年金等控除が使える）</td></tr>
 <tr><td>一括と分割の併用</td><td>それぞれの扱い（併用も可能）</td></tr>
 </tbody>
-</table>
+</table></div>
 
 <p>共済金は<b>退職・廃業のとき</b>に受け取れ、満期や満額はありません。一括受け取りなら退職所得控除、分割受け取りなら公的年金等控除が働くため、掛金を払ったときに受けた所得控除が、そのまま受取時に取り返されるわけではありません。<b>払うときに高い税率で節税し、受け取るときは軽い課税で受け取る</b>——ここに制度の妙味があります。</p>
 
@@ -336,20 +338,20 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 小規模企業共済でいくら節税できますか？</h3>
-<p>A. 掛金は全額が所得控除になるため、節税額は課税される所得金額と掛金月額で決まります。課税される所得金額500万円の人が上限の月70,000円（年84万円）を払うと、所得税・復興特別所得税・住民税を合わせて年間255,528円の節税になります（掛金の30.4%）。同じ所得でも掛金が少なければ節税額もほぼ比例して小さくなり、月30,000円（年36万円）なら109,512円です。上の計算機に課税される所得金額と掛金月額を入れると、あなたの年間節税額が出ます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>小規模企業共済でいくら節税できますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>掛金は全額が所得控除になるため、節税額は課税される所得金額と掛金月額で決まります。課税される所得金額500万円の人が上限の月70,000円（年84万円）を払うと、所得税・復興特別所得税・住民税を合わせて年間255,528円の節税になります（掛金の30.4%）。同じ所得でも掛金が少なければ節税額もほぼ比例して小さくなり、月30,000円（年36万円）なら109,512円です。上の計算機に課税される所得金額と掛金月額を入れると、あなたの年間節税額が出ます。</p>
 
-<h3>Q. 掛金はいくらから始められますか？</h3>
-<p>A. 月額1,000円から70,000円までの範囲で、500円きざみで自由に決められます。加入後も月に1回に限り増額・減額でき、1年以内の前納掛金もその年の所得控除にできます。掛金は共済契約者本人名義の口座から毎月18日（休日なら翌営業日）に振り替えられ、月払いのほか半年払い・年払いも選べます。所得が読みにくい年は少額で始め、余裕のある年に増やす使い方ができます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>掛金はいくらから始められますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>月額1,000円から70,000円までの範囲で、500円きざみで自由に決められます。加入後も月に1回に限り増額・減額でき、1年以内の前納掛金もその年の所得控除にできます。掛金は共済契約者本人名義の口座から毎月18日（休日なら翌営業日）に振り替えられ、月払いのほか半年払い・年払いも選べます。所得が読みにくい年は少額で始め、余裕のある年に増やす使い方ができます。</p>
 
-<h3>Q. 払った掛金は経費になりますか？</h3>
-<p>A. なりません。掛金は事業上の損金や必要経費には算入できず、あくまで個人の「小規模企業共済等掛金控除」として課税所得から差し引きます。法人の役員が加入した場合も、法人の経費ではなく役員個人の所得控除です。税負担を下げる効果は経費と同じですが、確定申告では経費欄ではなく所得控除欄に記載する点が異なります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>払った掛金は経費になりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>なりません。掛金は事業上の損金や必要経費には算入できず、あくまで個人の「小規模企業共済等掛金控除」として課税所得から差し引きます。法人の役員が加入した場合も、法人の経費ではなく役員個人の所得控除です。税負担を下げる効果は経費と同じですが、確定申告では経費欄ではなく所得控除欄に記載する点が異なります。</p>
 
-<h3>Q. 受け取るときに税金はかかりますか？</h3>
-<p>A. かかりますが、受け取り方で扱いが変わります。共済金を一括で受け取ると退職所得、分割で受け取ると公的年金等の雑所得となり、どちらも退職所得控除や公的年金等控除が使えるため、通常の所得より軽い課税で済みます。ただし65歳未満で任意解約した解約手当金は一時所得扱いとなり、掛金納付月数が240か月（20年）を下回ると受取額が掛金合計を下回ることがあります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>受け取るときに税金はかかりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>かかりますが、受け取り方で扱いが変わります。共済金を一括で受け取ると退職所得、分割で受け取ると公的年金等の雑所得となり、どちらも退職所得控除や公的年金等控除が使えるため、通常の所得より軽い課税で済みます。ただし65歳未満で任意解約した解約手当金は一時所得扱いとなり、掛金納付月数が240か月（20年）を下回ると受取額が掛金合計を下回ることがあります。</p>
 
-<h3>Q. 課税される所得金額とは何ですか？</h3>
-<p>A. 年収でも、事業の売上でもありません。確定申告書に載る「課税される所得金額」で、所得から基礎控除・扶養控除・社会保険料控除などをすべて引いた後の、税率をかける直前の金額です。この額が大きい人ほど高い税率がかかるため、同じ掛金でも節税額は大きくなります。個人事業主なら確定申告書の「課税される所得金額」をそのまま使えます。源泉徴収票にはこの名前の欄がないので、会社員は「給与所得控除後の金額」から「所得控除の額の合計額」を引いた額を使ってください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>課税される所得金額とは何ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>年収でも、事業の売上でもありません。確定申告書に載る「課税される所得金額」で、所得から基礎控除・扶養控除・社会保険料控除などをすべて引いた後の、税率をかける直前の金額です。この額が大きい人ほど高い税率がかかるため、同じ掛金でも節税額は大きくなります。個人事業主なら確定申告書の「課税される所得金額」をそのまま使えます。源泉徴収票にはこの名前の欄がないので、会社員は「給与所得控除後の金額」から「所得控除の額の合計額」を引いた額を使ってください。</p>
 
 <section class="related">
 <div class="tool-grid">

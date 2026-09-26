@@ -137,15 +137,16 @@
     自家用の乗用車（<b>登録車＝3・5・7ナンバー</b>）と<b>軽自動車</b>の年額を計算します。営業用（緑ナンバー）・貨物（1・4ナンバー）・トラック・バス・二輪・原付は税額表が別のため対象外です。実際の税額は毎年5月ごろ届く<b>納税通知書</b>が正本です。
   </div>
 
-  <label for="vehicle">車種<span class="hint">　ナンバープレートの色・区分でお選びください</span></label>
-  <select id="vehicle">
+  <label for="vehicle">車種</label>
+  <select id="vehicle" aria-describedby="vehicle-hint">
     <option value="passenger" selected>自家用乗用車（登録車・白ナンバー／3・5・7ナンバー）〔自動車税〕</option>
     <option value="kei">軽自動車（自家用乗用・黄色ナンバー）〔軽自動車税〕</option>
   </select>
+      <span id="vehicle-hint" class="hint">　ナンバープレートの色・区分でお選びください</span>
 
   <div id="cc-block">
-    <label for="cc">総排気量<span class="hint">　車検証の「総排気量」でお選びください（電気自動車は先頭）</span></label>
-    <select id="cc">
+    <label for="cc">総排気量</label>
+    <select id="cc" aria-describedby="cc-hint">
       <option value="ev">電気自動車（燃料電池車を含む）</option>
       <option value="le1000">1リットル（1,000cc）以下</option>
       <option value="le1500">1リットル超 1.5リットル以下</option>
@@ -158,11 +159,13 @@
       <option value="le6000">4.5リットル超 6リットル以下</option>
       <option value="gt6000">6リットル超</option>
     </select>
+      <span id="cc-hint" class="hint">　車検証の「総排気量」でお選びください（電気自動車は先頭）</span>
   </div>
 
-  <label for="regyear" id="reg-label">初度登録の年月<span class="hint" id="reg-hint">　車検証の「初度登録年月」（軽自動車は「初度検査年月」）</span></label>
+  <label for="regyear" id="reg-label">初度登録の年月</label>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
-    <select id="regyear" style="flex:1"></select>
+    <select id="regyear" style="flex:1" aria-describedby="reg-hint"></select>
+
     <span>年</span>
     <select id="regmonth" style="flex:1">
       <option value="1">1</option><option value="2">2</option><option value="3">3</option>
@@ -172,15 +175,17 @@
     </select>
     <span>月</span>
   </div>
+<span class="hint" id="reg-hint">　車検証の「初度登録年月」（軽自動車は「初度検査年月」）</span>
   <div id="rate-echo" class="hint" style="margin:-6px 0 10px"></div>
 
-  <label for="fuel">燃料の種類<span class="hint">　13年超の重課の対象かどうかの判定に使います</span></label>
-  <select id="fuel">
+  <label for="fuel">燃料の種類</label>
+  <select id="fuel" aria-describedby="fuel-hint">
     <option value="gasoline" selected>ガソリン・LPG</option>
     <option value="diesel">ディーゼル（軽油）</option>
     <option value="hybrid">ハイブリッド（ガソリンを燃料とするもの）</option>
     <option value="ev_other">電気・その他</option>
   </select>
+      <span id="fuel-hint" class="hint">　13年超の重課の対象かどうかの判定に使います</span>
 
   <label style="display:block;font-weight:400;margin:0 0 10px"><input type="checkbox" id="jyuka"> <b>初度登録から13年を超えている</b>（ディーゼル車は11年超）<span class="hint">　※ハイブリッド・電気・天然ガス車は13年超でも重課の対象外です</span></label>
 
@@ -301,7 +306,7 @@
 
 <div class="scroll-wrap">
 <table class="tbl" id="zeigaku-table">
-  <thead><tr><th scope="col">総排気量</th><th scope="col">新税率<br><span class="hint">令和元年10月1日以後の初度登録</span></th><th scope="col">旧税率<br><span class="hint">令和元年9月30日以前の初度登録</span></th><th scope="col">13年超の重課<br><span class="hint">ガソリン・LPG／ディーゼル11年超</span></th></tr></thead>
+  <thead><tr><th scope="col">総排気量</th><th scope="col" class="num">新税率<br><span class="hint">令和元年10月1日以後の初度登録</span></th><th scope="col" class="num">旧税率<br><span class="hint">令和元年9月30日以前の初度登録</span></th><th scope="col">13年超の重課<br><span class="hint">ガソリン・LPG／ディーゼル11年超</span></th></tr></thead>
   <tbody><tr><td>電気自動車（燃料電池車を含む）</td><td class="num">¥25,000</td><td class="num">¥29,500</td><td>—（対象外）</td></tr><tr><td>1リットル（1,000cc）以下</td><td class="num">¥25,000</td><td class="num">¥29,500</td><td>¥33,900</td></tr><tr><td>1リットル超 1.5リットル以下</td><td class="num">¥30,500</td><td class="num">¥34,500</td><td>¥39,600</td></tr><tr><td>1.5リットル超 2リットル以下</td><td class="num">¥36,000</td><td class="num">¥39,500</td><td>¥45,400</td></tr><tr><td>2リットル超 2.5リットル以下</td><td class="num">¥43,500</td><td class="num">¥45,000</td><td>¥51,700</td></tr><tr><td>2.5リットル超 3リットル以下</td><td class="num">¥50,000</td><td class="num">¥51,000</td><td>¥58,600</td></tr><tr><td>3リットル超 3.5リットル以下</td><td class="num">¥57,000</td><td class="num">¥58,000</td><td>¥66,700</td></tr><tr><td>3.5リットル超 4リットル以下</td><td class="num">¥65,500</td><td class="num">¥66,500</td><td>¥76,400</td></tr><tr><td>4リットル超 4.5リットル以下</td><td class="num">¥75,500</td><td class="num">¥76,500</td><td>¥87,900</td></tr><tr><td>4.5リットル超 6リットル以下</td><td class="num">¥87,000</td><td class="num">¥88,000</td><td>¥101,200</td></tr><tr><td>6リットル超</td><td class="num">¥110,000</td><td class="num">¥111,000</td><td>¥127,600</td></tr></tbody>
 </table>
 </div>
@@ -317,23 +322,23 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 自動車税は排気量でいくら違いますか？</h3>
-<p>A. 自家用乗用車（登録車）の自動車税（種別割）は総排気量の区分で決まります。令和元年10月1日以後に初度登録した車なら、1リットル以下25,000円、1リットル超1.5リットル以下30,500円、1.5リットル超2リットル以下36,000円、2リットル超2.5リットル以下43,500円…と上がり、6リットル超は110,000円です。令和元年9月30日以前に初度登録した車は、これより少し高い旧税率です（1.5リットル超2リットル以下なら39,500円）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>自動車税は排気量でいくら違いますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>自家用乗用車（登録車）の自動車税（種別割）は総排気量の区分で決まります。令和元年10月1日以後に初度登録した車なら、1リットル以下25,000円、1リットル超1.5リットル以下30,500円、1.5リットル超2リットル以下36,000円、2リットル超2.5リットル以下43,500円…と上がり、6リットル超は110,000円です。令和元年9月30日以前に初度登録した車は、これより少し高い旧税率です（1.5リットル超2リットル以下なら39,500円）。</p>
 
-<h3>Q. 13年経つと自動車税は高くなりますか？</h3>
-<p>A. ガソリン車・LPG車は初度登録から13年、ディーゼル車は11年を超えると、おおむね15%重くなります（重課）。ただし電気自動車・天然ガス・メタノール車と、ガソリンを燃料とするハイブリッド車、一般乗合バス・被けん引車は重課の対象外です。台数の多いハイブリッド車は13年超でも標準税率のままなので、一律に15%増しと考えると払いすぎの誤解になります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>13年経つと自動車税は高くなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>ガソリン車・LPG車は初度登録から13年、ディーゼル車は11年を超えると、おおむね15%重くなります（重課）。ただし電気自動車・天然ガス・メタノール車と、ガソリンを燃料とするハイブリッド車、一般乗合バス・被けん引車は重課の対象外です。台数の多いハイブリッド車は13年超でも標準税率のままなので、一律に15%増しと考えると払いすぎの誤解になります。</p>
 
-<h3>Q. 年度の途中で新車を買うと自動車税はいくらですか？</h3>
-<p>A. 登録車の自動車税（種別割）は、登録した月の翌月から翌年3月までの月数で月割になります。たとえば36,000円の車を8月に登録すると、9月〜3月の7か月分で21,000円です（年額×月数÷12、100円未満切捨）。翌年度からは年額です。3月に登録した場合その年度分はかかりません。なお軽自動車税に月割はなく、4月1日現在の所有者に年額が課税されます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>年度の途中で新車を買うと自動車税はいくらですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>登録車の自動車税（種別割）は、登録した月の翌月から翌年3月までの月数で月割になります。たとえば36,000円の車を8月に登録すると、9月〜3月の7か月分で21,000円です（年額×月数÷12、100円未満切捨）。翌年度からは年額です。3月に登録した場合その年度分はかかりません。なお軽自動車税に月割はなく、4月1日現在の所有者に年額が課税されます。</p>
 
-<h3>Q. 軽自動車の税金（軽自動車税）はいくらですか？</h3>
-<p>A. 自家用乗用の軽自動車（三輪以上・660cc以下）の軽自動車税（種別割）は、平成27年4月1日以後に最初の新規検査を受けた車で年10,800円、それより前は7,200円、最初の新規検査から13年を超えると12,900円（重課）です。軽自動車税は市区町村税で、自動車税（都道府県税）とは別の税金です。標準税率はほぼ全国共通ですが、詳しくはお住まいの市区町村でご確認ください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>軽自動車の税金（軽自動車税）はいくらですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>自家用乗用の軽自動車（三輪以上・660cc以下）の軽自動車税（種別割）は、平成27年4月1日以後に最初の新規検査を受けた車で年10,800円、それより前は7,200円、最初の新規検査から13年を超えると12,900円（重課）です。軽自動車税は市区町村税で、自動車税（都道府県税）とは別の税金です。標準税率はほぼ全国共通ですが、詳しくはお住まいの市区町村でご確認ください。</p>
 
-<h3>Q. 自動車税はいつ払いますか？誰が払いますか？</h3>
-<p>A. 毎年4月1日現在の自動車の所有者に課税され、5月ごろに納税通知書が届いて5月末までに納めるのが一般的です（納期は都道府県により多少異なります）。年度の途中で車を手放しても、月割で還付されるのは一部の場合に限られます。実際の税額は納税通知書が正本で、このツールは標準税率にもとづく目安です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>自動車税はいつ払いますか？誰が払いますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>毎年4月1日現在の自動車の所有者に課税され、5月ごろに納税通知書が届いて5月末までに納めるのが一般的です（納期は都道府県により多少異なります）。年度の途中で車を手放しても、月割で還付されるのは一部の場合に限られます。実際の税額は納税通知書が正本で、このツールは標準税率にもとづく目安です。</p>
 
-<h3>Q. 自動車税とエコカー減税・環境性能割は違うものですか？</h3>
-<p>A. 別のものです。このツールで計算するのは毎年かかる「自動車税（種別割）」です。買うときに一度だけかかっていた「自動車税環境性能割」は令和8年3月31日で廃止されました。また、電気自動車や一定の低燃費車は、登録の翌年度に限り自動車税が概ね75%または50%軽くなる「グリーン化特例（軽課）」の対象になることがありますが、対象かどうかは車種の燃費基準の達成度によります。軽課の金額は納税通知書でご確認ください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>自動車税とエコカー減税・環境性能割は違うものですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>別のものです。このツールで計算するのは毎年かかる「自動車税（種別割）」です。買うときに一度だけかかっていた「自動車税環境性能割」は令和8年3月31日で廃止されました。また、電気自動車や一定の低燃費車は、登録の翌年度に限り自動車税が概ね75%または50%軽くなる「グリーン化特例（軽課）」の対象になることがありますが、対象かどうかは車種の燃費基準の達成度によります。軽課の金額は納税通知書でご確認ください。</p>
 
 <section class="related">
 <div class="tool-grid">
@@ -367,7 +372,7 @@
   入力した内容はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年度　／　一次情報の確認: 2026年7月17日</li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年度　／　一次情報の確認: 2026年7月17日</li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

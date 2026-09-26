@@ -134,6 +134,7 @@ label { display: block; font-weight: 700; font-size: 14px; margin: 20px 0 4px; }
    ラベルと同じ行から始まり、幅が尽きた所で折れて**先頭1文字だけがラベル右端に残る**
    （aoiro-kojo で実際に発生）。ラベルの下に1行として置く。 */
 label > .hint { display: block; margin: 2px 0 0; font-weight: 400; }
+input + .hint, select + .hint, textarea + .hint { display: block; margin: 4px 0 0; }
 
 /* 任意項目の印（GOV.UK 方式: 必須にアスタリスクを付けず、任意側に印を付ける） */
 .field-optional { font-weight: 400; font-size: 14px; color: var(--sub); }
@@ -173,6 +174,14 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type=
    正本が認める例外（続柄＋年齢のような「短い組」）だけ --short で2カラムを維持する。 */
 @media (max-width: 560px) {
   .fee-pair:not(.fee-pair--short) { flex-direction: column; gap: 0; }
+}
+/* Subgrid shares the label row even when one label wraps to two lines. */
+@media (min-width: 601px) {
+  .fee-pair.field-pair, .fee-pair--short.field-pair { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; gap: 0 12px; }
+  .field-pair > div { display: grid; grid-template-rows: subgrid; grid-row: span 3; }
+  .field-pair > div > label { grid-row: 1; align-self: end; }
+  .field-pair > div > :is(input,select,textarea) { grid-row: 2; align-self: start; }
+  .field-pair > div > .hint { grid-row: 3; }
 }
 .fee-pair--short { display: flex; gap: 12px; }
 .fee-pair--short > div { flex: 1; min-width: 0; }
@@ -278,11 +287,17 @@ section.faq h3 { font-size: 15px; margin-bottom: 4px; }
 /* FAQの答えは本文と同格のコンテンツ(検索にも出る)。灰色で二級扱いしない(2026-07-23) */
 section.faq p { font-size: 15px; color: var(--ink); margin-top: 0; }
 footer.site {
-  max-width: var(--shell);
+  /* Match main: shell is the content width, padding belongs outside it. */
+  max-width: calc(var(--shell) + 32px);
   margin: 0 auto;
   padding: 20px 16px 40px;
   color: var(--sub);
   font-size: 13px;
+}
+/* Footer metadata is a labelled list, with no hanging marker. */
+footer.site .datasrc ul { list-style: none; padding-left: 0; }
+@media (min-width: 1200px) {
+  body:has(main nav.toc) footer.site { padding-right: calc(var(--shell) - 672px + 16px); }
 }
 footer.site nav { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px 16px; }
 /* リンクの当たり判定を 24px 以上にする（SC 2.5.8）。文字は13pxのまま */
@@ -341,11 +356,11 @@ article li:last-child { margin-bottom: 0; }
    break-word は「収まらないときだけ」折るので、通常の日本語・英単語の見た目は変わらない。 */
 main { overflow-wrap: break-word; }
 main a, main b, main code { overflow-wrap: anywhere; }
-article table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 16px 0; }
-article th, article td { border: 1px solid var(--line); padding: 9px 11px; text-align: left; }
-article th { background: var(--accent-soft); font-weight: 700; }
+main table { border-collapse: collapse; width: 100%; font-size: 14px; margin: 16px 0; }
+main th, main td { border: 1px solid var(--line); padding: 9px 11px; text-align: left; }
+main th { background: var(--accent-soft); font-weight: 700; }
 /* 値のセルは白地。ページ地(--bg)が透けると見出し行と値の区別がつかず読みにくい（2026-09-23） */
-article td, .tbl td { background: #fff; }
+main td, .tbl td { background: #fff; }
 article code { background: #eef2f5; padding: 1px 6px; border-radius: 4px; font-size: 14px; }
 .figure { margin: 22px 0; text-align: center; }
 .figure svg { max-width: 100%; height: auto; }
@@ -424,6 +439,26 @@ article blockquote p:last-child { margin-bottom: 0; }
 .data-table th { position: sticky; top: 0; background: var(--accent-soft); z-index: 1; font-size: 12.5px; padding: 7px 6px; }
 .data-table td { padding: 5px 6px; }
 .data-table tr:nth-child(even) td { background: #fafbfc; }
+
+/* A number and its unit form one token; surrounding prose may still wrap. */
+.numeric-token { white-space: nowrap; }
+/* FAQ h3+p is shared by tools and articles. Labels are presentation only;
+   the question, answer and FAQPage text stay unchanged. */
+main .faq-question {
+  position: relative; padding: 16px 0 0 32px; margin: 32px 0 8px;
+  border: 0; border-top: 1px solid var(--line);
+  font-size: 16px; font-weight: 700; line-height: 1.7;
+}
+main .faq-answer {
+  position: relative; padding-left: 32px; margin: 0 0 24px;
+  font-size: 16px; font-weight: 400; line-height: 1.95; color: var(--ink);
+}
+main .faq-answer b, main .faq-answer strong { font-weight: 400; }
+.faq-question::before, .faq-answer::before {
+  position: absolute; left: 0; width: 24px; font-weight: 700; color: var(--accent);
+}
+.faq-question::before { content: "Q"; }
+.faq-answer::before { content: "A"; }
 
 /* ---- 記事の図解（インラインSVG）の共通クラス。記事内 <style> は書かない ----
    本文色に追従させるため、地の文にあたる文字は fill: currentColor を使う。
@@ -1035,3 +1070,9 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
 .saved-condition button.btn-outline { width: auto; margin-top: 0; }
 .saved-condition [data-del] { flex: 0 0 auto; }
 .retention-months button[aria-pressed=true]::before { content: "✓ "; }
+
+.faq-existing-marker { display: none; }
+
+/* One short control beside its label; the help belongs on the next line. */
+.field-inline-help { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 4px 8px; align-items: center; margin: 12px 0; }
+.field-inline-help > .hint { grid-column: 1 / -1; }

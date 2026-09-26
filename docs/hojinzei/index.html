@@ -119,16 +119,18 @@
   </div>
 
   <div class="card">
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="shotoku">その事業年度の所得金額（円）</label>
-    <p class="hint" id="shotoku-hint">別表四で計算した所得金額（繰越欠損金を控除した後）。</p>
+
     <input aria-describedby="shotoku-hint" type="number" id="shotoku" value="20000000" min="0" step="100000" inputmode="numeric">
+    <p class="hint" id="shotoku-hint">別表四で計算した所得金額（繰越欠損金を控除した後）。</p>
       </div>
       <div>
         <label for="tsukisu">事業年度の月数</label>
-    <p class="hint" id="tsukisu-hint">1年未満なら800万円・10億円を按分します。</p>
+
     <input aria-describedby="tsukisu-hint" type="number" id="tsukisu" value="12" min="1" max="12" step="1" inputmode="numeric">
+    <p class="hint" id="tsukisu-hint">1年未満なら800万円・10億円を按分します。</p>
       </div>
     </div>
 
@@ -156,8 +158,8 @@
   <div class="scroll-wrap">
   <table id="rate-hyo">
     <tr><th scope="col">所得の部分</th><th scope="col">資本金1億円以下＋特例あり</th><th scope="col">特例が使えない</th><th scope="col">資本金1億円超</th></tr>
-    <tr><td><b>年800万円以下</b></td><td><b>15%</b>（10億円超の年は17%）</td><td class="num">19%</td><td class="num">23.2%</td></tr>
-    <tr><td>年800万円を超える部分</td><td>23.2%</td><td class="num">23.2%</td><td class="num">23.2%</td></tr>
+    <tr><td><b>年800万円以下</b></td><td><b>15%</b>（10億円超の年は17%）</td><td class="num"><span class="numeric-token">19%</span></td><td class="num"><span class="numeric-token">23.2%</span></td></tr>
+    <tr><td>年800万円を超える部分</td><td><span class="numeric-token">23.2%</span></td><td class="num"><span class="numeric-token">23.2%</span></td><td class="num"><span class="numeric-token">23.2%</span></td></tr>
   </table>
   </div>
   <div class="callout">
@@ -202,26 +204,26 @@
 
 <section class="faq">
 <h2 id="faq">よくある質問</h2>
-<h3>Q. 中小企業の法人税は15%ではないのですか？</h3>
-<p>A. <b>年800万円以下の部分だけ</b>が15%です（措置法42条の3の2）。800万円を超える部分には原則の23.2%がかかります（法人税法66条1項）。所得全体に15%を掛けると税額が大きく過少に出ます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>中小企業の法人税は15%ではないのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>年800万円以下の部分だけ</b>が15%です（措置法42条の3の2）。800万円を超える部分には原則の23.2%がかかります（法人税法66条1項）。所得全体に15%を掛けると税額が大きく過少に出ます。</p>
 
-<h3>Q. 15%が17%になるのはどういう場合ですか？</h3>
-<p>A. <b>所得の金額が年10億円を超える事業年度</b>です（措置法42条の3の2第1項）。令和7年度改正で入りました。判定は所得全体で行い、率が変わるのは800万円以下の部分です。10億円<b>ちょうど</b>は15%のままです（条文は「超える」）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>15%が17%になるのはどういう場合ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>所得の金額が年10億円を超える事業年度</b>です（措置法42条の3の2第1項）。令和7年度改正で入りました。判定は所得全体で行い、率が変わるのは800万円以下の部分です。10億円<b>ちょうど</b>は15%のままです（条文は「超える」）。</p>
 
-<h3>Q. 資本金1億円以下なら必ず軽減税率が使えますか？</h3>
-<p>A. いいえ。<b>適用除外事業者</b>（前3事業年度の所得の平均が15億円超）、<b>通算法人</b>、<b>資本金5億円以上の大法人による完全支配関係がある普通法人</b>などは使えず19%のままです。大法人の100%子会社が見落とされがちです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>資本金1億円以下なら必ず軽減税率が使えますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>いいえ。<b>適用除外事業者</b>（前3事業年度の所得の平均が15億円超）、<b>通算法人</b>、<b>資本金5億円以上の大法人による完全支配関係がある普通法人</b>などは使えず19%のままです。大法人の100%子会社が見落とされがちです。</p>
 
-<h3>Q. 地方法人税の税率10.3%は所得に掛けるのですか？</h3>
-<p>A. いいえ。<b>課税標準は法人税額</b>です（地方法人税法10条1項）。法人税120万円なら地方法人税は123,600円で、所得に掛けると6.7倍の過大になります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>地方法人税の税率10.3%は所得に掛けるのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>いいえ。<b>課税標準は法人税額</b>です（地方法人税法10条1項）。法人税120万円なら地方法人税は123,600円で、所得に掛けると6.7倍の過大になります。</p>
 
-<h3>Q. 事業年度が1年未満のときはどうなりますか？</h3>
-<p>A. 年800万円と年10億円を<b>「12で除して事業年度の月数を乗じた金額」</b>に読み替えます（法人税法66条4項・措置法42条の3の2第3項）。月数は暦に従って計算し、<b>1月に満たない端数は1月</b>とします（同条4項）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>事業年度が1年未満のときはどうなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>年800万円と年10億円を<b>「12で除して事業年度の月数を乗じた金額」</b>に読み替えます（法人税法66条4項・措置法42条の3の2第3項）。月数は暦に従って計算し、<b>1月に満たない端数は1月</b>とします（同条4項）。</p>
 
-<h3>Q. この特例はいつまでですか？</h3>
-<p>A. <b>令和9年3月31日までに開始する事業年度</b>までの時限措置です（措置法42条の3の2第1項）。延長されてきた経緯がありますが、条文上の期限はこの日です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>この特例はいつまでですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>令和9年3月31日までに開始する事業年度</b>までの時限措置です（措置法42条の3の2第1項）。延長されてきた経緯がありますが、条文上の期限はこの日です。</p>
 
-<h3>Q. 実効税率はいくらですか？</h3>
-<p>A. <b>このツールでは出しません。</b>実効税率には法人住民税・法人事業税・特別法人事業税が入り、これらは自治体と資本金・所得の区分で率が違うためです。国税だけの計算例としてお使いください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>実効税率はいくらですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>このツールでは出しません。</b>実効税率には法人住民税・法人事業税・特別法人事業税が入り、これらは自治体と資本金・所得の区分で率が違うためです。国税だけの計算例としてお使いください。</p>
 </section>
 
 <h2 id="shutten">出典</h2>
@@ -238,7 +240,7 @@
   © 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
 </footer>
 <script type="module">
 import { calc } from "../assets/hojinzei_core.js";

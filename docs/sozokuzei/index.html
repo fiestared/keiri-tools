@@ -153,8 +153,9 @@
 </section>
 
 <div class="card">
-  <label for="isan">遺産の総額（課税価格の合計・<b>万円</b>）<span class="hint">　プラスの財産から借金・葬式費用を引いた課税価格の合計。例: 10000 なら1億円</span></label>
-  <input type="number" id="isan" placeholder="例: 10000（＝1億円）" inputmode="numeric" min="0">
+  <label for="isan">遺産の総額（課税価格の合計・<b>万円</b>）</label>
+  <input type="number" id="isan" placeholder="例: 10000（＝1億円）" inputmode="numeric" min="0" aria-describedby="isan-hint">
+      <span id="isan-hint" class="hint">　プラスの財産から借金・葬式費用を引いた課税価格の合計。例: 10000 なら1億円</span>
   <div id="isan-echo" class="hint" style="margin:-6px 0 10px"></div>
 
 <details style="margin-top:12px" id="isan-builder">
@@ -188,28 +189,33 @@
 
 
 
-  <label for="haiguusha">配偶者（夫・妻）<span class="hint">　いる場合は税額軽減で配偶者の負担が大きく下がります</span></label>
-  <select id="haiguusha">
+  <label for="haiguusha">配偶者（夫・妻）</label>
+  <select id="haiguusha" aria-describedby="haiguusha-hint">
     <option value="1">いる</option>
     <option value="0">いない（すでに死亡・離婚など）</option>
   </select>
+      <span id="haiguusha-hint" class="hint">　いる場合は税額軽減で配偶者の負担が大きく下がります</span>
 
-  <label for="koReal">子の数（実子）<span class="hint">　亡くなった人の子。先に亡くなった子がいる場合はその孫（代襲相続人）も含める</span></label>
-  <input type="number" id="koReal" value="0" min="0" inputmode="numeric">
+  <label for="koReal">子の数（実子）</label>
+  <input type="number" id="koReal" value="0" min="0" inputmode="numeric" aria-describedby="koReal-hint">
+      <span id="koReal-hint" class="hint">　亡くなった人の子。先に亡くなった子がいる場合はその孫（代襲相続人）も含める</span>
 
-  <label for="koYoshi">うち養子の数<span class="hint">　法定相続人に数えられる養子は、実子がいれば1人まで・実子がいなければ2人まで（相続税法15条）</span></label>
-  <input type="number" id="koYoshi" value="0" min="0" inputmode="numeric">
+  <label for="koYoshi">うち養子の数</label>
+  <input type="number" id="koYoshi" value="0" min="0" inputmode="numeric" aria-describedby="koYoshi-hint">
+      <span id="koYoshi-hint" class="hint">　法定相続人に数えられる養子は、実子がいれば1人まで・実子がいなければ2人まで（相続税法15条）</span>
 
   <div class="callout" style="margin:10px 0">
     <b>子がいない場合だけ、下の父母・兄弟姉妹が相続人になります</b>
     相続の順位は <b>①子（いなければその孫）→ ②父母（直系尊属）→ ③兄弟姉妹</b> の順です（民法887〜890条）。子が1人でもいれば、父母・兄弟姉妹は相続人になりません（下の欄を入れても無視されます）。
   </div>
 
-  <label for="oya">父母（存命の直系尊属）の数<span class="hint">　子がいないときのみ。父母がいなければ祖父母</span></label>
-  <input type="number" id="oya" value="0" min="0" inputmode="numeric">
+  <label for="oya">父母（存命の直系尊属）の数</label>
+  <input type="number" id="oya" value="0" min="0" inputmode="numeric" aria-describedby="oya-hint">
+      <span id="oya-hint" class="hint">　子がいないときのみ。父母がいなければ祖父母</span>
 
-  <label for="kyodai">兄弟姉妹の数<span class="hint">　子も父母もいないときのみ。兄弟姉妹は相続税が2割加算されます</span></label>
-  <input type="number" id="kyodai" value="0" min="0" inputmode="numeric">
+  <label for="kyodai">兄弟姉妹の数</label>
+  <input type="number" id="kyodai" value="0" min="0" inputmode="numeric" aria-describedby="kyodai-hint">
+      <span id="kyodai-hint" class="hint">　子も父母もいないときのみ。兄弟姉妹は相続税が2割加算されます</span>
 
   <button class="primary" id="calc">計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -244,19 +250,19 @@
     相続税の総額は、①課税価格の合計から基礎控除を引いて<b>課税遺産総額</b>を出し、②これを各相続人が<b>法定相続分どおりに取得したと仮定</b>して1人ずつ速算表を当て、③合計します（相続税法16条）。遺産全体や「実際に相続した額」に税率を当てるのは誤りです。この仕組みのおかげで、同じ遺産額でも<b>相続人が多いほど1人あたりの税率が下がり、相続税の総額は小さく</b>なります。
   </div>
   <h3>相続税の速算表（令和8年・国税庁 No.4155）</h3>
-  <table id="sokusanhyo" class="tbl">
-    <thead><tr><th scope="col">法定相続分に応ずる取得金額</th><th scope="col">税率</th><th scope="col">控除額</th></tr></thead>
+  <div class="scroll-wrap"><table id="sokusanhyo" class="tbl">
+    <thead><tr><th scope="col">法定相続分に応ずる取得金額</th><th scope="col" class="num">税率</th><th scope="col">控除額</th></tr></thead>
     <tbody>
-      <tr><td>1,000万円以下</td><td class="num">10%</td><td>—</td></tr>
-      <tr><td>1,000万円超 3,000万円以下</td><td class="num">15%</td><td>50万円</td></tr>
-      <tr><td>3,000万円超 5,000万円以下</td><td class="num">20%</td><td>200万円</td></tr>
-      <tr><td>5,000万円超 1億円以下</td><td class="num">30%</td><td>700万円</td></tr>
-      <tr><td>1億円超 2億円以下</td><td class="num">40%</td><td>1,700万円</td></tr>
-      <tr><td>2億円超 3億円以下</td><td class="num">45%</td><td>2,700万円</td></tr>
-      <tr><td>3億円超 6億円以下</td><td class="num">50%</td><td>4,200万円</td></tr>
-      <tr><td>6億円超</td><td class="num">55%</td><td>7,200万円</td></tr>
+      <tr><td>1,000万円以下</td><td class="num"><span class="numeric-token">10%</span></td><td>—</td></tr>
+      <tr><td>1,000万円超 3,000万円以下</td><td class="num"><span class="numeric-token">15%</span></td><td>50万円</td></tr>
+      <tr><td>3,000万円超 5,000万円以下</td><td class="num"><span class="numeric-token">20%</span></td><td>200万円</td></tr>
+      <tr><td>5,000万円超 1億円以下</td><td class="num"><span class="numeric-token">30%</span></td><td>700万円</td></tr>
+      <tr><td>1億円超 2億円以下</td><td class="num"><span class="numeric-token">40%</span></td><td>1,700万円</td></tr>
+      <tr><td>2億円超 3億円以下</td><td class="num"><span class="numeric-token">45%</span></td><td>2,700万円</td></tr>
+      <tr><td>3億円超 6億円以下</td><td class="num"><span class="numeric-token">50%</span></td><td>4,200万円</td></tr>
+      <tr><td>6億円超</td><td class="num"><span class="numeric-token">55%</span></td><td>7,200万円</td></tr>
     </tbody>
-  </table>
+  </table></div>
   <h3>配偶者の税額軽減と2割加算</h3>
   <p><b>配偶者</b>は「1億6,000万円」と「配偶者の法定相続分相当額」の多い方まで相続税がかかりません（相続税法19条の2）。このツールは<b>配偶者が法定相続分を取得した場合</b>を計算するので、配偶者の税額は0円になります。一方、<b>兄弟姉妹</b>など（配偶者・親・子・代襲相続人である孫 以外）が相続すると、その人の税額に<b>2割が加算</b>されます（相続税法18条）。</p>
   <div class="note">
@@ -348,17 +354,17 @@
 <div class="scroll-wrap">
 <table class="num-nowrap">
 <thead>
-<tr><th scope="col">法定相続分に応ずる取得金額</th><th scope="col">税率</th><th scope="col">控除額</th></tr>
+<tr><th scope="col">法定相続分に応ずる取得金額</th><th scope="col">税率</th><th scope="col" class="num">控除額</th></tr>
 </thead>
 <tbody>
-<tr><td>1,000万円以下</td><td>10％</td><td class="num">0円</td></tr>
-<tr><td>1,000万円超 3,000万円以下</td><td>15％</td><td class="num">50万円</td></tr>
-<tr><td>3,000万円超 5,000万円以下</td><td>20％</td><td class="num">200万円</td></tr>
-<tr><td>5,000万円超 1億円以下</td><td>30％</td><td class="num">700万円</td></tr>
-<tr><td>1億円超 2億円以下</td><td>40％</td><td class="num">1,700万円</td></tr>
-<tr><td>2億円超 3億円以下</td><td>45％</td><td class="num">2,700万円</td></tr>
-<tr><td>3億円超 6億円以下</td><td>50％</td><td class="num">4,200万円</td></tr>
-<tr><td>6億円超</td><td>55％</td><td class="num">7,200万円</td></tr>
+<tr><td>1,000万円以下</td><td><span class="numeric-token">10％</span></td><td class="num"><span class="numeric-token">0円</span></td></tr>
+<tr><td>1,000万円超 3,000万円以下</td><td><span class="numeric-token">15％</span></td><td class="num">50万円</td></tr>
+<tr><td>3,000万円超 5,000万円以下</td><td><span class="numeric-token">20％</span></td><td class="num">200万円</td></tr>
+<tr><td>5,000万円超 1億円以下</td><td><span class="numeric-token">30％</span></td><td class="num">700万円</td></tr>
+<tr><td>1億円超 2億円以下</td><td><span class="numeric-token">40％</span></td><td class="num">1,700万円</td></tr>
+<tr><td>2億円超 3億円以下</td><td><span class="numeric-token">45％</span></td><td class="num">2,700万円</td></tr>
+<tr><td>3億円超 6億円以下</td><td><span class="numeric-token">50％</span></td><td class="num">4,200万円</td></tr>
+<tr><td>6億円超</td><td><span class="numeric-token">55％</span></td><td class="num">7,200万円</td></tr>
 </tbody>
 </table>
 </div>
@@ -420,17 +426,17 @@
 <div class="scroll-wrap">
 <table class="num-nowrap-sm">
 <thead>
-<tr><th scope="col">正味の遺産額</th><th scope="col">配偶者と子1人</th><th scope="col">配偶者と子2人</th><th scope="col">子1人だけ</th><th scope="col">子2人だけ</th></tr>
+<tr><th scope="col">正味の遺産額</th><th scope="col" class="num">配偶者と子1人</th><th scope="col" class="num">配偶者と子2人</th><th scope="col" class="num">子1人だけ</th><th scope="col" class="num">子2人だけ</th></tr>
 </thead>
 <tbody>
-<tr><td><b>4,000万円</b></td><td class="num">0円</td><td class="num">0円</td><td class="num">400,000円</td><td class="num">0円</td></tr>
-<tr><td><b>5,000万円</b></td><td class="num">400,000円</td><td class="num">100,000円</td><td class="num">1,600,000円</td><td class="num">800,000円</td></tr>
-<tr><td><b>6,000万円</b></td><td class="num">900,000円</td><td class="num">600,000円</td><td class="num">3,100,000円</td><td class="num">1,800,000円</td></tr>
-<tr><td><b>8,000万円</b></td><td class="num">2,350,000円</td><td class="num">1,750,000円</td><td class="num">6,800,000円</td><td class="num">4,700,000円</td></tr>
-<tr><td><b>1億円</b></td><td class="num">3,850,000円</td><td class="num">3,150,000円</td><td class="num">12,200,000円</td><td class="num">7,700,000円</td></tr>
-<tr><td><b>1億5,000万円</b></td><td class="num">9,200,000円</td><td class="num">7,475,000円</td><td class="num">28,600,000円</td><td class="num">18,400,000円</td></tr>
-<tr><td><b>2億円</b></td><td class="num">16,700,000円</td><td class="num">13,500,000円</td><td class="num">48,600,000円</td><td class="num">33,400,000円</td></tr>
-<tr><td><b>3億円</b></td><td class="num">34,600,000円</td><td class="num">28,600,000円</td><td class="num">91,800,000円</td><td class="num">69,200,000円</td></tr>
+<tr><td><b>4,000万円</b></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">400,000円</span></td><td class="num"><span class="numeric-token">0円</span></td></tr>
+<tr><td><b>5,000万円</b></td><td class="num"><span class="numeric-token">400,000円</span></td><td class="num"><span class="numeric-token">100,000円</span></td><td class="num"><span class="numeric-token">1,600,000円</span></td><td class="num"><span class="numeric-token">800,000円</span></td></tr>
+<tr><td><b>6,000万円</b></td><td class="num"><span class="numeric-token">900,000円</span></td><td class="num"><span class="numeric-token">600,000円</span></td><td class="num"><span class="numeric-token">3,100,000円</span></td><td class="num"><span class="numeric-token">1,800,000円</span></td></tr>
+<tr><td><b>8,000万円</b></td><td class="num"><span class="numeric-token">2,350,000円</span></td><td class="num"><span class="numeric-token">1,750,000円</span></td><td class="num"><span class="numeric-token">6,800,000円</span></td><td class="num"><span class="numeric-token">4,700,000円</span></td></tr>
+<tr><td><b>1億円</b></td><td class="num"><span class="numeric-token">3,850,000円</span></td><td class="num"><span class="numeric-token">3,150,000円</span></td><td class="num"><span class="numeric-token">12,200,000円</span></td><td class="num"><span class="numeric-token">7,700,000円</span></td></tr>
+<tr><td><b>1億5,000万円</b></td><td class="num"><span class="numeric-token">9,200,000円</span></td><td class="num"><span class="numeric-token">7,475,000円</span></td><td class="num"><span class="numeric-token">28,600,000円</span></td><td class="num"><span class="numeric-token">18,400,000円</span></td></tr>
+<tr><td><b>2億円</b></td><td class="num"><span class="numeric-token">16,700,000円</span></td><td class="num"><span class="numeric-token">13,500,000円</span></td><td class="num"><span class="numeric-token">48,600,000円</span></td><td class="num"><span class="numeric-token">33,400,000円</span></td></tr>
+<tr><td><b>3億円</b></td><td class="num"><span class="numeric-token">34,600,000円</span></td><td class="num"><span class="numeric-token">28,600,000円</span></td><td class="num"><span class="numeric-token">91,800,000円</span></td><td class="num"><span class="numeric-token">69,200,000円</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -466,26 +472,26 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 相続税は、遺産がいくらからかかりますか？</h3>
-<p>A. 正味の遺産額が基礎控除「3,000万円＋600万円×法定相続人の数」を超えたときからです。法定相続人が1人なら3,600万円、2人なら4,200万円、3人なら4,800万円までかかりません。法定相続人が1人以上なら、3,600万円以下は基礎控除の範囲内です。法定相続人がいない場合の基礎控除は3,000万円です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>相続税は、遺産がいくらからかかりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>正味の遺産額が基礎控除「3,000万円＋600万円×法定相続人の数」を超えたときからです。法定相続人が1人なら3,600万円、2人なら4,200万円、3人なら4,800万円までかかりません。法定相続人が1人以上なら、3,600万円以下は基礎控除の範囲内です。法定相続人がいない場合の基礎控除は3,000万円です。</p>
 
-<h3>Q. 遺産が基礎控除以下なら、申告もしなくてよいですか？</h3>
-<p>A. 原則不要です。取得した財産の価額の合計額が基礎控除の範囲内であれば、申告も納税も必要ありません（国税庁No.4205）。ただしこの判定は小規模宅地等の特例などを適用する前の金額で行うので、特例や配偶者の税額軽減を使って0円にする場合は、期限内の申告が必要です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>遺産が基礎控除以下なら、申告もしなくてよいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>原則不要です。取得した財産の価額の合計額が基礎控除の範囲内であれば、申告も納税も必要ありません（国税庁No.4205）。ただしこの判定は小規模宅地等の特例などを適用する前の金額で行うので、特例や配偶者の税額軽減を使って0円にする場合は、期限内の申告が必要です。</p>
 
-<h3>Q. 生命保険金も遺産に数えますか？</h3>
-<p>A. 数えます。被相続人が保険料を負担していた死亡保険金は「みなし相続財産」として相続税の対象です。ただし相続人が受け取った場合は「500万円×法定相続人の数」の非課税枠があり、超えた部分だけを課税価格に足します（国税庁No.4114）。相続人以外の人が受け取った保険金には、この非課税枠はありません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>生命保険金も遺産に数えますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>数えます。被相続人が保険料を負担していた死亡保険金は「みなし相続財産」として相続税の対象です。ただし相続人が受け取った場合は「500万円×法定相続人の数」の非課税枠があり、超えた部分だけを課税価格に足します（国税庁No.4114）。相続人以外の人が受け取った保険金には、この非課税枠はありません。</p>
 
-<h3>Q. 相続放棄をした人がいると、基礎控除は減りますか？</h3>
-<p>A. 減りません。基礎控除の「法定相続人の数」は、相続の放棄をした人がいても、その放棄がなかったものとした場合の人数で数えます（国税庁No.4152）。たとえば妻と子2人のうち子1人が放棄しても、法定相続人の数は3人のままで、基礎控除は4,800万円です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>相続放棄をした人がいると、基礎控除は減りますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>減りません。基礎控除の「法定相続人の数」は、相続の放棄をした人がいても、その放棄がなかったものとした場合の人数で数えます（国税庁No.4152）。たとえば妻と子2人のうち子1人が放棄しても、法定相続人の数は3人のままで、基礎控除は4,800万円です。</p>
 
-<h3>Q. 亡くなる前に贈与された財産も相続税の対象になりますか？</h3>
-<p>A. 相続や遺贈で財産を取得した人が、亡くなる前の一定期間内に被相続人から暦年課税の贈与で取得した財産は、贈与時の価額で相続税の課税価格に足し戻します。相続開始日が令和8年12月31日以前なら「相続開始前3年以内」で、令和5年度改正により段階的に延長され、令和13年1月1日以後の相続では「相続開始前7年以内」（3年より前の分は総額100万円まで加算されない）になります（国税庁No.4161）。年110万円以下で贈与税がかからなかった贈与も加算対象です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>亡くなる前に贈与された財産も相続税の対象になりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>相続や遺贈で財産を取得した人が、亡くなる前の一定期間内に被相続人から暦年課税の贈与で取得した財産は、贈与時の価額で相続税の課税価格に足し戻します。相続開始日が令和8年12月31日以前なら「相続開始前3年以内」で、令和5年度改正により段階的に延長され、令和13年1月1日以後の相続では「相続開始前7年以内」（3年より前の分は総額100万円まで加算されない）になります（国税庁No.4161）。年110万円以下で贈与税がかからなかった贈与も加算対象です。</p>
 
-<h3>Q. 配偶者は1億6,000万円まで相続税がかからないと聞きました。本当ですか？</h3>
-<p>A. 本当です。配偶者が実際に取得した正味の遺産額が「1億6,000万円」と「配偶者の法定相続分相当額」のどちらか多い金額までは、配偶者に相続税はかかりません（国税庁No.4158）。ただしこの軽減は相続税の申告をすることが条件で、申告期限までに分割されていない財産は対象になりません。また配偶者に寄せすぎると、次の相続（二次相続）で子の負担が増える点にも注意が必要です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>配偶者は1億6,000万円まで相続税がかからないと聞きました。本当ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>本当です。配偶者が実際に取得した正味の遺産額が「1億6,000万円」と「配偶者の法定相続分相当額」のどちらか多い金額までは、配偶者に相続税はかかりません（国税庁No.4158）。ただしこの軽減は相続税の申告をすることが条件で、申告期限までに分割されていない財産は対象になりません。また配偶者に寄せすぎると、次の相続（二次相続）で子の負担が増える点にも注意が必要です。</p>
 
-<h3>Q. 相続税の申告はいつまでですか？</h3>
-<p>A. 被相続人が死亡したことを知った日（通常は死亡の日）の翌日から10か月以内です（国税庁No.4205）。1月6日に死亡した場合はその年の11月6日が期限です。提出先は被相続人の住所地を所轄する税務署で、相続人の住所地ではありません。期限に遅れると加算税・延滞税がかかることがあります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>相続税の申告はいつまでですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>被相続人が死亡したことを知った日（通常は死亡の日）の翌日から10か月以内です（国税庁No.4205）。1月6日に死亡した場合はその年の11月6日が期限です。提出先は被相続人の住所地を所轄する税務署で、相続人の住所地ではありません。期限に遅れると加算税・延滞税がかかることがあります。</p>
 
 <section class="related">
 <div class="tool-grid">
@@ -522,7 +528,7 @@
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2015年1月1日　／　一次情報の確認: 2026年7月16日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4152.htm" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2015年1月1日　／　一次情報の確認: 2026年7月16日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4152.htm" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

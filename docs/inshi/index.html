@@ -169,21 +169,21 @@
     <thead><tr><th scope="col">記載された受取金額</th><th scope="col" class="num">印紙税額（1通）</th></tr></thead>
     <tbody>
       <tr><th scope="row">50,000円未満</th><td class="num">非課税（印紙不要）</td></tr>
-      <tr><th scope="row">5万円以上100万円以下</th><td class="num">200円</td></tr>
-      <tr><th scope="row">100万円を超え200万円以下</th><td class="num">400円</td></tr>
-      <tr><th scope="row">200万円を超え300万円以下</th><td class="num">600円</td></tr>
-      <tr><th scope="row">300万円を超え500万円以下</th><td class="num">1,000円</td></tr>
-      <tr><th scope="row">500万円を超え1千万円以下</th><td class="num">2,000円</td></tr>
-      <tr><th scope="row">1千万円を超え2千万円以下</th><td class="num">4,000円</td></tr>
-      <tr><th scope="row">2千万円を超え3千万円以下</th><td class="num">6,000円</td></tr>
-      <tr><th scope="row">3千万円を超え5千万円以下</th><td class="num">10,000円</td></tr>
-      <tr><th scope="row">5千万円を超え1億円以下</th><td class="num">20,000円</td></tr>
-      <tr><th scope="row">1億円を超え2億円以下</th><td class="num">40,000円</td></tr>
-      <tr><th scope="row">2億円を超え3億円以下</th><td class="num">60,000円</td></tr>
-      <tr><th scope="row">3億円を超え5億円以下</th><td class="num">100,000円</td></tr>
-      <tr><th scope="row">5億円を超え10億円以下</th><td class="num">150,000円</td></tr>
-      <tr><th scope="row">10億円を超えるもの</th><td class="num">200,000円</td></tr>
-      <tr><th scope="row">受取金額の記載がないもの</th><td class="num">200円</td></tr>
+      <tr><th scope="row">5万円以上100万円以下</th><td class="num"><span class="numeric-token">200円</span></td></tr>
+      <tr><th scope="row">100万円を超え200万円以下</th><td class="num"><span class="numeric-token">400円</span></td></tr>
+      <tr><th scope="row">200万円を超え300万円以下</th><td class="num"><span class="numeric-token">600円</span></td></tr>
+      <tr><th scope="row">300万円を超え500万円以下</th><td class="num"><span class="numeric-token">1,000円</span></td></tr>
+      <tr><th scope="row">500万円を超え1千万円以下</th><td class="num"><span class="numeric-token">2,000円</span></td></tr>
+      <tr><th scope="row">1千万円を超え2千万円以下</th><td class="num"><span class="numeric-token">4,000円</span></td></tr>
+      <tr><th scope="row">2千万円を超え3千万円以下</th><td class="num"><span class="numeric-token">6,000円</span></td></tr>
+      <tr><th scope="row">3千万円を超え5千万円以下</th><td class="num"><span class="numeric-token">10,000円</span></td></tr>
+      <tr><th scope="row">5千万円を超え1億円以下</th><td class="num"><span class="numeric-token">20,000円</span></td></tr>
+      <tr><th scope="row">1億円を超え2億円以下</th><td class="num"><span class="numeric-token">40,000円</span></td></tr>
+      <tr><th scope="row">2億円を超え3億円以下</th><td class="num"><span class="numeric-token">60,000円</span></td></tr>
+      <tr><th scope="row">3億円を超え5億円以下</th><td class="num"><span class="numeric-token">100,000円</span></td></tr>
+      <tr><th scope="row">5億円を超え10億円以下</th><td class="num"><span class="numeric-token">150,000円</span></td></tr>
+      <tr><th scope="row">10億円を超えるもの</th><td class="num"><span class="numeric-token">200,000円</span></td></tr>
+      <tr><th scope="row">受取金額の記載がないもの</th><td class="num"><span class="numeric-token">200円</span></td></tr>
     </tbody>
   </table>
   </div>
@@ -199,8 +199,8 @@
     印紙税が課されるのは<b>紙で作成した課税文書</b>だけ。<b>電子契約・PDFで送る請求書や領収書・電子交付</b>は課税文書の「作成」に当たらず、<b>収入印紙は不要</b>です（福岡国税局 文書回答事例・平成20年10月24日）。
   </div>
 
-  <label for="doc">文書の種類<span class="hint">　いちばん近いものを選んでください</span></label>
-  <select id="doc">
+  <label for="doc">文書の種類</label>
+  <select id="doc" aria-describedby="doc-hint">
     <optgroup label="領収書・受取書（17号・16号）">
       <option value="k17_uriage" selected>領収書・レシート（商品・サービスなど売上代金の受取書）〔17号〕</option>
       <option value="k17_other">借入金・保険金・損害賠償金・補償金・返還金などの受取書（売上代金以外）〔17号〕</option>
@@ -233,18 +233,21 @@
       <option value="k20">判取帳〔20号〕</option>
     </optgroup>
   </select>
+      <span id="doc-hint" class="hint">　いちばん近いものを選んでください</span>
   <div id="doc-note" class="hint" style="margin:-4px 0 10px"></div>
 
   <div id="amount-block">
-    <label for="amount">記載金額（<b>円</b>）<span class="hint" id="amount-unit">　文書に記載された受取金額</span></label>
-    <input type="number" id="amount" min="0" inputmode="numeric" placeholder="例: 54800">
+    <label for="amount">記載金額（<b>円</b>）</label>
+    <input type="number" id="amount" min="0" inputmode="numeric" placeholder="例: 54800" aria-describedby="amount-unit">
+      <span class="hint" id="amount-unit">　文書に記載された受取金額</span>
     <div id="amount-echo" class="hint" style="margin:-6px 0 6px"></div>
     <label style="display:block;font-weight:400;margin:0 0 10px"><input type="checkbox" id="noamount"> 金額の記載がない文書</label>
   </div>
 
   <div id="tax-block">
-    <label for="taxpart">うち消費税額等（円）<span class="hint">　「うち消費税額等◯円」などの<b>区分記載がある場合だけ</b>入力（無ければ0のまま）</span></label>
-    <input type="number" id="taxpart" value="0" min="0" inputmode="numeric" placeholder="例: 4981">
+    <label for="taxpart">うち消費税額等（円）</label>
+    <input type="number" id="taxpart" value="0" min="0" inputmode="numeric" placeholder="例: 4981" aria-describedby="taxpart-hint">
+      <span id="taxpart-hint" class="hint">　「うち消費税額等◯円」などの<b>区分記載がある場合だけ</b>入力（無ければ0のまま）</span>
     <label style="display:block;font-weight:400;margin:0 0 10px"><input type="checkbox" id="menzei"> 作成者は消費税の<b>免税事業者</b>（区分記載しても税込で判定します）</label>
   </div>
 
@@ -384,29 +387,29 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 領収書には、いくらから収入印紙が必要ですか？</h3>
-<p>A. 売上代金の領収書（17号文書）は、記載された受取金額が5万円未満なら非課税で収入印紙は不要です。5万円以上100万円以下は200円、100万円を超えると400円・600円…と金額の階級ごとに上がります（国税庁 No.7105・No.7141）。借入金など売上代金以外の受取書は5万円以上で一律200円です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>領収書には、いくらから収入印紙が必要ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>売上代金の領収書（17号文書）は、記載された受取金額が5万円未満なら非課税で収入印紙は不要です。5万円以上100万円以下は200円、100万円を超えると400円・600円…と金額の階級ごとに上がります（国税庁 No.7105・No.7141）。借入金など売上代金以外の受取書は5万円以上で一律200円です。</p>
 
-<h3>Q. 「5万円未満」は税込・税抜どちらで判定しますか？</h3>
-<p>A. 「うち消費税額等◯円」のように消費税額等が区分記載されていれば、記載金額に消費税額等を含めず税抜で判定します（国税庁 No.6925）。たとえば税込54,800円でも「うち消費税額等4,981円」と書けば記載金額は49,819円となり、5万円未満で非課税です。区分記載が無ければ税込54,800円で判定して200円の印紙が必要です。ただし免税事業者は区分記載しても税込で判定します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>「5万円未満」は税込・税抜どちらで判定しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>「うち消費税額等◯円」のように消費税額等が区分記載されていれば、記載金額に消費税額等を含めず税抜で判定します（国税庁 No.6925）。たとえば税込54,800円でも「うち消費税額等4,981円」と書けば記載金額は49,819円となり、5万円未満で非課税です。区分記載が無ければ税込54,800円で判定して200円の印紙が必要です。ただし免税事業者は区分記載しても税込で判定します。</p>
 
-<h3>Q. 電子契約やPDFの領収書にも収入印紙は必要ですか？</h3>
-<p>A. 不要です。印紙税は紙の課税文書を「作成」したときにかかる税金で、電磁的記録（PDF等）に変換して電子メールで送信する場合は課税文書の作成に当たらない、という照会に国税局が「貴見のとおり」と文書回答しています（福岡国税局 文書回答事例・平成20年10月24日）。ただし同じ内容を紙でも作成・交付すれば、その紙には課税されます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>電子契約やPDFの領収書にも収入印紙は必要ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>不要です。印紙税は紙の課税文書を「作成」したときにかかる税金で、電磁的記録（PDF等）に変換して電子メールで送信する場合は課税文書の作成に当たらない、という照会に国税局が「貴見のとおり」と文書回答しています（福岡国税局 文書回答事例・平成20年10月24日）。ただし同じ内容を紙でも作成・交付すれば、その紙には課税されます。</p>
 
-<h3>Q. 収入印紙を貼り忘れたらどうなりますか？</h3>
-<p>A. 納付しなかった印紙税額の3倍（本来の額＋その2倍）の過怠税が徴収されます。税務調査で指摘される前に自主的に「印紙税不納付事実申出書」を提出すれば1.1倍に軽減されます。また、貼っていても消印を忘れると印紙の額面と同額の過怠税がかかります。過怠税は全額、損金・必要経費になりません（国税庁 No.7131）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>収入印紙を貼り忘れたらどうなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>納付しなかった印紙税額の3倍（本来の額＋その2倍）の過怠税が徴収されます。税務調査で指摘される前に自主的に「印紙税不納付事実申出書」を提出すれば1.1倍に軽減されます。また、貼っていても消印を忘れると印紙の額面と同額の過怠税がかかります。過怠税は全額、損金・必要経費になりません（国税庁 No.7131）。</p>
 
-<h3>Q. 個人がマイホームや車を売ったときの領収書にも印紙が必要ですか？</h3>
-<p>A. 不要です。営業に関しない受取書は非課税で、公益法人や、商人でない個人が事業と関係なく作成する受取書は「営業に関しない」ものに当たります（国税庁 No.7105）。ただし、不動産を売るときの不動産売買契約書そのものは1号文書として印紙が必要です（こちらに営業に関しない非課税はありません）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>個人がマイホームや車を売ったときの領収書にも印紙が必要ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>不要です。営業に関しない受取書は非課税で、公益法人や、商人でない個人が事業と関係なく作成する受取書は「営業に関しない」ものに当たります（国税庁 No.7105）。ただし、不動産を売るときの不動産売買契約書そのものは1号文書として印紙が必要です（こちらに営業に関しない非課税はありません）。</p>
 
-<h3>Q. 3,000万円の不動産売買契約書の収入印紙はいくらですか？</h3>
-<p>A. 軽減税率で1万円です（本則は2万円）。不動産の譲渡に関する契約書のうち契約金額が10万円を超えるものには租税特別措置法91条の軽減措置があり、1,000万円超5,000万円以下の階級は1万円になります（国税庁 No.7108）。建設工事の請負契約書（100万円超）にも同様の軽減があります。適用期限は上の判定機・一覧表に表示しています。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>3,000万円の不動産売買契約書の収入印紙はいくらですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>軽減税率で1万円です（本則は2万円）。不動産の譲渡に関する契約書のうち契約金額が10万円を超えるものには租税特別措置法91条の軽減措置があり、1,000万円超5,000万円以下の階級は1万円になります（国税庁 No.7108）。建設工事の請負契約書（100万円超）にも同様の軽減があります。適用期限は上の判定機・一覧表に表示しています。</p>
 
-<h3>Q. 契約書に金額が書いていない場合、印紙はいくらですか？</h3>
-<p>A. 契約金額の記載のない1号・2号の契約書と15号・16号・17号の文書は200円です。「金額が無いから印紙も不要」は誤りです。例外は手形（3号）で、手形金額の記載がなければ非課税ですが、後から金額を補充した人が納税義務者になります（国税庁 No.7140・No.7141）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>契約書に金額が書いていない場合、印紙はいくらですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>契約金額の記載のない1号・2号の契約書と15号・16号・17号の文書は200円です。「金額が無いから印紙も不要」は誤りです。例外は手形（3号）で、手形金額の記載がなければ非課税ですが、後から金額を補充した人が納税義務者になります（国税庁 No.7140・No.7141）。</p>
 
-<h3>Q. 印紙税を納めるのは、領収書を「もらう側」「発行する側」どちらですか？</h3>
-<p>A. 発行する側（文書の作成者）です。領収書なら代金を受け取って領収書を書いた側が印紙を貼ります。契約書のように双方が保管する文書を2通作成した場合は、それぞれの通に印紙が必要で、実務では各自が保管する分を各自が負担するのが通常です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>印紙税を納めるのは、領収書を「もらう側」「発行する側」どちらですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>発行する側（文書の作成者）です。領収書なら代金を受け取って領収書を書いた側が印紙を貼ります。契約書のように双方が保管する文書を2通作成した場合は、それぞれの通に印紙が必要で、実務では各自が保管する分を各自が負担するのが通常です。</p>
 
 <section class="related">
 <div class="tool-grid">
@@ -442,7 +445,7 @@
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和7年　／　一次情報の確認: 2026年7月17日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7140.htm" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和7年　／　一次情報の確認: 2026年7月17日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7140.htm" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

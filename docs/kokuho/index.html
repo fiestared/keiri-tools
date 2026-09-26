@@ -145,7 +145,7 @@
 
   <label>① お住まいの市町村の料率（納付通知書・市町村のサイトに載っています）</label>
   <p class="hint" id="ryoritsu-hint">例: 所得割率は 8.00（医療分）・2.50（支援金分）・2.00（介護分）、均等割は 50000・16000・17000、平等割は無ければ 0。子育て支援金分は 0.30／2000 のような値です。</p>
-  <table class="tbl" id="rate-table" style="margin-top:8px">
+  <div class="scroll-wrap"><table class="tbl" id="rate-table" style="margin-top:8px">
     <thead><tr><th scope="col">賦課区分</th><th scope="col">所得割率（％）</th><th scope="col">均等割（円／人）</th><th scope="col">平等割（円／世帯）</th></tr></thead>
     <tbody>
       <tr><td><b>医療分</b><br><span class="hint">基礎賦課額</span></td>
@@ -165,7 +165,7 @@
         <td><input type="number" id="kosodate_k" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td>
         <td><input type="number" id="kosodate_h" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td></tr>
     </tbody>
-  </table>
+  </table></div>
   <p class="hint" style="margin-top:6px">
     <button type="button" id="sample" style="background:none;border:none;padding:0;font:inherit;color:var(--accent);text-decoration:underline;cursor:pointer">記入例（架空の料率）を入れて動きを見る</button>
     — <b id="sample-caution">これは実在する市町村の料率ではありません。</b>試しに動かすためだけの数字です。
@@ -224,7 +224,7 @@
   <details id="nini-block" style="margin-top:18px">
     <summary style="cursor:pointer;font-weight:600">退職して国保に入る方へ — 健康保険の「任意継続」と比べる</summary>
     <p class="hint" style="margin-top:8px">会社を辞めた後の健康保険は、国保か、それまでの健康保険を続ける<b>任意継続</b>かを選べます（申出は<b>資格喪失日から20日以内</b>・健康保険法37条）。任意継続の保険料は<b>労使折半ではなく全額自己負担</b>ですが、計算に使う標準報酬月額に<b>上限</b>があるため「在職中の2倍」になるとは限りません。</p>
-    <div class="fee-pair" style="margin-top:10px">
+    <div class="fee-pair field-pair" style="margin-top:10px">
       <div>
         <label for="niniTodofuken">健康保険料率の都道府県（協会けんぽ）</label>
         <select id="niniTodofuken"></select>
@@ -319,14 +319,14 @@
 
 <p id="keigen-handan">判定は次の式で行います。基準額は<b>43万円＋（給与所得者等の数−1）×10万円</b>で、この加算は<b>給与所得者等が2人以上のときだけ</b>効きます（0人でも1人でも加算はゼロ）。</p>
 
-<table class="tbl" id="keigen-table">
+<div class="scroll-wrap"><table class="tbl" id="keigen-table">
   <thead><tr><th scope="col">軽減割合</th><th scope="col">判定所得がこの額以下なら該当</th></tr></thead>
   <tbody>
     <tr><td><b>7割</b>軽減</td><td>基準額</td></tr>
     <tr><td><b>5割</b>軽減</td><td>基準額 ＋ <b>31万円</b> × （被保険者数＋特定同一世帯所属者数）</td></tr>
     <tr><td><b>2割</b>軽減</td><td>基準額 ＋ <b>57万円</b> × （被保険者数＋特定同一世帯所属者数）</td></tr>
   </tbody>
-</table>
+</table></div>
 
 <h2 id="hantei">判定所得は基礎控除を引く「前」</h2>
 
@@ -365,20 +365,20 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 国民健康保険料は全国共通ではないのですか？</h3>
-<p>A. 共通なのは「組み立て方」だけで、料率そのものは市町村がそれぞれ条例で定めます。所得割率・均等割額・平等割額は市町村ごとに違い、平等割を採らない市町村もあります。したがって全国共通の料率という数字は存在しません。この計算機が料率を入力してもらう形になっているのはそのためで、推測の数字で埋めると、それらしい金額が出るのに実際の納付額と合わないという最も困る誤り方をします。料率は納付通知書か市町村のサイトに載っています。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>国民健康保険料は全国共通ではないのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>共通なのは「組み立て方」だけで、料率そのものは市町村がそれぞれ条例で定めます。所得割率・均等割額・平等割額は市町村ごとに違い、平等割を採らない市町村もあります。したがって全国共通の料率という数字は存在しません。この計算機が料率を入力してもらう形になっているのはそのためで、推測の数字で埋めると、それらしい金額が出るのに実際の納付額と合わないという最も困る誤り方をします。料率は納付通知書か市町村のサイトに載っています。</p>
 
-<h3>Q. 令和8年度から何が変わったのですか？</h3>
-<p>A. 賦課区分が3つから4つになりました。従来の医療分（基礎賦課額・限度額67万円）・後期高齢者支援金等分（26万円）・介護分（17万円）に加えて、子ども・子育て支援納付金賦課額（3万円）が新設されています（国民健康保険法施行令29条の7第1項4号）。限度額の合計は113万円です。世に出回っている解説や計算機は3区分のままのものが多く、その場合は新設分をまるごと落とすことになります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>令和8年度から何が変わったのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>賦課区分が3つから4つになりました。従来の医療分（基礎賦課額・限度額67万円）・後期高齢者支援金等分（26万円）・介護分（17万円）に加えて、子ども・子育て支援納付金賦課額（3万円）が新設されています（国民健康保険法施行令29条の7第1項4号）。限度額の合計は113万円です。世に出回っている解説や計算機は3区分のままのものが多く、その場合は新設分をまるごと落とすことになります。</p>
 
-<h3>Q. 子どもの分の保険料はどうなりますか？</h3>
-<p>A. 減額が2つあります。未就学児（6歳に達する日以後の最初の3月31日以前）は、医療分・後期高齢者支援金等分の均等割が5割減額されます（施行令29条の7第6項6号）。7割・5割・2割の軽減に該当する世帯では、その軽減を当てた「後」の額に対して5割を減額します。もう1つは子ども・子育て支援金分で、この区分の均等割は18歳以上の被保険者にだけ賦課され、18歳未満の分は全額減額されます（同項10号・11号、同条5項3号）。所得割は年齢に関係なく全員が対象です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>子どもの分の保険料はどうなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>減額が2つあります。未就学児（6歳に達する日以後の最初の3月31日以前）は、医療分・後期高齢者支援金等分の均等割が5割減額されます（施行令29条の7第6項6号）。7割・5割・2割の軽減に該当する世帯では、その軽減を当てた「後」の額に対して5割を減額します。もう1つは子ども・子育て支援金分で、この区分の均等割は18歳以上の被保険者にだけ賦課され、18歳未満の分は全額減額されます（同項10号・11号、同条5項3号）。所得割は年齢に関係なく全員が対象です。</p>
 
-<h3>Q. 軽減の判定に使う所得は、確定申告の課税所得ですか？</h3>
-<p>A. 違います。軽減判定に使うのは基礎控除43万円を引く「前」の総所得金額等で、社会保険料控除や扶養控除といった所得控除も引きません（施行令29条の7第6項1号）。一方で所得割の課税標準は基礎控除43万円を引いた「後」の額です。同じ43万円という数字が別の役割で2回出てくるため、判定に控除後の額を渡すと軽減が1段階ずつ甘い方へずれます。また判定所得には世帯主（国保に入っていない擬制世帯主でも）と特定同一世帯所属者の所得が加わります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>軽減の判定に使う所得は、確定申告の課税所得ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>違います。軽減判定に使うのは基礎控除43万円を引く「前」の総所得金額等で、社会保険料控除や扶養控除といった所得控除も引きません（施行令29条の7第6項1号）。一方で所得割の課税標準は基礎控除43万円を引いた「後」の額です。同じ43万円という数字が別の役割で2回出てくるため、判定に控除後の額を渡すと軽減が1段階ずつ甘い方へずれます。また判定所得には世帯主（国保に入っていない擬制世帯主でも）と特定同一世帯所属者の所得が加わります。</p>
 
-<h3>Q. 賦課限度額の113万円を超えたら、そこで頭打ちですか？</h3>
-<p>A. 113万円という上限が1本あるのではなく、医療分67万円・後期高齢者支援金等分26万円・介護分17万円・子ども・子育て支援金分3万円という上限が区分ごとに個別にかかります。113万円はその4つを足した数字にすぎず、条文にその金額があるわけではありません。実際には医療分だけが上限に張り付いて他の区分は届いていない、という世帯がふつうに生じます。合計にだけ上限を当てる実装は、そうした世帯で保険料を過大に出します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>賦課限度額の113万円を超えたら、そこで頭打ちですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>113万円という上限が1本あるのではなく、医療分67万円・後期高齢者支援金等分26万円・介護分17万円・子ども・子育て支援金分3万円という上限が区分ごとに個別にかかります。113万円はその4つを足した数字にすぎず、条文にその金額があるわけではありません。実際には医療分だけが上限に張り付いて他の区分は届いていない、という世帯がふつうに生じます。合計にだけ上限を当てる実装は、そうした世帯で保険料を過大に出します。</p>
 
 <h2 id="shutten">出典</h2>
 <ul>
@@ -410,7 +410,7 @@
   <div>© 税金・経理・補助金ツールズ</div>
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年度　／　一次情報の確認: 2026年7月28日　／　<a href="https://laws.e-gov.go.jp/law/333CO0000000362" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年度　／　一次情報の確認: 2026年7月28日　／　<a href="https://laws.e-gov.go.jp/law/333CO0000000362" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

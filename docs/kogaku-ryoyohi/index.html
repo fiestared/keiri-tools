@@ -143,11 +143,13 @@
   <p class="article-meta">公開日: <time datetime="2026-08-02">2026年8月2日</time>（更新日: <time datetime="2026-09-01">2026年9月1日</time>）</p>
   <p>ひと月の医療費が高額になったとき、<b>いくらまでが自分の負担で、いくら戻ってくるのか</b>を計算します。<b>限度額の区分を決めるのは年収ではなく「療養のあった月の標準報酬月額」</b>です（健康保険法施行令42条1項）。世帯合算と多数回該当にも対応します。</p>
 </section>
+<!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機が答えていること</a></li><li><a href="#tool-section-2">よくある質問</a></li></ol></nav><!--layout-toc:end-->
 
 <div class="card">
   <label for="shinryo">診療を受けた年月</label>
-    <p class="hint" id="shinryo-hint">高額療養費は<b>「療養のあった月」の表</b>で決まります（申請した月でも支給された月でもありません）。<b>令和8年8月診療分から限度額が上がった</b>ので、月をまたぐと答えが変わります（区分ウ・医療費100万円の月で 87,430円 → 92,940円）。<span id="period-note">このツールが対応している診療年月には上限があります。</span>それより後の月は<b>額を出さずに止めます</b>。<a href="../column/kogaku-ryoyohi/#kaisei">令和8年8月の改正について</a></p>
+
     <input aria-describedby="shinryo-hint" type="month" id="shinryo">
+    <p class="hint" id="shinryo-hint">高額療養費は<b>「療養のあった月」の表</b>で決まります（申請した月でも支給された月でもありません）。<b>令和8年8月診療分から限度額が上がった</b>ので、月をまたぐと答えが変わります（区分ウ・医療費100万円の月で 87,430円 → 92,940円）。<span id="period-note">このツールが対応している診療年月には上限があります。</span>それより後の月は<b>額を出さずに止めます</b>。<a href="../column/kogaku-ryoyohi/#kaisei">令和8年8月の改正について</a></p>
 
   <label for="agegroup" style="margin-top:14px">療養を受けた方の年齢</label>
   <select id="agegroup">
@@ -178,9 +180,11 @@
   </div>
 
   <div id="row-hoshu">
-    <label for="monthly">毎月の給料（報酬月額・円）<span class="hint">　通勤手当・残業代を含む総支給額</span></label>
+    <label for="monthly">毎月の給料（報酬月額・円）</label>
+
+    <input aria-describedby="monthly-hint monthly-detail" type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
     <p class="hint" id="monthly-hint">給与明細の「標準報酬月額」が分かる方は、上の選択を切り替えて直接選ぶほうが正確です。<a href="../shakai-hoken/">社会保険料計算ツール</a>でも等級を確認できます。</p>
-    <input aria-describedby="monthly-hint" type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
+      <span id="monthly-detail" class="hint">　通勤手当・残業代を含む総支給額</span>
   </div>
 
   <div id="row-std" style="display:none">
@@ -202,7 +206,7 @@
 
   <p style="margin:0 0 10px"><b>ひと月にかかった医療費</b>　<span style="font-weight:400;font-size:13px;color:var(--sub)">同じ月・同じ人・同じ病院ごとに1行。医療費は<b>保険がきいた分の10割（窓口で払った額ではありません）</b>を入れます。</span></p>
 
-  <div class="fee-pair">
+  <div class="fee-pair field-pair">
     <div>
       <label for="medical1">① 医療費（10割・円）</label>
       <input type="number" id="medical1" value="1000000" placeholder="例: 1000000" inputmode="numeric">
@@ -216,7 +220,7 @@
       </select>
     </div>
   </div>
-  <div class="fee-pair over70-only" style="display:none">
+  <div class="fee-pair over70-only field-pair" style="display:none">
     <div>
       <label for="kind1">① 外来（通院）か入院か</label>
       <select id="kind1">
@@ -237,7 +241,7 @@
 
   <div class="note" style="margin-top:12px">
     <p style="margin:0 0 8px"><b>世帯合算（任意）</b>　同じ月に、ほかの病院にかかった分・家族が別の病院にかかった分があれば足してください。<b>ひとつの病院等・ひとり・ひと月あたりの自己負担が21,000円以上のものだけが合算できます</b>（施行令41条1項1号かっこ書き）。</p>
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="medical2">② 医療費（10割・円）</label>
         <input type="number" id="medical2" value="" placeholder="例: 200000" inputmode="numeric">
@@ -251,7 +255,7 @@
         </select>
       </div>
     </div>
-    <div class="fee-pair over70-only" style="display:none">
+    <div class="fee-pair over70-only field-pair" style="display:none">
       <div>
         <label for="kind2">② 外来（通院）か入院か</label>
         <select id="kind2">
@@ -269,7 +273,7 @@
         </select>
       </div>
     </div>
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="medical3">③ 医療費（10割・円）</label>
         <input type="number" id="medical3" value="" placeholder="例: 80000" inputmode="numeric">
@@ -283,7 +287,7 @@
         </select>
       </div>
     </div>
-    <div class="fee-pair over70-only" style="display:none">
+    <div class="fee-pair over70-only field-pair" style="display:none">
       <div>
         <label for="kind3">③ 外来（通院）か入院か</label>
         <select id="kind3">
@@ -301,7 +305,7 @@
         </select>
       </div>
     </div>
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="medical4">④ 医療費（10割・円）</label>
         <input type="number" id="medical4" value="" placeholder="例: 60000" inputmode="numeric">
@@ -315,7 +319,7 @@
         </select>
       </div>
     </div>
-    <div class="fee-pair over70-only" style="display:none">
+    <div class="fee-pair over70-only field-pair" style="display:none">
       <div>
         <label for="kind4">④ 外来（通院）か入院か</label>
         <select id="kind4">
@@ -347,7 +351,7 @@
 </div>
 
 <section class="card">
-  <h2>この計算機が答えていること</h2>
+  <h2 id="tool-section-1">この計算機が答えていること</h2>
   <p><b>区分を決めるのは年収ではありません。</b>健康保険法施行令42条1項2号〜4号が判定に使うのは「療養のあった月の<b>標準報酬月額</b>」で、条文に「年収」も「報酬月額」も出てきません。標準報酬月額は等級表の階段なので、<b>報酬月額が1円増えて等級が1つ上がるだけで区分が変わります</b>。報酬月額514,999円なら区分ウ、515,000円なら区分イで、医療費100万円の月の自己負担は<b>87,430円と171,820円</b>——<b>84,390円</b>違います。給料の差は1円です。</p>
   <p><b>世帯合算は21,000円未満を1円も拾いません。</b>「21,000円を超えた部分だけを合算する」ではなく、21,000円未満の自己負担は<b>まるごと対象外</b>になります（施行令41条1項1号かっこ書き）。家族3人が別々の病院で20,000円ずつ、合計6万円払っていても、合算される額は0円です。この計算機は、<b>どの行が合算され、どの行が外れたのか</b>を1行ずつ表示します。</p>
   <p><b>医療費が少ない月でも限度額は基準額を下回りません。</b>条文は1%を計算する費用の額を「その額が二十六万七千円に満たないときは、二十六万七千円」と読み替えます。素直に「（医療費−267,000円）×1%」と計算すると、医療費が少ない月に限度額が80,100円より低く出てしまいます。</p>
@@ -355,25 +359,25 @@
 </section>
 
 <section class="card">
-<h2>よくある質問</h2>
+<h2 id="tool-section-2">よくある質問</h2>
 
-<h3>高額療養費の限度額は年収で決まりますか？</h3>
-<p>いいえ。健康保険法施行令42条1項が判定に使うのは「療養のあった月の標準報酬月額」で、条文に年収も報酬月額も出てきません。標準報酬月額は等級表の階段なので、月給が1円増えて等級が1つ上がるだけで区分が変わります。報酬月額514,999円なら標準報酬月額50万円で区分ウ、515,000円なら53万円で区分イとなり、医療費100万円の月の限度額は87,430円と171,820円で84,390円違います。</p>
+<h3 class="faq-question">高額療養費の限度額は年収で決まりますか？</h3>
+<p class="faq-answer">いいえ。健康保険法施行令42条1項が判定に使うのは「療養のあった月の標準報酬月額」で、条文に年収も報酬月額も出てきません。標準報酬月額は等級表の階段なので、月給が1円増えて等級が1つ上がるだけで区分が変わります。報酬月額514,999円なら標準報酬月額50万円で区分ウ、515,000円なら53万円で区分イとなり、医療費100万円の月の限度額は87,430円と171,820円で84,390円違います。</p>
 
-<h3>家族の医療費は合算できますか？</h3>
-<p>70歳未満は、ひとつの病院等・ひとり・ひと月あたりの自己負担が21,000円以上のものだけを合算できます（施行令41条1項1号かっこ書き）。21,000円を超えた部分だけを足すのではなく、21,000円未満の自己負担はまるごと対象外です。家族3人が別の病院で20,000円ずつ払っても、合算される額は0円になります。</p>
+<h3 class="faq-question">家族の医療費は合算できますか？</h3>
+<p class="faq-answer">70歳未満は、ひとつの病院等・ひとり・ひと月あたりの自己負担が21,000円以上のものだけを合算できます（施行令41条1項1号かっこ書き）。21,000円を超えた部分だけを足すのではなく、21,000円未満の自己負担はまるごと対象外です。家族3人が別の病院で20,000円ずつ払っても、合算される額は0円になります。</p>
 
-<h3>医療費が少ない月でも限度額は下がりますか？</h3>
-<p>下がりません。条文は1%を計算する費用の額について「その額が二十六万七千円に満たないときは、二十六万七千円」と読み替えるよう定めているため、医療費が起点額に満たない月の1%部分は0円になります。区分ウなら医療費が10万円でも限度額は80,100円のままで、80,100円を下回ることはありません。</p>
+<h3 class="faq-question">医療費が少ない月でも限度額は下がりますか？</h3>
+<p class="faq-answer">下がりません。条文は1%を計算する費用の額について「その額が二十六万七千円に満たないときは、二十六万七千円」と読み替えるよう定めているため、医療費が起点額に満たない月の1%部分は0円になります。区分ウなら医療費が10万円でも限度額は80,100円のままで、80,100円を下回ることはありません。</p>
 
-<h3>多数回該当はいつから適用されますか？</h3>
-<p>暦年ではなく、その月から遡って直近12か月の中で高額療養費が支給された月が3か月以上あるとき、つまり4回目にあたる月からです（施行令42条1項各号ただし書）。区分ウは80,100円＋1%から44,400円へ、区分エは57,600円から44,400円へ下がり、この2つの区分は多数回該当では同額になります。</p>
+<h3 class="faq-question">多数回該当はいつから適用されますか？</h3>
+<p class="faq-answer">暦年ではなく、その月から遡って直近12か月の中で高額療養費が支給された月が3か月以上あるとき、つまり4回目にあたる月からです（施行令42条1項各号ただし書）。区分ウは80,100円＋1%から44,400円へ、区分エは57,600円から44,400円へ下がり、この2つの区分は多数回該当では同額になります。</p>
 
-<h3>差額ベッド代や食事代も高額療養費の対象になりますか？</h3>
-<p>なりません。入院時の食事療養・生活療養の自己負担は施行令41条1項が明文で除いており、差額ベッド代・先進医療の技術料・診断書料など保険がきかない費用も対象外です。窓口で払った総額をそのまま入れると、戻ってくる額が実際より多く出ます。</p>
+<h3 class="faq-question">差額ベッド代や食事代も高額療養費の対象になりますか？</h3>
+<p class="faq-answer">なりません。入院時の食事療養・生活療養の自己負担は施行令41条1項が明文で除いており、差額ベッド代・先進医療の技術料・診断書料など保険がきかない費用も対象外です。窓口で払った総額をそのまま入れると、戻ってくる額が実際より多く出ます。</p>
 
-<h3>70歳以上の限度額もこの計算機で出せますか？</h3>
-<p>出せます。「療養を受けた方の年齢」で70歳以上を選ぶと、健康保険法施行令42条3項の世帯単位の限度額と、同条5項の「外来（通院）だけを個人ごとに見る上限」の二段階で計算します。まず外来の自己負担をその人ごとに外来上限で頭打ちにし、そのあとで入院分と合わせて世帯の限度額と比べます。適用した表と両方の上限額は結果画面に表示します。70歳以上には21,000円の足切りがなく、自己負担をすべて合算できる点も70歳未満と違います。なお現役並み所得者には外来だけの上限がありません。</p>
+<h3 class="faq-question">70歳以上の限度額もこの計算機で出せますか？</h3>
+<p class="faq-answer">出せます。「療養を受けた方の年齢」で70歳以上を選ぶと、健康保険法施行令42条3項の世帯単位の限度額と、同条5項の「外来（通院）だけを個人ごとに見る上限」の二段階で計算します。まず外来の自己負担をその人ごとに外来上限で頭打ちにし、そのあとで入院分と合わせて世帯の限度額と比べます。適用した表と両方の上限額は結果画面に表示します。70歳以上には21,000円の足切りがなく、自己負担をすべて合算できる点も70歳未満と違います。なお現役並み所得者には外来だけの上限がありません。</p>
 </section>
 <section class="faq rel-block">
 <h2>関連する解説</h2>
@@ -385,7 +389,7 @@
 <footer class="site">
   <a href="../about/">このサイトについて</a> · <a href="../contact/">お問い合わせ</a>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0">一次情報の確認: 2026年8月2日</li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0">一次情報の確認: 2026年8月2日</li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

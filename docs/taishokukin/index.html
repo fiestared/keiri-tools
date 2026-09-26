@@ -127,19 +127,21 @@
   <p class="article-meta">公開日: <time datetime="2026-07-14">2026年7月14日</time>（更新日: <time datetime="2026-08-26">2026年8月26日</time>）</p>
   <p>退職金の額と勤続年数を入れるだけで、<b>退職所得控除額</b>・<b>所得税</b>・<b>住民税</b>・<b>手取り額</b>を計算します。<b>勤続年数は1年未満を切り上げる</b>ので、退職日が1か月違うだけで税額が数万円変わります。その差額も出します。</p>
 </section>
+<!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機の見方</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end-->
 
 <div class="card">
   <label for="amount">退職金の額（円・税引き前）</label>
   <input type="number" id="amount" value="15000000" placeholder="例: 15000000" inputmode="numeric">
 
-  <div class="fee-pair">
+  <div class="fee-pair field-pair">
     <div>
       <label for="years">勤続年数（年）</label>
       <input type="number" id="years" value="20" min="0" max="60" inputmode="numeric">
     </div>
     <div>
-      <label for="months">端数（か月）<span class="hint">　1か月でも1年に切上げ</span></label>
-      <input type="number" id="months" value="0" min="0" max="11" inputmode="numeric">
+      <label for="months">端数（か月）</label>
+      <input type="number" id="months" value="0" min="0" max="11" inputmode="numeric" aria-describedby="months-hint">
+      <span id="months-hint" class="hint">　1か月でも1年に切上げ</span>
     </div>
   </div>
 
@@ -159,7 +161,7 @@
 </div>
 
 <section class="faq">
-  <h2>この計算機の見方</h2>
+  <h2 id="tool-section-1">この計算機の見方</h2>
 
   <h3>退職金の税金は、3つの引き算でほとんど消えます</h3>
   <p>退職金は、給料とはまったく別の計算をします。<b>①退職所得控除を引く</b>（勤続20年までは1年あたり40万円、20年を超える分は1年あたり70万円）→ <b>②残った額を2分の1にする</b> → <b>③その額にだけ課税する</b>、の3段階です（所得税法30条）。勤続30年なら控除だけで<b>1,500万円</b>あるので、退職金が1,500万円以下なら<b>税金は1円もかかりません</b>。</p>
@@ -181,14 +183,14 @@
 
 <section class="faq">
   <h2 id="faq">よくある質問</h2>
-  <h3>退職金にかかる税金はいくらですか？</h3>
-  <p><b>多くの人はゼロです。</b>退職金には「退職所得控除」があり、勤続20年までは1年につき40万円、20年を超える分は1年につき70万円が退職金から差し引かれます。<b>勤続20年なら800万円、勤続30年なら1,500万円</b>まで税金はかかりません。控除を超えた分も、原則として<b>その2分の1</b>にしか課税されません。</p>
-  <h3>退職日が1か月違うと税金は変わりますか？</h3>
-  <p><b>変わります。</b>勤続年数は1年未満の端数を1年に切り上げて数えるためです（所得税法施行令69条2項）。勤続20年ちょうどで辞めると控除は800万円ですが、あと1か月勤めて20年1か月になると<b>勤続21年</b>として扱われ、控除は<b>870万円</b>に増えます。退職金1,500万円の人なら、これだけで税額が<b>91,155円</b>変わります。</p>
-  <h3>「退職所得の受給に関する申告書」を出さないとどうなりますか？</h3>
-  <p>退職所得控除も2分の1課税も使われず、<b>退職金の支給額そのものに一律20.42％</b>の所得税・復興特別所得税が源泉徴収されます（所得税法201条3項）。退職金800万円・勤続11年の人なら、申告書を出せば<b>91,890円</b>で済むところが<b>1,633,600円</b>引かれます。ただし取られっぱなしになるわけではなく、<b>自分で確定申告をすれば精算されて戻ってきます</b>。</p>
-  <h3>退職金の住民税はいつ払いますか？</h3>
-  <p><b>退職金を受け取るときに天引き（特別徴収）されて終わりです。</b>ふつうの住民税は前年の所得に対して翌年6月から払いますが、退職金は他の所得と分離して、支払いのときに<b>市町村民税6％・道府県民税4％</b>が引かれます（地方税法50条の2・328条）。<b>翌年に請求が来ることはありません。</b></p>
+  <h3 class="faq-question">退職金にかかる税金はいくらですか？</h3>
+  <p class="faq-answer"><b>多くの人はゼロです。</b>退職金には「退職所得控除」があり、勤続20年までは1年につき40万円、20年を超える分は1年につき70万円が退職金から差し引かれます。<b>勤続20年なら800万円、勤続30年なら1,500万円</b>まで税金はかかりません。控除を超えた分も、原則として<b>その2分の1</b>にしか課税されません。</p>
+  <h3 class="faq-question">退職日が1か月違うと税金は変わりますか？</h3>
+  <p class="faq-answer"><b>変わります。</b>勤続年数は1年未満の端数を1年に切り上げて数えるためです（所得税法施行令69条2項）。勤続20年ちょうどで辞めると控除は800万円ですが、あと1か月勤めて20年1か月になると<b>勤続21年</b>として扱われ、控除は<b>870万円</b>に増えます。退職金1,500万円の人なら、これだけで税額が<b>91,155円</b>変わります。</p>
+  <h3 class="faq-question">「退職所得の受給に関する申告書」を出さないとどうなりますか？</h3>
+  <p class="faq-answer">退職所得控除も2分の1課税も使われず、<b>退職金の支給額そのものに一律20.42％</b>の所得税・復興特別所得税が源泉徴収されます（所得税法201条3項）。退職金800万円・勤続11年の人なら、申告書を出せば<b>91,890円</b>で済むところが<b>1,633,600円</b>引かれます。ただし取られっぱなしになるわけではなく、<b>自分で確定申告をすれば精算されて戻ってきます</b>。</p>
+  <h3 class="faq-question">退職金の住民税はいつ払いますか？</h3>
+  <p class="faq-answer"><b>退職金を受け取るときに天引き（特別徴収）されて終わりです。</b>ふつうの住民税は前年の所得に対して翌年6月から払いますが、退職金は他の所得と分離して、支払いのときに<b>市町村民税6％・道府県民税4％</b>が引かれます（地方税法50条の2・328条）。<b>翌年に請求が来ることはありません。</b></p>
 </section>
 
 <section class="faq">
@@ -211,7 +213,7 @@
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2026年4月1日　／　一次情報の確認: 2026年7月14日　／　<a href="https://laws.e-gov.go.jp/law/340AC0000000033" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2026年4月1日　／　一次情報の確認: 2026年7月14日　／　<a href="https://laws.e-gov.go.jp/law/340AC0000000033" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

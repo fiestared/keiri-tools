@@ -167,12 +167,14 @@
   <div id="pane-baibai">
     <div style="margin-top:14px">
       <div>
-        <label for="sogaku">売買代金の総額（円）<span class="hint">　実際に支払う額</span></label>
-        <input type="number" id="sogaku" min="0" inputmode="numeric" value="30000000">
+        <label for="sogaku">売買代金の総額（円）</label>
+        <input type="number" id="sogaku" min="0" inputmode="numeric" value="30000000" aria-describedby="sogaku-hint">
+      <span id="sogaku-hint" class="hint">　実際に支払う額</span>
       </div>
       <div>
-        <label for="tatemono">うち建物の価格（税込・円）<span class="hint">　売主が個人／土地だけなら0</span></label>
-        <input type="number" id="tatemono" min="0" inputmode="numeric" value="0">
+        <label for="tatemono">うち建物の価格（税込・円）</label>
+        <input type="number" id="tatemono" min="0" inputmode="numeric" value="0" aria-describedby="tatemono-hint">
+      <span id="tatemono-hint" class="hint">　売主が個人／土地だけなら0</span>
       </div>
     </div>
     <div>
@@ -184,8 +186,9 @@
         </select>
       </div>
       <div>
-        <label for="hidzuke">媒介契約の日<span class="hint">　令和6年7月1日以後</span></label>
-        <input type="date" id="hidzuke" value="2026-07-30">
+        <label for="hidzuke">媒介契約の日</label>
+        <input type="date" id="hidzuke" value="2026-07-30" aria-describedby="hidzuke-hint">
+      <span id="hidzuke-hint" class="hint">　令和6年7月1日以後</span>
       </div>
     </div>
     <div style="margin-top:10px">
@@ -197,8 +200,9 @@
   <div id="pane-taishaku" hidden>
     <div style="margin-top:14px">
       <div>
-        <label for="yachin">借賃の1か月分（円）<span class="hint">　実際に払う額</span></label>
-        <input type="number" id="yachin" min="0" inputmode="numeric" value="100000">
+        <label for="yachin">借賃の1か月分（円）</label>
+        <input type="number" id="yachin" min="0" inputmode="numeric" value="100000" aria-describedby="yachin-hint">
+      <span id="yachin-hint" class="hint">　実際に払う額</span>
       </div>
       <div>
         <label for="youto">建物の用途</label>
@@ -217,8 +221,9 @@
         </select>
       </div>
       <div>
-        <label for="kenrikin">権利金（返還されない額・税抜）<span class="hint">　居住用以外のみ</span></label>
-        <input type="number" id="kenrikin" min="0" inputmode="numeric" value="0">
+        <label for="kenrikin">権利金（返還されない額・税抜）</label>
+        <input type="number" id="kenrikin" min="0" inputmode="numeric" value="0" aria-describedby="kenrikin-hint">
+      <span id="kenrikin-hint" class="hint">　居住用以外のみ</span>
       </div>
     </div>
     <div>
@@ -271,14 +276,14 @@
 
 <p>売買・交換の媒介で、依頼者の一方から受け取れる上限は、代金の額を次の3つに区分し、それぞれに割合を掛けた金額の合計です（告示 第二）。表の割合は<b>消費税等相当額を含んだ割合</b>です。</p>
 
-<table>
-  <thead><tr><th scope="col">代金の額の区分</th><th scope="col">割合（税込）</th><th scope="col">本体</th></tr></thead>
+<div class="scroll-wrap"><table>
+  <thead><tr><th scope="col">代金の額の区分</th><th scope="col" class="num">割合（税込）</th><th scope="col" class="num">本体</th></tr></thead>
   <tbody id="ritsu-table">
-    <tr><td>200万円以下の金額</td><td class="num">5.5%</td><td class="num">5%</td></tr>
-    <tr><td>200万円を超え400万円以下の金額</td><td class="num">4.4%</td><td class="num">4%</td></tr>
-    <tr><td>400万円を超える金額</td><td class="num">3.3%</td><td class="num">3%</td></tr>
+    <tr><td>200万円以下の金額</td><td class="num"><span class="numeric-token">5.5%</span></td><td class="num"><span class="numeric-token">5%</span></td></tr>
+    <tr><td>200万円を超え400万円以下の金額</td><td class="num"><span class="numeric-token">4.4%</span></td><td class="num"><span class="numeric-token">4%</span></td></tr>
+    <tr><td>400万円を超える金額</td><td class="num"><span class="numeric-token">3.3%</span></td><td class="num"><span class="numeric-token">3%</span></td></tr>
   </tbody>
-</table>
+</table></div>
 
 <p>よく見る<b id="sokusan-shiki">「代金の額×3％＋6万円」は本体（税抜）の額</b>で、400万円を超えるときだけ使える近道です。加算する6万円の正体は、200万円以下の部分の差（5%−3%＝2%×200万円＝4万円）と、200万円超400万円以下の部分の差（4%−3%＝1%×200万円＝2万円）の合計です。<b>実際に支払う額はこれに1.1を掛けた額</b>になります。税込の割合3.3%で計算した額にさらに1.1を掛けると、消費税を二重に乗せることになります。</p>
 
@@ -372,26 +377,26 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 仲介手数料の「3％＋6万円」に消費税はかかりますか？</h3>
-<p>A. かかります。「3％＋6万円」は本体の額なので、実際に支払う上限はこれに1.1を掛けた額です。3,000万円の物件なら本体96万円、税込105万6,000円になります。国土交通省の告示は消費税等相当額を含んだ割合（5.5％・4.4％・3.3％）で書かれているので、3.3％で計算した額にさらに1.1を掛けると消費税を二重に乗せることになります。どちらの式で計算しても、正しく使えば答えは同じです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>仲介手数料の「3％＋6万円」に消費税はかかりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>かかります。「3％＋6万円」は本体の額なので、実際に支払う上限はこれに1.1を掛けた額です。3,000万円の物件なら本体96万円、税込105万6,000円になります。国土交通省の告示は消費税等相当額を含んだ割合（5.5％・4.4％・3.3％）で書かれているので、3.3％で計算した額にさらに1.1を掛けると消費税を二重に乗せることになります。どちらの式で計算しても、正しく使えば答えは同じです。</p>
 
-<h3>Q. 新築マンションを買うとき、仲介手数料は物件価格そのままで計算しますか？</h3>
-<p>A. いいえ。告示は「代金の額（消費税等相当額を含まない）」と定めているので、建物価格に含まれる消費税を除いた額で計算します。売主が不動産会社などの課税事業者のときは建物に消費税が乗っています。たとえば総額4,000万円のうち建物が税込2,200万円なら、消費税200万円を除いた3,800万円が計算のもとになり、上限は税込総額で計算した場合より66,000円下がります。土地は消費税が非課税なので、個人が売主で土地だけを買う場合は総額のままです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>新築マンションを買うとき、仲介手数料は物件価格そのままで計算しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>いいえ。告示は「代金の額（消費税等相当額を含まない）」と定めているので、建物価格に含まれる消費税を除いた額で計算します。売主が不動産会社などの課税事業者のときは建物に消費税が乗っています。たとえば総額4,000万円のうち建物が税込2,200万円なら、消費税200万円を除いた3,800万円が計算のもとになり、上限は税込総額で計算した場合より66,000円下がります。土地は消費税が非課税なので、個人が売主で土地だけを買う場合は総額のままです。</p>
 
-<h3>Q. 800万円以下の中古住宅を買うと、仲介手数料は33万円になるのですか？</h3>
-<p>A. 33万円が上限になるだけで、自動的にその額になるわけではありません。告示 第七の低廉な空家等の特例は「当該媒介に要する費用を勘案して」原則の上限を超えて受け取れるという規定で、30万円の1.1倍＝33万円がその天井です。国土交通省の通達（宅地建物取引業法の解釈・運用の考え方）は、媒介契約の締結に際してあらかじめ報酬額を依頼者に説明し、合意する必要があると明記しています。なお代金800万円ちょうどのときは原則の計算額もちょうど33万円なので、特例で上限が上がるのは800万円未満のときです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>800万円以下の中古住宅を買うと、仲介手数料は33万円になるのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>33万円が上限になるだけで、自動的にその額になるわけではありません。告示 第七の低廉な空家等の特例は「当該媒介に要する費用を勘案して」原則の上限を超えて受け取れるという規定で、30万円の1.1倍＝33万円がその天井です。国土交通省の通達（宅地建物取引業法の解釈・運用の考え方）は、媒介契約の締結に際してあらかじめ報酬額を依頼者に説明し、合意する必要があると明記しています。なお代金800万円ちょうどのときは原則の計算額もちょうど33万円なので、特例で上限が上がるのは800万円未満のときです。</p>
 
-<h3>Q. 空き家でなくても低廉な空家等の特例は使えますか？</h3>
-<p>A. 使えます。国土交通省の通達改正（令和6年7月1日施行）は、売買・交換の特例に係る「低廉な空家等」について、価格800万円以下の宅地・建物であれば使用の状態は不問と明記しています。名前に「空家」とありますが、人が住んでいる家でも、800万円以下であれば対象です。一方、賃貸の特例（長期の空家等）のほうは、1年を超えるような期間にわたり居住者が不在であることなどが必要で、判断の基準が異なります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>空き家でなくても低廉な空家等の特例は使えますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>使えます。国土交通省の通達改正（令和6年7月1日施行）は、売買・交換の特例に係る「低廉な空家等」について、価格800万円以下の宅地・建物であれば使用の状態は不問と明記しています。名前に「空家」とありますが、人が住んでいる家でも、800万円以下であれば対象です。一方、賃貸の特例（長期の空家等）のほうは、1年を超えるような期間にわたり居住者が不在であることなどが必要で、判断の基準が異なります。</p>
 
-<h3>Q. 賃貸の仲介手数料は家賃1か月分＋消費税が普通ですか？</h3>
-<p>A. 告示の上限は、貸主と借主の双方から受ける報酬の「合計額」で借賃1か月分の1.1倍です。居住用の建物では、媒介の依頼を受けるにあたって承諾を得ている場合を除き、一方から受け取れるのは0.55か月分までと定められています（告示 第四）。借主が1.1か月分を払う慣行は、この承諾があることを前提にしたものです。承諾は「媒介の依頼を受けるにあたって」得るものなので、物件を紹介された後や契約時に同意を求められても、依頼の時点で承諾していなければ上限は0.55か月分のままです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>賃貸の仲介手数料は家賃1か月分＋消費税が普通ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>告示の上限は、貸主と借主の双方から受ける報酬の「合計額」で借賃1か月分の1.1倍です。居住用の建物では、媒介の依頼を受けるにあたって承諾を得ている場合を除き、一方から受け取れるのは0.55か月分までと定められています（告示 第四）。借主が1.1か月分を払う慣行は、この承諾があることを前提にしたものです。承諾は「媒介の依頼を受けるにあたって」得るものなので、物件を紹介された後や契約時に同意を求められても、依頼の時点で承諾していなければ上限は0.55か月分のままです。</p>
 
-<h3>Q. 代理を頼むと仲介手数料は必ず2倍になりますか？</h3>
-<p>A. なりません。告示 第三は代理の報酬を媒介の2倍以内としていますが、ただし書で、業者が取引の相手方からも媒介の報酬を受け取る場合は、その合計が媒介の2倍を超えてはならないと定めています。相手方から媒介の報酬を満額受け取るのであれば、代理を依頼した人から受け取れるのは残りの1倍分までです。賃貸の代理はそもそも2倍にはならず、借賃1か月分の1.1倍が上限です（告示 第五）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>代理を頼むと仲介手数料は必ず2倍になりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>なりません。告示 第三は代理の報酬を媒介の2倍以内としていますが、ただし書で、業者が取引の相手方からも媒介の報酬を受け取る場合は、その合計が媒介の2倍を超えてはならないと定めています。相手方から媒介の報酬を満額受け取るのであれば、代理を依頼した人から受け取れるのは残りの1倍分までです。賃貸の代理はそもそも2倍にはならず、借賃1か月分の1.1倍が上限です（告示 第五）。</p>
 
-<h3>Q. 仲介手数料のほかに業者へ払うお金はありますか？</h3>
-<p>A. 告示 第十一①は、この告示による報酬のほかに報酬を受けることを禁じていますが、依頼者の依頼によって行う広告の料金に相当する額だけは例外としています。したがって、依頼していない広告費や「事務手数料」「書類作成料」といった名目での上乗せは、報酬規制の潜脱にあたります。なお登記費用（登録免許税・司法書士報酬）、印紙税、不動産取得税、火災保険料などは業者への報酬ではなく別の費用です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>仲介手数料のほかに業者へ払うお金はありますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>告示 第十一①は、この告示による報酬のほかに報酬を受けることを禁じていますが、依頼者の依頼によって行う広告の料金に相当する額だけは例外としています。したがって、依頼していない広告費や「事務手数料」「書類作成料」といった名目での上乗せは、報酬規制の潜脱にあたります。なお登記費用（登録免許税・司法書士報酬）、印紙税、不動産取得税、火災保険料などは業者への報酬ではなく別の費用です。</p>
 
 <h2 id="shutten">出典</h2>
 <ul id="shutten-list">
@@ -421,7 +426,7 @@
   <div>© 税金・経理・補助金ツールズ</div>
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2024年7月1日　／　一次情報の確認: 2026年7月30日　／　<a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/content/001750143.pdf" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2024年7月1日　／　一次情報の確認: 2026年7月30日　／　<a href="https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/content/001750143.pdf" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

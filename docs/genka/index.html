@@ -166,24 +166,28 @@
     国税庁の<b>新しい定額法・定率法</b>（残存価額なし）で計算します。<b>平成19年3月31日以前</b>に取得した資産（旧定額法・旧定率法）は残存価額・5%均等償却があり計算が異なるため対象外です。建物は<b>定率法を選べません（定額法のみ）</b>。建物附属設備・構築物も平成28年4月1日以後に取得したものは定額法のみです。
   </div>
 
-  <label for="assettype">資産の種類<span class="hint">　最後に1円を残すかどうかが変わります（所令134条1項2号）</span></label>
-  <select id="assettype">
+  <label for="assettype">資産の種類</label>
+  <select id="assettype" aria-describedby="assettype-hint">
     <option value="yukei" selected>有形固定資産（建物・機械・車両・工具器具備品・生物など）</option>
     <option value="mukei">無形固定資産（ソフトウエア・特許権など）</option>
     <option value="kodo">坑道</option>
   </select>
+      <span id="assettype-hint" class="hint">　最後に1円を残すかどうかが変わります（所令134条1項2号）</span>
 
-  <label for="method">償却方法<span class="hint">　個人事業主は定額法が法定（届出で定率法も選べます）。法人は定率法が法定です</span></label>
-  <select id="method">
+  <label for="method">償却方法</label>
+  <select id="method" aria-describedby="method-hint">
     <option value="teigaku" selected>定額法（毎年ほぼ同額）</option>
     <option value="teiritsu">定率法（初めの年ほど多い）</option>
   </select>
+      <span id="method-hint" class="hint">　個人事業主は定額法が法定（届出で定率法も選べます）。法人は定率法が法定です</span>
 
-  <label for="cost">取得価額（円）<span class="hint">　本体価格＋引取運賃・据付費など、使えるようにするまでの費用の合計</span></label>
-  <input id="cost" type="number" inputmode="numeric" min="1" step="1" placeholder="例）300000" value="300000">
+  <label for="cost">取得価額（円）</label>
+  <input id="cost" type="number" inputmode="numeric" min="1" step="1" placeholder="例）300000" value="300000" aria-describedby="cost-hint">
+      <span id="cost-hint" class="hint">　本体価格＋引取運賃・据付費など、使えるようにするまでの費用の合計</span>
 
-  <label for="life">耐用年数（年）<span class="hint">　国税庁「耐用年数表」で資産ごとに決まっています（例：パソコン4年／軽・普通乗用車6年／木造事務所24年）。2〜50年に対応</span></label>
-  <input id="life" type="number" inputmode="numeric" min="2" max="50" step="1" placeholder="例）4" value="4">
+  <label for="life">耐用年数（年）</label>
+  <input id="life" type="number" inputmode="numeric" min="2" max="50" step="1" placeholder="例）4" value="4" aria-describedby="life-hint">
+      <span id="life-hint" class="hint">　国税庁「耐用年数表」で資産ごとに決まっています（例：パソコン4年／軽・普通乗用車6年／木造事務所24年）。2〜50年に対応</span>
 
   <label id="acq-label">取得（事業に使い始めた）年月<span class="hint">　定率法の適用表（200%／250%）と初年度の月割の起点に使います</span></label>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
@@ -199,8 +203,9 @@
   </div>
   <div id="era-echo" class="hint" style="margin:-6px 0 10px"></div>
 
-  <label for="ratio">事業専用割合（％）<span class="hint">　自宅兼用・自家用兼用のときだけ変更（例：仕事に6割なら60）。ふつうは100</span></label>
-  <input id="ratio" type="number" inputmode="numeric" min="1" max="100" step="1" placeholder="100" value="100">
+  <label for="ratio">事業専用割合（％）</label>
+  <input id="ratio" type="number" inputmode="numeric" min="1" max="100" step="1" placeholder="100" value="100" aria-describedby="ratio-hint">
+      <span id="ratio-hint" class="hint">　自宅兼用・自家用兼用のときだけ変更（例：仕事に6割なら60）。ふつうは100</span>
 
   <button class="primary" id="calc">減価償却費を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -211,8 +216,9 @@
   <h2 id="chuko" style="margin-top:0">中古資産の耐用年数（簡便法）</h2>
   <p style="margin-top:0">中古で買った資産は、法定耐用年数ではなく<b>使用可能期間として見積もった年数</b>で償却できます。見積りが難しいときは<b>簡便法</b>で計算した年数を使えます（耐令3条1項2号）。出た年数を上の計算機の「耐用年数」に入れてください。</p>
 
-  <label for="chuko-houtei">法定耐用年数（年）<span class="hint">　新品ならこの年数、というもの（例：木造アパート22年／軽・普通乗用車6年／パソコン4年）</span></label>
-  <input id="chuko-houtei" type="number" inputmode="numeric" min="2" max="100" step="1" placeholder="例）22" value="22">
+  <label for="chuko-houtei">法定耐用年数（年）</label>
+  <input id="chuko-houtei" type="number" inputmode="numeric" min="2" max="100" step="1" placeholder="例）22" value="22" aria-describedby="chuko-houtei-hint">
+      <span id="chuko-houtei-hint" class="hint">　新品ならこの年数、というもの（例：木造アパート22年／軽・普通乗用車6年／パソコン4年）</span>
 
   <label id="chuko-keika-label">経過年数（築年数・使用年数）<span class="hint">　新品で使い始めてから買うまでの期間。<b>月まで数えます</b>（耐令3条5項「暦に従つて計算し」）</span></label>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
@@ -222,9 +228,11 @@
     <span>か月</span>
   </div>
 
-  <label for="chuko-shishutsu">資本的支出の額（円）<span class="hint">　使えるようにするための改良・改造費。<b>取得価額の50％を超えると簡便法は使えません</b>（耐令3条1項ただし書）。無ければ0</span></label>
-    <p class="hint" style="margin:-4px 0 10px" id="chuko-shishutsu-hint">※ 50％の判定には、上の計算機の<b>取得価額</b>を使います。</p>
-    <input aria-describedby="chuko-shishutsu-hint" id="chuko-shishutsu" type="number" inputmode="numeric" min="0" step="1" placeholder="0" value="0">
+  <label for="chuko-shishutsu">資本的支出の額（円）</label>
+
+    <input aria-describedby="chuko-shishutsu-hint chuko-shishutsu-detail" id="chuko-shishutsu" type="number" inputmode="numeric" min="0" step="1" placeholder="0" value="0">
+    <p class="hint" style="margin:4px 0 10px" id="chuko-shishutsu-hint">※ 50％の判定には、上の計算機の<b>取得価額</b>を使います。</p>
+      <span id="chuko-shishutsu-detail" class="hint">　使えるようにするための改良・改造費。<b>取得価額の50％を超えると簡便法は使えません</b>（耐令3条1項ただし書）。無ければ0</span>
 
   <button class="primary" id="chuko-calc">簡便法で耐用年数を計算する</button>
   <div role="status" aria-live="polite" class="result" id="chuko-result"></div>
@@ -384,29 +392,29 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 減価償却費はどうやって計算しますか？</h3>
-<p>A. 平成19年4月1日以後に取得した資産は、定額法なら「取得価額×定額法の償却率」で毎年ほぼ同額、定率法なら「期首の未償却残高×定率法の償却率」で初めの年ほど多く計算します。償却率は耐用年数ごとに国税庁の表（別表第八〜第十）で決まっています。取得価額100万円・耐用年数10年なら、定額法は毎年10万円、定率法200%は1年目20万円・2年目16万円…と減り、後半は約6.5万円で一定になります。有形固定資産はどちらも合計が取得価額−1円で、最後に備忘価額1円を残します（ソフトウエア等の無形固定資産は1円を残さず全額を償却します）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>減価償却費はどうやって計算しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>平成19年4月1日以後に取得した資産は、定額法なら「取得価額×定額法の償却率」で毎年ほぼ同額、定率法なら「期首の未償却残高×定率法の償却率」で初めの年ほど多く計算します。償却率は耐用年数ごとに国税庁の表（別表第八〜第十）で決まっています。取得価額100万円・耐用年数10年なら、定額法は毎年10万円、定率法200%は1年目20万円・2年目16万円…と減り、後半は約6.5万円で一定になります。有形固定資産はどちらも合計が取得価額−1円で、最後に備忘価額1円を残します（ソフトウエア等の無形固定資産は1円を残さず全額を償却します）。</p>
 
-<h3>Q. 定額法と定率法はどちらを選べますか？</h3>
-<p>A. 個人事業主は定額法が法定で、税務署へ届け出れば定率法も選べます。法人は定率法が法定です。ただし建物は定率法を選べず定額法だけで、建物附属設備・構築物も平成28年4月1日以後に取得したものは定額法だけです。ソフトウエア等の無形固定資産と生物も定額法だけです。定率法は初めの年に多く経費にできるので早く費用化したいときに向き、定額法は毎年ならしたいときに向きます。合計の償却費はどちらも同じです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>定額法と定率法はどちらを選べますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>個人事業主は定額法が法定で、税務署へ届け出れば定率法も選べます。法人は定率法が法定です。ただし建物は定率法を選べず定額法だけで、建物附属設備・構築物も平成28年4月1日以後に取得したものは定額法だけです。ソフトウエア等の無形固定資産と生物も定額法だけです。定率法は初めの年に多く経費にできるので早く費用化したいときに向き、定額法は毎年ならしたいときに向きます。合計の償却費はどちらも同じです。</p>
 
-<h3>Q. ソフトウエアも最後に1円を残しますか？</h3>
-<p>A. 残しません。備忘価額1円を残すのは有形固定資産と生物で、ソフトウエアなどの無形固定資産と坑道は取得価額の全額を償却しきります（所得税法施行令134条1項2号ロ「その取得価額に相当する金額」）。つまり無形固定資産の帳簿価額は最後に0円になります。有形固定資産で1円を残すのは、その資産をまだ持っていることを帳簿に残すためです。上の計算機の「資産の種類」で切り替わります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>ソフトウエアも最後に1円を残しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>残しません。備忘価額1円を残すのは有形固定資産と生物で、ソフトウエアなどの無形固定資産と坑道は取得価額の全額を償却しきります（所得税法施行令134条1項2号ロ「その取得価額に相当する金額」）。つまり無形固定資産の帳簿価額は最後に0円になります。有形固定資産で1円を残すのは、その資産をまだ持っていることを帳簿に残すためです。上の計算機の「資産の種類」で切り替わります。</p>
 
-<h3>Q. 中古で買った資産の耐用年数はどうなりますか？</h3>
-<p>A. 事業に使い始めてからの使用可能期間として見積もった年数で償却でき、見積りが困難なときは簡便法が使えます。法定耐用年数の全部を経過していれば法定耐用年数×20％、一部を経過していれば（法定耐用年数−経過年数）＋経過年数×20％です。1年未満の端数は切り捨て、2年に満たないときは2年とします。経過年数は暦に従って計算するので月まで数えます。法定22年の木造アパートを築10年3か月で買ったなら13年です。ただし資本的支出が取得価額の50％を超えると簡便法は使えません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>中古で買った資産の耐用年数はどうなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>事業に使い始めてからの使用可能期間として見積もった年数で償却でき、見積りが困難なときは簡便法が使えます。法定耐用年数の全部を経過していれば法定耐用年数×20％、一部を経過していれば（法定耐用年数−経過年数）＋経過年数×20％です。1年未満の端数は切り捨て、2年に満たないときは2年とします。経過年数は暦に従って計算するので月まで数えます。法定22年の木造アパートを築10年3か月で買ったなら13年です。ただし資本的支出が取得価額の50％を超えると簡便法は使えません。</p>
 
-<h3>Q. 耐用年数はどこで調べますか？</h3>
-<p>A. 国税庁の「耐用年数表（減価償却資産の耐用年数等に関する省令の別表）」で資産の種類ごとに決まっています。たとえばパソコンは4年、軽自動車・普通乗用車は6年（軽自動車税の話とは別）、木造の事務所用建物は24年などです。中古資産を買ったときは「簡便法」で見積もった年数を使うこともあります。このツールは耐用年数2〜50年に対応しています。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>耐用年数はどこで調べますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>国税庁の「耐用年数表（減価償却資産の耐用年数等に関する省令の別表）」で資産の種類ごとに決まっています。たとえばパソコンは4年、軽自動車・普通乗用車は6年（軽自動車税の話とは別）、木造の事務所用建物は24年などです。中古資産を買ったときは「簡便法」で見積もった年数を使うこともあります。このツールは耐用年数2〜50年に対応しています。</p>
 
-<h3>Q. 年の途中で買った資産の初年度はどう計算しますか？</h3>
-<p>A. 初年度は月割で、償却費＝年額×事業に使った月数÷12（1円未満切捨）です。個人事業主（会計期間1〜12月）なら、使い始めた月から12月までの月数を使います。たとえば4月に使い始めたら9か月分、10月なら3か月分です。月割で初年度が少なくなった分、償却は耐用年数の後ろへ1年ほど延びます。翌年からは年額（定率法は残高×償却率）です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>年の途中で買った資産の初年度はどう計算しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>初年度は月割で、償却費＝年額×事業に使った月数÷12（1円未満切捨）です。個人事業主（会計期間1〜12月）なら、使い始めた月から12月までの月数を使います。たとえば4月に使い始めたら9か月分、10月なら3か月分です。月割で初年度が少なくなった分、償却は耐用年数の後ろへ1年ほど延びます。翌年からは年額（定率法は残高×償却率）です。</p>
 
-<h3>Q. 定率法の「償却保証額」「改定償却率」とは何ですか？</h3>
-<p>A. 定率法は残高×償却率で計算すると額がどんどん小さくなり償却が終わらないため、一定額を下回らないようにする仕組みです。償却保証額＝取得価額×保証率で、その年の償却額（調整前償却額）が償却保証額を初めて下回った年から、「改定取得価額（その年の期首帳簿価額）×改定償却率」で毎年同額を償却します。これで耐用年数までに1円まで償却し終わります。保証率・改定償却率は耐用年数ごとに国税庁の表で決まっています。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>定率法の「償却保証額」「改定償却率」とは何ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>定率法は残高×償却率で計算すると額がどんどん小さくなり償却が終わらないため、一定額を下回らないようにする仕組みです。償却保証額＝取得価額×保証率で、その年の償却額（調整前償却額）が償却保証額を初めて下回った年から、「改定取得価額（その年の期首帳簿価額）×改定償却率」で毎年同額を償却します。これで耐用年数までに1円まで償却し終わります。保証率・改定償却率は耐用年数ごとに国税庁の表で決まっています。</p>
 
-<h3>Q. 10万円・20万円・40万円未満の少額な資産はどうなりますか？</h3>
-<p>A. 取得価額10万円未満は消耗品費などで買った年に全額を経費にできます（減価償却しません）。20万円未満は一括償却資産として耐用年数にかかわらず3年で均等償却できます。青色申告の中小企業者等は40万円未満の資産を年間合計300万円まで買った年に全額経費にできる少額減価償却資産の特例があります（40万円未満になったのは令和8年4月1日以後に取得したものからで、それ以前の取得は30万円未満。取得の期限は令和11年3月31日まで）。これらに当てはまる資産は、このツールの耐用年数にわたる償却ではなく、それぞれの取扱いで計算します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>10万円・20万円・40万円未満の少額な資産はどうなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>取得価額10万円未満は消耗品費などで買った年に全額を経費にできます（減価償却しません）。20万円未満は一括償却資産として耐用年数にかかわらず3年で均等償却できます。青色申告の中小企業者等は40万円未満の資産を年間合計300万円まで買った年に全額経費にできる少額減価償却資産の特例があります（40万円未満になったのは令和8年4月1日以後に取得したものからで、それ以前の取得は30万円未満。取得の期限は令和11年3月31日まで）。これらに当てはまる資産は、このツールの耐用年数にわたる償却ではなく、それぞれの取扱いで計算します。</p>
 
 <section class="related">
 <div class="tool-grid">
@@ -444,7 +452,7 @@
   入力した内容はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　一次情報の確認: 2026年7月17日</li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　一次情報の確認: 2026年7月17日</li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 
@@ -498,7 +506,7 @@ function renderRitsuTable(D) {
     if (t == null || !r) continue;
     const kaitei = r.kaitei == null ? "—" : r.kaitei.toFixed(3);
     const hosho = r.hosho == null ? "—" : r.hosho.toFixed(5);
-    rows.push(`<tr><td>${n}年</td><td>${t.toFixed(3)}</td><td>${r.rate.toFixed(3)}</td><td>${kaitei}</td><td>${hosho}</td></tr>`);
+    rows.push(`<tr><td><span class="numeric-token">${n}年</span></td><td>${t.toFixed(3)}</td><td>${r.rate.toFixed(3)}</td><td>${kaitei}</td><td>${hosho}</td></tr>`);
   }
   $("ritsu-table").querySelector("tbody").innerHTML = rows.join("");
 }

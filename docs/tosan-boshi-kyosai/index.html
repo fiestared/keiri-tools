@@ -145,20 +145,25 @@
 </section>
 
 <div class="card">
-  <label for="kazei">課税される所得金額（掛金を経費にする前・円）<span class="hint">　確定申告書の「課税される所得金額」。売上でも所得でもありません</span></label>
-  <input type="number" id="kazei" placeholder="例: 5000000" inputmode="numeric" min="0" step="10000">
+  <label for="kazei">課税される所得金額（掛金を経費にする前・円）</label>
+  <input type="number" id="kazei" placeholder="例: 5000000" inputmode="numeric" min="0" step="10000" aria-describedby="kazei-hint">
+      <span id="kazei-hint" class="hint">　確定申告書の「課税される所得金額」。売上でも所得でもありません</span>
 
-  <label for="monthly" style="margin-top:14px">掛金月額（円）<span class="hint">　5,000円〜20万円・5,000円刻み</span></label>
-  <input type="number" id="monthly" placeholder="例: 100000" inputmode="numeric" min="5000" max="200000" step="5000">
+  <label for="monthly" style="margin-top:14px">掛金月額（円）</label>
+  <input type="number" id="monthly" placeholder="例: 100000" inputmode="numeric" min="5000" max="200000" step="5000" aria-describedby="monthly-hint">
+      <span id="monthly-hint" class="hint">　5,000円〜20万円・5,000円刻み</span>
 
-  <label for="months" style="margin-top:14px">掛金を納付する月数<span class="hint">　任意解約で100%戻るのは40か月から。累計800万円で積み立ては止まります</span></label>
-  <input type="number" id="months" value="40" inputmode="numeric" min="1" step="1">
+  <label for="months" style="margin-top:14px">掛金を納付する月数</label>
+  <input type="number" id="months" value="40" inputmode="numeric" min="1" step="1" aria-describedby="months-hint">
+      <span id="months-hint" class="hint">　任意解約で100%戻るのは40か月から。累計800万円で積み立ては止まります</span>
 
-  <label for="kaiyaku-type" style="margin-top:14px">解約の種類<span class="hint">　支給率が変わります</span></label>
-  <select id="kaiyaku-type"><option value="">読み込み中…</option></select>
+  <label for="kaiyaku-type" style="margin-top:14px">解約の種類</label>
+  <select id="kaiyaku-type" aria-describedby="kaiyaku-type-hint"><option value="">読み込み中…</option></select>
+      <span id="kaiyaku-type-hint" class="hint">　支給率が変わります</span>
 
-  <label for="kaiyaku-kazei" style="margin-top:14px">解約する年の課税所得（解約手当金を入れる前・円）<span class="hint">　空欄なら上と同じ所得で計算。廃業年・赤字年・退職金を出す年は下がります</span></label>
-  <input type="number" id="kaiyaku-kazei" placeholder="空欄＝掛金を払う年と同じ" inputmode="numeric" min="0" step="10000">
+  <label for="kaiyaku-kazei" style="margin-top:14px">解約する年の課税所得（解約手当金を入れる前・円）</label>
+  <input type="number" id="kaiyaku-kazei" placeholder="空欄＝掛金を払う年と同じ" inputmode="numeric" min="0" step="10000" aria-describedby="kaiyaku-kazei-hint">
+      <span id="kaiyaku-kazei-hint" class="hint">　空欄なら上と同じ所得で計算。廃業年・赤字年・退職金を出す年は下がります</span>
 
   <button class="primary" id="calc">入口と出口の両方を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -245,9 +250,9 @@
 <tr><th>　</th><th scope="col">① 同じ所得のまま一括解約</th><th scope="col">② 課税所得0円の年（廃業・赤字）に解約</th></tr>
 </thead>
 <tbody>
-<tr><td>入口: 掛金40か月の累計節税</td><td>+1,216,800円</td><td>+1,216,800円</td></tr>
+<tr><td>入口: 掛金40か月の累計節税</td><td>+<span class="numeric-token">1,216,800円</span></td><td>+<span class="numeric-token">1,216,800円</span></td></tr>
 <tr><td>出口: 解約手当金400万円への課税</td><td><b>−1,279,591円</b>（課税所得500万→900万円）</td><td>−780,322円（課税所得0→400万円）</td></tr>
-<tr><td>掛け捨て</td><td>0円（40か月なので100%支給）</td><td>0円</td></tr>
+<tr><td>掛け捨て</td><td>0円（40か月なので100%支給）</td><td><span class="numeric-token">0円</span></td></tr>
 <tr><td><b>差引</b></td><td><b>−62,791円の持ち出し</b></td><td><b>+436,478円の得</b></td></tr>
 </tbody>
 </table>
@@ -295,15 +300,15 @@
 <div class="scroll-wrap">
 <table id="kaiyaku-shurui-table">
 <thead>
-<tr><th scope="col">掛金納付月数</th><th scope="col">任意解約<br><span class="hint">自分の意思で解約</span></th><th scope="col">みなし解約<br><span class="hint">個人事業主の死亡・法人の解散・分割・事業の全部譲渡</span></th><th scope="col">機構解約<br><span class="hint">12か月分以上の掛金滞納・不正受給による解除</span></th></tr>
+<tr><th scope="col">掛金納付月数</th><th scope="col" class="num">任意解約<br><span class="hint">自分の意思で解約</span></th><th scope="col" class="num">みなし解約<br><span class="hint">個人事業主の死亡・法人の解散・分割・事業の全部譲渡</span></th><th scope="col" class="num">機構解約<br><span class="hint">12か月分以上の掛金滞納・不正受給による解除</span></th></tr>
 </thead>
 <tbody>
-<tr><td>1〜11か月</td><td class="num">0%</td><td class="num">0%</td><td class="num">0%</td></tr>
-<tr><td>12〜23か月</td><td class="num">80%</td><td class="num">85%</td><td class="num">75%</td></tr>
-<tr><td>24〜29か月</td><td class="num">85%</td><td class="num">90%</td><td class="num">80%</td></tr>
-<tr><td>30〜35か月</td><td class="num">90%</td><td class="num">95%</td><td class="num">85%</td></tr>
-<tr><td>36〜39か月</td><td class="num">95%</td><td class="num"><b>100%</b></td><td class="num">90%</td></tr>
-<tr><td>40か月〜</td><td class="num"><b>100%</b></td><td class="num"><b>100%</b></td><td class="num">95%</td></tr>
+<tr><td>1〜11か月</td><td class="num"><span class="numeric-token">0%</span></td><td class="num"><span class="numeric-token">0%</span></td><td class="num"><span class="numeric-token">0%</span></td></tr>
+<tr><td>12〜23か月</td><td class="num"><span class="numeric-token">80%</span></td><td class="num"><span class="numeric-token">85%</span></td><td class="num"><span class="numeric-token">75%</span></td></tr>
+<tr><td>24〜29か月</td><td class="num"><span class="numeric-token">85%</span></td><td class="num"><span class="numeric-token">90%</span></td><td class="num"><span class="numeric-token">80%</span></td></tr>
+<tr><td>30〜35か月</td><td class="num"><span class="numeric-token">90%</span></td><td class="num"><span class="numeric-token">95%</span></td><td class="num"><span class="numeric-token">85%</span></td></tr>
+<tr><td>36〜39か月</td><td class="num"><span class="numeric-token">95%</span></td><td class="num"><b><span class="numeric-token">100%</span></b></td><td class="num"><span class="numeric-token">90%</span></td></tr>
+<tr><td>40か月〜</td><td class="num"><b><span class="numeric-token">100%</span></b></td><td class="num"><b><span class="numeric-token">100%</span></b></td><td class="num"><span class="numeric-token">95%</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -334,23 +339,23 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>倒産防止共済の掛金は、個人事業主でも経費になりますか？</h3>
-<p>なります。ただし所得控除ではなく、事業所得の必要経費です（租税特別措置法28条1項2号）。iDeCoや小規模企業共済のような所得控除と違い、事業所得そのものが減るため、国民健康保険料や個人事業税の計算にも効きます。一方で条文が事業所得に限定しているため、不動産所得の必要経費にはできません。また、確定申告書に「特定の基金に対する負担金等の必要経費算入に関する明細書」を添付しないと適用されません。</p>
+<h3 class="faq-question">倒産防止共済の掛金は、個人事業主でも経費になりますか？</h3>
+<p class="faq-answer">なります。ただし所得控除ではなく、事業所得の必要経費です（租税特別措置法28条1項2号）。iDeCoや小規模企業共済のような所得控除と違い、事業所得そのものが減るため、国民健康保険料や個人事業税の計算にも効きます。一方で条文が事業所得に限定しているため、不動産所得の必要経費にはできません。また、確定申告書に「特定の基金に対する負担金等の必要経費算入に関する明細書」を添付しないと適用されません。</p>
 
-<h3>解約手当金は、いつから100%戻りますか？</h3>
-<p>自分の意思で解約する任意解約では、掛金を40か月以上納付していれば100%です。個人事業主の死亡などによるみなし解約は36か月以上で100%になります。逆に納付12か月未満は1円も支給されず（中小企業倒産防止共済法11条1項）、12〜39か月は75〜95%なので、40か月未満の解約は掛金の一部または全部が掛け捨てになります。</p>
+<h3 class="faq-question">解約手当金は、いつから100%戻りますか？</h3>
+<p class="faq-answer">自分の意思で解約する任意解約では、掛金を40か月以上納付していれば100%です。個人事業主の死亡などによるみなし解約は36か月以上で100%になります。逆に納付12か月未満は1円も支給されず（中小企業倒産防止共済法11条1項）、12〜39か月は75〜95%なので、40か月未満の解約は掛金の一部または全部が掛け捨てになります。</p>
 
-<h3>倒産防止共済は本当に節税になりますか？</h3>
-<p>正確には税金の繰り延べです。掛金は払った年の経費になりますが、解約手当金は受け取った年の事業所得の収入金額として全額課税されます。課税所得500万円の人が月10万円を40か月払い、同じ課税所得のまま一括で解約すると、積み上げた節税約121.7万円より解約年の増税約128.0万円のほうが大きく、差引で約6.3万円のマイナスになります。得になるかは、解約する年の所得をどれだけ下げられるか（廃業年・赤字年・大きな設備投資の年など）で決まります。</p>
+<h3 class="faq-question">倒産防止共済は本当に節税になりますか？</h3>
+<p class="faq-answer">正確には税金の繰り延べです。掛金は払った年の経費になりますが、解約手当金は受け取った年の事業所得の収入金額として全額課税されます。課税所得500万円の人が月10万円を40か月払い、同じ課税所得のまま一括で解約すると、積み上げた節税約121.7万円より解約年の増税約128.0万円のほうが大きく、差引で約6.3万円のマイナスになります。得になるかは、解約する年の所得をどれだけ下げられるか（廃業年・赤字年・大きな設備投資の年など）で決まります。</p>
 
-<h3>令和6年10月の改正で何が変わりましたか？</h3>
-<p>2024年10月1日以後に共済契約を解約した場合、解約の日から2年を経過する日までの間に支出する掛金は、再加入しても必要経費（法人は損金）に算入できなくなりました（租税特別措置法28条2項。適用時期は令和6年3月30日法律第8号 附則30条）。従来使われていた「40か月で解約→即再加入」の繰り返しを封じる改正です。解約自体はできますが、2年間は掛金を払っても税金は減りません。</p>
+<h3 class="faq-question">令和6年10月の改正で何が変わりましたか？</h3>
+<p class="faq-answer">2024年10月1日以後に共済契約を解約した場合、解約の日から2年を経過する日までの間に支出する掛金は、再加入しても必要経費（法人は損金）に算入できなくなりました（租税特別措置法28条2項。適用時期は令和6年3月30日法律第8号 附則30条）。従来使われていた「40か月で解約→即再加入」の繰り返しを封じる改正です。解約自体はできますが、2年間は掛金を払っても税金は減りません。</p>
 
-<h3>掛金はいくらまで払えますか？</h3>
-<p>掛金月額は5,000円から20万円まで5,000円刻みで選べ（中小企業倒産防止共済法4条2項）、掛金総額800万円に達するまで納付できます（同法14条3項）。月20万円なら40か月＝3年4か月で満額です。前納もでき、前納期間が1年以内の掛金は支払った年の必要経費にできるため、決算前に翌年分をまとめて払う使い方もあります。</p>
+<h3 class="faq-question">掛金はいくらまで払えますか？</h3>
+<p class="faq-answer">掛金月額は5,000円から20万円まで5,000円刻みで選べ（中小企業倒産防止共済法4条2項）、掛金総額800万円に達するまで納付できます（同法14条3項）。月20万円なら40か月＝3年4か月で満額です。前納もでき、前納期間が1年以内の掛金は支払った年の必要経費にできるため、決算前に翌年分をまとめて払う使い方もあります。</p>
 
-<h3>取引先が倒産したら、いくら借りられますか？</h3>
-<p>回収が困難になった売掛金債権等の額と、掛金総額の10倍（最高8,000万円）のいずれか少ない額まで、無担保・無保証人・無利子で借りられます。ただし借入額の10分の1に相当する掛金が掛金総額から控除されます（中小企業倒産防止共済法11条4項）。つまり無利子でも、実質的に借入額の10%を前払いする形のコストがかかります。</p>
+<h3 class="faq-question">取引先が倒産したら、いくら借りられますか？</h3>
+<p class="faq-answer">回収が困難になった売掛金債権等の額と、掛金総額の10倍（最高8,000万円）のいずれか少ない額まで、無担保・無保証人・無利子で借りられます。ただし借入額の10分の1に相当する掛金が掛金総額から控除されます（中小企業倒産防止共済法11条4項）。つまり無利子でも、実質的に借入額の10%を前払いする形のコストがかかります。</p>
 
 <h2 id="source">出典</h2>
 <ul>

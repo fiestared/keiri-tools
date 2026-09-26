@@ -136,22 +136,27 @@
   <p>1年間に払った<b>医療費</b>と<b>年収</b>を入れるだけで、<b>控除額</b>と、実際に<b>戻ってくる税金</b>（所得税＋復興特別所得税＋住民税）の目安を自動計算します。<b>足切りは「総所得金額等の5%」と「10万円」の低いほう</b>なので、年収およそ297万円以下なら医療費が10万円未満でも使えます。<b>令和8年分</b>。</p>
   <p id="lead-answer" style="margin-top:10px"><b>先に答え</b>：戻る額は「医療費の額」ではなく <b>（医療費 − 補填金 − 足切り）× (所得税率 ＋ 10%)</b> です。だから<b>医療費がちょうど10万円の人（年収500万円）は控除額0円＝1円も戻りません</b>。目安は下の<a href="#hayami">早見表</a>、正確な額は上の計算機でどうぞ。</p>
 </section>
+<!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#hayami">医療費いくらで、いくら戻る？（早見表）</a></li><li><a href="#kakutei-shinkoku">確定申告での出し方（何を書いて、何を添えるか）</a></li><li><a href="#tool-section-3">使い方と注意点</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end-->
 
 <div class="card">
-  <label for="iryohi">1年間に支払った医療費の合計（円）<span class="hint">　本人と生計を一にする家族の分を合算。通院の電車・バス代も含む</span></label>
-  <input type="number" id="iryohi" placeholder="例: 300000" inputmode="numeric">
+  <label for="iryohi">1年間に支払った医療費の合計（円）</label>
+  <input type="number" id="iryohi" placeholder="例: 300000" inputmode="numeric" aria-describedby="iryohi-hint">
+      <span id="iryohi-hint" class="hint">　本人と生計を一にする家族の分を合算。通院の電車・バス代も含む</span>
 
-  <label for="hoten">保険金などで補填される金額（円）<span class="hint">　高額療養費・入院給付金・出産育児一時金など。無ければ0</span></label>
-  <input type="number" id="hoten" value="0" min="0" inputmode="numeric">
+  <label for="hoten">保険金などで補填される金額（円）</label>
+  <input type="number" id="hoten" value="0" min="0" inputmode="numeric" aria-describedby="hoten-hint">
+      <span id="hoten-hint" class="hint">　高額療養費・入院給付金・出産育児一時金など。無ければ0</span>
 
-  <label for="hotenTaisho">（任意）その補填金がひも付く医療費（円）<span class="hint">　入院給付金なら入院費など。分かる場合だけ。空欄なら医療費全体から引きます（控除額は小さめ＝安全側）</span></label>
-  <input type="number" id="hotenTaisho" placeholder="例: 150000（入院費）" min="0" inputmode="numeric">
+  <label for="hotenTaisho">（任意）その補填金がひも付く医療費（円）</label>
+  <input type="number" id="hotenTaisho" placeholder="例: 150000（入院費）" min="0" inputmode="numeric" aria-describedby="hotenTaisho-hint">
+      <span id="hotenTaisho-hint" class="hint">　入院給付金なら入院費など。分かる場合だけ。空欄なら医療費全体から引きます（控除額は小さめ＝安全側）</span>
 
-  <label for="shunyu">給与収入（年収・円）<span class="hint">　税引き前の額面。ボーナス込み。足切り（総所得金額等の5%）の計算に使います</span></label>
-  <input type="number" id="shunyu" placeholder="例: 5000000" inputmode="numeric">
+  <label for="shunyu">給与収入（年収・円）</label>
+  <input type="number" id="shunyu" placeholder="例: 5000000" inputmode="numeric" aria-describedby="shunyu-hint">
+      <span id="shunyu-hint" class="hint">　税引き前の額面。ボーナス込み。足切り（総所得金額等の5%）の計算に使います</span>
 
-  <label for="zeiritsu">課税される所得金額の帯（＝所得税の税率）<span class="hint">　源泉徴収票の「給与所得控除後の金額」から所得控除を引いた額の帯。戻る税金の計算に使います</span></label>
-  <select id="zeiritsu">
+  <label for="zeiritsu">課税される所得金額の帯（＝所得税の税率）</label>
+  <select id="zeiritsu" aria-describedby="zeiritsu-hint">
     <option value="">選択してください</option>
     <option value="5">195万円以下（税率5%）</option>
     <option value="10">195万円超 330万円以下（税率10%）</option>
@@ -161,9 +166,11 @@
     <option value="40">1,800万円超 4,000万円以下（税率40%）</option>
     <option value="45">4,000万円超（税率45%）</option>
   </select>
+      <span id="zeiritsu-hint" class="hint">　源泉徴収票の「給与所得控除後の金額」から所得控除を引いた額の帯。戻る税金の計算に使います</span>
 
-  <label for="selfmed">（任意）セルフメディケーション税制で申告する場合の購入費（円）<span class="hint">　スイッチOTC医薬品など特定一般用医薬品等の年間購入費。通常の医療費控除とは選択（どちらか一方）</span></label>
-  <input type="number" id="selfmed" placeholder="例: 30000" min="0" inputmode="numeric">
+  <label for="selfmed">（任意）セルフメディケーション税制で申告する場合の購入費（円）</label>
+  <input type="number" id="selfmed" placeholder="例: 30000" min="0" inputmode="numeric" aria-describedby="selfmed-hint">
+      <span id="selfmed-hint" class="hint">　スイッチOTC医薬品など特定一般用医薬品等の年間購入費。通常の医療費控除とは選択（どちらか一方）</span>
 
   <button class="primary" id="calc">計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -177,7 +184,7 @@
   <h3>① 年収500万円・所得税率10%の人（足切りは10万円）</h3>
   <div class="scroll-wrap">
   <table class="tbl" id="hayami-iryohi">
-    <thead><tr><th scope="col">1年間に払った医療費</th><th scope="col">医療費控除の控除額</th><th scope="col">戻る税金の目安</th></tr></thead>
+    <thead><tr><th scope="col" class="num">1年間に払った医療費</th><th scope="col" class="num">医療費控除の控除額</th><th scope="col" class="num">戻る税金の目安</th></tr></thead>
     <tbody>
       <tr><td class="num">¥100,000</td><td class="num">¥0</td><td class="num"><b>¥0</b></td></tr>
       <tr><td class="num">¥120,000</td><td class="num">¥20,000</td><td class="num">¥4,042</td></tr>
@@ -198,7 +205,7 @@
   <p>総所得金額等が200万円未満なら足切りは<b>その5%</b>になるので、<b>同じ医療費10万円でも戻る額が出ます</b>（所得税法73条1項）。所得税率5%帯として計算しています。</p>
   <div class="scroll-wrap">
   <table class="tbl" id="hayami-nenshu">
-    <thead><tr><th scope="col">給与収入（年収）</th><th scope="col">総所得金額等</th><th scope="col">足切り額</th><th scope="col">控除額</th><th scope="col">戻る目安</th><th scope="col">うち住民税</th></tr></thead>
+    <thead><tr><th scope="col" class="num">給与収入（年収）</th><th scope="col" class="num">総所得金額等</th><th scope="col" class="num">足切り額</th><th scope="col" class="num">控除額</th><th scope="col" class="num">戻る目安</th><th scope="col" class="num">うち住民税</th></tr></thead>
     <tbody>
       <tr><td class="num">¥1,600,000</td><td class="num">¥860,000</td><td class="num">¥43,000</td><td class="num">¥57,000</td><td class="num">¥8,610</td><td class="num">¥5,700</td></tr>
       <tr><td class="num">¥2,000,000</td><td class="num">¥1,260,000</td><td class="num">¥63,000</td><td class="num">¥37,000</td><td class="num">¥5,589</td><td class="num">¥3,700</td></tr>
@@ -230,7 +237,7 @@
 </section>
 
 <section class="faq">
-  <h2>使い方と注意点</h2>
+  <h2 id="tool-section-3">使い方と注意点</h2>
   <div class="callout">
     <b>10万円は「上限」であって「下限」ではありません</b>
     医療費控除の足切り額は<b>「総所得金額等の5%」と「10万円」の低いほう</b>です（所得税法73条1項が10万円を「上限」として書いています）。総所得金額等が<b>200万円未満</b>の人（給与収入がおよそ<b>297万円以下</b>）は5%側が効くので、<b>医療費が10万円を超えなくても使えます</b>。「10万円を超えないと無理」と諦めている人が、いちばん取りこぼしています。
@@ -256,16 +263,16 @@
 
 <section class="faq">
   <h2 id="faq">よくある質問</h2>
-  <h3>医療費控除は医療費が10万円を超えないと使えないのですか？</h3>
-  <p>いいえ。足切り額は「総所得金額等の5%」と「10万円」の低いほうです（所得税法73条1項）。10万円は上限であって下限ではありません。総所得金額等が200万円未満の人（給与収入がおよそ297万円以下）は5%側が効くので、医療費が10万円未満でも控除を受けられます。たとえば年収160万円（令和8年分の総所得86万円）なら足切りは43,000円なので、医療費が6万円でも17,000円が控除されます。</p>
-  <h3>医療費控除でいくら戻ってきますか？</h3>
-  <p>戻ってくるのは支払った医療費ではなく、控除額に税率を掛けた額です。医療費控除は所得控除なので、控除額×（所得税の税率＋住民税10%）だけ税金が減ります。たとえば控除額が20万円で所得税率10%の人なら、所得税20,000円＋復興特別所得税420円＋住民税20,000円＝約40,420円が戻ります。所得税率は課税される所得金額で決まり、高い人ほど戻る額が大きくなります。</p>
-  <h3>医療費が10万円ちょうどだと、いくら戻りますか？</h3>
-  <p>年収500万円の人なら足切りが10万円なので、10万円−10万円＝控除額0円となり、戻る税金も0円です。10万円は「超えた分から効きはじめる線」であって、10万円払えば戻ってくる額ではありません。同じ人が12万円を払うと控除額2万円・戻り約4,042円になります。ただし総所得金額等が200万円未満（給与収入およそ298万円未満）の人は足切りが総所得金額等の5%なので、医療費10万円でも控除を受けられます。</p>
-  <h3>医療費の領収書は確定申告のときに提出しますか？</h3>
-  <p>提出しません。領収書から「医療費控除の明細書」を作成して確定申告書に添付します。ただし明細書の記載内容を確認するため、確定申告期限等から5年を経過する日までの間、領収書の提示または提出を求められることがあるので、5年間は保存してください。健康保険から届く医療費通知を添付すると、明細書の記載を簡略化できます。</p>
-  <h3>保険金や高額療養費はどう差し引きますか？</h3>
-  <p>保険金・高額療養費・出産育児一時金などの補填金は、その給付の目的となった医療費からだけ差し引きます（国税庁No.1125）。入院給付金が入院費を上回っても、はみ出した分を通院費や薬代など他の医療費から差し引く必要はありません。一方、傷病手当金・出産手当金は医療費の補填ではないので差し引きません（休業中の生活費の給付だからです）。</p>
+  <h3 class="faq-question">医療費控除は医療費が10万円を超えないと使えないのですか？</h3>
+  <p class="faq-answer">いいえ。足切り額は「総所得金額等の5%」と「10万円」の低いほうです（所得税法73条1項）。10万円は上限であって下限ではありません。総所得金額等が200万円未満の人（給与収入がおよそ297万円以下）は5%側が効くので、医療費が10万円未満でも控除を受けられます。たとえば年収160万円（令和8年分の総所得86万円）なら足切りは43,000円なので、医療費が6万円でも17,000円が控除されます。</p>
+  <h3 class="faq-question">医療費控除でいくら戻ってきますか？</h3>
+  <p class="faq-answer">戻ってくるのは支払った医療費ではなく、控除額に税率を掛けた額です。医療費控除は所得控除なので、控除額×（所得税の税率＋住民税10%）だけ税金が減ります。たとえば控除額が20万円で所得税率10%の人なら、所得税20,000円＋復興特別所得税420円＋住民税20,000円＝約40,420円が戻ります。所得税率は課税される所得金額で決まり、高い人ほど戻る額が大きくなります。</p>
+  <h3 class="faq-question">医療費が10万円ちょうどだと、いくら戻りますか？</h3>
+  <p class="faq-answer">年収500万円の人なら足切りが10万円なので、10万円−10万円＝控除額0円となり、戻る税金も0円です。10万円は「超えた分から効きはじめる線」であって、10万円払えば戻ってくる額ではありません。同じ人が12万円を払うと控除額2万円・戻り約4,042円になります。ただし総所得金額等が200万円未満（給与収入およそ298万円未満）の人は足切りが総所得金額等の5%なので、医療費10万円でも控除を受けられます。</p>
+  <h3 class="faq-question">医療費の領収書は確定申告のときに提出しますか？</h3>
+  <p class="faq-answer">提出しません。領収書から「医療費控除の明細書」を作成して確定申告書に添付します。ただし明細書の記載内容を確認するため、確定申告期限等から5年を経過する日までの間、領収書の提示または提出を求められることがあるので、5年間は保存してください。健康保険から届く医療費通知を添付すると、明細書の記載を簡略化できます。</p>
+  <h3 class="faq-question">保険金や高額療養費はどう差し引きますか？</h3>
+  <p class="faq-answer">保険金・高額療養費・出産育児一時金などの補填金は、その給付の目的となった医療費からだけ差し引きます（国税庁No.1125）。入院給付金が入院費を上回っても、はみ出した分を通院費や薬代など他の医療費から差し引く必要はありません。一方、傷病手当金・出産手当金は医療費の補填ではないので差し引きません（休業中の生活費の給付だからです）。</p>
   <p style="margin-top:12px">くわしくは<a href="../column/iryohi-kojo-ikura-kara/">医療費控除はいくらから？いくら戻る？</a>で、条文と国税庁の資料まで確認しています。</p>
 </section>
 <section class="faq rel-block">
@@ -279,7 +286,7 @@
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月16日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm" rel="noopener" style="color:var(--sub)">出典</a></li><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月21日　／　<a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月16日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm" rel="noopener" style="color:var(--sub)">出典</a></li><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月21日　／　<a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

@@ -99,7 +99,7 @@
   <p class="lead">毎月の積立額と年数、それに<b>あなたが想定する利回り</b>を入れると、将来の評価額を計算します。<b>信託報酬が削る額</b>と、<b>出すときの税金</b>まで同時に出します。</p>
 
   <div class="card">
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="monthly">毎月の積立額（円）</label>
         <input type="number" id="monthly" value="30000" min="0" step="1000" inputmode="numeric">
@@ -109,16 +109,18 @@
         <input type="number" id="years" value="20" min="1" max="60" step="1" inputmode="numeric">
       </div>
     </div>
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="rate">想定する年利回り（%）</label>
-    <p class="hint" id="rate-hint">この数字は<b>あなたが決める前提</b>です。当サイトは推奨値を置きません。</p>
+
     <input aria-describedby="rate-hint" type="number" id="rate" value="5" min="0" max="30" step="0.1" inputmode="decimal">
+    <p class="hint" id="rate-hint">この数字は<b>あなたが決める前提</b>です。当サイトは推奨値を置きません。</p>
       </div>
       <div>
         <label for="fee">信託報酬（年率%）</label>
-    <p class="hint" id="fee-hint">目論見書の「運用管理費用（信託報酬）」の年率です。</p>
+
     <input aria-describedby="fee-hint" type="number" id="fee" value="0.09" min="0" max="5" step="0.01" inputmode="decimal">
+    <p class="hint" id="fee-hint">目論見書の「運用管理費用（信託報酬）」の年率です。</p>
       </div>
     </div>
     <div class="result" id="result" aria-live="polite"></div>
@@ -167,20 +169,20 @@
 
 <section class="faq">
 <h2 id="faq">よくある質問</h2>
-<h3>Q. 想定利回りは何%にすればいいですか？</h3>
-<p>A. 当サイトでは推奨値を置いていません。過去の指数の実績を参考にする方が多いですが、<b>過去の成績は将来を保証しません</b>。複数の値を入れて、幅で見ることをおすすめします。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>想定利回りは何%にすればいいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>当サイトでは推奨値を置いていません。過去の指数の実績を参考にする方が多いですが、<b>過去の成績は将来を保証しません</b>。複数の値を入れて、幅で見ることをおすすめします。</p>
 
-<h3>Q. 信託報酬0.1%の差はそんなに大きいですか？</h3>
-<p>A. 月3万円・20年・年5%の前提では、<b>0.09%と0.5%で535,298円</b>の差になります。率の差は小さく見えても、積立額と年数が大きいほど効きます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>信託報酬0.1%の差はそんなに大きいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>月3万円・20年・年5%の前提では、<b>0.09%と0.5%で535,298円</b>の差になります。率の差は小さく見えても、積立額と年数が大きいほど効きます。</p>
 
-<h3>Q. NISAの枠を使い切ったらどうなりますか？</h3>
-<p>A. それ以上は課税口座（特定口座など）での購入になり、利益に<b>20.315%</b>がかかります。なお、NISAで保有していた商品を売却すると、<b>翌年以降にその簿価分の枠が復活</b>します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>NISAの枠を使い切ったらどうなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>それ以上は課税口座（特定口座など）での購入になり、利益に<b>20.315%</b>がかかります。なお、NISAで保有していた商品を売却すると、<b>翌年以降にその簿価分の枠が復活</b>します。</p>
 
-<h3>Q. 元本割れしたときも税金はかかりますか？</h3>
-<p>A. かかりません。課税されるのは<b>利益（評価額−元本）</b>だけで、利益がゼロ以下なら税額もゼロです。このツールも同じ計算をしています。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>元本割れしたときも税金はかかりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>かかりません。課税されるのは<b>利益（評価額−元本）</b>だけで、利益がゼロ以下なら税額もゼロです。このツールも同じ計算をしています。</p>
 
-<h3>Q. 積立は月の初めと終わり、どちらで計算していますか？</h3>
-<p>A. <b>期初</b>（その月の頭に買う）で統一しています。期末で計算すると1か月分だけ運用期間が短くなるため、他のシミュレーターと数字が少し違うことがあります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>積立は月の初めと終わり、どちらで計算していますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>期初</b>（その月の頭に買う）で統一しています。期末で計算すると1か月分だけ運用期間が短くなるため、他のシミュレーターと数字が少し違うことがあります。</p>
 </section>
 
 <h2 id="shutten">出典</h2>
@@ -197,7 +199,7 @@
   © 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
 </footer>
 <script type="module">
 import { simulate, afterTax, nisaRoom } from "../../assets/tsumitate_core.js";

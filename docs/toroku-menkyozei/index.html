@@ -152,8 +152,9 @@
   </div>
 
   <label for="tokiBi">① 登記を受ける日（登記申請日）</label>
-    <p class="hint" id="kigen-hint" style="margin-top:6px"></p>
+
     <input aria-describedby="kigen-hint" type="date" id="tokiBi" value="2026-07-01">
+    <p class="hint" id="kigen-hint" style="margin-top:6px"></p>
 
   <label for="tokiShurui" style="margin-top:14px">② 建物の登記の種類</label>
   <select id="tokiShurui">
@@ -260,8 +261,9 @@
   <p class="hint" id="yoken-hint" style="margin-top:6px"></p>
 
   <label for="saikenGaku" style="margin-top:14px">⑦ 住宅ローンの借入額（抵当権設定の課税標準）</label>
-    <p class="hint" id="saiken-hint" style="margin-top:6px"></p>
+
     <input aria-describedby="saiken-hint" type="number" id="saikenGaku" min="0" inputmode="numeric" value="35000000">
+    <p class="hint" id="saiken-hint" style="margin-top:6px"></p>
 
   <button class="primary" id="calc" style="margin-top:14px">登録免許税を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -357,13 +359,13 @@
 
 <p id="nintei-honbun">認定住宅には0.1%まで下がる特例がありますが、<b>特定認定長期優良住宅の移転登記だけ、一戸建てが0.2%</b>です。措法74条2項がかっこ書きで「<b>一戸建ての特定認定長期優良住宅にあつては、千分の二</b>」と定めているためです。<b>認定低炭素住宅（同74条の2第2項）にはこのかっこ書きが無く、一戸建てでも0.1%</b>です。</p>
 
-<table id="nintei-table">
-  <thead><tr><th scope="col">認定の種類</th><th scope="col">保存（新築）</th><th scope="col">移転・マンション等</th><th scope="col">移転・<b>一戸建て</b></th></tr></thead>
+<div class="scroll-wrap"><table id="nintei-table">
+  <thead><tr><th scope="col">認定の種類</th><th scope="col" class="num">保存（新築）</th><th scope="col" class="num">移転・マンション等</th><th scope="col" class="num">移転・<b>一戸建て</b></th></tr></thead>
   <tbody>
-    <tr><td><b>特定認定長期優良住宅</b>（74条）</td><td class="num">0.1%</td><td class="num">0.1%</td><td class="num"><b>0.2%</b></td></tr>
-    <tr><td><b>認定低炭素住宅</b>（74条の2）</td><td class="num">0.1%</td><td class="num">0.1%</td><td class="num"><b>0.1%</b></td></tr>
+    <tr><td><b>特定認定長期優良住宅</b>（74条）</td><td class="num"><span class="numeric-token">0.1%</span></td><td class="num"><span class="numeric-token">0.1%</span></td><td class="num"><b><span class="numeric-token">0.2%</span></b></td></tr>
+    <tr><td><b>認定低炭素住宅</b>（74条の2）</td><td class="num"><span class="numeric-token">0.1%</span></td><td class="num"><span class="numeric-token">0.1%</span></td><td class="num"><b><span class="numeric-token">0.1%</span></b></td></tr>
   </tbody>
-</table>
+</table></div>
 
 <p id="nintei-shinchiku">どちらの特例も<b>「新築又は建築後使用されたことのない」</b>住宅に限られます（74条1項2項・74条の2第1項2項）。<b>中古の長期優良住宅は0.3%まで</b>で、それ以上は下がりません。中古住宅で0.1%になる経路は<b>買取再販</b>（宅建業者が増改築した中古住宅を個人が買う場合・74条の3）だけです。</p>
 
@@ -381,23 +383,23 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 家を買うと登録免許税はいくらかかりますか？</h3>
-<p>A. 登記ごとに税率が違うので、足し合わせた額になります。土地の売買による所有権移転は固定資産税評価額の1.5％（租税特別措置法72条）、住宅用家屋の所有権移転は0.3％（同73条）、新築の所有権保存は0.15％（同72条の2）、住宅ローンの抵当権設定は借入額の0.1％（同75条）です。たとえば土地の評価額1,500万円・建物1,000万円・ローン3,500万円の中古住宅なら、225,000円＋30,000円＋35,000円＝290,000円です。これは登録免許税だけの額で、司法書士報酬や登記事項証明書の実費は含みません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>家を買うと登録免許税はいくらかかりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>登記ごとに税率が違うので、足し合わせた額になります。土地の売買による所有権移転は固定資産税評価額の1.5％（租税特別措置法72条）、住宅用家屋の所有権移転は0.3％（同73条）、新築の所有権保存は0.15％（同72条の2）、住宅ローンの抵当権設定は借入額の0.1％（同75条）です。たとえば土地の評価額1,500万円・建物1,000万円・ローン3,500万円の中古住宅なら、225,000円＋30,000円＋35,000円＝290,000円です。これは登録免許税だけの額で、司法書士報酬や登記事項証明書の実費は含みません。</p>
 
-<h3>Q. 抵当権設定の登録免許税は、家の評価額で計算するのですか？</h3>
-<p>A. いいえ、借入額（債権金額）で計算します。登録免許税法別表第一 第一号（五）が課税標準を「債権金額、極度金額又は不動産工事費用の予算金額」と定めているためです。不動産の価額を課税標準にするのは所有権の保存・移転の登記で、抵当権の設定は別です。評価額2,000万円の家に3,000万円のローンを組んだ場合、抵当権の課税標準は3,000万円で、税額は3,000万円×0.1％＝30,000円です。頭金を多く入れて借入額が小さいほど、抵当権の登録免許税も小さくなります。根抵当権のときは極度金額で計算します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>抵当権設定の登録免許税は、家の評価額で計算するのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>いいえ、借入額（債権金額）で計算します。登録免許税法別表第一 第一号（五）が課税標準を「債権金額、極度金額又は不動産工事費用の予算金額」と定めているためです。不動産の価額を課税標準にするのは所有権の保存・移転の登記で、抵当権の設定は別です。評価額2,000万円の家に3,000万円のローンを組んだ場合、抵当権の課税標準は3,000万円で、税額は3,000万円×0.1％＝30,000円です。頭金を多く入れて借入額が小さいほど、抵当権の登録免許税も小さくなります。根抵当権のときは極度金額で計算します。</p>
 
-<h3>Q. 土地の1.5％はいつまでですか？</h3>
-<p>A. 令和11年3月31日までです。令和8年度の改正（令和8年法律第12号・2026年4月1日施行）で3年延長されました。国税庁のタックスアンサーNo.7191も「令和8年4月1日現在法令等」に更新され、令和11年3月31日までと案内しています。住宅用家屋の軽減（住宅の保存0.15％・移転0.3％・抵当権0.1％）は期限が別で、令和9年3月31日までです。同じ日に切れると思って計算すると、令和9年4月以降の土地を本則2％と誤ります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>土地の1.5％はいつまでですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>令和11年3月31日までです。令和8年度の改正（令和8年法律第12号・2026年4月1日施行）で3年延長されました。国税庁のタックスアンサーNo.7191も「令和8年4月1日現在法令等」に更新され、令和11年3月31日までと案内しています。住宅用家屋の軽減（住宅の保存0.15％・移転0.3％・抵当権0.1％）は期限が別で、令和9年3月31日までです。同じ日に切れると思って計算すると、令和9年4月以降の土地を本則2％と誤ります。</p>
 
-<h3>Q. 親から譲ってもらった家の名義変更にも軽減はありますか？</h3>
-<p>A. 贈与にはありません。住宅用家屋の軽減が使える取得の原因は「売買又は競落」だけと定められているためです（租税特別措置法施行令42条3項）。贈与・交換・財産分与による所有権移転は本則の2％になります。評価額1,000万円の家なら、売買なら30,000円、贈与なら200,000円で、差は170,000円です。相続・遺贈による移転は税率そのものが別で0.4％なので、相続登記の登録免許税 計算機をお使いください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>親から譲ってもらった家の名義変更にも軽減はありますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>贈与にはありません。住宅用家屋の軽減が使える取得の原因は「売買又は競落」だけと定められているためです（租税特別措置法施行令42条3項）。贈与・交換・財産分与による所有権移転は本則の2％になります。評価額1,000万円の家なら、売買なら30,000円、贈与なら200,000円で、差は170,000円です。相続・遺贈による移転は税率そのものが別で0.4％なので、相続登記の登録免許税 計算機をお使いください。</p>
 
-<h3>Q. 認定長期優良住宅なら一戸建てでも0.1％ですか？</h3>
-<p>A. 移転登記は0.2％です。租税特別措置法74条2項が「一戸建ての特定認定長期優良住宅にあつては、千分の二」というかっこ書きを置いているためで、マンション等が0.1％、一戸建ては0.2％になります。保存登記にはこの区別がなく一律0.1％です。認定低炭素住宅（同74条の2第2項）には当該かっこ書きが無いので、移転登記でも一戸建てでも0.1％です。両者を同じ表で説明している解説が多く、取り違えると一戸建てで税額が2倍または半分になります。どちらの特例も新築または建築後使用されたことのない住宅に限られ、中古の長期優良住宅は0.3％までです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>認定長期優良住宅なら一戸建てでも0.1％ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>移転登記は0.2％です。租税特別措置法74条2項が「一戸建ての特定認定長期優良住宅にあつては、千分の二」というかっこ書きを置いているためで、マンション等が0.1％、一戸建ては0.2％になります。保存登記にはこの区別がなく一律0.1％です。認定低炭素住宅（同74条の2第2項）には当該かっこ書きが無いので、移転登記でも一戸建てでも0.1％です。両者を同じ表で説明している解説が多く、取り違えると一戸建てで税額が2倍または半分になります。どちらの特例も新築または建築後使用されたことのない住宅に限られ、中古の長期優良住宅は0.3％までです。</p>
 
-<h3>Q. 中古住宅は築何年までなら軽減を受けられますか？</h3>
-<p>A. 築年数の要件は令和4年度改正で廃止されました。今は「昭和57年1月1日以後に建築されたもの」であること、またはそれ以前でも耐震基準に適合する証明があることが要件です（租税特別措置法施行令42条1項2号）。かつての「木造20年・耐火25年以内」で説明している解説がまだ残っていますが、その基準は現在の条文にありません。築40年の住宅でも昭和57年1月以後の建築なら軽減を受けられます。ほかに、個人が自分の住まいとして使うこと・登記簿上の床面積が50㎡以上であること・新築や取得から1年以内に登記を受けることが必要です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>中古住宅は築何年までなら軽減を受けられますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>築年数の要件は令和4年度改正で廃止されました。今は「昭和57年1月1日以後に建築されたもの」であること、またはそれ以前でも耐震基準に適合する証明があることが要件です（租税特別措置法施行令42条1項2号）。かつての「木造20年・耐火25年以内」で説明している解説がまだ残っていますが、その基準は現在の条文にありません。築40年の住宅でも昭和57年1月以後の建築なら軽減を受けられます。ほかに、個人が自分の住まいとして使うこと・登記簿上の床面積が50㎡以上であること・新築や取得から1年以内に登記を受けることが必要です。</p>
 
 <h2 id="shutten">出典</h2>
 <ul>
@@ -425,7 +427,7 @@
   <div>© 税金・経理・補助金ツールズ</div>
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2026年4月1日　／　一次情報の確認: 2026年7月30日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7191.htm" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2026年4月1日　／　一次情報の確認: 2026年7月30日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7191.htm" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

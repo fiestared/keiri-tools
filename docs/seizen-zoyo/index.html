@@ -158,8 +158,9 @@
     <b>60歳以上の父母・祖父母</b>から、<b>相続人になる子</b>へ、<b>毎年同じ額の現金</b>を贈与する典型形で比べます。残った財産は法定相続分どおりに分け、配偶者は税額軽減の枠内（税額0円）としています。孫への贈与・不動産や株式など評価額が動く財産・住宅取得等資金などの非課税特例は対象外です（詳しくは<a href="#zentei">前提と限界</a>）。
   </div>
 
-  <label for="assets">現在の財産総額（<b>万円</b>）<span class="hint">　預金・不動産・株式などの評価額の合計。例: 10000 なら1億円</span></label>
-  <input type="number" id="assets" value="10000" min="0" inputmode="numeric" placeholder="例: 10000">
+  <label for="assets">現在の財産総額（<b>万円</b>）</label>
+  <input type="number" id="assets" value="10000" min="0" inputmode="numeric" placeholder="例: 10000" aria-describedby="assets-hint">
+      <span id="assets-hint" class="hint">　預金・不動産・株式などの評価額の合計。例: 10000 なら1億円</span>
   <div id="assets-echo" class="hint" style="margin:-6px 0 10px"></div>
 
   <div>
@@ -168,8 +169,9 @@
       <select id="haiguusha"><option value="1" selected>いる</option><option value="0">いない</option></select>
     </div>
     <div>
-      <label for="ko">子の人数<span class="hint">　全員相続人</span></label>
-      <input type="number" id="ko" value="2" min="1" max="9" inputmode="numeric">
+      <label for="ko">子の人数</label>
+      <input type="number" id="ko" value="2" min="1" max="9" inputmode="numeric" aria-describedby="ko-hint">
+      <span id="ko-hint" class="hint">　全員相続人</span>
     </div>
   </div>
 
@@ -190,8 +192,9 @@
       <input type="number" id="nensu" value="10" min="1" max="40" inputmode="numeric">
     </div>
     <div>
-      <label for="gap">最後の贈与から相続開始までの年数<span class="hint">　想定</span></label>
-      <input type="number" id="gap" value="3" min="1" max="40" inputmode="numeric">
+      <label for="gap">最後の贈与から相続開始までの年数</label>
+      <input type="number" id="gap" value="3" min="1" max="40" inputmode="numeric" aria-describedby="gap-hint">
+      <span id="gap-hint" class="hint">　想定</span>
     </div>
   </div>
   <p class="hint" style="margin:-4px 0 10px">「相続開始までの年数」は誰にも分かりません。<b>1年（直後）と8年（7年加算の圏外）の両方で試す</b>と、暦年贈与の結果がどれだけ動くかが見えます。相続開始と同じ年の贈与は別枠（贈与税がかからず全額加算）のため、1年以上で入力してください。</p>
@@ -289,14 +292,14 @@
 <div class="callout" id="keika-note">
 <b>「7年」への延長は段階的（経過措置）</b>
 <p>7年加算の対象になるのは<b>令和6年1月1日以後の贈与</b>だけです（令和5年法律3号附則19条）。相続開始日ごとの加算対象期間は次のとおりで、<b>相続開始が令和8年12月31日まで</b>の場合は従来どおり<b>「3年」</b>で計算します。<b>完全に7年分が加算されるのは令和13年1月1日以後の相続</b>からです。本シミュレーターは「これから始める贈与の設計用」として<b>7年ルールの完成形</b>で計算しています（2023年以前の過去の贈与を含む検討には使えません）。</p>
-<table class="tbl" style="margin-top:8px">
+<div class="scroll-wrap"><table class="tbl" style="margin-top:8px">
 <thead><tr><th scope="col">相続開始日</th><th scope="col">加算対象期間</th></tr></thead>
 <tbody>
 <tr><td>〜令和8年12月31日</td><td>相続開始前<b>3年</b>以内</td></tr>
 <tr><td>令和9年1月1日〜令和12年12月31日</td><td><b>令和6年1月1日以後</b>の贈与（3年超〜7年未満に段階的に延長）</td></tr>
 <tr><td>令和13年1月1日〜</td><td>相続開始前<b>7年</b>以内（完成形）</td></tr>
 </tbody>
-</table>
+</table></div>
 </div>
 
 <h2 id="seisan">相続時精算課税 — 年110万円は戻らない（令和6年改正）</h2>
@@ -322,16 +325,16 @@
 
 <p>財産1億円・配偶者と子2人の家族で、<b>子2人に毎年110万円ずつ10年間</b>贈与し、最後の贈与から<b>3年後</b>に相続が開始したとします（本シミュレーターの初期値）。贈与税はどの方式でも0円です — それでも実質負担はこれだけ違います。</p>
 
-<table id="rei-hyo" class="tbl">
+<div class="scroll-wrap"><table id="rei-hyo" class="tbl">
 <thead><tr><th></th><th scope="col">何もしない</th><th scope="col">暦年課税で贈与</th><th scope="col">相続時精算課税で贈与</th></tr></thead>
 <tbody>
-<tr><td>生前に払う贈与税</td><td>—</td><td>0円</td><td>0円</td></tr>
+<tr><td>生前に払う贈与税</td><td>—</td><td><span class="numeric-token">0円</span></td><td><span class="numeric-token">0円</span></td></tr>
 <tr><td>相続税に戻る加算額</td><td>—</td><td><b>1人450万円</b><br><span class="hint">3年前の110万円＋4〜7年前の440万円−100万円</span></td><td><b>0円</b><br><span class="hint">年110万円は基礎控除以下</span></td></tr>
-<tr><td>相続税（子2人の合計）</td><td>315万円</td><td>241万3,600円</td><td>162万5,000円</td></tr>
-<tr><td><b>実質の総負担</b></td><td><b>315万円</b></td><td><b>241万3,600円</b></td><td><b>162万5,000円</b></td></tr>
-<tr><td>何もしない場合との差</td><td>—</td><td><b>−73万6,400円</b></td><td><b>−152万5,000円</b></td></tr>
+<tr><td>相続税（子2人の合計）</td><td>315万円</td><td>241万<span class="numeric-token">3,600円</span></td><td>162万<span class="numeric-token">5,000円</span></td></tr>
+<tr><td><b>実質の総負担</b></td><td><b>315万円</b></td><td><b>241万<span class="numeric-token">3,600円</span></b></td><td><b>162万<span class="numeric-token">5,000円</span></b></td></tr>
+<tr><td>何もしない場合との差</td><td>—</td><td><b>−73万<span class="numeric-token">6,400円</span></b></td><td><b>−152万<span class="numeric-token">5,000円</span></b></td></tr>
 </tbody>
-</table>
+</table></div>
 
 <p>この例では、<b>同じ贈与でも精算課税を選ぶだけで、暦年課税よりさらに約79万円軽く</b>なります。暦年課税は直近7年分（うち4年分は100万円控除後）の450万円×2人が課税価格に戻るのに対し、精算課税は年110万円の基礎控除以下なので<b>1円も戻らない</b>からです。これが令和6年改正後に「毎年110万円の小口贈与なら精算課税」と言われる理由です。</p>
 
@@ -372,26 +375,26 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 生前贈与は年間いくらまで非課税ですか？</h3>
-<p>A. 贈与税は年110万円（基礎控除）まで非課税です。ただし「贈与税がかからない」と「相続税に戻らない」は別で、相続や遺贈で財産を取得する人（子など）への贈与は、110万円以下でも相続開始前7年以内の分は相続税の課税価格に加算されます。贈与税と相続税の両方で残らないのは、贈与から7年を超えて相続が開始した分だけです（国税庁No.4161）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>生前贈与は年間いくらまで非課税ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>贈与税は年110万円（基礎控除）まで非課税です。ただし「贈与税がかからない」と「相続税に戻らない」は別で、相続や遺贈で財産を取得する人（子など）への贈与は、110万円以下でも相続開始前7年以内の分は相続税の課税価格に加算されます。贈与税と相続税の両方で残らないのは、贈与から7年を超えて相続が開始した分だけです（国税庁No.4161）。</p>
 
-<h3>Q. 毎年110万円以下に抑えれば、相続税にも戻りませんか？</h3>
-<p>A. 戻ります。生前贈与加算は贈与税がかかったかどうかと無関係で、国税庁は「基礎控除額110万円以下の贈与財産や死亡した年に贈与されている財産の価額も加算することになります」と明示しています（No.4161）。一方、相続時精算課税を選んだ場合の年110万円（精算課税の基礎控除）は相続時に加算されません。ここが令和6年改正後の2方式の最大の違いです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>毎年110万円以下に抑えれば、相続税にも戻りませんか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>戻ります。生前贈与加算は贈与税がかかったかどうかと無関係で、国税庁は「基礎控除額110万円以下の贈与財産や死亡した年に贈与されている財産の価額も加算することになります」と明示しています（No.4161）。一方、相続時精算課税を選んだ場合の年110万円（精算課税の基礎控除）は相続時に加算されません。ここが令和6年改正後の2方式の最大の違いです。</p>
 
-<h3>Q. 生前贈与加算の「7年」はいつの贈与から適用されますか？</h3>
-<p>A. 令和6年1月1日以後の贈与からです（令和5年法律3号附則19条）。相続開始が令和8年12月31日までなら従来どおり3年、令和9年〜令和12年は令和6年1月1日以後の贈与だけが対象（実質3〜7年に段階的に延長）、完全に7年分が加算されるのは令和13年1月1日以後に開始した相続からです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>生前贈与加算の「7年」はいつの贈与から適用されますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>令和6年1月1日以後の贈与からです（令和5年法律3号附則19条）。相続開始が令和8年12月31日までなら従来どおり3年、令和9年〜令和12年は令和6年1月1日以後の贈与だけが対象（実質3〜7年に段階的に延長）、完全に7年分が加算されるのは令和13年1月1日以後に開始した相続からです。</p>
 
-<h3>Q. 孫への贈与も7年加算の対象ですか？</h3>
-<p>A. 原則、対象外です。加算されるのは相続や遺贈で財産を取得した人への贈与だけなので、相続人でない孫への贈与には加算の期間制限が働きません。ただし、代襲相続人になった孫・遺言で財産を受け取った孫・生命保険金の受取人になった孫・相続時精算課税を選んでいた孫は加算の対象になります（相続税法19条1項）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>孫への贈与も7年加算の対象ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>原則、対象外です。加算されるのは相続や遺贈で財産を取得した人への贈与だけなので、相続人でない孫への贈与には加算の期間制限が働きません。ただし、代襲相続人になった孫・遺言で財産を受け取った孫・生命保険金の受取人になった孫・相続時精算課税を選んでいた孫は加算の対象になります（相続税法19条1項）。</p>
 
-<h3>Q. 相続時精算課税を選ぶと、暦年課税の110万円非課税はどうなりますか？</h3>
-<p>A. その贈与者（特定贈与者）からの贈与については暦年課税に戻れなくなり、代わりに精算課税の基礎控除（年110万円・相続時に加算されない）を使います。別の贈与者（たとえば母や祖父母）からの贈与は引き続き暦年課税で受けられ、暦年課税の基礎控除110万円も別に使えます。なお同じ年に2人以上の特定贈与者から贈与を受けた場合、精算課税の110万円は贈与額であん分します（国税庁No.4103）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>相続時精算課税を選ぶと、暦年課税の110万円非課税はどうなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>その贈与者（特定贈与者）からの贈与については暦年課税に戻れなくなり、代わりに精算課税の基礎控除（年110万円・相続時に加算されない）を使います。別の贈与者（たとえば母や祖父母）からの贈与は引き続き暦年課税で受けられ、暦年課税の基礎控除110万円も別に使えます。なお同じ年に2人以上の特定贈与者から贈与を受けた場合、精算課税の110万円は贈与額であん分します（国税庁No.4103）。</p>
 
-<h3>Q. 精算課税で年110万円以下なら、申告は不要ですか？</h3>
-<p>A. 贈与税の申告は不要です（基礎控除以下のため）。ただし最初に精算課税を選ぶ年は、贈与を受けた年の翌年2月1日〜3月15日に「相続時精算課税選択届出書」の提出が必要です。また特別控除2,500万円は期限内申告書に記載した場合しか使えないので、110万円を超える年は申告を忘れないでください（国税庁No.4103）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>精算課税で年110万円以下なら、申告は不要ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>贈与税の申告は不要です（基礎控除以下のため）。ただし最初に精算課税を選ぶ年は、贈与を受けた年の翌年2月1日〜3月15日に「相続時精算課税選択届出書」の提出が必要です。また特別控除2,500万円は期限内申告書に記載した場合しか使えないので、110万円を超える年は申告を忘れないでください（国税庁No.4103）。</p>
 
-<h3>Q. 結局、暦年贈与と相続時精算課税はどちらが得ですか？</h3>
-<p>A. 一概には言えません。毎年110万円以下の小口贈与なら精算課税（加算ゼロ）が有利になりやすく、大きな額を若いうちから動かすなら暦年課税×時間（7年経過で加算ゼロ）が効きます。相続開始が近い時期の大口暦年贈与は、ほぼ全額が戻るうえ贈与税だけ残るため「何もしない」より損になることもあります。上のシミュレーターで、贈与額・年数・相続までの年数を変えて実額で比べてください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>結局、暦年贈与と相続時精算課税はどちらが得ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>一概には言えません。毎年110万円以下の小口贈与なら精算課税（加算ゼロ）が有利になりやすく、大きな額を若いうちから動かすなら暦年課税×時間（7年経過で加算ゼロ）が効きます。相続開始が近い時期の大口暦年贈与は、ほぼ全額が戻るうえ贈与税だけ残るため「何もしない」より損になることもあります。上のシミュレーターで、贈与額・年数・相続までの年数を変えて実額で比べてください。</p>
 
 <section class="related">
 <div class="tool-grid">
@@ -425,7 +428,7 @@
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2024年1月1日　／　一次情報の確認: 2026年7月24日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4161.htm" rel="noopener" style="color:var(--sub)">出典</a></li><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2015年1月1日　／　一次情報の確認: 2026年7月16日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4152.htm" rel="noopener" style="color:var(--sub)">出典</a></li><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2015年1月1日　／　一次情報の確認: 2026年7月16日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/zoyo/4408.htm" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2024年1月1日　／　一次情報の確認: 2026年7月24日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4161.htm" rel="noopener" style="color:var(--sub)">出典</a></li><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2015年1月1日　／　一次情報の確認: 2026年7月16日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4152.htm" rel="noopener" style="color:var(--sub)">出典</a></li><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2015年1月1日　／　一次情報の確認: 2026年7月16日　／　<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/zoyo/4408.htm" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

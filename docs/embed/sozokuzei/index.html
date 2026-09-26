@@ -43,30 +43,35 @@
   .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
   .warn{ font-size:13px; color:#b4232a; }
 </style>
+<link rel="stylesheet" href="/assets/embed-layout.css">
 </head>
 <body>
 <div class="w">
   <h1>相続税 計算機</h1>
   <p class="lead">遺産の総額と相続人の構成から、相続税の総額と、配偶者が法定相続分を取得した場合の実際の納税額を計算します。基礎控除は「3,000万円＋600万円×法定相続人の数」。</p>
 
-  <label for="isan">遺産の総額（課税価格の合計・<b>万円</b>）<span class="hint">　借金・葬式費用を引いた額。例: 10000 なら1億円</span></label>
-  <input id="isan" type="number" inputmode="numeric" placeholder="例: 10000（＝1億円）" min="0">
+  <label for="isan">遺産の総額（課税価格の合計・<b>万円</b>）</label>
+  <input id="isan" type="number" inputmode="numeric" placeholder="例: 10000（＝1億円）" min="0" aria-describedby="isan-hint">
+      <span id="isan-hint" class="hint">　借金・葬式費用を引いた額。例: 10000 なら1億円</span>
   <div id="isan-echo" class="echo"></div>
 
-  <label for="haiguusha">配偶者（夫・妻）<span class="hint">　いる場合は税額軽減で負担が大きく下がります</span></label>
-  <select id="haiguusha">
+  <label for="haiguusha">配偶者（夫・妻）</label>
+  <select id="haiguusha" aria-describedby="haiguusha-hint">
     <option value="1">いる</option>
     <option value="0">いない（すでに死亡・離婚など）</option>
   </select>
+      <span id="haiguusha-hint" class="hint">　いる場合は税額軽減で負担が大きく下がります</span>
 
   <div class="grid">
     <div>
-      <label for="koReal">子の数（実子）<span class="hint">　代襲相続の孫も含む</span></label>
-      <input id="koReal" type="number" inputmode="numeric" value="0" min="0">
+      <label for="koReal">子の数（実子）</label>
+      <input id="koReal" type="number" inputmode="numeric" value="0" min="0" aria-describedby="koReal-hint">
+      <span id="koReal-hint" class="hint">　代襲相続の孫も含む</span>
     </div>
     <div>
-      <label for="koYoshi">うち養子の数<span class="hint">　実子ありは1人・なしは2人まで</span></label>
-      <input id="koYoshi" type="number" inputmode="numeric" value="0" min="0">
+      <label for="koYoshi">うち養子の数</label>
+      <input id="koYoshi" type="number" inputmode="numeric" value="0" min="0" aria-describedby="koYoshi-hint">
+      <span id="koYoshi-hint" class="hint">　実子ありは1人・なしは2人まで</span>
     </div>
   </div>
 
@@ -76,12 +81,14 @@
 
   <div class="grid">
     <div>
-      <label for="oya">父母（存命の直系尊属）の数<span class="hint">　子がいないときのみ</span></label>
-      <input id="oya" type="number" inputmode="numeric" value="0" min="0">
+      <label for="oya">父母（存命の直系尊属）の数</label>
+      <input id="oya" type="number" inputmode="numeric" value="0" min="0" aria-describedby="oya-hint">
+      <span id="oya-hint" class="hint">　子がいないときのみ</span>
     </div>
     <div>
-      <label for="kyodai">兄弟姉妹の数<span class="hint">　子も父母もいないとき。2割加算</span></label>
-      <input id="kyodai" type="number" inputmode="numeric" value="0" min="0">
+      <label for="kyodai">兄弟姉妹の数</label>
+      <input id="kyodai" type="number" inputmode="numeric" value="0" min="0" aria-describedby="kyodai-hint">
+      <span id="kyodai-hint" class="hint">　子も父母もいないとき。2割加算</span>
     </div>
   </div>
 

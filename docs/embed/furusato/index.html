@@ -49,6 +49,7 @@
   .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
   .warn{ font-size:13px; color:#b4232a; }
 </style>
+<link rel="stylesheet" href="/assets/embed-layout.css">
 </head>
 <body>
 <div class="w">
@@ -70,8 +71,9 @@
   </div>
   <div class="hint">年齢と都道府県は<b>社会保険料の概算</b>にだけ使います。</div>
 
-  <label for="shakai" style="margin-top:10px">社会保険料（年額／円）<span class="hint">　空欄なら年収から概算</span></label>
-  <input id="shakai" type="number" inputmode="numeric" placeholder="源泉徴収票の「社会保険料等の金額」">
+  <label for="shakai" style="margin-top:10px">社会保険料（年額／円）</label>
+  <input id="shakai" type="number" inputmode="numeric" placeholder="源泉徴収票の「社会保険料等の金額」" aria-describedby="shakai-hint">
+      <span id="shakai-hint" class="hint">　空欄なら年収から概算</span>
 
   <div class="grid">
     <div>
@@ -112,10 +114,12 @@
         <input id="fuyoDokyoRooya" type="number" inputmode="numeric" value="0" min="0" max="20">
       </div>
     </div>
-    <label for="sonotaKojo" style="margin-top:6px">その他の所得控除（円）<span class="hint">　生命保険料・地震保険料・iDeCoなど</span></label>
-    <input id="sonotaKojo" type="number" inputmode="numeric" value="0" min="0">
-    <label for="sonotaShotoku" style="margin-top:6px">給与以外の所得（円）<span class="hint">　副業・不動産などの所得金額</span></label>
-    <input id="sonotaShotoku" type="number" inputmode="numeric" value="0" min="0">
+    <label for="sonotaKojo" style="margin-top:6px">その他の所得控除（円）</label>
+    <input id="sonotaKojo" type="number" inputmode="numeric" value="0" min="0" aria-describedby="sonotaKojo-hint">
+      <span id="sonotaKojo-hint" class="hint">　生命保険料・地震保険料・iDeCoなど</span>
+    <label for="sonotaShotoku" style="margin-top:6px">給与以外の所得（円）</label>
+    <input id="sonotaShotoku" type="number" inputmode="numeric" value="0" min="0" aria-describedby="sonotaShotoku-hint">
+      <span id="sonotaShotoku-hint" class="hint">　副業・不動産などの所得金額</span>
     <label class="chk"><input id="hitorioya" type="checkbox"> ひとり親</label>
     <div class="hint" style="margin:0 0 4px 20px">あなたは
       <select id="hitorioyaSei" style="width:auto;display:inline-block">
@@ -127,8 +131,9 @@
     <label class="chk"><input id="gakusei" type="checkbox"> 勤労学生</label>
   </details>
 
-  <label for="kifu" style="margin-top:10px">寄附する予定の額（円）<span class="hint">　任意。自己負担が2,000円で収まるか判定</span></label>
-  <input id="kifu" type="number" inputmode="numeric" placeholder="例: 60000">
+  <label for="kifu" style="margin-top:10px">寄附する予定の額（円）</label>
+  <input id="kifu" type="number" inputmode="numeric" placeholder="例: 60000" aria-describedby="kifu-hint">
+      <span id="kifu-hint" class="hint">　任意。自己負担が2,000円で収まるか判定</span>
 
   <button id="calc" type="button">限度額を計算する</button>
 

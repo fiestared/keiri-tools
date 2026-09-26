@@ -119,13 +119,14 @@
   <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-09-26">2026年9月26日</time>）</p>
   <p>入社日と勤務日数を入れるだけで、<b>付与日数・付与日・次回付与日</b>を計算します。<b>パート・アルバイトの比例付与</b>と、<b>年5日の取得義務</b>の判定にも対応。</p>
 </section>
+<!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">覚えている条件（次の付与日が近い順）</a></li><li><a href="#tool-section-2">有給休暇のしくみ</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end-->
 
 <p id="memo-return" class="retention-return" data-retention-control hidden><a href="#memo-card">覚えている条件から再計算する →</a></p>
 <div class="card">
   <label for="hire">入社日</label>
   <input type="date" id="hire">
 
-  <div class="fee-pair">
+  <div class="fee-pair field-pair">
     <div>
       <label for="wdays">週の所定労働日数</label>
       <select id="wdays">
@@ -156,7 +157,7 @@
 </div>
 
 <div class="card" id="memo-card" data-retention-control tabindex="-1" style="display:none">
-  <h2 style="font-size:16px;margin:0 0 2px">覚えている条件（次の付与日が近い順）</h2>
+  <h2 style="font-size:16px;margin:0 0 2px" id="tool-section-1">覚えている条件（次の付与日が近い順）</h2>
   <p style="font-size:12.5px;color:var(--sub);margin:0 0 10px">
     この端末のブラウザにだけ保存しています。<b>サーバーへは送信していません</b>。
     別のPCやブラウザには引き継がれません。
@@ -166,24 +167,24 @@
 </div>
 
 <section class="faq">
-  <h2>有給休暇のしくみ</h2>
+  <h2 id="tool-section-2">有給休暇のしくみ</h2>
 
   <h3>付与のルール（労働基準法39条）</h3>
   <p>入社から<b>6か月継続勤務し、全労働日の8割以上出勤</b>すると10日付与されます。以後は1年ごとに付与され、<b>6年6か月以降は年20日</b>で上限です。</p>
-  <div class="retention-table" tabindex="0" role="region" aria-label="有給休暇の付与日数表。横にスクロールできます"><table>
+  <div class="retention-table" tabindex="0" role="region" aria-label="有給休暇の付与日数表。横にスクロールできます"><div class="scroll-wrap"><table>
     <tr><th scope="col">勤続年数</th><th scope="col">6か月</th><th scope="col">1年6か月</th><th scope="col">2年6か月</th><th scope="col">3年6か月</th><th scope="col">4年6か月</th><th scope="col">5年6か月</th><th scope="col">6年6か月〜</th></tr>
-    <tr><td>付与日数</td><td>10日</td><td>11日</td><td>12日</td><td>14日</td><td>16日</td><td>18日</td><td><b>20日</b></td></tr>
-  </table></div>
+    <tr><td>付与日数</td><td><span class="numeric-token">10日</span></td><td><span class="numeric-token">11日</span></td><td><span class="numeric-token">12日</span></td><td><span class="numeric-token">14日</span></td><td><span class="numeric-token">16日</span></td><td><span class="numeric-token">18日</span></td><td><b><span class="numeric-token">20日</span></b></td></tr>
+  </table></div></div>
 
   <h3>パート・アルバイトの比例付与</h3>
   <p>週の所定労働日数が<b>4日以下 かつ 週30時間未満</b>の場合、所定労働日数に応じて比例付与されます。</p>
-  <div class="retention-table" tabindex="0" role="region" aria-label="有給休暇の付与日数表。横にスクロールできます"><table>
+  <div class="retention-table" tabindex="0" role="region" aria-label="有給休暇の付与日数表。横にスクロールできます"><div class="scroll-wrap"><table>
     <tr><th scope="col">週の日数</th><th scope="col">6か月</th><th scope="col">1年6か月</th><th scope="col">2年6か月</th><th scope="col">3年6か月</th><th scope="col">4年6か月</th><th scope="col">5年6か月</th><th scope="col">6年6か月〜</th></tr>
-    <tr><td>週4日</td><td>7日</td><td>8日</td><td>9日</td><td>10日</td><td>12日</td><td>13日</td><td>15日</td></tr>
-    <tr><td>週3日</td><td>5日</td><td>6日</td><td>6日</td><td>8日</td><td>9日</td><td>10日</td><td>11日</td></tr>
-    <tr><td>週2日</td><td>3日</td><td>4日</td><td>4日</td><td>5日</td><td>6日</td><td>6日</td><td>7日</td></tr>
-    <tr><td>週1日</td><td>1日</td><td>2日</td><td>2日</td><td>2日</td><td>3日</td><td>3日</td><td>3日</td></tr>
-  </table></div>
+    <tr><td>週4日</td><td><span class="numeric-token">7日</span></td><td><span class="numeric-token">8日</span></td><td><span class="numeric-token">9日</span></td><td><span class="numeric-token">10日</span></td><td><span class="numeric-token">12日</span></td><td><span class="numeric-token">13日</span></td><td><span class="numeric-token">15日</span></td></tr>
+    <tr><td>週3日</td><td><span class="numeric-token">5日</span></td><td><span class="numeric-token">6日</span></td><td><span class="numeric-token">6日</span></td><td><span class="numeric-token">8日</span></td><td><span class="numeric-token">9日</span></td><td><span class="numeric-token">10日</span></td><td><span class="numeric-token">11日</span></td></tr>
+    <tr><td>週2日</td><td><span class="numeric-token">3日</span></td><td><span class="numeric-token">4日</span></td><td><span class="numeric-token">4日</span></td><td><span class="numeric-token">5日</span></td><td><span class="numeric-token">6日</span></td><td><span class="numeric-token">6日</span></td><td><span class="numeric-token">7日</span></td></tr>
+    <tr><td>週1日</td><td><span class="numeric-token">1日</span></td><td><span class="numeric-token">2日</span></td><td><span class="numeric-token">2日</span></td><td><span class="numeric-token">2日</span></td><td><span class="numeric-token">3日</span></td><td><span class="numeric-token">3日</span></td><td><span class="numeric-token">3日</span></td></tr>
+  </table></div></div>
   <div class="callout">
     <b>間違えやすいポイント</b>
     週4日勤務でも、<b>週30時間以上働いていれば「通常の労働者」扱い</b>で10日付与されます（比例付与にはなりません）。日数だけで判断しないよう注意してください。
@@ -207,12 +208,12 @@
 
 <section class="faq">
   <h2 id="faq">よくある質問</h2>
-  <h3>有給休暇はいつ付与されますか？</h3>
-  <p>入社から<b>6か月継続勤務</b>し、全労働日の8割以上出勤した時点で10日付与されます。以後は1年ごとに付与され、6年6か月以降は年20日で上限となります。</p>
-  <h3>パート・アルバイトにも有給休暇はありますか？</h3>
-  <p>あります。週の所定労働日数が4日以下かつ週30時間未満の場合は、所定労働日数に応じて<b>比例付与</b>されます（週4日勤務なら6か月経過時点で7日）。なお週30時間以上働いていれば、週4日でも通常の10日が付与されます。</p>
-  <h3>年5日の取得義務とは？</h3>
-  <p>年10日以上の有給休暇が付与される労働者について、会社は<b>年5日を確実に取得させる義務</b>があります（2019年4月から）。違反すると30万円以下の罰金の対象です。パート・アルバイトでも10日以上付与されれば対象になります。</p>
+  <h3 class="faq-question">有給休暇はいつ付与されますか？</h3>
+  <p class="faq-answer">入社から<b>6か月継続勤務</b>し、全労働日の8割以上出勤した時点で10日付与されます。以後は1年ごとに付与され、6年6か月以降は年20日で上限となります。</p>
+  <h3 class="faq-question">パート・アルバイトにも有給休暇はありますか？</h3>
+  <p class="faq-answer">あります。週の所定労働日数が4日以下かつ週30時間未満の場合は、所定労働日数に応じて<b>比例付与</b>されます（週4日勤務なら6か月経過時点で7日）。なお週30時間以上働いていれば、週4日でも通常の10日が付与されます。</p>
+  <h3 class="faq-question">年5日の取得義務とは？</h3>
+  <p class="faq-answer">年10日以上の有給休暇が付与される労働者について、会社は<b>年5日を確実に取得させる義務</b>があります（2019年4月から）。違反すると30万円以下の罰金の対象です。パート・アルバイトでも10日以上付与されれば対象になります。</p>
 </section>
 <section class="faq rel-block">
 <h2>関連する解説</h2>

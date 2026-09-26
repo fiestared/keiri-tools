@@ -121,20 +121,22 @@
   </div>
 
   <div class="card">
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="hyojun">標準報酬月額（円）</label>
-    <p class="hint" id="hyojun-hint">健保・厚年・子育て拠出金のベース。<a href="../shakai-hoken/">社会保険料の計算</a>で等級が出せます。</p>
+
     <input aria-describedby="hyojun-hint" type="number" id="hyojun" value="300000" min="0" step="1000" inputmode="numeric">
+    <p class="hint" id="hyojun-hint">健保・厚年・子育て拠出金のベース。<a href="../shakai-hoken/">社会保険料の計算</a>で等級が出せます。</p>
       </div>
       <div>
         <label for="chingin">賃金総額（円／月）</label>
-    <p class="hint" id="chingin-hint">雇用保険・労災のベース。通勤手当・残業代を含む実際の支払額。</p>
+
     <input aria-describedby="chingin-hint" type="number" id="chingin" value="320000" min="0" step="1000" inputmode="numeric">
+    <p class="hint" id="chingin-hint">雇用保険・労災のベース。通勤手当・残業代を含む実際の支払額。</p>
       </div>
     </div>
 
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="ken">都道府県（健康保険料率）</label>
         <select id="ken"></select>
@@ -146,8 +148,9 @@
     </div>
 
     <label for="gyoshu">労災保険の事業の種類</label>
-    <p class="hint" id="gyoshu-hint"></p>
+
     <select aria-describedby="gyoshu-hint" id="gyoshu"></select>
+    <p class="hint" id="gyoshu-hint"></p>
 
     <label><input type="checkbox" id="kaigo"> 介護保険第2号被保険者（<b>40歳以上65歳未満</b>）</label>
 
@@ -208,26 +211,26 @@
 
 <section class="faq">
 <h2 id="faq">よくある質問</h2>
-<h3>Q. 社会保険料は労使折半ではないのですか？</h3>
-<p>A. 健康保険・介護保険・厚生年金は折半です。ただし<b>子ども・子育て拠出金は全額事業主負担</b>（本人負担はありません）、<b>労災保険も全額事業主負担</b>、<b>雇用保険は労使で率が違います</b>。この3つを折半として計算すると、会社の負担を過少に見積もります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>社会保険料は労使折半ではないのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>健康保険・介護保険・厚生年金は折半です。ただし<b>子ども・子育て拠出金は全額事業主負担</b>（本人負担はありません）、<b>労災保険も全額事業主負担</b>、<b>雇用保険は労使で率が違います</b>。この3つを折半として計算すると、会社の負担を過少に見積もります。</p>
 
-<h3>Q. 雇用保険はなぜ会社のほうが高いのですか？</h3>
-<p>A. 事業主だけが<b>雇用保険二事業</b>（雇用安定事業・能力開発事業）の分を負担するためです（徴収法31条1項1号）。令和8年度の一般の事業なら、本人5／1000に対して事業主8.5／1000で、差の3.5／1000がその分です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>雇用保険はなぜ会社のほうが高いのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>事業主だけが<b>雇用保険二事業</b>（雇用安定事業・能力開発事業）の分を負担するためです（徴収法31条1項1号）。令和8年度の一般の事業なら、本人5／1000に対して事業主8.5／1000で、差の3.5／1000がその分です。</p>
 
-<h3>Q. 労災保険料は給与から引かれますか？</h3>
-<p>A. <b>引かれません。全額が事業主負担</b>です。徴収法31条は雇用保険の被保険者負担額だけを定めており、労災保険には対応する規定がありません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>労災保険料は給与から引かれますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>引かれません。全額が事業主負担</b>です。徴収法31条は雇用保険の被保険者負担額だけを定めており、労災保険には対応する規定がありません。</p>
 
-<h3>Q. 法定福利費は給与の何%くらいですか？</h3>
-<p>A. <b>業種によります。</b>その他の各種事業（労災3／1000）なら給与の15%前後ですが、労災保険率は業種で2.5／1000〜88／1000と35倍の開きがあるため、建設・林業・鉱業ではもっと高くなります。上の欄で業種を選んで計算してください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>法定福利費は給与の何%くらいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>業種によります。</b>その他の各種事業（労災3／1000）なら給与の15%前後ですが、労災保険率は業種で2.5／1000〜88／1000と35倍の開きがあるため、建設・林業・鉱業ではもっと高くなります。上の欄で業種を選んで計算してください。</p>
 
-<h3>Q. 標準報酬月額と賃金総額のどちらを入れればよいですか？</h3>
-<p>A. <b>両方です。</b>健保・厚年・子育て拠出金は標準報酬月額、雇用保険と労災は賃金総額（実際の支払額）にかかるためです。標準報酬月額は<a href="../santei/">算定基礎届の計算</a>で出せます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>標準報酬月額と賃金総額のどちらを入れればよいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>両方です。</b>健保・厚年・子育て拠出金は標準報酬月額、雇用保険と労災は賃金総額（実際の支払額）にかかるためです。標準報酬月額は<a href="../santei/">算定基礎届の計算</a>で出せます。</p>
 
-<h3>Q. 介護保険料はいつからいつまでかかりますか？</h3>
-<p>A. <b>40歳以上65歳未満</b>（介護保険第2号被保険者）の期間です。65歳になると第1号被保険者になり、給与からの控除ではなく年金からの特別徴収などに変わります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>介護保険料はいつからいつまでかかりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>40歳以上65歳未満</b>（介護保険第2号被保険者）の期間です。65歳になると第1号被保険者になり、給与からの控除ではなく年金からの特別徴収などに変わります。</p>
 
-<h3>Q. メリット制で労災保険率が下がっている場合はどうすればよいですか？</h3>
-<p>A. このツールは<b>別表第1の率</b>（メリット制適用前）で計算します。メリット制の増減率は事業ごとに労働局から通知されるので、その率で計算し直してください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>メリット制で労災保険率が下がっている場合はどうすればよいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>このツールは<b>別表第1の率</b>（メリット制適用前）で計算します。メリット制の増減率は事業ごとに労働局から通知されるので、その率で計算し直してください。</p>
 </section>
 
 <h2 id="shutten">出典</h2>
@@ -244,7 +247,7 @@
   © 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
 </footer>
 <script type="module">
 import { jigyonushiFutan, rousaiRate, nenganAndRatio } from "../assets/hoteifukuri_core.js";

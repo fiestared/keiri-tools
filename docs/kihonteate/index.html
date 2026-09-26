@@ -143,16 +143,18 @@
   <p class="article-meta">公開日: <time datetime="2026-07-14">2026年7月14日</time>（更新日: <time datetime="2026-09-26">2026年9月26日</time>）</p>
   <p>離職時の年齢・給料・勤続年数・退職理由を入れるだけで、<b>1日あたりの金額（基本手当日額）</b>・<b>もらえる日数</b>・<b>総額の目安</b>・<b>いつから支給が始まるか</b>を計算します。厚生労働省の最新の上限額・下限額に対応。</p>
 </section>
+<!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機の見方</a></li><li><a href="#itsu">いつ振り込まれるか — 待期の7日と、4週に1回の認定日</a></li><li><a href="#zeikin">受け取った基本手当に、所得税・住民税はかかりません</a></li><li><a href="#arubaito">受給中にアルバイトをしたとき — 19条の減額と、申告の義務</a></li><li><a href="#kunren">訓練を受けると、所定給付日数を超えても支給が続きます</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end-->
 
 <div class="card">
-  <div class="fee-pair">
+  <div class="fee-pair field-pair">
     <div>
       <label for="age">離職時の年齢</label>
       <input type="number" id="age" value="35" min="15" max="70" inputmode="numeric">
     </div>
     <div>
-      <label for="monthly">毎月の給料（総支給・円）<span class="hint">　賞与は含めない</span></label>
-      <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
+      <label for="monthly">毎月の給料（総支給・円）</label>
+      <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric" aria-describedby="monthly-hint">
+      <span id="monthly-hint" class="hint">　賞与は含めない</span>
     </div>
   </div>
 
@@ -268,7 +270,7 @@
 </div>
 
 <section class="faq">
-  <h2>この計算機の見方</h2>
+  <h2 id="tool-section-1">この計算機の見方</h2>
   <h3>1日あたりの金額は「月給 → 賃金日額 → 給付率」の順で決まります</h3>
   <p>まず<b>賃金日額＝離職前6か月の賃金総額 ÷ 180</b>（雇用保険法17条1項）。おおよそ月給の30分の1です。賞与は含めません。次にこの賃金日額に<b>50〜80％の給付率</b>（60歳以上65歳未満は45〜80％）を掛けたものが、1日あたりの支給額です。<b>給料が低い人ほど率が高くなる</b>逆進的な仕組みになっています。</p>
   <h3>離職理由で変わるのは「日数」と「開始時期」。日額は変わりません</h3>
@@ -283,12 +285,12 @@
   <p>給付率は連続して下がるのではなく、賃金日額の<b>帯ごと</b>に決まります。<span id="joge-year">令和8年8月1日から</span>の帯は次のとおりです（30歳以上45歳未満の場合。月給の目安は賃金日額を30倍した概算です）。</p>
   <div class="scroll-wrap">
   <table class="num-nowrap-lg">
-    <thead><tr><th scope="col">賃金日額（月給の目安）</th><th scope="col">給付率</th><th scope="col">基本手当日額</th></tr></thead>
+    <thead><tr><th scope="col">賃金日額（月給の目安）</th><th scope="col" class="num">給付率</th><th scope="col" class="num">基本手当日額</th></tr></thead>
     <tbody>
       <tr><td>3,203円未満</td><td class="num">―</td><td class="num">下限の2,562円まで引き上げ</td></tr>
-      <tr><td>3,203円以上 5,480円未満（月給 約9.6万〜16.4万円）</td><td class="num">80％</td><td class="num">2,562円〜4,383円</td></tr>
-      <tr><td>5,480円以上 13,490円以下（月給 約16.4万〜40.5万円）</td><td class="num">80％→50％へ逓減</td><td class="num">4,384円〜6,745円</td></tr>
-      <tr><td>13,490円超 16,540円以下（月給 約40.5万〜49.6万円）</td><td class="num">50％</td><td class="num">6,745円〜8,270円</td></tr>
+      <tr><td>3,203円以上 5,480円未満（月給 約9.6万〜16.4万円）</td><td class="num"><span class="numeric-token">80％</span></td><td class="num"><span class="numeric-token">2,562円</span>〜<span class="numeric-token">4,383円</span></td></tr>
+      <tr><td>5,480円以上 13,490円以下（月給 約16.4万〜40.5万円）</td><td class="num">80％→50％へ逓減</td><td class="num"><span class="numeric-token">4,384円</span>〜<span class="numeric-token">6,745円</span></td></tr>
+      <tr><td>13,490円超 16,540円以下（月給 約40.5万〜49.6万円）</td><td class="num"><span class="numeric-token">50％</span></td><td class="num"><span class="numeric-token">6,745円</span>〜<span class="numeric-token">8,270円</span></td></tr>
       <tr><td>16,540円超（月給 約49.6万円超）</td><td class="num">―</td><td class="num">上限の8,270円で止まる</td></tr>
     </tbody>
   </table>
@@ -296,13 +298,13 @@
   <p>年齢で動くのは<b>いちばん下の2行（上限に関わる部分）だけ</b>です。80％の帯（3,203円以上5,480円未満）と下限は全年齢で同じです。年齢別の上限額と、全年齢共通の下限額は次のとおりです。</p>
   <div class="scroll-wrap">
   <table>
-    <thead><tr><th scope="col">区分</th><th scope="col">賃金日額</th><th scope="col">基本手当日額</th></tr></thead>
+    <thead><tr><th scope="col">区分</th><th scope="col" class="num">賃金日額</th><th scope="col" class="num">基本手当日額</th></tr></thead>
     <tbody>
-      <tr><td>上限・30歳未満</td><td class="num" style="white-space:nowrap">14,900円</td><td class="num" style="white-space:nowrap">7,450円</td></tr>
-      <tr><td>上限・30歳以上45歳未満</td><td class="num" style="white-space:nowrap">16,540円</td><td class="num" style="white-space:nowrap">8,270円</td></tr>
-      <tr><td>上限・45歳以上60歳未満</td><td class="num" style="white-space:nowrap">18,220円</td><td class="num" style="white-space:nowrap">9,110円</td></tr>
-      <tr><td>上限・60歳以上65歳未満</td><td class="num" style="white-space:nowrap">17,400円</td><td class="num" style="white-space:nowrap">7,830円</td></tr>
-      <tr><td>下限（全年齢）</td><td class="num" style="white-space:nowrap">3,203円</td><td class="num" style="white-space:nowrap">2,562円</td></tr>
+      <tr><td>上限・30歳未満</td><td class="num" style="white-space:nowrap"><span class="numeric-token">14,900円</span></td><td class="num" style="white-space:nowrap"><span class="numeric-token">7,450円</span></td></tr>
+      <tr><td>上限・30歳以上45歳未満</td><td class="num" style="white-space:nowrap"><span class="numeric-token">16,540円</span></td><td class="num" style="white-space:nowrap"><span class="numeric-token">8,270円</span></td></tr>
+      <tr><td>上限・45歳以上60歳未満</td><td class="num" style="white-space:nowrap"><span class="numeric-token">18,220円</span></td><td class="num" style="white-space:nowrap"><span class="numeric-token">9,110円</span></td></tr>
+      <tr><td>上限・60歳以上65歳未満</td><td class="num" style="white-space:nowrap"><span class="numeric-token">17,400円</span></td><td class="num" style="white-space:nowrap"><span class="numeric-token">7,830円</span></td></tr>
+      <tr><td>下限（全年齢）</td><td class="num" style="white-space:nowrap"><span class="numeric-token">3,203円</span></td><td class="num" style="white-space:nowrap"><span class="numeric-token">2,562円</span></td></tr>
     </tbody>
   </table>
   </div>
@@ -357,18 +359,18 @@
 
 <section class="faq">
   <h2 id="faq">よくある質問</h2>
-  <h3>失業保険は月給の何割もらえますか？</h3>
-  <p>1日あたりの支給額（基本手当日額）は、<b>賃金日額の50％〜80％</b>です（60歳以上65歳未満は45％〜80％）。賃金日額が低い人ほど率が高く、高い人ほど率が低くなります。さらに賃金日額そのものに年齢別の上限があるため、給料が高い人ほど「割合」も「上限」も効いて、月給に対する割合は小さくなります。</p>
-  <h3>自己都合と会社都合で何が変わりますか？</h3>
-  <p><b>1日あたりの金額（基本手当日額）は変わりません。</b>変わるのは「もらえる日数」と「いつから始まるか」です。自己都合は年齢に関係なく90日・120日・150日の3段階ですが、会社都合（特定受給資格者）は年齢と勤続年数の表で<b>最長330日</b>まで伸びます。また自己都合には給付制限（原則1か月）がありますが、会社都合にはありません。</p>
-  <h3>自己都合退職の給付制限は2か月ではないのですか？</h3>
-  <p>2025年4月1日以降に離職した人は、<b>原則1か月</b>です。ただし離職日からさかのぼって5年間に2回を超えて自己都合退職している場合は3か月になります。なお<b>雇用保険法33条は「1か月以上3か月以内でハローワーク所長の定める期間」としか書いておらず、「2か月」も「1か月」も法律の条文には書かれていません</b>。運用の基準（通達）で決まる数字です。</p>
-  <h3>失業保険に税金はかかりますか？</h3>
-  <p>かかりません。雇用保険法12条が「租税その他の公課は、失業等給付として支給を受けた金銭を標準として課することができない」と定めているため、所得税も住民税もかからず、源泉徴収もされません。確定申告で収入として書く欄もありません。ただし退職後は公的医療保険と年金の手当てが別に要り（国民健康保険・任意継続・家族の被扶養者のどれか、年金は原則として国民年金の第1号被保険者）、その保険料は基本手当とは別にかかります。</p>
-  <h3>失業保険をもらいながらアルバイトはできますか？</h3>
-  <p>できますが、働いた日の収入は必ず申告してください（雇用保険法19条3項）。収入の1日分から控除額を引いた額と基本手当日額の合計が賃金日額の80％に収まれば満額、超えれば超えた分だけ減り、超えた額が日額以上ならその日は支給されません（19条1項1〜3号）。申告しないと不正受給になり、返還のうえ、別に2倍以下の納付を命じられます。</p>
-  <h3>勤続1年未満でも失業保険はもらえますか？</h3>
-  <p>自己都合や定年での退職では、<b>原則もらえません</b>。受給には離職日以前2年間に被保険者期間が通算12か月以上必要だからです（雇用保険法13条1項）。ただし<b>会社都合（倒産・解雇）や契約期間満了・更新なし、正当な理由のある自己都合の場合は、離職日以前1年間に被保険者期間が6か月以上あれば受給できます</b>（同条2項）。</p>
+  <h3 class="faq-question">失業保険は月給の何割もらえますか？</h3>
+  <p class="faq-answer">1日あたりの支給額（基本手当日額）は、<b>賃金日額の50％〜80％</b>です（60歳以上65歳未満は45％〜80％）。賃金日額が低い人ほど率が高く、高い人ほど率が低くなります。さらに賃金日額そのものに年齢別の上限があるため、給料が高い人ほど「割合」も「上限」も効いて、月給に対する割合は小さくなります。</p>
+  <h3 class="faq-question">自己都合と会社都合で何が変わりますか？</h3>
+  <p class="faq-answer"><b>1日あたりの金額（基本手当日額）は変わりません。</b>変わるのは「もらえる日数」と「いつから始まるか」です。自己都合は年齢に関係なく90日・120日・150日の3段階ですが、会社都合（特定受給資格者）は年齢と勤続年数の表で<b>最長330日</b>まで伸びます。また自己都合には給付制限（原則1か月）がありますが、会社都合にはありません。</p>
+  <h3 class="faq-question">自己都合退職の給付制限は2か月ではないのですか？</h3>
+  <p class="faq-answer">2025年4月1日以降に離職した人は、<b>原則1か月</b>です。ただし離職日からさかのぼって5年間に2回を超えて自己都合退職している場合は3か月になります。なお<b>雇用保険法33条は「1か月以上3か月以内でハローワーク所長の定める期間」としか書いておらず、「2か月」も「1か月」も法律の条文には書かれていません</b>。運用の基準（通達）で決まる数字です。</p>
+  <h3 class="faq-question">失業保険に税金はかかりますか？</h3>
+  <p class="faq-answer">かかりません。雇用保険法12条が「租税その他の公課は、失業等給付として支給を受けた金銭を標準として課することができない」と定めているため、所得税も住民税もかからず、源泉徴収もされません。確定申告で収入として書く欄もありません。ただし退職後は公的医療保険と年金の手当てが別に要り（国民健康保険・任意継続・家族の被扶養者のどれか、年金は原則として国民年金の第1号被保険者）、その保険料は基本手当とは別にかかります。</p>
+  <h3 class="faq-question">失業保険をもらいながらアルバイトはできますか？</h3>
+  <p class="faq-answer">できますが、働いた日の収入は必ず申告してください（雇用保険法19条3項）。収入の1日分から控除額を引いた額と基本手当日額の合計が賃金日額の80％に収まれば満額、超えれば超えた分だけ減り、超えた額が日額以上ならその日は支給されません（19条1項1〜3号）。申告しないと不正受給になり、返還のうえ、別に2倍以下の納付を命じられます。</p>
+  <h3 class="faq-question">勤続1年未満でも失業保険はもらえますか？</h3>
+  <p class="faq-answer">自己都合や定年での退職では、<b>原則もらえません</b>。受給には離職日以前2年間に被保険者期間が通算12か月以上必要だからです（雇用保険法13条1項）。ただし<b>会社都合（倒産・解雇）や契約期間満了・更新なし、正当な理由のある自己都合の場合は、離職日以前1年間に被保険者期間が6か月以上あれば受給できます</b>（同条2項）。</p>
 </section>
 <section class="faq rel-block">
 <h2>関連する解説</h2>
@@ -381,7 +383,7 @@
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2026年8月1日　／　次回改定: 2027年8月1日　／　一次情報の確認: 2026年8月1日　／　<a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000160564_00050.html" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2026年8月1日　／　次回改定: 2027年8月1日　／　一次情報の確認: 2026年8月1日　／　<a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000160564_00050.html" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

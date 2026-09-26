@@ -126,7 +126,7 @@
       <label><input type="checkbox" id="tokubetsu"> すでに<b>特別勘定</b>を設けている（前期以前に43条で処理した）</label>
     </fieldset>
 
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="hojokin">補助金の額（円）</label>
         <input type="number" id="hojokin" value="3000000" min="0" step="100000" inputmode="numeric">
@@ -137,7 +137,7 @@
       </div>
     </div>
 
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="houshiki">圧縮記帳の方式</label>
         <select id="houshiki">
@@ -147,8 +147,9 @@
       </div>
       <div>
         <label for="ritsu">定額法の償却率</label>
-    <p class="hint" id="ritsu-hint">耐用年数10年なら 0.100、5年なら 0.200。</p>
+
     <input aria-describedby="ritsu-hint" type="number" id="ritsu" value="0.1" min="0" max="1" step="0.001" inputmode="decimal">
+    <p class="hint" id="ritsu-hint">耐用年数10年なら 0.100、5年なら 0.200。</p>
       </div>
     </div>
 
@@ -220,26 +221,26 @@
 
 <section class="faq">
 <h2 id="faq">よくある質問</h2>
-<h3>Q. 補助金をもらったら圧縮記帳をすればよいのですか？</h3>
-<p>A. <b>返還を要しないことが期末までに確定している場合だけです。</b>確定していなければ、圧縮記帳ではなく<b>特別勘定</b>を設けます（法人税法43条1項）。確定した年度に、あらためて圧縮記帳します（44条1項）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>補助金をもらったら圧縮記帳をすればよいのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>返還を要しないことが期末までに確定している場合だけです。</b>確定していなければ、圧縮記帳ではなく<b>特別勘定</b>を設けます（法人税法43条1項）。確定した年度に、あらためて圧縮記帳します（44条1項）。</p>
 
-<h3>Q. 圧縮記帳をすれば補助金に税金はかからなくなりますか？</h3>
-<p>A. <b>かからなくなるわけではありません。</b>補助金は益金に入り（法人税法22条2項）、圧縮記帳は同額を損金に立てて<b>課税を繰り延べる</b>制度です。圧縮した分だけ以後の減価償却費が小さくなるので、後の年度に課税されます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>圧縮記帳をすれば補助金に税金はかからなくなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>かからなくなるわけではありません。</b>補助金は益金に入り（法人税法22条2項）、圧縮記帳は同額を損金に立てて<b>課税を繰り延べる</b>制度です。圧縮した分だけ以後の減価償却費が小さくなるので、後の年度に課税されます。</p>
 
-<h3>Q. 直接減額方式と積立金方式はどちらが得ですか？</h3>
-<p>A. <b>税額の総額は変わりません。</b>違うのは損益計算書の見え方です。直接減額方式は簿価が下がるので減価償却費も下がり、積立金方式は簿価が下がらないので償却費は変わりません（申告調整で処理します）。決算書を金融機関等に見せる場面での見え方が判断材料になります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>直接減額方式と積立金方式はどちらが得ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>税額の総額は変わりません。</b>違うのは損益計算書の見え方です。直接減額方式は簿価が下がるので減価償却費も下がり、積立金方式は簿価が下がらないので償却費は変わりません（申告調整で処理します）。決算書を金融機関等に見せる場面での見え方が判断材料になります。</p>
 
-<h3>Q. 補助金が固定資産の取得価額より大きい場合は？</h3>
-<p>A. 圧縮限度額は<b>取得価額を超えられません</b>。帳簿価額を減額する処理なので、価額より大きくは減らせないためです。超えた部分はそのまま益金に残ります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>補助金が固定資産の取得価額より大きい場合は？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>圧縮限度額は<b>取得価額を超えられません</b>。帳簿価額を減額する処理なので、価額より大きくは減らせないためです。超えた部分はそのまま益金に残ります。</p>
 
-<h3>Q. 補助金に消費税はかかりますか？</h3>
-<p>A. <b>かかりません（不課税）。</b>対価性が無いためです。ただし多くの交付要綱に「消費税及び地方消費税に係る仕入控除税額」を返還する定めがあり、これは消費税法ではなく<b>補助金側のルール</b>です。要綱をご確認ください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>補助金に消費税はかかりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>かかりません（不課税）。</b>対価性が無いためです。ただし多くの交付要綱に「消費税及び地方消費税に係る仕入控除税額」を返還する定めがあり、これは消費税法ではなく<b>補助金側のルール</b>です。要綱をご確認ください。</p>
 
-<h3>Q. 補助金はいつ収益に計上しますか？</h3>
-<p>A. 実務上は<b>交付決定の通知を受けた日</b>の属する事業年度が原則で、入金日ではありません。ただし個別の事情により異なることがあるため、このツールでは判定していません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>補助金はいつ収益に計上しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>実務上は<b>交付決定の通知を受けた日</b>の属する事業年度が原則で、入金日ではありません。ただし個別の事情により異なることがあるため、このツールでは判定していません。</p>
 
-<h3>Q. 個人事業主でも同じですか？</h3>
-<p>A. <b>条文が別です。</b>所得税にも同趣旨の規定がありますが、要件も異なります。このツールは法人税法42条〜44条を前提にしています。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>個人事業主でも同じですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>条文が別です。</b>所得税にも同趣旨の規定がありますが、要件も異なります。このツールは法人税法42条〜44条を前提にしています。</p>
 </section>
 
 <h2 id="shutten">出典</h2>
@@ -256,7 +257,7 @@
   © 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　一次情報の確認: 2026年8月12日</li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　一次情報の確認: 2026年8月12日</li></ul></div><!-- /datasrc:auto -->
 </footer>
 <script type="module">
 import { bunki, assyukuGendo, shoukyaku, shiwake, BUNKI } from "../assets/hojokin_zeimu_core.js";

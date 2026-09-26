@@ -148,8 +148,9 @@
     <p class="hint" id="tokurei-hint" style="margin:4px 0 0 26px"></p>
   </div>
 
-  <label for="kazei">あなたの課税される所得金額（課税所得・円）<span class="hint">　確定申告書の「課税される所得金額」。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」。年収ではありません</span></label>
-  <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000">
+  <label for="kazei">あなたの課税される所得金額（課税所得・円）</label>
+  <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000" aria-describedby="kazei-hint">
+      <span id="kazei-hint" class="hint">　確定申告書の「課税される所得金額」。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」。年収ではありません</span>
 
   <button class="primary" id="calc">控除額と節税額を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -310,14 +311,14 @@
 <div class="scroll-wrap">
 <table class="num-nowrap-lg">
 <thead>
-<tr><th scope="col">ケース（年間の支払保険料）</th><th scope="col">課税所得</th><th scope="col">控除額（所得税／住民税）</th><th scope="col">年間の節税額</th></tr>
+<tr><th scope="col">ケース（年間の支払保険料）</th><th scope="col" class="num">課税所得</th><th scope="col">控除額（所得税／住民税）</th><th scope="col" class="num">年間の節税額</th></tr>
 </thead>
 <tbody>
-<tr><td>一般6万円・介護医療4万円・個人年金8万円</td><td class="num">300万円</td><td>10万5,000円／7万円</td><td class="num"><b>17,720円</b></td></tr>
-<tr><td>一般6万円・介護医療4万円・個人年金8万円</td><td class="num">500万円</td><td>10万5,000円／7万円</td><td class="num"><b>28,441円</b></td></tr>
-<tr><td>一般（新契約）8万円だけ</td><td class="num">300万円</td><td>4万円／2万8,000円</td><td class="num"><b>6,884円</b></td></tr>
-<tr><td>一般（新契約）8万円だけ・<b>23歳未満の子あり</b></td><td class="num">300万円</td><td>5万円／2万8,000円</td><td class="num"><b>7,905円</b></td></tr>
-<tr><td>3区分すべて年10万円以上</td><td class="num">500万円</td><td>12万円／7万円</td><td class="num"><b>31,504円</b></td></tr>
+<tr><td>一般6万円・介護医療4万円・個人年金8万円</td><td class="num">300万円</td><td>10万5,000円／7万円</td><td class="num"><b><span class="numeric-token">17,720円</span></b></td></tr>
+<tr><td>一般6万円・介護医療4万円・個人年金8万円</td><td class="num">500万円</td><td>10万5,000円／7万円</td><td class="num"><b><span class="numeric-token">28,441円</span></b></td></tr>
+<tr><td>一般（新契約）8万円だけ</td><td class="num">300万円</td><td>4万円／2万8,000円</td><td class="num"><b><span class="numeric-token">6,884円</span></b></td></tr>
+<tr><td>一般（新契約）8万円だけ・<b>23歳未満の子あり</b></td><td class="num">300万円</td><td>5万円／2万8,000円</td><td class="num"><b><span class="numeric-token">7,905円</span></b></td></tr>
+<tr><td>3区分すべて年10万円以上</td><td class="num">500万円</td><td>12万円／7万円</td><td class="num"><b><span class="numeric-token">31,504円</span></b></td></tr>
 </tbody>
 </table>
 </div>
@@ -331,20 +332,20 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 生命保険料控除は最大でいくら戻りますか？</h3>
-<p>A. 控除額の上限は所得税12万円・住民税7万円で、実際に戻る（安くなる）金額は課税所得500万円の人で年31,504円が上限のめやすです。所得税の減少は「所得税側の控除額×あなたの税率」、住民税の減少は「住民税側の控除額×10%」が基本だからです。課税所得300万円（税率10%）なら3区分上限で年19,504円ほどになります。控除額そのものが戻ってくるわけではない点に注意してください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>生命保険料控除は最大でいくら戻りますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>控除額の上限は所得税12万円・住民税7万円で、実際に戻る（安くなる）金額は課税所得500万円の人で年31,504円が上限のめやすです。所得税の減少は「所得税側の控除額×あなたの税率」、住民税の減少は「住民税側の控除額×10%」が基本だからです。課税所得300万円（税率10%）なら3区分上限で年19,504円ほどになります。控除額そのものが戻ってくるわけではない点に注意してください。</p>
 
-<h3>Q. 控除証明書をなくしました。どうすればいいですか？</h3>
-<p>A. 保険会社に再発行を依頼します。多くの保険会社はコールセンターやWebのマイページから即日〜数日で再発行でき、電子的控除証明書（XML）をダウンロードできる会社もあります。年末調整に間に合わない場合は、勤務先の期限までに提出できないことを伝えたうえで、自分で確定申告をすれば控除を受けられます。還付申告は5年以内までさかのぼれるので、過去に申告し忘れた年があっても取り戻せます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>控除証明書をなくしました。どうすればいいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>保険会社に再発行を依頼します。多くの保険会社はコールセンターやWebのマイページから即日〜数日で再発行でき、電子的控除証明書（XML）をダウンロードできる会社もあります。年末調整に間に合わない場合は、勤務先の期限までに提出できないことを伝えたうえで、自分で確定申告をすれば控除を受けられます。還付申告は5年以内までさかのぼれるので、過去に申告し忘れた年があっても取り戻せます。</p>
 
-<h3>Q. 新契約と旧契約の両方があります。どちらで申告すべきですか？</h3>
-<p>A. 有利な方を選べます。令和8・9年分に23歳未満の扶養親族がいる場合、一般生命保険料の新旧合算の上限は6万円です。それ以外の場合は、旧契約だけで計算すると上限5万円、新契約と合算すると上限4万円なので、所得税では旧契約の保険料が年6万円を超えるなら「旧契約だけ」が有利です。住民税は分かれ目が4万2,000円と違うため、所得税は合算・住民税は旧契約だけ、という組み合わせも実際に起こります。上の計算機は税ごとに有利な方を自動で選び、どちらを採ったかを表示します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>新契約と旧契約の両方があります。どちらで申告すべきですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>有利な方を選べます。令和8・9年分に23歳未満の扶養親族がいる場合、一般生命保険料の新旧合算の上限は6万円です。それ以外の場合は、旧契約だけで計算すると上限5万円、新契約と合算すると上限4万円なので、所得税では旧契約の保険料が年6万円を超えるなら「旧契約だけ」が有利です。住民税は分かれ目が4万2,000円と違うため、所得税は合算・住民税は旧契約だけ、という組み合わせも実際に起こります。上の計算機は税ごとに有利な方を自動で選び、どちらを採ったかを表示します。</p>
 
-<h3>Q. 23歳未満の子がいます。夫婦のどちらか一方しか特例を使えませんか？</h3>
-<p>A. 両方が使えます。租税特別措置法41条の15の5には「世帯で1人だけ」という制限が無いため、夫婦がそれぞれ一般の生命保険（新契約）を契約していれば、両方がこの特例の計算式を使えます。対象になる扶養親族は所得税法2条1項34号の扶養親族で、16歳未満の年少扶養親族も含みます。判定はその年12月31日の現況です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>23歳未満の子がいます。夫婦のどちらか一方しか特例を使えませんか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>両方が使えます。租税特別措置法41条の15の5には「世帯で1人だけ」という制限が無いため、夫婦がそれぞれ一般の生命保険（新契約）を契約していれば、両方がこの特例の計算式を使えます。対象になる扶養親族は所得税法2条1項34号の扶養親族で、16歳未満の年少扶養親族も含みます。判定はその年12月31日の現況です。</p>
 
-<h3>Q. 学資保険や医療保険も生命保険料控除の対象ですか？</h3>
-<p>A. 対象です。学資保険は「一般の生命保険料」、医療保険・がん保険・介護保険は「介護医療保険料」に分類されます。ただし控除の対象になるのは保険金の受取人が本人・配偶者・その他の親族である契約に限られ、財形保険や傷害保険など保険金が身体の傷害のみに基因して支払われる契約は対象外です。個人年金保険は「個人年金保険料税制適格特約」が付いているものだけが個人年金の区分になり、付いていない場合は一般の生命保険料として扱います。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>学資保険や医療保険も生命保険料控除の対象ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>対象です。学資保険は「一般の生命保険料」、医療保険・がん保険・介護保険は「介護医療保険料」に分類されます。ただし控除の対象になるのは保険金の受取人が本人・配偶者・その他の親族である契約に限られ、財形保険や傷害保険など保険金が身体の傷害のみに基因して支払われる契約は対象外です。個人年金保険は「個人年金保険料税制適格特約」が付いているものだけが個人年金の区分になり、付いていない場合は一般の生命保険料として扱います。</p>
 
 <section class="related">
 <div class="tool-grid">

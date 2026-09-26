@@ -44,6 +44,7 @@
   .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
   .warn{ font-size:13px; color:#b4232a; }
 </style>
+<link rel="stylesheet" href="/assets/embed-layout.css">
 </head>
 <body>
 <div class="w">
@@ -57,8 +58,8 @@
   </select>
 
   <div id="cc-block">
-    <label for="cc">総排気量<span class="hint">　車検証の「総排気量」（電気自動車は先頭）</span></label>
-    <select id="cc">
+    <label for="cc">総排気量</label>
+    <select id="cc" aria-describedby="cc-hint">
       <option value="ev">電気自動車（燃料電池車を含む）</option>
       <option value="le1000">1リットル（1,000cc）以下</option>
       <option value="le1500">1リットル超 1.5リットル以下</option>
@@ -71,11 +72,13 @@
       <option value="le6000">4.5リットル超 6リットル以下</option>
       <option value="gt6000">6リットル超</option>
     </select>
+      <span id="cc-hint" class="hint">　車検証の「総排気量」（電気自動車は先頭）</span>
   </div>
 
-  <label for="regyear" id="reg-label">初度登録の年月<span class="hint" id="reg-hint">　車検証の「初度登録年月」（軽は「初度検査年月」）</span></label>
+  <label for="regyear" id="reg-label">初度登録の年月</label>
   <div class="ym">
-    <select id="regyear"></select><span>年</span>
+    <select id="regyear" aria-describedby="reg-hint"></select>
+      <span>年</span>
     <select id="regmonth">
       <option value="1">1</option><option value="2">2</option><option value="3">3</option>
       <option value="4" selected>4</option><option value="5">5</option><option value="6">6</option>
@@ -83,15 +86,17 @@
       <option value="10">10</option><option value="11">11</option><option value="12">12</option>
     </select><span>月</span>
   </div>
+<span class="hint" id="reg-hint">　車検証の「初度登録年月」（軽は「初度検査年月」）</span>
   <div id="rate-echo" class="echo"></div>
 
-  <label for="fuel">燃料の種類<span class="hint">　13年超の重課の対象かどうかの判定に使います</span></label>
-  <select id="fuel">
+  <label for="fuel">燃料の種類</label>
+  <select id="fuel" aria-describedby="fuel-hint">
     <option value="gasoline" selected>ガソリン・LPG</option>
     <option value="diesel">ディーゼル（軽油）</option>
     <option value="hybrid">ハイブリッド（ガソリンを燃料とするもの）</option>
     <option value="ev_other">電気・その他</option>
   </select>
+      <span id="fuel-hint" class="hint">　13年超の重課の対象かどうかの判定に使います</span>
 
   <label class="chk"><input type="checkbox" id="jyuka"> <b>初度登録から13年を超えている</b>（ディーゼル車は11年超）<span class="hint">　※ハイブリッド・電気・天然ガス車は対象外</span></label>
 

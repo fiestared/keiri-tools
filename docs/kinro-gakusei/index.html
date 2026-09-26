@@ -161,14 +161,17 @@
   <label for="kyuyo" style="margin-top:14px">バイトなど給与収入（年収・額面・円）</label>
   <input type="number" id="kyuyo" placeholder="例: 1500000" inputmode="numeric" min="0" step="10000">
 
-  <label for="kinro-sonota" style="margin-top:14px">給与以外の「自分の働きによる」所得（任意・円）<span class="hint">　フリーランス・業務委託・原稿料など、自分の働きで得た事業所得・雑所得（経費を引いた後）。なければ空欄</span></label>
-  <input type="number" id="kinro-sonota" placeholder="例: 0" inputmode="numeric" min="0" step="10000">
+  <label for="kinro-sonota" style="margin-top:14px">給与以外の「自分の働きによる」所得（任意・円）</label>
+  <input type="number" id="kinro-sonota" placeholder="例: 0" inputmode="numeric" min="0" step="10000" aria-describedby="kinro-sonota-hint">
+      <span id="kinro-sonota-hint" class="hint">　フリーランス・業務委託・原稿料など、自分の働きで得た事業所得・雑所得（経費を引いた後）。なければ空欄</span>
 
-  <label for="hikinro" style="margin-top:14px">働きによらない所得（任意・円）<span class="hint">　株の配当・不動産・仮想通貨の売却益など。10万円を超えると対象外になります</span></label>
-  <input type="number" id="hikinro" placeholder="例: 0" inputmode="numeric" min="0" step="10000">
+  <label for="hikinro" style="margin-top:14px">働きによらない所得（任意・円）</label>
+  <input type="number" id="hikinro" placeholder="例: 0" inputmode="numeric" min="0" step="10000" aria-describedby="hikinro-hint">
+      <span id="hikinro-hint" class="hint">　株の配当・不動産・仮想通貨の売却益など。10万円を超えると対象外になります</span>
 
-  <label for="shaho" style="margin-top:14px">自分で払った社会保険料（任意・円／年）<span class="hint">　国民年金・国民健康保険など。親の扶養に入っていて本人負担がなければ空欄でOK。学生納付特例で猶予中の分は「払った」に入りません</span></label>
-  <input type="number" id="shaho" placeholder="例: 0" inputmode="numeric" min="0" step="10000">
+  <label for="shaho" style="margin-top:14px">自分で払った社会保険料（任意・円／年）</label>
+  <input type="number" id="shaho" placeholder="例: 0" inputmode="numeric" min="0" step="10000" aria-describedby="shaho-hint">
+      <span id="shaho-hint" class="hint">　国民年金・国民健康保険など。親の扶養に入っていて本人負担がなければ空欄でOK。学生納付特例で猶予中の分は「払った」に入りません</span>
 
   <button class="primary" id="calc">対象になるか判定する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -303,14 +306,14 @@
 <div class="scroll-wrap">
 <table id="jumin-rei">
 <thead>
-<tr><th scope="col">バイト年収</th><th scope="col">控除なしの住民税</th><th scope="col">勤労学生控除ありの住民税</th><th scope="col"><b>安くなる額</b></th></tr>
+<tr><th scope="col">バイト年収</th><th scope="col" class="num">控除なしの住民税</th><th scope="col">勤労学生控除ありの住民税</th><th scope="col"><b>安くなる額</b></th></tr>
 </thead>
 <tbody>
-<tr><td><b>119万円以下</b></td><td class="num">0円</td><td>0円</td><td><b>0円</b>（もともと非課税）</td></tr>
-<tr><td><b>130万円</b></td><td class="num">15,500円</td><td>5,000円</td><td><b>10,500円</b></td></tr>
-<tr><td><b>143万円</b></td><td class="num">28,500円</td><td>5,000円（均等割のみ）</td><td><b>23,500円</b></td></tr>
-<tr><td><b>150万円</b></td><td class="num">35,500円</td><td>9,000円</td><td><b>26,500円</b></td></tr>
-<tr><td><b>163万円</b></td><td class="num">48,500円</td><td>22,000円</td><td><b>26,500円</b></td></tr>
+<tr><td><b>119万円以下</b></td><td class="num"><span class="numeric-token">0円</span></td><td><span class="numeric-token">0円</span></td><td><b>0円</b>（もともと非課税）</td></tr>
+<tr><td><b>130万円</b></td><td class="num"><span class="numeric-token">15,500円</span></td><td><span class="numeric-token">5,000円</span></td><td><b><span class="numeric-token">10,500円</span></b></td></tr>
+<tr><td><b>143万円</b></td><td class="num"><span class="numeric-token">28,500円</span></td><td>5,000円（均等割のみ）</td><td><b><span class="numeric-token">23,500円</span></b></td></tr>
+<tr><td><b>150万円</b></td><td class="num"><span class="numeric-token">35,500円</span></td><td><span class="numeric-token">9,000円</span></td><td><b><span class="numeric-token">26,500円</span></b></td></tr>
+<tr><td><b>163万円</b></td><td class="num"><span class="numeric-token">48,500円</span></td><td><span class="numeric-token">22,000円</span></td><td><b><span class="numeric-token">26,500円</span></b></td></tr>
 </tbody>
 </table>
 </div>
@@ -359,26 +362,26 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>勤労学生控除を使うと、親の扶養から外れますか？</h3>
-<p>外れません。勤労学生控除はあなた自身の税金の計算に使う控除で、親の扶養控除はあなたの所得だけで判定される別の制度です。親の扶養控除の対象になるのはあなたの合計所得が62万円以下（バイト年収136万円以下）の場合で、これはあなたが勤労学生控除を使うかどうかと無関係に決まります。「勤労学生控除を申告したせいで親の税金が増えた」ということは起きませんが、逆に年収136万円を超えていれば、控除を使わなくても親の扶養控除は受けられなくなっています。</p>
+<h3 class="faq-question">勤労学生控除を使うと、親の扶養から外れますか？</h3>
+<p class="faq-answer">外れません。勤労学生控除はあなた自身の税金の計算に使う控除で、親の扶養控除はあなたの所得だけで判定される別の制度です。親の扶養控除の対象になるのはあなたの合計所得が62万円以下（バイト年収136万円以下）の場合で、これはあなたが勤労学生控除を使うかどうかと無関係に決まります。「勤労学生控除を申告したせいで親の税金が増えた」ということは起きませんが、逆に年収136万円を超えていれば、控除を使わなくても親の扶養控除は受けられなくなっています。</p>
 
-<h3>バイトをかけもちしています。年収はいくらまでなら対象ですか？</h3>
-<p>すべてのバイト給与を合計して年収163万円以下です（令和8年分）。給与所得の計算は全部の給与を合算してから行うので、1か所ごとではなく合計で判定します。給与のほかにフリーランスの報酬など「自分の働きによる」所得がある場合は、給与所得（年収−74万円）とそれらの所得の合計が89万円以下かで判定します。また、配当など働きによらない所得が10万円を超えると、合計が89万円以下でも対象外です。</p>
+<h3 class="faq-question">バイトをかけもちしています。年収はいくらまでなら対象ですか？</h3>
+<p class="faq-answer">すべてのバイト給与を合計して年収163万円以下です（令和8年分）。給与所得の計算は全部の給与を合算してから行うので、1か所ごとではなく合計で判定します。給与のほかにフリーランスの報酬など「自分の働きによる」所得がある場合は、給与所得（年収−74万円）とそれらの所得の合計が89万円以下かで判定します。また、配当など働きによらない所得が10万円を超えると、合計が89万円以下でも対象外です。</p>
 
-<h3>所得税が減らないなら、申告する意味はありますか？</h3>
-<p>あります。効き目は2つです。①住民税：令和9年度分の住民税が年間最大26,500円安くなります（バイト年収143万円までなら所得割が0円になります）。②月々の手取り：年末調整の申告書で勤労学生に印を付けると源泉徴収の「扶養親族等の数」が1人増え、毎月の天引きが減ります。逆に、バイト年収119万円以下の人と、18歳未満で年収209万円以下の人は住民税がもともと非課税なので、実益はほぼありません。</p>
+<h3 class="faq-question">所得税が減らないなら、申告する意味はありますか？</h3>
+<p class="faq-answer">あります。効き目は2つです。①住民税：令和9年度分の住民税が年間最大26,500円安くなります（バイト年収143万円までなら所得割が0円になります）。②月々の手取り：年末調整の申告書で勤労学生に印を付けると源泉徴収の「扶養親族等の数」が1人増え、毎月の天引きが減ります。逆に、バイト年収119万円以下の人と、18歳未満で年収209万円以下の人は住民税がもともと非課税なので、実益はほぼありません。</p>
 
-<h3>専門学校・予備校ですが対象になりますか？</h3>
-<p>専門学校（専修学校）や各種学校は、職業に必要な技術を教えること・修業期間が1年以上であることなどの課程の要件（所得税法施行令11条の3）を満たす場合だけ対象です。要件を満たすかどうかは自分で判定する必要はなく、学校の窓口で「勤労学生控除の証明書」を発行してもらえるか確認してください。発行されればその課程は要件を満たしています。予備校は各種学校であっても課程の要件（職業に必要な技術の教授）を満たさないことが多いので、必ず学校に確認を。</p>
+<h3 class="faq-question">専門学校・予備校ですが対象になりますか？</h3>
+<p class="faq-answer">専門学校（専修学校）や各種学校は、職業に必要な技術を教えること・修業期間が1年以上であることなどの課程の要件（所得税法施行令11条の3）を満たす場合だけ対象です。要件を満たすかどうかは自分で判定する必要はなく、学校の窓口で「勤労学生控除の証明書」を発行してもらえるか確認してください。発行されればその課程は要件を満たしています。予備校は各種学校であっても課程の要件（職業に必要な技術の教授）を満たさないことが多いので、必ず学校に確認を。</p>
 
-<h3>大学院生・通信制でも対象ですか？</h3>
-<p>対象です。大学院・短大・高等専門学校・定時制や通信制の高校・放送大学は、いずれも学校教育法1条の学校（またはそこに置かれる課程）なので無条件で対象です。一方、大学の研究生・聴講生・科目等履修生は「学生」に当たらない場合があるため、学校の学生課に確認してください。海外の大学に留学している人は、日本の学校教育法1条の学校に在学していないため原則対象外です。</p>
+<h3 class="faq-question">大学院生・通信制でも対象ですか？</h3>
+<p class="faq-answer">対象です。大学院・短大・高等専門学校・定時制や通信制の高校・放送大学は、いずれも学校教育法1条の学校（またはそこに置かれる課程）なので無条件で対象です。一方、大学の研究生・聴講生・科目等履修生は「学生」に当たらない場合があるため、学校の学生課に確認してください。海外の大学に留学している人は、日本の学校教育法1条の学校に在学していないため原則対象外です。</p>
 
-<h3>住民税はいつから安くなりますか？</h3>
-<p>住民税は前年の所得に対して翌年度に課税されるため、令和8年（2026年）のバイト代に対する住民税は、令和9年度分として2027年6月ごろから払うものです。勤労学生控除の効き目もそこに現れます。2026年に払っている住民税は令和7年（2025年）の所得に対するものなので、今年の申告では変わりません。なお2026年の毎月の給与から引かれる所得税（源泉徴収）は、申告書に印を付ければすぐ減ります。</p>
+<h3 class="faq-question">住民税はいつから安くなりますか？</h3>
+<p class="faq-answer">住民税は前年の所得に対して翌年度に課税されるため、令和8年（2026年）のバイト代に対する住民税は、令和9年度分として2027年6月ごろから払うものです。勤労学生控除の効き目もそこに現れます。2026年に払っている住民税は令和7年（2025年）の所得に対するものなので、今年の申告では変わりません。なお2026年の毎月の給与から引かれる所得税（源泉徴収）は、申告書に印を付ければすぐ減ります。</p>
 
-<h3>働きによらない所得10万円とは何ですか？</h3>
-<p>合計所得金額のうち「自分の勤労にもとづく給与所得・事業所得・退職所得・雑所得（給与所得等）」以外の部分です。株の配当（申告した場合）、不動産の賃貸収入、仮想通貨の売却益、親から譲り受けた資産の運用益などが典型です。これが10万円を超えると、合計所得が89万円以下でも勤労学生控除は受けられません。「働いて学ぶ学生」のための控除なので、働き以外の収入が多い人を外す趣旨です。</p>
+<h3 class="faq-question">働きによらない所得10万円とは何ですか？</h3>
+<p class="faq-answer">合計所得金額のうち「自分の勤労にもとづく給与所得・事業所得・退職所得・雑所得（給与所得等）」以外の部分です。株の配当（申告した場合）、不動産の賃貸収入、仮想通貨の売却益、親から譲り受けた資産の運用益などが典型です。これが10万円を超えると、合計所得が89万円以下でも勤労学生控除は受けられません。「働いて学ぶ学生」のための控除なので、働き以外の収入が多い人を外す趣旨です。</p>
 
 <h2 id="source">出典</h2>
 <ul>
@@ -409,7 +412,7 @@
 <footer class="site">
   <a href="../">ホーム</a> ・ <a href="../about/">運営者</a> ・ <a href="../privacy/">プライバシー</a> ・ <a href="../contact/">お問い合わせ</a>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月21日　／　<a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月21日　／　<a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

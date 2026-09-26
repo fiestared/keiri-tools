@@ -137,7 +137,7 @@
 </section>
 
 <div class="card">
-  <div class="fee-pair">
+  <div class="fee-pair field-pair">
     <div>
       <label for="pref">勤務先の都道府県</label>
       <select id="pref"></select>
@@ -150,14 +150,17 @@
     </div>
   </div>
 
-  <label for="gross">額面の月給（円）<span class="hint">　基本給＋残業手当＋通勤手当など、税引き前の総支給額</span></label>
-  <input type="number" id="gross" placeholder="例: 300000" inputmode="numeric">
+  <label for="gross">額面の月給（円）</label>
+  <input type="number" id="gross" placeholder="例: 300000" inputmode="numeric" aria-describedby="gross-hint">
+      <span id="gross-hint" class="hint">　基本給＋残業手当＋通勤手当など、税引き前の総支給額</span>
 
-  <label for="dependents">扶養親族等の数<span class="hint">　源泉控除対象になる配偶者と扶養親族の合計（16歳以上）。いなければ0</span></label>
-  <input type="number" id="dependents" value="0" min="0" max="20" inputmode="numeric">
+  <label for="dependents">扶養親族等の数</label>
+  <input type="number" id="dependents" value="0" min="0" max="20" inputmode="numeric" aria-describedby="dependents-hint">
+      <span id="dependents-hint" class="hint">　源泉控除対象になる配偶者と扶養親族の合計（16歳以上）。いなければ0</span>
 
-  <label for="gyoshu">業種<span class="hint">　雇用保険料率だけが業種で変わります（健康保険・厚生年金は変わりません）</span></label>
-  <select id="gyoshu"></select>
+  <label for="gyoshu">業種</label>
+  <select id="gyoshu" aria-describedby="gyoshu-hint"></select>
+      <span id="gyoshu-hint" class="hint">　雇用保険料率だけが業種で変わります（健康保険・厚生年金は変わりません）</span>
 
   <fieldset style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:14px">
     <legend style="font-weight:700;font-size:14px;padding:0 6px">住民税の扱い</legend>
@@ -165,8 +168,9 @@
     <label style="font-weight:400;display:block;margin:2px 0"><input type="radio" name="jmode" value="manual"> 給与明細の住民税額（月額）を入力する</label>
     <label style="font-weight:400;display:block;margin:2px 0"><input type="radio" name="jmode" value="none"> 含めない（新卒1年目など、前年に所得がない人）</label>
     <div id="manual-wrap" style="display:none;margin-top:6px">
-      <label for="jmanual">住民税（月額・円）<span class="hint">　給与明細か住民税決定通知書の月額</span></label>
-      <input type="number" id="jmanual" placeholder="例: 12000" inputmode="numeric">
+      <label for="jmanual">住民税（月額・円）</label>
+      <input type="number" id="jmanual" placeholder="例: 12000" inputmode="numeric" aria-describedby="jmanual-hint">
+      <span id="jmanual-hint" class="hint">　給与明細か住民税決定通知書の月額</span>
     </div>
   </fieldset>
 
@@ -217,7 +221,7 @@
 
 <p>このうち<b>最初の4つ（社会保険料）が、引かれる額のいちばん大きな部分</b>です。額面30万円の人で見ると、社会保険料が44,070円なのに対し、所得税は6,320円しかありません。<b>「税金で持っていかれる」と感じている額の正体は、その大半が社会保険料</b>です。</p>
 
-<table>
+<div class="scroll-wrap"><table>
 <thead>
 <tr><th scope="col">引かれるもの</th><th scope="col">何にかかるか</th><th scope="col">本人負担（東京都・30歳・額面30万円）</th></tr>
 </thead>
@@ -226,10 +230,10 @@
 <tr><td>厚生年金保険料</td><td><b>標準報酬月額</b>（等級表）</td><td>27,450円（料率18.3%の半分）</td></tr>
 <tr><td>子ども・子育て支援金</td><td><b>標準報酬月額</b>（等級表）</td><td>345円（料率0.23%の半分）</td></tr>
 <tr><td>雇用保険料</td><td><b>賃金総額</b>（実際の支給額）</td><td>1,500円（1,000分の5）</td></tr>
-<tr><td>所得税</td><td>社会保険料を引いた<b>後</b>の額</td><td>6,320円</td></tr>
+<tr><td>所得税</td><td>社会保険料を引いた<b>後</b>の額</td><td><span class="numeric-token">6,320円</span></td></tr>
 <tr><td>住民税</td><td><b>前年</b>の所得</td><td>人により異なる（後述）</td></tr>
 </tbody>
-</table>
+</table></div>
 
 <div class="callout">
 <p><b>健康保険・厚生年金・支援金と、雇用保険は「かかる土台」が違う</b></p>
@@ -238,7 +242,7 @@
 
 <figure class="figure fig-wide" style="--figw:640px">
 <svg viewBox="0 0 640 228" role="img" aria-label="額面30万円の内訳。手取り249,610円、社会保険料44,070円、所得税6,320円">
-  <text x="0" y="14" font-size="13" fill="currentColor">額面 300,000円（東京都・30歳・扶養なし／住民税を除く）の内わけ　※幅は金額比</text>
+  <text x="4" y="14" font-size="13" fill="currentColor">額面 300,000円（東京都・30歳・扶養なし／住民税を除く）の内わけ　※幅は金額比</text>
 
   <rect x="0" y="30" width="533" height="34" fill="var(--accent)" opacity="0.18" stroke="var(--accent)"/>
   <rect x="533" y="30" width="94" height="34" fill="var(--warn-line)" opacity="0.30" stroke="var(--warn-line)"/>
@@ -249,9 +253,9 @@
   <line x1="580" y1="64" x2="566" y2="86" stroke="var(--warn-line)" stroke-dasharray="3 2"/>
   <line x1="633" y1="64" x2="633" y2="102" stroke="var(--sub)" stroke-dasharray="3 2"/>
   <text x="570" y="100" font-size="12" fill="currentColor" text-anchor="end">社会保険料 44,070円</text>
-  <text x="640" y="116" font-size="12" fill="currentColor" text-anchor="end">所得税 6,320円</text>
+  <text x="635.9999694824219" y="116" font-size="12" fill="currentColor" text-anchor="end">所得税 6,320円</text>
 
-  <text x="0" y="146" font-size="12" fill="currentColor">社会保険料 44,070円 の内わけ（本人負担分）:</text>
+  <text x="4" y="146" font-size="12" fill="currentColor">社会保険料 44,070円 の内わけ（本人負担分）:</text>
   <rect x="0" y="156" width="259" height="26" fill="var(--accent)" opacity="0.12" stroke="var(--accent)"/>
   <rect x="259" y="156" width="139" height="26" fill="var(--accent)" opacity="0.22" stroke="var(--accent)"/>
   <rect x="398" y="156" width="14" height="26" fill="var(--sub)" opacity="0.25" stroke="var(--sub)"/>
@@ -259,7 +263,7 @@
   <text x="6" y="174" font-size="12" fill="currentColor">厚生年金 27,450円</text>
   <text x="265" y="174" font-size="12" fill="currentColor">健康保険 14,775円</text>
   <text x="424" y="174" font-size="11" fill="currentColor">← 雇用1,500円／支援金345円</text>
-  <text x="0" y="212" font-size="11" fill="currentColor">※ 厚生年金と健康保険だけで社会保険料の96%を占める。所得税より社会保険料のほうがはるかに重い。</text>
+  <text x="4" y="212" font-size="11" fill="currentColor">※ 厚生年金と健康保険だけで社会保険料の96%を占める。所得税より社会保険料のほうがはるかに重い。</text>
 </svg>
 <figcaption>額面30万円の内わけ。引かれる50,390円のうち、社会保険料が44,070円（87%）を占める。</figcaption>
 </figure>
@@ -271,15 +275,15 @@
 <div class="scroll-wrap">
 <table class="num-nowrap-sm">
 <thead>
-<tr><th scope="col">額面（月）</th><th scope="col">手取り</th><th scope="col">手取り率</th><th scope="col">社会保険料</th><th scope="col">所得税</th><th scope="col">標準報酬月額</th></tr>
+<tr><th scope="col" class="num">額面（月）</th><th scope="col" class="num">手取り</th><th scope="col" class="num">手取り率</th><th scope="col" class="num">社会保険料</th><th scope="col" class="num">所得税</th><th scope="col" class="num">標準報酬月額</th></tr>
 </thead>
 <tbody>
-<tr><td class="num">200,000円</td><td class="num"><b>167,350円</b></td><td class="num">83.7%</td><td class="num">29,380円</td><td class="num">3,270円</td><td class="num">200,000円</td></tr>
-<tr><td class="num">250,000円</td><td class="num"><b>207,086円</b></td><td class="num">82.8%</td><td class="num">38,144円</td><td class="num">4,770円</td><td class="num">260,000円</td></tr>
-<tr><td class="num">300,000円</td><td class="num"><b>249,610円</b></td><td class="num">83.2%</td><td class="num">44,070円</td><td class="num">6,320円</td><td class="num">300,000円</td></tr>
-<tr><td class="num">350,000円</td><td class="num"><b>289,346円</b></td><td class="num">82.7%</td><td class="num">52,834円</td><td class="num">7,820円</td><td class="num">360,000円</td></tr>
-<tr><td class="num">400,000円</td><td class="num"><b>329,072円</b></td><td class="num">82.3%</td><td class="num">60,178円</td><td class="num">10,750円</td><td class="num">410,000円</td></tr>
-<tr><td class="num">500,000円</td><td class="num"><b>408,690円</b></td><td class="num">81.7%</td><td class="num">73,450円</td><td class="num">17,860円</td><td class="num">500,000円</td></tr>
+<tr><td class="num"><span class="numeric-token">200,000円</span></td><td class="num"><b><span class="numeric-token">167,350円</span></b></td><td class="num"><span class="numeric-token">83.7%</span></td><td class="num"><span class="numeric-token">29,380円</span></td><td class="num"><span class="numeric-token">3,270円</span></td><td class="num"><span class="numeric-token">200,000円</span></td></tr>
+<tr><td class="num"><span class="numeric-token">250,000円</span></td><td class="num"><b><span class="numeric-token">207,086円</span></b></td><td class="num"><span class="numeric-token">82.8%</span></td><td class="num"><span class="numeric-token">38,144円</span></td><td class="num"><span class="numeric-token">4,770円</span></td><td class="num"><span class="numeric-token">260,000円</span></td></tr>
+<tr><td class="num"><span class="numeric-token">300,000円</span></td><td class="num"><b><span class="numeric-token">249,610円</span></b></td><td class="num"><span class="numeric-token">83.2%</span></td><td class="num"><span class="numeric-token">44,070円</span></td><td class="num"><span class="numeric-token">6,320円</span></td><td class="num"><span class="numeric-token">300,000円</span></td></tr>
+<tr><td class="num"><span class="numeric-token">350,000円</span></td><td class="num"><b><span class="numeric-token">289,346円</span></b></td><td class="num"><span class="numeric-token">82.7%</span></td><td class="num"><span class="numeric-token">52,834円</span></td><td class="num"><span class="numeric-token">7,820円</span></td><td class="num"><span class="numeric-token">360,000円</span></td></tr>
+<tr><td class="num"><span class="numeric-token">400,000円</span></td><td class="num"><b><span class="numeric-token">329,072円</span></b></td><td class="num"><span class="numeric-token">82.3%</span></td><td class="num"><span class="numeric-token">60,178円</span></td><td class="num"><span class="numeric-token">10,750円</span></td><td class="num"><span class="numeric-token">410,000円</span></td></tr>
+<tr><td class="num"><span class="numeric-token">500,000円</span></td><td class="num"><b><span class="numeric-token">408,690円</span></b></td><td class="num"><span class="numeric-token">81.7%</span></td><td class="num"><span class="numeric-token">73,450円</span></td><td class="num"><span class="numeric-token">17,860円</span></td><td class="num"><span class="numeric-token">500,000円</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -294,15 +298,15 @@
 
 <p>社会保険料は、額面そのものではなく<b>標準報酬月額</b>にかかります。標準報酬月額は健康保険法40条・厚生年金保険法20条が定める<b>等級表</b>で、報酬月額をあらかじめ決められた段に丸めたものです。たとえば健康保険の第22級・第23級は次のようになっています。</p>
 
-<table>
+<div class="scroll-wrap"><table>
 <thead>
-<tr><th scope="col">等級</th><th scope="col">標準報酬月額</th><th scope="col">報酬月額の範囲</th></tr>
+<tr><th scope="col">等級</th><th scope="col" class="num">標準報酬月額</th><th scope="col">報酬月額の範囲</th></tr>
 </thead>
 <tbody>
-<tr><td>第22級</td><td class="num">300,000円</td><td><b>290,000円以上 310,000円未満</b></td></tr>
-<tr><td>第23級</td><td class="num">320,000円</td><td><b>310,000円以上 330,000円未満</b></td></tr>
+<tr><td>第22級</td><td class="num"><span class="numeric-token">300,000円</span></td><td><b>290,000円以上 310,000円未満</b></td></tr>
+<tr><td>第23級</td><td class="num"><span class="numeric-token">320,000円</span></td><td><b>310,000円以上 330,000円未満</b></td></tr>
 </tbody>
-</table>
+</table></div>
 
 <p>境目は<b>310,000円</b>です。ここをまたぐと、標準報酬月額が20,000円ジャンプします。実際に計算すると、こうなります（東京都・30歳・扶養なし・一般の事業）。</p>
 
@@ -313,13 +317,13 @@
 </thead>
 <tbody>
 <tr><td>等級・標準報酬月額</td><td>第22級・300,000円</td><td>第23級・320,000円</td><td>＋20,000円</td></tr>
-<tr><td>健康保険料</td><td>14,775円</td><td>15,760円</td><td>＋985円</td></tr>
-<tr><td>厚生年金保険料</td><td>27,450円</td><td>29,280円</td><td>＋1,830円</td></tr>
-<tr><td>子ども・子育て支援金</td><td>345円</td><td>368円</td><td>＋23円</td></tr>
-<tr><td>雇用保険料</td><td>1,550円</td><td>1,550円</td><td>0円</td></tr>
-<tr><td>社会保険料 合計</td><td>44,120円</td><td>46,958円</td><td><b>＋2,838円</b></td></tr>
-<tr><td>所得税</td><td>6,650円</td><td>6,650円</td><td><b>0円</b></td></tr>
-<tr><td><b>手取り</b></td><td><b>259,229円</b></td><td><b>256,392円</b></td><td><b>−2,837円</b></td></tr>
+<tr><td>健康保険料</td><td><span class="numeric-token">14,775円</span></td><td><span class="numeric-token">15,760円</span></td><td>＋985円</td></tr>
+<tr><td>厚生年金保険料</td><td><span class="numeric-token">27,450円</span></td><td><span class="numeric-token">29,280円</span></td><td>＋1,830円</td></tr>
+<tr><td>子ども・子育て支援金</td><td><span class="numeric-token">345円</span></td><td><span class="numeric-token">368円</span></td><td>＋23円</td></tr>
+<tr><td>雇用保険料</td><td><span class="numeric-token">1,550円</span></td><td><span class="numeric-token">1,550円</span></td><td><span class="numeric-token">0円</span></td></tr>
+<tr><td>社会保険料 合計</td><td><span class="numeric-token">44,120円</span></td><td><span class="numeric-token">46,958円</span></td><td><b>＋2,838円</b></td></tr>
+<tr><td>所得税</td><td><span class="numeric-token">6,650円</span></td><td><span class="numeric-token">6,650円</span></td><td><b><span class="numeric-token">0円</span></b></td></tr>
+<tr><td><b>手取り</b></td><td><b><span class="numeric-token">259,229円</span></b></td><td><b><span class="numeric-token">256,392円</span></b></td><td><b>−<span class="numeric-token">2,837円</span></b></td></tr>
 </tbody>
 </table>
 </div>
@@ -333,12 +337,12 @@
 
 <figure class="figure fig-wide" style="--figw:640px">
 <svg viewBox="0 0 640 200" role="img" aria-label="報酬月額310,000円の境目で標準報酬月額が20,000円ジャンプし、手取りが2,837円下がる階段のグラフ">
-  <text x="0" y="14" font-size="13" fill="currentColor">報酬月額と標準報酬月額（等級表は階段）</text>
+  <text x="4" y="14" font-size="13" fill="currentColor">報酬月額と標準報酬月額（等級表は階段）</text>
 
   <line x1="40" y1="150" x2="600" y2="150" stroke="currentColor" opacity="0.5"/>
   <text x="40" y="168" font-size="11" fill="currentColor">290,000</text>
   <text x="270" y="168" font-size="11" fill="currentColor">310,000</text>
-  <text x="530" y="168" font-size="11" fill="currentColor">330,000（報酬月額）</text>
+  <text x="524.0802917480469" y="168" font-size="11" fill="currentColor">330,000（報酬月額）</text>
 
   <line x1="300" y1="40" x2="300" y2="150" stroke="var(--warn-line)" stroke-dasharray="4 3"/>
 
@@ -381,13 +385,13 @@
 <div class="scroll-wrap">
 <table>
 <thead>
-<tr><th scope="col">&nbsp;</th><th scope="col">額面 250,000円（等級の下端）</th><th scope="col">額面 269,999円（等級の上端）</th></tr>
+<tr><th scope="col">&nbsp;</th><th scope="col" class="num">額面 250,000円（等級の下端）</th><th scope="col">額面 269,999円（等級の上端）</th></tr>
 </thead>
 <tbody>
-<tr><td>標準報酬月額</td><td class="num">260,000円</td><td>260,000円</td></tr>
-<tr><td>健康保険料</td><td class="num">12,805円</td><td><b>12,805円（同額）</b></td></tr>
-<tr><td>厚生年金保険料</td><td class="num">23,790円</td><td><b>23,790円（同額）</b></td></tr>
-<tr><td>手取り</td><td class="num">207,086円</td><td>226,295円</td></tr>
+<tr><td>標準報酬月額</td><td class="num"><span class="numeric-token">260,000円</span></td><td><span class="numeric-token">260,000円</span></td></tr>
+<tr><td>健康保険料</td><td class="num"><span class="numeric-token">12,805円</span></td><td><b>12,805円（同額）</b></td></tr>
+<tr><td>厚生年金保険料</td><td class="num"><span class="numeric-token">23,790円</span></td><td><b>23,790円（同額）</b></td></tr>
+<tr><td>手取り</td><td class="num"><span class="numeric-token">207,086円</span></td><td><span class="numeric-token">226,295円</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -416,18 +420,18 @@
 
 <p>税率は次のとおりです（標準税率）。</p>
 
-<table>
+<div class="scroll-wrap"><table>
 <thead>
 <tr><th scope="col">区分</th><th scope="col">税率・金額</th><th scope="col">根拠</th></tr>
 </thead>
 <tbody>
-<tr><td>所得割（道府県民税）</td><td><b>4%</b></td><td>地方税法35条1項</td></tr>
-<tr><td>所得割（市町村民税）</td><td><b>6%</b></td><td>地方税法314条の3第1項</td></tr>
+<tr><td>所得割（道府県民税）</td><td><b><span class="numeric-token">4%</span></b></td><td>地方税法35条1項</td></tr>
+<tr><td>所得割（市町村民税）</td><td><b><span class="numeric-token">6%</span></b></td><td>地方税法314条の3第1項</td></tr>
 <tr><td>均等割（道府県民税）</td><td>1,000円／年</td><td>地方税法38条</td></tr>
 <tr><td>均等割（市町村民税）</td><td>3,000円／年</td><td>地方税法310条</td></tr>
 <tr><td>森林環境税</td><td>1,000円／年</td><td>森林環境税及び森林環境譲与税に関する法律5条</td></tr>
 </tbody>
-</table>
+</table></div>
 
 <p>所得割は<b>合わせて10%</b>、定額部分は<b>合わせて年5,000円</b>です。</p>
 
@@ -443,13 +447,13 @@
 <div class="scroll-wrap">
 <table class="num-nowrap-lg">
 <thead>
-<tr><th scope="col">額面（月）</th><th scope="col">健康保険の標準報酬月額</th><th scope="col">厚生年金の標準報酬月額</th><th scope="col">厚生年金保険料（本人）</th></tr>
+<tr><th scope="col" class="num">額面（月）</th><th scope="col" class="num">健康保険の標準報酬月額</th><th scope="col">厚生年金の標準報酬月額</th><th scope="col" class="num">厚生年金保険料（本人）</th></tr>
 </thead>
 <tbody>
-<tr><td class="num">630,000円</td><td class="num">620,000円</td><td>620,000円</td><td class="num">56,730円</td></tr>
-<tr><td class="num">640,000円</td><td class="num">650,000円</td><td>650,000円</td><td class="num">59,475円</td></tr>
-<tr><td class="num">700,000円</td><td class="num">710,000円</td><td><b>650,000円（頭打ち）</b></td><td class="num"><b>59,475円</b></td></tr>
-<tr><td class="num">1,000,000円</td><td class="num">980,000円</td><td><b>650,000円（頭打ち）</b></td><td class="num"><b>59,475円</b></td></tr>
+<tr><td class="num"><span class="numeric-token">630,000円</span></td><td class="num"><span class="numeric-token">620,000円</span></td><td><span class="numeric-token">620,000円</span></td><td class="num"><span class="numeric-token">56,730円</span></td></tr>
+<tr><td class="num"><span class="numeric-token">640,000円</span></td><td class="num"><span class="numeric-token">650,000円</span></td><td><span class="numeric-token">650,000円</span></td><td class="num"><span class="numeric-token">59,475円</span></td></tr>
+<tr><td class="num"><span class="numeric-token">700,000円</span></td><td class="num"><span class="numeric-token">710,000円</span></td><td><b>650,000円（頭打ち）</b></td><td class="num"><b><span class="numeric-token">59,475円</span></b></td></tr>
+<tr><td class="num"><span class="numeric-token">1,000,000円</span></td><td class="num"><span class="numeric-token">980,000円</span></td><td><b>650,000円（頭打ち）</b></td><td class="num"><b><span class="numeric-token">59,475円</span></b></td></tr>
 </tbody>
 </table>
 </div>
@@ -467,7 +471,7 @@
 
 <p>「額面30万円の手取りは？」に唯一の答えがないのは、次の4つで変わるからです。</p>
 
-<table>
+<div class="scroll-wrap"><table>
 <thead>
 <tr><th scope="col">軸</th><th scope="col">何が変わるか</th><th scope="col">影響の大きさ</th></tr>
 </thead>
@@ -477,7 +481,7 @@
 <tr><td><b>業種</b></td><td>雇用保険料率が違う（一般5/1000、建設・農林水産6/1000）</td><td>額面30万円で月300円</td></tr>
 <tr><td><b>扶養親族の数</b></td><td>所得税の源泉徴収税額が下がる</td><td>1人につき月数千円</td></tr>
 </tbody>
-</table>
+</table></div>
 
 <p><b>年齢の影響がいちばん大きい</b>点は覚えておく価値があります。40歳の誕生日を迎えた月から介護保険料の徴収が始まるので、<b>昇給していないのに手取りだけが減ります</b>。額面30万円・東京都なら、社会保険料が44,070円から46,500円に増え、手取りは249,610円から247,280円に下がります。</p>
 
@@ -485,20 +489,20 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 手取りは額面の何割ですか？</h3>
-<p>A. おおむね8割です。東京都・30歳・扶養なしで計算すると、額面20万円で83.7%（手取り167,350円）、額面30万円で83.2%（249,610円）、額面50万円で81.7%（408,690円）となります（住民税を除く）。額面が上がるほど手取り率は下がる傾向にありますが、標準報酬月額の等級表のどこに乗るかで前後するため、単純に下がり続けるわけではありません。実際、額面25万円の手取り率82.8%より、額面30万円の83.2%のほうが高くなります。住民税まで引かれると、これより月1〜2万円ほど手取りが少なくなります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>手取りは額面の何割ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>おおむね8割です。東京都・30歳・扶養なしで計算すると、額面20万円で83.7%（手取り167,350円）、額面30万円で83.2%（249,610円）、額面50万円で81.7%（408,690円）となります（住民税を除く）。額面が上がるほど手取り率は下がる傾向にありますが、標準報酬月額の等級表のどこに乗るかで前後するため、単純に下がり続けるわけではありません。実際、額面25万円の手取り率82.8%より、額面30万円の83.2%のほうが高くなります。住民税まで引かれると、これより月1〜2万円ほど手取りが少なくなります。</p>
 
-<h3>Q. 額面が増えたのに手取りが減ることはありますか？</h3>
-<p>A. あります。社会保険料は標準報酬月額という等級表の階段で決まるため、境目をまたぐと保険料が一段上がります。東京都・30歳・扶養なしの場合、報酬月額309,999円なら健康保険の第22級（標準報酬月額300,000円）ですが、310,000円だと第23級（320,000円）に上がり、社会保険料が2,838円増えます。所得税は源泉徴収税額表の同じ行に収まって変わらないため、手取りは2,837円減ります。年額では34,044円の差です。給料の差はわずか1円です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>額面が増えたのに手取りが減ることはありますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>あります。社会保険料は標準報酬月額という等級表の階段で決まるため、境目をまたぐと保険料が一段上がります。東京都・30歳・扶養なしの場合、報酬月額309,999円なら健康保険の第22級（標準報酬月額300,000円）ですが、310,000円だと第23級（320,000円）に上がり、社会保険料が2,838円増えます。所得税は源泉徴収税額表の同じ行に収まって変わらないため、手取りは2,837円減ります。年額では34,044円の差です。給料の差はわずか1円です。</p>
 
-<h3>Q. 4月から6月に残業すると損しますか？</h3>
-<p>A. 社会保険料は上がります。健康保険法41条1項が、標準報酬月額を「毎年7月1日」の「同日前3月間」＝4月・5月・6月に受けた報酬の平均で決めると定めており、41条2項でその額を「その年の9月から翌年の8月まで」使うと定めているためです。したがって4〜6月の残業代は、9月から1年間の保険料を押し上げます。ただし厚生年金保険料が上がれば将来受け取る老齢厚生年金も増えるので、一方的な損とは限りません。なお支払基礎日数が17日未満の月は平均から除かれます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>4月から6月に残業すると損しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>社会保険料は上がります。健康保険法41条1項が、標準報酬月額を「毎年7月1日」の「同日前3月間」＝4月・5月・6月に受けた報酬の平均で決めると定めており、41条2項でその額を「その年の9月から翌年の8月まで」使うと定めているためです。したがって4〜6月の残業代は、9月から1年間の保険料を押し上げます。ただし厚生年金保険料が上がれば将来受け取る老齢厚生年金も増えるので、一方的な損とは限りません。なお支払基礎日数が17日未満の月は平均から除かれます。</p>
 
-<h3>Q. 新入社員の手取りが2年目に減るのはなぜですか？</h3>
-<p>A. 住民税が引かれ始めるからです。地方税法32条1項は住民税の所得割の課税標準を「前年の所得」と定めているため、前年に所得がない新卒1年目には住民税がかかりません。2年目は前年（＝入社1年目）の所得があるので課税され、地方税法321条の5第1項により6月から翌年5月まで毎月天引きされます。所得割は道府県民税4%と市町村民税6%の合計10%、これに均等割4,000円と森林環境税1,000円が加わります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>新入社員の手取りが2年目に減るのはなぜですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>住民税が引かれ始めるからです。地方税法32条1項は住民税の所得割の課税標準を「前年の所得」と定めているため、前年に所得がない新卒1年目には住民税がかかりません。2年目は前年（＝入社1年目）の所得があるので課税され、地方税法321条の5第1項により6月から翌年5月まで毎月天引きされます。所得割は道府県民税4%と市町村民税6%の合計10%、これに均等割4,000円と森林環境税1,000円が加わります。</p>
 
-<h3>Q. 給料が高い人ほど厚生年金保険料も高いのですか？</h3>
-<p>A. 途中までは高くなりますが、標準報酬月額650,000円（第32級）で頭打ちになります。額面70万円の人も額面100万円の人も、厚生年金保険料の本人負担は同じ59,475円です。なお厚生年金保険法20条1項の等級表は第31級・620,000円までしか書かれておらず、第32級は同条2項の委任を受けた令和2年政令第246号が追加したものです。健康保険のほうは第50級・1,390,000円まで上がり続けます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>給料が高い人ほど厚生年金保険料も高いのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>途中までは高くなりますが、標準報酬月額650,000円（第32級）で頭打ちになります。額面70万円の人も額面100万円の人も、厚生年金保険料の本人負担は同じ59,475円です。なお厚生年金保険法20条1項の等級表は第31級・620,000円までしか書かれておらず、第32級は同条2項の委任を受けた令和2年政令第246号が追加したものです。健康保険のほうは第50級・1,390,000円まで上がり続けます。</p>
 
 <section class="related">
 <div class="tool-grid">
@@ -559,7 +563,7 @@
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月21日　／　<a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月21日　／　<a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

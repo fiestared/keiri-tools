@@ -48,6 +48,7 @@
   .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
   .warn{ font-size:13px; color:#b4232a; }
 </style>
+<link rel="stylesheet" href="/assets/embed-layout.css">
 </head>
 <body>
 <div class="w">
@@ -71,8 +72,9 @@
     </div>
   </div>
 
-  <label for="annual">現在の年収（円）<span class="hint">　パート・アルバイト先の税引き前の年収</span></label>
-  <input id="annual" type="number" inputmode="numeric" placeholder="例: 1290000" min="0" step="10000">
+  <label for="annual">現在の年収（円）</label>
+  <input id="annual" type="number" inputmode="numeric" placeholder="例: 1290000" min="0" step="10000" aria-describedby="annual-hint">
+      <span id="annual-hint" class="hint">　パート・アルバイト先の税引き前の年収</span>
 
   <button id="calc" type="button">壁を超えるといくら減るか計算する</button>
 

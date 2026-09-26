@@ -167,8 +167,9 @@
       </select>
     </div>
     <div>
-      <label for="koCount">18歳年度末までの子の人数<span class="hint">　20歳未満で障害1級2級の子を含む</span></label>
-      <input type="number" id="koCount" min="0" max="10" inputmode="numeric" value="2">
+      <label for="koCount">18歳年度末までの子の人数</label>
+      <input type="number" id="koCount" min="0" max="10" inputmode="numeric" value="2" aria-describedby="koCount-hint">
+      <span id="koCount-hint" class="hint">　20歳未満で障害1級2級の子を含む</span>
     </div>
   </div>
 
@@ -181,15 +182,17 @@
       </select>
     </div>
     <div>
-      <label for="age">受け取る方の年齢<span class="hint">　中高齢寡婦加算と65歳以降の判定に使います</span></label>
-      <input type="number" id="age" min="0" max="120" inputmode="numeric" value="45">
+      <label for="age">受け取る方の年齢</label>
+      <input type="number" id="age" min="0" max="120" inputmode="numeric" value="45" aria-describedby="age-hint">
+      <span id="age-hint" class="hint">　中高齢寡婦加算と65歳以降の判定に使います</span>
     </div>
   </div>
 
   <div style="margin-top:14px">
     <div>
-      <label for="postAvg">平均標準報酬<b>額</b>（平成15年4月以後・円）<span class="hint">　賞与込みの月あたり平均</span></label>
-      <input type="number" id="postAvg" min="0" inputmode="numeric" value="300000">
+      <label for="postAvg">平均標準報酬<b>額</b>（平成15年4月以後・円）</label>
+      <input type="number" id="postAvg" min="0" inputmode="numeric" value="300000" aria-describedby="postAvg-hint">
+      <span id="postAvg-hint" class="hint">　賞与込みの月あたり平均</span>
     </div>
     <div>
       <label for="postMonths">その期間の月数</label>
@@ -199,8 +202,9 @@
 
   <div>
     <div>
-      <label for="preAvg">平均標準報酬<b>月額</b>（平成15年3月以前・円）<span class="hint">　該当がなければ0</span></label>
-      <input type="number" id="preAvg" min="0" inputmode="numeric" value="0">
+      <label for="preAvg">平均標準報酬<b>月額</b>（平成15年3月以前・円）</label>
+      <input type="number" id="preAvg" min="0" inputmode="numeric" value="0" aria-describedby="preAvg-hint">
+      <span id="preAvg-hint" class="hint">　該当がなければ0</span>
     </div>
     <div>
       <label for="preMonths">その期間の月数</label>
@@ -209,8 +213,9 @@
   </div>
 
   <div style="margin-top:10px">
-    <label for="ownRourei">受け取る方自身の老齢厚生年金の年額（円）<span class="hint">　65歳以上のときだけ使います。無ければ0</span></label>
-    <input type="number" id="ownRourei" min="0" inputmode="numeric" value="0">
+    <label for="ownRourei">受け取る方自身の老齢厚生年金の年額（円）</label>
+    <input type="number" id="ownRourei" min="0" inputmode="numeric" value="0" aria-describedby="ownRourei-hint">
+      <span id="ownRourei-hint" class="hint">　65歳以上のときだけ使います。無ければ0</span>
   </div>
 
   <button class="primary" id="calc" style="margin-top:14px">遺族年金を計算する</button>
@@ -254,15 +259,15 @@
 
 <p>つまり<b>低い額が本文の原則で、2人までだけが高い額に読み替えられている</b>という構造です。全員を高い額で足す実装は、子が3人以上の世帯に過大な金額を出します。</p>
 
-<table>
+<div class="scroll-wrap"><table>
   <thead><tr><th scope="col">項目</th><th scope="col">本則の額</th><th scope="col">令和8年度の額</th></tr></thead>
   <tbody id="kiso-table">
-    <tr><td>基本額（国民年金法38条）</td><td>780,900円</td><td>847,300円</td></tr>
+    <tr><td>基本額（国民年金法38条）</td><td><span class="numeric-token">780,900円</span></td><td><span class="numeric-token">847,300円</span></td></tr>
     <tr><td>子の加算 1人目・2人目（39条1項かっこ書）</td><td>各 224,700円</td><td>各 243,800円</td></tr>
     <tr><td>子の加算 3人目以降（39条1項本文）</td><td>各 74,900円</td><td>各 81,300円</td></tr>
-    <tr><td>中高齢寡婦加算（厚生年金保険法62条1項）</td><td>基本額の4分の3</td><td>635,500円</td></tr>
+    <tr><td>中高齢寡婦加算（厚生年金保険法62条1項）</td><td>基本額の4分の3</td><td><span class="numeric-token">635,500円</span></td></tr>
   </tbody>
-</table>
+</table></div>
 
 <p><b id="ko-teigi">ここでいう「子」は、18歳に達する日以後の最初の3月31日までの間にある子</b>（または20歳未満で障害等級1級・2級に該当する子）です。高校を卒業する年の3月31日で終わるため、大学生の子は数に入りません。この要件に当たる子が1人もいない配偶者には、遺族基礎年金は<b>1円も支給されません</b>。</p>
 
@@ -369,26 +374,26 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 子どもがいない妻でも遺族年金は受け取れますか？</h3>
-<p>A. 遺族厚生年金は受け取れますが、遺族基礎年金は受け取れません。遺族基礎年金は「子のある配偶者」または「子」に支給されるもので（国民年金法37条の2第1項）、ここでいう子は18歳に達する日以後の最初の3月31日までの間にある子（または20歳未満で障害等級1級・2級の子）です。この要件に当たる子が1人もいない配偶者には支給されません。そのかわり、亡くなった方が厚生年金の被保険者だった場合は遺族厚生年金が支給され、妻が40歳以上65歳未満であれば中高齢寡婦加算が上乗せされます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>子どもがいない妻でも遺族年金は受け取れますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>遺族厚生年金は受け取れますが、遺族基礎年金は受け取れません。遺族基礎年金は「子のある配偶者」または「子」に支給されるもので（国民年金法37条の2第1項）、ここでいう子は18歳に達する日以後の最初の3月31日までの間にある子（または20歳未満で障害等級1級・2級の子）です。この要件に当たる子が1人もいない配偶者には支給されません。そのかわり、亡くなった方が厚生年金の被保険者だった場合は遺族厚生年金が支給され、妻が40歳以上65歳未満であれば中高齢寡婦加算が上乗せされます。</p>
 
-<h3>Q. 厚生年金の加入が短くても遺族厚生年金は300月で計算されますか？</h3>
-<p>A. 短期要件のときだけです。厚生年金保険法60条1項1号のただし書は、58条1項1号から3号まで（在職中の死亡、初診日から5年以内の死亡、障害厚生年金1級・2級の受給権者の死亡）に該当して支給される遺族厚生年金について、被保険者期間が300月に満たないときは300月として計算すると定めています。老齢厚生年金の受給権者などが亡くなった長期要件（58条1項4号）にはこのみなしがなく、実際の加入月数で計算します。同じ加入期間でも、どちらの要件かで額が大きく変わります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>厚生年金の加入が短くても遺族厚生年金は300月で計算されますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>短期要件のときだけです。厚生年金保険法60条1項1号のただし書は、58条1項1号から3号まで（在職中の死亡、初診日から5年以内の死亡、障害厚生年金1級・2級の受給権者の死亡）に該当して支給される遺族厚生年金について、被保険者期間が300月に満たないときは300月として計算すると定めています。老齢厚生年金の受給権者などが亡くなった長期要件（58条1項4号）にはこのみなしがなく、実際の加入月数で計算します。同じ加入期間でも、どちらの要件かで額が大きく変わります。</p>
 
-<h3>Q. 子の加算は3人目からなぜ安くなるのですか？</h3>
-<p>A. 国民年金法39条1項が、子1人につき7万4,900円に改定率を掛けた額を加算すると定めたうえで、かっこ書で「そのうち二人までについては、それぞれ二十二万四千七百円に改定率を乗じて得た額」と読み替えているためです。つまり本文が定める低い額が原則で、2人までだけが高い額に読み替えられる構造です。令和8年度は1人目・2人目が各24万3,800円、3人目以降が各8万1,300円になります。全員を高い額で足すと3人目以降で過大な金額が出ます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>子の加算は3人目からなぜ安くなるのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>国民年金法39条1項が、子1人につき7万4,900円に改定率を掛けた額を加算すると定めたうえで、かっこ書で「そのうち二人までについては、それぞれ二十二万四千七百円に改定率を乗じて得た額」と読み替えているためです。つまり本文が定める低い額が原則で、2人までだけが高い額に読み替えられる構造です。令和8年度は1人目・2人目が各24万3,800円、3人目以降が各8万1,300円になります。全員を高い額で足すと3人目以降で過大な金額が出ます。</p>
 
-<h3>Q. 中高齢寡婦加算は子どもがいるあいだも受け取れますか？</h3>
-<p>A. 受け取れません。厚生年金保険法65条により、遺族基礎年金を受けられるあいだは中高齢寡婦加算が支給停止になります。子が18歳到達年度の末日を過ぎて遺族基礎年金が終わったあと、妻が65歳になるまでのあいだ加算されます。つまり両方を同時に受け取ることはなく、子がいるあいだは遺族基礎年金、子が卒業したあとは中高齢寡婦加算、という順に切り替わります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>中高齢寡婦加算は子どもがいるあいだも受け取れますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>受け取れません。厚生年金保険法65条により、遺族基礎年金を受けられるあいだは中高齢寡婦加算が支給停止になります。子が18歳到達年度の末日を過ぎて遺族基礎年金が終わったあと、妻が65歳になるまでのあいだ加算されます。つまり両方を同時に受け取ることはなく、子がいるあいだは遺族基礎年金、子が卒業したあとは中高齢寡婦加算、という順に切り替わります。</p>
 
-<h3>Q. 中高齢寡婦加算が付かないと言われました。なぜですか？</h3>
-<p>A. 中高齢寡婦加算には4つの条件があり、どれか1つでも欠けると付きません。①受け取るのが妻であること、②40歳以上65歳未満であること、③遺族基礎年金を受けていないこと（厚生年金保険法65条）、④長期要件で支給される遺族厚生年金の場合は、厚生年金の被保険者期間が240月（20年）以上あること（同法62条1項かっこ書）です。とくに④は見落としやすく、自営業の期間が長かった方が老齢厚生年金の受給権者として亡くなった場合、加入が240月に届かず加算されないことがあります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>中高齢寡婦加算が付かないと言われました。なぜですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>中高齢寡婦加算には4つの条件があり、どれか1つでも欠けると付きません。①受け取るのが妻であること、②40歳以上65歳未満であること、③遺族基礎年金を受けていないこと（厚生年金保険法65条）、④長期要件で支給される遺族厚生年金の場合は、厚生年金の被保険者期間が240月（20年）以上あること（同法62条1項かっこ書）です。とくに④は見落としやすく、自営業の期間が長かった方が老齢厚生年金の受給権者として亡くなった場合、加入が240月に届かず加算されないことがあります。</p>
 
-<h3>Q. 65歳になって自分の老齢厚生年金が出ると、遺族厚生年金は止まりますか？</h3>
-<p>A. 止まりませんが、額の決め方が変わります。厚生年金保険法60条1項2号により、老齢厚生年金の受給権がある配偶者の遺族厚生年金は、①報酬比例の4分の3の額と、②その3分の2に自分の老齢厚生年金の2分の1を足した額の、いずれか多い額になります。そのうえで自分の老齢厚生年金は全額支給され、その差額が遺族厚生年金として上乗せされます。したがって受け取る合計額は、自分の老齢厚生年金が増えても遺族厚生年金の分だけ単純に足し算されるわけではありません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>65歳になって自分の老齢厚生年金が出ると、遺族厚生年金は止まりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>止まりませんが、額の決め方が変わります。厚生年金保険法60条1項2号により、老齢厚生年金の受給権がある配偶者の遺族厚生年金は、①報酬比例の4分の3の額と、②その3分の2に自分の老齢厚生年金の2分の1を足した額の、いずれか多い額になります。そのうえで自分の老齢厚生年金は全額支給され、その差額が遺族厚生年金として上乗せされます。したがって受け取る合計額は、自分の老齢厚生年金が増えても遺族厚生年金の分だけ単純に足し算されるわけではありません。</p>
 
-<h3>Q. 遺族年金に税金はかかりますか？</h3>
-<p>A. かかりません。国民年金法25条と厚生年金保険法41条2項が、給付として支給を受けた金銭には租税その他の公課を課することができないと定めており（老齢給付は除かれます）、遺族年金は所得税も住民税も非課税です。相続税もかかりません。したがって確定申告に含める必要はなく、扶養の判定に使う合計所得金額にも入りません。ただし国民健康保険料や高額療養費の区分では、自治体によって遺族年金を判定材料に含める制度があるため、窓口で確認してください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>遺族年金に税金はかかりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>かかりません。国民年金法25条と厚生年金保険法41条2項が、給付として支給を受けた金銭には租税その他の公課を課することができないと定めており（老齢給付は除かれます）、遺族年金は所得税も住民税も非課税です。相続税もかかりません。したがって確定申告に含める必要はなく、扶養の判定に使う合計所得金額にも入りません。ただし国民健康保険料や高額療養費の区分では、自治体によって遺族年金を判定材料に含める制度があるため、窓口で確認してください。</p>
 
 <h2 id="shutten">出典</h2>
 <ul id="shutten-list">
@@ -417,7 +422,7 @@
   <div>© 税金・経理・補助金ツールズ</div>
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年度　／　一次情報の確認: 2026年7月31日　／　<a href="https://laws.e-gov.go.jp/law/334AC0000000141" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年度　／　一次情報の確認: 2026年7月31日　／　<a href="https://laws.e-gov.go.jp/law/334AC0000000141" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

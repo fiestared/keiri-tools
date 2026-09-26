@@ -164,7 +164,7 @@
       <label><input type="radio" name="purpose" value="教育・子育て・少子化支援がほしい">教育・子育て</label>
       <label><input type="radio" name="purpose" value="スポーツ・文化支援がほしい">スポーツ・文化</label>
     </div>
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="area">都道府県</label>
         <select id="area">
@@ -182,11 +182,12 @@
       </div>
       <div>
         <label for="employees">従業員数（自社）</label>
-    <p class="hint" id="employees-hint">人数の上限がある補助金だけを絞ります。</p>
+
     <input aria-describedby="employees-hint" type="number" id="employees" value="" min="0" step="1" placeholder="例: 20" inputmode="numeric">
+    <p class="hint" id="employees-hint">人数の上限がある補助金だけを絞ります。</p>
       </div>
     </div>
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="maxdays">締切まで</label>
         <select id="maxdays">
@@ -203,7 +204,7 @@
         <p class="hint">金額の記載が無い補助金（83件前後）はこの条件で外れます。</p>
       </div>
     </div>
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="keyword">キーワード</label>
         <input type="text" id="keyword" value="" placeholder="例: 省エネ">
@@ -224,23 +225,23 @@
 
 <section class="faq">
 <h2 id="faq">よくある質問</h2>
-<h3>Q. 会員登録や電話番号の入力は必要ですか？</h3>
-<p>A. <b>いりません。</b>入力した条件はブラウザの外へ出ませんし、こちらから営業の連絡をすることもありません。このサイトは広告だけで運営しています。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>会員登録や電話番号の入力は必要ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>いりません。</b>入力した条件はブラウザの外へ出ませんし、こちらから営業の連絡をすることもありません。このサイトは広告だけで運営しています。</p>
 
-<h3>Q. 締切が過ぎた補助金も出てきますか？</h3>
-<p>A. <b>出しません。</b>表示のたびに今日の日付と突き合わせて外しています。ただし<b>当日が締切のものは残します</b>。締切の記載が無いものは落とさず、並びの最後に置いています。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>締切が過ぎた補助金も出てきますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>出しません。</b>表示のたびに今日の日付と突き合わせて外しています。ただし<b>当日が締切のものは残します</b>。締切の記載が無いものは落とさず、並びの最後に置いています。</p>
 
-<h3>Q. ここに載っていない補助金もありますか？</h3>
-<p>A. <b>あります。</b>データ元の jGrants 公開APIは検索キーワードが必須で「全件」を要求できないため、50語の和集合で近似しています。自治体が独自に出しているものなど、jGrants に載っていない補助金もあります。<b>網羅は約束していません。</b>国の主要補助金の受付状況と雇用関係助成金は別ページにまとめています。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>ここに載っていない補助金もありますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>あります。</b>データ元の jGrants 公開APIは検索キーワードが必須で「全件」を要求できないため、50語の和集合で近似しています。自治体が独自に出しているものなど、jGrants に載っていない補助金もあります。<b>網羅は約束していません。</b>国の主要補助金の受付状況と雇用関係助成金は別ページにまとめています。</p>
 
-<h3>Q. 都道府県を選ぶと、全国の補助金は消えますか？</h3>
-<p>A. <b>消えません。</b>「全国」が対象の補助金は、都道府県を選んでも表示されます。複数県が対象の補助金（「茨城県 / 栃木県 / …」）も、その中に選んだ県が含まれていれば表示されます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>都道府県を選ぶと、全国の補助金は消えますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>消えません。</b>「全国」が対象の補助金は、都道府県を選んでも表示されます。複数県が対象の補助金（「茨城県 / 栃木県 / …」）も、その中に選んだ県が含まれていれば表示されます。</p>
 
-<h3>Q. 従業員数を入れると何が変わりますか？</h3>
-<p>A. 「300名以下」のように<b>人数の上限がある補助金</b>のうち、入力した人数を超えるものが外れます。人数の記載が無いものは<b>落としません</b>（制限が無い可能性があるためです）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>従業員数を入れると何が変わりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>「300名以下」のように<b>人数の上限がある補助金</b>のうち、入力した人数を超えるものが外れます。人数の記載が無いものは<b>落としません</b>（制限が無い可能性があるためです）。</p>
 
-<h3>Q. 補助金をもらった後の経理はどうすればよいですか？</h3>
-<p>A. <b>圧縮記帳・受贈益の計上時期・消費税の扱い</b>という論点があります。<a href="../hojokin-zeimu/">補助金の経理・税務</a>で条文にあたって説明しています。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>補助金をもらった後の経理はどうすればよいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>圧縮記帳・受贈益の計上時期・消費税の扱い</b>という論点があります。<a href="../hojokin-zeimu/">補助金の経理・税務</a>で条文にあたって説明しています。</p>
 
 </section>
 

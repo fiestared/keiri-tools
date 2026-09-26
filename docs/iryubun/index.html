@@ -160,12 +160,14 @@
 
   <div>
     <div>
-      <label for="kaishiDate">相続開始日（亡くなった日）<span class="hint">　2019年7月1日より前は旧法です</span></label>
-      <input type="date" id="kaishiDate" value="2026-04-01">
+      <label for="kaishiDate">相続開始日（亡くなった日）</label>
+      <input type="date" id="kaishiDate" value="2026-04-01" aria-describedby="kaishiDate-hint">
+      <span id="kaishiDate-hint" class="hint">　2019年7月1日より前は旧法です</span>
     </div>
     <div>
-      <label for="shittaDate">遺贈・贈与があったことを知った日<span class="hint">　任意。時効の目安を出します</span></label>
-      <input type="date" id="shittaDate">
+      <label for="shittaDate">遺贈・贈与があったことを知った日</label>
+      <input type="date" id="shittaDate" aria-describedby="shittaDate-hint">
+      <span id="shittaDate-hint" class="hint">　任意。時効の目安を出します</span>
     </div>
   </div>
 
@@ -191,8 +193,9 @@
     </div>
   </div>
   <div>
-    <label for="zoyoSongaiShiri">期間外だが、双方が遺留分権利者に損害を加えることを知ってした贈与（円）<span class="hint">　民法1044条1項後段</span></label>
-    <input type="number" id="zoyoSongaiShiri" min="0" inputmode="numeric" value="0">
+    <label for="zoyoSongaiShiri">期間外だが、双方が遺留分権利者に損害を加えることを知ってした贈与（円）</label>
+    <input type="number" id="zoyoSongaiShiri" min="0" inputmode="numeric" value="0" aria-describedby="zoyoSongaiShiri-hint">
+      <span id="zoyoSongaiShiri-hint" class="hint">　民法1044条1項後段</span>
   </div>
 
   <label style="margin-top:14px">相続人（相続を放棄した人は「放棄」の欄に入れてください）</label>
@@ -212,8 +215,9 @@
   </div>
   <div>
     <div>
-      <label for="numChildrenAdopted">養子の数<span class="hint">　民法では人数制限なし</span></label>
-      <input type="number" id="numChildrenAdopted" min="0" inputmode="numeric" value="0">
+      <label for="numChildrenAdopted">養子の数</label>
+      <input type="number" id="numChildrenAdopted" min="0" inputmode="numeric" value="0" aria-describedby="numChildrenAdopted-hint">
+      <span id="numChildrenAdopted-hint" class="hint">　民法では人数制限なし</span>
     </div>
     <div>
       <label for="numChildrenRenounced">うち相続を放棄した子の数</label>
@@ -222,12 +226,14 @@
   </div>
   <div>
     <div>
-      <label for="numParents">父母（直系尊属）の数<span class="hint">　子がいないときだけ相続人</span></label>
-      <input type="number" id="numParents" min="0" inputmode="numeric" value="0">
+      <label for="numParents">父母（直系尊属）の数</label>
+      <input type="number" id="numParents" min="0" inputmode="numeric" value="0" aria-describedby="numParents-hint">
+      <span id="numParents-hint" class="hint">　子がいないときだけ相続人</span>
     </div>
     <div>
-      <label for="numSiblings">兄弟姉妹の数<span class="hint">　子も父母もいないときだけ相続人</span></label>
-      <input type="number" id="numSiblings" min="0" inputmode="numeric" value="0">
+      <label for="numSiblings">兄弟姉妹の数</label>
+      <input type="number" id="numSiblings" min="0" inputmode="numeric" value="0" aria-describedby="numSiblings-hint">
+      <span id="numSiblings-hint" class="hint">　子も父母もいないときだけ相続人</span>
     </div>
   </div>
 
@@ -254,8 +260,9 @@
       <input type="number" id="meShutoku" min="0" inputmode="numeric" value="0">
     </div>
     <div>
-      <label for="meSaimu">あなたが承継する債務（円）<span class="hint">　これは加算されます</span></label>
-      <input type="number" id="meSaimu" min="0" inputmode="numeric" value="0">
+      <label for="meSaimu">あなたが承継する債務（円）</label>
+      <input type="number" id="meSaimu" min="0" inputmode="numeric" value="0" aria-describedby="meSaimu-hint">
+      <span id="meSaimu-hint" class="hint">　これは加算されます</span>
     </div>
   </div>
 
@@ -344,14 +351,14 @@
 
 <p>遺留分は、亡くなった時に残っていた財産だけでは計算しません。<b>生前に贈与された財産を足し戻して</b>から割合を掛けます（民法1043条1項）。足し戻す範囲は、<b>贈与の相手が相続人かどうか</b>で変わります。</p>
 
-<table id="zoyo-table">
+<div class="scroll-wrap"><table id="zoyo-table">
   <thead><tr><th scope="col">贈与の相手</th><th scope="col">さかのぼる期間</th><th scope="col">対象になる贈与</th><th scope="col">条文</th></tr></thead>
   <tbody>
-    <tr id="zoyo-sozokunin"><td><b>相続人</b>（子・配偶者など）</td><td><b>10年</b></td><td>婚姻・養子縁組のため、又は生計の資本として受けた贈与（＝特別受益）に限る</td><td>民法1044条3項</td></tr>
-    <tr id="zoyo-daisansha"><td><b>相続人以外</b>（第三者・法人など）</td><td><b>1年</b></td><td>期間内の贈与すべて</td><td>民法1044条1項前段</td></tr>
+    <tr id="zoyo-sozokunin"><td><b>相続人</b>（子・配偶者など）</td><td><b><span class="numeric-token">10年</span></b></td><td>婚姻・養子縁組のため、又は生計の資本として受けた贈与（＝特別受益）に限る</td><td>民法1044条3項</td></tr>
+    <tr id="zoyo-daisansha"><td><b>相続人以外</b>（第三者・法人など）</td><td><b><span class="numeric-token">1年</span></b></td><td>期間内の贈与すべて</td><td>民法1044条1項前段</td></tr>
     <tr id="zoyo-songai"><td>上記の期間より前の贈与</td><td>期間の制限なし</td><td>当事者<b>双方</b>が遺留分権利者に損害を加えることを知ってしたもの</td><td>民法1044条1項後段</td></tr>
   </tbody>
-</table>
+</table></div>
 
 <div class="note">
 <b>相続税の「7年」と混同しないでください。</b>相続税の生前贈与加算（相続税法19条）は、相続や遺贈で財産を取得した人が受けた贈与を最長7年さかのぼって課税価格に足すルールです。<b>遺留分の10年／1年とは、根拠法も年数も対象も違います。</b>相続税では特別受益でない贈与も加算されますが、遺留分の10年は特別受益にあたる贈与だけが対象です。<a href="../seizen-zoyo/">生前贈与シミュレーター</a>で相続税側の計算を確認できます。
@@ -371,13 +378,13 @@
 
 <p>同じ家族構成でも、<a href="../sozokuzei/">相続税の計算</a>と遺留分の計算では<b>相続人の数え方が違います</b>。しかも2つのルールは<b>向きが逆</b>です。</p>
 
-<table>
+<div class="scroll-wrap"><table>
   <thead><tr><th scope="col">論点</th><th scope="col">遺留分（民法）</th><th scope="col">相続税（相続税法）</th></tr></thead>
   <tbody>
     <tr id="taihi-youshi"><td><b>養子の数</b></td><td>制限なし。何人でも全員が相続人（809条・887条1項）</td><td>実子がいれば1人まで、いなければ2人まで（15条3項）</td></tr>
     <tr id="taihi-houki"><td><b>相続放棄</b></td><td>反映する。放棄した人は初めから相続人でない（939条）</td><td>無視する。放棄がなかったものとした数で数える（15条2項）</td></tr>
   </tbody>
-</table>
+</table></div>
 
 <p>たとえば実子1人と養子3人がいる場合、遺留分では子は<b>4人</b>ですが、相続税の基礎控除では<b>2人</b>と数えます。逆に子が全員相続を放棄した場合、遺留分では次順位の父母が相続人に繰り上がりますが、相続税の基礎控除は子がいるものとして計算します。<b>片方のルールをもう片方に持ち込むと、答えが黙って狂います。</b></p>
 
@@ -391,26 +398,26 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 遺留分はどのくらいの割合ですか？</h3>
-<p>A. 相続人全体で、原則として遺産の<b>2分の1</b>です（民法1042条1項2号）。相続人が直系尊属（父母・祖父母）だけの場合に限り<b>3分の1</b>になります（同1号）。この全体の割合に各自の法定相続分を掛けたものが、その人個人の遺留分です。たとえば配偶者と子2人が相続人なら、配偶者は2分の1×2分の1＝<b>4分の1</b>、子は1人あたり2分の1×4分の1＝<b>8分の1</b>になります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>遺留分はどのくらいの割合ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>相続人全体で、原則として遺産の<b>2分の1</b>です（民法1042条1項2号）。相続人が直系尊属（父母・祖父母）だけの場合に限り<b>3分の1</b>になります（同1号）。この全体の割合に各自の法定相続分を掛けたものが、その人個人の遺留分です。たとえば配偶者と子2人が相続人なら、配偶者は2分の1×2分の1＝<b>4分の1</b>、子は1人あたり2分の1×4分の1＝<b>8分の1</b>になります。</p>
 
-<h3>Q. 兄弟姉妹に遺留分はありますか？</h3>
-<p>A. ありません。民法1042条1項が「兄弟姉妹以外の相続人は」と明文で除いています。そのため兄弟姉妹だけが相続人の場合、全財産を第三者に遺贈する遺言があっても取り戻すことはできません。兄弟姉妹の代襲相続人である甥・姪も同じく遺留分を持ちません。子どもがいない夫婦が配偶者に全財産を残したい場合、遺言が確実に効くのはこのためです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>兄弟姉妹に遺留分はありますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>ありません。民法1042条1項が「兄弟姉妹以外の相続人は」と明文で除いています。そのため兄弟姉妹だけが相続人の場合、全財産を第三者に遺贈する遺言があっても取り戻すことはできません。兄弟姉妹の代襲相続人である甥・姪も同じく遺留分を持ちません。子どもがいない夫婦が配偶者に全財産を残したい場合、遺言が確実に効くのはこのためです。</p>
 
-<h3>Q. 生前贈与は何年前までさかのぼって計算に入れますか？</h3>
-<p>A. 相手によって違います。<b>相続人に対する贈与は10年</b>で、しかも婚姻・養子縁組のため又は生計の資本として受けた贈与（特別受益）に限られます（民法1044条3項）。<b>相続人以外に対する贈与は1年</b>です（同1項前段）。ただし当事者双方が遺留分権利者に損害を加えることを知ってした贈与は、期間の制限なく算入されます（同項後段）。相続税の生前贈与加算（最長7年）とは別の制度なので、年数を混同しないでください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>生前贈与は何年前までさかのぼって計算に入れますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>相手によって違います。<b>相続人に対する贈与は10年</b>で、しかも婚姻・養子縁組のため又は生計の資本として受けた贈与（特別受益）に限られます（民法1044条3項）。<b>相続人以外に対する贈与は1年</b>です（同1項前段）。ただし当事者双方が遺留分権利者に損害を加えることを知ってした贈与は、期間の制限なく算入されます（同項後段）。相続税の生前贈与加算（最長7年）とは別の制度なので、年数を混同しないでください。</p>
 
-<h3>Q. 遺留分の額をそのまま請求できますか？</h3>
-<p>A. できません。請求できるのは遺留分侵害額で、遺留分の額から<b>自分が受けた遺贈・特別受益</b>と<b>自分が取得する遺産</b>を差し引き、<b>自分が承継する債務を加算</b>して計算します（民法1046条2項）。債務だけが加算である点に注意してください。借金を引き継ぐ分、取り戻すべき額は増えます。差し引いた結果がマイナスになる場合、請求できる額はありません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>遺留分の額をそのまま請求できますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>できません。請求できるのは遺留分侵害額で、遺留分の額から<b>自分が受けた遺贈・特別受益</b>と<b>自分が取得する遺産</b>を差し引き、<b>自分が承継する債務を加算</b>して計算します（民法1046条2項）。債務だけが加算である点に注意してください。借金を引き継ぐ分、取り戻すべき額は増えます。差し引いた結果がマイナスになる場合、請求できる額はありません。</p>
 
-<h3>Q. 相続放棄した子がいる場合、遺留分はどうなりますか？</h3>
-<p>A. 放棄した人は初めから相続人とならなかったものとみなされるため（民法939条）、遺留分もありません。残った相続人で計算し直します。子が全員放棄した場合は次順位の直系尊属が、直系尊属もいなければ兄弟姉妹が相続人になり、遺留分の枠組み自体が変わります。<b>相続税の基礎控除は放棄を無視して数える</b>ので（相続税法15条2項）、扱いが逆になる点に注意してください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>相続放棄した子がいる場合、遺留分はどうなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>放棄した人は初めから相続人とならなかったものとみなされるため（民法939条）、遺留分もありません。残った相続人で計算し直します。子が全員放棄した場合は次順位の直系尊属が、直系尊属もいなければ兄弟姉妹が相続人になり、遺留分の枠組み自体が変わります。<b>相続税の基礎控除は放棄を無視して数える</b>ので（相続税法15条2項）、扱いが逆になる点に注意してください。</p>
 
-<h3>Q. 養子がいる場合、遺留分は何人で分けますか？</h3>
-<p>A. 養子は縁組の日から養親の嫡出子の身分を取得し（民法809条）、人数の制限はありません。したがって養子が何人いても全員が相続人であり、全員に遺留分があります。実子1人と養子3人がいれば子は4人として計算します。相続税の基礎控除では養子の算入が実子がいれば1人まで、いなければ2人までに制限されますが（相続税法15条3項）、<b>これは相続税だけのルール</b>で、遺留分に持ち込むと遺留分を過大に計算します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>養子がいる場合、遺留分は何人で分けますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>養子は縁組の日から養親の嫡出子の身分を取得し（民法809条）、人数の制限はありません。したがって養子が何人いても全員が相続人であり、全員に遺留分があります。実子1人と養子3人がいれば子は4人として計算します。相続税の基礎控除では養子の算入が実子がいれば1人まで、いなければ2人までに制限されますが（相続税法15条3項）、<b>これは相続税だけのルール</b>で、遺留分に持ち込むと遺留分を過大に計算します。</p>
 
-<h3>Q. 遺留分はいつまでに請求すればよいですか？</h3>
-<p>A. 相続の開始および遺留分を侵害する贈与・遺贈があったことを<b>知った時から1年</b>以内です（民法1048条前段）。また知らなかった場合でも<b>相続開始の時から10年</b>を経過すると請求できなくなります（同条後段）。1年は非常に短いため、実務では内容証明郵便で遺留分侵害額請求の意思表示をして時効の完成を止めたうえで、金額の交渉を行います。具体的な進め方は弁護士に相談してください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>遺留分はいつまでに請求すればよいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>相続の開始および遺留分を侵害する贈与・遺贈があったことを<b>知った時から1年</b>以内です（民法1048条前段）。また知らなかった場合でも<b>相続開始の時から10年</b>を経過すると請求できなくなります（同条後段）。1年は非常に短いため、実務では内容証明郵便で遺留分侵害額請求の意思表示をして時効の完成を止めたうえで、金額の交渉を行います。具体的な進め方は弁護士に相談してください。</p>
 
 <h2 id="shutten">出典</h2>
 <ul id="shutten-list">
@@ -438,7 +445,7 @@
   <div>© 税金・経理・補助金ツールズ</div>
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2019年7月1日　／　一次情報の確認: 2026年7月25日　／　<a href="https://laws.e-gov.go.jp/law/129AC0000000089" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2019年7月1日　／　一次情報の確認: 2026年7月25日　／　<a href="https://laws.e-gov.go.jp/law/129AC0000000089" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

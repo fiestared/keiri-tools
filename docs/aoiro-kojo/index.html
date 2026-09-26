@@ -151,8 +151,9 @@
   <label style="margin-top:14px">あてはまるものにチェック<span class="hint">　控除の区分はこの要件で決まります</span></label>
   <div id="req-rows"><p class="hint">読み込み中…</p></div>
 
-  <label for="kazei" style="margin-top:14px">あなたの課税される所得金額（課税所得・円）<span class="hint">　確定申告書の「課税される所得金額」。売上でも所得でもありません</span></label>
-  <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000">
+  <label for="kazei" style="margin-top:14px">あなたの課税される所得金額（課税所得・円）</label>
+  <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000" aria-describedby="kazei-hint">
+      <span id="kazei-hint" class="hint">　確定申告書の「課税される所得金額」。売上でも所得でもありません</span>
 
   <button class="primary" id="calc">控除額と節税額を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -195,7 +196,7 @@
 <div class="scroll-wrap">
 <table class="num-nowrap">
 <thead>
-<tr><th scope="col">控除額</th><th scope="col">要件</th><th scope="col">対象になる所得</th></tr>
+<tr><th scope="col" class="num">控除額</th><th scope="col">要件</th><th scope="col">対象になる所得</th></tr>
 </thead>
 <tbody>
 <tr><td class="num"><b>65万円</b></td><td>55万円の要件すべて＋<b>e-Tax で申告</b>または<b>優良な電子帳簿</b>の保存</td><td>不動産所得・事業所得</td></tr>
@@ -307,12 +308,12 @@
 <div class="scroll-wrap">
 <table class="num-nowrap-lg">
 <thead>
-<tr><th scope="col">区分</th><th scope="col">所得税の減少</th><th scope="col">復興特別所得税</th><th scope="col">住民税の減少</th><th scope="col">年間の節税額</th></tr>
+<tr><th scope="col">区分</th><th scope="col" class="num">所得税の減少</th><th scope="col" class="num">復興特別所得税</th><th scope="col" class="num">住民税の減少</th><th scope="col" class="num">年間の節税額</th></tr>
 </thead>
 <tbody>
-<tr><td><b>65万円</b>の控除</td><td class="num">130,000円</td><td class="num">2,730円</td><td class="num">65,000円</td><td class="num"><b>197,730円</b></td></tr>
-<tr><td><b>55万円</b>の控除</td><td class="num">110,000円</td><td class="num">2,310円</td><td class="num">55,000円</td><td class="num"><b>167,310円</b></td></tr>
-<tr><td><b>10万円</b>の控除</td><td class="num">20,000円</td><td class="num">420円</td><td class="num">10,000円</td><td class="num"><b>30,420円</b></td></tr>
+<tr><td><b>65万円</b>の控除</td><td class="num"><span class="numeric-token">130,000円</span></td><td class="num"><span class="numeric-token">2,730円</span></td><td class="num"><span class="numeric-token">65,000円</span></td><td class="num"><b><span class="numeric-token">197,730円</span></b></td></tr>
+<tr><td><b>55万円</b>の控除</td><td class="num"><span class="numeric-token">110,000円</span></td><td class="num"><span class="numeric-token">2,310円</span></td><td class="num"><span class="numeric-token">55,000円</span></td><td class="num"><b><span class="numeric-token">167,310円</span></b></td></tr>
+<tr><td><b>10万円</b>の控除</td><td class="num"><span class="numeric-token">20,000円</span></td><td class="num"><span class="numeric-token">420円</span></td><td class="num"><span class="numeric-token">10,000円</span></td><td class="num"><b><span class="numeric-token">30,420円</span></b></td></tr>
 </tbody>
 </table>
 </div>
@@ -324,23 +325,23 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>青色申告特別控除65万円は、いくら得になりますか？</h3>
-<p>控除額そのものが戻るわけではなく、65万円に税率をかけた分だけ税金が減ります。課税される所得金額が500万円（所得税率20％）の人で年197,730円、課税所得300万円（税率10％）の人なら年131,365円（約13.1万円）が目安です。青色申告特別控除は住民税にも同額が効くので、控除の前後で所得税率が変わらなければ、所得税率×1.021に住民税10％を足した率で効きます。復興特別所得税は所得税額の2.1％で、所得に一律0.42％をかける税ではありません（令和8年分）。さらに国民健康保険料も所得が下がる分だけ安くなります。</p>
+<h3 class="faq-question">青色申告特別控除65万円は、いくら得になりますか？</h3>
+<p class="faq-answer">控除額そのものが戻るわけではなく、65万円に税率をかけた分だけ税金が減ります。課税される所得金額が500万円（所得税率20％）の人で年197,730円、課税所得300万円（税率10％）の人なら年131,365円（約13.1万円）が目安です。青色申告特別控除は住民税にも同額が効くので、控除の前後で所得税率が変わらなければ、所得税率×1.021に住民税10％を足した率で効きます。復興特別所得税は所得税額の2.1％で、所得に一律0.42％をかける税ではありません（令和8年分）。さらに国民健康保険料も所得が下がる分だけ安くなります。</p>
 
-<h3>白色申告から青色申告に変えるには、いつまでに何をすればいいですか？</h3>
-<p>青色申告をしたい年の3月15日までに「所得税の青色申告承認申請書」を税務署に出します。その年の1月16日以後に開業した場合は、開業の日から2か月以内です。提出だけなら手数料はかからず、e-Taxでも出せます。承認されると、その年分から青色申告特別控除のほか、赤字を3年間繰り越せる純損失の繰越控除や、家族に払う給与を経費にできる青色事業専従者給与も使えるようになります。</p>
+<h3 class="faq-question">白色申告から青色申告に変えるには、いつまでに何をすればいいですか？</h3>
+<p class="faq-answer">青色申告をしたい年の3月15日までに「所得税の青色申告承認申請書」を税務署に出します。その年の1月16日以後に開業した場合は、開業の日から2か月以内です。提出だけなら手数料はかからず、e-Taxでも出せます。承認されると、その年分から青色申告特別控除のほか、赤字を3年間繰り越せる純損失の繰越控除や、家族に払う給与を経費にできる青色事業専従者給与も使えるようになります。</p>
 
-<h3>複式簿記ができません。10万円しか受けられませんか？</h3>
-<p>手で複式簿記を書く必要はなく、市販の会計ソフトに日々の取引を入力すれば、貸借対照表と損益計算書は自動で作られます。国税庁も要件を「正規の簿記の原則（一般的には複式簿記）」と説明しており、簿記の知識より記帳の継続が実質的な条件です。会計ソフトの年間費用は1万円台からで、55万円と10万円の差（課税所得500万円なら年約13.7万円）を大きく下回ります。</p>
+<h3 class="faq-question">複式簿記ができません。10万円しか受けられませんか？</h3>
+<p class="faq-answer">手で複式簿記を書く必要はなく、市販の会計ソフトに日々の取引を入力すれば、貸借対照表と損益計算書は自動で作られます。国税庁も要件を「正規の簿記の原則（一般的には複式簿記）」と説明しており、簿記の知識より記帳の継続が実質的な条件です。会計ソフトの年間費用は1万円台からで、55万円と10万円の差（課税所得500万円なら年約13.7万円）を大きく下回ります。</p>
 
-<h3>期限に1日でも遅れると65万円は受けられませんか？</h3>
-<p>受けられず、10万円に下がります。措置法25条の2第6項が、55万円・65万円の控除は確定申告書を「その提出期限までに提出した場合に限り」適用すると定めているためです。e-Taxで65万円を受ける場合も、4項2号が「確定申告書の提出期限までに」送信することを要件にしています。還付になる申告であっても期限は同じで、翌年3月15日を過ぎると65万円は使えません。</p>
+<h3 class="faq-question">期限に1日でも遅れると65万円は受けられませんか？</h3>
+<p class="faq-answer">受けられず、10万円に下がります。措置法25条の2第6項が、55万円・65万円の控除は確定申告書を「その提出期限までに提出した場合に限り」適用すると定めているためです。e-Taxで65万円を受ける場合も、4項2号が「確定申告書の提出期限までに」送信することを要件にしています。還付になる申告であっても期限は同じで、翌年3月15日を過ぎると65万円は使えません。</p>
 
-<h3>事業所得が赤字です。青色申告特別控除は使えますか？</h3>
-<p>その所得からは引けませんが、他に黒字の不動産所得があれば、そちらから引けます。控除の限度になる「合計額」は損益通算前の黒字だけの合計で、赤字は無いものとして計算するためです。たとえば事業所得が▲200万円で不動産所得が+300万円なら、限度は差引100万円ではなく300万円になり、65万円を満額引けます。なお赤字そのものは、青色申告なら純損失として3年間繰り越せます。</p>
+<h3 class="faq-question">事業所得が赤字です。青色申告特別控除は使えますか？</h3>
+<p class="faq-answer">その所得からは引けませんが、他に黒字の不動産所得があれば、そちらから引けます。控除の限度になる「合計額」は損益通算前の黒字だけの合計で、赤字は無いものとして計算するためです。たとえば事業所得が▲200万円で不動産所得が+300万円なら、限度は差引100万円ではなく300万円になり、65万円を満額引けます。なお赤字そのものは、青色申告なら純損失として3年間繰り越せます。</p>
 
-<h3>令和9年分から75万円になると聞きました。今年から使えますか？</h3>
-<p>使えません。75万円が使えるのは令和9年分（2027年の所得・2028年春の申告）からです。令和8年3月31日法律第12号の附則33条が、改正後の措置法25条の2は令和9年分以後の所得税について適用し、令和8年分以前は従前の例によると定めています。いま準備している令和8年分は65万円・55万円・10万円のままです。</p>
+<h3 class="faq-question">令和9年分から75万円になると聞きました。今年から使えますか？</h3>
+<p class="faq-answer">使えません。75万円が使えるのは令和9年分（2027年の所得・2028年春の申告）からです。令和8年3月31日法律第12号の附則33条が、改正後の措置法25条の2は令和9年分以後の所得税について適用し、令和8年分以前は従前の例によると定めています。いま準備している令和8年分は65万円・55万円・10万円のままです。</p>
 
 <h2 id="source">出典</h2>
 <ul>
@@ -414,9 +415,9 @@ function fillRows(d) {
   for (const it of INCOMES) {
     const box = document.createElement("div");
     box.style.margin = "8px 0";
-    box.innerHTML = `<label for="inc-${it.key}" style="margin:0">${it.label}
-        <span class="hint" style="display:block;font-weight:400">${it.hint}</span></label>
-      <input type="number" id="inc-${it.key}" inputmode="numeric" step="10000" placeholder="0">`;
+    box.innerHTML = `<label for="inc-${it.key}" style="margin:0">${it.label}</label>
+      <input type="number" id="inc-${it.key}" inputmode="numeric" step="10000" placeholder="0" aria-describedby="inc-${it.key}-hint">
+      <span id="inc-${it.key}-hint" class="hint" style="display:block;font-weight:400">${it.hint}</span>`;
     iw.appendChild(box);
   }
   const rw = $("req-rows"); rw.innerHTML = "";

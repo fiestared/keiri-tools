@@ -143,16 +143,18 @@
   <p class="article-meta">公開日: <time datetime="2026-08-01">2026年8月1日</time>（更新日: <time datetime="2026-09-26">2026年9月26日</time>）</p>
   <p>失業保険（基本手当）を残したまま再就職したときにもらえる<b>再就職手当</b>の額を計算します。<b>支給残日数が所定給付日数の3分の2以上なら70%、3分の1以上なら60%</b>。<b>3分の1に届かないと1円も出ません</b>。支給要件も1つずつ確認できます。</p>
 </section>
+<!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機の見方</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end-->
 
 <div class="card">
-  <div class="fee-pair">
+  <div class="fee-pair field-pair">
     <div>
       <label for="age">離職時の年齢</label>
       <input type="number" id="age" value="35" min="15" max="70" inputmode="numeric">
     </div>
     <div>
-      <label for="monthly">毎月の給料（総支給・円）<span class="hint">　賞与は含めない</span></label>
-      <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric">
+      <label for="monthly">毎月の給料（総支給・円）</label>
+      <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric" aria-describedby="monthly-hint">
+      <span id="monthly-hint" class="hint">　賞与は含めない</span>
     </div>
   </div>
 
@@ -186,8 +188,9 @@
   </label>
 
   <label for="remaining" style="margin-top:14px">支給残日数（就職日の<b>前日</b>時点で、まだ受け取っていない日数）</label>
-    <p class="hint" id="remaining-hint">ハローワークの「雇用保険受給資格者証」で確認できます。<b>まだ1日も受け取っていない（給付制限中に就職した）場合は、所定給付日数がそのまま残日数</b>です。</p>
+
     <input aria-describedby="remaining-hint" type="number" id="remaining" value="90" min="0" max="360" inputmode="numeric">
+    <p class="hint" id="remaining-hint">ハローワークの「雇用保険受給資格者証」で確認できます。<b>まだ1日も受け取っていない（給付制限中に就職した）場合は、所定給付日数がそのまま残日数</b>です。</p>
 
   <div class="note" id="youken-list">
     <p style="margin:0 0 8px"><b>支給要件（すべて満たす必要があります）</b>　当てはまるものにチェックしてください。<b>1つでも欠けると支給されません</b>（雇用保険法56条の3、施行規則82条・82条の2）。</p>
@@ -218,7 +221,7 @@
 </div>
 
 <section class="faq">
-  <h2>この計算機の見方</h2>
+  <h2 id="tool-section-1">この計算機の見方</h2>
   <h3>再就職手当の計算に使う「基本手当日額」には、失業保険とは別の低い上限があります</h3>
   <p>いちばん間違えやすいのがここです。再就職手当の額は「<b>基本手当日額 × 支給残日数 × 60%（または70%）</b>」ですが、この式の基本手当日額には<b>再就職手当専用の上限</b>がかかります（雇用保険法56条の3第3項1号かっこ書き）。たとえば45〜59歳の基本手当日額の上限は<span id="cap-compare-kihon">—</span>ですが、再就職手当の計算では<span id="cap-compare-sai">—</span>で頭打ちになります。<b>この上限を知らずに計算すると、給料が高い人ほど大きく過大に見積もります</b>（45歳・月給60万円・会社都合・勤続20年以上なら、約55万円の差が出ます）。</p>
   <h3>「3分の1以上」を満たさないと1円も出ません</h3>
@@ -233,18 +236,18 @@
 
 <section class="faq">
   <h2 id="faq">よくある質問</h2>
-  <h3>再就職手当はいくらもらえますか？</h3>
-  <p>「基本手当日額 × 支給残日数 × 60%」が基本で、<b>支給残日数が所定給付日数の3分の2以上あれば70%</b>に上がります（雇用保険法56条の3第3項1号）。ただしこの式に使う基本手当日額には<b>再就職手当専用の上限</b>があり、給料が高い人はそこで頭打ちになります。所定給付日数120日・基本手当日額6,307円の人が120日まるごと残して就職した場合は529,788円です。</p>
-  <h3>60%と70%の分かれ目はどこですか？</h3>
-  <p><b>支給残日数が所定給付日数の3分の2以上</b>かどうかです。所定給付日数120日なら80日、90日なら60日が分かれ目で、<b>ちょうど3分の2の日は70%</b>です（条文が「3分の2以上」と書いているため）。1日遅らせて境目を下回ると支給率が60%に落ち、失業保険を1日ぶん多く受け取れることを差し引いても損になることがあります。</p>
-  <h3>給付制限中に就職しても再就職手当はもらえますか？</h3>
-  <p>もらえます。ただし<b>待期満了後1か月の期間内に就職した場合は、ハローワークまたは許可・届出のある職業紹介事業者の紹介による就職であること</b>が必要です（施行規則82条1項2号かっこ書き）。1か月を過ぎていれば、自分で見つけた就職でもかまいません。<b>教育訓練を受けて給付制限が解除された場合も、この紹介の要件は外れません。</b></p>
-  <h3>自分で会社を作った・フリーランスになった場合はもらえますか？</h3>
-  <p>もらえます。事業を開始した場合は「1年を超えて引き続き事業を行うことができると認められること」が要件になり（施行規則82条の2）、雇用保険の被保険者になる要件はかかりません。ただし<b>待期7日間が満了した後に開業の準備・開始をしていること</b>が必要です。</p>
-  <h3>前の会社に戻った場合はどうなりますか？</h3>
-  <p>支給されません。<b>離職前の事業主に再び雇用されたときは対象外</b>で、資本・資金・人事・取引で関係のある「関連事業主」に雇用された場合も同じです（施行規則82条1項3号）。</p>
-  <h3>過去に再就職手当をもらったことがある場合は？</h3>
-  <p>就職日前<b>3年以内</b>の就職について再就職手当または常用就職支度手当を受けていると、今回は支給されません（雇用保険法56条の3第2項・施行規則82条1項4号）。3年より前であれば、あらためて対象になります。</p>
+  <h3 class="faq-question">再就職手当はいくらもらえますか？</h3>
+  <p class="faq-answer">「基本手当日額 × 支給残日数 × 60%」が基本で、<b>支給残日数が所定給付日数の3分の2以上あれば70%</b>に上がります（雇用保険法56条の3第3項1号）。ただしこの式に使う基本手当日額には<b>再就職手当専用の上限</b>があり、給料が高い人はそこで頭打ちになります。所定給付日数120日・基本手当日額6,307円の人が120日まるごと残して就職した場合は529,788円です。</p>
+  <h3 class="faq-question">60%と70%の分かれ目はどこですか？</h3>
+  <p class="faq-answer"><b>支給残日数が所定給付日数の3分の2以上</b>かどうかです。所定給付日数120日なら80日、90日なら60日が分かれ目で、<b>ちょうど3分の2の日は70%</b>です（条文が「3分の2以上」と書いているため）。1日遅らせて境目を下回ると支給率が60%に落ち、失業保険を1日ぶん多く受け取れることを差し引いても損になることがあります。</p>
+  <h3 class="faq-question">給付制限中に就職しても再就職手当はもらえますか？</h3>
+  <p class="faq-answer">もらえます。ただし<b>待期満了後1か月の期間内に就職した場合は、ハローワークまたは許可・届出のある職業紹介事業者の紹介による就職であること</b>が必要です（施行規則82条1項2号かっこ書き）。1か月を過ぎていれば、自分で見つけた就職でもかまいません。<b>教育訓練を受けて給付制限が解除された場合も、この紹介の要件は外れません。</b></p>
+  <h3 class="faq-question">自分で会社を作った・フリーランスになった場合はもらえますか？</h3>
+  <p class="faq-answer">もらえます。事業を開始した場合は「1年を超えて引き続き事業を行うことができると認められること」が要件になり（施行規則82条の2）、雇用保険の被保険者になる要件はかかりません。ただし<b>待期7日間が満了した後に開業の準備・開始をしていること</b>が必要です。</p>
+  <h3 class="faq-question">前の会社に戻った場合はどうなりますか？</h3>
+  <p class="faq-answer">支給されません。<b>離職前の事業主に再び雇用されたときは対象外</b>で、資本・資金・人事・取引で関係のある「関連事業主」に雇用された場合も同じです（施行規則82条1項3号）。</p>
+  <h3 class="faq-question">過去に再就職手当をもらったことがある場合は？</h3>
+  <p class="faq-answer">就職日前<b>3年以内</b>の就職について再就職手当または常用就職支度手当を受けていると、今回は支給されません（雇用保険法56条の3第2項・施行規則82条1項4号）。3年より前であれば、あらためて対象になります。</p>
 </section>
 <section class="faq rel-block">
 <h2>関連する解説</h2>
@@ -258,7 +261,7 @@
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2026年8月1日　／　次回改定: 2027年8月1日　／　一次情報の確認: 2026年8月1日　／　<a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000160564_00050.html" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2026年8月1日　／　次回改定: 2027年8月1日　／　一次情報の確認: 2026年8月1日　／　<a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000160564_00050.html" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

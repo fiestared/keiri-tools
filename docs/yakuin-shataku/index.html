@@ -105,7 +105,7 @@
     </select>
     <p class="hint" id="kubun-hint" style="margin-top:6px"></p>
 
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="tatemono">建物の固定資産税の課税標準額（円）</label>
         <input type="number" id="tatemono" value="5000000" min="0" step="1000" inputmode="numeric">
@@ -116,19 +116,20 @@
       </div>
     </div>
 
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div id="menseki-wrap">
         <label for="menseki">建物の総床面積（㎡）</label>
         <input type="number" id="menseki" value="66" min="0" step="0.01" inputmode="decimal">
       </div>
       <div>
         <label for="nensu">建物の法定耐用年数（年）</label>
-    <p class="hint" id="nensu-hint">鉄筋コンクリート造の住宅は47年、木造は22年が目安です。</p>
+
     <input aria-describedby="nensu-hint" type="number" id="nensu" value="47" min="1" step="1" inputmode="numeric">
+    <p class="hint" id="nensu-hint">鉄筋コンクリート造の住宅は47年、木造は22年が目安です。</p>
       </div>
     </div>
 
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div id="yachin-wrap" hidden>
         <label for="yachin">会社が家主に支払う家賃（月額・円）</label>
         <input type="number" id="yachin" value="300000" min="0" step="1000" inputmode="numeric">
@@ -210,20 +211,20 @@
 
 <section class="faq">
 <h2 id="faq">よくある質問</h2>
-<h3>Q. 「会社が払う家賃の50%」を受け取れば大丈夫ですか？</h3>
-<p>A. 小規模な住宅にあたらない借上社宅では、<b>50%と固定資産税ベースの額のいずれか多い金額</b>が賃貸料相当額です。固定資産税ベースが上回る場合、50%では足りず差額が給与課税されます。小規模な住宅にあたる場合は別の算式で、50%とは無関係です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>「会社が払う家賃の50%」を受け取れば大丈夫ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>小規模な住宅にあたらない借上社宅では、<b>50%と固定資産税ベースの額のいずれか多い金額</b>が賃貸料相当額です。固定資産税ベースが上回る場合、50%では足りず差額が給与課税されます。小規模な住宅にあたる場合は別の算式で、50%とは無関係です。</p>
 
-<h3>Q. 小規模な住宅とはどのくらいの広さですか？</h3>
-<p>A. 法定耐用年数が30年以下の建物は<b>132㎡以下</b>、30年を超える建物は<b>99㎡以下</b>です。区分所有の建物は共用部分の床面積をあん分し、専用部分に加えて判定します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>小規模な住宅とはどのくらいの広さですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>法定耐用年数が30年以下の建物は<b>132㎡以下</b>、30年を超える建物は<b>99㎡以下</b>です。区分所有の建物は共用部分の床面積をあん分し、専用部分に加えて判定します。</p>
 
-<h3>Q. 住宅手当を現金で払うのではだめですか？</h3>
-<p>A. 現金支給の住宅手当や、入居者が直接契約している家賃の負担は<b>社宅の貸与と認められず全額が給与課税</b>されます。会社が借りて役員に貸す形にしていることが前提です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>住宅手当を現金で払うのではだめですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>現金支給の住宅手当や、入居者が直接契約している家賃の負担は<b>社宅の貸与と認められず全額が給与課税</b>されます。会社が借りて役員に貸す形にしていることが前提です。</p>
 
-<h3>Q. 固定資産税の課税標準額はどこで分かりますか？</h3>
-<p>A. 市区町村から届く<b>固定資産税の課税明細書</b>に載っています。借上で自社が所有していない場合は、所有者の同意を得て市区町村に固定資産課税台帳の閲覧を申請する方法があります。<b>評価額と課税標準額は別の欄</b>なので取り違えに注意してください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>固定資産税の課税標準額はどこで分かりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>市区町村から届く<b>固定資産税の課税明細書</b>に載っています。借上で自社が所有していない場合は、所有者の同意を得て市区町村に固定資産課税台帳の閲覧を申請する方法があります。<b>評価額と課税標準額は別の欄</b>なので取り違えに注意してください。</p>
 
-<h3>Q. 賃貸料相当額より多く受け取ったらどうなりますか？</h3>
-<p>A. 給与課税される差額は生じません（マイナスにはなりません）。受け取った家賃は会社の収入になります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>賃貸料相当額より多く受け取ったらどうなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>給与課税される差額は生じません（マイナスにはなりません）。受け取った家賃は会社の収入になります。</p>
 </section>
 
 <h2 id="shutten">出典</h2>
@@ -240,7 +241,7 @@
   © 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和7年4月1日現在法令等　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和7年4月1日現在法令等　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
 </footer>
 <script type="module">
 import {

@@ -51,6 +51,7 @@
   .warn{ font-size:13px; color:#b4232a; }
 </style>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","dateModified":"2026-09-26"}</script>
+<link rel="stylesheet" href="/assets/embed-layout.css">
 </head>
 <body>
 <div class="w">
@@ -73,15 +74,17 @@
     </div>
   </div>
 
-  <label for="dependents">扶養親族等の数<span class="hint">　源泉控除対象の配偶者＋扶養親族（16歳以上）</span></label>
-  <input id="dependents" type="number" inputmode="numeric" value="0" min="0" max="20">
+  <label for="dependents">扶養親族等の数</label>
+  <input id="dependents" type="number" inputmode="numeric" value="0" min="0" max="20" aria-describedby="dependents-hint">
+      <span id="dependents-hint" class="hint">　源泉控除対象の配偶者＋扶養親族（16歳以上）</span>
 
   <fieldset class="rc">
     <legend>前月の給与（税率を決める鍵）</legend>
     <label><input type="radio" name="zmode" value="paid" checked> 前月に給与の支払いがあった</label>
     <div id="zengetsu-wrap">
-      <label for="zengetsu">前月の額面の月給（円）<span class="hint">　総支給額</span></label>
-      <input id="zengetsu" type="number" inputmode="numeric" placeholder="例: 300000" min="0" step="1000">
+      <label for="zengetsu">前月の額面の月給（円）</label>
+      <input id="zengetsu" type="number" inputmode="numeric" placeholder="例: 300000" min="0" step="1000" aria-describedby="zengetsu-hint">
+      <span id="zengetsu-hint" class="hint">　総支給額</span>
     </div>
     <label><input type="radio" name="zmode" value="nopaid"> 前月に給与の支払いがない（休職明け・新規入社など）</label>
   </fieldset>
@@ -91,8 +94,9 @@
     <label for="gyoshu">業種（雇用保険料率）</label>
     <select id="gyoshu"><option value="general">一般の事業</option></select>
     <label class="check"><input type="checkbox" id="over6"> 賞与の計算期間が6か月を超える（決算賞与・役員賞与など）</label>
-    <label for="yearpaid">今年度すでに支給された賞与の合計（円・任意）<span class="hint">　健保の年度上限判定用。通常は空欄</span></label>
-    <input id="yearpaid" type="number" inputmode="numeric" placeholder="例: 0" min="0" step="1000">
+    <label for="yearpaid">今年度すでに支給された賞与の合計（円・任意）</label>
+    <input id="yearpaid" type="number" inputmode="numeric" placeholder="例: 0" min="0" step="1000" aria-describedby="yearpaid-hint">
+      <span id="yearpaid-hint" class="hint">　健保の年度上限判定用。通常は空欄</span>
   </details>
 
   <button id="calc" type="button">ボーナスの手取りを計算する</button>

@@ -204,14 +204,14 @@
 <!-- YUKYU_QUICK:START 自動生成。手で編集しない。tools/gen_yukyu_quick.mjs -->
   <h2 id="hayamihyo">まず早見表：6か月後に何日もらえるか</h2>
   <p><b>パートでもアルバイトでも、条件も日数も同じです</b>（労基法39条は雇用形態で区別していません）。週に何日働くかで決まります。</p>
-  <table>
+  <div class="scroll-wrap"><table>
     <tr><th scope="col">働き方</th><th scope="col">6か月後にもらえる日数</th></tr>
-    <tr><td>週1日</td><td><b>1日</b></td></tr>
-    <tr><td>週2日</td><td><b>3日</b></td></tr>
-    <tr><td>週3日</td><td><b>5日</b></td></tr>
-    <tr><td>週4日（週30時間未満）</td><td><b>7日</b></td></tr>
-    <tr><td>週5日以上、または週30時間以上</td><td><b>10日</b></td></tr>
-  </table>
+    <tr><td>週1日</td><td><b><span class="numeric-token">1日</span></b></td></tr>
+    <tr><td>週2日</td><td><b><span class="numeric-token">3日</span></b></td></tr>
+    <tr><td>週3日</td><td><b><span class="numeric-token">5日</span></b></td></tr>
+    <tr><td>週4日（週30時間未満）</td><td><b><span class="numeric-token">7日</span></b></td></tr>
+    <tr><td>週5日以上、または週30時間以上</td><td><b><span class="numeric-token">10日</span></b></td></tr>
+  </table></div>
   <p>いずれも「6か月続けて働いた」「その間の出勤率が8割以上」の2つを満たした場合です（<a href="#joken">2つの条件</a>）。勤続1年半・2年半…と増えていく分は<a href="#hyo">比例付与の早見表</a>に、自分の入社日で次の付与日と日数を出すなら<a href="../../yukyu/">有給休暇 計算機</a>が使えます。</p>
 <!-- YUKYU_QUICK:END -->
 
@@ -227,7 +227,7 @@
 
   <h3>「8割以上」の分母と分子（ここが分かれ目）</h3>
   <p>出勤率は <b>出勤した日数 ÷ 全労働日 ≧ 0.8</b> で判定します。問題は、休んだ日を<b>「分母から除く」のか「分母に入れて出勤扱いにする」のか「分母に入れて欠勤にする」のか</b>が、休みの種類によって違うことです。</p>
-  <table>
+  <div class="scroll-wrap"><table>
     <tr><th scope="col">休んだ日の種類</th><th scope="col">全労働日（分母）</th><th scope="col">出勤日（分子）</th></tr>
     <tr><td>業務上のケガ・病気による療養のための休業</td><td>含む</td><td><b>出勤したものとみなす</b></td></tr>
     <tr><td>産前産後休業</td><td>含む</td><td><b>出勤したものとみなす</b></td></tr>
@@ -236,7 +236,7 @@
     <tr><td>会社都合の休業（使用者に起因する経営・管理上の障害による休業日）</td><td><b>分母から除外する</b></td><td>—</td></tr>
     <tr><td>自己都合の欠勤・私傷病による欠勤</td><td>含む</td><td>出勤にならない（出勤率が下がる）</td></tr>
     <tr><td>もともとの所定休日</td><td>そもそも全労働日ではない</td><td>—</td></tr>
-  </table>
+  </table></div>
   <div class="callout">
     <b>「みなし出勤」と「分母から除外」は違います</b>
     上の4つ（労災・産前産後・育休介休・年休取得日）は<b>分母にも分子にも入る</b>ので、出勤率は下がりません。一方、会社都合の休業は<b>分母そのものから抜く</b>ので、やはり出勤率は下がりません。<b>ただし休んだ理由が自己都合の欠勤なら、分母に残ったまま分子に入らない</b>ため、出勤率を直接押し下げます。
@@ -255,14 +255,14 @@
 
   <p>法定の付与日は、<b>雇入れの日から6か月後が初回</b>です。そこで6か月間の継続勤務と8割出勤を満たしていれば、働き方に応じた日数がまとまって発生します。以後は、初回の付与日から<b>1年ごと</b>に、直前の1年間の出勤率を判定して次の日数が付与されます。</p>
 
-  <table>
-    <thead><tr><th scope="col">2026年4月1日に入社した場合</th><th scope="col">判定する勤務期間</th><th scope="col">週3日（週30時間未満）の法定付与日数</th><th scope="col">週4日（週30時間未満）の法定付与日数</th></tr></thead>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th scope="col">2026年4月1日に入社した場合</th><th scope="col">判定する勤務期間</th><th scope="col" class="num">週3日（週30時間未満）の法定付与日数</th><th scope="col" class="num">週4日（週30時間未満）の法定付与日数</th></tr></thead>
     <tbody>
-      <tr><td><b>2026年10月1日</b>（入社6か月後）</td><td>入社から6か月</td><td class="num">5日</td><td class="num">7日</td></tr>
-      <tr><td><b>2027年10月1日</b>（1年6か月後）</td><td>直前の1年間</td><td class="num">6日</td><td class="num">8日</td></tr>
-      <tr><td><b>2028年10月1日</b>（2年6か月後）</td><td>直前の1年間</td><td class="num">6日</td><td class="num">9日</td></tr>
+      <tr><td><b>2026年10月1日</b>（入社6か月後）</td><td>入社から6か月</td><td class="num"><span class="numeric-token">5日</span></td><td class="num"><span class="numeric-token">7日</span></td></tr>
+      <tr><td><b>2027年10月1日</b>（1年6か月後）</td><td>直前の1年間</td><td class="num"><span class="numeric-token">6日</span></td><td class="num"><span class="numeric-token">8日</span></td></tr>
+      <tr><td><b>2028年10月1日</b>（2年6か月後）</td><td>直前の1年間</td><td class="num"><span class="numeric-token">6日</span></td><td class="num"><span class="numeric-token">9日</span></td></tr>
     </tbody>
-  </table>
+  </table></div>
 
   <p>「毎月少しずつ増える」のではなく、<b>付与日に法定日数がまとまって増える</b>のが基本です。入社3か月の時点では法定の年休はまだ発生せず、6か月の付与日を迎えた時点で、週30時間未満なら週3日は5日、週4日は7日が発生します。<b>週4日でも週30時間以上なら通常付与の10日</b>です（<a href="#sanjukan">週30時間の判定</a>）。会社が法律より有利な制度として入社日に前倒し付与している場合は、その就業規則が優先されます。</p>
 
@@ -399,23 +399,23 @@
     </tr>
     <tr>
       <td><b>週5日以上</b><br>または<b>週30時間以上</b></td><td>217日以上</td>
-      <td><b>10日</b></td><td><b>11日</b></td><td><b>12日</b></td><td><b>14日</b></td><td><b>16日</b></td><td><b>18日</b></td><td><b>20日</b></td>
+      <td><b><span class="numeric-token">10日</span></b></td><td><b><span class="numeric-token">11日</span></b></td><td><b><span class="numeric-token">12日</span></b></td><td><b><span class="numeric-token">14日</span></b></td><td><b><span class="numeric-token">16日</span></b></td><td><b><span class="numeric-token">18日</span></b></td><td><b><span class="numeric-token">20日</span></b></td>
     </tr>
     <tr>
-      <td><b>週4日</b></td><td>169日〜216日</td>
-      <td>7日</td><td>8日</td><td>9日</td><td><b>10日</b></td><td><b>12日</b></td><td><b>13日</b></td><td><b>15日</b></td>
+      <td><b>週4日</b></td><td><span class="numeric-token">169日</span>〜<span class="numeric-token">216日</span></td>
+      <td><span class="numeric-token">7日</span></td><td><span class="numeric-token">8日</span></td><td><span class="numeric-token">9日</span></td><td><b><span class="numeric-token">10日</span></b></td><td><b><span class="numeric-token">12日</span></b></td><td><b><span class="numeric-token">13日</span></b></td><td><b><span class="numeric-token">15日</span></b></td>
     </tr>
     <tr>
-      <td><b>週3日</b></td><td>121日〜168日</td>
-      <td>5日</td><td>6日</td><td>6日</td><td>8日</td><td>9日</td><td><b>10日</b></td><td><b>11日</b></td>
+      <td><b>週3日</b></td><td><span class="numeric-token">121日</span>〜<span class="numeric-token">168日</span></td>
+      <td><span class="numeric-token">5日</span></td><td><span class="numeric-token">6日</span></td><td><span class="numeric-token">6日</span></td><td><span class="numeric-token">8日</span></td><td><span class="numeric-token">9日</span></td><td><b><span class="numeric-token">10日</span></b></td><td><b><span class="numeric-token">11日</span></b></td>
     </tr>
     <tr>
-      <td><b>週2日</b></td><td>73日〜120日</td>
-      <td>3日</td><td>4日</td><td>4日</td><td>5日</td><td>6日</td><td>6日</td><td>7日</td>
+      <td><b>週2日</b></td><td><span class="numeric-token">73日</span>〜<span class="numeric-token">120日</span></td>
+      <td><span class="numeric-token">3日</span></td><td><span class="numeric-token">4日</span></td><td><span class="numeric-token">4日</span></td><td><span class="numeric-token">5日</span></td><td><span class="numeric-token">6日</span></td><td><span class="numeric-token">6日</span></td><td><span class="numeric-token">7日</span></td>
     </tr>
     <tr>
-      <td><b>週1日</b></td><td>48日〜72日</td>
-      <td>1日</td><td>2日</td><td>2日</td><td>2日</td><td>3日</td><td>3日</td><td>3日</td>
+      <td><b>週1日</b></td><td><span class="numeric-token">48日</span>〜<span class="numeric-token">72日</span></td>
+      <td><span class="numeric-token">1日</span></td><td><span class="numeric-token">2日</span></td><td><span class="numeric-token">2日</span></td><td><span class="numeric-token">2日</span></td><td><span class="numeric-token">3日</span></td><td><span class="numeric-token">3日</span></td><td><span class="numeric-token">3日</span></td>
     </tr>
   </table>
   </div>
@@ -480,26 +480,26 @@
   <figcaption>比例付与になるのは<b>①も②も「いいえ」のときだけ</b>。週4日勤務でも1日8時間なら週32時間で、①の時点で通常付与が確定する。逆に<b>週5日×3時間（週15時間）</b>のような短時間勤務も、②で「はい」となり通常付与（6か月で10日）になる。</figcaption>
   </figure>
 
-  <table>
+  <div class="scroll-wrap"><table>
     <tr><th scope="col">働き方</th><th scope="col">週の日数</th><th scope="col">週の時間</th><th scope="col">6か月時点の付与日数</th></tr>
-    <tr><td>週4日 × 1日8時間</td><td>4日</td><td><b>32時間</b></td><td><b>10日</b>（通常付与。30時間以上のため）</td></tr>
-    <tr><td>週4日 × 1日7時間</td><td>4日</td><td>28時間</td><td>7日（比例付与）</td></tr>
-    <tr><td>週5日 × 1日3時間</td><td><b>5日</b></td><td>15時間</td><td><b>10日</b>（通常付与。週5日以上のため）</td></tr>
-    <tr><td>週3日 × 1日6時間</td><td>3日</td><td>18時間</td><td>5日（比例付与）</td></tr>
-  </table>
+    <tr><td>週4日 × 1日8時間</td><td><span class="numeric-token">4日</span></td><td><b>32時間</b></td><td><b>10日</b>（通常付与。30時間以上のため）</td></tr>
+    <tr><td>週4日 × 1日7時間</td><td><span class="numeric-token">4日</span></td><td>28時間</td><td>7日（比例付与）</td></tr>
+    <tr><td>週5日 × 1日3時間</td><td><b><span class="numeric-token">5日</span></b></td><td>15時間</td><td><b>10日</b>（通常付与。週5日以上のため）</td></tr>
+    <tr><td>週3日 × 1日6時間</td><td><span class="numeric-token">3日</span></td><td>18時間</td><td>5日（比例付与）</td></tr>
+  </table></div>
   <p><b>週4日×8時間の人に「7日」しか付与していないと、3日分の不足です。</b>逆に、週5日で1日3時間しか働かない学生アルバイトにも<b>10日</b>付与しなければなりません。日数だけ、あるいは時間だけを見て判断すると、どちらの方向にも間違えます。</p>
 
   <h2 id="nen5ka">パートにも「年5日の取得義務」は来る</h2>
   <p>2019年4月から、<b>年10日以上の年次有給休暇が付与される労働者</b>に対して、会社は基準日から1年以内に<b>合計5日</b>取得させることが義務づけられました（労基法39条7項）。労働者が自ら取得した日数と計画年休の日数はこの5日から差し引き、残りがある場合に会社が時季を指定します。</p>
   <p>ここで「うちはパートだから10日も付与していない、関係ない」と考えるのが<b>典型的な誤り</b>です。<b>比例付与でも、勤続が伸びれば10日に到達します。</b></p>
-  <table>
+  <div class="scroll-wrap"><table>
     <tr><th scope="col">週の勤務日数</th><th scope="col">10日に到達する時期</th><th scope="col">そのときの付与日数</th><th scope="col">年5日の取得義務</th></tr>
-    <tr><td><b>週5日以上／週30時間以上</b></td><td>入社から<b>6か月</b></td><td>10日</td><td><b>すぐに対象</b></td></tr>
-    <tr><td><b>週4日</b></td><td>入社から<b>3年6か月</b></td><td>10日</td><td><b>その時点から対象</b></td></tr>
-    <tr><td><b>週3日</b></td><td>入社から<b>5年6か月</b></td><td>10日</td><td><b>その時点から対象</b></td></tr>
+    <tr><td><b>週5日以上／週30時間以上</b></td><td>入社から<b>6か月</b></td><td><span class="numeric-token">10日</span></td><td><b>すぐに対象</b></td></tr>
+    <tr><td><b>週4日</b></td><td>入社から<b>3年6か月</b></td><td><span class="numeric-token">10日</span></td><td><b>その時点から対象</b></td></tr>
+    <tr><td><b>週3日</b></td><td>入社から<b>5年6か月</b></td><td><span class="numeric-token">10日</span></td><td><b>その時点から対象</b></td></tr>
     <tr><td>週2日</td><td>到達しない（最大7日）</td><td>—</td><td>対象外</td></tr>
     <tr><td>週1日</td><td>到達しない（最大3日）</td><td>—</td><td>対象外</td></tr>
-  </table>
+  </table></div>
   <p><b>週4日のパートを3年半以上雇っている会社は、その人に年5日取らせる義務があります。</b>違反すると<b>30万円以下の罰金</b>（労基法120条）。しかも罰則は<b>対象となる労働者1人につき1罪</b>として扱われます。長く働いてくれているパートほど、この義務が静かに発生していることに注意してください。</p>
 
   <div class="callout">
@@ -511,12 +511,12 @@
 
   <h2 id="chingin">有給を取った日の賃金はいくら払うのか</h2>
   <p>意外と知られていませんが、<b>有給の日に払う賃金には3つの方式があります</b>（労基法39条9項）。パートの場合、<b>どれを選ぶかで金額が倍近く変わることがあります。</b></p>
-  <table>
+  <div class="scroll-wrap"><table>
     <tr><th scope="col">方式</th><th scope="col">計算方法</th><th scope="col">労使協定</th></tr>
     <tr><td><b>① 通常の賃金</b><br>（最も一般的）</td><td>その日に働くはずだった所定労働時間 × 時給<br>（施行規則25条1号）</td><td>不要</td></tr>
     <tr><td><b>② 平均賃金</b></td><td>直近3か月の賃金総額 ÷ その期間の総日数（暦日数）<br>ただし時給制・日給制には<b>最低保障</b>あり（後述）</td><td>不要</td></tr>
     <tr><td><b>③ 標準報酬日額</b></td><td>健康保険の標準報酬月額 ÷ 30</td><td><b>必要</b></td></tr>
-  </table>
+  </table></div>
   <p class="note"><b>どれを使うかは就業規則で定め、勝手に使い分けてはいけません。</b>労基法39条9項は「<b>就業規則その他これに準ずるもので定めるところにより</b>」支払うと規定しています。「この人は平均賃金が安いから平均賃金で、あの人は通常の賃金で」といった運用は違法です。<b>③は労使協定を結んだ場合にのみ使え</b>、しかも健康保険の被保険者でなければ標準報酬月額が存在しないため、社会保険に入っていないパートには使えません。</p>
 
   <h3>実数で見る：時給1,200円・週3日・日によって時間が違う場合</h3>
@@ -626,22 +626,22 @@
 
   <p>休んだ日に賃金が出るかは、有給以外の枠でも変わります。会社都合で休ませたときの<a href="../kyugyo-teate/">休業手当</a>、休日を振り替えたときの<a href="../furikae-kyujitsu-daikyu/">振替休日と代休の違い</a>も、賃金の扱いが分かれる場面です。</p>
   <h2 id="faq">よくある質問</h2>
-  <h3>Q. アルバイトを始めて3か月です。有給はもらえますか？</h3>
-  <p>A. 法律上は、原則として<b>まだもらえません</b>。法定の初回付与日と、その後いつ増えるかは<a href="#fuyobi">「有給はいつから付くか」</a>で確認できます。ただし会社が独自に前倒しで付与している場合は、その定めに従います。なお、会社が法定の基準日より前に10日以上を前倒し付与した場合は、<b>その日から1年以内に5日取得させる義務</b>が発生します。</p>
-  <h3>Q. 「うちのパートに有給はない」と会社に言われました。</h3>
-  <p>A. <b>誤りです。</b>厚生労働省のリーフレットも「年次有給休暇は、要件を満たせば必ず発生します。会社がそのような主張をしたとしても、一定の要件を満たした全ての労働者に取得する権利があります」と明記しています。まずは6か月の継続勤務と8割出勤という2つの要件を満たしているか確認し、労働基準監督署に相談してください。</p>
-  <h3>Q. 週3日勤務です。有給を取ると、いくら払われますか？</h3>
-  <p>A. 就業規則で定めた方式によります（労基法39条9項）。<b>通常の賃金</b>方式なら「その日に働くはずだった所定労働時間 × 時給」で、時給1,200円・その日6時間の予定なら7,200円です。<b>平均賃金</b>方式なら「直近3か月の賃金総額 ÷ 暦日数」ですが、時給制には「賃金総額 ÷ 実労働日数 × 60%」という最低保障があり、通常はこちらが適用されます。</p>
-  <h3>Q. シフト制で、週に何日働くか決まっていません。何日付与されますか？</h3>
-  <p>A. 週の所定労働日数がはっきりしない場合は、<b>年間の所定労働日数</b>で判定します（169〜216日なら週4日相当、121〜168日なら週3日相当）。年間の日数も定まっていないときは、基準日の時点で予定されている労働日数、それも不明なら直近の勤務実績から週の平均所定労働日数を求めて当てはめるのが実務上の扱いです。</p>
-  <h3>Q. 繰越分を足すと10日以上あります。年5日の取得義務の対象ですか？</h3>
-  <p>A. <b>対象になりません。</b>厚生労働省のQ&amp;Aは「前年度から繰り越した年次有給休暇の日数は含まず、当年度に付与される法定の年次有給休暇日数が10日以上である労働者が義務の対象となります」としています。当年度の法定付与日数だけで判定してください。</p>
-  <h3>Q. 有給は何日前までに申請すればいいですか？</h3>
-  <p>A. <b>労働基準法に「何日前まで」という定めはありません。</b>条文が求めているのは休む時季を申し出ることだけです（労基法39条5項）。実際に従うのは就業規則の定めで、「前日まで」「1週間前まで」などと書かれているのが一般的です。就業規則にも定めがない場合は、<b>シフトが確定する前に伝える</b>のがいちばん揉めません。様式も法律上の定めはなく口頭でも成立しますが、後で「言った・聞いていない」にならないよう記録が残る形にしておくと安全です。</p>
-  <h3>Q. 有給を申請したら「その日はダメ」と言われました。</h3>
-  <p>A. 会社が持っているのは<b>拒否権ではなく時季変更権</b>です。労基法39条5項は「事業の正常な運営を妨げる場合においては、<b>他の時季にこれを与えることができる</b>」と定めており、代わりの時季を与えることとセットの権利です。<b>代替日を示さずに「認めない」とだけ言うのは、時季変更権の行使の形になっていません。</b>単に業務が忙しいという理由でも認められません。なお有給の取得に理由を告げることは法律上の要件ではないので、理由の内容を条件にすることもできません。</p>
-  <h3>Q. 退職するとき、残っている有給を全部使えますか？</h3>
-  <p>A. <b>原則として使えます。</b>会社の時季変更権は「他の時季に与える」ことが前提の権利なので（労基法39条5項）、退職日以降に「他の時季」が存在しない以上、行使できないからです。ただし退職日を超えて有給を使うことはできず、時効（2年）で消滅した分も使えません。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>アルバイトを始めて3か月です。有給はもらえますか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>法律上は、原則として<b>まだもらえません</b>。法定の初回付与日と、その後いつ増えるかは<a href="#fuyobi">「有給はいつから付くか」</a>で確認できます。ただし会社が独自に前倒しで付与している場合は、その定めに従います。なお、会社が法定の基準日より前に10日以上を前倒し付与した場合は、<b>その日から1年以内に5日取得させる義務</b>が発生します。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>「うちのパートに有給はない」と会社に言われました。</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>誤りです。</b>厚生労働省のリーフレットも「年次有給休暇は、要件を満たせば必ず発生します。会社がそのような主張をしたとしても、一定の要件を満たした全ての労働者に取得する権利があります」と明記しています。まずは6か月の継続勤務と8割出勤という2つの要件を満たしているか確認し、労働基準監督署に相談してください。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>週3日勤務です。有給を取ると、いくら払われますか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>就業規則で定めた方式によります（労基法39条9項）。<b>通常の賃金</b>方式なら「その日に働くはずだった所定労働時間 × 時給」で、時給1,200円・その日6時間の予定なら7,200円です。<b>平均賃金</b>方式なら「直近3か月の賃金総額 ÷ 暦日数」ですが、時給制には「賃金総額 ÷ 実労働日数 × 60%」という最低保障があり、通常はこちらが適用されます。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>シフト制で、週に何日働くか決まっていません。何日付与されますか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>週の所定労働日数がはっきりしない場合は、<b>年間の所定労働日数</b>で判定します（169〜216日なら週4日相当、121〜168日なら週3日相当）。年間の日数も定まっていないときは、基準日の時点で予定されている労働日数、それも不明なら直近の勤務実績から週の平均所定労働日数を求めて当てはめるのが実務上の扱いです。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>繰越分を足すと10日以上あります。年5日の取得義務の対象ですか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>対象になりません。</b>厚生労働省のQ&amp;Aは「前年度から繰り越した年次有給休暇の日数は含まず、当年度に付与される法定の年次有給休暇日数が10日以上である労働者が義務の対象となります」としています。当年度の法定付与日数だけで判定してください。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>有給は何日前までに申請すればいいですか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>労働基準法に「何日前まで」という定めはありません。</b>条文が求めているのは休む時季を申し出ることだけです（労基法39条5項）。実際に従うのは就業規則の定めで、「前日まで」「1週間前まで」などと書かれているのが一般的です。就業規則にも定めがない場合は、<b>シフトが確定する前に伝える</b>のがいちばん揉めません。様式も法律上の定めはなく口頭でも成立しますが、後で「言った・聞いていない」にならないよう記録が残る形にしておくと安全です。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>有給を申請したら「その日はダメ」と言われました。</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>会社が持っているのは<b>拒否権ではなく時季変更権</b>です。労基法39条5項は「事業の正常な運営を妨げる場合においては、<b>他の時季にこれを与えることができる</b>」と定めており、代わりの時季を与えることとセットの権利です。<b>代替日を示さずに「認めない」とだけ言うのは、時季変更権の行使の形になっていません。</b>単に業務が忙しいという理由でも認められません。なお有給の取得に理由を告げることは法律上の要件ではないので、理由の内容を条件にすることもできません。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>退職するとき、残っている有給を全部使えますか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>原則として使えます。</b>会社の時季変更権は「他の時季に与える」ことが前提の権利なので（労基法39条5項）、退職日以降に「他の時季」が存在しない以上、行使できないからです。ただし退職日を超えて有給を使うことはできず、時効（2年）で消滅した分も使えません。</p>
 
   <!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../taishoku-yukyu-shoka/"><b>退職時の有給消化｜動かす先の労働日がなければ会社は拒否できない根拠（基収5554号）と退職日・社会保険料の関係</b><span>退職日までの労働日に有給休暇を当てる請求は、動かす先の労働日が残っていなければ会社は拒否できません。時季変更権は他の時季に与える権利で、退職日の後ろには行使できないという行政解釈（</span></a><a class="tool-card" href="../kango-kaigo-kyuka/"><b>子の看護休暇（看護等休暇）と介護休暇 — 年5日は労働日。無給でも違法ではないが、勤続6か月未満を除外する労使協定は令和7年4月に使えなくなった</b><span>年5日（対象2人以上なら10日）。単位は暦日ではなく「労働日」。時間単位の1日は所定労働時間を1時間未満切り上げ＝7時間30分の人は8時間×5日＝40時間。賃金の定めは条文に無い（</span></a><a class="tool-card" href="../yukyu-fuyo-nissu/"><b>有給休暇の付与日数｜勤続年数ごとの一覧表と、出勤率8割・時効2年の落とし穴</b><span>入社6か月で10日、以後11・12・14・16・18・20日（労基法39条）。出勤率8割未満で付与ゼロになっても勤続年数はリセットされず、翌年は10日に戻りません。</span></a></div></section><!--next-read:E-->
 <section class="related">

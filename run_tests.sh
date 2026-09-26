@@ -45,6 +45,8 @@ QUIET=""
 FILTER="${1:-}"
 
 shopt -s nullglob
+# test_layout_* includes all-page Chromium geometry, mutation fixtures and reviewed image baselines.
+# Playwright is required; these checks never silently skip or update a baseline.
 files=(tests/*.mjs)
 (( ${#files[@]} )) || { echo "★ tests/ にテストが1つも無い（探索パターンの誤りを疑う）"; exit 2; }
 

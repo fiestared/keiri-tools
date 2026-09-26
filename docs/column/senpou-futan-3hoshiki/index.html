@@ -176,15 +176,15 @@
 
   <h2 id="3man">前提：振込手数料は「3万円」を境に変わる</h2>
   <p>多くの銀行では、他行宛の振込手数料が<b>振込金額3万円未満／3万円以上</b>の2段階に分かれています。</p>
-  <table>
+  <div class="scroll-wrap"><table>
     <tr><th scope="col">銀行・チャネル</th><th scope="col">3万円未満</th><th scope="col">3万円以上</th></tr>
-    <tr><td>三菱UFJ銀行（個人IB）</td><td>154円</td><td>220円</td></tr>
-    <tr><td>三菱UFJ銀行（法人・BizSTATION）</td><td>484円</td><td>660円</td></tr>
-    <tr><td>三井住友銀行（法人・Web21エキスパート等）</td><td>495円</td><td>660円</td></tr>
-    <tr><td>千葉銀行（個人IB）</td><td>165円</td><td>330円</td></tr>
+    <tr><td>三菱UFJ銀行（個人IB）</td><td><span class="numeric-token">154円</span></td><td><span class="numeric-token">220円</span></td></tr>
+    <tr><td>三菱UFJ銀行（法人・BizSTATION）</td><td><span class="numeric-token">484円</span></td><td><span class="numeric-token">660円</span></td></tr>
+    <tr><td>三井住友銀行（法人・Web21エキスパート等）</td><td><span class="numeric-token">495円</span></td><td><span class="numeric-token">660円</span></td></tr>
+    <tr><td>千葉銀行（個人IB）</td><td><span class="numeric-token">165円</span></td><td><span class="numeric-token">330円</span></td></tr>
     <tr><td>りそな銀行（個人IB）</td><td colspan="2" style="text-align:center">165円（金額区分なし）</td></tr>
     <tr><td>ゆうちょ銀行</td><td colspan="2" style="text-align:center">165円（金額区分なし）</td></tr>
-  </table>
+  </table></div>
   <p style="font-size:13px;color:var(--sub)">※他行宛・税込。2026年7月に各行の公式サイトで確認。無料回数の特典は含みません。</p>
   <p>ここで問題になるのが、先方負担のときに<b>「3万円の判定を、どの金額に対して行うのか」</b>です。請求額（差し引く前）で判定するのか、実際に振り込む額（差し引いた後）で判定するのか——これが3方式の分かれ目になります。</p>
   <p>なお、りそな銀行やゆうちょ銀行のように<b>金額区分がない銀行では、そもそも方式の違いが影響しません</b>。悩む必要があるのは「区分がある銀行」のときだけです。</p>
@@ -192,12 +192,12 @@
   <h2 id="hoshiki">差引額の決め方は3方式ある</h2>
   <p>北陸銀行が公開しているビジネスIBの利用者ガイドには、先方負担の計算方法として次の3方式が明記されています。群馬銀行、スルガ銀行なども同様の選択肢を持っており、<b>どの方式を使うかは支払側の会社が設定で決めます</b>。</p>
 
-  <table>
+  <div class="scroll-wrap"><table>
     <tr><th scope="col">方式</th><th scope="col">3万円判定に使う基準額</th><th scope="col">特徴</th></tr>
-    <tr><td><b>据置型</b><br><span style="font-size:12px;color:var(--sub)">（差引前基準）</span></td><td>30,000円</td><td>請求額をそのまま3万円と比較。多くの銀行の初期設定。<b>支払側に有利</b></td></tr>
+    <tr><td><b>据置型</b><br><span style="font-size:12px;color:var(--sub)">（差引前基準）</span></td><td><span class="numeric-token">30,000円</span></td><td>請求額をそのまま3万円と比較。多くの銀行の初期設定。<b>支払側に有利</b></td></tr>
     <tr><td><b>未満手数料加算型</b></td><td>30,000円＋<br>3万円未満の手数料</td><td>中間的な方式</td></tr>
     <tr><td><b>以上手数料加算型</b><br><span style="font-size:12px;color:var(--sub)">（差引後基準）</span></td><td>30,000円＋<br>3万円以上の手数料</td><td>差し引いた後の額で判定する運用に相当。<b>受取側に有利</b></td></tr>
-  </table>
+  </table></div>
 
   <h3 id="zukai">図解：3方式の違い</h3>
   <p>手数料が「3万円未満220円／3万円以上440円」の銀行を例に、請求額いくらまでが「安い方の手数料（220円）」になるかを図にすると、違いが一目でわかります。</p>
@@ -246,12 +246,12 @@
 
   <h3 id="rei">具体例：請求30,300円で220円ズレる</h3>
   <p>請求額 <b>30,300円</b>、手数料「3万円未満220円／3万円以上440円」のケースで計算してみます。</p>
-  <table class="num-nowrap">
+  <div class="scroll-wrap"><table class="num-nowrap">
     <tr><th scope="col">方式</th><th scope="col">基準額との比較</th><th scope="col">差引額</th><th scope="col">振込額</th></tr>
-    <tr><td>据置型</td><td>30,300 ≧ 30,000 → 3万円以上</td><td class="num">440円</td><td class="num"><b>29,860円</b></td></tr>
-    <tr><td>未満加算型</td><td>30,300 ＜ 30,220? → いいえ…3万円以上</td><td class="num">440円</td><td class="num">29,860円</td></tr>
-    <tr><td>以上加算型</td><td>30,300 ＜ 30,440 → 3万円未満</td><td class="num">220円</td><td class="num"><b>30,080円</b></td></tr>
-  </table>
+    <tr><td>据置型</td><td>30,300 ≧ 30,000 → 3万円以上</td><td class="num"><span class="numeric-token">440円</span></td><td class="num"><b><span class="numeric-token">29,860円</span></b></td></tr>
+    <tr><td>未満加算型</td><td>30,300 ＜ 30,220? → いいえ…3万円以上</td><td class="num"><span class="numeric-token">440円</span></td><td class="num"><span class="numeric-token">29,860円</span></td></tr>
+    <tr><td>以上加算型</td><td>30,300 ＜ 30,440 → 3万円未満</td><td class="num"><span class="numeric-token">220円</span></td><td class="num"><b><span class="numeric-token">30,080円</span></b></td></tr>
+  </table></div>
   <p>同じ請求額なのに、方式によって振込額が <b>220円</b> 変わります。受取側からすると「入金が請求より220円足りない」という状態になり、消込が合いません。滋賀銀行のFAQでは、この境界帯で生じた差額を雑益・雑損で処理する例が示されています。</p>
 
   <div class="callout">
@@ -271,19 +271,19 @@
   <p>請求110,000円に対し、手数料440円が差し引かれて109,560円が入金されたケース。処理は<b>2通り</b>あり、選び方で消費税の扱いが変わります。</p>
 
   <p><b>方法1: 支払手数料として処理する</b></p>
-  <table>
+  <div class="scroll-wrap"><table>
     <tr><th scope="col">借方</th><th scope="col">金額</th><th scope="col">貸方</th><th scope="col">金額</th></tr>
     <tr><td>普通預金</td><td class="num">109,560</td><td>売掛金</td><td>110,000</td></tr>
     <tr><td>支払手数料</td><td class="num">440</td><td></td><td></td></tr>
-  </table>
+  </table></div>
   <p style="font-size:13.5px">支払手数料を<b>課税仕入れ</b>として処理します。ただし、銀行から役務提供を受けたのは支払側であって受取側ではないため、実態に合わないという指摘があります。</p>
 
   <p><b>方法2: 売上値引きとして処理する</b></p>
-  <table>
+  <div class="scroll-wrap"><table>
     <tr><th scope="col">借方</th><th scope="col">金額</th><th scope="col">貸方</th><th scope="col">金額</th></tr>
     <tr><td>普通預金</td><td class="num">109,560</td><td>売掛金</td><td>110,000</td></tr>
     <tr><td>売上値引</td><td class="num">440</td><td></td><td></td></tr>
-  </table>
+  </table></div>
   <p style="font-size:13.5px"><b>売上に係る対価の返還等</b>として扱います。</p>
 
   <div class="callout">
@@ -295,11 +295,11 @@
 
   <h3 id="shiwake-harai">支払側の仕訳</h3>
   <p>先方負担なので、支払側は<b>手数料を負担していません</b>。差し引いた額をそのまま支払として処理します。</p>
-  <table>
+  <div class="scroll-wrap"><table>
     <tr><th scope="col">借方</th><th scope="col">金額</th><th scope="col">貸方</th><th scope="col">金額</th></tr>
     <tr><td>買掛金</td><td>110,000</td><td>普通預金</td><td class="num">109,560</td></tr>
     <tr><td></td><td></td><td>雑収入（または仕入値引）</td><td class="num">440</td></tr>
-  </table>
+  </table></div>
   <p style="font-size:13.5px">「一律550円を差し引いたが、実際の手数料は440円だった」というように<b>差額が出た場合は、その差額（110円）を雑収入</b>で処理します。</p>
 
   <div class="callout">
@@ -336,14 +336,14 @@
   </div>
 
   <h2 id="faq">よくある質問</h2>
-  <h3>どの方式を使うか、受取側から指定できますか？</h3>
-  <p>差引方式の設定は支払側の銀行システム側で行うため、受取側が直接指定することはできません。ただし契約や取引条件として取適法の対象外の取引で「差引額は実費とする」「3万円未満の手数料を適用する」等を合意しておけば、それに沿った運用を求めることはできます。</p>
-  <h3>差額が数円単位の場合は？</h3>
-  <p>手数料額は110円・165円・220円のように区切りのよい金額です。1円や5円といった端数の差額は、手数料ではなく請求金額の計算違いや消費税の端数処理を疑ってください。（詳しくは<a href="../shohizei-hasu-shori/">消費税の端数処理のルール</a>）</p>
-  <h3>差し引かれた手数料は「支払手数料」と「売上値引き」のどちらで処理すべき？</h3>
-  <p>どちらも認められますが、<b>インボイス制度以降は「売上値引き」が主流</b>です。支払手数料として課税仕入れにするには金融機関のインボイスが必要ですが、受取側は銀行と取引していないため入手できません。売上値引きなら、税込1万円未満の返還インボイスは交付免除の特例があり、実務上の負担がありません。</p>
-  <h3>インボイス制度で振込手数料の扱いは変わりましたか？</h3>
-  <p>先方負担の手数料を「売上値引き」として処理する場合、税込1万円未満の値引きは返還インボイスの交付が免除されます（少額な対価返還等の特例）。振込手数料は通常この範囲に収まるため、返還インボイスの発行は不要となるのが一般的です。</p>
+  <h3 class="faq-question">どの方式を使うか、受取側から指定できますか？</h3>
+  <p class="faq-answer">差引方式の設定は支払側の銀行システム側で行うため、受取側が直接指定することはできません。ただし契約や取引条件として取適法の対象外の取引で「差引額は実費とする」「3万円未満の手数料を適用する」等を合意しておけば、それに沿った運用を求めることはできます。</p>
+  <h3 class="faq-question">差額が数円単位の場合は？</h3>
+  <p class="faq-answer">手数料額は110円・165円・220円のように区切りのよい金額です。1円や5円といった端数の差額は、手数料ではなく請求金額の計算違いや消費税の端数処理を疑ってください。（詳しくは<a href="../shohizei-hasu-shori/">消費税の端数処理のルール</a>）</p>
+  <h3 class="faq-question">差し引かれた手数料は「支払手数料」と「売上値引き」のどちらで処理すべき？</h3>
+  <p class="faq-answer">どちらも認められますが、<b>インボイス制度以降は「売上値引き」が主流</b>です。支払手数料として課税仕入れにするには金融機関のインボイスが必要ですが、受取側は銀行と取引していないため入手できません。売上値引きなら、税込1万円未満の返還インボイスは交付免除の特例があり、実務上の負担がありません。</p>
+  <h3 class="faq-question">インボイス制度で振込手数料の扱いは変わりましたか？</h3>
+  <p class="faq-answer">先方負担の手数料を「売上値引き」として処理する場合、税込1万円未満の値引きは返還インボイスの交付が免除されます（少額な対価返還等の特例）。振込手数料は通常この範囲に収まるため、返還インボイスの発行は不要となるのが一般的です。</p>
 
   <section class="related">
     <h2>関連記事・ツール</h2>

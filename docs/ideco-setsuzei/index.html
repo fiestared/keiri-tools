@@ -129,18 +129,22 @@
 </section>
 
 <div class="card">
-  <label for="kubun">加入区分<span class="hint">　選ぶと月額掛金の上限が決まります</span></label>
-  <select id="kubun"><option value="">読み込み中…</option></select>
+  <label for="kubun">加入区分</label>
+  <select id="kubun" aria-describedby="kubun-hint"><option value="">読み込み中…</option></select>
+      <span id="kubun-hint" class="hint">　選ぶと月額掛金の上限が決まります</span>
 
-  <label for="kazei">課税される所得金額（課税所得・円）<span class="hint">　確定申告書の「課税される所得金額」。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」。年収ではありません</span></label>
-  <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000">
+  <label for="kazei">課税される所得金額（課税所得・円）</label>
+  <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000" aria-describedby="kazei-hint">
+      <span id="kazei-hint" class="hint">　確定申告書の「課税される所得金額」。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」。年収ではありません</span>
 
-  <label for="monthly">月額掛金（円）<span class="hint">　5,000円以上・1,000円単位。<span id="limit-hint"></span></span></label>
-  <input type="number" id="monthly" placeholder="例: 23000" inputmode="numeric" min="5000" step="1000">
+  <label for="monthly">月額掛金（円）</label>
+  <input type="number" id="monthly" placeholder="例: 23000" inputmode="numeric" min="5000" step="1000" aria-describedby="monthly-hint">
+      <span id="monthly-hint" class="hint">　5,000円以上・1,000円単位。<span id="limit-hint"></span></span>
 
   <label for="monthlyB" style="margin-top:10px">比べる月額掛金（円・任意）
-    <span class="hint">　「月2万と月2万3千でどれだけ違うか」を並べて見ます</span></label>
-  <input type="number" id="monthlyB" placeholder="例: 20000" inputmode="numeric" min="0" step="1000">
+    </label>
+  <input type="number" id="monthlyB" placeholder="例: 20000" inputmode="numeric" min="0" step="1000" aria-describedby="monthlyB-hint">
+      <span id="monthlyB-hint" class="hint">　「月2万と月2万3千でどれだけ違うか」を並べて見ます</span>
 
   <button class="primary" id="calc">節税額を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -217,14 +221,14 @@
 <div class="scroll-wrap">
 <table class="num-nowrap">
 <thead>
-<tr><th scope="col">加入区分</th><th scope="col">月額の上限</th><th scope="col">年額の上限</th><th scope="col">備考</th></tr>
+<tr><th scope="col">加入区分</th><th scope="col" class="num">月額の上限</th><th scope="col" class="num">年額の上限</th><th scope="col">備考</th></tr>
 </thead>
 <tbody>
-<tr><td>自営業・フリーランス（第1号）</td><td class="num"><b>68,000円</b></td><td class="num">816,000円</td><td>国民年金基金・付加保険料と合算した上限</td></tr>
-<tr><td>会社員（企業年金なし）</td><td class="num"><b>23,000円</b></td><td class="num">276,000円</td><td>&nbsp;</td></tr>
-<tr><td>会社員（企業型DCあり）</td><td class="num"><b>20,000円</b></td><td class="num">240,000円</td><td>企業型DC等との合算上限あり</td></tr>
-<tr><td>会社員（DB等あり）・公務員</td><td class="num"><b>20,000円</b></td><td class="num">240,000円</td><td>合算上限あり</td></tr>
-<tr><td>専業主婦・主夫（第3号）</td><td class="num"><b>23,000円</b></td><td class="num">276,000円</td><td>&nbsp;</td></tr>
+<tr><td>自営業・フリーランス（第1号）</td><td class="num"><b><span class="numeric-token">68,000円</span></b></td><td class="num"><span class="numeric-token">816,000円</span></td><td>国民年金基金・付加保険料と合算した上限</td></tr>
+<tr><td>会社員（企業年金なし）</td><td class="num"><b><span class="numeric-token">23,000円</span></b></td><td class="num"><span class="numeric-token">276,000円</span></td><td>&nbsp;</td></tr>
+<tr><td>会社員（企業型DCあり）</td><td class="num"><b><span class="numeric-token">20,000円</span></b></td><td class="num"><span class="numeric-token">240,000円</span></td><td>企業型DC等との合算上限あり</td></tr>
+<tr><td>会社員（DB等あり）・公務員</td><td class="num"><b><span class="numeric-token">20,000円</span></b></td><td class="num"><span class="numeric-token">240,000円</span></td><td>合算上限あり</td></tr>
+<tr><td>専業主婦・主夫（第3号）</td><td class="num"><b><span class="numeric-token">23,000円</span></b></td><td class="num"><span class="numeric-token">276,000円</span></td><td>&nbsp;</td></tr>
 </tbody>
 </table>
 </div>
@@ -241,14 +245,14 @@
 <div class="scroll-wrap">
 <table class="num-nowrap-lg">
 <thead>
-<tr><th scope="col">課税される所得金額</th><th scope="col">年間の掛金</th><th scope="col">年間の節税額</th><th scope="col">掛金に対する節税率</th></tr>
+<tr><th scope="col" class="num">課税される所得金額</th><th scope="col" class="num">年間の掛金</th><th scope="col" class="num">年間の節税額</th><th scope="col" class="num">掛金に対する節税率</th></tr>
 </thead>
 <tbody>
-<tr><td class="num">150万円</td><td class="num">276,000円</td><td class="num"><b>41,689円</b></td><td class="num">15.1%</td></tr>
-<tr><td class="num">300万円</td><td class="num">276,000円</td><td class="num"><b>55,779円</b></td><td class="num">20.2%</td></tr>
-<tr><td class="num">500万円</td><td class="num">276,000円</td><td class="num"><b>83,959円</b></td><td class="num">30.4%</td></tr>
-<tr><td class="num">700万円</td><td class="num">276,000円</td><td class="num"><b>85,490円</b></td><td class="num">31.0%</td></tr>
-<tr><td class="num">900万円</td><td class="num">276,000円</td><td class="num"><b>92,413円</b></td><td class="num">33.5%</td></tr>
+<tr><td class="num">150万円</td><td class="num"><span class="numeric-token">276,000円</span></td><td class="num"><b><span class="numeric-token">41,689円</span></b></td><td class="num"><span class="numeric-token">15.1%</span></td></tr>
+<tr><td class="num">300万円</td><td class="num"><span class="numeric-token">276,000円</span></td><td class="num"><b><span class="numeric-token">55,779円</span></b></td><td class="num"><span class="numeric-token">20.2%</span></td></tr>
+<tr><td class="num">500万円</td><td class="num"><span class="numeric-token">276,000円</span></td><td class="num"><b><span class="numeric-token">83,959円</span></b></td><td class="num"><span class="numeric-token">30.4%</span></td></tr>
+<tr><td class="num">700万円</td><td class="num"><span class="numeric-token">276,000円</span></td><td class="num"><b><span class="numeric-token">85,490円</span></b></td><td class="num"><span class="numeric-token">31.0%</span></td></tr>
+<tr><td class="num">900万円</td><td class="num"><span class="numeric-token">276,000円</span></td><td class="num"><b><span class="numeric-token">92,413円</span></b></td><td class="num"><span class="numeric-token">33.5%</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -266,7 +270,7 @@
 
 <p>iDeCoは積み立てるときに全額を所得控除できますが、<b>60歳以降に受け取るときには課税されることがあります</b>。ただし大きな控除が用意されているため、受取時の負担が積立時の節税額を上回ることは多くありません。受け取り方で税金の種類が変わります。</p>
 
-<table>
+<div class="scroll-wrap"><table>
 <thead>
 <tr><th scope="col">受け取り方</th><th scope="col">所得の種類</th><th scope="col">使える控除</th></tr>
 </thead>
@@ -274,7 +278,7 @@
 <tr><td><b>一時金</b>（まとめて受け取る）</td><td>退職所得</td><td>退職所得控除</td></tr>
 <tr><td><b>年金</b>（分割で受け取る）</td><td>公的年金等の雑所得</td><td>公的年金等控除</td></tr>
 </tbody>
-</table>
+</table></div>
 
 <p>国税庁のタックスアンサーNo.1420は、<b>「確定拠出年金法に規定する…個人型年金規約に基づいて老齢給付金として支給される一時金…は退職所得とみなされます」</b>と明記しています。退職所得の金額は、<b>（収入金額 − 退職所得控除額）× 2分の1</b>で計算します。退職所得控除額は勤続年数（iDeCoでは掛金を払った年数）に応じて決まり、<b>20年以下は40万円×年数、20年を超える部分は1年あたり70万円</b>（20年で800万円＋超えた年数×70万円）です。</p>
 
@@ -301,17 +305,17 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. iDeCoは課税所得がいくらから得ですか？</h3>
-<p>A. 課税される所得金額が1円でもあれば、掛金の分だけ所得税と住民税が下がるので節税になります。節税率は所得税の税率で決まり、課税所得195万円以下なら所得税5％＋住民税10％で約15％、330万円以下なら10％＋10％で約20％、695万円以下なら20％＋10％で約30％です。会社員（企業年金なし）が月23,000円（年276,000円）を積み立てると、課税所得300万円で年55,779円、課税所得500万円で年83,959円の節税になります。課税所得が高い人ほど節税額は大きくなります。ただし課税される所得金額が0円の人（掛金より所得控除が大きく所得税がかからない人）は、そもそも引く税金がないので節税にはなりません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>iDeCoは課税所得がいくらから得ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>課税される所得金額が1円でもあれば、掛金の分だけ所得税と住民税が下がるので節税になります。節税率は所得税の税率で決まり、課税所得195万円以下なら所得税5％＋住民税10％で約15％、330万円以下なら10％＋10％で約20％、695万円以下なら20％＋10％で約30％です。会社員（企業年金なし）が月23,000円（年276,000円）を積み立てると、課税所得300万円で年55,779円、課税所得500万円で年83,959円の節税になります。課税所得が高い人ほど節税額は大きくなります。ただし課税される所得金額が0円の人（掛金より所得控除が大きく所得税がかからない人）は、そもそも引く税金がないので節税にはなりません。</p>
 
-<h3>Q. 課税される所得金額とは年収のことですか？</h3>
-<p>A. 違います。年収から給与所得控除・基礎控除・社会保険料控除・扶養控除などをすべて引いた後の金額が課税される所得金額です。源泉徴収票では「課税される所得金額」ではなく「給与所得控除後の金額」と「所得控除の額の合計額」が載っているので、前者から後者を引いた額が課税所得です。確定申告書ならB表の「課税される所得金額」の欄そのものです。年収500万円の会社員でも、課税される所得金額はおおむね200万〜250万円程度になります。年収を入れると節税額を過大に見積もるので、必ず課税所得を入れてください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>課税される所得金額とは年収のことですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>違います。年収から給与所得控除・基礎控除・社会保険料控除・扶養控除などをすべて引いた後の金額が課税される所得金額です。源泉徴収票では「課税される所得金額」ではなく「給与所得控除後の金額」と「所得控除の額の合計額」が載っているので、前者から後者を引いた額が課税所得です。確定申告書ならB表の「課税される所得金額」の欄そのものです。年収500万円の会社員でも、課税される所得金額はおおむね200万〜250万円程度になります。年収を入れると節税額を過大に見積もるので、必ず課税所得を入れてください。</p>
 
-<h3>Q. iDeCoの掛金の上限はいくらですか？</h3>
-<p>A. 加入区分で決まります。自営業・フリーランス（第1号）は月68,000円（年816,000円・国民年金基金や付加保険料と合算した上限）、会社員（企業年金なし）と専業主婦・主夫（第3号）は月23,000円（年276,000円）、会社員（企業型DCあり）と会社員（DB等あり）・公務員は月20,000円（年240,000円）です。最低は月5,000円で、1,000円単位で決められます。なお2026年12月1日から上限が引き上げられ、第1号は月75,000円、企業年金なしの会社員は月62,000円になります（専業主婦・主夫の第3号は月23,000円のまま据え置きです）。引き上げ後の上限が適用されるのは2026年12月分の掛金からで、その掛金が実際に引き落とされるのは2027年1月26日です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>iDeCoの掛金の上限はいくらですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>加入区分で決まります。自営業・フリーランス（第1号）は月68,000円（年816,000円・国民年金基金や付加保険料と合算した上限）、会社員（企業年金なし）と専業主婦・主夫（第3号）は月23,000円（年276,000円）、会社員（企業型DCあり）と会社員（DB等あり）・公務員は月20,000円（年240,000円）です。最低は月5,000円で、1,000円単位で決められます。なお2026年12月1日から上限が引き上げられ、第1号は月75,000円、企業年金なしの会社員は月62,000円になります（専業主婦・主夫の第3号は月23,000円のまま据え置きです）。引き上げ後の上限が適用されるのは2026年12月分の掛金からで、その掛金が実際に引き落とされるのは2027年1月26日です。</p>
 
-<h3>Q. iDeCoは受け取るときに税金がかかりますか？</h3>
-<p>A. かかることがありますが、大きな控除が用意されています。一時金でまとめて受け取ると退職所得として扱われ、退職所得控除（勤続年数＝掛金を払った年数が20年以下なら40万円×年数、20年超なら800万円＋70万円×20年超の年数）を引いた残りの2分の1だけが課税対象になります。年金として分割で受け取ると公的年金等の雑所得となり、公的年金等控除を差し引いて所得を計算します。積立時に全額を所得控除できるうえ、受取時にもこれらの控除が使えるため、多くの人は受取時の税負担が積立時の節税額より小さくなります。ただし退職金と重なると退職所得控除を使い切ることがあるため、受け取り方は事前に確認してください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>iDeCoは受け取るときに税金がかかりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>かかることがありますが、大きな控除が用意されています。一時金でまとめて受け取ると退職所得として扱われ、退職所得控除（勤続年数＝掛金を払った年数が20年以下なら40万円×年数、20年超なら800万円＋70万円×20年超の年数）を引いた残りの2分の1だけが課税対象になります。年金として分割で受け取ると公的年金等の雑所得となり、公的年金等控除を差し引いて所得を計算します。積立時に全額を所得控除できるうえ、受取時にもこれらの控除が使えるため、多くの人は受取時の税負担が積立時の節税額より小さくなります。ただし退職金と重なると退職所得控除を使い切ることがあるため、受け取り方は事前に確認してください。</p>
 
 <section class="related">
 <div class="tool-grid">

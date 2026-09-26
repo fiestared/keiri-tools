@@ -144,8 +144,9 @@
   </div>
 
   <label for="birth">① 生年月日</label>
-    <p class="hint" style="margin-top:6px" id="birth-hint"></p>
+
     <input aria-describedby="birth-hint" type="date" id="birth" value="1975-05-15">
+    <p class="hint" style="margin-top:6px" id="birth-hint"></p>
 
   <label style="margin-top:16px">② 年金を受け取り始める年齢</label>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">
@@ -161,10 +162,10 @@
   <p class="hint" style="margin-top:6px" id="start-hint"></p>
 
   <label style="margin-top:16px">③ 国民年金の月数（ねんきん定期便の「国民年金」欄）</label>
-  <table class="tbl" id="months-table" style="margin-top:8px">
+  <div class="scroll-wrap"><table class="tbl" id="months-table" style="margin-top:8px">
     <thead><tr><th scope="col">期間の種類</th><th scope="col">月数</th><th scope="col">年金額への反映</th></tr></thead>
     <tbody id="months-body"></tbody>
-  </table>
+  </table></div>
   <p class="hint" style="margin-top:6px" id="gakuno-hint"></p>
 
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:16px">
@@ -181,7 +182,7 @@
 
   <label style="margin-top:16px">⑤ 厚生年金（会社員・公務員だった期間）</label>
   <p class="hint" style="margin-top:4px">平均標準報酬は「ねんきん定期便」やねんきんネットの記録から確認できます（平成15年3月以前は賞与を含まない月額、平成15年4月以後は賞与を含む額）。定期便のどの欄を見ればよいか、50歳の前後で「年金額」の意味が入れ替わる点については<a href="../column/nenkin-teikibin-mikata/">ねんきん定期便の見方</a>で解説しています。</p>
-  <table class="tbl" id="kosei-table" style="margin-top:8px">
+  <div class="scroll-wrap"><table class="tbl" id="kosei-table" style="margin-top:8px">
     <thead><tr><th scope="col">期間</th><th scope="col">平均標準報酬（円／月）</th><th scope="col">月数</th><th scope="col">乗率</th></tr></thead>
     <tbody>
       <tr>
@@ -197,7 +198,7 @@
         <td><span id="post-rate"></span></td>
       </tr>
     </tbody>
-  </table>
+  </table></div>
   <p class="hint" style="margin-top:6px" id="kosei-hint"></p>
 
   <p class="hint" style="margin-top:10px">
@@ -348,20 +349,20 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 保険料を免除してもらった期間は、年金額にどれくらい反映されますか？</h3>
-<p>A. 全額免除なら2分の1、4分の3免除なら8分の5、半額免除なら4分の3、4分の1免除なら8分の7が反映されます（平成21年4月以後の期間）。納めていないのに半分が付くのは、基礎年金の半分が国庫負担でまかなわれているためです。ただし率を掛けるだけでは足りません。国民年金法27条ただし書は納付済月数から順に「480月からそれより前の号の月数を引いた月数」を各号の限度と定めており、限度を超えた分は捨てられるのではなく一段低い率（8分の7に対して8分の3など、ちょうど国庫負担分を除いた率）で拾われます。例外は全額免除で、こちらだけ超過分を拾う号が無いため、限度を超えた全額免除の月数は年金額に一切反映されません。なお学生納付特例と納付猶予の期間は、受給資格期間には入りますが年金額には反映されません（追納すれば納付済月数になります）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>保険料を免除してもらった期間は、年金額にどれくらい反映されますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>全額免除なら2分の1、4分の3免除なら8分の5、半額免除なら4分の3、4分の1免除なら8分の7が反映されます（平成21年4月以後の期間）。納めていないのに半分が付くのは、基礎年金の半分が国庫負担でまかなわれているためです。ただし率を掛けるだけでは足りません。国民年金法27条ただし書は納付済月数から順に「480月からそれより前の号の月数を引いた月数」を各号の限度と定めており、限度を超えた分は捨てられるのではなく一段低い率（8分の7に対して8分の3など、ちょうど国庫負担分を除いた率）で拾われます。例外は全額免除で、こちらだけ超過分を拾う号が無いため、限度を超えた全額免除の月数は年金額に一切反映されません。なお学生納付特例と納付猶予の期間は、受給資格期間には入りますが年金額には反映されません（追納すれば納付済月数になります）。</p>
 
-<h3>Q. 繰上げ・繰下げをすると、付加年金も一緒に増減しますか？</h3>
-<p>A. します。国民年金法施行令12条2項と4条の5第2項が、付加年金の額にも同じ減額率・増額率を乗じると定めています。付加年金だけ200円×月数のまま据え置く計算機をよく見かけますが、条文どおりではありません。老齢厚生年金の繰上げは原則として老齢基礎年金と同時ですが、繰下げは別々に選べます。この計算機は両方を同じ月から受給する場合を試算するため、1つの受給開始月から3つすべてに同じ率を当てます。開始月を分ける場合には対応していません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>繰上げ・繰下げをすると、付加年金も一緒に増減しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>します。国民年金法施行令12条2項と4条の5第2項が、付加年金の額にも同じ減額率・増額率を乗じると定めています。付加年金だけ200円×月数のまま据え置く計算機をよく見かけますが、条文どおりではありません。老齢厚生年金の繰上げは原則として老齢基礎年金と同時ですが、繰下げは別々に選べます。この計算機は両方を同じ月から受給する場合を試算するため、1つの受給開始月から3つすべてに同じ率を当てます。開始月を分ける場合には対応していません。</p>
 
-<h3>Q. 繰下げは何歳まで、どれだけ増えますか？</h3>
-<p>A. 75歳まで繰り下げられ、1か月あたり0.7%増えます（国民年金法28条2項2号・施行令4条の5第1項）。ここで見落としやすいのが上限で、施行令4条の5第1項のかっこ書が「月数が120を超えるときは120」と定めているため、増額率は最大84%で止まります。一方、繰上げの減額率（1か月0.4%・施行令12条1項）には上限の定めがありません。60歳が請求できる下限なので事実上60月＝24%減が最大になりますが、条文の書き方が繰上げと繰下げで違うので、繰下げに上限を入れ忘れると76歳以降で青天井に増える実装になります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>繰下げは何歳まで、どれだけ増えますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>75歳まで繰り下げられ、1か月あたり0.7%増えます（国民年金法28条2項2号・施行令4条の5第1項）。ここで見落としやすいのが上限で、施行令4条の5第1項のかっこ書が「月数が120を超えるときは120」と定めているため、増額率は最大84%で止まります。一方、繰上げの減額率（1か月0.4%・施行令12条1項）には上限の定めがありません。60歳が請求できる下限なので事実上60月＝24%減が最大になりますが、条文の書き方が繰上げと繰下げで違うので、繰下げに上限を入れ忘れると76歳以降で青天井に増える実装になります。</p>
 
-<h3>Q. 厚生年金の乗率が2つあるのはなぜですか？</h3>
-<p>A. 平成15年4月に総報酬制が導入され、乗率と、乗率を掛ける相手の意味が同時に変わったためです。平成15年3月以前の期間は「平均標準報酬月額」に1000分の7.125を掛けます（賞与は年金額に反映されません）。平成15年4月以後の期間は賞与を含む「平均標準報酬額」に1000分の5.481を掛けます（厚生年金保険法43条1項・平成12年改正法附則20条1項）。片方の乗率だけで通すと、平成15年をまたいで働いた方の額がずれます。乗率が下がったのは給付の削減ではなく、賞与という分母が入ったことに合わせた調整です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>厚生年金の乗率が2つあるのはなぜですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>平成15年4月に総報酬制が導入され、乗率と、乗率を掛ける相手の意味が同時に変わったためです。平成15年3月以前の期間は「平均標準報酬月額」に1000分の7.125を掛けます（賞与は年金額に反映されません）。平成15年4月以後の期間は賞与を含む「平均標準報酬額」に1000分の5.481を掛けます（厚生年金保険法43条1項・平成12年改正法附則20条1項）。片方の乗率だけで通すと、平成15年をまたいで働いた方の額がずれます。乗率が下がったのは給付の削減ではなく、賞与という分母が入ったことに合わせた調整です。</p>
 
-<h3>Q. この計算機の金額は、実際に振り込まれる額と同じですか？</h3>
-<p>A. 違います。この計算機は老齢年金の本体部分（老齢基礎年金・付加年金・老齢厚生年金の報酬比例部分）だけを出します。加給年金額・振替加算・経過的加算・特別支給の老齢厚生年金・在職老齢年金による支給停止・厚生年金基金の代行部分などは入れていません。増える方向のもの（加給年金・経過的加算）と減る方向のもの（在職による支給停止）が両方あるので、多めにも少なめにもずれます。また実際の振込額からは介護保険料・国民健康保険料や所得税・住民税が差し引かれます。確定した額は日本年金機構の「ねんきんネット」か年金事務所でご確認ください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>この計算機の金額は、実際に振り込まれる額と同じですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>違います。この計算機は老齢年金の本体部分（老齢基礎年金・付加年金・老齢厚生年金の報酬比例部分）だけを出します。加給年金額・振替加算・経過的加算・特別支給の老齢厚生年金・在職老齢年金による支給停止・厚生年金基金の代行部分などは入れていません。増える方向のもの（加給年金・経過的加算）と減る方向のもの（在職による支給停止）が両方あるので、多めにも少なめにもずれます。また実際の振込額からは介護保険料・国民健康保険料や所得税・住民税が差し引かれます。確定した額は日本年金機構の「ねんきんネット」か年金事務所でご確認ください。</p>
 
 <h2 id="shutten">出典</h2>
 <ul>
@@ -389,7 +390,7 @@
   <div>© 税金・経理・補助金ツールズ</div>
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年度　／　一次情報の確認: 2026年7月29日　／　<a href="https://laws.e-gov.go.jp/law/334AC0000000141" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年度　／　一次情報の確認: 2026年7月29日　／　<a href="https://laws.e-gov.go.jp/law/334AC0000000141" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

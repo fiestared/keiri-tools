@@ -121,15 +121,16 @@
   </div>
 
   <div class="card">
-    <div class="fee-pair">
+    <div class="fee-pair field-pair">
       <div>
         <label for="year">対象の年（西暦）</label>
         <input type="number" id="year" value="2026" min="2020" max="2099" step="1" inputmode="numeric">
       </div>
       <div>
         <label for="shutoku">資格取得日（分かれば）</label>
-    <p class="hint" id="shutoku-hint">6月1日〜7月1日ならその年は対象外です。</p>
+
     <input aria-describedby="shutoku-hint" type="date" id="shutoku" value="">
+    <p class="hint" id="shutoku-hint">6月1日〜7月1日ならその年は対象外です。</p>
       </div>
     </div>
 
@@ -140,7 +141,7 @@
     </fieldset>
 
     <div id="tsuki-set">
-      <div class="fee-pair">
+      <div class="fee-pair field-pair">
         <div>
           <label for="h4">4月の報酬（円）</label>
           <input type="number" id="h4" value="300000" min="0" step="1000" inputmode="numeric">
@@ -150,7 +151,7 @@
           <input type="number" id="n4" value="20" min="0" max="31" step="1" inputmode="numeric">
         </div>
       </div>
-      <div class="fee-pair">
+      <div class="fee-pair field-pair">
         <div>
           <label for="h5">5月の報酬（円）</label>
           <input type="number" id="h5" value="100000" min="0" step="1000" inputmode="numeric">
@@ -160,7 +161,7 @@
           <input type="number" id="n5" value="10" min="0" max="31" step="1" inputmode="numeric">
         </div>
       </div>
-      <div class="fee-pair">
+      <div class="fee-pair field-pair">
         <div>
           <label for="h6">6月の報酬（円）</label>
           <input type="number" id="h6" value="300000" min="0" step="1000" inputmode="numeric">
@@ -242,26 +243,26 @@
 
 <section class="faq">
 <h2 id="faq">よくある質問</h2>
-<h3>Q. 4月・5月・6月のうち1か月だけ日数が足りません。3か月の合計を3で割るのですか？</h3>
-<p>A. いいえ。<b>その月を除いて、残った月数で割ります</b>（健康保険法41条1項）。条文は「その月を除く」としたうえで「その期間の月数で除して得た額」と書いています。3で割ると報酬月額が低く出て、等級が下がります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>4月・5月・6月のうち1か月だけ日数が足りません。3か月の合計を3で割るのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>いいえ。<b>その月を除いて、残った月数で割ります</b>（健康保険法41条1項）。条文は「その月を除く」としたうえで「その期間の月数で除して得た額」と書いています。3で割ると報酬月額が低く出て、等級が下がります。</p>
 
-<h3>Q. 支払基礎日数が17日ちょうどの月は入りますか？</h3>
-<p>A. <b>入ります。</b>条文は「十七日…未満である月があるときは、その月を除く」なので、除かれるのは16日以下です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>支払基礎日数が17日ちょうどの月は入りますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>入ります。</b>条文は「十七日…未満である月があるときは、その月を除く」なので、除かれるのは16日以下です。</p>
 
-<h3>Q. パートの人は11日でよいのですか？</h3>
-<p>A. 呼び方では決まりません。4分の3基準未満で、適用拡大により被保険者となった短時間労働者が11日基準の対象です。4分の3以上のパート等は原則17日ですが、3か月すべて17日未満で15日以上の月がある場合は、その月の平均で算定します。この計算機は15日以上の取扱いには対応していません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>パートの人は11日でよいのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>呼び方では決まりません。4分の3基準未満で、適用拡大により被保険者となった短時間労働者が11日基準の対象です。4分の3以上のパート等は原則17日ですが、3か月すべて17日未満で15日以上の月がある場合は、その月の平均で算定します。この計算機は15日以上の取扱いには対応していません。</p>
 
-<h3>Q. 6月に入社した人の算定基礎届はどう書きますか？</h3>
-<p>A. <b>6月1日から7月1日までの間に資格を取得した人は、その年に限り定時決定の対象外です</b>（41条3項）。資格取得時に決定した標準報酬月額が翌年8月まで続きます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>6月に入社した人の算定基礎届はどう書きますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>6月1日から7月1日までの間に資格を取得した人は、その年に限り定時決定の対象外です</b>（41条3項）。資格取得時に決定した標準報酬月額が翌年8月まで続きます。</p>
 
-<h3>Q. 7月から月額変更（随時改定）に該当しそうですが、まだ届け出ていません。</h3>
-<p>A. 条文は「改定され、または<b>改定されるべき</b>被保険者」と書いています。<b>届け出ていなくても該当していれば定時決定の対象から外れます</b>（41条3項）。月額変更届のほうで決まります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>7月から月額変更（随時改定）に該当しそうですが、まだ届け出ていません。</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>条文は「改定され、または<b>改定されるべき</b>被保険者」と書いています。<b>届け出ていなくても該当していれば定時決定の対象から外れます</b>（41条3項）。月額変更届のほうで決まります。</p>
 
-<h3>Q. 決まった標準報酬月額はいつから使いますか？</h3>
-<p>A. <b>その年の9月から翌年8月まで</b>の各月の標準報酬月額になります（41条2項）。保険料は原則として翌月控除なので、9月分の保険料を10月の給与から控除する会社が多くなります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>決まった標準報酬月額はいつから使いますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>その年の9月から翌年8月まで</b>の各月の標準報酬月額になります（41条2項）。保険料は原則として翌月控除なので、9月分の保険料を10月の給与から控除する会社が多くなります。</p>
 
-<h3>Q. 4月・5月・6月のすべてが17日未満でした。</h3>
-<p>A. 4分の3以上のパート等で、3か月すべて17日未満でも15日以上の月があれば、その月の報酬の平均で算定します。すべて15日未満なら従前の標準報酬月額によります。この計算機は15日以上の取扱いに対応していないため、該当する方は日本年金機構の案内に沿って別途算定してください。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>4月・5月・6月のすべてが17日未満でした。</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>4分の3以上のパート等で、3か月すべて17日未満でも15日以上の月があれば、その月の報酬の平均で算定します。すべて15日未満なら従前の標準報酬月額によります。この計算機は15日以上の取扱いに対応していないため、該当する方は日本年金機構の案内に沿って別途算定してください。</p>
 </section>
 
 <h2 id="shutten">出典</h2>
@@ -279,7 +280,7 @@
   © 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
 </footer>
 <script type="module">
 import { taishogai, teijiKettei, tekiyoKikan, zuijiNissuOK } from "../assets/santei_core.js";

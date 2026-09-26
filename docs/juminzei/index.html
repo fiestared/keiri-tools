@@ -127,6 +127,7 @@
   <p class="article-meta">公開日: <time datetime="2026-07-14">2026年7月14日</time>（更新日: <time datetime="2026-08-27">2026年8月27日</time>）</p>
   <p>年収と家族構成から、<b>住民税（市町村民税・道府県民税）の年額</b>を計算します。<b>所得割・均等割・森林環境税の内訳</b>まで表示し、<b>非課税限度額</b>（均等割と所得割で別々に決まります）も判定します。横浜市・神戸市・神奈川県などの<b>超過課税</b>にも対応しています。</p>
 </section>
+<!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機の見方</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end-->
 
 <div class="card">
   <label for="jichitai">お住まいの自治体</label>
@@ -140,7 +141,7 @@
   <label for="shunyu" style="margin-top:12px">給与収入（年収・額面／円）</label>
   <input type="number" id="shunyu" value="5000000" placeholder="例: 5000000" inputmode="numeric">
 
-  <div class="fee-pair">
+  <div class="fee-pair field-pair">
     <div>
       <label for="age">年齢</label>
       <input type="number" id="age" value="40" min="0" max="120" inputmode="numeric">
@@ -153,10 +154,11 @@
   <div class="hint">年齢と都道府県は<b>社会保険料の概算</b>にだけ使います（40〜64歳は介護保険料がかかり、健康保険料率は都道府県で違うため）。</div>
 
   <label for="shakai" style="margin-top:12px">社会保険料（年額／円）</label>
-  <p class="hint" id="shakai-hint">空欄なら年収から概算します。源泉徴収票の「社会保険料等の金額」</p>
-  <input type="number" id="shakai" inputmode="numeric" aria-describedby="shakai-hint">
 
-  <div class="fee-pair" style="margin-top:12px">
+  <input type="number" id="shakai" inputmode="numeric" aria-describedby="shakai-hint">
+    <p class="hint" id="shakai-hint">空欄なら年収から概算します。源泉徴収票の「社会保険料等の金額」</p>
+
+  <div class="fee-pair field-pair" style="margin-top:12px">
     <div>
       <label for="haigusha">配偶者控除</label>
       <select id="haigusha">
@@ -172,7 +174,7 @@
   </div>
   <div class="hint"><b>16歳未満の子は扶養控除が1円もつきません</b>（平成24年に廃止）。<b>それでも入力してください</b> — <b>非課税限度額の「扶養親族の数」には入る</b>ので、所得が低い人は<b>子どもの有無だけで住民税が変わります</b>（地方税法施行令47条の3）。</div>
 
-  <div class="fee-pair" style="margin-top:12px">
+  <div class="fee-pair field-pair" style="margin-top:12px">
     <div>
       <label for="fuyoIppan">扶養親族（一般・16〜18歳／23〜69歳）</label>
       <input type="number" id="fuyoIppan" value="0" min="0" max="20" inputmode="numeric">
@@ -186,7 +188,7 @@
   <details style="margin-top:12px">
     <summary>その他の控除（老人扶養・生命保険料・ひとり親・障害者・給与以外の所得など）</summary>
     <div style="margin-top:10px">
-      <div class="fee-pair">
+      <div class="fee-pair field-pair">
         <div>
           <label for="fuyoRojin">老人扶養（70歳以上・同居以外）</label>
           <input type="number" id="fuyoRojin" value="0" min="0" max="20" inputmode="numeric">
@@ -197,11 +199,13 @@
         </div>
       </div>
 
-      <label for="sonotaKojo" style="margin-top:10px">その他の所得控除（円）<span class="hint">　生命保険料控除・地震保険料控除・iDeCoの掛金など</span></label>
-      <input type="number" id="sonotaKojo" value="0" min="0" inputmode="numeric">
+      <label for="sonotaKojo" style="margin-top:10px">その他の所得控除（円）</label>
+      <input type="number" id="sonotaKojo" value="0" min="0" inputmode="numeric" aria-describedby="sonotaKojo-hint">
+      <span id="sonotaKojo-hint" class="hint">　生命保険料控除・地震保険料控除・iDeCoの掛金など</span>
 
-      <label for="sonotaShotoku" style="margin-top:10px">給与以外の所得（円）<span class="hint">　副業・不動産などの所得金額</span></label>
-      <input type="number" id="sonotaShotoku" value="0" min="0" inputmode="numeric">
+      <label for="sonotaShotoku" style="margin-top:10px">給与以外の所得（円）</label>
+      <input type="number" id="sonotaShotoku" value="0" min="0" inputmode="numeric" aria-describedby="sonotaShotoku-hint">
+      <span id="sonotaShotoku-hint" class="hint">　副業・不動産などの所得金額</span>
 
       <label style="font-weight:400;display:block;margin-top:10px">
         <input type="checkbox" id="hitorioya"> ひとり親
@@ -236,7 +240,7 @@
 </div>
 
 <section class="faq">
-  <h2>この計算機の見方</h2>
+  <h2 id="tool-section-1">この計算機の見方</h2>
 
   <h3>住民税は「所得割」と「均等割」の2階建てです</h3>
   <div class="callout">
@@ -254,12 +258,12 @@
 
   <h3>非課税限度額は、均等割と所得割で別々に決まります</h3>
   <p>「住民税が非課税になるライン」は1本ではありません。<b>均等割と所得割で、根拠も金額も別</b>です。</p>
-  <table class="res" style="margin-top:12px">
+  <div class="scroll-wrap"><table class="res" style="margin-top:12px">
     <tr><th></th><th scope="col">均等割</th><th scope="col">所得割</th></tr>
     <tr><td><b>根拠</b></td><td>地方税法295条3項＋施行令47条の3＋<b>各自治体の条例</b></td><td>地方税法附則3条の3（<b>法律で直接</b>）</td></tr>
     <tr><td><b>級地による差</b></td><td><b>あり</b>（1.0／0.9／0.8倍）</td><td><b>なし・全国一律</b></td></tr>
     <tr><td><b>扶養家族がいる場合の加算額</b></td><td><b>21万円</b></td><td><b>32万円</b></td></tr>
-  </table>
+  </table></div>
   <p>加算額が21万円と32万円で違うので、<b>そのあいだに「所得割はかからないが、均等割はかかる」帯</b>ができます。たとえば1級地に住む扶養1人の人なら、均等割の基準は101万円・所得割の基準は112万円なので、<b>合計所得101万円超〜112万円以下の人は、住民税が均等割（＋森林環境税）の5,000円だけ</b>になります。</p>
 
   <div class="note">
@@ -270,14 +274,14 @@
 
 <section class="faq">
   <h2 id="faq">よくある質問</h2>
-  <h3>住民税は いくらから かかりますか？</h3>
-  <p><b>扶養家族がいない人なら、合計所得金額が45万円を超えると住民税がかかります。給与収入に直すと<b>令和7年分の所得（令和8年度の住民税）なら110万円</b>、<b>令和8年分の所得（令和9年度の住民税）からは119万円</b>です（給与所得控除の最低額が65万円→74万円に上がったため。租税特別措置法29条の4）。</b>ただし<b>「均等割」と「所得割」で非課税になる基準が別々に決まっている</b>ため、そのあいだには<b>均等割だけがかかる帯</b>があります。均等割の基準はお住まいの市区町村の<b>級地区分</b>で変わり、所得割の基準は<b>全国一律</b>です。</p>
-  <h3>16歳未満の子どもは住民税に関係ありますか？</h3>
-  <p><b>扶養控除は1円もつきませんが、非課税限度額の「扶養親族の数」には入ります。</b>16歳未満の子の扶養控除は平成24年に廃止されたので所得控除は0円ですが、地方税法施行令47条の3は非課税限度額の扶養親族を<b>「年齢十六歳未満の者及び控除対象扶養親族に限る」</b>と定めており、16歳未満の子も数に入ります。そのため、<b>所得が非課税限度額の近くにある人は、16歳未満の子がいるかどうかだけで住民税が変わります</b>。</p>
-  <h3>住民税の均等割は5,000円ではないのですか？</h3>
-  <p><b>標準税率どおりなら5,000円ですが、超過課税を行う自治体では多くなります。</b>市町村民税3,000円・道府県民税1,000円に国税の森林環境税1,000円を加えた額です。総務省の調べでは<b>道府県民税の均等割は47団体中37団体が超過課税</b>で、<b>横浜市・神戸市は市民税の均等割にも上乗せ</b>があり、どちらも合計<b>6,200円</b>です。正確な額はお住まいの自治体の納税通知書で確認してください。</p>
-  <h3>住民税の均等割の内訳にある復興特別税の1,000円は何ですか？</h3>
-  <p><b>令和5年度で終了しており、今はかかりません。</b>東日本大震災の復興財源による均等割の上乗せ（市町村民税500円・道府県民税500円）は<b>「平成26年度から平成35年度まで」</b>と期限が定められていたため、令和5年度分で終わりました。令和6年度分からは代わりに<b>国税の森林環境税1,000円</b>が住民税と併せて徴収されています。<b>合計5,000円は同じですが、内訳と根拠法は別のもの</b>です。</p>
+  <h3 class="faq-question">住民税は いくらから かかりますか？</h3>
+  <p class="faq-answer"><b>扶養家族がいない人なら、合計所得金額が45万円を超えると住民税がかかります。給与収入に直すと<b>令和7年分の所得（令和8年度の住民税）なら110万円</b>、<b>令和8年分の所得（令和9年度の住民税）からは119万円</b>です（給与所得控除の最低額が65万円→74万円に上がったため。租税特別措置法29条の4）。</b>ただし<b>「均等割」と「所得割」で非課税になる基準が別々に決まっている</b>ため、そのあいだには<b>均等割だけがかかる帯</b>があります。均等割の基準はお住まいの市区町村の<b>級地区分</b>で変わり、所得割の基準は<b>全国一律</b>です。</p>
+  <h3 class="faq-question">16歳未満の子どもは住民税に関係ありますか？</h3>
+  <p class="faq-answer"><b>扶養控除は1円もつきませんが、非課税限度額の「扶養親族の数」には入ります。</b>16歳未満の子の扶養控除は平成24年に廃止されたので所得控除は0円ですが、地方税法施行令47条の3は非課税限度額の扶養親族を<b>「年齢十六歳未満の者及び控除対象扶養親族に限る」</b>と定めており、16歳未満の子も数に入ります。そのため、<b>所得が非課税限度額の近くにある人は、16歳未満の子がいるかどうかだけで住民税が変わります</b>。</p>
+  <h3 class="faq-question">住民税の均等割は5,000円ではないのですか？</h3>
+  <p class="faq-answer"><b>標準税率どおりなら5,000円ですが、超過課税を行う自治体では多くなります。</b>市町村民税3,000円・道府県民税1,000円に国税の森林環境税1,000円を加えた額です。総務省の調べでは<b>道府県民税の均等割は47団体中37団体が超過課税</b>で、<b>横浜市・神戸市は市民税の均等割にも上乗せ</b>があり、どちらも合計<b>6,200円</b>です。正確な額はお住まいの自治体の納税通知書で確認してください。</p>
+  <h3 class="faq-question">住民税の均等割の内訳にある復興特別税の1,000円は何ですか？</h3>
+  <p class="faq-answer"><b>令和5年度で終了しており、今はかかりません。</b>東日本大震災の復興財源による均等割の上乗せ（市町村民税500円・道府県民税500円）は<b>「平成26年度から平成35年度まで」</b>と期限が定められていたため、令和5年度分で終わりました。令和6年度分からは代わりに<b>国税の森林環境税1,000円</b>が住民税と併せて徴収されています。<b>合計5,000円は同じですが、内訳と根拠法は別のもの</b>です。</p>
 </section>
 
 <section class="faq">
@@ -300,7 +304,7 @@
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月21日　／　<a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月21日　／　<a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 

@@ -159,39 +159,45 @@
   </div>
 
   <div style="margin-bottom:10px">
-    <label for="hatarakikata">いまの働き方<span class="hint">　在職していなければ支給停止は起きません</span></label>
-    <select id="hatarakikata">
+    <label for="hatarakikata">いまの働き方</label>
+    <select id="hatarakikata" aria-describedby="hatarakikata-hint">
       <option value="hihokensha" selected>厚生年金の被保険者として在職している（70歳未満）</option>
       <option value="over70">70歳以上で、厚生年金の適用事業所に勤めている</option>
       <option value="taishoku">在職していない（退職済み・自営業など）</option>
     </select>
+      <span id="hatarakikata-hint" class="hint">　在職していなければ支給停止は起きません</span>
   </div>
 
   <div>
     <div>
-      <label for="koseiNenkin">老齢厚生年金（報酬比例部分）の年額<span class="hint">　円・加給年金額を除く</span></label>
-      <input type="number" id="koseiNenkin" min="0" inputmode="numeric" value="1200000">
+      <label for="koseiNenkin">老齢厚生年金（報酬比例部分）の年額</label>
+      <input type="number" id="koseiNenkin" min="0" inputmode="numeric" value="1200000" aria-describedby="koseiNenkin-hint">
+      <span id="koseiNenkin-hint" class="hint">　円・加給年金額を除く</span>
     </div>
     <div>
-      <label for="kisoNenkin">老齢基礎年金＋経過的加算の年額<span class="hint">　円・止まりませんが受取総額に使います</span></label>
-      <input type="number" id="kisoNenkin" min="0" inputmode="numeric" value="847300">
+      <label for="kisoNenkin">老齢基礎年金＋経過的加算の年額</label>
+      <input type="number" id="kisoNenkin" min="0" inputmode="numeric" value="847300" aria-describedby="kisoNenkin-hint">
+      <span id="kisoNenkin-hint" class="hint">　円・止まりませんが受取総額に使います</span>
     </div>
   </div>
 
   <div>
     <div>
-      <label for="hyojunHoshu">標準報酬月額<span class="hint">　円・等級表の額（手取りではありません）</span></label>
-      <input type="number" id="hyojunHoshu" min="0" inputmode="numeric" value="500000">
+      <label for="hyojunHoshu">標準報酬月額</label>
+      <input type="number" id="hyojunHoshu" min="0" inputmode="numeric" value="500000" aria-describedby="hyojunHoshu-hint">
+      <span id="hyojunHoshu-hint" class="hint">　円・等級表の額（手取りではありません）</span>
     </div>
     <div>
-      <label for="shoyoTotal">直近1年間の標準賞与額の合計<span class="hint">　円・無ければ0</span></label>
-      <input type="number" id="shoyoTotal" min="0" inputmode="numeric" value="1200000">
+      <label for="shoyoTotal">直近1年間の標準賞与額の合計</label>
+      <input type="number" id="shoyoTotal" min="0" inputmode="numeric" value="1200000" aria-describedby="shoyoTotal-hint">
+      <span id="shoyoTotal-hint" class="hint">　円・無ければ0</span>
     </div>
   </div>
 
   <div style="margin-top:10px">
-    <label for="kakyu">加給年金額の年額（円）<span class="hint">　判定には使いませんが、全額支給停止のときは一緒に止まります。無ければ0</span></label>
-    <input type="number" id="kakyu" min="0" inputmode="numeric" value="0">
+    <label for="kakyu">加給年金額の年額（円）</label>
+    <input type="number" id="kakyu" min="0" inputmode="numeric" value="0" aria-describedby="kakyu-hint">
+      <span id="kakyu-hint" class="hint">　判定には使いませんが、全額支給停止のときは一緒に止まります。無ければ0</span>
   </div>
 
   <button class="primary" id="calc" style="margin-top:14px">支給停止額を計算する</button>
@@ -242,13 +248,13 @@
 
 <p>令和4年4月以降、65歳未満と65歳以上の式は統一され、次の1本だけになりました（厚生年金保険法46条1項）。</p>
 
-<table>
+<div class="scroll-wrap"><table>
   <thead><tr><th scope="col">状態</th><th scope="col">その月の老齢厚生年金</th></tr></thead>
   <tbody id="shiki-table">
     <tr><td>基本月額 ＋ 総報酬月額相当額 ≦ 基準額</td><td>全額支給</td></tr>
     <tr><td>基本月額 ＋ 総報酬月額相当額 ＞ 基準額</td><td>基本月額 －（基本月額 ＋ 総報酬月額相当額 － 基準額）÷ 2</td></tr>
   </tbody>
-</table>
+</table></div>
 
 <p><b id="koeru-chui">条文は「超えるとき」であって「以上」ではありません。</b>合計がちょうど65万円のときは1円も止まりません。1円でも超えたところから、超えた額の2分の1が止まり始めます。</p>
 
@@ -352,26 +358,26 @@
 
 <h2 id="faq">よくある質問</h2>
 
-<h3>Q. 在職老齢年金の基準額は今いくらですか？</h3>
-<p>A. 令和8年度は<b>月65万円</b>です。令和7年年金制度改正法（令和7年法律第74号）により、令和8年4月分から、それまでの月51万円が65万円に引き上げられました。なお厚生年金保険法46条3項の条文本則は「六十二万円」ですが、これは毎年度の改定前の額で、実際に適用されるのは改定後の65万円です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>在職老齢年金の基準額は今いくらですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>令和8年度は<b>月65万円</b>です。令和7年年金制度改正法（令和7年法律第74号）により、令和8年4月分から、それまでの月51万円が65万円に引き上げられました。なお厚生年金保険法46条3項の条文本則は「六十二万円」ですが、これは毎年度の改定前の額で、実際に適用されるのは改定後の65万円です。</p>
 
-<h3>Q. 改正で私の年金はいくら増えますか？</h3>
-<p>A. 基準額が14万円上がったので、停止されていた方は<b>最大で月7万円</b>（14万円の2分の1）ぶん支給停止が減ります。基本月額10万円の方の場合、全額支給となる総報酬月額相当額の上限が41万円から55万円へ上がります。もともと停止されていなかった方は変わりません。このページの計算機が、改正前後の差額を表示します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>改正で私の年金はいくら増えますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>基準額が14万円上がったので、停止されていた方は<b>最大で月7万円</b>（14万円の2分の1）ぶん支給停止が減ります。基本月額10万円の方の場合、全額支給となる総報酬月額相当額の上限が41万円から55万円へ上がります。もともと停止されていなかった方は変わりません。このページの計算機が、改正前後の差額を表示します。</p>
 
-<h3>Q. 老齢基礎年金も支給停止されますか？</h3>
-<p>A. されません。止まるのは老齢厚生年金の報酬比例部分だけで、<b>老齢基礎年金と経過的加算額は全額支給</b>されます。老齢厚生年金が全額支給停止になった方でも、老齢基礎年金は満額受け取れます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>老齢基礎年金も支給停止されますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>されません。止まるのは老齢厚生年金の報酬比例部分だけで、<b>老齢基礎年金と経過的加算額は全額支給</b>されます。老齢厚生年金が全額支給停止になった方でも、老齢基礎年金は満額受け取れます。</p>
 
-<h3>Q. 加給年金額は基本月額に含めますか？</h3>
-<p>A. 含めません。厚生年金保険法46条1項が明文で除いています。ただし全額支給停止になる場合は、加給年金額も含めて全額が止まります。<b>判定には入れないが、全部止まるときは一緒に止まる</b>という関係です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>加給年金額は基本月額に含めますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>含めません。厚生年金保険法46条1項が明文で除いています。ただし全額支給停止になる場合は、加給年金額も含めて全額が止まります。<b>判定には入れないが、全部止まるときは一緒に止まる</b>という関係です。</p>
 
-<h3>Q. ボーナスは在職老齢年金の計算に入りますか？</h3>
-<p>A. 入ります。総報酬月額相当額は「その月の標準報酬月額」＋「その月以前1年間の標準賞与額の合計 ÷ 12」です。標準報酬月額45万円・年間賞与120万円なら55万円になります。<b>賞与を忘れると停止額を少なく見積もることになります。</b></p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>ボーナスは在職老齢年金の計算に入りますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>入ります。総報酬月額相当額は「その月の標準報酬月額」＋「その月以前1年間の標準賞与額の合計 ÷ 12」です。標準報酬月額45万円・年間賞与120万円なら55万円になります。<b>賞与を忘れると停止額を少なく見積もることになります。</b></p>
 
-<h3>Q. 70歳を過ぎて働いている場合はどうなりますか？</h3>
-<p>A. 70歳以上は厚生年金保険の被保険者ではなくなり保険料の負担もなくなりますが、<b>厚生年金の適用事業所に勤めている場合は支給停止の対象になります</b>（46条1項の「七十歳以上の使用される者」）。計算式は同じです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>70歳を過ぎて働いている場合はどうなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>70歳以上は厚生年金保険の被保険者ではなくなり保険料の負担もなくなりますが、<b>厚生年金の適用事業所に勤めている場合は支給停止の対象になります</b>（46条1項の「七十歳以上の使用される者」）。計算式は同じです。</p>
 
-<h3>Q. 退職したら支給停止はいつなくなりますか？</h3>
-<p>A. 退職して1か月を経過すると、退職した翌月分の年金から全額支給に戻ります（退職改定）。ただし1か月以内に再就職して厚生年金に加入した場合は年金額の再計算は行われません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>退職したら支給停止はいつなくなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>退職して1か月を経過すると、退職した翌月分の年金から全額支給に戻ります（退職改定）。ただし1か月以内に再就職して厚生年金に加入した場合は年金額の再計算は行われません。</p>
 
 <h2 id="shutten">出典</h2>
 
@@ -401,7 +407,7 @@
   <div>© 税金・経理・補助金ツールズ</div>
   <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0;padding-left:1.2em;list-style:disc"><li style="margin:2px 0"><b>適用</b>: 令和8年度　／　一次情報の確認: 2026年8月1日　／　<a href="https://laws.e-gov.go.jp/law/329AC0000000115" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年度　／　一次情報の確認: 2026年8月1日　／　<a href="https://laws.e-gov.go.jp/law/329AC0000000115" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
   <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
 </footer>
 
