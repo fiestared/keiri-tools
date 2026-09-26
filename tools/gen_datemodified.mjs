@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { verifiedContentDate } from './verified_content_dates.mjs';
 /**
  * 記事の「更新日」を git の履歴から焼き込む（JSON-LD の dateModified と、可視の更新日）。
  *
@@ -175,7 +176,7 @@ for (const fp of files) {
 
   const date = dirty.has(rel) ? todayJST() : (lastContentCommit.get(rel) ?? pub);
   // 公開日より前になることはない（履歴の付け替えなどで起きたら公開日に丸める）
-  const eff = date < pub ? pub : date;
+  const eff = verifiedContentDate(rel, date < pub ? pub : date);
 
   let out = s.replace(/("dateModified"\s*:\s*")\d{4}-\d{2}-\d{2}(")/, `$1${eff}$2`);
 

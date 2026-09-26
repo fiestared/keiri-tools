@@ -1,3 +1,4 @@
+import { verifiedContentDate } from './verified_content_dates.mjs';
 /**
  * sitemap.xml と コラム一覧(column/index.html の記事リスト) を、記事ファイルから生成する。
  *
@@ -1095,7 +1096,7 @@ const urls = [
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(({ loc, file }) => {
-  const d = file === hubPath && hubChanged ? TODAY : lastmodOf(file);
+  const d = file === hubPath && hubChanged ? TODAY : verifiedContentDate(`docs/${relative(DOCS, file)}`, lastmodOf(file));
   return `  <url><loc>${loc}</loc>${d ? `<lastmod>${d}</lastmod>` : ""}</url>`;
 }).join("\n")}
 </urlset>
