@@ -986,3 +986,47 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
 #grade-table .is-matched td { background: var(--accent-soft); font-weight: 700; border-top: 2px solid var(--accent); border-bottom: 2px solid var(--accent); }
 #grade-summary { margin: 16px 0; }
 @media print { #grade-lookup { display: none; } #grade-table th { position: static; } }
+
+/* Monthly work / optional device storage. Scoped; no changes to PR or article rails. */
+.retention-panel { margin: 24px 0; padding: 16px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.retention-panel[hidden], .bookmark-hint[hidden] { display: none; }
+.retention-panel h2 { margin-top: 0; }
+.retention-panel h3 { margin: 24px 0 16px; }
+.retention-panel h4 { margin: 24px 0 8px; }
+.retention-panel p, .bookmark-hint p { margin: 8px 0; }
+.retention-months, .retention-actions, .favorite-choices, .retention-links { display: flex; flex-wrap: wrap; gap: 8px 16px; }
+.retention-months button, .retention-actions button, .favorite-choices button, .retention-panel > button { min-height: 48px; }
+.retention-months button[aria-pressed=true], .favorite-choices button[aria-pressed=true] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.retention-opt, .monthly-task > label { display: flex; align-items: baseline; gap: 8px; min-height: 48px; margin: 0; padding: 8px 0; cursor: pointer; }
+.retention-opt input, .monthly-task input { flex: 0 0 auto; }
+.monthly-task { padding: 16px 0; border-bottom: 1px solid var(--line); }
+.monthly-task p { margin: 0 0 8px; }
+.retention-links a, #favorite-list a { display: inline-block; padding: 8px 0; }
+#favorite-list { margin: 8px 0 16px; padding-left: 24px; }
+.favorite-choices { margin: 16px 0; }
+.favorite-choices button { text-align: left; }
+.retention-return { margin: 16px 0; }
+.retention-return a { display: inline-block; padding: 8px 0; }
+.retention-actions { margin-top: 16px; }
+.retention-actions button { flex: 1 1 176px; }
+.saved-condition { display: flex; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.saved-condition [data-load] { flex: 1; text-align: left; min-width: 0; overflow-wrap: anywhere; }
+.saved-condition button, #memo-list [data-del] { min-width: 48px; min-height: 48px; }
+.bookmark-hint { margin: 16px 0 0; font-size: 14px; }
+.bookmark-hint summary, .optional-fields summary { cursor: pointer; min-height: 48px; padding: 12px 0; }
+.bookmark-hint a { overflow-wrap: anywhere; }
+.optional-fields { margin: 16px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 0 0 8px; }
+.optional-fields summary { font-weight: 700; }
+.optional-fields [data-optional-state] { font-size: 14px; color: var(--sub); font-weight: 400; }
+.retention-table { max-width: 100%; overflow: auto; margin: 16px 0; }
+.retention-table table { min-width: 640px; }
+.retention-table th { background: var(--accent-soft); }
+.retention-updates { margin: 24px 0; border-top: 1px solid var(--line); padding-top: 16px; }
+.retention-updates h3 { margin-top: 0; }
+.retention-updates li { margin: 16px 0; }
+.retention-updates p { margin: 8px 0; }
+.hj-item mark { background: #fff1c2; color: var(--ink); font-weight: 700; }
+@media print { .retention-actions, .favorite-choices, .bookmark-hint, .retention-months { display:none; } .retention-table { overflow:visible; } .retention-table table { min-width:0; } }
+
+.retention-months button { width: auto; flex: 1 1 200px; }
+#monthly-save-options { margin-top: 24px; }

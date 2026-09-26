@@ -343,6 +343,18 @@ export function search(index, query, limit = 3) {
     // 「◯◯の選び方」は、◯◯を主題にしていない記事へ偶然「選び方」が刺さっても返さない。
     .filter((x) => !profile.selection || x.leadCoverage >= 0.8)
     .sort((a, b) => b.s - a.s || (b.e.tool ? 1 : 0) - (a.e.tool ? 1 : 0));
+  // Only exact, short calculator intents. Writing/definition/article queries retain their ranking.
+  const directTools = { '源泉徴収':'gensen-choshu', '源泉徴収税額':'gensen-choshu', '源泉徴収計算':'gensen-choshu',
+    '社会保険料':'shakai-hoken', '社会保険料計算':'shakai-hoken', '手取り':'tedori',
+    '支払サイト':'shiharai-site', '営業日':'eigyobi', '有休':'yukyu', '有給休暇':'yukyu', '全銀カナ':'zengin-kana' };
+  const direct = directTools[normalize(query).replace(/ /g, '')];
+  const entry = direct && index.find(e => e.type === 'tool' && e.url === `/${direct}/`);
+  if (entry) {
+    const at = scored.findIndex(x => x.e === entry);
+    const priority = Math.max(MATCH_MIN + 1, (scored[0]?.s || 0) + 1);
+    if (at >= 0) scored.splice(at, 1);
+    scored.unshift({e:entry, s:priority});
+  }
   const top = scored.slice(0, limit);
   const best = scored.length ? scored[0].s : 0;
   // 最上位のエントリが、クエリのどのトークンで当たったか(質の門に使う)

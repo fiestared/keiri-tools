@@ -119,7 +119,17 @@ export function icsText(s) {
 }
 
 /** iCal(.ics)文字列を生成。終日イベント。 */
-export function toICS(rows, label) {
+export function foldICSLine(line) {
+  const encoder = new TextEncoder();
+  let out = '', bytes = 0;
+  for (const char of line) {
+    const n = encoder.encode(char).length;
+    if (bytes + n > 75) { out += "\r\n "; bytes = 1; }
+    out += char; bytes += n;
+  }
+  return out;
+}
+export function toICS(rows, label, now = new Date()) {
   const lines = [
     "BEGIN:VCALENDAR", "VERSION:2.0",
     "PRODID:-//keiri-tools.com//shiharai-site//JA",
@@ -128,13 +138,15 @@ export function toICS(rows, label) {
     const ymd = r.payIso.replaceAll("-", "");
     lines.push(
       "BEGIN:VEVENT",
+      `DTSTAMP:${now.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z")}`,
       `UID:${ymd}-${icsText(label).replace(/\s/g, "")}@keiri-tools.com`,
       `DTSTART;VALUE=DATE:${ymd}`,
       `SUMMARY:支払日: ${icsText(label)}`,
-      `DESCRIPTION:締め期間 ${r.periodFrom}〜${r.periodTo}`,
+      `DESCRIPTION:${icsText(`締め期間 ${r.periodFrom}〜${r.periodTo}\n条件変更時はこちらで再確認してください。取り込んだ予定は自動更新されません。\nhttps://keiri-tools.com/shiharai-site/`)}`,
+      "URL:https://keiri-tools.com/shiharai-site/",
       "END:VEVENT"
     );
   }
   lines.push("END:VCALENDAR");
-  return lines.join("\r\n");
+  return lines.map(foldICSLine).join("\r\n") + "\r\n";
 }

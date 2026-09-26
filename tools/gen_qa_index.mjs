@@ -134,6 +134,25 @@ function synonymsFor(base) {
 const buildTerms = (...parts) =>
   parts.join(" ").toLowerCase().replace(/\s+/g, " ").trim();
 
+const SEARCH_SUMMARIES = {
+  '/gensen-choshu/': '給与・賞与・報酬の源泉徴収税額を計算。令和8年分の税額表に対応。',
+  '/shakai-hoken/': '月給から社会保険料の本人・会社負担を計算。賞与にも対応。',
+  '/tedori/': '額面月給から社会保険料・源泉所得税・住民税を差し引いた手取りを計算。',
+  '/nenshu/': '年収別の手取りを早見表で比較。社会保険料・所得税・住民税の目安も確認。',
+  '/bonus-tedori/': '賞与の支給額と前月給与から、保険料・源泉所得税・手取りを計算。',
+  '/shiharai-site/': '締め日と支払条件から12か月の予定を計算。条件保存とカレンダー出力に対応。',
+  '/yukyu/': '入社日と勤務条件から、付与日数と次回の付与日を計算。条件を端末に保存可能。',
+  '/eigyobi/': '期間の営業日数、何営業日後の日付、休業日の前後調整を計算。',
+  '/zengin-kana/': '振込名義を全銀形式の半角カナへ一括変換。使える文字と文字数も確認。',
+  '/gensen-hyo/': '源泉徴収票の記入箇所を項目別に確認。給与・控除・税額をどこに書くかを整理。',
+  '/column/gensen-choshubo/': '源泉徴収簿の書き方・保存期間と、賃金台帳を兼ねる場合の確認点。',
+  '/column/gensen-choshuhyo-mikata/': '源泉徴収票の支払金額・所得控除・税額を読み解く。',
+  '/column/shakai-hokenryo-kojo/': '控除を受けられる人は保険料を支払った人。家族の分を払った場合も整理。',
+};
+function searchSummary(html, url, answer) {
+  return SEARCH_SUMMARIES[url] || strip(html.match(/<meta name="card-desc" content="([^"]*)"/)?.[1]) || answer;
+}
+
 const catOf = loadCategories();
 const entries = [];
 
@@ -157,7 +176,7 @@ for (const slug of readdirSync(COLUMN)) {
   const category = catOf.get(slug) || "";
   const base = `${title} ${answer}`;
   const terms = buildTerms(title, answer, category, ...synonymsFor(base), ...(ENTRY_ALIASES.get(slug) || []));
-  entries.push({ type: "article", url: `/column/${slug}/`, title, answer, tool, terms });
+  entries.push({ type: "article", url: `/column/${slug}/`, title, answer, summary: searchSummary(html, `/column/${slug}/`, answer), tool, terms });
 }
 
 // ---- ツール ----
@@ -178,7 +197,7 @@ for (const name of readdirSync(DOCS)) {
   const base = `${rawTitle} ${answer}`;
   const terms = buildTerms(rawTitle, answer, ...synonymsFor(base));
   // ツールは自分自身が「計算ツール」なので tool にも自分を入れ、CTA を出せるようにする。
-  entries.push({ type: "tool", url, title, answer, tool: url, terms });
+  entries.push({ type: "tool", url, title, answer, summary: searchSummary(html, url, answer), tool: url, terms });
 }
 
 // --check の安定のため url で決定的に並べる(索引の順序はマッチングに影響しない)。

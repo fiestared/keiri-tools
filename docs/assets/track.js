@@ -56,7 +56,7 @@
         type,
         function (e) {
           var t = e.target;
-          if (!t || !t.tagName) return;
+          if (!t || !t.tagName || t.closest("[data-retention-control]")) return;
           var tag = t.tagName.toLowerCase();
           if (tag !== "input" && tag !== "select" && tag !== "textarea") return;
           touched = true;
@@ -73,7 +73,7 @@
       "click",
       function (e) {
         var t = e.target;
-        if (!t || !t.closest) return;
+        if (!t || !t.closest || t.closest("[data-retention-control]")) return;
         var b = t.closest("button, input[type=submit], input[type=button]");
         if (!b) return;
         touched = true;
