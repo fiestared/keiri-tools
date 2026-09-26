@@ -19,7 +19,7 @@ async function calculate(page,button,result){await page.locator(button).click();
 const specs=[['gensen-choshu','amount','calcK','resultK','copy-k'],['shakai-hoken','monthly','calc','result','copy-result'],['tedori','gross','calc','result','copy-result']];
 try{
 for(const width of only==='fee'?[320]:[1280,390]){
- const page=await app.context.newPage({viewport:{width,height:900}});page.setDefaultTimeout(5000);
+ const page=await app.context.newPage();await page.setViewportSize({width,height:900});check(await page.evaluate(()=>innerWidth)===width,'requested viewport');page.setDefaultTimeout(5000);
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  if(!only||only==='stale'){
   for(const [slug,input,button,result,copy] of specs){
@@ -40,7 +40,12 @@ for(const width of only==='fee'?[320]:[1280,390]){
    const select=slug==='gensen-choshu'?'fuyo':'pref';await page.locator('#'+select).selectOption({index:1});check(await page.locator('#'+copy).isDisabled(),'select invalidates copy');await calculate(page,'#'+button,'#'+result);
    if(slug==='tedori'){await page.locator('#dependents').fill('1');check(await page.locator('#'+copy).isDisabled(),'dependents invalidates copy');await calculate(page,'#'+button,'#'+result);}
    await page.locator('#'+input).fill('');await page.locator('#'+button).click();check(await page.locator('#'+copy).isDisabled(),'error copy disabled');await page.locator('#'+input).fill('300000');await calculate(page,'#'+button,'#'+result);
-   await page.locator('#'+button).focus();await page.keyboard.press('Tab');check(await page.locator('#'+copy).evaluate(el=>el===document.activeElement),'Tab reaches copy');await page.keyboard.press('Enter');await page.waitForTimeout(50);await record(page,`${slug}-keyboard-${width}`);
+   await page.locator('#'+button).focus();await page.keyboard.press('Tab');
+   if (!(await page.locator('#'+copy).evaluate(el=>el===document.activeElement))) {
+    check(await page.evaluate(result=>{const el=document.activeElement;return document.getElementById(result).contains(el)&&el.scrollWidth>el.clientWidth&&getComputedStyle(el).overflowX==='auto';},result),'Tab reaches scrollable result at narrow width');
+    await page.keyboard.press('Tab');
+   }
+   check(await page.locator('#'+copy).evaluate(el=>el===document.activeElement),'Tab reaches copy '+slug+' '+width);await page.keyboard.press('Enter');await page.waitForTimeout(50);await record(page,`${slug}-keyboard-${width}`);
   }
   // Each withholding tab owns its result, including the two bonus methods.
   await page.goto(app.base+'/gensen-choshu/');await page.locator('#amount').fill('300000');await calculate(page,'#calcK','#resultK');
