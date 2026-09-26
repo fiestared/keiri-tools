@@ -120,6 +120,7 @@
   <p>入社日と勤務日数を入れるだけで、<b>付与日数・付与日・次回付与日</b>を計算します。<b>パート・アルバイトの比例付与</b>と、<b>年5日の取得義務</b>の判定にも対応。</p>
 </section>
 
+<p id="memo-return" class="retention-return" data-retention-control hidden><a href="#memo-card">覚えている条件から再計算する →</a></p>
 <div class="card">
   <label for="hire">入社日</label>
   <input type="date" id="hire">
@@ -146,13 +147,15 @@
 
   <button class="primary" id="calc">計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
+  <p class="hint">計算後、入社日と勤務条件を任意でこのブラウザに保存できます。名前の入力は不要です。共有PCでは保存せず使えます。</p>
+  <p id="memo-status" role="status" aria-live="polite"></p>
   <div id="memo-actions" style="display:none;margin-top:8px">
-    <button id="memo-save" class="btn-outline" type="button">この端末に覚えておく</button>
+    <button id="memo-save" data-retention-control class="btn-outline" type="button">この端末に覚えておく</button>
     <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
   </div>
 </div>
 
-<div class="card" id="memo-card" style="display:none">
+<div class="card" id="memo-card" data-retention-control tabindex="-1" style="display:none">
   <h2 style="font-size:16px;margin:0 0 2px">覚えている条件（次の付与日が近い順）</h2>
   <p style="font-size:12.5px;color:var(--sub);margin:0 0 10px">
     この端末のブラウザにだけ保存しています。<b>サーバーへは送信していません</b>。
@@ -167,20 +170,20 @@
 
   <h3>付与のルール（労働基準法39条）</h3>
   <p>入社から<b>6か月継続勤務し、全労働日の8割以上出勤</b>すると10日付与されます。以後は1年ごとに付与され、<b>6年6か月以降は年20日</b>で上限です。</p>
-  <table>
+  <div class="retention-table" tabindex="0" role="region" aria-label="有給休暇の付与日数表。横にスクロールできます"><table>
     <tr><th scope="col">勤続年数</th><th scope="col">6か月</th><th scope="col">1年6か月</th><th scope="col">2年6か月</th><th scope="col">3年6か月</th><th scope="col">4年6か月</th><th scope="col">5年6か月</th><th scope="col">6年6か月〜</th></tr>
     <tr><td>付与日数</td><td>10日</td><td>11日</td><td>12日</td><td>14日</td><td>16日</td><td>18日</td><td><b>20日</b></td></tr>
-  </table>
+  </table></div>
 
   <h3>パート・アルバイトの比例付与</h3>
   <p>週の所定労働日数が<b>4日以下 かつ 週30時間未満</b>の場合、所定労働日数に応じて比例付与されます。</p>
-  <table>
+  <div class="retention-table" tabindex="0" role="region" aria-label="有給休暇の付与日数表。横にスクロールできます"><table>
     <tr><th scope="col">週の日数</th><th scope="col">6か月</th><th scope="col">1年6か月</th><th scope="col">2年6か月</th><th scope="col">3年6か月</th><th scope="col">4年6か月</th><th scope="col">5年6か月</th><th scope="col">6年6か月〜</th></tr>
     <tr><td>週4日</td><td>7日</td><td>8日</td><td>9日</td><td>10日</td><td>12日</td><td>13日</td><td>15日</td></tr>
     <tr><td>週3日</td><td>5日</td><td>6日</td><td>6日</td><td>8日</td><td>9日</td><td>10日</td><td>11日</td></tr>
     <tr><td>週2日</td><td>3日</td><td>4日</td><td>4日</td><td>5日</td><td>6日</td><td>6日</td><td>7日</td></tr>
     <tr><td>週1日</td><td>1日</td><td>2日</td><td>2日</td><td>2日</td><td>3日</td><td>3日</td><td>3日</td></tr>
-  </table>
+  </table></div>
   <div class="callout">
     <b>間違えやすいポイント</b>
     週4日勤務でも、<b>週30時間以上働いていれば「通常の労働者」扱い</b>で10日付与されます（比例付与にはなりません）。日数だけで判断しないよう注意してください。
@@ -240,13 +243,21 @@ const CLAMP_NOTE = `<div style="font-size:12.5px;color:var(--sub);margin-top:8px
   ※ 6か月後・1年後に<b>同じ日が無い月</b>（例: 8/31入社 → 2/31は無い）は、
   <b>その月の末日</b>を付与日としています（民法143条2項・応当日がないときは末日）。</div>`;
 
+import { watchCalculation } from "../assets/calculation_state.js";
+import { trackRetention, recordUse, forgetUse, readJSON } from "../assets/retention.js";
+const calculation = watchCalculation($("calc").closest(".card"), $("result"), $("copy-result"));
+const memoNotice = text => { $("memo-status").textContent = text; };
+const syncMemoAction = () => { $("memo-save").disabled = $("result").dataset.resultState !== 'success'; };
+new MutationObserver(syncMemoAction).observe($("result"), {attributes:true,attributeFilter:['data-result-state']});
 $("calc").addEventListener("click", () => {
+  const ticket = calculation.begin(); syncMemoAction();
   const box = $("result");
   box.style.display = "block";
   const hire = $("hire").value;
-  if (!hire) { box.innerHTML = "入社日を入力してください。"; return; }
+  if (!hire) { box.dataset.resultState = 'error'; box.innerHTML = '<div class="warn">入社日を入力してください。</div>'; return; }
   const wd = Number($("wdays").value);
-  const wh = Number($("whours").value) || 0;
+  const wh = Number($("whours").value);
+  if (!Number.isFinite(wh) || wh < 0) { box.dataset.resultState = 'error'; box.innerHTML = '<div class="warn">週の所定労働時間を0以上の数で入力してください。</div>'; return; }
 
   const today = todayISO();
   const g = currentGrant(hire, wd, wh, today);
@@ -301,6 +312,7 @@ $("calc").addEventListener("click", () => {
   }
   box.innerHTML = html;
   $("memo-actions").style.display = "block";
+  calculation.finish(ticket); syncMemoAction();
 });
 
 /* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
@@ -332,6 +344,8 @@ function labelOf(m) {
 function renderMemos() {
   const list = store.read();
   $("memo-card").style.display = list.length ? "block" : "none";
+  $("memo-return").hidden = !list.length;
+  $("memo-return").querySelector('a').textContent = `覚えている${list.length}件の条件から再計算する →`;
   if (!list.length) { $("memo-list").innerHTML = ""; return; }
   const today = todayISO();
   const sorted = sortByNext(list, nextDateOf);
@@ -363,19 +377,28 @@ $("memo-list").addEventListener("click", (e) => {
     $("wdays").value = String(m.wdays);
     $("whours").value = String(m.whours);
     $("calc").click();
+    if ($("result").dataset.resultState === 'success') {
+      trackRetention('retention_restore','conditions','yukyu','restore'); recordUse('conditions','yukyu');
+      memoNotice('覚えている条件を復元し、今日の付与状況を再計算しました。');
+    }
     $("result").scrollIntoView({ block: "nearest" });
   } else if (del) {
-    store.write(removeMemo(store.read(), Number(del.dataset.del)));
-    renderMemos();
+    if (!store.write(removeMemo(store.read(), Number(del.dataset.del)))) { memoNotice('保存を消せませんでした。'); return; }
+    renderMemos(); memoNotice('選んだ条件を消しました。');
+    if (!store.read().length) forgetUse('conditions','yukyu');
+    ($( "memo-list").querySelector('[data-load]') || $("calc")).focus();
   }
 });
 
 $("memo-clear").addEventListener("click", () => {
-  store.write([]);
-  renderMemos();
+  if (!store.write([])) { memoNotice('保存を消せませんでした。'); return; }
+  renderMemos(); forgetUse('conditions','yukyu'); memoNotice('覚えていた条件をすべて消しました。'); $("calc").focus();
+  trackRetention('retention_clear','conditions','yukyu','clear');
 });
 
 $("memo-save").addEventListener("click", () => {
+  if ($("result").dataset.resultState !== 'success') return;
+  if (!readJSON('yukyu_memo_v1', []).ok) { memoNotice('保存を読み取れませんでした。ブラウザのサイトデータ設定を確認してください。'); return; }
   const hire = $("hire").value;
   if (!hire) return;
   const entry = {
@@ -387,9 +410,12 @@ $("memo-save").addEventListener("click", () => {
   const ok = store.write(addMemo(store.read(), entry));
   if (!ok) {
     $("memo-save").textContent = "この端末では保存できません";
+    memoNotice('保存できませんでした。計算はそのまま使えます。');
     return;
   }
   sendOnce("tool_save", { tool: "yukyu" });
+  trackRetention('retention_save','conditions','yukyu','save'); recordUse('conditions','yukyu',{baseline:true});
+  memoNotice('このブラウザに保存しました。次回は「覚えている条件から再計算する」から戻れます。');
   $("memo-save").textContent = "覚えました";
   setTimeout(() => { $("memo-save").textContent = "この端末に覚えておく"; }, 2000);
   renderMemos();
@@ -397,12 +423,21 @@ $("memo-save").addEventListener("click", () => {
 
 /* 初期表示。★別日に戻ってきたときだけ鳴らす（同日の再計算は鳴らさない） */
 (function initMemos() {
-  if (!store.usable()) { $("memo-save").style.display = "none"; }
+  if (!store.usable()) memoNotice('このブラウザでは保存できません。計算はそのまま使えます。');
   const list = store.read();
   if (isRevisit(list, todayJst())) sendOnce("tool_revisit", { tool: "yukyu" });
   renderMemos();
 })();
 </script>
 <script src="../assets/a11y_error.js" defer></script>
+
+<script type="module">
+import { calculatorEnter, optionalSummary } from "../assets/calculator_keyboard.js";
+const calcButton = document.getElementById("calc");
+calculatorEnter(calcButton.closest(".card"), calcButton);
+document.querySelectorAll(".optional-fields").forEach(optionalSummary);
+import { attachBookmarkHint } from "../assets/retention.js";
+attachBookmarkHint(document.getElementById("result"), "yukyu");
+</script>
 </body>
 </html>

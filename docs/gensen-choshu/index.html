@@ -138,6 +138,7 @@
   gtag('config', 'G-E742DSDHPD');
 </script>
 <script src="../assets/track.js" defer></script>
+<link rel="alternate" type="application/rss+xml" title="経理の制度変更" href="/updates.xml">
 </head>
 <body>
 <a class="skip-link" href="#main">本文へ移動</a>
@@ -187,6 +188,7 @@
       <select id="fuyo"></select>
       <div class="hint">源泉控除対象配偶者と控除対象扶養親族の合計。<b>16歳未満の子は含めません。</b></div>
 
+      <details class="optional-fields" id="additional"><summary>障害者・寡婦・ひとり親などの加算（該当する場合） <span data-optional-state>未設定</span></summary>
       <label>本人が次に該当する（該当するごとに1人を加算）</label>
       <div class="opts">
         <label><input type="checkbox" id="shogaisha">障害者</label>
@@ -198,6 +200,7 @@
       <label for="fuyoShogai">扶養親族のうち 障害者・同居特別障害者の人数</label>
       <select id="fuyoShogai"></select>
       <div class="hint">該当するごとに扶養親族等の数に1人を加算します（同居特別障害者は2人分ではなく1人）。</div>
+      </details>
     </div>
 
     <div id="otsu-only" style="display:none">
@@ -248,6 +251,7 @@
       <select id="fuyoS"></select>
       <div class="hint">源泉控除対象配偶者と控除対象扶養親族の合計。<b>16歳未満の子は含めません。</b></div>
 
+      <details class="optional-fields" id="additionalS"><summary>障害者・寡婦・ひとり親などの加算（該当する場合） <span data-optional-state>未設定</span></summary>
       <label>本人が次に該当する（該当するごとに1人を加算）</label>
       <div class="opts">
         <label><input type="checkbox" id="shogaishaS">障害者</label>
@@ -258,6 +262,7 @@
 
       <label for="fuyoShogaiS">扶養親族のうち 障害者・同居特別障害者の人数</label>
       <select id="fuyoShogaiS"></select>
+      </details>
     </div>
 
     <label for="monthsS">賞与の計算期間</label>
@@ -294,6 +299,8 @@
   </div>
 </div>
 
+<p class="retention-return"><a href="../column/keiri-nenkan-schedule/#month-start">今月・翌月の経理を確認する →</a></p>
+<!--retention-updates:S--><div class="retention-updates"><h3>制度変更の確認</h3><p class="hint">適用日と変更点を記録しています。日々の更新一覧ではありません。</p><ul><li id="change-gensen-2027"><b>2027年分の源泉徴収税額表へ切替が必要</b><br>適用日：<time datetime="2027-01-01">2027-01-01</time><p>基礎控除の引上げ等に伴い、2027年分の給与・賞与の税額表が変わります。2026年分以前には使えません。このサイトの源泉徴収計算機は2026年分です。年の切替時に使用する表を確認してください。</p><a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2027/01.htm" rel="nofollow">国税庁：令和9年分 源泉徴収税額表</a></li></ul><p><a href="/updates.xml">制度変更のRSS</a> <span class="hint">対応するRSSリーダーで購読できます。記録追加時だけ通知対象になります。</span></p></div><!--retention-updates:E-->
 <section class="faq">
   <h2>給与の源泉徴収税額の計算方法</h2>
 
@@ -778,5 +785,15 @@ attachCopyButton(gid("copy-s"), gid("resultS"));
 })();
 </script>
 <script src="../assets/a11y_error.js" defer></script>
+
+<script type="module">
+import { calculatorEnter, optionalSummary } from "../assets/calculator_keyboard.js";
+for (const [pane, button] of [["pane-kyuyo","calcK"],["pane-shoyo","calcS"],["pane-hoshu","calc"]]) calculatorEnter(document.getElementById(pane),document.getElementById(button));
+document.querySelectorAll(".optional-fields").forEach(optionalSummary);
+import { attachBookmarkHint } from "../assets/retention.js";
+attachBookmarkHint(document.getElementById("resultK"), "gensen-choshu");
+attachBookmarkHint(document.getElementById("resultS"), "gensen-choshu");
+attachBookmarkHint(document.getElementById("result"), "gensen-choshu");
+</script>
 </body>
 </html>

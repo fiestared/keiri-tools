@@ -122,6 +122,7 @@
   gtag('config', 'G-E742DSDHPD');
 </script>
 <script src="../assets/track.js" defer></script>
+<link rel="alternate" type="application/rss+xml" title="経理の制度変更" href="/updates.xml">
 </head>
 <body>
 <a class="skip-link" href="#main">本文へ移動</a>
@@ -165,17 +166,21 @@
   <label for="monthly">報酬月額（円）<span class="hint">　基本給＋残業手当＋通勤手当など、税引き前の総支給額</span></label>
   <input type="number" id="monthly" placeholder="例: 300000" inputmode="numeric">
 
+  <details class="optional-fields" id="bonus-fields"><summary>賞与も計算する（任意） <span data-optional-state>未設定</span></summary>
   <label for="bonus">賞与額（円・任意）<span class="hint">　入力すると賞与の保険料も計算します</span></label>
   <input type="number" id="bonus" placeholder="例: 500000" inputmode="numeric">
 
   <label for="yearpaid">今年度すでに支給された賞与の合計（円・任意）<span class="hint">　健康保険の上限（年度累計573万円）の判定に使います。ふつうは空欄のままで大丈夫です</span></label>
   <input type="number" id="yearpaid" placeholder="例: 0" inputmode="numeric">
 
+  </details>
+
   <button class="primary" id="calc">計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
 </div>
 
+<!--retention-updates:S--><div class="retention-updates"><h3>制度変更の確認</h3><p class="hint">適用日と変更点を記録しています。日々の更新一覧ではありません。</p><ul><li id="change-kodomo-support-2026"><b>2026年4月分から子ども・子育て支援金を徴収</b><br>適用日：<time datetime="2026-04-01">2026-04-01</time><p>協会けんぽの一般被保険者は2026年4月分（5月納付分）から支援金率0.23%。社会保険料計算機に反映済みです。給与からの控除月は勤務先の徴収方法も確認してください。</p><a href="https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/003/" rel="nofollow">協会けんぽ：子ども・子育て支援金率</a></li></ul><p><a href="/updates.xml">制度変更のRSS</a> <span class="hint">対応するRSSリーダーで購読できます。記録追加時だけ通知対象になります。</span></p></div><!--retention-updates:E-->
 <article>
 
 <p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
@@ -786,5 +791,12 @@ import { attachCopyButton } from "../assets/copy_result.js";
 attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
 <script src="../assets/a11y_error.js" defer></script>
+
+<script type="module">
+import { calculatorEnter, optionalSummary } from "../assets/calculator_keyboard.js";
+const calcButton = document.getElementById("calc");
+calculatorEnter(calcButton.closest(".card"), calcButton);
+document.querySelectorAll(".optional-fields").forEach(optionalSummary);
+</script>
 </body>
 </html>

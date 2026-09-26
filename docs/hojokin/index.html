@@ -282,6 +282,7 @@ import { filterRows, sortRows, freshness, capturedLabel, notStarted, employeeCap
   descOf, fmtDeadline, PAGE_SIZE, PURPOSES, PREF_GROUPS, SOURCE_NOTICE }
   from "../assets/hojokin_core.js";
 
+import { highlightKeyword } from "../assets/keyword_highlight.js";
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const fold = $("hj-filter-fold");
@@ -313,6 +314,7 @@ let D = null;
 const hojokinReady = fetch("../assets/hojokin_jgrants.json")
   .then((r) => r.json()).then((d) => { D = d; return true; }).catch(() => false);
 let shown = PAGE_SIZE;
+let lastRenderKey = '';
 
 function conditions() {
   return {
@@ -399,8 +401,8 @@ function itemHTML(r, today) {
   const href = r.front_subsidy_detail_page_url || `https://www.jgrants-portal.go.jp/subsidy/${encodeURIComponent(r.id)}`;
   return `<article class="hj-item">
     <p class="hj-status"><span class="hj-days${deadline.cls ? ` ${deadline.cls}` : ''}">${esc(deadline.text)}</span>${notStarted(r, today) ? '<span class="hj-yet">受付開始前</span>' : ''}</p>
-    <h3><a href="${esc(href)}" rel="nofollow noopener" target="_blank">${esc(r.title)}</a></h3>
-    ${desc ? `<p class="hj-desc">${esc(desc)}</p>` : ''}
+    <h3><a href="${esc(href)}" rel="nofollow noopener" target="_blank">${highlightKeyword(r.title, $("keyword").value)}</a></h3>
+    ${desc ? `<p class="hj-desc">${highlightKeyword(desc, $("keyword").value)}</p>` : ''}
     <p class="hj-meta"><span>${esc(areaLabel(r.target_area_search))}</span>
       ${amount ? `<span class="hj-amount">上限 <b>${esc(amount.text)}</b>${amount.budget ? '<span class="hj-approx">※</span>' : ''}</span>` : ''}
       ${r.subsidy_rate ? `<span>補助率 ${esc(r.subsidy_rate)}</span>` : ''}${cap !== null ? `<span>従業員${cap}名以下</span>` : ''}</p>
@@ -420,6 +422,10 @@ async function render() {
   $("hj-tab-n1").textContent = `${filterRows(D.subsidies, defaults, today).length}件`;
   const f = freshness(D._meta, today);
   const cond = conditions();
+  // input then blur/change can otherwise replace a result button between mousedown and click.
+  const renderKey = JSON.stringify([cond, $("sort").value, shown, KOYOU_NAMES, today.toDateString()]);
+  if (renderKey === lastRenderKey) return;
+  lastRenderKey = renderKey;
   const hit = sortRows(filterRows(D.subsidies, cond, today), $("sort").value, today);
   // キーワードが雇用関係助成金の制度名に当たるか（当たれば下の枠へ誘導する）
   const kw = String(cond.keyword || '').trim();
@@ -446,8 +452,10 @@ async function render() {
       ${suggestions.length ? `<p class="hint">条件を1つ外すと:</p><div class="hj-chips">${suggestions.map((x) => `<button class="hj-chip" data-remove="${x.key}">${esc(x.text)}を外す → ${x.n}件</button>`).join('')}</div>` : ''}</div>`;
   }
 
+  const keepStatusFocus = document.activeElement?.id === "hj-status";
   $("result").innerHTML = `
     ${f.stale ? `<div class="hj-warn" id="stale"><b>${esc(f.text)}</b>。締切はその後に変わっている可能性があります。応募の前に必ず公式ページでご確認ください。</div>` : ""}
+    ${/^it$/i.test(kw.normalize('NFKC')) ? `<div class="note" id="hj-it-hint"><p>「IT」はINPITなどの名称の一部にも一致します。導入目的で探す場合はこちら。</p><button type="button" class="btn-outline" data-it-purpose>「IT」を外して設備・IT導入で探す</button></div>` : ''}
     <div id="hj-status" aria-live="polite"><div class="big"><span id="count">${hit.length}</span>件</div>${rest ? `<p class="hint" id="hj-shown">うち${visible.length}件を表示中（残り${rest}件）</p>` : ''}</div>
     ${koyouHit.length ? `<div class="hj-warn" id="hj-koyou-hint">
       入力した語は<b>雇用関係助成金</b>にも当てはまります（${koyouHit.length}件）。
@@ -464,12 +472,18 @@ async function render() {
       当サイトは申請の支援を行っていません。${hasBudget ? '※印の金額は制度全体の予算規模が登録されている場合があります。1社あたりの上限は必ずリンク先でご確認ください。' : ''}
     </div>`;
   syncURL(cond);
+  if (keepStatusFocus) { $("hj-status").tabIndex = -1; $("hj-status").focus({preventScroll:true}); }
 }
 
 for (const id of ["area", "employees", "maxdays", "minamount", "keyword", "sort", "include-national", "hj-purpose"]) {
   for (const event of ['input', 'change']) $(id).addEventListener(event, () => { shown = PAGE_SIZE; render(); });
 }
 $("result").addEventListener('click', (event) => {
+  if (event.target.closest('[data-it-purpose]')) {
+    $("keyword").value = '';
+    purposeInputs.find(input => input.value === '設備整備・IT導入をしたい').checked = true;
+    shown = PAGE_SIZE; render().then(() => { $("hj-status").tabIndex = -1; $("hj-status").focus(); }); return;
+  }
   const remove = event.target.closest('[data-remove]');
   if (remove) { removeCondition(remove.dataset.remove); shown = PAGE_SIZE; render(); return; }
   if (event.target.closest('[data-reset]')) { resetAll(); shown = PAGE_SIZE; render(); return; }

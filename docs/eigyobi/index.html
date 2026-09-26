@@ -346,5 +346,14 @@ attachCopyButton(document.getElementById("copy-result"), document.getElementById
 })();
 </script>
 <script src="../assets/a11y_error.js" defer></script>
+
+<script type="module">
+import { calculatorEnter, optionalSummary } from "../assets/calculator_keyboard.js";
+const calcButton = document.getElementById("calc");
+calculatorEnter(calcButton.closest(".card"), calcButton);
+document.querySelectorAll(".optional-fields").forEach(optionalSummary);
+import { attachBookmarkHint } from "../assets/retention.js";
+attachBookmarkHint(document.getElementById("result"), "eigyobi");
+</script>
 </body>
 </html>

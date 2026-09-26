@@ -91,9 +91,10 @@
 <p class="article-meta">更新日: <time datetime="2026-09-26">2026年9月26日</time></p>
   <p class="lead">支払サイトとは、締め日から支払日までの期間です（末締め翌月末なら約1か月）。締め日と支払条件から、向こう1年の支払予定日を一括計算します。土日祝・年末年始は自動で営業日調整。条件はこの端末内にだけ保存されます。</p>
 
+  <p id="saved-return" class="retention-return" hidden data-retention-control><a href="#saved">保存した条件から再計算する</a></p>
   <div class="card">
     <label for="label">取引先名（任意・保存やカレンダー出力に使います）</label>
-    <input type="text" id="label" placeholder="例: 株式会社ヤマダ" style="width:100%;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px">
+    <input type="text" id="label" placeholder="例: 株式会社ヤマダ" style="width:100%;font-size:16px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px">
 
     <div class="fee-pair">
       <div>
@@ -133,16 +134,21 @@
     </div>
 
     <button class="primary" id="calc">向こう12ヶ月の支払日を計算</button>
-    <div style="display:flex;gap:8px;margin-top:10px">
-      <button class="primary" id="save" style="background:#5b6b7b;flex:1">この条件を保存</button>
-      <button class="primary" id="ics" style="background:#5b6b7b;flex:1;display:none">カレンダー(.ics)</button>
-      <button class="primary" id="csv" style="background:#5b6b7b;flex:1;display:none">CSVコピー</button>
+    <p class="hint">同じ条件でまた計算する場合は、任意でこのブラウザに保存できます。共有PCでは取引先名を入れずに使えます。別のPCには引き継がれません。</p>
+    <div class="retention-actions">
+      <button class="primary" id="save" data-retention-control style="background:#5b6b7b">この条件を保存</button>
+      <button class="primary" id="ics" data-retention-control style="background:#5b6b7b;display:none">カレンダー(.ics)</button>
+      <button class="primary" id="csv" style="background:#5b6b7b;display:none">CSVコピー</button>
     </div>
-    <div id="saved" role="status" aria-live="polite" aria-atomic="true" style="margin-top:12px"></div>
+    <p class="hint">取り込んだカレンダー予定は自動更新されません。条件が変わったら、このページで再計算してください。</p>
+    <p id="save-status" role="status" aria-live="polite"></p>
+    <div id="saved" data-retention-control tabindex="-1" style="margin-top:16px"></div>
+    <button type="button" class="btn-outline" id="saved-clear" data-retention-control hidden>保存した条件をすべて消す</button>
     <div id="out" role="status" aria-live="polite" aria-atomic="true" style="margin-top:16px"></div>
     <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
   </div>
 
+<p class="retention-return"><a href="../column/keiri-nenkan-schedule/#month-start">今月・翌月の経理を確認する →</a></p>
   <section class="faq">
     <h2 id="faq">よくある質問</h2>
     <h3>支払サイトとは何ですか？</h3>
@@ -169,6 +175,9 @@
 <script type="module">
 import { schedule, toICS, DOW_JA } from "../assets/payday_core.js";
 import { attachCopyButton } from "../assets/copy_result.js";
+import { watchCalculation } from "../assets/calculation_state.js";
+import { readConditions, writeConditions, PAYDAY_KEY } from "../assets/payday_store.js";
+import { removeStored, trackRetention, recordUse, forgetUse } from "../assets/retention.js";
 
 const $ = (id) => document.getElementById(id);
 let HOLIDAYS = {};
@@ -184,8 +193,14 @@ const holidaysReady = fetch("../assets/holidays_jp.json")
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
-const LS_KEY = "shiharai_conditions_v1";
-const loadSaved = () => JSON.parse(localStorage.getItem(LS_KEY) || "[]");
+const calculation = watchCalculation($("calc").closest(".card"), $("out"), $("copy-result"));
+const storageError = '保存データを読み取れませんでした。計算は使えます。保存した条件をすべて消すと、保存し直せます。';
+function saveNotice(text) { $("save-status").textContent = text; }
+function syncExports() {
+  const disabled = $("out").dataset.resultState !== 'success';
+  $("ics").disabled = disabled; $("csv").disabled = disabled;
+}
+new MutationObserver(syncExports).observe($("out"), {attributes:true,attributeFilter:['data-result-state']});
 
 function cond() {
   return {
@@ -204,11 +219,13 @@ function condLabel(c) {
 }
 
 async function run() {
+  const ticket = calculation.begin();
+  syncExports();
+  const c = cond(), label = ($("label").value || condLabel(c)).trim();
   const holidaysOk = await holidaysReady; // ← 祝日データが届くまで計算しない
   const now = new Date();
-  const c = cond();
   lastRows = schedule(c, now.getFullYear(), now.getMonth() + 1, 12, HOLIDAYS);
-  lastLabel = ($("label").value || condLabel(c)).trim();
+  lastLabel = label;
   const rows = lastRows.map((r) => `
     <tr>
       <td style="padding:6px 8px;border-bottom:1px solid var(--line);font-size:13px">${r.periodFrom.slice(5).replace("-", "/")}〜${r.periodTo.slice(5).replace("-", "/")}</td>
@@ -234,66 +251,91 @@ async function run() {
     ${notes.map((n) => `<div class="note" style="margin-top:10px">${n}</div>`).join("")}`;
   $("ics").style.display = "block";
   $("csv").style.display = "block";
+  calculation.finish(ticket); syncExports();
+  return $("out").dataset.resultState === 'success';
 }
 
 $("calc").addEventListener("click", run);
 
 $("ics").addEventListener("click", () => {
+  if ($("out").dataset.resultState !== 'success') return;
   const blob = new Blob([toICS(lastRows, lastLabel)], { type: "text/calendar" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = `shiharai_${lastLabel}.ics`;
   a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  trackRetention('retention_ics_export', 'calendar', 'shiharai-site');
 });
 
 $("csv").addEventListener("click", async () => {
+  if ($("out").dataset.resultState !== 'success') return;
   const csv = ["締め期間から,締め期間まで,支払予定日,曜日,営業日調整"]
     .concat(lastRows.map((r) => `${r.periodFrom},${r.periodTo},${r.payIso},${r.payDow},${r.moved ? "あり" : "なし"}`))
     .join("\n");
-  await navigator.clipboard.writeText(csv);
+  try { await navigator.clipboard.writeText(csv); }
+  catch { saveNotice('CSVをコピーできませんでした。ブラウザのクリップボード設定を確認してください。'); return; }
   $("csv").textContent = "コピーしました ✓";
   setTimeout(() => ($("csv").textContent = "CSVコピー"), 1500);
 });
 
 $("save").addEventListener("click", () => {
-  const list = loadSaved();
-  list.push({ label: $("label").value || condLabel(cond()), cond: cond() });
-  localStorage.setItem(LS_KEY, JSON.stringify(list));
-  renderSaved();
+  const data = readConditions();
+  if (!data.ok) { saveNotice(storageError); return; }
+  const entry = {label: $("label").value || condLabel(cond()), cond: cond()};
+  const list = data.list.filter(s => JSON.stringify(s) !== JSON.stringify(entry));
+  list.push(entry);
+  if (!writeConditions(list)) { saveNotice('保存できませんでした。計算はそのまま使えます。'); return; }
+  renderSaved(); saveNotice('このブラウザに保存しました。次回は「保存した条件から再計算する」から戻れます。');
+  trackRetention('retention_save', 'conditions', 'shiharai-site', 'save');
+  recordUse('conditions', 'shiharai-site', {baseline:true});
 });
-
 function renderSaved() {
-  const list = loadSaved();
-  $("saved").innerHTML = list.length
-    ? "<div style='font-size:12px;color:var(--sub);margin-bottom:4px'>保存済みの取引先（この端末のみ）</div>" +
-      list.map((s, i) => `
-        <span style="display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:99px;padding:4px 10px;margin:2px;font-size:13px;background:#fff">
-          <a href="#" data-load="${i}" style="text-decoration:none;color:var(--accent)">${esc(s.label)}</a>
-          <a href="#" data-del="${i}" style="text-decoration:none;color:#c33">×</a>
-        </span>`).join("")
-    : "";
-  $("saved").querySelectorAll("[data-load]").forEach((el) =>
-    el.addEventListener("click", (e) => {
-      e.preventDefault();
-      const s = loadSaved()[Number(el.dataset.load)];
-      $("label").value = s.label;
-      $("closing").value = String(s.cond.closing);
-      $("offset").value = String(s.cond.offsetMonths);
-      $("payday").value = String(s.cond.payday);
-      document.querySelector(`input[name="adjust"][value="${s.cond.adjust}"]`).checked = true;
-      run();
-    }));
-  $("saved").querySelectorAll("[data-del]").forEach((el) =>
-    el.addEventListener("click", (e) => {
-      e.preventDefault();
-      const list2 = loadSaved();
-      list2.splice(Number(el.dataset.del), 1);
-      localStorage.setItem(LS_KEY, JSON.stringify(list2));
-      renderSaved();
-    }));
+  const data = readConditions(), list = data.list;
+  $("saved-return").hidden = !list.length;
+  $("saved-return").querySelector('a').textContent = `保存した${list.length}件の条件から再計算する →`;
+  $("saved-clear").hidden = data.ok && !list.length;
+  if (!data.ok) saveNotice(storageError);
+  $("saved").innerHTML = list.length ? '<h3>保存した条件（このブラウザのみ）</h3>' + list.map((s,i) =>
+    `<div class="saved-condition"><button type="button" class="btn-outline" data-load="${i}">${esc(s.label)}<br><span class="hint">${esc(condLabel(s.cond))} — 復元して再計算</span></button><button type="button" class="btn-outline" data-del="${i}" aria-label="${esc(s.label)} の保存を消す">消す</button></div>`).join('') : '';
 }
+$("saved").addEventListener('click', async e => {
+  const load = e.target.closest('[data-load]'), del = e.target.closest('[data-del]');
+  const data = readConditions(); if (!data.ok) { saveNotice(storageError); return; }
+  if (load) {
+    const s = data.list[Number(load.dataset.load)]; if (!s) return;
+    $("label").value = s.label; $("closing").value = String(s.cond.closing);
+    $("offset").value = String(s.cond.offsetMonths); $("payday").value = String(s.cond.payday);
+    document.querySelector(`input[name="adjust"][value="${s.cond.adjust}"]`).checked = true;
+    if (await run()) {
+      saveNotice('保存した条件を復元し、現在の月から再計算しました。');
+      trackRetention('retention_restore','conditions','shiharai-site','restore'); recordUse('conditions','shiharai-site');
+      $("out").scrollIntoView({block:'nearest'});
+    }
+  } else if (del) {
+    data.list.splice(Number(del.dataset.del), 1);
+    if (!writeConditions(data.list)) { saveNotice('保存を消せませんでした。'); return; }
+    renderSaved(); saveNotice('選んだ条件を消しました。');
+    if (!data.list.length) forgetUse('conditions','shiharai-site');
+    $("saved-clear").hidden ? $("save").focus() : $("saved").querySelector('[data-load]').focus();
+  }
+});
+$("saved-clear").addEventListener('click', () => {
+  if (!removeStored(PAYDAY_KEY)) { saveNotice('保存を消せませんでした。ブラウザのサイトデータ設定も確認してください。'); return; }
+  forgetUse('conditions','shiharai-site'); renderSaved(); saveNotice('保存した条件をすべて消しました。'); $("save").focus();
+  trackRetention('retention_clear','conditions','shiharai-site','clear');
+});
 renderSaved();
 attachCopyButton($("copy-result"), $("out"));
+</script>
+
+<script type="module">
+import { calculatorEnter, optionalSummary } from "../assets/calculator_keyboard.js";
+const calcButton = document.getElementById("calc");
+calculatorEnter(calcButton.closest(".card"), calcButton);
+document.querySelectorAll(".optional-fields").forEach(optionalSummary);
+import { attachBookmarkHint } from "../assets/retention.js";
+attachBookmarkHint(document.getElementById("out"), "shiharai-site");
 </script>
 </body>
 </html>

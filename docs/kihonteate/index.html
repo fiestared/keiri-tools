@@ -485,5 +485,12 @@ import { attachCopyButton } from "../assets/copy_result.js";
 attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
 <script src="../assets/a11y_error.js" defer></script>
+
+<script type="module">
+import { calculatorEnter, optionalSummary } from "../assets/calculator_keyboard.js";
+const calcButton = document.getElementById("calc");
+calculatorEnter(calcButton.closest(".card"), calcButton);
+document.querySelectorAll(".optional-fields").forEach(optionalSummary);
+</script>
 </body>
 </html>

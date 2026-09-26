@@ -101,6 +101,20 @@
     <button type="button" data-p="jigyo" aria-pressed="false">個人事業主・フリーランス</button>
     <button type="button" data-p="keiri" aria-pressed="false">経理担当</button>
   </div>
+  <section id="favorite-tools" class="retention-panel" data-retention-control hidden aria-labelledby="favorite-heading">
+    <h2 id="favorite-heading">経理の仕事を再開する</h2>
+    <p><a href="/column/keiri-nenkan-schedule/#month-start">今月・翌月の経理を確認する →</a></p>
+    <h3>よく使う道具</h3>
+    <p class="hint">このブラウザだけの道具箱です。保存するのは道具のIDだけで、入力条件や閲覧履歴は保存しません。</p>
+    <ul id="favorite-list"></ul>
+    <details><summary>道具箱に追加・解除する（任意）</summary><div class="favorite-choices">
+      <button type="button" class="btn-outline" data-favorite="shiharai-site" aria-pressed="false">追加：支払サイト・支払日</button>
+      <button type="button" class="btn-outline" data-favorite="eigyobi" aria-pressed="false">追加：営業日・期限</button>
+      <button type="button" class="btn-outline" data-favorite="gensen-choshu" aria-pressed="false">追加：源泉徴収税額</button>
+      <button type="button" class="btn-outline" data-favorite="yukyu" aria-pressed="false">追加：有給休暇の付与日数</button>
+    </div><button type="button" class="btn-outline" id="favorite-clear">道具箱をすべて消す</button></details>
+    <p role="status" aria-live="polite"></p>
+  </section>
   <nav class="cat-nav" aria-label="ツールのカテゴリ">
     <a href="#t-kyuyo"><span class="cat-label">わたしの給与・手取り（会社員・パート）</span></a>
     <a href="#t-setsuzei"><span class="cat-label">わたしの節税・控除（会社員・個人）</span></a>
@@ -704,7 +718,7 @@ function card(e) {
   return `<div class="qa-card">
       <span class="qa-tag${isTool ? " is-tool" : ""}">${isTool ? "ツール" : "記事"}</span>
       <a class="qa-card-title" href="${esc(e.url)}">${esc(e.title)}</a>
-      <p class="qa-card-ans">${esc(e.answer)}</p>
+      <p class="qa-card-ans">${esc(e.summary || e.answer)}</p>
       <div class="qa-links"><a href="${esc(e.url)}">${isTool ? "ツールを開く" : "詳しく読む"} →</a>${toolLink}</div>
     </div>`;
 }
@@ -790,5 +804,6 @@ form.addEventListener("submit", (ev) => { ev.preventDefault(); clearTimeout(qaTi
   apply(saved && ORDER[saved] ? saved : "kojin", false);
 })();
 </script>
+<script type="module" src="assets/favorite_tools.js"></script>
 </body>
 </html>
