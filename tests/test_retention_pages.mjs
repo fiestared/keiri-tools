@@ -9,6 +9,7 @@ const mutations={
  stale:['/assets/calculation_state.js',"if (['success', 'pending', 'stale'].includes(box.dataset.resultState)) stale();",'if (false) stale();'],
  ics:['/assets/payday_core.js','"URL:https://keiri-tools.com/shiharai-site/"','"URL:https://keiri-tools.com/"'],
 };
+mutations.layout=['/assets/style.css','.saved-condition button.btn-outline { width: auto; margin-top: 0; }','.saved-condition button.btn-outline { width: 100%; margin-top: 0; }'];
 let mutated=false;
 const app=await start((path,body)=>{if(!mutation)return body;const[target,from,to]=mutations[mutation];if(path!==target)return body;const s=body.toString();assert(s.includes(from),'mutation target');mutated=true;return s.replace(from,to);}), artifacts=process.env.RETENTION_ARTIFACTS, log=[];
 const check=(x,msg)=>assert(x,'RETENTION: '+msg);
@@ -44,6 +45,9 @@ for(const width of [1280,390]){
   await record(p,`${slug}-restored-${width}`);
   await p.locator('#'+save).scrollIntoViewIfNeeded();await record(p,`${slug}-save-controls-${width}`);
   if(slug==='shiharai-site'){
+   const restoreBox=await p.locator('#saved [data-load]').first().boundingBox(), deleteBox=await p.locator('#saved [data-del]').first().boundingBox();
+   check(restoreBox.width>=150 && restoreBox.height<160 && deleteBox.width>=48 && deleteBox.width<90,'saved row gives readable space to restore');
+   await p.locator('#saved').evaluate(el=>el.scrollIntoView({block:'start'}));await record(p,`paid-saved-list-${width}`);
    const downloadPromise=p.waitForEvent('download');await p.locator('#ics').click();const download=await downloadPromise;
    const stream=await download.createReadStream();let txt='';for await(const c of stream)txt+=c.toString();check(txt.includes('URL:https://keiri-tools.com/shiharai-site/'),'download return URL');
    check((await events(p)).some(e=>e.name==='retention_ics_export'),'ICS export event');
@@ -55,7 +59,7 @@ for(const width of [1280,390]){
   await p.locator(slug==='yukyu'?'#memo-clear':'#saved-clear').click();await p.reload();check(await p.locator('[data-load]').count()===0,'clear persists');
  }
  await p.goto(app.base+'/');await p.locator('[data-p=keiri]').click();await p.locator('#favorite-tools summary').click();await p.locator('#favorite-clear').click();await p.reload();check(await p.locator('[data-favorite-link]').count()===0,'bulk favorite clear');
- await p.goto(app.base+'/column/keiri-nenkan-schedule/');await p.locator('#monthly-checklist').waitFor({state:'visible'});
+ await p.goto(app.base+'/column/keiri-nenkan-schedule/');await p.locator('#monthly-checklist').waitFor({state:'visible'});check(await p.locator('[data-month][aria-pressed=true]').evaluate(el=>getComputedStyle(el,'::before').content.includes('✓')),'selected month is not color-only');
  check(await p.locator('#monthly-checklist input:not([type=checkbox])').count()===0,'no names or amounts');
  await p.locator('[data-task=records]').check();check(await p.evaluate(()=>localStorage.getItem('keiri_monthly_checks_v1'))===null,'checks are temporary until opt-in');
  await p.locator('#monthly-save').check();await p.reload();check(await p.locator('[data-task=records]').isChecked(),'saved check restored');

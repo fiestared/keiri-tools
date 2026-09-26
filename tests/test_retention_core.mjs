@@ -34,6 +34,13 @@ assert(!search(index,'宇宙旅行の方法').matched);assert(search(index,'オ�
 assert(index.find(e=>e.url==='/gensen-choshu/').summary.length<60);
 execFileSync(process.execPath,['tools/gen_retention_updates.mjs','--check'],{cwd:new URL('../',import.meta.url),stdio:'pipe'});
 const xml=readFileSync(new URL('../docs/updates.xml',import.meta.url),'utf8'), feed=new JSDOM(xml,{contentType:'text/xml'}).window.document;
+const records=JSON.parse(readFileSync(new URL('../docs/assets/retention_updates.json',import.meta.url),'utf8'));
+for(const [i,item] of [...feed.querySelectorAll('item')].entries()) {
+ assert.equal(item.querySelector('pubDate').textContent,new Date(records[i].recordedAt).toUTCString(),'RSS uses fixed record time');
+ assert(item.querySelector('description').textContent.includes(records[i].effectiveDate),'RSS effective date');
+ assert(item.querySelector('description').textContent.includes(records[i].source),'RSS official source');
+ assert.equal(item.querySelector('guid').textContent,'keiri-tools:'+records[i].id);
+}
 assert.equal(feed.querySelectorAll('parsererror').length,0);assert.equal(feed.querySelectorAll('item').length,2);assert(feed.querySelector('description').textContent.includes('適用日'));
 for (const match of readFileSync(new URL('../docs/assets/monthly_checklist.js',import.meta.url),'utf8').matchAll(/['"](\/(?:[a-z0-9-]+\/)+)(?:#[a-z0-9-]+)?['"]/g)) assert(existsSync(new URL('../docs'+match[1]+'index.html',import.meta.url)), 'monthly destination '+match[1]);
 for(const slug of ['gensen-choshu','shakai-hoken','yukyu','column/keiri-nenkan-schedule']) {

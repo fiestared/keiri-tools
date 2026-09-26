@@ -28,6 +28,11 @@ const DOCS = join(ROOT, "docs");
 // 「制度の事実」= 年が変わっても真であり続ける記述。機械置換の対象にしてはいけない。
 // snippet はページに**そのまま含まれる**文字列。文言を変えたら免除が外れて落ちる。
 const HISTORICAL_FACTS = [
+  { file: "gensen-choshu/index.html",
+    snippet: '<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2027/01.htm" rel="nofollow">国税庁：令和9年分 源泉徴収税額表</a>',
+    reason: "国税庁が公開した将来年分の公式資料名の引用。2027-01-01適用の変更案内で、直前に計算機は2026年分と明記。" +
+      "現在の計算データの申告ではない。URLと資料名が一致するこのアンカーだけを免除し、" +
+      "給与・賞与の入力説明と結果の年度は従来どおり検査する。retention_updates.jsonと静的案内・RSSの一致はtest_retention_coreが検査する。" },
   { file: "juminzei/index.html", snippet: "令和7年分の所得（令和8年度の住民税）なら110万円",
     reason: "★給与所得控除の最低額が65万円→74万円に上がった**改正の境目**そのもの＝制度の事実" +
             "（租税特別措置法29条の4）。住民税が『いくらから』は所得の年分で変わり、" +

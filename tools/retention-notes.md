@@ -42,4 +42,6 @@ Commit HTML before the index/sitemap generators so lastmod can use committed con
 
 `BrowserContext.newPage()` ignores viewport options; call `page.setViewportSize()` and assert `innerWidth`. This was corrected in the previous UI regression test too. Chromium can tab into an overflowing result region at 390px before the copy button: test that useful keyboard stop, then the copy button.
 
-`RETENTION_MUTATION=month|favorite|restore|stale|ics` with the retention page test, or `enter|search|kana|it` with the UI test, must fail. Mutations replace HTTP responses in memory, never source files.
+`RETENTION_MUTATION=month|favorite|restore|stale|ics|layout` with the retention page test, or `enter|search|kana|it` with the UI test, must fail. Mutations replace HTTP responses in memory, never source files.
+
+The exact official 2027 tax-table anchor is a documented historical/future-source exception in `test_year_staleness.mjs`; calculator input/result year declarations remain checked. Do not exempt the whole notice or page. Flex-row restore controls must retain readable width, not merely avoid page overflow.

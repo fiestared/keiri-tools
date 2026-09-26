@@ -1030,3 +1030,8 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
 
 .retention-months button { width: auto; flex: 1 1 200px; }
 #monthly-save-options { margin-top: 24px; }
+
+/* A deletion button must not take the full flex row and squeeze the restore label. */
+.saved-condition button.btn-outline { width: auto; margin-top: 0; }
+.saved-condition [data-del] { flex: 0 0 auto; }
+.retention-months button[aria-pressed=true]::before { content: "✓ "; }
