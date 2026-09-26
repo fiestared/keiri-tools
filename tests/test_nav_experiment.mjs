@@ -78,7 +78,9 @@ export function checkTableFix(read, css) {
   const errs = [];
   const hy = read("hyojun-hoshu-gakuhyo");
   const cue = hy.indexOf('id="hyou-expand"');
-  const wrap = hy.indexOf('<div class="scroll-wrap">', cue);
+  // 2026-09-26: 読み上げのため scroll-wrap に tabindex/role/aria-label が付くことがある。属性の有無で約束の判定を変えない
+  const m = cue < 0 ? null : /<div class="scroll-wrap"[^>]*>/.exec(hy.slice(cue));
+  const wrap = m ? cue + m.index : -1;
   if (cue < 0) errs.push("標準報酬: 全行表示の操作が無い");
   else if (wrap < 0 || hy.slice(cue, wrap).includes("<table")) errs.push("標準報酬: 全行表示の操作が表の直前に無い");
   if (!/@media print \{\s*\.table-cue ~ \.scroll-wrap \{ max-height: none !important;/.test(css)) errs.push("標準報酬: 印刷で表が枠の高さに切れる");
