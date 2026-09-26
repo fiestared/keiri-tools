@@ -14,7 +14,7 @@
      参照JSONをfetchしないので await/fail-closed は不要（データが答えの一部にならない）。 -->
 <link rel="canonical" href="https://keiri-tools.com/senpou-futan/">
 <meta name="robots" content="noindex, follow">
-<meta name="description" content="振込手数料が先方負担のとき、請求額からいくら差し引いて振り込むかを計算する埋め込みウィジェット。keiri-tools 提供。">
+<meta name="description" content="取適法の対象外で振込手数料の先方負担を合意したとき、請求額からいくら差し引いて振り込むかを計算する埋め込みウィジェット。keiri-tools 提供。">
 <style>
   :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --control:#84939f; --accent:#1f6f5c; --accent2:#e7f3f0; --bg:#fff; }
   *{ box-sizing:border-box; }
@@ -46,11 +46,13 @@
   .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
   .warn{ font-size:13px; color:#b4232a; }
 </style>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","dateModified":"2026-09-26"}</script>
 </head>
 <body>
 <div class="w">
   <h1>振込手数料「先方負担」計算</h1>
-  <p class="lead">請求額からいくら差し引いて振り込めばよいかを計算します。金額はこの枠の外へ送信されません。</p>
+<p class="article-meta">更新日: <time datetime="2026-09-26">2026年9月26日</time></p>
+  <p class="lead">取適法の対象外で、手数料の先方負担を合意した取引の差引額を試算します。取適法の対象取引では、合意があっても振込手数料の控除は違反です。金額はこの枠の外へ送信されません。</p>
 
   <label for="invoice">請求額（振込予定額・円）</label>
   <input id="invoice" type="number" inputmode="numeric" placeholder="例: 110000" min="1">
