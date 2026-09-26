@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-13",
-  "dateModified": "2026-08-24",
+  "dateModified": "2026-09-27",
       "name": "消費税計算（税込・税抜・端数処理）",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -156,15 +156,16 @@
 
 <section class="hero">
   <h1>消費税計算（税込・税抜・端数処理）</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-08-24">2026年8月24日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-09-27">2026年9月27日</time>）</p>
   <p>税込・税抜の計算に加えて、<b>インボイス（適格請求書）の消費税額</b>を国税庁の規定どおり
   「<b>一の請求書につき、税率ごとに1回</b>」の端数処理で計算します。
   経理でいちばん事故が多い<b>明細ごとの端数処理</b>との差額も表示します。</p>
 </section>
+<!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">1. 税込・税抜を計算する</a></li><li><a href="#tool-section-2">2. 請求書（インボイス）の消費税額を計算する</a></li><li><a href="#shinkoku">3. 申告の消費税額を計算する（割戻し / 積上げ）</a></li><li><a href="#hikaku">4. 本則・簡易・2割特例で比べる</a></li><li><a href="#rules">消費税の端数処理のルール</a></li><li><a href="#tool-section-6">出典</a></li></ol></nav><!--layout-toc:end-->
 
 <!-- ============ 1. 税込・税抜の計算 ============ -->
 <div class="card">
-  <h2 style="margin-top:0">1. 税込・税抜を計算する</h2>
+  <h2 style="margin-top:0" id="tool-section-1">1. 税込・税抜を計算する</h2>
 
   <label>入力する金額は</label>
   <div class="radio-row">
@@ -192,7 +193,7 @@
 
 <!-- ============ 2. インボイスの端数処理 ============ -->
 <div class="card">
-  <h2 style="margin-top:0">2. 請求書（インボイス）の消費税額を計算する</h2>
+  <h2 style="margin-top:0" id="tool-section-2">2. 請求書（インボイス）の消費税額を計算する</h2>
   <p style="margin-top:0;font-size:14px;color:var(--sub)">
     明細を入れると、<b>税率ごとに合計してから1回だけ</b>端数処理した、適格請求書に記載すべき消費税額を計算します。
     あわせて、<b>認められていない「明細ごとの端数処理」</b>で計算した場合との差額も出します。
@@ -227,8 +228,8 @@
 
   <label>課税売上（税込・1年分）</label>
   <div class="radio-row">
-    <label style="flex-direction:column;align-items:stretch">10%対象<span class="hint">例: 11000000</span>
-      <input type="number" id="s10" inputmode="numeric"></label>
+    <label style="flex-direction:column;align-items:stretch">10%対象
+      <input type="number" id="s10" inputmode="numeric" aria-describedby="s10-hint"><span id="s10-hint" class="hint">例: 11000000</span></label>
     <label style="flex-direction:column;align-items:stretch">8%対象（軽減）
       <input type="number" id="s8" placeholder="例: 0" inputmode="numeric"></label>
   </div>
@@ -308,8 +309,8 @@
 <section class="card">
   <h2 id="rules" data-faq>消費税の端数処理のルール</h2>
 
-  <h3 id="rule-invoice">インボイスの消費税額は明細ごとに計算してもよいですか？</h3>
-  <p><b>認められません。</b>適格請求書に記載する消費税額等に1円未満の端数が生じる場合、端数処理は
+  <h3 id="rule-invoice" class="faq-question">インボイスの消費税額は明細ごとに計算してもよいですか？</h3>
+  <p class="faq-answer"><b>認められません。</b>適格請求書に記載する消費税額等に1円未満の端数が生じる場合、端数処理は
   <b>一の適格請求書につき、税率ごとに1回</b>行います（消費税法施行令70条の10、消費税法基本通達1-8-15）。</p>
   <div class="note">
     国税庁「インボイス制度に関するQ&amp;A」問57の（注）は、
@@ -319,43 +320,43 @@
   <p>上の「2. 請求書（インボイス）の消費税額を計算する」は、この差がいくらになるかを表示します。
   1行あたりのズレは1円未満でも、<b>明細の行数だけ積み上がります</b>。</p>
 
-  <h3 id="rule-round">消費税の端数処理は切捨て・切上げ・四捨五入のどれですか？</h3>
-  <p>端数処理の方法は<b>事業者が任意に選べます</b>（国税庁タックスアンサー No.6371「端数計算」）。
+  <h3 id="rule-round" class="faq-question">消費税の端数処理は切捨て・切上げ・四捨五入のどれですか？</h3>
+  <p class="faq-answer">端数処理の方法は<b>事業者が任意に選べます</b>（国税庁タックスアンサー No.6371「端数計算」）。
   切捨て・切上げ・四捨五入のいずれでも構いません。
   ただし請求書ごとに変えるものではなく、社内で1つに統一して継続適用するのが実務です。
   国税庁の記載例は<b>切捨て</b>で示されています。</p>
 
-  <h3 id="rule-included">税込価格から消費税額を出す計算式は？</h3>
-  <p>10%対象は <b>税込 × 10/110</b>、8%対象は <b>税込 × 8/108</b> です。
+  <h3 id="rule-included" class="faq-question">税込価格から消費税額を出す計算式は？</h3>
+  <p class="faq-answer">10%対象は <b>税込 × 10/110</b>、8%対象は <b>税込 × 8/108</b> です。
   国税庁Q&amp;A問57の記載例では、税込60,000円（10%対象）→ 60,000×10/110 ≒ <b>5,454円</b>、
   税込40,000円（8%対象）→ 40,000×8/108 ≒ <b>2,962円</b> と計算されています
   （このツールも同じ答えになることをテストで固定しています）。</p>
 
-  <h3 id="rule-mixed">8%と10%が混在する請求書はどう計算しますか？</h3>
-  <p>まず<b>税率ごとに対価の額を合計</b>し、その税率ごとの合計額に対してそれぞれ1回だけ端数処理します。
+  <h3 id="rule-mixed" class="faq-question">8%と10%が混在する請求書はどう計算しますか？</h3>
+  <p class="faq-answer">まず<b>税率ごとに対価の額を合計</b>し、その税率ごとの合計額に対してそれぞれ1回だけ端数処理します。
   8%の商品と10%の商品をまとめて1つの合計にして計算することはできません。
   適格請求書には、税率ごとに区分した対価の額と消費税額等の記載が必要です。</p>
 
-  <h3 id="rule-divide">申告の「割戻し計算」と「積上げ計算」の違いは何ですか？</h3>
-  <p><b>割戻し計算</b>は、税率ごとの税込売上の合計から割り戻して税額を出す方法です
+  <h3 id="rule-divide" class="faq-question">申告の「割戻し計算」と「積上げ計算」の違いは何ですか？</h3>
+  <p class="faq-answer"><b>割戻し計算</b>は、税率ごとの税込売上の合計から割り戻して税額を出す方法です
   （税込 × 100/110 で課税標準額を求め、7.8%を掛けます。軽減税率は 100/108 と 6.24%）。
   <b>積上げ計算</b>は、交付した適格請求書に記載した消費税額等を合計し、それに 78/100 を掛ける方法です。
   売上税額は割戻し計算が原則、積上げ計算が特例です（国税庁 No.6383）。</p>
 
-  <h3 id="rule-combo">売上を積上げ計算にしたら、仕入も積上げ計算にしなければいけませんか？</h3>
-  <p><b>そのとおりです。</b>国税庁 No.6391 は「割戻し計算により仕入税額を計算できるのは、
+  <h3 id="rule-combo" class="faq-question">売上を積上げ計算にしたら、仕入も積上げ計算にしなければいけませんか？</h3>
+  <p class="faq-answer"><b>そのとおりです。</b>国税庁 No.6391 は「割戻し計算により仕入税額を計算できるのは、
   売上税額を割戻し計算している場合に限られます」と明記しています。
   つまり<b>売上=積上げ × 仕入=割戻し は選べず</b>、認められる組み合わせは3通りだけです。
   上の「3. 申告の消費税額を計算する」は、この3通りを全部計算して納付税額を比べます。</p>
 
-  <h3 id="rule-shiire">仕入税額の計算はどちらが原則ですか？</h3>
-  <p>仕入税額は<b>積上げ計算が原則</b>で、割戻し計算が特例です（売上税額とは原則・特例が逆です）。
+  <h3 id="rule-shiire" class="faq-question">仕入税額の計算はどちらが原則ですか？</h3>
+  <p class="faq-answer">仕入税額は<b>積上げ計算が原則</b>で、割戻し計算が特例です（売上税額とは原則・特例が逆です）。
   積上げ計算には、交付を受けた適格請求書の消費税額等を合計する「請求書等積上げ計算」と、
   課税仕入れの都度、支払対価に 10/110（軽減8/108）を掛けて端数処理した額を積み上げる
   「帳簿積上げ計算」の2つがあります。どちらも合計に 78/100 を掛けて国税分を求めます。</p>
 
-  <h3 id="rule-chihou">地方消費税はどうやって計算しますか？</h3>
-  <p>消費税（国税）の<b>差引税額 × 22/78</b> で計算します。
+  <h3 id="rule-chihou" class="faq-question">地方消費税はどうやって計算しますか？</h3>
+  <p class="faq-answer">消費税（国税）の<b>差引税額 × 22/78</b> で計算します。
   10%の内訳は国税7.8%＋地方2.2%、軽減8%の内訳は国税6.24%＋地方1.76%だからです。
   申告では課税標準額を<b>税率ごとに千円未満切捨て</b>、差引税額を<b>百円未満切捨て</b>にします。</p>
 
@@ -373,7 +374,7 @@
 </section>
 
 <section class="card">
-  <h2>出典</h2>
+  <h2 id="tool-section-6">出典</h2>
   <ul style="font-size:14px">
     <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6371.htm" target="_blank" rel="noopener">国税庁 タックスアンサー No.6371「端数計算」</a></li>
     <li><a href="https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/57.pdf" target="_blank" rel="noopener">国税庁「消費税の仕入税額控除制度における適格請求書等保存方式に関するQ&amp;A」問57（PDF）</a></li>
@@ -712,7 +713,7 @@ attachCopyButton($("copy-h"), $("h-result"));
 attachCopyButton($("copy-dec"), $("dec-result"));
 
 /* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
-import { attachCopyButton } from "../assets/copy_result.js";
+
 attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
 <script src="../assets/a11y_error.js" defer></script>
