@@ -153,7 +153,9 @@
     </div>
     <div>
       <label for="age">年齢</label>
-      <input type="number" id="age" value="35" min="15" max="74" inputmode="numeric">
+      <input type="number" id="age" value="35" min="15" max="74" step="1" required inputmode="numeric" aria-describedby="age-help age-error">
+      <p class="hint" id="age-help">この計算機の入力範囲は15〜74歳です</p>
+      <p id="age-error" class="warn" hidden></p>
     </div>
   </div>
 
@@ -592,6 +594,8 @@
 import { calcMonthly, calcBonus, calcKoyou, KENKO_GRADES } from "../assets/shaho_core.js";
 
 const $ = (id) => document.getElementById(id);
+import { watchCalculation, validateAge } from "../assets/calculation_state.js";
+const calculation = watchCalculation($("calc").closest(".card"), $("result"), $("copy-result"));
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
 let RATES = null;
 
@@ -660,7 +664,9 @@ function showSource(d) {
 
 $("calc").addEventListener("click", async () => {
   const box = $("result");
+  const ticket = calculation.begin();
   box.style.display = "block";
+  if (!validateAge($("age"), box)) return;
   box.innerHTML = "計算中…";
   const loaded = await ratesReady;            // ← 料率の到着を必ず待つ
   if (!loaded || !RATES) {
@@ -772,6 +778,7 @@ $("calc").addEventListener("click", async () => {
       </div>`;
   }
   box.innerHTML = html;
+  calculation.finish(ticket);
 });
 
 /* ---------- 結果をコピー（共通部品） ---------- */

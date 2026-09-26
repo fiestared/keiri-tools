@@ -144,7 +144,9 @@
     </div>
     <div>
       <label for="age">年齢</label>
-      <input type="number" id="age" value="30" min="15" max="74" inputmode="numeric">
+      <input type="number" id="age" value="30" min="15" max="74" step="1" required inputmode="numeric" aria-describedby="age-help age-error">
+      <p class="hint" id="age-help">この計算機の入力範囲は15〜74歳です</p>
+      <p id="age-error" class="warn" hidden></p>
     </div>
   </div>
 
@@ -565,6 +567,8 @@
 import { calcTedori } from "../assets/tedori_core.js";
 
 const $ = (id) => document.getElementById(id);
+import { watchCalculation, validateAge } from "../assets/calculation_state.js";
+const calculation = watchCalculation($("calc").closest(".card"), $("result"), $("copy-result"));
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
 let SHAHO = null, GENSEN = null, JUMIN = null;
 
@@ -624,7 +628,9 @@ const jmode = () => document.querySelector('input[name="jmode"]:checked')?.value
 
 $("calc").addEventListener("click", async () => {
   const box = $("result");
+  const ticket = calculation.begin();
   box.style.display = "block";
+  if (!validateAge($("age"), box)) return;
   box.innerHTML = "計算中…";
   // 必要な参照データの到着を必ず待つ。社保・所得税はどのモードでも要る。
   const okShaho = await shahoReady;
@@ -730,6 +736,7 @@ $("calc").addEventListener("click", async () => {
       ${r.year ? `<span class="hint">（${r.year}の料率・税額表）</span>` : ""}</div>`;
 
   box.innerHTML = html;
+  calculation.finish(ticket);
 });
 
 /* ---------- 結果をコピー（共通部品） ---------- */

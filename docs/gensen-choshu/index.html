@@ -402,6 +402,10 @@ import {
 import { calcShoyo } from "../assets/gensen_shoyo_core.js";
 
 const $ = (id) => document.getElementById(id);
+import { watchCalculation } from "../assets/calculation_state.js";
+const calculationK = watchCalculation($("pane-kyuyo"), $("resultK"), $("copy-k"));
+const calculationS = watchCalculation($("pane-shoyo"), $("resultS"), $("copy-s"));
+const calculationH = watchCalculation($("pane-hoshu"), $("result"), $("copy-result"));
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
 
 // ── タブ ──────────────────────────────────────────────
@@ -451,12 +455,13 @@ for (const r of document.querySelectorAll('input[name="ran"]')) {
     const kou = ran() === "kou";
     $("kou-only").style.display = kou ? "" : "none";
     $("otsu-only").style.display = kou ? "none" : "";
-    $("resultK").style.display = "none";
+
   });
 }
 
 $("calcK").addEventListener("click", async () => {
   const box = $("resultK");
+  const ticket = calculationK.begin();
   box.style.display = "block";
   box.dataset.resultState = "pending";
   const A = Number($("amount").value);
@@ -517,7 +522,6 @@ $("calcK").addEventListener("click", async () => {
          <td style="padding:6px 8px;text-align:right">${yen(denshi)}</td></tr>`
     : "";
 
-  box.dataset.resultState = "success";
   box.innerHTML = `
     <div class="row">源泉徴収税額（${TABLE.year}・月額表 <span class="keep-phrase">${isKou ? "甲欄" : "乙欄"}）</span>
       <span class="big">${yen(tax)}</span></div>
@@ -540,6 +544,7 @@ $("calcK").addEventListener("click", async () => {
       月額表の額と一致しないことがありますが（国税庁も明記）、<b>どちらも適法</b>で、
       差額は年末調整で精算されます。手元の税額表と突き合わせるなら上の額を使ってください。
     </div>` : ""}`;
+  calculationK.finish(ticket);
 });
 
 // ── 賞与（算出率の表） ────────────────────────────────
@@ -547,7 +552,7 @@ const ranS = () => document.querySelector('input[name="ranS"]:checked').value;
 for (const r of document.querySelectorAll('input[name="ranS"]')) {
   r.addEventListener("change", () => {
     $("kouS-only").style.display = ranS() === "kou" ? "" : "none";
-    $("resultS").style.display = "none";
+
   });
 }
 $("zenPaid").addEventListener("change", () => {
@@ -557,6 +562,7 @@ $("zenPaid").addEventListener("change", () => {
 
 $("calcS").addEventListener("click", async () => {
   const box = $("resultS");
+  const ticket = calculationS.begin();
   box.style.display = "block";
   box.dataset.resultState = "pending";
   const shoyo = Number($("shoyoAmt").value);
@@ -613,7 +619,6 @@ $("calcS").addEventListener("click", async () => {
     const band = b.min == null ? `${b.max}千円未満`
       : b.max == null ? `${b.min}千円以上`
       : `${b.min}千円以上 ${b.max}千円未満`;
-    box.dataset.resultState = "success";
     box.innerHTML = `
       <div class="row">賞与の源泉徴収税額（${SHOYO.year}・${isKou ? "甲欄" : "乙欄"}）
         <span class="big">${yen(r.tax)}</span></div>
@@ -636,13 +641,13 @@ $("calcS").addEventListener("click", async () => {
         ${yen(r.zengetsuAfterIns)} が入る「<b>${band}</b>」の行を引き、率 <b>${r.ratePercent}%</b> を得ました。
         ${yen(r.shoyoAfterIns)} × ${r.ratePercent}% ＝ <b>${yen(r.tax)}</b>（1円未満切捨て）。${extraNote}${over7Note}
       </div>`;
+    calculationS.finish(ticket);
     return;
   }
 
   if (r.method === "getsugaku") {
     const s = r.steps;
     const noPrev = r.reason === "no_prev";
-    box.dataset.resultState = "success";
     box.innerHTML = `
       <div class="row">賞与の源泉徴収税額（${SHOYO.year}・月額表による例外計算）
         <span class="big">${yen(r.tax)}</span></div>
@@ -668,6 +673,7 @@ $("calcS").addEventListener("click", async () => {
         ①の1円未満は切り捨てます。賞与の計算期間が6か月を超える場合は 6 ではなく <b>12</b> で計算します
         （いまは <b>${s.divisor}</b> で計算しました）。${extraNote}
       </div>`;
+    calculationS.finish(ticket);
     return;
   }
 
@@ -689,6 +695,7 @@ showNote();
 
 $("calc").addEventListener("click", () => {
   const box = $("result");
+  const ticket = calculationH.begin();
   box.style.display = "block";
   box.dataset.resultState = "pending";
   const fee = Number($("fee").value);
@@ -700,7 +707,6 @@ $("calc").addEventListener("click", () => {
   const t = withholdingTarget(fee, rate, taxMode === "sep");
   const r = calcWithholding(t.target, sel.value);
 
-  box.dataset.resultState = "success";
   box.innerHTML = `
     <div class="row">源泉徴収税額 <span class="big">${yen(r.tax)}</span></div>
     <div class="row" style="margin-top:6px">お支払い額（差引後） <b>${yen(t.total - r.tax)}</b></div>
@@ -738,6 +744,7 @@ $("calc").addEventListener("click", () => {
         勘定科目は自社の科目体系に合わせてください。<b>一般的な処理の例であり、個別の税務相談ではありません。</b>
       </div>
     </div>`;
+  calculationH.finish(ticket);
 });
 
 /* ---------- 結果をコピー（共通部品） ---------- */

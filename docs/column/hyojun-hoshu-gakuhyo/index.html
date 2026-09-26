@@ -115,6 +115,13 @@
 <script src="../../assets/track.js" defer></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
      crossorigin="anonymous"></script>
+<style>
+#grade-lookup { margin: 24px 0 16px; }
+#grade-lookup button { min-height: 48px; margin-top: 8px; }
+#grade-table .is-matched td { background: var(--accent-soft); font-weight: 700; border-top: 2px solid var(--accent); border-bottom: 2px solid var(--accent); }
+#grade-summary { margin: 16px 0; }
+@media print { #grade-lookup { display: none; } #grade-table th { position: static; } }
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main">本文へ移動</a>
@@ -138,6 +145,8 @@
   <p>標準報酬月額の等級表は、公表資料では「料率」しか載っていないため、<b>結局いくら引かれるのか</b>が分かりにくいものです。</p>
   <p>東京都・協会けんぽ・令和8年度の本人負担額を全50等級で示します。令和8年4月から始まった子ども・子育て支援金（0.23%）を含みます。</p>
 
+  <p><a href="#hyou">等級表へ</a> ／ <a href="../../shakai-hoken/">金額を計算する</a></p>
+
   <div class="side-rail"><!-- pr-block:auto --><aside class="pr-block" aria-label="広告"><div class="pr-label">PR（広告）</div><p class="pr-lead">標準報酬月額の算定と社会保険の届出を管理する担当者は、算定基礎届に対応する弥生給与Nextを確認できます。</p><a class="pr-cta" href="https://af.moshimo.com/af/c/click?a_id=5780179&amp;p_id=914&amp;pc_id=1138&amp;pl_id=94972" rel="sponsored nofollow noopener" target="_blank" referrerpolicy="no-referrer-when-downgrade" attributionsrc data-pr="yayoi" data-pr-slot="rail-before-toc:text">算定基礎届に対応する弥生給与Nextを見る →</a><a class="pr-banner" href="https://af.moshimo.com/af/c/click?a_id=5780179&amp;p_id=914&amp;pc_id=1138&amp;pl_id=94972" rel="sponsored nofollow noopener" target="_blank" referrerpolicy="no-referrer-when-downgrade" attributionsrc data-pr="yayoi" data-pr-slot="rail-before-toc:banner"><img src="https://image.moshimo.com/af-img/0275/000000094972.png" width="320" height="100" alt="弥生シリーズの広告" loading="lazy" decoding="async" style="border:none;max-width:100%;height:auto"></a><p class="pr-note">当サイトは提携先から紹介料を受け取る場合があります。</p><img class="pr-impression" src="https://i.moshimo.com/af/i/impression?a_id=5780179&amp;p_id=914&amp;pc_id=1138&amp;pl_id=94972" width="1" height="1" alt="" loading="lazy" style="border:none"></aside><!-- /pr-block:auto -->
 <nav class="toc">
     <div class="toc-title">目次</div>
@@ -158,9 +167,16 @@
 
   <h2 id="hyou">標準報酬月額表（全50等級・保険料の実額つき）</h2>
   <p style="font-size:13.5px;color:var(--sub)">東京都・協会けんぽ・令和8年度／金額はすべて<b>本人負担分（月額）</b>／端数処理（50銭以下切捨）を適用した実額です。</p>
+  <form id="grade-lookup" novalidate>
+    <label for="grade-amount">報酬月額から該当行を探す（円）</label>
+    <input id="grade-amount" type="text" inputmode="numeric" aria-describedby="grade-help grade-summary">
+    <p id="grade-help" class="hint">基本給・残業手当・通勤手当などを含む、税引き前の月額を入力</p>
+    <button type="submit" class="primary">該当行を探す</button>
+    <p id="grade-summary" role="status" aria-live="polite"></p>
+  </form>
   <!--nav-exp:table-cue S--><p class="table-cue">表は枠の中でスクロールすると、50等級（報酬月額135万5,000円以上）まで続きます。<a href="#hyou" role="button" id="hyou-expand" aria-expanded="false">全50等級を広げて表示</a></p><script>document.addEventListener("DOMContentLoaded",function(){var a=document.getElementById("hyou-expand");if(!a)return;var w=a.closest("p").nextElementSibling;while(w&&w.tagName==="SCRIPT")w=w.nextElementSibling;if(!w||!w.classList.contains("scroll-wrap"))return;w.id="hyou-wrap";a.setAttribute("aria-controls","hyou-wrap");function t(e){if(e.type==="keydown"&&e.key!==" ")return;e.preventDefault();var on=w.classList.toggle("is-expanded");a.setAttribute("aria-expanded",on?"true":"false");a.textContent=on?"枠の中の表示に戻す":"全50等級を広げて表示";if(!on)a.scrollIntoView({block:"nearest"});}a.addEventListener("click",t);a.addEventListener("keydown",t);});</script><!--nav-exp:table-cue E-->
-  <div class="scroll-wrap">
-  <table class="data-table num-nowrap-sm">
+  <div class="scroll-wrap" tabindex="0" role="region" aria-label="標準報酬月額の全50等級">
+  <table id="grade-table" class="data-table num-nowrap-sm">
     <tr>
       <th scope="col">等級</th>
       <th scope="col">標準報酬<br>月額</th>
@@ -353,5 +369,6 @@
   <div style="margin-top:8px;font-size:12px"><a href="../../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../../contact/" style="color:var(--sub)">お問い合わせ</a></div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
 </footer>
+<script type="module" src="../../assets/hyojun_row_lookup.js"></script>
 </body>
 </html>

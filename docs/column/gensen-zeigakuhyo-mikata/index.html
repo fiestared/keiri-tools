@@ -147,6 +147,18 @@
 <script src="../../assets/track.js" defer></script>
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
      crossorigin="anonymous"></script>
+<style>
+.gensen-monthly-table { max-height: min(70vh, 640px); overflow: auto; }
+.gensen-monthly-table table { min-width: 640px; border-collapse: separate; border-spacing: 0; }
+.gensen-monthly-table thead th { position: sticky; top: 0; z-index: 2; background: var(--accent-soft); }
+.gensen-monthly-table tr > :first-child { position: sticky; left: 0; z-index: 1; background: #fff; min-width: 160px; max-width: 190px; }
+.gensen-monthly-table thead th:first-child { z-index: 3; background: var(--accent-soft); }
+@media print {
+  .gensen-monthly-table { max-height: none; overflow: visible; }
+  .gensen-monthly-table table { min-width: 0; width: 100%; }
+  .gensen-monthly-table tr > :first-child, .gensen-monthly-table thead th { position: static; }
+}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#main">本文へ移動</a>
@@ -365,7 +377,7 @@
 <p>① 行は<b>総支給額ではなく社会保険料等控除後の金額</b>で選びます（<a href="#shaho">前述</a>）。② 列の「人数」は<b>家族の人数ではありません</b>（<a href="#kazu">前述</a>）。③ 扶養控除等申告書が出ていない人は、扶養親族等が何人いても<b>乙欄</b>です。</p>
 </div>
 
-<div class="scroll-wrap">
+<div class="scroll-wrap gensen-monthly-table" tabindex="0" role="region" aria-label="令和8年分の源泉徴収税額表・全231区分">
 <table>
 <thead><tr><th scope="col">その月の社会保険料等控除後の給与等の金額</th><th scope="col">甲欄 0人</th><th scope="col">甲欄 1人</th><th scope="col">甲欄 2人</th><th scope="col">甲欄 3人</th><th scope="col">乙欄</th></tr></thead>
 <tbody>
