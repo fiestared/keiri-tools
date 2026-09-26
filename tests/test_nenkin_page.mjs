@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * /nenkin/ の静的ページと参照データの突き合わせ。
  *
@@ -15,7 +16,7 @@
  */
 import { readFileSync } from "node:fs";
 
-const PAGE = readFileSync(new URL("../docs/nenkin/index.html", import.meta.url), "utf8");
+const PAGE = contentHTML(readFileSync(new URL("../docs/nenkin/index.html", import.meta.url), "utf8"));
 const DATA = JSON.parse(readFileSync(new URL("../docs/assets/nenkin_r08.json", import.meta.url), "utf8"));
 
 let pass = 0;

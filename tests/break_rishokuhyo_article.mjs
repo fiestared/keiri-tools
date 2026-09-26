@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 壊しテスト: 記事「離職票とは？いつ届く・届かないときの対処法」に嘘を1つ注入し、
 // test_rishokuhyo_article.mjs が必ず落ちることを確かめる。
 //
@@ -21,7 +22,7 @@ import { execFileSync } from "node:child_process";
 
 const SRC = "docs/column/rishokuhyo/index.html";
 const TMP = "docs/column/rishokuhyo/.break.html";
-const orig = fs.readFileSync(SRC, "utf8");
+const orig = contentHTML(fs.readFileSync(SRC, "utf8"));
 const cut = orig.indexOf("<article>"); // 本文の開始。head の JSON-LD を誤爆しない
 
 const run = (file) => {

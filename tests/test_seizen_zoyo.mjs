@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 生前贈与シミュレーター（/seizen-zoyo/）のコア検証。
 //
 // オラクルは「条文を項ごとに書き下した独立実装」:
@@ -321,7 +322,7 @@ throws("データ無しは計算しない", () => calcSeizenZoyo(good, null, DZ,
 // ════════════════════════════════════════════════════════════════════
 // 7. ページとの照合（看板例・meta description・名指しの主張）
 // ════════════════════════════════════════════════════════════════════
-const page = readFileSync(join(docs, "seizen-zoyo", "index.html"), "utf8");
+const page = contentHTML(readFileSync(join(docs, "seizen-zoyo", "index.html"), "utf8"));
 const visible = page.replace(/<script[\s\S]*?<\/script>/g, " ");
 // 看板例（S1）の数字がページの例と一致（データ結合: コアが変わればここが落ちる）
 const exRow = visible.match(/<table id="rei-hyo"[\s\S]*?<\/table>/);

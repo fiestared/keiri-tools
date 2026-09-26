@@ -31,12 +31,20 @@ export function measure() {
   }
  }
 
- for(const row of document.querySelectorAll('.fee-pair,.fee-pair--short,.form-row,.grid-2,.radio-row')) {
+ for(const label of document.querySelectorAll('label'))if(visible(label)&&label.querySelector('input[type=radio],input[type=checkbox]')){
+  for(const n of label.childNodes)if(n.nodeType===Node.TEXT_NODE&&n.textContent.trim().length>=4){const range=document.createRange();range.selectNodeContents(n);const rs=[...range.getClientRects()].filter(r=>r.width>1);const em=parseFloat(getComputedStyle(label).fontSize);if(rs.length>=3&&Math.max(...rs.map(r=>r.width))<em*2.5)add('choice-caption-wrap',label);}
+ }
+ for(const row of document.querySelectorAll('.fee-pair,.fee-pair--short,.form-row,.grid-2,.grid,.radio-row')) {
  const fields=[...row.children].map(e=>({e,r:e.getBoundingClientRect(),i:e.querySelector('input:not([type=checkbox]):not([type=radio]):not([type=hidden]),select,textarea')})).filter(x=>x.i&&visible(x.i));
  for(let i=1;i<fields.length;i++){let a=fields[i-1],b=fields[i];if(Math.abs(a.r.top-b.r.top)<2&&Math.abs(a.i.getBoundingClientRect().top-b.i.getBoundingClientRect().top)>3)add('field-alignment',b.i,{other:a.i.id,delta:b.i.getBoundingClientRect().top-a.i.getBoundingClientRect().top});}
  }
  for(const e of document.querySelectorAll('main td,main th'))if(visible(e)&&/^[\d,.％%円万億千年月日人倍歳〜～–—+−\s]+$/.test(e.textContent.trim())&&/\d/.test(e.textContent)){
- const walker=document.createTreeWalker(e,NodeFilter.SHOW_TEXT);let n;while(n=walker.nextNode()){for(const m of n.textContent.matchAll(/[0-9][0-9,.]*[％%円年月日人倍歳]/g)){const r=document.createRange();r.setStart(n,m.index);r.setEnd(n,m.index+m[0].length);const rs=[...r.getClientRects()].filter(x=>x.width);if(rs.length>1&&Math.max(...rs.map(x=>x.top))-Math.min(...rs.map(x=>x.top))>2)add('number-wrap',e,{token:m[0]});}}
+ const walker=document.createTreeWalker(e,NodeFilter.SHOW_TEXT);let n;while(n=walker.nextNode()){for(const m of n.textContent.matchAll(/[0-9][0-9,.]*[億万千]?[％%円年月日人倍歳]/g)){const r=document.createRange();r.setStart(n,m.index);r.setEnd(n,m.index+m[0].length);const rs=[...r.getClientRects()].filter(x=>x.width);if(rs.length>1&&Math.max(...rs.map(x=>x.top))-Math.min(...rs.map(x=>x.top))>2)add('number-wrap',e,{token:m[0]});}}
+ }
+ // Reject vertically squeezed prose, but allow short codes and numeric-only cells.
+ for(const e of document.querySelectorAll('main td,main th'))if(visible(e)&&e.textContent.trim().length>=6&&/[一-龯ぁ-んァ-ヶ]/.test(e.textContent)){
+  const cs=getComputedStyle(e),em=parseFloat(cs.fontSize),content=e.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+  if(content<em*2.5&&e.clientHeight>em*3.5)add('table-prose-width',e,{content,em});
  }
  for(const t of document.querySelectorAll('main table'))if(visible(t)){
  let cells=[...t.querySelectorAll('td')].filter(visible);if(cells.some(e=>['Top','Bottom','Left','Right'].every(side=>getComputedStyle(e)['border'+side+'Style']==='none')))add('table-border',t);

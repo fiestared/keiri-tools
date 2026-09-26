@@ -179,7 +179,7 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type=
 @media (min-width: 601px) {
   .fee-pair.field-pair, .fee-pair--short.field-pair { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; gap: 0 12px; }
   .field-pair > div { display: grid; grid-template-rows: subgrid; grid-row: span 3; }
-  .field-pair > div > label { grid-row: 1; align-self: end; }
+  .field-pair > div > label:first-of-type { grid-row: 1; align-self: end; }
   .field-pair > div > :is(input,select,textarea) { grid-row: 2; align-self: start; }
   .field-pair > div > .hint { grid-row: 3; }
 }
@@ -1076,3 +1076,6 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
 /* One short control beside its label; the help belongs on the next line. */
 .field-inline-help { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 4px 8px; align-items: center; margin: 12px 0; }
 .field-inline-help > .hint { grid-column: 1 / -1; }
+
+/* Long prose columns retain four characters of readable content; wide tables scroll locally. */
+main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width: calc(4em + 24px); }

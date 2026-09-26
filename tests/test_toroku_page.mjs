@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * /toroku-menkyozei/ の静的ページと参照データの突き合わせ。
  *
@@ -15,7 +16,7 @@
  */
 import { readFileSync } from "node:fs";
 
-const PAGE = readFileSync(new URL("../docs/toroku-menkyozei/index.html", import.meta.url), "utf8").replace(/<td class="num">/g, "<td>");
+const PAGE = contentHTML(readFileSync(new URL("../docs/toroku-menkyozei/index.html", import.meta.url), "utf8")).replace(/<td class="num">/g, "<td>");
 const DATA = JSON.parse(readFileSync(new URL("../docs/assets/toroku_jutaku_r08.json", import.meta.url), "utf8"));
 
 let pass = 0;

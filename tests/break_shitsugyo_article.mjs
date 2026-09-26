@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 壊しテスト: 記事「失業保険はいくらもらえる？」に嘘を1つ注入し、
 // test_shitsugyo_article.mjs が必ず落ちることを確かめる。
 //
@@ -18,7 +19,7 @@ import { execFileSync } from "node:child_process";
 
 const SRC = "docs/column/shitsugyo-hoken-keisan/index.html";
 const TMP = "docs/column/shitsugyo-hoken-keisan/.break.html";
-const orig = fs.readFileSync(SRC, "utf8").replace(/<td class="num">/g, "<td>");
+const orig = contentHTML(fs.readFileSync(SRC, "utf8")).replace(/<td class="num">/g, "<td>");
 
 const run = (file) => {
   try {

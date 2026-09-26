@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * 不動産取得税の計算コアの検査。
  *
@@ -24,7 +25,7 @@ import {
   calcFudosanShutoku, menzeitenFor, floorYokenFor, rateFor,
 } from "../docs/assets/fudosan_shutoku_core.js";
 
-const PAGE = readFileSync(new URL("../docs/fudosan-shutoku/index.html", import.meta.url), "utf8");
+const PAGE = contentHTML(readFileSync(new URL("../docs/fudosan-shutoku/index.html", import.meta.url), "utf8"));
 /** タグを空白に置換した本文（属性値ごと消える点に注意して使う）。 */
 const visible = PAGE.replace(/<[^>]+>/g, " ");
 

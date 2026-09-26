@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * `/column/furikomi-tesuryo-hikaku/` の「金額から逆引き」表が、正本(fee_table.json)と
  * **1円もずれていない**ことを、出荷されたHTMLを読み直して照合する。
@@ -17,7 +18,7 @@ import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
 import { loadBanks, amountMap, ARTICLE, AMT_START, AMT_END } from '../tools/gen_bank_sections.mjs';
 
-const html = readFileSync(ARTICLE, 'utf-8');
+const html = contentHTML(readFileSync(ARTICLE, 'utf-8'));
 
 // --- 1. ブロックが存在すること ---------------------------------------------
 const start = html.indexOf(AMT_START);

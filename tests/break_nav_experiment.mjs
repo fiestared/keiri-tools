@@ -42,7 +42,7 @@ const cases = [
 ];
 const tableCases = [
   ["標準報酬の全行表示を消した", (m) => m.set("hyojun-hoshu-gakuhyo", m.get("hyojun-hoshu-gakuhyo").replace('id="hyou-expand"', 'id="x"'))],
-  ["全銀のリンクを表から離した", (m) => m.set("zengin-format-guide", m.get("zengin-format-guide").replace(/(<\/table>\n)(  <!--nav-exp:table-link S-->)/, "$1<p>x</p>\n$2"))],
+  ["全銀のリンクを表から離した", (m) => m.set("zengin-format-guide", m.get("zengin-format-guide").replace(/(<\/table>(?:<\/div>)?\n)(  <!--nav-exp:table-link S-->)/, "$1<p>x</p>\n$2"))],
   ["全銀のリンク先を変えた", (m) => m.set("zengin-format-guide", m.get("zengin-format-guide").replace(/(<!--nav-exp:table-link S-->[\s\S]*?)\.\.\/\.\.\/zengin-kana\//, "$1../../eigyobi/"))],
 ];
 

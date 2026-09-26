@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 記事「医療費控除はいくらから」の検査が、実際に壊れた記事を落とすかを確かめる。
 //
 // 規律（CLAUDE.md）:
@@ -20,7 +21,7 @@ import { execFileSync } from 'node:child_process';
 const SRC = 'docs/column/iryohi-kojo-ikura-kara/index.html';
 const TMP = '/tmp/break_iryohi_kojo.html';
 const CHECKER = 'tests/test_iryohi_kojo_article.mjs';
-const orig = fs.readFileSync(SRC, 'utf8').replace(/<td class="num">/g, '<td>');
+const orig = contentHTML(fs.readFileSync(SRC, 'utf8')).replace(/<td class="num">/g, '<td>');
 
 const run = file => {
   try {

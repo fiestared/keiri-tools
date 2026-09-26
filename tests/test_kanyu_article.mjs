@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 記事「雇用保険の加入条件」を、条文の生テキスト(fixtures/koyou_kanyu_statutes.json)と照合する。
 //
 // ★この記事には「計算」が無いので、オラクルは条文そのもの。
@@ -21,7 +22,7 @@ const dropNextRead = (src) => src.replace(/<!--next-read:S-->([\s\S]*?)<!--next-
   if (!/^<section class="next-read"[\s>]/.test(t) || /<(h2|h3|p|table|blockquote|li)[\s>]/.test(t.replace('<h2>次に読む</h2>', ''))) throw new Error('next-read の範囲にカード以外の本文要素がある: 除外範囲を確かめること');
   return ' ';
 });
-const html = dropNextRead(readFileSync(new URL("../" + ARTICLE, import.meta.url), "utf8"));
+const html = dropNextRead(contentHTML(readFileSync(new URL("../" + ARTICLE, import.meta.url), "utf8")));
 const body = html.slice(html.indexOf("<article>"));
 const strip = (s) => s.replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 const text = strip(body);

@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * 回遊の局所改修（2026-09-16）の約束を検査する。名簿は tools/nav_experiment.json。
  *
@@ -89,7 +90,7 @@ export function checkTableFix(read, css) {
   const list = zg.indexOf('<h3 id="list">');
   const tEnd = zg.indexOf("</table>", list);
   const next = zg.indexOf("<!--nav-exp:table-link S-->", list);
-  if (list < 0 || next < 0 || zg.slice(tEnd, next).replace(/\s/g, "") !== "</table>") errs.push("全銀: 略語表の直下に変換ツールへのリンクが無い");
+  if (list < 0 || next < 0 || !/^<\/table>(?:<\/div>)?$/.test(zg.slice(tEnd, next).replace(/\s/g, ""))) errs.push("全銀: 略語表の直下に変換ツールへのリンクが無い");
   else if (!zg.slice(next, zg.indexOf("<!--nav-exp:table-link E-->")).includes('href="../../zengin-kana/"')) errs.push("全銀: 表の直下のリンク先が変換ツールでない");
   return errs;
 }
@@ -118,7 +119,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] || "").href) {
   const pages = new Map();
   for (const d of readdirSync(COLUMN, { withFileTypes: true })) {
     const f = join(COLUMN, d.name, "index.html");
-    if (d.isDirectory() && existsSync(f)) pages.set(d.name, readFileSync(f, "utf8"));
+    if (d.isDirectory() && existsSync(f)) pages.set(d.name, contentHTML(readFileSync(f, "utf8")));
   }
   const read = (s) => pages.get(s) || "";
   const css = readFileSync(join(ROOT, "docs/assets/style.css"), "utf8");

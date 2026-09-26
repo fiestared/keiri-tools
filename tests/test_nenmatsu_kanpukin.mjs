@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // /column/nenmatsu-chosei-kanpukin/ の数値主張を、検証済みコアで再計算して機械照合する。
 //
 // この記事は「還付金の実数例」が主役なのに、2026-07-23まで専用テストが1つも無く、
@@ -17,7 +18,7 @@ import * as S from '../docs/assets/shaho_core.js';
 import * as J from '../docs/assets/juminzei_core.js';
 import { shotokuzei, seimeiHokenryoKojo } from '../docs/assets/setsuzei_core.js';
 
-const HTML = readFileSync(new URL('../docs/column/nenmatsu-chosei-kanpukin/index.html', import.meta.url), 'utf8');
+const HTML = contentHTML(readFileSync(new URL('../docs/column/nenmatsu-chosei-kanpukin/index.html', import.meta.url), 'utf8'));
 const table = JSON.parse(readFileSync(new URL('../docs/assets/gensen_getsugaku_r08.json', import.meta.url), 'utf8'));
 const SR = JSON.parse(readFileSync(new URL('../docs/assets/shaho_rates_r08.json', import.meta.url), 'utf8'));
 const D = JSON.parse(readFileSync(new URL('../docs/assets/juminzei_r08.json', import.meta.url), 'utf8'));

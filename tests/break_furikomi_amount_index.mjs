@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * `tests/test_furikomi_amount_index.mjs` の壊しテスト。
  *
@@ -30,9 +31,10 @@ const t = (name, ok, detail) => {
   else { fail++; console.log('❌ ' + name + (detail ? '\n   ' + detail : '')); }
 };
 
-const original = readFileSync(ARTICLE, 'utf-8');
+const rawOriginal = readFileSync(ARTICLE, 'utf-8');
+const original = contentHTML(rawOriginal);
 const originalData = readFileSync(DATA, 'utf-8');
-const restore = () => { writeFileSync(ARTICLE, original); writeFileSync(DATA, originalData); };
+const restore = () => { writeFileSync(ARTICLE, rawOriginal); writeFileSync(DATA, originalData); };
 
 // ── ベースライン ────────────────────────────────────────────────────────────
 const base = run();

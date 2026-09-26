@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 壊しテスト: 記事「手取りの計算方法」に嘘を1つ注入し、test_tedori_article.mjs が必ず落ちることを確かめる。
 //
 // 規則2（ベースライン確認）: **壊す前に、無傷の記事で検査が緑になることを確かめる**。
@@ -13,7 +14,7 @@ import { execFileSync } from 'node:child_process';
 
 const SRC = 'docs/column/tedori-keisan/index.html';
 const TMP = 'docs/column/tedori-keisan/.break.html';
-const orig = fs.readFileSync(SRC, 'utf8').replace(/<td class="num">/g, '<td>');
+const orig = contentHTML(fs.readFileSync(SRC, 'utf8')).replace(/<td class="num">/g, '<td>');
 
 const run = file => {
   try {

@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 壊しテスト: 記事「雇用保険料率」を N 通りに壊し、test_koyou_article.mjs が**全部落とす**ことを確かめる。
 //
 // 規律（CLAUDE.md）:
@@ -11,7 +12,7 @@ import fs from 'node:fs';
 
 const SRC = 'docs/column/koyou-hokenryo-ritsu/index.html';
 const TMP = '/tmp/koyou_broken.html';
-const orig = fs.readFileSync(SRC, 'utf8').replace(/<td class="num">/g, '<td>');
+const orig = contentHTML(fs.readFileSync(SRC, 'utf8')).replace(/<td class="num">/g, '<td>');
 
 const BREAKS = [
   // ── ★端数規則: 集合一致では絶対に捕まらない壊し方 ──

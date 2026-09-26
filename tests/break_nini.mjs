@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 壊しテスト: test_nini_article.mjs が本当に落ちるかを確かめる。
 //
 // なぜ必要か: 検査は「緑」しか出力しないので、**何も見ていない検査と正しい検査は区別できない**。
@@ -12,7 +13,7 @@ import fs from 'node:fs';
 
 const SRC = 'docs/column/kenko-hoken-nini-keizoku/index.html';
 const TMP = '/tmp/break_nini.html';
-const original = fs.readFileSync(SRC, 'utf8').replace(/<td class="num">/g, '<td>');
+const original = contentHTML(fs.readFileSync(SRC, 'utf8')).replace(/<td class="num">/g, '<td>');
 const cut = original.indexOf('<article>');
 
 // 壊し: 本文（<article>以降）だけを対象に置換する

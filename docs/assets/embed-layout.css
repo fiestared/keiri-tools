@@ -6,3 +6,18 @@ input + .hint, select + .hint, textarea + .hint {
 /* Embedded dependent rows keep their existing label/control pair, with help below. */
 .krow { flex-wrap: wrap; }
 .krow > .hint { flex-basis: 100%; }
+
+/* Share label height across each two-field row, including wrapped mobile labels. */
+.grid.field-pair { grid-template-rows: repeat(3, auto); }
+.grid.field-pair > div { display: grid; grid-template-rows: subgrid; grid-row: span 3; min-width: 0; }
+.grid.field-pair > div > label:first-of-type { grid-row: 1; align-self: end; }
+.grid.field-pair > div > :is(input,select,textarea) { grid-row: 2; align-self: start; }
+.grid.field-pair > div > .hint { grid-row: 3; }
+
+/* Generic text-field width must not consume the caption beside a choice control. */
+.radios input:is([type="radio"],[type="checkbox"]) { width: auto; flex: none; padding: 0; }
+
+/* A caption with b/span children is one sentence, not separate flex columns. */
+.chk { display: block; position: relative; padding-left: 22px; }
+.chk > input:is([type="radio"],[type="checkbox"]) { position: absolute; left: 0; top: 0; width: auto; }
+.chk > .hint { display: block; }

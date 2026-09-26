@@ -1,7 +1,8 @@
+import {contentHTML} from './layout/content-html.mjs';
 // JSを実行しないHTMLに税額があり、正本改定時に静的表の更新漏れを検出する。
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-const html = readFileSync(new URL('../docs/inshi/index.html', import.meta.url), 'utf8');
+const html = contentHTML(readFileSync(new URL('../docs/inshi/index.html', import.meta.url), 'utf8'));
 const data = JSON.parse(readFileSync(new URL('../docs/assets/inshi_r07.json', import.meta.url), 'utf8'));
 const table = html.match(/<table[^>]*id="receipt-tax-table"[^>]*>([\s\S]*?)<\/table>/)?.[1];
 assert.ok(table, '静的HTMLに第17号の表が必要');

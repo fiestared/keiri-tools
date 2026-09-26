@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * `tests/test_ikuji_hayamihyo.mjs` の壊しテスト。
  *
@@ -28,7 +29,7 @@ const t = (name, ok, detail) => {
 };
 
 const rawOriginal = readFileSync(ARTICLE, 'utf-8');
-const original = rawOriginal.replace(/<td class="num">/g, '<td>');
+const original = contentHTML(rawOriginal).replace(/<td class="num">/g, '<td>');
 
 const base = run();
 if (base.status !== 0) {

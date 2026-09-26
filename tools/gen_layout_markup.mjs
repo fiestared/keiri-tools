@@ -46,7 +46,7 @@ for(const file of readdirSync(root,{recursive:true}).filter(f=>f==='index.html'|
   }
  }
  // Align simple sibling fields with a shared label/control/help grid.
- for(const row of d.querySelectorAll('.fee-pair,.fee-pair--short')){
+ for(const row of d.querySelectorAll('.fee-pair,.fee-pair--short,.grid')){
   const children=[...row.children];
   if(children.length>1&&children.every(e=>e.tagName==='DIV'&&e.querySelector(':scope > label')&&e.querySelectorAll('input:not([type=checkbox]):not([type=radio]):not([type=hidden]),select,textarea').length===1))cls(row,'field-pair');
  }
@@ -65,11 +65,14 @@ for(const file of readdirSync(root,{recursive:true}).filter(f=>f==='index.html'|
     if(n.parentElement.closest('.numeric-token'))continue;
     const l=dom.nodeLocation(n);if(!l)continue;
     const raw=source.slice(l.startOffset,l.endOffset);
-    const next=raw.replace(/[0-9][0-9,.]*[％%円年月日人倍歳]/g,token=>'<span class="numeric-token">'+token+'</span>');
+    const next=raw.replace(/[0-9][0-9,.]*[億万千]?[％%円年月日人倍歳]/g,token=>'<span class="numeric-token">'+token+'</span>');
     if(next!==raw)edits.push({start:l.startOffset,end:l.endOffset,text:next});
    }
   }
-  if(!table.closest('.scroll-wrap,.fee-scroll')){
+  if(table.parentElement?.classList.contains('scroll-wrap')&&table.parentElement.parentElement?.classList.contains('retention-table')){
+   const wrap=dom.nodeLocation(table.parentElement);if(wrap?.startTag&&wrap?.endTag)edits.push({start:wrap.startTag.startOffset,end:wrap.startTag.endOffset,text:''},{start:wrap.endTag.startOffset,end:wrap.endTag.endOffset,text:''});
+  }
+  if(!table.closest('.scroll-wrap,.fee-scroll,.retention-table')){
    const l=dom.nodeLocation(table);if(l)edits.push({start:l.startOffset,end:l.startOffset,text:'<div class="scroll-wrap">'},{start:l.endOffset,end:l.endOffset,text:'</div>'});
   }
  }

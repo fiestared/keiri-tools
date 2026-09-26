@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 記事「源泉徴収税額表の見方」の検査が、実際に壊れた記事を落とすかを確かめる。
 //
 // 規律(CLAUDE.md): 「落ちるべきものが落ちる」を確かめずに満足すると、検査は安心だけを与える。
@@ -15,7 +16,7 @@ import { execFileSync } from 'node:child_process';
 
 const SRC = 'docs/column/gensen-zeigakuhyo-mikata/index.html';
 const TMP = '/tmp/break_gensen_zeigakuhyo.html';
-const orig = fs.readFileSync(SRC, 'utf8');
+const orig = contentHTML(fs.readFileSync(SRC, 'utf8'));
 
 const MUT = [
   // ── 網で捕まるはずのもの（金額・%・万円・年齢） ──

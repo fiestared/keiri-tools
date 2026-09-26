@@ -39,7 +39,7 @@ const rows = D.prefectures || [];
 if (rows.length !== 47) { console.error(`✗ 都道府県が ${rows.length} 件（47件でない）`); process.exit(1); }
 const m = D._meta, na = m.national_average;
 
-const table = `<table style="width:100%;border-collapse:collapse;font-size:14px">
+const table = `<div class="scroll-wrap"><table style="width:100%;border-collapse:collapse;font-size:14px">
 <thead><tr>
 <th scope="col" style="text-align:left;padding:6px;border-bottom:2px solid var(--line)">都道府県</th>
 <th scope="col" style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">時間額</th>
@@ -49,9 +49,9 @@ const table = `<table style="width:100%;border-collapse:collapse;font-size:14px"
 ${rows.map((p) => `<tr>` +
   `<td style="padding:6px;border-bottom:1px solid var(--line)">${esc(p.full)}の最低賃金</td>` +
   `<td style="padding:6px;border-bottom:1px solid var(--line);text-align:right"><b>${p.wage}</b>円 <span style="color:var(--sub);font-size:12px">(${p.prev})</span></td>` +
-  `<td style="padding:6px;border-bottom:1px solid var(--line);text-align:right">+${p.up}円 <span style="color:var(--sub);font-size:12px">+${p.rate}%</span></td>` +
+  `<td style="padding:6px;border-bottom:1px solid var(--line);text-align:right">+<span class="numeric-token">${p.up}円</span> <span style="color:var(--sub);font-size:12px">+<span class="numeric-token">${p.rate}%</span></span></td>` +
   `<td style="padding:6px;border-bottom:1px solid var(--line)">${esc(p.effective_wa)}</td></tr>`).join("\n")}
-</tbody></table>`;
+</tbody></table></div>`;
 
 const hi = rows.reduce((a, b) => (b.wage > a.wage ? b : a));
 const lo = rows.reduce((a, b) => (b.wage < a.wage ? b : a));

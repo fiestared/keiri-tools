@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * `tests/test_saishushoku_hayamihyo.mjs` の壊しテスト。
  * **壊す前に無傷が緑であることを先に確認する**（CLAUDE.md 規則2）。
@@ -30,7 +31,7 @@ const t = (name, ok, detail) => {
 };
 
 const rawOriginal = readFileSync(ARTICLE, 'utf-8');
-const original = rawOriginal.replace(/<td class="num">/g, '<td>');
+const original = contentHTML(rawOriginal).replace(/<td class="num">/g, '<td>');
 const base = run();
 if (base.status !== 0) {
   console.log('❌ ベースラインが赤。壊しテストは意味を成さないので中止する。');

@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * `tests/test_yukyu_quick.mjs` の壊しテスト。
  * **壊す前に無傷が緑であることを先に確認する**（CLAUDE.md 規則2）。
@@ -24,7 +25,8 @@ const t = (name, ok, detail) => {
   else { fail++; console.log('❌ ' + name + (detail ? '\n   ' + detail : '')); }
 };
 
-const original = readFileSync(ARTICLE, 'utf-8');
+const rawOriginal = readFileSync(ARTICLE, 'utf-8');
+const original = contentHTML(rawOriginal);
 const base = run();
 if (base.status !== 0) {
   console.log('❌ ベースラインが赤。壊しテストは意味を成さないので中止する。');
@@ -47,7 +49,7 @@ const withBreak = (label, mutate, expect) => {
         '赤にはなったが、何が食い違ったのか出力から分からない');
     }
   } finally {
-    writeFileSync(ARTICLE, original);
+    writeFileSync(ARTICLE, rawOriginal);
   }
 };
 
@@ -88,7 +90,7 @@ withBreak('壊し5: 早見表が本文の表より後ろへ移ると赤になる
   return rest.slice(0, after) + block + '\n\n' + rest.slice(after);
 }, '冒頭');
 
-t('壊しテストの後、記事が元のまま', readFileSync(ARTICLE, 'utf-8') === original,
+t('壊しテストの後、記事が元のまま', readFileSync(ARTICLE, 'utf-8') === rawOriginal,
   '★記事が書き換わったまま残っている。このまま push すると本番が壊れる');
 
 console.log(`\n${fail === 0 ? '✅' : '❌'} ${pass} passed, ${fail} failed`);

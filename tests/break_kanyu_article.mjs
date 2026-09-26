@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 壊しテスト: 記事「雇用保険の加入条件」に嘘を1つ注入し、
 // test_kanyu_article.mjs が必ず落ちることを確かめる。
 //
@@ -19,7 +20,7 @@ import { execFileSync } from "node:child_process";
 
 const SRC = "docs/column/koyou-hoken-kanyu-joken/index.html";
 const TMP = "docs/column/koyou-hoken-kanyu-joken/.break.html";
-const orig = fs.readFileSync(SRC, "utf8");
+const orig = contentHTML(fs.readFileSync(SRC, "utf8"));
 const cut = orig.indexOf("<article>"); // 本文の開始。head の JSON-LD を誤爆しない
 
 const run = (file) => {

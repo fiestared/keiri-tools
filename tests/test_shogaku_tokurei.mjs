@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * 中小企業者等の少額減価償却資産の特例（令和8年度改正で 30万円未満 → 40万円未満）の結合テスト。
  *
@@ -29,7 +30,7 @@ import { calcGenka } from '../docs/assets/genka_core.js';
 const ASSETS = new URL('../docs/assets/', import.meta.url);
 const D = JSON.parse(readFileSync(new URL('genka_rates.json', ASSETS)));
 const S = D.shogaku_tokurei;
-const genkaPage = readFileSync(new URL('../docs/genka/index.html', import.meta.url), 'utf8');
+const genkaPage = contentHTML(readFileSync(new URL('../docs/genka/index.html', import.meta.url), 'utf8'));
 const columnPage = readFileSync(
   new URL('../docs/column/shogaku-genka-shokyaku/index.html', import.meta.url), 'utf8');
 
@@ -125,7 +126,7 @@ t('10万円・20万円の案内: 19万9,999円では出る／20万円ちょう�
   assert.ok(!notesOf(200000, '2026-04').includes('一括償却資産として3年で均等'));
 });
 t('回帰防止: コアに 300000 の直書きゲートが残っていない（金額の正本はデータ）', () => {
-  const core = readFileSync(new URL('genka_core.js', ASSETS), 'utf8');
+  const core = contentHTML(readFileSync(new URL('genka_core.js', ASSETS), 'utf8'));
   assert.ok(!/cost\s*<\s*300000/.test(core), 'cost < 300000 の直書きが残っている');
   assert.ok(!/30万円未満まで少額減価償却資産/.test(core), '旧文言が残っている');
 });

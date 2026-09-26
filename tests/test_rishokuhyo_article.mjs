@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 記事「離職票とは？いつ届く・届かないときの対処法」を、条文の生テキストと照合する。
 //
 // ★この記事にも「計算」が無いので、オラクルは条文そのもの（fixtures/rishokuhyo_statutes.json）。
@@ -25,7 +26,7 @@ const dropNextRead = (src) => src.replace(/<!--next-read:S-->([\s\S]*?)<!--next-
   if (!/^<section class="next-read"[\s>]/.test(t) || /<(h2|h3|p|table|blockquote|li)[\s>]/.test(t.replace('<h2>次に読む</h2>', ''))) throw new Error('next-read の範囲にカード以外の本文要素がある: 除外範囲を確かめること');
   return ' ';
 });
-const html = dropNextRead(readFileSync(new URL("../" + ARTICLE, import.meta.url), "utf8"));
+const html = dropNextRead(contentHTML(readFileSync(new URL("../" + ARTICLE, import.meta.url), "utf8")));
 const head = html.slice(0, html.indexOf("<body"));
 const body = html.slice(html.indexOf("<article>"));
 const strip = (s) => s.replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();

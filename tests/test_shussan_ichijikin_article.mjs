@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 記事「出産育児一時金」の数字・条文引用を機械照合する。
 //
 // 規律（CLAUDE.md）:
@@ -20,7 +21,7 @@ const FILE = process.env.ARTICLE_FILE || 'docs/column/shussan-ikuji-ichijikin/in
 // ★「次に読む」（生成された導線）はリンク先の記事の説明文の写しで、この記事の主張ではない。
 //   網から外す前に、形とリンク先との一致を tests/lib/next_read.mjs が検査する（2026-09-23）
 const NR = stripNextRead(fs.readFileSync(FILE, 'utf8'));
-const html = NR.html;
+const html = contentHTML(NR.html);
 let ng = 0;
 const fail = m => { console.error('  ✗ ' + m); ng++; };
 const ok = m => console.log('  ✓ ' + m);

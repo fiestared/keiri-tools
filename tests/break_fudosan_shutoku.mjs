@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * test_fudosan_shutoku.mjs の壊しテスト。
  * 規則2: 壊す前に「無傷が緑」を確かめる（常に赤い検査は何を壊しても赤＝嘘の満点）。
@@ -29,7 +30,7 @@ const run = () => {
 };
 
 const rawOrig = { page: fs.readFileSync(PAGE, "utf8"), core: fs.readFileSync(CORE, "utf8") };
-const orig = { ...rawOrig, page: rawOrig.page.replace(/<td class="num">/g, "<td>") };
+const orig = { ...rawOrig, page: contentHTML(rawOrig.page).replace(/<td class="num">/g, "<td>") };
 const restore = () => { fs.writeFileSync(PAGE, rawOrig.page); fs.writeFileSync(CORE, rawOrig.core); };
 
 const base = run();

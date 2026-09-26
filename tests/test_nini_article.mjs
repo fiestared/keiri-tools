@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 記事「健康保険の任意継続」の数字・条文引用を機械照合する。
 //
 // 規律（CLAUDE.md）:
@@ -23,7 +24,7 @@ const dropNextRead = (src) => src.replace(/<!--next-read:S-->([\s\S]*?)<!--next-
   if (!/^<section class="next-read"[\s>]/.test(t) || /<(h2|h3|p|table|blockquote|li)[\s>]/.test(t.replace('<h2>次に読む</h2>', ''))) throw new Error('next-read の範囲にカード以外の本文要素がある: 除外範囲を確かめること');
   return ' ';
 });
-const html = dropNextRead(fs.readFileSync(FILE, 'utf8'));
+const html = dropNextRead(contentHTML(fs.readFileSync(FILE, 'utf8')));
 let ng = 0;
 const fail = m => { console.error('  ✗ ' + m); ng++; };
 const ok = m => console.log('  ✓ ' + m);

@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 /**
  * /column/tsukin-teate-hikazei/ の**ページ本文**の検査（このページに対応するツール/コアは無い）。
  *
@@ -31,7 +32,7 @@
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
 
-const HTML = readFileSync(new URL('../docs/column/tsukin-teate-hikazei/index.html', import.meta.url), 'utf8');
+const HTML = contentHTML(readFileSync(new URL('../docs/column/tsukin-teate-hikazei/index.html', import.meta.url), 'utf8'));
 
 let pass = 0, fail = 0;
 const t = (name, fn) => { try { fn(); pass++; console.log('✅ ' + name); }

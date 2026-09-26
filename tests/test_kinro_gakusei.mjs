@@ -1,3 +1,4 @@
+import {contentHTML} from './layout/content-html.mjs';
 // 勤労学生控除 kinroGakuseiHantei と /kinro-gakusei/ ページのテスト。
 //
 // オラクルは実装の式ではなく**条文を判定順そのまま書き下した独立実装**:
@@ -19,7 +20,7 @@ import { calc, kyuyoShotokuR8, shotokuzeiKisoKojo, hikazeiHantei } from "../docs
 
 const D = JSON.parse(readFileSync(new URL("../docs/assets/setsuzei_r08.json", import.meta.url)));
 const J = JSON.parse(readFileSync(new URL("../docs/assets/juminzei_r08.json", import.meta.url)));
-const HTML = readFileSync(new URL("../docs/kinro-gakusei/index.html", import.meta.url), "utf8");
+const HTML = contentHTML(readFileSync(new URL("../docs/kinro-gakusei/index.html", import.meta.url), "utf8"));
 
 let pass = 0, fail = 0;
 const eq = (name, got, want) => {
