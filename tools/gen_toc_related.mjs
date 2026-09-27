@@ -47,9 +47,10 @@ export function generate(pages){
   const resolve=href=>{try{const u=new URL(href,'https://keiri-tools.com'+path);return u.origin==='https://keiri-tools.com'&&u.pathname!==path&&pages.has(u.pathname)&&candidates.some(([p])=>p===u.pathname)?u.pathname:null;}catch{return null;}};
   const picks=[];const sources=[];
   const add=(p,source)=>{if(p&&!picks.includes(p)&&picks.length<3){picks.push(p);sources.push(source);}};
+  // Editorial pins win: they exist exactly where the page's own links point away from the reader's next task.
+  for(const p of pins[path]?.paths||[])add(p,'editorial');
   for(const href of a.handmade)add(resolve(href),'handmade');
   for(const href of a.body)add(resolve(href),'body');
-  if(picks.length<2)for(const p of pins[path]?.paths||[])add(p,'editorial');
   // Two contextual links are sufficient: never force a weak third recommendation.
   if(picks.length<2)for(const [p]of candidates.filter(([p])=>p!==path).sort((x,y)=>score(a,y[1])-score(a,x[1])||x[0].localeCompare(y[0]))){add(p,'weighted-2gram');if(picks.length>=2)break;}
   if(a.pr){picks.splice(2);sources.splice(2);}
