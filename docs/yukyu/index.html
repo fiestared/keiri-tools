@@ -297,17 +297,17 @@ $("calc").addEventListener("click", () => {
       <div style="overflow-x:auto;margin-top:14px">
       <table style="width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border-radius:8px">
         <tr style="background:#e7f3f0">
-          <th scope="col" style="text-align:left;padding:6px 8px">付与日</th>
-          <th scope="col" style="text-align:left;padding:6px 8px">勤続</th>
-          <th scope="col" style="text-align:right;padding:6px 8px">付与日数</th>
-          <th scope="col" style="text-align:center;padding:6px 8px">年5日義務</th></tr>
+          <th scope="col" style="text-align:left;padding:6px 8px;min-width:0">付与日</th>
+          <th scope="col" style="text-align:left;padding:6px 8px;min-width:0">勤続</th>
+          <th scope="col" style="text-align:right;padding:6px 8px;min-width:0">付与日数</th>
+          <th scope="col" style="text-align:center;padding:6px 8px;min-width:0">年5日<wbr>義務</th></tr>
         ${rows.map(r => {
           const past = r.date <= today;   // 文字列比較（new Date("YYYY-MM-DD")はUTC扱いで当日の朝に狂う）
           return `<tr style="${past ? "" : "color:var(--sub)"}">
-            <td style="padding:6px 8px">${r.date.replaceAll("-", "/")}${past ? "" : "（予定）"}</td>
-            <td style="padding:6px 8px">${r.years === 0.5 ? "6か月" : Math.floor(r.years) + "年6か月"}</td>
-            <td style="padding:6px 8px;text-align:right"><b>${r.days}日</b></td>
-            <td style="padding:6px 8px;text-align:center">${r.mustTakeFive ? "対象" : "—"}</td></tr>`;
+            <td style="padding:6px 8px;min-width:0">${r.date.replaceAll("-", "/")}${past ? "" : "（予定）"}</td>
+            <td style="padding:6px 8px;min-width:0">${r.years === 0.5 ? "6か月" : `<span class="numeric-token">${Math.floor(r.years)}年</span><span class="numeric-token">6か月</span>`}</td>
+            <td style="padding:6px 8px;min-width:0;text-align:right"><b>${r.days}日</b></td>
+            <td style="padding:6px 8px;min-width:0;text-align:center">${r.mustTakeFive ? "対象" : "—"}</td></tr>`;
         }).join("")}
       </table></div>
       ${g.clamped ? CLAMP_NOTE : ""}
