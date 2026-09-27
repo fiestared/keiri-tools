@@ -102,7 +102,7 @@ def render_html(doc):
     attribution = html_mod.escape(meta['attribution'])
     return f'''<!--sched:S-->
   <p class="hint">jGrants に載らない制度（デジタル化・AI導入／省力化投資／新事業進出）を含みます。
-  <a href="../">補助金の検索</a>には出てきません。★<b>いま受付中は{open_n}件</b>で、受付が終わった回は下に並べています
+  <a href="../">補助金の検索</a>には出てきません。★<b>受付中・受付予定の掲載は{open_n}件</b>です。開始日前の公募を含むので各受付期間を確認してください。受付が終わった回は下に並べています
   （次回の日程は公式に発表されるまで分かりません）。</p>
   <div class="scroll-wrap"><table class="res" id="hj-sched-table">
     <tr><th>補助金</th><th>申請受付期間</th></tr>
