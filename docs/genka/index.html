@@ -172,24 +172,24 @@
     <option value="mukei">無形固定資産（ソフトウエア・特許権など）</option>
     <option value="kodo">坑道</option>
   </select>
-      <span id="assettype-hint" class="hint">　最後に1円を残すかどうかが変わります（所令134条1項2号）</span>
+      <span id="assettype-hint" class="hint">最後に1円を残すかどうかが変わります（所令134条1項2号）</span>
 
   <label for="method">償却方法</label>
   <select id="method" aria-describedby="method-hint">
     <option value="teigaku" selected>定額法（毎年ほぼ同額）</option>
     <option value="teiritsu">定率法（初めの年ほど多い）</option>
   </select>
-      <span id="method-hint" class="hint">　個人事業主は定額法が法定（届出で定率法も選べます）。法人は定率法が法定です</span>
+      <span id="method-hint" class="hint">個人事業主は定額法が法定（届出で定率法も選べます）。法人は定率法が法定です</span>
 
   <label for="cost">取得価額（円）</label>
   <input id="cost" type="number" inputmode="numeric" min="1" step="1" placeholder="例）300000" value="300000" aria-describedby="cost-hint">
-      <span id="cost-hint" class="hint">　本体価格＋引取運賃・据付費など、使えるようにするまでの費用の合計</span>
+      <span id="cost-hint" class="hint">本体価格＋引取運賃・据付費など、使えるようにするまでの費用の合計</span>
 
   <label for="life">耐用年数（年）</label>
   <input id="life" type="number" inputmode="numeric" min="2" max="50" step="1" placeholder="例）4" value="4" aria-describedby="life-hint">
-      <span id="life-hint" class="hint">　国税庁「耐用年数表」で資産ごとに決まっています（例：パソコン4年／軽・普通乗用車6年／木造事務所24年）。2〜50年に対応</span>
+      <span id="life-hint" class="hint">国税庁「耐用年数表」で資産ごとに決まっています（例：パソコン4年／軽・普通乗用車6年／木造事務所24年）。2〜50年に対応</span>
 
-  <label id="acq-label">取得（事業に使い始めた）年月<span class="hint">　定率法の適用表（200%／250%）と初年度の月割の起点に使います</span></label>
+  <label id="acq-label">取得（事業に使い始めた）年月<span class="hint">定率法の適用表（200%／250%）と初年度の月割の起点に使います</span></label>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
     <select id="acqyear" style="flex:1"></select>
     <span>年</span>
@@ -205,7 +205,7 @@
 
   <label for="ratio">事業専用割合（％）</label>
   <input id="ratio" type="number" inputmode="numeric" min="1" max="100" step="1" placeholder="100" value="100" aria-describedby="ratio-hint">
-      <span id="ratio-hint" class="hint">　自宅兼用・自家用兼用のときだけ変更（例：仕事に6割なら60）。ふつうは100</span>
+      <span id="ratio-hint" class="hint">自宅兼用・自家用兼用のときだけ変更（例：仕事に6割なら60）。ふつうは100</span>
 
   <button class="primary" id="calc">減価償却費を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -218,9 +218,9 @@
 
   <label for="chuko-houtei">法定耐用年数（年）</label>
   <input id="chuko-houtei" type="number" inputmode="numeric" min="2" max="100" step="1" placeholder="例）22" value="22" aria-describedby="chuko-houtei-hint">
-      <span id="chuko-houtei-hint" class="hint">　新品ならこの年数、というもの（例：木造アパート22年／軽・普通乗用車6年／パソコン4年）</span>
+      <span id="chuko-houtei-hint" class="hint">新品ならこの年数、というもの（例：木造アパート22年／軽・普通乗用車6年／パソコン4年）</span>
 
-  <label id="chuko-keika-label">経過年数（築年数・使用年数）<span class="hint">　新品で使い始めてから買うまでの期間。<b>月まで数えます</b>（耐令3条5項「暦に従つて計算し」）</span></label>
+  <label id="chuko-keika-label">経過年数（築年数・使用年数）<span class="hint">新品で使い始めてから買うまでの期間。<b>月まで数えます</b>（耐令3条5項「暦に従つて計算し」）</span></label>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
     <input id="chuko-keika-y" type="number" inputmode="numeric" min="0" max="200" step="1" placeholder="例）10" value="10" style="flex:1">
     <span>年</span>
@@ -232,7 +232,7 @@
 
     <input aria-describedby="chuko-shishutsu-hint chuko-shishutsu-detail" id="chuko-shishutsu" type="number" inputmode="numeric" min="0" step="1" placeholder="0" value="0">
     <p class="hint" style="margin:4px 0 10px" id="chuko-shishutsu-hint">※ 50％の判定には、上の計算機の<b>取得価額</b>を使います。</p>
-      <span id="chuko-shishutsu-detail" class="hint">　使えるようにするための改良・改造費。<b>取得価額の50％を超えると簡便法は使えません</b>（耐令3条1項ただし書）。無ければ0</span>
+      <span id="chuko-shishutsu-detail" class="hint">使えるようにするための改良・改造費。<b>取得価額の50％を超えると簡便法は使えません</b>（耐令3条1項ただし書）。無ければ0</span>
 
   <button class="primary" id="chuko-calc">簡便法で耐用年数を計算する</button>
   <div role="status" aria-live="polite" class="result" id="chuko-result"></div>
