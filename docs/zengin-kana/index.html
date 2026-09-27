@@ -88,7 +88,7 @@
 <main id="main" tabindex="-1">
   <h1>振込名義カナ変換（全銀フォーマット一括正規化）</h1>
   <p class="lead">総合振込の受取人名を貼り付けると、半角カナ・法人略語(株式会社→ｶ)等)・使用可能文字・文字数まで一括で整えます。1行に1名義。データはブラウザの外へ送信されません。</p>
-<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">変換ルール（出典つき）</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/zengin-format-guide/">全銀フォーマットとは</a></li><li><a href="../column/kumimodoshi/">組戻しとは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
 
   <div class="card">
     <label for="names">名義リスト（1行1名義）</label>
@@ -101,6 +101,7 @@
     <div id="copyErr" class="note" role="alert" aria-atomic="true" style="margin-top:8px;color:#a33"></div>
     <a href="#" id="forceCopy" style="display:none;font-size:12px;color:var(--sub)">未変換の行も含めてコピーする</a>
   </div>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">変換ルール（出典つき）</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/zengin-format-guide/">全銀フォーマットとは</a></li><li><a href="../column/kumimodoshi/">組戻しとは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
   <section class="faq">
     <h2 id="tool-section-1">変換ルール（出典つき）</h2>
@@ -147,6 +148,9 @@ $("run").addEventListener("click", () => {
   const rs = normalizeBatch($("names").value);
   lastResults = rs;
   const out = $("out");
+  $("copyErr").textContent = "";
+  $("forceCopy").style.display = "none";
+  $("copyAll").style.display = "none";
   if (!rs.length) { out.innerHTML = "名義を入力してください。"; return; }
   out.innerHTML = rs.map((r) => `
     <div style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;background:${r.ok ? "#f2f9f6" : "#fff7e6"}">
@@ -189,19 +193,27 @@ $("copyAll").addEventListener("click", async () => {
 
 $("forceCopy").addEventListener("click", async (e) => {
   e.preventDefault();
-  await writeAll();
+  if (!await writeAll()) return;
   $("copyErr").textContent = "未変換の行を含めてコピーしました。振込データに使う前に必ず確認してください。";
 });
 
 async function writeAll() {
-  await navigator.clipboard.writeText(lastResults.map((r) => r.output).join("\n"));
+  try {
+    await navigator.clipboard.writeText(lastResults.map((r) => r.output).join("\n"));
+    $("copyErr").textContent = "";
+  } catch {
+    $("copyErr").textContent = "コピーできませんでした（手動で選択してください）";
+    return false;
+  }
   $("copyAll").textContent = "コピーしました ✓";
   setTimeout(() => ($("copyAll").textContent = copyLabel()), 1500);
+  return true;
 }
 
 function esc(s) {
   return s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 }
 </script>
+<script src="../assets/empty-state.js" defer></script>
 </body>
 </html>
