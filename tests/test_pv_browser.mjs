@@ -61,7 +61,12 @@ try {
     assert.match(await page.locator('#result .big').innerText(),/9日/);assert(await page.locator('#result-next').isHidden());
     await page.selectOption('#wdays','5');await page.fill('#hire','2026-01-01');await page.click(button);assert.match(await page.locator('#result .big').innerText(),/10日/);assert(await page.locator('#result-next').isVisible());
    }
-   if(slug==='gensen-choshu'){await page.locator('[role="tab"]').last().click();assert(await page.locator('#result-next').isHidden());}
+   if(slug==='gensen-choshu'){
+    await page.click('#tab-shoyo');await page.fill('#shoyoAmt','500000');await page.fill('#zenAmt','300000');await page.click('#calcS');
+    await page.locator('#resultS[data-result-state="success"]').waitFor();assert(await page.locator('#result-next').isHidden());
+    await page.click('#tab-hoshu');await page.fill('#fee','100000');await page.click('#calc');
+    await page.locator('#result[data-result-state="success"]').waitFor();assert(await page.locator('#result-next').isHidden());
+   }
    else {const field=slug==='yukyu'?'#hire':slug==='shakai-hoken'?'#monthly':'#bonus';await page.fill(field,'');assert(await page.locator('#result-next').isHidden());await page.click(button);assert(await page.locator('#result-next').isHidden());}
   }
   for(const slug of ['furikomi-tesuryo-hikaku','nenshu-no-kabe','shakai-hoken-kanyu-joken','kaigo-hokenryo-itsukara','gensen-shotokuzei-nofusho','hoteichosho-goukeihyo','kyuyo-shiharai-hokokusho','orcan-hikaku','invesco-sekai-vs-emaxis-orcan']){
