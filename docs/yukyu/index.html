@@ -154,6 +154,7 @@
     <button id="memo-save" data-retention-control class="btn-outline" type="button">この端末に覚えておく</button>
     <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
   </div>
+  <p class="workflow-next" id="result-next" data-workflow-slot="result_next_v1" hidden><a href="/column/yukyu-nen5ka/">付与後の管理：年5日の取得義務と数え方を確認する</a></p>
 </div>
 
 <div class="card" id="memo-card" data-retention-control tabindex="-1" style="display:none">
@@ -234,7 +235,9 @@ import {
   todayJst, addMemo, removeMemo, isRevisit, sortByNext, daysUntil, makeStore, sendOnce,
 } from "../assets/tool_memo.js";
 
+import { attachResultNext } from "../assets/workflow_next.js";
 const $ = (id) => document.getElementById(id);
+attachResultNext(document.getElementById("result"), document.getElementById("result-next"));
 const t0 = new Date();
 $("hire").value = `${t0.getFullYear() - 1}-04-01`;
 
@@ -311,6 +314,7 @@ $("calc").addEventListener("click", () => {
         ※ 各年度で全労働日の8割以上出勤していることが前提です。有給休暇は付与日から2年で時効消滅します。
       </div>`;
   }
+  box.dataset.workflowEligible = String(g.days >= 10);
   box.innerHTML = html;
   $("memo-actions").style.display = "block";
   calculation.finish(ticket); syncMemoAction();

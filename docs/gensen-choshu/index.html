@@ -214,6 +214,7 @@
     <button class="primary" id="calcK">計算する</button>
     <div role="status" aria-live="polite" class="result" data-result-state="initial" id="resultK"></div>
     <button id="copy-k" class="btn-outline" style="display:none">結果をコピー</button>
+  <p class="workflow-next" id="result-next" data-workflow-slot="result_next_v1" hidden><a href="/column/gensen-shotokuzei-nofusho/">給与担当の方：集計した源泉所得税の納付書の書き方を確認する</a></p>
   </div>
 
   <!-- ── 賞与（算出率の表） ───────────────────────────── -->
@@ -410,7 +411,9 @@ import {
 } from "../assets/gensen_kyuyo_core.js";
 import { calcShoyo } from "../assets/gensen_shoyo_core.js";
 
+import { attachResultNext } from "../assets/workflow_next.js";
 const $ = (id) => document.getElementById(id);
+attachResultNext(document.getElementById("resultK"), document.getElementById("result-next"));
 import { watchCalculation } from "../assets/calculation_state.js";
 const calculationK = watchCalculation($("pane-kyuyo"), $("resultK"), $("copy-k"));
 const calculationS = watchCalculation($("pane-shoyo"), $("resultS"), $("copy-s"));

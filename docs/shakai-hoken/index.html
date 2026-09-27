@@ -182,6 +182,7 @@
   <button class="primary" id="calc">計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
+  <p class="workflow-next" id="result-next" data-workflow-slot="result_next_v1" hidden><a href="/column/shakai-hokenryo-choshu-jiki/">給与担当の方：この保険料を、どの月の給与から引くか確認する</a></p>
 </div>
 
 <!--retention-updates:S--><div class="retention-updates"><h3>制度変更の確認</h3><p class="hint">適用日と変更点を記録しています。日々の更新一覧ではありません。</p><ul><li id="change-kodomo-support-2026"><b>2026年4月分から子ども・子育て支援金を徴収</b><br>適用日：<time datetime="2026-04-01">2026-04-01</time><p>協会けんぽの一般被保険者は2026年4月分（5月納付分）から支援金率0.23%。社会保険料計算機に反映済みです。給与からの控除月は勤務先の徴収方法も確認してください。</p><a href="https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/003/" rel="nofollow">協会けんぽ：子ども・子育て支援金率</a></li></ul><p><a href="/updates.xml">制度変更のRSS</a> <span class="hint">対応するRSSリーダーで購読できます。記録追加時だけ通知対象になります。</span></p></div><!--retention-updates:E-->
@@ -602,7 +603,9 @@
 <script type="module">
 import { calcMonthly, calcBonus, calcKoyou, KENKO_GRADES } from "../assets/shaho_core.js";
 
+import { attachResultNext } from "../assets/workflow_next.js";
 const $ = (id) => document.getElementById(id);
+attachResultNext(document.getElementById("result"), document.getElementById("result-next"));
 import { watchCalculation, validateAge } from "../assets/calculation_state.js";
 const calculation = watchCalculation($("calc").closest(".card"), $("result"), $("copy-result"));
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");

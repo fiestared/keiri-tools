@@ -173,6 +173,7 @@
   <button class="primary" id="calc">計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
+  <p class="workflow-next" id="result-next" data-workflow-slot="result_next_v1" hidden><a href="/column/shoyo-shiharaitodoke/">給与担当の方：賞与支払届の提出手順を確認する</a></p>
 </div>
 
 <article>
@@ -327,7 +328,9 @@
 <script type="module">
 import { calcBonusTedori } from "../assets/bonus_tedori_core.js";
 
+import { attachResultNext } from "../assets/workflow_next.js";
 const $ = (id) => document.getElementById(id);
+attachResultNext(document.getElementById("result"), document.getElementById("result-next"));
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
 let SHAHO = null, SHOYO = null, GENSEN = null;
 
@@ -384,10 +387,13 @@ for (const r of document.querySelectorAll('input[name="zmode"]')) {
       document.querySelector('input[name="zmode"]:checked')?.value === "paid" ? "block" : "none";
   });
 }
+import { watchCalculation } from "../assets/calculation_state.js";
+const calculation = watchCalculation($("calc").closest(".card"), $("result"), $("copy-result"));
 const zmode = () => document.querySelector('input[name="zmode"]:checked')?.value || "paid";
 
 $("calc").addEventListener("click", async () => {
   const box = $("result");
+  const ticket = calculation.begin();
   box.style.display = "block";
   box.innerHTML = "計算中…";
   // 必要な参照データの到着を必ず待つ(3つとも答えの一部になりうる)
@@ -494,6 +500,7 @@ $("calc").addEventListener("click", async () => {
       ${r.year ? `<span class="hint">（${r.year}の料率・${r.taxYear || ""}の算出率の表）</span>` : ""}</div>`;
 
   box.innerHTML = html;
+  calculation.finish(ticket);
 });
 
 /* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
