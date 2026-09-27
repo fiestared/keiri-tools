@@ -4,6 +4,7 @@ import {join} from 'node:path';
 import assert from 'node:assert/strict';
 import {browserTools,serve,contextFor,ready,DOCS,outputDir} from './layout/browser.mjs';
 import {measure} from './layout/measure.mjs';
+import {measureToc} from './layout/toc-measure.mjs';
 const pages=readdirSync(DOCS,{recursive:true}).filter(f=>f==='index.html'||f.endsWith('/index.html')).sort().map(f=>'/'+f.replace(/index.html$/,''));
 assert(pages.length>0,'No pages discovered');
 const jobs=[1280,390].flatMap(width=>pages.map(url=>({url,width})));const results=[];let next=0;
@@ -11,7 +12,7 @@ const {chromium}=await browserTools();const server=await serve();let browser;
 try{
  browser=await chromium.launch();
  await Promise.all(Array.from({length:4},async()=>{const context=await contextFor(browser,server.origin);const page=await context.newPage();let errors=[];page.on('pageerror',error=>errors.push(String(error)));
-  while(next<jobs.length){const job=jobs[next++];errors=[];try{await page.setViewportSize({width:job.width,height:900});await ready(page,server.origin+job.url);const measured=await page.evaluate(measure);for(const error of errors)measured.issues.push({kind:'page-error',text:error});results.push({...job,...measured});}catch(error){results.push({...job,error:String(error)});}}
+  while(next<jobs.length){const job=jobs[next++];errors=[];try{await page.setViewportSize({width:job.width,height:900});await ready(page,server.origin+job.url);const measured=await page.evaluate(measure);if(await page.locator('.rail-next').count())for(const kind of await page.evaluate(measureToc))measured.issues.push({kind,text:'TOC related rail'});for(const error of errors)measured.issues.push({kind:'page-error',text:error});results.push({...job,...measured});}catch(error){results.push({...job,error:String(error)});}}
   await context.close();
  }));
 }finally{await browser?.close();server.close();}

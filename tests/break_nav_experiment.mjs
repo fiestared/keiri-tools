@@ -62,7 +62,7 @@ console.log(`✓ 壊しテスト ${cases.length + tableCases.length}件すべて
 // CSS 側の壊し（style.css は1枚なので文字列で壊して checkTableFix / checkCss に渡す）
 const cssCases = [
   ["印刷で表を枠の高さに戻した", CSS.replace(".table-cue ~ .scroll-wrap { max-height: none !important;", ".table-cue ~ .scroll-wrap { max-height: 640px !important;")],
-  ["1200px未満でも右レールの関連を出した", CSS.replace("@media (max-width: 1199.98px) { .rail-next { display: none; } }", "")],
+  ["1200px未満で右レールの関連を隠した", CSS + "\n@media (max-width: 1199.98px) { .rail-next { display: none; } }"],
   ["右レールの関連の見た目を消した", CSS.replace(".rail-next { background: #fff;", ".rail-next { background: none;")],
 ];
 let cssMissed = 0;

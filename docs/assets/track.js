@@ -49,6 +49,40 @@
       window.gtag("event", name, params || {});
     }
 
+    // TOC navigation uses the existing qualified-exposure convention (50%, one second).
+    function workflowEvent(name, extra) {
+      if (typeof window.gtag !== "function") return;
+      try { window.gtag("event", name, Object.assign({ from: toolId(), slot: "toc_related_v1" }, extra || {})); } catch (_) {}
+    }
+    document.addEventListener("toc-toggle", function (e) {
+      workflowEvent("toc_toggle", { expanded: !!e.detail.expanded });
+    });
+    document.addEventListener("click", function (e) {
+      var a = e.target.closest && e.target.closest('.rail-next[data-workflow-slot="toc_related_v1"] a');
+      if (!a) return;
+      try {
+        var u = new URL(a.href, location.href);
+        if (u.origin === location.origin) workflowEvent("workflow_click", {link_url: u.origin + u.pathname});
+      } catch (_) {}
+    }, true);
+    function watchTocExposure() {
+      var el = document.querySelector('.rail-next[data-workflow-slot="toc_related_v1"]');
+      if (!el || typeof IntersectionObserver !== "function") return;
+      var timer, visible = false, done = false;
+      function cancel() { clearTimeout(timer); timer = null; }
+      function schedule() {
+        cancel();
+        if (done || !visible || document.hidden) return;
+        timer = setTimeout(function () { done = true; workflowEvent("workflow_view"); observer.disconnect(); }, 1000);
+      }
+      var observer = new IntersectionObserver(function (entries) {
+        visible = entries[entries.length - 1].intersectionRatio >= 0.5;
+        schedule();
+      }, {threshold:[0, 0.5]});
+      observer.observe(el);
+      document.addEventListener("visibilitychange", schedule);
+    }
+
     /* ---------- 1. 入力に触った ---------- */
     // capture で拾う: ページ側が stopPropagation していても取りこぼさない
     ["input", "change"].forEach(function (type) {
@@ -56,7 +90,7 @@
         type,
         function (e) {
           var t = e.target;
-          if (!t || !t.tagName || t.closest("[data-retention-control]")) return;
+          if (!t || !t.tagName || t.closest("[data-retention-control], [data-toc-control]")) return;
           var tag = t.tagName.toLowerCase();
           if (tag !== "input" && tag !== "select" && tag !== "textarea") return;
           touched = true;
@@ -73,7 +107,7 @@
       "click",
       function (e) {
         var t = e.target;
-        if (!t || !t.closest || t.closest("[data-retention-control]")) return;
+        if (!t || !t.closest || t.closest("[data-retention-control], [data-toc-control]")) return;
         var b = t.closest("button, input[type=submit], input[type=button]");
         if (!b) return;
         touched = true;
@@ -180,7 +214,7 @@
           // ★本文(article)の中のリンクだけを数える。ヘッダのブランド・パンくず・フッタ・目次を
           //   混ぜると「記事が送客したか」ではなく「ナビが押されたか」を測ることになり、
           //   数字は増えるのに判断には一切使えなくなる（E2Eで実際にヘッダのロゴを拾って気づいた）
-          if (!a.closest("article")) return;
+          if (!a.closest("article, .rail-next")) return; // Desktop rail moves to main; retain legacy article referral metrics.
           if (a.closest("nav")) return; // article 内の目次(nav.toc)
           // ★接頭辞(^\/column\/)ではなく部分一致で見る: E2Eハーネスはリポジトリのルートから
           //   配信するのでパスが /docs/column/… になり、接頭辞判定だと**本番でしか動かない
@@ -279,11 +313,12 @@
     }
 
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", function () { watchResults(); watchDomainExposure(); watchPrExposure(); });
+      document.addEventListener("DOMContentLoaded", function () { watchResults(); watchDomainExposure(); watchPrExposure(); watchTocExposure(); });
     } else {
       watchResults();
       watchDomainExposure();
       watchPrExposure();
+      watchTocExposure();
     }
   } catch (err) {
     /* 計測はツールの機能ではない。ここで転んでもページは動き続ける */

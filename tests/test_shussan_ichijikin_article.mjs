@@ -236,7 +236,8 @@ const rowOf = (subject) => rows.find(r => new RegExp(`<td><b>${subject}</b></td>
 }
 
 // ★9. 補償要件のリスト: 28週以上
-const ulHosho = (body.match(/<ul>[\s\S]*?在胎週数[\s\S]*?<\/ul>/) || [, ''])[0];
+// Match each list independently; a navigation list must not consume following body sections.
+const ulHosho = [...body.matchAll(/<ul>[\s\S]*?<\/ul>/g)].map(m => m[0]).find(ul => /在胎週数/.test(ul));
 if (!ulHosho) fail('補償要件のリストが無い');
 else if (!new RegExp(`<b>在胎週数が${WEEK_HOSHO}週以上</b>`).test(ulHosho))
   fail(`★補償要件のリストが「在胎週数が${WEEK_HOSHO}週以上」になっていない（補償の境目）`);

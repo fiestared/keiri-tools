@@ -31,3 +31,16 @@ For an intentional UI change: run the tests, open expected/actual/diff at both w
 After changes, inspect the target area **and** top/TOC, input pairs, tables, diagrams, FAQ, footer at 1280 and 390; inspect PR-bearing pages without changing PR/AdSense. Keep paths to before/after screenshots. `scrollWidth` alone is insufficient. Never edit the worktree while the full test runner is running: existing mutation tests temporarily modify documents and restore them.
 
 Legacy content tests use `content-html.mjs` only to remove audited presentation spans/classes, preserving all wording and structure. Mutation tests restore exact raw originals in finally; never normalize the saved restoration copy. Numeric values, conclusions, ordinary spans and table boundaries remain covered independently by `test_content_html`.
+
+
+## TOC related rail (2026-09-27)
+
+Run `node tools/gen_article_next_read.mjs` (or `node tools/gen_toc_related.mjs`) after the TOC/layout generator. The former preserves the existing end-of-article cards, then generates related navigation for **every public TOC**, including tools and former controls. `--check` and `test_toc_related` discover future pages automatically. Navigation uses the existing `rail-next` / `nav-exp` line markers so body-only dates stay intact. Do not introduce a newline inside an existing head line when adding a marked script.
+
+Handmade related links take precedence over body references and weighted title/description bigrams; deduplicate and exclude self/nonpublic pages. PR rails have two recommendations; others two or three. Two contextual links are sufficient: do not force a weak third. Sparse sources may use reasoned editorial fallbacks in tools/toc_related_pins.json before weighted bigrams. All selected destinations and sample reviews are in `reports/rail-toc/distribution.json`.
+
+Long means more than six links, or rendered list height exceeding min(320px, available rail height); in flow, available means min(320px, 40vh). Long TOCs default closed. Buttons stay 48px high. Desktop list scrolling is separate from PR and related cards; available space subtracts their measured heights, 12px gaps, 84px header clearance, 20px bottom clearance and 62px TOC controls. At very small heights or enlarged fonts, content remains page-scrollable rather than clipped. Tall 300×250 PR banners scale proportionally to 192×160 below 900px desktop height; no PR destination/content or AdSense settings change.
+
+The shared script moves the rail to a sticky track bounded by main on desktop and returns it to its original DOM position below 1200px. No JS leaves original readable navigation in flow. Printing opens all TOC items and hides recommendations/buttons. Tracking uses `workflow_view` (50% for one continuous visible second), `workflow_click`, slot `toc_related_v1`, and `toc_toggle`; navigation buttons cannot fire calculator input/result telemetry.
+
+`test_layout_render` applies TOC geometry checks to all generated rails at both widths. `test_toc_render` adds repeat clicks, Enter/Space, focus, anchors, print, JS-disabled rendering, footer boundaries, telemetry and CSS/ARIA mutation rejection. These tests are part of the default full runner.

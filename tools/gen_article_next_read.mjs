@@ -1,30 +1,14 @@
 /**
- * 公開コラムに「次に読む」3件を生成する。
- *
- * ★2026-09-16 から、名簿（tools/nav_experiment.json）で3通りに分けて扱う:
- *   - 対象15本（treatment）… 新しい選定。手作りの「関連記事・ツール」を先に置き、その後ろに
- *     「本文が参照している記事・ツール」→ 同カテゴリ需要順で3件。右レールにも関連3本を置く。
- *   - 対照15本・保護対象・表の施策のページ … **一切書き換えない**（入力バイトのまま）。
- *     記事が増えると旧選定は並びが変わるので、対照や進行中の検定のページを動かさないため。
- *   - それ以外 … 従来どおり（カテゴリ・需要順の上から3件を、関連記事の前に置く）。
- *
- * ★なぜ変えたか（2026-09-15 GA4・本番ソース）:
- *   旧選定は主題を見ない。振込手数料一覧の「次に読む」は領収書・見積書・下請法だった。
- *   しかも手作りの関連（主題に合う）がその下にあり、記事→記事の遷移は28日で24件しかなかった。
- *
- * ★対象ページで守ること（Astra の計画 §3・§4）:
- *   - 保護対象と対照群へは、新しい導線（次に読む・右レール）から**リンクしない**。
- *   - 手作り関連は触らない（リンクの所属・順序・文言・見た目をそのまま残す）。
- *     ★対象15本の関連は元から「次に読む」と同じ罫線行（.tool-card）だった（2026-09-16 実測。枠カードの .tool-list はサイト全体で3本）。
- *   - 見た目は assets/style.css（記事内に <style> を置かない）。
- *   - 生成するブロックは必ず1行で、導線の目印（NAV_LINE）を同じ行に持つ。
- *     更新日・lastmod はこの目印の行しか変わっていないファイルを「本文の更新」に数えない。
- *
- * usage: node tools/gen_article_next_read.mjs [--check]
+ * Generate existing article-end next-read cards, then all public TOC related rails.
+ * 2026-09-27: experiment protection was lifted on 09-25. The next-read selection
+ * stays unchanged because this task preserves its wording and destinations;
+ * gen_toc_related.mjs owns the independent rail for treatment/control/tools alike.
+ * Generated navigation keeps NAV_LINE markers for dateModified / sitemap history.
+ * Usage: node tools/gen_article_next_read.mjs [--check]
  */
 import { readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
-import { loadNavExperiment, NAV_LINE } from "./nav_experiment.mjs";
+import { loadNavExperiment } from "./nav_experiment.mjs";
 
 const ROOT = new URL("../", import.meta.url).pathname;
 const DOCS = join(ROOT, "docs");
@@ -209,35 +193,10 @@ function buildTreatment(slug, a) {
   for (const s of ranked([...articles.keys()], false)) push(`/column/${s}/`);
   if (picks.length < 3) throw new Error(`${slug}: 次に読むが3件そろわない`);
 
-  const railItems = [];
-  for (const p of [...related, ...picks]) if (!banned(p) && !railItems.includes(p) && railItems.length < 3) railItems.push(p);
-
   const nextBlock = `<!--next-read:S--><section class="next-read" data-nav-exp="t"><h2>次に読む</h2><div class="tool-grid">${picks.map((p) => card(infoOf(p))).join("")}</div></section><!--next-read:E-->`;
-  const railBlock = `<!--rail-next:S--><section class="rail-next" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul>${railItems.map((p) => `<li><a href="${esc(rel(p))}">${esc(shortTitle(infoOf(p).title))}</a></li>`).join("")}</ul></section><!--rail-next:E-->`;
-
-
-  // 1) 次に読む: 手作り関連の直後（同じ行の末尾に足す＝変更行が目印を持つ）
-  const rEnd = html.indexOf("</section>", html.indexOf('<section class="related"')) + "</section>".length;
-  html = html.slice(0, rEnd) + "\n  " + nextBlock + html.slice(rEnd);
-  // 2) 右レール: 目次の直後。レールが無いページは目次を .side-rail で包む
-  const tocStart = html.indexOf('<nav class="toc">');
-  if (tocStart < 0) throw new Error(`${slug}: 目次（nav.toc）が無い`);
-  const tocEnd = html.indexOf("</nav>", tocStart) + "</nav>".length;
-  // PR枠のあるページは gen_pr_blocks.mjs が「<div class="side-rail">PR…<nav class="toc">…</nav></div>」を書いている
-  const inRail = html.lastIndexOf('<div class="side-rail">', tocStart) >= 0 && html.startsWith("</div>", tocEnd);
-  if (inRail) {
-    html = html.slice(0, tocEnd) + railBlock + html.slice(tocEnd);
-  } else {
-    html = html.slice(0, tocStart) + '<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap">'
-      + html.slice(tocStart, tocEnd) + railBlock + "</div><!--rail-next:wrapE-->" + html.slice(tocEnd);
-  }
-
-  // 取り外すと元に戻ること（目印の外を1バイトも変えていない証拠）
-  if (stripNav(html) !== stripNav(a.html)) throw new Error(`${slug}: 導線を外しても元に戻らない`);
-  for (const line of html.split("\n")) {
-    if (/next-read|rail-next|nav-exp/.test(line) && !NAV_LINE.test(line)) throw new Error(`${slug}: 目印の無い導線の行がある`);
-  }
-  return html;
+  // Rail is owned by gen_toc_related.mjs. Preserve its markup exactly.
+  const nextOnly = MARK.test(a.html) ? a.html.replace(MARK, nextBlock) : a.html.replace(/(<section class="related"[\s\S]*?<\/section>)/, "$1\n  " + nextBlock);
+  return nextOnly;
 }
 
 let changed = 0, frozen = 0, treated = 0;
@@ -266,3 +225,7 @@ if (failures.length) { console.error(`✗ 対象ページの生成に失敗:\n  
 if (treated !== exp.treatment.length) { console.error(`✗ 対象 ${exp.treatment.length}本のうち ${treated}本しか生成していない`); process.exit(1); }
 if (CHECK && changed) { console.error(`✗ 次に読むが古い: ${changed}本`); process.exit(1); }
 console.log(`✓ 次に読む ${articles.size}本（対象${treated}・据え置き${frozen}） (${CHECK ? "最新" : `${changed}本更新`})`);
+
+// A new public TOC page must receive the shared related rail as part of this pipeline.
+const {run} = await import("./gen_toc_related.mjs");
+run({check: CHECK});

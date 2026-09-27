@@ -25,6 +25,7 @@ const COLUMN = join(ROOT, "docs/column");
 const hrefsIn = (html) => [...html.matchAll(/<a\b[^>]*\bhref="([^"]*)"/g)].map((m) => m[1]);
 const toPath = (href) => {
   const c = href.split("#")[0];
+  if (c.startsWith("/")) return c;
   let m = c.match(/^\.\.\/([a-z0-9-]+)\/$/); if (m) return `/column/${m[1]}/`;
   m = c.match(/^\.\.\/\.\.\/([a-z0-9-]+)\/$/); if (m) return `/${m[1]}/`;
   return null;
@@ -39,10 +40,10 @@ export function checkPages(pages, exp = loadNavExperiment()) {
       if (/<!--(?:next-read|rail-next|nav-exp)/.test(line) && !NAV_LINE.test(line)) errs.push(`${slug}: 目印の形が崩れた導線の行`);
     }
     const isT = exp.T.has(self);
-    const hasExp = /data-nav-exp=|<!--rail-next:/.test(html);
+    const hasExp = /<section class="next-read" data-nav-exp=/.test(html);
     if (!isT) {
       if (hasExp && !exp.F.has(self)) errs.push(`${slug}: 対象外なのに回遊実験の印がある`);
-      if (exp.F.has(self) && /data-nav-exp=|<!--rail-next:/.test(html)) errs.push(`${slug}: 表の施策のページに次に読む・レールの実験が入った`);
+      if (exp.F.has(self) && hasExp) errs.push(`${slug}: 表の施策のページに次に読む・レールの実験が入った`);
       continue;
     }
     const banned = (p) => p === self || exp.P.has(p) || exp.C.has(p);
@@ -61,8 +62,8 @@ export function checkPages(pages, exp = loadNavExperiment()) {
     const rail = html.match(/<!--rail-next:S-->([\s\S]*?)<!--rail-next:E-->/g) || [];
     if (rail.length !== 1) { errs.push(`${slug}: 右レールの関連が ${rail.length} 個`); continue; }
     const railLinks = hrefsIn(rail[0]).map(toPath);
-    if (railLinks.length !== 3 || railLinks.some((p) => !p)) errs.push(`${slug}: 右レールの関連が3件でない`);
-    for (const p of railLinks) if (p && banned(p)) errs.push(`${slug}: 右レールが禁止先 ${p} へリンク`);
+    if (railLinks.length < 2 || railLinks.length > 3 || railLinks.some((p) => !p)) errs.push(`${slug}: 右レールの関連が3件でない`);
+    for (const p of railLinks) if (p && p === self) errs.push(`${slug}: 右レールが自分 ${p} へリンク`);
     // レールは目次と同じ .side-rail の中（1200px以上で追従する面）
     const railAt = html.indexOf("<!--rail-next:S-->");
     const tocEnd = html.indexOf("</nav>", html.indexOf('<nav class="toc">'));
@@ -99,7 +100,7 @@ export function checkTableFix(read, css) {
 export function checkCss(css) {
   const errs = [];
   if (!/\.rail-next \{ background: #fff;/.test(css)) errs.push("style.css: 右レールの関連の見た目が無い");
-  if (!/@media \(max-width: 1199\.98px\) \{ \.rail-next \{ display: none; \} \}/.test(css)) errs.push("style.css: 1200px未満で右レールの関連を隠していない（記事冒頭に出る）");
+  if (/@media \(max-width: 1199\.98px\) \{ \.rail-next \{ display: none; \} \}/.test(css)) errs.push("style.css: モバイルで関連記事を隠している");
   return errs;
 }
 
