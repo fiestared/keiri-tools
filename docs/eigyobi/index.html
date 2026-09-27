@@ -127,8 +127,9 @@
   <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-09-26">2026年9月26日</time>）</p>
   <p>期間の日数、<b>「◯営業日後」の日付</b>、期間内の営業日数を計算します。土日・祝日・年末年始に対応（祝日データは内閣府の公表分）。</p>
 </section>
+<!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-calc">計算ツール</a></li><li><a href="#faq">よくある質問</a><ol><li><a href="#faq-q1">「3営業日後」はいつですか？</a></li><li><a href="#faq-q2">日数計算で開始日は含みますか？</a></li><li><a href="#faq-q3">銀行が休みになるのはいつですか？</a></li><li><a href="#faq-q4">支払日（月末締め翌月末払いなど）を計算したいときは？</a></li></ol></li></ol></nav><!--layout-toc:end-->
 
-<div class="card">
+<div class="card" id="tool-calc">
   <div class="tabs" role="tablist">
     <button id="tab-diff" role="tab" aria-controls="pane-diff" aria-selected="true">期間の日数を数える</button>
     <button id="tab-add" role="tab" aria-controls="pane-add" aria-selected="false">◯営業日後を計算</button>
@@ -178,13 +179,13 @@
 
 <section class="faq">
   <h2 id="faq">よくある質問</h2>
-  <h3 class="faq-question">「3営業日後」はいつですか？</h3>
+  <h3 class="faq-question" id="faq-q1">「3営業日後」はいつですか？</h3>
   <p class="faq-answer">土日・祝日を除いて3日進めた日です。<b>起算日は翌日から</b>で、当日は数えません。たとえば金曜日の3営業日後は、翌週の水曜日になります（間に祝日がなければ）。</p>
-  <h3 class="faq-question">日数計算で開始日は含みますか？</h3>
+  <h3 class="faq-question" id="faq-q2">日数計算で開始日は含みますか？</h3>
   <p class="faq-answer">用途によって変わります。契約期間の計算では<b>初日不算入</b>が原則（民法140条）ですが、宿泊日数・在籍日数などは両端を含めて数えることがあります。本ツールは切り替えられます。</p>
-  <h3 class="faq-question">銀行が休みになるのはいつですか？</h3>
+  <h3 class="faq-question" id="faq-q3">銀行が休みになるのはいつですか？</h3>
   <p class="faq-answer">銀行は土日祝に加えて<b>12月31日〜1月3日も休業</b>します。振込の着金日を計算するときは「年末年始」にチェックを入れてください。</p>
-  <h3 class="faq-question">支払日（月末締め翌月末払いなど）を計算したいときは？</h3>
+  <h3 class="faq-question" id="faq-q4">支払日（月末締め翌月末払いなど）を計算したいときは？</h3>
   <p class="faq-answer">「月末締め翌月末払い」のような支払条件から支払日を一覧で出したいときは、<a href="../shiharai-site/">支払サイト・支払日計算ツール</a>をご利用ください。取引先ごとの条件を保存でき、カレンダー(.ics)にも出力できます。</p>
   <div class="callout">
     <b>祝日データについて</b>
