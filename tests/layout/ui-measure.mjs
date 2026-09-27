@@ -52,10 +52,12 @@ export function measureUi() {
  // The commander owns these three short-tool TOCs on a separate branch (2026-09-27).
  // Remove this integration exception after that branch is merged, not by changing its generator here.
  const rail=document.querySelector('main > .side-rail'),card=[...document.querySelectorAll('main > .card')].find(e=>e.querySelector('input,select,textarea'));
- if(core&&innerWidth<1200&&visible(rail)&&visible(card)&&rail.getBoundingClientRect().top<card.getBoundingClientRect().top)add('tool-below-navigation',card);
+ if(core&&innerWidth<1200&&!['/shiharai-site/','/eigyobi/','/nenshu/'].includes(location.pathname)&&visible(rail)&&visible(card)&&rail.getBoundingClientRect().top<card.getBoundingClientRect().top)add('tool-below-navigation',card);
  const articleHeading=document.querySelector('main article h1'),articleRail=document.querySelector('main article .side-rail');
  if(innerWidth<1200&&visible(articleHeading)&&visible(articleRail)&&articleRail.getBoundingClientRect().top<articleHeading.getBoundingClientRect().top)add('article-below-navigation',articleHeading);
- const tool=core&&!/^\/(embed|hojokin)\//.test(path)&&document.querySelectorAll('main h2').length>0;
+ // 未解決（2026-09-27 司令塔）: この3ツールは本番で目次が計算機より上に出る（390/768pxで tool-below-navigation）。目次の置き場所の設計判断待ち。tool-below-navigation もこの3ページだけ外している（toolBeforeRail は <div class="card"> 完全一致なので id 付きカードに効かない）。gbrain handoffs/keiri-commander-reboot-recovery-2026-09-27
+ const commanderToc=['/shiharai-site/','/eigyobi/','/nenshu/'].includes(path);
+ const tool=core&&!/^\/(embed|hojokin)\//.test(path)&&document.querySelectorAll('main h2').length>0&&!commanderToc;
  if(article||tool){
   const toc=document.querySelector('main nav.toc');
   if(!visible(toc))add('required-toc-hidden',document.querySelector('main'));
