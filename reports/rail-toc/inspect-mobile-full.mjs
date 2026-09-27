@@ -1,0 +1,3 @@
+import {browserTools,serve,contextFor,ready} from '../../tests/layout/browser.mjs';
+const s=await serve();const{chromium}=await browserTools();const b=await chromium.launch();
+try{const c=await contextFor(b,s.origin);const p=await c.newPage();for(const width of [390,768])for(const[name,path]of [['pr','/column/furikomi-tesuryo-hikaku/'],['long','/column/hoteichosho-goukeihyo/']]){await p.setViewportSize({width,height:width===390?844:1024});await ready(p,s.origin+path);await p.locator('.toc-toggle').click();await p.locator('.side-rail').screenshot({path:`reports/rail-toc/shots/${name}-${width}-open-full-rail.png`});}}finally{await b.close();s.close();}
