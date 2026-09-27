@@ -51,7 +51,7 @@ const HISTORICAL_FACTS = [
             "計算に使ったデータの年（chukai_r08.json の _meta.year 令和8年）とは別の軸で、" +
             "告示が昭和45年に定められ令和6年に最終改正されたことは何年経っても真。" +
             "★次に告示が改正されたらこの文言自体を書き直す（そのとき免除は外れて落ちる＝腐らない）" },
-  { file: "chukai-tesuryo/index.html", snippet: "<span id=\"hidzuke-hint\" class=\"hint\">　令和6年7月1日以後",
+  { file: "chukai-tesuryo/index.html", snippet: "<span id=\"hidzuke-hint\" class=\"hint\">令和6年7月1日以後",
     reason: "★報酬額の告示（昭和45年建設省告示第1552号）を改正した令和6年国土交通省告示第949号の" +
             "**施行日**そのもの＝制度の事実（入力欄のヒント）。データ chukai_r08.json の " +
             "_meta.applies_from=2024-07-01 / applies_from_hyoji=令和6年7月1日 と同じ値で、" +
