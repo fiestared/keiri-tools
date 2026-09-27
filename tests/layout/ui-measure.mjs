@@ -55,8 +55,7 @@ export function measureUi() {
  if(core&&innerWidth<1200&&visible(rail)&&visible(card)&&rail.getBoundingClientRect().top<card.getBoundingClientRect().top)add('tool-below-navigation',card);
  const articleHeading=document.querySelector('main article h1'),articleRail=document.querySelector('main article .side-rail');
  if(innerWidth<1200&&visible(articleHeading)&&visible(articleRail)&&articleRail.getBoundingClientRect().top<articleHeading.getBoundingClientRect().top)add('article-below-navigation',articleHeading);
- const commanderToc=['/shiharai-site/','/eigyobi/','/nenshu/'].includes(path);
- const tool=core&&!/^\/(embed|hojokin)\//.test(path)&&document.querySelectorAll('main h2').length>0&&!commanderToc;
+ const tool=core&&!/^\/(embed|hojokin)\//.test(path)&&document.querySelectorAll('main h2').length>0;
  if(article||tool){
   const toc=document.querySelector('main nav.toc');
   if(!visible(toc))add('required-toc-hidden',document.querySelector('main'));
