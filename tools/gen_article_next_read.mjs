@@ -1,3 +1,4 @@
+import {foldLongRelated} from './gen_presentation_markup.mjs';
 /**
  * Generate existing article-end next-read cards, then all public TOC related rails.
  * 2026-09-27: experiment protection was lifted on 09-25. The next-read selection
@@ -67,10 +68,10 @@ const card = (it) => {
   const d = unesc(it.desc).replace(/\s+/g, " ").slice(0, 90);
   return `<a class="tool-card" href="${esc(rel(it.path))}"><b>${esc(unesc(it.title))}</b><span>${esc(d)}</span></a>`;
 };
-/** 旧来のカード。対象外のページを1バイトも変えないため、旧実装の書き方のまま残す */
+/** 旧来の選択と90文字の切断位置を保ち、表示時の二重エスケープだけを防ぐ */
 const legacyCard = (s) => {
-  const p = articles.get(s); const d = p.desc.replace(/\s+/g, " ").slice(0, 90);
-  return `<a class="tool-card" href="../${esc(s)}/"><b>${esc(p.h1)}</b><span>${esc(d)}</span></a>`;
+  const p = articles.get(s); const d = unesc(p.desc.replace(/\s+/g, " ").slice(0, 90));
+  return `<a class="tool-card" href="../${esc(s)}/"><b>${esc(unesc(p.h1))}</b><span>${esc(d)}</span></a>`;
 };
 /** 記事（/column/<slug>/）から見た相対パス */
 const rel = (path) => (path.startsWith("/column/") ? `..${path.slice(7)}` : `../..${path}`);
@@ -219,6 +220,7 @@ for (const [slug, a] of articles) {
       html = html.slice(0, at) + block + "\n" + html.slice(at);
     }
   }
+  html = foldLongRelated(html);
   if (html !== a.html) { changed++; if (!CHECK) writeFileSync(a.file, html); }
 }
 if (failures.length) { console.error(`✗ 対象ページの生成に失敗:\n  ${failures.join("\n  ")}`); process.exit(1); }

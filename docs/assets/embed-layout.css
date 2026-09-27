@@ -21,3 +21,16 @@ input + .hint, select + .hint, textarea + .hint {
 .chk { display: block; position: relative; padding-left: 22px; }
 .chk > input:is([type="radio"],[type="checkbox"]) { position: absolute; left: 0; top: 0; width: auto; }
 .chk > .hint { display: block; }
+
+/* Empty surfaces stay absent before scripts run and after state transitions. */
+:is(.note,.warn,.result,section.related,.rel-block,.next-read,[role="alert"],[role="status"]):empty,
+[data-empty-surface] { display: none !important; }
+/* The interactive target includes the entire visible control. */
+button, summary, a[role="button"] { min-width: 44px; min-height: 44px; box-sizing: border-box; }
+summary { padding-block: 10px; }
+a[role="button"] { display: inline-flex; align-items: center; justify-content: center; }
+:is(button,summary,a,input,select,textarea):focus-visible { outline: 2px solid #166b4b; outline-offset: 3px; }
+
+.numeric-token { white-space: nowrap; }
+
+.result .scroll-wrap, [role="status"] .scroll-wrap { max-width: 100%; overflow-x: auto; }

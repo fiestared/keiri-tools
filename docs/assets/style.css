@@ -1110,3 +1110,29 @@ main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width
 .workflow-next[hidden] { display: none; }
 .workflow-next a { text-decoration: underline; text-underline-offset: .18em; }
 @media print { .workflow-next { display: none; } }
+
+/* Empty surfaces stay absent before scripts run and after state transitions. */
+:is(.note,.warn,.result,section.related,.rel-block,.next-read,[role="alert"],[role="status"]):empty,
+[data-empty-surface] { display: none !important; }
+/* The interactive target includes the entire visible control. */
+button, summary, a[role="button"] { min-width: 44px; min-height: 44px; box-sizing: border-box; }
+summary { padding-block: 10px; }
+a[role="button"] { display: inline-flex; align-items: center; justify-content: center; }
+:is(button,summary,a,input,select,textarea):focus-visible { outline: 2px solid #166b4b; outline-offset: 3px; }
+
+.breadcrumb-needs-separator > a:last-of-type::after { content: " › "; white-space: pre; color: var(--sub); }
+.warning-link { color: var(--warn-ink); font-weight: 700; }
+@media print {
+  .scroll-wrap, .fee-scroll, .retention-table { max-height: none !important; overflow: visible !important; }
+}
+
+/* Keep existing destinations reachable without burying the footer in a long list. */
+.next-read-more { margin-top: 12px; }
+.next-read-more > summary { font-weight: 600; cursor: pointer; }
+
+@media print { .related, .next-read, .rel-block { display: none !important; } }
+
+.result .scroll-wrap { max-height: none; }
+
+/* Preserve source text/links while showing one copy of identical footer notes. */
+footer [data-duplicate-note] { display: none !important; }

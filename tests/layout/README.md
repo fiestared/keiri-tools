@@ -44,3 +44,39 @@ Long means more than six links, or rendered list height exceeding min(320px, ava
 The shared script moves the rail to a sticky track bounded by main on desktop and returns it to its original DOM position below 1200px. No JS leaves original readable navigation in flow. Printing opens all TOC items and hides recommendations/buttons. Tracking uses `workflow_view` (50% for one continuous visible second), `workflow_click`, slot `toc_related_v1`, and `toc_toggle`; navigation buttons cannot fire calculator input/result telemetry.
 
 `test_layout_render` applies TOC geometry checks to all generated rails at both widths. `test_toc_render` adds repeat clicks, Enter/Space, focus, anchors, print, JS-disabled rendering, footer boundaries, telemetry and CSS/ARIA mutation rejection. These tests are part of the default full runner.
+
+## Empty surfaces and interaction states (2026-09-27)
+
+`measureEmpty` rejects painted containers with no visible text, media or input,
+including whitespace and hidden-only children. It runs on every discovered page
+at every render width, not a hand-maintained page list. Decorative `hr`/SVG
+primitives and individual table cells are not content containers; an empty row
+is. No page-wide exceptions are allowed. Any future element exception must give
+its exact selector and a user-visible purpose, with a healthy and broken test.
+
+`test_empty_tool_states` discovers every core calculator and reuses normal-input
+scenarios from the E2E harness, then exercises invalid and cleared inputs at
+1280/390. New tools without a normal scenario fail coverage. The JSON artifact
+records actions and any control-type limitation. `test_empty_surfaces` proves
+empty note/related/result, whitespace, hidden-child failures, and copy denial.
+
+Authors must not emit empty related sections, placeholder-only result frames or
+headings for zero related items. Run `node tools/gen_presentation_markup.mjs`
+after generators: it removes empty static related sections and installs the
+shared empty-state controller. Keep dynamic live-region nodes; fill them before
+showing a result and clear stale messages on reset. Do not add inline styles to
+hide individual symptoms. `run_tests.sh` automatically executes all these gates.
+
+Chromium layout checks use one browser and one page at a time. Do not run audit
+screenshots beside the full test runner. Keep existing captures; full-site
+geometry tests emit JSON, not thousands of screenshots. Numeric-token display
+wrappers are applied by the shared controller without rewriting article source;
+legacy amount/content mutation tests must continue to exercise their original
+assertions. Printing must not retain painted recommendation shells after their
+links are hidden.
+
+The six-size gate makes fresh loads at 1280 and 390, and also measures responsive
+transitions at 1536, 1920, 1200 and 768. Every page still produces six records;
+there are no cached passes. A small NDJSON checkpoint preserves measured rows
+if the Mac restarts. Required TOCs, title-before-navigation order, encoded TOC
+labels, and links inside related sections have independent mutation checks.

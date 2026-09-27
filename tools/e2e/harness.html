@@ -5146,6 +5146,26 @@ SCENES.track_internal_link_click = async () => {
   return { names: gaNames(doc), linkUrl: ev.params.link_url, linkText: ev.params.link_text };
 };
 
+// Nested investment calculators are also part of the all-tool visual state gate.
+SCENES.ui_tsumitate = async () => {
+  const doc = await open("/docs/toushi/tsumitate/");
+  set(doc, "monthly", 30000); set(doc, "years", 20); set(doc, "rate", 0); set(doc, "fee", 0);
+  await waitFor(() => text(doc, "result").includes("7,200,000"), "元本30000×240の表示");
+  return { result: text(doc, "result") };
+};
+SCENES.ui_nisa_waku = async () => {
+  const doc = await open("/docs/toushi/nisa-waku/");
+  set(doc, "used-tsumitate", 600000); set(doc, "used-seicho", 1000000); click(doc, "calc");
+  await waitFor(() => text(doc, "result").includes("1,400,000"), "成長枠240万−100万の表示");
+  return { result: text(doc, "result") };
+};
+SCENES.ui_ideco_deguchi = async () => {
+  const doc = await open("/docs/toushi/ideco-deguchi/");
+  set(doc, "aki", 30); set(doc, "nensu", 30); set(doc, "chofuku", 0); set(doc, "shunyu", 20000000);
+  await waitFor(() => text(doc, "result").includes("2,500,000"), "重複なしの退職所得の表示");
+  return { result: text(doc, "result") };
+};
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPages[0] || null, pages: openedPages };

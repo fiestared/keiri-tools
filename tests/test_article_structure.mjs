@@ -1,3 +1,4 @@
+import {hasBreadcrumb,hasRelatedLinks} from './layout/article-structure.mjs';
 /**
  * 記事の「型」を機械で強制する。
  *
@@ -59,7 +60,7 @@ for (const slug of slugs) {
   if (!html.includes(`"@type": "Article"`)) fail(slug, "Article 構造化データが無い");
   if (!html.includes(`"@type": "BreadcrumbList"`)) fail(slug, "BreadcrumbList 構造化データが無い");
   if (!/"datePublished":\s*"\d{4}-\d{2}-\d{2}"/.test(html)) fail(slug, "datePublished が無い");
-  if (!/<nav class="breadcrumb">/.test(html)) fail(slug, "パンくずナビが無い");
+  if (!hasBreadcrumb(html)) fail(slug, "パンくずナビが無い");
 
   // --- 読み物としての型 ---
   const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? "";
@@ -114,7 +115,7 @@ for (const slug of slugs) {
 
   // --- FAQ(構造化データは本文から生成される。本文側の型を守らせる) ---
   if (!/<h2[^>]*\bid="faq"|<h2[^>]*data-faq/.test(body)) fail(slug, "FAQブロック(h2#faq)が無い");
-  if (!/<section class="related">/.test(body)) fail(slug, "関連記事・ツールが無い");
+  if (!hasRelatedLinks(body)) fail(slug, "関連記事・ツールが無い");
   if (!body.includes("出典")) fail(slug, "出典が無い");
 
   // --- 導線: 記事から必ずツールへ送る(記事は入口、ツールが商品) ---

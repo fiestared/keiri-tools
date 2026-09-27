@@ -7,6 +7,15 @@
   const heading = toc?.querySelector('.toc-title, :scope > b, :scope > strong');
   const main = document.querySelector('main');
   if (!list || !heading || !main) return;
+  // Older generated labels can contain an extra escaped entity. Only repair
+  // when decoding exactly reproduces the linked heading; preserve custom labels.
+  for (const link of list.querySelectorAll('a[href^="#"]')) {
+    if (!/&(?:amp|quot|lt|gt|#\d+|#x[\da-f]+);/i.test(link.textContent)) continue;
+    const target = document.getElementById(link.hash.slice(1));
+    const decoder = document.createElement('textarea');
+    decoder.innerHTML = link.textContent;
+    if (target && decoder.value.trim() === target.textContent.trim()) link.textContent = decoder.value;
+  }
   heading.classList.add('toc-title');
   const anchor = document.createComment('toc-rail-position');
   rail.before(anchor);
