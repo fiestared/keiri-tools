@@ -51,6 +51,7 @@ export function loadBanks() {
       throw new Error(`${b.name} の金額が数値ではありません（fee_table.json が壊れている）`);
     }
     return {
+      id: b.id,
       name: b.name,
       kubun: b.name.includes('法人') ? '法人' : '個人',
       under: `${b.under30k}円`,
@@ -134,6 +135,11 @@ export function buildSections(rows) {
     out.push(`  <p>${notes.join('。')}。</p>`);
     for (const note of [...new Set(list.filter((x) => x.publicNote).map((x) => x.publicNote))]) {
       out.push(`  <p class="bank-note">${esc(note)}。</p>`);
+    }
+
+    const presetLabels = {"mizuho-eb": "みずほ銀行の法人手数料で、先方負担の差引額を計算する", "mufg-bizstation": "BizSTATIONの手数料で、先方負担の差引額を計算する", "smbc-web21-standard": "Web21の掲載プランの手数料で、先方負担の差引額を計算する"};
+    if (hojin && presetLabels[hojin.id]) {
+      out.push(`  <p class="workflow-next" data-workflow-slot="bank_preset_v1"><a href="/senpou-futan/#bank=${hojin.id}">${presetLabels[hojin.id]}</a></p>`);
     }
 
     // ★出典は行ごとに出す。未照合の行は「未照合」と書く（黙って伏せない）

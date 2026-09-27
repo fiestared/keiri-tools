@@ -83,6 +83,56 @@
       document.addEventListener("visibilitychange", schedule);
     }
 
+    // PV workflow slots: a qualified view once per page/slot, clicks on each use.
+    function watchWorkflow() {
+      var slots = ['bank_preset_v1', 'result_next_v1', 'article_step_v1', 'article_axis_v1'];
+      var seen = new Set(), states = new Map();
+      function params(el) {
+        var slot = el.dataset.workflowSlot, a = el.querySelector('a[href]');
+        if (!slots.includes(slot) || !a) return null;
+        var url = new URL(a.getAttribute('href'), location.href);
+        if (url.origin !== location.origin) return null;
+        var hash = '';
+        // Only the three public bank IDs may leave the page as a hash.
+        if (url.pathname === '/senpou-futan/' && /^#bank=(mizuho-eb|mufg-bizstation|smbc-web21-standard)$/.test(url.hash)) hash = url.hash;
+        return {from: toolId(), slot: slot, link_url: url.origin + url.pathname + hash};
+      }
+      function emit(name, p) {
+        try { if (p && typeof window.gtag === 'function') window.gtag('event', name, p); } catch (_) {}
+      }
+      document.addEventListener('click', function(e) {
+        var a = e.target.closest && e.target.closest('.workflow-next a[href]');
+        if (a) emit('workflow_click', params(a.closest('.workflow-next')));
+      }, true);
+      if (typeof IntersectionObserver !== 'function') return;
+      function schedule(el, state) {
+        clearTimeout(state.timer);
+        var p = params(el);
+        if (!p || seen.has(p.slot) || !state.visible || document.hidden || el.hidden) return;
+        state.timer = setTimeout(function() {
+          if (document.hidden || el.hidden || !state.visible || seen.has(p.slot)) return;
+          seen.add(p.slot);
+          emit('workflow_view', p);
+        }, 1000);
+      }
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          var state = states.get(entry.target);
+          state.visible = entry.isIntersecting && entry.intersectionRatio >= 0.5;
+          schedule(entry.target, state);
+        });
+      }, {threshold:[0, 0.5]});
+      document.querySelectorAll('.workflow-next[data-workflow-slot]').forEach(function(el) {
+        if (!slots.includes(el.dataset.workflowSlot)) return;
+        states.set(el, {visible:false, timer:null});
+        observer.observe(el);
+        new MutationObserver(function() { schedule(el, states.get(el)); }).observe(el, {attributes:true, attributeFilter:['hidden']});
+      });
+      document.addEventListener('visibilitychange', function() {
+        states.forEach(function(state, el) { schedule(el, state); });
+      });
+    }
+
     /* ---------- 1. 入力に触った ---------- */
     // capture で拾う: ページ側が stopPropagation していても取りこぼさない
     ["input", "change"].forEach(function (type) {
@@ -313,12 +363,12 @@
     }
 
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", function () { watchResults(); watchDomainExposure(); watchPrExposure(); watchTocExposure(); });
+      document.addEventListener("DOMContentLoaded", function () { watchResults(); watchDomainExposure(); watchPrExposure(); watchTocExposure(); watchWorkflow(); });
     } else {
       watchResults();
       watchDomainExposure();
       watchPrExposure();
-      watchTocExposure();
+      watchTocExposure(); watchWorkflow();
     }
   } catch (err) {
     /* 計測はツールの機能ではない。ここで転んでもページは動き続ける */

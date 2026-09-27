@@ -1104,3 +1104,9 @@ main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width
 @media (min-width: 1200px) and (max-height: 899.98px) {
   .side-rail .pr-banner:has(img[width="300"][height="250"]) { width: 192px; }
 }
+
+/* Optional next task: ordinary text link, wrapping naturally on small screens. */
+.workflow-next { margin-block: 16px; line-height: 1.8; overflow-wrap: anywhere; }
+.workflow-next[hidden] { display: none; }
+.workflow-next a { text-decoration: underline; text-underline-offset: .18em; }
+@media print { .workflow-next { display: none; } }
