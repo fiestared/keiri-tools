@@ -1,0 +1,15 @@
+import {mkdirSync,writeFileSync} from 'node:fs';
+import {browserTools,serve,contextFor,ready} from '../../tests/layout/browser.mjs';
+import {measure} from '../../tests/layout/measure.mjs';
+const phase=process.argv[2]||'before',out=`reports/uiux-0927/${phase}/interactions`;mkdirSync(out,{recursive:true});
+const {chromium}=await browserTools(),server=await serve(),browser=await chromium.launch();const rows=[];
+const cases=[['tedori','/tedori/',{gross:'300000'},'#calc'],['iryohi','/iryohi/',{},'#calc'],['kihonteate','/kihonteate/',{},'#calc'],['shobyo','/shobyo/',{},'#calc'],['shiharai','/shiharai-site/',{},'#calc'],['embed','/embed/tedori/',{gross:'300000'},'#calc'],['hojokin','/hojokin/',{},null],['schedule','/hojokin/schedule/',{},null],['short','/column/orcan-sp500-holding-period/',{},null]];
+try{const c=await contextFor(browser,server.origin),p=await c.newPage();for(const [name,url,inputs,button] of cases.filter(c=>!process.env.CASES||process.env.CASES.split(',').includes(c[0])))for(const [width,height]of [[1280,900],[1536,864],[1920,1080],[1200,800],[768,1024],[390,844]]){await p.setViewportSize({width,height});await ready(p,server.origin+url);let actions=[];
+ if(button){if(name==='shobyo'){await p.locator('#startDate').fill('2026-09-01');actions.push(['startDate','2026-09-01']);}if(name==='iryohi'){await p.locator('#zeiritsu').selectOption({index:2});actions.push(['zeiritsu','index:2']);}const fields=await p.locator('input').evaluateAll(es=>es.map(e=>({id:e.id,type:e.type,value:e.value,placeholder:e.placeholder})));for(const f of fields){if(!f.id||!['number','text'].includes(f.type))continue;const v=inputs[f.id]||(!f.value&&f.placeholder.match(/[0-9][0-9,]*/)?.[0].replaceAll(',',''));if(v&&await p.locator('#'+f.id).isVisible()){await p.locator('#'+f.id).fill(v);actions.push([f.id,v]);}}if(await p.locator(button).count())await p.locator(button).click();else actions.push(['missing-button',button]);await p.waitForTimeout(100);}
+ const geometry=await p.evaluate(measure);const result=await p.locator('.result,#out').allTextContents();
+ await p.screenshot({path:`${out}/${name}-${width}-full.png`,fullPage:true});
+ if(await p.locator('.result:visible,#out:visible').count())await p.locator('.result:visible,#out:visible').first().screenshot({path:`${out}/${name}-${width}-result.png`});
+ await p.emulateMedia({media:'print'});const print=await p.evaluate(()=>[...document.querySelectorAll('.scroll-wrap,.fee-scroll,.retention-table')].filter(e=>e.getClientRects().length).map(e=>({id:e.id,cls:e.className,client:e.clientHeight,scroll:e.scrollHeight,overflow:getComputedStyle(e).overflow,max:getComputedStyle(e).maxHeight,width:e.clientWidth,sw:e.scrollWidth})));
+ if(width===1280)await p.screenshot({path:`${out}/${name}-print.png`,fullPage:true});await p.emulateMedia({media:'screen'});
+ rows.push({name,url,width,height,actions,result,geometry,print});console.log(name,width,geometry.issues.length,print.filter(x=>x.scroll>x.client+2).length);
+}await c.close();}finally{await browser.close();server.close();writeFileSync(out+'/measurements.json',JSON.stringify(rows,null,2));}
