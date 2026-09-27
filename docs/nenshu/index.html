@@ -35,7 +35,7 @@
 <!-- ★ツールが実際に使われたかの計測。他の全ページと同じ配線（test_measurement_wiring が見ている）。
      2026-08-17 に50ページを1枚の早見表へ作り替えたとき、これだけ落としていた -->
 <script src="../assets/track.js" defer></script>
-</head>
+<!--nav-exp:toc-script S--><script src="../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
 <body>
 <a class="skip-link" href="#main">本文へ移動</a>
 
@@ -53,12 +53,13 @@
 <article>
 <h1>年収別の手取り早見表</h1>
 <p class="article-meta">令和8年分・東京都・40歳・独身（扶養なし）・給与収入のみ・賞与なし（年収を12等分）</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-table">早見表</a></li><li><a href="#tool-section-1">年収が25万円増えると、手取りはいくら増えるか</a></li><li><a href="#tool-section-2">この表の前提</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/tokutei-shishutsu-kojo/">給与所得者の特定支出控除</a></li><li><a href="../tedori/">手取り計算機</a></li><li><a href="../juminzei/">住民税 計算機</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 <!-- built-from: assets/juminzei_r08.json, assets/shaho_rates_r08.json, assets/gensen_getsugaku_r08.json -->
 <p>年収200万円から800万円まで25万円刻みで、<b>所得税・住民税・社会保険料を引いた手取り</b>を計算しました。
 数字はすべて当サイトの計算コアから算出しています（表にベタ書きしていません）。</p>
 
 <div class="scroll-wrap">
-<table class="data-table num-nowrap-sm">
+<table class="data-table num-nowrap-sm" id="tool-table">
 <tr>
   <th scope="col">年収</th>
   <th scope="col" style="text-align:right">手取り（月）</th>
@@ -96,7 +97,7 @@
 </table>
 </div>
 
-<h2>年収が25万円増えると、手取りはいくら増えるか</h2>
+<h2 id="tool-section-1">年収が25万円増えると、手取りはいくら増えるか</h2>
 <p>額面の増分25万円のうち、実際に手元に残るのはこれだけです。残りは税と社会保険料に消えます。</p>
 <div class="scroll-wrap">
 <table class="data-table">
@@ -128,7 +129,7 @@
 </table>
 </div>
 
-<h2>この表の前提</h2>
+<h2 id="tool-section-2">この表の前提</h2>
 <ul>
 <li><b>賞与なし</b>として、年収を12等分した額を毎月の給与として計算しています。賞与があると源泉徴収の計算式が別（賞与の税額表）になるため、同じ表には混ぜられません。</li>
 <li>東京都・40歳・独身（扶養なし）・給与収入のみ。健康保険は協会けんぽ東京都の料率、介護保険料を含みます。</li>

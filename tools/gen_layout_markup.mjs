@@ -80,6 +80,31 @@ for(const file of readdirSync(root,{recursive:true}).filter(f=>f==='index.html'|
  // Hubs and embeds intentionally do not receive a reading TOC.
  const tool=[...d.scripts].some(s=>/_core\.js/.test(s.textContent));
  const eligible=tool&&!file.startsWith('embed/')&&!file.startsWith('hojokin/')&&d.querySelectorAll('main h2').length>=3;
+ // Short tool/reference pages (2026-09-27 Masahiro: /shiharai-site/ had no TOC): every non-hub page gets the same
+ // TOC + related rail. With fewer than three sections the TOC lists the calculator/table and the FAQ questions.
+ const HUB=/^(index\.html|column\/index\.html|about\/|contact\/|privacy\/|policy\/|toushi\/index\.html)/;
+ const contentH2=[...d.querySelectorAll('main h2')].filter(h=>!h.closest('.rel-block,.domain-bridge,.side-rail')&&!/^関連/.test(h.textContent.trim()));
+ const shortEligible=!eligible&&!HUB.test(file)&&!file.startsWith('embed/')&&!file.startsWith('hojokin/')&&!file.startsWith('column/')&&contentH2.length>=1;
+ if(shortEligible&&(!d.querySelector('nav.toc')||source.includes('<!--layout-toc:start-->'))){
+  const items=[];
+  const first=d.querySelector('main .card')||d.querySelector('main table');
+  if(first&&!first.closest('.rel-block,.side-rail')){
+   if(!first.id){let id=first.tagName==='TABLE'?'tool-table':'tool-calc';while(d.getElementById(id))id+='-nav';set(first,'id',id);}
+   items.push('<li><a href="#'+escape(first.id)+'">'+(first.tagName==='TABLE'?'早見表':'計算ツール')+'</a></li>');
+  }
+  contentH2.forEach((h,i)=>{
+   if(!h.id){let id='tool-section-'+(i+1);while(d.getElementById(id))id+='-nav';set(h,'id',id);}
+   const subs=[];
+   for(let e=h.nextElementSibling;e&&e.tagName!=='H2';e=e.nextElementSibling){
+    if(e.tagName==='H3'){let j=subs.length+1;if(!e.id){let id=h.id+'-q'+j;while(d.getElementById(id))id+='-nav';set(e,'id',id);}subs.push('<li><a href="#'+escape(e.id)+'">'+escape(e.textContent.trim())+'</a></li>');}
+   }
+   items.push('<li><a href="#'+escape(h.id)+'">'+escape(h.textContent.trim())+'</a>'+(subs.length?'<ol>'+subs.join('')+'</ol>':'')+'</li>');
+  });
+  const block='<!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol>'+items.join('')+'</ol></nav><!--layout-toc:end-->';
+  const match=/<!--layout-toc:start-->[\s\S]*?<!--layout-toc:end-->/.exec(source);
+  if(match){if(match[0]!==block)edits.push({start:match.index,end:match.index+match[0].length,text:block});}
+  else {const hero=d.querySelector('main > .hero, main > .lead, main > article > .article-meta') || d.querySelector('main h1');const l=hero&&dom.nodeLocation(hero);if(!l)throw Error(file+': no hero for TOC');edits.push({start:l.endOffset,end:l.endOffset,text:'\n'+block});}
+ }
  if(eligible&&(!d.querySelector('nav.toc')||source.includes('<!--layout-toc:start-->'))){
   const hs=[...d.querySelectorAll('main h2')].filter(h=>!h.closest('.rel-block,.domain-bridge,.side-rail')&&!/^関連/.test(h.textContent.trim()));
   hs.forEach((h,i)=>{if(!h.id){let id='tool-section-'+(i+1);while(d.getElementById(id))id+='-nav';set(h,'id',id);}});
