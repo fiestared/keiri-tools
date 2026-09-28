@@ -84,9 +84,9 @@
     <legend>前月の給与（税率を決める鍵）</legend>
     <label><input type="radio" name="zmode" value="paid" checked> 前月に給与の支払いがあった</label>
     <div id="zengetsu-wrap">
-      <label for="zengetsu">前月の額面の月給（円）</label>
+      <label for="zengetsu">前月の社会保険料等控除後の給与（円）</label>
       <input id="zengetsu" type="number" inputmode="numeric" placeholder="例: 300000" min="0" step="1000" aria-describedby="zengetsu-hint">
-      <span id="zengetsu-hint" class="hint">総支給額</span>
+      <span id="zengetsu-hint" class="hint">前月の課税給与から、実際に控除された社会保険料・小規模企業共済等掛金を引いた額</span>
     </div>
     <label><input type="radio" name="zmode" value="nopaid"> 前月に給与の支払いがない（休職明け・新規入社など）</label>
   </fieldset>
@@ -192,8 +192,8 @@ $("calc").addEventListener("click", async () => {
   if (!bonus || bonus <= 0) { box.innerHTML = `<div class="warn">ボーナスの額面を入力してください。</div>`; postHeight(); return; }
   const paid = zmode() === "paid";
   const zengetsu = Number($("zengetsu").value);
-  if (paid && (!zengetsu || zengetsu <= 0)) {
-    box.innerHTML = `<div class="warn"><b>前月の額面の月給を入力してください。</b>賞与の税率は前月の給与で決まるため、この欄が空だと計算できません。前月に給与がなかった場合はその選択肢に切り替えてください。</div>`;
+  if (paid && ($("zengetsu").value.trim() === "" || !Number.isFinite(zengetsu) || zengetsu < 0)) {
+    box.innerHTML = `<div class="warn"><b>前月の社会保険料等控除後の給与を入力してください。</b>賞与の税率は前月の給与で決まるため、この欄が空だと計算できません。前月に給与がなかった場合はその選択肢に切り替えてください。</div>`;
     postHeight(); return;
   }
   const pref = $("pref").value;
@@ -205,7 +205,7 @@ $("calc").addEventListener("click", async () => {
       bonus, age: Number($("age").value), prefecture: pref,
       dependents: Number($("dependents").value) || 0,
       gyoshu: $("gyoshu").value,
-      zengetsuPaid: paid, zengetsu,
+      zengetsuPaid: paid, zengetsuAfterIns: zengetsu,
       monthsOver6: $("over6").checked,
       yearPaidKenko: Number($("yearpaid").value) || 0,
     }, { shahoRates: SHAHO, shoyoTable: SHOYO, gensenTable: GENSEN });

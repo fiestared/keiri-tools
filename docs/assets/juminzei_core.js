@@ -113,7 +113,11 @@ export function kyuyoShotoku(shunyu, D) {
     const a = Math.floor(s / K.hyo5_step) * K.hyo5_step; // 別表第五の区分の下限額
     return a - kyuyoKojo(a, D);
   }
-  return yen(s - kyuyoKojo(s, D));
+  // 年末調整のしかた54頁: 控除額でなく「給与所得」の1円未満を切り捨てる。
+  // 先に控除額を整数化すると、6,777,778円の所得が1円過大になる。
+  const b = pickBracket(K.kojo_brackets, s);
+  const deduction100 = b.base * 100 + (b.rate_pct === 0 ? 0 : (s - b.over) * b.rate_pct);
+  return yen((s * 100 - deduction100) / 100);
 }
 
 /**

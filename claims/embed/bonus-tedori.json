@@ -1,0 +1,45 @@
+{
+  "page": "docs/embed/bonus-tedori/index.html",
+  "claims": [
+    {
+      "id": "t13-F3",
+      "text": "前月の給与明細から社会保険料等控除後給与を直接入力できるようにするか、少なくとも前月に実際に控除された社会保険料等を入力させる。額面からの推計は税率判定も概算であると明示する。",
+      "numbers": [],
+      "applies": "令和8年分。令和7年・9年・10年等は本文で明示する各年分。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "\f イ 「給与所得者の扶養控除等申告書」を提出している人の場合\n    ①    まず、算出率表の甲欄により、その人の前月中の社会保険料等\n        控除後の給与等の金額と扶養親族等の数とに応じて「賞与の金額\n        に乗ずべき率」欄に記載されている率を求めます。\n    ②    社会保険料等控除後の賞与の金額に①により求めた率を乗じま\n        す。これが、その賞与に対する源泉徴収税額になります。\n    （注）\u0007 賞与以外の普通給与を月の整数倍の期間ごとに支払うこととしている\n       ため、賞与を支払う月の前月中に給与の支払がなかった場合又は前月中\n       にその期間の給与をまとめて支払っていた場合には、前月中に支払を受\n       けた普通給与の額は、その賞与の支払の直前に支払った普通給与の月割\n       額に相当する額であったものとして算出率表を使用することになります\n      （所法186①一イ）。\n",
+      "supporting_sources": [],
+      "exceptions": "前月額面からの社会保険料推定では算出率のキーを確定できない。coreに控除後給与の直接入力を追加し、埋込は実額を渡す。従来APIの概算経路は互換性のため維持する。",
+      "adjudication": "t13-F3"
+    }
+  ],
+  "checked": "2026-09-29",
+  "scope": "t1正本照合。t1-*は今回修正した主張。既存台帳を保存し、ページ全体の未照合部分を正しいと認定するものではない。",
+  "absolutes": [],
+  "tool_cases": [
+    {
+      "input": {
+        "bonus": 100000,
+        "dependents": 3,
+        "zengetsuAfterIns": 181000
+      },
+      "expected": {
+        "ratePercent": 2.042
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "note": "正本94頁の181千円以上300千円未満、扶養3人。"
+    },
+    {
+      "input": {
+        "bonus": 100000,
+        "dependents": 3,
+        "zengetsuAfterIns": 299999
+      },
+      "expected": {
+        "ratePercent": 2.042
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "note": "正本94頁の181千円以上300千円未満、扶養3人。"
+    }
+  ]
+}

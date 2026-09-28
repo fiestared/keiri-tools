@@ -43,6 +43,16 @@ let pass = 0, fail = 0;
 const t = (name, fn) => { try { fn(); pass++; console.log('✅ ' + name); }
   catch (e) { fail++; console.log('❌ ' + name + '\n   ' + e.message); } };
 
+// t1: 前月の給与明細の控除後実額を使う。正本94頁の率を固定。
+for (const amount of [181000,299999]) t(`t1 実額${amount}円・扶養3人の率は2.042%`,()=>{
+ const r=calcBonusTedori({bonus:100000,age:30,prefecture:'東京都',dependents:3,zengetsu:800000,zengetsuAfterIns:amount},refs);
+ assert.equal(r.zengetsuAfterIns,amount); assert.equal(r.shoyo.rate,2042);
+});
+t('t1 前月給与支払あり・控除後0円を未入力と混同しない',()=>{
+ const r=calcBonusTedori({bonus:100000,age:30,prefecture:'東京都',dependents:3,zengetsu:800000,zengetsuAfterIns:0},refs);
+ assert.equal(r.zengetsuAfterIns,0);
+});
+
 const base = { age: 30, prefecture: '東京都', dependents: 0, zengetsu: 300000 };
 
 // ── 1. 看板の鎖（賞与50万・30歳）を1円まで再現 ──────────────────────────

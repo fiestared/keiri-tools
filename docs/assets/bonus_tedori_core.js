@@ -14,9 +14,9 @@
  *   手取り ＝ 額面の賞与 − 社会保険料(本人) − 源泉所得税
  *
  * ★★ 源泉所得税の率を決めるのは賞与の額ではなく「**前月の**社会保険料等控除後の給与」
- *   （ここがいちばん誤解される）。前月の給与は額面で受け取り、その月の社会保険料を
- *   tedori_core.shakaiHokenMonthly で概算して控除後の額を作る（＝定時決定とのずれで
- *   実際と数円ずれうる。正確を期すなら給与明細の「社会保険料合計」を引いた額で確かめる）。
+ *   （ここがいちばん誤解される）。zengetsuAfterIns に給与明細の控除後実額を渡す。
+ *   既存の額面入力 zengetsu は互換用の概算。実際の標準報酬等との差により
+ *   算出率の区分も変わり得るため、控除後実額があればそちらを優先する。
  *
  * ★★ 住民税は賞与から特別徴収されない。地方税法321条の5第1項が「特別徴収税額の
  *   十二分の一の額を六月から翌年五月まで…毎月徴収」と定めており、月割は**毎月の給与**
@@ -47,7 +47,8 @@ const yen = (n) => {
  *   dependents,     // 扶養親族等の数（源泉控除対象配偶者＋控除対象扶養親族）
  *   gyoshu,         // （任意）雇用保険の業種キー。既定 general
  *   zengetsuPaid,   // 前月に給与の支払があったか（既定 true）
- *   zengetsu,       // 前月の額面給与（円）。zengetsuPaid のとき必須
+ *   zengetsuAfterIns, // 前月の社会保険料等控除後の実額（円）。0円も有効
+ *   zengetsu,       // 互換用の額面給与（円）。控除後実額を渡さない場合に概算
  *   monthsOver6,    // 賞与の計算期間が6か月を超えるか（既定 false。超えると例外計算の除数が12）
  *   yearPaidKenko,  // （任意）今年度すでに支給された賞与の標準賞与額の累計（健保573万円上限の判定用）
  * }
@@ -78,8 +79,13 @@ export function calcBonusTedori(input, refs) {
   const shahoSelf = sb.selfTotal + koyou.self;
 
   // ── ② 前月の給与（社会保険料等控除後）。源泉の率を決める鍵はこちら ──────────
-  const zengetsu = zengetsuPaid ? yen(input.zengetsu) : 0;
-  const zenShaho = zengetsuPaid && zengetsu > 0
+  const hasActual = input.zengetsuAfterIns !== undefined && input.zengetsuAfterIns !== null
+    && String(input.zengetsuAfterIns).trim() !== '';
+  if (zengetsuPaid && hasActual && (!Number.isFinite(Number(input.zengetsuAfterIns)) || Number(input.zengetsuAfterIns) < 0)) {
+    throw new Error('前月の社会保険料等控除後の給与は0円以上で入力してください');
+  }
+  const zengetsu = zengetsuPaid ? yen(hasActual ? input.zengetsuAfterIns : input.zengetsu) : 0;
+  const zenShaho = zengetsuPaid && !hasActual && zengetsu > 0
     ? shakaiHokenMonthly(zengetsu, age, kenkoRate, gyoshu, S).self
     : 0;
 

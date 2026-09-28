@@ -14,3 +14,11 @@ export const cases = [
   { name: "介護保険第2号の終了年齢65歳の1歳下", run: () => (calcBonusTedori({bonus:100000,age:64,prefecture:'東京都',dependents:0,gyoshu:'general',zengetsuPaid:true,zengetsu:300000}, refs).shakaiHoken.kaigoApplies), expected: true, source: "https://laws.e-gov.go.jp/api/2/law_data/409AC0000000123?response_format=xml", quote: "市町村の区域内に住所を有する四十歳以上六十五歳未満の医療保険加入者（以下「第二号被保険者」という。）" },
   { name: "介護保険第2号は65歳ちょうどで終了", run: () => (calcBonusTedori({bonus:100000,age:65,prefecture:'東京都',dependents:0,gyoshu:'general',zengetsuPaid:true,zengetsu:300000}, refs).shakaiHoken.kaigoApplies), expected: false, source: "https://laws.e-gov.go.jp/api/2/law_data/409AC0000000123?response_format=xml", quote: "市町村の区域内に住所を有する六十五歳以上の者（以下「第一号被保険者」という。）" },
 ];
+
+// t1: あらまし94頁設例1は扶養3人、前月控除後181千円以上300千円未満を2.042%とする。
+for (const after of [181000,299999]) {
+ cases.push({ name:`t1 前月控除後実額${after}円を優先`,
+ run:()=> { const r=calcBonusTedori({bonus:100000,age:30,prefecture:'東京都',dependents:3,zengetsu:800000,zengetsuAfterIns:after},refs); return [r.zengetsuAfterIns,r.shoyo.rate]; },
+ expected:[after,2042], source:'https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf',
+ quote:'        まれている「181千円以上300千円未満」の行を求めます。その行\n        と「賞与の金額に乗ずべき率」欄との交わるところに記載されて\n        いる「2.042％」が、賞与の金額に乗ずる率です。' });
+}
