@@ -56,7 +56,7 @@
   <h1>産後パパ育休 給付金 計算</h1>
   <p class="lead">出生後8週間以内に取る産後パパ育休。67%（出生時育児休業給付金）＋13%（出生後休業支援給付金）＝合計80%。14日未満だと13%は1円も出ません。</p>
 
-  <label for="monthly">月給（額面・<b>賞与を除く</b>／円）</label>
+  <label for="monthly">賃金の月平均（額面／円）</label>
   <input id="monthly" type="number" inputmode="numeric" value="300000" placeholder="例: 300000" min="0" step="1000">
   <div class="hint">臨時の賃金・3か月を超える期間ごとの賃金は除きます（雇用保険法17条1項）。</div>
 
@@ -142,7 +142,7 @@ $("calc").addEventListener("click", async () => {
   }
 
   const monthly = Number($("monthly").value);
-  if (!(monthly > 0)) { box.innerHTML = `<div class="warn">月給（額面・賞与を除く）を入力してください。</div>`; postHeight(); return; }
+  if (!(monthly > 0)) { box.innerHTML = `<div class="warn">算入対象の賃金の月平均（額面）を入力してください。</div>`; postHeight(); return; }
 
   let r;
   try {
@@ -192,7 +192,7 @@ $("calc").addEventListener("click", async () => {
 
   box.innerHTML = `
     <div class="big">産後パパ育休の給付 ${yen(r.total)}</div>
-    <div class="hint">${r.payDays}日分／賃金日額 <b>${yen(Math.floor(r.daily))}</b>（賞与を除く）</div>
+    <div class="hint">${r.payDays}日分／賃金日額 <b>${yen(Math.floor(r.daily))}</b>（年2回など3か月を超える期間ごとの賞与を除く）</div>
     ${capNote}
     ${daysNote}
     ${shienNote}
