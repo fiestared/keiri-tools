@@ -30,7 +30,8 @@
   button.setAttribute('aria-expanded', 'true');
   button.hidden = true;
   heading.after(button);
-  const count = list.querySelectorAll('a').length;
+  // 表示する件数は大見出しだけ。入れ子の小見出しまで数えると、開いたときに見える番号と合わない。
+  const count = list.querySelectorAll(':scope > li').length;
   let chosen = null;
   function state(open) {
     button.setAttribute('aria-expanded', String(open));
