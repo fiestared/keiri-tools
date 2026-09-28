@@ -509,5 +509,16 @@ for (const [key, min] of R9_ROWS.filter((r) => r[4] === null)) {
 ok(r9.s20.tasukai === 44400 && r9.s16.tasukai === 44400, "★44,400 の結合セルを読み違えて下2区分に別の額を入れている");
 ok(r9.s15.tasukai === 34500, "標報15万円以下に新設された多数回該当34,500円が入っていない");
 
+// 15. 画面の改正前後の設例を期間ごとに確認する。
+// 厚労省 https://www.mhlw.go.jp/content/12401000/001726232.pdf の区分ウ:
+// 2026年7月まで 80,100+(1,000,000-267,000)*1%=87,430。
+// 2026年8月から 85,800+(1,000,000-286,000)*1%=92,940。
+// 新額を本文へ横展開する際に、比較の旧額まで同時に置換しないこと。
+const toolPage = readFileSync(new URL("../docs/kogaku-ryoyohi/index.html", import.meta.url), "utf8");
+const periodHint = toolPage.match(/<p[^>]*id="shinryo-hint"[^>]*>([\s\S]*?)<\/p>/)?.[1];
+const comparison = periodHint?.match(/区分ウ・医療費100万円の月で\s*([\d,]+)円\s*→\s*([\d,]+)円/);
+ok(comparison?.[1] === "87,430" && comparison?.[2] === "92,940",
+   `画面の改正前後は87,430円→92,940円であること（実際 ${comparison?.[1]}→${comparison?.[2]}）`);
+
 console.log(fail === 0 ? `✅ 高額療養費 ${checks}件 すべて一致` : `❌ ${fail}/${checks}件 不一致`);
 process.exit(fail === 0 ? 0 : 1);
