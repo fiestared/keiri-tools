@@ -55,15 +55,18 @@
 
   <label for="jichitai">お住まいの自治体</label>
   <select id="jichitai"><option value="">読み込み中…</option></select>
+
   <div class="hint">均等割の額と所得割の税率は自治体で違います。載っていない方は「標準税率」を選んでください。</div>
 
   <label for="shunyu" style="margin-top:10px">給与収入（年収・額面／円）</label>
-  <input id="shunyu" type="number" inputmode="numeric" value="5000000" placeholder="例: 5000000" min="0" step="10000">
+  <input id="shunyu" type="number" inputmode="numeric" value="5000000" placeholder="例: 5000000" min="0" step="10000" aria-describedby="shunyu-hint">
+<p class="hint" id="shunyu-hint">所得金額調整控除は未対応です。給与収入850万円超で23歳未満の扶養親族・特別障害者本人等の対象条件がある場合や、給与所得と公的年金所得の両方があり調整控除が必要な場合は、この計算結果を使わず自治体の計算方法で確認してください。</p>
 
   <div class="grid field-pair">
     <div>
       <label for="age">年齢</label>
-      <input id="age" type="number" inputmode="numeric" value="40" min="0" max="120">
+<input id="age" type="number" inputmode="numeric" value="40" min="18" max="120" aria-describedby="age-hint">
+<p class="hint" id="age-hint">試算対象は住民税の賦課期日（課税年度の1月1日）に18歳以上の方です。この年齢欄は社会保険料概算用で、未成年非課税の自動判定はしません。未成年者で前年の合計所得135万円以下なら住民税は非課税です。</p>
     </div>
     <div>
       <label for="ken">都道府県（社会保険料の概算用）</label>

@@ -48,7 +48,7 @@
   <p class="lead">文書の種類と記載金額から、その文書1通に必要な収入印紙の額を判定します（印紙税額一覧表・全20号）。</p>
 
   <label for="doc">文書の種類</label>
-  <select id="doc">
+<select id="doc" aria-describedby="doc-hint">
     <optgroup label="領収書・受取書（17号・16号）">
       <option value="k17_uriage" selected>領収書・レシート（商品・サービスなど売上代金の受取書）〔17号〕</option>
       <option value="k17_other">借入金・保険金・損害賠償金・補償金・返還金などの受取書（売上代金以外）〔17号〕</option>
@@ -81,6 +81,8 @@
       <option value="k20">判取帳〔20号〕</option>
     </optgroup>
   </select>
+<p class="hint" id="doc-hint">試算対象外：第6号の公証人保存以外の株式会社等の定款、第8号の信用金庫等の預入額1万円未満の証書、第13号の身元保証契約などの非課税文書、複数号に該当する複合文書、災害被災者等の非課税特例。これらは表示される一般税額を使わず、国税庁の一覧・特例を確認してください。第1号と第3〜17号に該当して第1号に所属する複合文書には1万円未満の非課税はありません。</p>
+
 
   <div id="amount-block">
     <label for="amount">記載金額（円）</label>

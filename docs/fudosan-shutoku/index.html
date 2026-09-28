@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-07-27",
-      "dateModified": "2026-09-23",
+      "dateModified": "2026-09-28",
       "name": "不動産取得税 計算機",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -140,7 +140,7 @@
 
 <section class="hero">
   <h1>不動産取得税 計算機</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-27">2026年7月27日</time>（更新日: <time datetime="2026-09-23">2026年9月23日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-27">2026年7月27日</time>（更新日: <time datetime="2026-09-28">2026年9月28日</time>）</p>
   <p>土地・家屋の<b>固定資産税評価額</b>と<b>床面積</b>を入れると、不動産取得税を計算します。<b id="hero-kaisei">令和8年度改正（2026年4月1日施行）で免税点が上がり、住宅の床面積要件の下限も50㎡から40㎡になりました</b>。改正前の数字で判定している解説がまだ多いので、取得日を入れて確かめてください。</p>
 </section>
 
@@ -154,6 +154,7 @@
   <label for="acquireDate">① 取得日</label>
 
     <input aria-describedby="date-hint" type="date" id="acquireDate" value="2026-07-01">
+
     <p class="hint" id="date-hint" style="margin-top:6px"></p>
 
   <label style="margin-top:14px">② 土地</label>
@@ -193,7 +194,8 @@
     </div>
     <div>
       <label for="houseFloor">床面積（㎡）</label>
-      <input type="number" id="houseFloor" min="0" step="0.01" inputmode="decimal" value="100">
+<input type="number" id="houseFloor" min="0" step="0.01" inputmode="decimal" value="100" aria-describedby="houseFloor-hint">
+<p class="hint" id="houseFloor-hint">2026年3月31日以前に取得した一戸建て以外の貸家の40〜49㎡は、貸家条件を指定できないため試算対象外です。都道府県の案内で控除額を確認してください。 中古住宅の土地減額は自己居住等の要件が必要です。この計算機では1982年1月1日以後の新築年月日の住宅を判定し、それより前の住宅の耐震証明等による減額は対象外です。家屋の控除額が未収録の年代でも、土地の要件は独立して判定します。</p>
     </div>
   </div>
   <div style="margin-top:10px" id="chuko-fields">

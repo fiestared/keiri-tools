@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>法定福利費の計算｜会社が負担する社会保険料・労働保険料（折半でないものが3つ）</title>
-<meta name="description" content="給与から、会社が負担する法定福利費（健康保険・介護保険・厚生年金・子ども子育て拠出金・雇用保険・労災保険）を計算します。労災保険と子ども子育て拠出金は全額事業主負担、雇用保険は労使で率が違います。社会保険は標準報酬月額、労働保険は賃金総額と課税ベースが違います。労災保険率は業種で2.5〜88／1000と35倍の開き。登録不要・無料。">
+<meta name="description" content="給与から、会社が負担する法定福利費（健康保険・介護保険・厚生年金・子ども子育て支援金・拠出金・雇用保険・労災保険）を計算します。労災保険と子ども子育て拠出金は全額事業主負担、雇用保険は労使で率が違います。社会保険は標準報酬月額、労働保険は賃金総額と課税ベースが違います。労災保険率は業種で2.5〜88／1000と35倍の開き。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/hotei-fukuri/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="法定福利費の計算｜会社が負担する社会保険料・労働保険料（折半でないものが3つ）">
-<meta property="og:description" content="給与から、会社が負担する法定福利費（健康保険・介護保険・厚生年金・子ども子育て拠出金・雇用保険・労災保険）を計算します。労災保険と子ども子育て拠出金は全額事業主負担、雇用保険は労使で率が違います。社会保険は標準報酬月額、労働保険は賃金総額と課税ベースが違います。労災保険率は業種で2.5〜88／1000と35倍の開き。登録不要・無料。">
+<meta property="og:description" content="給与から、会社が負担する法定福利費（健康保険・介護保険・厚生年金・子ども子育て支援金・拠出金・雇用保険・労災保険）を計算します。労災保険と子ども子育て拠出金は全額事業主負担、雇用保険は労使で率が違います。社会保険は標準報酬月額、労働保険は賃金総額と課税ベースが違います。労災保険率は業種で2.5〜88／1000と35倍の開き。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/hotei-fukuri/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -31,7 +31,7 @@
       "name": "Q. 社会保険料は労使折半ではないのですか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A. 健康保険・介護保険・厚生年金は折半です。ただし子ども・子育て拠出金は全額事業主負担（本人負担はありません）、労災保険も全額事業主負担、雇用保険は労使で率が違います。この3つを折半として計算すると、会社の負担を過少に見積もります。"
+        "text": "A. 健康保険・介護保険・厚生年金と子ども・子育て支援金は原則折半です。ただし子ども・子育て拠出金は全額事業主負担（本人負担はありません）、労災保険も全額事業主負担、雇用保険は労使で率が違います。この3つを折半として計算すると、会社の負担を過少に見積もります。"
       }
     },
     {
@@ -63,7 +63,7 @@
       "name": "Q. 標準報酬月額と賃金総額のどちらを入れればよいですか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A. 両方です。健保・厚年・子育て拠出金は標準報酬月額、雇用保険と労災は賃金総額（実際の支払額）にかかるためです。標準報酬月額は算定基礎届の計算で出せます。"
+        "text": "A. 両方です。健保・厚年・子育て支援金・拠出金は標準報酬月額、雇用保険と労災は賃金総額（実際の支払額）にかかるためです。標準報酬月額は算定基礎届の計算で出せます。"
       }
     },
     {
@@ -96,7 +96,7 @@
   gtag('config', 'G-E742DSDHPD');
 </script>
 <script src="../assets/track.js" defer></script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","dateModified":"2026-09-27"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","dateModified":"2026-09-28"}</script>
 <!--nav-exp:toc-script S--><script src="../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
 <body>
 <a class="skip-link" href="#main">本文へ移動</a>
@@ -113,20 +113,19 @@
 <main id="main" tabindex="-1">
   <nav class="breadcrumb"><a href="../">ホーム</a> › 法定福利費の計算</nav>
   <h1>法定福利費の計算</h1>
-<p class="article-meta">更新日: <time datetime="2026-09-27">2026年9月27日</time></p>
+<p class="article-meta">更新日: <time datetime="2026-09-28">2026年9月28日</time></p>
   <p class="lead">従業員1人あたり、会社が給与に<b>上乗せして</b>負担している額を出します。<b>折半でないものが3つあります</b> — 労災保険と子ども・子育て拠出金は<b>全額事業主負担</b>、雇用保険は労使で率が違います。</p>
 
   <div class="callout" id="base">
-    <p><b>課税ベースが2種類あります。</b>健康保険・介護保険・厚生年金・子ども子育て拠出金は<b>標準報酬月額</b>（等級表の額）、雇用保険と労災保険は<b>賃金総額</b>（通勤手当・残業代を含む実際の支払額。徴収法11条1項）にかかります。全部を標準報酬月額で計算すると、通勤手当の多い人の労働保険料が過少に出ます。</p>
+    <p><b>課税ベースが2種類あります。</b>健康保険・介護保険・厚生年金・子ども子育て支援金・拠出金は<b>標準報酬月額</b>（等級表の額）、雇用保険と労災保険は<b>賃金総額</b>（通勤手当・残業代を含む実際の支払額。徴収法11条1項）にかかります。全部を標準報酬月額で計算すると、通勤手当の多い人の労働保険料が過少に出ます。</p>
   </div>
 
   <div class="card">
     <div class="fee-pair field-pair">
       <div>
         <label for="hyojun">標準報酬月額（円）</label>
-
-    <input aria-describedby="hyojun-hint" type="number" id="hyojun" value="300000" min="0" step="1000" inputmode="numeric">
-    <p class="hint" id="hyojun-hint">健保・厚年・子育て拠出金のベース。<a href="../shakai-hoken/">社会保険料の計算</a>で等級が出せます。</p>
+<input aria-describedby="hyojun-hint" type="number" id="hyojun" value="300000" min="0" step="1000" inputmode="numeric">
+    <p class="hint" id="hyojun-hint">健保・厚年・子育て支援金・拠出金のベース。<a href="../shakai-hoken/">社会保険料の計算</a>で等級が出せます。 70歳未満の通常の被保険者を対象とします。拠出金は厚生年金の標準報酬月額（上限65万円）に0.36%、支援金は健康保険の標準報酬月額に0.23%を掛けて原則折半します。</p>
       </div>
       <div>
         <label for="chingin">賃金総額（円／月）</label>
@@ -152,6 +151,7 @@
     <select aria-describedby="gyoshu-hint" id="gyoshu"></select>
     <p class="hint" id="gyoshu-hint"></p>
 
+
     <label><input type="checkbox" id="kaigo"> 介護保険第2号被保険者（<b>40歳以上65歳未満</b>）</label>
 
     <div class="result" id="result" aria-live="polite"></div>
@@ -174,7 +174,8 @@
     <tr><td>健康保険</td><td>労使折半</td><td>標準報酬月額</td></tr>
     <tr><td>介護保険（40〜64歳）</td><td>労使折半</td><td>標準報酬月額</td></tr>
     <tr><td>厚生年金</td><td>労使折半</td><td>標準報酬月額</td></tr>
-    <tr><td><b>子ども・子育て拠出金</b></td><td><b>全額事業主</b>（本人負担なし）</td><td>標準報酬月額</td></tr>
+    <tr><td>子ども・子育て支援金（0.23%）</td><td>原則労使折半</td><td>健康保険の標準報酬月額</td></tr>
+    <tr><td><b>子ども・子育て拠出金（0.36%）</b></td><td><b>全額事業主</b>（本人負担なし）</td><td>標準報酬月額</td></tr>
     <tr><td><b>雇用保険</b></td><td><b>労使で率が違う</b>（事業主だけが二事業分を負担）</td><td><b>賃金総額</b></td></tr>
     <tr><td><b>労災保険</b></td><td><b>全額事業主</b></td><td><b>賃金総額</b></td></tr>
   </table>
@@ -212,7 +213,7 @@
 <section class="faq">
 <h2 id="faq">よくある質問</h2>
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>社会保険料は労使折半ではないのですか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>健康保険・介護保険・厚生年金は折半です。ただし<b>子ども・子育て拠出金は全額事業主負担</b>（本人負担はありません）、<b>労災保険も全額事業主負担</b>、<b>雇用保険は労使で率が違います</b>。この3つを折半として計算すると、会社の負担を過少に見積もります。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>健康保険・介護保険・厚生年金と子ども・子育て支援金は原則折半です。ただし<b>子ども・子育て拠出金は全額事業主負担</b>（本人負担はありません）、<b>労災保険も全額事業主負担</b>、<b>雇用保険は労使で率が違います</b>。この3つを折半として計算すると、会社の負担を過少に見積もります。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>雇用保険はなぜ会社のほうが高いのですか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>事業主だけが<b>雇用保険二事業</b>（雇用安定事業・能力開発事業）の分を負担するためです（徴収法31条1項1号）。令和8年度の一般の事業なら、本人5／1000に対して事業主8.5／1000で、差の3.5／1000がその分です。</p>
@@ -224,7 +225,7 @@
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>業種によります。</b>その他の各種事業（労災3／1000）なら給与の15%前後ですが、労災保険率は業種で2.5／1000〜88／1000と35倍の開きがあるため、建設・林業・鉱業ではもっと高くなります。上の欄で業種を選んで計算してください。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>標準報酬月額と賃金総額のどちらを入れればよいですか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>両方です。</b>健保・厚年・子育て拠出金は標準報酬月額、雇用保険と労災は賃金総額（実際の支払額）にかかるためです。標準報酬月額は<a href="../santei/">算定基礎届の計算</a>で出せます。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>両方です。</b>健保・厚年・子育て支援金・拠出金は標準報酬月額、雇用保険と労災は賃金総額（実際の支払額）にかかるためです。標準報酬月額は<a href="../santei/">算定基礎届の計算</a>で出せます。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>介護保険料はいつからいつまでかかりますか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>40歳以上65歳未満</b>（介護保険第2号被保険者）の期間です。65歳になると第1号被保険者になり、給与からの控除ではなく年金からの特別徴収などに変わります。</p>
@@ -234,7 +235,7 @@
 </section>
 
 <h2 id="shutten">出典</h2>
-<p class="note"><a href="https://laws.e-gov.go.jp/law/347M50002000008" rel="nofollow">労働保険の保険料の徴収等に関する法律施行規則</a> 別表第1（労災保険率表。53の事業の種類と率を e-Gov 法令API v2 のレスポンスから機械抽出。手で書き写していません）。<a href="https://laws.e-gov.go.jp/law/344AC0000000084" rel="nofollow">労働保険の保険料の徴収等に関する法律</a> 11条1項（賃金総額）・12条3項（メリット制）・31条1項1号（雇用保険の被保険者負担＝労災には対応する規定が無い）。健康保険・介護保険・厚生年金・子ども子育て拠出金の料率と雇用保険料率は<a href="../about/">このサイトについて</a>に出典を書いています（協会けんぽ・厚生労働省の公表値）。条文は 2026-08-08 に確認しています。</p>
+<p class="note"><a href="https://laws.e-gov.go.jp/law/347M50002000008" rel="nofollow">労働保険の保険料の徴収等に関する法律施行規則</a> 別表第1（労災保険率表。53の事業の種類と率を e-Gov 法令API v2 のレスポンスから機械抽出。手で書き写していません）。<a href="https://laws.e-gov.go.jp/law/344AC0000000084" rel="nofollow">労働保険の保険料の徴収等に関する法律</a> 11条1項（賃金総額）・12条3項（メリット制）・31条1項1号（雇用保険の被保険者負担＝労災には対応する規定が無い）。健康保険・介護保険・厚生年金・子ども子育て支援金・拠出金の料率と雇用保険料率は<a href="../about/">このサイトについて</a>に出典を書いています（協会けんぽ・厚生労働省の公表値）。条文は 2026-08-08 に確認しています。</p>
 
 <section class="faq rel-block">
 <h2>関連する解説</h2>
@@ -325,7 +326,8 @@ async function render() {
       <tr><th scope="row">健康保険（折半）</th><td id="kenko">${yen(r.kenko)}</td></tr>
       <tr><th scope="row">介護保険（折半）</th><td id="kaigo-bun">${r.kaigo ? yen(r.kaigo) : "なし（40歳未満または65歳以上）"}</td></tr>
       <tr><th scope="row">厚生年金（折半）</th><td id="kosei">${yen(r.kosei)}</td></tr>
-      <tr><th scope="row">子ども・子育て拠出金</th><td id="kosodate"><b>${yen(r.kosodate)}</b>　全額事業主（本人負担なし）</td></tr>
+      <tr><th scope="row">子ども・子育て支援金（会社分）</th><td>${yen(r.shien)}（本人分 ${yen(r.shienWorker)}）</td></tr>
+      <tr><th scope="row">子ども・子育て拠出金（0.36%）</th><td id="kosodate"><b>${yen(r.kosodate)}</b>　全額事業主（本人負担なし）</td></tr>
       <tr><th scope="row">雇用保険</th><td id="koyou-bun"><b>${yen(r.koyou)}</b>　本人は ${yen(r.koyouWorker)}（折半ではありません）</td></tr>
       <tr><th scope="row">労災保険</th><td id="rousai">${r.rousai == null ? "率が分からないため計算していません" : `<b>${yen(r.rousai)}</b>　全額事業主`}</td></tr>
       <tr><th scope="row">会社の負担 合計</th><td><b id="total">${yen(r.total)}</b></td></tr>

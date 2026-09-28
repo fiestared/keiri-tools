@@ -57,6 +57,7 @@
   <label for="gross">額面の月給（円）</label>
   <input id="gross" type="number" inputmode="numeric" placeholder="例: 300000" min="0" step="1000">
 
+
   <div class="grid field-pair">
     <div>
       <label for="pref">勤務先の都道府県</label>
@@ -64,14 +65,17 @@
     </div>
     <div>
       <label for="age">年齢</label>
-      <input id="age" type="number" inputmode="numeric" value="30" min="0" max="120">
+<input id="age" type="number" inputmode="numeric" value="30" min="0" max="120" aria-describedby="age-hint">
+<p class="hint" id="age-hint">70歳以上の厚生年金保険料は0円です。高齢任意加入は対象外です。</p>
     </div>
   </div>
 
   <div class="grid field-pair">
     <div>
       <label for="dependents">扶養親族の数</label>
-      <input id="dependents" type="number" inputmode="numeric" value="0" min="0" max="20">
+<input id="dependents" type="number" inputmode="numeric" value="0" min="0" max="20" aria-describedby="dependents-hint">
+<p class="hint" id="dependents-hint">扶養控除等申告書に基づく扶養親族等の数です。令和8年は源泉控除対象配偶者＋源泉控除対象親族（19〜22歳の特定親族のうち所得100万円以下も含む）。本人の障害者・寡婦・ひとり親・勤労学生は各1人、同一生計配偶者・扶養親族の障害者（16歳未満も含む）は各1人、同居特別障害者はさらに1人を加算してください。住民税は概算より通知書の月額入力を優先してください。</p>
+
     </div>
     <div>
       <label>住民税</label>

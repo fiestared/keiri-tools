@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-17",
-  "dateModified": "2026-09-13",
+  "dateModified": "2026-09-28",
       "name": "収入印紙の金額 判定機（印紙税額一覧表）",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -157,8 +157,8 @@
 <section class="hero">
   <h1>収入印紙の金額 判定機＋<span class="keep-phrase">印紙税額一覧表</span><span class="keep-phrase">（全20号）</span></h1>
   <p class="tool-jump"><a href="#inshi-calculator">金額を判定する ↓</a></p>
-  <p class="article-meta">公開日: <time datetime="2026-07-17">2026年7月17日</time><span class="keep-phrase">（更新日: <time datetime="2026-09-13">2026年9月13日</time>）</span></p>
-  <p><b>文書の種類</b>と<b>記載金額</b>を選ぶだけで、その文書1通に必要な<b>収入印紙の額</b>を判定します。<b>領収書は5万円未満なら非課税（印紙不要）</b>、5万円以上100万円以下は200円。<b>消費税額等が区分記載されていれば税抜金額で判定</b>（No.6925）、不動産売買・建設工事請負の<b>軽減税率</b>（No.7108）にも対応。ページ下部に<b>第1号〜第20号文書の印紙税額一覧表</b>。</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-17">2026年7月17日</time><span class="keep-phrase">（更新日: <time datetime="2026-09-28">2026年9月28日</time>）</span></p>
+  <p>文書の種類と記載金額から一般的な印紙税額を試算します。個別の非課税資格や複合文書の所属は判定しません。<b>領収書は5万円未満なら非課税（印紙不要）</b>、5万円以上100万円以下は200円。<b>消費税額等が区分記載されていれば税抜金額で判定</b>（No.6925）、不動産売買・建設工事請負の<b>軽減税率</b>（No.7108）にも対応。ページ下部に<b>第1号〜第20号文書の印紙税額一覧表</b>。</p>
 </section>
 
 <!-- receipt-table:auto -->
@@ -189,7 +189,7 @@
   </div>
   <p>営業に関する紙の領収書が対象です。電子交付だけの領収書や、営業に関しない受取書は非課税です。借入金など売上代金以外の受取書は、下の判定機で文書の種類を選んでください。</p>
   <p>消費税額等が区分記載されている場合は税抜で判定します（免税事業者は税込）。売上代金とそれ以外が混在する場合の扱いは、<a href="#ryoshusho">領収書の金額と消費税の説明</a>をご確認ください。</p>
-  <p class="hint">出典：<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">国税庁 No.7141 印紙税額の一覧表</a>（令和7年4月1日現在法令等。第17号の税額は2026年9月12日に再照合）。</p>
+  <p class="hint">出典：<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">国税庁 No.7141 印紙税額の一覧表</a>（令和8年4月1日現在法令等。第17号の税額は2026年9月12日に再照合）。</p>
 </section>
 <!-- /receipt-table:auto -->
 
@@ -200,7 +200,7 @@
   </div>
 
   <label for="doc">文書の種類</label>
-  <select id="doc" aria-describedby="doc-hint">
+<select id="doc" aria-describedby="doc-hint">
     <optgroup label="領収書・受取書（17号・16号）">
       <option value="k17_uriage" selected>領収書・レシート（商品・サービスなど売上代金の受取書）〔17号〕</option>
       <option value="k17_other">借入金・保険金・損害賠償金・補償金・返還金などの受取書（売上代金以外）〔17号〕</option>
@@ -233,7 +233,7 @@
       <option value="k20">判取帳〔20号〕</option>
     </optgroup>
   </select>
-      <span id="doc-hint" class="hint">いちばん近いものを選んでください</span>
+      <span id="doc-hint" class="hint">いちばん近いものを選んでください 試算対象外：第6号の公証人保存以外の株式会社等の定款、第8号の信用金庫等の預入額1万円未満の証書、第13号の身元保証契約などの非課税文書、複数号に該当する複合文書、災害被災者等の非課税特例。これらは表示される一般税額を使わず、国税庁の一覧・特例を確認してください。第1号と第3〜17号に該当して第1号に所属する複合文書には1万円未満の非課税はありません。</span>
   <div id="doc-note" class="hint" style="margin:-4px 0 10px"></div>
 
   <div id="amount-block">
