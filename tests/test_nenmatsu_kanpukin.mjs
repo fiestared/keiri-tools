@@ -202,7 +202,7 @@ if (kinkoCallout) {
 }
 
 console.log('== E. 生命保険料控除(令和8・9年分の6万円特例) ==');
-// コア: 一般(新契約)8万円 → 特例なし4万/特例あり5万(帯ごと1.5倍・上限6万)
+// コア: 一般(新契約)8万円 → 特例なし4万/特例あり5万(特例の専用式・上限6万)
 const seihoNashi = seimeiHokenryoKojo({ ippan_shin: 80_000 }, SD).shotoku.items.find((i) => i.key === 'ippan').amount;
 const seihoAri = seimeiHokenryoKojo({ ippan_shin: 80_000, tokurei: true }, SD).shotoku.items.find((i) => i.key === 'ippan').amount;
 const seihoCap = seimeiHokenryoKojo({ ippan_shin: 200_000, tokurei: true }, SD).shotoku.items.find((i) => i.key === 'ippan').amount;
@@ -222,7 +222,19 @@ if (tokureiSpan) {
 const faqSeiho = HTML.match(/<h3>Q\. 生命保険料を年8万円払いました。[\s\S]*?<\/h3>\s*<p>([\s\S]*?)<\/p>/);
 ok(!!faqSeiho && strip(faqSeiho[1]).includes('年8万円の支払いなら控除は5万円'), 'FAQの答えに特例(5万円)');
 // 計算式表の注にも特例
-ok(strip(HTML).includes('令和8年分・令和9年分に限り上の式が1.5倍（上限6万円）'), '計算式表の注に特例');
+// 国税庁 https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1140.htm
+// 特例は通常式の結果を1.5倍せず、次の4段階の式で求める。
+const formulaNote = [...HTML.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/g)]
+  .map(m => strip(m[1])).find(t => t.includes('支払3万円以下')) || '';
+for (const text of [
+  '23歳未満の扶養親族がいる人の一般（新契約）だけ',
+  '令和8年分・令和9年分に限り専用式',
+  '支払3万円以下は全額',
+  '3万円超6万円以下は支払額×1/2＋1万5千円',
+  '6万円超12万円以下は支払額×1/4＋3万円',
+  '12万円超は6万円',
+]) ok(formulaNote.includes(text), `計算式表の注: ${text}`);
+ok(!strip(HTML).includes('上の式が1.5倍'), '通常式の1.5倍という誤記がない');
 
 console.log(`\n結果: ${pass} passed / ${fail} failed`);
 if (fail > 0) process.exit(1);
