@@ -4642,6 +4642,9 @@ SCENES.kokunen_setainushi = kokunenScene({ shotoku: 0, age: 25, setainushi: 3000
 //   所得70万・社保控除20万・扶養0 → 全額免除は「所得70万 > 基準67万」で該当しない。
 //   6区分に一律で控除を引く実装だと、50万 ≦ 67万 となって「全額免除」と誤答する。
 SCENES.kokunen_kojo = kokunenScene({ shotoku: 700000, kojo: 200000 });
+// 2026-09-28: 控除で区分が変わる値（控除なしなら4分の1免除、控除30万円を引くと半額免除）。
+//   入力欄の id 変更で控除が計算に届いていなかった（控除がいつも0円扱い）のを、70万/20万の場面は見逃した
+SCENES.kokunen_kojo_hangaku = kokunenScene({ shotoku: 1500000, kojo: 300000 });
 
 // ★学生は免除・納付猶予の対象外。学生納付特例だけが出る(親の所得は見ない)。
 SCENES.kokunen_gakusei = kokunenScene({ shotoku: 1200000, age: 20, isStudent: true, setainushi: 9000000 });

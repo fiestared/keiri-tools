@@ -1660,6 +1660,12 @@ const SCENES = [
       s.available.includes("4分の3免除") &&
       s.expectedAvailable.every((x) => s.available.includes(x)) && !s.failed },
 
+  // ★控除が計算に届いているか（2026-09-28 配線検査で発覚）。所得150万−控除30万＝120万 ≦ 半額免除の基準128万（単身）。
+  //   控除を読まない実装だと150万のまま4分の1免除（月13,440円）になってここで落ちる。国民年金法施行令6条の9・6条の12
+  { name: "kokunen_kojo_hangaku", expect: (s) =>
+      s.best === "半額免除" && s.monthlyPay === 8960 &&
+      s.expectedAvailable.every((x) => s.available.includes(x)) && !s.failed },
+
   // ★学生は免除・納付猶予の対象外。世帯主が900万でも学生納付特例は本人だけで判定する。
   { name: "kokunen_gakusei", expect: (s) =>
       s.best === "学生納付特例" && s.monthlyPay === 0 &&
