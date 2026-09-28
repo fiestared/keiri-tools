@@ -338,5 +338,14 @@ sec("§12 世帯全員が非課税でなければ非課税世帯ではない（�
   ok(!r.setaiHikazei, "→ 非課税世帯ではない（所得割の限度額は112万で非課税でも）");
 }
 
+// r8: 財務省令和8年度改正。令和9年度の扶養所得62万円の境界。
+for (const [zeisei, childIncome, expected] of [['r8',580001,true], ['r8',620000,true], ['r8',620001,false], [undefined,580001,false]]) {
+ const r = calcHikazeiSetai({ kyuchi:1, zeisei, members:[
+ {age:50,zokugara:'self',sonotaShotoku:1000000},
+ {age:25,zokugara:'child',sonotaShotoku:childIncome,shogaisha:true}
+ ]},D,J);
+ eq(r.setaiHikazei,expected,`r8扶養境界 ${zeisei}/${childIncome}`);
+ if(expected) eq(r.rows[0].kintouLimit,1010000,'r8 親の限度額101万円');
+}
 console.log(`\n${fail === 0 ? "✅" : "❌"} ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

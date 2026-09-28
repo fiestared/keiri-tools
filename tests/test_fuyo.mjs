@@ -90,17 +90,17 @@ const eq = (got, want, msg) => {
   const r = taxSavingSplit({ kazeiShotoku: 5_000_000, shotokuKojo: t.shotoku, juminKojo: t.jumin }, D);
   eq(r.total, 284_242, "500万×一般1+特定1: 節税額合計 284,242(E2Eシーンのオラクル)");
 }
-// 課税所得0 → 節税額0
+// 両税の課税所得0 → 節税額0
 {
-  const r = taxSavingSplit({ kazeiShotoku: 0, shotokuKojo: 380_000, juminKojo: 330_000 }, D);
-  eq(r.total, 0, "課税所得0 → 節税額0");
+  const r = taxSavingSplit({ kazeiShotoku: 0, juminKazeiShotoku: 0, shotokuKojo: 380_000, juminKojo: 330_000 }, D);
+  eq(r.total, 0, "両税の課税所得0 → 節税額0");
 }
 // 低所得クランプ: 課税所得30万・特定1人 → 控除は課税所得の範囲でしか効かない
 //   所得税 before 15,000 → after 0 = 15,000 / 住民税 min(45万,30万)×10% = 30,000
 {
-  const r = taxSavingSplit({ kazeiShotoku: 300_000, shotokuKojo: 630_000, juminKojo: 450_000 }, D);
+  const r = taxSavingSplit({ kazeiShotoku: 300_000, juminKazeiShotoku: 300_000, shotokuKojo: 630_000, juminKojo: 450_000 }, D);
   eq(r.usedShotoku, 300_000, "低所得: 使える所得税控除は課税所得まで(30万)");
-  eq(r.usedJumin, 300_000, "低所得: 住民税側も課税所得まででクランプ");
+  eq(r.usedJumin, 300_000, "低所得: 住民税側は別入力した住民税課税所得まで");
   eq(r.shotokuGen, 15_000, "低所得: 所得税減 15,000");
   eq(r.juminGen, 30_000, "低所得: 住民税減 30,000(45万×10%ではない)");
   eq(r.total, 45_315, "低所得: 節税額合計 45,315");

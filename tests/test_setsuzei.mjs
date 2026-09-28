@@ -1,3 +1,17 @@
+import {taxSaving as saveR8} from '../docs/assets/setsuzei_core.js';
+// Same resident-income distinction for full deductions (iDeCo, mutual aid).
+
+
+import assertR8 from 'node:assert/strict';
+import {taxSavingSplit as splitR8} from '../docs/assets/setsuzei_core.js';
+import {readFileSync as readR8} from 'node:fs';
+const refR8=JSON.parse(readR8(new URL('../docs/assets/setsuzei_r08.json',import.meta.url)));
+assertR8.equal(saveR8({kazeiShotoku:20000,annualDeduction:40000},refR8).juminGen,4000);
+assertR8.equal(saveR8({kazeiShotoku:20000,juminKazeiShotoku:0,annualDeduction:40000},refR8).juminGen,0);
+// r8: 給与所得106万円、所得税基礎控除104万円、住民税43万円。各課税所得を混同しない。
+assertR8.equal(splitR8({kazeiShotoku:20000,shotokuKojo:40000,juminKojo:28000},refR8).juminGen,2800);
+assertR8.equal(splitR8({kazeiShotoku:20000,juminKazeiShotoku:630000,shotokuKojo:40000,juminKojo:28000},refR8).total,3821);
+assertR8.equal(splitR8({kazeiShotoku:20000,juminKazeiShotoku:0,shotokuKojo:40000,juminKojo:28000},refR8).juminGen,0);
 /**
  * 節税額コア（setsuzei_core.js）のオラクル照合。
  *
@@ -50,15 +64,15 @@ eq(shotokuzei(3_000_999, D), 202_500, "3,000,999 → 千円未満切捨てで300
 }
 // 低所得: 課税所得10万・年276,000 → 控除は所得の範囲でしか効かない（住民税減が頭打ち）
 {
-  const r = taxSaving({ kazeiShotoku: 100_000, annualDeduction: 276_000 }, D);
+  const r = taxSaving({ kazeiShotoku: 100_000, juminKazeiShotoku: 100_000, annualDeduction: 276_000 }, D);
   eq(r.usedDeduction, 100_000, "低所得: 使える控除は課税所得まで(10万)");
   eq(r.juminGen, 10_000, "低所得: 住民税減は10万×10% = 10,000(掛金全額でなく)");
   eq(r.total, 15_105, "低所得: 節税額合計 15,105");
 }
-// 課税所得0 → 節税額0
+// 所得税・住民税課税所得とも0 → 節税額0
 {
-  const r = taxSaving({ kazeiShotoku: 0, annualDeduction: 276_000 }, D);
-  eq(r.total, 0, "課税所得0 → 節税額0");
+  const r = taxSaving({ kazeiShotoku: 0, juminKazeiShotoku: 0, annualDeduction: 276_000 }, D);
+  eq(r.total, 0, "所得税・住民税課税所得とも0 → 節税額0");
 }
 // 上限超過の申告（黙って丸めない）: iDeCo会社員(年金なし)上限 月23,000 を月30,000で
 {

@@ -128,7 +128,7 @@ t('恒等式: 年収 = 手取り + 社保（加入時）', () => {
 
 // ── 6. 適用拡大の壁（約106万）— hifuyousha より低い位置で加入 ──────────────
 t('wallType tekiyoKakudai: 壁は106万・105万は未加入/106万は加入', () => {
-  assert.strictEqual(wallAmount(K, 'tekiyoKakudai', 30), 1060000, '壁は約106万');
+  assert.strictEqual(wallAmount(K, 'tekiyoKakudai', 30), 1056000, '月8.8万円×12=105.6万円');
   const below = calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 1050000 }, refs);
   const above = calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 1060000 }, refs);
   assert.strictEqual(below.joins, false, '105万は未加入');
@@ -178,4 +178,8 @@ t('wallType 不正は 130万 にフォールバック（黙って106万にしな
 });
 
 console.log(`\n${fail ? '❌' : '✓'} 年収の壁コア: ${pass} passed, ${fail} failed`);
+// r8: 日本年金機構の月額8.8万円。賞与等なし・均等月給の年換算。
+assert.equal(calcKabe({...base,wallType:'tekiyoKakudai',annual:1055999},refs).joins,false);
+assert.equal(calcKabe({...base,wallType:'tekiyoKakudai',annual:1056000},refs).joins,true);
+assert.equal(calcKabe({...base,wallType:'tekiyoKakudai',annual:1059999},refs).joins,true);
 process.exit(fail ? 1 : 0);

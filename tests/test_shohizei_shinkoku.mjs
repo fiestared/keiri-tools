@@ -1,3 +1,9 @@
+import assertR8 from 'node:assert/strict';
+import {calcDeclaration as declR8} from '../docs/assets/shohizei_core.js';
+// r8: 国税庁6401。税込5億5千万円=税抜5億円の境界（標準税率のみ）。
+assertR8.equal(declR8({salesIncluded:{standard:550000000}}).allowed,true);
+assertR8.equal(declR8({salesIncluded:{standard:550000002}}).allowed,false);
+assertR8.equal(declR8({salesIncluded:{reduced:540000002}}).allowed,false);
 import assert from "node:assert";
 import {
   salesTaxByDivide, salesTaxByPileUp,

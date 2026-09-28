@@ -34,11 +34,11 @@ function oracleShotokuzei(kazei) {
   return Math.floor(x * 0.45 - 4796000);
 }
 
-// 入口: 経費yで課税所得kazeiが下がる分の減税。住民税(10%概算)は**実際に下がった課税所得**
-// にしか掛からない(課税所得0の人は経費を積んでも住民税は減らない)。
+// 入口: 所得税は累進差額。住民税は住民税課税所得が十分ある場合の経費全額×10%の概算。
+// 所得税課税所得を住民税課税所得として代用しない。
 function oracleSetsuzei(kazei, y) {
   const dec = oracleShotokuzei(kazei) - oracleShotokuzei(Math.max(0, kazei - y));
-  return dec + Math.floor(dec * 0.021) + Math.floor(Math.min(y, Math.max(0, kazei)) * 0.10);
+  return dec + Math.floor(dec * 0.021) + Math.floor(y * 0.10);
 }
 
 // 出口: 収入teateが課税所得baseに上乗せされる分の増税。teateは全額が新たな所得なので住民税は全額に掛かる。
