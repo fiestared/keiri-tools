@@ -12,7 +12,7 @@
      このページ自体は noindex（/kabe/ と重複させない）。計算は本体と同じ ../../assets/kabe_core.js。 -->
 <link rel="canonical" href="https://keiri-tools.com/kabe/">
 <meta name="robots" content="noindex, follow">
-<meta name="description" content="社会保険の壁（約106万円・130万円）を超えると手取りがいくら逆転し、年収いくらまで働けば元に戻るかを自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<meta name="description" content="配偶者が勤務時間を増やす等で勤務先の社会保険加入要件を満たす場合の、保険料と手取り回復年収を概算する埋め込みウィジェット。keiri-tools 提供。">
 <style>
   :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --control:#84939f; --accent:#1f6f5c; --accent2:#e7f3f0; --bg:#fff; }
   *{ box-sizing:border-box; }
@@ -49,15 +49,24 @@
   .warn{ font-size:13px; color:#b4232a; }
 </style>
 <link rel="stylesheet" href="/assets/embed-layout.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "年収の壁 手取り逆転シミュレーター ウィジェット｜keiri-tools",
+  "dateModified": "2026-09-28"
+}
+</script>
 </head>
 <body>
 <div class="w">
   <h1>年収の壁 手取り逆転シミュレーター</h1>
-  <p class="lead">パート・アルバイトの年収から、社会保険の壁（約106万円・130万円）を超えると手取りがいくら逆転し、年収いくらまで働けば元に戻るかを概算します（社会保険料のみ。税金は含みません）。</p>
+<p class="article-meta">更新日: <time datetime="2026-09-28">2026年9月28日</time></p>
+  <p class="lead">一定月給の配偶者が勤務時間を増やす等により勤務先の社会保険加入要件も満たす場合の、保険料と手取り回復年収を概算します。賞与等なし・均等月給の年換算で月8.8万円は105.6万円です。130万円以上だけで勤務先社保に加入するわけではありません。国保・国年、非配偶者19〜22歳の150万円区分、一定の障害者の180万円区分はこの試算の対象外です。生計維持要件や一時的収入増の特例も別途確認してください（税金は含みません）。</p>
 
   <fieldset class="rc">
     <legend>どちらの壁で判定しますか</legend>
-    <label><input type="radio" name="wall" value="hifuyousha" checked> <b>130万円の壁</b>（家族の健康保険の扶養。すべての勤め先。60歳以上・障害者は180万円）</label>
+    <label><input type="radio" name="wall" value="hifuyousha" checked> <b>130万円の壁</b>（配偶者の健康保険の扶養。60歳以上は180万円。障害者は試算対象外）</label>
     <label><input type="radio" name="wall" value="tekiyoKakudai"> <b>約106万円の壁</b>（従業員51人以上で5要件を満たす短時間労働者）</label>
   </fieldset>
 
@@ -169,12 +178,12 @@ $("calc").addEventListener("click", async () => {
   if (!r.joins) {
     body = `<div class="callout">
       <b>${wallLabel}を超えて社会保険に入ると、手取りは一段下がります</b>
-      年収が<b>${yen(r.wall)}</b>以上になると自分で社会保険（健康保険・厚生年金）に加入し本人負担が発生します。
+      年収が<b>${yen(r.wall)}</b>以上で勤務時間等の加入要件も満たすと仮定して、勤務先の健康保険・厚生年金の本人負担を試算します。
       壁のすぐ上では社会保険料が<b>${yen(r.bottomShahoAnnual)}</b>かかり、手取りは<b>${yen(r.bottomTedori)}</b>まで下がります。
       いまの手取り（${yen(r.reference)}）と比べて最大<b>${yen(r.maxLoss)}</b>の逆転です。</div>`;
   } else {
     body = `<div class="callout">
-      <b>あなたは社会保険に加入しています（本人負担 ${yen(r.shahoAnnual)}／年）</b>
+      <b>この試算では勤務先の社会保険に加入する前提です（本人負担 ${yen(r.shahoAnnual)}／年）</b>
       扶養内で働ける上限（年収${yen(r.wall - 1)}）なら手取りは約${yen(r.reference)}でした。
       社会保険に入ったぶん、その水準に戻る・上回るには下の年収まで働く必要があります。</div>`;
   }
