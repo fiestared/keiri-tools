@@ -1,0 +1,78 @@
+{
+ "_note": "改定で古くなった値の拒否リスト（誤りの型 C の予防。2026-09-28 司令塔）。改定があったら1行足す。stale_from 以後に、context の語の近く（window 字以内）に value が出て、allow_near（過去・旧・比較を示す語）が近くに無ければ落とす。stale_from が未来の行は、その日になると自動で効き始める（改定日の直し忘れを防ぐ）。allow_pages は、そのページ全体が旧値を過去として説明している場合だけ、理由つきで書く。 correct（正しい値）が同じ window 内に書かれていれば、新旧の比較とみなして通す。",
+ "entries": [
+  {
+   "id": "ikukyu-cap-16110",
+   "value": "16,110円",
+   "context": "育児休業|育休|出生時育児",
+   "window": 120,
+   "stale_from": "2026-08-01",
+   "allow_near": "旧|改定前|7月31日まで|令和8年7月|以前|まで",
+   "reason": "育児休業給付の上限（67%の日額）は2026年8月から16,540円",
+   "source": "https://shussan.ikukyu-simu.mhlw.go.jp/faq/",
+   "allow_pages": {},
+   "correct": "16,540円"
+  },
+  {
+   "id": "its-kenpo-avg-38man",
+   "value": "38万円",
+   "context": "関東ITソフトウェア|ITS健保",
+   "window": 120,
+   "stale_from": "2025-04-01",
+   "allow_near": "旧|以前|令和6年度まで",
+   "reason": "関東ITソフトウェア健保の平均標準報酬月額は令和7・8年度とも44万円",
+   "source": "https://www.its-kenpo.or.jp/hoken/kyufu/shoute/index.html",
+   "allow_pages": {},
+   "correct": "44万円"
+  },
+  {
+   "id": "kogaku-u-80100",
+   "value": "80,100円",
+   "context": "高額療養費|自己負担限度額",
+   "window": 150,
+   "stale_from": "2026-08-01",
+   "allow_near": "7月|改定前|旧|まで|以前",
+   "reason": "区分ウは2026年8月診療分から85,800円＋（医療費−286,000円）×1%",
+   "source": "https://www.mhlw.go.jp/content/001726232.pdf",
+   "allow_pages": {
+    "docs/column/kogaku-ryoyohi/index.html": "冒頭の注記で『以下の早見表と例は令和8年7月診療分までのもの。8月診療分からは85,800円＋1%』と明示し、改定前後の比較節もある（2026-09-28 第8周で確認）"
+   },
+   "correct": "85,800円"
+  },
+  {
+   "id": "fuyo-shotoku-58man-r8",
+   "value": "58万円以下",
+   "context": "令和8年分",
+   "window": 60,
+   "stale_from": "2026-01-01",
+   "allow_near": "令和7年分|改正前|旧|裏面の印字|記載のまま",
+   "reason": "令和8年分の同一生計配偶者・扶養親族の所得要件は62万円以下（令和7年分は58万円以下）",
+   "source": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1180.htm",
+   "allow_pages": {},
+   "correct": "62万円"
+  },
+  {
+   "id": "tekiyo-chingin-8.8man",
+   "value": "8\\.8万円",
+   "context": "適用拡大|短時間労働者|106万円",
+   "window": 120,
+   "stale_from": "2026-10-01",
+   "allow_near": "撤廃|廃止|改正前|9月30日まで|以前|まで",
+   "reason": "短時間労働者の賃金要件（月額8.8万円以上）は令和8年10月に撤廃（年金機構『この要件は令和8年10月に撤廃されます』）",
+   "source": "https://www.nenkin.go.jp/tokusetsu/tekiyokakudai_kojin.html",
+   "allow_pages": {},
+   "correct": "撤廃"
+  }
+ ],
+ "future_tense": {
+  "_note": "『予定』『から変わります』等の未来形のまま、日付が今日より前になった文を落とす（国税システム更改後も『予定』のまま、の型）。allow_pages は理由つき。 日付の直後が「時点」（その日の状態を書いたもの）と、日付と未来形の間に別の年・「時点」「判決」が挟まるものは数えない。 「予定納税」は税目の名前なので数えない。日付の後ろの閉じかっこで区切る（表の隣のセルを拾わない）。",
+  "pattern": "((?:\\d{4})年|令和(\\d+)年)(\\d{1,2})月(\\d{1,2})日(?!時点)[^年時判）)]{0,30}?(予定です|予定されています|から変わります|から始まります|施行されます|撤廃されます|に改正されます|予定(?!納税))",
+  "allow_pages": {},
+  "known_issues": {
+   "docs/column/zeimu-dairi-kengen-shosho/index.html": "BL-047: 『令和8年9月1日に、様式第八号の改正が施行されます』（施行済みなのに未来形）",
+   "docs/column/josei-katsuyaku-suishinho/index.html": "BL-047: 『2026年3月31日…失効する予定』（延長の有無を一次資料で確認して直す）",
+   "docs/column/izoku-nenkin-jukyu-yoken/index.html": "BL-047: 『令和8年3月31日以前の死亡までで終わる予定』（経過措置の現状を一次資料で確認して直す）"
+  }
+ },
+ "known_issues_note": "known_issues は直すまでの一時的な登録（在庫 BL-047）。テストは警告として出し続けるが、赤にはしない。直したら消す。"
+}

@@ -47,6 +47,10 @@ AI月30万円プロジェクト・柱Aのプロダクト。経理実務の「ち
 - `node tools/check_claims.mjs --changed` — **主張の台帳の関門**（2026-09-28 新設）。書いた・足した数字が全部 `claims/<ページ>.json` に
   一次資料の逐語つきで載っているか、言い切り（原則・常に・必ず・一律）を見直したか、計算機なら公表例の tool_cases があるかを見る。
   **記事を書いたら・直したら commit 前に必ず緑にする。** 書く前に gbrain `keiri-tools/article-error-patterns`（誤りの型のチェックリスト）を読む
+- **誤りの予防の検出器（2026-09-28 新設。gbrain `keiri-tools/article-error-patterns` の D・C 型）**:
+  `tests/test_boundary_cases.mjs` — 計算の中身（*_core.js）ごとに、境目の1つ上と1つ下を一次資料の正解で照らす。**新しい core を足したら `tests/boundaries/<名前>.mjs` を必ず作る**（既存の未作成分は `_status.json` の pending で、減らすだけ）／
+  `tests/test_stale_values.mjs` — 改定で古くなった値・過ぎた日付の未来形を落とす。**改定を反映したら旧値を `tests/stale_values.json` に1行足す**（stale_from が未来の行は、その日から自動で効く）／
+  `tools/check_input_wiring.mjs` — 入力欄が答えを動かすかを実ブラウザで見る（今は候補を出す道具。仕分けが済んだら関門にする）
 - `node tests/test_article_structure.mjs` — 型の違反を落とす(canonical/GA4/AdSense/構造化データ/
   目次と全h2の対応/図解(figure内インラインSVG)/FAQ/出典/ツール導線/title 60字/一覧・sitemap掲載/
   **ORDER登録**(需要順)・**CATEGORIES分類**(一覧のカテゴリ。未分類は「その他」に埋もれるので落とす))
