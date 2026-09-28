@@ -37,8 +37,12 @@ const BREAKS = [
    "return h.amount;"],
 
   ["★適用拡大の壁(約106万)と被扶養者の壁(130万)を取り違える",
-   "if (wallType === 'tekiyoKakudai') return K.shakaiHoken.tekiyoKakudai.amount;",
-   "if (wallType === 'tekiyoKakudai') return K.shakaiHoken.hifuyousha.amount;"],
+   "return wageRequirementActive(K, asOf) ? K.shakaiHoken.tekiyoKakudai.amount : 0;",
+   "return wageRequirementActive(K, asOf) ? K.shakaiHoken.hifuyousha.amount : 0;"],
+
+  ["★賃金要件の撤廃日を無視する（2026-10-01 以後も月8.8万円の壁で判定し続ける）",
+   "return !until || String(asOf) <= until;",
+   "return true;"],
 
   ["社会保険料の年額を ×11 で出す（12か月ぶん引かない）",
    "annual: m.selfTotal * 12,",

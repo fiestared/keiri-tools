@@ -62,12 +62,12 @@
 <div class="w">
   <h1>年収の壁 手取り逆転シミュレーター</h1>
 <p class="article-meta">更新日: <time datetime="2026-09-28">2026年9月28日</time></p>
-  <p class="lead">一定月給の配偶者が勤務時間を増やす等により勤務先の社会保険加入要件も満たす場合の、保険料と手取り回復年収を概算します。賞与等なし・均等月給の年換算で月8.8万円は105.6万円です。130万円以上だけで勤務先社保に加入するわけではありません。国保・国年、非配偶者19〜22歳の150万円区分、一定の障害者の180万円区分はこの試算の対象外です。生計維持要件や一時的収入増の特例も別途確認してください（税金は含みません）。</p>
+  <p class="lead">一定月給の配偶者が勤務時間を増やす等により勤務先の社会保険加入要件も満たす場合の、保険料と手取り回復年収を概算します。賞与等なし・均等月給の年換算で月8.8万円は105.6万円です（この月8.8万円の要件は2026年9月30日までで、2026年10月1日に撤廃）。130万円以上だけで勤務先社保に加入するわけではありません。国保・国年、非配偶者19〜22歳の150万円区分、一定の障害者の180万円区分はこの試算の対象外です。生計維持要件や一時的収入増の特例も別途確認してください（税金は含みません）。</p>
 
   <fieldset class="rc">
     <legend>どちらの壁で判定しますか</legend>
     <label><input type="radio" name="wall" value="hifuyousha" checked> <b>130万円の壁</b>（配偶者の健康保険の扶養。60歳以上は180万円。障害者は試算対象外）</label>
-    <label><input type="radio" name="wall" value="tekiyoKakudai"> <b>約106万円の壁</b>（従業員51人以上で5要件を満たす短時間労働者）</label>
+    <label><input type="radio" name="wall" value="tekiyoKakudai"> <b>約106万円の壁</b>（従業員51人以上で要件を満たす短時間労働者。2026年10月1日からは賃金の要件がなくなり、金額の壁ではなくなります）</label>
   </fieldset>
 
   <div class="grid field-pair">
@@ -175,12 +175,17 @@ $("calc").addEventListener("click", async () => {
 
   // 逆転の説明
   let body;
-  if (!r.joins) {
+  if (r.wageRequirementAbolished) {
+    body = `<div class="callout"><b>2026年10月1日から、短時間労働者の賃金の要件（月額8.8万円以上）はなくなりました</b>
+      従業員51人以上（2027年10月から36人以上）の勤め先で、週20時間以上・2か月を超える雇用の見込み・学生でない、を満たせば、年収にかかわらず加入します。年収${yen(r.annual)}での本人負担は<b>${yen(r.shahoAnnual)}</b>／年です。扶養の130万円（60歳以上は180万円）は別に残ります。</div>`;
+  } else if (!r.joins) {
     body = `<div class="callout">
-      <b>${wallLabel}を超えて社会保険に入ると、手取りは一段下がります</b>
+      <b>${wallLabel}を超えて社会保険に入ると、${r.maxLoss > 0 ? "手取りは一段下がります" : "社会保険料がかかります（いまの年収からなら手取りは逆転しません）"}</b>
       年収が<b>${yen(r.wall)}</b>以上で勤務時間等の加入要件も満たすと仮定して、勤務先の健康保険・厚生年金の本人負担を試算します。
       壁のすぐ上では社会保険料が<b>${yen(r.bottomShahoAnnual)}</b>かかり、手取りは<b>${yen(r.bottomTedori)}</b>まで下がります。
-      いまの手取り（${yen(r.reference)}）と比べて最大<b>${yen(r.maxLoss)}</b>の逆転です。</div>`;
+      ${r.maxLoss > 0
+        ? `いまの手取り（${yen(r.reference)}）と比べて、最大<b>${yen(r.maxLoss)}</b>の逆転です。`
+        : `いまの年収（${yen(r.annual)}）からなら、壁のすぐ上で加入しても手取りは今より<b>${yen(-r.maxLoss)}</b>多く、<b>逆転はしません</b>。手取りが減るのは、年収が<b>${yen(r.bottomTedori + 1)}〜${yen(r.wall - 1)}</b>の人が壁を越えたときです。`}</div>`;
   } else {
     body = `<div class="callout">
       <b>この試算では勤務先の社会保険に加入する前提です（本人負担 ${yen(r.shahoAnnual)}／年）</b>
@@ -190,7 +195,9 @@ $("calc").addEventListener("click", async () => {
 
   // 回復年収（収録範囲を超えると rec は null で返る＝算出できないと申告する）
   let recBox;
-  if (rec == null) {
+  if (r.wageRequirementAbolished) {
+    recBox = "";
+  } else if (rec == null) {
     recBox = `<div class="note">回復年収を算出できませんでした（収録範囲を超えています）。</div>`;
   } else if (r.joins && annual >= rec) {
     recBox = `<div class="row" style="margin-top:10px">回復済み

@@ -29,7 +29,9 @@ let pass = 0, fail = 0;
 const t = (name, fn) => { try { fn(); pass++; console.log('✅ ' + name); }
   catch (e) { fail++; console.log('❌ ' + name + '\n   ' + e.message); } };
 
-const base = { age: 30, prefecture: '東京都', wallType: 'hifuyousha' };
+// ★日付を固定する（賃金要件は 2026-09-30 まで。撤廃前の挙動はこの日付で見る。CLAUDE.md: 今日に依存するテストは実行日で落ちる）
+const PRE = '2026-09-30', POST = '2026-10-01';
+const base = { age: 30, prefecture: '東京都', wallType: 'hifuyousha', asOf: PRE };
 
 // ── 1. 社会保険料(本人・年額)が記事の 187,296円 を1円まで再現する（独立オラクル） ────
 t('社保(年): 年収131万・東京都・30歳 → 187,296円（記事の値）', () => {
@@ -94,7 +96,7 @@ t('回復年収の以後に基準割れの年収は無い・旧定義と同値�
   for (const { pref, age, wallType } of combos) {
     const rate = S.kenko_rates[pref];
     // 基準がいちばん高い入力（壁−1円）＝いちばん破れやすい条件で見る
-    const r = calcKabe({ annual: wallAmount(K, wallType, age) - 1, age, prefecture: pref, wallType }, refs);
+    const r = calcKabe({ annual: wallAmount(K, wallType, age, PRE) - 1, age, prefecture: pref, wallType, asOf: PRE }, refs);
     assert.ok(r.recovery != null, `${pref}/${age}/${wallType}: 回復年収が出ない`);
     let firstCross = null;
     for (let a = r.wall; a <= r.wall + 4000000; a += 1000) {
@@ -128,7 +130,7 @@ t('恒等式: 年収 = 手取り + 社保（加入時）', () => {
 
 // ── 6. 適用拡大の壁（約106万）— hifuyousha より低い位置で加入 ──────────────
 t('wallType tekiyoKakudai: 壁は106万・105万は未加入/106万は加入', () => {
-  assert.strictEqual(wallAmount(K, 'tekiyoKakudai', 30), 1056000, '月8.8万円×12=105.6万円');
+  assert.strictEqual(wallAmount(K, 'tekiyoKakudai', 30, PRE), 1056000, '月8.8万円×12=105.6万円');
   const below = calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 1050000 }, refs);
   const above = calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 1060000 }, refs);
   assert.strictEqual(below.joins, false, '105万は未加入');
@@ -136,7 +138,7 @@ t('wallType tekiyoKakudai: 壁は106万・105万は未加入/106万は加入', (
   assert.strictEqual(above.joins, true, '106万は加入');
   assert.ok(above.tedori < 1060000, '加入で手取りが年収未満');
   // 適用拡大の壁は被扶養者の壁より低い（早く加入する）
-  assert.ok(wallAmount(K, 'tekiyoKakudai', 30) < wallAmount(K, 'hifuyousha', 30));
+  assert.ok(wallAmount(K, 'tekiyoKakudai', 30, PRE) < wallAmount(K, 'hifuyousha', 30));
 });
 
 // ── 7. 60歳以上は被扶養者の壁が180万に上がる ─────────────────────────
@@ -182,4 +184,22 @@ console.log(`\n${fail ? '❌' : '✓'} 年収の壁コア: ${pass} passed, ${fai
 assert.equal(calcKabe({...base,wallType:'tekiyoKakudai',annual:1055999},refs).joins,false);
 assert.equal(calcKabe({...base,wallType:'tekiyoKakudai',annual:1056000},refs).joins,true);
 assert.equal(calcKabe({...base,wallType:'tekiyoKakudai',annual:1059999},refs).joins,true);
+// ── 2026-10-01 の賃金要件の撤廃（厚生年金保険法12条5号・健康保険法3条。令和7年法律第74号）──
+// 撤廃前（9/30）は月8.8万円の壁があり、撤廃後（10/1）は年収にかかわらず加入。被扶養者の130万円は変わらない
+assert.equal(wallAmount(K, 'tekiyoKakudai', 30, PRE), 1056000, '9/30 は賃金要件あり');
+assert.equal(wallAmount(K, 'tekiyoKakudai', 30, POST), 0, '10/1 からは金額の壁なし');
+assert.equal(calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 900000, asOf: PRE }, refs).joins, false, '9/30・年90万は加入しない');
+{
+  const r = calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 900000, asOf: POST }, refs);
+  assert.equal(r.joins, true, '10/1・年90万でも加入（週20時間以上などを満たす前提の選択肢）');
+  assert.equal(r.wageRequirementAbolished, true);
+  assert.ok(r.shahoAnnual > 0 && r.tedori === 900000 - r.shahoAnnual);
+  assert.equal(r.recovery, null, '壁が無いので回復年収は定義しない');
+}
+assert.equal(wallAmount(K, 'hifuyousha', 30, POST), 1300000, '被扶養者の130万円は撤廃の対象外');
+assert.equal(calcKabe({ ...base, annual: 1290000, asOf: POST }, refs).joins, false, '10/1 以後も被扶養者の判定は130万円のまま');
+// 日付の形が壊れていたら今日の日付を使う（黙って撤廃前に固定しない）
+assert.equal(calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 900000, asOf: 'あした' }, refs).asOf.length, 10);
+console.log('✓ 2026-10-01 の賃金要件の撤廃: 撤廃前（9/30）・撤廃後（10/1）・被扶養者は不変');
 process.exit(fail ? 1 : 0);
+

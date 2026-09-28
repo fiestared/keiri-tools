@@ -44,10 +44,25 @@ export function shakaiHokenAnnual(annual, age, kenkoRate, S) {
   };
 }
 
-/** 適用される壁の年収額。hifuyousha は60歳以上・障害者だと180万円。 */
-export function wallAmount(K, wallType, age) {
+/** 今日（日本時間）の YYYY-MM-DD。日付の比較は文字列で行う（CLAUDE.md: new Date("YYYY-MM-DD") は UTC 扱いで狂う） */
+export const todayJST = () => new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
+
+/**
+ * 短時間労働者の賃金要件（所定内賃金 月額8.8万円以上）が、その日に生きているか。
+ * ★2026-10-01 に撤廃（厚生年金保険法12条5号ロ・健康保険法3条の「八万八千円未満」が
+ *   令和7年法律第74号で削られた。e-Gov v2 で 2026-10-01 施行の版を確認。gbrain research/tekiyo-kakudai-chingin-yoken-teppai-2026-10）。
+ *   データの chinginYokenUntil（要件が生きている最後の日）より後なら撤廃後。
+ */
+export function wageRequirementActive(K, asOf = todayJST()) {
+  const until = K?.shakaiHoken?.tekiyoKakudai?.chinginYokenUntil;
+  return !until || String(asOf) <= until;
+}
+
+/** 適用される壁の年収額。hifuyousha は60歳以上・障害者だと180万円。
+ *  tekiyoKakudai は賃金要件の撤廃後（2026-10-01〜）は金額の壁が無い＝0 を返す（週20時間以上などの要件で加入）。 */
+export function wallAmount(K, wallType, age, asOf = todayJST()) {
   if (!K || !K.shakaiHoken) throw new Error('参照データ（kabe_thresholds_r08.json）が渡されていません');
-  if (wallType === 'tekiyoKakudai') return K.shakaiHoken.tekiyoKakudai.amount;
+  if (wallType === 'tekiyoKakudai') return wageRequirementActive(K, asOf) ? K.shakaiHoken.tekiyoKakudai.amount : 0;
   const h = K.shakaiHoken.hifuyousha;
   return (Number(age) >= 60) ? h.age60plus : h.amount;
 }
@@ -73,7 +88,21 @@ export function calcKabe(input, refs) {
   const kenkoRate = S.kenko_rates[input.prefecture];
   if (!(kenkoRate > 0)) throw new Error('健康保険料率が特定できません（都道府県を確認してください）');
 
-  const wall = wallAmount(K, wallType, age);
+  const asOf = /^\d{4}-\d{2}-\d{2}$/.test(String(input.asOf || '')) ? input.asOf : todayJST();
+  const wall = wallAmount(K, wallType, age, asOf);
+  // ★賃金要件の撤廃後（tekiyoKakudai で wall=0）は、年収にかかわらず加入（週20時間以上などの要件は満たしている前提の選択肢）。
+  //   壁が無いので「壁の手前の手取り」「回復年収」「壁の底」は定義できない＝null で返し、画面は別の説明を出す。
+  if (wall === 0) {
+    const shaho0 = annual > 0 ? shakaiHokenAnnual(annual, age, kenkoRate, S) : null;
+    const shahoAnnual0 = shaho0 ? shaho0.annual : 0;
+    return {
+      annual, age, wallType, wall, asOf, wageRequirementAbolished: true,
+      joins: annual > 0, shaho: shaho0, shahoAnnual: shahoAnnual0, tedori: annual - shahoAnnual0,
+      tedoriRate: annual > 0 ? (annual - shahoAnnual0) / annual : 0,
+      reference: null, recovery: null, recoveryGap: null, bottomTedori: null, bottomShahoAnnual: null, maxLoss: null,
+      year: K._meta?.year || '',
+    };
+  }
   // 「130万円未満が被扶養者」なので、130万円ちょうどは加入側（壁「以上」で加入）。
   const joins = annual >= wall;
 
@@ -106,7 +135,7 @@ export function calcKabe(input, refs) {
   const bottomTedori = wall - bottomShaho.annual;
 
   return {
-    annual, age, wallType, wall,
+    annual, age, wallType, wall, asOf, wageRequirementAbolished: false,
     joins, shaho, shahoAnnual, tedori,
     tedoriRate: annual > 0 ? tedori / annual : 0,
     reference,
