@@ -73,9 +73,9 @@ const BREAKS = [
    "if (!isValidRate(rate, I)) return null;",
    "if (false) return null;"],
 
-  ["速算表の帯の境界を『未満』にずらす（195万ちょうどの人を10%にする）",
-   "if (b.kazei_upto === null || b.kazei_upto === undefined || v <= b.kazei_upto) return b.rate_pct;",
-   "if (b.kazei_upto === null || b.kazei_upto === undefined || v < b.kazei_upto) return b.rate_pct;"],
+  ["速算表の帯の境界を旧誤仕様の『以下』に戻す（195万ちょうどの人を5%にする）",
+   "if (b.kazei_upto === null || b.kazei_upto === undefined || v < b.kazei_upto) return b.rate_pct;",
+   "if (b.kazei_upto === null || b.kazei_upto === undefined || v <= b.kazei_upto) return b.rate_pct;"],
 
   ["★渡し忘れガードを外す（年収も総所得も無いと足切り0で控除額を過大に）",
    "if (!hasSoto && !hasShunyu) {",
