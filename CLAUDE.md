@@ -44,6 +44,9 @@ AI月30万円プロジェクト・柱Aのプロダクト。経理実務の「ち
   (2026-07-26 に知らずに二重構築して即日削除した。既存アクセスの有無は gbrain
   `keiri-tools/analytics-access` を先に見る)
   ⚠️ **elife系の会社GCP(ecare-298703 / nice-diorama-453205-u6)は使わない**(2度繋ぎかけて安に止められた)
+- `node tools/check_claims.mjs --changed` — **主張の台帳の関門**（2026-09-28 新設）。書いた・足した数字が全部 `claims/<ページ>.json` に
+  一次資料の逐語つきで載っているか、言い切り（原則・常に・必ず・一律）を見直したか、計算機なら公表例の tool_cases があるかを見る。
+  **記事を書いたら・直したら commit 前に必ず緑にする。** 書く前に gbrain `keiri-tools/article-error-patterns`（誤りの型のチェックリスト）を読む
 - `node tests/test_article_structure.mjs` — 型の違反を落とす(canonical/GA4/AdSense/構造化データ/
   目次と全h2の対応/図解(figure内インラインSVG)/FAQ/出典/ツール導線/title 60字/一覧・sitemap掲載/
   **ORDER登録**(需要順)・**CATEGORIES分類**(一覧のカテゴリ。未分類は「その他」に埋もれるので落とす))
