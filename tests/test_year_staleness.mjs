@@ -29,6 +29,13 @@ const DOCS = join(ROOT, "docs");
 // 「制度の事実」= 年が変わっても真であり続ける記述。機械置換の対象にしてはいけない。
 // snippet はページに**そのまま含まれる**文字列。文言を変えたら免除が外れて落ちる。
 const HISTORICAL_FACTS = [
+  ...[
+    '令和7年度初度登録の電気自動車・燃料電池車は翌年度の75%軽課（年額6,500円）',
+    '令和7年度に初度登録した電気自動車・燃料電池車の令和8年度年額6,500円',
+  ].map(snippet => ({file: 'jidoshazei/index.html', snippet,
+    reason: '三重県令和8年度税額表 https://www.pref.mie.lg.jp/common/content/001128502.pdf の軽課対象となる登録年度。' +
+      '令和7年度初度登録の翌年度が令和8年度であるという適用条件で、参照データの年度を古く申告しているものではない。' +
+      '登録年度・車種・適用年度または翌年度・税額を含む全文一致だけを免除し、境界はtest_jidoshazeiで検証する。'})),
   ...["shobyo/index.html", "shussan/index.html", "embed/shobyo/index.html", "embed/shussan/index.html"].map(file => ({
     file, snippet: "例: 関東ITソフトウェア健保は令和8年度の支給開始で44万円",
     reason: "関東ITソフトウェア健保の令和8年度支給開始に限定した平均標準報酬月額の参考例。" +

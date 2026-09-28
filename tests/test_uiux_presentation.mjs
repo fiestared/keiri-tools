@@ -60,7 +60,7 @@ try{
   const control=p.locator('.persona-bar button').first();await control.focus();await p.keyboard.press('Tab');
   const ring=await p.evaluate(()=>{const e=document.activeElement,s=getComputedStyle(e);return {tag:e.tagName,style:s.outlineStyle,width:parseFloat(s.outlineWidth)};});assert.equal(ring.tag,'BUTTON');assert.notEqual(ring.style,'none');assert(ring.width>=2);
   await ready(p,server.origin+'/shobyo/');await p.locator('#startDate').fill('2026-09-01');await p.locator('#calc').click();assert.match(await p.locator('#result').innerText(),/6,667/);assert.deepEqual(await p.evaluate(measureUi),[]);
-  await ready(p,server.origin+'/embed/tedori/');const summary=p.locator('summary');await summary.focus();await p.keyboard.press('Enter');assert(await summary.evaluate(e=>e.parentElement.open));await p.locator('#gross').fill('300000');await p.locator('#calc').click();assert.match(await p.locator('#result').innerText(),/237,060/);assert.deepEqual(await p.evaluate(measureUi),[]);
+  await ready(p,server.origin+'/embed/tedori/');const summary=p.locator('summary');await summary.focus();await p.keyboard.press('Enter');assert(await summary.evaluate(e=>e.parentElement.open));await p.locator('#gross').fill('300000');await p.locator('#calc').click();assert.match(await p.locator('#result').innerText(),/237,068/);assert.deepEqual(await p.evaluate(measureUi),[]);
  }
  await c.close();
 }finally{await browser?.close();server.close();}

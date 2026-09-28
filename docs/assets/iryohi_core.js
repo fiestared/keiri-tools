@@ -86,7 +86,7 @@ export function rateFromKazei(kazei, I) {
   const B = I.keigen.shotokuzei_brackets;
   const v = yen(kazei);
   for (const b of B) {
-    if (b.kazei_upto === null || b.kazei_upto === undefined || v <= b.kazei_upto) return b.rate_pct;
+    if (b.kazei_upto === null || b.kazei_upto === undefined || v < b.kazei_upto) return b.rate_pct;
   }
   return B[B.length - 1].rate_pct;
 }

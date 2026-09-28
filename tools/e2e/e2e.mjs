@@ -441,10 +441,10 @@ const SCENES = [
   // ★住民税を除くと記事の早見表と同じ値(額面30万 → 249,610円)。同じコアの別の顔なので一致するのが正しい
   { name: "tedori_none", expect: (s) =>
       s.tedori === s.expectedTedori && s.tedori === 249610 && s.expectedJumin === 0 && !s.failed },
-  // ★概算(前年ベース)。住民税 年150,600 → 月12,550 → 手取り237,060。住民税の配線が狂えば落ちる
+  // ★概算(前年ベース)。住民税 年150,500 → 月12,542 → 手取り237,068。住民税の配線が狂えば落ちる
   { name: "tedori_estimate", expect: (s) =>
-      s.tedori === s.expectedTedori && s.tedori === 237060 &&
-      s.juminMonthly === s.expectedJumin && s.juminMonthly === 12550 && !s.failed },
+      s.tedori === s.expectedTedori && s.tedori === 237068 &&
+      s.juminMonthly === s.expectedJumin && s.juminMonthly === 12542 && !s.failed },
 
   // ── ボーナス手取り (/bonus-tedori/) ──────────────────────────────────
   // ★検証済み3コア(calcBonus/calcKoyou/calcShoyo)の合成。期待値はハーネス側で

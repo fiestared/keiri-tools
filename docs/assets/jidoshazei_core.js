@@ -103,7 +103,7 @@ export function calcJidoshazei(input, D) {
     if (i.jyuka) {
       if (jyukaExcluded) {
         jyukaBlocked = true;
-        notes.push('電気・ハイブリッド等の軽自動車は重課の対象外です。標準税率で計算しました。');
+        notes.push('電気・ハイブリッド等の軽自動車は重課の対象外です。');
       } else {
         annual = k.jyuka;
         isJyuka = true;
@@ -141,7 +141,7 @@ export function calcJidoshazei(input, D) {
   if (i.jyuka) {
     if (!jyukaEligibleFuel || b.jyuka == null) {
       jyukaBlocked = true;
-      notes.push('電気・天然ガス・メタノール・ハイブリッド車、一般乗合バス・被けん引車は重課の対象外です。標準税率で計算しました。');
+      notes.push('電気・天然ガス・メタノール・ハイブリッド車、一般乗合バス・被けん引車は重課の対象外です。');
     } else {
       annual = b.jyuka;
       isJyuka = true;

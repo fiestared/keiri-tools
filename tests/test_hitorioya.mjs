@@ -125,12 +125,12 @@ eq("合計所得500万1円 → 対象外",
 ok("データ無しで throw", (() => { try { hitorioyaKafu({}, null); return false; } catch { return true; } })());
 
 // ---- 3. 節税額シナリオ(速算表からの手計算定数=第三の網) ---------------------
-// 課税所得150万(5%帯): ひとり親 17,500+367+30,000=47,867 / 寡婦 13,500+283+26,000=39,783
+// 課税所得150万(5%帯): ひとり親 17,500+368+30,000=47,868 / 寡婦 13,500+284+26,000=39,784
 // 課税所得250万(10%帯): ひとり親 35,000+735+30,000=65,735 / 寡婦 27,000+567+26,000=53,567
 // 課税所得400万(20%帯): ひとり親 70,000+1,470+30,000=101,470 / 寡婦 54,000+1,134+26,000=81,134
 const SAVING_CASES = [
-  { kazei: 1_500_000, type: "hitorioya", total: 47_867, shotokuGen: 17_500, fukkoGen: 367, juminGen: 30_000 },
-  { kazei: 1_500_000, type: "kafu", total: 39_783, shotokuGen: 13_500, fukkoGen: 283, juminGen: 26_000 },
+  { kazei: 1_500_000, type: "hitorioya", total: 47_868, shotokuGen: 17_500, fukkoGen: 368, juminGen: 30_000 },
+  { kazei: 1_500_000, type: "kafu", total: 39_784, shotokuGen: 13_500, fukkoGen: 284, juminGen: 26_000 },
   { kazei: 2_500_000, type: "hitorioya", total: 65_735, shotokuGen: 35_000, fukkoGen: 735, juminGen: 30_000 },
   { kazei: 2_500_000, type: "kafu", total: 53_567, shotokuGen: 27_000, fukkoGen: 567, juminGen: 26_000 },
   { kazei: 4_000_000, type: "hitorioya", total: 101_470, shotokuGen: 70_000, fukkoGen: 1_470, juminGen: 30_000 },

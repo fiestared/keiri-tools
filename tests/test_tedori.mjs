@@ -69,12 +69,14 @@ t('manual: 額面300,000・住民税(月)10,000 → 手取り239,610', () => {
 });
 
 // ── 4. estimate モード: この年収が前年も続いたと仮定した住民税（前年ベース） ──
-// juminzei_core の検証済みの鎖（年収360万・社保52.8万・独身 → 住民税150,600円）が出力する額。
-t('estimate: 額面300,000・独身 → 住民税(年)150,600・手取り237,060', () => {
+// 年収360万→給与所得244万、社保528840、基礎43万→課税所得1481000。
+// 市民税88860−調整1500→87300、都民税59240−調整1000→58200（各100円未満切捨）。
+// 均等割等5000を加え150500、月額round(150500/12)=12542、手取り249610−12542=237068。
+t('estimate: 額面300,000・独身 → 住民税(年)150,500・手取り237,068', () => {
   const r = calcTedori({ ...base, gross: 300000, juminzeiMode: 'estimate' }, refs);
-  assert.strictEqual(r.juminzeiAnnual, 150600, '住民税(年・概算)');
-  assert.strictEqual(r.juminzeiMonthly, 12550, '住民税(月・概算)=年÷12四捨五入');
-  assert.strictEqual(r.tedori, 237060, '手取り = 249,610 − 12,550');
+  assert.strictEqual(r.juminzeiAnnual, 150500, '住民税(年・概算)');
+  assert.strictEqual(r.juminzeiMonthly, 12542, '住民税(月・概算)=年÷12四捨五入');
+  assert.strictEqual(r.tedori, 237068, '手取り = 249,610 − 12,542');
   // 記事が qualitatively 言う「住民税で月1〜2万円少なくなる」帯に入っていること
   assert.ok(r.juminzeiMonthly >= 10000 && r.juminzeiMonthly <= 20000, '月1〜2万円の帯');
 });

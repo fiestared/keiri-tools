@@ -135,14 +135,24 @@ t('医療費が大きければ通常を推奨', () => {
   assert.strictEqual(r.recommended, 'normal', '通常控除の方が大きい');
 });
 
+// R9: 国税庁No.2260の速算表。境界直前と境界ちょうどを独立定数で照合。
+for (const [boundary, below, at] of [[1950000,5,10],[3300000,10,20],[6950000,20,23],[9000000,23,33],[18000000,33,40],[40000000,40,45]]) {
+  t(`R9 税率境界 ${boundary}`, () => {
+    assert.strictEqual(rateFromKazei(boundary - 1, I), below);
+    assert.strictEqual(rateFromKazei(boundary, I), at);
+  });
+}
+t('R9 速算表の表示区分はNo.2260と一致', () => {
+  assert.deepStrictEqual(I.keigen.shotokuzei_brackets.map(b=>b.label), ['195万円未満','195万円以上 330万円未満','330万円以上 695万円未満','695万円以上 900万円未満','900万円以上 1,800万円未満','1,800万円以上 4,000万円未満','4,000万円以上']);
+});
 // ── 7. 速算表: 課税所得帯 → 限界税率（No.2260・7区分） ───────────────────────
 t('速算表: 課税所得の帯ごとに正しい限界税率を引く', () => {
-  assert.strictEqual(rateFromKazei(1950000, I), 5, '195万以下=5%');
+  assert.strictEqual(rateFromKazei(1950000, I), 10, '195万以上=10%');
   assert.strictEqual(rateFromKazei(2000000, I), 10, '195万超=10%');
-  assert.strictEqual(rateFromKazei(6950000, I), 20, '695万以下=20%');
-  assert.strictEqual(rateFromKazei(9000000, I), 23, '900万以下=23%');
-  assert.strictEqual(rateFromKazei(18000000, I), 33, '1,800万以下=33%');
-  assert.strictEqual(rateFromKazei(40000000, I), 40, '4,000万以下=40%');
+  assert.strictEqual(rateFromKazei(6950000, I), 23, '695万以上=23%');
+  assert.strictEqual(rateFromKazei(9000000, I), 33, '900万以上=33%');
+  assert.strictEqual(rateFromKazei(18000000, I), 40, '1,800万以上=40%');
+  assert.strictEqual(rateFromKazei(40000000, I), 45, '4,000万以上=45%');
   assert.strictEqual(rateFromKazei(50000000, I), 45, '4,000万超=45%');
 });
 

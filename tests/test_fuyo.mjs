@@ -59,7 +59,7 @@ const eq = (got, want, msg) => {
 {
   const r = taxSavingSplit({ kazeiShotoku: 5_000_000, shotokuKojo: 380_000, juminKojo: 330_000 }, D);
   eq(r.shotokuGen, 76_000, "500万×一般1: 所得税減 76,000");
-  eq(r.fukkoGen, 1_596, "500万×一般1: 復興 floor(76,000×2.1%) = 1,596");
+  eq(r.fukkoGen, 1_596, "500万×一般1: 復興 floor(572,500×2.1%)−floor(496,500×2.1%) = 1,596");
   eq(r.juminGen, 33_000, "500万×一般1: 住民税減 33万×10% = 33,000(38万×10%ではない)");
   eq(r.total, 110_596, "500万×一般1: 節税額合計 110,596");
 }
@@ -69,7 +69,7 @@ const eq = (got, want, msg) => {
 {
   const r = taxSavingSplit({ kazeiShotoku: 3_400_000, shotokuKojo: 630_000, juminKojo: 450_000 }, D);
   eq(r.shotokuGen, 73_000, "340万×特定1(またぎ): 所得税減 73,000(63万×20%=126,000ではない)");
-  eq(r.fukkoGen, 1_533, "340万×特定1: 復興 floor(73,000×2.1%) = 1,533");
+  eq(r.fukkoGen, 1_533, "340万×特定1: 復興 floor(252,500×2.1%)−floor(179,500×2.1%) = 1,533");
   eq(r.juminGen, 45_000, "340万×特定1: 住民税減 45,000");
   eq(r.total, 119_533, "340万×特定1: 節税額合計 119,533");
 }
@@ -79,9 +79,9 @@ const eq = (got, want, msg) => {
   const t = fuyoKojoTotal({ ippan: 1, dokyo_rojin: 1 }, D);
   const r = taxSavingSplit({ kazeiShotoku: 8_000_000, shotokuKojo: t.shotoku, juminKojo: t.jumin }, D);
   eq(r.shotokuGen, 220_800, "800万×一般1+同居老親1: 所得税減 220,800");
-  eq(r.fukkoGen, 4_636, "800万×一般1+同居老親1: 復興 floor(220,800×2.1%) = 4,636");
+  eq(r.fukkoGen, 4_637, "800万×一般1+同居老親1: 復興 floor(1,204,000×2.1%)−floor(983,200×2.1%) = 4,637");
   eq(r.juminGen, 78_000, "800万×一般1+同居老親1: 住民税減 78,000");
-  eq(r.total, 303_436, "800万×一般1+同居老親1: 節税額合計 303,436");
+  eq(r.total, 303_437, "800万×一般1+同居老親1: 節税額合計 303,437");
 }
 // E2Eシーンと同じ入力: 課税所得500万・一般1+特定1(101万/78万)
 //   before 572,500 / after shotokuzei(3,990,000) = 370,500 → 202,000
@@ -114,8 +114,8 @@ const pageExample = (kazei, counts) => {
 eq(pageExample(2_000_000, { ippan: 1 }), 54_951, "例表: 200万×一般1 = 54,951");
 eq(pageExample(3_000_000, { ippan: 1 }), 71_798, "例表: 300万×一般1 = 71,798");
 eq(pageExample(5_000_000, { ippan: 1 }), 110_596, "例表: 500万×一般1 = 110,596");
-eq(pageExample(7_000_000, { ippan: 1 }), 112_127, "例表: 700万×一般1 = 112,127");
-eq(pageExample(9_000_000, { ippan: 1 }), 122_235, "例表: 900万×一般1 = 122,235");
+eq(pageExample(7_000_000, { ippan: 1 }), 112_128, "例表: 700万×一般1 = 112,128");
+eq(pageExample(9_000_000, { ippan: 1 }), 122_236, "例表: 900万×一般1 = 122,236");
 eq(pageExample(3_000_000, { tokutei: 1 }), 109_323, "例表: 300万×特定1 = 109,323");
 eq(pageExample(5_000_000, { tokutei: 1 }), 173_646, "例表: 500万×特定1 = 173,646");
 eq(pageExample(4_000_000, { dokyo_rojin: 1 }), 163_436, "例表: 400万×同居老親1 = 163,436");

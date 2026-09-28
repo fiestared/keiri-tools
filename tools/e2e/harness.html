@@ -1719,9 +1719,9 @@ SCENES.tedori_slow = SCENES.tedori;   // 800ms遅らせる(モバイル回線)�
 SCENES.tedori_nodata = tedoriScene({ gross: 300000, jmode: "manual", jmanual: 10000, nodata: true });
 // ★「住民税を除く」= 記事の早見表と同じ値(額面30万 → 249,610円)。同じコアの別の顔なので一致するのが正しい
 SCENES.tedori_none = tedoriScene({ gross: 300000, jmode: "none" });
-// ★「概算」= この年収が前年も続いたと仮定した住民税(juminzei の検証済みの鎖の出力=年150,600円)。
-//   年150,600 → 月12,550 → 手取り 237,060円。住民税の配線(年収×12・社保実額)が狂えば落ちる
-SCENES.tedori_estimate = tedoriScene({ gross: 300000, jmode: "estimate", juminAnnual: 150600 });
+// ★「概算」= この年収が前年も続いたと仮定した住民税(juminzei の検証済みの鎖の出力=年150,500円)。
+//   年150,500 → 月12,542 → 手取り 237,068円。住民税の配線(年収×12・社保実額)が狂えば落ちる
+SCENES.tedori_estimate = tedoriScene({ gross: 300000, jmode: "estimate", juminAnnual: 150500 });
 
 // ── ボーナス手取り(額面の賞与 − 社保 − 源泉所得税。住民税は引かれない) ─────────────
 // tedoriScene と同じ作法: 期待値はハーネス側で独立に組む。
