@@ -227,7 +227,7 @@ $("calc").addEventListener("click", async () => {
   if (r.usedShotoku < k.shotoku) {
     html += `<div class="note">課税所得（${yen(kazei)}）が控除額より小さいため、控除の一部しか効いていません。</div>`;
   }
-  html += `<div class="note">${convNote} ※ 民法上の配偶者・生計一・専従者でない等の要件を満たす前提。所得税は速算表・住民税は所得割10%で概算。${r.year ? `<span class="hint">（${r.year}の速算表）</span>` : ""}</div>
+  html += `<div class="note">${convNote} ※ 民法上の配偶者・生計一・専従者でないことに加え、他の所得者の扶養親族でないことが前提。夫婦双方で配偶者特別控除を重複適用できず、他の所得者の特定親族に該当する場合も、いずれか一人だけが控除します。所得税は速算表・住民税は所得割10%で概算。${r.year ? `<span class="hint">（${r.year}の速算表）</span>` : ""}</div>
     <div class="cta">
       <a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 控除額の表・要件など詳しく見る</a>
       <a class="a-share" href="${shareUrl}" target="_blank" rel="noopener">結果をシェア</a>
