@@ -161,9 +161,10 @@ ok(kajoGendo > seikaiGendo, '割合を小さく見誤ると限度額を過大に
 // ───────────────────────────────────────────────────────────
 console.log('■ 限度額の定義そのもの（境界で20%上限にちょうど張り付く）');
 const g = osaka.furusatoGendo;
-const atLimit = calc({ ...base, shiteiToshi: false, kifu: g }, D);
+// この境界比較では、その他控除は所得税も103,530円と指定する（公表例の住民税用額から推測しない）。
+const atLimit = calc({ ...base, shotokuzeiSonotaKojo: 103530, shiteiToshi: false, kifu: g }, D);
 ok(!atLimit.kifu.tokureiCapped, `限度額ちょうど（${g.toLocaleString()}円）では20%上限を超えない`);
-const overLimit = calc({ ...base, shiteiToshi: false, kifu: g + 1000 }, D);
+const overLimit = calc({ ...base, shotokuzeiSonotaKojo: 103530, shiteiToshi: false, kifu: g + 1000 }, D);
 ok(overLimit.kifu.tokureiCapped, '限度額を1,000円超えると20%上限に当たる（＝自己負担が2,000円を超える）');
 ok(atLimit.kifu.jikoFutan <= 2_000 + 10,
   `限度額ちょうどなら自己負担はほぼ2,000円（実際 ${atLimit.kifu.jikoFutan}円）`);
@@ -565,6 +566,18 @@ assertR11.equal(calc({kyuyoShunyu:3000000,shakaiHoken:0,family:{hitorioyaHaha:tr
  const noTax=calc({kyuyoShunyu:1000000,zeisei:'r8',family:{},kifu:10000},D);
  assertR11.equal(noTax.kifu.total,0,'r11 所得税も住民税もゼロなら控除なし');
 }
+
+// r11追加検算: NTA1160・1171・1199・2260。所得税0円境界と控除可能な税額の上限。
+for (const [salary, expected] of [[2049000,0],[2050000,0],[2051000,51],[2090000,408]]) {
+ const x=calc({kyuyoShunyu:salary,shakaiHoken:0,zeisei:'r8',family:{honninShogai:true,shogaiIppan:1},kifu:10000},D);
+ assertR11.equal(x.kifu.shotokuzei,expected,`r11 所得税の残額境界 ${salary}`);
+}
+assertR11.equal(calc({kyuyoShunyu:2090000,shakaiHoken:0,zeisei:'r8',family:{hitorioyaChichi:true,fuyoNensho:1},kifu:10000},D).kifu.shotokuzei,0,'r11 父のひとり親も所得税35万円控除');
+assertR11.equal(calc({kyuyoShunyu:2090000,shakaiHoken:0,zeisei:'r8',family:{honninShogai:true,shogaiIppan:1},kifu:100000},D).kifu.shotokuzei,2042,'r11 寄附額が課税所得を超えても所得税全額が上限');
+assertR11.equal(calc({kyuyoShunyu:1000000,sonotaShotoku:2731000,shakaiHoken:0,zeisei:'r8',family:{},kifu:10000},D).kifu.shotokuzei,459,'r11 寄附金控除で195万円境界を跨ぐ税額差');
+const unknownIncome=calc({kyuyoShunyu:5000000,shakaiHoken:700000,sonotaKojo:70000,zeisei:'r8',family:{},kifu:10000},D);
+assertR11.equal(unknownIncome.kifu.shotokuzei,null,'r11 住民税用のその他控除から所得税額を推定しない');
+assertR11.equal(unknownIncome.kifu.jikoFutan,null,'r11 所得税額不明なら自己負担額を断定しない');
 
 console.log(`\n${failed === 0 ? '✅' : '❌'} test_juminzei: ${checks - failed}/${checks} checks passed`);
 if (failed > 0) process.exit(1);

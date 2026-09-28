@@ -114,7 +114,7 @@
         <input id="fuyoDokyoRooya" type="number" inputmode="numeric" value="0" min="0" max="20">
       </div>
     </div>
-    <label for="sonotaKojo" style="margin-top:6px">その他の所得控除（円）</label>
+    <label for="sonotaKojo" style="margin-top:6px">その他の所得控除（住民税用・円）</label>
     <input id="sonotaKojo" type="number" inputmode="numeric" value="0" min="0" aria-describedby="sonotaKojo-hint">
       <span id="sonotaKojo-hint" class="hint">生命保険料・地震保険料・iDeCoなど</span>
     <label for="sonotaShotoku" style="margin-top:6px">給与以外の所得（円）</label>
@@ -244,12 +244,15 @@ $("calc").addEventListener("click", async () => {
 
   if (r.shotokuwari <= 0) {
     const hikazei = r.hikazei.shotokuwariHikazei;
-    const riyu = hikazei
+    const riyu = r.hikazei.jonrei295
+      ? `本人が障害者等で合計所得135万円以下のため、住民税が非課税です。`
+      : hikazei
       ? `合計所得金額 <b>${yen(r.goukeiShotoku)}</b> が住民税の所得割の非課税限度額 <b>${yen(r.hikazei.shotokuLimit)}</b>（本人＋同一生計配偶者＋扶養親族 ${r.hikazei.ninzu}人分）以下のため、所得割が非課税です（16歳未満のお子さんもこの人数に入ります）。`
       : `控除の合計が所得を上回り、課税所得が0円になっています。`;
     box.innerHTML = `
       <div>限度額 <span class="big">¥0</span></div>
-      <div class="note"><b>住民税の所得割がかからないため、ふるさと納税をしても税金は戻りません。</b>${riyu} この場合、寄附額はそのまま自己負担になります。</div>
+      <div class="note"><b>住民税の所得割がないため、自己負担2,000円で済む寄附上限は0円です。</b>${riyu} 所得税がかかる方には所得税の寄附金控除が残る場合があります。</div>
+      ${r.kifu ? renderKifu(r, Number(kifuInput)) : ""}
       <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
     postHeight(); return;
   }
@@ -277,18 +280,19 @@ $("calc").addEventListener("click", async () => {
 
 function renderKifu(r, kifu) {
   const k = r.kifu;
+  if (k.incomeTaxUnverified) return `<div class="note">その他の所得控除は住民税用の額です。所得税用の控除額が分からないため、所得税の軽減額と自己負担額は表示していません。住民税の基本分は ${yen(k.kihon)}、特例分は ${yen(k.tokurei)} です。</div>`;
   const over = kifu > r.furusatoGendo;
   const head = over
-    ? `<div class="warn" style="margin-top:8px"><b>この寄附額は限度額を ${yen(kifu - r.furusatoGendo)} 超えています。</b>自己負担は2,000円ではなく <b>${yen(k.jikoFutan)}</b> になります（超えた分は税金から引かれません）。</div>`
-    : `<div class="note"><b>この寄附額なら自己負担は ${yen(k.jikoFutan)} です。</b>限度額（${yen(r.furusatoGendo)}）の範囲内なので、寄附額のうち2,000円を除いた全額が所得税と住民税から引かれます。</div>`;
+    ? `<div class="warn" style="margin-top:8px"><b>この寄附額は限度額を ${yen(kifu - r.furusatoGendo)} 超えています。</b>自己負担の概算は <b>${yen(k.jikoFutan)}</b> です（所得税・住民税の控除にはそれぞれ上限があります）。</div>`
+    : `<div class="note"><b>この寄附額の自己負担の概算は ${yen(k.jikoFutan)} です。</b>限度額（${yen(r.furusatoGendo)}）の範囲内なので、寄附額のうち2,000円を除いた全額が所得税と住民税から引かれます。</div>`;
   return `${head}
     <table>
       <tr><td>寄附額</td><td class="n">${yen(kifu)}</td></tr>
       <tr><td>所得税からの控除</td><td class="n">${yen(k.shotokuzei)}</td></tr>
       <tr><td>住民税・基本分</td><td class="n">${yen(k.kihon)}</td></tr>
       <tr><td>住民税・特例分</td><td class="n">${yen(k.tokurei)}</td></tr>
-      <tr class="tot"><td>実質の自己負担</td><td class="n">${yen(k.jikoFutan)}</td></tr>
-    </table>`;
+      <tr class="tot"><td>実質の自己負担（概算）</td><td class="n">${yen(k.jikoFutan)}</td></tr>
+    </table><p class="hint">所得税の税額控除と申告時の端数処理は反映していません。</p>`;
 }
 </script>
 <script src="../../assets/embed_beacon.js" defer>

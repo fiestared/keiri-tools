@@ -84,9 +84,9 @@ const BREAKS = [
    'const limit = 480000;\n  const eligible',
    '§8 妻の所得55万円 → 夫は扶養1人で101万円'],
 
-  ['★扶養に入っている人にも他人を扶養させる（同じ人を二重に数える）', 'core',
-   'if (assign[i] >= 0 && assign.some((a, k) => k !== i && a === i)) return null;',
-   'if (false) return null;',
+  ['★循環する扶養を許容する（一方向の連鎖とは区別する）', 'core',
+   'if (seen.has(j)) return null;',
+   'if (seen.has(j)) break;',
    '§7 ★互いを扶養に数えることはしない'],
 
   ['★配偶者を扶養親族として二重に数える（同一生計配偶者の枠を使わない）', 'core',

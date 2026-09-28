@@ -309,6 +309,26 @@ export function furusatoGendo(shotokuwariAfterChosei, pct_x1000, D) {
   return { gendo, cap };
 }
 
+/** 所得税法89条・国税庁2260。総合課税の所得税額（税額控除・申告納税額の端数処理前）。 */
+function incomeTaxBeforeCredits(taxable, D) {
+  let total = 0, lower = 0;
+  for (const b of D.furusato.tokurei_ritsu.brackets) {
+    const upper = b.upto == null ? Infinity : b.upto;
+    total += Math.max(0, Math.min(taxable, upper) - lower) * b.shotokuzei_pct / 100;
+    if (taxable <= upper) break;
+    lower = upper;
+  }
+  return total;
+}
+
+/** 所得税の寄附金控除は、実際の課税所得を超えて税を還付しない。 */
+function donationIncomeBenefit(kifu, taxable, goukei, D) {
+  const deduction = Math.max(0, Math.min(yen(kifu), Math.floor(goukei * 40 / 100)) - D.furusato.jiko_futan);
+  // 申告時の千円未満・納税額の端数処理による差を含めない概算。
+  const after = Math.max(0, taxable - deduction);
+  return Math.max(0, Math.floor((incomeTaxBeforeCredits(taxable, D) - incomeTaxBeforeCredits(after, D)) * 1021 / 1000 + 1e-8));
+}
+
 /**
  * 寄附額を入れたときの実際の控除額（基本分・特例分・所得税分）。
  *
@@ -598,6 +618,24 @@ export function calc(input, D) {
     out.kifu = furusatoKojo(
       input.kifu, shichoson, dofuken, R.pct_x1000, R.shotokuzei_pct, goukei, shitei, D
     );
+    // 住民税の法定「人的控除差調整額」は所得税の実際の課税所得ではない。
+    // その他控除は住民税用の入力。所得税用が分からなければ自己負担額を断定しない。
+    const suppliedIncomeOther = input.shotokuzeiSonotaKojo != null && input.shotokuzeiSonotaKojo !== '';
+    const knownIncomeOther = sonotaKojo === 0 || suppliedIncomeOther;
+    if (!knownIncomeOther) {
+      out.kifu.incomeTaxUnverified = true;
+      out.kifu.shotokuzei = null;
+      out.kifu.total = null;
+      out.kifu.jikoFutan = null;
+    } else {
+      const incomePersonal = jintekiKojo(input.family, goukei, { ...D, shotoku_kojo: D.shotokuzei_jinteki_kojo });
+      const incomeOther = suppliedIncomeOther ? yen(input.shotokuzeiSonotaKojo) : 0;
+      const incomeTaxable = kazeiSoShotoku(goukei, shotokuzeiKisoKojo(goukei, D, zeisei) + shakai + incomeOther + incomePersonal);
+      out.kifu.incomeTaxable = incomeTaxable;
+      out.kifu.shotokuzei = donationIncomeBenefit(input.kifu, incomeTaxable, goukei, D);
+      out.kifu.total = out.kifu.kihon + out.kifu.tokurei + out.kifu.shotokuzei;
+      out.kifu.jikoFutan = yen(input.kifu) - out.kifu.total;
+    }
   }
   return out;
 }

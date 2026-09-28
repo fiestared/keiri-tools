@@ -382,6 +382,11 @@ const SCENES = [
   { name: "furusato_honnin_shogai", expect: (s) =>
       s.gendo === 0 && s.showsNoBenefit && !s.failed },
 
+  { name: "furusato_income_zero", expect: (s) => s.gendo === 0 && s.incomeBenefit === 0 && s.jikoFutan === 10000 && !s.failed },
+  { name: "furusato_income_remaining", expect: (s) => s.gendo === 0 && s.incomeBenefit === 408 && s.jikoFutan === 9592 && !s.failed },
+  { name: "furusato_income_cap", expect: (s) => s.gendo === 0 && s.incomeBenefit === 51 && s.jikoFutan === 9949 && !s.failed },
+  { name: "furusato_other_unknown", expect: (s) => s.unknownIncome && s.jikoFutan === null && s.housingBlocked && !s.failed },
+
   // ── 住民税 ────────────────────────────────────────────────────────────
   // ★期待値は条文から手で積み上げた実額(鎖は harness.html のコメントに全部書いた)。
   //   標準税率・独身・年収500万・社保70万 → 所得割240,500 + 均等割5,000 = **245,500円**。
@@ -413,9 +418,9 @@ const SCENES = [
       s.total === 5000 && s.shotokuwari === 0 && s.kintouwari === 5000 &&
       s.showsKintouOnly && !s.hikazei && !s.failed },
   // ★超過課税。横浜市は市3,900+県1,300+森林環境税1,000 = **6,200円**(横浜市の公表額と一致)。
-  //   所得割は指定都市の8%:2% に神奈川県の超過課税(+0.025%)が乗る → 241,107円
+  //   所得割は指定都市の8%:2% に神奈川県の超過課税(+0.025%)が乗る → 市192,400円＋県48,700円＝241,100円（各100円未満切捨、地方税法20条の4の2第3項）
   { name: "juminzei_yokohama", expect: (s) =>
-      s.total === 247307 && s.shotokuwari === 241107 && s.kintouwari === 6200 && !s.failed },
+      s.total === 247300 && s.shotokuwari === 241100 && s.kintouwari === 6200 && !s.failed },
   // ★ひとり親の父/母(2026-07-19レビュー)。控除30万円は同じでも人的控除差が母5万/父1万なので、
   //   調整控除を通じて住民税が2,000円違う。ページが一律「母」で配線していた(父の住民税が過小)。
   //   期待値の鎖は harness.html のシーン定義のコメントに全部書いた

@@ -1,4 +1,3 @@
-import assertR11 from 'node:assert/strict';
 import {contentHTML} from './layout/content-html.mjs';
 /**
  * 不動産取得税の計算コアの検査。
@@ -468,7 +467,7 @@ for (const [value, expected] of [[12339999,0],[12340000,10200]]) {
 for (const [kind, acquisition, value, expected] of [
  ['shinchiku','other',12339999,0],['shinchiku','other',12340000,10200],['shinchiku','other',12500000,15000],
  ['hijutaku','construction',659999,0],['hijutaku','construction',660000,26400],['hijutaku','other',500000,20000]]) {
- assertR11.equal(calcFudosanShutoku({...base,acquireDate:'2026-09-28',houseKind:kind,houseAcquisition:acquisition,houseValue:value,landValue:0}).house.tax,expected,`r11 ${kind}/${value}`);
+ eq(`r11 ${kind}/${acquisition}/${value}`,calcFudosanShutoku({...base,acquireDate:'2026-09-28',houseKind:kind,houseAcquisition:acquisition,houseValue:value,landValue:0}).house.tax,expected);
 }
 
 console.log(`${pass} passed, ${fails.length} failed`);

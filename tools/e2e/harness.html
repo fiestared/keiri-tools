@@ -1506,6 +1506,8 @@ const furusatoScene = (inp) => async () => {
   set(doc, "age", String(inp.age ?? 40));
   set(doc, "shakai", inp.shakai == null ? "" : String(inp.shakai)); // 空欄 = 年収から概算させる
   set(doc, "kifu", inp.kifu == null ? "" : String(inp.kifu));
+  set(doc, "sonotaKojo", String(inp.sonotaKojo ?? 0));
+  set(doc, "jutakuKoujo", String(inp.jutakuKoujo ?? 0));
   set(doc, "fuyoNensho", String(inp.fuyoNensho ?? 0));
   // ★本人が障害者(295条1項2号)。「障害者控除」と「本人である」は別のチェック
   if (inp.honninShogai) { check(doc, "shogai", true); check(doc, "honninShogai", true); }
@@ -1527,10 +1529,14 @@ const furusatoScene = (inp) => async () => {
     showsRitsu: /特例控除額の割合84\.895％/.test(body),
     // 概算を使ったときは、金額と前提を必ず名乗ること(黙って勝手な社保で答えない)
     showsGaisan: /社会保険料 ¥762,988 は概算です/.test(body),
-    jikoFutan: num(/実質の自己負担¥([\d,]+)/),
+    jikoFutan: num(/実質の自己負担(?:（概算）)?¥([\d,]+)/),
+    incomeBenefit: num(/所得税からの控除¥([\d,]+)/),
+    unknownIncome: /所得税用の控除額が分からないため/.test(body),
+    housingBlocked: /その他の所得控除があるため/.test(text(doc, "jutaku-adj")),
     showsOver: /この寄附額は限度額を ¥21,342 超えています/.test(body),
-    // ★所得割が非課税の人には「寄附しても税金は戻らない」と言い切ること
-    showsNoBenefit: /住民税の所得割がかからないため、ふるさと納税をしても税金は戻りません/.test(body),
+    // r11: 住民税の所得割0と所得税の寄附金控除は別に判定する。
+    showsNoBenefit: /住民税の所得割がないため、自己負担2,000円で済む寄附上限は0円/.test(body)
+      && /所得税の寄附金控除が残る場合/.test(body) && !/税金は戻りません/.test(body),
     failed: body.includes("読み込めませんでした"),
     body,
   };
@@ -1564,6 +1570,10 @@ SCENES.furusato_nensho = furusatoScene({ shunyu: 1700000, shakai: 240000, fuyoNe
 //   非課税＝限度額0円。ページが honninShogai を配線していなかった実バグ(2026-07-19レビュー)の再発防止。
 //   fuyoNensho(第23便)と同型: coreは正しく、壊れていたのはページの配線なので単体では捕まらない
 SCENES.furusato_honnin_shogai = furusatoScene({ shunyu: 1900000, shakai: 280000, honninShogai: true });
+SCENES.furusato_income_zero = furusatoScene({ shunyu: 2050000, shakai: 0, honninShogai: true, kifu: 10000 });
+SCENES.furusato_income_remaining = furusatoScene({ shunyu: 2090000, shakai: 0, honninShogai: true, kifu: 10000 });
+SCENES.furusato_income_cap = furusatoScene({ shunyu: 2051000, shakai: 0, honninShogai: true, kifu: 10000 });
+SCENES.furusato_other_unknown = furusatoScene({ shunyu: 5000000, shakai: 700000, sonotaKojo: 70000, jutakuKoujo: 60000, kifu: 10000 });
 
 // ── 住民税 ──────────────────────────────────────────────────────────
 // ★期待値は juminzei_core.js を一切通さず、**条文から手で積み上げた実額**を固定する。

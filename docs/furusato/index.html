@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-14",
-  "dateModified": "2026-09-28",
+  "dateModified": "2026-09-29",
       "name": "ふるさと納税 限度額シミュレーション",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -148,7 +148,7 @@
 
 <section class="hero">
   <h1>ふるさと納税 限度額シミュレーション</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-14">2026年7月14日</time>（更新日: <time datetime="2026-09-28">2026年9月28日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-14">2026年7月14日</time>（更新日: <time datetime="2026-09-29">2026年9月29日</time>）</p>
   <p>年収と家族構成を入れるだけで、<b>自己負担2,000円で収まる寄附額の上限（限度額）</b>を計算します。<b>限度額は住民税の所得割額の20％</b>から逆算して決まるので、同じ年収でも家族構成や社会保険料で変わります。寄附額を入れると<b>本当に2,000円で収まるか</b>も判定します。</p>
 </section>
 
@@ -211,7 +211,7 @@
   <details style="margin-top:12px">
     <summary>その他の控除（<b>住宅ローン控除</b>・生命保険料・ひとり親・障害者・給与以外の所得など）</summary>
     <div style="margin-top:10px">
-      <label for="sonotaKojo">その他の所得控除（円）</label>
+      <label for="sonotaKojo">その他の所得控除（住民税用・円）</label>
       <input type="number" id="sonotaKojo" value="0" min="0" inputmode="numeric" aria-describedby="sonotaKojo-hint">
       <span id="sonotaKojo-hint" class="hint">生命保険料控除・地震保険料控除・iDeCoの掛金など</span>
 
@@ -414,7 +414,7 @@
   <p class="lead">※「夫婦」は配偶者（専業主婦・主夫）を配偶者控除の対象にする場合。「子1人（高校生）」は16〜18歳の一般扶養、「子2人（大学生＋高校生）」は19〜22歳の特定扶養＋16〜18歳の一般扶養。<b>15歳以下の子は上限額に影響しないため、列に含めていません</b>（扶養控除が0円のため。ただし所得の低い方は非課税の判定で効くことがあります）。</p>
   <div class="callout">
     <b>年収300万・夫婦＋子2人が「0円」なのはなぜか</b>
-    この世帯は扶養控除などが大きく、<b>住民税の所得割そのものが非課税</b>になります。所得割が0円なら、そこから引く控除もないので、<b>ふるさと納税をしても税金は1円も戻りません（上限額0円）</b>。返礼品目当てに寄附するのは自由ですが、税制上の得はなく、寄附額がそのまま自己負担です。<b>所得割が非課税かどうかは、子どもの人数でも変わります。</b>
+    この世帯は扶養控除などが大きく、<b>住民税の課税所得が0円</b>になります。この表の設例は所得税も0円なので、<b>寄附による税の軽減はありません（上限額0円）</b>。所得税がかかる別のケースでは、住民税の所得割が0円でも所得税の寄附金控除が残る場合があります。この設例では寄附額がそのまま自己負担です。<b>所得控除と住民税の非課税限度額は、子どもの人数でも変わります。</b>
   </div>
   <div class="note">
     <b>この目安より上限が下がる人</b>
@@ -709,24 +709,25 @@ $("calc").addEventListener("click", async () => {
 /** 寄附額を入れたときの内訳（自己負担が2,000円で収まるか） */
 function renderKifu(r, kifu) {
   const k = r.kifu;
+  if (k.incomeTaxUnverified) return `<div class="note">その他の所得控除は住民税用の額です。所得税用の控除額が分からないため、所得税の軽減額と自己負担額は表示していません。住民税の基本分は ${yen(k.kihon)}、特例分は ${yen(k.tokurei)} です。</div>`;
   const over = kifu > r.furusatoGendo;
   const head = over
     ? `<div class="callout"><b>この寄附額は限度額を ${yen(kifu - r.furusatoGendo)} 超えています。</b>
-        自己負担は2,000円ではなく<b>${yen(k.jikoFutan)}</b>になります
+        自己負担の概算は<b>${yen(k.jikoFutan)}</b>です
         （上限で頭打ちになるのは住民税の特例分です。超過後も所得税の寄附金控除や住民税の基本分はそれぞれの限度まで増えます）。</div>`
-    : `<div class="callout"><b>この寄附額なら自己負担は ${yen(k.jikoFutan)} です。</b>
+    : `<div class="callout"><b>この寄附額の自己負担の概算は ${yen(k.jikoFutan)} です。</b>
         限度額（${yen(r.furusatoGendo)}）の範囲内なので、寄附額のうち2,000円を除いた全額が
         所得税と住民税から引かれます。</div>`;
 
   return `${head}
     <table class="res">
       <tr><th scope="row">寄附額</th><td>${yen(kifu)}</td></tr>
-      <tr><th scope="row">所得税からの控除</th><td>${yen(k.shotokuzei)}（（寄附額 − 2,000円）× ${r.tokureiRitsu.shotokuzei_pct}％ × 1.021）</td></tr>
+      <tr><th scope="row">所得税からの控除</th><td>${yen(k.shotokuzei)}（寄附金控除前後の所得税額差・復興特別所得税込みの概算）</td></tr>
       <tr><th scope="row">住民税・基本分</th><td>${yen(k.kihon)}（（寄附額 − 2,000円）× 10％）</td></tr>
       <tr><th scope="row">住民税・特例分</th><td>${yen(k.tokurei)}${k.tokureiCapped ? "（<b>所得割額の20％の上限に達しています</b>）" : ""}</td></tr>
-      <tr><th scope="row">控除の合計</th><td><b>${yen(k.total)}</b></td></tr>
-      <tr><th scope="row">実質の自己負担</th><td><b>${yen(k.jikoFutan)}</b>（寄附額 ${yen(kifu)} − 控除 ${yen(k.total)}）</td></tr>
-    </table>`;
+      <tr><th scope="row">控除の合計（概算）</th><td><b>${yen(k.total)}</b></td></tr>
+      <tr><th scope="row">実質の自己負担（概算）</th><td><b>${yen(k.jikoFutan)}</b>（寄附額 ${yen(kifu)} − 控除 ${yen(k.total)}）</td></tr>
+    </table><p class="hint">所得税の住宅ローン控除などの税額控除と、申告時の納税額の端数処理は反映していません。</p>`;
 }
 
 /**
@@ -746,10 +747,10 @@ function renderJutakuAdj(r, shakai, family) {
     return;
   }
   const unsupported = family.shogaiIppan || family.honninShogai || family.kafu
-    || family.hitorioyaHaha || family.hitorioyaChichi || family.kinroGakusei;
+    || family.hitorioyaHaha || family.hitorioyaChichi || family.kinroGakusei || Number($("sonotaKojo").value) > 0;
   if (unsupported) {
     box.innerHTML = `<div class="callout" style="margin-top:12px">
-      <b>障害者・寡婦・ひとり親・勤労学生の控除があるため、住宅ローン控除の影響は計算していません。</b>
+      <b>障害者・寡婦・ひとり親・勤労学生、またはその他の所得控除があるため、住宅ローン控除の影響は計算していません。</b>
       これらは所得税と住民税で控除額が違い、この画面では所得税側を計算していないため、
       所得税額を実際より多く見積もって<b>限度額を過大に出すおそれ</b>があります。</div>`;
     return;
