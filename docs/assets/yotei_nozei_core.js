@@ -111,9 +111,14 @@ export function shinseiKigen(ki, year, tsuchiHassoBi, D) {
   if (!Number.isFinite(hasso) || hasso <= hassoKigen) {
     return { kigen: honsoku, encho: false, genkyo: g.genkyo };
   }
-  // ★「発せられた日から起算して1月を経過した日」＝翌月の同日
+  // 翌月の同日。応当日がなければ翌月末日（民法143条2項ただし書）。
+  // setMonthだけでは10/31が12/1に繰り越される。
   const d = new Date(hasso);
+  const day = d.getDate();
+  d.setDate(1);
   d.setMonth(d.getMonth() + 1);
+  const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+  d.setDate(Math.min(day, lastDay));
   const pad = (n) => String(n).padStart(2, '0');
   return {
     kigen: `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`,

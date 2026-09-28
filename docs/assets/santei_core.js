@@ -89,10 +89,12 @@ export function tekiyoKikan(year) {
 }
 
 /**
- * 随時改定の日数要件（43条1項）。★定時決定と逆で、全月が17日以上でなければならない。
+ * 随時改定の日数要件（43条1項）。★定時決定と逆で、全月が17日以上（短時間労働者は11日以上）でなければならない。
  * @returns {{mitasu:boolean, kaketaTsuki:Array}}
  */
-export function zuijiNissuOK(months, D) {
-  const kaketa = months.filter((m) => Number(m.nissu) < D.zuiji.nissu);
+export function zuijiNissuOK(months, D, isTanjikan = false) {
+  // 41条1項の11日読替えは43条1項にも適用する。
+  const hitsuyo = hitsuyoNissu(isTanjikan, D);
+  const kaketa = months.filter((m) => Number(m.nissu) < hitsuyo);
   return { mitasu: kaketa.length === 0, kaketaTsuki: kaketa };
 }

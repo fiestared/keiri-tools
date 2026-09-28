@@ -1,3 +1,4 @@
+import assertBoundary from 'node:assert/strict';
 /**
  * 算定基礎届（定時決定）の検査。
  *
@@ -11,6 +12,14 @@ import {
 import { kenkoGrade, koseiStandard } from '../docs/assets/shaho_core.js';
 
 const D = JSON.parse(readFileSync(new URL('../docs/assets/santei_r08.json', import.meta.url), 'utf8'));
+
+// b1: 健康保険法41条1項の11日読替えは43条1項にも適用する。
+// https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?elm=Article_41
+assertBoundary.equal(zuijiNissuOK([{nissu:11},{nissu:11},{nissu:11}], D, true).mitasu, true);
+assertBoundary.equal(zuijiNissuOK([{nissu:11},{nissu:10},{nissu:11}], D, true).mitasu, false);
+assertBoundary.equal(zuijiNissuOK([{nissu:16},{nissu:17},{nissu:17}], D).mitasu, false);
+assertBoundary.equal(zuijiNissuOK([{nissu:17},{nissu:17},{nissu:17}], D).mitasu, true);
+
 let checks = 0, fail = 0;
 const ok = (c, m) => { checks++; if (!c) { console.log('  ✗ ' + m); fail++; } };
 const eq = (a, b, m) => ok(a === b, `${m}（期待 ${b} / 実際 ${a}）`);

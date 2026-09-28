@@ -1,3 +1,4 @@
+import assertBoundary from 'node:assert/strict';
 /**
  * 予定納税・減額申請の検査。
  *
@@ -10,6 +11,13 @@ import {
 } from '../docs/assets/yotei_nozei_core.js';
 
 const D = JSON.parse(readFileSync(new URL('../docs/assets/yotei_nozei_r08.json', import.meta.url), 'utf8'));
+
+// b1: 所得税法111条3項＋民法143条2項ただし書（応当日なしは月末）。
+// https://laws.e-gov.go.jp/api/2/law_data/129AC0000000089?elm=Article_143
+assertBoundary.equal(shinseiKigen('ki2',2026,'2026-10-31',D).kigen, '2026-11-30');
+assertBoundary.equal(shinseiKigen('ki2',2026,'2026-10-30',D).kigen, '2026-11-30');
+assertBoundary.equal(shinseiKigen('ki1',2026,'2026-08-31',D).kigen, '2026-09-30');
+
 let checks = 0, fail = 0;
 const ok = (c, m) => { checks++; if (!c) { console.log('  ✗ ' + m); fail++; } };
 const eq = (a, b, m) => ok(a === b, `${m}（期待 ${b} / 実際 ${a}）`);

@@ -217,7 +217,7 @@
   </div>
 
   <h2 id="zuiji-setsu">随時改定は17日の使い方が逆</h2>
-  <p>同じ17日でも、定時決定と随時改定（43条1項）では条文の書きぶりが逆です。</p>
+  <p>定時決定は日数不足の月を除きますが、随時改定は各月とも必要日数を満たすことが要件です。一般は17日、短時間労働者は11日です（41条1項の読替えは43条1項にも適用）。</p>
   <div class="scroll-wrap">
   <table id="zuiji-hyo">
     <tr><th></th><th scope="col">定時決定（41条1項）</th><th scope="col">随時改定（43条1項）</th></tr>
@@ -325,7 +325,7 @@ async function render() {
 
   const r = teijiKettei(months, tanjikan, D);
   const k = tekiyoKikan(year);
-  const z = zuijiNissuOK(months, D);
+  const z = zuijiNissuOK(months, D, tanjikan);
 
   const meisai = [...r.used.map((m) => `${m.name} ${yen(m.hoshu)}（${m.nissu}日）`),
     ...r.excluded.map((m) => `<s>${m.name} ${yen(m.hoshu)}（${m.nissu}日）</s> ← ${m.riyu}`)].join("<br>");
@@ -360,7 +360,7 @@ async function render() {
       <tr><th scope="row">厚生年金</th><td><b id="kosei">${yen(ks)}</b>${ks === 650000 && r.hoshuGetsugaku > 650000 ? "（上限で頭打ち）" : ""}</td></tr>
       <tr><th scope="row">使う期間</th><td id="kikan">${k.from} 〜 ${k.to}（41条2項）</td></tr>
       ${r.excluded.length ? `<tr><th scope="row">3で割った場合</th><td id="hikaku">${yen(bunbo3)}（健保 第${kenkoGrade(bunbo3).grade}級・${yen(kenkoGrade(bunbo3).standard)}）— <b>${kenkoGrade(bunbo3).grade !== kg.grade ? "等級が変わります" : "同じ等級ですが金額の根拠が違います"}</b></td></tr>` : ""}
-      ${!z.mitasu ? `<tr><th scope="row">随時改定との違い</th><td id="zuiji-note">同じ入力でも随時改定なら、${z.kaketaTsuki.map((m) => m.name).join("・")}が17日未満のため<b>要件を満たしません</b>（43条1項は「各月とも17日以上でなければならない」）。</td></tr>` : ""}
+      ${!z.mitasu ? `<tr><th scope="row">随時改定との違い</th><td id="zuiji-note">同じ入力でも随時改定なら、${z.kaketaTsuki.map((m) => m.name).join("・")}が${r.hitsuyo}日未満のため<b>要件を満たしません</b>（各月とも${r.hitsuyo}日以上が必要。41条1項・43条1項）。</td></tr>` : ""}
     </table>
     <div class="note" style="margin-top:12px">
       保険者算定（年間平均等）・報酬に何を含めるかは判定していません。これは入力した前提での<b>計算例</b>です。

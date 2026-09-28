@@ -145,7 +145,7 @@ export function calcShussan(input, D) {
   // ── 任意継続被保険者（99条1項かっこ書き・102条1項で同じ） ───────────────────
   // 傷病手当金と同じ扱い: 任意継続になってから「新たに」出産…は無いが、退職前から受給していた人は
   // 104条の継続給付で受け続けられる。ここを「任意継続なら¥0」で終わらせない。
-  if (i.ninnikeizoku) {
+  if (i.ninnikeizoku || i.taishokugo) {
     const k = keizokuKyufu({ hihokenshaMonths: months, receivingAtLoss: !!i.taishokugo });
     if (!k.ok) {
       return {
@@ -195,7 +195,7 @@ export function calcShussan(input, D) {
 
   return {
     eligible: true,
-    via104: !!i.ninnikeizoku, // 104条の継続給付として計算したか（任意継続なのに支給される）
+    via104: !!i.taishokugo, // 104条の継続給付。退職後の保険が任意継続かどうかは問わない
     estimated,
     months: n.months,
     rule: n.rule, // 'full'（12月以上）/ 'short'（12月未満＝二号頭打ちがありうる）

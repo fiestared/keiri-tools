@@ -130,17 +130,22 @@ export function calcZangyodai(input, D) {
     { key: "night", min: nightMin, pct: p.night.value },
   ];
 
-  // ★端数処理は「区分ごと」に行い、その合計を総額にする（昭和63.3.14 基発150号）。
+  // 時間外・休日・深夜の3区分の月総額を丸める（昭和63.3.14 基発150号）。
   //   通達が円未満の端数処理を認めるのは「1か月における時間外労働・休日労働・深夜労働の
   //   **各々の**割増賃金の総額」であって、全部を足した1つの数ではない。
   //   実装上も、こうしないと**画面の内訳が合計と1円合わない**（利用者は必ず縦に足し算して確かめる）。
-  let total = 0;
   const breakdown = {};
   for (const l of layers) {
     const amount = roundYen(K * l.min * l.pct, den);
-    total += amount;
     breakdown[l.key] = { hours: l.min / 60, pct: l.pct, amount };
   }
+  // 60時間までと超過分は同じ「時間外労働」の月総額として一度だけ丸める。
+  // 内訳合計を保つため、超過分に円単位の差額を配分する（独立した丸めではない）。
+  const overtimeTotal = roundYen(K * (
+    otNormalMin * (100 + p.overtime.value) +
+    otOver60Min * (100 + p.overtime_over60.value)), den);
+  breakdown.overtime_over60.amount = overtimeTotal - breakdown.overtime.amount;
+  const total = overtimeTotal + breakdown.holiday.amount + breakdown.night.amount;
   const fixed = Math.max(0, Math.floor(Number(input.fixedAmount) || 0));
   const shortfall = Math.max(0, total - fixed);
 

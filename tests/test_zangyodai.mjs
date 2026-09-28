@@ -1,3 +1,4 @@
+import assertBoundary from 'node:assert/strict';
 /**
  * 残業代（割増賃金）計算機の単体テスト。
  *
@@ -24,6 +25,16 @@ import {
 } from "../docs/assets/zangyodai_core.js";
 
 const D = JSON.parse(readFileSync(new URL("../docs/assets/zangyodai_rates.json", import.meta.url)));
+
+// b1: 基発150号2(3)、時間外の月総額を一度だけ50銭基準で丸める。
+// https://jsite.mhlw.go.jp/aichi-roudoukyoku/var/rev0/0119/6636/hasuutoriatukai.pdf
+// 100000×12/(245×8) × (60×1.25 + (1/60)×1.5) = 45933.673... → 45934。
+{
+  const r = calcZangyodai({base:100000,annualHolidays:120,dailyHours:8,overtimeHours:60+1/60,holidayHours:0,nightHours:0,fixedAmount:0}, D);
+  assertBoundary.equal(r.total, 45934);
+  assertBoundary.equal(r.breakdown.overtime.amount + r.breakdown.overtime_over60.amount, 45934);
+}
+
 let n = 0;
 const eq = (a, b, msg) => { assert.strictEqual(a, b, `${msg}: ${a} ≠ ${b}`); n++; };
 const near = (a, b, msg, tol = 1e-6) => {

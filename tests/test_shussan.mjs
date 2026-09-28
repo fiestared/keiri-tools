@@ -1,3 +1,4 @@
+import assertBoundary from 'node:assert/strict';
 /**
  * 出産手当金の単体テスト。
  *
@@ -20,6 +21,19 @@ import {
 } from '../docs/assets/shussan_core.js';
 
 const D = JSON.parse(readFileSync(new URL('../docs/assets/shobyo_r08.json', import.meta.url), 'utf8'));
+
+// b1: 健康保険法104条は任意継続以外の退職後にも適用される。
+// https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?elm=Article_104
+for (const ninnikeizoku of [false, true]) {
+  const retired = {yoteibi:'2026-10-10',shussanbi:'2026-10-10',monthly:300000,taishokugo:true,ninnikeizoku};
+  const under = calcShussan({...retired, months:11}, D);
+  assertBoundary.equal(under.eligible, false);
+  assertBoundary.equal(under.total, 0);
+  const at = calcShussan({...retired, months:12}, D);
+  assertBoundary.equal(at.eligible, true);
+  assertBoundary.equal(at.via104, true);
+}
+
 
 let checks = 0, failed = 0;
 function eq(actual, expected, label) {

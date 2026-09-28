@@ -154,7 +154,7 @@ $("calc").addEventListener("click", async () => {
   ].filter(([k]) => r.breakdown[k].hours > 0)
    .map(([k, label]) => {
      const b = r.breakdown[k];
-     return `<tr><th>${label}</th><td>${hrs(b.hours)}時間 × ${yen2(r.hourlyRate)} × ${b.pct}％ ＝ <b>${yen(b.amount)}</b></td></tr>`;
+     return `<tr><th>${label}</th><td>${hrs(b.hours)}時間 × ${yen2(r.hourlyRate)} × ${b.pct}％ ＝ <b>${yen(b.amount)}</b>${k === "overtime_over60" ? "（月総額の端数調整後）" : ""}</td></tr>`;
    }).join("");
 
   // ★60時間を超えたことは、画面で必ず名指しする（率が上がったことに気づかない人が多い）
@@ -178,6 +178,7 @@ $("calc").addEventListener("click", async () => {
       <tr><th scope="row">残業代の合計</th><td><b>${yen(r.total)}</b></td></tr>
     </table>
     ${over60Note}
+    <p class="hint">時間外の月総額は60時間までと超過分を合算して丸め、内訳の端数差は60時間超の行で調整しています。</p>
     ${fixedNote}
     <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 割増率・基礎賃金の詳しい解説を見る</a></div>`;
   postHeight();
