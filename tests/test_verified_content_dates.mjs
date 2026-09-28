@@ -7,7 +7,13 @@ for (const entry of verifiedContentDates) {
   const date = execFileSync('git', ['show', '-s', '--format=%cs', entry.commit], { cwd, encoding: 'utf8' }).trim();
   assert.equal(entry.date, date, 'override must match the verified commit date');
   const patch = execFileSync('git', ['show', '--format=', '-U0', entry.commit, '--', entry.path], { cwd, encoding: 'utf8' });
-  assert.match(patch, /^\+[ ]*<p(?:>| )/m, 'verified commit must change article paragraphs');
+  if (entry.tableEvidence) {
+    assert.match(entry.tableEvidence, /<table>.*<td>.*<\/table>/, 'table evidence must contain an actual content table');
+    assert.ok(patch.split('\n').includes('+' + entry.tableEvidence), 'exact reviewed table must occur in the commit additions');
+    assert.ok(!patch.split('\n').includes('-' + entry.tableEvidence), 'table evidence must represent changed content');
+  } else {
+    assert.match(patch, /^\+[ ]*<p(?:>| )/m, 'verified commit must change article paragraphs');
+  }
   const html = readFileSync(new URL(entry.path, cwd), 'utf8');
   const modified = html.match(/"dateModified"\s*:\s*"([\d-]+)"/)[1];
   assert.ok(modified >= entry.date, 'published metadata must not predate the verified content revision');
