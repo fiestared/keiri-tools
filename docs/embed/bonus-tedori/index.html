@@ -50,18 +50,19 @@
   .brand a{ color:var(--accent); text-decoration:none; font-weight:700; }
   .warn{ font-size:13px; color:#b4232a; }
 </style>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","dateModified":"2026-09-26"}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","dateModified":"2026-09-28"}</script>
 <link rel="stylesheet" href="/assets/embed-layout.css">
 </head>
 <body>
 <div class="w">
   <h1>ボーナス手取り計算</h1>
-<p class="article-meta">更新日: <time datetime="2026-09-26">2026年9月26日</time></p>
+<p class="article-meta">更新日: <time datetime="2026-09-28">2026年9月28日</time></p>
 <p class="note">この計算機は賞与が同じ月に1回支給される前提で試算します。同月に複数回支給する場合、厚生年金は合算した標準賞与額に月150万円の上限を適用するため、各回を別々に計算した結果は使えません。</p>
   <p class="lead">賞与の額面から、社会保険料・源泉所得税を引いた手取りを概算します。税率は賞与の額ではなく「前月の給与」で決まります。</p>
 
   <label for="bonus">ボーナスの額面（円）</label>
   <input id="bonus" type="number" inputmode="numeric" placeholder="例: 500000" min="0" step="1000">
+
 
   <div class="grid field-pair">
     <div>
@@ -70,13 +71,14 @@
     </div>
     <div>
       <label for="age">年齢</label>
-      <input id="age" type="number" inputmode="numeric" value="30" min="15" max="74">
+<input id="age" type="number" inputmode="numeric" value="30" min="15" max="74" aria-describedby="age-hint">
+<p class="hint" id="age-hint">70歳以上の厚生年金保険料は0円として計算します。高齢任意加入は対象外です。料率は2026年度4月以後を用い、2026年1〜3月は対象外です。 70歳以上の厚生年金保険料は0円です。高齢任意加入は対象外です。</p>
     </div>
   </div>
 
   <label for="dependents">扶養親族等の数</label>
   <input id="dependents" type="number" inputmode="numeric" value="0" min="0" max="20" aria-describedby="dependents-hint">
-      <span id="dependents-hint" class="hint">源泉控除対象の配偶者＋扶養親族（16歳以上）</span>
+      <span id="dependents-hint" class="hint">扶養控除等申告書に基づく扶養親族等の数です。令和8年は源泉控除対象配偶者＋源泉控除対象親族（19〜22歳の特定親族のうち所得100万円以下も含む）。本人の障害者・寡婦・ひとり親・勤労学生は各1人、同一生計配偶者・扶養親族の障害者（16歳未満も含む）は各1人、同居特別障害者はさらに1人を加算してください。 </span>
 
   <fieldset class="rc">
     <legend>前月の給与（税率を決める鍵）</legend>
@@ -94,9 +96,9 @@
     <label for="gyoshu">業種（雇用保険料率）</label>
     <select id="gyoshu"><option value="general">一般の事業</option></select>
     <label class="check"><input type="checkbox" id="over6"> 賞与の計算期間が6か月を超える（決算賞与・役員賞与など）</label>
-    <label for="yearpaid">今年度すでに支給された賞与の合計（円・任意）</label>
-    <input id="yearpaid" type="number" inputmode="numeric" placeholder="例: 0" min="0" step="1000" aria-describedby="yearpaid-hint">
-      <span id="yearpaid-hint" class="hint">健保の年度上限判定用。通常は空欄</span>
+    <label for="yearpaid">今年度の既払標準賞与額の累計（円・任意）</label>
+<input id="yearpaid" type="number" inputmode="numeric" placeholder="例: 0" min="0" step="1000" aria-describedby="yearpaid-hint">
+      <span id="yearpaid-hint" class="hint">健保の年度上限判定用。通常は空欄 各支給分の1,000円未満を切り捨ててから年度内で合計してください。総支給額の累計ではありません。</span>
   </details>
 
   <button id="calc" type="button" class="primary">ボーナスの手取りを計算する</button>
