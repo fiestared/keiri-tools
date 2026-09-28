@@ -248,6 +248,9 @@ export function calcDeclaration({
   salesMethod = "divide",
   purchaseMethod = "pileup",
 }) {
+  // No.6401: 全額控除は税抜課税売上5億円以下。千円丸め前の売上で判定する。
+  const salesExcluded = (salesIncluded.standard || 0) * 100 / 110 + (salesIncluded.reduced || 0) * 100 / 108;
+  if (salesExcluded > 500000000) return {allowed:false, reason:'課税売上高5億円超は全額控除の対象外です。個別対応方式等で計算してください。'};
   if (!isAllowedCombination(salesMethod, purchaseMethod)) {
     return {
       allowed: false,

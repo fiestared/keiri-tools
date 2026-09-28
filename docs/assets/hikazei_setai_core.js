@@ -272,6 +272,8 @@ export function calcHikazeiSetai(input, D, J) {
 
   const kyuchi = [1, 2, 3].includes(Number(input?.kyuchi)) ? Number(input.kyuchi) : 1;
   const zeisei = input?.zeisei === 'r8' ? 'r8' : undefined;
+  // 令和9年度以後の扶養所得要件は62万円。探索・単純割当・表示に同じ年度値を渡す。
+  if (zeisei === 'r8') D = { ...D, fuyo_yoken: { ...D.fuyo_yoken, goukei_shotoku_ika: D.fuyo_yoken.goukei_shotoku_r9_ika } };
 
   const shotokus = members.map((m) => memberShotoku(m, D, J, zeisei));
   const best = searchAssignments(members, shotokus, kyuchi, J, D);

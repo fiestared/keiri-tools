@@ -55,14 +55,15 @@ export function taxSaving(input, D) {
   const kazei = yen0(input.kazeiShotoku);
   const deduction = yen0(input.annualDeduction);
 
-  // 控除は課税所得を下回る範囲でしか効かない（課税所得0の人は節税額0）。
+  // 所得税の控除は所得税課税所得まで。住民税側は別の課税所得で判定する。
   const used = Math.min(deduction, kazei);
 
   const taxBefore = shotokuzei(kazei, D);
   const taxAfter = shotokuzei(kazei - deduction, D); // 速算表の差＝超過累進を厳密に反映
   const shotokuGen = Math.max(0, taxBefore - taxAfter);                 // 所得税の減少
   const fukkoGen = Math.floor(shotokuGen * (D.fukko_rate || 0));        // 復興特別所得税の減少(2.1%)
-  const juminGen = Math.floor(used * (D.juminzei_shotokuwari_rate || 0)); // 住民税の減少(概算・一律10%)
+  const residentUsed = input.juminKazeiShotoku == null ? deduction : Math.min(deduction, yen0(input.juminKazeiShotoku));
+  const juminGen = Math.floor(residentUsed * (D.juminzei_shotokuwari_rate || 0)); // 住民税の減少(概算・一律10%)
   const total = shotokuGen + fukkoGen + juminGen;
 
   return {
@@ -85,7 +86,7 @@ export function taxSavingByMonthly(input, D) {
   const limit = Number(input.annualLimit) || null;
   const annual = monthly * 12;
   const beyondLimit = limit != null && annual > limit;
-  const r = taxSaving({ kazeiShotoku: input.kazeiShotoku, annualDeduction: annual }, D);
+  const r = taxSaving({ kazeiShotoku: input.kazeiShotoku, annualDeduction: annual, juminKazeiShotoku: input.juminKazeiShotoku }, D);
   return { ...r, monthly, annual, annualLimit: limit, beyondLimit };
 }
 
@@ -101,9 +102,10 @@ export function taxSavingSplit(input, D) {
   const sKojo = yen0(input.shotokuKojo);
   const jKojo = yen0(input.juminKojo);
 
-  // 控除は課税所得を下回る範囲でしか効かない（住民税側も同じ概算の考え方でクランプする）。
+  // 所得税と住民税の課税所得は別。住民税課税所得が未指定なら控除全額が効く概算。
   const usedShotoku = Math.min(sKojo, kazei);
-  const usedJumin = Math.min(jKojo, kazei);
+  const usedJumin = input.juminKazeiShotoku == null
+    ? jKojo : Math.min(jKojo, yen0(input.juminKazeiShotoku));
 
   const taxBefore = shotokuzei(kazei, D);
   const taxAfter = shotokuzei(kazei - sKojo, D); // 速算表の差＝超過累進を厳密に反映
