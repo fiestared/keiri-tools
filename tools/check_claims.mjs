@@ -116,7 +116,9 @@ export function checkPage({ html, ledger, requiredText = null, page = "(page)" }
   for (const n of findNumbers(text)) if (!have.has(n)) errors.push(`${page}: 数字「${n}」が台帳の numbers にありません（一次資料で確かめて載せる）`);
   for (const c of claims) {
     const id = c.id ?? "(id無し)";
-    if (!c.source_url || !domainOk(c.source_url)) errors.push(`${page}: ${id} の source_url が一次資料の許可ドメインではありません: ${c.source_url ?? "(無し)"}（tools/claims_sources.json）`);
+    const own = /^https:\/\/keiri-tools\.com(\/|$)/.test(c.source_url ?? "");
+    if (own && c.kind !== "own_site") errors.push(`${page}: ${id} の出典がこのサイト自身です。サイト自身を出典にできるのは、このサイトの仕組みについての主張（kind: "own_site"）だけ`);
+    else if (!own && (!c.source_url || !domainOk(c.source_url))) errors.push(`${page}: ${id} の source_url が一次資料の許可ドメインではありません: ${c.source_url ?? "(無し)"}（tools/claims_sources.json）`);
     if (!c.source_quote || c.source_quote.trim().length < 8) errors.push(`${page}: ${id} に source_quote（一次資料の逐語）がありません`);
     if (!c.exceptions || !c.exceptions.trim()) errors.push(`${page}: ${id} に exceptions（確かめた例外。無ければ『無し: 根拠』）がありません`);
     const money = (c.numbers ?? []).some((n) => /円|%|％/.test(n));

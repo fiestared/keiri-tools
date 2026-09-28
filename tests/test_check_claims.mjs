@@ -48,6 +48,7 @@ const cases = [
   ["台帳が無い", (l) => null, /台帳/],
   ["数字を台帳から1つ落とす", (l) => { l.claims[1].numbers = ["3万円"]; return l; }, /「550円」/],
   ["一次資料でないドメイン", (l) => { l.claims[0].source_url = "https://www.freee.co.jp/kb/"; return l; }, /許可ドメイン/],
+  ["税の主張の出典をサイト自身にする", (l) => { l.claims[0].source_url = "https://keiri-tools.com/"; return l; }, /サイト自身/],
   ["逐語の引用が空", (l) => { l.claims[0].source_quote = ""; return l; }, /source_quote/],
   ["例外を確かめた記録が無い", (l) => { delete l.claims[0].exceptions; return l; }, /exceptions/],
   ["金額なのに適用年が無い", (l) => { l.claims[1].applies = ""; return l; }, /applies/],
@@ -61,6 +62,10 @@ for (const [name, breakIt, expect] of cases) {
   assert.ok(errs.some((e) => expect.test(e)), `壊し「${name}」を捕まえられない: ${JSON.stringify(errs)}`);
   caught++;
 }
+
+// サイト自身の仕組みの主張（kind: own_site）だけは、サイト自身を出典にできる
+{ const l = structuredClone(base); l.claims.push({ id: "own", kind: "own_site", text: "入力値は送信しない", numbers: [], source_url: "https://keiri-tools.com/", source_quote: "計算はブラウザ内で行います", exceptions: "無し: 実装で確認" });
+  assert.deepEqual(checkPage({ html: HTML, ledger: l, page: "p" }), [], "own_site の主張がサイト自身の出典で通らない"); }
 
 // ── 計算機のページ: tool_cases が2件未満なら赤、2件あれば緑 ──
 const TOOL = HTML.replace("</body>", '<script type="module" src="../assets/kabe_core.js"></script></body>');
