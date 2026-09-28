@@ -136,14 +136,20 @@ export function checkPage({ html, ledger, requiredText = null, page = "(page)" }
 
 // ── --changed: 基点から変わったページ ─────────────────────────────────────
 const GENERATED = [/^docs\/column\/index\.html$/, /^docs\/hojokin\/(schedule|koyou)\/index\.html$/, /^docs\/(embed|assets)\//];
+// 基点との分岐点から「作業ツリー」までの差分を見る（commit 前に緑にする手順なので、未コミットの変更も含める）
+const forkPoint = (base) => execFileSync("git", ["-C", ROOT, "merge-base", base, "HEAD"], { encoding: "utf8" }).trim();
 function changedPages(base) {
-  const out = execFileSync("git", ["-C", ROOT, "diff", "--name-status", `${base}...HEAD`, "--", "docs"], { encoding: "utf8" });
+  const fp = forkPoint(base);
+  const tracked = execFileSync("git", ["-C", ROOT, "diff", "--name-status", fp, "--", "docs"], { encoding: "utf8" });
+  const untracked = execFileSync("git", ["-C", ROOT, "ls-files", "--others", "--exclude-standard", "--", "docs"], { encoding: "utf8" })
+    .trim().split("\n").filter(Boolean).map((f) => `A\t${f}`).join("\n");
+  const out = [tracked.trim(), untracked].filter(Boolean).join("\n");
   return out.trim().split("\n").filter(Boolean).map((l) => l.split("\t"))
     .filter(([st, f]) => /index\.html$/.test(f) && !st.startsWith("D") && !GENERATED.some((re) => re.test(f)))
     .map(([st, f]) => ({ page: f, isNew: st.startsWith("A") }));
 }
 function addedText(base, page) {
-  const diff = execFileSync("git", ["-C", ROOT, "diff", "-U0", `${base}...HEAD`, "--", page], { encoding: "utf8" });
+  const diff = execFileSync("git", ["-C", ROOT, "diff", "-U0", forkPoint(base), "--", page], { encoding: "utf8" });
   const added = diff.split("\n").filter((l) => l.startsWith("+") && !l.startsWith("+++")).map((l) => l.slice(1)).join("\n");
   return claimText(`<html><head></head><body>${added}</body></html>`);
 }

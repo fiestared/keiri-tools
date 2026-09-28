@@ -13,8 +13,9 @@ const r = [
   ["令和7年分と比べる→通す", t("所得要件は令和7年分は58万円以下、令和8年分は62万円以下です。", "fuyo-shotoku-58man-r8") === 0],
   ["過ぎた日付の未来形→捕まえる", futureTenseHits("令和8年9月1日に様式の改正が施行されます。", C.future_tense, "p", "2026-09-28").length === 1],
   ["これからの日付の未来形→通す", futureTenseHits("2027年4月1日から始まります。", C.future_tense, "p", "2026-09-28").length === 0],
+  ["予定だった（過去の話）→通す", futureTenseHits("2026年3月31日——つまりこの法律は、5か月前に失効する予定だったのです。", C.future_tense, "p", "2026-09-28").length === 0],
   ["予定納税→通す", futureTenseHits("令和8年7月31日（金） 申告所得税 予定納税", C.future_tense, "p", "2026-09-28").length === 0],
 ];
 const bad = r.filter(([, ok]) => !ok);
 if (bad.length) { console.error(bad.map(([n]) => "✗ " + n).join("\n")); process.exit(1); }
-console.log(`✓ test_stale_values_rules: ${r.length}ケース（捕まえる4・通す4）`);
+console.log(`✓ test_stale_values_rules: ${r.length}ケース（捕まえる4・通す5）`);
