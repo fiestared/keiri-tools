@@ -25,6 +25,8 @@
  *     最大±40%増減しうるが（徴収法12条3項）、適用の有無と増減率は個別に決まる。
  */
 
+import { component } from './shaho_core.js';
+
 /** 1000分率を金額に。★端数は円未満切捨（合計してから納付額の丸めを行うのは会社側の処理） */
 const permille = (base, sen) => Math.floor(Number(base) * Number(sen) / 1000);
 const percent = (base, pct) => Math.floor(Number(base) * Number(pct) / 100);
@@ -52,14 +54,16 @@ export function jigyonushiFutan({ hyojun, chingin, kenkoPct, kaigo = false, koyo
 
   // ── 標準報酬月額にかかるもの ─────────────────────────
   // 健康保険・介護保険・厚生年金は労使折半。事業主負担は全体の半分。
-  const kenkoZen = percent(h, kenkoPct);
-  const kenko = Math.floor(kenkoZen / 2);
-  const kaigoZen = kaigo ? percent(h, S.kaigo_rate) : 0;
-  const kaigoBun = Math.floor(kaigoZen / 2);
-  const koseiZen = percent(h, S.kosei_nenkin_rate);
-  const kosei = Math.floor(koseiZen / 2);
-  // ★子ども・子育て拠出金は全額事業主負担（本人負担なし）
-  const kosodate = percent(h, S.kosodate_rate);
+  // 健保と介護は合算料率で折半し、会社負担は総額－本人控除額。
+  const kenkoOnly = component(kenkoPct, h);
+  const kenkoKaigo = component(Number(kenkoPct) + (kaigo ? S.kaigo_rate : 0), h);
+  const kenko = kenkoOnly.company;
+  const kaigoBun = kenkoKaigo.company - kenko;
+  const koseiPart = component(S.kosei_nenkin_rate, Math.min(h, 650000));
+  const kosei = koseiPart.company;
+  const shien = component(S.kosodate_rate, h);
+  // 拠出金は支援金と別制度。厚年の標準報酬に0.36%、全額会社負担。
+  const kosodate = percent(Math.min(h, 650000), S.kodomo_kyoshutsu_rate);
 
   // ── 賃金総額にかかるもの ────────────────────────────
   // ★雇用保険は労使で率が違う（事業主は二事業分を上乗せ）
@@ -69,14 +73,14 @@ export function jigyonushiFutan({ hyojun, chingin, kenkoPct, kaigo = false, koyo
   // ★労災保険は全額事業主負担
   const rousai = rousaiSen == null ? null : permille(c, rousaiSen);
 
-  const total = kenko + kaigoBun + kosei + kosodate + koyou + (rousai || 0);
+  const total = kenko + kaigoBun + kosei + kosodate + shien.company + koyou + (rousai || 0);
 
   return {
     hyojun: h, chingin: c,
-    kenko, kaigo: kaigoBun, kosei, kosodate, koyou, rousai,
+    kenko, kaigo: kaigoBun, kosei, kosodate, shien: shien.company, shienWorker: shien.self, koyou, rousai,
     total,
     // 本人が給与から引かれる分（対照。会社負担との差を見せるため）
-    honninTotal: Math.floor(kenkoZen / 2) + Math.floor(kaigoZen / 2) + Math.floor(koseiZen / 2) + koyouWorker,
+    honninTotal: kenkoKaigo.self + koseiPart.self + shien.self + koyouWorker,
     // ★全額事業主負担のもの（折半だと思われがちな部分を名指しする）
     zengakuJigyonushi: kosodate + (rousai || 0),
     koyouWorker,

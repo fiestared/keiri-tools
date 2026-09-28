@@ -4,7 +4,7 @@
  * 守りたいのは、画面が正常に見えたまま黙って誤答する急所:
  *   ① 抵当権設定の課税標準は「債権金額」であって不動産の評価額ではない
  *   ② 税率が違う登記は別々に端数処理する（合算して1回で丸めない）
- *   ③ 住宅用家屋の軽減が使える原因は「売買・競落」だけ（贈与・交換は本則2%）
+ *   ③ 住宅用家屋の移転登記の軽減が使える原因は「売買・競落」だけ（贈与・交換は本則2%）
  *   ④ 長期優良の移転だけ一戸建ては0.2%／低炭素にはその区別が無い
  *   ⑤ 長期優良・低炭素は「建築後使用されたことのない」ものに限る（中古は0.3%まで）
  *   ⑥ 最低税額1,000円の判定は100円未満を切り捨てる「前」の額で行う
@@ -268,14 +268,14 @@ ok("§8 入力が空なら計算しない",
   eq("看板例 合計", r.gokei, 275000);
 }
 {
-  // ★同じ物件を「贈与で取得した」場合＝軽減が全部落ちる（措令42条3項）。
+  // 未使用住宅の保存は贈与取得でも原因要件を当てはめない。土地の贈与は本則。
   // 土地 15,000,000×2% = 300,000 ／ 建物 10,000,000×0.4%(保存本則) = 40,000 → 340,000
   const r = calcTorokuJutaku({
     ...base, genin: "贈与", tochiKagaku: 15000000, tochiGenin: "贈与",
     tatemonoKagaku: 10000000, tokiShurui: "hozon",
   }, DATA);
   eq("看板例（贈与）土地は本則2%", r.meisai.find((m) => m.key === "tochi").zeigaku, 300000);
-  eq("看板例（贈与）建物は本則0.4%", r.meisai.find((m) => m.key === "tatemono").zeigaku, 40000);
+  eq("看板例（贈与・未使用）建物の保存は0.15%", r.meisai.find((m) => m.key === "tatemono").zeigaku, 15000);
 }
 
 // ── §9 登記を受ける日と2つの期限（急所⑥） ────────────────────
@@ -358,6 +358,15 @@ ok("§9 贈与は断らずに計算する",
 }
 
 // ── 結果 ─────────────────────────────────────────────
+
+// R7: 措令41条（保存）と42条3項（移転）を混同しない。
+import assertR7 from 'node:assert/strict';
+const r7Data = JSON.parse(readFileSync(new URL('../docs/assets/toroku_jutaku_r08.json', import.meta.url),'utf8'));
+const r7j = {tokiShurui:'hozon',kojinKyoju:true,yukamenseki:100,genin:'新築',tokiMadeMonths:6,chuko:false};
+assertR7.equal(jutakuKeigenOk(r7j,r7Data).ok,true);
+assertR7.equal(tatemonoRitsu(r7j,r7Data).ritsu,0.0015);
+assertR7.equal(jutakuKeigenOk({...r7j,tokiShurui:'iten',genin:'贈与'},r7Data).ok,false);
+
 if (fails.length) {
   console.error(`FAIL ${fails.length}件 / ${pass + fails.length}件`);
   for (const f of fails) console.error("  - " + f);

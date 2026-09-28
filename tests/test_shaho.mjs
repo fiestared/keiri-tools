@@ -105,3 +105,9 @@ assert.equal(roundHalf(100.0), 100);
 }
 
 console.log("all shaho_core tests passed");
+
+// R7: 日本年金機構「70歳未満」、70歳到達の境界（月額・賞与）。
+import assertR7 from 'node:assert/strict';
+assertR7.equal(calcMonthly(300000,9.85,1.62,70).kosei.self,0);
+assertR7.equal(calcMonthly(300000,9.85,1.62,69).kosei.self,27450);
+assertR7.equal(calcBonus(500000,9.85,1.62,70).kosei.self,0);

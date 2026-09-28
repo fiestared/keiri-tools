@@ -232,7 +232,10 @@ export function calcFudosanShutoku(input) {
     land.taxBefore = (land.base * land.rate) / 100;
 
     // 住宅用土地の減額（法73条の24）。1㎡単価は宅地なら1/2後の額で出す（附則11条の5第2項の読替え）。
-    const houseEligible = kubun.jutaku && house.floorOk && !house.uncomputable;
+    // 家屋の控除額の検証範囲とは独立して、土地の住宅要件を判定する。
+    // 中古は自己居住と新耐震基準が必要。旧耐震の個別証明はこの入力では判定しない。
+    const houseEligible = kubun.jutaku && house.floorOk &&
+      (kubun.key !== "chuko" || (input.selfUse && input.builtDate >= "1982-01-01"));
     if (input.landForHouse && houseEligible && landArea > 0) {
       land.unitPrice = land.kazeiHyojunPrice / landArea;
       const m2 = Math.min(houseFloor * SEIDO.tochiGenkakuMultiplier, SEIDO.tochiGenkakuMaxM2);

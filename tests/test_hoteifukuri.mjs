@@ -36,11 +36,11 @@ console.log('★折半でないもの');
 {
   const r = jigyonushiFutan({ hyojun: 300000, chingin: 300000, kenkoPct: 9.85,
     kaigo: false, koyouType: 'general', rousaiSen: 3 }, S);
-  // 子ども・子育て拠出金 300,000 × 0.23% = 690（全額事業主）
-  eq(r.kosodate, 690, '★子ども・子育て拠出金は全額事業主（本人負担なし）');
+  // 子ども・子育て拠出金 300,000 × 0.36% = 1080（全額事業主）
+  eq(r.kosodate, 1080, '★子ども・子育て拠出金は全額事業主（本人負担なし）');
   // 労災 300,000 × 3/1000 = 900（全額事業主）
   eq(r.rousai, 900, '★労災保険も全額事業主');
-  eq(r.zengakuJigyonushi, 1590, '全額事業主負担の合計');
+  eq(r.zengakuJigyonushi, 1980, '全額事業主負担の合計');
   // ★雇用保険は労使で率が違う
   eq(r.koyou, 2550, '事業主 300,000 × 8.5/1000');
   eq(r.koyouWorker, 1500, '本人 300,000 × 5/1000');
@@ -109,7 +109,7 @@ console.log('★雇用保険の区分');
 console.log('★合計');
 {
   const r = jigyonushiFutan({ hyojun: 300000, chingin: 300000, kenkoPct: 9.85, rousaiSen: 3 }, S);
-  eq(r.total, 14775 + 0 + 27450 + 690 + 2550 + 900, '積み上げ');
+  eq(r.total, 14775 + 0 + 27450 + 1080 + 345 + 2550 + 900, '積み上げ');
   const n = nenganAndRatio(r);
   eq(n.nengan, r.total * 12, '年額');
   ok(n.ritsu > 14 && n.ritsu < 17, `★給与の約${n.ritsu.toFixed(1)}%が会社の上乗せ負担`);
@@ -124,7 +124,7 @@ console.log('★fail closed');
 {
   const r = jigyonushiFutan({ hyojun: 300000, chingin: 300000, kenkoPct: 9.85, rousaiSen: null }, S);
   eq(r.rousai, null, '★労災保険率が分からなければ null（0円と書かない）');
-  eq(r.total, 14775 + 27450 + 690 + 2550, '労災を除いた合計');
+  eq(r.total, 14775 + 27450 + 1080 + 345 + 2550, '労災を除いた合計');
 }
 
 // ── ★壊しテスト ─────────────────────────────────────────────
@@ -141,11 +141,21 @@ console.log('★壊しテスト');
 {
   // 子育て拠出金を折半にする誤り
   const r = jigyonushiFutan({ hyojun: 300000, chingin: 300000, kenkoPct: 9.85, rousaiSen: 3 }, S);
-  const han = Math.floor(690 / 2);
-  ok(r.kosodate === 690 && han === 345,
+  const han = Math.floor(1080 / 2);
+  ok(r.kosodate === 1080 && han === 540,
     '★子ども・子育て拠出金を折半にすると会社負担が半分になる（本人負担は存在しない）');
   checks++;
 }
 
 console.log(`\n${fail ? '✗' : '✓'} test_hoteifukuri: ${checks} checks, ${fail} failed`);
+// R7: 協会けんぽ令和8年東京表（支援金0.23%、拠出金0.36%）。
+import assertR7 from 'node:assert/strict';
+const r7f = jigyonushiFutan({hyojun:300000,chingin:300000,kenkoPct:9.85,rousaiSen:3},S);
+assertR7.equal(r7f.kosodate,1080);
+assertR7.equal(r7f.total,47100);
+assertR7.equal(r7f.honninTotal,44070);
+// 年金機構の給与控除50銭以下切捨て。会社は総額－本人額。
+assertR7.equal(jigyonushiFutan({hyojun:650000,chingin:650000,kenkoPct:9.85,rousaiSen:3},S).kenko,32013);
+
+
 process.exit(fail ? 1 : 0);

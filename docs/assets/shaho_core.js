@@ -99,7 +99,7 @@ export function kaigoApplies(age) {
  * total/half は銭（小数）のまま保持する（公式の保険料額表と直接照合できるようにするため）。
  * self は端数処理後の実際の控除額（円）。
  */
-function component(rate, base) {
+export function component(rate, base) {
   const total = base * (rate / 100);
   const half = total / 2;
   const self = roundHalf(half);
@@ -125,7 +125,8 @@ export function calcMonthly(monthly, kenkoRate, kaigoRate, age, koseiRate = 18.3
   const kenkoKaigoRate = kenkoRate + (kaigo ? kaigoRate : 0);
   const kenkoKaigo = component(kenkoKaigoRate, standard);
   const kosodate = component(kosodateRate, standard);
-  const kosei = component(koseiRate, koseiStd);
+  // 厚生年金の通常の被保険者は70歳未満（高齢任意加入は対象外）。
+  const kosei = component(Number(age) >= 70 ? 0 : koseiRate, koseiStd);
 
   return {
     grade, standard, koseiStandard: koseiStd, kaigoApplies: kaigo,
@@ -211,7 +212,8 @@ export function calcBonus(bonus, kenkoRate, kaigoRate, age, koseiRate = 18.3,
 
   const kenkoKaigo = component(kenkoRate + (kaigo ? kaigoRate : 0), kenkoStd);
   const kosodate = component(kosodateRate, kenkoStd);
-  const kosei = component(koseiRate, koseiStd);
+  // 厚生年金の通常の被保険者は70歳未満（高齢任意加入は対象外）。
+  const kosei = component(Number(age) >= 70 ? 0 : koseiRate, koseiStd);
 
   return {
     standardBonus: std, kenkoStandard: kenkoStd, koseiStandard: koseiStd, kaigoApplies: kaigo,

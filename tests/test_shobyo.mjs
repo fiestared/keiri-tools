@@ -437,6 +437,15 @@ ok(Number.isFinite(nichigaku(new Array(12).fill(260000), D).amount),
 }
 
 // ───────────────────────────────────────────────────────────────
+
+// R7: 健康保険法99条4項・104条。通算上限と国保移行後の1年境界。
+import assertR7 from 'node:assert/strict';
+const r7Data = JSON.parse(readFileSync(new URL('../docs/assets/shobyo_r08.json', import.meta.url),'utf8'));
+const r7Input = {startDate:'2026-02-15',monthly:300000,months:12,restDays:600,taikiDone:false};
+assertR7.equal(calcShobyo(r7Input,r7Data).days,546);
+assertR7.equal(calcShobyo({...r7Input,months:11,taishokugo:true,ninnikeizoku:false},r7Data).eligible,false);
+assertR7.equal(calcShobyo({...r7Input,months:12,taishokugo:true,ninnikeizoku:false},r7Data).eligible,true);
+
 if (failed) {
   console.error(`\n✗ ${failed} 件失敗 / ${checks} checks`);
   process.exit(1);

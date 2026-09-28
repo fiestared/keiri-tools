@@ -28,11 +28,11 @@ assert.equal(n("きゃっしゅふろー"), "ｷﾔﾂｼﾕﾌﾛ-");
 assert.equal(n("スーパー・マーケット"), "ｽ-ﾊﾟ-.ﾏ-ｹﾂﾄ");
 assert.equal(n("ヴェルディ"), "ｳﾞｴﾙﾃﾞｲ");
 
-// ヲ→オ(警告つき)
+// 総合振込の受取人名ではヲを保持（全銀協付録1注1の例外）
 {
   const r = normalize("カヲル");
-  assert.equal(r.output, "ｶｵﾙ");
-  assert.ok(r.warnings.some((w) => w.includes("ヲ")));
+  assert.equal(r.output, "ｶｦﾙ");
+  assert.ok(r.ok);
 }
 
 // 英数字: 全角→半角、小文字→大文字
@@ -107,7 +107,7 @@ for (const name of ["ヷタナベ", "ヸセキ", "ヹビス", "ヺロシ"]) {
 }
 
 // ---- 記号: 受取人名フィールドの許可集合は ( ) - . の4種類だけ ----
-// 全銀協「使用文字一覧」注1: 「口座名等で使用できる文字は、カナ(ヲと小文字を除く)、濁点、(中略)、
+// 全銀協「使用文字一覧」注1: 「口座名等で使用できる文字は、カナ(総合振込では小文字を除く)、濁点、(中略)、
 // 記号4種類(( ) -〔ハイフン〕 .〔ピリオド〕)のみである」。
 // 銀行が配る「全銀仕様データレコード使用可能文字」表には / ¥ ｢｣ も載っているが、それは
 // **レコード全体の文字集合**であって受取人名フィールドの許可集合ではない。
@@ -133,7 +133,7 @@ assert.equal(normalize("ｴｽ.ﾋﾞ-").ok, true, "ピリオド・ハイフン�
 
 // ---- 出力は必ず受取人名の許可集合に収まる(ok=true のとき) ----
 // 「変換できた」と言い切った出力に許可外文字が混ざっていないかを機械で担保する。
-const ALLOWED_RE = /^[ｱ-ﾝﾞﾟA-Z0-9()\-. ]*$/;
+const ALLOWED_RE = /^[ｦｱ-ﾝﾞﾟA-Z0-9()\-. ]*$/;
 for (const s of ["株式会社ヴィレッジヴァンガード", "ヱビス", "ヲノ ヨーコ", "ジャックポット",
                  "株式会社エヌ・ティ・ティ・ドコモ", "株式会社Ｇｏｏｄ", "マルヶイ"]) {
   const r = normalize(s);
@@ -146,3 +146,10 @@ for (const s of ["株式会社ヤマダ", "ヤマダ株式会社", "株式会社
   const a = normalize(s).output;
   assert.equal(normalize(a).output, a, `冪等でない: ${s}`);
 }
+
+// R7: 全銀協PC接続手順・付録1注1（総合振込の受取人名）、第四北越銀行略語表。
+import assertR7 from 'node:assert/strict';
+assertR7.equal(normalize('カヲル').output,'ｶｦﾙ');
+assertR7.equal(normalize('ｶｦﾙ').ok,true);
+assertR7.equal(normalize('ヤマダ医療法人').ok,false);
+assertR7.equal(normalize('医療法人ヤマダ').output,'ｲ)ﾔﾏﾀﾞ');

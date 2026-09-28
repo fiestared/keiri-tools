@@ -446,6 +446,15 @@ const run = (over = {}) => calcFudosanShutoku({ ...base, ...over });
 
 // ────────────────────────────────────────────────────────────────────────────
 console.log(`${pass} passed, ${fails.length} failed`);
+
+// R7: 地方税法73条の24第2項：中古住宅敷地の自己居住要件。
+import assertR7 from 'node:assert/strict';
+const r7f = {acquireDate:'2026-09-01',houseKind:'chuko',houseValue:13000000,houseFloor:100,builtDate:'2020-01-01',selfUse:false,landValue:20000000,landArea:200,isTakuchi:true,landForHouse:true};
+assertR7.equal(calcFudosanShutoku(r7f).land.genkaku,0);
+assertR7.equal(calcFudosanShutoku(r7f).total,690000);
+// 昭和57年以後の耐震基準を満たす既存住宅。家屋控除額の未確認と土地要件を分離。
+assertR7.equal(calcFudosanShutoku({...r7f,builtDate:'2010-01-01',selfUse:true}).land.tax,0);
+
 if (fails.length) {
   for (const f of fails) console.log("  ✗ " + f);
   process.exit(1);

@@ -59,7 +59,7 @@
  * ★★保険者による違い（定数にできない）:
  *    上の 2. の「全被保険者の平均標準報酬月額」は **保険者ごとに違う**。
  *    協会けんぽは32万円だが、**健保組合は組合自身の平均**を使う（例: 関東ITソフトウェア健保は
- *    平成28年度 38万円）。だからこの額は **データで持ち、利用者が上書きできる** ようにする。
+ *    令和8年度の支給開始は44万円）。だからこの額は **データで持ち、利用者が上書きできる** ようにする。
  */
 
 import { kenkoGrade } from './shaho_core.js';
@@ -310,7 +310,7 @@ export function calcShobyo(input, D) {
   //   病気で辞めた人はほぼ全員が任意継続を選ぶ（病気なのだから保険が要る）ので、
   //   ここを取り違えると **いちばん重い病気の人に「¥0」と答える**（月給30万・546日休業で
   //   3,620,181円 = 待期3日を引いた543日 × 6,667円。test_shobyo.mjs / e2e shobyo_keizoku の正値）。
-  if (i.ninnikeizoku) {
+  if (i.ninnikeizoku || i.taishokugo) {
     const k = keizokuKyufu({
       hihokenshaMonths: hihokenshaMonths(i),
       receivingAtLoss: !!i.taishokugo,
@@ -361,13 +361,14 @@ export function calcShobyo(input, D) {
     taishokugo: i.taishokugo,
   });
 
-  const days = shikyuNissu(i.restDays, i.taikiDone);
+  const kikan = /^\d{4}-\d{2}-\d{2}$/.test(String(i.startDate || "")) ? shikyuKikan(i.startDate) : null;
+  const days = Math.min(shikyuNissu(i.restDays, i.taikiDone), kikan ? kikan.totalDays : Infinity);
   const total = adj.paid * days;
 
   return {
     eligible: true,
     // ★104条の継続給付として計算したか（任意継続なのに支給される＝画面で必ず名乗る）
-    via104: !!i.ninnikeizoku,
+    via104: !!i.taishokugo,
     estimated,
     months: n.months,
     rule: n.rule,
@@ -384,6 +385,6 @@ export function calcShobyo(input, D) {
     taikiDays: i.taikiDone ? 0 : Math.min(TAIKI_DAYS, Math.max(0, Math.floor(Number(i.restDays) || 0))),
     total,
     // 支給期間（暦で1年6月）。支給を始めた日がわかるときだけ
-    kikan: /^\d{4}-\d{2}-\d{2}$/.test(String(i.startDate || '')) ? shikyuKikan(i.startDate) : null,
+    kikan,
   };
 }
