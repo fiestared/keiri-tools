@@ -1,0 +1,15 @@
+// 2026-09-29 一次資料を再取得して審査。期待値は条文・公表表から独立に計算。
+import { taishogai, teijiKettei, zuijiNissuOK } from "../../docs/assets/santei_core.js";
+import { readFileSync } from "node:fs";
+const load = f => JSON.parse(readFileSync(new URL(`../../docs/assets/${f}`, import.meta.url)));
+const D = load("santei_r08.json");
+export const cases = [
+  { name: "一般・基礎日数16日の月は定時決定から除外", run: () => (teijiKettei([{name:'4月',hoshu:300000,nissu:16,zaiseki:true}], false, D).hoshuGetsugaku), expected: null, source: "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41", quote: "報酬支払の基礎となった日数が十七日（厚生労働省令で定める者にあっては、十一日。第四十三条第一項、第四十三条の二第一項及び第四十三条の三第一項において同じ。）未満である月があるときは、その月を除く。" },
+  { name: "一般・基礎日数17日の月は定時決定に算入", run: () => (teijiKettei([{name:'4月',hoshu:300000,nissu:17,zaiseki:true}], false, D).hoshuGetsugaku), expected: 300000, source: "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41", quote: "報酬支払の基礎となった日数が十七日（厚生労働省令で定める者にあっては、十一日。第四十三条第一項、第四十三条の二第一項及び第四十三条の三第一項において同じ。）未満である月があるときは、その月を除く。" },
+  { name: "短時間・基礎日数10日の月は定時決定から除外", run: () => (teijiKettei([{name:'4月',hoshu:300000,nissu:10,zaiseki:true}], true, D).hoshuGetsugaku), expected: null, source: "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41", quote: "報酬支払の基礎となった日数が十七日（厚生労働省令で定める者にあっては、十一日。第四十三条第一項、第四十三条の二第一項及び第四十三条の三第一項において同じ。）未満である月があるときは、その月を除く。" },
+  { name: "短時間・基礎日数11日の月は定時決定に算入", run: () => (teijiKettei([{name:'4月',hoshu:300000,nissu:11,zaiseki:true}], true, D).hoshuGetsugaku), expected: 300000, source: "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41", quote: "報酬支払の基礎となった日数が十七日（厚生労働省令で定める者にあっては、十一日。第四十三条第一項、第四十三条の二第一項及び第四十三条の三第一項において同じ。）未満である月があるときは、その月を除く。" },
+  { name: "資格取得日5月31日は6月1日境界の外", run: () => (taishogai('2026-05-31', false, 2026, D).taishogai), expected: false, source: "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41", quote: "第一項の規定は、六月一日から七月一日までの間に被保険者の資格を取得した者及び第四十三条、第四十三条の二又は第四十三条の三の規定により七月から九月までのいずれかの月から標準報酬月額を改定され、又は改定されるべき被保険者については、その年に限り適用しない。" },
+  { name: "資格取得日6月1日は定時決定対象外", run: () => (taishogai('2026-06-01', false, 2026, D).taishogai), expected: true, source: "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41", quote: "第一項の規定は、六月一日から七月一日までの間に被保険者の資格を取得した者及び第四十三条、第四十三条の二又は第四十三条の三の規定により七月から九月までのいずれかの月から標準報酬月額を改定され、又は改定されるべき被保険者については、その年に限り適用しない。" },
+  { name: "短時間労働者・随時改定で各月10日は不足", run: () => (zuijiNissuOK([{nissu:10},{nissu:10},{nissu:10}], D, true).mitasu), expected: false, source: "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41", quote: "十七日（厚生労働省令で定める者にあっては、十一日。第四十三条第一項、第四十三条の二第一項及び第四十三条の三第一項において同じ。）" },
+  { name: "短時間労働者・随時改定は各月11日で日数要件を満たす", run: () => (zuijiNissuOK([{nissu:11},{nissu:11},{nissu:11}], D, true).mitasu), expected: true, source: "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41", quote: "十七日（厚生労働省令で定める者にあっては、十一日。第四十三条第一項、第四十三条の二第一項及び第四十三条の三第一項において同じ。）" },
+];

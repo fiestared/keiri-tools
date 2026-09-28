@@ -1,0 +1,11 @@
+// 2026-09-29 一次資料を再取得して審査。期待値は条文・公表表から独立に計算。
+import { calcZaishoku } from "../../docs/assets/zaishoku_core.js";
+import { readFileSync } from "node:fs";
+const load = f => JSON.parse(readFileSync(new URL(`../../docs/assets/${f}`, import.meta.url)));
+const D = load("zaishoku_r08.json");
+export const cases = [
+  { name: "令和8年度65万円境界の1円下", run: () => ((r => ({over:r.over,teishiYen:r.teishiYen,shikyuKoseiYen:r.shikyuKoseiYen}))(calcZaishoku({koseiNenkinYen:1200000,hyojunHoshuYen:549999,shoyoTotalYen:0,kakyuYen:0,kisoNenkinYen:800000,hatarakikata:'hihokensha',kijunKey:'r08'},D))), expected: {"over": false, "teishiYen": 0, "shikyuKoseiYen": 1200000}, source: "https://www.nenkin.go.jp/service/jukyu/seido/roureinenkin/zaishoku/20150401-01.html", quote: "基本月額と総報酬月額相当額との合計が65万円※以下の場合 全額支給" },
+  { name: "令和8年度65万円境界の1円上", run: () => ((r => ({over:r.over,teishiYen:r.teishiYen,shikyuKoseiYen:r.shikyuKoseiYen}))(calcZaishoku({koseiNenkinYen:1200000,hyojunHoshuYen:550001,shoyoTotalYen:0,kakyuYen:0,kisoNenkinYen:800000,hatarakikata:'hihokensha',kijunKey:'r08'},D))), expected: {"over": true, "teishiYen": 6, "shikyuKoseiYen": 1199994}, source: "https://www.nenkin.go.jp/service/jukyu/seido/roureinenkin/zaishoku/20150401-01.html", quote: "基本月額と総報酬月額相当額との合計が65万円※を超える場合 基本月額－（基本月額＋総報酬月額相当額－65万円 ※ ）÷2" },
+  { name: "令和7年度51万円境界の1円下", run: () => ((r => ({over:r.over,teishiYen:r.teishiYen,shikyuKoseiYen:r.shikyuKoseiYen}))(calcZaishoku({koseiNenkinYen:1200000,hyojunHoshuYen:409999,shoyoTotalYen:0,kakyuYen:0,kisoNenkinYen:800000,hatarakikata:'hihokensha',kijunKey:'r07'},D))), expected: {"over": false, "teishiYen": 0, "shikyuKoseiYen": 1200000}, source: "https://www.nenkin.go.jp/service/jukyu/seido/roureinenkin/zaishoku/20150401-01.html", quote: "令和8年4月から、年金が減額になる基準額（賃金と老齢厚生年金の合計）が月51万円から65万円に引き上げられました。" },
+  { name: "令和7年度51万円境界の1円上", run: () => ((r => ({over:r.over,teishiYen:r.teishiYen,shikyuKoseiYen:r.shikyuKoseiYen}))(calcZaishoku({koseiNenkinYen:1200000,hyojunHoshuYen:410001,shoyoTotalYen:0,kakyuYen:0,kisoNenkinYen:800000,hatarakikata:'hihokensha',kijunKey:'r07'},D))), expected: {"over": true, "teishiYen": 6, "shikyuKoseiYen": 1199994}, source: "https://www.nenkin.go.jp/service/jukyu/seido/roureinenkin/zaishoku/20150401-01.html", quote: "令和8年4月から、年金が減額になる基準額（賃金と老齢厚生年金の合計）が月51万円から65万円に引き上げられました。" },
+];
