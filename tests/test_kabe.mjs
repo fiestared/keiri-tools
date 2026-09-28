@@ -1,3 +1,4 @@
+import assertR11 from 'node:assert/strict';
 /**
  * 年収の壁コア（kabe_core.js）の単体テスト。
  *
@@ -201,5 +202,10 @@ assert.equal(calcKabe({ ...base, annual: 1290000, asOf: POST }, refs).joins, fal
 // 日付の形が壊れていたら今日の日付を使う（黙って撤廃前に固定しない）
 assert.equal(calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 900000, asOf: 'あした' }, refs).asOf.length, 10);
 console.log('✓ 2026-10-01 の賃金要件の撤廃: 撤廃前（9/30）・撤廃後（10/1）・被扶養者は不変');
+
+// r11: 日本年金機構・後期高齢者医療の被保険者となったら被扶養者非該当。
+assertR11.throws(()=>calcKabe({...base,age:75,annual:1790000},refs),/75歳/,'r11 75歳からは計算対象外');
+assertR11.doesNotThrow(()=>calcKabe({...base,age:74,annual:1790000},refs));
+
 process.exit(fail ? 1 : 0);
 

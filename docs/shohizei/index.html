@@ -267,7 +267,7 @@
   <p style="margin-top:0;font-size:14px;color:var(--sub)">
     納める消費税は、<b>どの方式を選ぶか</b>で変わります。<b>本則課税</b>だけが実際の仕入れで決まり、
     <b>簡易課税・2割特例・3割特例</b>は<b>売上だけ</b>で決まります（経費がいくらでも動きません）。
-    自分の数字を入れて、4方式の概算を比べます。申告書の国税・地方税それぞれの100円未満切捨て等は反映しないため、実際の納付額とは異なります。<b>どれを選ぶかは届出を伴う申告上の選択</b>で、
+    自分の数字を入れて、4方式の概算を比べます。申告書の国税・地方税それぞれの100円未満切捨て等は反映しないため、実際の納付額とは異なります。<b>方式ごとに届出要否が異なる申告上の選択（2割特例は事前届出不要）</b>で、
     本ツールが推奨するものではありません。
   </p>
 
@@ -277,7 +277,7 @@
   <label for="h-purchase" style="margin-top:12px">課税仕入れ（税込・1年分・10%対象）</label>
   <input type="number" id="h-purchase" placeholder="例: 5500000" inputmode="numeric">
   <div class="hint" style="font-size:12.5px;margin-top:5px">
-    本則課税の計算だけに使います。給与・法定福利費・家賃（非課税）などは課税仕入れに含めません。
+    本則課税の計算だけに使います。給与・法定福利費・住宅家賃などの非課税家賃は課税仕入れに含めません。事務所・店舗等の建物家賃は課税対象で、仕入税額控除の要件を満たす場合は含めます。
   </div>
 
   <label for="h-kubun" style="margin-top:12px">事業区分（簡易課税のみなし仕入率）</label>
@@ -679,7 +679,7 @@ $("h-calc").addEventListener("click", () => {
 
   const rows = r.methods.map((m) => {
     const off = m.available === false;
-    const isBest = !off && m.key === r.best.key;
+    const isBest = false; // 適用期間が異なるため最良の強調はしない
     return `<tr${isBest ? ' style="font-weight:700;background:var(--hl,#fff8e1)"' : ""}>
       <td>${m.label}${off ? "<br><small>（法人は使えません）</small>" : ""}</td>
       <td><small>${m.formula}</small>${m.note ? `<br><small style="color:var(--sub)">${m.note}</small>` : ""}</td>
@@ -703,8 +703,8 @@ $("h-calc").addEventListener("click", () => {
     <p>${judge}</p>
     <p>本則と簡易が一致するのは、課税仕入れ（税込）が <b>${yen(r.breakEvenPurchaseIncTax)}</b> のときです。
     これより経費が少なければ簡易、多ければ本則が小さくなります。</p>
-    <p style="font-size:13px;color:var(--sub)"><b>2割特例と3割特例は使える年が重なりません</b>（2割は令和8年9月30日を含む課税期間まで、3割は令和9年分・令和10年分の個人）。同じ表に並べていますが、ある年に選べるのはどちらか一方です。<br>※ 金額の小さい行を強調していますが、
-    <b>選択には届出と適用要件の確認が必要</b>です。簡易課税は原則として2年間継続します。</p>`;
+    <p style="font-size:13px;color:var(--sub)"><b>2割特例と3割特例は使える年が重なりません</b>（2割は令和8年9月30日を含む課税期間まで、3割は令和9年分・令和10年分の個人）。同じ表に並べていますが、ある年に選べるのはどちらか一方です。<br>※ 適用期間が違う方式を同じ年の最良として強調しません。
+    方式ごとの届出要否と適用要件の確認が必要です（2割特例は事前届出不要）。簡易課税は原則として2年間継続します。</p>`;
 });
 
 

@@ -46,7 +46,7 @@ const round = (n) => Math.round(n);
  *   kubun           事業区分 1〜6
  *   ratePercent     税率（既定10）
  *   isIndividual    個人事業者か（3割特例の可否）
- * @returns {{methods: Array, best: object, breakEvenPurchaseIncTax: number, purchaseRatio: number}}
+ * @returns {{methods: Array, best: null, breakEvenPurchaseIncTax: number, purchaseRatio: number}}
  */
 export function compareMethods(input) {
   const {
@@ -97,8 +97,8 @@ export function compareMethods(input) {
     },
   ];
 
-  const selectable = methods.filter((m) => m.available !== false);
-  const best = selectable.reduce((a, b) => (b.amount < a.amount ? b : a));
+  // 課税期間を受け取らないので、適用期間の異なる特例間に順位を付けない。
+  const best = null;
 
   return {
     salesTax: round(salesTax),

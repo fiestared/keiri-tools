@@ -1,3 +1,4 @@
+import assertR11 from 'node:assert/strict';
 import assert from "node:assert";
 import {
   compareMethods, kaniIsBetter, taxFromIncluded, MINASHI, TOKUREI,
@@ -14,7 +15,7 @@ assert.equal(amountOf(r, "honsoku"), 500_000, "本則 100万 − 50万 = 50万")
 assert.equal(amountOf(r, "kani"), 500_000, "簡易 第5種 100万×(1−50%) = 50万");
 assert.equal(amountOf(r, "niwari"), 200_000, "2割特例 100万×20% = 20万");
 assert.equal(amountOf(r, "sanwari"), 300_000, "3割特例 100万×30% = 30万");
-assert.equal(r.best.key, "niwari", "この条件では2割特例が最小");
+assert.equal(r.best, null, "期間不明のため最良を選ばない");
 
 // ── みなし仕入率6段階（施行令57条5項）と「納税額は売上税額の何%か」 ─────────
 // 売上税額100万円のとき、第1種10万〜第6種60万（コラムの図と同じ）
@@ -48,11 +49,11 @@ assert.equal(amountOf(compareMethods({ ...base, purchaseIncTax: 9_900_000 }), "h
 // ── ★3割特例は個人事業者だけ。法人で「有利」と出してはいけない ────────────
 const houjin = compareMethods({ salesIncTax: 11_000_000, purchaseIncTax: 9_900_000, kubun: 5, isIndividual: false });
 assert.equal(houjin.methods.find((m) => m.key === "sanwari").available, false);
-assert.notEqual(houjin.best.key, "sanwari", "法人に3割特例を勧めない");
+assert.equal(houjin.best, null, "法人でも適用期間不明のため最良を選ばない");
 assert.equal(TOKUREI.sanwari.individualOnly, true);
 
 // ── 端と異常系 ──────────────────────────────────────────────────
-assert.equal(compareMethods({ salesIncTax: 0, kubun: 5 }).best.amount, 0);
+assert.ok(compareMethods({ salesIncTax: 0, kubun: 5 }).methods.every(m => m.amount === 0));
 // ★仕入税額が売上税額を超える年（設備投資・輸出免税）は本則が還付になる。0で潰さない。
 //   簡易・2割・3割では還付は生じないので、この非対称が比較の核心（2026-08-04 レビュー指摘）
 {
@@ -60,12 +61,16 @@ assert.equal(compareMethods({ salesIncTax: 0, kubun: 5 }).best.amount, 0);
   assert.equal(amountOf(x, "honsoku"), -200_000, "売上税額10万 − 仕入税額30万 = △20万（還付）");
   assert.equal(x.methods.find((m) => m.key === "honsoku").refund, true);
   assert.equal(amountOf(x, "kani"), 50_000, "簡易は還付にならない");
-  assert.equal(x.best.key, "honsoku", "還付が出る年は本則が最小");
+  assert.equal(x.best, null, "還付額は表示するが期間不明の最良判定はしない");
 }
 assert.throws(() => compareMethods({ salesIncTax: 1000, kubun: 7 }), /事業区分/);
 assert.throws(() => compareMethods({ salesIncTax: -1, kubun: 5 }), /0以上/);
 
 // 税率8%（軽減）でも売上税額の取り出しが合う
 assert.equal(Math.round(taxFromIncluded(10_800_000, 8)), 800_000);
+
+
+// r11: NTA 2割特例はR8/9/30を含む期間、3割は個人R9・R10。期間不明なら順位を付けない。
+assertR11.equal(compareMethods({salesIncTax:11000000,purchaseIncTax:5500000,kubun:5,isIndividual:true}).best,null,'r11 適用期間が違う方式を最良と強調しない');
 
 console.log("✓ 消費税の方式比較 OK");

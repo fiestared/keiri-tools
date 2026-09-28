@@ -1,3 +1,4 @@
+import assertR11 from 'node:assert/strict';
 // 住民税非課税世帯の判定（/hikazei-setai/）のコア検証。
 //
 // オラクルは2つ。どちらもコアの式とは**別の形**で書く（同じ式を書き写すと検算にならない）。
@@ -347,5 +348,18 @@ for (const [zeisei, childIncome, expected] of [['r8',580001,true], ['r8',620000,
  eq(r.setaiHikazei,expected,`r8扶養境界 ${zeisei}/${childIncome}`);
  if(expected) eq(r.rows[0].kintouLimit,1010000,'r8 親の限度額101万円');
 }
+
+// r11: NTA1180の扶養親族要件に「扶養者が他人の扶養でないこと」はない。
+{
+ const r=calcHikazeiSetai({kyuchi:1,zeisei:'r8',members:[
+  {zokugara:'self',age:40,sonotaShotoku:1000000},
+  {zokugara:'spouse',age:40,sonotaShotoku:500000},
+  {zokugara:'child',age:10,sonotaShotoku:0}
+ ]},D,J);
+ assertR11.equal(r.setaiHikazei,true,'r11 夫→妻→子の一方向の扶養');
+ assertR11.equal(r.rows[0].kintouLimit,1010000);
+ assertR11.equal(r.rows[1].kintouLimit,1010000);
+}
+
 console.log(`\n${fail === 0 ? "✅" : "❌"} ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

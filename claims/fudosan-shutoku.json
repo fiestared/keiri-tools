@@ -1,7 +1,7 @@
 {
   "page": "docs/fudosan-shutoku/index.html",
   "checked": "2026-09-28",
-  "scope": "R9の追加行（既存の設例・年度・数字が同じ行に残る場合も含む）。全文監査済みという意味ではない。",
+  "scope": "r11で変更した主張を追加。既存台帳は保持。全文の再検証を意味しない。",
   "claims": [
     {
       "id": "r9-changed-statements",
@@ -53,7 +53,46 @@
       "source_url": "https://www.tax.metro.tokyo.lg.jp/shitsumon/real_estate/f",
       "source_quote": "得税の計算はどのように行いますか。 A9 取得した家屋が併用住宅（店舗兼住宅等）の場合は、当該家屋の価格を住宅部分、非住宅部分の床面積の割合であん分します。 そのうえで、住宅部分にあん分された価格には３％を、非住宅部分にあん分された価格には４％を乗じることになります。 【例】 併用住宅 評価額：９００万円 床面積：９０㎡（住宅※自己居住用 ４０㎡、店舗５０㎡） 住宅部分 ９００万円 × ４０㎡／９０㎡ ＝ ４００万円 ４００万円 × ３％ ＝ １２万円（住宅部分の税額） 非住宅部分 ９００万円 × ５０㎡／９０㎡ ＝ ５００万円 ５００万円 ×４％ ＝ ２０万円（店舗部分の税額） 合計１２万円 ＋ ２０万円 ＝ ３２万円（最終税額） なお、住宅部分が軽減の要件に該当する場合、当該住宅部分のあん分額から一定額が控除されます。 新築住宅に係る軽減制度は こちら 、中古住宅に係る軽減制度は こちら をご確認ください。 Q10 不動産取得税はどのように納めればいいですか。 A10 不動",
       "exceptions": "併用住宅を対象外と明示する。solの住宅40㎡例は床面積軽減要件も要確認で、20万円を無条件の正解とはしない。"
+    },
+    {
+      "id": "r11-b05-01",
+      "text": "\n\n住宅かどうかとは別に、家屋の建築に係る取得は66万円未満、その他の取得（売買等）は34万円未満なら課税されません。取得態様を選んでください。\n\n\n \n 家屋の取得態様（免税点の判定） \n \n 建築（新築・増築・改築）による取得 \n その他の取得（売買・贈与等） \n \n 住宅かどうかとは別に選びます。新築未使用住宅の購入は「その他」、店舗・事務所等を建築した場合は「建築」を選んでください。 \n\n\nhouseKind: $(\"houseKind\").value,\n houseAcquisition: $(\"houseAcquisition\").value,\n\n\n$(\"houseKind\").value = \"shinchiku\";\n$(\"houseKind\").addEventListener(\"change\", () => { $(\"houseAcquisition\").value = $(\"houseKind\").value === \"shinchiku\" ? \"construction\" : \"other\"; });",
+      "where": [
+        "r11修正対象の本文・同一主張のFAQ・meta（変更箇所はr11/applied-edits.jsonに記録）"
+      ],
+      "numbers": [
+        "66万円",
+        "34万円"
+      ],
+      "applies": "2026-09-28時点。適用年・時点は各主張の本文の限定に従う。",
+      "source_url": "https://www.tax.metro.tokyo.lg.jp/kazei/real_estate/fudosan",
+      "source_quote": "）・・・・・・・・・12万円【令和8年4月1日以降の取得の場合】土地・・・・・・・・・・・・・・・・・・16万円家屋新築、増築、改築・・・・・・・・・・66万円その他（売買など）・・・・・・・・・34万円ただし",
+      "exceptions": "住宅控除の新築区分と、免税点の建築／その他の取得区分は別。東京都の免税点表と73条の15の2を確認し、住宅・非住宅とは独立した取得態様の入力で判定する。 修正方針: 住宅控除の新築区分と、免税点の建築／その他の取得区分は別。東京都の免税点表と73条の15の2を確認し、住宅・非住宅とは独立した取得態様の入力で判定する。"
     }
   ],
-  "absolutes": []
+  "absolutes": [],
+  "tool_cases": [
+    {
+      "input": {
+        "houseKind": "shinchiku",
+        "houseAcquisition": "other",
+        "houseValue": 12340000,
+        "landValue": 0
+      },
+      "expected": 10200,
+      "source_url": "https://www.tax.metro.tokyo.lg.jp/kazei/real_estate/fudosan",
+      "note": "r11一次資料の規則による境界値・反例。完全な入力と実行結果はtests/test_<tool>.mjsおよびr11/red-*.log、green-*.log。"
+    },
+    {
+      "input": {
+        "houseKind": "hijutaku",
+        "houseAcquisition": "construction",
+        "houseValue": 659999,
+        "landValue": 0
+      },
+      "expected": 0,
+      "source_url": "https://www.tax.metro.tokyo.lg.jp/kazei/real_estate/fudosan",
+      "note": "r11一次資料の規則による境界値・反例。完全な入力と実行結果はtests/test_<tool>.mjsおよびr11/red-*.log、green-*.log。"
+    }
+  ]
 }

@@ -83,6 +83,7 @@ export function calcKabe(input, refs) {
 
   const annual = Math.max(0, Math.floor(Number(input.annual) || 0));
   const age = Number(input.age) || 0;
+  if (age >= 75) throw new Error('75歳以上は後期高齢者医療の対象となるため、この計算機の対象外です');
   const wallType = WALL_TYPES.includes(input.wallType) ? input.wallType : 'hifuyousha';
   const kenkoRate = S.kenko_rates[input.prefecture];
   if (!(kenkoRate > 0)) throw new Error('健康保険料率が特定できません（都道府県を確認してください）');

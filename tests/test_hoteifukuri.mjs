@@ -1,3 +1,4 @@
+import assertR11 from 'node:assert/strict';
 /**
  * 法定福利費（事業主負担）の検査。
  *
@@ -165,6 +166,12 @@ assertR7.equal(jigyonushiFutan({hyojun:650000,chingin:650000,kenkoPct:9.85,rousa
  eq(r.kosei,8052,'r10 健保58000円でも厚年は下限88000円');
  eq(r.kosodate,316,'r10 拠出金にも厚年下限を適用');
  eq(r.total,11958,'r10 最低等級の事業主負担合計');
+}
+
+
+// r11: 東京ハローワーク001924585.pdf 給与控除は50銭以下切捨て、超は切上げ。
+for (const [wage, expected] of [[100100,500],[100101,501],[100200,501]]) {
+ assertR11.equal(jigyonushiFutan({hyojun:300000,chingin:wage,kenkoPct:9.85,rousaiSen:3},S).koyouWorker,expected,`r11 雇用保険50銭境界 ${wage}`);
 }
 
 process.exit(fail ? 1 : 0);

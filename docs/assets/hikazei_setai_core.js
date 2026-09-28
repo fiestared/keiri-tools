@@ -186,8 +186,8 @@ function hantei1(sho, fuyoCount, hasSpouseDep, m, kyuchi, J) {
  *   夫100万・妻60万・子2人（1級地）は、子を1人ずつ分けたときだけ世帯非課税になる。
  *
  * assign[i] = その人を扶養している人の index（-1 = 誰の扶養にも入らない）。
- * 扶養に入れるのは合計所得が58万円以下の人だけで、扶養に入っている人は他人を扶養できない
- * （重ねて数えると同じ人を二重に数えることになる）。
+ * 扶養の所得要件は年度別の参照データで判定する。
+ * 扶養されている人が別の親族を扶養する一方向の連鎖も候補に含める。
  */
 function searchAssignments(members, shotokus, kyuchi, J, D) {
   const n = members.length;
@@ -197,9 +197,13 @@ function searchAssignments(members, shotokus, kyuchi, J, D) {
   let best = null;
 
   const evaluate = (assign) => {
-    // 扶養に入っている人は扶養者になれない
+    // 一方向の連鎖（夫→妻→子）は許容する。同じ人の重複計上は配列で防ぎ、循環だけ除く。
     for (let i = 0; i < n; i++) {
-      if (assign[i] >= 0 && assign.some((a, k) => k !== i && a === i)) return null;
+      const seen = new Set([i]);
+      for (let j = assign[i]; j >= 0; j = assign[j]) {
+        if (seen.has(j)) return null;
+        seen.add(j);
+      }
     }
     const rows = [];
     for (let i = 0; i < n; i++) {

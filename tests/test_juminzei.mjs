@@ -1,3 +1,4 @@
+import assertR11 from 'node:assert/strict';
 /**
  * 住民税（所得割）・ふるさと納税限度額コアの検査。
  *
@@ -550,5 +551,20 @@ console.log('\n■ ★★令和8年分（zeisei:"r8"）— 令和8年度税制�
  eq(r9.shotokuwariJissaiDofuken,200,'R9 府民税100円未満切捨');
  eq(r9.juminzeiTotal,6300,'R9 大阪市の均等割等5300円を加算');
 }
+
+// r11: 地方税法23条「寡婦…ひとり親に該当しないもの」。
+assertR11.equal(calc({kyuyoShunyu:3000000,shakaiHoken:0,family:{hitorioyaHaha:true,kafu:true}},D).juminzeiTotal,129000,'r11 寡婦とひとり親は重複しない');
+// r11: NTA1155。住民税295条の非課税でも所得税の寄附金控除は残る。
+{
+ const r=calc({kyuyoShunyu:2090000,shakaiHoken:0,zeisei:'r8',family:{honninShogai:true,shogaiIppan:1},kifu:10000},D);
+ assertR11.equal(r.shotokuwari,0);
+ assertR11.equal(r.kifu.kihon,0,'r11 非課税時の住民税基本分');
+ assertR11.equal(r.kifu.tokurei,0,'r11 非課税時の住民税特例分');
+ assertR11.equal(r.kifu.shotokuzei,408,'r11 8,000円×5%×1.021の概算');
+ assertR11.equal(r.kifu.jikoFutan,9592);
+ const noTax=calc({kyuyoShunyu:1000000,zeisei:'r8',family:{},kifu:10000},D);
+ assertR11.equal(noTax.kifu.total,0,'r11 所得税も住民税もゼロなら控除なし');
+}
+
 console.log(`\n${failed === 0 ? '✅' : '❌'} test_juminzei: ${checks - failed}/${checks} checks passed`);
 if (failed > 0) process.exit(1);

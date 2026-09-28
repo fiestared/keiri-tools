@@ -1,3 +1,4 @@
+import assertR11 from 'node:assert/strict';
 import {contentHTML} from './layout/content-html.mjs';
 /**
  * 不動産取得税の計算コアの検査。
@@ -462,6 +463,14 @@ for (const [value, expected] of [[12659999,0],[12660000,19800],[12661000,19800]]
 for (const [value, expected] of [[12339999,0],[12340000,10200]]) {
   eq(`R9 中古控除後の免税点 ${value}`, calcFudosanShutoku({...base, acquireDate:'2026-09-01',houseKind:'chuko',builtDate:'2020-01-01',selfUse:true,houseValue:value,landValue:0}).house.tax,expected);
 }
+
+// r11: 東京都主税局「家屋 新築、増築、改築66万円／その他（売買など）34万円」。
+for (const [kind, acquisition, value, expected] of [
+ ['shinchiku','other',12339999,0],['shinchiku','other',12340000,10200],['shinchiku','other',12500000,15000],
+ ['hijutaku','construction',659999,0],['hijutaku','construction',660000,26400],['hijutaku','other',500000,20000]]) {
+ assertR11.equal(calcFudosanShutoku({...base,acquireDate:'2026-09-28',houseKind:kind,houseAcquisition:acquisition,houseValue:value,landValue:0}).house.tax,expected,`r11 ${kind}/${value}`);
+}
+
 console.log(`${pass} passed, ${fails.length} failed`);
 if (fails.length) {
   for (const f of fails) console.log("  ✗ " + f);

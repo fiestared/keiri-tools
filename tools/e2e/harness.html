@@ -424,6 +424,21 @@ const fillLines = (doc, rows) => {
 
 // 国税庁 インボイスQ&A 問57 の記載例そのもの。税込100,000円 / 10%と8%の混在。
 // 10%対象 60,000 → 5,454円 / 8%対象 40,000 → 2,962円 / 合計 8,416円
+SCENES.shohizei_hikaku = async () => {
+  const doc = await open("/docs/shohizei/");
+  doc.getElementById("h-sales").value = "11000000";
+  doc.getElementById("h-purchase").value = "5500000";
+  doc.getElementById("h-kubun").value = "5";
+  pickRadio(doc, "h-kojin", "kojin");
+  click(doc, "h-calc");
+  await waitFor(() => text(doc,"h-result").includes("売上税額"), "方式比較の計算結果");
+  const result=doc.getElementById("h-result"), body=result.textContent;
+  return { amounts: ["500,000", "200,000", "300,000"].every(x=>body.includes(x)),
+    periods: body.includes("使える年が重なりません"),
+    noBest: !result.querySelector('tr[style*="font-weight"]'),
+    noAdvanceNotice: body.includes("2割特例は事前届出不要") };
+};
+
 SCENES.shohizei_invoice = async () => {
   const doc = await open("/docs/shohizei/");
   pickRadio(doc, "inv-dir", "included");

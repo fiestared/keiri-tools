@@ -167,9 +167,11 @@ export function calcFudosanShutoku(input) {
   house.floorOk = kubun.jutaku && houseFloor >= yoken.min && houseFloor <= yoken.max;
 
   if (kubun.key !== "none" && houseValue > 0) {
-    // 免税点の判定は「建築に係るもの」＝新築かどうかで線が違う（法73条の15の2）。
+    // 免税点は住宅区分とは独立して、取得が「建築に係るもの」かで判定する（法73条の15の2）。
     // 住宅控除後の課税標準となるべき額で判定する（神奈川県・愛知県の免税点の説明）。
-    house.menzeitenLine = kubun.key === "shinchiku" ? menzeiten.kenchiku : menzeiten.sonota;
+    const construction = input.houseAcquisition === 'construction' ||
+      (input.houseAcquisition == null && kubun.key === 'shinchiku');
+    house.menzeitenLine = construction ? menzeiten.kenchiku : menzeiten.sonota;
 
 
     if (kubun.key === "shinchiku") {

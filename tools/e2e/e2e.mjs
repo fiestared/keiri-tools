@@ -77,6 +77,7 @@ const SCENES = [
       s.showsLegal && !s.showsCarried && !s.clampNote },
 
   // 消費税: 国税庁Q&A問57の記載例(税込10万・8%と10%混在)を画面が再現すること
+  { name: "shohizei_hikaku", expect: (s) => s.amounts && s.periods && s.noBest && s.noAdvanceNotice },
   { name: "shohizei_invoice", expect: (s) =>
       s.expected.total === 8416 && s.showsStd && s.showsRed && s.showsTotal },
   // 明細ごとの端数処理(認められない方法)との差を、黙って飲み込まず警告すること

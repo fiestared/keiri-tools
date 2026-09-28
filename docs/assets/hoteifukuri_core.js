@@ -69,7 +69,8 @@ export function jigyonushiFutan({ hyojun, chingin, kenkoPct, kaigo = false, koyo
   // ★雇用保険は労使で率が違う（事業主は二事業分を上乗せ）
   const koyouT = S.koyou.types[koyouType] || S.koyou.types.general;
   const koyou = permille(c, koyouT.employer_permille);
-  const koyouWorker = permille(c, koyouT.worker_permille);
+  // 給与控除・特約なしの本人負担は50銭以下切捨て、50銭超切上げ。
+  const koyouWorker = Math.ceil(c * koyouT.worker_permille / 1000 - 0.5);
   // ★労災保険は全額事業主負担
   const rousai = rousaiSen == null ? null : permille(c, rousaiSen);
 

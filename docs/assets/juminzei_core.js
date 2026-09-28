@@ -178,7 +178,7 @@ function normalizeFamily(f) {
     shogaiIppan: n(f?.shogaiIppan),
     shogaiTokubetsu: n(f?.shogaiTokubetsu),
     shogaiDokyoTokubetsu: n(f?.shogaiDokyoTokubetsu),
-    kafu: !!f?.kafu,
+    kafu: !!f?.kafu && !f?.hitorioyaHaha && !f?.hitorioyaChichi,
     hitorioyaHaha: !!f?.hitorioyaHaha,
     hitorioyaChichi: !!f?.hitorioyaChichi,
     kinroGakusei: !!f?.kinroGakusei,
@@ -333,8 +333,8 @@ export function furusatoKojo(kifu, shotokuwariShichoson, shotokuwariDofuken, pct
 
   const sPct = shiteiToshi ? Z.shitei_shichoson_pct : Z.shichoson_pct;
   const dPct = shiteiToshi ? Z.shitei_dofuken_pct : Z.dofuken_pct;
-  const kihonS = Math.ceil(kihonTaisho * sPct / 100);
-  const kihonD = Math.ceil(kihonTaisho * dPct / 100);
+  const kihonS = Math.min(shotokuwariShichoson, Math.ceil(kihonTaisho * sPct / 100));
+  const kihonD = Math.min(shotokuwariDofuken, Math.ceil(kihonTaisho * dPct / 100));
 
   // 特例分（20%上限つき）。★特例分には30%の上限は掛からない（11項に規定がない）
   const taisho = k - F.jiko_futan;
@@ -543,8 +543,8 @@ export function calc(input, D) {
   //   標準税率で計算した額を明文で指すので、自治体の超過課税・減税は限度額を1円も動かさない。
   const shichosonRaw = Math.floor(kazei * sPct / 100);
   const dofukenRaw = Math.floor(kazei * dPct / 100);
-  const shichoson = Math.max(0, shichosonRaw - chosei.shichoson);
-  const dofuken = Math.max(0, dofukenRaw - chosei.dofuken);
+  const shichoson = hikazei.shotokuwariHikazei ? 0 : Math.max(0, shichosonRaw - chosei.shichoson);
+  const dofuken = hikazei.shotokuwariHikazei ? 0 : Math.max(0, dofukenRaw - chosei.dofuken);
   // 所得割が非課税なら、控除される所得割そのものが無い（限度額も自己負担2,000円だけになる）
   const shotokuwari = hikazei.shotokuwariHikazei ? 0 : shichoson + dofuken;
 

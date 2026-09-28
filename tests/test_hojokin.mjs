@@ -1,3 +1,4 @@
+import assertR11 from 'node:assert/strict';
 /**
  * 補助金の検索（jGrants データ）の検査。
  *
@@ -217,6 +218,14 @@ console.log('★壊しテスト');
   ok(seikai === 1 && machigai === 0,
     '★完全一致で絞ると、複数県が対象の補助金がその県で出てこない');
   checks++;
+}
+
+
+// r11: jGrants a0WJ200000CDeNDMA1 公表締切2026-09-28T03:00Z。
+{
+ const row={acceptance_end_datetime:'2026-09-28T03:00Z'};
+ assertR11.equal(isOpen(row,new Date('2026-09-28T02:59:59Z')),true);
+ assertR11.equal(isOpen(row,new Date('2026-09-28T03:00:01Z')),false,'r11 同日でも締切時刻後は終了');
 }
 
 console.log(`\n${fail ? '✗' : '✓'} test_hojokin: ${checks} checks, ${fail} failed`);

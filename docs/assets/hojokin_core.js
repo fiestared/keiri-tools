@@ -84,9 +84,8 @@ export function daysLeft(row, today) {
  * 締切の記載が無いものは**落とさない**（記載漏れで消すと、実在する補助金が見えなくなる）。
  */
 export function isOpen(row, today) {
-  const n = daysLeft(row, today);
-  if (n === null) return true;
-  return n >= 0;
+  const end = parseDt(row.acceptance_end_datetime);
+  return end === null || today.getTime() <= end.getTime();
 }
 
 /** 受付がまだ始まっていないか（開始前のものは「予告」として区別する） */
@@ -141,6 +140,7 @@ export function fmtDeadline(row, today = new Date()) {
   const n = daysLeft(row, today);
   if (!end || n === null) return { text: '締切の記載なし', cls: '' };
   const date = `${end.getMonth() + 1}/${end.getDate()}(${'日月火水木金土'[end.getDay()]})`;
+  if (!isOpen(row, today)) return { text: `${date}締切済み`, cls: '' };
   if (n === 0) return { text: `本日 ${date}締切`, cls: 'hj-soon' };
   return { text: `${date}まで・あと${n}日`, cls: n <= 7 ? 'hj-near' : '' };
 }
