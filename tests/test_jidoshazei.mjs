@@ -167,5 +167,14 @@ t('単調性: 排気量が上がれば年額は非減少（新税率・旧税率
   }
 });
 
+
+// R9: 三重県令和8年度税額表、公表年額6,500円と適用年度の境界。
+// https://www.pref.mie.lg.jp/common/content/001128502.pdf
+t('R9 EV75%軽課は令和7年度初度登録の翌年度だけ',()=>{
+ for(const [firstReg,annual] of [['2025-03',25000],['2025-04',6500],['2026-03',6500],['2026-04',25000]])
+  assert.strictEqual(P({cc:'ev',fuel:'ev_other',firstReg}).annual,annual,firstReg);
+ assert.strictEqual(P({cc:'ev',fuel:'ev_other',firstReg:'2025-04'}).dueThisYear,6500);
+ assert.strictEqual(P({cc:'ev',fuel:'ev_other',firstReg:'2025-04',prorateMonth:4}).proration.amount,22900);
+});
 console.log(`\n${fail ? '❌' : '✓'} 自動車税コア: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

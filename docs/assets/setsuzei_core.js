@@ -61,7 +61,7 @@ export function taxSaving(input, D) {
   const taxBefore = shotokuzei(kazei, D);
   const taxAfter = shotokuzei(kazei - deduction, D); // 速算表の差＝超過累進を厳密に反映
   const shotokuGen = Math.max(0, taxBefore - taxAfter);                 // 所得税の減少
-  const fukkoGen = Math.floor(shotokuGen * (D.fukko_rate || 0));        // 復興特別所得税の減少(2.1%)
+  const fukkoGen = Math.floor(taxBefore * (D.fukko_rate || 0)) - Math.floor(taxAfter * (D.fukko_rate || 0));        // 復興特別所得税の減少(2.1%)
   const residentUsed = input.juminKazeiShotoku == null ? deduction : Math.min(deduction, yen0(input.juminKazeiShotoku));
   const juminGen = Math.floor(residentUsed * (D.juminzei_shotokuwari_rate || 0)); // 住民税の減少(概算・一律10%)
   const total = shotokuGen + fukkoGen + juminGen;
@@ -110,7 +110,7 @@ export function taxSavingSplit(input, D) {
   const taxBefore = shotokuzei(kazei, D);
   const taxAfter = shotokuzei(kazei - sKojo, D); // 速算表の差＝超過累進を厳密に反映
   const shotokuGen = Math.max(0, taxBefore - taxAfter);
-  const fukkoGen = Math.floor(shotokuGen * (D.fukko_rate || 0));
+  const fukkoGen = Math.floor(taxBefore * (D.fukko_rate || 0)) - Math.floor(taxAfter * (D.fukko_rate || 0));
   const juminGen = Math.floor(usedJumin * (D.juminzei_shotokuwari_rate || 0));
   const total = shotokuGen + fukkoGen + juminGen;
 

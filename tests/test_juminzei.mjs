@@ -317,8 +317,8 @@ console.log('\n■ ★★超過課税は「納税額」を動かすが「ふる�
   // 一方、実際に払う所得割は増える（＝限度額と納税額で答えが逆になる）
   ok(kanagawa.shotokuwariJissai > hyojun.shotokuwariJissai,
      '★しかし実際に払う所得割は神奈川県のほうが高い（超過課税がここには効く）');
-  eq(kanagawa.shotokuwariJissai - hyojun.shotokuwariJissai, 607,
-     '　└ 年収500万・独身・社保70万での差は607円（課税総所得243万 × 0.025%）');
+  eq(kanagawa.shotokuwariJissai - hyojun.shotokuwariJissai, 600,
+     '　└ 年収500万・独身・社保70万での差は600円（課税総所得243万 × 0.025%、府県民税100円未満切捨後）');
   eq(yokohama.shotokuwariJissai, kanagawa.shotokuwariJissai,
      '　└ 横浜市も同額（8%+2.025% ＝ 6%+4.025%。指定都市かどうかで合計は変わらない）');
 
@@ -541,5 +541,14 @@ console.log('\n■ ★★令和8年分（zeisei:"r8"）— 令和8年度税制�
   checks++; if (!both) { failed++; console.log('  ❌ /juminzei/ に「令和7年分=110万円 / 令和8年分=119万円」の年分併記が無い'); }
 }
 
+
+// R9: 大阪市 https://www.city.osaka.lg.jp/zaisei/page/0000383147.html
+// 課税所得21,000円、調整控除後840円/210円を各100円未満切捨。
+{
+ const r9=calc({kyuyoShunyu:1191097,zeisei:'r8',shakaiHoken:0,family:{},kyuchi:1,jichitai:'osaka_shitei'},D);
+ eq(r9.shotokuwariJissaiShichoson,800,'R9 市民税100円未満切捨');
+ eq(r9.shotokuwariJissaiDofuken,200,'R9 府民税100円未満切捨');
+ eq(r9.juminzeiTotal,6300,'R9 大阪市の均等割等5300円を加算');
+}
 console.log(`\n${failed === 0 ? '✅' : '❌'} test_juminzei: ${checks - failed}/${checks} checks passed`);
 if (failed > 0) process.exit(1);

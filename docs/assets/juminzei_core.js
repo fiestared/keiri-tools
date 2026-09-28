@@ -552,10 +552,11 @@ export function calc(input, D) {
   // 超過課税（神奈川県 +0.025%）・減税（名古屋市 7.7%）はこちらにだけ効く。
   const aSPct1000 = hasJichitai ? J.shichoson_pct_x1000 : sPct * 1000;
   const aDPct1000 = hasJichitai ? J.dofuken_pct_x1000 : dPct * 1000;
+  // 確定所得割は市町村・道府県ごとに100円未満切捨。上の特例控除上限用の額とは区別する。
   const jissaiShichoson = hikazei.shotokuwariHikazei
-    ? 0 : Math.max(0, Math.floor(kazei * aSPct1000 / 100000) - chosei.shichoson);
+    ? 0 : Math.floor(Math.max(0, Math.floor(kazei * aSPct1000 / 100000) - chosei.shichoson) / 100) * 100;
   const jissaiDofuken = hikazei.shotokuwariHikazei
-    ? 0 : Math.max(0, Math.floor(kazei * aDPct1000 / 100000) - chosei.dofuken);
+    ? 0 : Math.floor(Math.max(0, Math.floor(kazei * aDPct1000 / 100000) - chosei.dofuken) / 100) * 100;
   const shotokuwariJissai = jissaiShichoson + jissaiDofuken;
 
   // ── ③ 均等割＋森林環境税 ────────────────────────────────────

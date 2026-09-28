@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>手取り計算機｜額面月給から手取りを自動計算【2026年度・社会保険料＋所得税＋住民税】</title>
-<meta name="description" content="額面の月給を入れるだけで、健康保険・厚生年金・雇用保険・子ども子育て支援金の社会保険料、給与の源泉所得税、住民税を差し引いた手取りを自動計算。令和8年度（2026年度）の都道府県別料率・国税庁の月額表で計算します。住民税は前年の所得で決まるため、概算・給与明細の実額入力・含めないを選べます。登録不要・無料。">
+<meta name="description" content="非課税手当を含まない額面の月給から、健康保険・厚生年金・雇用保険・子ども子育て支援金の社会保険料、給与の源泉所得税、住民税を差し引いた手取りを自動計算。令和8年度（2026年度）の都道府県別料率・国税庁の月額表で計算します。住民税は前年の所得で決まるため、概算・給与明細の実額入力・含めないを選べます。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/tedori/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="手取り計算機｜額面月給から手取りを自動計算【2026年度・社会保険料＋所得税＋住民税】">
-<meta property="og:description" content="額面の月給を入れるだけで、健康保険・厚生年金・雇用保険・子ども子育て支援金の社会保険料、給与の源泉所得税、住民税を差し引いた手取りを自動計算。令和8年度（2026年度）の都道府県別料率・国税庁の月額表で計算します。住民税は前年の所得で決まるため、概算・給与明細の実額入力・含めないを選べます。登録不要・無料。">
+<meta property="og:description" content="非課税手当を含まない額面の月給から、健康保険・厚生年金・雇用保険・子ども子育て支援金の社会保険料、給与の源泉所得税、住民税を差し引いた手取りを自動計算。令和8年度（2026年度）の都道府県別料率・国税庁の月額表で計算します。住民税は前年の所得で決まるため、概算・給与明細の実額入力・含めないを選べます。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/tedori/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -133,7 +133,7 @@
 <section class="hero">
   <h1>手取り計算機</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-16">2026年7月16日</time>（更新日: <time datetime="2026-09-28">2026年9月28日</time>）</p>
-  <p>額面の月給を入れるだけで、<b>社会保険料</b>（健康保険・厚生年金・雇用保険・子ども子育て支援金）・<b>給与の源泉所得税</b>・<b>住民税</b>を差し引いた<b>手取り</b>を自動計算します。<b>2026年度の都道府県別料率</b>と国税庁の月額表に対応。</p>
+  <p>非課税手当を含まない額面の月給から、<b>社会保険料</b>（健康保険・厚生年金・雇用保険・子ども子育て支援金）・<b>給与の源泉所得税</b>・<b>住民税</b>を差し引いた<b>手取り</b>を自動計算します。<b>2026年度の都道府県別料率</b>と国税庁の月額表に対応。</p>
 </section>
 
 <div class="card">
@@ -150,9 +150,9 @@
     </div>
   </div>
 
-  <label for="gross">額面の月給（円）</label>
+  <label for="gross">額面の月給（非課税手当がある給与は対象外／円）</label>
   <input type="number" id="gross" placeholder="例: 300000" inputmode="numeric" aria-describedby="gross-hint">
-      <span id="gross-hint" class="hint">基本給＋残業手当＋通勤手当など、税引き前の総支給額</span>
+      <span id="gross-hint" class="hint">基本給＋残業手当など、税引き前の総支給額。この計算機は非課税通勤手当等を含まない給与が対象です。非課税手当がある場合は、社会保険と税の対象額を分けられないため試算対象外です。</span>
 
   <label for="dependents">扶養親族等の数</label>
   <input type="number" id="dependents" value="0" min="0" max="20" inputmode="numeric" aria-describedby="dependents-hint">
@@ -372,7 +372,7 @@
 <p>つまり<b>4〜6月の平均が1円違うだけで、9月から翌年8月までの1年間、毎月の保険料が変わり続ける</b>ということです。「4〜6月に残業をすると社会保険料が上がる」と言われるのは、この条文が理由です。</p>
 
 <div class="callout">
-<p><b>ただし「支払基礎日数17日未満の月」は平均から外れる</b></p>
+<p><b>ただし「支払基礎日数17日未満の月（適用拡大の短時間労働者は11日未満）」は平均から外れる</b></p>
 <p>41条1項には続きがあり、<b>「報酬支払の基礎となった日数が17日…未満である月があるときは、その月を除く」</b>とあります。たとえば4月が欠勤続きで支払基礎日数が17日に満たなければ、<b>その月は平均の計算から丸ごと除かれ、5月と6月の2か月平均</b>になります。「4月の給料が少なかったから今年は等級が下がるはず」と考えると、外れることがあります。</p>
 </div>
 

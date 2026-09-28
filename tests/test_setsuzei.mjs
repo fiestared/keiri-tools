@@ -12,6 +12,12 @@ assertR8.equal(saveR8({kazeiShotoku:20000,juminKazeiShotoku:0,annualDeduction:40
 assertR8.equal(splitR8({kazeiShotoku:20000,shotokuKojo:40000,juminKojo:28000},refR8).juminGen,2800);
 assertR8.equal(splitR8({kazeiShotoku:20000,juminKazeiShotoku:630000,shotokuKojo:40000,juminKojo:28000},refR8).total,3821);
 assertR8.equal(splitR8({kazeiShotoku:20000,juminKazeiShotoku:0,shotokuKojo:40000,juminKojo:28000},refR8).juminGen,0);
+
+// R9: 国税庁 確定申告の手引き。復興税は前後の基準所得税額ごとに切捨。
+// https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/03/order4/3-4_45.htm
+assertR8.equal(splitR8({kazeiShotoku:1955000,shotokuKojo:380000,juminKojo:330000},refR8).fukkoGen,405);
+assertR8.equal(splitR8({kazeiShotoku:1955000,shotokuKojo:380000,juminKojo:330000},refR8).total,52655);
+assertR8.equal(saveR8({kazeiShotoku:1955000,annualDeduction:380000},refR8).fukkoGen,405);
 /**
  * 節税額コア（setsuzei_core.js）のオラクル照合。
  *
@@ -60,7 +66,7 @@ eq(shotokuzei(3_000_999, D), 202_500, "3,000,999 → 千円未満切捨てで300
   const r = taxSaving({ kazeiShotoku: 3_000_000, annualDeduction: 276_000 }, D);
   eq(r.shotokuGen, 27_600, "300万×年27.6万: 所得税減 27,600");
   eq(r.juminGen, 27_600, "300万×年27.6万: 住民税減 27,600");
-  eq(r.total, 55_779, "300万×年27.6万: 節税額合計 55,779");
+  eq(r.total, 55_780, "300万×年27.6万: 節税額合計 55,780");
 }
 // 低所得: 課税所得10万・年276,000 → 控除は所得の範囲でしか効かない（住民税減が頭打ち）
 {

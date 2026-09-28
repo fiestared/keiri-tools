@@ -168,10 +168,9 @@ export function calcFudosanShutoku(input) {
 
   if (kubun.key !== "none" && houseValue > 0) {
     // 免税点の判定は「建築に係るもの」＝新築かどうかで線が違う（法73条の15の2）。
-    // 判定は控除前の価格で行う。控除で課税標準が0になる場合は税額も0なので、
-    // どちらで判定しても最終税額は変わらない（安全側で一致する）。
+    // 住宅控除後の課税標準となるべき額で判定する（神奈川県・愛知県の免税点の説明）。
     house.menzeitenLine = kubun.key === "shinchiku" ? menzeiten.kenchiku : menzeiten.sonota;
-    house.taxable = houseValue >= house.menzeitenLine;
+
 
     if (kubun.key === "shinchiku") {
       if (house.floorOk) {
@@ -197,6 +196,7 @@ export function calcFudosanShutoku(input) {
     }
 
     if (!house.uncomputable) {
+      house.taxable = Math.max(0, houseValue - house.kojo) >= house.menzeitenLine;
       house.base = house.taxable ? floor1000(Math.max(0, houseValue - house.kojo)) : 0;
       house.tax = floor100((house.base * house.rate) / 100);
     }

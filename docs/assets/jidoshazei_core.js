@@ -150,6 +150,14 @@ export function calcJidoshazei(input, D) {
     }
   }
 
+  // 令和8年度のEV軽課。初度登録翌年度のみ。登録年度の月割とは別。
+  const green = D.passenger.ev_green;
+  if (!i.prorateMonth && isEvBracket && green &&
+      firstReg >= green.first_reg_from && firstReg <= green.first_reg_to) {
+    annual = green.annual;
+    notes.push(green.note);
+  }
+
   // 月割（急所4）: その月に新規登録した年度の月割。必ず標準税率に対して行う（新車なので重課でない）
   let proration = null;
   if (i.prorateMonth) {

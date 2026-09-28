@@ -453,6 +453,15 @@ eq("R7 非自己居住の中古住宅・土地の税額", calcFudosanShutoku(r7f
 // 昭和57年以後の耐震基準を満たす既存住宅。家屋控除額の未確認と土地要件を分離。
 eq("R7 家屋控除額表の未収録と敷地軽減は独立", calcFudosanShutoku({...r7f,builtDate:'2010-01-01',selfUse:true}).land.tax,0);
 
+
+// R9: 神奈川県「不動産取得税」免税点は住宅控除後。
+// https://www.pref.kanagawa.jp/zei/kenzei/a001/b011/index.html
+for (const [value, expected] of [[12659999,0],[12660000,19800],[12661000,19800]]) {
+  eq(`R9 新築控除後の免税点 ${value}`, calcFudosanShutoku({...base, acquireDate:'2026-09-01', houseValue:value, landValue:0}).house.tax, expected);
+}
+for (const [value, expected] of [[12339999,0],[12340000,10200]]) {
+  eq(`R9 中古控除後の免税点 ${value}`, calcFudosanShutoku({...base, acquireDate:'2026-09-01',houseKind:'chuko',builtDate:'2020-01-01',selfUse:true,houseValue:value,landValue:0}).house.tax,expected);
+}
 console.log(`${pass} passed, ${fails.length} failed`);
 if (fails.length) {
   for (const f of fails) console.log("  ✗ " + f);
