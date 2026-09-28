@@ -29,6 +29,13 @@ const DOCS = join(ROOT, "docs");
 // 「制度の事実」= 年が変わっても真であり続ける記述。機械置換の対象にしてはいけない。
 // snippet はページに**そのまま含まれる**文字列。文言を変えたら免除が外れて落ちる。
 const HISTORICAL_FACTS = [
+  ...["shobyo/index.html", "shussan/index.html", "embed/shobyo/index.html", "embed/shussan/index.html"].map(file => ({
+    file, snippet: "例: 関東ITソフトウェア健保は令和8年度の支給開始で44万円",
+    reason: "関東ITソフトウェア健保の令和8年度支給開始に限定した平均標準報酬月額の参考例。" +
+      "https://www.its-kenpo.or.jp/hoken/kyufu/shoute/index.html が令和8年4月1日〜令和9年3月31日の支給開始に440,000円と公表。" +
+      "協会けんぽの参照データの年度申告ではなく、組合の方が入力を上書きする理由を示す年度付きの事実。" +
+      "年度・金額・適用対象を含む文言全体を照合し、どれかが変われば免除を再審査する。"
+  })),
   { file: "gensen-choshu/index.html",
     snippet: '<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2027/01.htm" rel="nofollow">国税庁：令和9年分 源泉徴収税額表</a>',
     reason: "国税庁が公開した将来年分の公式資料名の引用。2027-01-01適用の変更案内で、直前に計算機は2026年分と明記。" +

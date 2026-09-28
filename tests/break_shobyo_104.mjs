@@ -44,8 +44,8 @@ const BREAKS = [
   // ── コア: 104条の継続給付を殺す（＝本番で起きていたバグそのもの） ──
   [CORE, "★旧バグの再来: ninnikeizoku を見た瞬間に ¥0 を返す", (s) =>
     s.replace(
-      "  if (i.ninnikeizoku) {\n    const k = keizokuKyufu({",
-      "  if (i.ninnikeizoku) {\n    return { eligible: false, reason: 'ninnikeizoku', message: '99条1項 104条', total: 0 };\n    const k = keizokuKyufu({",
+      "  if (i.ninnikeizoku || i.taishokugo) {\n    const k = keizokuKyufu({",
+      "  if (i.ninnikeizoku || i.taishokugo) {\n    if (i.ninnikeizoku) return { eligible: false, reason: 'ninnikeizoku', message: '99条1項 104条', total: 0 };\n    const k = keizokuKyufu({",
     )],
   [CORE, "taishokugo を読まない（受給中かどうかを無視して常に false）", (s) =>
     s.replace("receivingAtLoss: !!i.taishokugo,", "receivingAtLoss: false,")],
@@ -54,7 +54,7 @@ const BREAKS = [
   [CORE, "被保険者期間を読み損なう（months を常に0にする）", (s) =>
     s.replace("const m = Math.floor(Number(i.months) || 0);\n  if (m > 0) return m;", "const m = 0;\n  if (m > 0) return m;")],
   [CORE, "via104 を名乗らない（画面が理由を出せなくなる）", (s) =>
-    s.replace("via104: !!i.ninnikeizoku,", "via104: false,")],
+    s.replace("via104: !!i.taishokugo,", "via104: false,")],
   [CORE, "1年未満を 99条1項の不支給と混同する（理由を区別しない）", (s) =>
     s.replace("reason: k.receiving ? 'keizoku_under1y' : 'ninnikeizoku',", "reason: 'ninnikeizoku',")],
 
