@@ -33,6 +33,9 @@ assert.ok(nums.has("8.8万円") && nums.has("550円") && nums.has("3万円") && 
 assert.ok(!nums.has("1,000円"), "nav の数字を主張として拾っている");
 assert.ok(!nums.has("130万円"), "関連記事（section.related）の数字を拾っている");
 assert.ok(![...nums].some((n) => n.startsWith("2026年9月")), "公開日（article-meta）を主張として拾っている");
+{ const n2 = findNumbers(claimText("<p>9月30日までは要件あり。10月1日に撤廃。30日以内に届け出る。</p>"));
+  assert.ok(n2.has("9月30日") && n2.has("10月1日") && n2.has("30日"), `年の付かない日付と日数: ${[...n2]}`);
+  assert.ok(!n2.has("1日"), "年の付かない日付の一部を日数として拾っている"); }
 assert.deepEqual(findAbsolutes("原則として学生は対象外").map((a) => a.phrase), ["原則"]);
 assert.equal(ledgerPath("docs/column/furikomi-tesuryo-hikaku/index.html"), "claims/column/furikomi-tesuryo-hikaku.json");
 assert.equal(ledgerPath("docs/yukyu/index.html"), "claims/yukyu.json");
