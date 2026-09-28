@@ -34,8 +34,7 @@
 export function extraDependentCount(opts = {}) {
   let n = 0;
   if (opts.shogaisha) n += 1;
-  if (opts.kafu) n += 1;
-  if (opts.hitorioya) n += 1;
+  if (opts.kafu || opts.hitorioya) n += 1; // 寡婦はひとり親に該当しない人（国税庁1170）
   if (opts.kinroGakusei) n += 1;
   n += Math.max(0, Math.floor(opts.shogaishaFuyoCount || 0));
   return n;

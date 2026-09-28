@@ -21,7 +21,7 @@
  *  3. ★**労災保険率は業種で35倍違う。**（2.5／1000 〜 88／1000）
  *     「だいたい0.3%」のような一律の見積りは、建設・林業・鉱業で大きく外す。
  *
- *  4. **このコアはメリット制を反映しない。** 継続事業では収支率で労災保険率が
+ *  4. **このコアはメリット制を反映しない。** 継続事業では収支率で非業務災害率を除く部分が
  *     最大±40%増減しうるが（徴収法12条3項）、適用の有無と増減率は個別に決まる。
  */
 
@@ -59,11 +59,11 @@ export function jigyonushiFutan({ hyojun, chingin, kenkoPct, kaigo = false, koyo
   const kenkoKaigo = component(Number(kenkoPct) + (kaigo ? S.kaigo_rate : 0), h);
   const kenko = kenkoOnly.company;
   const kaigoBun = kenkoKaigo.company - kenko;
-  const koseiPart = component(S.kosei_nenkin_rate, Math.min(h, 650000));
+  const koseiPart = component(S.kosei_nenkin_rate, Math.max(88000, Math.min(h, 650000)));
   const kosei = koseiPart.company;
   const shien = component(S.kosodate_rate, h);
   // 拠出金は支援金と別制度。厚年の標準報酬に0.36%、全額会社負担。
-  const kosodate = percent(Math.min(h, 650000), S.kodomo_kyoshutsu_rate);
+  const kosodate = percent(Math.max(88000, Math.min(h, 650000)), S.kodomo_kyoshutsu_rate);
 
   // ── 賃金総額にかかるもの ────────────────────────────
   // ★雇用保険は労使で率が違う（事業主は二事業分を上乗せ）

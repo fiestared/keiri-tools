@@ -218,5 +218,14 @@ const A = (group, key) => D[group].kubun.find((k) => k.key === key).amount;
   ok("§9 年分がページに出ている", visible.includes(D._meta.year));
 }
 
+
+// r10: 国税庁の令和2年源泉徴収票にも基礎控除欄がある。
+{
+ const r=checkSanKojo({san:1000000,printed:{shakaiHoken:750000},counts:{}},D);
+ const text=r.notes.find(n=>n.key==='kiso').text;
+ ok('r10 基礎控除欄の成立年を令和2年とする',text.includes('令和2年'));
+ ok('r10 空欄だけで年末調整なしと断定しない',!text.includes('空欄なら年末調整をしていません'));
+}
+
 console.log(`test_gensen_kojo_check: ${pass} passed, ${fails.length} failed`);
 if (fails.length) { for (const f of fails) console.log("  FAIL " + f); process.exit(1); }

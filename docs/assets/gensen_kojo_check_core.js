@@ -166,10 +166,10 @@ export function checkSanKojo(input = {}, D) {
   }
   if (remainder > 0 && explains.some((e) => e.keys.some((k) => k.startsWith('honnin_')))) {
     // 急所3
-    notes.push({ key: 'honnin', text: '「障害者の数」欄は本人を含みません。本人が障害者の場合の27万円（特別障害者は40万円）は、人数欄には現れずここに残差として出ます。' });
+    notes.push({ key: 'honnin', text: '「障害者の数」欄は本人を含みません。本人が障害者の場合の27万円（特別障害者は40万円）は、人数欄には現れず残差となります。票下部の本人の障害者・寡婦・ひとり親・勤労学生の区分欄と照合してください。' });
   }
   if (yen(input.printed?.kisoKojo) === 0) {
-    notes.push({ key: 'kiso', text: '「基礎控除の額」が0円のままです。令和7年分から独立した欄になっており、年末調整をしていれば必ず金額が入っています（空欄なら年末調整をしていません）。' });
+    notes.push({ key: 'kiso', text: '「基礎控除の額」が0円のままです。「基礎控除の額」欄は令和2年分からあります。対象年分の記載要領と年末調整の有無を確認して入力してください。' });
   }
 
   return {

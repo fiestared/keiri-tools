@@ -103,3 +103,7 @@ assert.equal(iso(addDays(d("2026-12-31"), 1)), "2027-01-01");
 }
 
 console.log("all eigyobi_core tests passed");
+
+// r10: 内閣府CSV 2024/2/12は振替休日。
+assert.equal(iso(addBusinessDays(d('2024-02-09'),1,H)), '2024-02-13');
+assert.equal(iso(adjust(d('2024-02-12'),'next',H)), '2024-02-13');

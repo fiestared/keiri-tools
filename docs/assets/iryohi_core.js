@@ -93,6 +93,7 @@ export function rateFromKazei(kazei, I) {
 
 /** 渡された税率(%)が速算表の税率のどれかに一致するか（＝正しく選ばれたか）。 */
 export function isValidRate(rate, I) {
+  if (rate === "" || rate === null || rate === undefined) return false;
   const r = Number(rate);
   return I.keigen.shotokuzei_brackets.some((b) => b.rate_pct === r);
 }

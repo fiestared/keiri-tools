@@ -158,4 +158,13 @@ assertR7.equal(r7f.honninTotal,44070);
 assertR7.equal(jigyonushiFutan({hyojun:650000,chingin:650000,kenkoPct:9.85,rousaiSen:3},S).kenko,32013);
 
 
+
+// r10: 日本年金機構 R08ryougaku.pdf 第1級88000円。
+{
+ const r = jigyonushiFutan({hyojun:58000,chingin:58000,kenkoPct:9.85,kaigo:false,koyouType:'general',rousaiSen:3},S);
+ eq(r.kosei,8052,'r10 健保58000円でも厚年は下限88000円');
+ eq(r.kosodate,316,'r10 拠出金にも厚年下限を適用');
+ eq(r.total,11958,'r10 最低等級の事業主負担合計');
+}
+
 process.exit(fail ? 1 : 0);

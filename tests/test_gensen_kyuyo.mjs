@@ -171,3 +171,10 @@ t("第1表・第3表・第4表の端数処理", () => {
 });
 
 console.log(`✓ test_gensen_kyuyo: ${pass} 件 pass`);
+
+// r10: 国税庁1170「ひとり親に該当せず」。二重指定でも1人加算。
+t("r10 寡婦とひとり親は排他、221000円は扶養1人欄3520円", () => {
+  const n = extraDependentCount({kafu:true,hitorioya:true});
+  assert.equal(n, 1);
+  assert.equal(kouTax(table, 221000, n), 3520);
+});

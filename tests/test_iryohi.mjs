@@ -143,7 +143,7 @@ for (const [boundary, below, at] of [[1950000,5,10],[3300000,10,20],[6950000,20,
   });
 }
 t('R9 速算表の表示区分はNo.2260と一致', () => {
-  assert.deepStrictEqual(I.keigen.shotokuzei_brackets.map(b=>b.label), ['195万円未満','195万円以上 330万円未満','330万円以上 695万円未満','695万円以上 900万円未満','900万円以上 1,800万円未満','1,800万円以上 4,000万円未満','4,000万円以上']);
+  assert.deepStrictEqual(I.keigen.shotokuzei_brackets.map(b=>b.label), ['課税所得0円（所得税非課税）','195万円未満','195万円以上 330万円未満','330万円以上 695万円未満','695万円以上 900万円未満','900万円以上 1,800万円未満','1,800万円以上 4,000万円未満','4,000万円以上']);
 });
 // ── 7. 速算表: 課税所得帯 → 限界税率（No.2260・7区分） ───────────────────────
 t('速算表: 課税所得の帯ごとに正しい限界税率を引く', () => {
@@ -211,5 +211,15 @@ t('keigenGaku: 課税所得を跨がない範囲で控除額×率×(1+2.1%)＋10
   assert.strictEqual(k.total, 33483);
 });
 
+// r10: 国税庁2260、課税所得0は所得税なし。未選択と0%を区別。
+t('r10 非課税なら所得税・復興税0、住民税だけ概算',()=>{
+ const r=keigenGaku(57000,0,I);
+ assert.strictEqual(r.shotokuzei,0);
+ assert.strictEqual(r.fukko,0);
+ assert.strictEqual(r.total,5700);
+ assert.strictEqual(rateFromKazei(0,I),0);
+ assert.strictEqual(keigenGaku(57000,'',I),null);
+ assert.strictEqual(keigenGaku(57000,null,I),null);
+});
 console.log(`\n${fail ? '❌' : '✓'} 医療費控除コア: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
