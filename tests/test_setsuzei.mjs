@@ -18,6 +18,21 @@ assertR8.equal(splitR8({kazeiShotoku:20000,juminKazeiShotoku:0,shotokuKojo:40000
 assertR8.equal(splitR8({kazeiShotoku:1955000,shotokuKojo:380000,juminKojo:330000},refR8).fukkoGen,405);
 assertR8.equal(splitR8({kazeiShotoku:1955000,shotokuKojo:380000,juminKojo:330000},refR8).total,52655);
 assertR8.equal(saveR8({kazeiShotoku:1955000,annualDeduction:380000},refR8).fukkoGen,405);
+// 静的な早見表もコアと同じ独立定数で照合する。No.2260と上記の1円未満切捨で検算。
+// 例: 700万・年12万では所得税974000−948500、復興20454−19918、住民税12000=38036。
+for (const [slug, rows, deductions] of [
+  ['ideco-setsuzei', [[150,41690],[300,55780],[500,83959],[700,85491],[900,92414]], [276000]],
+  ['shokibo-kyosai', [[195,18126,54378,90630,126882],[300,24252,72756,121260,169764],[500,36504,109512,182520,255528],[700,38036,111044,184052,257060],[900,40180,120539,200898,281258]], [120000,360000,600000,840000]],
+]) {
+  const html=readR8(new URL(`../docs/${slug}/index.html`,import.meta.url),'utf8');
+  const trs=[...html.matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map(m=>[...m[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map(c=>c[1].replace(/<[^>]+>/g,'')));
+  for(const [man,...expected] of rows){
+    const row=trs.find(c=>c[0]===`${man}万円`);assertR8.ok(row,`${slug} ${man}万円の設例が存在する`);
+    const cells=slug==='ideco-setsuzei'?row.slice(2,3):row.slice(1);
+    assertR8.deepEqual(cells.map(c=>Number(c.match(/[\d,]+(?=円)/)[0].replaceAll(',',''))),expected,`${slug} ${man}万円の表示額`);
+    deductions.forEach((amount,i)=>assertR8.equal(saveR8({kazeiShotoku:man*10000,annualDeduction:amount},refR8).total,expected[i],`${slug} ${man}万円の計算額`));
+  }
+}
 /**
  * 節税額コア（setsuzei_core.js）のオラクル照合。
  *
