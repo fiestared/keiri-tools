@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-22",
-  "dateModified": "2026-09-26",
+  "dateModified": "2026-09-28",
       "name": "生命保険料控除シミュレーター",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -132,7 +132,7 @@
 
 <section class="hero">
   <h1>生命保険料控除シミュレーター</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-22">2026年7月22日</time>（更新日: <time datetime="2026-09-26">2026年9月26日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-22">2026年7月22日</time>（更新日: <time datetime="2026-09-28">2026年9月28日</time>）</p>
   <p>控除証明書に書かれた<b>年間の支払保険料</b>を入れるだけで、<b>生命保険料控除の控除額</b>（所得税・住民税）と、実際に安くなる<b>年間の節税額</b>を計算します。<b>新契約と旧契約の併用</b>（どちらで計算した方が得か）や、<b>23歳未満の扶養親族がいる場合の特例</b>にも対応しています。</p>
 </section>
 
@@ -148,9 +148,9 @@
     <p class="hint" id="tokurei-hint" style="margin:4px 0 0 26px"></p>
   </div>
 
-  <label for="kazei">あなたの課税される所得金額（課税所得・円）</label>
+  <label for="kazei">あなたの課税される所得金額（課税所得・円）</label><p class="hint">所得税と住民税の課税所得は異なります。この画面の住民税軽減額は、住民税側の控除が全額効く場合の所得割10%の概算です。非課税・課税所得不足・調整控除等は反映しません。</p>
   <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000" aria-describedby="kazei-hint">
-      <span id="kazei-hint" class="hint">確定申告書の「課税される所得金額」。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」。年収ではありません</span>
+      <span id="kazei-hint" class="hint">今回試算する所得控除を引く前の所得税課税所得です。既にその控除を引いた確定申告書の金額をそのまま入力しないでください。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」。年収ではありません</span>
 
   <button class="primary" id="calc">控除額と節税額を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -442,7 +442,7 @@ function showMeta() {
   if (T) {
     $("tokurei-label").textContent = `年齢${T.age_under}歳未満の扶養親族がいる`;
     $("tokurei-hint").textContent =
-      `${T.years}に限り、一般の生命保険料（新契約）の計算式が1.5倍になります（${T.law}）。住民税に同じ特例はありません。`;
+      `${T.years}に限り、一般の生命保険料（新契約）には専用の計算式が適用され、控除上限が6万円になります（${T.law}）。住民税に同じ特例はありません。`;
   }
   if (R08?.seiho?.shotoku?.total_max != null) {
     $("src-hint").textContent =

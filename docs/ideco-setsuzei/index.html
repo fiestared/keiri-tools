@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-21",
-  "dateModified": "2026-09-13",
+  "dateModified": "2026-09-28",
       "name": "iDeCo節税シミュレーター",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -124,7 +124,7 @@
 
 <section class="hero">
   <h1>iDeCo節税シミュレーター</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-21">2026年7月21日</time>（更新日: <time datetime="2026-08-27">2026年8月27日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-21">2026年7月21日</time>（更新日: <time datetime="2026-09-28">2026年9月28日</time>）</p>
   <p>iDeCo（イデコ）の掛金は<b>全額が所得控除</b>になります。<b>加入区分</b>・<b>課税される所得金額</b>・<b>月額掛金</b>を入れるだけで、掛金でどれだけ<b>所得税・住民税が下がるか（年間の節税額）</b>を自動計算します。所得税は速算表で厳密に計算します。</p>
 </section>
 
@@ -133,9 +133,9 @@
   <select id="kubun" aria-describedby="kubun-hint"><option value="">読み込み中…</option></select>
       <span id="kubun-hint" class="hint">選ぶと月額掛金の上限が決まります</span>
 
-  <label for="kazei">課税される所得金額（課税所得・円）</label>
+  <label for="kazei">課税される所得金額（課税所得・円）</label><p class="hint">所得税と住民税の課税所得は異なります。この画面の住民税軽減額は、住民税側の控除が全額効く場合の所得割10%の概算です。非課税・課税所得不足・調整控除等は反映しません。</p>
   <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000" aria-describedby="kazei-hint">
-      <span id="kazei-hint" class="hint">確定申告書の「課税される所得金額」。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」。年収ではありません</span>
+      <span id="kazei-hint" class="hint">今回試算する所得控除を引く前の所得税課税所得です。既にその控除を引いた確定申告書の金額をそのまま入力しないでください。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」。年収ではありません</span>
 
   <label for="monthly">月額掛金（円）</label>
   <input type="number" id="monthly" placeholder="例: 23000" inputmode="numeric" min="5000" step="1000" aria-describedby="monthly-hint">

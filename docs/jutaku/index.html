@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-15",
-  "dateModified": "2026-08-24",
+  "dateModified": "2026-09-28",
       "name": "住宅ローン控除 計算機",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -148,7 +148,7 @@
 
 <section class="hero">
   <h1>住宅ローン控除 計算機</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-15">2026年7月15日</time>（更新日: <time datetime="2026-08-24">2026年8月24日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-15">2026年7月15日</time>（更新日: <time datetime="2026-09-28">2026年9月28日</time>）</p>
   <p><b>住宅ローン控除（住宅借入金等特別控除）</b>の<b>1年あたりの控除額・控除期間・総額のめやす</b>を計算します。<b>2022〜2027年入居に対応</b>。<b>控除率は0.7％</b>（1％ではありません）。<b>住宅の種類</b>と<b>入居した年</b>で<b>借入限度額</b>が大きく変わります。制度は<b>2030年入居まで5年延長</b>され、<b>2026年入居から中古（既存住宅）のルールが大きく変わりました</b>（認定住宅・ZEH水準は3,500万円・13年、子育て世帯の上乗せが中古にも）。省エネ基準を満たさない<b>「その他の住宅」の新築入居は2024年以降、原則1円も控除されません</b>（中古はその他でも0円になりません）。</p>
 </section>
 
@@ -156,11 +156,11 @@
 <div class="card">
   <label for="type">取得のしかた</label>
   <select id="type">
-    <option value="shinchiku" selected>新築・買取再販（建売・注文住宅・買取再販マンション等）</option>
+    <option value="shinchiku" selected>新築・省エネ基準適合等の買取再販（その他の買取再販は中古を選択）</option>
     <option value="chuko">中古（既存住宅）を個人などから購入した</option>
     <option value="zokaichiku">増改築・リフォーム</option>
   </select>
-  <div class="hint">この計算機は<b>新築・買取再販</b>と<b>中古（既存住宅）</b>を計算します（借入限度額も控除期間も違うので分けて計算します）。<b>中古は控除期間が一律10年（新築は13年）</b>で、<b>「その他の住宅」でも0円になりません</b>。<b>増改築・リフォーム</b>は計算方法がまるごと違うので扱いません（選ぶと、その旨をお知らせします）。</div>
+  <div class="hint">この計算機は<b>新築・買取再販</b>と<b>中古（既存住宅）</b>を計算します（借入限度額も控除期間も違うので分けて計算します）。<b>中古は2025年入居までは10年、2026年以降は認定・ZEH・省エネ住宅13年、その他10年です</b>で、<b>「その他の住宅」でも0円になりません</b>。<b>増改築・リフォーム</b>は計算方法がまるごと違うので扱いません（選ぶと、その旨をお知らせします）。</div>
 
   <label for="kubun" style="margin-top:12px">住宅の種類（省エネ性能）</label>
   <select id="kubun">
@@ -215,7 +215,7 @@
       <label for="shotokuzei" style="margin-top:12px">その年の所得税額（住宅ローン控除を受ける前・円）</label>
       <input type="number" id="shotokuzei" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="shotokuzei-hint">
       <span id="shotokuzei-hint" class="hint">任意</span>
-      <div class="hint">これを入れると<b>実際に戻る（軽減される）税額</b>を計算します。<b>源泉徴収票の「源泉徴収税額」や確定申告書の所得税額</b>（住宅ローン控除を差し引く<b>前</b>の額）を入れてください。年間の控除額がこの所得税額を上回ると、はみ出した分は<b>翌年度の住民税</b>から一定額まで引かれ、それでも余ると<b>戻りません</b>。</div>
+      <div class="hint">これを入れると<b>実際に戻る（軽減される）税額</b>を計算します。<b>住宅ローン控除を差し引く前、復興特別所得税を加算する前の所得税額を入れてください。年末調整済み源泉徴収票の「源泉徴収税額」は控除後なので、そのまま使えません。控除前の算出所得税額を年末調整の計算資料等で確認してください。</b>年間の控除額がこの所得税額を上回ると、はみ出した分は<b>翌年度の住民税</b>から一定額まで引かれ、それでも余ると<b>戻りません</b>。</div>
 
       <label for="kazei" style="margin-top:12px">課税総所得金額等（円）</label>
       <input type="number" id="kazei" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="kazei-hint">

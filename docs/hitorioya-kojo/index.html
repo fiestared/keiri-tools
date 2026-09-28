@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-23",
-  "dateModified": "2026-08-24",
+  "dateModified": "2026-09-28",
       "name": "ひとり親控除・寡婦控除シミュレーター",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -148,7 +148,7 @@
 
 <section class="hero">
   <h1>ひとり親控除・寡婦控除シミュレーター</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-23">2026年7月23日</time>（更新日: <time datetime="2026-08-24">2026年8月24日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-23">2026年7月23日</time>（更新日: <time datetime="2026-09-28">2026年9月28日</time>）</p>
   <p><b>ひとり親控除（35万円）と寡婦控除（27万円）のどちらに当てはまるか</b>を要件から判定し、実際に安くなる<b>年間の税金</b>を計算します。対象外のときは<b>どの要件で外れたか</b>を名指しし、<b>住民税が全額かからなくなる非課税のライン</b>まで出します。</p>
 </section>
 
@@ -168,9 +168,9 @@
   <div id="income-mode-rows"><p class="hint">読み込み中…</p></div>
   <input type="number" id="income" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000">
 
-  <label for="kazei" style="margin-top:14px">課税される所得金額（任意・円）</label>
+  <label for="kazei" style="margin-top:14px">課税される所得金額（任意・円）</label><p class="hint">所得税と住民税の課税所得は異なります。この画面の住民税軽減額は、住民税側の控除が全額効く場合の所得割10%の概算です。非課税・課税所得不足・調整控除等は反映しません。</p>
   <input type="number" id="kazei" placeholder="例: 1500000" inputmode="numeric" min="0" step="10000" aria-describedby="kazei-hint">
-      <span id="kazei-hint" class="hint">確定申告書の「課税される所得金額」。源泉徴収票なら「給与所得控除後の金額 − 所得控除の額の合計額」。空欄でも判定はできます</span>
+      <span id="kazei-hint" class="hint">今回試算する所得控除を引く前の所得税課税所得です。既にその控除を引いた確定申告書の金額をそのまま入力しないでください。源泉徴収票なら「給与所得控除後の金額 − 所得控除の額の合計額」。空欄でも判定はできます</span>
 
   <button class="primary" id="calc">どちらに当てはまるか判定する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
