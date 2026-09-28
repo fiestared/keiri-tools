@@ -27,8 +27,8 @@
   "@graph": [
     {
       "@type": "WebApplication",
-  "datePublished": "2026-07-13",
-  "dateModified": "2026-09-28",
+      "datePublished": "2026-07-13",
+      "dateModified": "2026-09-28",
       "name": "社会保険料 計算機",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -103,7 +103,7 @@
           "name": "Q. 会社の負担額はいくらですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. 健康保険・介護保険・厚生年金・子ども・子育て支援金はすべて労使折半なので、本人と同額です（東京都・月給30万円・35歳なら42,570円）。これに加えて会社は 子ども・子育て拠出金0.36% を全額負担します（本人負担はゼロ）。標準報酬月額30万円なら1,080円で、会社の実負担は43,650円になります。"
+            "text": "A. 協会けんぽの健康保険・介護保険・子ども・子育て支援金と厚生年金は原則労使折半です。端数処理で異なる場合がありますが、この設例では本人と同額です（東京都・月給30万円・35歳なら42,570円）。これに加えて会社は 子ども・子育て拠出金0.36% を全額負担します（本人負担はゼロ）。標準報酬月額30万円なら1,080円で、会社の実負担は43,650円になります。"
           }
         }
       ]
@@ -168,7 +168,7 @@
 
   <label for="monthly">報酬月額（円）</label>
   <input type="number" id="monthly" placeholder="例: 300000" inputmode="numeric" aria-describedby="monthly-hint">
-      <span id="monthly-hint" class="hint">基本給＋残業手当など、税引き前の総支給額。この計算機は非課税通勤手当等を含まない給与が対象です。非課税手当がある場合は、社会保険と税の対象額を分けられないため試算対象外です。</span>
+      <span id="monthly-hint" class="hint">基本給・残業手当・住宅手当・役職手当・通勤手当など、報酬に該当する総額を入力してください。通勤手当は所得税で非課税の部分も含めます。</span>
 
   <details class="optional-fields" id="bonus-fields"><summary>賞与も計算する（任意） <span data-optional-state>未設定</span></summary>
   <label for="bonus">賞与額（円・任意）</label>
@@ -534,7 +534,7 @@
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>給与計算ソフトの金額が、協会けんぽの保険料額表と1円合いません。</h3>
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>まず、健康保険料と介護保険料を<b>別々に端数処理していないか</b>を確認してください。40〜64歳の人は、健康保険料率と介護保険料率を合算した料率（東京都なら11.47%）で1本で計算し、最後に1回だけ端数処理するのが正しい方法です。別々に計算して足すと、一部の等級で額表と1円ずれます。それでも合わない場合は、端数処理が「50銭以下切捨・50銭超切上」になっているか（50銭ちょうどを切り上げていないか）を確認してください。</p>
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>会社の負担額はいくらですか？</h3>
-  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>健康保険・介護保険・厚生年金・子ども・子育て支援金はすべて労使折半なので、<b>本人と同額</b>です（東京都・月給30万円・35歳なら42,570円）。これに加えて会社は <b>子ども・子育て拠出金0.36%</b> を全額負担します（本人負担はゼロ）。標準報酬月額30万円なら1,080円で、会社の実負担は43,650円になります。</p>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>協会けんぽの健康保険・介護保険・子ども・子育て支援金と厚生年金は原則労使折半です。端数処理で異なる場合がありますが、<b>この設例では本人と同額</b>です（東京都・月給30万円・35歳なら42,570円）。これに加えて会社は <b>子ども・子育て拠出金0.36%</b> を全額負担します（本人負担はゼロ）。標準報酬月額30万円なら1,080円で、会社の実負担は43,650円になります。</p>
 
 <section class="related">
     <h2>関連記事・ツール</h2>
