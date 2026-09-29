@@ -7,7 +7,19 @@ import { readFileSync } from "node:fs";
 // 記事の一覧は「ツールのプリセットと同じ数字である」ことがこのページの売りなので、ここは崩せない。
 
 const FEES = JSON.parse(readFileSync(new URL("../docs/assets/fee_table.json", import.meta.url)));
-const HTML = contentHTML(readFileSync(new URL("../docs/column/furikomi-tesuryo-hikaku/index.html", import.meta.url), "utf8")).replace(/<td class="num">/g, "<td>");
+const RAW = contentHTML(readFileSync(new URL("../docs/column/furikomi-tesuryo-hikaku/index.html", import.meta.url), "utf8")).replace(/<td class="num">/g, "<td>");
+// ★2026-09-29: この記事に「経路別（窓口・ATM・ネットバンキング）／同じ銀行あて」の表を足した。
+//   その表の中身は fee_table.json（他行宛・インターネットバンキングのプリセット）とは**別のデータ**
+//   なので、下の行スキャンに混ざると「fee_table.json に無い銀行がある」と誤って落ちる。
+//   → 表側に data-fee-scope="route" を付け、**その表だけ**をスキャンの対象から外す。
+//   ⚠️ 外すのは行スキャン（1・2番の照合）だけ。本文の断定（3番のレンジ・倍率・区分数）は
+//   HTML 全体を見るので、素通しにはならない。**新しい表を足すときに黙って外さないこと**
+//   — 印を付けるのは「fee_table.json が正本ではないデータの表」だけ。
+const ROUTE_TABLE = /<table\b[^>]*data-fee-scope="route"[\s\S]*?<\/table>/g;
+const ROUTE_TABLE_COUNT = (RAW.match(ROUTE_TABLE) || []).length;
+assert.equal(ROUTE_TABLE_COUNT, 2, `経路別の表は2つのはず（実際 ${ROUTE_TABLE_COUNT}）。増減したらこの検査の前提を見直す`);
+const HTML = RAW; // 本文の断定（3番）は記事全体で見る
+const SCANNED = RAW.replace(ROUTE_TABLE, " "); // 行スキャン（1・2番）は経路別の表を除く
 // 表から <tr><td>銀行名</td><td>N円</td><td>M円</td>... を拾う
 //
 // ★2026-08-17: ここは **Map に set していた**（後勝ち）。記事には同じ銀行の行が
@@ -17,7 +29,7 @@ const HTML = contentHTML(readFileSync(new URL("../docs/column/furikomi-tesuryo-h
 //   **読者が最初に見る表が130円のまま**でも検査は緑だった（GMOあおぞら 130→100 の改定で実際に起きた）。
 //   → **出現ごとに全件突き合わせる**。CLAUDE.md 規則4「名指しは一意でなければ効かない」の同型。
 const occurrences = [];
-for (const m of HTML.matchAll(/<tr><td>([^<]+)<\/td><td>(\d+)円<\/td><td>(\d+)円<\/td>/g)) {
+for (const m of SCANNED.matchAll(/<tr><td>([^<]+)<\/td><td>(\d+)円<\/td><td>(\d+)円<\/td>/g)) {
   occurrences.push({ name: m[1], under30k: Number(m[2]), over30k: Number(m[3]) });
 }
 const rows = new Map(occurrences.map((o) => [o.name, o]));
