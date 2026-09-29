@@ -164,6 +164,7 @@ else fail(`根拠のない%が記事にある: ${pctExtra.join(' / ')}`);
 // カンマの網は緑のまま（85万円にカンマは無い）なので、万円は別の網で数える。
 // 出所: 国税庁「給与所得の源泉徴収税額の求め方」（令和8年分）注2〜注6
 const EXP_MAN = new Set([
+  2000, // 年末調整対象外の給与収入（corpus/nencho/nencho_all.txt:333-334）
   900, // 源泉控除対象配偶者: 本人の所得の見積額
   95,  // 源泉控除対象配偶者: 配偶者の所得の見積額
   58,  // 令和8年11月までの月次源泉徴収の扶養要件
@@ -263,11 +264,12 @@ for (const [A, n] of [[300000, 1], [500000, 1]]) {
 // 乙欄の節の<p>だけを見る。甲欄と乙欄を入れ替えても、記事全体の集合は変わらない。
 const otsuSec = (html.split('<h3>乙欄')[1] || '').split('<h3>')[0];
 const otsuText = strip(otsuSec);
+// corpus/gensen/16.txt:167-181: 乙欄でも端数処理や扶養控除後に0円となる。
 const otsuOK = /105,000円未満の場合は、その金額の3\.063%/.test(otsuText)
-  && /甲欄なら105,000円未満は税額0円ですが、\s*<?b?>?乙欄は0円になりません/.test(otsuSec.replace(/<[^>]+>/g, ''))
-  || (/甲欄なら105,000円未満は税額0円/.test(otsuText) && /乙欄は0円になりません/.test(otsuText));
-if (otsuOK) ok('乙欄の節: 「乙欄は105,000円未満でも3.063%（甲欄と違い0円にならない）」');
-else fail('乙欄の節で、甲欄0円 / 乙欄3.063% の対比が崩れている');
+  && otsuText.includes('1円未満を切り捨て') && otsuText.includes('1人につき1,610円')
+  && otsuText.includes('乙欄でも税額0円となる場合') && !otsuText.includes('乙欄は0円になりません');
+if (otsuOK) ok('乙欄の低額帯: 率・端数処理・扶養控除・0円例外');
+else fail('乙欄の低額帯の条件が不足');
 // データとの一致（乙欄の下限帯は表の正本から）
 if (otsuText.includes(String(TBL.otsuLowMax.toLocaleString())) && otsuText.includes((TBL.otsuLowRate * 100).toFixed(3)))
   ok(`乙欄の節の数値が税額表データと一致 (${TBL.otsuLowMax.toLocaleString()}円未満 / ${(TBL.otsuLowRate * 100).toFixed(3)}%)`);
@@ -320,7 +322,7 @@ else fail('国税庁「社会保険料等を控除した後の金額」の引用
 const coShoyo = callouts.find(c => strip(c).includes('賞与'));
 if (coShoyo) {
   const t = strip(coShoyo);
-  if (/前月中に普通給与の支払がない/.test(t) && /前月中の普通給与の額の10倍を超える/.test(t) && /月額表を使います/.test(t))
+  if (/前月中に普通給与の支払がない/.test(t) && /同控除後の前月普通給与の10倍を超える/.test(t) && /月額表を使います/.test(t) && /直前の普通給与の月割額/.test(t))
     ok('callout: 賞与でも月額表を使う2つの場合（前月給与なし／前月給与の10倍超）');
   else fail('賞与の例外2つ（前月給与なし・10倍超）が揃っていない');
 } else fail('賞与の例外のcalloutが無い');
@@ -336,8 +338,8 @@ else fail('丙欄の「2か月を超えたら使えない」が引用・地の�
 
 // ───────── 電算機計算の特例が「月額表の甲欄だけ」であること ─────────
 const coRange = callouts.find(c => strip(c).includes('特例が使えるのは'));
-if (coRange && /乙欄・丙欄・日額表・賞与/.test(strip(coRange)) && /適用されません/.test(strip(coRange)))
-  ok('callout: 特例は月額表の甲欄だけ（乙欄・丙欄・日額表・賞与には使えない）');
+if (coRange && /乙欄・丙欄・日額表/.test(strip(coRange)) && /賞与も含まれます/.test(strip(coRange)) && /乙欄には別の電算機計算方法/.test(strip(coRange)) && /この甲欄特例の対象外/.test(strip(coRange)))
+  ok('callout: 甲欄特例の対象賞与・対象外区分と乙欄の別計算法');
 else fail('特例の適用範囲（月額表の甲欄限定）の注意が無い');
 
 // ───────── 早見表（記事に埋め込んだ月額表）の位置照合 ─────────
