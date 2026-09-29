@@ -3,7 +3,7 @@
  * DOM非依存・テスト対象。借入限度額・控除率・控除期間は jutaku_r07.json に持たせる（ページに手書きしない）。
  *
  * 正本: 国税庁No.1211-1（新築）・1211-2（買取再販）・1211-3（中古）。
- * 令和8年4月1日現在法令等を2026-09-29に照合。対応入居年は令和4〜9年。
+ * 令和8年4月1日現在法令等を2026-09-29に照合。対応入居年は令和4〜12年。
  * 特例認定住宅等は40〜50㎡未満の住宅。令和8年以後も50㎡以上の上乗せは存続。
  *
  * ★★ ここを取り違えると「黙って間違える」点（この計算のいちばん危ない所）:
@@ -116,14 +116,14 @@ export function resolveGendo(kubun, year, tokurei, keikaSochi, D, type) {
 
 /**
  * 所得税から引ききれなかった住宅ローン控除を、翌年度の個人住民税から控除する額を計算する。
- * 一次ソース：総務省「所得税から住宅ローン控除額を引ききれなかった方」
+ * 一次ソース：地方税法附則5条の4（令和8年以後入居は2027-01-01施行版と改正附則）
  *   個人住民税の住宅ローン控除額(A) ＝ 住宅ローン控除可能額 − 住宅ローン控除“適用前”の前年の所得税額。
  *   ただし A が上限(B)＝「前年分の所得税の課税総所得金額等の5％（97,500円を限度）」を超えるときは B が控除額。
  *   （率・上限は JSON の juminzei に持たせる。★令和4〜令和7年入居はすべて5％・97,500円）
  *
  * @param nenkanKoujo  その年の住宅ローン控除可能額（＝calc の nenkanKoujo。所得税＋住民税に配分される総枠）
  * @param shotokuzei   住宅ローン控除“適用前”のその年分の所得税額（円）。源泉徴収票・確定申告で分かる
- * @param kazeiSotoku  （任意）課税総所得金額等（円）。5％上限の判定に使う。未入力なら5％判定を省き上限97,500円で概算する
+ * @param kazeiSotoku  （任意）課税総所得金額等（円、令和7年以前入居は基礎控除差額補正後）。5％上限の判定に使う。未入力なら5％判定を省き上限97,500円で概算する
  * @returns 所得税から控除された額・住民税から控除された額・切り捨て額・実際の軽減税額の内訳
  */
 export function juminzeiKoujo(nenkanKoujo, shotokuzei, kazeiSotoku, D) {
@@ -171,17 +171,27 @@ export function juminzeiKoujo(nenkanKoujo, shotokuzei, kazeiSotoku, D) {
  * input = {
  *   type,               // 'shinchiku'(新築／既定) | 'kaitori'(買取再販) | 'chuko'(中古) | 'zokaichiku'(増改築)
  *   kubun,              // 'nintei' | 'zeh' | 'shoene' | 'sonota'
- *   year,               // 入居（居住開始）年（西暦 2022〜2027）
+ *   year,               // 入居（居住開始）年（西暦 2022〜2030）
  *   nenmatsuZandaka,    // その年の年末借入残高（円）
  *   shutokuTaika,       // （任意）住宅の取得対価等（円）。年末残高より少なければこちらが控除対象になる
  *   kosodateTokurei,    // （任意・真偽）特例対象個人（子育て世帯・若者夫婦世帯）か
- *   keikaSochi,         // （任意・真偽）その他の住宅の経過措置に該当するか
+ *   keikaSochi,         // その他の経過措置の確認済フラグ（50㎡以上用。日付入力を優先）
+ *   buildingConfirmationDate, // 建築確認日 YYYY-MM-DD（小規模その他・新築省エネの経過措置）
+ *   constructionDate,   // 建築日 YYYY-MM-DD
+ *   redZoneExcluded,    // 令和10年以後の新築の災害危険区域等除外。例外を確認した上でtrue/false。未入力は未判定。
  *   goukeiShotoku,      // （任意）その年の合計所得金額（円）。所得要件の判定に使う
  *   menseki,            // （任意）床面積（㎡）。床面積・所得要件の判定に使う
  *   shotokuzeiGaku,     // （任意）住宅ローン控除“適用前”の所得税額（円）。渡すと juminzeiKoujo で実還付額を出す
  *   kazeiSotokugaku     // （任意）課税総所得金額等（円）。住民税の5％上限の判定に使う
  * }
  */
+// 日付の比較は実在するISO日付だけを対象にする。欠落・不正な値で経過措置を通さない。
+const validDate = value => {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+  const date = new Date(value + 'T00:00:00Z');
+  return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value ? value : null;
+};
+
 export function calc(input, D) {
   if (!D) throw new Error('参照データ（jutaku_r07.json）が渡されていません');
   const type = input.type || 'shinchiku';
@@ -226,7 +236,29 @@ export function calc(input, D) {
   const tokureiDenied = !!input.kosodateTokurei && mensekiStatus === 'shokibo'
     && !!ST && yearNum >= ST.exclude_from_year;
 
-  const g = resolveGendo(input.kubun, yearNum, !!input.kosodateTokurei && !tokureiDenied, !!input.keikaSochi, D, type);
+  const R = D.construction_rules;
+  const confirmation = validDate(input.buildingConfirmationDate);
+  const completion = validDate(input.constructionDate);
+  const before = (date, deadline) => date != null && date <= deadline;
+  const smallSonota = type === 'shinchiku' && input.kubun === 'sonota' && mensekiStatus === 'shokibo';
+  // No.1211-1: 小規模の「その他」は建築日だけでは足りず、令和5年末までの確認が必要。
+  const smallConfirmationMissing = smallSonota && !confirmation;
+  const smallConfirmationDenied = smallSonota && !before(confirmation, R.sonota_confirmation_deadline);
+  let transition = !!input.keikaSochi;
+  if (type === 'shinchiku' && input.kubun === 'sonota') {
+    const hasDates = !!input.buildingConfirmationDate || !!input.constructionDate;
+    transition = smallSonota
+      ? before(confirmation, R.sonota_confirmation_deadline)
+      : hasDates ? before(confirmation, R.sonota_confirmation_deadline) || before(completion, R.sonota_completion_deadline) : transition;
+  }
+  if (type === 'shinchiku' && input.kubun === 'shoene' && yearNum >= R.shoene_transition_from_year) {
+    // 「その他」の旧チェックを省エネの新しい経過措置に流用しない。
+    transition = before(confirmation, R.shoene_confirmation_deadline) || before(completion, R.shoene_completion_deadline);
+  }
+  const redZoneRelevant = type === 'shinchiku' && yearNum >= R.red_zone_from_year;
+  const redZoneDenied = redZoneRelevant && input.redZoneExcluded === true;
+  const redZoneUnknown = redZoneRelevant && typeof input.redZoneExcluded !== 'boolean';
+  const g = resolveGendo(input.kubun, yearNum, !!input.kosodateTokurei && !tokureiDenied, transition, D, type);
   if (!g) {
     // 収録範囲はデータの years キーから描く（年を足すたびに文言を手で直すと必ずずれて、
     // 「収録範囲の外です」が実際には収録済みの年を名指しする嘘になる）。
@@ -244,7 +276,7 @@ export function calc(input, D) {
   const goukeiShotoku = input.goukeiShotoku != null && input.goukeiShotoku !== '' ? yen(input.goukeiShotoku) : null;
   const incomeOver = goukeiShotoku != null && goukeiShotoku > shotokuLimit;
 
-  const eligible = !g.zero && mensekiStatus !== 'too_small' && !incomeOver;
+  const eligible = !g.zero && mensekiStatus !== 'too_small' && !incomeOver && !smallConfirmationDenied && !redZoneDenied;
 
   // ── 控除額 ──
   const koujoRitsuPermille = D.koujo_ritsu_permille; // 7（=0.7％）
@@ -276,6 +308,13 @@ export function calc(input, D) {
   return {
     ...base,
     eligible,
+    eligibilityUnknown: smallConfirmationMissing,
+    smallConfirmationDenied,
+    redZoneDenied,
+    redZoneUnknown,
+    reason: smallConfirmationDenied
+      ? (smallConfirmationMissing ? '小規模の「その他の住宅」は建築確認日が未確認のため判定できません。令和5年12月31日以前の建築確認が必要です。' : '小規模の「その他の住宅」は令和5年12月31日以前の建築確認が必要です。建築日のみでは対象になりません。')
+      : redZoneDenied ? '令和10年以後の新築で災害危険区域等の除外条件に該当するため、控除の対象になりません。' : undefined,
     kubun: input.kubun,
     kubunLabel: D.kubun[input.kubun].label,
     shakunyuGendoMan: g.gendoMan,

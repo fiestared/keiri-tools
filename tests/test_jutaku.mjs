@@ -186,7 +186,7 @@ eq(calc({ type: "chuko", kubun: "nintei", year: 2024, nenmatsuZandaka: BIG, gouk
 // 中古の収録外の入居年・区分は beyondData
 eq(calc({ type: "chuko", kubun: "nintei", year: 2021, nenmatsuZandaka: BIG }, D).beyondData, true,
   "★中古・令和3年入居は収録外");
-eq(calc({ type: "chuko", kubun: "nintei", year: 2028, nenmatsuZandaka: BIG }, D).beyondData, true,
+eq(calc({ type: "chuko", kubun: "nintei", year: 2031, nenmatsuZandaka: BIG }, D).beyondData, true,
   "★中古・令和10年入居は収録外（法定済みだが41条25項の段差があり1年ずつ収録する方針）");
 eq(calc({ type: "chuko", kubun: "unknown", year: 2024, nenmatsuZandaka: BIG }, D).beyondData, true,
   "中古・不明な区分は beyondData");
@@ -201,10 +201,10 @@ eq(calc({ type: "chuko", kubun: "unknown", year: 2024, nenmatsuZandaka: BIG }, D
 eq(calc({ type: "foobar", kubun: "nintei", year: 2024, nenmatsuZandaka: BIG }, D).beyondData, true,
   "★想定外のtypeは beyondData（新築の数字を誤って当てない）");
 {
-  // 収録外の入居年（令和3年＝2021、令和10年＝2028）— 新築
+  // 収録外の入居年（令和3年＝2021、令和13年＝2031）— 新築
   eq(calc({ kubun: "nintei", year: 2021, nenmatsuZandaka: BIG }, D).beyondData, true,
     "★令和3年入居は収録外（別の表・控除率1％）");
-  eq(calc({ kubun: "nintei", year: 2028, nenmatsuZandaka: BIG }, D).beyondData, true,
+  eq(calc({ kubun: "nintei", year: 2031, nenmatsuZandaka: BIG }, D).beyondData, true,
     "★令和10年入居は収録外（法定済みだが41条25項の段差があり1年ずつ収録する方針）");
 }
 
@@ -327,8 +327,8 @@ eq(resolveGendo("nintei", 2026, false, false, D, "chuko").gendoMan, 3500, "中�
 eq(resolveGendo("nintei", 2026, false, false, D, "chuko").kikan, 13, "中古・認定・令和8年は13年");
 eq(resolveGendo("nintei", 2026, true, false, D, "chuko").gendoMan, 4500, "中古・認定・令和8年（特例）は4,500万");
 eq(resolveGendo("sonota", 2026, false, true, D).gendoMan, 2000, "その他・令和8年＋経過措置は2,000万");
-eq(resolveGendo("nintei", 2028, false, false, D), null, "令和10年は収録外（null）");
-eq(resolveGendo("nintei", 2028, false, false, D, "chuko"), null, "中古・令和10年も収録外（null）");
+eq(resolveGendo("nintei", 2031, false, false, D), null, "令和13年は収録外（null）");
+eq(resolveGendo("nintei", 2031, false, false, D, "chuko"), null, "中古・令和13年も収録外（null）");
 
 // ===== 8c. ★令和9年（2027）入居 — 令和8年と同値（2026-07-20 条文で確認）=====
 // ★外部オラクル＝措法41条の居住年レンジ（3項3号・6項・7項2号/4号/6号・9項＝いずれも「令和8年から
@@ -490,7 +490,8 @@ for (const year of [2022,2023,2024,2025,2026,2027]) {
           }
           const limit = (kosodateTokurei && !(year>=2026 && menseki<50) ? special : limits)[i];
           const eligible = limit>0 && !(type!=='shinchiku' && year<2026 && menseki<50);
-          const r=calc({type,kubun,year,kosodateTokurei,menseki,goukeiShotoku:10000000,nenmatsuZandaka:60000000},D);
+          // 令和4・5年の小規模その他の正例は、期限内の建築確認を明示する。
+          const r=calc({type,kubun,year,kosodateTokurei,menseki,buildingConfirmationDate:year<2024?'2022-01-01':undefined,goukeiShotoku:10000000,nenmatsuZandaka:60000000},D);
           const label=`t4 ${type}/${kubun}/${year}/特例${kosodateTokurei}/${menseki}㎡`;
           assert.equal(r.shakunyuGendoMan,limit,label+' 借入限度額');
           assert.equal(r.kikan,periods[i],label+' 控除期間');
@@ -507,10 +508,18 @@ for (const year of [2022,2023,2024,2025,2026,2027]) {
 for (const [income,amount] of [[10000000,140000],[10000001,0]]) {
  assert.equal(calc({type:'kaitori',kubun:'sonota',year:2026,menseki:40,goukeiShotoku:income,nenmatsuZandaka:20000000},D).nenkanKoujo,amount);
 }
-// 元の対応範囲は令和4〜9年。令和10〜12年の未収録を黙って計算しない。
-for (const year of [2028,2029,2030]) for (const type of ['shinchiku','kaitori','chuko']) for (const kubun of ['nintei','zeh','shoene','sonota']) {
+// 令和13年以後の未収録を黙って計算しない。
+for (const year of [2031,2032,2033]) for (const type of ['shinchiku','kaitori','chuko']) for (const kubun of ['nintei','zeh','shoene','sonota']) {
  assert.equal(calc({type,kubun,year,nenmatsuZandaka:60000000},D).beyondData,true);
 }
 const {cases: t4BoundaryCases}=await import('./boundaries/jutaku_core.mjs');
 for (const c of t4BoundaryCases) assert.deepEqual(c.run(),c.expected,c.name);
 console.log(`t4 corpus matrix: ${matrixCases} cases + 36 unsupported-year cases + boundaries OK`);
+
+// t4b: 境界表の独立expectedを単体テストでも全件実行する。
+const {t4bOracle}=await import('./boundaries/jutaku_core.mjs');
+for (const row of t4bOracle) {
+ const actual=calc(row.input,D);
+ for (const [key,expected] of Object.entries(row.expected)) eq(key.split('.').reduce((v,k)=>v?.[k],actual),expected,'t4b '+row.name+' '+key);
+}
+console.log(`✓ t4b ${t4bOracle.length}ケースを追加、合計${n} assertions`);
