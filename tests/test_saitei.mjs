@@ -63,10 +63,10 @@ eq(D.prefectures.length, 47, '都道府県は47件');
 
 // ---- 急所3: 発効日をまたぐ判定 ----
 {
-  // 秋田の令和8年度の発効予定日は 2026-10-14（答申状況PDF）。その前日は改定前の額で判定される。
+  // 秋田の令和8年度の発効日は 2026-10-14（全国一覧PDF）。その前日は改定前の額で判定される。
   // ★日付を直書きしない。出典の値をデータから読み、境界の前後で向きが変わることを見る。
   const akita = D.prefectures.find((p) => p.pref === '秋田');
-  eq(akita.effective, '2026-10-14', '秋田の発効予定日（出典どおり）');
+  eq(akita.effective, '2026-10-14', '秋田の発効日（出典どおり）');
   const dayBefore = new Date(Date.parse(akita.effective) - 86400000).toISOString().slice(0, 10);
   const before = effectiveWage(akita, dayBefore);
   eq(before.wage, akita.prev, '発効日前は改定前の額');
@@ -140,14 +140,11 @@ eq(D.prefectures.length, 47, '都道府県は47件');
   ok(hard.length >= 0, '年度名の出現を数えた');
 }
 
-// ---- 令和8年度（47都道府県の答申が出そろい、発効は順次） ----
-// ★2026-09-22 に状態が進んだ。旧: status='announced'（中央の目安だけ出ていて県表は令和7年度）
-//   新: status='answered'（各県の改定額が答申され、県表も令和8年度。発効は10-01〜12-02）
-//   語彙を増やしたのは、この2つが**判定に効く別の状態**だから。
-//   'announced' は「金額が未確定＝表に載せられない」、'answered' は「金額は確定・発効前」。
-//   画面側の分岐は status==='pending' だけを見ているので、どちらも金額を出す側に入る。
+// ---- 令和8年度（全国一覧で決定額・県別発効日を確認済み） ----
+// 2026-09-30に全国一覧へ切替。決定済みでも発効日前には改定前額を使う。
 {
-  eq(D.next_revision.status, 'answered', '47都道府県の改定額が答申済み');
+  eq(D.next_revision.status, 'confirmed', '47都道府県の改定額・発効日を全国一覧で確認済み');
+  eq(D._meta.status, 'confirmed', '全国一覧への確定切替');
   eq(D._meta.year, '令和8年度', '都道府県表も令和8年度に進んでいる');
   eq(D.next_revision.guideline.A, 54, 'Ａランク目安');
   eq(D.next_revision.guideline.B, 56, 'Ｂランク目安');

@@ -64,12 +64,12 @@ const effs = rows.map((r) => r.effective).sort();
 const oct1 = rows.filter((r) => r.effective === effs[0]).length;
 const note = `全国加重平均は<b>${na.wage}円</b>（改定前${na.prev}円・+${na.up}円／+${na.rate.toFixed(1)}%）。` +
   `最高は${esc(hi.full)}の${hi.wage}円、最低は${lo.wage}円で、その差は<b>${hi.wage - lo.wage}円</b>です。` +
+  `金額は${esc(m.year)}の<b>${answered ? "答申額" : "決定額"}</b>で、発効日は都道府県ごとに${esc(rows.find((r) => r.effective === effs[0]).effective_wa)}から` +
+  `${esc(rows.find((r) => r.effective === effs[effs.length - 1]).effective_wa)}まで分かれています` +
+  `（もっとも早い日に発効するのは${oct1}都道府県）。<b>自分の県の発効日が来るまでは改定前の額が有効です。</b>` +
   (answered
-    ? `金額は${esc(m.year)}の<b>答申額</b>で、発効日は都道府県ごとに${esc(rows.find((r) => r.effective === effs[0]).effective_wa)}から`
-      + `${esc(rows.find((r) => r.effective === effs[effs.length - 1]).effective_wa)}まで分かれています`
-      + `（もっとも早い日に発効するのは${oct1}都道府県）。<b>自分の県の発効日が来るまでは改定前の額が有効です。</b>`
-      + `${esc(m.checked)}に厚生労働省の答申状況（別紙）と照合しました。`
-    : `金額は${esc(m.year)}のもので、${esc(m.checked)}に厚生労働省の公式一覧と照合しました。`);
+    ? `${esc(m.checked)}に厚生労働省の答申状況（別紙）と照合しました。`
+    : `${esc(m.checked)}に厚生労働省の全国一覧PDFと${rows.length}件照合し、不一致0件を確認しました。`);
 
 let html = readFileSync(PAGE, "utf8");
 const before = html;
