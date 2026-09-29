@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "core": "gensen_hyo_core",
+  "page": "docs/gensen-hyo/index.html",
+  "priority_evidence": "t2 F07",
+  "conditions": [
+    {
+      "id": "income-band",
+      "statute": "https://laws.e-gov.go.jp/api/2/law_data/332AC0000000026_20261201_508AC0000000012?response_format=xml",
+      "disposition": "input",
+      "input_ids": [
+        "shiharai"
+      ],
+      "cases": [
+        "74万1千円境界の1円下",
+        "74万1千円境界の1円上",
+        "219万1千円境界の1円下",
+        "219万1千円境界の1円上"
+      ]
+    },
+    {
+      "id": "year-end-adjustment",
+      "statute": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "disposition": "input",
+      "input_ids": [
+        "nencho"
+      ],
+      "cases": [
+        "年調なし②空欄",
+        "年調あり②金額"
+      ]
+    },
+    {
+      "id": "deductions",
+      "statute": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "disposition": "input",
+      "input_ids": [
+        "shakai",
+        "seimei",
+        "jishin",
+        "jinteki",
+        "kiso"
+      ],
+      "cases": [
+        "令和8年の初期例・年末調整ありの③欄",
+        "同じ初期例・年末調整なしは③欄を空欄"
+      ]
+    },
+    {
+      "id": "adjustment-deduction",
+      "statute": "https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/PDF/02.pdf",
+      "disposition": "out_of_scope",
+      "scope_selector": "#dekinai-note li:nth-child(2)",
+      "scope_text": "所得金額調整控除 — 子育て世帯等の調整控除がある場合、②欄は「（調整控除後）」の欄との使い分けが要ります",
+      "cases": [
+        "年調あり②金額"
+      ]
+    }
+  ],
+  "default_cases": [
+    "HTML初期値②③欄"
+  ]
+}

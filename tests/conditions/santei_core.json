@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "core": "santei_core",
+  "page": "docs/santei/index.html",
+  "priority_evidence": "b1 santei-1",
+  "conditions": [
+    {
+      "id": "days-general",
+      "statute": "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41",
+      "disposition": "input",
+      "input_ids": [
+        "n4",
+        "n5",
+        "n6"
+      ],
+      "cases": [
+        "一般・基礎日数16日の月は定時決定から除外",
+        "一般・基礎日数17日の月は定時決定に算入"
+      ]
+    },
+    {
+      "id": "part-time",
+      "statute": "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41",
+      "disposition": "input",
+      "input_ids": [
+        "tanjikan"
+      ],
+      "cases": [
+        "短時間・基礎日数10日の月は定時決定から除外",
+        "短時間・基礎日数11日の月は定時決定に算入",
+        "短時間労働者・随時改定で各月10日は不足",
+        "短時間労働者・随時改定は各月11日で日数要件を満たす"
+      ]
+    },
+    {
+      "id": "qualification",
+      "statute": "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41",
+      "disposition": "input",
+      "input_ids": [
+        "shutoku",
+        "year"
+      ],
+      "cases": [
+        "資格取得日5月31日は6月1日境界の外",
+        "資格取得日6月1日は定時決定対象外"
+      ]
+    },
+    {
+      "id": "revision",
+      "statute": "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41",
+      "disposition": "input",
+      "input_ids": [
+        "zuiji"
+      ],
+      "cases": [
+        "7〜9月随時改定は定時対象外",
+        "随時改定予定なしは除外しない"
+      ]
+    },
+    {
+      "id": "average",
+      "statute": "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41",
+      "disposition": "input",
+      "input_ids": [
+        "h4",
+        "h5",
+        "h6"
+      ],
+      "cases": [
+        "一般・基礎日数16日の月は定時決定から除外",
+        "一般・基礎日数17日の月は定時決定に算入",
+        "算定平均の1円未満切捨"
+      ],
+      "rounding": "対象月で平均後1円未満切捨"
+    },
+    {
+      "id": "fifteen-days",
+      "statute": "https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41",
+      "disposition": "out_of_scope",
+      "scope_selector": "#dekinai-note li:nth-child(2)",
+      "scope_text": "4分の3以上のパート等の15日以上の取扱い — 3か月すべて17日未満でも15日以上の月があれば、その月の平均で算定します。本ツールはこの取扱いに対応していません。それにも該当しない場合の従前の標準報酬月額の適用等は、年金事務所等へ確認してください。",
+      "cases": [
+        "一般・基礎日数16日の月は定時決定から除外"
+      ]
+    }
+  ],
+  "default_cases": [
+    "HTML初期値の算定平均"
+  ]
+}

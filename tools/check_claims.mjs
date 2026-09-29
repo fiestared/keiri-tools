@@ -39,6 +39,7 @@ import { execFileSync } from "node:child_process";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SOURCES = JSON.parse(readFileSync(join(ROOT, "tools/claims_sources.json"), "utf8"));
 
@@ -147,9 +148,21 @@ function changedPages(base) {
   const untracked = execFileSync("git", ["-C", ROOT, "ls-files", "--others", "--exclude-standard", "--", "docs"], { encoding: "utf8" })
     .trim().split("\n").filter(Boolean).map((f) => `A\t${f}`).join("\n");
   const out = [tracked.trim(), untracked].filter(Boolean).join("\n");
-  return out.trim().split("\n").filter(Boolean).map((l) => l.split("\t"))
+  const pages = out.trim().split("\n").filter(Boolean).map((l) => l.split("\t"))
     .filter(([st, f]) => /index\.html$/.test(f) && !st.startsWith("D") && !GENERATED.some((re) => re.test(f)))
     .map(([st, f]) => ({ page: f, isNew: st.startsWith("A") }));
+  // A newly added ledger for an existing page is also a new enforcement cohort.
+  const addedLedgers = execFileSync("git", ["-C", ROOT, "diff", "--name-only", "--diff-filter=A", fp, "--", "claims"], {encoding:"utf8"})
+    + execFileSync("git", ["-C", ROOT, "ls-files", "--others", "--exclude-standard", "--", "claims"], {encoding:"utf8"});
+  for (const file of new Set(addedLedgers.trim().split("\n"))) {
+    if (!file.endsWith(".json") || file.endsWith("_TEMPLATE.json")) continue;
+    const ledger = JSON.parse(readFileSync(join(ROOT, file), "utf8"));
+    const page = ledger.page;
+    if (typeof page !== "string" || !/^docs\/(?:[a-zA-Z0-9_-]+\/)*index\.html$/.test(page) || ledgerPath(page) !== file) throw Error(`invalid new ledger page: ${file}`);
+    const target = pages.find(p => p.page === page);
+    if (target) target.isNew = true; else pages.push({page, isNew:true});
+  }
+  return pages;
 }
 function addedText(base, page) {
   const diff = execFileSync("git", ["-C", ROOT, "diff", "-U0", forkPoint(base), "--", page], { encoding: "utf8" });
@@ -159,7 +172,16 @@ function addedText(base, page) {
 const readLedger = (page) => { const p = join(ROOT, ledgerPath(page)); return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null; };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const args = process.argv.slice(2);
+  const { segmentClaims, validateSegments } = await import("./segment_claims.mjs");
+  const segments = process.argv.includes("--segments");
+  const args = process.argv.slice(2).filter(x => x !== "--segments");
+  if (segments && !args.length) args.push("--changed");
+  const base = args[0] === "--changed" ? (args[1] ?? "origin/main") : "origin/main";
+  const newLedger = page => {
+    const fp = forkPoint(base);
+    const existed = file => { try { execFileSync("git", ["-C", ROOT, "cat-file", "-e", `${fp}:${file}`], {stdio:"ignore"}); return true; } catch { return false; } };
+    return !existed(page) || (existsSync(join(ROOT, ledgerPath(page))) && !existed(ledgerPath(page)));
+  };
   let targets;
   if (args[0] === "--changed") {
     const base = args[1] ?? "origin/main";
@@ -172,7 +194,15 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   let bad = 0;
   for (const { page, required } of targets) {
     const html = readFileSync(join(ROOT, page), "utf8");
-    const errs = checkPage({ html, ledger: readLedger(page), requiredText: required, page });
+    const ledger = readLedger(page);
+    const fresh = newLedger(page);
+    const errs = segments ? [] : checkPage({ html, ledger, requiredText: required, page });
+    if (segments || fresh) {
+      const coverage = validateSegments(segmentClaims(html, page), ledger);
+      const strict = fresh || process.env.SEGMENTS_STRICT === "1";
+      console.log(`${strict ? "gate" : "warning"} segments ${page}: ${coverage.covered}/${coverage.total} covered, ${coverage.nonclaims} nonclaims, ${coverage.unprocessed} unprocessed`);
+      if (strict) errs.push(...coverage.errors.map(e => `${page}: ${e}`));
+    }
     if (errs.length) { bad++; for (const e of errs) console.log("✗ " + e); }
     else console.log(`✓ ${page}${required === null ? "（ページ全体）" : "（足した行）"}`);
   }

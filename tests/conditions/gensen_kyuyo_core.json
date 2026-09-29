@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "core": "gensen_kyuyo_core",
+  "page": "docs/gensen-choshu/index.html",
+  "priority_evidence": "t1 源泉系・r10 給与の人的区分",
+  "conditions": [
+    {
+      "id": "monthly-income",
+      "statute": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf",
+      "disposition": "input",
+      "input_ids": [
+        "amount"
+      ],
+      "cases": [
+        "月額表105,000円境界の1円下（甲欄・扶養0人）",
+        "月額表105,000円境界の1円上（甲欄・扶養0人）",
+        "月額表740,000円境界の1円下（甲欄・扶養0人）",
+        "月額表740,000円境界の1円上（甲欄・扶養0人）"
+      ]
+    },
+    {
+      "id": "personal-extra",
+      "statute": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf",
+      "disposition": "input",
+      "input_ids": [
+        "kafu",
+        "hitorioya"
+      ],
+      "cases": [
+        "寡婦とひとり親の排他",
+        "寡婦もひとり親もなし"
+      ],
+      "exclusive_with": [
+        "kafu",
+        "hitorioya"
+      ]
+    },
+    {
+      "id": "otsu-rounding",
+      "statute": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf",
+      "disposition": "input",
+      "input_ids": [
+        "amount"
+      ],
+      "cases": [
+        "乙欄低額の端数切捨",
+        "同額の甲欄はゼロ"
+      ],
+      "rounding": "乙欄の1円未満切捨"
+    }
+  ],
+  "default_cases": [
+    "HTML初期の人的加算なし"
+  ]
+}
