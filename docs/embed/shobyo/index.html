@@ -54,7 +54,7 @@
   <h1>傷病手当金 計算</h1>
   <p class="lead">病気やケガで働けないときに健康保険から出る傷病手当金（日額・支給日数・支給期間・合計）を概算します。日額は標準報酬÷30×2／3、待期3日あり。</p>
 
-  <label for="startDate">支給を始める日（働けなくなって4日目＝待期3日の翌日）</label>
+  <label for="startDate">初回の支給開始日（初めての申請では待期3日の翌日）</label>
   <input id="startDate" type="date" value="">
   <div class="hint">この日は①支給期間（1年6か月）の起算日、②入社1年未満の方の上限額、の両方に効きます。</div>
 
@@ -72,7 +72,11 @@
       <input id="restDays" type="number" inputmode="numeric" value="30" min="0" max="600">
     </div>
   </div>
-  <div class="hint">被保険者期間が12か月未満の方は上限がかかります（99条2項ただし書）。休んだ日数は土日祝も含む暦の日数。待期未完成の場合は連続休業が前提です。既払分がある場合は通算1年6か月の残日数以内で入力してください（過去の受給日数は自動控除しません）。</div>
+  <div class="hint">被保険者期間が12か月未満の方は上限がかかります（99条2項ただし書）。休んだ日数は土日祝も含む暦の日数。待期未完成の場合は連続休業が前提です。既払分は下の既受給日数に入れてください。通算1年6か月の残日数を上限に計算します。</div>
+
+  <label for="usedDays">今回の休業より前に受給した日数（同じ病気・けが）</label>
+  <input id="usedDays" type="number" value="0" min="0" inputmode="numeric">
+  <div class="hint">初回は0。復職して働けた期間は含めません。過去に受給済みなら初回の支給開始日を入力し、待期完成済みにチェックしてください。支給済み日数は保険者に確認してください。</div>
 
   <label class="chk"><input id="taikiDone" type="checkbox"> <span>すでに<b>待期3日</b>が完成している（受給中で、続きの分を計算したい）</span></label>
   <label class="chk"><input id="ninnikeizoku" type="checkbox"> <span><b>任意継続被保険者</b>である（退職後に健康保険を任意継続している）</span></label>
@@ -151,7 +155,7 @@ $("calc").addEventListener("click", async () => {
 
   const startDate = $("startDate").value;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) {
-    box.innerHTML = `<div class="warn"><b>「支給を始める日」を入力してください。</b>この日がないと、支給期間（通算1年6か月）の最終日を出せません（総日数は開始日によって546日にも549日にも変わります）。</div>`;
+    box.innerHTML = `<div class="warn"><b>「支給を始める日」を入力してください。</b>この日がないと、支給期間（通算1年6か月）の上限日数を出せません（総日数は開始日によって546日にも549日にも変わります）。</div>`;
     postHeight(); return;
   }
 
@@ -169,6 +173,7 @@ $("calc").addEventListener("click", async () => {
       monthly,
       months: Number($("months").value),
       restDays: Number($("restDays").value),
+      usedDays: Number($("usedDays").value),
       taikiDone: $("taikiDone").checked,
       ninnikeizoku: $("ninnikeizoku").checked,
       hoshuNichigaku: Number($("hoshuNichigaku").value),
@@ -209,7 +214,7 @@ $("calc").addEventListener("click", async () => {
     ? `<tr><td>待期（支給されない日）</td><td class="n">${r.taikiDays}日</td></tr>`
     : "";
   const kikanRow = r.kikan
-    ? `<tr><td>支給期間の最終日</td><td class="n">${jp(r.kikan.end)}（通算${r.kikan.totalDays}日）</td></tr>`
+    ? `<tr><td>通算上限日数</td><td class="n">${r.kikan.totalDays}日</td></tr><tr><td>今回計算前の残日数</td><td class="n">${r.kikan.remainingDays}日</td></tr><tr><td>今回計算後の残日数</td><td class="n">${r.kikan.remainingAfter}日</td></tr><tr><td colspan="2">既受給${r.kikan.usedDays}日を控除。実際の受給終了日は固定できません。</td></tr>`
     : "";
 
   box.innerHTML = `
@@ -227,7 +232,7 @@ $("calc").addEventListener("click", async () => {
       <tr class="tot"><td>合計</td><td class="n">${yen(r.total)}</td></tr>
     </table>
     ${estimatedNote}
-    <div class="note">休職中に退職する予定の方は、退職日に出社すると労務不能でなくなり、退職後の傷病手当金が受けられなくなります（104条）。挨拶や荷物は退職日を避けてください。</div>
+    <div class="note">休職中に退職する予定の方は、退職日の受給可能要件は業務外の療養・労務不能・待期完成です。労務不能は療養担当者の意見と仕事の内容を考慮して判断されるため、出社・就労の扱いは保険者に確認してください。</div>
     <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
   postHeight();
 });

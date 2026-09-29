@@ -607,12 +607,9 @@ $("calc").addEventListener("click", async () => {
 
   // 10b. まだ政令で確認できていない表（enacted:false）で計算したときは、額を出す前に必ず断る。
   //      ★これを消すと「予定の額」が確定額の顔をして出る。core の planned とセットで意味を持つ。
-  const plannedNote = r.planned
-    ? `<div class="note" id="planned-note"><b>これは「予定」の限度額です。</b>` +
-      `${r.table.label}は、厚生労働省が公表した見直し後の表にもとづく額です。` +
-      `健康保険法施行令（政令）ではまだ確認できていないため、実際にはこのとおりにならないことがあります。` +
-      `加入先の健康保険が公表する表で必ずご確認ください。</div>`
-    : "";
+  const plannedNote = r.enforcementDate
+    ? `<div class="note" id="planned-note"><b>公布済み・令和9年8月1日施行の限度額です。</b>令和8年政令第240号で定められた、令和9年8月以後の診療分の表で計算しています。</div>`
+    : r.planned ? `<div class="note" id="planned-note">この表は政令で未確認の見込額です。加入先の健康保険に確認してください。</div>` : "";
 
   if (r.ageGroup === "over70") { renderOver70(box, r, plannedNote); return; }
 
@@ -635,15 +632,14 @@ $("calc").addEventListener("click", async () => {
   //   だから限度額の表には入れず、別の枠で出す（混ぜると窓口で払う額を過小に答える）。
   const ann = r.annual;
   const annHtml = ann ? `
-    <div class="callout" style="margin-top:12px"><b>年間上限（令和8年8月診療分から新設）：あなたの区分は ${yen(ann.cap)}／年</b>
+    <div class="callout" style="margin-top:12px"><b>年間上限（令和8年8月診療分から新設）：入力した区分の参考額は ${yen(ann.cap)}／年</b>
     ${ann.reduced ? `<br><span style="font-size:13px">標準報酬月額が15万円以下のため、53万円ではなく<b>${yen(ann.cap)}</b>が上限です（保険者が確認できた場合）。</span>` : ""}
     <p style="margin:8px 0 0;font-size:13px">1年の区切りは<b>${ymJa(ann.period.from)} 診療分 〜 ${ymJa(ann.period.through)} 診療分</b>です（暦年でも年度でもありません）。
-    この1年でのあなたの自己負担の合計が ${yen(ann.cap)} を超えたときは、超えた分が戻ります。</p>
+    対象となる自己負担を世帯で合算し、支給済みの高額療養費等を控除した額が、基準日の所得区分による年間上限を超えた場合に支給されます。</p>
     <p style="margin:8px 0 0;font-size:13px"><b>これは窓口で引かれる仕組みではありません。</b>窓口では上の月額の限度額（${yen(r.limit)}）まで払い、
     <b>1年が終わったあとに保険者へ申請して払い戻し（償還払い）を受けます</b>。申請しないと戻りません。
     協会けんぽの場合は「年間の高額療養費支給申請書兼自己負担額証明書交付申請書」です。</p>
-    <p style="margin:8px 0 0;font-size:12px;color:var(--sub)">なお、年間の合計を数える単位（世帯か個人か）と、合計に入る自己負担の範囲は、
-    公表資料からまだ確定できていません。このツールは<b>上限額と期間をお知らせするだけで、あなたの年間累計は計算していません</b>。加入先の健康保険にご確認ください。</p>
+    <p style="margin:8px 0 0;font-size:12px;color:var(--sub)">施行令41条の3では、被保険者・被扶養者の対象自己負担を世帯で合算します。70歳未満分は月ごとの一医療機関等21,000円以上（75歳到達時の特例は10,500円）が対象です。月ごとの高額療養費・外来年間合算などの支給済み額を控除し、70歳以上の世帯分は先に精算します。年間上限の所得区分は基準日で判定するため、診療月の入力と異なる場合があります。このツールは<b>上限額と期間をお知らせするだけで、あなたの年間累計は計算していません</b>。加入先の健康保険にご確認ください。</p>
     </div>` : "";
 
   box.innerHTML = `

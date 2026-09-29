@@ -12,7 +12,7 @@
      このページ自体は noindex（/shussan/ と重複させない）。計算は本体と同じ ../../assets/shussan_core.js。 -->
 <link rel="canonical" href="https://keiri-tools.com/shussan/">
 <meta name="robots" content="noindex, follow">
-<meta name="description" content="産休中に健康保険から出る出産手当金（日額・支給日数・合計）を自動計算する埋め込みウィジェット。予定日より遅れた分の増額にも対応。keiri-tools 提供。">
+<meta name="description" content="法定範囲を全日休んだ場合の出産手当金の最大見込額を計算する埋め込みウィジェット。予定日より遅れた分の増額にも対応。keiri-tools 提供。">
 <style>
   :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --control:#84939f; --accent:#1f6f5c; --accent2:#e7f3f0; --bg:#fff; }
   *{ box-sizing:border-box; }
@@ -52,15 +52,15 @@
 <body>
 <div class="w">
   <h1>出産手当金 計算</h1>
-  <p class="lead">産休中に健康保険から出る出産手当金（日額・支給日数・合計）を概算します。日額は標準報酬÷30×2／3。多胎は産前98日。予定日より遅れた日数はそのまま給付が増えます。</p>
+  <p class="lead">法定範囲を全日休んだ場合の出産手当金の最大見込額を概算します。休業開始が遅い方・途中に働いた日がある方の受給額は計算できません。日額は標準報酬÷30×2／3。多胎は産前98日。予定日より遅れた日数はそのまま給付が増えます。</p>
 
   <label for="yoteibi">出産予定日</label>
   <input id="yoteibi" type="date" value="">
-  <div class="hint">産前休業はこの日の42日前（多胎は98日前）から取れます。入社1年未満の方の上限額の判定にも使います。</div>
+  <div class="hint">出産日（遅れた場合は予定日）を含む産前42日（多胎98日）から産後56日まで全日休む前提です。上限額は、この前提での支給開始日で判定します。</div>
 
   <label for="shussanbi">実際の出産日<span style="font-weight:400">　まだの方は空欄でOK</span></label>
   <input id="shussanbi" type="date" value="">
-  <div class="hint">予定日より遅れると、遅れた日数ぶん給付が増えます（早いと減ります）。空欄なら予定日どおりの見込みで計算します。</div>
+  <div class="hint">予定日より遅れると、遅れた日数ぶん給付が増えます（早産自体では法定の産前日数は減りません）。空欄なら予定日どおりの見込みで計算します。</div>
 
   <label class="chk"><input id="tatai" type="checkbox"> <span><b>多胎妊娠</b>（双子以上）である（産前が42日→<b>98日</b>になります）</span></label>
 
@@ -137,7 +137,7 @@ $("calc").addEventListener("click", async () => {
 
   const yoteibi = $("yoteibi").value;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(yoteibi)) {
-    box.innerHTML = `<div class="warn"><b>「出産予定日」を入力してください。</b>この日がないと、産前・産後の日数（産前は予定日の42日前から）を数えられません。</div>`;
+    box.innerHTML = `<div class="warn"><b>「出産予定日」を入力してください。</b>この日がないと、産前・産後の日数（産前は出産日または予定日を含む42日間）を数えられません。</div>`;
     postHeight(); return;
   }
   const shussanbi = $("shussanbi").value;
@@ -185,7 +185,7 @@ $("calc").addEventListener("click", async () => {
   const delayNote = (!k.shussanbiEstimated && k.delay !== 0)
     ? (k.delay > 0
         ? `<div class="callout">出産が予定日より ${k.delay}日 遅れたため、産前が ${k.delay}日 延びています（+${yen(r.paidNichigaku * k.delay)}）。産前の起点が予定日に固定されるためです（102条1項）。</div>`
-        : `<div class="callout">出産が予定日より ${-k.delay}日 早かったため、産前が ${-k.delay}日 短くなっています。</div>`)
+        : `<div class="callout">早産の場合も実際の出産日を含む産前${k.sanzenBase}日が対象範囲です。全日休業した場合の最大見込額です。</div>`)
     : "";
   const capNote = r.capped
     ? `<div class="callout">被保険者期間が${r.months}か月（12か月未満）のため、上限（1日 ${yen(r.cap)}）にかかっています。ご自身の平均から出した ${yen(r.own)} ではなく、全被保険者の平均標準報酬月額 ${yen(r.heikin)}（${r.heikinLabel}）から出した額の少ないほうで計算されます（99条2項ただし書）。</div>`
@@ -205,8 +205,9 @@ $("calc").addEventListener("click", async () => {
   const tataiLabel = k.tatai ? "（多胎）" : "";
 
   box.innerHTML = `
-    <div class="big">出産手当金 ${yen(r.total)}</div>
+    <div class="big">出産手当金の最大見込額 ${yen(r.total)}</div>
     <div class="hint">${r.days}日分／1日あたり <b>${yen(r.paidNichigaku)}</b></div>
+    <div class="hint">法定範囲を全日休んだ場合の試算です。実際の休業開始が遅い場合や就労日がある場合は支給日数が減ります。表示した給与日額が全対象日に同じという前提です。</div>
     ${keizokuNote}
     ${delayNote}
     ${capNote}
@@ -214,9 +215,9 @@ $("calc").addEventListener("click", async () => {
     <table>
       <tr><td>日額${adj.deduct > 0 ? "（調整後）" : ""}</td><td class="n">${yen(r.paidNichigaku)}</td></tr>
       <tr><td>標準報酬月額の平均 ÷ 30</td><td class="n">${yen(r.base)}</td></tr>
-      <tr><td>産前${tataiLabel}</td><td class="n">${k.sanzen}日${k.delay > 0 ? `（基準${k.sanzenBase}＋遅${k.delay}）` : k.delay < 0 ? `（基準${k.sanzenBase}−早${-k.delay}）` : ""}</td></tr>
+      <tr><td>産前${tataiLabel}</td><td class="n">${k.sanzen}日${k.delay > 0 ? `（基準${k.sanzenBase}＋遅${k.delay}）`  : ""}</td></tr>
       <tr><td>産後</td><td class="n">${k.sango}日</td></tr>
-      <tr><td>支給期間</td><td class="n">${jp(k.startDate)}〜${jp(k.endDate)}</td></tr>
+      <tr><td>全日休業の対象範囲</td><td class="n">${jp(k.startDate)}〜${jp(k.endDate)}</td></tr>
       <tr class="tot"><td>合計</td><td class="n">${yen(r.total)}</td></tr>
     </table>
     ${yoteiNote}
