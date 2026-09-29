@@ -5174,6 +5174,20 @@ SCENES.track_internal_link_click = async () => {
   return { names: gaNames(doc), linkUrl: ev.params.link_url, linkText: ev.params.link_text };
 };
 
+// どの欄から押されたか（slot）を送ること。「次に読む」と「関連記事・ツール」を別々に数えるため（2026-09-29）
+async function clickSlot(selector, eventName) {
+  const doc = await open("/docs/column/seikyusho-kakikata/");
+  const link = doc.querySelector(selector);
+  if (!link) throw new Error(selector + " が見つからない");
+  link.addEventListener("click", (e) => e.preventDefault());
+  link.click();
+  await waitFor(() => gaNames(doc).includes(eventName), eventName + " の送出");
+  const ev = gaEvents(doc).find((e) => e.name === eventName);
+  return { names: gaNames(doc), slot: ev.params.slot, linkUrl: ev.params.link_url || "", tool: ev.params.tool || "" };
+}
+SCENES.track_slot_next_read = () => clickSlot(".next-read a[href]", "internal_link_click");
+SCENES.track_slot_related_tool = () => clickSlot('section.related a[href^="../../"]', "tool_link_click");
+
 // Nested investment calculators are also part of the all-tool visual state gate.
 SCENES.ui_tsumitate = async () => {
   const doc = await open("/docs/toushi/tsumitate/");

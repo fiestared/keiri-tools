@@ -273,12 +273,20 @@
           var url = new URL(a.getAttribute("href"), location.href);
           if (url.origin !== location.origin) return; // 外部リンクは自動計測に任せる
           if (url.pathname === location.pathname) return; // ページ内アンカー
+          // ★どの欄から押されたか（GA4 のカスタムディメンション slot。登録済み）。
+          //   これが無いと「次に読む」と「関連記事・ツール」と本文のリンクが1つの数に混ざり、
+          //   欄ごとの効きを HTML と突き合わせないと読めなかった（2026-09-29 実測: 次に読む 0.28%/PV）。
+          var slot = a.closest(".next-read") ? "next_read"
+            : a.closest("section.related") ? "related"
+            : a.closest(".rail-next") ? "rail"
+            : "body";
           if (url.pathname.indexOf("/column/") !== -1) {
             // GA4標準のリンク項目を使う。カスタムディメンション登録なしで遷移先を読める。
             if (typeof window.gtag === "function") {
               window.gtag("event", "internal_link_click", {
                 link_url: url.href,
                 link_text: (a.textContent || "").trim().slice(0, 100),
+                slot: slot,
               });
             }
             return;
@@ -290,6 +298,7 @@
             window.gtag("event", "tool_link_click", {
               tool: url.pathname.replace(/^\/+|\/+$/g, "") || "(top)",
               from: toolId(),
+              slot: slot,
             });
           }
         } catch (err) {

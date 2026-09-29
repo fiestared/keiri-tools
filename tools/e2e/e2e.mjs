@@ -1894,6 +1894,11 @@ const SCENES = [
       s.names.includes("internal_link_click") &&
       s.linkUrl.includes("/column/furikomi-tesuryo-hikaku/") &&
       s.linkText.includes("振込手数料") },
+  // ★欄の区別: 「次に読む」は next_read、「関連記事・ツール」は related を送る（本文と混ぜない）
+  { name: "track_slot_next_read", noCoverage: true, expect: (s) =>
+      s.names.includes("internal_link_click") && s.slot === "next_read" && s.linkUrl.includes("/column/") },
+  { name: "track_slot_related_tool", noCoverage: true, expect: (s) =>
+      s.names.includes("tool_link_click") && s.slot === "related" && s.tool.length > 0 },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────
