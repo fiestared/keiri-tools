@@ -85,18 +85,20 @@ assert.ok(found.size >= 8, `照合したカンマ区切りの数が少なすぎ�
 // 等級は「2等級以上」など記事中に何度も出るため集合一致にできない。→ 載っている要素を名指しする。
 const gradeRow = HTML.match(/<tr><td>標準報酬月額<\/td>([\s\S]*?)<\/tr>/);
 assert.ok(gradeRow, '具体例の「標準報酬月額」の行が見つからない');
-for (const [amount, grade, label] of [[a.standard, a.grade, '従前'], [b.standard, b.grade, '改定後']]) {
-  const cell = `${amount.toLocaleString('ja-JP')}円（<b>${grade}等級</b>）`;
+// 日本年金機構 算定ガイド令和8年度 冊子p.40（PDF43頁）の厚年表で確認。
+// 30万円=19級、32万円=20級、36万円=22級。健保のgradeを厚年番号に流用しない。
+for (const [amount, grade, label] of [[300000, 19, '従前'], [360000, 22, '改定後']]) {
+  const cell = `${amount.toLocaleString('ja-JP')}円（<b>厚年${grade}等級</b>）`;
   assert.ok(gradeRow[1].includes(cell),
-    `具体例の表の${label}のセルが core と合わない。期待: ${cell}`);
+    `具体例の表の${label}のセルが正本の厚年表と合わない。期待: ${cell}`);
 }
 
 // 反例（1等級差にとどまり改定されない）の callout も名指しで見る
 const ctr = HTML.match(/<div class="callout">\s*<b>昇給しても、1等級しか動かなければ改定されない<\/b>([\s\S]*?)<\/div>/);
 assert.ok(ctr, '1等級差の反例の callout が見つからない');
-assert.ok(ctr[1].includes(`${c.standard.toLocaleString('ja-JP')}円（${c.grade}等級）`),
-  `反例の標準報酬月額・等級が core と合わない（期待 ${c.standard.toLocaleString('ja-JP')}円（${c.grade}等級））`);
-assert.ok(ctr[1].includes(`従前の${a.grade}等級`), `反例の「従前の${a.grade}等級」が core と合わない`);
+assert.ok(ctr[1].includes('320,000円（厚年20等級）'),
+  '反例の標準報酬月額・等級が厚年表と合わない（期待 320,000円（厚年20等級））');
+assert.ok(ctr[1].includes('従前の厚年19等級'), '反例の従前額は厚年19等級');
 
 // 「等級の差は3等級」という断定も core から導く
 assert.ok(HTML.includes(`等級の差は<b>${b.grade - a.grade}等級</b>`),

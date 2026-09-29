@@ -215,10 +215,10 @@ const gradeCallout = callouts.find(c => strip(c).includes('同じ等級'));
 if (!gradeCallout) fail('「同じ等級の2人でも雇用保険料は違う」の callout が無い');
 else {
   const t = strip(gradeCallout);
-  const want = ['1,500円', '1,525円', `${SAME_GRADE_DIFF}円`, '第22級'];
+  const want = ['1,500円', '1,525円', `${SAME_GRADE_DIFF}円`, '厚生年金では第19級'];
   const missing = want.filter(w => !t.includes(w));
   if (missing.length) fail(`同一等級の callout に無い: ${missing.join(' / ')}`);
-  else ok(`同一等級の callout: 1,500円 と 1,525円 で ${SAME_GRADE_DIFF}円 違う（第22級で同額なのは健保・厚年）`);
+  else ok(`同一等級の callout: 1,500円 と 1,525円 で ${SAME_GRADE_DIFF}円 違う（厚生年金の30万円は第19級。健保と等級番号を混同しない）`);
 }
 
 // ───────── 名指し⑥ 比較表：計算のもとが「賃金総額」で、標準報酬月額でないこと ─────────
