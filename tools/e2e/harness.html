@@ -1180,7 +1180,7 @@ const kogakuScene = ({ ageGroup = "under70", monthly = 300000, hikazei = false, 
     // ★記号の正規表現だけだと、13区分の画面が区分を一切名乗らなくても null で素通りする。
     kubunLabel13: (body.match(/あなたの区分は\s*(標報[^（(]+)/) || [])[1] || null,
     // ★まだ政令で確認できていない表で計算したことを画面が断っているか
-    saysPlanned: /これは「予定」の限度額です/.test(body) && /健康保険法施行令（政令）ではまだ確認できていない/.test(body),
+    saysEnacted: /公布済み・令和9年8月1日施行/.test(body),
     limit: num(/自己負担限度額\s*¥([\d,]+)/),
     refund: num(/高額療養費として支給される額\s*¥([\d,]+)/),
     totalMedical: num(/合算した医療費（10割）\s*¥([\d,]+)/),
@@ -1195,7 +1195,7 @@ const kogakuScene = ({ ageGroup = "under70", monthly = 300000, hikazei = false, 
     // 適用した表を画面が名乗っているか(名乗らないと、利用者は新旧どちらで計算されたか分からない)
     tableLabel: (body.match(/適用した表：(.+?)\s*(?:判定に使った|市町村民税非課税のため)/) || [])[1] || null,
     expectedAnnualCap: expected ? expected.annualCap : null,
-    annualCap: num(/年間上限（令和8年8月診療分から新設）：あなたの区分は\s*¥([\d,]+)／年/),
+    annualCap: num(/年間上限（令和8年8月診療分から新設）：入力した区分の参考額は\s*¥([\d,]+)／年/),
     annualPeriod: (body.match(/1年の区切りは(\d{4}年\d+月 診療分 〜 \d{4}年\d+月 診療分)です/) || [])[1] || null,
     saysRetrospective: /窓口で引かれる仕組みではありません/.test(body) && /償還払い/.test(body),
     failed: body.includes("読み込めませんでした"),
@@ -3678,8 +3678,8 @@ const shobyoScene = (inp) => async () => {
     days: num(/支給される日数(\d+)日/),
     total: num(/傷病手当金 ¥([\d,]+)/),
     // ★支給期間が**暦で**出ていること（開始日によって549日にも546日にもなる）
-    kikanDays: num(/通算1年6か月＝(\d+)日/),
-    showsKikanEnd: /支給期間の最終日2023年9月3日/.test(body),
+    kikanDays: num(/通算上限日数(\d+)日/),
+    showsCumulative: /実際の受給終了日は固定できません/.test(body) && !/支給期間の最終日/.test(body),
     // ★被保険者期間12か月未満の頭打ち。上限にかかったことを**画面が名指しで言う**こと
     showsCap: /この方は上限（1日 ¥7,113）にかかっています/.test(body),
     // ★給与が出ていても差額は出る（108条1項ただし書）。「対象外」と黙らせない
@@ -3760,7 +3760,7 @@ const shussanScene = (inp) => async () => {
   click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
 
   await waitFor(
-    () => /出産手当金 ¥|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    () => /出産手当金(?:の最大見込額)? ¥|読み込めませんでした|入力してください/.test(text(doc, "result")),
     "出産手当金の計算結果",
   );
   const body = text(doc, "result");
@@ -3769,8 +3769,8 @@ const shussanScene = (inp) => async () => {
   return {
     ...inp,
     nichigaku: num(/1日あたりの金額（日額）¥([\d,]+)/),
-    days: num(/支給される日数(\d+)日/),
-    total: num(/出産手当金 ¥([\d,]+)/),
+    days: num(/全日休業時の日数(\d+)日/),
+    total: num(/出産手当金(?:の最大見込額)? ¥([\d,]+)/),
     // ★出産が予定日より遅れた日数がそのまま給付に乗ることを、画面が名指しで言う（102条1項かっこ書き）
     showsDelay: /出産が予定日より 10日 遅れたため、産前が 10日 延びています/.test(body),
     // ★任意継続なのに**支給される**＝104条の継続給付（shobyo と同じ「黙って¥0」の罠）。名乗ること

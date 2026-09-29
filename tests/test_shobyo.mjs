@@ -1,3 +1,6 @@
+import assertT6 from 'node:assert/strict';
+import { cases as t6Cases } from './boundaries/shobyo_core.mjs';
+for (const c of t6Cases) assertT6.deepEqual(c.run(), c.expected, c.name);
 /**
  * 傷病手当金の単体テスト。
  *
@@ -394,7 +397,8 @@ console.log('§8 通し計算（calcShobyo）');
   // 支給期間も返す（暦で1年6月）
   const r = calcShobyo({ monthly: 260000, months: 12, restDays: 30, startDate: '2026-02-15' }, D);
   eq(r.kikan.totalDays, 546, '支給期間は暦で数える');
-  eq(r.kikan.end, '2027-08-14', '最終日');
+  eq(r.kikan.end, null, '通算終了日は未確定');
+  eq(r.kikan.continuousEnd, '2027-08-14', '連続受給を仮定した参考日');
 }
 {
   // 給料が一部出ている人

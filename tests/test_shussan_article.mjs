@@ -67,6 +67,7 @@ const TEDORI_SANKYU = D30 * 30;                      // 200,010円
 
 // 記事に登場してよい「カンマ区切りの金額」の集合（前提 ∪ 導出）
 const EXPECT_YEN = new Set([
+  daily(500000), // 99条2項・102条2項: 500000÷30→16670、×2/3→11113円
   per30(170000), D_ORACLE, D_ORACLE * (SANZEN + SANGO),        // 5,670 / 3,780 / 370,440
   per30(300000), D30, D30 * (SANZEN + SANGO),                  // 10,000 / 6,667 / 653,366
   per30(CAP_UNDER12M), D_CAP, D_CAP * (SANZEN + SANGO),        // 10,670 / 7,113 / 697,074
@@ -142,6 +143,7 @@ const cmp = (name, got, want) => {
   if (!extra.length && !missing.length) ok(`${name}: ${got.size}件が完全一致`);
 };
 cmp('金額（カンマ区切り）', yen, EXPECT_YEN);
+if (!/①で計算した11,113円ではありません/.test(text)) fail('標準報酬50万円の日額比較は11,113円（99条2項の二段階丸め）');
 cmp('万円表記', man, EXPECT_MAN);
 cmp('パーセント', pct, EXPECT_PCT);
 cmp('日数', days, EXPECT_DAYS);

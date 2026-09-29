@@ -520,6 +520,7 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
     const p = notes.find(x => x.includes('この表は政令で決まっています'));
     if (!p) fail('令和9年8月の表が政令で決まっていること（令和8年政令第240号）の申告が無い');
     else {
+      if (!p.trim().startsWith('この表は政令で決まっています（令和9年8月1日施行）。')) fail('政令の施行日の先頭説明が違う');
       const need = ['令和9年8月1日施行', '令和8年政令第240号', '未施行版', '三十四万二千円', '百十四万円', '三万六千九百円', '41万円'];
       const miss = need.filter(n => !p.includes(n));
       if (miss.length) fail(`令和9年8月の注記に ${miss} が無い: ${p}`);
@@ -528,6 +529,7 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
       if (s127.base !== 342000 || s127.threshold !== 1140000 || hz.base !== 36900 || CAPS.s15.cap !== 410000)
         fail('from_2027_08 の額が、注記が引く政令の額（342,000・1,140,000・36,900・41万円）と一致しない');
       else ok('令和9年8月: 注記が引く政令の額 ＝ from_2027_08（計算機の表）');
+      if (T27.enacted === true && !p.includes('「公布済み・令和9年8月1日施行」と表示し')) fail('公布済みの将来施行である計算機の表示が記事に無い');
       const saysYotei = p.includes('「予定の表で計算しています」と表示します');
       if (T27.enacted === false && !saysYotei) fail('計算機はまだ「予定の表」と表示するのに（enacted:false）、記事がそれを書いていない');
       else if (T27.enacted !== false && saysYotei) fail('データは enacted になったのに、記事が「予定の表」と表示すると書いている');

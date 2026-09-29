@@ -23,8 +23,8 @@
  * 3. **予定日より遅れた日数は、そのまま給付が増える**（102条1項かっこ書き）。
  *    産前の起点は「出産日以前42日」だが、**出産日が予定日より後のときは起点を『予定日以前42日』に固定**する。
  *    終点は常に「出産日後56日」。→ 10日遅れ＝**+10日ぶん**（標準報酬30万で +66,670円）。
- *    逆に早く産まれると起点が実際の出産日に戻るので **産前が短くなる**（10日早い＝−66,670円）。
- *    ★「産前は必ず42日」と焼き込むと、遅れた人に足りず・早い人に払いすぎる。
+ *    早く産まれた場合は実際の出産日を基準に産前42日（多胎98日）を数える。
+ *    ★全日休業時の最大見込額。実際の就労日・休業開始の遅れは別途確認する。
  *
  * 4. **多胎（双子以上）は産前98日**（産後は56日のまま）＝合計154日。
  *
@@ -78,8 +78,8 @@ export function addDays(dateStr, n) {
 /**
  * 出産手当金の支給期間を求める（102条1項）。
  *
- * 前提モデル: **予定日の42日（多胎98日）前から産前休業に入り、産後56日まで休む**（満額のケース）。
- * 実際に働いた日は「労務に服した」ので支給対象外だが、その分は報酬調整（108条2項）で扱う。
+ * 前提モデル: **法定範囲を全日休業した場合の最大見込額**。
+ * 実際に働いた日は支給対象外。就労日を報酬調整で代用せず、この試算の対象外とする。
  *
  * @param yoteibi   出産予定日（YYYY-MM-DD・必須）
  * @param shussanbi 実際の出産日（YYYY-MM-DD）。未確定なら予定日と同じにする（＝オンタイム見込み）
@@ -92,12 +92,12 @@ export function shussanKikan(yoteibi, shussanbi, tatai) {
 
   // 遅れ＝+／早い＝−（102条1項かっこ書き：出産日が予定日後なら起点は予定日に固定＝遅れた分だけ産前が延びる）
   const delay = daysBetween(yoteibi, birth);
-  const sanzen = Math.max(0, sanzenBase + delay);
+  const sanzen = sanzenBase + Math.max(0, delay);
   const sango = SANGO_DAYS;
   const days = sanzen + sango;
 
-  // 支給を始める日＝産前休業開始日（予定日の (産前基準−1) 日前）。二号頭打ちの額を「支給開始日」で引くのに使う
-  const startDate = addDays(yoteibi, -(sanzenBase - 1));
+  // 全日休業を仮定した開始日（早産時は実出産日を基準にする）。二号頭打ちの額を「支給開始日」で引くのに使う
+  const startDate = addDays(delay > 0 ? yoteibi : birth, -(sanzenBase - 1));
   // 支給の最終日＝出産日後56日
   const endDate = addDays(birth, SANGO_DAYS);
 
@@ -210,6 +210,7 @@ export function calcShussan(input, D) {
     paidNichigaku: adj.paid, // 調整後の日額
     kikan, // 産前・産後・遅れ/早い・支給開始/終了日
     days,
+    fullLeaveMaximum: true, // 法定範囲の全日休業が前提。実際の受給額ではない
     total,
   };
 }

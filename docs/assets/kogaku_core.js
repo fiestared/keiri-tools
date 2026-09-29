@@ -328,6 +328,7 @@ function calcOver70(input, data) {
     // 10b. enacted === false の表（＝公表されただけで政令で確認できていない）は planned を立てる。
     //      画面はこれを見て「予定」と断る。false でない限り立てない（未記載の表は従来どおり確定扱い）。
     planned: table.enacted === false,
+    enforcementDate: table.enforcement_date ?? null, // 公布済みの将来施行を未確認の案と区別する
     table: { id: table.id, label: table.label, appliesFrom: table.applies_from, appliesThrough: table.applies_through, enacted: table.enacted !== false },
     kubun,
     annual,
@@ -459,6 +460,7 @@ export function calcKogaku(input, data) {
     // 10b. enacted === false の表（＝公表されただけで政令で確認できていない）は planned を立てる。
     //      画面はこれを見て「予定」と断る。false でない限り立てない（未記載の表は従来どおり確定扱い）。
     planned: table.enacted === false,
+    enforcementDate: table.enforcement_date ?? null, // 公布済みの将来施行を未確認の案と区別する
     table: { id: table.id, label: table.label, appliesFrom: table.applies_from, appliesThrough: table.applies_through, enacted: table.enacted !== false },
     annual,
     kubun,

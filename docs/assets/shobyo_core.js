@@ -181,7 +181,7 @@ export function nichigaku(standards, D, opt) {
  *     繰り越してから前日を取ると、満了日が1〜2日**遅く**出ていた（2026-07-19レビューで修正。
  *     ikuji/yukyu と同じ addMonthsClamped 方式に統一）。
  * @param startDate 支給を **始めた** 日（待期3日の翌日＝4日目）
- * @returns { start, end, totalDays } end は最終日（開始日 + 18か月 − 1日）
+ * @returns { start, end, totalDays } end は連続受給を仮定した日数換算上の終点。実際の受給終了日ではない
  */
 export function shikyuKikan(startDate) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(startDate || ''))) {
@@ -361,8 +361,15 @@ export function calcShobyo(input, D) {
     taishokugo: i.taishokugo,
   });
 
-  const kikan = /^\d{4}-\d{2}-\d{2}$/.test(String(i.startDate || "")) ? shikyuKikan(i.startDate) : null;
-  const days = Math.min(shikyuNissu(i.restDays, i.taikiDone), kikan ? kikan.totalDays : Infinity);
+  const period = /^\d{4}-\d{2}-\d{2}$/.test(String(i.startDate || "")) ? shikyuKikan(i.startDate) : null;
+  const usedDays = Math.max(0, Math.floor(Number(i.usedDays) || 0));
+  if (usedDays > 0 && !period) throw new Error('残日数の計算には初回の支給開始日が必要です');
+  const remainingDays = period ? Math.max(0, period.totalDays - usedDays) : null;
+  const taikiDone = !!i.taikiDone || usedDays > 0; // 既受給があれば待期は完成済み
+  const days = Math.min(shikyuNissu(i.restDays, taikiDone), remainingDays ?? Infinity);
+  // 通算日数から実際の終了日は確定できない。連続受給の参考日とは分離する。
+  const kikan = period ? { start: period.start, end: null, continuousEnd: period.end,
+    totalDays: period.totalDays, usedDays, remainingDays, remainingAfter: remainingDays - days } : null;
   const total = adj.paid * days;
 
   return {
@@ -382,9 +389,9 @@ export function calcShobyo(input, D) {
     chosei: adj,
     paidNichigaku: adj.paid, // 調整後の日額
     days,
-    taikiDays: i.taikiDone ? 0 : Math.min(TAIKI_DAYS, Math.max(0, Math.floor(Number(i.restDays) || 0))),
+    taikiDays: taikiDone ? 0 : Math.min(TAIKI_DAYS, Math.max(0, Math.floor(Number(i.restDays) || 0))),
     total,
-    // 支給期間（暦で1年6月）。支給を始めた日がわかるときだけ
+    // 通算上限・既受給・残日数。終了日は将来の休業状況で変わる
     kikan,
   };
 }

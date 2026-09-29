@@ -237,7 +237,7 @@ const SCENES = [
       s.totalSelf === 30000 && s.refund === 0 && !s.failed },
   // ★令和9年8月からの13区分。標報44万は旧5区分だと区分ウ(92,940円)に落ちるので、
   //   境界を流用したままなら limit が 92,940 になってここで落ちる。正しくは 116,720円。
-  //   ★enacted:false の表なので、画面が「予定」と断っていること(断らなければ予定額が確定額の顔で出る)。
+  //   公布済みであり、令和9年8月1日施行の表であることを画面でも示す。
   { name: "kogaku_r0908", expect: (s) =>
       s.declaredStd === 440000 &&
       s.kubunLabel13 === "標報44万〜50万円" && s.kubun === null &&
@@ -245,7 +245,7 @@ const SCENES = [
       s.refund === 300000 - 116720 && s.refund === s.expectedRefund &&
       s.finalBurden === 116720 && s.manyLimit === 44400 &&
       s.annualCap === 530000 && s.annualCap === s.expectedAnnualCap &&
-      s.saysPlanned && !s.failed },
+      s.saysEnacted && !s.failed },
   // ★70歳以上の目玉: 外来(通院)だけの人に**世帯上限を当てない**。一般区分・自己負担3万円 →
   //   外来上限22,000円で頭打ち → 8,000円戻る。世帯上限61,500円を当てると「支給0円」と答える。
   //   足切り21,000円が70歳未満だけの規律であることも画面が言っていること。
@@ -1338,7 +1338,7 @@ const SCENES = [
   //     (コアは startDate が無いと kikan を null にするだけ = 画面から支給期間が黙って消える)。
   { name: "shobyo", expect: (s) =>
       s.nichigaku === 3780 && s.base === 5670 && s.days === 27 && s.total === 102060 &&
-      s.kikanDays === 549 && s.showsKikanEnd && !s.failed },
+      s.kikanDays === 549 && s.showsCumulative && !s.failed },
   // ★★丸めの向きが**逆**の公表例(ITS健保/厚労省資料): 20万×5 + 24万×7 → ÷30=7,440(切捨て側)
   //   → ×2/3 = **4,960円/日**。協会けんぽ(切上げ側)と**同時に**合う = 四捨五入の境界が正しい証明。
   { name: "shobyo_its", expect: (s) =>

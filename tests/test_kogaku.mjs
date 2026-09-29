@@ -1,3 +1,6 @@
+import assertT6 from 'node:assert/strict';
+import { cases as t6Cases } from './boundaries/kogaku_core.mjs';
+for (const c of t6Cases) assertT6.deepEqual(c.run(), c.expected, c.name);
 // 高額療養費（70歳未満）の計算コアの検査。
 //
 // 期待値の作り方（規則: オラクルは実装と別ルートで作る）:
@@ -178,7 +181,7 @@ ok(p("2027-08").supported === true, "令和9年8月診療分が計算できな�
 ok(p("2027-08").table.id === "from_2027_08", `令和9年8月に選ばれた表=${p("2027-08").table.id}`);
 ok(p("2027-08").kubun.key === "s28", `標報30万円の令和9年8月の区分=${p("2027-08").kubun.key}（s28のはず）`);
 // ★まだ政令で確認できていない表なので「予定」と申告すること（黙って確定額として出さない）
-ok(p("2027-08").planned === true, "★令和9年8月の表は enacted:false なのに planned を立てていない");
+ok(p("2027-08").planned === false, "令和9年8月の表は公布済み。未確認案と表示している");
 ok(p("2027-07").planned === false, "令和9年7月（施行済みの表）にまで planned を立てている");
 // ★実装した表の1年先より後は、やはり答えない（終期の無い表を無期限に信用しない）
 ok(p("2028-08").supported === false, "supported_through（2028-07）を超えた診療分に答えている");
@@ -437,7 +440,7 @@ ok(g12.supported === false && g12.reason === "no_shinryo_ym", "診療年月な�
 //    1%の起点は「基礎額を3割で割り戻した額」という設計なので、転記を1桁誤ると必ず崩れる。
 const TBL_R9 = D.tables.find((t) => t.id === "from_2027_08");
 ok(!!TBL_R9, "令和9年8月の表（from_2027_08）が無い");
-ok(TBL_R9.enacted === false, "★令和9年8月の表が enacted:true を名乗っている（政令では確認できていない）");
+ok(TBL_R9.enacted === true, "令和9年8月の公布済み表に enacted:true が無い");
 
 // 厚労省 001726232.pdf『患者負担割合及び高額療養費自己負担限度額（令和９年８月～）』70歳未満の欄。
 // [標報の下限, 標報の上限(未満), 基礎額, 1%の起点, 多数回該当, 年間上限]

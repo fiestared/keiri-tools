@@ -69,8 +69,8 @@ const MUT = [
   [DATA, "\"supported_through\": \"2028-07\"", "\"supported_through\": \"2099-12\"",
          "★表の使える期間を無限に延ばし、まだ公表されていない先の診療分にも答えさせる"],
   // ★予定の表を「確定」と名乗らせる（画面の「これは予定です」が消え、予定額が確定額の顔で出る）
-  [DATA, "\"enacted\": false", "\"enacted\": true",
-         "★政令で確認できていない令和9年8月の表を、確定した表として出させる"],
+  [DATA, "\"enacted\": true", "\"enacted\": false",
+         "公布済みの令和9年8月の表を未確認案に戻す"],
   // ★年間上限: 月額の限度額に混ぜる／額を取り違える
   [CORE, "const annual = annualCapFor(kubun.key, standardMonthly, shinryoYM, data);",
          "const annual = null;", "★年間上限を画面に出さない（申請しないと戻らない金の存在を隠す）"],

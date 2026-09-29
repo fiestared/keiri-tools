@@ -1,3 +1,6 @@
+import assertT6 from 'node:assert/strict';
+import { cases as t6Cases } from './boundaries/shussan_core.mjs';
+for (const c of t6Cases) assertT6.deepEqual(c.run(), c.expected, c.name);
 import assertBoundary from 'node:assert/strict';
 /**
  * 出産手当金の単体テスト。
@@ -9,8 +12,8 @@ import assertBoundary from 'node:assert/strict';
  *     B. 協会けんぽ 計算例 … 平均17万円 → 5,670円 → **3,780円/日**（傷病手当金と同一算式の裏取り）
  *
  * ★期間のオラクル（102条1項）: 出産日が予定日より **遅れた日数はそのまま給付が増える**。
- *   標準報酬30万（日額6,667）で **10日遅れ＝+66,670円 / 10日早い＝−66,670円**（gbrain）。
- *   → 総日数 98 ± 10 を、日額×日数で突き合わせる。
+ *   標準報酬30万（日額6,667）で **10日遅れ＝+66,670円 / 10日早産でも全日休業なら98日**（gbrain）。
+ *   → 全日休業の総日数 98 と108 を、日額×日数で突き合わせる。
  *
  * ★待期3日は無い（102条2項は99条1項を準用しない）。−3日していないことを固定する。
  */
@@ -87,12 +90,12 @@ eq(addDays('2026-03-01', -1), '2026-02-28', 'addDays: 月頭−1');
   eq(k.sanzen, 52, '10日遅れ 産前52');
   eq(k.days, 108, '10日遅れ 合計108日');
 }
-// 早い: 出産日が予定日より10日前 → 産前が10日縮む（合計88日）
+// 早い: 出産日が予定日より10日前 → 実出産日前の全日休業なら産前42日（合計98日）
 {
   const k = shussanKikan('2026-06-01', '2026-05-22', false);
   eq(k.delay, -10, '10日早い delay=-10');
-  eq(k.sanzen, 32, '10日早い 産前32');
-  eq(k.days, 88, '10日早い 合計88日');
+  eq(k.sanzen, 42, '10日早い 産前42');
+  eq(k.days, 98, '10日早い 合計98日');
 }
 // 出産日 未入力 → 予定日で見込み（98日・estimated）
 {
@@ -130,7 +133,7 @@ eq(SANZEN_TANTAI, 42, 'SANZEN_TANTAI'); eq(SANZEN_TATAI, 98, 'SANZEN_TATAI'); eq
   const late = calcShussan({ yoteibi: '2026-06-01', shussanbi: '2026-06-11', monthly: 300000, months: 12 }, D).total;
   const early = calcShussan({ yoteibi: '2026-06-01', shussanbi: '2026-05-22', monthly: 300000, months: 12 }, D).total;
   eq(late - base, 66670, '10日遅れ＝+66,670円');
-  eq(base - early, 66670, '10日早い＝−66,670円');
+  eq(base - early, 0, '10日早産でも全日休業なら98日');
 }
 // 多胎 154日
 {
