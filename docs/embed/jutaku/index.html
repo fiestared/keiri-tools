@@ -243,7 +243,7 @@ $("calc").addEventListener("click", async () => {
     ? `<div class="callout"><b>子育て世帯・若者夫婦世帯の上乗せを適用しました。</b>借入限度額が<b>${man(r.shakunyuGendoEn)}</b>になっています。</div>`
     : "";
   const keikaNote = r.keikaApplied
-    ? `<div class="callout"><b>${r.kubunLabel}の経過措置を適用しました。</b>借入限度額<b>2,000万円</b>・控除期間<b>10年</b>で計算しています。</div>`
+    ? `<div class="callout"><b>${r.kubun === "sonota" ? "「その他の住宅」" : r.kubunLabel}の経過措置を適用しました。</b>借入限度額<b>2,000万円</b>・控除期間<b>10年</b>で計算しています。</div>`
     : "";
   const zandakaVal = Number($("zandaka").value);
   const cappedNote = (zandakaVal > r.shakunyuGendoEn)

@@ -1,5 +1,6 @@
 // 入居年追加・経過措置の日付・小規模資格が本体とembedからcoreへ届くことを確認する。
 import assert from 'node:assert/strict';
+import {measure} from './layout/measure.mjs';
 import {browserTools,serve,contextFor,ready} from './layout/browser.mjs';
 const {chromium}=await browserTools();
 const server=await serve(); let browser;
@@ -10,6 +11,12 @@ try {
  const page=await context.newPage();
  for (const path of ['/jutaku/','/embed/jutaku/']) {
   await ready(page,server.origin+path);
+  for (const width of [375,390,1280]) {
+   await page.setViewportSize({width,height:900});
+   const measured=await page.evaluate(measure);
+   assert.deepEqual(measured.issues,[],path+' width='+width+' geometry');
+  }
+  await page.setViewportSize({width:390,height:900});
   await page.locator('details').first().evaluate(el=>el.open=true);
   assert.deepEqual(await page.locator('#year option').evaluateAll(els=>els.map(e=>Number(e.value))),[2022,2023,2024,2025,2026,2027,2028,2029,2030]);
   await page.locator('#zandaka').fill('60000000');
@@ -62,4 +69,4 @@ try {
  }
  await context.close();
 } finally {if(browser)await browser.close();server.close();}
-console.log(`✓ jutaku UI: 本体・embed ${count}シナリオ、390px、Chromium直列`);
+console.log(`✓ jutaku UI: 本体・embed ${count}シナリオ、375/390/1280px形状検査、Chromium直列`);

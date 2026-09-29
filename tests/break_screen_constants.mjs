@@ -49,19 +49,19 @@ const restore = async () => {
 
 const BREAKS = [
   {
-    name: "① /jutaku/ の入居年リストから 2027 を落とす（データにはある年が画面から消える）",
+    name: "① /jutaku/ の入居年リストから 2030 を落とす（データにはある年が画面から消える）",
     file: "docs/jutaku/index.html",
-    apply: (s) => s.replace("const FALLBACK_YEARS = [2022, 2023, 2024, 2025, 2026, 2027]",
-                            "const FALLBACK_YEARS = [2022, 2023, 2024, 2025, 2026]"),
+    apply: (s) => s.replace("const FALLBACK_YEARS = [2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030]",
+                            "const FALLBACK_YEARS = [2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029]"),
     expect: /入居年の選択肢が参照データの years とずれている/,
   },
   {
-    name: "② 参照データに 2028 を足す（データに年を足したのに画面が追随していない状態）",
+    name: "② 参照データに 2031 を足す（データに年を足したのに画面が追随していない状態）",
     file: "docs/assets/jutaku_r07.json",
     apply: (s) => {
       const d = JSON.parse(s);
-      // 新築・認定住宅の years に 2028 を足す（2027の内容をそのまま複製）
-      d.kubun.nintei.years["2028"] = d.kubun.nintei.years["2027"];
+      // 新築・認定住宅の years に 2031 を足す（2030の内容をそのまま複製）
+      d.kubun.nintei.years["2031"] = d.kubun.nintei.years["2030"];
       return JSON.stringify(d, null, 2);
     },
     expect: /入居年の選択肢が参照データの years とずれている/,
@@ -69,8 +69,8 @@ const BREAKS = [
   {
     name: "③ /jutaku/ の既定の入居年をデータに無い年にする",
     file: "docs/jutaku/index.html",
-    apply: (s) => s.replace("const DEFAULT_YEAR = 2026", "const DEFAULT_YEAR = 2030"),
-    expect: /既定の入居年 2030 が参照データに無い/,
+    apply: (s) => s.replace("const DEFAULT_YEAR = 2026", "const DEFAULT_YEAR = 2031"),
+    expect: /既定の入居年 2031 が参照データに無い/,
   },
   {
     name: "④ /jutaku/ がデータ到着後に選択肢を作り直すのをやめる（暫定リストで固定される）",
