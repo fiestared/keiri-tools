@@ -58,7 +58,9 @@
     button.hidden = !long;
     heading.hidden = long;
     if (desktop && long) list.style.maxHeight = Math.max(96, room) + 'px';
-    state(long ? (chosen ?? false) : true);
+    // 長い目次も、PCでは最初から開いておく（右レールに場所があるので、読者が開く手間を省く。2026-09-29）。
+    // スマホは目次が本文の前に並ぶので、開くと本文が下へ押し出される。最初は閉じたままにする。
+    state(long ? (chosen ?? desktop) : true);
     rail.classList.toggle('toc-rail-tall', rail.getBoundingClientRect().height > innerHeight - 104);
     if (focused) button.focus({preventScroll:true});
   }
