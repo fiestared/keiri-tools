@@ -6,6 +6,10 @@ const C = JSON.parse(readFileSync(new URL("./stale_values.json", import.meta.url
 const E = Object.fromEntries(C.entries.map((e) => [e.id, e]));
 const t = (s, id, day = "2026-09-28") => staleHits(s, E[id], "p", day).length;
 const r = [
+  ["東京の旧額を現行と書く→発効日に捕まえる", t("東京都の最低賃金は1,226円です。", "tokyo-minimum-wage-1226", "2026-10-01") === 1],
+  ["東京の旧額→発効前は通す", t("東京都の最低賃金は1,226円です。", "tokyo-minimum-wage-1226", "2026-09-30") === 0],
+  ["東京の旧額を過去の日付で書く→通す", t("東京都の最低賃金は2026年9月30日までは1,226円でした。", "tokyo-minimum-wage-1226", "2026-10-01") === 0],
+  ["東京の新旧比較→通す", t("東京都の最低賃金は1,226円から1,280円へ改定。", "tokyo-minimum-wage-1226", "2026-10-01") === 0],
   ["旧上限をそのまま書く→捕まえる", t("育児休業給付金の上限額は月額16,110円です。", "ikukyu-cap-16110") === 1],
   ["新旧を並べる→通す", t("育児休業給付金の上限は16,110円から16,540円に上がりました。", "ikukyu-cap-16110") === 0],
   ["改定日より前の日付で見る→通す", t("育児休業給付金の上限額は月額16,110円です。", "ikukyu-cap-16110", "2026-07-31") === 0],
@@ -18,4 +22,4 @@ const r = [
 ];
 const bad = r.filter(([, ok]) => !ok);
 if (bad.length) { console.error(bad.map(([n]) => "✗ " + n).join("\n")); process.exit(1); }
-console.log(`✓ test_stale_values_rules: ${r.length}ケース（捕まえる4・通す5）`);
+console.log(`✓ test_stale_values_rules: ${r.length}ケース（旧値・改定日前後・過去額・新旧比較）`);

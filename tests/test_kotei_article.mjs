@@ -21,12 +21,13 @@ const rates = JSON.parse(readFileSync(new URL("../docs/assets/shaho_rates_r08.js
 const text = html.replace(/<script[\s\S]*?<\/script>/g, "").replace(/<[^>]+>/g, "");
 
 // --- 前提(記事が明示している条件) ---
-const HOURS = 160, PAY = 200000, KOTEI = 40000, MINASHI = 30, BASE = PAY - KOTEI;
-// --- 一次情報: 厚労省「令和7年度 地域別最低賃金 全国一覧」東京都1,226円(令和7年10月3日発効) ---
-const MIN_WAGE_TOKYO = 1226;
+const HOURS = 160, PAY = 220000, KOTEI = 40000, MINASHI = 30, BASE = PAY - KOTEI;
+// --- 一次情報: 東京労働局 2026-09-01 官報公示。1,280円は2026-10-01発効 ---
+const MIN_WAGE_TOKYO = 1280;
 
 const yen = (n) => Math.round(n).toLocaleString("en-US");
 const fails = [];
+if (!(PAY / HOURS >= MIN_WAGE_TOKYO && BASE / HOURS < MIN_WAGE_TOKYO)) fails.push("見かけは最低賃金以上・基本給だけでは未満という設例の前提が崩れている");
 
 // === 1. 導出（記事はこれ以外の金額を書いてはならない） ===
 const needBase = MIN_WAGE_TOKYO * HOURS;          // 最賃を満たすのに必要な基本給
@@ -41,6 +42,9 @@ const derived = {
   "前提: 基本給": BASE,
   "前提: 固定残業代": KOTEI,
   "一次情報: 東京都の最低賃金": MIN_WAGE_TOKYO,
+  "過去額: 2026年9月30日まで": 1226,
+  "割増単価": premium,
+  "固定残業代の不足額": premium * MINASHI - KOTEI,
   "見かけの時給(総額÷所定)": PAY / HOURS,
   "最賃判定の時給(基本給のみ÷所定)": BASE / HOURS,
   "最賃を満たす基本給": needBase,
@@ -66,8 +70,8 @@ for (const got of inArticle) {
 }
 
 // 「4万円で賄えるのは何時間分か」も、出現箇所すべてが一致すること
-const hours = (KOTEI / premium).toFixed(1);
-const hoursInArticle = new Set(text.match(/\d+\.\d(?=時間)/g) ?? []);
+const hours = String(KOTEI / premium);
+const hoursInArticle = new Set(text.match(/(?<=では)\d+(?:\.\d+)?(?=時間分)|(?<=実際には)\d+(?:\.\d+)?(?=時間分)|(?<=>)\d+(?:\.\d+)?(?=時間<)|(?<=>)\d+(?:\.\d+)?(?=時間分<)/g) ?? []);
 if (hoursInArticle.size === 0) fails.push("固定残業代で賄える時間数が記事に無い");
 for (const got of hoursInArticle) {
   if (got !== hours) fails.push(`賄える時間数が合わない: 記事「${got}時間」/ 計算 ${hours}時間`);

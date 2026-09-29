@@ -159,10 +159,16 @@ eq(D.prefectures.length, 47, '都道府県は47件');
      '答申の加重平均は目安どおりの額を上回っている');
   ok(!('wage' in D.next_revision), '目安を現行の時間額として持たない');
   ok(D.next_revision.source_url.startsWith('https://www.mhlw.go.jp/'), '出典が厚労省');
-  // ★答申であって決定ではない。発効前の額で判定していないことを、県単位でもう一度見る
+  // ★東京は9月1日に官報公示済み。ただし発効は10月1日。決定日には切り替えない。
   const tokyo = D.prefectures.find((p) => p.pref === '東京');
-  eq(effectiveWage(tokyo, '2026-09-30').wage, tokyo.prev, '9/30時点の東京は改定前の額');
-  eq(effectiveWage(tokyo, '2026-10-01').wage, tokyo.wage, '10/1時点の東京は改定後の額');
+  eq(tokyo.effective, '2026-10-01', '東京の効力発生日');
+  eq(tokyo.status, 'decided', '東京は官報公示済みの決定額');
+  eq(tokyo.gazette_date, '2026-09-01', '東京の官報公示日');
+  for (const [day, clears] of [['2026-09-30', true], ['2026-10-01', false]]) {
+    eq(judgeSaitei({ prefCode: '東京', wageType: 'hourly', amount: 1250, onDate: day }, D).clears, clears, `東京1250円の判定 ${day}`);
+  }
+  eq(effectiveWage(tokyo, '2026-09-30').wage, 1226, '9/30時点の東京は改定前の額');
+  eq(effectiveWage(tokyo, '2026-10-01').wage, 1280, '10/1時点の東京は改定後の額');
 }
 
 // ---- 一覧表の静的HTMLがデータと一致している（生成器を流し忘れて古い表を配信しない） ----
