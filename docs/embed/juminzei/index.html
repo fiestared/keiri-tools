@@ -12,7 +12,7 @@
      このページ自体は noindex（/juminzei/ と重複させない）。計算は本体と同じ ../../assets/juminzei_core.js。 -->
 <link rel="canonical" href="https://keiri-tools.com/juminzei/">
 <meta name="robots" content="noindex, follow">
-<meta name="description" content="年収と家族構成から住民税（所得割・均等割・森林環境税）の年額を計算する埋め込みウィジェット。keiri-tools 提供。">
+<meta name="description" content="年収と家族構成から住民税（所得割・均等割・森林環境税）の年額を概算する埋め込みウィジェット（調整控除以外の税額控除は未反映）。keiri-tools 提供。">
 <style>
   :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --control:#84939f; --accent:#1f6f5c; --accent2:#e7f3f0; --bg:#fff; }
   *{ box-sizing:border-box; }
@@ -52,6 +52,7 @@
 <div class="w">
   <h1>住民税 計算機</h1>
   <p class="lead">年収と家族構成から、住民税（所得割・均等割・森林環境税）の年額を概算します。非課税限度額（均等割と所得割で別々に決まります）も判定します。</p>
+  <p class="note">令和8年分の所得に基づく令和9年度住民税の概算です。この概算は調整控除以外の税額控除（住宅ローン控除、寄附金税額控除など）を反映しません。該当する控除がある場合、控除後の年税額とは異なります。</p>
 
   <label for="jichitai">お住まいの自治体</label>
   <select id="jichitai"><option value="">読み込み中…</option></select>
@@ -125,6 +126,8 @@
     <input id="sonotaShotoku" type="number" inputmode="numeric" value="0" min="0" aria-describedby="sonotaShotoku-hint">
       <span id="sonotaShotoku-hint" class="hint">副業・不動産などの所得金額</span>
     <label class="chk"><input id="hitorioya" type="checkbox"> ひとり親</label>
+    <label for="hitorioyaSei">ひとり親の区分（該当する場合）</label>
+    <select id="hitorioyaSei"><option value="haha">母</option><option value="chichi">父</option></select>
     <label class="chk"><input id="kafu" type="checkbox"> 寡婦（ひとり親と重複不可）</label>
     <label class="chk"><input id="shogai" type="checkbox"> 障害者（本人・同一生計配偶者・扶養親族のいずれか。一般）</label>
     <label class="chk"><input id="honninShogai" type="checkbox"> 上の障害者が本人である</label>
@@ -225,7 +228,8 @@ $("calc").addEventListener("click", async () => {
     shogaiIppan: $("shogai").checked ? 1 : 0,
     honninShogai: $("honninShogai").checked,
     kafu: $("kafu").checked,
-    hitorioyaHaha: $("hitorioya").checked,
+    hitorioyaHaha: $("hitorioya").checked && $("hitorioyaSei").value === "haha",
+    hitorioyaChichi: $("hitorioya").checked && $("hitorioyaSei").value === "chichi",
     kinroGakusei: $("gakusei").checked,
   };
 
@@ -239,6 +243,7 @@ $("calc").addEventListener("click", async () => {
       family,
       jichitai: $("jichitai").value,
       kyuchi: $("kyuchi").value,
+      zeisei: "r8",
     }, D);
   } catch (e) {
     box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
@@ -276,6 +281,7 @@ $("calc").addEventListener("click", async () => {
   box.innerHTML = `
     <div>住民税 <span class="big">${yen(r.juminzeiTotal)}</span><span style="font-size:14px;font-weight:600">／年</span></div>
     <div class="hint">所得割 <b>${yen(r.shotokuwariJissai)}</b> ＋ 均等割・森林環境税 <b>${yen(r.kintouwari.total)}</b>（${r.year}の所得にもとづく計算）</div>
+    <div class="note">この概算は調整控除以外の税額控除（住宅ローン控除、寄附金税額控除など）を反映しません。該当する控除がある場合、控除後の年税額とは異なります。</div>
     ${kintouOnlyNote}
     <table>
       <tr><td>給与所得</td><td class="n">${yen(r.kyuyoShotoku)}</td></tr>

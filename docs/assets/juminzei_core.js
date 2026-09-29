@@ -606,7 +606,8 @@ export function calc(input, D) {
     tokureiRitsu: R,
     furusatoGendo: gendo,
     tokureiCap: cap,
-    year: D._meta?.year || '',
+    // 計算に使用した年分を返す。共有データのラベルで旧年分を上書きしない。
+    year: zeisei === 'r8' ? '令和8年分' : '令和7年分',
 
     // 住民税そのもの（/juminzei/ が使う）
     jichitai: J,

@@ -206,7 +206,7 @@ ok(threw, '参照データ未読込なら例外を投げる（空データで黙
 
 // ───────────────────────────────────────────────────────────
 console.log('■ 年度はデータが名乗る（ページに手書きしない）');
-eq(calc({ kyuyoShunyu: 5_000_000, family: {} }, D).year, D._meta.year, '結果に年分が載る');
+eq(calc({ kyuyoShunyu: 5_000_000, family: {} }, D).year, '令和7年分', '旧年分の計算結果には実際の年分が載る');
 ok(/令和8年分/.test(D._meta.year), '_meta.year が令和8年分');
 
 // ───────────────────────────────────────────────────────────
@@ -578,6 +578,14 @@ assertR11.equal(calc({kyuyoShunyu:1000000,sonotaShotoku:2731000,shakaiHoken:0,ze
 const unknownIncome=calc({kyuyoShunyu:5000000,shakaiHoken:700000,sonotaKojo:70000,zeisei:'r8',family:{},kifu:10000},D);
 assertR11.equal(unknownIncome.kifu.shotokuzei,null,'r11 住民税用のその他控除から所得税額を推定しない');
 assertR11.equal(unknownIncome.kifu.jikoFutan,null,'r11 所得税額不明なら自己負担額を断定しない');
+
+// t5: 正本から独立に定めた年度・非課税境界の所得・父母区分をcore検査にも接続する。
+const {cases:t5Cases}=await import('./boundaries/juminzei_core.mjs');
+for (const c of t5Cases.filter(c=>c.name.startsWith('t5 '))) {
+  checks++;
+  try { assertR11.deepEqual(c.run(),c.expected,c.name); }
+  catch(e) { failed++; console.error(`  ✗ ${c.name}: ${e.message}`); }
+}
 
 console.log(`\n${failed === 0 ? '✅' : '❌'} test_juminzei: ${checks - failed}/${checks} checks passed`);
 if (failed > 0) process.exit(1);
