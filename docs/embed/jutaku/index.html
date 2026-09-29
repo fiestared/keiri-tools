@@ -56,7 +56,8 @@
 
   <label for="type">取得のしかた</label>
   <select id="type">
-    <option value="shinchiku" selected>新築・買取再販</option>
+    <option value="shinchiku" selected>新築</option>
+    <option value="kaitori">買取再販（国税庁の要件を満たす住宅）</option>
     <option value="chuko">中古（既存住宅）</option>
     <option value="zokaichiku">増改築・リフォーム</option>
   </select>
@@ -81,7 +82,12 @@
   <input id="zandaka" type="number" inputmode="numeric" value="30000000" placeholder="例: 30000000">
 
   <details>
-    <summary>詳細設定（子育て世帯の上乗せ・経過措置）</summary>
+    <summary>詳細設定（床面積・所得・上乗せ・経過措置）</summary>
+    <label for="menseki">床面積（登記簿・㎡、任意）</label>
+    <input id="menseki" type="number" inputmode="decimal" step="any" placeholder="例: 50">
+    <label for="shotoku">合計所得金額（円、任意）</label>
+    <input id="shotoku" type="number" inputmode="numeric" placeholder="例: 5000000">
+    <div class="hint">空欄の要件は未確認です。2026年以降の40〜50㎡未満は所得1,000万円以下で、上乗せ対象外です。</div>
     <label class="chk"><input type="checkbox" id="tokurei"> 特例対象個人（子育て世帯・若者夫婦世帯）である（2024年以降の入居で借入限度額が上乗せ。2026年からは中古にも）</label>
     <label class="chk"><input type="checkbox" id="keika"> 「その他の住宅」の経過措置に該当する（2023年末までに建築確認、または2024年6月末までに建築）</label>
   </details>
@@ -148,7 +154,7 @@ $("calc").addEventListener("click", async () => {
 
   const zandaka = Number($("zandaka").value);
   const type = $("type").value;
-  if ((type === "shinchiku" || type === "chuko") && !(zandaka > 0)) {
+  if ((type === "shinchiku" || type === "kaitori" || type === "chuko") && !(zandaka > 0)) {
     box.innerHTML = `<div class="warn">「年末のローン残高」を入力してください。その年の12月31日時点の残高で控除額が決まります。</div>`;
     postHeight(); return;
   }
@@ -162,6 +168,8 @@ $("calc").addEventListener("click", async () => {
       nenmatsuZandaka: zandaka,
       kosodateTokurei: $("tokurei").checked,
       keikaSochi: $("keika").checked,
+      menseki: $("menseki").value || null,
+      goukeiShotoku: $("shotoku").value || null,
     }, D);
   } catch (e) {
     box.innerHTML = `<div class="warn"><b>計算できませんでした。</b>${e.message}</div>`;
@@ -182,9 +190,9 @@ $("calc").addEventListener("click", async () => {
   if (!r.eligible) {
     let why = "";
     if (r.sonotaZero) {
-      why = `<div class="callout"><b>「その他の住宅」を${yearLabel}に入居したため、原則として控除の対象になりません（借入限度額0円）。</b>省エネ基準を満たさない住宅は2024年以降の入居で新築の控除がゼロになりました（2023年までは3,000万円）。<b>2023年末までに建築確認を受けた</b>、または<b>2024年6月末までに建築された</b>住宅なら、上の詳細設定で<b>「経過措置に該当する」</b>にチェックすると2,000万円・10年で計算し直します。宅建業者のリフォーム済み再販（買取再販住宅）は0円にならず2,000万円・10年＝<b>「中古（既存住宅）」×「その他の住宅」</b>を選んで計算してください。</div>`;
+      why = `<div class="callout"><b>「その他の住宅」を${yearLabel}に入居したため、原則として控除の対象になりません（借入限度額0円）。</b>省エネ基準を満たさない住宅は2024年以降の入居で新築の控除がゼロになりました（2023年までは3,000万円）。<b>2023年末までに建築確認を受けた</b>、または<b>2024年6月末までに建築された</b>住宅なら、上の詳細設定で<b>「経過措置に該当する」</b>にチェックすると2,000万円・10年で計算し直します。宅建業者のリフォーム済み再販（買取再販住宅）は0円にならず2,000万円・10年＝<b>「買取再販」×「その他の住宅」</b>を選んで計算してください。</div>`;
     } else {
-      why = `<div class="callout">入力の条件では控除の対象になりません。</div>`;
+      why = `<div class="callout">${r.mensekiStatus === "too_small" ? `床面積が下限の${r.mensekiFloor}㎡未満です。` : r.incomeOver ? `合計所得金額が上限の${man(r.shotokuLimit)}を超えています。` : "入力の条件では控除の対象になりません。"}</div>`;
     }
     box.innerHTML = `
       <div class="big">控除額 ¥0（原則、控除の対象になりません）</div>
@@ -211,7 +219,8 @@ $("calc").addEventListener("click", async () => {
 
   box.innerHTML = `
     <div class="big">控除額（1年あたり・上限）${yen(r.nenkanKoujo)}</div>
-    <div class="hint" style="margin-bottom:6px">${r.isChuko ? "中古（既存住宅）・" : ""}${kubunLabel}・${yearLabel}に入居</div>
+    <div class="hint" style="margin-bottom:6px">${r.type === "kaitori" ? "買取再販・" : r.isChuko ? "中古（既存住宅）・" : ""}${kubunLabel}・${yearLabel}に入居</div>
+    <div class="note">${r.mensekiStatus === 'unknown' || r.goukeiShotokuGiven == null ? '<b>床面積・所得の未入力項目は未確認です。適用可能との判定ではありません。</b>' : '入力された床面積・所得の範囲で計算しています。'}借入期間・居住状況・取得対価等の要件は別途確認してください。${r.tokureiDeniedShokibo ? '小規模住宅のため特例対象個人の上乗せは適用していません。' : ''}</div>
     ${chukoNote}${tokureiNote}${keikaNote}${cappedNote}
     <table>
       <tr><td>年間の控除額（上限）</td><td class="n">${yen(r.nenkanKoujo)}</td></tr>

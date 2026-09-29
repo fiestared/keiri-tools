@@ -468,3 +468,49 @@ n++;
 }
 
 console.log(`test_jutaku: ${n} checks OK`);
+
+// t4: 固定正本No.1211-1/2/3（令和8年4月1日現在）から独立に置いた表。
+// 令和8年以降の小規模上乗せ除外と50㎡以上の存続を同時に守る。
+let matrixCases = 0;
+for (const year of [2022,2023,2024,2025,2026,2027]) {
+  for (const type of ['shinchiku','kaitori','chuko']) {
+    for (const [i,kubun] of ['nintei','zeh','shoene','sonota'].entries()) {
+      for (const kosodateTokurei of [false,true]) {
+        for (const menseki of [40,50]) {
+          let limits, periods, special;
+          if (type === 'chuko') {
+            limits = year < 2026 ? [3000,3000,3000,2000] : [3500,3500,2000,2000];
+            periods = year < 2026 ? [10,10,10,10] : [13,13,13,10];
+            special = year < 2026 ? limits : [4500,4500,3000,2000];
+          } else {
+            limits = year < 2024 ? [5000,4500,4000,3000] : year < 2026 ? [4500,3500,3000,0] : [4500,3500,2000,0];
+            periods = year < 2024 ? [13,13,13,13] : [13,13,13,0];
+            special = year < 2024 ? [...limits] : year < 2026 ? [5000,4500,4000,0] : [5000,4500,3000,0];
+            if (type === 'kaitori' && year >= 2024) {limits[3]=2000;special[3]=2000;periods[3]=10;}
+          }
+          const limit = (kosodateTokurei && !(year>=2026 && menseki<50) ? special : limits)[i];
+          const eligible = limit>0 && !(type!=='shinchiku' && year<2026 && menseki<50);
+          const r=calc({type,kubun,year,kosodateTokurei,menseki,goukeiShotoku:10000000,nenmatsuZandaka:60000000},D);
+          const label=`t4 ${type}/${kubun}/${year}/特例${kosodateTokurei}/${menseki}㎡`;
+          assert.equal(r.shakunyuGendoMan,limit,label+' 借入限度額');
+          assert.equal(r.kikan,periods[i],label+' 控除期間');
+          assert.equal(r.koujoRitsuPct,0.7,label+' 控除率');
+          assert.equal(r.nenkanKoujo,eligible?limit*70:0,label+' 年額');
+          assert.equal(r.eligible,eligible,label+' 適格性');
+          matrixCases++;
+        }
+      }
+    }
+  }
+}
+// 新築のその他と違い、令和8年の買取再販・その他は40㎡から。所得境界も確認。
+for (const [income,amount] of [[10000000,140000],[10000001,0]]) {
+ assert.equal(calc({type:'kaitori',kubun:'sonota',year:2026,menseki:40,goukeiShotoku:income,nenmatsuZandaka:20000000},D).nenkanKoujo,amount);
+}
+// 元の対応範囲は令和4〜9年。令和10〜12年の未収録を黙って計算しない。
+for (const year of [2028,2029,2030]) for (const type of ['shinchiku','kaitori','chuko']) for (const kubun of ['nintei','zeh','shoene','sonota']) {
+ assert.equal(calc({type,kubun,year,nenmatsuZandaka:60000000},D).beyondData,true);
+}
+const {cases: t4BoundaryCases}=await import('./boundaries/jutaku_core.mjs');
+for (const c of t4BoundaryCases) assert.deepEqual(c.run(),c.expected,c.name);
+console.log(`t4 corpus matrix: ${matrixCases} cases + 36 unsupported-year cases + boundaries OK`);

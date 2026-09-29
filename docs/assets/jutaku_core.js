@@ -2,20 +2,9 @@
  * 住宅ローン控除（住宅借入金等特別控除）の計算ロジック。
  * DOM非依存・テスト対象。借入限度額・控除率・控除期間は jutaku_r07.json に持たせる（ページに手書きしない）。
  *
- * 一次ソース（すべて生テキストを curl で読んで実装した。政府サイトに WebFetch は使わない）:
- * - 国税庁タックスアンサー No.1211-1『住宅の新築等をし、令和4年以降に居住の用に供した場合
- *   （住宅借入金等特別控除）』（令和7年4月1日現在法令等）
- *   https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1211-1.htm
- * - ★令和8年（2026年）入居分：租税特別措置法41条（令和8年法律第12号による改正後。
- *   e-Gov法令API v2 の現行施行版で逐語確認）＋令和8年度税制改正の大綱（2025-12-26閣議決定）。
- * - ★令和9年（2027年）入居分：令和8年と同値（2026-07-20 条文で確認。41条の居住年レンジは
- *   全て令和12年まで・41条/措令26条とも2028-01-01施行リビジョンまで逐語同一＝未施行改正なし。
- *   41条25項の段差は令和10年1月1日以後の居住にのみ効く）。
- *   タックスアンサーは2026-07-19時点で令和7年版のまま未更新＝令和8年分の正本は条文。
- *   改正の骨子：適用期限を令和12年12月31日まで5年延長／中古（既存認定住宅等）が13年・3,500万円へ／
- *   子育て世帯等の上乗せが中古にも／中古も40㎡から（所得1,000万円以下の年のみ）／
- *   ★40〜50㎡（小規模）には令和8年以降、上乗せが効かない（41条9項かっこ書き）。
- * - 根拠条文：租税特別措置法41条
+ * 正本: 国税庁No.1211-1（新築）・1211-2（買取再販）・1211-3（中古）。
+ * 令和8年4月1日現在法令等を2026-09-29に照合。対応入居年は令和4〜9年。
+ * 特例認定住宅等は40〜50㎡未満の住宅。令和8年以後も50㎡以上の上乗せは存続。
  *
  * ★★ ここを取り違えると「黙って間違える」点（この計算のいちばん危ない所）:
  *
@@ -32,8 +21,7 @@
  *      ★経過措置は建築の日付で決まり居住年の限定が無いので令和8年入居にも生きる（措令26条43項）。
  *    ★★非認定の「買取再販住宅」（宅建業者のリフォーム済み再販）は新築と違い0円にならない
  *      （令和6年以降の入居で一律2,000万円・10年＝措法41条3項3号・No.1211-2。数字は中古×その他と同じ）。
- *      このツールは新築と買取再販を1つの選択肢に束ねているので、0円と答える画面で
- *      「買取再販なら中古×その他で計算」と必ず誘導する（黙って0円と言うと140万円の嘘になる）。
+ *      買取再販は専用typeと年別データで計算する。令和4・5年のその他は3,000万円・13年。
  *
  * 3. **各年の控除額は「その年の年末残高」で決まり、毎年減っていく。**
  *    借入限度額 × 0.7％ は“天井”であって、実際の控除額は min(年末残高, 取得対価等, 借入限度額) × 0.7％。
@@ -88,8 +76,8 @@ export function resolveGendo(kubun, year, tokurei, keikaSochi, D, type) {
   // ★令和8年入居から子育て特例の上乗せが中古にも効く（tokurei_gendo_man を持つ年だけ。
   //   令和7年以前の年エントリには無いので、フラグが立っていても素通しになる）。
   // 経過措置（keika_*）は中古の表に無い（その他でも0円にならないので不要）＝素通し。
-  if (type === 'chuko') {
-    const C = D.chuko;
+  if (type === 'chuko' || type === 'kaitori') {
+    const C = type === 'kaitori' ? D.kaitori : D.chuko;
     const K = C && C.kubun[kubun];
     const y = K && K.years[String(year)];
     if (!y) return null;
@@ -181,9 +169,9 @@ export function juminzeiKoujo(nenkanKoujo, shotokuzei, kazeiSotoku, D) {
 /**
  * 入口。
  * input = {
- *   type,               // 'shinchiku'(新築・買取再販／既定) | 'chuko'(中古) | 'zokaichiku'(増改築)
+ *   type,               // 'shinchiku'(新築／既定) | 'kaitori'(買取再販) | 'chuko'(中古) | 'zokaichiku'(増改築)
  *   kubun,              // 'nintei' | 'zeh' | 'shoene' | 'sonota'
- *   year,               // 入居（居住開始）年（西暦 2022〜2025）
+ *   year,               // 入居（居住開始）年（西暦 2022〜2027）
  *   nenmatsuZandaka,    // その年の年末借入残高（円）
  *   shutokuTaika,       // （任意）住宅の取得対価等（円）。年末残高より少なければこちらが控除対象になる
  *   kosodateTokurei,    // （任意・真偽）特例対象個人（子育て世帯・若者夫婦世帯）か
@@ -201,7 +189,7 @@ export function calc(input, D) {
 
   // 増改築等（No.1211-4）は計算方法がまるごと違う → 黙って答えない（fail closed）。
   // 想定外の type も同様に beyondData（新築の数字を誤って当てない）。中古（chuko）は下で計算する。
-  if (type !== 'shinchiku' && type !== 'chuko') {
+  if (type !== 'shinchiku' && type !== 'chuko' && type !== 'kaitori') {
     return {
       ...base, beyondData: true, eligible: false,
       reason: type === 'zokaichiku'
@@ -219,9 +207,10 @@ export function calc(input, D) {
   // ★中古の下限は令和7年以前の入居で50㎡（40〜50㎡の特例は新築だけ）、
   //   令和8年入居からは新築と同じ40㎡（特例既存住宅・措法41条17項）。
   const Y = D.shotoku_yoken;
-  const chukoShokiboFrom = D.chuko && D.chuko.shokibo_from_year; // 2026（令和8）
-  const mensekiFloor = isChuko && !(chukoShokiboFrom && yearNum >= chukoShokiboFrom)
-    ? D.chuko.menseki_min : Y.shokibo_menseki_min;               // 中古(〜令和7)50・それ以外40
+  const existing = type === 'kaitori' ? D.kaitori : isChuko ? D.chuko : null;
+  const shokiboFrom = existing && existing.shokibo_from_year;
+  const mensekiFloor = existing && !(shokiboFrom && yearNum >= shokiboFrom)
+    ? existing.menseki_min : Y.shokibo_menseki_min;               // 中古(〜令和7)50・それ以外40
   const mensekiFull = isChuko ? D.chuko.menseki_min : Y.menseki_min; // どちらも50
   const menseki = input.menseki != null && input.menseki !== '' ? Number(input.menseki) : null;
   let mensekiStatus = 'unknown'; // 'unknown' | 'ok' | 'shokibo'(40〜50㎡未満) | 'too_small'
