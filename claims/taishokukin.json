@@ -68,7 +68,13 @@
         }
       ],
       "exceptions": "正本は確定申告による精算であって還付の保証ではない。高率の役員退職所得等では追加納付もあり得る。",
-      "adjudication": "t12-F1"
+      "adjudication": "t12-F1",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c16"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c16": "1d0b5ad6cd6e136aa02eb3ca86904bd1fe601033366e8f5f402dcab24172f691"
+      }
     },
     {
       "id": "t1-added-context",
@@ -88,6 +94,688 @@
       ],
       "exceptions": "同じ追加行に残る既存の説明を含む。対象者・年分・例外は個別t1所見と本文に記載。計算例・換算額は下記原式から計算する。",
       "calculation": "金額の換算と端数処理は参照正本の原式による。詳細は個別t1所見と回帰テスト。"
+    },
+    {
+      "id": "sol-eaff2cfa09d3ea11",
+      "text": "過去の退職手当等との重複調整がなく、年内1か所1回、一般分と役員分が混在しない退職金を計算対象とする",
+      "numbers": [],
+      "where": [
+        "meta description",
+        "hero",
+        "入力欄注記",
+        "ご注意"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "    また、その年中に一般退職手当等、短期退職手当等又は特定役員退職手当\n 等のうち２以上の退職手当の支払がある場合の課税退職所得金額の計算方法",
+      "supporting_sources": [
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+          "quote": "    る場合には、その年に支払を受ける退職手当についての退職所得控除\n    額は、原則として、次のロにより計算した金額となります（所法30⑥一、\n    所令70①二、②③）。\n    イ 次に掲げる場合の区分に応じそれぞれ次に定める退職手当\n        Ａ   その年の前年以前４年内に退職手当（上記ハの「前に支払を受\n         けた退職手当」を除きます。）の支払を受けた場合（Ｂ及びＣに\n\n\n                     −115−\n\f        掲げる場合に該当する場合を除きます。）……その年の前年以前\n        ４年内に支払を受けた退職手当\n     Ｂ      その年の前年以前９年内に確定拠出年金法に基づく老齢給付金\n        として支給される一時金（令和８年１月１日以後に支払を受けた\n        ものに限り、上記ハの「前に支払を受けた退職手当」を除きます。）\n        の支払を受けた場合（Ｃに掲げる場合に該当する場合を除きま\n        す。）……次に掲げる退職手当\n        A    令和８年１月１日以後に支払を受けた退職手当であってその\n         年の前年以前９年内に支払を受けたもの\n        B    令和８年１月１日前に支払を受けた退職手当であってその年",
+          "corpus_ref": "t1/corpus/gensen/05.txt:472-490",
+          "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b"
+        },
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+          "quote": " イ     退職手当                          25,385,000円\n       うち   一般退職手当等                  21,185,000円\n            特定役員退職手当等                4,200,000円\n ロ     勤続期間                          28年９か月\n       うち   特定役員等勤続年数                ４年\n            重複勤続年数                   ２年\n ハ     退職の区分                         一般退職\n\n〈説明〉\n①    まず、「退職所得控除額の表」により、勤続年数が29年（１年未\n    満の端数切上げ）で一般退職の場合の退職所得控除額を求めると、\n    14,300,000円となります。\n②    退職手当が一般退職手当等と特定役員退職手当等の両方を含むも\n    のである場合には、次に特定役員退職所得控除額を求めます。特定\n    役員退職所得控除額は1,200,000円｛40万円×（４（年）－２（年））\n    ＋20万円×２（年）｝となります。\n③ 「課税退職所得金額の算式の表」の算式に当てはめて課税退職所\n    得金額を計算すると、課税退職所得金額7,042,000円（1,000円未満の\n    端 数 切 捨 て ）［（4,200,000円 －1,200,000円 ） ＋｛21,185,000円 －\n（14,300,000円－1,200,000）｝×1 ／ 2］となります。\n④    最後に、課税退職所得金額7,042,000円について、「退職所得の源\n 泉徴収税額の速算表」の「税額」欄に示されている算式に従って税\n 額を求めると1,004,316円（１円未満の端数切捨て）｛（7,042,000円×\n 23％－636,000円）×102.1％｝となります。これがこの退職手当か\n",
+          "corpus_ref": "t1/corpus/gensen/05.txt:2028-2052",
+          "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b"
+        }
+      ],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c01"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c01": "f8240b4e7a0e558a0a5ee0685b0186001e073ed7f103a080a94108f26fc45c20"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:41-42",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "その年中に一般退職手当等、短期退職手当等又は特定役員退職手当等のうち２以上の退職手当の支払がある場合…／その年の前年以前４年内…／前年以前９年内…"
+    },
+    {
+      "id": "sol-80d6c58c29ba926c",
+      "text": "退職所得控除は20年以下40万円×年数、20年超は800万円+70万円×超過年数",
+      "numbers": [
+        "40万円",
+        "800万円",
+        "70万円"
+      ],
+      "where": [
+        "本文",
+        "FAQ",
+        "JSON-LD FAQ",
+        "core結果"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": " ⑵   退職所得控除額の計算\n        通常の場合の退職所得控除額は、上記⑴により計算した勤続年数を基\n    として、次の表の算式によって計算します（所法30③、所令69①）。\n         勤   続   年   数     退     職     所   得   控   除   額\n\n        20 年 以 下 の 場 合     40万円×勤続年数\n\n        20 年 を 超 え る 場 合   800万円＋70万円×（勤続年数−20年）",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c02"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c02": "9ed388bd220a280e0f2556c88573f1dc448354aaff07b6c18e7a6e3d9bba4979"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:329-336",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "20年以下の場合 40万円×勤続年数／20年を超える場合 800万円＋70万円×（勤続年数−20年）"
+    },
+    {
+      "id": "sol-da9a00b2ece145ea",
+      "text": "勤続20年の控除は800万円、30年は1,500万円",
+      "numbers": [
+        "1,500",
+        "800万円"
+      ],
+      "where": [
+        "本文",
+        "FAQ",
+        "JSON-LD FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": " ⑵   退職所得控除額の計算\n        通常の場合の退職所得控除額は、上記⑴により計算した勤続年数を基\n    として、次の表の算式によって計算します（所法30③、所令69①）。\n         勤   続   年   数     退     職     所   得   控   除   額\n\n        20 年 以 下 の 場 合     40万円×勤続年数\n\n        20 年 を 超 え る 場 合   800万円＋70万円×（勤続年数−20年）",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c03"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c03": "797b02d94fcf06909fd2946c18ecfabf99d3a180d094dd5d3f4482431361a3d7"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:329-336",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "20年以下の場合 40万円×勤続年数／20年を超える場合 800万円＋70万円×（勤続年数−20年）"
+    },
+    {
+      "id": "sol-b1f6cfa49ef8a057",
+      "text": "一般退職手当等は収入から控除を引いた残額の2分の1を課税退職所得とする",
+      "numbers": [],
+      "where": [
+        "本文",
+        "FAQ",
+        "JSON-LD FAQ",
+        "core結果"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "退職手当の区分                  課税退職所得金額\n一般退職手当等\n              （一般退職手当等の収入金額－退職所得控除額）×１／２\n の場合（注１）",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c04"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c04": "8f80725f35e436e957b4ac3b1cbac2b0df9c7a4fff0c6d83a18dd1c9e3c9e4c9"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:16-19",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "（一般退職手当等の収入金額－退職所得控除額）×１／２"
+    },
+    {
+      "id": "sol-8c019d9090e3694f",
+      "text": "勤続期間の1年未満の端数は1年に切り上げる",
+      "numbers": [
+        "1年未満"
+      ],
+      "where": [
+        "meta description",
+        "hero",
+        "入力欄",
+        "本文",
+        "FAQ",
+        "JSON-LD FAQ",
+        "core結果"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "\f    イ    勤続期間に１年未満の端数があるときは、その端数は１年に切り上\n     げて勤続年数を計算します（所令69②）。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c05"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c05": "b4edfde535db52adad0f25e9b767df202aaf8175bb4e4aba9f8140c27a996b30"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:315-316",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "勤続期間に１年未満の端数があるときは、その端数は１年に切り上げて勤続年数を計算します"
+    },
+    {
+      "id": "sol-f68e4bd6b7c5b476",
+      "text": "20年ちょうどは控除800万円、20年と1日なら21年として870万円",
+      "numbers": [
+        "800万円",
+        "870万円",
+        "1日"
+      ],
+      "where": [
+        "本文",
+        "FAQ",
+        "JSON-LD FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "\f    イ    勤続期間に１年未満の端数があるときは、その端数は１年に切り上\n     げて勤続年数を計算します（所令69②）。",
+      "supporting_sources": [
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+          "quote": "        20 年 以 下 の 場 合     40万円×勤続年数\n\n        20 年 を 超 え る 場 合   800万円＋70万円×（勤続年数−20年）",
+          "corpus_ref": "t1/corpus/gensen/05.txt:334-336",
+          "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b"
+        }
+      ],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c06"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c06": "468af864b3e5c1dbfec3fe9c77d650ce58f81978dc00fabd5cd77f297e02a701"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:315-316",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "１年未満の端数…１年に切り上げ／20年を超える場合 800万円＋70万円×（勤続年数−20年）"
+    },
+    {
+      "id": "sol-fbb8d3c7152078dc",
+      "text": "全期間が役員等として5年以下の特定役員退職手当等には2分の1課税を適用しない",
+      "numbers": [],
+      "where": [
+        "meta description",
+        "入力欄",
+        "本文",
+        "core結果"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "特定役員退職手\n                 特定役員退職手当等の収入金額－退職所得控除額\n当等の場合（注３）\n\n（注）１\u0007 一般退職手当等とは、退職手当のうち、短期退職手当等及び特定役員退職手\n    当等のいずれにも該当しないものをいいます（所法30⑦）。\n   ２\u0007 短期退職手当等とは、短期勤続年数（役員等以外の者として勤務した期間に\n    より計算した勤続年数が５年以下であるものをいいます。詳しくは、124ページ\n    のⅤ２参照。）に対応する退職手当として支払を受けるものであって、特定役員\n    退職手当等に該当しないものをいいます（所法30④、所令69の２①③）。\n   ３\u0007 特定役員退職手当等とは、役員等勤続年数（役員等として勤務した期間によ\n    り計算した年数をいいます。詳しくは137ページのⅥ２参照。）が５年以下であ\n    る人が支払を受ける退職手当のうち、その役員等勤続年数に対応する退職手当\n    として支払を受けるものをいいます（所法30⑤、所令69の２②）。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c08"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c08": "0032702391b5b185ad6fb33ffe517929d0f798996e25697a587546d0a59357c7"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:24-37",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "特定役員退職手当等の収入金額－退職所得控除額／役員等勤続年数…が５年以下…その役員等勤続年数に対応する退職手当"
+    },
+    {
+      "id": "sol-120708259cba3e13",
+      "text": "役員以外で勤続5年以下の短期退職手当等は控除後残額300万円超部分に2分の1課税を適用しない",
+      "numbers": [
+        "300万円"
+      ],
+      "where": [
+        "本文",
+        "core結果"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "              短期退職手当等の収入金額－退職所得控除額≦300万円の場合\n短期退職手当等       （短期退職手当等の収入金額－退職所得控除額）×１／２\n の場合（注２）      短期退職手当等の収入金額－退職所得控除額＞300万円の場合\n            150万円＋（短期退職手当等の収入金額－（300万円＋退職所得控除額））",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c09"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c09": "105325618f3d7d88e68bc3940702bccd06351fb1aba9241b70c8379026175a9e"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:20-23",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "300万円を超える場合 150万円＋（短期退職手当等の収入金額－（300万円＋退職所得控除額））"
+    },
+    {
+      "id": "sol-b24ad46df76a3cdb",
+      "text": "前年以前の退職手当等と勤続期間が重複する場合は控除調整があり、令和8年1月1日以後のiDeCo一時金に関する判定には前年以前9年内がある",
+      "numbers": [
+        "令和8年1月1日"
+      ],
+      "where": [
+        "ご注意"
+      ],
+      "applies": "2026年",
+      "applies_period": {
+        "years": [
+          2026
+        ],
+        "axis": "explicit_claim_year",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "    る場合には、その年に支払を受ける退職手当についての退職所得控除\n    額は、原則として、次のロにより計算した金額となります（所法30⑥一、\n    所令70①二、②③）。\n    イ 次に掲げる場合の区分に応じそれぞれ次に定める退職手当\n        Ａ   その年の前年以前４年内に退職手当（上記ハの「前に支払を受\n         けた退職手当」を除きます。）の支払を受けた場合（Ｂ及びＣに\n\n\n                     −115−\n\f        掲げる場合に該当する場合を除きます。）……その年の前年以前\n        ４年内に支払を受けた退職手当\n     Ｂ      その年の前年以前９年内に確定拠出年金法に基づく老齢給付金\n        として支給される一時金（令和８年１月１日以後に支払を受けた\n        ものに限り、上記ハの「前に支払を受けた退職手当」を除きます。）\n        の支払を受けた場合（Ｃに掲げる場合に該当する場合を除きま\n        す。）……次に掲げる退職手当\n        A    令和８年１月１日以後に支払を受けた退職手当であってその\n         年の前年以前９年内に支払を受けたもの\n        B    令和８年１月１日前に支払を受けた退職手当であってその年",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c12"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c12": "ad1b3fecc0d9fc728553c5f4b6d9e46647e9f686a93f18a08b91510b8ef81bab"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:472-490",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "その年に支払を受ける退職手当についての勤続期間等と前年以前に支払を受けた他の退職手当についての勤続期間等とに重複している期間がある場合…／その年の前年以前９年内に確定拠出年金法に基づく老齢給付金として支給される一時金（令和８年１月１日以後に支払を受けたものに限り…）"
+    },
+    {
+      "id": "sol-7ac1dcb700d54e8b",
+      "text": "通常計算の退職所得控除が80万円未満なら80万円",
+      "numbers": [
+        "80万円"
+      ],
+      "where": [
+        "coreの計算結果"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "    次の場合の退職所得控除額は、それぞれ次により計算します。\n イ       退職所得控除額が80万円に満たない場合\n            上記１の⑵に掲げる表又は次のハ以下により計算した退職所得控除\n     額が80万円に満たない場合には、退職所得控除額は80万円とされます\n    （所法30⑥二）。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c13"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c13": "4dada283e218c80633a8e0b052d0095a9ec79bfc3407d35a661b7e85fec44d77"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:414-418",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "退職所得控除額が80万円に満たない場合には、退職所得控除額は80万円とされます"
+    },
+    {
+      "id": "sol-f2e4f8a15d029be8",
+      "text": "障害者となったことに直接基因する退職は退職所得控除を100万円加算する",
+      "numbers": [
+        "100万円"
+      ],
+      "where": [
+        "入力欄",
+        "meta description",
+        "core結果"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "    ロ    障害退職の場合\n            職務上又は職務外の傷病により障害者となったことに直接基因して\n     退職する場合には、上記１の⑵に掲げる表又は次のハ以下により計算\n        した金額（80万円に満たない場合には、80万円）に更に100万円を加\n        算した金額が退職所得控除額とされます（所法30⑥三）。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c14"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c14": "df9bdd557857975a9e0a078e00d7cac16d3d84c89b5bc64573f536863955ed17"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:419-423",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "障害者となったことに直接基因して退職する場合には…更に100万円を加算した金額が退職所得控除額とされます"
+    },
+    {
+      "id": "sol-db5aa2aa66dd9ad6",
+      "text": "退職所得の受給に関する申告書を提出しない場合は支払額に20.42%を乗じて源泉徴収する",
+      "numbers": [
+        "20.42%"
+      ],
+      "where": [
+        "FAQ",
+        "JSON-LD FAQ",
+        "core結果"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "５ 「退職所得の受給に関する申告書」の提出がなかった場合の源泉徴収\n  退職手当の支払を受ける人が退職手当の支払者に「退職所得の受給に関\n する申告書」を提出しなかった場合には、その退職手当の支払金額（退職\n 所得控除額の控除前の金額）に20.42％の税率を乗じて計算した税額により、\n 源泉徴収をします（所法201③）。\n\n 〈設例〉\n  イ    退   職   手   当                      1,511,000円\n  ロ    勤   続   期   間                      10年５か月\n\n 〈説明〉\n  「退職所得の受給に関する申告書」の提出がない場合には退職所得控\n  除額の控除は行わず、退職手当の額や勤続年数の長短にかかわらず、一\n  律に退職手当の支払金額の20.42％に相当する額を求めます。\n      1,511,000円×20.42％＝308,546円（１円未満の端数切捨て）\n      これが求める税額です。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c15"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c15": "b4396e15d7ffb3cb1015aa1af90a31ed6b967aa903af1930e559dabbd781e24b"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:2216-2231",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "退職手当の支払金額（退職所得控除額の控除前の金額）に20.42％の税率を乗じて計算した税額により、源泉徴収をします"
+    },
+    {
+      "id": "sol-180a45f87edee73a",
+      "text": "退職金800万円・勤続11年の所得税等は申告書あり91,890円、なし1,633,600円",
+      "numbers": [
+        "91,890円",
+        "1,633,600円",
+        "800万円"
+      ],
+      "where": [
+        "FAQ",
+        "JSON-LD FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "退職手当の区分                  課税退職所得金額\n一般退職手当等\n              （一般退職手当等の収入金額－退職所得控除額）×１／２",
+      "supporting_sources": [
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+          "quote": "                  退職所得の源泉徴収税額の速算表（令和 ８ 年分）\n         課税退職所得金額A                  所得税率B 控除額C            税額＝（A×B－C）×102.1%\n \b                 1,950,000円以下      ５%             －    （A×５%\b           ）×102.1%\n     1,950,000円超\b 3,300,000円    〃    10%           97,500円（A×10%－  97,500円）×102.1%\n     3,300,000円 〃\b 6,950,000円   〃    20%         427,500円（A×20%－  427,500円）×102.1%\n     6,950,000円 〃\b 9,000,000円   〃    23%         636,000円（A×23%－  636,000円）×102.1%\n     9,000,000円 〃\b18,000,000円   〃    33%       1,536,000円（A×33%－1,536,000円）×102.1%\n 18,000,000円 〃\b40,000,000円      〃    40%       2,796,000円（A×40%－2,796,000円）×102.1%\n 40,000,000円 〃                       45%       4,796,000円（A×45%－4,796,000円）×102.1%\n（注） 求めた税額に１円未満の端数があるときは、これを切り捨てます。",
+          "corpus_ref": "t1/corpus/gensen/05.txt:1923-1932",
+          "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b"
+        },
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+          "quote": "５ 「退職所得の受給に関する申告書」の提出がなかった場合の源泉徴収\n  退職手当の支払を受ける人が退職手当の支払者に「退職所得の受給に関\n する申告書」を提出しなかった場合には、その退職手当の支払金額（退職\n 所得控除額の控除前の金額）に20.42％の税率を乗じて計算した税額により、\n 源泉徴収をします（所法201③）。",
+          "corpus_ref": "t1/corpus/gensen/05.txt:2216-2220",
+          "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b"
+        }
+      ],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c17"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c17": "c66e020359d91614d0868a9e9f239c3c934e7a1444a53afbabd8ff77fbe375b6"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:16-18",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "（一般退職手当等の収入金額－退職所得控除額）×１／２／税額＝（A×B－C）×102.1%／支払金額…に20.42％"
+    },
+    {
+      "id": "sol-e43060c5c365f5e8",
+      "text": "課税退職所得は1,000円未満切捨て、所得税等は速算表で計算して1円未満切捨てる",
+      "numbers": [
+        "1,000円"
+      ],
+      "where": [
+        "core結果の計算式"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "４ 「退職所得の受給に関する申告書」の提出があった場合の源泉徴収\n     退職手当の支払を受ける人が退職手当の支払者に「退職所得の受給に関\n する申告書」を提出した場合には、次により源泉徴収を行います（所法\n 201①②、別表第六）。\n ⑴ 「退職所得の受給に関する申告書」にその年中に支払済みの他の退職\n     手当がない旨の記載がある場合\n     「退職所得の受給に関する申告書」にその年中に支払済みの他の退職\n     手当がない旨の記載がある場合には、次の「課税退職所得金額の算式の\n     表」に掲げる退職手当の区分に応じて課税退職所得金額を求め、この課\n     税退職所得金額に応じて、次の「退職所得の源泉徴収税額の速算表」の「税\n     額」欄に示されている算式に従って税額を求めます。\n      この場合、課税退職所得金額に1,000円未満の端数があるときは、これ\n     を切り捨てて計算します。\n      また、求めた税額に１円未満の端数があるときは、これを切り捨てま\n     す。\n                    −148−\n\f                      課税退職所得金額の算式の表（令和 ８ 年分）",
+      "supporting_sources": [
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+          "quote": "                  退職所得の源泉徴収税額の速算表（令和 ８ 年分）\n         課税退職所得金額A                  所得税率B 控除額C            税額＝（A×B－C）×102.1%\n \b                 1,950,000円以下      ５%             －    （A×５%\b           ）×102.1%\n     1,950,000円超\b 3,300,000円    〃    10%           97,500円（A×10%－  97,500円）×102.1%\n     3,300,000円 〃\b 6,950,000円   〃    20%         427,500円（A×20%－  427,500円）×102.1%\n     6,950,000円 〃\b 9,000,000円   〃    23%         636,000円（A×23%－  636,000円）×102.1%\n     9,000,000円 〃\b18,000,000円   〃    33%       1,536,000円（A×33%－1,536,000円）×102.1%\n 18,000,000円 〃\b40,000,000円      〃    40%       2,796,000円（A×40%－2,796,000円）×102.1%\n 40,000,000円 〃                       45%       4,796,000円（A×45%－4,796,000円）×102.1%\n（注） 求めた税額に１円未満の端数があるときは、これを切り捨てます。",
+          "corpus_ref": "t1/corpus/gensen/05.txt:1923-1932",
+          "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b"
+        }
+      ],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c20"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c20": "829d0864575a6a730dbaff09d763338e15bf0245bc16f28ea03f76bb6ea55354"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:1885-1901",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "課税退職所得金額に1,000円未満の端数があるときは、これを切り捨て／求めた税額に１円未満の端数があるときは、これを切り捨てます。"
+    },
+    {
+      "id": "sol-8b81396e8b5546bc",
+      "text": "coreは設例1（10,432,000円、23年10か月）を24年・控除10,800,000円・所得税等0円とする",
+      "numbers": [
+        "10,432,000円",
+        "10,800,000円",
+        "10か月"
+      ],
+      "where": [
+        "計算機ロジック（node実行）"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "    〈設例１〉\n    イ     退職手当（一般退職手当等）             10,432,000円\n    ロ     勤続期間                      23年10か月\n    ハ     退職の区分                     一般退職\n\n 〈説明〉\n    ①    まず、「退職所得控除額の表」により、勤続年数が24年（１年未\n     満の端数切上げ）で一般退職の場合の退職所得控除額を求めると、\n     10,800,000円となります。\n    （注）\u0007 障害退職（114ページのⅣ２⑵ロ参照）の場合には、退職所得控除額\n       の表の「障害退職の場合」欄を使用することになり、この設例の場合の\n       控除額は11,800,000円となります。\n ②       退職手当の額（10,432,000円）が退職所得控除額（10,800,000円）\n    以下となりますから、課税退職所得金額はないことになります。\n        したがって、退職手当から源泉徴収する税額もないことになりま\n    す。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c21"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c21": "5334175e997cab3fc5ae4c0ec7da0a74e45cc3fc9f27baaacb481470f29ae105"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:1942-1957",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "勤続年数が24年…退職所得控除額…10,800,000円…源泉徴収する税額もない"
+    },
+    {
+      "id": "sol-abefa5000ef43d01",
+      "text": "coreは設例2（21,431,000円、26年3か月）を課税退職所得4,265,000円・所得税等434,435円とする",
+      "numbers": [
+        "21,431,000円",
+        "4,265,000円",
+        "434,435円",
+        "3か月"
+      ],
+      "where": [
+        "計算機ロジック（node実行）"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "    〈設例２〉\n    イ     退職手当（一般退職手当等）             21,431,000円\n    ロ     勤続期間                      26年３か月\n    ハ     退職の区分                     一般退職\n\n 〈説明〉\n    ①    まず、「退職所得控除額の表」により、勤続年数が27年（１年未\n     満の端数切上げ）で一般退職の場合の退職所得控除額を求めると、\n     12,900,000円となります。\n    ②   退職手当の額から退職所得控除額を控除した残額の２分の１に相\n     当する金額、すなわち課税退職所得金額を求めると4,265,000円とな\n     ります。\n          課税退職所得金額＝（21,431,000円−12,900,000円）× 1 ／ 2\n                      ＝4,265,000円（1,000円未満の端数切捨て）\n\n                         −150−\n\f③    次に、課税退職所得金額4,265,000円について、「退職所得の源泉\n 徴収税額の速算表」の「税額」欄に示されている算式に従って税額\n を求めると434,435円（１円未満の端数切捨て）｛（4,265,000円×20％\n −427,500円）×102.1％｝となります。これがこの退職手当から源\n 泉徴収する税額です。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c22"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c22": "0d020e9c05f04de6b23678c750ff4055511dc239753f5e330a85425a08683e3e"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:1961-1981",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "課税退職所得金額…4,265,000円…税額を求めると434,435円"
+    },
+    {
+      "id": "sol-ed165ce036386240",
+      "text": "coreは設例3（特定役員4,500,000円、4年7か月）を課税退職所得2,500,000円・所得税等155,702円とする",
+      "numbers": [
+        "4,500,000円",
+        "2,500,000円",
+        "155,702円",
+        "7か月"
+      ],
+      "where": [
+        "計算機ロジック（node実行）"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "〈設例３〉\n イ     退職手当（特定役員退職手当等）             4,500,000円\n ロ     勤続期間                        ４年７か月\n ハ     退職の区分                       一般退職\n\n〈説明〉\n①    まず、「退職所得控除額の表」により、勤続年数が５年（１年未\n    満の端数切上げ）で一般退職の場合の退職所得控除額を求めると、\n    2,000,000円となります。\n②    退職手当が特定役員退職手当等に該当する場合の課税退職所得金\n    額は、退職手当の額から退職所得控除額を控除した残額に相当する\n    金額（1,000円未満の端数切捨て）である2,500,000円となります。\n③    次に、課税退職所得金額2,500,000円について、「退職所得の源泉\n    徴収税額の速算表」の「税額」欄に示されている算式に従って税額\n    を求めると155,702円（１円未満の端数切捨て）｛（2,500,000円×10％\n    －97,500円）×102.1％｝となります。これがこの退職手当から源泉\n    徴収する税額です。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c23"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c23": "d80773f0ab56f56ee77b0a4f1f43b3cec7fe78f991ac32ad1ad5204daf742a91"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:1983-1999",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "課税退職所得金額…2,500,000円…税額を求めると155,702円"
+    },
+    {
+      "id": "sol-9bc4f955739890a2",
+      "text": "coreは設例4（短期5,200,000円、2年5か月）を課税退職所得2,500,000円・所得税等155,702円とする",
+      "numbers": [
+        "5,200,000円",
+        "2,500,000円",
+        "155,702円",
+        "5か月"
+      ],
+      "where": [
+        "計算機ロジック（node実行）"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "〈設例４〉\n イ     退職手当（短期退職手当等）               5,200,000円\n ロ     勤続期間                        ２年５か月\n ハ     退職の区分                       一般退職\n\n〈説明〉\n①    まず、「退職所得控除額の表」により、勤続年数が３年（１年未\n    満の端数切上げ）で一般退職の場合の退職所得控除額を求めると、\n    1,200,000円となります。\n②    退職手当の額から退職所得控除額を控除した残額は4,000,000円\n （5,200,000円－1,200,000円）となり3,000,000円を超えるため、退職手\n    当 が 短 期 退 職 手 当 等 に 該 当 す る 場 合 の 課 税 退 職 所 得 金 額 は、\n    1,500,000円とその短期退職手当等の収入金額から3,000,000円に退職\n\n                     −151−\n\f    所得控除額を加算した金額を控除した残額（1,000円未満の端数切捨\n    て）の合計額である2,500,000円となります。\n     課税退職所得金額＝\u00071,500,000円 ＋{5,200,000円 －（3,000,000円 ＋\n                     1,200,000円）}\n                   ＝2,500,000円\n③    次に、課税退職所得金額2,500,000円について、「退職所得の源泉\n    徴収税額の速算表」の「税額」欄に示されている算式に従って税額\n    を求めると155,702円（１円未満の端数切捨て）｛（2,500,000円×10％\n    －97,500円）×102.1％｝となります。これがこの退職手当から源泉",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c24"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c24": "c5ceec558edbcba2fb4a58fff5b438e691fdefc4d9a45ae4f494337c65421d46"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:2001-2024",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "課税退職所得金額…2,500,000円…税額を求めると155,702円"
+    },
+    {
+      "id": "sol-23be368b2a204cac",
+      "text": "coreは申告書未提出設例（1,511,000円）を所得税等308,546円とする",
+      "numbers": [
+        "1,511,000円",
+        "308,546円"
+      ],
+      "where": [
+        "計算機ロジック（node実行）"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": " 〈設例〉\n  イ    退   職   手   当                      1,511,000円\n  ロ    勤   続   期   間                      10年５か月\n\n 〈説明〉\n  「退職所得の受給に関する申告書」の提出がない場合には退職所得控\n  除額の控除は行わず、退職手当の額や勤続年数の長短にかかわらず、一\n  律に退職手当の支払金額の20.42％に相当する額を求めます。\n      1,511,000円×20.42％＝308,546円（１円未満の端数切捨て）\n      これが求める税額です。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c25"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c25": "d1094b23a8a15fabcb99ef0cac59818c3ab479a6e4f04d9d4e9bca562dae7d48"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:2222-2231",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "1,511,000円×20.42％＝308,546円（１円未満の端数切捨て）"
+    },
+    {
+      "id": "sol-fd55a999391095db",
+      "text": "退職所得は給与等の他の所得と分離して課税する",
+      "numbers": [],
+      "where": [
+        "本文の計算説明",
+        "FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "    退職手当は、永年の勤務に対する勤続報償的給与であるという点において給\n与所得の一形態であるとも考えられますが、それが一時に支給される点や老後\nの生活保障的な最後の所得であることなどによる担税力などを考慮し、課税の\n累進性を軽減する意味から、給与所得とは別個に退職所得として類型化し、所\n得金額の計算に当たっては、その人の勤続年数に応じて計算した退職所得控除\n額を控除するとともに、他の所得と分離して課税することとされています。\n\n\nⅠ   退職所得の課税標準\n    退職所得は、その年中に支払を受ける退職手当の区分に応じ、次の課税退\n 職所得金額を課税標準として、他の所得と分離して課税することとされてい\n ます（所法22①③、30①②、所令71の２①③⑤⑦）。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/taishokukin/index.html/p2-c26"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/taishokukin/index.html/p2-c26": "4a168023703ec40d751adab3ec1c843b322f0be851d6d73a161543109a28aaa4"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:3-14",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "給与所得とは別個に退職所得として類型化し…他の所得と分離して課税する"
     }
   ],
   "absolutes": [

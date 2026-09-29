@@ -10,7 +10,13 @@
       "source_quote": "３   控除の対象になるかどうかの判定時期等\n ⑴   控除対象配偶者や控除対象扶養親族、障害者などに該当するかどうか\n    は、その年12月31日の現況により判定しますが、給与所得者やその親族\n    が年の中途で死亡したり、給与所得者が年の中途で出国したりした場合\n    には、その死亡又は出国の時の現況により判定します（所法85、措法41\n    の３の11③、41の15の５②、41の16②、所基通85−１、措通41の３の11\n    −２、41の15の５−２）。\n     なお、「給与所得者の扶養控除等申告書」、「給与所得者の配偶者控除\n    等申告書」、「給与所得者の特定親族特別控除申告書」、「所得金額調整控\n    除申告書」又は「給与所得者の保険料控除申告書」を提出する際に、源\n    泉控除対象配偶者や源泉控除対象親族、障害者などに該当するかどうか\n    等を判定する場合には、これらの申告書を提出する日の現況により判定\n    します。この場合、その判定の要素となる合計所得金額及び44ページ⑶",
       "supporting_sources": [],
       "exceptions": "正本は本人・親族死亡、本人出国時の現況での判定を明記。年齢入力に例外を補足。",
-      "adjudication": "t13-F1"
+      "adjudication": "t13-F1",
+      "import_keys": [
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c03"
+      ],
+      "import_inputs": {
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c03": "d7e9df5d789684b9478656991047d0a126e4b863b8cbe28d3e42dc6eca634c06"
+      }
     },
     {
       "id": "t13-F2",
@@ -21,7 +27,13 @@
       "source_quote": "    ロ    非居住者のうち、次に掲げる人\n     Ａ       年齢16歳以上30歳未満の人（令和８年分の所得税については、\n         平成９年１月２日から平成23年１月１日までの間に生まれた人）\n     Ｂ       年齢70歳以上の人（令和８年分の所得税については、昭和32年\n         １月１日以前に生まれた人）\n     Ｃ       年齢30歳以上70歳未満の人（令和８年分の所得税については、\n         昭和32年１月２日から平成９年１月１日までの間に生まれた人）\n         のうち、次のいずれかに該当する人\n         A    留学により国内に住所及び居所を有しなくなった人\n         B    障害者\n         C    所得者からその年において生活費又は教育費に充てるための\n          支払を38万円以上受けている人\n ニ      特定扶養親族とは、控除対象扶養親族のうち、年齢19歳以上23歳未",
       "supporting_sources": [],
       "exceptions": "coreは資格判定後の人数を合算する関数であり計算額の誤りではない。入力する人数の定義に国外居住親族の制限を明記して採用、tool_logicから適用範囲の表示へ再分類。",
-      "adjudication": "t13-F2"
+      "adjudication": "t13-F2",
+      "import_keys": [
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c12"
+      ],
+      "import_inputs": {
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c12": "ccf4defaa5f524d413a78ee6e8ab52c8324892931e2b6466b5ec7268781ff62a"
+      }
     },
     {
       "id": "t1-added-context",
@@ -54,6 +66,285 @@
       ],
       "exceptions": "同じ追加行に残る既存の説明を含む。対象者・年分・例外は個別t1所見と本文に記載。計算例・換算額は下記原式から計算する。",
       "calculation": "金額の換算と端数処理は参照正本の原式による。詳細は個別t1所見と回帰テスト。"
+    },
+    {
+      "id": "sol-31788e92f877f6ee",
+      "text": "扶養控除は区分ごとの所得控除額を課税所得から差し引いて所得税の減少額を概算する",
+      "numbers": [],
+      "where": [
+        "index.html:62",
+        "index.html:78",
+        "index.html:162-183"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "⑶   扶養控除\n イ      所得者に控除対象扶養親族に該当する人がいる場合には、次の金額\n    が所得から控除されます（所法84、措法41の16）。\n    イ    一般の控除対象扶養親族については、１人につき38万円\n    ロ    特定扶養親族については、１人につき63万円\n    ハ    老人扶養親族のうち同居老親等については、１人につき58万円、\n     同居老親等以外の老人扶養親族については、１人につき48万円\n ロ      扶養親族とは、所得者と生計を一にする次に掲げる人（青色事業専\n    従者として給与の支払を受ける人及び白色事業専従者を除きます。）\n    で、合計所得金額が58万円以下の人をいいます（所法２①三十四）。\n    イ    配偶者以外の親族（６親等内の血族及び３親等内の姻族）\n    ロ    児童福祉法の規定により養育を委託されたいわゆる里子\n         なお、里子となるのは、原則として年齢18歳未満の人に限られて",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c01"
+      ],
+      "import_inputs": {
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c01": "d0c894a5d18952477d8fdb4280ef4258db4d8d80202110dbe2e21261b2d7aa0f"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1311-1323",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "所得者に控除対象扶養親族に該当する人がいる場合には、次の金額が所得から控除されます"
+    },
+    {
+      "id": "sol-03385014efe2e65f",
+      "text": "一般の控除対象扶養親族の所得税の扶養控除額は1人38万円",
+      "numbers": [
+        "38万円",
+        "1人"
+      ],
+      "where": [
+        "assets/setsuzei_r08.json:155-156",
+        "index.html:108-120"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "    イ    一般の控除対象扶養親族については、１人につき38万円\n    ロ    特定扶養親族については、１人につき63万円\n    ハ    老人扶養親族のうち同居老親等については、１人につき58万円、\n     同居老親等以外の老人扶養親族については、１人につき48万円\n ロ      扶養親族とは、所得者と生計を一にする次に掲げる人（青色事業専\n    従者として給与の支払を受ける人及び白色事業専従者を除きます。）\n    で、合計所得金額が58万円以下の人をいいます（所法２①三十四）。\n    イ    配偶者以外の親族（６親等内の血族及び３親等内の姻族）\n    ロ    児童福祉法の規定により養育を委託されたいわゆる里子\n         なお、里子となるのは、原則として年齢18歳未満の人に限られて\n     います（所基通２−49）。\n    ハ    老人福祉法の規定により養護を委託されたいわゆる養護老人\n         なお、養護老人となるのは、原則として年齢65歳以上の人に限ら",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c04"
+      ],
+      "import_inputs": {
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c04": "ce1c7efd855471a7c64f756a71779dda55f7af8115bc519a4bbc980d0471e039"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1314-1326",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "一般の控除対象扶養親族については、１人につき38万円"
+    },
+    {
+      "id": "sol-f93441959936572b",
+      "text": "特定扶養親族の所得税の扶養控除額は1人63万円",
+      "numbers": [
+        "63万円",
+        "1人"
+      ],
+      "where": [
+        "assets/setsuzei_r08.json:157-158",
+        "index.html:108-120"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "    ロ    特定扶養親族については、１人につき63万円\n    ハ    老人扶養親族のうち同居老親等については、１人につき58万円、\n     同居老親等以外の老人扶養親族については、１人につき48万円\n ロ      扶養親族とは、所得者と生計を一にする次に掲げる人（青色事業専\n    従者として給与の支払を受ける人及び白色事業専従者を除きます。）\n    で、合計所得金額が58万円以下の人をいいます（所法２①三十四）。\n    イ    配偶者以外の親族（６親等内の血族及び３親等内の姻族）\n    ロ    児童福祉法の規定により養育を委託されたいわゆる里子\n         なお、里子となるのは、原則として年齢18歳未満の人に限られて\n     います（所基通２−49）。\n    ハ    老人福祉法の規定により養護を委託されたいわゆる養護老人\n         なお、養護老人となるのは、原則として年齢65歳以上の人に限ら\n     れています（所基通２−49）。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c05"
+      ],
+      "import_inputs": {
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c05": "a1ab86079ce071b5cca714aea230726484ecd9ddefc47bcdb16237c4842f462b"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1315-1327",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "特定扶養親族については、１人につき63万円"
+    },
+    {
+      "id": "sol-08696791a24ba57b",
+      "text": "同居老親等以外の老人扶養親族の所得税の扶養控除額は1人48万円",
+      "numbers": [
+        "48万円",
+        "1人"
+      ],
+      "where": [
+        "assets/setsuzei_r08.json:159-160",
+        "index.html:108-120"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "    ハ    老人扶養親族のうち同居老親等については、１人につき58万円、\n     同居老親等以外の老人扶養親族については、１人につき48万円\n ロ      扶養親族とは、所得者と生計を一にする次に掲げる人（青色事業専\n    従者として給与の支払を受ける人及び白色事業専従者を除きます。）\n    で、合計所得金額が58万円以下の人をいいます（所法２①三十四）。\n    イ    配偶者以外の親族（６親等内の血族及び３親等内の姻族）\n    ロ    児童福祉法の規定により養育を委託されたいわゆる里子\n         なお、里子となるのは、原則として年齢18歳未満の人に限られて\n     います（所基通２−49）。\n    ハ    老人福祉法の規定により養護を委託されたいわゆる養護老人\n         なお、養護老人となるのは、原則として年齢65歳以上の人に限ら\n     れています（所基通２−49）。\n ハ      控除対象扶養親族とは、扶養親族のうち、次に掲げる人をいいます",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c06"
+      ],
+      "import_inputs": {
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c06": "8a701fdc785de87fb170022a6ccd52444ca74ed71918a1a2acc928605d2f1de2"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1316-1328",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "同居老親等以外の老人扶養親族については、１人につき48万円"
+    },
+    {
+      "id": "sol-0a89a31ae89bc78e",
+      "text": "同居老親等の所得税の扶養控除額は1人58万円",
+      "numbers": [
+        "58万円",
+        "1人"
+      ],
+      "where": [
+        "assets/setsuzei_r08.json:161-162",
+        "index.html:108-120"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "    ハ    老人扶養親族のうち同居老親等については、１人につき58万円、\n     同居老親等以外の老人扶養親族については、１人につき48万円\n ロ      扶養親族とは、所得者と生計を一にする次に掲げる人（青色事業専\n    従者として給与の支払を受ける人及び白色事業専従者を除きます。）\n    で、合計所得金額が58万円以下の人をいいます（所法２①三十四）。\n    イ    配偶者以外の親族（６親等内の血族及び３親等内の姻族）\n    ロ    児童福祉法の規定により養育を委託されたいわゆる里子\n         なお、里子となるのは、原則として年齢18歳未満の人に限られて\n     います（所基通２−49）。\n    ハ    老人福祉法の規定により養護を委託されたいわゆる養護老人\n         なお、養護老人となるのは、原則として年齢65歳以上の人に限ら\n     れています（所基通２−49）。\n ハ      控除対象扶養親族とは、扶養親族のうち、次に掲げる人をいいます",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c07"
+      ],
+      "import_inputs": {
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c07": "0cd598207b6cb4f08e9027a726c388d70d52870dbb19442a8a8416c62ea46a56"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1316-1328",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "老人扶養親族のうち同居老親等については、１人につき58万円"
+    },
+    {
+      "id": "sol-2a3c427c210d48d9",
+      "text": "特定扶養親族は19歳以上23歳未満、老人扶養親族は70歳以上、一般はそれら以外の16歳以上",
+      "numbers": [
+        "19歳",
+        "23歳",
+        "70歳",
+        "16歳"
+      ],
+      "where": [
+        "assets/setsuzei_r08.json:155-162"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": " ハ      控除対象扶養親族とは、扶養親族のうち、次に掲げる人をいいます\n    （所法２①三十四の二）。\n    イ    居住者のうち、年齢16歳以上の人（令和８年分の所得税について\n     は、平成23年１月１日以前に生まれた人）\n    ロ    非居住者のうち、次に掲げる人\n     Ａ       年齢16歳以上30歳未満の人（令和８年分の所得税については、\n         平成９年１月２日から平成23年１月１日までの間に生まれた人）\n     Ｂ       年齢70歳以上の人（令和８年分の所得税については、昭和32年\n         １月１日以前に生まれた人）\n     Ｃ       年齢30歳以上70歳未満の人（令和８年分の所得税については、\n         昭和32年１月２日から平成９年１月１日までの間に生まれた人）\n         のうち、次のいずれかに該当する人\n         A    留学により国内に住所及び居所を有しなくなった人",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c08"
+      ],
+      "import_inputs": {
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c08": "bd3c9e615000d1990a97cf6c2f7d8550264b6756157bbcd50c1c6245425ca900"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1328-1340",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "居住者のうち、年齢16歳以上の人／特定扶養親族とは、控除対象扶養親族のうち、年齢19歳以上23歳未満の人／老人扶養親族とは、控除対象扶養親族のうち、年齢70歳以上の人"
+    },
+    {
+      "id": "sol-f6080887decb0962",
+      "text": "16歳未満は扶養控除の対象外",
+      "numbers": [
+        "16歳"
+      ],
+      "where": [
+        "index.html:150",
+        "index.html:183"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": " ハ      控除対象扶養親族とは、扶養親族のうち、次に掲げる人をいいます\n    （所法２①三十四の二）。\n    イ    居住者のうち、年齢16歳以上の人（令和８年分の所得税について\n     は、平成23年１月１日以前に生まれた人）\n    ロ    非居住者のうち、次に掲げる人\n     Ａ       年齢16歳以上30歳未満の人（令和８年分の所得税については、\n         平成９年１月２日から平成23年１月１日までの間に生まれた人）\n     Ｂ       年齢70歳以上の人（令和８年分の所得税については、昭和32年\n         １月１日以前に生まれた人）\n     Ｃ       年齢30歳以上70歳未満の人（令和８年分の所得税については、\n         昭和32年１月２日から平成９年１月１日までの間に生まれた人）\n         のうち、次のいずれかに該当する人\n         A    留学により国内に住所及び居所を有しなくなった人",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c09"
+      ],
+      "import_inputs": {
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c09": "bfd6c543778d43a639f8f96f40daf8e1b253c20df34e3e005fc3b699291482b1"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1328-1340",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "控除対象扶養親族とは、扶養親族のうち、次に掲げる人をいいます／居住者のうち、年齢16歳以上の人"
+    },
+    {
+      "id": "sol-caf2494ffe6f81b7",
+      "text": "扶養親族は所得者と生計を一にすることが要件",
+      "numbers": [],
+      "where": [
+        "index.html:183"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": " ロ      扶養親族とは、所得者と生計を一にする次に掲げる人（青色事業専\n    従者として給与の支払を受ける人及び白色事業専従者を除きます。）\n    で、合計所得金額が58万円以下の人をいいます（所法２①三十四）。\n    イ    配偶者以外の親族（６親等内の血族及び３親等内の姻族）\n    ロ    児童福祉法の規定により養育を委託されたいわゆる里子\n         なお、里子となるのは、原則として年齢18歳未満の人に限られて\n     います（所基通２−49）。\n    ハ    老人福祉法の規定により養護を委託されたいわゆる養護老人\n         なお、養護老人となるのは、原則として年齢65歳以上の人に限ら\n     れています（所基通２−49）。\n ハ      控除対象扶養親族とは、扶養親族のうち、次に掲げる人をいいます\n    （所法２①三十四の二）。\n    イ    居住者のうち、年齢16歳以上の人（令和８年分の所得税について",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c11"
+      ],
+      "import_inputs": {
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c11": "0a93f9bf2fd5c0732887d23584a229ed750f4a5d06330c5dbb08c3ffb2d73b17"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1318-1330",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "扶養親族とは、所得者と生計を一にする次に掲げる人"
+    },
+    {
+      "id": "sol-b1e7efb8ffb09a06",
+      "text": "coreの扶養控除額計算は正本の控除額表と一致する",
+      "numbers": [],
+      "where": [
+        "index.html:84",
+        "assets/setsuzei_core.js:438-456"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "⑶   扶養控除\n イ      所得者に控除対象扶養親族に該当する人がいる場合には、次の金額\n    が所得から控除されます（所法84、措法41の16）。\n    イ    一般の控除対象扶養親族については、１人につき38万円\n    ロ    特定扶養親族については、１人につき63万円\n    ハ    老人扶養親族のうち同居老親等については、１人につき58万円、\n     同居老親等以外の老人扶養親族については、１人につき48万円\n ロ      扶養親族とは、所得者と生計を一にする次に掲げる人（青色事業専\n    従者として給与の支払を受ける人及び白色事業専従者を除きます。）\n    で、合計所得金額が58万円以下の人をいいます（所法２①三十四）。\n    イ    配偶者以外の親族（６親等内の血族及び３親等内の姻族）\n    ロ    児童福祉法の規定により養育を委託されたいわゆる里子\n         なお、里子となるのは、原則として年齢18歳未満の人に限られて",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c13"
+      ],
+      "import_inputs": {
+        "t1/t13/docs/embed/fuyo-kojo/index.html/p1-c13": "67b7b831a8f9fc82b194373328b90aa3ac957e8b76594095b283fe025c94eafb"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1311-1323",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "一般の控除対象扶養親族については、１人につき38万円／特定扶養親族については、１人につき63万円／同居老親等については、１人につき58万円、同居老親等以外については、１人につき48万円"
     }
   ],
   "checked": "2026-09-29",

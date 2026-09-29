@@ -47,7 +47,7 @@ FILTER="${1:-}"
 shopt -s nullglob
 # test_layout_* includes all-page Chromium geometry, mutation fixtures and reviewed image baselines.
 # Playwright is required; these checks never silently skip or update a baseline.
-files=(tests/*.mjs)
+files=(tests/*.mjs tests/test_*.py)
 (( ${#files[@]} )) || { echo "★ tests/ にテストが1つも無い（探索パターンの誤りを疑う）"; exit 2; }
 
 if [ -n "$FILTER" ]; then
@@ -63,7 +63,9 @@ fi
 red=()
 for f in "${files[@]}"; do
   [ -z "$QUIET" ] && printf '%-46s ' "$f"
-  if out=$(node "$f" 2>&1); then
+  runner=node
+  [[ "$f" == *.py ]] && runner="${PYTHON:-python3}"
+  if out=$("$runner" "$f" 2>&1); then
     [ -z "$QUIET" ] && echo "緑"
   else
     [ -z "$QUIET" ] && echo "★赤" || printf '%-46s ★赤\n' "$f"

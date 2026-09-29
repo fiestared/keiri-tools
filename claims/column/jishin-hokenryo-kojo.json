@@ -10,7 +10,13 @@
       "source_quote": "   所得者が、所得者本人又は所得者と生計を一にする配偶者その他の\n  親族の所有する家屋・家財（注１）のうち一定のものを保険や共済の目的\n  とし、かつ、地震等損害（注２）によりこれらの資産について生じた損失\n  の額を塡補する保険金又は共済金が支払われる損害保険契約等（注３）に\n  係る地震保険料（注４）を支払った場合には、その年中に支払った地震保\n  険料の金額の合計額（注５）（最高５万円）が地震保険料控除として所得\n  から控除されます（所法77①）。\n（注）１\u0007 家財を保険の目的とする契約であっても、宝石、貴金属、書画、骨とう\n    などで１個又は１組の価額が30万円を超えるものその他の生活に通常必要\n    でない資産が保険の目的となっている家財のうちに含まれている場合に\n    は、この契約により支払う保険料のうち生活に通常必要な資産に対応する\n    部分の保険料だけが地震保険料控除の対象になります（所法９①九、77①、\n    所令25）。",
       "supporting_sources": [],
       "exceptions": "生計一は同一世帯・同居と同義ではない。別世帯だけで除外する記載を修正。",
-      "adjudication": "t09-F1"
+      "adjudication": "t09-F1",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c02"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c02": "fdde5221137eb613b5bed148cb472d4beb49f556ed31752abc63d760101e31db"
+      }
     },
     {
       "id": "t09-F2",
@@ -21,7 +27,13 @@
       "source_quote": "\n                                                   １０，\n                                                     ０００円以下   その合計額\n                   地震保険料等に係る契約の       旧長期損害保険\n年末調整のしかた\n                                                              （支払った保険料等\n                                                               の金額の合計額 ） ２\n                                                   １０，\n                                                     ０００円超               １\n                ② 全てが旧長期損害保険契約        料の金額の合計                           × ＋５，\n                                                                            ０００円\n                                                   ２０，\n                                                     ０００円以下\n・手         順\n                   に該当するものである場合       額\n                                                   ２０，\n                                                     ０００円超    一律に１５，\n                                                                   ０００円\n・控 除 額 の 確 認                          ①、②それぞれ ５０，\n                                                ０００円以下 その合計額\n                ③ ①と②がある場合            計算した金額の\n                                                   ５０，\n                                                     ０００円超    一律に５万円\n                                      合計額\n\n               （注）\n                 １ ここでいう地震保険料等とは、地震保険料控除の対象となる地震保険料及び旧長期損害保険料をいいます。\n                  ２ 一つの契約等が、地震等損害により保険金や共済金が支払われるものと旧長期損害保険契約のいずれの\n                    契約区分にも該当する場合には、いずれか一方の契約区分にのみ該当するものとして、地震保険料控除の\n                    控除額を計算します。\n                   ３ 地震保険料の控除額の計算において算出した金額に１円未満の端数があるときは、その端数を切り上げ\n                    ます。\n",
       "supporting_sources": [],
       "exceptions": "所見の20,000円以上も厳密な到達点ではない。正本26頁の1円未満切上げを合わせると19,999円で15,000円に達する。所得税側だけをこの値へ修正。",
-      "adjudication": "t09-F2"
+      "adjudication": "t09-F2",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c11"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c11": "ce62f75fa47d81975303c989259e32c85db4d938a5bb3da3738ddfdaee9dab36"
+      }
     },
     {
       "id": "t1-added-context",
@@ -49,6 +61,480 @@
       ],
       "exceptions": "同じ追加行に残る既存の説明を含む。対象者・年分・例外は個別t1所見と本文に記載。計算例・換算額は下記原式から計算する。",
       "calculation": "金額の換算と端数処理は参照正本の原式による。詳細は個別t1所見と回帰テスト。"
+    },
+    {
+      "id": "sol-fc42e7de3c01aabb",
+      "text": "地震保険料控除は本人又は生計を一にする親族所有の一定の家屋・家財を目的とし、本人が支払った地震等損害部分の保険料が対象である。",
+      "numbers": [],
+      "where": [
+        "meta description",
+        "本文導入",
+        "本文『結論』",
+        "本文『対象になる条件』",
+        "FAQ",
+        "JSON-LD"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": " 地震保険料とは\n⑴ 地震保険料控除の対象となる地震保険料は、所得者本人又は本人と生計を一にする親族が所\n    有している家屋・家財のうち一定のものを保険や共済の目的とし、かつ地震等損害によりこれ\n    らの資産について生じた損失の額を塡補する保険金又は共済金が支払われる損害保険契約等に\n    基づく地震等損害部分の保険料や掛金で所得者本人が支払ったものに限られます。\n     なお、\n       地震保険料控除の対象となる保険契約等の詳細については、\n                                 国税庁ホームページ\n                                         （https://\n    www.nta.go.jp）をご確認ください。\n⑵ 剰余金の分配や割戻金の割戻しを受けたり、その剰余金や割戻金を保険料の払込みに充てた\n    りした場合には、その年中に支払った保険料の合計額からその支払を受けたり払込みに充てた\n    りした剰余金や割戻金の合計額を差し引いた残額が控除の対象となります。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c01"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c01": "a3c76e9ed68140ea6b4d0804bf31bdea2103c1343e27e218d285ccd8fdcffe47"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2008-2020",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "所得者本人又は本人と生計を一にする親族が所有している家屋・家財のうち一定のものを保険や共済の目的とし…地震等損害部分の保険料や掛金で所得者本人が支払ったものに限られます。"
+    },
+    {
+      "id": "sol-c690694b1d034062",
+      "text": "家屋は常時居住用に供するものに限られ、別荘・空き家・純賃貸用物件は対象外である。",
+      "numbers": [],
+      "where": [
+        "本文導入",
+        "本文『結論』表",
+        "本文『間違えやすい点』",
+        "FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "１ 保険の目的\n     家屋や家財を保険又は共済の目的とする損害保険契約等は、所得者本人又は本人と生計を一\n    にする親族が所有して常時居住している家屋や、これらの人の所有している生活に通常必要な\n    家財を保険の目的としているものであるかどうか。\n２ 保険料の支払内容等\n ⑴ 本人自身が支払ったものであるかどうか。\n      給与の支払者が負担した地震保険料の金額で給与として課税されるべきものは、本人自身\n     が支払ったものとして控除の対象になります。\n ⑵ 本年中に支払ったものであるかどうか。\n      いわゆる「振替貸付」により保険料の払込みに充てられた金額や、いわゆる「前納保険料」\n     があるときは、生命保険料の場合と同様に取り扱われますので２１\n                                  ・２２ページを参照してください。\n ⑶ 剰余金の分配や割戻金の割戻しを受けている場合又は剰余金や割戻金が地震保険料の払込",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c03"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c03": "37b4ad7d62432676bacae09a7436f373da6c212970fefaef4a98ecdb93ea170c"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2041-2053",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "所得者本人又は本人と生計を一にする親族が所有して常時居住している家屋や、これらの人の所有している生活に通常必要な家財を保険の目的としているものであるかどうか。"
+    },
+    {
+      "id": "sol-cb3316f03c54f66d",
+      "text": "対象外となるのは臨時費用・取壊し等費用に対応する保険料と、地震保険金額が火災保険金額の20%未満の契約の地震部分保険料である。",
+      "numbers": [
+        "20%"
+      ],
+      "where": [
+        "meta description",
+        "本文導入",
+        "図",
+        "本文『政令が外している2種類』",
+        "FAQ",
+        "JSON-LD"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "ハ 地震保険料控除の対象とならない保険料等\n  次に掲げる保険料等は地震保険料控除の対象となりません（所法77\n ①、所令213）。\n イ 地震等損害により臨時に生ずる費用又はその資産の取壊し若しく\n  は除去に係る費用その他これらに類する費用に対して支払われる保\n  険金又は共済金に係る保険料等\n ロ 一の損害保険契約等の契約内容につき、次の算式により計算した\n      20\n 割合が 100 未満であることとされている場合における地震等損害部\n 分の保険料等（イに掲げるものを除きます。）\n   地震等損害により資産について生じた\n   損 失 を 塡 補 す る 保 険 金 又 は 共 済 金 の 額（ 注 ３）    20\n                                           ＜",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c04"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c04": "5c2a88e7af2ae920f8f73d37cdfa2882345995b978dad0d7fd7e4344dec5280d"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1911-1923",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "地震等損害により臨時に生ずる費用又はその資産の取壊し若しくは除去に係る費用…に係る保険料等／…割合が20/100未満…地震等損害部分の保険料等"
+    },
+    {
+      "id": "sol-79bd9b39c834a5df",
+      "text": "地震保険金額が政令限度額以上の契約は20%未満ルールにかかわらず控除対象で、限度額は家屋5,000万円・家財1,000万円である。",
+      "numbers": [
+        "5,000",
+        "1,000",
+        "20%"
+      ],
+      "where": [
+        "本文『20%ルール』",
+        "表",
+        "FAQ",
+        "JSON-LD"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "\f               の額を塡補する保険金又は共済金の額が、地震保険に関する法律施行令\n               第2条\u001a保険金額の限度額\u001aに規定する金額（原則として家屋について\n               は5,000万円、家財については1,000万円）以上とされている保険契約につ\n               いては、上記計算式にかかわらず地震保険料控除の対象となります。\n【経過措置】\n○       所得者が、平成19年分以後の各年において、平成18年12月31日までに締\n 結した長期損害保険契約等（注）に係る保険料等（以下「旧長期損害保険料」\n    といいます。）を支払った場合には、上記⑿イにかかわらず、支払った地\n    震保険料等（地震保険料控除の対象となる地震保険料及び旧長期損害保険\n    料）の区分に応じて次により計算した金額とすることができます（平18改\n    正法附則10②）。\n        支払った保険料\n                          保   険   料   等   の   金    額         控   除   額",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c05"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c05": "e32aa980931f7b57b7de71e795b5d10a54880f777d3565f319999044b58ebd31"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1939-1951",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "地震保険に関する法律施行令第2条…に規定する金額（原則として家屋については5,000万円、家財については1,000万円）以上とされている保険契約については、上記計算式にかかわらず地震保険料控除の対象となります。"
+    },
+    {
+      "id": "sol-bed5f43db5a626f5",
+      "text": "家財のうち1個又は1組30万円超の宝石・貴金属・書画・骨董等に対応する保険料は対象外である。",
+      "numbers": [
+        "30万円"
+      ],
+      "where": [
+        "title",
+        "meta description",
+        "本文導入",
+        "本文『家財』",
+        "FAQ",
+        "JSON-LD"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "（注）１\u0007 家財を保険の目的とする契約であっても、宝石、貴金属、書画、骨とう\n    などで１個又は１組の価額が30万円を超えるものその他の生活に通常必要\n    でない資産が保険の目的となっている家財のうちに含まれている場合に\n    は、この契約により支払う保険料のうち生活に通常必要な資産に対応する\n    部分の保険料だけが地震保険料控除の対象になります（所法９①九、77①、\n    所令25）。\n   ２\u0007 「地震等損害」とは、地震若しくは噴火又はこれらによる津波を直接又\n    は間接の原因とする火災、損壊、埋没又は流出による損害をいいます（所\n    法77①）。\n   ３\u0007 「損害保険契約等」とは、次のロに掲げる契約に附帯して締結されるも\n    の又はその契約と一体となって効力を有する一の保険契約若しくは共済に\n    係る契約をいいます（所法77②）。\n   ４\u0007 「地震保険料」とは、地震等損害により保険又は共済の目的とする資産",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c06"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c06": "409551567c741c260b23da337be4fa03fe410246653be77a05d9abdf7611d791"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1863-1875",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "宝石、貴金属、書画、骨とうなどで１個又は１組の価額が30万円を超えるもの…この契約により支払う保険料のうち生活に通常必要な資産に対応する部分の保険料だけが地震保険料控除の対象になります。"
+    },
+    {
+      "id": "sol-48996ba3e864b0a3",
+      "text": "所得税の地震保険料控除額は支払額の全額で最高5万円である。",
+      "numbers": [
+        "5万円"
+      ],
+      "where": [
+        "本文『控除額』",
+        "表",
+        "FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "  係る地震保険料（注４）を支払った場合には、その年中に支払った地震保\n  険料の金額の合計額（注５）（最高５万円）が地震保険料控除として所得\n  から控除されます（所法77①）。\n（注）１\u0007 家財を保険の目的とする契約であっても、宝石、貴金属、書画、骨とう\n    などで１個又は１組の価額が30万円を超えるものその他の生活に通常必要\n    でない資産が保険の目的となっている家財のうちに含まれている場合に\n    は、この契約により支払う保険料のうち生活に通常必要な資産に対応する\n    部分の保険料だけが地震保険料控除の対象になります（所法９①九、77①、\n    所令25）。\n   ２\u0007 「地震等損害」とは、地震若しくは噴火又はこれらによる津波を直接又\n    は間接の原因とする火災、損壊、埋没又は流出による損害をいいます（所\n    法77①）。\n   ３\u0007 「損害保険契約等」とは、次のロに掲げる契約に附帯して締結されるも",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c07"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c07": "822840fa7a8a7ba64024f42e388a260fb4763e99a8810082d894b7e7c034eba0"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1860-1872",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "その年中に支払った地震保険料の金額の合計額…（最高５万円）が地震保険料控除として所得から控除されます。"
+    },
+    {
+      "id": "sol-86d6bbdbbdffaaec",
+      "text": "所得税の旧長期損害保険料控除は1万円以下全額、1万円超2万円以下は2分の1+5千円、2万円超は1万5千円である。",
+      "numbers": [
+        "1万円",
+        "2万円",
+        "1万5千円"
+      ],
+      "where": [
+        "本文『旧長期の経過措置』"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "                                                   １０，\n                                                     ０００円以下   その合計額\n                   地震保険料等に係る契約の       旧長期損害保険\n年末調整のしかた\n                                                              （支払った保険料等\n                                                               の金額の合計額 ） ２\n                                                   １０，\n                                                     ０００円超               １\n                ② 全てが旧長期損害保険契約        料の金額の合計                           × ＋５，\n                                                                            ０００円\n                                                   ２０，\n                                                     ０００円以下\n・手         順",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c10"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c10": "057e0f233be14dde06e9e4fbb6c5a8c9e1e4367745a10426ac64b4e672968c9e"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2083-2095",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "１０，０００円以下　その合計額／１０，０００円超２０，０００円以下…×1/2＋５，０００円／２０，０００円超　一律に１５，０００円"
+    },
+    {
+      "id": "sol-cb9e21b9ba251e24",
+      "text": "地震保険料と旧長期損害保険料の両方がある場合は各控除額を合計し、所得税側の合計上限は5万円である。",
+      "numbers": [
+        "5万円"
+      ],
+      "where": [
+        "本文『旧長期の経過措置』",
+        "FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "・控 除 額 の 確 認                          ①、②それぞれ ５０，\n                                                ０００円以下 その合計額\n                ③ ①と②がある場合            計算した金額の\n                                                   ５０，\n                                                     ０００円超    一律に５万円\n                                      合計額\n\n               （注）\n                 １ ここでいう地震保険料等とは、地震保険料控除の対象となる地震保険料及び旧長期損害保険料をいいます。\n                  ２ 一つの契約等が、地震等損害により保険金や共済金が支払われるものと旧長期損害保険契約のいずれの\n                    契約区分にも該当する場合には、いずれか一方の契約区分にのみ該当するものとして、地震保険料控除の\n                    控除額を計算します。\n                   ３ 地震保険料の控除額の計算において算出した金額に１円未満の端数があるときは、その端数を切り上げ",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c12"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c12": "76d2a23acc47fed0c1d9d9bb3d30611287c2a45ab7c27aaddce800969cee461a"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2100-2112",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "①と②がある場合　①、②それぞれ計算した金額の合計額　５０，０００円以下 その合計額／５０，０００円超 一律に５万円"
+    },
+    {
+      "id": "sol-3fd690278f7140db",
+      "text": "一つの契約が地震保険契約区分と旧長期損害保険契約区分の双方に該当するときはいずれか一方のみで計算する。",
+      "numbers": [],
+      "where": [
+        "本文『旧長期の経過措置』",
+        "FAQ",
+        "JSON-LD"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "               （注）\n                 １ ここでいう地震保険料等とは、地震保険料控除の対象となる地震保険料及び旧長期損害保険料をいいます。\n                  ２ 一つの契約等が、地震等損害により保険金や共済金が支払われるものと旧長期損害保険契約のいずれの\n                    契約区分にも該当する場合には、いずれか一方の契約区分にのみ該当するものとして、地震保険料控除の\n                    控除額を計算します。\n                   ３ 地震保険料の控除額の計算において算出した金額に１円未満の端数があるときは、その端数を切り上げ\n                    ます。\n\n\n\n               ◉ 社会保険料控除\n\n                社会保険料とは",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c13"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c13": "20149b051b994c72dd7dd9ffd1f965bc23dbe15eafc2acc4239f7c49c2dedd45"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2107-2119",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "一つの契約等が…いずれの契約区分にも該当する場合には、いずれか一方の契約区分にのみ該当するものとして、地震保険料控除の控除額を計算します。"
+    },
+    {
+      "id": "sol-7bbfda935a9b5815",
+      "text": "地震保険料控除は年末調整で処理でき、保険料控除申告書に基づく。",
+      "numbers": [],
+      "where": [
+        "本文『控除証明書は1円でも要る』",
+        "FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "⑷    この地震保険料控除は、本人から提出された保険料控除申告書に基づいて控除することに\n    なっています。\n\n 〔注意事項〕\n１ 保険の目的\n     家屋や家財を保険又は共済の目的とする損害保険契約等は、所得者本人又は本人と生計を一\n    にする親族が所有して常時居住している家屋や、これらの人の所有している生活に通常必要な\n    家財を保険の目的としているものであるかどうか。\n２ 保険料の支払内容等\n ⑴ 本人自身が支払ったものであるかどうか。\n      給与の支払者が負担した地震保険料の金額で給与として課税されるべきものは、本人自身\n     が支払ったものとして控除の対象になります。\n ⑵ 本年中に支払ったものであるかどうか。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c14"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c14": "6e8c190fa0aee3883b7056388f12e4f8094ce64b62a1de34b91f5214de8d6ec9"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2037-2049",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "この地震保険料控除は、本人から提出された保険料控除申告書に基づいて控除することになっています。"
+    },
+    {
+      "id": "sol-3997dbf908efc39c",
+      "text": "年末調整の地震保険料控除は金額の多少に関係なく証明書類の添付・提出又は提示が必要で、翌年1月末までの後日提出を条件に先に処理できる。",
+      "numbers": [],
+      "where": [
+        "title",
+        "本文『控除証明書は1円でも要る』",
+        "FAQ",
+        "JSON-LD"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": " 証明書類\n 保険料の金額の多少に関係なく、その保険料を支払ったこと等の証明書類又はその証明書類に\n記載すべき事項を記録した電子証明書等に係る電磁的記録印刷書面を保険料控除申告書に添付し\nて提出又は提示する必要があります。\n 証明書類の交付を請求中などのため、証明書類が確認できない場合でも、翌年１月末日までに\n提出又は提示することを条件として地震保険料の控除をしたところで年末調整を行ってもよいこ\n\n                              ─ 25 ─\n\f               とになっています。\n                なお、証明書類の電子データによる提供や証明書類として使用される書面の内容などについて\n               は、生命保険料の場合と同じですから、２２ページを参照してください。\n\n                地震保険料の控除額の計算",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c15"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c15": "5bb804a5ab75650cfc747ae18cf7eb9636d6b2287db76331ba5dcd173b9d6776"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2057-2069",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "保険料の金額の多少に関係なく、その保険料を支払ったこと等の証明書類…を保険料控除申告書に添付して提出又は提示する必要があります。…翌年１月末日までに提出又は提示することを条件として…年末調整を行ってもよい"
+    },
+    {
+      "id": "sol-6c62b7af3afc9986",
+      "text": "地震保険料控除の要件は本人が支払うこと、本人又は生計を一にする親族が対象資産を所有すること、家屋は常時居住用であることで、契約者名義自体は要件ではない。",
+      "numbers": [],
+      "where": [
+        "meta description",
+        "本文『対象になる条件は3つだけ』",
+        "FAQ『家の名義は親』",
+        "JSON-LD"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": " 地震保険料とは\n⑴ 地震保険料控除の対象となる地震保険料は、所得者本人又は本人と生計を一にする親族が所\n    有している家屋・家財のうち一定のものを保険や共済の目的とし、かつ地震等損害によりこれ\n    らの資産について生じた損失の額を塡補する保険金又は共済金が支払われる損害保険契約等に\n    基づく地震等損害部分の保険料や掛金で所得者本人が支払ったものに限られます。\n     なお、\n       地震保険料控除の対象となる保険契約等の詳細については、\n                                 国税庁ホームページ\n                                         （https://\n    www.nta.go.jp）をご確認ください。\n⑵ 剰余金の分配や割戻金の割戻しを受けたり、その剰余金や割戻金を保険料の払込みに充てた\n    りした場合には、その年中に支払った保険料の合計額からその支払を受けたり払込みに充てた\n    りした剰余金や割戻金の合計額を差し引いた残額が控除の対象となります。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c27"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c27": "5ac7a800eb69d670ec44258cb28db312b727135bfab9d7e9e24cc4a08cbbb9f0"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2008-2020",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "所得者本人又は本人と生計を一にする親族が所有している家屋・家財のうち一定のものを保険や共済の目的とし…地震等損害部分の保険料や掛金で所得者本人が支払ったものに限られます。"
+    },
+    {
+      "id": "sol-a698a1db0711e51b",
+      "text": "地震等損害は地震・噴火又はこれらによる津波を直接又は間接原因とする火災、損壊、埋没、流失による損害である。",
+      "numbers": [],
+      "where": [
+        "本文引用",
+        "FAQ『火災保険』"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "   ２\u0007 「地震等損害」とは、地震若しくは噴火又はこれらによる津波を直接又\n    は間接の原因とする火災、損壊、埋没又は流出による損害をいいます（所\n    法77①）。\n   ３\u0007 「損害保険契約等」とは、次のロに掲げる契約に附帯して締結されるも\n    の又はその契約と一体となって効力を有する一の保険契約若しくは共済に\n    係る契約をいいます（所法77②）。\n   ４\u0007 「地震保険料」とは、地震等損害により保険又は共済の目的とする資産\n    について生じた損失の額を塡補する保険金又は共済金が支払われる損害保\n    険契約等に係る地震等損害部分の保険料等（次のハに掲げる保険料等を除\n    きます。）をいいます（所法77①）。\n   ５\u0007 剰余金の分配や割戻金の割戻しを受けたり、その剰余金や割戻金を保険\n    料の払込みに充てたりした場合には、その年中に支払った保険料の合計額\n    からその支払を受けたり払込みに充てたりした剰余金や割戻金の合計額を",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c28"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c28": "99aa86fea92a81309b66d746b57fab5e4ac0f83e681b682897ce6faa00708a72"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1869-1881",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "「地震等損害」とは、地震若しくは噴火又はこれらによる津波を直接又は間接の原因とする火災、損壊、埋没又は流出による損害をいいます。"
+    },
+    {
+      "id": "sol-66216a27375bc8ca",
+      "text": "所得税の旧長期損害保険料の経過措置は適用することができる任意規定である。",
+      "numbers": [],
+      "where": [
+        "本文『旧長期の経過措置』表・説明"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "【経過措置】\n○       所得者が、平成19年分以後の各年において、平成18年12月31日までに締\n 結した長期損害保険契約等（注）に係る保険料等（以下「旧長期損害保険料」\n    といいます。）を支払った場合には、上記⑿イにかかわらず、支払った地\n    震保険料等（地震保険料控除の対象となる地震保険料及び旧長期損害保険\n    料）の区分に応じて次により計算した金額とすることができます（平18改\n    正法附則10②）。\n        支払った保険料\n                          保   険   料   等   の   金    額         控   除   額\n        等の区分\n\n        地震保険料等の\n        全てが地震保険",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c29"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c29": "9128941d5b9e12536e10e145966ea384b453626a6e80d9584df9cfc38950ab45"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1943-1955",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "旧長期損害保険料…を支払った場合には…区分に応じて次により計算した金額とすることができます。"
+    },
+    {
+      "id": "sol-c151df934931acb3",
+      "text": "火災だけを補償する部分の保険料は地震保険料控除の対象外である。",
+      "numbers": [],
+      "where": [
+        "本文導入",
+        "図",
+        "本文『間違えやすい点』",
+        "FAQ",
+        "JSON-LD"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "   ４\u0007 「地震保険料」とは、地震等損害により保険又は共済の目的とする資産\n    について生じた損失の額を塡補する保険金又は共済金が支払われる損害保\n    険契約等に係る地震等損害部分の保険料等（次のハに掲げる保険料等を除\n    きます。）をいいます（所法77①）。\n   ５\u0007 剰余金の分配や割戻金の割戻しを受けたり、その剰余金や割戻金を保険\n    料の払込みに充てたりした場合には、その年中に支払った保険料の合計額\n    からその支払を受けたり払込みに充てたりした剰余金や割戻金の合計額を\n    控除した残額が、「支払った地震保険料の金額」になります（所法77①）。\n\n ロ    地震保険料控除の対象となる保険料等\n      地震保険料控除の対象となる保険料等は、次に掲げる損害保険契約\n    等に基づいて支払った地震等損害部分の保険料等をいいます（所法77\n    ②、所令214、平18財務省告示第139号（最終改正平30財務省告示第",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c30"
+      ],
+      "import_inputs": {
+        "t1/t09/docs/column/jishin-hokenryo-kojo/index.html/p4-c30": "c7fb7049caae641c07df7a8a28b83e32b76c04180569f09d667a7c087d2d23d7"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1875-1887",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "「地震保険料」とは…損害保険契約等に係る地震等損害部分の保険料等…をいいます。"
     }
   ],
   "checked": "2026-09-29",

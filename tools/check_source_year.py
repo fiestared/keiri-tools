@@ -30,6 +30,8 @@ mt-tax.com は改正が決まった直後の **2026-04-23** に防衛特別所�
 import argparse
 import json
 import os
+import re
+from fetch_corpus import decode_html
 import ssl
 import sys
 import urllib.error
@@ -76,7 +78,8 @@ def probe(url: str, expect: str, timeout: int = 20, kind: str = "year_templated"
       year_templated … 年度ごとに別URLが生える型。そのURLで200が返って
                        ラベルが無いなら**別ページを掴んだ疑い**＝unknown（要調査）。
       in_place       … 同じURLの中身が毎年差し替わる型（厚労省の全国一覧など）。
-                       200でラベルが無いのは**まだ差し替わっていない**＝absent（未公表）。
+                       200で翌年ラベルが無く、別年度のラベルが残るなら absent（未公表）。
+                       年度ラベル自体が無い場合は移転等の疑いで unknown。
                        ここを unknown にすると毎回「確認不能・URLを調べろ」と鳴り続け、
                        本当に調査が要る登録に紛れて読まれなくなる。
     """
@@ -86,23 +89,26 @@ def probe(url: str, expect: str, timeout: int = 20, kind: str = "year_templated"
         with opener.open(req, timeout=timeout) as r:
             if r.status != 200:
                 return "absent", f"HTTP {r.status}（未公表）"
-            raw = r.read(200_000)
-            enc = "cp932"
-            head = raw[:2048].decode("ascii", "ignore").lower()
-            if "utf-8" in head:
-                enc = "utf-8"
-            text = norm_digits(raw.decode(enc, "replace"))
-            expect = norm_digits(expect)
+            raw = r.read()
+            decoded, enc = decode_html(raw, r.headers.get('Content-Type', '') if hasattr(r, 'headers') else '')
+            # Inspect visible text, never script/comment metadata containing a future label.
+            from fetch_corpus import Text
+            parser = Text(); parser.feed(decoded)
+            text = norm_digits(''.join(parser.parts))
+            text = re.sub(r'\s+', '', text)
+            expect = re.sub(r"\s+", "", norm_digits(expect))
             if expect in text:
                 return "found", f"HTTP 200 / 本文に「{expect}」あり"
             if kind == "in_place":
+                if not re.search(r'令和[0-9]+年', text):
+                    return "unknown", "HTTP 200 だが年度ラベルが無い（監視先の移転・内容変更の可能性）"
                 return "absent", f"HTTP 200 だが本文に「{expect}」が無い（同じURLがまだ差し替わっていない＝未公表）"
             return "unknown", f"HTTP 200 だが本文に「{expect}」が無い（別ページの可能性）"
     except urllib.error.HTTPError as e:
         if e.code in (301, 302, 303, 307, 308):
-            return "absent", f"HTTP {e.code}（リダイレクト＝未公表）"
+            return ("unknown" if kind == "in_place" else "absent"), f"HTTP {e.code}（リダイレクト。固定URLなら移転確認が必要）"
         if e.code == 404:
-            return "absent", "HTTP 404（未公表）"
+            return ("unknown" if kind == "in_place" else "absent"), "HTTP 404（固定URLなら移転確認が必要）"
         return "unknown", f"HTTP {e.code}"
     except Exception as e:  # 通信失敗を「未公表」に混ぜない
         return "unknown", f"{type(e).__name__}: {e}"
@@ -120,10 +126,11 @@ def source_url(pattern: str, year: int) -> str:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--json", action="store_true")
+    ap.add_argument("--registry", default=REGISTRY)
     ap.add_argument("--slug", help="この slug だけ見る")
     args = ap.parse_args()
 
-    reg = json.load(open(REGISTRY, encoding="utf-8"))
+    reg = json.load(open(args.registry, encoding="utf-8"))
     entries = reg["entries"]
     if args.slug:
         entries = [e for e in entries if e["slug"] == args.slug]

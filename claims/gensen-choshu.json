@@ -73,7 +73,13 @@
       "source_quote": "（設例４）\nイ    給与の支給額（月額）83,900円       ロ \u0007給与から控除する社会保\n                               険料等なし\n\n    （説明）\n    ①    給与から控除する社会保険料等がありませんので、支給額\n        83,900円がそのまま社会保険料等控除後の給与等の金額になりま\n        す。\n    ②    月額表の「その月の社会保険料等控除後の給与等の金額」欄で、\n        83,900円が含まれている「105,000円未満」の行を求め、その行と\n     「乙」欄との交わるところをみると、「その月の社会保険料等控除\n        後の給与等の金額の3.063％に相当する金額」となっていますから、\n        2,569円（83,900円×3.063％）が、その求める税額です。",
       "supporting_sources": [],
       "exceptions": "正本設例4は83,900円×3.063%=2,569円。税額表にも掛け算があり、式がないとの断定を修正。core税額は変更不要。",
-      "adjudication": "t03-F3"
+      "adjudication": "t03-F3",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c02"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c02": "6735d52cbe6e347d654e649fcc478d512cf19e789fab1f3075b3fe0d12ad98ad"
+      }
     },
     {
       "id": "t03-F4",
@@ -84,7 +90,13 @@
       "source_quote": "その報酬・料金等の支払者が個人であって、その個人が給与の支払者でないと\nき又は給与の支払者であっても常時２人以下の家事使用人のみに対する給与の\n支払者であるときは、６の表（186ページ）のホステス、バンケットホステス等に\n支払う報酬・料金を除き、源泉徴収をする必要はありません（所法184、204②二）",
       "supporting_sources": [],
       "exceptions": "報酬の種類だけでなく支払者側の例外がある。計算式の誤りではなく適用範囲の説明として修正。",
-      "adjudication": "t03-F4"
+      "adjudication": "t03-F4",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c16"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c16": "b213b367d04e0a997790315a13828b7cefc4a541d3cba473bde1416220c3bd5a"
+      }
     },
     {
       "id": "t1-added-context",
@@ -123,6 +135,813 @@
       "where": [
         "<!--rel:S-->〜<!--rel:E-->"
       ]
+    },
+    {
+      "id": "sol-f48e14a582d7ac8d",
+      "text": "計算機は令和8年分の給与月額表（甲欄・乙欄）、賞与算出率表、報酬10.21%に対応",
+      "numbers": [
+        "令和8年分",
+        "10.21%"
+      ],
+      "where": [
+        "title/meta/JSON-LD",
+        "hero161",
+        "tabs167-169"
+      ],
+      "applies": "2026年",
+      "applies_period": {
+        "years": [
+          2026
+        ],
+        "axis": "explicit_claim_year",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "    月額表、日額表を使用した税額の求め方を設例によって説明します。\n    設例に基づく税額計算は、\n               「令和８年分 源泉徴収税額表」によってい\nます。\n    なお、税額表の「以上」の欄はその欄に記入されている数字を含み、\n                                  「未\n 満」の欄はその数字を含まないことにご注意ください。\n     また、給与等の支払の際控除される社会保険料（49ページ参照）又は小\n 規模企業共済等掛金（50ページ参照）がある場合には、その給与等の金額\n からその社会保険料の金額とその小規模企業共済等掛金の金額との合計\n 額を控除した残額に相当する金額の給与等の支払があったものとみなし\n て、源泉徴収税額の計算をすることとされています（所法188）。以下、\n 社会保険料と小規模企業共済等掛金とを併せて「社会保険料等」といい\n ます。\n イ      月額表を適用する場合の税額の求め方\n    イ 「給与所得者の扶養控除等申告書」を提出している人の場合\n        ①    まず、社会保険料等控除後の給与等の金額を計算します。\n        ②    ①により求めた金額に応じて、月額表の「その月の社会保険料\n            等控除後の給与等の金額」欄の当てはまる行を求めます。その行\n            と「甲」欄の「扶養親族等の数」欄の該当する人数の欄との交わ\n            るところに記載されている金額が、その求める税額です。",
+      "supporting_sources": [
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+          "quote": "２    賞与に対する源泉徴収\n ⑴      税額表等の適用区分\n         賞与に対する源泉徴収税額は、一般の場合には、「賞与に対する源泉\n     徴収税額の算出率の表」（以下「算出率表」といいます。）を使って求め\n     ますが、月額表を使って求める場合もあります。その区分を表であらわ\n     しますと、次のようになります。\n         なお、日額表の丙欄適用者に支払われる臨時手当等については、「算\n     出率表」を使用せず、原則として、その支払を受ける日の通常の日雇賃\n     金と合計して源泉徴収税額を計算します。",
+          "corpus_ref": "t1/corpus/gensen/04.txt:3587-3595",
+          "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3"
+        }
+      ],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c01"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c01": "0d5dab007a156a462887074034ba59b6492f9f35ae9ce605e3c5718641490faa"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3182-3202",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "『令和８年分 源泉徴収税額表』…月額表…賞与に対する源泉徴収税額の算出率の表"
+    },
+    {
+      "id": "sol-5b39190db893a87d",
+      "text": "月額表は社会保険料等控除後給与と扶養親族等数で引く",
+      "numbers": [],
+      "where": [
+        "入力174-179",
+        "本文319-323",
+        "FAQ/JSON-LD385-386"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "     また、給与等の支払の際控除される社会保険料（49ページ参照）又は小\n 規模企業共済等掛金（50ページ参照）がある場合には、その給与等の金額\n からその社会保険料の金額とその小規模企業共済等掛金の金額との合計\n 額を控除した残額に相当する金額の給与等の支払があったものとみなし\n て、源泉徴収税額の計算をすることとされています（所法188）。以下、\n 社会保険料と小規模企業共済等掛金とを併せて「社会保険料等」といい\n ます。\n イ      月額表を適用する場合の税額の求め方\n    イ 「給与所得者の扶養控除等申告書」を提出している人の場合\n        ①    まず、社会保険料等控除後の給与等の金額を計算します。\n        ②    ①により求めた金額に応じて、月額表の「その月の社会保険料\n            等控除後の給与等の金額」欄の当てはまる行を求めます。その行\n            と「甲」欄の「扶養親族等の数」欄の該当する人数の欄との交わ\n            るところに記載されている金額が、その求める税額です。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c03"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c03": "924dcda180d51233ed2d4af90ba0c9ba34eec0d4058f9af07ddf3433cabdc81c"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3189-3202",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "給与等の金額からその社会保険料の金額とその小規模企業共済等掛金の金額との合計額を控除した残額…月額表…扶養親族等の数"
+    },
+    {
+      "id": "sol-ee11819f631366f0",
+      "text": "扶養控除等申告書提出ありは甲欄、なしは乙欄",
+      "numbers": [],
+      "where": [
+        "UI182-186",
+        "本文316-317",
+        "FAQ/JSON-LD379-380"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": " イ      月額表を適用する場合の税額の求め方\n    イ 「給与所得者の扶養控除等申告書」を提出している人の場合\n        ①    まず、社会保険料等控除後の給与等の金額を計算します。\n        ②    ①により求めた金額に応じて、月額表の「その月の社会保険料\n            等控除後の給与等の金額」欄の当てはまる行を求めます。その行\n            と「甲」欄の「扶養親族等の数」欄の該当する人数の欄との交わ\n            るところに記載されている金額が、その求める税額です。",
+      "supporting_sources": [
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+          "quote": " ロ 「給与所得者の扶養控除等申告書」を提出していない人の場合\n    ①    まず、社会保険料等控除後の給与等の金額を計算します。\n    ②    ①により求めた金額に応じて、月額表の「その月の社会保険料\n        等控除後の給与等の金額」欄の当てはまる行を求めます。その行\n        と「乙」欄との交わるところに記載されている金額が、その求め\n        る税額です。",
+          "corpus_ref": "t1/corpus/gensen/04.txt:3257-3262",
+          "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3"
+        }
+      ],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c04"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c04": "03f25f618e7ff1c471d9432362350ca4ac71da30c87f5ffa30edbaa7892897c8"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3196-3202",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "『給与所得者の扶養控除等申告書』を提出している人の場合…『甲』欄…提出していない人の場合…『乙』欄"
+    },
+    {
+      "id": "sol-432c8ea4a7dd0fe1",
+      "text": "扶養親族等数は源泉控除対象配偶者と源泉控除対象親族の合計で、19～22歳の所得100万円以下の特定親族を含む",
+      "numbers": [
+        "100万円",
+        "22歳"
+      ],
+      "where": [
+        "UI191,255",
+        "本文325-326"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "（注）１\u0007 「源泉控除対象配偶者」とは、所得者（合計所得金額が900万円以下であ\n    る人に限ります。）と生計を一にする配偶者（青色事業専従者として給与の\n    支払を受ける人及び白色事業専従者に該当する人を除きます。）で合計所得\n    金額が95万円以下の人をいいます。\n   ２\u0007 「源泉控除対象親族」とは、控除対象扶養親族及び所得者と生計を一にす\n    る次に掲げる人（青色事業専従者として給与の支払を受ける人及び白色事\n    業専従者に該当する人を除きます。）のうち年齢19歳以上23歳未満の人で合\n    計所得金額が100万円以下の人（控除対象扶養親族に該当する人を除きま\n    す。）をいいます。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c05"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c05": "caf2278a7e828cbf47e3e22a211e604df142f9cd2b718f3fc5f37f5f3f128bc3"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:2544-2552",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "源泉控除対象配偶者…合計所得金額が95万円以下…源泉控除対象親族…年齢19歳以上23歳未満…合計所得金額が100万円以下"
+    },
+    {
+      "id": "sol-2a3a83bc6d477947",
+      "text": "16歳未満は基本人数に入れないが、本人の障害者等は1人加算し、16歳未満を含む同一生計配偶者・扶養親族の障害者等も加算する",
+      "numbers": [
+        "16歳",
+        "1人"
+      ],
+      "where": [
+        "JSON-LD79-82",
+        "UI191-204",
+        "本文325-326",
+        "FAQ381-382"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "                           〈事例７〉                            「扶養親族等の数」は、源泉控除対\n                           イ\u0007 源泉控除対象配偶者あ 甲欄の 象配偶者と源泉控除対象親族との合計\n                            り                        ４人欄 数に、本人が障害者（特別障害者を含\n                           ロ    源泉控除対象親族２人                  みます。）、寡婦、ひとり親又は勤労学\n                           ハ    本人が障害者に該当                   生に該当する場合には、その該当する\n                                                            数を加えることになっていますから、\n                                        配\n                                                            障害者の１人を加え、甲欄の４人の欄\n                                障       源                   を使用します。",
+      "supporting_sources": [
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+          "quote": "                           〈事例９〉                             年齢16歳未満の扶養親族の人数は、\n                           イ\u0007 源泉控除対象配偶者あ 甲欄の 扶養親族等の数には加えませんが、そ\n                            り                         ２人欄 の扶養親族が障害者（特別障害者を含\n                           ロ       扶養親族（年齢16歳未              みます。）に該当する場合には、障害\n                               満）１人、障害者に該当                  者の１人を加えることになっています\n                                                            ので、甲欄の２人の欄を使用します。\n                                □    配\n                                     扶      障",
+          "corpus_ref": "t1/corpus/gensen/04.txt:3080-3087",
+          "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3"
+        }
+      ],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c06"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c06": "47e6919e907b509b2c70cc148afac3ee5c5a96052c287811075df7d28f05d66a"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3041-3049",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "本人が障害者…その該当する数を加える…年齢16歳未満の扶養親族の人数は…加えませんが、その扶養親族が障害者…の場合には、障害者の１人を加える"
+    },
+    {
+      "id": "sol-9c9c7f6c83462b2f",
+      "text": "月額表で扶養親族等7人超は1人につき1,610円控除、従たる給与申告書でも1人1,610円控除",
+      "numbers": [
+        "1,610円",
+        "7人",
+        "1人"
+      ],
+      "where": [
+        "本文326",
+        "UI209-211"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "    ②    ①により求めた金額に応じて、月額表の「その月の社会保険料\n        等控除後の給与等の金額」欄の当てはまる行を求めます。その行\n        と「乙」欄との交わるところに記載されている金額を求めます。\n    ③    ②により求めた金額から「従たる給与についての扶養控除等申\n        告書」により申告されている扶養親族等の数に応じ、扶養親族等\n        １人につき1,610円を控除した金額が、その求める税額です。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c07"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c07": "eeb115b409e922c56b908a070f4c7a0cac8712f0241be1aa9e97d6b91c97b0d7"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3280-3285",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "扶養親族等１人につき1,610円を控除"
+    },
+    {
+      "id": "sol-8e2a71a41a50cc45",
+      "text": "月額表と電算機計算特例の税額は必ずしも一致せず年末調整で精算される",
+      "numbers": [],
+      "where": [
+        "JSON-LD87-90",
+        "本文328-329",
+        "FAQ383-384"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/16.pdf",
+      "source_quote": "   める税額とします。\n ⑶   税額計算の特例により求めた税額と税額表による税額との差異\n      税額計算の特例により求めた税額は、次に掲げるような理由から税額\n  表による税額とは必ずしも一致しませんが、その差異は年末調整におい\n  て精算されることになります。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c08"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c08": "a75194e849eee1a28e37a7c8a93476023d57b0585d4d4aeff65418fb827e97eb"
+      },
+      "corpus_ref": "t1/corpus/gensen/16.txt:100-104",
+      "source_text_sha256": "754951f52df19dfef97c5c27dc58ecbc304454ee2df6801f9080f4f15124b077",
+      "review_result": "sol_ok",
+      "sol_quote": "税額表による税額とは必ずしも一致しませんが、その差異は年末調整において精算"
+    },
+    {
+      "id": "sol-b9fe058acc5c9f27",
+      "text": "賞与は原則、前月の社会保険料等控除後給与と扶養人数で算出率を引き、社会保険料等控除後賞与に率を掛ける",
+      "numbers": [],
+      "where": [
+        "UI220-276",
+        "hero161"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "     イ      前月中に賞与以外の普通給与の支払がある人に支払う賞与（前月中\n        の普通給与の10倍を超える賞与を除きます。）\n\n                                     −93−\n\f イ 「給与所得者の扶養控除等申告書」を提出している人の場合\n    ①    まず、算出率表の甲欄により、その人の前月中の社会保険料等\n        控除後の給与等の金額と扶養親族等の数とに応じて「賞与の金額\n        に乗ずべき率」欄に記載されている率を求めます。\n    ②    社会保険料等控除後の賞与の金額に①により求めた率を乗じま\n        す。これが、その賞与に対する源泉徴収税額になります。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c10"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c10": "bda8f545d9c05a3a541e32119750f09d2e1747ebb192ef16969908d053e531d8"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3613-3622",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "前月中の社会保険料等控除後の給与等の金額と扶養親族等の数とに応じて…率…社会保険料等控除後の賞与の金額に…率を乗じます。"
+    },
+    {
+      "id": "sol-103783da0547574b",
+      "text": "前月給与なし又は賞与が前月給与の10倍超なら賞与算出率表でなく月額表による例外計算",
+      "numbers": [
+        "10倍"
+      ],
+      "where": [
+        "UI234-276"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "２    賞与に対する源泉徴収\n ⑴      税額表等の適用区分\n         賞与に対する源泉徴収税額は、一般の場合には、「賞与に対する源泉\n     徴収税額の算出率の表」（以下「算出率表」といいます。）を使って求め\n     ますが、月額表を使って求める場合もあります。その区分を表であらわ\n     しますと、次のようになります。\n         なお、日額表の丙欄適用者に支払われる臨時手当等については、「算\n     出率表」を使用せず、原則として、その支払を受ける日の通常の日雇賃\n     金と合計して源泉徴収税額を計算します。\n\n                                                      給与所得者の扶\n                                             使用する             使 用\n            賞    与   の   支   給   区   分                養控除等申告書\n                                             税 額 表            する欄\n                                                      の提出の有無\n\n    ①\u0007 前月中に賞与以外の普通給与の支払があ                             提   出   あ   り 甲   欄\n     る人に支払う賞与（前月中の普通給与の10 算出率表\n     倍を超える賞与を除きます。）                                   提   出   な   し 乙   欄\n\n    ②\u0007 前月中に賞与以外の普通給与の支払がな                             提   出   あ   り 甲   欄\n     い人に支払う賞与                                月 額 表\n    ③ 前月中の普通給与の10倍を超える賞与                              提   出   な   し 乙   欄\n",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c11"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c11": "c135334eaa4757b1a303dda6e3c962f07eca2f6ee3dafa5a6925fe9c831ff0bd"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3587-3610",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "前月中に賞与以外の普通給与の支払がない…前月中の普通給与の10倍を超える賞与…月額表"
+    },
+    {
+      "id": "sol-dc7bb8a7b758f0a4",
+      "text": "一般報酬は100万円以下10.21%、超過部分20.42%+102,100円、1円未満切捨て",
+      "numbers": [
+        "102,100円",
+        "100万円",
+        "10.21%",
+        "20.42%"
+      ],
+      "where": [
+        "title/meta/JSON-LD103-106",
+        "表335-341",
+        "FAQ387-388"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/07.pdf",
+      "source_quote": "原稿の報 ⑴     原稿料           左の報酬・料金 ⑴ 懸賞応募作品の選稿\n酬    ⑵     演劇、演芸の台本の   の額×10.21％       料又は審査料\n          報酬             ただし、同一人 ⑵ 試験問題の出題料又\n         ⑶ 口述の報酬       に対し１回に支払        は各種答案の採点料\n         ⑷ 映画のシノプス（筋   わ れ る 金 額 が100 ⑶ クイズ等の問題又は\n          書）料          万円を超える場合        解答の投書に対する賞\n         ⑸ 文、詩、歌、標語等   には、その超える        金等\n          の懸賞の入賞金      部分については、 （注\u0007）広告宣伝のための\n         ⑹ 書籍等の編さん料又   20.42％            賞金に該当するもの",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c12"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c12": "0ba5334f60f364638afa7eb9b0c51ebeb790c05d91c241cb93cdf784815f7820"
+      },
+      "corpus_ref": "t1/corpus/gensen/07.txt:52-60",
+      "source_text_sha256": "437244e3c45167477e6deca2f68827ef71704dc7925e1c180281cc3043d7125c",
+      "review_result": "sol_ok",
+      "sol_quote": "報酬・料金の額×10.21％ ただし、同一人に対し１回に支払われる金額が100万円を超える場合には、その超える部分については、20.42％"
+    },
+    {
+      "id": "sol-adf111280ede0318",
+      "text": "10.21%は所得税10%+復興特別所得税0.21%",
+      "numbers": [
+        "10.21%",
+        "10%",
+        "0.21%"
+      ],
+      "where": [
+        "本文341"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/03.pdf",
+      "source_quote": "           特定受益証券発行信託の収益の分配\n 外国法人    ⑺\u0007 国内において業務を行う者に対するその国内業務に係る貸\n 内国法人以     付金の利子\n 外の法人を\n いいます。   ⑻\u0007 国内において業務を行う者から受けるその国内業務に係る\n           工業所有権、著作権等の使用料若しくは譲渡による対価又は\n（所法２①七）\n           機械、装置等の使用料\n         ⑼\u0007 ①給与その他人的役務の提供に対する報酬のうち、国内に\n           おいて行う勤務等に基因するもの、②公的年金等のうち一定\n           のもの、③退職手当等のうち受給者が居住者であった期間に\n           行った勤務等に基因するもの（非居住者のみ）\n         ⑽ 国内において行う事業の広告宣伝のための賞金品\n         ⑾\u0007 国内にある営業所等を通じて保険業法に規定する生命保険",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c13"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c13": "65e83c04179d1d4e9f73d176454c10a06f4c57289580b7c3e98c2ae1cda649f8"
+      },
+      "corpus_ref": "t1/corpus/gensen/03.txt:281-294",
+      "source_text_sha256": "92eb9ba0670deb729607e1f4b84022b3efafdcbd908eefdcd2949c0f806ae082",
+      "review_result": "sol_ok",
+      "sol_quote": "所得税率10％の場合…所得税率（％）10…合計税率（％）10.21"
+    },
+    {
+      "id": "sol-979df7661f283073",
+      "text": "消費税込額が原則対象だが請求書で報酬と消費税を明確区分すれば税抜報酬のみでよい",
+      "numbers": [],
+      "where": [
+        "UI289-296",
+        "JSON-LD111-114",
+        "本文343-350",
+        "FAQ389-390"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/07.pdf",
+      "source_quote": "（注）１ 報酬・料金等の金額の中に消費税及び地方消費税の額が含まれている場合で\n    あっても、消費税及び地方消費税の額を含めた金額が源泉徴収の対象となる報\n    酬・料金等の金額となります。ただし、報酬・料金等の支払を受ける者からの\n    請求書等において報酬・料金等の額と消費税及び地方消費税の額とが明確に区\n    分されている場合には、その報酬・料金等の額のみを源泉徴収の対象とする金\n    額として差し支えありません（平元直法６−１（最終改正平26課法９－１））。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c14"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c14": "138e7a120fe8ee72e87bc5a1e601ccca65644f98357d3eab1c56f90925467046"
+      },
+      "corpus_ref": "t1/corpus/gensen/07.txt:29-34",
+      "source_text_sha256": "437244e3c45167477e6deca2f68827ef71704dc7925e1c180281cc3043d7125c",
+      "review_result": "sol_ok",
+      "sol_quote": "消費税及び地方消費税の額を含めた金額…ただし…報酬・料金等の額と消費税…が明確に区分…報酬・料金等の額のみ"
+    },
+    {
+      "id": "sol-45f62269521d2ffc",
+      "text": "司法書士・土地家屋調査士・海事代理士は1回の支払額から1万円控除後に10.21%",
+      "numbers": [
+        "1万円",
+        "10.21%"
+      ],
+      "where": [
+        "JSON-LD119-122",
+        "本文352-354",
+        "FAQ391-392"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/07.pdf",
+      "source_quote": "司法書士     裁判所、検察庁、法務局 （左の報酬・料金\nの業務に     又は地方法務局に提出す の額−１回の支払\n関する報     る書類の作成その他の業 につき１万円）×\n酬・料金     務に関する報酬・料金  10.21％\n土地家屋     不動産の表示に関する登 同上\n調査士の     記につき必要な土地又は\n業務に関     家屋に関する調査、測量\nする報酬     又は官公庁に対する申請\n・料金      手続その他の業務に関す\n         る報酬・料金\n\n\n\n\n                    −175−\n\f        左の報酬・料金に該当す                   左の報酬・料金に類似す\n区   分                    源泉徴収税額\n        るもの                           るが該当しないもの\n海事代理    船舶法、船舶安全法、船 同上\n士の業務    員法、海上運送法又は港\nに関する    湾運送事業法の規定に基\n報酬・料    づく申請、届出、登記そ\n金       の他の手続又はこれらの\n        手続に関する書類の作成\n        その他の業務に関する報",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c15"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c15": "5508d397e4dc35fc9c7e5ce6c32fb178ca501b6e01eab19f09549506a33187aa"
+      },
+      "corpus_ref": "t1/corpus/gensen/07.txt:299-323",
+      "source_text_sha256": "437244e3c45167477e6deca2f68827ef71704dc7925e1c180281cc3043d7125c",
+      "review_result": "sol_ok",
+      "sol_quote": "（左の報酬・料金の額−１回の支払につき１万円）×10.21％…土地家屋調査士…海事代理士…同上"
+    },
+    {
+      "id": "sol-6b1fda709d6f82f4",
+      "text": "行政書士の一般的業務は対象外だが建築代理士業務等は別判定",
+      "numbers": [],
+      "where": [
+        "本文359"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/07.pdf",
+      "source_quote": "       る事務を行ったことに            関する報酬・料金と建築\n       対して支払う報酬・料            の対価とに区分し、建築\n       金                     士の業務に関する報酬・\n      ⑷ 建築物に関する調査又は鑑定を行ったこ 料金について源泉徴収を\n       とに対して支払う報酬・料金         行うのが建前ですが、建\n      ⑸ 建築に関する法令又は条例に基づく手続 築 士 の 業 務 に 関 す る 報\n       の代理を行ったことに対して支払う報酬・ 酬・料金の部分が極めて\n       料金                    少額であると認められる\n      （注）1\u0007 個人の建築業者等で建築士の資格を ときは、源泉徴収をしな\n          有しない人が建築士の資格を有する使 くて差し支えありません。\n          用人を雇用している場合に、その建築\n          業者等に支払われるこれらの業務に関\n          する報酬・料金も源泉徴収の対象とさ",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c17"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c17": "333dc2d28b64e756580f8ad11c943180c69c32e4b872b93062fe645e33327e07"
+      },
+      "corpus_ref": "t1/corpus/gensen/07.txt:345-357",
+      "source_text_sha256": "437244e3c45167477e6deca2f68827ef71704dc7925e1c180281cc3043d7125c",
+      "review_result": "sol_ok",
+      "sol_quote": "行政書士の資格を有する人の行う業務に関する報酬・料金は…源泉徴収の対象とはなりません。ただし…建築代理士の業務…源泉徴収の対象"
+    },
+    {
+      "id": "sol-33efa5b349956876",
+      "text": "源泉税は原則翌月10日納付、納期特例は1～6月分7月10日・7～12月分翌年1月20日で原稿料等は対象外",
+      "numbers": [
+        "7月10日",
+        "1月20日",
+        "10日"
+      ],
+      "where": [
+        "本文366-367"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/03.pdf",
+      "source_quote": " 国内に本店\n 又は主たる       ２\u0007 配当等（居住者の場合の範囲に同じ）（所法174二、212③、\n 事務所を有        措法８の２③、８の３②③、９の２①②、９の３の２①）\n する法人を\n いいます。       ３    定期積金の給付補塡金等（所法174三〜八、212③）\n（所法２①六）\n             ４    匿名組合契約等に基づく利益の分配（所法174九、212③）\n\n\n\n\n                            −6−\n\f 支 払 を          源泉徴収の対象とされている所得の種類と範囲\n 受ける者\n 内国法人     ５   馬主が受ける競馬の賞金（所法174十、212③）\n 国内に本店    ６   懸賞金付預貯金等の懸賞金等（措法41の９）\n 又は主たる\n 事務所を有    ７   割引債の償還差益（措法41の12）\n する法人を\n いいます。    ８\u0007 割引債の償還金に係る差益金額（一定の内国法人に限りま\n（所法２①六）    す。）（措法41の12の２）\n\n        １\u0007 次に掲げる国内源泉所得（所法161①四〜十六、212①②⑤、\n         措法９の３の２①、37の11の６⑥、41の22）\n         ⑴\u0007 恒久的施設を通じて行う組合契約事業（注）から生ずる利益\n           の配分\n          （注）\u0007「組合契約事業」とは、所得税法第161条第１項第４号に\n              規定する組合契約に基づいて行う事業をいいます。\n         ⑵ 国内にある土地等の譲渡による対価\n         ⑶\u0007 国内において人的役務の提供事業を行う者が受けるその役\n           務提供の対価\n         ⑷\u0007 国内にある不動産、船舶、航空機などの貸付けの対価及び\n           地上権などの設定の対価\n 非居住者\n         ⑸ 国内にある営業所等に預け入れられた預貯金の利子等\n 居住者以外   ⑹\u0007 ①内国法人から受ける所得税法第24条第１項に規定する剰",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c18"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c18": "6015b69a0865f4271eb4ff69a4618af4fd1f255b30f9d7132c3295116739bb4e"
+      },
+      "corpus_ref": "t1/corpus/gensen/03.txt:240-275",
+      "source_text_sha256": "92eb9ba0670deb729607e1f4b84022b3efafdcbd908eefdcd2949c0f806ae082",
+      "review_result": "sol_ok",
+      "sol_quote": "徴収の日の属する月の翌月10日まで…１月から６月まで…７月10日まで…７月から12月まで…翌年１月20日まで"
+    },
+    {
+      "id": "sol-3a75919d28a2078e",
+      "text": "社会保険診療報酬支払基金の診療報酬は月20万円超部分に10.21%",
+      "numbers": [
+        "20万円",
+        "10.21%"
+      ],
+      "where": [
+        "報酬種類UI/asset gensen_core.js"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/07.pdf",
+      "source_quote": "\f３   第204条第１項第３号の診療報酬\n                       （所法205、所令322、所基通204−19）\n         左の報酬・料金に該当す            左の報酬・料金に類似す\n区    分                 源泉徴収税額\n         るもの                    るが該当しないもの\n診療報酬 社会保険診療報酬支払基 （左の診療報酬の ⑴ 健康保険組合又は国\n     金法の規定により社会保 額−その月分とし    民健康保険組合等が直\n     険診療報酬支払基金が支 て支払われる金額    接支払う診療報酬\n     払う診療報酬       につき20万円）× ⑵ 福祉事務所が支払う\n     （注\u0007）社会保険診療報酬 10.21％     生活保護法の規定によ",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c19"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c19": "f9bf540235dceed923e1513242315a48c874c753c1371499cbebfbf4acf1641e"
+      },
+      "corpus_ref": "t1/corpus/gensen/07.txt:458-467",
+      "source_text_sha256": "437244e3c45167477e6deca2f68827ef71704dc7925e1c180281cc3043d7125c",
+      "review_result": "sol_ok",
+      "sol_quote": "（左の診療報酬の額−その月分として支払われる金額につき20万円）×10.21％"
+    },
+    {
+      "id": "sol-591757a7e723b3e4",
+      "text": "給与設例1：社保控除後213,067円・甲欄扶養1人の税額3,230円をcoreが返す",
+      "numbers": [
+        "213,067円",
+        "3,230円",
+        "1人"
+      ],
+      "where": [
+        "core実行 M1"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "\f（設例１）\nイ    給与の支給額（月額） 250,400円        ハ   源泉控除対象配偶者あり\nロ    給与から控除する社会保険料等             ニ   源泉控除対象親族なし\n                      37,333円\n\n    （説明）\n    ①    社会保険料等控除後の給与等の金額は、213,067円（250,400円\n        －37,333円）となります。\n    ②    月額表の「その月の社会保険料等控除後の給与等の金額」欄で、\n        213,067円が含まれている「213,000円以上215,000円未満」の行を\n        求め、その行と「甲」欄の「扶養親族等の数」が「１人」の欄と\n        の交わるところに記載されている3,230円が、その求める税額です。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c21"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c21": "e07604002a7f8cb51438fca443a6e7046e0dc3063c5605ea87d226f243a36467"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3208-3219",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "213,067円…『扶養親族等の数』が『１人』…3,230円"
+    },
+    {
+      "id": "sol-a12c3b078f83f9aa",
+      "text": "給与設例2：社保控除後253,101円・甲欄扶養2人の税額2,980円をcoreが返す",
+      "numbers": [
+        "253,101円",
+        "2,980円",
+        "2人"
+      ],
+      "where": [
+        "core実行 M2"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "（設例２）\nイ    給与の支給額（月額） 296,200円        ハ   源泉控除対象配偶者なし\nロ    給与から控除する社会保険料等             ニ   源泉控除対象親族１人\n                      43,099円       （合計所得金額58万円以\n                                    \u0007\n                                    下で障害者に該当）\n\n    （説明）\n    ①    社会保険料等控除後の給与等の金額は、253,101円（296,200円\n     −43,099円）となります。\n    ②    月額表の「その月の社会保険料等控除後の給与等の金額」欄で、\n     253,101円が含まれている「251,000円以上254,000円未満」の行を\n     求め、その行と「甲」欄の「扶養親族等の数」が「２人」の欄と\n     の交わるところに記載されている2,980円が、その求める税額です。\n    （注）\u0007 扶養親族等の数は、源泉控除対象親族の１人に障害者としての１人を\n       加えた２人となります。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c22"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c22": "f1bfea9d4865bc8104b9be3a4de88f54b2b256882127db47269c287c0e99a9a8"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3221-3236",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "253,101円…『扶養親族等の数』が『２人』…2,980円"
+    },
+    {
+      "id": "sol-80d068f5ac03e2ac",
+      "text": "給与設例3：社保控除後230,492円・甲欄扶養4人の税額0円をcoreが返す",
+      "numbers": [
+        "230,492円",
+        "4人"
+      ],
+      "where": [
+        "core実行 M3"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "（設例３）\nイ    給与の支給額（月額） 270,700円        ハ \u0007源泉控除対象親族２人\nロ    給与から控除する社会保険料等                 （うち１人が合計所得金額58\n                                     \u0007\n                      40,208円       万円以下で障害者に該当）\n                                ニ   本人がひとり親に該当\n\n    （説明）\n    ①    社会保険料等控除後の給与等の金額は、230,492円（270,700円\n        −40,208円）となります。\n    ②    月額表の「その月の社会保険料等控除後の給与等の金額」欄で、\n\n                      −84−\n\f        230,492円が含まれている「230,000円以上233,000円未満」の行を\n        求め、その行と「甲」欄の「扶養親族等の数」が「４人」の欄と\n        の交わるところをみると、「０」となっていますから、この例の\n        場合は、源泉徴収をする税額はありません。\n    （注）\u0007 扶養親族等の数は、源泉控除対象親族の２人に障害者としての１人及\n       びひとり親としての１人を加えた４人となります。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c23"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c23": "2dc658dbcf70f9855926f86f5912df39b4a6742f688017153149cadeccec13de"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3238-3256",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "230,492円…『扶養親族等の数』が『４人』…源泉徴収をする税額はありません"
+    },
+    {
+      "id": "sol-ea9eb96087d1272d",
+      "text": "給与設例4・5：83,900円乙欄2,569円、151,600円乙欄従たる扶養2人5,380円をcoreが返す",
+      "numbers": [
+        "83,900円",
+        "2,569円",
+        "151,600円",
+        "5,380円",
+        "2人"
+      ],
+      "where": [
+        "core実行 M4,M5"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "（設例４）\nイ    給与の支給額（月額）83,900円       ロ \u0007給与から控除する社会保\n                               険料等なし\n\n    （説明）\n    ①    給与から控除する社会保険料等がありませんので、支給額\n        83,900円がそのまま社会保険料等控除後の給与等の金額になりま\n        す。\n    ②    月額表の「その月の社会保険料等控除後の給与等の金額」欄で、\n        83,900円が含まれている「105,000円未満」の行を求め、その行と\n     「乙」欄との交わるところをみると、「その月の社会保険料等控除\n        後の給与等の金額の3.063％に相当する金額」となっていますから、\n        2,569円（83,900円×3.063％）が、その求める税額です。\n ハ 「従たる給与についての扶養控除等申告書」を提出している人の\n    場合\n    ①    まず、社会保険料等控除後の給与等の金額を計算します。\n    ②    ①により求めた金額に応じて、月額表の「その月の社会保険料\n        等控除後の給与等の金額」欄の当てはまる行を求めます。その行\n        と「乙」欄との交わるところに記載されている金額を求めます。\n    ③    ②により求めた金額から「従たる給与についての扶養控除等申\n        告書」により申告されている扶養親族等の数に応じ、扶養親族等\n        １人につき1,610円を控除した金額が、その求める税額です。\n\n\n\n\n                     −85−\n\f（設例５）\nイ    給与の支給額（月額） 151,600円        ハ \u0007従たる給与から控除する\nロ    給与から控除する社会保険料等なし               源泉控除対象親族２人\n\n    （説明）\n    ①    給与から控除する社会保険料等がありませんので、支給額\n     151,600円がそのまま社会保険料等控除後の給与等の金額になりま\n     す。\n    ②   月額表の「その月の社会保険料等控除後の給与等の金額」欄で、\n     151,600円が含まれている「151,000円以上153,000円未満」の行を\n     求め、その行と「乙」欄との交わるところに記載されている8,600\n     円を求めます。\n    ③    ②により求めた8,600円から3,220円（1,610円×２人）を控除し\n     た5,380円が、その求める税額です。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c24"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c24": "d4e2c29624d52cc2b6c20715acab1d386385878992cccd0fd417b0bc9964afba"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3264-3304",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "2,569円（83,900円×3.063％）…8,600円から3,220円（1,610円×２人）を控除した5,380円"
+    },
+    {
+      "id": "sol-2b70f6dd6fec2171",
+      "text": "賞与通常設例：甲欄7954円・乙欄36457円をcoreが返す",
+      "numbers": [
+        "7954円",
+        "36457円"
+      ],
+      "where": [
+        "core実行 S1,S3"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "（設例１）\nイ    前月の給与（社会保険料等控除後） ニ 源泉控除対象配偶者あり\n                         285,454円   ホ   源泉控除対象親族２人\nロ    賞与の金額               454,800円\nハ    賞与から控除する社会保険料等\n                          65,242円\n\n    （説明）\n    ①    まず、算出率表の「甲」欄により、\n                        「扶養親族等の数」が「３人」\n        の欄で、前月の社会保険料等控除後の給与等の金額285,454円が含\n        まれている「181千円以上300千円未満」の行を求めます。その行\n        と「賞与の金額に乗ずべき率」欄との交わるところに記載されて\n        いる「2.042％」が、賞与の金額に乗ずる率です。\n    ②    賞与の金額454,800円から社会保険料等65,242円を控除した残額\n        389,558円に2.042％を乗じた金額7,954円（389,558円×2.042％……\n        １円未満切捨て）が、その賞与に対する源泉徴収税額です。",
+      "supporting_sources": [
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+          "quote": "（設例３）\nイ   前月の給与（社会保険料等控除後）                 ハ   \u0007賞与から控除する社\n                        144,022円         会保険料等 59,922円\nロ   賞与の金額               417,000円\n\n    （説明）\n    ①    まず、算出率表の「乙」欄により、前月の社会保険料等控除後\n     の給与等の金額144,022円が含まれている「224千円未満」の行を\n     求めます。その行と「賞与の金額に乗ずべき率」欄との交わると\n     ころに記載されている「10.21％」が、賞与の金額に乗ずる率です。\n    ②    賞与の金額417,000円から社会保険料等59,922円を控除した残額\n     357,078円 に10.21 ％ を 乗 じ た 金 額36,457円（357,078円 ×10.21 ％\n     ……１円未満切捨て）が、その賞与に対する源泉徴収税額です。",
+          "corpus_ref": "t1/corpus/gensen/04.txt:3677-3689",
+          "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3"
+        }
+      ],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c25"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c25": "f2431add231a13a2b5ace11d11e94c3552939d75409ae165bc0f18407e4ff454"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3630-3646",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "389,558円に2.042％…7,954円…357,078円に10.21％…36,457円"
+    },
+    {
+      "id": "sol-0ba13ef9995fd567",
+      "text": "賞与例外設例：前月給与なし7,800円、10倍超87,540円をcoreが返す",
+      "numbers": [
+        "7,800円",
+        "87,540円",
+        "10倍"
+      ],
+      "where": [
+        "core実行 S4,S6"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "（設例４）\nイ   賞与の金額（計算期間は６か月）                 ハ   源泉控除対象配偶者なし\n                         907,800円 ニ     源泉控除対象親族なし\nロ   賞与から控除する社会保険料等\n                         138,500円\n\n    （説明）\n    ①    賞 与907,800円 か ら 社 会 保 険 料 等138,500円 を 控 除 し た 残 額\n        769,300円を６で除すと、128,216円（1円未満切捨て）となります。\n    ②    月額表の甲欄によって、社会保険料等控除後の給与等の金額が\n        128,216円で扶養親族等の数が０人の場合の税額を求めると1,300\n        円となります。\n    ③    ②により求めた税額1,300円を６倍した7,800円が、その賞与に\n        対する源泉徴収税額です。",
+      "supporting_sources": [
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+          "quote": "\f（設例６）\nイ   \u0007前月中の給与の金額（社会保険              ハ \u0007賞与から控除する\n    料等控除後）           166,531円        社会保険料等   254,938円\nロ   賞与の金額（計算期間は６か月）              ニ   源泉控除対象配偶者なし\n                    1,923,000円   ホ   源泉控除対象親族１人\n\n    （説明）\n    ①    賞与の金額1,923,000円から社会保険料等254,938円を控除し、こ\n        れを６で除した金額278,010円（１円未満切捨て）と前月中の社会\n        保険料等控除後の給与等の金額166,531円との合計額444,541円を\n        求めます。\n    ②    月額表の甲欄によって、①により求めた合計額444,541円について\n        扶養親族等の数１人の場合の税額を求めると16,100円になります。\n    ③    月額表の甲欄によって、前月中の社会保険料等控除後の給与等\n        の金額166,531円について扶養親族等の数１人の場合の税額を求め\n        ると、1,510円となります。\n    ④    ②により求めた税額16,100円から③により求めた税額1,510円を\n        控除した残額14,590円を６倍した金額87,540円が、その賞与に対\n        する源泉徴収税額です。",
+          "corpus_ref": "t1/corpus/gensen/04.txt:3779-3797",
+          "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3"
+        }
+      ],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c26"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c26": "0bc14bc34cf01200c1644425ec8c6da5b6f36ed824f633932c3d09b9ba1a9014"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3711-3724",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "1,300円を６倍した7,800円…14,590円を６倍した金額87,540円"
+    },
+    {
+      "id": "sol-e0463799bd51c653",
+      "text": "報酬coreは一般100万円102,100円・150万円204,200円・司法書士11万円10,210円を返す",
+      "numbers": [
+        "102,100円",
+        "204,200円",
+        "10,210円",
+        "100万円",
+        "150万円",
+        "11万円"
+      ],
+      "where": [
+        "core実行 R1,R2,R3"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/07.pdf",
+      "source_quote": "原稿の報 ⑴     原稿料           左の報酬・料金 ⑴ 懸賞応募作品の選稿\n酬    ⑵     演劇、演芸の台本の   の額×10.21％       料又は審査料\n          報酬             ただし、同一人 ⑵ 試験問題の出題料又\n         ⑶ 口述の報酬       に対し１回に支払        は各種答案の採点料\n         ⑷ 映画のシノプス（筋   わ れ る 金 額 が100 ⑶ クイズ等の問題又は\n          書）料          万円を超える場合        解答の投書に対する賞\n         ⑸ 文、詩、歌、標語等   には、その超える        金等\n          の懸賞の入賞金      部分については、 （注\u0007）広告宣伝のための\n         ⑹ 書籍等の編さん料又   20.42％            賞金に該当するもの",
+      "supporting_sources": [
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/07.pdf",
+          "quote": "司法書士     裁判所、検察庁、法務局 （左の報酬・料金\nの業務に     又は地方法務局に提出す の額−１回の支払\n関する報     る書類の作成その他の業 につき１万円）×\n酬・料金     務に関する報酬・料金  10.21％",
+          "corpus_ref": "t1/corpus/gensen/07.txt:299-302",
+          "source_text_sha256": "437244e3c45167477e6deca2f68827ef71704dc7925e1c180281cc3043d7125c"
+        }
+      ],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c27"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c27": "9acf39aded2167d5f3e5c30d7116337309d8c1d008aa7c95ac1212d9e8a091ba"
+      },
+      "corpus_ref": "t1/corpus/gensen/07.txt:52-60",
+      "source_text_sha256": "437244e3c45167477e6deca2f68827ef71704dc7925e1c180281cc3043d7125c",
+      "review_result": "sol_ok",
+      "sol_quote": "報酬・料金の額×10.21％…100万円を超える場合には、その超える部分については20.42％…（報酬・料金の額−１回の支払につき１万円）×10.21％"
+    },
+    {
+      "id": "sol-84b57cbfe21bccdf",
+      "text": "報酬10万円+消費税1万円では区分あり10,210円、区分なし11,231円",
+      "numbers": [
+        "10,210円",
+        "11,231円",
+        "10万円",
+        "1万円"
+      ],
+      "where": [
+        "本文346-349"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/07.pdf",
+      "source_quote": "（注）１ 報酬・料金等の金額の中に消費税及び地方消費税の額が含まれている場合で\n    あっても、消費税及び地方消費税の額を含めた金額が源泉徴収の対象となる報\n    酬・料金等の金額となります。ただし、報酬・料金等の支払を受ける者からの\n    請求書等において報酬・料金等の額と消費税及び地方消費税の額とが明確に区\n    分されている場合には、その報酬・料金等の額のみを源泉徴収の対象とする金\n    額として差し支えありません（平元直法６−１（最終改正平26課法９－１））。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t03/docs/gensen-choshu/index.html/p4-c28"
+      ],
+      "import_inputs": {
+        "t1/t03/docs/gensen-choshu/index.html/p4-c28": "247fa3f3b55d61b04f7f3bb5c396882debc0c4c0a542f1e04c2366aa49e7f74f"
+      },
+      "corpus_ref": "t1/corpus/gensen/07.txt:29-34",
+      "source_text_sha256": "437244e3c45167477e6deca2f68827ef71704dc7925e1c180281cc3043d7125c",
+      "review_result": "sol_ok",
+      "sol_quote": "消費税及び地方消費税の額を含めた金額…明確に区分されている場合には、その報酬・料金等の額のみ"
     }
   ],
   "absolutes": [

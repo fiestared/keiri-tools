@@ -10,7 +10,13 @@
       "source_quote": " ① 次の速算表によって「算出所得税額」を求めます。\n （令和８年分の年末調整のための算出所得税額の速算表）\n        課税給与所得金額A                 税   率B   控除額C          税額＝A×B−C\n    \b              1,950,000円以下    5％           −       A× 5％\n      1,950,000円超\b 3,300,000円 〃   10％         97,500円   A×10％−97,500円\n      3,300,000円〃\b 6,950,000円 〃   20％        427,500円   A×20％−427,500円\n      6,950,000円〃\b 9,000,000円 〃   23％        636,000円   A×23％−636,000円\n      9,000,000円〃\b18,000,000円 〃   33％      1,536,000円   A×33％−1,536,000円\n    18,000,000円〃\b18,050,000円 〃    40％      2,796,000円   A×40％−2,796,000円\n （注）１\u0007 課税給与所得金額に1,000円未満の端数があるときは、これを切り捨てま\n     す。\n    ２\u0007 課税給与所得金額が18,050,000円を超える場合は、令和８年分の年末調",
       "supporting_sources": [],
       "exceptions": "正本の千円未満切捨てにより1,950,001円では税額が動かない。1,951,000円を例にする。",
-      "adjudication": "t11-F6"
+      "adjudication": "t11-F6",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c15"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c15": "c2daee22205428b54760974aadfdc5628d30f6ef4537111bdf666939b0403c8a"
+      }
     },
     {
       "id": "t11-F7",
@@ -21,7 +27,13 @@
       "source_quote": "           定納期限までに、その防衛特別所得税をその所得税と併せて国に納付しなければならないこととされまし\n           た。\n            また、復興特別所得税について、その税率が１.１％（改正前：２.１％）に引き下げられ、課税期間が令和\n           29 年 12 月 31 日まで（改正前：令和 19 年 12 月 31 日まで）10 年間延長されました。\n            これらの改正は、令和９年１月１日以後に生ずる所得に対する所得税について適用されます。\n            なお、改正前（復興特別所得税の税率２.１％）と改正後（防衛特別所得税の税率１％及び復興特別所得税\n           の税率 1.１％）とで、合計税率（２.１％）に変更はありませんので、改正前後で、源泉徴収税額の計算方法\n           に変更は生じません。",
       "supporting_sources": [],
       "exceptions": "正本44頁は令和9年1月1日以後に生ずる所得からの変更と明記。令和8年分の2.1%と、以後の復興1.1%＋防衛1%・令和29年末までを区別して修正。",
-      "adjudication": "t11-F7"
+      "adjudication": "t11-F7",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c17"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c17": "757f4fabd4df64c39ccfe4c2e3f05dfb422cbb23d7fabf3d67e2e5af4fca5796"
+      }
     },
     {
       "id": "t1-added-context",
@@ -57,6 +69,445 @@
       ],
       "exceptions": "同じ追加行に残る既存の説明を含む。対象者・年分・例外は個別t1所見と本文に記載。計算例・換算額は下記原式から計算する。",
       "calculation": "金額の換算と端数処理は参照正本の原式による。詳細は個別t1所見と回帰テスト。"
+    },
+    {
+      "id": "sol-e70a3baa4bd42203",
+      "text": "所得税率は課税所得の各部分に5・10・20・23・33・40・45%を適用する7段階。",
+      "numbers": [
+        "45%"
+      ],
+      "where": [
+        "title/meta",
+        "本文180-202行",
+        "FAQ 458-459行",
+        "FAQ 473-474行",
+        "JSON-LD"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "                  退職所得の源泉徴収税額の速算表（令和 ８ 年分）\n         課税退職所得金額A                  所得税率B 控除額C            税額＝（A×B－C）×102.1%\n \b                 1,950,000円以下      ５%             －    （A×５%\b           ）×102.1%\n     1,950,000円超\b 3,300,000円    〃    10%           97,500円（A×10%－  97,500円）×102.1%\n     3,300,000円 〃\b 6,950,000円   〃    20%         427,500円（A×20%－  427,500円）×102.1%\n     6,950,000円 〃\b 9,000,000円   〃    23%         636,000円（A×23%－  636,000円）×102.1%\n     9,000,000円 〃\b18,000,000円   〃    33%       1,536,000円（A×33%－1,536,000円）×102.1%\n 18,000,000円 〃\b40,000,000円      〃    40%       2,796,000円（A×40%－2,796,000円）×102.1%\n 40,000,000円 〃                       45%       4,796,000円（A×45%－4,796,000円）×102.1%",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c01"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c01": "9555f93002d461e64d986063127a5c9cbad08b27b6af4bc589b519cd231eab2c"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:1923-1931",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "1,950,000円以下 5%…40,000,000円超 45%"
+    },
+    {
+      "id": "sol-faff094b18af22ab",
+      "text": "速算表は1,000円～1,949,000円5%控除0、以後10%/97,500、20%/427,500、23%/636,000、33%/1,536,000、40%/2,796,000、45%/4,796,000。",
+      "numbers": [
+        "1,000円",
+        "1,949,000円",
+        "97,500",
+        "427,500",
+        "636,000",
+        "1,536,000",
+        "2,796,000",
+        "4,796,000",
+        "5%",
+        "10%",
+        "20%",
+        "23%",
+        "33%",
+        "40%",
+        "45%"
+      ],
+      "where": [
+        "表213-222行",
+        "FAQ 455-456行"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "                  退職所得の源泉徴収税額の速算表（令和 ８ 年分）\n         課税退職所得金額A                  所得税率B 控除額C            税額＝（A×B－C）×102.1%\n \b                 1,950,000円以下      ５%             －    （A×５%\b           ）×102.1%\n     1,950,000円超\b 3,300,000円    〃    10%           97,500円（A×10%－  97,500円）×102.1%\n     3,300,000円 〃\b 6,950,000円   〃    20%         427,500円（A×20%－  427,500円）×102.1%\n     6,950,000円 〃\b 9,000,000円   〃    23%         636,000円（A×23%－  636,000円）×102.1%\n     9,000,000円 〃\b18,000,000円   〃    33%       1,536,000円（A×33%－1,536,000円）×102.1%\n 18,000,000円 〃\b40,000,000円      〃    40%       2,796,000円（A×40%－2,796,000円）×102.1%\n 40,000,000円 〃                       45%       4,796,000円（A×45%－4,796,000円）×102.1%",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c02"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c02": "470a6a840c99ae12a4d167629b0c2f53689ea0aeb14c3600ae393309bbc374a7"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:1923-1931",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "所得税率B 控除額C…10% 97,500円…45% 4,796,000円"
+    },
+    {
+      "id": "sol-febb0336b06d6efc",
+      "text": "各段の速算控除額は下段控除額+境界額×税率差で導け、6額はいずれも掲載表と一致する。",
+      "numbers": [],
+      "where": [
+        "本文208-247行",
+        "表234-242行",
+        "FAQ 455-456行"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "                  退職所得の源泉徴収税額の速算表（令和 ８ 年分）\n         課税退職所得金額A                  所得税率B 控除額C            税額＝（A×B－C）×102.1%\n \b                 1,950,000円以下      ５%             －    （A×５%\b           ）×102.1%\n     1,950,000円超\b 3,300,000円    〃    10%           97,500円（A×10%－  97,500円）×102.1%\n     3,300,000円 〃\b 6,950,000円   〃    20%         427,500円（A×20%－  427,500円）×102.1%\n     6,950,000円 〃\b 9,000,000円   〃    23%         636,000円（A×23%－  636,000円）×102.1%\n     9,000,000円 〃\b18,000,000円   〃    33%       1,536,000円（A×33%－1,536,000円）×102.1%\n 18,000,000円 〃\b40,000,000円      〃    40%       2,796,000円（A×40%－2,796,000円）×102.1%\n 40,000,000円 〃                       45%       4,796,000円（A×45%－4,796,000円）×102.1%",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c03"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c03": "e664444a40df3c76895cd877d5d1439e2e4a1a55dcd314b62a749f5187278a12"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:1923-1931",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "所得税率B 控除額C…97,500円…427,500円…636,000円…1,536,000円…2,796,000円…4,796,000円"
+    },
+    {
+      "id": "sol-8a6f01a95879a572",
+      "text": "課税所得700万円の所得税は7,000,000×23%-636,000=974,000円。",
+      "numbers": [
+        "7,000,000",
+        "636,000",
+        "974,000円",
+        "700万円",
+        "23%"
+      ],
+      "where": [
+        "本文249-264行",
+        "表252-259行"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "     6,950,000円 〃\b 9,000,000円   〃    23%         636,000円（A×23%－  636,000円）×102.1%\n     9,000,000円 〃\b18,000,000円   〃    33%       1,536,000円（A×33%－1,536,000円）×102.1%\n 18,000,000円 〃\b40,000,000円      〃    40%       2,796,000円（A×40%－2,796,000円）×102.1%\n 40,000,000円 〃                       45%       4,796,000円（A×45%－4,796,000円）×102.1%\n（注） 求めた税額に１円未満の端数があるときは、これを切り捨てます。\n\n\n\n\n                                         −149−\n\f【退職所得に対する源泉徴収税額の計算例】\nイ       退職手当の金額が退職所得控除額以下である場合（課税退職所得金\n 額がない場合）",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c04"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c04": "23c6f4d983819698ab4d584754a8c033ee441910e642594d1572ea4a8ade4c7d"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:1928-1940",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "6,950,000円超9,000,000円以下 23% 636,000円（A×23%－636,000円）×102.1%"
+    },
+    {
+      "id": "sol-a8628591b60acbba",
+      "text": "上位税率はその段に入った部分だけにかかるため、税率段が上がるだけで税引後額が逆転しない。",
+      "numbers": [],
+      "where": [
+        "本文180-202行",
+        "FAQ 458-459行"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "                  退職所得の源泉徴収税額の速算表（令和 ８ 年分）\n         課税退職所得金額A                  所得税率B 控除額C            税額＝（A×B－C）×102.1%\n \b                 1,950,000円以下      ５%             －    （A×５%\b           ）×102.1%\n     1,950,000円超\b 3,300,000円    〃    10%           97,500円（A×10%－  97,500円）×102.1%\n     3,300,000円 〃\b 6,950,000円   〃    20%         427,500円（A×20%－  427,500円）×102.1%\n     6,950,000円 〃\b 9,000,000円   〃    23%         636,000円（A×23%－  636,000円）×102.1%\n     9,000,000円 〃\b18,000,000円   〃    33%       1,536,000円（A×33%－1,536,000円）×102.1%\n 18,000,000円 〃\b40,000,000円      〃    40%       2,796,000円（A×40%－2,796,000円）×102.1%\n 40,000,000円 〃                       45%       4,796,000円（A×45%－4,796,000円）×102.1%",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c05"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c05": "d9700eee8506a968be96ffb00ccc6aebfa941e1ba3bbd16ca389fa1b6d7a4ff8"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:1923-1931",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "課税退職所得金額A 所得税率B 控除額C（段階別の速算表）"
+    },
+    {
+      "id": "sol-8cb8ca6f09eef63e",
+      "text": "令和8年分は所得税額に復興特別所得税2.1%を加え、合計税率は所得税率×102.1%。",
+      "numbers": [
+        "令和8年分",
+        "2.1%",
+        "102.1%"
+      ],
+      "where": [
+        "meta description",
+        "本文308-335行",
+        "FAQ 461-462行"
+      ],
+      "applies": "2026年",
+      "applies_period": {
+        "years": [
+          2026
+        ],
+        "axis": "explicit_claim_year",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/03.pdf",
+      "source_quote": "\fⅦ    復興特別所得税の源泉徴収の概要\n     所得税の源泉徴収義務者は、平成25年１月１日から令和19年12月31日まで\n の間に生じる所得について源泉所得税を徴収する際、復興特別所得税を併せ\n て徴収し、源泉所得税の法定納期限までに、その復興特別所得税を源泉所得\n 税と併せて国に納付しなければならないこととされています（復興財確法28\n ①）。\n     源泉徴収すべき復興特別所得税の額は、所得税に関する法令の規定により\n 源泉徴収すべき所得税の額に2.1％の税率を乗じて計算した金額とされていま\n すが、源泉徴収に係る所得税及び復興特別所得税の額の端数計算は、所得税\n 及び復興特別所得税の合計額によって行うこととされているため、実際には、\n 一定の所得を除き、源泉徴収の対象となる支払金額等に対して、所得税と復\n 興特別所得税とをあわせた合計税率（＝所得税率×102.1％）を乗じることに\n より源泉徴収すべき所得税及び復興特別所得税の合計額を計算することがで",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c06"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c06": "ce4dc9e40dc58b75be23a6a924c701bf3304e5a02623292056e9b7a45f74b994"
+      },
+      "corpus_ref": "t1/corpus/gensen/03.txt:486-498",
+      "source_text_sha256": "92eb9ba0670deb729607e1f4b84022b3efafdcbd908eefdcd2949c0f806ae082",
+      "review_result": "sol_ok",
+      "sol_quote": "源泉徴収すべき所得税の額に2.1％…合計税率（＝所得税率×102.1％）"
+    },
+    {
+      "id": "sol-a511fcacae606893",
+      "text": "復興特別所得税込み限界率は5.105、10.21、20.42、23.483、33.693、40.84、45.945%。",
+      "numbers": [
+        "45.945%"
+      ],
+      "where": [
+        "表321-330行"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/03.pdf",
+      "source_quote": "【注：本冊子における復興特別所得税に関する記載について】\n １\u0007 本冊子では、所得税及び復興特別所得税の源泉徴収税額の計算に当たり\n     支払金額等に一定の税率を乗じる場合のその税率については、原則として\n     所得税と復興特別所得税とをあわせた合計税率（＝所得税率×102.1％）に\n     より表記してあります。\n    〔参考〕所得税率に応じた合計税率の例\n\n        所得税率(%)         ５       10      15       16       18       20\n\n        合計税率(%)\n                       5.105   10.21   15.315   16.336   18.378   20.42\n    （所得税率(%)×102.1％）\n\n    ２\u0007 本冊子において、所得税と復興特別所得税とをあわせた合計税率を説明",
+      "supporting_sources": [
+        {
+          "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/16.pdf",
+          "quote": "      3,333,334   円 以   上                   B×45.945％－408,061円\n（注） 税額に10 円未満の端数があるときは、これを四捨五入した額をもってその求\n   める税額とします。\n ⑶   税額計算の特例により求めた税額と税額表による税額との差異\n      税額計算の特例により求めた税額は、次に掲げるような理由から税額\n  表による税額とは必ずしも一致しませんが、その差異は年末調整におい\n  て精算されることになります。\n  イ\u0007 税額表の税額は、その月の社会保険料等控除後の給与等の金額を一\n     定の階級ごとに区分し、その区分の中間値を基として計算してある（例\n     えば、「175,000円以上177,000円未満」の場合には、176,000円を基とし\n     て計算してあります｡）のに対し、この税額計算の特例では、その月\n     の社会保険料等控除後の給与等の金額そのものを基として計算するこ\n     とになっています。",
+          "corpus_ref": "t1/corpus/gensen/16.txt:98-110",
+          "source_text_sha256": "754951f52df19dfef97c5c27dc58ecbc304454ee2df6801f9080f4f15124b077"
+        }
+      ],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c07"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c07": "b997099d7d1c0866e222c8fa603839e407e1fabb131cbeb63a45476acc673de5"
+      },
+      "corpus_ref": "t1/corpus/gensen/03.txt:510-523",
+      "source_text_sha256": "92eb9ba0670deb729607e1f4b84022b3efafdcbd908eefdcd2949c0f806ae082",
+      "review_result": "sol_ok",
+      "sol_quote": "所得税率(%)×102.1％…5.105 10.21…／45.945％"
+    },
+    {
+      "id": "sol-ba353ca30cc5086e",
+      "text": "所得税974,000円の復興特別所得税は20,454円で合計994,454円、100円未満処理後994,400円。",
+      "numbers": [
+        "974,000円",
+        "20,454円",
+        "994,454円",
+        "994,400円",
+        "100円"
+      ],
+      "where": [
+        "本文335行",
+        "本文445行"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": " ③ ②で求めた年調所得税額に102.1％を乗じて、復興特別所得税を含む「年調年\n  税額」を求めます。なお、この年調年税額に100円未満の端数があるときは、そ\n  の端数は切り捨てます。\n⑴    年末調整を行う理由",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c08"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c08": "447783e1a09d7e58c9f3e6eb2a9062cdaf7c54086b7202aeeffc5bfcac32e8f8"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3881-3884",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "年調所得税額に102.1％を乗じて…年調年税額に100円未満の端数…切り捨て"
+    },
+    {
+      "id": "sol-99c594f660c9e317",
+      "text": "税率を掛けるのは年収でなく、給与所得控除と所得控除後の課税所得。",
+      "numbers": [],
+      "where": [
+        "本文345-359行",
+        "FAQ 452-453行"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "請に応ずることができます。そこで、給与所得に対する所得税及び復興特別所\n得税については、いわゆる源泉徴収制度を採用し、給料や賃金等の支払者が給\n与を支払う際に、支払額に応じた所得税及び復興特別所得税をその給与から差\nし引いてこれを国に納付するとともに、年末において年末調整を行い、その年\n中の給与の総額に対する年税額と給与の支払の都度差し引いて納付した源泉所\n得税及び復興特別所得税の合計額とを対比して、過不足額の精算をすることと",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c09"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c09": "daa4a4c17017461ec5ff8c7fb5c86e32c98f617a229f05a06c8a425e9d0410be"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:13-18",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "給与等の収入金額から給与所得控除額を控除…各種の所得控除額…課税給与所得金額"
+    },
+    {
+      "id": "sol-bd60c8d1ad186d74",
+      "text": "上場株式等の譲渡・配当は所得税15%に復興0.315%と住民税5%を加え20.315%。",
+      "numbers": [
+        "15%",
+        "0.315%",
+        "5%",
+        "20.315%"
+      ],
+      "where": [
+        "本文369-392行",
+        "表380-387行",
+        "FAQ 464-465行"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/08.pdf",
+      "source_quote": "の所得税及び復興特別所得税を源泉徴収し、その懸賞金等を支払った月の翌\n月10日までに、「所得税徴収高計算書データ」をe-Taxにより送信した上で納\n付する（キャッシュレス納付）か、「定期積金の給付補てん金等の所得税徴\n収高計算書（納付書）」を添えて最寄りの金融機関又は所轄の税務署の窓口\nで納付します（措法41の９、国税通則法34①）。\n なお、居住者が支払を受けるものについては、この源泉徴収だけで納税が\n完結する源泉分離課税制度が適用されます（措法41の９①、措令26の９）。\n 懸賞金付預貯金等の懸賞金等とは、国内において預貯金等（預貯金、合同\n運用信託、公社債、公社債投資信託の受益権又は定期積金等）に係る契約に\n基づき預入等（預入、信託、購入又は払込み）がされた預貯金等を対象とし\nてくじ引その他の方法により、支払等を受ける金品その他の経済上の利益（懸\n賞金等）をいいます。\n\n                     −192−\n\f（注）\u0007 所得税及び復興特別所得税15.315％のほかに個人住民税５％の特別徴収が必要",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c11"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c11": "291e4d44728ae1a0be987c288b56b4659eeef56434121491a7183cfbc539a57f"
+      },
+      "corpus_ref": "t1/corpus/gensen/08.txt:69-83",
+      "source_text_sha256": "0920c90828390841fb8bef2846e2aa6064d35194fee6652c14ae196dfe68e3e5",
+      "review_result": "sol_ok",
+      "sol_quote": "所得税及び復興特別所得税15.315％のほかに個人住民税5％"
+    },
+    {
+      "id": "sol-302a668a6c65e53a",
+      "text": "課税所得は税率適用前に1,000円未満、計算後税額は100円未満を切り捨てる。",
+      "numbers": [
+        "1,000円",
+        "100円"
+      ],
+      "where": [
+        "本文433-445行",
+        "FAQ 470-471行"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": " ① 次の速算表によって「算出所得税額」を求めます。\n （令和８年分の年末調整のための算出所得税額の速算表）\n        課税給与所得金額A                 税   率B   控除額C          税額＝A×B−C\n    \b              1,950,000円以下    5％           −       A× 5％\n      1,950,000円超\b 3,300,000円 〃   10％         97,500円   A×10％−97,500円\n      3,300,000円〃\b 6,950,000円 〃   20％        427,500円   A×20％−427,500円\n      6,950,000円〃\b 9,000,000円 〃   23％        636,000円   A×23％−636,000円\n      9,000,000円〃\b18,000,000円 〃   33％      1,536,000円   A×33％−1,536,000円\n    18,000,000円〃\b18,050,000円 〃    40％      2,796,000円   A×40％−2,796,000円\n （注）１\u0007 課税給与所得金額に1,000円未満の端数があるときは、これを切り捨てま\n     す。\n    ２\u0007 課税給与所得金額が18,050,000円を超える場合は、令和８年分の年末調\n     整の対象となりません。\n ② ①で求めた算出所得税額から住宅借入金等特別控除額を控除し、   「年調所得\n  税額」を求めます。なお、住宅借入金等特別控除の適用を受けない人については、\n  算出所得税額がそのまま年調所得税額となります。\n ③ ②で求めた年調所得税額に102.1％を乗じて、復興特別所得税を含む「年調年\n  税額」を求めます。なお、この年調年税額に100円未満の端数があるときは、そ\n  の端数は切り捨てます。\n⑴    年末調整を行う理由",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c14"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c14": "7a510050db80f4450b9429b97c329d4b7b8f9f2febfb07bd0b7780b0428c6cdf"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:3865-3884",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "課税給与所得金額に1,000円未満の端数…切り捨て／年調年税額に100円未満の端数…切り捨て"
+    },
+    {
+      "id": "sol-2bc77d64dcd72a8e",
+      "text": "令和8年分の所得税率表は5～45%の7段階で変わらない。",
+      "numbers": [
+        "令和8年分",
+        "45%"
+      ],
+      "where": [
+        "title",
+        "FAQ 473-474行"
+      ],
+      "applies": "2026年",
+      "applies_period": {
+        "years": [
+          2026
+        ],
+        "axis": "explicit_claim_year",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "                  退職所得の源泉徴収税額の速算表（令和 ８ 年分）\n         課税退職所得金額A                  所得税率B 控除額C            税額＝（A×B－C）×102.1%\n \b                 1,950,000円以下      ５%             －    （A×５%\b           ）×102.1%\n     1,950,000円超\b 3,300,000円    〃    10%           97,500円（A×10%－  97,500円）×102.1%\n     3,300,000円 〃\b 6,950,000円   〃    20%         427,500円（A×20%－  427,500円）×102.1%\n     6,950,000円 〃\b 9,000,000円   〃    23%         636,000円（A×23%－  636,000円）×102.1%\n     9,000,000円 〃\b18,000,000円   〃    33%       1,536,000円（A×33%－1,536,000円）×102.1%\n 18,000,000円 〃\b40,000,000円      〃    40%       2,796,000円（A×40%－2,796,000円）×102.1%\n 40,000,000円 〃                       45%       4,796,000円（A×45%－4,796,000円）×102.1%",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c16"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c16": "5553ea83d4274d2e786aa4d6a52b67032fa86e24f925e942c2105da1b4b5694d"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:1923-1931",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "退職所得の源泉徴収税額の速算表（令和8年分）…5%…45%"
+    },
+    {
+      "id": "sol-e635dfe5ec933ec8",
+      "text": "源泉所得税と復興特別所得税は区分せず併せて納付する。",
+      "numbers": [],
+      "where": [
+        "FAQ 461-462行"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/03.pdf",
+      "source_quote": " の間に生じる所得について源泉所得税を徴収する際、復興特別所得税を併せ\n て徴収し、源泉所得税の法定納期限までに、その復興特別所得税を源泉所得\n 税と併せて国に納付しなければならないこととされています（復興財確法28\n ①）。\n     源泉徴収すべき復興特別所得税の額は、所得税に関する法令の規定により\n 源泉徴収すべき所得税の額に2.1％の税率を乗じて計算した金額とされていま\n すが、源泉徴収に係る所得税及び復興特別所得税の額の端数計算は、所得税\n 及び復興特別所得税の合計額によって行うこととされているため、実際には、\n 一定の所得を除き、源泉徴収の対象となる支払金額等に対して、所得税と復\n 興特別所得税とをあわせた合計税率（＝所得税率×102.1％）を乗じることに\n より源泉徴収すべき所得税及び復興特別所得税の合計額を計算することがで\n きます（復興財確法28②、31①②）。\n     なお、源泉徴収をした所得税及びその所得税に係る復興特別所得税を納付\n する際には、これらの金額を区分することなく、その所得税及び復興特別所",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c18"
+      ],
+      "import_inputs": {
+        "t1/t11/docs/column/shotokuzei-ritsu/index.html/p4-c18": "b81e5abd8c91244997b4f87c3c82a6e9b49615f82a0cea91880fba6b6901367b"
+      },
+      "corpus_ref": "t1/corpus/gensen/03.txt:488-501",
+      "source_text_sha256": "92eb9ba0670deb729607e1f4b84022b3efafdcbd908eefdcd2949c0f806ae082",
+      "review_result": "sol_ok",
+      "sol_quote": "復興特別所得税をその所得税と併せて国に納付…これらの金額を区分することなく…合計額を納付"
     }
   ],
   "checked": "2026-09-29",

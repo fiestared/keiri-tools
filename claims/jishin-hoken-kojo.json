@@ -43,7 +43,13 @@
         }
       ],
       "exceptions": "対象資産・契約を満たす保険料だけを入力する必要がある。控除証明書の対象額を使う旨を入力近くにも示す。",
-      "adjudication": "t12-F0"
+      "adjudication": "t12-F0",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c02"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c02": "e82c0d4c2207cfae53ee5de29c451e00b90e97a75fbb982b2dd4c4021ca21660"
+      }
     },
     {
       "id": "t1-added-context",
@@ -68,6 +74,481 @@
       ],
       "exceptions": "同じ追加行に残る既存の説明を含む。対象者・年分・例外は個別t1所見と本文に記載。計算例・換算額は下記原式から計算する。",
       "calculation": "金額の換算と端数処理は参照正本の原式による。詳細は個別t1所見と回帰テスト。"
+    },
+    {
+      "id": "sol-b190eaeaad2776c0",
+      "text": "地震保険料控除は地震保険料を払う人の所得から所得税側で最大5万円を控除する",
+      "numbers": [
+        "5万円"
+      ],
+      "where": [
+        "本文導入",
+        "計算式表",
+        "FAQ",
+        "JSON-LD FAQ",
+        "meta description"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "   所得者が、所得者本人又は所得者と生計を一にする配偶者その他の\n  親族の所有する家屋・家財（注１）のうち一定のものを保険や共済の目的\n  とし、かつ、地震等損害（注２）によりこれらの資産について生じた損失\n  の額を塡補する保険金又は共済金が支払われる損害保険契約等（注３）に\n  係る地震保険料（注４）を支払った場合には、その年中に支払った地震保\n  険料の金額の合計額（注５）（最高５万円）が地震保険料控除として所得\n  から控除されます（所法77①）。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c01"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c01": "6c213b161d6ebf5b200e3b251dd73d13a74ff844f110e03a818dfb49e84a12ae"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1856-1862",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "その年中に支払った地震保険料の金額の合計額（注５）（最高５万円）が地震保険料控除として所得から控除されます"
+    },
+    {
+      "id": "sol-ba7f7c9162eb7ae9",
+      "text": "年末調整では保険料控除申告書と支払証明書類に基づき地震保険料控除を行う",
+      "numbers": [],
+      "where": [
+        "本文導入",
+        "使い方",
+        "FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "    なっています。\n\n 〔注意事項〕\n１ 保険の目的\n     家屋や家財を保険又は共済の目的とする損害保険契約等は、所得者本人又は本人と生計を一\n    にする親族が所有して常時居住している家屋や、これらの人の所有している生活に通常必要な\n    家財を保険の目的としているものであるかどうか。\n２ 保険料の支払内容等\n ⑴ 本人自身が支払ったものであるかどうか。\n      給与の支払者が負担した地震保険料の金額で給与として課税されるべきものは、本人自身\n     が支払ったものとして控除の対象になります。\n ⑵ 本年中に支払ったものであるかどうか。\n      いわゆる「振替貸付」により保険料の払込みに充てられた金額や、いわゆる「前納保険料」\n     があるときは、生命保険料の場合と同様に取り扱われますので２１\n                                  ・２２ページを参照してください。\n ⑶ 剰余金の分配や割戻金の割戻しを受けている場合又は剰余金や割戻金が地震保険料の払込\n     みに充てられている場合には、契約保険料の金額からこれらの剰余金や割戻金の額が差し引\n     かれているかどうか。\n\n 証明書類\n 保険料の金額の多少に関係なく、その保険料を支払ったこと等の証明書類又はその証明書類に\n記載すべき事項を記録した電子証明書等に係る電磁的記録印刷書面を保険料控除申告書に添付し\nて提出又は提示する必要があります。\n 証明書類の交付を請求中などのため、証明書類が確認できない場合でも、翌年１月末日までに\n提出又は提示することを条件として地震保険料の控除をしたところで年末調整を行ってもよいこ",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c03"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c03": "87909ec26f0590c983527c3188ccd991115bfab8e6e6deec88690ca5c2646c86"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2038-2062",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "この地震保険料控除は、本人から提出された保険料控除申告書に基づいて控除することになっています。／その保険料を支払ったこと等の証明書類…を保険料控除申告書に添付して提出又は提示する必要があります。"
+    },
+    {
+      "id": "sol-3e0436e1def45ee9",
+      "text": "地震保険料控除額の計算で1円未満の端数は切り上げる",
+      "numbers": [],
+      "where": [
+        "このツールの前提",
+        "動的出典表示"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "                   ３ 地震保険料の控除額の計算において算出した金額に１円未満の端数があるときは、その端数を切り上げ\n                    ます。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c05"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c05": "058b52bfe8efad17f40ebfca18bab008d9c8014a612adf8dfffbf71cc73ec6ae"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2112-2113",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "地震保険料の控除額の計算において算出した金額に１円未満の端数があるときは、その端数を切り上げます。"
+    },
+    {
+      "id": "sol-381ad7542e6e4114",
+      "text": "所得税の節税額は速算表の差で超過累進を反映し、復興特別所得税2.1%の減少も含める",
+      "numbers": [
+        "2.1%"
+      ],
+      "where": [
+        "このツールの前提",
+        "FAQ",
+        "JSON-LD FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf",
+      "source_quote": "                  退職所得の源泉徴収税額の速算表（令和 ８ 年分）\n         課税退職所得金額A                  所得税率B 控除額C            税額＝（A×B－C）×102.1%\n \b                 1,950,000円以下      ５%             －    （A×５%\b           ）×102.1%\n     1,950,000円超\b 3,300,000円    〃    10%           97,500円（A×10%－  97,500円）×102.1%\n     3,300,000円 〃\b 6,950,000円   〃    20%         427,500円（A×20%－  427,500円）×102.1%\n     6,950,000円 〃\b 9,000,000円   〃    23%         636,000円（A×23%－  636,000円）×102.1%\n     9,000,000円 〃\b18,000,000円   〃    33%       1,536,000円（A×33%－1,536,000円）×102.1%\n 18,000,000円 〃\b40,000,000円      〃    40%       2,796,000円（A×40%－2,796,000円）×102.1%\n 40,000,000円 〃                       45%       4,796,000円（A×45%－4,796,000円）×102.1%\n（注） 求めた税額に１円未満の端数があるときは、これを切り捨てます。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c06"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c06": "79a729176baade884eef8b17a01ab8d3342ad14efb8cf80dc37e07e2f33bd1c3"
+      },
+      "corpus_ref": "t1/corpus/gensen/05.txt:1923-1932",
+      "source_text_sha256": "a2079a21cadba1f1cf13977a8673830ffc72b4eedde0e212106aeafb2b51ec1b",
+      "review_result": "sol_ok",
+      "sol_quote": "税額＝（A×B－C）×102.1%／求めた税額に１円未満の端数があるときは、これを切り捨てます。"
+    },
+    {
+      "id": "sol-5bb4b7d020c6898b",
+      "text": "地震保険料3万円なら所得税側の控除額は3万円",
+      "numbers": [
+        "3万円"
+      ],
+      "where": [
+        "計算式の例",
+        "FAQ",
+        "JSON-LD FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "                  地震保険料等に係る契約の\n                  全てが地震等損害により保\n                                                              その年中に支払った地震保険料の\n                ① 険金や共済金が支払われる              ―            ―\n                                                              金額の合計額（最高５万円）",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c09"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c09": "6b7b81fcba4afb2a7f8adef00e5795cd4956e86208231b28f880fd115733c76b"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2075-2079",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "その年中に支払った地震保険料の金額の合計額（最高５万円）"
+    },
+    {
+      "id": "sol-58531110888a313f",
+      "text": "地震保険料と旧長期損害保険料を併用した所得税側の合計上限も5万円である",
+      "numbers": [
+        "5万円"
+      ],
+      "where": [
+        "上限注記",
+        "FAQ",
+        "JSON-LD FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "                         ①、 ② そ れ ぞ れ     50,000円以下     その合計額\n        ①と②がある場\n    ③                    計算した金額の\n        合                                 50,000円超      一律に50,000円\n                         合計額",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c10"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c10": "4e3790eddf001bd381bc46e5d82ef8db622349434711bf7192d8e63f0dde5de6"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1977-1981",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "①、②それぞれ計算した金額の合計額／50,000円超　一律に50,000円"
+    },
+    {
+      "id": "sol-b5367024ef91cbc5",
+      "text": "平成18年12月31日までに締結した一定の長期損害保険契約は経過措置の対象になる",
+      "numbers": [
+        "平成18年12月31日"
+      ],
+      "where": [
+        "旧長期損害保険料の経過措置",
+        "FAQ",
+        "JSON-LD FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "【経過措置】\n○       所得者が、平成19年分以後の各年において、平成18年12月31日までに締\n 結した長期損害保険契約等（注）に係る保険料等（以下「旧長期損害保険料」\n    といいます。）を支払った場合には、上記⑿イにかかわらず、支払った地\n    震保険料等（地震保険料控除の対象となる地震保険料及び旧長期損害保険\n    料）の区分に応じて次により計算した金額とすることができます（平18改\n    正法附則10②）。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c11"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c11": "73aead19040dabaab0ffb3dea216a24bc86473bf9ae18d0b010343a6d59a91fc"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1943-1949",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "平成18年12月31日までに締結した長期損害保険契約等…に係る保険料等（以下『旧長期損害保険料』といいます。）を支払った場合には…"
+    },
+    {
+      "id": "sol-4c99215079527763",
+      "text": "旧長期損害保険料は締結日、満期返戻金等、10年以上、平成19年以後変更なし、始期が平成19年以後でないという要件を満たす",
+      "numbers": [
+        "平成19年",
+        "10年以上"
+      ],
+      "where": [
+        "旧長期損害保険料の5要件",
+        "FAQ",
+        "JSON-LD FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": " （注）\u0007「長期損害保険契約等」とは、次の全てに該当する損害保険契約等をいいま\n    す（保険期間又は共済期間の始期が平成19年１月１日以後であるものを除きま\n    す。）。\n    ①\u0007 保険期間又は共済期間の満了後に満期返戻金を支払う旨の特約のある契約\n     その他一定の契約（※）であること\n    ② 保険期間又は共済期間が10年以上であること\n    ③\u0007 平成19年１月１日以後にその損害保険契約等の変更をしていないものであ\n     ること\n   （※） \u0007 「その他一定の契約」は、建物又は動産の共済期間中の耐存を共済事故\n       とする共済に係る契約をいいます（平18改正令附則14①）。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c12"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c12": "ea7076a5dc836d672d3b4cdb1a8a031a2523bc83bceb9747a08f6860b944c9dd"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1986-1995",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "保険期間又は共済期間の始期が平成19年１月１日以後であるものを除きます。…満期返戻金…10年以上…平成19年１月１日以後に…変更をしていない"
+    },
+    {
+      "id": "sol-8e2e5f6d7d1d2405",
+      "text": "旧長期損害保険料の所得税控除は1万円以下全額、1万円超2万円以下は支払額×1/2+5千円、2万円超は1万5千円",
+      "numbers": [
+        "1万円",
+        "2万円",
+        "1万5千円"
+      ],
+      "where": [
+        "旧長期の計算表",
+        "式の説明",
+        "FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "        地震保険料等に                           10,000円以下     その合計額\n        係る契約の全て\n    ②\n        が長期損害保険\n        契 約 等（ 注 ） に 該\n                         旧長期損害保険料\n                         の金額の合計額\n                                          10,000円超\n                                          20,000円以下    （ 支払った保険料\n                                                         の金額の合計額 ） 2\n                                                                   1\n                                                                  × ＋5,000円\n        当するものであ\n        る場合                               20,000円超      一律に15,000円",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c13"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c13": "1d27d00de206ea7db5483bf3c79815aed13aad36c1e3c0fb0b8c533ad29a283f"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1962-1975",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "10,000円以下 その合計額／10,000円超20,000円以下…×1/2＋5,000円／20,000円超 一律に15,000円"
+    },
+    {
+      "id": "sol-926b516813b0a35e",
+      "text": "一つの契約が地震保険料と旧長期損害保険料の両区分に該当するときは選択した一方だけで計算する",
+      "numbers": [],
+      "where": [
+        "一つの契約が両方に該当するとき",
+        "FAQ",
+        "JSON-LD FAQ"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "                 １ ここでいう地震保険料等とは、地震保険料控除の対象となる地震保険料及び旧長期損害保険料をいいます。\n                  ２ 一つの契約等が、地震等損害により保険金や共済金が支払われるものと旧長期損害保険契約のいずれの\n                    契約区分にも該当する場合には、いずれか一方の契約区分にのみ該当するものとして、地震保険料控除の\n                    控除額を計算します。",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c15"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c15": "8811091b3ba47f8ffdbf1d958a73fd3f4848eb0c12074ad09fca0ebfaddaf73f"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2108-2111",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "一つの契約等が…いずれの契約区分にも該当する場合には、いずれか一方の契約区分にのみ該当するものとして…計算します。"
+    },
+    {
+      "id": "sol-560ba3ae1d237d1b",
+      "text": "地震保険料42,000円と旧長期14,800円の所得税控除は合計上限50,000円",
+      "numbers": [
+        "42,000円",
+        "14,800円",
+        "50,000円"
+      ],
+      "where": [
+        "計算機ロジック（正本例で実行）"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "\f６ 地震保険料の控除額５０，\n             ０００円は、本年中に支払った地震保険料の合計額４２，\n                                      ０００円及び旧長期\n 損害保険料の合計額１４，\n            ８００円のそれぞれに基づいて、次により求めた金額となります。\n    地震保険料に\n              旧長期損害保険料に係る控除額\n     係る控除額\n                      １\n    ４２，        ８００円 × ２ ＋ ５，\n      ０００円 ＋ １４，           ０００円 ＝ ５４，\n                                    ４００円 → ５０，\n                                             ０００円（最高５０，\n                                                      ０００円）",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c16"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c16": "a90a1f5681a759ed6d791e921e5f956fdcc3cf2d8d5a6f54d42800d005ab7e84"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:4882-4895",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "４２，０００円＋１４，８００円×1/2＋５，０００円＝５４，４００円→５０，０００円（最高５０，０００円）"
+    },
+    {
+      "id": "sol-2e00010ebec90cb1",
+      "text": "地震保険料2万円・3万円・5万円以上の所得税控除は各2万円・3万円・5万円",
+      "numbers": [
+        "2万円",
+        "3万円",
+        "5万円"
+      ],
+      "where": [
+        "節税額の例の表"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "                  地震保険料等に係る契約の\n                  全てが地震等損害により保\n                                                              その年中に支払った地震保険料の\n                ① 険金や共済金が支払われる              ―            ―\n                                                              金額の合計額（最高５万円）",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c17"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c17": "1d38b130450df5ef5060504614df7e33e8138b23925977f8c67c7f0359ed0e49"
+      },
+      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2075-2079",
+      "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
+      "review_result": "sol_ok",
+      "sol_quote": "その年中に支払った地震保険料の金額の合計額（最高５万円）"
+    },
+    {
+      "id": "sol-10d8ab02a262e789",
+      "text": "地震3万円と旧長期2万4千円なら所得税控除は4万5千円",
+      "numbers": [
+        "3万円",
+        "2万4千円",
+        "4万5千円"
+      ],
+      "where": [
+        "節税額の例のコールアウト"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "        地震保険料等に                           10,000円以下     その合計額\n        係る契約の全て\n    ②\n        が長期損害保険\n        契 約 等（ 注 ） に 該\n                         旧長期損害保険料\n                         の金額の合計額\n                                          10,000円超\n                                          20,000円以下    （ 支払った保険料\n                                                         の金額の合計額 ） 2\n                                                                   1\n                                                                  × ＋5,000円\n        当するものであ\n        る場合                               20,000円超      一律に15,000円\n\n                         ①、 ② そ れ ぞ れ     50,000円以下     その合計額\n        ①と②がある場\n    ③                    計算した金額の\n        合                                 50,000円超      一律に50,000円\n                         合計額",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c19"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c19": "612877d3a5e640f6aed72240dff44eea6b35227fca0828ca47dc598a5b754548"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1962-1981",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "20,000円超 一律に15,000円／①、②それぞれ計算した金額の合計額50,000円以下 その合計額"
+    },
+    {
+      "id": "sol-8fde87c0b56399b8",
+      "text": "coreは旧長期1万円の所得税控除を1万円と計算する",
+      "numbers": [
+        "1万円"
+      ],
+      "where": [
+        "計算機ロジック（node実行）"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "        地震保険料等に                           10,000円以下     その合計額\n        係る契約の全て\n    ②\n        が長期損害保険\n        契 約 等（ 注 ） に 該\n                         旧長期損害保険料\n                         の金額の合計額\n                                          10,000円超\n                                          20,000円以下    （ 支払った保険料\n                                                         の金額の合計額 ） 2\n                                                                   1\n                                                                  × ＋5,000円",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c23"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c23": "74d4916a7ca7e94a2f0742b1731827bb392eb0e4ed10305ba6f63d3c5565fd99"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1962-1973",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "10,000円以下 その合計額"
+    },
+    {
+      "id": "sol-d68e5e05fb93dc5e",
+      "text": "coreは旧長期2万円の所得税控除を1万5千円と計算する",
+      "numbers": [
+        "2万円",
+        "1万5千円"
+      ],
+      "where": [
+        "計算機ロジック（node実行）"
+      ],
+      "applies": "対象年は引用箇所・主張本文による（未特定）",
+      "applies_period": {
+        "years": [],
+        "axis": "unspecified",
+        "review_theme": "t1"
+      },
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "                                          10,000円超\n                                          20,000円以下    （ 支払った保険料\n                                                         の金額の合計額 ） 2\n                                                                   1\n                                                                  × ＋5,000円\n        当するものであ\n        る場合                               20,000円超      一律に15,000円",
+      "supporting_sources": [],
+      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "import_keys": [
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c24"
+      ],
+      "import_inputs": {
+        "t1/t12/docs/jishin-hoken-kojo/index.html/p1-c24": "bb0f50ce94263188bce0d91d4d6e3e783e322e234d28c89043211af089fd248d"
+      },
+      "corpus_ref": "t1/corpus/gensen/04.txt:1969-1975",
+      "source_text_sha256": "e8ff1f6922f6ccc7a34b23f8b76b2212f96c752d733a8993e36e07196db839c3",
+      "review_result": "sol_ok",
+      "sol_quote": "10,000円超20,000円以下…×1/2＋5,000円"
     }
   ],
   "absolutes": []
