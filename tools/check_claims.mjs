@@ -159,8 +159,10 @@ function changedPages(base) {
     const ledger = JSON.parse(readFileSync(join(ROOT, file), "utf8"));
     const page = ledger.page;
     if (typeof page !== "string" || !/^docs\/(?:[a-zA-Z0-9_-]+\/)*index\.html$/.test(page) || ledgerPath(page) !== file) throw Error(`invalid new ledger page: ${file}`);
-    const target = pages.find(p => p.page === page);
-    if (target) target.isNew = true; else pages.push({page, isNew:true});
+    // 2026-09-29 司令塔: 既存ページに初めて台帳を足しただけでは全文の関門にしない（訂正のたびに台帳を足すと公開が止まり、
+    //   台帳を足さない方が得になるため。設計 designs/keiri-high-severity-prevention-2026-09-29 の「新規記事だけ強制」に戻す）。
+    //   台帳だけの追加は、そのページを「足した行」の検査対象に加える（本文の変更が無ければ検査する行も無い）。
+    if (!pages.some(p => p.page === page)) pages.push({page, isNew:false});
   }
   return pages;
 }
@@ -180,7 +182,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const newLedger = page => {
     const fp = forkPoint(base);
     const existed = file => { try { execFileSync("git", ["-C", ROOT, "cat-file", "-e", `${fp}:${file}`], {stdio:"ignore"}); return true; } catch { return false; } };
-    return !existed(page) || (existsSync(join(ROOT, ledgerPath(page))) && !existed(ledgerPath(page)));
+    return !existed(page); // 新規記事（分岐点に無かったページ）だけ単位の全被覆を強制する
   };
   let targets;
   if (args[0] === "--changed") {

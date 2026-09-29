@@ -28,5 +28,5 @@ class CLI(unittest.TestCase):
    self.assertEqual(check('--changed').returncode,1)
    ledger['claims'][0]['covers']=[u['id'] for u in units];lp.write_text(json.dumps(ledger));self.assertEqual(check('--changed').returncode,0)
    (repo/'claims/no-ledger.json').write_text(json.dumps({'page':'docs/no-ledger/index.html','claims':[]}))
-   self.assertEqual(check('--changed').returncode,1) # ledger-only addition also gates
+   self.assertEqual(check('--changed').returncode,0) # 2026-09-29: 既存ページへの台帳だけの追加は関門にしない（新規記事だけ強制）
 if __name__=='__main__':unittest.main()
