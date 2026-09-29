@@ -78,4 +78,25 @@ class Units(unittest.TestCase):
                 with patch.object(runner,'execute') as worker:self.assertEqual(runner.run(a),4);worker.assert_not_called()
             finally:writable(root)
 
+
+class QuoteRefFormats(unittest.TestCase):
+    """2026-09-29 r13 実測: sol は複数の正本・複数の範囲をまとめて書き、行番号もずれる。
+    受け付けるのは「参照したファイルに逐語で在る」引用だけ。別ファイル・画像・正本に無い文は不成立。"""
+    def test_formats(self):
+        import tempfile
+        from pathlib import Path
+        with tempfile.TemporaryDirectory() as d:
+            run=Path(d);(run/'corpus').mkdir()
+            (run/'corpus/a.txt').write_text('一行目\n\n\n\n\n\n\n\n\n\n会社が対象です。\n')
+            (run/'corpus/b.txt').write_text('短時間労働者も加入します。\n')
+            (run/'corpus/c.png').write_bytes(b'\x89PNG\r\n')
+            qp=units.quote_present
+            self.assertTrue(qp(run,'corpus/a.txt:11','会社が対象です。'))                       # 無傷
+            self.assertTrue(qp(run,'corpus/a.txt:1','会社が対象です。'))                        # 行番号のずれ
+            self.assertTrue(qp(run,'corpus/a.txt:1-2,11; corpus/b.txt:1','会社が対象です。\n短時間労働者も加入します。'))  # 複数の正本・範囲・断片
+            self.assertFalse(qp(run,'corpus/a.txt:11','短時間労働者も加入します。'))              # 参照していない別ファイルの文
+            self.assertFalse(qp(run,'corpus/a.txt:11; corpus/b.txt:1','会社が対象です。\n正本に存在しない文です'))  # 断片の1つが正本に無い
+            self.assertFalse(qp(run,'corpus/c.png:1','会社が対象です。'))                        # 画像
+            self.assertFalse(qp(run,'corpus/a.txt','会社が対象です。'))                           # 行番号の無い参照は書式違反
+
 if __name__=='__main__':unittest.main()

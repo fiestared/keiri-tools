@@ -50,21 +50,35 @@ def prepare(r,repo,pages):
     return {str(p.relative_to(r)):digest(p) for p in paths}
 
 def quote_present(run,ref,quote):
+    """引用 quote が、参照 ref の指す正本の範囲に逐語（空白を除く）で在るか。
+    ref は `corpus/<file>:<start>-<end>`。複数の範囲は `,`、複数のファイルは `;` で区切ってよい（2026-09-29 r13 実測:
+    sol は複数の正本・複数の範囲をまとめて書く。1ファイル1範囲しか読めず 566 件が不成立になった）。
+    行番号は目安（全文で照合）。引用が複数箇所をつないだものなら断片ごとに照合。別ファイル・画像/PDF・正本に無い文は不成立のまま。"""
     if not isinstance(ref,str) or not isinstance(quote,str) or not quote.strip():return False
-    match=re.fullmatch(r'(.+?):L?(\d+)(?:-L?(\d+))?',ref)
-    if not match:return False
-    name,start,end=match.groups();start=int(start);end=int(end or start)
-    if start<1 or end<start:return False
-    base=run.resolve()
-    for candidate in (run/name,run/'corpus'/name):
-        path=candidate.resolve()
-        if not any(path.is_relative_to(base/folder) for folder in ('corpus','t1-corpus')):continue
-        if not path.is_file():continue
-        lines=path.read_text().splitlines()
-        if end>len(lines):continue
-        norm=lambda text:re.sub(r'\s+','',text)
-        if norm(quote) in norm('\n'.join(lines[start-1:end])):return True
-    return False
+    norm=lambda text:re.sub(r'\s+','',text)
+    want=norm(quote);base=run.resolve();pool=[]
+    for part in [x.strip() for x in ref.split(';') if x.strip()]:
+        match=re.fullmatch(r'(.+?):((?:L?\d+(?:-L?\d+)?)(?:\s*,\s*L?\d+(?:-L?\d+)?)*)',part)
+        if not match:return False
+        name,spans=match.groups();path=None
+        for candidate in (run/name,run/'corpus'/name):
+            c=candidate.resolve()
+            if any(c.is_relative_to(base/folder) for folder in ('corpus','t1-corpus')) and c.is_file():path=c;break
+        if path is None or path.suffix.lower() not in ('.txt','.md','.htm','.html','.xml','.json'):return False
+        try:lines=path.read_text().splitlines()
+        except (UnicodeDecodeError,OSError):return False
+        for span in spans.split(','):
+            a,_,b=span.strip().replace('L','').partition('-');a=int(a);b=int(b or a)
+            if a<1 or b<a or a>len(lines):return False
+        # 行番号は目安として扱い、照合は参照したファイルの全文で行う（pdftotext の段組みで行番号が大きくずれる。r13 実測 176 件）。
+        # 別ファイル・存在しない引用は不成立のまま＝「正本に逐語で在る」ことは保つ。
+        pool.append('\n'.join(lines))
+    if not pool:return False
+    # sol は複数箇所の引用を改行・「…」・「 | 」でつないで1つに書く。断片ごとに、参照したどれかの正本に逐語で在ることを求める。
+    frags=[norm(f) for f in re.split(r'\n|…|\.\.\.|\s\|\s|／',quote)]
+    frags=[f for f in frags if len(f)>=6] or [want]
+    text=[norm(chunk) for chunk in pool]
+    return all(any(f in t for t in text) for f in frags)
 
 def inspect(path,units):
     errors=[];done={};expected={(u['page'],u['id']):u for u in units}
