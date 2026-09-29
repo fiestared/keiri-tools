@@ -89,6 +89,13 @@ const HISTORICAL_FACTS = [
   { file: "kogaku-ryoyohi/index.html", snippet: "<a href=\"../column/kogaku-ryoyohi/#kaisei\">令和8年8月の改正について</a>",
     reason: "★上と同じ改正を指すリンクの文言＝制度の事実。リンク先の記事の節（#kaisei）も" +
             "『令和8年8月診療分から限度額は上がる』という見出しで、この年月は動かない" },
+  { file: "kogaku-ryoyohi/index.html",
+    snippet: "令和8年政令第240号で定められた、令和9年8月以後の診療分の表で計算しています。",
+    reason: "健康保険法施行令の改正政令の識別番号と将来施行表の適用月という制度の事実。" +
+            "https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20270801_508CO0000000240 の" +
+            "附則第一条第二号・第十八条第二項で施行日と適用を確認。データの現在年度の申告ではない。" +
+            "公布済み表を選んだときだけ表示し、test_kogaku・test_t6_uiで月境界と表示を検証する。" +
+            "政令番号・適用月を含む全文一致だけを免除し、文言変更時には再審査する。" },
   { file: "kogaku-ryoyohi/index.html", snippet: "年間上限（令和8年8月診療分から新設）",
     reason: "★年間上限が**新設された時点**そのもの＝制度の事実（結果画面の見出し）。" +
             "上限額そのものは kogaku_r08.json の annual.caps が持ち、適用開始も annual.applies_from " +
