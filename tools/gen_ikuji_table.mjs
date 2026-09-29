@@ -38,8 +38,7 @@ const END = '<!-- IKUJI_TABLE:END -->';
 export const WAGES = [150000, 175000, 200000, 225000, 250000, 275000, 300000,
   325000, 350000, 375000, 400000, 425000, 450000, 475000, 500000, 550000];
 
-/** 開始日を固定する（応当日で区切るため、開始日が変わると合計が動く） */
-export const START_DATE = '2026-04-01';
+/** 現行額の早見表は参照データの適用開始日から算定する。過去の固定日を使わない。 */
 /** 1年間（365日）休んだ場合で示す */
 export const LEAVE_DAYS = 365;
 
@@ -47,7 +46,7 @@ const fmt = (n) => n.toLocaleString('ja-JP');
 
 /** 月給1点ぶんの計算。★数字はすべて calcIkuji が出したものだけを使う */
 export function rowFor(wage, D) {
-  const r = calcIkuji({ total6m: wage * 6, startDate: START_DATE, leaveDays: LEAVE_DAYS, shien: null }, D);
+  const r = calcIkuji({ total6m: wage * 6, startDate: D._meta.applies_from, leaveDays: LEAVE_DAYS, shien: null }, D);
   const u67 = r.units.find((u) => u.lowDays === 0);   // 67%だけの支給単位期間
   const u50 = r.units.find((u) => u.highDays === 0);  // 50%だけの支給単位期間
   if (!u67 || !u50) throw new Error(`月給${wage}円で67%/50%の支給単位期間が取れませんでした`);
@@ -58,7 +57,7 @@ export function buildTable(D) {
   const rows = WAGES.map((w) => rowFor(w, D));
   // 上限に張り付き始める月給 = 賃金日額の上限 × 30日（賃金日額 = 6か月の総額 ÷ 180 = 月給 ÷ 30）
   const capDaily = rows.find((r) => r.capped)
-    ? calcIkuji({ total6m: 10 ** 9, startDate: START_DATE, leaveDays: LEAVE_DAYS, shien: null }, D).daily
+    ? calcIkuji({ total6m: 10 ** 9, startDate: D._meta.applies_from, leaveDays: LEAVE_DAYS, shien: null }, D).daily
     : null;
   const capWage = capDaily ? capDaily * UNIT_DAYS : null;
 
