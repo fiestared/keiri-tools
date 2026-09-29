@@ -146,6 +146,11 @@
   <input type="number" id="leaveDays" value="28" min="1" max="60" inputmode="numeric">
   <div class="hint">土日祝を含む<b>暦の日数</b>です。<b>上限は28日</b>（4週間・61条の8第2項2号）で、それを超える分は支給されません。<b>2回まで分割できます</b>（3回目以降は支給対象外・同項1号）。<b>14日以上でないと13%（出生後休業支援給付金）が1円も出ません。</b></div>
 
+  <label for="workDays">休業中に就業する日数</label>
+  <input id="workDays" type="number" value="0" min="0" max="28" inputmode="numeric">
+  <label for="workHours">休業中に就業する合計時間</label>
+  <input id="workHours" type="number" value="0" min="0" step="any" inputmode="decimal">
+  <div class="hint">28日休業なら就業10日以下、10日を超えるときは80時間以下が給付要件です。短い休業では比例し、日数の上限は端数を切り上げます。例えば14日休業なら5日以下、5日超なら40時間以下です。労使間の就業の合意とは別に判定します。</div>
   <label for="wage" style="margin-top:12px">休業中に会社から支払われる賃金（円）</label>
   <input type="number" id="wage" value="0" min="0" inputmode="numeric">
   <div class="hint">産後パパ育休は<b>労使協定があれば休業中に就業できます</b>（ここが通常の育休と違う点です）。就業日数・時間が支給要件の上限以内であることを確認してから、受け取る賃金を入れてください。28日休業なら10日（10日を超える場合は80時間）以下、短い休業では比例した上限です。この計算機は日数・時間の判定を行わず、上限超過の場合は対象外です。<b>受け取らない場合は0のまま</b>で結構です。</div>
@@ -354,6 +359,8 @@ $("calc").addEventListener("click", async () => {
       leaveDays: Number($("leaveDays").value),
       // ★賃金は**必ず明示的に渡す**（省略を0と読ませない。渡し忘れると80%調整が消えて多く出る）
       wage: Number($("wage").value) || 0,
+      workDays: Number($("workDays").value),
+      workHours: Number($("workHours").value),
       spouse: spouseArg,
     }, D);
   } catch (e) {
@@ -387,6 +394,9 @@ $("calc").addEventListener("click", async () => {
   let shienRow, shienNote = "";
   if (s.eligible) {
     shienRow = `<tr><th>出生後休業支援給付金（＋13%）</th><td><b>${yen(s.amount)}</b>（${s.days}日分・最大28日）</td></tr>`;
+  } else if (s.reason === "work_exceeded") {
+    shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td>¥0</td></tr>`;
+    shienNote = `<div class="callout">就業日数・時間が給付の上限を超えるため、出生時育児休業給付金と出生後休業支援給付金は不支給です。今回の上限は${r.work.maxDays}日、これを超える場合は${r.work.maxHours}時間です。</div>`;
   } else if (s.reason === "shusshoji_unpaid") {
     shienRow = `<tr><th>出生後休業支援給付金（＋13%）</th><td>¥0 — <b>出生時育児休業給付金が不支給のため</b></td></tr>`;
     shienNote = `<div class="callout"><b>休業中の賃金が80%以上のため、給付金は1円も出ません。</b>
@@ -403,12 +413,7 @@ $("calc").addEventListener("click", async () => {
     //     そのまま案内すると、**休業を延ばしても1円も増えない人に「延ばせば18,200円乗る」と言う**。
     //     産後パパ育休を1日延ばすのは職場調整を伴う実際の決断なので、この誤りは金額の誤差より重い。
     const need = SHIEN_MIN_DAYS - r.payDays;
-    const would = shienKyufu(
-      r.daily,
-      SHIEN_MIN_DAYS,                                   // 自分を14日にしたと仮定して
-      spouseArg.exempt ? 0 : spouseArg.days,            // 配偶者の状況は**いま入力されているまま**
-      spouseArg.exempt,
-    );
+    const would = r.extensionShien;
     shienRow = `<tr><th>出生後休業支援給付金（＋13%）</th><td>¥0 — <b>あなたの休業が14日未満</b>のため（61条の10第1項2号）</td></tr>`;
     shienNote = would.eligible
       ? `<div class="callout"><b>あと${need}日 休業を延ばすと、13%（約${yen(would.amount)}）がまるごと乗ります。</b>

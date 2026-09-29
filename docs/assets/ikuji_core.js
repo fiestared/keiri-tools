@@ -123,6 +123,40 @@ export function applyIkujiCaps(w, D) {
   return { daily: capped ? max : floored ? min : w, max, min, capped, floored };
 }
 
+/** 厚労省001728499の新旧月額から得た旧日額。現行額は共通データを参照。 */
+function capsForPeriod(raw, from, to, D) {
+  const revision = D?._meta?.applies_from;
+  const next = D?._meta?.next_revision;
+  if (!revision || !next || from < '2025-08-01' || to >= next) {
+    throw new Error('この期間の改定額は未収録です。ハローワークで支給額を確認してください');
+  }
+  if (from < revision && to >= revision && (raw < 3203 || raw > 16110)) {
+    throw new Error('改定日をまたぐ支給単位期間の適用額は未確認のため、計算できません');
+  }
+  if (to < revision) {
+    if (revision !== '2026-08-01') throw new Error('この改定前の額は未収録です');
+    return applyIkujiCaps(raw, { chingin_nichigaku_max: { age30_44: 483300 / 30 }, chingin_nichigaku_min: 90420 / 30 });
+  }
+  return applyIkujiCaps(raw, D);
+}
+
+function wholeDays(value, max, name) {
+  const n = Number(value);
+  if (!Number.isInteger(n) || n < 0 || n > max) throw new Error(`${name}は0〜${max}の整数で入力してください`);
+  return n;
+}
+
+/** 厚労省001461102・3頁。日数は切上げ、時間は端数処理しない。 */
+function papaWork(leaveDays, workDays = 0, workHours = 0) {
+  const days = Math.min(leaveDays, SHUSSHOJI_MAX_DAYS);
+  const worked = wholeDays(workDays, days, '就業日数');
+  const hours = Number(workHours);
+  if (!Number.isFinite(hours) || hours < 0 || hours > worked * 24) throw new Error('就業時間と就業日数を確認してください');
+  const maxDays = Math.ceil(days * 10 / 28);
+  const maxHours = days * 80 / 28;
+  return { eligible: worked <= maxDays || hours <= maxHours, maxDays, maxHours };
+}
+
 /* ───────── 日付（支給単位期間は暦の応当日で区切る。61条の7第5項） ─────────
  *
  * ⚠️ `new Date("2026-04-01")` は **UTCの真夜中**として解釈される（ローカル時刻ではない）。
@@ -388,12 +422,21 @@ export function calcPapaIkukyu(input, D) {
   const daily = cap.daily;
 
   // 67%（61条の8）。28日で頭打ち＋賃金が出ていれば80%調整。
+  const work = papaWork(leaveDays, i.workDays, i.workHours);
   const shusshoji = shusshojiKyufu(daily, leaveDays, i.wage);
+  if (!work.eligible) Object.assign(shusshoji, { amount: 0, unpaid: true, workExceeded: true });
 
   // 13%（61条の10）。**賃金では減らない**が、**67%が不支給なら道連れで出ない**（厚労省・5頁）。
   const shien = shusshoji.unpaid
-    ? { eligible: false, reason: 'shusshoji_unpaid', amount: 0, days: 0 }
+    ? { eligible: false, reason: work.eligible ? 'shusshoji_unpaid' : 'work_exceeded', amount: 0, days: 0 }
     : shienKyufu(daily, shusshoji.days, i.spouse.exempt ? 0 : i.spouse.days, !!i.spouse.exempt);
+
+  // 14日へ延長した仮定でも配偶者・就業・賃金の要件を確認してから案内する。
+  const extensionBase = shusshojiKyufu(daily, SHIEN_MIN_DAYS, i.wage);
+  const extensionShien = leaveDays < SHIEN_MIN_DAYS &&
+      papaWork(SHIEN_MIN_DAYS, i.workDays, i.workHours).eligible && !extensionBase.unpaid
+    ? shienKyufu(daily, SHIEN_MIN_DAYS, i.spouse.exempt ? 0 : i.spouse.days, !!i.spouse.exempt)
+    : { eligible: false, amount: 0, days: 0 };
 
   return {
     rawDaily: raw,
@@ -412,7 +455,9 @@ export function calcPapaIkukyu(input, D) {
     // ★産後パパ育休で使った日数は、そのあとの育児休業給付金の「67%が続く180日」を食う
     //   （61条の8第7項が、61条の7第6項の日数に出生時育児休業給付金の支給日数を含めて読み替える）。
     //   28日取ると、そのあとの育休で67%が続くのは残り152日。**180日はリセットされない。**
-    remaining67: Math.max(0, HIGH_DAYS - shusshoji.days),
+    remaining67: Math.max(0, HIGH_DAYS - (shusshoji.unpaid ? 0 : shusshoji.days)),
+    work,
+    extensionShien,
     year: D?._meta?.label ?? null,
     nextRevision: D?._meta?.next_revision ?? null,
   };
@@ -457,23 +502,34 @@ export function calcIkuji(input, D) {
   const startMs = parseYmd(i.startDate);
 
   const raw = wageDaily(i.total6m);
-  const cap = applyIkujiCaps(raw, D);
+  const cap = capsForPeriod(raw, i.startDate, i.startDate, D);
   const daily = cap.daily;
 
   const leaveDays = Math.floor(Number(i.leaveDays) || 0);
   if (leaveDays <= 0) throw new Error('育児休業の日数を入力してください');
 
   // 支給単位期間 = 暦の応当日で区切る（5項）。支給日数は各号（1号=30日 / 2号=終了月は実日数）。
-  const units = unitPeriods(startMs, leaveDays).map((u) => unitPayment(daily, u));
+  const prior = wholeDays(i.priorShusshojiDays ?? 0, SHUSSHOJI_MAX_DAYS, '先行する出生時育児休業給付の支給日数');
+  const units = unitPeriods(startMs, leaveDays).map((u) => {
+    const unitCap = capsForPeriod(raw, u.from, u.to, D);
+    return { ...unitPayment(unitCap.daily, { ...u, startDay: u.startDay + prior, endDay: u.endDay + prior }), daily: unitCap.daily };
+  });
   const ikujiTotal = units.reduce((s, u) => s + u.amount, 0);
   const payDays67 = units.reduce((s, u) => s + u.highDays, 0);
   const payDays50 = units.reduce((s, u) => s + u.lowDays, 0);
 
   // shien: null ＝「この人は出生後休業支援の対象ではない」と呼び出し側が言明した状態
-  const shien =
-    i.shien === null
-      ? { eligible: false, reason: 'not_applicable', amount: 0, days: 0 }
-      : shienKyufu(daily, i.shien.ownDays, i.shien.spouseDays, !!i.shien.spouseExempt);
+  let shien = { eligible: false, reason: 'not_applicable', amount: 0, days: 0 };
+  if (i.shien !== null) {
+    const own = wholeDays(i.shien.ownDays, leaveDays, '今回の対象期間内の休業日数');
+    const paid = wholeDays(i.shien.paidDays ?? 0, prior, '支援給付の支給済日数');
+    const ownCap = capsForPeriod(raw, i.startDate, fmtYmd(addDays(startMs, Math.max(own, 1) - 1)), D);
+    shien = shienKyufu(ownCap.daily, own + prior, i.shien.spouseDays, !!i.shien.spouseExempt);
+    if (shien.eligible) {
+      const days = Math.min(own, SHIEN_MAX_DAYS - paid);
+      shien = { ...shien, days, amount: yen(ownCap.daily * days * RATE_SHIEN) };
+    }
+  }
 
   return {
     rawDaily: raw,

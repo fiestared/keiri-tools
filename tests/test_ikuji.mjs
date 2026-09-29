@@ -64,14 +64,14 @@ const APR = '2026-04-01'; // 4月は30日。1期間目＝暦30日ちょうど（
 
 // 上限に張りついた人（月給が高い人）: 賃金日額が上限16,110円まで切られる
 const capRun = calcIkuji({ total6m: 16540 * 180 * 2, startDate: APR, leaveDays: 365, shien: null }, D);
-eq(capRun.daily, MAX, '賃金日額が上限16,110円に張りつく');
-eq(capRun.units[0].amount, 332454, '【オラクル】育休67%の支給限度額 = 332,454円（1期間目・30日）');
+eq(capRun.daily, 16110, '賃金日額が上限16,110円に張りつく');
+eq(capRun.units[0].amount, 323811, '【オラクル】育休67%の支給限度額 = 323,811円（1期間目・30日・令和8年8月改定前）');
 eq(capRun.units[6].amount, 248100, '【オラクル】育休50%の支給限度額 = 248,100円（7期間目・181日目以降）');
 
 // 下限に張りついた人: 6か月の賃金総額30万円 → 賃金日額1,666.67 → 下限3,014円まで引き上げ
 const floorRun = calcIkuji({ total6m: 300000, startDate: APR, leaveDays: 365, shien: null }, D);
-eq(floorRun.daily, MIN, '賃金日額が下限3,014円まで引き上げられる');
-eq(floorRun.units[0].amount, 64380, '【オラクル】育休67%の支給下限額 = 64,380円（切り捨て）');
+eq(floorRun.daily, 3014, '賃金日額が下限3,014円まで引き上げられる');
+eq(floorRun.units[0].amount, 60581, '【オラクル】育休67%の支給下限額 = 60,581円（改定前・切り捨て）');
 eq(floorRun.units[6].amount, 48045, '【オラクル】育休50%の支給下限額 = 48,045円');
 
 // 産後パパ育休（出生時育児休業給付金）28日
@@ -101,7 +101,7 @@ eq(poor.daily, MIN, '★賃金日額が下限を割る人は3,014円まで引き
 eq(poor.floored, true, '下限に張りついたことを画面に出せる');
 const poorRun = calcIkuji({ total6m: 300000, startDate: APR, leaveDays: 30, shien: null }, D);
 eq(poorRun.floored, true, '★calcIkuji でも下限が当たる（端から端まで）');
-eq(poorRun.ikujiTotal, 64380, '★低賃金の人の1か月分は下限額64,380円（賃金日額のままなら35,588円で赤）');
+eq(poorRun.ikujiTotal, 60581, '★改定前の低賃金の人の1か月分は下限額60,581円（賃金日額のままなら35,588円で赤）');
 
 // ── 3. 賃金日額（17条1項）。賞与は総額に入らない ───────────────────
 eq(wageDaily(300000 * 6), 10000, '月給30万・賞与なし → 賃金日額10,000円');
@@ -250,8 +250,8 @@ const rich2 = calcIkuji(
 );
 eq(rich2.capped, true, '月給60万は上限に張りつく');
 eq(rich2.payDays67, 177, '★★暦で180日休んでも、67%で払われるのは177日（5月・7月・8月が31日あるため）');
-eq(rich2.ikujiTotal, 332454 * 5 + yen(16540 * 27 * RATE_HIGH), '★上限額×5か月＋終了月27日分');
-eq(rich2.ikujiTotal, 1961478, '★実額。「332,454×6か月＝1,994,724」は33,246円の過大');
+eq(rich2.ikujiTotal, 323811 * 4 + 332454 + yen(16540 * 27 * RATE_HIGH), '★上限額×5か月＋終了月27日分');
+eq(rich2.ikujiTotal, 1926906, '★改定前4期間323,811円＋改定後30日332,454円＋27日299,208円');
 eq(rich2.shien.eligible, false, '出生後休業をしていなければ13%は乗らない');
 
 // ── 10. fail closed（参照データが無ければ計算しない）──────────────
@@ -429,6 +429,35 @@ const papa = (over) => calcPapaIkukyu({
 }
 
 // ───────────────────────────────────────────────────────────────
+
+const rejected = f => { try { f(); return false; } catch { return true; } };
+const oldInput = { total6m: 3000000, startDate: '2026-04-01', leaveDays: 30, shien: null };
+const papaInput = { total6m: 1800000, leaveDays: 28, wage: 0, spouse: { exempt: true } };
+const source = "https://www.mhlw.go.jp/content/001728499.pdf";
+const guide = "https://www.mhlw.go.jp/content/11600000/001461102.pdf";
+const reviewCases = [
+ {name:'t7 改定前67%上限',run:()=>calcIkuji(oldInput,D).ikujiTotal,expected:323811,source,quote:' 支給上限額 （支給率 67％） 323,811 円 →        332,454 円'},
+ {name:'t7 改定後67%上限',run:()=>calcIkuji({...oldInput,startDate:'2026-08-01'},D).ikujiTotal,expected:332454,source,quote:' 支給上限額 （支給率 67％） 323,811 円 →        332,454 円'},
+ {name:'t7 7月31日旧上限',run:()=>calcIkuji({...oldInput,startDate:'2026-07-31',leaveDays:1},D).ikujiTotal,expected:10793,source,quote:'    上限額 483,300 円 →     496,200 円'},
+ {name:'t7 8月1日新上限',run:()=>calcIkuji({...oldInput,startDate:'2026-08-01',leaveDays:1},D).ikujiTotal,expected:11081,source,quote:'    上限額 483,300 円 →     496,200 円'},
+ {name:'t7 支給単位期間ごとに改定',run:()=>calcIkuji({...oldInput,startDate:'2026-07-01',leaveDays:62},D).units[1].amount,expected:343535,source,quote:'    上限額 483,300 円 →     496,200 円'},
+ {name:'t7 未収録の将来改定を止める',run:()=>rejected(()=>calcIkuji({...oldInput,startDate:'2027-08-01'},D)),expected:true,source:guide,quote:'支給上限額（令和９年７月31日までの額）'},
+ {name:'t7 改定をまたぐ単位期間は未確認として止める',run:()=>rejected(()=>calcIkuji({...oldInput,startDate:'2026-07-15'},D)),expected:true,source,quote:'令和８年８月１日から支給限度額が変更になります。'},
+ {name:'t7 先行28日後の通常育休152日までは67%',run:()=>calcIkuji({...oldInput,total6m:1800000,priorShusshojiDays:28,leaveDays:152},D).payDays50,expected:0,source:guide,quote:'れます。181日目以降は給付率50％となります。'},
+ {name:'t7 先行28日後の通常育休153日目は50%',run:()=>calcIkuji({...oldInput,total6m:1800000,priorShusshojiDays:28,leaveDays:153},D).payDays50,expected:1,source:guide,quote:'れます。181日目以降は給付率50％となります。'},
+ {name:'t7 先行28日と通常育休180日の給付',run:()=>calcIkuji({...oldInput,total6m:1800000,priorShusshojiDays:28,leaveDays:180},D).ikujiTotal,expected:1145000,source:guide,quote:'出生時育児休業給付金が支給された日数は、育児休業給付金の給付率67％の上限日数である180日に通算さ'},
+ {name:'t7 休業14日に本人28日を入れたら止める',run:()=>rejected(()=>calcIkuji({...oldInput,total6m:1800000,leaveDays:14,shien:{ownDays:28,spouseDays:14}},D)),expected:true,source:guide,quote:'休業開始時賃金日額※１×対象期間内の被保険者の休業期間の日数（28日が上限）'},
+ {name:'t7 既支給14日なら残り14日18200円',run:()=>calcIkuji({...oldInput,total6m:1800000,priorShusshojiDays:14,shien:{ownDays:28,spouseDays:14,paidDays:14}},D).shien.amount,expected:18200,source:guide,quote:'同一の子に対して既に出生後休業支援給付金が支給されている場合は、支給済日数分を差し引いた日数が上'},
+ {name:'t7 既支給28日なら0円',run:()=>calcIkuji({...oldInput,total6m:1800000,priorShusshojiDays:28,shien:{ownDays:28,spouseDays:14,paidDays:28}},D).shien.amount,expected:0,source:guide,quote:'同一の子に対して既に出生後休業支援給付金が支給されている場合は、支給済日数分を差し引いた日数が上'},
+ {name:'t7 28日中14日112時間就業は全額不支給',run:()=>calcPapaIkukyu({...papaInput,workDays:14,workHours:112},D).total,expected:0,source:guide,quote:'業しているため、全期間を通じて出生時育児休業給付金は不支給となります。'},
+ {name:'t7 就業11日80時間は支給対象',run:()=>calcPapaIkukyu({...papaInput,workDays:11,workHours:80},D).total,expected:224000,source:guide,quote:'出生時育児休業給付金の支給対象期間中、最大10日（10日を超える場合は80時間）まで就業する'},
+ {name:'t7 就業11日80時間超は不支給',run:()=>calcPapaIkukyu({...papaInput,workDays:11,workHours:80.01},D).total,expected:0,source:guide,quote:'出生時育児休業給付金の支給対象期間中、最大10日（10日を超える場合は80時間）まで就業する'},
+ {name:'t7 14日休業の就業6日40時間超は不支給',run:()=>calcPapaIkukyu({...papaInput,leaveDays:14,workDays:6,workHours:40.01},D).total,expected:0,source:guide,quote:'例：14日間の休業 ⇒ 最大５日（５日を超える場合は40時間）'},
+ {name:'t7 本人13日配偶者0日なら延長支援案内0円',run:()=>calcPapaIkukyu({...papaInput,leaveDays:13,spouse:{exempt:false,days:0}},D).extensionShien.amount,expected:0,source:'https://laws.e-gov.go.jp/law/349AC0000000116',quote:'当該出生後休業に係る子について出生後休業をしたとき'},
+ {name:'t7 本人13日配偶者14日なら延長支援案内18200円',run:()=>calcPapaIkukyu({...papaInput,leaveDays:13,spouse:{exempt:false,days:14}},D).extensionShien.amount,expected:18200,source:'https://laws.e-gov.go.jp/law/349AC0000000116',quote:'対象期間内にした出生後休業の日数が通算して十四日以上であるとき。'},
+];
+
+for (const c of reviewCases) { try { eq(c.run(), c.expected, c.name); } catch(e) { eq(e.message, c.expected, c.name); } }
 if (failed) {
   console.error(`\n✗ ${failed} 件失敗 / ${checks} checks`);
   process.exit(1);

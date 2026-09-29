@@ -63,6 +63,9 @@
   <label for="startDate">育児休業を開始する日</label>
   <input id="startDate" type="date" value="2026-04-01">
 
+  <label for="priorShusshojiDays">同じ子について先に受給した出生時育児休業給付の日数</label>
+  <input id="priorShusshojiDays" type="number" min="0" max="28" value="0" inputmode="numeric">
+  <div class="hint">先行分を67%の180日に通算します。ここでは、産後パパ育休の後に連続して取る通常育休を計算します。通常育休を分割した後の再開分は対象外です。</div>
   <label for="leaveDays">育児休業の日数（暦の日数）</label>
   <input id="leaveDays" type="number" inputmode="numeric" value="365" min="1" max="1095">
 
@@ -70,10 +73,13 @@
     <legend>出生後休業支援給付金（＋13%）の判定</legend>
     <div class="grid field-pair">
       <div>
-        <label for="shienOwnDays">あなたの出生後休業の日数</label>
+        <label for="shienOwnDays">今回の育休開始日から連続する、対象期間内の休業日数</label>
         <input id="shienOwnDays" type="number" inputmode="numeric" value="28" min="0" max="112">
       </div>
       <div>
+        <label for="shienPaidDays">先行する産後パパ育休で支援給付を受給済みの日数</label>
+        <input id="shienPaidDays" type="number" min="0" max="28" value="0" inputmode="numeric">
+        <div class="hint">今回の休業日数を超える日数は入力できません。支援給付は支給済日数を差し引き、合計28日までです。先行する出生時育児休業給付の日数は14日要件にも通算します。</div>
         <label for="shienSpouseDays">配偶者の出生後休業の日数</label>
         <input id="shienSpouseDays" type="number" inputmode="numeric" value="0" min="0" max="112">
       </div>
@@ -87,6 +93,7 @@
       <b>あなたが父親で配偶者が子を出産した場合（子が養子でない）は⑥に当たります</b>。妻が育休を1日も取らなくても13%を受け取れるので、父親はチェックしてください。</div>
   </fieldset>
 
+  <p class="hint">限度額は支給対象期間に応じて切り替えます。令和8年8月1日の改定をまたぐ支給単位期間で新旧の限度額によって金額が変わる場合、又は令和9年8月1日以後など改定額が未収録の場合は計算を止めます。開始時の表示額だけで全期間を計算するものではありません。</p>
   <button id="calc" type="button" class="primary">育児休業給付金を計算する</button>
 
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -144,9 +151,11 @@ $("calc").addEventListener("click", async () => {
     r = calcIkuji({
       total6m: monthly * 6,
       startDate,
+      priorShusshojiDays: Number($("priorShusshojiDays").value),
       leaveDays: Number($("leaveDays").value),
       shien: {
         ownDays: Number($("shienOwnDays").value),
+        paidDays: Number($("shienPaidDays").value),
         spouseDays: Number($("shienSpouseDays").value),
         spouseExempt: $("spouseExempt").checked,
       },
@@ -176,7 +185,7 @@ $("calc").addEventListener("click", async () => {
 
   box.innerHTML = `
     <div class="big">育児休業給付 ${yen(r.total)}</div>
-    <div class="hint">${r.startDate}〜${r.endDate}・${r.leaveDays}日／賃金日額 <b>${yen(Math.floor(r.daily))}</b></div>
+    <div class="hint">${r.startDate}〜${r.endDate}・${r.leaveDays}日／開始時の適用賃金日額 <b>${yen(Math.floor(r.daily))}</b></div>
     ${capNote}
     ${shienNote}
     <table>
@@ -184,7 +193,7 @@ $("calc").addEventListener("click", async () => {
       ${shienRow}
       <tr class="tot"><td>合計</td><td class="n">${yen(r.total)}</td></tr>
     </table>
-    <div class="note">支給日数は終了月以外つねに30日なので、67%で払われる日数は<b>${r.payDays67}日</b>・50%は<b>${r.payDays50}日</b>（暦の${r.leaveDays}日とは一致しません）。年2回などの賞与は計算に入りません。名称が賞与でも3か月以内ごとの支払いは扱いが異なります。${r.year ? `<span class="hint">（${r.year}）</span>` : ""}</div>
+    <div class="note">支給日数は原則30日。ただし終了期間と通算180日目を含む期間は法定の日割りです。67%で払われる日数は<b>${r.payDays67}日</b>・50%は<b>${r.payDays50}日</b>（暦の${r.leaveDays}日とは一致しません）。年2回などの賞与は計算に入りません。名称が賞与でも3か月以内ごとの支払いは扱いが異なります。${r.year ? `<span class="hint">（${r.year}）</span>` : ""}</div>
     <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
   postHeight();
 });

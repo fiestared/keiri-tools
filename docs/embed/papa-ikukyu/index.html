@@ -64,6 +64,11 @@
   <input id="leaveDays" type="number" inputmode="numeric" value="28" min="1" max="60">
   <div class="hint">上限は28日（61条の8第2項2号）。14日以上でないと13%は1円も出ません。</div>
 
+  <label for="workDays">休業中に就業する日数</label>
+  <input id="workDays" type="number" value="0" min="0" max="28" inputmode="numeric">
+  <label for="workHours">休業中に就業する合計時間</label>
+  <input id="workHours" type="number" value="0" min="0" step="any" inputmode="decimal">
+  <div class="hint">28日休業なら就業10日以下、10日を超えるときは80時間以下が給付要件です。短い休業では比例し、日数の上限は端数を切り上げます。例えば14日休業なら5日以下、5日超なら40時間以下です。労使間の就業の合意とは別に判定します。</div>
   <label for="wage">休業中に会社から支払われる賃金（円）</label>
   <input id="wage" type="number" inputmode="numeric" value="0" min="0">
   <div class="hint">産後パパ育休は労使協定があれば就業できます。受け取らない場合は0のまま。</div>
@@ -150,6 +155,8 @@ $("calc").addEventListener("click", async () => {
       total6m: monthly * 6,
       leaveDays: Number($("leaveDays").value),
       wage: Number($("wage").value) || 0,
+      workDays: Number($("workDays").value),
+      workHours: Number($("workHours").value),
       spouse: spouseIsExempt()
         ? { exempt: true }
         : { exempt: false, days: Number($("spouseDays").value) || 0 },
@@ -173,14 +180,19 @@ $("calc").addEventListener("click", async () => {
   let shienRow, shienNote = "";
   if (s.eligible) {
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">${yen(s.amount)}</td></tr>`;
+  } else if (s.reason === "work_exceeded") {
+    shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td>¥0</td></tr>`;
+    shienNote = `<div class="callout">就業日数・時間が給付の上限を超えるため、出生時育児休業給付金と出生後休業支援給付金は不支給です。今回の上限は${r.work.maxDays}日、これを超える場合は${r.work.maxHours}時間です。</div>`;
   } else if (s.reason === "shusshoji_unpaid") {
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">¥0</td></tr>`;
     shienNote = `<div class="callout">休業中の賃金（${yen(r.shusshoji.wage)}）が80%相当額（${yen(r.shusshoji.cap)}）以上のため、給付金は1円も出ません。67%が不支給になると13%も道連れで消えます。</div>`;
   } else if (s.reason === "own_days") {
     const need = 14 - r.payDays;
-    const wouldGet = Math.floor(r.daily * 14 * 0.13);
+    const wouldGet = r.extensionShien.amount;
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">¥0</td></tr>`;
-    shienNote = `<div class="callout"><b>あと${need}日 延ばすと、13%（約${yen(wouldGet)}）がまるごと乗ります。</b>いまは${r.payDays}日で14日未満のため0円です（61条の10第1項2号）。</div>`;
+    shienNote = r.extensionShien.eligible
+      ? `<div class="callout"><b>あと${need}日 延ばすと、13%（約${yen(wouldGet)}）がまるごと乗ります。</b>いまは${r.payDays}日で14日未満のため0円です（61条の10第1項2号）。</div>`
+      : `<div class="callout">本人の休業を14日に延ばすだけでは支援給付は出ません。配偶者の14日要件（免除あり）と、就業・賃金の要件も満たす必要があります。</div>`;
   } else {
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">¥0</td></tr>`;
     shienNote = `<div class="callout"><b>配偶者が14日以上の育児休業を取れば、13%が上乗せ</b>されます。配偶者が産後休業中なら要件は免除されるので、上で「配偶者が出産した（＝産後休業中）」を選び直してください（同条2項3号）。</div>`;

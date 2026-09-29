@@ -138,6 +138,9 @@
   <input type="date" id="startDate" value="2026-04-01">
   <div class="hint"><b>母親は原則、産後休業が終わった翌日</b>、父親は勤務先に申し出た育休の初日です。分からない方は、厚生労働省の<a href="https://www.bosei-navi.mhlw.go.jp/leave/" rel="noopener">産休・育休期間の計算</a>で確認できます。支給単位期間は、この日の「応当日」で1か月ごとに区切られます。</div>
 
+  <label for="priorShusshojiDays">同じ子について先に受給した出生時育児休業給付の日数</label>
+  <input id="priorShusshojiDays" type="number" min="0" max="28" value="0" inputmode="numeric">
+  <div class="hint">先行分を67%の180日に通算します。ここでは、産後パパ育休の後に連続して取る通常育休を計算します。通常育休を分割した後の再開分は対象外です。</div>
   <label for="leaveDays" style="margin-top:12px">育児休業の日数</label>
   <input type="number" id="leaveDays" value="307" min="1" max="1095" inputmode="numeric">
   <div class="hint">土日祝を含む<b>暦の日数</b>です。初期値の307日は、母親が産後休業から続けて育休に入り、子どもが1歳になるまで休む一般例です。給付は原則として<b>1歳の誕生日の前々日まで</b>。父親、延長、分割取得の方は実際の開始日と終了日を数えて入力してください。厚生労働省の<a href="https://shussan.ikukyu-simu.mhlw.go.jp/" rel="noopener">公式試算ツール</a>でも期間を確認できます。</div>
@@ -148,15 +151,18 @@
 
     <div class="fee-pair field-pair" style="margin-top:10px">
       <div>
-        <label for="shienOwnDays">あなたが出生後休業をする日数</label>
+        <label for="shienOwnDays">今回の育休開始日から連続する、対象期間内の休業日数</label>
         <input type="number" id="shienOwnDays" value="28" min="0" max="112" inputmode="numeric">
       </div>
       <div>
+        <label for="shienPaidDays">先行する産後パパ育休で支援給付を受給済みの日数</label>
+        <input id="shienPaidDays" type="number" min="0" max="28" value="0" inputmode="numeric">
+        <div class="hint">今回の休業日数を超える日数は入力できません。支援給付は支給済日数を差し引き、合計28日までです。先行する出生時育児休業給付の日数は14日要件にも通算します。</div>
         <label for="shienSpouseDays">配偶者が出生後休業をする日数</label>
         <input type="number" id="shienSpouseDays" value="0" min="0" max="112" inputmode="numeric">
       </div>
     </div>
-    <div class="hint"><b>13%は「配偶者も14日以上」取らないと乗りません</b>（雇用保険法61条の10第1項3号）。あなたが条件を満たしていても、<b>配偶者が育休を取らなければ0円</b>です。対象期間は<b>産後休業をしなかった方（多くは父）が出生日から8週間、産後休業をした方（母）が16週間</b>です（同条7項）。</div>
+    <div class="hint"><b>13%は「配偶者も14日以上」取らないと乗りません</b>（雇用保険法61条の10第1項3号）。あなたが条件を満たしていても、<b>配偶者が育休を取らなければ0円</b>です。対象期間は<b>出生日・出産予定日の早い日から、遅い日から起算して8週間（産後休業をした方は16週間）を経過する日の翌日まで</b>です（同条7項）。</div>
 
     <label style="font-weight:400;display:block;margin-top:10px">
       <input type="checkbox" id="spouseExempt"> <b>配偶者の要件が免除される</b>（61条の10第2項）
@@ -169,11 +175,11 @@
       産後休業は出産の翌日から8週間なので、<b>妻が育児休業を1日も取らなくても13%を受け取れます</b>。
       <b>父親の方はチェックしてください</b>（産後パパ育休だけを取る方は
       <a href="../papa-ikukyu/">産後パパ育休 給付金 計算機</a>のほうが正確です）。<br>
-      この免除は<b>母親側には効きません</b>（男性に産後休業は存在しないため）。母親が13%を受け取るには、
-      <b>夫が実際に14日以上の育児休業を取る必要があります</b>。
+      母親に通常当てはまらないのは⑥の「配偶者が産後休業中」という類型です。<b>母親も、ひとり親、夫が無業・自営業など他の免除類型に当てはまれば、配偶者の14日要件は免除されます</b>。
     </div>
   </fieldset>
 
+  <p class="hint">限度額は支給対象期間に応じて切り替えます。令和8年8月1日の改定をまたぐ支給単位期間で新旧の限度額によって金額が変わる場合、又は令和9年8月1日以後など改定額が未収録の場合は計算を止めます。開始時の表示額だけで全期間を計算するものではありません。</p>
   <button class="primary" id="calc">育児休業給付金を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
@@ -233,7 +239,7 @@
     <b>父親には、この要件が最初から免除されています（見落とされがちです）</b>
     61条の10<b>第2項3号</b>が、「配偶者が<b>労働基準法65条2項の規定による休業</b>（＝<b>産後休業</b>）をした場合」に配偶者要件を<b>外す</b>と定めています。<b>産後休業は出産の翌日から8週間</b>ですから、<b>あなたが父親で、配偶者が子を出産した場合（子が養子でない場合）は、これに当てはまります</b>。<br>
     → <b>妻が育児休業を1日も取らなくても、あなたは13%を受け取れます。</b>上の「配偶者の要件が免除される」に<b>チェックしてください</b>（チェックしないと0円と表示されます）。<br>
-    <b>この免除は母親側には効きません</b>（<b>男性に産後休業は存在しない</b>ため）。<b>同じ13%なのに、父と母で条件が非対称です。</b><br>
+    <b>母親も、ひとり親や配偶者が無業・自営業などの免除類型に当てはまれば配偶者の14日要件を免除されます。</b>通常当てはまらないのは「配偶者が産後休業中」の類型です。<br>
     → 出生後8週間以内の<b>産後パパ育休だけ</b>を取る方は、<a href="../papa-ikukyu/">産後パパ育休 給付金 計算機</a>のほうが正確です（28日の上限・休業中の就業・14日の崖に対応しています）。
   </div>
 
@@ -374,6 +380,7 @@ $("calc").addEventListener("click", async () => {
     r = calcIkuji({
       total6m: monthly * 6,   // 休業前6か月の算入対象の賃金総額
       startDate,
+      priorShusshojiDays: Number($("priorShusshojiDays").value),
       leaveDays: Number($("leaveDays").value),
       // ★出生後休業支援給付金（13%）は**必ず明示的に渡す**。コアは省略を許さない
       //   （省略を「対象外」と読むと、渡し忘れたときに13%＝最大60,205円が黙って消える。
@@ -381,6 +388,7 @@ $("calc").addEventListener("click", async () => {
       //   このページは3つの入力を**必ず画面で聞く**ので、null を渡す道はない。
       shien: {
         ownDays: Number($("shienOwnDays").value),
+        paidDays: Number($("shienPaidDays").value),
         spouseDays: Number($("shienSpouseDays").value),
         spouseExempt: $("spouseExempt").checked,
       },
@@ -435,12 +443,12 @@ $("calc").addEventListener("click", async () => {
       ? `<span style="color:var(--sub)">（暦は${u.calDays}日）</span>`
       : "";
     return `<tr><th>${u.index}回目<br><span style="font-weight:400;color:var(--sub);font-size:12px">${u.from}〜${u.to}</span></th>` +
-      `<td>${yen(u.amount)}　<span style="color:var(--sub)">支給日数${u.payDays}日${cal}・${rate}</span></td></tr>`;
+      `<td>${yen(u.amount)}　<span style="color:var(--sub)">支給日数${u.payDays}日${cal}・${rate}・適用賃金日額${yen(Math.floor(u.daily))}</span></td></tr>`;
   }).join("");
 
   box.innerHTML = `
     <div class="big">育児休業給付 ${yen(r.total)}<span style="font-size:15px;font-weight:600">（${r.startDate}〜${r.endDate}・${r.leaveDays}日）</span></div>
-    <div class="hint" style="margin-bottom:10px">賃金日額 <b>${yen(Math.floor(r.daily))}</b>（休業前6か月の賃金総額 ÷ 180）</div>
+    <div class="hint" style="margin-bottom:10px">開始時の適用賃金日額 <b>${yen(Math.floor(r.daily))}</b>（休業前6か月の賃金総額 ÷ 180）</div>
     ${capNote}
     ${shienNote}
     <table class="res">
@@ -451,7 +459,7 @@ $("calc").addEventListener("click", async () => {
     <h3 style="font-size:15px;margin:16px 0 6px">支給単位期間ごとに、いつ・いくら</h3>
     <table class="res">${rows}</table>
     <div class="hint">支給単位期間は<b>${r.startDate}の応当日</b>で1か月ごとに区切っています（61条の7第5項）。
-      <b>支給日数は終了月以外つねに30日</b>（同条6項1号）なので、<b>暦が31日の月でも30日分、暦28日の2月でも30日分</b>です。
+      <b>支給日数は原則30日。ただし終了期間と通算180日目を含む期間は法定の日割り</b>（同条6項）。通常の支給単位期間では、<b>暦が31日の月でも30日分、暦28日の2月でも30日分</b>です。
       その結果、<b>67%で払われる日数は ${r.payDays67}日</b>・<b>50%は ${r.payDays50}日</b>（合計${r.payDaysTotal}日）で、
       <b>暦の休業日数${r.leaveDays}日とは一致しません</b>。
       <b>年2回などの賞与は計算に入りません。名称が賞与でも3か月以内ごとの支払いは扱いが異なります</b>（17条1項）。</div>`;

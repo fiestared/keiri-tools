@@ -115,7 +115,7 @@ const MUTATIONS = [
     scene: "papa_cap",
     file: CORE,
     src: () => coreOrig,
-    apply: (s) => s.replace(/    remaining67: Math\.max\(0, HIGH_DAYS - shusshoji\.days\),/,
+    apply: (s) => s.replace("    remaining67: Math.max(0, HIGH_DAYS - (shusshoji.unpaid ? 0 : shusshoji.days)),",
                             "    remaining67: Math.max(0, HIGH_DAYS - leaveDays),"),
   },
   {
