@@ -37,7 +37,7 @@ try{
  }
  // Every PR rail must fit the smallest requested desktop, both closed and expanded.
  const prPages=readdirSync(DOCS,{recursive:true}).filter(f=>f.endsWith('/index.html')&&readFileSync(join(DOCS,f),'utf8').includes('data-pr-slot="rail-before-toc:'));
- assert(prPages.length>0);
+ // 2026-09-29 から全PR案件を休止中なので0件でもよい。案件を戻したら下のループで収まりを検査する。
  for(const file of prPages){
   await p.setViewportSize({width:1200,height:800});await ready(p,server.origin+'/'+file.replace(/index.html$/,''));
   if(!await p.locator('.rail-next').count())continue;

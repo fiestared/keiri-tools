@@ -96,8 +96,8 @@ assert.ok(off.includes('保持') && off.includes('本文'), '撤去時に本文�
 
 // --- ⑦ 本番のページに、設定外のPR枠が残っていないこと ----------------------------
 const plan = planFrom(loadOffers());
-// 2026-09-29 フィンサーバンク（振込手数料記事）をクリック0で休止して 25→24
-assert.strictEqual(plan.size, 24, `PR枠の対象が24ページではありません: ${plan.size}`);
+// 2026-09-29 フィンサーバンク（クリック0）→ もしも4案件（クリックはあるが成果0）の順に全案件を休止して 25→0
+assert.strictEqual(plan.size, 0, `PR枠の対象が0ページではありません: ${plan.size}`);
 const all = [];
 (function walk(dir) {
   for (const f of readdirSync(dir)) {
