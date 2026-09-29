@@ -6,6 +6,7 @@ const C = JSON.parse(readFileSync(new URL("./stale_values.json", import.meta.url
 const E = Object.fromEntries(C.entries.map((e) => [e.id, e]));
 const t = (s, id, day = "2026-09-28") => staleHits(s, E[id], "p", day).length;
 const r = [
+  ["旧発効日を書くだけでは過去額扱いにしない", t("東京都の最低賃金は1,226円（令和7年10月3日発効）です。", "tokyo-minimum-wage-1226", "2026-10-01") === 1],
   ["東京の旧額を現行と書く→発効日に捕まえる", t("東京都の最低賃金は1,226円です。", "tokyo-minimum-wage-1226", "2026-10-01") === 1],
   ["東京の旧額→発効前は通す", t("東京都の最低賃金は1,226円です。", "tokyo-minimum-wage-1226", "2026-09-30") === 0],
   ["東京の旧額を過去の日付で書く→通す", t("東京都の最低賃金は2026年9月30日までは1,226円でした。", "tokyo-minimum-wage-1226", "2026-10-01") === 0],
