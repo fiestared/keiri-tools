@@ -71,8 +71,14 @@ for (const got of inArticle) {
 
 // 「4万円で賄えるのは何時間分か」も、出現箇所すべてが一致すること
 const hours = String(KOTEI / premium);
-const hoursInArticle = new Set(text.match(/(?<=では)\d+(?:\.\d+)?(?=時間分)|(?<=実際には)\d+(?:\.\d+)?(?=時間分)|(?<=>)\d+(?:\.\d+)?(?=時間<)|(?<=>)\d+(?:\.\d+)?(?=時間分<)/g) ?? []);
-if (hoursInArticle.size === 0) fails.push("固定残業代で賄える時間数が記事に無い");
+// 整数の25時間になっても、SVGだけ古い値に戻った事故を見逃さない。
+// 本文・aria-label・図注とSVGの独立したラベルを全6箇所拾う。
+const hourMatches = [
+  ...html.matchAll(/(?:では|実際には)(\d+(?:\.\d+)?)時間分/g),
+  ...html.matchAll(/<(?:text|tspan)\b[^>]*>(\d+(?:\.\d+)?)時間(?:分)?<\/(?:text|tspan)>/g),
+];
+const hoursInArticle = new Set(hourMatches.map((m) => m[1]));
+if (hourMatches.length < 6) fails.push(`賄える時間数の照合が${hourMatches.length}箇所しかない`);
 for (const got of hoursInArticle) {
   if (got !== hours) fails.push(`賄える時間数が合わない: 記事「${got}時間」/ 計算 ${hours}時間`);
 }
