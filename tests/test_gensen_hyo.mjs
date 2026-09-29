@@ -129,6 +129,18 @@ console.log('★整合チェック');
     '③が②を超えたら警告（誤りとは限らないので error にしない）');
 }
 
+// 令和8年分の実際の初期入力。正本「年末調整のしかた」3頁（104万円）。
+// UIの古い既定値58万円をcoreに渡すと83万円になる回帰を防ぐ。
+{
+  const html = readFileSync(new URL('../docs/gensen-hyo/index.html', import.meta.url), 'utf8');
+  const initialValue = id => Number(html.match(new RegExp(`<input[^>]*id="${id}"[^>]*value="([^"]+)"`))[1]);
+  const inputs = Object.fromEntries(['shakai', 'seimei', 'jishin', 'jinteki', 'kiso'].map(id => [id, initialValue(id)]));
+  eq(kojoGoNoGaku(initialValue('shiharai'), true, D, kyuyoShotokuR8).value, 960000, '初期給与170万円の給与所得96万円');
+  eq(inputs.kiso, 1040000, '給与以外の所得なしの初期例の基礎控除104万円');
+  eq(shotokuKojoGokei(inputs, true).value, 1290000, '年末調整あり：初期例の③欄は社会保険25万円＋基礎控除104万円');
+  eq(shotokuKojoGokei(inputs, false).value, null, '年末調整なし：同じ初期入力でも③欄は空欄');
+}
+
 // ── ★壊しテスト ─────────────────────────────────────────────
 console.log('★壊しテスト');
 {

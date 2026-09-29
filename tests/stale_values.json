@@ -170,6 +170,42 @@
    "source": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
    "allow_pages": {},
    "correct": "令和8・9年分"
+  },
+  {
+   "id": "hotei-r8-deadline-jan31",
+   "value": "令和9年1月31日",
+   "context": "(?:提出|交付)期限|従業員へ交付",
+   "window": 90,
+   "stale_from": "2026-01-01",
+   "allow_near": "日曜|休日|土日|繰り下|繰下|ずれ|旧|改正前",
+   "correct": "2月1日",
+   "reason": "令和8年分の法定調書提出・給与支払報告書提出・源泉徴収票交付の通常期限は令和9年2月1日。日曜日の説明と区別。",
+   "source": "https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/PDF/02.pdf",
+   "allow_pages": {}
+  },
+  {
+   "id": "gensen-hyo-old-initial-kiso",
+   "value": "初期(?:値|例)[^。]{0,25}(?:58万円|580,000円)",
+   "context": "基礎控除",
+   "window": 100,
+   "stale_from": "2026-01-01",
+   "allow_near": "旧|改正前|以前",
+   "correct": "104万円",
+   "reason": "令和8年分・給与170万円のみの初期例に58万円は不適合。HTML valueはtest_gensen_hyoで別途検査。",
+   "source": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+   "allow_pages": {}
+  },
+  {
+   "id": "hotei-r8-old-red-correction",
+   "value": "「(?:無効分|訂正分)」と赤書き",
+   "context": "法定調書",
+   "window": 160,
+   "stale_from": "2026-01-01",
+   "allow_near": "旧様式|旧手順|令和7年分以前|従来の",
+   "correct": "無効区分",
+   "reason": "令和8年分の書面訂正は無効区分1・0と摘要「訂正分」を使う。右上余白への赤書き案内を再導入しない。",
+   "source": "https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/PDF/09.pdf",
+   "allow_pages": {}
   }
  ],
  "future_tense": {
