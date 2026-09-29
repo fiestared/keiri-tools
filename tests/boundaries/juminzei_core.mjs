@@ -16,3 +16,10 @@ for (const [revenue, expected] of [[6777777,4999999],[6777778,5000000],[6777779,
     source: 'https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf',
     quote: '未満の端数があるときは、これを切り捨てた額をもってその求める給与所得控除後の給与等の金額とします。' });
 }
+
+// t1: 正本3頁は所得489万円以下の給与上限を6,655,556円と明記。54頁の端数処理も確認。
+for (const [revenue, expected] of [[6655556,4890000],[6655557,4890001]]) {
+  cases.push({ name: `t1 基礎控除境界 給与${revenue}円の所得`, run: () => kyuyoShotokuR8(revenue,D), expected,
+    source: "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+    quote: "                                     104 万円                     88 万円\n     （206 万円超 475 万 1,999 円以下）\n      336 万円超 489 万円以下                                               （注２）\n                                                                68 万円\n（475 万 1,999 円超 665 万 5,556 円以下）\n                                                   62 万円                      58 万円\n      489 万円超 655 万円以下                     （注２）                      （注２）" });
+}
