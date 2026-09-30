@@ -1,0 +1,24 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {JSDOM} from 'jsdom';
+const path=new URL('../docs/column/kenko-hoken-nini-keizoku/index.html',import.meta.url);
+const d=new JSDOM(readFileSync(path,'utf8')).window.document;
+const svg=[...d.querySelectorAll('svg')].find(x=>x.getAttribute('aria-label')?.includes('標準報酬月額'));
+const work=svg.querySelector('line[stroke="var(--sub)"]');
+const rise=svg.querySelector('line[stroke="var(--accent)"]');
+const num=(el,name)=>Number(el.getAttribute(name));
+const slope=el=>(num(el,'y2')-num(el,'y1'))/(num(el,'x2')-num(el,'x1'));
+// 正本: kk_faq_voluntary_continuation_005:5-6。同一料率なら在職折半と任意継続全額で傾きは1:2。
+assert.ok(Math.abs(slope(rise)-2*slope(work))<1e-12,'在職線と任意継続線の傾きが1:2');
+const cross=svg.querySelector('circle');
+const y=x=>num(work,'y1')+(x-num(work,'x1'))*slope(work);
+assert.ok(Math.abs(y(num(cross,'cx'))-num(cross,'cy'))<1e-12,'64万円の目印で実際に交差');
+assert.ok(y(num(cross,'cx')-1)>num(cross,'cy'));
+assert.ok(y(num(cross,'cx')+1)<num(cross,'cy'));
+const faqs=[...d.querySelectorAll('.faq-answer')].map(x=>x.textContent.trim());
+const ld=[...d.querySelectorAll('script[type="application/ld+json"]')].flatMap(x=>{const o=JSON.parse(x.textContent);return o['@graph'] || [o];}).find(x=>x['@type']==='FAQPage');
+assert.deepEqual(ld.mainEntity.map(x=>x.acceptedAnswer.text),faqs,'FAQの本文と構造化データを同期');
+assert.match(faqs[0],/同じ料率・介護保険条件/);
+assert.match(faqs[4],/医療費の保険負担分/);
+assert.match(svg.textContent,/同じ料率・介護保険条件/);
+console.log('任意継続記事: 図の傾き・逆転点の両側・条件表示・FAQ同期が緑');

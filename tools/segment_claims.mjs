@@ -32,7 +32,7 @@ export function segmentClaims(html, page = '') {
     const zone = summarySection || tag === 'title' || tag === 'meta' || tag === 'h1' || (tag === 'p' && afterH1) || el.closest('.lead,.summary,.callout') ? 'summary' : faq ? 'faq' : el.closest('table') ? 'table' : el.closest('label,select,form') || ['input','option','label','button'].includes(tag) ? 'ui' : 'body';
     const protectedUnit = zone === 'summary' || (zone === 'faq' && !/^h/.test(tag));
     // Split prose, but leave labels/options and input values intact.
-    const parts = ['p','li','td','th','dd','figcaption'].includes(tag) ? text.match(/[^。！？!?]+[。！？!?]*|[。！？!?]+/gu) || [] : [text];
+    const parts = ['p','li','td','th','dd','figcaption'].includes(tag) ? text.match(/[^。！？!?]+[。！？!?]*[」』”’）)\]】]*|[。！？!?]+[」』”’）)\]】]*/gu) || [] : [text];
     for (const part of parts) {
       const normalized = normalize(part); if (!normalized) continue;
       const text_hash = hash(normalized), key = `${kind}:${text_hash}`;
