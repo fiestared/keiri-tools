@@ -72,7 +72,11 @@ function stripNonClaims(html, preserveLines = false) {
     .replace(/<style\b[\s\S]*?<\/style>/gi, omit)
     .replace(/<(nav|header|footer|aside)\b[\s\S]*?<\/\1>/gi, omit)
     .replace(/<section\b[^>]*class="[^"]*(related|rel-block|next-read|rail-next)[^"]*"[\s\S]*?<\/section>/gi, omit)
-    .replace(/<(div|ul|p)\b[^>]*class="[^"]*(related|rel-block|next-read|breadcrumb|article-meta)[^"]*"[\s\S]*?<\/\1>/gi, omit);
+    // source-method = 日付行（article-meta）から出典の節へ移した「確認のしかた」の注記（2026-09-30）。
+    //   元の日付行と同じ扱い（主張ではなく出所の説明）にする。移しただけで網から外れる／入ることを防ぐ。
+    // p-title / p-desc = 記事カード（トップの新着など）。他ページの題と説明文の写しで、正本は各記事の側にある
+    //   （各記事の title・meta description はその記事の台帳で検査される）。column/index.html を GENERATED で外すのと同じ理由。
+    .replace(/<(div|ul|p)\b[^>]*class="[^"]*(related|rel-block|next-read|breadcrumb|article-meta|source-method|p-title|p-desc)[^"]*"[\s\S]*?<\/\1>/gi, omit);
 }
 export function claimText(html) {
   const title = (html.match(/<title>([\s\S]*?)<\/title>/i) || [, ""])[1];

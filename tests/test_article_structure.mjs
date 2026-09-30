@@ -16,6 +16,18 @@ import {hasBreadcrumb,hasRelatedLinks} from './layout/article-structure.mjs';
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 
+// 日付行の検査を保留している記事（2026-09-30）。移したら、ここから外す。
+//  - nenshu-no-kabe: 司令塔が題名を並行して改稿中のため、この便では触っていない
+//  - 残り10本: 日付行か出典の見出しが本文と同じ1行に詰めて書かれており、直すとその行の数字全部が
+//    check_claims --changed の「足した行」になる。台帳が無い／数字が台帳に無いページなので、
+//    台帳を整えてから移す（gbrain implementation/keiri-ux-nav-fixes-2026-09-30）
+const META_TAIL_PENDING = new Set([
+  "nenshu-no-kabe",
+  "chinage-sokushin-zeisei", "kashidaore-hikiatekin", "kekkin-kojo-keisan", "kosaihi-kaigihi-chigai",
+  "kurikoshi-kessonkin", "kyuyo-keisan-yarikata", "orcan-sp500-holding-period",
+  "shuzenhi-shihonteki-shishutsu", "taiyo-nensu", "tsukitochu-nyusha-taishoku-kyuyo", "yakuin-hoshu-kimekata",
+]);
+
 const DOCS = new URL("../docs/", import.meta.url).pathname;
 const COLUMN = join(DOCS, "column");
 
@@ -72,6 +84,14 @@ for (const slug of slugs) {
 
   if (!/<h1>/.test(body)) fail(slug, "<h1> が無い");
   if (!/class="article-meta"/.test(body)) fail(slug, "公開日(article-meta)が無い");
+  // ★日付行は公開日・更新日だけ（2026-09-30 UI/UXレビュー）。根拠・作り方・訂正の記録は
+  //   出典の節の <p class="source-method"> へ。日付行に置くと、本文の前に作業記録が4〜7行並ぶ。
+  else if (!META_TAIL_PENDING.has(slug)) {
+    const meta = body.match(/<p class="article-meta">([\s\S]*?)<\/p>/)[1];
+    const rest = meta.replace(/(公開日|最終更新|更新日)\s*[:：]\s*<time\b[^>]*>[^<]*<\/time>/g, "")
+      .replace(/<[^>]+>/g, "").replace(/[\s／/（）()—\-–、。,:：]/g, "");
+    if (rest) fail(slug, `日付行(article-meta)に日付以外の文がある: 「${rest.slice(0, 40)}…」→ 出典の節の <p class="source-method"> へ移す`);
+  }
 
   // --- E-E-A-T: 著者は実名(匿名Organizationに戻さない)。可視バイライン+JSON-LD authorの両方 ---
   // (YMYLで匿名運営=QRG Low。about#operatorのPersonを各記事が参照する設計。gbrain参照)

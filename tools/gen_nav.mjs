@@ -30,6 +30,10 @@ const ITEMS = [
   { href: 'hojokin/', label: '補助金' },
   { href: 'column/', label: 'コラム' },
   { href: 'toushi/', label: '資産形成' },
+  // ★運営者情報（/about/）への入口（2026-09-30 UI/UXレビュー grok §9）。
+  //   それまではフッタ（13px）にしか無く、長いページの終わりまで来た人にしか届かなかった。
+  //   ラベルは短く（スマホで2段目に収める。「このサイトについて」は9字で3段目に落ちる）。
+  { href: 'about/', label: '運営者情報' },
 ];
 
 const walk = (dir, out = []) => {
@@ -91,12 +95,9 @@ function main() {
     if (relPath.startsWith('embed/')) { skipped++; continue; }
     const html = readFileSync(fp, 'utf8');
     if (!HEADER_RE.test(html)) { skipped++; continue; }
-    // ★案内ページだけは独自ナビを保つ。リンク文言で判定すると、同じリンクを含む
-    //   古い記事ナビまで対象外になり、全体ナビの更新から取り残される。
-    if (['about/index.html', 'privacy/index.html', 'contact/index.html'].includes(relPath)) {
-      skipped++;
-      continue;
-    }
+    // ★案内ページ（about/privacy/contact）も同じナビに揃える（2026-09-30）。
+    //   以前は独自ナビとして除外していたが、中身は全体ナビと同一の写しで、
+    //   「運営者情報」を足すと about 自身だけ現在地の印が付かない・3ページだけ取り残される。
 
     const cur = html.match(HEADER_RE)[0];
 

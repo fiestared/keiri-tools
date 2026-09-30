@@ -212,7 +212,11 @@ sitemap の実行自体が `docs/column/index.html` を書き換えるので**2�
   <nav class="breadcrumb">ホーム › コラム › <この記事></nav>
   <article>
     <h1>…</h1>
-    <p class="article-meta">公開日: 2026年7月13日 ／ 〈根拠の出所を一言〉</p>
+    <p class="article-meta">公開日: 2026年7月13日</p>
+       ← 日付行は**公開日・更新日だけ**（2026-09-30〜。test_article_structure が落とす）。
+         根拠の出所・確かめ方・訂正の記録は、末尾の h2「出典」の直後に
+         <p class="source-method">〜の条文（e-Gov法令検索）で確認して作成。</p> として1回だけ書く。
+         「API v2」「保存条文」「木構造から機械的に」「今回の資料」のような作業記録の言葉は読者に見せない
     <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
        ← 実名バイライン必須(E-E-A-T)。JSON-LDの author も Person(Masahiro Yasu, about参照)で書く。
          匿名Organizationに戻すとテストが落とす。免責(税理士でない旨)はaboutと記事末尾の注記に集約し、
@@ -236,7 +240,7 @@ sitemap の実行自体が `docs/column/index.html` を書き換えるので**2�
     （FAQのJSON-LDは本文から自動生成する。手で書かない）
 
     <section class="related">…関連ツール/記事のカード…</section>
-    <h2>出典</h2><ul>…</ul>
+    <h2>出典</h2><p class="source-method">〈根拠の出所を一言〉</p><ul>…</ul>
     〈免責の一文〉
   </article>
   </main>

@@ -956,12 +956,48 @@ const card = (a, indent) => `${indent}<a href="${a.slug}/" data-s="${esc((a.titl
 ${indent}  <div class="p-date">${a.ymd}</div>
 ${indent}  <div>
 ${indent}    <div class="p-title">${esc(a.title)}</div>
-${indent}    <div class="p-desc">${esc(a.desc)}</div>
+${indent}    <div class="p-desc">${esc(a.cardDesc ?? a.desc)}</div>
 ${indent}  </div>
 ${indent}</a>`;
 
+// ★カテゴリの**表示順**（2026-09-30 UI/UXレビュー）。
+//   CATEGORIES の定義順のまま出すと、一覧の先頭が「資産形成・投資」（投信の比較記事が並ぶ）で、
+//   件数最多の「法人税・決算の実務」が最後だった。経理のサイトなのに第一画面が投資記事になる
+//   （gbrain reviews/keiri-uiux-opus-2026-09-30 §6・grok §4）。
+//   → 画面の並びだけをここで決める。ORDER（需要順）とカテゴリ内の並びには触れない。
+//   登録漏れ・二重登録は黙って通さない（新カテゴリを足したらここにも足す）。
+const DISPLAY_ORDER = [
+  "nenmatsu-gensen", "kyuyo", "shakai-hoken", "hojinzei-kessan", "shohizei", "keiri",
+  "kyuyo-jitsumu", "kyufu", "yukyu", "denchoho", "kotei-shisan", "hojokin-keiri",
+  "sozoku-zoyo", "shisan",
+];
+{
+  const ids = CATEGORIES.map((c) => c.id);
+  const missing = ids.filter((id) => !DISPLAY_ORDER.includes(id));
+  const extra = DISPLAY_ORDER.filter((id) => !ids.includes(id));
+  if (missing.length || extra.length || new Set(DISPLAY_ORDER).size !== DISPLAY_ORDER.length) {
+    console.error(`✗ DISPLAY_ORDER と CATEGORIES が一致しない（未登録: ${missing.join(",") || "なし"} / 余分: ${extra.join(",") || "なし"}）`);
+    process.exit(1);
+  }
+}
+const displayCategories = DISPLAY_ORDER.map((id) => CATEGORIES.find((c) => c.id === id));
+
+// ★一覧カードの説明文から、多数の記事で同じ定型文を落とす（2026-09-30）。
+//   投信比較の23本は meta description が「…を商品名で比較。投資対象、信託報酬、総経費率と対象期間、
+//   同期間の分配金再投資実績を一次資料から整理します。」の定型で、一覧に同じ文が並んでいた。
+//   記事の meta description（検索結果に出る文）は変えない。一覧の表示だけ、5本以上で共有される
+//   文を落とす（カテゴリの説明文に同じ趣旨が1回書いてある）。検索用の data-s には全文を残す。
+const BOILERPLATE_MIN = 5;
+const sentencesOf = (d) => d.split(/(?<=。)/).map((x) => x.trim()).filter(Boolean);
+const sentenceCount = new Map();
+for (const a of articles) for (const s of new Set(sentencesOf(a.desc))) sentenceCount.set(s, (sentenceCount.get(s) ?? 0) + 1);
+for (const a of articles) {
+  const kept = sentencesOf(a.desc).filter((s) => (sentenceCount.get(s) ?? 0) < BOILERPLATE_MIN);
+  a.cardDesc = kept.length ? kept.join("") : a.desc;   // 全部が定型なら元の文を残す（空にしない）
+}
+
 // カテゴリ内の並びは articles(=ORDER=需要順)のまま。日付順にはしない。
-const groups = CATEGORIES.map((c) => ({
+const groups = displayCategories.map((c) => ({
   id: c.id, name: c.name, desc: c.desc,
   items: articles.filter((a) => catOf.get(a.slug) === c.id),
 })).filter((g) => g.items.length > 0);
@@ -984,7 +1020,9 @@ ${g.items.map((a) => card(a, "      ")).join("\n")}
     </div>
   </section>`).join("\n");
 
-const colBlock = `  <details class="category-index">
+// ★索引は開いた状態で出す（2026-09-30）。閉じた「▶記事のカテゴリから探す」は
+//   スマホで押されず、第一画面が先頭カテゴリの記事だけになっていた（レビュー grok §4）。
+const colBlock = `  <details class="category-index" open>
     <summary>記事のカテゴリから探す</summary>
     <nav class="cat-nav" id="cat-nav" aria-label="記事のカテゴリ">
 ${catNav}
@@ -1017,15 +1055,21 @@ const write = (path, next, label) => {
   return true;
 };
 
-// ---- トップページの「コラム」欄(上位6本だけ) ----
+// ---- トップページの「コラム」欄(新着6本) ----
 // 手打ちにしておくと、記事が増えても**古い低需要の記事が居座り続ける**(実際にそうなっていた)
+// ★2026-09-30: ORDER（需要順）の先頭6本から、公開日の新しい順の6本へ変えた。
+//   需要順の先頭は 09-13 の投信比較で固定され、09-27〜09-30 に出した経理の記事が
+//   トップに一度も出なかった（レビュー opus §6）。同じ公開日の中だけ ORDER の順を使う。
+//   ORDER そのもの（sitemap・一覧のカテゴリ内の並び）は変えない。
 const topPath = join(DOCS, "index.html");
 let top = readFileSync(topPath, "utf8");
-const topCards = articles.slice(0, 6).map((a) => `    <a href="column/${a.slug}/">
+const newest = articles.map((a, i) => ({ a, i }))
+  .sort((x, y) => y.a.iso.localeCompare(x.a.iso) || x.i - y.i).map((x) => x.a);
+const topCards = newest.slice(0, 6).map((a) => `    <a href="column/${a.slug}/">
       <div class="p-date">${a.ymd}</div>
       <div>
         <div class="p-title">${esc(a.title)}</div>
-        <div class="p-desc">${esc(a.desc)}</div>
+        <div class="p-desc">${esc(a.cardDesc ?? a.desc)}</div>
       </div>
     </a>`).join("\n");
 // ★終端は**明示マーカー**で持つ（2026-08-16 修正）。
