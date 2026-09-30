@@ -450,12 +450,6 @@ assertR7.equal(calcShobyo(r7Input,r7Data).days,546);
 assertR7.equal(calcShobyo({...r7Input,months:11,taishokugo:true,ninnikeizoku:false},r7Data).eligible,false);
 assertR7.equal(calcShobyo({...r7Input,months:12,taishokugo:true,ninnikeizoku:false},r7Data).eligible,true);
 
-if (failed) {
-  console.error(`\n✗ ${failed} 件失敗 / ${checks} checks`);
-  process.exit(1);
-}
-console.log(`\n✓ 全て通過（${checks} checks）`);
-
 // r16: 日額の現保険者3か月とは別に、資格喪失前の連続加入を確認する。
 {
  const input={startDate:'2026-09-01',monthly:500000,months:3,continuationMonths:12,taishokugo:true,restDays:30,taikiDone:true};
@@ -463,3 +457,10 @@ console.log(`\n✓ 全て通過（${checks} checks）`);
  eq(calcShobyo({...input,continuationMonths:11},D).eligible,false,'104条11か月は対象外');
  eq(calcShobyo({...input,continuationMonths:null},D).reason,'no_continuation_months','継続加入未確認は停止');
 }
+
+if (failed) {
+  console.error(`\n✗ ${failed} 件失敗 / ${checks} checks`);
+  process.exit(1);
+}
+console.log(`\n✓ 全て通過（${checks} checks）`);
+
