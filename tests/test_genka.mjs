@@ -16,8 +16,20 @@ import { calcGenka, floorYen, usedMonthsFromStart, chukoTaiyoNensu, formatYm, AS
 const ASSETS = new URL('../docs/assets/', import.meta.url);
 const D = JSON.parse(readFileSync(new URL('genka_rates.json', ASSETS)));
 
-import { cases as r16Cases } from './boundaries/genka_core.mjs';
-for (const c of r16Cases.filter(c => !c.name.includes('HTML'))) assert.deepStrictEqual(c.run(), c.expected, c.name);
+// 取得年月は償却率表、供用年月は初年度月割（所令132条）。
+// 壊しテストはこのファイルとcore/dataを隔離コピーするため、対象coreへ直接入力する。
+const serviceBase = {method: 'teiritsu', cost: 1000000, life: 10};
+for (const [acqYm, serviceYm, expected] of [
+  ['2012-03', '2012-04', [0.25, 9, 187500]],
+  ['2012-04', '2012-04', [0.2, 9, 150000]],
+  ['2025-12', '2026-01', [0.2, 12, 200000]],
+]) {
+  const r = calcGenka({...serviceBase, acqYm, serviceYm}, D);
+  assert.deepStrictEqual([r.rate, r.usedMonths, r.firstYearDep], expected, `${acqYm}取得/${serviceYm}供用`);
+}
+for (const serviceYm of ['2026-03', '2026-13']) {
+  assert.throws(() => calcGenka({...serviceBase, acqYm: '2026-04', serviceYm}, D), /供用年月/);
+}
 
 let pass = 0, fail = 0;
 const t = (name, fn) => { try { fn(); pass++; console.log('✅ ' + name); }

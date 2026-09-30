@@ -28,6 +28,10 @@ const testSrc = readFileSync(TEST, 'utf8');
 
 /** [名前, 対象('core'|'data'), 置換前, 置換後] */
 const BREAKS = [
+  ['★月割を供用年月でなく取得年月に戻す（供用待ち期間も償却してしまう）', 'core',
+   'const startMonth = Number(serviceYm.slice(5, 7));',
+   'const startMonth = Number(acqYm.slice(5, 7));'],
+
   ['★定率法の償却保証額の切替を消す（償却が終わらず毎年少なく誤答＝核心）', 'core',
    'if (canSwitch && chosei < hoshoGaku) {',
    'if (false) {'],
