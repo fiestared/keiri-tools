@@ -16,9 +16,15 @@ const MUT = [
   [CORE, "return Math.floor(x + 0.5);", "return Math.floor(x);", "端数を四捨五入→切り捨てにする"],
   [CORE, "return Math.floor(x + 0.5);", "return Math.ceil(x);", "端数を四捨五入→切り上げにする"],
   [CORE, "self >= min", "self > min", "世帯合算の「21,000円以上」を「超」にする"],
-  [CORE, "if (hikazei) return hikazeiRow;", "", "区分オの優先(非課税)を落とす"],
-  [CORE, "if (!(standardMonthly > 0)) return null;   // 分からないものを黙って真ん中の区分に落とさない",
-         "if (false) return null;", "標報不明を黙って区分に落とす"],
+  // 2026-10-01: r16 t6-a の訂正で classify が「非課税でも標報53万円以上(ア・イ相当)は区分オにしない」
+  //   （42条1項5号）に変わり、標報不明の判定が非課税判定より前に移った。新しい行を名指しする。
+  [CORE, "if (hikazei && standardMonthly < table.hikazei_excluded_from_std) return hikazeiRow;", "",
+         "区分オの優先(非課税)を落とす"],
+  [CORE, "if (hikazei && standardMonthly < table.hikazei_excluded_from_std) return hikazeiRow;",
+         "if (hikazei) return hikazeiRow;",
+         "★非課税でも標報53万円以上はア・イ（42条1項5号の除外）を落とす（訂正前の誤りに戻す）"],
+  [CORE, "  if (!(standardMonthly > 0)) return null;\n  if (hikazei &&",
+         "  if (false) return null;\n  if (hikazei &&", "標報不明を黙って区分に落とす"],
   [CORE, "(x.std_min == null || standardMonthly >= x.std_min)",
          "(x.std_min == null || standardMonthly > x.std_min)",
          "区分の境目(std_min)を「以上」→「超」にする"],
