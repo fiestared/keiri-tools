@@ -1,0 +1,7 @@
+- `soumu_furusato_deduction.txt`（総務省「ふるさと納税のしくみ｜税金の控除について」 https://www.soumu.go.jp/main_sosiki/jichi_zeisei/czaisei/czaisei_seido/furusato/mechanism/deduction.html 、Shift_JIS）・`soumu_furusato_about.txt`（同「概要」）
+- `soumu_kojin_juminzei.txt`（総務省「個人住民税」 https://www.soumu.go.jp/main_sosiki/jichi_zeisei/czaisei/czaisei_seido/150790_06.html 、Shift_JIS）
+- `nta_1150.txt`（国税庁 No.1150 寄附金控除）・`nta_1155.txt`（No.1155 ふるさと納税）… 令和8年4月1日現在
+- `tokyo_kojin_ju.txt`（東京都主税局「個人住民税」 https://www.tax.metro.tokyo.lg.jp/kazei/life/kojin_ju ）
+- `egov_chihozei_*.txt` … e-Gov 法令API v2 の地方税法（325AC0000000226）: 34条（道府県民税の所得控除）・35条（税率）・37条の2（寄附金税額控除）・314条の2（市町村民税の所得控除）・314条の3（税率）・314条の6・314条の7（寄附金税額控除）・附則5条の4（住宅借入金等特別税額控除）・附則7条（寄附金税額控除の申告の特例＝ワンストップ特例）
+- 均等割・森林環境税・非課税限度額・調整控除など、この正本に無い住民税の主張は out_of_corpus（自治体ごとに違う超過課税も out_of_corpus）。
+- **令和8年分所得（令和9年度住民税）の改正**（基礎控除・給与所得控除の見直し等）が住民税にどう及ぶかは、地方税法の**未施行の改正版**にある可能性がある。条文で確かめるときは `/api/2/law_revisions/325AC0000000226` で将来施行版を見て、**適用年度は附則**で決める。
