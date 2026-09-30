@@ -362,6 +362,10 @@ $("calc").addEventListener("click", async () => {
   }
 
   // ── 任意継続被保険者は支給されない（99条1項のかっこ書き） ──────────────
+  if (r.reason === "no_continuation_months") {
+    box.innerHTML = `<div class="callout"><b>加入期間を確認してください。</b>${r.message}</div>`;
+    return;
+  }
   if (!r.eligible) {
     box.innerHTML = `
       <div class="big">傷病手当金 ¥0（支給されません）</div>

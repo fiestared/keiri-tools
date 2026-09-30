@@ -191,6 +191,11 @@ $("calc").addEventListener("click", async () => {
     postHeight(); return;
   }
 
+  if (r.reason === "no_continuation_months") {
+    box.innerHTML = `<div class="callout"><b>加入期間を確認してください。</b>${r.message}</div>`;
+    postHeight();
+    return;
+  }
   if (!r.eligible) {
     box.innerHTML = `<div class="big">傷病手当金 ¥0（支給されません）</div><div class="callout">${r.message}</div>`;
     postHeight(); return;
