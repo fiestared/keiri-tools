@@ -1,0 +1,4 @@
+import fs from 'node:fs';import {spawnSync} from 'node:child_process';
+const names=['test_enumeration_completeness','test_kanyu_article','test_kihonteate_page_claims','break_enumeration','break_izoku_page','break_kanyu_article','break_shobyo_104','test_boundary_cases','test_condition_tables','test_condition_tables_break','test_kihonteate','test_segment_claims','test_papa_ikukyu','break_papa_ikukyu'];
+const results=[];for(const name of names){console.log('START '+name);const r=spawnSync(process.execPath,['tests/'+name+'.mjs'],{encoding:'utf8',env:process.env,maxBuffer:20*1024*1024});fs.writeFileSync('review-evidence/r16-t7-a/retest-'+name+'.log',(r.stdout||'')+(r.stderr||''));results.push({test:name,status:r.status,error:r.error?.message});console.log((r.status===0?'GREEN ':'RED ')+name);}
+fs.writeFileSync('review-evidence/r16-t7-a/retest-results.json',JSON.stringify(results,null,2)+'\n');process.exit(results.some(x=>x.status!==0)?1:0);
