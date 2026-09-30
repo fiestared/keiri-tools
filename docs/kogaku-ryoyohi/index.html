@@ -27,8 +27,8 @@
   "@graph": [
     {
       "@type": "WebApplication",
-  "datePublished": "2026-08-02",
-  "dateModified": "2026-09-29",
+      "datePublished": "2026-08-02",
+      "dateModified": "2026-09-29",
       "name": "高額療養費 計算機",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -37,7 +37,7 @@
         "price": "0",
         "priceCurrency": "JPY"
       },
-      "description": "健康保険の高額療養費について、ひと月の自己負担限度額と払い戻される額を計算します。区分は健康保険法施行令42条1項が定める標準報酬月額で判定し、世帯合算（21,000円以上のものに限る）と多数回該当にも対応します。"
+      "description": "高額療養費の月額上限と払戻額を、診療月・年齢・療養月の標準報酬月額・非課税区分から試算します。70歳未満の世帯合算は医科・歯科、入院・外来を分けた各区分21,000円以上、70歳以上は全額が対象です。多数回該当は同一保険者・同一被保険者の支給月で確認し、70～74歳の外来個人上限による支給月は除きます。登録不要・無料。"
     },
     {
       "@type": "BreadcrumbList",
@@ -552,7 +552,7 @@ function renderOver70(box, r, plannedNote = "") {
          多数回該当にチェックがあっても限度額は ${yen(r.limit)} のままです。</div>`
       : ""}
     ${!r.tasukai && r.tasukaiAvailable
-      ? `<div class="callout" style="margin-top:12px"><b>この先も治療が続く場合</b>：直近12か月で高額療養費が支給された月が3か月以上になると、
+      ? `<div class="callout" style="margin-top:12px"><b>この先も治療が続く場合</b>：当月を含む直近12か月に同一保険者・同一被保険者の支給対象月が3か月以上ある場合（70～74歳の外来個人上限による支給月を除く）、
          <b>4回目の月から世帯単位の限度額が ${yen(r.limitIfTasukai)} に下がります</b>（多数回該当）。
          なお<b>外来だけの上限で受けた回数は、この月数に数えません</b>（協会けんぽ）。</div>`
       : ""}
@@ -668,7 +668,7 @@ $("calc").addEventListener("click", async () => {
 
     ${r.tasukai
       ? `<p style="margin:12px 0 0;font-size:13px">多数回該当のため定額 ${yen(r.limit)} で計算しました。多数回該当でなければ ${yen(r.limitNormal)} でした。</p>`
-      : `<div class="callout" style="margin-top:12px"><b>この先も治療が続く場合</b>：直近12か月で高額療養費が支給された月が3か月以上になると、` +
+      : `<div class="callout" style="margin-top:12px"><b>この先も治療が続く場合</b>：当月を含む直近12か月に同一保険者・同一被保険者の支給対象月が3か月以上ある場合（70～74歳の外来個人上限による支給月を除く）、` +
         `<b>4回目の月から限度額が ${yen(r.limitIfTasukai)} に下がります</b>（多数回該当・施行令42条1項各号ただし書）。` +
         `今回の ${yen(r.limit)} と比べて <b>${yen(Math.max(0, r.limit - r.limitIfTasukai))}</b> 軽くなります。暦年ではなく、その月から遡って12か月で数えます。</div>`}
 
