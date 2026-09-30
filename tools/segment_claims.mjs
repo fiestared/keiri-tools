@@ -30,7 +30,10 @@ export function segmentClaims(html, page = '') {
     if (!normalize(text || '')) continue;
     const kind = tag === 'meta' ? (el.name || el.getAttribute('property')) : tag;
     const zone = summarySection || tag === 'title' || tag === 'meta' || tag === 'h1' || (tag === 'p' && afterH1) || el.closest('.lead,.summary,.callout') ? 'summary' : faq ? 'faq' : el.closest('table') ? 'table' : el.closest('label,select,form') || ['input','option','label','button'].includes(tag) ? 'ui' : 'body';
-    const protectedUnit = zone === 'summary' || (zone === 'faq' && !/^h/.test(tag));
+    // Pure organizational labels carry no assertion. Keep substantive headings/cells protected.
+    const organizationalLabel = ((/^(?:h[2-6]|div)$/.test(tag)) && /^(?:この記事のまとめ|実務の注意点まとめ)$/.test(text.trim()))
+      || (tag === 'th' && /^(?:支出の例|よく使う科目|消費税|ここを間違える)$/.test(text.trim()));
+    const protectedUnit = !organizationalLabel && (zone === 'summary' || (zone === 'faq' && !/^h/.test(tag))); 
     // Split prose, but leave labels/options and input values intact.
     const parts = ['p','li','td','th','dd','figcaption'].includes(tag) ? text.match(/[^。！？!?]+[。！？!?]*|[。！？!?]+/gu) || [] : [text];
     for (const part of parts) {

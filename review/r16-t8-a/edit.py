@@ -1,0 +1,23 @@
+from pathlib import Path
+import json
+edits=[]
+def edit(page,old,new):
+ p=Path(page);s=p.read_text();n=s.count(old);assert n,(page,old);p.write_text(s.replace(old,new));edits.append(dict(page=page,old=old,new=new,occurrences=n))
+e='docs/eigyobi/index.html';s='docs/senpou-futan/index.html';c='docs/column/furikomi-tesuryo-kanjo-kamoku/index.html'
+edit(e,'用途によって変わります。','日・週・月・年で定める期間は、初日を算入しないのが原則です（民法140条）。ただし、午前零時から始まる期間は初日を算入します。')
+edit(e,'振込の着金日を計算するときは「年末年始」にチェックを入れてください。','振込の着金日は、即時振込サービスの登録、モアタイムへの対応、受取口座の条件やメンテナンスによって異なります。即時振込が利用できる場合は年末年始でも当日入金されることがあります。翌銀行営業日扱いとなる振込の日付を数える場合に「年末年始」をチェックしてください。')
+edit(s,'前提：振込手数料は「3万円」を境に変わる','前提：多くの銀行では振込手数料が「3万円」を境に変わる')
+edit(s,'<tr><td>りそな銀行（個人IB）</td><td colspan="2" style="text-align:center">165円（金額区分なし）</td></tr>','<tr><td>りそな銀行（個人IB）</td><td colspan="2" style="text-align:center">165円（金額区分なし・スタンダード／パール）</td></tr>')
+edit(s,'<tr><td>ゆうちょ銀行</td><td colspan="2" style="text-align:center">165円（金額区分なし）</td></tr>','<tr><td>ゆうちょダイレクト</td><td colspan="2" style="text-align:center">165円（金額区分なし・居住者）</td></tr>')
+pos='  <h2 id="shiwake">'
+# Place applicable qualifications directly after the fee table, without changing its existing confirmation date.
+needle='※他行宛・税込。'
+p=Path(s);h=p.read_text();i=h.index('</p>',h.index(needle))+4
+notes='\n  <p class="hint">三菱UFJダイレクトの三菱UFJ信託銀行・auじぶん銀行あては当行扱いで0円です。りそなマイゲートは2025年4月1日現在の税込料金で、ルビーは月間3回82円、ダイヤモンドは月間3回0円です。ゆうちょダイレクトで外為法上の非居住者が他行へ送金する料金は1回3,000円です。</p>'
+h=h[:i]+notes+h[i:];p.write_text(h);edits.append(dict(page=s,old='',new=notes,occurrences=1))
+edit(s,'原則として<b>金融機関や取引先から受領するインボイス</b>が必要です。受取側が銀行から直接受領できない場合でも、取引先から必要なインボイス等を受領する方法があります。','買手から代金決済上の役務提供を受ける取引として、原則として<b>買手の適格請求書、または買手の確認を受けた仕入明細書等</b>を保存します。少額特例の要件を満たす場合は、一定の事項を記載した帳簿のみで仕入税額控除できます。')
+edit(s,'<b>仕訳</b>は「支払手数料」と「売上値引き」の2通り。','<b>処理方法</b>は、契約関係等に応じて「買手の役務提供への対価」「売上値引き」「買手による銀行手数料の立替払い」の3通り。立替払いは差引額が実際の銀行手数料と同額である必要があります。')
+edit(s,'支払手数料として課税仕入れにするには金融機関のインボイスが必要ですが、受取側は銀行と取引していないため入手できません。','買手の役務提供への対価を支払手数料として課税仕入れにする場合は、原則として買手の適格請求書または買手確認済みの仕入明細書等を保存します。少額特例の要件を満たす場合は帳簿のみで控除できます。')
+edit(c,'いずれも消費税は課税取引（10%）。違うのは<tspan font-weight="bold">「誰との取引か」</tspan>と<tspan font-weight="bold">「どの書類を保存するか」</tspan>。','売上値引きは元の売上の税率（軽減税率対象は8%）。役務提供・銀行手数料は10%。')
+edit(c,'現在帳簿の保存だけで控除できるのは、少額特例（税込1万円未満・令和11年9月30日まで・基準期間の課税売上高1億円以下または特定期間5,000万円以下の事業者）か、ATM振込のように自動販売機特例に当たる場合に限られます。','振込手数料について帳簿のみで控除できる例には、少額特例（税込1万円未満・令和11年9月30日まで・基準期間の課税売上高1億円以下または特定期間5,000万円以下の事業者）や、税込3万円未満のATM振込に係る自動販売機特例があります。振込手数料以外にも、税込3万円未満の公共交通機関による旅客運送、郵便切手類を対価として郵便ポストに差し出す郵便サービス、従業員等に支給する通常必要な出張旅費等は、一定の事項を記載した帳簿のみで控除できます。')
+Path('review/r16-t8-a/edits.json').write_text(json.dumps(edits,ensure_ascii=False,indent=2)+'\n')

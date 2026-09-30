@@ -18,3 +18,11 @@ const summaryLedger={claims:[{id:'s',covers:summary.map(u=>u.id)}]};
 assert.deepEqual(validateSegments(summary,summaryLedger).errors,[]);
 summaryLedger.claims[0].covers.pop();summaryLedger.nonclaims=[{id:summary.at(-1).id,why:'まとめの案内'}];
 assert.ok(validateSegments(summary,summaryLedger).errors.some(e=>e.includes('invalid nonclaim')));
+
+// Section labels and column labels are not claims, even under a summary heading.
+const labels=segmentClaims('<div class="summary">この記事のまとめ</div><h2>まとめ</h2><table><tr><th>支出の例</th><th>消費税</th></tr><tr><td>税率は10%です。</td></tr></table><p>適用条件を満たします。</p><h2>実務の注意点まとめ</h2><h2>結論：税率は10%</h2>');
+for (const text of ['この記事のまとめ','支出の例','消費税','実務の注意点まとめ']) {
+  const u=labels.find(u=>u.text===text);
+  assert.equal(u.protected,false,text);
+}
+for (const text of ['税率は10%です。','適用条件を満たします。','結論：税率は10%']) assert.equal(labels.find(u=>u.text===text).protected,true,text);
