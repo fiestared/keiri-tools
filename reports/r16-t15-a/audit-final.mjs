@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import {segmentClaims,validateSegments} from '../../tools/segment_claims.mjs';
+import {ledgerPath} from '../../tools/check_claims.mjs';
+const r='/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t15-a/';const old=JSON.parse(fs.readFileSync(r+'segments.json'));const a=JSON.parse(fs.readFileSync(r+'segment-adjudication.json')).segments;const oc=JSON.parse(fs.readFileSync(r+'oc-opinion.json')).units;const pages=[...new Set(old.map(u=>u.page))];const all=[];const result=[];
+for(const page of pages){const units=segmentClaims(fs.readFileSync(page,'utf8'),page);all.push(...units);const d=JSON.parse(fs.readFileSync(ledgerPath(page)));const c=validateSegments(units,d);const unc=new Set(d.unconfirmed.map(u=>u.id));assert.deepEqual([...unc].sort(),c.unprocessed_ids.sort());assert(d.unconfirmed.every(u=>u.needed_source));assert(!c.errors.some(x=>!x.startsWith('unprocessed segment:')));result.push({page,total:c.total,covers:c.covered,verified:c.verified,nonclaims:c.nonclaims,out_of_corpus:unc.size,unprocessed:c.unprocessed,unclassified:0});}
+const oldById=new Map(old.map(u=>[u.page+'|'+u.id,u]));const preserved=[];
+for(const o of oc.filter(u=>u.verdict!=='wrong')){const u=oldById.get(o.page+'|'+o.id);assert(all.some(x=>x.page===u.page&&x.text_hash===u.text_hash&&x.kind===u.kind),u.id);preserved.push({page:u.page,id:u.id,text_hash:u.text_hash,verdict:o.verdict});}
+const remaining=a.filter(u=>u.decision==='unresolved'&&all.some(x=>x.page===u.page&&x.id===u.id));assert.equal(remaining.length,0);
+const out={pages:result,preserved_out_of_corpus:preserved.length,remaining_original_unresolved_ids:remaining,preservation:preserved,warning:'原文IDが無いことは修正文の正確性・独立審査完了を保証しない。'};fs.writeFileSync('reports/r16-t15-a/final-audit.json',JSON.stringify(out,null,2)+'\n');fs.writeFileSync('reports/r16-t15-a/segments-after.json',JSON.stringify(all,null,2)+'\n');console.log(result);console.log('OC preserved',preserved.length,'remaining unresolved old IDs',remaining.length);
