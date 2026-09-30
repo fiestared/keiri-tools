@@ -51,3 +51,6 @@ extra.juminzei_core = [{name:'r15 HTML初期値は所得金額調整なし',
     family:{fuyoNensho:Number(d.getElementById('fuyoNensho').value)}},R15D).shotokuKingakuChosei,
   expected:0,source:'https://www.tax.metro.tokyo.lg.jp/kazei/life/kojin_ju',
   quote:'給与等の収入金額が850万円を超える者'}];
+// r15: 全フォーム初期値を実際のHTMLから読む。
+import {calcIkuji} from '../../docs/assets/ikuji_core.js';
+extra.ikuji_core=[{name:'r15 育休HTML初期値の合計',run:d=>calcIkuji({total6m:num(d,'monthly')*6,startDate:d.getElementById('startDate').value,leaveDays:num(d,'leaveDays'),priorShusshojiDays:num(d,'priorShusshojiDays'),shien:{ownDays:num(d,'shienOwnDays'),paidDays:num(d,'shienPaidDays'),spouseDays:num(d,'shienSpouseDays'),spouseExempt:checked(d,'spouseExempt')}},load('kihonteate_r07.json')).total,expected:1805900,source:'https://laws.e-gov.go.jp/law/349AC0000000116',quote:'休業日数が通算して百八十日に達するまでの間に限り、百分の六十七',note:'2026-04-01から初期値307日、日額10000円、67%177日＋50%124日、配偶者要件未達で支援0円。'}];

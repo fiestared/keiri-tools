@@ -457,6 +457,9 @@ const reviewCases = [
  {name:'t7 本人13日配偶者14日なら延長支援案内18200円',run:()=>calcPapaIkukyu({...papaInput,leaveDays:13,spouse:{exempt:false,days:14}},D).extensionShien.amount,expected:18200,source:'https://laws.e-gov.go.jp/law/349AC0000000116',quote:'対象期間内にした出生後休業の日数が通算して十四日以上であるとき。'},
 ];
 
+import {r15Cases} from './boundaries/ikuji_core.mjs';
+for (const c of r15Cases) eq(c.run(), c.expected, c.name);
+
 for (const c of reviewCases) { try { eq(c.run(), c.expected, c.name); } catch(e) { eq(e.message, c.expected, c.name); } }
 if (failed) {
   console.error(`\n✗ ${failed} 件失敗 / ${checks} checks`);

@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "core": "ikuji_core",
+  "page": "docs/ikuji/index.html",
+  "priority_evidence": "r15 t7-a: 免除・率切替・既支給通算・就業対象外。重要条件の部分登録であり全条件網羅を意味しない。端数処理の正本は未収録。",
+  "conditions": [
+    {
+      "id": "spouse-exemption",
+      "statute": "https://laws.e-gov.go.jp/law/349AC0000000116",
+      "disposition": "input",
+      "input_ids": [
+        "spouseExempt",
+        "shienOwnDays",
+        "shienSpouseDays"
+      ],
+      "cases": [
+        "r15 配偶者免除でも本人13日は不支給",
+        "r15 配偶者免除・本人14日配偶者0日",
+        "r15 免除なし本人14日配偶者0日"
+      ]
+    },
+    {
+      "id": "prior-180-days",
+      "statute": "https://laws.e-gov.go.jp/law/349AC0000000116",
+      "disposition": "input",
+      "input_ids": [
+        "startDate",
+        "leaveDays",
+        "priorShusshojiDays"
+      ],
+      "cases": [
+        "t7 先行28日後の通常育休152日までは67%",
+        "t7 先行28日後の通常育休153日目は50%",
+        "r15 2026年4月開始365日の明示例",
+        "r15 2026年2月開始365日の明示例"
+      ]
+    },
+    {
+      "id": "paid-support-days",
+      "statute": "https://laws.e-gov.go.jp/law/349AC0000000116",
+      "disposition": "input",
+      "input_ids": [
+        "shienPaidDays",
+        "priorShusshojiDays"
+      ],
+      "cases": [
+        "t7 既支給14日なら残り14日18200円",
+        "t7 既支給28日なら0円"
+      ]
+    },
+    {
+      "id": "work-income-out-of-scope",
+      "statute": "https://laws.e-gov.go.jp/law/349AC0000000116",
+      "disposition": "out_of_scope",
+      "scope_selector": "#ikuji-work-scope",
+      "scope_text": "この計算機で正しく出ない方\n    育休中に就業して賃金を受け取る方は、賃金と給付の合計が休業前の80%で頭打ちになります（61条の7第7項。賃金が80%以上なら不支給ですが、賃金が13%（181日目以降30%）を超えると給付が減額され、賃金と育児休業給付の合計は80%で一定になる区間があります）。産後パパ育休（出生時育児休業給付金）は別の給付です（61条の8）→ 産後パパ育休 給付金 計算機。最終的な金額はお住まいの地域のハローワークにご確認ください。",
+      "cases": [
+        "r15 67%給付・賃金13%境界39000円",
+        "r15 67%給付・賃金13%の1円超",
+        "r15 50%給付・賃金30%境界90000円",
+        "r15 50%給付・賃金30%の1円超"
+      ]
+    }
+  ],
+  "default_cases": [
+    "r15 育休HTML初期値の合計"
+  ]
+}

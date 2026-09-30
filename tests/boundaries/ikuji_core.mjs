@@ -37,3 +37,20 @@ export const reviewCases = [
  {name:'t7 本人13日配偶者14日なら延長支援案内18200円',run:()=>calcPapaIkukyu({...papaInput,leaveDays:13,spouse:{exempt:false,days:14}},kihonteateData).extensionShien.amount,expected:18200,source:'https://laws.e-gov.go.jp/law/349AC0000000116',quote:'対象期間内にした出生後休業の日数が通算して十四日以上であるとき。'},
 ];
 cases.push(...reviewCases);
+
+// r15: 説明文の訂正を裏付ける境界。core は訂正前から正しい（core の赤→緑とは数えない）。
+import {adjustForWage} from '../../docs/assets/ikuji_core.js';
+const act='https://laws.e-gov.go.jp/law/349AC0000000116';
+const wageQuote='百分の八十に相当する額から当該賃金の額を減じて得た額';
+export const r15Cases = [
+ {name:'r15 67%給付・賃金13%境界39000円',run:()=>adjustForWage(201000,39000,300000).amount,expected:201000,source:act,quote:wageQuote},
+ {name:'r15 67%給付・賃金13%の1円超',run:()=>adjustForWage(201000,39001,300000).amount,expected:200999,source:act,quote:wageQuote},
+ {name:'r15 50%給付・賃金30%境界90000円',run:()=>adjustForWage(150000,90000,300000).amount,expected:150000,source:act,quote:wageQuote},
+ {name:'r15 50%給付・賃金30%の1円超',run:()=>adjustForWage(150000,90001,300000).amount,expected:149999,source:act,quote:wageQuote},
+ {name:'r15 配偶者免除でも本人13日は不支給',run:()=>shienKyufu(10000,13,0,true).amount,expected:0,source:act,quote:'対象期間内にした出生後休業の日数が通算して十四日以上であるとき。'},
+ {name:'r15 配偶者免除・本人14日配偶者0日',run:()=>shienKyufu(10000,14,0,true).amount,expected:18200,source:act,quote:'第一号及び第二号'},
+ {name:'r15 免除なし本人14日配偶者0日',run:()=>shienKyufu(10000,14,0,false).amount,expected:0,source:act,quote:'当該被保険者の配偶者が当該子を養育するための休業をした場合'},
+ {name:'r15 2026年4月開始365日の明示例',run:()=>calcIkuji({total6m:1800000,startDate:'2026-04-01',leaveDays:365,shien:null},kihonteateData).total,expected:2105900,source:act,quote:'休業日数が通算して百八十日に達するまでの間に限り、百分の六十七'},
+ {name:'r15 2026年2月開始365日の明示例',run:()=>calcIkuji({total6m:1800000,startDate:'2026-02-01',leaveDays:365,shien:null},kihonteateData).total,expected:2116000,source:act,quote:'休業日数が通算して百八十日に達するまでの間に限り、百分の六十七'}
+];
+cases.push(...r15Cases);
