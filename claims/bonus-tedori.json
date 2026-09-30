@@ -1,7 +1,7 @@
 {
   "page": "docs/bonus-tedori/index.html",
-  "checked": "2026-09-28",
-  "scope": "R9の追加行（既存の設例・年度・数字が同じ行に残る場合も含む）。全文監査済みという意味ではない。",
+  "checked": "2026-09-30",
+  "scope": "r14/t1x-b: coversは正本照合済みの単位。verifiedは既存の独立審査と同文の単位のみ。修正後の単位は書き手の再照合であり司令塔の検品待ち。正本外はpending_segmentsに保留。",
   "claims": [
     {
       "id": "r9-changed-statements",
@@ -420,6 +420,756 @@
       "source_text_sha256": "3ae3ec2337c90c1367a431f4a4a8717c557e5e5a25f719eff9bbb36feaedf787",
       "review_result": "sol_ok",
       "sol_quote": "一般の事業 5/1,000／農林水産・清酒製造の事業 6/1,000／建設の事業 6/1,000"
+    },
+    {
+      "id": "r14-s-a084042d67a35770a209-1",
+      "text": "通常の甲欄の賞与税率は、前月の社会保険料等控除後給与と扶養親族等の数で決まります。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "イ 「給与所得者の扶養控除等申告書」を提出している人の場合\n    ①    まず、算出率表の甲欄により、その人の前月中の社会保険料等\n        控除後の給与等の金額と扶養親族等の数とに応じて「賞与の金額\n        に乗ずべき率」欄に記載されている率を求めます。\n    ②    社会保険料等控除後の賞与の金額に①により求めた率を乗じま\n        す。これが、その賞与に対する源泉徴収税額になります。",
+      "corpus_ref": "corpus/gensen/04.txt:3617-3622;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126",
+      "exceptions": "corpus/gensen/04.txt:3617-3622;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126 を直接照合。税率が前月の給与だけで決まるように読めるが、正本では前月の社会保険料等控除後給与と扶養親族等の数の双方に応じる。前月給与なし等や10倍超賞与には別計算もあるため、対象条件を欠く過度な一般化である。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-a084042d67a35770a209-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-cb2aa6477a9700d0c293-1",
+      "text": "前月給与なし等や控除後賞与が前月控除後給与の10倍を超える場合は、月額表による別計算です。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [
+        "10倍"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "イ 「給与所得者の扶養控除等申告書」を提出している人の場合\n    ①    まず、算出率表の甲欄により、その人の前月中の社会保険料等\n        控除後の給与等の金額と扶養親族等の数とに応じて「賞与の金額\n        に乗ずべき率」欄に記載されている率を求めます。\n    ②    社会保険料等控除後の賞与の金額に①により求めた率を乗じま\n        す。これが、その賞与に対する源泉徴収税額になります。",
+      "corpus_ref": "corpus/gensen/04.txt:3617-3622;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126",
+      "exceptions": "corpus/gensen/04.txt:3617-3622;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126 を直接照合。税率が前月の給与だけで決まるように読めるが、正本では前月の社会保険料等控除後給与と扶養親族等の数の双方に応じる。前月給与なし等や10倍超賞与には別計算もあるため、対象条件を欠く過度な一般化である。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-cb2aa6477a9700d0c293-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-d6d1b2f8bd39b88cd980-1",
+      "text": "前月の給与（税率を決める鍵）",
+      "where": [
+        "div / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf",
+      "source_quote": "イ 「給与所得者の扶養控除等申告書」を提出している人の場合\n    ①    まず、算出率表の甲欄により、その人の前月中の社会保険料等\n        控除後の給与等の金額と扶養親族等の数とに応じて「賞与の金額\n        に乗ずべき率」欄に記載されている率を求めます。",
+      "corpus_ref": "corpus/gensen/04.txt:3617-3620",
+      "exceptions": "corpus/gensen/04.txt:3617-3620 を正本で直接照合。対象「前月の給与（税率を決める鍵）」の用語・適用条件又は表示された設例の計算を、隣接セル・前後文も含めて確認し採用。",
+      "covers": [
+        "s-d6d1b2f8bd39b88cd980-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "independent_ok"
+    },
+    {
+      "id": "r14-s-3e536b796d40fdf77ff6-1",
+      "text": "扶養控除等申告書に基づく扶養親族等の数を入力。令和8年分は源泉控除対象配偶者＋源泉控除対象親族（19〜22歳の特定親族のうち合計所得100万円以下も含む）が基本です。本人の障害者・寡婦・ひとり親・勤労学生は各1人加算。同一生計配偶者・扶養親族の障害者（16歳未満も対象）は各1人、同居特別障害者はさらに1人を加算。該当なしは0。",
+      "where": [
+        "span / body"
+      ],
+      "numbers": [
+        "令和8年分",
+        "100万円",
+        "22歳",
+        "1人",
+        "16歳"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "１     「扶養親族等」とは、源泉控除対象配偶者及び源泉控除対象親族をいいます。詳しくは19ページ２「税額表の使い\n   方」をご覧ください。\n₂       １の場合において、扶養控除等申告書にその人が障害者（特別障害者を含みます。以下同じです。）、寡婦、ひと\n    り親又は勤労学生に該当する旨の記載があるときは、扶養親族等の数にこれらの一に該当するごとに１人を加算した\n    数を、扶養控除等申告書にその人の同一生計配偶者又は扶養親族のうちに障害者又は同居特別障害者（障害者又は同\n    居特別障害者が国外居住親族である場合には、親族に該当する旨を証する書類がその申告書に添付され、又はその申\n    告書の提出の際に提示された障害者又は同居特別障害者に限ります。）に該当する人がいる旨の記載があるときは、\n    扶養親族等の数にこれらの一に該当するごとに１人を加算した数を、それぞれ扶養親族等の数とします。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:47-48,110-115;corpus/gensen/04.txt:3005-3014;corpus/gensen/04.txt:3080-3085,3109-3115",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:47-48,110-115;corpus/gensen/04.txt:3005-3014 を正本で直接照合。対象「扶養控除等申告書に基づく扶養親族等の数を入力。令和8年分は源泉控除対象配偶者＋源泉控除対象親族（19〜22歳の特定親族のうち合計所得100万円以下も含む）が基本です。本人の障害者・」の用語・適用条件又は表示された設例の計算を、隣接セル・前後文も含めて確認し採用。 補足: corpus/gensen/04.txt:3080-3085,3109-3115で16歳未満の障害者加算と同居特別障害者の2人加算も確認。",
+      "covers": [
+        "s-3e536b796d40fdf77ff6-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "independent_ok"
+    },
+    {
+      "id": "r14-s-bd6fcc988529dd0f1531-1",
+      "text": "月額表をその月の社会保険料等控除後給与で引く（甲欄は扶養親族等の数にも応じる）",
+      "where": [
+        "td / table"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01_07.pdf",
+      "source_quote": "１ 「給与所得者の扶養控除等申告書」（以下この表において「扶養控除等申告書」といいます。 ）の提出があった人\n   ⑴ まず、その人のその月の給与等の金額から、その給与等の金額から控除される社会保険料等の金額を控除した金額\n    を求めます。\n   ⑵ 次に、扶養控除等申告書により申告された扶養親族等（その申告書に記載がされていないものとされる源泉控除対\n    象配偶者及び源泉控除対象親族を除きます。また、扶養親族等が非居住者である親族（以下この表において「国外居\n    住親族」といいます。）である場合には、親族に該当する旨を証する書類（その国外居住親族である扶養親族等が年\n    齢30歳以上70歳未満の控除対象扶養親族であり、かつ、留学により国内に住所及び居所を有しなくなった人である場\n    合には、親族に該当する旨を証する書類及び留学により国内に住所及び居所を有しなくなった人に該当する旨を証す\n    る書類。２において同じです。）がその申告書に添付され、又はその申告書の提出の際に提示された扶養親族等に限り\n    ます。）の数が₇人以下である場合には、⑴により求めた金額に応じて「その月の社会保険料等控除後の給与等の金額」\n    欄の該当する行を求め、その行と扶養親族等の数に応じた甲欄の該当欄との交わるところに記載されている金額を求\n    めます。これが求める税額です。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_01_07_pdf.txt:539-550;corpus/gensen/04.txt:3603-3609,3617-3622",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_01_07_pdf.txt:539-550 を直接照合。毎月給与の所得税は単にその月の給与で月額表を引くのではなく、社会保険料等控除後の給与額を求め、甲欄では扶養親族等の数にも応じて税額を求めるため、計算条件の省略により不正確である。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。;corpus/gensen/04.txt:3603-3609,3617-3622 を直接照合。賞与の算出率表は前月給与そのものではなく前月の社会保険料等控除後給与と扶養親族等の数に応じて引く。さらに前月給与なし等や10倍超賞与には算出率表ではなく月額表を使うため、条件・例外が欠落している。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-bd6fcc988529dd0f1531-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-7aa4b06d77be38ffc3af-1",
+      "text": "通常の甲欄は算出率の表を前月の社会保険料等控除後給与と扶養親族等の数で引く（前月給与なし等・10倍超は月額表）",
+      "where": [
+        "td / table"
+      ],
+      "numbers": [
+        "10倍"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01_07.pdf",
+      "source_quote": "１ 「給与所得者の扶養控除等申告書」（以下この表において「扶養控除等申告書」といいます。 ）の提出があった人\n   ⑴ まず、その人のその月の給与等の金額から、その給与等の金額から控除される社会保険料等の金額を控除した金額\n    を求めます。\n   ⑵ 次に、扶養控除等申告書により申告された扶養親族等（その申告書に記載がされていないものとされる源泉控除対\n    象配偶者及び源泉控除対象親族を除きます。また、扶養親族等が非居住者である親族（以下この表において「国外居\n    住親族」といいます。）である場合には、親族に該当する旨を証する書類（その国外居住親族である扶養親族等が年\n    齢30歳以上70歳未満の控除対象扶養親族であり、かつ、留学により国内に住所及び居所を有しなくなった人である場\n    合には、親族に該当する旨を証する書類及び留学により国内に住所及び居所を有しなくなった人に該当する旨を証す\n    る書類。２において同じです。）がその申告書に添付され、又はその申告書の提出の際に提示された扶養親族等に限り\n    ます。）の数が₇人以下である場合には、⑴により求めた金額に応じて「その月の社会保険料等控除後の給与等の金額」\n    欄の該当する行を求め、その行と扶養親族等の数に応じた甲欄の該当欄との交わるところに記載されている金額を求\n    めます。これが求める税額です。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_01_07_pdf.txt:539-550;corpus/gensen/04.txt:3603-3609,3617-3622",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_01_07_pdf.txt:539-550 を直接照合。毎月給与の所得税は単にその月の給与で月額表を引くのではなく、社会保険料等控除後の給与額を求め、甲欄では扶養親族等の数にも応じて税額を求めるため、計算条件の省略により不正確である。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。;corpus/gensen/04.txt:3603-3609,3617-3622 を直接照合。賞与の算出率表は前月給与そのものではなく前月の社会保険料等控除後給与と扶養親族等の数に応じて引く。さらに前月給与なし等や10倍超賞与には算出率表ではなく月額表を使うため、条件・例外が欠落している。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-7aa4b06d77be38ffc3af-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-1244f21f69b15819c07a-1",
+      "text": "税率4.084%を決めたのは賞与の50万円ではなく、前月の給与（の社会保険料控除後の255,930円）です。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [
+        "255,930円",
+        "50万円",
+        "4.084%"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "また、「賞与の金額に乗ずべき率」の賞与の金額とは、賞与の金額から控除される社会保険料等の金額がある場合\n   には、その社会保険料等控除後の金額をいいます。\n     ⑴   まず、その人の前月中の給与等（賞与を除きます。以下この表において同じです。）の金額から、その給与等の\n       金額から控除される社会保険料等の金額（以下この表において「前月中の社会保険料等の金額」といいます。）を\n       控除した金額を求めます。\n   ⑵     次に、扶養控除等申告書により申告された扶養親族等（その申告書に記載がされていないものとされる源泉控除\n       対象配偶者及び源泉控除対象親族を除きます。また、扶養親族等が非居住者である親族（以下この表において「国\n       外居住親族」といいます。）である場合には、親族に該当する旨を証する書類（その国外居住親族である扶養親族\n       等が年齢30歳以上70歳未満の控除対象扶養親族であり、かつ、留学により国内に住所及び居所を有しなくなった人\n       である場合には、親族に該当する旨を証する書類及び留学により国内に住所及び居所を有しなくなった人に該当す\n       る旨を証する書類）がその申告書に添付され、又はその申告書の提出の際に提示された扶養親族等に限ります。）\n       の数と⑴により求めた金額とに応じて甲欄の「前月の社会保険料等控除後の給与等の金額」欄の該当する行を求め\n       ます。\n   ⑶     ⑵により求めた行と「賞与の金額に乗ずべき率」欄との交わるところに記載されている率を求めます。これが求\n       める率です。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:51-52,56-68",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:51-52,56-68 を正本で直接照合。対象「税率4.084%を決めたのは賞与の50万円ではなく、前月の給与（の社会保険料控除後の255,930円）です。」の用語・適用条件又は表示された設例の計算を、隣接セル・前後文も含めて確認し採用。 算出率表15_16_pdf.txt:19-21の甲欄0人94千円以上260千円未満=4.084%で確認。255,930円という控除後入力を仮定した税率照合であり、正本外の社会保険料44,070円の正しさは認定していない。",
+      "covers": [
+        "s-1244f21f69b15819c07a-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "independent_ok"
+    },
+    {
+      "id": "r14-s-349e2d303fb25dc52635-1",
+      "text": "前月の社会保険料等控除後給与が高くなり、上の税率帯へ移れば、同じ50万円のボーナスでも税率が上がります。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [
+        "50万円"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "2.042                 82              94             107              250             143         276             181         300\n     4.084                 94             260             250              289             276         321             300         354\n     6.126                260             309             289              346             321         377             354         405",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21。扶養0人は控除後94,000円以上260,000円未満で一律4.084%。例の255,930円より高くても259,000円なら同率である。「税率帯を超えれば上がる」等に修正が必要。;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21。直前の設例255,930円では扶養0人も1人も4.084%。扶養がいるだけで必ず下がるという元okは不採用。「人数・給与の組合せにより同率の場合もある」とする。",
+      "covers": [
+        "s-349e2d303fb25dc52635-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-a43d9e2cf9ec299bda1b-1",
+      "text": "同じ税率帯なら同率です。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "2.042                 82              94             107              250             143         276             181         300\n     4.084                 94             260             250              289             276         321             300         354\n     6.126                260             309             289              346             321         377             354         405",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21。扶養0人は控除後94,000円以上260,000円未満で一律4.084%。例の255,930円より高くても259,000円なら同率である。「税率帯を超えれば上がる」等に修正が必要。;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21。直前の設例255,930円では扶養0人も1人も4.084%。扶養がいるだけで必ず下がるという元okは不採用。「人数・給与の組合せにより同率の場合もある」とする。",
+      "covers": [
+        "s-a43d9e2cf9ec299bda1b-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-fc76ce56fc74d0719544-1",
+      "text": "扶養親族等の数によって参照列は変わりますが、税率が同じ場合もあります。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "2.042                 82              94             107              250             143         276             181         300\n     4.084                 94             260             250              289             276         321             300         354\n     6.126                260             309             289              346             321         377             354         405",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21。扶養0人は控除後94,000円以上260,000円未満で一律4.084%。例の255,930円より高くても259,000円なら同率である。「税率帯を超えれば上がる」等に修正が必要。;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21。直前の設例255,930円では扶養0人も1人も4.084%。扶養がいるだけで必ず下がるという元okは不採用。「人数・給与の組合せにより同率の場合もある」とする。",
+      "covers": [
+        "s-fc76ce56fc74d0719544-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-70e3952b14e8153b54ea-1",
+      "text": "この例の控除後給与255,930円では、扶養0人でも1人でも4.084%です。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [
+        "255,930円",
+        "4.084%",
+        "0人",
+        "1人"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "2.042                 82              94             107              250             143         276             181         300\n     4.084                 94             260             250              289             276         321             300         354\n     6.126                260             309             289              346             321         377             354         405",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21。扶養0人は控除後94,000円以上260,000円未満で一律4.084%。例の255,930円より高くても259,000円なら同率である。「税率帯を超えれば上がる」等に修正が必要。;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:19-21。直前の設例255,930円では扶養0人も1人も4.084%。扶養がいるだけで必ず下がるという元okは不採用。「人数・給与の組合せにより同率の場合もある」とする。",
+      "covers": [
+        "s-70e3952b14e8153b54ea-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-75bc92fa309d694c256b-1",
+      "text": "算出率の表が使えない3つの場合 — 月額表による例外計算",
+      "where": [
+        "h2 / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "₄    前月中の給与等の金額がない場合や前月中の給与等の金額が前月中の社会保険料等の金額以下である場合又はその\n    賞与の金額（その金額から控除される社会保険料等の金額がある場合には、その控除後の金額）が前月中の給与等の\n    金額から前月中の社会保険料等の金額を控除した金額の10倍に相当する金額を超える場合には、この表によらず、平\n    成24年 3 月31日財務省告示第115号（令和 7 年 4 月30日財務省告示第122号改正）第 3 項第 1 号イ⑵若しくはロ⑵又は第\n    2 号の規定により、月額表を使って税額を計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126 を正本で直接照合。対象「算出率の表が使えない3つの場合 — 月額表による例外計算」の用語・適用条件又は表示された設例の計算を、隣接セル・前後文も含めて確認し採用。",
+      "covers": [
+        "s-75bc92fa309d694c256b-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "independent_ok"
+    },
+    {
+      "id": "r14-s-28c1f2b88327cf3711c3-1",
+      "text": "算出率の表の備考は、次の場合にこの表を使わず、月額表で計算すると定めています（計算式は国税庁タックスアンサー No.2523）。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "₄    前月中の給与等の金額がない場合や前月中の給与等の金額が前月中の社会保険料等の金額以下である場合又はその\n    賞与の金額（その金額から控除される社会保険料等の金額がある場合には、その控除後の金額）が前月中の給与等の\n    金額から前月中の社会保険料等の金額を控除した金額の10倍に相当する金額を超える場合には、この表によらず、平\n    成24年 3 月31日財務省告示第115号（令和 7 年 4 月30日財務省告示第122号改正）第 3 項第 1 号イ⑵若しくはロ⑵又は第\n    2 号の規定により、月額表を使って税額を計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126;corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:24-47",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126;corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:24-47 を正本で直接照合。対象「算出率の表の備考は、次の場合にこの表を使わず、月額表で計算すると定めています（計算式は国税庁タックスアンサー No.2523）。」の用語・適用条件又は表示された設例の計算を、隣接セル・前後文も含めて確認し採用。",
+      "covers": [
+        "s-28c1f2b88327cf3711c3-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "independent_ok"
+    },
+    {
+      "id": "r14-s-0a70ea64242946fe0c3c-1",
+      "text": "前月中に給与の支払がない（休職明け・新規入社の直後など）",
+      "where": [
+        "li / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "₄    前月中の給与等の金額がない場合や前月中の給与等の金額が前月中の社会保険料等の金額以下である場合又はその\n    賞与の金額（その金額から控除される社会保険料等の金額がある場合には、その控除後の金額）が前月中の給与等の\n    金額から前月中の社会保険料等の金額を控除した金額の10倍に相当する金額を超える場合には、この表によらず、平\n    成24年 3 月31日財務省告示第115号（令和 7 年 4 月30日財務省告示第122号改正）第 3 項第 1 号イ⑵若しくはロ⑵又は第\n    2 号の規定により、月額表を使って税額を計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126 を正本で直接照合。対象「前月中に給与の支払がない（休職明け・新規入社の直後など）」の用語・適用条件又は表示された設例の計算を、隣接セル・前後文も含めて確認し採用。",
+      "covers": [
+        "s-0a70ea64242946fe0c3c-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "independent_ok"
+    },
+    {
+      "id": "r14-s-de990ea50cb9935eaecf-1",
+      "text": "前月の給与が、前月の社会保険料等以下（控除後が0円以下になる）",
+      "where": [
+        "li / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "₄    前月中の給与等の金額がない場合や前月中の給与等の金額が前月中の社会保険料等の金額以下である場合又はその\n    賞与の金額（その金額から控除される社会保険料等の金額がある場合には、その控除後の金額）が前月中の給与等の\n    金額から前月中の社会保険料等の金額を控除した金額の10倍に相当する金額を超える場合には、この表によらず、平\n    成24年 3 月31日財務省告示第115号（令和 7 年 4 月30日財務省告示第122号改正）第 3 項第 1 号イ⑵若しくはロ⑵又は第\n    2 号の規定により、月額表を使って税額を計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126 を正本で直接照合。対象「前月の給与が、前月の社会保険料等以下（控除後が0円以下になる）」の用語・適用条件又は表示された設例の計算を、隣接セル・前後文も含めて確認し採用。",
+      "covers": [
+        "s-de990ea50cb9935eaecf-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "independent_ok"
+    },
+    {
+      "id": "r14-s-5cc760772e5bbef0c814-1",
+      "text": "賞与（社会保険料等控除後）が、前月の給与（同）の10倍を超える",
+      "where": [
+        "li / body"
+      ],
+      "numbers": [
+        "10倍"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "₄    前月中の給与等の金額がない場合や前月中の給与等の金額が前月中の社会保険料等の金額以下である場合又はその\n    賞与の金額（その金額から控除される社会保険料等の金額がある場合には、その控除後の金額）が前月中の給与等の\n    金額から前月中の社会保険料等の金額を控除した金額の10倍に相当する金額を超える場合には、この表によらず、平\n    成24年 3 月31日財務省告示第115号（令和 7 年 4 月30日財務省告示第122号改正）第 3 項第 1 号イ⑵若しくはロ⑵又は第\n    2 号の規定により、月額表を使って税額を計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126 を正本で直接照合。対象「賞与（社会保険料等控除後）が、前月の給与（同）の10倍を超える」の用語・適用条件又は表示された設例の計算を、隣接セル・前後文も含めて確認し採用。",
+      "covers": [
+        "s-5cc760772e5bbef0c814-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "independent_ok"
+    },
+    {
+      "id": "r14-s-70455ce1719a93aedc75-1",
+      "text": "社会保険料等控除後賞与をB、前月の社会保険料等控除後給与をP、月額表による税額をTとします。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm",
+      "source_quote": "前月の給与の金額（社会保険料等を差し引いた金額）の10倍を超える賞与（社会保険料等を差し引いた金額）を支払う場合\n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」）\n（2）上記（1）＋（前月の給与から社会保険料等を差し引いた金額）\n（3）上記（2）の金額を\n「月額表」\nに当てはめて税額を求める。\n（4）上記（3）の税額-（前月の給与に対する源泉徴収税額）\n（5）上記（4）の税額×6（または「12」）\nこの金額が賞与から源泉徴収する税額になります。\n（注） 賞与の計算期間が6か月を超える場合には、上記算式の「12」を使って計算します。 \n前月に給与の支払がない場合 \n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」） \n（2）上記（1）の金額を\n「月額表」\nに当てはめて税額を求める。 \n（3）上記（2）の税額×6（または「12」） \nこの金額が賞与から源泉徴収する税額になります。 \n（注） 賞与の計算期間が6か月を超える場合には、上記計算式の「12」を使って計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47 を直接照合。例外計算を一律に「賞与を6（12）等分して月額表へ当て、税額を6（12）倍」と説明しているが、前月給与の社会保険料等控除後額の10倍を超える賞与では、等分額に前月給与を加えた月額表税額から前月給与単独の月額表税額を控除し、その差額を6（12）倍する必要がある。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-70455ce1719a93aedc75-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-1da664a4cff941a77f98-1",
+      "text": "計算期間が6か月以下ならn＝6、6か月超ならn＝12です。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [
+        "6か月"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm",
+      "source_quote": "前月の給与の金額（社会保険料等を差し引いた金額）の10倍を超える賞与（社会保険料等を差し引いた金額）を支払う場合\n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」）\n（2）上記（1）＋（前月の給与から社会保険料等を差し引いた金額）\n（3）上記（2）の金額を\n「月額表」\nに当てはめて税額を求める。\n（4）上記（3）の税額-（前月の給与に対する源泉徴収税額）\n（5）上記（4）の税額×6（または「12」）\nこの金額が賞与から源泉徴収する税額になります。\n（注） 賞与の計算期間が6か月を超える場合には、上記算式の「12」を使って計算します。 \n前月に給与の支払がない場合 \n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」） \n（2）上記（1）の金額を\n「月額表」\nに当てはめて税額を求める。 \n（3）上記（2）の税額×6（または「12」） \nこの金額が賞与から源泉徴収する税額になります。 \n（注） 賞与の計算期間が6か月を超える場合には、上記計算式の「12」を使って計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47 を直接照合。例外計算を一律に「賞与を6（12）等分して月額表へ当て、税額を6（12）倍」と説明しているが、前月給与の社会保険料等控除後額の10倍を超える賞与では、等分額に前月給与を加えた月額表税額から前月給与単独の月額表税額を控除し、その差額を6（12）倍する必要がある。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-1da664a4cff941a77f98-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-0b41adba6e83cb354f56-1",
+      "text": "前月給与がない場合はn×T(B÷n)、BがPの10倍を超える場合はn×{T(P＋B÷n)−T(P)}で計算します。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [
+        "10倍"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm",
+      "source_quote": "前月の給与の金額（社会保険料等を差し引いた金額）の10倍を超える賞与（社会保険料等を差し引いた金額）を支払う場合\n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」）\n（2）上記（1）＋（前月の給与から社会保険料等を差し引いた金額）\n（3）上記（2）の金額を\n「月額表」\nに当てはめて税額を求める。\n（4）上記（3）の税額-（前月の給与に対する源泉徴収税額）\n（5）上記（4）の税額×6（または「12」）\nこの金額が賞与から源泉徴収する税額になります。\n（注） 賞与の計算期間が6か月を超える場合には、上記算式の「12」を使って計算します。 \n前月に給与の支払がない場合 \n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」） \n（2）上記（1）の金額を\n「月額表」\nに当てはめて税額を求める。 \n（3）上記（2）の税額×6（または「12」） \nこの金額が賞与から源泉徴収する税額になります。 \n（注） 賞与の計算期間が6か月を超える場合には、上記計算式の「12」を使って計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47 を直接照合。例外計算を一律に「賞与を6（12）等分して月額表へ当て、税額を6（12）倍」と説明しているが、前月給与の社会保険料等控除後額の10倍を超える賞与では、等分額に前月給与を加えた月額表税額から前月給与単独の月額表税額を控除し、その差額を6（12）倍する必要がある。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-0b41adba6e83cb354f56-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-4ad08228121c81d55738-1",
+      "text": "B÷nの1円未満は切り捨て、月額表は申告書の提出区分と扶養親族等の数に応じて適用します。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm",
+      "source_quote": "前月の給与の金額（社会保険料等を差し引いた金額）の10倍を超える賞与（社会保険料等を差し引いた金額）を支払う場合\n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」）\n（2）上記（1）＋（前月の給与から社会保険料等を差し引いた金額）\n（3）上記（2）の金額を\n「月額表」\nに当てはめて税額を求める。\n（4）上記（3）の税額-（前月の給与に対する源泉徴収税額）\n（5）上記（4）の税額×6（または「12」）\nこの金額が賞与から源泉徴収する税額になります。\n（注） 賞与の計算期間が6か月を超える場合には、上記算式の「12」を使って計算します。 \n前月に給与の支払がない場合 \n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」） \n（2）上記（1）の金額を\n「月額表」\nに当てはめて税額を求める。 \n（3）上記（2）の税額×6（または「12」） \nこの金額が賞与から源泉徴収する税額になります。 \n（注） 賞与の計算期間が6か月を超える場合には、上記計算式の「12」を使って計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47 を直接照合。例外計算を一律に「賞与を6（12）等分して月額表へ当て、税額を6（12）倍」と説明しているが、前月給与の社会保険料等控除後額の10倍を超える賞与では、等分額に前月給与を加えた月額表税額から前月給与単独の月額表税額を控除し、その差額を6（12）倍する必要がある。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-4ad08228121c81d55738-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-abf12e5571439fe8102e-1",
+      "text": "前月給与がない人の少額の賞与は、月額表の非課税帯に収まって源泉所得税が0円になることもあります（年末調整または確定申告で最終的な税額に精算されます）。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm",
+      "source_quote": "前月に給与の支払がない場合 \n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」） \n（2）上記（1）の金額を\n「月額表」\nに当てはめて税額を求める。 \n（3）上記（2）の税額×6（または「12」） \nこの金額が賞与から源泉徴収する税額になります。 \n（注） 賞与の計算期間が6か月を超える場合には、上記計算式の「12」を使って計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:40-47;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_01_07_pdf.txt:15-21;corpus/gensen/04.txt:3853-3861",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:40-47;corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_01_07_pdf.txt:15-21;corpus/gensen/04.txt:3853-3861 を正本で直接照合。対象「前月給与がない人の少額の賞与は、月額表の非課税帯に収まって源泉所得税が0円になることもあります（年末調整または確定申告で最終的な税額に精算されます）。」の用語・適用条件又は表示された設例の計算を、隣接セル・前後文も含めて確認し採用。",
+      "covers": [
+        "s-abf12e5571439fe8102e-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "independent_ok"
+    },
+    {
+      "id": "r14-s-a084042d67a35770a209-2",
+      "text": "通常の甲欄の賞与税率は、前月の社会保険料等控除後給与と扶養親族等の数で決まります。",
+      "where": [
+        "p / faq"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "１     「給与所得者の扶養控除等申告書」（以下この表において「扶養控除等申告書」といいます。）の提出があった人\n   （₄に該当する場合を除きます。）\n     ⑴   まず、その人の前月中の給与等（賞与を除きます。以下この表において同じです。）の金額から、その給与等の\n       金額から控除される社会保険料等の金額（以下この表において「前月中の社会保険料等の金額」といいます。）を\n       控除した金額を求めます。\n   ⑵     次に、扶養控除等申告書により申告された扶養親族等（その申告書に記載がされていないものとされる源泉控除\n       対象配偶者及び源泉控除対象親族を除きます。また、扶養親族等が非居住者である親族（以下この表において「国\n       外居住親族」といいます。）である場合には、親族に該当する旨を証する書類（その国外居住親族である扶養親族\n       等が年齢30歳以上70歳未満の控除対象扶養親族であり、かつ、留学により国内に住所及び居所を有しなくなった人\n       である場合には、親族に該当する旨を証する書類及び留学により国内に住所及び居所を有しなくなった人に該当す\n       る旨を証する書類）がその申告書に添付され、又はその申告書の提出の際に提示された扶養親族等に限ります。）\n       の数と⑴により求めた金額とに応じて甲欄の「前月の社会保険料等控除後の給与等の金額」欄の該当する行を求め\n       ます。\n   ⑶     ⑵により求めた行と「賞与の金額に乗ずべき率」欄との交わるところに記載されている率を求めます。これが求\n       める率です。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68 を直接照合。算出率は前月の社会保険料等控除後給与だけで一意に決まるのではなく、扶養控除等申告書の提出区分と扶養親族等の数にも依存する。さらに表は金額帯ごとの段階税率なので、前月給与が少し高い人ほど常に率が上がるという関係でもない。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-a084042d67a35770a209-2"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-cb2aa6477a9700d0c293-2",
+      "text": "前月給与なし等や控除後賞与が前月控除後給与の10倍を超える場合は、月額表による別計算です。",
+      "where": [
+        "p / faq"
+      ],
+      "numbers": [
+        "10倍"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "１     「給与所得者の扶養控除等申告書」（以下この表において「扶養控除等申告書」といいます。）の提出があった人\n   （₄に該当する場合を除きます。）\n     ⑴   まず、その人の前月中の給与等（賞与を除きます。以下この表において同じです。）の金額から、その給与等の\n       金額から控除される社会保険料等の金額（以下この表において「前月中の社会保険料等の金額」といいます。）を\n       控除した金額を求めます。\n   ⑵     次に、扶養控除等申告書により申告された扶養親族等（その申告書に記載がされていないものとされる源泉控除\n       対象配偶者及び源泉控除対象親族を除きます。また、扶養親族等が非居住者である親族（以下この表において「国\n       外居住親族」といいます。）である場合には、親族に該当する旨を証する書類（その国外居住親族である扶養親族\n       等が年齢30歳以上70歳未満の控除対象扶養親族であり、かつ、留学により国内に住所及び居所を有しなくなった人\n       である場合には、親族に該当する旨を証する書類及び留学により国内に住所及び居所を有しなくなった人に該当す\n       る旨を証する書類）がその申告書に添付され、又はその申告書の提出の際に提示された扶養親族等に限ります。）\n       の数と⑴により求めた金額とに応じて甲欄の「前月の社会保険料等控除後の給与等の金額」欄の該当する行を求め\n       ます。\n   ⑶     ⑵により求めた行と「賞与の金額に乗ずべき率」欄との交わるところに記載されている率を求めます。これが求\n       める率です。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68 を直接照合。算出率は前月の社会保険料等控除後給与だけで一意に決まるのではなく、扶養控除等申告書の提出区分と扶養親族等の数にも依存する。さらに表は金額帯ごとの段階税率なので、前月給与が少し高い人ほど常に率が上がるという関係でもない。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-cb2aa6477a9700d0c293-2"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-703a27fcff90518f712f-1",
+      "text": "同じ税率帯の中では前月給与が増えても税率は変わりません。",
+      "where": [
+        "p / faq"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "１     「給与所得者の扶養控除等申告書」（以下この表において「扶養控除等申告書」といいます。）の提出があった人\n   （₄に該当する場合を除きます。）\n     ⑴   まず、その人の前月中の給与等（賞与を除きます。以下この表において同じです。）の金額から、その給与等の\n       金額から控除される社会保険料等の金額（以下この表において「前月中の社会保険料等の金額」といいます。）を\n       控除した金額を求めます。\n   ⑵     次に、扶養控除等申告書により申告された扶養親族等（その申告書に記載がされていないものとされる源泉控除\n       対象配偶者及び源泉控除対象親族を除きます。また、扶養親族等が非居住者である親族（以下この表において「国\n       外居住親族」といいます。）である場合には、親族に該当する旨を証する書類（その国外居住親族である扶養親族\n       等が年齢30歳以上70歳未満の控除対象扶養親族であり、かつ、留学により国内に住所及び居所を有しなくなった人\n       である場合には、親族に該当する旨を証する書類及び留学により国内に住所及び居所を有しなくなった人に該当す\n       る旨を証する書類）がその申告書に添付され、又はその申告書の提出の際に提示された扶養親族等に限ります。）\n       の数と⑴により求めた金額とに応じて甲欄の「前月の社会保険料等控除後の給与等の金額」欄の該当する行を求め\n       ます。\n   ⑶     ⑵により求めた行と「賞与の金額に乗ずべき率」欄との交わるところに記載されている率を求めます。これが求\n       める率です。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68 を直接照合。算出率は前月の社会保険料等控除後給与だけで一意に決まるのではなく、扶養控除等申告書の提出区分と扶養親族等の数にも依存する。さらに表は金額帯ごとの段階税率なので、前月給与が少し高い人ほど常に率が上がるという関係でもない。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-703a27fcff90518f712f-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-a084042d67a35770a209-3",
+      "text": "通常の甲欄の賞与税率は、前月の社会保険料等控除後給与と扶養親族等の数で決まります。",
+      "where": [
+        "p / faq"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "１     「給与所得者の扶養控除等申告書」（以下この表において「扶養控除等申告書」といいます。）の提出があった人\n   （₄に該当する場合を除きます。）\n     ⑴   まず、その人の前月中の給与等（賞与を除きます。以下この表において同じです。）の金額から、その給与等の\n       金額から控除される社会保険料等の金額（以下この表において「前月中の社会保険料等の金額」といいます。）を\n       控除した金額を求めます。\n   ⑵     次に、扶養控除等申告書により申告された扶養親族等（その申告書に記載がされていないものとされる源泉控除\n       対象配偶者及び源泉控除対象親族を除きます。また、扶養親族等が非居住者である親族（以下この表において「国\n       外居住親族」といいます。）である場合には、親族に該当する旨を証する書類（その国外居住親族である扶養親族\n       等が年齢30歳以上70歳未満の控除対象扶養親族であり、かつ、留学により国内に住所及び居所を有しなくなった人\n       である場合には、親族に該当する旨を証する書類及び留学により国内に住所及び居所を有しなくなった人に該当す\n       る旨を証する書類）がその申告書に添付され、又はその申告書の提出の際に提示された扶養親族等に限ります。）\n       の数と⑴により求めた金額とに応じて甲欄の「前月の社会保険料等控除後の給与等の金額」欄の該当する行を求め\n       ます。\n   ⑶     ⑵により求めた行と「賞与の金額に乗ずべき率」欄との交わるところに記載されている率を求めます。これが求\n       める率です。\n₄    前月中の給与等の金額がない場合や前月中の給与等の金額が前月中の社会保険料等の金額以下である場合又はその\n    賞与の金額（その金額から控除される社会保険料等の金額がある場合には、その控除後の金額）が前月中の給与等の\n    金額から前月中の社会保険料等の金額を控除した金額の10倍に相当する金額を超える場合には、この表によらず、平\n    成24年 3 月31日財務省告示第115号（令和 7 年 4 月30日財務省告示第122号改正）第 3 項第 1 号イ⑵若しくはロ⑵又は第\n    2 号の規定により、月額表を使って税額を計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68,122-126;corpus/gensen/04.txt:3853-3861,3876-3877",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68,122-126。FAQも通常計算の甲欄・扶養親族等の数と、前月給与なし等・10倍超の例外条件を欠く。本文のwrongと同じ理由で元okを不採用。;corpus/gensen/04.txt:3853-3861,3876-3877 を直接照合。年末調整は給与所得者の大部分について源泉徴収税額の過不足を精算するが、全員が対象ではない。正本にも令和8年分は課税給与所得金額18,050,000円超が対象外とあり、無条件に『取られすぎのままにはならない』とはいえない。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-a084042d67a35770a209-3"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-cb2aa6477a9700d0c293-3",
+      "text": "前月給与なし等や控除後賞与が前月控除後給与の10倍を超える場合は、月額表による別計算です。",
+      "where": [
+        "p / faq"
+      ],
+      "numbers": [
+        "10倍"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "１     「給与所得者の扶養控除等申告書」（以下この表において「扶養控除等申告書」といいます。）の提出があった人\n   （₄に該当する場合を除きます。）\n     ⑴   まず、その人の前月中の給与等（賞与を除きます。以下この表において同じです。）の金額から、その給与等の\n       金額から控除される社会保険料等の金額（以下この表において「前月中の社会保険料等の金額」といいます。）を\n       控除した金額を求めます。\n   ⑵     次に、扶養控除等申告書により申告された扶養親族等（その申告書に記載がされていないものとされる源泉控除\n       対象配偶者及び源泉控除対象親族を除きます。また、扶養親族等が非居住者である親族（以下この表において「国\n       外居住親族」といいます。）である場合には、親族に該当する旨を証する書類（その国外居住親族である扶養親族\n       等が年齢30歳以上70歳未満の控除対象扶養親族であり、かつ、留学により国内に住所及び居所を有しなくなった人\n       である場合には、親族に該当する旨を証する書類及び留学により国内に住所及び居所を有しなくなった人に該当す\n       る旨を証する書類）がその申告書に添付され、又はその申告書の提出の際に提示された扶養親族等に限ります。）\n       の数と⑴により求めた金額とに応じて甲欄の「前月の社会保険料等控除後の給与等の金額」欄の該当する行を求め\n       ます。\n   ⑶     ⑵により求めた行と「賞与の金額に乗ずべき率」欄との交わるところに記載されている率を求めます。これが求\n       める率です。\n₄    前月中の給与等の金額がない場合や前月中の給与等の金額が前月中の社会保険料等の金額以下である場合又はその\n    賞与の金額（その金額から控除される社会保険料等の金額がある場合には、その控除後の金額）が前月中の給与等の\n    金額から前月中の社会保険料等の金額を控除した金額の10倍に相当する金額を超える場合には、この表によらず、平\n    成24年 3 月31日財務省告示第115号（令和 7 年 4 月30日財務省告示第122号改正）第 3 項第 1 号イ⑵若しくはロ⑵又は第\n    2 号の規定により、月額表を使って税額を計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68,122-126;corpus/gensen/04.txt:3853-3861,3876-3877",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68,122-126。FAQも通常計算の甲欄・扶養親族等の数と、前月給与なし等・10倍超の例外条件を欠く。本文のwrongと同じ理由で元okを不採用。;corpus/gensen/04.txt:3853-3861,3876-3877 を直接照合。年末調整は給与所得者の大部分について源泉徴収税額の過不足を精算するが、全員が対象ではない。正本にも令和8年分は課税給与所得金額18,050,000円超が対象外とあり、無条件に『取られすぎのままにはならない』とはいえない。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-cb2aa6477a9700d0c293-3"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-6ea723ce70054a1fdbaf-1",
+      "text": "年末調整の対象者は年末調整で過不足を精算します。",
+      "where": [
+        "p / faq"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "１     「給与所得者の扶養控除等申告書」（以下この表において「扶養控除等申告書」といいます。）の提出があった人\n   （₄に該当する場合を除きます。）\n     ⑴   まず、その人の前月中の給与等（賞与を除きます。以下この表において同じです。）の金額から、その給与等の\n       金額から控除される社会保険料等の金額（以下この表において「前月中の社会保険料等の金額」といいます。）を\n       控除した金額を求めます。\n   ⑵     次に、扶養控除等申告書により申告された扶養親族等（その申告書に記載がされていないものとされる源泉控除\n       対象配偶者及び源泉控除対象親族を除きます。また、扶養親族等が非居住者である親族（以下この表において「国\n       外居住親族」といいます。）である場合には、親族に該当する旨を証する書類（その国外居住親族である扶養親族\n       等が年齢30歳以上70歳未満の控除対象扶養親族であり、かつ、留学により国内に住所及び居所を有しなくなった人\n       である場合には、親族に該当する旨を証する書類及び留学により国内に住所及び居所を有しなくなった人に該当す\n       る旨を証する書類）がその申告書に添付され、又はその申告書の提出の際に提示された扶養親族等に限ります。）\n       の数と⑴により求めた金額とに応じて甲欄の「前月の社会保険料等控除後の給与等の金額」欄の該当する行を求め\n       ます。\n   ⑶     ⑵により求めた行と「賞与の金額に乗ずべき率」欄との交わるところに記載されている率を求めます。これが求\n       める率です。\n₄    前月中の給与等の金額がない場合や前月中の給与等の金額が前月中の社会保険料等の金額以下である場合又はその\n    賞与の金額（その金額から控除される社会保険料等の金額がある場合には、その控除後の金額）が前月中の給与等の\n    金額から前月中の社会保険料等の金額を控除した金額の10倍に相当する金額を超える場合には、この表によらず、平\n    成24年 3 月31日財務省告示第115号（令和 7 年 4 月30日財務省告示第122号改正）第 3 項第 1 号イ⑵若しくはロ⑵又は第\n    2 号の規定により、月額表を使って税額を計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68,122-126;corpus/gensen/04.txt:3853-3861,3876-3877",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68,122-126。FAQも通常計算の甲欄・扶養親族等の数と、前月給与なし等・10倍超の例外条件を欠く。本文のwrongと同じ理由で元okを不採用。;corpus/gensen/04.txt:3853-3861,3876-3877 を直接照合。年末調整は給与所得者の大部分について源泉徴収税額の過不足を精算するが、全員が対象ではない。正本にも令和8年分は課税給与所得金額18,050,000円超が対象外とあり、無条件に『取られすぎのままにはならない』とはいえない。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-6ea723ce70054a1fdbaf-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-cf7ffa189d6a09e67333-1",
+      "text": "対象外の場合などは確定申告による精算が必要になることがあります。",
+      "where": [
+        "p / faq"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "１     「給与所得者の扶養控除等申告書」（以下この表において「扶養控除等申告書」といいます。）の提出があった人\n   （₄に該当する場合を除きます。）\n     ⑴   まず、その人の前月中の給与等（賞与を除きます。以下この表において同じです。）の金額から、その給与等の\n       金額から控除される社会保険料等の金額（以下この表において「前月中の社会保険料等の金額」といいます。）を\n       控除した金額を求めます。\n   ⑵     次に、扶養控除等申告書により申告された扶養親族等（その申告書に記載がされていないものとされる源泉控除\n       対象配偶者及び源泉控除対象親族を除きます。また、扶養親族等が非居住者である親族（以下この表において「国\n       外居住親族」といいます。）である場合には、親族に該当する旨を証する書類（その国外居住親族である扶養親族\n       等が年齢30歳以上70歳未満の控除対象扶養親族であり、かつ、留学により国内に住所及び居所を有しなくなった人\n       である場合には、親族に該当する旨を証する書類及び留学により国内に住所及び居所を有しなくなった人に該当す\n       る旨を証する書類）がその申告書に添付され、又はその申告書の提出の際に提示された扶養親族等に限ります。）\n       の数と⑴により求めた金額とに応じて甲欄の「前月の社会保険料等控除後の給与等の金額」欄の該当する行を求め\n       ます。\n   ⑶     ⑵により求めた行と「賞与の金額に乗ずべき率」欄との交わるところに記載されている率を求めます。これが求\n       める率です。\n₄    前月中の給与等の金額がない場合や前月中の給与等の金額が前月中の社会保険料等の金額以下である場合又はその\n    賞与の金額（その金額から控除される社会保険料等の金額がある場合には、その控除後の金額）が前月中の給与等の\n    金額から前月中の社会保険料等の金額を控除した金額の10倍に相当する金額を超える場合には、この表によらず、平\n    成24年 3 月31日財務省告示第115号（令和 7 年 4 月30日財務省告示第122号改正）第 3 項第 1 号イ⑵若しくはロ⑵又は第\n    2 号の規定により、月額表を使って税額を計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68,122-126;corpus/gensen/04.txt:3853-3861,3876-3877",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:54-68,122-126。FAQも通常計算の甲欄・扶養親族等の数と、前月給与なし等・10倍超の例外条件を欠く。本文のwrongと同じ理由で元okを不採用。;corpus/gensen/04.txt:3853-3861,3876-3877 を直接照合。年末調整は給与所得者の大部分について源泉徴収税額の過不足を精算するが、全員が対象ではない。正本にも令和8年分は課税給与所得金額18,050,000円超が対象外とあり、無条件に『取られすぎのままにはならない』とはいえない。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。",
+      "covers": [
+        "s-cf7ffa189d6a09e67333-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-37be5243802a03eb9442-1",
+      "text": "国税庁「賞与に対する源泉徴収税額の算出率の表（令和8年分）」— 通常の甲欄は「前月の社会保険料等控除後の給与等の金額」と扶養親族等の数で率を引く。",
+      "where": [
+        "li / body"
+      ],
+      "numbers": [
+        "令和8年分"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "賞与に対する源泉徴収税額の算出率の表（令和 8 年分）\n\n（平成24年 3 月31日財務省告示第115号別表第三（令和 7 年 4 月30日財務省告示第122号改正）\n     ⑴   まず、その人の前月中の給与等（賞与を除きます。以下この表において同じです。）の金額から、その給与等の\n       金額から控除される社会保険料等の金額（以下この表において「前月中の社会保険料等の金額」といいます。）を\n       控除した金額を求めます。\n       の数と⑴により求めた金額とに応じて甲欄の「前月の社会保険料等控除後の給与等の金額」欄の該当する行を求め\n       ます。\n   ⑶     ⑵により求めた行と「賞与の金額に乗ずべき率」欄との交わるところに記載されている率を求めます。これが求\n       める率です。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:2-4,56-58,65-68",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:2-4,56-58,65-68 を正本で直接照合。対象「国税庁「賞与に対する源泉徴収税額の算出率の表（令和8年分）」— 率を引く鍵は「前月の社会保険料等控除後の給与等の金額」。」の用語・適用条件又は表示された設例の計算を、隣接セル・前後文も含めて確認し採用。",
+      "covers": [
+        "s-37be5243802a03eb9442-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-bb092b897a6bde82fa74-1",
+      "text": "備考に、前月中に給与等の支払がない場合・賞与（社会保険料等控除後）が前月の給与（同）の10倍を超える場合は、この表によらず月額表を使うと定める",
+      "where": [
+        "li / body"
+      ],
+      "numbers": [
+        "10倍"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15_16.pdf",
+      "source_quote": "₄    前月中の給与等の金額がない場合や前月中の給与等の金額が前月中の社会保険料等の金額以下である場合又はその\n    賞与の金額（その金額から控除される社会保険料等の金額がある場合には、その控除後の金額）が前月中の給与等の\n    金額から前月中の社会保険料等の金額を控除した金額の10倍に相当する金額を超える場合には、この表によらず、平\n    成24年 3 月31日財務省告示第115号（令和 7 年 4 月30日財務省告示第122号改正）第 3 項第 1 号イ⑵若しくはロ⑵又は第\n    2 号の規定により、月額表を使って税額を計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_publication_pamph_gensen_zeigakuhyo2026_data_15_16_pdf.txt:122-126 を正本で直接照合。対象「備考に、前月中に給与等の支払がない場合・賞与（社会保険料等控除後）が前月の給与（同）の10倍を超える場合は、この表によらず月額表を使うと定める」の用語・適用条件又は表示された設例の計算を、隣接セル・前後文も含めて確認し採用。",
+      "covers": [
+        "s-bb092b897a6bde82fa74-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "independent_ok"
+    },
+    {
+      "id": "r14-s-1c89e86071010ae2efe0-1",
+      "text": "国税庁 タックスアンサー No.2523「賞与に対する源泉徴収」— 月額表による例外計算（控除後賞与B、前月控除後給与P、月額表税額T、n＝6、計算期間6か月超ならn＝12）。",
+      "where": [
+        "li / body"
+      ],
+      "numbers": [
+        "6か月"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm",
+      "source_quote": "前月の給与の金額（社会保険料等を差し引いた金額）の10倍を超える賞与（社会保険料等を差し引いた金額）を支払う場合\n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」）\n（2）上記（1）＋（前月の給与から社会保険料等を差し引いた金額）\n（3）上記（2）の金額を\n「月額表」\nに当てはめて税額を求める。\n（4）上記（3）の税額-（前月の給与に対する源泉徴収税額）\n（5）上記（4）の税額×6（または「12」）\nこの金額が賞与から源泉徴収する税額になります。\n（注） 賞与の計算期間が6か月を超える場合には、上記算式の「12」を使って計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-39;corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-39 を直接照合。前月給与の10倍を超える賞与の計算は、賞与の6分の1（または12分の1）を単独で月額表に当てて税額を6倍（または12倍）する式ではない。等分額に前月給与を加えた月額表税額から前月給与に対する税額を差し引き、その差額を6倍（または12倍）する必要がある。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。;corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47。12で除す・12倍する部分自体は正しいが、直前のs-64ab8563a3070659b3ae-1と一続きで全例外を単純な12分割式にしている。10倍超では前月控除後給与の加算と税額差引きが必要。連結文全体を修正する。",
+      "covers": [
+        "s-1c89e86071010ae2efe0-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-d30e8b8174e357aa63ec-1",
+      "text": "前月給与なしはn×T(B÷n)、10倍超はn×{T(P＋B÷n)−T(P)}。",
+      "where": [
+        "li / body"
+      ],
+      "numbers": [
+        "10倍"
+      ],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm",
+      "source_quote": "前月の給与の金額（社会保険料等を差し引いた金額）の10倍を超える賞与（社会保険料等を差し引いた金額）を支払う場合\n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」）\n（2）上記（1）＋（前月の給与から社会保険料等を差し引いた金額）\n（3）上記（2）の金額を\n「月額表」\nに当てはめて税額を求める。\n（4）上記（3）の税額-（前月の給与に対する源泉徴収税額）\n（5）上記（4）の税額×6（または「12」）\nこの金額が賞与から源泉徴収する税額になります。\n（注） 賞与の計算期間が6か月を超える場合には、上記算式の「12」を使って計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-39;corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-39 を直接照合。前月給与の10倍を超える賞与の計算は、賞与の6分の1（または12分の1）を単独で月額表に当てて税額を6倍（または12倍）する式ではない。等分額に前月給与を加えた月額表税額から前月給与に対する税額を差し引き、その差額を6倍（または12倍）する必要がある。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。;corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47。12で除す・12倍する部分自体は正しいが、直前のs-64ab8563a3070659b3ae-1と一続きで全例外を単純な12分割式にしている。10倍超では前月控除後給与の加算と税額差引きが必要。連結文全体を修正する。",
+      "covers": [
+        "s-d30e8b8174e357aa63ec-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-s-683222952eab2dd15e32-1",
+      "text": "B÷nの1円未満は切捨て",
+      "where": [
+        "li / body"
+      ],
+      "numbers": [],
+      "applies": "令和8年分。将来改正・設例条件は本文の明示による。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm",
+      "source_quote": "前月の給与の金額（社会保険料等を差し引いた金額）の10倍を超える賞与（社会保険料等を差し引いた金額）を支払う場合\n（1）（賞与から社会保険料等を差し引いた金額）÷6（または「12」）\n（2）上記（1）＋（前月の給与から社会保険料等を差し引いた金額）\n（3）上記（2）の金額を\n「月額表」\nに当てはめて税額を求める。\n（4）上記（3）の税額-（前月の給与に対する源泉徴収税額）\n（5）上記（4）の税額×6（または「12」）\nこの金額が賞与から源泉徴収する税額になります。\n（注） 賞与の計算期間が6か月を超える場合には、上記算式の「12」を使って計算します。",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-39;corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47",
+      "exceptions": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-39 を直接照合。前月給与の10倍を超える賞与の計算は、賞与の6分の1（または12分の1）を単独で月額表に当てて税額を6倍（または12倍）する式ではない。等分額に前月給与を加えた月額表税額から前月給与に対する税額を差し引き、その差額を6倍（または12倍）する必要がある。 現snapshotは未修正のため採用不可。書き手による修正後の新snapshotで再照合する。;corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:30-47。12で除す・12倍する部分自体は正しいが、直前のs-64ab8563a3070659b3ae-1と一続きで全例外を単純な12分割式にしている。10倍超では前月控除後給与の加算と税額差引きが必要。連結文全体を修正する。",
+      "covers": [
+        "s-683222952eab2dd15e32-1"
+      ],
+      "topic": [
+        "t1",
+        "r14-t1x-b"
+      ],
+      "review_status": "author_rechecked_pending_commander"
+    },
+    {
+      "id": "r14-unchanged-context-pending",
+      "text": "変更行に同居する既存の未確認数値の所在記録（確認済み主張ではない）",
+      "numbers": [
+        "409,130円",
+        "30万円",
+        "81.8%",
+        "30歳"
+      ],
+      "applies": "既存記載の適用時期。正本外のため未確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm",
+      "source_quote": "通常の場合（「給与所得者の扶養控除等申告書」を提出している場合）\n（1）前月の給与から社会保険料等を差し引きます。\n（2）算出率の表の甲欄の扶養親族等の数に応じた上記（1）の金額の当てはまる行と「賞与の金額に乗ずべき率」欄との交わるところに記載されている税率を求めます。\n（3）（賞与から社会保険料等を差し引いた金額）×上記（2）の税率\nこの金額が、賞与から源泉徴収する税額になります。 ",
+      "corpus_ref": "corpus/zeigakuhyo/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2523_htm.txt:25-29",
+      "exceptions": "既存の社会保険料込み手取り設例。同じHTML行の所得税説明だけを修正。社会保険料の正本と計算機の受入試験が必要。",
+      "needed_source": "既存の社会保険料込み手取り設例。同じHTML行の所得税説明だけを修正。社会保険料の正本と計算機の受入試験が必要。",
+      "review_status": "out_of_corpus",
+      "covers": []
     }
   ],
   "absolutes": [
@@ -427,6 +1177,1054 @@
       "phrase": "一律",
       "context": "都道府県別料率、厚生年金18.3%（全国一律）、雇用保険は選んだ業種の料率で計算します。 健康保険組",
       "reviewed": "上記の一次資料・例外を確認。原則の範囲は本文およびclaims.exceptionsに限定。"
+    }
+  ],
+  "nonclaims": [
+    {
+      "id": "s-4be9fa66f820bf8f2e2c-1",
+      "why": "本文・隣接文脈を確認。パンくずナビゲーションであり、外部事実の主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-18fd9258161bb7520030-1",
+      "why": "本文・隣接文脈を確認。入力欄の項目名であり、単独では外部事実を述べていない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-71eccb01a2777fc804c3-1",
+      "why": "本文・隣接文脈を確認。入力欄の項目名であり、単独では外部事実を述べていない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-12421b28d011f2827184-1",
+      "why": "本文・隣接文脈を確認。HTML入力要素の値・制約を列挙した機械的なUI情報である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-94284cdf46985a70562b-1",
+      "why": "本文・隣接文脈を確認。金額入力欄の項目名である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-dce53c819bdf7b8ad6b8-1",
+      "why": "本文・隣接文脈を確認。HTML入力要素のプレースホルダー等を列挙したUI情報である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-f30f927a866f998acc9e-1",
+      "why": "本文・隣接文脈を確認。入力対象を説明するUI補助文であり、制度上の数値・要件を主張していない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-0ea6c01b1fcb678e1311-1",
+      "why": "本文・隣接文脈を確認。選択肢のラベルである。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-1978777eff94eeb3b536-1",
+      "why": "本文・隣接文脈を確認。HTML入力要素の状態を示す機械的なUI情報である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-ea6c932b081fdb196535-1",
+      "why": "本文・隣接文脈を確認。入力欄の項目名と計算上の前提を示すラベルであり、外部制度の事実を単独で主張していない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-aed88bb3484f4e641c97-1",
+      "why": "本文・隣接文脈を確認。HTML入力要素のプレースホルダー等を列挙したUI情報である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-60089a0144feb6fce82c-1",
+      "why": "本文・隣接文脈を確認。利用者の状況を選ぶための選択肢ラベルである。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-b1aba54ca57508679ea9-1",
+      "why": "本文・隣接文脈を確認。HTML入力要素の状態を示す機械的なUI情報である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-470041f08464f3425148-1",
+      "why": "本文・隣接文脈を確認。入力欄の項目名である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-40660c2988000a007584-1",
+      "why": "本文・隣接文脈を確認。HTML入力要素の値・制約を列挙した機械的なUI情報である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-d56fb7b4f4fbfeb4e999-1",
+      "why": "本文・隣接文脈を確認。入力欄の項目名である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-5a4cbcdf4e2dfe198d31-1",
+      "why": "本文・隣接文脈を確認。賞与の状況を選ぶための選択肢ラベルである。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-fa01ba749d62ae36b689-1",
+      "why": "本文・隣接文脈を確認。HTML入力要素の状態を示す機械的なUI情報である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-39fb0c67b34fad239f01-1",
+      "why": "本文・隣接文脈を確認。任意入力欄の項目名である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-ac2bf91bd7619c36cf00-1",
+      "why": "本文・隣接文脈を確認。HTML入力要素のプレースホルダー等を列挙したUI情報である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-61c89e9cb12cbd33c36a-1",
+      "why": "本文・隣接文脈を確認。操作ボタンの文言である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-5b6fd71f935e658a1881-1",
+      "why": "本文・隣接文脈を確認。操作ボタンの文言である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-594927a1a4c5e578f38a-1",
+      "why": "本文・隣接文脈を確認。別ページへの案内文であり、賞与支払届の制度内容を述べていない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-c8c54ca5ac83b7e347d2-1",
+      "why": "本文・隣接文脈を確認。別ページの計算機への案内文であり、制度上の事実を述べていない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-559e9238f0ee592b99fa-1",
+      "why": "本文・隣接文脈を確認。後続記事の内容と一般的説明である旨を案内する編集上の導入文である。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-d845109ea2823f2a40d0-1",
+      "why": "本文・隣接文脈を確認。節見出しであり、単独では外部事実を主張していない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-3104bff08e2c86cea100-1",
+      "why": "本文・隣接文脈を確認。節見出しであり、単独では外部事実を主張していない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-ff30b6c1d81c9525f107-1",
+      "why": "本文・隣接文脈を確認。節見出しであり、単独では三つの相違内容を主張していない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-bb71f306ae6a6666b914-1",
+      "why": "本文・隣接文脈を確認。直後の算式を導入する編集上の文であり、単独で検証可能な算式を示していない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-c2c25e920674c52322f7-1",
+      "why": "本文・隣接文脈を確認。直後の比較表を導入する構成上の文であり、相違内容自体は述べていない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-9c3e5a6674d7423eec22-1",
+      "why": "本文・隣接文脈を確認。比較表の列見出しである。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-7176bcfb80240665474b-1",
+      "why": "本文・隣接文脈を確認。比較表の列見出しである。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-db146df159b35cf62319-1",
+      "why": "本文・隣接文脈を確認。比較表の行見出しである。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-536c62f0487945284aad-1",
+      "why": "本文・隣接文脈を確認。比較表の行見出しである。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-68b6bf5b4d09a935bfdf-1",
+      "why": "本文・隣接文脈を確認。比較表の行見出しである。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-d750c53210873d478b30-1",
+      "why": "本文・隣接文脈を確認。計算例の節見出しであり、単独では計算結果を主張していない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-761d99185ab00fecc335-1",
+      "why": "本文・隣接文脈を確認。計算例に与える仮定・入力条件の列挙であり、外部の人物や実例についての主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-bc996b63ee23dcdc1dae-1",
+      "why": "本文・隣接文脈を確認。直前の計算例のどこを重視するかを示す編集上の案内で、独立した事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-311b49a443348e6b681f-1",
+      "why": "本文・隣接文脈を確認。表の列見出しだけで、単独の事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-31d3b34e1e9be8c703a1-1",
+      "why": "本文・隣接文脈を確認。表の列見出しだけで、単独の事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-2b41a748cc625e0978dc-1",
+      "why": "本文・隣接文脈を確認。表の列見出しだけで、単独の事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-64a022fb57d1bdeae39b-1",
+      "why": "本文・隣接文脈を確認。表の行を識別する保険区分名だけで、単独の事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-e97d2875ac94eb43f151-1",
+      "why": "本文・隣接文脈を確認。表の行を識別する保険区分名だけで、単独の事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-e89c05e0a1b5f149c7c5-1",
+      "why": "本文・隣接文脈を確認。表の行を識別する保険区分名だけで、単独の事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-80aee356c764ea50cc12-1",
+      "why": "本文・隣接文脈を確認。FAQ節の見出しであり、事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-6bfd232f75edbfe987b7-1",
+      "why": "本文・隣接文脈を確認。読者の疑問を示す質問文であり、肯定・否定の事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-b407d709294a183937a2-1",
+      "why": "本文・隣接文脈を確認。読者の疑問を示す質問文であり、割合についての事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-81599d2f049873e7a867-1",
+      "why": "本文・隣接文脈を確認。読者の疑問を示す質問文であり、肯定または否定の事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-62606cee44b95cea0930-1",
+      "why": "本文・隣接文脈を確認。読者の疑問を示す質問文であり、肯定または否定の事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-c561e91b5c2bbaf7e71f-1",
+      "why": "本文・隣接文脈を確認。出典節の見出しであり、事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-2298228feb1bb2b04c6a-1",
+      "why": "本文・隣接文脈を確認。情報の基準時点と個別助言ではないことを示す免責・適用範囲の表示であり、独立した制度内容の主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-cfca798fc54aed15d556-1",
+      "why": "本文・隣接文脈を確認。読者に賞与支給明細での確認を促す案内であり、独立した事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    },
+    {
+      "id": "s-313980f375839482f8d3-1",
+      "why": "本文・隣接文脈を確認。SNS共有ボタンの操作ラベルであり、事実主張ではない。 正本上の制度事実の採否は発生しない。"
+    }
+  ],
+  "verified": [
+    {
+      "id": "s-d6d1b2f8bd39b88cd980-1",
+      "text_hash": "f10fc4837c3a818983c1",
+      "result": "ok",
+      "review_ref": "r14/t1x-b/segment-adjudication.json#docs/bonus-tedori/index.html:s-d6d1b2f8bd39b88cd980-1"
+    },
+    {
+      "id": "s-3e536b796d40fdf77ff6-1",
+      "text_hash": "8fdc2c325593b9b4d002",
+      "result": "ok",
+      "review_ref": "r14/t1x-b/segment-adjudication.json#docs/bonus-tedori/index.html:s-3e536b796d40fdf77ff6-1"
+    },
+    {
+      "id": "s-1244f21f69b15819c07a-1",
+      "text_hash": "44e73c23dcc6ae5bec36",
+      "result": "ok",
+      "review_ref": "r14/t1x-b/segment-adjudication.json#docs/bonus-tedori/index.html:s-1244f21f69b15819c07a-1"
+    },
+    {
+      "id": "s-75bc92fa309d694c256b-1",
+      "text_hash": "0d4e269f7f580e36123b",
+      "result": "ok",
+      "review_ref": "r14/t1x-b/segment-adjudication.json#docs/bonus-tedori/index.html:s-75bc92fa309d694c256b-1"
+    },
+    {
+      "id": "s-28c1f2b88327cf3711c3-1",
+      "text_hash": "5d20601c9be46ee9fe86",
+      "result": "ok",
+      "review_ref": "r14/t1x-b/segment-adjudication.json#docs/bonus-tedori/index.html:s-28c1f2b88327cf3711c3-1"
+    },
+    {
+      "id": "s-0a70ea64242946fe0c3c-1",
+      "text_hash": "e0abe81304a19641b2f2",
+      "result": "ok",
+      "review_ref": "r14/t1x-b/segment-adjudication.json#docs/bonus-tedori/index.html:s-0a70ea64242946fe0c3c-1"
+    },
+    {
+      "id": "s-de990ea50cb9935eaecf-1",
+      "text_hash": "a3aedefcb6ca5305f1b5",
+      "result": "ok",
+      "review_ref": "r14/t1x-b/segment-adjudication.json#docs/bonus-tedori/index.html:s-de990ea50cb9935eaecf-1"
+    },
+    {
+      "id": "s-5cc760772e5bbef0c814-1",
+      "text_hash": "d309e6e95d7c2183e435",
+      "result": "ok",
+      "review_ref": "r14/t1x-b/segment-adjudication.json#docs/bonus-tedori/index.html:s-5cc760772e5bbef0c814-1"
+    },
+    {
+      "id": "s-abf12e5571439fe8102e-1",
+      "text_hash": "7ad103b09c3403b56e5a",
+      "result": "ok",
+      "review_ref": "r14/t1x-b/segment-adjudication.json#docs/bonus-tedori/index.html:s-abf12e5571439fe8102e-1"
+    },
+    {
+      "id": "s-bb092b897a6bde82fa74-1",
+      "text_hash": "e77a3ffc0b51f6086f08",
+      "result": "ok",
+      "review_ref": "r14/t1x-b/segment-adjudication.json#docs/bonus-tedori/index.html:s-bb092b897a6bde82fa74-1"
+    }
+  ],
+  "pending_segments": [
+    {
+      "id": "s-b05190e450a52a22067e-1",
+      "text_hash": "01d21778d55605ce24f9",
+      "result": "out_of_corpus",
+      "needed_source": "2026年度4月以後の健康保険・厚生年金・雇用保険・子ども・子育て支援金の適用時期と料率、および計算機の対応範囲を示す一次資料・仕様",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-b05190e450a52a22067e-1"
+      ]
+    },
+    {
+      "id": "s-8e64982934c5fdb3f0c1-1",
+      "text_hash": "c32512d541a1e23f142a",
+      "result": "out_of_corpus",
+      "needed_source": "社会保険料率・住民税等の一次資料、および計算機の適用範囲・提供機能を示す仕様・受入試験（所得税部分のみ修正済み）",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-ebe4d32e714bf3f598f1-1"
+      ]
+    },
+    {
+      "id": "s-0f09f277e6e390d17c23-1",
+      "text_hash": "01d21778d55605ce24f9",
+      "result": "out_of_corpus",
+      "needed_source": "2026年度4月以後の健康保険・厚生年金・雇用保険・子ども・子育て支援金の適用時期と料率、および計算機の対応範囲を示す一次資料・仕様",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-0f09f277e6e390d17c23-1"
+      ]
+    },
+    {
+      "id": "s-b3d4ca4960db0ec3e713-1",
+      "text_hash": "c32512d541a1e23f142a",
+      "result": "out_of_corpus",
+      "needed_source": "社会保険料率・住民税等の一次資料、および計算機の適用範囲・提供機能を示す仕様・受入試験（所得税部分のみ修正済み）",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-56e043dcd97ec45ccec8-1"
+      ]
+    },
+    {
+      "id": "s-8f543e333cc3a2af55b9-1",
+      "text_hash": "e3def0923ea06f8c965a",
+      "result": "out_of_corpus",
+      "needed_source": "計算機の名称と提供機能を確定する製品仕様または受入試験",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-8f543e333cc3a2af55b9-1"
+      ]
+    },
+    {
+      "id": "s-27e986ba0f9df54d09d9-1",
+      "text_hash": "10b9e6d82b1b0ed8d2d8",
+      "result": "out_of_corpus",
+      "needed_source": "同月1回支給を前提とする計算機仕様と、その挙動を確認できる試験資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-27e986ba0f9df54d09d9-1"
+      ]
+    },
+    {
+      "id": "s-f82428c7936a6f8039b0-1",
+      "text_hash": "cbaed4c2c912de145c43",
+      "result": "out_of_corpus",
+      "needed_source": "同月複数回の賞与に係る厚生年金の標準賞与額合算と月150万円上限を定める日本年金機構等の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-f82428c7936a6f8039b0-1"
+      ]
+    },
+    {
+      "id": "s-288b842f38a4863b7bd8-1",
+      "text_hash": "ba3668105fcbbb39f89d",
+      "result": "out_of_corpus",
+      "needed_source": "健康保険・厚生年金・雇用保険・子ども・子育て支援金を含む計算機の控除項目と計算挙動を示す仕様・試験資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-288b842f38a4863b7bd8-1"
+      ]
+    },
+    {
+      "id": "s-66c057884d9d5f2e7b2a-1",
+      "text_hash": "a2b09f3ab559d6780d26",
+      "result": "out_of_corpus",
+      "needed_source": "社会保険料率・住民税等の一次資料、および計算機の適用範囲・提供機能を示す仕様・受入試験（所得税部分のみ修正済み）",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-86724fa29520ec6e5a95-1"
+      ]
+    },
+    {
+      "id": "s-2624ce64fc9415eda4d5-1",
+      "text_hash": "15c5064828ef53afa061",
+      "result": "out_of_corpus",
+      "needed_source": "70歳以上の厚生年金保険料の扱いを定める日本年金機構等の一次資料、および計算機仕様",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-2624ce64fc9415eda4d5-1"
+      ]
+    },
+    {
+      "id": "s-e091496b76b700de3ce5-1",
+      "text_hash": "ab89ca45ad32f76cfc6c",
+      "result": "out_of_corpus",
+      "needed_source": "高齢任意加入を計算対象外とする計算機仕様・試験資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-e091496b76b700de3ce5-1"
+      ]
+    },
+    {
+      "id": "s-bfce7a04c72dfc743c75-1",
+      "text_hash": "ee0ca583000d71dfe065",
+      "result": "out_of_corpus",
+      "needed_source": "2026年度4月以後の各社会保険料率の適用時期を示す一次資料、および2026年1〜3月を対象外とする計算機仕様",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-bfce7a04c72dfc743c75-1"
+      ]
+    },
+    {
+      "id": "s-c4ceab22fd911b4c9a25-1",
+      "text_hash": "93e89084ab6fe6f51419",
+      "result": "out_of_corpus",
+      "needed_source": "非課税通勤手当等を含む前月給与を概算対象外とする計算機仕様と検証資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-c4ceab22fd911b4c9a25-1"
+      ]
+    },
+    {
+      "id": "s-3dae950858a65891877d-1",
+      "text_hash": "78e4370546b0340d45cb",
+      "result": "out_of_corpus",
+      "needed_source": "業種別の雇用保険料率と、健康保険・厚生年金の料率決定単位を示す厚生労働省・協会けんぽ・日本年金機構等の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-3dae950858a65891877d-1"
+      ]
+    },
+    {
+      "id": "s-a243a7d85b5b069e1356-1",
+      "text_hash": "07e85793d19b63008f9e",
+      "result": "out_of_corpus",
+      "needed_source": "健康保険の標準賞与額の年度累計573万円上限と各支給時の1,000円未満切捨てを定める協会けんぽ等の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-a243a7d85b5b069e1356-1"
+      ]
+    },
+    {
+      "id": "s-334220e4b41c156035ae-1",
+      "text_hash": "5fb28fecf80c0ff76dfd",
+      "result": "out_of_corpus",
+      "needed_source": "著者の氏名、クリニック・EC事業の経営者および経理実務者という経歴を確認できる公式プロフィール",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-334220e4b41c156035ae-1"
+      ]
+    },
+    {
+      "id": "s-a64d1295e5525cc2b452-1",
+      "text_hash": "7d1a623079a09846a46b",
+      "result": "out_of_corpus",
+      "needed_source": "賞与から控除される社会保険料の範囲と手取り計算を定める日本年金機構・協会けんぽ・厚生労働省等の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-a64d1295e5525cc2b452-1"
+      ]
+    },
+    {
+      "id": "s-268bd38bbfc988b51ec6-1",
+      "text_hash": "f8a37eb93bbf43559530",
+      "result": "out_of_corpus",
+      "needed_source": "賞与から住民税を特別徴収しないこと、および毎月給与と賞与で異なる控除・税額計算を示す地方税・社会保険の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-268bd38bbfc988b51ec6-1"
+      ]
+    },
+    {
+      "id": "s-b7534e076e05a2da901a-1",
+      "text_hash": "7afa80706813c0e06f75",
+      "result": "out_of_corpus",
+      "needed_source": "掲載計算機が入力した賞与額面から手取り額を算出することを示す製品仕様または受入試験",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-b7534e076e05a2da901a-1"
+      ]
+    },
+    {
+      "id": "s-618aaa0d1242f71c546f-1",
+      "text_hash": "d47f10234ba4a31ee48d",
+      "result": "out_of_corpus",
+      "needed_source": "社会保険料率・住民税等の一次資料、および計算機の適用範囲・提供機能を示す仕様・受入試験（所得税部分のみ修正済み）",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-4e510de4b1c34e2b1ffa-1"
+      ]
+    },
+    {
+      "id": "s-2f2d2b9b9194caa95c01-1",
+      "text_hash": "e811307c8531857b39dd",
+      "result": "out_of_corpus",
+      "needed_source": "2026年度の協会けんぽ都道府県別健康保険料率、厚生年金保険料率、業種別雇用保険料率、および計算機の実装仕様",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-2f2d2b9b9194caa95c01-1"
+      ]
+    },
+    {
+      "id": "s-8478a3f8120c7899491a-1",
+      "text_hash": "fb00dbbd6ce061f637bb",
+      "result": "out_of_corpus",
+      "needed_source": "健康保険組合ごとに保険料率が異なることを示す健康保険法または健康保険組合等の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-8478a3f8120c7899491a-1"
+      ]
+    },
+    {
+      "id": "s-7b3dcae71931b7741e4d-1",
+      "text_hash": "7b40a50f82dd30f5bb3f",
+      "result": "out_of_corpus",
+      "needed_source": "計算機の仕様、甲乙区分を含む受入試験・実装検証結果。",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-7b3dcae71931b7741e4d-1"
+      ]
+    },
+    {
+      "id": "s-11a949c2eed83dc43f8c-1",
+      "text_hash": "fd8773e7a271e6f40df6",
+      "result": "out_of_corpus",
+      "needed_source": "前月給与の社会保険料を現在の料率と額面から概算する計算機仕様、およびその試験資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-11a949c2eed83dc43f8c-1"
+      ]
+    },
+    {
+      "id": "s-aa76b0b5ab377b6c498e-1",
+      "text_hash": "fe041e508a95be0c248c",
+      "result": "out_of_corpus",
+      "needed_source": "標準報酬月額・社会保険料の徴収時期と賞与源泉税率への影響を結び付けて確認できる社会保険の一次資料および計算仕様",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-aa76b0b5ab377b6c498e-1"
+      ]
+    },
+    {
+      "id": "s-3d9c9b03aa87add8d856-1",
+      "text_hash": "bae9f5b74f342310baf3",
+      "result": "out_of_corpus",
+      "needed_source": "4月賞与など前月と異なる社会保険料率が適用される場合を対象外とする計算機仕様・受入試験",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-3d9c9b03aa87add8d856-1"
+      ]
+    },
+    {
+      "id": "s-de1c4a24fdef67657441-1",
+      "text_hash": "1f3e03d8d6cb46e19245",
+      "result": "out_of_corpus",
+      "needed_source": "案内先の賞与源泉徴収計算機が前月明細の社会保険料等控除後給与を用い、例外計算を含め正確な源泉税を算出することを示す仕様・試験資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-de1c4a24fdef67657441-1"
+      ]
+    },
+    {
+      "id": "s-a33bba45b75934c5dc34-1",
+      "text_hash": "9f074a9024d15e30a701",
+      "result": "out_of_corpus",
+      "needed_source": "本ツールの計算精度・対象範囲を示す仕様と、正確な社会保険控除額が賞与支給明細で確定することを示す一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-1b96ec251068c40f5904-1"
+      ]
+    },
+    {
+      "id": "s-6e993b8619e148cf49cb-1",
+      "text_hash": "ba52e5645be255b2ad43",
+      "result": "out_of_corpus",
+      "needed_source": "2026年度の賞与から控除する健康保険料・厚生年金保険料・子ども子育て支援金・雇用保険料の全範囲と手取り算式を示す一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-6e993b8619e148cf49cb-1"
+      ]
+    },
+    {
+      "id": "s-1fa93af6fcc5647685b2-1",
+      "text_hash": "6d1a1257c30c84f26241",
+      "result": "out_of_corpus",
+      "needed_source": "毎月の社会保険料の算定基礎となる標準報酬月額と等級表による決定方法を示す日本年金機構・協会けんぽ等の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-1fa93af6fcc5647685b2-1"
+      ]
+    },
+    {
+      "id": "s-9b3c3e6b9c9aaed0f88e-1",
+      "text_hash": "b94f361a069baf352fea",
+      "result": "out_of_corpus",
+      "needed_source": "標準賞与額の1,000円未満切捨てと賞与に等級表を用いないことを示す日本年金機構・協会けんぽ等の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-9b3c3e6b9c9aaed0f88e-1"
+      ]
+    },
+    {
+      "id": "s-61f61a1188186b76abe0-1",
+      "text_hash": "16b059a65efa5e86a739",
+      "result": "out_of_corpus",
+      "needed_source": "個人住民税の特別徴収税額を毎月の給与から徴収する時期・方法を定める地方税法または自治体の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-61f61a1188186b76abe0-1"
+      ]
+    },
+    {
+      "id": "s-a3a22c89cfba3d4bc861-1",
+      "text_hash": "56fa5c92d1666f04eb88",
+      "result": "out_of_corpus",
+      "needed_source": "賞与支給時に個人住民税を特別徴収しないことを示す地方税法または自治体の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-a3a22c89cfba3d4bc861-1"
+      ]
+    },
+    {
+      "id": "s-be36afa50496fb4a07d7-1",
+      "text_hash": "18bfce628f4ced7ba9e8",
+      "result": "out_of_corpus",
+      "needed_source": "賞与支給時に個人住民税を特別徴収しないことを示す地方税法または自治体の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-be36afa50496fb4a07d7-1"
+      ]
+    },
+    {
+      "id": "s-0d0015e3ade3a50df71e-1",
+      "text_hash": "3efe9160246984b7e264",
+      "result": "out_of_corpus",
+      "needed_source": "地方税法321条の5第1項の現行条文、および六月から翌年五月まで毎月の給与から特別徴収する運用を示す自治体等の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-0d0015e3ade3a50df71e-1"
+      ]
+    },
+    {
+      "id": "s-df4c9249a17fa08237ae-1",
+      "text_hash": "4979bc4e91d52a1d25fb",
+      "result": "out_of_corpus",
+      "needed_source": "賞与支給明細で住民税を控除しないことを示す地方税の一次資料または標準的な賞与明細仕様",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-df4c9249a17fa08237ae-1"
+      ]
+    },
+    {
+      "id": "s-1effac005b1338aa94d3-1",
+      "text_hash": "ae8d2c63bf19d071ad29",
+      "result": "out_of_corpus",
+      "needed_source": "賞与を個人住民税の前年所得に含め、翌年度の特別徴収税額へ反映することを示す地方税法または自治体の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-1effac005b1338aa94d3-1"
+      ]
+    },
+    {
+      "id": "s-8d6ac7b68a215999d948-1",
+      "text_hash": "e66d870743d794276bc0",
+      "result": "out_of_corpus",
+      "needed_source": "賞与に係る個人住民税が賞与支給時ではなく翌年度の毎月給与から特別徴収されることを示す地方税法または自治体の一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-8d6ac7b68a215999d948-1"
+      ]
+    },
+    {
+      "id": "s-fc1e85fd2572cb4c1c3e-1",
+      "text_hash": "37c1a00b3946ce3f5613",
+      "result": "out_of_corpus",
+      "needed_source": "東京都・30歳・扶養0人・一般事業・賞与50万円という条件に対する2026年度の健康保険、子ども子育て支援金、厚生年金、雇用保険の各料率・端数処理を確認できる一次資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-fc1e85fd2572cb4c1c3e-1"
+      ]
+    },
+    {
+      "id": "s-ce3555f0675aaac75a41-1",
+      "text_hash": "e167a48fbb25ad1cfc8a",
+      "result": "out_of_corpus",
+      "needed_source": "令和8年度の東京都・30歳・月給30万円について前月社会保険料等44,070円を構成する公的な料率表と計算根拠",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-ce3555f0675aaac75a41-1"
+      ]
+    },
+    {
+      "id": "s-065d5b163d526ffddace-1",
+      "text_hash": "1b94f0257bf5e5c3be30",
+      "result": "out_of_corpus",
+      "needed_source": "賞与50万円に対する社会保険料等73,450円の内訳を検証できる令和8年度の公的な料率表と計算根拠",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-065d5b163d526ffddace-1"
+      ]
+    },
+    {
+      "id": "s-1a5def9dccea2e78e21c-1",
+      "text_hash": "019865f30ce73ac25e13",
+      "result": "out_of_corpus",
+      "needed_source": "手取り409,130円の前提となる賞与社会保険料等73,450円を検証できる令和8年度の公的な料率表と計算根拠",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-1a5def9dccea2e78e21c-1"
+      ]
+    },
+    {
+      "id": "s-5a4899ba34f3ff87af19-1",
+      "text_hash": "5f002417756e78c815a7",
+      "result": "out_of_corpus",
+      "needed_source": "3条件の自動判定、例外計算への切替え、結果表示を確認できる計算機の実装仕様およびテスト証跡",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-5a4899ba34f3ff87af19-1"
+      ]
+    },
+    {
+      "id": "s-4b96a35a7eaad4dab1f9-1",
+      "text_hash": "7927ac8153192197be8b",
+      "result": "out_of_corpus",
+      "needed_source": "賞与に係る健康保険・厚生年金等の標準賞与額上限を定める法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-4b96a35a7eaad4dab1f9-1"
+      ]
+    },
+    {
+      "id": "s-6f034f3a23ce340e37e2-1",
+      "text_hash": "20a33328c40daf818390",
+      "result": "out_of_corpus",
+      "needed_source": "標準賞与額の1,000円未満切捨てと各上限を定める健康保険・厚生年金の法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-6f034f3a23ce340e37e2-1"
+      ]
+    },
+    {
+      "id": "s-a6d8d3eba6d687703ab2-1",
+      "text_hash": "68b9fbdee5ef760a5fdd",
+      "result": "out_of_corpus",
+      "needed_source": "健康保険の標準賞与額について年度累計573万円の上限を定める法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-a6d8d3eba6d687703ab2-1"
+      ]
+    },
+    {
+      "id": "s-546bb4e50c4d5bab8535-1",
+      "text_hash": "a77852ed4875a4db3749",
+      "result": "out_of_corpus",
+      "needed_source": "健康保険法45条1項の条文",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-546bb4e50c4d5bab8535-1"
+      ]
+    },
+    {
+      "id": "s-dbc2edacdc94bda33226-1",
+      "text_hash": "1879871bd44d2b1ad3ff",
+      "result": "out_of_corpus",
+      "needed_source": "厚生年金の標準賞与額について同月内支給合算150万円の上限を定める法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-dbc2edacdc94bda33226-1"
+      ]
+    },
+    {
+      "id": "s-944f72f74b7cdb403958-1",
+      "text_hash": "90e8aa533544eeb10edb",
+      "result": "out_of_corpus",
+      "needed_source": "厚生年金保険法24条の4および令和2年政令第246号2条の条文",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-944f72f74b7cdb403958-1"
+      ]
+    },
+    {
+      "id": "s-1eadd7654778e9b6f721-1",
+      "text_hash": "7d223515b7c757053308",
+      "result": "out_of_corpus",
+      "needed_source": "雇用保険料が賞与の実額全体にかかり上限がないことを示す法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-1eadd7654778e9b6f721-1"
+      ]
+    },
+    {
+      "id": "s-f14d3de50866dde4558c-1",
+      "text_hash": "81acb85909373e5eb293",
+      "result": "out_of_corpus",
+      "needed_source": "労働保険徴収法11条1項の条文",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-f14d3de50866dde4558c-1"
+      ]
+    },
+    {
+      "id": "s-096cbf72b16a6432c9c0-1",
+      "text_hash": "cbc73333dc886d1eb0c3",
+      "result": "out_of_corpus",
+      "needed_source": "厚生年金の標準賞与額の月間上限150万円を示す法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-096cbf72b16a6432c9c0-1"
+      ]
+    },
+    {
+      "id": "s-4c6aebe55a288b0456d5-1",
+      "text_hash": "195e0a0a20c3d3583bc7",
+      "result": "out_of_corpus",
+      "needed_source": "令和8年度の一般の事業の雇用保険労働者負担率5/1,000、賞与実額への適用、端数処理および上限の有無を示す公的資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-4c6aebe55a288b0456d5-1"
+      ]
+    },
+    {
+      "id": "s-de9eb2ed4d02e170a938-1",
+      "text_hash": "ef4210e7d64f96dcc72f",
+      "result": "out_of_corpus",
+      "needed_source": "高額賞与時の上限適用とその結果表示を確認できる計算機の実装仕様およびテスト証跡",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-de9eb2ed4d02e170a938-1"
+      ]
+    },
+    {
+      "id": "s-e2188e152a9f1b21806d-1",
+      "text_hash": "62a9f9e4818572112e13",
+      "result": "out_of_corpus",
+      "needed_source": "住民税の特別徴収が賞与支給時には行われないことを示す地方税法の条文または自治体の公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-e2188e152a9f1b21806d-1"
+      ]
+    },
+    {
+      "id": "s-a7610f02a1c25193cfba-1",
+      "text_hash": "34cec3754988dec0bad3",
+      "result": "out_of_corpus",
+      "needed_source": "地方税法321条の5第1項の条文および賞与を特別徴収の対象としないことを示す公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-a7610f02a1c25193cfba-1"
+      ]
+    },
+    {
+      "id": "s-561388512c0990baa2d8-1",
+      "text_hash": "67f8eea39dbc443bd842",
+      "result": "out_of_corpus",
+      "needed_source": "賞与が個人住民税の前年所得に算入され翌年度税額へ反映されることを示す地方税法または自治体の公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-561388512c0990baa2d8-1"
+      ]
+    },
+    {
+      "id": "s-3511a8c2b751d05388d9-1",
+      "text_hash": "adef13bfb765a66a0950",
+      "result": "out_of_corpus",
+      "needed_source": "賞与が個人住民税の課税所得に含まれる一方、賞与支給時には特別徴収しないことを示す地方税法または自治体の公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-3511a8c2b751d05388d9-1"
+      ]
+    },
+    {
+      "id": "s-89dde0cb4e29761bf975-1",
+      "text_hash": "cf1d051a96a383fd8330",
+      "result": "out_of_corpus",
+      "needed_source": "ボーナス手取りが一般に額面の8割前後となることを裏付ける対象者・年度・条件を明示した公的資料または代表性のある統計",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-89dde0cb4e29761bf975-1"
+      ]
+    },
+    {
+      "id": "s-033a4dc2797184d96a25-1",
+      "text_hash": "c8042df147350ffdfa4e",
+      "result": "out_of_corpus",
+      "needed_source": "東京都・30歳・扶養親族0人・前月月給30万円・賞与50万円という条件で、令和8年の手取り409,130円を構成する健康保険、厚生年金、雇用保険および源泉所得税の公的な料率表と計算根拠",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-033a4dc2797184d96a25-1"
+      ]
+    },
+    {
+      "id": "s-ae47f1e736711fe82c01-1",
+      "text_hash": "1628a4cf91fcfa0451fa",
+      "result": "out_of_corpus",
+      "needed_source": "40歳から64歳までの被保険者に賞与の介護保険料が加わることを示す令和8年度の法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-ae47f1e736711fe82c01-1"
+      ]
+    },
+    {
+      "id": "s-c7c9989d6dea775a5e8e-1",
+      "text_hash": "1279a4764588cddb6152",
+      "result": "out_of_corpus",
+      "needed_source": "前月給与の入力を含む計算機の入力仕様、計算仕様および検証済みのテスト証跡",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-c7c9989d6dea775a5e8e-1"
+      ]
+    },
+    {
+      "id": "s-ea57e510dbcaa26ed332-1",
+      "text_hash": "9cc60aa1bc565b1001ce",
+      "result": "out_of_corpus",
+      "needed_source": "賞与の源泉徴収制度が月々の給与と賞与を合わせた年間収入に対する所得税の前払いであるという制度趣旨を明示した公的資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-ea57e510dbcaa26ed332-1"
+      ]
+    },
+    {
+      "id": "s-e1e09523d20e887de5f1-1",
+      "text_hash": "6ca54c62f9a26d13e6fe",
+      "result": "out_of_corpus",
+      "needed_source": "賞与の算出率表が前月給与から年間収入を推定して税率を設定しているという作成趣旨を明示した国税庁または法令の資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-e1e09523d20e887de5f1-1"
+      ]
+    },
+    {
+      "id": "s-58fc3e4342037df60973-1",
+      "text_hash": "f8f0f65ac006370a969a",
+      "result": "out_of_corpus",
+      "needed_source": "月給と賞与に適用される健康保険・厚生年金の料率が同じで計算基礎が異なることを示す法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-58fc3e4342037df60973-1"
+      ]
+    },
+    {
+      "id": "s-35e4457c3c0d655e726e-1",
+      "text_hash": "60a10ff52c69e324e9d9",
+      "result": "out_of_corpus",
+      "needed_source": "月給の標準報酬月額と賞与の標準賞与額について、等級表の有無および1,000円未満切捨てを定める法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-35e4457c3c0d655e726e-1"
+      ]
+    },
+    {
+      "id": "s-7c1a2f436b42e3b5479c-1",
+      "text_hash": "7470d1bac8e9321b515c",
+      "result": "out_of_corpus",
+      "needed_source": "健康保険の年度累計573万円および厚生年金の1か月150万円という標準賞与額上限を定める法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-7c1a2f436b42e3b5479c-1"
+      ]
+    },
+    {
+      "id": "s-24c2272e4f2c9e0d05a2-1",
+      "text_hash": "ef9b435787cf157d7626",
+      "result": "out_of_corpus",
+      "needed_source": "雇用保険料が月給・賞与とも実際の賃金額を基礎に計算されることを示す法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-24c2272e4f2c9e0d05a2-1"
+      ]
+    },
+    {
+      "id": "s-69d117b75b1ab951c22d-1",
+      "text_hash": "f5e048bc36bd3b0570e0",
+      "result": "out_of_corpus",
+      "needed_source": "健康保険法45条1項の条文を収録した正本テキスト",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-69d117b75b1ab951c22d-1"
+      ]
+    },
+    {
+      "id": "s-0a7c7e57f40cc86f3ca7-1",
+      "text_hash": "4c4e5c86126a1ed0fe19",
+      "result": "out_of_corpus",
+      "needed_source": "標準賞与額の1,000円未満切捨ておよび健康保険の年度累計573万円上限を定める法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-0a7c7e57f40cc86f3ca7-1"
+      ]
+    },
+    {
+      "id": "s-8f074bc6f5640582494e-1",
+      "text_hash": "9523872e55fefce07de9",
+      "result": "out_of_corpus",
+      "needed_source": "厚生年金保険法24条の4第1項および令和2年政令第246号2条の条文を収録し、標準賞与額の月間上限150万円を確認できる正本テキスト",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-8f074bc6f5640582494e-1"
+      ]
+    },
+    {
+      "id": "s-82a4830a73cbf0790605-1",
+      "text_hash": "11cb348f0cda5d70883d",
+      "result": "out_of_corpus",
+      "needed_source": "労働保険徴収法11条1項の条文を収録し、雇用保険料の算定基礎となる賃金総額を確認できる正本テキスト",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-82a4830a73cbf0790605-1"
+      ]
+    },
+    {
+      "id": "s-0cce27aeee5669176b45-1",
+      "text_hash": "6408a2ec35dd907468e1",
+      "result": "out_of_corpus",
+      "needed_source": "賞与が雇用保険の賃金総額に実額で含まれ、標準賞与額の切捨てや上限が適用されないことを示す法令または公的解説",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-0cce27aeee5669176b45-1"
+      ]
+    },
+    {
+      "id": "s-a9360d2fb59c6408f493-1",
+      "text_hash": "c2d51bad48e8dc935816",
+      "result": "out_of_corpus",
+      "needed_source": "地方税法321条の5第1項の条文および給与所得に係る特別徴収税額を6月から翌年5月まで毎月徴収することを確認できる正本テキスト",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-a9360d2fb59c6408f493-1"
+      ]
+    },
+    {
+      "id": "s-f3053ece66c8e00e505a-1",
+      "text_hash": "3f2b6d6b81ce28ff7eec",
+      "result": "out_of_corpus",
+      "needed_source": "全国健康保険協会の令和8年度都道府県別保険料率表ならびに介護保険料率1.62%および子ども・子育て支援金率0.23%を確認できる正本テキスト",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-f3053ece66c8e00e505a-1"
+      ]
+    },
+    {
+      "id": "s-c2b7ccb07255a9eccb09-1",
+      "text_hash": "894e277d7ab26039c922",
+      "result": "out_of_corpus",
+      "needed_source": "厚生労働省の令和8年度雇用保険料率資料で、一般の事業および農林水産・清酒製造・建設の労働者負担率を確認できる正本テキスト",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-c2b7ccb07255a9eccb09-1"
+      ]
+    },
+    {
+      "id": "s-81a6302f627f1f3b116e-1",
+      "text_hash": "f74642596dcaafd90c5b",
+      "result": "out_of_corpus",
+      "needed_source": "賞与手取りが加入する健康保険、扶養親族数および前月給与額によって変わることを一体として示す公的な計算資料",
+      "review_ref": "r14/t1x-b/segment-adjudication.json",
+      "previous_ids": [
+        "s-81a6302f627f1f3b116e-1"
+      ]
     }
   ]
 }
