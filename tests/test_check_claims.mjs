@@ -2,7 +2,7 @@
 // CLAUDE.md 規則1・2: 「落ちるべきものが落ちる」と「通るべきものが通る」を両方見る。
 // 壊しケースの前に、無傷の台帳が緑であること（ベースライン）を確かめ、赤なら即座に降りる。
 import assert from "node:assert/strict";
-import { checkPage, claimText, findNumbers, findAbsolutes, ledgerPath } from "../tools/check_claims.mjs";
+import { checkPage, claimText, addedClaimText, findNumbers, findAbsolutes, ledgerPath } from "../tools/check_claims.mjs";
 
 const HTML = `<!doctype html><html><head><title>年収106万円の壁</title>
 <meta name="description" content="令和8年分の月8.8万円の基準を解説"></head><body>
@@ -89,7 +89,18 @@ assert.ok(checkPage({ html: HTML, ledger: partial, requiredText: claimText("<p>�
 assert.deepEqual(checkPage({ html: HTML, ledger: null, requiredText: claimText('<script type="application/ld+json">{"dateModified":"2026-09-28"}</script>'), page: "p" }), []);
 assert.ok(checkPage({ html: HTML, ledger: null, requiredText: claimText("<p>月8.8万円</p>"), page: "p" }).some((e) => /台帳/.test(e)));
 
-console.log(`✓ test_check_claims: 抽出の性質 / ベースライン緑 / 壊し ${caught}/${cases.length} 捕捉 / 計算機の tool_cases / 足した行モード`);
+
+// r14: 差分が関連記事の内側1行だけでも、外側sectionの除外範囲を保つ。
+const changedPage = '<p>通常料金204円</p>\n<section class="faq rel-block">\n<ul><li>別記事の80%控除・24万円</li></ul>\n</section>\n<p>本文の880円</p>';
+const innerDiff = '@@ -3 +3 @@\n-<ul>旧説明</ul>\n+<ul><li>別記事の80%控除・24万円</li></ul>';
+assert.deepEqual([...findNumbers(addedClaimText(changedPage, innerDiff))], [], '関連記事の内側だけの変更に他記事の数字を要求しない');
+const mixedDiff = '@@ -1 +1 @@\n-<p>通常料金99円</p>\n+<p>通常料金204円</p>\n' + innerDiff + '\n@@ -5 +5 @@\n-<p>本文の770円</p>\n+<p>本文の880円</p>';
+assert.deepEqual([...findNumbers(addedClaimText(changedPage, mixedDiff))], ['204円', '880円'], '関連記事の前後の本文は除外しない');
+const ordinaryFaq = changedPage.replace('faq rel-block','faq');
+assert.deepEqual([...findNumbers(addedClaimText(ordinaryFaq, innerDiff))], ['24万円','80%'], '普通のFAQ回答の主張は引き続き拾う');
+assert.ok(checkPage({html:changedPage,ledger:null,requiredText:addedClaimText(changedPage,mixedDiff),page:'p'}).length, '本文の台帳欠落は引き続き赤');
+
+console.log(`✓ test_check_claims: 抽出の性質 / ベースライン緑 / 壊し ${caught}/${cases.length} 捕捉 / 計算機の tool_cases / 足した行モード / 関連記事の内側差分・本文・FAQの回帰`);
 
 // r14: 目次横の自動生成リンクはリンク先の見出し。隣接する本文は引き続き検査する。
 const railOnly='<nav class="toc"><ol><li>目次</li></ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1"><div>あわせて読む</div><ul><li><a href="../kenko-hoken-nini-keizoku/">標準報酬月額の上限32万円</a></li></ul></section><!--rail-next:E-->';

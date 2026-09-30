@@ -64,14 +64,15 @@ const toHalf = (s) => s.replace(/[０-９]/g, (c) => String.fromCharCode(c.charC
 export const norm = (s) => toHalf(s).replace(/\s+/g, "");
 
 // 配信されるが「このページの主張」ではない部分を落とす（他ページの紹介・共通部品・日付欄）
-function stripNonClaims(html) {
+function stripNonClaims(html, preserveLines = false) {
+  const omit = (part) => preserveLines ? part.replace(/[^\n]/g, " ") : " ";
   return html
-    .replace(/<script\b(?![^>]*application\/ld\+json)[\s\S]*?<\/script>/gi, " ")
-    .replace(/<script\b[^>]*application\/ld\+json[\s\S]*?<\/script>/gi, " ") // JSON-LD は本文から生成される
-    .replace(/<style\b[\s\S]*?<\/style>/gi, " ")
-    .replace(/<(nav|header|footer|aside)\b[\s\S]*?<\/\1>/gi, " ")
-    .replace(/<section\b[^>]*class="[^"]*(related|rel-block|next-read|rail-next)[^"]*"[\s\S]*?<\/section>/gi, " ")
-    .replace(/<(div|ul|p)\b[^>]*class="[^"]*(related|rel-block|next-read|breadcrumb|article-meta)[^"]*"[\s\S]*?<\/\1>/gi, " ");
+    .replace(/<script\b(?![^>]*application\/ld\+json)[\s\S]*?<\/script>/gi, omit)
+    .replace(/<script\b[^>]*application\/ld\+json[\s\S]*?<\/script>/gi, omit) // JSON-LD は本文から生成される
+    .replace(/<style\b[\s\S]*?<\/style>/gi, omit)
+    .replace(/<(nav|header|footer|aside)\b[\s\S]*?<\/\1>/gi, omit)
+    .replace(/<section\b[^>]*class="[^"]*(related|rel-block|next-read|rail-next)[^"]*"[\s\S]*?<\/section>/gi, omit)
+    .replace(/<(div|ul|p)\b[^>]*class="[^"]*(related|rel-block|next-read|breadcrumb|article-meta)[^"]*"[\s\S]*?<\/\1>/gi, omit);
 }
 export function claimText(html) {
   const title = (html.match(/<title>([\s\S]*?)<\/title>/i) || [, ""])[1];
@@ -168,9 +169,24 @@ function changedPages(base) {
 }
 function addedText(base, page) {
   const diff = execFileSync("git", ["-C", ROOT, "diff", "-U0", forkPoint(base), "--", page], { encoding: "utf8" });
-  const added = diff.split("\n").filter((l) => l.startsWith("+") && !l.startsWith("+++")).map((l) => l.slice(1)).join("\n");
-  return claimText(`<html><head></head><body>${added}</body></html>`);
+  return addedClaimText(readFileSync(join(ROOT, page), "utf8"), diff);
 }
+// Diff hunks contain only the changed inner line, not its enclosing related section.
+// Blank excluded regions in the complete current document before selecting added lines.
+export function addedClaimText(html, diff) {
+  const lines = stripNonClaims(html, true).split("\n");
+  const added = [];
+  let lineNumber = 0;
+  for (const line of diff.split("\n")) {
+    const hunk = line.match(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/);
+    if (hunk) { lineNumber = Number(hunk[1]) - 1; continue; }
+    if (line.startsWith("+++") || line.startsWith("---")) continue;
+    if (line.startsWith("+")) { added.push(lines[lineNumber] ?? ""); lineNumber++; }
+    else if (line.startsWith(" ")) lineNumber++;
+  }
+  return claimText(`<html><head></head><body>${added.join("\n")}</body></html>`);
+}
+
 const readLedger = (page) => { const p = join(ROOT, ledgerPath(page)); return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null; };
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
