@@ -1,0 +1,9 @@
+- `santei_guidebook_r8.pdf` … 日本年金機構「算定基礎届の記入・提出ガイドブック（令和8年度）」 https://www.nenkin.go.jp/service/kounen/hokenryo/hoshu/20121017.files/santei.guide.book.pdf 。**このPDFは文字が取り出せないので `santei_guidebook_r8.ocr.txt` は OCR（読み違いを含む）**。OCR は場所を探すためだけに使い、**数字・要件は必ず `pages/santei_guidebook_r8-NN.png`（ページ画像）を開いて目で確かめる**。引用は画像で確かめた文面を書き、corpus_ref にページ番号を書く
+- `nenkin_seidoannai.pdf`（同じく OCR: `nenkin_seidoannai.ocr.txt`・`pages/nenkin_seidoannai-N.png`）… 年金機構「健康保険・厚生年金保険の制度（事業主の皆様へ）」 https://www.nenkin.go.jp/service/pamphlet/kouseinenkin.files/seidoannai.pdf
+- `nenkin_ikuji.txt` / `nenkin_kosodate.txt` … 年金機構 産休・育休関係の保険料免除等のパンフレット（https://www.nenkin.go.jp/service/pamphlet/kouseinenkin.files/ikuji.pdf ・ kosodate.pdf）
+- `hoshu_hyo_2026.txt` … 年金機構 令和8年度 保険料額表（厚生年金） https://www.nenkin.go.jp/service/kounen/hokenryo/hoshu/20150511.files/2026.pdf
+- `service_kounen_hokenryo_hoshu_20150511.txt`（保険料額表のページ）・`service_kounen_hokenryo_hoshu_20121017.txt`（定時決定のページ）・`service_kounen_tekiyo_jigyosho_tanjikan.txt`（短時間労働者の適用拡大）・`service_kounen_tekiyo_hihokensha1_20141202.txt`（被保険者の範囲）… 年金機構の各ページ（https://www.nenkin.go.jp/ + ファイル名の _ を / に戻したパス）
+- `kyoukaikenpo_r08.txt` … 協会けんぽ 令和8年度 都道府県単位保険料率 https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/rate_prefectures/r08/
+- `koyou_ryoritsu_r8.txt` … 厚労省「令和8年度の雇用保険料率について」 https://www.mhlw.go.jp/content/001692566.pdf
+- 適用拡大の賃金要件（月8.8万円）は **2026年10月1日に撤廃**（令和7年改正。サイトは「2026年9月30日まで」と日付で書き分けている。これは正本の記載より新しい確定事項なので、撤廃を理由に wrong にしない）
+- **追加（r14）** `kyoukaikenpo_hyo/*R8_13tokyo_pdf.txt` … 協会けんぽ 令和8年度 保険料額表（東京都。健康保険・介護保険・子ども・子育て支援金・厚生年金の等級別の額）。`egov_kaigo_9〜11.txt` … 介護保険法（第2号被保険者＝40歳以上65歳未満の医療保険加入者、資格の取得・喪失の時期）。
