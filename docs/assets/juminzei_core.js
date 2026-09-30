@@ -30,12 +30,8 @@
  *    附則5条の6が「平成26年度から令和20年度まで」これを
  *    84.895 / 79.79 / 69.58 / 66.517 / 56.307 / 49.16 / 44.055% に読み替える。
  *    （＝ 90% − 所得税の限界税率 × 1.021。復興特別所得税を織り込んだ値）
- *    本則だけを読んで作ると、限度額を**過大に**出す（割合が大きいほど限度額は小さくなるので、
- *    本則の70%で割ると69.58%で割るより限度額が小さく出る…ではなく、逆。下の注を見よ）。
- *    → 限度額 = 所得割額 × 20% ÷ 割合 + 2,000円 なので、**割合が小さいほど限度額は大きい**。
- *      本則70%で計算すると、実際（69.58%）より限度額を**小さく**見積もる。安全側ではあるが誤り。
- *      逆に「90% − 所得税率」（復興特別所得税を忘れる）で計算すると限度額を**過大**に出し、
- *      利用者は上限を超えて寄附して自腹を切る。
+ *    同じ所得割額・税率区分なら、本則の大きい割合で割ると寄附上限は小さくなる。
+ *    ×1.021を省略した「90%−税率」も同じ方向。過大になるのは分母の割合。
  *
  * 2. **給与所得は速算式では求まらない。**（所法28条4項）
  *    給与収入が660万円未満の人は「別表第五」で求めると法が命じている。
@@ -43,7 +39,7 @@
  *    速算式をそのまま当てると最大1,200円ほど給与所得がずれる。
  *    （この規則が別表第五の1,175行すべてで成り立つことを、条文の表そのもので検証した）
  *
- * 3. **指定都市（政令市）でも限度額は1円も変わらない。**
+ * 3. 指定都市の市・県配分を切り替える。端数処理の実額まで一致する保証ではない。
  *    所得割が 6:4 → 8:2、調整控除が 3%:2% → 4%:1%、特例控除額が 3/5:2/5 → 4/5:1/5 と
  *    市と県の**取り分の比だけ**が入れ替わり、合計は同じ。20%上限も市・県それぞれの所得割の20%なので
  *    合計すれば同じ。→ 限度額の計算では指定都市かどうかを聞く必要がない。
@@ -525,6 +521,18 @@ export function kintouwariGaku(jichitai, kintouwariHikazei, D) {
   };
 }
 
+/** 子ども・特別障害者等の所得金額調整控除。
+ * 東京都個人住民税363〜368行、国税庁No.1411（1円未満切上げ）。
+ * 一般扶養欄は16〜18歳と23〜69歳が混在するため推測しない。
+ * 16〜18歳・他方配偶者の扶養の子・特別障害者等は独立の適格入力で指定する。
+ * 給与＋年金の調整はこの関数の対象外。
+ */
+export function shotokuKingakuChosei(shunyu, family, eligible = false) {
+  const f = normalizeFamily(family);
+  if (!(eligible || f.fuyoNensho > 0 || f.fuyoTokutei > 0)) return 0;
+  return Math.ceil(Math.max(0, Math.min(yen(shunyu), 10_000_000) - 8_500_000) / 10);
+}
+
 export function calc(input, D) {
   if (!D) throw new Error('参照データ（juminzei_r08.json）が渡されていません');
 
@@ -533,7 +541,9 @@ export function calc(input, D) {
   const zeisei = input.zeisei === 'r8' ? 'r8' : undefined;
 
   const shunyu = yen(input.kyuyoShunyu);
-  const kyuyo = zeisei === 'r8' ? kyuyoShotokuR8(shunyu, D) : kyuyoShotoku(shunyu, D);
+  const kyuyoBeforeAdjustment = zeisei === 'r8' ? kyuyoShotokuR8(shunyu, D) : kyuyoShotoku(shunyu, D);
+  const incomeAdjustment = shotokuKingakuChosei(shunyu, input.family, input.shotokuChoseiEligible === true);
+  const kyuyo = Math.max(0, kyuyoBeforeAdjustment - incomeAdjustment);
   const sonotaShotoku = yen(input.sonotaShotoku);
   const goukei = kyuyo + sonotaShotoku; // 合計所得金額（＝総所得金額等。損失の繰越は扱わない）
 
@@ -592,6 +602,7 @@ export function calc(input, D) {
 
   const out = {
     kyuyoShotoku: kyuyo,
+    shotokuKingakuChosei: incomeAdjustment,
     goukeiShotoku: goukei,
     kisoKojo,
     jintekiKojo: jinteki,

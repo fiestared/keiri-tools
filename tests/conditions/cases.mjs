@@ -42,3 +42,12 @@ export const extra={
   {name:'同額の甲欄はゼロ',run:()=>kouTax(K,104999,0),expected:0,source:gs,quote:'105,000 円未満'},
  ]
 };
+
+import {calc as r15Calc} from '../../docs/assets/juminzei_core.js';
+const R15D=JSON.parse(readFileSync(new URL('../../docs/assets/juminzei_r08.json',import.meta.url)));
+extra.juminzei_core = [{name:'r15 HTML初期値は所得金額調整なし',
+  run:d=>r15Calc({kyuyoShunyu:Number(d.getElementById('shunyu').value),
+    shotokuChoseiEligible:d.getElementById('shotokuChoseiEligible').checked,
+    family:{fuyoNensho:Number(d.getElementById('fuyoNensho').value)}},R15D).shotokuKingakuChosei,
+  expected:0,source:'https://www.tax.metro.tokyo.lg.jp/kazei/life/kojin_ju',
+  quote:'給与等の収入金額が850万円を超える者'}];

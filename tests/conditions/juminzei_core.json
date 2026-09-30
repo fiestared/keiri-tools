@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "core": "juminzei_core",
+  "page": "docs/furusato/index.html",
+  "priority_evidence": "r15-t5-a 年少扶養に係る所得金額調整控除の欠落",
+  "scope": "給与収入850万円超の子ども・特別障害者等の調整を登録。全税制条件の網羅ではなく、公的年金併存の調整は未対応。",
+  "conditions": [
+    {
+      "id": "salary-income-adjustment",
+      "statute": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1411.htm",
+      "disposition": "input",
+      "input_ids": [
+        "shunyu",
+        "fuyoNensho",
+        "fuyoTokutei",
+        "shotokuChoseiEligible"
+      ],
+      "cases": [
+        "r15 所得金額調整 8499999/{\"fuyoNensho\":1}/false",
+        "r15 所得金額調整 8500000/{\"fuyoNensho\":1}/false",
+        "r15 所得金額調整 8500001/{\"fuyoNensho\":1}/false",
+        "r15 所得金額調整 9000000/{\"fuyoNensho\":1}/false",
+        "r15 所得金額調整 9999999/{\"fuyoTokutei\":1}/false",
+        "r15 所得金額調整 10000000/{\"fuyoNensho\":1}/false",
+        "r15 所得金額調整 10000001/{\"fuyoNensho\":1}/false",
+        "r15 所得金額調整 9000000/{}/false",
+        "r15 所得金額調整 9000000/{\"fuyoIppan\":1}/false",
+        "r15 所得金額調整 9000000/{\"fuyoIppan\":1}/true"
+      ]
+    }
+  ],
+  "default_cases": [
+    "r15 HTML初期値は所得金額調整なし"
+  ]
+}

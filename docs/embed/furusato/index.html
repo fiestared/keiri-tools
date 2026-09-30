@@ -79,10 +79,11 @@
     <div>
       <label for="haigusha">配偶者控除</label>
       <select id="haigusha">
-        <option value="none">なし（共働き・配偶者なし）</option>
+        <option value="none">なし（控除対象の配偶者なし）</option>
         <option value="ippan">あり（70歳未満）</option>
         <option value="rojin">あり（70歳以上）</option>
       </select>
+      <p class="hint">配偶者控除は共働きかどうかではなく、本人と配偶者の所得等の要件で判断します。配偶者特別控除はこの選択肢の対象外です。</p>
     </div>
     <div>
       <label for="fuyoIppan">一般扶養（16〜18・23〜69歳）</label>
@@ -106,11 +107,12 @@
     <summary>その他の控除・給与以外の所得</summary>
     <div class="grid field-pair" style="margin-top:6px">
       <div>
-        <label for="fuyoRojin">老人扶養（70歳以上・別居）</label>
+        <label for="fuyoRojin">老人扶養（70歳以上・同居老親等以外）</label>
         <input id="fuyoRojin" type="number" inputmode="numeric" value="0" min="0" max="20">
       </div>
       <div>
-        <label for="fuyoDokyoRooya">同居老親等（70歳以上・同居）</label>
+        <label for="fuyoDokyoRooya">同居老親等（70歳以上の直系尊属）</label>
+        <p class="hint">本人または配偶者の直系尊属で、本人または配偶者との同居を常況とする老人扶養親族。同居する兄姉などは「同居老親等以外」に入力してください。</p>
         <input id="fuyoDokyoRooya" type="number" inputmode="numeric" value="0" min="0" max="20">
       </div>
     </div>
@@ -131,6 +133,8 @@
     <label class="chk"><input id="gakusei" type="checkbox"> 勤労学生</label>
   </details>
 
+  <label style="display:block;margin-top:12px"><input type="checkbox" id="shotokuChoseiEligible"> 所得金額調整控除の対象条件あり（子ども・特別障害者等）</label>
+  <p class="hint" id="shotoku-chosei-scope">給与収入850万円超で、23歳未満の扶養親族、本人の特別障害、特別障害者の同一生計配偶者・扶養親族のいずれかがある場合に適用します。16歳未満・特定扶養の入力分は自動反映します。一般扶養欄の16〜18歳や他方の配偶者の扶養としている子などはこのチェックで指定してください。給与所得と公的年金所得の双方がある場合の所得金額調整控除は未対応です。</p>
   <label for="kifu" style="margin-top:10px">寄附する予定の額（円）</label>
   <input id="kifu" type="number" inputmode="numeric" placeholder="例: 60000" aria-describedby="kifu-hint">
       <span id="kifu-hint" class="hint">任意。自己負担が2,000円で収まるか判定</span>
@@ -228,6 +232,7 @@ $("calc").addEventListener("click", async () => {
   try {
     r = calc({
       kyuyoShunyu: shunyu,
+    shotokuChoseiEligible: $("shotokuChoseiEligible").checked,
       shakaiHoken: shakai,
       sonotaKojo: Number($("sonotaKojo").value),
       sonotaShotoku: Number($("sonotaShotoku").value),

@@ -46,3 +46,18 @@ for (const [family, expected] of [[{hitorioyaHaha:true},5000],[{hitorioyaChichi:
     quote:'（３）　寡婦又はひとり親で政令で定めるものである所得割の納税義務者',
     note:'314条の6第1号イの表(3)一万円/(4)五万円。基礎分五万円を加え、東京都正本の合計5%を適用。父母の対応は委任先施行令48条の7の2で補充確認。'});
 }
+
+// r15-t5-a: 東京都正本363〜368行。控除は給与所得から差し引く。
+for (const [salary, family, eligible, expected] of [
+  [8499999,{fuyoNensho:1},false,0], [8500000,{fuyoNensho:1},false,0],
+  [8500001,{fuyoNensho:1},false,1], [9000000,{fuyoNensho:1},false,50000],
+  [9999999,{fuyoTokutei:1},false,150000], [10000000,{fuyoNensho:1},false,150000],
+  [10000001,{fuyoNensho:1},false,150000], [9000000,{},false,0],
+  [9000000,{fuyoIppan:1},false,0], [9000000,{fuyoIppan:1},true,50000],
+]) {
+  cases.push({name:`r15 所得金額調整 ${salary}/${JSON.stringify(family)}/${eligible}`,
+    run:()=>calc({kyuyoShunyu:salary,family,shotokuChoseiEligible:eligible,shakaiHoken:0,zeisei:'r8'},D).shotokuKingakuChosei,
+    expected,source:'https://www.tax.metro.tokyo.lg.jp/kazei/life/kojin_ju',
+    quote:'（給与等の収入金額－850万円）×10％',
+    note:'23歳未満扶養等。収入1000万円上限。1円未満切上げの補足資料は review-evidence/r15-t5-a/nta-1411.html。'});
+}

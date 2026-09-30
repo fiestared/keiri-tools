@@ -589,3 +589,16 @@ for (const c of t5Cases.filter(c=>c.name.startsWith('t5 '))) {
 
 console.log(`\n${failed === 0 ? '✅' : '❌'} test_juminzei: ${checks - failed}/${checks} checks passed`);
 if (failed > 0) process.exit(1);
+
+// r15: 同じ給与でも16歳未満の扶養があれば給与所得側の控除を適用する。
+// 東京都正本363〜368行: (900万円−850万円)×10%=5万円。
+const r15Child=calc({kyuyoShunyu:9000000,shakaiHoken:0,family:{fuyoNensho:1},zeisei:'r8'},D);
+const r15None=calc({kyuyoShunyu:9000000,shakaiHoken:0,family:{},zeisei:'r8'},D);
+assertR11.equal(r15Child.kyuyoShotoku,7000000);
+assertR11.equal(r15None.kyuyoShotoku,7050000);
+assertR11.equal(r15Child.shotokuwari,r15None.shotokuwari-5000);
+assertR11.ok(r15Child.furusatoGendo<r15None.furusatoGendo);
+for (const salary of [8500000,8500001,10000000,10000001]) {
+  const r=calc({kyuyoShunyu:salary,shakaiHoken:0,family:{fuyoNensho:1},zeisei:'r8'},D);
+  assertR11.equal(r.shotokuKingakuChosei, salary===8500000 ? 0 : salary===8500001 ? 1 : 150000);
+}
