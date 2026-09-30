@@ -83,7 +83,7 @@
     <div>
       <label for="haigusha">配偶者控除</label>
       <select id="haigusha">
-        <option value="none">なし（共働き・配偶者なし）</option>
+        <option value="none">なし（配偶者控除の対象外）</option>
         <option value="ippan">あり（70歳未満）</option>
         <option value="rojin">あり（70歳以上）</option>
       </select>
@@ -96,7 +96,8 @@
 
   <div class="grid field-pair">
     <div>
-      <label for="fuyoIppan">一般扶養（16〜18・23〜69歳）</label>
+      <label for="fuyoIppan">一般扶養（16〜18歳・23〜69歳。非居住者の30〜69歳は下記条件）</label>
+<p class="hint">非居住者で30歳以上70歳未満の扶養親族は、留学・障害者・前年に本人から生活費または教育費として38万円以上の支払いを受けた人のいずれかに限ります。</p>
       <input id="fuyoIppan" type="number" inputmode="numeric" value="0" min="0" max="20">
     </div>
     <div>
@@ -111,11 +112,11 @@
     <select id="kyuchi"></select>
     <div class="grid field-pair" style="margin-top:6px">
       <div>
-        <label for="fuyoRojin">老人扶養（70歳以上・別居）</label>
+        <label for="fuyoRojin">老人扶養（70歳以上・同居老親等以外）</label>
         <input id="fuyoRojin" type="number" inputmode="numeric" value="0" min="0" max="20">
       </div>
       <div>
-        <label for="fuyoDokyoRooya">同居老親等（70歳以上・同居）</label>
+        <label for="fuyoDokyoRooya">同居老親等（70歳以上の本人・配偶者の直系尊属で、同居を常況とする人）</label>
         <input id="fuyoDokyoRooya" type="number" inputmode="numeric" value="0" min="0" max="20">
       </div>
     </div>
