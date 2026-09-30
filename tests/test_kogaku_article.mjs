@@ -102,14 +102,14 @@ for (const hoshu of [514999, 515000]) {
   else ok(`外部オラクル: 高額療養費 212,570円（300,000−87,430）を再計算で確認`);
 }
 
-// ───────── 外部オラクル3: 80万円台の標準報酬月額の等級は存在しない ─────────
+// ───────── 外部オラクル3: 79万円超83万円未満の標準報酬月額の等級は存在しない ─────────
 // 記事は「条文の『83万円未満』と協会けんぽの『79万円まで』は矛盾しない」と主張する。
-// その根拠（80万円台の等級が無いこと）を、等級表そのものから確かめる。
+// その根拠（79万円超83万円未満の等級が無いこと）を、等級表そのものから確かめる。
 {
   const stds = KENKO_GRADES.map(([, std]) => std);
   const between = stds.filter(s => s > 790000 && s < 830000);
   if (between.length) fail(`80万円台の標準報酬月額の等級が存在する: ${between}`);
-  else ok(`外部オラクル: 標準報酬月額に80万円台の等級は無い(79万→83万で飛ぶ)＝条文と協会けんぽ表は矛盾しない`);
+  else ok(`外部オラクル: 標準報酬月額に79万円超83万円未満の等級は無い(79万→83万で飛ぶ)＝条文と協会けんぽ表は矛盾しない`);
   // 同じ理由で区分ウの上端が50万円になること
   const uEnd = stds.filter(s => s >= 280000 && s < 530000).pop();
   if (uEnd !== 500000) fail(`区分ウの上端の等級が50万円でない: ${uEnd}`);
@@ -132,8 +132,8 @@ const KYOKAI_CELL = {
   ア: '<td>83万円以上</td>',
   イ: '<td>53万円以上83万円未満</td>',
   ウ: '<td>28万円以上53万円未満</td>',
-  エ: '<td>28万円未満</td>',
-  オ: '<td>住民税非課税</td>',
+  エ: '<td>28万円未満（区分オを除く）</td>',
+  オ: '<td>被保険者が住民税非課税（区分ア・イを除く）</td>',
 };
 for (const [k, v] of Object.entries(SEIREI)) {
   const r = rowBy(`<td><b>${k}</b></td>`);
@@ -231,13 +231,13 @@ for (const [hoshu, want] of [[514999, CLIFF[514999]], [515000, CLIFF[515000]]]) 
   const miss = need.filter(n => !t.includes(n));
   if (miss.length) fail(`認定証の節に ${miss} が無い`);
   else ok('認定証: 施行規則129条の2第2項が交付対象を「資格確認書の交付を受けているものに限る」と限定');
-  const exceptions = ['通常はこの事前申請を省けます', '低所得者区分', '協会けんぽの低所得者区分等は認定申請が必要です。', '非対応施設', '番号未登録'];
+  const exceptions = ['通常はこの事前申請を省けます', '低所得者区分', '協会けんぽの低所得者区分等は認定申請が必要です。', '非対応の施設', '番号未登録'];
   for (const phrase of exceptions) {
     if (!t.includes(phrase)) fail('認定証の原則と例外がない: ' + phrase);
     else ok('認定証の原則と例外: ' + phrase);
   }
   if (t.includes('申請する対象から外れている')) fail('マイナ保険証利用者の申請を一律に否定している');
-  if (!t.includes('マイナ保険証を使っていない人（資格確認書の人）は、今も事前申請が必要')) fail('資格確認書の人は事前申請が必要、の但し書きが無い');
+  if (!t.includes('認定証を事前に申請') || !t.includes('70歳以上75歳未満の一般・現役並みⅢは認定証不要')) fail('資格確認書での事前申請と一般・現役並みⅢの例外が無い');
   else ok('認定証: 資格確認書の人は今も事前申請が必要（両側を書いている）');
 }
 
@@ -606,7 +606,7 @@ for (const t of OVER70.tables) for (const k of t.kubun) {
 
   // 13-2. ★二段階の順序（この節の核心）。callout の p を名指しする（規則3・5）
   {
-    const p = firstP(afterMark('<b>70歳以上は「①外来だけを個人ごとに」→「②世帯で合算して」の二段階で計算します</b>'));
+    const p = firstP(afterMark('<b>70歳以上の一般・低所得者は「①外来を個人ごとに」→「②世帯で合算」の二段階（現役並み所得者は②のみ）</b>'));
     const need = [['外来（通院）だけ', '①が外来だけを見ること'], ['ひとりずつ', '①が個人単位であること'],
                   ['施行令42条5項', '①の条文'], ['世帯で合算', '②が世帯単位であること'], ['同42条3項', '②の条文'],
                   ['現役並み所得者には外来の上限がありません', '現役並みは①を飛ばすこと']];
@@ -748,7 +748,7 @@ const R9_REI_SA = R9_REI_GENDO - gendoOf(
     const row = KENKO_GRADES.find(([n]) => n === g);
     const man = row[1] / 10000;
     if (!text.includes(`第${g}級`)) continue;
-    if (!new RegExp(`第${g}級[^。]{0,20}${man}万円`).test(text) && !text.includes(`第${g}級＝${man}万円`) && !text.includes(`第${g}級（標準報酬月額${man}万円）`) && !text.includes(`第${g}級・${man}万円`)) {
+    if (!new RegExp(`第${g}級[^。]{0,20}${man}万円`).test(text) && !text.includes(`第${g}級＝${man}万円`) && !text.includes(`第${g}級（標準報酬月額${man}万円）`) && !text.includes(`第${g}級・${man}万円`) && !text.includes(`第${g}級＝${row[1].toLocaleString()}円`)) {
       fail(`第${g}級 と 標準報酬月額${man}万円 の対応が本文に無い（本番の等級表と照合）`);
     } else ok(`第${g}級 ＝ 標準報酬月額${man}万円（本番の等級表と一致）`);
   }
@@ -761,7 +761,7 @@ const R9_REI_SA = R9_REI_GENDO - gendoOf(
   if (!title.includes('標準報酬月額')) fail(`titleに「標準報酬月額」が無い: ${title}`);
   else if (title.length > 60) fail(`titleが60字超: ${title.length}字`);
   else ok(`title（${title.length}字）: 区分は年収でなく標準報酬月額`);
-  for (const n of ['87,430円', '171,820円', '84,390円', '21,000円']) {
+  for (const n of ['年齢', '標準報酬月額', '住民税非課税', '70歳未満', '21,000円', '70歳以上は少額も合算']) {
     if (!desc.includes(n)) fail(`meta descriptionに ${n} が無い`);
   }
   if (desc.includes('87,430円') && desc.includes('171,820円') && desc.includes('84,390円') && desc.includes('21,000円')) {

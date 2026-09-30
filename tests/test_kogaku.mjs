@@ -87,10 +87,18 @@ ok(kub(279999) === "e", "標報279,999円は区分エのはず");
 ok(kub(280000) === "u", "標報280,000円ちょうどは区分ウのはず");
 // ★区分オは区分エより優先する（4号が「次号に掲げる者を除く」と書いている）
 ok(kub(200000, true) === "o", "非課税なのに区分エになっている（オが優先のはず）");
-ok(kub(900000, true) === "o", "非課税なのに区分アになっている（オが優先のはず）");
+ok(kub(900000, true) === "a", "非課税でも区分アは区分オから除外される");
 // 標準報酬月額が無いまま黙って区分ウに落とさないこと
 ok(K.classify({ standardMonthly: null, hikazei: false }, TBL_OLD) === null, "標報不明を黙って区分に落としている");
 ok(run({ standardMonthly: null }).determined === false, "標報不明なのに額を出している");
+
+// r16: 非課税でもア・イは優先（協会けんぽ表※3、施行令42条1項5号）。
+for (const ym of ["2026-07", "2026-08", "2027-08"]) {
+  for (const [std, expected] of [[529999, ym === "2026-07" ? 35400 : 36900], [530000, ym === "2026-07" ? 171820 : 183130], [830000, ym === "2026-07" ? 254180 : 271290]]) {
+    ok(run({shinryoYM:ym,standardMonthly:std,hikazei:true}).limit === expected, `r16 非課税 ${ym} 標報${std} 上限${expected}`);
+  }
+}
+ok(K.classify({standardMonthly:null,hikazei:true}, TBL_NEW) === null, "非課税でも標報不明ならア・イ除外を確認できない");
 
 // ── 6. 等級表と噛み合っていること（記事の 514,999 / 515,000 の1円差）────────────
 // shaho_core の等級表を通す＝等級表を二重実装していないことの確認でもある
@@ -488,7 +496,7 @@ for (const [key, min, max] of R9_ROWS) {
   if (max !== null) ok(k9(max) !== key, `標報${max}円が ${key} のまま（上の区分へ移っていない）`);
 }
 ok(k9(200000, true) === "hikazei", "非課税なのに標報の区分に落ちている（非課税が優先のはず）");
-ok(k9(1500000, true) === "hikazei", "非課税なのに最上位区分に落ちている");
+ok(k9(1500000, true) === "s127", "非課税でも標報53万円以上は低所得区分から除く");
 ok(K.classify({ standardMonthly: null, hikazei: false }, TBL_R9) === null, "標報不明を黙って区分に落としている（13区分）");
 
 // 14-3. ★旧5区分の境界を流用していたら落ちること（revision_2027_08 が名指しで警告していた穴）
