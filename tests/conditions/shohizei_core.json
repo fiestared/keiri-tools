@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "core": "shohizei_core",
+  "page": "docs/shohizei/index.html",
+  "priority_evidence": "r16/t10-a追加発見: 地方消費税の還付額を納付と同じ100円単位で切り捨てていた。今回の端数条件のみで全条件の網羅ではない。",
+  "conditions": [
+    {
+      "id": "local-refund-rounding",
+      "statute": "https://www.nta.go.jp/law/jimu-unei/shozei/000703/01.htm",
+      "disposition": "input",
+      "input_ids": [
+        "s10",
+        "s8",
+        "s-inv",
+        "p10",
+        "p8",
+        "p-inv"
+      ],
+      "rounding": true,
+      "cases": [
+        "地方消費税還付の1円・100円境界: 仕入インボイス税額2円",
+        "地方消費税還付の1円・100円境界: 仕入インボイス税額4円",
+        "地方消費税還付の1円・100円境界: 仕入インボイス税額454円",
+        "地方消費税還付の1円・100円境界: 仕入インボイス税額455円",
+        "地方消費税還付の1円・100円境界: 仕入インボイス税額456円",
+        "地方消費税還付の1円・100円境界: 仕入インボイス税額460円",
+        "地方消費税還付の1円・100円境界: 仕入インボイス税額461円"
+      ]
+    }
+  ],
+  "default_cases": [
+    "r16 消費税申告HTML初期値の空欄"
+  ]
+}

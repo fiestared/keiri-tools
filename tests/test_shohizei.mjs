@@ -165,3 +165,10 @@ function oracle(amount, num, den, mode) {
 }
 
 console.log("test_shohizei: all passed");
+
+// r16: 国税庁事務運営指針・通則法120条。還付の100円未満を消さない。
+const {calcDeclaration: declarationR16} = await import('../docs/assets/shohizei_core.js');
+assert.equal(declarationR16({purchaseInvoiceTax:454}).local,-99);
+assert.equal(declarationR16({purchaseInvoiceTax:456}).local,-100);
+assert.equal(declarationR16({purchaseInvoiceTax:461}).local,-101);
+assert.equal(declarationR16({purchaseInvoiceTax:2}).local,-1);

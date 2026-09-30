@@ -270,9 +270,10 @@ export function calcDeclaration({
   const rawNational = sales.tax - purchase.tax;
   const national = rawNational >= 0 ? floorToUnit(rawNational, 100) : rawNational;
 
-  // 地方消費税（譲渡割額）= 差引税額 × 22/78。こちらも百円未満切捨て。
+  // 地方消費税（譲渡割額）= 差引税額 × 22/78。納付は100円未満切捨て。
+  // 還付は1円未満切捨て、全額1円未満は1円（国税庁事務運営指針・通則法120条）。
   const rawLocal = (national * 22) / 78;
-  const local = rawLocal >= 0 ? floorToUnit(rawLocal, 100) : -floorToUnit(-rawLocal, 100);
+  const local = rawLocal >= 0 ? floorToUnit(rawLocal, 100) : -Math.max(1, Math.floor(-rawLocal));
 
   return {
     allowed: true,

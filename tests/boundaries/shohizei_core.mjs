@@ -6,3 +6,11 @@ export const cases = [
   { name: "全額控除の課税売上高5億円境界に対応する標準税率税込額550,000,000円の1円下", run: () => (calcDeclaration({salesIncluded:{standard:549999999}, purchasesIncluded:{}, salesMethod:'divide', purchaseMethod:'divide'}).allowed), expected: true, source: "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6401.htm", quote: "1 課税期間中の課税売上高が5億円以下（注1）、かつ、課税売上割合が95パーセント以上（注2）の場合 課税期間中の課税売上げに係る消費税額から、その課税期間中の課税仕入れ等に係る消費税額の全額を控除します。" },
   { name: "全額控除の課税売上高5億円境界に対応する標準税率税込額550,000,000円の1円上", run: () => (calcDeclaration({salesIncluded:{standard:550000001}, purchasesIncluded:{}, salesMethod:'divide', purchaseMethod:'divide'}).allowed), expected: false, source: "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6401.htm", quote: "1 課税期間中の課税売上高が5億円以下（注1）、かつ、課税売上割合が95パーセント以上（注2）の場合 課税期間中の課税売上げに係る消費税額から、その課税期間中の課税仕入れ等に係る消費税額の全額を控除します。" },
 ];
+
+// r16: 地方消費税の還付は1円単位。納付の100円単位と区別する。
+for (const [invoiceTax, expected] of [[1,0],[2,-1],[4,-1],[5,-1],[6,-1],[454,-99],[455,-99],[456,-100],[459,-100],[460,-100],[461,-101]]) {
+  cases.push({name: `地方消費税還付の1円・100円境界: 仕入インボイス税額${invoiceTax}円`,
+    kind: "rounding", run: () => calcDeclaration({purchaseInvoiceTax:invoiceTax}).local, expected,
+    source:'https://www.nta.go.jp/law/jimu-unei/shozei/000703/01.htm',
+    quote:'還付金の額に1円未満の端数があるとき若しくはその全額が1円未満であるときは、消費税の例により、通則法第119条《国税の確定金額の端数計算等》又は第120条《還付金額等の端数計算等》の規定に基づきその端数を処理する'});
+}

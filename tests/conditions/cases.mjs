@@ -80,3 +80,6 @@ extra.ikuji_core.push({name:'r16 パパHTML初期値',run:d=>r16CalcPapa({total6
 
 import {calcKihonteate as r16CalcKihonteate} from '../../docs/assets/kihonteate_core.js';
 extra.kihonteate_core = [{name:'r16 基本手当HTML初期値',run:d=>r16CalcKihonteate({age:num(d,'age'),monthly:num(d,'monthly'),period:d.getElementById('period').value,reason:d.getElementById('reason').value,wageBasis:d.getElementById('wageBasis').value,workDays6m:num(d,'workDays6m')},load('kihonteate_r07.json')).wageDaily,expected:10000,source:'https://laws.e-gov.go.jp/law/349AC0000000116',quote:'賃金の総額を百八十で除して得た額とする。'}];
+
+extra.shohizei_core = [];
+extra.shohizei_core.push({name:'r16 消費税申告HTML初期値の空欄', run:d=>['s10','s8','p10','p8','s-inv','p-inv'].map(id=>d.getElementById(id).value),expected:['','','','','',''],source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6383.htm',quote:'課税期間中の課税資産の譲渡等の税込金額の合計額',kind:'default'});

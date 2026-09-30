@@ -61,7 +61,7 @@ function oracleTotal(salesTax, purchaseTax) {
   const raw = BigInt(salesTax) - BigInt(purchaseTax);
   const national = raw >= 0n ? floorUnitB(raw, 100) : raw;
   const rawLocal = (national * 22n) / 78n; // BigInt除算は0方向切捨て
-  const local = national >= 0n ? floorUnitB(rawLocal, 100) : -floorUnitB(-rawLocal, 100);
+  const local = national >= 0n ? floorUnitB(rawLocal, 100) : (rawLocal === 0n ? -1n : rawLocal);
   return { national: Number(national), local: Number(local), total: Number(national + local) };
 }
 
