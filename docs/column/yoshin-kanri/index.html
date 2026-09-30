@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>与信管理とは？与信限度額の決め方と取引先の調べ方を実務手順で解説</title>
+<meta name="description" content="与信管理の手順と与信限度額の設例を解説します。2026年4月売上・5月末入金なら休日調整前で31〜60日。月300万円の売上が2か月分未回収になる入金直前の残高600万円と、入金後300万円を区別します。決算公告の適用除外、破産手続開始後の公告事項、民法137条の期限の利益も確認します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/yoshin-kanri/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="与信管理とは？与信限度額の決め方と取引先の調べ方を実務手順で解説">
+<meta property="og:description" content="与信管理の手順と与信限度額の設例を解説します。2026年4月売上・5月末入金なら休日調整前で31〜60日。月300万円の売上が2か月分未回収になる入金直前の残高600万円と、入金後300万円を区別します。決算公告の適用除外、破産手続開始後の公告事項、民法137条の期限の利益も確認します。">
+<meta property="og:url" content="https://keiri-tools.com/column/yoshin-kanri/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "与信管理とは？与信限度額の決め方と取引先の調べ方を実務手順で解説",
+      "datePublished": "2026-09-30",
+      "dateModified": "2026-09-30",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/yoshin-kanri/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "与信管理とは"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 与信管理と債権管理の違いは何ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 時間軸が違います。与信管理は取引を始める前と続けている間の話で、「この相手にいくらまで売ってよいか」を決めて守ります。債権管理は債権が発生した後の話で、請求・消込・督促・回収を扱います。実務では同じ担当が両方を持つことが多いですが、失敗の直し方が違います。督促の運用改善と与信判断の見直しは分けて考えます。回収の可否は個別の事情によります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 与信限度額はどうやって決めればよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 本記事の社内ルールの設例では、3つの基準を同じ相手に当てて、いちばん小さい額を採ります。①自社の売上債権基準（月間の取引予定額 × 回収サイトの月数）、②相手の純資産基準（純資産 × 社内で決めた率）、③相手の仕入債務基準（仕入債務 × 自社のシェア）です。たとえば各月300万円売り、当日の売上計上後に前月分を月末回収する設例で、相手の純資産8,000万円・仕入債務6,000万円・自社シェア5%・純資産への掛け率10%なら、順に600万円・800万円・300万円となり、採用するのは300万円です。②③の率は本記事の仮定です。実際の率は社内で検討し、規程に記録してください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 取引先の決算書は、頼まないと手に入りませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 株式会社の貸借対照表は決算公告から読めることがあります。会社法440条1項は大会社には損益計算書の公告も義務づけますが、同条3項の継続的な電磁的開示措置をとる場合は1・2項を適用せず、4項の有価証券報告書提出義務のある会社には1〜3項を適用しません。同条1項の対象は株式会社で、持分会社は対象外です。大会社以外の任意開示もあり、官報・日刊新聞紙による公告では貸借対照表の要旨で足りる場合があります（440条2項）。定款に公告方法の定めがなければ官報です（939条4項）。公告が見つからなければ、直接の提供を依頼する方法も検討します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 取引先が倒産したら、まず何をすればよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 倒産の種類・手続の段階と、自社の債権・債務を確認してください。破産法32条1項4号は、破産手続開始決定後に、破産者への財産交付・弁済を禁止する旨を公告する規定です。買掛金などがある場合は公告を確認し、破産管財人に支払先・方法を確認します。倒産一般の支払停止や出荷停止の順序を同条が定めているわけではありません。債権届出や相殺の可否、税務処理は個別の要件に沿って検討してください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 期限の利益喪失条項は、契約書に書かなくても効きますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 民法137条が定める3つの場合（債務者が破産手続開始の決定を受けたとき、担保を滅失・損傷・減少させたとき、担保を供する義務を負うのに供しないとき）は、契約に書かなくても適用されます。ただしこの3つはいずれもかなり事態が進んだ段階で、破産手続開始の決定が出てから請求できるようになっても回収はほとんど望めません。契約書に条項を置く意味は、支払いの遅滞や手形の不渡り、破産等の申立てといった、より手前の段階で期限を前倒しできるようにしておくことにあります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 与信管理は経理と営業のどちらの仕事ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 決め方を分けるのが実務的です。限度額の計算と残高の監視は、数字が手元にある経理・財務が担い、相手の様子の変化（担当者の交替、支払方法の変更の申し出、発注の急増）は営業からも集めます。どちらか一方に寄せると、片方の情報が落ちます。規程で「調査は誰、限度額の決定は誰、超過の承認は誰」を分けて書いておくと、担当者が替わっても回ります。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 与信管理とは</nav>
+<article>
+  <h1>与信管理とは？与信限度額の決め方と取引先の調べ方を実務手順で解説</h1>
+  <p class="article-meta">公開日: <time datetime="2026-09-30">2026年9月30日</time> ／ 会社法440条・939条・976条、民法137条・166条、破産法32条の条文（e-Gov 法令API v2 の保存条文）に基づいて作成</p>
+  <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+  <p>結論から言うと、与信管理とは<b>「この取引先には、いくらまで売ってよいか」を金額で決めて、その金額を超えないように見張る仕事</b>です。相手を信用できるかどうかを気分で語ることではありません。<b>限度額という数字を1つ置く</b>ところまで行って、はじめて管理になります。</p>
+  <p>そして、経理の側から見るといちばん大事なのはここです。<b>掛け売りは、代金をもらう前に商品やサービスを渡すこと</b>＝相手にお金を貸しているのと同じ状態が、入金日まで続きます。2026年4月売上を5月31日に回収する設例なら、休日調整前の日付差は<b>31日〜60日</b>。その間ずっと、自社の現金が相手のところに置きっぱなしになります。<b>本設例の入金直前の未回収残高は、2か月分の売上</b>です。この「2か月分」がいくらなのかを知らずに取引を増やすのが、いちばん危ない状態です。</p>
+  <p>この記事は<b>取引を始める前と、続けている間</b>の話です。焦げ付いた後の回収手続と税務（内容証明・支払督促・相殺・貸倒損失・時効）は、それぞれ別の記事にまとめてあるので、必要なところからリンクで辿ってください。</p>
+
+  <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc">
+    <div class="toc-title">目次</div>
+    <ol>
+      <li><a href="#toha">与信管理とは — 限度額を決めて、守る</a></li>
+      <li><a href="#saiken">与信管理と債権管理はどこで分かれるか</a></li>
+      <li><a href="#site">回収サイトが与信残高を決める — 日数で数える</a></li>
+      <li><a href="#shirabe">取引先を調べる — 無料で取れる3つと、有料の調査</a></li>
+      <li><a href="#kessan">決算書は「もらう」前に「公告」を見る（会社法440条）</a></li>
+      <li><a href="#gendogaku">与信限度額の決め方 — 3つの基準を同じ相手に当てる</a></li>
+      <li><a href="#tarinai">必要な額と、許せる額が食い違ったとき</a></li>
+      <li><a href="#tojo">取引が始まってからの与信管理（途上与信）</a></li>
+      <li><a href="#keiyaku">契約で効かせる — 期限の利益喪失条項（民法137条）</a></li>
+      <li><a href="#kitei">与信管理規程に書く項目</a></li>
+      <li><a href="#sonae">それでも焦げ付いたときのために</a></li>
+      <li><a href="#faq">よくある質問</a></li>
+    </ol>
+  </nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../../tosan-boshi-kyosai/">倒産防止共済（経営セーフティ共済）節税シミュレーター</a></li><li><a href="../kashidaore-sonshitsu/">貸倒損失とは</a></li><li><a href="../jikou-engyo/">時効の援用とは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+  <h2 id="toha">与信管理とは — 限度額を決めて、守る</h2>
+  <p>与信とは、<b>相手に信用を与えること</b>、具体的には<b>代金の回収より先に商品・サービスを渡すこと</b>です。掛け売り（信用取引）をした瞬間に、自社は相手に対する売掛金という債権を持ちます。与信管理は、この債権が焦げ付かないように<b>事前に上限を決め、事後に残高を見張る</b>一連の作業を指します。</p>
+  <p>作業を分解すると、次の5つになります。この記事の残りは、この5つを順番に見ていきます。</p>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>段階</th><th>やること</th><th>出てくるもの</th></tr></thead>
+    <tbody>
+      <tr><td>① 調べる</td><td>登記・官報・決算公告・自社の取引実績を集める</td><td>相手の実在と財政状態</td></tr>
+      <tr><td>② 評価する</td><td>集めた材料を社内の基準に当てる</td><td>社内格付け（A〜Eなど）</td></tr>
+      <tr><td>③ 決める</td><td>3つの基準で限度額を計算し、いちばん小さい額を採る</td><td><b>与信限度額</b></td></tr>
+      <tr><td>④ 契約する</td><td>支払条件・期限の利益喪失条項を入れる</td><td>契約書・取引基本契約</td></tr>
+      <tr><td>⑤ 見張る</td><td>残高が限度額を超えていないか、相手が変わっていないかを定期的に見る</td><td>途上与信の記録</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">
+    <b>「与信管理をしている」と言えるのは③まで行ったときだけ</b>
+    <p>①②だけで止まっている会社は少なくありません。調査報告書を取り寄せて回覧して終わり、という状態です。<b>調べた結果が金額に変換されていないと、営業は「大丈夫そうだった」以上のことを受け取れません。</b>金額があってはじめて、営業も経理も同じ物差しで話せます。</p>
+  </div>
+
+  <h2 id="saiken">与信管理と債権管理はどこで分かれるか</h2>
+  <p>この2つは混同されがちですが、<b>時間軸で分かれている</b>と考えると整理できます。</p>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th></th><th>与信管理</th><th>債権管理</th></tr></thead>
+    <tbody>
+      <tr><td>いつの話か</td><td>取引を始める前／続けている間</td><td>債権が発生した後</td></tr>
+      <tr><td>問い</td><td>いくらまで売ってよいか</td><td>発生した債権を、期日どおりに回収できているか</td></tr>
+      <tr><td>主な作業</td><td>調査・評価・限度額の設定・途上与信</td><td>請求・消込・滞留の督促・回収</td></tr>
+      <tr><td>失敗したときに出るもの</td><td>回収できない売掛金そのもの</td><td>滞留債権・遅延</td></tr>
+    </tbody>
+  </table></div>
+  <p>実務では両方を同じ担当が持つことが多く、境目を意識しないまま回ります。ただし<b>失敗の直し方が違います</b>。督促の運用改善と、取引開始前の与信判断の見直しは分けて考えます。<b>回収できるかどうかは個別の事情によります</b>。だから前に置く価値があります。</p>
+  <p>売掛金・未収入金・未収収益の使い分けは <a href="../urikake-mishunyukin-mishushueki/">売掛金と未収入金と未収収益の違い</a> に、回収できなくなった後の流れは <a href="../naiyo-shomei/">内容証明郵便の書き方</a>・<a href="../shiharai-tokusoku/">支払督促</a> にまとめてあります。</p>
+
+  <h2 id="site">回収サイトが与信残高を決める — 日数で数える</h2>
+  <p>限度額を決める前に、<b>自社の支払条件だと、売上がどれだけの期間「未回収」で残るのか</b>を日数で数えておきます。ここを数えていないと、限度額を小さく見積もりすぎます。</p>
+  <p><b>2026年の月末締め・翌月末払い</b>を例にします。以下の日数は休日調整前の暦日差で、売上日は数えません。月ごとの日数や売上配分により変わるため、一般的な最短・最長ではありません。4月1日に売った分と、4月30日に売った分は、どちらも4月30日に締められ、<b>5月31日に一緒に入金されます</b>。</p>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>支払条件</th><th class="num">売上から入金までの最長</th><th class="num">最短</th><th>未回収残高のピーク</th></tr></thead>
+    <tbody>
+      <tr><td>月末締め・翌月末払い</td><td class="num">60日（4/1売上 → 5/31入金）</td><td class="num"><span class="numeric-token">31日</span></td><td><b>2か月分</b>の売上（各月300万円なら600万円）</td></tr>
+      <tr><td>月末締め・翌々月末払い</td><td class="num">90日（4/1売上 → 6/30入金）</td><td class="num"><span class="numeric-token">61日</span></td><td><b>3か月分</b>の売上（各月300万円なら900万円）</td></tr>
+      <tr><td>20日締め・翌月末払い</td><td class="num">71日（3/21売上 → 4/20締め → 5/31入金）</td><td class="num"><span class="numeric-token">41日</span>（4/20売上 → 5/31入金）</td><td>日額10万円・4/21〜5/31も売上が続く例では<b>720万円</b>（72日分）</td></tr>
+    </tbody>
+  </table></div>
+  <p>残高の設例では、売上の返品・前受け・入金遅延はなく、支払日当日の売上計上が入金より先とします。20日締めの行は3月21日〜5月31日の72日間に毎日10万円売り、3月20日以前の分は回収済みとします。3月21日〜4月20日の31日分310万円を5月31日に回収すると、720万円から410万円に減ります。他の2行は各月300万円の売上を前提とします。「ピークが2か月分」というのは、こういう意味です。月末締め翌月末払いで、5月31日の入金<b>直前</b>を見てください。そこには<b>4月分の売上（まだ入金されていない）</b>と<b>5月分の売上（締めたばかりで請求もこれから）</b>の2か月分が、まるごと未回収で載っています。<b>4月・5月に各300万円売った例なら、5月31日の入金直前は600万円、4月分300万円の入金後は300万円</b>です。</p>
+  <figure class="figure">
+    <svg viewBox="0 0 640 260" role="img" aria-label="2026年4月と5月に各300万円売上、5月末の入金直前600万円・入金後300万円となる休日調整前の設例">
+      <text x="8" y="18" font-size="13" fill="currentColor">月末締め・翌月末払い（4月・5月の売上）</text>
+      <line x1="40" y1="60" x2="600" y2="60" stroke="currentColor" stroke-width="1"/>
+      <line x1="40" y1="54" x2="40" y2="66" stroke="currentColor" stroke-width="1"/>
+      <line x1="180" y1="54" x2="180" y2="66" stroke="currentColor" stroke-width="1"/>
+      <line x1="320" y1="54" x2="320" y2="66" stroke="currentColor" stroke-width="1"/>
+      <line x1="460" y1="54" x2="460" y2="66" stroke="currentColor" stroke-width="1"/>
+      <line x1="600" y1="54" x2="600" y2="66" stroke="currentColor" stroke-width="1"/>
+      <text x="40" y="48" font-size="12" fill="currentColor" text-anchor="middle">4/1</text>
+      <text x="180" y="48" font-size="12" fill="currentColor" text-anchor="middle">4/30締</text>
+      <text x="320" y="48" font-size="12" fill="currentColor" text-anchor="middle">5/31締</text>
+      <text x="460" y="48" font-size="12" fill="currentColor" text-anchor="middle">6/30</text>
+      <text x="600" y="48" font-size="12" fill="currentColor" text-anchor="middle">7/31</text>
+      <rect x="40" y="80" width="140" height="22" fill="none" stroke="var(--accent)" stroke-width="1.5"/>
+      <text x="110" y="96" font-size="12" fill="currentColor" text-anchor="middle">4月の売上</text>
+      <line x1="180" y1="91" x2="316" y2="91" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <polygon points="320,91 312,87 312,95" fill="var(--accent)"/>
+      <text x="250" y="84" font-size="11" fill="currentColor" text-anchor="middle">未回収</text>
+      <rect x="180" y="116" width="140" height="22" fill="none" stroke="var(--sub)" stroke-width="1.5"/>
+      <text x="250" y="132" font-size="12" fill="currentColor" text-anchor="middle">5月の売上</text>
+      <line x1="320" y1="127" x2="456" y2="127" stroke="var(--sub)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <polygon points="460,127 452,123 452,131" fill="var(--sub)"/>
+      <text x="390" y="120" font-size="11" fill="currentColor" text-anchor="middle">未回収</text>
+      <line x1="320" y1="70" x2="320" y2="200" stroke="var(--warn-line)" stroke-width="1.5"/>
+      <text x="326" y="160" font-size="12" fill="currentColor">5/31 入金直前</text>
+      <text x="326" y="178" font-size="12" fill="currentColor">＝4月分＋5月分が未回収</text>
+      <text x="326" y="196" font-size="12" fill="currentColor">＝入金前600万円 → 入金後300万円</text>
+      <text x="40" y="228" font-size="12" fill="currentColor">4/1の売上 → 5/31入金 ＝ 60日（最長）</text>
+      <text x="40" y="248" font-size="12" fill="currentColor">4/30の売上 → 5/31入金 ＝ 31日（最短）</text>
+    </svg>
+    <figcaption>2026年4月・5月に各300万円売る設例（休日調整なし、当日の売上計上後に入金）。5月31日の入金直前は600万円、入金後は300万円。横軸は模式図で、日数に比例しない。</figcaption>
+  </figure>
+  <div class="callout">
+    <b>入金日が土日祝に当たったら、その分だけ長くなることがある</b>
+    <p>支払日が金融機関の休業日のとき、翌営業日に送金する取引先と、前営業日に繰り上げる取引先があります。<b>どちらなのかは契約書か、過去の入金実績で確かめます。</b>翌営業日にずれる条件なら、その日数だけ未回収の期間が延びます。年末年始やゴールデンウィークをまたぐと、3〜5日動くことがあります。営業日の数え方は <a href="../../eigyobi/">営業日計算ツール</a> で確かめられます。</p>
+  </div>
+
+  <h2 id="shirabe">取引先を調べる — 無料で取れる3つと、有料の調査</h2>
+  <p>調査の方法は、一般に<b>社内調査・直接調査・外部調査・依頼調査</b>の4つに分けて説明されます。ただし名前を覚えても手は動かないので、ここでは<b>費用がかかるかどうか</b>で並べ直します。<b>まず無料で取れるものを全部取ってから、足りない分だけ有料にする</b>のが、金額に見合った進め方です。</p>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>経路</th><th>何が分かるか</th><th>費用</th></tr></thead>
+    <tbody>
+      <tr><td><b>登記事項証明書</b>（法務局・登記情報提供サービス）</td><td>実在・本店所在地・設立年月日・資本金・役員・目的・公告方法。<b>過去の変更履歴</b>も残る</td><td>1通あたりの手数料</td></tr>
+      <tr><td><b>官報</b>（インターネット版・図書館）</td><td>決算公告、破産手続開始・特別清算・会社更生などの裁判所の公告</td><td>無料〜</td></tr>
+      <tr><td><b>相手の決算公告</b>（官報・日刊紙・自社サイト）</td><td>貸借対照表（大会社は損益計算書も）</td><td>無料</td></tr>
+      <tr><td><b>自社の取引実績</b></td><td>過去の支払遅延・値引き要求・発注の急増や急減</td><td>無料</td></tr>
+      <tr><td><b>相手への直接のヒアリング・訪問</b></td><td>事業の実態、在庫や工場の様子、経営者の受け答え</td><td>時間</td></tr>
+      <tr><td><b>信用調査会社への依頼</b></td><td>評点、他社との取引状況、風評まで含む調査報告</td><td>依頼先と調査の深さによる</td></tr>
+    </tbody>
+  </table></div>
+  <p>登記で見るときのコツを1つ。<b>いま何が書いてあるかより、どう変わってきたかを見ます。</b>短期間に本店を何度も移している、事業目的が本業と関係ない分野に次々増えている、代表者が短期間で入れ替わっている——このあたりは、登記事項証明書に<b>下線つきの旧記載</b>として残ります。取り寄せるときは<b>履歴事項全部証明書</b>を選んでください（現在事項証明書だと、消された過去が見えません）。<a href="../toki-jiko-shomeisho/">登記事項証明書の取り方</a>に手順をまとめてあります。</p>
+  <div class="callout">
+    <b>官報で「破産手続開始」を見つけたら、公告と支払先を確認する</b>
+    <p>裁判所は破産手続開始の決定をしたとき、直ちに公告しなければならないと定められています（破産法32条1項）。同項が挙げる事項の中には、<b>破産財団に属する財産の所持者や、破産者に対して債務を負担する者は、破産者に財産を交付したり弁済したりしてはならない旨</b>が含まれています。この規定は<b>破産手続開始決定後の、破産者本人への交付・弁済禁止の公告</b>を扱います。倒産一般について支払いを止める順序を定めた条文ではありません。買掛金などがある場合は、公告を確認し、破産管財人に支払先・方法を確認してください。相殺の可否は要件・制限を個別に確認します（<a href="../sousai/">相殺のルール</a>）。</p>
+  </div>
+
+  <h2 id="kessan">決算書は「もらう」前に「公告」を見る（会社法440条）</h2>
+  <p>与信でいちばん欲しいのは相手の決算書です。「取引先に決算書をくださいとは言えない」という声をよく聞きますが、<b>会社法440条1項は株式会社の貸借対照表の公告義務を定めています</b>（会社法440条1項。大会社は損益計算書も）。ただし、同条3項の継続的な電磁的開示措置をとる場合は1・2項を適用せず、4項の有価証券報告書提出義務のある株式会社には1〜3項を適用しません。頼む前に、公告や開示情報を探してみてください。</p>
+  <p>探す手掛かりは、その会社が<b>定款で定めた公告方法</b>です。440条3項の電磁的開示措置や4項の適用除外も確認します。公告方法は<b>登記事項</b>なので、登記事項証明書を見れば分かります。電子公告なら相手のWebサイト、官報ならインターネット版官報、という順です。そして定款に何も定めていない会社については、条文がこう決めています。</p>
+  <blockquote>第一項又は第二項の規定による定めがない会社又は外国会社の公告方法は、第一項第一号の方法とする。</blockquote>
+  <p>会社法939条4項で、同条1項1号は「官報に掲載する方法」です。つまり<b>定款に公告方法の定めがなければ、その会社の公告方法は官報</b>と決まります。</p>
+  <p>ただし、この経路には<b>与信の側から見て注意したい点が</b>あります。</p>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>限界</th><th>中身</th><th>そのときどうするか</th></tr></thead>
+    <tbody>
+      <tr><td>相手が株式会社でない</td><td>440条1項の主語は「株式会社は」。合同会社などの持分会社は同項による義務の対象ではない</td><td>直接依頼するか、信用調査会社に依頼する</td></tr>
+      <tr><td>損益計算書の公告義務がない場合がある</td><td>440条1項は<b>大会社</b>に損益計算書の公告も義務づける（同条3・4項の適用除外あり）。大会社の金額基準は会社法2条6号により最終事業年度に係る貸借対照表の資本金5億円以上、または負債合計200億円以上。成立後最初の定時株主総会までは435条1項の貸借対照表による。大会社以外の任意開示を禁じる規定ではない</td><td>損益計算書の詳細が必要なら別途依頼する</td></tr>
+      <tr><td>要旨の場合がある</td><td>官報・日刊新聞紙で公告する会社は、貸借対照表の<b>要旨</b>で足りる（440条2項）</td><td>内訳が要るなら別経路にする</td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">
+    <b>公告が見つからないこと自体は、危険信号として弱い</b>
+    <p>公告を怠った場合、取締役などが<b>100万円以下の過料</b>に処せられることがあります（会社法976条柱書・同条2号）。ただし<b>公告をしていない中小の株式会社は珍しくありません</b>。見つからないことを相手の問題と読むより、「公告が出ている会社は、その分だけ手間をかけている」という程度に受け取り、<b>見つからなければ次の経路に進む</b>ほうが実務的です。公告する側の手順・4つの公告方法の費用比較・過料の名宛人といった<b>自社が公告する立場</b>の論点は、<a href="../kessan-kokoku/">決算公告とは</a> にまとめてあります。この記事では<b>読む側</b>の話だけを扱います。</p>
+  </div>
+  <p>手に入れた貸借対照表のどこを見るかは <a href="../taishaku-taishohyo-mikata/">貸借対照表の見方</a> に、ここで得た純資産を限度額に変換する方法は次の節にあります。</p>
+
+  <h2 id="gendogaku">与信限度額の決め方 — 3つの基準を同じ相手に当てる</h2>
+  <p>ここでは社内ルールの設例として、3つの基準を置きます。一般的な正解や法定の算式を示すものではありません。<b>どれか1つを選ぶのではなく、3つとも計算して、いちばん小さい額を採る</b>という運用例です。Aは必要額、B・Cは本設例で置いた許容額の目安で、性質が異なります。</p>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>基準</th><th>考え方</th><th>算式</th></tr></thead>
+    <tbody>
+      <tr><td><b>A 自社の売上債権基準</b></td><td>その相手に売りたい額から、必要な枠を出す</td><td>月間の取引予定額 × 回収サイト（月数）</td></tr>
+      <tr><td><b>B 相手の純資産基準</b></td><td>相手の体力から、貸してよい額を出す</td><td>相手の純資産 × 社内で決めた率</td></tr>
+      <tr><td><b>C 相手の仕入債務基準</b></td><td>相手が全体でどれだけ買っているかのうち、自社の取り分を出す</td><td>相手の仕入債務（買掛金＋支払手形） × 自社のシェア</td></tr>
+    </tbody>
+  </table></div>
+  <p>言葉だけでは動かないので、同じ相手に3つとも当てます。<b>設例</b>：取引先B社に<b>毎月300万円</b>売る予定。支払条件は<b>月末締め翌月末払い</b>（前の節のとおり、未回収のピークは2か月分）。B社の公告された貸借対照表では<b>純資産8,000万円</b>、<b>仕入債務6,000万円</b>。自社がB社の仕入に占めるシェアは<b>5%</b>程度と見込む。社内の内規では、純資産に掛ける率を<b>10%</b>としている。</p>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>基準</th><th>計算</th><th class="num">結果</th></tr></thead>
+    <tbody>
+      <tr><td>A 自社の売上債権基準（必要額）</td><td>300万円 × 2か月</td><td class="num"><span class="numeric-token">600万円</span></td></tr>
+      <tr><td>B 相手の純資産基準</td><td>8,000万円 × 10%</td><td class="num"><span class="numeric-token">800万円</span></td></tr>
+      <tr><td>C 相手の仕入債務基準</td><td>6,000万円 × 5%</td><td class="num"><span class="numeric-token">300万円</span></td></tr>
+      <tr><td><b>採用する与信限度額</b></td><td>3つのうちいちばん小さい額</td><td class="num"><b><span class="numeric-token">300万円</span></b></td></tr>
+    </tbody>
+  </table></div>
+  <div class="callout">
+    <b>設例の率を自社にそのまま当てはめず、判断基準を文書にする</b>
+    <p>Bの「10%」やCの「5%」は本記事の仮定です。<b>自社が決める数字</b>です。だからこそ、決めた率を<a href="#kitei">与信管理規程</a>に書いて固定します。相手ごとに率を動かせる状態にしておくと、営業の要望に押されて事実上の上限が消えます。<b>率を動かすなら、格付けを動かす</b>（Aランクは15%、Cランクは5%というように、格付けと率を紐づける）のが、後から説明できる形です。</p>
+  </div>
+
+  <h2 id="tarinai">必要な額と、許せる額が食い違ったとき</h2>
+  <p>先ほどの設例で起きたことを、もう一度見てください。<b>自社が必要とする枠は600万円なのに、相手の体力から許せる枠は300万円</b>でした。<b>300万円足りません。</b>ここで「まあ大丈夫だろう」と600万円売ってしまうのが、与信管理が機能していない状態です。差が出たときの対応例を4つ挙げます。</p>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>手当</th><th>設例に当てはめると</th><th>誰と交渉するか</th></tr></thead>
+    <tbody>
+      <tr><td><b>① 取引量を減らす</b></td><td>月300万円 → 月150万円にすれば、必要額は300万円になり枠に収まる</td><td>自社の営業</td></tr>
+      <tr><td><b>② 回収サイトを短くする</b></td><td>翌月末払い → 当月末払いにすれば、ピークが2か月分 → 1か月分＝300万円</td><td>取引先</td></tr>
+      <tr><td><b>③ 先にもらう／担保を取る</b></td><td>一部を前受金にする、保証金を預かる、代表者の連帯保証を取る</td><td>取引先</td></tr>
+      <tr><td><b>④ 断る・保留する</b></td><td>枠の範囲（300万円）でだけ取引する</td><td>自社の営業</td></tr>
+    </tbody>
+  </table></div>
+  <p>①と④は自社の中の話、②と③は相手との交渉です。<b>順番としては①②③を試してから④</b>ですが、②③を切り出すと相手の反応そのものが情報になります。資金繰りに余裕のある会社は、サイトの短縮も前受けも「それで構いません」と返してきます。強く抵抗されたときは、<b>抵抗の理由を聞く</b>ところまで進めてください。</p>
+  <p>なお、限度額を超えそうなときに<b>出荷を止める人が誰なのかを、事前に決めておく</b>必要があります。ここが決まっていないと、超過は必ず見逃されます。営業は売りたいので止めません。経理が止めるのか、上長の承認で超過を認めるのか、どこまでの超過なら誰の判断でよいのか——これを<a href="#kitei">規程</a>に書きます。</p>
+
+  <a class="tool-cta" href="../../tosan-boshi-kyosai/">取引先が倒産したときの備え — 経営セーフティ共済の掛金と貸付額を計算する</a>
+
+  <h2 id="tojo">取引が始まってからの与信管理（途上与信）</h2>
+  <p>限度額は、決めた瞬間から古くなります。取引を始めた後に定期的に見直すことを<b>途上与信</b>といいます。見直すきっかけは、定期のものと、随時のものの2つです。</p>
+  <p><b>定期</b>：年1回、相手の決算が出たタイミングで格付けと限度額を引き直します。440条1項の公告時期は定時株主総会の終結後遅滞なくです。同条3・4項の扱いも確認し、相手の実際の開示時期に合わせて予定を立てます。</p>
+  <p><b>随時</b>：次のような兆候が出たら、定期を待たずに見直します。これらは<b>経理の手元にいちばん早く届く</b>情報です。</p>
+  <ul>
+    <li><b>支払いが遅れた</b>（1日でも。遅れた理由と、翌月に戻るかどうかを記録する）</li>
+    <li><b>一部だけ入金された</b>（差額の説明が来ないときは特に）</li>
+    <li><b>支払方法を変えたいと言ってきた</b>（振込 → 手形、サイトの延長）</li>
+    <li><b>発注が急に増えた</b>（他社から仕入れられなくなっている可能性がある）</li>
+    <li><b>担当者や経理の責任者が短期間で替わった</b>／連絡が取りにくくなった</li>
+    <li><b>登記が動いた</b>（本店移転・役員変更・目的変更）</li>
+  </ul>
+  <div class="callout">
+    <b>「発注が急に増えた」を喜ばない</b>
+    <p>与信の現場でいちばん危ないのがこれです。他の仕入先から取引を止められた会社は、<b>まだ止めていない会社への発注を増やします</b>。売上が伸びているように見えるので、営業からは歓迎されます。<b>限度額を置いておく意味は、まさにこの瞬間に効かせるため</b>です。増加分が枠を超えるなら、増えた理由を確かめるまで枠内に留めます。</p>
+  </div>
+  <p>そしてもう1つ、<b>回収できていない売掛金を放置すると、最後は時効で消えます</b>。債権は「権利を行使することができることを知った時から五年間行使しないとき」に時効によって消滅すると定められています（民法166条1項1号。同項2号に「権利を行使することができる時から十年間」もあり、先に来た方で消えます）。<b>請求書を送り続けるだけでは時効は止まりません。</b>更新・完成猶予の手当は <a href="../jikou-engyo/">時効の援用と更新</a> にまとめてあります。</p>
+
+  <h2 id="keiyaku">契約で効かせる — 期限の利益喪失条項（民法137条）</h2>
+  <p>掛け売りでは、相手は<b>支払期日が来るまで払わなくてよい</b>という利益を持っています。これを<b>期限の利益</b>といいます。相手の様子がおかしくなっても、期日が来るまで請求できないのが原則です。</p>
+  <p>民法137条は、期限の利益を主張できなくなる事由を次の3つに定めています。</p>
+  <blockquote>次に掲げる場合には、債務者は、期限の利益を主張することができない。
+一 債務者が破産手続開始の決定を受けたとき。
+二 債務者が担保を滅失させ、損傷させ、又は減少させたとき。
+三 債務者が担保を供する義務を負う場合において、これを供しないとき。</blockquote>
+  <p>民法137条です。<b>3つとも、かなり進んでからの事態</b>だと気づいてください。破産手続開始の決定が出たときには、もう回収はほとんど望めません。<b>だから契約書で、法律より手前に線を引きます。</b>これが期限の利益喪失条項です。</p>
+  <p>取引基本契約でよく置かれる事由は、次のようなものです。<b>民法137条の3つは、契約に書かなくても効きます</b>。契約に書く意味は、<b>それより手前の段階で、こちらから期日を前倒しできるようにしておく</b>ことにあります。</p>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>事由</th><th>どの段階か</th></tr></thead>
+    <tbody>
+      <tr><td>支払いを1回でも遅滞したとき</td><td>いちばん手前。実務上いちばん使う</td></tr>
+      <tr><td>手形・小切手が不渡りになったとき、または支払を停止したとき</td><td>手前</td></tr>
+      <tr><td>差押え・仮差押え・仮処分・滞納処分を受けたとき</td><td>中間</td></tr>
+      <tr><td>破産・民事再生・会社更生・特別清算の申立てがあったとき（自ら申し立てたときを含む）</td><td>中間（<b>申立て</b>の時点。137条1号の「決定」より手前）</td></tr>
+      <tr><td>解散の決議をしたとき、事業を廃止したとき</td><td>中間</td></tr>
+      <tr><td>資産・信用状態に重大な変化が生じたとき</td><td>包括条項</td></tr>
+    </tbody>
+  </table></div>
+  <p>期限の利益を失わせると、まだ期日が来ていない売掛金も<b>その時点で全額が期限到来</b>になります。すると<b>相手に対する買掛金との相殺</b>が使える場面が広がります（相殺には民法505条以下の要件があります。<a href="../sousai/">相殺のルール</a>）。<b>回収手段として実際に効くのは、この相殺であることが多い</b>ので、期限の利益喪失条項は「入れてあるだけ」にせず、どの事由でいつ通知するかまで決めておきます。</p>
+
+  <h2 id="kitei">与信管理規程に書く項目</h2>
+  <p>ここまでの決めごとを文書にしたものが与信管理規程です。<b>規程を作る目的は、判断を人から切り離すこと</b>です。担当者が替わっても、営業が強く出ても、同じ結論になる状態を作ります。入れる項目は次のとおりです。</p>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>項目</th><th>書くこと</th><th>書かないとどうなるか</th></tr></thead>
+    <tbody>
+      <tr><td>適用範囲</td><td>どの取引に適用するか（新規／既存、金額の下限）</td><td>少額取引にまで手間がかかり、運用が止まる</td></tr>
+      <tr><td>担当と権限</td><td>調査は誰、限度額の決定は誰、超過の承認は誰</td><td>誰も止めない</td></tr>
+      <tr><td>調査の方法</td><td>新規取引で必ず取る資料（登記・決算公告など）</td><td>相手によって調べる深さが変わる</td></tr>
+      <tr><td>格付けの基準</td><td>ランクの定義と、ランクごとの掛け率</td><td>限度額の根拠が人によって変わる</td></tr>
+      <tr><td>限度額の算式</td><td>3つの基準と、採用の仕方（最小値を採る）</td><td>「だいたいこのくらい」で決まる</td></tr>
+      <tr><td>決裁の金額基準</td><td>いくらまでが部長決裁、いくらから役員決裁か</td><td>大口だけ例外的に緩くなる</td></tr>
+      <tr><td>超過時の扱い</td><td>出荷を止める条件、暫定的に認める場合の上限と期限</td><td>超過が常態化する</td></tr>
+      <tr><td>見直しの頻度</td><td>定期（年1回）と、随時見直しの兆候の一覧</td><td>初回の限度額が何年も残る</td></tr>
+      <tr><td>契約に入れる条項</td><td>期限の利益喪失条項、所有権留保、遅延損害金の率</td><td>契約書ごとにばらつく</td></tr>
+      <tr><td>記録の残し方</td><td>調査資料と決裁の保存場所・保存期間</td><td>後から「なぜこの額なのか」を説明できない</td></tr>
+    </tbody>
+  </table></div>
+  <p>最初から完璧な規程を作る必要はありません。<b>1枚から始めて、実際に判断に迷った場面を1行ずつ足していく</b>ほうが、使われる規程になります。</p>
+
+  <h2 id="sonae">それでも焦げ付いたときのために</h2>
+  <p>与信管理を丁寧にやっても、取引先の倒産はゼロにはなりません。<b>備えと、起きた後の処理は、別々に用意しておきます。</b></p>
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>場面</th><th>手段</th><th>詳しくは</th></tr></thead>
+    <tbody>
+      <tr><td>連鎖倒産に備える</td><td>経営セーフティ共済（中小企業倒産防止共済）。取引先が倒産したときに、無担保・無保証人で共済金の貸付を受けられる</td><td><a href="../../tosan-boshi-kyosai/">共済金の計算ツール</a>／<a href="../keiei-safety-kyosai-shiwake/">掛金の仕訳と税務</a></td></tr>
+      <tr><td>入金を待てない</td><td>ファクタリング（売掛債権の売却）。手数料の年率換算に注意</td><td><a href="../factoring-toha/">ファクタリングとは</a></td></tr>
+      <tr><td>支払いが遅れている</td><td>催告 → 内容証明 → 支払督促の順に進める</td><td><a href="../naiyo-shomei/">内容証明郵便</a>／<a href="../shiharai-tokusoku/">支払督促</a></td></tr>
+      <tr><td>相手に買掛金もある</td><td>相殺する</td><td><a href="../sousai/">相殺のルール</a></td></tr>
+      <tr><td>回収できないと決まった</td><td>貸倒損失として損金にする。要件は3つの類型で分かれる</td><td><a href="../kashidaore-sonshitsu/">貸倒損失の要件</a></td></tr>
+      <tr><td>決算で見込みを立てる</td><td>貸倒引当金を繰り入れる</td><td><a href="../kashidaore-hikiatekin/">貸倒引当金の計算</a></td></tr>
+    </tbody>
+  </table></div>
+  <div class="summary-box">
+    <b>この記事のまとめ</b>
+    <ul>
+      <li>与信管理は<b>「いくらまで売ってよいか」を金額で決めて守る仕事</b>。調べて終わりにしない。</li>
+      <li>2026年4月売上・5月末入金の設例は、休日調整前で<b>31〜60日</b>。各月300万円売り、当日の売上計上後に入金する例なら、5月末の<b>入金直前は600万円、入金後は300万円</b>。</li>
+      <li>本記事の設例では、限度額は<b>3つの基準（自社の売上債権・相手の純資産・相手の仕入債務）を全部計算して、いちばん小さい額</b>を採る。掛け率は設例の仮定なので、自社の基準を検討して規程に書く。</li>
+      <li>必要額が許容額を上回ったら、<b>取引量を減らす・サイトを短くする・先にもらう・断る</b>などを検討する。</li>
+      <li>相手の貸借対照表は、<b>決算公告</b>から取れることがある（会社法440条1項は株式会社の貸借対照表・大会社の損益計算書を対象とするが、3・4項に適用除外がある。任意開示の範囲とは別）。公告方法は登記事項で、<b>定款に定めがなければ官報</b>（939条4項）。</li>
+      <li>契約には<b>期限の利益喪失条項</b>を入れる。民法137条の3事由（破産手続開始の決定・担保の滅失等・担保を供しないこと）は法律上の最低線で、実務では<b>それより手前</b>に線を引く。</li>
+    </ul>
+  </div>
+
+  <h2 id="faq">よくある質問</h2>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>与信管理と債権管理の違いは何ですか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>時間軸が違います。与信管理は取引を始める前と続けている間の話で、「この相手にいくらまで売ってよいか」を決めて守ります。債権管理は債権が発生した後の話で、請求・消込・督促・回収を扱います。実務では同じ担当が両方を持つことが多いですが、失敗の直し方が違います。督促の運用改善と与信判断の見直しは分けて考えます。回収の可否は個別の事情によります。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>与信限度額はどうやって決めればよいですか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>本記事の社内ルールの設例では、3つの基準を同じ相手に当てて、いちばん小さい額を採ります。①自社の売上債権基準（月間の取引予定額 × 回収サイトの月数）、②相手の純資産基準（純資産 × 社内で決めた率）、③相手の仕入債務基準（仕入債務 × 自社のシェア）です。たとえば各月300万円売り、当日の売上計上後に前月分を月末回収する設例で、相手の純資産8,000万円・仕入債務6,000万円・自社シェア5%・純資産への掛け率10%なら、順に600万円・800万円・300万円となり、採用するのは300万円です。②③の率は本記事の仮定です。実際の率は社内で検討し、規程に記録してください。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>取引先の決算書は、頼まないと手に入りませんか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>株式会社の貸借対照表は決算公告から読めることがあります。会社法440条1項は大会社には損益計算書の公告も義務づけますが、同条3項の継続的な電磁的開示措置をとる場合は1・2項を適用せず、4項の有価証券報告書提出義務のある会社には1〜3項を適用しません。同条1項の対象は株式会社で、持分会社は対象外です。大会社以外の任意開示もあり、官報・日刊新聞紙による公告では貸借対照表の要旨で足りる場合があります（440条2項）。定款に公告方法の定めがなければ官報です（939条4項）。公告が見つからなければ、直接の提供を依頼する方法も検討します。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>取引先が倒産したら、まず何をすればよいですか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>倒産の種類・手続の段階と、自社の債権・債務を確認してください。破産法32条1項4号は、破産手続開始決定後に、破産者への財産交付・弁済を禁止する旨を公告する規定です。買掛金などがある場合は公告を確認し、破産管財人に支払先・方法を確認します。倒産一般の支払停止や出荷停止の順序を同条が定めているわけではありません。債権届出や相殺の可否、税務処理は個別の要件に沿って検討してください。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>期限の利益喪失条項は、契約書に書かなくても効きますか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>民法137条が定める3つの場合（債務者が破産手続開始の決定を受けたとき、担保を滅失・損傷・減少させたとき、担保を供する義務を負うのに供しないとき）は、契約に書かなくても適用されます。ただしこの3つはいずれもかなり事態が進んだ段階で、破産手続開始の決定が出てから請求できるようになっても回収はほとんど望めません。契約書に条項を置く意味は、支払いの遅滞や手形の不渡り、破産等の申立てといった、より手前の段階で期限を前倒しできるようにしておくことにあります。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>与信管理は経理と営業のどちらの仕事ですか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>決め方を分けるのが実務的です。限度額の計算と残高の監視は、数字が手元にある経理・財務が担い、相手の様子の変化（担当者の交替、支払方法の変更の申し出、発注の急増）は営業からも集めます。どちらか一方に寄せると、片方の情報が落ちます。規程で「調査は誰、限度額の決定は誰、超過の承認は誰」を分けて書いておくと、担当者が替わっても回ります。</p>
+
+  <!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../ryoshusho-kakikata/"><b>領収書の書き方 — 「上様」でよいかは業種で決まる。宛名を省ける事業は政令に4号しかない</b><span>領収書を出す義務の根拠は税法ではなく民法486条です。宛名を省けるのは「適格簡易請求書」を交付できる事業だけで、消費税法施行令70条の11は小売業・飲食店業・写真業・旅行業、タクシ</span></a><a class="tool-card" href="../mitsumorisho-kakikata/"><b>見積書の書き方 — 書式を定めた法律は無い。それでも5本の法令が「見積書」を名指しする</b><span>見積書には法定の書式がありません。それでも法人税法施行規則・所得税法施行規則・電子帳簿保存法・印紙税法・建設業法の5本が条文で「見積書」を名指ししています。保存は7年とは限らず個人</span></a><a class="tool-card" href="../shitaukeho-toritekiho/"><b>下請法は令和8年1月に名前が変わった — 中小受託取引適正化法とフリーランス法は、適用の決まり方から違う</b><span>下請法は令和8年1月1日施行の改正（令和7年法律第41号）で題名が変わった。正式名称は「製造委託等に係る中小受託事業者に対する代金の支払の遅延等の防止に関する法律」、略称は中小受託</span></a></div></section><!--next-read:E-->
+<section class="related">
+    <div class="tool-grid">
+      <a class="tool-card" href="../../tosan-boshi-kyosai/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4-3 7-7 9-4-2-7-5-7-9V6z"/></svg></div>
+        <div><div class="name">経営セーフティ共済の計算</div>
+        <div class="desc">取引先の倒産に備える掛金と共済金の貸付額。</div></div>
+      </a>
+      <a class="tool-card" href="../kashidaore-sonshitsu/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5z"/><path d="M8 10h8M8 14h5"/></svg></div>
+        <div><div class="name">貸倒損失の要件</div>
+        <div class="desc">回収できないと決まった後、損金にできる3つの類型。</div></div>
+      </a>
+      <a class="tool-card" href="../jikou-engyo/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg></div>
+        <div><div class="name">時効の援用と更新</div>
+        <div class="desc">売掛金は5年で消える。止め方と、うっかり振り出しに戻す瞬間。</div></div>
+      </a>
+      <a class="tool-card" href="../taishaku-taishohyo-mikata/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v14H4z"/><path d="M12 5v14M4 11h8"/></svg></div>
+        <div><div class="name">貸借対照表の見方</div>
+        <div class="desc">手に入れた決算書のどこを見るか。</div></div>
+      </a>
+      <a class="tool-card" href="../factoring-toha/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg></div>
+        <div><div class="name">ファクタリングとは</div>
+        <div class="desc">売掛債権の売却。手数料を年率に直すと何%か。</div></div>
+      </a>
+      <a class="tool-card" href="../../eigyobi/">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v14H4z"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></div>
+        <div><div class="name">営業日計算</div>
+        <div class="desc">支払日が休業日に当たるときの前後の営業日。</div></div>
+      </a>
+    </div>
+  </section>
+
+  <h2>出典</h2>
+  <ul style="font-size:13px;color:var(--sub)">
+    <li>会社法（平成十七年法律第八十六号）── <b>440条1項</b>（貸借対照表の公告義務・大会社は損益計算書も）、<b>440条2項</b>（官報・日刊新聞紙の場合は要旨で足りる）、<b>939条1項</b>（公告方法の3種類）、<b>939条4項</b>（定めがない会社の公告方法は官報）、<b>976条柱書</b>（100万円以下の過料）・<b>同条2号</b>（公告を怠ったとき）。e-Gov 法令API v2（`417AC0000000086`）で取得した現行版</li>
+    <li>民法（明治二十九年法律第八十九号）── <b>137条</b>（期限の利益の喪失・3号まで）、<b>166条1項</b>（債権の消滅時効・知った時から5年／行使できる時から10年）。e-Gov 法令API v2（`129AC0000000089`）の保存条文を参照。取得データの版表示は PreviousEnforced であり、2026年9月30日の現行版としての確認は未了</li>
+    <li>破産法（平成十六年法律第七十五号）── <b>32条1項</b>（破産手続開始の公告事項。<b>4号</b>が財産所持者等による破産者への交付・弁済の禁止）。e-Gov 法令API v2（`416AC0000000075`）で取得した現行版</li>
+    <li>回収サイトの日数と設例の与信限度額は、上記の支払条件・前提金額から計算したものです。掛け率（純資産の10%、仕入債務に対するシェア5%）は<b>法令上の基準ではなく、社内で定める数値の例</b>です。</li>
+  </ul>
+  <p style="font-size:13px;color:var(--sub)">本記事は一般的な情報提供を目的としたものです。個別の判断は税務署または税理士・弁護士にご確認ください。</p>
+</article>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E4%B8%8E%E4%BF%A1%E7%AE%A1%E7%90%86%E3%81%AF%E3%80%8C%E3%81%9D%E3%81%AE%E5%8F%96%E5%BC%95%E5%85%88%E3%81%AB%E3%81%84%E3%81%8F%E3%82%89%E3%81%BE%E3%81%A7%E5%A3%B2%E3%81%A3%E3%81%A6%E3%82%88%E3%81%84%E3%81%8B%E3%80%8D%E3%82%92%E6%B1%BA%E3%82%81%E3%81%A6%E5%AE%88%E3%82%8B%E4%BB%95%E4%BA%8B%E3%81%A7%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fyoshin-kanri%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site" style="display:block">© 税金・経理・補助金ツールズ
+  <div style="margin-top:8px;font-size:12px"><a href="../../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body>
+</html>
