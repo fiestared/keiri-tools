@@ -15,4 +15,4 @@ const small=shakaiHokenAnnual(1200000,30,refs.shahoRates.kenko_rates['東京都'
 const dom=new JSDOM(readFileSync('docs/kabe/index.html','utf8'));
 const shares=[...dom.window.document.querySelectorAll('a')].filter(a=>a.textContent.trim()==='この内容をXで共有');assert.equal(shares.length,1);const url=new URL(shares[0].href);assert.equal(url.origin,'https://x.com');assert.equal(url.pathname,'/intent/tweet');assert.equal(url.searchParams.get('url'),'https://keiri-tools.com/kabe/');assert.ok(url.searchParams.get('text'));
 writeFileSync('review/r16-t3-a/reproduction.json',JSON.stringify({scope:'東京・30/39歳、一定月給、賞与なし、給与控除丸め、4月以後の料率×12。扶養内は被扶養配偶者・第3号。税・雇用保険は除外。',input,result:r,results,monthly100000:small,share:{href:shares[0].href,verified:'静的リンクの宛先・共有本文・対象URLを確認。外部送信なし。Xでの投稿完了を確認したものではない。'}},null,2)+'\n');
-dom.window.close();console.log('19 amount/recovery checks and static share destination verified');
+dom.window.close();console.log('18 annual amount cases, recovery, monthly premium and static share destination verified');
