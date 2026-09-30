@@ -4,6 +4,7 @@ Runs in a new isolated directory; use --run-dir DIR to resume a STOPPED round.
 No publish/push/notification side effects. --prepare-only and --check-only call no models.
 """
 import argparse
+import os
 import datetime
 import hashlib
 import json
@@ -61,6 +62,9 @@ def fill(template,values):
 def stop(r,reason):
     (r/'STOPPED').write_text(reason+'\n');print(reason);return 4
 
+
+# sol のモデル（2026-09-30 Masahiro「今後 sol に依頼するときは sol6.1 を使ってね」）。環境変数で差し替え可
+SOL_MODEL=os.environ.get('KEIRI_SOL_MODEL','gpt-6.1-sol')
 
 def execute(worker,model,prompt,r,log):
     with log.open('w') as f:
@@ -184,7 +188,7 @@ def run_locked(a):
         if a.check_only:continue
         prompt=fill(r/'sol_theme.md',{**values,'LIST':b,'OUT':out,'BATCH':state['round']+'-'+b.name})
         (r/'out'/(b.name+'.prompt.md')).write_text(prompt)
-        rc,quota=execute(a.worker,'gpt-5.6-sol',prompt,r,r/'out'/(b.name+'.log'))
+        rc,quota=execute(a.worker,SOL_MODEL,prompt,r,r/'out'/(b.name+'.log'))
         if rc or quota:
             # A nonzero worker must not become a successful batch just because it left JSON behind.
             if out.exists():

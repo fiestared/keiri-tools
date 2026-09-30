@@ -44,12 +44,12 @@ class Round(unittest.TestCase):
             calls=[]
             def fake(worker,model,prompt,run,log):
                 calls.append(model);log.write_text('fixture only')
-                if model=='gpt-5.6-sol':out.write_text(json.dumps(self.valid(pages)))
+                if model==runner.SOL_MODEL:out.write_text(json.dumps(self.valid(pages)))
                 else:(r/'fixes.md').write_text('Fixture report\nDONE\n')
                 return 0,False
             a.check_only=False
             with patch.object(runner,'execute',side_effect=fake):self.assertEqual(runner.run(a),0)
-            self.assertEqual(calls,['gpt-5.6-sol','gpt-6-astra']);self.assertFalse((r/'STOPPED').exists());self.assertTrue((r/'publish-request').exists())
+            self.assertEqual(calls,[runner.SOL_MODEL,'gpt-6-astra']);self.assertFalse((r/'STOPPED').exists());self.assertTrue((r/'publish-request').exists())
             with patch.object(runner,'execute') as worker:self.assertEqual(runner.run(a),0);worker.assert_not_called()
 
     def test_failed_sol_output_is_not_in_astra_input_glob(self):
@@ -64,7 +64,7 @@ class Round(unittest.TestCase):
             self.assertEqual(list((r/'out').glob('t*.json')),[])
             self.assertEqual(len(list((r/'failed').glob('*.json'))),1)
             def resume(worker,model,prompt,run,log):
-                if model=='gpt-5.6-sol':(r/'out/t00.json').write_text(json.dumps(self.valid(pages)))
+                if model==runner.SOL_MODEL:(r/'out/t00.json').write_text(json.dumps(self.valid(pages)))
                 else:
                     self.assertEqual(len(list((r/'out').glob('t*.json'))),1)
                     (r/'fixes.md').write_text('New report\nDONE\n')

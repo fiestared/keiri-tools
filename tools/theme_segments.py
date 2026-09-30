@@ -122,7 +122,7 @@ def run(a,state,execute,stop):
         if not inspect(out,batch)[1] or a.check_only:continue
         prompt=(r/'sol_segments.md').read_text().replace('{{SITE}}',str(r/'site')).replace('{{CORPUS}}',str(r/'corpus')).replace('{{LIST}}',str(b)).replace('{{OUT}}',str(out))
         (r/'out'/(b.stem+'.prompt.md')).write_text(prompt)
-        rc,quota=execute(a.worker,'gpt-5.6-sol',prompt,r,r/'out'/(b.stem+'.log'))
+        rc,quota=execute(a.worker,os.environ.get('KEIRI_SOL_MODEL','gpt-6.1-sol'),prompt,r,r/'out'/(b.stem+'.log'))
         if rc or quota:
             if out.exists():
                 (r/'failed').mkdir(exist_ok=True);out.rename(r/'failed'/f'{b.stem}-{time.time_ns()}.json')
