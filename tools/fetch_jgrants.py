@@ -111,12 +111,43 @@ def sweep(verbose=False):
 #   例: 「［第十三回］事業再構築補助金（交付申請等）」「女性活躍情報公開促進奨励金 撤回届」
 #   これらは既に採択された人が使うもので、探している人が応募できるものではない。
 #   一覧に「撤回届」が並ぶと、一覧そのものの信頼が落ちる。
-#   ★タイトルで除外する。除いた件数は _meta.excluded で申告する（黙って減らさない）。
-JUNK_RE = re.compile(r'交付申請|実績報告|変更申請|撤回届|廃止申請|中止申請')
+#   ★除いた件数と理由は _meta.excluded で申告する（黙って減らさない）。
+#
+# ★2026-09-30 拡張（UI/UXレビュー #9。オーナー「全部修正しちゃって」）:
+#   381件の一覧に、交付後の「仕入控除税額報告」の様式が5件（うち2件は題が「×」始まり）、
+#   事業完了後の「状況報告」「事業完了後申請」、採択後の「中止届」「変更届」、
+#   さらに練習用ダミー（「実際に補助金が支払われることはありません」）が
+#   **新しい補助金の顔をして並んでいた**。題だけでなく catch_phrase / 概要冒頭の自己申告
+#   （「本申請フォームは、仕入控除税額報告用です」「完了後の活用状況報告用のページ」）も見る。
+#   ★残すもの（誤って落とさない）: 題の途中の「×」（「ＡＩ×データ」）、
+#     「中間手続補助」（INPIT。中間手続の費用を補助する実在の公募）、
+#     「2年目申請用」（継続支給の申請＝応募そのもの）。tests/test_hojokin_postgrant.mjs が両方向を固定する。
+JUNK_RULES = [
+    # (理由, 題に対する正規表現, catch_phrase＋概要冒頭に対する正規表現 or None)
+    ('題の先頭に「×」が付いた受付停止中の様式', re.compile(r'^[\s\u3000]*[×✕✖╳]'), None),
+    ('交付後の仕入控除税額報告の様式', re.compile(r'仕入控除税額'), re.compile(r'仕入控除税額報告用')),
+    ('事業完了後の状況報告の様式', re.compile(r'状況報告'), re.compile(r'状況報告用')),
+    ('事業完了後の手続き様式', re.compile(r'事業完了後'), re.compile(r'完了後[^。]{0,20}手続き用')),
+    ('採択後の届出様式', re.compile(r'(撤回|中止|変更|廃止|辞退)届'), None),
+    ('応募用ではない手続きフォーム', re.compile(r'交付申請等|実績報告|変更申請|廃止申請|中止申請'), None),
+    ('練習用のダミー（補助金の支払いが無い）', re.compile(r'練習用'),
+     re.compile(r'実際に補助金が支払われることはありません')),
+]
+JUNK_HEAD = 120   # 概要は冒頭だけ見る（本文の奥の「実績報告」等の説明文で落とさない）
+
+
+def junk_reason(row):
+    """新規に応募するものでなければ理由を返す。応募できるものなら None。"""
+    title = row.get('title') or ''
+    blurb = (row.get('subsidy_catch_phrase') or '') + ' ' + (row.get('summary') or '')[:JUNK_HEAD]
+    for reason, title_re, blurb_re in JUNK_RULES:
+        if title_re.search(title) or (blurb_re and blurb_re.search(blurb)):
+            return reason
+    return None
 
 
 def is_junk(row):
-    return bool(JUNK_RE.search(row.get('title') or ''))
+    return junk_reason(row) is not None
 
 
 def trim(row):
@@ -156,10 +187,37 @@ def enrich(seen, verbose=False):
     return filled, failed
 
 
+def refilter():
+    """★通信なしで、書き出し済みJSONに現行の除外規則を掛け直す。
+    取得日時（captured_jst）は変えない＝データの鮮度を偽らない。定時ジョブは取得のたびに
+    同じ junk_reason を通すので、これは規則を変えた当日の反映用。"""
+    doc = json.loads(OUT.read_text(encoding='utf-8'))
+    meta = doc['_meta']
+    excluded = meta.setdefault('excluded', [])
+    known = {e['id'] for e in excluded}
+    keep = []
+    for r in doc['subsidies']:
+        reason = junk_reason(r)
+        if reason is None:
+            keep.append(r)
+        elif r['id'] not in known:
+            excluded.append({'id': r['id'], 'title': r['title'], 'reason': reason})
+    before = len(doc['subsidies'])
+    doc['subsidies'] = keep
+    meta['count'] = len(keep)
+    OUT.write_text(json.dumps(doc, ensure_ascii=False, indent=1), encoding='utf-8')
+    print(f'✓ 除外規則を掛け直した: {before}件 → {len(keep)}件（除外 計{len(excluded)}件）', file=sys.stderr)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--check', action='store_true', help='書き出さずに件数と収束だけ見る')
+    ap.add_argument('--refilter', action='store_true',
+                    help='取得し直さず、いまのJSONに除外規則だけを掛け直す（規則を変えた日に使う）')
     args = ap.parse_args()
+    if args.refilter:
+        refilter()
+        return
 
     seen, growth, failed = sweep(verbose=True)
     tail = (growth[-1] - growth[-11]) if len(growth) > 11 else None
@@ -192,7 +250,7 @@ def main():
     }
     # ★何を除いたかを申告する（件数だけ減っていると原因が追えない）
     doc['_meta']['excluded'] = [
-        {'id': r['id'], 'title': r['title'], 'reason': '応募用ではない手続きフォーム'}
+        {'id': r['id'], 'title': r['title'], 'reason': junk_reason(r)}
         for r in seen.values() if is_junk(r)
     ]
     doc['_meta']['count'] = len(doc['subsidies'])
