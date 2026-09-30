@@ -602,3 +602,11 @@ for (const salary of [8500000,8500001,10000000,10000001]) {
   const r=calc({kyuyoShunyu:salary,shakaiHoken:0,family:{fuyoNensho:1},zeisei:'r8'},D);
   assertR11.equal(r.shotokuKingakuChosei, salary===8500000 ? 0 : salary===8500001 ? 1 : 150000);
 }
+
+// r16: 最初の子と2人目以降の限度額増分を区別する。
+for (const [n,limit] of [[0,450000],[1,1010000],[2,1360000]]) {
+ assertR11.equal(hikazeiHantei(0,0,{fuyoNensho:n},1,D).kintouLimit,limit,`r16 年少扶養${n}人`);
+}
+for (const [income,expected] of [[1010000,true],[1010001,false]]) {
+ assertR11.equal(hikazeiHantei(income,income,{fuyoNensho:1},1,D).kintouwariHikazei,expected,'r16 扶養1人の1円境界');
+}

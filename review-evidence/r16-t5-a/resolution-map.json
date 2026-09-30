@@ -1,0 +1,605 @@
+[
+  {
+    "page": "docs/embed/juminzei/index.html",
+    "old_id": "s-4d64cae90d87cc14fa8b-1",
+    "severity": "high",
+    "reason": "「なし（共働き・配偶者なし）」は、共働きなら配偶者控除が無い、と読める。egov_chihozei_314_2.txt 551-564行の配偶者控除は、本人の合計所得（900万円以下で33万円、900万超950万以下で22万円、950万超1000万以下で11万円。70歳以上の配偶者は38万・26万・13万円）と、配偶者側の所得で決まる。配偶者が給与を得ていても控除対象の所得に収まる。この選択肢に従うと控除が落ち、住民税を過大にする。embed と本体の両方。",
+    "old_text": "なし（共働き・配偶者なし） [value=none;default=true]",
+    "replacement_ids": [
+      "s-abcef219595f8d814c3f-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/embed/juminzei/index.html",
+    "old_id": "s-2f63f87eec8bb1299aec-1",
+    "severity": "medium",
+    "reason": "居住者の一般扶養の年齢（16歳以上19歳未満と23歳以上70歳未満）は、控除対象が16歳以上（egov_chihozei_314_2.txt 682-685行）、特定が19歳以上23歳未満、老人が70歳以上（675行）の残余と一致する。非居住者は、30歳以上70歳未満だと留学・障害者・生活費または教育費の支払い38万円以上のいずれかに限られる（690-714行）。ラベルにその条件が無く、該当しない非居住者を一般扶養に数えると控除対象を誤る。居住者が多数なので medium。",
+    "old_text": "一般扶養（16〜18・23〜69歳）",
+    "replacement_ids": [
+      "s-0bb78f2f2bb4b935f3e1-1",
+      "s-64edc79e7c5946af4bf0-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/embed/juminzei/index.html",
+    "old_id": "s-e6de6ba01d80bd4fe0e3-1",
+    "severity": "medium",
+    "reason": "老人扶養の控除は、70歳以上の控除対象扶養親族につき38万円（egov_chihozei_314_2.txt 675行）。45万円になるのは、本人または配偶者の直系尊属で同居を常況とする場合だけ（823行）。ラベル「70歳以上・別居」は、同居していても直系尊属でない人（兄姉など）を通常の老人扶養から外す。その人を同居老親等に入れると控除が38万円でなく45万円になる。多数派の別居の親には当てはまるので medium。",
+    "old_text": "老人扶養（70歳以上・別居）",
+    "replacement_ids": [
+      "s-0bc436b81a5a7dba5474-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/embed/juminzei/index.html",
+    "old_id": "s-230237a89c587d524f33-1",
+    "severity": "medium",
+    "reason": "同居老親等の45万円は、老人扶養親族が本人または配偶者の直系尊属であり、かつ同居を常況とするとき（egov_chihozei_314_2.txt 823行）。括弧は「70歳以上・同居」だけで、直系尊属が無い。同居の70歳以上の兄姉等を選ぶと45万円を適用しうる。embed は sol が ok、本体は wrong。同じ文言なので両方とも未解決。親と同居する多数には当てはまるので medium。",
+    "old_text": "同居老親等（70歳以上・同居）",
+    "replacement_ids": [
+      "s-7287f64037ead844e6c6-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-e53d7ecca99b3982dc02-1",
+    "severity": "high",
+    "reason": "要約の155万円・105万円は本文 s-2b7001491f016b4f085d-1 と同じ境界で、他の所得が無い・控除が最低額の区分・東京23区、が落ちている。tokyo_kojin_ju.txt 415行・381行・501-503行。措置法41条の15の3の条名と1〜3級地の倍率、ツールが条文どおりに全ケースを計算する保証は正本に無い。読者が155万円・105万円を単身の年金上限として使うと、他所得がある場合の非課税該当を誤る。条名は外し、条件を本文と同じく限定する。",
+    "old_text": "世帯全員の年金収入・給与収入と年齢を入れるだけで、住民税非課税世帯にあたるかを自動判定。65歳以上は年金155万円まで、65歳未満は105万円まで（1級地・単身）という境界を、公的年金等控除（措置法41条の15の3の110万円）と均等割の非課税限度額から条文どおりに計算します。お住まいの級地（1〜3級地）、子のアルバイト代で世帯が課税になる境界、未成年の135万円特例、扶養の付け方で判定が変わるケースにも対応。無料・登録不要。",
+    "replacement_ids": [
+      "s-355ae1701920f08aa84a-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-63395dee80401da0ac53-1",
+    "severity": "high",
+    "reason": "要約の155万円・105万円は本文 s-2b7001491f016b4f085d-1 と同じ境界で、他の所得が無い・控除が最低額の区分・東京23区、が落ちている。tokyo_kojin_ju.txt 415行・381行・501-503行。措置法41条の15の3の条名と1〜3級地の倍率、ツールが条文どおりに全ケースを計算する保証は正本に無い。読者が155万円・105万円を単身の年金上限として使うと、他所得がある場合の非課税該当を誤る。条名は外し、条件を本文と同じく限定する。",
+    "old_text": "世帯全員の年金収入・給与収入と年齢を入れるだけで、住民税非課税世帯にあたるかを自動判定。65歳以上は年金155万円まで、65歳未満は105万円まで（1級地・単身）という境界を、公的年金等控除（措置法41条の15の3の110万円）と均等割の非課税限度額から条文どおりに計算します。お住まいの級地（1〜3級地）、子のアルバイト代で世帯が課税になる境界、未成年の135万円特例、扶養の付け方で判定が変わるケースにも対応。無料・登録不要。",
+    "replacement_ids": [
+      "s-58f33429ee5adc9ba02a-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-2b7001491f016b4f085d-1",
+    "severity": "high",
+    "reason": "155万円・105万円は、東京23区・扶養なし・公的年金等以外の所得が無く、控除が最低額の区分（65歳以上は収入330万円未満かつ他の所得1000万円以下で110万円、65歳未満は収入130万円未満で60万円。tokyo_kojin_ju.txt 374-416行、501-503行）のときの境界。文は1級地・単身としか限っていない。年金以外に所得がある単身（例: 65歳以上で年金150万円＝所得40万円に事業所得10万円で合計50万円）は45万円を超え課税になる。障害者・寡婦・ひとり親・未成年は合計所得135万円以下なら非課税で境界も変わる（491行）。155万円まで非課税、と動くと該当を誤る。",
+    "old_text": "65歳以上は年金155万円まで、65歳未満は105万円まで（1級地・単身）という境界を、公的年金等控除と均等割の非課税限度額から条文どおりに計算します。",
+    "replacement_ids": [
+      "s-ce67c450f366e4ad1a83-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-9347dcb4f79bfddba977-1",
+    "severity": "high",
+    "reason": "『高額療養費の区分』が一律に世帯全員の均等割非課税という定義を用いるとの説明は誤り。少なくとも協会けんぽの70歳未満の低所得者区分は、被保険者本人が市区町村民税非課税である場合等を対象とする（全国健康保険協会『高額な医療費を支払ったとき（高額療養費）』https://www.kyoukaikenpo.or.jp/g3/sb3030/r150/）。制度ごとに判定対象が異なる。",
+    "old_text": "「住民税非課税世帯」とは、世帯全員が住民税の均等割を課されない世帯のことです\n    給付金・高額療養費の区分・保育料の減免などが使っているのはこの定義で、所得割だけが非課税でも該当しません。世帯のうち1人でも均等割を課される人がいれば、その世帯は非課税世帯ではありません。判定は前年の合計所得金額で行います。",
+    "replacement_ids": [
+      "s-8dd3ea62329d661a7fd7-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-0838fa3e2a69b6812a0e-1",
+    "severity": "high",
+    "reason": "入力ラベルは「12月31日時点」だけで、前年が無い。公的年金の年齢は tokyo_kojin_ju.txt 445行、控除対象の年齢判定は egov_chihozei_314_2.txt 1010行で、いずれも前年の12月31日。当年の12月31日の年齢を入れると、その年に65歳・70歳・16歳になる人の控除額と非課税該当が変わる。6人分の同じラベルをそろえる。",
+    "old_text": "年齢（12月31日時点）",
+    "replacement_ids": [
+      "s-e415436b11670c71a3ae-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-0838fa3e2a69b6812a0e-2",
+    "severity": "high",
+    "reason": "入力ラベルは「12月31日時点」だけで、前年が無い。公的年金の年齢は tokyo_kojin_ju.txt 445行、控除対象の年齢判定は egov_chihozei_314_2.txt 1010行で、いずれも前年の12月31日。当年の12月31日の年齢を入れると、その年に65歳・70歳・16歳になる人の控除額と非課税該当が変わる。6人分の同じラベルをそろえる。",
+    "old_text": "年齢（12月31日時点）",
+    "replacement_ids": [
+      "s-e415436b11670c71a3ae-2"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-0838fa3e2a69b6812a0e-3",
+    "severity": "high",
+    "reason": "入力ラベルは「12月31日時点」だけで、前年が無い。公的年金の年齢は tokyo_kojin_ju.txt 445行、控除対象の年齢判定は egov_chihozei_314_2.txt 1010行で、いずれも前年の12月31日。当年の12月31日の年齢を入れると、その年に65歳・70歳・16歳になる人の控除額と非課税該当が変わる。6人分の同じラベルをそろえる。",
+    "old_text": "年齢（12月31日時点）",
+    "replacement_ids": [
+      "s-e415436b11670c71a3ae-3"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-0838fa3e2a69b6812a0e-4",
+    "severity": "high",
+    "reason": "入力ラベルは「12月31日時点」だけで、前年が無い。公的年金の年齢は tokyo_kojin_ju.txt 445行、控除対象の年齢判定は egov_chihozei_314_2.txt 1010行で、いずれも前年の12月31日。当年の12月31日の年齢を入れると、その年に65歳・70歳・16歳になる人の控除額と非課税該当が変わる。6人分の同じラベルをそろえる。",
+    "old_text": "年齢（12月31日時点）",
+    "replacement_ids": [
+      "s-e415436b11670c71a3ae-4"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-0838fa3e2a69b6812a0e-5",
+    "severity": "high",
+    "reason": "入力ラベルは「12月31日時点」だけで、前年が無い。公的年金の年齢は tokyo_kojin_ju.txt 445行、控除対象の年齢判定は egov_chihozei_314_2.txt 1010行で、いずれも前年の12月31日。当年の12月31日の年齢を入れると、その年に65歳・70歳・16歳になる人の控除額と非課税該当が変わる。6人分の同じラベルをそろえる。",
+    "old_text": "年齢（12月31日時点）",
+    "replacement_ids": [
+      "s-e415436b11670c71a3ae-5"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-0838fa3e2a69b6812a0e-6",
+    "severity": "high",
+    "reason": "入力ラベルは「12月31日時点」だけで、前年が無い。公的年金の年齢は tokyo_kojin_ju.txt 445行、控除対象の年齢判定は egov_chihozei_314_2.txt 1010行で、いずれも前年の12月31日。当年の12月31日の年齢を入れると、その年に65歳・70歳・16歳になる人の控除額と非課税該当が変わる。6人分の同じラベルをそろえる。",
+    "old_text": "年齢（12月31日時点）",
+    "replacement_ids": [
+      "s-e415436b11670c71a3ae-6"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-60931fb82b11c337bfca-1",
+    "severity": "medium",
+    "reason": "人数式の136万円（35万円×3＋31万円）・45万円・101万円（35万円×2＋31万円）は、東京23区で妻を同一生計配偶者に数えないときの tokyo_kojin_ju.txt 493-503行と一致する。「妻は課税」「世帯は非課税世帯にならない」は、妻が障害者・寡婦・ひとり親・未成年で合計所得135万円以下なら扶養なしでも非課税（491行）という条件が無い。所得60万円の妻がその特例なら、子を夫にまとめても妻は非課税になり得る。多数の世帯には当てはまるので medium。",
+    "old_text": "1級地で、夫の合計所得100万円・妻60万円・子2人の場合 —\n子2人を夫にまとめると夫の限度額は136万円になりますが、妻は扶養なしで限度額45万円のため課税になり、世帯は非課税世帯になりません。\n子を1人ずつ分けると、夫も妻も限度額101万円になって2人とも非課税＝世帯非課税になります。",
+    "replacement_ids": [
+      "s-5ab2aac40691b9d1d546-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-5ce5fad0b098c851100a-1",
+    "severity": "medium",
+    "reason": "均等割と所得割で非課税ラインが違い、その間は所得割が無く均等割が残る、という構造は tokyo_kojin_ju.txt 493-518行（扶養ありは＋31万円と＋42万円、差11万円）と一致する。加算額を21万円と32万円とするのは、31万円・42万円から10万円を除いた内訳で、正本はその数を書かない。21万円・32万円を加算額そのものに使うと限度額が10万円ずれる。帯があること自体は残して、額は31万円と42万円（東京23区）に合わせる。medium。",
+    "old_text": "加算額が21万円と32万円で違うため、「所得割は非課税だが均等割は課税される」帯が生まれます。この帯にいる人は住民税を均等割の分（＋森林環境税1,000円）だけ払うことになり、住民税非課税世帯には該当しません。「住民税がほとんどかかっていないから非課税世帯だろう」という感覚は、この帯でずれます。",
+    "replacement_ids": [
+      "s-f050fedddfed2a581025-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-a6d5a0e1eda2f56cb926-1",
+    "severity": "medium",
+    "reason": "扶養なし45万円は tokyo_kojin_ju.txt 501-503行の東京23区と一致し、35万円は493-500行の人数に掛ける係数。「1級地・扶養なし＝35万円＋10万円」は、10万円の分離も1級地全体も正本に無い。505行は23区外では均等割の非課税となる合計所得が異なり得る。23区の読者の45万円は合っている。23区以外の1級地に45万円を当てると境界が変わり得るので medium。",
+    "old_text": "均等割の非課税限度額（1級地・扶養なし）＝ 35万円 ＋ 10万円 ＝ 45万円",
+    "replacement_ids": [
+      "s-7ff429ae8130321858fb-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-4f9c1a6d0280a4212e91-1",
+    "severity": "high",
+    "reason": "図は「その年12月31日」とする。公的年金の年齢は tokyo_kojin_ju.txt 445行「前年の12月31日現在」。扶養・老人の判定も egov_chihozei_314_2.txt 1010行が前年12月31日。課税年度の12月31日と読むと、その年に65歳になる人の控除（110万円か60万円）と非課税境界が反転する。措法41条の15の3第4項への帰属はこの正本に無い。年は「前年」と書く。",
+    "old_text": "65歳以上かどうかは「その年12月31日」の年齢で判定する（措法41条の15の3第4項）",
+    "replacement_ids": [
+      "s-72ac18f31e2d794f9d2a-1",
+      "s-14ef68c4a11dd635bbd1-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-3ee7259bcd9a5f62760d-1",
+    "severity": "medium",
+    "reason": "年齢は誕生日の月ではなく前年12月31日（tokyo_kojin_ju.txt 445行）。その部分は合っている。年金155万円で64歳と65歳が必ず課税と非課税に分かれる、は過大。65歳未満の155万円は所得95万円（控除60万円、381行）。障害者・寡婦・ひとり親・未成年は135万円以下なら非課税（491行）で、64歳でも65歳でも非課税のまま反転しない。単身・扶養なし・特例なしでは反転する。その条件を書く。medium。",
+    "old_text": "誕生日を迎えた月からではない。1歳ずれると、年金155万円の人の答えが「非課税」と「課税」で反転する",
+    "replacement_ids": [
+      "s-72ac18f31e2d794f9d2a-1",
+      "s-14ef68c4a11dd635bbd1-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-0d78880fb05c6846a83d-1",
+    "severity": "high",
+    "reason": "セルの21万円を加算額として使うと、東京23区の扶養ありの加算と一致しない。均等割は扶養ありで35万円×人数＋31万円（tokyo_kojin_ju.txt 493-500行）。31万円は10万円＋21万円とは書かれていない。35万円×2＋21万円＝91万円になり、正本の扶養1人101万円より10万円低い。非課税の該当が変わる。21万円を残すなら、同じ箇所に10万円を足して31万円になる内訳だと書く。単独の加算額にしない。",
+    "old_text": "21万円",
+    "replacement_ids": [
+      "s-a323900f173e9baf404d-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-ef2cf9e634c473e5fe3b-1",
+    "severity": "medium",
+    "reason": "『参酌基準』との説明は法令の向きを弱めており誤り。地方税法295条3項は、市町村が『政令で定める基準に従い当該市町村の条例で定める』金額以下の者を非課税とする規定で、単なる参酌ではなく『従う』基準である（地方税法・昭和25年法律第226号第295条第3項、e-Gov https://laws.e-gov.go.jp/law/325AC0000000226 ）。最終額を条例に置く点自体は正しい。",
+    "old_text": "政令の額はあくまで参酌基準で、最終的に決めるのは各市区町村の条例です。",
+    "replacement_ids": [
+      "s-c952ce9d34901529c380-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-b64160d9de460872fa80-1",
+    "severity": "high",
+    "reason": "「合計所得45万円＝給与収入110万円」は、給与所得控除の最低額が65万円のとき（tokyo_kojin_ju.txt 347行、190万円以下）の扶養なし・東京23区の話。357行は令和9年度から最低保障額を74万円とする。その年分は45万+74万＝給与収入119万円が境界で、115万円は合計所得41万円となり45万円以下。年分の無い110万円で令和9年度を課税と判定する。1級地一般でもなく、505行は23区外は異なり得る。",
+    "old_text": "1級地なら子ども自身の限度額も合計所得45万円＝給与収入110万円です。",
+    "replacement_ids": [
+      "s-ce0f45b9f26258a97c9c-1",
+      "s-d9e07e1af2121835eb4d-1",
+      "s-d81a29f5619c3c22fc1d-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-917ff15a84e4c4a95261-1",
+    "severity": "high",
+    "reason": "給与収入115万円の19歳を課税とする例に年分が無い。現行の最低控除65万円なら所得50万円で、東京23区の扶養なし45万円を超え課税（tokyo_kojin_ju.txt 347行・501-503行）。令和9年度は最低控除74万円（357行）で所得41万円、45万円以下となり非課税。年を書かないと令和9年度の該当が反転する。135万円以下の非課税が障害者・未成年者・寡婦・ひとり親に適用されること自体は491行と一致する。18歳未満を未成年とすることの定義はこの正本に無い。年齢の線は外すか、定義の資料を付けて年分を限定する。",
+    "old_text": "ただし18歳未満の未成年者は、合計所得135万円以下なら非課税です（地方税法295条1項2号）。この規定は人数による限度額の計算より先に効くので、同じ収入でも年齢によって結果が反転します。たとえば給与収入115万円の子は、19歳なら課税・17歳なら非課税です。障害者・寡婦・ひとり親にあたる人も同じ135万円の基準が使えます。",
+    "replacement_ids": [
+      "s-ce0f45b9f26258a97c9c-1",
+      "s-d9e07e1af2121835eb4d-1",
+      "s-d81a29f5619c3c22fc1d-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-6338712846e33df4af18-1",
+    "severity": "high",
+    "reason": "16歳未満を扶養親族の数に含める点は tokyo_kojin_ju.txt 504行と一致する。「数え落とすと限度額を35万円過小」は、扶養がいない人に最初の1人を足すときに外れる。扶養なしは45万円（501-503行）、扶養1人は35万円×2＋31万円＝101万円（493-500行）。差は56万円。35万円で計算すると非課税の該当を誤る。2人目以降の増分だけが35万円。「所得控除には1円も効きません」は、16歳未満でも障害者なら障害者控除（egov_chihozei_314_2.txt 501-504行）が付くので過大。平成24年の廃止時期はこの正本に無い。",
+    "old_text": "16歳未満の子どもも人数に入ります。年少扶養控除は平成24年に廃止されたので所得控除には1円も効きませんが、非課税限度額の「扶養親族の数」には入ります（地方税法施行令47条の3第1号が「年齢十六歳未満の者及び…控除対象扶養親族に限る」と明記）。小さな子どもを数え落とすと、1級地なら限度額を35万円過小に出します。",
+    "replacement_ids": [
+      "s-f087ea9b1c21049f6553-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-afa63d605f424437f509-1",
+    "severity": "high",
+    "reason": "FAQの答え「1級地の単身なら65歳以上155万円、65歳未満105万円」。tokyo_kojin_ju.txt の45万円以下は東京23区内・扶養なし（501-503行）で、23区外は異なり得る（505行）。155万・105万は年金以外の所得が無く、控除が最低額（415行の110万円、381行の60万円）のときだけ。他所得がある単身や、135万円以下の非課税特例（491行）ではこの額で該当が変わる。",
+    "old_text": "A. 1級地に住む単身の人なら、65歳以上は年金収入155万円まで、65歳未満は105万円までです。",
+    "replacement_ids": [
+      "s-46b3c9786a6101f91de5-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-6f61a344128b66623bd7-1",
+    "severity": "high",
+    "reason": "FAQ「その年の12月31日」。tokyo_kojin_ju.txt 445行は前年の12月31日、egov_chihozei_314_2.txt 1010行も前年12月31日。「その年」を住民税の年度と読むと、65歳到達年の控除額と非課税該当が変わる。protected の要約でも非主張にはしない。",
+    "old_text": "65歳以上かどうかはその年の12月31日の年齢で判定します。",
+    "replacement_ids": [
+      "s-f6ac1cff398a36ba859d-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-0814ab0752326574002e-1",
+    "severity": "high",
+    "reason": "「1級地なら給与収入110万円まで」に年分と扶養なしが無い。110万円は東京23区・扶養なし・給与所得控除最低65万円（tokyo_kojin_ju.txt 347行・501-503行）の現在の表。令和9年度は357行の74万円で119万円。年を書かないと令和9年度の給与収入115万円前後を課税と誤る。23区外は505行で異なり得る。",
+    "old_text": "A. 1級地なら給与収入110万円までです。",
+    "replacement_ids": [
+      "s-de38ae138d0ca917824e-1",
+      "s-2eb83c5086d4e59780de-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-d25e6dcd722e23c68b11-1",
+    "severity": "high",
+    "reason": "45万円＋65万円＝110万円は、扶養なし・控除最低65万円のときの給与収入（tokyo_kojin_ju.txt 347行・501-503行）。35万円＋10万円＝45万円という分離は正本に無く、正本は扶養なし45万円、扶養ありは35万円×人数＋31万円。令和9年度は最低控除74万円で境界119万円（357行）。110万円を年の無い境界として書くと適用年分を誤る。",
+    "old_text": "均等割の非課税限度額が合計所得45万円（35万円＋10万円）で、給与所得控除の最低保障額が65万円なので、45万円＋65万円＝110万円が境界になります。",
+    "replacement_ids": [
+      "s-de38ae138d0ca917824e-1",
+      "s-2eb83c5086d4e59780de-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-549a5158979a9f876b94-1",
+    "severity": "high",
+    "reason": "子の限度を「合計所得45万円（給与収入110万円）」とするのは、控除最低65万円・扶養なし・東京23区の現在表（tokyo_kojin_ju.txt 347行・501-503行）。令和9年度は74万円で給与収入119万円（357行）。年分が無い。",
+    "old_text": "1級地なら子ども自身の限度額は合計所得45万円（給与収入110万円）です。",
+    "replacement_ids": [
+      "s-101991fea4b7ac5925f3-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-6a66d4b3c2201a4aa76d-1",
+    "severity": "high",
+    "reason": "「19歳の給与収入115万円は課税、17歳は非課税」は s-917ff15a84e4c4a95261-1 と同じ。令和9年度の給与所得控除最低74万円（tokyo_kojin_ju.txt 357行）では115万円の所得は41万円で、23区の扶養なし45万円以下。19歳を課税と言い切ると適用年分を誤る。17歳の非課税は135万円特例（491行）に依存し、未成年の年齢定義は正本に無い。",
+    "old_text": "19歳の子の給与収入115万円は課税、17歳なら非課税です。",
+    "replacement_ids": [
+      "s-b4d54b8b35cdfa8f4502-1",
+      "s-60581a866410af82e3df-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-7fd4cd0b6eff5626adb1-1",
+    "severity": "medium",
+    "reason": "『参酌基準』との説明は法令の向きを弱めており誤り。地方税法295条3項は、市町村が『政令で定める基準に従い当該市町村の条例で定める』金額以下の者を非課税とする規定で、単なる参酌ではなく『従う』基準である（地方税法・昭和25年法律第226号第295条第3項、e-Gov https://laws.e-gov.go.jp/law/325AC0000000226 ）。最終額を条例に置く点自体は正しい。",
+    "old_text": "政令の額はあくまで参酌基準で、最終的には各市区町村の条例が定めるため、境界に近い場合はお住まいの市区町村の住民税担当窓口でご確認ください。",
+    "replacement_ids": [
+      "s-cf681990858eda21306c-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-f45c6b57650118b5e6d6-1",
+    "severity": "medium",
+    "reason": "人数式の136万円（35万円×3＋31万円）・45万円・101万円（35万円×2＋31万円）は、東京23区で妻を同一生計配偶者に数えないときの tokyo_kojin_ju.txt 493-503行と一致する。「妻は課税」「世帯は非課税世帯にならない」は、妻が障害者・寡婦・ひとり親・未成年で合計所得135万円以下なら扶養なしでも非課税（491行）という条件が無い。所得60万円の妻がその特例なら、子を夫にまとめても妻は非課税になり得る。多数の世帯には当てはまるので medium。",
+    "old_text": "たとえば1級地で夫の合計所得100万円・妻60万円・子2人なら、子2人を夫にまとめると妻が課税になりますが、1人ずつ分ければ2人とも非課税になります。",
+    "replacement_ids": [
+      "s-c99324a1ba1090ed4187-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/hikazei-setai/index.html",
+    "old_id": "s-7e7fddd2c5609660465d-1",
+    "severity": "high",
+    "reason": "出典行は「年齢は12月31日で判定」とし、前年が落ちている。正本の年齢時点は tokyo_kojin_ju.txt 445行と egov_chihozei_314_2.txt 1010行の前年12月31日。措法41条の15の3と41条の3の11の本文はこの正本に無い。12月31日だけを残すと年度の取り違えになる。",
+    "old_text": "租税特別措置法41条の15の3 — 65歳以上の最低控除額を110万円に読み替える特例（4項＝年齢は12月31日で判定）／同41条の3の11第2項 — 給与所得と公的年金等雑所得の双方がある場合の所得金額調整控除",
+    "replacement_ids": [
+      "s-8b2ba3ddc6e5904ba328-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-4d64cae90d87cc14fa8b-1",
+    "severity": "high",
+    "reason": "「なし（共働き・配偶者なし）」は、共働きなら配偶者控除が無い、と読める。egov_chihozei_314_2.txt 551-564行の配偶者控除は、本人の合計所得（900万円以下で33万円、900万超950万以下で22万円、950万超1000万以下で11万円。70歳以上の配偶者は38万・26万・13万円）と、配偶者側の所得で決まる。配偶者が給与を得ていても控除対象の所得に収まる。この選択肢に従うと控除が落ち、住民税を過大にする。embed と本体の両方。",
+    "old_text": "なし（共働き・配偶者なし） [value=none;default=true]",
+    "replacement_ids": [
+      "s-abcef219595f8d814c3f-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-3085ad120e3761cd16e4-1",
+    "severity": "medium",
+    "reason": "16歳未満が扶養控除の対象外であること（egov_chihozei_314_2.txt 682-685行）と、非課税の人数に入ること（tokyo_kojin_ju.txt 504行）は確認できる。「平成24年に廃止」の年度はこの正本に無く、単位全体は ok にできない。読者が今の計算で従う部分（扶養控除は無く、人数には入る）は正本と一致し、年度の誤りは現在の税額計算を直ちには変えない。沿革を消すか、改正法を示してから書く。sol の high は medium に付け直した。ok にはしていない。",
+    "old_text": "16歳未満の子は扶養控除が1円もつきません（平成24年に廃止）。それでも入力してください — 非課税限度額の「扶養親族の数」には入るので、所得が低い人は子どもの有無だけで住民税が変わります（地方税法施行令47条の3）。",
+    "replacement_ids": [
+      "s-37fdaf6b4c2a73565fcd-1",
+      "s-0bb78f2f2bb4b935f3e1-1",
+      "s-64edc79e7c5946af4bf0-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-956b71616834a1efed44-1",
+    "severity": "medium",
+    "reason": "居住者の一般扶養の年齢（16歳以上19歳未満と23歳以上70歳未満）は、控除対象が16歳以上（egov_chihozei_314_2.txt 682-685行）、特定が19歳以上23歳未満、老人が70歳以上（675行）の残余と一致する。非居住者は、30歳以上70歳未満だと留学・障害者・生活費または教育費の支払い38万円以上のいずれかに限られる（690-714行）。ラベルにその条件が無く、該当しない非居住者を一般扶養に数えると控除対象を誤る。居住者が多数なので medium。",
+    "old_text": "扶養親族（一般・16〜18歳／23〜69歳）",
+    "replacement_ids": [
+      "s-37fdaf6b4c2a73565fcd-1",
+      "s-0bb78f2f2bb4b935f3e1-1",
+      "s-64edc79e7c5946af4bf0-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-d382689283592365e758-1",
+    "severity": "medium",
+    "reason": "通常の老人扶養（38万円）は、同居でも直系尊属でなければ該当する（egov_chihozei_314_2.txt 675行・823行）。「70歳以上・同居以外」と書くと、同居する70歳以上の兄姉等の入力先を誤り、同居老親等の45万円に入れうる。medium。",
+    "old_text": "老人扶養（70歳以上・同居以外）",
+    "replacement_ids": [
+      "s-0bc436b81a5a7dba5474-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-230237a89c587d524f33-1",
+    "severity": "medium",
+    "reason": "同居老親等の45万円は、老人扶養親族が本人または配偶者の直系尊属であり、かつ同居を常況とするとき（egov_chihozei_314_2.txt 823行）。括弧は「70歳以上・同居」だけで、直系尊属が無い。同居の70歳以上の兄姉等を選ぶと45万円を適用しうる。embed は sol が ok、本体は wrong。同じ文言なので両方とも未解決。親と同居する多数には当てはまるので medium。",
+    "old_text": "同居老親等（70歳以上・同居）",
+    "replacement_ids": [
+      "s-7287f64037ead844e6c6-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-8d9626535e9ea602d5b4-1",
+    "severity": "medium",
+    "reason": "ひとり親控除30万円は egov_chihozei_314_2.txt 529-532行で、性別の区別は無い。調整控除の人的控除差は、314条の6の47-58行が「寡婦又はひとり親で政令で定めるもの」1万円と「ひとり親で政令で定めるもの」5万円に分けている。母5万円・父1万円とは書いていない。父を1万円で計算すると、政令が5万円とする場合に調整控除（差の5%。所得割）が約2,000円ずれる。政令が要る。",
+    "old_text": "あなたは\n        \n          \n          \n        \n        です（控除額30万円は同じですが、調整控除の「人的控除差」が母5万円・父1万円と法定されており、所得割がわずかに変わります）",
+    "replacement_ids": [
+      "s-af302990638f4d5dc933-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-d89dde917343f4f64067-1",
+    "severity": "high",
+    "reason": "標準税率10%（道府県民税4%・市町村民税6%、指定都市は2%・8%）、均等割の標準4,000円（1,000円＋3,000円）、令和6年度からの森林環境税1,000円は soumu_kojin_juminzei.txt 102-106行と一致する。所得割の式が「（年収−給与所得控除−社会保険料−扶養控除など）×10%−調整控除」で、基礎控除が列挙から落ちている。113-114行は、所得金額から基礎控除や扶養控除等を引いた課税所得に10%を掛ける。基礎控除は合計所得2,400万円以下で43万円（egov_chihozei_314_2.txt 784-787行。tokyo_kojin_ju.txt 528行は2,400万円超で逓減）。給与所得者の大多数で課税所得を43万円過大にし、所得割を4万3千円過大にする。基礎控除を式に戻す。",
+    "old_text": "住民税 ＝ 所得割（所得に比例）＋ 均等割（定額）＋ 森林環境税（定額・国税）\n    所得割は「（年収 − 給与所得控除 − 社会保険料 − 扶養控除など）× 10％ − 調整控除」で計算します（標準税率は市町村民税6％・道府県民税4％。政令指定都市は8％・2％ですが合計は同じ10％です）。均等割は所得に関係なくかかる定額で、標準税率なら市町村民税3,000円＋道府県民税1,000円です。ここに国税の森林環境税1,000円が上乗せされ、合計5,000円が住民税と一緒に徴収されます。",
+    "replacement_ids": [
+      "s-6986a41a69e400ccaefa-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-e12592cc0b0b11440855-1",
+    "severity": "medium",
+    "reason": "16歳未満は控除対象扶養親族に含まれず、扶養控除は付かない（egov_chihozei_314_2.txt 675行・682-685行）。「所得控除は1円もつきません」は、16歳未満でも障害者である扶養親族なら障害者控除26万円（特別障害者は30万円。501-504行）が付く点を落とす。障害のある子の親が控除ゼロで計算すると所得割を過大にする。対象は特定できる少数なので medium。平成24年の廃止時期は正本に無い。",
+    "old_text": "16歳未満の子の扶養控除は平成24年に廃止されたので、所得控除は1円もつきません。",
+    "replacement_ids": [
+      "s-05811e3cef6f53e9dcdf-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-0d78880fb05c6846a83d-1",
+    "severity": "high",
+    "reason": "セルの21万円を加算額として使うと、東京23区の扶養ありの加算と一致しない。均等割は扶養ありで35万円×人数＋31万円（tokyo_kojin_ju.txt 493-500行）。31万円は10万円＋21万円とは書かれていない。35万円×2＋21万円＝91万円になり、正本の扶養1人101万円より10万円低い。非課税の該当が変わる。21万円を残すなら、同じ箇所に10万円を足して31万円になる内訳だと書く。単独の加算額にしない。",
+    "old_text": "21万円",
+    "replacement_ids": [
+      "s-a323900f173e9baf404d-1",
+      "s-f2a90c832a519fac64b0-1",
+      "s-4a5375f9add8cf9ec609-1",
+      "s-4a073725a1cdf716870a-1",
+      "s-8e194093328b1950bc7b-1",
+      "s-09c51f4d5daa28aa5bc2-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-97a70ee2a05979f4d60c-1",
+    "severity": "high",
+    "reason": "所得割の扶養あり加算は35万円×人数＋42万円（tokyo_kojin_ju.txt 508-514行）。表は扶養家族がいる場合の加算額を32万円とする。35万円×2＋32万円＝102万円で、正本の扶養1人112万円より10万円低い。32万円は42万円から10万円を除いた内訳にすぎず、正本はその分離を書いていない。加算額そのものとして置くと所得割の非課税ラインを誤る。sol は low。金額の境界なので high。",
+    "old_text": "32万円",
+    "replacement_ids": [
+      "s-a323900f173e9baf404d-1",
+      "s-f2a90c832a519fac64b0-1",
+      "s-4a5375f9add8cf9ec609-1",
+      "s-4a073725a1cdf716870a-1",
+      "s-8e194093328b1950bc7b-1",
+      "s-09c51f4d5daa28aa5bc2-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-5e380476e160d5e96256-1",
+    "severity": "medium",
+    "reason": "s-5ce5fad0b098c851100a-1 と同じ。21万円と32万円の差で帯ができる、は差の11万円だけ見れば＋31万円と＋42万円（tokyo_kojin_ju.txt 493-514行）と一致する。額自体は正本の加算額ではない。31万円・42万円と書くか、10万円を同じ式に戻す。medium。",
+    "old_text": "加算額が21万円と32万円で違うので、そのあいだに「所得割はかからないが、均等割はかかる」帯ができます。",
+    "replacement_ids": [
+      "s-a323900f173e9baf404d-1",
+      "s-f2a90c832a519fac64b0-1",
+      "s-4a5375f9add8cf9ec609-1",
+      "s-4a073725a1cdf716870a-1",
+      "s-8e194093328b1950bc7b-1",
+      "s-09c51f4d5daa28aa5bc2-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-1a34e0d9d1e06d14f612-1",
+    "severity": "high",
+    "reason": "扶養1人の101万円と112万円の算術自体は、東京23区の35万円×2＋31万円と＋42万円（tokyo_kojin_ju.txt 493-514行）と一致する。所得割の判定は合計所得金額ではなく総所得金額等（507行）。合計所得で帯を切ると、退職所得や分離課税がある人の該当を誤る。障害者・未成年者・寡婦・ひとり親は合計所得135万円以下なら所得割も均等割も非課税（491行）で、この帯でも5,000円にはならない。5,000円は標準の均等割4,000円＋森林環境税1,000円（soumu_kojin_juminzei.txt 103-106行）。107行は自治体が税率を決められる。「5,000円だけ」は金額と該当の両方を誤らせる。",
+    "old_text": "たとえば1級地に住む扶養1人の人なら、均等割の基準は101万円・所得割の基準は112万円なので、合計所得101万円超〜112万円以下の人は、住民税が均等割（＋森林環境税）の5,000円だけになります。",
+    "replacement_ids": [
+      "s-a323900f173e9baf404d-1",
+      "s-f2a90c832a519fac64b0-1",
+      "s-4a5375f9add8cf9ec609-1",
+      "s-4a073725a1cdf716870a-1",
+      "s-8e194093328b1950bc7b-1",
+      "s-09c51f4d5daa28aa5bc2-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-2c5eb58228da363be5cf-1",
+    "severity": "high",
+    "reason": "「配当所得がある人は分離課税なので別計算」は一律として誤り。tokyo_kojin_ju.txt 339-342行: 非上場株式の配当と大口株主（3%以上）の配当等は総合課税。上場株式等の配当は申告不要が原則で、総合課税の選択も分離課税の申告もできる。分離課税と決め打ちすると、総合課税にしなければならない配当の申告要否を誤る。住宅ローン控除の住民税への残りは、所得税で引ききれない額など条件がある（637-647行）。「そのぶん所得割が減る」だけでは足りない。年末調整の有無による計算機のずれは正本に無い。",
+    "old_text": "この計算機で正しく出ない人\n    住宅ローン控除・寄附金税額控除（ふるさと納税）を受ける人（そのぶん所得割が減ります）、医療費控除・雑損控除がある人（「その他の所得控除」に入れてください）、退職金・株式の譲渡所得・配当所得がある人（分離課税なので別計算です）、年の途中で退職して年末調整を受けていない人は、結果とずれます。また、均等割の非課税限度額は最終的に各自治体の条例で決まるため（政令の額は「参酌基準」です）、境界に近い方はお住まいの市区町村にご確認ください。",
+    "replacement_ids": [
+      "s-a323900f173e9baf404d-1",
+      "s-f2a90c832a519fac64b0-1",
+      "s-4a5375f9add8cf9ec609-1",
+      "s-4a073725a1cdf716870a-1",
+      "s-8e194093328b1950bc7b-1",
+      "s-09c51f4d5daa28aa5bc2-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  },
+  {
+    "page": "docs/juminzei/index.html",
+    "old_id": "s-007ffa1b423a5ee10bc7-1",
+    "severity": "medium",
+    "reason": "扶養なし45万円は tokyo_kojin_ju.txt 501-503行の東京23区。文は「1級地の通常の基準」とする。505行は23区外では異なり得る、と明記している。目安ではあるが、1級地一般の45万円は23区以外で境界を誤らせ得る。東京23区・扶養なし、と書く。medium。",
+    "old_text": "扶養なし・1級地の通常の基準では、合計所得金額45万円が非課税の目安です。",
+    "replacement_ids": [
+      "s-4a7f18839f7af1be5784-1"
+    ],
+    "status": "corrected",
+    "review": "self_checked; independent re-review pending"
+  }
+]

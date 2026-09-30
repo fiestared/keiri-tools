@@ -1,5 +1,5 @@
 // 2026-09-29 一次資料を再取得して審査。期待値は条文・公表表から独立に計算。
-import { juminzeiKisoKojo, kyuyoShotokuR8, calc } from "../../docs/assets/juminzei_core.js";
+import { juminzeiKisoKojo, kyuyoShotokuR8, calc, hikazeiHantei } from "../../docs/assets/juminzei_core.js";
 import { readFileSync } from "node:fs";
 const load = f => JSON.parse(readFileSync(new URL(`../../docs/assets/${f}`, import.meta.url)));
 const D = load("juminzei_r08.json");
@@ -60,4 +60,14 @@ for (const [salary, family, eligible, expected] of [
     expected,source:'https://www.tax.metro.tokyo.lg.jp/kazei/life/kojin_ju',
     quote:'（給与等の収入金額－850万円）×10％',
     note:'23歳未満扶養等。収入1000万円上限。1円未満切上げの補足資料は review-evidence/r15-t5-a/nta-1411.html。'});
+}
+
+// r16: 16歳未満の最初の扶養は45万円→101万円（差56万円）。
+for (const [n, limit] of [[0,450000],[1,1010000],[2,1360000]]) {
+ cases.push({name:`r16 年少扶養${n}人の均等割限度額`,run:()=>hikazeiHantei(0,0,{fuyoNensho:n},1,D).kintouLimit,expected:limit,
+ source:'https://www.tax.metro.tokyo.lg.jp/kazei/life/kojin_ju',quote:'扶養親族は、年齢16歳未満の者及び地方税法第314条の2第1項第11号に規定する控除対象扶養親族に限ります。'});
+}
+for (const [income, expected] of [[1009999,true],[1010000,true],[1010001,false]]) {
+ cases.push({name:`r16 扶養1人の均等割境界${income}`,run:()=>hikazeiHantei(income,income,{fuyoNensho:1},1,D).kintouwariHikazei,expected,
+ source:'https://www.tax.metro.tokyo.lg.jp/kazei/life/kojin_ju',quote:'（本人・同一生計配偶者・扶養親族の合計人数）'});
 }

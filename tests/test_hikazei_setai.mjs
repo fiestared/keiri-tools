@@ -361,5 +361,13 @@ for (const [zeisei, childIncome, expected] of [['r8',580001,true], ['r8',620000,
  assertR11.equal(r.rows[1].kintouLimit,1010000);
 }
 
+// r16: 正本上の年度差と公的年金以外の所得・障害者特例を検算。
+for (const [zeisei, salary, expected] of [[undefined,1100000,true],[undefined,1100001,false],['r8',1190000,true],['r8',1190001,false],[undefined,1150000,false],['r8',1150000,true]]) {
+ eq(calcHikazeiSetai({kyuchi:1,zeisei,members:[{age:30,kyuyoShunyu:salary}]},D,J).setaiHikazei,expected,`r16 年度・給与 ${zeisei}/${salary}`);
+}
+for (const [age, other, disabled, expected] of [[65,0,false,true],[65,1,false,false],[64,0,false,false],[64,0,true,true]]) {
+ eq(calcHikazeiSetai({kyuchi:1,members:[{age,nenkinShunyu:1550000,sonotaShotoku:other,shogaisha:disabled}]},D,J).setaiHikazei,expected,`r16 年金 ${age}/${other}/${disabled}`);
+}
+
 console.log(`\n${fail === 0 ? "✅" : "❌"} ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
