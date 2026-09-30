@@ -118,11 +118,12 @@ export function tableFor(shinryoYM, data) {
  */
 export function classify({ hikazei, standardMonthly }, table) {
   const kubun = table.kubun || [];
-  // 非課税の区分は標準報酬月額にかかわらず優先する（施行令42条1項4号「次号に掲げる者を除く」）。
+  // 非課税でもア・イ相当（標報53万円以上）は低所得区分から除外する（42条1項5号）。
   // ★この行は std_min/std_max を持たないので、下の区間検索からは必ず外す（外さないと全員に当たる）。
   const hikazeiRow = kubun.find((x) => x.hikazei === true) || null;
-  if (hikazei) return hikazeiRow;
-  if (!(standardMonthly > 0)) return null;   // 分からないものを黙って真ん中の区分に落とさない
+  if (!(standardMonthly > 0)) return null;
+  if (hikazei && standardMonthly < table.hikazei_excluded_from_std) return hikazeiRow;
+  // 分からないものを黙って真ん中の区分に落とさない
 
   // 10. 境界は表の側（std_min 以上・std_max 未満の半開区間）。関数に境界を書かない。
   const hit = kubun.filter(

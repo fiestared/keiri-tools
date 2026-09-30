@@ -52,11 +52,11 @@
 <body>
 <div class="w">
   <h1>傷病手当金 計算</h1>
-  <p class="lead">病気やケガで働けないときに健康保険から出る傷病手当金（日額・支給日数・支給期間・合計）を概算します。日額は標準報酬÷30×2／3、待期3日あり。</p>
+  <p class="lead">病気やケガで働けないときに健康保険から出る傷病手当金（日額・支給日数・支給期間・合計）を概算します。日額は支給開始月以前の直近継続12か月の標準報酬月額平均÷30を10円単位に四捨五入し、2／3を掛け1円単位に四捨五入（12か月未満は本人平均と保険者平均の低い方・待期3日）。</p>
 
-  <label for="startDate">初回の支給開始日（初めての申請では待期3日の翌日）</label>
+  <label for="startDate">初回の支給開始日（待期完成後、給与との調整も含め初めて支給対象となる日）</label>
   <input id="startDate" type="date" value="">
-  <div class="hint">この日は①支給期間（1年6か月）の起算日、②入社1年未満の方の上限額、の両方に効きます。</div>
+  <div class="hint">この日は支給期間（通算1年6か月）の起算日であり、現保険者等の標準報酬月額が定められた直近継続月数が12か月未満の場合は、上限の基礎額の適用時期にも関わります。</div>
 
   <label for="monthly">月給（額面・社会保険の報酬月額／円）</label>
   <input id="monthly" type="number" inputmode="numeric" value="300000" placeholder="例: 300000" min="0" step="1000">
@@ -80,7 +80,7 @@
 
   <label class="chk"><input id="taikiDone" type="checkbox"> <span>すでに<b>待期3日</b>が完成している（受給中で、続きの分を計算したい）</span></label>
   <label class="chk"><input id="ninnikeizoku" type="checkbox"> <span><b>任意継続被保険者</b>である（退職後に健康保険を任意継続している）</span></label>
-  <label class="chk"><input id="taishokugo" type="checkbox"> <span><b>退職する前から</b>傷病手当金を受けていた＝<b>資格喪失後の継続給付</b>（104条）</span></label>
+  <label class="chk"><input id="taishokugo" type="checkbox">資格喪失前日まで継続1年以上の被保険者期間（任意継続・共済組合・国保を除く）があり、その日に受給中又は受給可能で、資格喪失後も労務不能が続く＝継続給付（104条）<span></span></label>
 
   <details>
     <summary>給与・年金を受け取っている場合／標準報酬月額を月ごとに入れる／健保組合の方</summary>
@@ -89,7 +89,7 @@
     <div class="hint">給与が出ていても、日額が傷病手当金より少なければ差額が支給されます（108条1項ただし書）。</div>
     <div class="grid field-pair">
       <div>
-        <label for="shogaiNenkin">障害厚生年金＋障害基礎年金（年額）</label>
+        <label for="shogaiNenkin">同一傷病の障害厚生年金＋同一支給事由の障害基礎年金（年額）</label>
         <input id="shogaiNenkin" type="number" inputmode="numeric" value="0" min="0">
       </div>
       <div>
@@ -97,10 +97,10 @@
         <input id="roureiNenkin" type="number" inputmode="numeric" value="0" min="0">
       </div>
     </div>
-    <div class="hint">年金は年額÷360で日額にして比べます。老齢年金の調整は退職後の継続給付の人だけ（108条5項）。障害厚生年金は在職中でも調整されます（108条3項）。</div>
+    <div class="hint">年金は年額÷360で日額換算し、傷病手当金より少ない場合は差額を支給します（以上なら支給なし）。老齢年金は資格喪失後の継続給付の場合、障害厚生年金は同一傷病の場合に調整します（108条）。</div>
     <label for="standards">標準報酬月額を月ごとに（カンマ区切り・古い月→新しい月／円）</label>
     <input id="standards" type="text" placeholder="例: 160000,160000,180000,180000,180000,180000" inputmode="numeric">
-    <div class="hint">昇給・降給があった方は直近12か月を入れると正確です（入れた場合は上の月給より優先）。</div>
+    <div class="hint">支給開始日の属する月以前の直近継続12か月について、現保険者等が定めた標準報酬月額を入力してください（12か月未満はある月数分・上の月給より優先）。</div>
     <label for="heikinOverride">保険者の平均標準報酬月額（円）<span style="font-weight:400">　健保組合の方だけ</span></label>
     <input id="heikinOverride" type="number" inputmode="numeric" value="0" min="0">
     <div class="hint">既定は協会けんぽの額。健保組合の方は組合公表の平均額を入れてください（例: 関東ITソフトウェア健保は令和8年度の支給開始で44万円）。</div>

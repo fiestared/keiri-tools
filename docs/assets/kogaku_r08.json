@@ -24,12 +24,13 @@
       "applies_through": "2026-07",
       "label": "70歳未満の方の区分（～令和8年7月診療分）",
       "law": "健康保険法施行令 第42条第1項（e-Gov法令API v2 の生条文）",
+      "hikazei_excluded_from_std": 530000,
       "kubun": [
         { "key": "a", "label": "ア", "item": "第42条第1項第2号", "criteria": "療養のあった月の標準報酬月額が83万円以上", "std_min": 830000, "std_max": null,   "base": 252600, "threshold": 842000, "rate": 0.01, "tasukai": 140100 },
         { "key": "i", "label": "イ", "item": "第42条第1項第3号", "criteria": "療養のあった月の標準報酬月額が53万円以上83万円未満", "std_min": 530000, "std_max": 830000, "base": 167400, "threshold": 558000, "rate": 0.01, "tasukai": 93000 },
         { "key": "u", "label": "ウ", "item": "第42条第1項第1号", "criteria": "ア・イ・エ・オ以外（標準報酬月額28万円以上53万円未満）", "std_min": 280000, "std_max": 530000, "base": 80100, "threshold": 267000, "rate": 0.01, "tasukai": 44400 },
         { "key": "e", "label": "エ", "item": "第42条第1項第4号", "criteria": "療養のあった月の標準報酬月額が28万円未満", "std_min": 0, "std_max": 280000, "base": 57600, "threshold": null, "rate": 0, "tasukai": 44400 },
-        { "key": "o", "label": "オ", "item": "第42条第1項第5号", "criteria": "市町村民税非課税者（標準報酬月額にかかわらず、エより優先する）", "hikazei": true, "std_min": null, "std_max": null, "base": 35400, "threshold": null, "rate": 0, "tasukai": 24600 }
+        { "key": "o", "label": "オ", "item": "第42条第1項第5号", "criteria": "被保険者が市町村民税非課税（区分ア・イを除く）", "hikazei": true, "std_min": null, "std_max": null, "base": 35400, "threshold": null, "rate": 0, "tasukai": 24600 }
       ]
     },
     {
@@ -42,12 +43,13 @@
         "https://www.mhlw.go.jp/content/001726232.pdf （pdftotext -layout で生読み）",
         "https://www.kyoukaikenpo.or.jp/benefit/high_cost_medical_expenses/002 （curlで生HTML。旧額のほうは『～令和8年7月』と明示されている）"
       ],
+      "hikazei_excluded_from_std": 530000,
       "kubun": [
         { "key": "a", "label": "ア", "item": "厚労省・協会けんぽ公表表（標報83万円以上）", "criteria": "療養のあった月の標準報酬月額が83万円以上", "std_min": 830000, "std_max": null,   "base": 270300, "threshold": 901000, "rate": 0.01, "tasukai": 140100 },
         { "key": "i", "label": "イ", "item": "厚労省・協会けんぽ公表表（標報53万〜79万円）", "criteria": "療養のあった月の標準報酬月額が53万円以上83万円未満", "std_min": 530000, "std_max": 830000, "base": 179100, "threshold": 597000, "rate": 0.01, "tasukai": 93000 },
         { "key": "u", "label": "ウ", "item": "厚労省・協会けんぽ公表表（標報28万〜50万円）", "criteria": "ア・イ・エ・オ以外（標準報酬月額28万円以上53万円未満）", "std_min": 280000, "std_max": 530000, "base": 85800, "threshold": 286000, "rate": 0.01, "tasukai": 44400 },
         { "key": "e", "label": "エ", "item": "厚労省・協会けんぽ公表表（標報26万円以下）", "criteria": "療養のあった月の標準報酬月額が28万円未満", "std_min": 0, "std_max": 280000, "base": 61500, "threshold": null, "rate": 0, "tasukai": 44400 },
-        { "key": "o", "label": "オ", "item": "厚労省・協会けんぽ公表表（住民税非課税）", "criteria": "市町村民税非課税者（標準報酬月額にかかわらず、エより優先する）", "hikazei": true, "std_min": null, "std_max": null, "base": 36900, "threshold": null, "rate": 0, "tasukai": 24600 }
+        { "key": "o", "label": "オ", "item": "厚労省・協会けんぽ公表表（住民税非課税）", "criteria": "被保険者が市町村民税非課税（区分ア・イを除く）", "hikazei": true, "std_min": null, "std_max": null, "base": 36900, "threshold": null, "rate": 0, "tasukai": 24600 }
       ],
       "tasukai_note": "多数回該当の額（140,100 / 93,000 / 44,400 / 24,600）は据え置き＝旧表と同じ。厚労省が『多数回該当の金額を維持』と明記している。",
       "example_check": "区分ウ・医療費100万円の月: 85,800＋(1,000,000−286,000)×1％＝92,940円。厚労省の国民向け資料の『医療費100万円 → 自己負担は約9.3万円』と一致する（旧表なら87,430円＝約8.7万円）。"
@@ -65,6 +67,7 @@
         "https://www.mhlw.go.jp/content/001726232.pdf （pdftotext -layout で生読み。同PDF内の2つの表で相互検算）"
       ],
       "verify_note": "13区分すべてで base ÷ 0.3 ＝ threshold が成り立つことを確認した（342,000/0.3=1,140,000 … 85,800/0.3=286,000）。1%の起点は『限度額の基礎額を医療費の3割相当で割り戻した額』という設計なので、転記を1桁でも誤ると必ず崩れる＝読み取りの機械的な検算になっている。",
+      "hikazei_excluded_from_std": 530000,
       "kubun": [
         { "key": "s127", "label": "標報127万円以上", "item": "厚労省公表表（年収換算 約1,650万円～）", "criteria": "療養のあった月の標準報酬月額が127万円以上", "std_min": 1270000, "std_max": null,    "base": 342000, "threshold": 1140000, "rate": 0.01, "tasukai": 140100 },
         { "key": "s103", "label": "標報103万〜121万円", "item": "厚労省公表表（年収換算 約1,410万〜約1,650万円）", "criteria": "標準報酬月額が103万円以上127万円未満", "std_min": 1030000, "std_max": 1270000, "base": 303000, "threshold": 1010000, "rate": 0.01, "tasukai": 140100 },
@@ -78,7 +81,7 @@
         { "key": "s20",  "label": "標報20万〜26万円", "item": "厚労省公表表（年収換算 約260万〜約370万円）", "criteria": "標準報酬月額が20万円以上28万円未満", "std_min": 200000,  "std_max": 280000,  "base": 69600,  "threshold": null,    "rate": 0, "tasukai": 44400 },
         { "key": "s16",  "label": "標報16万〜19万円", "item": "厚労省公表表（年収換算 約200万〜約260万円）", "criteria": "標準報酬月額が16万円以上20万円未満", "std_min": 160000,  "std_max": 200000,  "base": 65400,  "threshold": null,    "rate": 0, "tasukai": 44400 },
         { "key": "s15",  "label": "標報15万円以下", "item": "厚労省公表表（年収換算 ～約200万円）", "criteria": "標準報酬月額が15万円以下", "std_min": 0,       "std_max": 160000,  "base": 61500,  "threshold": null,    "rate": 0, "tasukai": 34500 },
-        { "key": "hikazei", "label": "住民税非課税", "item": "厚労省公表表（住民税非課税）", "criteria": "市町村民税非課税者（標準報酬月額にかかわらず優先する）", "hikazei": true, "std_min": null, "std_max": null, "base": 36900, "threshold": null, "rate": 0, "tasukai": 24600 }
+        { "key": "hikazei", "label": "住民税非課税", "item": "厚労省公表表（住民税非課税）", "criteria": "被保険者が市町村民税非課税（標準報酬月額53万円以上を除く）", "hikazei": true, "std_min": null, "std_max": null, "base": 36900, "threshold": null, "rate": 0, "tasukai": 24600 }
       ],
       "tasukai_note": "多数回該当は 140,100 / 93,000 / 44,400 / 24,600 が据え置きで、標準報酬月額15万円以下に 34,500 が新設される。44,400 が及ぶのは標報44万〜50万から16万〜19万までの5区分（対照表で『約260万〜約370万円』『約200万〜約260万円』の行にも <44,400> が付いていることで確かめた。PDFの結合セルは縦中央に1回しか印字されないので、行数を数えないと下2区分を取りこぼす）。",
       "example_check": "標準報酬月額44万円・医療費100万円の月: 110,400＋(1,000,000−368,000)×1％＝116,720円。同じ人が令和9年7月診療分なら区分ウで 85,800＋(1,000,000−286,000)×1％＝92,940円なので、23,780円の増。旧5区分の境界（83万/53万/28万）を流用すると、この人を区分ウのまま 92,940円と答えてしまう。"
