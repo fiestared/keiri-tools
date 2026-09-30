@@ -176,12 +176,16 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type=
   .fee-pair:not(.fee-pair--short) { flex-direction: column; gap: 0; }
 }
 /* Subgrid shares the label row even when one label wraps to two lines. */
+/* ★label と入力欄の2行だけを揃え、その後ろ（注意書き・エラー文・2つ目の注意書き…）は
+   入力欄の下に順に積む（2026-09-30）。以前は .hint を全部 grid-row:3 に固定していたため、
+   注意書きが2つある欄（/shakai-hoken/ の年齢）で2つ目が**隣の列（入力欄の右）**に押し出された。
+   行間(row-gap)は0なので、使われない行は高さ0。1つの欄に置けるのは label・入力欄＋後続6個まで。 */
 @media (min-width: 601px) {
-  .fee-pair.field-pair, .fee-pair--short.field-pair { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; gap: 0 12px; }
-  .field-pair > div { display: grid; grid-template-rows: subgrid; grid-row: span 3; }
+  .fee-pair.field-pair, .fee-pair--short.field-pair { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); grid-template-rows: repeat(8, auto); gap: 0 12px; }
+  .field-pair > div { display: grid; grid-template-rows: subgrid; grid-row: span 8; grid-auto-flow: row; }
   .field-pair > div > label:first-of-type { grid-row: 1; align-self: end; }
-  .field-pair > div > :is(input,select,textarea) { grid-row: 2; align-self: start; }
-  .field-pair > div > .hint { grid-row: 3; }
+  .field-pair > div > :is(input,select,textarea):first-of-type { grid-row: 2; align-self: start; }
+  .field-pair > div > * { grid-column: 1; }
 }
 .fee-pair--short { display: flex; gap: 12px; }
 .fee-pair--short > div { flex: 1; min-width: 0; }
@@ -425,7 +429,11 @@ article blockquote p:last-child { margin-bottom: 0; }
    article table / .tbl の margin:16px が .scroll-wrap の内側でも効いてしまい、
    角丸の枠と表のあいだに上下17pxの帯ができて**枠が二重に見えていた**。
    外側の余白は枠が持ち、表の周囲の罫線は枠線と重ねない（重なると2px幅の線に見える）。 */
-.scroll-wrap { max-height: 640px; overflow: auto; border: 1px solid var(--line); border-radius: 8px; margin: 16px 0; }
+/* ★本文の表は縦に切らない（2026-09-30）。以前は max-height:640px を全表に当てており、
+   20ページ中11ページで表が縦に隠れ、/inshi/ の全20号表はスマホで 9,402px 中 638px しか見えなかった
+   （ページのスクロールの中に表のスクロールがある二重スクロール）。枠は横スクロールだけを受け持つ。
+   畳むのは、合図と「広げる」操作を持つ表（.table-cue ~ .scroll-wrap）だけ。 */
+.scroll-wrap { overflow-x: auto; overflow-y: hidden; border: 1px solid var(--line); border-radius: 8px; margin: 16px 0; }
 .scroll-wrap > table { margin: 0; }
 .scroll-wrap > table th:first-child,
 .scroll-wrap > table td:first-child { border-left: 0; }
@@ -437,6 +445,23 @@ article blockquote p:last-child { margin-bottom: 0; }
 .scroll-wrap > table tr:last-child td { border-bottom: 0; }
 /* .result table.res は後方でより強く margin-top:12px を当てているので、上書きする */
 .result .scroll-wrap > table.res { margin: 0; }
+/* ★横にはみ出した表・図には「続きがある」合図を出す（2026-09-30）。
+   以前は合図が何も無く、スマホで標準報酬月額表の金額が「3,3」で切れ、手取りの図は要点
+   「社会保険料44,070円・所得税6,320円」が画面の外にあった＝壊れた表・図に見えた。
+   実際にはみ出しているかは assets/empty-state.js が測って data-overflow-x を付ける
+   （幅の広い画面では付かない＝合図も出ない）。右端まで送ると data-scroll-end でぼかしを外す。 */
+:is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x]::before {
+  content: "→ 横にスクロールできます"; display: block; width: max-content; padding: 4px 10px; font-size: 12.5px; line-height: 1.5; color: var(--sub); text-align: left;
+}
+.figure.fig-wide[data-overflow-x]::before { padding-left: 0; }
+:is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x]:not([data-scroll-end]) {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), rgba(0,0,0,.25));
+  mask-image: linear-gradient(to right, #000 calc(100% - 36px), rgba(0,0,0,.25));
+}
+@media print {
+  :is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x]::before { content: none; }
+  :is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x] { -webkit-mask-image: none; mask-image: none; }
+}
 .data-table { font-size: 13px; }
 .data-table th { position: sticky; top: 0; background: var(--accent-soft); z-index: 1; font-size: 12.5px; padding: 7px 6px; }
 .data-table td { padding: 5px 6px; }
@@ -980,6 +1005,7 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
 /* 標準報酬月額表: 表が枠（640px）の中で続くことの合図と、全行を広げる操作。印刷では枠の高さで切らない */
 .table-cue { font-size: 14px; color: var(--sub); margin: 8px 0 0; line-height: 1.7; }
 .table-cue a[role=button] { display: block; width: max-content; max-width: 100%; margin-top: 2px; padding: 2px 0; font-weight: 700; }
+.table-cue ~ .scroll-wrap { max-height: 640px; overflow-y: auto; }
 .table-cue ~ .scroll-wrap.is-expanded { max-height: none; }
 @media print {
   .table-cue ~ .scroll-wrap { max-height: none !important; overflow: visible !important; }
@@ -987,7 +1013,7 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
 }
 
 /* column/furikomi-tesuryo-hikaku（2026-09-26 UI/UX） */
-.fee-scroll { max-width: 100%; overflow: auto; max-height: 640px; margin: 16px 0; border: 1px solid var(--line); border-radius: 8px; }
+.fee-scroll { max-width: 100%; overflow-x: auto; overflow-y: hidden; margin: 16px 0; border: 1px solid var(--line); border-radius: 8px; }
 .fee-scroll .fee-table { margin: 0; }
 .fee-scroll th { position: sticky; top: 0; background: var(--accent-soft); z-index: 1; }
 .fee-entry a { display: inline-block; padding: 8px 0; }
@@ -1088,7 +1114,10 @@ main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width
   main:has(.toc-rail-track) { position: relative; }
   .toc-rail-track { position: absolute; top: 0; bottom: 0; left: 736px; width: 300px; max-width: none; margin: 0; }
   .toc-rail-track > .side-rail { position: sticky; top: 84px; margin: 0; }
-  .toc-rail-ready > .toc > ol { overflow-y: auto; overscroll-behavior: contain; }
+  /* ol がスクロール枠になると、枠の外に描かれる番号(list-style-position: outside)が切り抜かれ、
+     「10.」が「0.」に見えていた（2026-09-30・目次10項目以上の約208ページ）。
+     本文の位置は変えずに、番号の入る余白だけを枠の内側へ広げる。 */
+  .toc-rail-ready > .toc > ol { overflow-y: auto; overscroll-behavior: contain; margin-left: -12px; padding-left: 30px; }
   /* Very short windows / increased text size: page scrolling, never clipped rail content. */
   .toc-rail-track > .toc-rail-tall { top: auto; }
 }
@@ -1138,3 +1167,20 @@ a[role="button"] { display: inline-flex; align-items: center; justify-content: c
 
 /* Preserve source text/links while showing one copy of identical footer notes. */
 footer [data-duplicate-note] { display: none !important; }
+
+/* /inshi/ 印紙税額の一覧表（全20号）。階級の多い号は details で号ごとに畳む（2026-09-30）。
+   スマホでは3列の表をやめて号ごとのカードにし、税額の行を全幅で読ませる（以前は 9,402px の表を
+   640px の枠で覗く作りで、枠の最初の画面には金額の列しか出ず何の号か分からなかった）。 */
+.go-table td { vertical-align: top; }
+.go-tiers > summary { font-weight: 700; color: var(--accent); cursor: pointer; }
+.go-tiers[open] > summary { margin-bottom: 4px; }
+@media (max-width: 600px) {
+  .scroll-wrap:has(> .go-table) { border: 0; border-radius: 0; overflow: visible; }
+  .go-table, .go-table tbody, .go-table tr, .go-table td { display: block; width: auto; }
+  .go-table thead { display: none; }
+  .go-table tr { margin: 0 0 10px; }
+  .scroll-wrap > .go-table tr:last-child td, .scroll-wrap > .go-table tr td { border: 1px solid var(--line); }
+  .scroll-wrap > .go-table tr td + td { border-top: 0; }
+  .go-table td:first-child { font-weight: 700; background: var(--accent-soft); border-radius: 8px 8px 0 0; }
+  .go-table td:last-child { border-radius: 0 0 8px 8px; }
+}

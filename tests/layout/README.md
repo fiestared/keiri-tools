@@ -80,3 +80,15 @@ transitions at 1536, 1920, 1200 and 768. Every page still produces six records;
 there are no cached passes. A small NDJSON checkpoint preserves measured rows
 if the Mac restarts. Required TOCs, title-before-navigation order, encoded TOC
 labels, and links inside related sections have independent mutation checks.
+
+## Tables, wide figures, field help (2026-09-30)
+
+`measure` also rejects: a body table cropped to a vertical scroll box (`table-vertical-clip`; only
+`.table-cue ~ .scroll-wrap`, which has an explicit "expand all rows" control, and the sticky 2D
+`.gensen-monthly-table` may scroll vertically); a horizontally overflowing table/figure without the
+shared cue (`scroll-cue-missing`; `assets/empty-state.js` sets `data-overflow-x`, `style.css` draws
+「→ 横にスクロールできます」 and a right-edge fade); at widths ≤700px, figure text below 9.5px effective
+(`svg-text-small`); a clipping list with 10+ outside markers and less than 1.9em left padding
+(`list-marker-clipped`, the TOC rail's 「0.」); and paired-field help lines beside or on top of each other
+(`field-hint-beside`). `node tools/gen_layout_markup.mjs` adds `.fig-wide` and `--figw` to any figure
+whose smallest text would fall below 10px in the 358px phone column; do not hand-maintain a list.

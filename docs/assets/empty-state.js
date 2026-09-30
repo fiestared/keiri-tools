@@ -34,7 +34,12 @@
    }
   }
  }
- function sync(){for(const table of dirtyTables)if(table.isConnected)keepTableTokens(table);dirtyTables.clear();for(const e of document.querySelectorAll(selector)){const empty=e.childNodes.length>0&&!hasContent(e);if(empty!==e.hasAttribute('data-empty-surface'))e.toggleAttribute('data-empty-surface',empty);}}
+ // Horizontal scrollers show a visible cue only while their content actually overflows (style.css).
+ const scrollers='.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide';
+ function markEnd(e){const end=e.scrollLeft+e.clientWidth>=e.scrollWidth-2;if(end!==e.hasAttribute('data-scroll-end'))e.toggleAttribute('data-scroll-end',end);}
+ function markOverflow(){for(const e of document.querySelectorAll(scrollers)){const over=e.scrollWidth>e.clientWidth+2;if(over!==e.hasAttribute('data-overflow-x'))e.toggleAttribute('data-overflow-x',over);markEnd(e);}}
+ addEventListener('scroll',event=>{const e=event.target;if(e.nodeType===1&&e.matches(scrollers))markEnd(e);},{capture:true,passive:true});
+ function sync(){for(const table of dirtyTables)if(table.isConnected)keepTableTokens(table);dirtyTables.clear();for(const e of document.querySelectorAll(selector)){const empty=e.childNodes.length>0&&!hasContent(e);if(empty!==e.hasAttribute('data-empty-surface'))e.toggleAttribute('data-empty-surface',empty);}markOverflow();}
  matchMedia('print').addEventListener('change',sync);
  for(const event of ['resize','beforeprint','afterprint'])addEventListener(event,sync);
  let queued=false;
@@ -44,5 +49,6 @@
    for(const n of r.addedNodes||[])if(n.nodeType===1){if(n.matches('main table,.wrap table'))dirtyTables.add(n);for(const t of n.querySelectorAll('main table,.wrap table'))dirtyTables.add(t);}
   }
   if(!queued){queued=true;queueMicrotask(()=>{queued=false;sync();});}});
+ document.fonts?.ready.then(markOverflow);addEventListener('load',markOverflow);
  sync();observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['style','class','hidden','open','data-empty-surface']});
 })();

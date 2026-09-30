@@ -68,6 +68,26 @@ export function measure() {
  if(containers.length&&over(containers[0].b))add('svg-rect',e,{bounds:b,rect:containers[0].b,svg:[...document.querySelectorAll('svg')].indexOf(svg)});
  }
  }
+ // 2026-09-30: body tables are not cropped to a vertical box inside the page scroll (only a table with the
+ // .table-cue "expand" control, or the sticky 2D tax table, may be); every local horizontal scroller shows
+ // the shared cue (empty-state.js + style.css); phone figures keep text >= 9.5px or scroll as .fig-wide.
+ for(const e of document.querySelectorAll('main *')){
+  const cs=getComputedStyle(e);if(cs.overflowX==='visible'&&cs.overflowY==='visible')continue;if(!visible(e))continue;
+  if(/(auto|scroll)/.test(cs.overflowY)&&e.scrollHeight>e.clientHeight+2&&e.querySelector('table')&&!e.matches('.table-cue ~ .scroll-wrap,.gensen-monthly-table'))add('table-vertical-clip',e,{hidden:e.scrollHeight-e.clientHeight});
+  if(/(auto|scroll)/.test(cs.overflowX)&&e.scrollWidth>e.clientWidth+2&&(e.querySelector('table')||e.matches('figure'))&&getComputedStyle(e,'::before').content==='none')add('scroll-cue-missing',e,{hidden:e.scrollWidth-e.clientWidth});
+ }
+ // A clipping list (TOC rail scroll box) must leave room for two-digit outside markers ("10." not "0.").
+ for(const ol of document.querySelectorAll('ol'))if(visible(ol)&&ol.children.length>=10&&getComputedStyle(ol).overflowX!=='visible'&&getComputedStyle(ol).listStylePosition==='outside'){
+  const em=parseFloat(getComputedStyle(ol.children[9]).fontSize);if(parseFloat(getComputedStyle(ol).paddingLeft)<em*1.9)add('list-marker-clipped',ol,{padding:getComputedStyle(ol).paddingLeft});
+ }
+ // Every help/error line of a paired field sits under its own control, not in the neighbouring grid column.
+ for(const div of document.querySelectorAll('.field-pair > div')){const control=div.querySelector(':scope > :is(input,select,textarea)');if(!control||!visible(control))continue;const c=control.getBoundingClientRect();
+  let prev=null;for(const h of div.querySelectorAll(':scope > .hint'))if(visible(h)){const r=h.getBoundingClientRect();if(r.left>c.right-2||r.top<c.bottom-2||(prev&&r.top<prev.bottom-2))add('field-hint-beside',h,{control:control.id});prev=r;}}
+ if(innerWidth<=700)for(const svg of document.querySelectorAll('main figure svg'))if(visible(svg)&&svg.viewBox.baseVal.width){
+  const scale=svg.getScreenCTM().a;let min=Infinity;
+  for(const t of svg.querySelectorAll('text'))if(t.textContent.trim()&&t.getClientRects().length)min=Math.min(min,parseFloat(getComputedStyle(t).fontSize)*scale);
+  if(min<9.5)add('svg-text-small',svg.closest('figure'),{px:+min.toFixed(1),viewBox:svg.getAttribute('viewBox')});
+ }
  for(const img of document.images)if(visible(img)&&img.complete&&!img.naturalWidth&&new URL(img.src,location.href).origin===location.origin)add('broken-image',img,{src:img.getAttribute('src')});
  for(const img of document.querySelectorAll('main img'))if(visible(img)&&getComputedStyle(img).objectFit!=='cover'){
   const r=img.getBoundingClientRect();let e=img.parentElement;

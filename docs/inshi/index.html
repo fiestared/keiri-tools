@@ -356,7 +356,7 @@
 <p>国税庁 No.7140／No.7141（印紙税額の一覧表）を、そのまま一覧にしたものです（<span id="hyo-year">読み込み中…</span>現在法令等）。金額の階級は「以下」がその階級に<b>含まれ</b>、「超え」は<b>含まれない</b>ことに注意してください。</p>
 
 <div class="scroll-wrap">
-<table class="tbl" id="zeigaku-table">
+<table class="tbl go-table" id="zeigaku-table">
   <thead><tr><th scope="col" style="width:3.5em">号</th><th scope="col">文書の種類</th><th scope="col">印紙税額（1通または1冊につき）</th></tr></thead>
   <tbody><tr><td colspan="3">読み込み中…</td></tr></tbody>
 </table>
@@ -525,7 +525,11 @@ function renderTable(D) {
         lines.push(doc.noamount === 0 ? `${esc(doc.unit)}の記載のないもの: <b>非課税</b>` : `${esc(doc.unit)}の記載のないもの: ${yen(doc.noamount)}`);
       }
       if (doc.ichiranbarai) lines.push(`一覧払のもの等: ${doc.ichiranbarai.hikazei_under.toLocaleString("ja-JP")}円以上 一律 ${yen(doc.ichiranbarai.tax)}`);
-      taxCell = lines.join("<br>");
+      // 階級が多い号は号ごとに畳める（スマホは閉じた状態で始め、号と文書名の一覧として読める）
+      const tiers = lines.filter((l) => !l.startsWith('<span class="hint">')).length;
+      taxCell = tiers > 4
+        ? `<details class="go-tiers"${matchMedia("(min-width: 601px)").matches ? " open" : ""}><summary>金額ごとの税額（${tiers}行）</summary>${lines.join("<br>")}</details>`
+        : lines.join("<br>");
     }
     return `<tr><td>${esc(doc.go)}</td><td>${esc(doc.name)}${doc._note ? `<br><span class="hint">${esc(doc._note)}</span>` : ""}</td><td>${taxCell}</td></tr>`;
   }).join("");

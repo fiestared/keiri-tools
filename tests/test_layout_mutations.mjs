@@ -35,18 +35,29 @@ const cases=[
  ['text-clipped',()=>{const e=document.querySelector('#clip');e.style.cssText='height:20px;overflow:hidden';}],
  ['text-overlap',()=>{document.querySelector('#next').style.transform='translateY(-35px)';}],
  ['broken-image',()=>{const e=new Image();e.src='/layout-fixture-missing.png';document.querySelector('main').append(e);}],
+ // 2026-09-30 table/figure layout: each reproduces the pre-fix rule (640px box, no cue, scaled-down figure).
+ ['table-vertical-clip',()=>{const t=document.querySelector('.scroll-wrap tbody');for(let i=0;i<40;i++)t.append(t.rows[0].cloneNode(true));document.querySelector('.scroll-wrap').style.cssText='max-height:200px;overflow:auto';}],
+ ['field-hint-beside',()=>{const h=document.createElement('span');h.className='hint';h.textContent='二つ目の補足';document.querySelector('#one-hint').after(h);const s=document.createElement('style');s.textContent='.field-pair{display:grid!important;grid-auto-flow:column;grid-template-rows:auto auto auto}.field-pair>div{display:grid;grid-template-rows:subgrid;grid-row:span 3}.field-pair>div>label{grid-row:1}.field-pair>div>input{grid-row:2}.field-pair>div>.hint{grid-row:3}';document.head.append(s);}],
+ ['list-marker-clipped',()=>{const ol=document.createElement('ol');ol.style.cssText='overflow-y:auto;padding-left:18px;max-height:120px;font-size:14px';ol.innerHTML=Array.from({length:10},(_,i)=>'<li>項目'+(i+1)+'</li>').join('');document.querySelector('main').append(ol);}],
+ ['scroll-cue-missing',()=>{document.querySelector('table').style.minWidth='900px';const s=document.createElement('style');s.textContent='.scroll-wrap::before{content:none!important}';document.head.append(s);}],
  ['image-clipped',()=>{const div=document.createElement('div');div.style.cssText='width:40px;height:40px;overflow:hidden';const img=new Image();img.width=100;img.height=100;img.src='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="red"/></svg>';div.append(img);document.querySelector('main').append(div);}]
 ];
 try{
  browser=await chromium.launch();const context=await contextFor(browser,server.origin);const page=await context.newPage();const scriptErrors=[];page.on('pageerror',e=>scriptErrors.push(String(e)));await ready(page,server.origin+'/');
+ // The shared display controller (horizontal-scroll cue) is loaded only for the scroll/figure controls:
+ // it also re-tokenizes table numbers, which would mask the number-wrap fixture.
+ const withController=()=>page.evaluate(src=>new Promise(r=>{const e=document.createElement('script');e.src=src;e.onload=r;document.body.append(e);}),server.origin+'/assets/empty-state.js');
  async function reset(){await page.setContent('<!doctype html><html lang="ja"><head><meta charset="utf-8"><link rel="stylesheet" href="'+server.origin+'/assets/style.css"></head><body>'+base+'</body></html>');await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(50);}
  for(const width of [1280,390]){
   await page.setViewportSize({width,height:900});await reset();let measured=await page.evaluate(measure);assert.deepEqual(measured.issues,[],`Healthy fixture @${width}`);
   for(const [kind,mutate]of cases){await reset();await page.evaluate(mutate);await page.waitForTimeout(80);measured=await page.evaluate(measure);assert(measured.issues.some(i=>i.kind===kind),`Mutation not caught: ${kind} @${width}: ${JSON.stringify(measured.issues)}`);}
+  // A wide diagram scaled into a phone column: text below 9.5px (only judged at phone widths).
+  if(width<=700){await reset();await page.evaluate(()=>{const f=document.createElement('figure');f.className='figure';f.innerHTML='<svg viewBox="0 0 1000 120"><text x="10" y="40" font-size="12">縮んだ図の文字</text></svg>';document.querySelector('main').append(f);});await withController();await page.waitForTimeout(80);assert((await page.evaluate(measure)).issues.some(i=>i.kind==='svg-text-small'),'Mutation not caught: svg-text-small @'+width);
+   await page.evaluate(()=>{const f=document.querySelector('figure');f.classList.add('fig-wide');f.style.setProperty('--figw','1000px');});await page.waitForTimeout(80);assert.deepEqual((await page.evaluate(measure)).issues,[],'fig-wide figure scrolls with cue @'+width);}
   await reset();scriptErrors.length=0;await page.evaluate(()=>{const script=document.createElement('script');script.textContent='const repeated = 1; const repeated = 2;';document.body.append(script);});await page.waitForTimeout(80);assert(scriptErrors.some(e=>e.includes('repeated')),'Duplicate declaration must be a browser page error');
   // Local table scrolling and a quantitative bar are legitimate, not page overflow/text boxes.
-  await reset();await page.evaluate(()=>{document.querySelector('table').style.minWidth='900px';const rect=document.querySelector('svg rect');rect.setAttribute('width','80');rect.setAttribute('data-layout-role','bar');rect.setAttribute('data-layout-note','Amount encoded by width; label intentionally extends past bar');});
-  assert.deepEqual((await page.evaluate(measure)).issues,[],`Legitimate scroll/bar @${width}`);
+  await reset();await withController();await page.evaluate(()=>{document.querySelector('table').style.minWidth='900px';const rect=document.querySelector('svg rect');rect.setAttribute('width','80');rect.setAttribute('data-layout-role','bar');rect.setAttribute('data-layout-note','Amount encoded by width; label intentionally extends past bar');});
+  await page.waitForTimeout(80);assert.deepEqual((await page.evaluate(measure)).issues,[],`Legitimate scroll/bar @${width}`);
  }
 }finally{await browser?.close();server.close();}
 console.log(`✓ ${cases.length} independent broken HTML cases × 2 widths rejected; healthy/scroll/bar controls accepted`);

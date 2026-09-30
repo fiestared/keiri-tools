@@ -7,6 +7,30 @@ import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../docs/',import.meta.url));
 const check=process.argv.includes('--check');let changed=[];
 const escape=s=>s.replaceAll('&','&amp;').replaceAll('"','&quot;').replaceAll('<','&lt;');
+// Wide diagrams on phones (2026-09-30): a figure scaled into the 358px phone column must keep its
+// smallest text at FIG_MIN_TEXT px or larger. Otherwise it receives .fig-wide and scrolls locally at
+// --figw, the narrowest width that keeps that text size (never wider than the drawing itself).
+// Font sizes follow CSS precedence: style attribute > shared .figure svg class rule > presentation attribute > parent.
+const FIG_PHONE=358,FIG_MIN_TEXT=10;
+const figClassSize=Object.fromEntries([...readFileSync(root+'assets/style.css','utf8').matchAll(/\.figure svg \.([\w-]+) \{[^}]*?font-size:\s*([\d.]+)px/g)].map(m=>[m[1],+m[2]]));
+function svgMinText(svg){
+ const size=e=>{
+  for(;e&&e.nodeType===1;e=e.parentElement){
+   const st=/font-size:\s*([\d.]+)px/.exec(e.getAttribute('style')||'');if(st)return +st[1];
+   const c=[...e.classList].map(c=>figClassSize[c]).find(Boolean);if(c)return c;
+   const a=e.getAttribute('font-size');if(a&&/^[\d.]+(px)?$/.test(a.trim()))return parseFloat(a);
+   if(e.tagName.toLowerCase()==='figure')break;
+  }
+  return 16;
+ };
+ const sizes=[...svg.querySelectorAll('text')].filter(t=>t.textContent.trim()).map(t=>Math.min(size(t),...[...t.querySelectorAll('tspan')].filter(x=>x.textContent.trim()).map(size)));
+ return sizes.length?Math.min(...sizes):null;
+}
+function wideFigureWidth(svg){
+ const vb=(svg.getAttribute('viewBox')||'').trim().split(/[\s,]+/).map(Number);const w=vb[2];const min=svgMinText(svg);
+ if(!(w>0)||!min||min*FIG_PHONE/w>=FIG_MIN_TEXT)return null;
+ return Math.min(Math.ceil(w*FIG_MIN_TEXT/min/10)*10,Math.ceil(w));
+}
 for(const file of readdirSync(root,{recursive:true}).filter(f=>f==='index.html'||f.endsWith('/index.html')).sort()){
  let source=readFileSync(root+file,'utf8'); const dom=new JSDOM(source,{includeNodeLocations:true});const d=dom.window.document;const edits=[];const attrs=new Map();
  const set=(e,k,v)=>{if(e.getAttribute(k)===v)return;if(!attrs.has(e))attrs.set(e,{});attrs.get(e)[k]=v;e.setAttribute(k,v);};
@@ -75,6 +99,13 @@ for(const file of readdirSync(root,{recursive:true}).filter(f=>f==='index.html'|
   if(!table.closest('.scroll-wrap,.fee-scroll,.retention-table')){
    const l=dom.nodeLocation(table);if(l)edits.push({start:l.startOffset,end:l.startOffset,text:'<div class="scroll-wrap">'},{start:l.endOffset,end:l.endOffset,text:'</div>'});
   }
+ }
+ for(const fig of d.querySelectorAll('main figure')){
+  if(fig.classList.contains('fig-wide'))continue;
+  const svg=[...fig.querySelectorAll('svg')].find(e=>e.closest('figure')===fig);if(!svg)continue;
+  const figw=wideFigureWidth(svg);if(!figw)continue;
+  set(fig,'class',['figure','fig-wide',...[...fig.classList].filter(c=>c!=='figure')].join(' '));
+  set(fig,'style',[(fig.getAttribute('style')||'').replace(/;?\s*$/,''),'--figw:'+figw+'px'].filter(Boolean).join(';'));
  }
  // Multi-section calculators need the same navigation as the long articles.
  // Hubs and embeds intentionally do not receive a reading TOC.

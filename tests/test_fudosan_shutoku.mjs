@@ -342,7 +342,7 @@ const run = (over = {}) => calcFudosanShutoku({ ...base, ...over });
   ok("§7 目次のリンク先が全て h2 に存在する", tocIds.every((id) => h2ids.includes(id)));
 
   // ⑬ 図解はインラインSVG（外部画像を使わない）
-  ok("§7 figure 内にインラインSVGがある", /<figure>[\s\S]*?<svg[\s\S]*?<\/svg>[\s\S]*?<\/figure>/.test(PAGE));
+  ok("§7 figure 内にインラインSVGがある", /<figure\b[^>]*>[\s\S]*?<svg[\s\S]*?<\/svg>[\s\S]*?<\/figure>/.test(PAGE));
   ok("§7 外部画像の img タグを使っていない", !/<img\s/.test(PAGE));
 
   // ── §8 2026-09-18 網羅便の追記（本文より先に書いた検査。規則3〜5で要素を名指し） ──

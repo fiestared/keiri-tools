@@ -8,11 +8,12 @@ input + .hint, select + .hint, textarea + .hint {
 .krow > .hint { flex-basis: 100%; }
 
 /* Share label height across each two-field row, including wrapped mobile labels. */
-.grid.field-pair { grid-template-rows: repeat(3, auto); }
-.grid.field-pair > div { display: grid; grid-template-rows: subgrid; grid-row: span 3; min-width: 0; }
+/* label と入力欄の2行だけを揃え、後続（注意書きが2つ以上でも）は入力欄の下に順に積む（style.css と同じ規則） */
+.grid.field-pair { grid-template-rows: repeat(8, auto); }
+.grid.field-pair > div { display: grid; grid-template-rows: subgrid; grid-row: span 8; min-width: 0; grid-auto-flow: row; }
 .grid.field-pair > div > label:first-of-type { grid-row: 1; align-self: end; }
-.grid.field-pair > div > :is(input,select,textarea) { grid-row: 2; align-self: start; }
-.grid.field-pair > div > .hint { grid-row: 3; }
+.grid.field-pair > div > :is(input,select,textarea):first-of-type { grid-row: 2; align-self: start; }
+.grid.field-pair > div > * { grid-column: 1; }
 
 /* Generic text-field width must not consume the caption beside a choice control. */
 .radios input:is([type="radio"],[type="checkbox"]) { width: auto; flex: none; padding: 0; }
