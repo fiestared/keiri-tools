@@ -88,9 +88,11 @@ function applyAbbr(name, table, style, warnings) {
   for (const [pat, abbr] of table) {
     const idx = name.indexOf(pat);
     if (idx === -1) continue;
-    // 銀行の法人略語表で頭部しか定義されない法人は後置略語を作らない。
-    if (idx > 0 && table === LEGAL_ABBR && ['イ', 'ザイ', 'シヤ', 'シユウ', 'ガク', 'フク'].includes(abbr)) {
-      warnings.push(`${pat}の略語は頭部のみです。銀行登録の名義を確認してください`);
+    // SMBC法人略語表: 医療法人は先頭・末尾、以下の法人は頭部のみ。
+    const headOnly = ['ザイ', 'シヤ', 'シユウ', 'ガク', 'フク', 'トクヒ', 'ドク', 'ベン'].includes(abbr);
+    const medicalMiddle = abbr === 'イ' && idx > 0 && idx + pat.length < name.length;
+    if (table === LEGAL_ABBR && ((headOnly && idx > 0) || medicalMiddle)) {
+      warnings.push(`${pat}の略語は${abbr === 'イ' ? '先頭・末尾のみ' : '頭部のみ'}です。銀行登録の名義を確認してください`);
       return name;
     }
     let rep;

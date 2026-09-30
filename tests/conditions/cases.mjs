@@ -1,3 +1,4 @@
+import { normalizeBatch } from '../../docs/assets/zengin_core.js';
 import {readFileSync} from 'node:fs';
 import {calc} from '../../docs/assets/jutaku_core.js';
 import {kojoGoNoGaku,shotokuKojoGokei} from '../../docs/assets/gensen_hyo_core.js';
@@ -11,6 +12,7 @@ const hs='https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1211-2.htm';
 const ss='https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41';
 const gs='https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf';
 export const extra={
+ zengin_core:[{name:'カナ変換HTML初期入力は空',run:d=>normalizeBatch(d.getElementById('names').value),expected:[],source:'https://www.smbc.co.jp/direct/sousa/help_furikomi/15.html',quote:'【法人へのお振込の場合の法人略語の入力例の一覧】',note:'初期入力は空なので変換対象なし。位置境界は境界表で別途確認。'}],
  jutaku_core:[
   {name:'HTML初期残高・新築省エネ・年選択の初期値',run:d=>{
     const script=[...d.scripts].map(s=>s.textContent).join('\n');

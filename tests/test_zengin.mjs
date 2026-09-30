@@ -151,7 +151,8 @@ for (const s of ["株式会社ヤマダ", "ヤマダ株式会社", "株式会社
 import assertR7 from 'node:assert/strict';
 assertR7.equal(normalize('カヲル').output,'ｶｦﾙ');
 assertR7.equal(normalize('ｶｦﾙ').ok,true);
-assertR7.equal(normalize('ヤマダ医療法人').ok,false);
+assertR7.equal(normalize('ヤマダ医療法人').output,'ﾔﾏﾀﾞ(ｲ');
+assertR7.equal(normalize('ヤマダ医療法人').ok,true);
 assertR7.equal(normalize('医療法人ヤマダ').output,'ｲ)ﾔﾏﾀﾞ');
 
 // 2026-09-28 司令塔: ｦ は総合振込では保持するが、給与・賞与振込では使えない旨を必ず申告する（全銀協 付録1 注1・注2）
@@ -162,3 +163,10 @@ assertR7.equal(normalize('医療法人ヤマダ').output,'ｲ)ﾔﾏﾀﾞ');
   const r2 = normalize("カオル");
   assert.ok(!r2.warnings.some(w => /給与振込・賞与振込/.test(w)), "ｦ を含まない名義に給与・賞与振込の注意を出している");
 }
+
+// r14: official legal-form position boundaries, including medical suffix.
+import { cases as positionCases } from './boundaries/zengin_core.mjs';
+for (const c of positionCases) assert.deepEqual(c.run(), c.expected, c.name);
+assert.equal(normalize('ヤマダ医療法人タナカ').ok, false);
+assert.match(normalize('ヤマダ医療法人タナカ').warnings.join(' '), /先頭・末尾のみ/);
+assert.equal(normalize('ヤマダ医療法人').warnings.length, 0);
