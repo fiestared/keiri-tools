@@ -74,7 +74,7 @@
     </div>
   </div>
 
-  <label id="acq-label">取得（事業に使い始めた）年月</label>
+  <label id="acq-label">取得年月（償却率表の判定）</label>
   <div class="ym">
     <select id="acqyear"></select><span>年</span>
     <select id="acqmonth">
@@ -87,7 +87,10 @@
 
   <details>
     <summary>詳細設定（事業専用割合）</summary>
-    <label for="ratio">事業専用割合（％）　自宅兼用などのときだけ変更。ふつうは100</label>
+    <label for="serviceym">事業の用に供した年月</label>
+  <input id="serviceym" type="month" value="" aria-describedby="service-hint">
+  <span id="service-hint" class="hint">取得と同月なら空欄。異なる場合は供用年月を入力してください。初年度は供用月から12月までで計算します。</span>
+  <label for="ratio">事業専用割合（％）　実際の業務使用割合を入力</label>
     <input id="ratio" type="number" inputmode="numeric" min="1" max="100" step="1" placeholder="100" value="100">
   </details>
 
@@ -158,6 +161,7 @@ $("calc").addEventListener("click", async () => {
   try {
     r = calcGenka({
       method, cost, life: Number($("life").value), acqYm,
+      serviceYm: $("serviceym").value || acqYm,
       bizRatio: Number($("ratio").value) || 100,
     }, DATA);
   } catch (e) {

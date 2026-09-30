@@ -16,6 +16,9 @@ import { calcGenka, floorYen, usedMonthsFromStart, chukoTaiyoNensu, formatYm, AS
 const ASSETS = new URL('../docs/assets/', import.meta.url);
 const D = JSON.parse(readFileSync(new URL('genka_rates.json', ASSETS)));
 
+import { cases as r16Cases } from './boundaries/genka_core.mjs';
+for (const c of r16Cases.filter(c => !c.name.includes('HTML'))) assert.deepStrictEqual(c.run(), c.expected, c.name);
+
 let pass = 0, fail = 0;
 const t = (name, fn) => { try { fn(); pass++; console.log('✅ ' + name); }
   catch (e) { fail++; console.log('❌ ' + name + '\n   ' + e.message); } };

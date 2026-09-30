@@ -23,7 +23,7 @@
  *     所令134条1項2号は、平成19年4月1日以後に取得した資産の償却の限度を3つに分ける:
  *       イ 6条1号〜7号・9号の資産（坑道とハを除く）＝ **取得価額から一円を控除した金額**
  *       ロ **坑道及び6条8号の無形固定資産** ＝ **その取得価額に相当する金額**（＝1円を残さない）
- *       ハ 所有権移転外リース取引のリース賃貸資産（貸主側）＝ 取得価額−残価保証額（当ツール対象外）
+ *       ハ 所有権移転外リース取引のリース資産（借主側）＝ 取得価額−残価保証額（当ツール対象外）
  *     一律に1円を残すと、**ソフトウエア等の無形固定資産で永久に1円が残る**（法と違う挙動）。
  *     ★無形固定資産（6条8号）と生物（6条9号）は**定額法のみ**（所令120条の2第1項4号）。
  *     坑道は鉱業用減価償却資産なので定率法も選べる（同項3号ロ）ので、無形と同じ扱いにはしない。
@@ -45,7 +45,7 @@
  *     fail closed で止める。建物・構築物か否かは耐用年数からは分からないので画面で注意喚起する。
  *
  *  6. **1円未満の端数は切り捨てで計算（切り上げも認められる）。** 調整前償却額・年額の端数は
- *     切り捨て。国税庁の計算例（262,144×0.200＝52,428）も切り捨て。
+ *     切り捨て。国税庁No.2106は調整前償却額52,429円を掲げるため、この切捨て試算とは区別する。
  *
  * 一次情報: 国税庁 タックスアンサー No.2106『定額法と定率法による減価償却』／同添付
  *   『減価償却資産の償却率等表』（別表第八＝定額法・別表第九＝250%定率法）／『法人の
@@ -83,7 +83,7 @@ export function usedMonthsFromStart(startMonth) {
 /**
  * 償却の限度額の区分（所令134条1項2号。平成19年4月1日以後に取得した資産）。
  * residual = 償却しきったあとに帳簿に残す金額（円）。
- * ★ハ（所有権移転外リース取引のリース賃貸資産＝貸主側・取得価額−残価保証額）は当ツール対象外。
+ * ★ハ（所有権移転外リース取引のリース資産＝借主側・取得価額−残価保証額）は当ツール対象外。
  *   「無いこと」を黙って落とさないため、ここに理由つきで明示しておく。
  */
 export const ASSET_TYPES = {
@@ -200,7 +200,8 @@ export function formatYm(months) {
  *   method,     // 'teigaku'（定額法）| 'teiritsu'（定率法）
  *   cost,       // 取得価額（円・1以上の整数）
  *   life,       // 耐用年数（年・2〜50）
- *   acqYm,      // 'YYYY-MM' 取得（＝事業供用）年月。定率法の適用表と初年度月割の起点に使う
+ *   acqYm,      // 'YYYY-MM' 取得年月。償却率表の区分
+ *   serviceYm,  // 'YYYY-MM' 供用年月。月割の起点。省略時だけ取得と同月
  *   bizRatio,   // 事業専用割合（0超100以下・％）。省略＝100。必要経費算入額＝償却費×割合
  *   assetType,  // 'yukei'（既定）| 'mukei' | 'kodo'。償却の限度額（備忘1円の有無）を決める
  * }
@@ -236,7 +237,12 @@ export function calcGenka(input, D) {
   }
 
   const acqYm = typeof i.acqYm === 'string' ? i.acqYm.slice(0, 7) : '';
-  if (!/^\d{4}-\d{2}$/.test(acqYm)) throw new Error('取得（事業供用）年月を入力してください');
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(acqYm)) throw new Error('取得年月を正しく入力してください');
+  // Existing API callers omit serviceYm only when acquisition and service coincide.
+  const serviceYm = i.serviceYm == null || i.serviceYm === '' ? acqYm : String(i.serviceYm);
+  if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(serviceYm) || serviceYm < acqYm) {
+    throw new Error('供用年月は取得年月以後の有効な年月を入力してください');
+  }
 
   // ── 急所1: 取得年月で適用表を決める。平成19年3月31日以前は旧法＝対象外（fail closed）──────
   const B = D.boundaries;
@@ -244,8 +250,8 @@ export function calcGenka(input, D) {
     throw new Error(`${B.shin_start_label}より前に取得した資産（旧定額法・旧定率法）は当ツールの対象外です。旧法は残存価額・5%均等償却があり計算が異なります。`);
   }
 
-  const startMonth = Number(acqYm.slice(5, 7));
-  const usedMonths = usedMonthsFromStart(startMonth); // 初年度の事業供用月数（13−取得月）
+  const startMonth = Number(serviceYm.slice(5, 7));
+  const usedMonths = usedMonthsFromStart(startMonth); // 初年度の事業供用月数（13−供用月）
 
   const ratio = i.bizRatio == null || i.bizRatio === '' ? 100 : Number(i.bizRatio);
   if (!Number.isFinite(ratio) || ratio <= 0 || ratio > 100) throw new Error('事業専用割合は0〜100％で入力してください');
@@ -333,36 +339,36 @@ export function calcGenka(input, D) {
   }
   notes.push(residual > 0
     ? `${AT.label}は最終年に備忘価額1円を残します（帳簿価額は0でなく1円で止まります・${AT.kon}）。`
-    : `${AT.label}は取得価額まで償却します（備忘価額1円を残しません＝帳簿価額は0円になります・${AT.kon}）。1円を残すのは有形固定資産・生物です。`);
+    : `${AT.label}は取得価額まで償却します（備忘価額1円を残しません＝帳簿価額は0円になります・${AT.kon}）。1円を残すのは坑道等を除く有形固定資産・生物です。`);
   if (ratio < 100) {
     notes.push(`必要経費に算入できるのは償却費×事業専用割合（${ratio}％）です。帳簿価額（未償却残高）は家事用部分も含めた償却費の全額で減っていきます。`);
   }
   if (i.method === 'teiritsu') {
     notes.push('建物は定率法を選べません（定額法のみ）。建物附属設備・構築物も平成28年4月1日以後に取得したものは定額法のみです（所令120条の2第1項1号）。定率法で計算する場合は対象資産かご確認ください。');
   }
-  notes.push('1円未満の端数は切り捨てで計算しています（切り上げも認められます）。');
+  notes.push('この試算は円未満切捨てです。国税庁No.2106の公表例の円未満処理とは差が出る場合があります。');
   // 少額な資産は減価償却せず別の取扱いができる。金額基準・適用期限は参照データが正本
   // （中小企業者等の少額特例は令和8年度改正で30万円未満→40万円未満。境界は「取得日」なので acqYm で分ける）
   const S = D.shogaku_tokurei;
   if (S) {
     if (cost < S.ikkatsu_mangan) {
-      notes.push(`取得価額が${S.shogaku_mangan_label}なら消耗品費などで買った年に全額、${S.ikkatsu_mangan_label}なら一括償却資産として${S.ikkatsu_years}年で均等に経費にできます（この計算とは別の取扱いです）。`);
+      notes.push(`取得価額が${S.shogaku_mangan_label}なら消耗品費などで業務の用に供した年に全額、${S.ikkatsu_mangan_label}なら一括償却資産として${S.ikkatsu_years}年で均等に経費にできます（この計算とは別の取扱いです）。`);
     }
     const kakuju = acqYm >= S.chusho_kakuju_start;
     const chushoMangan = kakuju ? S.chusho_mangan : S.chusho_mangan_kyu;
     const chushoLabel = kakuju ? S.chusho_mangan_label : S.chusho_mangan_kyu_label;
     if (cost < chushoMangan) {
       if (acqYm <= S.chusho_kigen.slice(0, 7)) {
-        notes.push(`青色申告の中小企業者等（常時使用する従業員${S.chusho_jugyoin}人以下）は、この資産を少額減価償却資産の特例（取得価額${chushoLabel}・${S.chusho_nengaku_gendo_label}まで）で買った年に全額経費にできる場合があります（${S.chusho_kigen_label}までに取得したものが対象）。`);
+        notes.push(`青色申告の中小企業者等（常時使用する従業員${S.chusho_jugyoin}人以下）は、この資産を少額減価償却資産の特例（取得価額${chushoLabel}・${S.chusho_nengaku_gendo_label}まで、開廃業年・短期年度は月割、対象資産・明細添付等の条件あり）で業務の用に供した年に全額経費にできる場合があります（${S.chusho_kigen_label}までに取得・供用したものが対象）。`);
       } else {
-        notes.push(`少額減価償却資産の特例（中小企業者等・取得価額${chushoLabel}）は${S.chusho_kigen_label}までに取得したものが対象です。それ以後に取得した資産に使えるかは、延長されたかどうかをご確認ください。`);
+        notes.push(`少額減価償却資産の特例（中小企業者等・取得価額${chushoLabel}）は${S.chusho_kigen_label}までに取得・供用したものが対象です。それ以後に取得した資産に使えるかは、延長されたかどうかをご確認ください。`);
       }
     }
   }
 
   return {
     method: i.method, methodLabel, eraLabel, life, cost, bizRatio: ratio,
-    assetType, assetLabel: AT.label, residual,
+    assetType, assetLabel: AT.label, residual, acqYm, serviceYm,
     rate, kaiteiRate, hoshoRate, hoshoGaku, usedMonths,
     schedule, firstYearDep: schedule[0] ? schedule[0].dep : 0,
     firstYearExpense: schedule[0] ? schedule[0].expense : 0,
