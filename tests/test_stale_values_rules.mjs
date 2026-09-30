@@ -6,6 +6,8 @@ const C = JSON.parse(readFileSync(new URL("./stale_values.json", import.meta.url
 const E = Object.fromEntries(C.entries.map((e) => [e.id, e]));
 const t = (s, id, day = "2026-09-28") => staleHits(s, E[id], "p", day).length;
 const r = [
+  ["壁の回復額を150万円以上と断定する旧説明→捕まえる", t("壁を超えるなら年収150万円以上を目指すほうが手取りは増えます。", "kabe-recovery-unqualified-150man", "2026-09-30") === 1],
+  ["150万円時点で基準に足りない比較→通す", t("年収150万円の手取りは128万5,452円で、129万円にまだ足りません。", "kabe-recovery-unqualified-150man", "2026-09-30") === 0],
   ["旧発効日を書くだけでは過去額扱いにしない", t("東京都の最低賃金は1,226円（令和7年10月3日発効）です。", "tokyo-minimum-wage-1226", "2026-10-01") === 1],
   ["東京の旧額を現行と書く→発効日に捕まえる", t("東京都の最低賃金は1,226円です。", "tokyo-minimum-wage-1226", "2026-10-01") === 1],
   ["東京の旧額→発効前は通す", t("東京都の最低賃金は1,226円です。", "tokyo-minimum-wage-1226", "2026-09-30") === 0],
