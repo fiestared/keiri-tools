@@ -12,8 +12,15 @@ export const cases = [
 ];
 
 // r16: 法89条は「以下／超える」。境界の両側と補填対象未入力を検証。
+const rateSourceQuote = `百九十五万円以下の金額 | 百分の五 | 
+百九十五万円を超え三百三十万円以下の金額 | 百分の十 | 
+三百三十万円を超え六百九十五万円以下の金額 | 百分の二十 | 
+六百九十五万円を超え九百万円以下の金額 | 百分の二十三 | 
+九百万円を超え千八百万円以下の金額 | 百分の三十三 | 
+千八百万円を超え四千万円以下の金額 | 百分の四十 | 
+四千万円を超える金額 | 百分の四十五 |`;
 for (const [n,lo,hi] of [[1950000,5,10],[3300000,10,20],[6950000,20,23],[9000000,23,33],[18000000,33,40],[40000000,40,45]]) {
- for (const [delta,expected] of [[-1,lo],[0,lo],[1,hi]]) cases.push({name:`r16税率${n}${delta}`,run:()=>rateFromKazei(n+delta,iryohiData),expected,source:'https://laws.e-gov.go.jp/law/340AC0000000033',quote:'百九十五万円以下の金額'});
+ for (const [delta,expected] of [[-1,lo],[0,lo],[1,hi]]) cases.push({name:`r16税率${n}${delta}`,run:()=>rateFromKazei(n+delta,iryohiData),expected,source:'https://laws.e-gov.go.jp/law/340AC0000000033',quote:rateSourceQuote});
 }
 cases.push(
  {name:'r16補填対象未入力',run:()=>{try{iryohiKojo(300000,200000,null,3000000,iryohiData);return '計算続行';}catch(e){return /対象医療費/.test(e.message);}},expected:true,source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm',quote:'その給付の目的となった医療費の金額を限度として差し引きます'},
