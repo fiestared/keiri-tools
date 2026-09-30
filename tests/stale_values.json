@@ -686,15 +686,27 @@
     },
     {
       "id": "taishoku-1420-reference-date-r7",
-      "value": "令和7年4月1日現在法令等",
-      "context": "No\\.1420|退職金を受け取ったとき",
-      "window": 160,
+      "value": "No\\.1420[^。\\n]{0,50}令和7年4月1日現在法令等",
+      "context": "No\\.1420",
+      "window": 0,
       "stale_from": "2026-09-30",
       "allow_near": "旧資料|過去の版",
       "reason": "No.1420の現行法令基準日は令和8年4月1日。r17/t1x-bで一次資料本文を再取得して確認。",
       "source": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1420.htm",
       "allow_pages": {},
       "correct": "令和8年4月1日現在法令等"
+    },
+    {
+      "id": "nofusho-form-change-september24",
+      "value": "令和8年9月24日に様式が変更済み",
+      "context": "様式が変更",
+      "window": 0,
+      "stale_from": "2026-09-30",
+      "allow_near": "誤記|誤り|実施日ではない",
+      "reason": "固定正本は令和8年9月下旬以降の窓口配付分の様式変更予定。9月24日を実施済みの変更日としたr17の誤記を拒否。",
+      "source": "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/18.pdf",
+      "allow_pages": {},
+      "correct": "9月下旬以降"
     }
   ],
   "future_tense": {
