@@ -102,5 +102,11 @@ eq(shotokuzei(3_000_999, D), 202_500, "3,000,999 → 千円未満切捨てで300
   eq(r.annual, 360_000, "年額 = 30,000×12 = 360,000");
 }
 
+// r16/t15: 年額84万円の控除は税率帯をまたぐため「84万円×10%」にはならない。
+eq(taxSaving({kazeiShotoku:2000000,annualDeduction:840000},D).shotokuGen,44500,'共済84万円控除で195万円帯をまたぐ');
+eq(taxSaving({kazeiShotoku:839999,annualDeduction:840000},D).usedDeduction,839999,'年額控除の1円下');
+eq(taxSaving({kazeiShotoku:840001,annualDeduction:840000},D).usedDeduction,840000,'年額控除の1円上');
+eq(taxSaving({kazeiShotoku:2000000,juminKazeiShotoku:0,annualDeduction:840000},D).juminGen,0,'住民税の課税所得不足は別に判定');
+
 console.log(fails ? `\n❌ ${fails}件 失敗` : "\nall setsuzei checks passed");
 process.exit(fails ? 1 : 0);

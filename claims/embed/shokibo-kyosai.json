@@ -1,0 +1,212 @@
+{
+  "page": "docs/embed/shokibo-kyosai/index.html",
+  "claims": [
+    {
+      "id": "r16-t15-0001",
+      "text": "所得税と住民税の課税所得は異なります。",
+      "where": [
+        "p s-218e993fecd9c377e41a-1"
+      ],
+      "numbers": [],
+      "applies": "本文に明記した年分・条件に限定。令和8年分と令和9年分以後の制度を区別。",
+      "source_url": "https://laws.e-gov.go.jp/api/2/law_data/340AC0000000033?elm=Article_86",
+      "source_quote": "【第1項】合計所得金額が二千五百万円以下である居住者については、その者のその年分の総所得金額、退職所得金額又は山林所得金額から次の各号に掲げる場合の区分に応じ当該各号に定める金額を控除する。\n（第1号）その居住者の合計所得金額が二千三百五十万円以下である場合五十八万円",
+      "corpus_ref": "corpus/egov_shotokuzeiho_86.txt:6-7",
+      "supporting_sources": [
+        {
+          "source_url": "https://laws.e-gov.go.jp/api/2/law_data/325AC0000000226?elm=Article_314_2",
+          "source_quote": "【第2項】市町村は、前年の合計所得金額が二千五百万円以下である所得割の納税義務者については、その者の前年の所得について算定した総所得金額、退職所得金額又は山林所得金額から、次の各号に掲げる場合の区分に応じ、当該各号に定める金額を控除するものとする。\n（第1号）当該納税義務者の前年の合計所得金額が二千四百万円以下である場合四十三万円",
+          "corpus_ref": "corpus/egov_chihozeiho_314_2.txt:118-119"
+        }
+      ],
+      "exceptions": "corpus/egov_shotokuzeiho_86.txt:6-7;corpus/egov_chihozeiho_314_2.txt:118-119。正本の該当箇所は「【第1項】合計所得金額が二千五百万円以下である居住者については、その者のその年分の総所得金額、退職所得金額又は山林所得金額から次の各号に掲げる場合の区分に応じ当該各号に定める金額を控除する。 （第1号）その居住者の合計所得金額が二千三百五十万円以下である場合五十八万円 【第2項】市町村は、前年の合計所得金額が二千五百万円以下である所得割の納税義務者については…」。対象文言「所得税と住民税の課税所得は異なります。」は、この範囲に書いてある内容と矛盾しない。",
+      "covers": [
+        "s-218e993fecd9c377e41a-1"
+      ],
+      "topic": [
+        "r16-t15-a"
+      ],
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-218e993fecd9c377e41a-1"
+    },
+    {
+      "id": "r16-t15-0002",
+      "text": "今回試算する掛金控除前の所得税課税所得です。申告書や源泉徴収票の計算額に今回の掛金控除が含まれるなら、控除前に戻して計算してください。源泉徴収票からは「給与所得控除後の金額」−「所得控除の額の合計額」を基に調整します。年収や売上ではありません",
+      "where": [
+        "div s-5cdc05758463ac10ac35-1"
+      ],
+      "numbers": [],
+      "applies": "本文に明記した年分・条件に限定。令和8年分と令和9年分以後の制度を区別。",
+      "source_url": "https://kyosai-web.smrj.go.jp/customer/skyosai/installment/",
+      "source_quote": "「\n課税される所得金額\n」とは、その年分の総所得金額から、基礎控除、扶養控除、社会保険料控除等を控除した後の額で、課税の対象となる額をいいます。",
+      "corpus_ref": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:69-71",
+      "supporting_sources": [
+        {
+          "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1135.htm",
+          "source_quote": "控除できる金額は、その年に支払った掛金の全額です。",
+          "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1135_htm.txt:23-23"
+        }
+      ],
+      "exceptions": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:69-71;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1135_htm.txt:23-23。控除前の入力を求める前半に対し、会社員向けの「給与所得控除後の金額−所得控除の額の合計額」は、年末調整で今回の掛金控除が既に含まれる場合には控除後になる。該当する給与所得者・役員は掛金控除を戻す必要があるが、その条件がなく節税額を過少に試算する。",
+      "covers": [
+        "s-5cdc05758463ac10ac35-1"
+      ],
+      "topic": [
+        "r16-t15-a"
+      ],
+      "review_ref": "reports/r16-t15-a/replacements.json#s-7c2d98cef89c44f75839-1"
+    },
+    {
+      "id": "r16-t15-0003",
+      "text": "monthly: 30000; placeholder=; min=1000; max=70000; step=500",
+      "where": [
+        "input s-4abd2e23e3f73644afb6-1"
+      ],
+      "numbers": [],
+      "applies": "本文に明記した年分・条件に限定。令和8年分と令和9年分以後の制度を区別。",
+      "source_url": "https://kyosai-web.smrj.go.jp/customer/skyosai/installment/",
+      "source_quote": "小規模企業共済の掛金は、月額1,000円～最高70,000円の範囲内（500円単位）で自由に設定できます。",
+      "corpus_ref": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:8-8",
+      "supporting_sources": [],
+      "exceptions": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:8-8。正本の該当箇所は「小規模企業共済の掛金は、月額1,000円～最高70,000円の範囲内（500円単位）で自由に設定できます。」。対象文言「monthly: 30000; placeholder=; min=1000; max=70000; step=500」は、この範囲に書いてある内容と矛盾しない。",
+      "covers": [
+        "s-4abd2e23e3f73644afb6-1"
+      ],
+      "topic": [
+        "r16-t15-a"
+      ],
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-4abd2e23e3f73644afb6-1"
+    },
+    {
+      "id": "r16-t15-0004",
+      "text": "1,000〜70,000円・500円きざみ",
+      "where": [
+        "div s-b3efb5c9375aed7c8ca6-1"
+      ],
+      "numbers": [
+        "1,000",
+        "70,000円",
+        "500円"
+      ],
+      "applies": "本文に明記した年分・条件に限定。令和8年分と令和9年分以後の制度を区別。",
+      "source_url": "https://kyosai-web.smrj.go.jp/customer/skyosai/installment/",
+      "source_quote": "小規模企業共済の掛金は、月額1,000円～最高70,000円の範囲内（500円単位）で自由に設定できます。",
+      "corpus_ref": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:8-8",
+      "supporting_sources": [],
+      "exceptions": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:8-8。正本の該当箇所は「小規模企業共済の掛金は、月額1,000円～最高70,000円の範囲内（500円単位）で自由に設定できます。」。対象文言「1,000〜70,000円・500円きざみ」は、この範囲に書いてある内容と矛盾しない。",
+      "covers": [
+        "s-b3efb5c9375aed7c8ca6-1"
+      ],
+      "topic": [
+        "r16-t15-a"
+      ],
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-b3efb5c9375aed7c8ca6-1"
+    }
+  ],
+  "absolutes": [],
+  "tool_cases": [],
+  "nonclaims": [
+    {
+      "id": "s-e834a743118b51acd354-1",
+      "why": "入力欄・操作ボタン・ナビゲーションの表示であり、制度や税額に関する主張ではない。 金額・税率・期限・義務の有無をこの単位は断定していない。"
+    },
+    {
+      "id": "s-5acbdb59f936eb990679-1",
+      "why": "入力欄・操作ボタン・ナビゲーションの表示であり、制度や税額に関する主張ではない。 金額・税率・期限・義務の有無をこの単位は断定していない。"
+    },
+    {
+      "id": "s-0680ed5f694e6e7f5bae-1",
+      "why": "入力欄・操作ボタン・ナビゲーションの表示であり、制度や税額に関する主張ではない。 金額・税率・期限・義務の有無をこの単位は断定していない。"
+    },
+    {
+      "id": "s-095af31ff1c420db4c2a-1",
+      "why": "入力欄・操作ボタン・ナビゲーションの表示であり、制度や税額に関する主張ではない。 金額・税率・期限・義務の有無をこの単位は断定していない。"
+    },
+    {
+      "id": "s-5b6fd71f935e658a1881-1",
+      "why": "入力欄・操作ボタン・ナビゲーションの表示であり、制度や税額に関する主張ではない。 金額・税率・期限・義務の有無をこの単位は断定していない。"
+    },
+    {
+      "id": "s-272b1d7baf1f14a0014a-1",
+      "why": "参考値として利用し個別判断を専門家や窓口に確認するよう促す案内。具体的な税額・要件を断定していない。 金額・税率・期限・義務の有無をこの単位は断定していない。"
+    }
+  ],
+  "verified": [
+    {
+      "id": "s-218e993fecd9c377e41a-1",
+      "text_hash": "eeba8ff7314f5d82d98b",
+      "result": "ok",
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-218e993fecd9c377e41a-1"
+    },
+    {
+      "id": "s-4abd2e23e3f73644afb6-1",
+      "text_hash": "838f263018926e895058",
+      "result": "ok",
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-4abd2e23e3f73644afb6-1"
+    },
+    {
+      "id": "s-b3efb5c9375aed7c8ca6-1",
+      "text_hash": "31f5c5f8d812de184076",
+      "result": "ok",
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-b3efb5c9375aed7c8ca6-1"
+    }
+  ],
+  "unconfirmed": [
+    {
+      "id": "s-da65671f6fb54ff33f6a-1",
+      "text_hash": "0210bd321d9a89912dbe",
+      "result": "out_of_corpus",
+      "needed_source": "keiri-toolsのウィジェット仕様・提供者情報および自動計算の機能を確認できる資料。正本の税法・共済資料には当該製品の名称や機能の裏付けがない。",
+      "reason": "指定正本（corpus と corpus_desc.md）を確認し、対象文言「小規模企業共済 節税シミュレーター｜keiri-tools」を裏付ける記載は収録範囲にない。keiri-toolsのウィジェット仕様・提供者情報および自動計算の機能を確認できる資料。正本の税法・共済資料には当該製品の名称や機能の裏付けがない。",
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-da65671f6fb54ff33f6a-1"
+    },
+    {
+      "id": "s-d4d1b5a8706ff96a42ec-1",
+      "text_hash": "18a2fb8df2575a7e9033",
+      "result": "out_of_corpus",
+      "needed_source": "keiri-toolsのウィジェット仕様・提供者情報および自動計算の機能を確認できる資料。正本の税法・共済資料には当該製品の名称や機能の裏付けがない。",
+      "reason": "指定正本（corpus と corpus_desc.md）を確認し、対象文言「小規模企業共済の掛金による年間の節税額を自動計算する埋め込みウィジェット。keiri-tools 提供。」を裏付ける記載は収録範囲にない。keiri-toolsのウィジェット仕様・提供者情報および自動計算の機能を確認できる資料。正本の税法・共済資料には当該製品の名称や機能の裏付けがない。",
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-d4d1b5a8706ff96a42ec-1"
+    },
+    {
+      "id": "s-eade1bb7acba415fa820-1",
+      "text_hash": "464a52f6eb25b4839a59",
+      "result": "out_of_corpus",
+      "needed_source": "keiri-toolsのウィジェット仕様・提供者情報および自動計算の機能を確認できる資料。正本の税法・共済資料には当該製品の名称や機能の裏付けがない。",
+      "reason": "指定正本（corpus と corpus_desc.md）を確認し、対象文言「小規模企業共済 節税シミュレーター」を裏付ける記載は収録範囲にない。keiri-toolsのウィジェット仕様・提供者情報および自動計算の機能を確認できる資料。正本の税法・共済資料には当該製品の名称や機能の裏付けがない。",
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-eade1bb7acba415fa820-1"
+    },
+    {
+      "id": "s-cebbf438d5f96047a22c-1",
+      "text_hash": "bebc41dfd3a38ca5b2f8",
+      "result": "out_of_corpus",
+      "needed_source": "当該ツールの名称・2026年対応・入力と計算結果・計算エンジン・準拠性・無料提供等、当該単位に含まれる製品の主張を裏付ける正本の計算仕様と検証記録。税法や掛金規則は収録されているが、それだけでは製品の動作や結果の正確性まで照合できない。",
+      "reason": "指定正本（corpus と corpus_desc.md）を確認し、対象文言「課税される所得金額と月額掛金から、掛金による年間の節税額を概算します。」を裏付ける記載は収録範囲にない。当該ツールの名称・2026年対応・入力と計算結果・計算エンジン・準拠性・無料提供等、当該単位に含まれる製品の主張を裏付ける正本の計算仕様と検証記録。税法や掛金規則は収録されているが、それだけでは製品の動作や結果の正確性まで照合できない。",
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-cebbf438d5f96047a22c-1"
+    },
+    {
+      "id": "s-a743172c88c0b5a8b800-1",
+      "text_hash": "84c0355c562add30718f",
+      "result": "out_of_corpus",
+      "needed_source": "住民税所得割の標準税率（道府県民税と市町村民税の合計10%）を定める条文、およびこの画面の概算仕様を正本として収録した資料。指定正本には税率の直接の根拠と製品仕様がない。",
+      "reason": "指定正本（corpus と corpus_desc.md）を確認し、対象文言「この画面の住民税軽減額は、住民税側の控除が全額効く場合の所得割10%の概算です。」を裏付ける記載は収録範囲にない。住民税所得割の標準税率（道府県民税と市町村民税の合計10%）を定める条文、およびこの画面の概算仕様を正本として収録した資料。指定正本には税率の直接の根拠と製品仕様がない。",
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-a743172c88c0b5a8b800-1"
+    },
+    {
+      "id": "s-ee34ecd1250e7db5aee1-1",
+      "text_hash": "8627417ccbfebb7a1d10",
+      "result": "out_of_corpus",
+      "needed_source": "当該シミュレーターが非課税・住民税課税所得不足・調整控除等を反映しないことを示す計算仕様または検証記録。SITEの実装は読んだが、製品仕様の正本は指定corpusに収録されていない。",
+      "reason": "指定正本（corpus と corpus_desc.md）を確認し、対象文言「非課税・課税所得不足・調整控除等は反映しません。」を裏付ける記載は収録範囲にない。当該シミュレーターが非課税・住民税課税所得不足・調整控除等を反映しないことを示す計算仕様または検証記録。SITEの実装は読んだが、製品仕様の正本は指定corpusに収録されていない。",
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-ee34ecd1250e7db5aee1-1"
+    },
+    {
+      "id": "s-7104f7fcd47e9adc8b3c-1",
+      "text_hash": "c5011c3aa3e1018605d5",
+      "result": "out_of_corpus",
+      "needed_source": "当該ツールの名称・2026年対応・入力と計算結果・計算エンジン・準拠性・無料提供等、当該単位に含まれる製品の主張を裏付ける正本の計算仕様と検証記録。税法や掛金規則は収録されているが、それだけでは製品の動作や結果の正確性まで照合できない。",
+      "reason": "指定正本（corpus と corpus_desc.md）を確認し、対象文言「keiri-tools の計算エンジンで動いています（国税庁の速算表・中小機構の掛金ルール）。」を裏付ける記載は収録範囲にない。当該ツールの名称・2026年対応・入力と計算結果・計算エンジン・準拠性・無料提供等、当該単位に含まれる製品の主張を裏付ける正本の計算仕様と検証記録。税法や掛金規則は収録されているが、それだけでは製品の動作や結果の正確性まで照合できない。",
+      "review_ref": "reports/r16-t15-a/segment-adjudication.json#s-7104f7fcd47e9adc8b3c-1"
+    }
+  ],
+  "checked": "2026-10-01"
+}

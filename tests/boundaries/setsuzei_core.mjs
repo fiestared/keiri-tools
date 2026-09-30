@@ -1,5 +1,5 @@
 // 2026-09-29 一次資料を再取得して審査。期待値は条文・公表表から独立に計算。
-import { shotokuzei, haigushaKojo, idecoMonthlyLimit, taxSavingByMonthly } from "../../docs/assets/setsuzei_core.js";
+import { shotokuzei, haigushaKojo, idecoMonthlyLimit, taxSavingByMonthly, taxSaving } from "../../docs/assets/setsuzei_core.js";
 import { readFileSync } from "node:fs";
 const load = f => JSON.parse(readFileSync(new URL(`../../docs/assets/${f}`, import.meta.url)));
 const D = load("setsuzei_r08.json");
@@ -17,3 +17,11 @@ cases.push(...[
  ...[['kaishain_dc',35000,20000],['kaishain_dc',35001,19000],['kaishain_db',40000,15000],['kaishain_db',50000,5000],['kaishain_db',50001,0],['jieigyo',0,68000],['jieigyo',400,67000]].map(([kubun,otherMonthly,expected])=>({name:`iDeCo上限 ${kubun} 他制度${otherMonthly}`,run:()=>idecoMonthlyLimit({kubun,otherMonthly},D),expected,source,quote})),
  {name:'iDeCo控除330万円境界を下へまたぐ',run:()=>taxSavingByMonthly({kazeiShotoku:3300000,monthly:23000},D).shotokuGen,expected:27600,source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm',quote:'1,950,000円 から 3,299,000円まで 10％ 97,500円。3,300,000円 から 6,949,000円まで 20％ 427,500円'},
 ]);
+
+// r16/t15: 説明文で誤っていた単一税率・月額/年額・住民税限度の境界。既存coreは正しい。
+for (const [name,input,field,expected] of [
+ ['小規模共済84万円控除で195万円の税率帯をまたぐ',{kazeiShotoku:2000000,annualDeduction:840000},'shotokuGen',44500],
+ ['小規模共済年間掛金の1円下の課税所得',{kazeiShotoku:839999,annualDeduction:840000},'usedDeduction',839999],
+ ['小規模共済年間掛金の1円上の課税所得',{kazeiShotoku:840001,annualDeduction:840000},'usedDeduction',840000],
+ ['小規模共済住民税課税所得ゼロは所得税と別判定',{kazeiShotoku:2000000,juminKazeiShotoku:0,annualDeduction:840000},'juminGen',0],
+]) cases.push({name,run:()=>taxSaving(input,D)[field],expected,source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm',quote:'1,000円 から 1,949,000円まで 5％。1,950,000円 から 3,299,000円まで 10％ 97,500円',supporting_source:'https://kyosai-web.smrj.go.jp/customer/skyosai/installment/'});

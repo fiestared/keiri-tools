@@ -1,0 +1,1362 @@
+[
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-ac9f19d685cbdd500d34-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_sochiho_25_2.txt:14-20;corpus/egov_shotokuzeiho_120.txt:6-7。計算機は青色申告特別控除前の課税所得を要求するが、この文は申告書の「課税される所得金額」の欄そのものを入力するよう案内している。申告書の課税所得は青色申告特別控除で所得金額を減額した後のものなので、控除後の額を入れる典型的な利用者で節税額を誤る。",
+    "needed_source": "",
+    "text": "入れるのは「所得の金額」と「課税される所得金額」の2つです\n    所得の金額は青色申告特別控除を引く前の、売上から必要経費を引いた金額です（売上そのものではありません）。節税額のほうは税率で決まり、税率は課税される所得金額で決まります。これは所得から基礎控除・社会保険料控除などをすべて引いた後の金額で、確定申告書の「課税される所得金額」の欄そのものです。",
+    "new": "入れるのは控除前の「所得の金額」と「課税所得」です。所得の金額は、青色申告特別控除前の売上から必要経費を引いた額です。課税所得も青色申告特別控除を引く前で、基礎控除・社会保険料控除などを差し引いた額を入力します。申告書の「課税される所得金額」は青色申告特別控除後なので、そのまま使わず控除前の額を計算してください。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-8812e3322578d15bc805-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:22-24,31-34,41-42。65万円はe-Taxだけでなく優良な電子帳簿保存でも適用可能であり、4つの分かれ目との断定はこの代替要件を落としている。また貸借対照表等の添付と現金主義適用者の除外も必要。電子帳簿を備え紙申告する実在の対象者が55万円と誤判定し得る。",
+    "needed_source": "",
+    "text": "分かれ目は「事業として営んでいるか」「複式簿記で記帳しているか」「期限内に申告するか」「e-Tax で出すか」の4つです。",
+    "new": "区分は、事業としての規模、正規の簿記、貸借対照表・損益計算書等の添付と控除額の記載、期限内申告、現金主義の特例の有無で分かれます。65万円には、申告書・決算書等の期限内e-Tax送信、または届出等を含む優良な電子帳簿保存の要件も必要です。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-a6d0c80a2679536fd6fb-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:31-34;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:41-43。65万円への上乗せ要件として、優良な電子帳簿の保存だけでよいと読める。正本ではその年分の仕訳帳・総勘定元帳の備付け・保存に加え、原則として期限内の届出が必要（既に適用し引き続き要件を満たす者は届出不要）。またe-Taxは確定申告書だけでなく貸借対照表・損益計算書等も期限内に送信する必要がある。届出や決算書送信をしていない対象者が65万円適用を誤る。届出を出していない新規の電子帳簿保存者、または貸借対照表・損益計算書を期限内にe-Tax送信していない人が65万円と判断する。控除額が10万円ずれる典型なので high。",
+    "needed_source": "",
+    "text": "55万円の要件すべて＋e-Tax で申告または優良な電子帳簿の保存",
+    "new": "55万円の全要件＋申告書・貸借対照表・損益計算書等の期限内e-Tax送信、または仕訳帳・総勘定元帳の優良な電子帳簿による備付け・保存と期限内届出（従前から要件を満たす継続適用者は届出不要）"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-4a8cff2e65e7e8886de0-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1373_htm.txt:20-23;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1373_htm.txt:29-31;corpus/egov_sochiho_25_2.txt:14-14。5棟10室基準に達していないと事業にならず10万円になるという断定は、正本の実質判定を落としている。5棟10室は原則として事業扱いする基準であり、未達でも社会通念上の規模により事業となり得る。また事業所得を生ずべき事業を併営している者まで、少数室の不動産貸付けを理由に一律10万円とはできない。該当する少数の読者が控除区分を誤る。",
+    "needed_source": "",
+    "text": "「事業として営んでいるか」は、とくに不動産所得で問題になります\n55万円・65万円は「不動産所得又は事業所得を生ずべき事業を営むもの」が要件です（措置法25条の2第3項）。不動産貸付けの場合、いわゆる事業的規模（独立家屋おおむね5棟以上、アパート等はおおむね10室以上＝5棟10室基準）に達していないと「事業」と扱われず、10万円の区分になります。ワンルーム1室だけの貸付けで65万円を見込んでいると、申告時に足りなくなります。",
+    "new": "不動産貸付けが事業かは社会通念上の規模で実質的に判定します。独立家屋おおむね5棟以上、アパート等おおむね10室以上は事業扱いの目安で、未達でも直ちに対象外とはなりません。事業所得を生ずべき事業を併営する場合も含め、55万円・65万円の他の要件と合わせて確認します。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-faf1aa2035e102615581-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:24-25;corpus/egov_shotokuzeirei_195.txt:6-9;corpus/egov_sochiho_25_2.txt:14-14。300万円以下の判定には、青色事業専従者給与等（所得税法57条）を適用せずに計算する条件がある。専従者給与控除後では300万円以下でも控除前では超える者は対象外。また過去に特例をやめた者の再適用には税務署長の承認要件があり、届出だけで適用できるとの説明では特定の対象者が該当要件を誤る。",
+    "needed_source": "",
+    "text": "現金主義の特例を選んでいる人は、65万円・55万円を受けられません。前々年分の事業所得・不動産所得の合計が300万円以下の青色申告者は、届出により現金主義（お金の出入りの時点で計上する方法）で計算できますが、この特例を選ぶと措置法25条の2第3項の対象から外れ、10万円のみになります（同項かっこ書きで所得税法67条1項の適用者を除いています）。",
+    "new": "現金主義の特例の適用者は55万円・65万円の対象外で、10万円の区分です。特例には前々年分の事業所得・不動産所得の合計が300万円以下という要件があり、青色事業専従者給与等の特例を適用せずに計算します。届出のほか、過去に適用をやめた人の再適用には税務署長の承認も必要です。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-19713c3f698faf9e74b4-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:22-23。判定フローで貸借対照表の添付だけを条件とし、損益計算書および所得金額の計算に関する明細書の添付、控除適用額の記載を落としている。正本はこれらも必要とするため、貸借対照表だけ添付して他を欠く申告者が55万円・65万円の該当を誤る。損益計算書と明細書を欠いたまま55万円・65万円へ進む。添付漏れは普通に起きるので high。",
+    "needed_source": "",
+    "text": "② 複式簿記で記帳し、貸借対照表を添付して期限内に申告する",
+    "new": "② 複式簿記・決算書等の添付・控除額の記載・期限内申告（注）"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-0b3ca81d4359a434b789-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:31-34;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:41-43。判定フローでは優良な電子帳簿の保存だけで65万円へ進めるが、正本はその年分の仕訳帳・総勘定元帳の備付け・保存と原則として期限内の届出を要求する（継続適用者の届出不要例外あり）。e-Taxも申告書に加えて貸借対照表・損益計算書等の期限内送信が必要。これらを欠く対象者が65万円の該当を誤る。同じ欠落が判定フローの分岐にある。65万円と55万円の差は多数の申告者の税額に効くので high。",
+    "needed_source": "",
+    "text": "③ e-Tax で申告する、または優良な電子帳簿を保存している",
+    "new": "③ 申告書・決算書等の期限内e-Tax送信／優良電子帳簿と届出（注）"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-2016efce600c0398d26d-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_kokuhorei_29_7.txt:45-45;corpus/egov_kokuhorei_29_7.txt:61-61。保険料が下がると断定しているが、控除後も賦課限度額に達する被保険者などでは下がらない。加入状況と賦課限度額等の条件が必要。",
+    "needed_source": "",
+    "text": "さらに国民健康保険料も所得に応じて下がります。",
+    "new": "国民健康保険の所得割も減る場合がありますが、控除後も賦課限度額に達する場合などは保険料が下がりません。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-4fa7fc51222f00de08fa-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_sochiho_mishiko_20270101_25_2.txt:12-15。新2項は事業所得と不動産所得の総収入金額を各別に判定し、所得税法67条1項の現金主義適用者を除く。「総収入金額1,000万円超」だけでは、例えば事業600万円・不動産600万円の合算で控除を失うと誤読できる。",
+    "needed_source": "",
+    "text": "前々年の総収入金額1,000万円超の事業者は、65万円の要件を満たさないと10万円も受けられない",
+    "new": "前々年の事業所得・不動産所得の総収入金額を各別に見て1,000万円超の対象事業者は、65万円の要件を満たさないと10万円も対象外（現金主義の特例適用者を除く）"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-4cad86ba1fca733847c6-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_sochiho_mishiko_20270101_r8hou12_fusoku_33.txt:6-6;corpus/egov_sochiho_mishiko_20270101_25_2.txt:12-15;corpus/egov_sochiho_mishiko_20270101_25_2.txt:38-38。新2項の10万円控除排除からは所得税法67条1項の現金主義適用者が除外される。この条件を省き、対象事業者は複式簿記とe-Taxがなければ10万円も受けられないと断定している。",
+    "needed_source": "",
+    "text": "「令和9年分から」は、2027年の1年間の所得＝2028年春に出す申告のことです。いま準備している令和8年分（2026年の所得・2027年3月15日期限の申告）は従来どおり65万円・55万円・10万円で、75万円はまだ使えません。一方で、令和9年分の改正では紙で申告する人の65万円が無くなり、さらに前々年の事業所得に係る収入金額、または不動産所得に係る収入金額がそれぞれ1,000万円を超える対象事業者は、複式簿記と e-Tax をそろえないと10万円の控除すら受けられなくなります（新2項）。売上1,000万円前後の事業者にとっては影響が大きいので、令和9年分が始まる前に e-Tax と会計ソフトの準備をしておくのが安全です。",
+    "new": "令和9年分は2027年の所得で、2028年に申告する分です。令和8年分（2026年の所得）は65万円・55万円・10万円の区分です。令和9年分から65万円・75万円には期限内のe-Tax送信が必要になります。また、前々年の事業所得と不動産所得の総収入金額を合算せず各別に判定し、1,000万円を超える対象事業者は65万円の要件を満たさなければ10万円も受けられません。ただし現金主義の特例適用者はこの10万円排除の対象外です。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-af5f7c05a635546c9c01-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:31-34、corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:22-36。55万円の要件を満たす人がe-Taxで決算書も送ると65万円になり、課税所得500万円が20%の帯に残るなら、所得税の差は10万円×20%＝2万円、復興2.1%で420円、差の2万円台は計算として辿れる。ただし「e-Taxに変えるだけで」は、貸借対照表・損益計算書の期限内送信と65万円の残りの要件を落とす。「戻ってくる」は、課税所得500万円の人が還付を受けると読ませる。通常は納付税額が減るだけで、還付には源泉徴収や予定納税の余りが要る。「会計ソフトの年間費用と同じくらい」は、corpus_desc.md が未収録とする料金の主張である。30,420円の算術そのものが常に誤り、というより、還付の向きと費用比較と「だけで」が欠陥なので medium。",
+    "needed_source": "会計ソフトの年間料金を示す製品資料。住民税所得割10%は地方税法35条・314条の3（収録外、setsuzei_r08.json 側）。この単位を未解決にした理由は還付方向と「だけで」と費用比較。",
+    "text": "e-Tax に変えるだけで、この人は年30,420円 得します\n複式簿記で期限内に申告している人が、紙の申告から e-Tax に変えると 55万円 → 65万円 になり、控除が10万円増えます。課税所得500万円なら 197,730円 − 167,310円 ＝ 30,420円 の差です。会計ソフトの年間費用と同じくらいの額が、申告方法を変えるだけで戻ってくる計算になります。同じ人が複式簿記をやめて10万円の区分になると、節税額は30,420円まで落ちます。",
+    "new": "55万円から65万円になった場合の税負担の差。55万円の全要件を満たす人が申告書・貸借対照表・損益計算書等を期限内にe-Tax送信すれば、控除が10万円増えます。控除前の課税所得500万円で、住民税側も控除が全額効く上の例なら、197,730円−167,310円＝30,420円の税負担減少です。還付額ではなく、源泉徴収・予定納税の状況で納付額の減少となる場合もあります。同じ前提で10万円控除の節税額は30,420円です。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-cfcebdc52a13120f0878-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:22-30;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:26-26。控除前後で累進税率の区分をまたぐ典型例では、65万円全額に単一税率を掛けても減税額にならない。所得が控除額未満なら65万円全額も控除できない。",
+    "needed_source": "",
+    "text": "控除額そのものが戻るわけではなく、65万円に税率をかけた分だけ税金が減ります。",
+    "new": "控除額そのものが戻るわけではなく、所得に応じた実際の控除額で、控除前後の税額を比較します。税率区分をまたぐ場合は65万円に一つの税率を掛けるだけでは計算できません。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-f4a90eadc7f5561180ad-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_kokuhorei_29_7.txt:45-45,61-61。国保の賦課限度額に達した世帯や所得割が既にゼロの世帯などでは、所得が下がっても保険料は下がらない。「下がる分だけ安くなる」と例外なく断定している。",
+    "needed_source": "",
+    "text": "さらに国民健康保険料も所得が下がる分だけ安くなります。",
+    "new": "国民健康保険料も減る場合がありますが、所得割が既にゼロの場合や控除後も賦課限度額に達する場合などは下がりません。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-46435bdea9578e315282-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2070_htm.txt:81-88;corpus/egov_tsusokuho_10.txt:14-14。令和8年の3月15日は日曜日なので、青色申告承認申請の通常期限は3月16日となる。年分を限定せず3月15日を期限と断定し、休日による期限繰下げを欠いている。新規開業例外は次の固定単位に記載されている。",
+    "needed_source": "",
+    "text": "青色申告をしたい年の3月15日までに「所得税の青色申告承認申請書」を税務署に出します。",
+    "new": "青色申告承認申請書の通常期限は適用を受けたい年の3月15日です。土日・祝日等なら翌開庁日に繰り下がり、令和8年は3月16日です。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-a252f62853431f3604f2-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2070_htm.txt:54-54;corpus/egov_shotokuzeiho_57.txt:8-8;corpus/egov_shotokuzeiho_70.txt:16-16。青色申告の承認だけで家族給与が経費になるわけではない。専従・年齢・相当額等の要件と、別途の期限内届出が必要。純損失の繰越にも継続申告が必要であり、承認だけで使えるとの記述は要件を落としている。",
+    "needed_source": "",
+    "text": "承認されると、その年分から青色申告特別控除のほか、赤字を3年間繰り越せる純損失の繰越控除や、家族に払う給与を経費にできる青色事業専従者給与も使えるようになります。",
+    "new": "青色申告の承認を受けると、各制度の要件を満たす場合に特別控除や純損失の3年間の繰越控除を利用できます。繰越しには継続申告が必要です。青色事業専従者給与には生計を一にする15歳以上の親族の専従等、労務の対価として相当な額、別途の期限内届出などの要件があります。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-78f7ce555d069676b4f8-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:21-24。正規の簿記の原則という引用は正しいが、記帳の継続だけが実質的条件ではない。正規の簿記で記録し、その記帳に基づく貸借対照表等を作成・添付して期限内申告する必要があり、簡易記帳を継続するだけでは55万円・65万円を満たさない。",
+    "needed_source": "",
+    "text": "国税庁も要件を「正規の簿記の原則（一般的には複式簿記）」と説明しており、簿記の知識より記帳の継続が実質的な条件です。",
+    "new": "国税庁は正規の簿記の原則（一般的には複式簿記）による記帳を求めています。55万円・65万円には、その帳簿に基づく貸借対照表・損益計算書等の作成・添付、控除額の記載と期限内申告も必要です。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-9b173b55963775d21417-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:28-28;corpus/egov_tsusokuho_10.txt:14-14。還付申告も法定期限内が必要という点は正しいが、3月15日が休日なら期限は繰り下がる。繰下げ後の期限内に申告した人まで65万円を使えないと読める。",
+    "needed_source": "",
+    "text": "還付になる申告であっても期限は同じで、翌年3月15日を過ぎると65万円は使えません。",
+    "new": "還付申告でも法定申告期限内の提出が必要です。通常は翌年3月15日ですが、土日・祝日等なら翌開庁日に繰り下がります。"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-ea7be561a69e04c63f3f-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2070_htm.txt:69-73;corpus/egov_shotokuzeiho_70.txt:16-16。繰越対象は赤字そのもの全額ではなく、損益通算後も控除しきれない純損失。直前の例では不動産所得と通算して赤字が残らず、事業の赤字200万円を別に繰り越すことはできない。また継続申告が必要。",
+    "needed_source": "",
+    "text": "なお赤字そのものは、青色申告なら純損失として3年間繰り越せます。",
+    "new": "青色申告の純損失の繰越控除は、損益通算後も控除しきれない純損失が対象で、継続申告等の要件を満たせば3年間繰り越せます。この例では通算後に赤字は残らず、事業の赤字200万円を別に繰り越すことはできません。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-811f8afb49b793fd5fc0-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:6-21;corpus/egov_shotokuzeiho_205.txt:6-9;corpus/egov_fukko_28.txt:6-8。204条1項の8つの号は源泉徴収対象の分類であり、全てを一律10.21%で計算する分類ではない。205条は1回100万円超の部分を20%（復興税込み20.42%）とし、診療報酬・外交員・ホステス等では控除後の残額を基礎にする。この見出しだけで計算すると該当する報酬の徴収額を誤る。",
+    "needed_source": "",
+    "text": "業務委託の確定申告【令和8年分】源泉徴収10.21%の対象は8種類だけ",
+    "new": "業務委託の確定申告【令和8年分】源泉徴収の対象と税率・所得区分"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-d58d8f287fc1d835a078-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:6-21;corpus/egov_shotokuzeiho_205.txt:6-9;corpus/egov_fukko_28.txt:6-8;corpus/www_nta_go_jp_law_tsutatsu_kihon_shotoku_04_09_htm.txt:36-37;corpus/egov_shotokuzeiho_225.txt:6-11,36-39。固定単位内の「事業所得と雑所得の分かれ目は帳簿の有無」は不正確。正本は社会通念上事業と称する程度かを判定基準とし、帳簿保存がなくても収入300万円超かつ事業の事実があれば例外となる。帳簿がある副業を自動的に事業所得と扱うと所得区分・青色申告等の適否を誤る。また8つの号すべてに一律10.21%が適用されるわけではなく、205条に税率・計算基礎の相違がある。報酬の支払調書について本人交付義務がないとの部分は225条の交付対象と整合する。",
+    "needed_source": "",
+    "text": "業務委託で報酬を受け取る側の確定申告を令和8年分の条文で整理します。源泉徴収10.21%の対象は所得税法204条1項が挙げる8種類の報酬だけで、システム開発や配送の業務委託は対象外です。事業所得と雑所得の分かれ目は帳簿の有無、支払調書には本人への交付義務がありません。経費と家事按分、青色申告、開業届の期限の改正、消費税の免税とインボイス、住民税・国保・国民年金まで。",
+    "new": "業務委託で報酬を受け取る側の確定申告を令和8年分の条文で整理します。源泉徴収は所得税法204条の報酬の内容と支払者の条件で判定し、税率・控除額は報酬の種類と金額で異なります。事業所得か雑所得かは社会通念上の実態で判定し、帳簿の保存も確認します。報酬の支払調書には本人への交付義務がありません。経費と家事按分、青色申告、開業届、消費税、住民税・国保・国民年金を解説します。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-ce533a76a5389ae8b338-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_121.txt:6-12。会社員なら給与・退職以外の所得20万円以下で121条1項1号が適用されると読めるが、給与収入2,000万円以下、給与の支払者が1か所、給与全部が源泉徴収対象であることなどの条件がある。給与が複数の場合は2号の別の判定となる。高額給与や複数給与等の特定の読者が申告不要と誤認する。",
+    "needed_source": "",
+    "text": "会社員が本業のかたわら業務委託を受けている場合は、これとは別に121条1項1号の申告不要制度（給与と退職所得以外の所得が20万円以下）が乗ります。",
+    "new": "会社員の副業には、給与収入2,000万円以下・給与の支払者1か所・給与全部が源泉徴収対象などの要件を満たし、給与・退職以外の所得が20万円以下なら申告不要となる制度があります（121条1項1号）。勤務先への資産提供の対価等を受ける場合は除外され、複数給与には同項2号の別の判定があります。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-377d542893091ded9609-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:7-13;corpus/egov_shotokuzeirei_320.txt:6-8。「Webサイトの構築」「営業代行」「経理代行」などを業務名だけで一律に対象外としている。Webデザイン部分は204条1項1号のデザイン、外交員に該当する営業活動は4号、税理士等の業務に当たる経理関連報酬は2号の対象になり得る。報酬の実質を区別せず対象外とすると、実在する典型的なデザイン・営業の委託で源泉徴収義務の有無を誤る。",
+    "needed_source": "",
+    "text": "源泉徴収の対象になるのは、所得税法204条1項が第1号から第8号までに挙げた報酬・料金・契約金・賞金だけで、原稿・デザイン・講演・士業・外交員などは入りますが、システム開発、Webサイトの構築、軽貨物の配送、営業代行、清掃、経理代行といった多くの業務委託は入りません。",
+    "new": "所得税法204条1項は源泉徴収対象を8つの号に列挙しています。原稿・デザイン・講演・士業・外交員等が含まれ、業務名だけでは判定できません。Web制作中のデザイン、営業代行中の外交員業務、経理関連の税理士等の報酬は対象となり得ます。支払者についての適用除外も確認します。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-d59d77ba8f7078472dfb-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_205.txt:7-9;corpus/egov_fukko_28.txt:8-8。204条各号の報酬全体に一律の二段階税率を示している。205条2号の司法書士・外交員・ホステス等には所定額控除後の10%という別計算があり、100万円超部分も一律20.42%にはならない。対象を205条1号に限定しないと徴収税額を誤る。",
+    "needed_source": "",
+    "text": "1回の支払が100万円以下は10.21%、超える部分は20.42%",
+    "new": "205条1号の一般報酬は1回100万円以下10.21%、超過部分20.42%。司法書士・外交員等は所定額控除後に10.21%"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-ff1623cbb10647769c31-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shohizeiho_9.txt:6-6;corpus/egov_shohizeiho_9.txt:20-20。インボイス登録者を除くとの隣接条件を含めても、9条1項ただし書と課税事業者選択などの例外が抜ける。基準期間売上1,000万円以下でも課税選択している事業者等は免税ではない。",
+    "needed_source": "",
+    "text": "基準期間（個人は前々年）の課税売上高1,000万円以下なら免税。",
+    "new": "基準期間（個人は前々年）の課税売上高1,000万円以下は免税の基本条件ですが、課税選択・特定期間などの例外があります。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-515cab472a7e8aba719a-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:6-29。列挙該当性だけで源泉徴収の有無が決まると断定しているが、204条2項に支払者が給与の源泉徴収義務を負わない個人である場合等の適用除外がある。該当報酬でも徴収しないケースを誤判定する。",
+    "needed_source": "",
+    "text": "源泉徴収されるかどうかは「業務委託かどうか」ではなく「その報酬が204条1項の列挙に入るかどうか」で決まります。",
+    "new": "源泉徴収の要否は、報酬が204条1項の列挙に当たるかに加え、同条2項の支払者等に関する適用除外も確認して判定します。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-7d3cecf5a312f647df99-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_minpo_632.txt:6-6;corpus/egov_minpo_643.txt:6-6;corpus/egov_minpo_656.txt:6-6。請負・委任・準委任の定義は正本と一致するが、業務委託を請負か準委任の二つに限定するのは過剰。法律行為を委託する場合は、本文にも掲げた643条の委任に当たり得る。",
+    "needed_source": "",
+    "text": "民法にあるのは、仕事の完成を約する請負（632条）、法律行為の委託である委任（643条）、法律行為でない事務の委託である準委任（656条）で、実務で業務委託と呼ばれているものはこの請負か準委任のどちらかです。",
+    "new": "民法では仕事の完成を約する請負（632条）、法律行為の委託である委任（643条）、法律行為でない事務の委託である準委任（656条）を定めています。業務委託と呼ばれる契約も、その内容に応じて判断します。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-41ad3acb272c25e63d59-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_205.txt:7-9;corpus/egov_shotokuzeirei_322.txt:6-6;corpus/egov_fukko_28.txt:6-8。2号の一般税率を10.21%とだけ示しているが、司法書士・土地家屋調査士・海事代理士以外の対象報酬は同一人への1回の支払が100万円を超えると超過部分に20.42%が適用される。例えば150万円の弁護士報酬を全額10.21%で計算すると徴収税額を過少にする。",
+    "needed_source": "",
+    "text": "10.21%（司法書士・土地家屋調査士・海事代理士は1回1万円を引いた残額に10.21%）",
+    "new": "一般の士業報酬は1回100万円以下10.21%、超過部分20.42%。司法書士・土地家屋調査士・海事代理士は1回1万円を引いた残額に10.21%"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-be41a6347a017aa2fb34-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeirei_322.txt:9-9;corpus/egov_shotokuzeiho_205.txt:9-9;corpus/egov_fukko_28.txt:6-8。同じ支払者からその月中に給与等も受ける場合、控除額は12万円からその給与等の額を控除した金額となる。この条件がなく、給与併給者は控除額を過大にして徴収税額を過少に計算する。",
+    "needed_source": "",
+    "text": "外交員・集金人・検針人はその月中の支払から12万円を引いた残額に10.21%",
+    "new": "外交員・集金人・検針人は月中支払額から控除額を引いた残額に10.21%。控除額は12万円（同じ支払者から給与も受ける場合は12万円からその月の給与額を差し引く）"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-4108e1283698892e1bd0-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:14-15、corpus/egov_shotokuzeirei_320.txt:6-12。俳優・演奏家は204条1項5号および施行令320条4項・5項で確認できるが、司会業務全般を5号に分類する根拠は正本内に見つからず、出演する媒体・芸能との関係もこの確認単位には示されていない。",
+    "needed_source": "",
+    "text": "俳優、演奏家、司会",
+    "new": "俳優、演奏家など（対象となる芸能・放送の出演等）"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-a97401ba85813b86b4e4-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeirei_322.txt:10-10;corpus/egov_shotokuzeiho_205.txt:9-9;corpus/egov_fukko_28.txt:6-8。同じ支払者から計算期間に係る給与等も受ける場合、5,000円×計算期間の日数からその給与等の額を控除した金額が控除額となる。この条件がなく、給与併給者は徴収税額を過少に計算する。",
+    "needed_source": "",
+    "text": "5,000円×計算期間の日数を引いた残額に10.21%",
+    "new": "支払額から控除額を引いた残額に10.21%。控除額は5,000円×計算期間の日数（同じ支払者から給与も受ける場合は、その期間の給与額をさらに差し引く）"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-5a08c3006d6f88bd4e90-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeirei_322.txt:11-12;corpus/egov_shotokuzeiho_205.txt:9-9。8号には競馬賞金も含めているが、50万円控除は広告宣伝賞金の規定。競馬賞金の控除額は令298条1項による別の金額であり、この表を使う馬主は源泉徴収額を誤る。",
+    "needed_source": "",
+    "text": "1回50万円を引いた残額に10.21%",
+    "new": "広告宣伝の賞金は1回50万円を引いた残額に10.21%。競馬賞金の控除額は別規定（施行令298条1項）"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-a7b827e6b732b60267e0-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeirei_320.txt:6-8,12-12。表は限定列挙の全項目を記載していない。例えば印刷物掲載用の写真、書籍の装てい、損害鑑定人、映画等の編集は正本の対象に含まれ、表に文字どおりないことだけで対象外と判断すると徴収義務を誤る。",
+    "needed_source": "",
+    "text": "この表に無い仕事は、契約書に「業務委託」と書いてあっても源泉徴収されません。",
+    "new": "この表は代表例で、全業務の一覧ではありません。表にない名称でも204条と施行令320条に照らして内容を確認します。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-90f5e4b2a82063e3be32-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:13-15;corpus/egov_shotokuzeirei_320.txt:12-12。営業代行には4号の外交員に該当する業務があり、動画編集も映画・テレビ等の演出に係る編集なら5号に含まれる。「作業部分」という区別だけで除外する規定はない。これらを一括して対象外とすると典型的な該当業務で徴収義務を誤る。",
+    "needed_source": "",
+    "text": "システム開発・プログラミング、Webサイトの構築、軽貨物や宅配の配送、営業代行、清掃、警備、経理代行、データ入力、事務代行、家事代行、動画編集の作業部分などが典型です。",
+    "new": "純粋なプログラミング、配送、清掃など、列挙された報酬に当たらないものは対象外です。Web制作のデザイン部分、外交員に当たる営業代行、税理士等の報酬、映画等の編集は対象となり得るので、業務名で一括して除外しません。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-55d2b68ba32196107d20-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_205.txt:7-7;corpus/egov_fukko_28.txt:8-8;corpus/egov_shotokuzeiho_204.txt:27-27。原稿料も同一人への1回の支払額が100万円を超える部分は20.42%。法人からの原稿料を一律10.21%とすると、大口の原稿料で徴収額・手取りを誤る。また、一人で仕事をしていることだけでは給与の源泉徴収義務がないことまで確定しない。",
+    "needed_source": "",
+    "text": "ライターが法人のメディアから受ける原稿料は10.21%を引かれるのに、同じ原稿料を一人で仕事をしている個人事業主から受けると全額が振り込まれる、という違いはここから来ています。",
+    "new": "法人からの原稿料は1回100万円以下の部分が10.21%、超過部分が20.42%の対象です。一方、給与の源泉徴収義務がない個人からの原稿料は204条2項2号の適用除外に当たります。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-3f31eff3a36a615e29cb-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:13-13。源泉徴収なしの例に営業代行を置いているが、外交員に該当する営業代行は4号の対象。職種名だけで対象外とすると徴収義務を誤る。",
+    "needed_source": "",
+    "text": "営業代行・清掃など",
+    "new": "清掃・配送など"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-1af0fc9277eacbf7513b-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:25-25;corpus/egov_shotokuzeiho_121.txt:17-17。この到達先は給与と退職手当の双方を受けるが、退職手当は給与として徴収するものではない。正本は退職所得の徴収を199条・201条としており、給与扱いすると適用税額・計算方法を誤る。",
+    "needed_source": "",
+    "text": "給与として徴収",
+    "new": "給与・退職で別計算"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-3ea58ef4f15f142c25b8-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:25-25;corpus/egov_shotokuzeiho_121.txt:7-7,17-17。図は退職手当も183条による給与の徴収へ送るが、正本では退職所得の源泉徴収は199条・201条。退職手当に給与の税額表を適用すると税額を誤る。また183条そのものの税額表を確認できる正本はない。",
+    "needed_source": "",
+    "text": "183条の税額表で",
+    "new": "給与183条／退職199条"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-5bb74e73f07ada04665b-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:25-25;corpus/egov_shotokuzeiho_226.txt:8-8。図の到達先には退職手当も含まれる。退職手当を毎月徴収される給与として扱うと支払・徴収時期や所得区分を誤る。正本は退職手当を別に扱い、退職の日以後1月以内の源泉徴収票作成・交付を定めている。",
+    "needed_source": "",
+    "text": "毎月引かれる",
+    "new": "それぞれの規定を適用"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-36e0444c3b3bd62efa96-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:6-6,27-27。給与の源泉徴収義務の有無による204条2項2号の除外は個人に限られる。給与を支払わない法人までこの括弧の判定で除外すると、法人の報酬の徴収義務を誤る。",
+    "needed_source": "",
+    "text": "（給与の源泉徴収義務がある者か）",
+    "new": "（個人は給与の徴収義務も確認）"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-49c2a445b7addc51b585-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_205.txt:7-9;corpus/egov_fukko_28.txt:8-8。204条対象の全報酬に支払金額そのままの10.21%を掛けるとの断定は誤り。205条1号では1回100万円超の部分は20.42%、2号では政令の控除額を引いた残額に10.21%を掛ける。司法書士・外交員・ホステス等の実際の徴収税額を誤る。また「ほとんど一致しない」という頻度の裏付けは正本にない。",
+    "needed_source": "",
+    "text": "204条の源泉徴収は、経費も所得控除も引く前の支払金額にそのまま10.21%をかけているので、実際の年税額とはほとんど一致しません。",
+    "new": "204条の源泉徴収は年税額の前払いです。205条1号の報酬は1回100万円超の部分に20.42%、同条2号の報酬等は所定額控除後に10.21%など、種類・金額で計算が異なります。経費や所得控除を反映する年税額との差を申告で精算します。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-442a7a2f71dfbb223f0e-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_205.txt:6-7;corpus/egov_fukko_28.txt:8-8。3回に分けるだけでは各回100万円以下とは限らない。例えば120万円・15万円・15万円なら120万円の超過部分は20.42%となり、源泉徴収額は153,150円ではない。各回100万円以下（例：50万円ずつ）という条件が必要。",
+    "needed_source": "",
+    "text": "100万円は年間ではなく同一人に対し1回に支払われる金額で見るので、同じ150万円でも3回に分けて受け取れば全額が10.21%となり、源泉徴収額は153,150円になります。",
+    "new": "205条1号の100万円は年間合計でなく同一人への1回の支払額で判定します。150万円を50万円ずつ3回の支払として受ける例なら、各回100万円以下なので全額が10.21%となり、合計153,150円です。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-e0076bf42894f1f2291d-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_104.txt:6-9。源泉徴収されなくても予定納税基準額15万円以上の事業所得者には予定納税という前払いがある。後段で予定納税に触れているが、この文の「前払いがありません」はその対象者にも通用する断定になっている。",
+    "needed_source": "",
+    "text": "反対に、源泉徴収されない業務委託では前払いがありません。",
+    "new": "源泉徴収されない報酬でも、予定納税による前払いがある場合があります。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-1d77f85d82d1d5ca4a59-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_104.txt:6-9。予定納税基準額は単純な前年分の所得税額から源泉徴収税額を引いた額とは限らない。譲渡所得・一時所得・雑所得・臨時所得等を除いて計算し、特別農業所得者も別扱い。該当する少数の読者では15万円判定と納付時期が変わる。",
+    "needed_source": "",
+    "text": "なお、前年分の所得税額から源泉徴収税額を引いた予定納税基準額が15万円以上になると、その年の7月と11月に予定納税が生じます（所得税法104条1項）。",
+    "new": "予定納税基準額が15万円以上なら、通常は7月と11月に予定納税を行います。基準額は前年税額から源泉税額を単純に引くとは限らず、譲渡・一時・雑所得や臨時所得等を除く調整があります。特別農業所得者は別扱いです（104条）。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-2e11f7048417cbd1f8e8-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_120.txt:7-7;corpus/egov_shotokuzeiho_120.txt:13-13。申告書の必要事項を収入金額と源泉徴収税額だけとする説明は不足する。所得金額・必要経費・所得控除なども必要で、収入をそのまま所得として申告すれば税額を誤る。",
+    "needed_source": "",
+    "text": "申告書に必要なのは、その年の収入金額と源泉徴収税額です。",
+    "new": "報酬について収入金額と源泉徴収税額を確認し、申告書には必要経費を引いた所得金額、所得控除なども記載します。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-0c579178ebcce98b6349-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2798_htm.txt:20-20;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2798_htm.txt:27-34。10.21%の一律逆算では100万円超の支払に係る20.42%部分や消費税の区分・端数処理を反映できず、源泉徴収税額を誤る。",
+    "needed_source": "",
+    "text": "請求額と入金額の差が源泉徴収税額なので、10.21%で逆算して確かめられます。",
+    "new": "請求額と入金額の差には振込手数料等が含まれることもあるため、支払明細で源泉徴収額を確認します。対象報酬の種類、100万円の境界、消費税の区分記載と端数処理も踏まえ、一律10.21%の逆算だけで確定しません。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-8dd7292d3514219e5a41-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:6-6;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_hotei_7431_htm.txt:20-20;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2798_htm.txt:23-24。翌月10日までの納付を断定しているが、納期の特例では7月10日・翌年1月20日となる。特例適用者の期限が変わる条件を欠く。",
+    "needed_source": "",
+    "text": "提出範囲以下の支払いでは税務署への提出義務もありませんが、その場合でも支払う側は源泉徴収した税額を翌月10日までに納付しています（204条1項）。",
+    "new": "支払調書の提出範囲以下でも源泉徴収・納付が必要な場合があります。納期限は通常翌月10日ですが、対象となる士業報酬等に納期の特例を適用する場合は7月10日・翌年1月20日です。休日等による繰下げも確認します。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-a0d5def85e7f4a37ce5f-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_law_tsutatsu_kihon_shotoku_04_09_htm.txt:36-37。帳簿で所得区分が決まると断定しているが、判定は活動が社会通念上事業と称する程度かどうかによる。帳簿の保存だけで事業所得を選択すれば所得区分と適用制度を誤る。",
+    "needed_source": "",
+    "text": "事業所得か雑所得かは帳簿で決まる。300万円は「帳簿が無いとき」の話",
+    "new": "事業所得か雑所得かは社会通念上の実態で判定。帳簿保存の有無も確認"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-959d37eb696eef1004ca-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_232.txt:8-8;corpus/egov_shotokuzeisoku_102.txt:22-22。表の300万円・前々年と合わせても「300万円を超える」という条件が示されていない。正本の保存義務は前々年の業務収入が300万円超の場合で、ちょうど300万円には生じない。金額を義務発生額と読むと境界で義務の有無を誤る。",
+    "needed_source": "",
+    "text": "業務に係る雑所得で、現金預金取引等関係書類の保存義務が生じる",
+    "new": "前々年の業務収入が300万円を超えると、業務に係る雑所得の現金預金取引等関係書類の保存義務が生じる"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-cacd317725723a555c68-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_120.txt:48-48。表の1,000万円・前々年と合わせても「1,000万円を超える」という条件が示されていない。正本では前々年の業務収入が1,000万円超の居住者が120条1項の申告書を提出する場合に添付義務が生じる。ちょうど1,000万円や同項の申告をしない場合まで義務があると誤る。",
+    "needed_source": "",
+    "text": "業務に係る雑所得で、収支内訳書の添付義務が生じる",
+    "new": "前々年の業務収入が1,000万円を超える居住者が120条1項の申告をする場合、業務に係る雑所得の収支内訳書を添付する"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-20560d80bbcd93afb36f-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_sochiho_28_2.txt:6-10;corpus/egov_sochiho_mishiko_20270101_r8hou12_fusoku_35.txt:6-6;corpus/egov_sochiho_mishiko_20270101_r8hou12_fusoku_1.txt:6-6。青色申告者全員を対象として、令和8年4月1日以後なら使えると述べているが、正本は所定の中小事業者に限り、取得期限は令和11年3月31日。業務供用と明細書添付も必要である。直後の本文に年間合計額・添付要件の説明はあるものの、対象者限定と取得期限の欠落により、対象外の青色申告者や期限後取得者が全額算入できると誤認する。",
+    "needed_source": "",
+    "text": "青色申告者は令和8年4月1日以後に取得したものなら40万円未満まで全額を経費にできる（措置法28条の2）",
+    "new": "青色申告をする所定の中小事業者は、令和8年4月1日から令和11年3月31日までの対象資産の取得・業務供用等の要件を満たす場合、40万円未満の少額減価償却資産の取得価額を経費算入できる（措置法28条の2）"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-09af46478545c9103e21-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_sochiho_28_2.txt:6-10;corpus/egov_sochiho_r080101ban_28_2.txt:6-10。開業年・廃業年の上限は300万円の月割り。無条件に年間300万円までとするため、年途中で開業・廃業する人が上限を過大に扱う。",
+    "needed_source": "",
+    "text": "年間の合計300万円までという上限と、確定申告書に明細書を添付することが要件である点（同条3項）は変わっていません。",
+    "new": "年300万円が上限ですが、開業・廃業年は営業月数で月割りします。確定申告書への明細書添付も必要です。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-761a5603b583fe343d62-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_143.txt:6-6;corpus/egov_sochiho_25_2.txt:14-23,28-28。事業所得であることだけでは65万円控除の可否は決まらない。承認、所定の記帳、電子申告または所定の電子帳簿保存、期限内申告等の要件があり、事業所得でも10万円・55万円になる典型的ケースがある。",
+    "needed_source": "",
+    "text": "前節の通達35-2で事業所得と雑所得のどちらに寄るかを決めることが、そのまま青色申告特別控除65万円を使えるかどうかを決めています。",
+    "new": "事業所得に当たるだけで65万円控除が決まるわけではありません。青色申告の承認、正規の簿記、決算書等の添付・期限内申告、e-Tax送信または所定の電子帳簿保存等の要件も必要です。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-d169fc13420e2714d5e5-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:16-30;corpus/egov_sochiho_25_2.txt:6-9;corpus/egov_fukko_13.txt:6-6。税率5%の帯にいるだけでは65万円全額に5%の節税効果が生じるとは限らない。控除前の課税所得が65万円未満なら所得税差は32,500円に達しない。前掲例でも青色控除後の課税所得は21万円で、控除前後とも十分な課税所得があるという条件が必要。住民税の税額控除・非課税判定等でも差は変わる。",
+    "needed_source": "",
+    "text": "所得税の税率5%の帯にいる人でも、住民税の所得割10%が課税標準に乗るので、65万円の控除は所得税32,500円・復興特別所得税682円・住民税65,000円の合わせておよそ9万8,000円の差になります。",
+    "new": "65万円を全額控除でき、控除前後とも所得税5%の帯に収まり、住民税側も控除が全額効くと仮定すれば、所得税32,500円、復興特別所得税約682円、住民税概算65,000円で、合わせて約9万8,000円の差です。課税所得不足や税額控除等で実際の差は変わります。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-d846e1cb7641e138a725-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_229.txt:6-6;corpus/egov_shotokuzeiho_r5hou3_fusoku_10.txt:6-6。令和8年に業務委託を始めた人「だけ」ではない。令和9年以後の開業や既存事業の事務所の設置・移転・廃止にも新期限が適用される。対象を不当に限定している。",
+    "needed_source": "",
+    "text": "ここは、令和8年に業務委託を始めた人だけが直面する新しい話です。",
+    "new": "令和8年1月1日以後の事業開始、事務所等の設置・移転・廃止には改正後の届出期限が適用されます。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-0d51d1b6f50089dc159a-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_229.txt:6-6;corpus/egov_shotokuzeiho_120.txt:6-6。229条の対象は事業所得等を生ずべき事業の開始。業務委託開始だけでは雑所得のケースにも開業届義務があるように読める。事業開始に該当する通常の居住者なら日付は正しいが、対象条件が欠ける。雑所得の業務委託まで開業届の義務があるように読める。229条は事業所得を生ずべき事業の開始である。義務の有無を誤るので high。令和9年3月15日は月曜日で、日付そのものは事業所得なら合う。",
+    "needed_source": "",
+    "text": "令和8年中に業務委託を始めた人の開業届の期限は、令和9年3月15日です。",
+    "new": "令和8年中に事業所得等を生ずべき事業を開始した通常の居住者の開業届期限は、令和9年3月15日です。雑所得となる業務委託の開始だけでは、この届出義務は生じません。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-af5223becd70f9929d18-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_229.txt:6-6。改正前の1か月は提出期限であり、期限を過ぎたら提出できないことの根拠は正本にない。この説明を令和7年以前には妥当な説明として扱ってよいか確認できない。",
+    "needed_source": "",
+    "text": "「1か月を過ぎたからもう出せない」という説明を見かけたら、令和7年以前の話だと思ってください。",
+    "new": "改正前の1か月は提出期限であり、期限を過ぎると提出できなくなるという意味ではありません。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-6fa04079be79ccda18d7-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_144.txt:6-6;corpus/egov_shotokuzeiho_229.txt:6-6;corpus/egov_shotokuzeiho_120.txt:6-6。業務委託には雑所得となる仕事もある。青色申告対象の業務・開業届対象の事業を開始した条件がなく、業務委託開始だけで両手続の対象になると読める。対象となる通常の居住者について示した日付は正しい。業務委託の開始だけで青色承認申請と開業届の両方の義務があるように読める。雑所得では開業届の義務はない。義務の有無を誤るので high。事業所得なら7月1日（開始日から2か月）と令和9年3月15日は条文の期限と一致する。",
+    "needed_source": "",
+    "text": "令和8年5月1日に業務委託を始めた人なら、青色申告承認申請は令和8年7月1日まで、開業届は令和9年3月15日までです。",
+    "new": "令和8年5月1日に事業所得を生ずべき事業を開始した通常の居住者なら、その年から青色申告を希望する場合の承認申請期限は令和8年7月1日、開業届期限は令和9年3月15日です。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-6c77d7b4d62b9a45d324-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_144.txt:6-6、corpus/egov_shotokuzeiho_229.txt:6-6。144条は青色申告承認申請の期限、229条は開業届の期限を別々に定める。早めに両方をまとめて出すという実務の断定は正本にない。読者は法定期限より前に出す必要があると受け取る。期限そのものを誤った日付にはしていないので medium。",
+    "needed_source": "",
+    "text": "青色を使うつもりなら、実務上は従来どおり早めに両方をまとめて出すことになります。",
+    "new": "開業届と青色申告承認申請は別の手続きです。青色申告を希望する場合は、それぞれの提出期限を確認してください。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-e000e98246656a9e6189-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_publication_pamph_shohi_kaisei_202304_01_htm.txt:22-22;corpus/egov_shohizeiho_9.txt:6-6;corpus/egov_shohizeiho_9.txt:20-20。前々年と1,000万円以下の境界は正しいが、納税義務が必ず免除されるとの断定は9条のただし書及び課税事業者選択の例外を落としている。後続のインボイス登録の説明でもこれらの例外は補われない。",
+    "needed_source": "",
+    "text": "令和8年分の判定に使うのは令和6年の課税売上高で、それが1,000万円以下なら納税義務は免除されます。",
+    "new": "令和8年の基準期間は令和6年で、課税売上高1,000万円以下は免税の基本条件です。ただし課税選択・インボイス登録・特定期間等の例外も確認します。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-7cb36803f60a69c3c3a5-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_publication_pamph_shohi_kaisei_202304_01_htm.txt:22-22;corpus/egov_shohizeiho_9.txt:6-6。業務委託開始が事業者としての新規開業とは限らない。以前から別の事業で課税売上高がある人は、業務委託1・2年目でも基準期間の売上高が無いとはいえない。「原則」は基準期間が無いとの断定を補わない。",
+    "needed_source": "",
+    "text": "業務委託を始めて1年目・2年目は基準期間の課税売上高が無い（またはゼロ）ので、原則として免税事業者です。",
+    "new": "他の事業も含めて基準期間の課税売上高がない新規開業者は免税の基本条件を満たしますが、課税選択・インボイス登録・特定期間等の例外があります。既存事業者が業務委託を始めても、過去の他事業の売上を除いて判定することはできません。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-cd4a8b6b92509a7d75f2-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/_taxes_shiraberu_zeimokubetsu_shohi_keigenzeiritsu_invoice_review_pdf_0026004_099_01_1_pdf.txt:15-22。個人事業者である適格請求書発行事業者であれば一律に使えるように読めるが、正本※2は登録又は課税事業者選択によって免税点制度を受けられなくなる課税期間に限定している。基準期間売上が1,000万円を超えるなど登録と無関係に課税される者の適用条件が欠ける。",
+    "needed_source": "",
+    "text": "令和9年分と令和10年分は、個人事業者である適格請求書発行事業者に限り、納付税額を課税標準額に対する消費税額の3割にできる3割特例が新設されました（国税庁リーフレット「インボイス制度に関する令和8年度税制改正について」）。",
+    "new": "令和9年分・令和10年分には個人の適格請求書発行事業者向けに3割特例が設けられます。登録や課税選択によって免税点制度が適用されなくなる課税期間が対象で、基準期間売上1,000万円超など登録と無関係に課税される場合は使えません。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-e7295c72336591d7ed26-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/_taxes_shiraberu_zeimokubetsu_shohi_keigenzeiritsu_invoice_review_pdf_0026004_099_01_1_pdf.txt:19-21;corpus/_taxes_shiraberu_zeimokubetsu_shohi_keigenzeiritsu_invoice_review_pdf_0026004_099_01_1_pdf.txt:33-38;corpus/www_nta_go_jp_publication_pamph_shohi_kaisei_202304_01_htm.txt:60-60。令和8年9月30日を含む課税期間は2割特例の適用対象。法人が本則課税又は簡易課税に戻るのはその翌課税期間であり、最終対象期間そのもので戻るとの記述は適用時期を一課税期間早める。",
+    "needed_source": "",
+    "text": "法人はこの3割特例を使えないので、令和8年9月30日を含む課税期間で本則課税か簡易課税に戻ります。",
+    "new": "法人は3割特例を使えません。2割特例は令和8年9月30日を含む課税期間まで対象で、その翌課税期間から本則課税または要件を満たす場合の簡易課税になります。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-9fafb3d51b4e4962617a-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_kokuhorei_29_7.txt:45-45;corpus/egov_chihozeiho_314_2.txt:118-123。43万円は前年合計所得2,400万円以下の場合。2,400万円超では29万円・15万円となり、2,500万円超は基礎控除がない。一律43万円と読むと高所得者の所得割算定額を過少にする。",
+    "needed_source": "",
+    "text": "令和8年分の基礎控除後の総所得金額等（総所得金額等から43万円を引いた額）で令和9年度分を算定",
+    "new": "令和8年の総所得金額等から国保算定用の基礎控除を引いて令和9年度分を算定。控除は合計所得2,400万円以下なら43万円、超過すると29万円・15万円と逓減し、2,500万円超はゼロ"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-c9a5b8b8b5505446f5ce-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_chihozeiho_72_49_14.txt:6-10。事業期間が1年未満なら290万円の控除は月割。退職後に開業した年などで一律290万円を引くと課税の有無・税額を誤る。また法定業種の範囲そのものを示す条文は正本にない。",
+    "needed_source": "",
+    "text": "地方税法が定める法定業種に当たる場合に、事業の所得から290万円の事業主控除（72条の49の14第1項）を引いた額に課税",
+    "new": "法定業種の場合、事業所得から事業主控除を引いて課税。控除は年290万円ですが、事業期間が1年未満なら月割り（72条の49の14）"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-088c7c62422a3e958ee7-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_chihozeiho_317_2.txt:6-7。所得税の申告義務がない人全員に住民税申告が残るとは限らない。給与以外の所得がない者や所得割非課税で条例が定める者等は除外される。免除対象者にも義務が残ると断定している。",
+    "needed_source": "",
+    "text": "逆に、所得税の申告義務がなかった人（会社員の副業で20万円以下だった人など）は、住民税の申告が別に残ります。",
+    "new": "所得税の申告義務がなくても、副業所得などについて住民税申告が必要な場合があります。給与以外の所得がない場合や条例による非課税者等の申告免除もあるため、市区町村で確認します。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-fba331295f3467030612-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_121.txt:6-7。121条1項ただし書の例外（給与支払者に資産を提供して対価を受ける場合等）が欠落。この条件に当たる給与所得者は20万円以下でも申告不要制度を使えない。",
+    "needed_source": "",
+    "text": "給与の支払者が1か所、その年の給与等が2,000万円以下、給与の全部について源泉徴収または年末調整を受けている人は、給与所得および退職所得以外の所得金額の合計が20万円以下であれば、所得税の確定申告書の提出を要しません。",
+    "new": "給与1か所・給与収入2,000万円以下・給与全部が源泉徴収対象で、給与・退職以外の所得が20万円以下なら、121条1項1号の申告不要制度があります。ただし勤務先への事業用資産の提供による対価等を受ける人は除外されます。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-96696783b0d88c625f88-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_122.txt:6-11。122条は控除しきれない源泉徴収税額がある場合の還付申告を認めるが、源泉徴収された人の「多くは戻る」という頻度は正本にない。給与の課税所得・税率等が示されず還付を一般化できない。",
+    "needed_source": "",
+    "text": "原稿料や講演料で10.21%を引かれている人は、申告義務が無くても122条の還付申告ができ、多くは戻ります。",
+    "new": "源泉徴収税額が年税額から控除しきれず還付要件を満たす人は、申告義務がなくても122条の還付申告ができます。源泉徴収があっただけで還付になるとは限りません。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-ff7cedc324c2b9b3850a-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:7-13。Webサイト構築に含まれるデザインの報酬は204条1項1号、営業代行でも実態が外交員の業務なら4号に該当する。業務の名称だけで対象外を断定しており、これらの対価を含む受注者・支払者が源泉徴収の要否を誤る。本文にはデザインの区別があるが、このFAQの一律の断定には条件がない。Web制作・営業代行・経理代行を業務名だけで非該当と断定する。204条1項1号のデザイン、2号の税理士等、4号の外交員に当たる典型を落とすので high。",
+    "needed_source": "",
+    "text": "システム開発、Webサイトの構築、軽貨物の配送、営業代行、清掃、経理代行のような業務委託は、この列挙に当たらないので源泉徴収されません。",
+    "new": "プログラミング・配送・清掃等で列挙報酬に当たらないものは対象外です。ただしWebデザイン、外交員に当たる営業代行、税理士等の業務報酬は対象となり得ます。業務名だけでなく内容と支払者の条件で判定します。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-21ad6c0aec72c428ff74-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_gensen_2798_htm.txt:27-38;corpus/egov_shotokuzeiho_205.txt:7-9。一律10.21%ではない。一般報酬でも1回100万円超の部分は20.42%、外交員等は政令の控除額を差し引く。150万円の弁護士報酬等で実際の源泉税額を誤る。また年税額と偶然一致する可能性もあり、「一致しません」は過剰な断定。",
+    "needed_source": "",
+    "text": "10.21%は経費も所得控除も引く前の支払金額に一律にかけた前払いなので、経費や所得控除を引いた後の年税額とは一致しません。",
+    "new": "源泉徴収税額は報酬の種類と金額で異なり、一律10.21%ではありません。経費・所得控除等を反映した年税額と比較して精算するため、追加納付にも還付にもなり得ます。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-3b758ad7844015df924a-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_225.txt:6-11;corpus/egov_shotokuzeiho_225.txt:36-39。225条2項1号はオープン型の証券投資信託（公社債投資信託を除く。）に限定される。「証券投資信託の収益の分配」とだけ書くと、それ以外の投資信託の受益者にも同項の本人交付義務があると読める。報酬支払調書の税務署提出・本人交付義務がないという部分は一致。",
+    "needed_source": "",
+    "text": "報酬の支払調書は所得税法225条1項3号で税務署へ提出する書類で、同条2項が本人への交付を義務づけているのは証券投資信託の収益の分配とみなし配当の2つだけです。",
+    "new": "報酬の支払調書は225条1項3号の税務署提出書類です。同条2項の本人交付の対象は、所定のオープン型証券投資信託（公社債投資信託を除く）の収益分配と、みなし配当に係るものです。報酬の支払調書には同項による本人交付義務はありません。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-091684ead9e7492c9232-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_121.txt:6-7。121条1項ただし書の例外が欠落。勤務先に不動産その他の資産を事業用として提供して対価を受ける人等では、給与1か所・2000万円以下・年末調整済み・その他所得20万円以下でもこの申告不要規定を適用できない。",
+    "needed_source": "",
+    "text": "A. 給与が1か所・2,000万円以下・年末調整済みで、給与と退職所得以外の所得の合計が20万円以下なら、所得税法121条1項1号で所得税の確定申告書の提出は要りません。",
+    "new": "A. 給与1か所・2,000万円以下・年末調整済みで、給与・退職以外の所得が20万円以下なら申告不要制度があります。ただし勤務先への事業用資産の提供による対価等を受ける場合は除外されます（121条1項）。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-934cb9a8ccfcc46cfb62-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shohizeiho_9.txt:6-6;corpus/egov_shohizeiho_9.txt:20-20。9条1項ただし書「この法律に別段の定めがある場合」を落としている。基準期間の課税売上高1000万円以下でも、課税選択届出をした事業者などは免税にならない。インボイス登録者が除かれる部分は一致。",
+    "needed_source": "",
+    "text": "納税義務が免除されるのは消費税法9条1項で基準期間の課税売上高が1,000万円以下の場合ですが、同項の括弧書きが適格請求書発行事業者を除いているので、インボイス登録をすると売上高にかかわらず課税事業者になります。",
+    "new": "消費税法9条1項は基準期間の課税売上高1,000万円以下を免税の基本条件としていますが、課税選択・特定期間等の例外があります。またインボイス登録者は免税対象から除かれます。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-c2a4203389a3f5cf02a1-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeirei_322.txt:6-11。外交員等の12万円とホステス等の5,000円×計算期間の日数は、同じ支払者から給与も受ける場合に給与額を差し引く。給与併給者の控除額を過大にし、源泉徴収税額を過少に計算する条件欠落。",
+    "needed_source": "",
+    "text": "司法書士等1万円・診療報酬20万円・外交員等12万円・ホステス等5,000円×日数・広告宣伝の賞金50万円）。",
+    "new": "司法書士等1万円・診療報酬20万円・外交員等12万円・ホステス等5,000円×日数・広告宣伝の賞金50万円。外交員等とホステス等は、同じ支払者から受ける対応期間の給与額を控除額から差し引く）。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-631d7d3ed3e7ba48f667-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_sochiho_mishiko_20261201_28_2.txt:6-10;corpus/egov_sochiho_mishiko_20261201_41_16_2.txt:3-4。年間300万円の上限は開業年・廃業年には営業月数で按分される。該当者が一律300万円まで必要経費算入できると判断する。40万円基準の取得日の切替は同じ出典項目の後続文で説明されている。",
+    "needed_source": "",
+    "text": "取得価額40万円未満・年間300万円まで・明細書の添付が要件）、41条の16の2（令和八年分以後の各年分の基礎控除等の特例。",
+    "new": "取得価額40万円未満・年300万円まで（開業・廃業年は営業月数で月割り）・明細書の添付が要件）、41条の16の2（令和八年分以後の各年分の基礎控除等の特例。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-2a0c45c34479a988010b-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1350_htm.txt:10-10;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1350_htm.txt:41-42。正本のNo.1350は令和8年4月1日現在法令等で、令和8年分から最高69万円、令和7年分65万円と表示している。令和7年版のまま65万円を表示するという記述は一致せず、適用年分と特例額の確認を誤らせる。",
+    "needed_source": "",
+    "text": "なお同ページは令和7年4月1日現在法令等のままで、家内労働者等の特例を65万円と表示しています（令和8年分の69万円は上記の措置法27条で確認）。",
+    "new": "同ページは令和8年4月1日現在法令等を基準とし、家内労働者等の特例は令和8年分から最高69万円、令和7年分は65万円と説明しています。"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-1adb85b34d05e8375ada-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:6-21;corpus/egov_shotokuzeiho_205.txt:6-9;corpus/egov_fukko_28.txt:6-8。204条1項の8つの号は源泉徴収対象の分類であり、全てを一律10.21%で計算する分類ではない。205条は1回100万円超の部分を20%（復興税込み20.42%）とし、診療報酬・外交員・ホステス等では控除後の残額を基礎にする。この見出しだけで計算すると該当する報酬の徴収額を誤る。",
+    "needed_source": "",
+    "text": "業務委託の確定申告【令和8年分】源泉徴収10.21%の対象は8種類だけ",
+    "new": "業務委託の確定申告【令和8年分】源泉徴収の対象と税率・所得区分"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-5737e9b4ab50a4f83447-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:6-21;corpus/egov_shotokuzeiho_205.txt:6-9;corpus/egov_fukko_28.txt:6-8。204条1項の8つの号は源泉徴収対象の分類であり、全てを一律10.21%で計算する分類ではない。205条は1回100万円超の部分を20%（復興税込み20.42%）とし、診療報酬・外交員・ホステス等では控除後の残額を基礎にする。この見出しだけで計算すると該当する報酬の徴収額を誤る。",
+    "needed_source": "",
+    "text": "業務委託の確定申告【令和8年分】源泉徴収10.21%の対象は8種類だけ",
+    "new": "業務委託の確定申告【令和8年分】源泉徴収の対象と税率・所得区分"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-bfd682a8be4cae994613-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_204.txt:6-21;corpus/egov_shotokuzeiho_205.txt:6-9;corpus/egov_fukko_28.txt:6-8;corpus/www_nta_go_jp_law_tsutatsu_kihon_shotoku_04_09_htm.txt:36-37;corpus/egov_shotokuzeiho_225.txt:6-11,36-39。固定単位内の「事業所得と雑所得の分かれ目は帳簿の有無」は不正確。正本は社会通念上事業と称する程度かを判定基準とし、帳簿保存がなくても収入300万円超かつ事業の事実があれば例外となる。帳簿がある副業を自動的に事業所得と扱うと所得区分・青色申告等の適否を誤る。また8つの号すべてに一律10.21%が適用されるわけではなく、205条に税率・計算基礎の相違がある。報酬の支払調書について本人交付義務がないとの部分は225条の交付対象と整合する。",
+    "needed_source": "",
+    "text": "業務委託で報酬を受け取る側の確定申告を令和8年分の条文で整理します。源泉徴収10.21%の対象は所得税法204条1項が挙げる8種類の報酬だけで、システム開発や配送の業務委託は対象外です。事業所得と雑所得の分かれ目は帳簿の有無、支払調書には本人への交付義務がありません。経費と家事按分、青色申告、開業届の期限の改正、消費税の免税とインボイス、住民税・国保・国民年金まで。",
+    "new": "業務委託で報酬を受け取る側の確定申告を令和8年分の条文で整理します。源泉徴収は所得税法204条の報酬の内容と支払者の条件で判定し、税率・控除額は報酬の種類と金額で異なります。事業所得か雑所得かは社会通念上の実態で判定し、帳簿の保存も確認します。報酬の支払調書には本人への交付義務がありません。経費と家事按分、青色申告、開業届、消費税、住民税・国保・国民年金を解説します。"
+  },
+  {
+    "page": "docs/column/hojokin-kojin-jigyonushi/index.html",
+    "id": "s-5dc2fec91b6f25468ff0-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_42.txt:12-12;corpus/egov_shotokuzeiho_43.txt:14-14。所得税法42条4項・43条5項は、申告書の未提出・記載漏れにやむを得ない事情があると税務署長が認める場合、適用を認められると定める。「書かなければ適用されない」と断定すると、この例外に該当する者が適用の可能性を誤る。",
+    "needed_source": "",
+    "text": "要件を満たしていても、申告書に書かなければ適用されないということです。",
+    "new": "申告書への記載が適用条件です。ただし、未提出・記載漏れにやむを得ない事情があると税務署長が認める場合の例外があります。"
+  },
+  {
+    "page": "docs/column/hojokin-kojin-jigyonushi/index.html",
+    "id": "s-5dd11180264f83cf01a4-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_42.txt:6-6。判定日を12月31日と断定しているが、年の中途で死亡・出国した人はその時が基準となる。本文には例外の説明があるが、この要約セルにはない。",
+    "needed_source": "",
+    "text": "その年12月31日",
+    "new": "その年12月31日（年途中の死亡・出国はその時）"
+  },
+  {
+    "page": "docs/column/hojokin-kojin-jigyonushi/index.html",
+    "id": "s-856964587cb840a96461-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_42.txt:6-6。年の中途で死亡・出国した場合の基準日はその時であり、図の12月31日には例外の表示がない。",
+    "needed_source": "",
+    "text": "12月31日までに返還不要が確定したか？",
+    "new": "判定日までに返還不要が確定したか？"
+  },
+  {
+    "page": "docs/column/hojokin-kojin-jigyonushi/index.html",
+    "id": "s-53cccb735d9aafab12dd-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_42.txt:6-6。死亡・出国した人は資産取得・改良の期限もその時となる。図では12月31日までと一律に示す。",
+    "needed_source": "",
+    "text": "（目的に適合する資産の取得・改良も同日まで）",
+    "new": "（判定日：12月31日。年途中の死亡・出国はその時）"
+  },
+  {
+    "page": "docs/column/hojokin-kojin-jigyonushi/index.html",
+    "id": "s-7d8ad5e172dcafcdbd29-2",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_42.txt:6-6;corpus/egov_shotokuzeiho_43.txt:6-6。図の「いいえ」は返還不要が未確定の場合だけでなく、括弧の資産取得・改良が同日までに済んでいない場合も含みうる。返還不要が年内に確定済みで資産取得が翌年のケースは43条1項の対象ではない。",
+    "needed_source": "",
+    "text": "いいえ",
+    "new": "未確定"
+  },
+  {
+    "page": "docs/column/hojokin-kojin-jigyonushi/index.html",
+    "id": "s-294a641cf3d1f0b291bb-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_43.txt:6-6。図は返還不要の確定と年内の資産取得・改良を同じ判定枠に置き、「いいえ」を43条へ誘導する。返還不要は確定済みだが取得が翌年の場合には43条1項を使えない。",
+    "needed_source": "",
+    "text": "43条",
+    "new": "43条（未確定）"
+  },
+  {
+    "page": "docs/column/hojokin-kojin-jigyonushi/index.html",
+    "id": "s-cf58f7300cef3ae639f5-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_42.txt:6-6;corpus/egov_shotokuzeiho_43.txt:6-6。12月31日を一律の分かれ目としているが、死亡・出国した場合はその時が基準日となる。",
+    "needed_source": "",
+    "text": "分かれ目は「入金したか」ではなく「12月31日までに返還不要が確定したか」",
+    "new": "交付を受けたうえで、判定日までの返還不要の確定と資産取得を確認（死亡・出国時は基準日が変わる）"
+  },
+  {
+    "page": "docs/column/hojokin-kojin-jigyonushi/index.html",
+    "id": "s-b10f9137c6cbddd668ed-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_43.txt:8-8;corpus/egov_shotokuzeirei_91.txt:7-10;corpus/egov_shotokuzeirei_91.txt:22-22。減価償却資産を取得してから返還不要の確定までに償却期間がある場合、除外額は確定部分全額ではなく未償却割合を乗じた額。目的に適合する資産に充てた分を全額収入に戻さないと読むと、確定年の総収入金額を過少に計算する。",
+    "needed_source": "",
+    "text": "持ち越した補助金が確定したとき、そのうち目的に適合する固定資産に充てた分は総収入金額に戻さず、代わりに施行令91条2項でその固定資産を確定部分を控除した金額で取得したものとみなす——つまり42条と同じ着地になります。",
+    "new": "持ち越した補助金の返還不要が確定した年は、確定部分から施行令91条1項の計算額を除いた額を総収入金額に算入します。減価償却資産では取得から確定までの償却期間があると、不算入額は未償却割合を掛けた額です。同条2項により取得価額と過去の償却費も調整するため、資産に充てた確定部分の全額をそのまま不算入にするとは限りません。"
+  },
+  {
+    "page": "docs/column/hojokin-kojin-jigyonushi/index.html",
+    "id": "s-f581999a170b706ce87c-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_42.txt:6-8、corpus/egov_shotokuzeirei_90.txt:6-8。直前の表は初年度を含む10年間だが、「初年度」と「その後10年」は合計11年間とも読める。所得の繰延べという趣旨は裏付けられるものの、期間の表現が曖昧。「初年度」と「その後10年」は合計11年にも読める。圧縮記帳の所得が戻る年が1年ずれるので、言い回しにとどめず medium。",
+    "needed_source": "",
+    "text": "初年度の資金繰りと、その後10年の所得の出方を入れ替えているのが、この制度の中身です。",
+    "new": "この例は初年度を含む10年間で比較しています。初年度の課税所得を減らす一方、取得価額が下がることで以後の減価償却費が小さくなる仕組みです。"
+  },
+  {
+    "page": "docs/column/hojokin-kojin-jigyonushi/index.html",
+    "id": "s-8b5e5866cae6d001e6e6-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeiho_42.txt:6-12、corpus/egov_shotokuzeiho_43.txt:6-14。条文番号だけの検索で必ず取り違えるという検索者の行動の断定は、正本に根拠がない。両法の内容が異なることは確認できるが、誤認の必然性までは裏付けられない。",
+    "needed_source": "",
+    "text": "ここは条文番号だけで検索していると必ず取り違えます。",
+    "new": "同じ条文番号でも法律によって内容が異なるため、法律名と条文を合わせて確認してください。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-48022db5105516f06ce6-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:449-458;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_kojin_jigyo_kichou03_pdf.txt:667-667。事業主借を「個人のお金が事業へ入ってきた記録」に限定する説明では、正本が明示する預金利息など事業所得以外の収入を拾えない。預金利息を個人からの資金移動に当たらないとして雑収入に処理するおそれがある。預金利息を事業主借に入れず雑収入にすると事業所得が過大になる。書き方457〜458行は事業所得以外の収入で事業に受け入れた金額を事業主借に含める。金額の向きを誤るので high。",
+    "needed_source": "",
+    "text": "結論から言うと、事業主貸は「事業のお金が事業主個人へ出ていった記録」、事業主借は「個人のお金が事業へ入ってきた記録」です。",
+    "new": "事業主貸には生活費・所得税・住民税・商品の家事消費など事業から個人に出た金額を、事業主借には事業主から受け入れた資金や預金利息など事業所得以外の収入を記録します。借入れや資産購入は、それぞれの科目で処理します。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-998486db93f5c9d73d8e-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_kojin_jigyo_kichou03_pdf.txt:628-629,642-642,663-663,667-667;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:461-461。年末に事業主貸・事業主借が元入金へ溶けて翌年ゼロになると読むと、白色申告や簡易帳簿の人まで貸借対照表の元入金振替をすることになる。帳簿の記帳のしかた（事業所得者用）の現金出納帳は事業主借を記入するだけで、年末に元入金へ合算する手続きは書いていない。そこでの元入金は、年の途中で開業したときの現金残高の摘要である。期首と期末に同じ金額を書く元入金は、青色申告決算書（一般用）の書き方の貸借対照表の説明である。青色申告決算書を作らない申告ではこの振替は出てこない。税額の計算そのものは動かないが、対象でない人に決算手続があるように読める。",
+    "needed_source": "",
+    "text": "ただし本当の貸し借りではないので、返済も利息もなく、年末に元入金へ溶け込みます。",
+    "new": "事業主本人との資金移動等を表す科目です。青色申告決算書の貸借対照表では、元入金は当年の期首と期末に同じ額を記載します。簡易帳簿等にも同じ決算処理を一律に求めるものではありません。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-8de8ec6914aff0273dae-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:449-451;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_yoshiki_01_shinkokusho_pdf_r07_10_pdf.txt:266-266,268-268,287-287,320-320。必要経費でない出金をすべて事業主貸にすると、建物などの固定資産の取得、買掛金の支払い、借入金の返済まで事業主貸になる。青色申告決算書の様式は建物、買掛金、借入金を事業主貸と別の欄にしている。書き方の事業主貸は、生活費その他の家事上の費用、所得税、住民税など必要経費にならない租税、商品などの家事消費など、事業から事業主個人へ出た金額である。資産の取得を事業主貸にすると資産計上と減価償却が抜け、事業所得が過大になる。",
+    "needed_source": "",
+    "text": "出ていった → 事業主貸",
+    "new": "家計への支出 → 事業主貸"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-2dff717629de1f95f42c-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_39.txt:6-6;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:166-167,451-451;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_kojin_jigyo_kichou03_pdf.txt:852-854。家事消費を、事業の収入でも必要経費でもない側の事業主貸の例に置くと、総収入金額に入れずに終わる。所得税法39条1項は、棚卸資産を家事のために消費した時の価額を、その年分の事業所得などの総収入金額に算入する。青色申告決算書（一般用）の書き方は、損益計算書の売上（収入）金額に「家事消費等」欄を置き、他の売上げに含めて記帳している場合は欄の記入を省略してよいとしている。同じ書き方の事業主貸に家事消費の金額が含まれるのは、代金が入らない相手科目としてである。飲食店や小売が商品を自家消費する典型例で、売上を落とすと事業所得が過少になる。家事関連費の家事分を必要経費から除いて事業主貸にすることは、施行規則57条2項と記帳のしかたの年末の家事分除外に沿う。",
+    "needed_source": "",
+    "text": "家事消費・家事関連費の家事分",
+    "new": "家事分。商品自家消費は売上も計上"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-663e9a2cf4fed9638360-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:457-458;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_yoshiki_01_shinkokusho_pdf_r07_10_pdf.txt:266-266,268-268,314-314。事業の収入でも必要経費でもない入金をすべて事業主借にすると、金融機関からの借入金や買掛・預り以外の負債の増加まで事業主借になる。様式は借入金・買掛金を事業主借と別の欄にしている。書き方の事業主借は、事業主から受け入れた事業資金と、預金利息などの事業所得以外の収入で事業に受け入れた金額である。借入金を事業主借にして年末に元入金へ合算すると、負債が消え翌年の元入金が過大になる。",
+    "needed_source": "",
+    "text": "入ってきた → 事業主借",
+    "new": "家計からの資金等 → 事業主借"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-bea115f8bd7271b3bc42-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_37.txt:6-6;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_kojin_jigyo_kichou03_pdf.txt:667-667;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:457-458。家計で立て替えた事業の支払いを、必要経費でない入金の例として事業主借だけに置くと、その費用を必要経費から落とす。所得税法37条1項の必要経費は、総収入金額を得るために直接要した費用と、その年の販売費・一般管理費その他業務について生じた費用である。私費で消耗品や交通費を払っても費用は必要経費のまま、貸方を事業主借にする。記帳のしかたは事業主借を、家計用の現金を事業用に充てる勘定と定義している。立替の経費を計上しないと事業所得が過大になる。家計から事業へ資金を入れた分は売上ではなく事業主借で、書き方の「事業主から受け入れた金額」に当たる。",
+    "needed_source": "",
+    "text": "家計からの資金・立替払い",
+    "new": "私費で経費を払う場合は経費も計上"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-2b5e2e762d9fcf8d40f8-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_kojin_jigyo_kichou03_pdf.txt:628-629,663-663,667-667;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:449-451,461-461。年末に事業主貸・事業主借が元入金へ溶けて翌年ゼロになると読むと、白色申告や簡易帳簿の人まで貸借対照表の元入金振替をすることになる。帳簿の記帳のしかた（事業所得者用）の現金出納帳は事業主借を記入するだけで、年末に元入金へ合算する手続きは書いていない。そこでの元入金は、年の途中で開業したときの現金残高の摘要である。期首と期末に同じ金額を書く元入金は、青色申告決算書（一般用）の書き方の貸借対照表の説明である。青色申告決算書を作らない申告ではこの振替は出てこない。税額の計算そのものは動かないが、対象でない人に決算手続があるように読める。",
+    "needed_source": "",
+    "text": "年末：2科目を元入金へ合算して翌年はゼロから",
+    "new": "貸借対照表の元入金：当年の期首・期末は同額"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-adc5a6314ec2b22166f8-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:449-451,457-458,461-461;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_yoshiki_01_shinkokusho_pdf_r07_10_pdf.txt:266-266,268-268,287-287;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_kojin_jigyo_kichou03_pdf.txt:663-663,667-667。事業の収入でも必要経費でもないお金の動きを、出は事業主貸、入は事業主借に振り、年末に元入金へ合算する、と読める。書き方の事業主貸は生活費・所得税・住民税・家事消費など事業主個人へ出た金額、事業主借は事業主からの受入と事業所得以外の収入である。様式は建物、買掛金、借入金を別欄にしている。借入や資産購入までこの2科目にすると、負債や資産の金額がずれ、減価償却が抜けると事業所得も変わる。年末の元入金への合算は、青色申告決算書の貸借対照表で元入金の期首と期末を同じ金額にする書き方に対応する。記帳のしかたの現金出納帳は事業主借を元入金へ振り替える手続きを示しておらず、白色申告や簡易帳簿までこの合算があることにはならない。",
+    "needed_source": "",
+    "text": "事業の収入でも必要経費でもないお金の動きを、出と入で事業主貸・事業主借に振り、年末に元入金へ合算する。",
+    "new": "事業主貸は生活費等の家計への支出、事業主借は事業主からの受入資金や事業所得外の収入を記録する科目です。借入れや資産購入は別科目です。貸借対照表の元入金は当年の期首・期末に同じ額を書き、簡易帳簿等とは区別します。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-7547ec0486f79a87594b-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:449-458。現金・預金の相手勘定という限定はあるが、「覚えるほうが間違えません」という比較・無誤りの保証は正本で裏付けられない。仕訳方向を直接示す資料も収録されていない。",
+    "needed_source": "",
+    "text": "「事業主貸が借方、事業主借が貸方」と丸暗記するより、現金・預金の相手勘定として、出ていけば借方に事業主貸・入ってくれば貸方に事業主借と覚えるほうが間違えません。",
+    "new": "事業と家計の間の資金移動を、通常の売上・経費や借入れ・資産購入と区別します。現金・預金の増減だけで事業主貸・事業主借を選ばないようにしてください。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-88f8373acd304135e693-1",
+    "decision": "unresolved",
+    "severity": "low",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:449-451。正本は生活費等・必要経費にならない租税公課・商品等の家事消費を「など」と例示しており、家事関連費の家事分を独立した第4分類とする「4種類」という分類数までは確認できない。",
+    "needed_source": "",
+    "text": "「決算書の書き方」の定義をほどくと、事業主貸は4種類に分かれます。",
+    "new": "「決算書の書き方」が挙げる生活費等の例をもとに、ここでは次のケースを説明します。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-9a755a4b6d4f72a2aa2b-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeirei_96.txt:6-9。施行令96条1号は業務上必要な部分が主たる部分であることも要求し、2号は青色申告承認者について取引記録等から直接必要な部分が明らかになる条件を置く。業務部分を明らかに区分できることだけで必要経費になると読め、白色申告者等の適用条件を誤る。",
+    "needed_source": "",
+    "text": "所得税法施行令96条の「明らかに区分することができる」業務部分だけが必要経費。",
+    "new": "施行令96条は、業務に必要な部分が主たる部分で明確に区分できる場合などを定めています。青色申告者は、取引記録等から業務上直接必要だったことが明らかな部分も対象です。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-2796762d44ebec9fa9ff-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_37.txt:6-6;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:457-458。同じ行の例には家計から仕入代金を直接払う場合もある。その場合の借方は仕入等であり、普通預金・現金とすると事業の現預金と経費を誤って記録する。",
+    "needed_source": "",
+    "text": "貸方に事業主借、借方は普通預金・現金",
+    "new": "貸方は事業主借。借方は入金なら現金・預金、私費で仕入代金を払った場合は仕入等"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-5aed4a6e5bd18fbb2216-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:449-451;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:457-458;corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_kojin_jigyo_kichou03_pdf.txt:852-866;corpus/egov_shotokuzeisoku_57.txt:14-14。現金・預金の増減だけでは判定できない。直前の設例4の商品自家消費と設例8の家事分振替は現金・預金が減らなくても事業主貸となる。通常の売上入金・経費支払にもこの見分け方を適用すると事業主借・貸に誤分類し、所得計算を誤る。事業と家計の間の移動または事業所得外の取引という条件が必要。",
+    "needed_source": "",
+    "text": "見分け方は前述のとおり、事業の現金・預金が減るなら事業主貸、増えるなら（または事業外から経費が払われたなら）事業主借です。",
+    "new": "事業と家計の間の移動や事業所得外の取引かを先に確認します。売上入金・経費支払・借入れをこの2科目に一括しません。商品自家消費や家事分振替では、現金・預金が減らなくても事業主貸を使います。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-a9ecb8e318f90aabd388-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:464-466。不一致の原因を記帳漏れか転記誤りに限定している。正本は記帳誤りや計算誤りも挙げ、二重記帳の確認も求めている。計算誤りや二重記帳のある読者が原因を見落とす。",
+    "needed_source": "",
+    "text": "一致しなければ記帳漏れか転記誤りです。",
+    "new": "一致しないときは、記帳漏れ・転記・計算の誤りや二重記帳などを確認します。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-46d04565259d9ad6c1cc-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:457-458。「外側」が家計内での使用を指すか、事業へ入金した資金を含むか不明。正本は事業所得以外の収入でも事業に受け入れたものを事業主借に記入するとしている。資金移動の条件が不足しており帳簿に矛盾がないとの断定を確認できない。事業用の口座に入った給与・年金・利息まで帳簿の外だとすると、事業主借が抜けて所得が過大になる。資金が事業に入ったかどうかの条件がないので high。",
+    "needed_source": "",
+    "text": "事業所得以外の収入（給与・年金・家族の収入・貯蓄の取り崩し）が原資なら、それは事業主借・事業主貸の外側の話で帳簿に矛盾はありません。",
+    "new": "給与・年金・家族の収入・貯蓄などを家計内で使っただけなら事業帳簿の外ですが、事業に受け入れた金額は事業主借などとして記録が必要です。原資が事業所得外というだけで帳簿から除外しません。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-deef7477bc9959bf7ab3-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_kojin_jigyo_kichou03_pdf.txt:663-667、corpus/egov_shotokuzeisoku_102.txt:6-8。直前の質問は白色申告と簡易帳簿の双方を含むが、収録の事業主借の記載例は青色申告者の簡易帳簿。白色での使用範囲・任意性を裏付ける根拠が不足。",
+    "needed_source": "",
+    "text": "使います。",
+    "new": "青色の簡易帳簿には事業主借の記載例があります。白色申告でも家計分と事業分を分けて記録しますが、この科目名の使用を一律に義務づけるものではありません。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-8faed79493d0c75c49fa-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2072_htm.txt:22-24、corpus/egov_shotokuzeisoku_65.txt:14-14。貸借対照表の添付要件と3科目の欄は確認できるが、「3科目が揃って初めて」の意味が不明。各科目に取引・残高が必須という意味なら根拠がない。ゼロ残高や該当取引がない場合の扱いが不足。",
+    "needed_source": "",
+    "text": "一方、65万円・55万円の青色申告特別控除を受けるには貸借対照表が要るので、事業主貸・事業主借・元入金の3科目が揃って初めて決算書4ページ目が埋まります（白色申告の仕組みはこちら、青色の控除額の分かれ目はこちら）。",
+    "new": "55万円・65万円の控除には貸借対照表等の添付要件があります。決算書の事業主貸・事業主借・元入金の各欄には実際の取引・残高に応じて記載し、すべての科目に必ず残高が必要という意味ではありません。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-15b9d88904c30490c160-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_shinkoku_tebiki_2025_pdf_037_pdf.txt:461-466。正本は期首元入金の算出と当年元入金の表示を説明するが、翌年に両科目を残高ゼロにする繰越処理そのものの明記がない。根拠不足。",
+    "needed_source": "",
+    "text": "A. 翌年の期首の元入金に合算され、2科目とも残高ゼロで翌年が始まります。",
+    "new": "A. 貸借対照表の元入金は期首の資産総額から負債総額を引いて計算し、当年の期首と期末に同じ金額を記載します。翌年への繰越しはこの関係と使用する帳簿の方式を確認して行います。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-30f684ca3d17ef9f45c7-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/egov_shotokuzeisoku_65.txt:14-14;corpus/egov_shotokuzeisoku_102.txt:6-8。正本は簡易記録の青色申告者について貸借対照表の添付を「要しない」とし、白色申告には簡易記録を定める。作成しない・出納帳だけ・元入金への合算手続きがないと一律に断定できず、任意に複式簿記で貸借対照表を作成する白色申告者等の処理を誤らせる。",
+    "needed_source": "",
+    "text": "ただし白色申告や簡易帳簿の青色申告（10万円控除）では貸借対照表を作らないので、現金出納帳・預金出納帳の中で使うだけで、年末に元入金へ合算する手続きはありません。",
+    "new": "簡易帳簿の青色申告では貸借対照表の添付を要しません。白色申告も簡易な記録が認められますが、任意に複式簿記や貸借対照表を用いることと区別し、出納帳だけに限定しません。"
+  },
+  {
+    "page": "docs/column/jigyonushi-kashi-kari/index.html",
+    "id": "s-9db6e42444b52db46270-1",
+    "decision": "unresolved",
+    "severity": "low",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2210_htm.txt:8-10。正本の基準日は「令和8年4月1日現在法令等」で、表示の令和7年4月1日と異なる。出典の基準日表示の不一致であり、この単位には税額・適用年分を変える説明はない。",
+    "needed_source": "",
+    "text": "国税庁タックスアンサー「No.2210 必要経費の知識」（令和7年4月1日現在法令等）",
+    "new": "国税庁タックスアンサー「No.2210 必要経費の知識」（令和8年4月1日現在法令等）"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-0066697b2fe632ed357a-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:69-71;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1135_htm.txt:23-23。控除前の入力を求める前半に対し、会社員向けの「給与所得控除後の金額−所得控除の額の合計額」は、年末調整で今回の掛金控除が既に含まれる場合には控除後になる。該当する給与所得者・役員は掛金控除を戻す必要があるが、その条件がなく節税額を過少に試算する。",
+    "needed_source": "",
+    "text": "今回試算する所得控除を引く前の所得税課税所得です。既にその控除を引いた確定申告書の金額をそのまま入力しないでください。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」。年収や売上ではありません",
+    "new": "今回試算する掛金控除前の所得税課税所得です。申告書や源泉徴収票の計算額に今回の掛金控除が含まれるなら、控除前に戻して計算してください。源泉徴収票からは「給与所得控除後の金額」−「所得控除の額の合計額」を基に調整します。年収や売上ではありません"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-bad35e401b188d063cfc-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1135_htm.txt:23-23;corpus/egov_chihozeiho_314_2.txt:6-6;corpus/egov_chihozeiho_314_2.txt:19-20。「掛金を払った年は…所得税と住民税が軽くなる」とするが、住民税の所得控除は前年中に支払った掛金を対象とするため、当年の掛金が反映されるのは翌年度の住民税。税負担が減る時期を誤る。また非課税・控除しきれない場合には必ず税額が軽くなるとは限らない。",
+    "needed_source": "",
+    "text": "つまり掛金を払った年は、その分だけ課税所得が下がり、所得税と住民税が軽くなります。",
+    "new": "支払った掛金は所得控除の対象ですが、課税所得不足や税額控除等によって所得税・住民税が減らない場合もあります。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-d0797f5e961ce6d6ab67-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_shotokuzeiho_75.txt:6-6;corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:71-71。確定申告書の課税所得を「そのまま」入力できると断定しているが、既に共済掛金控除を反映した申告書では控除前の所得に戻す必要がある。そのまま入力すると二重に控除して節税額を誤る。給与の式も給与以外の所得や申告時の追加控除がない場合の条件が必要。",
+    "needed_source": "",
+    "text": "入れるのは「年収」ではなく「課税される所得金額」です\n    節税額は掛金にかかっていた税率で決まるため、税率を決める課税される所得金額（課税所得）を入力します。これは年収でも売上でもありません。個人事業主は確定申告書の「課税される所得金額」をそのまま使えます。ただし源泉徴収票にこの欄はありません——会社員は「給与所得控除後の金額」から「所得控除の額の合計額」を引いた額が課税所得です。所得から基礎控除・扶養控除・社会保険料控除などをすべて引いた、税率をかける直前の金額です。",
+    "new": "入力するのは今回の掛金控除前の課税所得です。申告書の「課税される所得金額」は既に掛金控除を反映している場合があるため、そのまま使わず控除前の額を計算します。源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」も、今回の掛金控除が含まれるなら同じ調整が必要です。年収・売上とは異なり、基礎控除等の他の所得控除を引いた額です。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-89dead89aef0b50570bc-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:71-71;corpus/egov_chihozeiho_314_2.txt:19-20。月額70,000円と課税所得を比較しているが、比較対象は年間掛金である。また所得税課税所得の不足だけで住民税の控除限度まで決まるわけではなく、所得税と住民税の課税所得を別に判定する必要がある。",
+    "needed_source": "",
+    "text": "掛金を上限の70,000円にしても、課税所得がそれより小さければ節税額はその範囲までにとどまります（下げられる税金には限りがあるため）。",
+    "new": "月額70,000円を12か月払う場合の年額は84万円です。所得税の課税所得が年額より少なければ控除しきれず、住民税側の限度は住民税の課税所得で別に判断します。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-caeb118493837bbd512f-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:14-16;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:43-43。所得税を速算表で「厳密に」計算できるという断定には適用範囲がない。分離課税や令和7年分以後の基準所得金額3億3,000万円超の課税特例など、速算表だけでは所得税額が決まらない対象がある。",
+    "needed_source": "",
+    "text": "本ツールの結果は目安です。所得税は国税庁の速算表で厳密に計算しますが、住民税の減少は所得割を一律10%として概算しています（住民税は課税所得の算定が所得税と少し異なるため）。均等割・調整控除などは含みません。正確な税額は税理士・お住まいの市区町村でご確認ください。",
+    "new": "本ツールは令和8年分の総合課税の所得税速算表による目安で、分離課税や高額所得の追加課税、税額控除等は対象外です。住民税は控除が全額効くと仮定した所得割10%の概算で、課税所得不足・非課税や均等割・調整控除等は反映しません。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-66249a46a80490b24858-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:20-20;corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:71-71。控除前の課税所得が84万円未満でも必ず84万円下がるように断定している。低所得の加入者では控除しきれず、84万円全体について所得税・住民税が消えるわけではない。両税の課税所得の違いも必要。",
+    "needed_source": "",
+    "text": "掛金を年84万円払えば、課税所得が84万円下がるので、その84万円にかかっていたはずの所得税と住民税が丸ごと消えます。",
+    "new": "年84万円の掛金は所得控除の対象ですが、所得税・住民税それぞれの課税所得が不足すれば全額の効果は生じません。税額はそれぞれ控除前後で比較します。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-8c3385a157c099d8d379-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:22-42。掛金控除で税率区分をまたぐ場合、控除前の税率を掛金全額に掛けると節税額を過大計算する。課税所得200万円から84万円控除する例では所得税の減少は44,500円であり、84万円×10%=84,000円にはならない。",
+    "needed_source": "",
+    "text": "ポイントは、減る税額は「掛金 × あなたの税率」で決まることです。",
+    "new": "所得税の減少額は控除前後の税額の差です。控除で税率区分をまたぐ場合、掛金全額に控除前の税率を掛けると過大になります。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-f3ebd74fb7dd4132d987-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:22-42;corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:34-40。控除後も同じ税率区分にとどまり、住民税の控除が全額効く条件が省略されている。税率区分をまたぐ場合は所得税率＋10%から離れ、正本の課税所得200万円・月7万円の節税額129,400円は掛金の約15.4%で、控除前税率10%＋10%とは異なる。",
+    "needed_source": "",
+    "text": "ここに住民税の所得割10%が上乗せされるため、実際の節税率は「所得税率＋10%」に近い水準になります。",
+    "new": "控除前後で所得税の税率区分が変わらず、住民税も全額控除が効く場合に限れば、節税率は所得税率と住民税所得割10%を合わせた率に近づきます。区分をまたぐ場合や課税所得不足では異なります。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-2dd95ece44ca55ba8ea4-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:20-21、corpus/egov_shotokuzeiho_75.txt:6-6、corpus/egov_chihozeiho_72_49_14.txt:6-8。掛金が所得控除であり必要経費ではない、という区別は正本と合う。「税金を下げる効果は同じ」は、事業税まで同じだと読める。事業税は事業所得（必要経費控除後、所得控除前）から事業主控除290万円を引いた額に課される。掛金を経費にすると事業所得が減り事業税も減るが、所得控除は事業所得を減らさない。所得290万円超の法定業種では税額が変わる。大多数の所得税・住民税の方向は同じなので medium。",
+    "needed_source": "",
+    "text": "「経費」ではなく「所得控除」— でも税金を下げる効果は同じ",
+    "new": "掛金は所得控除。必要経費とは事業税などへの効果が異なる"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-8a145aa17088619fd621-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:20-20;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1135_htm.txt:23-23。84万円は月額上限×12か月の通常年額であり、支払年の所得控除の絶対上限ではない。通常の掛金に1年以内の前納掛金を加えて支払った年は84万円を超える控除が可能。",
+    "needed_source": "",
+    "text": "年間では最大84万円（70,000円×12か月）を所得控除にできます。",
+    "new": "月額70,000円を12か月払う通常年額は84万円です。1年以内の前納掛金も支払年の控除対象となるため、84万円は所得控除の絶対上限ではありません。この計算機は前納を含めない月額×12の試算です。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-4dab0b85ef9846fb9b21-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:16-36;corpus/egov_fukko_13.txt:6-6;corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:20-20;corpus/egov_shotokuzeiho_122.txt:6-11。「255,528円の税金が戻ってくる」は還付を断定している。正本では掛金は所得控除で、還付は源泉徴収税額・予納税額の控除しきれない額等を条件とする。源泉徴収・予納がない加入者では納付税額の減少であり、この金額が還付されるわけではない。「税負担が概算255,528円減る」とする必要がある。",
+    "needed_source": "",
+    "text": "課税所得500万円で上限の月7万円を掛ければ、年84万円の積立をしながら、その約3割にあたる255,528円の税金が戻ってくる計算です。",
+    "new": "掛金控除前の課税所得500万円、月7万円を12か月払い、住民税も全額控除が効く前提なら、年84万円の積立に対する税負担減少は概算255,528円です。還付される額を意味せず、源泉徴収・予定納税の状況によって納付額の減少となる場合もあります。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-f5b7ff43d21e0f29f21a-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:15-43。速算表を用いた税率帯の計算自体は正本2260の15～42行に沿うが、「厳密に反映」という計算機の精度保証は正本で裏付けられない。同資料43行の高額所得の課税特例等を含む適用範囲が明示されず、厳密性の範囲を確定できない。",
+    "needed_source": "",
+    "text": "単純に「掛金×税率」で出すと、控除によって税率のブラケット（段）をまたぐ人の額がずれるため、国税庁の速算表で超過累進を厳密に反映しています。",
+    "new": "控除で税率区分をまたぐ場合も、速算表による控除前後の所得税額を比較します。分離課税や高額所得の追加課税、税額控除等はこの試算に含めません。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-5aa66b63c017d8025bf6-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/egov_fukko_13.txt:6-6、corpus/egov_fukko_mishiko_20270101_13.txt:6-6、corpus/egov_boeizaigen_5_26_mishiko_20270101.txt:7-7、corpus/egov_fukko_28.txt:8-8。令和8年分の年税の復興特別所得税は基準所得税額の2.1%で、この文の前半はその範囲では合う。令和9年1月1日以後の年税は、未施行の復興財確法13条が基準所得税額の1.1%とする。防衛特別所得税1%は、収録の5条の26が源泉徴収すべき所得税の額に乗じるもので、令和9年1月1日以後に行うべき徴収に限る。年税の基準所得税額に1%を課し、復興1.1%と合わせて2.1%のままにする条文は収録にない。No.2260も、年税の合計が2.1%のままだとは書いていない。令和9年分の節税額に2.1%を掛けると、年税が1.1%だけの場合に復興・防衛の減少を1ポイント過大にする（例: 減った所得税84万円相当の20%部分なら1,680円）。料率と適用年分を誤る。",
+    "needed_source": "防衛特別所得税の年税（基準所得税額に対する税率）を定める条文。収録は5条の26の源泉徴収（徴収すべき所得税の額の1%）と、復興特別所得税の年税1.1%（未施行13条）まで。",
+    "text": "復興特別所得税の減少：減った所得税の2.1%（令和9年分からは防衛特別所得税1%＋復興特別所得税1.1%に組み替わるが、合計2.1%は変わらない・令和8年法律12号）。",
+    "new": "復興特別所得税の減少は、令和8年分の基準所得税額に2.1%を掛けた控除前後の税額の差です。この計算機は令和8年分の試算です。令和9年分以後の税制は、この試算から算出しません。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-e335229ec37166a6578e-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_claim.txt:210-218。一括受取りを一律に退職所得扱いとしているが、死亡による共済金を遺族が受け取る場合はみなし相続財産となる。死亡時の受給者は所得税の退職所得控除として処理できない。",
+    "needed_source": "",
+    "text": "退職所得扱い（退職所得控除が使える）",
+    "new": "共済金（死亡以外）・準共済金の一括は退職所得扱い。死亡共済金はみなし相続財産"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-dd3095727c3e2c72b318-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_claim.txt:193-205;corpus/kyosai_web_smrj_go_jp_customer_skyosai_claim.txt:214-216。併用可能とする説明に要件がない。共済金A・B、死亡以外、請求事由発生日に60歳以上、総額330万円以上（一括30万円以上・分割300万円以上）が必要であり、要件に該当しない人が併用できると判断する。",
+    "needed_source": "",
+    "text": "それぞれの扱い（併用も可能）",
+    "new": "併用は共済金A・B、死亡以外、請求事由発生日に60歳以上、総額330万円以上（一括30万円以上・分割300万円以上）が必要"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-c33513757845f1f88360-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/kyosai_web_smrj_go_jp_skyosai_know.txt:12-12;corpus/kyosai_web_smrj_go_jp_skyosai_know.txt:22-22;corpus/egov_shotokuzeiho_35.txt:8-9。支払時の高税率・受取時の軽い課税を一般に保証する言い方になっている。正本は税制メリットがあることを述べるが、低所得時に掛金を払い、他の公的年金等の収入が大きい時に分割受取りするなど、所得状況によって受取時の負担が軽くなるとは限らない。",
+    "needed_source": "",
+    "text": "払うときに高い税率で節税し、受け取るときは軽い課税で受け取る——ここに制度の妙味があります。",
+    "new": "掛金支払時の所得控除と、受取時の所得区分・控除が設けられています。支払時・受取時の他の所得等によって負担が変わるため、受取時の税負担が常に軽くなるとは限りません。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-b6b2bbea026040705a9b-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:20-21,69-71。全額所得控除は正本で確認できるが、実際の節税額が課税所得と月額だけで決まるとの断定は、税額控除等の影響まで確認できず根拠不足。",
+    "needed_source": "",
+    "text": "A. 掛金は全額が所得控除になるため、節税額は課税される所得金額と掛金月額で決まります。",
+    "new": "A. この計算機は掛金控除前の課税所得と月額から節税額を概算します。実際の税負担の差は、税額控除や住民税の非課税・課税所得不足などによっても変わります。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-f8da2fda2b2e83c94d0e-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:20-21、corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1135_htm.txt:26-26、corpus/egov_chihozeiho_72_49_14.txt:6-8。申告書の所得控除欄に書く、という後半は1135と合う。「税負担を下げる効果は経費と同じ」は事業税を落とす。事業税の課税標準は事業所得であり、小規模企業共済等掛金控除はここから引かない。経費にした場合と所得控除にした場合で事業税額が変わる人がいる。所得税の課税所得を下げる点まで同じ、とはこの文は書いていないので medium。",
+    "needed_source": "",
+    "text": "税負担を下げる効果は経費と同じですが、確定申告では経費欄ではなく所得控除欄に記載する点が異なります。",
+    "new": "所得税の課税所得を下げる効果はありますが、事業所得自体を減らす必要経費とは異なり、個人事業税への効果も同じではありません。申告書では所得控除欄に記載します。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-e10e3835a209923e1405-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_claim.txt:207-222。受取方法等で税法上の取扱いは変わるが、「かかります」は課税額が必ず発生するとの断定。控除により課税所得がゼロとなる受取人もいるため、課税対象になることと納税額が発生することを分ける必要がある。",
+    "needed_source": "",
+    "text": "A. かかりますが、受け取り方で扱いが変わります。",
+    "new": "A. 課税対象になりますが、控除等により納税額がゼロの場合もあります。受取事由・方法で扱いが変わります。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-4ee00d1790495507e558-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_claim.txt:210-218。一括の退職所得扱いは正本で「死亡除く」と限定されている。死亡共済金を遺族が受け取るケースではみなし相続財産となり、退職所得控除を使うという案内は誤り。",
+    "needed_source": "",
+    "text": "共済金を一括で受け取ると退職所得、分割で受け取ると公的年金等の雑所得となり、どちらも退職所得控除や公的年金等控除が使えるため、通常の所得より軽い課税で済みます。",
+    "new": "死亡以外の共済金の一括受取りは退職所得、分割は公的年金等の雑所得です。死亡共済金は遺族のみなし相続財産となります。各控除や他の所得によって税額が変わり、負担が軽くなることを一律には保証できません。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-b6554abedab6b3b858cc-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:69-71;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1135_htm.txt:23-23。申告済みの課税所得には、その年に支払った小規模企業共済掛金の控除も既に反映される。既加入者が申告書の額をそのまま入力すると計算機が掛金をもう一度差し引き、節税額を誤る。掛金控除前の額に戻す条件が必要。",
+    "needed_source": "",
+    "text": "個人事業主なら確定申告書の「課税される所得金額」をそのまま使えます。",
+    "new": "確定申告書の課税所得に今回の掛金控除が含まれる場合は、そのまま使わず控除前の課税所得を計算して入力します。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-2887ec85ba256d8c92cf-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_claim.txt:193-205,210-218。分割・併用は共済金A/B、死亡以外、請求事由発生日に60歳以上、分割300万円以上・併用330万円以上等の要件がある。無条件に選べるとの記載では、60歳未満や金額不足の典型的な請求で受取方法の選択を誤る。また死亡共済金は退職所得ではなくみなし相続財産。",
+    "needed_source": "",
+    "text": "受け取り方は一括・分割・併用が選べ、一括受取りは退職所得扱い、分割受取りは公的年金等の雑所得扱い。",
+    "new": "分割・併用は共済金A・Bで死亡以外、請求事由発生日に60歳以上などの要件があります。分割は300万円以上、併用は330万円以上（一括30万円以上・分割300万円以上）が必要です。死亡以外の共済金の一括は退職所得、分割は公的年金等の雑所得、死亡共済金はみなし相続財産です。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-22a5f7ce66fb15ff4fed-1",
+    "decision": "unresolved",
+    "severity": "high",
+    "reason": "corpus/kyosai_web_smrj_go_jp_skyosai_entry_index_02_html.txt:28-53,66-73,83-90。個人事業主・共同経営者にも小規模事業者の従業員数要件があり、兼業給与所得者等は加入不可。共同経営者も経営への関与・報酬等の要件と人数上限がある。個人事業の事業主なら加入できるという記載では、従業員数超過や給与所得者の副業のケースで加入可否を誤る。",
+    "needed_source": "",
+    "text": "個人事業の事業主とその共同経営者、および小規模企業を経営する会社等の役員が加入できる。",
+    "new": "加入には主たる事業の常時使用従業員数が建設・製造・運輸・不動産・農業・宿泊娯楽等で20人以下、商業やその他サービス業で5人以下などの要件があります。兼業の給与所得者等は対象外です。共同経営者も経営上の重要な意思決定または資金負担と報酬等の要件があり、事業主1人につき2人までです。会社等の役員にも所定の加入要件があります。"
+  },
+  {
+    "page": "docs/shokibo-kyosai/index.html",
+    "id": "s-240326275e1bf163983c-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus_desc.md（令和8年分と令和9年分で基礎控除・青色控除・復興特別所得税の条文が分かれる）。2026年時点の法令に基づくとのページ全体の適合性について、全解説・計算例の照合根拠が不足している。",
+    "needed_source": "",
+    "text": "本ページの解説・計算例は2026年時点の法令にもとづく一般的な情報であり、個別の事案に対する助言ではありません。",
+    "new": "掛金控除の計算例は令和8年分の総合課税の速算表による概算です。制度の解説は各出典の対象範囲による一般的な情報であり、個別の事案への助言ではありません。"
+  },
+  {
+    "page": "docs/embed/shokibo-kyosai/index.html",
+    "id": "s-7c2d98cef89c44f75839-1",
+    "decision": "unresolved",
+    "severity": "medium",
+    "reason": "corpus/kyosai_web_smrj_go_jp_customer_skyosai_installment.txt:69-71;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1135_htm.txt:23-23。控除前の入力を求める前半に対し、会社員向けの「給与所得控除後の金額−所得控除の額の合計額」は、年末調整で今回の掛金控除が既に含まれる場合には控除後になる。該当する給与所得者・役員は掛金控除を戻す必要があるが、その条件がなく節税額を過少に試算する。",
+    "needed_source": "",
+    "text": "今回試算する所得控除を引く前の所得税課税所得です。既にその控除を引いた確定申告書の金額をそのまま入力しないでください。会社員は源泉徴収票の「給与所得控除後の金額」−「所得控除の額の合計額」（年収ではありません）",
+    "new": "今回試算する掛金控除前の所得税課税所得です。申告書や源泉徴収票の計算額に今回の掛金控除が含まれるなら、控除前に戻して計算してください。源泉徴収票からは「給与所得控除後の金額」−「所得控除の額の合計額」を基に調整します。年収や売上ではありません"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-1216307655f05e368df7-1",
+    "verdict": "wrong",
+    "reason": "令和9年分の改正は、75万円を廃止するものではない。2027年1月1日施行の租税特別措置法25条の2（e-Gov law_revision_id 332AC0000000026_20270101_508AC0000000012。改正は令和8年法律第12号）は、55万円の額を置かず、複式簿記等なら65万円（第4項。第7項により期限内のe-Tax送信が適用条件）、電子帳簿の要件を満たすときはその65万円を75万円と読み替える（第5項）。10万円（第1項）も残る。55万円の廃止は正しいが、75万円は新設で向きが逆。https://laws.e-gov.go.jp/law/332AC0000000026",
+    "text": "青色申告特別控除が65万円・55万円・10万円のどれになるかを要件から判定し、実際に安くなる税金（節税額）を自動計算。所得が控除額より少ないときの限度、赤字を相殺しない合計額のルール、山林所得の扱い、令和9年分からの75万円・55万円廃止の改正にも対応。登録不要・無料。",
+    "new": "青色申告特別控除が65万円・55万円・10万円のどれになるかを要件から判定し、実際に安くなる税金（節税額）を自動計算。所得が控除額より少ないときの限度、赤字を相殺しない合計額のルール、山林所得の扱い、令和9年分からの75万円区分の新設・55万円区分の廃止も解説（計算は令和8年分）。登録不要・無料。",
+    "severity": "medium",
+    "decision": "out_of_corpus_wrong"
+  },
+  {
+    "page": "docs/aoiro-kojo/index.html",
+    "id": "s-84e6525be991a9d4952e-1",
+    "verdict": "wrong",
+    "reason": "令和9年分の改正は、75万円を廃止するものではない。2027年1月1日施行の租税特別措置法25条の2（e-Gov law_revision_id 332AC0000000026_20270101_508AC0000000012。改正は令和8年法律第12号）は、55万円の額を置かず、複式簿記等なら65万円（第4項。第7項により期限内のe-Tax送信が適用条件）、電子帳簿の要件を満たすときはその65万円を75万円と読み替える（第5項）。10万円（第1項）も残る。55万円の廃止は正しいが、75万円は新設で向きが逆。https://laws.e-gov.go.jp/law/332AC0000000026",
+    "text": "青色申告特別控除が65万円・55万円・10万円のどれになるかを要件から判定し、実際に安くなる税金（節税額）を自動計算。所得が控除額より少ないときの限度、赤字を相殺しない合計額のルール、山林所得の扱い、令和9年分からの75万円・55万円廃止の改正にも対応。登録不要・無料。",
+    "new": "青色申告特別控除が65万円・55万円・10万円のどれになるかを要件から判定し、実際に安くなる税金（節税額）を自動計算。所得が控除額より少ないときの限度、赤字を相殺しない合計額のルール、山林所得の扱い、令和9年分からの75万円区分の新設・55万円区分の廃止も解説（計算は令和8年分）。登録不要・無料。",
+    "severity": "medium",
+    "decision": "out_of_corpus_wrong"
+  },
+  {
+    "page": "docs/column/gyomuitaku-kakutei-shinkoku/index.html",
+    "id": "s-1bd051217c27ed42c321-1",
+    "verdict": "wrong",
+    "reason": "源泉徴収の要否が契約書の表題ではなく報酬の中身で決まる点は、所得税法204条の限定列挙どおりで誤りではない。一方「税法もこの呼び名を使っていない」は誤り。印紙税法施行令（昭和42年政令第108号）が継続的取引の文書の例示として「業務委託契約書」という語を使い、関税法施行規則にも「業務委託契約」がある（e-Gov法令APIの語検索）。民法に業務委託という典型契約がないこととは別。https://laws.e-gov.go.jp/law/342CO0000000108",
+    "text": "税法もこの呼び名を使っていないので、源泉徴収の要否は契約書の表題ではなく、支払われる報酬の中身で決まります。",
+    "new": "源泉徴収の要否は契約書の表題ではなく、報酬の内容と支払者の条件で判断します。「業務委託契約書」という語は印紙税法施行令にもありますが、名称だけで所得税の源泉徴収対象は決まりません。",
+    "severity": "medium",
+    "decision": "out_of_corpus_wrong"
+  }
+]
