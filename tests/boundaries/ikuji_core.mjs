@@ -49,7 +49,7 @@ export const r15Cases = [
  {name:'r15 50%給付・賃金30%の1円超',run:()=>adjustForWage(150000,90001,300000).amount,expected:149999,source:act,quote:wageQuote},
  {name:'r15 配偶者免除でも本人13日は不支給',run:()=>shienKyufu(10000,13,0,true).amount,expected:0,source:act,quote:'対象期間内にした出生後休業の日数が通算して十四日以上であるとき。'},
  {name:'r15 配偶者免除・本人14日配偶者0日',run:()=>shienKyufu(10000,14,0,true).amount,expected:18200,source:act,quote:'第一号及び第二号'},
- {name:'r15 免除なし本人14日配偶者0日',run:()=>shienKyufu(10000,14,0,false).amount,expected:0,source:act,quote:'当該被保険者の配偶者が当該子を養育するための休業をした場合'},
+ {name:'r15 免除なし本人14日配偶者0日',run:()=>shienKyufu(10000,14,0,false).amount,expected:0,source:act,quote:'当該配偶者が当該子の出生の日から起算して八週間を経過する日の翌日までの期間内にした出生後休業の日数が通算して十四日以上であるときに限る。'},
  {name:'r15 2026年4月開始365日の明示例',run:()=>calcIkuji({total6m:1800000,startDate:'2026-04-01',leaveDays:365,shien:null},kihonteateData).total,expected:2105900,source:act,quote:'休業日数が通算して百八十日に達するまでの間に限り、百分の六十七'},
  {name:'r15 2026年2月開始365日の明示例',run:()=>calcIkuji({total6m:1800000,startDate:'2026-02-01',leaveDays:365,shien:null},kihonteateData).total,expected:2116000,source:act,quote:'休業日数が通算して百八十日に達するまでの間に限り、百分の六十七'}
 ];
