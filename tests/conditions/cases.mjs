@@ -54,3 +54,8 @@ extra.juminzei_core = [{name:'r15 HTML初期値は所得金額調整なし',
 // r15: 全フォーム初期値を実際のHTMLから読む。
 import {calcIkuji} from '../../docs/assets/ikuji_core.js';
 extra.ikuji_core=[{name:'r15 育休HTML初期値の合計',run:d=>calcIkuji({total6m:num(d,'monthly')*6,startDate:d.getElementById('startDate').value,leaveDays:num(d,'leaveDays'),priorShusshojiDays:num(d,'priorShusshojiDays'),shien:{ownDays:num(d,'shienOwnDays'),paidDays:num(d,'shienPaidDays'),spouseDays:num(d,'shienSpouseDays'),spouseExempt:checked(d,'spouseExempt')}},load('kihonteate_r07.json')).total,expected:1805900,source:'https://laws.e-gov.go.jp/law/349AC0000000116',quote:'休業日数が通算して百八十日に達するまでの間に限り、百分の六十七',note:'2026-04-01から初期値307日、日額10000円、67%177日＋50%124日、配偶者要件未達で支援0円。'}];
+
+import {calcJouto as r16Jouto} from '../../docs/assets/jouto_core.js';
+import {idecoMonthlyLimit as r16Limit} from '../../docs/assets/setsuzei_core.js';
+extra.jouto_core=[{name:'r16 譲渡HTML初期日付は短期',run:d=>r16Jouto({joutoKagaku:num(d,'joutoKagaku'),joutoHiyo:num(d,'joutoHiyo'),tochiShutokuhi:num(d,'tochiShutokuhi'),tatemonoShutokuKagaku:num(d,'tatemonoShutokuKagaku'),shutokuBi:d.getElementById('shutokuBi').value,joutoBi:d.getElementById('joutoBi').value},load('jouto_r08.json')).isChoki,expected:false,source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3211.htm',quote:'土地や建物を売った年の1月1日現在で所有期間が5年以下の場合'}];
+extra.setsuzei_core=[{name:'r16 iDeCo HTML初期他制度額',run:d=>r16Limit({kubun:'kaishain_none',otherMonthly:num(d,'otherMonthly')},load('setsuzei_r08.json')),expected:23000,source:'https://laws.e-gov.go.jp/law/413CO0000000248',quote:'第二号加入者であって、次号から第五号までに掲げる者以外のもの二万三千円',note:'動的selectの初期選択kaishain_none、他制度額はHTMLの初期値から取得。'}];

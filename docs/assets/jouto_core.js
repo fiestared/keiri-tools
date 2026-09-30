@@ -182,8 +182,8 @@ export function calcJouto(input, D) {
   if (tokurei) {
     let limit = tokurei.gaku_en;
     if (tokureiKey === "akiya") {
-      // 相続人が3人以上なら控除額が2,000万円に下がる（措法35条4項）
-      if (sozokuninSu >= tokurei.sozokunin_shikii) {
+      // 2024年1月1日以後の譲渡は、相続人3人以上で上限2,000万円（No.3306）。
+      if (joutoBi >= tokurei.gengaku_kaishi && sozokuninSu >= tokurei.sozokunin_shikii) {
         limit = tokurei.gaku_en_3nin_ijo;
         notes.push(`相続人が${sozokuninSu}人（${tokurei.sozokunin_shikii}人以上）なので、控除額は3,000万円ではなく2,000万円です（措法35条4項）。`);
       }
@@ -214,12 +214,14 @@ export function calcJouto(input, D) {
   const is10Choki = koeruKikan(kikan, D.shoyu_kikan.keigen_koeru_years);
   const keigenOK = keigenZeiritsu && is10Choki && tokureiKey === "kyojuyo";
 
-  // 復興特別所得税は令和19年分まで。過ぎた年分には掛けない（黙って古い税率を当てない）。
-  const fukkoOn = joutoY <= D.fukko.until_year;
-  const fukkoMul = fukkoOn ? 1 + D.fukko.rate : 1;
-  if (!fukkoOn) {
-    notes.push(`${joutoY}年分の譲渡なので、復興特別所得税（令和19年＝${D.fukko.until_year}年分まで）は掛かりません。`);
-  }
+  // 成立済みの2027年改正を税目別に計算する。防衛税に復興税の終期を流用しない。
+  const fukkoRate = joutoY <= D.fukko.until_year
+    ? (joutoY >= D.fukko.reform_from_year ? D.fukko.reform_rate : D.fukko.rate) : 0;
+  const boeiRate = joutoY >= D.boei.from_year ? D.boei.rate : 0;
+  const fukkoOn = fukkoRate > 0;
+  const combinedRate = fukkoRate + boeiRate;
+  const totalPct = (s, j) => Number((s * (1 + combinedRate) + j).toFixed(6));
+  if (!fukkoOn) notes.push(`${joutoY}年分には復興特別所得税は掛かりません（${D.fukko.until_year}年分まで）。防衛特別所得税は別に計算します。`);
 
   let shotokuZei = 0, juminZei = 0, kubun, zeiritsuLabel, uchiwake = [];
   if (keigenOK) {
@@ -229,7 +231,7 @@ export function calcJouto(input, D) {
     shotokuZei = ika * (k.ika.shotoku_pct / 100) + koe * (k.koe.shotoku_pct / 100);
     juminZei = ika * (k.ika.jumin_pct / 100) + koe * (k.koe.jumin_pct / 100);
     kubun = k.name;
-    zeiritsuLabel = `6,000万円以下の部分 ${k.ika.goukei_pct_with_fukko}%／超える部分 ${k.koe.goukei_pct_with_fukko}%`;
+    zeiritsuLabel = `6,000万円以下の部分 ${totalPct(k.ika.shotoku_pct, k.ika.jumin_pct)}%／超える部分 ${totalPct(k.koe.shotoku_pct, k.koe.jumin_pct)}%`;
     uchiwake = [
       { label: `6,000万円以下の部分`, gaku: ika, shotokuPct: k.ika.shotoku_pct, juminPct: k.ika.jumin_pct },
       { label: `6,000万円を超える部分`, gaku: koe, shotokuPct: k.koe.shotoku_pct, juminPct: k.koe.jumin_pct },
@@ -239,13 +241,14 @@ export function calcJouto(input, D) {
     shotokuZei = kazei * (z.shotoku_pct / 100);
     juminZei = kazei * (z.jumin_pct / 100);
     kubun = z.name;
-    zeiritsuLabel = `合計 ${z.goukei_pct_with_fukko}%（所得税${z.shotoku_pct}%＋復興特別所得税＋住民税${z.jumin_pct}%）`;
+    zeiritsuLabel = `合計 ${totalPct(z.shotoku_pct, z.jumin_pct)}%（所得税${z.shotoku_pct}%＋付加税（復興・防衛）＋住民税${z.jumin_pct}%）`;
     uchiwake = [{ label: "課税譲渡所得金額", gaku: kazei, shotokuPct: z.shotoku_pct, juminPct: z.jumin_pct }];
   }
   const shotokuZeiY = yen(shotokuZei);
-  const fukkoZeiY = yen(shotokuZei * (fukkoOn ? D.fukko.rate : 0));
+  const fukkoZeiY = yen(shotokuZeiY * fukkoRate);
+  const boeiZeiY = yen(shotokuZeiY * boeiRate);
   const juminZeiY = yen(juminZei);
-  const goukei = shotokuZeiY + fukkoZeiY + juminZeiY;
+  const goukei = shotokuZeiY + fukkoZeiY + boeiZeiY + juminZeiY;
 
   // ── 短期だったとき「年を越したら長期になるか」を出す（行動に移せる答えにする） ──
   let kurikoshi = null;
@@ -255,9 +258,12 @@ export function calcJouto(input, D) {
     if (koeruKikan(next, D.shoyu_kikan.choki_koeru_years)) {
       const c = D.zeiritsu.choki;
       const sz = yen(kazei * (c.shotoku_pct / 100));
-      const fz = yen(kazei * (c.shotoku_pct / 100) * (fukkoOn ? D.fukko.rate : 0));
+      const nextY = joutoY + 1;
+      const nextFukko = nextY <= D.fukko.until_year ? (nextY >= D.fukko.reform_from_year ? D.fukko.reform_rate : D.fukko.rate) : 0;
+      const fz = yen(sz * nextFukko);
+      const bz = yen(sz * (nextY >= D.boei.from_year ? D.boei.rate : 0));
       const jz = yen(kazei * (c.jumin_pct / 100));
-      kurikoshi = { year: joutoY + 1, goukei: sz + fz + jz, sagaku: goukei - (sz + fz + jz) };
+      kurikoshi = { year: joutoY + 1, goukei: sz + fz + bz + jz, sagaku: goukei - (sz + fz + bz + jz) };
     }
   }
 
@@ -267,7 +273,7 @@ export function calcJouto(input, D) {
     gaisan, jitsugaku, useGaisan, shutokuhi, shokyaku,
     joutoShotoku, kojoGaku, kojoName, kojoRieki, akiyaBlocked,
     kazeiRaw, kazei,
-    shotokuZei: shotokuZeiY, fukkoZei: fukkoZeiY, juminZei: juminZeiY, goukei,
+    shotokuZei: shotokuZeiY, fukkoZei: fukkoZeiY, boeiZei: boeiZeiY, fukkoRate, boeiRate, juminZei: juminZeiY, goukei,
     tedori: joutoKagaku - joutoHiyo - goukei,
     fukkoOn, joutoYear: joutoY, kurikoshi, notes,
     dataYear: D._meta && D._meta.year,

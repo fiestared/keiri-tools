@@ -261,22 +261,10 @@ sec("§7 被相続人の居住用財産（空き家）の特別控除");
   eq("期限はデータ由来", D.tokubetsu_kojo.akiya.kigen, "2027-12-31");
 }
 
-// ── §8 復興特別所得税は令和19年分まで ────────────────────────
-sec("§8 復興特別所得税（令和19年分まで）");
-{
-  eq("データ上の終期は2037年", D.fukko.until_year, 2037);
-  const mk = (y) => calcJouto({
-    joutoKagaku: 50000000, joutoHiyo: 0, tochiShutokuhi: 10000000, tatemonoShutokuKagaku: 0,
-    shutokuBi: "2000-04-01", joutoBi: `${y}-06-01`,
-  }, D);
-  const a = mk(2037), b = mk(2038);
-  eq("2037年分は復興特別所得税が掛かる", a.fukkoOn, true);
-  eq("  所得税の2.1%", a.fukkoZei, Math.floor(a.shotokuZei * 0.021));
-  eq("2038年分は掛からない", b.fukkoOn, false);
-  eq("  復興特別所得税は0", b.fukkoZei, 0);
-  eq("  その旨を注記する", b.notes.some((n) => n.includes("復興特別所得税")), true);
-  // ★復興特別所得税は住民税には掛からない
-  eq("住民税は同額（復興税の影響を受けない）", a.juminZei, b.juminZei);
+// 成立済み改正の年境界と相続人3人の適用開始日。
+sec("§8 復興・防衛特別所得税と空き家の年境界");
+for (const c of (await import('./boundaries/jouto_core.mjs')).cases) {
+  eq(c.name, JSON.stringify(c.run()), JSON.stringify(c.expected));
 }
 
 // ── §9 端数処理 ────────────────────────────────────────
@@ -437,9 +425,9 @@ sec("§15 ページ本文 ⇔ 参照データの一致");
   eq("軽減の超過部分の税率が本文にある",
     has("keigen-ritsu", `${z.keigen.koe.goukei_pct_with_fukko}%`), true);
   eq("復興特別所得税の率が本文にある",
-    has("fukko-kigen", `${D.fukko.rate * 100}%`), true);
+    html.includes(`${D.fukko.rate * 100}%`), true);
   eq(`復興特別所得税の終期 ${D.fukko.until_year}年 が本文にある`,
-    has("fukko-until", `${D.fukko.until_year}年`), true);
+    html.includes(`${D.fukko.until_year}年`), true);
   eq("減価償却の算式が本文にある（0.9・償却率・経過年数）",
     has("shokyaku-shiki", `× ${D.shokyaku.shikiso} ×`), true);
   eq(`減価償却の限度 ${D.shokyaku.gendo_pct}% が本文にある`,

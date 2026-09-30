@@ -619,3 +619,19 @@ export function jishinHokenryoBest(input, D) {
     diff: Math.abs(a - b),
   };
 }
+
+/** 現行（2026年11月分まで）のiDeCo月額上限。DC令36条、公式FAQ。
+ * otherMonthly: 第1号は基金・付加保険料、それ以外は事業主掛金・DB等相当額の合計。
+ * 月5,000円未満は拠出できず、1,000円単位のため上限は切り下げる。
+ */
+export function idecoMonthlyLimit({ kubun, otherMonthly = 0 }, D) {
+  const k = D?.ideco?.limits?.find(l => l.key === kubun);
+  if (!k) throw new Error('加入区分を選んでください');
+  const other = Number(otherMonthly);
+  if (!Number.isFinite(other) || other < 0) throw new Error('他制度の掛金等は0円以上で入力してください');
+  let cap = k.monthly;
+  if (kubun === 'jieigyo') cap -= other;
+  if (kubun === 'kaishain_dc' || kubun === 'kaishain_db') cap = Math.min(cap, D.ideco.combined_monthly - other);
+  cap = Math.max(0, Math.floor(cap / D.ideco.step) * D.ideco.step);
+  return cap < D.ideco.min_monthly ? 0 : cap;
+}
