@@ -1,3 +1,5 @@
+import {calcKokuho as kokuhoCalc, classifyByAge as kokuhoAge} from '../../docs/assets/kokuho_core.js';
+import vm from 'node:vm';
 import { normalizeBatch } from '../../docs/assets/zengin_core.js';
 import {readFileSync} from 'node:fs';
 import {calc} from '../../docs/assets/jutaku_core.js';
@@ -63,3 +65,12 @@ extra.jouto_core=[{name:'r16 譲渡HTML初期日付は短期',run:d=>r16Jouto({j
 extra.setsuzei_core=[{name:'r16 iDeCo HTML初期他制度額',run:d=>r16Limit({kubun:'kaishain_none',otherMonthly:num(d,'otherMonthly')},load('setsuzei_r08.json')),expected:23000,source:'https://laws.e-gov.go.jp/law/413CO0000000248',quote:'第二号加入者であって、次号から第五号までに掲げる者以外のもの二万三千円',note:'動的selectの初期選択kaishain_none、他制度額はHTMLの初期値から取得。'}];
 import {calcKogaku} from '../../docs/assets/kogaku_core.js';
 extra.kogaku_core=[{name:'r16 高額療養費HTML初期状態は診療月未指定',run:d=>calcKogaku({ageGroup:d.getElementById('agegroup').value,shinryoYM:d.getElementById('shinryo').value,hikazei:checked(d,'hikazei'),standardMonthly:num(d,'monthly'),tasukai:checked(d,'tasukai'),items:[{medical:num(d,'medical1'),ratio:Number(d.getElementById('ratio1').value)}]},load('kogaku_r08.json')).reason,expected:'no_shinryo_ym',source:'https://www.kyoukaikenpo.or.jp/benefit/high_cost_medical_expenses/002/',quote:'70歳未満の方の区分（令和8年8月～令和9年7月）',note:'診療月はJS初期化前には未指定。期間を推測せず停止する。'}];
+extra.kokuho_core=[{name:'国保HTMLの動的初期入力',run:d=>{
+  const script=[...d.querySelectorAll('script')].map(x=>x.textContent).join('\n');
+  const expr=script.match(/row\.innerHTML\s*=([\s\S]*?);\s*\$\("members"\)/)?.[1];
+  if(!expr)throw Error('member defaults not found');
+  const row=d.createElement('div');row.innerHTML=vm.runInNewContext(expr,{i:0});
+  const shotoku=Number(row.querySelector('#shotoku0').value),gokei=row.querySelector('#gokei0').value;
+  const r=kokuhoCalc({members:[{shotoku,gokeiShotoku:gokei===''?shotoku:Number(gokei),...kokuhoAge(Number(row.querySelector('#age0').value)),kyuyoShotokusha:row.querySelector('#kyuyo0').value==='1'}]},load('kokuho_r08.json'));
+  return [r.total,r.keigen.key,r.kubun[0].kazeiHyojun];
+},expected:[0,'7wari',0],source:'https://laws.e-gov.go.jp/api/2/law_data/333CO0000000362?elm=Article_29_7',quote:'世帯十分の七'}];

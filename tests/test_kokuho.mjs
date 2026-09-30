@@ -366,6 +366,23 @@ ok("§7 基礎控除が空なら計算しない", throws(() => calcKokuho({ memb
 }
 
 // ────────────────────────────────────────────────────────────────────────────
+// r16: 地方税法314条の2第2項。上限に隠れない低い仮定料率で控除の境界を検査。
+for (const [income, deduction] of [
+  [23500000,430000],[23500001,430000],
+  [24000000,430000],[24000001,290000],
+  [24500000,290000],[24500001,150000],
+  [25000000,150000],[25000001,0],
+]) {
+  const r=calcKokuho({members:[member({shotoku:income})],rates:{iryo:{shotokuwari:0.01}}},D);
+  eq(`r16 合計所得${income}円の基礎控除`,r.kubun[0].kazeiHyojun,income-deduction);
+  eq(`r16 合計所得${income}円の保険料`,r.total,Math.floor((income-deduction)*0.0001));
+}
+{
+  const r=calcKokuho({members:[member({shotoku:1000000,gokeiShotoku:25000001})],rates:{iryo:{shotokuwari:1}}},D);
+  eq('r16 繰越控除後の総所得と合計所得を区別',r.kubun[0].kazeiHyojun,1000000);
+  eq('r16 合計所得による控除消失後の保険料',r.total,10000);
+}
+
 if (fails.length) {
   console.error(`✗ test_kokuho: ${fails.length} 件失敗 / ${pass} 件成功`);
   for (const f of fails) console.error("   - " + f);

@@ -23,7 +23,7 @@
  *  4. **軽減の判定所得は基礎控除43万円を引く「前」の額。**（6項1号）
  *     所得割の課税標準である「基礎控除後の総所得金額等」（2項4号）とは別物。
  *     同じ43万円という数字が別の役割で2回出てくるので、判定に控除後の額を渡すと
- *     軽減が1段階ずつ甘い方へずれる。
+ *     軽減が過大になる場合がある（段階が変わらない場合もある）。
  *
  *  5. **判定所得と人数には「世帯主」と「特定同一世帯所属者」が入る。**（6項1号）
  *     世帯主が国保の被保険者でない場合（擬制世帯主）でも世帯主の所得は判定に入り、
@@ -35,12 +35,11 @@
  *     人数×10万円にすると単身の給与所得者で判定が甘くなる。
  *
  *  7. **未就学児の5割減額は、7割・5割・2割の軽減を当てた「後」の均等割にかける。**（6項6号）
- *     条文が「その減額後の被保険者均等割額」と明記している。順序を逆にすると
- *     7割軽減世帯の未就学児で減額が過大になる。
+ *     条文が「その減額後の被保険者均等割額」と明記している。掛け算の順序だけでは額は変わらない。
  *
  *  8. **子ども・子育て支援金分の均等割は18歳以上だけが負担する。**（5項3号・6項10号11号）
- *     同区分の均等割は「十八歳以上被保険者均等割額」として18歳以上に賦課され、
- *     18歳未満の分は6項11号が全額減額する。全員に掛けると子どものいる世帯で過大になる。
+ *     一般均等割は全年齢に賦課し、18歳到達年度末まで6項10号・11号で全額減額する。
+ *     その翌日以後は十八歳以上被保険者均等割額を加算する。全員に掛けると子どものいる世帯で過大になる。
  *
  *  9. **介護分は40歳以上65歳未満だけ。**（1項3号）所得割も均等割も、
  *     介護納付金賦課被保険者でない人の分は積まない。
@@ -168,7 +167,7 @@ function isShotokuwariTaisho(member, kubun) {
  * 世帯の年間保険料を計算する。
  *
  * @param {object} input
- *   - members: [{shotoku, kaigo2, mishugakuji, under18, kyuyoShotokusha}] 国保の被保険者
+ *   - members: [{shotoku, gokeiShotoku, kaigo2, mishugakuji, under18, kyuyoShotokusha}] 国保の被保険者
  *   - tokuteiDouitsu: [{shotoku, kyuyoShotokusha}] 特定同一世帯所属者（保険料は賦課されない）
  *   - setainushiIsHihokensha: 世帯主が被保険者か（false＝擬制世帯主）
  *   - setainushiShotoku / setainushiKyuyoShotokusha: 擬制世帯主のときだけ使う
@@ -182,6 +181,9 @@ export function calcKokuho(input, data) {
   const rates = input.rates || {};
   const kisoKojo = nz(data.kiso_kojo_yen);
 
+  if (!Array.isArray(data.kiso_kojo_bands) || !data.kiso_kojo_bands.length) {
+    throw new Error('基礎控除の所得段階データがありません');
+  }
   const keigen = judgeKeigen(input, data);
   const keigenRate = keigen.rate_pct / 100;
 
@@ -201,7 +203,11 @@ export function calcKokuho(input, data) {
     let kazeiHyojun = 0;
     for (const m of members) {
       if (!isShotokuwariTaisho(m, kubun)) continue;
-      kazeiHyojun += Math.max(0, nz(m.shotoku) - kisoKojo);
+      // 合計所得金額と総所得金額等は繰越控除などで異なるため別入力を受ける。
+      const gokei = nz(m.gokeiShotoku ?? m.shotoku);
+      const band = data.kiso_kojo_bands.find(b => gokei <= b.max_income_yen);
+      const deduction = band ? nz(band.deduction_yen) : 0;
+      kazeiHyojun += Math.max(0, nz(m.shotoku) - deduction);
     }
     const shotokuwari = kazeiHyojun * shotokuwariRate;
 
