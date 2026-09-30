@@ -101,9 +101,14 @@ for(const file of readdirSync(root,{recursive:true}).filter(f=>f==='index.html'|
   }
  }
  for(const fig of d.querySelectorAll('main figure')){
-  if(fig.classList.contains('fig-wide'))continue;
   const svg=[...fig.querySelectorAll('svg')].find(e=>e.closest('figure')===fig);if(!svg)continue;
   const figw=wideFigureWidth(svg);if(!figw)continue;
+  if(fig.classList.contains('fig-wide')){
+   // 既に fig-wide の図も、あとで小さい文字が足されたら --figw を足りる幅まで上げる（下げはしない。2026-10-01 雑収入の図で実害）
+   const cur=/--figw:\s*(\d+)px/.exec(fig.getAttribute('style')||'');
+   if(cur&&Number(cur[1])<figw)set(fig,'style',fig.getAttribute('style').replace(/--figw:\s*\d+px/,'--figw:'+figw+'px'));
+   continue;
+  }
   set(fig,'class',['figure','fig-wide',...[...fig.classList].filter(c=>c!=='figure')].join(' '));
   set(fig,'style',[(fig.getAttribute('style')||'').replace(/;?\s*$/,''),'--figw:'+figw+'px'].filter(Boolean).join(';'));
  }
