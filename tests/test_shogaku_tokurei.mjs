@@ -117,8 +117,8 @@ t('★期限: 令和11年3月取得は案内する／令和11年4月取得は「
   assert.ok(inTime[0].includes('全額経費にできる'), inTime[0]);
   const after = tokureiNote(350000, '2029-04');
   assert.strictEqual(after.length, 1, '期限後も黙らず、期限を告げること');
-  assert.ok(!after.includes('全額経費にできる場合があります'), after[0]);
-  assert.ok(after[0].includes('までに取得したものが対象'), after[0]);
+  assert.ok(!after[0].includes('全額経費にできる場合があります'), after[0]);
+  assert.ok(after[0].includes('までに取得・供用したものが対象'), after[0]);
   assert.ok(after[0].includes('延長されたかどうか'), after[0]);
 });
 t('10万円・20万円の案内: 19万9,999円では出る／20万円ちょうどでは出ない', () => {
@@ -131,12 +131,24 @@ t('回帰防止: コアに 300000 の直書きゲートが残っていない（�
   assert.ok(!/30万円未満まで少額減価償却資産/.test(core), '旧文言が残っている');
 });
 
+// 新旧基準の併記は、取得時期と金額が正しく対応していれば必要な説明。
+function assertTokureiConditions(text) {
+  const amount = text.split('。').find(s => s.includes('令和8年4月1日以後'));
+  assert.ok(amount, '取得時期を区別する文が無い: ' + text);
+  assert.ok(amount.includes('以後取得は' + S.chusho_mangan_label), '新取得の金額: ' + amount);
+  assert.ok(amount.includes('同日前取得は' + S.chusho_mangan_kyu_label), '旧取得の金額: ' + amount);
+  assert.ok(amount.includes('年300万円'), '年額上限: ' + amount);
+  assert.match(amount, /短期年度[^。]*月割/, '短期年度の月割');
+  assert.ok(text.includes('青色申告') && text.includes('供用年度・供用年'), '対象・算入時期: ' + text);
+  assert.ok(text.includes('対象資産') && text.includes('明細添付'), '資産・明細要件: ' + text);
+}
+
 // ── 3. ページ ⇔ データ（規則3/4/5: 主張が1回だけ現れる要素を名指し）──────────────
 t('/genka/ 一覧の中小特例の行が「40万円未満」「300万円」を言う', () => {
   const li = byId(genkaPage, 'shogaku-chusho');
   assert.ok(li.includes(S.chusho_mangan_label), li);
   assert.ok(li.includes('300万円'), li);
-  assert.ok(!li.includes('30万円未満'), '旧基準が残っている: ' + li);
+  assertTokureiConditions(li);
 });
 t('★/genka/ の注記が「令和8年4月1日以後の取得」「それ以前は30万円未満」「令和11年3月31日」「400人」を全部言う', () => {
   const p = byId(genkaPage, 'shogaku-kakuju');
@@ -153,16 +165,10 @@ t('/genka/ の見出し・目次が「40万円未満」を名乗る（30万円�
   assert.ok(toc && toc[1] === (h2 && h2[1]), '目次と見出しが一致しない: ' + (toc && toc[1]));
 });
 t('★/genka/ のFAQは本文とJSON-LDの「回答文そのもの」が40万円を言う（設問名や括弧書きで代用しない）', () => {
-  // 規則7: 同じ「40万円」が回答の別の文（括弧の中）にも出るので、主張が1回だけ現れる
-  //        節（＝いくらの資産をいくらまで全額経費にできるか）を名指しする。
-  // 規則8: この主張はhead側のJSON-LDにも本文にも出る＝2箇所とも別々に見ないと素通しする。
-  const CLAIM = '中小企業者等は40万円未満の資産を年間合計300万円まで';
-  const WRONG = '30万円未満の資産を年間合計';
-
+  // 同じ回答内で、取得時期別の金額・供用時期・年額・月割条件を対応させる。
   const body = genkaPage.match(/<h3>Q\. 10万円[^<]*<\/h3>\s*<p>([\s\S]*?)<\/p>/);
   assert.ok(body, 'FAQ本文の回答が見つからない');
-  assert.ok(visible(body[1]).includes(CLAIM), 'FAQ本文の回答: ' + visible(body[1]).slice(0, 140));
-  assert.ok(!visible(body[1]).includes(WRONG), 'FAQ本文に旧基準が残っている');
+  assertTokureiConditions(visible(body[1]));
 
   const ldRaw = genkaPage.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
   assert.ok(ldRaw, 'JSON-LDが見つからない');
@@ -172,8 +178,7 @@ t('★/genka/ のFAQは本文とJSON-LDの「回答文そのもの」が40万円
   const q = faqPage.mainEntity.find((x) => x.name.startsWith('Q. 10万円'));
   assert.ok(q, '少額資産のFAQがJSON-LDに無い');
   assert.ok(q.name.includes('40万円未満'), '設問名が古い: ' + q.name);
-  assert.ok(q.acceptedAnswer.text.includes(CLAIM), 'JSON-LDの回答文が古い: ' + q.acceptedAnswer.text.slice(0, 140));
-  assert.ok(!q.acceptedAnswer.text.includes(WRONG), 'JSON-LDの回答文に旧基準が残っている');
+  assertTokureiConditions(q.acceptedAnswer.text);
   assert.ok(q.acceptedAnswer.text.includes('令和8年4月1日以後'), '改正時期がJSON-LDの回答に無い');
 });
 t('/genka/ が特例の条文（措法28条の2・67条の5）を出典に挙げる', () => {
