@@ -70,7 +70,7 @@ function stripNonClaims(html) {
     .replace(/<script\b[^>]*application\/ld\+json[\s\S]*?<\/script>/gi, " ") // JSON-LD は本文から生成される
     .replace(/<style\b[\s\S]*?<\/style>/gi, " ")
     .replace(/<(nav|header|footer|aside)\b[\s\S]*?<\/\1>/gi, " ")
-    .replace(/<section\b[^>]*class="[^"]*(related|rel-block|next-read)[^"]*"[\s\S]*?<\/section>/gi, " ")
+    .replace(/<section\b[^>]*class="[^"]*(related|rel-block|next-read|rail-next)[^"]*"[\s\S]*?<\/section>/gi, " ")
     .replace(/<(div|ul|p)\b[^>]*class="[^"]*(related|rel-block|next-read|breadcrumb|article-meta)[^"]*"[\s\S]*?<\/\1>/gi, " ");
 }
 export function claimText(html) {

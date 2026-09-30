@@ -90,3 +90,10 @@ assert.deepEqual(checkPage({ html: HTML, ledger: null, requiredText: claimText('
 assert.ok(checkPage({ html: HTML, ledger: null, requiredText: claimText("<p>月8.8万円</p>"), page: "p" }).some((e) => /台帳/.test(e)));
 
 console.log(`✓ test_check_claims: 抽出の性質 / ベースライン緑 / 壊し ${caught}/${cases.length} 捕捉 / 計算機の tool_cases / 足した行モード`);
+
+// r14: 目次横の自動生成リンクはリンク先の見出し。隣接する本文は引き続き検査する。
+const railOnly='<nav class="toc"><ol><li>目次</li></ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1"><div>あわせて読む</div><ul><li><a href="../kenko-hoken-nini-keizoku/">標準報酬月額の上限32万円</a></li></ul></section><!--rail-next:E-->';
+assert.deepEqual(checkPage({html:railOnly,ledger:null,requiredText:claimText(railOnly),page:'existing'}),[]);
+const railAndBody=railOnly+'<p>このページの保険料は32万円です。</p>';
+assert.ok(checkPage({html:railAndBody,ledger:null,requiredText:claimText(railAndBody),page:'existing'}).some(e=>e.includes('台帳')));
+assert.ok(findNumbers(claimText(railAndBody)).has('32万円'));
