@@ -59,3 +59,8 @@ assert.equal(explainShortfall(110000, 108000).verdict, "unknown");
 assert.equal(explainShortfall(110000, 109450).verdict, "likely_fee"); // 一律550円
 
 console.log("all senpou_core tests passed");
+
+// 正本の料金による境界ケース。プリセットと差額候補の双方を独立期待値で検査。
+const {cases: reviewedFees} = await import('./boundaries/senpou_core.mjs');
+for (const c of reviewedFees) assert.deepEqual(c.run(), c.expected, c.name);
+assert.ok(!COMMON_FEES.includes(99), 'auじぶんの誤った通常料金99円を候補に残さない');

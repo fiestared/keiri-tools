@@ -110,7 +110,7 @@ export function buildSections(rows) {
   const out = [];
   out.push(START);
   out.push('  <h2 id="ginkobetsu">銀行別の振込手数料（他行宛）</h2>');
-  out.push('  <p>上の一覧を銀行ごとに並べ替えたものです。<b>数字は上の一覧と同一の調査結果に基づいています</b>ので食い違いません。個人と法人の両方がある銀行は並べて示します。行ごとに、最後に公式ページで確認した日を付けています。</p>');
+  out.push('  <p>上の一覧を銀行ごとに並べ替えたものです。<b>数字は上の一覧と同一の調査結果に基づいています</b>ので食い違いません。個人と法人の両方がある銀行は並べて示します。出典の確認範囲は調査方法と出典をご参照ください。</p>');
   for (const [base, list] of sorted) {
     const kojin = list.find((x) => x.kubun === '個人');
     const hojin = list.find((x) => x.kubun === '法人');
@@ -126,7 +126,7 @@ export function buildSections(rows) {
     const notes = [];
     if (kojin && hojin && price(kojin.over) !== price(hojin.over)) {
       const ratio = (price(hojin.over) / price(kojin.over)).toFixed(1).replace(/\.0$/, '');
-      notes.push(`法人は個人の<b>${ratio}倍</b>（${kojin.over}→${hojin.over}）`);
+      notes.push(`他行宛ネット振込の3万円以上では、法人は個人の<b>${Number(ratio) === price(hojin.over) / price(kojin.over) ? "" : "約"}${ratio}倍</b>（${kojin.over}→${hojin.over}）`);
     }
     const withBoundary = list.filter((x) => x.boundary).map((x) => x.kubun);
     notes.push(withBoundary.length
@@ -144,10 +144,9 @@ export function buildSections(rows) {
 
     // ★出典は行ごとに出す。未照合の行は「未照合」と書く（黙って伏せない）
     const srcs = [...new Set(list.filter((x) => x.source).map((x) => x.source))];
-    const dates = [...new Set(list.filter((x) => x.verifiedAt).map((x) => x.verifiedAt))].sort();
     if (srcs.length) {
       const links = srcs.map((u) => `<a href="${u}" rel="nofollow">公式ページ</a>`).join('・');
-      out.push(`  <p class="src">出典: ${links}（${dates.map(formatJapaneseDate).join('・')}確認）</p>`);
+      out.push(`  <p class="src">出典: ${links}（確認範囲は調査方法と出典をご参照ください）</p>`);
     } else {
       // ★2026-08-14: 文言を読者向けに直した。旧文「★この行はまだ一次情報での再照合が
       //   済んでいません（表全体の確認日のみ）。」は**編集メモがそのまま公開に出ていた**もので、
