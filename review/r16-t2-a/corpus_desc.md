@@ -1,0 +1,2 @@
+- `00.txt`〜`14.txt`（と同名の PDF）… 国税庁 令和8年分「給与所得の源泉徴収票等の法定調書の作成と提出の手引」（章ごと。https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/index.htm 。PDF は https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/PDF/NN.pdf）
+- 源泉徴収・年末調整そのもの（税額・控除）の正本は t1 の `/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t2-a/t1-corpus/`（令和8年版 源泉徴収のあらまし／令和8年分 年末調整のしかた）。法定調書の主張が税額計算に触れるときだけ参照してよい
