@@ -75,8 +75,8 @@ def quote_present(run,ref,quote):
         pool.append('\n'.join(lines))
     if not pool:return False
     # sol は複数箇所の引用を改行・「…」・「 | 」でつないで1つに書く。断片ごとに、参照したどれかの正本に逐語で在ることを求める。
-    frags=[norm(f) for f in re.split(r'\n|…|\.\.\.|\s\|\s|／',quote)]
-    frags=[f for f in frags if len(f)>=6] or [want]
+    frags=[norm(f) for f in re.split(r'\n|…|\.\.\.|\s\|\s|／|[;；]',quote)]  # 2026-09-30: Grok は複数箇所を ; でつなぐ
+    frags=[f for f in frags if len(f)>=2] or [want]  # 短い断片（例「二半製品」）も断片として照合する（2026-09-30: 同じ短文を2つの正本から ; で並べた引用が不成立になった）
     text=[norm(chunk) for chunk in pool]
     return all(any(f in t for t in text) for f in frags)
 

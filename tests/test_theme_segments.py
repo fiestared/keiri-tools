@@ -94,6 +94,7 @@ class QuoteRefFormats(unittest.TestCase):
             self.assertTrue(qp(run,'corpus/a.txt:11','会社が対象です。'))                       # 無傷
             self.assertTrue(qp(run,'corpus/a.txt:1','会社が対象です。'))                        # 行番号のずれ
             self.assertTrue(qp(run,'corpus/a.txt:1-2,11; corpus/b.txt:1','会社が対象です。\n短時間労働者も加入します。'))  # 複数の正本・範囲・断片
+            self.assertTrue(qp(run,'corpus/a.txt:11;corpus/b.txt:1','会社が対象です。;短時間労働者も加入します。'))   # ; でつないだ引用（Grok）
             self.assertFalse(qp(run,'corpus/a.txt:11','短時間労働者も加入します。'))              # 参照していない別ファイルの文
             self.assertFalse(qp(run,'corpus/a.txt:11; corpus/b.txt:1','会社が対象です。\n正本に存在しない文です'))  # 断片の1つが正本に無い
             self.assertFalse(qp(run,'corpus/c.png:1','会社が対象です。'))                        # 画像
