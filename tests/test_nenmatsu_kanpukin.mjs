@@ -80,11 +80,11 @@ if (cap) {
   }
   ok(cap.includes('雇用保険料は含めない'), 'figcaptionが社保の範囲(雇用保険を含めない)を明示する');
 }
-// meta description: 看板の実数を figcaption と同じ桁で出す（53,740 / 30,200）
+// r16: 条件付き実数例を一般的な還付額としてメタ説明へ転用しない。
 const meta = HTML.match(/<meta name="description" content="([^"]*)"/)[1];
 ok(withheld500 - tax500r8 === 53_740, '還付53,740のオラクル一致');
-ok(meta.includes('53,740円'), 'meta descriptionの53,740円');
-ok(meta.includes('30,200円'), 'meta descriptionの30,200円');
+ok(meta.includes('徴収済み税額と年調年税額の差'), 'metaは還付・追徴の精算原則を示す');
+ok(meta.includes('所得や控除、徴収済み税額で異なります'), 'metaは個人差の条件を示す');
 ok(!meta.includes('約53,700'), 'meta は100円丸めを出さない');
 
 console.log('== B. 基礎控除の帯表(新旧・コア照合) ==');
@@ -193,13 +193,15 @@ if (tsuichoTable) {
   ok(t.includes('152,400円'), '追徴表: 152,400');
   ok(t.includes('追徴12,720円'), '追徴表: 追徴12,720');
 }
-const kinkoCallout = [...HTML.matchAll(/<div class="callout">([\s\S]*?)<\/div>/g)]
-  .map((m) => strip(m[1])).find((t) => t.includes('26,080'));
-ok(!!kinkoCallout, '拮抗callout(26,080)が存在する');
-if (kinkoCallout) {
-  ok(kinkoCallout.includes('26,160円'), '拮抗callout: 26,160円');
-  ok(kinkoCallout.includes('38,800円'), '拮抗callout: 38,800円');
+// r16: 前提が正本で確認できない個別額・頻度を本文の一般論にしない。
+const fuyoCallout = [...HTML.matchAll(/<div class="callout">([\s\S]*?)<\/div>/g)]
+  .map((m) => strip(m[1])).find((t) => t.includes('扶養の減少だけでは還付・追徴は決まりません'));
+ok(!!fuyoCallout, '扶養減少だけで還付を断定しない説明がある');
+if (fuyoCallout) {
+  ok(fuyoCallout.includes('年調年税額を計算し、徴収済み税額と比較'), '扶養異動は年税額と徴収済額で精算する');
+  ok(fuyoCallout.includes('両年の条件をそろえて'), '前年比は条件をそろえる');
 }
+ok(!strip(HTML).includes('まだ還付になることが多い'), '根拠のない還付頻度が復活しない');
 
 console.log('== E. 生命保険料控除(令和8・9年分の6万円特例) ==');
 // コア: 一般(新契約)8万円 → 特例なし4万/特例あり5万(特例の専用式・上限6万)
@@ -209,14 +211,14 @@ const seihoCap = seimeiHokenryoKojo({ ippan_shin: 200_000, tokurei: true }, SD).
 ok(seihoNashi === 40_000, '一般新契約8万→特例なし4万', `core=${seihoNashi}`);
 ok(seihoAri === 50_000, '一般新契約8万→特例あり5万', `core=${seihoAri}`);
 ok(seihoCap === 60_000, '特例の上限6万', `core=${seihoCap}`);
-const tokureiSpan = HTML.match(/<span id="seiho-tokurei">([\s\S]*?)<\/span>/);
-ok(!!tokureiSpan, '#seiho-tokurei 注記が存在する');
-if (tokureiSpan) {
-  const t = strip(tokureiSpan[1]);
-  ok(t.includes('上限6万円'), '特例の上限6万円');
-  ok(t.includes('控除5万円'), '年8万円→控除5万円');
-  ok(t.includes('41条の15の5'), '条文番号(措法41の15の5)');
-  ok(tokureiSpan[1].includes('../../seimei-hoken-kojo/'), '生保シミュレーターへの導線');
+const seihoCallout = [...HTML.matchAll(/<div class="callout">([\s\S]*?)<\/div>/g)]
+  .map((m) => strip(m[1])).find((t) => t.includes('生命保険料と控除額は別の金額です'));
+ok(!!seihoCallout, '生命保険料と控除額を区別する注記が存在する');
+if (seihoCallout) {
+  ok(seihoCallout.includes('23歳未満の扶養親族') && seihoCallout.includes('上限6万円'), '特例の年齢条件と上限6万円');
+  ok(seihoCallout.includes('年8万円の支払いなら控除5万円'), '年8万円→控除5万円');
+  ok(seihoCallout.includes('全額使え') && seihoCallout.includes('区分内') && seihoCallout.includes('税額控除や端数処理'), '減税概算の成立条件を明示');
+  ok(seihoCallout.includes('還付額や保険加入の適否を示す額ではありません'), '減税概算を還付総額・加入判断と混同しない');
 }
 // FAQ(可視側)の答えにも特例がある(JSON-LDは生成物なのでここでは見ない)
 const faqSeiho = HTML.match(/<h3>Q\. 生命保険料を年8万円払いました。[\s\S]*?<\/h3>\s*<p>([\s\S]*?)<\/p>/);
