@@ -1,0 +1,39 @@
+賞与 — 国税庁の使用例（令和8年分・使い方PDF 19-22.pdf）
+  ok 使用例: 率は2.042%、引いた行は143千円以上276千円未満
+  ok 使用例: 税額は9,564円
+
+賞与 — 月額表による例外計算（算式の検算・No.2523の計算例。令和7年分なので月額表の税額は注入する）
+  ok 10倍超の算式: ÷6→+前月→月額表→−前月税額→×6 で90,120円（月額表の値はNo.2523のものを注入）
+  ok 前月なしの算式: ÷6→月額表→×6 で3,180円
+  ok 計算期間が6か月を超えると12で割り12を掛ける
+
+賞与 — 例外に入る条件（表の備考4）
+  ok ちょうど10倍は表を使う。10倍を「超える」と月額表
+  ok 前月の給与が社会保険料等以下（控除後0円以下）なら月額表
+  ok 前月に給与の支払がない場合は、前月分を足さない
+  ok getsugakuRequired: 通常のケースでは null
+
+賞与 — 表の引き方（境界・7人以上・乙欄）
+  ok 「以上・未満」の境界: 143千円ちょうどは2.042%、142,999円は0%
+  ok 率0%の行では税額も0円
+  ok 甲欄は「7人以上」— 8人でも10人でも7人と同じ率（1,610円控除は無い）
+  ok 乙欄は5段しか使わない（10.210/20.420/30.630/38.798/45.945%）
+  ok 乙欄は扶養親族等の数を見ない
+
+賞与 — 表の構造（抽出が壊れていないこと。Python側とは独立に検算する）
+  ok 21行・率は0%から45.945%まで単調増加
+  ok どの扶養人数でも、帯が0円から上限なしまで隙間なく続く
+  ok どんな前月給与・扶養人数でも必ず率が1つ引ける（穴が無い）
+
+賞与 — 端数処理（浮動小数点で1円ずれないこと。第8便の教訓）
+  ok 浮動小数点なら1円ずれる実入力を固定: 550,000円 × 22.462% = 123,541円
+     105,021件照合・ズレ0（浮動小数点なら 95件 ずれる）
+  ok BigIntの厳密計算を独立オラクルにして全数照合（21率 × 金額5,001通り = 105,021件）
+  ok 境界: ちょうど割り切れる金額でも切り捨てで1円減らさない
+  ok 賞与が0円・社会保険料等が賞与以上なら税額0円
+
+21 tests passed
+(node:38165) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t5-a/docs/assets/gensen_shoyo_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)

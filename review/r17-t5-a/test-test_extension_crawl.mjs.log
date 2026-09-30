@@ -1,0 +1,49 @@
+ok   3ページを巡って完了する
+ok   注文が重複していない
+ok   2回移動した(1→2→3)
+ok   3ページとも別のURLを読んだ
+ok   巡回が終わったら状態は消える
+ok   積むのは索引簿に要る項目だけ
+ok   1件目の中身
+ok   輪になっていても訪問済みで止まる
+ok   同じURLへ2度移動していない
+ok   同じページを2度読んでいない
+ok   集めた分は捨てない(20件)
+ok   「次へ」が自分自身を指していても止まる
+ok   新規0件で打ち切る
+ok   重複ページを積まない(20件のまま)
+ok   読んだのは3ページ(3枚目で既出と判明して停止)
+ok   状態は消える
+ok   maxPagesで打ち切る
+ok   上限を超えて移動しない
+ok   maxPages=1なら1ページで終わる(移動しない)
+ok   9分前の巡回は継続する
+ok   10分を超えた巡回は破棄する
+ok   終了済み(active:false)は破棄する
+ok   状態が無ければ破棄
+ok   startedAtが壊れていれば破棄
+ok   未来から来た状態(時計のずれ)は破棄
+ok   古い中断が残っていても勝手に移動しない
+ok   古い状態は消される
+ok   中止: 2ページ分(20件)は残る
+ok   中止: 重複なし
+ok   中止: 3ページ目へは移動しない
+ok   中止: 状態は消える(次に開いても再開しない)
+ok   1ページ目で中止しても10件は残る
+ok   別タブで注文履歴を開いても移動しない
+ok   別タブの状態を消さない(巡回中のタブを壊さない)
+ok   runIdの無い状態(旧形式)は自分のものとして扱う
+ok   crawl.js はDOM・chrome・fetchに触らない(純ロジック)
+ok   権限は downloads/storage だけ(tabs権限を足さない)
+ok   crawl.js が content script に入っている
+ok   crawl.js は scrape.js の後(ktOrderKeyに依存している)
+file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t5-a/tests/test_extension_crawl.mjs:350
+    if (Date.now() - t0 > ms) return ng(new Error("timeout"));
+                                        ^
+
+Error: timeout
+    at Timeout.poll [as _onTimeout] (file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t5-a/tests/test_extension_crawl.mjs:350:41)
+    at listOnTimeout (node:internal/timers:608:17)
+    at process.processTimers (node:internal/timers:543:7)
+
+Node.js v24.3.0
