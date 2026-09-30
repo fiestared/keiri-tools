@@ -1,0 +1,4 @@
+import fs from 'node:fs';import {execFileSync} from 'node:child_process';import {segmentClaims,validateSegments} from '../../tools/segment_claims.mjs';import {ledgerPath} from '../../tools/check_claims.mjs';
+const orig=JSON.parse(fs.readFileSync('/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t13-a/segments.json'));const out=[];
+for(const page of new Set(orig.map(x=>x.page))){const html=execFileSync('git',['show','d4126d4d:'+page],{encoding:'utf8'});let ledger={};try{ledger=JSON.parse(execFileSync('git',['show','d4126d4d:'+ledgerPath(page)],{encoding:'utf8',stdio:['ignore','pipe','ignore']}));}catch{}out.push({page,...validateSegments(segmentClaims(html,page),ledger)});}
+fs.writeFileSync('reports/r16-t13-a/coverage-before.json',JSON.stringify(out,null,2));console.log(out.map(({page,total,covered,verified,nonclaims,unprocessed})=>({page,total,covered,verified,nonclaims,unprocessed})));
