@@ -1907,6 +1907,58 @@
       "expected": "本則50万、簡易50万、2割20万、3割30万。期間不明でbest=null",
       "source_url": "https://www.nta.go.jp/publication/pamph/shohi/kaisei/202304/01.htm",
       "note": "r11一次資料の規則による境界値・反例。完全な入力と実行結果はtests/test_<tool>.mjsおよびr11/red-*.log、green-*.log。"
+    },
+    {
+      "input": {
+        "purchaseInvoiceTax": 2
+      },
+      "expected": {
+        "national": -1,
+        "local": -1,
+        "total": -2
+      },
+      "source_url": "https://www.nta.go.jp/law/jimu-unei/shozei/000703/01.htm",
+      "source_quote": "地方消費税の確定金額に100円未満の端数があるとき若しくはその全額が100円未満であるとき又は還付金の額に1円未満の端数があるとき若しくはその全額が1円未満であるときは、消費税の例により、通則法第119条《国税の確定金額の端数計算等》又は第120条《還付金額等の端数計算等》の規定に基づきその端数を処理するのであるから留意する。",
+      "note": "r16追加発見。calcDeclarationにこの入力を渡す（他は既定値）。売上0、仕入は請求書等積上げ。負値は還付。tests/test_shohizei.mjs及びtests/boundaries/shohizei_core.mjsで検証。"
+    },
+    {
+      "input": {
+        "purchaseInvoiceTax": 454
+      },
+      "expected": {
+        "national": -354,
+        "local": -99,
+        "total": -453
+      },
+      "source_url": "https://www.nta.go.jp/law/jimu-unei/shozei/000703/01.htm",
+      "source_quote": "地方消費税の確定金額に100円未満の端数があるとき若しくはその全額が100円未満であるとき又は還付金の額に1円未満の端数があるとき若しくはその全額が1円未満であるときは、消費税の例により、通則法第119条《国税の確定金額の端数計算等》又は第120条《還付金額等の端数計算等》の規定に基づきその端数を処理するのであるから留意する。",
+      "note": "r16追加発見。calcDeclarationにこの入力を渡す（他は既定値）。売上0、仕入は請求書等積上げ。負値は還付。tests/test_shohizei.mjs及びtests/boundaries/shohizei_core.mjsで検証。"
+    },
+    {
+      "input": {
+        "purchaseInvoiceTax": 456
+      },
+      "expected": {
+        "national": -355,
+        "local": -100,
+        "total": -455
+      },
+      "source_url": "https://www.nta.go.jp/law/jimu-unei/shozei/000703/01.htm",
+      "source_quote": "地方消費税の確定金額に100円未満の端数があるとき若しくはその全額が100円未満であるとき又は還付金の額に1円未満の端数があるとき若しくはその全額が1円未満であるときは、消費税の例により、通則法第119条《国税の確定金額の端数計算等》又は第120条《還付金額等の端数計算等》の規定に基づきその端数を処理するのであるから留意する。",
+      "note": "r16追加発見。calcDeclarationにこの入力を渡す（他は既定値）。売上0、仕入は請求書等積上げ。負値は還付。tests/test_shohizei.mjs及びtests/boundaries/shohizei_core.mjsで検証。"
+    },
+    {
+      "input": {
+        "purchaseInvoiceTax": 461
+      },
+      "expected": {
+        "national": -359,
+        "local": -101,
+        "total": -460
+      },
+      "source_url": "https://www.nta.go.jp/law/jimu-unei/shozei/000703/01.htm",
+      "source_quote": "地方消費税の確定金額に100円未満の端数があるとき若しくはその全額が100円未満であるとき又は還付金の額に1円未満の端数があるとき若しくはその全額が1円未満であるときは、消費税の例により、通則法第119条《国税の確定金額の端数計算等》又は第120条《還付金額等の端数計算等》の規定に基づきその端数を処理するのであるから留意する。",
+      "note": "r16追加発見。calcDeclarationにこの入力を渡す（他は既定値）。売上0、仕入は請求書等積上げ。負値は還付。tests/test_shohizei.mjs及びtests/boundaries/shohizei_core.mjsで検証。"
     }
   ],
   "scope": "r11で変更した主張を追加。既存台帳は保持。全文の再検証を意味しない。",
