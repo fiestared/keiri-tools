@@ -22,5 +22,10 @@ for(const core of registered){
  const {cases}=await import('./boundaries/'+core+'.mjs');
  const errors=validateTable(table,readFileSync(new URL(table.page,root),'utf8'),[...cases,...(extra[core]||[])]);
  assert.deepEqual(errors,[],core);count+=table.conditions.length;
+ for (const companion of table.companions || []) {
+  assert.deepEqual(validateTable(companion,readFileSync(new URL(companion.page,root),'utf8'),[...cases,...(extra[core]||[])]),[],core+' '+companion.page);
+  count+=companion.conditions.length;
+ }
+
 }
 console.log(`condition tables: ${registered.length} cores, ${count} conditions, ${status.pending.length} pending`);

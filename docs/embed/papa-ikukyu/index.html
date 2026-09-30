@@ -12,7 +12,7 @@
      このページ自体は noindex（/papa-ikukyu/ と重複させない）。計算は本体と同じ ../../assets/ikuji_core.js。 -->
 <link rel="canonical" href="https://keiri-tools.com/papa-ikukyu/">
 <meta name="robots" content="noindex, follow">
-<meta name="description" content="産後パパ育休（出生時育児休業給付金67%＋出生後休業支援給付金13%＝合計80%）を自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<meta name="description" content="産後パパ育休の給付を計算するウィジェット。通算14日・配偶者要件等を満たす場合の13%加算と、賃金による減額・不支給に対応。keiri-tools 提供。">
 <style>
   :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --control:#84939f; --accent:#1f6f5c; --accent2:#e7f3f0; --bg:#fff; }
   *{ box-sizing:border-box; }
@@ -54,7 +54,7 @@
 <body>
 <div class="w">
   <h1>産後パパ育休 給付金 計算</h1>
-  <p class="lead">出生後8週間以内に取る産後パパ育休。67%（出生時育児休業給付金）＋13%（出生後休業支援給付金）＝合計80%。14日未満だと13%は1円も出ません。</p>
+  <p class="lead">出生日と出産予定日の早い日から、遅い日から起算して8週間を経過する日の翌日までの間に取得する産後パパ育休の給付を計算します。両給付の要件を満たし、賃金による減額がなければ、67%＋13%＝合計80%（賃金日額に上限あり）。同じ対象期間の給付対象となる通常の育休も通算して14日未満なら、13%は支給されません。</p>
 
   <label for="monthly">賃金の月平均（額面／円）</label>
   <input id="monthly" type="number" inputmode="numeric" data-example="300000" min="0" step="1000" aria-describedby="monthly-hint">
@@ -63,8 +63,14 @@
 
   <label for="leaveDays">産後パパ育休の日数（暦の日数）</label>
   <input id="leaveDays" type="number" inputmode="numeric" value="28" min="1" max="60">
-  <div class="hint">上限は28日（61条の8第2項2号）。14日以上でないと13%は1円も出ません。</div>
+  <div class="hint">上限は28日（61条の8第2項2号）。13%の14日要件は、同じ対象期間の給付対象となる通常の育休も通算して判定します。</div>
 
+  <label for="otherEligibleDays">同じ対象期間の通常の育休の給付対象日数</label>
+  <input id="otherEligibleDays" type="number" value="0" min="0" max="112" step="1" inputmode="numeric">
+  <div class="hint">今回の産後パパ育休とは重複しない、同じ子・対象期間の育児休業給付金が支給される日数です。14日要件に通算します。通常の育休分の給付額はこの結果に含めません。</div>
+  <label for="shienPaidDays">同じ子の出生後休業支援給付金（13%）の支給済日数</label>
+  <input id="shienPaidDays" type="number" value="0" min="0" max="28" step="1" inputmode="numeric">
+  <div class="hint">13%の上限28日から支給済日数を差し引き、今回分を計算します。</div>
   <label for="workDays">休業中に就業する日数</label>
   <input id="workDays" type="number" value="0" min="0" max="28" inputmode="numeric">
   <label for="workHours">休業中に就業する合計時間</label>
@@ -81,15 +87,15 @@
       <option value="postpartum" selected>配偶者が出産した（＝産後休業中）父親のほとんどはこれ</option>
       <option value="jobless">配偶者が無業者（働いていない）</option>
       <option value="selfemployed">配偶者が自営業・フリーランスなど、雇用される労働者でない</option>
-      <option value="nospouse">配偶者がいない／ひとり親／配偶者が行方不明</option>
+      <option value="nospouse">配偶者がいない／行方不明（勤務先で3か月以上無断欠勤、または災害による場合）</option>
       <option value="noparent">配偶者が、子と法律上の親子関係がない</option>
       <option value="dv">配偶者から暴力を受け、別居している</option>
-      <option value="other_exempt">その他の法定免除事由に該当（単なる業務都合は不可）</option>
+      <option value="other_exempt">その他の法定免除（所定の申告書の理由に該当することを確認済み）</option>
       <option value="employed">配偶者は会社員などで、上のどれにも当てはまらない（例: 子が養子）</option>
     </select>
-    <div class="hint">「配偶者が出産した」を選べば、妻が育休を取らなくても13%が乗ります（61条の10第2項3号）。</div>
+    <div class="hint">配偶者が出産し子が養子でない場合などは配偶者要件が免除されますが、本人の対象期間内の給付対象休業が通算14日以上であること等が必要です。</div>
     <div id="spouseDaysWrap" style="display:none">
-      <label for="spouseDays">配偶者が取得する育児休業の日数</label>
+      <label for="spouseDays">配偶者の対象期間内の給付対象となる育児休業日数（出生日・予定日の早い日から遅い日の8週間後の翌日まで）</label>
       <input id="spouseDays" type="number" inputmode="numeric" value="0" min="0" max="112">
       <div class="hint">免除に当てはまらない場合は、配偶者も14日以上取らないと13%は0円です（61条の10第1項3号）。</div>
     </div>
@@ -155,6 +161,8 @@ $("calc").addEventListener("click", async () => {
     r = calcPapaIkukyu({
       total6m: monthly * 6,
       leaveDays: Number($("leaveDays").value),
+      otherEligibleDays: Number($("otherEligibleDays").value),
+      shienPaidDays: Number($("shienPaidDays").value),
       wage: Number($("wage").value) || 0,
       workDays: Number($("workDays").value),
       workHours: Number($("workHours").value),

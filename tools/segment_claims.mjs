@@ -9,6 +9,12 @@ export const normalize = s => s.normalize('NFKC').replace(/\s+/gu, '').trim();
 const hash = s => createHash('sha256').update(s).digest('hex').slice(0,20);
 const selector = 'div,section,article,main,title,meta[name="description"],meta[property^="og:"],h1,h2,h3,h4,h5,h6,p,li,td,th,text,label,option,input,textarea,button,figcaption,dt,dd,summary,.hint';
 const excluded = 'script,style,nav,header,footer,aside,.breadcrumb,.article-meta,.source-method,.related,.rel-block,.next-read,.article-next-read,.rail-next,.tool-related';
+function structuralNonclaim(tag, text) {
+  if (/^[)）]+$/.test(text)) return true;
+  if (/^h[1-6]$/.test(tag) && text === 'まとめ') return true;
+  if (tag === 'th' && ['区分','原則','入る方法','根拠'].includes(text)) return true;
+  return (tag === 'p' && text === '先に全体を表にします。') || text === 'この内容をXで共有';
+}
 export function segmentClaims(html, page = '') {
   const dom = new JSDOM(html); const d = dom.window.document;
   const seen = new Map(), units = [];
@@ -40,7 +46,7 @@ export function segmentClaims(html, page = '') {
       const normalized = normalize(part); if (!normalized) continue;
       const text_hash = hash(normalized), key = `${kind}:${text_hash}`;
       const occurrence = (seen.get(key) || 0) + 1; seen.set(key, occurrence);
-      units.push({id:`s-${hash(key)}-${occurrence}`,page,kind,zone,protected:protectedUnit,text:part.trim(),text_hash,element_id:el.id || null});
+      units.push({id:`s-${hash(key)}-${occurrence}`,page,kind,zone,protected:protectedUnit && !structuralNonclaim(tag, normalized),text:part.trim(),text_hash,element_id:el.id || null});
     }
     if (tag === 'p') afterH1 = false;
   }

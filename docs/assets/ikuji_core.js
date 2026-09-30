@@ -427,9 +427,16 @@ export function calcPapaIkukyu(input, D) {
   if (!work.eligible) Object.assign(shusshoji, { amount: 0, unpaid: true, workExceeded: true });
 
   // 13%（61条の10）。**賃金では減らない**が、**67%が不支給なら道連れで出ない**（厚労省・5頁）。
+  const otherEligibleDays = wholeDays(i.otherEligibleDays ?? 0, 112, "同じ対象期間の通常育休の給付対象日数");
+  const shienPaidDays = wholeDays(i.shienPaidDays ?? 0, SHIEN_MAX_DAYS, "出生後休業支援給付の支給済日数");
   const shien = shusshoji.unpaid
     ? { eligible: false, reason: work.eligible ? 'shusshoji_unpaid' : 'work_exceeded', amount: 0, days: 0 }
-    : shienKyufu(daily, shusshoji.days, i.spouse.exempt ? 0 : i.spouse.days, !!i.spouse.exempt);
+    : shienKyufu(daily, shusshoji.days + otherEligibleDays, i.spouse.exempt ? 0 : i.spouse.days, !!i.spouse.exempt);
+  if (shien.eligible) {
+    // 通算は資格判定に用いる。ここで払うのは今回の出生時休業だけ（通常育休分は別計算）。
+    shien.days = Math.min(shusshoji.days, SHIEN_MAX_DAYS - shienPaidDays);
+    shien.amount = yen(daily * shien.days * RATE_SHIEN);
+  }
 
   // 14日へ延長した仮定でも配偶者・就業・賃金の要件を確認してから案内する。
   const extensionBase = shusshojiKyufu(daily, SHIEN_MIN_DAYS, i.wage);
@@ -437,6 +444,11 @@ export function calcPapaIkukyu(input, D) {
       papaWork(SHIEN_MIN_DAYS, i.workDays, i.workHours).eligible && !extensionBase.unpaid
     ? shienKyufu(daily, SHIEN_MIN_DAYS, i.spouse.exempt ? 0 : i.spouse.days, !!i.spouse.exempt)
     : { eligible: false, amount: 0, days: 0 };
+
+  if (extensionShien.eligible) {
+    extensionShien.days = Math.min(extensionShien.days, SHIEN_MAX_DAYS - shienPaidDays);
+    extensionShien.amount = yen(daily * extensionShien.days * RATE_SHIEN);
+  }
 
   return {
     rawDaily: raw,
@@ -457,6 +469,8 @@ export function calcPapaIkukyu(input, D) {
     //   28日取ると、そのあとの育休で67%が続くのは残り152日。**180日はリセットされない。**
     remaining67: Math.max(0, HIGH_DAYS - (shusshoji.unpaid ? 0 : shusshoji.days)),
     work,
+    otherEligibleDays,
+    shienPaidDays,
     extensionShien,
     year: D?._meta?.label ?? null,
     nextRevision: D?._meta?.next_revision ?? null,

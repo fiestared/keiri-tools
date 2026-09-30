@@ -54,3 +54,16 @@ export const r15Cases = [
  {name:'r15 2026年2月開始365日の明示例',run:()=>calcIkuji({total6m:1800000,startDate:'2026-02-01',leaveDays:365,shien:null},kihonteateData).total,expected:2116000,source:act,quote:'休業日数が通算して百八十日に達するまでの間に限り、百分の六十七'}
 ];
 cases.push(...r15Cases);
+
+// r16: 同じ対象期間の通常育休を14日要件に通算。金額は今回の出生時休業分だけ。
+const r16Papa = (otherEligibleDays, shienPaidDays=0, wage=0) => calcPapaIkukyu({total6m:1800000,leaveDays:13,wage,spouse:{exempt:true},otherEligibleDays,shienPaidDays},kihonteateData);
+const r16Source='https://www.mhlw.go.jp/content/11600000/001461102.pdf';
+const r16Quote='産後パパ育休の期間（例１、２の期間）に育児休業給付金が支給される育児休業を取得している場合は、その日数も通算します。';
+cases.push(
+ {name:'r16 パパ13日と通常育休0日は13%不支給',run:()=>r16Papa(0).shien.amount,expected:0,source:r16Source,quote:r16Quote},
+ {name:'r16 パパ13日と通常育休1日は今回16900円',run:()=>r16Papa(1).shien.amount,expected:16900,source:r16Source,quote:r16Quote},
+ {name:'r16 パパ13日と通常育休2日でも今回16900円',run:()=>r16Papa(2).shien.amount,expected:16900,source:r16Source,quote:r16Quote},
+ {name:'r16 支援既支給27日は今回1日分',run:()=>r16Papa(1,27).shien.amount,expected:1300,source:r16Source,quote:'支給済日数分を差し引いた日数が上限日数となります。'},
+ {name:'r16 支援既支給28日は今回0円',run:()=>r16Papa(1,28).shien.amount,expected:0,source:r16Source,quote:'支給済日数分を差し引いた日数が上限日数となります。'},
+ {name:'r16 通算14日でも賃金80%は両給付不支給',run:()=>r16Papa(1,0,104000).total,expected:0,source:r16Source,quote:'出生時育児休業給付金が支給されない場合は、出生後休業支援給付金も支給されません。'}
+);

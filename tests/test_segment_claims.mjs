@@ -26,3 +26,7 @@ for (const text of ['この記事のまとめ','支出の例','消費税','実�
   assert.equal(u.protected,false,text);
 }
 for (const text of ['税率は10%です。','適用条件を満たします。','結論：税率は10%']) assert.equal(labels.find(u=>u.text===text).protected,true,text);
+// Structural summary/FAQ labels have no proposition. Real summary/FAQ assertions stay protected.
+const structural = segmentClaims('<h2>まとめ</h2><p>先に全体を表にします。</p><table><tr><th>区分</th><th>原則</th><th>入る方法</th><th>根拠</th><th>給付率は80%</th></tr></table><p>）</p><h2>FAQ</h2><div>この内容をXで共有</div><p>給付率は常に80%です。</p>');
+for (const u of structural.filter(u=>['まとめ','先に全体を表にします。','区分','原則','入る方法','根拠','）','この内容をXで共有'].includes(u.text))) assert.equal(u.protected,false,u.text);
+for (const u of structural.filter(u=>u.text.includes('80%'))) assert.equal(u.protected,true,u.text);

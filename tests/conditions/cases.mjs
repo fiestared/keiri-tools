@@ -74,3 +74,9 @@ extra.kokuho_core=[{name:'国保HTMLの動的初期入力',run:d=>{
   const r=kokuhoCalc({members:[{shotoku,gokeiShotoku:gokei===''?shotoku:Number(gokei),...kokuhoAge(Number(row.querySelector('#age0').value)),kyuyoShotokusha:row.querySelector('#kyuyo0').value==='1'}]},load('kokuho_r08.json'));
   return [r.total,r.keigen.key,r.kubun[0].kazeiHyojun];
 },expected:[0,'7wari',0],source:'https://laws.e-gov.go.jp/api/2/law_data/333CO0000000362?elm=Article_29_7',quote:'世帯十分の七'}];
+import {calcPapaIkukyu as r16CalcPapa} from "../../docs/assets/ikuji_core.js";
+extra.ikuji_core ||= [];
+extra.ikuji_core.push({name:'r16 パパHTML初期値',run:d=>r16CalcPapa({total6m:Number(d.getElementById('monthly').value)*6,leaveDays:Number(d.getElementById('leaveDays').value),wage:Number(d.getElementById('wage').value),otherEligibleDays:Number(d.getElementById('otherEligibleDays').value),shienPaidDays:Number(d.getElementById('shienPaidDays').value),spouse:{exempt:d.getElementById('spouse').value==='postpartum'}},load("kihonteate_r07.json")).total,expected:224000,source:'https://www.mhlw.go.jp/content/11600000/001461102.pdf',quote:'休業開始時賃金日額 × 休業期間の日数（28日が上限）× 67％',note:'月給30万円・28日・賃金0・配偶者免除の初期入力。13%は36400円。'});
+
+import {calcKihonteate as r16CalcKihonteate} from '../../docs/assets/kihonteate_core.js';
+extra.kihonteate_core = [{name:'r16 基本手当HTML初期値',run:d=>r16CalcKihonteate({age:num(d,'age'),monthly:num(d,'monthly'),period:d.getElementById('period').value,reason:d.getElementById('reason').value,wageBasis:d.getElementById('wageBasis').value,workDays6m:num(d,'workDays6m')},load('kihonteate_r07.json')).wageDaily,expected:10000,source:'https://laws.e-gov.go.jp/law/349AC0000000116',quote:'賃金の総額を百八十で除して得た額とする。'}];

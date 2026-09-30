@@ -79,8 +79,12 @@ export function daysAgeBand(age) {
  * 17条1項: 賃金日額 ＝ 離職前6か月に支払われた賃金の総額 ÷ 180。
  * 賞与（3か月を超える期間ごとに支払われる賃金）は総額に含めない。
  */
-export function wageDaily(total6m) {
-  return total6m / 180;
+export function wageDaily(total6m, workDays6m = null) {
+  const ordinary = total6m / 180;
+  if (workDays6m === null) return ordinary;
+  const days = Number(workDays6m);
+  if (!Number.isInteger(days) || days < 1 || days > 184) throw new Error('日給・時間給等の6か月の実労働日数を1〜184日の整数で入力してください');
+  return Math.max(ordinary, total6m / days * 0.7); // 法17条2項1号の最低保障
 }
 
 /**
@@ -266,7 +270,8 @@ export function calcKihonteate(input, D) {
   const total6m = input.total6m > 0 ? input.total6m : (input.monthly || 0) * 6;
   const elig = eligibility(period, reason);
 
-  const raw = wageDaily(total6m);
+  if (input.wageBasis === 'mixed') return {supported:false,outOfRange:'mixed_wage',message:'月給部分と日給・時間給等が混在する賃金は法17条2項2号の個別算定が必要です。この計算機の対象外です。'};
+  const raw = wageDaily(total6m, input.wageBasis === 'daily' ? (input.workDays6m ?? 0) : null);
   const capped = applyWageCaps(raw, age, D);
   const w = capped.value;
   const rate = benefitRate(w, age, D);
