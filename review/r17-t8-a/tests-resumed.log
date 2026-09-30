@@ -1,0 +1,2941 @@
+
+### tests/test_fee_article.mjs rc=0 finished=2026-10-01T00:14:18.260799+09:00
+all fee article tests passed (30 banks, 11 with 30k step)
+
+### tests/test_fetch_tsutatsu.mjs rc=0 finished=2026-10-01T00:14:33.519616+09:00
+fetch_tsutatsu: 15 passed, 0 failed
+
+### tests/test_fudosan_shutoku.mjs rc=0 finished=2026-10-01T00:14:34.506529+09:00
+156 passed, 0 failed
+(node:78504) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/fudosan_shutoku_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_furikomi_amount_index.mjs rc=0 finished=2026-10-01T00:14:35.186642+09:00
+✓ 逆引き表 21金額 が fee_table.json と一致（目次・収録範囲の申告も確認）
+
+### tests/test_furikomi_bank_sections.mjs rc=0 finished=2026-10-01T00:14:35.626041+09:00
+✓ test_furikomi_bank_sections: 17銀行 / 30区分が比較表と一致
+
+### tests/test_furikomi_kamoku.mjs rc=0 finished=2026-10-01T00:14:36.648421+09:00
+  ✓ 仕訳表1 の貸借が一致 (10,440円)
+  ✓ 仕訳表2 の貸借が一致 (10,000円)
+  ✓ 仕訳表3 の貸借が一致 (10,000円)
+  ✓ 設例の整合 10000 − 440 = 9560
+  ✓ 本文に記載: 1万円未満
+  ✓ 本文に記載: 少額特例の基準期間1億円
+  ✓ 本文に記載: 少額特例の特定期間5,000万円
+  ✓ 本文に記載: 少額特例の期限 令和11年9月30日
+  ✓ 本文に記載: 自動販売機特例 3万円未満
+  ✓ 本文に記載: 取適法の施行日 2026年1月1日
+  ✓ 本文に記載: 従業員300人（製造委託等）
+  ✓ 本文に記載: 従業員100人（情報成果物・役務）
+  ✓ 本文に記載: 消法57条の4第3項
+  ✓ 本文に記載: 消令70条の9第3項2号
+  ✓ 本文に記載: 取適法5条1項3号
+  ✓ 3万円未満特例の廃止に言及している
+  ✓ 合意と差引の関係に言及 (2箇所)
+  ✓ 公取委の引用に「合意の有無にかかわらず」が入っている
+
+✅ test_furikomi_kamoku: 18件すべて green (仕訳3表の貸借一致を含む)
+
+### tests/test_furusato_adjustment.mjs rc=0 finished=2026-10-01T00:15:26.839958+09:00
+furusato adjustment: main/embed checkbox and under-16 inputs agree; mobile overflow absent
+
+### tests/test_fuyo.mjs rc=0 finished=2026-10-01T00:15:27.016136+09:00
+✅ 一般: 所得税38万(所法84条)
+✅ 一般: 住民税33万(地方税法314条の2①十一)
+✅ 特定: 所得税63万(所法84条)
+✅ 特定: 住民税45万(地方税法314条の2①十一)
+✅ 老人: 所得税48万(所法84条)
+✅ 老人: 住民税38万(地方税法314条の2①十一)
+✅ 同居老親等: 所得税58万(48万+措法41の16の10万加算)
+✅ 同居老親等: 住民税45万(地方税法314条の2④)
+✅ 扶養親族の所得要件62万円(所法2条①34号・令和8年12月1日施行版で逐語確認・令和8年分以後)
+✅ 給与収入換算136万円(62万+給与所得控除74万=措法29条の4・令和8・9年分)
+✅ 一般1人: 所得税控除38万
+✅ 一般1人: 住民税控除33万
+✅ 一般1人: 人数1
+✅ 一般2+同居老親1: 所得税控除 38万×2+58万 = 134万
+✅ 一般2+同居老親1: 住民税控除 33万×2+45万 = 111万
+✅ 一般2+同居老親1: 人数3
+✅ 負数・NaNの人数は0扱い(NaNを素通しして節税額をNaNにしない)
+✅ 負数・NaNの人数: 人数0
+✅ 500万×一般1: 所得税減 76,000
+✅ 500万×一般1: 復興 floor(572,500×2.1%)−floor(496,500×2.1%) = 1,596
+✅ 500万×一般1: 住民税減 33万×10% = 33,000(38万×10%ではない)
+✅ 500万×一般1: 節税額合計 110,596
+✅ 340万×特定1(またぎ): 所得税減 73,000(63万×20%=126,000ではない)
+✅ 340万×特定1: 復興 floor(252,500×2.1%)−floor(179,500×2.1%) = 1,533
+✅ 340万×特定1: 住民税減 45,000
+✅ 340万×特定1: 節税額合計 119,533
+✅ 800万×一般1+同居老親1: 所得税減 220,800
+✅ 800万×一般1+同居老親1: 復興 floor(1,204,000×2.1%)−floor(983,200×2.1%) = 4,637
+✅ 800万×一般1+同居老親1: 住民税減 78,000
+✅ 800万×一般1+同居老親1: 節税額合計 303,437
+✅ 500万×一般1+特定1: 節税額合計 284,242(E2Eシーンのオラクル)
+✅ 両税の課税所得0 → 節税額0
+✅ 低所得: 使える所得税控除は課税所得まで(30万)
+✅ 低所得: 住民税側は別入力した住民税課税所得まで
+✅ 低所得: 所得税減 15,000
+✅ 低所得: 住民税減 30,000(45万×10%ではない)
+✅ 低所得: 節税額合計 45,315
+✅ 例表: 200万×一般1 = 54,951
+✅ 例表: 300万×一般1 = 71,798
+✅ 例表: 500万×一般1 = 110,596
+✅ 例表: 700万×一般1 = 112,128
+✅ 例表: 900万×一般1 = 122,236
+✅ 例表: 300万×特定1 = 109,323
+✅ 例表: 500万×特定1 = 173,646
+✅ 例表: 400万×同居老親1 = 163,436
+
+all fuyo checks passed
+
+### tests/test_generators_fresh.mjs rc=0 finished=2026-10-01T00:24:23.502161+09:00
+✓ test_generators_fresh: 5個の生成器が最新 / 終端は明示マーカー / lastmod は 32日に分散（最大 16%）
+
+### tests/test_genka.mjs rc=0 finished=2026-10-01T00:24:24.190543+09:00
+✅ 定額法 n10 100万: 1〜9年目=100,000 / 10年目=99,999 / 合計999,999 / 期末1円
+✅ 200%定率法 n10 100万: 償却率0.200/改定0.250/保証0.06552・保証額65,520
+✅ 200%定率法 n10 100万: 公表スケジュール（1年目200,000…7年目切替65,536…10年目65,535）
+✅ 200%定率法: 7年目に改定取得価額×改定償却率へ切替（毎年同額65,536）
+✅ 250%定率法 n10: 償却率0.250/改定0.334/保証0.04448・1年目=250,000・era表示250%
+✅ ★同じ耐用年数でも取得時期で率が変わる（急所1）: 200%(0.200)≠250%(0.250)
+✅ 定額法 4月取得（9か月）: 1年目=75,000・以降100,000・11年目まで延び・合計999,999
+✅ 月数: 1月→12 / 4月→9 / 12月→1
+✅ 備忘1円: 取得価額を変えても最終年末=1円・合計=取得価額−1
+✅ 事業専用割合60%: 必要経費=償却費×60%・帳簿価額は全額で減る
+✅ floorYen: 円未満切り捨て・負とNaNは0
+✅ 定率法 era境界: 2012-04=200% / 2012-03=250%
+✅ fail closed: 平成19年3月以前取得は対象外
+✅ fail closed: 耐用年数<2・>50・取得年月なし・取得価額0・方法未選択・データ無しは throw
+✅ 定率法の初年度償却費 > 定額法（加速償却）
+✅ 全耐用年数2〜50: 償却率が国税庁の式と一致（機械照合）
+✅ 無形固定資産（ソフトウエア）は1円を残さず取得価額まで償却する（134条1項2号ロ）
+✅ ★対照: 同条件でも有形なら1円が残る（同じ入力で結果が分かれることを固定）
+✅ 坑道も1円を残さない（134条1項2号ロは「坑道及び…無形固定資産」）
+✅ assetType 省略＝有形（既定値。従来の呼び出しの結果を変えない）
+✅ fail closed: 無形固定資産に定率法は選べない（所令120条の2第1項4号）／未知の種類は throw
+✅ 無形の注記は「1円を残さない」と言う／有形の注記と取り違えていない
+✅ ★オラクル No.5404: 法定30年・経過10年 → 22年（国税庁の公表例を再現）
+✅ 全部経過は法定×20%（2号イ）: 法定22年・経過25年 → 4年（22×0.2=4.4→切捨）
+✅ 経過＝法定ちょうども「全部経過」（境界。22年経過→4年であって22年ではない）
+✅ ★経過年数は月まで数える（耐令3条5項「暦に従つて計算し」）: 法定22年・築10年3か月 → 13年
+✅ 2年未満は2年（2号かっこ書き）: 法定4年・全部経過 → 0.8年ではなく2年
+✅ 経過0か月なら法定耐用年数のまま（新品と同じ。短くならない）
+✅ ★ただし書: 資本的支出 > 取得価額×50% で簡便法は使えない（耐令3条1項ただし書）
+✅ fail closed: 法定耐用年数<2・経過が負・経過月が12以上は年数を返さない
+✅ 簡便法の年数は必ず 2 以上・法定耐用年数以下（全域スイープ 2〜60年 × 経過0〜80年）
+✅ 簡便法の年数は経過が長いほど短くなる（単調非増加）
+✅ formatYm: 165.6か月＝13年9.6か月 / 12か月＝1年 / 0は「0か月」
+✅ ASSET_TYPES はイ／ロの2水準しか持たない（残す額は1円か0円だけ）
+
+✓ 減価償却コア: 34 passed, 0 failed
+
+### tests/test_gensen.mjs rc=0 finished=2026-10-01T00:24:24.472650+09:00
+all gensen_core tests passed
+(node:31229) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/gensen_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_gensen_hyo.mjs rc=0 finished=2026-10-01T00:24:25.010804+09:00
+★措置法29条の4の帯
+★空欄の扱い
+★所得控除の合計
+★②−③
+★整合チェック
+★壊しテスト
+  ok   支払金額170万: 措置法29条の4→960,000 / 別表第五→1,050,000
+
+✓ test_gensen_hyo: 46 checks, 0 failed
+
+### tests/test_gensen_kojo_check.mjs rc=0 finished=2026-10-01T00:24:25.218118+09:00
+test_gensen_kojo_check: 81 passed, 0 failed
+(node:31369) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/gensen_kojo_check_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_gensen_kyuyo.mjs rc=0 finished=2026-10-01T00:24:25.850700+09:00
+✓ test_gensen_kyuyo: 14 件 pass
+(node:31399) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/gensen_kyuyo_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_gensen_shoyo.mjs rc=0 finished=2026-10-01T00:24:26.623028+09:00
+賞与 — 国税庁の使用例（令和8年分・使い方PDF 19-22.pdf）
+  ok 使用例: 率は2.042%、引いた行は143千円以上276千円未満
+  ok 使用例: 税額は9,564円
+
+賞与 — 月額表による例外計算（算式の検算・No.2523の計算例。令和7年分なので月額表の税額は注入する）
+  ok 10倍超の算式: ÷6→+前月→月額表→−前月税額→×6 で90,120円（月額表の値はNo.2523のものを注入）
+  ok 前月なしの算式: ÷6→月額表→×6 で3,180円
+  ok 計算期間が6か月を超えると12で割り12を掛ける
+
+賞与 — 例外に入る条件（表の備考4）
+  ok ちょうど10倍は表を使う。10倍を「超える」と月額表
+  ok 前月の給与が社会保険料等以下（控除後0円以下）なら月額表
+  ok 前月に給与の支払がない場合は、前月分を足さない
+  ok getsugakuRequired: 通常のケースでは null
+
+賞与 — 表の引き方（境界・7人以上・乙欄）
+  ok 「以上・未満」の境界: 143千円ちょうどは2.042%、142,999円は0%
+  ok 率0%の行では税額も0円
+  ok 甲欄は「7人以上」— 8人でも10人でも7人と同じ率（1,610円控除は無い）
+  ok 乙欄は5段しか使わない（10.210/20.420/30.630/38.798/45.945%）
+  ok 乙欄は扶養親族等の数を見ない
+
+賞与 — 表の構造（抽出が壊れていないこと。Python側とは独立に検算する）
+  ok 21行・率は0%から45.945%まで単調増加
+  ok どの扶養人数でも、帯が0円から上限なしまで隙間なく続く
+  ok どんな前月給与・扶養人数でも必ず率が1つ引ける（穴が無い）
+
+賞与 — 端数処理（浮動小数点で1円ずれないこと。第8便の教訓）
+  ok 浮動小数点なら1円ずれる実入力を固定: 550,000円 × 22.462% = 123,541円
+     105,021件照合・ズレ0（浮動小数点なら 95件 ずれる）
+  ok BigIntの厳密計算を独立オラクルにして全数照合（21率 × 金額5,001通り = 105,021件）
+  ok 境界: ちょうど割り切れる金額でも切り捨てで1円減らさない
+  ok 賞与が0円・社会保険料等が賞与以上なら税額0円
+
+21 tests passed
+(node:31494) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/gensen_shoyo_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_gensen_zeigakuhyo_article.mjs rc=0 finished=2026-10-01T00:24:27.028809+09:00
+  ✓ オラクル: 比較セル数 5080 が記事の主張と一致
+  ✓ オラクル: 完全一致 1171 通りが記事の主張と一致
+  ✓ オラクル: 一致率 23.1% が記事の主張と一致
+  ✓ オラクル: 差の範囲 -310〜+120円 が記事の主張と一致
+  ✓ 記事の「N通り」全7箇所がオラクル（5080/1171）と一致
+  ✓ 金額の集合が一致 (1195種)
+  ✓ パーセントの集合に根拠のない値なし (5種)
+  ✓ 「N万円」の集合が一致 (7種)
+  ✓ 令和8年月次58万円と年末調整62万円の適用先を明示
+  ✓ 年齢の集合が一致 (3/16/19/22/23歳)
+  ✓ 引用: 1,610円は「7人の場合の税額から」控除すると明記されている
+  ✓ 本文(over7の節): 「給与の額からではなく税額から」と明記
+  ✓ 本文(over7の節): 日額表は1人ごとに50円
+  ✓ 実例の段落: 300,000円で 0人=7,930 / 1人=6,320 / 2人=4,700円（表と一致）
+  ✓ 実例の段落: 該当行の範囲が表と一致
+  ✓ 比較表の行「完全に一致した割合」= 23.1% (1,171/5,080) がオラクルと一致
+  ✓ 比較表の行「差の範囲」= -310〜+120円 がオラクルと一致（3桁なので網に入らない＝名指しが要る）
+  ✓ 比較表の行「300,000円・扶養1人」: 表=6,320 / 式=6,300 が再計算と一致
+  ✓ 比較表の行「500,000円・扶養1人」: 表=21,730 / 式=21,480 が再計算と一致
+  ✓ 乙欄の低額帯: 率・端数処理・扶養控除・0円例外
+  ✓ 乙欄の節の数値が税額表データと一致 (105,000円未満 / 3.063%)
+  ✓ callout: 100万円以下だけが毎月の数に入り、100万超123万以下は年末調整で精算
+  ✓ 表の行: 特定親族は19歳以上23歳未満・かつ100万円以下
+  ✓ 本文: 16歳未満は原則として加算しない
+  ✓ 本文: 例外（16歳未満でも障害者なら加算）が、原則とは別の段落で明記されている
+  ✓ 16歳未満のcalloutあり
+  ✓ 引用: 税額表に当てはめるのは社会保険料等控除後の金額（国税庁の原文）
+  ✓ callout: 賞与でも月額表を使う2つの場合（前月給与なし／前月給与の10倍超）
+  ✓ callout: 継続2か月超の部分は日雇賃金でない（引用・地の文とも2か月）
+  ✓ callout: 甲欄特例の対象賞与・対象外区分と乙欄の別計算法
+  ✓ 早見表の全231行×6列が税額表JSONと位置まで一致
+  ✓ 出典に「月額表」あり
+  ✓ 出典に「給与所得の源泉徴収税額の求め方」あり
+  ✓ 出典に「財務省告示」あり
+  ✓ 出典に「令和7年分以前」あり
+
+✓ 記事「源泉徴収税額表」 OK
+
+### tests/test_haigusha.mjs rc=0 finished=2026-10-01T00:24:27.564833+09:00
+✅ 配偶者控除(所得税) 一般: 38/26/13万(No.1191)
+✅ 配偶者控除(所得税) 老人: 48/32/16万(No.1191)
+✅ 配偶者控除(住民税) 一般: 33/22/11万(地方税法314条の2①十)
+✅ 配偶者控除(住民税) 老人: 38/26/13万(同)
+✅ 配偶者の所得要件62万円(令和8年分以後・所法2条1項33号=同一生計配偶者・e-Gov逐語)
+✅ 給与収入換算136万円(62万+給与所得控除74万=措法29条の4・令和8・9年分)
+✅ 配偶者特別控除の上限133万円(No.1195)
+✅ 配偶者特別控除: 9帯(No.1195)
+✅ 配特(所得税) 帯1 62万超95万以下: 38/26/13万
+✅ 配特(所得税) 帯2 95万超100万以下: 36/24/12万
+✅ 配特(所得税) 帯3 100万超105万以下: 31/21/11万
+✅ 配特(所得税) 帯4 105万超110万以下: 26/18/9万
+✅ 配特(所得税) 帯5 110万超115万以下: 21/14/7万
+✅ 配特(所得税) 帯6 115万超120万以下: 16/11/6万
+✅ 配特(所得税) 帯7 120万超125万以下: 11/8/4万
+✅ 配特(所得税) 帯8 125万超130万以下: 6/4/2万
+✅ 配特(所得税) 帯9 130万超133万以下: 3/2/1万
+✅ 配特(住民税) 帯1 x=620,001: 条文式 33/22/11万
+✅ 配特(住民税) 帯1 x=950,000: 条文式 33/22/11万
+✅ 配特(住民税) 帯2 x=950,001: 条文式 33/22/11万
+✅ 配特(住民税) 帯2 x=1,000,000: 条文式 33/22/11万
+✅ 配特(住民税) 帯3 x=1,000,001: 条文式 31/21/11万
+✅ 配特(住民税) 帯3 x=1,050,000: 条文式 31/21/11万
+✅ 配特(住民税) 帯4 x=1,050,001: 条文式 26/18/9万
+✅ 配特(住民税) 帯4 x=1,100,000: 条文式 26/18/9万
+✅ 配特(住民税) 帯5 x=1,100,001: 条文式 21/14/7万
+✅ 配特(住民税) 帯5 x=1,150,000: 条文式 21/14/7万
+✅ 配特(住民税) 帯6 x=1,150,001: 条文式 16/11/6万
+✅ 配特(住民税) 帯6 x=1,200,000: 条文式 16/11/6万
+✅ 配特(住民税) 帯7 x=1,200,001: 条文式 11/8/4万
+✅ 配特(住民税) 帯7 x=1,250,000: 条文式 11/8/4万
+✅ 配特(住民税) 帯8 x=1,250,001: 条文式 6/4/2万
+✅ 配特(住民税) 帯8 x=1,300,000: 条文式 6/4/2万
+✅ 配特(住民税) 帯9 x=1,300,001: 条文式 3/2/1万
+✅ 配特(住民税) 帯9 x=1,330,000: 条文式 3/2/1万
+✅ 本人600万×配偶者所得40万: 配偶者控除38/33万
+✅ 老人(70歳以上): 配偶者控除48/38万
+✅ 本人900万超×老人: 32/26万(段2)
+✅ 本人ちょうど1,000万×配偶者62万: 13/11万(段3・両方とも境界の内側)
+✅ 本人1,000万超: 適用なし(理由を申告)
+✅ 配偶者62万+1円: 配特へ切替(38/33万・住民税は33万)
+✅ 配偶者105万: 配特31/31万
+✅ 配特の帯では老人区分は無関係(36/33万)
+✅ 本人段3×配偶者ちょうど133万: 1/1万
+✅ 配偶者133万超: 適用なし(理由を申告)
+✅ 給与100万 → 所得26万
+✅ 給与136万 → 所得62万(配偶者控除の上限ちょうど)
+✅ 給与136万+1円 → 配特の帯へ
+✅ 給与169万 → 所得95万(配特38万の帯の上限)
+✅ 給与207万 → 所得133万(配特の上限ちょうど)
+✅ 給与219万 → 所得145万(換算上限。配特対象外だが換算はできる)
+✅ 給与219万超 → 換算しない(fail closed・219.1万以上は量子化帯)
+✅ 給与74.1万円未満 → 所得0(措法29条の4②一「給与所得の金額はないものとする」)
+✅ 給与74.1万円ちょうど → 所得1,000円(同②二の下端)
+✅ 給与50万 → 所得0(マイナスにしない)
+✅ 結合前段: 給与179万→所得105万→配特31/31万
+✅ 結合オラクル: 課税所得500万×配特31/31万 → 節税94,302
+✅ E2E前段: 給与150万→所得76万→配特帯1=38/33万
+✅ E2Eオラクル: 課税所得500万×配特帯1 → 節税110,596
+✅ 配偶者控除38/33万×課税所得500万: 節税110,596
+✅ 老人配偶者48/38万×課税所得300万: 節税87,008
+✅ 例表: 300万×配偶者控除(38/33) = 71,798
+✅ 例表: 500万×配偶者控除(38/33) = 110,596
+✅ 例表: 700万×配偶者控除(38/33) = 112,128
+✅ 例表: 300万×配特105万(31/31) = 62,651
+✅ 例表: 500万×配特105万(31/31) = 94,302
+✅ 例表: 700万×配特105万(31/31) = 95,834
+
+all haigusha checks passed
+
+### tests/test_hikazei_setai.mjs rc=0 finished=2026-10-01T00:24:27.858680+09:00
+
+── §1 公的年金等控除 — 国税庁の速算表と全域で一致する（1,000円刻み・0〜1,500万円）
+
+── §2 最低保障額の読替え（措法41条の15の3第1項）— 65歳で110万円に切り替わる
+
+── §3 有名な境界 — 1級地の単身が非課税でいられる上限
+
+── §4 級地で限度額が変わる（施行規則9条の21第2項の1.0/0.9/0.8）
+
+── §5 扶養がいると加算額が乗る（高齢夫婦2人世帯）
+
+── §6 ★子のアルバイト代が世帯の非課税を壊す（未成年なら壊れない）
+
+── §7 ★扶養の付け方で世帯の判定が変わる（決め打ちでは外す）
+
+── §8 扶養に入れる所得の上限は58万円（旧48万円ではない）
+
+── §9 所得金額調整控除（措法41条の3の11第2項・給与と年金の両方がある人）
+
+── §10 年金だけの人が非課税でいられる上限を逆算する（画面の目安）
+
+── §11 fail closed — 参照データが無ければ計算しない
+
+── §12 世帯全員が非課税でなければ非課税世帯ではない（所得割ではなく均等割で見る）
+
+✅ 101 passed, 0 failed
+
+### tests/test_hint_leading_space.mjs rc=0 finished=2026-10-01T00:24:29.148817+09:00
+ok: .hint の先頭に全角スペースなし
+
+### tests/test_hitorioya.mjs rc=0 finished=2026-10-01T00:24:29.396804+09:00
+
+test_hitorioya: 69 passed, 0 failed
+(node:31939) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/setsuzei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_hojinzei.mjs rc=0 finished=2026-10-01T00:24:29.530237+09:00
+★データ
+★軽減の範囲
+★10億円の崖
+★適用除外
+★地方法人税
+★月数按分
+★月数
+★端数
+★壊しテスト
+  ok   10億円ちょうど: 条文どおり→15% / 「以上」実装→17%
+
+✓ test_hojinzei: 54 checks, 0 failed
+
+### tests/test_hojokin.mjs rc=0 finished=2026-10-01T00:24:29.784101+09:00
+★データ
+★締切
+★従業員数
+★絞り込み
+★並べ替え
+★表示用整形
+★鮮度
+★選択肢
+★実データ
+★壊しテスト
+  ok   当日締切: 条文どおり→公募中 / 「>0」実装→消える
+
+✓ test_hojokin: 85 checks, 0 failed
+
+### tests/test_hojokin_captured_label.mjs rc=0 finished=2026-10-01T00:24:30.060439+09:00
+緑
+(node:32043) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/hojokin_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_hojokin_cards.mjs rc=0 finished=2026-10-01T00:24:30.546705+09:00
+★対応表
+★生成物
+★生成器
+
+✓ test_hojokin_cards: 42 checks, 0 failed
+
+### tests/test_hojokin_sources.mjs rc=1 finished=2026-10-01T00:24:31.529853+09:00
+★公募スケジュール
+★雇用関係助成金
+★静的HTMLへの焼き込みとタブ
+★混ざっていないか
+★生成物が最新か
+  ✗ ★gen_hojokin_tabs.mjs --check が緑（赤なら node tools/gen_hojokin_tabs.mjs を流してコミットする）
+
+✗ test_hojokin_sources: 35 checks, 1 failed
+
+### tests/test_hojokin_zeimu.mjs rc=0 finished=2026-10-01T00:24:32.071710+09:00
+★データ
+★分岐
+★圧縮限度額
+★方式の違い
+★仕訳
+★壊しテスト
+  ok   未確定: 条文どおり→特別勘定(43条) / 「もらった＝圧縮」実装→圧縮記帳(42条)
+
+✓ test_hojokin_zeimu: 48 checks, 0 failed
+
+### tests/test_hoteifukuri.mjs rc=0 finished=2026-10-01T00:24:32.639717+09:00
+★労災保険率
+★折半でないもの
+★折半のもの
+★課税ベース
+★業種の効き
+★雇用保険の区分
+★合計
+★fail closed
+★壊しテスト
+  ok   雇用保険: 条文どおり→8.5/1000 / 折半実装→6.75/1000
+
+✓ test_hoteifukuri: 45 checks, 0 failed
+
+### tests/test_ideco_deguchi.mjs rc=0 finished=2026-10-01T00:24:32.850565+09:00
+★データ（施行令70条1項2号）
+★令和8年1月1日の境目
+★向き
+★年数の数え方
+★重複調整
+★退職所得
+★壊しテスト
+  ok   7年空き: 旧ルール→調整なし / 新ルール→調整あり
+
+✓ test_ideco_deguchi: 31 checks, 0 failed
+
+### tests/test_ikuji.mjs rc=0 finished=2026-10-01T00:24:33.080362+09:00
+
+✓ 全て通過（182 checks）
+(node:32621) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/ikuji_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_ikuji_article.mjs rc=0 finished=2026-10-01T00:24:33.235294+09:00
+✓ test_ikuji_article: オラクル7件 / 金額53件 / 万円4件 / %6件 / 日数9件 / 表38行 / callout6件 を照合
+
+### tests/test_ikuji_hayamihyo.mjs rc=0 finished=2026-10-01T00:24:33.545694+09:00
+✓ test_ikuji_hayamihyo: 早見表16行 + 既存の表2行が ikuji_core と一致
+(node:32671) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/ikuji_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_index_entities.mjs rc=0 finished=2026-10-01T00:24:53.166825+09:00
+✓ index entities: decoded text / safe attributes / dates / adjacent content / idempotency
+
+### tests/test_input_wiring.mjs rc=0 finished=2026-10-01T00:50:58.778993+09:00
+✓ check_input_wiring: 558個の入力欄が答えを動かす（うち組み合わせ指定 11件）。動かないのが正しい 2件は理由つきで除外
+
+### tests/test_inshi.mjs rc=0 finished=2026-10-01T00:50:58.924574+09:00
+✅ No.7108例: 不動産の譲渡 6,000万円（建物4,000万＋定期借地権2,000万）→ 印紙税30,000円（軽減）
+✅ No.7108例: 建設工事の請負 5,500万円（建設5,000万＋設計500万）→ 印紙税30,000円（軽減）
+✅ 同じ1号でも消費貸借（金銭借用証書）6,000万円は本則 60,000円（軽減を当てない）
+✅ 同じ2号でも建設工事以外の請負 5,500万円は本則 60,000円（軽減を当てない）
+✅ 軽減の適用下限: 不動産10万円ちょうどは軽減対象外＝本則200円、10万円超で軽減表
+✅ 軽減の適用下限: 建設工事250万円→軽減500円／建設以外の請負250万円→本則1,000円
+✅ 建設工事100万円ちょうど→軽減対象外＝本則200円（1万以上100万以下）
+✅ 領収書 49,999円 → 非課税／50,000円ちょうど → 200円（5万円「未満」が非課税）
+✅ ★No.6925: 税込54,800円・うち消費税等4,981円の区分記載 → 税抜49,819円で判定＝非課税
+✅ ★No.6925: 同じ54,800円でも区分記載が無ければ（消費税欄0）税込で判定＝200円
+✅ ★No.6925: 免税事業者は区分記載しても税込で判定＝200円
+✅ ★No.6925の対象外の号（15号）では消費税額等を引かない（税込で判定）
+✅ 領収書（売上代金）の階級: 100万以下200円／100万超400円／5千万超1億以下2万円／10億超20万円
+✅ 売上代金以外（借入金など）は5万円以上一律200円（1,000万円でも200円）
+✅ ★営業に関しない受取書は金額によらず非課税（急所4・No.7105）
+✅ 1号本則: 1万円未満非課税／1万〜10万 200円／50万超100万以下 1,000円／50億超 60万円
+✅ 2号本則: 300万超500万以下 2,000円／500万超1千万以下 10,000円
+✅ 手形: 10万円未満非課税／100万円 200円／3千万超5千万以下 10,000円
+✅ 手形の一覧払等の特例: 5,000万円でも一律200円（10万円未満は非課税のまま）
+✅ 手形金額の記載のない手形は非課税（急所5・補充者が納税義務者になる注意を出す）
+✅ 契約金額の記載のない1号・2号・15号・16号・17号 → 200円（0円ではない）
+✅ 4号: 500万円以下 200円（非課税の下限なし）／1億円超 20,000円
+✅ 15号: 1万円未満非課税・1万円以上200円／16号: 3千円未満非課税・3千円以上200円
+✅ 定額: 5号・6号=4万円／7号=4千円／8〜14号=200円
+✅ 通帳: 18号=200円/年・19号=400円/年・20号=4,000円/年（perYearを立てる）
+✅ 単調性: 金額が増えれば印紙税は非減少（1号不動産・2号建設・17号売上代金）
+✅ 軽減は本則より高くならない（全金額帯で 軽減 ≤ 本則）
+✅ fail closed: データ無し・文書未選択・金額0・消費税額等≧記載金額は throw
+✅ fail closed: 17号以外に「営業に関しない」・3号以外に「一覧払」を渡すと throw
+
+✓ 収入印紙コア: 29 passed, 0 failed
+
+### tests/test_inshi_receipt_table.mjs rc=0 finished=2026-10-01T00:50:59.112387+09:00
+第17号の静的表：全16行・正本JSON・国税庁税額・位置・見出し一致
+
+### tests/test_internal_links.mjs rc=0 finished=2026-10-01T00:51:00.964285+09:00
+✓ 内部リンク OK (15122リンク)
+
+### tests/test_invoice_bangou.mjs rc=0 finished=2026-10-01T00:51:01.120314+09:00
+✅ test_invoice_bangou: 79 checks passed
+(node:80941) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/invoice_bangou_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_invoice_line_share.mjs rc=0 finished=2026-10-01T00:51:01.420981+09:00
+✓ 請求書用1行コピー OK
+(node:81050) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/invoice_line_share.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_iryohi.mjs rc=0 finished=2026-10-01T00:51:01.666471+09:00
+✅ 足切り[令和7年分まで] 年収1600000 → 総所得950000 → 足切り47500
+✅ 足切り[令和8年分] 年収1600000 → 総所得860000 → 足切り43000(5%側)
+✅ 足切り[令和7年分まで] 年収2000000 → 総所得1320000 → 足切り66000
+✅ 足切り[令和8年分] 年収2000000 → 総所得1260000 → 足切り63000(5%側)
+✅ 足切り[令和7年分まで] 年収2500000 → 総所得1670000 → 足切り83500
+✅ 足切り[令和8年分] 年収2500000 → 総所得1670000 → 足切り83500(5%側)
+✅ 足切り[令和7年分まで] 年収3000000 → 総所得2020000 → 足切り100000
+✅ 足切り[令和8年分] 年収3000000 → 総所得2020000 → 足切り100000(10万で頭打ち)
+✅ 足切り[令和7年分まで] 年収5000000 → 総所得3560000 → 足切り100000
+✅ 足切り[令和8年分] 年収5000000 → 総所得3560000 → 足切り100000(10万で頭打ち)
+✅ 令和8年分は収入220万円未満の足切りが必ず下がる（＝控除額が増える）
+✅ 令和8年分でも収入220万円以上は令和7年分と完全に一致する（別表第五は不変）
+✅ 医療費30万・補填0・年収500万 → 控除額20万
+✅ 控除額20万・税率10% → 所得税20,000＋復興420＋住民税20,000 = 40,420
+✅ 控除額20万・税率20% → 軽減額 60,840
+✅ 医療費6万・年収160万[令和8年分] → 控除額17,000（10万円は下限ではない）
+✅ 補填ひも付き: 医療費27万(入院15万+通院12万)・入院給付20万 → 控除額20,000（総額から引く誤りなら0）
+✅ 補填ひも付きを渡さない（保守側）: 総額27万から補填20万を引く → 控除額0
+✅ 医療費300万・補填0・高所得 → 控除額は200万円で頭打ち
+✅ セルフメディ: 購入3万 → 控除額18,000 / 購入20万 → 88,000で頭打ち
+✅ ★通常とセルフメディは選択: セルフメディの控除額が大きければ selfmed を推奨
+✅ 医療費が大きければ通常を推奨
+✅ R9 税率境界 1950000
+✅ R9 税率境界 3300000
+✅ R9 税率境界 6950000
+✅ R9 税率境界 9000000
+✅ R9 税率境界 18000000
+✅ R9 税率境界 40000000
+✅ R9 速算表の表示区分はNo.2260と一致
+✅ 速算表: 課税所得の帯ごとに正しい限界税率を引く
+✅ 税率未選択（速算表に無い率）→ keigen は null・控除額は計算する
+✅ 総所得金額等の直接指定が年収より優先される
+✅ 参照データ・所得の欠落は throw（黙って過大な控除額を出さない）
+✅ 単調性: 足切りは非減少で10万円で頭打ち
+✅ iryohiKojo: 補填で医療費を下回っても控除額は0未満にならない
+✅ keigenGaku: 課税所得を跨がない範囲で控除額×率×(1+2.1%)＋10%
+✅ r10 非課税なら所得税・復興税0、住民税だけ概算
+
+✓ 医療費控除コア: 37 passed, 0 failed
+
+### tests/test_iryohi_hayami.mjs rc=0 finished=2026-10-01T00:51:02.060651+09:00
+✓ test_iryohi_hayami: 90 checks
+(node:81265) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/iryohi_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_iryohi_kojo_article.mjs rc=0 finished=2026-10-01T00:51:02.513148+09:00
+  ✓ オラクル: 総所得<200万の4件は足切り<10万円
+  ✓ オラクル: 総所得≧200万の2件は足切り=10万円で固定
+  ✓ オラクル: 足切りが10万円を下回る最大の給与収入 = 2,971,999円
+  ✓ オラクル: 別表第五の刻みで総所得は 1,997,600円 → 2,000,400円 と跳ぶ（200万円ちょうどを通らない）
+  ✓ オラクル: 医療費30万・補填金なし → 控除額20万円
+  ✓ オラクル: 税率10% → 所得税20,000+復興420+住民税20,000 = 40,420円
+  ✓ オラクル: 税率20% → 60,840円
+  ✓ オラクル: ひも付きで引くと控除額20,000円
+  ✓ オラクル: 総額から引く誤りだと控除額0円（結論が逆になる）
+  ✓ オラクル: 引き方の違いで「使える/使えない」が分かれる
+  ✓ 表の行「160万円」: 控除740,000 / 所得860,000 / 5%=43,000 / 足切り43,000
+  ✓ 表の行「200万円」: 控除740,000 / 所得1,260,000 / 5%=63,000 / 足切り63,000
+  ✓ 表の行「250万円」: 控除830,000 / 所得1,670,000 / 5%=83,500 / 足切り83,500
+  ✓ 表の行「297万円」: 控除972,400 / 所得1,997,600 / 5%=99,880 / 足切り99,880
+  ✓ 表の行「300万円」: 控除980,000 / 所得2,020,000 / 5%=101,000 / 足切り100,000
+  ✓ 表の行「500万円」: 控除1,440,000 / 所得3,560,000 / 5%=178,000 / 足切り100,000
+  ✓ 境目の段落: 境目は総所得金額等200万円
+  ✓ 境目の段落: 手前の足切りは99,880円
+  ✓ 刻みの段落: 別表第五は4,000円刻みの区分（太字を名指し）
+  ✓ 刻みの段落: 総所得は 1,997,600円 → 2,000,400円 と跳ぶ（オラクル一致）
+  ✓ 「足切り＝5％と10万円の低いほう」と明言している
+  ✓ 10万円を「床ではなく天井」と位置づけている
+  ✓ 73条の引用が原文どおり（5%が本体・10万円がかっこ書き）
+  ✓ 引用に控除上限200万円が含まれる
+  ✓ No.1120の引用に「他の医療費からは差し引きません」がある
+  ✓ 補填金「高額療養費」= 差し引く
+  ✓ 補填金「入院給付金（生命保険）」= 差し引く
+  ✓ 補填金「出産育児一時金」= 差し引く
+  ✓ 補填金「傷病手当金」= 差し引かない
+  ✓ 補填金「出産手当金」= 差し引かない
+  ✓ 補填金「会社からの見舞金」= 差し引かない
+  ✓ 対象表「自家用車のガソリン代・駐車場代」は✕対象外の列にある
+  ✓ 対象表「それ以外のタクシー代」は✕対象外の列にある
+  ✓ 対象表「ビタミン剤」は✕対象外の列にある
+  ✓ 対象表「通院のための電車・バス代」は◯対象の列にある
+  ✓ 対象表「公共交通機関が使えない場合のタクシー代」は◯対象の列にある
+  ✓ 税率は「所得の高い人」に◯（向きが正しい）
+  ✓ 足切りは「所得の低い人」に◯（向きが正しい）
+  ✓ 落とし穴: 所得控除は税金を減らす仕組みであって、もらう仕組みではない
+  ✓ 落とし穴: 納税していない人が負担しても還付は生じない
+  ✓ セルフメディケーション: 令和8年分の期間は令和8年12月31日まで
+  ✓ セルフメディケーション: 改正は令和9年分以後に適用（附則46条）
+  ✓ セルフメディケーション: スイッチOTC（薬局製造販売医薬品を除く）は期限なし
+  ✓ セルフメディケーション: それ以外は令和13年12月31日まで
+  ✓ セルフメディケーション: 金額は改正後も据え置き
+  ✓ セルフメディケーション: 「令和8年分で終わる」系の旧主張がページに無い
+  ✓ h2: セルフメディケーション税制は令和9年分以後も続く
+  ✓ セルフメディケーション: 12,000円超・88,000円限度
+  ✓ 還付申告: 翌年1月1日から5年間
+  ✓ 年末調整では受けられない旨を明記
+  ✓ 金額の網: 42種が一致（過不足なし）
+  ✓ 万円表記の網: 30種が一致
+  ✓ ％の網: 13種が一致
+  ✓ 年数の網: 5年間 / 6か月
+  ✓ title: 「10万円は下限ではない」を掲げている
+  ✓ title: 36字（60字以内）
+  ✓ meta description: 上限/下限の位置づけが正しい
+  ✓ meta description: 297万円の境目を含む
+  ✓ meta description: 225字（60字以上）
+
+✓ 医療費控除の記事: 全て一致
+
+### tests/test_iryohi_selfmed_kigen.mjs rc=0 finished=2026-10-01T00:51:03.124099+09:00
+test_iryohi_selfmed_kigen: OK (57)
+
+### tests/test_iryubun.mjs rc=0 finished=2026-10-01T00:51:03.854515+09:00
+
+test_iryubun: 113 passed, 0 failed
+(node:81788) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/iryubun_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_izoku.mjs rc=0 finished=2026-10-01T00:51:04.030346+09:00
+test_izoku: 81 passed, 0 failed
+(node:82240) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/izoku_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_jidoshazei.mjs rc=0 finished=2026-10-01T00:51:04.214223+09:00
+✅ 新税率: 1.5L超2L以下=36,000／2.5L超3L以下=50,000／6L超=110,000／電気=25,000
+✅ 新税率 全11区分が税率表と一致
+✅ 旧税率: 1.5L超2L以下=39,500（新36,000と別）／2L超2.5L=45,000／6L超=111,000
+✅ 新旧の境界: 2019-10は新税率・2019-09は旧税率
+✅ 重課: 旧1.5L超2L(39,500)→45,400／2.5L超3L(51,000)→58,600／6L超(111,000)→127,600
+✅ 重課 全区分（電気を除く10区分）が重課税額表と一致
+✅ ★13年超でもハイブリッドは重課対象外＝標準税率のまま（jyukaBlocked）
+✅ ★電気自動車は重課対象外（区分evは燃料に依らず重課しない）
+✅ ★ディーゼルは11年超で重課（ガソリンの13年と別）
+✅ 月割 月数: 4月→11 / 8月→7 / 12月→3 / 1月→2 / 2月→1 / 3月→0
+✅ 月割額: 新1.5L超2L(36,000) 4月登録=33,000 / 8月=21,000 / 2月=3,000
+✅ ★月割の100円未満切捨: 新2.5L超(43,500) 8月登録(7か月)=25,300（43,500×7/12=25,375→切捨）
+✅ ★3月登録はその年度0円（翌年度から年額）
+✅ 月割は標準税率に対して行う（重課年数でも新車の初年度は標準で月割）
+✅ 軽 新税率10,800（H27.4.1以後）／旧7,200（以前）／重課12,900
+✅ 軽の新旧境界: 2015-04は新10,800・2015-03は旧7,200
+✅ ★軽のハイブリッド・電気は重課対象外
+✅ ★軽自動車税に月割はない（prorateMonthを渡してもproration=null・注記を出す）
+✅ 登録車は都道府県税・軽は市区町村税を taxKind で申告
+✅ fail closed: データ無し・車種未選択・排気量未選択・初度登録年月なしは throw
+✅ 単調性: 排気量が上がれば年額は非減少（新税率・旧税率・重課）
+✅ R9 EV75%軽課は令和7年度初度登録の翌年度だけ
+
+✓ 自動車税コア: 22 passed, 0 failed
+
+### tests/test_jidoshazei_article.mjs rc=0 finished=2026-10-01T00:51:04.537966+09:00
+✅ title に「早見表」と西暦の年度が入っている（実SERPの上位10件が持っていた語）
+✅ meta description の 1,500cc/2,000cc の年額が正本データと一致する
+✅ hero の答え（1,500cc/2,000cc）が正本データと一致する
+✅ 境界callout の <p> が「1,500cc は 1リットル超1.5リットル以下」と自分で言っている
+✅ 早見表の h2 と目次のリンク文字列が一致する
+
+✅ test_jidoshazei_article: 5 passed, 0 failed
+
+### tests/test_jidoshazei_static_table.mjs rc=0 finished=2026-10-01T00:51:04.715669+09:00
+✅ 早見表の tbody がクローラに見える（読み込み中… が残っていない）
+✅ 外部オラクル: 新税率・旧税率・13年超重課が表の行に出ている
+✅ 外部オラクル: 電気自動車は1リットル以下と同額で、重課は「対象外」と書く
+✅ 外部オラクル: 軽自動車（大阪市の税率表）— 新10,800／旧7,200／重課12,900
+✅ 静的HTMLが、ページ内 JS の描画結果と完全一致する
+✅ 軽自動車の行も、ページ内 JS の描画結果と完全一致する
+✅ 年度（令和8年度）が静的HTMLに出ている
+✅ データ取得に失敗しても、静的な早見表を「読み込めませんでした」で潰さない
+
+8 passed, 0 failed
+
+### tests/test_jishin_hoken_kojo.mjs rc=0 finished=2026-10-01T00:51:05.441801+09:00
+test_jishin_hoken_kojo: 122 passed, 0 failed
+(node:82607) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/setsuzei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_jouto.mjs rc=0 finished=2026-10-01T00:51:05.855363+09:00
+
+── §1 所有期間の判定基準日（措法31条1項） ────────────────────────────
+  ok  2021-05-01取得→2026-07-15譲渡: 基準日は譲渡年の1月1日
+  ok    起算日は取得日の翌日
+  ok    1月1日時点の所有期間は4年7か月
+  ok    譲渡日時点では5年2か月（実際は5年超）
+  ok    5年を超えない＝短期
+  ok  2020-03-15取得→2026譲渡: 5年超＝長期
+  ok  2020-12-31取得: 起算日は2021-01-01
+  ok    2026-01-01でちょうど5年＝『超える』でないので短期
+  ok  2020-12-30取得: 起算日は2020-12-31
+  ok    丸めるとどちらも5年0か月に見える
+  ok    5年と2日＝『5年を超える』ので長期
+  ok  1日違いで税率区分が反転する
+  ok  譲渡日が取得日以前なら計算しない
+  ok  壊れた日付は例外にする
+
+── §2 外部オラクル（国税庁 No.3208 の具体例） ───────────────────────
+  ok  長期譲渡と判定
+  ok  課税長期譲渡所得金額 = 4,000万円
+  ok  所得税 = 600万円（公表値と一致）
+  ok  住民税 = 200万円（公表値と一致）
+  ok  復興特別所得税 = 600万円×2.1% = 126,000円
+  ok  合計税額
+  ok  合計税率20.315%と一致
+
+── §3 建物の減価償却費相当額（非業務用） ──────────────────────────────
+  ok  経過年数: 6か月以上の端数は1年
+  ok  経過年数: 6か月未満の端数は切捨て
+  ok  木造の償却年数 = 22年×1.5 = 33年
+  ok  木造の償却率 = 0.031（別表第七の33年）
+  ok  経過年数 = 16年（16年3か月→切捨て）
+  ok  減価償却費相当額 = 8,928,000円
+  ok  95%上限にはかかっていない
+  ok  46年経過だと計算値が95%を超えるので頭打ち
+  ok    減価償却費相当額は取得価額の95% = 19,000,000円
+  ok  構造 mokuzo: 償却率 0.031
+  ok    mokuzo: 償却年数 = floor(22×1.5)
+  ok  構造 mokkotsu: 償却率 0.034
+  ok    mokkotsu: 償却年数 = floor(20×1.5)
+  ok  構造 rc: 償却率 0.015
+  ok    rc: 償却年数 = floor(47×1.5)
+  ok  構造 renga: 償却率 0.018
+  ok    renga: 償却年数 = floor(38×1.5)
+  ok  構造 kinzoku4over: 償却率 0.02
+  ok    kinzoku4over: 償却年数 = floor(34×1.5)
+  ok  構造 kinzoku3to4: 償却率 0.025
+  ok    kinzoku3to4: 償却年数 = floor(27×1.5)
+  ok  構造 kinzoku3under: 償却率 0.036
+  ok    kinzoku3under: 償却年数 = floor(19×1.5)
+  ok  構造が未選択なら計算しない
+
+── §4 概算取得費5%（措法31条の4・国税庁 No.3258） ───────────────────
+  ok  概算取得費 = 譲渡価額の5%
+  ok    概算を使っている
+  ok  実額100万＜5%の250万 → 5%を採る
+  ok    その旨を注記する
+  ok  実額3,000万＞5%の250万 → 実額を採る
+  ok    概算は使っていない
+
+── §5 居住用財産の3,000万円特別控除 ──────────────────────────────
+  ok  控除額はデータ由来
+  ok  短期譲渡である
+  ok    短期でも3,000万円控除は使える
+  ok    課税譲渡所得 = 4,000万 − 3,000万 = 1,000万
+  ok    所得税は30%
+  ok    住民税は9%
+  ok  譲渡益500万＜控除3,000万 → 控除は500万まで
+  ok    課税譲渡所得は0
+  ok    税額は0
+
+── §6 10年超所有軽減税率の特例 ──────────────────────────────────
+  ok  10年超である
+  ok  軽減税率が適用される
+  ok  譲渡益 = 9,000万
+  ok  課税長期譲渡所得金額 = 9,000万 − 3,000万 = 6,000万
+  ok    6,000万円ちょうど → 全額が10%
+  ok    住民税は4%
+  ok    合計は14.21%と一致
+  ok  課税長期譲渡所得金額 = 7,000万
+  ok    所得税 = 600万 + 150万 = 750万（条文のイ+ロと一致）
+  ok    住民税 = 6,000万×4% + 1,000万×5% = 290万
+  ok  譲渡益8,000万（6,000万超）
+  ok    控除後の課税額は5,000万（6,000万未満）
+  ok    判定は控除【後】なので全額が10% = 500万
+  ok    住民税は4% = 200万
+  ok    6,000万を超える部分は無い
+  ok  8年所有では軽減税率は使えない
+  ok    通常の長期15%になる
+
+── §7 被相続人の居住用財産（空き家）の特別控除 ───────────────────────────
+  ok  相続人2人 → 控除は3,000万円
+  ok  相続人3人 → 控除は2,000万円
+  ok    その旨を注記する
+  ok    控除が1,000万円減った分だけ課税額が増える
+  ok  譲渡対価1億円超 → 控除0
+  ok    理由は対価
+  ok  譲渡対価1億円ちょうど → 使える（『超える』ものを除く）
+  ok  令和9年12月31日より後の譲渡 → 控除0
+  ok    理由は期限
+  ok  令和9年12月31日ちょうど → まだ使える
+  ok  期限はデータ由来
+
+── §8 復興特別所得税（令和19年分まで） ──────────────────────────────
+  ok  データ上の終期は2037年
+  ok  2037年分は復興特別所得税が掛かる
+  ok    所得税の2.1%
+  ok  2038年分は掛からない
+  ok    復興特別所得税は0
+  ok    その旨を注記する
+  ok  住民税は同額（復興税の影響を受けない）
+
+── §9 課税譲渡所得金額の1,000円未満切捨て ───────────────────────────
+  ok  譲渡益 10,000,500円
+  ok    課税譲渡所得金額は1,000円未満切捨てで 10,000,000円
+  ok  切捨て単位はデータ由来
+
+── §10 参照データの欠落 ──────────────────────────────────────
+  ok  データがnullなら計算しない
+  ok  税率が欠けたら計算しない
+  ok  償却率が欠けたら計算しない
+  ok  譲渡価額が無ければ計算しない
+
+── §11 データ⇔コアの結合 ─────────────────────────────────────
+  ok  税率を20%に差し替えたら所得税も追従する
+  ok  控除額を4,000万に差し替えたら控除も追従する
+  ok  償却率を差し替えたら減価償却も追従する
+
+── §12 翌年に売れば長期になるかの案内 ───────────────────────────────
+  ok  短期と判定
+  ok  翌年なら長期になる案内が出る
+  ok    案内の年は2027年
+  ok    差額は税額の差
+  ok    短期の方が高い
+  ok  翌年でも長期にならないなら案内を出さない
+
+── §13 単調性 ───────────────────────────────────────────
+  ok  譲渡価額が上がれば税額は下がらない
+  ok  取得費が上がれば税額は上がらない
+
+── §14 掲載している合計税率と計算の一致 ──────────────────────────────
+  ok  長期 20.315% = 15%×1.021 + 5%
+  ok  短期 39.63% = 30%×1.021 + 9%
+  ok  軽減 14.21% = 10%×1.021 + 4%
+  ok  軽減の超過部分 20.315% = 15%×1.021 + 5%
+  ok  軽減税率2号のイ600万円 = 6,000万×10%
+  ok  短期は長期のほぼ2倍
+
+── §15 ページ本文 ⇔ 参照データの一致 ──────────────────────────────
+  ok  抽出器が動いている（自己検査）
+  ok  抽出器は存在しないidにnullを返す
+  ok  長期の合計税率 20.315% が本文にある
+  ok  短期の合計税率 39.63% が本文にある
+  ok  軽減税率 14.21% が本文にある
+  ok  軽減の超過部分の税率が本文にある
+  ok  復興特別所得税の率が本文にある
+  ok  復興特別所得税の終期 2037年 が本文にある
+  ok  減価償却の算式が本文にある（0.9・償却率・経過年数）
+  ok  減価償却の限度 95% が本文にある
+  ok  木造の償却率が本文にある
+  ok  耐用年数の1.5倍が本文にある
+  ok  概算取得費の割合が本文にある
+  ok  空き家特例の適用期限が本文にある
+  ok  空き家の1億円上限が本文にある
+  ok  空き家の相続人3人以上→2,000万円が本文にある
+  ok  判定基準日の主張が本文にある
+  ok  短期の具体例（4年7か月）が本文にある
+  ok  3,000万円控除が短期にも効くと書いてある
+  ok  軽減税率の6,000万判定は控除の『後』だと書いてある
+  ok    その6,000万円という区切りがデータと一致する
+
+✅ test_jouto: 140 passed, 0 failed
+
+### tests/test_juminzei.mjs rc=0 finished=2026-10-01T00:51:06.604006+09:00
+■ 給与所得（所法28条・別表第五）
+■ 基礎控除
+■ ★★ 外部オラクル1: 大阪市の公表計算例（令和8年度・指定都市）
+■ ★ 指定都市かどうかで限度額は変わらない（比が入れ替わるだけ）
+■ ★★ 外部オラクル2: 総務省の控除イメージ（年収750万・夫婦子なし・寄附30,000円）
+■ ★ 90% − 所得税率 × 1.021 が附則の表と1つ残らず一致する
+■ ★ 割合を1段階間違えると限度額がどれだけ動くか（本則を使う誤りの実害）
+■ 限度額の定義そのもの（境界で20%上限にちょうど張り付く）
+■ 調整控除（地税314条の6）
+■ 課税総所得が人的控除差調整額を下回る場合（第11項2号）
+■ 所得割が0円の人は限度額も0円（fail closed）
+■ 参照データが無ければ計算しない（fail closed）
+■ 年度はデータが名乗る（ページに手書きしない）
+■ 社会保険料の概算（限度額に直接効く。黙って0円で計算したら限度額が過大になる）
+■ ★限度額ちょうど寄附すると自己負担は2,000円で収まる（限度額の定義そのもの）
+
+■ 均等割・森林環境税（地税310条 3,000円 / 38条 1,000円 / 森林環境税法5条 1,000円）
+
+■ ★★超過課税は「納税額」を動かすが「ふるさと納税の限度額」は1円も動かさない
+
+■ 非課税限度額（均等割＝条例・級地で変わる / 所得割＝法律で全国一律）
+
+■ 非課税は calc() の答えにも効く（均等割だけ課税される人の住民税）
+
+■ ひとり親の父/母・本人障害者（2026-07-19レビューでページ配線を修正した項目）
+
+■ ★★令和8年分（zeisei:"r8"）— 令和8年度税制改正（措法29条の4・改正後86条＋41条の16の2）
+
+✅ test_juminzei: 217/217 checks passed
+(node:83063) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/juminzei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_juminzei_embed.mjs rc=0 finished=2026-10-01T00:51:32.082768+09:00
+給与1150000: ¥0 / expected 0
+給与2000000: ¥85,500 / expected 85500
+給与5000000: ¥315,500 / expected 315500
+haha: ¥129,000 / expected 129000
+chichi: ¥131,000 / expected 131000
+✓ t5 住民税埋込: 年度・父母の実計算と対象範囲表示
+
+### tests/test_juminzei_zeisei.mjs rc=0 finished=2026-10-01T00:51:32.236275+09:00
+✓ 住民税ツールの年分（令和8年分）OK
+(node:89116) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/juminzei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_jutaku.mjs rc=0 finished=2026-10-01T00:51:32.562209+09:00
+test_jutaku: 188 checks OK
+t4 corpus matrix: 288 cases + 36 unsupported-year cases + boundaries OK
+✓ t4b 270ケースを追加、合計1214 assertions
+(node:89129) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/jutaku_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_jutaku_ui.mjs rc=0 finished=2026-10-01T00:51:48.405343+09:00
+✓ jutaku UI: 本体・embed 29シナリオ、375/390/1280px形状検査、Chromium直列
+
+### tests/test_kabe.mjs rc=0 finished=2026-10-01T00:51:49.800606+09:00
+✅ 社保(年): 年収131万・東京都・30歳 → 187,296円（記事の値）
+✅ 年収129万（扶養内）→ 社保0・手取り1,290,000
+✅ 年収131万（加入）→ 社保187,296・手取り1,122,704（記事の見出し）
+✅ 年収130万ちょうどは加入側（130万"未満"が扶養）＝壁の底
+✅ 回復年収: 129万の手取りに戻るのは年収1,505,000
+✅ 回復年収の以後に基準割れの年収は無い・旧定義と同値（オラクル不変）
+✅ 壁の手前の手取り > 壁の底の手取り（逆転が実在する）
+✅ 恒等式: 年収 = 手取り + 社保（加入時）
+✅ wallType tekiyoKakudai: 壁は106万・105万は未加入/106万は加入
+✅ 60歳以上: 被扶養者の壁は180万（130万では加入しない）
+✅ 40歳は介護保険が乗り、30歳より社保が高い
+✅ 参照データ欠落は throw（黙って0で答えない）
+✅ 未知の都道府県は throw
+✅ wallType 不正は 130万 にフォールバック（黙って106万にしない）
+
+✓ 年収の壁コア: 14 passed, 0 failed
+✓ 2026-10-01 の賃金要件の撤廃: 撤廃前（9/30）・撤廃後（10/1）・被扶養者は不変
+
+### tests/test_kaitori_hayamihyo.mjs rc=0 finished=2026-10-01T00:51:50.094520+09:00
+✓ test_kaitori_hayamihyo: 11行 / 記事の手書き設例(月給30万)を3方式とも再現 / 前提の明示あり
+
+### tests/test_kani_hikaku.mjs rc=0 finished=2026-10-01T00:51:50.300706+09:00
+✓ 消費税の方式比較 OK
+(node:91324) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/kani_hikaku_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_kanyu_article.mjs rc=0 finished=2026-10-01T00:51:50.513766+09:00
+── オラクル: 条文の生テキストと突き合わせる ──────────
+── 網①: 正しい値が在るか ──────────
+── 網②: 未知の値が紛れていないか（ホワイトリスト）──────────
+── FAQ: 答えを1つずつ名指しする ──────────
+
+✓ 記事「雇用保険の加入条件」OK (332 checks・条文の生テキストと一致)
+
+### tests/test_keyword_demand.mjs rc=0 finished=2026-10-01T00:52:29.713513+09:00
+✔ test_keyword_demand (506件を走査[コラム395/ツール72/その他39]・コラム重複3件+ツール重複2件を検出・slug衝突をパスで区別・部分一致で「出張日当」を捕捉・誤爆なし)
+
+### tests/test_keyword_demand_decisions.mjs rc=0 finished=2026-10-01T00:52:34.109192+09:00
+✓ keyword_demand decisions OK (実在の却下を拾い・別の文の却下語を巻き込まない)
+
+### tests/test_keyword_demand_volume.mjs rc=0 finished=2026-10-01T00:52:35.439971+09:00
+✓ keyword_demand volume OK (月間推定検索数を alt で判別して読めている)
+
+### tests/test_kihonteate.mjs rc=0 finished=2026-10-01T00:52:35.555014+09:00
+✅ test_kihonteate: 100 checks
+(node:96699) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/kihonteate_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_kihonteate_oracle.mjs rc=0 finished=2026-10-01T00:52:35.705485+09:00
+✅ test_kihonteate_oracle: 55 checks — 厚労省の公表値を、条文の式＋自動変更対象額から再現
+(node:96701) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/kihonteate_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_kihonteate_page_claims.mjs rc=0 finished=2026-10-01T00:52:35.988843+09:00
+── 年齢別の上限額が kihonteate_r07.json と一致するか（年齢が主語） ──
+  ✓ 表の行「上限・30歳未満」 14,900円 7,450円
+  ✓ 表の行「上限・30歳以上45歳未満」 16,540円 8,270円
+  ✓ 表の行「上限・45歳以上60歳未満」 18,220円 9,110円
+  ✓ 表の行「上限・60歳以上65歳未満」 17,400円 7,830円
+  ✓ 表の行「下限（全年齢）」 3,203円 2,562円
+── 給付率の帯が JSON の境目と一致するか（賃金日額の帯が主語） ──
+  ✓ 表の行「3,203円未満」 2,562円
+  ✓ 表の行「3,203円以上 5,480円未満（月給 約9.6万〜16.4万円）」 80％ 2,562円
+  ✓ 表の行「5,480円以上 13,490円以下（月給 約16.4万〜40.5万円）」 80％→50％へ逓減 6,745円
+  ✓ 表の行「13,490円超 16,540円以下（月給 約40.5万〜49.6万円）」 50％ 8,270円
+  ✓ 表の行「16,540円超（月給 約49.6万円超）」 8,270円
+── 表が名乗る年が、データの年と一致するか ──
+  ✓ 帯の表の年表記が 令和8年（データの申告）
+── 60〜64歳だけ帯の形が違うこと（逓減の上端と45％） ──
+  ✓ 60〜64歳の帯 12,120円・45％
+── 条文の額は今日の実額ではない、の callout（17条4項の出発点） ──
+  ✓ 条文の額の callout 17条4項の4額＋下限2,460円＋18条の自動変更対象額
+── 6か月の数え方（14条1項の11日）と賃金の範囲（17条1項の除外） ──
+  ✓ h3 6か月は賃金支払基礎日数11日以上の月で数える
+  ✓ h3 賞与は除き通勤手当・残業代は含む（17条1項の除外そのまま）
+── 就職困難者の所定給付日数（画面に選択肢があるのに数字が無かった） ──
+  ✓ h3 就職困難者 150日／300日／360日
+── 待期は「通算7日」・認定は4週に1回で直前28日分 ──
+  ✓ 待期は通算7日（21条）／認定は4週に1回・直前28日分（15条3項）／15条4項の例外
+  ✓ p 1回の認定でまとまるのは28日分・初回入金まで1か月前後
+── 条文の逐語（blockquote に条文本文だけ。出典ラベルを同居させない） ──
+  ✓ 12条（公課の禁止）を blockquote に逐語で置いている
+  ✓ 21条（待期）を blockquote に逐語で置いている
+  ✓ 21条を算用数字にした鉤括弧が本文に無い
+  ✓ h2 非課税の見出しが所得税・住民税を名指し
+── 19条の減額（3段階）と届出義務・不正受給の重さ ──
+  ✓ 19条1項の3段階・2項で控除額が変わる・3項の届出義務・不正受給は2倍
+  ✓ p 19条3項の届出義務の逐語と、不正受給が最大3倍になること
+── 訓練延長給付と技能習得手当（競合の計算ページに無い一段） ──
+  ✓ 所長の指示で訓練終了日まで支給／受講手当500円・上限20,000円／通所手当42,500円／寄宿手当10,700円／傷病手当15日以上
+── 網の外に何が残るか（規則6）: 足した金額が全部どこかの名指しに入っているか ──
+  ✓ 追記した節の金額 28種すべてが名指しの中
+
+✅ test_kihonteate_page_claims: 26 checks — 追記した主張を要素名指しで固定（額は kihonteate_r07.json が正本）
+
+### tests/test_kihonteate_zantei.mjs rc=0 finished=2026-10-01T00:52:36.101181+09:00
+  ✅ fusoku4_zantei がデータに存在する
+  ✅ kigen(2027-03-31) が YYYY-MM-DD
+  ✅ kigen(2027-03-31) と kigen_wareki(令和9年3月31日) の和暦換算が一致(計算値=令和9年3月31日)
+  ✅ recheck_after(2027-01-31) は kigen(2027-03-31) より前
+  ✅ ページに #keiyaku-zantei-note がある
+  ✅ 注記が期限「離職日が令和9年3月31日まで」をデータどおりに書く
+  ✅ 注記が根拠(附則4条・暫定措置)を名指しする
+  ✅ 注記が指す選択肢(keiyaku)が画面に存在する
+  ✅ 記事に附則4条の callout がある
+  ✅ 記事calloutの期限「令和9年3月31日までの離職」がデータと一致
+  ✅ 記事出典(附則第4条)の期限がデータと一致
+  ✅ core: keiyaku の所定給付日数は kaisha と同じ(附則4条を適用している)
+  ✅ core: keiyaku は jiko より日数が多い(暫定措置が効いている)
+  ✅ core: keiyaku に給付制限なし
+  ✅ カナリア: 今日(2026-09-30) <= recheck_after(2027-01-31)。赤くなったら e-Gov で雇用保険法附則4条の延長立法の有無を確認し、データの note の手順(延長→期限更新/未定→recheck_afterのみ前進/失効→core改修)に従うこと
+
+test_kihonteate_zantei: all green
+(node:96719) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/kihonteate_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_kinro_gakusei.mjs rc=0 finished=2026-10-01T00:52:36.219067+09:00
+test_kinro_gakusei: 92 passed, 0 failed
+(node:96728) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/setsuzei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_kogaku.mjs rc=0 finished=2026-10-01T00:52:36.411683+09:00
+✅ 高額療養費 338件 すべて一致
+
+### tests/test_kogaku_article.mjs rc=0 finished=2026-10-01T00:52:36.600015+09:00
+  ✓ 外部オラクル: 施行令42条から読んだ12個の金額が協会けんぽの公表表と完全一致
+  ✓ 外部オラクル: 本番ツールの等級表＋施行令の式で、報酬月額1円差の崖を再現(87,430 / 171,820)
+  ✓ 外部オラクル: 崖の差額 84,390円 を再計算で確認
+  ✓ 外部オラクル: 高額療養費 212,570円（300,000−87,430）を再計算で確認
+  ✓ 外部オラクル: 標準報酬月額に80万円台の等級は無い(79万→83万で飛ぶ)＝条文と協会けんぽ表は矛盾しない
+  ✓ 外部オラクル: 区分ウ(28万以上53万未満)の上端の等級は50万円
+  ✓ 早見表 区分ウ: 境目28万円以上53万円未満 / 80,100円 / 267,000円 ＋多数回 44,400円
+  ✓ 早見表 区分ア: 境目83万円以上 / 252,600円 / 842,000円 ＋多数回 140,100円
+  ✓ 早見表 区分イ: 境目53万円以上83万円未満 / 167,400円 / 558,000円 ＋多数回 93,000円
+  ✓ 早見表 区分エ: 境目28万円未満 / 57,600円 ＋多数回 44,400円
+  ✓ 早見表 区分オ: 境目住民税非課税 / 35,400円 ＋多数回 24,600円
+  ✓ 区分の境目(83万/53万/28万)が政令の標準報酬月額と一致
+  ✓ 崖の表 報酬月額514,999円 → 第30級・区分ウ・87,430円
+  ✓ 崖の表 報酬月額515,000円 → 第31級・区分イ・171,820円
+  ✓ 多数回該当: 区分ウ(87,430→44,400) / 区分エ(57,600→44,400) が同額に潰れる
+  ✓ 多数回該当: 要件は「十二月以内に三月以上」＝4回目から（暦年ではない）
+  ✓ 世帯合算: 20,000円×3件でも合算される額は0円
+  ✓ 世帯合算: 「超えた分だけ」ではなく「まるごと対象外」と明記
+  ✓ 条文の号の順番 ウ・ア・イ・エ・オ（1号が「以外の者」＝区分ウ）
+  ✓ 認定証: 施行規則129条の2第2項が交付対象を「資格確認書の交付を受けているものに限る」と限定
+  ✓ 認定証の原則と例外: 通常はこの事前申請を省けます
+  ✓ 認定証の原則と例外: 低所得者区分
+  ✓ 認定証の原則と例外: 協会けんぽの低所得者区分等は認定申請が必要です。
+  ✓ 認定証の原則と例外: 非対応施設
+  ✓ 認定証の原則と例外: 番号未登録
+  ✓ 認定証: 資格確認書の人は今も事前申請が必要（両側を書いている）
+  ✓ 改正: 「変わらない」と書いていたのは誤りだったと明示して訂正している
+  ✓ 8月からの表 区分ア: 270,300円＋起点901,000円 ／多数回 140,100円／年間上限 168万円
+  ✓ 8月からの表 区分イ: 179,100円＋起点597,000円 ／多数回 93,000円／年間上限 111万円
+  ✓ 8月からの表 区分ウ: 85,800円＋起点286,000円 ／多数回 44,400円／年間上限 53万円
+  ✓ 8月からの表 区分エ: 61,500円 ／多数回 44,400円／年間上限 53万円
+  ✓ 8月からの表 区分オ: 36,900円 ／多数回 24,600円／年間上限 29万円
+  ✓ 8月からの表: 多数回該当（140,100/93,000/44,400/24,600）は据え置き＝7月までと同額
+  ✓ 比較: 7月診療分87,430円 → 8月診療分92,940円（差5,510円）が同じ段落で結び付いている
+  ✓ 外部オラクル: 85,800＋(100万−28.6万)×1%＝92,940円 ＝ 厚労省の「約9.3万円」と一致
+  ✓ 改正: 8月からの額は令和8年政令第240号（219号は読替額だけ）と明記し、協会けんぽの表とも照合
+  ✓ 改正: 政令第240号 第1号（区分ウ） の引用 八万五千八百円・二十八万六千円 ＝ 表の 85,800円・286,000円
+  ✓ 改正: 政令第240号 第2号（区分ア） の引用 二十七万三百円・九十万千円 ＝ 表の 270,300円・901,000円
+  ✓ 改正: 「e-Govの条文にはまだ無い」系の旧主張がページに無い
+  ✓ 7月までの早見表に、8月からの額は入っていない
+  ✓ 早見表のh2が「令和8年7月診療分まで」と期間を名乗っている
+  ✓ 目次と早見表のh2が一致
+  ✓ 端数規則: 50銭未満切捨・50銭以上切上（政令が明記）
+  ✓ 対象外: 入院時の食費・差額ベッド代は限度額の対象に含まれない（厚労省）
+  ✓ 医療費控除との接続: 高額療養費は差し引く／傷病・出産手当金は差し引かない
+  ✓ 年間上限: h3が「窓口で引かれるのではなく申請して戻る」と名乗っている
+  ✓ 年間上限: 月額の限度額を下げないことを本文が断定している
+  ✓ 年間上限: 申請しないと戻らないことを明記
+  ✓ 年間上限: 申請書の名前（通常の高額療養費支給申請書とは別）を明記
+  ✓ 年間上限: 窓口では92,940円を払う、と同じ段落で結び付いている
+  ✓ 年間上限: 暦年でも年度でもないことを明示
+  ✓ 年間上限: 最初の1年の期間を明記
+  ✓ 年間上限: 「令和9年8月以降に償還払い」の一次引用がある
+  ✓ 年間上限: 先行制度の「7月31日を基準日として」の引用がある
+  ✓ 年間上限: 標報15万円以下は41万円（53万円ではない）
+  ✓ 年間上限: 年間累計を計算していないことを申告している
+  ✓ 令和9年8月 標報127万円以上: 342,000円＋1％／多数回140,100円／年間168万円
+  ✓ 令和9年8月 標報103万〜121万円: 303,000円＋1％／多数回140,100円／年間168万円
+  ✓ 令和9年8月 標報83万〜98万円: 270,300円＋1％／多数回140,100円／年間168万円
+  ✓ 令和9年8月 標報71万〜79万円: 209,400円＋1％／多数回93,000円／年間111万円
+  ✓ 令和9年8月 標報62万〜68万円: 194,400円＋1％／多数回93,000円／年間111万円
+  ✓ 令和9年8月 標報53万〜59万円: 179,100円＋1％／多数回93,000円／年間111万円
+  ✓ 令和9年8月 標報44万〜50万円: 110,400円＋1％／多数回44,400円／年間53万円
+  ✓ 令和9年8月 標報36万〜41万円: 98,100円＋1％／多数回44,400円／年間53万円
+  ✓ 令和9年8月 標報28万〜34万円: 85,800円＋1％／多数回44,400円／年間53万円
+  ✓ 令和9年8月 標報20万〜26万円: 69,600円／多数回44,400円／年間53万円
+  ✓ 令和9年8月 標報16万〜19万円: 65,400円／多数回44,400円／年間53万円
+  ✓ 令和9年8月 標報15万円以下: 61,500円／多数回34,500円／年間41万円
+  ✓ 令和9年8月 住民税非課税: 36,900円／多数回24,600円／年間29万円
+  ✓ 令和9年8月: 見出しが 13段階 を名乗っている
+  ✓ 令和9年8月: 導入段落の区分数がデータの行数（13）と一致
+  ✓ 令和9年8月: 区分の切り方そのものが変わることを導入段落が断定している
+  ✓ 令和9年8月: 計算機の対応範囲が supported_through と一致（70歳未満 令和10年7月診療分まで）
+  ✓ 令和9年8月: 70歳以上の対応範囲（70歳以上が令和9年7月診療分まで）を申告している
+  ✓ 令和9年8月: 70歳以上は額を出さないことを断定している
+  ✓ 令和9年8月: 令和8年政令第240号（2027-08-01施行・e-Gov未施行版）で決まっていると申告
+  ✓ 令和9年8月: 注記が引く政令の額 ＝ from_2027_08（計算機の表）
+  ✓ 令和9年8月: 計算機の表示（enacted）と記事の説明が一致
+  ✓ 令和9年8月: 「予定・条文未確認」の旧主張が無い
+  ✓ 令和9年8月: 表の見出しに「予定」が無い
+  ✓ 70歳以上[7月まで] 現役並みⅢ: 外来なし／世帯252,600円／多数回140,100円
+  ✓ 70歳以上[7月まで] 現役並みⅡ: 外来なし／世帯167,400円／多数回93,000円
+  ✓ 70歳以上[7月まで] 現役並みⅠ: 外来なし／世帯80,100円／多数回44,400円
+  ✓ 70歳以上[7月まで] 一般: 外来18,000円／世帯57,600円／多数回44,400円
+  ✓ 70歳以上[7月まで] 低所得者Ⅱ: 外来8,000円／世帯24,600円／多数回なし
+  ✓ 70歳以上[7月まで] 低所得者Ⅰ: 外来8,000円／世帯15,000円／多数回なし
+  ✓ 70歳以上[8月から] 現役並みⅢ: 外来なし／世帯270,300円／多数回140,100円／年間168万円
+  ✓ 70歳以上[8月から] 現役並みⅡ: 外来なし／世帯179,100円／多数回93,000円／年間111万円
+  ✓ 70歳以上[8月から] 現役並みⅠ: 外来なし／世帯85,800円／多数回44,400円／年間53万円
+  ✓ 70歳以上[8月から] 一般: 外来22,000円／世帯61,500円／多数回44,400円／年間53万円
+  ✓ 70歳以上[8月から] 低所得者Ⅱ: 外来11,000円／世帯25,700円／多数回24,600円／年間29万円
+  ✓ 70歳以上[8月から] 低所得者Ⅰ: 外来8,000円／世帯15,700円／多数回なし／年間18万円
+  ✓ 70歳以上: ①外来を個人ごと(42条5項)→②世帯で合算(42条3項)の順序と、現役並みの例外を明記
+  ✓ 70歳以上: ①を飛ばすと自己負担が22,000円→61,500円（戻る額 58,000円→18,500円）
+  ✓ 70歳以上: 2.8倍・39,500円と、①が効く条件の限定が同じ段落にある
+  ✓ 70歳以上: 21,000円の足切りは70歳未満だけ（協会けんぽの逐語）
+  ✓ 70歳以上: 現役並みは標報だけで決まらない（520万/383万の収入要件）
+  ✓ 70歳以上: 低所得者Ⅰに多数回該当が無い根拠（6号にただし書が無い）
+  ✓ 70歳以上: 外来の年間上限（41条の2・8/1〜翌7/31・216,000/144,000/96,000円・事後の償還払い）
+  ✓ 目次と70歳以上のh2が一致
+  ✓ 金額の網: カンマ金額 79種すべてが想定内・70歳未満(旧/R8.8/R9.8の13区分)と70歳以上(新旧)の金額がすべて本文にある
+  ✓ 等級の網: 第30・31・39・40級（崖と80万円台の不在）がすべて本文にある
+  ✓ 第30級 ＝ 標準報酬月額50万円（本番の等級表と一致）
+  ✓ 第31級 ＝ 標準報酬月額53万円（本番の等級表と一致）
+  ✓ 第39級 ＝ 標準報酬月額79万円（本番の等級表と一致）
+  ✓ 第40級 ＝ 標準報酬月額83万円（本番の等級表と一致）
+  ✓ title（33字）: 区分は年収でなく標準報酬月額
+  ✓ meta description: 崖(87,430→171,820・差84,390)と世帯合算21,000円を明記
+
+✓ 記事「高額療養費」: 政令・省令・本番ツールの等級表と一致
+
+### tests/test_kokuho.mjs rc=0 finished=2026-10-01T00:52:36.734955+09:00
+✓ test_kokuho: 89 件すべて成功
+(node:96794) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/kokuho_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_kokunen_menjo.mjs rc=0 finished=2026-10-01T00:52:36.813757+09:00
+test_kokunen_menjo: 29件 緑
+(node:96809) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/kokunen_menjo_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_kotei_article.mjs rc=0 finished=2026-10-01T00:52:36.949257+09:00
+✓ 固定残業代の記事 OK (金額16種・時間数1種を shaho_core と最低賃金から独立に導出して全出現箇所と照合)
+(node:96817) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shaho_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_kotei_shisanzei.mjs rc=0 finished=2026-10-01T00:52:37.072965+09:00
+91 passed, 0 failed
+(node:96832) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/kotei_shisanzei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_koyou_article.mjs rc=0 finished=2026-10-01T00:52:37.245046+09:00
+  ✓ 外部オラクル[一般の事業]: (13.5−3.5)÷2 = 5/1,000・事業主 8.5/1,000 が公表値と一致
+  ✓ 外部オラクル[農林水産・清酒製造]: (15.5−3.5)÷2 = 6/1,000・事業主 9.5/1,000 が公表値と一致
+  ✓ 外部オラクル[建設の事業]: (16.5−4.5)÷2 = 6/1,000・事業主 10.5/1,000 が公表値と一致
+  ✓ 外部オラクル: 100,100円×5/1,000 = 500.5（ちょうど50銭）→ 天引き500円 / 現金501円
+  ✓ 関連カード4本（網からの除外領域は、この範囲だけ）
+  ✓ 千分率の網: 記事に出る 17 個の率がすべて一次情報から導ける
+    （未出現の率: 4, 12）
+  ✓ カンマ金額の網: 記事の 17 個の数がすべて core の計算結果か前提から導ける
+  ✓ 料率表[一般の事業]の行: 労働者5 事業主8.5 合計13.5（令7も併記）
+  ✓ 料率表[農林水産・清酒製造]の行: 労働者6 事業主9.5 合計15.5（令7も併記）
+  ✓ 料率表[建設の事業]の行: 労働者6 事業主10.5 合計16.5（令7も併記）
+  ✓ 導出表[一般の事業]: (13.5 − 3.5) ÷ 2 = 5 と公表値が並んでいる
+  ✓ 導出表[農林水産・清酒製造]: (15.5 − 3.5) ÷ 2 = 6 と公表値が並んでいる
+  ✓ 導出表[建設の事業]: (16.5 − 4.5) ÷ 2 = 6 と公表値が並んでいる
+  ✓ 計算例[月給 20万円]: 本人1,000円 会社1,700円 合計2,700円（core と一致）
+  ✓ 計算例[月給 30万円]: 本人1,500円 会社2,550円 合計4,050円（core と一致）
+  ✓ 計算例[月給 50万円]: 本人2,500円 会社4,250円 合計6,750円（core と一致）
+  ✓ 計算例[賞与 50万円]: 本人2,500円 会社4,250円 合計6,750円（core と一致）
+  ✓ 計算例[賞与 300万円]: 本人15,000円 会社25,500円 合計40,500円（core と一致）
+  ✓ 端数表[源泉控除]: 50銭以下→切り捨て / 50銭1厘以上→切り上げ
+  ✓ 端数表[現金払い]: 50銭未満→切り捨て / 50銭以上→切り上げ
+  ✓ 50銭の例: 天引き→切り捨て500円 / 現金→切り上げ501円（入れ替わっていない）
+  ✓ 同一等級の callout: 1,500円 と 1,525円 で 25円 違う（厚生年金の30万円は第19級。健保と等級番号を混同しない）
+  ✓ 比較表[計算のもと]: 健保・厚年＝標準報酬月額 ⇔ 雇用保険＝賃金総額
+  ✓ 比較表[賞与の上限]: 健保573万円／厚年150万円 ⇔ 雇用保険は なし
+  ✓ 31条1項1号の引用: 「減じた額の二分の一」＋「二事業率」が引用の中にある
+  ✓ 12条6項の引用: 二事業率＝「二事業費充当徴収保険率を雇用保険率で除して得た率」
+  ✓ 11条1項の引用: 「賃金総額に……保険料率を乗じて得た額」
+  ✓ 免除の節: 現行の徴収法に年齢による免除規定は無い、と明示している
+  ✓ ツール導線: /shakai-hoken/ へのCTAがある
+  ✓ 年度: rates JSON の適用開始（2026-04）と記事の令和8年度が一致
+
+✓ 記事「雇用保険料率」の照合 OK
+
+### tests/test_koyou_oracle.mjs rc=0 finished=2026-10-01T00:52:37.349066+09:00
+  ✓ 一般の事業: 労働者5/1000・事業主8.5/1000 が公表値と一致
+  ✓ 農林水産・清酒製造の事業: 労働者6/1000・事業主9.5/1000 が公表値と一致
+  ✓ 建設の事業: 労働者6/1000・事業主10.5/1000 が公表値と一致
+  ✓ 労使折半ではない（事業主 − 労働者 ＝ 雇用保険二事業の率）
+  ✓ 賃金総額にかかる（同じ等級でも賃金が違えば保険料が違う: 1,500円 ≠ 1,525円）
+  ✓ 賞与に上限なし・1,000円未満切捨なし（2,000万円→100,000円 / 500,500円→2,502円≠2,500円）
+  ✓ 端数は50銭以下切捨・50銭超切上
+  ✓ 業種で変わる（一般1,500円 / 建設1,800円）
+  ✓ データの申告（賃金総額・適用開始・出典）が実体と一致
+
+✅ test_koyou_oracle: 9 件すべて通過（厚労省の公表値と一致）
+(node:96848) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shaho_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_law_char_claims.mjs rc=0 finished=2026-10-01T00:52:40.564788+09:00
+  ※ 台帳に無く照合できない字数の主張 12件（★測定不能。緑の保証はここには及ばない）:
+     column/dozoku-kaisha: …による全文取得（600,520字）
+     column/dozoku-kaisha: …による全文取得（1,184,221字）
+     column/gaika-kansan: …の第1節・第2節の原文（14,095字）
+     column/gisou-ukeoi: …法令の字数（72,896字）
+     column/kogitte: …から全文（10,656字）
+     column/kogitte: …から全文（16,559字）
+     column/kumimodoshi: …表第二第3号により非課税となる取引を17項目列挙していることを確認し、同項目の区間（1,260字）
+     column/roudou-hoken-bango: …徴収法（54,185字）
+     column/roudou-hoken-bango: …施行規則（118,402字）
+     column/soneki-keisansho-mikata: …各0回は、会社計算規則の取得結果の全文（112,442字）
+     column/stock-option-zeikin: …による全文取得（1,095,638字）
+     column/taishaku-taishohyo-mikata: …回は、会社計算規則の取得結果の全文（112,442字）
+✓ 法令の字数 0件（うち表の行 0件は別途）が台帳と一致（方法=squash・測定日=2026-08-24）
+
+### tests/test_layout_markup.mjs rc=0 finished=2026-10-01T00:54:31.270506+09:00
+stale layout markup: 0 pages
+stale presentation markup: 0
+
+### tests/test_layout_mutations.mjs rc=0 finished=2026-10-01T00:54:46.788391+09:00
+✓ 24 independent broken HTML cases × 2 widths rejected; healthy/scroll/bar controls accepted
+
+### tests/test_layout_render.mjs rc=0 finished=2026-10-01T01:12:04.492948+09:00
+✓ Layout: 514 pages × 6 sizes = 3084; no skipped pages. /Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/.layout-artifacts/render.json
+
+### tests/test_layout_visual.mjs rc=1 finished=2026-10-01T01:12:07.827098+09:00
+node:internal/modules/run_main:105
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Different rendering environment; run the documented environment migration review instead of silently accepting images
++ actual - expected
+
+  {
+    arch: 'arm64',
++   browser: '145.0.7632.6',
+-   browser: '151.0.7922.34',
+    deviceScaleFactor: 1,
+    platform: 'darwin',
++   playwright: '1.58.2'
+-   playwright: '1.62.1'
+  }
+
+    at file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/tests/test_layout_visual.mjs:11:172 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: {
+    platform: 'darwin',
+    arch: 'arm64',
+    playwright: '1.58.2',
+    browser: '145.0.7632.6',
+    deviceScaleFactor: 1
+  },
+  expected: {
+    platform: 'darwin',
+    arch: 'arm64',
+    playwright: '1.62.1',
+    browser: '151.0.7922.34',
+    deviceScaleFactor: 1
+  },
+  operator: 'deepStrictEqual'
+}
+
+Node.js v24.3.0
+
+### tests/test_left_edge.mjs rc=0 finished=2026-10-01T01:12:08.154607+09:00
+↷ ローカルHTTPを立てられないので測定を飛ばします（EADDRINUSE）。
+   ★これは「左端が揃っている」という意味ではない。測っていないだけ。
+
+### tests/test_link_inventory.mjs rc=0 finished=2026-10-01T01:12:08.325520+09:00
+✓ link inventory normalizes URLs and separates body/list/fixed links
+
+### tests/test_measurement_wiring.mjs rc=0 finished=2026-10-01T01:12:09.156385+09:00
+公開ページ 506件（免除 32件: embed/）／検査 1928項目
+✅ test_measurement_wiring: 計測・収益の配線 OK
+
+### tests/test_nav.mjs rc=0 finished=2026-10-01T01:12:09.865821+09:00
+✓ gen_nav --check: 全ページのナビが揃っている（37件は対象外）
+
+### tests/test_nav_experiment.mjs rc=0 finished=2026-10-01T01:12:10.874646+09:00
+✓ 回遊実験: 対象15本・対照15本・保護15件・表の施策2本の約束を満たす
+
+### tests/test_nenkin.mjs rc=0 finished=2026-10-01T01:12:11.012862+09:00
+✓ test_nenkin: 87 件すべて成功
+(node:46283) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/nenkin_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_nenkin_page.mjs rc=0 finished=2026-10-01T01:12:11.193390+09:00
+✅ §1 #hani-list が取り出せる
+✅ §1 収録範囲外「加給年金額」が画面の一覧に載っている
+✅ §1 収録範囲外「振替加算」が画面の一覧に載っている
+✅ §1 収録範囲外「経過的加算」が画面の一覧に載っている
+✅ §1 収録範囲外「特別支給の老齢厚生年金」が画面の一覧に載っている
+✅ §1 収録範囲外「在職老齢年金による支給停止」が画面の一覧に載っている
+✅ §1 収録範囲外「平成21年3月以前の保険料免除期間」が画面の一覧に載っている
+✅ §1 収録範囲外「昭和37年4月1日以前生まれの方の繰上げ」が画面の一覧に載っている
+✅ §1 収録範囲外「昭和27年4月1日以前生まれの方の繰下げ」が画面の一覧に載っている
+✅ §1 収録範囲外「昭和16年4月1日以前生まれの方の加入可能年数」が画面の一覧に載っている
+✅ §1 収録範囲外「第3種被保険者」が画面の一覧に載っている
+✅ §1 収録範囲外「厚生年金基金の代行部分」が画面の一覧に載っている
+✅ §1 収録範囲外「合算対象期間」が画面の一覧に載っている
+✅ §1 一覧の項目数がデータの件数と一致（12件）
+✅ §2 「平成21年3月以前の保険料免除期間」は金額を出さないことが画面に書かれている
+✅ §2 「昭和37年4月1日以前生まれの方の繰上げ」は金額を出さないことが画面に書かれている
+✅ §2 「昭和27年4月1日以前生まれの方の繰下げ」は金額を出さないことが画面に書かれている
+✅ §2 「昭和16年4月1日以前生まれの方の加入可能年数」は金額を出さないことが画面に書かれている
+✅ §3 満額 847300 が script に直書きされていない
+✅ §3 満額 844900 が script に直書きされていない
+✅ §3 乗率 7.125 が script に直書きされていない
+✅ §3 乗率 5.481 が script に直書きされていない
+✅ §4 FAQ の設問数が JSON-LD と本文で一致（5件）
+
+23 件成功 / 0 件失敗
+
+### tests/test_nenmatsu_kanpukin.mjs rc=0 finished=2026-10-01T01:12:11.429398+09:00
+== A. 看板の実数例(年収500万) — 図と本文 ==
+== B. 基礎控除の帯表(新旧・コア照合) ==
+== C. 年収別の上乗せ表 ==
+== D. 追徴の実数例(年収600万) ==
+== E. 生命保険料控除(令和8・9年分の6万円特例) ==
+
+結果: 104 passed / 0 failed
+(node:46343) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/gensen_kyuyo_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_nenshu_kabe.mjs rc=0 finished=2026-10-01T01:12:11.616648+09:00
+課税最低限を区分表から導く（不動点で区分の自己整合を検算）
+  ✅ 令和6年分: 1,030,000円 (期待 1,030,000 = 旧「103万円の壁」)
+  ✅ 令和7年分: 1,600,000円 (期待 1,600,000 = 「160万円の壁」)
+  ✅ 令和8年分: 1,780,000円 (期待 1,780,000 = 74万+104万)
+
+区分表が本番の参照データ（条文から作成）と一致しているか
+  ✅ 令和8年分の基礎控除の区分表が本番データと一致
+     本番: [{"gokei_shotoku_max":4890000,"amount":1040000},{"gokei_shotoku_max":6550000,"amount":670000},{"gokei_shotoku_max":23500000,"amount":620000},{"gokei_shotoku_max":24000000,"amount":480000},{"gokei_shotoku_max":24500000,"amount":320000},{"gokei_shotoku_max":25000000,"amount":160000}]
+     検査: [{"gokei_shotoku_max":4890000,"amount":1040000},{"gokei_shotoku_max":6550000,"amount":670000},{"gokei_shotoku_max":23500000,"amount":620000},{"gokei_shotoku_max":24000000,"amount":480000},{"gokei_shotoku_max":24500000,"amount":320000},{"gokei_shotoku_max":25000000,"amount":160000}]
+  ✅ 令和8年分の区分表に99万円が無い
+  ✅ 99万円(=62万+37万)は令和10年分以後・合計所得132万円以下の区分として持っている
+  ✅ 令和10年分以後の区分を令和8年分に当てると 1,730,000円 (=本番に出ていた誤り)
+  ✅ 正しい導き方は、その誤りと一致しない
+
+配偶者・扶養の壁（給与収入換算）
+  ✅ 配偶者控除・扶養親族の上限: 1,360,000円 (期待 1,360,000)
+  ✅ 配偶者特別控除が減り始める: 1,690,000円 (期待 1,690,000)
+  ✅ 配偶者特別控除がゼロ: 2,070,000円 (期待 2,070,000)
+
+記事の記載と一致しているか
+  ✅ nenshu-no-kabe: 正しい壁「178万円」を記載している
+  ✅ nenshu-no-kabe: 壁を述べている行を 2 件見つけた
+  ✅ nenshu-no-kabe: 誤り「173万円」を令和8年分の壁として提示していない
+  ✅ nenshu-no-kabe: 壁を述べている行(2件)が全て「178万円」を載せている
+  ✅ fuyo-kojo-shinkokusho: 正しい壁「178万円」を記載している
+  ✅ fuyo-kojo-shinkokusho: 壁を述べている行を 1 件見つけた
+  ✅ fuyo-kojo-shinkokusho: 誤り「173万円」を令和8年分の壁として提示していない
+  ✅ fuyo-kojo-shinkokusho: 壁を述べている行(1件)が全て「178万円」を載せている
+
+数直線SVGの目盛り位置（軸のスケールから検算）
+  ✅ 点とラベルの対応を 7 件抽出した
+  ✅ 106万円の点: cx=94.3 (軸から計算すると 94.3)
+  ✅ 130万円の点: cx=231.4 (軸から計算すると 231.4)
+  ✅ 119万円の点: cx=168.6 (軸から計算すると 168.6)
+  ✅ 169万円の点: cx=454.3 (軸から計算すると 454.3)
+  ✅ 207万円の点: cx=671.4 (軸から計算すると 671.4)
+  ✅ 136万円の点: cx=265.7 (軸から計算すると 265.7)
+  ✅ 178万円の点: cx=505.7 (軸から計算すると 505.7)
+  ✅ 数直線に178万円の点がある
+  ✅ 数直線に173万円の点が残っていない
+
+all green
+
+### tests/test_nini_article.mjs rc=0 finished=2026-10-01T01:12:11.916427+09:00
+  ✓ 外部オラクル: 協会けんぽ公式額表 第23級の全額（31,520.0／36,704.0／736.0）を再現
+  ✓ 上限以下（標準報酬月額30万円）はちょうど2.00倍
+  ✓ 標準報酬月額65万円で逆転（在職 32759円 > 任継 32256円）
+  ✓ 金額（カンマ区切り）: 14件が完全一致
+  ✓ 万円表記: 5件が完全一致
+  ✓ パーセント: 6件が完全一致
+  ✓ 倍率: 3件が完全一致
+  ✓ 日数: 3件が完全一致
+  ✓ 引用 健保法161条（全額を負担する）
+  ✓ 引用 健保法38条7号（脱退の申出）
+  ✓ 引用 健保法164条（その月の十日）
+  ✓ 引用 国保法施行令29条の7の2（百分の三十）
+  ✓ callout 37条1項ただし書（正当な理由）
+  ✓ callout 37条2項（初回未納は遡って無効）
+  ✓ callout 会社都合退職は国保を先に試算
+  ✓ callout 上限は年度ごとに算定され、変更される場合がある
+  ✓ callout 1年目は任意継続・2年目は国保
+  ✓ 表の行 2回目以降の未納（38条3号・翌日に資格喪失）
+  ✓ 表の行 初回の未納（37条2項・とならなかったものとみなす）
+  ✓ 表の行 特定受給資格者（雇保法23条2項）
+  ✓ 表の行 特定理由離職者（雇保法13条3項）
+  ✓ 表の行 40歳未満・65歳以上の保険料
+  ✓ 表の行 40歳以上65歳未満の保険料
+  ✓ 表の行 標準報酬月額300,000円の倍率 2.00倍
+  ✓ 表の行 標準報酬月額440,000円の倍率 1.45倍
+  ✓ 表の行 標準報酬月額650,000円の倍率 0.98倍
+  ✓ 表の行 被保険者期間（前日まで継続して2か月以上）
+  ✓ 表の行 申出の期限（20日以内）
+  ✓ 本文 納付期限はその月の10日（在職中の「翌月末日」との対比）
+  ✓ 注記 公式額表の全額から保険料を組み立てる（736を含む）
+  ✓ 逆転点の式（料率が約分されて消える）
+  ✓ 逆転点は同一料率・介護保険条件の比較に限定
+
+✓ 任意継続 記事: すべて一致
+
+### tests/test_nini_keizoku.mjs rc=0 finished=2026-10-01T01:12:12.212956+09:00
+前提: 東京都 健保9.85% / 介護1.62% / 支援金0.23% / 上限320,000円
+★介護保険の年齢境界
+★推測で埋めない
+  ok   capYen が無ければ例外（推測で埋めない）
+★比較
+★壊しテスト
+  ok   上限を無視すると 50,400円（正 32,256円）＝検査は効いている
+
+✓ test_nini_keizoku: 30 checks, 0 failed
+
+### tests/test_nini_keizoku_article.mjs rc=0 finished=2026-10-01T01:12:17.850697+09:00
+任意継続記事: 図の傾き・逆転点の両側・条件表示・FAQ同期が緑
+
+### tests/test_nisa_waku.mjs rc=0 finished=2026-10-01T01:12:18.057437+09:00
+★NISAの残り枠（取得対価で計算）
+★生涯枠が年間枠より先に効く
+★売却額は時価でなく簿価、同年には戻らない
+
+✓ test_nisa_waku: 14 checks, 0 failed
+
+### tests/test_no_hscroll.mjs rc=0 finished=2026-10-01T01:17:56.602663+09:00
+✓ 横スクロールなし（514ページ・375px）
+
+### tests/test_no_orphan.mjs rc=0 finished=2026-10-01T01:17:58.156480+09:00
+✓ 孤立した公開記事なし（公開395本／リンク元482ページ）
+
+### tests/test_no_stray_paths.mjs rc=0 finished=2026-10-01T01:17:58.468526+09:00
+✓ docs/ に undefined/null/NaN 由来のパスは無い
+
+### tests/test_nopublish.mjs rc=0 finished=2026-10-01T01:17:59.638199+09:00
+✓ .nopublish の実効性 OK（コラム403本中 非公開8本、全てnoindex）
+
+### tests/test_ogp.mjs rc=0 finished=2026-10-01T01:18:01.135593+09:00
+✅ test_ogp: 5689 checks（対象474ページすべてに OGP あり）
+
+### tests/test_papa_ikukyu.mjs rc=0 finished=2026-10-01T01:18:47.339174+09:00
+✓ t7 育児給付の4画面: 改定・通算・既支給・就業・延長案内を確認
+
+### tests/test_payday.mjs rc=0 finished=2026-10-01T01:18:47.540699+09:00
+all payday_core tests passed
+(node:71611) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/payday_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_persona_order.mjs rc=0 finished=2026-10-01T01:18:47.839835+09:00
+✓ 対象者別ORDERは全カテゴリを含み、静的順・チップ順・未登録時の末尾フォールバックも正常
+
+### tests/test_pr_blocks.mjs rc=0 finished=2026-10-01T01:18:52.620688+09:00
+✓ test_pr_blocks: PR明示あり / rel=sponsored nofollow noopener / 計測あり / 設定 0ページ / 設定外の残留 0（全514ページ走査）
+
+### tests/test_prefill.mjs rc=0 finished=2026-10-01T01:18:53.436677+09:00
+✓ ツール間の値の受け渡し OK
+(node:72176) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/prefill.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_pv_browser.mjs rc=0 finished=2026-10-01T01:21:19.977218+09:00
+✓ PV browser: 36 views, input/results, copy/save, keyboard, conditions, telemetry, links and overflow
+
+### tests/test_pv_tracking.mjs rc=0 finished=2026-10-01T01:21:27.765986+09:00
+✓ PV telemetry: 50%/1s, cancellation, background/hidden exclusion, per-slot deduplication, public URL allowlist
+TypeError: Cannot read properties of null (reading '_location')
+    at get location (/Users/masahiroyasu/node_modules/jsdom/lib/jsdom/browser/Window.js:380:79)
+    at params (eval at <anonymous> (file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/tests/test_pv_tracking.mjs:9:3), <anonymous>:93:51)
+    at schedule (eval at <anonymous> (file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/tests/test_pv_tracking.mjs:9:3), <anonymous>:110:17)
+    at MutationObserver.observe.attributes (eval at <anonymous> (file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/tests/test_pv_tracking.mjs:9:3), <anonymous>:129:43)
+    at MutationObserver.invokeTheCallbackFunction (/Users/masahiroyasu/node_modules/jsdom/lib/generated/idl/MutationCallback.js:19:26)
+    at notifyMutationObservers (/Users/masahiroyasu/node_modules/jsdom/lib/jsdom/living/helpers/mutation-observers.js:160:22)
+    at /Users/masahiroyasu/node_modules/jsdom/lib/jsdom/living/helpers/mutation-observers.js:133:5
+
+### tests/test_pv_workflows.mjs rc=0 finished=2026-10-01T01:21:44.585163+09:00
+(node:81429) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/bank_presets.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ PV workflows: stable IDs/reordering, unknown, failure, delayed edits, conditional results, stable controls, generator
+
+### tests/test_qa.mjs rc=0 finished=2026-10-01T01:21:56.517411+09:00
+✅ 記事の網羅: 索引 395件 = 記事フォルダ 395件
+✅ ツールの網羅: 索引 67件 = ツールフォルダ 67件
+✅ 記事 /column/36-kyotei/ が索引にある
+✅ 記事 /column/ai-keiri-hanjidoka/ が索引にある
+✅ 記事 /column/angoshisan-zeikin/ が索引にある
+✅ 記事 /column/anzen-eisei-iinkai/ が索引にある
+✅ 記事 /column/anzen-eisei-suishinsha/ が索引にある
+✅ 記事 /column/anzen-hairyo-gimu/ が索引にある
+✅ 記事 /column/aoiro-shonin-shinseisho/ が索引にある
+✅ 記事 /column/aoiro-tokubetsu-kojo/ が索引にある
+✅ 記事 /column/assyuku-kicho-houshiki/ が索引にある
+✅ 記事 /column/azukarikin/ が索引にある
+✅ 記事 /column/career-up-joseikin/ が索引にある
+✅ 記事 /column/cash-flow-keisansho/ が索引にある
+✅ 記事 /column/chidai-yachin/ が索引にある
+✅ 記事 /column/chinage-sokushin-zeisei/ が索引にある
+✅ 記事 /column/chingin-daicho/ が索引にある
+✅ 記事 /column/choikin-hikazei/ が索引にある
+✅ 記事 /column/chokai-shobun/ が索引にある
+✅ 記事 /column/chukan-shinkoku/ が索引にある
+✅ 記事 /column/chumon-ukesho/ が索引にある
+✅ 記事 /column/chushajodai-kanjo-kamoku/ が索引にある
+✅ 記事 /column/chusho-keiei-kyoka-zeisei/ が索引にある
+✅ 記事 /column/chusho-toshi-sokushin-zeisei/ が索引にある
+✅ 記事 /column/chutaikyo/ が索引にある
+✅ 記事 /column/dattai-ichijikin/ が索引にある
+✅ 記事 /column/denchoho-kensaku-yoken/ が索引にある
+✅ 記事 /column/denchoho-scanner-hozon/ が索引にある
+✅ 記事 /column/denchoho-wakariyasuku/ が索引にある
+✅ 記事 /column/doitsu-rodo-doitsu-chingin/ が索引にある
+✅ 記事 /column/dollar-cost-heikin/ が索引にある
+✅ 記事 /column/dozoku-kaisha/ が索引にある
+✅ 記事 /column/eigyobi-kazoekata/ が索引にある
+✅ 記事 /column/einen-kinzoku-hyosho/ が索引にある
+✅ 記事 /column/emaxis-sp-vs-fang/ が索引にある
+✅ 記事 /column/emaxis-sp-vs-rakuten-nasdaq/ が索引にある
+✅ 記事 /column/emaxis-sp-vs-rakuten-vti/ が索引にある
+✅ 記事 /column/emaxis-sp-vs-sbi-nasdaq/ が索引にある
+✅ 記事 /column/emaxis-sp-vs-sbi-sp/ が索引にある
+✅ 記事 /column/emaxis-topix-vs-nikkei/ が索引にある
+✅ 記事 /column/factoring-toha/ が索引にある
+✅ 記事 /column/fang-leverage-cost/ が索引にある
+✅ 記事 /column/fang-vs-sbi-nasdaq/ が索引にある
+✅ 記事 /column/flextime/ が索引にある
+✅ 記事 /column/fudosan-shutokuzei-shiwake/ が索引にある
+✅ 記事 /column/fufuku-moshitate/ が索引にある
+✅ 記事 /column/fukugyo-20man-kakutei-shinkoku/ が索引にある
+✅ 記事 /column/fukugyo-rodojikan-tsusan/ が索引にある
+✅ 記事 /column/fukuri-koseihi/ が索引にある
+✅ 記事 /column/furikae-kyujitsu-daikyu/ が索引にある
+✅ 記事 /column/furikomi-furikae-chigai/ が索引にある
+✅ 記事 /column/furikomi-hanei-jikan/ が索引にある
+✅ 記事 /column/furikomi-tesuryo-hikaku/ が索引にある
+✅ 記事 /column/furikomi-tesuryo-kanjo-kamoku/ が索引にある
+✅ 記事 /column/furusato-nozei-kakutei-shinkoku/ が索引にある
+✅ 記事 /column/fuyo-kojo-shinkokusho/ が索引にある
+✅ 記事 /column/gaichuhi-kyuyo-kubun/ が索引にある
+✅ 記事 /column/gaika-kansan/ が索引にある
+✅ 記事 /column/gaikei-hyojun-kazei/ が索引にある
+✅ 記事 /column/gaikoku-zeigaku-kojo/ が索引にある
+✅ 記事 /column/gasolindai-kanjo-kamoku/ が索引にある
+✅ 記事 /column/genka-keisan/ が索引にある
+✅ 記事 /column/genka-shokyaku-ruikeigaku/ が索引にある
+✅ 記事 /column/genka-shokyaku-toha/ が索引にある
+✅ 記事 /column/genkin-suitocho-kakikata/ が索引にある
+✅ 記事 /column/gensen-choshubo/ が索引にある
+✅ 記事 /column/gensen-choshuhyo-mikata/ が索引にある
+✅ 記事 /column/gensen-shotokuzei-nofusho/ が索引にある
+✅ 記事 /column/gensen-shotokuzei-noki-tokurei/ が索引にある
+✅ 記事 /column/gensen-zeigakuhyo-mikata/ が索引にある
+✅ 記事 /column/gensen-zeigakuhyo-r09/ が索引にある
+✅ 記事 /column/genshi/ が索引にある
+✅ 記事 /column/genson-sonshitsu/ が索引にある
+✅ 記事 /column/gisou-ukeoi/ が索引にある
+✅ 記事 /column/group-hojin-zeisei/ が索引にある
+✅ 記事 /column/gyomu-kaizen-joseikin/ が索引にある
+✅ 記事 /column/gyomuitaku-kakutei-shinkoku/ が索引にある
+✅ 記事 /column/haigusha-kyojuken/ が索引にある
+✅ 記事 /column/haigusha-tokubetsu-kojo/ が索引にある
+✅ 記事 /column/haitokin-kakutei-shinkoku/ が索引にある
+✅ 記事 /column/haken-3nen-teishokubi/ が索引にある
+✅ 記事 /column/henkei-roudou-jikan/ が索引にある
+✅ 記事 /column/hifuyosha-ido-todoke/ が索引にある
+✅ 記事 /column/hitori-oyakata-rosai/ が索引にある
+✅ 記事 /column/hojin-jigyo-gaikyo-setsumeisho/ が索引にある
+✅ 記事 /column/hojin-nari/ が索引にある
+✅ 記事 /column/hojinzei-ritsu/ が索引にある
+✅ 記事 /column/hojinzei-toha/ が索引にある
+✅ 記事 /column/hojokin-asshuku-gendogaku/ が索引にある
+✅ 記事 /column/hojokin-kojin-jigyonushi/ が索引にある
+✅ 記事 /column/hojokin-koteishisan-genka-shokyaku/ が索引にある
+✅ 記事 /column/hojokin-shiwake/ が索引にある
+✅ 記事 /column/hojokin-shohizei/ が索引にある
+✅ 記事 /column/hojokin-tokubetsu-kanjo/ が索引にある
+✅ 記事 /column/hokenryo-kojo-shinkokusho/ が索引にある
+✅ 記事 /column/hotei-fukurihi-keisan/ が索引にある
+✅ 記事 /column/hotei-koyoritsu/ が索引にある
+✅ 記事 /column/hotei-sozoku-joho-ichiranzu/ が索引にある
+✅ 記事 /column/hoteichosho-goukeihyo/ が索引にある
+✅ 記事 /column/hyojun-hoshu-gakuhyo/ が索引にある
+✅ 記事 /column/ichiji-shotoku/ が索引にある
+✅ 記事 /column/ideco-nenmatsu-chosei/ が索引にある
+✅ 記事 /column/ifreenext-fang-vs-rakuten-nasdaq/ が索引にある
+✅ 記事 /column/ikuji-jitan-kyufukin/ が索引にある
+✅ 記事 /column/ikuji-kyugyo-kyufukin/ が索引にある
+✅ 記事 /column/ikukyu-nenmatsu-chosei/ が索引にある
+✅ 記事 /column/index-toushi/ が索引にある
+✅ 記事 /column/invesco-sekai-vs-emaxis-orcan/ が索引にある
+✅ 記事 /column/invoice-2wari-tokurei/ が索引にある
+✅ 記事 /column/invoice-wakariyasuku/ が索引にある
+✅ 記事 /column/iryohi-kojo-ikura-kara/ が索引にある
+✅ 記事 /column/isan-bunkatsu-kyogisho/ が索引にある
+✅ 記事 /column/izoku-nenkin-jukyu-yoken/ が索引にある
+✅ 記事 /column/jigyo-joto/ が索引にある
+✅ 記事 /column/jigyo-shokei-zeisei/ が索引にある
+✅ 記事 /column/jigyonushi-kashi-kari/ が索引にある
+✅ 記事 /column/jigyoshozei/ が索引にある
+✅ 記事 /column/jikou-engyo/ が索引にある
+✅ 記事 /column/jinzai-kaihatsu-joseikin/ が索引にある
+✅ 記事 /column/jishin-hokenryo-kojo/ が索引にある
+✅ 記事 /column/josei-katsuyaku-suishinho/ が索引にある
+✅ 記事 /column/jugyoin-mochikabukai/ が索引にある
+✅ 記事 /column/juminzei-hikazei-border/ が索引にある
+✅ 記事 /column/juminzei-kettei-tsuchisho/ が索引にある
+✅ 記事 /column/juminzei-tokubetsu-choshu/ が索引にある
+✅ 記事 /column/junkakutei-shinkoku/ が索引にある
+✅ 記事 /column/jutaku-kojo-shinkokusho/ が索引にある
+✅ 記事 /column/jutaku-loan-kojo-yoken/ が索引にある
+✅ 記事 /column/kabunushi-shihon-hendo-keisansho/ が索引にある
+✅ 記事 /column/kabunushi-soukai-gijiroku/ が索引にある
+✅ 記事 /column/kaigo-hokenryo-itsukara/ が索引にある
+✅ 記事 /column/kaigo-kyugyo-kyufukin/ が索引にある
+✅ 記事 /column/kaigyo-todoke/ が索引にある
+✅ 記事 /column/kaiko-yokoku-teate/ が索引にある
+✅ 記事 /column/kaisha-seisan/ が索引にある
+✅ 記事 /column/kaisha-setsuritsu/ が索引にある
+✅ 記事 /column/kaji-anbun/ が索引にある
+✅ 記事 /column/kakutei-kyoshutsu-nenkin/ が索引にある
+✅ 記事 /column/kakutei-shinkoku-hitsuyo-shorui/ が索引にある
+✅ 記事 /column/kakutei-shinkoku-ikurakara/ が索引にある
+✅ 記事 /column/kakutei-shinkoku-itsumade/ が索引にある
+✅ 記事 /column/kakutei-shinkoku-kanpukin-itsu/ が索引にある
+✅ 記事 /column/kakutei-shinkoku-sumaho/ が索引にある
+✅ 記事 /column/kakutei-shinkoku-yarikata/ が索引にある
+✅ 記事 /column/kakutei-shinkoku-yuso/ が索引にある
+✅ 記事 /column/kakutei-shinkoku-zeirishi-hiyo/ が索引にある
+✅ 記事 /column/kakyu-nenkin/ が索引にある
+✅ 記事 /column/kanai-rodosha-tokurei/ が索引にある
+✅ 記事 /column/kango-kaigo-kyuka/ が索引にある
+✅ 記事 /column/kani-kazei/ が索引にある
+✅ 記事 /column/kanjo-kamoku-ichiran/ が索引にある
+✅ 記事 /column/kanjo-kamoku-uchiwakesho/ が索引にある
+✅ 記事 /column/kanri-kantokusha/ が索引にある
+✅ 記事 /column/karibaraikin-kariukekin/ が索引にある
+✅ 記事 /column/kashidaore-hikiatekin/ が索引にある
+✅ 記事 /column/kashidaore-sonshitsu/ が索引にある
+✅ 記事 /column/kasuhara/ が索引にある
+✅ 記事 /column/kazei-uriage-wariai/ が索引にある
+✅ 記事 /column/keiei-jiko-shinsa/ が索引にある
+✅ 記事 /column/keiei-safety-kyosai-shiwake/ が索引にある
+✅ 記事 /column/keiri-nenkan-schedule/ が索引にある
+✅ 記事 /column/kekkin-kojo-keisan/ が索引にある
+✅ 記事 /column/kenko-hoken-nini-keizoku/ が索引にある
+✅ 記事 /column/kenko-shindan/ が索引にある
+✅ 記事 /column/kensetsu-karikanjo/ が索引にある
+✅ 記事 /column/kensetsugyo-kyoka/ が索引にある
+✅ 記事 /column/kessan-kokoku/ が索引にある
+✅ 記事 /column/kessan-seiri-shiwake/ が索引にある
+✅ 記事 /column/kessan-shoyo/ が索引にある
+✅ 記事 /column/kibiki-keicho-kyuka/ が索引にある
+✅ 記事 /column/kifukin-kojo/ が索引にある
+✅ 記事 /column/kigyo-ban-furusato-nozei/ が索引にある
+✅ 記事 /column/kigyogata-dc-taishoku/ が索引にある
+✅ 記事 /column/kinmukan-interval/ が索引にある
+✅ 記事 /column/kodomo-kosodate-kyoshutsukin/ が索引にある
+✅ 記事 /column/kodomo-kosodate-shienkin/ が索引にある
+✅ 記事 /column/kogaku-ryoyohi/ が索引にある
+✅ 記事 /column/kogitte/ が索引にある
+✅ 記事 /column/kojin-jigyozei/ が索引にある
+✅ 記事 /column/kokoku-sendenhi/ が索引にある
+✅ 記事 /column/kokuho-hokenryo/ が索引にある
+✅ 記事 /column/kosaihi-kaigihi-chigai/ が索引にある
+✅ 記事 /column/kosei-shosho/ が索引にある
+✅ 記事 /column/kotei-shisan-daicho/ が索引にある
+✅ 記事 /column/kotei-shisanzei/ が索引にある
+✅ 記事 /column/kotei-zangyodai/ が索引にある
+✅ 記事 /column/kotora-sokin/ が索引にある
+✅ 記事 /column/kounenrei-koyou-keizoku/ が索引にある
+✅ 記事 /column/kounenrei-kyushokusha-kyufukin/ が索引にある
+✅ 記事 /column/koyou-hoken-hihokenshasho/ が索引にある
+✅ 記事 /column/koyou-hoken-kanyu-joken/ が索引にある
+✅ 記事 /column/koyou-hokenryo-ritsu/ が索引にある
+✅ 記事 /column/koza-furikae-iraisho/ が索引にある
+✅ 記事 /column/kumimodoshi/ が索引にある
+✅ 記事 /column/kurikoshi-kessonkin/ が索引にある
+✅ 記事 /column/kurinobe-shisan/ が索引にある
+✅ 記事 /column/kyogyo-hishi-gimu/ が索引にある
+✅ 記事 /column/kyoiku-kunren-kyufukin/ が索引にある
+✅ 記事 /column/kyosankin-kanjo-kamoku/ が索引にある
+✅ 記事 /column/kyugyo-teate/ が索引にある
+✅ 記事 /column/kyujitsu-shukkin-teate/ が索引にある
+✅ 記事 /column/kyukei-jikan/ が索引にある
+✅ 記事 /column/kyushoku-shakai-hokenryo/ が索引にある
+✅ 記事 /column/kyuyo-keisan-machigai-teisei/ が索引にある
+✅ 記事 /column/kyuyo-keisan-yarikata/ が索引にある
+✅ 記事 /column/kyuyo-kojo-dekirumono/ が索引にある
+✅ 記事 /column/kyuyo-meisai-mikata/ が索引にある
+✅ 記事 /column/kyuyo-sashiosae/ が索引にある
+✅ 記事 /column/kyuyo-shiharai-hokokusho/ が索引にある
+✅ 記事 /column/kyuyo-shiharai-jimusho-kaisetsu/ が索引にある
+✅ 記事 /column/lease-torihiki-zeimu/ が索引にある
+✅ 記事 /column/maebarai-hiyo/ が索引にある
+✅ 記事 /column/maeukekin/ が索引にある
+✅ 記事 /column/maina-hokensho/ が索引にある
+✅ 記事 /column/matahara/ が索引にある
+✅ 記事 /column/miharai-hiyo-miharaikin/ が索引にある
+✅ 記事 /column/mimoto-hosho/ が索引にある
+✅ 記事 /column/minashi-haito/ が索引にある
+✅ 記事 /column/mitsumorisho-kakikata/ が索引にある
+✅ 記事 /column/muki-tenkan/ が索引にある
+✅ 記事 /column/naitei-torikeshi/ が索引にある
+✅ 記事 /column/naiyo-shomei/ が索引にある
+✅ 記事 /column/nenkin-jukyusha-kakutei-shinkoku/ が索引にある
+✅ 記事 /column/nenkin-seikatsusha-shien-kyufukin/ が索引にある
+✅ 記事 /column/nenkin-techo-haishi/ が索引にある
+✅ 記事 /column/nenkin-teikibin-mikata/ が索引にある
+✅ 記事 /column/nenmatsu-chosei-itsumade/ が索引にある
+✅ 記事 /column/nenmatsu-chosei-kakikata/ が索引にある
+✅ 記事 /column/nenmatsu-chosei-kanpukin/ が索引にある
+✅ 記事 /column/nenpousei/ が索引にある
+✅ 記事 /column/nenshu-no-kabe/ が索引にある
+✅ 記事 /column/nisa-kakutei-shinkoku/ が索引にある
+✅ 記事 /column/nohinsho-toha/ が索引にある
+✅ 記事 /column/noren/ が索引にある
+✅ 記事 /column/nozei-shomeisho/ が索引にある
+✅ 記事 /column/okuyuki-kakaku-hoseiritsu/ が索引にある
+✅ 記事 /column/orcan-hikaku/ が索引にある
+✅ 記事 /column/orcan-sp500-holding-period/ が索引にある
+✅ 記事 /column/orcan-sp500-recovery-days/ が索引にある
+✅ 記事 /column/orcan-vs-emaxis-sp/ が索引にある
+✅ 記事 /column/orcan-vs-rakuten-vti/ が索引にある
+✅ 記事 /column/part-yukyu/ が索引にある
+✅ 記事 /column/pay-easy/ が索引にある
+✅ 記事 /column/rakuten-bull-vs-sbi-bull/ が索引にある
+✅ 記事 /column/rakuten-nasdaq-vs-sbi-nasdaq/ が索引にある
+✅ 記事 /column/rakuten-orcan-vs-invesco/ が索引にある
+✅ 記事 /column/rakuten-orcan-vs-rakuten-sp/ が索引にある
+✅ 記事 /column/rakuten-orcan-vs-rakuten-vti/ が索引にある
+✅ 記事 /column/rakuten-sp-vs-fang/ が索引にある
+✅ 記事 /column/rakuten-sp-vs-rakuten-nasdaq/ が索引にある
+✅ 記事 /column/rakuten-sp-vs-rakuten-vti/ が索引にある
+✅ 記事 /column/rakuten-sp-vs-sbi-nasdaq/ が索引にある
+✅ 記事 /column/rakuten-sp-vs-sbi-sp/ が索引にある
+✅ 記事 /column/rakuten-vti-vs-fang/ が索引にある
+✅ 記事 /column/rakuten-vti-vs-rakuten-nasdaq/ が索引にある
+✅ 記事 /column/rakuten-vti-vs-sbi-nasdaq/ が索引にある
+✅ 記事 /column/rakuten-vti-vs-sbi-vti/ が索引にある
+✅ 記事 /column/refresh-kyuka/ が索引にある
+✅ 記事 /column/reverse-charge/ が索引にある
+✅ 記事 /column/rishokuhyo/ が索引にある
+✅ 記事 /column/rodo-hoken-nendo-koshin/ が索引にある
+✅ 記事 /column/rosai-hokenryoritsu/ が索引にある
+✅ 記事 /column/rosai-kyugyo-hosho/ が索引にある
+✅ 記事 /column/roudou-hoken-bango/ が索引にある
+✅ 記事 /column/roudou-joken-tsuchisho/ が索引にある
+✅ 記事 /column/roudousha-meibo/ が索引にある
+✅ 記事 /column/roudousha-shishobyo-houkoku/ が索引にある
+✅ 記事 /column/ryohi-kotsuhi/ が索引にある
+✅ 記事 /column/ryoshusho-kakikata/ が索引にある
+✅ 記事 /column/sairyo-roudou/ が索引にある
+✅ 記事 /column/saishushoku-teate/ が索引にある
+✅ 記事 /column/sango-papa-ikukyu/ が索引にある
+✅ 記事 /column/sangyoi/ が索引にある
+✅ 記事 /column/sanzen-sango-kyugyo/ が索引にある
+✅ 記事 /column/sbi-gold-vs-mufg-gold/ が索引にある
+✅ 記事 /column/sbi-sp-vs-fang/ が索引にある
+✅ 記事 /column/sbi-sp-vs-rakuten-nasdaq/ が索引にある
+✅ 記事 /column/sbi-sp-vs-rakuten-vti/ が索引にある
+✅ 記事 /column/sbi-sp-vs-sbi-nasdaq/ が索引にある
+✅ 記事 /column/seikyusho-kakikata/ が索引にある
+✅ 記事 /column/seimei-hokenryo-kojo/ が索引にある
+✅ 記事 /column/sentan-setsubi-dounyu-keikaku/ が索引にある
+✅ 記事 /column/shain-ryoko/ が索引にある
+✅ 記事 /column/shakai-hoken-fuyo-joken/ が索引にある
+✅ 記事 /column/shakai-hoken-kanyu-joken/ が索引にある
+✅ 記事 /column/shakai-hokenryo-choshu-jiki/ が索引にある
+✅ 記事 /column/shakai-hokenryo-kojo/ が索引にある
+✅ 記事 /column/shakuchiken-sozoku/ が索引にある
+✅ 記事 /column/shataku-chintairyo/ が索引にある
+✅ 記事 /column/shayosha-shutoku-kagaku/ が索引にある
+✅ 記事 /column/shiharai-chosho/ が索引にある
+✅ 記事 /column/shiharai-tokusoku/ が索引にある
+✅ 記事 /column/shiharai-tsuchisho/ が索引にある
+✅ 記事 /column/shihonkin/ が索引にある
+✅ 記事 /column/shikaku-kakuninsho/ が索引にある
+✅ 記事 /column/shikikin-hoshokin/ が索引にある
+✅ 記事 /column/shinya-teate/ が索引にある
+✅ 記事 /column/shiroiro-shinkoku/ が索引にある
+✅ 記事 /column/shisan-jokyo-saimu/ が索引にある
+✅ 記事 /column/shisanhyo-mikata/ が索引にある
+✅ 記事 /column/shitaukeho-toritekiho/ が索引にある
+✅ 記事 /column/shitsugyo-hoken-keisan/ が索引にある
+✅ 記事 /column/shiwakecho/ が索引にある
+✅ 記事 /column/shiyo-kikan/ が索引にある
+✅ 記事 /column/shiyonin-kenmu-yakuin/ が索引にある
+✅ 記事 /column/shobyo-teate-kin/ が索引にある
+✅ 記事 /column/shobyo-teate-kin-shinseisho/ が索引にある
+✅ 記事 /column/shogai-nenkin-kingaku/ が索引にある
+✅ 記事 /column/shogaku-genka-shokyaku/ が索引にある
+✅ 記事 /column/shogaku-sosho/ が索引にある
+✅ 記事 /column/shoguchi-genkin/ が索引にある
+✅ 記事 /column/shohizei-hasu-shori/ が索引にある
+✅ 記事 /column/shohizei-kanpu/ が索引にある
+✅ 記事 /column/shohizei-zeiritsu/ が索引にある
+✅ 記事 /column/shokibo-kyosai-uketori/ が索引にある
+✅ 記事 /column/shokuji-hojo/ が索引にある
+✅ 記事 /column/shokyaku-shisanzei/ が索引にある
+✅ 記事 /column/shomohinhi/ が索引にある
+✅ 記事 /column/shotoku-kingaku-chosei-kojo/ が索引にある
+✅ 記事 /column/shotokuzei-ritsu/ が索引にある
+✅ 記事 /column/shoyo-gensen-shotokuzei/ が索引にある
+✅ 記事 /column/shoyo-shakaihoken/ が索引にある
+✅ 記事 /column/shoyo-shiharaitodoke/ が索引にある
+✅ 記事 /column/shueki-ninshiki-kijun/ が索引にある
+✅ 記事 /column/shugyo-kisoku/ が索引にある
+✅ 記事 /column/shukkin-denpyo/ が索引にある
+✅ 記事 /column/shukkinbo/ が索引にある
+✅ 記事 /column/shukko-zeimu/ が索引にある
+✅ 記事 /column/shunyu-inshi-warihan/ が索引にある
+✅ 記事 /column/shunyu-shotoku-chigai/ が索引にある
+✅ 記事 /column/shusei-shinkoku-kosei-seikyu/ が索引にある
+✅ 記事 /column/shussan-ikuji-ichijikin/ が索引にある
+✅ 記事 /column/shussan-teate-kin/ が索引にある
+✅ 記事 /column/shutcho-nittou-ryohi-kitei/ が索引にある
+✅ 記事 /column/shuzenhi-shihonteki-shishutsu/ が索引にある
+✅ 記事 /column/soneki-bunkiten/ が索引にある
+✅ 記事 /column/soneki-keisansho-mikata/ が索引にある
+✅ 記事 /column/soukanjo-motocho-kakikata/ が索引にある
+✅ 記事 /column/sousai/ が索引にある
+✅ 記事 /column/sozei-koka/ が索引にある
+✅ 記事 /column/sozoku-hoki/ が索引にある
+✅ 記事 /column/sp500-hikaku/ が索引にある
+✅ 記事 /column/spot-work-romu/ が索引にある
+✅ 記事 /column/stock-option-zeikin/ が索引にある
+✅ 記事 /column/taishaku-taishohyo-mikata/ が索引にある
+✅ 記事 /column/taishoku-gensen-choshuhyo/ が索引にある
+✅ 記事 /column/taishoku-kansho/ が索引にある
+✅ 記事 /column/taishoku-shomeisho/ が索引にある
+✅ 記事 /column/taishoku-shotoku-shinkokusho/ が索引にある
+✅ 記事 /column/taishoku-yukyu-shoka/ が索引にある
+✅ 記事 /column/taishokukin-soba/ が索引にある
+✅ 記事 /column/taishokukin-zeikin/ が索引にある
+✅ 記事 /column/taishokutodoke-kakikata/ が索引にある
+✅ 記事 /column/taiyo-nensu/ が索引にある
+✅ 記事 /column/tanaoroshi-hyo/ が索引にある
+✅ 記事 /column/tanaoroshi-hyoka-hoho/ が索引にある
+✅ 記事 /column/tanaoroshi-kaitenritsu/ が索引にある
+✅ 記事 /column/tatekaekin-seisansho/ が索引にある
+✅ 記事 /column/tegata-toha/ が索引にある
+✅ 記事 /column/teigaku-genzei-reiwa8/ が索引にある
+✅ 記事 /column/teiji-kettei/ が索引にある
+✅ 記事 /column/toki-jiko-shomeisho/ が索引にある
+✅ 記事 /column/tokubetsu-shikyu-rourei-kosei-nenkin/ が索引にある
+✅ 記事 /column/tokutei-koza-gensen-ari/ が索引にある
+✅ 記事 /column/tokutei-shinzoku-tokubetsu-kojo/ が索引にある
+✅ 記事 /column/tokutei-shishutsu-kojo/ が索引にある
+✅ 記事 /column/toroku-menkyozei-nofu/ が索引にある
+✅ 記事 /column/tsukin-saigai/ が索引にある
+✅ 記事 /column/tsukin-teate-hikazei/ が索引にある
+✅ 記事 /column/tsukitochu-nyusha-taishoku-kyuyo/ が索引にある
+✅ 記事 /column/tsushinhi/ が索引にある
+✅ 記事 /column/uketori-haito-ekikin-fusannyu/ が索引にある
+✅ 記事 /column/uriage-genka/ が索引にある
+✅ 記事 /column/urikake-mishunyukin-mishushueki/ が索引にある
+✅ 記事 /column/yachin-shunyu-kakutei-shinkoku/ が索引にある
+✅ 記事 /column/yakuin-hoshu-kimekata/ が索引にある
+✅ 記事 /column/yakuin-kariirekin/ が索引にある
+✅ 記事 /column/yakuin-koyou-hoken/ が索引にある
+✅ 記事 /column/yakuin-shakai-hoken/ が索引にある
+✅ 記事 /column/yakuin-taishokukin/ が索引にある
+✅ 記事 /column/yoshin-kanri/ が索引にある
+✅ 記事 /column/yotei-nozei-toha/ が索引にある
+✅ 記事 /column/yukyu-fuyo-nissu/ が索引にある
+✅ 記事 /column/yukyu-kaitori/ が索引にある
+✅ 記事 /column/yukyu-nen5ka/ が索引にある
+✅ 記事 /column/zandaka-shomeisho/ が索引にある
+✅ 記事 /column/zangyodai-keisan/ が索引にある
+✅ 記事 /column/zasson-kojo/ が索引にある
+✅ 記事 /column/zatsushunyu/ が索引にある
+✅ 記事 /column/zeiko-kaikei/ が索引にある
+✅ 記事 /column/zeimu-chosa/ が索引にある
+✅ 記事 /column/zeimu-dairi-kengen-shosho/ が索引にある
+✅ 記事 /column/zeinuki-zeikomi-keiri/ が索引にある
+✅ 記事 /column/zengin-format-guide/ が索引にある
+✅ 記事 /column/zesei-kankoku/ が索引にある
+✅ 記事 /column/zoyo-keiyakusho/ が索引にある
+✅ 記事 /column/zuiji-kaitei/ が索引にある
+✅ ツール /aoiro-kojo/ が索引にある
+✅ ツール /bonus-tedori/ が索引にある
+✅ ツール /chukai-tesuryo/ が索引にある
+✅ ツール /denchoho-index/ が索引にある
+✅ ツール /eigyobi/ が索引にある
+✅ ツール /fudosan-jouto/ が索引にある
+✅ ツール /fudosan-shutoku/ が索引にある
+✅ ツール /furusato/ が索引にある
+✅ ツール /fuyo-kojo/ が索引にある
+✅ ツール /genka/ が索引にある
+✅ ツール /gensen-choshu/ が索引にある
+✅ ツール /gensen-hyo/ が索引にある
+✅ ツール /haigusha-kojo/ が索引にある
+✅ ツール /hikazei-setai/ が索引にある
+✅ ツール /hitorioya-kojo/ が索引にある
+✅ ツール /hojinzei/ が索引にある
+✅ ツール /hojokin/ が索引にある
+✅ ツール /hojokin-zeimu/ が索引にある
+✅ ツール /hotei-fukuri/ が索引にある
+✅ ツール /ideco-setsuzei/ が索引にある
+✅ ツール /ikuji/ が索引にある
+✅ ツール /inshi/ が索引にある
+✅ ツール /invoice-bangou/ が索引にある
+✅ ツール /iryohi/ が索引にある
+✅ ツール /iryubun/ が索引にある
+✅ ツール /izoku/ が索引にある
+✅ ツール /jidoshazei/ が索引にある
+✅ ツール /jishin-hoken-kojo/ が索引にある
+✅ ツール /juminzei/ が索引にある
+✅ ツール /jutaku/ が索引にある
+✅ ツール /kabe/ が索引にある
+✅ ツール /kihonteate/ が索引にある
+✅ ツール /kinro-gakusei/ が索引にある
+✅ ツール /kogaku-ryoyohi/ が索引にある
+✅ ツール /kokuho/ が索引にある
+✅ ツール /kokunen-menjo/ が索引にある
+✅ ツール /kotei-shisanzei/ が索引にある
+✅ ツール /nenkin/ が索引にある
+✅ ツール /nenshu/ が索引にある
+✅ ツール /papa-ikukyu/ が索引にある
+✅ ツール /saishushoku/ が索引にある
+✅ ツール /saitei-chingin/ が索引にある
+✅ ツール /santei/ が索引にある
+✅ ツール /seimei-hoken-kojo/ が索引にある
+✅ ツール /seizen-zoyo/ が索引にある
+✅ ツール /senpou-futan/ が索引にある
+✅ ツール /shakai-hoken/ が索引にある
+✅ ツール /shiharai-site/ が索引にある
+✅ ツール /shobyo/ が索引にある
+✅ ツール /shohizei/ が索引にある
+✅ ツール /shokibo-kyosai/ が索引にある
+✅ ツール /shokibo-takuchi/ が索引にある
+✅ ツール /shussan/ が索引にある
+✅ ツール /sozoku-toki-menkyozei/ が索引にある
+✅ ツール /sozokuzei/ が索引にある
+✅ ツール /taishokukin/ が索引にある
+✅ ツール /tedori/ が索引にある
+✅ ツール /toroku-menkyozei/ が索引にある
+✅ ツール /tosan-boshi-kyosai/ が索引にある
+✅ ツール /toushi/ が索引にある
+✅ ツール /yakuin-shataku/ が索引にある
+✅ ツール /yotei-nozei/ が索引にある
+✅ ツール /yukyu/ が索引にある
+✅ ツール /zaishoku/ が索引にある
+✅ ツール /zangyodai/ が索引にある
+✅ ツール /zengin-kana/ が索引にある
+✅ ツール /zoyozei/ が索引にある
+✅ 全記事に関連ツール(tool-cta)が紐づいている
+✅ 全ツールの tool は自分自身(＝計算ツールCTAを出せる)
+✅ 「ボーナス 保険料」→ 上位に /column/shoyo-shakaihoken/ 等 [best=137.0] 実際=/column/shoyo-shakaihoken/ /bonus-tedori/ /shakai-hoken/
+✅ 「ボーナスの社会保険料はいくら引かれる？」→ 上位に /column/shoyo-shakaihoken/ 等 [best=273.2] 実際=/column/shoyo-shakaihoken/ /shakai-hoken/ /column/kaigo-hokenryo-itsukara/
+✅ 「ふるさと納税 いくらまで」→ 上位に /furusato/ 等 [best=363.6] 実際=/furusato/ /column/kigyo-ban-furusato-nozei/ /column/furusato-nozei-kakutei-shinkoku/
+✅ 「ふるさと納税の上限は？」→ 上位に /furusato/ 等 [best=244.8] 実際=/furusato/ /column/kotei-shisanzei/
+✅ 「失業保険 いくら」→ 上位に /column/shitsugyo-hoken-keisan/ 等 [best=153.7] 実際=/kihonteate/ /column/shitsugyo-hoken-keisan/ /shakai-hoken/
+✅ 「有給 何日」→ 上位に /column/yukyu-fuyo-nissu/ 等 [best=24.2] 実際=/column/part-yukyu/ /column/kibiki-keicho-kyuka/
+✅ 「手取り 計算」→ 上位に /tedori/ 等 [best=52.0] 実際=/tedori/ /bonus-tedori/ /column/ikuji-kyugyo-kyufukin/
+✅ 「バイト 有給」→ 上位に /column/part-yukyu/ 等 [best=52.2] 実際=/column/part-yukyu/ /column/yukyu-nen5ka/ /yukyu/
+✅ 「退職金 税金」→ 上位に /taishokukin/ 等 [best=75.3] 実際=/column/taishokukin-zeikin/ /taishokukin/ /column/yakuin-taishokukin/
+✅ 「インボイスってなに」→ 上位に /column/invoice-wakariyasuku/ 等 [best=131.1] 実際=/column/invoice-wakariyasuku/ /invoice-bangou/ /column/invoice-2wari-tokurei/
+✅ 「電帳法 索引簿」→ 上位に /denchoho-index/ 等 [best=97.3] 実際=/denchoho-index/ /column/denchoho-kensaku-yoken/
+✅ 「産休 手当」→ 上位に /shussan/ 等 [best=12.4] 実際=/shussan/ /column/shussan-teate-kin/ /column/kaigo-kyugyo-kyufukin/
+✅ 「育休 いくら」→ 上位に /column/ikuji-kyugyo-kyufukin/ 等 [best=33.9] 実際=/papa-ikukyu/ /column/sango-papa-ikukyu/ /column/ikukyu-nenmatsu-chosei/
+✅ 「住民税 いくら」→ 上位に /juminzei/ 等 [best=69.2] 実際=/juminzei/ /hikazei-setai/ /column/juminzei-hikazei-border/
+✅ 「医療費控除 いくらから」→ 上位に /column/iryohi-kojo-ikura-kara/ 等 [best=325.6] 実際=/column/iryohi-kojo-ikura-kara/ /iryohi/ /column/junkakutei-shinkoku/
+✅ 「住宅ローン控除の計算」→ 上位に /jutaku/ 等 [best=60.1] 実際=/jutaku/ /column/jutaku-loan-kojo-yoken/ /column/jutaku-kojo-shinkokusho/
+✅ 「源泉徴収票の見方」→ 上位に /column/gensen-choshuhyo-mikata/ 等 [best=361.4] 実際=/column/gensen-choshuhyo-mikata/ /gensen-hyo/ /column/taishoku-gensen-choshuhyo/
+✅ 「振込手数料 勘定科目」→ 上位に /column/furikomi-tesuryo-kanjo-kamoku/ 等 [best=407.1] 実際=/column/furikomi-tesuryo-kanjo-kamoku/ /column/chushajodai-kanjo-kamoku/ /column/kanjo-kamoku-ichiran/
+✅ 「カナ変換」→ 上位に /zengin-kana/ 等 [best=53.6] 実際=/zengin-kana/ /column/furikomi-furikae-chigai/ /column/furikomi-hanei-jikan/
+✅ 「年収の壁」→ 上位に /column/nenshu-no-kabe/ 等 [best=100.2] 実際=/column/nenshu-no-kabe/ /kabe/ /column/nenmatsu-chosei-kakikata/
+✅ 「みなし残業」→ 上位に /column/kotei-zangyodai/ 等 [best=256.7] 実際=/column/kotei-zangyodai/ /zangyodai/ /column/nenpousei/
+✅ 「出産一時金」→ 上位に /column/shussan-ikuji-ichijikin/ 等 [best=155.5] 実際=/column/shussan-ikuji-ichijikin/ /column/dattai-ichijikin/ /column/kounenrei-kyushokusha-kyufukin/
+✅ 「交通費 非課税」→ 上位に /column/tsukin-teate-hikazei/ 等 [best=111.0] 実際=/column/tsukin-teate-hikazei/ /column/ryohi-kotsuhi/ /column/chushajodai-kanjo-kamoku/
+✅ 「残業代の計算」→ 上位に /zangyodai/ 等 [best=294.4] 実際=/column/zangyodai-keisan/ /zangyodai/ /column/kotei-zangyodai/
+✅ 「銀行振込」→ 振込手数料一覧が1位 [実際=/column/furikomi-tesuryo-hikaku/ /column/furikomi-furikae-chigai/ /column/furikomi-hanei-jikan/]
+✅ 「銀行振込」→ 反映時間・振込と振替の違いも候補に残る
+✅ 1位精度「インボイスってなに」→ /column/invoice-wakariyasuku/ [実際=/column/invoice-wakariyasuku/ /invoice-bangou/ /column/invoice-2wari-tokurei/]
+✅ 1位精度「ボーナスの社会保険料はいくら引かれる？」→ /column/shoyo-shakaihoken/ [実際=/column/shoyo-shakaihoken/ /shakai-hoken/ /column/kaigo-hokenryo-itsukara/]
+✅ 1位精度「住民税 いくら」→ /juminzei/ [実際=/juminzei/ /hikazei-setai/ /column/juminzei-hikazei-border/]
+✅ 1位精度「みなし残業代の仕組みが分かりません」→ /column/kotei-zangyodai/ [実際=/column/kotei-zangyodai/ /zangyodai/ /column/zangyodai-keisan/]
+✅ 主題のない選び方「パソコンの選び方を教えて」は matched:false
+✅ 丁寧な長文「源泉徴収票の見方を教えてください」→ 上位に /column/gensen-choshuhyo-mikata/ 等 [best=346.2] 実際=/column/gensen-choshuhyo-mikata/ /gensen-hyo/ /column/taishoku-gensen-choshuhyo/
+✅ 丁寧な長文「アルバイトでも有給休暇はもらえるのでしょうか」→ 上位に /column/part-yukyu/ 等 [best=369.3] 実際=/column/part-yukyu/ /column/yukyu-nen5ka/ /yukyu/
+✅ 丁寧な長文「電子帳簿保存法の索引簿の作り方を教えてください」→ 上位に /denchoho-index/ 等 [best=505.1] 実際=/denchoho-index/ /column/denchoho-kensaku-yoken/
+✅ 丁寧な長文「医療費控除はいくらから使えるのでしょうか」→ 上位に /column/iryohi-kojo-ikura-kara/ 等 [best=321.4] 実際=/column/iryohi-kojo-ikura-kara/ /iryohi/ /column/junkakutei-shinkoku/
+✅ 丁寧な長文「残業代の正しい計算のしかたを教えてください」→ 上位に /column/zangyodai-keisan/ 等 [best=93.1] 実際=/column/zangyodai-keisan/ /zangyodai/ /column/kotei-zangyodai/
+✅ 丁寧な長文「出産育児一時金はいくらもらえますか」→ 上位に /column/shussan-ikuji-ichijikin/ 等 [best=349.7] 実際=/column/shussan-ikuji-ichijikin/
+✅ 丁寧な長文「振込手数料の勘定科目は何になりますか」→ 上位に /column/furikomi-tesuryo-kanjo-kamoku/ 等 [best=517.5] 実際=/column/furikomi-tesuryo-kanjo-kamoku/ /column/chushajodai-kanjo-kamoku/ /column/kanjo-kamoku-ichiran/
+✅ 丁寧な長文「失業保険はいくらもらえるのか計算したい」→ 上位に /column/shitsugyo-hoken-keisan/ 等 [best=354.5] 実際=/column/shitsugyo-hoken-keisan/ /column/ikuji-jitan-kyufukin/ /column/saishushoku-teate/
+✅ 丁寧な長文「固定資産税の計算方法を教えてください」→ 上位に /kotei-shisanzei/ 等 [best=439.8] 実際=/column/kotei-shisanzei/ /kotei-shisanzei/ /column/shokyaku-shisanzei/
+✅ 丁寧な長文「小規模企業共済の節税効果を知りたいです」→ 上位に /shokibo-kyosai/ 等 [best=330.4] 実際=/shokibo-kyosai/ /column/shokibo-kyosai-uketori/ /ideco-setsuzei/
+✅ 丁寧な長文「高額療養費はいくら戻ってくるのでしょうか」→ 上位に /kogaku-ryoyohi/ 等 [best=473.0] 実際=/kogaku-ryoyohi/ /column/kogaku-ryoyohi/
+✅ 丁寧な長文「相続税はいくらかかるのか知りたい」→ 上位に /sozokuzei/ 等 [best=115.4] 実際=/sozokuzei/ /column/haigusha-kyojuken/ /column/zoyo-keiyakusho/
+✅ 丁寧な長文「印紙税はいくら貼ればいいですか」→ 上位に /inshi/ 等 [best=87.2] 実際=/inshi/ /column/shunyu-inshi-warihan/ /column/chumon-ukesho/
+✅ 丁寧な長文「iDeCoの節税額はどれくらいですか」→ 上位に /ideco-setsuzei/ 等 [best=67.8] 実際=/ideco-setsuzei/ /column/ideco-nenmatsu-chosei/ /taishokukin/
+✅ 丁寧な長文「ふるさと納税はいくらまでできるのか教えてください」→ 上位に /furusato/ 等 [best=251.0] 実際=/furusato/ /column/kigyo-ban-furusato-nozei/ /column/furusato-nozei-kakutei-shinkoku/
+✅ 丁寧な長文「育児休業給付金はいくらもらえるのか教えて」→ 上位に /column/ikuji-kyugyo-kyufukin/ 等 [best=359.1] 実際=/column/ikuji-jitan-kyufukin/ /ikuji/ /column/ikuji-kyugyo-kyufukin/
+✅ 丁寧な長文「育休はいくらもらえるの？」→ 上位に /column/ikuji-kyugyo-kyufukin/ 等 [best=26.2] 実際=/column/sango-papa-ikukyu/ /column/ikuji-kyugyo-kyufukin/ /papa-ikukyu/
+✅ 丁寧な長文「通勤手当は非課税になるのでしょうか」→ 上位に /column/tsukin-teate-hikazei/ 等 [best=186.6] 実際=/column/tsukin-teate-hikazei/ /column/ryohi-kotsuhi/ /column/chushajodai-kanjo-kamoku/
+✅ 丁寧な長文「青色申告特別控除はいくらになりますか」→ 上位に /aoiro-kojo/ 等 [best=321.0] 実際=/column/aoiro-tokubetsu-kojo/ /aoiro-kojo/ /column/shiroiro-shinkoku/
+✅ 丁寧な長文「社会保険料はいつから引かれるのでしょうか」→ 上位に /column/kaigo-hokenryo-itsukara/ 等 [best=343.3] 実際=/column/kaigo-hokenryo-itsukara/ /column/sanzen-sango-kyugyo/ /column/shakai-hokenryo-choshu-jiki/
+✅ 丁寧な長文「扶養に入れる条件を教えてほしい」→ 上位に /column/shakai-hoken-fuyo-joken/ 等 [best=50.9] 実際=/column/shakai-hoken-fuyo-joken/ /column/hifuyosha-ido-todoke/ /column/fudosan-shutokuzei-shiwake/
+✅ 丁寧な長文「確定申告が必要なのはどんな人ですか」→ 上位に /column/fukugyo-20man-kakutei-shinkoku/ 等 [best=108.5] 実際=/column/kakutei-shinkoku-ikurakara/ /column/fukugyo-20man-kakutei-shinkoku/ /column/kakutei-shinkoku-hitsuyo-shorui/
+✅ 丁寧な長文「産休中にもらえる手当について教えてほしいです」→ 上位に /shussan/ 等 [best=65.1] 実際=/shussan/ /papa-ikukyu/ /column/shussan-teate-kin/
+✅ 丁寧な長文「退職金にかかる税金の計算方法を知りたいのですが」→ 上位に /column/taishokukin-zeikin/ 等 [best=155.4] 実際=/column/taishokukin-zeikin/ /taishokukin/ /column/yukyu-kaitori/
+✅ 丁寧な長文「年収の壁について詳しく知りたいのですが」→ 上位に /column/nenshu-no-kabe/ 等 [best=41.0] 実際=/column/nenmatsu-chosei-kakikata/ /column/nenshu-no-kabe/ /column/ikukyu-nenmatsu-chosei/
+✅ 丁寧な長文「住民税はいくらぐらいになるのか知りたいです」→ 上位に /juminzei/ 等 [best=56.4] 実際=/hikazei-setai/ /juminzei/ /column/taishoku-shotoku-shinkokusho/
+✅ 丁寧な長文「ボーナスの手取りが知りたい」→ 上位に /bonus-tedori/ 等 [best=115.3] 実際=/bonus-tedori/ /nenshu/ /column/shoyo-shakaihoken/
+✅ 無関係「今日の天気」は matched:false [best=0.0]
+✅ 無関係「おすすめの映画」は matched:false [best=0.0]
+✅ 無関係「旅行の予約」は matched:false [best=0.0]
+✅ 無関係「宇宙旅行の予約方法」は matched:false [best=0.0]
+✅ 無関係「カレーの作り方」は matched:false [best=0.0]
+✅ 無関係「カレーの作り方の方法」は matched:false [best=0.0]
+✅ 無関係「おすすめの映画の見方」は matched:false [best=0.0]
+✅ 無関係「引っ越しの方法を教えて」は matched:false [best=0.0]
+✅ 無関係「英会話の勉強の方法」は matched:false [best=0.0]
+✅ 無関係「筋トレの効果的なやり方」は matched:false [best=0.0]
+✅ 無関係「ダイエットの方法を教えてください」は matched:false [best=0.0]
+✅ 無関係「引っ越しの見積もりの取り方」は matched:false [best=0.0]
+✅ 無関係「スマホの機種変更の方法」は matched:false [best=0.0]
+✅ 無関係「車の保険の選び方」は matched:false [best=0.0]
+✅ 無関係「犬のしつけの仕方」は matched:false [best=0.0]
+✅ 無関係「ゲームの攻略方法」は matched:false [best=0.0]
+✅ 無関係「髪型の変え方」は matched:false [best=0.0]
+✅ 無関係「家の掃除のコツ」は matched:false [best=0.0]
+✅ 無関係「結婚式の準備の進め方」は matched:false [best=0.0]
+✅ 無関係「資格の勉強時間の目安」は matched:false [best=0.0]
+✅ 無関係「野球の試合の結果を教えて」は matched:false [best=0.0]
+✅ 無関係「恋愛の相談にのってください」は matched:false [best=0.0]
+✅ 無関係「英語の勉強のやり方を知りたい」は matched:false [best=0.0]
+✅ 無関係「ラーメンのおいしい店の探し方」は matched:false [best=0.0]
+✅ gen_qa_index.mjs --check が緑(索引は最新)
+
+all qa tests passed (記事395/ツール67)
+
+### tests/test_qa_stopword_drift.mjs rc=0 finished=2026-10-01T01:21:57.005966+09:00
+索引 462件 / COVERAGE_STOPWORD_DF_RATIO = 0.25（25.0%）
+--- 撒かれる同義語（門より上に居てほしい側）---
+  いくら	 df=45.02%	 余裕=+20.02pt	 本文にある記事=34
+  どのくらい	 df=33.98%	 余裕=+8.98pt	 本文にある記事=0
+  いくらぐらい	 df=33.98%	 余裕=+8.98pt	 本文にある記事=0
+  金額	 df=43.51%	 余裕=+18.51pt	 本文にある記事=67
+  目安	 df=34.85%	 余裕=+9.85pt	 本文にある記事=8
+--- 本文の内容語（条件①で守られている側）---
+  計算	 df=43.51%	 本文にある記事=142
+  期限	 df=11.47%	 本文にある記事=53
+  税率	 df=5.41%	 本文にある記事=25
+✅ test_qa_stopword_drift: 13 checks（門は跨がれていない）
+
+### tests/test_r15_t7_content.mjs rc=0 finished=2026-10-01T01:22:21.294143+09:00
+r15 t7: 要約・本文・埋込の条件回帰が緑
+
+### tests/test_result_visible.mjs rc=0 finished=2026-10-01T01:22:24.275713+09:00
+✓ test_result_visible: 結果を描く94ページすべてが表示に切り替えている
+
+### tests/test_retention_core.mjs rc=0 finished=2026-10-01T01:22:31.194958+09:00
+Retention core: month boundaries, privacy, blocked storage, ICS, search, safe highlight, deterministic RSS passed
+(node:84909) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/monthly_checklist.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_retention_pages.mjs rc=0 finished=2026-10-01T01:24:26.161755+09:00
+Retention pages: save/reload/restore/erase, month isolation, favorites, events, blocked storage and slow fetch passed
+
+### tests/test_rishokuhyo_article.mjs rc=0 finished=2026-10-01T01:24:26.510364+09:00
+── オラクル: 条文の生テキストと突き合わせる ──────────
+
+✓ 離職票の記事: 186/186 checks
+
+### tests/test_saishushoku.mjs rc=0 finished=2026-10-01T01:24:26.710834+09:00
+✅ 再就職手当 67件 すべて一致
+
+### tests/test_saishushoku_article.mjs rc=0 finished=2026-10-01T01:24:27.155682+09:00
+✓ 再就職手当の記事: 209 checks 全て一致（上限は料率JSON×条文の率から導出）
+
+### tests/test_saishushoku_hayamihyo.mjs rc=0 finished=2026-10-01T01:24:27.655063+09:00
+✓ test_saishushoku_hayamihyo: 14行が2つのコアと一致 / 上限到達 404,760円
+(node:94125) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/kihonteate_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_saitei.mjs rc=0 finished=2026-10-01T01:24:28.186593+09:00
+✓ 最低賃金コア OK (288 checks)
+(node:94301) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/saitei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_santei.mjs rc=0 finished=2026-10-01T01:24:28.547307+09:00
+★データ
+★必要日数
+★分母
+★17日の境目
+★定時決定の対象外
+★適用期間
+★随時改定との違い
+★等級
+★壊しテスト
+  ok   17日ちょうど: 条文どおり→含む / 「以下」実装→落ちる
+
+✓ test_santei: 51 checks, 0 failed
+
+### tests/test_scheduled_revisions.mjs rc=0 finished=2026-10-01T01:24:28.845412+09:00
+✓ test_scheduled_revisions: 予定0件（施行済み0件）/ 実読から34日
+
+### tests/test_screen_constants.mjs rc=0 finished=2026-10-01T01:24:29.153784+09:00
+(node:94472) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/ikuji_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+✓ test_screen_constants: 18 checks
+
+### tests/test_section_width.mjs rc=0 finished=2026-10-01T01:24:29.621219+09:00
+↷ ローカルHTTPを立てられないので測定を飛ばします（EADDRINUSE）。
+   ★これは「幅が揃っている」という意味ではない。測っていないだけ。
+
+### tests/test_segment_claims.mjs rc=0 finished=2026-10-01T01:24:38.731020+09:00
+segment fixtures: pristine green; covers/meta/nonclaim red; whitespace/bold/navigation green
+
+### tests/test_segment_high_quotes.mjs rc=0 finished=2026-10-01T01:24:44.570298+09:00
+historical r11 HTML: 19/19 enumerated; missing mapping rejected (not semantic redetection)
+
+### tests/test_seiho.mjs rc=0 finished=2026-10-01T01:24:46.531771+09:00
+  計算式Ⅰ・住民税(新) を 0〜130,000円 の1円刻みで全数照合
+  計算式Ⅲ・住民税(旧) を 0〜130,000円 の1円刻みで全数照合
+  計算式Ⅱ(特例) を 0〜130,000円 の1円刻みで全数照合＋住民税に特例が及ばないことを固定
+OK 生命保険料控除 41項目
+
+### tests/test_seizen_zoyo.mjs rc=0 finished=2026-10-01T01:24:47.038323+09:00
+
+12153 passed, 0 failed
+(node:95866) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/seizen_zoyo_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_senpou.mjs rc=0 finished=2026-10-01T01:24:47.187410+09:00
+all senpou_core tests passed
+(node:95906) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/senpou_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_setsuzei.mjs rc=0 finished=2026-10-01T01:24:47.336602+09:00
+✅ 課税所得0 → 0
+✅ 100万 → 100万×5% = 50,000
+✅ 1,949,000(5%上限) → 97,450
+✅ 1,950,000(10%開始) → ×10%−97,500 = 97,500
+✅ 300万 → ×10%−97,500 = 202,500
+✅ 330万(20%開始) → ×20%−427,500 = 232,500
+✅ 500万 → ×20%−427,500 = 572,500
+✅ 700万(23%帯) → ×23%−636,000 = 974,000
+✅ 900万(33%開始) → ×33%−1,536,000 = 1,434,000
+✅ 2000万(40%帯) → ×40%−2,796,000 = 5,204,000
+✅ 5000万(45%帯) → ×45%−4,796,000 = 17,704,000
+✅ 3,000,999 → 千円未満切捨てで300万と同じ
+✅ 500万×年84万: 所得税減 168,000
+✅ 500万×年84万: 復興 floor(168,000×2.1%) = 3,528
+✅ 500万×年84万: 住民税減 84万×10% = 84,000
+✅ 500万×年84万: 節税額合計 255,528
+✅ 300万×年27.6万: 所得税減 27,600
+✅ 300万×年27.6万: 住民税減 27,600
+✅ 300万×年27.6万: 節税額合計 55,780
+✅ 低所得: 使える控除は課税所得まで(10万)
+✅ 低所得: 住民税減は10万×10% = 10,000(掛金全額でなく)
+✅ 低所得: 節税額合計 15,105
+✅ 所得税・住民税課税所得とも0 → 節税額0
+✅ 月30,000 > 上限月23,000 → beyondLimit=true で申告
+✅ 年額 = 30,000×12 = 360,000
+
+all setsuzei checks passed
+
+### tests/test_shaho.mjs rc=0 finished=2026-10-01T01:24:51.888474+09:00
+all shaho_core tests passed
+(node:95918) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shaho_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_shaho_kosei_cap.mjs rc=0 finished=2026-10-01T01:24:52.128879+09:00
+✓ test_shaho_kosei_cap: 25項目 (次の確認期限 2027-06-01 / 次の施行 2027-09-01)
+(node:96348) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shaho_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_shaho_oracle.mjs rc=0 finished=2026-10-01T01:24:52.437550+09:00
+all shaho oracle tests passed (公式額表 全50等級 × 健保/介護/支援金/厚年 と一致)
+(node:96403) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shaho_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_shaho_round_exact.mjs rc=0 finished=2026-10-01T01:24:52.757071+09:00
+all shaho round-exact tests passed (4700組合せ全数照合 / 50銭ちょうど1141件)
+(node:96426) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shaho_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_shataku.mjs rc=0 finished=2026-10-01T01:24:53.005267+09:00
+★データ
+★小規模な住宅
+★非小規模・自社所有
+★非小規模・借上は「多い方」
+★床面積の要件
+★給与課税される差額
+★壊しテスト
+
+✓ test_shataku: 42 checks, 0 failed
+
+### tests/test_shitsugyo_article.mjs rc=0 finished=2026-10-01T01:24:53.212485+09:00
+失業保険の記事: 135 checks 緑
+✓ 記事の数値は本番core+一次情報データから再計算して一致（要素を名指しで照合）
+(node:96519) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/kihonteate_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_shobyo.mjs rc=0 finished=2026-10-01T01:24:53.347245+09:00
+§1 端数処理（法99条2項）— 境界は「切上げ」側
+§2 日額（12月以上）— 法99条2項本文
+§3 ★★外部オラクル — 保険者が「実額で」公表している計算例をそのまま固定する
+§4 ★日額（12月未満）— 法99条2項ただし書・各号
+§4b ★支給期間（法99条4項）— 「546日」と焼き込んではいけない
+§5 待期3日（法99条1項）
+§6 報酬・年金との調整（法108条）
+§7 資格喪失後の継続給付（法104条）／任意継続（法99条1項）
+§8 通し計算（calcShobyo）
+§9 fail closed / 任意項目の省略（第20便の教訓: undefined は 0 にならず NaN になる）
+
+✓ 全て通過（151 checks）
+(node:96536) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shobyo_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_shobyo_article.mjs rc=0 finished=2026-10-01T01:24:53.529784+09:00
+✔ test_shobyo_article (協会けんぽ公式例を再現・金額17件が集合一致・等級/率/条文引用を名指し確認)
+(node:96572) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shaho_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_shogaku_tokurei.mjs rc=0 finished=2026-10-01T01:24:53.981727+09:00
+✅ データ: 取得価額の基準は 40万円未満（措法28条の2①/67条の5①）
+✅ データ: 改正前（令和8年3月31日以前の取得）は 30万円未満
+✅ データ: 拡充の境界は取得年月 2026-04（=令和8年4月1日・附則35条/65条の「施行日以後に取得」）
+✅ データ: 年間限度は300万円
+✅ データ: 適用期限（取得期限）は令和11年3月31日＝2029-03-31
+✅ データ: 従業員要件は400人以下（旧500人・特定法人300人）
+✅ データ: 少額10万円未満（所令138条）・一括償却20万円未満3年（所令139条）
+✅ データ整合: 拡充の開始は適用期限より前（期限切れの制度を拡充と称さない）
+✅ ★35万円・令和8年4月取得: 特例を案内し「40万円未満」と言う（旧コードは案内しなかった）
+✅ 35万円・令和8年3月取得: 旧基準（30万円未満）では対象外なので特例を案内しない
+✅ 29万9,999円・令和8年3月取得: 旧基準で対象。「30万円未満」と言う
+✅ 境界: 39万9,999円は対象・40万円ちょうどは対象外（「未満」）
+✅ 境界: 令和8年3月31日以前＝29万9,999円まで／30万円ちょうどは対象外
+✅ ★期限: 令和11年3月取得は案内する／令和11年4月取得は「使える」と言わず期限を告げる
+✅ 10万円・20万円の案内: 19万9,999円では出る／20万円ちょうどでは出ない
+✅ 回帰防止: コアに 300000 の直書きゲートが残っていない（金額の正本はデータ）
+✅ /genka/ 一覧の中小特例の行が「40万円未満」「300万円」を言う
+✅ ★/genka/ の注記が「令和8年4月1日以後の取得」「それ以前は30万円未満」「令和11年3月31日」「400人」を全部言う
+✅ /genka/ の見出し・目次が「40万円未満」を名乗る（30万円のまま残さない）
+✅ ★/genka/ のFAQは本文とJSON-LDの「回答文そのもの」が40万円を言う（設問名や括弧書きで代用しない）
+✅ /genka/ が特例の条文（措法28条の2・67条の5）を出典に挙げる
+✅ コラム: 改正calloutが「40万円未満」「令和8年4月1日以後に取得」「令和11年」「500人以下から400人以下」
+✅ コラム: 要件表の「取得価額」行と「適用期限」行がデータと一致
+✅ ★カナリア: recheck_after を過ぎたら赤くなる（令和11年度改正で延長の有無を確認する）
+✅ カナリア: 適用期限そのものを過ぎていないか（過ぎたら特例の案内を止める判断が要る）
+
+25 passed, 0 failed
+
+### tests/test_shohizei.mjs rc=0 finished=2026-10-01T01:24:54.829582+09:00
+  端数処理 総当たり照合: 360,060件 OK
+test_shohizei: all passed
+(node:96737) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shohizei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_shohizei_shinkoku.mjs rc=0 finished=2026-10-01T01:24:55.174107+09:00
+  BigIntオラクルと照合: 108,000件 ズレ0
+test_shohizei_shinkoku: all passed
+(node:96798) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shohizei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_shokibo_takuchi.mjs rc=0 finished=2026-10-01T01:24:58.361652+09:00
+106 passed, 0 failed
+(node:96809) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shokibo_takuchi_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_shokyaku_rates_oracle.mjs rc=0 finished=2026-10-01T01:24:58.576374+09:00
+✅ 出典A（本番）と出典B（オラクル）の両方に表がある
+✅ 照合する耐用年数が 2〜50年の49通り そろっている（母数の固定）
+✅ 定額法 償却率 49個が 出典A（No.2106 PDF）と 出典B（別表第八）で一致
+✅ 定率法200% 償却率 49個が 出典A と 出典B（別表第十）で一致
+✅ 定率法200% 改定償却率 49個が 出典A と 出典B（別表第十）で一致
+✅ 定率法200% 保証率 49個が 出典A と 出典B（別表第十）で一致
+✅ 耐用年数2年は 改定償却率・保証率が両出典とも null（0で埋めていない）
+✅ 本番は max_life（50年）までで、51年以上は収録していない
+✅ ★定率法250%（別表第九）はオラクルに無く未照合であることを明示
+
+✅ 9 passed, 0 failed
+
+### tests/test_shussan.mjs rc=0 finished=2026-10-01T01:24:58.778316+09:00
+出産手当金: 全 57 checks 緑
+(node:97109) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shussan_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_shussan_article.mjs rc=0 finished=2026-10-01T01:24:59.082195+09:00
+  ✓ 次に読む（3件）はリンク先の見出し・説明文の写し — 網から外して別途検査
+  ✓ 外部オラクル: 協会けんぽの公式計算例（17万円→5,670円→3,780円）を再現
+  ✓ 金額（カンマ区切り）: 28件が完全一致
+  ✓ 万円表記: 8件が完全一致
+  ✓ パーセント: 8件が完全一致
+  ✓ 日数: 15件が完全一致
+  ✓ 102条の引用ブロック: 支給期間の漢数字とかっこ書きが原文どおり
+  ✓ 99条の引用ブロック: 「第百二条第一項において同じ」が原文どおり
+  ✓ 予定日どおり: 行が正しい
+  ✓ 10日遅れ: 行が正しい
+  ✓ 10日早い: 行が正しい
+  ✓ 早見表17万円: 行が正しい
+  ✓ 早見表30万円: 行が正しい
+  ✓ 早見表32万円: 行が正しい
+  ✓ 早見表139万円: 行が正しい
+  ✓ 上限の比較: 行が正しい
+  ✓ 手取り: 行が正しい
+  ✓ ずれの向き: 「遅れ＝増える」「早い＝減る」が本文で断定されている
+  ✓ 待期3日が無い根拠（準用の範囲）が、その主張を載せたcallout内にある
+  ✓ 任意継続の節: 99条のかっこ書きが102条に及ぶ、という核心が本文にある
+
+✓ 出産手当金の記事 OK
+
+### tests/test_shussan_ichijikin_article.mjs rc=0 finished=2026-10-01T01:24:59.299383+09:00
+  ✓ 次に読む（3件）はリンク先の見出し・説明文の写し — 網から外して別途検査
+  ✓ 外部オラクル: 政令の488,000円＋掛金12,000円＝500,000円（＝記事の「50万円」）
+  ✓ 外部オラクル: 準備一時金600万＋分割金120万×20回＝総額3,000万円
+  ✓ 加算12,000円は政令の枠（3万円を超えない範囲内）に収まる
+  ✓ 「N万M千円」の集合が一致（12000, 16000, 488000, 518000）
+  ✓ 「N万円」の集合が一致（1.2, 3, 5, 10, 40, 48.8, 50, 55, 100, 120, 600）
+  ✓ 「N,NNN万円」の集合が一致（3000）
+  ✓ カンマ区切りの円の集合が一致（12000, 16000, 30000）
+  ✓ 週の集合が一致（6, 22, 27, 28, 32）
+  ✓ 日数の集合が一致（85）
+  ✓ か月の集合が一致（1, 2, 3, 4, 6）
+  ✓ 回の集合が一致（1, 20）
+  ✓ 要素を抽出（表12行・引用5・callout5・図2）
+  ✓ 50万円の行の条件は「在胎22週以降」（28週ではない）
+  ✓ 48万8千円になるのは「22週未満」と「未加入機関」の2行
+  ✓ 施行令36条の引用＝四十八万八千円＋「三万円を超えない範囲内」の加算（50万円は無い）
+  ✓ 101条の引用に任意継続の除外が無い（＝任意継続でも一時金が出る根拠）
+  ✓ 99条1項の引用＝除外のかっこ書き＋「第百二条第一項において同じ」
+  ✓ 106条の引用＝資格喪失日後「六月以内」の出産
+  ✓ 104条のcallout＝任意継続を除く定義が106条へ飛ぶ（＝任継期間は1年に算入されない）
+  ✓ 任意継続の可否表＝一時金○（101条）／出産手当金×／傷病手当金×（主語セルで特定）
+  ✓ 補償要件のリスト＝「在胎週数が28週以上」（22週ではない）
+  ✓ 産科医療補償制度の引用＝22週以降の分娩が制度の対象（死産を含む）
+  ✓ 図2の結論＝22〜27週は上乗せは付くが補償の対象外
+  ✓ 施行規則86条の2の引用＝「在胎週数が二十八週以上」（本文の引用要素を名指し）
+  ✓ 「6週ずれています」と明言している
+  ✓ 差額のcallout＝費用40万円なら差額10万円・3か月後に申請書・申請が必要
+  ✓ 85日のcallout＝生産・死産（流産）・人工妊娠中絶を列挙（列挙の一文を名指し）
+  ✓ 受取代理の行＝出産予定日まで2か月以内・届出をした医療機関のみ
+  ✓ 関連カード4本（社保計算機・出産手当金・育休給付・任意継続）— 網から除外した領域を別途検査
+
+✓ 記事「出産育児一時金」の数字・条文引用 OK
+
+### tests/test_sitemap.mjs rc=0 finished=2026-10-01T01:25:00.109176+09:00
+✅ test_sitemap: 2440 checks（全475URLに lastmod あり）
+
+### tests/test_source_year_registry.mjs rc=0 finished=2026-10-01T01:25:00.808890+09:00
+✓ 年度監視の登録 OK（8件 / うち監視可能 8件）
+  ※ titleに令和N年を持つコラム 88本に対して登録 8件。残りは順次登録すること。
+
+### tests/test_sozokuzei.mjs rc=0 finished=2026-10-01T01:25:00.963036+09:00
+✅ 早見表 遺産1億・配偶者あり・子2人 → 総額6300000 / 実質3150000
+✅ 早見表 遺産2億・配偶者あり・子2人 → 総額27000000 / 実質13500000
+✅ 早見表 遺産1億・配偶者なし・子2人 → 総額7700000 / 実質7700000
+✅ 早見表 遺産1億・配偶者なし・子1人 → 総額12200000 / 実質12200000
+✅ 兄弟姉妹2人・1億（配偶者/子/親なし）→ 総額770万・実質924万（2割加算）
+✅ 配偶者のみ・1億 → 総額1,220万・実質0（配偶者は法定相続分＝全部を1.6億まで非課税）
+✅ 配偶者＋親2人・1億 → 総額6,666,400（2/3:1/3の按分＋速算表）・親は2割加算なし
+✅ 養子制限: 実子1＋養子3 → 法定相続人は「実子1＋養子1」＝2人（養子は1人まで）
+✅ 養子制限: 実子0＋養子3 → 法定相続人は養子2人まで
+✅ 養子を無制限に数えると基礎控除が過大（制限の逆をやると別の額）
+✅ 遺産4,800万・配偶者＋子2人（基礎控除4,800万）→ ちょうど基礎控除 → 税額0
+✅ 遺産3,600万・子1人のみ（基礎控除3,600万）→ 税額0
+✅ 速算表: 各帯の境界で正しい税率・控除額
+✅ 法定相続分: 配偶者と子/親/兄弟で配偶者側が 1/2・2/3・3/4
+✅ 順位: 子がいれば親・兄弟の入力は無視される（第1順位が優先）
+✅ 順位: 子がいなければ親、親もいなければ兄弟
+✅ 単調性: 遺産が増えると総額は非減少
+✅ fail closed: データ無し・相続人無し・遺産0/負は throw
+
+✓ 相続税コア: 18 passed, 0 failed
+
+### tests/test_sozokuzei_article.mjs rc=0 finished=2026-10-01T01:25:01.169702+09:00
+all sozokuzei article tests passed (基礎控除表・速算表・早見表8行×4構成・計算例を実装と照合)
+(node:97278) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/sozokuzei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_stale_values.mjs rc=0 finished=2026-10-01T01:25:05.196549+09:00
+✓ test_stale_values: 482ページ × 旧値58件＋未来形の過去日付（基準日 2026-10-01）
+
+### tests/test_stale_values_rules.mjs rc=0 finished=2026-10-01T01:25:05.826627+09:00
+✓ test_stale_values_rules: 16ケース（旧値・改定日前後・過去額・新旧比較）
+
+### tests/test_sticky_header.mjs rc=0 finished=2026-10-01T01:25:17.803020+09:00
+✓ test_sticky_header: ヘッダーは追随し、アンカーの飛び先も隠れない（1280px / 375px）
+
+### tests/test_t6_ui.mjs rc=0 finished=2026-10-01T01:25:30.280112+09:00
+t6: 本体・埋め込みの早産、残日数、将来施行表示が一致
+
+### tests/test_taishoku.mjs rc=0 finished=2026-10-01T01:25:30.448044+09:00
+ok test_taishoku.mjs (77 checks)
+(node:123) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/taishoku_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_tedori.mjs rc=0 finished=2026-10-01T01:25:30.612009+09:00
+✅ 早見表 額面200000 → 手取り167350(83.7%)
+✅ 早見表 額面250000 → 手取り207086(82.8%)
+✅ 早見表 額面300000 → 手取り249610(83.2%)
+✅ 早見表 額面500000 → 手取り408690(81.7%)
+✅ 内わけ: 社保44,070 / 社保控除後255,930 / 所得税6,320
+✅ manual: 額面300,000・住民税(月)10,000 → 手取り239,610
+✅ estimate: 額面300,000・独身 → 住民税(年)150,500・手取り237,068
+✅ 扶養0→2で所得税が下がる（甲欄）
+✅ 40歳は介護保険が乗り、30歳より社保が高い
+✅ 恒等式: 額面 = 手取り + 社保 + 所得税 + 住民税
+✅ 参照データ欠落は throw（黙って0で答えない）
+✅ 未知の都道府県は throw（NaNで手取りを出さない）
+
+✓ 手取りコア: 12 passed, 0 failed
+
+### tests/test_tedori_article.mjs rc=0 finished=2026-10-01T01:25:31.024564+09:00
+■ 外部オラクル（本番ツールの core で再計算し、記事の数字と突き合わせる）
+  ✓ core: 報酬月額309,999円 → 第22級・標準報酬月額300,000円
+  ✓ core: 報酬月額310,000円 → 第23級・標準報酬月額320,000円
+  ✓ オラクル: 社会保険料の差 +2,838円
+  ✓ オラクル: 所得税の差 0円（社会保険料控除後がどちらも同じ税額表の行に収まる）
+  ✓ オラクル: 手取りの差 -2,837円 ／ 年 -34,044円
+  ✓ オラクル: 額面が1円多い側のほうが手取りが少ない（逆転が実在する）
+  ✓ オラクル: 課税対象 265,879円 と 263,042円 は同じ行 263,000〜266,000未満（6,650円）
+  ✓ core: 厚生年金の標準報酬月額の上限 650,000円（第32級）
+  ✓ オラクル: 額面70万円と100万円で厚生年金保険料は同額（59,475円）＝頭打ち
+  ✓ core: 健康保険の最高等級 第50級・1,390,000円
+  ✓ オラクル: 額面250,000円と269,999円は同じ標報260,000円 → 健保12,805円・厚年23,790円が同額
+  ✓ オラクル: 手取り率は単調でない（25万 82.8% < 30万 83.2%）
+  ✓ オラクル: 40歳（介護保険料）で手取りが 2,330円 減る
+
+■ 記事の表（行を先頭セルで名指しし、全セルを完全一致で照合）
+  ✓ 行「第22級」の全セルが一致（3列）
+  ✓ 行「第23級」の全セルが一致（3列）
+  ✓ 行「等級・標準報酬月額」の全セルが一致（4列）
+  ✓ 行「社会保険料 合計」の全セルが一致（4列）
+  ✓ 行「所得税」の全セルが一致（4列）
+  ✓ 行「手取り」の全セルが一致（4列）
+  ✓ 行「雇用保険料」の全セルが一致（3列）
+  ✓ 行「住民税」の全セルが一致（3列）
+  ✓ 行「200,000円」の全セルが一致（6列）
+  ✓ 行「250,000円」の全セルが一致（6列）
+  ✓ 行「300,000円」の全セルが一致（6列）
+  ✓ 行「350,000円」の全セルが一致（6列）
+  ✓ 行「400,000円」の全セルが一致（6列）
+  ✓ 行「500,000円」の全セルが一致（6列）
+  ✓ 行「健康保険料」の全セルが一致（3列）
+  ✓ 行「厚生年金保険料」の全セルが一致（3列）
+  ✓ 行「手取り」の全セルが一致（3列）
+  ✓ 行「所得割（道府県民税）」の全セルが一致（3列）
+  ✓ 行「所得割（市町村民税）」の全セルが一致（3列）
+  ✓ 行「均等割（道府県民税）」の全セルが一致（3列）
+  ✓ 行「均等割（市町村民税）」の全セルが一致（3列）
+  ✓ 行「森林環境税」の全セルが一致（3列）
+  ✓ 行「700,000円」の全セルが一致（4列）
+  ✓ 行「1,000,000円」の全セルが一致（4列）
+  ✓ 行「年齢」の全セルが一致（3列）
+  ✓ 行「都道府県」の全セルが一致（3列）
+  ✓ 行「業種」の全セルが一致（3列）
+  ✓ 正本の月額表 254000円: 0人6,320円・1人4,710円・差1,610円
+  ✓ 正本の月額表 256999円: 0人6,320円・1人4,710円・差1,610円
+  ✓ 行「扶養親族の数」の全セルが一致（3列）
+  ✓ オラクル: 都道府県差 960円 ＝ (9.85−9.21)%÷2×300,000（記事の記載と一致）
+
+■ 本文の主張（要素を名指し。同じ数字が他所にもあるので網では守れない）
+  ✓ 崖のcallout（2点）
+  ✓ 所得税が0円になる理由の段落（5点）
+  ✓ 定時決定の段落（6点）
+  ✓ 支払基礎日数17日のcallout（4点）
+  ✓ 政令のcallout（7点）
+  ✓ 住民税＝前年の所得の段落（2点）
+  ✓ 指定都市のcallout（4点）
+  ✓ 等級の下端のcallout（3点）
+  ✓ 雇用保険の土台のcallout（3点）
+
+■ 網（表記の系統ごと。網の外に残るものは上で名指し済み）
+  ✓ 等級の集合が一致（第1級 第20級 第22級 第23級 第31級 第32級 第50級）
+  ✓ 率の網 20種を確認（9.85 / 18.3 / 0.23 / 1.62 / 9.21 …）
+  ✓ 料率JSON: 東京都の健康保険料率 9.85%（記事の記載と一致）
+  ✓ 料率JSON: 新潟県 9.21%（記事が「最も低い」と書く根拠）
+  ✓ 料率JSO: 全都道府県で最も低いのは新潟県（記事の断定を裏取り）
+  ✓ 条文番号8件を確認（健保40/41・厚年20・地税32/35/314の3/321の5・令和2年政令246号）
+
+■ title / meta description（規則9: タグ剥がしで消えるので別に見る）
+  ✓ title 29字
+  ✓ meta description 181字
+  ✓ meta descriptionの数字が本文と一致（2,837円 / 34,044円）
+
+✓ 記事「手取りの計算方法」OK
+
+### tests/test_title_h1_subject.mjs rc=0 finished=2026-10-01T01:25:32.547773+09:00
+  ⚠️  免除: / — トップだけは title=ブランド名『税金・経理・補助金ツールズ』・h1=タグライン『税金・給与・社会保険の計算と、補助金さがしを、さっと片づける。』という別の型。ブランド名とタグラインが別の語なのは意図であって、主題の食い違いではない。
+✓ title と h1 は同じ主題を名乗っている（474ページ／noindex 39ページは対象外）
+
+### tests/test_toc_content_boundaries.mjs rc=0 finished=2026-10-01T01:25:33.376690+09:00
+✓ unrelated preceding UL accepted; compensation week 28→22 rejected
+
+### tests/test_toc_related.mjs rc=0 finished=2026-10-01T01:26:52.270721+09:00
+✓ 463 public TOCs; byte-preserved body, dates, PR and next-read; new-page and missing-rail checks
+
+### tests/test_toc_render.mjs rc=0 finished=2026-10-01T01:27:23.508877+09:00
+✓ TOC: both widths, repeated mouse/Enter/Space, focus, jump, telemetry, print, no-JS, footer and 8 mutations
+
+### tests/test_tool_memo.mjs rc=0 finished=2026-10-01T01:27:23.660563+09:00
+✓ test_tool_memo
+(node:11106) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/tool_memo.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_tool_related.mjs rc=0 finished=2026-10-01T01:27:24.598677+09:00
+✓ ツールの関連リンク OK（65ページ・237リンク / 672 checks）
+
+### tests/test_toroku_jutaku.mjs rc=0 finished=2026-10-01T01:27:24.735159+09:00
+ok  test_toroku_jutaku  102件
+(node:11230) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/toroku_jutaku_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_toroku_menkyo.mjs rc=0 finished=2026-10-01T01:27:24.863817+09:00
+  （全域1件: 380通り）
+  （全域2件: 256通り）
+
+test_toroku_menkyo: 2029 passed, 0 failed
+(node:11265) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/toroku_menkyo_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_toroku_page.mjs rc=0 finished=2026-10-01T01:27:25.013635+09:00
+✅ §1 「2027-03-31」が script に直書きされていない
+✅ §1 「令和9年3月31日」が script に直書きされていない
+✅ §1 「2029-03-31」が script に直書きされていない
+✅ §1 「令和11年3月31日」が script に直書きされていない
+✅ §1 「2026-04-01」が script に直書きされていない
+✅ §1 「令和8年4月1日」が script に直書きされていない
+✅ §1 「1982-01-01」が script に直書きされていない
+✅ §1 「昭和57年1月1日」が script に直書きされていない
+✅ §1 「0.004」が script に直書きされていない
+✅ §1 「0.02」が script に直書きされていない
+✅ §1 「0.015」が script に直書きされていない
+✅ §1 「0.0015」が script に直書きされていない
+✅ §1 「0.003」が script に直書きされていない
+✅ §1 「0.001」が script に直書きされていない
+✅ §1 「0.002」が script に直書きされていない
+✅ §1 script が期限をデータのキーから読んでいる
+✅ §1 script が税率をデータのキーから読んでいる
+✅ §1 script が中古の基準日をデータのキーから読んでいる
+✅ §2 #kigen-honbun が取り出せる
+✅ §2 本文が土地の期限（令和11年3月31日）を正しく書いている
+✅ §2 本文が住宅の期限（令和9年3月31日）を正しく書いている
+✅ §2 データ上も2つの期限は別の日（同じになったら本文の『2年ずれ』が嘘になる）
+✅ §2 hero が「期限は2つ」と申告している
+✅ §2 title が土地の期限の年（令和11年）をデータどおり書いている
+✅ §2 meta description が土地の期限（令和11年3月31日）をデータどおり書いている
+✅ §2 title が住宅の期限の年（令和9年）をデータどおり書いている
+✅ §2 meta description が住宅の期限（令和9年3月31日）をデータどおり書いている
+✅ §3 #nintei-table が取り出せる
+✅ §3 長期優良の行が特定できる
+✅ §3 低炭素の行が特定できる
+✅ §3 長期優良・一戸建ての移転が 0.2%
+✅ §3 低炭素・一戸建ての移転が 0.1%
+✅ §3 データ上も両者は別の率（同じになったら表の対比が嘘になる）
+✅ §3 低炭素に一戸建ての別税率がデータに無い
+✅ §4 競落の食い違いが本文にある
+✅ §4 取得の原因「売買」が選択肢にある
+✅ §4 取得の原因「競落」が選択肢にある
+✅ §5 相続は計算しないと本文で申告している
+✅ §5 相続の本則税率（1000分の4）を書いている
+✅ §5 その他の移転（1000分の20）を当てると誤ることも書いている
+✅ §5 相続登記の計算機へのリンクがある
+✅ §6 出典に「登録免許税法」がある
+✅ §6 出典に「租税特別措置法」がある
+✅ §6 出典に「租税特別措置法施行令」がある
+✅ §6 出典に「国税通則法」がある
+✅ §6 国税庁の更新後の税額表と土地の期限を出典で示している
+✅ §7 FAQ の設問数が JSON-LD と本文で一致（6件）
+
+47 件成功 / 0 件失敗
+
+### tests/test_tosan.mjs rc=0 finished=2026-10-01T01:27:25.281740+09:00
+1. setsuzei_r08.json の支給率表が施行令4条と一致
+2. 掛金月額の範囲外を申告する
+3. 掛金総額の限度
+4. シナリオA/B/C/D(手計算定数)
+5. 月数×種類×所得の全域でコアがオラクルと一致
+6. 解約年の課税所得
+7. fail closed
+
+448 passed, 0 failed
+(node:11328) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/setsuzei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_toushi_hub.mjs rc=0 finished=2026-10-01T01:27:25.438422+09:00
+✓ 資産形成ハブ: 固定2本＋新着6本、カテゴリ全37本への導線・日付順・記事優先を確認
+
+### tests/test_tsukin_article.mjs rc=0 finished=2026-10-01T01:27:25.596090+09:00
+✅ title に実クエリの「車通勤」が入っている
+✅ title に西暦（2026年）が入っている（元号だけにしない）
+✅ title に「マイカー」が入っている（実クエリの語）
+✅ meta description が有料道路の上限15万円に触れている
+✅ #yuryo の h2 が在り、目次から同じ文言でリンクされている
+✅ 表に「マイカーなどだけ」の行があり、上限が66,400円
+✅ 表に「＋駐車場等」の行があり、上限が71,400円（66,400+5,000）
+✅ ★表に「＋有料道路」の行があり、上限が150,000円
+✅ ★表に「＋有料道路＋駐車場等」の行があり、上限が150,000円
+✅ 例示 55,300円 が、早見表の45〜55km区分＋高速18,000＋駐車場5,000と一致する
+✅ 片道2km未満は駐車場代も有料道路も非課税にならないと書いてある
+✅ FAQ「高速道路を使っています」の答えが上限15万円を言っている
+✅ FAQ「ガソリン代の実費」の答えが、実費でも距離区分で判定すると言っている
+✅ 総論FAQ が交通用具でも有料道路の加算があることに触れている
+
+✅ 通勤手当の記事: 14 件成功 / 0 件失敗
+
+### tests/test_tsumitate.mjs rc=0 finished=2026-10-01T01:27:25.818579+09:00
+★データ（措置法37条の14）
+★月利の出し方
+  ok   年5% → 月0.40741%（12分割なら 0.41667%）
+★積立の将来価値
+  ok   月3万・20年・年5% → 元本720万 / 評価額 12,223,733円
+★信託報酬
+  ok   0.09% → 12,102,443円 / 0.5% → 11,567,145円（差 535,298円）
+★課税
+  ok   評価額1,000万・元本720万 → 税 568,820円（全体課税なら 2,031,500円）
+★NISAの枠
+★壊しテスト
+  ok   12で割ると 12,382,389円（正 12,223,733円）＝差 158,656円
+
+✓ test_tsumitate: 36 checks, 0 failed
+
+### tests/test_uiux_0926.mjs rc=0 finished=2026-10-01T01:28:30.723193+09:00
+UIUX 1–5: browser interactions passed
+
+### tests/test_uiux_presentation.mjs rc=0 finished=2026-10-01T01:28:59.007712+09:00
+✓ Breadcrumb text preservation; 7 broken presentations × 6 widths; unit/rail/list mutations; print completeness; keyboard and calculation states
+
+### tests/test_uiux_retention.mjs rc=0 finished=2026-10-01T01:29:46.825932+09:00
+UI 6–9 and leave tables: interactions, IME, focus, search and changes passed
+
+### tests/test_verified_content_dates.mjs rc=0 finished=2026-10-01T01:29:51.204477+09:00
+verified content dates: OK
+
+### tests/test_x_link.mjs rc=0 finished=2026-10-01T01:29:53.507609+09:00
+✓ test_x_link: フッター481ページに導線あり / 埋め込み31件には無し / 文言は非販促
+
+### tests/test_x_link_idempotent.mjs rc=0 finished=2026-10-01T01:29:53.844748+09:00
+✓ test_x_link_idempotent: 中身なしマーカーでも複製されない / 冪等 / 未挿入ページに1つだけ入る
+
+### tests/test_x_share.mjs rc=0 finished=2026-10-01T01:29:57.024394+09:00
+✓ test_x_share: 対象478ページに共有リンク / 埋め込み31件には無し / 共有文は meta 由来 / X換算280以内 / マーカーは対・無関係要素を巻き込まない
+
+### tests/test_year_staleness.mjs rc=0 finished=2026-10-01T01:29:57.903285+09:00
+✅ 年度表記 110ページ: データの年と一致 (令和8年 / 令和8年分 / 令和8年分 / 令和9年分 / 令和7年分 / 令和8年分 / 令和8年度 / 令和8年 / 令和8年 / 令和8年 / 令和8年 / 令和8年分 / 令和8年 / 令和8年度 / 令和8年度 / 令和8年 / 令和8年分 / 令和8年 / 令和8年（2026年） / 令和8年 / 令和8年度 / 令和8年度 / 令和8年度 / 令和8年 / 令和7年度 / 令和8年度 / 令和8年 / 令和8年 / 令和8年分 / 令和8年度 / 令和7年4月1日現在法令等 / 令和8年 / 令和8年 / 令和8年 / 令和8年 / 令和8年 / 令和8年 / 令和8年 / 令和8年度 / 令和8年、免除 77件)
+
+### tests/test_yotei_nozei.mjs rc=0 finished=2026-10-01T01:29:58.137411+09:00
+★データ
+★予定納税基準額
+★15万円の境目
+★端数処理
+★減額申請（113条2項2号の10分の7）
+★申請期限
+★承認後
+★壊しテスト
+  ok   ちょうど10分の7: 条文どおり→承認義務あり / 「未満」実装→なし
+
+✓ test_yotei_nozei: 50 checks, 0 failed
+
+### tests/test_yukyu.mjs rc=0 finished=2026-10-01T01:29:58.275987+09:00
+all yukyu_core tests passed
+(node:24528) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/yukyu_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_yukyu_memo_page.mjs rc=0 finished=2026-10-01T01:33:58.616996+09:00
+✓ test_yukyu_memo_page（4件: 表示・tool_revisit の発火/非発火・375px 横あふれ）
+
+### tests/test_yukyu_quick.mjs rc=0 finished=2026-10-01T01:33:58.713331+09:00
+✓ test_yukyu_quick: 冒頭5行が yukyu_core と一致 / 本文の表とも4行を突合
+(node:44290) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/yukyu_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_zaishoku.mjs rc=0 finished=2026-10-01T01:33:58.801270+09:00
+✅ 在職老齢年金の検査: 72 件すべて成功
+(node:44312) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/zaishoku_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_zangyodai.mjs rc=0 finished=2026-10-01T01:33:58.859862+09:00
+ok test_zangyodai.mjs (81 checks)
+(node:44314) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/zangyodai_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_zengin.mjs rc=0 finished=2026-10-01T01:33:58.926307+09:00
+all zengin_core tests passed
+(node:44318) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/zengin_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_zengin_layout.mjs rc=0 finished=2026-10-01T01:33:59.037973+09:00
+✓ test_zengin_layout: 4レコード / 35項目が出典データと一致・各120バイト・出典と但し書きあり
+
+### tests/test_zoyozei.mjs rc=0 finished=2026-10-01T01:33:59.082597+09:00
+✅ No.4408例: 一般贈与500万円 → 53万円
+✅ No.4408例: 特例贈与500万円 → 48.5万円
+✅ No.4408例: 混在 一般100万＋特例400万 → 49.4万円（按分）
+✅ 早見表 tokurei 贈与300万 → 190000
+✅ 早見表 tokurei 贈与1000万 → 1770000
+✅ 早見表 tokurei 贈与1500万 → 3660000
+✅ 早見表 ippan 贈与300万 → 190000
+✅ 早見表 ippan 贈与1000万 → 2310000
+✅ 早見表 ippan 贈与610万 → 850000
+✅ 基礎控除110万は合計から1回: 一般60万＋特例60万＝合計120万 → 課税10万・税額1万
+✅ 合計110万ちょうど → 非課税・税額0
+✅ 合計110万以下（一般50万＋特例50万＝100万）→ 非課税
+✅ 合計110万超（111万）→ 課税される
+✅ 同額でも 一般 と 特例 で税額が異なる（1000万）
+✅ 一般速算表: 各帯の境界で正しい税率・控除額
+✅ 特例速算表: 各帯の境界で正しい税率・控除額（一般と帯が違う）
+✅ 単調性: 贈与額が増えると税額は非減少（一般・特例とも）
+✅ fail closed: データ無し・贈与0/負は throw
+
+✓ 贈与税コア: 18 passed, 0 failed
+
+### tests/test_zoyozei_article.mjs rc=0 finished=2026-10-01T01:33:59.276858+09:00
+all zoyozei article tests passed (速算表2本・早見表・計算例3件を実装と照合)
+(node:44332) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/zoyozei_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_zuiji_article.mjs rc=0 finished=2026-10-01T01:33:59.351960+09:00
+✓ test_zuiji_article: カンマ区切りの数 9件が導出と一致 (30万→35万: 22→25等級・本人負担 42,570→51,084円・年102,168円増) / 43条1項の引用も一致
+(node:44335) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/masahiroyasu/Scripts/keiri-tools-astra-r17-t8-a/docs/assets/shaho_core.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/masahiroyasu/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+### tests/test_citation_date.py rc=0 finished=2026-10-01T01:33:59.738985+09:00
+..
+----------------------------------------------------------------------
+Ran 2 tests in 0.001s
+
+OK
+
+### tests/test_citation_fetch.py rc=0 finished=2026-10-01T01:34:00.149208+09:00
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.016s
+
+OK
+
+### tests/test_citation_monitor.py rc=0 finished=2026-10-01T01:34:00.423145+09:00
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.006s
+
+OK
+
+### tests/test_import_citation_inventory.py rc=0 finished=2026-10-01T01:34:00.675969+09:00
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+OK
+
+### tests/test_segments_cli.py rc=0 finished=2026-10-01T01:34:31.878127+09:00
+.
+----------------------------------------------------------------------
+Ran 1 test in 30.939s
+
+OK
+
+### tests/test_source_pipeline.py rc=0 finished=2026-10-01T01:34:32.664590+09:00
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.491s
+
+OK
+
+### tests/test_theme_round.py rc=0 finished=2026-10-01T01:34:33.802930+09:00
+sol stopped: t00 rc=1 quota=True
+/var/folders/wm/ytv3l4p50j1czghx169hzwx80000gn/T/tmpynkxum8d/round/publish-request
+.missing_batches=1; Astra not started
+/var/folders/wm/ytv3l4p50j1czghx169hzwx80000gn/T/tmp8j10unxs/round/publish-request
+already finished
+..frozen input changed: corpus/a.txt
+.From /var/folders/wm/ytv3l4p50j1czghx169hzwx80000gn/T/tmpyz_54h9s/repo
+ * [new branch]      main       -> origin/main
+Preparing worktree (detached HEAD 9f8449c)
+HEAD is now at 9f8449c fixture
+/var/folders/wm/ytv3l4p50j1czghx169hzwx80000gn/T/tmpyz_54h9s/new-round
+snapshot hash mismatch: a
+.astra incomplete rc=1 quota=True
+.astra incomplete rc=0 quota=False
+.
+----------------------------------------------------------------------
+Ran 7 tests in 0.896s
+
+OK
+
+### tests/test_theme_segments.py rc=0 finished=2026-10-01T01:34:49.813051+09:00
+./var/folders/wm/ytv3l4p50j1czghx169hzwx80000gn/T/tmpoupdego2/round
+incomplete segment batches; Astra not started
+incomplete segment batches; Astra not started
+incomplete segment batches; Astra not started
+incomplete segment batches; Astra not started
+incomplete segment batches; Astra not started
+incomplete segment batches; Astra not started
+./var/folders/wm/ytv3l4p50j1czghx169hzwx80000gn/T/tmp86_8lt8x/round
+/var/folders/wm/ytv3l4p50j1czghx169hzwx80000gn/T/tmpf_2cuy_y/round
+/var/folders/wm/ytv3l4p50j1czghx169hzwx80000gn/T/tmpdu4kjbk3/round
+unresolved findings; fix and review a new snapshot (unresolved 0, out_of_corpus judged wrong 1)
+/var/folders/wm/ytv3l4p50j1czghx169hzwx80000gn/T/tmpsmrfge69/round
+second opinion IDs incomplete
+./var/folders/wm/ytv3l4p50j1czghx169hzwx80000gn/T/tmp436w7sfz/round
+frozen draft changed
+.
+----------------------------------------------------------------------
+Ran 4 tests in 15.690s
+
+OK

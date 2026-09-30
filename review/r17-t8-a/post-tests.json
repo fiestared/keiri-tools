@@ -1,0 +1,76 @@
+[
+  {
+    "name": "toroku-keiraku",
+    "command": [
+      "node",
+      "tools/e2e/e2e.mjs",
+      "toroku_keiraku"
+    ],
+    "rc": 0,
+    "log": "review/r17-t8-a/post-toroku-keiraku.log",
+    "finished": "2026-10-01T01:35:23.564147+09:00"
+  },
+  {
+    "name": "break-toroku",
+    "command": [
+      "node",
+      "tests/break_toroku_page.mjs"
+    ],
+    "rc": 0,
+    "log": "review/r17-t8-a/post-break-toroku.log",
+    "finished": "2026-10-01T01:37:15.289601+09:00"
+  },
+  {
+    "name": "check-claims-test",
+    "command": [
+      "node",
+      "tests/test_check_claims.mjs"
+    ],
+    "rc": 0,
+    "log": "review/r17-t8-a/post-check-claims-test.log",
+    "finished": "2026-10-01T01:37:15.456516+09:00"
+  },
+  {
+    "name": "segment-claims-test",
+    "command": [
+      "node",
+      "tests/test_segment_claims.mjs"
+    ],
+    "rc": 0,
+    "log": "review/r17-t8-a/post-segment-claims-test.log",
+    "finished": "2026-10-01T01:37:17.370527+09:00"
+  },
+  {
+    "name": "changed-claims",
+    "command": [
+      "node",
+      "tools/check_claims.mjs",
+      "--changed",
+      "origin/main"
+    ],
+    "rc": 0,
+    "log": "review/r17-t8-a/post-changed-claims.log",
+    "finished": "2026-10-01T01:37:19.559366+09:00"
+  },
+  {
+    "name": "final-audit",
+    "command": [
+      "node",
+      "logs/r17-t8-a/final-audit.mjs"
+    ],
+    "rc": 0,
+    "log": "review/r17-t8-a/post-final-audit.log",
+    "finished": "2026-10-01T01:37:23.178499+09:00"
+  },
+  {
+    "name": "diff-check",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "rc": 0,
+    "log": "review/r17-t8-a/post-diff-check.log",
+    "finished": "2026-10-01T01:37:23.299480+09:00"
+  }
+]
