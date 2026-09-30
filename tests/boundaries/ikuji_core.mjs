@@ -67,3 +67,5 @@ cases.push(
  {name:'r16 支援既支給28日は今回0円',run:()=>r16Papa(1,28).shien.amount,expected:0,source:r16Source,quote:'支給済日数分を差し引いた日数が上限日数となります。'},
  {name:'r16 通算14日でも賃金80%は両給付不支給',run:()=>r16Papa(1,0,104000).total,expected:0,source:r16Source,quote:'出生時育児休業給付金が支給されない場合は、出生後休業支援給付金も支給されません。'}
 );
+
+cases.push({name:"r16 パパ10日と通常3日の延長1日は今回11日分",run:()=>calcPapaIkukyu({total6m:1800000,leaveDays:10,otherEligibleDays:3,wage:0,spouse:{exempt:true}},kihonteateData).extensionShien.amount,expected:14300,source:r16Source,quote:r16Quote});

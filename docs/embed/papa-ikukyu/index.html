@@ -66,7 +66,7 @@
   <div class="hint">上限は28日（61条の8第2項2号）。13%の14日要件は、同じ対象期間の給付対象となる通常の育休も通算して判定します。</div>
 
   <label for="otherEligibleDays">同じ対象期間の通常の育休の給付対象日数</label>
-  <input id="otherEligibleDays" type="number" value="0" min="0" max="112" step="1" inputmode="numeric">
+  <input id="otherEligibleDays" type="number" value="0" min="0" step="1" inputmode="numeric">
   <div class="hint">今回の産後パパ育休とは重複しない、同じ子・対象期間の育児休業給付金が支給される日数です。14日要件に通算します。通常の育休分の給付額はこの結果に含めません。</div>
   <label for="shienPaidDays">同じ子の出生後休業支援給付金（13%）の支給済日数</label>
   <input id="shienPaidDays" type="number" value="0" min="0" max="28" step="1" inputmode="numeric">
@@ -196,11 +196,11 @@ $("calc").addEventListener("click", async () => {
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">¥0</td></tr>`;
     shienNote = `<div class="callout">休業中の賃金（${yen(r.shusshoji.wage)}）が80%相当額（${yen(r.shusshoji.cap)}）以上のため、給付金は1円も出ません。67%が不支給になると13%も道連れで消えます。</div>`;
   } else if (s.reason === "own_days") {
-    const need = 14 - r.payDays;
+    const need = 14 - r.payDays - r.otherEligibleDays;
     const wouldGet = r.extensionShien.amount;
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">¥0</td></tr>`;
     shienNote = r.extensionShien.eligible
-      ? `<div class="callout"><b>あと${need}日 延ばすと、13%（約${yen(wouldGet)}）がまるごと乗ります。</b>いまは${r.payDays}日で14日未満のため0円です（61条の10第1項2号）。</div>`
+      ? `<div class="callout"><b>あと${need}日 延ばすと、13%（約${yen(wouldGet)}）がまるごと乗ります。</b>いまは対象期間内の給付対象休業が通算${r.payDays + r.otherEligibleDays}日で14日未満のため0円です（61条の10第1項2号）。</div>`
       : `<div class="callout">本人の休業を14日に延ばすだけでは支援給付は出ません。配偶者の14日要件（免除あり）と、就業・賃金の要件も満たす必要があります。</div>`;
   } else {
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td class="n">¥0</td></tr>`;
@@ -223,7 +223,7 @@ $("calc").addEventListener("click", async () => {
       ${shienRow}
       <tr class="tot"><td>合計</td><td class="n">${yen(r.total)}</td></tr>
     </table>
-    <div class="note">この${r.payDays}日は、そのあとの育児休業の「67%が続く180日」を食います。67%が続くのは<b>残り${r.remaining67}日</b>（180日はリセットされません）。育児休業給付は非課税・社会保険料も免除です。</div>
+    <div class="note">出生時育児休業給付金が支給される${r.shusshoji.unpaid ? 0 : r.payDays}日が、育児休業の67%の180日に通算されます。今回のパパ分だけを差し引くと<b>残り${r.remaining67}日</b>です。通常の育休で既に支給された日数は、さらに差し引きます（180日はリセットされません）。育児休業給付は非課税です。社会保険料の免除には休業期間等の要件と事業主の届出が必要です。</div>
     <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
   postHeight();
 });

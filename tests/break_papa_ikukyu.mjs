@@ -63,23 +63,16 @@ const MUTATIONS = [
     scene: "papa_unpaid",
     file: CORE,
     src: () => coreOrig,
-    apply: (s) =>
-      s.replace(
-        /  const shien = shusshoji\.unpaid\n[\s\S]*?: shienKyufu\(daily, shusshoji\.days, i\.spouse\.exempt \? 0 : i\.spouse\.days, !!i\.spouse\.exempt\);/,
-        "  const shien = shienKyufu(daily, shusshoji.days, i.spouse.exempt ? 0 : i.spouse.days, !!i.spouse.exempt);",
-      ),
+    apply: (s) => s.replace("const shien = shusshoji.unpaid", "const shien = false"),
   },
   {
     name: "★★13%も賃金で減額する（厚労省は「減額されません」と明記＝18,200円が減ってしまう）",
     scene: "papa_wage",
     file: CORE,
     src: () => coreOrig,
-    apply: (s) =>
-      s.replace(
-        /    : shienKyufu\(daily, shusshoji\.days, i\.spouse\.exempt \? 0 : i\.spouse\.days, !!i\.spouse\.exempt\);/,
-        "    : (() => { const sh = shienKyufu(daily, shusshoji.days, i.spouse.exempt ? 0 : i.spouse.days, !!i.spouse.exempt);\n" +
-          "        return { ...sh, amount: Math.max(0, sh.amount - (Number(i.wage) || 0)) }; })();",
-      ),
+    apply: (s) => s.replace(
+      "shien.amount = yen(daily * shien.days * RATE_SHIEN);",
+      "shien.amount = Math.max(0, yen(daily * shien.days * RATE_SHIEN) - (Number(i.wage) || 0));"),
   },
   {
     name: "★不支給の境界を「80%超」にする（ちょうど80%の人に給付を出してしまう・61条の8第5項は「以上」）",
@@ -160,7 +153,7 @@ const MUTATIONS = [
     scene: "papa_13days",
     file: PAGE,
     src: () => pageOrig,
-    apply: (s) => s.replace(/    shienRow = `<tr><th>出生後休業支援給付金（＋13%）<\/th><td>¥0 — <b>あなたの休業が14日未満<\/b>のため（61条の10第1項2号）<\/td><\/tr>`;/,
+    apply: (s) => s.replace(/    shienRow = `<tr><th>出生後休業支援給付金（＋13%）<\/th><td>¥0 — <b>対象期間内の給付対象休業が通算14日未満<\/b>のため（61条の10第1項2号）<\/td><\/tr>`;/,
                             "    shienRow = ``;"),
   },
   {
