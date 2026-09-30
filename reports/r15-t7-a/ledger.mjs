@@ -46,7 +46,7 @@ for(const page of [...new Set(original.map(x=>x.page))]){
    if(result==='ok')l.verified.push({id:u.id,text_hash:u.text_hash,result:'ok',review_ref:'r15/t7-a/segment-adjudication.json#'+old.id});
   }else{
    result=result==='out_of_corpus'?'out_of_corpus':'unconfirmed';
-   l.unconfirmed.push({id:u.id,text_hash:u.text_hash,result,needed_source:a?.needed_source||'修正後の複合単位の追加照合。元の正本外部分を含む場合は元審査の必要資料も確認する。',reason:reason||'修正後に新たに列挙された単位。独立照合は未実施。'});
+   l.unconfirmed.push({id:u.id,text_hash:u.text_hash,result,needed_source:a?.needed_source||(u.text.startsWith('12か月に足りないとき')?'このsnapshotの受給資格判定範囲を示す仕様・実行記録。半月算入等の子単位は別途元のneeded_sourceを保持。':u.text.startsWith('この計算機で正しく出ない方')?'このsnapshotで休業中賃金を計算対象外とする仕様・実行記録。給付減額の法令部分はr15-work-income-reductionに別記。':'修正後の複合単位全体を裏付ける追加正本。'),reason:reason||'修正後に新たに列挙された単位。独立照合は未実施。'});
   }
   all.push({...u,decision:result,reason:reason||'',needed_source:l.unconfirmed.find(x=>x.id===u.id)?.needed_source||''});
  }
