@@ -106,7 +106,11 @@
   gtag('config', 'G-E742DSDHPD');
 </script>
 <script src="../assets/track.js" defer></script>
-<!--nav-exp:toc-script S--><script src="../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<!--nav-exp:toc-script S--><script src="../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--><style>
+/* 扶養条件の長いラベルは、subgridへの切替前には縦に並べる。 */
+@media (max-width: 600px) { .fee-pair.field-pair { flex-direction: column; gap: 0; } }
+</style>
+</head>
 <body>
 <a class="skip-link" href="#main">本文へ移動</a>
 
@@ -184,8 +188,8 @@
   <div class="fee-pair field-pair" style="margin-top:12px">
     <div>
       <label for="fuyoIppan">一般扶養（16〜18歳・23〜69歳。非居住者の30〜69歳は下記条件）</label>
-<p class="hint">非居住者で30歳以上70歳未満の扶養親族は、留学・障害者・前年に本人から生活費または教育費として38万円以上の支払いを受けた人のいずれかに限ります。</p>
-      <input type="number" id="fuyoIppan" value="0" min="0" max="20" inputmode="numeric">
+<input type="number" id="fuyoIppan" value="0" min="0" max="20" inputmode="numeric">
+      <p class="hint">非居住者で30歳以上70歳未満の扶養親族は、留学・障害者・前年に本人から生活費または教育費として38万円以上の支払いを受けた人のいずれかに限ります。</p>
     </div>
     <div>
       <label for="fuyoTokutei">特定扶養（19〜22歳）</label>
