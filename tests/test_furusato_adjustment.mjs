@@ -35,7 +35,7 @@ try {
  }
  if(process.env.R15_SCREENSHOTS){
   await page.goto(base+'/column/juminzei-tokubetsu-choshu/');await page.setViewportSize({width:1000,height:900});
-  await page.locator('figure').nth(2).screenshot({path:process.env.R15_SCREENSHOTS+'/retirement.png'});
+  await page.locator('figure').last().screenshot({path:process.env.R15_SCREENSHOTS+'/retirement.png'});
  }
  console.log('furusato adjustment: main/embed checkbox and under-16 inputs agree; mobile overflow absent');
 } finally {await browser?.close();await new Promise(r=>server.close(r));}
