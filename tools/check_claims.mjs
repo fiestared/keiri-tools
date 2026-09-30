@@ -180,12 +180,25 @@ function addedText(base, page) {
 export function addedClaimText(html, diff) {
   const lines = stripNonClaims(html, true).split("\n");
   const added = [];
+  // 見た目の文字が変わっていない行（タグ・属性・クラスだけの変更）は主張の変更ではない（2026-10-01）。
+  //   図に fig-wide を付けただけで、同じ行にある図の数字が「足した数字」扱いになり、台帳の無い記事が軒並み落ちた。
+  //   消した行と見た目の文字が同じ足した行は数えない（行の移動もこれで除かれる。文字が1つでも違えば数える）。
+  const visible = (s) => s.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  const removed = new Map();
+  for (const line of diff.split("\n")) {
+    if (line.startsWith("-") && !line.startsWith("---")) { const v = visible(line.slice(1)); removed.set(v, (removed.get(v) || 0) + 1); }
+  }
   let lineNumber = 0;
   for (const line of diff.split("\n")) {
     const hunk = line.match(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/);
     if (hunk) { lineNumber = Number(hunk[1]) - 1; continue; }
     if (line.startsWith("+++") || line.startsWith("---")) continue;
-    if (line.startsWith("+")) { added.push(lines[lineNumber] ?? ""); lineNumber++; }
+    if (line.startsWith("+")) {
+      const v = visible(line.slice(1));
+      if (v && removed.get(v)) removed.set(v, removed.get(v) - 1);
+      else added.push(lines[lineNumber] ?? "");
+      lineNumber++;
+    }
     else if (line.startsWith(" ")) lineNumber++;
   }
   return claimText(`<html><head></head><body>${added.join("\n")}</body></html>`);

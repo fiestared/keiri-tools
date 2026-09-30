@@ -99,6 +99,15 @@ assert.deepEqual([...findNumbers(addedClaimText(changedPage, mixedDiff))], ['204
 const ordinaryFaq = changedPage.replace('faq rel-block','faq');
 assert.deepEqual([...findNumbers(addedClaimText(ordinaryFaq, innerDiff))], ['24万円','80%'], '普通のFAQ回答の主張は引き続き拾う');
 assert.ok(checkPage({html:changedPage,ledger:null,requiredText:addedClaimText(changedPage,mixedDiff),page:'p'}).length, '本文の台帳欠落は引き続き赤');
+// 2026-10-01: タグ・属性だけの変更（図に fig-wide を付けた等）は、同じ行の数字を「足した数字」にしない。文字が変われば拾う。
+{ const figPage = '<html><body><main><figure class="figure fig-wide"><svg><text>保険料 47,100円</text></svg></figure>\n<p>会社負担は 900円。</p></main></body></html>';
+  const markupOnly = '@@ -1 +1 @@\n-<html><body><main><figure class="figure"><svg><text>保険料 47,100円</text></svg></figure>\n+<html><body><main><figure class="figure fig-wide"><svg><text>保険料 47,100円</text></svg></figure>\n';
+  assert.deepEqual([...findNumbers(addedClaimText(figPage, markupOnly))], [], 'クラスだけの変更で図の数字を要求しない');
+  const textChanged = '@@ -1 +1 @@\n-<html><body><main><figure class="figure"><svg><text>保険料 47,000円</text></svg></figure>\n+<html><body><main><figure class="figure fig-wide"><svg><text>保険料 47,100円</text></svg></figure>\n';
+  assert.deepEqual([...findNumbers(addedClaimText(figPage, textChanged))], ['47,100円'], '同じ行で文字が変わったら拾う');
+  const added = '@@ -1,0 +2 @@\n+<p>会社負担は 900円。</p>\n';
+  assert.deepEqual([...findNumbers(addedClaimText(figPage, added))], ['900円'], '新しく足した行は拾う'); }
+
 
 console.log(`✓ test_check_claims: 抽出の性質 / ベースライン緑 / 壊し ${caught}/${cases.length} 捕捉 / 計算機の tool_cases / 足した行モード / 関連記事の内側差分・本文・FAQの回帰`);
 
