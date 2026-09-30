@@ -80,6 +80,9 @@
 
   <label class="chk"><input id="taikiDone" type="checkbox"> <span>すでに<b>待期3日</b>が完成している（受給中で、続きの分を計算したい）</span></label>
   <label class="chk"><input id="ninnikeizoku" type="checkbox"> <span><b>任意継続被保険者</b>である（退職後に健康保険を任意継続している）</span></label>
+  <label for="continuationMonths">継続給付の確認：資格喪失前日まで連続して加入した月数</label>
+  <input id="continuationMonths" type="number" min="0" step="1" inputmode="numeric" placeholder="継続給付を選ぶ場合に入力">
+  <div class="hint">任意継続・共済組合・国保の期間を除き、保険者が変わっても途切れず加入した期間を入力してください。日額計算に使う現保険者の月数とは別に確認します。</div>
   <label class="chk"><input id="taishokugo" type="checkbox">資格喪失前日まで継続1年以上の被保険者期間（任意継続・共済組合・国保を除く）があり、その日に受給中又は受給可能で、資格喪失後も労務不能が続く＝継続給付（104条）<span></span></label>
 
   <details>
@@ -172,6 +175,7 @@ $("calc").addEventListener("click", async () => {
       standards,
       monthly,
       months: Number($("months").value),
+      continuationMonths: $("continuationMonths").value === "" ? null : Number($("continuationMonths").value),
       restDays: Number($("restDays").value),
       usedDays: Number($("usedDays").value),
       taikiDone: $("taikiDone").checked,

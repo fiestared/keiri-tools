@@ -3660,7 +3660,10 @@ const shobyoScene = (inp) => async () => {
   set(doc, "hoshuNichigaku", String(inp.hoshuNichigaku ?? 0));
   set(doc, "heikinOverride", String(inp.heikinOverride ?? 0));
   if (inp.ninnikeizoku) check(doc, "ninnikeizoku", true);
-  if (inp.taishokugo) check(doc, "taishokugo", true);
+  if (inp.taishokugo) {
+    set(doc, "continuationMonths", String(inp.continuationMonths ?? ""));
+    check(doc, "taishokugo", true);
+  }
   click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
 
   await waitFor(
@@ -3734,7 +3737,7 @@ SCENES.shobyo_ninnikeizoku = shobyoScene({ startDate: "2026-08-01", ninnikeizoku
 //     単体テストは永久に緑だった。**このシーンだけが、それを画面で捕まえる。**
 SCENES.shobyo_keizoku = shobyoScene({
   startDate: "2026-08-01", monthly: 300000, months: 24, restDays: 546,
-  ninnikeizoku: true, taishokugo: true,
+  ninnikeizoku: true, taishokugo: true, continuationMonths: 24,
 });
 // 参照データを配信できない → 金額を出さずに断ること（fail closed）。
 // ★ここで黙って答えると、入社1年未満の人に**上限を無視した高い額**を信じさせる

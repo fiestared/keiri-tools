@@ -455,3 +455,11 @@ if (failed) {
   process.exit(1);
 }
 console.log(`\n✓ 全て通過（${checks} checks）`);
+
+// r16: 日額の現保険者3か月とは別に、資格喪失前の連続加入を確認する。
+{
+ const input={startDate:'2026-09-01',monthly:500000,months:3,continuationMonths:12,taishokugo:true,restDays:30,taikiDone:true};
+ eq(calcShobyo(input,D).nichigaku,7113,'104条を満たしても99条の日額上限を外さない');
+ eq(calcShobyo({...input,continuationMonths:11},D).eligible,false,'104条11か月は対象外');
+ eq(calcShobyo({...input,continuationMonths:null},D).reason,'no_continuation_months','継続加入未確認は停止');
+}

@@ -162,7 +162,10 @@
   <label style="font-weight:400;display:block">
     <input type="checkbox" id="taishokugo"> <b>退職する前から</b>傷病手当金を受けていた（受けられる状態だった）＝<b>資格喪失後の継続給付</b>（104条）
   </label>
-  <div class="note" id="keizoku-note">任意継続中に新たに発生した傷病には傷病手当金は支給されません。資格喪失後の継続給付には、資格喪失前日まで継続1年以上の被保険者期間（任意継続・共済組合・国保を除く）と、その日に受給中又は受給可能であることが必要です。業務外の療養・労務不能・待期完成を確認し、該当する場合に上の項目を選んでください。支給は通算1年6か月までで、退職後に一度働ける状態になると再び労務不能になっても支給されません。<br></div>
+    <label for="continuationMonths">継続給付の確認：資格喪失前日まで連続して加入した月数</label>
+  <input id="continuationMonths" type="number" min="0" step="1" inputmode="numeric" placeholder="継続給付を選ぶ場合に入力">
+  <div class="hint">任意継続・共済組合・国保の期間を除き、保険者が変わっても途切れず加入した期間を入力してください。日額計算に使う現保険者の月数とは別に確認します。</div>
+<div class="note" id="keizoku-note">任意継続中に新たに発生した傷病には傷病手当金は支給されません。資格喪失後の継続給付には、資格喪失前日まで継続1年以上の被保険者期間（任意継続・共済組合・国保を除く）と、その日に受給中又は受給可能であることが必要です。業務外の療養・労務不能・待期完成を確認し、該当する場合に上の項目を選んでください。支給は通算1年6か月までで、退職後に一度働ける状態になると再び労務不能になっても支給されません。<br></div>
 
   <details style="margin-top:12px">
     <summary>給与・調整対象の年金がある場合（傷病手当金以上なら支給なし）／標準報酬月額を月ごとに入力／健保組合の方</summary>
@@ -342,6 +345,7 @@ $("calc").addEventListener("click", async () => {
       standards,                                  // 入っていれば monthly より優先される
       monthly,
       months: Number($("months").value),
+      continuationMonths: $("continuationMonths").value === "" ? null : Number($("continuationMonths").value),
       restDays: Number($("restDays").value),
       usedDays: Number($("usedDays").value),
       taikiDone: $("taikiDone").checked,

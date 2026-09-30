@@ -277,6 +277,8 @@ export function keizokuKyufu(input) {
  * standards（月ごとの標準報酬月額）だけが渡されたときは、その列の長さを月数とみなす。
  */
 function hihokenshaMonths(i) {
+  // 新UIは104条用の連続加入期間を独立入力する。旧API呼出しだけ従来値を使う。
+  if (Object.hasOwn(i, "continuationMonths")) return Math.max(0, Math.floor(Number(i.continuationMonths) || 0));
   const m = Math.floor(Number(i.months) || 0);
   if (m > 0) return m;
   return Array.isArray(i.standards) ? i.standards.length : 0;
@@ -287,7 +289,8 @@ function hihokenshaMonths(i) {
  *
  * @param input.standards       各月の標準報酬月額（古い→新しい順）。monthly と排他
  * @param input.monthly         月給（報酬月額）。standards が無いときに等級表から概算する
- * @param input.months          monthly を使うときの被保険者期間（月数）
+ * @param input.months          日額計算に使う現保険者の月数
+ * @param input.continuationMonths 資格喪失前日までの連続加入月数（104条）。nullは未確認。省略は旧API互換
  * @param input.restDays        仕事を休んだ日数
  * @param input.taikiDone       待期3日が完成済みか
  * @param input.ninnikeizoku    任意継続被保険者か（99条1項：**新たに** 病気になった人には支給されない）
@@ -310,6 +313,11 @@ export function calcShobyo(input, D) {
   //   病気で辞めた人はほぼ全員が任意継続を選ぶ（病気なのだから保険が要る）ので、
   //   ここを取り違えると **いちばん重い病気の人に「¥0」と答える**（月給30万・546日休業で
   //   3,620,181円 = 待期3日を引いた543日 × 6,667円。test_shobyo.mjs / e2e shobyo_keizoku の正値）。
+  if (i.taishokugo && Object.hasOwn(i, "continuationMonths") &&
+      (i.continuationMonths === null || i.continuationMonths === "" || !Number.isFinite(Number(i.continuationMonths)) || Number(i.continuationMonths) < 0)) {
+    return { eligible: false, reason: "no_continuation_months",
+      message: "資格喪失前日まで連続して加入した月数を入力してください（任意継続・共済組合・国保を除く）。" };
+  }
   if (i.ninnikeizoku || i.taishokugo) {
     const k = keizokuKyufu({
       hihokenshaMonths: hihokenshaMonths(i),
