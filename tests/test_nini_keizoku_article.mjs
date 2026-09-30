@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {JSDOM} from 'jsdom';
+import {segmentClaims} from '../tools/segment_claims.mjs';
 const path=new URL('../docs/column/kenko-hoken-nini-keizoku/index.html',import.meta.url);
 const d=new JSDOM(readFileSync(path,'utf8')).window.document;
 const svg=[...d.querySelectorAll('svg')].find(x=>x.getAttribute('aria-label')?.includes('標準報酬月額'));
@@ -21,4 +22,7 @@ assert.deepEqual(ld.mainEntity.map(x=>x.acceptedAnswer.text),faqs,'FAQの本文�
 assert.match(faqs[0],/同じ料率・介護保険条件/);
 assert.match(faqs[4],/医療費の保険負担分/);
 assert.match(svg.textContent,/同じ料率・介護保険条件/);
+const units=segmentClaims(readFileSync(path,'utf8'));
+assert.ok(!units.some(u=>/^[」』）]+$/.test(u.text)),'閉じ括弧だけの確認単位がない');
+assert.equal(units.filter(u=>u.text.startsWith('ただし、保険者は、正当な理由があると認めるときは')).length,1,'37条の引用は一つの単位');
 console.log('任意継続記事: 図の傾き・逆転点の両側・条件表示・FAQ同期が緑');

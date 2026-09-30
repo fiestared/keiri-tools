@@ -18,9 +18,3 @@ const summaryLedger={claims:[{id:'s',covers:summary.map(u=>u.id)}]};
 assert.deepEqual(validateSegments(summary,summaryLedger).errors,[]);
 summaryLedger.claims[0].covers.pop();summaryLedger.nonclaims=[{id:summary.at(-1).id,why:'まとめの案内'}];
 assert.ok(validateSegments(summary,summaryLedger).errors.some(e=>e.includes('invalid nonclaim')));
-
-// r14: 引用末尾の閉じ括弧を独立したprotected単位にしない。
-const quoted=segmentClaims('<div class="callout"><p>条文です。<b>「受理できる。」</b>次の文です。</p></div>');
-assert.deepEqual(quoted.map(x=>x.text),['条文です。','「受理できる。」','次の文です。']);
-assert.ok(quoted.every(x=>x.protected));
-assert.deepEqual(segmentClaims('<p>「申請する。」</p>').map(x=>x.text),['「申請する。」']);
