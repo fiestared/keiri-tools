@@ -111,3 +111,19 @@ import assertR7 from 'node:assert/strict';
 assertR7.equal(calcMonthly(300000,9.85,1.62,70).kosei.self,0);
 assertR7.equal(calcMonthly(300000,9.85,1.62,69).kosei.self,27450);
 assertR7.equal(calcBonus(500000,9.85,1.62,70).kosei.self,0);
+
+// R14: 図に記載した全料率から設例を再計算（支援金欠落の旧HTMLでは赤）。
+import {JSDOM} from 'jsdom';
+const dom=new JSDOM(readFileSync('docs/shakai-hoken/index.html','utf8'));
+const diagram=[...dom.window.document.querySelectorAll('svg')].find(e=>e.textContent.includes('⑤ × 料率'));
+assert.ok(diagram,'計算手順の図が存在する');
+const rateLabel=[...diagram.querySelectorAll('text')].find(e=>e.textContent.includes('⑤ × 料率')).nextElementSibling;
+const shown=[...rateLabel.textContent.matchAll(/(\d+(?:\.\d+)?)%/g)].map(m=>Number(m[1]));
+assert.equal(shown.length,3,'令和8年4月分以降の図は健保・厚年・支援金の3料率を示す');
+assert.equal(Math.round(300000*shown.reduce((a,b)=>a+b,0)/100/2),42570,'図の料率から本人控除額を再計算');
+assert.equal(calcMonthly(300000,9.85,1.62,35).selfTotal,42570);
+dom.window.close();
+
+// R14: 公式額表に基づく境界・端数・異なる上限の反例。
+import {cases as r14BoundaryCases} from './boundaries/shaho_core.mjs';
+for (const c of r14BoundaryCases.filter(c=>c.name.startsWith('r14:'))) assert.deepEqual(c.run(),c.expected,c.name);
