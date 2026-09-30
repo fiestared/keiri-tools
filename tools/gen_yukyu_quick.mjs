@@ -32,9 +32,9 @@ const END = '<!-- YUKYU_QUICK:END -->';
 
 /** 冒頭に出す働き方。weeklyHours は「週30時間未満／以上」の分岐だけに効く */
 export const PATTERNS = [
-  { label: '週1日', weeklyDays: 1, weeklyHours: 8 },
-  { label: '週2日', weeklyDays: 2, weeklyHours: 16 },
-  { label: '週3日', weeklyDays: 3, weeklyHours: 21 },
+  { label: '週1日（週所定労働時間30時間未満）', weeklyDays: 1, weeklyHours: 8 },
+  { label: '週2日（週所定労働時間30時間未満）', weeklyDays: 2, weeklyHours: 16 },
+  { label: '週3日（週所定労働時間30時間未満）', weeklyDays: 3, weeklyHours: 21 },
   { label: '週4日（週30時間未満）', weeklyDays: 4, weeklyHours: 28 },
   { label: '週5日以上、または週30時間以上', weeklyDays: 5, weeklyHours: 40 },
 ];
@@ -52,7 +52,7 @@ export function buildQuick() {
   const rows = PATTERNS.map(rowFor);
   const out = [START];
   out.push('  <h2 id="hayamihyo">まず早見表：6か月後に何日もらえるか</h2>');
-  out.push('  <p><b>パートでもアルバイトでも、条件も日数も同じです</b>（労基法39条は雇用形態で区別していません）。週に何日働くかで決まります。</p>');
+  out.push('  <p><b>パートでもアルバイトでも、条件も日数も同じです</b>（労基法39条は雇用形態で区別していません）。週所定労働時間、週所定労働日数（週以外の期間で定める場合は年間所定労働日数）、勤続期間で日数を判定します。</p>');
   out.push('  <table>');
   out.push('    <tr><th scope="col">働き方</th><th scope="col">6か月後にもらえる日数</th></tr>');
   for (const r of rows) {
