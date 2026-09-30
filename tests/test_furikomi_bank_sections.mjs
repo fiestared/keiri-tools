@@ -15,7 +15,7 @@
  */
 import assert from 'node:assert';
 import { readFileSync } from 'node:fs';
-import { loadBanks, baseName, bankId, ARTICLE } from '../tools/gen_bank_sections.mjs';
+import { loadBanks, baseName, bankId, buildSections, ARTICLE } from '../tools/gen_bank_sections.mjs';
 
 const html = readFileSync(ARTICLE, 'utf-8');
 const strip = (s) => s.replace(/<[^>]*>/g, '').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').trim();
@@ -64,7 +64,7 @@ for (const [base, list] of banks) {
 assert.strictEqual(checked, 30, `照合できたのは ${checked}/30 区分です`);
 
 // --- 3. 銀行別セクションに、正本に無い金額が紛れていないこと -------------------
-const known = new Set(rows.flatMap((r) => [r.under, r.over]));
+const known = new Set(rows.flatMap(r => [...(r.under + ' ' + r.over).matchAll(/(\d{2,6})円/g)].map(m => m[0])));
 const sectionWithoutNotes = section.replace(/<p class="bank-note">[\s\S]*?<\/p>/g, '');
 for (const m of sectionWithoutNotes.matchAll(/(\d{2,6})円/g)) {
   const yen = `${m[1]}円`;
@@ -101,3 +101,13 @@ assert.ok(toc.includes('href="#ginkobetsu"'),
   '目次に銀行別セクション（#ginkobetsu）へのリンクがありません');
 
 console.log(`✓ test_furikomi_bank_sections: ${banks.size}銀行 / ${checked}区分が比較表と一致`);
+
+// r17: the text corpus omits the merged 30,000+ cell; regeneration must not
+// turn that unverified band back into a quoted price or a personal/corporate ratio.
+const regenerated = buildSections(rows);
+const yokohama = regenerated.split('id="bank-yokohama"')[1].split('<h3 ')[0];
+assert.ok(yokohama.includes('未確認'), '横浜個人IBの未確認額を再生成で確定額に戻さない');
+assert.ok(!yokohama.includes('約3.6倍'), '未確認の個人料金から法人倍率を生成しない');
+for (const note of ['三井住友信託銀行あて0円', 'スタンダード・パール', '非居住者による送金は1回3,000円']) {
+  assert.ok(regenerated.includes(note), `再生成で料金条件が消えた: ${note}`);
+}

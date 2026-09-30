@@ -54,9 +54,16 @@ export function loadBanks() {
       id: b.id,
       name: b.name,
       kubun: b.name.includes('法人') ? '法人' : '個人',
-      under: `${b.under30k}円`,
-      over: `${b.over30k}円`,
-      boundary: b.under30k !== b.over30k,
+      // Article review can withhold an unverified band without inventing a new fee.
+      rawUnder: b.under30k,
+      rawOver: b.article?.over_unverified ? null : b.over30k,
+      under: `${b.under30k}円${b.article?.fee_note || ''}`,
+      over: b.article?.over_unverified ? '未確認' : `${b.over30k}円${b.article?.fee_note || ''}`,
+      underHTML: `${b.under30k}円${b.article?.fee_note ? '<br>' + esc(b.article.fee_note) : ''}`,
+      overHTML: b.article?.over_unverified ? '未確認' : `${b.over30k}円${b.article?.fee_note ? '<br>' + esc(b.article.fee_note) : ''}`,
+      indexName: b.article?.index_name || b.name,
+      indexFullLabel: b.article?.index_full_label || false,
+      boundary: b.article?.over_unverified ? null : b.under30k !== b.over30k,
       source: b.source || null,
       verifiedAt: b.verified_date || null,
       publicNote: b.public_note || null,
@@ -119,17 +126,17 @@ export function buildSections(rows) {
     out.push('    <tr><th scope="col">区分</th><th scope="col">3万円未満</th><th scope="col">3万円以上</th></tr>');
     for (const r of [kojin, hojin]) {
       if (!r) continue;
-      out.push(`    <tr><td>${r.name}</td><td>${r.under}</td><td>${r.over}</td></tr>`);
+      out.push(`    <tr><td>${r.name}</td><td>${r.underHTML}</td><td>${r.overHTML}</td></tr>`);
     }
     out.push('  </table>');
 
     const notes = [];
-    if (kojin && hojin && price(kojin.over) !== price(hojin.over)) {
-      const ratio = (price(hojin.over) / price(kojin.over)).toFixed(1).replace(/\.0$/, '');
-      notes.push(`他行宛ネット振込の3万円以上では、法人は個人の<b>${Number(ratio) === price(hojin.over) / price(kojin.over) ? "" : "約"}${ratio}倍</b>（${kojin.over}→${hojin.over}）`);
+    if (kojin && hojin && kojin.rawOver !== null && hojin.rawOver !== null && kojin.rawOver !== hojin.rawOver) {
+      const ratio = (hojin.rawOver / kojin.rawOver).toFixed(1).replace(/\.0$/, '');
+      notes.push(`他行宛ネット振込の3万円以上では、法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）`);
     }
     const withBoundary = list.filter((x) => x.boundary).map((x) => x.kubun);
-    notes.push(withBoundary.length
+    notes.push(list.some(r => r.rawOver === null) ? '個人IBの3万円以上は掲載を保留しています' : withBoundary.length
       ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）`
       : '金額にかかわらず<b>定額</b>');
     out.push(`  <p>${notes.join('。')}。</p>`);
@@ -174,16 +181,16 @@ export const AMT_END = '<!-- AMOUNT_INDEX:END -->';
  *   （2行に割ると、定額の銀行が同じ金額の欄に二重に出て読みにくいだけで、情報が増えない）。
  */
 export function amountMap(rows) {
-  const yen = (s) => Number(String(s).replace(/[^0-9]/g, ''));
   const m = new Map();
-  const add = (v, name, range) => {
+  const add = (v, name, range, fullLabel = false) => {
     if (!Number.isFinite(v) || v <= 0) throw new Error(`${name} の金額を数値にできません（fee_table.json が壊れている）`);
     if (!m.has(v)) m.set(v, []);
-    m.get(v).push({ name, range });
+    m.get(v).push({ name, range, fullLabel });
   };
   for (const r of rows) {
-    if (!r.boundary) add(yen(r.under), r.name, '金額不問');
-    else { add(yen(r.under), r.name, '3万円未満'); add(yen(r.over), r.name, '3万円以上'); }
+    if (r.rawOver === null) add(r.rawUnder, r.indexName, '3万円未満');
+    else if (!r.boundary) add(r.rawUnder, r.indexName, '金額不問', r.indexFullLabel);
+    else { add(r.rawUnder, r.indexName, '3万円未満'); add(r.rawOver, r.indexName, '3万円以上'); }
   }
   return new Map([...m.entries()].sort((a, b) => a[0] - b[0]));
 }
@@ -211,7 +218,7 @@ export function buildAmountIndex(rows) {
   out.push('  <table>');
   out.push('    <tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th></tr>');
   for (const [amount, list] of m) {
-    const cells = list.map((x) => `${x.name}（${x.range}）`).join('<br>');
+    const cells = list.map((x) => x.fullLabel ? x.name : `${x.name}（${x.range}）`).join('<br>');
     out.push(`    <tr><td><b>${amount}円</b></td><td>${cells}</td></tr>`);
   }
   out.push('  </table>');

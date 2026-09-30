@@ -30,7 +30,7 @@ const block = html.slice(start, end);
 // --- 2. 正本の金額が、過不足なく行になっていること --------------------------
 // ★「在ること」だけでは足りない。**表にしか無い金額**＝改定で消えたのに残った行を落とす。
 const want = amountMap(loadBanks());
-const rowRe = /<tr><td><b>(\d+)円<\/b><\/td><td>(.*?)<\/td><\/tr>/g;
+const rowRe = /<tr><td><b>(\d+)円(?:<br>[^<]*)?<\/b><\/td><td>(.*?)<\/td><\/tr>/g;
 const got = new Map();
 for (const m of block.matchAll(rowRe)) got.set(Number(m[1]), m[2]);
 
@@ -42,11 +42,11 @@ assert.deepStrictEqual([...got.keys()].sort((a, b) => a - b), [...want.keys()],
 //   **その金額の行のセル**に、その区分が載っていることを見る。
 for (const [amount, list] of want) {
   const cell = got.get(amount);
-  for (const { name, range } of list) {
-    assert.ok(cell.includes(`${name}（${range}）`),
+  for (const { name, range, fullLabel } of list) {
+    assert.ok(cell.includes(fullLabel ? name : `${name}（${range}）`),
       `${amount}円 の行に「${name}（${range}）」がありません。実際: ${cell}`);
   }
-  const n = (cell.match(/（(金額不問|3万円未満|3万円以上)）/g) || []).length;
+  const n = (cell.match(/(?:（|、)(金額不問|3万円未満|3万円以上)）/g) || []).length;
   assert.strictEqual(n, list.length,
     `${amount}円 の行の区分数が合いません（表 ${n} / 正本 ${list.length}）。実際: ${cell}`);
 }
@@ -67,3 +67,7 @@ assert.ok(note.includes('この表に当てはめず') && note.includes('銀行�
   '未収録の金額を表に当てはめず、公式料金を確認する案内が消えています');
 
 console.log(`✓ 逆引き表 ${got.size}金額 が fee_table.json と一致（目次・収録範囲の申告も確認）`);
+
+// The missing >=30k source cell cannot become a flat-rate reverse lookup.
+const yokohamaBands = [...want.entries()].flatMap(([amount, entries]) => entries.filter(e => e.name === '横浜銀行（個人IB）').map(e => ({amount, range:e.range})));
+assert.deepStrictEqual(yokohamaBands, [{amount:154, range:'3万円未満'}]);

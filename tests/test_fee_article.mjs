@@ -1,5 +1,6 @@
 import {contentHTML} from './layout/content-html.mjs';
 import assert from "node:assert";
+import {loadBanks} from "../tools/gen_bank_sections.mjs";
 import { readFileSync } from "node:fs";
 
 // 記事「銀行別 振込手数料 一覧」の表は fee_table.json から生成した。
@@ -29,19 +30,21 @@ const SCANNED = RAW.replace(ROUTE_TABLE, " "); // 行スキャン（1・2番）�
 //   **読者が最初に見る表が130円のまま**でも検査は緑だった（GMOあおぞら 130→100 の改定で実際に起きた）。
 //   → **出現ごとに全件突き合わせる**。CLAUDE.md 規則4「名指しは一意でなければ効かない」の同型。
 const occurrences = [];
-for (const m of SCANNED.matchAll(/<tr><td>([^<]+)<\/td><td>(\d+)円<\/td><td>(\d+)円<\/td>/g)) {
-  occurrences.push({ name: m[1], under30k: Number(m[2]), over30k: Number(m[3]) });
+const bandTables = [...SCANNED.matchAll(/<table[^>]*>[\s\S]*?<\/table>/g)].map(m => m[0]).filter(t => t.includes('3万円未満') && t.includes('3万円以上')).join('\n');
+for (const row of bandTables.matchAll(/<tr>([\s\S]*?)<\/tr>/g)) {
+  const cells = [...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map(m => m[1].replace(/<[^>]*>/g, '').trim());
+  if (cells.length >= 3 && (cells[1].match(/^\d+円/) || cells[1] === '未確認')) occurrences.push({name: cells[0], under30k: cells[1], over30k: cells[2]});
 }
 const rows = new Map(occurrences.map((o) => [o.name, o]));
 
 // 1. 掲載漏れ・数字ズレが無いこと（★1行でも古ければ落とす）
-for (const bank of FEES.banks) {
+for (const bank of loadBanks()) {
   const hits = occurrences.filter((o) => o.name === bank.name);
   assert.ok(hits.length > 0, `記事に未掲載の銀行: ${bank.name}`);
   hits.forEach((row, i) => {
     const where = hits.length > 1 ? `（${hits.length}箇所中${i + 1}番目の表）` : "";
-    assert.equal(row.under30k, bank.under30k, `${bank.name} の3万円未満が不一致${where}`);
-    assert.equal(row.over30k, bank.over30k, `${bank.name} の3万円以上が不一致${where}`);
+    assert.equal(row.under30k, bank.under, `${bank.name} の3万円未満が不一致${where}`);
+    assert.equal(row.over30k, bank.over, `${bank.name} の3万円以上が不一致${where}`);
   });
 }
 
