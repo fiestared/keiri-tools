@@ -16,7 +16,7 @@
  *
  *  1. **足切りの10万円は「上限（キャップ）」であって「下限」ではない。**（所法73条1項）
  *     足切り ＝ min(総所得金額等 × 5%, 10万円)。
- *     総所得金額等が200万円未満の人（給与収入およそ297万円以下）は5%側が効いて足切りが10万円より小さくなる。
+ *     総所得金額等が200万円未満の人（令和8年分の給与所得のみなら給与収入2,972,000円未満）は5%側が効いて足切りが10万円より小さくなる。
  *     → 「医療費が10万円を超えないと使えない」は誤り。低所得の人ほど少ない医療費で使える。
  *     ここを「足切り＝一律10万円」と実装すると、いちばん救われるべき低所得の人が黙って控除を失う。
  *
@@ -28,13 +28,13 @@
  *
  * ★補填金は「その給付の目的となった医療費」を限度に引く（No.1125）。入院給付金が入院費を上回っても、
  *   はみ出した分を他の医療費（通院・薬代）からは引かない。hotenTaisho（補填がひも付く医療費）を渡すと
- *   その限度で引く。省略時は医療費全体から引く（＝多めに引く・控除額を小さめに出す保守側）。
+ *   その限度で引く。補填金がある場合の対象医療費の省略はエラーとする。
  *
  * 一次情報: 所得税法73条・89条／復興財源確保法13条／租税特別措置法41条の17／
  *           国税庁 No.1120・No.1122・No.1125・No.1129・No.2260・No.1410。
  */
 
-import { kyuyoShotoku, kyuyoShotokuR8 } from './juminzei_core.js';
+import { kyuyoShotoku, kyuyoShotokuR8, shotokuzeiKisoKojo } from './juminzei_core.js';
 
 /** 円に丸める（0未満・未入力・数値でないものは0）。NaN を素通しすると控除額が丸ごと NaN になる。 */
 const yen = (n) => {
@@ -53,14 +53,17 @@ export function ashikiriGaku(sotoShotoku, I) {
 /**
  * 通常の医療費控除の控除額（所法73条1項）。
  *   控除額 ＝ min( max(0, (医療費 − 補填金) − 足切り), 200万円 )
- * @param hotenTaisho 補填金がひも付く医療費（省略時は医療費全体を対象＝補填を全体から引く保守側）
+ * @param hotenTaisho 補填金がひも付く医療費（補填金がある場合は必須）
  */
 export function iryohiKojo(iryohi, hoten, hotenTaisho, sotoShotoku, I) {
   if (!I) throw new Error('参照データ（iryohi_r08.json）が渡されていません');
   const K = I.iryohi_kojo;
   const hi = yen(iryohi);
-  // 補填金は「その給付の目的となった医療費」を限度に引く。ひも付き医療費が不明なら医療費全体を限度とする。
-  const taisho = hotenTaisho != null && hotenTaisho !== '' ? yen(hotenTaisho) : hi;
+  // 補填金は「その給付の目的となった医療費」を限度に引く。ひも付き医療費が不明なら計算を止める。
+  if (yen(hoten) > 0 && (hotenTaisho == null || hotenTaisho === '' || !Number.isFinite(Number(hotenTaisho)) || Number(hotenTaisho) < 0)) {
+    throw new Error('補填金がある場合は、その給付の対象医療費を入力してください');
+  }
+  const taisho = hotenTaisho != null && hotenTaisho !== '' ? yen(hotenTaisho) : 0;
   const netHoten = Math.min(yen(hoten), taisho);
   const netIryohi = Math.max(0, hi - netHoten);
   const ashikiri = ashikiriGaku(sotoShotoku, I);
@@ -86,7 +89,7 @@ export function rateFromKazei(kazei, I) {
   const B = I.keigen.shotokuzei_brackets;
   const v = yen(kazei);
   for (const b of B) {
-    if (b.kazei_upto === null || b.kazei_upto === undefined || v < b.kazei_upto) return b.rate_pct;
+    if (b.kazei_upto === null || b.kazei_upto === undefined || v <= b.kazei_upto) return b.rate_pct;
   }
   return B[B.length - 1].rate_pct;
 }
@@ -122,7 +125,7 @@ export function keigenGaku(kojo, rate, I) {
  * input = {
  *   iryohi,          // 支払った医療費の合計（円）
  *   hoten,           // 保険金などで補填される金額（円）
- *   hotenTaisho,     // （任意）補填金がひも付く医療費（円）
+ *   hotenTaisho,     // （補填金がある場合必須）補填金がひも付く医療費（円）
  *   kyuyoShunyu,     // 給与収入（年収）→ 総所得金額等の算出（足切りの5%に使う）
  *   sotoShotoku,     // （任意）総所得金額等を直接指定。あれば kyuyoShunyu より優先
  *   shotokuzeiRate,  // 所得税の限界税率（%）— 課税所得帯のドロップダウンから
@@ -154,7 +157,9 @@ export function calcIryohi(input, refs) {
   }
 
   const ashikiri = ashikiriGaku(sotoShotoku, I);
-  const rate = i.shotokuzeiRate;
+  // 給与所得のみのR8換算で基礎控除だけでも非課税なら、選択税率で還付を作らない。
+  const noIncomeTax = !hasSoto && i.zeisei === 'r8' && sotoShotoku <= shotokuzeiKisoKojo(sotoShotoku, D, 'r8');
+  const rate = noIncomeTax && isValidRate(i.shotokuzeiRate, I) ? 0 : i.shotokuzeiRate;
   const rateValid = isValidRate(rate, I);
 
   // ── 通常の医療費控除 ──────────────────────────────────────────────

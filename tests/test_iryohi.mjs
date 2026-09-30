@@ -97,6 +97,11 @@ t('医療費6万・年収160万[令和8年分] → 控除額17,000（10万円は
   assert.strictEqual(r.normal.kojo, 17000, '控除額 = 60,000 − 43,000');
 });
 
+t('r16 給与160万円のみは基礎控除104万円で所得税0、住民税の軽減目安5700円', () => {
+ const r=calcIryohi({iryohi:100000,kyuyoShunyu:1600000,zeisei:'r8',shotokuzeiRate:5},refs);
+ assert.deepStrictEqual([r.normal.keigen.shotokuzei,r.normal.keigen.fukko,r.normal.keigen.jumin,r.normal.keigen.total],[0,0,5700,5700]);
+});
+
 // ── 4. ★補填金は「その給付の目的となった医療費」を限度に引く（No.1125） ──────────────
 t('補填ひも付き: 医療費27万(入院15万+通院12万)・入院給付20万 → 控除額20,000（総額から引く誤りなら0）', () => {
   // ひも付き対象=入院費15万 → 引くのは min(20万,15万)=15万 → 27万−15万=12万 −足切り10万 = 20,000
@@ -104,10 +109,8 @@ t('補填ひも付き: 医療費27万(入院15万+通院12万)・入院給付20�
   assert.strictEqual(r.normal.netHoten, 150000, '補填はひも付き医療費15万を限度に引く');
   assert.strictEqual(r.normal.kojo, 20000, '控除額20,000');
 });
-t('補填ひも付きを渡さない（保守側）: 総額27万から補填20万を引く → 控除額0', () => {
-  const r = calcIryohi({ iryohi: 270000, hoten: 200000, kyuyoShunyu: 5000000, shotokuzeiRate: 10 }, refs);
-  assert.strictEqual(r.normal.netHoten, 200000, 'ひも付き不明なら医療費全体から引く');
-  assert.strictEqual(r.normal.kojo, 0, '控除額0（引き方で結論が変わる）');
+t('補填金あり・対象医療費未入力は計算しない', () => {
+  assert.throws(() => calcIryohi({ iryohi: 270000, hoten: 200000, kyuyoShunyu: 5000000, shotokuzeiRate: 10 }, refs), /対象医療費/);
 });
 
 // ── 5. 控除額の上限200万円 ────────────────────────────────────────────────
@@ -137,22 +140,23 @@ t('医療費が大きければ通常を推奨', () => {
 
 // R9: 国税庁No.2260の速算表。境界直前と境界ちょうどを独立定数で照合。
 for (const [boundary, below, at] of [[1950000,5,10],[3300000,10,20],[6950000,20,23],[9000000,23,33],[18000000,33,40],[40000000,40,45]]) {
-  t(`R9 税率境界 ${boundary}`, () => {
+  t(`r16 所得税法89条の境界 ${boundary}`, () => {
     assert.strictEqual(rateFromKazei(boundary - 1, I), below);
-    assert.strictEqual(rateFromKazei(boundary, I), at);
+    assert.strictEqual(rateFromKazei(boundary + 1, I), at);
+    assert.strictEqual(rateFromKazei(boundary, I), below);
   });
 }
-t('R9 速算表の表示区分はNo.2260と一致', () => {
-  assert.deepStrictEqual(I.keigen.shotokuzei_brackets.map(b=>b.label), ['課税所得0円（所得税非課税）','195万円未満','195万円以上 330万円未満','330万円以上 695万円未満','695万円以上 900万円未満','900万円以上 1,800万円未満','1,800万円以上 4,000万円未満','4,000万円以上']);
+t('r16 表示区分は所得税法89条に一致', () => {
+  assert.deepStrictEqual(I.keigen.shotokuzei_brackets.map(b=>b.label), ['課税所得0円（所得税非課税）','195万円以下','195万円超 330万円以下','330万円超 695万円以下','695万円超 900万円以下','900万円超 1,800万円以下','1,800万円超 4,000万円以下','4,000万円超']);
 });
 // ── 7. 速算表: 課税所得帯 → 限界税率（No.2260・7区分） ───────────────────────
 t('速算表: 課税所得の帯ごとに正しい限界税率を引く', () => {
-  assert.strictEqual(rateFromKazei(1950000, I), 10, '195万以上=10%');
+  assert.strictEqual(rateFromKazei(1950000, I), 5, '195万以上=10%');
   assert.strictEqual(rateFromKazei(2000000, I), 10, '195万超=10%');
-  assert.strictEqual(rateFromKazei(6950000, I), 23, '695万以上=23%');
-  assert.strictEqual(rateFromKazei(9000000, I), 33, '900万以上=33%');
-  assert.strictEqual(rateFromKazei(18000000, I), 40, '1,800万以上=40%');
-  assert.strictEqual(rateFromKazei(40000000, I), 45, '4,000万以上=45%');
+  assert.strictEqual(rateFromKazei(6950000, I), 20, '695万以上=23%');
+  assert.strictEqual(rateFromKazei(9000000, I), 23, '900万以上=33%');
+  assert.strictEqual(rateFromKazei(18000000, I), 33, '1,800万以上=40%');
+  assert.strictEqual(rateFromKazei(40000000, I), 40, '4,000万以上=45%');
   assert.strictEqual(rateFromKazei(50000000, I), 45, '4,000万超=45%');
 });
 
@@ -199,7 +203,7 @@ t('単調性: 足切りは非減少で10万円で頭打ち', () => {
 
 // ── 12. iryohiKojo 単体: 足切りを直接与えたときの控除額（上限・下限の境界） ──────────
 t('iryohiKojo: 補填で医療費を下回っても控除額は0未満にならない', () => {
-  const r = iryohiKojo(50000, 80000, null, 5000000, I); // 補填が医療費を上回る
+  const r = iryohiKojo(50000, 80000, 50000, 5000000, I); // 補填が医療費を上回る
   assert.strictEqual(r.netIryohi, 0, '医療費−補填は0で止まる');
   assert.strictEqual(r.kojo, 0, '控除額0');
 });

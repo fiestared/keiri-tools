@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "core": "iryohi_core",
+  "page": "docs/iryohi/index.html",
+  "priority_evidence": "r16/t14-a",
+  "conditions": [
+    {
+      "id": "medical-cost-compensation",
+      "statute": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm",
+      "disposition": "input",
+      "input_ids": [
+        "iryohi",
+        "hoten",
+        "hotenTaisho"
+      ],
+      "cases": [
+        "r16補填対象未入力",
+        "r16補填超過を他の医療費から引かない"
+      ]
+    },
+    {
+      "id": "salary-threshold",
+      "statute": "https://laws.e-gov.go.jp/law/340AC0000000033",
+      "disposition": "input",
+      "input_ids": [
+        "shunyu"
+      ],
+      "cases": [
+        "r16給与2971999円の足切り",
+        "r16給与2972000円の足切り",
+        "r16給与160万円は所得税0"
+      ]
+    },
+    {
+      "id": "rate-edges",
+      "statute": "https://laws.e-gov.go.jp/law/340AC0000000033",
+      "disposition": "input",
+      "input_ids": [
+        "zeiritsu"
+      ],
+      "cases": [
+        "r16税率19500000",
+        "r16税率19500001"
+      ]
+    },
+    {
+      "id": "salary-only",
+      "statute": "https://laws.e-gov.go.jp/law/340AC0000000033",
+      "disposition": "out_of_scope",
+      "scope_selector": "#shunyu-hint",
+      "scope_text": "税引き前・賞与込みの給与収入です。この画面は給与所得のみの人が対象です。給与以外の所得がある人は総所得金額等を使って申告書等で計算してください。",
+      "cases": [
+        "r16給与2971999円の足切り"
+      ]
+    }
+  ],
+  "default_cases": [
+    "r16HTML初期値は計算不能"
+  ]
+}

@@ -1,11 +1,11 @@
 {
   "page": "docs/embed/iryohi/index.html",
-  "checked": "2026-09-28",
+  "checked": "2026-10-01",
   "scope": "R9: 親ページと同じ計算条件・入力案内を埋め込み版でも同期。一次資料は親ページの台帳と共通。",
   "claims": [
     {
       "id": "r9-changed-statements",
-      "text": "\"dateModified\": \"2026-09-28\",\n \n 195万円未満（税率5%） \n 195万円以上 330万円未満（税率10%） \n 330万円以上 695万円未満（税率20%） \n 695万円以上 900万円未満（税率23%） \n 900万円以上 1,800万円未満（税率33%） \n 1,800万円以上 4,000万円未満（税率40%） \n 4,000万円以上（税率45%）",
+      "text": "\"dateModified\": \"2026-09-28\",\n \n 195万円以下（税率5%） \n 195万円超 330万円以下（税率10%） \n 330万円超 695万円以下（税率20%） \n 695万円超 900万円以下（税率23%） \n 900万円超 1,800万円以下（税率33%） \n 1,800万円超 4,000万円以下（税率40%） \n 4,000万円超（税率45%）",
       "numbers": [
         "1,800",
         "4,000",
@@ -95,8 +95,609 @@
           "old": "4,000万円超",
           "new": "4,000万円以上"
         }
-      ]
+      ],
+      "covers": []
+    },
+    {
+      "id": "r16-s-801c42c6bac5df2108dd-1",
+      "text": "給与所得のみの人が医療費・補填金・給与収入・所得税率を入力すると、控除額と税の軽減目安を計算します。",
+      "where": [
+        "p:summary"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm",
+      "source_quote": "対象税目\n所得税\n概要\nその年の1月1日から12月31日までの間に自己または自己と生計を一にする配偶者やその他の親族のために医療費を支払った場合において、その支払った医療費が一定額を超えるときは、その医療費の額を基に計算される金額（下記「医療費控除の対象となる金額」参照）の所得控除を受けることができます。これを医療費控除といいます。",
+      "exceptions": "照合の出発点は corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:11-14;corpus/egov_chihozeiho_32.txt:6-6。住民税を「戻ってくる税金」に含めている。通常、医療費控除による住民税の効果は翌年度の税額の減額であり、所得税の還付と同じ返金として扱うと受取金額・時期を誤認する。ウィジェットの機能自体の精度は正本では検証できない。",
+      "covers": [
+        "s-801c42c6bac5df2108dd-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:11-14;corpus/egov_chihozeiho_32.txt:6-6",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-029d388ebcf4fb351d4f-1",
+      "remediation": {
+        "original_ids": [
+          "s-029d388ebcf4fb351d4f-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-86ec1debc7eb5afbcf7b-1",
+      "text": "住民税分は通常翌年度の減額で、所得税等の還付とは時期が異なります。",
+      "where": [
+        "p:summary"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm",
+      "source_quote": "対象税目\n所得税\n概要\nその年の1月1日から12月31日までの間に自己または自己と生計を一にする配偶者やその他の親族のために医療費を支払った場合において、その支払った医療費が一定額を超えるときは、その医療費の額を基に計算される金額（下記「医療費控除の対象となる金額」参照）の所得控除を受けることができます。これを医療費控除といいます。",
+      "exceptions": "照合の出発点は corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:11-14;corpus/egov_chihozeiho_32.txt:6-6。住民税を「戻ってくる税金」に含めている。通常、医療費控除による住民税の効果は翌年度の税額の減額であり、所得税の還付と同じ返金として扱うと受取金額・時期を誤認する。ウィジェットの機能自体の精度は正本では検証できない。",
+      "covers": [
+        "s-86ec1debc7eb5afbcf7b-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:11-14;corpus/egov_chihozeiho_32.txt:6-6",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-029d388ebcf4fb351d4f-1",
+      "remediation": {
+        "original_ids": [
+          "s-029d388ebcf4fb351d4f-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-b80a7414bd653f43927a-1",
+      "text": "足切りは「総所得金額等の5％」と「10万円」の低いほうです。",
+      "where": [
+        "p:summary"
+      ],
+      "numbers": [
+        "10万円",
+        "5％"
+      ],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm",
+      "source_quote": "（2）10万円\n（注）その年の\n総所得金額等\nが200万円未満の人は、\n総所得金額等\nの5パーセントの金額",
+      "exceptions": "正本 corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:24-29 の年分・金額・境界・対象者を確認し、この文の主張はその範囲で一致する。",
+      "covers": [
+        "s-b80a7414bd653f43927a-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:24-29",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-b80a7414bd653f43927a-1"
+    },
+    {
+      "id": "r16-s-b8268c8d9437f8bae92a-1",
+      "text": "本人が支払った生計同一の家族分も対象。通院の電車・バス代等を含み、車のガソリン・駐車料金は対象外。タクシーは公共交通を使えない場合等に限ります。",
+      "where": [
+        "span:body"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm",
+      "source_quote": "（1）納税者が、自己または自己と生計を一にする配偶者やその他の親族のために支払った医療費であること。\n（2）その年の1月1日から12月31日までの間に支払った医療費であること（未払いの医療費は、現実に支払った年の医療費控除の対象となります。）。\n医療費控除の対象となる金額\n医療費控除の金額は、次の式で計算した金額（最高で200万円）です。",
+      "exceptions": "照合の出発点は corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:16-17;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1122_htm.txt:25-28。家族分は生計を一にする親族のために納税者が支払った費用に限る。通院交通費も自家用車のガソリン代・駐車料金は対象外で、タクシー代には条件がある。無条件に合算・含めると読め、特定の家族や移動手段で控除対象を誤る。",
+      "covers": [
+        "s-b8268c8d9437f8bae92a-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:16-17;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1122_htm.txt:25-28",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-e2edc587d51f80a23a9f-1",
+      "remediation": {
+        "original_ids": [
+          "s-e2edc587d51f80a23a9f-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-6ce1697aa3c46701e94b-1",
+      "text": "高額療養費・入院給付金など。無ければ0",
+      "where": [
+        "span:body"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm",
+      "source_quote": "（1）保険金などで補てんされる金額\n（例） 生命保険契約などで支給される入院費給付金や健康保険などで支給される高額療養費・家族療養費・出産育児一時金など\n（注）保険金などで補てんされる金額は、その給付の目的となった医療費の金額を限度として差し引きますので、引ききれない金額が生じた場合であっても他の医療費からは差し引きません。",
+      "exceptions": "正本 corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:21-23 の年分・金額・境界・対象者を確認し、この文の主張はその範囲で一致する。",
+      "covers": [
+        "s-6ce1697aa3c46701e94b-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:21-23",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-6ce1697aa3c46701e94b-1"
+    },
+    {
+      "id": "r16-s-fc87705ec9eef030bdc0-1",
+      "text": "補填金がある場合に必須：その給付の対象医療費（円）",
+      "where": [
+        "label:ui"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm",
+      "source_quote": "（注）保険金などで補てんされる金額は、その給付の目的となった医療費の金額を限度として差し引きますので、引ききれない金額が生じた場合であっても他の医療費からは差し引きません。\n（2）10万円\n（注）その年の\n総所得金額等",
+      "exceptions": "照合の出発点は corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:23-23。補填対象医療費を任意扱いし、空欄時に全体から差し引く。例えば入院費15万円・給付20万円・他の医療費10万円の場合、超過給付5万円を他の医療費から差し引いて控除額を過少にする。対象医療費の上限は任意に省略できない。",
+      "covers": [
+        "s-fc87705ec9eef030bdc0-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:23-23",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-577b325f4823a897d3c3-1",
+      "remediation": {
+        "original_ids": [
+          "s-577b325f4823a897d3c3-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-61004f35ef5cf248bb6e-1",
+      "text": "補填金がある場合は対象医療費の入力が必要です。複数の対象がある場合は、各医療費を限度に補填額を集計してください。",
+      "where": [
+        "span:body"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm",
+      "source_quote": "（注）保険金などで補てんされる金額は、その給付の目的となった医療費の金額を限度として差し引きますので、引ききれない金額が生じた場合であっても他の医療費からは差し引きません。\n（2）10万円\n（注）その年の\n総所得金額等",
+      "exceptions": "照合の出発点は corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:23-23。補填対象医療費を任意扱いし、空欄時に全体から差し引く。例えば入院費15万円・給付20万円・他の医療費10万円の場合、超過給付5万円を他の医療費から差し引いて控除額を過少にする。対象医療費の上限は任意に省略できない。",
+      "covers": [
+        "s-61004f35ef5cf248bb6e-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:23-23",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-0c2dd2340e23f038ab58-1",
+      "remediation": {
+        "original_ids": [
+          "s-0c2dd2340e23f038ab58-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-308fc2c90ce01770caa4-1",
+      "text": "この画面は給与所得のみの人が対象です。",
+      "where": [
+        "p:body"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm",
+      "source_quote": "医療費控除の金額は、次の式で計算した金額（最高で200万円）です。\n（実際に支払った医療費の合計額-（1）の金額）-（2）の金額\n（1）保険金などで補てんされる金額\n（例） 生命保険契約などで支給される入院費給付金や健康保険などで支給される高額療養費・家族療養費・出産育児一時金など",
+      "exceptions": "修正文の対象・条件・金額を指定正本に照合した。",
+      "covers": [
+        "s-308fc2c90ce01770caa4-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:19-29;corpus/egov_shotokuzeiho_r081201_beppyo5.txt:125-126",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-308fc2c90ce01770caa4-1",
+      "remediation": {
+        "original_ids": [
+          "s-308fc2c90ce01770caa4-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-247ee07ab080c7d4e181-1",
+      "text": "給与以外の所得がある人は総所得金額等を使って申告書等で計算してください。",
+      "where": [
+        "p:body"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm",
+      "source_quote": "医療費控除の金額は、次の式で計算した金額（最高で200万円）です。\n（実際に支払った医療費の合計額-（1）の金額）-（2）の金額\n（1）保険金などで補てんされる金額\n（例） 生命保険契約などで支給される入院費給付金や健康保険などで支給される高額療養費・家族療養費・出産育児一時金など",
+      "exceptions": "修正文の対象・条件・金額を指定正本に照合した。",
+      "covers": [
+        "s-247ee07ab080c7d4e181-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:19-29;corpus/egov_shotokuzeiho_r081201_beppyo5.txt:125-126",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-247ee07ab080c7d4e181-1",
+      "remediation": {
+        "original_ids": [
+          "s-247ee07ab080c7d4e181-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-57f992987c548df38291-1",
+      "text": "税引き前の額面。足切りの計算に使います",
+      "where": [
+        "span:body"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm",
+      "source_quote": "（2）10万円\n（注）その年の\n総所得金額等\nが200万円未満の人は、\n総所得金額等\nの5パーセントの金額\n【第2項】給与所得の金額は、その年中の給与等の収入金額から給与所得控除額を控除した残額とする。",
+      "exceptions": "正本 corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:24-29;corpus/egov_shotokuzeiho_r081201_28.txt:8-8 の年分・金額・境界・対象者を確認し、この文の主張はその範囲で一致する。",
+      "covers": [
+        "s-57f992987c548df38291-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:24-29;corpus/egov_shotokuzeiho_r081201_28.txt:8-8",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-57f992987c548df38291-1"
+    },
+    {
+      "id": "r16-s-9800bc56801361a77fa2-1",
+      "text": "課税される所得金額の帯（＝所得税の税率）",
+      "where": [
+        "label:ui"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "所得税の税率は、分離課税に対するものなどを除くと、5パーセントから45パーセントの7段階に区分されています。\n計算方法・計算式\n課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。）に対する所得税の金額は、次の「所得税の速算表」を使用すると簡単に求められます。",
+      "exceptions": "正本 corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:14-16 の年分・金額・境界・対象者を確認し、この文の主張はその範囲で一致する。",
+      "covers": [
+        "s-9800bc56801361a77fa2-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:14-16",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-9800bc56801361a77fa2-1"
+    },
+    {
+      "id": "r16-s-c62f6b3ba5b8e03d2909-1",
+      "text": "課税所得0円（所得税非課税・税率0%） [value=0;default=false]",
+      "where": [
+        "option:ui"
+      ],
+      "numbers": [
+        "0%"
+      ],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://laws.e-gov.go.jp/api/2/law_data/340AC0000000033?elm=Article_89",
+      "source_quote": "【第1項】居住者に対して課する所得税の額は、その年分の課税総所得金額又は課税退職所得金額をそれぞれ次の表の上欄に掲げる金額に区分してそれぞれの金額に同表の下欄に掲げる税率を乗じて計算した金額を合計した金額と、その年分の課税山林所得金額の五分の一に相当する金額を同表の上欄に掲げる金額に区分してそれぞれの金額に同表の下欄に掲げる税率を乗じて計算した金額を合計した金額に五を乗じて計算した金額との合計額とする。百九十五万円以下の金額 | 百分の五 | ",
+      "exceptions": "正本 corpus/egov_shotokuzeiho_89.txt:6-6 の年分・金額・境界・対象者を確認し、この文の主張はその範囲で一致する。",
+      "covers": [
+        "s-c62f6b3ba5b8e03d2909-1"
+      ],
+      "corpus_ref": "corpus/egov_shotokuzeiho_89.txt:6-6",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-c62f6b3ba5b8e03d2909-1"
+    },
+    {
+      "id": "r16-s-77e7cd8670cdf3d64a16-1",
+      "text": "195万円以下（税率5%） [value=5;default=false]",
+      "where": [
+        "option:ui"
+      ],
+      "numbers": [
+        "195万円",
+        "5%"
+      ],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。）に対する所得税の金額は、次の「所得税の速算表」を使用すると簡単に求められます。\n平成27年分以後\n -->\n 課税される所得金額",
+      "exceptions": "所得税法89条（corpus/egov_shotokuzeiho_89.txt 6–12行）は195万円以下が5%、195万円を超え330万円以下が10%、330万円を超え695万円以下が20%、695万円を超え900万円以下が23%、900万円を超え1,800万円以下が33%、1,800万円を超え4,000万円以下が40%、4,000万円を超える金額が45%。「以上／未満」だと、ちょうど境界額の税率が一段ずれる。",
+      "covers": [
+        "s-77e7cd8670cdf3d64a16-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:16-17;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:22-24",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-9d93f24916471ed120e0-1",
+      "remediation": {
+        "original_ids": [
+          "s-9d93f24916471ed120e0-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-bcd5a05cbaf0c91527e9-1",
+      "text": "195万円超 330万円以下（税率10%） [value=10;default=false]",
+      "where": [
+        "option:ui"
+      ],
+      "numbers": [
+        "195万円",
+        "330万円",
+        "10%"
+      ],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。）に対する所得税の金額は、次の「所得税の速算表」を使用すると簡単に求められます。\n平成27年分以後\n -->\n 課税される所得金額",
+      "exceptions": "所得税法89条（corpus/egov_shotokuzeiho_89.txt 6–12行）は195万円以下が5%、195万円を超え330万円以下が10%、330万円を超え695万円以下が20%、695万円を超え900万円以下が23%、900万円を超え1,800万円以下が33%、1,800万円を超え4,000万円以下が40%、4,000万円を超える金額が45%。「以上／未満」だと、ちょうど境界額の税率が一段ずれる。",
+      "covers": [
+        "s-bcd5a05cbaf0c91527e9-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:16-17;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:25-27",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-68dcdc6e60241a1670b4-1",
+      "remediation": {
+        "original_ids": [
+          "s-68dcdc6e60241a1670b4-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-49e2264363de552e0bb0-1",
+      "text": "330万円超 695万円以下（税率20%） [value=20;default=false]",
+      "where": [
+        "option:ui"
+      ],
+      "numbers": [
+        "330万円",
+        "695万円",
+        "20%"
+      ],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。）に対する所得税の金額は、次の「所得税の速算表」を使用すると簡単に求められます。\n平成27年分以後\n -->\n 課税される所得金額",
+      "exceptions": "所得税法89条（corpus/egov_shotokuzeiho_89.txt 6–12行）は195万円以下が5%、195万円を超え330万円以下が10%、330万円を超え695万円以下が20%、695万円を超え900万円以下が23%、900万円を超え1,800万円以下が33%、1,800万円を超え4,000万円以下が40%、4,000万円を超える金額が45%。「以上／未満」だと、ちょうど境界額の税率が一段ずれる。",
+      "covers": [
+        "s-49e2264363de552e0bb0-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:16-17;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:28-30",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-0f266a349d3a44f6a14f-1",
+      "remediation": {
+        "original_ids": [
+          "s-0f266a349d3a44f6a14f-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-cbf12d5da53e656cbffd-1",
+      "text": "695万円超 900万円以下（税率23%） [value=23;default=false]",
+      "where": [
+        "option:ui"
+      ],
+      "numbers": [
+        "695万円",
+        "900万円",
+        "23%"
+      ],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。）に対する所得税の金額は、次の「所得税の速算表」を使用すると簡単に求められます。\n平成27年分以後\n -->\n 課税される所得金額",
+      "exceptions": "所得税法89条（corpus/egov_shotokuzeiho_89.txt 6–12行）は195万円以下が5%、195万円を超え330万円以下が10%、330万円を超え695万円以下が20%、695万円を超え900万円以下が23%、900万円を超え1,800万円以下が33%、1,800万円を超え4,000万円以下が40%、4,000万円を超える金額が45%。「以上／未満」だと、ちょうど境界額の税率が一段ずれる。",
+      "covers": [
+        "s-cbf12d5da53e656cbffd-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:16-17;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:31-33",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-a4352294bcf7904c7da5-1",
+      "remediation": {
+        "original_ids": [
+          "s-a4352294bcf7904c7da5-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-21011989cbb68fc078b5-1",
+      "text": "900万円超 1,800万円以下（税率33%） [value=33;default=false]",
+      "where": [
+        "option:ui"
+      ],
+      "numbers": [
+        "1,800",
+        "900万円",
+        "33%"
+      ],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。）に対する所得税の金額は、次の「所得税の速算表」を使用すると簡単に求められます。\n平成27年分以後\n -->\n 課税される所得金額",
+      "exceptions": "所得税法89条（corpus/egov_shotokuzeiho_89.txt 6–12行）は195万円以下が5%、195万円を超え330万円以下が10%、330万円を超え695万円以下が20%、695万円を超え900万円以下が23%、900万円を超え1,800万円以下が33%、1,800万円を超え4,000万円以下が40%、4,000万円を超える金額が45%。「以上／未満」だと、ちょうど境界額の税率が一段ずれる。",
+      "covers": [
+        "s-21011989cbb68fc078b5-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:16-17;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:34-36",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-ce601598af7735498de6-1",
+      "remediation": {
+        "original_ids": [
+          "s-ce601598af7735498de6-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-787d667cc98ce02fca0a-1",
+      "text": "1,800万円超 4,000万円以下（税率40%） [value=40;default=false]",
+      "where": [
+        "option:ui"
+      ],
+      "numbers": [
+        "1,800",
+        "4,000",
+        "40%"
+      ],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。）に対する所得税の金額は、次の「所得税の速算表」を使用すると簡単に求められます。\n平成27年分以後\n -->\n 課税される所得金額",
+      "exceptions": "所得税法89条（corpus/egov_shotokuzeiho_89.txt 6–12行）は195万円以下が5%、195万円を超え330万円以下が10%、330万円を超え695万円以下が20%、695万円を超え900万円以下が23%、900万円を超え1,800万円以下が33%、1,800万円を超え4,000万円以下が40%、4,000万円を超える金額が45%。「以上／未満」だと、ちょうど境界額の税率が一段ずれる。",
+      "covers": [
+        "s-787d667cc98ce02fca0a-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:16-17;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:37-39",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-abfb32ef547e6ba6e66f-1",
+      "remediation": {
+        "original_ids": [
+          "s-abfb32ef547e6ba6e66f-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-416ff46999ab9fbb8fc1-1",
+      "text": "4,000万円超（税率45%） [value=45;default=false]",
+      "where": [
+        "option:ui"
+      ],
+      "numbers": [
+        "4,000",
+        "45%"
+      ],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。）に対する所得税の金額は、次の「所得税の速算表」を使用すると簡単に求められます。\n平成27年分以後\n -->\n 課税される所得金額",
+      "exceptions": "所得税法89条（corpus/egov_shotokuzeiho_89.txt 6–12行）は195万円以下が5%、195万円を超え330万円以下が10%、330万円を超え695万円以下が20%、695万円を超え900万円以下が23%、900万円を超え1,800万円以下が33%、1,800万円を超え4,000万円以下が40%、4,000万円を超える金額が45%。「以上／未満」だと、ちょうど境界額の税率が一段ずれる。",
+      "covers": [
+        "s-416ff46999ab9fbb8fc1-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:16-17;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:40-42",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-801519e093f4feb7b4dd-1",
+      "remediation": {
+        "original_ids": [
+          "s-801519e093f4feb7b4dd-1"
+        ],
+        "review": "修正担当による正本再照合。独立再審査は司令塔の工程。"
+      }
+    },
+    {
+      "id": "r16-s-970ebba117c9cf84bae3-1",
+      "text": "戻る税金の計算に使います",
+      "where": [
+        "span:body"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。）に対する所得税の金額は、次の「所得税の速算表」を使用すると簡単に求められます。\n医療費控除の金額は、次の式で計算した金額（最高で200万円）です。\n（実際に支払った医療費の合計額-（1）の金額）-（2）の金額",
+      "exceptions": "正本 corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:16-16;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:19-20 の年分・金額・境界・対象者を確認し、この文の主張はその範囲で一致する。",
+      "covers": [
+        "s-970ebba117c9cf84bae3-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2260_htm.txt:16-16;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1120_htm.txt:19-20",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-970ebba117c9cf84bae3-1"
+    },
+    {
+      "id": "r16-s-db53da5a205604822ee1-1",
+      "text": "スイッチOTC等の年間購入費。通常の控除とは選択",
+      "where": [
+        "span:body"
+      ],
+      "numbers": [],
+      "applies": "本文に明示した年分・条件。令和8年12月1日施行の条文は令和8年分以後への適用を附則で確認。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1129.htm",
+      "source_quote": "セルフメディケーション税制は医療費控除の特例であり、\n通常の医療費控除\nとの選択適用となります。したがって、この特例の適用を受ける場合は、\n通常の医療費控除\nを併せて受けることはできません。\n特定一般用医薬品等購入費とは、医師によって処方される医薬品（医療用医薬品）から、ドラッグストアで購入できるOTC医薬品に転用された医薬品（スイッチOTC医薬品）等の購入費をいいます。\nセルフメディケーション税制の対象となる商品には、購入の際の領収書等にセルフメディケーション税制の対象商品である旨が表示されています。スイッチOTC医薬品等の具体的な品目一覧は、",
+      "exceptions": "正本 corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1129_htm.txt:16-20;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1129_htm.txt:35-36 の年分・金額・境界・対象者を確認し、この文の主張はその範囲で一致する。",
+      "covers": [
+        "s-db53da5a205604822ee1-1"
+      ],
+      "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1129_htm.txt:16-20;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_1129_htm.txt:35-36",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-db53da5a205604822ee1-1"
     }
   ],
-  "absolutes": []
+  "absolutes": [],
+  "nonclaims": [
+    {
+      "id": "s-462a7b4e81d71523cdb9-1",
+      "why": "医療費の入力欄の名称で、控除要件や計算結果を断定していない。"
+    },
+    {
+      "id": "s-c0a1f19aa0c0adc3f975-1",
+      "why": "入力欄の識別子・例示・入力制約。"
+    },
+    {
+      "id": "s-86b3de045e1e54269280-1",
+      "why": "入力項目の名称であり、税制の要件・金額・計算結果を断定していない。"
+    },
+    {
+      "id": "s-1213175e8c67938135a8-1",
+      "why": "入力欄の初期値・入力例・操作案内・パンくずであり、検証対象の制度上の主張ではない。"
+    },
+    {
+      "id": "s-fb47cc8308be1c59a734-1",
+      "why": "入力欄の初期値・入力例・操作案内・パンくずであり、検証対象の制度上の主張ではない。"
+    },
+    {
+      "id": "s-0a092d44986d9ea3f41b-1",
+      "why": "入力項目の名称であり、税制の要件・金額・計算結果を断定していない。"
+    },
+    {
+      "id": "s-e7a7b939981530fbbb7f-1",
+      "why": "入力欄の初期値・入力例・操作案内・パンくずであり、検証対象の制度上の主張ではない。"
+    },
+    {
+      "id": "s-58064c1894aa1ca848d4-1",
+      "why": "入力欄の初期値・入力例・操作案内・パンくずであり、検証対象の制度上の主張ではない。"
+    },
+    {
+      "id": "s-a58404d37d806adfae84-1",
+      "why": "入力項目の名称であり、税制の要件・金額・計算結果を断定していない。"
+    },
+    {
+      "id": "s-e20ceb962ba74360e858-1",
+      "why": "入力欄の初期値・入力例・操作案内・パンくずであり、検証対象の制度上の主張ではない。"
+    },
+    {
+      "id": "s-61c89e9cb12cbd33c36a-1",
+      "why": "入力欄の初期値・入力例・操作案内・パンくずであり、検証対象の制度上の主張ではない。"
+    },
+    {
+      "id": "s-5b6fd71f935e658a1881-1",
+      "why": "入力欄の初期値・入力例・操作案内・パンくずであり、検証対象の制度上の主張ではない。"
+    }
+  ],
+  "verified": [
+    {
+      "id": "s-b80a7414bd653f43927a-1",
+      "text_hash": "c4a84c253b43aa769f8d",
+      "result": "ok",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-b80a7414bd653f43927a-1"
+    },
+    {
+      "id": "s-6ce1697aa3c46701e94b-1",
+      "text_hash": "ca00e75493a7e9b9e8b5",
+      "result": "ok",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-6ce1697aa3c46701e94b-1"
+    },
+    {
+      "id": "s-57f992987c548df38291-1",
+      "text_hash": "4fd07c0c63def548aa62",
+      "result": "ok",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-57f992987c548df38291-1"
+    },
+    {
+      "id": "s-9800bc56801361a77fa2-1",
+      "text_hash": "833608379d4d4d17623a",
+      "result": "ok",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-9800bc56801361a77fa2-1"
+    },
+    {
+      "id": "s-c62f6b3ba5b8e03d2909-1",
+      "text_hash": "da6b22e34f0324ad4fcf",
+      "result": "ok",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-c62f6b3ba5b8e03d2909-1"
+    },
+    {
+      "id": "s-970ebba117c9cf84bae3-1",
+      "text_hash": "fd8d20ab889c90d8b73f",
+      "result": "ok",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-970ebba117c9cf84bae3-1"
+    },
+    {
+      "id": "s-db53da5a205604822ee1-1",
+      "text_hash": "53042f0a92f5601cbaac",
+      "result": "ok",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-db53da5a205604822ee1-1"
+    }
+  ],
+  "unconfirmed": [
+    {
+      "id": "s-d13a5bd04fdb7a8b4f94-1",
+      "text_hash": "eaec37147b097fac8aa0",
+      "text": "医療費控除 計算ウィジェット｜keiri-tools",
+      "result": "out_of_corpus",
+      "needed_source": "keiri-tools医療費控除ウィジェットの仕様・提供者情報・機能検証資料。税制資料から製品名や対応機能は裏付けられない。",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-d13a5bd04fdb7a8b4f94-1"
+    },
+    {
+      "id": "s-cf317cb365ee32b7f72f-1",
+      "text_hash": "57c56b0c8e3c46d3c529",
+      "text": "1年間の医療費と年収から医療費控除の控除額と戻る税金の目安を計算する埋め込みウィジェット。セルフメディケーション税制対応。keiri-tools 提供。",
+      "result": "out_of_corpus",
+      "needed_source": "keiri-tools医療費控除ウィジェットの仕様・提供者情報・機能検証資料。税制資料から製品名や対応機能は裏付けられない。",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-cf317cb365ee32b7f72f-1"
+    },
+    {
+      "id": "s-b33c81ceb629b392302b-1",
+      "text_hash": "dd9e051bb32c595185a0",
+      "text": "医療費控除 計算機",
+      "result": "out_of_corpus",
+      "needed_source": "keiri-tools医療費控除ウィジェットの仕様・提供者情報・機能検証資料。税制資料から製品名や対応機能は裏付けられない。",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-b33c81ceb629b392302b-1"
+    },
+    {
+      "id": "s-d1abcc4c33aa98cadbe7-1",
+      "text_hash": "f2342b21769788560df4",
+      "text": "keiri-tools\n    の計算エンジンで動いています（所得税法73条・国税庁 No.1120 ほか）。",
+      "result": "out_of_corpus",
+      "needed_source": "keiri-tools計算エンジンの実装・使用状況と法令準拠を証明する仕様書または検証記録。正本は制度を規定するが、このエンジンの動作は証明しない。",
+      "review_ref": "r16/t14-a/segment-adjudication.json#s-d1abcc4c33aa98cadbe7-1"
+    }
+  ]
 }

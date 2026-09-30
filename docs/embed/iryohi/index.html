@@ -47,21 +47,22 @@
 <body>
 <div class="w">
   <h1>医療費控除 計算機</h1>
-  <p class="lead">1年間の医療費と年収から、控除額と、戻ってくる税金（所得税＋復興特別所得税＋住民税）の目安を計算します。足切りは「総所得金額等の5％」と「10万円」の低いほうです。</p>
+  <p class="lead">給与所得のみの人が医療費・補填金・給与収入・所得税率を入力すると、控除額と税の軽減目安を計算します。住民税分は通常翌年度の減額で、所得税等の還付とは時期が異なります。足切りは「総所得金額等の5％」と「10万円」の低いほうです。</p>
 
   <label for="iryohi">1年間に支払った医療費の合計（円）</label>
   <input id="iryohi" type="number" inputmode="numeric" placeholder="例: 300000" min="0" aria-describedby="iryohi-hint">
-      <span id="iryohi-hint" class="hint">家族分を合算・通院交通費も含む</span>
+      <span id="iryohi-hint" class="hint">本人が支払った生計同一の家族分も対象。通院の電車・バス代等を含み、車のガソリン・駐車料金は対象外。タクシーは公共交通を使えない場合等に限ります。</span>
 
   <label for="hoten">保険金などで補填される金額（円）</label>
   <input id="hoten" type="number" inputmode="numeric" value="0" min="0" aria-describedby="hoten-hint">
       <span id="hoten-hint" class="hint">高額療養費・入院給付金など。無ければ0</span>
 
-  <label for="hotenTaisho">（任意）その補填金がひも付く医療費（円）</label>
+  <label for="hotenTaisho">補填金がある場合に必須：その給付の対象医療費（円）</label>
   <input id="hotenTaisho" type="number" inputmode="numeric" placeholder="例: 150000（入院費）" min="0" aria-describedby="hotenTaisho-hint">
-      <span id="hotenTaisho-hint" class="hint">空欄なら医療費全体から引きます</span>
+      <span id="hotenTaisho-hint" class="hint">補填金がある場合は対象医療費の入力が必要です。複数の対象がある場合は、各医療費を限度に補填額を集計してください。</span>
 
-  <label for="shunyu">給与収入（年収・円）</label>
+  <p id="salary-scope">この画面は給与所得のみの人が対象です。給与以外の所得がある人は総所得金額等を使って申告書等で計算してください。</p>
+<label for="shunyu">給与収入（年収・円）</label>
   <input id="shunyu" type="number" inputmode="numeric" placeholder="例: 5000000" min="0" aria-describedby="shunyu-hint">
       <span id="shunyu-hint" class="hint">税引き前の額面。足切りの計算に使います</span>
 
@@ -69,13 +70,13 @@
   <select id="zeiritsu" aria-describedby="zeiritsu-hint">
     <option value="">選択してください</option>
     <option value="0">課税所得0円（所得税非課税・税率0%）</option>
-    <option value="5">195万円未満（税率5%）</option>
-    <option value="10">195万円以上 330万円未満（税率10%）</option>
-    <option value="20">330万円以上 695万円未満（税率20%）</option>
-    <option value="23">695万円以上 900万円未満（税率23%）</option>
-    <option value="33">900万円以上 1,800万円未満（税率33%）</option>
-    <option value="40">1,800万円以上 4,000万円未満（税率40%）</option>
-    <option value="45">4,000万円以上（税率45%）</option>
+    <option value="5">195万円以下（税率5%）</option>
+    <option value="10">195万円超 330万円以下（税率10%）</option>
+    <option value="20">330万円超 695万円以下（税率20%）</option>
+    <option value="23">695万円超 900万円以下（税率23%）</option>
+    <option value="33">900万円超 1,800万円以下（税率33%）</option>
+    <option value="40">1,800万円超 4,000万円以下（税率40%）</option>
+    <option value="45">4,000万円超（税率45%）</option>
   </select>
       <span id="zeiritsu-hint" class="hint">戻る税金の計算に使います</span>
 
@@ -165,9 +166,9 @@ $("calc").addEventListener("click", async () => {
 
   // 軽減額の行は常に描く（税率未選択なら理由を出す。黙って消さない）。
   const keigenRow = (keigen) => keigen
-    ? `<div class="row">戻ってくる税金の目安 <span class="big">${yen(keigen.total)}</span></div>
-       <div class="hint">内わけ： 所得税 ${yen(keigen.shotokuzei)} ＋ 復興特別所得税 ${yen(keigen.fukko)} ＋ 住民税 ${yen(keigen.jumin)}（所得税率 ${keigen.rate}%・住民税一律10%）</div>`
-    : `<div class="note"><b>戻ってくる税金の目安を出すには「課税される所得金額の帯（＝所得税の税率）」を選んでください。</b>医療費控除は所得控除なので、戻る額は控除額に税率を掛けた分になります。</div>`;
+    ? `<div class="row">税負担の軽減目安 <span class="big">${yen(keigen.total)}</span></div>
+       <div class="hint">内わけ： 所得税 ${yen(keigen.shotokuzei)} ＋ 復興特別所得税 ${yen(keigen.fukko)} ＋ 翌年度住民税の減額 ${yen(keigen.jumin)}（所得税率 ${keigen.rate}%・住民税は標準税率10%の概算）</div>`
+    : `<div class="note"><b>税負担の軽減目安を出すには「課税される所得金額の帯（＝所得税の税率）」を選んでください。</b>医療費控除は所得控除なので、軽減額は控除が同じ税率で全額効く場合の概算で、実際の還付額とは異なります。</div>`;
 
   const ashiNote = r.ashikiriCapped
     ? `総所得金額等 ${yen(r.sotoShotoku)} の5%（${yen(Math.floor(r.sotoShotoku * 0.05))}）より10万円が小さいので<b>10万円</b>`
@@ -192,10 +193,10 @@ $("calc").addEventListener("click", async () => {
         <div class="hint">（購入費 ${yen(sk.purchase)} − ${yen(IRYOHI.selfmed.floor)}${sk.kojo >= IRYOHI.selfmed.cap ? ` → 上限${yen(IRYOHI.selfmed.cap)}で頭打ち` : ""}）</div>
         ${keigenRow(sk.keigen)}
       </div>
-      <div class="callout"><b>おすすめ：${r.recommended === "selfmed" ? "② セルフメディケーション税制" : "① 通常の医療費控除"}</b> 控除額が大きいほうを選ぶと戻る税金が大きくなります。</div>`;
+      <div class="callout"><b>おすすめ：${r.recommended === "selfmed" ? "② セルフメディケーション税制" : "① 通常の医療費控除"}</b> 控除額による比較です。実際の税の軽減は課税所得等で変わります。</div>`;
   }
 
-  html += `<div class="note">※ 戻る税金は<b>概算（目安）</b>です。医療費控除・セルフメディケーション税制は<b>確定申告</b>が必要です。所得税を納めていない人は所得税は戻りません（住民税は課税されていれば戻ります）。${r.year ? `（${r.year}）` : ""}</div>
+  html += `<div class="note">※ 税負担の軽減額は<b>概算（目安）</b>です。医療費控除・セルフメディケーション税制は<b>確定申告</b>が必要です。所得税を納めていない人は所得税は戻りません（住民税は課税されていれば通常翌年度の減額となります）。${r.year ? `（${r.year}）` : ""}</div>
     <div class="cta"><a class="a-detail" href="${BASE}" target="_blank" rel="noopener">▶ 詳しい内訳・解説を見る</a></div>`;
 
   box.innerHTML = html;
