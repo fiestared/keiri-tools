@@ -129,8 +129,13 @@ breakCore('9. 介護分を全員に賦課すると赤になる',
 
 // 10. 所得割の基礎控除を引かない
 breakCore('10. 所得割の基礎控除を引かないと赤になる',
-  'kazeiHyojun += Math.max(0, nz(m.shotoku) - kisoKojo);',
+  'kazeiHyojun += Math.max(0, nz(m.shotoku) - deduction);',
   'kazeiHyojun += nz(m.shotoku);');
+
+// r16: 2400万円超でも43万円に戻すと、新しい所得段階の境界で赤になる。
+breakCore('11. 基礎控除を一律43万円に戻すと赤になる',
+  'const deduction = band ? nz(band.deduction_yen) : 0;',
+  'const deduction = kisoKojo;');
 
 // ── 壊しを戻したあと、本当に緑へ戻ることを確認する ──────────────────────────
 {
