@@ -69,6 +69,36 @@ class Units(unittest.TestCase):
                 git('add','docs/a/index.html','docs/b/index.html');self.assertEqual(git('write-tree'),review['reviewed_tree'])
             finally:writable(root)
 
+    def test_out_of_corpus_kept_unless_second_model_says_wrong(self):
+        # 2026-09-30 Masahiro: 正本外は別モデルが誤りと判断しなければそのまま残す
+        for case in ('not_wrong','unsure','wrong','incomplete'):
+            with tempfile.TemporaryDirectory() as tmp:
+                root,repo,a,git=self.fixture(tmp)
+                try:
+                    with patch.object(runner,'execute'):runner.run(a)
+                    r=a.run_dir;self.outputs(r);a.prepare_only=False;a.check_only=False;calls=[]
+                    def fake(worker,model,prompt,rr,log):
+                        calls.append(model);us=json.loads((rr/'segments.json').read_text())
+                        if model=='gpt-6-astra':
+                            rows=[{'page':u['page'],'id':u['id'],'decision':'ok','reason':'fixture corpus/a.txt:1'} for u in us]
+                            rows[0].update(decision='out_of_corpus',needed_source='資料X')
+                            (rr/'segment-adjudication.json').write_text(json.dumps({'segments':rows}));(rr/'fixes.md').write_text('fixture\nDONE\n')
+                        else:
+                            listed=json.loads((rr/'oc-units.json').read_text());self.assertEqual(len(listed),1)
+                            ops=[{'page':x['page'],'id':x['id'],'verdict':case if case!='incomplete' else 'not_wrong','reason':'fixture'} for x in listed]
+                            if case=='incomplete':ops=[]
+                            (rr/'oc-opinion.json').write_text(json.dumps({'units':ops}))
+                        return 0,False
+                    with patch.object(runner,'execute',side_effect=fake):rc=runner.run(a)
+                    self.assertEqual(calls,['gpt-6-astra','gpt-5.6-sol'],case)
+                    if case in ('not_wrong','unsure'):
+                        self.assertEqual(rc,0,case);self.assertEqual(json.loads((r/'review-summary.json').read_text())['out_of_corpus_kept'],1)
+                    else:
+                        self.assertEqual(rc,4,case);self.assertFalse((r/'review-summary.json').exists(),case)
+                        stopped=(r/'STOPPED').read_text()
+                        self.assertIn('unresolved findings' if case=='wrong' else 'second opinion IDs incomplete',stopped,case)
+                finally:writable(root)
+
     def test_snapshot_change_is_rejected(self):
         with tempfile.TemporaryDirectory() as tmp:
             root,repo,a,git=self.fixture(tmp)

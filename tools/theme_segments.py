@@ -154,15 +154,39 @@ def run(a,state,execute,stop):
         keys=[(x['page'],x['id']) for x in rows]
         if len(keys)!=len(set(keys)) or set(keys)!={(u['page'],u['id']) for u in units}:raise ValueError('adjudication IDs incomplete')
         if any(x.get('decision') not in ('ok','nonclaim','out_of_corpus','unresolved') or not x.get('reason') for x in rows):raise ValueError('adjudication verdict missing')
-        if any(x['decision']=='unresolved' for x in rows):raise ValueError('unresolved findings; fix and review a new snapshot')
         if any(x['decision']=='out_of_corpus' and not x.get('needed_source') for x in rows):raise ValueError('required source missing')
-        # Published review cannot call out-of-corpus evidence verified.
-        if any(x['decision']=='out_of_corpus' for x in rows):raise ValueError('out_of_corpus: next theme required before handoff')
         protected={(u['page'],u['id']) for u in units if u['protected']}
         if any(x['decision']=='nonclaim' and (x['page'],x['id']) in protected for x in rows):raise ValueError('protected nonclaim')
     except (ValueError,KeyError,TypeError,AttributeError) as e:return stop(r,str(e))
+    # 正本外は「別のモデルが誤りと判断しなければ、そのまま残す」（2026-09-30 Masahiro「照合できない主張で正本がない場合は、
+    # 書き直すんじゃなくて他のモデルがダメだと思わなければそのままでいいよ」）。
+    # 別のモデル = この周の sol と別の sol。一般知識で wrong / not_wrong / unsure を付け、wrong だけを修正対象にする。
+    oc=[x for x in rows if x['decision']=='out_of_corpus']
+    wrong=[]
+    if oc:
+        opinion=r/'oc-opinion.json'
+        if not opinion.exists() or opinion.stat().st_mtime_ns<verdict.stat().st_mtime_ns:
+            text={(u['page'],u['id']):u['text'] for u in units}
+            listing=r/'oc-units.json'
+            listing.write_text(json.dumps([{'page':x['page'],'id':x['id'],'text':text[(x['page'],x['id'])],'adjudication_reason':x['reason'],'needed_source':x['needed_source']} for x in oc],ensure_ascii=False,indent=1)+'\n')
+            template=Path(__file__).resolve().parent/'review_templates/oc_opinion.md'
+            prompt=template.read_text().replace('{{LIST}}',str(listing)).replace('{{OUT}}',str(opinion))
+            (r/'oc-opinion.prompt.md').write_text(prompt)
+            sol=os.environ.get('KEIRI_SOL_MODEL','gpt-6.1-sol');other='gpt-5.6-sol' if sol=='gpt-6.1-sol' else 'gpt-6.1-sol'
+            rc,quota=execute(a.worker,other,prompt,r,r/'oc-opinion.log')
+            if rc or quota or not opinion.exists():return stop(r,'second opinion on out_of_corpus incomplete')
+        try:
+            ops=json.loads(opinion.read_text())['units']
+            got={(x['page'],x['id']):x for x in ops}
+            if set(got)!={(x['page'],x['id']) for x in oc}:raise ValueError('second opinion IDs incomplete')
+            if any(x.get('verdict') not in ('not_wrong','unsure','wrong') or not x.get('reason') for x in ops):raise ValueError('second opinion verdict missing')
+        except (OSError,ValueError,KeyError,TypeError) as e:return stop(r,str(e))
+        wrong=[x for x in ops if x['verdict']=='wrong']
+    unresolved=[x for x in rows if x['decision']=='unresolved']
+    if unresolved or wrong:
+        return stop(r,f'unresolved findings; fix and review a new snapshot (unresolved {len(unresolved)}, out_of_corpus judged wrong {len(wrong)})')
     if not frozen_ok(r,state):return stop(r,'frozen input changed during Astra')
     tree=state.get('draft_snapshot',{}).get('tree') or subprocess.check_output(['git','-C',str(r/'site'),'rev-parse','HEAD^{tree}'],text=True).strip()
-    (r/'review-summary.json').write_text(json.dumps({'status':'reviewed','reviewed_tree':tree,'scope':state['pages'],'unprocessed':0,'unresolved_high':0,'evidence':str(verdict),'evidence_sha256':digest(verdict)},ensure_ascii=False,indent=2)+'\n')
+    (r/'review-summary.json').write_text(json.dumps({'status':'reviewed','reviewed_tree':tree,'scope':state['pages'],'unprocessed':0,'unresolved_high':0,'out_of_corpus_kept':len(oc),'evidence':str(verdict),'evidence_sha256':digest(verdict)},ensure_ascii=False,indent=2)+'\n')
     (r/'publish-request').write_text('司令塔の検品待ち（未公開）\n'+str(r/'review-summary.json')+'\n')
     (r/'.finished').touch();(r/'STOPPED').unlink(missing_ok=True);return 0
