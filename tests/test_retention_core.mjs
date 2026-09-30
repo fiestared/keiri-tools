@@ -37,7 +37,7 @@ const xml=readFileSync(new URL('../docs/updates.xml',import.meta.url),'utf8'), f
 const records=JSON.parse(readFileSync(new URL('../docs/assets/retention_updates.json',import.meta.url),'utf8'));
 for(const [i,item] of [...feed.querySelectorAll('item')].entries()) {
  assert.equal(item.querySelector('pubDate').textContent,new Date(records[i].recordedAt).toUTCString(),'RSS uses fixed record time');
- assert(item.querySelector('description').textContent.includes(records[i].effectiveDate),'RSS effective date');
+ {const [y,m,d]=records[i].effectiveDate.split('-');assert(item.querySelector('description').textContent.includes(`${y}年${Number(m)}月${Number(d)}日`),'RSS effective date (読者向けは「2026年4月1日」表記。2026-09-30)');}
  assert(item.querySelector('description').textContent.includes(records[i].source),'RSS official source');
  assert.equal(item.querySelector('guid').textContent,'keiri-tools:'+records[i].id);
 }

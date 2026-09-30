@@ -238,7 +238,7 @@ $("calc").addEventListener("click", async () => {
     return;
   }
   const annual = Number($("annual").value);
-  if (!annual || annual <= 0) { box.innerHTML = '<div class="warn">現在の年収を入力してください。</div>'; return; }
+  if (!annual || annual <= 0) { box.innerHTML = '<div class="warn" data-field="annual">現在の年収を入力してください。</div>'; return; }
   const pref = $("pref").value;
   if (!SHAHO.kenko_rates[pref]) {
     box.innerHTML = `<div class="note"><b>「${pref || "未選択"}」の健康保険料率が見つかりませんでした。</b>

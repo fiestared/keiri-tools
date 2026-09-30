@@ -61,7 +61,8 @@ for(const width of only==='fee'?[320]:[1280,390]){
    for(const value of ['-1','35.5','','14','75']){
     await page.locator('#age').fill(value);await page.locator('#calc').focus();await page.keyboard.press('Enter');await page.waitForTimeout(30);
     check(await page.locator('#age').getAttribute('aria-invalid')==='true','age invalid blocked');check(await page.locator('#copy-result').isDisabled(),'age error cannot copy');check(await page.locator('#age').inputValue()===value,'age value retained');check(await page.locator('#result > .warn a').getAttribute('href')==='#age','age correction link');
-    check(await page.locator('#result > .warn').evaluate(el=>el===document.activeElement),'age error focus');
+    // 2026-09-30: エラー時のフォーカスは警告の箱ではなく誤りのある欄へ（a11y_error.js が #age へのリンクから結び付ける）
+    check(await page.locator('#age').evaluate(el=>el===document.activeElement),'age error focus');
     log.push({slug,width,action:'invalid age → Enter',value});
    }
    await record(page,`${slug}-age-error-${width}`);await page.locator('#result .warn a').click();check(await page.locator('#age').evaluate(el=>el===document.activeElement),'error link focuses age');

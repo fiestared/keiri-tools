@@ -330,9 +330,9 @@ $("calc").addEventListener("click", async () => {
   }
 
   const iryohi = Number($("iryohi").value);
-  if (!iryohi || iryohi <= 0) { box.innerHTML = "1年間に支払った医療費の合計を入力してください。"; return; }
+  if (!iryohi || iryohi <= 0) { box.innerHTML = '<div class="warn" data-field="iryohi">1年間に支払った医療費の合計を入力してください。</div>'; return; }
   const shunyu = Number($("shunyu").value);
-  if (!shunyu || shunyu <= 0) { box.innerHTML = "給与収入（年収）を入力してください（足切りの計算に必要です）。"; return; }
+  if (!shunyu || shunyu <= 0) { box.innerHTML = '<div class="warn" data-field="shunyu">給与収入（年収）を入力してください（足切りの計算に必要です）。</div>'; return; }
   if (!okJ || !JUMIN) {
     box.innerHTML = `<div class="note"><b>データを読み込めませんでした。</b>
       年収から総所得金額等を換算するデータが読めませんでした。再読み込みしてください。</div>`;

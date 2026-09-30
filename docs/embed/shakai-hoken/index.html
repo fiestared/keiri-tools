@@ -74,8 +74,8 @@
       <span id="gyoshu-hint" class="hint">雇用保険料率だけが業種で変わります</span>
 
   <label for="monthly">報酬月額（円）</label>
-  <input id="monthly" type="number" inputmode="numeric" placeholder="例: 300000" min="0" step="1000" aria-describedby="monthly-hint">
-      <span id="monthly-hint" class="hint">基本給＋残業手当＋通勤手当などの総支給額</span>
+  <input id="monthly" type="number" inputmode="numeric" data-example="300000" min="0" step="1000" aria-describedby="monthly-hint">
+      <span id="monthly-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b>基本給＋残業手当＋通勤手当などの総支給額</span>
 
   <label for="bonus">賞与額（円・任意）</label>
   <input id="bonus" type="number" inputmode="numeric" placeholder="例: 500000" min="0" step="1000" aria-describedby="bonus-hint">
@@ -153,7 +153,7 @@ $("calc").addEventListener("click", async () => {
   const monthly = Number($("monthly").value);
   const age = Number($("age").value);
   const pref = $("pref").value;
-  if (!monthly || monthly <= 0) { box.innerHTML = `<div class="warn">報酬月額を入力してください。</div>`; postHeight(); return; }
+  if (!monthly || monthly <= 0) { box.innerHTML = `<div class="warn" data-field="monthly">報酬月額を入力してください。</div>`; postHeight(); return; }
   const kRate = RATES.kenko_rates[pref];
   if (!kRate) { box.innerHTML = `<div class="warn">都道府県を選び直してください。</div>`; postHeight(); return; }
   const gy = RATES.koyou.types[$("gyoshu").value];

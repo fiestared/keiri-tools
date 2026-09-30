@@ -440,7 +440,7 @@ $("calc").addEventListener("click", () => {
   const box = $("result");
   box.style.display = "block";
   const amount = Number($("amount").value);
-  if (!(amount > 0)) { box.innerHTML = "金額を入力してください。"; return; }
+  if (!(amount > 0)) { box.innerHTML = '<div class="warn" data-field="amount">金額を入力してください。</div>'; return; }
 
   const rateKey = radio("rate");
   const mode = $("mode").value;
@@ -671,7 +671,7 @@ $("h-calc").addEventListener("click", () => {
   const box = $("h-result");
   box.style.display = "block";
   const salesIncTax = Number($("h-sales").value);
-  if (!(salesIncTax > 0)) { box.innerHTML = "課税売上（税込）を入力してください。"; return; }
+  if (!(salesIncTax > 0)) { box.innerHTML = '<div class="warn" data-field="h-sales">課税売上（税込）を入力してください。</div>'; return; }
   const purchaseIncTax = Number($("h-purchase").value) || 0;
   const isIndividual = radio("h-kojin") === "kojin";
   const r = compareMethods({

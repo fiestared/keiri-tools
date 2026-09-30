@@ -142,12 +142,15 @@
 
 <section class="hero">
   <h1>社会保険料 計算機</h1>
-<p class="note">この計算機は賞与が同じ月に1回支給される前提で試算します。同月に複数回支給する場合、厚生年金は合算した標準賞与額に月150万円の上限を適用するため、各回を別々に計算した結果は使えません。</p>
   <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-09-30">2026年9月30日</time>）</p>
   <p>給与額を入れるだけで、<b>標準報酬月額の等級</b>・健康保険料・介護保険料・厚生年金保険料・<b>雇用保険料</b>を自動計算します。<b>令和8年度（2026年度）の都道府県別料率</b>に対応。</p>
 </section>
 
 <div class="card">
+  <label for="monthly">報酬月額（円）</label>
+  <input type="number" id="monthly" data-example="300000" inputmode="numeric" aria-describedby="monthly-hint">
+      <span id="monthly-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b>基本給・残業手当・住宅手当・役職手当・通勤手当など、報酬に該当する総額を入力してください。通勤手当は所得税で非課税の部分も含めます。</span>
+
   <div class="fee-pair field-pair">
     <div>
       <label for="pref">勤務先の都道府県</label>
@@ -167,14 +170,11 @@
   <select id="gyoshu" aria-describedby="gyoshu-hint"></select>
       <span id="gyoshu-hint" class="hint">この計算機では、協会けんぽの選択県・標準報酬・年齢等を同じにして業種を変えると、雇用保険料率が変わります</span>
 
-  <label for="monthly">報酬月額（円）</label>
-  <input type="number" id="monthly" placeholder="例: 300000" inputmode="numeric" aria-describedby="monthly-hint">
-      <span id="monthly-hint" class="hint">基本給・残業手当・住宅手当・役職手当・通勤手当など、報酬に該当する総額を入力してください。通勤手当は所得税で非課税の部分も含めます。</span>
-
   <details class="optional-fields" id="bonus-fields"><summary>賞与も計算する（任意） <span data-optional-state>未設定</span></summary>
   <label for="bonus">賞与額（円・任意）</label>
   <input type="number" id="bonus" placeholder="例: 500000" inputmode="numeric" aria-describedby="bonus-hint">
       <span id="bonus-hint" class="hint">入力すると賞与の保険料も計算します</span>
+  <p class="note" id="bonus-scope">この計算機は賞与が同じ月に1回支給される前提で試算します。同月に複数回支給する場合、厚生年金は合算した標準賞与額に月150万円の上限を適用するため、各回を別々に計算した結果は使えません。</p>
 
   <label for="yearpaid">今年度の既払標準賞与額の累計（円・任意）</label>
   <input type="number" id="yearpaid" placeholder="例: 0" inputmode="numeric" aria-describedby="yearpaid-hint">
@@ -188,7 +188,7 @@
   <p class="workflow-next" id="result-next" data-workflow-slot="result_next_v1" hidden><a href="/column/shakai-hokenryo-choshu-jiki/">給与担当の方：この保険料を、どの月の給与から引くか確認する</a></p>
 </div>
 
-<!--retention-updates:S--><div class="retention-updates"><h3>制度変更の確認</h3><p class="hint">適用日と変更点を記録しています。日々の更新一覧ではありません。</p><ul><li id="change-kodomo-support-2026"><b>2026年4月分から子ども・子育て支援金を徴収</b><br>適用日：<time datetime="2026-04-01">2026-04-01</time><p>協会けんぽの一般被保険者は2026年4月分（5月納付分）から支援金率0.23%。社会保険料計算機に反映済みです。給与からの控除月は勤務先の徴収方法も確認してください。</p><a href="https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/003/" rel="nofollow">協会けんぽ：子ども・子育て支援金率</a></li></ul><p><a href="/updates.xml">制度変更のRSS</a> <span class="hint">対応するRSSリーダーで購読できます。記録追加時だけ通知対象になります。</span></p></div><!--retention-updates:E-->
+<!--retention-updates:S--><div class="retention-updates"><h3>制度変更の確認</h3><p class="hint">適用日と変更点を記録しています。日々の更新一覧ではありません。</p><ul><li id="change-kodomo-support-2026"><b>2026年4月分から子ども・子育て支援金を徴収</b><br>適用日：<time datetime="2026-04-01">2026年4月1日</time><p>協会けんぽの一般被保険者は2026年4月分（5月納付分）から支援金率0.23%。社会保険料計算機に反映済みです。給与からの控除月は勤務先の徴収方法も確認してください。</p><a href="https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/003/" rel="nofollow">協会けんぽ：子ども・子育て支援金率</a></li></ul><p><a href="/updates.xml">制度変更のRSS</a> <span class="hint">対応するRSSリーダーで購読できます。記録追加時だけ通知対象になります。</span></p></div><!--retention-updates:E-->
 <article>
 
 <p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
@@ -692,7 +692,7 @@ $("calc").addEventListener("click", async () => {
   const monthly = Number($("monthly").value);
   const age = Number($("age").value);
   const pref = $("pref").value;
-  if (!monthly || monthly <= 0) { box.innerHTML = '<div class="warn">報酬月額を入力してください。</div>'; return; }
+  if (!monthly || monthly <= 0) { box.innerHTML = '<div class="warn" data-field="monthly">報酬月額を入力してください。</div>'; return; }
 
   const kRate = RATES.kenko_rates[pref];
   // 料率を引けない都道府県で NaN を答えない(知らないことは知らないと言う)

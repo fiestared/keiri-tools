@@ -57,7 +57,8 @@
   <p class="lead">年収と家族構成から、自己負担2,000円で収まる寄附額の上限（限度額）を概算します。限度額は住民税の所得割額の20％から逆算して決まります。</p>
 
   <label for="shunyu">給与収入（年収・額面／円）</label>
-  <input id="shunyu" type="number" inputmode="numeric" value="5000000" placeholder="例: 5000000" min="0" step="10000">
+  <input id="shunyu" type="number" inputmode="numeric" data-example="5000000" min="0" step="10000" aria-describedby="shunyu-hint">
+  <span id="shunyu-hint" class="hint"><b class="input-example">入力例：年収500万円なら 5000000</b></span>
 
   <div class="grid field-pair">
     <div>
@@ -203,7 +204,7 @@ $("calc").addEventListener("click", async () => {
   }
 
   const shunyu = Number($("shunyu").value);
-  if (!(shunyu > 0)) { box.innerHTML = `<div class="warn">給与収入（年収）を入力してください。</div>`; postHeight(); return; }
+  if (!(shunyu > 0)) { box.innerHTML = `<div class="warn" data-field="shunyu">給与収入（年収）を入力してください。</div>`; postHeight(); return; }
 
   const shakaiInput = $("shakai").value.trim();
   const gaisan = shakaiHokenGaisan(shunyu, Number($("age").value), $("ken").value, S);

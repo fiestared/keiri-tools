@@ -79,7 +79,8 @@
   </div>
 
   <label for="zandaka">年末のローン残高（12月31日時点・円）</label>
-  <input id="zandaka" type="number" inputmode="numeric" value="30000000" placeholder="例: 30000000">
+  <input id="zandaka" type="number" inputmode="numeric" data-example="30000000" aria-describedby="zandaka-hint">
+  <span id="zandaka-hint" class="hint"><b class="input-example">入力例：3,000万円なら 30000000</b></span>
 
   <details>
     <summary>詳細設定（床面積・所得・上乗せ・経過措置）</summary>
@@ -181,7 +182,7 @@ $("calc").addEventListener("click", async () => {
   const zandaka = Number($("zandaka").value);
   const type = $("type").value;
   if ((type === "shinchiku" || type === "kaitori" || type === "chuko") && !(zandaka > 0)) {
-    box.innerHTML = `<div class="warn">「年末のローン残高」を入力してください。その年の12月31日時点の残高で控除額が決まります。</div>`;
+    box.innerHTML = `<div class="warn" data-field="zandaka">「年末のローン残高」を入力してください。その年の12月31日時点の残高で控除額が決まります。</div>`;
     postHeight(); return;
   }
 

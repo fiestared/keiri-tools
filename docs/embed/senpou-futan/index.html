@@ -126,7 +126,7 @@ $("calc").addEventListener("click", () => {
   const method = document.querySelector('input[name="method"]:checked').value;
   const box = $("result");
   box.style.display = "block";
-  if (!invoice || invoice <= 0) { box.innerHTML = `<div class="warn">請求額を入力してください。</div>`; postHeight(); return; }
+  if (!invoice || invoice <= 0) { box.innerHTML = `<div class="warn" data-field="invoice">請求額を入力してください。</div>`; postHeight(); return; }
 
   if (method === "flat") {
     const flatFee = Number($("flatFee").value) || 0;

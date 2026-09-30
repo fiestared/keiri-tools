@@ -128,24 +128,21 @@
 
 <section class="hero">
   <h1>自動車税はいくら？ 排気量別の早見表＋税額判定機</h1>
-<p class="hint">初度登録年月から重課の適用有無を自動判定する機能はありません。重課は当該年度の対象条件を確認してチェックしてください。対象外の車にはチェックを入れないでください。</p>
-<p class="note">令和8年度の試算です。令和7年度初度登録の電気自動車・燃料電池車は翌年度の75%軽課（年額6,500円）に対応します。登録年度の月割は標準税率で計算します。その他の軽課は対象外です。</p>
   <p class="article-meta">公開日: <time datetime="2026-07-17">2026年7月17日</time>（更新日: <time datetime="2026-09-28">2026年9月28日</time>）</p>
   <p><b>総排気量</b>と<b>初度登録の年月</b>を選ぶだけで、自家用乗用車の<b>自動車税（種別割）の年額</b>を判定します。<b>1,500ccなら年30,500円、2,000ccなら年36,000円</b>（令和元年10月以降の登録）。<b>13年超の重課（ハイブリッド・電気は対象外）</b>、年度途中に新車を登録したときの<b>月割</b>、<b>軽自動車の10,800円</b>にも対応。ページ下部に<b>令和8年度（2026年度）の排気量別 早見表</b>。</p>
 </section>
 
 <div class="card">
-  <div class="callout" style="margin-bottom:12px">
-    <b>自家用乗用車のためのツールです</b>
-    自家用の乗用車（<b>登録車＝3・5・7ナンバー</b>）と<b>軽自動車</b>の年額を計算します。営業用（緑ナンバー）・貨物（1・4ナンバー）・トラック・バス・二輪・原付は税額表が別のため対象外です。実際の税額は毎年5月ごろ届く<b>納税通知書</b>が正本です。
-  </div>
-
   <label for="vehicle">車種</label>
-  <select id="vehicle" aria-describedby="vehicle-hint">
+  <select id="vehicle" aria-describedby="vehicle-hint vehicle-scope">
     <option value="passenger" selected>自家用乗用車（登録車・白ナンバー／3・5・7ナンバー）〔自動車税〕</option>
     <option value="kei">軽自動車（自家用乗用・黄色ナンバー）〔軽自動車税〕</option>
   </select>
       <span id="vehicle-hint" class="hint">ナンバープレートの色・区分でお選びください</span>
+  <div class="hint" id="vehicle-scope" style="margin-top:6px">
+    <b>自家用乗用車のためのツールです</b><br>
+    自家用の乗用車（<b>登録車＝3・5・7ナンバー</b>）と<b>軽自動車</b>の年額を計算します。営業用（緑ナンバー）・貨物（1・4ナンバー）・トラック・バス・二輪・原付は税額表が別のため対象外です。実際の税額は毎年5月ごろ届く<b>納税通知書</b>が正本です。
+  </div>
 
   <div id="cc-block">
     <label for="cc">総排気量</label>
@@ -191,10 +188,12 @@
       <span id="fuel-hint" class="hint">13年超の重課の対象かどうかの判定に使います</span>
 
   <label style="display:block;font-weight:400;margin:0 0 10px"><input type="checkbox" id="jyuka"> <b>初度登録から13年を超えている</b>（ディーゼル車は11年超）<span class="hint">※ハイブリッド・電気・天然ガス車は13年超でも重課の対象外です</span></label>
+  <p class="hint" style="margin-top:-6px">初度登録年月から重課の適用有無を自動判定する機能はありません。重課は当該年度の対象条件を確認してチェックしてください。対象外の車にはチェックを入れないでください。</p>
 
   <div id="proate-block">
     <label style="display:block;font-weight:400;margin:0 0 10px"><input type="checkbox" id="proate"> この車を<b>新規に登録した年度の税額（月割）</b>も表示する<span class="hint">上で選んだ「登録の月」から翌年3月までの月割です（登録車のみ）</span></label>
   </div>
+  <p class="note">令和8年度の試算です。令和7年度初度登録の電気自動車・燃料電池車は翌年度の75%軽課（年額6,500円）に対応します。登録年度の月割は標準税率で計算します。その他の軽課は対象外です。</p>
 
   <button class="primary" id="calc">自動車税の年額を判定する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>

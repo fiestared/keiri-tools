@@ -275,6 +275,19 @@ button.primary:hover { opacity: 0.92; }
 }
 .warn > b:first-child { display: block; margin-bottom: 4px; }
 .result:has(> .warn) { border-color: var(--warn-line-strong); background: #fffdf7; padding: 6px; }
+/* 入力欄に結び付いたエラー（assets/a11y_error.js・2026-09-30）。
+   ・警告が1枚だけのときは外枠を消して1枚の囲みにする（外の太枠＋内の枠の二重枠をやめる）
+   ・誤りのある欄は枠を赤くし、欄の直後に同じ文言を出す（色だけに頼らず文言も出す） */
+.result:has(> .warn:only-child) { border: 0; background: none; padding: 0; }
+.result > .warn:only-child { border-color: var(--warn-line-strong); }
+:is(input, select, textarea)[aria-invalid="true"] { border-color: var(--danger-ink); box-shadow: 0 0 0 1px var(--danger-ink); }
+.warn.field-error { margin: 6px 0 0; padding: 6px 10px; font-size: 13.5px; color: var(--danger-ink); }
+.hint > .warn.field-error { display: block; margin: 0 0 4px; }
+.warn.field-error[hidden] { display: none; }
+.warn.field-error::before { content: "⚠ "; }
+.field-error + .hint { display: block; margin: 4px 0 0; }
+/* 入力例は値に見えるプレースホルダではなく、欄の下の説明の1行目に書く（2026-09-30 の方針） */
+.hint .input-example { display: block; font-weight: 600; color: var(--ink); }
 /* ★左アクセントバー＋グラデーションを廃止（2026-08-27）。
    gbrain design/ui-no-left-accent-border-cards（2026-08-26 の恒久方針）が
    「border-left を強調用途で使わない」「グラデーションを抑える」と定めており、
@@ -680,6 +693,12 @@ header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent);
 .tabs button[aria-selected="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
 .tabs button[aria-selected="true"]::before,
 .persona-bar button[aria-pressed="true"]::before { content: "✓ "; }
+/* 3つ以上の切替は、狭い画面で「2つ＋1つ」の2段（形の違うボタン）に割れていた（源泉の給与／賞与／報酬、2026-09-30）。
+   狭い画面では同じ幅の選択肢を縦に積み、どれも同じ形にする。 */
+@media (max-width: 560px) {
+  .tabs:has(> button:nth-child(3)) { flex-direction: column; }
+  .tabs:has(> button:nth-child(3)) > button { flex: none; width: 100%; text-align: left; }
+}
 .pane { display: none; }
 .pane[data-active] { display: block; }
 .opts { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font-size: 13px; }

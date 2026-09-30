@@ -27,7 +27,7 @@ for(const width of [1280,390]){
  await p.reload();check(await p.locator('[data-favorite-link=yukyu]').isVisible(),'favorite reload');await p.locator('#favorite-tools').evaluate(el=>el.scrollIntoView({block:'start'}));await record(p,`favorites-saved-${width}`);
  await p.locator('[data-p=kojin]').click();check(await p.locator('#favorite-tools').isHidden(),'not mixed with individual persona');await p.locator('[data-p=keiri]').click();
  await p.evaluate(()=>localStorage.setItem('keiri_retention_usage_v1',JSON.stringify({'favorites:yukyu':'2026-01-01'})));
- await p.locator('[data-favorite-link=yukyu]').click();await p.locator('#calc').click();await success(p,'result');await p.waitForTimeout(50);
+ await p.locator('[data-favorite-link=yukyu]').click();await p.locator('#hire').fill('2024-04-01');await p.locator('#calc').click();await success(p,'result');await p.waitForTimeout(50);
  check((await events(p)).some(e=>e.name==='retention_use'&&e.params.feature==='favorites'),'favorite leads to successful calculation');
  check((await events(p)).some(e=>e.name==='retention_reuse'&&e.params.feature==='favorites'),'different-day favorite use');
  for(const slug of ['shiharai-site','yukyu']){

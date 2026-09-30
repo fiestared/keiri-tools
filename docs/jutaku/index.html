@@ -178,8 +178,8 @@
   <div class="hint"><b>入居した年（居住開始した年）</b>で借入限度額が決まります（購入契約の年でも、ローンを組んだ年でもありません）。2021年までの入居は<b>控除率も限度額も違う別の制度</b>なので、この計算機では扱いません。</div>
 
   <label for="zandaka" style="margin-top:12px">年末のローン残高（その年の12月31日時点／円）</label>
-  <input type="number" id="zandaka" value="30000000" placeholder="例: 30000000" inputmode="numeric">
-  <div class="hint">その年の<b>12月31日時点の住宅ローンの残高</b>を入れてください。控除額は毎年この残高で決まるので、<b>返済が進むほど控除額は減っていきます</b>。</div>
+  <input type="number" id="zandaka" data-example="30000000" inputmode="numeric" aria-describedby="zandaka-hint">
+  <div class="hint" id="zandaka-hint"><b class="input-example">入力例：3,000万円なら 30000000</b>その年の<b>12月31日時点の住宅ローンの残高</b>を入れてください。控除額は毎年この残高で決まるので、<b>返済が進むほど控除額は減っていきます</b>。</div>
 
   <details style="margin-top:12px">
     <summary>くわしく計算する（実際に戻る額・取得対価・所得・床面積・子育て世帯の特例）</summary>
@@ -449,7 +449,7 @@ $("calc").addEventListener("click", async () => {
   const zandaka = Number($("zandaka").value);
   const type = $("type").value;
   if ((type === "shinchiku" || type === "kaitori" || type === "chuko") && !(zandaka > 0)) {
-    box.innerHTML = `<div class="callout"><b>「年末のローン残高」を入力してください。</b>` +
+    box.innerHTML = `<div class="warn" data-field="zandaka"><b>「年末のローン残高」を入力してください。</b>` +
       `その年の12月31日時点の残高で控除額が決まります。</div>`;
     return;
   }

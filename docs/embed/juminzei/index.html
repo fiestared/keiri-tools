@@ -60,8 +60,8 @@
   <div class="hint">均等割の額と所得割の税率は自治体で違います。載っていない方は「標準税率」を選んでください。</div>
 
   <label for="shunyu" style="margin-top:10px">給与収入（年収・額面／円）</label>
-  <input id="shunyu" type="number" inputmode="numeric" value="5000000" placeholder="例: 5000000" min="0" step="10000" aria-describedby="shunyu-hint">
-<p class="hint" id="shunyu-hint">給与収入850万円超で、入力した16歳未満・特定扶養の親族がいる場合の所得金額調整控除を反映します。一般扶養欄の16〜18歳、他方の配偶者の扶養としている子、特別障害者等や、給与と公的年金の双方がある場合の調整には未対応です。これらの場合は計算結果を使わず自治体の計算方法で確認してください。</p>
+  <input id="shunyu" type="number" inputmode="numeric" data-example="5000000" min="0" step="10000" aria-describedby="shunyu-hint">
+<p class="hint" id="shunyu-hint"><b class="input-example">入力例：年収500万円なら 5000000</b>給与収入850万円超で、入力した16歳未満・特定扶養の親族がいる場合の所得金額調整控除を反映します。一般扶養欄の16〜18歳、他方の配偶者の扶養としている子、特別障害者等や、給与と公的年金の双方がある場合の調整には未対応です。これらの場合は計算結果を使わず自治体の計算方法で確認してください。</p>
 
   <div class="grid field-pair">
     <div>
@@ -211,7 +211,7 @@ $("calc").addEventListener("click", async () => {
   }
 
   const shunyu = Number($("shunyu").value);
-  if (!(shunyu > 0)) { box.innerHTML = `<div class="warn">給与収入（年収）を入力してください。</div>`; postHeight(); return; }
+  if (!(shunyu > 0)) { box.innerHTML = `<div class="warn" data-field="shunyu">給与収入（年収）を入力してください。</div>`; postHeight(); return; }
 
   const shakaiInput = $("shakai").value.trim();
   const gaisan = shakaiHokenGaisan(shunyu, Number($("age").value), $("ken").value, S);

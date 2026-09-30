@@ -63,7 +63,8 @@
     </div>
     <div>
       <label for="monthly">毎月の給料（総支給・円）</label>
-      <input id="monthly" type="number" inputmode="numeric" value="300000" placeholder="例: 300000" min="0" step="1000">
+      <input id="monthly" type="number" inputmode="numeric" data-example="300000" min="0" step="1000" aria-describedby="monthly-hint">
+  <span id="monthly-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b></span>
     </div>
   </div>
   <div class="hint">臨時の賃金・3か月を超える期間ごとの賃金を除く月平均。年間4回以上の同じ性質の賞与等は含めます（単なる分割払いを除く）。</div>
@@ -181,7 +182,7 @@ $("calc").addEventListener("click", async () => {
     training: $("training").checked,
     konnan: $("konnan").checked,
   };
-  if (!(input.monthly > 0)) { box.innerHTML = `<div class="warn">毎月の給料（総支給額）を入力してください。</div>`; postHeight(); return; }
+  if (!(input.monthly > 0)) { box.innerHTML = `<div class="warn" data-field="monthly">毎月の給料（総支給額）を入力してください。</div>`; postHeight(); return; }
 
   const r = calcKihonteate(input, DATA);
   if (!r.supported) { box.innerHTML = `<div class="warn"><b>この計算機の対象外です。</b>${r.message}</div>`; postHeight(); return; }

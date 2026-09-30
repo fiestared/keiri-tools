@@ -37,6 +37,7 @@
   th{ padding:6px 8px; text-align:left; background:var(--accent2); }
   td{ padding:6px 8px; border-bottom:1px solid var(--line); }
   .note{ font-size:12px; color:var(--sub); margin-top:10px; padding:8px 10px; background:#fff; border:1px solid var(--line); border-radius:8px; }
+  .warn{ font-size:13px; color:#b4232a; }
   .warn5{ background:#fff3d6; border:1px solid #e6c47a; color:var(--ink); }
   .cta{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
   .cta a{ font-size:12.5px; text-decoration:none; padding:6px 10px; border-radius:7px; }
@@ -52,7 +53,8 @@
   <p class="lead">入社日・週所定労働日数・週所定労働時間を入力し、出勤率8割以上を前提に、付与日数・付与日・次回付与日を計算します。パート・アルバイトの比例付与、年5日の取得義務にも対応。年間所定労働日数での判定には対応していません。</p>
 
   <label for="hire">入社日</label>
-  <input type="date" id="hire">
+  <input type="date" id="hire" data-example="2024-04-01" aria-describedby="hire-hint">
+  <span id="hire-hint" class="hint"><b class="input-example">入力例：2024年4月1日入社なら 2024/04/01</b>カレンダーから入社日を選んでください。</span>
 
   <div class="grid field-pair">
     <div>
@@ -99,9 +101,7 @@ addEventListener("load", postHeight);
 addEventListener("resize", postHeight);
 if (window.ResizeObserver) new ResizeObserver(postHeight).observe(document.body);
 
-// 既定値は「昨年の4/1」を文字列で組むだけ（答えを左右する日付演算は core 側にある）
-const t0 = new Date();
-$("hire").value = `${t0.getFullYear() - 1}-04-01`;
+// ★入社日は空欄で始める（2026-09-30。本体 /yukyu/ と同じ方針）。入力例は欄の下の説明に書く。
 
 const CLAMP_NOTE = `<div class="note">※ 6か月後・1年後に<b>同じ日が無い月</b>（例: 8/31入社 → 2/31は無い）は、<b>その月の末日</b>を付与日としています（民法143条2項・応当日がないときは末日）。</div>`;
 
@@ -109,7 +109,7 @@ $("calc").addEventListener("click", () => {
   const box = $("result");
   box.style.display = "block";
   const hire = $("hire").value;
-  if (!hire) { box.innerHTML = "入社日を入力してください。"; postHeight(); return; }
+  if (!hire) { box.innerHTML = `<div class="warn" data-field="hire">入社日を入力してください。</div>`; postHeight(); return; }
   const wd = Number($("wdays").value);
   const wh = Number($("whours").value) || 0;
 

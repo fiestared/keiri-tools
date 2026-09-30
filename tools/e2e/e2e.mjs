@@ -1870,6 +1870,16 @@ const SCENES = [
   { name: "yakuin_shataku_kazei_nashi", expect: (s) =>
       s.total === 64327 && s.kazei === 0 && s.kazeiNashi && !s.failed },
 
+  // ─── 入力欄に結び付いたエラー・初期値の方針（2026-09-30 UI/UX レビュー）───
+  // 空欄で始まり（例は説明文に）、空欄で押すとその欄に aria-invalid・エラー文・フォーカスが移り、直すと消える
+  ...["shaho", "tedori", "furusato", "yukyu", "embed_yukyu", "gensen", "gensen_hoshu",
+      "kihonteate", "saishushoku", "ikuji", "papa_ikukyu", "juminzei", "taishokukin", "jutaku"].map((t) => ({
+    name: `ux_field_error_${t}`, noCoverage: true, expect: (s) =>
+      s.initialEmpty && s.noPlaceholder && s.hasExample && s.focused && s.describedByError &&
+      s.errorVisible && s.errorNearField && s.resultWarnLinked && s.fieldInView && s.cleared })),
+  // 押した後に結果が折り目の下に出たら、結果の頭まで自動で送る（見えないところに答えを出さない）
+  { name: "ux_result_scroll_shaho", noCoverage: true, expect: (s) => s.visible && s.scrolled },
+
   // ─── ツール利用の計測（assets/track.js）───
   // ★noCoverage: これらは「計測が飛ぶか」を見るシーンで、**答えの正しさは検査していない**。
   //   網羅チェックに数えると「正常条件で正しい答えを出すシーンが1つある」という要求を

@@ -139,10 +139,10 @@ $("calc").addEventListener("click", async () => {
   if (!kubun) { box.innerHTML = `<div class="warn">加入区分を選び直してください。</div>`; postHeight(); return; }
 
   const kazei = Number($("kazei").value);
-  if (!kazei || kazei <= 0) { box.innerHTML = `<div class="warn">課税される所得金額（年収ではなく課税所得）を入力してください。</div>`; postHeight(); return; }
+  if (!kazei || kazei <= 0) { box.innerHTML = `<div class="warn" data-field="kazei">課税される所得金額（年収ではなく課税所得）を入力してください。</div>`; postHeight(); return; }
   const monthly = Number($("monthly").value);
   const min = R08.ideco.min_monthly;
-  if (!monthly || monthly < min) { box.innerHTML = `<div class="warn">月額掛金は ${yen(min)} 以上で入力してください。</div>`; postHeight(); return; }
+  if (!monthly || monthly < min) { box.innerHTML = `<div class="warn" data-field="monthly">月額掛金は ${yen(min)} 以上で入力してください。</div>`; postHeight(); return; }
 
   const limitMonthly = kubun.monthly;
   const annualLimit = limitMonthly * 12;

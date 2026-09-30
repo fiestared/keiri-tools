@@ -182,9 +182,10 @@ try {
     window.__wFill = () => {
       for (const e of document.querySelectorAll("main input[id]")) {
         if (e.offsetParent === null || e.disabled || e.value !== "" || e.dataset.wiringBlank === "1") continue;
-        if (e.type === "date") e.value = "2026-04-01";
+        if (e.type === "date") e.value = e.dataset.example || "2026-04-01";
         else if (e.type === "number" || e.inputMode === "numeric" || e.inputMode === "decimal") {
-          const ph = (e.placeholder || "").replace(/[^0-9.]/g, "");
+          // 入力例は data-example（2026-09-30 から。値に見えるプレースホルダをやめ、例は欄の下の説明に書く）→ placeholder の順
+          const ph = (e.dataset.example || e.placeholder || "").replace(/[^0-9.]/g, "");
           // 小数の欄（料率％など）に 300000 を入れると上限に張り付くので、小数の欄は 5 にする
           const decimal = e.inputMode === "decimal" || (e.step && e.step !== "any" && Number(e.step) < 1);
           // 見本の値は placeholder（「例: 0」なら 0。0 を 300000 に置き換えると、勤労学生の「勤労によらない所得」が

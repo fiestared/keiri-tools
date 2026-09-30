@@ -35,3 +35,9 @@ a[role="button"] { display: inline-flex; align-items: center; justify-content: c
 .numeric-token { white-space: nowrap; }
 
 .result .scroll-wrap, [role="status"] .scroll-wrap { max-width: 100%; overflow-x: auto; }
+
+/* Field-linked errors (assets/a11y_error.js): mark the field and repeat the message beside it. */
+:is(input, select, textarea)[aria-invalid="true"] { border-color: #b4232a; box-shadow: 0 0 0 1px #b4232a; }
+.warn.field-error { margin: 4px 0 0; }
+.field-error + .hint { display: block; margin-top: 4px; }
+.hint .input-example { display: block; font-weight: 600; }

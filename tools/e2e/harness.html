@@ -5211,6 +5211,73 @@ SCENES.ui_ideco_deguchi = async () => {
   return { result: text(doc, "result") };
 };
 
+// ── 入力欄に結び付いたエラーと、初期値の方針（2026-09-30 UI/UX レビューの修正）──────────
+// ★方針: 答えを決める金額・日付の欄は **空欄で始める**。入力例は値に見えるプレースホルダでも
+//   黙って入れた値でもなく、欄の下の説明に「入力例：…」と書く（data-example が同じ例を持つ）。
+// ★空欄のまま計算を押したら: 欄の直後に同じ文言・aria-invalid="true"・aria-describedby に
+//   エラーの id・フォーカスはその欄へ。直したら（input）欄のエラーは消える。
+//   noCoverage: 答えの正しさはこのシーンの主題ではない（正常系シーンは各ツールに別にある）。
+const fieldErrorScene = ({ path, field, button = "calc", result = "result", value, tab = null }) => async () => {
+  const doc = await open(path);
+  if (tab) click(doc, tab);
+  const el = doc.getElementById(field);
+  const hint = (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean)
+    .map((id) => doc.getElementById(id)?.textContent || "").join(" ");
+  const initial = {
+    initialEmpty: el.value === "",
+    noPlaceholder: !el.getAttribute("placeholder"),
+    hasExample: !!el.dataset.example && /入力例/.test(hint),
+  };
+  click(doc, button);
+  await waitFor(() => el.getAttribute("aria-invalid") === "true", "欄の aria-invalid");
+  const errId = `${field}-error`;
+  const err = doc.getElementById(errId);
+  const onError = {
+    focused: doc.activeElement === el,
+    describedByError: (el.getAttribute("aria-describedby") || "").split(/\s+/).includes(errId),
+    errorVisible: !!err && !err.hidden && err.getClientRects().length > 0 && /入力してください/.test(err.textContent),
+    // 欄のエラーは欄の直後（または欄の説明の中）にある。ボタンの下の結果欄だけに出すのをやめたことを見る
+    errorNearField: !!err && !err.closest(".result"),
+    resultWarnLinked: !!doc.querySelector(`#${result} .warn[data-field="${field}"]`),
+    fieldInView: (() => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= doc.defaultView.innerHeight; })(),
+  };
+  set(doc, field, value);
+  const cleared = el.getAttribute("aria-invalid") !== "true" && (!err || err.hidden);
+  click(doc, button);
+  await waitFor(() => doc.getElementById(result).dataset.resultState === "success" || /¥|日/.test(text(doc, result)), "直した後の計算結果");
+  return { ...initial, ...onError, cleared, resultAfter: text(doc, result).slice(0, 80) };
+};
+SCENES.ux_field_error_shaho = fieldErrorScene({ path: "/docs/shakai-hoken/", field: "monthly", value: "300000" });
+SCENES.ux_field_error_tedori = fieldErrorScene({ path: "/docs/tedori/", field: "gross", value: "300000" });
+SCENES.ux_field_error_furusato = fieldErrorScene({ path: "/docs/furusato/", field: "shunyu", value: "5000000" });
+SCENES.ux_field_error_yukyu = fieldErrorScene({ path: "/docs/yukyu/", field: "hire", value: "2020-04-01" });
+SCENES.ux_field_error_embed_yukyu = fieldErrorScene({ path: "/docs/embed/yukyu/", field: "hire", value: "2020-04-01" });
+SCENES.ux_field_error_gensen = fieldErrorScene({ path: "/docs/gensen-choshu/", field: "amount", button: "calcK", result: "resultK", value: "250000" });
+SCENES.ux_field_error_gensen_hoshu = fieldErrorScene({ path: "/docs/gensen-choshu/", field: "fee", button: "calc", result: "result", value: "100000", tab: "tab-hoshu" });
+// 同じ方針を当てた他の計算機（例の値を黙って入れていたもの）。kihonteate/saishushoku は2列グリッド内の欄
+SCENES.ux_field_error_kihonteate = fieldErrorScene({ path: "/docs/kihonteate/", field: "monthly", value: "300000" });
+SCENES.ux_field_error_saishushoku = fieldErrorScene({ path: "/docs/saishushoku/", field: "monthly", value: "300000" });
+SCENES.ux_field_error_ikuji = fieldErrorScene({ path: "/docs/ikuji/", field: "monthly", value: "300000" });
+SCENES.ux_field_error_papa_ikukyu = fieldErrorScene({ path: "/docs/papa-ikukyu/", field: "monthly", value: "300000" });
+SCENES.ux_field_error_juminzei = fieldErrorScene({ path: "/docs/juminzei/", field: "shunyu", value: "5000000" });
+SCENES.ux_field_error_taishokukin = fieldErrorScene({ path: "/docs/taishokukin/", field: "amount", value: "15000000" });
+SCENES.ux_field_error_jutaku = fieldErrorScene({ path: "/docs/jutaku/", field: "zandaka", value: "30000000" });
+// 計算ボタンを押して、結果が画面の下（見えない位置）に描かれたら、結果の頭が見えるところまでスクロールすること。
+// iframe を低くして「結果が折り目の下に出る」スマホの状態を作る
+SCENES.ux_result_scroll_shaho = async () => {
+  document.getElementById("f").style.height = "560px";
+  const doc = await open("/docs/shakai-hoken/");
+  const win = doc.defaultView;
+  set(doc, "monthly", "300000");
+  win.scrollTo(0, 0);
+  const box = doc.getElementById("result");
+  click(doc, "calc");
+  await waitFor(() => box.dataset.resultState === "success", "社会保険料の計算結果");
+  await waitFor(() => { const t = box.getBoundingClientRect().top; return t >= 0 && t < win.innerHeight - 100; }, "結果の頭が画面内に来る", 3000).catch(() => null);
+  const top = Math.round(box.getBoundingClientRect().top);
+  return { top, vh: win.innerHeight, scrolled: win.pageYOffset > 0, visible: top >= 0 && top < win.innerHeight - 100 };
+};
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPages[0] || null, pages: openedPages };

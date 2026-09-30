@@ -125,7 +125,8 @@
 <p id="memo-return" class="retention-return" data-retention-control hidden><a href="#memo-card">覚えている条件から再計算する →</a></p>
 <div class="card">
   <label for="hire">入社日</label>
-  <input type="date" id="hire">
+  <input type="date" id="hire" data-example="2024-04-01" aria-describedby="hire-hint">
+  <span id="hire-hint" class="hint"><b class="input-example">入力例：2024年4月1日入社なら 2024/04/01</b>カレンダーから入社日を選んでください。</span>
 
   <div class="fee-pair field-pair">
     <div>
@@ -242,8 +243,8 @@ import {
 import { attachResultNext } from "../assets/workflow_next.js";
 const $ = (id) => document.getElementById(id);
 attachResultNext(document.getElementById("result"), document.getElementById("result-next"));
-const t0 = new Date();
-$("hire").value = `${t0.getFullYear() - 1}-04-01`;
+// ★入社日は空欄で始める（2026-09-30）。以前は「前年4月1日」を黙って入れており、
+//   開いた人の結果のように見えていた。入力例は欄の下の説明に書く。
 
 // 日付の計算・比較は すべて yukyu_core に置く（ページ側で new Date(...) を組み立てない）。
 // ページ側に日付計算を持つと単体テストが届かず、実際に3件のバグが出た（2026-07-13）。
@@ -262,10 +263,10 @@ $("calc").addEventListener("click", () => {
   const box = $("result");
   box.style.display = "block";
   const hire = $("hire").value;
-  if (!hire) { box.dataset.resultState = 'error'; box.innerHTML = '<div class="warn">入社日を入力してください。</div>'; return; }
+  if (!hire) { box.dataset.resultState = 'error'; box.innerHTML = '<div class="warn" data-field="hire">入社日を入力してください。</div>'; return; }
   const wd = Number($("wdays").value);
   const wh = Number($("whours").value);
-  if (!Number.isFinite(wh) || wh < 0) { box.dataset.resultState = 'error'; box.innerHTML = '<div class="warn">週の所定労働時間を0以上の数で入力してください。</div>'; return; }
+  if (!Number.isFinite(wh) || wh < 0) { box.dataset.resultState = 'error'; box.innerHTML = '<div class="warn" data-field="whours">週の所定労働時間を0以上の数で入力してください。</div>'; return; }
 
   const today = todayISO();
   const g = currentGrant(hire, wd, wh, today);

@@ -41,7 +41,7 @@ const CASES = [
   { name: "別日に戻ってきた", seed: [{ hire: "2024-04-01", wdays: 5, whours: 40, savedAt: yesterday }], card: true, revisit: true },
   { name: "同じ日の再訪", seed: [{ hire: "2024-04-01", wdays: 5, whours: 40, savedAt: today }], card: true, revisit: false },
   { name: "保存が無い", seed: null, card: false, revisit: false },
-  // ★保存する側。ここが外れると実験は1件もデータを生まないのに「効果なし」と読めてしまう
+  // ★保存する側（入社日は空欄で始まるので 2024-04-01 を入れてから計算する。2026-09-30）。ここが外れると実験は1件もデータを生まないのに「効果なし」と読めてしまう
   { name: "計算して保存する", seed: null, card: true, revisit: false, act: "save" },
 ];
 
@@ -67,7 +67,7 @@ const FRAME = (i) => {
 f.onload=function(){setTimeout(function(){
   var w=f.contentWindow, d=f.contentDocument;
   var err='';
-  try{ ${c.act === "save" ? `d.getElementById('calc').click(); d.getElementById('memo-save').click();` : ``} }catch(e){err=String(e&&e.message||e)}
+  try{ ${c.act === "save" ? `d.getElementById('hire').value='2024-04-01'; d.getElementById('calc').click(); d.getElementById('memo-save').click();` : ``} }catch(e){err=String(e&&e.message||e)}
   var card=d.getElementById('memo-card');
   var vis=!!card && w.getComputedStyle(card).display!=='none';
   var dl=w.dataLayer||[];

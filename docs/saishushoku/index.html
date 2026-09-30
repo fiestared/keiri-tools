@@ -154,8 +154,8 @@
     </div>
     <div>
       <label for="monthly">毎月の給料（総支給・円）</label>
-      <input type="number" id="monthly" value="300000" placeholder="例: 300000" inputmode="numeric" aria-describedby="monthly-hint">
-      <span id="monthly-hint" class="hint">臨時の賃金・3か月を超える期間ごとの賃金を除く月平均。年間4回以上の同じ性質の賞与等は含めます（単なる分割払いを除く）。</span>
+      <input type="number" id="monthly" data-example="300000" inputmode="numeric" aria-describedby="monthly-hint">
+      <span id="monthly-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b>臨時の賃金・3か月を超える期間ごとの賃金を除く月平均。年間4回以上の同じ性質の賞与等は含めます（単なる分割払いを除く）。</span>
     </div>
   </div>
 
@@ -323,7 +323,7 @@ $("calc").addEventListener("click", async () => {
   const monthly = Number($("monthly").value);
   const remaining = Number($("remaining").value);
   if (!(monthly > 0)) {
-    box.innerHTML = `<div class="callout">毎月の給料（総支給額）を入力してください。</div>`;
+    box.innerHTML = `<div class="warn" data-field="monthly">毎月の給料（総支給額）を入力してください。</div>`;
     return;
   }
   if (!(remaining >= 0)) {

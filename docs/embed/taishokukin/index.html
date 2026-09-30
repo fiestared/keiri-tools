@@ -52,7 +52,8 @@
   <p class="lead">他の退職金・iDeCo等の一時金との重複調整がない場合に、退職金の額と勤続年数を入れて、退職所得控除額・所得税・住民税・手取り額を計算します。勤続年数は1年未満を切り上げるので、退職日が1か月違うだけで税額が数万円変わります。</p>
 
   <label for="amount">退職金の額（円・税引き前）</label>
-  <input type="number" id="amount" value="15000000" placeholder="例: 15000000" inputmode="numeric">
+  <input type="number" id="amount" data-example="15000000" inputmode="numeric" aria-describedby="amount-hint">
+  <span id="amount-hint" class="hint"><b class="input-example">入力例：1,500万円なら 15000000</b></span>
 
   <div class="grid field-pair">
     <div>
@@ -123,7 +124,7 @@ $("calc").addEventListener("click", async () => {
     filed: $("filed").checked,
   };
   if (!(input.amount > 0)) {
-    box.innerHTML = `<div class="callout">退職金の額を入力してください。</div>`;
+    box.innerHTML = `<div class="warn" data-field="amount">退職金の額を入力してください。</div>`;
     postHeight(); return;
   }
 

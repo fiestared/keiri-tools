@@ -147,7 +147,7 @@ $("calc").addEventListener("click", async () => {
     postHeight(); return;
   }
   const annual = Number($("annual").value);
-  if (!annual || annual <= 0) { box.innerHTML = `<div class="warn">現在の年収を入力してください。</div>`; postHeight(); return; }
+  if (!annual || annual <= 0) { box.innerHTML = `<div class="warn" data-field="annual">現在の年収を入力してください。</div>`; postHeight(); return; }
   const pref = $("pref").value;
   if (!SHAHO.kenko_rates[pref]) { box.innerHTML = `<div class="warn">都道府県を選び直してください。</div>`; postHeight(); return; }
 

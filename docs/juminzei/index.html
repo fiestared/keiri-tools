@@ -143,8 +143,8 @@
   <div class="hint">級地は<b>非課税限度額の判定にだけ</b>使います（生活保護法の級地区分。東京23区・政令指定都市は1級地）。<b>所得が非課税限度額を大きく超える人には影響しません。</b></div>
 
   <label for="shunyu" style="margin-top:12px">給与収入（年収・額面／円）</label>
-<input type="number" id="shunyu" value="5000000" placeholder="例: 5000000" inputmode="numeric" aria-describedby="shunyu-hint">
-<p class="hint" id="shunyu-hint">給与収入850万円超で、入力した16歳未満・特定扶養の親族がいる場合の所得金額調整控除を反映します。一般扶養欄の16〜18歳、他方の配偶者の扶養としている子、特別障害者等や、給与と公的年金の双方がある場合の調整には未対応です。これらの場合は計算結果を使わず自治体の計算方法で確認してください。</p>
+<input type="number" id="shunyu" data-example="5000000" inputmode="numeric" aria-describedby="shunyu-hint">
+<p class="hint" id="shunyu-hint"><b class="input-example">入力例：年収500万円なら 5000000</b>給与収入850万円超で、入力した16歳未満・特定扶養の親族がいる場合の所得金額調整控除を反映します。一般扶養欄の16〜18歳、他方の配偶者の扶養としている子、特別障害者等や、給与と公的年金の双方がある場合の調整には未対応です。これらの場合は計算結果を使わず自治体の計算方法で確認してください。</p>
 
   <div class="fee-pair field-pair">
     <div>
@@ -381,7 +381,7 @@ $("calc").addEventListener("click", async () => {
 
   const shunyu = Number($("shunyu").value);
   if (!(shunyu > 0)) {
-    box.innerHTML = `<div class="callout">給与収入（年収）を入力してください。</div>`;
+    box.innerHTML = `<div class="warn" data-field="shunyu">給与収入（年収）を入力してください。</div>`;
     return;
   }
 

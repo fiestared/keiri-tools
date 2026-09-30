@@ -57,7 +57,8 @@
   <p class="lead">出生後8週間以内に取る産後パパ育休。67%（出生時育児休業給付金）＋13%（出生後休業支援給付金）＝合計80%。14日未満だと13%は1円も出ません。</p>
 
   <label for="monthly">賃金の月平均（額面／円）</label>
-  <input id="monthly" type="number" inputmode="numeric" value="300000" placeholder="例: 300000" min="0" step="1000">
+  <input id="monthly" type="number" inputmode="numeric" data-example="300000" min="0" step="1000" aria-describedby="monthly-hint">
+  <span id="monthly-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b></span>
   <div class="hint">臨時の賃金・3か月を超える期間ごとの賃金は除きます（雇用保険法17条1項）。</div>
 
   <label for="leaveDays">産後パパ育休の日数（暦の日数）</label>
@@ -147,7 +148,7 @@ $("calc").addEventListener("click", async () => {
   }
 
   const monthly = Number($("monthly").value);
-  if (!(monthly > 0)) { box.innerHTML = `<div class="warn">算入対象の賃金の月平均（額面）を入力してください。</div>`; postHeight(); return; }
+  if (!(monthly > 0)) { box.innerHTML = `<div class="warn" data-field="monthly">算入対象の賃金の月平均（額面）を入力してください。</div>`; postHeight(); return; }
 
   let r;
   try {

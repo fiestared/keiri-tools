@@ -74,8 +74,8 @@
   <!-- ── 給与（月額表） ── -->
   <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-kyuyo" id="pane-kyuyo" data-active>
     <label for="amount">その月の社会保険料等控除後の給与等の金額</label>
-    <input type="number" id="amount" placeholder="例: 250000" inputmode="numeric">
-    <div class="hint"><b>総支給額ではありません。</b>社会保険料等を差し引いた後の金額です。</div>
+    <input type="number" id="amount" data-example="250000" inputmode="numeric" aria-describedby="amount-hint">
+    <div class="hint" id="amount-hint"><b class="input-example">入力例：控除後の金額が25万円なら 250000</b><b>総支給額ではありません。</b>社会保険料等を差し引いた後の金額です。</div>
 
     <label>税額表の欄</label>
     <div class="radio-row">
@@ -113,16 +113,20 @@
     <div class="note" style="margin-bottom:8px">通常の甲欄は、社会保険料等控除後の前月給与と扶養親族等の数で算出率を選び、社会保険料等控除後の賞与に掛けます。前月給与がない場合・前月給与が社会保険料等以下の場合や、控除後賞与が控除後前月給与の10倍を超える場合は、賞与額も使って月額表で計算します。</div>
 
     <label for="shoyoAmt">賞与の支給額</label>
-    <input type="number" id="shoyoAmt" placeholder="例: 554000" inputmode="numeric">
+    <input type="number" id="shoyoAmt" data-example="554000" inputmode="numeric" aria-describedby="shoyoAmt-hint">
+    <div class="hint" id="shoyoAmt-hint"><b class="input-example">入力例：賞与55万4千円なら 554000</b></div>
     <label for="shoyoIns">賞与から控除する社会保険料等</label>
-    <input type="number" id="shoyoIns" placeholder="例: 85593" inputmode="numeric">
+    <input type="number" id="shoyoIns" data-example="85593" inputmode="numeric" aria-describedby="shoyoIns-hint">
+    <div class="hint" id="shoyoIns-hint"><b class="input-example">入力例：85593</b></div>
 
     <label class="inline"><input type="checkbox" id="zenPaid" checked> 前月に給与の支払があった</label>
     <div id="zen-only">
       <label for="zenAmt">前月の給与等の金額（賞与を除く）</label>
-      <input type="number" id="zenAmt" placeholder="例: 300000" inputmode="numeric">
+      <input type="number" id="zenAmt" data-example="300000" inputmode="numeric" aria-describedby="zenAmt-hint">
+      <div class="hint" id="zenAmt-hint"><b class="input-example">入力例：前月30万円なら 300000</b></div>
       <label for="zenIns">前月の給与から控除された社会保険料等</label>
-      <input type="number" id="zenIns" placeholder="例: 45000" inputmode="numeric">
+      <input type="number" id="zenIns" data-example="45000" inputmode="numeric" aria-describedby="zenIns-hint">
+      <div class="hint" id="zenIns-hint"><b class="input-example">入力例：45000</b></div>
     </div>
 
     <label>税額表の欄</label>
@@ -163,7 +167,8 @@
     <div id="kind-note" class="hint" style="margin-top:5px"></div>
 
     <label for="fee">報酬額（税抜・円）</label>
-    <input type="number" id="fee" placeholder="例: 100000" inputmode="numeric">
+    <input type="number" id="fee" data-example="100000" inputmode="numeric" aria-describedby="fee-hint">
+    <div class="hint" id="fee-hint"><b class="input-example">入力例：報酬10万円（税抜）なら 100000</b></div>
 
     <label>消費税</label>
     <div class="radio-row">
@@ -251,7 +256,7 @@ $("calcK").addEventListener("click", async () => {
   const box = $("resultK");
   box.style.display = "block";
   const A = Number($("amount").value);
-  if (!A || A <= 0) { box.innerHTML = `<div class="warn">社会保険料等控除後の給与等の金額を入力してください。</div>`; postHeight(); return; }
+  if (!A || A <= 0) { box.innerHTML = `<div class="warn" data-field="amount">社会保険料等控除後の給与等の金額を入力してください。</div>`; postHeight(); return; }
 
   box.innerHTML = "計算中…"; postHeight();
   const loaded = await tableReady;
@@ -325,7 +330,7 @@ $("calcS").addEventListener("click", async () => {
   const box = $("resultS");
   box.style.display = "block";
   const shoyo = Number($("shoyoAmt").value);
-  if (!shoyo || shoyo <= 0) { box.innerHTML = `<div class="warn">賞与の支給額を入力してください。</div>`; postHeight(); return; }
+  if (!shoyo || shoyo <= 0) { box.innerHTML = `<div class="warn" data-field="shoyoAmt">賞与の支給額を入力してください。</div>`; postHeight(); return; }
 
   box.innerHTML = "計算中…"; postHeight();
   // 算出率の表と月額表の両方を待つ（例外計算に入ると月額表を引くため）
@@ -415,7 +420,7 @@ $("calc").addEventListener("click", () => {
   const box = $("result");
   box.style.display = "block";
   const fee = Number($("fee").value);
-  if (!fee || fee <= 0) { box.innerHTML = `<div class="warn">報酬額を入力してください。</div>`; postHeight(); return; }
+  if (!fee || fee <= 0) { box.innerHTML = `<div class="warn" data-field="fee">報酬額を入力してください。</div>`; postHeight(); return; }
 
   const taxMode = document.querySelector('input[name="tax"]:checked').value;
   const rate = taxMode === "none" ? 0 : 0.1;

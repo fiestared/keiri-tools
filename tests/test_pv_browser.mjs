@@ -13,8 +13,9 @@ try {
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  async function shot(name,selector,width){
   const target=page.locator(selector).first();await target.scrollIntoViewIfNeeded();
-  if(selector==='#bankPreset')await target.evaluate(el=>scrollTo(0,scrollY+el.getBoundingClientRect().top-180));
-  else await page.evaluate(()=>scrollBy(0,-160));
+  // 2026-09-30: 以前は「必要なら画面内へ→上へ160px」で、要素が既に画面の下端近くにあると（計算後に結果へ自動スクロールする
+  //   ようになった源泉の結果など）160px ずらした分だけ画面外へ出ていた。どの要素も「上から180px」に置く（位置に依存しない）
+  await target.evaluate(el=>scrollTo(0,scrollY+el.getBoundingClientRect().top-180));
   await page.waitForTimeout(1100);
   const dimensions=await page.evaluate(()=>({width:innerWidth,scrollWidth:document.documentElement.scrollWidth}));
   assert.equal(dimensions.width,width);assert(dimensions.scrollWidth<=width,`${name} overflow: ${dimensions.scrollWidth}`);

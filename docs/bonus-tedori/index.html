@@ -410,7 +410,7 @@ $("calc").addEventListener("click", async () => {
   }
 
   const bonus = Number($("bonus").value);
-  if (!bonus || bonus <= 0) { box.innerHTML = '<div class="warn">ボーナスの額面を入力してください。</div>'; return; }
+  if (!bonus || bonus <= 0) { box.innerHTML = '<div class="warn" data-field="bonus">ボーナスの額面を入力してください。</div>'; return; }
   const paid = zmode() === "paid";
   const zengetsu = Number($("zengetsu").value);
   if (paid && (!zengetsu || zengetsu <= 0)) {

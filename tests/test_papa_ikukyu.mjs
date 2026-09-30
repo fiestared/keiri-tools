@@ -17,7 +17,8 @@ try {
   await page.fill('#leaveDays','14');assert.match(await result(),/計算できません/,url+' 実休業より多い対象日数を拒否');
  }
  for(const url of ['/papa-ikukyu/','/embed/papa-ikukyu/']){
-  await ready(page,server.origin+url);await page.fill('#leaveDays','28');await page.fill('#workDays','14');await page.fill('#workHours','112');
+  // 2026-09-30: 月給欄は空欄で始まる（入力例は説明文）。以前の初期値 300000 を明示して入れる
+  await ready(page,server.origin+url);await page.fill('#monthly','300000');await page.fill('#leaveDays','28');await page.fill('#workDays','14');await page.fill('#workHours','112');
   assert.match(await result(),/就業日数・時間が給付の上限を超える/,url+' 公表例14日112時間は不支給');
   await page.fill('#workDays','11');await page.fill('#workHours','80');assert.match(await result(),/224,000/,url+' 80時間境界');
   await page.fill('#workDays','0');await page.fill('#workHours','0');await page.fill('#leaveDays','13');await page.selectOption('#spouse','employed');await page.fill('#spouseDays','0');

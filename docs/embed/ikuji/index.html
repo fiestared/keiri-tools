@@ -57,7 +57,8 @@
   <p class="lead">育休中に雇用保険から出る育児休業給付金（67%・181日目から50%）と、出生後休業支援給付金（＋13%）を概算します。</p>
 
   <label for="monthly">賃金の月平均（額面／円）</label>
-  <input id="monthly" type="number" inputmode="numeric" value="300000" placeholder="例: 300000" min="0" step="1000">
+  <input id="monthly" type="number" inputmode="numeric" data-example="300000" min="0" step="1000" aria-describedby="monthly-hint">
+  <span id="monthly-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b></span>
   <div class="hint">臨時の賃金・3か月を超える期間ごとの賃金は除きます（雇用保険法17条1項）。除外対象の賞与を含む年収を12で割って入力すると、給付を多く見積もるおそれがあります。</div>
 
   <label for="startDate">育児休業を開始する日</label>
@@ -138,9 +139,9 @@ $("calc").addEventListener("click", async () => {
   }
 
   const monthly = Number($("monthly").value);
-  if (!(monthly > 0)) { box.innerHTML = `<div class="warn">算入対象の賃金の月平均（額面）を入力してください。</div>`; postHeight(); return; }
+  if (!(monthly > 0)) { box.innerHTML = `<div class="warn" data-field="monthly">算入対象の賃金の月平均（額面）を入力してください。</div>`; postHeight(); return; }
   const startDate = $("startDate").value;
-  if (!startDate) { box.innerHTML = `<div class="warn">育児休業を開始する日を入力してください（支給単位期間は開始日の応当日で区切られます）。</div>`; postHeight(); return; }
+  if (!startDate) { box.innerHTML = `<div class="warn" data-field="startDate">育児休業を開始する日を入力してください（支給単位期間は開始日の応当日で区切られます）。</div>`; postHeight(); return; }
 
   let r;
   try {

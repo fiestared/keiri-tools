@@ -572,7 +572,7 @@ $("calc").addEventListener("click", async () => {
   }
 
   const man = Number($("isan").value);
-  if (!man || man <= 0) { box.innerHTML = "遺産の総額（課税価格の合計・万円）を入力してください。"; return; }
+  if (!man || man <= 0) { box.innerHTML = '<div class="warn" data-field="isan">遺産の総額（課税価格の合計・万円）を入力してください。</div>'; return; }
   const isanTotal = Math.round(man * 10000); // 万円 → 円
 
   let r;

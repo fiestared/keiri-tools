@@ -155,7 +155,8 @@
 
 <div class="card">
   <label for="shunyu">給与収入（年収・額面／円）</label>
-  <input type="number" id="shunyu" value="5000000" placeholder="例: 5000000" inputmode="numeric">
+  <input type="number" id="shunyu" data-example="5000000" inputmode="numeric" aria-describedby="shunyu-hint">
+  <span id="shunyu-hint" class="hint"><b class="input-example">入力例：年収500万円なら 5000000</b>源泉徴収票の「支払金額」（税引き前の年収）</span>
 
   <div class="fee-pair field-pair">
     <div>
@@ -607,7 +608,7 @@ $("calc").addEventListener("click", async () => {
 
   const shunyu = Number($("shunyu").value);
   if (!(shunyu > 0)) {
-    box.innerHTML = `<div class="warn">給与収入（年収）を入力してください。</div>`;
+    box.innerHTML = `<div class="warn" data-field="shunyu">給与収入（年収）を入力してください。</div>`;
     return;
   }
 

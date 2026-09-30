@@ -76,7 +76,10 @@ function stripNonClaims(html, preserveLines = false) {
     //   元の日付行と同じ扱い（主張ではなく出所の説明）にする。移しただけで網から外れる／入ることを防ぐ。
     // p-title / p-desc = 記事カード（トップの新着など）。他ページの題と説明文の写しで、正本は各記事の側にある
     //   （各記事の title・meta description はその記事の台帳で検査される）。column/index.html を GENERATED で外すのと同じ理由。
-    .replace(/<(div|ul|p)\b[^>]*class="[^"]*(related|rel-block|next-read|breadcrumb|article-meta|source-method|p-title|p-desc)[^"]*"[\s\S]*?<\/\1>/gi, omit);
+    .replace(/<(div|ul|p)\b[^>]*class="[^"]*(related|rel-block|next-read|breadcrumb|article-meta|source-method|p-title|p-desc)[^"]*"[\s\S]*?<\/\1>/gi, omit)
+    // 入力欄の下の「入力例：月30万円なら 300000」（2026-09-30）。欄の使い方の見本で、制度についての主張ではない。
+    //   ★要素を名指しして落とす（b.input-example だけ）。同じ説明文の残りの部分は従来どおり検査する
+    .replace(/<b\b[^>]*class="[^"]*\binput-example\b[^"]*"[^>]*>[^<]*<\/b>/gi, omit);
 }
 export function claimText(html) {
   const title = (html.match(/<title>([\s\S]*?)<\/title>/i) || [, ""])[1];

@@ -7,7 +7,8 @@ import {teijiKettei,taishogai,zuijiNissuOK} from '../../docs/assets/santei_core.
 import {extraDependentCount,kouTax,otsuTax} from '../../docs/assets/gensen_kyuyo_core.js';
 const load=f=>JSON.parse(readFileSync(new URL('../../docs/assets/'+f,import.meta.url)));
 const J=load('jutaku_r07.json'),S=load('santei_r08.json'),G=load('juminzei_r08.json'),K=load('gensen_getsugaku_r08.json');
-const num=(d,id)=>Number(d.getElementById(id).value),checked=(d,id)=>d.getElementById(id).checked;
+// 2026-09-30: 答えを決める金額欄は空欄で始め、入力例は data-example に持つ（UI/UX 方針）。空欄なら入力例で読む
+const num=(d,id)=>{const e=d.getElementById(id);return Number(e.value||e.dataset.example||'');},checked=(d,id)=>d.getElementById(id).checked;
 const hs='https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1211-2.htm';
 const ss='https://laws.e-gov.go.jp/api/2/law_data/211AC0000000070?response_format=xml&elm=Article_41';
 const gs='https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf';
@@ -47,7 +48,7 @@ export const extra={
 import {calc as r15Calc} from '../../docs/assets/juminzei_core.js';
 const R15D=JSON.parse(readFileSync(new URL('../../docs/assets/juminzei_r08.json',import.meta.url)));
 extra.juminzei_core = [{name:'r15 HTML初期値は所得金額調整なし',
-  run:d=>r15Calc({kyuyoShunyu:Number(d.getElementById('shunyu').value),
+  run:d=>r15Calc({kyuyoShunyu:num(d,'shunyu'),
     shotokuChoseiEligible:d.getElementById('shotokuChoseiEligible').checked,
     family:{fuyoNensho:Number(d.getElementById('fuyoNensho').value)}},R15D).shotokuKingakuChosei,
   expected:0,source:'https://www.tax.metro.tokyo.lg.jp/kazei/life/kojin_ju',

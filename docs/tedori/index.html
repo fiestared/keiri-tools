@@ -152,8 +152,8 @@
   </div>
 
   <label for="gross">額面の月給（非課税手当がある給与は対象外／円）</label>
-  <input type="number" id="gross" placeholder="例: 300000" inputmode="numeric" aria-describedby="gross-hint">
-      <span id="gross-hint" class="hint">基本給＋残業手当など、税引き前の総支給額。この計算機は非課税通勤手当等を含まない給与が対象です。非課税手当がある場合は、社会保険と税の対象額を分けられないため試算対象外です。</span>
+  <input type="number" id="gross" data-example="300000" inputmode="numeric" aria-describedby="gross-hint">
+      <span id="gross-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b>基本給＋残業手当など、税引き前の総支給額。この計算機は非課税通勤手当等を含まない給与が対象です。非課税手当がある場合は、社会保険と税の対象額を分けられないため試算対象外です。</span>
 
   <label for="dependents">扶養親族等の数</label>
   <input type="number" id="dependents" value="0" min="0" max="20" inputmode="numeric" aria-describedby="dependents-hint">
@@ -655,7 +655,7 @@ $("calc").addEventListener("click", async () => {
   }
 
   const gross = Number($("gross").value);
-  if (!gross || gross <= 0) { box.innerHTML = '<div class="warn">額面の月給を入力してください。</div>'; return; }
+  if (!gross || gross <= 0) { box.innerHTML = '<div class="warn" data-field="gross">額面の月給を入力してください。</div>'; return; }
   const pref = $("pref").value;
   if (!SHAHO.kenko_rates[pref]) {
     box.innerHTML = `<div class="note"><b>「${pref || "未選択"}」の健康保険料率が見つかりませんでした。</b>
