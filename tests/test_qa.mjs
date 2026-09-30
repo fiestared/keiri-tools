@@ -221,5 +221,14 @@ try {
   ok(false, "gen_qa_index.mjs --check が失敗(node tools/gen_qa_index.mjs を流すこと)");
 }
 
+// 2026-10-01: ツールの名前の頭と検索語がそのまま一致したら、そのツールを1位に出す（トップの検索は上位3件だけ見せる）。
+//   「社会保険」は「社会保険の…」を見出しの頭に持つ記事3本に負けて4位＝画面に出ていなかった（Masahiro 指摘）。
+for (const [q, url] of [["社会保険", "/shakai-hoken/"], ["社保", "/shakai-hoken/"], ["住民税", "/juminzei/"], ["ふるさと納税", "/furusato/"]]) {
+  const r = search(index, q);
+  ok(r.results[0]?.url === url, `「${q}」の1位がツール ${url}（実際: ${r.results.map(x => x.url).join(" ")}）`);
+}
+// 記事を狙った質問はツールで上書きしない
+{ const r = search(index, "社会保険の加入条件"); ok(r.results[0]?.url === "/column/shakai-hoken-kanyu-joken/", `「社会保険の加入条件」の1位は記事のまま（実際: ${r.results[0]?.url}）`); }
+
 console.log(fails ? `\n❌ ${fails}件 失敗` : `\nall qa tests passed (記事${gotArticles.length}/ツール${gotTools.length})`);
 process.exit(fails ? 1 : 0);

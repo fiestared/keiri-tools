@@ -345,10 +345,18 @@ export function search(index, query, limit = 3) {
     .sort((a, b) => b.s - a.s || (b.e.tool ? 1 : 0) - (a.e.tool ? 1 : 0));
   // Only exact, short calculator intents. Writing/definition/article queries retain their ranking.
   const directTools = { '源泉徴収':'gensen-choshu', '源泉徴収税額':'gensen-choshu', '源泉徴収計算':'gensen-choshu',
-    '社会保険料':'shakai-hoken', '社会保険料計算':'shakai-hoken', '手取り':'tedori',
+    '社会保険料':'shakai-hoken', '社会保険料計算':'shakai-hoken', '社保':'shakai-hoken', '社保計算':'shakai-hoken', '手取り':'tedori',
     '支払サイト':'shiharai-site', '営業日':'eigyobi', '有休':'yukyu', '有給休暇':'yukyu', '全銀カナ':'zengin-kana' };
-  const direct = directTools[normalize(query).replace(/ /g, '')];
-  const entry = direct && index.find(e => e.type === 'tool' && e.url === `/${direct}/`);
+  const nqs = normalize(query).replace(/ /g, '');
+  const direct = directTools[nqs];
+  // ★ツールの名前の頭と検索語がそのまま一致するなら、そのツールを先頭に出す（2026-10-01 Masahiro
+  //   「社会保険って検索した時に、社会保険料のツールがヒットしないのなぜ？」）。「社会保険」は見出しの頭が
+  //   「社会保険の…」の記事3本に主題一致で負け、上位3件から落ちていた。対応表に語を足すだけでは他のツールで再発する。
+  //   2文字以上・候補に残っているツールのうち最も点の高いもの。定義・書き方の質問（「〜とは」等）は頭一致しないので影響しない。
+  const prefixTool = !direct && nqs.length >= 2
+    ? scored.find(x => x.e.type === 'tool' && titleLead(x.e).replace(/[\s　]/g, '').startsWith(nqs))?.e
+    : null;
+  const entry = (direct && index.find(e => e.type === 'tool' && e.url === `/${direct}/`)) || prefixTool;
   if (entry) {
     const at = scored.findIndex(x => x.e === entry);
     const priority = Math.max(MATCH_MIN + 1, (scored[0]?.s || 0) + 1);
