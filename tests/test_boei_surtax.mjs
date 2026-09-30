@@ -77,11 +77,17 @@ for (const p of ['docs/fuyo-kojo/index.html', 'docs/haigusha-kojo/index.html',
      `${p}: 脚注が組み替え後の姿(1%+1.1%・法律番号つき・令和19年なし)`);
 }
 {
-  const lis = [...read('docs/shokibo-kyosai/index.html')
-    .matchAll(/<li><b>復興特別所得税の減少<\/b>[\s\S]*?<\/li>/g)];
-  ok(lis.length === 1 && lis[0][0].includes('防衛特別所得税1%＋復興特別所得税1.1%')
-     && !lis[0][0].includes('令和19年分まで'),
-     'shokibo-kyosai: 復興特別所得税bulletが組み替え後の姿');
+  // r16/t15: この計算機は令和8年分限定。固定正本の防衛5条の26は源泉徴収の
+  // 条文であり、これだけで令和9年分の年税の合計2.1%を保証させない。
+  const lis = [...read('docs/shokibo-kyosai/index.html').matchAll(/<li[^>]*>([\s\S]*?)<\/li>/g)]
+    .map(m => visible(m[1]).replace(/\s+/g, ' ').trim())
+    .filter(t => t.startsWith('復興特別所得税の減少'));
+  ok(lis.length === 1 && lis[0].includes('令和8年分の基準所得税額に2.1%')
+     && lis[0].includes('控除前後の税額の差')
+     && lis[0].includes('この計算機は令和8年分の試算です')
+     && lis[0].includes('令和9年分以後の税制は、この試算から算出しません')
+     && !lis[0].includes('合計2.1%は変わらない'),
+     'shokibo-kyosai: 令和8年分の2.1%と試算範囲を明示し、令和9年分年税を保証しない');
 }
 
 // --- ④ ふるさと納税(ツール+記事): ×1.021段落に組み替えと絶対上限の適用年度 ---

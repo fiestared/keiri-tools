@@ -24,4 +24,7 @@ for (const [name,input,field,expected] of [
  ['小規模共済年間掛金の1円下の課税所得',{kazeiShotoku:839999,annualDeduction:840000},'usedDeduction',839999],
  ['小規模共済年間掛金の1円上の課税所得',{kazeiShotoku:840001,annualDeduction:840000},'usedDeduction',840000],
  ['小規模共済住民税課税所得ゼロは所得税と別判定',{kazeiShotoku:2000000,juminKazeiShotoku:0,annualDeduction:840000},'juminGen',0],
-]) cases.push({name,run:()=>taxSaving(input,D)[field],expected,source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm',quote:'1,000円 から 1,949,000円まで 5％。1,950,000円 から 3,299,000円まで 10％ 97,500円',supporting_source:'https://kyosai-web.smrj.go.jp/customer/skyosai/installment/'});
+]) cases.push({name,run:()=>taxSaving(input,D)[field],expected,
+ source:field==='juminGen'?'https://laws.e-gov.go.jp/api/2/law_data/325AC0000000226?elm=Article_314_2':field==='usedDeduction'?'https://kyosai-web.smrj.go.jp/customer/skyosai/installment/':'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm',
+ quote:field==='juminGen'?'その者の前年の所得について算定した総所得金額、退職所得金額又は山林所得金額から控除するものとする。':field==='usedDeduction'?'掛金は税法上、全額を小規模企業共済等掛金控除として、課税対象となる所得から控除できます。':'1,000円 から 1,949,000円まで 5％。1,950,000円 から 3,299,000円まで 10％ 97,500円',
+ note:field==='juminGen'?'住民税の控除は住民税側の所得から行う。控除前課税所得が0なら所得割の減少も0。税率10%そのものの立証を兼ねない。':'所得控除は税額からの還付ではない。課税所得を下限0として控除前後の税額を比較する。'});

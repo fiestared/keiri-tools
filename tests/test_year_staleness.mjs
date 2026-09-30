@@ -170,7 +170,7 @@ const HISTORICAL_FACTS = [
             "参照データを差し替えても真であり続ける。むしろ機械置換すると" +
             "『今年から75万円が使える』という逆向きの嘘になる(第6便の年収の壁と同型の事故)。" +
             "どの年分で計算したかは setsuzei_r08.json の aoiro.year / _meta.year から結果欄と出典注記に描いている" },
-  { file: "index.html", snippet: "令和9年分からの75万円・55万円廃止",
+  { file: "index.html", snippet: "令和9年分からの75万円区分新設・55万円区分廃止",
     reason: "同上(トップのツールカードの説明文)。措法25条の2の改正の適用開始年分＝制度の事実" },
   { file: "tosan-boshi-kyosai/index.html", snippet: "令和6年",
     reason: "★倒産防止共済の再加入2年ルールは『令和6年3月30日法律第8号 附則30条』が" +

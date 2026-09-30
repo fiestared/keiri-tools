@@ -24,5 +24,40 @@
   ],
   "default_cases": [
     "r16 iDeCo HTML初期他制度額"
+  ],
+  "companions": [
+    {
+      "page": "docs/shokibo-kyosai/index.html",
+      "priority_evidence": "r16/t15-a: 掛金控除前の課税所得、年額との限度・累進税率、住民税の別限度。説明修正を既存coreの境界に結びつける。",
+      "conditions": [
+        {
+          "id": "shokibo-before-deduction-and-annual-cap",
+          "statute": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+          "disposition": "input",
+          "input_ids": [
+            "kazei",
+            "monthly"
+          ],
+          "cases": [
+            "小規模共済84万円控除で195万円の税率帯をまたぐ",
+            "小規模共済年間掛金の1円下の課税所得",
+            "小規模共済年間掛金の1円上の課税所得"
+          ]
+        },
+        {
+          "id": "shokibo-resident-tax-separate-cap",
+          "statute": "https://laws.e-gov.go.jp/api/2/law_data/325AC0000000226?elm=Article_314_2",
+          "disposition": "out_of_scope",
+          "scope_selector": ".card > p.hint",
+          "scope_text": "所得税と住民税の課税所得は異なります。この画面の住民税軽減額は、住民税側の控除が全額効く場合の所得割10%の概算です。非課税・課税所得不足・調整控除等は反映しません。",
+          "cases": [
+            "小規模共済住民税課税所得ゼロは所得税と別判定"
+          ]
+        }
+      ],
+      "default_cases": [
+        "r16 小規模共済HTML初期掛金と控除限度"
+      ]
+    }
   ]
 }

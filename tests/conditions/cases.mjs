@@ -83,3 +83,8 @@ extra.kihonteate_core = [{name:'r16 基本手当HTML初期値',run:d=>r16CalcKih
 
 extra.shohizei_core = [];
 extra.shohizei_core.push({name:'r16 消費税申告HTML初期値の空欄', run:d=>['s10','s8','p10','p8','s-inv','p-inv'].map(id=>d.getElementById(id).value),expected:['','','','','',''],source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6383.htm',quote:'課税期間中の課税資産の譲渡等の税込金額の合計額',kind:'default'});
+import {taxSavingByMonthly as r16ShokiboSaving} from '../../docs/assets/setsuzei_core.js';
+extra.setsuzei_core.push({name:'r16 小規模共済HTML初期掛金と控除限度',run:d=>{
+ const r=r16ShokiboSaving({kazeiShotoku:num(d,'kazei'),monthly:num(d,'monthly')},load('setsuzei_r08.json'));
+ return [d.getElementById('kazei').value,r.annual,r.usedDeduction];
+},expected:['',360000,0],source:'https://kyosai-web.smrj.go.jp/customer/skyosai/installment/',quote:'掛金は税法上、全額を小規模企業共済等掛金控除として、課税対象となる所得から控除できます。',note:'空欄を0としてcoreに渡した場合の所得税控除限度と、初期月額3万円の年換算。住民税の非課税判定は画面の対象外。'});
