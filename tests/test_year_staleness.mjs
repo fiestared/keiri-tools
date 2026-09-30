@@ -29,11 +29,12 @@ const DOCS = join(ROOT, "docs");
 // 「制度の事実」= 年が変わっても真であり続ける記述。機械置換の対象にしてはいけない。
 // snippet はページに**そのまま含まれる**文字列。文言を変えたら免除が外れて落ちる。
 const HISTORICAL_FACTS = [
-  {file: "kogaku-ryoyohi/index.html", snippet: "令和8年8月〜令和9年7月診療分",
-   reason: "r16: 協会けんぽの対象期間別公表表 https://www.kyoukaikenpo.or.jp/benefit/high_cost_medical_expenses/002/ の適用期間。" +
-     "kogaku_r08.json の tables.from_2026_08（applies_from=2026-08 / applies_through=2027-07）を使う設例の範囲であり、" +
-     "計算機全体が単一年度のデータを使うという申告ではない。年号だけを免除せず、開始月・終了月・診療分まで全文一致とする。" +
-     "複数期間表の選択と上限は test_kogaku.mjs で検査する。"},
+  {file: "kogaku-ryoyohi/index.html",
+   snippet: "一般区分の標準報酬月額は、令和8年8月～令和9年7月の世帯年間上限の判定に使います（53万円、標報15万円以下と確認できた方は41万円・令和9年8月以降に償還払い）。令和8年7月以前にこの世帯年間上限はありません。",
+   reason: "r16: 協会けんぽの対象期間別公表表 https://www.kyoukaikenpo.or.jp/benefit/high_cost_medical_expenses/002/ の世帯年間上限の適用期間・償還時期。" +
+     "kogaku_r08.json の annual.applies_from=2026-08 と、現行期間表の一般区分に対応する制度の事実。" +
+     "計算機全体が単一年度のデータを使うという申告ではない。年号だけを免除せず、期間・所得条件・金額・償還時期を含む全文一致に限る。" +
+     "金額や年を変えると一致しなくなる。期間表・年間上限は test_kogaku.mjs でも検査する。"},
   ...[
     '令和7年度初度登録の電気自動車・燃料電池車は翌年度の75%軽課（年額6,500円）',
     '令和7年度に初度登録した電気自動車・燃料電池車の令和8年度年額6,500円',
