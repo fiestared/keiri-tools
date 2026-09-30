@@ -1,0 +1,3 @@
+- `egov_rokiho_39.txt`（労働基準法39条＝年次有給休暇）・`egov_rokiho_12.txt`（平均賃金）・`egov_rokiho_115.txt`（時効）・`egov_rokiho_fusoku_136.txt`（附則136条＝不利益取扱い）… e-Gov 法令API v2。
+- `egov_rokisoku_24_3〜24_7.txt`・`egov_rokisoku_25.txt` … 労働基準法施行規則（比例付与・時間単位年休・時季指定・管理簿・賃金）。
+- `www_mhlw_go_jp_hatarakikata_pdf_000463186_pdf.txt`（厚労省「年5日の年次有給休暇の確実な取得 わかりやすい解説」）・`www_mhlw_go_jp_content_000350327_pdf.txt`（年休の時季指定義務）・`*_faq_kijyunhou_6_00001_html.txt`（厚労省 労働基準法 FAQ）・`*_part_haken_*career*`（パートの年休）・`jsite_mhlw_go_jp_chiba_*_heikinchingin_pdf.txt`（千葉労働局 平均賃金）。
