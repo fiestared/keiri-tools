@@ -373,3 +373,8 @@ if (fails.length) {
   process.exit(1);
 }
 console.log(`ok  test_toroku_jutaku  ${pass}件`);
+
+// r16/t12-a: 新築・取得期限と登記日の境界（正本: 措法72条の2・73・75）。
+const {cases:r16DateCases}=await import('./boundaries/toroku_jutaku_core.mjs');
+for(const c of r16DateCases) assertR7.deepEqual(c.run(),c.expected,c.name);
+assertR7.equal(calcTorokuJutaku({...base,tokiBi:'2027-04-01',shutokuBi:'2027-04-02'},DATA).ok,false,'取得日前の登記を拒否');

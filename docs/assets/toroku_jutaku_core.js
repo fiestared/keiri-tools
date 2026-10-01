@@ -28,7 +28,7 @@ import { isDateStr, addYearsClamped } from './toroku_menkyo_core.js';
  *     中古で0.1%になる経路は買取再販（74条の3）だけ。
  *
  *  6. **軽減の期限が2つある**。住宅用家屋の軽減（72条の2・73・74・74条の2・74条の3・75）は
- *     令和9年3月31日まで。**土地の売買の1.5%（72条）は令和11年3月31日まで**で2年長い。
+ *     令和9年3月31日までの新築・取得と原則その後1年以内の登記。**土地の売買の1.5%（72条）は令和11年3月31日まで**で2年長い。
  *     同時に切れると考えると、令和9年4月以降の土地の税率を2%と誤って出す。
  *
  *  7. **中古住宅の築年数要件は廃止済み**。令和4年度改正で「木造20年・耐火25年」は無くなり、
@@ -218,7 +218,7 @@ export function kigenHantei(tokiBi, data, shutokuBi) {
   if (tokiBi > K.tochi_baibai.kigen) {
     return {
       ok: false,
-      riyu: `${K.tochi_baibai.kigen_hyoji}より後に受ける登記は税額を出せません。土地の売買の軽減（1000分の15）の新築・取得の適用期限がその日までで、延長されるか本則（1000分の20）に戻るかが決まっていないためです。`,
+      riyu: `${K.tochi_baibai.kigen_hyoji}より後に受ける登記は税額を出せません。土地の売買の軽減（1000分の15）の登記の適用期限がその日までで、延長されるか本則（1000分の20）に戻るかが決まっていないためです。`,
     };
   }
   if (shutokuBi !== undefined && (!isDateStr(shutokuBi) || !isDateStr(tokiBi) || shutokuBi > tokiBi)) {

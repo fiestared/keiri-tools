@@ -1,0 +1,233 @@
+[
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-d3a4b842a64eff2e1257-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_42.txt:4-4;corpus/www_nta_go_jp_taxes_nozei_nozei_shomei_01_htm.txt:88-94;corpus/egov_tsusokurei_41.txt:16-17。税目数・年度数を掛ける算式を全種類に一般化しているが、その3・その4は枚数のみで計算する。また証明の対象期間は法定納期限と会計年度で判定し、単純な請求日から3年ではない。読者が手数料や取得可能年度を誤る。",
+    "needed_source": "",
+    "severity": "high",
+    "text": "納税証明書は税務署が交付する証明書で、手数料は1枚400円、オンラインで請求すると370円です（国税通則法施行令42条1項）。その1〜その4という呼び名は国税庁のもので、条文が分けているのは施行令41条1項の6つの号です。手数料は税目数×年度数×枚数で数え、災害復旧資金の借入れや法定扶助等のための請求は、要件を満たせば手数料が免除されます（同42条3項）。請求日の3年前より古い年度は原則として証明されず、未納の国税だけが例外です（同41条2項3号）。",
+    "new": "納税証明書の手数料は書面請求400円、オンライン請求370円を基準に計算します。その1・その2は税目数×年度数×枚数（未納税額のみは年度別計算の例外）、その3・その4は枚数で数えます。対象期間は請求日の3年前の日が属する会計年度が基準で、未納国税の例外は施行令41条1項1号の事項に限ります。災害復旧資金の借入れや法定扶助等のための請求には手数料免除があります。",
+    "matches": 2
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-c280026a500dee2e4255-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_41.txt:16-17。「3年より前が出ない」と前提を断定しているが、会計年度基準であり3年超の期間も対象になり得る。未納国税の例外もあり、取得可能範囲を誤る。",
+    "needed_source": "",
+    "severity": "high",
+    "text": "納税証明書とは — その1〜その4は何が違い、手数料はいくらで、なぜ3年より前が出ないのか",
+    "new": "納税証明書とは — その1〜その4の違い・手数料・証明できる会計年度",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-e8772628c7ed2425f8ff-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_42.txt:4-4;corpus/www_nta_go_jp_taxes_nozei_nozei_shomei_01_htm.txt:132-137。その3・その4は税目数・年度数を掛けない。未納税額のみの証明にも年度別計算の例外がある。一般則として断定すると実際の手数料を過大に計算する。",
+    "needed_source": "",
+    "severity": "high",
+    "text": "そして「1枚」の数え方まで政令が決めています —— 税目が違えば別の1枚、年度が違えば別の1枚です。",
+    "new": "その1・その2は税目数×年度数×枚数で計算します（未納税額のみは年度別計算の例外）。その3・その4は枚数のみで計算します。",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-632d8377cf4c1a417b59-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/www_nta_go_jp_taxes_nozei_nozei_shomei_01_htm.txt:132-137。1,600円はその1を各1枚・2年度分請求する等の設例なら正しいが、証明書の種類と枚数が指定されていない。その3では400円であり、条件のない金額提示は手数料を誤らせる。",
+    "needed_source": "",
+    "severity": "high",
+    "text": "法人税と消費税をそれぞれ2年度分そろえると、書面なら 2税目 × 2年度 × 400円 = 1,600円 になります。",
+    "new": "その1を法人税・消費税について各2年度分、各1枚ずつ書面で請求する場合は、2税目×2年度×1枚×400円＝1,600円です。",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-47748ae769d6234099cd-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/www_nta_go_jp_taxes_nozei_nozei_shomei_01_htm.txt:88-94。算式の対象をその1・その2に限定していない。その3・その4は枚数のみで計算し、税目数・年度数を掛けると手数料を誤る。",
+    "needed_source": "",
+    "severity": "high",
+    "text": "枚数は税目数 × 年度数 × 枚数で数える",
+    "new": "その1・その2は税目数×年度数×枚数（未納税額のみは年度別計算の例外）、その3・その4は枚数で計算",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-5e2e7b1e15299719362b-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_41.txt:16-17。基準は法定納期限が属する会計年度と、請求日の3年前の日が属する会計年度。単純な3年前より古い年度との表現では年分・事業年度を誤判定する。",
+    "needed_source": "",
+    "severity": "high",
+    "text": "請求日の3年前より古い年度は、原則として証明されない（令41条2項3号）。",
+    "new": "法定納期限が請求日の3年前の日の属する会計年度より前の会計年度に係る国税は、令41条2項3号の除外対象です（同1項1号の事項について未納国税は除く）。",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-dc0c3a861868f184b838-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_41.txt:13-16。古い未納国税の例外は第1項第1号の適用についてのみで、源泉徴収税など別の除外もある。「古くても出る」と無条件に断定すると対象外の税についても取得可能と判断する。",
+    "needed_source": "",
+    "severity": "medium",
+    "text": "ただし未納の国税だけは例外で、古くても出る",
+    "new": "未納国税の期間制限の例外は1項1号の事項に限られ、源泉徴収税等の別の除外も確認する",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-6febf84bc8b94c9c14cd-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_42.txt:6-6。災害被害者は復旧に必要な資金の借入れ、生計困難者は法律に定める扶助等を受けるために使用する証明書に限る。使用目的という主要な要件を落としており、それ以外の請求でも免除になると誤る。",
+    "needed_source": "",
+    "severity": "high",
+    "text": "災害で財産に相当な損失を受けた人・生計の維持が困難な人は手数料が要らない（令42条3項）",
+    "new": "災害による相当な財産損失の復旧資金を借りるため、又は生計困難者が法定扶助等を受けるために使う証明書は手数料免除（令42条3項）",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-973ba798c0e1f0c05e36-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_41.txt:16-17。その4の対象は請求日の3年前の日が属する会計年度以降であり、最長3年間という上限ではない。その1も法定納期限と会計年度で判定する。3年を超える対象期間を取得不能と誤る。",
+    "needed_source": "",
+    "severity": "high",
+    "text": "「その4（滞納処分を受けたことがない証明）は最長でも3年分しか出ない」「その1で3年より古い年度を頼んでも、未納が無ければ証明されない」という制約は、条文の側にはっきり書かれています。",
+    "new": "その4の期間は請求日の3年前の日が属する会計年度以降です。その1等も単に3年間で区切らず、法定納期限が属する会計年度を基準に判断します（令41条2項3号・3項）。",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-ba775428bd459585defd-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_42.txt:5-6。「実務で必要なことがすべてこの1項」と断定しているが、42条2項に収入印紙・現金による納付方法、3項に災害復旧資金の借入れや法定扶助等のための手数料免除が定められている。免除対象者等が1項だけで実務条件を判断すると答えが変わる。",
+    "needed_source": "",
+    "severity": "medium",
+    "text": "長い条文ですが、実務で必要なことがすべてこの1項に入っています。",
+    "new": "1項は手数料の額と枚数計算を定め、2項は納付方法、3項は免除を定めています。",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-20ba514c66d44db18e26-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/www_nta_go_jp_taxes_nozei_nozei_shomei_01_htm.txt:138-139。正本の「消印をしたものは無効」は収入印紙についての説明であり、請求自体を無効にするとは規定していない。印紙の不備を直して請求する余地と請求自体の無効を混同させる。",
+    "needed_source": "",
+    "severity": "medium",
+    "text": "親切のつもりで押した印が、請求を無効にする",
+    "new": "手数料の収入印紙に消印すると、その印紙が無効になる",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-4c9853e468fc9448ec7e-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_41.txt:16-17。制限は単純な「3年より前」ではなく、請求日の3年前の日が属する会計年度より前の会計年度を基準にする。3年前の日より前でも同じ会計年度に法定納期限がある納付済み国税は対象に残り得るため、取得可能な証明書を取得不可と判断させる。",
+    "needed_source": "",
+    "severity": "high",
+    "text": "3年より前は証明されない — ただし未納だけは別",
+    "new": "証明できる期間は会計年度で判断 — 未納国税には限定的な例外",
+    "matches": 2
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-5c92e04f465d8ad95243-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_41.txt:13-17。41条2項は前項各号のうち「第五号を除く」と明記する。各号全体を除外対象とする説明では、その4に関する除外が2項によると誤認させる。その4の期間制限は別の3項で定められている。",
+    "needed_source": "",
+    "severity": "medium",
+    "text": "施行令41条2項は、1項の各号に「該当しないものとする」事項を並べています。",
+    "new": "施行令41条2項は、1項各号のうち5号を除く事項の対象外を定めています。その4に対応する5号の期間制限は3項にあります。",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-8778235100a4ebda68f4-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_41.txt:5-5;corpus/egov_tsusokurei_41.txt:13-14。「納めなかった分だけが現れる」では未納であればすべて記載されるように読める。源泉徴収による国税は原則除外され、所得税法221条による徴収・納税の告知に係る分が対象であり、未納だけでは足りない。",
+    "needed_source": "",
+    "severity": "medium",
+    "text": "結果として、きちんと毎月納めている源泉所得税ほど納税証明書には現れず、納めなかった分だけが現れるという形になります。",
+    "new": "源泉徴収による国税は対象から除かれますが、所得税法221条による徴収・納税の告知に係る分は対象となります。単に未納であるだけでは足りません。",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-e9f1649add45cb643569-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/www_nta_go_jp_taxes_tetsuzuki_shinsei_annai_gensen_annai_1648_31_htm.txt:12-13;corpus/www_nta_go_jp_taxes_tetsuzuki_shinsei_annai_gensen_annai_1648_31_htm.txt:19-20。給与の源泉所得税を納めていることを証明したい一般の源泉徴収義務者に、別制度の証明願を案内している。正本の証明願の対象は国内源泉所得に課税された非居住者・外国法人で、居住地国で外国税額控除を受ける目的の手続。対象者・目的を欠くため典型的な国内給与のケースで利用できる制度を誤る。",
+    "needed_source": "",
+    "severity": "high",
+    "text": "「源泉所得税をきちんと納めていることを証明したい」という場面では、通則法の納税証明書ではなく、国税庁が別に案内している源泉徴収に係る所得税等の証明を探すことになります。",
+    "new": "国税庁のA2-25「源泉徴収に係る所得税等の証明」は、国内源泉所得に課税された非居住者・外国法人が居住地国で外国税額控除を受けるための手続です。国内給与の一般的な源泉徴収義務者向けの証明手続ではありません。",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-b8e8dc92635327bc6bc7-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_41.txt:26-26。①は単なる担保権設定一般ではなく、国税又は地方税と競合する債権に係る担保権の設定という限定がある。限定を落とした列挙により、該当しない担保設定まで①で交付されると読める。",
+    "needed_source": "",
+    "severity": "medium",
+    "text": "①担保権の設定に関するもの ②法令にもとづき国や地方公共団体に提出すべきもの ③その他、使用目的につき相当の理由があると認めるもの。",
+    "new": "①国税又は地方税と競合する債権に係る担保権の設定に関するもの、②法令に基づき国や地方公共団体に提出すべきもの、③その他、使用目的につき相当の理由があると認めるものです。",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-2eddccd205105e6a9df3-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_42.txt:6-6。手数料免除には、災害損失の場合は復旧に必要な資金の借入れ、生計維持困難の場合は法律に定める扶助等を受けるため、という証明書の使用目的が必要。対象者であるだけで用途を問わず無料になると読め、免除の該当・非該当を誤る。",
+    "needed_source": "",
+    "severity": "high",
+    "text": "災害で財産に相当な損失を受けた人・生計の維持が困難な人は手数料が不要（同42条3項）",
+    "new": "災害による相当な財産損失の復旧資金の借入れ、又は生計困難者が法律上の扶助等を受けるために使う証明書は手数料不要（同42条3項）",
+    "matches": 1
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-2f880fd518fb1bf546a3-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/egov_tsusokurei_41.txt:7-11;corpus/www_nta_go_jp_taxes_nozei_nozei_shomei_01_htm.txt:28-33。「その4だけ」は過剰な限定。その2も所得金額を定めた独立の3号に対応する。その4が5号である部分は正しい。",
+    "needed_source": "",
+    "severity": "medium",
+    "text": "その4だけは5号という独立した号を持っています。",
+    "new": "その4は5号、その2は所得金額を定める3号に対応します。",
+    "matches": 2
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-eee61c2aaea6d55b9130-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/www_nta_go_jp_taxes_nozei_nozei_shomei_01_htm.txt:169-171;corpus/egov_tsusoku_123.txt:4-4。本人に関する証明書という限定は、本人から委任を受けた代理人の請求を排除しない。後続には代理請求の留保があるものの、この単位は取引先の証明書を取り寄せられない／自分のものだけ／取引先自身の取得という断定で、委任を受けて取り寄せる場合の答えが変わる。",
+    "needed_source": "",
+    "severity": "medium",
+    "text": "A. できません。",
+    "new": "A. 本人の委任を受けた代理人として請求することはできます。",
+    "matches": 2
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-af77c3db26b16a462d51-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/www_nta_go_jp_taxes_nozei_nozei_shomei_01_htm.txt:169-171;corpus/egov_tsusoku_123.txt:4-4。本人に関する証明書という限定は、本人から委任を受けた代理人の請求を排除しない。後続には代理請求の留保があるものの、この単位は取引先の証明書を取り寄せられない／自分のものだけ／取引先自身の取得という断定で、委任を受けて取り寄せる場合の答えが変わる。",
+    "needed_source": "",
+    "severity": "medium",
+    "text": "国税通則法123条1項は「その者に関するものに限り」と限定しており、請求できるのは自分（法人であれば自社）に関する証明書だけです。",
+    "new": "国税通則法123条1項は本人に関する証明に限りますが、本人から委任を受けた代理人の請求は可能です。",
+    "matches": 2
+  },
+  {
+    "page": "docs/column/nozei-shomeisho/index.html",
+    "id": "s-1f17a68c76683baaf648-1",
+    "decision": "unresolved",
+    "reason": "照合箇所 corpus/www_nta_go_jp_taxes_nozei_nozei_shomei_01_htm.txt:169-171;corpus/egov_tsusoku_123.txt:4-4。本人に関する証明書という限定は、本人から委任を受けた代理人の請求を排除しない。後続には代理請求の留保があるものの、この単位は取引先の証明書を取り寄せられない／自分のものだけ／取引先自身の取得という断定で、委任を受けて取り寄せる場合の答えが変わる。",
+    "needed_source": "",
+    "severity": "medium",
+    "text": "取引先の納税状況を確かめたい場合は、取引先自身に取得してもらい提示を受ける形になります。",
+    "new": "取引先に取得・提示してもらう方法のほか、委任状を添付した代理請求も可能です。業務として行う請求は税理士法上の税務代理に該当します。",
+    "matches": 2
+  }
+]
