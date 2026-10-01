@@ -281,7 +281,10 @@ else ok(`「${ZURE}週ずれています」と明言している`);
 const cSagaku = callouts.find(c => /差額/.test(c) && /40万円/.test(c));
 if (!cSagaku) fail('差額のcalloutが無い');
 else if (!/産科医療補償制度加入機関で在胎22週以降/.test(cSagaku) || !/50万円との差額10万円/.test(cSagaku) || !/48\.8万円の区分なら差額8\.8万円/.test(cSagaku)) fail('★差額のcalloutは加入機関・22週条件と50万円/48.8万円の両区分が必要');
-else if (!/3か月後/.test(cSagaku)) fail('★差額のcalloutに「3か月後」が無い');
+// r16 t6-z 後の callout は「3か月後」を2回書く（協会けんぽの送付時期＋「出産直後の3か月後に届く書類」）。
+// 存在チェックだけでは片方を壊しても緑なので（規則5）、送付の一文を名指しし、callout内の「Nか月後」を全て3に縛る。
+else if (!/協会けんぽは出産後おおむね3か月後に差額申請書を送付/.test(cSagaku)) fail('★差額のcalloutに「協会けんぽは出産後おおむね3か月後に差額申請書を送付」が無い');
+else if ((cSagaku.match(/\d+か月後/g) || []).some(m => m !== '3か月後')) fail('★差額のcalloutに3か月後以外の「Nか月後」がある');
 else if (!/申請/.test(cSagaku)) fail('★差額のcalloutが「申請が必要」と言っていない');
 else ok('差額のcallout＝費用40万円なら区分別に10万円/8.8万円・おおむね3か月後に申請書・申請が必要');
 
