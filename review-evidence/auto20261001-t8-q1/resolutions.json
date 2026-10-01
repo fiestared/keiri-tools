@@ -1,0 +1,442 @@
+[
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-54562cfbd471520b4005-1",
+    "decision": "unresolved",
+    "reason": "『30区分中11区分だけが3万円境界』という閉じた件数。比較表の30区分を正本と突き合わせた。境界ありとラベルされた11行のうち、正本で3万円未満と以上の額が違うと確認できたのは10行。三菱UFJ個人154/220（corpus/www_bk_mufg_jp_tesuuryou_furikomi_html.txt:16-23）、三井住友個人ダイレクト154/220（corpus/www_smbc_co_jp_kojin_fee_furikomi_html.txt:94-104）、千葉個人IB165/330と法人EB385/550（corpus/www_chibabank_co_jp_kinri_fee_transfer.txt:64-86）、福岡個人220/440（corpus/www_fukuokabank_co_jp_personal_service_directbanking_summary_furikomi.txt:40-46）、福岡法人330/550（corpus/www_fukuokabank_co_jp_corporate_ebservice_tesuuryou.txt:6-38）、横浜法人EB385/550（corpus/www_boy_co_jp_hojin_eb_service_fee02_html.txt:12-29）、楽天法人150/229（corpus/www_rakuten_bank_co_jp_business_howto_interest_html.txt:94-100）、三菱UFJ法人484/660（同mufgファイル196-206）、三井住友法人Web21エキスパート等495/660（corpus/www_smbc_co_jp_hojin_fee_furikomi_html.txt:54-61）。11件目の三菱UFJ以外のみずほ法人は料金ページが正本に無く、境界ありとは確定できない。定額ラベルは18行。残り1行の横浜個人IBは3万円未満154円だけで、3万円以上の額は取得テキストに無い（corpus/www_boy_co_jp_fee_furikomi_html.txt:12-25。3万円以上の次の行が割引制度の文で金額が欠ける）。表自身も『3万円以上は未確認』としている。それなのに30−11=19を全部定額と数えると、未確認の横浜個人IBを定額に数える。読者が3万円以上を横浜の個人IBで154円のまま振り込むと、境界があった場合に手数料区分を誤る。典型的な他行宛なので high。みずほ個人・イオン個人・フィンサー法人も定額ラベルだが正本が無い。確認できた範囲だけを数え、未確認4行と横浜個人の3万円以上を母数から外す。",
+    "needed_source": "横浜銀行マイダイレクト他行あて3万円以上の金額（https://www.boy.co.jp/fee/furikomi.html 。正本テキストは3万円以上のセルが空）。みずほ銀行・イオン銀行の公式料金ページ（取得時403で正本に無い）。数が揃うまでは『30区分中11』『残る19は定額』と書かない。",
+    "severity": "high",
+    "old_text": "3万円の境界で料金が変わるのは30区分中11区分だけ。",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-ed05b6d1687c48de5b85-1",
+        "text": "料金を照合できた25区分では、3万円境界あり10区分・定額15区分です。"
+      },
+      {
+        "id": "s-d86724f23e1975c9bf58-1",
+        "text": "未確認の5区分は集計から除いています"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-31def858d2f9e0cad44f-1",
+    "decision": "unresolved",
+    "reason": "『残る19区分は定額』。定額ラベルは18行で、19件目は横浜個人IBの未確認行になる。比較表の30区分を正本と突き合わせた。境界ありとラベルされた11行のうち、正本で3万円未満と以上の額が違うと確認できたのは10行。三菱UFJ個人154/220（corpus/www_bk_mufg_jp_tesuuryou_furikomi_html.txt:16-23）、三井住友個人ダイレクト154/220（corpus/www_smbc_co_jp_kojin_fee_furikomi_html.txt:94-104）、千葉個人IB165/330と法人EB385/550（corpus/www_chibabank_co_jp_kinri_fee_transfer.txt:64-86）、福岡個人220/440（corpus/www_fukuokabank_co_jp_personal_service_directbanking_summary_furikomi.txt:40-46）、福岡法人330/550（corpus/www_fukuokabank_co_jp_corporate_ebservice_tesuuryou.txt:6-38）、横浜法人EB385/550（corpus/www_boy_co_jp_hojin_eb_service_fee02_html.txt:12-29）、楽天法人150/229（corpus/www_rakuten_bank_co_jp_business_howto_interest_html.txt:94-100）、三菱UFJ法人484/660（同mufgファイル196-206）、三井住友法人Web21エキスパート等495/660（corpus/www_smbc_co_jp_hojin_fee_furikomi_html.txt:54-61）。11件目の三菱UFJ以外のみずほ法人は料金ページが正本に無く、境界ありとは確定できない。定額ラベルは18行。残り1行の横浜個人IBは3万円未満154円だけで、3万円以上の額は取得テキストに無い（corpus/www_boy_co_jp_fee_furikomi_html.txt:12-25。3万円以上の次の行が割引制度の文で金額が欠ける）。表自身も『3万円以上は未確認』としている。それなのに30−11=19を全部定額と数えると、未確認の横浜個人IBを定額に数える。読者が3万円以上を横浜の個人IBで154円のまま振り込むと、境界があった場合に手数料区分を誤る。典型的な他行宛なので high。みずほ個人・イオン個人・フィンサー法人も定額ラベルだが正本が無い。確認できた範囲だけを数え、未確認4行と横浜個人の3万円以上を母数から外す。",
+    "needed_source": "横浜銀行マイダイレクト他行あて3万円以上の金額（https://www.boy.co.jp/fee/furikomi.html 。正本テキストは3万円以上のセルが空）。みずほ銀行・イオン銀行の公式料金ページ（取得時403で正本に無い）。数が揃うまでは『30区分中11』『残る19は定額』と書かない。",
+    "severity": "high",
+    "old_text": "残る19区分は定額です",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-ed05b6d1687c48de5b85-1",
+        "text": "料金を照合できた25区分では、3万円境界あり10区分・定額15区分です。"
+      },
+      {
+        "id": "s-d86724f23e1975c9bf58-1",
+        "text": "未確認の5区分は集計から除いています"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-e92c819e1712043d298d-1",
+    "decision": "unresolved",
+    "reason": "『境界がある11区分は楽天法人を除きすべてメガバンク・地方銀行』。確認できた10行の内訳（楽天法人以外は三菱UFJ・三井住友・千葉・福岡・横浜）はメガバンクと地方銀行で、この部分の業態分類は正本の行名と合う。ただし『11区分』『すべて』は、正本に無いみずほ法人を境界側に入れ、未確認の横浜個人IBを境界側に入れない、という閉じた母集団が前提。件数が崩れると『すべて』も崩れる。件数と同じ high。比較表の30区分を正本と突き合わせた。境界ありとラベルされた11行のうち、正本で3万円未満と以上の額が違うと確認できたのは10行。三菱UFJ個人154/220（corpus/www_bk_mufg_jp_tesuuryou_furikomi_html.txt:16-23）、三井住友個人ダイレクト154/220（corpus/www_smbc_co_jp_kojin_fee_furikomi_html.txt:94-104）、千葉個人IB165/330と法人EB385/550（corpus/www_chibabank_co_jp_kinri_fee_transfer.txt:64-86）、福岡個人220/440（corpus/www_fukuokabank_co_jp_personal_service_directbanking_summary_furikomi.txt:40-46）、福岡法人330/550（corpus/www_fukuokabank_co_jp_corporate_ebservice_tesuuryou.txt:6-38）、横浜法人EB385/550（corpus/www_boy_co_jp_hojin_eb_service_fee02_html.txt:12-29）、楽天法人150/229（corpus/www_rakuten_bank_co_jp_business_howto_interest_html.txt:94-100）、三菱UFJ法人484/660（同mufgファイル196-206）、三井住友法人Web21エキスパート等495/660（corpus/www_smbc_co_jp_hojin_fee_furikomi_html.txt:54-61）。11件目の三菱UFJ以外のみずほ法人は料金ページが正本に無く、境界ありとは確定できない。定額ラベルは18行。残り1行の横浜個人IBは3万円未満154円だけで、3万円以上の額は取得テキストに無い（corpus/www_boy_co_jp_fee_furikomi_html.txt:12-25。3万円以上の次の行が割引制度の文で金額が欠ける）。表自身も『3万円以上は未確認』としている。それなのに30−11=19を全部定額と数えると、未確認の横浜個人IBを定額に数える。読者が3万円以上を横浜の個人IBで154円のまま振り込むと、境界があった場合に手数料区分を誤る。典型的な他行宛なので high。みずほ個人・イオン個人・フィンサー法人も定額ラベルだが正本が無い。確認できた範囲だけを数え、未確認4行と横浜個人の3万円以上を母数から外す。",
+    "needed_source": "横浜銀行マイダイレクト他行あて3万円以上の金額（https://www.boy.co.jp/fee/furikomi.html 。正本テキストは3万円以上のセルが空）。みずほ銀行・イオン銀行の公式料金ページ（取得時403で正本に無い）。数が揃うまでは『30区分中11』『残る19は定額』と書かない。",
+    "severity": "high",
+    "old_text": "境界がある11区分は楽天銀行（法人）を除き、すべてメガバンク・地方銀行。",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-3f57926756f9d9548fc8-1",
+        "text": "境界を確認できた10区分は三菱UFJ・三井住友・千葉・福岡の個人と法人、横浜法人、楽天法人。"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-ffc4b699d297e0b5386c-7",
+    "decision": "unresolved",
+    "reason": "比較表のドコモSMTBネット銀行（法人）の他行宛セルが145円。正本の法人料金ページは取得日時点で他行宛を『振込金額に関わらず 145円（税込）』（corpus/www_netbk_co_jp_contents_hojin_charge.txt:16-23,39）としている。同じ正本の2026-09-02付プレスリリースは、法人の他行宛を2026-10-01から一律100円（税込）へ引き下げ、最大45円の引下げ（145円との差）とし、総合振込は対象外、予約振込は予約受付日の料金、と書いている（corpus/www_netbk_co_jp_contents_company_press_2026_0902_006290_html.txt:15-27）。審査日は適用開始日当日で、145円を現行の比較額として置くと読者は100円の振込を145円で見積もる。施行日の取り違えなので high。10月1日以降のセルは100円にするか、145円セルに『2026-09-30時点。10月1日から100円』と期限を同じ行へ書く。",
+    "needed_source": "追加の料金ページは要らない。正本のプレスリリース（上記15-27行）と法人料金ページ（16-23行）で足りる。直すのは記事の145円と比較表の『現行』という語。",
+    "severity": "high",
+    "old_text": "145円",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-f4ad3aa46049ef3ba269-3",
+        "text": "100円"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-ffc4b699d297e0b5386c-8",
+    "decision": "unresolved",
+    "reason": "比較表のドコモSMTBネット銀行（法人）の他行宛セルが145円。正本の法人料金ページは取得日時点で他行宛を『振込金額に関わらず 145円（税込）』（corpus/www_netbk_co_jp_contents_hojin_charge.txt:16-23,39）としている。同じ正本の2026-09-02付プレスリリースは、法人の他行宛を2026-10-01から一律100円（税込）へ引き下げ、最大45円の引下げ（145円との差）とし、総合振込は対象外、予約振込は予約受付日の料金、と書いている（corpus/www_netbk_co_jp_contents_company_press_2026_0902_006290_html.txt:15-27）。審査日は適用開始日当日で、145円を現行の比較額として置くと読者は100円の振込を145円で見積もる。施行日の取り違えなので high。10月1日以降のセルは100円にするか、145円セルに『2026-09-30時点。10月1日から100円』と期限を同じ行へ書く。",
+    "needed_source": "追加の料金ページは要らない。正本のプレスリリース（上記15-27行）と法人料金ページ（16-23行）で足りる。直すのは記事の145円と比較表の『現行』という語。",
+    "severity": "high",
+    "old_text": "145円",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-f4ad3aa46049ef3ba269-4",
+        "text": "100円"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-ffc4b699d297e0b5386c-9",
+    "decision": "unresolved",
+    "reason": "金額逆引きの145円の行に、ドコモSMTB法人が金額不問で入っている（直後の区分セル）。正本の法人料金ページは取得日時点で他行宛を『振込金額に関わらず 145円（税込）』（corpus/www_netbk_co_jp_contents_hojin_charge.txt:16-23,39）としている。同じ正本の2026-09-02付プレスリリースは、法人の他行宛を2026-10-01から一律100円（税込）へ引き下げ、最大45円の引下げ（145円との差）とし、総合振込は対象外、予約振込は予約受付日の料金、と書いている（corpus/www_netbk_co_jp_contents_company_press_2026_0902_006290_html.txt:15-27）。審査日は適用開始日当日で、145円を現行の比較額として置くと読者は100円の振込を145円で見積もる。施行日の取り違えなので high。10月1日以降のセルは100円にするか、145円セルに『2026-09-30時点。10月1日から100円』と期限を同じ行へ書く。PayPay個人・PayPay法人・楽天個人の145円は各社ページに残るので、その3つだけを145円の行に残し、ドコモSMTB法人は100円の行へ移す。",
+    "needed_source": "追加の料金ページは要らない。正本のプレスリリース（上記15-27行）と法人料金ページ（16-23行）で足りる。直すのは記事の145円と比較表の『現行』という語。",
+    "severity": "high",
+    "old_text": "145円",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-ffc4b699d297e0b5386c-7",
+        "text": "145円"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-e0b16acaa19b96671a5e-1",
+    "decision": "unresolved",
+    "reason": "逆引きの区分文が『ドコモSMTBネット銀行（旧 住信SBIネット銀行・法人）（金額不問）』を145円の仲間に数えている。正本の法人料金ページは取得日時点で他行宛を『振込金額に関わらず 145円（税込）』（corpus/www_netbk_co_jp_contents_hojin_charge.txt:16-23,39）としている。同じ正本の2026-09-02付プレスリリースは、法人の他行宛を2026-10-01から一律100円（税込）へ引き下げ、最大45円の引下げ（145円との差）とし、総合振込は対象外、予約振込は予約受付日の料金、と書いている（corpus/www_netbk_co_jp_contents_company_press_2026_0902_006290_html.txt:15-27）。審査日は適用開始日当日で、145円を現行の比較額として置くと読者は100円の振込を145円で見積もる。施行日の取り違えなので high。10月1日以降のセルは100円にするか、145円セルに『2026-09-30時点。10月1日から100円』と期限を同じ行へ書く。",
+    "needed_source": "追加の料金ページは要らない。正本のプレスリリース（上記15-27行）と法人料金ページ（16-23行）で足りる。直すのは記事の145円と比較表の『現行』という語。",
+    "severity": "high",
+    "old_text": "PayPay銀行（個人）（金額不問）PayPay銀行（法人）（金額不問）楽天銀行（個人）（金額不問）ドコモSMTBネット銀行（旧 住信SBIネット銀行・法人）（金額不問）",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-138765cf7271d84223e0-1",
+        "text": "PayPay銀行（個人）（金額不問）PayPay銀行（法人）（金額不問）楽天銀行（個人）（金額不問）"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-ffc4b699d297e0b5386c-14",
+    "decision": "unresolved",
+    "reason": "比較表のドコモSMTBネット銀行（法人）の他行宛セルが145円。正本の法人料金ページは取得日時点で他行宛を『振込金額に関わらず 145円（税込）』（corpus/www_netbk_co_jp_contents_hojin_charge.txt:16-23,39）としている。同じ正本の2026-09-02付プレスリリースは、法人の他行宛を2026-10-01から一律100円（税込）へ引き下げ、最大45円の引下げ（145円との差）とし、総合振込は対象外、予約振込は予約受付日の料金、と書いている（corpus/www_netbk_co_jp_contents_company_press_2026_0902_006290_html.txt:15-27）。審査日は適用開始日当日で、145円を現行の比較額として置くと読者は100円の振込を145円で見積もる。施行日の取り違えなので high。10月1日以降のセルは100円にするか、145円セルに『2026-09-30時点。10月1日から100円』と期限を同じ行へ書く。",
+    "needed_source": "追加の料金ページは要らない。正本のプレスリリース（上記15-27行）と法人料金ページ（16-23行）で足りる。直すのは記事の145円と比較表の『現行』という語。",
+    "severity": "high",
+    "old_text": "145円",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-f4ad3aa46049ef3ba269-8",
+        "text": "100円"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-ffc4b699d297e0b5386c-15",
+    "decision": "unresolved",
+    "reason": "比較表のドコモSMTBネット銀行（法人）の他行宛セルが145円。正本の法人料金ページは取得日時点で他行宛を『振込金額に関わらず 145円（税込）』（corpus/www_netbk_co_jp_contents_hojin_charge.txt:16-23,39）としている。同じ正本の2026-09-02付プレスリリースは、法人の他行宛を2026-10-01から一律100円（税込）へ引き下げ、最大45円の引下げ（145円との差）とし、総合振込は対象外、予約振込は予約受付日の料金、と書いている（corpus/www_netbk_co_jp_contents_company_press_2026_0902_006290_html.txt:15-27）。審査日は適用開始日当日で、145円を現行の比較額として置くと読者は100円の振込を145円で見積もる。施行日の取り違えなので high。10月1日以降のセルは100円にするか、145円セルに『2026-09-30時点。10月1日から100円』と期限を同じ行へ書く。",
+    "needed_source": "追加の料金ページは要らない。正本のプレスリリース（上記15-27行）と法人料金ページ（16-23行）で足りる。直すのは記事の145円と比較表の『現行』という語。",
+    "severity": "high",
+    "old_text": "145円",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-f4ad3aa46049ef3ba269-9",
+        "text": "100円"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-3122744e441894ec0848-1",
+    "decision": "unresolved",
+    "reason": "『法人は個人の約1.9倍（77円→145円）』。個人の無料回数以降77円はcorpus/www_netbk_co_jp_contents_charge_furikomi.txt:41-46 で正しい。145/77は約1.88で『約1.9倍』の計算自体は改定前の額に合う。ただし2026-10-01以降の法人他行宛は100円で、100/77は約1.3倍になる。正本の法人料金ページは取得日時点で他行宛を『振込金額に関わらず 145円（税込）』（corpus/www_netbk_co_jp_contents_hojin_charge.txt:16-23,39）としている。同じ正本の2026-09-02付プレスリリースは、法人の他行宛を2026-10-01から一律100円（税込）へ引き下げ、最大45円の引下げ（145円との差）とし、総合振込は対象外、予約振込は予約受付日の料金、と書いている（corpus/www_netbk_co_jp_contents_company_press_2026_0902_006290_html.txt:15-27）。審査日は適用開始日当日で、145円を現行の比較額として置くと読者は100円の振込を145円で見積もる。施行日の取り違えなので high。10月1日以降のセルは100円にするか、145円セルに『2026-09-30時点。10月1日から100円』と期限を同じ行へ書く。",
+    "needed_source": "追加の料金ページは要らない。正本のプレスリリース（上記15-27行）と法人料金ページ（16-23行）で足りる。直すのは記事の145円と比較表の『現行』という語。",
+    "severity": "high",
+    "old_text": "法人は個人の約1.9倍（77円→145円）。",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-0a744dfb8062e6241471-1",
+        "text": "法人は個人の約1.3倍（77円→100円）。"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-710b99c2b020f352e2ac-1",
+    "decision": "unresolved",
+    "reason": "見出し『法人は銀行選びで年6万円変わる』。法人他行宛3万円以上の両端はGMOあおぞら100円（corpus/gmo_aozora_com_business_contents_fee_html.txt:10-18）と三菱UFJ BizSTATION660円（corpus/www_bk_mufg_jp_tesuuryou_furikomi_html.txt:196-206）。差は560円。年120件なら560×120=67,200円で、直後の本文も67,200円と書いている。見出しの6万円は7,200円少ない。向き（ネット銀行の方が安い）は変わらないが、見出しだけを拾うと年間差の金額を誤る。公式手数料そのものではないので high にはしない。medium。見出しを『年6.7万円』または『年67,200円』にする。",
+    "needed_source": "",
+    "severity": "medium",
+    "old_text": "法人は銀行選びで年6万円変わる",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-e27f74039c901b4c4458-1",
+        "text": "法人は銀行選びで年67,200円変わる"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-bc6b190d4884f645700f-1",
+    "decision": "unresolved",
+    "reason": "『30区分中11区分だけが3万円境界』という閉じた件数。比較表の30区分を正本と突き合わせた。境界ありとラベルされた11行のうち、正本で3万円未満と以上の額が違うと確認できたのは10行。三菱UFJ個人154/220（corpus/www_bk_mufg_jp_tesuuryou_furikomi_html.txt:16-23）、三井住友個人ダイレクト154/220（corpus/www_smbc_co_jp_kojin_fee_furikomi_html.txt:94-104）、千葉個人IB165/330と法人EB385/550（corpus/www_chibabank_co_jp_kinri_fee_transfer.txt:64-86）、福岡個人220/440（corpus/www_fukuokabank_co_jp_personal_service_directbanking_summary_furikomi.txt:40-46）、福岡法人330/550（corpus/www_fukuokabank_co_jp_corporate_ebservice_tesuuryou.txt:6-38）、横浜法人EB385/550（corpus/www_boy_co_jp_hojin_eb_service_fee02_html.txt:12-29）、楽天法人150/229（corpus/www_rakuten_bank_co_jp_business_howto_interest_html.txt:94-100）、三菱UFJ法人484/660（同mufgファイル196-206）、三井住友法人Web21エキスパート等495/660（corpus/www_smbc_co_jp_hojin_fee_furikomi_html.txt:54-61）。11件目の三菱UFJ以外のみずほ法人は料金ページが正本に無く、境界ありとは確定できない。定額ラベルは18行。残り1行の横浜個人IBは3万円未満154円だけで、3万円以上の額は取得テキストに無い（corpus/www_boy_co_jp_fee_furikomi_html.txt:12-25。3万円以上の次の行が割引制度の文で金額が欠ける）。表自身も『3万円以上は未確認』としている。それなのに30−11=19を全部定額と数えると、未確認の横浜個人IBを定額に数える。読者が3万円以上を横浜の個人IBで154円のまま振り込むと、境界があった場合に手数料区分を誤る。典型的な他行宛なので high。みずほ個人・イオン個人・フィンサー法人も定額ラベルだが正本が無い。確認できた範囲だけを数え、未確認4行と横浜個人の3万円以上を母数から外す。",
+    "needed_source": "横浜銀行マイダイレクト他行あて3万円以上の金額（https://www.boy.co.jp/fee/furikomi.html 。正本テキストは3万円以上のセルが空）。みずほ銀行・イオン銀行の公式料金ページ（取得時403で正本に無い）。数が揃うまでは『30区分中11』『残る19は定額』と書かない。",
+    "severity": "high",
+    "old_text": "「3万円の境界」があるのは11区分だけ",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-19bad2286b5d585fd08d-1",
+        "text": "「3万円の境界」を確認できた10区分"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-25248bd6260ed80caff6-1",
+    "decision": "unresolved",
+    "reason": "『30区分中11区分だけが3万円境界』という閉じた件数。比較表の30区分を正本と突き合わせた。境界ありとラベルされた11行のうち、正本で3万円未満と以上の額が違うと確認できたのは10行。三菱UFJ個人154/220（corpus/www_bk_mufg_jp_tesuuryou_furikomi_html.txt:16-23）、三井住友個人ダイレクト154/220（corpus/www_smbc_co_jp_kojin_fee_furikomi_html.txt:94-104）、千葉個人IB165/330と法人EB385/550（corpus/www_chibabank_co_jp_kinri_fee_transfer.txt:64-86）、福岡個人220/440（corpus/www_fukuokabank_co_jp_personal_service_directbanking_summary_furikomi.txt:40-46）、福岡法人330/550（corpus/www_fukuokabank_co_jp_corporate_ebservice_tesuuryou.txt:6-38）、横浜法人EB385/550（corpus/www_boy_co_jp_hojin_eb_service_fee02_html.txt:12-29）、楽天法人150/229（corpus/www_rakuten_bank_co_jp_business_howto_interest_html.txt:94-100）、三菱UFJ法人484/660（同mufgファイル196-206）、三井住友法人Web21エキスパート等495/660（corpus/www_smbc_co_jp_hojin_fee_furikomi_html.txt:54-61）。11件目の三菱UFJ以外のみずほ法人は料金ページが正本に無く、境界ありとは確定できない。定額ラベルは18行。残り1行の横浜個人IBは3万円未満154円だけで、3万円以上の額は取得テキストに無い（corpus/www_boy_co_jp_fee_furikomi_html.txt:12-25。3万円以上の次の行が割引制度の文で金額が欠ける）。表自身も『3万円以上は未確認』としている。それなのに30−11=19を全部定額と数えると、未確認の横浜個人IBを定額に数える。読者が3万円以上を横浜の個人IBで154円のまま振り込むと、境界があった場合に手数料区分を誤る。典型的な他行宛なので high。みずほ個人・イオン個人・フィンサー法人も定額ラベルだが正本が無い。確認できた範囲だけを数え、未確認4行と横浜個人の3万円以上を母数から外す。",
+    "needed_source": "横浜銀行マイダイレクト他行あて3万円以上の金額（https://www.boy.co.jp/fee/furikomi.html 。正本テキストは3万円以上のセルが空）。みずほ銀行・イオン銀行の公式料金ページ（取得時403で正本に無い）。数が揃うまでは『30区分中11』『残る19は定額』と書かない。",
+    "severity": "high",
+    "old_text": "ただし、いまその境界が実際に残っているのは30区分中11区分だけでした。",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-6582fe6e30f3a73c8881-1",
+        "text": "料金を照合できた25区分では、3万円境界あり10区分・定額15区分です。"
+      },
+      {
+        "id": "s-7e5923b6d0f78f7583e0-1",
+        "text": "みずほ個人・法人、イオン個人、フィンサー法人、横浜個人IB（3万円以上は未確認）の5区分は集計から除いています。"
+      },
+      {
+        "id": "s-3b6c258b5779392d1ab7-1",
+        "text": "境界を確認できたのは、三菱UFJ・三井住友・千葉・福岡の個人と法人、横浜法人、楽天法人です。"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-04659e0f6e896e86f1f4-1",
+    "decision": "unresolved",
+    "reason": "『残る19区分は定額』。定額ラベルは18行で、19件目は横浜個人IBの未確認行になる。比較表の30区分を正本と突き合わせた。境界ありとラベルされた11行のうち、正本で3万円未満と以上の額が違うと確認できたのは10行。三菱UFJ個人154/220（corpus/www_bk_mufg_jp_tesuuryou_furikomi_html.txt:16-23）、三井住友個人ダイレクト154/220（corpus/www_smbc_co_jp_kojin_fee_furikomi_html.txt:94-104）、千葉個人IB165/330と法人EB385/550（corpus/www_chibabank_co_jp_kinri_fee_transfer.txt:64-86）、福岡個人220/440（corpus/www_fukuokabank_co_jp_personal_service_directbanking_summary_furikomi.txt:40-46）、福岡法人330/550（corpus/www_fukuokabank_co_jp_corporate_ebservice_tesuuryou.txt:6-38）、横浜法人EB385/550（corpus/www_boy_co_jp_hojin_eb_service_fee02_html.txt:12-29）、楽天法人150/229（corpus/www_rakuten_bank_co_jp_business_howto_interest_html.txt:94-100）、三菱UFJ法人484/660（同mufgファイル196-206）、三井住友法人Web21エキスパート等495/660（corpus/www_smbc_co_jp_hojin_fee_furikomi_html.txt:54-61）。11件目の三菱UFJ以外のみずほ法人は料金ページが正本に無く、境界ありとは確定できない。定額ラベルは18行。残り1行の横浜個人IBは3万円未満154円だけで、3万円以上の額は取得テキストに無い（corpus/www_boy_co_jp_fee_furikomi_html.txt:12-25。3万円以上の次の行が割引制度の文で金額が欠ける）。表自身も『3万円以上は未確認』としている。それなのに30−11=19を全部定額と数えると、未確認の横浜個人IBを定額に数える。読者が3万円以上を横浜の個人IBで154円のまま振り込むと、境界があった場合に手数料区分を誤る。典型的な他行宛なので high。みずほ個人・イオン個人・フィンサー法人も定額ラベルだが正本が無い。確認できた範囲だけを数え、未確認4行と横浜個人の3万円以上を母数から外す。",
+    "needed_source": "横浜銀行マイダイレクト他行あて3万円以上の金額（https://www.boy.co.jp/fee/furikomi.html 。正本テキストは3万円以上のセルが空）。みずほ銀行・イオン銀行の公式料金ページ（取得時403で正本に無い）。数が揃うまでは『30区分中11』『残る19は定額』と書かない。",
+    "severity": "high",
+    "old_text": "残る19区分は金額にかかわらず定額です。",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-6582fe6e30f3a73c8881-1",
+        "text": "料金を照合できた25区分では、3万円境界あり10区分・定額15区分です。"
+      },
+      {
+        "id": "s-7e5923b6d0f78f7583e0-1",
+        "text": "みずほ個人・法人、イオン個人、フィンサー法人、横浜個人IB（3万円以上は未確認）の5区分は集計から除いています。"
+      },
+      {
+        "id": "s-3b6c258b5779392d1ab7-1",
+        "text": "境界を確認できたのは、三菱UFJ・三井住友・千葉・福岡の個人と法人、横浜法人、楽天法人です。"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-286f54eca0ffbcc32e45-1",
+    "decision": "unresolved",
+    "reason": "『境界がある11区分は楽天法人を除きすべてメガバンク・地方銀行』。確認できた10行の内訳（楽天法人以外は三菱UFJ・三井住友・千葉・福岡・横浜）はメガバンクと地方銀行で、この部分の業態分類は正本の行名と合う。ただし『11区分』『すべて』は、正本に無いみずほ法人を境界側に入れ、未確認の横浜個人IBを境界側に入れない、という閉じた母集団が前提。件数が崩れると『すべて』も崩れる。件数と同じ high。比較表の30区分を正本と突き合わせた。境界ありとラベルされた11行のうち、正本で3万円未満と以上の額が違うと確認できたのは10行。三菱UFJ個人154/220（corpus/www_bk_mufg_jp_tesuuryou_furikomi_html.txt:16-23）、三井住友個人ダイレクト154/220（corpus/www_smbc_co_jp_kojin_fee_furikomi_html.txt:94-104）、千葉個人IB165/330と法人EB385/550（corpus/www_chibabank_co_jp_kinri_fee_transfer.txt:64-86）、福岡個人220/440（corpus/www_fukuokabank_co_jp_personal_service_directbanking_summary_furikomi.txt:40-46）、福岡法人330/550（corpus/www_fukuokabank_co_jp_corporate_ebservice_tesuuryou.txt:6-38）、横浜法人EB385/550（corpus/www_boy_co_jp_hojin_eb_service_fee02_html.txt:12-29）、楽天法人150/229（corpus/www_rakuten_bank_co_jp_business_howto_interest_html.txt:94-100）、三菱UFJ法人484/660（同mufgファイル196-206）、三井住友法人Web21エキスパート等495/660（corpus/www_smbc_co_jp_hojin_fee_furikomi_html.txt:54-61）。11件目の三菱UFJ以外のみずほ法人は料金ページが正本に無く、境界ありとは確定できない。定額ラベルは18行。残り1行の横浜個人IBは3万円未満154円だけで、3万円以上の額は取得テキストに無い（corpus/www_boy_co_jp_fee_furikomi_html.txt:12-25。3万円以上の次の行が割引制度の文で金額が欠ける）。表自身も『3万円以上は未確認』としている。それなのに30−11=19を全部定額と数えると、未確認の横浜個人IBを定額に数える。読者が3万円以上を横浜の個人IBで154円のまま振り込むと、境界があった場合に手数料区分を誤る。典型的な他行宛なので high。みずほ個人・イオン個人・フィンサー法人も定額ラベルだが正本が無い。確認できた範囲だけを数え、未確認4行と横浜個人の3万円以上を母数から外す。",
+    "needed_source": "横浜銀行マイダイレクト他行あて3万円以上の金額（https://www.boy.co.jp/fee/furikomi.html 。正本テキストは3万円以上のセルが空）。みずほ銀行・イオン銀行の公式料金ページ（取得時403で正本に無い）。数が揃うまでは『30区分中11』『残る19は定額』と書かない。",
+    "severity": "high",
+    "old_text": "しかも境界が残る11区分は、楽天銀行（法人）を除くとすべてメガバンクと地方銀行。",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-6582fe6e30f3a73c8881-1",
+        "text": "料金を照合できた25区分では、3万円境界あり10区分・定額15区分です。"
+      },
+      {
+        "id": "s-7e5923b6d0f78f7583e0-1",
+        "text": "みずほ個人・法人、イオン個人、フィンサー法人、横浜個人IB（3万円以上は未確認）の5区分は集計から除いています。"
+      },
+      {
+        "id": "s-3b6c258b5779392d1ab7-1",
+        "text": "境界を確認できたのは、三菱UFJ・三井住友・千葉・福岡の個人と法人、横浜法人、楽天法人です。"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-689ec2bdc0d27a2ec518-1",
+    "decision": "unresolved",
+    "reason": "『30区分中11区分だけが3万円境界』という閉じた件数。比較表の30区分を正本と突き合わせた。境界ありとラベルされた11行のうち、正本で3万円未満と以上の額が違うと確認できたのは10行。三菱UFJ個人154/220（corpus/www_bk_mufg_jp_tesuuryou_furikomi_html.txt:16-23）、三井住友個人ダイレクト154/220（corpus/www_smbc_co_jp_kojin_fee_furikomi_html.txt:94-104）、千葉個人IB165/330と法人EB385/550（corpus/www_chibabank_co_jp_kinri_fee_transfer.txt:64-86）、福岡個人220/440（corpus/www_fukuokabank_co_jp_personal_service_directbanking_summary_furikomi.txt:40-46）、福岡法人330/550（corpus/www_fukuokabank_co_jp_corporate_ebservice_tesuuryou.txt:6-38）、横浜法人EB385/550（corpus/www_boy_co_jp_hojin_eb_service_fee02_html.txt:12-29）、楽天法人150/229（corpus/www_rakuten_bank_co_jp_business_howto_interest_html.txt:94-100）、三菱UFJ法人484/660（同mufgファイル196-206）、三井住友法人Web21エキスパート等495/660（corpus/www_smbc_co_jp_hojin_fee_furikomi_html.txt:54-61）。11件目の三菱UFJ以外のみずほ法人は料金ページが正本に無く、境界ありとは確定できない。定額ラベルは18行。残り1行の横浜個人IBは3万円未満154円だけで、3万円以上の額は取得テキストに無い（corpus/www_boy_co_jp_fee_furikomi_html.txt:12-25。3万円以上の次の行が割引制度の文で金額が欠ける）。表自身も『3万円以上は未確認』としている。それなのに30−11=19を全部定額と数えると、未確認の横浜個人IBを定額に数える。読者が3万円以上を横浜の個人IBで154円のまま振り込むと、境界があった場合に手数料区分を誤る。典型的な他行宛なので high。みずほ個人・イオン個人・フィンサー法人も定額ラベルだが正本が無い。確認できた範囲だけを数え、未確認4行と横浜個人の3万円以上を母数から外す。",
+    "needed_source": "横浜銀行マイダイレクト他行あて3万円以上の金額（https://www.boy.co.jp/fee/furikomi.html 。正本テキストは3万円以上のセルが空）。みずほ銀行・イオン銀行の公式料金ページ（取得時403で正本に無い）。数が揃うまでは『30区分中11』『残る19は定額』と書かない。",
+    "severity": "high",
+    "old_text": "3万円の境界があるのは30区分中11区分で、すべてメガバンク・地銀（＋楽天法人）",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-032255fe539484d58d37-1",
+        "text": "料金を照合できた25区分では、3万円境界あり10区分・定額15区分（未確認の5区分は除外）"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-3c69704b924cd7b50497-1",
+    "decision": "unresolved",
+    "reason": "『三井住友銀行の法人（495円／660円）』。正本はWeb21ライトが他行宛165円／330円、Web21エキスパート・デビュー等が495円／660円（corpus/www_smbc_co_jp_hojin_fee_furikomi_html.txt:54-61）。比較表の行名は『Web21エキスパート等』で、495/660はその行に合う。この文はプラン名を落として法人一般のように読める。605円がりそな2行だけ、という結論はライト（165/330）でも崩れない。崩れるのは括弧内の金額。ライト契約は特定できる少数なので medium。『Web21エキスパート等は495円／660円。ライトは165円／330円』とプランを書く。",
+    "needed_source": "",
+    "severity": "medium",
+    "old_text": "この30区分で605円はこの2つだけで、三菱UFJ銀行の法人（484円／660円）や三井住友銀行の法人（495円／660円）とは金額が違います。",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-5135995c7aa5e6f2de7e-1",
+        "text": "この30区分で605円はこの2つだけで、三菱UFJ銀行の法人（484円／660円）や三井住友銀行の法人（Web21エキスパート等・495円／660円）とは金額が違います。"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-6b2039263602c508b14c-1",
+    "decision": "unresolved",
+    "reason": "『30区分中11区分だけが3万円境界』という閉じた件数。比較表の30区分を正本と突き合わせた。境界ありとラベルされた11行のうち、正本で3万円未満と以上の額が違うと確認できたのは10行。三菱UFJ個人154/220（corpus/www_bk_mufg_jp_tesuuryou_furikomi_html.txt:16-23）、三井住友個人ダイレクト154/220（corpus/www_smbc_co_jp_kojin_fee_furikomi_html.txt:94-104）、千葉個人IB165/330と法人EB385/550（corpus/www_chibabank_co_jp_kinri_fee_transfer.txt:64-86）、福岡個人220/440（corpus/www_fukuokabank_co_jp_personal_service_directbanking_summary_furikomi.txt:40-46）、福岡法人330/550（corpus/www_fukuokabank_co_jp_corporate_ebservice_tesuuryou.txt:6-38）、横浜法人EB385/550（corpus/www_boy_co_jp_hojin_eb_service_fee02_html.txt:12-29）、楽天法人150/229（corpus/www_rakuten_bank_co_jp_business_howto_interest_html.txt:94-100）、三菱UFJ法人484/660（同mufgファイル196-206）、三井住友法人Web21エキスパート等495/660（corpus/www_smbc_co_jp_hojin_fee_furikomi_html.txt:54-61）。11件目の三菱UFJ以外のみずほ法人は料金ページが正本に無く、境界ありとは確定できない。定額ラベルは18行。残り1行の横浜個人IBは3万円未満154円だけで、3万円以上の額は取得テキストに無い（corpus/www_boy_co_jp_fee_furikomi_html.txt:12-25。3万円以上の次の行が割引制度の文で金額が欠ける）。表自身も『3万円以上は未確認』としている。それなのに30−11=19を全部定額と数えると、未確認の横浜個人IBを定額に数える。読者が3万円以上を横浜の個人IBで154円のまま振り込むと、境界があった場合に手数料区分を誤る。典型的な他行宛なので high。みずほ個人・イオン個人・フィンサー法人も定額ラベルだが正本が無い。確認できた範囲だけを数え、未確認4行と横浜個人の3万円以上を母数から外す。",
+    "needed_source": "横浜銀行マイダイレクト他行あて3万円以上の金額（https://www.boy.co.jp/fee/furikomi.html 。正本テキストは3万円以上のセルが空）。みずほ銀行・イオン銀行の公式料金ページ（取得時403で正本に無い）。数が揃うまでは『30区分中11』『残る19は定額』と書かない。",
+    "severity": "high",
+    "old_text": "ただし現在は定額制に移行した銀行も多く、本記事の30区分では境界が残るのは11区分でした。",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-b741e3b487ba80f123b2-1",
+        "text": "本記事で料金を照合できた25区分では、3万円境界あり10区分・定額15区分です。"
+      },
+      {
+        "id": "s-b08b61d0343760a94dbc-1",
+        "text": "未確認の5区分はこの集計に含めていません。"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/furikomi-tesuryo-hikaku/index.html",
+    "id": "s-1d18dadfa38f7e9b465b-1",
+    "decision": "unresolved",
+    "reason": "『上記の料金表は改定前の現行料金です。』改定前の145円を、適用開始日以降も現行と呼んでいる。正本の法人料金ページは取得日時点で他行宛を『振込金額に関わらず 145円（税込）』（corpus/www_netbk_co_jp_contents_hojin_charge.txt:16-23,39）としている。同じ正本の2026-09-02付プレスリリースは、法人の他行宛を2026-10-01から一律100円（税込）へ引き下げ、最大45円の引下げ（145円との差）とし、総合振込は対象外、予約振込は予約受付日の料金、と書いている（corpus/www_netbk_co_jp_contents_company_press_2026_0902_006290_html.txt:15-27）。審査日は適用開始日当日で、145円を現行の比較額として置くと読者は100円の振込を145円で見積もる。施行日の取り違えなので high。10月1日以降のセルは100円にするか、145円セルに『2026-09-30時点。10月1日から100円』と期限を同じ行へ書く。『現行』を削り、『2026-09-30に取得した料金表は改定前の145円。2026-10-01から他行宛は一律100円』と書く。",
+    "needed_source": "追加の料金ページは要らない。正本のプレスリリース（上記15-27行）と法人料金ページ（16-23行）で足りる。直すのは記事の145円と比較表の『現行』という語。",
+    "severity": "high",
+    "old_text": "上記の料金表は改定前の現行料金です。",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-975cd5be93a26d33ed69-1",
+        "text": "上記の料金表は、この法人通常振込について2026年10月1日からの100円を反映しています。"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/zengin-format-guide/index.html",
+    "id": "s-7ab68eb7037c5577515d-1",
+    "decision": "unresolved",
+    "reason": "『全角文字は1文字で2バイトを食うため、そもそもC項目には入れられない』。群馬銀行の総合振込仕様は、120バイト、Cは半角文字（カタカナ・英大文字・数字）、全角をCへ入れるとは書いていない（corpus/www_gunmabank_co_jp_hojin_biznb_service_pdf_z_format1_pdf.txt:6-9,76）。C項目に全角を入れない、という結論は仕様の文字種定義に合う。『1文字2バイト』は仕様に無く、記事自身が文字コードはシフトJISまたはEBCDICで銀行により違うと書いている。UTF-8では全角は3バイトで、2バイトと決め打ちすると桁計算がずれる。ただしこの文は『入れられない』で止めており、読者がC項目へ全角を入れる操作にはならない。金額・期限の誤りではないので medium。『C項目は半角文字だけ。バイト数は利用銀行の文字コード仕様による』に変える。",
+    "needed_source": "",
+    "severity": "medium",
+    "old_text": "全角文字は1文字で2バイトを食うため、そもそもC項目には入れられない",
+    "origin": "corpus_adjudication",
+    "new_units": [
+      {
+        "id": "s-718fba25b6bffe8fe7cf-1",
+        "text": "C項目は半角文字（カタカナ・英大文字・数字）で記入し、全角文字は使用しません"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/zengin-format-guide/index.html",
+    "id": "s-213a8bd4a6fd9c317a12-1",
+    "verdict": "wrong",
+    "reason": "ヘッダーは1ファイル1行とは限らない。〔別冊〕全銀協パーソナル・コンピュータ用標準通信プロトコル（ベーシック手順）適用業務およびレコード・フォーマット（令和8年10月、一般社団法人全国銀行協会）の「7. レコード・シークェンス」(2)は、ヘッダー・データ・トレーラの順とし、1ファイルに複数のヘッダー・レコードがある場合を認め、そのときは各種別コードを同一に限る（パターン②）。エンド・レコードだけがファイル末尾の1レコード。https://www.zenginkyo.or.jp/fileadmin/res/abstract/efforts/system/jba_protocol_pc.pdf",
+    "old_text": "1ファイルに1行。",
+    "severity": "medium",
+    "origin": "out_of_corpus_opinion_primary_verified",
+    "new_units": [
+      {
+        "id": "s-b4f0731d2e657e8fe27f-1",
+        "text": "データの集まりごとに1行で、1ファイルに複数置く場合は各ヘッダーの種別コードを同一にします。"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/zengin-format-guide/index.html",
+    "id": "s-213a8bd4a6fd9c317a12-2",
+    "verdict": "wrong",
+    "reason": "トレーラも1ファイル1行とは限らない。同じ「7. レコード・シークェンス」(2)で、トレーラはヘッダーで始まるデータの集まりの終わり（データ区分8）なので、ヘッダーが複数ならトレーラも複数になる。エンド・レコード（データ区分9）がファイルに1つ。〔別冊〕全銀協パーソナル・コンピュータ用標準通信プロトコル（ベーシック手順）適用業務およびレコード・フォーマット（令和8年10月、一般社団法人全国銀行協会）。https://www.zenginkyo.or.jp/fileadmin/res/abstract/efforts/system/jba_protocol_pc.pdf",
+    "old_text": "1ファイルに1行。",
+    "severity": "medium",
+    "origin": "out_of_corpus_opinion_primary_verified",
+    "new_units": [
+      {
+        "id": "s-52a5f8da771b6b3286ee-1",
+        "text": "ヘッダーで始まるデータの集まりごとに1行で、複数のヘッダーがあるファイルではトレーラも複数になります。"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/zengin-format-guide/index.html",
+    "id": "s-5a402b3889b20d7d5ce6-1",
+    "verdict": "wrong",
+    "reason": "ザイに対応するのは一般財団法人と公益財団法人。裸の「財団法人」は現行の略語表に無い。〔別冊〕全銀協パーソナル・コンピュータ用標準通信プロトコル（ベーシック手順）適用業務およびレコード・フォーマット（令和8年10月、一般社団法人全国銀行協会）の付録2「振込依頼人名・受取人名などの記入」B(C)法人略語。https://www.zenginkyo.or.jp/fileadmin/res/abstract/efforts/system/jba_protocol_pc.pdf",
+    "old_text": "一般財団法人・財団法人",
+    "severity": "medium",
+    "origin": "out_of_corpus_opinion_primary_verified",
+    "new_units": [
+      {
+        "id": "s-41caa65f144f972a621f-1",
+        "text": "一般財団法人・公益財団法人"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  },
+  {
+    "page": "docs/column/zengin-format-guide/index.html",
+    "id": "s-d9dbc3f83cd0c398d8fe-1",
+    "verdict": "wrong",
+    "reason": "シヤに対応するのは一般社団法人と公益社団法人。裸の「社団法人」は現行の略語表に無い。〔別冊〕全銀協パーソナル・コンピュータ用標準通信プロトコル（ベーシック手順）適用業務およびレコード・フォーマット（令和8年10月、一般社団法人全国銀行協会）の付録2 B(C)法人略語。https://www.zenginkyo.or.jp/fileadmin/res/abstract/efforts/system/jba_protocol_pc.pdf",
+    "old_text": "一般社団法人・社団法人",
+    "severity": "medium",
+    "origin": "out_of_corpus_opinion_primary_verified",
+    "new_units": [
+      {
+        "id": "s-95978ad7d84ebeab1afc-1",
+        "text": "一般社団法人・公益社団法人"
+      }
+    ],
+    "resolution": "fixed_source_checked_by_repairer"
+  }
+]

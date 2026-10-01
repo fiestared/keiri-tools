@@ -31,7 +31,7 @@ for (const c of [...files].sort()) {
   assert.ok(Array.isArray(cases) && cases.length >= 2, `${c}: ケースが2件未満`);
   for (const k of cases) {
     // 一次資料: 官公庁・協会けんぽ・全銀協等と、銀行自身が公表する手数料・操作の公式ページ（r14: auじぶん・三井住友）。
-    if (!k.source || !/^https:\/\/([a-z0-9-]+\.)*(go\.jp|lg\.jp|kyoukaikenpo\.or\.jp|zenginkyo\.or\.jp|kenpo\.or\.jp|smbc\.co\.jp|jibunbank\.co\.jp)\//.test(k.source)) errors.push(`${c} / ${k.name}: source が一次資料でない: ${k.source}`);
+    if (!k.source || !/^https:\/\/([a-z0-9-]+\.)*(go\.jp|lg\.jp|kyoukaikenpo\.or\.jp|zenginkyo\.or\.jp|kenpo\.or\.jp|smbc\.co\.jp|jibunbank\.co\.jp|netbk\.co\.jp)\//.test(k.source)) errors.push(`${c} / ${k.name}: source が一次資料でない: ${k.source}`);
     if (!k.quote || k.quote.length < 6) errors.push(`${c} / ${k.name}: quote（一次資料の逐語）が無い`);
     let got; try { got = k.run(); } catch (e) { errors.push(`${c} / ${k.name}: 例外 ${e.message}`); continue; }
     try { assert.deepEqual(got, k.expected); n++; } catch { errors.push(`${c} / ${k.name}: 期待 ${JSON.stringify(k.expected)} ／ 実際 ${JSON.stringify(got)}（${k.source}）`); }

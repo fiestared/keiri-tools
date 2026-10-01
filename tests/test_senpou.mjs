@@ -64,3 +64,17 @@ console.log("all senpou_core tests passed");
 const {cases: reviewedFees} = await import('./boundaries/senpou_core.mjs');
 for (const c of reviewedFees) assert.deepEqual(c.run(), c.expected, c.name);
 assert.ok(!COMMON_FEES.includes(99), 'auじぶんの誤った通常料金99円を候補に残さない');
+
+// 改定後の100円を差額候補として認識し、99円・101円と混同しない。
+assert.equal(explainShortfall(30000,29900).verdict, 'likely_fee');
+assert.equal(explainShortfall(30000,29901).verdict, 'near_fee');
+assert.equal(explainShortfall(30000,29899).verdict, 'near_fee');
+
+const {readFileSync}=await import('node:fs');
+const {staleHits}=await import('./test_stale_values.mjs');
+const staleEntry=JSON.parse(readFileSync(new URL('./stale_values.json',import.meta.url))).entries.find(e=>e.id==='docomo-smtb-corporate-145');
+const oldFee='ドコモSMTBネット銀行（旧 住信SBIネット銀行・法人） 145円';
+assert.equal(staleHits(oldFee,staleEntry,'fixture','2026-09-30').length,0);
+assert.equal(staleHits(oldFee,staleEntry,'fixture','2026-10-01').length,1);
+assert.equal(staleHits(oldFee+'（改定前）',staleEntry,'fixture','2026-10-01').length,0);
+assert.equal(staleHits(oldFee.replace('145円','100円'),staleEntry,'fixture','2026-10-01').length,0);

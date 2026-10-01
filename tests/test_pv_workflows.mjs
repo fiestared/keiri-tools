@@ -32,3 +32,11 @@ for(let i=0;i<3;i++){r.innerHTML='new result';r.dataset.resultState='success';aw
 dom.window.close();
 const generated=buildSections(loadBanks());for(const id of ids)assert(generated.includes('/senpou-futan/#bank='+id));
 console.log('✓ PV workflows: stable IDs/reordering, unknown, failure, delayed edits, conditional results, stable controls, generator');
+
+const revised=fixture('');await revised.ready;
+revised.select.value=String(data.banks.findIndex(b=>b.name.includes('SMTB')&&b.name.includes('法人')));
+revised.select.dispatchEvent(new revised.dom.window.Event('change'));
+assert.deepEqual([revised.under.value,revised.over.value],['100','100']);
+assert.match(revised.note.textContent,/総合振込サービスは改定対象外/);
+assert.match(revised.note.textContent,/予約受付日時点/);
+revised.dom.window.close();

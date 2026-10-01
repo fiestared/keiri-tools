@@ -163,7 +163,7 @@ export function buildSections(rows) {
         + '金額は表全体の調査時点のものです。<b>お手続き前に各行の公式ページでご確認ください。</b></p>');
     }
   }
-  out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」があるのは11区分だけ</a>に書いています。</p>');
+  out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」を確認できた10区分</a>に書いています。</p>');
   out.push(END);
   return out.join('\n');
 }

@@ -1,0 +1,40 @@
+{
+  "core": "senpou_core",
+  "page": "docs/senpou-futan/index.html",
+  "scope": "今回追加した通常振込100円のプリセットと差額判定。全方式・契約条件の網羅を意味しない。総合振込は対象外、予約は受付日時点。",
+  "conditions": [
+    {
+      "id": "current-bank-fee",
+      "statute": "ドコモSMTBネット銀行2026年9月2日発表・2026年10月1日適用の通常振込料金",
+      "disposition": "input",
+      "input_ids": [
+        "bankPreset",
+        "invoice",
+        "feeUnder",
+        "feeOver"
+      ],
+      "cases": [
+        "ドコモSMTB法人改定・29999円",
+        "ドコモSMTB法人改定・30000円",
+        "ドコモSMTB法人改定・30001円"
+      ]
+    },
+    {
+      "id": "received-shortfall",
+      "statute": "同発表の他行宛一律100円（税込）との一致照合",
+      "disposition": "input",
+      "input_ids": [
+        "chkInvoice",
+        "chkReceived"
+      ],
+      "cases": [
+        "改定後通常料金・99円差",
+        "改定後通常料金・100円差",
+        "改定後通常料金・101円差"
+      ]
+    }
+  ],
+  "default_cases": [
+    "t8q1 先方負担HTML初期値は料金未指定"
+  ]
+}

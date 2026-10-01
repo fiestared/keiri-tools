@@ -18,6 +18,7 @@ export function attachBankPresets({ select, under, over, note, fetcher = fetch, 
     if (select.value !== '' && bank) {
       under.value = bank.under30k;
       over.value = bank.over30k;
+      if (bank.public_note) notice(bank.public_note);
     }
   });
   function applyHash() {

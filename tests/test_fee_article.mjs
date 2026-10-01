@@ -63,7 +63,14 @@ const cMin = Math.min(...corp.map((b) => b.over30k));
 const cMax = Math.max(...corp.map((b) => b.over30k));
 const pMin = Math.min(...pers.map((b) => b.over30k));
 const pMax = Math.max(...pers.map((b) => b.over30k));
-const step = FEES.banks.filter((b) => b.under30k !== b.over30k).length;
+// auto20261001-t8-q1: 正本で未確認の5区分を件数の母数から除外する。
+const unconfirmed = new Set(['みずほ銀行（個人・みずほダイレクト）','みずほ銀行（法人・EB）','イオン銀行（個人）','フィンサーバンク（法人・フリープラン）','横浜銀行（個人IB）']);
+const reviewed = FEES.banks.filter(b=>!unconfirmed.has(b.name));
+assert.equal(reviewed.length,25,'公式資料で照合した25区分');
+const step = reviewed.filter(b=>b.under30k!==b.over30k).length;
+assert.equal(step,10);
+const flat = reviewed.filter(b=>b.under30k===b.over30k).length;
+assert.equal(flat,15);
 
 assert.ok(HTML.includes(`${cMin}円〜${cMax}円`), `法人のレンジ ${cMin}円〜${cMax}円 が本文に無い`);
 assert.ok(HTML.includes(`${pMin}円〜${pMax}円`), `個人のレンジ ${pMin}円〜${pMax}円 が本文に無い`);
@@ -74,7 +81,8 @@ const ratio = (cMax / cMin).toFixed(1);
 assert.ok(HTML.includes(`${ratio}倍`),
   `法人の倍率 ${ratio}倍（${cMax}円 ÷ ${cMin}円）が本文に無い。料金改定で倍率が動いたら本文・meta の記述も直すこと`);
 assert.ok(HTML.includes(`${FEES.banks.length}区分`), "本文の区分数が件数と不一致");
-assert.ok(HTML.includes(`${step}区分だけ`) || HTML.includes(`中${step}区分`), `3万円境界の件数(${step})が本文と不一致`);
+assert.ok(HTML.includes(`3万円境界あり${step}区分・定額${flat}区分`), '照合済みの母数と境界・定額件数が本文と不一致');
+assert.ok(!/30区分中11|残る19区分|境界が残るのは11区分/.test(HTML),'未確認を定額と扱う旧集計を残さない');
 
 // 年120件の差額試算(本文の 63,600円)
 const annual = (cMax - cMin) * 120;
