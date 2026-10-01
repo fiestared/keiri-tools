@@ -88,8 +88,14 @@ const run = () => {
 
 writeFileSync(join(dir, 'jidoshazei_core.js'), orig);
 writeFileSync(join(dir, 'jidoshazei_r08.json'), origData);
+// 単体検査が参照する境界値ケースも、同じ隔離先の可変core/dataを使う。
+writeFileSync(join(dir, 'boundary.mjs'),
+  readFileSync(new URL('./boundaries/jidoshazei_core.mjs', import.meta.url), 'utf8')
+    .replace('"../../docs/assets/jidoshazei_core.js"', '"./jidoshazei_core.js"')
+    .replace('`../../docs/assets/${f}`', '`./${f}`'));
 writeFileSync(join(dir, 'test_jidoshazei.mjs'),
   testSrc
+    .replace("'./boundaries/jidoshazei_core.mjs'", "'./boundary.mjs'")
     .replace("from '../docs/assets/jidoshazei_core.js'", "from './jidoshazei_core.js'")
     .replace("new URL('../docs/assets/', import.meta.url)", 'new URL(\'./\', import.meta.url)'));
 
