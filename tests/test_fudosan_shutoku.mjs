@@ -296,12 +296,12 @@ const run = (over = {}) => calcFudosanShutoku({ ...base, ...over });
   // ④ 床面積の改正：条文の前後が、名指しした段落の中で対比されている
   const yoken = byId("yoken-jouban");
   ok("§7 床面積の段落に改正前の条文（50㎡・貸家のかっこ書き）がある",
-    yoken.includes("五十平方メートル") && yoken.includes("貸家"));
+    yoken.includes("50㎡以上") && yoken.includes("戸建以外の新築貸家に限り40㎡以上"));
   ok("§7 床面積の段落に「自己居住用でも40㎡から」の主張がある", yoken.includes("自己居住用でも40㎡から"));
 
   // ⑤ 45,000円の誤解を解く主張（このページの目玉）— 一意な要素を名指しする
   const g45 = byId("tochi-45000");
-  ok("§7 45,000円は税率3％のときだけ、と書いている", g45.includes("45,000円になるだけ"));
+  ok("§7 45,000円は税率3％のときだけ、と書いている", g45.includes("150万円側を使う場合") && g45.includes("税率3%で45,000円"));
   ok("§7 4％なら60,000円になると書いている", g45.includes("60,000円"));
   // 独立に計算した値と一致すること（本文の断定を実装で裏取りする）
   eq("§7 定額減額(3％)は本文の45,000円と一致", (SEIDO.tochiGenkakuBase * SEIDO.tokureiRate) / 100, 45000);
@@ -310,7 +310,7 @@ const run = (over = {}) => calcFudosanShutoku({ ...base, ...over });
   // ⑥ 1/2読替えの主張（忘れると減額が2倍になる急所）
   const half = byId("tochi-hanbun");
   ok("§7 1/2読替えの段落が附則11条の5第2項を名指ししている", half.includes("附則11条の5第2項"));
-  ok("§7 1/2読替えを忘れると減額が2倍になると書いている", half.includes("減額が2倍"));
+  ok("§7 1/2読替えと、減額・税額が変わらない場合の条件を書いている", half.includes("減額計算の単価にも1/2を反映") && half.includes("150万円との比較や税額の下限により結果が変わらない場合"));
 
   // ⑦ 収録範囲の申告（fail closed）が本文にある
   const hani = byId("chuko-hani");
@@ -324,7 +324,7 @@ const run = (over = {}) => calcFudosanShutoku({ ...base, ...over });
   ok("§7 税率の段落に25％過小になると書いてある", zei.includes("25％"));
 
   // ⑨ 評価額≠購入価格の注意（最も多い誤入力）
-  ok("§7 評価額の注意が売買代金ではないと書いている", byId("hyoka-setsumei").includes("売買代金や建築工事費ではありません"));
+  ok("§7 評価額の注意に購入価格の除外と新築・増築家屋の取得時価格を書いている", byId("hyoka-caution").includes("購入価格・工事費でなく") && byId("hyoka-setsumei").includes("新築・増築家屋等は取得時の価格"));
 
   // ⑩ 計測タグと canonical（新規ページで最も落としやすい）
   ok("§7 GA4 のローダーが1文字列で入っている", PAGE.includes("gtag/js?id=G-E742DSDHPD"));

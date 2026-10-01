@@ -2891,6 +2891,7 @@ const torokuJutakuScene = (o) => async () => {
     }, "期限の表示（データから描かれる）");
   }
   set(doc, "tokiBi", o.tokiBi ?? "2026-07-01");
+  set(doc, "shutokuBi", o.shutokuBi ?? "2026-04-01");
   set(doc, "tokiShurui", o.tokiShurui ?? "iten");
   set(doc, "in-genin", o.genin ?? "売買");
   set(doc, "tochiKagaku", o.tochiKagaku ?? 15000000);
@@ -2899,7 +2900,6 @@ const torokuJutakuScene = (o) => async () => {
   set(doc, "tatemonoMochibun", o.tatemonoMochibun ?? 1);
   set(doc, "kojinKyoju", o.kojinKyoju ?? "1");
   set(doc, "yukamenseki", o.yukamenseki ?? 80);
-  set(doc, "tokiMadeMonths", o.tokiMadeMonths ?? 3);
   set(doc, "in-chuko", o.chuko ?? "0");
   set(doc, "kenchikuBi", o.kenchikuBi ?? "2000-01-01");
   set(doc, "taishinTekigo", o.taishinTekigo ?? "0");
@@ -2987,16 +2987,16 @@ SCENES.toroku_saiken = torokuJutakuScene({
 SCENES.toroku_mochibun = torokuJutakuScene({
   tochiKagaku: 20000000, tochiMochibun: 0.5, tatemonoKagaku: 0, saikenGaku: 0,
 });
-// ★登記までの月数（既定値3でない側）。13か月＝1年超で軽減が落ちて 2%＝200,000円。
-//   月数を渡し忘れる実装は30,000円のままで落ちる。
+// ★取得から登記まで1年超の入力。取得日を渡し忘れると軽減を通してしまう。
 SCENES.toroku_1nen_choka = torokuJutakuScene({
-  tokiMadeMonths: 13, tochiKagaku: 0, saikenGaku: 0,
+  shutokuBi: "2025-06-01", tochiKagaku: 0, saikenGaku: 0,
 });
 // ★★期限の境界の対。住宅用家屋の軽減の最終日（令和9年3月31日）は通る＝看板例と同じ290,000円。
-SCENES.toroku_kigen_kyokai = torokuJutakuScene({ tokiBi: "2027-03-31" });
-// その翌日 → 建物と抵当権は出せず、土地だけ出す（期限が別の制度だから）。
+SCENES.toroku_kigen_kyokai = torokuJutakuScene({ shutokuBi: "2027-03-31", tokiBi: "2027-03-31" });
+// 取得期限の翌日に取得 → 建物と抵当権は出せず、土地だけ出す。期限内取得・翌日登記は別シーンで軽減を確認。
 //   ★tokiBi を渡し忘れる実装は290,000円を出して落ちる。
-SCENES.toroku_kigen_gai = torokuJutakuScene({ tokiBi: "2027-04-01" });
+SCENES.toroku_kigen_gai = torokuJutakuScene({ shutokuBi: "2027-04-01", tokiBi: "2027-04-01" });
+SCENES.toroku_acquired_in_time = torokuJutakuScene({ shutokuBi: "2027-03-31", tokiBi: "2027-04-01" });
 // ★同じ日でも土地だけなら全部出せる（土地は令和11年3月31日まで）＝225,000円・一部の申告なし。
 SCENES.toroku_kigen_tochi = torokuJutakuScene({
   tokiBi: "2027-04-01", tatemonoKagaku: 0, saikenGaku: 0,

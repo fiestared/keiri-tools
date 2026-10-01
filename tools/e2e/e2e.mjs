@@ -1186,7 +1186,8 @@ const SCENES = [
   // ★★期限の境界の対。最終日は通る（条文の「まで」は当日を含む）。
   { name: "toroku_kigen_kyokai", expect: (s) =>
       s.total === 290000 && s.tatemono === 30000 && s.bubun === null },
-  // その翌日は建物と抵当権を出さない。★tokiBi を渡し忘れる実装は290,000を出して落ちる。
+  // 取得期限翌日の取得は建物と抵当権を出さない。期限内取得・翌日登記は上の別ケースで確認。
+  { name: "toroku_acquired_in_time", expect: (s) => s.total === 290000 && s.tatemono === 30000 && s.bubun === null },
   { name: "toroku_kigen_gai", expect: (s) =>
       s.total === 225000 && s.tochi === 225000 && s.tatemono === null && s.teitoken === null &&
       s.rows === 1 && /一部だけ/.test(s.bubun || "") &&

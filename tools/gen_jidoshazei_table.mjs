@@ -43,14 +43,14 @@ export function buildRows(D) {
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;');
   return (D.passenger.brackets || []).map((b) => {
     const jyuka = b.jyuka == null ? '—（対象外）' : yen(b.jyuka);
-    return `<tr><td>${esc(b.label)}</td><td>${yen(b.new)}</td><td>${yen(b.old)}</td><td>${jyuka}</td></tr>`;
+    return `<tr><td>${esc(b.label)}</td><td class="num">${yen(b.new)}</td><td class="num">${yen(b.old)}</td><td>${jyuka}</td></tr>`;
   }).join('');
 }
 
 /** ★ページ内 JS の kei-line と同一実装 */
 export function buildKeiLine(D) {
   const k = D.kei;
-  return `軽自動車（自家用乗用・660cc以下）の軽自動車税（種別割）＝ 平成27年4月1日以後 最初の新規検査 <b>${yen(k.new)}</b>／以前 <b>${yen(k.old)}</b>／13年超の重課 <b>${yen(k.jyuka)}</b>（市区町村税・月割なし）。`;
+  return `四輪以上の自家用乗用軽自動車の標準年額（重課・軽課を除く）は、平成27年4月1日以後の初回新規検査で<b>${yen(k.new)}</b>、それ以前は<b>${yen(k.old)}</b>。13年経過後の重課は<b>${yen(k.jyuka)}</b>ですが、電気・天然ガス・メタノール・ガソリン電力併用等は対象外です。グリーン化特例の軽課は別途確認します（月割なし）。`;
 }
 
 export const buildYear = (D) => (D._meta || {}).year || '';

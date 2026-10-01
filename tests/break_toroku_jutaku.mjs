@@ -139,11 +139,11 @@ breakData('12. 土地の軽減の期限を令和9年3月31日にする（実際�
 // ── 13〜16. 登記を受ける日と2つの期限 ──────────────────────────────────────
 // ★どれも「軽減を受けられない人に『軽減されます』と答える」向きの誤り。
 breakCore('13. 期限の当日を「軽減なし」にする（条文は「まで」＝当日を含む）',
-  'return { ok: true, jutakuKeigen: tokiBi <= K.jutaku_kigen };',
-  'return { ok: true, jutakuKeigen: tokiBi < K.jutaku_kigen };');
+  'return { ok: true, jutakuKeigen: (shutokuBi ?? tokiBi) <= K.jutaku_kigen };',
+  'return { ok: true, jutakuKeigen: (shutokuBi ?? tokiBi) < K.jutaku_kigen };');
 
 breakCore('14. 期限を無視して常に軽減を当てる（いちばん危険な向き）',
-  'return { ok: true, jutakuKeigen: tokiBi <= K.jutaku_kigen };',
+  'return { ok: true, jutakuKeigen: (shutokuBi ?? tokiBi) <= K.jutaku_kigen };',
   'return { ok: true, jutakuKeigen: true };');
 
 // ★逆向きの誤り。期限後は「軽減が使えたはずの人」だけ答えが決まらない。
@@ -160,6 +160,11 @@ breakCore('16. 土地の期限（令和11年3月31日）を過ぎても計算す
 breakCore('17. 相続に「その他の移転」1000分の20を当てる（正しくは1000分の4の別制度）',
   '  if (inp.genin === "相続" || inp.tochiGenin === "相続") {',
   '  if (false) {');
+
+// r16: 取得日を無視する旧判定へ戻すと、期限内取得・翌日登記の境界で落ちる。
+breakCore('18. 住宅の取得期限を登記日で判定する旧実装へ戻す',
+  'return { ok: true, jutakuKeigen: (shutokuBi ?? tokiBi) <= K.jutaku_kigen };',
+  'return { ok: true, jutakuKeigen: tokiBi <= K.jutaku_kigen };');
 
 // ── 結果 ──────────────────────────────────────────────────────────────
 console.log(`\n${pass}/${pass + fail} 捕捉`);

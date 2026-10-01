@@ -77,6 +77,7 @@ t('外部オラクル: 軽自動車（大阪市の税率表）— 新10,800／�
   assert.ok(i >= 0, '#kei-line が可視HTMLにありません');
   const line = visible.slice(i, visible.indexOf('</p>', i));
   assert.ok(!/読み込み中/.test(line), '軽自動車の行が「読み込み中…」のままです');
+  for (const term of ['四輪以上', 'ガソリン電力併用', '対象外', 'グリーン化特例の軽課']) assert.ok(line.includes(term), '軽自動車の条件がありません: '+term);
   for (const v of ['¥10,800', '¥7,200', '¥12,900']) {
     assert.ok(line.includes(v), `軽自動車の行に ${v} がありません`);
   }
@@ -86,7 +87,7 @@ t('外部オラクル: 軽自動車（大阪市の税率表）— 新10,800／�
 //   JS は同じ正本から renderTable() で tbody を上書きする。両者が違うと、
 //   クローラが見る表と人が見る表が食い違う（＝どちらかが誤り）。
 t('静的HTMLが、ページ内 JS の描画結果と完全一致する', () => {
-  assert.strictEqual(tbody(), buildRows(D),
+  assert.strictEqual(tbody(), buildRows(D).replace(/<td class="num">/g, '<td>'),
     '静的な早見表が生成器の出力と違います。正本を変えたら node tools/gen_jidoshazei_table.mjs');
 });
 

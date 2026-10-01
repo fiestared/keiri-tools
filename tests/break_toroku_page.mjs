@@ -46,6 +46,11 @@ const runChecker = (m) => (m.checker ? unit(m.checker) : e2e(m.scene));
 
 const MUTATIONS = [
   {
+    name: "取得日を渡し忘れると期限内取得・翌日登記の軽減を失う",
+    scene: "toroku_acquired_in_time",
+    apply: s=>s.replace('    shutokuBi: $("shutokuBi").value,', '    shutokuBi: undefined,'),
+  },
+  {
     // ★★このツールでいちばん見つけにくい誤り。土地に原因を渡し忘れると、
     //   措法72条の「売買」判定が常に外れて土地が本則2%になる（225,000→300,000）。
     name: "★★土地に取得の原因を渡し忘れる（土地が常に本則2%になる）",
@@ -86,10 +91,10 @@ const MUTATIONS = [
     apply: (s) => s.replace('    tochiMochibun: Number($("tochiMochibun").value) || 0,', "    tochiMochibun: 1,"),
   },
   {
-    // ★登記までの月数を渡し忘れる（1年超で落ちるはずの軽減が通る・200,000→30,000）。
-    name: "★登記までの月数を渡し忘れる（1年超でも軽減を通す）",
+    // ★取得日を渡し忘れる（1年超で落ちるはずの軽減が通る・200,000→30,000）。
+    name: "★取得日を渡し忘れる（1年超でも軽減を通す）",
     scene: "toroku_1nen_choka",
-    apply: (s) => s.replace('    tokiMadeMonths: num("tokiMadeMonths"),', "    tokiMadeMonths: 0,"),
+    apply: (s) => s.replace('    shutokuBi: $("shutokuBi").value,', "    shutokuBi: undefined,"),
   },
   {
     // ★中古かどうかを渡し忘れる（昭和56年建築でも軽減が通る・200,000→30,000）。

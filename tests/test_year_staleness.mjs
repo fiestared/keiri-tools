@@ -188,7 +188,7 @@ const HISTORICAL_FACTS = [
             "差し替えても期限は真のまま。機械置換すると法定期限を書き換えて嘘にする。" +
             "この日付は kihonteate_r07.json の fusoku4_zantei.kigen_wareki が正本で、" +
             "test_kihonteate_zantei.mjs がページ・記事・coreとの一致とrecheck_afterカナリアを守っている" },
-  { file: "sozoku-toki-menkyozei/index.html", snippet: "免税措置（令和9年3月31日まで・1筆ごとに判定）",
+  { file: "sozoku-toki-menkyozei/index.html", snippet: "土地1筆ごとの100万円以下の免税（令和9年3月31日まで）",
     reason: "★租税特別措置法84条の2の2の免税措置の法定の適用期限そのもの＝制度の事実" +
             "(2026-07-24にe-Gov現行版で1項・2項とも『令和九年三月三十一日まで』を逐語確認。" +
             "国税庁No.7191とパンフレット令和8年4月版とも一致)。このページのデータ年(令和8年=税率・" +
@@ -196,8 +196,6 @@ const HISTORICAL_FACTS = [
             "機械置換すると法定期限を書き換えて『まだ免税が使える』式の嘘になる。" +
             "この日付は toroku_menkyo_r08.json の menzei.kigen_hyoji が正本で、" +
             "test_toroku_menkyo.mjs が recheck_after(2027-01-31)のカナリアで期限到来を検知する" },
-  { file: "sozoku-toki-menkyozei/index.html", snippet: "免税措置</b>（令和9年3月31日まで・<b>1筆ごとに判定</b>）",
-    reason: "同上(heroの説明文)。措法84条の2の2の適用期限＝制度の事実" },
   { file: "sozoku-toki-menkyozei/index.html",
     snippet: "令和6年4月1日より前に知ったため、<b>施行日（${g.start}）から3年</b>。令和3年法律24号 附則5条6項",
     reason: "★相続登記の申請義務(不動産登記法76条の2)の施行日と、施行日前の相続に読み替えを定める" +

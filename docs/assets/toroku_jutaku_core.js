@@ -189,13 +189,13 @@ export function tatemonoRitsu(j, data) {
 }
 
 /**
- * 登記を受ける日から、その日に使える軽減を判定する。
+ * 土地の登記期限と住宅の新築・取得期限を判定する。登記まで1年以内かは別途判定する。
  *
  * ★日付の比較は `YYYY-MM-DD` の文字列比較で行う（`new Date("YYYY-MM-DD")` はUTC解釈なので
  *   JSTでは当日の00:00〜09:00が「まだ来ていない」と判定される。CLAUDE.md の実害例そのもの）。
  *
  * ★この判定が要る理由: 軽減の期限は**2つ別々にある**（急所⑥）。
- *   住宅用家屋の軽減は令和9年3月31日・土地の売買の1.5%は令和11年3月31日。
+ *   住宅の新築・取得期限は令和9年3月31日・土地売買の登記期限は令和11年3月31日。
  *   期限を過ぎた日の登記に今日の税率をそのまま当てると、**軽減を受けられない人に
  *   「軽減されます」と答える**（データの next_review_reason が最も危険な向きと書いている方向）。
  *   延長されるか失効するかは令和9年度税制改正で決まるので、**分からないと申告する**（fail closed）。
@@ -239,6 +239,7 @@ export function kigenHantei(tokiBi, data, shutokuBi) {
  *   @param {string} inp.tokiShurui   "hozon"（新築の保存）| "iten"（売買等の移転）
  *   @param {number} inp.saikenGaku   住宅ローンの借入額（＝抵当権設定の課税標準）。0なら抵当権なし
  *   @param {boolean} inp.chuko       建築後使用されたことのある住宅か
+ *   @param {string} inp.shutokuBi    住宅の新築・取得日（YYYY-MM-DD）。実UIでは住宅計算時に必須。省略時は従来の月数入力で判定。
  *   @param {string} inp.tokiBi       登記を受ける日（YYYY-MM-DD）。渡すと期限を判定する。
  *                                    ★省略時は期限を見ない（データの checked 時点の税率で計算する）
  *   ほか jutakuKeigenOk / tatemonoRitsu が見る条件
@@ -268,7 +269,9 @@ export function calcTorokuJutaku(inp, data) {
 
   // ── 登記を受ける日 → その日に使える軽減 ────────────────────────
   // tokiBi を渡さない呼び出し（単体テスト・埋め込み用途）は従来どおり期限を見ない。
-  const kigen = inp.tokiBi === undefined ? null : kigenHantei(inp.tokiBi, data, inp.shutokuBi);
+  // 住宅の新築・取得日は建物・住宅ローンの軽減に使う。土地だけの登記では不要。
+  const hasJutaku = nz(inp.tatemonoKagaku) * (inp.tatemonoMochibun == null ? 1 : nz(inp.tatemonoMochibun)) > 0 || nz(inp.saikenGaku) > 0;
+  const kigen = inp.tokiBi === undefined ? null : kigenHantei(inp.tokiBi, data, hasJutaku ? inp.shutokuBi : undefined);
   if (kigen && !kigen.ok) return { ok: false, riyu: kigen.riyu, hanigai: true };
   const jutakuKeigenKa = kigen ? kigen.jutakuKeigen : true;
   // ★期限を過ぎた日に「出せない」のは、軽減が**使えたはずの人**だけ。
