@@ -186,7 +186,10 @@ export function addedClaimText(html, diff) {
   // 見た目の文字が変わっていない行（タグ・属性・クラスだけの変更）は主張の変更ではない（2026-10-01）。
   //   図に fig-wide を付けただけで、同じ行にある図の数字が「足した数字」扱いになり、台帳の無い記事が軒並み落ちた。
   //   消した行と見た目の文字が同じ足した行は数えない（行の移動もこれで除かれる。文字が1つでも違えば数える）。
-  const visible = (s) => s.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  // ★空白も無視して比べる（2026-10-02）。gen_layout_markup が日付を <span class="numeric-token">2023年</span><span…>9月</span>… と
+  //   包むと、タグを空白に置き換えた文字列は「2023年 9月 29日」になり、包む前の「2023年9月29日」と一致しない。
+  //   タグだけの変更なのに足した行になり、しかも分かれた「29日」が日数として拾われ、正しい記事8本を落とした。
+  const visible = (s) => s.replace(/<[^>]*>/g, "").replace(/\s+/g, "");
   const removed = new Map();
   for (const line of diff.split("\n")) {
     if (line.startsWith("-") && !line.startsWith("---")) { const v = visible(line.slice(1)); removed.set(v, (removed.get(v) || 0) + 1); }

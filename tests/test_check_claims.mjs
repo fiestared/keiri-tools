@@ -107,6 +107,13 @@ assert.ok(checkPage({html:changedPage,ledger:null,requiredText:addedClaimText(ch
   assert.deepEqual([...findNumbers(addedClaimText(figPage, textChanged))], ['47,100円'], '同じ行で文字が変わったら拾う');
   const added = '@@ -1,0 +2 @@\n+<p>会社負担は 900円。</p>\n';
   assert.deepEqual([...findNumbers(addedClaimText(figPage, added))], ['900円'], '新しく足した行は拾う'); }
+// 2026-10-02: gen_layout_markup が日付を numeric-token の span で包むだけの変更は、足した行にしない
+//   （タグを空白に置き換えて比べていたので「2023年 9月 29日」≠「2023年9月29日」になり、分かれた「29日」が日数として拾われた）。
+{ const wrapped = '<html><body><main><table><tr><td class="num"><span class="numeric-token">2023年</span><span class="numeric-token">9月</span><span class="numeric-token">29日</span>〜</td></tr></table></main></body></html>';
+  const wrapOnly = '@@ -1 +1 @@\n-<html><body><main><table><tr><td class="num">2023年9月29日〜</td></tr></table></main></body></html>\n+' + wrapped + '\n';
+  assert.deepEqual([...findNumbers(addedClaimText(wrapped, wrapOnly))], [], 'span で包むだけの変更で日付の一部を数字として要求しない');
+  const dayChanged = '@@ -1 +1 @@\n-<html><body><main><table><tr><td class="num">2023年9月28日〜</td></tr></table></main></body></html>\n+' + wrapped + '\n';
+  assert.notEqual(addedClaimText(wrapped, dayChanged).replace(/\s+/g, ''), '', '包むと同時に日付の文字が変わったら足した行として拾う'); }
 
 
 console.log(`✓ test_check_claims: 抽出の性質 / ベースライン緑 / 壊し ${caught}/${cases.length} 捕捉 / 計算機の tool_cases / 足した行モード / 関連記事の内側差分・本文・FAQの回帰`);
