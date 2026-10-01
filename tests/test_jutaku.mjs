@@ -523,3 +523,21 @@ for (const row of t4bOracle) {
  for (const [key,expected] of Object.entries(row.expected)) eq(key.split('.').reduce((v,k)=>v?.[k],actual),expected,'t4b '+row.name+' '+key);
 }
 console.log(`✓ t4b ${t4bOracle.length}ケースを追加、合計${n} assertions`);
+
+// r16/t4b-z: 独立FAQの読者が使う式と、上限に届いている返済前後の実額。
+{
+  const { JSDOM } = await import('jsdom');
+  const inspect = (html) => {
+    const doc = new JSDOM(html).window.document;
+    const answer = [...doc.querySelectorAll('.faq-answer')][0].textContent;
+    assert.ok(answer.includes('2022年入居でも') && answer.includes('対象外'), '旧1％制度の例外をFAQ内で説明');
+    assert.ok(answer.includes('年末残高・借入限度額・取得対価等') && answer.includes('最小額'), 'FAQの式にも3つの上限');
+    const schema = [...doc.querySelectorAll('script[type="application/ld+json"]')].flatMap(x=>{const j=JSON.parse(x.textContent);return j['@graph']||[j]});
+    const faq = schema.find(x=>x['@type']==='FAQPage');
+    if (faq) assert.equal(faq.mainEntity[0].acceptedAnswer.text,answer, '構造化FAQと表示本文が一致');
+  };
+  const html = readFileSync(process.env.JUTAKU_REVIEW_HTML || 'docs/jutaku/index.html','utf8');
+  inspect(html);
+  assert.throws(()=>inspect(html.replaceAll('年末残高・借入限度額・取得対価等','年末の借入残高')), '残高だけの式への退行を拒否');
+  console.log('✓ r16 FAQ: 旧制度・min式・構造化データとmin式の退行を検査');
+}
