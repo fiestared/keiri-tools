@@ -11,7 +11,7 @@ const selector = 'div,section,article,main,title,meta[name="description"],meta[p
 const excluded = 'script,style,nav,header,footer,aside,.breadcrumb,.article-meta,.source-method,.related,.rel-block,.next-read,.article-next-read,.rail-next,.tool-related';
 function structuralNonclaim(tag, text) {
   if (/^[)）]+$/.test(text)) return true;
-  if (/^h[1-6]$/.test(tag) && text === 'まとめ') return true;
+  if (/^h[1-6]$/.test(tag) && ['まとめ','実務上の意味'].includes(text)) return true;
   if (tag === 'th' && ['区分','原則','入る方法','根拠'].includes(text)) return true;
   return (tag === 'p' && text === '先に全体を表にします。') || text === 'この内容をXで共有';
 }

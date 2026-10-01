@@ -30,3 +30,8 @@ for (const text of ['税率は10%です。','適用条件を満たします。',
 const structural = segmentClaims('<h2>まとめ</h2><p>先に全体を表にします。</p><table><tr><th>区分</th><th>原則</th><th>入る方法</th><th>根拠</th><th>給付率は80%</th></tr></table><p>）</p><h2>FAQ</h2><div>この内容をXで共有</div><p>給付率は常に80%です。</p>');
 for (const u of structural.filter(u=>['まとめ','先に全体を表にします。','区分','原則','入る方法','根拠','）','この内容をXで共有'].includes(u.text))) assert.equal(u.protected,false,u.text);
 for (const u of structural.filter(u=>u.text.includes('80%'))) assert.equal(u.protected,true,u.text);
+
+// r16 t7-z: a callout heading is organizational; its substantive body stays protected.
+const practical = segmentClaims('<div class="callout"><h3>実務上の意味</h3><p>給付は50日分です。</p></div>');
+assert.equal(practical.find(u=>u.kind==='h3').protected,false);
+assert.equal(practical.find(u=>u.kind==='p').protected,true);
