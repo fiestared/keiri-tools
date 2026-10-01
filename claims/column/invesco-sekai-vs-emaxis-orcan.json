@@ -3160,21 +3160,22 @@
       "needed_source": ""
     },
     {
-      "id": "finish4-005",
-      "text": "世界のベストの再投資成績は未確認のため、開始日を変えた場合の両商品の実績差も検証していません。",
+      "id": "finish4-source-method",
+      "text": "資料取得日: 2026年9月30日。",
       "where": [
-        "p / body"
+        "p.source-method（単位抽出対象外）"
       ],
-      "numbers": [],
+      "numbers": [
+        "2026年9月30日",
+        "30日"
+      ],
       "applies": "2026年9月30日保存の日次データと本記事の検証範囲",
-      "scope": "本記事における世界のベストとオルカンの再投資成績の検証範囲",
+      "scope": "この記事で使用した目論見書・運用報告書・日次データの保存取得日",
       "source_url": "https://apl.wealthadvisor.jp/xml/chart/funddata/1999010702.xml",
-      "source_quote": "  \"invesco_nav_start\": \"9098\",\n  \"invesco_nav_end\": \"8452\",\n  \"invesco_price_only_pct\": -7.100461639920863,\n  \"note\": \"世界のベストのreturn_valueは定義未確認のため再投資成績に採用しない。\",\n  \"figure\": {\n    \"series\": \"eMAXIS Slimオルカンのみ\",\n    \"points\": 733,\n    \"formula\": \"x=48+334*i/732; y=204-83*(reinvested_nav/20087); 開始日100\",\n    \"max_rounding_error\": 0.04992781400906665",
-      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-01-pm/segment-review-4/corpus/finish-round2-calculation.json:18-26",
-      "exceptions": "無し: 計算記録全27行と日次データの項目定義を確認。世界のベストのreturn_valueは定義未確認で、オルカンのみ再投資実績を掲載。別期間の両商品の差は未検証。",
-      "covers": [
-        "s-d8ba43602f96cbda0d8f-1"
-      ],
+      "source_quote": "2026-09-30保存資料を2026-10-01に複製。取得日の再認定ではない。",
+      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-01-pm/segment-review-4/corpus/manifest.json:1-82",
+      "exceptions": "無し: 両日次資料の冒頭1〜3行とmanifest全件を確認。9月13日の初回取得と二時点の同値再現は確認対象に含めない。10月1日の正本複製を取得日とはしない。",
+      "covers": [],
       "status": "corrected_pending_independent_review",
       "needed_source": ""
     }
@@ -3506,10 +3507,6 @@
     {
       "id": "s-313980f375839482f8d3-1",
       "why": "固定ページの前後関係まで確認。SNS共有ボタンのUI文言。正本の事実認定を代替するものではない。"
-    },
-    {
-      "id": "s-2c0877be3d1f70d5b4dd-1",
-      "why": "対象snapshotの当該IDと前後を確認。別記事への案内文であり、この文自体は検証対象となる具体的事実を述べていない。 正本の数値・制度について独立した断定としては採らない。"
     }
   ],
   "verified": [
@@ -4492,7 +4489,7 @@
       "element_id": null,
       "status": "unverified",
       "opinion": "unsure",
-      "reason": "氏名・事業経営・経理実務者という個人の経歴は、制度の一般知識では真偽を判断できない。本人または運営者の一次情報を確認できておらず、誤りとは断定できない。",
+      "reason": "氏名・経営事業・経理実務者という個人の経歴は、制度の一般知識からは判断できない。誤りと断定する材料もない。",
       "needed_source": "Masahiro Yasu本人または運営者の公式プロフィール等、氏名・経営事業・経理実務者という経歴を確認できる一次資料。"
     },
     {
@@ -4506,7 +4503,7 @@
       "element_id": null,
       "status": "unverified",
       "opinion": "unsure",
-      "reason": "楽天証券の週間買付金額ランキングは集計週・対象銘柄・集計条件によって変動する。対象週の公式ランキングを確認できていないため、世界のベスト8位・eMAXIS Slimオルカン1位という順位の真偽は判断できない。世界株式をテーマとして両商品を比較すること自体には誤りを認めない。",
+      "reason": "週間買付金額の順位は集計週・対象・条件によって変わる。該当する週とランキングの一次資料が特定されていないため、8位・1位が誤りかどうかは判断できない。",
       "needed_source": "順位の基準週と集計条件が分かる楽天証券の週間買付金額ランキング一次資料。"
     },
     {
@@ -4534,7 +4531,7 @@
       "element_id": null,
       "status": "unverified",
       "opinion": "unsure",
-      "reason": "サイト運営主体の金融商品取引業登録の有無や実際に行っている業務は、一般知識やこの文言だけでは確定できない。登録情報・業務実態が不明であり、誤りとは断定できない。",
+      "reason": "サイト運営主体の登録状況と、投資助言に該当する業務を行っているかという実態は、一般知識だけでは判断できない。誤りと断定する材料もない。",
       "needed_source": "サイト運営主体の金融商品取引業登録の有無および投資助言業務の実態を確認できる運営者情報"
     },
     {
@@ -4548,11 +4545,39 @@
       "element_id": null,
       "status": "unverified",
       "opinion": "not_wrong",
-      "reason": "投資信託の費用や運用方針は変更され得るため、最新の交付目論見書で確認するよう促すのは妥当な説明。「変更される」はこの文脈では変更の可能性についての一般的な注意として理解でき、必ず変更が予定されているという意味には限定されない。",
+      "reason": "投資信託の費用や運用方針は変更され得るため、最新の交付目論見書で確認するという案内は妥当。「変更される」は変更の可能性を示す一般的な注意書きとして読め、必ず変更されるとの断定とは考えない。",
       "needed_source": "費用・運用方針が変更され得ることと最新版確認の必要性を明記した各商品の公式資料"
+    },
+    {
+      "id": "s-2c0877be3d1f70d5b4dd-1",
+      "page": "docs/column/invesco-sekai-vs-emaxis-orcan/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "投資対象の異なる2商品に加え、同じ指数に連動する全世界株式ファンド同士の費用と実績の差も確認できます。",
+      "text_hash": "7f636f34ed7f52d01d74",
+      "element_id": null,
+      "status": "unverified",
+      "opinion": "unsure",
+      "reason": "同じ指数に連動するファンドでも費用や実績に差が生じるという説明は妥当。ただし、この文はリンク先で比較内容を確認できることも述べており、リンク先の内容を確認していないため、文全体の真偽は判断できない。",
+      "needed_source": "リンク先の全世界株式ファンド比較記事の保存版と、両商品の目論見書・同期間の基準価額データ。"
+    },
+    {
+      "id": "s-49c9bfad555c7941fdc6-1",
+      "page": "docs/column/invesco-sekai-vs-emaxis-orcan/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "開始日を変えれば実績差も変わります。",
+      "text_hash": "f5561e7d712dcb262672",
+      "element_id": null,
+      "status": "unverified",
+      "opinion": "not_wrong",
+      "reason": "運用実績の比較は対象期間に依存する。開始日を変えると各商品の累積リターンとその差も一般に変わるため、通常の説明として誤りではない。",
+      "needed_source": "開始日を変えた複数の比較期間について実績差を算定した資料"
     }
   ],
-  "review_note": "仕上げ4周目: unresolved5単位を2論点として訂正。正本外5単位（unsure4/not_wrong1）は未確認として維持。修正後の独立再照合待ち。",
+  "review_note": "仕上げ4周目最終: 正式審査のunresolved4単位を取得履歴1論点として修正。正本外wrong0件、6単位を原文維持・未確認。従来台帳のランキング出典1単位も未確認を維持（合計7）。source-methodの同一履歴も訂正。独立再照合待ち。",
   "corpus_root": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-01-pm/segment-review-2/corpus",
   "calculation_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-01-pm/corpus-add/finish-round2-calculation.json"
 }
