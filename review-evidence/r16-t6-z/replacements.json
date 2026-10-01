@@ -1,0 +1,362 @@
+[
+  {
+    "page": "docs/column/shobyo-teate-kin-shinseisho/index.html",
+    "id": "s-04beabca4d2f534d11ad-1",
+    "decision": "unresolved",
+    "reason": "健康保険法108条1項ただし書（corpus/hk_108.txt:3）は、報酬が99条2項の額より少ないときに差額を支給するが、「第百三条第一項又は第三項若しくは第四項に該当するときを除く」と明記している。この文は差額支給だけを書き、出産手当金との調整に当たる人を除いていない。報酬と出産手当金が重なる人は、報酬との差額がそのまま傷病手当金になるとは限らない。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "ただし書で、その報酬の額が99条2項で算定される額より少ないときは差額が支給されます。",
+    "new": "ただし書では、その報酬の額が99条2項で算定される額より少ないときは差額が支給されます（103条1項、108条3項・4項による調整の場合を除きます）。"
+  },
+  {
+    "page": "docs/column/shobyo-teate-kin-shinseisho/index.html",
+    "id": "s-669b3b015486d592cbb3-1",
+    "decision": "unresolved",
+    "reason": "99条2項（corpus/hk_99.txt:3）は、支給を始める日の属する月以前の直近の継続した十二月間で、現に属する保険者等が定めた標準報酬月額に限る。十二月に満たないときは、その各月の平均と、前年度9月30日の全被保険者平均から出す額の、いずれか少ない額の三分の二である（協会けんぽは corpus/kk_benefit_injury_and_sickness_allowance.txt:40-45 で、令和7年4月1日以降の開始は32万円、それ以前は30万円）。本文の「支給開始日以前の直近12か月の平均で決まる」は、開始月を含める月単位の基準と、12月未満の特則と、同じ保険者の標準報酬に限る条件を欠く。月途中の開始や、入社・転職で12月に満たない人は算定月と給付額を誤る。前事業所の添付義務（施行規則84条7項）は正本になく、その部分は照合できない。high-origin のまま ok にしない。",
+    "needed_source": "前事業所の期間を記載した書類の添付を定める健康保険法施行規則84条7項1号の正文。計算基準そのものは正本で足り、本文の月の取り方と12月未満の特則を直す。",
+    "severity": "high",
+    "old": "傷病手当金の額は支給開始日以前の直近12か月の標準報酬月額を平均して決まるため（健康保険法99条2項）、その12か月のあいだに勤務先が変わっていると、保険者は前の事業所の期間を知る必要があります。",
+    "new": "傷病手当金は、支給を始める日の属する月以前の直近の継続した12か月の標準報酬月額（現在の保険者等が定めたもの）の平均を基に算定し、12か月未満なら、その各月の平均と全被保険者平均を基にした額の低い方を用います（健康保険法99条2項）。"
+  },
+  {
+    "page": "docs/column/shobyo-teate-kin-shinseisho/index.html",
+    "id": "s-2b41e0ec65dc3f8048d9-1",
+    "decision": "unresolved",
+    "reason": "資格喪失後の傷病手当金は、喪失前日まで継続1年以上（任意継続・共済・国保の期間を除く）あり、喪失前日に現に受給しているか受給できる状態であることが必要で、一旦就労可能になると再休業では支給されない（corpus/kk_benefit_injury_and_sickness_allowance.txt:52-57、corpus/hk_104.txt:3）。「在職中から続いている継続給付の場合」だけだと、1年未満の人や、喪失前日に受給できる状態でない人が受け取れると誤る。このページで継続給付の要件を書いた単位はここだけである。",
+    "needed_source": "",
+    "severity": "high",
+    "old": "退職後に受け取れるのは、あくまで在職中から続いている継続給付の場合です。",
+    "new": "退職後の継続給付は、資格喪失日の前日までの被保険者期間が継続1年以上（任意継続・共済組合・国民健康保険の期間を除く）あり、同日に傷病手当金を受給中か受給できる状態であることが必要で、一旦就労可能になると、その後再び働けなくなっても支給されません。"
+  },
+  {
+    "page": "docs/column/shobyo-teate-kin-shinseisho/index.html",
+    "id": "s-e2bfa566c49c9357d4a3-1",
+    "decision": "unresolved",
+    "reason": "協会けんぽ（corpus/kk_benefit_injury_and_sickness_allowance.txt:40-45）と99条2項（corpus/hk_99.txt:3）は、12月に満たないときは直近各月の平均と全被保険者平均（令和7年4月1日以降の開始は32万円、それ以前は30万円）の低い方を使う。「直近12か月の平均で決まる以上、前の勤務先が分からないと計算できない」は、この特則を欠き、計算不能と断定している。転職して現在の保険者での標準報酬月額が12月に満たない人は、前の保険者の額を使わずに計算できる。protected のFAQなので nonclaim にはできない。",
+    "needed_source": "",
+    "severity": "high",
+    "old": "傷病手当金の額が直近12か月の標準報酬月額の平均で決まる以上、前の勤務先の期間が分からないと計算できないためです。",
+    "new": "算定の基礎は、支給開始日の属する月以前の直近の継続した12か月の標準報酬月額（現在の保険者等が定めたもの）の平均ですが、12か月未満の場合は、その各月の平均と全被保険者平均を基にした額の低い方を用います（協会けんぽの全被保険者平均は、開始日が令和7年4月1日以降なら32万円、それ以前は30万円）。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-7077d2f596509c93f219-1",
+    "decision": "unresolved",
+    "reason": "協会けんぽ（corpus/kk_benefit_childbirth_002.txt:10-14）は、2023年4月1日以降、産科医療補償制度加入機関で在胎22週以降が1児50万円、加入機関で22週未満が1児48.8万円。施行令36条（corpus/hkr_36.txt:3）の本則は48万8千円で、加算は要件を満たす機関に限る。「結論は1児50万円」は、この条件がない。22週未満または未加入の出産では金額が違う。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "結論から言うと、出産育児一時金は1児につき50万円です。",
+    "new": "出産育児一時金は、産科医療補償制度加入機関で在胎22週以降の出産なら1児50万円、それ以外の支給対象の出産は1児48.8万円です。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-435e39f5d867a04df48c-1",
+    "decision": "unresolved",
+    "reason": "多胎は胎児数分（corpus/kk_benefit_childbirth_002.txt:6）で、1児50万円は加入機関かつ在胎22週以降（同10-12行）。1児48.8万円の区分なら双子は97.6万円であり、100万円とは限らない。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "双子なら2倍の100万円になります（協会けんぽ「多胎児を出産したときは、胎児数分だけ支給されます」）。",
+    "new": "双子は胎児数分の支給となり、2児とも50万円の区分なら100万円、2児とも48.8万円の区分なら97.6万円です。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-1c3d5c9bf2e7105336bf-1",
+    "decision": "unresolved",
+    "reason": "50万円と48.8万円の差は1.2万円だが、50万円は加入機関で在胎22週以降に限る（corpus/kk_benefit_childbirth_002.txt:10-14）。施行令36条は加算を「3万円を超えない範囲で保険者が定める額」とし、掛金1.2万円とは書いていない。未加入機関ではこの上乗せは付かない。",
+    "needed_source": "産科医療補償制度の掛金が1分娩あたり1万2千円であることを示す制度側の一次資料。50万円の条件（加入機関・22週）は正本にある。",
+    "severity": "medium",
+    "old": "② ここから掛金1.2万円が上乗せ ＝ 50万円になる",
+    "new": "② 加入機関・22週以降は50万円"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-3ccf4df379e882e2c532-1",
+    "decision": "unresolved",
+    "reason": "22週から27週でも未加入機関は48.8万円であり、50万円は加入機関かつ22週以降に限る（corpus/kk_benefit_childbirth_002.txt:10-15、corpus/hkr_36.txt:3）。掛金1.2万円と補償3,000万円は正本に文言がない。50万円の断定は正本と照合でき、加入条件の欠落として未解決にする。",
+    "needed_source": "産科医療補償制度の掛金と補償金（重度脳性麻痺・総額）の一次資料。",
+    "severity": "medium",
+    "old": "22週から27週の間に出産した場合、掛金1万2千円分が上乗せされた50万円は受け取れるが、その掛金が支えている補償（重度脳性麻痺に対する総額3,000万円）の対象にはならない。",
+    "new": "在胎22週から27週の出産でも、産科医療補償制度加入機関なら50万円、未加入機関なら48.8万円です。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-4f6b791aa4c3d5bb87d3-1",
+    "decision": "unresolved",
+    "reason": "直前の図の説明と同じく、22週から27週を一律50万円としている。未加入機関は施行令36条の加算対象外で48万8千円（corpus/hkr_36.txt:3、corpus/kk_benefit_childbirth_002.txt:13-15）。補償対象外の部分は正本にない。",
+    "needed_source": "産科医療補償制度の補償対象範囲を示す一次資料。",
+    "severity": "medium",
+    "old": "整理すると、在胎22週から27週の間に出産した場合、出産育児一時金は50万円（＝掛金1万2千円分が上乗せされた額）を受け取りますが、その掛金が支えている補償の対象には入りません。",
+    "new": "在胎22週から27週の出産の一時金は、産科医療補償制度加入機関なら50万円、未加入機関なら48.8万円となります。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-2f755737ee2a32a6c3fa-1",
+    "decision": "unresolved",
+    "reason": "任意継続のFAQ（corpus/kk_faq_voluntary_continuation_001.txt:32-33）と給付案内（corpus/kk_benefit_voluntary_continuation.txt:78-81）は、任意継続の期間中に発生した出産手当金は出ないが、在職中からの継続給付の要件を満たす場合は対象だと書いている。見出しの「出産手当金は出ない」は、継続給付を受けられる人まで受け取れないと読める。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "誰がもらえるか — 任意継続でも出る（出産手当金は出ないのに）",
+    "new": "誰がもらえるか — 任意継続の出産育児一時金と継続給付"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-385e6822a2c5695bb243-1",
+    "decision": "unresolved",
+    "reason": "「出産まわりの給付は3つ」の範囲が、この文だけでは決まらない。正本には出産育児一時金、家族出産育児一時金、出産手当金があり、直後の表は傷病手当金も含む。総数を3と確定する根拠が正本にない。金額や受給の可否そのものは後続の単位にあるため、読者の給付額の判断は直ちには変わらない。",
+    "needed_source": "",
+    "severity": "low",
+    "old": "健康保険から出る出産まわりの給付は3つありますが、任意継続被保険者の扱いが割れます。",
+    "new": "以下では出産育児一時金・出産手当金・傷病手当金について、任意継続被保険者の扱いを比べます。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-9cdecdd328f812544898-1",
+    "decision": "unresolved",
+    "reason": "出産手当金の額は、102条2項が準用する99条2項により、標準報酬月額の平均の三十分の一の三分の二である（corpus/hk_102.txt:3、corpus/hk_99.txt:3）。「給料の約2/3」は計算の基礎を給料にしており、標準報酬月額と実支給額がずれる人は日額を誤る。約が付く概数なので、式そのものを示した単位よりは軽い。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "産休中の所得補償（給料の約2/3）",
+    "new": "産休中の所得補償（標準報酬月額の平均÷30×2/3、12か月未満は比較の特則あり）"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-47a3f7df24da0e365582-1",
+    "decision": "unresolved",
+    "reason": "表の「受け取れない」は、任意継続被保険者の出産手当金を無条件で否定している。正本は、期間中に発生したものは支給せず、在職中からの継続給付の要件を満たす場合は対象とする（corpus/kk_faq_voluntary_continuation_001.txt:32-33、corpus/kk_benefit_voluntary_continuation.txt:78-81、corpus/hk_104.txt:3）。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "受け取れない",
+    "new": "新たな給付は対象外（在職中からの継続給付は要件を満たせば対象）"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-47a3f7df24da0e365582-2",
+    "decision": "unresolved",
+    "reason": "表の「受け取れない」は、任意継続被保険者の傷病手当金を無条件で否定している。99条1項は任意継続を除くが、104条と協会けんぽは在職中からの継続給付を残している（corpus/hk_99.txt:3、corpus/hk_104.txt:3、corpus/kk_benefit_voluntary_continuation.txt:78-81）。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "受け取れない",
+    "new": "新たな給付は対象外（在職中からの継続給付は要件を満たせば対象）"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-7bf1b0195e2451ff4565-1",
+    "decision": "unresolved",
+    "reason": "家族出産育児一時金の額は被保険者と同じ表で、加入機関かつ22週以降が50万円、22週未満の加入機関は48.8万円（corpus/kk_benefit_childbirth_002.txt:8-14）。「金額は同じ（1児につき50万円）」は48.8万円の区分を書いていない。protected なので nonclaim にはできない。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "金額は同じ（1児につき50万円）です。",
+    "new": "金額は同じで、産科医療補償制度加入機関で在胎22週以降の出産は1児50万円、それ以外の支給対象の出産は1児48.8万円です。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-2ea81c40d996d30019a3-1",
+    "decision": "unresolved",
+    "reason": "106条の「一年以上被保険者であった者」の定義が104条にあることは corpus/hk_104.txt:3 と corpus/hk_106.txt:3 で確認できる。ただし104条は106条の直近の前条ではなく、正本の条文ファイルも104の次が106ではない（105は未収録）。「ひとつ前」は条の隣り合いとしては支えられない。条文番号104は併記されているので、開く条を誤る程度で給付の該当は変わらない。",
+    "needed_source": "健康保険法第105条の正文（104条と106条の間に条があることの確認）。定義の所在は104条で足りる。",
+    "severity": "low",
+    "old": "定義しているのは、ひとつ前の104条です。",
+    "new": "この言葉を定義しているのは104条です。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-980bb14801df32ea6ac9-1",
+    "decision": "unresolved",
+    "reason": "101条（corpus/hk_101.txt:3）は現に被保険者である者への出産育児一時金を定め、任意継続を除いていない。106条（corpus/hk_106.txt:3）は資格喪失後6月以内の給付である。任意継続中は被保険者なので101条が適用される、という読みは隣接文にあるが、任意継続中は106条を使えないという排他までは正本にない。資格喪失後6月以内は保険者が複数になり得る（corpus/kk_benefit_childbirth_002.txt:58）。「106条の出番ではない」は確認できない。high-origin のまま ok にしない。",
+    "needed_source": "",
+    "severity": "high",
+    "old": "ただし、任意継続に入っている期間中に出産した場合は、そもそも106条の出番ではありません。",
+    "new": "任意継続中の出産でも、資格喪失後の給付との関係を確認する必要があります。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-9ad2d003e9b68c61cd89-1",
+    "decision": "unresolved",
+    "reason": "106条の対象を、任意継続に入らず国民健康保険や家族の扶養へ移った人に限る記載は正本にない。106条は一年以上被保険者であった者の資格喪失後6月以内の出産であり（corpus/hk_106.txt:3、corpus/kk_benefit_childbirth_002.txt:53-58）、新しい健康保険に入った人などを除くとは書いていない。この限定だと、別の保険者から受けられる人が自分は対象外だと判断する。high-origin のまま ok にしない。",
+    "needed_source": "",
+    "severity": "high",
+    "old": "106条が問題になるのは、任意継続にも入らず（あるいはやめて）、国民健康保険や家族の扶養に移った人です。",
+    "new": "106条の対象は国民健康保険や家族の扶養に移った人に限定されず、資格喪失前日まで継続1年以上の被保険者期間（任意継続・共済組合の期間を除く）があり、資格喪失後6か月以内に出産した人が、最後の保険者から受けられる給付です。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-adbfc4ad64312f69eb47-1",
+    "decision": "unresolved",
+    "reason": "106条と協会けんぽは、本人の資格喪失後の出産育児一時金に、継続1年以上と喪失後6月以内の両方を求める（corpus/hk_106.txt:3、corpus/kk_benefit_childbirth_002.txt:54-56）。家族の出産が資格喪失後に出ないことは同59行で正しい。しかし「本人の出産は6か月以内なら出る」は1年要件を欠き、1年未満の退職者は対象だと誤る。家族側の非対称だけを残し、本人側に1年以上を書く。",
+    "needed_source": "",
+    "severity": "high",
+    "old": "本人の出産は6か月以内なら出るのに、家族の出産は出ない——106条が「被保険者であった者」の出産だけを対象にしているためで、ここは非対称です。",
+    "new": "本人は資格喪失前日まで継続1年以上の被保険者期間（任意継続・共済組合の期間を除く）があり、資格喪失後6か月以内に出産した場合に対象となりますが、資格喪失後の家族の出産には家族出産育児一時金は支給されません。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-9d4bf73450add1ef3bc7-1",
+    "decision": "unresolved",
+    "reason": "直接支払いは退院までに合意文書への同意が必要で、使わない場合は退院までに医療機関へ支払い、自分で請求する（corpus/kk_benefit_childbirth_002.txt:21-23）。受取代理は出産予定日まで2月以内かつ届出医療機関に限る（同27-28行）。「50万円を立て替えてあとから受け取る必要はない」は、これらの制度を使わない人まで立替不要と読める。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "50万円を自分で立て替えて、あとから受け取る必要はありません。",
+    "new": "直接支払制度は医療機関との合意により利用でき、利用しない場合は退院までに出産費用を支払い、自分で給付を請求します。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-d27b82d9b0d2a0d21f99-1",
+    "decision": "unresolved",
+    "reason": "費用が一時金を下回れば差額を申請して受け取ることは正本どおり（corpus/kk_benefit_childbirth_002.txt:22、44-46）。見出しの基準が「50万円より安い」だと、48.8万円の区分で費用が49万円の人は差額が出ると誤る。50万円は加入機関・22週以降の額である（同10-12行）。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "出産費用が50万円より安かったら、差額は自分で申請して受け取る",
+    "new": "出産費用が一時金の支給額より安かったら、差額は自分で申請して受け取る"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-67ccdb540740367ecb8c-1",
+    "decision": "unresolved",
+    "reason": "40万円の例で差額を申請するのは、2023年4月1日以降の加入機関・在胎22週以降（一時金50万円）の例である（corpus/kk_benefit_childbirth_002.txt:40-46）。48.8万円の区分では差額は8.8万円であり、10万円ではない。この要約は50万円の条件を書いていない。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "直接支払制度を使い、出産費用が40万円だった場合、差額の10万円は受け取れます。",
+    "new": "直接支払制度を使い、産科医療補償制度加入機関で在胎22週以降に出産して費用が40万円だった場合、50万円との差額10万円を受け取れます（48.8万円の区分なら差額8.8万円）。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-0452bc2df77023dfce8e-1",
+    "decision": "unresolved",
+    "reason": "協会けんぽが差額申請書を出産後おおむね3か月後に送ること、差額は申請が必要なことは正本どおり（corpus/kk_benefit_childbirth_002.txt:22、44-46）。「返送しなければ受け取れません」は、その書類の返送以外では受け取れないという限定で、正本にはない。同じ限定のFAQ（s-3f9873278a8417fcc082-1）を ok のままにはできない。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "協会けんぽの場合は「出産後概ね3か月後に、申請に必要な書類（出産育児一時金差額申請書）を協会けんぽより被保険者あてに送付します」——つまり案内は向こうから届きますが、返送しなければ受け取れません。",
+    "new": "協会けんぽは出産後おおむね3か月後に差額申請書を送付しますが、差額を受け取るには申請が必要です。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-4402412bafcc4180e29f-1",
+    "decision": "unresolved",
+    "reason": "55万円の例で不足分を窓口で払うのは、加入機関・在胎22週以降（50万円）の例である（corpus/kk_benefit_childbirth_002.txt:40-43）。一時金が48.8万円のときは、超える額は5万円ではない（55万−48.8万＝6.2万円）。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "逆に費用が55万円なら、超えた5万円を窓口で支払います。",
+    "new": "直接支払制度で費用が55万円なら、50万円の区分では5万円、48.8万円の区分では6.2万円を窓口で支払います。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-ce990d1943631e29f939-1",
+    "decision": "unresolved",
+    "reason": "8割相当・無利子、出産予定日まで1か月以内、または妊娠4か月以上で一時的な支払いを要する、は正本どおり（corpus/kk_benefit_childbirth_002.txt:50-52）。正本の対象は、そのうち被保険者または被扶養者で出産育児一時金の支給が見込まれる人に限る。この文は時期の条件だけを対象にしており、一時金が出ない人まで貸付を受けられると読める。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "出産育児一時金の8割相当額を限度に、無利子で貸し付ける制度で、対象は「出産予定日まで1か月以内の人」または「妊娠4か月以上で医療機関等に一時的な支払いを要する人」です。",
+    "new": "出産費貸付制度は一時金の8割相当額を限度に無利子で貸し付けるもので、対象は、被保険者または被扶養者で一時金の支給が見込まれ、出産予定日まで1か月以内、または妊娠4か月以上で医療機関等に一時的な支払いを要する人です。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-b4d6447b9912323453e9-1",
+    "decision": "unresolved",
+    "reason": "在胎22週以降でも、産科医療補償制度に未加入の機関は加算がなく48万8千円である（corpus/kk_benefit_childbirth_002.txt:13-15 の行分けと corpus/hkr_36.txt:3）。「22〜27週の出産は50万円は出る」は加入機関の条件がない。補償の対象に入らないという後半は、在胎28週等の補償基準が正本になく確認できない。",
+    "needed_source": "産科医療補償制度の補償対象（在胎週数・補償額・出生年月日）を示す一次資料。50万円の部分は、加入機関かつ22週以降に限る修正が正本だけでできる。",
+    "severity": "medium",
+    "old": "22〜27週の出産は、50万円は出るが補償の対象には入らない",
+    "new": "22〜27週の出産の一時金は、産科医療補償制度加入機関なら50万円、未加入機関なら48.8万円"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-37f2106b575033d1a01f-1",
+    "decision": "unresolved",
+    "reason": "まとめの「出産手当金・傷病手当金は受け取れない」は無条件である。協会けんぽは、任意継続期間中に発生したものは支給しないが、在職中から継続して給付されている場合は申請できると書いている（corpus/kk_benefit_voluntary_continuation.txt:78-81、corpus/hk_104.txt:3）。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "出産手当金・傷病手当金は受け取れない",
+    "new": "出産手当金・傷病手当金は任意継続中に新しく発生したものは対象外で、在職中からの継続給付は要件を満たせば対象"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-a5bc6510ddb245212f66-1",
+    "decision": "unresolved",
+    "reason": "資格喪失後の出産育児一時金は、①資格喪失日の前日まで継続1年以上（任意継続期間を除く）、②資格喪失後6月以内、の両方が必要（corpus/kk_benefit_childbirth_002.txt:53-56、corpus/hk_106.txt:3）。この箇条書きは「退職後6か月以内も対象」とのみ書き、次の箇条書きは「この1年以上」と言うだけで1年要件を提示していない。加入1年未満の退職者は受給できると誤る。基準は退職後ではなく資格喪失後6月以内でもある。high-origin のまま ok にしない。",
+    "needed_source": "",
+    "severity": "high",
+    "old": "退職後6か月以内の出産も対象（106条）。",
+    "new": "資格喪失前日まで継続1年以上の被保険者期間（任意継続・共済組合の期間を除く）があり、資格喪失後6か月以内に出産した場合も対象です（106条）。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-e74b3d6536117d5e3d2d-1",
+    "decision": "unresolved",
+    "reason": "差額は自動では振り込まれず申請が必要、は正本どおり（corpus/kk_benefit_childbirth_002.txt:44-46）。「50万円未満」を差額の条件にすると、48.8万円の区分では境界を誤る。同じまとめの別箇条書きが50万円の条件を書いていても、この箇条書き単体が50万円を基準にしている。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "費用が50万円未満なら差額は申請して受け取る（自動では振り込まれない）",
+    "new": "費用が一時金の支給額未満なら差額は申請して受け取る（自動では振り込まれない）"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-e666633c89e5e5a5d288-1",
+    "decision": "unresolved",
+    "reason": "施行令36条ただし書は、要件を満たす機関による出産と保険者が認めるときに、3万円を超えない範囲で保険者が定める額を加算する（corpus/hkr_36.txt:3）。協会けんぽの50万円は加入機関かつ在胎22週以降で、加入機関でも22週未満は48.8万円（corpus/kk_benefit_childbirth_002.txt:10-14）。「加入した医療機関での出産は加算1万2千円で合計50万円」は、22週未満の加入機関を50万円にする。1.2万円という額自体は50万円と48.8万円の差として正本の表から出る。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "同条のただし書が、産科医療補償制度に加入した医療機関での出産について「3万円を超えない範囲内で保険者が定める金額」を加算できるとしており、現在この加算額が1万2千円になっているため、合計で50万円になります。",
+    "new": "同条ただし書は要件を満たす出産について3万円以内で保険者が定める額の加算を認め、協会けんぽでは産科医療補償制度加入機関で在胎22週以降の出産に1万2千円を加算して50万円、それ以外の支給対象の出産は48.8万円としています。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-14f32d712e2e51fba60c-1",
+    "decision": "unresolved",
+    "reason": "在職中からの継続給付の要件を満たす人は、任意継続中も傷病手当金・出産手当金を受けられる（corpus/kk_benefit_voluntary_continuation.txt:78-81、corpus/hk_104.txt:3）。「受け取れません」は一律の断定である。protected のFAQなので nonclaim にはできない。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "つまり任意継続では、出産育児一時金は受け取れますが、出産手当金と傷病手当金は受け取れません。",
+    "new": "任意継続でも出産育児一時金は対象になり、出産手当金・傷病手当金は期間中に新しく発生したものは対象外ですが、在職中からの継続給付の要件を満たす場合は申請できます。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-fa714fd49e289bb302fd-1",
+    "decision": "unresolved",
+    "reason": "協会けんぽの除外は「任意継続被保険者期間中に発生した」傷病手当金・出産手当金であり、在職中からの継続給付は残る（corpus/kk_benefit_voluntary_continuation.txt:77-81）。「名指しで除いている」だけでは、継続給付に当たる人が受給できないと誤る。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "協会けんぽも任意継続について「原則、在職中と同様の給付を受けることができます」としたうえで、傷病手当金と出産手当金だけを名指しで除いています。",
+    "new": "協会けんぽは、傷病手当金と出産手当金について、在職中からの継続給付の場合に限り引き続き申請できると説明しています。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-deb0a11818d8c3c768c0-1",
+    "decision": "unresolved",
+    "reason": "FAQが「22週から27週は掛金分を上乗せした50万円を受け取れる」としている。協会けんぽの50万円は加入機関かつ22週以降で、未加入は48.8万円である（corpus/kk_benefit_childbirth_002.txt:10-15、corpus/hkr_36.txt:3）。補償対象の有無は正本にない。",
+    "needed_source": "産科医療補償制度の補償対象（28週等）を示す一次資料。",
+    "severity": "medium",
+    "old": "つまり在胎22週から27週の間に出産した場合は、掛金1万2千円分が上乗せされた50万円は受け取れますが、その掛金が支えている補償の対象にはなりません。",
+    "new": "在胎22週から27週の出産の一時金は、産科医療補償制度加入機関なら50万円、未加入機関なら48.8万円です。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-2d4a2bee4035b5850a6e-1",
+    "decision": "unresolved",
+    "reason": "質問が「残りの10万円」と置いているが、回答が「差額の10万円を受け取れる」と断定している。正本の40万円の例は加入機関・22週以降の50万円区分で、差額の額は「10万円」とは書かず申請を求めている（corpus/kk_benefit_childbirth_002.txt:40-46）。48.8万円の区分では10万円にならない。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "A. 差額の10万円を受け取れますが、申請が必要です。",
+    "new": "A. 産科医療補償制度加入機関で在胎22週以降に出産した場合は50万円との差額10万円、48.8万円の区分なら差額8.8万円を受け取れますが、申請が必要です。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-3f9873278a8417fcc082-1",
+    "decision": "unresolved",
+    "reason": "正本は、費用が一時金を下回ったとき差額を支給し、おおむね3か月後に差額申請書を送り、差額は申請する、と定める（corpus/kk_benefit_childbirth_002.txt:22、44-46）。送付された書類を返送しなければ他の方法では受け取れない、とまでの限定は正本にない。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "この書類を返送しなければ受け取れません。",
+    "new": "差額を受け取るには申請が必要です。"
+  },
+  {
+    "page": "docs/column/shussan-ikuji-ichijikin/index.html",
+    "id": "s-91b74b5c9a166ec18499-1",
+    "decision": "unresolved",
+    "reason": "費用が一時金を超えた分を窓口で払うことは正本どおりだが、例は加入機関・22週以降である（corpus/kk_benefit_childbirth_002.txt:22、40-43）。「50万円を超えた分」だと、一時金が48.8万円の人は49万円の出産で窓口負担がないと誤る。",
+    "needed_source": "",
+    "severity": "medium",
+    "old": "逆に出産費用が50万円を超えた場合は、超えた分を医療機関の窓口で支払うことになります。",
+    "new": "直接支払制度で出産費用が一時金の支給額（50万円または48.8万円）を超えた場合は、超えた分を医療機関の窓口で支払います。"
+  }
+]
