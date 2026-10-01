@@ -12,7 +12,7 @@
      このページ自体は noindex（/gensen-choshu/ と重複させない）。計算は本体と同じ ../../assets/ の各コア。 -->
 <link rel="canonical" href="https://keiri-tools.com/gensen-choshu/">
 <meta name="robots" content="noindex, follow">
-<meta name="description" content="給与（月額表）・賞与（算出率の表）・報酬料金（10.21%）の源泉徴収税額を自動計算する埋め込みウィジェット。keiri-tools 提供。">
+<meta name="description" content="給与（月額表）・賞与（算出率の表）・報酬料金（区分別）の源泉徴収税額を自動計算する埋め込みウィジェット。keiri-tools 提供。">
 <style>
   :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --control:#84939f; --accent:#1f6f5c; --accent2:#e7f3f0; --bg:#fff; }
   *{ box-sizing:border-box; }
@@ -63,7 +63,7 @@
 <body>
 <div class="w">
   <h1>源泉徴収税額 計算</h1>
-  <p class="lead">この計算機では給与は月額表、賞与は通常は算出率の表で計算します。前月給与がない場合・前月給与が社会保険料等以下の場合や、控除後賞与が控除後前月給与の10倍を超える場合は、賞与額も使って月額表で計算します。報酬・料金（原稿料・士業など）の10.21%も同じ画面で計算できます。</p>
+  <p class="lead">この計算機では給与は月額表、賞与は通常は算出率の表で計算します。前月給与がない場合・前月給与が社会保険料等以下の場合や、控除後賞与が控除後前月給与の10倍を超える場合は、賞与額も使って月額表で計算します。報酬・料金も区分別に計算できます。原稿料・弁護士・税理士等は1回の支払額の100万円以下の部分に10.21%、100万円を超える部分に20.42%。司法書士・土地家屋調査士・海事代理士は1回の支払額から1万円を控除した残額に10.21%を掛けます。</p>
 
   <div class="tabs" role="tablist">
     <button id="tab-kyuyo" role="tab" aria-controls="pane-kyuyo" aria-selected="true">給与（月額表）</button>
@@ -86,7 +86,7 @@
     <div id="kou-only">
       <label for="fuyo">扶養親族等の数</label>
       <select id="fuyo"></select>
-      <div class="hint">源泉控除対象配偶者と源泉控除対象親族の合計。ただし、相互適用などにより扶養控除等申告書に記載がないものとされる源泉控除対象配偶者・源泉控除対象親族は除きます。令和8年分は、19〜22歳の特定親族のうち合計所得100万円以下の人も含みます。16歳未満は基本人数に含めず、障害者等の加算は下で指定してください。</div>
+      <div class="hint">源泉控除対象配偶者と源泉控除対象親族の合計。ただし、相互適用などにより扶養控除等申告書に記載がないものとされる源泉控除対象配偶者・源泉控除対象親族は除きます。令和8年分は、19歳以上23歳未満（令和8年分は平成16年1月2日から平成20年1月1日生まれ）の特定親族のうち合計所得100万円以下の人も含みます。16歳未満は基本人数に含めず、障害者等の加算は下で指定してください。</div>
       <label>扶養控除等申告書に本人の該当の記載がある（各1人加算）</label>
       <div class="opts">
         <label><input type="checkbox" id="shogaisha">障害者</label>
