@@ -1,3 +1,4 @@
+import { isDateStr, addYearsClamped } from './toroku_menkyo_core.js';
 /**
  * 不動産の売買・新築に係る登録免許税の計算コア（DOM非依存・テスト対象）。
  *
@@ -9,7 +10,7 @@
  *
  *  1. **抵当権設定の課税標準は「債権金額」であって不動産の評価額ではない**
  *     （登録免許税法 別表第一 第一号（五））。住宅ローンの借入額で計算する。
- *     評価額を入れると額が大きく狂う（頭金の分だけずれる）。
+ *     評価額と借入額は異なる基準で、差額は頭金とは限らない。
  *
  *  2. **税率が違う登記は、別々に端数処理する**（合算して1回で計算しない）。
  *     土地1.5%・建物0.3%・抵当権0.1% を足してから丸めると、切捨てが1回しか効かず税額がずれる。
@@ -116,7 +117,13 @@ export function jutakuKeigenOk(j, data) {
   if (j.tokiShurui !== "hozon" && !Y.gen_in.includes(j.genin)) {
     riyu.push(`取得の原因が${Y.gen_in.join("・")}ではない（措令42条3項）。贈与・交換・財産分与による移転登記に軽減はありません。`);
   }
-  if (nz(j.tokiMadeMonths) > Y.toki_kigen_months) {
+  if (j.shutokuBi !== undefined && (!isDateStr(j.shutokuBi) || !isDateStr(j.tokiBi) || j.shutokuBi > j.tokiBi)) {
+    riyu.push("新築・取得日と登記日を確認してください。");
+  }
+  const overYear = j.shutokuBi !== undefined
+    ? isDateStr(j.shutokuBi) && isDateStr(j.tokiBi) && j.tokiBi > addYearsClamped(j.shutokuBi, 1)
+    : nz(j.tokiMadeMonths) > Y.toki_kigen_months;
+  if (overYear) {
     riyu.push(`新築・取得から${Y.toki_kigen_months}か月（1年）を過ぎてからの登記（措法72条の2・73）。`);
   }
   // 中古（建築後使用されたことのある）だけに掛かる要件。
@@ -196,7 +203,7 @@ export function tatemonoRitsu(j, data) {
  * @returns {{ok:boolean, riyu?:string, jutakuKeigen?:boolean}}
  *   jutakuKeigen=false は「住宅用家屋の軽減が使えるかまだ分からない」の意味（使えない、ではない）。
  */
-export function kigenHantei(tokiBi, data) {
+export function kigenHantei(tokiBi, data, shutokuBi) {
   const M = data._meta;
   const K = data.keigen;
   if (!tokiBi) {
@@ -211,10 +218,14 @@ export function kigenHantei(tokiBi, data) {
   if (tokiBi > K.tochi_baibai.kigen) {
     return {
       ok: false,
-      riyu: `${K.tochi_baibai.kigen_hyoji}より後に受ける登記は税額を出せません。土地の売買の軽減（1000分の15）の適用期限がその日までで、延長されるか本則（1000分の20）に戻るかが決まっていないためです。`,
+      riyu: `${K.tochi_baibai.kigen_hyoji}より後に受ける登記は税額を出せません。土地の売買の軽減（1000分の15）の新築・取得の適用期限がその日までで、延長されるか本則（1000分の20）に戻るかが決まっていないためです。`,
     };
   }
-  return { ok: true, jutakuKeigen: tokiBi <= K.jutaku_kigen };
+  if (shutokuBi !== undefined && (!isDateStr(shutokuBi) || !isDateStr(tokiBi) || shutokuBi > tokiBi)) {
+    return { ok: false, riyu: "新築・取得日を登記日以前の有効な日付で入力してください。" };
+  }
+  // 住宅は登記日でなく新築・取得日が適用期限の基準。1年の条件はjutakuKeigenOkで判定。
+  return { ok: true, jutakuKeigen: (shutokuBi ?? tokiBi) <= K.jutaku_kigen };
 }
 
 /**
@@ -257,7 +268,7 @@ export function calcTorokuJutaku(inp, data) {
 
   // ── 登記を受ける日 → その日に使える軽減 ────────────────────────
   // tokiBi を渡さない呼び出し（単体テスト・埋め込み用途）は従来どおり期限を見ない。
-  const kigen = inp.tokiBi === undefined ? null : kigenHantei(inp.tokiBi, data);
+  const kigen = inp.tokiBi === undefined ? null : kigenHantei(inp.tokiBi, data, inp.shutokuBi);
   if (kigen && !kigen.ok) return { ok: false, riyu: kigen.riyu, hanigai: true };
   const jutakuKeigenKa = kigen ? kigen.jutakuKeigen : true;
   // ★期限を過ぎた日に「出せない」のは、軽減が**使えたはずの人**だけ。
@@ -332,8 +343,8 @@ export function calcTorokuJutaku(inp, data) {
 
   // 期限後で税率が決まらない項目の断り書き（1つでもあれば合計は「一部だけ」になる）。
   const kigenGaiRiyu = kigenGai.length === 0 ? null
-    : `${data.keigen.jutaku_kigen_hyoji}より後に受ける登記なので、${kigenGai.join("と")}の税額は出せません。`
-      + `住宅用家屋の軽減（措法72条の2・73・74・74条の2・75）の適用期限がその日までで、`
+    : `${data.keigen.jutaku_kigen_hyoji}までの新築・取得を確認できないため、${kigenGai.join("と")}の税額は出せません。`
+      + `住宅用家屋の軽減（措法72条の2・73・74・74条の2・75）の新築・取得の適用期限がその日までで、`
       + `延長されるか本則に戻るかは令和9年度税制改正で決まります。`
       + `土地の売買の軽減は${data.keigen.tochi_baibai.kigen_hyoji}までなので、そちらは出せます（期限が別の制度です）。`;
 
