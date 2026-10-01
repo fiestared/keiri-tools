@@ -59,11 +59,12 @@ t('title に「早見表」と西暦の年度が入っている（実SERPの上�
 //    規則9。ここは検索結果のスニペットに出るので、金額が古いと**公開された嘘**になる。
 t('meta description の 1,500cc/2,000cc の年額が正本データと一致する', () => {
   const desc = el(/name="description" content="([^"]*)"/, 'meta description');
-  assert.ok(desc.includes(`1,500ccなら年${yen(le1500.new)}円`),
+  assert.ok(desc.includes(`1,500ccは年${yen(le1500.new)}円`),
     `meta description の1,500ccの額が正本(${yen(le1500.new)}円)と違う: ${desc.slice(0, 90)}`);
-  assert.ok(desc.includes(`2,000ccなら年${yen(le2000.new)}円`),
+  assert.ok(desc.includes(`2,000ccは年${yen(le2000.new)}円`),
     `meta description の2,000ccの額が正本(${yen(le2000.new)}円)と違う: ${desc.slice(0, 90)}`);
   assert.ok(desc.includes('早見表'), 'meta description に「早見表」が無い');
+  assert.ok(desc.includes('令和元年10月以後の初度登録で軽課等がない場合'), 'meta description に年額の適用条件が無い');
 });
 
 // ── 3. hero の <p>: 上と同じ値だが**別の要素**なので別に見る（規則7）────────────
