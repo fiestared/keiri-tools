@@ -140,6 +140,13 @@ assert.ok(checkPage({html:changedPage,ledger:null,requiredText:addedClaimText(ch
   const arr = structuredClone(withScope); arr.claims[0].exceptions = ["昼間学生は対象外（休学・夜間は対象）", "2か月以内の雇用は対象外"];
   assert.deepEqual(checkPage({ html: HTML, ledger: arr, page: "p", baseLedger: null }), [], "例外の配列（全件の列挙）を受け付けない");
 }
+// 2026-10-02: ページ全体モードでも numeric-token の包みを外して読む（日付の一部を日数として拾わない）。包まれた数字そのものは拾う。
+{ const tok = '<html><head><title>t</title></head><body><main><p>比較期間は<span class="numeric-token">2023年</span><span class="numeric-token">9月</span><span class="numeric-token">29日</span>から。手数料は<span class="numeric-token">880円</span>。猶予は<span class="numeric-token">14日</span>。</p></main></body></html>';
+  const nums = [...findNumbers(claimText(tok))];
+  assert.ok(!nums.includes('29日'), '日付の日を日数として拾わない: ' + nums.join(','));
+  assert.ok(nums.includes('880円'), '包まれた金額は拾う: ' + nums.join(','));
+  assert.ok(nums.includes('14日'), '包まれた本物の日数は拾う: ' + nums.join(',')); }
+
 
 console.log(`✓ test_check_claims: 抽出の性質 / ベースライン緑 / 壊し ${caught}/${cases.length} 捕捉 / 計算機の tool_cases / 足した行モード / 関連記事の内側差分・本文・FAQの回帰`);
 

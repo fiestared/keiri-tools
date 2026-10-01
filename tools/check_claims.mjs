@@ -84,7 +84,11 @@ function stripNonClaims(html, preserveLines = false) {
 export function claimText(html) {
   const title = (html.match(/<title>([\s\S]*?)<\/title>/i) || [, ""])[1];
   const desc = (html.match(/<meta\s+name="description"\s+content="([^"]*)"/i) || [, ""])[1];
-  const body = stripNonClaims(html.replace(/<head\b[\s\S]*?<\/head>/i, " "));
+  // ★gen_layout_markup の numeric-token は見た目（折り返し防止）だけの包み。タグを空白に置き換える前に外す（2026-10-02）。
+  //   外さないと「<span>2023年</span><span>9月</span><span>29日</span>」が「2023年 9月 29日」になり、日付の網に掛からず
+  //   「29日」が日数として拾われて、正しい記事（投信比較8本）がページ全体モードで赤になった。
+  const body = stripNonClaims(html.replace(/<head\b[\s\S]*?<\/head>/i, " "))
+    .replace(/<span class="numeric-token">([^<]*)<\/span>/g, "$1");
   return toHalf(`${title}\n${desc}\n${body.replace(/<[^>]+>/g, " ")}`)
     .replace(/&nbsp;|&#160;/g, " ").replace(/[ \t]+/g, " ");
 }
