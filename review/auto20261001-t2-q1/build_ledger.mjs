@@ -28,6 +28,7 @@ function repairSource(u){
 }
 for(const name of ['hoteichosho-goukeihyo','taishoku-gensen-choshuhyo']){
  const page=`docs/column/${name}/index.html`,path=`claims/column/${name}.json`,html=fs.readFileSync(page,'utf8'),units=segmentClaims(html,page),ledger=read(path);
+ ledger.claims=ledger.claims.filter(c=>!c.id.startsWith("auto20261001-t2-q1-"));
  for(const c of ledger.claims)c.covers=[];
  ledger.nonclaims=[];ledger.verified=[];ledger.out_of_corpus=[];ledger.checked='2026-10-01';
  for(const u of units){
