@@ -1,0 +1,65 @@
+ok   3ページを巡って完了する
+ok   注文が重複していない
+ok   2回移動した(1→2→3)
+ok   3ページとも別のURLを読んだ
+ok   巡回が終わったら状態は消える
+ok   積むのは索引簿に要る項目だけ
+ok   1件目の中身
+ok   輪になっていても訪問済みで止まる
+ok   同じURLへ2度移動していない
+ok   同じページを2度読んでいない
+ok   集めた分は捨てない(20件)
+ok   「次へ」が自分自身を指していても止まる
+ok   新規0件で打ち切る
+ok   重複ページを積まない(20件のまま)
+ok   読んだのは3ページ(3枚目で既出と判明して停止)
+ok   状態は消える
+ok   maxPagesで打ち切る
+ok   上限を超えて移動しない
+ok   maxPages=1なら1ページで終わる(移動しない)
+ok   9分前の巡回は継続する
+ok   10分を超えた巡回は破棄する
+ok   終了済み(active:false)は破棄する
+ok   状態が無ければ破棄
+ok   startedAtが壊れていれば破棄
+ok   未来から来た状態(時計のずれ)は破棄
+ok   古い中断が残っていても勝手に移動しない
+ok   古い状態は消される
+ok   中止: 2ページ分(20件)は残る
+ok   中止: 重複なし
+ok   中止: 3ページ目へは移動しない
+ok   中止: 状態は消える(次に開いても再開しない)
+ok   1ページ目で中止しても10件は残る
+ok   別タブで注文履歴を開いても移動しない
+ok   別タブの状態を消さない(巡回中のタブを壊さない)
+ok   runIdの無い状態(旧形式)は自分のものとして扱う
+ok   crawl.js はDOM・chrome・fetchに触らない(純ロジック)
+ok   権限は downloads/storage だけ(tabs権限を足さない)
+ok   crawl.js が content script に入っている
+ok   crawl.js は scrape.js の後(ktOrderKeyに依存している)
+ok   [content.js] 3ページを実際に移動して巡回する
+ok   [content.js] 同じURLへ2度移動しない
+ok   [content.js] 注文履歴を裏からfetchしない(本番を壊した原因)
+ok   [content.js] CSVに3ページ分30件が入る
+ok   [content.js] 3ページ目の注文がCSVに載っている
+ok   [content.js] CSVに重複行が無い
+ok   [content.js] 「3ページ分」と表示する
+ok   [content.js] 終わったら状態を消す(次に開いても再開しない)
+ok   [content.js] 課金ゲートが復活していない
+ok   [content.js] 単ページ取得の逃げ道が残っている
+ok   [content.js] 0件でも黙らず「画面仕様が変わった可能性」と報告先を出す
+ok   [content.js] 0件のときは最新のセレクタ定義を取り直す(即回復のため)
+ok   [content.js] 前提: 既定セレクタでは新レイアウトを読めない(0件)
+ok   [content.js] 定義を取り直して新レイアウトを読み、10件を救う
+ok   [content.js] 0件表示に問い合わせ先URLが埋め込まれている
+ok   [content.js] 古い中断が残っていても勝手にページが動かない
+ok   [content.js] 古い状態は捨てられる
+ok   [content.js] 中断した巡回は再開してページを移動する
+ok   [content.js] 別タブの巡回に相乗りしない
+ok   [content.js] 別タブの状態を消さない
+ok   [content.js] 中止: 3ページ目へ移動しない
+ok   [content.js] 中止: それまでの2ページ分(20件)でCSVをつくる
+ok   [content.js] 中止: 状態を消す(次に開いても再開しない)
+ok   [content.js] 巡回中の状態なら、開いたページから続きを巡回する
+
+✓ 全ページ巡回: 3ページ完走 / 輪を回らない / 新規0件で停止 / maxPages / 古い状態は破棄 / 中止で全損しない / 別タブ安全 / content.jsの配線 — すべてOK
