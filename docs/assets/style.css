@@ -779,6 +779,10 @@ html.ss-lock, html.ss-lock body { overflow: hidden; }
 /* ---- 銀行別手数料一覧テーブル ---- */
 .fee-table td:nth-child(2), .fee-table td:nth-child(3) { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .fee-table td:nth-child(4) { font-size: 12.5px; white-space: nowrap; }
+/* 金額セルの注記は折り返す（2026-10-01: 注記が nowrap のまま列を押し広げ、PC でも「3万円以上」の列が枠外に出た）。金額そのものは折り返さない */
+table td .cell-note { display: block; white-space: normal; font-size: 12px; line-height: 1.45; color: var(--sub); text-align: left; min-width: 6em; }
+.fee-table td:first-child { min-width: 8.5em; }
+@media (max-width: 600px) { .fee-table td:first-child { min-width: 6.5em; } .fee-table td:nth-child(4) { white-space: normal; } }
 .fee-table .flat { color: var(--sub); }
 .fee-table .step { color: var(--warn-ink); font-weight: 700; background: var(--warn-bg); }
 
