@@ -6,6 +6,8 @@ const C = JSON.parse(readFileSync(new URL("./stale_values.json", import.meta.url
 const E = Object.fromEntries(C.entries.map((e) => [e.id, e]));
 const t = (s, id, day = "2026-09-28") => staleHits(s, E[id], "p", day).length;
 const r = [
+  ["基礎控除5万円加算の上限省略を捕まえる", t("基礎控除への加算：ロ 四百八十九万円を超える場合 五万円", "auto20261001-unbounded-kiso-addition", "2026-10-01") === 1],
+  ["基礎控除5万円加算の655万円以下の限定は通す", t("基礎控除への加算：ロ 四百八十九万円を超える場合 五万円（加算対象は合計所得金額655万円以下）", "auto20261001-unbounded-kiso-addition", "2026-10-01") === 0],
   ["審査対象の旧期限表記を捕まえる", t("源泉徴収票の交付期限＝翌年1月31日・中途退職は退職の日以後1月以内", "r8-hotei-deadline-jan31", "2026-10-01") === 1],
   ["修正後の年分付き交付期限は通す", t("源泉徴収票の交付期限＝令和8年分は令和9年2月1日・中途退職は退職の日以後1月以内", "r8-hotei-deadline-jan31", "2026-10-01") === 0],
   ["令和8年分の1月31日期限を捕まえる", t("令和8年分の給与支払報告書の提出期限は翌年1月31日です。", "r8-hotei-deadline-jan31", "2026-10-01") === 1],
