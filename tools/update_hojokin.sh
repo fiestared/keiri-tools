@@ -115,7 +115,11 @@ if [ "${n:-0}" -lt 50 ]; then
   exit 1
 fi
 
-if git diff --quiet -- docs/assets/hojokin_jgrants.json docs/assets/hojokin_schedule.json docs/assets/koyou_joseikin.json; then
+# ★データが同じでも、タブの「公募中」件数は締切が過ぎるたびに減る（今日の日付で数えるため）。
+#   ここで降りるとタブだけ古い件数のまま残り、test_hojokin_sources が赤になる（2026-10-01 に 319→316 で実測）。
+#   → タブが今日の件数と一致しているときだけ「変化なし」で降りる。ずれていれば下で焼き直して commit する。
+if git diff --quiet -- docs/assets/hojokin_jgrants.json docs/assets/hojokin_schedule.json docs/assets/koyou_joseikin.json \
+   && node tools/gen_hojokin_tabs.mjs --check >/dev/null 2>&1; then
   say "変化なし（${n}件）"
   echo "$TODAY" > "$STAMP"   # ★取得は成功している＝今日の確認は済み
   exit 0
