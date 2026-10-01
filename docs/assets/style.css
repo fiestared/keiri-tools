@@ -532,8 +532,10 @@ main .faq-answer b, main .faq-answer strong { font-weight: 400; }
 /* ---- サイトナビ / トップページ ---- */
 header.site { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 /* ★狭い画面ではヘッダーが2段に折り返して104pxになる（実測）。
-   追随させたまま縦を食いすぎないよう詰め、飛び先の余白もその高さに合わせる。 */
-@media (max-width: 560px) {
+   追随させたまま縦を食いすぎないよう詰め、飛び先の余白もその高さに合わせる。
+   ★2026-10-01: ヘッダに「検索」を足し、≤720px ではナビを必ず2段目に回すので、詰める範囲も 720px まで広げた
+   （561〜720px で詰めないと 109px になり、飛び先の余白 72px ではヘッダーの下に潜る）。 */
+@media (max-width: 720px) {
   header.site { padding: 8px 14px; gap: 8px 14px; }
   header.site nav { gap: 14px; }
   header.site nav a { padding: 4px 2px; }
@@ -543,6 +545,102 @@ header.site .brand { font-weight: 800; font-size: 16px; color: var(--ink); text-
 header.site nav { margin-left: auto; display: flex; gap: 16px; }
 header.site nav a { font-size: 14px; color: var(--sub); text-decoration: none; font-weight: 600; padding: 8px 2px; }
 header.site nav a:hover, header.site nav a[aria-current] { color: var(--accent); }
+
+/* ---- ヘッダの「検索」とサイト内検索のダイアログ（assets/site_search.js。2026-10-01）----
+   ★ボタンはナビの右。狭い画面（≤720px）ではナビが2段目に落ちるので、ボタンをブランドの右
+     （1段目）へ回す。3段目を作らない（追随ヘッダが本文を食う）。≤374px は虫眼鏡だけ
+     （名前は aria-label「サイト内検索」が常に持つ）。 */
+.site-search-btn {
+  /* ★押せる範囲は 44×44（サイトの規範・tests/layout/ui-measure の action-target）。見た目の枠は 32px で、
+     上下 6px は負のマージンで相殺してヘッダの段の高さを増やさない。枠は ::before に描く */
+  position: relative; isolation: isolate;
+  display: inline-flex; align-items: center; gap: 6px;
+  font: inherit; font-size: 14px; font-weight: 600; line-height: 1;
+  color: var(--sub); background: transparent; border: 0;
+  padding: 0 12px; min-height: 44px; min-width: 44px; margin: -6px 0; cursor: pointer;
+}
+.site-search-btn::before {
+  content: ""; position: absolute; inset: 6px 0; z-index: -1;
+  background: #fff; border: 1px solid var(--line-strong); border-radius: 8px;
+}
+.site-search-btn:hover { color: var(--accent); }
+.site-search-btn:hover::before { border-color: var(--accent); }
+.site-search-btn:focus-visible { outline: none; }
+.site-search-btn:focus-visible::before { outline: 2px solid var(--accent); outline-offset: 2px; }
+.site-search-icon { flex: 0 0 auto; }
+@media (max-width: 720px) {
+  header.site .site-search-btn { order: 1; margin-left: auto; }
+  header.site nav { order: 2; }
+}
+@media (max-width: 374px) {
+  .site-search-btn { padding: 0 8px; }
+  .site-search-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+html.ss-lock, html.ss-lock body { overflow: hidden; }
+.ss-dialog {
+  width: min(640px, calc(100% - 32px)); max-width: none; max-height: calc(100dvh - 12vh - 16px);
+  margin: 10vh auto auto; padding: 0; border: 0; border-radius: 12px;
+  background: #fff; color: var(--ink); box-shadow: 0 12px 40px rgba(20, 30, 40, .28);
+  overflow: hidden;
+}
+.ss-dialog[open] { display: flex; }
+.ss-dialog::backdrop { background: rgba(20, 30, 40, .45); }
+.ss-panel { flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0; width: 100%; padding: 16px 20px 20px; overflow-y: auto; }
+.ss-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
+.ss-title { margin: 0; font-weight: 700; font-size: 16px; }
+.ss-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; margin: -10px -12px -10px 0; padding: 0;
+  color: var(--sub); background: transparent; border: 0; border-radius: 8px; cursor: pointer;
+}
+.ss-close:hover { color: var(--ink); background: var(--bg); }
+.ss-form { display: flex; gap: 8px; }
+.ss-input {
+  flex: 1 1 auto; min-width: 0; min-height: 44px; font: inherit; font-size: 16px; /* 16px 未満は iOS がズームする */
+  padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 8px; background: #fff; color: var(--ink);
+}
+.ss-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.ss-submit {
+  flex: 0 0 auto; font: inherit; font-size: 15px; font-weight: 700; color: #fff; background: var(--accent);
+  border: 0; border-radius: 8px; padding: 0 18px; min-height: 44px; cursor: pointer;
+}
+.ss-submit:hover { opacity: .92; }
+.ss-note { font-size: 12.5px; color: var(--sub); margin: 8px 2px 0; line-height: 1.6; }
+.ss-status { font-size: 13px; color: var(--sub); margin: 10px 2px 6px; min-height: 1em; }
+.ss-status:empty { margin: 4px 0 0; }
+.ss-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.ss-item {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 10px; align-items: baseline;
+  padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg);
+  color: var(--ink); text-decoration: none;
+}
+.ss-item:hover, .ss-item:focus-visible { border-color: var(--accent); background: #fff; }
+.ss-item:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.ss-tag {
+  grid-row: 1; font-size: 12px; font-weight: 700; color: var(--sub); line-height: 1.5;
+  border: 1px solid var(--line-strong); border-radius: 4px; padding: 0 6px; background: #fff;
+}
+.ss-tag.is-tool { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+.ss-item-title { grid-row: 1; font-size: 15px; font-weight: 700; line-height: 1.5; }
+.ss-item:hover .ss-item-title { color: var(--accent); text-decoration: underline; }
+.ss-item-sum {
+  grid-column: 2; font-size: 13px; color: var(--sub); line-height: 1.6;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ss-empty { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 8px; padding: 12px 14px; font-size: 14px; }
+.ss-empty p { margin: 0; }
+.ss-empty-links { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 8px !important; }
+.ss-empty a { color: var(--accent); font-weight: 700; text-decoration: none; }
+.ss-empty a:hover { text-decoration: underline; }
+/* スマホ: 画面上端に張り付く全幅のシート */
+@media (max-width: 560px) {
+  .ss-dialog { width: 100%; margin: 0 0 auto; border-radius: 0 0 12px 12px; max-height: 100dvh; }
+  .ss-panel { padding: 12px 14px 16px; }
+  .ss-item { grid-template-columns: minmax(0, 1fr); }
+  .ss-tag { justify-self: start; }
+  .ss-item-title { grid-row: auto; }
+  .ss-item-sum { grid-column: 1; }
+}
 
 .hero { padding: 28px 0 8px; }
 .hero h1 { font-size: 27px; line-height: 1.45; margin: 0 0 10px; }

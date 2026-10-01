@@ -5278,6 +5278,123 @@ SCENES.ux_result_scroll_shaho = async () => {
   return { top, vh: win.innerHeight, scrolled: win.pageYOffset > 0, visible: top >= 0 && top < win.innerHeight - 100 };
 };
 
+// ── ヘッダの「検索」（assets/site_search.js。2026-10-01 gbrain decisions/keiri-header-search-2026-10-01）──
+// ★記事ページのヘッダから開き、トップと同じ索引で答えること。索引（約1MB）は**開くまで読まない**こと。
+//   ダイアログの作法（フォーカスが入力欄へ・Esc/×/背景で閉じる・閉じたらボタンへ戻る・開いている間は
+//   背景がスクロールしない）と、GA4 の search_open / question / search_result_click を実ブラウザで見る。
+// ★幅は iframe の幅で作る（390px ではナビが2段目に落ち、ボタンはブランドの右＝1段目に来る）。
+const loadedAssets = (doc) => doc.defaultView.performance.getEntriesByType("resource")
+  .map((e) => e.name).filter((n) => /\/assets\/qa_(index\.json|search\.js)/.test(n))
+  .map((n) => n.replace(/^.*\/assets\//, "").replace(/\?.*$/, ""));
+const siteSearchScene = (width, path = "/docs/column/furikomi-tesuryo-hikaku/") => async () => {
+  document.getElementById("f").style.width = width + "px";
+  const doc = await open(path);
+  const win = doc.defaultView;
+  await sleep(300); // 開いただけで索引を取りに行かないことを、少し待ってから見る
+  const beforeOpen = loadedAssets(doc);
+  const header = doc.querySelector("header.site");
+  const btn = header.querySelector("button[data-site-search]");
+  if (!btn) throw new Error("ヘッダに検索ボタンが無い");
+  const hr = header.getBoundingClientRect(), br = btn.getBoundingClientRect();
+  const brand = header.querySelector(".brand").getBoundingClientRect();
+  const geometry = {
+    headerHeight: Math.round(hr.height),
+    btnInHeader: br.top >= hr.top && br.bottom <= hr.bottom && br.right <= hr.right + 0.5 && br.width > 0,
+    btnOnBrandRow: Math.abs((br.top + br.bottom) / 2 - (brand.top + brand.bottom) / 2) < 12,
+    btnName: btn.getAttribute("aria-label"),
+    btnTag: btn.tagName,
+    labelVisible: btn.querySelector(".site-search-label").getBoundingClientRect().width > 1,
+  };
+  btn.click();
+  const dlg = await waitFor(() => doc.querySelector("dialog.ss-dialog[open]"), "検索ダイアログが開く");
+  const input = dlg.querySelector("input");
+  const onOpen = {
+    role: dlg.getAttribute("role"), modal: dlg.getAttribute("aria-modal"),
+    labelled: !!doc.getElementById(dlg.getAttribute("aria-labelledby") || "-"),
+    focusInInput: doc.activeElement === input,
+    scrollLocked: win.getComputedStyle(doc.documentElement).overflow === "hidden",
+    expanded: btn.getAttribute("aria-expanded"),
+    openEvents: gaNames(doc).filter((n) => n === "search_open").length,
+  };
+  // 打つそばから探す（デバウンス後に結果）。この時点では question を送らない
+  input.value = "社会保険";
+  input.dispatchEvent(new win.InputEvent("input", { bubbles: true }));
+  const first = await waitFor(() => dlg.querySelector(".ss-list a.ss-item"), "検索結果の描画");
+  const items = [...dlg.querySelectorAll(".ss-list a.ss-item")];
+  const typed = {
+    firstHref: first.getAttribute("href"),
+    firstTag: first.querySelector(".ss-tag").textContent.trim(),
+    firstTitle: first.querySelector(".ss-item-title").textContent.trim(),
+    count: items.length,
+    everyHasSummary: items.every((a) => a.querySelector(".ss-item-sum").textContent.trim().length > 0),
+    questionBeforeEnter: gaNames(doc).includes("question"),
+    afterOpen: loadedAssets(doc),
+  };
+  // Enter（フォームの確定）で question を送る。トップと同じ q / matched / top
+  dlg.querySelector("form").requestSubmit();
+  await waitFor(() => gaNames(doc).includes("question"), "question の送出");
+  const qEv = gaEvents(doc).find((e) => e.name === "question");
+  // 結果を押したら search_result_click（位置と遷移先）。遷移は止めて送出だけ見る
+  // （確定で一覧は描き直されるので、押す要素は取り直す）
+  const firstNow = await waitFor(() => dlg.querySelector(".ss-list a.ss-item"), "確定後の結果");
+  firstNow.addEventListener("click", (e) => e.preventDefault(), { once: true });
+  firstNow.click();
+  await waitFor(() => gaNames(doc).includes("search_result_click"), "search_result_click の送出");
+  const cEv = gaEvents(doc).find((e) => e.name === "search_result_click");
+  // Esc で閉じてボタンへフォーカスが戻る・スクロールの固定が外れる
+  input.dispatchEvent(new win.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  await waitFor(() => !dlg.open, "Esc で閉じる");
+  const onEsc = {
+    focusBack: doc.activeElement === btn,
+    unlocked: win.getComputedStyle(doc.documentElement).overflow !== "hidden",
+    expanded: btn.getAttribute("aria-expanded"),
+  };
+  // ×ボタンでも、背景（dialog 自身＝::backdrop）でも閉じる
+  btn.click(); await waitFor(() => dlg.open, "再び開く");
+  dlg.querySelector(".ss-close").click();
+  const closeBtn = !dlg.open && doc.activeElement === btn;
+  btn.click(); await waitFor(() => dlg.open, "再び開く(2)");
+  dlg.dispatchEvent(new win.MouseEvent("click", { bubbles: true }));
+  const closeBackdrop = !dlg.open && doc.activeElement === btn;
+  // 当たらない言葉は「無い」と言い、トップのツール一覧とコラム一覧へ案内する
+  btn.click(); await waitFor(() => dlg.open, "再び開く(3)");
+  input.value = "ｚｚｑｑｘｘ";
+  dlg.querySelector("form").requestSubmit();
+  const empty = await waitFor(() => { const el = dlg.querySelector(".ss-empty"); return el && !el.hidden && el; }, "該当なしの案内");
+  const emptyLinks = [...empty.querySelectorAll("a")].map((a) => a.getAttribute("href"));
+  const qEvents = gaEvents(doc).filter((e) => e.name === "question");
+  return {
+    width, beforeOpen, ...geometry, onOpen, typed,
+    question: qEv.params, click: cEv.params, onEsc, closeBtn, closeBackdrop,
+    emptyText: empty.textContent.replace(/\s+/g, " ").trim(), emptyLinks,
+    emptyListHidden: dlg.querySelector(".ss-list").hidden,
+    weakQuestion: qEvents[qEvents.length - 1].params,
+  };
+};
+SCENES.site_search_390 = siteSearchScene(390);
+SCENES.site_search_1280 = siteSearchScene(1280);
+// トップでは、ヘッダの検索と既存の質問欄（インライン）が両方動くこと（同じ索引・別の描画）
+SCENES.site_search_top = async () => {
+  document.getElementById("f").style.width = "1280px";
+  const doc = await open("/docs/");
+  const win = doc.defaultView;
+  doc.querySelector("header.site button[data-site-search]").click();
+  const dlg = await waitFor(() => doc.querySelector("dialog.ss-dialog[open]"), "検索ダイアログが開く");
+  const input = dlg.querySelector("input");
+  input.value = "社会保険";
+  dlg.querySelector("form").requestSubmit();
+  const first = await waitFor(() => dlg.querySelector(".ss-list a.ss-item"), "ヘッダ検索の結果");
+  const headerFirst = first.getAttribute("href");
+  input.dispatchEvent(new win.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+  await waitFor(() => !dlg.open, "閉じる");
+  set(doc, "qa-q", "源泉徴収");
+  doc.getElementById("qa-form").requestSubmit();
+  const inline = await waitFor(() => doc.querySelector("#qa-results .qa-card-title"), "トップの質問欄の結果");
+  return { headerFirst, inlineFirst: inline.getAttribute("href"),
+    inlineCards: doc.querySelectorAll("#qa-results .qa-card").length,
+    dialogCardsLeak: dlg.querySelectorAll(".qa-card").length };
+};
+
 let state;
 try {
   state = { scene, ...(await SCENES[scene]()), page: openedPages[0] || null, pages: openedPages };

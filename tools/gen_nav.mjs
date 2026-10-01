@@ -17,7 +17,7 @@
  *
  * ★/embed/ は他サイトへの埋め込み用でヘッダを持たない。触らない。
  */
-import { readFileSync, writeFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative, dirname } from 'node:path';
 
 const ROOT = new URL('../', import.meta.url).pathname;
@@ -80,7 +80,25 @@ export function buildHeader(pageDir) {
     const cur = isCurrent(pageDir, it.href) ? ' aria-current="page"' : '';
     return `    <a href="${href}"${cur}>${it.label}</a>`;
   }).join('\n');
-  return `<header class="site">\n  <a class="brand" href="${up}">税金・経理・補助金ツールズ</a>\n  <nav>\n${links}\n  </nav>\n</header>`;
+  return `<header class="site">\n  <a class="brand" href="${up}">税金・経理・補助金ツールズ</a>\n  <nav>\n${links}\n  </nav>\n${searchButton(up)}\n</header>`;
+}
+
+/**
+ * ★全ページのヘッダに「検索」（2026-10-01 決定 gbrain decisions/keiri-header-search-2026-10-01）。
+ *   GA4 28日で約19,300セッションのうちトップ着地は62（0.3%）。検索欄がトップにしか無く、
+ *   記事に着地した人は探す手段を持っていなかった。
+ * ★押すとそのページ上に検索窓（ダイアログ）を開く。中身は assets/site_search.js（1本の共通モジュール）。
+ *   索引（qa_index.json・約1MB）と qa_search.js は**開いたときに初めて**読む（通常の表示を重くしない）。
+ * ★アクセシブルな名前は常に「サイト内検索」（見える文字「検索」を含む＝WCAG 2.5.3）。
+ *   狭い画面では文字を隠して虫眼鏡だけにする（style.css .site-search-label）。
+ */
+function searchButton(up) {
+  return `  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false">`
+    + `<svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false">`
+    + `<circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/>`
+    + `<path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`
+    + `<span class="site-search-label">検索</span></button>\n`
+    + `  <script type="module" src="${up}assets/site_search.js"></script>`;
 }
 
 const HEADER_RE = /<header class="site">[\s\S]*?<\/header>/;
@@ -103,6 +121,12 @@ function main() {
 
     const pageDir = dirname(relPath) === '.' ? '' : dirname(relPath);
     const want = buildHeader(pageDir);
+    // ★ヘッダ内の検索モジュールのパスが実在すること（深さを間違えると 404 で「検索」だけが黙って死ぬ）
+    const src = want.match(/src="([^"]+site_search\.js)"/)[1];
+    if (!existsSync(join(DOCS, pageDir, src))) {
+      console.error(`✗ ${relPath}: ${src} が存在しない（相対パスの深さの誤り）`);
+      process.exit(1);
+    }
     if (cur === want) continue;
     stale.push(relPath);
     if (!check) writeFileSync(fp, html.replace(HEADER_RE, want));

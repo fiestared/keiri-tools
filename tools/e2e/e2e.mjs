@@ -1909,6 +1909,29 @@ const SCENES = [
       s.names.includes("internal_link_click") && s.slot === "next_read" && s.linkUrl.includes("/column/") },
   { name: "track_slot_related_tool", noCoverage: true, expect: (s) =>
       s.names.includes("tool_link_click") && s.slot === "related" && s.tool.length > 0 },
+  // ★ヘッダの「検索」（2026-10-01）。記事ページから開いて、トップと同じ索引で「社会保険」→社会保険料の計算機が1位。
+  //   索引は開く前に読まない／ダイアログの作法／GA4 3種。狭い画面ではブランドの右（1段目）に置き、ヘッダを3段にしない
+  ...[390, 1280].map((w) => ({ name: `site_search_${w}`, noCoverage: true, expect: (s) =>
+      s.width === w && s.beforeOpen.length === 0 &&
+      s.btnTag === "BUTTON" && s.btnName === "サイト内検索" && s.btnInHeader && s.labelVisible &&
+      (w === 390 ? s.btnOnBrandRow && s.headerHeight <= 100 : s.headerHeight <= 62) &&
+      s.onOpen.role === "dialog" && s.onOpen.modal === "true" && s.onOpen.labelled &&
+      s.onOpen.focusInInput && s.onOpen.scrollLocked && s.onOpen.expanded === "true" && s.onOpen.openEvents === 1 &&
+      /\/docs\/shakai-hoken\/$/.test(s.typed.firstHref) && s.typed.firstTag === "ツール" &&
+      s.typed.count >= 3 && s.typed.count <= 8 && s.typed.everyHasSummary && !s.typed.questionBeforeEnter &&
+      s.typed.afterOpen.includes("qa_index.json") && s.typed.afterOpen.includes("qa_search.js") &&
+      s.question.q === "社会保険" && s.question.matched === true && s.question.top === "/shakai-hoken/" &&
+      s.click.position === 1 && /\/shakai-hoken\/$/.test(s.click.link_url) && !("q" in s.click) &&
+      s.onEsc.focusBack && s.onEsc.unlocked && s.onEsc.expanded === "false" &&
+      s.closeBtn && s.closeBackdrop &&
+      /見つかりませんでした/.test(s.emptyText) && s.emptyListHidden &&
+      s.emptyLinks.some((h) => /#tools$/.test(h)) && s.emptyLinks.some((h) => /\/column\/$/.test(h)) &&
+      s.weakQuestion.matched === false && s.weakQuestion.top === "" }),
+  ),
+  // トップ: ヘッダの検索とインラインの質問欄が両方動く（互いの描画を混ぜない）
+  { name: "site_search_top", noCoverage: true, expect: (s) =>
+      /\/docs\/shakai-hoken\/$/.test(s.headerFirst) && s.inlineFirst === "/gensen-choshu/" &&
+      s.inlineCards >= 1 && s.dialogCardsLeak === 0 },
 ];
 
 // ── /embed/ ウィジェットのパリティ検証(2026-07-20) ─────────────────────────────
