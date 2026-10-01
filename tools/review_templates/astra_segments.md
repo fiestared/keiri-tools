@@ -1,13 +1,16 @@
 独立審査。RUN={{R}}、読み取り専用の対象={{SITE}}。正本は RUN/corpus と corpus_desc.md。
 他モデル・サブエージェント・orca・スキル・pushは禁止。
-segments.json と out/s*.json を読み、全IDの判定を審査する。wrong/unclearと要約部は必ず正本を開き、残りのokも範囲を明示して審査する。
+segments.json と sol-union.json を読み、全IDの判定を審査する。sol は sol-models.json のモデル全部で同じ束を照合した（1本目は out/s*.json、2本目以降は out/<モデル>/s*.json）。sol-union.json は単位ごとに全モデルの判定と所見をまとめたもの。**どれか1つのモデルでも wrong/unclear とした単位は、全部の所見を正本で確かめる**（和集合を審査する）。wrong/unclearと要約部は必ず正本を開き、残りのokも範囲を明示して審査する。
 固定コピーと元の執筆作業場は変更しない。修正が必要なら未解決として書き手に返し、修正後の新snapshotで再照合する。
-RUN/segment-adjudication.json: {"segments":[{"page":"...","id":"...","decision":"ok|nonclaim|out_of_corpus|unresolved","reason":"正本の箇所と採否理由","needed_source":"正本外の場合の必要資料"}]}。
+RUN/segment-adjudication.json: {"segments":[{"page":"...","id":"...","decision":"ok|nonclaim|out_of_corpus|unresolved","reason":"正本の箇所と採否理由","needed_source":"正本外の場合の必要資料","conditions":[...]}]}。
 全IDが必須。protected=true の nonclaim は禁止。未解決highをokへ変えて通さない。
+ok にする前の条件・例外の走査（2026-10-01 必須）: sol の ok を写すだけにしない。数字・境界・対象者・期限・義務・列挙を含む単位を ok にするときは、同じ条・同じ表・同じ節のただし書・かっこ書・注・備考・別区分を自分で開き、conditions: [{"condition":"...","corpus_ref":"corpus/<ファイル>:<行>","covered":"yes|no|irrelevant"}] を書く（sol の conditions を確かめて足りなければ足す）。no が1つでもあれば ok にせず unresolved。列挙は正本の全件と突き合わせる。主張の主語（銀行名・制度名・対象者）と別の主語の資料を根拠にした ok は認めない（例: PayPay銀行の料金表で SMTB の手数料を ok にしない）。
+正本外（out_of_corpus）: 照合できない主張は、別モデルが wrong と判断しない限り残す（2026-10-01 Masahiro「Aに統一」。直すかどうかはこのあとの別モデルの意見で決まるので、ここでは裏付けの無さを unresolved の理由にしない）。ただし照合できる部分を含む単位を丸ごと out_of_corpus にしない。照合できる部分は ok/unresolved を出す。
 unresolved の行には severity（high|medium|low）を必ず付ける。sol の付けた重要度をそのまま写さず、下の基準で付け直す。
+sol のどのモデルも wrong/unclear にしていない単位を unresolved にするときは、reason に正本の行を必ず書く（審査だけの指摘は修正の対象だが、徹底チェックの通過判定の high には数えない＝次の周の候補）。
 重要度（severity）の基準 — 「読者がこの文のとおりに動いたら、何を誤るか」で決める。
 - high: 実在する典型的なケースで、金額・税額・給付額・料率・期限・日付・要件の該当/非該当・義務の有無・計算の向きを誤る。古い年度の値、境界（以上/超・未満/以下）の取り違え、多数派に当たる条件の欠落、存在しない制度・義務の断定、正しい値でも適用年分・施行日の取り違えは high。
-- medium: 大多数には正しいが、特定できる少数（例外・年齢・加入状況・経過措置の対象など）で答えが変わるのに条件を書いていない。「必ず」「だけ」などの過剰な断定。正本で裏付けられない主張（ツールの精度保証・一般論の数字など）。
+- medium: 大多数には正しいが、特定できる少数（例外・年齢・加入状況・経過措置の対象など）で答えが変わるのに条件を書いていない。「必ず」「だけ」などの過剰な断定。
 - low: 読み方の曖昧さ・言い回し・表記ゆれで、読者の判断は変わらない。
 迷ったら重い方にする。
 

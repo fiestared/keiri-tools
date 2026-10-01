@@ -165,8 +165,13 @@ def run_locked(a):
         if segments:
             for name in ('sol_segments.md','astra_segments.md'):
                 shutil.copy2(a.repo/'tools/review_templates'/name,r/name);state['frozen_hashes'][name]=theme_segments.digest(r/name)
-            state['frozen_hashes'].update(theme_segments.prepare(r,a.repo,pages))
+            since=getattr(a,'changed_since',None)
+            if since is not None:state['changed_since']=str(since)
+            state['frozen_hashes'].update(theme_segments.prepare(r,a.repo,pages,since))
         config.write_text(json.dumps(state,ensure_ascii=False,indent=2)+'\n');(r/'.started').touch()
+        if segments and not json.loads((r/'segments.json').read_text()):
+            # 修正で変わった単位が無い（--changed-since）。照合するものが無いので通過扱い。モデルは呼ばない。
+            (r/'.finished').write_text('no changed units since '+state.get('changed_since','')+'; no model called\n');print('no changed units');return 0
     for path,digest in state['frozen_hashes'].items():
         if not (r/path).exists() or hashlib.sha256((r/path).read_bytes()).hexdigest()!=digest:return stop(r,'frozen input changed: '+path)
     if state.get('base_sha'):
@@ -220,8 +225,16 @@ def main():
     ap.add_argument('--prepare-only',action='store_true');ap.add_argument('--check-only',action='store_true')
     ap.add_argument('--segments',action='store_true');ap.add_argument('--draft-worktree',type=Path)
     ap.add_argument('--registry',type=Path);ap.add_argument('--corpus-dir',type=Path)
+    # 2026-10-01 対策2: 同じ束を複数の sol で並走（例 gpt-6.1-sol,gpt-5.6-sol）。審査は和集合を見る。省略時は KEIRI_SOL_MODELS → KEIRI_SOL_MODEL。
+    ap.add_argument('--sol-models',help='comma-separated sol models run in parallel on the same batches (segments mode)')
+    # 2026-10-01 対策4: 前の run（の segments.json）から本文が変わった単位だけを照合し直す
+    ap.add_argument('--changed-since',type=Path,help='previous segments run dir; review only units whose text changed')
     a=ap.parse_args()
     if a.draft_worktree and not a.segments:ap.error('--draft-worktree requires --segments')
+    if (a.sol_models or a.changed_since) and not a.segments:ap.error('--sol-models/--changed-since require --segments')
+    if a.changed_since:
+        a.changed_since=a.changed_since.resolve()
+        if not (a.changed_since/'segments.json').is_file():ap.error('--changed-since needs a run directory with segments.json')
     a.root=a.root.resolve();a.repo=a.repo.resolve()
     if not re.fullmatch('[a-zA-Z0-9_-]+',a.theme):ap.error('invalid theme')
     if a.run_dir is None:

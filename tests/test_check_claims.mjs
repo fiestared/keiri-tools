@@ -116,6 +116,31 @@ assert.ok(checkPage({html:changedPage,ledger:null,requiredText:addedClaimText(ch
   assert.notEqual(addedClaimText(wrapped, dayChanged).replace(/\s+/g, ''), '', '包むと同時に日付の文字が変わったら足した行として拾う'); }
 
 
+// ── 2026-10-01 対策1（執筆側）: 新しく書いた・変えた主張にだけ scope と中身のある exceptions を課す ──
+{
+  const { isNewClaim } = await import("../tools/check_claims.mjs");
+  const withScope = structuredClone(base);
+  withScope.claims[0].scope = "週20時間以上の短時間労働者・令和8年10月以後・従業員51人以上の企業";
+  withScope.claims[1].scope = "法人口座からの他行宛て振込・2026年9月時点";
+  withScope.claims[1].exceptions = "無し: 料金表の注・備考・別表（ATM・窓口）を読んで確認";
+  // 通るべき（ベースライン）: scope と例外が揃った新しい主張は緑／基点と同じ既存の主張は scope 無しでも緑（既存ページを一斉に赤にしない）
+  assert.deepEqual(checkPage({ html: HTML, ledger: withScope, page: "p", baseLedger: null }), [], "scope と例外の揃った新規の台帳が赤");
+  assert.deepEqual(checkPage({ html: HTML, ledger: base, page: "p", baseLedger: structuredClone(base) }), [], "変えていない既存の主張に scope を要求した");
+  assert.deepEqual(checkPage({ html: HTML, ledger: base, page: "p" }), [], "基点を渡さない従来の呼び出しで scope を要求した");
+  const cov = structuredClone(base); cov.claims[0].covers = ["s-x-1"];
+  assert.equal(isNewClaim(cov.claims[0], base), false, "covers の付け替えだけで「変えた主張」扱いにした");
+  // 落ちるべき
+  const noScope = structuredClone(withScope); delete noScope.claims[0].scope;
+  assert.ok(checkPage({ html: HTML, ledger: noScope, page: "p", baseLedger: null }).some((e) => /c01.*scope/.test(e)), "新しい主張の scope 欠落を通した");
+  const bareNone = structuredClone(withScope); bareNone.claims[1].exceptions = "無し";
+  assert.ok(checkPage({ html: HTML, ledger: bareNone, page: "p", baseLedger: null }).some((e) => /c02.*『無し』だけ/.test(e)), "根拠の無い『無し』を通した");
+  const changed = structuredClone(base); changed.claims[1].numbers = ["3万円", "550円", "令和8年分"];
+  const errs = checkPage({ html: HTML, ledger: changed, page: "p", baseLedger: structuredClone(base) });
+  assert.ok(errs.some((e) => /c02.*scope/.test(e)) && !errs.some((e) => /c01.*scope/.test(e)), `変えた主張だけに scope を要求する: ${JSON.stringify(errs)}`);
+  const arr = structuredClone(withScope); arr.claims[0].exceptions = ["昼間学生は対象外（休学・夜間は対象）", "2か月以内の雇用は対象外"];
+  assert.deepEqual(checkPage({ html: HTML, ledger: arr, page: "p", baseLedger: null }), [], "例外の配列（全件の列挙）を受け付けない");
+}
+
 console.log(`✓ test_check_claims: 抽出の性質 / ベースライン緑 / 壊し ${caught}/${cases.length} 捕捉 / 計算機の tool_cases / 足した行モード / 関連記事の内側差分・本文・FAQの回帰`);
 
 // r14: 目次横の自動生成リンクはリンク先の見出し。隣接する本文は引き続き検査する。

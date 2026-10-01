@@ -114,8 +114,31 @@ function domainOk(url) {
   return SOURCES.allow_suffix.some((s) => host === s || host.endsWith("." + s)) || SOURCES.allow_host.includes(host);
 }
 
+// ── 新しく書いた・変えた主張の「範囲と例外」（2026-10-01 対策1・gbrain audits/keiri-why-not-one-pass-2026-10-01）──
+// 後の周の要修正の58%は「数字は合っているが、誰に・いつ・どの区分か、例外が欠けた文」だった。書く時点で
+// scope（誰に・いつ・どの区分）と exceptions（正本の同じ節の例外を全件。無ければ『無し: 確かめた範囲』）を台帳に書かせる。
+// ★既存の主張には課さない（既存ページを一斉に赤にしない）。基点の台帳に無い主張・中身（text/numbers/applies/出典）が変わった主張だけ。
+const SUBSTANCE = ["text", "numbers", "applies", "source_url", "source_quote"];
+const substance = (c) => JSON.stringify(SUBSTANCE.map((k) => c?.[k] ?? null));
+export function isNewClaim(claim, baseLedger) {
+  if (baseLedger === undefined) return false;                 // 基点が分からない呼び出し（従来の単体検査）は課さない
+  const before = (baseLedger?.claims ?? []).find((b) => b.id === claim.id);
+  return !before || substance(before) !== substance(claim);
+}
+const exceptionList = (e) => Array.isArray(e) ? e.filter((x) => typeof x === "string" && x.trim()) : typeof e === "string" && e.trim() ? [e.trim()] : [];
+export function scopeErrors(claim, page) {
+  const id = claim.id ?? "(id無し)", errors = [];
+  if (typeof claim.scope !== "string" || claim.scope.trim().length < 4) errors.push(`${page}: ${id} は新しく書いた主張なのに scope（誰に・いつ・どの区分の話か）がありません`);
+  const ex = exceptionList(claim.exceptions);
+  if (!ex.length) errors.push(`${page}: ${id} は新しく書いた主張なのに exceptions（正本の同じ節のただし書・かっこ書・注・別区分を全件）がありません`);
+  else if (ex.length === 1 && /^(無し|なし|該当なし)/.test(ex[0]) && !/^(無し|なし|該当なし)\s*[:：]\s*\S.{7,}/u.test(ex[0]))
+    errors.push(`${page}: ${id} の exceptions が『無し』だけです。『無し: 〜の同じ節（ただし書・注・別表）を読んで確認』のように確かめた範囲を書く`);
+  return errors;
+}
+
 // ── 1ページの検査。required: 要求する数字・言い切り（null ならページ全体）──────────
-export function checkPage({ html, ledger, requiredText = null, page = "(page)" }) {
+// baseLedger: 基点（分岐点）の台帳。渡されたときだけ、新しく書いた・変えた主張に scope と exceptions を課す（null＝基点に台帳なし＝全件が新規）
+export function checkPage({ html, ledger, requiredText = null, page = "(page)", baseLedger = undefined }) {
   const errors = [];
   const text = requiredText ?? claimText(html);
   // 既存ページで、足した行に数字も言い切りも無い（生成器が更新日だけ書き換えた等）なら、台帳は要求しない
@@ -130,7 +153,10 @@ export function checkPage({ html, ledger, requiredText = null, page = "(page)" }
     if (own && c.kind !== "own_site") errors.push(`${page}: ${id} の出典がこのサイト自身です。サイト自身を出典にできるのは、このサイトの仕組みについての主張（kind: "own_site"）だけ`);
     else if (!own && (!c.source_url || !domainOk(c.source_url))) errors.push(`${page}: ${id} の source_url が一次資料の許可ドメインではありません: ${c.source_url ?? "(無し)"}（tools/claims_sources.json）`);
     if (!c.source_quote || c.source_quote.trim().length < 8) errors.push(`${page}: ${id} に source_quote（一次資料の逐語）がありません`);
-    if (!c.exceptions || !c.exceptions.trim()) errors.push(`${page}: ${id} に exceptions（確かめた例外。無ければ『無し: 根拠』）がありません`);
+    const hasExceptions = exceptionList(c.exceptions).length > 0;
+    if (!hasExceptions) errors.push(`${page}: ${id} に exceptions（確かめた例外。無ければ『無し: 根拠』）がありません`);
+    // 新しく書いた・変えた主張は scope と、中身のある exceptions も要る（exceptions 欠落は上で報告済みなので重ねない）
+    if (isNewClaim(c, baseLedger)) errors.push(...scopeErrors(c, page).filter((e) => hasExceptions || !e.includes("exceptions（正本")));
     const money = (c.numbers ?? []).some((n) => /円|%|％/.test(n));
     if (money && !(c.applies ?? "").trim()) errors.push(`${page}: ${id} は金額・率を含むのに applies（いつの制度か: 令和8年分 等）がありません`);
   }
@@ -211,6 +237,14 @@ export function addedClaimText(html, diff) {
 }
 
 const readLedger = (page) => { const p = join(ROOT, ledgerPath(page)); return existsSync(p) ? JSON.parse(readFileSync(p, "utf8")) : null; };
+// 基点（分岐点）の台帳。無ければ null（＝全件が新しく書いた主張）。
+// ★在るのに読めない（大きすぎる・壊れている）を「無い」と取り違えると、既存の全主張が新規扱いで赤になる（2026-10-01 実測:
+//   1.4MB の台帳で execFileSync の既定 maxBuffer 1MB を超え、543件が誤って赤）。在るか無いかを先に分け、読めなければ止める。
+const readBaseLedger = (base, page) => {
+  const spec = `${forkPoint(base)}:${ledgerPath(page)}`;
+  try { execFileSync("git", ["-C", ROOT, "cat-file", "-e", spec], { stdio: "ignore" }); } catch { return null; }
+  return JSON.parse(execFileSync("git", ["-C", ROOT, "show", spec], { encoding: "utf8", maxBuffer: 256 * 1024 * 1024 }));
+};
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const { segmentClaims, validateSegments } = await import("./segment_claims.mjs");
@@ -237,7 +271,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const html = readFileSync(join(ROOT, page), "utf8");
     const ledger = readLedger(page);
     const fresh = newLedger(page);
-    const errs = segments ? [] : checkPage({ html, ledger, requiredText: required, page });
+    const errs = segments ? [] : checkPage({ html, ledger, requiredText: required, page, baseLedger: readBaseLedger(base, page) });
     if (segments || fresh) {
       const coverage = validateSegments(segmentClaims(html, page), ledger);
       const strict = fresh || process.env.SEGMENTS_STRICT === "1";

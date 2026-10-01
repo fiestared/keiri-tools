@@ -40,3 +40,19 @@ inputは実在する入力IDと2件以上のケース。固定/対象外は一�
 排他・端数条件には専用ケース、表ごとにHTMLから読む初期値ケースを要求する。
 ケースの意味が条件全体をカバーするかは独立レビューで確かめる。条件表の行数は法制度の全条件の網羅率ではない。
 pendingは基点の既存coreから開始し、Git履歴上のpendingとの積集合より増やせない。新規coreは表または理由つき対象外が必要。
+
+## 2026-10-01 一発で潰すための変更（gbrain audits/keiri-why-not-one-pass-2026-10-01・implementation/keiri-onepass-countermeasures-2026-10-01）
+- **単位の切り方（対策5）**: 図は SVG の text 断片・aria-label・title・図の figcaption を図ごとに1単位（kind `figure`）。
+  表のデータのセルは `【行】行見出し 【列】列見出し 【値】セル` の1単位（文で分けない。見出しを変えればセルの ID も変わる）。
+  見出し・ラベル・表・図のうち金額・数字・日付・境界語（超・以上・未満・以下・以内・まで 等）を含むものは protected＝非主張にできない。
+  ★既存台帳の covers のうち表のセル・SVG の text・図の figcaption を指していたものは古い ID になる（既存ページは警告のみ。直すときに付け替える）。
+- **ok の条件・例外の走査（対策1）**: sol・審査の ok は `conditions: [{condition, corpus_ref, covered: yes|no|irrelevant}]` 必須。
+  数字・境界・対象者・期限・義務・言い切りを含む単位で空、または no が1つでもあれば ok として数えない（sol は未処理、審査は run を止める）。
+  審査は sol の conditions で足りれば `"conditions":"sol"`。この要求は run に固定したひな形が conditions を求めるときだけ（旧 run の再開は従来どおり）。
+- **sol の並走（対策2）**: `--sol-models gpt-6.1-sol,gpt-5.6-sol` で同じ束を並走。1本目は `out/s*.json`、2本目以降は `out/<モデル>/s*.json`。
+  `sol-models.json` と単位ごとの和集合 `sol-union.json` を審査が読む。再開でモデルの組を変えると止まる。
+- **正本外（対策3・A に統一）**: 照合できない主張は別モデルが wrong と言わない限り残す。裏付けの無さは重要度の理由にしない。
+  照合できる部分を含む単位を丸ごと out_of_corpus にしない。
+- **関門と high の数え方**: 修正の対象は unresolved 全部と別モデルが wrong とした正本外（`STOPPED` の unresolved findings）。
+  徹底チェックの通過判定に使う high は「審査が high かつ sol のどれかが wrong/unclear」だけ（`gate.json` の `unresolved_high`。審査だけの high は `unresolved_high_adjudication_only`＝次の周の候補）。
+- **変わった単位だけの再照合（対策4）**: `--changed-since <前の run>` は、前の run の segments.json に同じページ・同じ本文の無い単位だけを照合する。0件ならモデルを呼ばずに `.finished`。

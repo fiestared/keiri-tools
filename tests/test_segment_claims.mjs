@@ -8,7 +8,7 @@ assert.ok(validateSegments(segmentClaims(html.replace('content="条件の説明"
 const nc=structuredClone(ledger);nc.claims[0].covers.shift();nc.nonclaims=[{id:units[0].id,why:'案内文'}];assert.ok(validateSegments(units,nc).errors.length);
 assert.deepEqual(segmentClaims(html.replace('<b>会社</b>',' 会 社 ')).map(s=>s.id),units.map(s=>s.id));
 assert.deepEqual(segmentClaims(html+'<nav><p>パンくず</p></nav><section class="related"><p>関連記事</p></section>').map(s=>s.id),units.map(s=>s.id));
-assert.ok(units.some(u=>u.kind==='og:description'));assert.ok(units.some(u=>u.kind==='input'));assert.ok(units.some(u=>u.kind==='text'));assert.ok(units.some(u=>u.zone==='faq'&&u.protected));
+assert.ok(units.some(u=>u.kind==='og:description'));assert.ok(units.some(u=>u.kind==='input'));assert.ok(units.some(u=>u.kind==='figure'&&u.text==='図の主張'));assert.ok(units.some(u=>u.zone==='faq'&&u.protected));
 const duplicate=segmentClaims('<p>同じ文。</p><p>同じ文。</p>');assert.equal(new Set(duplicate.map(u=>u.id)).size,2);
 const plain=segmentClaims('<p>目次へ戻る</p>');assert.deepEqual(validateSegments(plain,{nonclaims:[{id:plain[0].id,why:'ページ内の案内'}]}).errors,[]);
 console.log('segment fixtures: pristine green; covers/meta/nonclaim red; whitespace/bold/navigation green');
@@ -35,3 +35,51 @@ for (const u of structural.filter(u=>u.text.includes('80%'))) assert.equal(u.pro
 const practical = segmentClaims('<div class="callout"><h3>実務上の意味</h3><p>給付は50日分です。</p></div>');
 assert.equal(practical.find(u=>u.kind==='h3').protected,false);
 assert.equal(practical.find(u=>u.kind==='p').protected,true);
+
+// 2026-10-01 対策5（gbrain audits/keiri-why-not-one-pass-2026-10-01 の D: 図の断片・表の行見出し・見出しが単独で非主張にされ、後の周で high になった）
+{
+  const fig = segmentClaims('<figure><svg aria-label="住民税の控除の内訳"><title>内訳</title><text>①5,600円</text><text>②2,800<tspan>円</tspan></text><text>×（100−10−20）＝70％</text></svg><figcaption>図: 控除の合計28,000円</figcaption></figure><p>本文です。</p>');
+  const figs = fig.filter(u => u.kind === 'figure');
+  // 通るべき: 図1つ＝単位1つで、断片・aria-label・title・figcaption を全部含む
+  assert.equal(figs.length, 1, '図は1単位');
+  for (const piece of ['住民税の控除の内訳', '内訳', '①5,600円', '②2,800円', '×（100−10−20）＝70％', '図: 控除の合計28,000円']) assert.ok(figs[0].text.includes(piece), piece);
+  assert.equal(figs[0].protected, true, '金額を含む図は非主張にできない');
+  // 落ちるべき: 断片や figcaption が別の単位として残っていない
+  assert.ok(!fig.some(u => u.kind === 'text' || u.kind === 'figcaption'), '図の断片が別単位で残っている');
+  const ledger = { claims: [{ id: 'c', covers: fig.filter(u => u.kind !== 'figure').map(u => u.id) }], nonclaims: [{ id: figs[0].id, why: '図の飾り' }] };
+  assert.ok(validateSegments(fig, ledger).errors.some(e => e.includes('invalid nonclaim')), '金額つきの図を非主張にできてしまう');
+  // 図の外の figcaption（表の説明など）は従来どおり単独の単位
+  assert.ok(segmentClaims('<figure><table><tr><td>a</td></tr></table><figcaption>表の説明</figcaption></figure>').some(u => u.kind === 'figcaption'));
+}
+{
+  const html = '<table><thead><tr><th>年収</th><th>超えるとどうなる</th><th>手続</th></tr></thead><tbody><tr><th>130万円</th><td>扶養から外れる。国保に入る。</td><td>届出</td></tr><tr><td>106万円</td><td>社保に入る</td><td>なし</td></tr></tbody></table>';
+  const t = segmentClaims(html);
+  const cell = t.find(u => u.text.includes('扶養から外れる'));
+  // 通るべき: データのセルは「行見出し＋列見出し＋セル」の1単位（文で分けない）
+  assert.equal(cell.text, '【行】130万円 【列】超えるとどうなる 【値】扶養から外れる。国保に入る。');
+  assert.equal(cell.protected, true, '境界語・金額の見出しを持つセルは非主張にできない');
+  assert.equal(t.find(u => u.text.includes('社保に入る')).text, '【行】106万円 【列】超えるとどうなる 【値】社保に入る', 'thead が無い行見出し td も見出しとして使う');
+  // 見出しのセル自体は単独の単位として残り、境界語を含めば protected
+  assert.equal(t.find(u => u.text === '超えるとどうなる').protected, true);
+  assert.equal(t.find(u => u.text === '130万円').protected, true);
+  assert.equal(t.find(u => u.text === '手続').protected, false, '境界語の無い列見出しは従来どおり');
+  // 落ちるべき: 見出しを書き換えたらセルの単位も変わる（見出しと結論を一緒に照合し直す）
+  const t2 = segmentClaims(html.replace('超えるとどうなる', '以上になるとどうなる'));
+  assert.notEqual(t2.find(u => u.text.includes('扶養から外れる')).id, cell.id);
+  // colspan を数える
+  const span = segmentClaims('<table><tr><th>区分</th><th colspan="2">手数料</th><th>備考</th></tr><tr><td>他行</td><td>3万円未満</td><td>220円</td><td>窓口</td></tr></table>');
+  assert.equal(span.find(u => u.text.endsWith('220円')).text, '【行】他行 【列】手数料 【値】220円');
+  assert.equal(span.find(u => u.text.endsWith('窓口')).text, '【行】他行 【列】備考 【値】窓口');
+}
+{
+  // 見出し・ラベルの境界語・金額・日付。通るべき: 語の無い見出しは非主張にできる。落ちるべき: 有る見出しはできない
+  const h = segmentClaims('<h2>手続の流れ</h2><h3>年収130万円を超えると</h3><h3>10月1日から</h3><label>月額</label><select><option>8.8万円以上</option></select>');
+  for (const text of ['年収130万円を超えると', '10月1日から', '8.8万円以上 [value=8.8万円以上;default=true]']) assert.equal(h.find(u => u.text === text).protected, true, text);
+  for (const text of ['手続の流れ', '月額']) assert.equal(h.find(u => u.text === text).protected, false, text);
+  const ok = { nonclaims: h.filter(u => !u.protected).map(u => ({ id: u.id, why: '見出し' })), claims: [{ id: 'c', covers: h.filter(u => u.protected).map(u => u.id) }] };
+  assert.deepEqual(validateSegments(h, ok).errors, []);
+  const bad = structuredClone(ok); const tgt = h.find(u => u.text === '年収130万円を超えると');
+  bad.claims[0].covers = bad.claims[0].covers.filter(id => id !== tgt.id); bad.nonclaims.push({ id: tgt.id, why: '見出し' });
+  assert.ok(validateSegments(h, bad).errors.some(e => e.includes('invalid nonclaim')));
+}
+console.log('one-pass units: figure bundled; table cell with row/column headers; boundary headings protected');

@@ -1,6 +1,6 @@
 import argparse,copy,hashlib,importlib.util,importlib.machinery,json,os
 from pathlib import Path
-import subprocess,sys,tempfile,unittest
+import re,subprocess,sys,tempfile,unittest
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'tools'))
 import theme_segments as units
@@ -11,7 +11,7 @@ def writable(root):
         if p.is_dir():p.chmod(0o755)
         elif p.is_file():p.chmod(0o644)
 
-class Units(unittest.TestCase):
+class Base(unittest.TestCase):
     def fixture(self,tmp):
         root=Path(tmp);repo=root/'repo';repo.mkdir();(repo/'docs/a').mkdir(parents=True)
         (repo/'docs/a/index.html').write_text('<title>対象</title><p>会社が対象。</p>')
@@ -29,11 +29,18 @@ class Units(unittest.TestCase):
         a=argparse.Namespace(run_dir=root/'round',theme='t1',pages=pages,corpus_report=None,root=legacy,repo=ROOT,prepare_only=True,check_only=False,worker='never-real-model',segments=True,draft_worktree=repo,registry=registry,corpus_dir=None)
         return root,repo,a,git
 
-    def outputs(self,r):
+    COND=[{'condition':'同じ条にただし書・注・別区分なし','corpus_ref':'corpus/a.txt:1','covered':'irrelevant'}]
+    def outputs(self,r,model=None,conditions=True,wrong=()):
         for b in (r/'segment-batches').glob('*.json'):
-            data=json.loads(b.read_text());rows=[{**u,'claim_id':'c-'+u['id'],'result':'ok','corpus_ref':'corpus/a.txt:1','corpus_quote':'会社が対象です。'} for u in data]
-            (r/'out'/(b.stem+'.json')).write_text(json.dumps({'segments':rows,'findings':[]}))
+            data=json.loads(b.read_text());rows=[{**u,'claim_id':'c-'+u['id'],'result':'ok','corpus_ref':'corpus/a.txt:1','corpus_quote':'会社が対象です。',**({'conditions':self.COND} if conditions else {})} for u in data]
+            findings=[]
+            for row in rows:
+                if row['id'] in wrong:row['result']='wrong';row.pop('conditions',None);findings.append({'page':row['page'],'segment_id':row['id'],'severity':'high','reason':'fixture'})
+            out=r/'out'/(model or '')/(b.stem+'.json');out.parent.mkdir(exist_ok=True)
+            out.write_text(json.dumps({'segments':rows,'findings':findings}))
 
+
+class Units(Base):
     def test_draft_pristine_then_missing_unknown_findings_and_no_astra(self):
         with tempfile.TemporaryDirectory() as tmp:
             root,repo,a,git=self.fixture(tmp)
@@ -46,13 +53,18 @@ class Units(unittest.TestCase):
                 self.outputs(r);a.prepare_only=False;a.check_only=True
                 self.assertEqual(runner.run(a),0) # actual frozen draft and complete response pristine green
                 out=r/'out'/(batches[0].stem+'.json');original=out.read_text();data=json.loads(original)
-                for change in ('missing','unknown','no-verdict','wrong-no-finding','bad-quote','protected-nonclaim'):
+                for change in ('missing','unknown','no-verdict','wrong-no-finding','bad-quote','protected-nonclaim','ok-no-conditions','ok-empty-conditions','ok-uncovered-condition','ok-bad-condition'):
                     d=copy.deepcopy(data)
                     if change=='missing':d['segments'].pop()
                     elif change=='unknown':d['segments'][0]['id']='unknown'
                     elif change=='no-verdict':d['segments'][0].pop('result')
                     elif change=='wrong-no-finding':d['segments'][0]['result']='wrong'
                     elif change=='bad-quote':d['segments'][0]['corpus_quote']='正本に存在しない引用'
+                    elif change=='ok-no-conditions':d['segments'][0].pop('conditions')
+                    elif change=='ok-empty-conditions':  # 境界・対象者を含む単位は空の走査で ok にできない
+                        target=next(x for x in d['segments'] if units.needs_conditions(x['text']));target['conditions']=[]
+                    elif change=='ok-uncovered-condition':d['segments'][0]['conditions']=[{'condition':'ただし書: 派遣は除く','corpus_ref':'corpus/a.txt:1','covered':'no'}]
+                    elif change=='ok-bad-condition':d['segments'][0]['conditions']=[{'condition':'','corpus_ref':'corpus/a.txt:1','covered':'yes'}]
                     else:
                         target=next(x for x in d['segments'] if x['protected']);target.update(result='nonclaim',why='案内')
                     out.write_text(json.dumps(d))
@@ -62,7 +74,7 @@ class Units(unittest.TestCase):
                 a.check_only=False;calls=[]
                 def fake(worker,model,prompt,r,log):
                     calls.append(model)
-                    rows=[{'page':u['page'],'id':u['id'],'decision':'ok','reason':'fixture reviewed corpus/a.txt:1'} for u in json.loads((r/'segments.json').read_text())]
+                    rows=[{'page':u['page'],'id':u['id'],'decision':'ok','reason':'fixture reviewed corpus/a.txt:1','conditions':'sol'} for u in json.loads((r/'segments.json').read_text())]
                     (r/'segment-adjudication.json').write_text(json.dumps({'segments':rows}));(r/'fixes.md').write_text('fixture only\nDONE\n');return 0,False
                 with patch.object(runner,'execute',side_effect=fake):self.assertEqual(runner.run(a),0)
                 self.assertEqual(calls,['gpt-6-astra']);review=json.loads((r/'review-summary.json').read_text())
@@ -80,7 +92,7 @@ class Units(unittest.TestCase):
                     def fake(worker,model,prompt,rr,log):
                         calls.append(model);us=json.loads((rr/'segments.json').read_text())
                         if model=='gpt-6-astra':
-                            rows=[{'page':u['page'],'id':u['id'],'decision':'ok','reason':'fixture corpus/a.txt:1'} for u in us]
+                            rows=[{'page':u['page'],'id':u['id'],'decision':'ok','reason':'fixture corpus/a.txt:1','conditions':'sol'} for u in us]
                             rows[0].update(decision='out_of_corpus',needed_source='資料X')
                             (rr/'segment-adjudication.json').write_text(json.dumps({'segments':rows}));(rr/'fixes.md').write_text('fixture\nDONE\n')
                         else:
@@ -107,6 +119,114 @@ class Units(unittest.TestCase):
                 self.assertEqual(runner.run(a),0);self.outputs(a.run_dir);a.prepare_only=False;a.check_only=True;self.assertEqual(runner.run(a),0)
                 p=a.run_dir/'site/docs/a/index.html';p.chmod(0o644);p.write_text('changed')
                 with patch.object(runner,'execute') as worker:self.assertEqual(runner.run(a),4);worker.assert_not_called()
+            finally:writable(root)
+
+class OnePass(Base):
+    """2026-10-01 対策1〜4（gbrain audits/keiri-why-not-one-pass-2026-10-01）。各ケースは無傷が緑を確かめてから1か所だけ壊す。"""
+    def adjudicate(self,rr,conditions='sol',high_ids=(),oc_first=False):
+        us=json.loads((rr/'segments.json').read_text())
+        rows=[{'page':u['page'],'id':u['id'],'decision':'ok','reason':'fixture corpus/a.txt:1','conditions':conditions} for u in us]
+        for x in rows:
+            if x['id'] in high_ids:x.update(decision='unresolved',severity='high');x.pop('conditions')
+        (rr/'segment-adjudication.json').write_text(json.dumps({'segments':rows}));(rr/'fixes.md').write_text('fixture\nDONE\n')
+
+    def dual(self,tmp,wrong_by=None,adj_high=(),adj_conditions='sol'):
+        root,repo,a,git=self.fixture(tmp)
+        with patch.object(runner,'execute'):runner.run(a)
+        r=a.run_dir;a.prepare_only=False;a.sol_models='gpt-6.1-sol,gpt-5.6-sol';calls=[];lock=__import__('threading').Lock()
+        ids=[u['id'] for u in json.loads((r/'segments.json').read_text())]
+        def fake(worker,model,prompt,rr,log):
+            with lock:calls.append(model)
+            if model=='gpt-6-astra':self.adjudicate(rr,adj_conditions,[ids[i] for i in adj_high]);return 0,False
+            out=Path(re.search(r'出力=(\S+?\.json)',prompt).group(1));batch=json.loads(Path(re.search(r'束=(\S+?\.json)',prompt).group(1)).read_text())
+            rows=[{**u,'claim_id':'c','result':'ok','corpus_ref':'corpus/a.txt:1','corpus_quote':'会社が対象です。','conditions':self.COND} for u in batch];findings=[]
+            for row in rows:
+                if wrong_by and model==wrong_by[0] and row['id']==ids[wrong_by[1]]:
+                    row['result']='wrong';findings.append({'page':row['page'],'segment_id':row['id'],'severity':'high','reason':'fixture'})
+            out.write_text(json.dumps({'segments':rows,'findings':findings}));return 0,False
+        with patch.object(runner,'execute',side_effect=fake):rc=runner.run(a)
+        return root,r,rc,calls,ids
+
+    def test_dual_sol_union_and_gate(self):
+        import re as _re;globals()['re']=_re
+        with tempfile.TemporaryDirectory() as tmp:
+            # 無傷: 2モデルとも全束を照合し、審査が和集合を見て通る
+            root,r,rc,calls,ids=self.dual(tmp)
+            try:
+                self.assertEqual(rc,0)
+                self.assertEqual(sorted(set(calls)),['gpt-5.6-sol','gpt-6-astra','gpt-6.1-sol'])
+                self.assertEqual(calls.count('gpt-6.1-sol'),calls.count('gpt-5.6-sol'));self.assertEqual(calls[-1],'gpt-6-astra')
+                self.assertTrue(list((r/'out/gpt-5.6-sol').glob('s*.json')) and list((r/'out').glob('s*.json')))
+                self.assertEqual(json.loads((r/'sol-models.json').read_text()),['gpt-6.1-sol','gpt-5.6-sol'])
+                self.assertEqual(json.loads((r/'review-summary.json').read_text())['sol_models'],['gpt-6.1-sol','gpt-5.6-sol'])
+                self.assertTrue(json.loads((r/'gate.json').read_text())['passed'])
+            finally:writable(root)
+        with tempfile.TemporaryDirectory() as tmp:
+            # 2本目だけが指摘した単位も和集合に入り、審査が high にすれば通過判定の high に数える
+            root,r,rc,calls,ids=self.dual(tmp,wrong_by=('gpt-5.6-sol',1),adj_high=(1,2))
+            try:
+                self.assertEqual(rc,4);u=json.loads((r/'sol-union.json').read_text())
+                hit=next(x for x in u if x['id']==ids[1]);self.assertEqual(hit['results'],{'gpt-6.1-sol':'ok','gpt-5.6-sol':'wrong'});self.assertEqual(hit['findings'][0]['model'],'gpt-5.6-sol')
+                g=json.loads((r/'gate.json').read_text())
+                # 単位1は sol(5.6)も審査も要修正＝high。単位2は審査だけ＝次の周の候補（修正の対象には入る）
+                self.assertEqual((g['unresolved'],g['unresolved_high'],g['unresolved_high_adjudication_only']),(2,1,1))
+                self.assertIn('unresolved findings',(r/'STOPPED').read_text())
+            finally:writable(root)
+
+    def test_adjudication_ok_needs_conditions(self):
+        import re as _re;globals()['re']=_re
+        for conds,ok in (('sol',True),([{'condition':'注: 派遣は除く','corpus_ref':'corpus/a.txt:1','covered':'yes'}],True),(None,False),([],False),
+                         ([{'condition':'注: 派遣は除く','corpus_ref':'corpus/a.txt:1','covered':'no'}],False)):
+            with tempfile.TemporaryDirectory() as tmp:
+                root,r,rc,calls,ids=self.dual(tmp,adj_conditions=conds)
+                try:
+                    self.assertEqual(rc,0 if ok else 4,conds)
+                    if not ok:self.assertIn('adjudication ok with',(r/'STOPPED').read_text())
+                finally:writable(root)
+
+    def test_old_template_run_resumes_without_conditions(self):
+        # 2026-10-01 以前に固定した run（ひな形に conditions が無い）を再開しても、旧形式の出力を未処理にしない
+        with tempfile.TemporaryDirectory() as tmp:
+            root,repo,a,git=self.fixture(tmp)
+            try:
+                with patch.object(runner,'execute'):runner.run(a)
+                r=a.run_dir;state=json.loads((r/'run.json').read_text())
+                for name in ('sol_segments.md','astra_segments.md'):  # 固定済みの旧ひな形（conditions の語が無い）
+                    (r/name).write_text('旧ひな形 fixture');state['frozen_hashes'][name]=units.digest(r/name)
+                (r/'run.json').write_text(json.dumps(state))
+                self.assertEqual(runner.run(argparse.Namespace(**{**vars(a),'prepare_only':False,'check_only':True})),4)  # 旧ひな形でも出力が無ければ未処理
+                self.outputs(r,conditions=False);a.prepare_only=False;a.check_only=True
+                with patch.object(runner,'execute') as worker:self.assertEqual(runner.run(a),0);worker.assert_not_called()
+            finally:writable(root)
+
+    def test_resume_with_other_models_is_rejected(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root,repo,a,git=self.fixture(tmp)
+            try:
+                with patch.object(runner,'execute'):runner.run(a)
+                r=a.run_dir;self.outputs(r);a.prepare_only=False;a.check_only=True
+                with patch.dict(os.environ,{'KEIRI_SOL_MODEL':'gpt-6.1-sol'}):self.assertEqual(runner.run(a),0)
+                a.sol_models='gpt-6.1-sol,gpt-5.6-sol'
+                with patch.object(runner,'execute') as worker:self.assertEqual(runner.run(a),4);worker.assert_not_called()
+                self.assertIn('resume sol models differ',(r/'STOPPED').read_text())
+            finally:writable(root)
+
+    def test_changed_since_reviews_only_changed_units(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root,repo,a,git=self.fixture(tmp)
+            try:
+                with patch.object(runner,'execute'):self.assertEqual(runner.run(a),0)
+                prev=a.run_dir
+                # 無傷: 本文が変わっていなければ照合する単位は0で、モデルを呼ばずに通過
+                b=argparse.Namespace(**{**vars(a),'run_dir':root/'recheck','changed_since':prev,'prepare_only':False})
+                with patch.object(runner,'execute') as worker:self.assertEqual(runner.run(b),0);worker.assert_not_called()
+                self.assertIn('no changed units',(root/'recheck/.finished').read_text())
+                # 壊し: 1文だけ変える → その単位だけが照合の対象
+                p=repo/'docs/a/index.html';p.write_text(p.read_text().replace('確認単位7。','確認単位7は年収130万円以上です。'))
+                c=argparse.Namespace(**{**vars(a),'run_dir':root/'recheck2','changed_since':prev,'prepare_only':True})
+                with patch.object(runner,'execute'):self.assertEqual(runner.run(c),0)
+                got=json.loads((root/'recheck2/segments.json').read_text())
+                self.assertEqual([u['text'] for u in got],['確認単位7は年収130万円以上です。'])
             finally:writable(root)
 
 
