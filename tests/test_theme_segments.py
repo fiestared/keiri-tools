@@ -89,7 +89,8 @@ class Units(unittest.TestCase):
                             if case=='incomplete':ops=[]
                             (rr/'oc-opinion.json').write_text(json.dumps({'units':ops}))
                         return 0,False
-                    with patch.object(runner,'execute',side_effect=fake):rc=runner.run(a)
+                    # Pin the primary reviewer so this fixture is independent of the caller's environment.
+                    with patch.dict(os.environ, {'KEIRI_SOL_MODEL':'gpt-6.1-sol'}), patch.object(runner,'execute',side_effect=fake):rc=runner.run(a)
                     self.assertEqual(calls,['gpt-6-astra','gpt-5.6-sol'],case)
                     if case in ('not_wrong','unsure'):
                         self.assertEqual(rc,0,case);self.assertEqual(json.loads((r/'review-summary.json').read_text())['out_of_corpus_kept'],1)

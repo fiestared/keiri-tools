@@ -23,7 +23,8 @@ import { join, extname } from 'node:path';
 const ROOT = new URL('../', import.meta.url).pathname;
 const DOCS = join(ROOT, 'docs');
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-const PORT = 8938;
+// Use the exact listener address and an ephemeral port (see test_no_hscroll).
+let PORT = 0;
 const WIDTH = 1280;
 const TOL = 2;
 const MIME = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.mjs': 'text/javascript',
@@ -107,7 +108,7 @@ const server = createServer(async (req, res) => {
 });
 const listened = await new Promise((ok) => {
   server.once('error', (e) => ok({ err: e }));
-  server.listen(PORT, '127.0.0.1', () => ok({ err: null }));
+  server.listen(0, '127.0.0.1', () => { PORT = server.address().port; ok({ err: null }); });
 });
 if (listened.err) {
   console.log(`↷ ローカルHTTPを立てられないので測定を飛ばします（${listened.err.code}）。`);
@@ -116,7 +117,7 @@ if (listened.err) {
 }
 const profile = await mkdtemp(join(tmpdir(), 'secwidth-'));
 const chrome = spawn(CHROME, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
-  `--user-data-dir=${profile}`, `--window-size=${WIDTH},900`, `http://localhost:${PORT}${list[0]}`], { stdio: 'ignore' });
+  `--user-data-dir=${profile}`, `--window-size=${WIDTH},900`, `http://127.0.0.1:${PORT}${list[0]}`], { stdio: 'ignore' });
 const timeout = setTimeout(() => done(), 1000 * 60 * 10);
 await finished; clearTimeout(timeout);
 chrome.kill(); server.close();
