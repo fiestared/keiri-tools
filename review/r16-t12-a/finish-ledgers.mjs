@@ -22,14 +22,22 @@ const audit=JSON.parse(fs.readFileSync(dir+'/ledger-audit.json'));
 for(const x of audit){const lp='claims/'+x.page.replace(/^docs\//,'').replace(/\/index.html$/,'.json');const l=JSON.parse(fs.readFileSync(lp));let pending=[];
 for(const u of l.review_pending){let ev;
  if(refs[u.id])ev=evidence(refs[u.id]);
+ else if(x.page==='docs/toroku-menkyozei/index.html'&&/^(月数を丸めず|新築・取得日と登記日を正確に入力)/.test(u.text))ev=evidence('egov_sochiho_72_2:4-4 egov_sochiho_73:4-4');
+ else if(x.page==='docs/jidoshazei/index.html'&&u.text.startsWith('自家用乗用車の自動車税の早見表。'))ev=evidence('www_tax_metro_tokyo_lg_jp_shitsumon_automobiles_j:401-411');
+ else if(x.page==='docs/jidoshazei/index.html'&&/^(四輪以上の自家用乗用軽自動車|13年経過後の重課は)/.test(u.text))ev=evidence('www_city_osaka_lg_jp_zaisei_page_0000587096_html:108-140');
  else if(x.page.includes('toroku-menkyozei-nofu')&&u.text.includes('再使用証明'))ev=evidence('egov_torokumenkyo_31:9-9');
  else if(['s-c664d1921a594333f0f1-1','s-4d8705bad7bf1161211b-1','s-9e691501ec053a33ed05-1'].includes(u.id)){l.nonclaims.push({id:u.id,why:'利用者に確認・入力を促す案内またはフォームの項目名。税額や適用条件自体の結論ではない。'});continue;}
  else if(['s-f2335d6c9e3c5ddc6151-1','s-8d14bb5437e38df9b35f-1','s-1fe3663a9b9dafac0ee9-1','s-f3cc8edecfee4e6fbfbf-1'].includes(u.id))ev={kind:'own_site',source_url:'https://keiri-tools.com/'+x.page.replace(/^docs\//,'').replace(/index.html$/,''),source_quote: u.text,corpus_ref:'ローカルHTML入力要素・core処理。住宅日付は tests/test_toroku_jutaku.mjs で検証'};
  if(ev)l.claims.push({id:'r16t12-'+u.id,text:u.text,where:['変更後の抽出単位'],numbers:[...findNumbers(u.text)],applies:'2026-10-01確認。本文に示す対象期間・条件。',...ev,exceptions:'固定正本の条文・ただし書と修正文を対照。修正担当による確認であり独立再審査は未実施。',covers:[u.id],topic:['r16-t12-a'],review_status:'corrected_pending_independent_review'});else pending.push(u);
 }
 l.review_pending=pending;
+l.review_migrations=[];
+const migrationIDs={'s-b22d85e94deb18884542-1':'s-e575dff23de542f04526-1','s-62d1cc8f3227ea1c4e0f-1':'s-9711b652fe9ebaf420e9-1','s-1f9670793a23cbdd064b-1':'s-1c841ac35e8825602802-1'};
+for(const o of JSON.parse(fs.readFileSync(dir+'/ok-migrations.json'))){if(o.page!==x.page)continue;const current=migrationIDs[o.id]||l.claims.find(c=>c.text==='新築・取得日と登記日を正確に入力してください。')?.covers?.[0];l.review_migrations.push({prior_id:o.id,prior_result:'ok',prior_text_hash:o.text_hash,current_id:current,reason:'関連するunresolved単位の訂正に合わせて法定例外・対象範囲を追記したため、元の独立okは継承しない。現行単位をcoversで結び、独立再審査待ちとする。'});}
+
 if(x.page==='docs/sozoku-toki-menkyozei/index.html')l.claims.push({id:'r16t12-start-date-only',text:'相続登記義務化の施行日は令和6年4月1日。元の正本外の複合単位には被覆・okを付けない。',numbers:['令和6年4月1日'],source_url:'https://www.moj.go.jp/MINJI/minji05_00600.html',source_quote:'備えて安心！令和６年４月\n１日から相続登記が義務\n化されました！',exceptions:'開始日のみの追加一次資料照合。複合単位のそれ以外の正本外主張は未確認のまま。',where:['FAQの既存日付'],covers:[],corpus_ref:dir+'/moj-obligation.html:360-362',review_status:'source_checked_not_unit_verified'});
 if(x.page==='docs/toroku-menkyozei/index.html')l.claims.push({id:'r16t12-rate-ratio-only',text:'長期優良一戸建ての移転0.2%は低炭素0.1%の2倍。利用頻度の主張は未確認のまま。',numbers:['2倍'],applies:'各特例の新築・未使用住宅と期限等を満たす場合',...evidence('egov_sochiho_74:4-5 egov_sochiho_74_2:4-5'),exceptions:'両税率の算術的比較のみ。頻度を含む元の正本外単位には被覆・okを付けない。',where:['FAQの税率比較'],covers:[],review_status:'source_checked_not_unit_verified'});
-const html=fs.readFileSync(x.page,'utf8');const diff=execFileSync('git',['diff','origin/main','--',x.page],{encoding:'utf8'});l.absolutes.push(...findAbsolutes(addedClaimText(html,diff)).map(a=>({...a,reviewed:'変更箇所と正本を対照。例外・要件・最低税額は修正文に明記。正本外は未確認として別記。'})));
+const html=fs.readFileSync(x.page,'utf8');const diff=execFileSync('git',['diff','e7391b66','--',x.page],{encoding:'utf8'});l.absolutes.push(...findAbsolutes(addedClaimText(html,diff)).map(a=>({...a,reviewed:'変更箇所と正本を対照。例外・要件・最低税額は修正文に明記。正本外は未確認として別記。'})));
+l.absolutes=[...new Map(l.absolutes.map(a=>[a.phrase+'|'+a.context,a])).values()];
 fs.writeFileSync(lp,JSON.stringify(l,null,2)+'\n');console.log(x.page,'pending',pending.length);
 }

@@ -1,0 +1,13 @@
+from pathlib import Path
+p=Path('tests/test_fudosan_shutoku.mjs');t=p.read_text()
+t=t.replace('yoken.includes("五十平方メートル") && yoken.includes("貸家")','yoken.includes("50㎡以上") && yoken.includes("戸建以外の新築貸家に限り40㎡以上")')
+t=t.replace('g45.includes("45,000円になるだけ")','g45.includes("150万円側を使う場合") && g45.includes("税率3%で45,000円")')
+t=t.replace('half.includes("減額が2倍")','half.includes("減額計算の単価にも1/2を反映") && half.includes("150万円との比較や税額の下限により結果が変わらない場合")')
+t=t.replace('1/2読替えを忘れると減額が2倍になると書いている','1/2読替えと、減額・税額が変わらない場合の条件を書いている')
+t=t.replace('byId("hyoka-setsumei").includes("売買代金や建築工事費ではありません")','byId("hyoka-caution").includes("購入価格・工事費でなく") && byId("hyoka-setsumei").includes("新築・増築家屋等は取得時の価格")')
+t=t.replace('評価額の注意が売買代金ではないと書いている','評価額の注意に購入価格の除外と新築・増築家屋の取得時価格を書いている')
+p.write_text(t)
+p=Path('tests/break_fudosan_shutoku.mjs');t=p.read_text();t=t.replace('「45,000円になるだけ」の限定を消して金額の断定にする','150万円側を使う条件を消して金額の断定にする').replace('editPage("45,000円になるだけで", "常に45,000円が引かれるので")','editPage("150万円側を使う場合は、税率3%で45,000円", "常に45,000円")')
+t=t.replace('editPage("<b>税率が4％に戻れば60,000円</b>", "<b>税率が4％に戻っても45,000円</b>")','editPage("4%なら60,000円", "4%なら45,000円")')
+t=t.replace('改正前の条文は「五十平方メートル（当該住宅が貸家の用に供するものにあつては、四十平方メートル）以上二百四十平方メートル以下」と書かれていて、<b>40㎡台で控除を受けられるのは貸家だけ</b>でした。','改正前は50㎡以上が基本で、戸建以外の新築貸家に限り40㎡以上でした。')
+p.write_text(t)

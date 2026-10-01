@@ -1,0 +1,33 @@
+r16 / t12-a 修正報告 — 2026-10-01
+
+入力coverage.json（sol集計）は total 2,440 / confirmed 1,636 / nonclaims 542 / out_of_corpus 231 / unclear 31 / unprocessed 0。これはレビュー応答の充足を表す集計で、ページ台帳へのcovers登録とは別である。以下の誤り率・修正数はAstraのsegment-adjudication.jsonを用いる。
+
+対象: 12ページ。固定審査は2,440単位、ok 1,444／wrong(unresolved) 224／nonclaim 541／out_of_corpus 231。
+正本に照らした修正前の誤り率は 224 ÷ (1,444 + 224) = 13.4292566%（13.43%）。非主張・正本外を分母に入れていない。
+修正対象224単位に対応。high 126、medium 96、low 2。重複する本文・メタ・FAQ等も別単位として数えた件数であり、固有の不具合数ではない。修正後の独立再審査は未実施のため、修正後の正本照合誤り率は未測定（独立再審査待ち）であり、0%とは記録しない。
+
+主な修正
+- 不動産取得税の仕訳（high 11 / medium 16）: 損金算入時期を通知の受領日から賦課決定日に訂正。土地の費用化、個人の死亡・出国時、消費税の事業要件、新築家屋の価格などの例外を明示。
+- 固定資産税（high 16 / medium 8）: 評価額×1.4%で一致する条件、負担調整の5%の基準と下限・据置き、新築減額の3/5/7年度、令和9年度以後の免税点、351条ただし書と350条2項の引用を訂正。
+- 納税証明書（high 12 / medium 10）: その1・2とその3・4の料金算定、会計年度で数える証明期間、手数料免除・代理人・外国税関係の対象条件を訂正。
+- 印紙の消印コラム（high 19 / medium 5 / low 1）: 過怠税の合計最低1,000円、決定を予知しない申出の要件、還付の除外の読み方、文書の作成時期を訂正。No.7129の現在法令等を令和8年4月1日に更新。
+- 登録免許税の納付（high 14 / medium 21）: 3万円超の印紙納付の例外、増差額の納付、免許等の納期、納税地、再使用申出を取下げと同時に行う条件、還付請求の期限を訂正。
+- 印紙の本体・埋込（本体 high 8 / medium 11、埋込 high 1 / medium 2）: 営業に関しない受取書、消費税区分、7号・12号の除外、過怠税の最低額と軽減要件を訂正。
+- 自動車税の本体・埋込（本体 high 11 / medium 6、埋込 high 1 / medium 1）: 月割は登録月の翌月から。重課の年度基準とガソリンハイブリッドの対象外、軽自動車の四輪以上と三輪の区別、1.5L境界、軽課の対象範囲を訂正。軽自動車の静的本文・JS描画・表生成器を同期。
+- 不動産取得税計算機（high 12 / medium 8）: 新築・増築家屋の取得時価格、1年以内の取得合算、改正前の貸家要件、長期優良住宅の新築・取得期限、土地減額の比較式、申告・適用要件を訂正。
+- 相続登記（high 12 / medium 3）: 経過措置の起算日、相続人申告登記と遺産分割後の申請義務、持分と端数処理・最低税額、相続以外の税率の例外を訂正。
+- 住宅の登録免許税（high 9 / medium 5 / low 1）: 新築・取得期限と登記期限を分離。取得日入力を追加し toroku_jutaku_core.js を修正。新築未使用の保存登記、競落、買取再販、抵当権の課税標準等を訂正。固定正本の施行版の日付を更新。
+
+境界値・条件表・古い値
+- tests/boundaries/toroku_jutaku_core.mjs と tests/test_toroku_jutaku.mjs に取得期限当日／翌日、取得から1年当日／翌日を追加。2027-03-31取得・2027-04-01登記は建物30,000円／抵当権20,000円、2028-03-31も同額、2028-04-01は本則200,000円／80,000円。
+- 旧coreではこの3ケースが赤、新coreでは緑（boundary-red.log / boundary-green.log）。取得期限翌日は未収録として回答しない。HTML初期値と取得日が登記日より後の入力も検証。追加した日付欄が土地のみの計算を阻害しないケースも、赤→緑で確認した。月数欄は日付と重複して答えに効かないため除去し、入力は実日付に統一。
+- tests/conditions/toroku_jutaku_core.json に日付条件とHTML初期値ケースを登録。条件表・境界表のpendingから同coreを除外。他条件まで全網羅したとはしていない。
+- tests/stale_values.json に旧文・旧日付7件を追加（納税証明の3年間、印紙の1枚単位最低額、No.7129の令和7年、登録月からの月割、固定資産税の年5%刻み、相続以外一律5倍、登録免許税ページの旧引用版）。
+
+正本外
+oc-opinion.json は wrong 0 / not_wrong 100 / unsure 131。231単位を改稿・削除せず、needed_sourceを保った未確認として台帳へ残した。現在の抽出で228単位、着手基点ですでに抽出が異なる3単位は prior_out_of_corpus で保持。今回の編集で失われた正本外の単位は0。
+住宅登録免許税の meta description は unresolved、同文の og:description は out_of_corpus のため、後者はユーザー指定どおり保持。元のokのうち納付コラムの5年・6か月のFAQと住宅保存登記の選択肢、および廃止した月数欄に対応する入力案内の4単位は、例外・対象範囲を補足したためreview_migrationsに旧新IDを記録した。本文ハッシュが変わっていない元のok 1,440単位をverifiedへ引き継ぎ、修正した主張は corrected_pending_independent_review とした。
+
+作業・公開
+作業ブランチ wt/astra-r16-t12-a、作業場 /Users/masahiroyasu/Scripts/keiri-tools-astra-r16-t12-a。開始時にfetchしてorigin/main e7391b66から作成。別モデル・サブエージェント・Orca・スキルは未使用。pushは実施していない。
+HTMLを先行コミット後、test_generators_freshのCHECKABLE全5本（gen_index_sitemap / gen_datemodified / gen_trust_footer / gen_data_source_note / gen_domain_bridge）を実行。軽自動車表のgen_jidoshazei_tableと検索用gen_qa_index・関連記事gen_toc_related／gen_tool_relatedも本文に同期。

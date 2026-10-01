@@ -7,8 +7,9 @@ const defaults={column_fudosan:'corpus/www_nta_go_jp_law_tsutatsu_kihon_hojin_07
 let audit=[];
 for(const page of [...new Set(old.map(x=>x.page))]){
  const html=fs.readFileSync(page,'utf8');const units=segmentClaims(html,page);const lp=ledgerPath(page);const ledger=fs.existsSync(lp)?JSON.parse(fs.readFileSync(lp)): {page,claims:[],absolutes:[],tool_cases:[]};
- ledger.claims=ledger.claims.filter(c=>!c.id.startsWith('r16t12-'));for(const c of ledger.claims)c.covers=[];
+ ledger.prior_claims=Object.values(Object.fromEntries([...(ledger.prior_claims||[]),...ledger.claims.filter(c=>!c.id.startsWith('r16t12-'))].map(c=>[c.id,{...c,covers:[],status:'superseded_by_r16_unit_ledger'}])));ledger.claims=[];
  ledger.checked='2026-10-01';ledger.nonclaims=[];ledger.verified=[];ledger.out_of_corpus=[];ledger.review_pending=[];
+ ledger.prior_nonclaims=adj.filter(a=>a.page===page&&a.decision==='nonclaim').filter(a=>{const o=oldBy.get(page+'|'+a.id);return !units.some(u=>u.id===o.id||u.kind===o.kind&&u.text_hash===o.text_hash)}).map(a=>({id:a.id,why:a.reason,text:oldBy.get(page+'|'+a.id).text,status:'superseded_or_prior_snapshot',note:'現行の抽出にない旧単位。原審査の非主張理由を保持し、現行nonclaimsへの不存在ID登録は行わない。'}));
  for(const u of units){
   const key=page+'|'+u.id;let a=adjBy.get(key),o=oldBy.get(key),s=solBy.get(key);
   if(!a){const matching=old.find(x=>x.page===page&&x.kind===u.kind&&x.text_hash===u.text_hash);if(matching){o=matching;a=adjBy.get(page+'|'+o.id);s=solBy.get(page+'|'+o.id)}}
@@ -31,6 +32,7 @@ for(const page of [...new Set(old.map(x=>x.page))]){
  // Preserve all original out-of-corpus records even where origin/main already changed the extraction.
  const originalOC=adj.filter(x=>x.page===page&&x.decision==='out_of_corpus');ledger.prior_out_of_corpus=originalOC.filter(x=>!ledger.out_of_corpus.some(y=>y.review_ref.endsWith('#'+x.id))).map(x=>({...x,text:oldBy.get(page+'|'+x.id).text,status:'unverified_prior_snapshot'}));
  ledger.absolutes=[...(ledger.absolutes||[]),...findAbsolutes(claimText(html)).map(x=>({phrase:x.phrase,context:x.context,reviewed:'r16/t12-a: 原則の外・対象要件・端数と最低額を本文および紐づく正本で確認。正本外は未確認のまま別記。'}))];
+ ledger.absolutes=[...new Map(ledger.absolutes.map(a=>[a.phrase+'|'+a.context,a])).values()];
  fs.mkdirSync(path.dirname(lp),{recursive:true});fs.writeFileSync(lp,JSON.stringify(ledger,null,2)+'\n');audit.push({page,current:units.length,ok:ledger.verified.length,nonclaims:ledger.nonclaims.length,oc:ledger.out_of_corpus.length,pending:ledger.review_pending});
 }
 fs.writeFileSync(dir+'/ledger-audit.json',JSON.stringify(audit,null,2));console.log(audit.map(x=>({page:x.page,ok:x.ok,nonclaims:x.nonclaims,oc:x.oc,pending:x.pending.length})));
