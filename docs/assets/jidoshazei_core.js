@@ -103,11 +103,11 @@ export function calcJidoshazei(input, D) {
     if (i.jyuka) {
       if (jyukaExcluded) {
         jyukaBlocked = true;
-        notes.push('電気・ハイブリッド等の軽自動車は重課の対象外です。');
+        notes.push('電気・天然ガス・メタノール・混合メタノール・ガソリン電力併用の軽自動車は重課の対象外です。');
       } else {
         annual = k.jyuka;
         isJyuka = true;
-        notes.push('最初の新規検査から13年を超えた軽自動車（自家用乗用）は重課で12,900円です。');
+        notes.push('初回新規検査から13年経過日の翌年度以降の軽自動車（自家用乗用）は重課で12,900円です。');
       }
     }
     if (i.prorateMonth) notes.push('軽自動車税（種別割）に月割はありません。4月1日現在の所有者に年額が課税されます。');
@@ -141,12 +141,12 @@ export function calcJidoshazei(input, D) {
   if (i.jyuka) {
     if (!jyukaEligibleFuel || b.jyuka == null) {
       jyukaBlocked = true;
-      notes.push('電気・天然ガス・メタノール・ハイブリッド車、一般乗合バス・被けん引車は重課の対象外です。');
+      notes.push('電気・天然ガス・メタノール・ガソリンを燃料とするハイブリッド車、一般乗合バス・スクールバス・被けん引車は重課の対象外です。');
     } else {
       annual = b.jyuka;
       isJyuka = true;
       const yrs = fuel === 'diesel' ? D.jyuka_rule.diesel_years : D.jyuka_rule.gasoline_years;
-      notes.push(`初度登録から${yrs}年を超えた${fuel === 'diesel' ? 'ディーゼル' : 'ガソリン・LPG'}車は重課（${D.jyuka_rule.rate_note}）です。`);
+      notes.push(`当年度4月1日現在で初度登録から${yrs}年を超えた${fuel === 'diesel' ? 'ディーゼル' : 'ガソリン・LPG'}車は重課（${D.jyuka_rule.rate_note}）です。`);
     }
   }
 

@@ -176,5 +176,8 @@ t('R9 EV75%軽課は令和7年度初度登録の翌年度だけ',()=>{
  assert.strictEqual(P({cc:'ev',fuel:'ev_other',firstReg:'2025-04'}).dueThisYear,6500);
  assert.strictEqual(P({cc:'ev',fuel:'ev_other',firstReg:'2025-04',prorateMonth:4}).proration.amount,22900);
 });
+// auto20261001-t12-q3: 公表された基準日・適用年度を計算結果にも保持。
+const { cases: reviewCases } = await import('./boundaries/jidoshazei_core.mjs');
+for (const c of reviewCases) t(c.name, () => assert.deepStrictEqual(c.run(), c.expected));
 console.log(`\n${fail ? '❌' : '✓'} 自動車税コア: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

@@ -12,7 +12,7 @@
      このページ自体は noindex（/jidoshazei/ と重複させない）。判定は本体と同じ ../../assets/jidoshazei_core.js。 -->
 <link rel="canonical" href="https://keiri-tools.com/jidoshazei/">
 <meta name="robots" content="noindex, follow">
-<meta name="description" content="総排気量と初度登録の年月から自家用乗用車の自動車税（種別割）の年額を判定する埋め込みウィジェット。13年超の重課・月割・軽自動車税に対応。keiri-tools 提供。">
+<meta name="description" content="総排気量・初度登録年月・燃料・重課の適用有無を指定する自動車税（種別割）の年額試算ウィジェット（重課は自動判定しません）。月割・軽自動車税に対応。keiri-tools 提供。">
 <style>
   :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --control:#84939f; --accent:#1f6f5c; --accent2:#e7f3f0; --bg:#fff; }
   *{ box-sizing:border-box; }
@@ -49,7 +49,7 @@
 <body>
 <div class="w">
   <h1>自動車税はいくら？ 判定</h1>
-  <p class="lead">総排気量と初度登録の年月から、自家用乗用車の自動車税（種別割）の年額を判定します。</p>
+  <p class="lead">総排気量・初度登録年月・燃料・重課の適用有無を指定し、自家用乗用車の自動車税（種別割）の年額を試算します（重課は自動判定しません）。</p>
 
   <label for="vehicle">車種</label>
   <select id="vehicle">
@@ -94,11 +94,11 @@
     <option value="gasoline" selected>ガソリン・LPG</option>
     <option value="diesel">ディーゼル（軽油）</option>
     <option value="hybrid">ハイブリッド（ガソリンを燃料とするもの）</option>
-    <option value="ev_other">電気・その他</option>
+    <option value="ev_other">電気・天然ガス・メタノール（軽は混合メタノールも含む）</option>
   </select>
-      <span id="fuel-hint" class="hint">13年超の重課の対象かどうかの判定に使います</span>
+      <span id="fuel-hint" class="hint">登録車はガソリン・LPG13年超／ディーゼル11年超の重課の対象判定に使います。選択肢にない燃料は試算対象外です</span>
 
-  <label class="chk"><input type="checkbox" id="jyuka"> <b>初度登録から13年を超えている</b>（ディーゼル車は11年超）<span class="hint">※ガソリンのハイブリッド・電気・天然ガス車は重課対象外</span></label>
+  <label class="chk"><input type="checkbox" id="jyuka"> <b>当年度4月1日現在で初度登録から13年超（登録車のディーゼルは11年超）。軽自動車は初回新規検査から13年経過日の翌年度以降</b><span class="hint">※ガソリンのハイブリッド・電気・天然ガス車は重課対象外</span></label>
 
   <div id="proate-block">
     <label class="chk"><input type="checkbox" id="proate"> この車を<b>新規登録した年度の税額（月割）</b>も表示する<span class="hint">登録月の翌月から年度末3月までの月割（登録車のみ）</span></label>
@@ -205,7 +205,7 @@ $("calc").addEventListener("click", async () => {
 
   const noteHtml = r.notes.length
     ? `<div class="hint" style="margin-top:10px">${r.notes.map((n) => "※ " + n).join("<br>")}</div>` : "";
-  const jyukaTag = r.isJyuka ? "／<b>13年超の重課を適用</b>" : "";
+  const jyukaTag = r.isJyuka ? "／<b>重課を適用</b>" : "";
   const yearTag = DATA._meta?.year ? `<span class="hint">（${DATA._meta.year}・標準税率で判定）</span>` : "";
 
   const proHtml = r.proration
