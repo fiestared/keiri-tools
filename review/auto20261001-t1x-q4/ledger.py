@@ -49,6 +49,8 @@ for page in sorted({x['page'] for x in old}):
     c=dict(source_url='https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2795.htm',source_quote='（注）求めた税額に1円未満の端数があるときは、これを切り捨てます。',corpus_ref='review/auto20261001-t1x-q4/nta2795.html:112',supporting_sources=[dict(source_url='https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2798.htm',source_quote='（注）求めた税額に1円未満の端数があるときは、これを切り捨てます。',corpus_ref='review/auto20261001-t1x-q4/nta2798.html:112')])
    else:c=source(fixrefs[kind])
    c['review_result']='corrected_author_checked_pending_independent_review'
+   if '原稿料' in t and c['source_url'].endswith('/07.pdf'):c.setdefault('supporting_sources',[]).append(source('corpus/gensen/07.txt:52-62'))
+   if kind=='disability':c.setdefault('supporting_sources',[]).append(source(z('19_22')+':41-50'))
   c.update(id=ident,text=u['text'],where=[u['kind']+': '+u['id']],numbers=[],applies='令和8年分（令和9年分の表の改正に関する注意は令和9年分）',exceptions=(a['reason'] if a and a['decision']=='ok' else '修正根拠は該当正本の条件・例外と照合。審査前の正本外421単位は変更せず未確認のまま保持。'),covers=[u['id']],topic=['gensen'],review_ref='review/auto20261001-t1x-q4/input-segment-adjudication.json')
   d['claims'].append(c)
  path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
