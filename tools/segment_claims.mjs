@@ -13,7 +13,8 @@ function structuralNonclaim(tag, text) {
   if (/^[)）]+$/.test(text)) return true;
   if (/^h[1-6]$/.test(tag) && ['まとめ','実務上の意味'].includes(text)) return true;
   if (tag === 'th' && ['区分','原則','入る方法','根拠'].includes(text)) return true;
-  return (tag === 'p' && text === '先に全体を表にします。') || text === 'この内容をXで共有';
+  // Exact advisory/operation labels assert no deadline or legal requirement; adjacent FAQ assertions stay protected.
+  return (tag === 'p' && ['先に全体を表にします。', '契約と適用法令を確認してください。'].includes(text)) || text === 'この内容をXで共有';
 }
 export function segmentClaims(html, page = '') {
   const dom = new JSDOM(html); const d = dom.window.document;
