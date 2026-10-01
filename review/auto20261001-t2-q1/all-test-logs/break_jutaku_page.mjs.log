@@ -1,0 +1,19 @@
+ベースライン（無傷）を確認中…
+  ✓ jutaku_sonota_r6（無傷で緑）
+  ✓ jutaku_keika（無傷で緑）
+  ✓ jutaku_tokurei（無傷で緑）
+  ✓ jutaku_chuko_sonota（無傷で緑）
+  ✓ jutaku_refund（無傷で緑）
+  ✓ jutaku_refund_capped（無傷で緑）
+  ✓ jutaku（無傷で緑）
+  ✓ tests/test_data_pages.mjs（無傷で緑）
+✅ 捕捉: ★★ページが year を渡し忘れる（その他令和6年の0円が21万円に化ける）（jutaku_sonota_r6）
+✅ 捕捉: ★ページが経過措置フラグを渡し忘れる（14万円が0円に消える）（jutaku_keika）
+✅ 捕捉: ★ページが子育て特例フラグを渡し忘れる（上乗せ35万円が31.5万円に減る）（jutaku_tokurei）
+✅ 捕捉: ★★ページが取得のしかた（type）を渡し忘れる（中古その他の14万円が新築扱いで0円に化ける）（jutaku_chuko_sonota）
+✅ 捕捉: ★ページが所得税額（shotokuzeiGaku）を渡し忘れる（実還付の内訳が丸ごと消える）（jutaku_refund）
+✅ 捕捉: ★★ページが課税総所得（kazeiSotokugaku）を渡し忘れる（5％上限が効かず実還付を過大表示）（jutaku_refund_capped）
+✅ 捕捉: ★★控除率を0.7%でなく1%にする（データを 7→10 に）＝約1.4倍の過大表示（jutaku）
+✅ 捕捉: ★ページが参照データを待たずに計算する（回線が遅い人だけ借入限度額を知らずに答える）（tests/test_data_pages.mjs）
+
+壊しテスト: 8/8 捕捉・素通し 0

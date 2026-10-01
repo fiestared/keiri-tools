@@ -9,7 +9,7 @@ const oldMap=new Map(old.map((u,i)=>[u.page+':'+u.id,{...u,...adjud[i]}]));
 const reports={};
 function source(reason){
  const refs=[...reason.matchAll(/(?:(t1-corpus\/gensen\/|corpus\/))?(\d\d)\.txt:(\d+)(?:[-–](\d+))?/g)];
- if(!refs.length)return {source_url:'https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/PDF/03.pdf',source_quote:'退職所得控除額 万円 ／ 所得税法第201条第1項第1号及び地方税法第50条の6第1項第1号及び第328条の6第1項第1号適用分',corpus_ref:'corpus/03.pdf:p.19（様式の印字。独立審査の目視照合を継承）'};
+ if(!refs.length)return {source_url:'https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/PDF/03.pdf',source_quote:'退職所得控除額 万円 ／ 所得税法201条第1項第1号及び地方税法50条の6第1項第1号及び第328条の6第1項第1号適用分',corpus_ref:'corpus/03.pdf:p.19（様式の印字。独立審査の目視照合を継承）'};
  const chunks=refs.map(m=>{const path=(m[1]||'corpus/')+m[2]+'.txt';const lines=fs.readFileSync(run+path,'utf8').split('\n');return {path,quote:lines.slice(+m[3]-1,+(m[4]||m[3])).join('\n'),ref:`${path}:${m[3]}-${m[4]||m[3]}`};});
  return {source_url:chunks[0].path.startsWith('t1-')?'https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/05.pdf':`https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/PDF/${refs[0][2]}.pdf`,source_quote:chunks.map(x=>x.quote).join('\n'),corpus_ref:chunks.map(x=>x.ref).join('; ')};
 }
@@ -40,6 +40,17 @@ for(const name of ['hoteichosho-goukeihyo','taishoku-gensen-choshuhyo']){
   }
   if(a?.decision==='unresolved')throw Error('Unchanged unresolved '+u.id);
   const src=a?source(a.reason):repairSource(u);
+  if(src.corpus_ref.includes('pdf:p.19')) {
+   if(/中段/.test(a?.reason||''))src.source_quote='所得税法201条第1項第2号及び地方税法50条の6第1項第2号及び第328条の6第1項第2号適用分';
+   else if(/下段/.test(a?.reason||''))src.source_quote='所得税法201条第3項並びに地方税法50条の6第2項及び第328条の6第2項適用分';
+   else if(/控除額/.test(a?.reason||''))src.source_quote='退職所得控除額 万円 800';
+   else src.source_quote='所得税法201条第1項第1号及び地方税法50条の6第1項第1号及び第328条の6第1項第1号適用分';
+  }
+  if(src.source_url.includes('okayama')) {
+   const lines=fs.readFileSync(dir+'okayama.txt','utf8').split('\n');
+   src.source_quote=lines.slice(56,66).join('\n')+'\n'+lines[106];
+   src.corpus_ref=dir+'okayama.txt:57-66,107（固定正本外の追加一次資料。既存out_of_corpusは未確認のまま維持）';
+  }
   ledger.claims.push({id:'auto20261001-t2-q1-'+u.id,text:u.text,where:[`${u.kind}/${u.zone}`],numbers:[...findNumbers(u.text)],applies:'令和8年分の手引。電子提出基準は提出日で判断。住民税の補足は令和4年1月1日以降の制度。設例は記載された条件に限る。',...src,exceptions:a?.reason||'今回の修正後再照合。一般退職手当等、短期退職手当等、特定役員退職手当等を区別し、設例は他社分なしに限定。様式の存在と新設時期を混同しない。',covers:[u.id],topic:[name],review_ref:a?dir+'segment-adjudication.json':dir+'applied-edits.json'});
   ledger.verified.push({id:u.id,text_hash:u.text_hash,result:'ok',review_ref:a?dir+'segment-adjudication.json':dir+'applied-edits.json',review_type:a?'independent-adjudication':'fixer-source-recheck'});
  }

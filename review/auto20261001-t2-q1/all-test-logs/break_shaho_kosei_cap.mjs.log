@@ -1,0 +1,21 @@
+✓ ベースライン緑
+✓ 捕捉: ① データの current を680,000に(コアだけ据え置き)
+     └ AssertionError [ERR_ASSERTION]: KOSEI_MAX とデータの current がずれている
+✓ 捕捉: ② コアの KOSEI_MAX を680,000に(データだけ据え置き)
+     └ AssertionError [ERR_ASSERTION]: KOSEI_MAX とデータの current がずれている
+✓ 捕捉: ③ scheduled[0] の金額を700,000へ(条文と食い違わせる)
+     └ AssertionError [ERR_ASSERTION]: 施行スケジュール[0] が条文と違う
+✓ 捕捉: ④ scheduled[0] の等級を34へ(連番を壊す)
+     └ AssertionError [ERR_ASSERTION]: 施行スケジュール[0] が条文と違う
+✓ 捕捉: ⑤ recheck_after を過去日に(カナリア)
+     └ AssertionError [ERR_ASSERTION]: 【カナリア】厚生年金の標準報酬月額の上限を確認する期限(2020-01-01)を過ぎた。
+✓ 捕捉: ⑥ recheck_after を2099年へ延ばす + 施行日を過ぎた世界(二重カナリア)
+     └ AssertionError [ERR_ASSERTION]: 【カナリア】2027-09-01 に第33級 680,000円が施行済み。KOSEI_MAX が 650,000円 のままなので、報酬月額 665,000円 以上の人の厚生年金保険料を過少に計算し
+✓ 捕捉: ⑦ コアの上限クランプを削除(実害そのものの再現)
+     └ AssertionError [ERR_ASSERTION]: 上限で頭打ちにならない
+✓ 捕捉: ⑧ データの kosei_min を98,000に
+     └ AssertionError [ERR_ASSERTION]: KOSEI_MIN とデータの kosei_min がずれている
+
+[規則1] シーム健全性: 2026-07-25→緑 / 2027-09-02→赤
+
+8/8 方向を捕捉
