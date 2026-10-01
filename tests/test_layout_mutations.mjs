@@ -56,8 +56,21 @@ try{
    await page.evaluate(()=>{const f=document.querySelector('figure');f.classList.add('fig-wide');f.style.setProperty('--figw','1000px');});await page.waitForTimeout(80);assert.deepEqual((await page.evaluate(measure)).issues,[],'fig-wide figure scrolls with cue @'+width);}
   await reset();scriptErrors.length=0;await page.evaluate(()=>{const script=document.createElement('script');script.textContent='const repeated = 1; const repeated = 2;';document.body.append(script);});await page.waitForTimeout(80);assert(scriptErrors.some(e=>e.includes('repeated')),'Duplicate declaration must be a browser page error');
   // Local table scrolling and a quantitative bar are legitimate, not page overflow/text boxes.
-  await reset();await withController();await page.evaluate(()=>{document.querySelector('table').style.minWidth='900px';const rect=document.querySelector('svg rect');rect.setAttribute('width','80');rect.setAttribute('data-layout-role','bar');rect.setAttribute('data-layout-note','Amount encoded by width; label intentionally extends past bar');});
+  await reset();await withController();await page.evaluate(()=>{document.querySelector('table').style.minWidth='900px';document.querySelector('.scroll-wrap').dataset.wide='ok';const rect=document.querySelector('svg rect');rect.setAttribute('width','80');rect.setAttribute('data-layout-role','bar');rect.setAttribute('data-layout-note','Amount encoded by width; label intentionally extends past bar');});
   await page.waitForTimeout(80);assert.deepEqual((await page.evaluate(measure)).issues,[],`Legitimate scroll/bar @${width}`);
+  // 2026-10-01 /column/furikomi-tesuryo-hikaku/: a note inside a nowrap amount cell widened the comparison table past
+  // the 670px column on PC (「3万円以上」 off-screen). Desktop must reject it; the same note in span.cell-note fits;
+  // a table genuinely wider than the column passes only when its wrapper says data-wide="ok".
+  const nowrapNote='<td class="num"><span class="numeric-token">0円</span>（三井住友信託銀行あて。インターネットバンキングで同行の本支店に振り込む場合に限り、月の回数制限なし）</td>';
+  const feeTable=cell=>'<table class="num-nowrap"><thead><tr><th>銀行</th><th class="num">3万円未満</th><th class="num">3万円以上</th></tr></thead><tbody><tr><td>ある銀行</td>'+cell+'<td class="num"><span class="numeric-token">220円</span></td></tr></tbody></table>';
+  if(width>=1024){
+   await reset();await withController();await page.evaluate(html=>{document.querySelector('.scroll-wrap').innerHTML=html;},feeTable(nowrapNote));await page.waitForTimeout(80);
+   assert((await page.evaluate(measure)).issues.some(i=>i.kind==='table-hscroll-desktop'),'Mutation not caught: table-hscroll-desktop (nowrap note) @'+width);
+   await reset();await withController();await page.evaluate(html=>{document.querySelector('.scroll-wrap').innerHTML=html;},feeTable(nowrapNote.replace('</span>（','</span><span class="cell-note">（').replace('）</td>','）</span></td>')));await page.waitForTimeout(80);
+   assert.deepEqual((await page.evaluate(measure)).issues,[],'cell-note keeps the fee table in the column @'+width);
+   await reset();await withController();await page.evaluate(()=>{document.querySelector('table').style.minWidth='900px';document.querySelector('.scroll-wrap').dataset.wide='ok';});await page.waitForTimeout(80);
+   assert.deepEqual((await page.evaluate(measure)).issues,[],'data-wide="ok" table scrolls with cue @'+width);
+  }
  }
 }finally{await browser?.close();server.close();}
-console.log(`✓ ${cases.length} independent broken HTML cases × 2 widths rejected; healthy/scroll/bar controls accepted`);
+console.log(`✓ ${cases.length} independent broken HTML cases × 2 widths rejected; desktop table overflow (nowrap note) rejected, cell-note/data-wide accepted; healthy/scroll/bar controls accepted`);

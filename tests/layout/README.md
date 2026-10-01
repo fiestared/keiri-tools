@@ -92,3 +92,14 @@ shared cue (`scroll-cue-missing`; `assets/empty-state.js` sets `data-overflow-x`
 (`list-marker-clipped`, the TOC rail's 「0.」); and paired-field help lines beside or on top of each other
 (`field-hint-beside`). `node tools/gen_layout_markup.mjs` adds `.fig-wide` and `--figw` to any figure
 whose smallest text would fall below 10px in the 358px phone column; do not hand-maintain a list.
+
+## Desktop table width (2026-10-01)
+
+At widths ≥1024px `measure` rejects a body table whose scroll wrapper (nearest ancestor with
+non-visible `overflow-x`, else the parent) overflows horizontally (`table-hscroll-desktop`).
+Origin: on /column/furikomi-tesuryo-hikaku/ notes inside nowrap amount cells widened the comparison
+tables to 886/952px in the 670px column, hiding 「3万円以上」 on PC; only phone widths were looked at.
+Fix notes with `<span class="cell-note">` (block, wraps) instead of letting them sit in `.numeric-token`
+or `td.num`. A table that genuinely needs more width than the column (many numeric columns, e.g. a tax
+table) marks its wrapper `data-wide="ok"` and keeps the local scroll and cue; such wrappers are also
+exempt from the desktop compaction in `style.css` (3em+22px cell minimum, 6px side padding for 8+ columns).

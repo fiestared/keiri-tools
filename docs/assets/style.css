@@ -1219,6 +1219,16 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
 
 /* Long prose columns retain four characters of readable content; wide tables scroll locally. */
 main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width: calc(4em + 24px); }
+/* PC幅では表を本文の列（670px）に収める（2026-10-01: 上の最小幅が短い数字の列にも80pxを課し、9〜12列の表が
+   本文の列からはみ出していた。3em は prose の下限 2.5em を割らない）。金額の見出し（thead の th.num）は
+   金額と一緒に改行禁止になっていたが、見出しは語の切れ目で折ってよい（PC幅で改行禁止だった .num-nowrap と -lg だけ。-sm は元から折れる）。data-wide="ok"（列数が多く本文の列に
+   収まらないと判断した表。横スクロール＋合図のまま）は詰めずに従来の幅で見せる */
+@media (min-width: 1024px) {
+  main :is(.scroll-wrap,.retention-table):not([data-wide="ok"]) :is(td, th):not(.pr-block *) { min-width: calc(3em + 22px); }
+  :is(.num-nowrap,.num-nowrap-lg) thead th.num { white-space: normal; word-break: keep-all; }
+  /* 8列以上の表は左右の余白を詰める（11px→6px。.data-table と同じ）。8列×22px の余白だけで本文の列の1/4を使っていた */
+  main :is(.scroll-wrap,.retention-table):not([data-wide="ok"]) table:has(tr > :nth-child(8)) :is(td, th):not(.pr-block *) { padding-left: 6px; padding-right: 6px; }
+}
 
 /* Without JS the rail stays in normal flow, so every TOC link is reachable. */
 .side-rail:has(.rail-next) { position: static; width: auto; max-height: none; display: flex; flex-direction: column; gap: 12px; margin: 24px 0; }

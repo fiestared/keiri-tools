@@ -76,6 +76,14 @@ export function measure() {
   if(/(auto|scroll)/.test(cs.overflowY)&&e.scrollHeight>e.clientHeight+2&&e.querySelector('table')&&!e.matches('.table-cue ~ .scroll-wrap,.gensen-monthly-table'))add('table-vertical-clip',e,{hidden:e.scrollHeight-e.clientHeight});
   if(/(auto|scroll)/.test(cs.overflowX)&&e.scrollWidth>e.clientWidth+2&&(e.querySelector('table')||e.matches('figure'))&&getComputedStyle(e,'::before').content==='none')add('scroll-cue-missing',e,{hidden:e.scrollWidth-e.clientWidth});
  }
+ // 2026-10-01: on desktop (>= 1024px) a body table fits its column. A note inside a nowrap amount cell
+ // pushed /column/furikomi-tesuryo-hikaku/ to 994px in the 670px column, so the 「3万円以上」 column was
+ // off-screen on PC. Only a wrapper marked data-wide="ok" (a table that genuinely needs more width) may scroll.
+ if(innerWidth>=1024)for(const t of document.querySelectorAll('main table'))if(visible(t)){
+  let w=t.parentElement;while(w&&w.tagName!=='MAIN'&&getComputedStyle(w).overflowX==='visible')w=w.parentElement;
+  if(!w||w.tagName==='MAIN')w=t.parentElement;
+  if(w.scrollWidth>w.clientWidth+2&&!w.closest('[data-wide="ok"]'))add('table-hscroll-desktop',w,{scrollWidth:w.scrollWidth,clientWidth:w.clientWidth});
+ }
  // A clipping list (TOC rail scroll box) must leave room for two-digit outside markers ("10." not "0.").
  for(const ol of document.querySelectorAll('ol'))if(visible(ol)&&ol.children.length>=10&&getComputedStyle(ol).overflowX!=='visible'&&getComputedStyle(ol).listStylePosition==='outside'){
   const em=parseFloat(getComputedStyle(ol.children[9]).fontSize);if(parseFloat(getComputedStyle(ol).paddingLeft)<em*1.9)add('list-marker-clipped',ol,{padding:getComputedStyle(ol).paddingLeft});
