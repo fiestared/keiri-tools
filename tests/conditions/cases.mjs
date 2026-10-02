@@ -94,3 +94,11 @@ extra.senpou_core=[{name:'t8q1 先方負担HTML初期値は料金未指定',
  expected:['','','','','sueoki'],source:'https://www.netbk.co.jp/contents/company/press/2026/0902_006290.html',
  quote:'他行宛の振込手数料を、振込件数にかかわらず一律100円（税込）へ引下げます。（※）',
  note:'銀行・料金は初期HTMLで未指定。銀行選択前に改定後の料金を任意の銀行へ適用しない。'}];
+
+import {calcJidoshazei as reviewJidoshazei} from '../../docs/assets/jidoshazei_core.js';
+extra.jidoshazei_core=[{name:'自動車税HTML初期値・登録車1.5L超2L以下',run:d=>{
+ const scripts=[...d.querySelectorAll('script')].map(s=>s.textContent).join('\n');
+ const initialYear=scripts.match(/y === (\d{4})\) o.selected = true/)?.[1];
+ if(!initialYear)throw Error('初期登録年が取得できない');
+ return reviewJidoshazei({vehicle:d.getElementById('vehicle').value,cc:d.getElementById('cc').value,firstReg:initialYear+'-'+d.getElementById('regmonth').value.padStart(2,'0'),fuel:d.getElementById('fuel').value,jyuka:d.getElementById('jyuka').checked},load('jidoshazei_r08.json')).annual;
+},expected:36000,source:'https://www.tax.metro.tokyo.lg.jp/kazei/automobiles/shubetsu',quote:'1.5リットル超 ～2リットル以下',note:'HTMLの初期選択とJSの初期年2021を読む。自家用乗用新税率36,000円。'}];

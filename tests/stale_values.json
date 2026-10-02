@@ -1,5 +1,5 @@
 {
-  "_note": "改定で古くなった値の拒否リスト（誤りの型 C の予防。2026-09-28 司令塔）。改定があったら1行足す。stale_from 以後に、context の語の近く（window 字以内）に value が出て、allow_near（過去・旧・比較を示す語）が近くに無ければ落とす。stale_from が未来の行は、その日になると自動で効き始める（改定日の直し忘れを防ぐ）。allow_pages は、そのページ全体が旧値を過去として説明している場合だけ、理由つきで書く。 correct（正しい値）が同じ window 内に書かれていれば、新旧の比較とみなして通す。",
+  "_note": "改定で古くなった値の拒否リスト（誤りの型 C の予防。2026-09-28 司令塔）。改定があったら1行足す。stale_from 以後に、context の語の近く（window 字以内）に value が出て、allow_near（過去・旧・比較を示す語）が近くに無ければ落とす。stale_from が未来の行は、その日になると自動で効き始める（改定日の直し忘れを防ぐ）。allow_pages は、そのページ全体が旧値を過去として説明している場合だけ、理由つきで書く。 correct（正しい値）が同じ window 内に書かれていれば、新旧の比較とみなして通す。 allow_scope（sentence＝『。！』で区切る／line＝改行でも区切る）を付けた行は、allow_near と correct を値と同じ文の中でだけ効かせる。context_scope=sentence は context も同じ文の中で見る（2026-10-02）。",
   "entries": [
     {
       "id": "ikukyu-cap-16110",
@@ -54,14 +54,41 @@
     {
       "id": "tekiyo-chingin-8.8man",
       "value": "8\\.8万円",
-      "context": "適用拡大|短時間労働者|106万円",
+      "context": "適用拡大|短時間労働者|106万円|4分の3|20時間",
       "window": 120,
       "stale_from": "2026-10-01",
-      "allow_near": "撤廃|廃止|改正前|9月30日まで|以前|まで",
-      "reason": "短時間労働者の賃金要件（月額8.8万円以上）は令和8年10月に撤廃（年金機構『この要件は令和8年10月に撤廃されます』）",
+      "allow_near": "撤廃|廃止|削られ|なくな|改正前|9月30日まで|以前|まで|特例|下回|時給|最低賃金|していました|していた|あった|参考の値",
+      "reason": "短時間労働者の賃金要件（月額8.8万円以上）は令和8年10月に撤廃（年金機構『この要件は令和8年10月に撤廃されます』）。2026-10-02: 許可語は値と同じ文の中にあるときだけ効かせる（allow_scope=sentence。120字以内の別の文に『まで』があるだけで、元の誤文を戻しても緑だった）。context に 4分の3・20時間 を足した",
       "source": "https://www.nenkin.go.jp/tokusetsu/tekiyokakudai_kojin.html",
       "allow_pages": {},
-      "correct": "撤廃"
+      "correct": "撤廃",
+      "allow_scope": "sentence"
+    },
+    {
+      "id": "tekiyo-chingin-8man8sen",
+      "value": "8万8千円|八万八千円",
+      "context": "適用拡大|短時間労働者|106万円|4分の3|20時間",
+      "window": 120,
+      "stale_from": "2026-10-01",
+      "allow_near": "撤廃|廃止|削られ|なくな|改正前|9月30日まで|以前|まで|特例|下回|時給|最低賃金|していました|していた|あった|参考の値",
+      "reason": "同じ賃金要件の別表記（8万8千円・八万八千円）。8.8万円の網からこぼれていた（column/spot-work-romu が撤廃後も現行の要件として書いていた。2026-10-02）",
+      "source": "https://laws.e-gov.go.jp/law/329AC0000000115",
+      "allow_pages": {},
+      "correct": "撤廃",
+      "allow_scope": "sentence"
+    },
+    {
+      "id": "tekiyo-106man-genko",
+      "value": "106万円?",
+      "context": "超え|要件|判定|発生する|外れる|加入|社会保険料|入る|入り|社会保険[（(]",
+      "window": 80,
+      "stale_from": "2026-10-01",
+      "allow_near": "撤廃|廃止|なくな|消え|過去のもの|もうありません|金額の壁ではな|金額の要件なし|9月30日まで|以前|していました|していた|でした|旧|経緯|置き換わ|参考の値",
+      "allow_scope": "line",
+      "reason": "年収106万円（月8.8万円×12）を超えると社会保険に加入する、という賃金の要件は2026年10月1日に撤廃。いまは週20時間以上などの要件で判定し、年収の線ではない。106万円を現行の要件・判定・加入の線として書く文を落とす（『年収106万円を超えると／超えた時点で…加入』『106万円・130万円の壁は社会保険料が発生するライン』『週20時間・106万円・従業員数の要件』の型。2026-10-02 照合の所見 F2〜F5・F8）。呼び名だけ（『106万・130万の壁』）や、撤廃済みと同じ文に書いたものは通す",
+      "source": "https://www.nenkin.go.jp/tokusetsu/tekiyokakudai_kojin.html",
+      "allow_pages": {},
+      "context_scope": "sentence"
     },
     {
       "id": "t1-hitorioya-salary",
@@ -1807,6 +1834,18 @@
       "source": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1212.htm",
       "allow_pages": {},
       "correct": "2022年入居でも"
+    },
+    {
+      "id": "shogaku-employees-500-pre-reform",
+      "value": "500人以下",
+      "context": "少額減価償却資産|少額特例",
+      "window": 140,
+      "stale_from": "2026-04-01",
+      "allow_near": "旧|改正前|以前|同日前|3月31日",
+      "reason": "令和8年4月1日以後取得分の一般区分は400人以下。改正前取得分は500人以下を維持し、特定法人は300人以下。",
+      "source": "https://laws.e-gov.go.jp/law/332CO0000000043",
+      "allow_pages": {},
+      "correct": "400人以下"
     }
   ],
   "future_tense": {

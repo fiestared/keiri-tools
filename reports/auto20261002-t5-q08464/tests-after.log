@@ -1,0 +1,49 @@
+
+=== FAIL test_layout_visual.mjs ===
+-   playwright: '1.62.1'
+  }
+
+    at file:///Users/masahiroyasu/Scripts/keiri-tools-astra-auto20261002-t5-q08464/tests/test_layout_visual.mjs:11:172 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: {
+    platform: 'darwin',
+    arch: 'arm64',
+    playwright: '1.58.2',
+    browser: '145.0.7632.6',
+    deviceScaleFactor: 1
+  },
+  expected: {
+    platform: 'darwin',
+    arch: 'arm64',
+    playwright: '1.62.1',
+    browser: '151.0.7922.34',
+    deviceScaleFactor: 1
+  },
+  operator: 'deepStrictEqual'
+}
+
+Node.js v24.3.0
+
+
+=== FAIL test_stale_values.mjs ===
+✗ docs/column/hotei-koyoritsu/index.html: 日付が過ぎたのに未来形のまま … 2026-10-01: 2026年10月1日施行予定
+✗ docs/column/nenshu-no-kabe/index.html: 日付が過ぎたのに未来形のまま … 2026-10-01: 2026年10月1日に撤廃されます
+✗ docs/column/shakai-hoken-kanyu-joken/index.html: 日付が過ぎたのに未来形のまま … 2026-10-01: 2026年10月1日、入口②の賃金要件が撤廃されます
+✗ docs/kabe/index.html: 日付が過ぎたのに未来形のまま … 2026-10-01: 2026年10月1日からはこの賃金要件が撤廃されます
+★ 4件。直すか、過去として書かれているなら allow_near／allow_pages に理由つきで足す（tests/stale_values.json）
+
+
+=== FAIL test_year_staleness.mjs ===
+❌ 年度表記がデータと食い違っています:
+
+  - embed/furusato/index.html: 「令和9年度」がデータの年と食い違う(このページのデータ: 令和8年分 / 令和8年度)
+  - furusato/index.html: 「令和9年度」がデータの年と食い違う(このページのデータ: 令和8年分 / 令和8年度 / 令和8年)
+
+  データが名乗っている年: chukai_r08.json=令和8年, genka_rates.json=令和8年分, gensen_getsugaku_r08.json=令和8年分, gensen_getsugaku_r09.json=令和9年分, gensen_kojo_r07.json=令和7年分, gensen_shoyo_r08.json=令和8年分, hikazei_setai_r08.json=令和8年度, hojinzei_r08.json=令和8年, hojokin_zeimu_r08.json=令和8年, ideco_deguchi_r08.json=令和8年, inshi_r07.json=令和8年, iryohi_r08.json=令和8年分, iryubun_r08.json=令和8年, izoku_r08.json=令和8年度, jidoshazei_r08.json=令和8年度, jouto_r08.json=令和8年, juminzei_r08.json=令和8年分, jutaku_r07.json=令和8年, kabe_thresholds_r08.json=令和8年（2026年）, kihonteate_r07.json=令和8年, kokuho_r08.json=令和8年度, kokunen_menjo_r08.json=令和8年度, nenkin_r08.json=令和8年度, rousai_r08.json=令和8年, saitei_chingin_r07.json=令和7年度, saitei_chingin_r08.json=令和8年度, santei_r08.json=令和8年, seizen_zoyo_r08.json=令和8年, setsuzei_r08.json=令和8年分, shaho_rates_r08.json=令和8年度, shataku_r08.json=令和7年4月1日現在法令等, shokibo_takuchi_r08.json=令和8年, sozokuzei_r08.json=令和8年, taishoku_rates_r08.json=令和8年, toroku_jutaku_r08.json=令和8年, toroku_menkyo_r08.json=令和8年, tsumitate_r08.json=令和8年, yotei_nozei_r08.json=令和8年, zaishoku_r08.json=令和8年度, zoyozei_r08.json=令和8年
+
+  「制度の事実」(年が変わっても真)なら HISTORICAL_FACTS に理由つきで足す。
+  「使ったデータの申告」なら、データの年に合わせて書き直す。
+
+
+❌ 3ファイル失敗 / 実行 234
