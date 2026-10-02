@@ -110,11 +110,11 @@ export function calcJidoshazei(input, D) {
         notes.push('初回新規検査から13年経過日の翌年度以降の軽自動車（自家用乗用）は重課で12,900円です。');
       }
     }
-    if (i.prorateMonth) notes.push('軽自動車税（種別割）に月割はありません。4月1日現在の所有者に年額が課税されます。');
+    if (i.prorateMonth) notes.push('軽自動車税（種別割）に月割はありません。4月1日現在の所有者に年額が課税されます。所有者が法令上課税できない者の場合は使用者に課税されます（公用・公共用を除く）。');
     notes.push('軽自動車税（種別割）は市区町村税です。標準税率はほぼ全国共通ですが、詳しくはお住まいの市区町村でご確認ください。');
 
     return {
-      vehicleName: k.label, taxKind: k.tax_kind, ccLabel: '三輪以上・660cc以下',
+      vehicleName: k.label, taxKind: k.tax_kind, ccLabel: '四輪以上・自家用乗用',
       rateType, rateTypeLabel, standard, annual, isJyuka, jyukaBlocked,
       proration: null, dueThisYear: annual, notes,
     };
@@ -141,7 +141,7 @@ export function calcJidoshazei(input, D) {
   if (i.jyuka) {
     if (!jyukaEligibleFuel || b.jyuka == null) {
       jyukaBlocked = true;
-      notes.push('電気・天然ガス・メタノール・ガソリンを燃料とするハイブリッド車、一般乗合バス・スクールバス・被けん引車は重課の対象外です。');
+      notes.push('主な重課対象外の例は、電気・天然ガス・メタノール・ガソリンを燃料とするハイブリッド車、一般乗合バス・スクールバス・被けん引車です。');
     } else {
       annual = b.jyuka;
       isJyuka = true;
@@ -165,11 +165,11 @@ export function calcJidoshazei(input, D) {
     if (months == null) throw new Error('登録した月（1〜12）を選んでください');
     if (months === 0) {
       proration = { month: Math.floor(Number(i.prorateMonth)), months: 0, amount: 0 };
-      notes.push('3月に新規登録した場合、その年度分の自動車税はかかりません（翌年度から年額）。');
+      notes.push('3月に新規登録した場合、その年度分の自動車税はかかりません（翌年度4月1日にも所有する場合は原則年額。軽課・免除・減免や抹消登録による減額は別途確認）。');
     } else {
       const amount = floorTo100(standard * months / 12);
       proration = { month: Math.floor(Number(i.prorateMonth)), months, amount };
-      notes.push('月割は登録した月の翌月から翌年3月までの月数で計算し、翌年度からは年額になります。');
+      notes.push('月割は登録した月の翌月から翌年3月までの月数で計算し、翌年度4月1日にも所有する場合は原則年額課税です。軽課・免除・減免や抹消登録による減額は別途確認してください。');
     }
   }
 

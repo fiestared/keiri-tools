@@ -1,0 +1,10 @@
+from pathlib import Path
+p=Path('tests/boundaries/jidoshazei_core.mjs');s=p.read_text();s=s.replace('export const cases = [','''export const cases = [
+  { name: "軽・2015年3月の旧税率7,200円は四輪以上に限定", run: () => { const r=calcJidoshazei({vehicle:'kei',fuel:'gasoline',firstReg:'2015-03'},D); return r.annual===7200 && r.ccLabel.includes('四輪以上') && !r.vehicleName.includes('三輪以上'); }, expected:true, source:"https://www.city.osaka.lg.jp/zaisei/page/0000587096.html", quote:"4輪以上のもので、総排気量660cc以下のもの" },
+  { name: "軽・2015年4月の新税率10,800円は四輪以上に限定", run: () => { const r=calcJidoshazei({vehicle:'kei',fuel:'gasoline',firstReg:'2015-04'},D); return r.annual===10800 && r.ccLabel.includes('四輪以上') && !r.vehicleName.includes('三輪以上'); }, expected:true, source:"https://www.city.osaka.lg.jp/zaisei/page/0000587096.html", quote:"4輪以上のもので、総排気量660cc以下のもの" },
+  { name: "3月新規登録0円の説明は翌4月1日の所有と軽課等を条件にする", run: () => { const r=calcJidoshazei({vehicle:'passenger',cc:'ev',fuel:'ev_other',firstReg:'2025-03',prorateMonth:3},D); return r.dueThisYear===0 && r.notes.some(n=>n.includes('翌年度4月1日') && n.includes('軽課') && n.includes('抹消登録')); }, expected:true, source:"https://laws.e-gov.go.jp/api/2/law_data/325AC0000000226", quote:"自動車税の賦課期日は、四月一日とする。" },
+  { name: "4月新規登録の月割説明も翌年度の税額を無条件に断定しない", run: () => { const r=calcJidoshazei({vehicle:'passenger',cc:'ev',fuel:'ev_other',firstReg:'2025-04',prorateMonth:4},D); return r.dueThisYear===22900 && r.notes.some(n=>n.includes('翌年度4月1日') && n.includes('軽課') && n.includes('抹消登録')); }, expected:true, source:"https://laws.e-gov.go.jp/api/2/law_data/325AC0000000226", quote:"自動車税の賦課期日は、四月一日とする。" },''');p.write_text(s)
+p=Path('tests/test_jidoshazei.mjs');s=p.read_text();s=s.replace("import { calcJidoshazei, prorationMonths }", "import { cases as reviewBoundaryCases } from './boundaries/jidoshazei_core.mjs';\nimport { calcJidoshazei, prorationMonths }")
+s=s.replace('let pass = 0, fail = 0;', 'let pass = 0, fail = 0;')
+s=s.replace('const P = (o) =>',"for (const c of reviewBoundaryCases) t(c.name, () => assert.deepStrictEqual(c.run(), c.expected));\n\nconst P = (o) =>")
+p.write_text(s)

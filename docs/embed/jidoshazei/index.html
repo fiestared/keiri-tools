@@ -12,7 +12,7 @@
      このページ自体は noindex（/jidoshazei/ と重複させない）。判定は本体と同じ ../../assets/jidoshazei_core.js。 -->
 <link rel="canonical" href="https://keiri-tools.com/jidoshazei/">
 <meta name="robots" content="noindex, follow">
-<meta name="description" content="総排気量・初度登録年月・燃料・重課の適用有無を指定する自動車税（種別割）の年額試算ウィジェット（重課は自動判定しません）。月割・軽自動車税に対応。keiri-tools 提供。">
+<meta name="description" content="総排気量・初度登録年月・燃料・重課の適用有無を指定する自動車税（種別割）の年額試算ウィジェット（重課は自動判定しません）。自家用乗用の登録車と四輪以上の軽自動車の標準税率による試算。軽課は令和7年度初度登録の登録車EV・燃料電池車のみ対応。課税免除・申請減免は対象外。keiri-tools 提供。">
 <style>
   :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --control:#84939f; --accent:#1f6f5c; --accent2:#e7f3f0; --bg:#fff; }
   *{ box-sizing:border-box; }
@@ -49,7 +49,7 @@
 <body>
 <div class="w">
   <h1>自動車税はいくら？ 判定</h1>
-  <p class="lead">総排気量・初度登録年月・燃料・重課の適用有無を指定し、自家用乗用車の自動車税（種別割）の年額を試算します（重課は自動判定しません）。</p>
+  <p class="lead">総排気量・初度登録年月・燃料・重課の適用有無を指定し、自家用乗用車の自動車税（種別割）の標準年額を試算します（重課は自動判定しません）。四輪以上の自家用乗用軽自動車にも対応します。主な例外: 軽課は令和7年度初度登録の自家用乗用の登録車EV・燃料電池車の令和8年度6,500円のみ対応します。その他の軽課・課税免除・申請減免は試算対象外です。</p>
 
   <label for="vehicle">車種</label>
   <select id="vehicle">
@@ -72,7 +72,7 @@
       <option value="le6000">4.5リットル超 6リットル以下</option>
       <option value="gt6000">6リットル超</option>
     </select>
-      <span id="cc-hint" class="hint">車検証の「総排気量」（電気自動車は先頭）</span>
+      <span id="cc-hint" class="hint">車検証の「総排気量」で選びます（電気自動車は先頭）。4.00リットル等、小数点以下第2位までが0の表示は税額が変わる可能性があるため、課税自治体に区分を確認してください。ロータリー車は単室容積×ローター数×1.5で算出した総排気量を使います。</span>
   </div>
 
   <label for="regyear" id="reg-label">初度登録の年月</label>
@@ -98,7 +98,7 @@
   </select>
       <span id="fuel-hint" class="hint">登録車はガソリン・LPG13年超／ディーゼル11年超の重課の対象判定に使います。選択肢にない燃料は試算対象外です</span>
 
-  <label class="chk"><input type="checkbox" id="jyuka"> <b>当年度4月1日現在で初度登録から13年超（登録車のディーゼルは11年超）。軽自動車は初回新規検査から13年経過日の翌年度以降</b><span class="hint">※ガソリンのハイブリッド・電気・天然ガス車は重課対象外</span></label>
+  <label class="chk"><input type="checkbox" id="jyuka"> <b>当年度4月1日現在で初度登録から13年超（登録車のディーゼルは11年超）。軽自動車は初回新規検査から13年経過日の翌年度以降</b><span class="hint">※自家用乗用車の入力では、ガソリンのハイブリッド・電気・天然ガス・メタノールは重課対象外です。軽は混合メタノールも対象外です。選択肢にない燃料は試算対象外です</span></label>
 
   <div id="proate-block">
     <label class="chk"><input type="checkbox" id="proate"> この車を<b>新規登録した年度の税額（月割）</b>も表示する<span class="hint">登録月の翌月から年度末3月までの月割（登録車のみ）</span></label>
@@ -211,9 +211,9 @@ $("calc").addEventListener("click", async () => {
   const proHtml = r.proration
     ? (r.proration.months === 0
         ? `<div style="margin-top:10px">新規登録した年度（3月登録） <span class="big">¥0</span></div>
-           <div class="hint" style="margin-top:6px">3月に登録した場合、その年度分はかかりません。翌年度から年額 <b>${yen(r.annual)}</b> です。</div>`
+           <div class="hint" style="margin-top:6px">3月に登録した場合、その年度分はかかりません。翌年度も4月1日に所有する場合は年額課税です。軽課・免除・減免や抹消登録で税額が変わるため、翌年度の額は別途確認してください。</div>`
         : `<div style="margin-top:10px"><b>新規登録した年度の月割（${r.proration.month}月登録）</b> <span class="big">${yen(r.proration.amount)}</span></div>
-           <div class="hint" style="margin-top:6px">${r.proration.months}か月分（登録の翌月〜翌3月）。<b>翌年度からは年額 ${yen(r.annual)}</b> です。</div>`)
+           <div class="hint" style="margin-top:6px">${r.proration.months}か月分（登録の翌月〜翌3月）。翌年度も4月1日に所有する場合は年額課税です。軽課・免除・減免や抹消登録による減額は別途確認してください。</div>`)
     : "";
 
   box.innerHTML = `
