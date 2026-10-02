@@ -18,7 +18,7 @@ export function attachBankPresets({ select, under, over, note, fetcher = fetch, 
     if (select.value !== '' && bank) {
       under.value = bank.under30k;
       over.value = bank.over30k;
-      if (bank.public_note) notice(bank.public_note);
+      if (bank.scope_note || bank.public_note) notice([bank.scope_note, bank.public_note].filter(Boolean).join("。"));
     }
   });
   function applyHash() {
@@ -37,7 +37,7 @@ export function attachBankPresets({ select, under, over, note, fetcher = fetch, 
     over.value = bank.over30k;
     // Auto-applied values become the baseline for history/hash navigation.
     initialFees[0] = under.value; initialFees[1] = over.value;
-    notice(`${bank.name}の掲載手数料を選択済み。請求額と、取引先との取り決めに合う差引方式を確認してください。`);
+    notice(`${bank.name}の掲載手数料を選択済み。請求額と、取引先との取り決めに合う差引方式を確認してください。${[bank.scope_note, bank.public_note].filter(Boolean).join("。")}`);
   }
   win.addEventListener('hashchange', applyHash);
   return fetcher('../assets/fee_table.json')

@@ -67,6 +67,7 @@ export function loadBanks() {
       source: b.source || null,
       verifiedAt: b.verified_date || null,
       publicNote: b.public_note || null,
+      scoped: Boolean(b.scope_note),
     };
   });
   if (rows.length !== 30) throw new Error(`30区分のはずが ${rows.length} 行でした（fee_table.json の構造が変わった可能性）`);
@@ -117,7 +118,7 @@ export function buildSections(rows) {
   const out = [];
   out.push(START);
   out.push('  <h2 id="ginkobetsu">銀行別の振込手数料（他行宛）</h2>');
-  out.push('  <p>上の一覧を銀行ごとに並べ替えたものです。<b>数字は上の一覧と同一の調査結果に基づいています</b>ので食い違いません。個人と法人の両方がある銀行は並べて示します。出典の確認範囲は調査方法と出典をご参照ください。</p>');
+  out.push('  <p>上の一覧を銀行ごとに並べ替えたものです。<b>数字は上の一覧と同一の調査結果に基づいています</b>ので食い違いません。個人と法人の両方がある銀行は並べて示します。出典欄には参照した資料の取得日、または未確認の表示を付けています。</p>');
   for (const [base, list] of sorted) {
     const kojin = list.find((x) => x.kubun === '個人');
     const hojin = list.find((x) => x.kubun === '法人');
@@ -133,7 +134,7 @@ export function buildSections(rows) {
     const notes = [];
     if (kojin && hojin && kojin.rawOver !== null && hojin.rawOver !== null && kojin.rawOver !== hojin.rawOver) {
       const ratio = (hojin.rawOver / kojin.rawOver).toFixed(1).replace(/\.0$/, '');
-      notes.push(`他行宛ネット振込の3万円以上では、法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）`);
+      notes.push(`${base === "みずほ銀行" ? "" : (list.some(r => r.scoped) ? "上表の宛先・対象サービス条件に限った" : "") + "他行宛ネット振込の3万円以上では、"}法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）`);
     }
     const withBoundary = list.filter((x) => x.boundary).map((x) => x.kubun);
     notes.push(list.some(r => r.rawOver === null) ? '個人IBの3万円以上は掲載を保留しています' : withBoundary.length
@@ -222,7 +223,7 @@ export function buildAmountIndex(rows) {
     out.push(`    <tr><td><b>${amount}円</b></td><td>${cells}</td></tr>`);
   }
   out.push('  </table>');
-  out.push('  <p class="note">この表が扱うのは<b>他行宛・30区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後の料金や、振込以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。この表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
+  out.push('  <p class="note">この表が扱うのは<b>他行宛・30区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後の料金や、振込以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。主要5行については<a href="#keiro">窓口・ATM・同じ銀行あての実額</a>を別に載せています。それでも合わない場合はこの表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
   out.push(AMT_END);
   return out.join('\n');
 }
