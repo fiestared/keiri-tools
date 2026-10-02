@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "core": "jidoshazei_core",
+  "page": "docs/jidoshazei/index.html",
+  "priority_evidence": "auto20261002-t12-q08466: 四輪限定・翌年度断定の回帰を起点に条件表登録。重課は手動指定、軽課対応範囲は画面に明示。",
+  "conditions": [
+    {
+      "id": "kei-first-inspection",
+      "statute": "https://www.city.osaka.lg.jp/zaisei/page/0000587096.html",
+      "disposition": "input",
+      "input_ids": [
+        "vehicle",
+        "regyear",
+        "regmonth"
+      ],
+      "cases": [
+        "軽・2015年3月の旧税率7,200円は四輪以上に限定",
+        "軽・2015年4月の新税率10,800円は四輪以上に限定"
+      ]
+    },
+    {
+      "id": "registration-month-next-year",
+      "statute": "https://laws.e-gov.go.jp/api/2/law_data/325AC0000000226",
+      "disposition": "input",
+      "input_ids": [
+        "proate",
+        "regmonth"
+      ],
+      "cases": [
+        "3月新規登録0円の説明は翌4月1日の所有と軽課等を条件にする",
+        "4月新規登録の月割説明も翌年度の税額を無条件に断定しない"
+      ]
+    }
+  ],
+  "default_cases": [
+    "自動車税HTML初期値・登録車1.5L超2L以下"
+  ]
+}

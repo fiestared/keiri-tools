@@ -1,0 +1,934 @@
+{
+  "units": [
+    {
+      "id": "s-eccd61facebfbab67554-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "title",
+      "zone": "summary",
+      "protected": true,
+      "text": "ふるさと納税 限度額ウィジェット｜keiri-tools",
+      "text_hash": "af11389c88f013ff0029",
+      "element_id": null
+    },
+    {
+      "id": "s-013cb23a1dd1745519d6-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "description",
+      "zone": "summary",
+      "protected": true,
+      "text": "年収と家族構成からふるさと納税の目安（指定自治体への対象寄附で税率条件と各控除限度を満たす場合の自己負担2,000円の上限）を計算する埋め込みウィジェット。keiri-tools 提供。",
+      "text_hash": "5542d4c9121e82d9c58c",
+      "element_id": null
+    },
+    {
+      "id": "s-11e36cb9a84852e8826f-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "h1",
+      "zone": "summary",
+      "protected": true,
+      "text": "ふるさと納税 限度額シミュレーション",
+      "text_hash": "ddd3b061ebfe5ae5aeef",
+      "element_id": null
+    },
+    {
+      "id": "s-ec77053a36de95f4a6da-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "summary",
+      "protected": true,
+      "text": "年収と家族構成から、指定自治体への対象寄附で税率条件と各控除限度を満たす場合に自己負担2,000円となる寄附額の目安を概算します。",
+      "text_hash": "59bec69078b33e9cc34e",
+      "element_id": null
+    },
+    {
+      "id": "s-911a61aff2d7fbca455b-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "summary",
+      "protected": true,
+      "text": "寄附時に指定された自治体への寄附（寄附者に特別の利益が及ぶものを除く）で年合計2,000円超の場合、調整控除後の住民税所得割額の20％から逆算した目安であり、全額控除には総所得金額等に対する所得税40％・住民税基本分30％の対象寄附限度や、所得税と特例分の税率の相違も確認が必要です。",
+      "text_hash": "3aaefa0e928f026c215e",
+      "element_id": null
+    },
+    {
+      "id": "s-99f362e8024b28bea48a-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "給与収入（年収・額面／円）",
+      "text_hash": "9404f7d514efc80f8f08",
+      "element_id": null
+    },
+    {
+      "id": "s-f55c5452a125371dd6ca-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "shunyu: ; placeholder=; min=0; max=; step=10000",
+      "text_hash": "76aec74beb5d30a0fc7d",
+      "element_id": "shunyu"
+    },
+    {
+      "id": "s-5c2dcca8acc1a9422788-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "span",
+      "zone": "body",
+      "protected": false,
+      "text": "入力例：年収500万円なら 5000000",
+      "text_hash": "408d0cbafc2c7be8c1de",
+      "element_id": "shunyu-hint"
+    },
+    {
+      "id": "s-71eccb01a2777fc804c3-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "年齢",
+      "text_hash": "18a91230ad01fe75a865",
+      "element_id": null
+    },
+    {
+      "id": "s-277c904a883ffd87bb73-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "age: 40; placeholder=; min=0; max=120; step=",
+      "text_hash": "f12d1e87105c8fb6435b",
+      "element_id": "age"
+    },
+    {
+      "id": "s-af0dec8d6455b2539088-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "お住まいの都道府県",
+      "text_hash": "8c595f3ba83041b94e08",
+      "element_id": null
+    },
+    {
+      "id": "s-392b57464935ce95f9b1-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "option",
+      "zone": "ui",
+      "protected": false,
+      "text": "読み込み中… [value=;default=true]",
+      "text_hash": "a01850e748e1e8a0c96b",
+      "element_id": null
+    },
+    {
+      "id": "s-72a3bd4ad26d013ef271-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "div",
+      "zone": "body",
+      "protected": false,
+      "text": "年齢と都道府県は社会保険料の概算にだけ使います。",
+      "text_hash": "071c916d2b7a75b77462",
+      "element_id": null
+    },
+    {
+      "id": "s-19fe999774208167e79c-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "社会保険料（年額／円）",
+      "text_hash": "df65d049c2a998b13568",
+      "element_id": null
+    },
+    {
+      "id": "s-9db5f4e8aaa458e3ffab-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "shakai: ; placeholder=源泉徴収票の「社会保険料等の金額」; min=; max=; step=",
+      "text_hash": "d3a93029e5c0ab172933",
+      "element_id": "shakai"
+    },
+    {
+      "id": "s-98e8583f59f1d3c2ba2f-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "span",
+      "zone": "body",
+      "protected": false,
+      "text": "空欄なら年収から概算",
+      "text_hash": "a15a9ed2d7bb8c2b33a1",
+      "element_id": "shakai-hint"
+    },
+    {
+      "id": "s-856f281a92aec34cdd36-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "配偶者・扶養親族の年齢や該当性は寄附年12月31日（年の途中で死亡した場合は死亡時）で判定します。",
+      "text_hash": "fecef01df69e09091dd5",
+      "element_id": "family-eligibility"
+    },
+    {
+      "id": "s-9a1ad2538ce628775d98-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "2026年寄附に対応する令和9年度住民税では、扶養親族は本人と生計を一にする親族（配偶者を除く）・里子・養護受託老人で、寄附年の合計所得金額62万円以下の人です。",
+      "text_hash": "9faea0836ef603bbe715",
+      "element_id": "family-eligibility"
+    },
+    {
+      "id": "s-8c8f39a85f209263c6d0-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "青色事業専従者として給与を受ける人・白色事業専従者は除き、他の納税者との重複算入はできません。",
+      "text_hash": "abe3285e03bb003a1f44",
+      "element_id": "family-eligibility"
+    },
+    {
+      "id": "s-b524ccc82e8ef7b304e1-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "配偶者控除は生計を一にする配偶者の合計所得62万円以下、本人の合計所得1,000万円以下が条件で、事業専従者の除外も同様です。",
+      "text_hash": "f71a973ddfe0073857e4",
+      "element_id": "family-eligibility"
+    },
+    {
+      "id": "s-a1d64af4883a4eae84f3-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "本人所得900万円超・950万円超では控除額が段階的に減ります。",
+      "text_hash": "810d9e20220e80996d4d",
+      "element_id": "family-eligibility"
+    },
+    {
+      "id": "s-8dfdf044e39d2faa0427-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "主な例外：年内に配偶者が死亡して再婚した場合は範囲の特例を確認してください。",
+      "text_hash": "a278bbd26bed3dbf0ac5",
+      "element_id": "family-eligibility"
+    },
+    {
+      "id": "s-1c4f343e5976e1c9863f-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "19〜22歳で所得要件を超える親族の特定親族特別控除は別制度です。",
+      "text_hash": "cd6a5803e20c459b3fbb",
+      "element_id": "family-eligibility"
+    },
+    {
+      "id": "s-27df7c9eb8e0b9114ee7-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "この特定扶養の人数欄には含めません。",
+      "text_hash": "a99d3939e1b7c8edbd75",
+      "element_id": "family-eligibility"
+    },
+    {
+      "id": "s-88bfe47a7eb5237f7dea-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "非居住者の控除対象扶養親族は、16〜29歳、70歳以上、または30〜69歳で〔留学により国内に住所・居所がなくなった人、障害者、本人から寄附年中に生活費・教育費として38万円以上の支払を受けた人〕のいずれかに該当する人です（所得等の扶養要件も必要）。",
+      "text_hash": "ba78cddbcfd899991668",
+      "element_id": "family-nonresident"
+    },
+    {
+      "id": "s-3380ba852ee6f448257b-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "年齢だけでなく、上記の所得等の扶養要件も必要です。",
+      "text_hash": "32d21508390e237ab4c1",
+      "element_id": "family-nonresident"
+    },
+    {
+      "id": "s-43354277202057c02d0d-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "配偶者控除",
+      "text_hash": "fb15e5fa5218f5d5083c",
+      "element_id": null
+    },
+    {
+      "id": "s-6545288136cfac780098-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "option",
+      "zone": "ui",
+      "protected": false,
+      "text": "なし（控除対象の配偶者なし） [value=none;default=true]",
+      "text_hash": "418aa4226cf74d40a9ee",
+      "element_id": null
+    },
+    {
+      "id": "s-abab2f9c85d032f05c8b-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "option",
+      "zone": "ui",
+      "protected": true,
+      "text": "あり（寄附年末（年途中死亡時は死亡時）の年齢70歳未満） [value=ippan;default=false]",
+      "text_hash": "5805a8413ab93fa8da55",
+      "element_id": null
+    },
+    {
+      "id": "s-a61c9793cd5fb4150628-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "option",
+      "zone": "ui",
+      "protected": true,
+      "text": "あり（寄附年末（年途中死亡時は死亡時）の年齢70歳以上） [value=rojin;default=false]",
+      "text_hash": "b4ad0c29ff759291b58c",
+      "element_id": null
+    },
+    {
+      "id": "s-dc94c20125db12e164b6-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "配偶者控除は共働きかどうかではなく、本人と配偶者の所得等の要件で判断します。",
+      "text_hash": "1e7341572a5811cbdea7",
+      "element_id": null
+    },
+    {
+      "id": "s-5eb023e6c9b7963cabca-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "配偶者特別控除はこの選択肢の対象外です。",
+      "text_hash": "53094c668f71f17a419d",
+      "element_id": null
+    },
+    {
+      "id": "s-7f30e672a1b71ee1b44f-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": true,
+      "text": "一般扶養（所得等の扶養要件を満たす親族・寄附年末（年途中死亡時は死亡時）16〜18・23〜69歳）",
+      "text_hash": "70fd034123db39318468",
+      "element_id": null
+    },
+    {
+      "id": "s-150fd66024358cc1ccc2-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "fuyoIppan: 0; placeholder=; min=0; max=20; step=",
+      "text_hash": "8177cedc0fa5525578d1",
+      "element_id": "fuyoIppan"
+    },
+    {
+      "id": "s-027f0b129a0e4473a522-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": true,
+      "text": "特定扶養（所得等の扶養要件を満たす親族・寄附年末（年途中死亡時は死亡時）19〜22歳）",
+      "text_hash": "43e892e98a053578d17c",
+      "element_id": null
+    },
+    {
+      "id": "s-bb1eed40f490fd8be32f-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "fuyoTokutei: 0; placeholder=; min=0; max=20; step=",
+      "text_hash": "87cb54d0f6e0a2f62483",
+      "element_id": "fuyoTokutei"
+    },
+    {
+      "id": "s-82000d1be23d68b26de0-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": true,
+      "text": "16歳未満の扶養親族である子（寄附年末、年途中死亡時は死亡時・人）",
+      "text_hash": "4f629ad4e63e1785e637",
+      "element_id": null
+    },
+    {
+      "id": "s-885f81005d88ab96a2f7-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "fuyoNensho: 0; placeholder=; min=0; max=20; step=",
+      "text_hash": "ff3bc62ddc3ca0b067fa",
+      "element_id": "fuyoNensho"
+    },
+    {
+      "id": "s-b933db2ad7a5fcfc2d0e-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "div",
+      "zone": "body",
+      "protected": false,
+      "text": "所得等の扶養要件を満たす16歳未満の子は扶養控除は0円ですが、非課税限度額の判定に効くので入力してください。",
+      "text_hash": "e7f35c7a074480c3b7dd",
+      "element_id": null
+    },
+    {
+      "id": "s-20a1d1bda88d8cbde1d6-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "summary",
+      "zone": "body",
+      "protected": false,
+      "text": "その他の控除・給与以外の所得",
+      "text_hash": "cf4aceb29979ac5d631b",
+      "element_id": null
+    },
+    {
+      "id": "s-20bd5571830fadc0adf5-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": true,
+      "text": "老人扶養（所得等の扶養要件を満たす親族・寄附年末（年途中死亡時は死亡時）70歳以上・同居老親等以外）",
+      "text_hash": "e6c790b4469c7f54d16f",
+      "element_id": null
+    },
+    {
+      "id": "s-d8b9e9761ac04d8c93c4-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "fuyoRojin: 0; placeholder=; min=0; max=20; step=",
+      "text_hash": "53006da8a6ca79f99de4",
+      "element_id": "fuyoRojin"
+    },
+    {
+      "id": "s-ce460cdeb8960fcfb9e3-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": true,
+      "text": "同居老親等（70歳以上の直系尊属）",
+      "text_hash": "4341e7be36e72a2c052a",
+      "element_id": null
+    },
+    {
+      "id": "s-28d6acb6009977a9df23-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "本人または配偶者の直系尊属で、本人または配偶者との同居を常況とする老人扶養親族。",
+      "text_hash": "af904b08065d7e8998db",
+      "element_id": null
+    },
+    {
+      "id": "s-8ed15be1638fffeb3dbe-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "70歳以上の控除対象扶養親族である同居の兄姉などは「同居老親等以外」に入力してください。",
+      "text_hash": "c5d36aa39144db6f090e",
+      "element_id": null
+    },
+    {
+      "id": "s-cbfb434f934a82cb7653-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "fuyoDokyoRooya: 0; placeholder=; min=0; max=20; step=",
+      "text_hash": "e5c0ba1a5b1a574eb2bd",
+      "element_id": "fuyoDokyoRooya"
+    },
+    {
+      "id": "s-509c05d1be7a20a34d64-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "その他の所得控除（住民税用・円）",
+      "text_hash": "a628000752c1d1af92d0",
+      "element_id": null
+    },
+    {
+      "id": "s-17146c3bbf690494ac6a-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "sonotaKojo: 0; placeholder=; min=0; max=; step=",
+      "text_hash": "df5d79e2bb27ef0df071",
+      "element_id": "sonotaKojo"
+    },
+    {
+      "id": "s-5290c55e197a85ee9d80-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "span",
+      "zone": "body",
+      "protected": false,
+      "text": "生命保険料・地震保険料・iDeCoなど",
+      "text_hash": "eb58847d3492f01d92b4",
+      "element_id": "sonotaKojo-hint"
+    },
+    {
+      "id": "s-20de0bf600c71bb0b9e9-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "給与以外の所得（円）",
+      "text_hash": "3b99a94519abfc255d9b",
+      "element_id": null
+    },
+    {
+      "id": "s-b895bfc6c0d5468034c5-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "sonotaShotoku: 0; placeholder=; min=0; max=; step=",
+      "text_hash": "2313a9b8396a1d0d0470",
+      "element_id": "sonotaShotoku"
+    },
+    {
+      "id": "s-5990e400fc665d7fa6c3-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "span",
+      "zone": "body",
+      "protected": false,
+      "text": "副業・不動産などの所得金額",
+      "text_hash": "4f861749a6b52989c640",
+      "element_id": "sonotaShotoku-hint"
+    },
+    {
+      "id": "s-c704f52e241d8f7860b1-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "ひとり親",
+      "text_hash": "667fc688f1a0976a269c",
+      "element_id": null
+    },
+    {
+      "id": "s-9b8a565311dd466fce74-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "hitorioya: false; placeholder=; min=; max=; step=",
+      "text_hash": "865c9d11a0b9b9d75d7e",
+      "element_id": "hitorioya"
+    },
+    {
+      "id": "s-828d28fe4e76d393125a-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "div",
+      "zone": "body",
+      "protected": false,
+      "text": "あなたは\n      \n        \n       です（調整控除に用いる法定の人的控除差は母5万円・父1万円。地方税法施行令48条の7の2による）",
+      "text_hash": "dd87430a730597bb65ba",
+      "element_id": null
+    },
+    {
+      "id": "s-d143ad83ba0877d7c983-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "option",
+      "zone": "ui",
+      "protected": false,
+      "text": "母 [value=haha;default=true]",
+      "text_hash": "abf2c4d105a37b39de0c",
+      "element_id": null
+    },
+    {
+      "id": "s-43e53fc87ade52958a5f-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "option",
+      "zone": "ui",
+      "protected": false,
+      "text": "父 [value=chichi;default=false]",
+      "text_hash": "f0741850da85c1b0cefb",
+      "element_id": null
+    },
+    {
+      "id": "s-6008e232880d2c128ead-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "寡婦（ひとり親と重複不可）",
+      "text_hash": "6ea9b2889d76ee54fd09",
+      "element_id": null
+    },
+    {
+      "id": "s-f75bd03550124319f243-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "kafu: false; placeholder=; min=; max=; step=",
+      "text_hash": "886ebbb801fa3c1d4e17",
+      "element_id": "kafu"
+    },
+    {
+      "id": "s-ecd8aa3bbc03bc189b90-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "障害者（本人・同一生計配偶者・扶養親族のいずれか。一般）",
+      "text_hash": "49fc48eb0a30d1c3f576",
+      "element_id": null
+    },
+    {
+      "id": "s-45e4ae033cd2e2903e1a-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "shogai: false; placeholder=; min=; max=; step=",
+      "text_hash": "6e5ad43215ca3bee208c",
+      "element_id": "shogai"
+    },
+    {
+      "id": "s-bf2e7d3c6baf2805be1d-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "上の障害者が本人である",
+      "text_hash": "ec78bfd4a4b5709f7b82",
+      "element_id": null
+    },
+    {
+      "id": "s-5897f5008b70f2f4fc34-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "honninShogai: false; placeholder=; min=; max=; step=",
+      "text_hash": "4ef1451fb3a376aa026b",
+      "element_id": "honninShogai"
+    },
+    {
+      "id": "s-7593b455b57e75b62764-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "span",
+      "zone": "ui",
+      "protected": false,
+      "text": "本人が障害者で寄附年の合計所得135万円以下なら翌年度の住民税は非課税（所得税の寄附金控除が残る場合があります）",
+      "text_hash": "2eef55617d30a7b4967f",
+      "element_id": null
+    },
+    {
+      "id": "s-5905c6ebb231bf70602c-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "勤労学生",
+      "text_hash": "786fcd1eaa50222aeda1",
+      "element_id": null
+    },
+    {
+      "id": "s-5de653621d685c897321-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "gakusei: false; placeholder=; min=; max=; step=",
+      "text_hash": "49e3eccd76ffd2a74277",
+      "element_id": "gakusei"
+    },
+    {
+      "id": "s-9a9560b1935296e332b5-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "所得金額調整控除の対象条件あり（子ども・特別障害者等）",
+      "text_hash": "8d19bf92708e386f0583",
+      "element_id": null
+    },
+    {
+      "id": "s-d2e9f3ac21ec07ec6135-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "shotokuChoseiEligible: false; placeholder=; min=; max=; step=",
+      "text_hash": "61eb7707649c9712fbfa",
+      "element_id": "shotokuChoseiEligible"
+    },
+    {
+      "id": "s-fe9e8cb7137eeccb5069-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "給与収入850万円超で、23歳未満の扶養親族、本人の特別障害、特別障害者の同一生計配偶者・扶養親族のいずれかがある場合に適用します。",
+      "text_hash": "c7910b14da08b761ef44",
+      "element_id": "shotoku-chosei-scope"
+    },
+    {
+      "id": "s-2ea49037c11c6477643b-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "16歳未満・特定扶養の入力分は自動反映します。",
+      "text_hash": "15411ab4335e28ee901f",
+      "element_id": "shotoku-chosei-scope"
+    },
+    {
+      "id": "s-e85f7ea73e3dbf0c89b2-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "一般扶養欄の16〜18歳や他方の配偶者の扶養としている子などはこのチェックで指定してください。",
+      "text_hash": "236b38ba67878ce157b7",
+      "element_id": "shotoku-chosei-scope"
+    },
+    {
+      "id": "s-7035d44dc2309594d802-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "p",
+      "zone": "body",
+      "protected": false,
+      "text": "給与所得と公的年金所得の双方がある場合の所得金額調整控除は未対応です。",
+      "text_hash": "8401231f41d528777265",
+      "element_id": "shotoku-chosei-scope"
+    },
+    {
+      "id": "s-4081694e4266e0e07d8a-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "label",
+      "zone": "ui",
+      "protected": false,
+      "text": "寄附する予定の額（円）",
+      "text_hash": "449556383d04ddff1082",
+      "element_id": null
+    },
+    {
+      "id": "s-5df454d85745604ac721-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "input",
+      "zone": "ui",
+      "protected": false,
+      "text": "kifu: ; placeholder=例: 60000; min=; max=; step=",
+      "text_hash": "4e20a9e21fecf44872fa",
+      "element_id": "kifu"
+    },
+    {
+      "id": "s-b88690d00aac9b3b9d58-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "span",
+      "zone": "body",
+      "protected": false,
+      "text": "任意。自己負担が2,000円で収まるか判定",
+      "text_hash": "7835e92205f6320de720",
+      "element_id": "kifu-hint"
+    },
+    {
+      "id": "s-b0e824e4bca286e414d1-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "button",
+      "zone": "ui",
+      "protected": false,
+      "text": "限度額を計算する",
+      "text_hash": "8354151f00580495f559",
+      "element_id": "calc"
+    },
+    {
+      "id": "s-5b6fd71f935e658a1881-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "button",
+      "zone": "ui",
+      "protected": false,
+      "text": "結果をコピー",
+      "text_hash": "76febe2bdac062bef6d1",
+      "element_id": "copy-result"
+    },
+    {
+      "id": "s-880621deff9c8c22e51c-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "div",
+      "zone": "body",
+      "protected": false,
+      "text": "keiri-tools\n    の計算エンジンで動いています（地方税法・附則5条の6の読替え後の割合で計算）。",
+      "text_hash": "6ab8e4c3a20cf5579568",
+      "element_id": null
+    },
+    {
+      "id": "s-272b1d7baf1f14a0014a-1",
+      "page": "docs/embed/furusato/index.html",
+      "kind": "div",
+      "zone": "body",
+      "protected": false,
+      "text": "計算結果は目安です。個別の判断は、税理士・社会保険労務士等の専門家、または所轄の税務署・年金事務所・市区町村にご確認ください。",
+      "text_hash": "529b0e7e15c14e7974a6",
+      "element_id": null
+    }
+  ],
+  "coverage": {
+    "total": 79,
+    "covered": 30,
+    "verified": 16,
+    "nonclaims": 38,
+    "unprocessed": 11,
+    "unprocessed_ids": [
+      "s-eccd61facebfbab67554-1",
+      "s-11e36cb9a84852e8826f-1",
+      "s-72a3bd4ad26d013ef271-1",
+      "s-98e8583f59f1d3c2ba2f-1",
+      "s-8c8f39a85f209263c6d0-1",
+      "s-88bfe47a7eb5237f7dea-1",
+      "s-5eb023e6c9b7963cabca-1",
+      "s-6008e232880d2c128ead-1",
+      "s-2ea49037c11c6477643b-1",
+      "s-e85f7ea73e3dbf0c89b2-1",
+      "s-880621deff9c8c22e51c-1"
+    ],
+    "links": {
+      "s-013cb23a1dd1745519d6-1": [
+        "auto-t5-eligibility",
+        "recheck1-ok-0"
+      ],
+      "s-ec77053a36de95f4a6da-1": [
+        "auto-t5-eligibility",
+        "recheck1-ok-1"
+      ],
+      "s-856f281a92aec34cdd36-1": [
+        "auto-t5-family",
+        "recheck1-ok-3"
+      ],
+      "s-9a1ad2538ce628775d98-1": [
+        "auto-t5-family",
+        "recheck1-ok-4"
+      ],
+      "s-b524ccc82e8ef7b304e1-1": [
+        "auto-t5-family",
+        "recheck1-ok-6"
+      ],
+      "s-3380ba852ee6f448257b-1": [
+        "auto-t5-family",
+        "recheck1-ok-13"
+      ],
+      "s-b933db2ad7a5fcfc2d0e-1": [
+        "auto-t5-family",
+        "recheck1-ok-19"
+      ],
+      "s-8ed15be1638fffeb3dbe-1": [
+        "auto-t5-family",
+        "recheck1-ok-21"
+      ],
+      "s-a1d64af4883a4eae84f3-1": [
+        "auto-t5-family",
+        "recheck1-ok-7"
+      ],
+      "s-8dfdf044e39d2faa0427-1": [
+        "auto-t5-family",
+        "recheck1-ok-8"
+      ],
+      "s-1c4f343e5976e1c9863f-1": [
+        "auto-t5-family",
+        "recheck1-ok-9"
+      ],
+      "s-27df7c9eb8e0b9114ee7-1": [
+        "auto-t5-family",
+        "recheck1-ok-10"
+      ],
+      "s-dc94c20125db12e164b6-1": [
+        "auto-t5-review-s-dc94c20125db12e164b6-1"
+      ],
+      "s-ce460cdeb8960fcfb9e3-1": [
+        "auto-t5-review-s-ce460cdeb8960fcfb9e3-1"
+      ],
+      "s-28d6acb6009977a9df23-1": [
+        "auto-t5-review-s-ce460cdeb8960fcfb9e3-1"
+      ],
+      "s-5290c55e197a85ee9d80-1": [
+        "auto-t5-review-s-5290c55e197a85ee9d80-1"
+      ],
+      "s-828d28fe4e76d393125a-1": [
+        "auto-t5-single-parent",
+        "recheck1-ok-22"
+      ],
+      "s-ecd8aa3bbc03bc189b90-1": [
+        "auto-t5-review-s-ecd8aa3bbc03bc189b90-1"
+      ],
+      "s-7593b455b57e75b62764-1": [
+        "auto-t5-exempt-year",
+        "recheck1-ok-23"
+      ],
+      "s-9a9560b1935296e332b5-1": [
+        "auto-t5-review-s-9a9560b1935296e332b5-1"
+      ],
+      "s-fe9e8cb7137eeccb5069-1": [
+        "auto-t5-review-s-9a9560b1935296e332b5-1"
+      ],
+      "s-7035d44dc2309594d802-1": [
+        "auto-t5-review-s-7035d44dc2309594d802-1"
+      ],
+      "s-b88690d00aac9b3b9d58-1": [
+        "auto-t5-review-s-b88690d00aac9b3b9d58-1"
+      ],
+      "s-911a61aff2d7fbca455b-1": [
+        "recheck1-donation"
+      ],
+      "s-abab2f9c85d032f05c8b-1": [
+        "recheck1-age"
+      ],
+      "s-a61c9793cd5fb4150628-1": [
+        "recheck1-age"
+      ],
+      "s-7f30e672a1b71ee1b44f-1": [
+        "recheck1-age"
+      ],
+      "s-027f0b129a0e4473a522-1": [
+        "recheck1-age"
+      ],
+      "s-82000d1be23d68b26de0-1": [
+        "recheck1-age"
+      ],
+      "s-20bd5571830fadc0adf5-1": [
+        "recheck1-age"
+      ]
+    },
+    "errors": [
+      "unknown/stale segment: s-405ef3dbab2475fcb3f0-1",
+      "unprocessed segment: s-eccd61facebfbab67554-1",
+      "unprocessed segment: s-11e36cb9a84852e8826f-1",
+      "unprocessed segment: s-72a3bd4ad26d013ef271-1",
+      "unprocessed segment: s-98e8583f59f1d3c2ba2f-1",
+      "unprocessed segment: s-8c8f39a85f209263c6d0-1",
+      "unprocessed segment: s-88bfe47a7eb5237f7dea-1",
+      "unprocessed segment: s-5eb023e6c9b7963cabca-1",
+      "unprocessed segment: s-6008e232880d2c128ead-1",
+      "unprocessed segment: s-2ea49037c11c6477643b-1",
+      "unprocessed segment: s-e85f7ea73e3dbf0c89b2-1",
+      "unprocessed segment: s-880621deff9c8c22e51c-1"
+    ]
+  }
+}
