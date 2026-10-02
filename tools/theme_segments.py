@@ -7,13 +7,20 @@ from pathlib import Path
 # ok にする前に同じ条・表・節のただし書・かっこ書・注・別区分を走査した記録（conditions）が要る。
 CONDITIONAL=re.compile(r'[0-9０-９]|[一二三四五六七八九十百千万億]+(?:円|年|月|日|割|歳|人)|以上|以下|未満|超|以内|まで|以後|以降|対象|義務|必要|不要|期限|要件|だけ|のみ|必ず|一律|すべて|全て|全員|限り|除|免除|非課税|課税|控除')
 def needs_conditions(text):return bool(CONDITIONAL.search(text or ''))
+COVERED=re.compile(r'(yes|no|irrelevant)(?=$|[\s（(:：、,。.])')
+def covered_value(c):
+    """covered の値。先頭の語が yes|no|irrelevant ならそれを返す（後ろの理由書きは許す）。それ以外は None。
+    2026-10-02 実害: gpt-5.6-sol が "irrelevant（単位は…だけを述べる）" と理由をかっこで足して返し、完全一致だけを見ていた検査が
+    中身の正しい束（28単位）を3回続けて不成立にして、再照合が止まった（同じ日に「不成立の束」16回）。"""
+    m=COVERED.match(str(c.get('covered','')).strip())
+    return m.group(1) if m else None
 def conditions_error(conds,text):
     """None なら有効。ok の conditions: [{condition, corpus_ref, covered: yes|no|irrelevant}]。no があれば ok にできない。"""
     if not isinstance(conds,list):return 'ok without conditions'
     if needs_conditions(text) and not conds:return 'ok without conditions'
     for c in conds:
-        if not isinstance(c,dict) or not str(c.get('condition','')).strip() or not str(c.get('corpus_ref','')).strip() or c.get('covered') not in ('yes','no','irrelevant'):return 'ok without conditions'
-    if any(c['covered']=='no' for c in conds):return 'ok with uncovered condition'
+        if not isinstance(c,dict) or not str(c.get('condition','')).strip() or not str(c.get('corpus_ref','')).strip() or covered_value(c) is None:return 'ok without conditions'
+    if any(covered_value(c)=='no' for c in conds):return 'ok with uncovered condition'
     return None
 
 MODEL_NAME=re.compile(r'[a-zA-Z0-9._-]+')

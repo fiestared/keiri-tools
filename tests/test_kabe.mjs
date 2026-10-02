@@ -201,7 +201,19 @@ assert.equal(wallAmount(K, 'hifuyousha', 30, POST), 1300000, '被扶養者の130
 assert.equal(calcKabe({ ...base, annual: 1290000, asOf: POST }, refs).joins, false, '10/1 以後も被扶養者の判定は130万円のまま');
 // 日付の形が壊れていたら今日の日付を使う（黙って撤廃前に固定しない）
 assert.equal(calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 900000, asOf: 'あした' }, refs).asOf.length, 10);
-console.log('✓ 2026-10-01 の賃金要件の撤廃: 撤廃前（9/30）・撤廃後（10/1）・被扶養者は不変');
+// 撤廃後: 月8.8万円×12（105.6万円）を下回る入力には注意を出す（最低賃金以上で週20時間以上なら月8.8万円以上になる＝厚労省。判定は変えない）
+assert.equal(calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 1055999, asOf: POST }, refs).belowFormerWageLine, true, '105万5,999円は下回る');
+assert.equal(calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 1056000, asOf: POST }, refs).belowFormerWageLine, false, '105.6万円ちょうどは下回らない');
+assert.equal(calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 1056000, asOf: POST }, refs).formerWageLine, 1056000);
+assert.equal(calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 0, asOf: POST }, refs).belowFormerWageLine, false, '年収0は注意を出さない（未入力扱い）');
+// 独立オラクル（協会けんぽ東京 令和8年度の額表）: 年90万＝月7.5万→健保 第3級 78,000円（3,841.5→3,841）＋支援金 89.7→90＋厚年 下限88,000円（8,052）＝月11,983円
+assert.equal(calcKabe({ ...base, wallType: 'tekiyoKakudai', annual: 900000, asOf: POST }, refs).shahoAnnual, 143796, '年90万の本人負担は143,796円');
+// データが撤廃日を持っていること（ページに手書きしない）。今日（2026-10-02 以後）は既定の日付で撤廃後になる
+assert.equal(K.shakaiHoken.tekiyoKakudai.chinginYokenUntil, '2026-09-30');
+assert.equal(calcKabe({ age: 30, prefecture: '東京都', wallType: 'tekiyoKakudai', annual: 900000 }, refs).wageRequirementAbolished, true, '日付を渡さなければ今日の日付で撤廃後');
+assert.equal(K.shakaiHoken.tekiyoKakudaiYouken.length, 4, '撤廃後の要件は4つ');
+assert.ok(!K.shakaiHoken.tekiyoKakudaiYouken.some((y) => /8\.8万/.test(y.label)), '現行の要件一覧に賃金要件を残さない');
+console.log('✓ 2026-10-01 の賃金要件の撤廃: 撤廃前（9/30）・撤廃後（10/1）・被扶養者は不変・月8.8万円未満の注意');
 
 // r11: 日本年金機構・後期高齢者医療の被保険者となったら被扶養者非該当。
 assertR11.throws(()=>calcKabe({...base,age:75,annual:1790000},refs),/75歳/,'r11 75歳からは計算対象外');

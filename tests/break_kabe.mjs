@@ -44,6 +44,10 @@ const BREAKS = [
    "return !until || String(asOf) <= until;",
    "return true;"],
 
+  ["★撤廃後の『月8.8万円を下回る』注意の境界を取り違える（105.6万円ちょうどにも注意を出す）",
+   "belowFormerWageLine: annual > 0 && annual < K.shakaiHoken.tekiyoKakudai.amount,",
+   "belowFormerWageLine: annual > 0 && annual <= K.shakaiHoken.tekiyoKakudai.amount,"],
+
   ["社会保険料の年額を ×11 で出す（12か月ぶん引かない）",
    "annual: m.selfTotal * 12,",
    "annual: m.selfTotal * 11,"],
