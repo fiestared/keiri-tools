@@ -68,6 +68,7 @@ export function loadBanks() {
       verifiedAt: b.verified_date || null,
       publicNote: b.public_note || null,
       scoped: Boolean(b.scope_note),
+      sourceNote: b.article?.source_note || null,
     };
   });
   if (rows.length !== 30) throw new Error(`30区分のはずが ${rows.length} 行でした（fee_table.json の構造が変わった可能性）`);
@@ -105,10 +106,9 @@ export function buildSections(rows) {
   }
   // 並び順: まず法人口座がある銀行を法人の3万円以上の安い順、次に個人のみの銀行を個人の安い順。
   // ★個人と法人は価格帯が別物（同じ三菱UFJでも220円と660円）なので、混ぜて1本のキーで並べない。
-  const price = (s) => Number(String(s).replace(/[^0-9]/g, '')) || 0;
   const rank = ([, v]) => {
     const h = v.find((x) => x.kubun === '法人');
-    return h ? [0, price(h.over)] : [1, price(v[0].over)];
+    return h ? [0, h.rawOver ?? Infinity] : [1, v[0].rawOver ?? Infinity];
   };
   const sorted = [...banks.entries()].sort((a, b) => {
     const [ga, pa] = rank(a); const [gb, pb] = rank(b);
@@ -137,7 +137,8 @@ export function buildSections(rows) {
       notes.push(`${base === "みずほ銀行" ? "" : (list.some(r => r.scoped) ? "上表の宛先・対象サービス条件に限った" : "") + "他行宛ネット振込の3万円以上では、"}法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）`);
     }
     const withBoundary = list.filter((x) => x.boundary).map((x) => x.kubun);
-    notes.push(list.some(r => r.rawOver === null) ? '個人IBの3万円以上は掲載を保留しています' : withBoundary.length
+    if (list.some(r => r.rawOver === null)) notes.push('横浜銀行の法人EBの他行宛は、3万円未満385円・3万円以上550円です。個人IBの3万円以上は掲載を保留しています');
+    notes.push(withBoundary.length
       ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）`
       : '金額にかかわらず<b>定額</b>');
     out.push(`  <p>${notes.join('。')}。</p>`);
@@ -154,7 +155,7 @@ export function buildSections(rows) {
     const srcs = [...new Set(list.filter((x) => x.source).map((x) => x.source))];
     if (srcs.length) {
       const links = srcs.map((u) => `<a href="${u}" rel="nofollow">公式ページ</a>`).join('・');
-      out.push(`  <p class="src">出典: ${links}（確認範囲は調査方法と出典をご参照ください）</p>`);
+      out.push(`  <p class="src">出典: ${links}（${esc(list.find(r => r.sourceNote)?.sourceNote || "確認範囲は調査方法と出典をご参照ください")}）</p>`);
     } else {
       // ★2026-08-14: 文言を読者向けに直した。旧文「★この行はまだ一次情報での再照合が
       //   済んでいません（表全体の確認日のみ）。」は**編集メモがそのまま公開に出ていた**もので、
