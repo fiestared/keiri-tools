@@ -352,14 +352,15 @@ export function calcGenka(input, D) {
   const S = D.shogaku_tokurei;
   if (S) {
     if (cost < S.ikkatsu_mangan) {
-      notes.push(`取得価額が${S.shogaku_mangan_label}なら消耗品費などで業務の用に供した年に全額、${S.ikkatsu_mangan_label}なら一括償却資産として${S.ikkatsu_years}年で均等に経費にできます（この計算とは別の取扱いです）。`);
+      notes.push(`取得価額が${S.shogaku_mangan_label}なら消耗品費などで業務の用に供した年に全額、${S.ikkatsu_mangan_label}なら一括償却資産として${S.ikkatsu_years}年で均等に経費にできます（個人の所得税の取扱い。対象所得・供用・選択・申告明細添付・計算書類保存等が条件で、即時算入対象を一括償却に重複適用せず、所定リース・非主要業務の貸付資産等も除きます。この計算とは別の取扱いです）。`);
     }
     const kakuju = acqYm >= S.chusho_kakuju_start;
+    const peopleLimit = kakuju ? S.chusho_jugyoin : S.chusho_jugyoin_kyu;
     const chushoMangan = kakuju ? S.chusho_mangan : S.chusho_mangan_kyu;
     const chushoLabel = kakuju ? S.chusho_mangan_label : S.chusho_mangan_kyu_label;
     if (cost < chushoMangan) {
       if (acqYm <= S.chusho_kigen.slice(0, 7)) {
-        notes.push(`青色申告の中小企業者等（常時使用する従業員${S.chusho_jugyoin}人以下）は、この資産を少額減価償却資産の特例（取得価額${chushoLabel}・${S.chusho_nengaku_gendo_label}まで、開廃業年・短期年度は月割、対象資産・明細添付等の条件あり）で業務の用に供した年に全額経費にできる場合があります（${S.chusho_kigen_label}までに取得・供用したものが対象）。`);
+        notes.push(`青色申告の中小企業者等（常時使用する従業員${peopleLimit}人以下。法人の特定法人は${S.chusho_jugyoin_tokutei_hojin}人以下）は、この資産を少額減価償却資産の特例（取得価額${chushoLabel}・${S.chusho_nengaku_gendo_label}まで、開廃業年・短期年度は月割、対象資産・明細添付等の条件あり）で業務の用に供した年に全額経費にできる場合があります（${S.chusho_kigen_label}までに取得・供用したものが対象）。`);
       } else {
         notes.push(`少額減価償却資産の特例（中小企業者等・取得価額${chushoLabel}）は${S.chusho_kigen_label}までに取得・供用したものが対象です。それ以後に取得した資産に使えるかは、延長されたかどうかをご確認ください。`);
       }
