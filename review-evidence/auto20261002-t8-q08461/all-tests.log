@@ -1,0 +1,37 @@
+tests/test_layout_render.mjs                   ★赤
+    | /column/furikomi-tesuryo-hikaku/ @1200: table-hscroll-desktop: 銀行（同じ銀行あて）ネットバンキングATM（当行カード）窓口
+    |     みずほ銀行0円220円880円
+    |     三菱UFJ銀行0円110円ATM利用料は別途の場合あり880円
+    |     三井住友銀行無料無料イーネット・ローソ
+    | file:///Users/masahiroyasu/Scripts/keiri-tools-astra-auto20261002-t8-q08461/tests/test_layout_render.mjs:43
+    | if(bad.length){console.error(bad.slice(0,30).map(r=>`${r.url} @${r.width}: ${r.error||r.issues.map(x=>x.kind+': '+x.text).join('; ')}`).join('\n'));throw Error(`${bad.length}/${jobs.length} page/viewports failed. Full measurements: ${out}`);}
+    |                                                                                                                                                           ^
+    | 
+    | Error: 4/3138 page/viewports failed. Full measurements: /Users/masahiroyasu/Scripts/keiri-tools-astra-auto20261002-t8-q08461/.layout-artifacts/render.json
+    |     at file:///Users/masahiroyasu/Scripts/keiri-tools-astra-auto20261002-t8-q08461/tests/test_layout_render.mjs:43:155
+    | 
+    | Node.js v24.3.0
+tests/test_layout_visual.mjs                   ★赤
+    |   },
+    |   expected: {
+    |     platform: 'darwin',
+    |     arch: 'arm64',
+    |     playwright: '1.62.1',
+    |     browser: '151.0.7922.34',
+    |     deviceScaleFactor: 1
+    |   },
+    |   operator: 'deepStrictEqual'
+    | }
+    | 
+    | Node.js v24.3.0
+tests/test_stale_values.mjs                    ★赤
+    | ✗ docs/column/hotei-koyoritsu/index.html: 日付が過ぎたのに未来形のまま … 2026-10-01: 2026年10月1日施行予定
+    | ✗ docs/column/nenshu-no-kabe/index.html: 日付が過ぎたのに未来形のまま … 2026-10-01: 2026年10月1日に撤廃されます
+    | ✗ docs/column/shakai-hoken-kanyu-joken/index.html: 日付が過ぎたのに未来形のまま … 2026-10-01: 2026年10月1日、入口②の賃金要件が撤廃されます
+    | ✗ docs/kabe/index.html: 日付が過ぎたのに未来形のまま … 2026-10-01: 2026年10月1日からはこの賃金要件が撤廃されます
+    | ★ 4件。直すか、過去として書かれているなら allow_near／allow_pages に理由つきで足す（tests/stale_values.json）
+
+★赤 3/300 件:
+  tests/test_layout_render.mjs
+  tests/test_layout_visual.mjs
+  tests/test_stale_values.mjs
