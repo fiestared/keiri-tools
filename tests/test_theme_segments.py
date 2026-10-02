@@ -251,4 +251,20 @@ class QuoteRefFormats(unittest.TestCase):
             self.assertFalse(qp(run,'corpus/c.png:1','会社が対象です。'))                        # 画像
             self.assertFalse(qp(run,'corpus/a.txt','会社が対象です。'))                           # 行番号の無い参照は書式違反
 
+class CoveredValue(unittest.TestCase):
+    """covered は先頭の語で読む（理由書きつきを許す）。条件なし・未被覆・知らない値は従来どおり落とす（2026-10-02）。"""
+    def test_covered_with_reason_is_accepted_and_others_still_fail(self):
+        text='月額8.8万円以上が要件です。'
+        cond=lambda v:[{'condition':'ただし書: 学生は除く','corpus_ref':'corpus/a.txt:1','covered':v}]
+        for v in ('yes','irrelevant','irrelevant（単位は一般的な方向だけを述べる）','yes (同じ文に記載)','irrelevant: 別区分','yes、表の行に記載'):
+            self.assertIsNone(units.conditions_error(cond(v),text),v)
+        for v in ('no','no（書いていない）','no: 例外の記載なし'):
+            self.assertEqual(units.conditions_error(cond(v),text),'ok with uncovered condition',v)
+        for v in ('','maybe','not yes','yesterday','none','irrelevantish',None,'（irrelevant）'):
+            self.assertEqual(units.conditions_error(cond(v),text),'ok without conditions',repr(v))
+        self.assertEqual(units.conditions_error([],text),'ok without conditions')
+        self.assertEqual(units.conditions_error(None,text),'ok without conditions')
+        self.assertEqual(units.conditions_error([{'condition':'','corpus_ref':'corpus/a.txt:1','covered':'yes（理由）'}],text),'ok without conditions')
+        self.assertEqual(units.conditions_error([{'condition':'注','corpus_ref':'','covered':'irrelevant（理由）'}],text),'ok without conditions')
+
 if __name__=='__main__':unittest.main()

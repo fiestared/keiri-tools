@@ -5,7 +5,7 @@ JSON {"segments":[...],"findings":[...]} を出す。
 ok/wrong は claim_id・corpus_ref・corpus_quote（逐語）必須。corpus_ref の書式は `corpus/<ファイル>:<開始行>-<終了行>`（複数の範囲は `,`、複数のファイルは `;` で区切る。行番号を必ず書く。PDF・画像は参照せず、同名の .txt を参照する）。corpus_quote は正本の文字列をそのまま写す（要約・言い換え・つなぎの語を足さない）。条件・対象者・年分も照合する。
 ok にする前の条件・例外の走査（2026-10-01 必須。後の周の要修正の58%は「数字は合っているが条件・例外が欠けた文」を ok で通したものだった）:
 - 引用した行だけを見て ok にしない。同じ条・同じ表・同じ節・同じページの ただし書・かっこ書・注・備考・別区分（別の宛先・対象者・年分・金額帯・業種・適用日）を開いて読む。
-- ok の行には conditions を必ず書く: [{"condition":"正本にある条件・例外・区分","corpus_ref":"corpus/<ファイル>:<行>","covered":"yes|no|irrelevant"}]。yes＝単位の文（またはその単位が置かれた表の行・同じ文）がその条件を書いている。irrelevant＝その単位の主張には効かない（理由を condition に書く）。no＝書いていない。**no が1つでもあれば ok にしない**（条件の欠落として wrong にする）。条件が本当に無いときも、確かめた範囲を1件書く（例 {"condition":"同じ条・同じ表にただし書・注・別区分なし","corpus_ref":"corpus/x.txt:10-40","covered":"irrelevant"}）。conditions の無い ok は未処理として数える。
+- ok の行には conditions を必ず書く: [{"condition":"正本にある条件・例外・区分","corpus_ref":"corpus/<ファイル>:<行>","covered":"yes|no|irrelevant"}]。yes＝単位の文（またはその単位が置かれた表の行・同じ文）がその条件を書いている。irrelevant＝その単位の主張には効かない（理由を condition に書く）。no＝書いていない。covered の値は yes・no・irrelevant の語だけにする（理由は condition に書く。値にかっこ書きを足さない）。**no が1つでもあれば ok にしない**（条件の欠落として wrong にする）。条件が本当に無いときも、確かめた範囲を1件書く（例 {"condition":"同じ条・同じ表にただし書・注・別区分なし","corpus_ref":"corpus/x.txt:10-40","covered":"irrelevant"}）。conditions の無い ok は未処理として数える。
 - 列挙（「対象外は」「次の○つ」「〜の場合」）は正本の全件と突き合わせる。全件でないのに「など」「例」と書いていなければ wrong。
 - 主張の主語（銀行名・制度名・税目・対象者・年分）と別の主語の資料を根拠に ok にしない（例: PayPay銀行の料金表で SMTB の手数料を ok にしない）。主語に当たる資料が正本に無ければ、その部分は out_of_corpus。
 nonclaim は why 必須、protected=true は非主張不可。
