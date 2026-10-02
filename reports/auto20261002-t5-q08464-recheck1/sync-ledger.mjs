@@ -1,0 +1,7 @@
+import fs from 'node:fs';import {execFileSync} from 'node:child_process';import {segmentClaims} from '../../tools/segment_claims.mjs';
+const pages=['furusato','embed/furusato','column/furusato-nozei-keisan','column/furusato-nozei-kakutei-shinkoku'];
+for(const p of pages){const page='docs/'+p+'/index.html',lp='claims/'+p+'.json';const after=segmentClaims(fs.readFileSync(page,'utf8'),page);const old=segmentClaims(execFileSync('git',['show',`98ac25bd^:${page}`],{encoding:'utf8',maxBuffer:32e6}),page);const ids=new Set(after.map(u=>u.id));const d=JSON.parse(fs.readFileSync(lp));let rate=d.claims.find(c=>c.id==='recheck1-rate');if(!rate){rate=JSON.parse(JSON.stringify(JSON.parse(fs.readFileSync('claims/furusato.json')).claims.find(c=>c.id==='recheck1-rate')));rate.covers=[];rate.where=[];d.claims.push(rate);}
+for(const c of d.claims){c.covers=(c.covers||[]).filter(id=>ids.has(id));if(c.id.startsWith('recheck1-ok-')&&c.corpus_ref.startsWith('corpus/nta_'))c.source_url='https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1155.htm';if(c.id.startsWith('recheck1-ok-')&&c.corpus_ref.startsWith('corpus/soumu_'))c.source_url='https://www.soumu.go.jp/main_sosiki/jichi_zeisei/czaisei/czaisei_seido/furusato/mechanism/deduction.html';}
+for(const u of after.filter(u=>!old.some(o=>o.id===u.id))){rate.covers.push(u.id);rate.where.push(u.kind+': '+u.text);}
+if(p==='furusato')rate.where.push('docs/assets/juminzei_r08.json: furusato.tokurei_ritsu._note');
+d.verified=(d.verified||[]).filter(v=>ids.has(v.id));fs.writeFileSync(lp,JSON.stringify(d,null,2)+'\n');}
