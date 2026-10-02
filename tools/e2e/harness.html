@@ -3587,7 +3587,9 @@ const round58 = (h) => (h - Math.floor(h) > 0.5 ? Math.ceil(h) : Math.floor(h));
 const kabeSiAnnual = (kenpo, std, age) => {
   const g = kenpo.grades.find((x) => x.standard === std);
   const kaigo = age >= 40 && age < 65;
-  const monthly = round58(kaigo ? g.kenko_kaigo_half : g.kenko_half) + round58(g.kosodate_half) + round58(g.kosei_half);
+  // 厚生年金の標準報酬月額は下限88,000円（第1級）。健保の等級がそれより下（厚年の等級が無い行）は、厚年だけ第1級の折半額を使う
+  const koseiHalf = g.kosei_half ?? kenpo.grades.find((x) => x.kosei_grade === 1).kosei_half;
+  const monthly = round58(kaigo ? g.kenko_kaigo_half : g.kenko_half) + round58(g.kosodate_half) + round58(koseiHalf);
   return monthly * 12;
 };
 const kabeScene = ({ annual, age = 30, pref = "東京都", wall = "hifuyousha", wallAmt, std }) => async () => {
@@ -3619,6 +3621,9 @@ const kabeScene = ({ annual, age = 30, pref = "東京都", wall = "hifuyousha", 
     bottom: num(/手取りは¥([\d,]+)まで下がります/),
     shaho: num(/社会保険料 ¥([\d,]+)／年/),
     recoveryShown: num(/元の手取りに戻る年収 ¥([\d,]+)/),
+    abolishedShown: body.includes("賃金の要件（月額8.8万円以上＝約106万円）はなくなりました"),
+    belowLineShown: body.includes("月8.8万円（年105.6万円）を下回っています"),
+    wallShown: body.includes("まで下がります"),
     expectedTedori, expectedBottom, expectedSi: si,
     failed: body.includes("読み込めませんでした"),
     body,
@@ -3629,6 +3634,12 @@ SCENES.kabe = kabeScene({ annual: 1290000, std: 110000, wallAmt: 1300000 });
 SCENES.kabe_slow = SCENES.kabe;   // 800ms遅らせる(モバイル回線)。待って正答すること
 // 加入側(131万): 社保187,296を引いて手取り112万2,704。合成の配線が狂えば落ちる
 SCENES.kabe_join = kabeScene({ annual: 1310000, std: 110000, wallAmt: 1300000 });
+// ★適用拡大(週20時間以上で加入)。賃金要件(月8.8万円)は 2026-10-01 に撤廃済み＝年収90万でも加入し、金額の壁は出さない。
+//   独立オラクル: 月75,000円 → 健保の標準報酬月額78,000円(第3級)。本人 3,841+90+8,052(厚年は下限88,000円) = 11,983 ×12 = 143,796。
+//   ページは今日の日付(日本時間)で判定する。撤廃日は過去なので、実行日によって結果は変わらない。
+SCENES.kabe_tekiyo = kabeScene({ annual: 900000, std: 78000, wall: "tekiyoKakudai", wallAmt: 0 });
+// 月8.8万円×12 ちょうど(105.6万)は「下回っています」の注意を出さない(境界)。標準報酬月額88,000円
+SCENES.kabe_tekiyo_line = kabeScene({ annual: 1056000, std: 88000, wall: "tekiyoKakudai", wallAmt: 0 });
 // 基準額を配信できない → 手取りを出さず断る(fail closed)
 SCENES.kabe_nodata = kabeScene({ annual: 1290000, std: 110000, wallAmt: 1300000 });
 

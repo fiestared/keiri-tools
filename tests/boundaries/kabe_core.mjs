@@ -6,13 +6,15 @@ import { readFileSync } from "node:fs";
 const load = (f) => JSON.parse(readFileSync(new URL(`../../docs/assets/${f}`, import.meta.url)));
 const refs = { thresholds: load("kabe_thresholds_r08.json"), shahoRates: load("shaho_rates_r08.json") };
 const k = (annual, age, wallType, asOf = "2026-09-30") => calcKabe({ annual, age, prefecture: "東京都", wallType, asOf }, refs);
-const TEKIYO = "https://www.nenkin.go.jp/tokusetsu/tekiyokakudai_kojin.html";
+const TEKIYO = "https://www.nenkin.go.jp/tokusetsu/tekiyokakudai_kojin.html"; // ★2026-10-02 に再取得: 撤廃後のページは「週の所定労働時間が20時間以上かつ、学生ではない場合」に変わり、月額8.8万円の文は消えた。下の2件は撤廃前（9/30）の判定で、引用は撤廃前のページの文
 const FUYO = "https://www.kyoukaikenpo.or.jp/about/business/dependent_status/001/index.html"; // 協会けんぽ（curl で逐語確認 2026-09-28）
 export const cases = [
   { name: "適用拡大: 年1,055,999円（月8.8万円未満）は加入しない", run: () => k(1055999, 30, "tekiyoKakudai").joins, expected: false, source: TEKIYO, quote: "所定内賃金が月額8.8万円以上" },
   { name: "適用拡大: 年1,056,000円（月8.8万円×12）は加入", run: () => k(1056000, 30, "tekiyoKakudai").joins, expected: true, source: TEKIYO, quote: "所定内賃金が月額8.8万円以上" },
   { name: "適用拡大: 2026-10-01 からは年90万円でも加入（賃金要件の撤廃）", run: () => k(900000, 30, "tekiyoKakudai", "2026-10-01").joins, expected: true, source: "https://laws.e-gov.go.jp/api/2/law_data/329AC0000000115_20261001_507AC0000000074?elm=Article_12", quote: "かつ、イ又はロのいずれかの要件に該当するもの" },
   { name: "適用拡大: 2026-09-30 は年90万円なら加入しない（賃金要件あり）", run: () => k(900000, 30, "tekiyoKakudai", "2026-09-30").joins, expected: false, source: "https://laws.e-gov.go.jp/api/2/law_data/329AC0000000115_20260525_506AC0000000052?elm=Article_12", quote: "第二十二条第一項の規定の例により算定した額が、八万八千円未満であること" },
+  { name: "適用拡大: 撤廃後、年1,055,999円（月8.8万円未満）は加入のまま注意を出す", run: () => { const r = k(1055999, 30, "tekiyoKakudai", "2026-10-01"); return r.joins && r.belowFormerWageLine; }, expected: true, source: "https://www.nenkin.go.jp/service/kounen/tekiyo/jigyosho/tanjikan.html", quote: "最低賃金の減額の特例許可（※1）を受けている所定内賃金（※2）が月額8.8万円未満の方は特定減額特例対象者です" },
+  { name: "適用拡大: 撤廃後、年1,056,000円（月8.8万円×12）は注意を出さない", run: () => k(1056000, 30, "tekiyoKakudai", "2026-10-01").belowFormerWageLine, expected: false, source: "https://www.nenkin.go.jp/service/kounen/tekiyo/jigyosho/tanjikan.html", quote: "最低賃金の減額の特例許可（※1）を受けている所定内賃金（※2）が月額8.8万円未満の方は特定減額特例対象者です" },
   { name: "被扶養者: 1,299,999円は扶養内", run: () => k(1299999, 30, "hifuyousha").joins, expected: false, source: FUYO, quote: "被扶養者の年収が130万円（※）未満でかつ、被保険者の年収の半分未満" },
   { name: "被扶養者: 1,300,000円で扶養を外れる", run: () => k(1300000, 30, "hifuyousha").joins, expected: true, source: FUYO, quote: "被扶養者の年収が130万円（※）未満でかつ、被保険者の年収の半分未満" },
   { name: "被扶養者: 59歳の壁は130万円", run: () => k(1500000, 59, "hifuyousha").wall, expected: 1300000, source: FUYO, quote: "課税収入額が130万円（60歳以上は180万円）" },

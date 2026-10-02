@@ -1324,6 +1324,13 @@ const SCENES = [
   // 加入側(131万): 社保187,296を引いて手取り112万2,704
   { name: "kabe_join", expect: (s) =>
       s.tedori === s.expectedTedori && s.tedori === 1122704 && s.shaho === 187296 && !s.failed },
+  // 適用拡大(賃金要件は 2026-10-01 に撤廃): 年収90万でも加入。社保143,796・手取り756,204。金額の壁・回復年収は出さない
+  { name: "kabe_tekiyo", expect: (s) =>
+      s.tedori === s.expectedTedori && s.tedori === 756204 && s.shaho === 143796 &&
+      s.abolishedShown && s.belowLineShown && !s.wallShown && s.recoveryShown === null && !s.failed },
+  // 月8.8万円×12 ちょうどは「下回っています」を出さない
+  { name: "kabe_tekiyo_line", expect: (s) =>
+      s.tedori === s.expectedTedori && s.abolishedShown && !s.belowLineShown && !s.wallShown && !s.failed },
   { name: "kabe_slow", slow: true, expect: (s) =>
       s.current === 1290000 && s.bottom === 1112704 && s.recoveryShown === 1505000 && !s.failed },
   // 基準額・料率を配信できない → 手取りを出さず断る(fail closed)。黙って壁ゼロの手取りを信じさせない

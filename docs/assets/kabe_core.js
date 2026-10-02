@@ -23,7 +23,7 @@
 
 import { calcMonthly } from './shaho_core.js';
 
-/** 壁の種類。tekiyoKakudai=約106万（適用拡大の5要件を満たす短時間労働者）, hifuyousha=130万（被扶養者認定） */
+/** 壁の種類。tekiyoKakudai=適用拡大の要件を満たす短時間労働者（2026-09-30 までは約106万＝月8.8万円の賃金要件あり。2026-10-01 に撤廃）, hifuyousha=130万（被扶養者認定） */
 export const WALL_TYPES = ['tekiyoKakudai', 'hifuyousha'];
 
 /**
@@ -100,6 +100,10 @@ export function calcKabe(input, refs) {
       joins: annual > 0, shaho: shaho0, shahoAnnual: shahoAnnual0, tedori: annual - shahoAnnual0,
       tedoriRate: annual > 0 ? (annual - shahoAnnual0) / annual : 0,
       reference: null, recovery: null, recoveryGap: null, bottomTedori: null, bottomShahoAnnual: null, maxLoss: null,
+      // 撤廃された賃金要件の年換算額（月8.8万円×12）。最低賃金以上で週20時間以上働くと月8.8万円以上になる（厚労省・年金機構）ので、
+      // これを下回る入力は「週20時間未満ではないか」「減額特例ではないか」を画面で確かめてもらう（判定は変えない）。
+      formerWageLine: K.shakaiHoken.tekiyoKakudai.amount,
+      belowFormerWageLine: annual > 0 && annual < K.shakaiHoken.tekiyoKakudai.amount,
       year: K._meta?.year || '',
     };
   }
