@@ -12,7 +12,7 @@
      このページ自体は noindex（/furusato/ と重複させない）。計算は本体と同じ ../../assets/juminzei_core.js。 -->
 <link rel="canonical" href="https://keiri-tools.com/furusato/">
 <meta name="robots" content="noindex, follow">
-<meta name="description" content="年収と家族構成からふるさと納税の限度額（自己負担2,000円で収まる寄附の上限）を計算する埋め込みウィジェット。keiri-tools 提供。">
+<meta name="description" content="年収と家族構成からふるさと納税の目安（指定自治体への対象寄附で税率条件と各控除限度を満たす場合の自己負担2,000円の上限）を計算する埋め込みウィジェット。keiri-tools 提供。">
 <style>
   :root{ --ink:#1a2b33; --sub:#5b6b73; --line:#e2e8f0; --control:#84939f; --accent:#1f6f5c; --accent2:#e7f3f0; --bg:#fff; }
   *{ box-sizing:border-box; }
@@ -54,7 +54,7 @@
 <body>
 <div class="w">
   <h1>ふるさと納税 限度額シミュレーション</h1>
-  <p class="lead">年収と家族構成から、自己負担2,000円で収まる寄附額の上限（限度額）を概算します。調整控除後の住民税所得割額の20％から逆算した目安であり、全額控除には所得税40％・住民税基本分30％の対象寄附限度や、所得税と特例分の税率の相違も確認が必要です。</p>
+  <p class="lead">年収と家族構成から、指定自治体への対象寄附で税率条件と各控除限度を満たす場合に自己負担2,000円となる寄附額の目安を概算します。調整控除後の住民税所得割額の20％から逆算した目安であり、全額控除には総所得金額等に対する所得税40％・住民税基本分30％の対象寄附限度や、所得税と特例分の税率の相違も確認が必要です。</p>
 
   <label for="shunyu">給与収入（年収・額面／円）</label>
   <input id="shunyu" type="number" inputmode="numeric" data-example="5000000" min="0" step="10000" aria-describedby="shunyu-hint">
@@ -76,45 +76,47 @@
   <input id="shakai" type="number" inputmode="numeric" placeholder="源泉徴収票の「社会保険料等の金額」" aria-describedby="shakai-hint">
       <span id="shakai-hint" class="hint">空欄なら年収から概算</span>
 
+  <p class="hint" id="family-eligibility">配偶者・扶養親族の年齢や該当性は寄附年12月31日（年の途中で死亡した場合は死亡時）で判定します。2026年寄附に対応する令和9年度住民税では、扶養親族は本人と生計を一にする親族（配偶者を除く）・里子・養護受託老人で、寄附年の合計所得金額62万円以下の人です。青色事業専従者として給与を受ける人・白色事業専従者は除き、他の納税者との重複算入はできません。配偶者控除は生計を一にする配偶者の合計所得62万円以下、本人の合計所得1,000万円以下が条件で、事業専従者の除外も同様です。本人所得900万円超・950万円超では控除額が段階的に減ります。主な例外：年内に配偶者が死亡して再婚した場合は範囲の特例を確認してください。</p>
+  <p class="hint" id="family-nonresident">非居住者の控除対象扶養親族は16〜29歳または70歳以上。30〜69歳は、留学により国内に住所・居所がなくなった人、障害者、本人から寄附年中に生活費・教育費として38万円以上の支払を受けた人のいずれかに限ります。年齢だけでなく、上記の所得等の扶養要件も必要です。</p>
   <div class="grid field-pair">
     <div>
       <label for="haigusha">配偶者控除</label>
-      <select id="haigusha">
+      <select id="haigusha" aria-describedby="family-eligibility">
         <option value="none">なし（控除対象の配偶者なし）</option>
-        <option value="ippan">あり（70歳未満）</option>
-        <option value="rojin">あり（70歳以上）</option>
+        <option value="ippan">あり（寄附年末の年齢70歳未満）</option>
+        <option value="rojin">あり（寄附年末の年齢70歳以上）</option>
       </select>
       <p class="hint">配偶者控除は共働きかどうかではなく、本人と配偶者の所得等の要件で判断します。配偶者特別控除はこの選択肢の対象外です。</p>
     </div>
     <div>
-      <label for="fuyoIppan">一般扶養（16〜18・23〜69歳。非居住者の30〜69歳は留学・障害者・生活費等38万円以上の支払のいずれかが必要）</label>
-      <input id="fuyoIppan" type="number" inputmode="numeric" value="0" min="0" max="20">
+      <label for="fuyoIppan">一般扶養（所得等の扶養要件を満たす親族・寄附年末16〜18・23〜69歳）</label>
+      <input id="fuyoIppan" aria-describedby="family-eligibility family-nonresident" type="number" inputmode="numeric" value="0" min="0" max="20">
     </div>
   </div>
 
   <div class="grid field-pair">
     <div>
-      <label for="fuyoTokutei">特定扶養（19〜22歳）</label>
-      <input id="fuyoTokutei" type="number" inputmode="numeric" value="0" min="0" max="20">
+      <label for="fuyoTokutei">特定扶養（所得等の扶養要件を満たす親族・寄附年末19〜22歳）</label>
+      <input id="fuyoTokutei" aria-describedby="family-eligibility family-nonresident" type="number" inputmode="numeric" value="0" min="0" max="20">
     </div>
     <div>
-      <label for="fuyoNensho">16歳未満の子ども（人）</label>
-      <input id="fuyoNensho" type="number" inputmode="numeric" value="0" min="0" max="20">
+      <label for="fuyoNensho">16歳未満の扶養親族である子（寄附年末・人）</label>
+      <input id="fuyoNensho" aria-describedby="family-eligibility family-nonresident" type="number" inputmode="numeric" value="0" min="0" max="20">
     </div>
   </div>
-  <div class="hint">16歳未満の子は扶養控除は0円ですが、<b>非課税限度額の判定に効く</b>ので入力してください。</div>
+  <div class="hint">所得等の扶養要件を満たす16歳未満の子は扶養控除は0円ですが、<b>非課税限度額の判定に効く</b>ので入力してください。</div>
 
   <details>
     <summary>その他の控除・給与以外の所得</summary>
     <div class="grid field-pair" style="margin-top:6px">
       <div>
-        <label for="fuyoRojin">老人扶養（70歳以上・同居老親等以外）</label>
-        <input id="fuyoRojin" type="number" inputmode="numeric" value="0" min="0" max="20">
+        <label for="fuyoRojin">老人扶養（所得等の扶養要件を満たす親族・寄附年末70歳以上・同居老親等以外）</label>
+        <input id="fuyoRojin" aria-describedby="family-eligibility family-nonresident" type="number" inputmode="numeric" value="0" min="0" max="20">
       </div>
       <div>
         <label for="fuyoDokyoRooya">同居老親等（70歳以上の直系尊属）</label>
-        <p class="hint">本人または配偶者の直系尊属で、本人または配偶者との同居を常況とする老人扶養親族。同居する兄姉などは「同居老親等以外」に入力してください。</p>
-        <input id="fuyoDokyoRooya" type="number" inputmode="numeric" value="0" min="0" max="20">
+        <p class="hint">本人または配偶者の直系尊属で、本人または配偶者との同居を常況とする老人扶養親族。70歳以上の控除対象扶養親族である同居の兄姉などは「同居老親等以外」に入力してください。</p>
+        <input id="fuyoDokyoRooya" aria-describedby="family-eligibility family-nonresident" type="number" inputmode="numeric" value="0" min="0" max="20">
       </div>
     </div>
     <label for="sonotaKojo" style="margin-top:6px">その他の所得控除（住民税用・円）</label>
@@ -127,10 +129,10 @@
     <div class="hint" style="margin:0 0 4px 20px">あなたは
       <select id="hitorioyaSei" style="width:auto;display:inline-block">
         <option value="haha" selected>母</option><option value="chichi">父</option>
-      </select> です（人的控除差が母5万円・父1万円と異なるため）</div>
+      </select> です（調整控除に用いる法定の人的控除差は母5万円・父1万円。地方税法施行令48条の7の2による）</div>
     <label class="chk"><input id="kafu" type="checkbox"> 寡婦（ひとり親と重複不可）</label>
     <label class="chk"><input id="shogai" type="checkbox"> 障害者（本人・同一生計配偶者・扶養親族のいずれか。一般）</label>
-    <label class="chk"><input id="honninShogai" type="checkbox"> 上の障害者が<b>本人</b>である<span class="hint">本人が障害者で合計所得135万円以下なら住民税は非課税（所得税の寄附金控除が残る場合があります）</span></label>
+    <label class="chk"><input id="honninShogai" type="checkbox"> 上の障害者が<b>本人</b>である<span class="hint">本人が障害者で寄附年の合計所得135万円以下なら翌年度の住民税は非課税（所得税の寄附金控除が残る場合があります）</span></label>
     <label class="chk"><input id="gakusei" type="checkbox"> 勤労学生</label>
   </details>
 
@@ -251,7 +253,7 @@ $("calc").addEventListener("click", async () => {
   if (r.shotokuwari <= 0) {
     const hikazei = r.hikazei.shotokuwariHikazei;
     const riyu = r.hikazei.jonrei295
-      ? `本人が障害者等で合計所得135万円以下のため、住民税が非課税です。`
+      ? `本人が障害者等で寄附年の合計所得135万円以下のため、翌年度の住民税が非課税です。`
       : hikazei
       ? `合計所得金額 <b>${yen(r.goukeiShotoku)}</b> が住民税の所得割の非課税限度額 <b>${yen(r.hikazei.shotokuLimit)}</b>（本人＋同一生計配偶者＋扶養親族 ${r.hikazei.ninzu}人分）以下のため、所得割が非課税です（16歳未満のお子さんもこの人数に入ります）。`
       : `控除の合計が所得を上回り、課税所得が0円になっています。`;
@@ -274,7 +276,7 @@ $("calc").addEventListener("click", async () => {
     <div class="hint">この額までの寄附なら、自己負担は2,000円だけで済みます（${r.year}の所得にもとづく計算）。</div>
     <table>
       <tr><td>住民税の所得割額</td><td class="n">${yen(r.shotokuwari)}</td></tr>
-      <tr><td>特例控除の上限（所得割額の20％）</td><td class="n">${yen(r.tokureiCap)}</td></tr>
+      <tr><td>特例控除の上限（調整控除後の所得割額の20％）</td><td class="n">${yen(r.tokureiCap)}</td></tr>
       <tr><td>特例控除額の割合</td><td class="n">${pct(r.tokureiRitsu.pct_x1000)}</td></tr>
       <tr class="tot"><td>限度額</td><td class="n">${yen(r.furusatoGendo)}</td></tr>
     </table>
