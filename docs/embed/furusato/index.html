@@ -54,7 +54,7 @@
 <body>
 <div class="w">
   <h1>ふるさと納税 限度額シミュレーション</h1>
-  <p class="lead">年収と家族構成から、指定自治体への対象寄附で税率条件と各控除限度を満たす場合に自己負担2,000円となる寄附額の目安を概算します。調整控除後の住民税所得割額の20％から逆算した目安であり、全額控除には総所得金額等に対する所得税40％・住民税基本分30％の対象寄附限度や、所得税と特例分の税率の相違も確認が必要です。</p>
+  <p class="lead">年収と家族構成から、指定自治体への対象寄附で税率条件と各控除限度を満たす場合に自己負担2,000円となる寄附額の目安を概算します。寄附時に指定された自治体への寄附（寄附者に特別の利益が及ぶものを除く）で年合計2,000円超の場合、調整控除後の住民税所得割額の20％から逆算した目安であり、全額控除には総所得金額等に対する所得税40％・住民税基本分30％の対象寄附限度や、所得税と特例分の税率の相違も確認が必要です。</p>
 
   <label for="shunyu">給与収入（年収・額面／円）</label>
   <input id="shunyu" type="number" inputmode="numeric" data-example="5000000" min="0" step="10000" aria-describedby="shunyu-hint">
@@ -77,30 +77,30 @@
       <span id="shakai-hint" class="hint">空欄なら年収から概算</span>
 
   <p class="hint" id="family-eligibility">配偶者・扶養親族の年齢や該当性は寄附年12月31日（年の途中で死亡した場合は死亡時）で判定します。2026年寄附に対応する令和9年度住民税では、扶養親族は本人と生計を一にする親族（配偶者を除く）・里子・養護受託老人で、寄附年の合計所得金額62万円以下の人です。青色事業専従者として給与を受ける人・白色事業専従者は除き、他の納税者との重複算入はできません。配偶者控除は生計を一にする配偶者の合計所得62万円以下、本人の合計所得1,000万円以下が条件で、事業専従者の除外も同様です。本人所得900万円超・950万円超では控除額が段階的に減ります。主な例外：年内に配偶者が死亡して再婚した場合は範囲の特例を確認してください。19〜22歳で所得要件を超える親族の特定親族特別控除は別制度です。この特定扶養の人数欄には含めません。</p>
-  <p class="hint" id="family-nonresident">非居住者の控除対象扶養親族は16〜29歳または70歳以上。30〜69歳は、留学により国内に住所・居所がなくなった人、障害者、本人から寄附年中に生活費・教育費として38万円以上の支払を受けた人のいずれかに限ります。年齢だけでなく、上記の所得等の扶養要件も必要です。</p>
+  <p class="hint" id="family-nonresident">非居住者の控除対象扶養親族は、16〜29歳、70歳以上、または30〜69歳で留学により国内に住所・居所がなくなった人、障害者、本人から寄附年中に生活費・教育費として38万円以上の支払を受けた人のいずれかに限ります。年齢だけでなく、上記の所得等の扶養要件も必要です。</p>
   <div class="grid field-pair">
     <div>
       <label for="haigusha">配偶者控除</label>
       <select id="haigusha" aria-describedby="family-eligibility">
         <option value="none">なし（控除対象の配偶者なし）</option>
-        <option value="ippan">あり（寄附年末の年齢70歳未満）</option>
-        <option value="rojin">あり（寄附年末の年齢70歳以上）</option>
+        <option value="ippan">あり（寄附年末（年途中死亡時は死亡時）の年齢70歳未満）</option>
+        <option value="rojin">あり（寄附年末（年途中死亡時は死亡時）の年齢70歳以上）</option>
       </select>
       <p class="hint">配偶者控除は共働きかどうかではなく、本人と配偶者の所得等の要件で判断します。配偶者特別控除はこの選択肢の対象外です。</p>
     </div>
     <div>
-      <label for="fuyoIppan">一般扶養（所得等の扶養要件を満たす親族・寄附年末16〜18・23〜69歳）</label>
+      <label for="fuyoIppan">一般扶養（所得等の扶養要件を満たす親族・寄附年末（年途中死亡時は死亡時）16〜18・23〜69歳）</label>
       <input id="fuyoIppan" aria-describedby="family-eligibility family-nonresident" type="number" inputmode="numeric" value="0" min="0" max="20">
     </div>
   </div>
 
   <div class="grid field-pair">
     <div>
-      <label for="fuyoTokutei">特定扶養（所得等の扶養要件を満たす親族・寄附年末19〜22歳）</label>
+      <label for="fuyoTokutei">特定扶養（所得等の扶養要件を満たす親族・寄附年末（年途中死亡時は死亡時）19〜22歳）</label>
       <input id="fuyoTokutei" aria-describedby="family-eligibility family-nonresident" type="number" inputmode="numeric" value="0" min="0" max="20">
     </div>
     <div>
-      <label for="fuyoNensho">16歳未満の扶養親族である子（寄附年末・人）</label>
+      <label for="fuyoNensho">16歳未満の扶養親族である子（寄附年末、年途中死亡時は死亡時・人）</label>
       <input id="fuyoNensho" aria-describedby="family-eligibility family-nonresident" type="number" inputmode="numeric" value="0" min="0" max="20">
     </div>
   </div>
@@ -110,7 +110,7 @@
     <summary>その他の控除・給与以外の所得</summary>
     <div class="grid field-pair" style="margin-top:6px">
       <div>
-        <label for="fuyoRojin">老人扶養（所得等の扶養要件を満たす親族・寄附年末70歳以上・同居老親等以外）</label>
+        <label for="fuyoRojin">老人扶養（所得等の扶養要件を満たす親族・寄附年末（年途中死亡時は死亡時）70歳以上・同居老親等以外）</label>
         <input id="fuyoRojin" aria-describedby="family-eligibility family-nonresident" type="number" inputmode="numeric" value="0" min="0" max="20">
       </div>
       <div>
