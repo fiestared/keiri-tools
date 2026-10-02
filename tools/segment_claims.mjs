@@ -41,6 +41,26 @@ function figureText(svg) {
   const cap = fig && fig.querySelector('figcaption'); if (cap) parts.push(cap.textContent);
   return parts.map(x => x.replace(/\s+/gu, ' ').trim()).filter(Boolean).join(' / ');
 }
+// Opt-in context for labels that cannot be adjudicated independently. Keep the
+// visible answer/data units too; a change to either also invalidates this unit.
+function reviewContextText(el) {
+  const mode = el.getAttribute('data-review-context');
+  if (!mode) return null;
+  if (mode === 'next' && /^h[2-6]$/.test(el.localName)) {
+    const answer = el.nextElementSibling;
+    if (!answer?.matches('p.faq-answer')) throw Error('data-review-context=next requires an adjacent FAQ answer');
+    return `【質問】${cellText(el)} 【回答】${cellText(answer)}`;
+  }
+  if (mode === 'row' && /^t[dh]$/.test(el.localName)) {
+    const cells = [...el.parentElement.children].filter(c => /^t[dh]$/.test(c.localName));
+    if (cells[0] !== el || cells.length < 2) throw Error('data-review-context=row requires a row label and data cells');
+    return `【行】${cellText(el)} / ` + cells.slice(1).map(c => {
+      const context = tableContext(c);
+      return `【列】${context.col} 【値】${cellText(c)}`;
+    }).join(' / ');
+  }
+  throw Error('Invalid data-review-context: ' + mode);
+}
 const excluded = 'script,style,nav,header,footer,aside,.breadcrumb,.article-meta,.source-method,.related,.rel-block,.next-read,.article-next-read,.rail-next,.tool-related';
 function structuralNonclaim(tag, text) {
   if (/^[)）]+$/.test(text)) return true;
@@ -73,14 +93,16 @@ export function segmentClaims(html, page = '') {
     if (tag === 'input') text = `${el.id || el.name || el.type}: ${['checkbox','radio'].includes(el.type) ? el.checked : el.value}; placeholder=${el.getAttribute('placeholder') || ''}; min=${el.min}; max=${el.max}; step=${el.step}`;
     if (tag === 'option') text += ` [value=${el.value};default=${el.selected}]`;
     if (!normalize(text || '')) continue;
+    const reviewContext = reviewContextText(el);
+    if (reviewContext) text = reviewContext;
     const kind = tag === 'meta' ? (el.name || el.getAttribute('property')) : tag === 'svg' ? 'figure' : tag;
     const zone = summarySection || tag === 'title' || tag === 'meta' || tag === 'h1' || (tag === 'p' && afterH1) || el.closest('.lead,.summary,.callout') ? 'summary' : faq ? 'faq' : el.closest('table') ? 'table' : el.closest('label,select,form') || ['input','option','label','button'].includes(tag) ? 'ui' : 'body';
     // Pure organizational labels carry no assertion. Keep substantive headings/cells protected.
     const organizationalLabel = ((/^(?:h[2-6]|div)$/.test(tag)) && /^(?:この記事のまとめ|実務の注意点まとめ)$/.test(text.trim()))
       || (tag === 'th' && /^(?:支出の例|よく使う科目|消費税|ここを間違える)$/.test(text.trim()));
-    const protectedUnit = !organizationalLabel && (zone === 'summary' || (zone === 'faq' && !/^h/.test(tag))); 
+    const protectedUnit = !organizationalLabel && (!!reviewContext || zone === 'summary' || (zone === 'faq' && !/^h/.test(tag))); 
     // Split prose, but leave labels/options and input values intact. 表のデータのセルは見出しつきの1単位（分けない）。
-    const parts = ['p','li','td','th','dd','figcaption'].includes(tag) && !context ? text.match(/[^。！？!?]+[。！？!?]*|[。！？!?]+/gu) || [] : [text];
+    const parts = ['p','li','td','th','dd','figcaption'].includes(tag) && !context && !reviewContext ? text.match(/[^。！？!?]+[。！？!?]*|[。！？!?]+/gu) || [] : [text];
     for (const part of parts) {
       const normalized = normalize(part); if (!normalized) continue;
       const text_hash = hash(normalized), key = `${kind}:${text_hash}`;
