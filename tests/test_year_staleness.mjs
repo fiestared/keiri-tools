@@ -29,7 +29,7 @@ const DOCS = join(ROOT, "docs");
 // 「制度の事実」= 年が変わっても真であり続ける記述。機械置換の対象にしてはいけない。
 // snippet はページに**そのまま含まれる**文字列。文言を変えたら免除が外れて落ちる。
 const HISTORICAL_FACTS = [
-  {"file": "embed/jidoshazei/index.html", "snippet": "令和7年度初度登録の登録車EV・燃料電池車のみ対応", "reason": "固定正本 corpus/www_tax_metro_tokyo_lg_jp_kazei_automobiles_shubetsu.txt:701-746 および同軽課表2-6。初回登録の適用年度・車種・額・免除期間を限定した制度条件であり、参照データが令和8年度という申告とは別。全文一致でのみ区別する。"},
+  {"file": "embed/jidoshazei/index.html", "snippet": "令和7年度初度登録の登録車EV・燃料電池車の令和8年度分のみ対応", "reason": "固定正本 corpus/www_tax_metro_tokyo_lg_jp_kazei_automobiles_shubetsu.txt:701-746 および同軽課表2-6。初回登録の適用年度・車種・額・免除期間を限定した制度条件であり、参照データが令和8年度という申告とは別。全文一致でのみ区別する。"},
   {"file": "embed/jidoshazei/index.html", "snippet": "令和7年度初度登録の自家用乗用の登録車EV・燃料電池車の令和8年度6,500円", "reason": "固定正本 corpus/www_tax_metro_tokyo_lg_jp_kazei_automobiles_shubetsu.txt:701-746 および同軽課表2-6。初回登録の適用年度・車種・額・免除期間を限定した制度条件であり、参照データが令和8年度という申告とは別。全文一致でのみ区別する。"},
   {"file": "jidoshazei/index.html", "snippet": "平成21年度〜令和12年度に初回新規登録した電気・水素燃料電池・プラグインハイブリッド車が、登録年度の月割と翌年度から5年度分の課税免除", "reason": "固定正本 corpus/www_tax_metro_tokyo_lg_jp_kazei_automobiles_shubetsu.txt:701-746 および同軽課表2-6。初回登録の適用年度・車種・額・免除期間を限定した制度条件であり、参照データが令和8年度という申告とは別。全文一致でのみ区別する。"},
   {file: "kogaku-ryoyohi/index.html",
