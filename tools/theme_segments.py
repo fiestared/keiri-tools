@@ -298,7 +298,7 @@ def run(a,state,execute,stop):
     if unresolved or wrong:
         return stop(r,f'unresolved findings; fix and review a new snapshot (unresolved {len(unresolved)}, out_of_corpus judged wrong {len(wrong)})')
     if not frozen_ok(r,state):return stop(r,'frozen input changed during Astra')
-    tree=state.get('draft_snapshot',{}).get('tree') or subprocess.check_output(['git','-C',str(r/'site'),'rev-parse','HEAD^{tree}'],text=True).strip()
+    tree=(state.get('draft_snapshot') or {}).get('tree') or subprocess.check_output(['git','-C',str(r/'site'),'rev-parse','HEAD^{tree}'],text=True).strip()
     (r/'review-summary.json').write_text(json.dumps({'status':'reviewed','reviewed_tree':tree,'scope':state['pages'],'unprocessed':0,'unresolved_high':0,'out_of_corpus_kept':len(oc),'sol_models':models,'evidence':str(verdict),'evidence_sha256':digest(verdict)},ensure_ascii=False,indent=2)+'\n')
     (r/'publish-request').write_text('司令塔の検品待ち（未公開）\n'+str(r/'review-summary.json')+'\n')
     (r/'.finished').touch();(r/'STOPPED').unlink(missing_ok=True);return 0
