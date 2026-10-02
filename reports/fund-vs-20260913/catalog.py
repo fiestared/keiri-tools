@@ -14,7 +14,7 @@ K='https://www.rakuten-toushin.co.jp/fund/nav/'
 S='https://www.sbiam.co.jp/fund/report/'
 add('orcan','eMAXIS Slim 全世界株式（オール・カントリー）','eMAXIS Slimオルカン','world','MSCI ACWI',.05775,.07061,'2025/4/26〜2026/4/27',M+'253425.html','日本・先進国・新興国の株式へ投資します。米国株も含むため、米国株ファンドとの併用では投資先の重複が生まれます。',sbi=1,rakuten=1,fee_note='以内（段階制）')
 add('rakuten-orcan','楽天・プラス・オールカントリー株式インデックス・ファンド','楽天・プラス・オルカン','world','MSCI ACWI',.0561,.08,'2024/7/17〜2025/7/15',K+'riracwi/','日本・先進国・新興国を含むMSCIの全世界株式指数を対象とします。「楽天・全世界株式」のVTを主に使う商品とは別です。',rakuten=3)
-add('emaxis-sp','eMAXIS Slim 米国株式（S&P500）','eMAXIS Slim S&P500','us','S&P500',.0814,.07953,'2025/4/26〜2026/4/27',M+'253266.html','純資産の部分ごとに信託報酬率が下がる段階制です。0.0814%は上限であり、資産全体に一律適用される実効率ではありません。',sbi=2,rakuten=2,fee_note='以内（段階制）')
+add('emaxis-sp','eMAXIS Slim 米国株式（S&P500）','eMAXIS Slim S&P500','us','S&P500',.0814,.07953,'2025/4/26〜2026/4/27',M+'253266.html','純資産の部分ごとに信託報酬率が下がる段階制です。0.0814%は最も高い区分の率であり、資産全体に一律適用される実効率ではありません。',sbi=2,rakuten=2,fee_note='以内（段階制）')
 add('rakuten-sp','楽天・プラス・S&P500インデックス・ファンド','楽天・プラス・S&P500','us','S&P500',.077,.09,'2024/7/17〜2025/7/15',K+'rirsp500/','S&P500への連動を目指す通常型です。楽天VTIとは対象指数が異なり、小型株まで広く含める全米型ではありません。',rakuten=4)
 add('sbi-sp','SBI・V・S&P500インデックス・ファンド','SBI・V・S&P500','us','S&P500',.0938,.10,'2024/9/18〜2025/9/16',S+'sa_2019092601.html','米国ETFのVOOを主な投資対象にします。国内ファンド0.0638%と投資先ETF約0.03%を合わせた運用管理費用の概算が約0.0938%です。',sbi=3,fee_note='程度（ETF込み）',domestic=.0638)
 add('rakuten-vti','楽天・全米株式インデックス・ファンド','楽天VTI','us','CRSP USトータル・マーケット',.162,.18,'2024/7/17〜2025/7/15',K+'rivue/','米国ETFのVTIを主に使い、大型株から小型株まで投資します。大型企業の比率も大きいため、S&P500との重複がなくなるわけではありません。',rakuten=5,fee_note='程度（ETF込み）',domestic=.132)
@@ -29,6 +29,37 @@ add('sbi-bull','SBI 日本株4.3ブル','SBI 日本株4.3ブル','bull','日本�
 add('sbi-gold','SBI・iシェアーズ・ゴールドファンド（為替ヘッジなし）','SBI・iシェアーズ・ゴールド（ヘッジなし）','gold','海外の金現物関連ETF・ETC',.1838,.19,'2025/6/11〜2026/6/10',S+'sa_202306080A.html','金の現物に裏付けられた海外の上場商品を通じて投資します。外貨建資産は原則為替ヘッジを行わず、金価格と円相場の影響を受けます。',sbi=10,fee_note='は概算範囲の上端（0.1538〜0.1838%程度）',domestic=.0638)
 add('sbi-vti','SBI・V・全米株式インデックス・ファンド','SBI・V・全米株式','us','CRSP USトータル・マーケット',.0938,.11,'2024/7/12〜2025/7/11',S+'sa_2021062901.html','米国ETFのVTIを主な投資対象にする、今回の上位10本の外から追加した比較相手です。',fee_note='程度（ETF込み）',domestic=.0638)
 add('mufg-gold','三菱UFJ 純金ファンド（愛称：ファインゴールド）','三菱UFJ 純金ファンド','gold','国内上場・純金上場信託',.99,1.,'2025/1/21〜2026/1/20','https://www.am.mufg.jp/fund/251065.html','国内上場の純金上場信託（現物国内保管型）を主要投資対象とします。国内市場の取引価格には需給も影響するため、海外の金価格と同じ評価時点・価格になるとは限りません。',fee_note='程度（ETF込み）',domestic=.55)
+# 2026-10-02 audit: what each current prospectus (交付目論見書) says about securities-lending
+# fees (品貸料) and about currency hedging. Checked per fund on the whitespace-stripped full
+# text of the PDF fetched on 2026-10-02 -- never inferred from the management company
+# (eMAXIS Slim TOPIX has no lending clause, eMAXIS Slim 日経平均 has one).
+#  lend: 'add'  = 貸付の指図を行った場合、品貸料の一定割合以内の額が運用管理費用（信託報酬）に追加される
+#        'rk'   = 「その他の費用・手数料」の貸付有価証券関連報酬（品貸料に0.55（税抜0.5）を乗じて得た額）
+#        None   = 「品貸料」の語が目論見書に0件
+#  hedge: 目論見書本文の書き方（「原則として…行いません」→ 原則なし ／「行いません」→ なし ／ 国内資産は None）
+#  ter2: 目論見書の総経費率欄の小数第2位表示（詳細値を別に示す eMAXIS Slim だけ）
+PROSPECTUS={
+ 'orcan':('2026年7月25日','add','49.5%（税抜45.0%）','原則なし','0.07%'),
+ 'rakuten-orcan':('2026年4月16日','rk',None,'原則なし',None),
+ 'emaxis-sp':('2026年7月25日','add','49.5%（税抜45.0%）','原則なし','0.08%'),
+ 'rakuten-sp':('2026年4月16日','rk',None,'原則なし',None),
+ 'sbi-sp':('2026年6月17日','add','55.0%（税抜50.0%）','なし',None),
+ 'rakuten-vti':('2026年4月16日','rk',None,'原則なし',None),
+ 'fang':('2026年4月24日',None,None,'原則なし',None),
+ 'rakuten-nasdaq':('2026年7月16日','rk',None,'原則なし',None),
+ 'sbi-nasdaq':('2026年5月7日','add','55.0%（税抜50.0%）','なし',None),
+ 'invesco':('2026年9月17日',None,None,'原則なし',None),
+ 'topix':('2026年7月25日',None,None,None,'0.14%'),
+ 'nikkei':('2026年7月25日','add','49.5%（税抜45.0%）',None,'0.14%'),
+ 'rakuten-bull':('2026年9月16日',None,None,None,None),
+ 'sbi-bull':('2026年9月5日',None,None,None,None),
+ 'sbi-gold':('2026年9月11日','add','55.0%（税抜50.0%）','原則なし',None),
+ 'sbi-vti':('2026年4月11日','add','55.0%（税抜50.0%）','なし',None),
+ 'mufg-gold':('2026年4月18日','add','49.5%（税抜45.0%）',None,None),
+}
+assert set(PROSPECTUS)==set(funds)
+for k,(used,lend,rate,hedge,ter2) in PROSPECTUS.items():
+ funds[k].update(prospectus=used,lend=lend,lend_rate=rate,hedge=hedge,ter2=ter2)
 core=[k for k,f in funds.items() if f['sbi'] or f['rakuten']]
 assert len(core)==15
 existing={frozenset(('orcan','rakuten-orcan')):'orcan-hikaku',frozenset(('emaxis-sp','rakuten-sp')):'sp500-hikaku',frozenset(('rakuten-vti','sbi-vti')):'rakuten-vti-vs-sbi-vti',frozenset(('rakuten-bull','sbi-bull')):'rakuten-bull-vs-sbi-bull',frozenset(('fang','rakuten-nasdaq')):'ifreenext-fang-vs-rakuten-nasdaq',frozenset(('invesco','orcan')):'invesco-sekai-vs-emaxis-orcan',frozenset(('topix','nikkei')):'emaxis-topix-vs-nikkei'}

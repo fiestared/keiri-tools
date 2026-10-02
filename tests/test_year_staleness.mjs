@@ -37,6 +37,9 @@ const HISTORICAL_FACTS = [
       "reports/auto20261002-t5-q08464/corpus/chihozei-2027.txt:3-7 の施行版・改正附則で確認。" +
       "データが名乗る令和8年分と矛盾しない制度の事実であり、寄附年・住民税年度・所得要件を含む全文一致だけを区別する。"
   })),
+  {"file": "embed/jidoshazei/index.html", "snippet": "令和7年度初度登録の登録車EV・燃料電池車の令和8年度分のみ対応", "reason": "固定正本 corpus/www_tax_metro_tokyo_lg_jp_kazei_automobiles_shubetsu.txt:701-746 および同軽課表2-6。初回登録の適用年度・車種・額・免除期間を限定した制度条件であり、参照データが令和8年度という申告とは別。全文一致でのみ区別する。"},
+  {"file": "embed/jidoshazei/index.html", "snippet": "令和7年度初度登録の自家用乗用の登録車EV・燃料電池車の令和8年度6,500円", "reason": "固定正本 corpus/www_tax_metro_tokyo_lg_jp_kazei_automobiles_shubetsu.txt:701-746 および同軽課表2-6。初回登録の適用年度・車種・額・免除期間を限定した制度条件であり、参照データが令和8年度という申告とは別。全文一致でのみ区別する。"},
+  {"file": "jidoshazei/index.html", "snippet": "平成21年度〜令和12年度に初回新規登録した電気・水素燃料電池・プラグインハイブリッド車が、登録年度の月割と翌年度から5年度分の課税免除", "reason": "固定正本 corpus/www_tax_metro_tokyo_lg_jp_kazei_automobiles_shubetsu.txt:701-746 および同軽課表2-6。初回登録の適用年度・車種・額・免除期間を限定した制度条件であり、参照データが令和8年度という申告とは別。全文一致でのみ区別する。"},
   {file: "kogaku-ryoyohi/index.html",
    snippet: "一般区分の標準報酬月額は、令和8年8月～令和9年7月の世帯年間上限の判定に使います（53万円、標報15万円以下と確認できた方は41万円・令和9年8月以降に償還払い）。令和8年7月以前にこの世帯年間上限はありません。",
    reason: "r16: 協会けんぽの対象期間別公表表 https://www.kyoukaikenpo.or.jp/benefit/high_cost_medical_expenses/002/ の世帯年間上限の適用期間・償還時期。" +
@@ -44,8 +47,8 @@ const HISTORICAL_FACTS = [
      "計算機全体が単一年度のデータを使うという申告ではない。年号だけを免除せず、期間・所得条件・金額・償還時期を含む全文一致に限る。" +
      "金額や年を変えると一致しなくなる。期間表・年間上限は test_kogaku.mjs でも検査する。"},
   ...[
-    '令和7年度初度登録の電気自動車・燃料電池車は翌年度の75%軽課（年額6,500円）',
-    '令和7年度に初度登録した電気自動車・燃料電池車の令和8年度年額6,500円',
+    '令和7年度初度登録の自家用乗用の登録車に限り、電気自動車・燃料電池車は翌年度の概ね75%軽課（年額6,500円）',
+    '令和7年度に初度登録した自家用乗用の登録車の電気自動車・燃料電池車に限り、令和8年度年額6,500円',
   ].map(snippet => ({file: 'jidoshazei/index.html', snippet,
     reason: '三重県令和8年度税額表 https://www.pref.mie.lg.jp/common/content/001128502.pdf の軽課対象となる登録年度。' +
       '令和7年度初度登録の翌年度が令和8年度であるという適用条件で、参照データの年度を古く申告しているものではない。' +

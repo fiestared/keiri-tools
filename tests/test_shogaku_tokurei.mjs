@@ -224,5 +224,12 @@ t('カナリア: 適用期限そのものを過ぎていないか（過ぎたら
     `適用期限 ${S.chusho_kigen} を過ぎた。延長の有無を確認し chusho_kigen を更新すること`);
 });
 
+// 旧取得・新供用でも人数は取得日で分ける（措令改正附則9・20条）。
+for (const [acqYm, expectedPeople] of [['2026-03',500], ['2026-04',400]]) {
+ const note=calcGenka({method:'teigaku',cost:150000,life:4,acqYm,serviceYm:'2026-04'},D).notes.find(n=>n.includes('少額減価償却資産の特例'));
+ assert.equal(Number(note?.match(/従業員(\d+)人/)?.[1]),expectedPeople,`${acqYm}: 取得日で従業員数の新旧を判定`);
+}
+
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
+

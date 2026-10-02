@@ -83,3 +83,18 @@ assert.equal(practical.find(u=>u.kind==='p').protected,true);
   assert.ok(validateSegments(h, bad).errors.some(e => e.includes('invalid nonclaim')));
 }
 console.log('one-pass units: figure bundled; table cell with row/column headers; boundary headings protected');
+
+// t11-q08465: protected row labels/questions need their actual data/answer.
+{
+ const html='<table><tr><th>年度</th><th>一括</th><th>特例</th></tr><tr><td data-review-context="row">1年目</td><td>50,000円</td><td>150,000円</td></tr></table><h2>よくある質問</h2><h3 data-review-context="next">3年途中の除却は？</h3><p class="faq-answer">通常除却では残額算入不可。清算等の例外あり。</p>';
+ const units=segmentClaims(html), row=units.find(x=>x.text.startsWith('【行】1年目 /')), q=units.find(x=>x.text.startsWith('【質問】'));
+ assert.ok(row?.text.includes('【列】一括 【値】50,000円'));
+ assert.ok(row?.text.includes('【列】特例 【値】150,000円'));
+ assert.ok(q?.text.includes('【回答】通常除却では残額算入不可。清算等の例外あり。'));
+ assert.ok(row.protected && q.protected);
+ assert.notEqual(segmentClaims(html.replace('150,000円','100,000円')).find(x=>x.text.startsWith('【行】1年目 /')).id,row.id);
+ assert.notEqual(segmentClaims(html.replace('清算等の例外あり','例外なし')).find(x=>x.text.startsWith('【質問】')).id,q.id);
+ assert.throws(()=>segmentClaims('<h3 data-review-context="next">問い</h3><p>回答class欠落</p>'),/adjacent FAQ answer/);
+ assert.throws(()=>segmentClaims('<table><tr><td data-review-context="row">1年目</td></tr></table>'),/row label/);
+ assert.ok(validateSegments(units,{nonclaims:[{id:q.id,why:'質問'}]}).errors.some(x=>x.includes('invalid nonclaim')));
+}
