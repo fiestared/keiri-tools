@@ -9,6 +9,12 @@
 //   node tools/analytics_report.mjs --check    # 接続確認。権限が無ければセットアップ手順を出す
 //   node tools/analytics_report.mjs            # 直近28日: サイトごとに GSC + GA4
 //   node tools/analytics_report.mjs --days 7 --site aitimes.jp
+//   node tools/analytics_report.mjs --engagement [--days 7]
+//       keiri-tools.com の「どのボタンが押されたか・どの部分が読まれたか」(track.js 2026-10-03〜)。
+//       ui_click(from×slot×linkText) / section_view(区画ごとの表示率 = 件数 ÷ そのページのPV) /
+//       scroll_depth(25/50/75/100% の到達率)。GA4 は当日分も入るので、この節だけ終端を「今日」にする。
+//       ★読めるのは登録済みのカスタムディメンション(from / slot)と標準の linkText だけ。
+//         新しい情報は track.js 側で slot の文字列に載せている(SA は閲覧者で、ディメンションを登録できない)
 //
 // 出力の日付はすべてJST。GSCのデータは約2日遅れで確定することに注意。
 
@@ -28,6 +34,7 @@ const args = process.argv.slice(2);
 const CHECK = args.includes("--check");
 const DAYS = Number(args[args.indexOf("--days") + 1]) || 28;
 const ONLY = args.includes("--site") ? args[args.indexOf("--site") + 1] : null;
+const ENGAGEMENT = args.includes("--engagement");
 
 // ---------- 認証(依存ゼロ: JWT自作 → access_token) ----------
 const sa = JSON.parse(readFileSync(SA_PATH, "utf8"));
@@ -187,6 +194,65 @@ if (CHECK) {
   }
   if (!ok) console.log("\n" + setupGuide());
   process.exit(ok ? 0 : 1);
+}
+
+// ---------- --engagement: ボタン・区画・スクロール(track.js の ui_click / section_view / scroll_depth) ----------
+async function engagementReport(property, domain) {
+  const today = jstDate(now);
+  const from = jstDate(new Date(now.getTime() - (DAYS - 1) * 864e5));
+  const host = { filter: { fieldName: "hostName", stringFilter: { matchType: "EXACT", value: domain } } };
+  const ev = (name) => ({ andGroup: { expressions: [host,
+    { filter: { fieldName: "eventName", stringFilter: { matchType: "EXACT", value: name } } }] } });
+  const run = (body) => api(`https://analyticsdata.googleapis.com/v1beta/${property}:runReport`, {
+    dateRanges: [{ startDate: from, endDate: today }], limit: 10000, ...body });
+  const count = { metrics: [{ name: "eventCount" }], orderBys: [{ metric: { metricName: "eventCount" }, desc: true }] };
+  const [ui, sec, depth, pv] = await Promise.all([
+    run({ dimensions: [{ name: "customEvent:from" }, { name: "customEvent:slot" }, { name: "linkText" }], dimensionFilter: ev("ui_click"), ...count }),
+    run({ dimensions: [{ name: "customEvent:from" }, { name: "customEvent:slot" }], dimensionFilter: ev("section_view"), ...count }),
+    run({ dimensions: [{ name: "customEvent:from" }, { name: "customEvent:slot" }], dimensionFilter: ev("scroll_depth"), ...count }),
+    run({ dimensions: [{ name: "pagePath" }], metrics: [{ name: "screenPageViews" }], dimensionFilter: host,
+      orderBys: [{ metric: { metricName: "screenPageViews" }, desc: true }] }),
+  ]);
+  const rows = (r) => (r.rows ?? []).map((x) => ({ d: x.dimensionValues.map((v) => v.value), n: Number(x.metricValues[0].value) }));
+  // track.js の from は「パスの前後のスラッシュを落としたもの」。PV の pagePath を同じ形にそろえる
+  const pageId = (p) => p.replace(/index\.html$/, "").replace(/^\/+|\/+$/g, "") || "(top)";
+  const pvBy = new Map();
+  for (const r of rows(pv)) pvBy.set(pageId(r.d[0]), (pvBy.get(pageId(r.d[0])) ?? 0) + r.n);
+  const pct = (n, d) => (d ? ((n / d) * 100).toFixed(1) + "%" : "-");
+
+  console.log(`\n# エンゲージメント ${from} 〜 ${today} (JST・当日分は未確定) — ${domain}`);
+  console.log(`\n## ui_click 上位50 (from\tslot\tlinkText\tclicks\tclicks/PV)`);
+  console.log(rows(ui).slice(0, 50).map((r) =>
+    [r.d[0], r.d[1], r.d[2], r.n, pct(r.n, pvBy.get(r.d[0]))].join("\t")).join("\n") || "(データなし)");
+
+  const group = (rs) => {
+    const m = new Map();
+    for (const r of rs) { if (!m.has(r.d[0])) m.set(r.d[0], []); m.get(r.d[0]).push(r); }
+    return [...m.entries()].sort((a, b) => (pvBy.get(b[0]) ?? 0) - (pvBy.get(a[0]) ?? 0));
+  };
+  console.log(`\n## section_view 区画ごとの表示率 (PV上位30ページ。page [PV] → slot 件数 表示率)`);
+  const secPages = group(rows(sec)).slice(0, 30);
+  console.log(secPages.map(([page, rs]) => {
+    const p = pvBy.get(page) ?? 0;
+    return `${page} [PV ${p}]\n` + rs.sort((a, b) => b.n - a.n)
+      .map((r) => `  ${r.d[1]}\t${r.n}\t${pct(r.n, p)}`).join("\n");
+  }).join("\n") || "(データなし)");
+
+  console.log(`\n## scroll_depth 到達率 (PV上位30ページ。page\tPV\t25%\t50%\t75%\t100%)`);
+  const dPages = group(rows(depth)).slice(0, 30);
+  console.log(dPages.map(([page, rs]) => {
+    const p = pvBy.get(page) ?? 0;
+    const at = (k) => rs.find((r) => r.d[1] === `scroll:${k}`)?.n ?? 0;
+    return [page, p, ...[25, 50, 75, 100].map((k) => `${at(k)} (${pct(at(k), p)})`)].join("\t");
+  }).join("\n") || "(データなし)");
+}
+
+if (ENGAGEMENT) {
+  const props = await resolveProperties();
+  const t = SITES[0]; // track.js を載せているのは keiri-tools.com だけ
+  if (!props[t.measurementId]) { console.log("(GA4: プロパティ未解決 — --check 参照)"); process.exit(1); }
+  await engagementReport(props[t.measurementId], t.domain);
+  process.exit(0);
 }
 
 console.log(`# 実測レポート ${start} 〜 ${end} (JST)`);
