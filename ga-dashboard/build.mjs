@@ -186,6 +186,29 @@ const searchAnalytics = (token, siteUrl, body) =>
   });
 
 // ---------- 取得 ----------
+// ---------- 流入元の群 ----------
+// 色は CSS 変数（--src-*）。並び順＝積み上げの下から。Bing が主（2026-10 時点で約9割）なので一番下に置き、伸ばしたい Google を2番目に。
+const SOURCE_GROUPS = [
+  { key: "bing", label: "Bing" },
+  { key: "google", label: "Google" },
+  { key: "ai", label: "AI（ChatGPT・Copilot 等）" },
+  { key: "search", label: "その他の検索" },
+  { key: "direct", label: "直接" },
+  { key: "other", label: "その他" },
+  { key: "unset", label: "判定前（当日に多い）" },
+];
+function sourceGroup(src) {
+  const v = String(src || "").toLowerCase();
+  if (v.includes("bing")) return "bing";
+  if (v.includes("google")) return "google";
+  if (/openai|chatgpt|copilot|perplexity|gemini|claude\.ai|bard|you\.com|phind/.test(v)) return "ai";
+  if (/duckduckgo|yahoo|ecosia|yandex|baidu|naver|brave|startpage|qwant|seznam|so\.com|sogou/.test(v)) return "search";
+  if (v === "(direct)") return "direct";
+  // GA4 は当日の流入元を後から割り振る（当日分は "(not set)" が大半）。「その他」に混ぜると当日だけ別物に見える
+  if (v === "(not set)" || v === "(data not available)" || v === "") return "unset";  // 当日は両方が大半（2026-10-03 実測: 当日 not set 192・data not available 177、前日は0）
+  return "other";
+}
+
 async function fetchAll() {
   const token = await accessToken();
   const now = jstFields();
@@ -221,6 +244,22 @@ async function fetchAll() {
       metrics: [{ name: "sessions" }],
       limit: 2000,
     });
+    // 流入元別（2026-10-03 Masahiro「どこからのトラフィックかで色分けして棒グラフ出すようにできる？」）。
+    //   日次の棒を流入元の群（SOURCE_GROUPS）で積み上げる。群への振り分けは sourceGroup() の1箇所だけ。
+    const bySource = await runReport(token, s.property, {
+      dimensionFilter: hostFilter,
+      dimensions: [{ name: "date" }, { name: "sessionSource" }],
+      metrics: [{ name: "sessions" }],
+      limit: 10000,
+    });
+    const sources = {};
+    for (const r of bySource.rows ?? []) {
+      const raw = r.dimensionValues[0].value;
+      const date = `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`;
+      const g = sourceGroup(r.dimensionValues[1].value);
+      const day = (sources[date] ??= {});
+      day[g] = (day[g] ?? 0) + Number(r.metricValues[0].value);
+    }
     // ページ名は月次更新で変わるため、集計キーは pagePath に固定する。
     // pageTitle は画面で人が識別するためだけに使い、同じ path の行は後段で合算する。
     const pages = await runReport(token, s.property, {
@@ -391,7 +430,7 @@ async function fetchAll() {
     // titleSuffix は RegExp なので data.json に載せない（描画時に SITES から引き直す）
     const { titleSuffix: _titleSuffix, ...cfg } = s;
     sites.push({
-      ...cfg, days, pageRows, gsc, retention,
+      ...cfg, days, pageRows, gsc, retention, sources,
       feeDays: days.map(({ date }) => ({ date, ...(feeMap.get(date) ?? { pageviews: 0, clicks: 0 }) })),
       cutoff, cutoffHour, cmpHour: lastFull,
       todayCum: lastFull >= 0 ? cumToHour(today, lastFull) : 0,
@@ -451,6 +490,7 @@ function model(data) {
           offName: offDayName(x.date),
           today: i === arr.length - 1,
           prev: prev ? prev.sessions : null,
+          src: s.sources?.[x.date] ?? null,
         };
       });
       const last7 = sum(d.slice(n - 8, n - 1).map((x) => x.sessions));   // 昨日までの7日
@@ -611,6 +651,7 @@ function chart(site) {
   const ticks = [];
   for (let v = 0; v <= top + 1e-9; v += st) ticks.push(v);
 
+  const stacked = site.shown.some((d) => d.src);
   const bars = site.shown.map((d, i) => {
     const x = PAD.l + band * i + (band - bw) / 2;
     const h = Math.max(d.sessions > 0 ? 2 : 0, (d.sessions / top) * ih);
@@ -619,8 +660,24 @@ function chart(site) {
     const path = h <= 0 ? "" :
       `M${x} ${yy + h} L${x} ${yy + r} Q${x} ${yy} ${x + r} ${yy} L${x + bw - r} ${yy} Q${x + bw} ${yy} ${x + bw} ${yy + r} L${x + bw} ${yy + h} Z`;
     const fill = d.today ? `url(#hatch-${site.key})` : "var(--series-1)";
-    return { d, x, yy, h, path, fill, cx: PAD.l + band * i + band / 2 };
+    // 流入元の積み上げ。棒の高さは日次の sessions（正）のまま、内訳の比で切り分ける
+    //   （流入元別の合計は日次とわずかにずれることがあるので、高さの正本は日次に置く）。
+    let segs = [];
+    const srcTotal = d.src ? Object.values(d.src).reduce((a, b) => a + b, 0) : 0;
+    if (stacked && srcTotal > 0 && h > 0) {
+      let acc = 0;
+      segs = SOURCE_GROUPS.filter((g) => d.src[g.key]).map((g) => {
+        const sh = (d.src[g.key] / srcTotal) * h;
+        const seg = { key: g.key, y: PAD.t + ih - acc - sh, h: sh };
+        acc += sh;
+        return seg;
+      });
+    }
+    return { d, x, yy, h, path, fill, segs, cx: PAD.l + band * i + band / 2 };
   });
+  const srcTip = (d) => d.src
+    ? " / " + SOURCE_GROUPS.filter((g) => d.src[g.key]).map((g) => `${g.label.replace(/（.*）/, "")} ${d.src[g.key].toLocaleString("ja-JP")}`).join("・")
+    : "";
 
   return `
 <figure class="chart">
@@ -636,7 +693,11 @@ function chart(site) {
     ${ticks.map((v) => `<line x1="${PAD.l}" x2="${W - PAD.r}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"
         stroke="${v === 0 ? "var(--axis)" : "var(--grid)"}" stroke-width="1" shape-rendering="crispEdges"/>`).join("")}
     ${ticks.map((v) => `<text x="${PAD.l - 8}" y="${(y(v) + 4).toFixed(1)}" class="tick" text-anchor="end">${v.toLocaleString("ja-JP")}</text>`).join("")}
-    ${bars.map((b) => b.path ? `<path d="${b.path}" fill="${b.fill}"/>` : "").join("")}
+    ${stacked
+      ? bars.map((b) => `<clipPath id="clip-${site.key}-${b.d.date}"><path d="${b.path}"/></clipPath>
+        <g clip-path="url(#clip-${site.key}-${b.d.date})" ${b.d.today ? 'opacity="0.55"' : ""}>${b.segs.map((g) =>
+          `<rect x="${b.x}" y="${g.y.toFixed(1)}" width="${bw}" height="${g.h.toFixed(1)}" fill="var(--src-${g.key})"/>`).join("")}</g>`).join("")
+      : bars.map((b) => b.path ? `<path d="${b.path}" fill="${b.fill}"/>` : "").join("")}
     ${bars.map((b) => `
       <text x="${b.cx}" y="${H - PAD.b + 16}" class="xlab ${b.d.weekend ? "we" : ""}" text-anchor="middle">${b.d.wd}</text>
       <text x="${b.cx}" y="${H - PAD.b + 30}" class="xsub" text-anchor="middle">${b.d.date.slice(5).replace("-", "/")}</text>`).join("")}
@@ -644,10 +705,12 @@ function chart(site) {
         ? `<text x="${b.cx}" y="${(b.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${b.d.sessions.toLocaleString("ja-JP")}</text>` : ""; })()}
     ${bars.map((b, i) => `<rect class="hit" x="${PAD.l + (iw / site.shown.length) * i}" y="${PAD.t}"
         width="${iw / site.shown.length}" height="${ih}" fill="transparent"
-        data-tip="${esc(`${b.d.date}(${b.d.wd})${b.d.today ? " ※途中" : ""} — ${b.d.sessions.toLocaleString("ja-JP")} セッション / ${b.d.users.toLocaleString("ja-JP")} ユーザー${b.d.prev !== null ? ` / 前週同曜日 ${b.d.prev.toLocaleString("ja-JP")}` : ""}`)}"></rect>`).join("")}
+        data-tip="${esc(`${b.d.date}(${b.d.wd})${b.d.today ? " ※途中" : ""} — ${b.d.sessions.toLocaleString("ja-JP")} セッション / ${b.d.users.toLocaleString("ja-JP")} ユーザー${b.d.prev !== null ? ` / 前週同曜日 ${b.d.prev.toLocaleString("ja-JP")}` : ""}${srcTip(b.d)}`)}"></rect>`).join("")}
   </svg>
   </div>
-  <figcaption>直近${WINDOW_DAYS}日のセッション数（JST）。<span class="swatch-hatch"></span> は当日ぶんで、まだ増える。</figcaption>
+  <figcaption>直近${WINDOW_DAYS}日のセッション数（JST）。${stacked
+    ? `色は流入元: ${SOURCE_GROUPS.map((g) => `<span class="src-key"><span class="src-sw" style="background:var(--src-${g.key})"></span>${g.label}</span>`).join("")}。薄い棒は当日ぶんで、まだ増える。`
+    : `<span class="swatch-hatch"></span> は当日ぶんで、まだ増える。`}</figcaption>
 </figure>`;
 }
 
@@ -1167,7 +1230,11 @@ const CSS = `
   /* 先週同曜日＝破線で他の2系列と区別する */
   --series-3:#a55400;
   --up:#006300; --down:#d03b3b; --warn:#fab219;
+  /* 流入元（積み上げ棒）。隣り合う群が見分けられる明度差をつける */
+  --src-bing:#2a78d6; --src-google:#1f9d55; --src-ai:#8a4fd1; --src-search:#d08c00; --src-direct:#8a8580; --src-other:#c9c7bf; --src-unset:#e9e7e0;
 }
+.src-key{display:inline-flex;align-items:center;gap:4px;margin:0 8px 0 2px;white-space:nowrap}
+.src-sw{display:inline-block;width:10px;height:10px;border-radius:2px}
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme: dark;
@@ -1178,6 +1245,7 @@ const CSS = `
     --series-2:#8f8b85; --series-2-wash:rgba(143,139,133,.20);
     --series-3:#f0a24a;
     --up:#0ca30c; --down:#e66767;
+    --src-bing:#3987e5; --src-google:#2fbf6c; --src-ai:#a77be6; --src-search:#f0a830; --src-direct:#8f8b85; --src-other:#55534e; --src-unset:#33322f;
   }
 }
 :root[data-theme="dark"]{
@@ -1189,6 +1257,7 @@ const CSS = `
   --series-2:#8f8b85; --series-2-wash:rgba(143,139,133,.20);
   --series-3:#f0a24a;
   --up:#0ca30c; --down:#e66767;
+  --src-bing:#3987e5; --src-google:#2fbf6c; --src-ai:#a77be6; --src-search:#f0a830; --src-direct:#8f8b85; --src-other:#55534e; --src-unset:#33322f;
 }
 
 *{box-sizing:border-box}
