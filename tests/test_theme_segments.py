@@ -252,6 +252,10 @@ class QuoteRefFormats(unittest.TestCase):
             self.assertFalse(qp(run,'corpus/a.txt:11; corpus/b.txt:1','会社が対象です。\n正本に存在しない文です'))  # 断片の1つが正本に無い
             self.assertFalse(qp(run,'corpus/c.png:1','会社が対象です。'))                        # 画像
             self.assertFalse(qp(run,'corpus/a.txt','会社が対象です。'))                           # 行番号の無い参照は書式違反
+            (run/'corpus/d.csv').write_bytes('基準日,基準価額(円)\n2026/09/30,13022\n'.encode('cp932'))
+            self.assertTrue(qp(run,'corpus/d.csv:2','2026/09/30,13022'))                           # Shift_JIS の CSV（2026-10-03）
+            self.assertTrue(qp(run,'corpus/d.csv:1','基準日,基準価額(円)'))
+            self.assertFalse(qp(run,'corpus/d.csv:2','2026/09/30,99999'))                          # CSV でも逐語でなければ不成立
 
 class CoveredValue(unittest.TestCase):
     """covered は先頭の語で読む（理由書きつきを許す）。条件なし・未被覆・知らない値は従来どおり落とす（2026-10-02）。"""

@@ -113,9 +113,14 @@ def quote_present(run,ref,quote):
         for candidate in (run/name,run/'corpus'/name):
             c=candidate.resolve()
             if any(c.is_relative_to(base/folder) for folder in ('corpus','t1-corpus')) and c.is_file():path=c;break
-        if path is None or path.suffix.lower() not in ('.txt','.md','.htm','.html','.xml','.json'):return False
-        try:lines=path.read_text().splitlines()
-        except (UnicodeDecodeError,OSError):return False
+        # 2026-10-03: 投信の基準価額 CSV（楽天）・SBI の XML は Shift_JIS。.csv を許さず UTF-8 でしか読まなかったので、正しい引用 33 件が不成立になった（write-2026-10-03-fin）
+        if path is None or path.suffix.lower() not in ('.txt','.md','.htm','.html','.xml','.json','.csv','.tsv'):return False
+        lines=None
+        for enc in ('utf-8','cp932'):
+            try:lines=path.read_text(encoding=enc).splitlines();break
+            except UnicodeDecodeError:continue
+            except OSError:return False
+        if lines is None:return False
         for span in spans.split(','):
             a,_,b=span.strip().replace('L','').partition('-');a=int(a);b=int(b or a)
             if a<1 or b<a or a>len(lines):return False
