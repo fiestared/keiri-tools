@@ -554,6 +554,8 @@ const ORDER = [
   // 2026-10-01 投信比較の第2便（Masahiro「googleはこの投信の比較記事をどんどん作っていってサイトの信頼度上げる形にしようぜ」）。需要順（keyword_demand.py 2026-10-01 実測・Google推定）:
   // オルカン 240,800/FANG+ 160,800 → インド株 39,600 → 楽天SCHD 32,400 → たわらノーロード 先進国株式 26,480 → 全世界株式 11,840 → 金 投資信託 11,840/楽天 ゴールド 2,320 → SBI 雪だるま 1,280 → 楽天SCHD×楽天VYM(704)。根拠は reports/fund-vs-20261001。
   "orcan-vs-fang",
+  // 2026-10-03 投信比較の金融アドオン（1日1本）。SCHD 196,800/SPYD 39,600/楽天SCHD 32,400（keyword_demand.py 2026-10-03・2026-10-01 実測・Google推定）。根拠は reports/fund-vs-20261003。
+  "sbi-spyd-vs-rakuten-schd",
   "ifreenext-india-vs-rakuten-india",
   "rakuten-schd-vs-sbi-vym",
   "tawara-vs-emaxis-sensinkoku",
@@ -573,7 +575,7 @@ const CATEGORIES = [
     id: "shisan",
     name: "資産形成・投資",
     desc: "インデックス投資の考え方と、費用・分散・元本割れの扱い。具体的な商品名で投資信託を比較し、費用と同期間の実績、投資対象の違いを示します。特定の商品を勧めるものではありません。",
-    slugs: ["index-toushi", "dollar-cost-heikin", "orcan-sp500-holding-period", "orcan-sp500-recovery-days", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold", "orcan-vs-fang", "ifreenext-india-vs-rakuten-india", "rakuten-schd-vs-sbi-vym", "tawara-vs-emaxis-sensinkoku", "orcan-vs-emaxis-sensinkoku", "rakuten-gold-vs-sbi-gold", "sbi-yukidaruma-vs-orcan", "rakuten-schd-vs-rakuten-vym"],
+    slugs: ["index-toushi", "dollar-cost-heikin", "orcan-sp500-holding-period", "orcan-sp500-recovery-days", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold", "orcan-vs-fang", "ifreenext-india-vs-rakuten-india", "rakuten-schd-vs-sbi-vym", "tawara-vs-emaxis-sensinkoku", "orcan-vs-emaxis-sensinkoku", "rakuten-gold-vs-sbi-gold", "sbi-yukidaruma-vs-orcan", "rakuten-schd-vs-rakuten-vym", "sbi-spyd-vs-rakuten-schd"],
   },
   {
     id: "shakai-hoken",
