@@ -192,6 +192,7 @@ const SOURCE_GROUPS = [
   { key: "bing", label: "Bing" },
   { key: "google", label: "Google" },
   { key: "ai", label: "AI（ChatGPT・Copilot 等）" },
+  { key: "x", label: "X" },
   { key: "search", label: "その他の検索" },
   { key: "direct", label: "直接" },
   { key: "other", label: "その他" },
@@ -199,6 +200,9 @@ const SOURCE_GROUPS = [
 ];
 function sourceGroup(src) {
   const v = String(src || "").toLowerCase();
+  // X: 投稿URLの utm_source=x と、X の短縮URL t.co（2026-10-03 Masahiro「Xもトラフィックにラベル付けしてくれる？」。
+  //   道しるべの直近28日で x 104・t.co 48。"twitter"・"x.com" も X として数える）
+  if (v === "x" || v === "t.co" || v === "x.com" || v.endsWith(".x.com") || v.includes("twitter")) return "x";
   if (v.includes("bing")) return "bing";
   if (v.includes("google")) return "google";
   if (/openai|chatgpt|copilot|perplexity|gemini|claude\.ai|bard|you\.com|phind/.test(v)) return "ai";
@@ -1231,7 +1235,7 @@ const CSS = `
   --series-3:#a55400;
   --up:#006300; --down:#d03b3b; --warn:#fab219;
   /* 流入元（積み上げ棒）。隣り合う群が見分けられる明度差をつける */
-  --src-bing:#2a78d6; --src-google:#1f9d55; --src-ai:#8a4fd1; --src-search:#d08c00; --src-direct:#8a8580; --src-other:#c9c7bf; --src-unset:#e9e7e0;
+  --src-bing:#2a78d6; --src-google:#1f9d55; --src-ai:#8a4fd1; --src-search:#d08c00; --src-x:#111111; --src-direct:#8a8580; --src-other:#c9c7bf; --src-unset:#e9e7e0;
 }
 .src-key{display:inline-flex;align-items:center;gap:4px;margin:0 8px 0 2px;white-space:nowrap}
 .src-sw{display:inline-block;width:10px;height:10px;border-radius:2px}
@@ -1245,7 +1249,7 @@ const CSS = `
     --series-2:#8f8b85; --series-2-wash:rgba(143,139,133,.20);
     --series-3:#f0a24a;
     --up:#0ca30c; --down:#e66767;
-    --src-bing:#3987e5; --src-google:#2fbf6c; --src-ai:#a77be6; --src-search:#f0a830; --src-direct:#8f8b85; --src-other:#55534e; --src-unset:#33322f;
+    --src-bing:#3987e5; --src-google:#2fbf6c; --src-ai:#a77be6; --src-search:#f0a830; --src-x:#e8e8e8; --src-direct:#8f8b85; --src-other:#55534e; --src-unset:#33322f;
   }
 }
 :root[data-theme="dark"]{
@@ -1257,7 +1261,7 @@ const CSS = `
   --series-2:#8f8b85; --series-2-wash:rgba(143,139,133,.20);
   --series-3:#f0a24a;
   --up:#0ca30c; --down:#e66767;
-  --src-bing:#3987e5; --src-google:#2fbf6c; --src-ai:#a77be6; --src-search:#f0a830; --src-direct:#8f8b85; --src-other:#55534e; --src-unset:#33322f;
+  --src-bing:#3987e5; --src-google:#2fbf6c; --src-ai:#a77be6; --src-search:#f0a830; --src-x:#e8e8e8; --src-direct:#8f8b85; --src-other:#55534e; --src-unset:#33322f;
 }
 
 *{box-sizing:border-box}
