@@ -126,8 +126,10 @@ const SUBSTANCE = ["text", "numbers", "applies", "source_url", "source_quote"];
 const substance = (c) => JSON.stringify(SUBSTANCE.map((k) => c?.[k] ?? null));
 export function isNewClaim(claim, baseLedger) {
   if (baseLedger === undefined) return false;                 // 基点が分からない呼び出し（従来の単体検査）は課さない
-  const before = (baseLedger?.claims ?? []).find((b) => b.id === claim.id);
-  return !before || substance(before) !== substance(claim);
+  // ★2026-10-03: 同じ id の主張が台帳に複数ある（gensen-zeigakuhyo-mikata に113組）。find() で最初の1件とだけ比べると、
+  //   変えていない2件目以降が「変えた主張」になり、ページを1行直しただけで113件が赤になった。同じ id で中身の一致する基点の主張があれば既存。
+  const s = substance(claim);
+  return !(baseLedger?.claims ?? []).some((b) => b.id === claim.id && substance(b) === s);
 }
 const exceptionList = (e) => Array.isArray(e) ? e.filter((x) => typeof x === "string" && x.trim()) : typeof e === "string" && e.trim() ? [e.trim()] : [];
 export function scopeErrors(claim, page) {

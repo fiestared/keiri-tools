@@ -137,6 +137,12 @@ assert.ok(checkPage({html:changedPage,ledger:null,requiredText:addedClaimText(ch
   const changed = structuredClone(base); changed.claims[1].numbers = ["3万円", "550円", "令和8年分"];
   const errs = checkPage({ html: HTML, ledger: changed, page: "p", baseLedger: structuredClone(base) });
   assert.ok(errs.some((e) => /c02.*scope/.test(e)) && !errs.some((e) => /c01.*scope/.test(e)), `変えた主張だけに scope を要求する: ${JSON.stringify(errs)}`);
+  // 同じ id が台帳に2件ある（中身は別）: 変えていなければ2件とも既存、2件目を変えたら2件目だけ新規
+  const dup = structuredClone(base); dup.claims.push({ ...structuredClone(base.claims[0]), text: base.claims[0].text + "（再掲）" });
+  assert.deepEqual(checkPage({ html: HTML, ledger: dup, page: "p", baseLedger: structuredClone(dup) }), [], "同じ id の2件目（変えていない）に scope を要求した");
+  const dupChanged = structuredClone(dup); dupChanged.claims[2].numbers = ["999円"];
+  assert.equal(isNewClaim(dupChanged.claims[2], dup), true, "同じ id の2件目を変えたのに既存扱いにした");
+  assert.equal(isNewClaim(dupChanged.claims[0], dup), false, "同じ id の1件目（変えていない）を新規扱いにした");
   const arr = structuredClone(withScope); arr.claims[0].exceptions = ["昼間学生は対象外（休学・夜間は対象）", "2か月以内の雇用は対象外"];
   assert.deepEqual(checkPage({ html: HTML, ledger: arr, page: "p", baseLedger: null }), [], "例外の配列（全件の列挙）を受け付けない");
 }
