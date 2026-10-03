@@ -1,5 +1,5 @@
 /**
- * 自動車税（種別割）判定コア（jidoshazei_core.js）の単体テスト。
+ * 自動車税判定コア（jidoshazei_core.js）の単体テスト。
  *
  * ★オラクルの独立性（CLAUDE.md 一次情報の読み方）:
  *   期待値はコアを通さず、**主税局・市の税額表に載っている税額そのもの**で照合する。
@@ -144,6 +144,17 @@ t('★軽自動車税に月割はない（prorateMonthを渡してもproration=n
 t('登録車は都道府県税・軽は市区町村税を taxKind で申告', () => {
   assert.ok(/都道府県税/.test(P({ cc: 'le2000' }).taxKind));
   assert.ok(/市区町村税/.test(K({}).taxKind));
+});
+t('令和8年度の税目名は「自動車税」「軽自動車税」（旧称の種別割を出力に出さない）', () => {
+  // 東京都主税局: 令和8年4月1日から「自動車税種別割」は「自動車税」へ名称が変更されました。
+  const p = P({ cc: 'le2000', prorateMonth: 8 });
+  const k = K({ prorateMonth: 6, jyuka: true });
+  for (const r of [p, k]) {
+    assert.ok(!/種別割/.test(r.taxKind), r.taxKind);
+    assert.ok(r.notes.every((n) => !/種別割/.test(n)), r.notes.join(' / '));
+  }
+  assert.ok(/^自動車税/.test(p.taxKind));
+  assert.ok(/^軽自動車税/.test(k.taxKind));
 });
 
 // ── 8. fail closed: データ・入力が無ければ throw（黙って答えない）───────────────────
