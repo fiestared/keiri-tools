@@ -256,6 +256,12 @@ class QuoteRefFormats(unittest.TestCase):
             self.assertTrue(qp(run,'corpus/d.csv:2','2026/09/30,13022'))                           # Shift_JIS の CSV（2026-10-03）
             self.assertTrue(qp(run,'corpus/d.csv:1','基準日,基準価額(円)'))
             self.assertFalse(qp(run,'corpus/d.csv:2','2026/09/30,99999'))                          # CSV でも逐語でなければ不成立
+            import json as _j
+            (run/'corpus/law.json').write_text(_j.dumps({'law':{'Sentence':['市町村は指定しなければならない。','この場合においては通知する。']}},ensure_ascii=False))
+            self.assertTrue(qp(run,'corpus/law.json:1','指定しなければならない。この場合において'))   # JSON の文の区切りをまたぐ引用（e-Gov・2026-10-04）
+            self.assertFalse(qp(run,'corpus/law.json:1','指定しなければならない。その場合において'))  # つないでも逐語でなければ不成立
+            (run/'corpus/egov.json').write_text(_j.dumps({'tag':'Paragraph','attr':{'Num':'2'},'children':[{'tag':'Sentence','attr':{'Num':'1'},'children':['定めなければならない。']},{'tag':'Sentence','attr':{'Num':'2'},'children':['この場合において通知する。']}]},ensure_ascii=False))
+            self.assertTrue(qp(run,'corpus/egov.json:1','定めなければならない。この場合において'))   # e-Gov v2 の tag・attr を本文に混ぜない
 
 class CoveredValue(unittest.TestCase):
     """covered は先頭の語で読む（理由書きつきを許す）。条件なし・未被覆・知らない値は従来どおり落とす（2026-10-02）。"""
