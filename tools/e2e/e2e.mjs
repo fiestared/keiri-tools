@@ -1803,7 +1803,7 @@ const SCENES = [
   // ★★年末調整をしていない人の②③欄は「空欄」。**0円ではない**（0と書くと別の意味になる）
   { name: "gensen_hyo_kuran", expect: (s) =>
       s.ni === "空欄" && s.san === "空欄" && s.nokori === "空欄" &&
-      /毎月徴収した税額の合計/.test(s.warns || "") && !s.failed },
+      /源泉徴収すべき所得税と復興特別所得税の合計額/.test(s.warns || "") && !s.failed },
   // ★④欄の100円未満の端数を指摘する（国税通則法119条1項）
   { name: "gensen_hyo_hasu", expect: (s) =>
       /100円未満/.test(s.warns || "") && !s.failed },
