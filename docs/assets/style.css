@@ -1315,3 +1315,17 @@ footer [data-duplicate-note] { display: none !important; }
   .go-table td:first-child { font-weight: 700; background: var(--accent-soft); border-radius: 8px 8px 0 0; }
   .go-table td:last-child { border-radius: 0 0 8px 8px; }
 }
+
+/* ---- 「あわせて読む」を目次と見分けられる見た目に（2026-10-03 Masahiro「おすすめ記事のデザインをもう少し目立つようにできるかな、気付いてない可能性あるよね？」）
+   目次と同じ白い箱・地の文字のリンクだったので、目次の続きに見えて押されていなかった（28日で rail 13クリック / 20,752PV）。
+   色の面・左の帯・カード状のリンク（右に ›）で「別の読みもの」だと分かるようにする。
+   ★種類のラベル（ツール／記事）は付けない: 相対リンクで見分けるとツールのページで外れる（../bonus-tedori/ を記事と誤表示した）。
+     付けるなら生成器（gen_toc_related.mjs）が data 属性で種類を書く。 */
+.rail-next { background: var(--accent-soft); border: 1px solid #b9dcd2; border-left: 4px solid var(--accent); }
+.rail-next-title { color: var(--accent); font-size: 15px; margin-bottom: 8px; }
+.rail-next-title::before { content: "▶"; font-size: 10px; margin-right: 6px; vertical-align: 2px; }
+.rail-next li, .rail-next li:first-child { border-top: 0; margin: 0 0 8px; }
+.rail-next li:last-child { margin-bottom: 0; }
+.rail-next a { position: relative; background: #fff; border: 1px solid #cfe5de; border-radius: 8px; padding: 10px 28px 10px 12px; font-weight: 600; box-shadow: 0 1px 2px rgba(31, 111, 92, .08); }
+.rail-next a::after { content: "›"; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 20px; color: var(--accent); }
+.rail-next a:hover { border-color: var(--accent); text-decoration: none; background: #fbfefd; }

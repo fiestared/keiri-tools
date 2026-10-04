@@ -1917,6 +1917,23 @@ const SCENES = [
       s.names.includes("internal_link_click") && s.slot === "next_read" && s.linkUrl.includes("/column/") },
   { name: "track_slot_related_tool", noCoverage: true, expect: (s) =>
       s.names.includes("tool_link_click") && s.slot === "related" && s.tool.length > 0 },
+  // ★どのボタンが押されたか（2026-10-03）。id のボタンは id、id の無い折りたたみは「見出し|ラベル」、
+  //   連打は1回。**入力した数字がどの値にも出ない**／後から描かれたボタンの文字は送らない
+  { name: "track_ui_click", noCoverage: true, expect: (s) =>
+      s.onOpen === 0 && s.calcCount === 1 && s.from === "docs/shakai-hoken" &&
+      !!s.summary && s.summary.link_text === "賞与も計算する（任意）" && // 状態表示「未設定」はラベルに混ぜない
+      !!s.calc && s.calc.link_text === "計算する" &&
+      !!s.header && !s.leaked &&
+      !!s.dynamic && !/わたしの条件|987/.test(JSON.stringify(s.dynamic)) && !("link_text" in s.dynamic) },
+  // ★どの部分が読まれたか。止まった区画だけ・2秒未満の通過は数えない・開いただけでスクロール深度を出さない・重複しない
+  { name: "track_section_view", noCoverage: true, expect: (s) =>
+      s.scrollOnOpen === 0 && s.shortRatio >= 0.25 && s.shortDepthOnOpen === 0 &&
+      s.midSections.includes("sec:shiharai") && !s.midSections.includes("sec:jiyu") &&
+      !s.midSections.includes("sec:faq") &&
+      s.sections.includes("sec:faq") &&
+      new Set(s.sections).size === s.sections.length &&
+      JSON.stringify(s.depth) === JSON.stringify(["scroll:25", "scroll:50", "scroll:75", "scroll:100"]) &&
+      s.from === "docs/column/seikyusho-kakikata" },
   // ★ヘッダの「検索」（2026-10-01）。記事ページから開いて、トップと同じ索引で「社会保険」→社会保険料の計算機が1位。
   //   索引は開く前に読まない／ダイアログの作法／GA4 3種。狭い画面ではブランドの右（1段目）に置き、ヘッダを3段にしない
   ...[390, 1280].map((w) => ({ name: `site_search_${w}`, noCoverage: true, expect: (s) =>

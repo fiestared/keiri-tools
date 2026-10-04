@@ -40,7 +40,7 @@ const SITES = [
     key: "keiri-tools", label: "keiri-tools.com", property: "properties/545217731",
     url: "https://keiri-tools.com", gscSite: "sc-domain:keiri-tools.com",
     feeArticlePath: "/column/furikomi-tesuryo-hikaku/",
-    sessionGoal: 2400,
+    pvGoal: 2400,   // 2026-10-04 Masahiro「目標はPV数に置き換えようか」（旧 sessionGoal 2400。PV/セッション≈1.01）
     goalBy: "2027-03-31",
     googleKpi: GOOGLE_KPI_KEIRI,
     titleSuffix: /\s*[|｜]\s*経理・税金・補助金ツールズ.*$/,
@@ -50,6 +50,9 @@ const SITES = [
     key: "pachisloshirube", label: "パチスロ店道しるべ", property: "properties/551973871",
     url: "https://pachisloshirube.jp", gscSite: "sc-domain:pachisloshirube.jp",
     titleSuffix: /\s*[|｜]\s*(?:パチスロ店)?道しるべ.*$/,
+    // 道しるべの目標は「2027年中に月100万PV」（日報 reports/shirube-daily-*）。1日あたり 1,000,000 / 30.4 ≈ 32,900 PV（2026-10-04 追加）
+    pvGoal: 32900,
+    goalBy: "2027-12-31",
   },
 ];
 
@@ -186,6 +189,33 @@ const searchAnalytics = (token, siteUrl, body) =>
   });
 
 // ---------- 取得 ----------
+// ---------- 流入元の群 ----------
+// 色は CSS 変数（--src-*）。並び順＝積み上げの下から。Bing が主（2026-10 時点で約9割）なので一番下に置き、伸ばしたい Google を2番目に。
+const SOURCE_GROUPS = [
+  { key: "bing", label: "Bing" },
+  { key: "google", label: "Google" },
+  { key: "ai", label: "AI（ChatGPT・Copilot 等）" },
+  { key: "x", label: "X" },
+  { key: "search", label: "その他の検索" },
+  { key: "direct", label: "直接" },
+  { key: "other", label: "その他" },
+  { key: "unset", label: "判定前（当日に多い）" },
+];
+function sourceGroup(src) {
+  const v = String(src || "").toLowerCase();
+  // X: 投稿URLの utm_source=x と、X の短縮URL t.co（2026-10-03 Masahiro「Xもトラフィックにラベル付けしてくれる？」。
+  //   道しるべの直近28日で x 104・t.co 48。"twitter"・"x.com" も X として数える）
+  if (v === "x" || v === "t.co" || v === "x.com" || v.endsWith(".x.com") || v.includes("twitter")) return "x";
+  if (v.includes("bing")) return "bing";
+  if (v.includes("google")) return "google";
+  if (/openai|chatgpt|copilot|perplexity|gemini|claude\.ai|bard|you\.com|phind/.test(v)) return "ai";
+  if (/duckduckgo|yahoo|ecosia|yandex|baidu|naver|brave|startpage|qwant|seznam|so\.com|sogou/.test(v)) return "search";
+  if (v === "(direct)") return "direct";
+  // GA4 は当日の流入元を後から割り振る（当日分は "(not set)" が大半）。「その他」に混ぜると当日だけ別物に見える
+  if (v === "(not set)" || v === "(data not available)" || v === "") return "unset";  // 当日は両方が大半（2026-10-03 実測: 当日 not set 192・data not available 177、前日は0）
+  return "other";
+}
+
 async function fetchAll() {
   const token = await accessToken();
   const now = jstFields();
@@ -221,6 +251,22 @@ async function fetchAll() {
       metrics: [{ name: "sessions" }],
       limit: 2000,
     });
+    // 流入元別（2026-10-03 Masahiro「どこからのトラフィックかで色分けして棒グラフ出すようにできる？」）。
+    //   日次の棒を流入元の群（SOURCE_GROUPS）で積み上げる。群への振り分けは sourceGroup() の1箇所だけ。
+    const bySource = await runReport(token, s.property, {
+      dimensionFilter: hostFilter,
+      dimensions: [{ name: "date" }, { name: "sessionSource" }],
+      metrics: [{ name: "sessions" }],
+      limit: 10000,
+    });
+    const sources = {};
+    for (const r of bySource.rows ?? []) {
+      const raw = r.dimensionValues[0].value;
+      const date = `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`;
+      const g = sourceGroup(r.dimensionValues[1].value);
+      const day = (sources[date] ??= {});
+      day[g] = (day[g] ?? 0) + Number(r.metricValues[0].value);
+    }
     // ページ名は月次更新で変わるため、集計キーは pagePath に固定する。
     // pageTitle は画面で人が識別するためだけに使い、同じ path の行は後段で合算する。
     const pages = await runReport(token, s.property, {
@@ -391,7 +437,7 @@ async function fetchAll() {
     // titleSuffix は RegExp なので data.json に載せない（描画時に SITES から引き直す）
     const { titleSuffix: _titleSuffix, ...cfg } = s;
     sites.push({
-      ...cfg, days, pageRows, gsc, retention,
+      ...cfg, days, pageRows, gsc, retention, sources,
       feeDays: days.map(({ date }) => ({ date, ...(feeMap.get(date) ?? { pageviews: 0, clicks: 0 }) })),
       cutoff, cutoffHour, cmpHour: lastFull,
       todayCum: lastFull >= 0 ? cumToHour(today, lastFull) : 0,
@@ -451,6 +497,7 @@ function model(data) {
           offName: offDayName(x.date),
           today: i === arr.length - 1,
           prev: prev ? prev.sessions : null,
+          src: s.sources?.[x.date] ?? null,
         };
       });
       const last7 = sum(d.slice(n - 8, n - 1).map((x) => x.sessions));   // 昨日までの7日
@@ -540,12 +587,17 @@ function goalModel(s, today, last7Sessions, last7Rows = []) {
   const weekdaySessionsPerDay = wdRows.length ? wdRows.reduce((a, x) => a + x.sessions, 0) / wdRows.length : null;
   const weekdayN = wdRows.length;
   const conf = siteConf(s);
-  const sessionGoal = conf.sessionGoal ?? null;
+  const pvGoal = conf.pvGoal ?? null;
   const googleKpi = conf.googleKpi ?? [];
-  const sessionPct = sessionGoal ? sessionsPerDay / sessionGoal * 100 : null;
+  // 目標は PV（2026-10-04）。セッションと UU は横に並べる
+  const pvPerDay = last7Rows.reduce((a, x) => a + (x.pageviews ?? 0), 0) / 7;
+  const weekdayPvPerDay = wdRows.length ? wdRows.reduce((a, x) => a + (x.pageviews ?? 0), 0) / wdRows.length : null;
+  const r7 = s.retention?.last7 ?? {};
+  const uu7 = ["new", "returning", "unknown"].reduce((a, k) => a + (r7[k]?.users ?? 0), 0) || null;
+  const sessionPct = pvGoal ? pvPerDay / pvGoal * 100 : null;
   const g = s.gsc;
   if (!g || g.error || !(g.rows ?? []).length) {
-    return { sessionsPerDay, weekdaySessionsPerDay, weekdayN, offInWindow, sessionPct, google: null, error: g?.error ?? null, milestones: googleKpi.map((k) => ({ ...k, pct: null, daysLeft: daysBetween(today, k.by) })) };
+    return { sessionsPerDay, weekdaySessionsPerDay, weekdayN, offInWindow, sessionPct, pvPerDay, weekdayPvPerDay, uu7, google: null, error: g?.error ?? null, milestones: googleKpi.map((k) => ({ ...k, pct: null, daysLeft: daysBetween(today, k.by) })) };
   }
   const byDate = new Map(g.rows.map((r) => [r.date, r]));
   const end = g.rows.at(-1).date;                         // GSC がデータを出している末端
@@ -562,7 +614,7 @@ function goalModel(s, today, last7Sessions, last7Rows = []) {
   const clicksPerDay = avg(last7, "clicks"), prevClicksPerDay = avg(prev7, "clicks");
   const series = win(0, GSC_FETCH_DAYS - 1 - lagDays);    // 取得範囲のうち GSC が出している日だけ（末端まで）
   return {
-    sessionsPerDay, weekdaySessionsPerDay, weekdayN, offInWindow, sessionPct, error: null,
+    sessionsPerDay, weekdaySessionsPerDay, weekdayN, offInWindow, sessionPct, pvPerDay, weekdayPvPerDay, uu7, error: null,
     google: {
       end, lagDays, clicksPerDay, prevClicksPerDay,
       impressionsPerDay: avg(last7, "impressions"), prevImpressionsPerDay: avg(prev7, "impressions"),
@@ -611,6 +663,7 @@ function chart(site) {
   const ticks = [];
   for (let v = 0; v <= top + 1e-9; v += st) ticks.push(v);
 
+  const stacked = site.shown.some((d) => d.src);
   const bars = site.shown.map((d, i) => {
     const x = PAD.l + band * i + (band - bw) / 2;
     const h = Math.max(d.sessions > 0 ? 2 : 0, (d.sessions / top) * ih);
@@ -619,8 +672,24 @@ function chart(site) {
     const path = h <= 0 ? "" :
       `M${x} ${yy + h} L${x} ${yy + r} Q${x} ${yy} ${x + r} ${yy} L${x + bw - r} ${yy} Q${x + bw} ${yy} ${x + bw} ${yy + r} L${x + bw} ${yy + h} Z`;
     const fill = d.today ? `url(#hatch-${site.key})` : "var(--series-1)";
-    return { d, x, yy, h, path, fill, cx: PAD.l + band * i + band / 2 };
+    // 流入元の積み上げ。棒の高さは日次の sessions（正）のまま、内訳の比で切り分ける
+    //   （流入元別の合計は日次とわずかにずれることがあるので、高さの正本は日次に置く）。
+    let segs = [];
+    const srcTotal = d.src ? Object.values(d.src).reduce((a, b) => a + b, 0) : 0;
+    if (stacked && srcTotal > 0 && h > 0) {
+      let acc = 0;
+      segs = SOURCE_GROUPS.filter((g) => d.src[g.key]).map((g) => {
+        const sh = (d.src[g.key] / srcTotal) * h;
+        const seg = { key: g.key, y: PAD.t + ih - acc - sh, h: sh };
+        acc += sh;
+        return seg;
+      });
+    }
+    return { d, x, yy, h, path, fill, segs, cx: PAD.l + band * i + band / 2 };
   });
+  const srcTip = (d) => d.src
+    ? " / " + SOURCE_GROUPS.filter((g) => d.src[g.key]).map((g) => `${g.label.replace(/（.*）/, "")} ${d.src[g.key].toLocaleString("ja-JP")}`).join("・")
+    : "";
 
   return `
 <figure class="chart">
@@ -636,7 +705,11 @@ function chart(site) {
     ${ticks.map((v) => `<line x1="${PAD.l}" x2="${W - PAD.r}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"
         stroke="${v === 0 ? "var(--axis)" : "var(--grid)"}" stroke-width="1" shape-rendering="crispEdges"/>`).join("")}
     ${ticks.map((v) => `<text x="${PAD.l - 8}" y="${(y(v) + 4).toFixed(1)}" class="tick" text-anchor="end">${v.toLocaleString("ja-JP")}</text>`).join("")}
-    ${bars.map((b) => b.path ? `<path d="${b.path}" fill="${b.fill}"/>` : "").join("")}
+    ${stacked
+      ? bars.map((b) => `<clipPath id="clip-${site.key}-${b.d.date}"><path d="${b.path}"/></clipPath>
+        <g clip-path="url(#clip-${site.key}-${b.d.date})" ${b.d.today ? 'opacity="0.55"' : ""}>${b.segs.map((g) =>
+          `<rect x="${b.x}" y="${g.y.toFixed(1)}" width="${bw}" height="${g.h.toFixed(1)}" fill="var(--src-${g.key})"/>`).join("")}</g>`).join("")
+      : bars.map((b) => b.path ? `<path d="${b.path}" fill="${b.fill}"/>` : "").join("")}
     ${bars.map((b) => `
       <text x="${b.cx}" y="${H - PAD.b + 16}" class="xlab ${b.d.weekend ? "we" : ""}" text-anchor="middle">${b.d.wd}</text>
       <text x="${b.cx}" y="${H - PAD.b + 30}" class="xsub" text-anchor="middle">${b.d.date.slice(5).replace("-", "/")}</text>`).join("")}
@@ -644,10 +717,12 @@ function chart(site) {
         ? `<text x="${b.cx}" y="${(b.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${b.d.sessions.toLocaleString("ja-JP")}</text>` : ""; })()}
     ${bars.map((b, i) => `<rect class="hit" x="${PAD.l + (iw / site.shown.length) * i}" y="${PAD.t}"
         width="${iw / site.shown.length}" height="${ih}" fill="transparent"
-        data-tip="${esc(`${b.d.date}(${b.d.wd})${b.d.today ? " ※途中" : ""} — ${b.d.sessions.toLocaleString("ja-JP")} セッション / ${b.d.users.toLocaleString("ja-JP")} ユーザー${b.d.prev !== null ? ` / 前週同曜日 ${b.d.prev.toLocaleString("ja-JP")}` : ""}`)}"></rect>`).join("")}
+        data-tip="${esc(`${b.d.date}(${b.d.wd})${b.d.today ? " ※途中" : ""} — ${b.d.sessions.toLocaleString("ja-JP")} セッション / ${b.d.users.toLocaleString("ja-JP")} ユーザー / ${(b.d.pageviews ?? 0).toLocaleString("ja-JP")} PV${b.d.prev !== null ? ` / 前週同曜日 ${b.d.prev.toLocaleString("ja-JP")}` : ""}${srcTip(b.d)}`)}"></rect>`).join("")}
   </svg>
   </div>
-  <figcaption>直近${WINDOW_DAYS}日のセッション数（JST）。<span class="swatch-hatch"></span> は当日ぶんで、まだ増える。</figcaption>
+  <figcaption>直近${WINDOW_DAYS}日のセッション数（JST）。${stacked
+    ? `色は流入元: ${SOURCE_GROUPS.map((g) => `<span class="src-key"><span class="src-sw" style="background:var(--src-${g.key})"></span>${g.label}</span>`).join("")}。薄い棒は当日ぶんで、まだ増える。`
+    : `<span class="swatch-hatch"></span> は当日ぶんで、まだ増える。`}</figcaption>
 </figure>`;
 }
 
@@ -1011,7 +1086,7 @@ function goalBlock(site) {
   const g = site.goal;
   if (!g) return "";
   const G = g.google;
-  const sessionGoal = siteConf(site).sessionGoal ?? null;
+  const sessionGoal = siteConf(site).pvGoal ?? null;   // 2026-10-04 から PV の目標（変数名は描画の都合で据え置き）
   const bar = (pct) => `<div class="bar" role="img" aria-label="達成率 ${n1(pct)}%"><i style="width:${Math.max(0.5, Math.min(100, pct || 0))}%"></i></div>`;
   const msRows = (g.milestones ?? []).map((k) => `<tr>
       <td>${esc(k.by)}<small>${k.daysLeft >= 0 ? `あと${k.daysLeft}日` : `${-k.daysLeft}日超過`}</small></td>
@@ -1035,22 +1110,24 @@ function goalBlock(site) {
       </div>`;
   const sessionCard = sessionGoal ? `
       <div class="goal-card">
-        <div class="insight-head"><div><span class="eyebrow">全体（GA4）</span><h4>1日セッション <small>直近7日平均・昨日まで</small></h4></div></div>
-        <div class="goal-value">${n0(g.sessionsPerDay)}<span>/ ${sessionGoal.toLocaleString("ja-JP")}</span></div>
-        ${g.weekdaySessionsPerDay == null ? "" : `<div class="metric-sub">平日${g.weekdayN}日平均 <b>${n0(g.weekdaySessionsPerDay)}</b>/日（${HOLIDAYS ? "土日・祝日・年末年始を除く" : "土日を除く。★祝日表を読めなかったので祝日は含んだまま"}）${g.offInWindow && g.offInWindow.length ? `。この7日の祝日: ${esc(g.offInWindow.join("・"))}` : ""}。目標は7日平均、進捗の判断には平日平均も使う。</div>`}
+        <div class="insight-head"><div><span class="eyebrow">全体（GA4）</span><h4>1日PV <small>直近7日平均・昨日まで</small></h4></div></div>
+        <div class="goal-value">${n0(g.pvPerDay)}<span>/ ${sessionGoal.toLocaleString("ja-JP")} PV</span></div>
+        <div class="metric-sub">同じ7日のセッション <b>${n0(g.sessionsPerDay)}</b>/日・UU <b>${g.uu7 == null ? "—" : n0(g.uu7)}</b>人（7日間の重複なし）</div>
+        ${g.weekdayPvPerDay == null ? "" : `<div class="metric-sub">平日${g.weekdayN}日平均 <b>${n0(g.weekdayPvPerDay)}</b> PV/日（${HOLIDAYS ? "土日・祝日・年末年始を除く" : "土日を除く。★祝日表を読めなかったので祝日は含んだまま"}）${g.offInWindow && g.offInWindow.length ? `。この7日の祝日: ${esc(g.offInWindow.join("・"))}` : ""}。目標は7日平均、進捗の判断には平日平均も使う。</div>`}
         ${bar(g.sessionPct)}
-        <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>。内訳の目標は Bing 2,000 ＋ Google 100 ＋ 非検索 300。</div>
-        <div class="metric-sub">2026-12-31に中間確認。年末休業前の完成7日（候補: Bingの日付で12/18〜24）と平日平均で進捗を見る。表示18,000/日だけでは判定しない。</div>
-        <div class="metric-sub">12月末の進捗目安: Bing 1,014 / Google 20.3 / 非検索 89.5 / GA4 1,201。目標まで一定率で伸びた場合の目安で、予測値ではない。</div>
+        <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>${site.key === "keiri-tools" ? "。内訳の目標は Bing 2,000 ＋ Google 100 ＋ 非検索 300。" : `（月100万PV＝日約${sessionGoal.toLocaleString("ja-JP")} PV・${esc(siteConf(site).goalBy)}まで）。`}</div>
+        ${site.key !== "keiri-tools" ? "" : `<div class="metric-sub">2026-12-31に中間確認。年末休業前の完成7日（候補: Bingの日付で12/18〜24）と平日平均で進捗を見る。表示18,000/日だけでは判定しない。</div>
+        <div class="metric-sub">12月末の進捗目安: Bing 1,014 / Google 20.3 / 非検索 89.5 / GA4 1,201 PV。目標まで一定率で伸びた場合の目安で、予測値ではない。</div>`}
       </div>` : `
       <div class="goal-card">
-        <div class="insight-head"><div><span class="eyebrow">全体（GA4）</span><h4>1日セッション <small>直近7日平均・昨日まで</small></h4></div></div>
-        <div class="goal-value">${n0(g.sessionsPerDay)}<span>/日</span></div>
+        <div class="insight-head"><div><span class="eyebrow">全体（GA4）</span><h4>1日PV <small>直近7日平均・昨日まで</small></h4></div></div>
+        <div class="goal-value">${n0(g.pvPerDay)}<span>PV/日</span></div>
+        <div class="metric-sub">同じ7日のセッション <b>${n0(g.sessionsPerDay)}</b>/日・UU <b>${g.uu7 == null ? "—" : n0(g.uu7)}</b>人（7日間の重複なし）</div>
         <div class="metric-sub">目標の通過点はまだ置いていない。数字の見方は keiri-tools と同じ（昨日までの7日平均。当日は途中なので含めない）。</div>
       </div>`;
   const heading = sessionGoal
-    ? `目標: 日 ${sessionGoal.toLocaleString("ja-JP")} セッション <small>${esc(siteConf(site).goalBy)}まで</small>`
-    : "セッションと Google トラック";
+    ? `目標: 日 ${sessionGoal.toLocaleString("ja-JP")} PV <small>${esc(siteConf(site).goalBy)}まで</small>`
+    : "PV と Google トラック";
   const milestones = msRows ? `
     <div class="goal-ms">
       <div class="chart-title">Google クリック/日の通過点（7日平均で判定）</div>
@@ -1059,9 +1136,9 @@ function goalBlock(site) {
         <tbody>${msRows}</tbody>
       </table></div>
     </div>` : "";
-  const keiriFoot = sessionGoal ? `
+  const keiriFoot = sessionGoal && site.key === "keiri-tools" ? `
     <p class="foot">
-      日1万セッションは長期の方向とし、今期は2027-03-31までに日2,400を目指す。<br>
+      日1万PVを2027-12-31までの最終目標とし、今期は2027-03-31までに日2,400 PVを目指す（2026-10-04 にセッションから PV へ変更）。<br>
       Googleの通過点は10月末10 / 12月末30 / 2027-03末100クリック/日。外れた場合は方針も見直す。<br>
       ★Google クリックは GA4 ではなく Search Console の値。GSC は2〜3日遅れで届くので、7日平均は「今日」ではなく <b>GSC の末端の日</b> で締めている。
     </p>` : `
@@ -1167,7 +1244,11 @@ const CSS = `
   /* 先週同曜日＝破線で他の2系列と区別する */
   --series-3:#a55400;
   --up:#006300; --down:#d03b3b; --warn:#fab219;
+  /* 流入元（積み上げ棒）。隣り合う群が見分けられる明度差をつける */
+  --src-bing:#2a78d6; --src-google:#1f9d55; --src-ai:#8a4fd1; --src-search:#d08c00; --src-x:#111111; --src-direct:#8a8580; --src-other:#c9c7bf; --src-unset:#e9e7e0;
 }
+.src-key{display:inline-flex;align-items:center;gap:4px;margin:0 8px 0 2px;white-space:nowrap}
+.src-sw{display:inline-block;width:10px;height:10px;border-radius:2px}
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme: dark;
@@ -1178,6 +1259,7 @@ const CSS = `
     --series-2:#8f8b85; --series-2-wash:rgba(143,139,133,.20);
     --series-3:#f0a24a;
     --up:#0ca30c; --down:#e66767;
+    --src-bing:#3987e5; --src-google:#2fbf6c; --src-ai:#a77be6; --src-search:#f0a830; --src-x:#e8e8e8; --src-direct:#8f8b85; --src-other:#55534e; --src-unset:#33322f;
   }
 }
 :root[data-theme="dark"]{
@@ -1189,6 +1271,7 @@ const CSS = `
   --series-2:#8f8b85; --series-2-wash:rgba(143,139,133,.20);
   --series-3:#f0a24a;
   --up:#0ca30c; --down:#e66767;
+  --src-bing:#3987e5; --src-google:#2fbf6c; --src-ai:#a77be6; --src-search:#f0a830; --src-x:#e8e8e8; --src-direct:#8f8b85; --src-other:#55534e; --src-unset:#33322f;
 }
 
 *{box-sizing:border-box}

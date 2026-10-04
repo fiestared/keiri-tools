@@ -246,10 +246,22 @@ class QuoteRefFormats(unittest.TestCase):
             self.assertTrue(qp(run,'corpus/a.txt:1','会社が対象です。'))                        # 行番号のずれ
             self.assertTrue(qp(run,'corpus/a.txt:1-2,11; corpus/b.txt:1','会社が対象です。\n短時間労働者も加入します。'))  # 複数の正本・範囲・断片
             self.assertTrue(qp(run,'corpus/a.txt:11;corpus/b.txt:1','会社が対象です。;短時間労働者も加入します。'))   # ; でつないだ引用（Grok）
+            self.assertTrue(qp(run,'corpus/a.txt:11;corpus/b.txt:1','会社が対象です。 / 短時間労働者も加入します。'))  # 「 / 」でつないだ引用（Claude）
+            self.assertFalse(qp(run,'corpus/a.txt:11;corpus/b.txt:1','会社が対象です。 / 正本に存在しない文です'))    # 「 / 」でも断片ごとに逐語を求める
             self.assertFalse(qp(run,'corpus/a.txt:11','短時間労働者も加入します。'))              # 参照していない別ファイルの文
             self.assertFalse(qp(run,'corpus/a.txt:11; corpus/b.txt:1','会社が対象です。\n正本に存在しない文です'))  # 断片の1つが正本に無い
             self.assertFalse(qp(run,'corpus/c.png:1','会社が対象です。'))                        # 画像
             self.assertFalse(qp(run,'corpus/a.txt','会社が対象です。'))                           # 行番号の無い参照は書式違反
+            (run/'corpus/d.csv').write_bytes('基準日,基準価額(円)\n2026/09/30,13022\n'.encode('cp932'))
+            self.assertTrue(qp(run,'corpus/d.csv:2','2026/09/30,13022'))                           # Shift_JIS の CSV（2026-10-03）
+            self.assertTrue(qp(run,'corpus/d.csv:1','基準日,基準価額(円)'))
+            self.assertFalse(qp(run,'corpus/d.csv:2','2026/09/30,99999'))                          # CSV でも逐語でなければ不成立
+            import json as _j
+            (run/'corpus/law.json').write_text(_j.dumps({'law':{'Sentence':['市町村は指定しなければならない。','この場合においては通知する。']}},ensure_ascii=False))
+            self.assertTrue(qp(run,'corpus/law.json:1','指定しなければならない。この場合において'))   # JSON の文の区切りをまたぐ引用（e-Gov・2026-10-04）
+            self.assertFalse(qp(run,'corpus/law.json:1','指定しなければならない。その場合において'))  # つないでも逐語でなければ不成立
+            (run/'corpus/egov.json').write_text(_j.dumps({'tag':'Paragraph','attr':{'Num':'2'},'children':[{'tag':'Sentence','attr':{'Num':'1'},'children':['定めなければならない。']},{'tag':'Sentence','attr':{'Num':'2'},'children':['この場合において通知する。']}]},ensure_ascii=False))
+            self.assertTrue(qp(run,'corpus/egov.json:1','定めなければならない。この場合において'))   # e-Gov v2 の tag・attr を本文に混ぜない
 
 class CoveredValue(unittest.TestCase):
     """covered は先頭の語で読む（理由書きつきを許す）。条件なし・未被覆・知らない値は従来どおり落とす（2026-10-02）。"""

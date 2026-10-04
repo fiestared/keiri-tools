@@ -371,13 +371,215 @@
       document.addEventListener("click", function () { setTimeout(check, 0); }, true);
     }
 
+    /* ---------- 5. どのボタンが押されたか・どの部分が読まれたか（2026-10-03） ----------
+       Masahiro「どのボタンが押されたか、どの部分がよく見られているか取れる？」への対応。
+       ★GA4 で読めるのは登録済みのカスタムディメンション（from / slot / link_url …）だけ。
+         SA は閲覧権限しか無く新規登録できないので、**新しい情報は全部 slot の文字列に載せる**:
+           ui_click      slot = ボタンの識別（data-track > id > data-*属性 > 見出し|ラベル）
+           section_view  slot = "sec:<h2のid>" / "result"
+           scroll_depth  slot = "scroll:25|50|75|100"
+       ★入力値・利用者が書いた文字は絶対に送らない:
+         - ラベル（ボタンの文字）を使うのは「ページを開いた時点で既に在った」ボタンだけ。
+           後から描かれたボタン（保存した条件の一覧など、利用者が付けた名前を含む）は文字を読まない
+         - [data-retention-control] の中も文字を読まない
+         - 念のため2桁以上の数字の並びは「#」に伏せる（金額がラベルに混ざっても漏れない） */
+    var UI_SEL = "button, input[type=submit], input[type=button], input[type=reset], [role=button], [role=tab], summary";
+    var initialUi = typeof WeakSet === "function" ? new WeakSet() : null;
+    function snapshotUi() {
+      if (!initialUi) return;
+      var els = document.querySelectorAll(UI_SEL);
+      for (var i = 0; i < els.length; i++) initialUi.add(els[i]);
+    }
+
+    function emitEngagement(name, params) {
+      try { if (typeof window.gtag === "function") window.gtag("event", name, params); } catch (_) {}
+    }
+
+    function maskDigits(s) {
+      return s.replace(/[0-9０-９][0-9０-９,，.．]+/g, "#");
+    }
+
+    /** そのボタンが属する見出し（直前の h2[id]）。ヘッダ・フッタはその名前 */
+    function regionOf(el) {
+      if (el.closest("header.site")) return "header";
+      if (el.closest("footer.site")) return "footer";
+      // 目次・脇の欄は本文の区画ではない（直前の h2 で呼ぶと「FAQ の中のボタン」と誤読する）
+      if (el.closest("nav.toc, .rail-next")) return "toc";
+      if (el.closest("nav")) return "nav";
+      if (el.closest("aside")) return "aside";
+      var root = el.closest("article, main");
+      if (!root) return "";
+      var hs = root.querySelectorAll("h2[id]"), found = "";
+      for (var i = 0; i < hs.length; i++) {
+        // h2 が el より前にある（DOCUMENT_POSITION_FOLLOWING = 4 は「el が h2 の後ろ」）
+        if (hs[i].compareDocumentPosition(el) & 4) found = hs[i].id;
+        else break;
+      }
+      return found ? "h2#" + found : "";
+    }
+
+    function uiLabel(el) {
+      var tag = el.tagName.toLowerCase();
+      var raw = tag === "input" ? (el.getAttribute("value") || "") : el.getAttribute("aria-label");
+      if (raw == null) {
+        // ★ラベルの中の「状態表示」は除く（例: 折りたたみの「未設定／設定あり」）。
+        //   入れたままだと同じボタンが状態ごとに別の slot に割れ、集計で1つに数えられない
+        var c = el.cloneNode(true), kids = c.querySelectorAll("*");
+        for (var i = 0; i < kids.length; i++) {
+          var k = kids[i], dyn = k.matches("output, [aria-live], [role=status]");
+          for (var j = 0; !dyn && j < k.attributes.length; j++) dyn = k.attributes[j].name.indexOf("data-") === 0;
+          if (dyn && k.parentNode) k.parentNode.removeChild(k);
+        }
+        raw = c.textContent || "";
+      }
+      return maskDigits(raw.replace(/\s+/g, " ").trim()).slice(0, 40);
+    }
+
+    /** 送ってよい識別子だけで組む。返り値 {slot, label} — label は静的な文字のときだけ */
+    function uiIdentity(el) {
+      // 開いた後に描かれたボタン・覚えておく機能の中は、文字(ラベル)を一切読まない
+      var dynamic = (initialUi && !initialUi.has(el)) || !!el.closest("[data-retention-control]");
+      var label = dynamic ? "" : uiLabel(el);
+      var out = function (slot) { return label ? { slot: slot, label: label } : { slot: slot }; };
+      var t = el.getAttribute("data-track");
+      if (t) return out(t.slice(0, 80));
+      if (el.id) return out(el.id.slice(0, 80));
+      // 折りたたみの見出し(summary)は、開閉する details の id で呼ぶ
+      var det = el.tagName === "SUMMARY" && el.parentElement && el.parentElement.tagName === "DETAILS" ? el.parentElement : null;
+      if (det && det.id) return out("details#" + det.id.slice(0, 80));
+      var region = regionOf(el), pre = region ? region + "|" : "";
+      // data-* 属性があれば、その名前（値は英数字の識別子のときだけ）で呼ぶ。
+      // 保存一覧の data-load="${i}" のように中身が利用者データに近いボタンも、文字を読まずに済む
+      for (var i = 0; i < el.attributes.length; i++) {
+        var a = el.attributes[i];
+        if (a.name.indexOf("data-") !== 0 || a.name === "data-retention-control") continue;
+        var v = /^(?=.*[a-z])[a-z0-9_-]{1,40}$/i.test(a.value) ? "=" + a.value : "";
+        return out((pre + "[" + a.name + v + "]").slice(0, 100));
+      }
+      if (dynamic) {
+        var host = el.parentElement && el.parentElement.closest("[id]");
+        return out((pre + (host ? "#" + host.id + ">" : "") + el.tagName.toLowerCase()).slice(0, 100));
+      }
+      return out((pre + (label || el.tagName.toLowerCase())).slice(0, 100));
+    }
+
+    var lastUi = null, lastUiAt = 0;
+    document.addEventListener("click", function (e) {
+      try {
+        var el = e.target && e.target.closest ? e.target.closest(UI_SEL) : null;
+        if (!el) return;
+        var now = Date.now();
+        if (el === lastUi && now - lastUiAt < 500) return; // 連打・二重発火は1回に数える
+        lastUi = el; lastUiAt = now;
+        var id = uiIdentity(el);
+        var p = { from: toolId(), slot: id.slot };
+        if (id.label) p.link_text = id.label;
+        emitEngagement("ui_click", p);
+      } catch (_) { /* 計測でボタンを止めない */ }
+    }, true);
+
+    /* 見られた部分: 見出し(h2[id])から次の h2 までを1区画とし、
+       区画の50%以上 または 画面の40%以上を占める状態が2秒続いたら、区画ごとに1回だけ送る。
+       結果ボックス(.result)も、文字が出ている状態で同じ条件を満たしたら "result" を1回送る。
+       ★setTimeout ではなく「判定の時刻差」で2秒を測る（スクロールのたびにタイマーを作らない）。
+         見えている途中の区画がある間だけ 500ms 間隔で見直し、無ければ止める。 */
+    function watchEngagement() {
+      var targets = [];
+      var hs = document.querySelectorAll("main h2[id], article h2[id]");
+      var seenH = [];
+      for (var i = 0; i < hs.length; i++) {
+        if (seenH.indexOf(hs[i]) !== -1 || hs[i].closest("nav, header.site, footer.site, dialog")) continue;
+        seenH.push(hs[i]);
+      }
+      seenH.forEach(function (h, idx) {
+        var root = h.closest("article") || h.closest("main");
+        var next = null;
+        for (var j = idx + 1; j < seenH.length; j++) {
+          if ((seenH[j].closest("article") || seenH[j].closest("main")) === root) { next = seenH[j]; break; }
+        }
+        targets.push({ slot: "sec:" + h.id.slice(0, 60), rect: function () {
+          var top = h.getBoundingClientRect().top;
+          var bottom = next ? next.getBoundingClientRect().top : root.getBoundingClientRect().bottom;
+          return { top: top, bottom: bottom };
+        } });
+      });
+      var boxes = document.querySelectorAll(".result");
+      if (boxes.length) targets.push({ slot: "result", rect: function () {
+        for (var k = 0; k < boxes.length; k++) {
+          if (!visibleWithText(boxes[k])) continue;
+          var r = boxes[k].getBoundingClientRect();
+          return { top: r.top, bottom: r.bottom };
+        }
+        return null;
+      } });
+
+      var since = {}, done = {}, timer = null, from = toolId();
+      function qualifies(t) {
+        var r = t.rect();
+        if (!r) return false;
+        var h = r.bottom - r.top, vh = window.innerHeight || document.documentElement.clientHeight || 0;
+        if (h <= 0 || vh <= 0) return false;
+        var overlap = Math.min(r.bottom, vh) - Math.max(r.top, 0);
+        if (overlap <= 0) return false;
+        return overlap / h >= 0.5 || overlap / vh >= 0.4;
+      }
+      function check() {
+        var now = Date.now(), pending = false;
+        for (var i = 0; i < targets.length; i++) {
+          var t = targets[i];
+          if (done[t.slot]) continue;
+          if (document.hidden || !qualifies(t)) { delete since[t.slot]; continue; }
+          if (since[t.slot] == null) since[t.slot] = now;
+          if (now - since[t.slot] >= 2000) {
+            done[t.slot] = true;
+            emitEngagement("section_view", { from: from, slot: t.slot });
+          } else pending = true;
+        }
+        if (pending && !timer) timer = setInterval(check, 500);
+        if (!pending && timer) { clearInterval(timer); timer = null; }
+      }
+
+      var depthDone = {};
+      function depth() {
+        var de = document.documentElement;
+        var full = Math.max(de.scrollHeight, document.body ? document.body.scrollHeight : 0);
+        var vh = window.innerHeight || de.clientHeight || 0;
+        if (full <= 0 || vh <= 0) return;
+        var y = window.pageYOffset || de.scrollTop || 0;
+        var ratio = (y + vh) / full;
+        [25, 50, 75, 100].forEach(function (p) {
+          if (depthDone[p] || ratio < (p === 100 ? 0.99 : p / 100)) return;
+          depthDone[p] = true;
+          emitEngagement("scroll_depth", { from: from, slot: "scroll:" + p });
+        });
+      }
+
+      var queued = false;
+      function onScroll() {
+        if (queued) return;
+        queued = true;
+        // 1スクロールごとに判定しない（rAF が無い環境では即時）
+        var run = function () { queued = false; try { depth(); check(); } catch (_) {} };
+        if (typeof window.requestAnimationFrame === "function") window.requestAnimationFrame(run); else run();
+      }
+      // ★scroll_depth はスクロールが起きてから。開いただけ（短いページで全部見えている）では送らない
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", function () { try { check(); } catch (_) {} });
+      document.addEventListener("visibilitychange", function () { try { check(); } catch (_) {} });
+      // 折りたたみを開いた・計算して結果が出た、でも区画の見え方は変わる
+      document.addEventListener("click", function () { if (typeof window.requestAnimationFrame === "function") window.requestAnimationFrame(function () { try { check(); } catch (_) {} }); }, true);
+      check();
+    }
+
+    function startAll() {
+      snapshotUi();
+      watchResults(); watchDomainExposure(); watchPrExposure(); watchTocExposure(); watchWorkflow();
+      try { watchEngagement(); } catch (_) {}
+    }
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", function () { watchResults(); watchDomainExposure(); watchPrExposure(); watchTocExposure(); watchWorkflow(); });
+      document.addEventListener("DOMContentLoaded", startAll);
     } else {
-      watchResults();
-      watchDomainExposure();
-      watchPrExposure();
-      watchTocExposure(); watchWorkflow();
+      startAll();
     }
   } catch (err) {
     /* 計測はツールの機能ではない。ここで転んでもページは動き続ける */

@@ -5202,6 +5202,85 @@ async function clickSlot(selector, eventName) {
 SCENES.track_slot_next_read = () => clickSlot(".next-read a[href]", "internal_link_click");
 SCENES.track_slot_related_tool = () => clickSlot('section.related a[href^="../../"]', "tool_link_click");
 
+// ── どのボタンが押されたか（ui_click, 2026-10-03）────────────────────────────
+// ★見ること: ①id のボタンは id で呼ぶ ②id の無い折りたたみは「見出し|ラベル」③連打は1回
+//   ④**入力した数字がどのイベントのどの値にも出ない**（利用者が入れた金額を GA4 に送らない）
+//   ⑤開いた後に描かれたボタン（保存一覧＝利用者が付けた名前が入る）の文字は送らない
+const SECRET = "987654321";
+SCENES.track_ui_click = async () => {
+  const doc = await open("/docs/shakai-hoken/");
+  const win = doc.defaultView;
+  const onOpen = gaNames(doc).filter((n) => n === "ui_click").length;
+  set(doc, "monthly", SECRET);
+  set(doc, "age", "30");
+  click(doc, "calc");
+  click(doc, "calc"); // 二重押し（500ms以内）
+  await waitFor(() => /本人負担|読み込めませんでした/.test(text(doc, "result")), "計算結果");
+  const sum = doc.querySelector("details > summary");
+  sum.click();
+  doc.querySelector("header.site button[data-site-search]").click();
+  // 後から描かれた、利用者の文字を含むボタン（保存一覧と同じ形）
+  const dyn = doc.createElement("button");
+  dyn.type = "button";
+  dyn.textContent = "わたしの条件 " + SECRET + "円";
+  dyn.addEventListener("click", (e) => e.preventDefault());
+  doc.querySelector("main").appendChild(dyn);
+  dyn.click();
+  const ui = gaEvents(doc).filter((e) => e.name === "ui_click").map((e) => e.params);
+  return {
+    onOpen,
+    ui,
+    calcCount: ui.filter((p) => p.slot === "calc").length,
+    summary: ui.find((p) => p.slot === "details#bonus-fields") || null,
+    calc: ui.find((p) => p.slot === "calc") || null,
+    header: ui.find((p) => /^header\|\[data-site-search\]$/.test(p.slot)) || null,
+    dynamic: ui[ui.length - 1] || null,
+    from: (ui[0] || {}).from,
+    // 送った全イベント（ui_click 以外も）の値に、入力した数字が1つも無いこと
+    leaked: JSON.stringify(gaEvents(doc).map((e) => e.params)).includes(SECRET) ||
+      JSON.stringify(gaEvents(doc).map((e) => e.params)).includes("987,654,321"),
+    win: !!win,
+  };
+};
+
+// ── どの部分が読まれたか（section_view / scroll_depth, 2026-10-03）──────────────
+// ★鳴るべきでないものが鳴らないことも見る（規則1の逆側）: 開いただけでは scroll_depth は出ない／
+//   2秒未満で通り過ぎた区画・一度も画面に入らない区画は section_view を出さない
+SCENES.track_section_view = async () => {
+  // 短いページ（開いた時点で25%以上が見えている）でも、スクロールしていなければ scroll_depth は出ない
+  const short = await open("/docs/contact/");
+  await sleep(500);
+  const shortRatio = (short.defaultView.innerHeight) / short.documentElement.scrollHeight;
+  const shortDepthOnOpen = gaEvents(short).filter((e) => e.name === "scroll_depth").length;
+  const doc = await open("/docs/column/seikyusho-kakikata/");
+  const win = doc.defaultView;
+  const evs = (n) => gaEvents(doc).filter((e) => e.name === n).map((e) => e.params);
+  await sleep(300);
+  const scrollOnOpen = evs("scroll_depth").length;
+  const toEl = (id) => win.scrollTo(0, doc.getElementById(id).getBoundingClientRect().top + win.pageYOffset - 10);
+  // 「jiyu」を一瞬だけ通過（2秒未満）→ 次に「shiharai」で3秒止まる
+  toEl("jiyu");
+  await sleep(600);
+  toEl("shiharai");
+  await waitFor(() => evs("section_view").some((p) => p.slot === "sec:shiharai"), "sec:shiharai の section_view", 8000);
+  const midSections = evs("section_view").map((p) => p.slot);
+  // 最後まで送る
+  win.scrollTo(0, doc.documentElement.scrollHeight);
+  await waitFor(() => evs("scroll_depth").some((p) => p.slot === "scroll:100"), "scroll:100", 8000);
+  await sleep(2600);
+  // もう一度上下しても重複しない
+  win.scrollTo(0, 0); await sleep(200);
+  win.scrollTo(0, doc.documentElement.scrollHeight); await sleep(400);
+  return {
+    shortRatio, shortDepthOnOpen,
+    scrollOnOpen,
+    midSections,
+    sections: evs("section_view").map((p) => p.slot),
+    depth: evs("scroll_depth").map((p) => p.slot),
+    from: (evs("section_view")[0] || {}).from,
+  };
+};
+
 // Nested investment calculators are also part of the all-tool visual state gate.
 SCENES.ui_tsumitate = async () => {
   const doc = await open("/docs/toushi/tsumitate/");
