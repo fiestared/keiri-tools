@@ -1,5 +1,5 @@
 """Strict unit batches and frozen, read-only draft snapshots for theme_round."""
-import hashlib,json,os,re,shutil,subprocess,tempfile,threading,time
+import functools,hashlib,json,os,re,shutil,subprocess,tempfile,threading,time
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
@@ -98,6 +98,35 @@ def prepare(r,repo,pages,since=None):
     paths=[r/'segments.json',*(r/'segment-batches').glob('*.json')]
     return {str(p.relative_to(r)):digest(p) for p in paths}
 
+@functools.lru_cache(maxsize=64)
+def _corpus_text(path,mtime_ns):
+    """正本1ファイルを読み、(行数, 空白を除いた本文の組) を返す。読めなければ None。
+    ★1ファイル1回だけ読む（2026-10-04: 12MB の e-Gov JSON を引用1件ごとに読み直し、1,678単位の照合が数分で終わらなくなった）。mtime を鍵に入れて、書き換えたら読み直す。
+    - UTF-8 で読めなければ cp932（2026-10-03: 楽天の基準価額 CSV・SBI の XML は Shift_JIS。33件が不成立になった）
+    - JSON（e-Gov 法令 API など）は、条文が「文」ごとに別の文字列に分かれていて、文の区切りをまたぐ引用は生の並びでは連続しない
+      （2026-10-03 write-2026-10-03-pm: 地方税法 321条の4 の引用18単位が不成立）。文字列値を順につないだ本文も足す（中身は正本の文字のまま）"""
+    p=Path(path);raw=None
+    for enc in ('utf-8','cp932'):
+        try:raw=p.read_text(encoding=enc);break
+        except UnicodeDecodeError:continue
+        except OSError:return None
+    if raw is None:return None
+    norm=lambda text:re.sub(r'\s+','',text)
+    texts=[norm(raw)]
+    if p.suffix.lower()=='.json':
+        try:
+            def _strings(x):
+                if isinstance(x,str):yield x
+                elif isinstance(x,dict):
+                    # e-Gov v2 は {"tag","attr","children"}。タグ名・属性（Num など）を本文に混ぜない
+                    for k,v in x.items():
+                        if k not in ('tag','attr'):yield from _strings(v)
+                elif isinstance(x,list):
+                    for v in x:yield from _strings(v)
+            texts.append(norm(''.join(_strings(json.loads(raw)))))
+        except (ValueError,RecursionError):pass
+    return len(raw.splitlines()),tuple(texts)
+
 def quote_present(run,ref,quote):
     """引用 quote が、参照 ref の指す正本の範囲に逐語（空白を除く）で在るか。
     ref は `corpus/<file>:<start>-<end>`。複数の範囲は `,`、複数のファイルは `;` で区切ってよい（2026-09-29 r13 実測:
@@ -115,24 +144,20 @@ def quote_present(run,ref,quote):
             if any(c.is_relative_to(base/folder) for folder in ('corpus','t1-corpus')) and c.is_file():path=c;break
         # 2026-10-03: 投信の基準価額 CSV（楽天）・SBI の XML は Shift_JIS。.csv を許さず UTF-8 でしか読まなかったので、正しい引用 33 件が不成立になった（write-2026-10-03-fin）
         if path is None or path.suffix.lower() not in ('.txt','.md','.htm','.html','.xml','.json','.csv','.tsv'):return False
-        lines=None
-        for enc in ('utf-8','cp932'):
-            try:lines=path.read_text(encoding=enc).splitlines();break
-            except UnicodeDecodeError:continue
-            except OSError:return False
-        if lines is None:return False
+        loaded=_corpus_text(str(path),path.stat().st_mtime_ns)
+        if loaded is None:return False
+        nlines,texts=loaded
         for span in spans.split(','):
             a,_,b=span.strip().replace('L','').partition('-');a=int(a);b=int(b or a)
-            if a<1 or b<a or a>len(lines):return False
+            if a<1 or b<a or a>nlines:return False
         # 行番号は目安として扱い、照合は参照したファイルの全文で行う（pdftotext の段組みで行番号が大きくずれる。r13 実測 176 件）。
         # 別ファイル・存在しない引用は不成立のまま＝「正本に逐語で在る」ことは保つ。
-        pool.append('\n'.join(lines))
+        pool.extend(texts)
     if not pool:return False
     # sol は複数箇所の引用を改行・「…」・「 | 」でつないで1つに書く。断片ごとに、参照したどれかの正本に逐語で在ることを求める。
     frags=[norm(f) for f in re.split(r'\n|…|\.\.\.|\s[|/]\s|／|[;；]',quote)]  # 2026-09-30: Grok は ; でつなぐ。2026-10-03: Codex 代替の Claude は「 / 」でつなぐ（t3-q1 で 31 単位が不成立）
     frags=[f for f in frags if len(f)>=2] or [want]  # 短い断片（例「二半製品」）も断片として照合する（2026-09-30: 同じ短文を2つの正本から ; で並べた引用が不成立になった）
-    text=[norm(chunk) for chunk in pool]
-    return all(any(f in t for t in text) for f in frags)
+    return all(any(f in t for t in pool) for f in frags)
 
 def run_root(path):
     """out/<束>.json と out/<モデル>/<束>.json のどちらからも run の直下を返す。"""
