@@ -50,6 +50,9 @@ const SITES = [
     key: "pachisloshirube", label: "パチスロ店道しるべ", property: "properties/551973871",
     url: "https://pachisloshirube.jp", gscSite: "sc-domain:pachisloshirube.jp",
     titleSuffix: /\s*[|｜]\s*(?:パチスロ店)?道しるべ.*$/,
+    // 道しるべの目標は「2027年中に月100万PV」（日報 reports/shirube-daily-*）。1日あたり 1,000,000 / 30.4 ≈ 32,900 PV（2026-10-04 追加）
+    pvGoal: 32900,
+    goalBy: "2027-12-31",
   },
 ];
 
@@ -1112,9 +1115,9 @@ function goalBlock(site) {
         <div class="metric-sub">同じ7日のセッション <b>${n0(g.sessionsPerDay)}</b>/日・UU <b>${g.uu7 == null ? "—" : n0(g.uu7)}</b>人（7日間の重複なし）</div>
         ${g.weekdayPvPerDay == null ? "" : `<div class="metric-sub">平日${g.weekdayN}日平均 <b>${n0(g.weekdayPvPerDay)}</b> PV/日（${HOLIDAYS ? "土日・祝日・年末年始を除く" : "土日を除く。★祝日表を読めなかったので祝日は含んだまま"}）${g.offInWindow && g.offInWindow.length ? `。この7日の祝日: ${esc(g.offInWindow.join("・"))}` : ""}。目標は7日平均、進捗の判断には平日平均も使う。</div>`}
         ${bar(g.sessionPct)}
-        <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>。内訳の目標は Bing 2,000 ＋ Google 100 ＋ 非検索 300。</div>
-        <div class="metric-sub">2026-12-31に中間確認。年末休業前の完成7日（候補: Bingの日付で12/18〜24）と平日平均で進捗を見る。表示18,000/日だけでは判定しない。</div>
-        <div class="metric-sub">12月末の進捗目安: Bing 1,014 / Google 20.3 / 非検索 89.5 / GA4 1,201 PV。目標まで一定率で伸びた場合の目安で、予測値ではない。</div>
+        <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>${site.key === "keiri-tools" ? "。内訳の目標は Bing 2,000 ＋ Google 100 ＋ 非検索 300。" : `（月100万PV＝日約${sessionGoal.toLocaleString("ja-JP")} PV・${esc(siteConf(site).goalBy)}まで）。`}</div>
+        ${site.key !== "keiri-tools" ? "" : `<div class="metric-sub">2026-12-31に中間確認。年末休業前の完成7日（候補: Bingの日付で12/18〜24）と平日平均で進捗を見る。表示18,000/日だけでは判定しない。</div>
+        <div class="metric-sub">12月末の進捗目安: Bing 1,014 / Google 20.3 / 非検索 89.5 / GA4 1,201 PV。目標まで一定率で伸びた場合の目安で、予測値ではない。</div>`}
       </div>` : `
       <div class="goal-card">
         <div class="insight-head"><div><span class="eyebrow">全体（GA4）</span><h4>1日PV <small>直近7日平均・昨日まで</small></h4></div></div>
@@ -1133,7 +1136,7 @@ function goalBlock(site) {
         <tbody>${msRows}</tbody>
       </table></div>
     </div>` : "";
-  const keiriFoot = sessionGoal ? `
+  const keiriFoot = sessionGoal && site.key === "keiri-tools" ? `
     <p class="foot">
       日1万PVを2027-12-31までの最終目標とし、今期は2027-03-31までに日2,400 PVを目指す（2026-10-04 にセッションから PV へ変更）。<br>
       Googleの通過点は10月末10 / 12月末30 / 2027-03末100クリック/日。外れた場合は方針も見直す。<br>
