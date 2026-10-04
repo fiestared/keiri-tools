@@ -30,12 +30,26 @@ const ledgerFor = (page) => ledgerArg || page.replace(/^docs\//, 'claims/').repl
 // 年分・年度・日付だけの語は「数字」として拾わない（それ自体が条件の語になりがち）
 const isQuantity = (t) => /[0-9０-９]/.test(t) && !/^(令和|平成)?[0-9０-９]+年(分|度)?$|^[0-9０-９]{4}年[0-9０-９]+月([0-9０-９]+日)?$/.test(normalize(t));
 
-let bad = 0, checked = 0, skipped = 0;
+// ★2026-10-04〜05 の high 608件の分類: 「自分で計算した境界・差額・設例の誤り」（例: 境界 約196万6,667円 を「約203万円」）と
+//   「例外がある主張の言い切り」（「全域で5万円下がる」「各帯の起点で計算した値」）が多かった。
+//   - 台帳で `derived: true`（正本に書いてある数字ではなく、書き手が計算・推計した数字）の主張は `calc`（計算式とスクリプトの実行結果）が必須
+//   - 数字を含む文の全称表現（全域・すべて・各〜・いずれも・必ず・常に・一律）は一覧に出す（落とさない。書き手が例外を確かめる）
+const UNIVERSAL = /全域|すべての|全ての|全部の|各帯|各行|いずれも|必ず|常に|一律|どの[^、。]{0,6}でも/u;
+let bad = 0, checked = 0, skipped = 0, nocalc = 0, universal = 0;
 for (const page of pages) {
   const lp = ledgerFor(page);
   if (!existsSync(lp)) { console.log(`- ${page}: 台帳 ${lp} が無い（検査なし）`); continue; }
   const ledger = JSON.parse(readFileSync(lp, 'utf8'));
   const units = segmentClaims(readFileSync(page, 'utf8'), page);
+  for (const c of ledger.claims || []) {
+    if (c.derived === true && !(typeof c.calc === 'string' ? c.calc.trim() : (c.calc && Object.keys(c.calc).length))) {
+      nocalc++; console.log(`✗ ${page} 主張 ${c.id}: derived（書き手が計算した数字）なのに calc（計算式と実行結果）が無い — ${(c.text || '').slice(0, 60)}`);
+    }
+  }
+  for (const u of units) {
+    const t = u.text || '';
+    if (/[0-9０-９]/.test(t) && UNIVERSAL.test(t)) { universal++; console.log(`△ ${page} ${u.id}: 数字の文に全称表現「${t.match(UNIVERSAL)[0]}」— 例外が無いか正本で確かめる: ${t.slice(0, 70)}`); }
+  }
   for (const c of ledger.claims || []) {
     const must = (c.must_with || []).filter(Boolean);
     if (!must.length) { skipped++; continue; }
@@ -53,5 +67,5 @@ for (const page of pages) {
     }
   }
 }
-console.log(`check_claim_scope: 数字を含む単位 ${checked} を検査、条件の抜け ${bad}（must_with の無い主張 ${skipped} は対象外）`);
-process.exit(bad ? 1 : 0);
+console.log(`check_claim_scope: 数字を含む単位 ${checked} を検査、条件の抜け ${bad}・calc の無い derived ${nocalc}（must_with の無い主張 ${skipped} は対象外）・全称表現の確認 ${universal}（△は落とさない）`);
+process.exit(bad || nocalc ? 1 : 0);
