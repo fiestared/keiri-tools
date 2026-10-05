@@ -216,7 +216,7 @@ def chart(p):
     cap = p.r('perf', f'<figcaption>開始日（{jd(r["起点"])}）を100に統一し、終了日（{jd(r["終点"])}）までを描画。実線：{E(p.A["short"])}。破線：{E(p.B["short"])}。税引前の分配金を再投資した推移で、数値は直上の表のとおりです。</figcaption>')
     return f'<figure class="figure">{svg}{cap}</figure>'
 
-FIELD_ROWS = [('fee', '信託報酬（税込年率・ファンド本体）'), ('eff', '投資先ETF等を加味した実質的な信託報酬'), ('ter', '総経費率（参考値・年率）'),
+FIELD_ROWS = [('fee', '信託報酬（税込年率・ファンド本体・貸付時の追加分を除く）'), ('eff', '投資先ETF等を加味した実質的な信託報酬'), ('ter', '総経費率（参考値・年率）'),
               ('ter_period', '総経費率の対象期間'), ('index', '連動対象・投資対象'), ('hedge', '為替ヘッジ'), ('settle', '決算'),
               ('incept', '設定日'), ('nofee', '購入時手数料／信託財産留保額')]
 
@@ -550,7 +550,7 @@ def build_ledger(p):
         absolutes.append({'phrase': a['phrase'], 'context': ctx[:30], 'reviewed': ABS_REVIEW(a)})
     claims = [c for c in p.claims.values() if c['covers']]
     verified = []
-    keep = OC_KEEP.get(p.slug, {})
+    keep = {**OC_KEEP, **OC_KEEP_JHD}.get(p.slug, {})
     if keep:
         segs = json.loads(subprocess.run(['node', 'tools/segment_claims.mjs', page], capture_output=True, text=True, cwd=ROOT).stdout)
         for sg in segs:
@@ -578,7 +578,7 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'perfB': {'must_with': ['再投資|信託報酬', '2026年9月30日|比較期間|信託報酬'], 'derived': True, 'calc': _PERF_CALC},
         'method': {'must_with': ['比較期間|起点|終点|基準価額|データ|再投資|信託報酬']},
         'period': {'must_with': ['2026年9月30日', '2025年2月7日'], 'derived': True, 'calc': 'python3: (date(2026,9,30)-date(2025,2,7)).days=600、600*12/365.25=19.71か月→約1年8か月。'},
-        'feepair': {'must_with': ['税込', '信託報酬']},
+        'feepair': {'must_with': ['税込', '信託報酬', '貸付']},
         'feegap': {'must_with': ['税込|再投資|終了時評価額', '信託報酬|再投資|終了時評価額'], 'derived': True,
                    'calc': 'python3: round(0.297-0.099,3)=0.198（年0.198ポイント）、1_000_000*0.00198=1980.0（約1,980円）。'},
         'sbi-jhd-ter': {'must_with': ['総経費率', '参考値|対象期間|作成対象期間']},
@@ -609,6 +609,12 @@ def apply_scope_rules(p):
 # Units the 2026-10-03 segment review left as out_of_corpus with no model judging them wrong
 # (oc-opinion.json: all "unsure"). Kept unchanged as unverified, with the source that would settle them.
 _OCR = 'segment-review 2026-10-03（write-2026-10-03-fin）: 正本（目論見書・運用報告書・月次・基準価額データ）に無い。別モデルの意見は unsure（wrong ではない）ので書き換えず未確認のまま残す。'
+_OCR5 = 'segment-review 2026-10-05（write-2026-10-05-fin）: 正本（目論見書・運用報告書・月次・基準価額データ）に無い。別モデルの意見は not_wrong なので書き換えず未確認のまま残す。'
+OC_KEEP_JHD = {'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': {
+    's-334220e4b41c156035ae-1': ('文責者の肩書（クリニック・EC事業の経営者／経理実務者）を示す運営者情報（/about/ の記載など）。', _OCR5),
+    's-d666cca387098425ff12-1': ('資料の確認日（2026年10月3日）と取得元URLを記録した取得ログ（source_registry の fetched）。', _OCR5),
+    's-80712083074ccfddf34a-1': ('資料の確認日（2026年10月3日）を記録した取得ログ（source_registry の fetched）。', _OCR5),
+}}
 OC_KEEP = {'sbi-spyd-vs-rakuten-schd': {
     's-334220e4b41c156035ae-1': ('文責者の肩書（クリニック・EC事業の経営者／経理実務者）を示す運営者情報（/about/ の記載など）。', _OCR),
     's-d666cca387098425ff12-1': ('資料の確認日（2026年10月3日）と取得元URLを記録した取得ログ（corpus_desc.md / source_registry の取得日）。', _OCR),
