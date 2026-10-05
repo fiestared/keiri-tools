@@ -18,8 +18,8 @@ from funds import FUNDS, check_all
 check_all()
 import compare as CP
 
-PUB_DEFAULT = '2026-10-04'  # この便で公開する記事の公開日
-PUB_BY_SLUG = {'sbi-spyd-vs-rakuten-schd': '2026-10-03'}  # 既に公開した記事の公開日は動かさない
+PUB_DEFAULT = '2026-10-05'  # この便で公開する記事の公開日
+PUB_BY_SLUG = {'sbi-spyd-vs-rakuten-schd': '2026-10-03', 'sbi-spyd-vs-sbi-vym': '2026-10-04'}  # 既に公開した記事の公開日は動かさない
 PUB = PUB_DEFAULT  # 公開日（datePublished・ページの公開日の表示）。Page ごとに差し替える
 GOT = '2026-10-03'  # 資料・基準価額データの取得日（公開日と分けて持つ。2026-10-02 の TODO）
 CMP = json.loads((R / 'comparison.json').read_text())['pairs']
@@ -162,16 +162,16 @@ def perf_section(p, intro_cid=None):
     r, A, B = p.r_, p.A, p.B
     yrs = r['年数']
     rows = [('比較期間', f"{jd(r['起点'])}〜{jd(r['終点'])}", f"{jd(r['起点'])}〜{jd(r['終点'])}", 'perf'),
-            ('累積騰落率', pct(r['A累積']), pct(r['B累積']), None)]
+            ('累積騰落率（比較期間・分配金再投資）', pct(r['A累積']), pct(r['B累積']), None)]
     if yrs >= 1:
-        rows.append(('年率換算（複利）', pct(r['A年率']), pct(r['B年率']), None))
-    rows.append(('100万円の終了時評価額（売却前）', yen(r['A100万円終価']), yen(r['B100万円終価']), None))
-    rows.append(('比較期間内の最大下落率', pct(r['A最大下落率']), pct(r['B最大下落率']), None))
+        rows.append(('年率換算（複利・比較期間・分配金再投資）', pct(r['A年率']), pct(r['B年率']), None))
+    rows.append(('100万円の終了時評価額（売却前・比較期間・分配金再投資）', yen(r['A100万円終価']), yen(r['B100万円終価']), None))
+    rows.append(('比較期間内の最大下落率（分配金再投資）', pct(r['A最大下落率']), pct(r['B最大下落率']), None))
     if '1年窓' in r:
         one = r['1年窓']
-        rows.append((f"直近1年の騰落率（{jd(one['起点'])}〜）", pct(one['A累積']), pct(one['B累積']), None))
-    h = p.r('perf', '<h2 id="performance">同じ期間の100万円を、分配金再投資で比べる</h2>')
-    h += '<div class="scroll-wrap"><table><thead><tr><th scope="col">項目</th>'
+        rows.append((f"直近1年の騰落率（{jd(one['起点'])}〜{jd(one['終点'])}・分配金再投資）", pct(one['A累積']), pct(one['B累積']), None))
+    h = p.r('perf', '<h2 id="performance">同じ期間の実績を、分配金再投資で比べる</h2>')
+    h += '<div class="scroll-wrap"><table><thead><tr><th scope="col">' + p.r('perf', f'項目（基準価額は{jd(r["終点"])}まで）') + '</th>'
     h += f'<th scope="col" class="num">{E(A["short"])}</th><th scope="col" class="num">{E(B["short"])}</th></tr></thead><tbody>'
     for label, va, vb, cid in rows:
         if cid:
@@ -181,7 +181,7 @@ def perf_section(p, intro_cid=None):
     h += '</tbody></table></div>'
     notes = ['最大下落率は、比較期間内のそれまでの高値から、その後の安値までの下落を日次で測った値です。将来の損失の上限ではありません。']
     if yrs >= 1:
-        notes.append(f"年率は複利換算で、比較期間の暦日数（{(dt.date.fromisoformat(r['終点']) - dt.date.fromisoformat(r['起点'])).days:,}日）を365.25日で割った年数（{yrs:.2f}年）で計算しています。毎年同じ率で増えたという意味ではありません。")
+        notes.append(f"年率は分配金再投資ベースの累積騰落率を複利で年率に直した値で、比較期間の暦日数（{(dt.date.fromisoformat(r['終点']) - dt.date.fromisoformat(r['起点'])).days:,}日）を365.25で割った年数（{yrs:.2f}年）で計算しています。毎年同じ率で増えたという意味ではありません。")
     else:
         notes.append('共通期間が1年未満のため、年率換算と直近1年の欄は載せていません。短い期間の騰落を1年分に引き延ばすと、実際より大きな印象を与えるためです。')
     h += p.r('perf', '<p class="note">' + ''.join(notes) + '</p>')
@@ -213,7 +213,7 @@ def chart(p):
            f'<polyline points="{pts(va)}" fill="none" stroke="var(--accent)" stroke-width="2.5"/>'
            f'<polyline points="{pts(vb)}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-dasharray="7 5"/>'
            f'<text x="{x0}" y="237" fill="currentColor" font-size="13">開始日</text><text x="300" y="237" fill="currentColor" font-size="13">終了日</text></svg>')
-    cap = p.r('perf', f'<figcaption>開始日（{jd(r["起点"])}）を100に統一。実線：{E(p.A["short"])}。破線：{E(p.B["short"])}。税引前の分配金を再投資した推移で、数値は直上の表のとおりです。</figcaption>')
+    cap = p.r('perf', f'<figcaption>開始日（{jd(r["起点"])}）を100に統一し、終了日（{jd(r["終点"])}）までを描画。実線：{E(p.A["short"])}。破線：{E(p.B["short"])}。税引前の分配金を再投資した推移で、数値は直上の表のとおりです。</figcaption>')
     return f'<figure class="figure">{svg}{cap}</figure>'
 
 FIELD_ROWS = [('fee', '信託報酬（税込年率・ファンド本体）'), ('eff', '投資先ETF等を加味した実質的な信託報酬'), ('ter', '総経費率（参考値・年率）'),
@@ -224,7 +224,7 @@ def fee_section(p, show_eff=None):
     A, B = p.A, p.B
     show_eff = (A['etf'] or B['etf']) if show_eff is None else show_eff
     h = p.r('feehead', '<h2 id="fees">目論見書の料率と、総経費率（参考値）を分けて見る</h2>')
-    h += '<div class="scroll-wrap"><table class="num-nowrap"><thead><tr><th scope="col">項目</th>'
+    h += '<div class="scroll-wrap"><table class="num-nowrap"><thead><tr><th scope="col">' + p.r('feehead', f'項目（{jd(GOT)}に確認した資料）') + '</th>'
     h += f'<th scope="col">{E(A["short"])}</th><th scope="col">{E(B["short"])}</th></tr></thead><tbody>'
     for field, label in FIELD_ROWS:
         if field == 'eff' and not show_eff:
@@ -386,16 +386,17 @@ def method_section(p):
     h += '<p>' + p.r('method', f'{jd(GOT)}に取得した日次データを使い、{jd(r["起点"])}以降で、2本とも基準価額がある日だけを比べました。')
     if r['起点'] > str(CP.START3Y):
         lates = [k for k in (p.a, p.b) if str(min(p.series[k])) == r['起点']]
+        e_ = dt.date.fromisoformat(r['終点']); y3 = jd(e_.replace(year=e_.year - 3))
         h += p.r('method', 'この比較は、終点から3年さかのぼった日を起点にするのを既定にしています。')
         if len(lates) == 2:  # 2本の設定日が同じ日のときは片方だけを名指ししない
             ca, cb = p.claims[p.fc(p.a, 'incept')], p.claims[p.fc(p.b, 'incept')]
             cid = p.claim('inceptpair', f'{p.A["short"]}と{p.B["short"]}の設定日はどちらも{jd(r["起点"])}',
                           ca['source_url'], ca['source_quote'], ca['applies'],
                           ca['exceptions'] + f' 比較相手: {cb["source_url"]}「{cb["source_quote"]}」')
-            h += p.r(cid, f'ただし2本とも設定日が{jd(r["起点"])}で、その3年前より後なので、2本の基準価額がそろう最初の日であるこの設定日を起点にしました。')
+            h += p.r(cid, f'ただし2本とも設定日が{jd(r["起点"])}で、終点の3年前（{y3}）より後なので、2本の基準価額がそろう最初の日であるこの設定日を起点にしました。')
         else:
             late = lates[0]
-            h += p.r(f'{late}-incept', f'ただし{FUNDS[late]["short"]}の設定日（{jd(r["起点"])}）がその3年前より後なので、2本の基準価額がそろう最初の日であるこの設定日を起点にしました。')
+            h += p.r(f'{late}-incept', f'ただし{FUNDS[late]["short"]}の設定日（{jd(r["起点"])}）が終点の3年前（{y3}）より後なので、2本の基準価額がそろう最初の日であるこの設定日を起点にしました。')
     else:
         h += p.r('method', f'2本とも終点の3年前より前に設定されているため、起点は{jd(r["起点"])}です（3年前にあたる2023年9月30日が土曜日のため、その前の営業日）。')
     lasts = [(FUNDS[k]['short'], str(max(CP.series(k)[0]))) for k in (p.a, p.b)]  # p.series is already cut at END; read the raw file's last day
@@ -404,7 +405,7 @@ def method_section(p):
     nofee = all(FUNDS[k].get('nofee_val', 'なし／なし') == 'なし／なし' for k in (p.a, p.b))
     tax = nofee and tax_pair(p)
     cost = ('投資者ごとの税金は含めていません。' if tax else '投資者ごとの税金（分配金や換金時の差益にかかる税金）は含めていないため、実際に受け取る手取り額とは異なります。') if nofee else '購入時・換金時の手数料と投資者ごとの税金は含めていないため、実際に受け取る手取り額とは異なります。'
-    h += '<p>' + p.r('method', '終了時評価額は「100万円×終点の再投資基準価額÷起点の再投資基準価額」で計算しました。基準価額は信託報酬などを差し引いた後の値なので、費用をもう一度引いてはいません。' + cost)
+    h += '<p>' + p.r('method', '比較期間の終了時評価額は「100万円×終点の再投資基準価額÷起点の再投資基準価額」で計算しました。基準価額は信託報酬などを差し引いた後の値なので、費用をもう一度引いてはいません。' + cost)
     if tax:
         h += p.r(tax, '交付目論見書の税金の表では、個人投資者が受け取る普通分配金と、換金（解約）時・償還時の差益（譲渡益）に、源泉徴収時の税率でそれぞれ20.315%がかかります（課税方法や外国税額控除の適用などにより異なる場合があり、法人の場合は異なります）。')
         h += p.r(tax, '課税口座では、その税金の分だけ実際の手取り額はこの評価額より少なくなります。')
@@ -558,10 +559,51 @@ def build_ledger(p):
         missing = set(keep) - {v['id'] for v in verified}
         for m in missing:
             errors.append(f'out_of_corpus unit kept in the review is no longer on the page: {m}')
-    ledger = {'page': page, 'checked': GOT, 'claims': claims, 'absolutes': absolutes, 'tool_cases': [], 'nonclaims': nonclaims, 'verified': verified}
+    apply_scope_rules(p)
+    ledger = {'page': page, 'checked': CHECKED.get(p.slug, GOT), 'claims': claims, 'absolutes': absolutes, 'tool_cases': [], 'nonclaims': nonclaims, 'verified': verified}
     (ROOT / 'claims/column').mkdir(parents=True, exist_ok=True)
     (ROOT / f'claims/column/{p.slug}.json').write_text(json.dumps(ledger, ensure_ascii=False, indent=2) + '\n')
     return errors
+
+# Ledgers reviewed claim by claim on a later day carry that date (check_claim_scope requires must_with from 2026-10-05).
+CHECKED = {'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05'}
+_PERF_CALC = ('python3（2026-10-05、compare.series の保存データから再計算）: 共通営業日 2025-02-07〜2026-09-30（暦日600日、600/365.25=1.64年）。'
+              'SBI: 累積 19780.68269/11947.95801-1=+65.5570%、年率 (1.655570)^(1/1.6427)-1=+35.9203%、100万円×1.655570=1,655,570円、最大下落 -16.9911%、'
+              '直近1年 19780.68269/14510.21310-1=+36.3225%。楽天: 累積 16063/9999-1=+60.6461%、年率 +33.4515%、1,606,461円、最大下落 -15.3947%、'
+              '直近1年 16063/12323-1=+30.3498%。comparison.json と一致。期間 600日×12/365.25=19.7か月→約1年8か月。')
+SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'calc': str}}
+    'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': {
+        'perf': {'must_with': ['再投資|信託報酬', '2026年9月30日|比較期間|信託報酬'], 'derived': True, 'calc': _PERF_CALC},
+        'perfA': {'must_with': ['再投資|信託報酬', '2026年9月30日|比較期間|信託報酬'], 'derived': True, 'calc': _PERF_CALC},
+        'perfB': {'must_with': ['再投資|信託報酬', '2026年9月30日|比較期間|信託報酬'], 'derived': True, 'calc': _PERF_CALC},
+        'method': {'must_with': ['比較期間|起点|終点|基準価額|データ|再投資|信託報酬']},
+        'period': {'must_with': ['2026年9月30日', '2025年2月7日'], 'derived': True, 'calc': 'python3: (date(2026,9,30)-date(2025,2,7)).days=600、600*12/365.25=19.71か月→約1年8か月。'},
+        'feepair': {'must_with': ['税込', '信託報酬']},
+        'feegap': {'must_with': ['税込|再投資|終了時評価額', '信託報酬|再投資|終了時評価額'], 'derived': True,
+                   'calc': 'python3: round(0.297-0.099,3)=0.198（年0.198ポイント）、1_000_000*0.00198=1980.0（約1,980円）。'},
+        'sbi-jhd-ter': {'must_with': ['総経費率', '参考値|対象期間|作成対象期間']},
+        'rakuten-jhd-ter': {'must_with': ['総経費率', '参考値|対象期間|作成対象期間']},
+        'terpair': {'must_with': ['総経費率', '参考値|対象期間|作成対象期間|作成期間'], 'derived': True,
+                    'calc': 'python3: (date(2025,12,26)-date(2025,10,11)).days=76→「始まりは76日ずれ」。作成期間はどちらも約半年（2025/10/11〜2026/4/10、2025/12/26〜2026/6/25）。'},
+        'desc': {'must_with': ['税込|2026年9月30日', '信託報酬|再投資']},
+        'distA': {'must_with': ['1万口当たり', '税引前']},
+        'distB': {'must_with': ['1万口当たり', '税引前']},
+        'comp-s': {'must_with': ['2026年8月31日|2026年8月末']},
+        'comp-r': {'must_with': ['2026年8月31日|2026年8月末']},
+        'overlap': {'must_with': ['2026年8月31日|2026年8月末'], 'derived': True,
+                    'calc': 'python3: 楽天の上位10銘柄のうちSBIの上位30銘柄表に名前がある数 = sum([日本たばこ産業,三菱ＵＦＪ,トヨタ,アステラス,東京海上,ＩＮＰＥＸ]) = 6（ブリヂストン・第一三共・スズキ・デンソーは無い）。'},
+        'yielddef': {'must_with': ['2026年8月31日|過去12か月|予想']},
+        'sbi-jhd-settle': {'must_with': ['原則として|決算日（|作成対象期間|使用開始日|365.25日', '休業日|決算日（|作成対象期間|使用開始日|365.25日']},
+        'rakuten-jhd-settle': {'must_with': ['原則として|決算日（|作成対象期間|使用開始日|365.25日', '休業日|決算日（|作成対象期間|使用開始日|365.25日']},
+        'settlepair': {'must_with': ['原則として|決算日（|作成対象期間|使用開始日|365.25日', '休業日|決算日（|作成対象期間|使用開始日|365.25日']},
+        'sbi-jhd-lend': {'must_with': ['貸付', '以内']},
+    },
+}
+
+def apply_scope_rules(p):
+    for cid, rule in SCOPE_RULES.get(p.slug, {}).items():
+        if cid in p.claims:
+            p.claims[cid].update(rule)
 
 # Units the 2026-10-03 segment review left as out_of_corpus with no model judging them wrong
 # (oc-opinion.json: all "unsure"). Kept unchanged as unverified, with the source that would settle them.
