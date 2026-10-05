@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CSVの文字化けの直し方｜Excelで化ける原因とBOM・文字コードの確かめ方</title>
+<meta name="description" content="CSVをExcelで開くと文字化けするのは、多くの場合ファイルが壊れたのではなく文字コードの読み違いです。Microsoftの案内では、UTF-8のCSVはBOM付きなら通常どおり開け、BOMが無ければ「データの取得」から文字コードを選んで開けます。症状の見分け方、先頭3バイトEF BB BFでの確かめ方、元に戻せない保存のしかたまで。">
+<meta name="card-desc" content="CSVの文字化けの多くは読み違い。UTF-8はBOM付きなら通常どおり開け、BOMが無ければ「テキストまたはCSVから」で文字コードを選ぶ。化けたまま上書きすると元に戻せないことがある。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/csv-mojibake/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="CSVの文字化けの直し方｜Excelで化ける原因とBOM・文字コードの確かめ方">
+<meta property="og:description" content="CSVをExcelで開くと文字化けするのは、多くの場合ファイルが壊れたのではなく文字コードの読み違いです。Microsoftの案内では、UTF-8のCSVはBOM付きなら通常どおり開け、BOMが無ければ「データの取得」から文字コードを選んで開けます。症状の見分け方、先頭3バイトEF BB BFでの確かめ方、元に戻せない保存のしかたまで。">
+<meta property="og:url" content="https://keiri-tools.com/column/csv-mojibake/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "CSVの文字化けの直し方 — Excelで化けるのは「文字コードの読み違い」。開き方で直る場合と、もう直らない場合",
+      "datePublished": "2026-10-05",
+      "dateModified": "2026-10-05",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/csv-mojibake/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "CSVの文字化け",
+          "item": "https://keiri-tools.com/column/csv-mojibake/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. CSVをダブルクリックすると文字化けします。ファイルは壊れていますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 多くの場合、壊れてはいません。Excel がファイルを書いたときと違う文字コードとして読んだために、別の文字に見えている状態です。Microsoft の案内では、BOM の無い UTF-8 のCSVは［データ］タブの「データの取得」（テキストまたは CSV から）で開けます。開き直す前に元のファイルをコピーして残してください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 文字化けしたまま保存してしまいました。元に戻せますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 戻せないことがあります。化けた表示のまま上書き保存すると、化けた文字のほうが新しい中身として書き込まれ、読み違いで「�」などに置き換わった部分は元のバイトが分からなくなります。元のファイルのコピーが無ければ、渡してくれた人やシステムからもう一度出力してもらうのが確実です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. BOM付きのUTF-8とBOMなしのUTF-8は、どちらで保存すればよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 受け取る側の取込仕様で決めます。仕様に指定があればそれに合わせ、相手が Excel で開いて見るだけなら、Microsoft が通常どおり開けると案内している BOM 付きの UTF-8 が無難です。BOM を想定していないシステムでは、1行目の見出しの先頭に余計な文字が付いたように扱われることがあります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. ファイルの文字コードはどうやって確かめますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. Windows なら PowerShell の Format-Hex で先頭のバイトを表示し、EF BB BF の3バイトで始まれば BOM 付きの UTF-8 です。BOM が無い場合は先頭のバイトだけでは UTF-8 か Shift_JIS かを決めきれないので、Excel の「テキストまたは CSV から」のプレビューで文字コードを切り替え、日本語が読めるほうを選びます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 文字化けを直したら、今度は先頭のゼロが消えました。",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 文字コードとは別の問題で、Microsoft の説明では Excel は先頭のゼロを自動的に取り除きます。「テキストまたは CSV から」で開くときにデータ型の自動検出をやめるか、読み込んだ後に列のデータ型を「テキスト」に変えると、00123 のような値を文字列のまま残せます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 銀行に出す振込データのCSVも、BOM付きUTF-8にすればよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. いいえ。銀行に渡す全銀フォーマットのファイルは、文字コードやレコードの長さ、使える文字が銀行側の仕様で決まっています。全銀ファイルの文字コードは「全銀フォーマットとは」の記事の文字コードの節で確かめてください。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-E742DSDHPD');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578" crossorigin="anonymous"></script>
+<script src="../../assets/track.js" defer></script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › CSVの文字化け</nav>
+<article>
+
+  <h1>CSVの文字化けの直し方 — Excelで化けるのは「文字コードの読み違い」。開き方で直る場合と、もう直らない場合</h1>
+  <p class="article-meta">公開日: <time datetime="2026-10-05">2026年10月5日</time></p>
+  <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+  <p>結論から言うと、<b>CSVをExcelで開いたときの文字化けの多くは、ファイルの中身が壊れたのではなく、Excelがファイルを別の文字コードとして読んだ状態</b>です。同じ「経理」という文字でも、UTF-8 と Shift_JIS ではファイルに書かれるバイトの並びが違います。読む側が書いた側と違う文字コードを選ぶと、別の文字に置き換わって見えます。</p>
+
+  <p>Microsoft のサポート記事「Excel で CSV UTF-8 ファイルを正しく開くには」は、<b>UTF-8 の CSV ファイルは BOM（バイト オーダー マーク）付きで保存されていれば通常どおり開けて、BOM が無い場合は［データ］タブの「データの取得」（Power Query）などから開く</b>、と案内しています。ダブルクリックで化けたCSVでも、<b>開き方を変えて文字コードを指定すれば、元の文字で読める</b>ことがあります。</p>
+
+  <p>ただし直らない場合もあります。<b>化けた表示のまま上書き保存したファイルや、保存先の文字コードに無い文字を含んだまま保存したファイルは、元の文字に戻せない</b>ことがあります。この記事では、症状から文字コードを見分ける方法、Excel での開き方の違い、渡す側での保存のしかたを、架空のCSVを使って順に確かめます。<b>開く前に元のファイルをコピーして残す</b>ことだけは、どの方法でも先に済ませてください。</p>
+
+  <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+    <li><a href="#shikumi">文字化けの仕組み — 同じ文字でもバイトの並びが違う</a></li>
+    <li><a href="#shindan">症状から読み違いの向きを見分ける</a></li>
+    <li><a href="#bom">BOMとは — UTF-8 の先頭に付く3バイト</a></li>
+    <li><a href="#hirakikata">Excel での開き方は3通り。結果が変わるのは文字コードを選べるかどうか</a></li>
+    <li><a href="#tejun">「テキストまたは CSV から」で開き直す手順</a></li>
+    <li><a href="#hozon">渡す側で防ぐ — 保存のときに文字コードを決める</a></li>
+    <li><a href="#kakunin">先頭のバイトで確かめる — PowerShell の Format-Hex</a></li>
+    <li><a href="#modoranai">もう直らない場合 — 失われた文字は復元できない</a></li>
+    <li><a href="#ginko">銀行に渡す振込ファイルは別の話</a></li>
+    <li><a href="#rfc">CSVという形式は文字コードを決めていない（RFC 4180）</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#shutten">出典</a></li>
+  </ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../zengin-format-guide/">全銀フォーマットとは</a></li><li><a href="../../zengin-kana/">振込名義カナ変換（全銀フォーマット一括正規化）</a></li><li><a href="../denchoho-kensaku-yoken/">電子帳簿保存法の検索要件</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+  <h2 id="shikumi">文字化けの仕組み — 同じ文字でもバイトの並びが違う</h2>
+
+  <p>CSVファイルの中身は、文字そのものではなくバイト（0〜255の数）の並びです。どの並びをどの文字として読むかの約束が文字コードで、日本語のCSVでよく使われるのが <b>UTF-8</b> と <b>Shift_JIS</b> です。同じ文字でも、文字コードが違えばバイトの並びが変わります。</p>
+
+  <p>次の表は、「経理」の2文字を Python の標準の符号化（UTF-8 と、Windows の日本語で使われる cp932＝Shift_JIS の拡張）でバイトに直した結果です。</p>
+
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>文字コード</th><th>「経理」のバイト列（16進数）</th><th class="num">バイト数</th></tr></thead>
+    <tbody>
+      <tr><td>UTF-8</td><td><code>E7 B5 8C E7 90 86</code></td><td class="num">UTF-8 では「経理」は6バイト</td></tr>
+      <tr><td>Shift_JIS（cp932）</td><td><code>8C 6F 97 9D</code></td><td class="num">cp932 では「経理」は4バイト</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>UTF-8 で書かれたこの6バイトを、読む側が cp932 として読むと、Python の cp932 の復号では「<b>邨檎炊</b>」という別の3文字になります。ファイルのバイトは1つも変わっていません。<b>変わったのは読み方だけ</b>なので、正しい文字コードで読み直せば「経理」に戻ります。</p>
+
+  <figure class="figure fig-wide" style="--figw:540px">
+    <svg viewBox="0 0 640 260" role="img" aria-labelledby="fig1-t" xmlns="http://www.w3.org/2000/svg">
+      <title id="fig1-t">同じバイト列を2つの文字コードで読んだときの違い</title>
+      <rect x="220" y="16" width="200" height="52" rx="6" fill="none" stroke="var(--accent)" stroke-width="2"/>
+      <text x="320" y="38" font-size="13" text-anchor="middle" fill="currentColor">ファイルのバイト列</text>
+      <text x="320" y="58" font-size="13" text-anchor="middle" fill="currentColor" font-family="monospace">E7 B5 8C E7 90 86</text>
+      <line x1="280" y1="68" x2="150" y2="140" stroke="currentColor" stroke-width="1.5"/>
+      <line x1="360" y1="68" x2="490" y2="140" stroke="currentColor" stroke-width="1.5"/>
+      <rect x="40" y="140" width="220" height="80" rx="6" fill="none" stroke="var(--accent)" stroke-width="2"/>
+      <text x="150" y="164" font-size="13" text-anchor="middle" fill="currentColor">UTF-8 として読む</text>
+      <text x="150" y="192" font-size="18" text-anchor="middle" fill="currentColor">経理</text>
+      <text x="150" y="212" font-size="12" text-anchor="middle" fill="var(--sub)">書いた側と同じ読み方</text>
+      <rect x="380" y="140" width="220" height="80" rx="6" fill="none" stroke="var(--warn-line)" stroke-width="2"/>
+      <text x="490" y="164" font-size="13" text-anchor="middle" fill="currentColor">cp932 として読む</text>
+      <text x="490" y="192" font-size="18" text-anchor="middle" fill="currentColor">邨檎炊</text>
+      <text x="490" y="212" font-size="12" text-anchor="middle" fill="var(--sub)">読み違い（バイトは同じ）</text>
+      <text x="320" y="248" font-size="12" text-anchor="middle" fill="var(--sub)">表示例は Python の復号の結果。Excel での表示は実機未検証</text>
+    </svg>
+    <figcaption>文字化けは読み方の違い。ファイルの中身は変わっていないので、読み方を合わせれば元の文字に戻る</figcaption>
+  </figure>
+
+  <h2 id="shindan">症状から読み違いの向きを見分ける</h2>
+
+  <p>架空の社員一覧のCSVで確かめます。中身は次の2行で、1列目は先頭がゼロの社員番号です。</p>
+
+  <pre><code>社員番号,氏名,部署
+00123,山田太郎,経理部</code></pre>
+
+  <p>このファイルを書いた文字コードと読んだ文字コードの組み合わせで、2行目の見え方は次のように変わります（Python の復号で、読めないバイトを「�」に置き換えた場合の表示例です。Excel が同じ表示をするかは実機未検証です）。</p>
+
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>書いた文字コード → 読んだ文字コード</th><th>2行目の見え方（表示例）</th><th>見分け方の目安</th></tr></thead>
+    <tbody>
+      <tr><td>UTF-8 → UTF-8</td><td><code>00123,山田太郎,経理部</code></td><td>正しく読めている</td></tr>
+      <tr><td>UTF-8 → cp932</td><td><code>00123,螻ｱ逕ｰ螟ｪ驛�,邨檎炊驛ｨ</code></td><td>見慣れない漢字と半角カナが交互に出る</td></tr>
+      <tr><td>cp932 → UTF-8</td><td><code>00123,�R�c���Y,�o����</code></td><td>「�」が並び、ところどころに英字が残る</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>この例では、どちらの向きでも<b>半角の数字とカンマは化けていません</b>。UTF-8 も cp932 も、半角の英数字とカンマを同じ1バイトで書くからです。社員番号の「00123」やカンマが読めていて日本語だけが化けているなら、区切り方ではなく文字コードの問題だと絞り込めます。逆に、列がずれている・1列にまとまっているなら、文字コードより先に区切り文字を疑います。</p>
+
+  <p>UTF-8 → cp932 の行の「驛�」の「�」は、「郎」の UTF-8 の3バイト目（<code>8E</code>）が cp932 では2バイト文字の1バイト目にあたり、続くカンマと組にならなかったために置き換わった1文字です。読み違えた状態のまま保存すると、こうした「�」の部分から元の文字は分からなくなります（後の節で扱います）。</p>
+
+  <h2 id="bom">BOMとは — UTF-8 の先頭に付く3バイト</h2>
+
+  <p>BOM（バイト オーダー マーク）は、ファイルの先頭に置く目印の文字です。UTF-8 の仕様である RFC 3629 の第6節は、U+FEFF という文字を BOM として使うことを説明し、<b>UTF-8 で書くと BOM はいつも <code>EF BB BF</code> の3バイトになる</b>としています。</p>
+
+  <p>Microsoft のサポート記事が「BOM で保存されている場合は通常どおり開くことができます」と書いているのは、この先頭の3バイトがあると、Excel が UTF-8 のファイルだと判断できるからです。<b>BOM の無い UTF-8 のCSVは、中身は正しい UTF-8 でも、ダブルクリックで開くと化けることがあります</b>。</p>
+
+  <div class="callout"><b>BOM が付いていると困る相手もある</b>
+    <p>BOM は「見えない文字」なので、受け取る側のシステムが BOM を想定していないと、1行目の1列目の見出しの先頭に余計な文字が付いたように扱われることがあります。どちらの形式で渡すかは、受け取る側の取込仕様（「UTF-8（BOM付き）」「UTF-8（BOMなし）」「Shift_JIS」のどれか）で決めます。</p>
+  </div>
+
+  <h2 id="hirakikata">Excel での開き方は3通り。結果が変わるのは文字コードを選べるかどうか</h2>
+
+  <p>同じCSVでも、Excel で開く経路によって文字化けするかどうかが変わります。違いは、<b>開くときに文字コードを人が選べるかどうか</b>です。</p>
+
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>開き方</th><th>文字コード</th><th>Microsoft の資料での説明</th></tr></thead>
+    <tbody>
+      <tr><td>ファイルをダブルクリック／［ファイル］→［開く］</td><td>選べない</td><td>CSVファイルは Excel が自動的に開き、新しいブックにデータを表示する。UTF-8 は BOM 付きなら通常どおり開ける</td></tr>
+      <tr><td>［データ］→［テキストまたは CSV から］（Power Query）</td><td>選べる（「ファイルの配信元」）</td><td>文字セットは推論されず、UTF-8 は UTF-8 BOM で始まる場合にのみ推論される。違えば一覧から選び直す</td></tr>
+      <tr><td>拡張子を .csv から .txt に変えて開く</td><td>テキスト インポート ウィザードで指定</td><td>Excel で強制的にテキスト インポート ウィザードを実行する方法として案内されている</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>ダブルクリックで化けたファイルを、<b>同じファイルのまま「テキストまたは CSV から」で開き直す</b>のが、いちばん手数の少ない直し方です。どの文字コードを選べばよいか分からないときは、プレビューの文字を見ながら UTF-8 と Shift_JIS（日本語）を切り替え、日本語が読めるほうを選びます。</p>
+
+  <p>なお、ダブルクリックで開いたときに BOM の無いファイルをどの文字コードとして読むかは、Microsoft の資料に書かれていません。お使いの Windows の言語設定や Excel の版によって変わる可能性があり、この記事では実機未検証です。</p>
+
+  <h2 id="tejun">「テキストまたは CSV から」で開き直す手順</h2>
+
+  <p>Microsoft のサポート記事「テキスト (.txt または .csv) ファイルのインポートまたはエクスポート」と、Power Query の「テキスト/CSV」コネクタの説明に沿うと、手順は次のとおりです。画面の名前は Excel の版によって違うことがあります。</p>
+
+  <ol>
+    <li>新しいブックを開き、データを置くセルを選ぶ。</li>
+    <li>［データ］タブの［データの取得と変換］グループで、［テキストまたは CSV から］を選ぶ。</li>
+    <li>CSVファイルを選んで［インポート］を押す。プレビューの画面が開く。</li>
+    <li>プレビューの「ファイルの配信元」で、ファイルを作ったときの文字コードを選ぶ。日本語が読めれば合っている。</li>
+    <li>区切り記号がコンマになっているかを確かめる（Power Query は区切り記号を自動で判断するが、推論が正しくないこともある）。</li>
+    <li>［読み込み］で、データをシートに置く。</li>
+  </ol>
+
+  <div class="callout"><b>先頭のゼロを消したくないとき</b>
+    <p>同じプレビュー画面のデータ型検出の設定で、Power Query の説明は「自動データ型検出をオフにして、代わりにすべての列を既定の "テキスト" にすることもできます」としています。社員番号や商品コードの「00123」を数値に変えずに残したいときは、ここで検出をやめるか、読み込んだ後に列のデータ型を「テキスト」に変えます。Microsoft の説明では、Excel は先頭のゼロを自動的に取り除くとされています。</p>
+  </div>
+
+  <h2 id="hozon">渡す側で防ぐ — 保存のときに文字コードを決める</h2>
+
+  <p>文字化けは、受け取った人が開き方を工夫するより、<b>渡す側が相手の読み方に合わせて保存するほうが確実</b>です。決め方は次の順番です。</p>
+
+  <ol>
+    <li><b>受け取る側の仕様を見る。</b>会計ソフトや業務システムの取込画面・マニュアルに、受け付ける文字コードが書いてあればそれに合わせる。</li>
+    <li><b>相手が Excel で開いて見るだけなら、BOM 付きの UTF-8 にする。</b>Microsoft のサポート記事が通常どおり開けると案内している形式だからです。</li>
+    <li><b>保存した後に先頭のバイトを確かめる。</b>次の節の方法で、BOM が付いたか、付いていないかを見る。</li>
+  </ol>
+
+  <p>Excel の［名前を付けて保存］で選べる CSV の種類について、Microsoft の「ブックをテキスト形式 (.txt または .csv) で保存する」のページには「CSV (コンマ区切り)」「CSV (Macintosh)」「CSV (MS-DOS)」などが並んでいますが、それぞれの文字コードは書かれていません。お使いの Excel の保存の種類に UTF-8 の CSV がある場合でも、保存したファイルに BOM が付くかどうかはこの記事では実機未検証です。<b>保存の種類の名前ではなく、保存したファイルの先頭のバイトで確かめる</b>のが確実です。</p>
+
+  <h2 id="kakunin">先頭のバイトで確かめる — PowerShell の Format-Hex</h2>
+
+  <p>Windows では、PowerShell の <code>Format-Hex</code> でファイルの中身を16進数で表示できます。Microsoft の説明（PowerShell 7.6 のページ）では、<code>-Count</code> で表示するバイト数を絞れます。CSVファイルのある場所で、次のように打ちます。</p>
+
+  <pre><code>Format-Hex -Path .\shain.csv -Count 16</code></pre>
+
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>先頭のバイト</th><th>読み取れること</th></tr></thead>
+    <tbody>
+      <tr><td><code>EF BB BF</code> で始まる</td><td>BOM 付きの UTF-8</td></tr>
+      <tr><td>架空の例なら <code>E7 A4 BE</code>（「社」の UTF-8）で始まる</td><td>BOM の無い UTF-8 の可能性が高い</td></tr>
+      <tr><td>架空の例なら <code>8E D0</code>（「社」の cp932）で始まる</td><td>Shift_JIS（cp932）の可能性が高い</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>2行目と3行目は、この記事の架空のCSVの1文字目「社」を Python で符号化した値です。先頭の文字が違えばバイトも違うので、<b>確実に言えるのは1行目の「BOM があるかどうか」だけ</b>です。BOM が無いときに UTF-8 か Shift_JIS かを決めるには、前の節の「テキストまたは CSV から」でプレビューを切り替えて、日本語が読めるほうを選びます。なお、この書き方は PowerShell 7.6 の説明に沿ったもので、Windows に最初から入っている Windows PowerShell で同じように動くかはこの記事では実機未検証です。</p>
+
+  <h2 id="modoranai">もう直らない場合 — 失われた文字は復元できない</h2>
+
+  <p>読み違いで化けて見えているだけなら、ファイルのバイトは無傷なので、正しく読み直せば元に戻ります。しかし、<b>次のような保存をした後は、元の文字に戻せないことがあります</b>。</p>
+
+  <div class="scroll-wrap"><table>
+    <thead><tr><th>やったこと</th><th>何が起きるか</th></tr></thead>
+    <tbody>
+      <tr><td>化けて見えている状態のまま、上書き保存した</td><td>化けた文字のほうが新しい中身として書き込まれる。読み違いで「�」に置き換わった部分は、元のバイトが分からなくなる</td></tr>
+      <tr><td>Shift_JIS に無い文字を含んだまま、Shift_JIS で保存した</td><td>その文字は Shift_JIS では書けないので、別の文字に置き換わるか、保存できない</td></tr>
+    </tbody>
+  </table></div>
+
+  <p>2行目の例として、「𠮷」（つちよし）は cp932 に無い文字です。Python で「𠮷野」を cp932 に符号化し、書けない文字を半角の疑問符に置き換えると、結果は疑問符と「野」の2文字になります。一度疑問符に置き換わったファイルからは、そこが「𠮷」だったことは分かりません。Excel で保存したときに同じ置き換えが起きるかは、この記事では実機未検証です。</p>
+
+  <p>だから<b>CSVを開く前に元のファイルをコピーして残し、作業はコピーで行う</b>のが確実です。元のファイルを上書きしてしまった後は、渡してくれた人やシステムからもう一度出力してもらうのが、いちばん確かな直し方です。</p>
+
+  <h2 id="ginko">銀行に渡す振込ファイルは別の話</h2>
+
+  <p>この記事が扱うのは、会計ソフトや業務システムとやり取りする一般的なCSVです。<b>銀行に渡す総合振込などの全銀フォーマットのファイル</b>は、文字コードやレコードの長さ、使える文字が全国銀行協会のレコード・フォーマットと各銀行の仕様で決まっていて、ここで書いた「BOM 付き UTF-8 にする」は当てはまりません。全銀ファイルの文字コードとレコードの作り方は <a href="../zengin-format-guide/">全銀フォーマットとは</a> の「文字コード」の節を、振込名義に使える文字は <a href="../../zengin-kana/">振込名義カナ変換ツール</a> を見てください。</p>
+
+  <a class="tool-cta" href="../../zengin-kana/">振込名義を全銀フォーマットで使える文字に変換してチェックする</a>
+
+  <h2 id="rfc">CSVという形式は文字コードを決めていない（RFC 4180）</h2>
+
+  <p>CSV の書式をまとめた文書としてよく参照されるのが、2005年10月に出た RFC 4180 です。RFC 4180 は冒頭で、自らを「インターネット標準を定めるものではない」情報提供の文書だと書いています。そして文字コードについては、CSV で一般的なのは US-ASCII だが、IANA が定めた他の文字セットも「charset」というパラメータと組み合わせて使えるとしています。</p>
+
+  <p>つまり、<b>「CSVだからこの文字コード」という決まりはありません</b>。同じ拡張子 .csv でも、UTF-8（BOM の有無を含む）で書かれたものも Shift_JIS で書かれたものもあり、ファイルの名前からは区別できません。文字化けを繰り返さないためには、取引先やシステムとの間で<b>文字コードとBOMの有無を、取込仕様として文字で決めておく</b>のが確実です。</p>
+
+  <div class="summary-box">
+    <b>まとめ</b>
+    <ul>
+      <li>CSVの文字化けの多くは、ファイルの中身ではなく読み方（文字コード）の違い。半角の英数字とカンマが読めていれば、文字コードの問題に絞れる</li>
+      <li>Microsoft の案内では、UTF-8 のCSVは BOM 付きなら通常どおり開ける。BOM が無ければ「データの取得」（テキストまたは CSV から）で開く</li>
+      <li>「テキストまたは CSV から」なら「ファイルの配信元」で文字コードを選び直せる。UTF-8 が自動で選ばれるのは BOM で始まる場合だけ</li>
+      <li>BOM の有無は、保存の種類の名前ではなく先頭の3バイト（<code>EF BB BF</code>）で確かめる</li>
+      <li>化けたまま上書き保存したり、Shift_JIS に無い文字を Shift_JIS で保存したりすると、元の文字には戻せないことがある。開く前に元のファイルを残す</li>
+    </ul>
+  </div>
+
+  <h2 id="faq">よくある質問</h2>
+
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>CSVをダブルクリックすると文字化けします。ファイルは壊れていますか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>多くの場合、壊れてはいません。Excel がファイルを書いたときと違う文字コードとして読んだために、別の文字に見えている状態です。Microsoft の案内では、BOM の無い UTF-8 のCSVは［データ］タブの「データの取得」（テキストまたは CSV から）で開けます。開き直す前に元のファイルをコピーして残してください。</p>
+
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>文字化けしたまま保存してしまいました。元に戻せますか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>戻せないことがあります。化けた表示のまま上書き保存すると、化けた文字のほうが新しい中身として書き込まれ、読み違いで「�」などに置き換わった部分は元のバイトが分からなくなります。元のファイルのコピーが無ければ、渡してくれた人やシステムからもう一度出力してもらうのが確実です。</p>
+
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>BOM付きのUTF-8とBOMなしのUTF-8は、どちらで保存すればよいですか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>受け取る側の取込仕様で決めます。仕様に指定があればそれに合わせ、相手が Excel で開いて見るだけなら、Microsoft が通常どおり開けると案内している BOM 付きの UTF-8 が無難です。BOM を想定していないシステムでは、1行目の見出しの先頭に余計な文字が付いたように扱われることがあります。</p>
+
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>ファイルの文字コードはどうやって確かめますか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>Windows なら PowerShell の Format-Hex で先頭のバイトを表示し、EF BB BF の3バイトで始まれば BOM 付きの UTF-8 です。BOM が無い場合は先頭のバイトだけでは UTF-8 か Shift_JIS かを決めきれないので、Excel の「テキストまたは CSV から」のプレビューで文字コードを切り替え、日本語が読めるほうを選びます。</p>
+
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>文字化けを直したら、今度は先頭のゼロが消えました。</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>文字コードとは別の問題で、Microsoft の説明では Excel は先頭のゼロを自動的に取り除きます。「テキストまたは CSV から」で開くときにデータ型の自動検出をやめるか、読み込んだ後に列のデータ型を「テキスト」に変えると、00123 のような値を文字列のまま残せます。</p>
+
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>銀行に出す振込データのCSVも、BOM付きUTF-8にすればよいですか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>いいえ。銀行に渡す全銀フォーマットのファイルは、文字コードやレコードの長さ、使える文字が銀行側の仕様で決まっています。全銀ファイルの文字コードは「全銀フォーマットとは」の記事の文字コードの節で確かめてください。</p>
+
+  <!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../ryoshusho-kakikata/"><b>領収書の書き方 — 「上様」でよいかは業種で決まる。宛名を省ける事業は政令に4号しかない</b><span>領収書を出す義務の根拠は税法ではなく民法486条です。宛名を省けるのは「適格簡易請求書」を交付できる事業だけで、消費税法施行令70条の11は小売業・飲食店業・写真業・旅行業、タクシ</span></a><a class="tool-card" href="../mitsumorisho-kakikata/"><b>見積書の書き方 — 書式を定めた法律は無い。それでも5本の法令が「見積書」を名指しする</b><span>見積書には法定の書式がありません。それでも法人税法施行規則・所得税法施行規則・電子帳簿保存法・印紙税法・建設業法の5本が条文で「見積書」を名指ししています。保存は7年とは限らず個人</span></a><a class="tool-card" href="../shitaukeho-toritekiho/"><b>下請法は令和8年1月に名前が変わった — 中小受託取引適正化法とフリーランス法は、適用の決まり方から違う</b><span>下請法は令和8年1月1日施行の改正（令和7年法律第41号）で題名が変わった。正式名称は「製造委託等に係る中小受託事業者に対する代金の支払の遅延等の防止に関する法律」、略称は中小受託</span></a></div></section><!--next-read:E-->
+<section class="related">
+    <div class="tool-grid">
+      <a class="tool-card" href="../zengin-format-guide/"><b>全銀フォーマットとは</b><span>振込ファイルの文字コードと120バイトの構造</span></a>
+      <a class="tool-card" href="../../zengin-kana/"><b>振込名義カナ変換</b><span>全銀フォーマットで使えない文字をその場で判定</span></a>
+      <a class="tool-card" href="../denchoho-kensaku-yoken/"><b>電子帳簿保存法の検索要件</b><span>索引簿とファイル名のつけ方</span></a>
+    </div>
+  </section>
+
+  <h2 id="shutten">出典</h2>
+  <p class="source-method">Microsoft のサポート記事・Power Query と PowerShell の説明ページ、RFC 4180・RFC 3629 の原文を読んで作成。表のバイト列と表示例は Python で符号化・復号した結果で、Excel の実機での表示は確かめていません。</p>
+  <ul>
+    <li>Microsoft サポート「<b>Excel で CSV UTF-8 ファイルを正しく開くには</b>」（support.microsoft.com/ja-jp/excel/opening-csv-utf-8-files-correctly-in-excel）を2026年10月5日に確認。</li>
+    <li>Microsoft サポート「<b>テキスト (.txt または .csv) ファイルのインポートまたはエクスポート</b>」を2026年10月5日に確認。</li>
+    <li>Microsoft サポート「<b>ブックをテキスト形式 (.txt または .csv) で保存する</b>」を2026年10月5日に確認。</li>
+    <li>Microsoft サポート「<b>Keeping leading zeros and large numbers</b>」（英語版）を2026年10月5日に確認。</li>
+    <li>Microsoft Learn「<b>テキスト/CSV</b>」（Power Query コネクタ。learn.microsoft.com/ja-jp/power-query/connectors/text-csv）を2026年10月5日に確認。</li>
+    <li>Microsoft Learn「<b>Format-Hex</b>」（PowerShell 7.6。learn.microsoft.com/ja-jp/powershell/module/microsoft.powershell.utility/format-hex）を2026年10月5日に確認。</li>
+    <li>RFC 4180「<b>Common Format and MIME Type for Comma-Separated Values (CSV) Files</b>」（2005年10月・Informational）。www.rfc-editor.org/rfc/rfc4180.txt</li>
+    <li>RFC 3629「<b>UTF-8, a transformation format of ISO 10646</b>」第6節 Byte order mark (BOM)。www.rfc-editor.org/rfc/rfc3629.txt</li>
+  </ul>
+
+  <p class="note">この記事は一般的な情報提供です。お使いの会計ソフト・業務システムが受け付ける文字コードは、それぞれの取込仕様で確かめてください。</p>
+
+</article>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=CSV%E3%82%92Excel%E3%81%A7%E9%96%8B%E3%81%8F%E3%81%A8%E6%96%87%E5%AD%97%E5%8C%96%E3%81%91%E3%81%99%E3%82%8B%E3%81%AE%E3%81%AF%E3%80%81%E5%A4%9A%E3%81%8F%E3%81%AE%E5%A0%B4%E5%90%88%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%8C%E5%A3%8A%E3%82%8C%E3%81%9F%E3%81%AE%E3%81%A7%E3%81%AF%E3%81%AA%E3%81%8F%E6%96%87%E5%AD%97%E3%82%B3%E3%83%BC%E3%83%89%E3%81%AE%E8%AA%AD%E3%81%BF%E9%81%95%E3%81%84%E3%81%A7%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fcsv-mojibake%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site">
+  <p>© 税金・経理・補助金ツールズ</p>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body>
+</html>
