@@ -80,7 +80,7 @@ FUNDS['sbi-jhd'] = F(
 FUNDS['rakuten-jhd'] = F(
     name='楽天・高配当株式・日本ファンド（四半期決算型）', short='楽天・高配当株式・日本（四半期）', company='楽天投信投資顧問',
     page='https://www.rakuten-toushin.co.jp/fund/nav/risjde/', P='risjde_P', Ak='risjde_Ak', M='risjde_M', etf=False,
-    index='ベンチマークなし（ダウ・ジョーンズ日本配当100インデックスを参照して銘柄を選定）',
+    index='ベンチマークなし（主としてダウ・ジョーンズ日本配当100インデックスを参照して銘柄を選定）',
     index_q=('risjde_P', r'当ファンドには、 ベンチマークはありません。'),
     fee='年0.297%', fee_num=0.297, tiered=False,
     fee_q=('risjde_P', r'財産の純資産総額に年0\.297％（税抜0\.27％）'),
