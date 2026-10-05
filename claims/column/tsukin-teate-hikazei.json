@@ -1271,6 +1271,127 @@
       "must_with": [
         "除外できる通勤手当の具体的範囲"
       ]
+    },
+    {
+      "id": "rw1005-08",
+      "text": "交通用具の駐車場等の料金相当額（上限5,000円）・有料道路の合理的な料金の額の加算は、片道2km未満の人を除き、駐車場等は勤務する場所または利用する駅・停留所その他の施設の周辺のものに限る。",
+      "where": [
+        "結論",
+        "改正点②",
+        "早見表の区分の文",
+        "自宅付近の callout",
+        "有料道路の節の冒頭・表の3行",
+        "FAQ 2・3・10問目"
+      ],
+      "numbers": [
+        "5,000円",
+        "38,700円",
+        "66,400円",
+        "71,400円",
+        "150,000円"
+      ],
+      "applies": "令和8年4月1日以後に支払われるべき通勤手当（No.2585 令和8年4月1日現在法令等）",
+      "scope": "マイカー・自転車など交通用具を使う通勤者の非課税限度額の加算（区分2〜4）",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2585.htm",
+      "source_quote": "２ マイカーなどで通勤している人で一定の要件を満たす駐車場等を利用している人（通勤距離が片道2キロメートル未満である人及び４に該当する人を除きます。）の非課税となる1か月当たりの限度額",
+      "supporting_sources": [
+        {
+          "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2585.htm",
+          "source_quote": "「一定の要件を満たす駐車場等」とは、通勤のために使用するマイカーなどの駐車のための駐車場等のうち、その通勤手当の支払を受ける人の勤務する場所の周辺又はその人が通勤のために利用する交通機関の駅若しくは停留所その他の施設の周辺にあるものをいいます。",
+          "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-05-rw/sources/nta_2585.txt:50-50"
+        },
+        {
+          "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2585.htm",
+          "source_quote": "３ 有料道路を利用するほか、マイカーなどで通勤している人（そのマイカーなどを使用する通勤距離が片道2キロメートル未満である人及び４に該当する人を除きます。）の非課税となる1か月当たりの限度額",
+          "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-05-rw/sources/nta_2585.txt:46-49"
+        }
+      ],
+      "exceptions": [
+        "区分2・3は「４に該当する人を除く」（区分4に振り分けるための除外で、限度額の扱いは区分4）",
+        "有料道路は合理的な料金の額に限る（nta_2585.txt:51）",
+        "区分3・4の最高限度は150,000円",
+        "must_with を付けていない理由: check_claim_scope は数字を部分一致で拾うため「5,000円」が「15,000円」「25,000円」の単位にも当たり、既存の無関係な文（社会保険料の設例など）で必ず落ちる。数字ごとの条件は各文に直接書いた（片道2km未満の人を除く・要件を満たす駐車場等・合理的な料金・1か月15万円）"
+      ],
+      "covers": [
+        "s-9d829f837bb88fe83db7-1",
+        "s-3213b99c3d27c3039b85-1",
+        "s-eb32998bdf1e8e3cb4bc-1",
+        "s-4423dc2d9f5151003720-1",
+        "s-fd0c6e276152846756b5-1",
+        "s-20c242e311095634b8cc-1",
+        "s-cb5f48309aeb4272e189-1",
+        "s-ccd8027549834deebcd6-1",
+        "s-6fb7b49a445a60827c88-1",
+        "s-e0d0e27122b3fa8bb6b9-1",
+        "s-9b82ab07d0b6130e623b-1",
+        "s-211fe4e8d08b9b6ee220-1"
+      ],
+      "topic": [
+        "gensen"
+      ],
+      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-05-rw/sources/nta_2585.txt:44-49",
+      "note": "2026-10-05 segment-review 1周目の unresolved（既存文の条件抜け）を直した",
+      "derived": true,
+      "calc": "python3 -c 'print(66400+5000)' → 71400（95km以上の距離区分66,400円＋駐車場等の加算上限5,000円。表『実質の上限』の既存値）。5,000円・66,400円・150,000円・38,700円は nta_2585.txt:35,43,45,47,49 の逐語（38,700円は55km以上65km未満の現行値で、FAQ では改正前の頭打ちの額として既存記述）"
+    },
+    {
+      "id": "rw1005-09",
+      "text": "交通機関の定期券等の金額は1か月15万円を上限に非課税で、交通機関と交通用具の併用は（1）＋（2）の合計で1か月15万円が限度。",
+      "where": [
+        "h3 電車・バスなど",
+        "併用の節の冒頭"
+      ],
+      "numbers": [],
+      "applies": "令和8年4月1日現在法令等（No.2582）",
+      "scope": "電車・バスなど交通機関だけの通勤者／交通機関と交通用具の併用者",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2582.htm",
+      "source_quote": "最も経済的かつ合理的な経路および方法による通勤手当や通勤定期券などの金額が、1か月当たり15万円を超える場合には、15万円が非課税となる限度額となります。",
+      "supporting_sources": [
+        {
+          "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2582.htm",
+          "source_quote": "この場合の非課税となる限度額は、次の（1）と（2）を合計した金額ですが、1か月当たり15万円が限度です。",
+          "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-05-rw/sources/nta_2582.txt:21-21"
+        }
+      ],
+      "exceptions": [
+        "新幹線・特急は最も経済的かつ合理的なら含むがグリーン料金は含まない（本文 callout に既存）",
+        "無し: No.2582 の同じ節のほかの例外は読んで確認"
+      ],
+      "covers": [
+        "s-3064203c29219268d5a8-1",
+        "s-2299de1600b9d68744ad-1"
+      ],
+      "topic": [
+        "gensen"
+      ],
+      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-05-rw/sources/nta_2582.txt:19-19",
+      "note": "2026-10-05 segment-review 1周目の unresolved（既存文の条件抜け）を直した"
+    },
+    {
+      "id": "rw1005-10",
+      "text": "所得税で非課税なのは限度額までで、超える部分は給与として課税される（非課税になるのは実際に支給した額のうち限度額までの部分）。",
+      "where": [
+        "冒頭の落とし穴の文",
+        "FAQ ガソリン代の実費"
+      ],
+      "numbers": [],
+      "applies": "令和8年4月1日現在法令等",
+      "scope": "通勤手当を支給する給与所得者（交通機関・交通用具とも）",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2585.htm",
+      "source_quote": "1か月当たりの非課税となる限度額を超えて通勤手当を支給する場合には、超える部分の金額が給与として課税されます。",
+      "exceptions": [
+        "交通用具の限度額は距離区分の定額で、実費以下に抑える要件は無い（No.2585 に実費要件の記載なし）。そのため「実費が限度額に届かないときに限度額まで支給してよいわけでもなく」の一文を削った",
+        "社会保険料の部分は正本外（日本年金機構の既存出典）"
+      ],
+      "covers": [
+        "s-881a030a450013baa017-1",
+        "s-fd64e09641e0e9c73a86-1"
+      ],
+      "topic": [
+        "gensen"
+      ],
+      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-05-rw/sources/nta_2585.txt:52-52",
+      "note": "2026-10-05 segment-review 1周目の unresolved（既存文の条件抜け）を直した"
     }
   ],
   "absolutes": [
