@@ -110,7 +110,7 @@
         },
         {
           "@type": "Question",
-          "name": "Q. 銀行に出す振込データのCSVも、BOM付きUTF-8にすればよいですか？",
+          "name": "Q. 銀行に出す振込データ（全銀フォーマットのファイル）も、BOM付きUTF-8にすればよいですか？",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "A. いいえ。銀行に渡す全銀フォーマットのファイルは、文字コードやレコードの長さ、使える文字が全国銀行協会のレコード・フォーマットと各銀行の仕様で決まっています。全銀ファイルの文字コードは「全銀フォーマットとは」の記事の文字コードの節で確かめてください。"
@@ -160,7 +160,7 @@ gtag('config', 'G-E742DSDHPD');
   <p>ただし直らない場合もあります。<b>化けた表示のまま上書き保存したファイルや、保存先の文字コードに無い文字を含んだまま保存したファイルは、元の文字に戻せない</b>ことがあります。この記事では、症状から文字コードを見分ける方法、Excel での開き方の違い、渡す側での保存のしかたを、架空のCSVを使って順に確かめます。<b>開く前に元のファイルをコピーして残す</b>ことだけは、どの方法でも先に済ませてください。</p>
 
   <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
-    <li><a href="#shikumi">文字化けの仕組み — 同じ文字でもバイトの並びが違う</a></li>
+    <li><a href="#shikumi">文字化けの仕組み — 同じ漢字でもバイトの並びが違う</a></li>
     <li><a href="#shindan">症状から読み違いの向きを見分ける</a></li>
     <li><a href="#bom">BOMとは — UTF-8 の先頭に付く3バイト</a></li>
     <li><a href="#hirakikata">Excel での主な開き方は3通り。結果が変わるのは文字コードを選べるかどうか</a></li>
@@ -174,9 +174,9 @@ gtag('config', 'G-E742DSDHPD');
     <li><a href="#shutten">出典</a></li>
   </ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../zengin-format-guide/">全銀フォーマットとは</a></li><li><a href="../../zengin-kana/">振込名義カナ変換（全銀フォーマット一括正規化）</a></li><li><a href="../denchoho-kensaku-yoken/">電子帳簿保存法の検索要件</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
-  <h2 id="shikumi">文字化けの仕組み — 同じ文字でもバイトの並びが違う</h2>
+  <h2 id="shikumi">文字化けの仕組み — 同じ漢字でもバイトの並びが違う</h2>
 
-  <p>CSVファイルの中身は、文字そのものではなくバイト（0〜255の数）の並びです。どの並びをどの文字として読むかの約束が文字コードで、日本語のCSVでよく使われるのが <b>UTF-8</b> と <b>Shift_JIS</b> です。同じ文字でも、文字コードが違えばバイトの並びが変わります。</p>
+  <p>CSVファイルの中身は、文字そのものではなくバイト（0〜255の数）の並びです。どの並びをどの文字として読むかの約束が文字コードで、日本語のCSVでよく使われるのが <b>UTF-8</b> と <b>Shift_JIS</b> です。日本語の文字は、同じ文字でも文字コードが違えばバイトの並びが変わります（半角の英数字とカンマは UTF-8 と Shift_JIS で同じ1バイトです）。</p>
 
   <p>次の表は、「経理」の2文字を Python の標準の符号化（UTF-8 と、Windows の日本語で使われる cp932＝Shift_JIS の拡張）でバイトに直した結果です。</p>
 
@@ -365,7 +365,7 @@ gtag('config', 'G-E742DSDHPD');
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>文字化けを直したら、今度は先頭のゼロが消えました。</h3>
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>文字コードとは別の問題で、Microsoft の英語版の説明では Excel は既定で先頭のゼロを自動的に取り除きます。「テキストまたは CSV から」で開き、シートに置く前にデータ型の自動検出をやめるか、Power Query エディターで列のデータ型を「テキスト」にして［現在のものを置換］を選ぶと、00123 のような値を文字列のまま残せます。消えた後にセルの書式を変えても、ゼロは戻りません。</p>
 
-  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>銀行に出す振込データのCSVも、BOM付きUTF-8にすればよいですか？</h3>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>銀行に出す振込データ（全銀フォーマットのファイル）も、BOM付きUTF-8にすればよいですか？</h3>
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>いいえ。銀行に渡す全銀フォーマットのファイルは、文字コードやレコードの長さ、使える文字が全国銀行協会のレコード・フォーマットと各銀行の仕様で決まっています。全銀ファイルの文字コードは「全銀フォーマットとは」の記事の文字コードの節で確かめてください。</p>
 
   <!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../ryoshusho-kakikata/"><b>領収書の書き方 — 「上様」でよいかは業種で決まる。宛名を省ける事業は政令に4号しかない</b><span>領収書を出す義務の根拠は税法ではなく民法486条です。宛名を省けるのは「適格簡易請求書」を交付できる事業だけで、消費税法施行令70条の11は小売業・飲食店業・写真業・旅行業、タクシ</span></a><a class="tool-card" href="../mitsumorisho-kakikata/"><b>見積書の書き方 — 書式を定めた法律は無い。それでも5本の法令が「見積書」を名指しする</b><span>見積書には法定の書式がありません。それでも法人税法施行規則・所得税法施行規則・電子帳簿保存法・印紙税法・建設業法の5本が条文で「見積書」を名指ししています。保存は7年とは限らず個人</span></a><a class="tool-card" href="../shitaukeho-toritekiho/"><b>下請法は令和8年1月に名前が変わった — 中小受託取引適正化法とフリーランス法は、適用の決まり方から違う</b><span>下請法は令和8年1月1日施行の改正（令和7年法律第41号）で題名が変わった。正式名称は「製造委託等に係る中小受託事業者に対する代金の支払の遅延等の防止に関する法律」、略称は中小受託</span></a></div></section><!--next-read:E-->
