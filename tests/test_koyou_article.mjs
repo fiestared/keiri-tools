@@ -78,7 +78,15 @@ const title = (html.match(/<title>([^<]*)<\/title>/) || [, ''])[1];
 const desc = (html.match(/<meta name="description" content="([^"]*)"/) || [, ''])[1];
 const cardDesc = (html.match(/<meta name="card-desc" content="([^"]*)"/) || [, ''])[1];
 // JSON-LD(FAQPage)は本文から生成されるので、二重に数えないよう本文だけを対象にする
-const body = html.slice(html.indexOf('<article>'));
+// 「次に読む」（<!--next-read:S-->〜<!--next-read:E-->）は他記事へのカードで、中身は**リンク先の記事**の要約
+// （2026-10-05: 国民年金保険料の記事のカードが入り、17,920円・18,290円がこの記事の網に掛かった）。
+// この記事の主張ではないので網から外す（test_kanyu_article と同じ）。外す範囲がカード以外を飲み込んでいたら検査ごと止める。
+const dropNextRead = (src) => src.replace(/<!--next-read:S-->([\s\S]*?)<!--next-read:E-->/g, (all, inner) => {
+  const t = inner.trim();
+  if (!/^<section class="next-read"[\s>]/.test(t) || /<(h2|h3|p|table|blockquote|li)[\s>]/.test(t.replace('<h2>次に読む</h2>', ''))) throw new Error('next-read の範囲にカード以外の本文要素がある: 除外範囲を確かめること');
+  return ' ';
+});
+const body = dropNextRead(html.slice(html.indexOf('<article>')));
 if (body.length < 5000) fail('抽出に失敗（<article>が読めていない）');
 // 関連カード（他の記事の主張。この記事の期待集合に混ぜない）は名指しで除外し、別に本数を見る
 const relatedRe = /<section class="related">[\s\S]*?<\/section>/;

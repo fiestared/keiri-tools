@@ -18,7 +18,9 @@ from funds import FUNDS, check_all
 check_all()
 import compare as CP
 
-PUB = '2026-10-03'  # 公開日（datePublished・ページの公開日の表示）
+PUB_DEFAULT = '2026-10-04'  # この便で公開する記事の公開日
+PUB_BY_SLUG = {'sbi-spyd-vs-rakuten-schd': '2026-10-03'}  # 既に公開した記事の公開日は動かさない
+PUB = PUB_DEFAULT  # 公開日（datePublished・ページの公開日の表示）。Page ごとに差し替える
 GOT = '2026-10-03'  # 資料・基準価額データの取得日（公開日と分けて持つ。2026-10-02 の TODO）
 CMP = json.loads((R / 'comparison.json').read_text())['pairs']
 E = H.escape
@@ -40,6 +42,8 @@ def yen(n):
 # ---------------------------------------------------------------- page model
 class Page:
     def __init__(self, slug, a, b, pair):
+        global PUB
+        PUB = PUB_BY_SLUG.get(slug, PUB_DEFAULT)
         self.slug, self.a, self.b, self.A, self.B = slug, a, b, FUNDS[a], FUNDS[b]
         self.pair = pair
         self.r_ = CMP[pair]
@@ -381,9 +385,17 @@ def method_section(p):
     h = p.r('method', '<h2 id="method">計算条件と、この比較からは分からないこと</h2>')
     h += '<p>' + p.r('method', f'{jd(GOT)}に取得した日次データを使い、{jd(r["起点"])}以降で、2本とも基準価額がある日だけを比べました。')
     if r['起点'] > str(CP.START3Y):
-        late = next(k for k in (p.a, p.b) if str(min(p.series[k])) == r['起点'])
+        lates = [k for k in (p.a, p.b) if str(min(p.series[k])) == r['起点']]
         h += p.r('method', 'この比較は、終点から3年さかのぼった日を起点にするのを既定にしています。')
-        h += p.r(f'{late}-incept', f'ただし{FUNDS[late]["short"]}の設定日（{jd(r["起点"])}）がその3年前より後なので、2本の基準価額がそろう最初の日であるこの設定日を起点にしました。')
+        if len(lates) == 2:  # 2本の設定日が同じ日のときは片方だけを名指ししない
+            ca, cb = p.claims[p.fc(p.a, 'incept')], p.claims[p.fc(p.b, 'incept')]
+            cid = p.claim('inceptpair', f'{p.A["short"]}と{p.B["short"]}の設定日はどちらも{jd(r["起点"])}',
+                          ca['source_url'], ca['source_quote'], ca['applies'],
+                          ca['exceptions'] + f' 比較相手: {cb["source_url"]}「{cb["source_quote"]}」')
+            h += p.r(cid, f'ただし2本とも設定日が{jd(r["起点"])}で、その3年前より後なので、2本の基準価額がそろう最初の日であるこの設定日を起点にしました。')
+        else:
+            late = lates[0]
+            h += p.r(f'{late}-incept', f'ただし{FUNDS[late]["short"]}の設定日（{jd(r["起点"])}）がその3年前より後なので、2本の基準価額がそろう最初の日であるこの設定日を起点にしました。')
     else:
         h += p.r('method', f'2本とも終点の3年前より前に設定されているため、起点は{jd(r["起点"])}です（3年前にあたる2023年9月30日が土曜日のため、その前の営業日）。')
     lasts = [(FUNDS[k]['short'], str(max(CP.series(k)[0]))) for k in (p.a, p.b)]  # p.series is already cut at END; read the raw file's last day
@@ -585,6 +597,9 @@ def ABS_REVIEW(a):
                 '分配を必ず行うわけではない旨は別の主張（分配方針）として本文に書いている。')
     if '原則として' in ctx and ('ヘッジ' in ctx or '為替' in ctx):
         return '交付目論見書の文言（原則として為替ヘッジを行わない）を写した。例外は目論見書の「市況動向の急激な変化等の場合は上記の運用ができない場合がある」旨で、本文では「原則なし」と表示して断定していない。'
+    if '原則として' in ctx and ('受益者の負担' in ctx or '監査報酬' in ctx or '諸費用' in ctx):
+        return ('交付目論見書の「その他の費用・手数料」の欄の文言（原則として受益者の負担とし、信託財産中から支払われます）を写した。'
+                '原則の外は同じ欄に書かれていない。同じ欄の注記（手数料等の合計額は保有期間等に応じて異なり表示できない・費用等は本書作成日現在の情報で今後変更される場合がある）は本文に書いた。')
     if '原則として' in ctx:
         return '交付目論見書の総経費率の注記（原則として購入時手数料・売買委託手数料・有価証券取引税を含まない）を写した。含まれない費用がほかにもある場合がある旨は目論見書の注記どおり。'
     if '必ず' in ctx:
