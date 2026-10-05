@@ -252,6 +252,8 @@ class QuoteRefFormats(unittest.TestCase):
             self.assertFalse(qp(run,'corpus/a.txt:11; corpus/b.txt:1','会社が対象です。\n正本に存在しない文です'))  # 断片の1つが正本に無い
             self.assertFalse(qp(run,'corpus/c.png:1','会社が対象です。'))                        # 画像
             self.assertFalse(qp(run,'corpus/a.txt','会社が対象です。'))                           # 行番号の無い参照は書式違反
+            self.assertTrue(qp(run,'corpus/a.txt:11;corpus/b.txt:1',['会社が対象です。','短時間労働者も加入します。']))   # 配列の引用（2026-10-05 Opus）
+            self.assertFalse(qp(run,'corpus/a.txt:11',['会社が対象です。','正本に存在しない文です']))           # 配列でも断片ごとに逐語
             (run/'corpus/d.csv').write_bytes('基準日,基準価額(円)\n2026/09/30,13022\n'.encode('cp932'))
             self.assertTrue(qp(run,'corpus/d.csv:2','2026/09/30,13022'))                           # Shift_JIS の CSV（2026-10-03）
             self.assertTrue(qp(run,'corpus/d.csv:1','基準日,基準価額(円)'))

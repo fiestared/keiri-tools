@@ -132,6 +132,8 @@ def quote_present(run,ref,quote):
     ref は `corpus/<file>:<start>-<end>`。複数の範囲は `,`、複数のファイルは `;` で区切ってよい（2026-09-29 r13 実測:
     sol は複数の正本・複数の範囲をまとめて書く。1ファイル1範囲しか読めず 566 件が不成立になった）。
     行番号は目安（全文で照合）。引用が複数箇所をつないだものなら断片ごとに照合。別ファイル・画像/PDF・正本に無い文は不成立のまま。"""
+    # 2026-10-05: レビュー役を Opus 5.5 にしたら、引用を文字列の配列で書く出力が出た（168単位が不成立）。配列は断片の並びとして扱う（各断片に逐語を求めるのは同じ）
+    if isinstance(quote,list) and all(isinstance(x,str) for x in quote):quote='\n'.join(quote)
     if not isinstance(ref,str) or not isinstance(quote,str) or not quote.strip():return False
     norm=lambda text:re.sub(r'\s+','',text)
     want=norm(quote);base=run.resolve();pool=[]
