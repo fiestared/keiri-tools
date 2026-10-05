@@ -107,8 +107,8 @@ console.log('★整合チェック');
 {
   const w = checkKinyu({ shiharai: 3000000, nenmatsuChosei: false, kojoGo: null, kojoGokei: null });
   ok(!w.some((x) => x.level === 'error'), '空欄ならエラーにしない');
-  ok(w.some((x) => x.text.includes('毎月徴収した税額の合計')),
-    '★④欄が月々の合計になることを注意する');
+  ok(w.some((x) => x.text.includes('源泉徴収すべき所得税と復興特別所得税の合計額')),
+    '★④欄が源泉徴収すべき税額の合計になることを注意する');
 }
 {
   const w = checkKinyu({ shiharai: 1000000, nenmatsuChosei: true, kojoGo: 1200000, kojoGokei: 500000 });
