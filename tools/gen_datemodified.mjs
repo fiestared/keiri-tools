@@ -71,13 +71,18 @@ function withTimeTags(html) {
   const meta = html.match(/<p class="article-meta">([\s\S]*?)<\/p>/);
   if (!meta) return html;
   let m = meta[1];
-  if (/<time\b/.test(m)) return html;            // 既に包んである
   // 「公開日:」「更新日:」「最終更新:」の直後に来る和文日付だけを包む。
   // 本文中の他の日付（例: 「2026年8月28日に公式ページで確認」）は対象外。
-  m = m.replace(
-    /((?:公開日|更新日|最終更新)\s*[:：]\s*)(\d{4})年(\d{1,2})月(\d{1,2})日/g,
-    (_, label, y, mo, d) => `${label}<time datetime="${iso(y, mo, d)}">${y}年${mo}月${d}日</time>`
-  );
+  // 既存の <time> ごと article-meta 全体を素通りさせると、公開日だけが既に
+  // 包まれたページへ追加した更新日が裸のまま残る。既存の time 要素だけを保護し、
+  // それ以外の断片に包みを追加する。
+  m = m.split(/(<time\b[^>]*>[\s\S]*?<\/time>)/gi).map((part, i) => {
+    if (i % 2) return part;
+    return part.replace(
+      /((?:公開日|更新日|最終更新)\s*[:：]\s*)(\d{4})年(\d{1,2})月(\d{1,2})日/g,
+      (_, label, y, mo, d) => `${label}<time datetime="${iso(y, mo, d)}">${y}年${mo}月${d}日</time>`
+    );
+  }).join('');
   return m === meta[1] ? html : html.replace(meta[0], `<p class="article-meta">${m}</p>`);
 }
 
@@ -187,17 +192,33 @@ for (const fp of files) {
       let m = meta[1];
       // 旧ジェネレータ／手書き記事の「（更新: …）」が残っていると、現行の
       // 「（更新日: …）」と二重になる。現行表記へ寄せてから日付を更新する。
-      m = m.replace(/（更新:\s*\d{4}年\d{1,2}月\d{1,2}日）/g, '');
+      const visibleDate = '(?:<time\\b[^>]*>\\s*)?\\d{4}年\\d{1,2}月\\d{1,2}日(?:\\s*<\\/time>)?';
+      m = m.replace(new RegExp(`（更新:\\s*${visibleDate}）`, 'g'), '');
       // ★著者が「最終更新: 〇月〇日 — 〈何を直したか〉」と手で書いている記事が3本ある。
       //   ここに機械の日付を上書きすると、注記（何を直したか）と日付が食い違う。
       //   注記は人にしか書けない情報なので**可視表記には触れない**。JSON-LD だけ直す。
-      if (/最終更新:\s*\d{4}年\d{1,2}月\d{1,2}日/.test(m)) {
-        m = m.replace(/（更新日:\s*\d{4}年\d{1,2}月\d{1,2}日）/, '');   // 過去に二重表記を作った分を戻す
-      } else if (/（更新日:\s*\d{4}年\d{1,2}月\d{1,2}日/.test(m)) {
-        m = m.replace(/（更新日:\s*\d{4}年\d{1,2}月\d{1,2}日/, `（更新日: ${ja(eff)}`);
-      } else if (/公開日:\s*\d{4}年\d{1,2}月\d{1,2}日/.test(m)) {
-        m = m.replace(/(公開日:\s*\d{4}年\d{1,2}月\d{1,2}日)/, `$1（更新日: ${ja(eff)}）`);
+      const finalUpdated = new RegExp(`最終更新:\\s*${visibleDate}`);
+      const updateParen = new RegExp(`（更新日:\\s*${visibleDate}）`);
+      const updateDate = new RegExp(`（更新日:\\s*${visibleDate}`);
+      const publishedDate = new RegExp(`(公開日:\\s*${visibleDate})`);
+      if (finalUpdated.test(m)) {
+        m = m.replace(updateParen, '');   // 過去に二重表記を作った分を戻す
+      } else if (updateDate.test(m)) {
+        // いったん素の日付へ戻し、下の withTimeTags で正しい datetime を付け直す。
+        m = m.replace(updateDate, `（更新日: ${ja(eff)}`);
+      } else if (publishedDate.test(m)) {
+        m = m.replace(publishedDate, `$1（更新日: ${ja(eff)}）`);
       }
+      out = out.replace(meta[0], `<p class="article-meta">${m}</p>`);
+    }
+  } else {
+    // 実履歴から得た更新日が公開日と同じなら、以前の生成で残った可視の更新日も消す。
+    // JSON-LD だけ公開日へ戻って可視表示だけ新しいまま、という逆向きの不一致を残さない。
+    const meta = out.match(/<p class="article-meta">([\s\S]*?)<\/p>/);
+    if (meta) {
+      const visibleDate = '(?:<time\\b[^>]*>\\s*)?\\d{4}年\\d{1,2}月\\d{1,2}日(?:\\s*<\\/time>)?';
+      const generatedUpdate = new RegExp(`(公開日\\s*[:：]\\s*${visibleDate})\\s*（更新日\\s*[:：]\\s*${visibleDate}）`);
+      const m = meta[1].replace(generatedUpdate, '$1');
       out = out.replace(meta[0], `<p class="article-meta">${m}</p>`);
     }
   }
