@@ -135,7 +135,13 @@ def fee_note(p):
     if effn:
         h += P(*effn)
     extra = []
-    lend = [lend_sentence(p, k) for k, f in fs]
+    if all(f.get('lend_kind') == 'other' for k, f in fs) and A['lend_rate'] == B['lend_rate']:
+        ca = p.claims[p.fc(p.a, 'lend')]; cb = p.claims[p.fc(p.b, 'lend')]
+        p.claim('lendpair', f'{A["short"]}と{B["short"]}の交付目論見書の貸付有価証券関連報酬（その他の費用・手数料）', ca['source_url'], ca['source_quote'], ca['applies'],
+                ca['exceptions'] + f' 比較相手: {cb["source_url"]}「{cb["source_quote"]}」')
+        lend = [S(p, 'lendpair', f'2本の交付目論見書はどちらも、その他の費用・手数料のひとつに貸付有価証券関連報酬を挙げ、有価証券の貸付取引を行った場合は、投資信託財産の収益となる品貸料に{A["lend_rate"]}を乗じて得た額としています。')]
+    else:
+        lend = [lend_sentence(p, k) for k, f in fs]
     first = next((k for k, f in fs if f.get('lend_q')), None)
     if first:
         rows = '表の信託報酬と実質的な信託報酬' if (A['etf'] or B['etf']) else '表の信託報酬'
@@ -800,5 +806,145 @@ def a_bal8():
     sections = std_sections('mechanism', '8資産の指数と、配分の保ち方', '信託報酬は同じ年0.143%、総経費率は0.17056%と0.17%')
     related = [('../emaxis-shinkoukoku-vs-tawara-shinkoukoku/', 'eMAXIS Slim新興国株式 vs たわらノーロード新興国株式', '同じ2社の新興国株式を比べる'),
                ('../tawara-vs-emaxis-sensinkoku/', 'たわらノーロード先進国株式 vs eMAXIS Slim先進国株式', '同じ2社の先進国株式を比べる'),
+               ('../../toushi/tsumitate/', '積立シミュレーター', '積立額と期間から将来額の目安を計算します')]
+    return p, title, desc, body, sections, related
+
+# ======================================================================== 6. Rakuten Plus SOX vs Rakuten Plus NASDAQ-100 (2026-10-06)
+@article
+def a_sox_ndx():
+    p = Page('rakuten-sox-vs-rakuten-nasdaq', 'rakuten-sox', 'rakuten-ndx', 'rakuten-sox__rakuten-ndx')
+    r = p.r_
+    one = r['1年窓']
+    for k in (p.a, p.b):
+        for d in (FUNDS[k]['P'], FUNDS[k]['Ak'], FUNDS[k]['M']):
+            p.src(d)
+    p.src('nq_sox'); p.src('nq_ndx')
+    p.title = title = '楽天・プラス・SOX vs 楽天・プラス・NASDAQ-100｜費用・指数の中身・実績を比較'
+    desc = (f"楽天・プラス・SOXと楽天・プラス・NASDAQ-100を比較。{jd(r['起点'])}〜{jd(r['終点'])}の分配金再投資の実績と最大下落率、"
+            "信託報酬（税込年率・貸付時の報酬を除く）はSOXが年0.176%・NASDAQ-100が年0.198%、指数の銘柄数と比率の上限を交付目論見書と指数算出方法書で確認します。")
+    common_claims(p, title, desc); perf_claims(p); desc_claim(p)
+    pk_a, tr_a = peak_trough({d: v for d, v in p.series[p.a].items() if r['起点'] <= str(d) <= r['終点']})
+    pk_b, tr_b = peak_trough({d: v for d, v in p.series[p.b].items() if r['起点'] <= str(d) <= r['終点']})
+    # --- index definitions (issuer prospectus) and index rules (index provider)
+    p.docq('sox-def', 'SOXインデックスの定義（米国上場の主要な半導体関連30銘柄）', 'rirsox_P',
+           r'「ＳＯＸインデックス」は正式名称を「PHLX Semiconductor SectorTM Index」 ?といい、米国上場の ?主要な半導体関連30銘柄で構成されている株価指数です。',
+           '同じ欄に「フィラデルフィア半導体株指数」とも呼ばれ、半導体の設計や製造、流通、販売などを手掛ける銘柄で構成される旨。円換算ベースは委託会社が日々の為替レートを乗じて算出したもの（同資料）。',
+           extra_doc=[('rirsox_P', r'「フィラデルフィア半導体株指数」 ?とも呼ばれており、半導体の設計や製造、流通、販売などを手掛け ?る銘柄で構成されています。')])
+    p.docq('ndx-def', 'Nasdaq-100インデックスの定義（ナスダック上場・時価総額の大きい金融を除く100社）', 'rirndx_P',
+           r'「Ｎａｓｄａｑ－１００インデックス」 ?は、米国のナスダック市場に上場している銘柄のうち、時価総額 ?の大きい金融を除く100社の株式で構成される株価指数です。',
+           '指数提供者の算出方法書では、時価総額上位の会社が一時的に追加されて100銘柄を超える場合がある（Fast Entry）。本文の指数の節に書いた。円換算ベースは委託会社が日々の為替レートを乗じて算出したもの（同資料）。')
+    p.claims['ndx-def']['exceptions'] += ' 根拠: ' + url('nq_ndx') + '「' + Q('nq_ndx', r'A Fast Entry inclusion will not require the removal of another security, and may ?temporarily increase the constituent count to more than 100\.') + '」'
+    p.docq('nq-sox-sel', 'SOX指数の銘柄の選び方（米国上場の半導体関連で時価総額の大きい30銘柄、年1回の入れ替え）', 'nq_sox',
+           r'An index reconstitution is conducted annually based on the Reconstitution Reference Date\. The Index selects the 30 largest eligible securities by market capitalization\.',
+           '同じ算出方法書の条件: 米国の取引所に上場（A security must be listed on a U.S. exchange）、ICBの半導体（Semiconductors）または製造装置（Production Technology Equipment）のサブセクター、ADRも対象で国・地域の要件は無い、時価総額1億ドル以上・流動性・上場期間などの要件。入れ替えの適用は9月の第3金曜日の翌取引日。本文は「米国の取引所に上場」「ADRも対象」「主な条件」と範囲を書いた。',
+           extra_doc=[('nq_sox', r'Security types generally eligible for the Index include common stocks, ordinary shares, ?American Depositary Receipts \(ADRs\)'),
+                      ('nq_sox', r'The security must be classified under the Semiconductors Subsector or Production Technology ?Equipment Subsector'),
+                      ('nq_sox', r'At market open on the first trading day after the Reconstitution Effective Dates third Friday in September')])
+    p.docq('nq-sox-w', 'SOX指数の比率の上限（上位3銘柄は12%・10%・8%、ほかは4%。四半期ごとに調整）', 'nq_sox',
+           r'The weights of the top three \(3\) Index Securities by market capitalization, may not exceed 12%, ?10%, 8%, respectively\..{0,200}?The individual weights of other Index Securities may not exceed 4%; only the top three \(3\) may ?exceed this constraint\.',
+           '上限は四半期ごとのリバランス（Rebalance）で当てる値で、次のリバランスまでの間は株価の動きで比率が上限を上回ることがある（算出方法書は四半期ごとに調整すると書き、日々の上限維持は書いていない）。本文では「四半期ごとの調整で当てる上限」と書き、月次レポートの比率（2026年8月31日）が上限を上回っていることと矛盾しない旨を書いた。超過分は時価総額の小さい銘柄へ配分し直す。',
+           extra_doc=[('nq_sox', r'An index rebalance is conducted quarterly based on the Rebalance Reference Date\.'),
+                      ('nq_sox', r'The Index is a modified market capitalization-weighted index\.')])
+    p.docq('nq-ndx', 'Nasdaq-100指数の銘柄の選び方と見直しの時期（修正時価総額加重、12月に年次見直し、3・6・9月にリバランス）', 'nq_ndx',
+           r'The Nasdaq-100 Index® \(the “Index”\) is designed to measure the performance of 100 of the largest ?Nasdaq-listed non-financial companies\. The Index employs a modified market capitalization weighting ?scheme\.',
+           '同じ算出方法書: 年次の見直し（Annual Reconstitution & Rebalance）は12月、リバランスは3・6・9月。比率が一定の水準を超えた場合に会社単位・銘柄単位で下げる多段階の調整があり、条件つきのため本文には数値を書かず「詳細は算出方法書」とした。REITは対象外。時価総額上位40に入る銘柄は臨時に追加され、銘柄数が一時的に100を超えることがある。',
+           extra_doc=[('nq_ndx', r'An Annual Reconstitution & Rebalance is conducted in December'),
+                      ('nq_ndx', r'A Rebalance is conducted in March, June, and September\.')])
+    # --- holdings (issuer monthly report, mother-fund basis, 2026-08-31)
+    p.docq('comp-sox', '楽天・プラス・SOXのマザーファンドの投資銘柄数・資産の内訳・業種・上位10銘柄（2026年8月31日）', 'rirsox_M',
+           r'投資銘柄数 31 株式 93\.9% 投資信託証券 4\.8% 短期金融資産等 1\.3% 合計 100\.0% 株式先物 1\.4% 業種別構成比 業種 比率 情報技術 93\.9%.{0,80}?組入上位10銘柄 銘柄 業種 比率 NVIDIA CORP 情報技術 13\.1%.{0,400}?KLA CORPORATION 情報技術 3\.9% ※ 比率は、マザーファンドの純資産総額に対する各資産の評価額の比率です。',
+           '比率はマザーファンドの純資産総額比。業種別構成比はETF・先物を含まない（同資料の注記）。上位10銘柄にはETF（ISHARES SEMICONDUCTOR ETF 4.8%）が含まれ、本文の表にも載せた。投資銘柄数31にETFを数えているかは資料に書かれていない。')
+    p.docq('comp-ndx', '楽天・プラス・NASDAQ-100のマザーファンドの投資銘柄数・資産の内訳・業種・上位10銘柄（2026年8月31日）', 'rirndx_M',
+           r'投資銘柄数 103 株式 93\.9% 投資信託証券 4\.9% 短期金融資産等 1\.3% 合計 100\.0% 株式先物 1\.4% 業種別構成比 業種 比率 情報技術 54\.6% コミュニケーション・サービス 12\.7% 一般消費財・サービス 10\.1%.{0,200}?組入上位10銘柄 銘柄 業種 比率 NVIDIA CORP 情報技術 7\.9%.{0,500}?BROADCOM INC 情報技術 2\.6% ※ 比率は、マザーファンドの純資産総額に対する各資産の評価額の比率です。',
+           '比率はマザーファンドの純資産総額比。業種別構成比はETF・先物を含まない。上位10銘柄にはETF（INVESCO QQQ TRUST SERIES 1 4.9%）が含まれ、ALPHABET INC が2行（3.0%と2.8%、株式の種類が違うと見られるが資料に種類の記載は無い）ある。本文の表は資料の行どおりに載せた。')
+    p.claim('top10', '2026年8月31日の上位10銘柄（ETFを含む）の比率の合計：SOXは60.4%、NASDAQ-100は45.7%', url('rirsox_M'),
+            p.claims['comp-sox']['source_quote'], f'{GOT}に確認した月次レポート（2026年8月31日作成基準）',
+            'マザーファンドの純資産総額に対する比率を、月次レポートの上位10行（ETFの行を含む）について足した値。比較相手: ' + url('rirndx_M') + '「' + p.claims['comp-ndx']['source_quote'] + '」',
+            scope='2本の月次レポート（2026年8月31日作成基準）の組入上位10銘柄の比率（マザーファンドの純資産総額比）の合計。ETFの行を含む。指数そのものの比率ではない')
+    p.claim('overlap', '2026年8月31日の上位10銘柄のうち、2本に共通するのはNVIDIA・BROADCOM・MICRON TECHNOLOGYの3銘柄', url('rirsox_M'),
+            p.claims['comp-sox']['source_quote'], f'{GOT}に確認した月次レポート（2026年8月31日作成基準）',
+            '2本の上位10銘柄を名前で照合した。上位10より下の保有は月次レポートからは分からないため、本文では「上位10銘柄の中で」と範囲を書いた。比較相手: ' + url('rirndx_M') + '「' + p.claims['comp-ndx']['source_quote'] + '」',
+            scope='2本の月次レポート（2026年8月31日作成基準）の組入上位10銘柄の名前の重なり。上位10より下の保有は含まない')
+    p.docq('mf-etf', '2本のマザーファンドは、連動性を保つためにETFと株価指数先物取引を使うことがある', 'rirsox_P',
+           r'マザーファンドにおいては、ベンチマークとの連動性を維持するため、米国株式の指数との連動をめ ?ざすETF（上場投資信託証券）、米国株式の指数を対象とした株価指数先物取引を利用することが ?あります。',
+           '2本の交付目論見書に同じ文。同じ欄に、投資信託財産の規模や資金流出入の規模によってはETFや株価指数先物取引への投資割合が相対的に大きくなることがある旨。比較相手: ' + url('rirndx_P') + '「'
+           + Q('rirndx_P', r'マザーファンドにおいては、ベンチマークとの連動性を維持するため、米国株式の指数との連動をめ ?ざすETF（上場投資信託証券）、米国株式の指数を対象とした株価指数先物取引を利用することが ?あります。') + '」')
+    p.docq('fut-sox', '楽天・プラス・SOXの交付目論見書の運用実績（2026年4月30日現在）では、株式先物（2.2%）はNASDAQ-100株価指数先物', 'rirsox_P',
+           r'株式先物 2\.2% ※当ファンドの純資産総額に対し、楽天･SOXインデックス･マザーファンドを100\.0％組入れています。 ※投資比率は、 ?マザーファンドの純資産総額に対する各資産の評価額の比率です。 ※業種は、GICS\(世界産業分類基準\)による分類です。 ※株式先物は、NASDAQ-100 株価指数先物です。',
+           '交付目論見書の「運用実績（2026年4月30日現在）」の欄。2026年8月31日の月次レポートの株式先物1.4%については先物の種類の記載が無いため、本文では2026年4月30日現在と時点を限って書いた。')
+    p.claims['fut-sox']['exceptions'] += ' 時点: 「' + Q('rirsox_P', r'2026年4月30日現在 ※過去の実績を示したものであり、将来の成果を示唆・保証するものではありません。') + '」'
+    p.docq('dist0', '2本とも、2024年10月と2025年10月の決算の分配金は0円（1万口当たり・税引前）', 'rirsox_M',
+           r'分配金（税引前、1万口当たり） 設定来分配金合計額 0 円 決算期 2024年10月 2025年10月 2026年10月 分配金 0 円 0 円 - 円',
+           '同じ欄の注記: 分配金実績は将来の分配金の水準を示唆・保証するものではない／分配金は分配方針に基づいて委託会社が決定し、分配を行わない場合もある。比較相手: ' + url('rirndx_M') + '「'
+           + Q('rirndx_M', r'分配金（税引前、1万口当たり） 設定来分配金合計額 0 円 決算期 2024年10月 2025年10月 2026年10月 分配金 0 円 0 円 - 円') + '」')
+    p.docq('distpolicy', '分配金は委託会社が決定し、必ず分配を行うものではない', 'rirsox_P',
+           r'収益分配金額は、委託会社が基準価額水準、市況動向等を勘案して決定します。ただし、必ず分配を行うも ?のではありません。',
+           '比較相手の交付目論見書にも同じ文がある（全文検索で確認）。')
+    pair_claim(p, 'settlepair', 'settle', '2本の決算頻度と決算日')
+    pair_claim(p, 'hedgepair', 'hedge', '2本とも為替ヘッジは原則として行わない')
+    ci = p.claims[p.fc(p.a, 'incept')]
+    p.claim('period', f'比較期間（2本の設定日{jd(r["起点"])}〜{jd(r["終点"])}）の長さ', ci['source_url'], ci['source_quote'], ci['applies'],
+            ci['exceptions'] + ' 2本とも設定日は同じ。終点は月末に固定した（本文の計算条件）。期間の長さは暦日数から計算した値。',
+            scope=f'この記事の比較期間（{jd(r["起点"])}〜{jd(r["終点"])}）の長さ')
+    gap_claim(p, 'feegap', '2本の信託報酬の差と100万円あたりの目安')
+    d, ds, amt, hi, lo = gap_text(p)
+    # --- lead
+    lead = P(perf_lead(p, '結論から言うと、'), one_year_line(p), dd_line(p))
+    lead += P(S(p, 'feepair', f"信託報酬（税込年率・ファンド本体、有価証券の貸付を行った場合の報酬を除く）は{p.A['short']}が{p.A['fee']}、{p.B['short']}が{p.B['fee']}です。"),
+              S(p, 'sox-def', '連動を目指す指数が違い、SOXインデックスは米国上場の主要な半導体関連30銘柄、'),
+              S(p, 'ndx-def', 'Nasdaq-100インデックスは米国のナスダック市場に上場している時価総額の大きい金融を除く100社で構成されます（交付目論見書の説明）。'),
+              S(p, 'period', f'比較期間は、2本の設定日（{jd(r["起点"])}）から{jd(r["終点"])}までの約2年8か月です。'))
+    p.lead = lead_block(p, lead)
+    body = perf_section(p)
+    body += P(S(p, 'perf', f"楽天・プラス・SOXの最大下落率（{pct(r['A最大下落率'])}）は{jd(str(pk_a))}の高値から{jd(str(tr_a))}の安値まで、楽天・プラス・NASDAQ-100の最大下落率（{pct(r['B最大下落率'])}）は{jd(str(pk_b))}の高値から{jd(str(tr_b))}の安値までで、どちらも比較期間（{jd(r['起点'])}〜{jd(r['終点'])}）の分配金再投資基準価額で測った値です。"),
+              S(p, 'perf', f"{corr_period(p)}{r['同日相関']:.2f}で、同じ日に同じ方向へ動くことが多かった一方、この期間の累積騰落率と最大下落率の大きさはどちらもSOXのほうが大きくなりました。"))
+    body += fee_section(p) + fee_note(p)
+    body += S(p, 'sox-def', '<h2 id="mechanism">指数の中身：半導体30銘柄か、金融を除く100社か</h2>')
+    body += P(S(p, 'nq-sox-sel', '指数を算出するNasdaqの指数算出方法書によると、SOX指数は米国の取引所に上場する半導体・半導体製造装置の銘柄から、時価総額の大きい30銘柄を年1回選びます（ADRも対象で、主な条件は時価総額・売買高・上場期間など）。'),
+              S(p, 'nq-sox-w', 'SOX指数は修正時価総額加重で、四半期ごとの調整では、時価総額の上位3銘柄の比率の上限を順に12パーセント・10パーセント・8パーセント、それ以外の銘柄の上限を4パーセントとし、超えた分をほかの銘柄へ配り直します。'),
+              S(p, 'nq-ndx', '同じ算出方法書によると、Nasdaq-100指数はナスダック上場の金融を除く大型100社の修正時価総額加重で、年次の見直しは12月、リバランスは3・6・9月です。'),
+              S(p, 'nq-ndx', 'Nasdaq-100指数にも比率が一定の水準を超えた場合に下げる調整の定めがありますが、条件つきの多段階の仕組みなので、詳細は算出方法書を確認してください。'),
+              S(p, 'ndx-def', '時価総額の大きい銘柄が臨時に加わり、銘柄数が一時的に100を超える場合があります。'))
+    body += P(S(p, 'comp-sox', '2026年8月31日時点の月次レポート（マザーファンドの純資産総額比）では、楽天・プラス・SOXの投資銘柄数は31、業種別構成比は情報技術が93.9%です。'),
+              S(p, 'comp-ndx', '同じ2026年8月31日時点の楽天・プラス・NASDAQ-100の投資銘柄数は103で、業種別構成比は情報技術54.6%、コミュニケーション・サービス12.7%、一般消費財・サービス10.1%の順です（2本とも業種別構成比にETFと先物は含みません）。'))
+    sox_rows = [('NVIDIA CORP', '13.1%'), ('BROADCOM INC', '8.8%'), ('MICRON TECHNOLOGY INC', '8.2%'), ('ISHARES SEMICONDUCTOR ETF', '4.8%'), ('MARVELL TECHNOLOGY INC', '4.5%'),
+                ('ASML HOLDING NV', '4.5%'), ('APPLIED MATERIALS INC', '4.4%'), ('TAIWAN SEMICONDUCTOR MANUFACTURING', '4.2%'), ('LAM RESEARCH CORP', '4.0%'), ('KLA CORPORATION', '3.9%')]
+    ndx_rows = [('NVIDIA CORP', '7.9%'), ('APPLE INC', '7.0%'), ('MICROSOFT CORP', '5.7%'), ('INVESCO QQQ TRUST SERIES 1', '4.9%'), ('MICRON TECHNOLOGY INC', '4.4%'),
+                ('AMAZON COM INC', '4.3%'), ('ADVANCED MICRO DEVICES INC', '3.1%'), ('ALPHABET INC', '3.0%'), ('ALPHABET INC', '2.8%'), ('BROADCOM INC', '2.6%')]
+    t = ('<div class="scroll-wrap"><table><thead><tr><th scope="col">' + S(p, 'comp-sox', '順位（2026年8月31日）') + '</th><th scope="col">' + S(p, 'comp-sox', '楽天・プラス・SOXの上位10銘柄（2026年8月31日）') + '</th><th scope="col" class="num">' + S(p, 'comp-sox', 'SOXでの比率（2026年8月31日）')
+         + '</th><th scope="col">' + S(p, 'comp-ndx', '楽天・プラス・NASDAQ-100の上位10銘柄（2026年8月31日）') + '</th><th scope="col" class="num">' + S(p, 'comp-ndx', 'NASDAQ-100での比率（2026年8月31日）') + '</th></tr></thead><tbody>')
+    for i, ((na, va), (nb, vb)) in enumerate(zip(sox_rows, ndx_rows), 1):
+        t += f'<tr><th scope="row">{S(p, "comp-sox", f"{i}位")}</th><td>{S(p, "comp-sox", na)}</td><td class="num">{S(p, "comp-sox", va)}</td><td>{S(p, "comp-ndx", nb)}</td><td class="num">{S(p, "comp-ndx", vb)}</td></tr>'
+    t += '</tbody></table></div>'
+    body += t
+    body += P(S(p, 'top10', '2026年8月31日の上位10銘柄（ETFの行を含む）の比率を足すと、楽天・プラス・SOXは60.4%、楽天・プラス・NASDAQ-100は45.7%です（どちらもマザーファンドの純資産総額比）。'),
+              S(p, 'overlap', '2026年8月31日の上位10銘柄の中で2本に共通するのは、NVIDIA・BROADCOM・MICRON TECHNOLOGYの3銘柄です。'),
+              S(p, 'comp-sox', '月次レポートの比率はマザーファンドの純資産総額に対する比率で、指数の中の比率そのものではありません。'),
+              S(p, 'nq-sox-w', 'SOX指数の比率の上限は、算出方法書では四半期ごとの調整の時点で当てる値として書かれています。'),
+              S(p, 'comp-sox', '2026年8月31日の上位10銘柄にあるISHARES SEMICONDUCTOR ETFとINVESCO QQQ TRUST SERIES 1は株式ではなくETFです。'),
+              S(p, 'mf-etf', '2本のマザーファンドは、指数との連動性を保つためにETFや株価指数先物取引を使うことがあると交付目論見書に書かれています。'),
+              S(p, 'fut-sox', '楽天・プラス・SOXの交付目論見書の運用実績（2026年4月30日現在）では、マザーファンドの株式先物2.2%はNASDAQ-100株価指数先物と注記されています。'))
+    body += P(S(p, 'hedgepair', '為替ヘッジは2本とも原則として行わないため、円換算した値動きには為替の変動も含まれます。'))
+    body += S(p, 'feegap', '<h2 id="cost-detail">信託報酬（税込）の差と、分配金の実績</h2>')
+    body += P(S(p, 'feegap', f'交付目論見書の信託報酬（税込年率、貸付時の報酬を除く）は楽天・プラス・SOXが年0.176%、楽天・プラス・NASDAQ-100が年0.198%で、差は年{ds}ポイントです。'),
+              S(p, 'feegap', f'100万円を1年間一定額で保有すると仮定した信託報酬の差の目安は、100万円×年{ds}%で約{amt:,}円（税込）で、実際の利益差ではありません。'),
+              ter_line(p), S(p, 'terpair', '2本の総経費率は同じ作成対象期間（2024年10月16日〜2025年10月15日）の参考値です。'))
+    body += P(S(p, 'feegap', f'この比較期間の実績の差は信託報酬（税込）の差（年{ds}ポイント）よりはるかに大きく、費用の差では説明できません。'), S(p, 'perf', '2本は連動を目指す指数が違い、実績の差は主に指数の値動きの違いから生じていますが、どの業種・銘柄がどれだけ効いたかはこの記事の資料からは分けられません。'))
+    body += P(S(p, 'settlepair', '決算は2本とも年1回で、交付目論見書の決算日は原則として毎年10月15日（休業日の場合は翌営業日）です。'),
+              S(p, 'dist0', '月次レポート（2026年8月31日作成基準）では、2本とも2024年10月と2025年10月の決算の分配金が0円（1万口当たり・税引前）です。'),
+              S(p, 'distpolicy', '分配金は委託会社が基準価額水準や市況動向などを考えて決め、必ず分配を行うものではありません。'))
+    body += method_section(p)
+    body += faq_block(p, [
+        ('sox-def', 'SOXはNASDAQ-100に含まれる半導体株だけを集めたものですか？', [('sox-def', '違います。SOXインデックスは米国上場の主要な半導体関連30銘柄で構成されます。'),
+                                                                   ('nq-sox-sel', '指数算出方法書の条件は米国の取引所への上場で、ナスダック上場に限らず、ADRも対象です。'),
+                                                                   ('overlap', '2026年8月31日の上位10銘柄で2本に共通するのは、NVIDIA・BROADCOM・MICRON TECHNOLOGYの3銘柄です。')]),
+        ('feepair', '信託報酬はどちらが低いですか？', [('feepair', '交付目論見書の信託報酬（税込年率、貸付時の報酬を除く）は楽天・プラス・SOXが年0.176%、楽天・プラス・NASDAQ-100が年0.198%です。'),
+                                              ('terpair', '総経費率（2024年10月16日〜2025年10月15日の作成対象期間の参考値）は楽天・プラス・SOXが0.20%、楽天・プラス・NASDAQ-100が0.21%です。')]),
+        faq_net(p),
+        ('perf', '直近1年ではどちらが上でしたか？', f"{jd(one['起点'])}〜{jd(one['終点'])}の税引前分配金再投資ベースの騰落率は楽天・プラス・SOXが{pct(one['A累積'])}、楽天・プラス・NASDAQ-100が{pct(one['B累積'])}でした。開始日によって結果は変わり、過去の実績は将来の成果を示しません。"),
+    ])
+    sections = std_sections('mechanism', '指数の中身：半導体30銘柄か、金融を除く100社か', '信託報酬（税込）の差と、分配金の実績')
+    related = [('../rakuten-sp-vs-rakuten-nasdaq/', '楽天・プラス・S&P500 vs 楽天・プラス・NASDAQ-100', '同じ楽天・プラスのS&P500と比べる'),
+               ('../rakuten-nasdaq-vs-sbi-nasdaq/', '楽天・プラス・NASDAQ-100 vs SBI NASDAQ100', '同じ指数の別の運用会社と比べる'),
                ('../../toushi/tsumitate/', '積立シミュレーター', '積立額と期間から将来額の目安を計算します')]
     return p, title, desc, body, sections, related

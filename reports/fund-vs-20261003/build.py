@@ -18,10 +18,12 @@ from funds import FUNDS, check_all
 check_all()
 import compare as CP
 
-PUB_DEFAULT = '2026-10-05'  # この便で公開する記事の公開日
-PUB_BY_SLUG = {'sbi-spyd-vs-rakuten-schd': '2026-10-03', 'sbi-spyd-vs-sbi-vym': '2026-10-04'}  # 既に公開した記事の公開日は動かさない
+PUB_DEFAULT = '2026-10-06'  # この便で公開する記事の公開日
+PUB_BY_SLUG = {'sbi-spyd-vs-rakuten-schd': '2026-10-03', 'sbi-spyd-vs-sbi-vym': '2026-10-04', 'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05'}  # 既に公開した記事の公開日は動かさない
 PUB = PUB_DEFAULT  # 公開日（datePublished・ページの公開日の表示）。Page ごとに差し替える
-GOT = '2026-10-03'  # 資料・基準価額データの取得日（公開日と分けて持つ。2026-10-02 の TODO）
+GOT_DEFAULT = '2026-10-03'  # 資料・基準価額データの取得日（公開日と分けて持つ。2026-10-02 の TODO）
+GOT_BY_SLUG = {'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06'}  # 後の便で資料を取り直した記事
+GOT = GOT_DEFAULT
 CMP = json.loads((R / 'comparison.json').read_text())['pairs']
 E = H.escape
 
@@ -42,8 +44,9 @@ def yen(n):
 # ---------------------------------------------------------------- page model
 class Page:
     def __init__(self, slug, a, b, pair):
-        global PUB
+        global PUB, GOT
         PUB = PUB_BY_SLUG.get(slug, PUB_DEFAULT)
+        GOT = GOT_BY_SLUG.get(slug, GOT_DEFAULT)
         self.slug, self.a, self.b, self.A, self.B = slug, a, b, FUNDS[a], FUNDS[b]
         self.pair = pair
         self.r_ = CMP[pair]
@@ -340,6 +343,8 @@ NAME_PATS = {
     'tawara-emg': r'たわらノーロード 新興国株式',
     'emaxis-bal8': r'この目論見書により行う 「ｅＭＡＸＩＳＳｌ ｉｍ バランス（８資産均等型） 」の募集',
     'tawara-bal8': r'たわらノーロード バランス （８資産均等型）',
+    'rakuten-sox': r'「楽天・プラス・ＳＯＸインデックス・ファンド」の募集',
+    'rakuten-ndx': r'「楽天・プラス・ＮＡＳＤＡＱ－１００インデックス・ファンド」 ?の募集',
 }
 def _name_pat(f):
     k = next(k for k, v in FUNDS.items() if v is f)
@@ -357,6 +362,9 @@ DOCDATE = {
     'eemg_P': r'使用開始日 2026\.７\.25', 'eemg_Ak': r'作成対象期間：2025年４月26日～2026年４月27日', 'eemg_M': r'2026年08月31日現在',
     'ebal_P': r'使用開始日 2026\.７\.25', 'ebal_Ak': r'作成対象期間：2025年４月26日～2026年４月27日', 'ebal_M': r'2026年08月31日現在',
     'temg_P': r'使用開始日 2026年７月15日', 'temg_Ak': r'作成対象期間 2024年10月16日～2025年10月14日', 'temg_M': r'2026年8月31日基準',
+    'rirsox_P': r'使用開始日：2026年7月16日', 'rirsox_Ak': r'（作成対象期間 2024年10月16日～2025年10月15日）', 'rirsox_M': r'作成基準日 ： 2026年8月31日',
+    'rirndx_P': r'使用開始日：2026年7月16日', 'rirndx_Ak': r'（作成対象期間 2024年10月16日～2025年10月15日）', 'rirndx_M': r'作成基準日 ： 2026年8月31日',
+    'nq_sox': r'INDEX METHODOLOGY \| © Copyright 2026, Nasdaq, Inc\. All Rights Reserved\.', 'nq_ndx': r'INDEX METHODOLOGY \| © Copyright 2026, Nasdaq, Inc\. All Rights Reserved\.',
     'tbal_P': r'使用開始日 2026年７月15日', 'tbal_Ak': r'作成対象期間 2024年10月16日～2025年10月14日', 'tbal_M': r'2026年8月31日基準',
 }
 
@@ -566,12 +574,44 @@ def build_ledger(p):
     return errors
 
 # Ledgers reviewed claim by claim on a later day carry that date (check_claim_scope requires must_with from 2026-10-05).
-CHECKED = {'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05'}
+CHECKED = {'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06'}
 _PERF_CALC = ('python3（2026-10-05、compare.series の保存データから再計算）: 共通営業日 2025-02-07〜2026-09-30（暦日600日、600/365.25=1.64年）。'
               'SBI: 累積 19780.68269/11947.95801-1=+65.5570%、年率 (1.655570)^(1/1.6427)-1=+35.9203%、100万円×1.655570=1,655,570円、最大下落 -16.9911%、'
               '直近1年 19780.68269/14510.21310-1=+36.3225%。楽天: 累積 16063/9999-1=+60.6461%、年率 +33.4515%、1,606,461円、最大下落 -15.3947%、'
               '直近1年 16063/12323-1=+30.3498%。comparison.json と一致。期間 600日×12/365.25=19.7か月→約1年8か月。')
+_PERF_CALC_SOX = ('python3（2026-10-06、compare.series の保存データ rakuten_100092.csv / rakuten_100091.csv から再計算）: 共通営業日 2024-01-30〜2026-09-30（暦日974日、974/365.25=2.6667年）。'
+                  'SOX: 累積 31777/10000-1=+217.77%、年率 (3.1777)^(1/2.6667)-1=+54.27%、100万円×3.1777=3,177,700円、最大下落 8341/15211-1=-45.16%（高値2024-07-11 15211→安値2025-04-09 8341）、'
+                  '直近1年 31777/15096-1=+110.50%。NASDAQ-100: 累積 19178/10000-1=+91.78%、年率 (1.9178)^(1/2.6667)-1=+27.66%、1,917,800円、最大下落 9933/13750-1=-27.76%（高値2024-12-27 13750→安値2025-04-09 9933）、'
+                  '直近1年 19178/14674-1=+30.69%。日次騰落率の相関 0.8933→0.89。comparison.json と一致。')
 SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'calc': str}}
+    'rakuten-sox-vs-rakuten-nasdaq': {
+        'perf': {'must_with': ['再投資|信託報酬', '2026年9月30日|比較期間|信託報酬'], 'derived': True, 'calc': _PERF_CALC_SOX},
+        'perfA': {'must_with': ['再投資|信託報酬', '2026年9月30日|比較期間|信託報酬'], 'derived': True, 'calc': _PERF_CALC_SOX},
+        'perfB': {'must_with': ['再投資|信託報酬', '2026年9月30日|比較期間|信託報酬'], 'derived': True, 'calc': _PERF_CALC_SOX},
+        'method': {'must_with': ['比較期間|起点|終点|基準価額|データ|再投資|信託報酬|源泉徴収']},
+        'period': {'must_with': ['2026年9月30日', '2024年1月30日'], 'derived': True, 'calc': 'python3: (date(2026,9,30)-date(2024,1,30)).days=974、974*12/365.25=32.0か月→約2年8か月。'},
+        'feepair': {'must_with': ['税込', '信託報酬', '貸付']},
+        'desc': {'must_with': ['税込|2026年9月30日', '信託報酬|再投資']},
+        'rakuten-sox-ter': {'must_with': ['総経費率', '参考値|対象期間|作成対象期間']},
+        'rakuten-ndx-ter': {'must_with': ['総経費率', '参考値|対象期間|作成対象期間']},
+        'terpair': {'must_with': ['総経費率', '参考値|対象期間|作成対象期間']},
+        'feegap': {'must_with': ['税込|再投資|終了時評価額', '信託報酬|再投資|終了時評価額'], 'derived': True,
+                   'calc': 'python3: round(0.198-0.176,3)=0.022（年0.022ポイント）、1_000_000*0.00022=220.0（約220円）。'},
+        'nq-sox-w': {'must_with': ['上限', '四半期']},
+        'comp-sox': {'must_with': ['2026年8月31日|2026年8月末']},
+        'comp-ndx': {'must_with': ['2026年8月31日|2026年8月末']},
+        'top10': {'must_with': ['2026年8月31日', '純資産総額'], 'derived': True,
+                  'calc': 'python3: SOX round(13.1+8.8+8.2+4.8+4.5+4.5+4.4+4.2+4.0+3.9,1)=60.4、NASDAQ-100 round(7.9+7.0+5.7+4.9+4.4+4.3+3.1+3.0+2.8+2.6,1)=45.7（月次レポート2026年8月31日の上位10行、ETFの行を含む）。'},
+        'overlap': {'must_with': ['2026年8月31日'], 'derived': True,
+                    'calc': 'python3: set(SOX上位10) & set(NDX上位10) = {NVIDIA CORP, BROADCOM INC, MICRON TECHNOLOGY INC} → 3銘柄（AMD・APPLE等はSOX上位10に無い）。'},
+        'fut-sox': {'must_with': ['2026年4月30日']},
+        'rakuten-sox-settle': {'must_with': ['原則として|決算日（|作成対象期間|対象期間|使用開始日', '休業日|決算日（|作成対象期間|対象期間|使用開始日']},
+        'rakuten-ndx-settle': {'must_with': ['原則として|決算日（|作成対象期間|対象期間|使用開始日', '休業日|決算日（|作成対象期間|対象期間|使用開始日']},
+        'settlepair': {'must_with': ['原則として|決算日（|作成対象期間|対象期間|使用開始日', '休業日|決算日（|作成対象期間|対象期間|使用開始日']},
+        'taxpair': {'must_with': ['源泉徴収|個人']},
+        'lendpair': {'must_with': ['品貸料']},
+        'dist0': {'must_with': ['1万口当たり', '税引前']},
+    },
     'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': {
         'perf': {'must_with': ['再投資|信託報酬', '2026年9月30日|比較期間|信託報酬'], 'derived': True, 'calc': _PERF_CALC},
         'perfA': {'must_with': ['再投資|信託報酬', '2026年9月30日|比較期間|信託報酬'], 'derived': True, 'calc': _PERF_CALC},

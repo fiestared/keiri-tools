@@ -191,6 +191,32 @@ FUNDS['tawara-bal8'] = F(
     nofee_q=('tbal_P', r'購 入 時 手 数 料 ありません。 信託財産留保額 ありません。'),
 )
 
+# 2026-10-06: 楽天・プラス・SOX と 楽天・プラス・NASDAQ-100（資料は 2026-10-06 に保存。GOT_BY_SLUG で取得日を分ける）
+def _rplus(code, name, short, idx, fee, fee_num, ter, ter3):
+    return F(
+        name=name, short=short, company='楽天投信投資顧問',
+        page=f'https://www.rakuten-toushin.co.jp/fund/nav/{code}/', P=f'{code}_P', Ak=f'{code}_Ak', M=f'{code}_M', etf=False,
+        index=idx[0], index_q=(f'{code}_P', idx[1]),
+        fee=f'年{fee}%', fee_num=fee_num, tiered=False,
+        fee_q=(f'{code}_P', fee.replace('.', r'\.').join(['財産の純資産総額に年', '％']) + r'（税抜' + {'0.176': r'0\.16', '0.198': r'0\.18'}[fee] + '％）'),
+        ter=ter, ter_period='2024/10/16〜2025/10/15',
+        ter_q=(f'{code}_P', r'対象期間：2024年10月16日～ 2025年10月15日 総経費率（①＋②） ①運用管理費用の比率 ②その他費用の比率 ' + ter3),
+        lend_kind='other', lend_rate='0.55（税抜0.5）',
+        lend_q=(f'{code}_P', r'・貸付有価証券関連報酬：有価証券の貸.{0,160}?品貸料に0\.55 ?（税抜0\.5） ?を乗 ?じて得た額'),
+        lendhead_q=(f'{code}_P', r'以下の費用・手数料は、原則として受益者の負担とし.{0,900}?・貸付有価証券関連報酬 等'),
+        hedge='原則なし', hedge_q=(f'{code}_P', r'2 原則として、為替ヘッジは行いません'),
+        settle='年1回（原則として10月15日。休業日の場合は翌営業日）',
+        settle_q=(f'{code}_P', r'決 ?算 ?日 原則として、毎年10月15日 （ただし、休業日の場合は翌営業日）'),
+        incept='2024年1月30日', incept_q=(f'{code}_P', r'無期限 ?（設定日：2024年1月30日）'),
+        nofee_q=(f'{code}_P', r'購入時手数料 ありません。 信託財産留保額 ありません。'),
+    )
+FUNDS['rakuten-sox'] = _rplus('rirsox', '楽天・プラス・ＳＯＸインデックス・ファンド', '楽天・プラス・SOX',
+    ('SOXインデックス（円換算ベース）', r'ＳＯＸインデックス ?（円換算ベース） ?（以下、｢対象指数｣といいます。） ?に連動する投資成果を目指し ?ます。'),
+    '0.176', 0.176, '0.20%', r'0\.20% 0\.18% 0\.02%')
+FUNDS['rakuten-ndx'] = _rplus('rirndx', '楽天・プラス・ＮＡＳＤＡＱ－１００インデックス・ファンド', '楽天・プラス・NASDAQ-100',
+    ('Nasdaq-100インデックス（円換算ベース）', r'Ｎａｓｄａｑ－１００インデックス ?（円換算ベース） ?（以下、｢対象指数｣といいます。） ?に連動する投資 ?成果を目指します。'),
+    '0.198', 0.198, '0.21%', r'0\.21% 0\.20% 0\.01%')
+
 # Funds whose prospectus has no securities-lending fee clause: the build stops if the word ever appears.
 NO_LEND = ('rakuten-jhd', 'emaxis-emg', 'tawara-emg', 'emaxis-bal8')
 

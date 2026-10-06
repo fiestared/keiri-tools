@@ -47,6 +47,14 @@ doc('ebal_M', f'{M}/geppou/252760/252760_202608.pdf', 'eMAXIS Slim バランス�
 doc('tbal_P', 'https://www.am-one.co.jp/fund/pdf/313144/313144_pr_d.pdf', 'たわらノーロード バランス（8資産均等型）交付目論見書（使用開始日2026年7月15日）')
 doc('tbal_Ak', 'https://www.am-one.co.jp/fund/pdf/313144/313144_r_d.pdf', 'たわらノーロード バランス（8資産均等型）交付運用報告書（作成対象期間2024年10月16日〜2025年10月14日）')
 doc('tbal_M', 'https://www.am-one.co.jp/fund/pdf/313144/313144_mr.pdf', 'たわらノーロード バランス（8資産均等型）マンスリーレポート（2026年8月31日基準）')
+doc('rirsox_P', f'{RK}/rirsox/pdf/rirsox_P.pdf', '楽天・プラス・ＳＯＸインデックス・ファンド 交付目論見書（使用開始日2026年7月16日）')
+doc('rirsox_Ak', f'{RK}/rirsox/pdf/rirsox_Ak.pdf', '楽天・プラス・ＳＯＸインデックス・ファンド 交付運用報告書（第2期・作成対象期間2024年10月16日〜2025年10月15日）')
+doc('rirsox_M', f'{RK}/rirsox/pdf/rirsox_M202608.pdf', '楽天・プラス・ＳＯＸインデックス・ファンド 月次レポート（2026年8月31日作成基準）')
+doc('rirndx_P', f'{RK}/rirndx/pdf/rirndx_P.pdf', '楽天・プラス・ＮＡＳＤＡＱ－１００インデックス・ファンド 交付目論見書（使用開始日2026年7月16日）')
+doc('rirndx_Ak', f'{RK}/rirndx/pdf/rirndx_Ak.pdf', '楽天・プラス・ＮＡＳＤＡＱ－１００インデックス・ファンド 交付運用報告書（第2期・作成対象期間2024年10月16日〜2025年10月15日）')
+doc('rirndx_M', f'{RK}/rirndx/pdf/rirndx_M202608.pdf', '楽天・プラス・ＮＡＳＤＡＱ－１００インデックス・ファンド 月次レポート（2026年8月31日作成基準）')
+doc('nq_sox', 'https://indexes.nasdaqomx.com/docs/Methodology_SOX.pdf', 'Nasdaq：PHLX Semiconductor Sector Index（SOX）Index Methodology（2026年10月6日に確認）')
+doc('nq_ndx', 'https://indexes.nasdaqomx.com/docs/Methodology_NDX.pdf', 'Nasdaq：Nasdaq-100 Index（NDX）Index Methodology（2026年10月6日に確認）')
 
 # NAV data (issuer-published; the SBI funds are WealthAdvisor XML feeds, see compare.xml_nav)
 NAV = {
@@ -59,6 +67,8 @@ NAV = {
     'tawara-emg': ('amone_313128.json', 'https://www.am-one.co.jp/chart_data/313128/dat.json'),
     'emaxis-bal8': ('mufg_252760.csv', 'https://www.am.mufg.jp/fund_file/setteirai/252760.csv'),
     'tawara-bal8': ('amone_313144.json', 'https://www.am-one.co.jp/chart_data/313144/dat.json'),
+    'rakuten-sox': ('rakuten_100092.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100092.csv'),
+    'rakuten-ndx': ('rakuten_100091.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100091.csv'),
 }
 
 _cache = {}

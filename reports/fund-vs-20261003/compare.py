@@ -1,6 +1,6 @@
 """2026-10-03 batch: compute same-period comparisons from saved issuer NAV files (no network).
 
-Sources (saved 2026-10-03 in this directory):
+Sources (saved 2026-10-03 in this directory; rakuten_100091/100092 saved 2026-10-06):
   MUFG  https://www.am.mufg.jp/fund_file/setteirai/<code>.csv
   Daiwa https://www.daiwa-am.co.jp/funds/detail/csv_out.php?code=<code>&type=1
   Rakuten https://www.rakuten-toushin.co.jp/assets/csv/chart_<n>.csv
@@ -44,9 +44,11 @@ FILES = {
     'sbi-spyd4': 'sbi_2024013002.xml', 'sbi-vym4': 'sbi_2024013001.xml', 'rakuten-schd': 'rakuten_100105.csv',
     'emaxis-emg': 'mufg_252878.csv', 'tawara-emg': 'amone_313128.json',
     'emaxis-bal8': 'mufg_252760.csv', 'tawara-bal8': 'amone_313144.json',
+    'rakuten-sox': 'rakuten_100092.csv', 'rakuten-ndx': 'rakuten_100091.csv',
 }
 PAIRS = [('sbi-jhd', 'rakuten-jhd'), ('sbi-spyd4', 'sbi-vym4'), ('sbi-spyd4', 'rakuten-schd'),
-         ('emaxis-emg', 'tawara-emg'), ('emaxis-bal8', 'tawara-bal8')]
+         ('emaxis-emg', 'tawara-emg'), ('emaxis-bal8', 'tawara-bal8'),
+         ('rakuten-sox', 'rakuten-ndx')]
 
 def series(key):
     p = HERE / FILES[key]
