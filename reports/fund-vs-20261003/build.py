@@ -558,7 +558,7 @@ def build_ledger(p):
         absolutes.append({'phrase': a['phrase'], 'context': ctx[:30], 'reviewed': ABS_REVIEW(a)})
     claims = [c for c in p.claims.values() if c['covers']]
     verified = []
-    keep = {**OC_KEEP, **OC_KEEP_JHD}.get(p.slug, {})
+    keep = {**OC_KEEP, **OC_KEEP_JHD, **OC_KEEP_SOX}.get(p.slug, {})
     if keep:
         segs = json.loads(subprocess.run(['node', 'tools/segment_claims.mjs', page], capture_output=True, text=True, cwd=ROOT).stdout)
         for sg in segs:
@@ -612,6 +612,7 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'nq-sox-old': {'must_with': ['2024年4月22日']},
         'nq-sox-cal': {'must_with': ['9月']},
         'nq-ndx-w': {'must_with': ['年次見直し', '当初の比率']},
+        'nq-ndx-sp': {'must_with': ['臨時']},
         'lendpair': {'must_with': ['品貸料']},
         'dist0': {'must_with': ['1万口当たり', '税引前']},
         'dc-ndx': {'must_with': ['確定拠出']},
@@ -658,6 +659,12 @@ OC_KEEP_JHD = {'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': {
     's-334220e4b41c156035ae-1': ('文責者の肩書（クリニック・EC事業の経営者／経理実務者）を示す運営者情報（/about/ の記載など）。', _OCR5),
     's-d666cca387098425ff12-1': ('資料の確認日（2026年10月3日）と取得元URLを記録した取得ログ（source_registry の fetched）。', _OCR5),
     's-80712083074ccfddf34a-1': ('資料の確認日（2026年10月3日）を記録した取得ログ（source_registry の fetched）。', _OCR5),
+}}
+_OCR6 = 'segment-review 2026-10-06（write-2026-10-06-fin）: 正本（目論見書・運用報告書・月次・算出方法書・基準価額データ）に無い、サイト自身の記述。数値の誤りの指摘は無いので書き換えず未確認のまま残す。'
+OC_KEEP_SOX = {'rakuten-sox-vs-rakuten-nasdaq': {
+    's-334220e4b41c156035ae-1': ('文責者の肩書（クリニック・EC事業の経営者／経理実務者）を示す運営者情報（/about/ の記載など）。', _OCR6),
+    's-5c051646a5edba65120d-1': ('資料の確認日（2026年10月6日）を記録した取得ログ（source_registry の fetched）。', _OCR6),
+    's-88cb4618a808586b8e9e-1': ('比較の起点を終点の3年前とする既定を定めた計算仕様（reports/fund-vs-20261003/compare.py の START3Y）。', _OCR6),
 }}
 OC_KEEP = {'sbi-spyd-vs-rakuten-schd': {
     's-334220e4b41c156035ae-1': ('文責者の肩書（クリニック・EC事業の経営者／経理実務者）を示す運営者情報（/about/ の記載など）。', _OCR),

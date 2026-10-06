@@ -865,6 +865,9 @@ def a_sox_ndx():
            r'4/22/2024 Constituent SOX employs a two-stage weight',
            '算出方法書の付録A（METHODOLOGY CHANGE LOG）の 4/22/2024 の行。Previous 欄に Stage 1「No Index Security weight may exceed 8%.」、Stage 2「For Index Securities with the five largest market capitalizations, Stage 1 weights are maintained.」「For all other Index Securities, no weight may exceed 4%.」。抽出テキストは3段組で行が交互に混ざるため、source_quote は行の先頭だけにした。同じ表の 7/6/2026 の行は上場取引所の要件の変更（本文の「米国の取引所に上場」は変更後の定め）。',
            extra_doc=[('nq_sox', r'• No Index Security weight may.{0,120}?exceed 8% of the index; five may.{0,120}?exceed 4%\.'), ('nq_sox', r'• For all other Index Securities, no.{0,160}?weight may exceed 4%\.')])
+    p.docq('nq-ndx-sp', 'Nasdaq-100指数の臨時リバランス（1社24%超、または4.5%超の会社の合計48%超で）', 'nq_ndx',
+           r'A Special Rebalance may be triggered, if either of the following weighting constraints are breached, ?based on end-of-day \(EOD\) values: • No company.s weight may exceed 24%\. • The aggregate weight of the companies whose weights exceed 4\.5% may not exceed 48%\.',
+           '同じ節: 臨時リバランスの適用日・基準日は事前に公表され、3・6・9月のリバランスの節にある会社単位の調整の手順に従う。本文は「行われることがあります」と書き、必ず行うとは書いていない。')
     p.docq('nq-ndx-w', 'Nasdaq-100指数の年次見直しの比率の調整（当初比率24%超の会社があるとき1社20%以下、4.5%超の会社の合計48%以上なら40%へ、ほかに銘柄単位の調整）', 'nq_ndx',
            r"If any company.s initial weight exceeds 24%: Company-Level Weighting Constraints Stage 1: The weights are adjusted such that no company.s weight exceeds 20%\. Stage 2: Any resulting company weights that exceed 4\.5% are added together\. If the sum of ?those weights is 48% or greater, then that group of companies will have its aggregate weight ?adjusted down to 40%\.",
            '同じ節の続き: 銘柄単位（Security-Level）の調整（当初比率15%超の銘柄があれば14%以下、上位5銘柄の合計が40%以上なら38.5%へ等）。会社単位の調整は「当初の比率が24%を超える会社がある場合」の条件つきで、本文は条件ごと書き、銘柄単位は「銘柄単位の調整を重ねる」とだけ書いた。3・6・9月のリバランスにも別の定めがある。')
@@ -923,7 +926,8 @@ def a_sox_ndx():
               S(p, 'nq-sox-cal', 'SOX指数の定期の銘柄の入れ替えは年1回9月、比率の調整は3・6・9・12月で、適用はその月の第3金曜日の翌取引日の取引開始時です。'),
               S(p, 'nq-sox-cal', '合併などで条件を満たさなくなった銘柄は定期の入れ替えを待たずに除かれ、条件を満たす時価総額の最も大きい銘柄が加わります。'),
               S(p, 'nq-sox-old', 'この比率の上限は2024年4月22日からの定めで、それ以前は、どの銘柄も8パーセントまで、4パーセントを超えてよいのは時価総額の上位5銘柄までという2段階の上限でした。'),
-              S(p, 'nq-ndx', '同じ算出方法書によると、Nasdaq-100指数はナスダック上場の金融を除く大型100社の修正時価総額加重で、年次の見直しは12月、リバランスは3・6・9月です。'),
+              S(p, 'nq-ndx', '同じ算出方法書によると、Nasdaq-100指数はナスダック上場の金融を除く大型100社の修正時価総額加重で、定期の見直しは12月の年次の入れ替え・リバランスと、3・6・9月のリバランスです。'),
+              S(p, 'nq-ndx-sp', 'このほか、日々の終値で1社の比率が24パーセントを超えるか、4.5パーセントを超える会社の比率の合計が48パーセントを超えた場合には、臨時のリバランス（Special Rebalance）が行われることがあります。'),
               S(p, 'nq-ndx-w', 'Nasdaq-100指数の12月の年次見直しでは、当初の比率が24パーセントを超える会社があるときに、1社を20パーセント以下にし、4.5パーセントを超える会社の比率の合計が48パーセント以上なら40パーセントまで下げるといった会社単位の調整と、銘柄単位の調整を重ねる定めがあります（詳細は算出方法書）。'),
               S(p, 'ndx-def', '時価総額の大きい銘柄が臨時に加わり、銘柄数が一時的に100を超える場合があります。'))
     body += P(S(p, 'comp-sox', '2026年8月31日時点の月次レポート（マザーファンドの純資産総額比）では、楽天・プラス・SOXの投資銘柄数は31、業種別構成比は情報技術が93.9%です。'),
