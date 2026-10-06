@@ -30,6 +30,12 @@ TAXQ = (r'以下の表は、 ?個人投資者の源泉徴収時の税率であ�
         r'\x07?法人の場合は、?上記と?は?異なります。',
         r'上記は、?2026年[0-9]+月末日?現在のものです。 ?税法が改正された場合等には、 ?税率等が変更される場合があります。')
 
+def tax_asof(p):
+    """The as-of date printed under the prospectus tax table (e.g. 2026年4月末). Both funds must agree."""
+    import re as _re
+    ds = {_re.search(r'2026年[0-9]+月末日?', Q(FUNDS[k]['P'], TAXQ[-1])).group(0) for k in (p.a, p.b)}
+    return '・'.join(sorted(ds))
+
 def tax_pair(p):
     """Tax table + NISA lines of both prospectuses (who pays what, and the NISA exemption). None if any line is missing."""
     if 'taxpair' in p.claims:
@@ -41,8 +47,8 @@ def tax_pair(p):
         except ValueError: return None
     da, db = FUNDS[p.a]['P'], FUNDS[p.b]['P']
     p.claim('taxpair', '2本の交付目論見書の税金の表（個人の源泉徴収時の税率20.315%）と、NISAの成長投資枠の対象であること・NISA利用時の非課税',
-            url(da), qs[p.a][0] + ' … ' + qs[p.a][2], f'{GOT}に確認した交付目論見書',
-            '（SBIの抽出テキストは段組のため、成長投資枠の文の途中に欄見出し「課 税 関 係」が挟まる。）同じ節・同じ欄の例外を全件（本文の計算条件の節とFAQに書いた）: 源泉徴収時の税率で課税方法などにより異なる場合がある／外国税額控除の適用となった場合は分配時の税金が異なる場合がある／法人の場合は異なる／税法改正等で税率等が変わる場合がある（資料の時点）／NISAの成長投資枠の取扱いは販売会社により異なる場合がある／NISAは非課税口座の開設など一定の条件に該当する方が対象。'
+            url(da), qs[p.a][0], f'{GOT}に確認した交付目論見書',
+            ('（SBIの抽出テキストは段組のため、成長投資枠の文の途中に欄見出し「課 税 関 係」が挟まる。）' if 'SBI' in FUNDS[p.a]['name'] + FUNDS[p.b]['name'] else '') + '同じ節・同じ欄の例外を全件（本文の計算条件の節とFAQに書いた）: 源泉徴収時の税率で課税方法などにより異なる場合がある／外国税額控除の適用となった場合は分配時の税金が異なる場合がある／法人の場合は異なる／税法改正等で税率等が変わる場合がある（資料の時点）／NISAの成長投資枠の取扱いは販売会社により異なる場合がある／NISAは非課税口座の開設など一定の条件に該当する方が対象。'
             '課税されるのは分配時は普通分配金、換金（解約）時・償還時は差益（譲渡益）で、差益が無ければ譲渡益の税金はかからない。'
             f' 根拠: {url(da)}「' + '」「'.join(qs[p.a]) + f'」 / {url(db)}「' + '」「'.join(qs[p.b]) + '」',
             scope=f'個人投資者が受け取る分配金・換金時の差益の税金（{GOT}に確認した2本の交付目論見書の「税金」「課税関係」の欄）。法人・個別の課税方法は含まない')
@@ -267,8 +273,8 @@ def faq_net(p):
     if not all(FUNDS[k].get('nofee_val', 'なし／なし') == 'なし／なし' for k in (p.a, p.b)):
         return ('method', '表の評価額は売却して受け取れる金額ですか？',
                 '違います。税引前の分配金を再投資した基準価額で計算した売却前の金額です。購入時・換金時の手数料や投資者ごとの税金は含みません。基準価額に反映済みの信託報酬を二重に引いてもいません。')
-    head = ([(tax_pair(p), '課税口座では違います。税引前の分配金を再投資した基準価額で計算した売却前の金額で、普通分配金と換金時の差益（譲渡益）にかかる税金（個人の源泉徴収時の税率で20.315%。課税方法や外国税額控除の適用などにより異なる場合があり、法人の場合は異なります）は含みません。'),
-             (tax_pair(p), '2本ともNISAの成長投資枠の対象で（販売会社により取扱いが異なる場合があります）、NISAを利用した場合は、これらの配当所得と譲渡所得は非課税です。')]
+    head = ([(tax_pair(p), f'課税口座では違います。税引前の分配金を再投資した基準価額で計算した売却前の金額で、普通分配金と換金時の差益（譲渡益）にかかる税金（交付目論見書の{tax_asof(p)}現在の記載で、個人の源泉徴収時の税率で20.315%。課税方法などにより異なる場合があり、外国税額控除の適用となった場合は分配時の税金が異なる場合があり、法人の場合は異なります）は含みません。'),
+             (tax_pair(p), '2本ともNISAの成長投資枠の対象で（販売会社により取扱いが異なる場合があります）、NISAを利用した場合は、一定の額を上限として毎年一定額の範囲で新たに購入した分から生じる配当所得と譲渡所得が非課税です。')]
             if tax_pair(p) else
             [('method', '違います。税引前の分配金を再投資した基準価額で計算した売却前の金額で、投資者ごとの税金（分配金や換金時の差益にかかる税金）は含みません。')])
     return ('method', '表の評価額は売却して受け取れる金額ですか？',
@@ -850,6 +856,18 @@ def a_sox_ndx():
            '同じ算出方法書: 年次の見直し（Annual Reconstitution & Rebalance）は12月、リバランスは3・6・9月。比率が一定の水準を超えた場合に会社単位・銘柄単位で下げる多段階の調整があり、条件つきのため本文には数値を書かず「詳細は算出方法書」とした。REITは対象外。時価総額上位40に入る銘柄は臨時に追加され、銘柄数が一時的に100を超えることがある。',
            extra_doc=[('nq_ndx', r'An Annual Reconstitution & Rebalance is conducted in December'),
                       ('nq_ndx', r'A Rebalance is conducted in March, June, and September\.')])
+    p.docq('nq-sox-cal', 'SOX指数の入れ替えは9月、リバランスは3・6・9・12月（第3金曜日の翌取引日の取引開始時に適用）', 'nq_sox',
+           r'At market open on the first trading day after the Reconstitution Effective Dates third Friday in September',
+           '定期の入れ替え以外の除外・補充（Deletion Policy / Replacement Policy）: 「' + Q('nq_sox', r'If, at any time other than an index reconstitution, Nasdaq determines that an Index Security has or will ?undergo a fundamental alteration that would make it ineligible for index inclusion, the Index Security is ?removed as soon as practicable\.') + '」「' + Q('nq_sox', r'The ?issuer with the largest market capitalization which is not in the Index and meets all security eligibility ?criteria will replace the deleted security\.') + '」。' +
+'同じ表のリバランスの適用日（Rebalance Effective Dates）は3・6・9・12月の第3金曜日の翌取引日の取引開始時。基準日（Reference Date）は入れ替えが7月の最終取引日、リバランスが2・5・8・11月の最終取引日。抽出テキストは2段組のため表の行見出しが文の途中に挟まる。',
+           extra_doc=[('nq_sox', r'At market open on the first trading day after the Rebalance Effective Dates third Friday in March, June, September, and')])
+    p.docq('nq-sox-old', 'SOX指数の比率の上限は2024年4月22日に変わり、それ以前は全銘柄8%以下・4%超は上位5銘柄までの2段階', 'nq_sox',
+           r'4/22/2024 Constituent SOX employs a two-stage weight',
+           '算出方法書の付録A（METHODOLOGY CHANGE LOG）の 4/22/2024 の行。Previous 欄に Stage 1「No Index Security weight may exceed 8%.」、Stage 2「For Index Securities with the five largest market capitalizations, Stage 1 weights are maintained.」「For all other Index Securities, no weight may exceed 4%.」。抽出テキストは3段組で行が交互に混ざるため、source_quote は行の先頭だけにした。同じ表の 7/6/2026 の行は上場取引所の要件の変更（本文の「米国の取引所に上場」は変更後の定め）。',
+           extra_doc=[('nq_sox', r'• No Index Security weight may.{0,120}?exceed 8% of the index; five may.{0,120}?exceed 4%\.'), ('nq_sox', r'• For all other Index Securities, no.{0,160}?weight may exceed 4%\.')])
+    p.docq('nq-ndx-w', 'Nasdaq-100指数の年次見直しの比率の調整（当初比率24%超の会社があるとき1社20%以下、4.5%超の会社の合計48%以上なら40%へ、ほかに銘柄単位の調整）', 'nq_ndx',
+           r"If any company.s initial weight exceeds 24%: Company-Level Weighting Constraints Stage 1: The weights are adjusted such that no company.s weight exceeds 20%\. Stage 2: Any resulting company weights that exceed 4\.5% are added together\. If the sum of ?those weights is 48% or greater, then that group of companies will have its aggregate weight ?adjusted down to 40%\.",
+           '同じ節の続き: 銘柄単位（Security-Level）の調整（当初比率15%超の銘柄があれば14%以下、上位5銘柄の合計が40%以上なら38.5%へ等）。会社単位の調整は「当初の比率が24%を超える会社がある場合」の条件つきで、本文は条件ごと書き、銘柄単位は「銘柄単位の調整を重ねる」とだけ書いた。3・6・9月のリバランスにも別の定めがある。')
     # --- holdings (issuer monthly report, mother-fund basis, 2026-08-31)
     p.docq('comp-sox', '楽天・プラス・SOXのマザーファンドの投資銘柄数・資産の内訳・業種・上位10銘柄（2026年8月31日）', 'rirsox_M',
            r'投資銘柄数 31 株式 93\.9% 投資信託証券 4\.8% 短期金融資産等 1\.3% 合計 100\.0% 株式先物 1\.4% 業種別構成比 業種 比率 情報技術 93\.9%.{0,80}?組入上位10銘柄 銘柄 業種 比率 NVIDIA CORP 情報技術 13\.1%.{0,400}?KLA CORPORATION 情報技術 3\.9% ※ 比率は、マザーファンドの純資産総額に対する各資産の評価額の比率です。',
@@ -889,7 +907,7 @@ def a_sox_ndx():
     gap_claim(p, 'feegap', '2本の信託報酬の差と100万円あたりの目安')
     d, ds, amt, hi, lo = gap_text(p)
     # --- lead
-    lead = P(perf_lead(p, '結論から言うと、'), one_year_line(p), dd_line(p))
+    lead = P(perf_lead(p, '結論から言うと、'), one_year_line(p), dd_line(p), S(p, 'perf', 'いずれも過去の実績で、将来の成果を示すものではありません。'))
     lead += P(S(p, 'feepair', f"信託報酬（税込年率・ファンド本体、有価証券の貸付を行った場合の報酬を除く）は{p.A['short']}が{p.A['fee']}、{p.B['short']}が{p.B['fee']}です。"),
               S(p, 'sox-def', '連動を目指す指数が違い、SOXインデックスは米国上場の主要な半導体関連30銘柄、'),
               S(p, 'ndx-def', 'Nasdaq-100インデックスは米国のナスダック市場に上場している時価総額の大きい金融を除く100社で構成されます（交付目論見書の説明）。'),
@@ -902,8 +920,11 @@ def a_sox_ndx():
     body += S(p, 'sox-def', '<h2 id="mechanism">指数の中身：半導体30銘柄か、金融を除く100社か</h2>')
     body += P(S(p, 'nq-sox-sel', '指数を算出するNasdaqの指数算出方法書によると、SOX指数は米国の取引所に上場する半導体・半導体製造装置の銘柄から、時価総額の大きい30銘柄を年1回選びます（ADRも対象で、主な条件は時価総額・売買高・上場期間など）。'),
               S(p, 'nq-sox-w', 'SOX指数は修正時価総額加重で、四半期ごとの調整では、時価総額の上位3銘柄の比率の上限を順に12パーセント・10パーセント・8パーセント、それ以外の銘柄の上限を4パーセントとし、超えた分をほかの銘柄へ配り直します。'),
+              S(p, 'nq-sox-cal', 'SOX指数の定期の銘柄の入れ替えは年1回9月、比率の調整は3・6・9・12月で、適用はその月の第3金曜日の翌取引日の取引開始時です。'),
+              S(p, 'nq-sox-cal', '合併などで条件を満たさなくなった銘柄は定期の入れ替えを待たずに除かれ、条件を満たす時価総額の最も大きい銘柄が加わります。'),
+              S(p, 'nq-sox-old', 'この比率の上限は2024年4月22日からの定めで、それ以前は、どの銘柄も8パーセントまで、4パーセントを超えてよいのは時価総額の上位5銘柄までという2段階の上限でした。'),
               S(p, 'nq-ndx', '同じ算出方法書によると、Nasdaq-100指数はナスダック上場の金融を除く大型100社の修正時価総額加重で、年次の見直しは12月、リバランスは3・6・9月です。'),
-              S(p, 'nq-ndx', 'Nasdaq-100指数にも比率が一定の水準を超えた場合に下げる調整の定めがありますが、条件つきの多段階の仕組みなので、詳細は算出方法書を確認してください。'),
+              S(p, 'nq-ndx-w', 'Nasdaq-100指数の12月の年次見直しでは、当初の比率が24パーセントを超える会社があるときに、1社を20パーセント以下にし、4.5パーセントを超える会社の比率の合計が48パーセント以上なら40パーセントまで下げるといった会社単位の調整と、銘柄単位の調整を重ねる定めがあります（詳細は算出方法書）。'),
               S(p, 'ndx-def', '時価総額の大きい銘柄が臨時に加わり、銘柄数が一時的に100を超える場合があります。'))
     body += P(S(p, 'comp-sox', '2026年8月31日時点の月次レポート（マザーファンドの純資産総額比）では、楽天・プラス・SOXの投資銘柄数は31、業種別構成比は情報技術が93.9%です。'),
               S(p, 'comp-ndx', '同じ2026年8月31日時点の楽天・プラス・NASDAQ-100の投資銘柄数は103で、業種別構成比は情報技術54.6%、コミュニケーション・サービス12.7%、一般消費財・サービス10.1%の順です（2本とも業種別構成比にETFと先物は含みません）。'))
@@ -911,8 +932,8 @@ def a_sox_ndx():
                 ('ASML HOLDING NV', '4.5%'), ('APPLIED MATERIALS INC', '4.4%'), ('TAIWAN SEMICONDUCTOR MANUFACTURING', '4.2%'), ('LAM RESEARCH CORP', '4.0%'), ('KLA CORPORATION', '3.9%')]
     ndx_rows = [('NVIDIA CORP', '7.9%'), ('APPLE INC', '7.0%'), ('MICROSOFT CORP', '5.7%'), ('INVESCO QQQ TRUST SERIES 1', '4.9%'), ('MICRON TECHNOLOGY INC', '4.4%'),
                 ('AMAZON COM INC', '4.3%'), ('ADVANCED MICRO DEVICES INC', '3.1%'), ('ALPHABET INC', '3.0%'), ('ALPHABET INC', '2.8%'), ('BROADCOM INC', '2.6%')]
-    t = ('<div class="scroll-wrap"><table><thead><tr><th scope="col">' + S(p, 'comp-sox', '順位（2026年8月31日）') + '</th><th scope="col">' + S(p, 'comp-sox', '楽天・プラス・SOXの上位10銘柄（2026年8月31日）') + '</th><th scope="col" class="num">' + S(p, 'comp-sox', 'SOXでの比率（2026年8月31日）')
-         + '</th><th scope="col">' + S(p, 'comp-ndx', '楽天・プラス・NASDAQ-100の上位10銘柄（2026年8月31日）') + '</th><th scope="col" class="num">' + S(p, 'comp-ndx', 'NASDAQ-100での比率（2026年8月31日）') + '</th></tr></thead><tbody>')
+    t = ('<div class="scroll-wrap"><table><thead><tr><th scope="col">' + S(p, 'comp-sox', '順位（2026年8月31日）') + '</th><th scope="col">' + S(p, 'comp-sox', '楽天・プラス・SOXの上位10銘柄（2026年8月31日）') + '</th><th scope="col" class="num">' + S(p, 'comp-sox', '楽天・プラス・SOXのマザーファンドでの比率（2026年8月31日・純資産総額比）')
+         + '</th><th scope="col">' + S(p, 'comp-ndx', '楽天・プラス・NASDAQ-100の上位10銘柄（2026年8月31日）') + '</th><th scope="col" class="num">' + S(p, 'comp-ndx', '楽天・プラス・NASDAQ-100のマザーファンドでの比率（2026年8月31日・純資産総額比）') + '</th></tr></thead><tbody>')
     for i, ((na, va), (nb, vb)) in enumerate(zip(sox_rows, ndx_rows), 1):
         t += f'<tr><th scope="row">{S(p, "comp-sox", f"{i}位")}</th><td>{S(p, "comp-sox", na)}</td><td class="num">{S(p, "comp-sox", va)}</td><td>{S(p, "comp-ndx", nb)}</td><td class="num">{S(p, "comp-ndx", vb)}</td></tr>'
     t += '</tbody></table></div>'
