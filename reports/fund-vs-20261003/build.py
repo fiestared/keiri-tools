@@ -611,6 +611,7 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'taxpair': {'must_with': ['源泉徴収|個人']},
         'lendpair': {'must_with': ['品貸料']},
         'dist0': {'must_with': ['1万口当たり', '税引前']},
+        'dc-ndx': {'must_with': ['確定拠出']},
     },
     'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': {
         'perf': {'must_with': ['再投資|信託報酬', '2026年9月30日|比較期間|信託報酬'], 'derived': True, 'calc': _PERF_CALC},
