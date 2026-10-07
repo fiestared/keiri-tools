@@ -191,6 +191,12 @@ export function calcShotokuzei(input, refs) {
   const shinkoku = nozeiHasu(zeigakuGokei - gensen, K);   // 申告納税額（赤字は還付）
   const daisanki = nozeiHasu(shinkoku - yotei, K);         // 第3期分の税額
 
+  if (jutakuIn > 0 && gokei > K.jutaku_note.gokei_over) {
+    notes.push(K.jutaku_note.text);
+  }
+  if (daisanki < 0) {
+    notes.push('源泉徴収税額のうち未納付の分（源泉徴収票の「源泉徴収税額」欄の内書き）は、支払者が納付するまで還付されません（所得税法138条2項）。');
+  }
   if (jutakuKirisute > 0) {
     notes.push(`住宅借入金等特別控除額のうち${jutakuKirisute.toLocaleString('ja-JP')}円は所得税から引ききれません。引ききれない分は、一定の範囲で翌年度の住民税から控除されます（この計算機は住民税を計算しません）。`);
   }

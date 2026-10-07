@@ -204,6 +204,14 @@ eq("2項: 給与所得控除後200万・年金雑所得5万 → 5万",
   eq("住宅ローン控除: 源泉50,000が全額還付", r.kanpu, 50000);
 }
 
+// ── 注記: 住宅ローン控除の所得要件・未納付の源泉徴収税額 ──
+{
+  const r = calcShotokuzei({ kyuyo: 20000000, zatsu: 2000000, jutaku: 200000 }, refs);
+  ok("合計所得1,000万円超で住宅ローン控除を入れたら所得要件を確かめるよう注記", r.notes.some((t) => /所得要件/.test(t)));
+  ok("合計所得1,000万円以下なら所得要件の注記は出さない", !calcShotokuzei({ kyuyo: 5000000, jutaku: 100000 }, refs).notes.some((t) => /所得要件/.test(t)));
+  ok("還付のときは未納付の源泉徴収税額は納付まで還付されないと注記", calcShotokuzei({ kyuyo: 1000000, gensen: 50000 }, refs).notes.some((t) => /138条2項/.test(t)));
+}
+
 // ── 断る入力 ──
 ok("事業所得の赤字は断る", !calcShotokuzei({ kyuyo: 5000000, jigyo: -100000 }, refs).ok);
 ok("不動産所得の赤字は断る", !calcShotokuzei({ kyuyo: 5000000, fudosan: -1 }, refs).ok);
