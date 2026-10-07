@@ -107,3 +107,8 @@ extra.nencho_core=[{name:'年末調整HTML初期は給与空欄で計算しな�
  expected:['','','','','',''],source:'https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf',
  quote:'年末調整の対象となる給与の総額と徴収税額の合計額を計算します。',
  note:'金額欄はすべて空欄で始め、給与の総額が空なら計算せずに入力を促す（e2e nenmatsu_chosei_empty）。'}];
+
+extra.shotokuzei_core=[{name:'所得税HTML初期は金額欄が空欄',run:d=>['kyuyo','nenkin','jigyo','fudosan','zatsu','ichiji_shunyu','gensen','yotei','kifukin','ts'].map(id=>d.getElementById(id).value).concat([d.getElementById('iryohi_mode').value,String(d.getElementById('age65').checked)]),
+ expected:['','','','','','','','','','','none','false'],source:'https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/03/order4/3-4_26.htm',
+ quote:'所得金額の合計',
+ note:'金額欄はすべて空欄・医療費控除は「受けない」・65歳以上は未チェックで始め、収入が無ければ計算せずに入力を促す（e2e shotokuzei_empty）。'}];

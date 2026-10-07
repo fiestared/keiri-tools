@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "core": "shotokuzei_core",
+  "page": "docs/shotokuzei/index.html",
+  "priority_evidence": "2026-10-07 新規ツール（/shotokuzei/）",
+  "conditions": [
+    { "id": "ichiji-tokubetsu", "statute": "https://laws.e-gov.go.jp/api/2/law_data/340AC0000000033_20261201_508AC0000000012", "disposition": "input",
+      "input_ids": ["ichiji_shunyu", "ichiji_shishutsu"], "cases": ["一時所得 残額50万円ちょうどは0", "一時所得 残額50万円＋1円は1円"] },
+    { "id": "kifukin-ashikiri", "statute": "https://laws.e-gov.go.jp/api/2/law_data/340AC0000000033_20261201_508AC0000000012", "disposition": "input",
+      "input_ids": ["kifukin"], "cases": ["寄附金2,000円ちょうどは控除0", "寄附金2,001円は控除1円"] },
+    { "id": "zeiritsu-45", "statute": "https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/03/order4/3-4_26.htm", "disposition": "fixed",
+      "scope_selector": "#sokusan-hyo tbody tr:last-child td:first-child", "scope_text": "40,000,000円以上",
+      "cases": ["課税される所得金額4,000万円は40%−2,796,000円", "課税される所得金額4,000万1千円は45%−4,796,000円"] },
+    { "id": "shinkoku-nozei-hasu", "statute": "https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/03/order4/3-4_39.htm", "disposition": "input",
+      "input_ids": ["gensen", "yotei"], "rounding": "floor100",
+      "cases": ["申告納税額 黒字100円は100円", "申告納税額 黒字99円は0円", "申告納税額 赤字1円はそのまま−1円"] },
+    { "id": "chosei-kojo-2", "statute": "https://laws.e-gov.go.jp/api/2/law_data/332AC0000000026_20261201_508AC0000000012?elm=Article_41_3_11", "disposition": "input",
+      "input_ids": ["kyuyo", "nenkin"], "cases": ["給与所得控除後99,999円＋年金雑所得1円＝10万円は所得金額調整控除0", "給与所得控除後10万円＋年金雑所得1円は所得金額調整控除1円"] },
+    { "id": "nenkin-igai-1000man", "statute": "https://laws.e-gov.go.jp/api/2/law_data/340AC0000000033_20261201_508AC0000000012", "disposition": "input",
+      "input_ids": ["nenkin", "age65", "jigyo"], "cases": ["以外の所得1,000万円・65歳以上・年金110万円は雑所得0", "以外の所得1,000万円＋1円・65歳以上・年金110万円は雑所得10万円"] },
+    { "id": "akaji-taishogai", "statute": "https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/03/order2/3-2_08_1.htm", "disposition": "out_of_scope",
+      "scope_selector": "#shotokuzei-taishogai ol li:first-child", "scope_text": "事業所得・不動産所得・雑所得のどれかが赤字の人（損益通算・雑所得の中での差引きが必要）",
+      "cases": ["事業所得0円は計算する", "事業所得−1円（赤字）は計算しない"] }
+  ],
+  "default_cases": ["所得税HTML初期は金額欄が空欄"]
+}
