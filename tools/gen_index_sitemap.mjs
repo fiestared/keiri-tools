@@ -339,6 +339,7 @@ const ORDER = [
   "rodo-kumiai",               // 労働組合 18,100/月（keyword_demand.py 2026-10-05 実測・節保有の警告1件＝haken-3nen-teishokubi の FAQ「意見聴取で労働組合が反対したら」）。在庫 mf の未着手2位。労働組合法5,400・労働協約1,600も同じ1本で扱う。★核: 労組法2条の定義と但書4号、労基法24条・90条の相手方は事業場ごとに過半数組合→なければ過半数代表者（労基則6条の2）で少数組合・社外合同労組は協定の相手にならない、7条の4類型と3号の経理上の援助、14〜18条の労働協約、チェックオフは最高裁平成元年12月11日判決で24条1項ただし書の要件が要る。★意見聴取の各論は shugyo-kisoku・kyuyo-kojo-dekirumono・36-kyotei・anzen-eisei-iinkai・haken-3nen-teishokubi に文脈リンクで渡す
   "fuyo-teate",                // 扶養手当 14,800/月＋家族手当 2,400（keyword_demand.py 2026-10-06 実測。title/h1 0件・節保有は nenshu-no-kabe の FAQ1問）。在庫 topic_stock normal（season=nencho_kaisei）の未着手最大。★核: 会社の賃金規程で決まる手当で、所得税は給与所得（国税庁No.2508）・健保/厚年の報酬・雇保/徴収法の賃金に含む、割増賃金の基礎から外せるのは扶養家族数に応じて算定したものだけ（労基法37条5項・鳥取労働局）、最低賃金の比較では算入しない、有期契約社員への不支給を不合理とした最判令和2年10月15日、廃止は労契法9条・10条。統計は令和7年就労条件総合調査（17.6千円）と人事院令和6年表12。割増賃金の表は zangyodai-keisan、社保/税の扶養は shakai-hoken-fuyo-joken・fuyo-kojo-shinkokusho に文脈リンクで渡す
   "nenmatsu-chosei-taishogai", // 年末調整の対象とならない人 1,900/月（「年末調整 退職者」で 2026-10-07 司令塔が実測。MF1便・新規）。被覆: slug taishogai 0件・<title>「年末調整の対象」0件。nenmatsu-chosei-kanpukin の節「そもそも年末調整の対象外の人」は表のみで、本記事へリンクで譲る。核: 令和8年分「年末調整のしかた」の対象とならない6区分、中途退職の4例外（パート等は令和8年分136万円以下・あらまし令和8年版は123万円のまま）、対象給与は支給日基準で未払も含む、速算表注の課税給与所得金額18,050,000円超、外国人も居住者なら同じ表で判定
+  "nenmatsu-chosei-denshika",  // 年末調整の電子化 1,300/月（「年末調整 電子化」2026-10-07 実測 1,040＋260。MF2便・新規。被覆は hojin-jigyo-gaikyo-setsumeisho の欄名だけ）
   "doitsu-rodo-doitsu-chingin", // 同一労働同一賃金 11,840/月（同一労働同一賃金とは 1,040・パートタイム有期雇用労働法 1,040・不合理な待遇差 56 ＝クラスタ 13,976）。8条=不合理な待遇の禁止／9条=差別的取扱いの禁止で別物。18条2項の公表対象列挙に8条は入っていない。令和8年10月1日から則2条1項の特定事項が4→5（新4号=法14条2項の説明を求められる旨）
   "kasuhara",                   // カスハラ 32,400/月（カスタマーハラスメント 26,480・カスハラ 対策 1,920・カスハラ 定義 800・カスハラ 義務化 704・カスタマーハラスメント 定義 384・カスタマーハラスメント 義務化 72 ＝クラスタ 62,760）。令和8年10月1日施行＝執筆時点は未施行。新設33条1項が措置義務／パワハラの30条の2は同日に31条へ番号だけ変わる（本文はハッシュ一致）。中小の猶予は無い（附則に「中小」0回）。義務違反に罰則は無く、45条1項の報告懈怠が51条の過料20万円
   "kyuyo-shiharai-hokokusho",   // 給与支払報告書 18,100/月（書き方 3,600・総括表 2,400・提出先 1,300・eltax 1,300・提出期限 880・退職者 880・普通徴収 210 ＝副意図クラスタ 10,570）
@@ -638,7 +639,7 @@ const CATEGORIES = [
       "furusato-nozei-keisan", "kifukin-kojo",
       "teigaku-genzei-reiwa8",
       "shotokuzei-ritsu",
-      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai",
+      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-denshika",
       "shotoku-kingaku-chosei-kojo",
       "hokenryo-kojo-shinkokusho", "ideco-nenmatsu-chosei", "jutaku-kojo-shinkokusho", "fuyo-kojo-shinkokusho", "haigusha-tokubetsu-kojo", "tokutei-shinzoku-tokubetsu-kojo", "gensen-choshu-toha", "gensen-choshuhyo-mikata", "kyuyo-shotoku-kojo", "gensen-zeigakuhyo-mikata", "gensen-zeigakuhyo-r09", "gensen-choshubo",
       "hoteichosho-goukeihyo", "kyuyo-shiharai-hokokusho", "shiharai-chosho", "shakai-hokenryo-kojo", "seimei-hokenryo-kojo", "jishin-hokenryo-kojo", "jutaku-loan-kojo-yoken", "iryohi-kojo-ikura-kara", "tokutei-shishutsu-kojo", "zasson-kojo",
