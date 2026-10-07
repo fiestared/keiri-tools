@@ -68,44 +68,13 @@ export function sanshutsuZeigaku(kazei, N) {
 }
 
 /**
- * 年末調整の計算。
- * @param input {
- *   kyuyo,            // 本年分の給与の総額（給料・手当・賞与。非課税の通勤手当などは除く）
- *   choshu,           // 本年分の徴収税額の合計（源泉徴収簿の⑧）
- *   shaho,            // 給与等から控除した社会保険料等（②＋⑤）
- *   shahoShinkoku,    // 申告による社会保険料（国民年金保険料・国民健康保険料など）
- *   kyosai,           // 申告による小規模企業共済等掛金（iDeCo・小規模企業共済など）
- *   otherKyuyo,       // 年末調整に含めない他の勤務先の給与の収入金額（合計所得金額の判定にだけ使う）
- *   nenkinZatsu,      // 公的年金等に係る雑所得の金額の見積額（同上。措法41条の3の11第2項の調整に使う）
- *   otherIncome,      // それ以外の所得の合計額の見積額（損益通算後。赤字はマイナスで可。同上）
- *   tokushitsu,       // 特定支出控除額（合計所得金額の判定にだけ使う）
- *   lastTax,          // choshu のうち、最後の給与で徴収すべき税額でまだ天引きしていない額（未徴収分）
- *   miharaiTax,       // choshu のうち、未払給与に係る未徴収の税額
- *   fuyoOther: { under23, tokubetsuShogai }, // 他の人が扶養控除を受けている扶養親族の人数（判定にだけ使う）
- *   seiho: { ippan_shin, ippan_kyu, kaigo, nenkin_shin, nenkin_kyu }, // 年間支払保険料
- *   jishin: { jishin, kyuChoki },  // 年間支払保険料
- *   haigu: { ari, gokei, rojin, shogai: 'none'|'ippan'|'tokubetsu'|'dokyo' },
- *   fuyo: { nensho, ippan1618, tokutei, ippan2369, rojin, dokyoRojin },  // 人数
- *   fuyoShogai: { ippan, tokubetsu, dokyo },   // 扶養親族（年少を含む）のうち障害者の人数
- *   tokuteiShinzoku: [合計所得金額, ...],
- *   honnin: { shogai: 'none'|'ippan'|'tokubetsu', kafu: 'none'|'kafu'|'hitorioya', kinroGakusei: bool },
- *   jutaku,           // 住宅借入金等特別控除額（申告書の控除額）
- * }
- * @param refs { J: juminzei_r08.json, S: setsuzei_r08.json, N: nencho_r08.json }
+ * 家族と本人の区分の判定（年末調整・確定申告で共用）。
+ * 所得金額調整控除と生命保険料控除の特例の判定に使う「23歳未満の扶養親族」「特別障害者」の有無と、
+ * 同一生計配偶者かどうかを返す。入力の形は calcNencho の input と同じ（fuyo / fuyoShogai / fuyoOther /
+ * haigu / honnin）。
  */
-export function calcNencho(input, refs) {
-  const { J, S, N } = refs || {};
-  if (!J?.kyuyo_shotoku_r8 || !S?.haigu || !N?.sokusan) {
-    throw new Error('参照データ（juminzei_r08.json / setsuzei_r08.json / nencho_r08.json）が渡されていません');
-  }
-  const kyuyo = n0(input.kyuyo);
-  const notes = [];
+export function kazokuHantei(input, S) {
   const errors = [];
-
-  if (kyuyo > N.taisho.kyuyo_max) {
-    return { ok: false, reason: 'over_20m', errors: ['本年分の給与の総額が2,000万円を超える人は年末調整の対象になりません（所得税法190条）。確定申告で精算します。'] };
-  }
-
   const fuyo = {
     nensho: n0(input.fuyo?.nensho), ippan1618: n0(input.fuyo?.ippan1618),
     tokutei: n0(input.fuyo?.tokutei), ippan2369: n0(input.fuyo?.ippan2369),
@@ -135,33 +104,20 @@ export function calcNencho(input, refs) {
     (doitsuSeikei && (haigu.shogai === 'tokubetsu' || haigu.shogai === 'dokyo')) ||
     fs.tokubetsu + fs.dokyo + fo.tokubetsuShogai > 0;
 
-  // ── 給与所得控除後の給与等の金額 → 所得金額調整控除 → 調整控除後 ──
-  const kojoGo = kyuyoShotokuR8(kyuyo, J);
-  const choseiEligible = under23 || tokubetsuShogaiAri;
-  const chosei = Math.min(choseiKojoGaku(kyuyo, choseiEligible, N), kojoGo);
-  const choseiGo = kojoGo - chosei;
+  return { fuyo, fuyoTotal, fs, fo, haigu, haiguAri, haiguGokei, doitsuSeikei, honnin, under23, tokubetsuShogaiAri, errors };
+}
 
-  // 本人の合計所得金額（見積額）。★年調の課税標準（年調対象の給与だけ）とは別に、全部の給与で計算する
-  //   （年末調整のしかた20頁「2か所以上から給与の支払を受けている場合には、その給与の全部を基に」）。
-  //   給与所得は所得金額調整控除の1項・2項（給与と公的年金等の両方がある人の最大10万円）を引いた後
-  //   （基礎控除申告書の注）。それ以外の所得は損益通算後の額（赤字はマイナス）を受け取る。
-  const otherKyuyo = n0(input.otherKyuyo);
-  const nenkinZatsu = n0(input.nenkinZatsu);
-  const otherRaw = Math.floor(Number(input.otherIncome) || 0);
-  const allKyuyo = kyuyo + otherKyuyo;
-  const allKojoGo = kyuyoShotokuR8(allKyuyo, J);
-  const allChosei1 = Math.min(choseiKojoGaku(allKyuyo, choseiEligible, N), allKojoGo);
-  const c2cap = N.chosei_kojo.nenkin_cap;
-  const allChosei2 = (allKojoGo > 0 && nenkinZatsu > 0)
-    ? Math.max(0, Math.min(allKojoGo, c2cap) + Math.min(nenkinZatsu, c2cap) - c2cap) : 0;
-  // 特定支出控除（所法57条の2）は年末調整では引かないが、合計所得金額の見積額では控除後の金額を使う
-  // （基礎控除申告書の注「所得金額調整控除や特定支出控除の適用がある場合には、これらの控除の控除後の金額」）。
-  const tokushitsu = n0(input.tokushitsu);
-  const allKyuyoShotoku = Math.max(0, allKojoGo - tokushitsu - allChosei1 - allChosei2);
-  const gokei = Math.max(0, allKyuyoShotoku + nenkinZatsu + otherRaw);
-  const otherIncome = Math.max(0, nenkinZatsu + otherRaw); // 給与所得以外の所得金額（121条の判定用の目安）
-
-  // ── 所得控除 ──
+/**
+ * 所得控除（雑損控除・医療費控除・寄附金控除を除く13の控除）の計算（年末調整・確定申告で共用）。
+ * ★控除が受けられるか・いくらかは**本人の合計所得金額 gokei** で決まる（基礎控除・配偶者控除・寡婦/ひとり親・
+ *   勤労学生）。年末調整は見積額、確定申告は申告する年分の合計所得金額を渡す。
+ * @param h kazokuHantei() の戻り値
+ */
+export function jintekiKojoR8(input, gokei, h, refs) {
+  const { J, S, N } = refs;
+  const errors = [];
+  const notes = [];
+  const { fuyo, fs, haigu, haiguAri, haiguGokei, doitsuSeikei, honnin, under23 } = h;
   const shaho = n0(input.shaho) + n0(input.shahoShinkoku) + n0(input.kyosai);
   const seihoR = seimeiHokenryoKojo({ ...(input.seiho || {}), tokurei: under23 }, S);
   const seiho = seihoR.shotoku.total;
@@ -171,12 +127,12 @@ export function calcNencho(input, refs) {
   let haiguKojo = 0;
   let haiguType = 'none';
   if (haiguAri) {
-    const h = haigushaKojo({ honninShotoku: gokei, haiguShotoku: haiguGokei, rojin: !!haigu.rojin }, S);
-    haiguKojo = h.shotoku;
-    haiguType = h.type;
-    if (h.type === 'none' && h.reason === 'honnin_over') {
+    const hk = haigushaKojo({ honninShotoku: gokei, haiguShotoku: haiguGokei, rojin: !!haigu.rojin }, S);
+    haiguKojo = hk.shotoku;
+    haiguType = hk.type;
+    if (hk.type === 'none' && hk.reason === 'honnin_over') {
       notes.push('あなたの合計所得金額が1,000万円を超えるため、配偶者控除・配偶者特別控除は受けられません（配偶者が障害者なら障害者控除は受けられます）。');
-    } else if (h.type === 'none' && h.reason === 'haigu_over') {
+    } else if (hk.type === 'none' && hk.reason === 'haigu_over') {
       notes.push('配偶者の合計所得金額が133万円を超えるため、配偶者特別控除は受けられません。');
     }
   }
@@ -234,6 +190,89 @@ export function calcNencho(input, refs) {
 
   const kojoGokei = shaho + seiho + jishin + haiguKojo + tokutei + fuyoTou + kiso;
 
+
+  return {
+    shaho, seiho, seihoR, jishin, haigu: haiguKojo, haiguType, tokutei, tsDetail,
+    fuyo: fuyoR.shotoku, shogai, kafu: kafuKojo, kinro, fuyoTou, kiso, gokei: kojoGokei,
+    errors, notes,
+  };
+}
+
+/**
+ * 年末調整の計算。
+ * @param input {
+ *   kyuyo,            // 本年分の給与の総額（給料・手当・賞与。非課税の通勤手当などは除く）
+ *   choshu,           // 本年分の徴収税額の合計（源泉徴収簿の⑧）
+ *   shaho,            // 給与等から控除した社会保険料等（②＋⑤）
+ *   shahoShinkoku,    // 申告による社会保険料（国民年金保険料・国民健康保険料など）
+ *   kyosai,           // 申告による小規模企業共済等掛金（iDeCo・小規模企業共済など）
+ *   otherKyuyo,       // 年末調整に含めない他の勤務先の給与の収入金額（合計所得金額の判定にだけ使う）
+ *   nenkinZatsu,      // 公的年金等に係る雑所得の金額の見積額（同上。措法41条の3の11第2項の調整に使う）
+ *   otherIncome,      // それ以外の所得の合計額の見積額（損益通算後。赤字はマイナスで可。同上）
+ *   tokushitsu,       // 特定支出控除額（合計所得金額の判定にだけ使う）
+ *   lastTax,          // choshu のうち、最後の給与で徴収すべき税額でまだ天引きしていない額（未徴収分）
+ *   miharaiTax,       // choshu のうち、未払給与に係る未徴収の税額
+ *   fuyoOther: { under23, tokubetsuShogai }, // 他の人が扶養控除を受けている扶養親族の人数（判定にだけ使う）
+ *   seiho: { ippan_shin, ippan_kyu, kaigo, nenkin_shin, nenkin_kyu }, // 年間支払保険料
+ *   jishin: { jishin, kyuChoki },  // 年間支払保険料
+ *   haigu: { ari, gokei, rojin, shogai: 'none'|'ippan'|'tokubetsu'|'dokyo' },
+ *   fuyo: { nensho, ippan1618, tokutei, ippan2369, rojin, dokyoRojin },  // 人数
+ *   fuyoShogai: { ippan, tokubetsu, dokyo },   // 扶養親族（年少を含む）のうち障害者の人数
+ *   tokuteiShinzoku: [合計所得金額, ...],
+ *   honnin: { shogai: 'none'|'ippan'|'tokubetsu', kafu: 'none'|'kafu'|'hitorioya', kinroGakusei: bool },
+ *   jutaku,           // 住宅借入金等特別控除額（申告書の控除額）
+ * }
+ * @param refs { J: juminzei_r08.json, S: setsuzei_r08.json, N: nencho_r08.json }
+ */
+export function calcNencho(input, refs) {
+  const { J, S, N } = refs || {};
+  if (!J?.kyuyo_shotoku_r8 || !S?.haigu || !N?.sokusan) {
+    throw new Error('参照データ（juminzei_r08.json / setsuzei_r08.json / nencho_r08.json）が渡されていません');
+  }
+  const kyuyo = n0(input.kyuyo);
+  const notes = [];
+  const errors = [];
+
+  if (kyuyo > N.taisho.kyuyo_max) {
+    return { ok: false, reason: 'over_20m', errors: ['本年分の給与の総額が2,000万円を超える人は年末調整の対象になりません（所得税法190条）。確定申告で精算します。'] };
+  }
+
+  const h = kazokuHantei(input, S);
+  errors.push(...h.errors);
+  const { under23, doitsuSeikei, tokubetsuShogaiAri } = h;
+
+  // ── 給与所得控除後の給与等の金額 → 所得金額調整控除 → 調整控除後 ──
+  const kojoGo = kyuyoShotokuR8(kyuyo, J);
+  const choseiEligible = under23 || tokubetsuShogaiAri;
+  const chosei = Math.min(choseiKojoGaku(kyuyo, choseiEligible, N), kojoGo);
+  const choseiGo = kojoGo - chosei;
+
+  // 本人の合計所得金額（見積額）。★年調の課税標準（年調対象の給与だけ）とは別に、全部の給与で計算する
+  //   （年末調整のしかた20頁「2か所以上から給与の支払を受けている場合には、その給与の全部を基に」）。
+  //   給与所得は所得金額調整控除の1項・2項（給与と公的年金等の両方がある人の最大10万円）を引いた後
+  //   （基礎控除申告書の注）。それ以外の所得は損益通算後の額（赤字はマイナス）を受け取る。
+  const otherKyuyo = n0(input.otherKyuyo);
+  const nenkinZatsu = n0(input.nenkinZatsu);
+  const otherRaw = Math.floor(Number(input.otherIncome) || 0);
+  const allKyuyo = kyuyo + otherKyuyo;
+  const allKojoGo = kyuyoShotokuR8(allKyuyo, J);
+  const allChosei1 = Math.min(choseiKojoGaku(allKyuyo, choseiEligible, N), allKojoGo);
+  const c2cap = N.chosei_kojo.nenkin_cap;
+  const allChosei2 = (allKojoGo > 0 && nenkinZatsu > 0)
+    ? Math.max(0, Math.min(allKojoGo, c2cap) + Math.min(nenkinZatsu, c2cap) - c2cap) : 0;
+  // 特定支出控除（所法57条の2）は年末調整では引かないが、合計所得金額の見積額では控除後の金額を使う
+  // （基礎控除申告書の注「所得金額調整控除や特定支出控除の適用がある場合には、これらの控除の控除後の金額」）。
+  const tokushitsu = n0(input.tokushitsu);
+  const allKyuyoShotoku = Math.max(0, allKojoGo - tokushitsu - allChosei1 - allChosei2);
+  const gokei = Math.max(0, allKyuyoShotoku + nenkinZatsu + otherRaw);
+  const otherIncome = Math.max(0, nenkinZatsu + otherRaw); // 給与所得以外の所得金額（121条の判定用の目安）
+
+  // ── 所得控除（確定申告の計算機 shotokuzei_core と共用）──
+  const k = jintekiKojoR8(input, gokei, h, { J, S, N });
+  errors.push(...k.errors);
+  notes.push(...k.notes);
+  const kojoGokei = k.gokei;
+
   // ── 課税給与所得金額 → 算出所得税額 → 年調所得税額 → 年調年税額 ──
   const unit = N.sokusan.kazei_unit;
   const kazei = Math.floor(Math.max(0, choseiGo - kojoGokei) / unit) * unit;
@@ -272,8 +311,9 @@ export function calcNencho(input, refs) {
     year: N._meta?.year || '',
     kyuyo, kojoGo, choseiEligible, chosei, choseiGo, gokei,
     kojo: {
-      shaho, seiho, jishin, haigu: haiguKojo, haiguType, tokutei, tsDetail,
-      fuyo: fuyoR.shotoku, shogai, kafu: kafuKojo, kinro, fuyoTou, kiso, gokei: kojoGokei,
+      shaho: k.shaho, seiho: k.seiho, jishin: k.jishin, haigu: k.haigu, haiguType: k.haiguType,
+      tokutei: k.tokutei, tsDetail: k.tsDetail, fuyo: k.fuyo, shogai: k.shogai, kafu: k.kafu,
+      kinro: k.kinro, fuyoTou: k.fuyoTou, kiso: k.kiso, gokei: kojoGokei,
     },
     under23, doitsuSeikei,
     seihoTokurei: under23,
