@@ -819,6 +819,100 @@
       "needed_source": "2026年度の各社会保険料率・標準報酬等級と端数処理の一次資料、設例の前提、住民税見積りの根拠。oc-opinion.json は未提供。",
       "review_status": "out_of_corpus",
       "covers": []
+    },
+    {
+      "scope": "2026年度の料率・令和8年分甲欄。東京都の協会けんぽ加入、一般の事業、30歳、扶養親族等0、本人の加算なし、非課税手当なし、額面月給＝標準報酬月額30万円、住民税除外の仮定例。",
+      "exceptions": "組合健保・共済、介護保険対象年齢、業種、扶養等の加算、実際の標準報酬月額で異なる。住民税・賞与を含めない。非課税手当のある給与は対象外。標準報酬月額は定時決定・随時改定により実額と異なり得る。",
+      "applies": "2026年度（支援金・雇用保険は4月以降）、令和8年分給与月額表。",
+      "checked": "2026-10-07",
+      "id": "lead-la2-example",
+      "text": "2026年度の料率・令和8年分の月額表（甲欄）では、東京都の協会けんぽ加入・一般の事業・30歳・扶養なしで、非課税手当を含まない額面月給30万円なら、住民税を除く手取り月額は249,610円が目安です。",
+      "numbers": [
+        "手取り月額は249,610円",
+        "2026年度",
+        "令和8年分"
+      ],
+      "must_with": [
+        "2026年度",
+        "令和8年分",
+        "甲欄",
+        "東京都",
+        "協会けんぽ",
+        "一般の事業",
+        "30歳",
+        "扶養なし",
+        "非課税手当を含まない",
+        "額面月給30万円",
+        "住民税を除く"
+      ],
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf",
+      "source_quote": "    254,000       257,000        6,320       4,710       3,090            1,470             0            0           0            0       37,600",
+      "corpus_ref": "sources/getsugaku-r08.txt:132-132",
+      "derived": true,
+      "calc": {
+        "executor": "node calcTedori from docs/assets/tedori_core.js",
+        "input": {
+          "gross": 300000,
+          "age": 30,
+          "prefecture": "東京都",
+          "dependents": 0,
+          "gyoshu": "general",
+          "juminzeiMode": "none"
+        },
+        "refs": [
+          "shaho_rates_r08.json",
+          "gensen_getsugaku_r08.json"
+        ],
+        "result": "300000 - 44070 - 6320 - 0 = 249610",
+        "output_file": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-07-la2/core-result.json"
+      },
+      "covers": [
+        "s-4601e9f8befa4c46c4f4-1"
+      ],
+      "supporting_sources": [
+        {
+          "source_url": "https://www.mhlw.go.jp/content/001692566.pdf",
+          "source_quote": "\n •   失業等給付等の保険料率は、労働者負担・事業主負担ともに5/1,000に変更に\n     なります（農林水産・清酒製造の事業及び建設の事業は6/1,000に変更になり",
+          "corpus_ref": "sources/koyou_ryoritsu_r8.txt:7-9"
+        },
+        {
+          "source_url": "https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/rate_prefectures/r08/",
+          "source_quote": "\n令和8年度の協会けんぽの保険料率は3月分（4月納付分）から改定されます｜都道府県毎の保険料率｜保険料率｜協会けんぽの事業｜協会けんぽについて｜協会けんぽ",
+          "corpus_ref": "sources/kyoukaikenpo_r08.txt:1-2"
+        }
+      ]
+    },
+    {
+      "scope": "2026年度の料率・令和8年分甲欄。東京都の協会けんぽ加入、一般の事業、30歳、扶養親族等0、本人の加算なし、非課税手当なし、額面月給＝標準報酬月額30万円、住民税除外の仮定例。",
+      "exceptions": "組合健保・共済、介護保険対象年齢、業種、扶養等の加算、実際の標準報酬月額で異なる。住民税・賞与を含めない。非課税手当のある給与は対象外。標準報酬月額は定時決定・随時改定により実額と異なり得る。",
+      "applies": "2026年度（支援金・雇用保険は4月以降）、令和8年分給与月額表。",
+      "checked": "2026-10-07",
+      "id": "lead-la2-tool-1",
+      "kind": "own_site",
+      "text": "この計算機は社会保険料・源泉所得税を差し引き、住民税も概算・実額入力・含めないから選べます。",
+      "numbers": [],
+      "must_with": [],
+      "source_url": "https://keiri-tools.com/tedori/",
+      "source_quote": " 住民税は「今の給料」からは決まらない（ここを取り違えると黙って間違える）:\n *   地方税法32条1項が所得割の課税標準を「**前年の所得**」と定め、321条の5第1項が\n *   税額の12分の1を「**6月から翌5月まで**」特別徴収すると定めている。だから当年の月給に\n *   料率を掛けて住民税を出すことはできない。このコアは住民税を3つのモードで扱う:\n *     - 'manual':   給与明細（住民税決定通知書）の月額をそのまま使う ＝ 唯一の正確な値\n *     - 'estimate': この年収が**前年も続いた**と仮定して概算する ＝ 2年目以降の目安\n *     - 'none':     住民税を含めない（新卒1年目・前年に所得がない人／額が不明なとき）\n *   estimate は juminzei_core に「年収×12」と「社会保険料の実額（本人・年額）」を渡して\n *   翌年度の住民税を計算し、12で割った月額。★扶養親族は一律「一般扶養（16歳以上）」として\n *   概算する（特定扶養や配偶者の状況で変わる）。正確な額は manual で上書きしてもらう。\n *\n * ★社会保険料の前提（＝概算になる理由。実態が違う人は給与明細で確かめる）:\n *   健保は協会けんぽの都道府県料率（組合健保・共済は料率が違う）。雇用保険は既定で一般の事業。\n *   賞与は含めない（月給のみ）。標準報酬月額は本来 定時決定/随時改定で決まるが、ここでは\n *   額面月給＝報酬月額として等級を引く（＝入社直後や大きな変動直後は実際とずれうる）。\n",
+      "covers": [
+        "s-ab1a892a3019ae5e49db-1"
+      ]
+    },
+    {
+      "scope": "2026年度の料率・令和8年分甲欄。東京都の協会けんぽ加入、一般の事業、30歳、扶養親族等0、本人の加算なし、非課税手当なし、額面月給＝標準報酬月額30万円、住民税除外の仮定例。",
+      "exceptions": "組合健保・共済、介護保険対象年齢、業種、扶養等の加算、実際の標準報酬月額で異なる。住民税・賞与を含めない。非課税手当のある給与は対象外。標準報酬月額は定時決定・随時改定により実額と異なり得る。",
+      "applies": "2026年度（支援金・雇用保険は4月以降）、令和8年分給与月額表。",
+      "checked": "2026-10-07",
+      "id": "lead-la2-tool-2",
+      "kind": "own_site",
+      "text": "非課税手当がある給与は試算対象外です。",
+      "numbers": [],
+      "must_with": [],
+      "source_url": "https://keiri-tools.com/tedori/",
+      "source_quote": "この計算機は非課税通勤手当等がある給与には対応していません。非課税手当を除いて入力しても社会保険料がずれるため、そのような給与は試算対象外です。",
+      "covers": [
+        "s-117f868e54ca815e7543-1"
+      ]
     }
   ],
   "absolutes": [
@@ -6937,6 +7031,36 @@
       "result": "pending_review",
       "needed_source": "修正後の文面を固定正本と照合する独立レビュー。r17/t1x-a fixes-applied.md の修正根拠を参照。",
       "reason": "r17修正により新しい単位ID。修正担当の自己確認を独立照合済みに数えない。"
+    }
+  ],
+  "tool_cases": [
+    {
+      "id": "lead-la2-200000",
+      "input": {
+        "gross": 200000,
+        "age": 30,
+        "prefecture": "東京都",
+        "dependents": 0,
+        "gyoshu": "general",
+        "juminzeiMode": "none"
+      },
+      "expected": 167350,
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf",
+      "note": "既存の tests/test_tedori.mjs 独立オラクル（167350 / 249610）とcore実行を照合。協会けんぽ東京令和8年度の保険料額表と令和8年分甲欄を合成。"
+    },
+    {
+      "id": "lead-la2-300000",
+      "input": {
+        "gross": 300000,
+        "age": 30,
+        "prefecture": "東京都",
+        "dependents": 0,
+        "gyoshu": "general",
+        "juminzeiMode": "none"
+      },
+      "expected": 249610,
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf",
+      "note": "既存の tests/test_tedori.mjs 独立オラクル（167350 / 249610）とcore実行を照合。協会けんぽ東京令和8年度の保険料額表と令和8年分甲欄を合成。"
     }
   ]
 }
