@@ -250,7 +250,7 @@ def fee_section(p, show_eff=None, labels=None, vals=None):
             else:
                 cid = p.fc(k, field); val = f[field]
             val = vals.get((k, field), val)
-            cls = ' class="num"' if field in ('fee', 'ter') else ''
+            cls = ' class="num"' if field in ('fee', 'ter') and (k, field) not in vals else ''  # 条件つきの上書きは折り返せるように
             cells.append(f'<td{cls}>{p.r(cid, E(val))}</td>')
         h += f'<tr><th scope="row">{labels.get(field, label)}</th>{"".join(cells)}</tr>'
     h += '</tbody></table></div>'
@@ -607,11 +607,11 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'effpair': {'must_with': ['程度', '交付目論見書|その他の費用|貸付|投資先ETF|実質']},
         'effgap': {'must_with': ['程度|再投資|終了時評価額', '仮定|概算|再投資|終了時評価額'], 'derived': True, 'calc': 'python3: round(0.172-0.1338,4)=0.0382（年0.0382ポイント）、round(0.0382/100*1_000_000)=382（約382円）。'},
         'sbi-spyd4-effnote': {'must_with': ['2026年5月末|程度|変更|比率']},
-        'sbi-spyd4-ter': {'must_with': ['総経費率|参考値', '参考値|2025|作成対象期間|対象期間']},
-        'rakuten-vym-ter': {'must_with': ['総経費率|参考値', '参考値|2025|2026|作成対象期間|対象期間|運用報告書']},
+        'sbi-spyd4-ter': {'must_with': ['総経費率|参考値', '2025/11/21|2025年11月21日']},
+        'rakuten-vym-ter': {'must_with': ['総経費率|参考値', '2025/7/16|2025年7月16日']},
         'terpair': {'must_with': ['総経費率|作成対象期間', '参考値|作成対象期間|対象期間|2025', '年率|年率換算|経費率']},
         'terbrk': {'must_with': ['総経費率|内訳|比率|程度|管理報酬', '交付運用報告書|作成対象期間|2025|交付目論見書|程度']},
-        'rakuten-vym-etfchg': {'must_with': ['2026年2月2日|2025年7月16日|程度|内訳']},
+        'rakuten-vym-etfchg': {'must_with': ['2026年2月2日|2025年7月16日|程度|内訳', '2026年2月末|2025年7月16日|2026年2月2日']},
         'sbi-spyd4-settle': {'must_with': ['原則として|決算日（|作成対象期間|使用開始日|の決算）', '休業日|決算日（|作成対象期間|使用開始日|の決算）']},
         'rakuten-vym-settle': {'must_with': ['7月15日', '休業日|決算|作成対象期間|使用開始日|実績']},
         'settlepair': {'must_with': ['原則として|決算日（|作成対象期間|使用開始日', '休業日|決算日（|作成対象期間|使用開始日']},
