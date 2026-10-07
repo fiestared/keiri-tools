@@ -294,6 +294,7 @@ const ORDER = [
   "tokutei-shinzoku-tokubetsu-kojo", // 特定親族特別控除 18,100/月（特定扶養親族 5,400 ＝クラスタ 23,500。★受け皿の /fuyo-kojo/ ツールは「段階的な控除額はこのツールでは計算していません」と自分で明言しており、記事も無かった＝片肺。所得税法84条の2の9段階を条文から導出したのがこの記事）
   "gensen-choshu-toha",        // 源泉徴収とは 74,000/月（google 59,200＋yahoo 14,800。keyword_demand.py 2026-10-04 実測）。★被覆ゲート: ⚠️主題保有0件・slug gensen-choshu-toha は0件・<title>に「源泉徴収」を含む13本の h1 を全数読み、/gensen-choshu/＝「源泉徴収税額 計算機」（道具）・/gensen-hyo/＝源泉徴収票の書き方・gensen-choshubo＝帳簿・gensen-zeigakuhyo-mikata/r09＝税額表・nofusho＝納付書・noki-tokurei＝納期の特例・shoyo＝賞与・taishoku＝退職・gaichuhi-kyuyo-kubun＝区分・gyomuitaku＝受け取る側の申告・tokutei-koza＝特定口座・chidai-yachin／kakutei-shinkoku-zeirishi-hiyo＝別主題の付随言及で、「源泉徴収という制度そのもの」を主題に持つページは0。★食い合わない形: 税額の計算は /gensen-choshu/ と gensen-zeigakuhyo-mikata へ、帳簿は gensen-choshubo、納付書は nofusho、納期特例は noki-tokurei、賞与は shoyo-gensen-shotokuzei、退職は taishoku-gensen-choshuhyo、区分は gaichuhi-kyuyo-kubun、受け取る側は gyomuitaku-kakutei-shinkoku、年末調整の対象者は nenmatsu-chosei-itsumade、開設届は kyuyo-shiharai-jimusho-kaisetsu へ渡し、表・計算例・税額表は複製しない。★核は ①源泉徴収義務者は「支払う人」で会社・学校・官公庁・個人・人格のない社団等を含み、外れるのは常時2人以下の家事使用人のみに給与を払う個人（所法184・200）と給与について源泉徴収義務を有しない個人が払う報酬・料金等（204②二。ホステス等を除く）の2つだけ ②居住者13区分／内国法人8区分（給与・報酬が入らない）③給与183・185条と報酬204・205条の2系統の対比（税額表か率か・年末調整の有無・納期特例の範囲・納付書） ④徴収は「現実に支払う時」で未払なら引かない＋例外5つ（配当1年・役員賞与1年・組合2か月・割引債2つ）＋「支払」は債務が消滅する一切の行為（所基通181〜223共−1） ⑤年末調整は「支払うことが確定した給与」で未払も含める＝源泉徴収と物差しが違う ⑥納税地は支払事務を取り扱う事務所等の所在地（所法17）＝支店ごと ⑦合計税率＝所得税率×102.1% の表と、租税条約の限度税率適用時は復興特別所得税が課されない例外（復興財確法33⑨一・33④一）。一次資料は registry t1 の固定正本（aramashi2026 の 03/04/07/15）
   "gensen-choshuhyo-saihakko",  // 源泉徴収票 再発行 22,200/月（google 17,760＋yahoo 4,440。keyword_demand.py 2026-10-06 実測）。★被覆ゲート: 再発行を主題に持つページ0本。節保有2本（gensen-choshuhyo-mikata のFAQ・taishoku-gensen-choshuhyo のFAQ）は答えを縮めず文脈リンクで双方向。欄の読み方は mikata、退職所得の様式は taishoku-gensen-choshuhyo へ渡す。核は所得税法226条に再交付の定めが無いこと・226条4項ただし書（電子交付後の書面請求）・242条6号7号・国税庁F5-4（再発行は対象外）。台帳 G-050 の賭け1本目
+  "kenpo-shikaku-soshitsu",  // 健康保険資格喪失証明書 27,100/月（google 21,680＋yahoo 5,420。keyword_demand.py 2026-10-07 実測。資格喪失届 2,900 を寄せる）。★被覆ゲート: 主題保有・節保有の警告0、slug grep 0件、title「資格喪失」0件。喪失届の細かな例外は tsukitochu-nyusha-taishoku-kyuyo#todoke、資格確認書は maina-hokensho、扶養は hifuyosha-ido-todoke へ譲る。核は証明書が健保法48条・規則29条の届と別物であること・市区町村の書式例の項目・健保法51条の確認の請求。台帳 G-050 の賭け2本目
   "gensen-choshuhyo-mikata",    // 源泉徴収票 見方 17,131/月
   "sozokuzei-ikura",            // 相続税 いくらから 17,131/月
   "zoyozei-ikura",              // 贈与税 いくらから 17,131/月
@@ -605,7 +606,7 @@ const CATEGORIES = [
       "iryo-hoken-toha",
       "shakai-hoken-kanyu-joken", "shakai-hokenryo-keisan", "hyojun-hoshu-gakuhyo",
       "teiji-kettei", "zuiji-kaitei", "sanzen-sango-kyugyo", "sango-papa-ikukyu", "shoyo-shakaihoken", "shoyo-shiharaitodoke", "kaigo-hokenryo-itsukara",
-      "kodomo-kosodate-shienkin", "kodomo-kosodate-kyoshutsukin", "shakai-hoken-fuyo-joken", "hifuyosha-ido-todoke", "nenshu-no-kabe",
+      "kodomo-kosodate-shienkin", "kodomo-kosodate-kyoshutsukin", "shakai-hoken-fuyo-joken", "hifuyosha-ido-todoke", "kenpo-shikaku-soshitsu", "nenshu-no-kabe",
       "yakuin-shakai-hoken",
       "koyou-hoken-kanyu-joken", "koyou-hoken-hihokenshasho", "koyou-hokenryo-ritsu", "rosai-hokenryoritsu", "hitori-oyakata-rosai",
       "yakuin-koyou-hoken",
