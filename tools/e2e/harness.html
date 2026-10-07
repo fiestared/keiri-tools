@@ -4606,6 +4606,76 @@ SCENES.jishin_hoken_empty = jishinScene({ jishin: 0, kyuchoki: 0 });
 // 参照データ配信不可 → 控除額を出さずに断る（fail closed）
 SCENES.jishin_hoken_nodata = jishinScene({});
 
+// ── 年末調整 計算機 (/nenmatsu-chosei/) ──────────────────────────────────
+// ★期待値は国税庁『令和8年分 年末調整のしかた』57〜59頁の設例（省略する場合）と、設例PDF 203
+//   （省略しない場合）の公表値そのもの。単体（tests/test_nencho.mjs）は core しか見ないので、
+//   18個の入力欄の読み取り→3つの参照データの待ち合わせ→結果表の描画の配線はここでしか守れない。
+const nenchoScene = (o) => async () => {
+  const doc = await open("/docs/nenmatsu-chosei/");
+  for (const [id, v] of Object.entries(o.vals || {})) set(doc, id, v);
+  if (o.haigu) {
+    set(doc, "haigu", "ari");
+    for (const [id, v] of Object.entries(o.haigu)) set(doc, id, v);
+  }
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+  await waitFor(
+    () => /¥|読み込めませんでした|入力してください/.test(text(doc, "result")),
+    "年末調整の計算結果",
+  );
+  const body = text(doc, "result");
+  const rows = [...(doc.querySelectorAll("#result table tr") || [])].map((tr) =>
+    [...tr.querySelectorAll("th,td")].map((e) => e.textContent.trim()));
+  const cell = (label) => {
+    const r = rows.find((x) => x[0] === label);
+    if (!r) return null;
+    const m = r[1].match(/¥([\d,]+)/);
+    return m ? Number(m[1].replace(/,/g, "")) : null;
+  };
+  const big = doc.getElementById("kekka-big");
+  return {
+    kojoGo: cell("給与所得控除後の給与等の金額"),
+    chosei: cell("所得金額調整控除"),
+    seiho: cell("生命保険料の控除額"),
+    jishin: cell("地震保険料の控除額"),
+    haigu: cell("配偶者（特別）控除額"),
+    tokutei: cell("特定親族特別控除額"),
+    fuyoTou: cell("扶養控除額及び障害者等の控除額の合計額"),
+    kiso: cell("基礎控除額"),
+    kojoGokei: cell("所得控除額の合計額"),
+    kazei: cell("課税給与所得金額"),
+    nenzei: cell("年調年税額（復興特別所得税を含む）"),
+    kanpu: cell("超過額"),
+    fusoku: cell("不足額"),
+    juto: cell("最後の給与の税額に充当する額"),
+    kanpuGaku: cell("本人に還付する額"),
+    bigVal: big ? Number((big.textContent.match(/¥([\d,]+)/) || [, ""])[1].replace(/,/g, "")) : null,
+    bigIsKanpu: /年末調整で 戻る額/.test(body),
+    bigIsFusoku: /追加で引かれる額（不足額）/.test(body),
+    srcHasYear: /令和8年分/.test(text(doc, "src-hint")),
+    failed: body.includes("読み込めませんでした"),
+    noInput: body.includes("入力してください"),
+    body,
+  };
+};
+const NENCHO_A = {
+  vals: { kyuyo: 8970000, choshu: 156670, shaho: 1386102,
+          ippan_shin: 80000, ippan_kyu: 35000, kaigo: 80000, nenkin_shin: 30000, nenkin_kyu: 90000,
+          jishin: 42000, kyuchoki: 14800,
+          f_2369: 1, f_tokutei: 1, f_dokyo: 1, fs_ippan: 1, ts: "1000000", jutaku: 76500 },
+  haigu: { haigu_gokei: 500000 },
+};
+SCENES.nenmatsu_chosei = nenchoScene(NENCHO_A);
+SCENES.nenmatsu_chosei_slow = SCENES.nenmatsu_chosei;   // 800ms遅らせる。3つとも待って正答すること
+SCENES.nenmatsu_chosei_b = nenchoScene({
+  vals: { kyuyo: 4390000, choshu: 51845, shaho: 641525, ippan_kyu: 50200, nenkin_shin: 56000,
+          jishin: 45000, f_2369: 1, last_tax: 6963 },
+  haigu: { haigu_gokei: 0 },
+});
+// 不足額: 給与600万・社保90万・徴収10万 → 年調年税額147,500円 → 不足47,500円（tests/test_nencho.mjs の手計算）
+SCENES.nenmatsu_chosei_fusoku = nenchoScene({ vals: { kyuyo: 6000000, choshu: 100000, shaho: 900000 } });
+SCENES.nenmatsu_chosei_empty = nenchoScene({ vals: {} });
+SCENES.nenmatsu_chosei_nodata = nenchoScene(NENCHO_A);
+
 // ── 国民年金の免除・納付猶予 ───────────────────────────────────────────
 // ★期待値の基準額は**施行令の条文から手で書き起こしたもの**（データJSONもコアも通さない）:
 //   全額免除・納付猶予 = (扶養親族等の数+1)×35万+32万（6条の7）

@@ -744,6 +744,29 @@ const SCENES = [
   { name: "iryubun_nodata", data404: "iryubun_r08.json",
     expect: (s) => s.failed && s.shingai === null },
 
+  // ── 年末調整 計算機 (/nenmatsu-chosei/) ─────────────────────────────
+  // ★期待値は国税庁『令和8年分 年末調整のしかた』57〜59頁の設例: 年調年税額41,400円・超過額115,270円。
+  //   途中の欄（⑨7,020,000／⑩47,000／⑮120,000／⑯50,000／⑰380,000／⑱410,000／⑲1,860,000／⑳620,000／
+  //   ㉑4,826,102／㉒2,146,000）まで画面の表で照合する。
+  { name: "nenmatsu_chosei", expect: (s) =>
+      s.kojoGo === 7020000 && s.chosei === 47000 && s.seiho === 120000 && s.jishin === 50000 &&
+      s.haigu === 380000 && s.tokutei === 410000 && s.fuyoTou === 1860000 && s.kiso === 620000 &&
+      s.kojoGokei === 4826102 && s.kazei === 2146000 && s.nenzei === 41400 && s.kanpu === 115270 &&
+      s.bigVal === 115270 && s.bigIsKanpu && s.srcHasYear && !s.failed },
+  { name: "nenmatsu_chosei_slow", slow: true, expect: (s) =>
+      s.nenzei === 41400 && s.kanpu === 115270 && !s.failed },
+  // ★設例PDF 203（12月の税額計算を省略しない場合）: 基礎控除104万円・年調年税額26,100円・超過額25,745円
+  //   → 12月分の税額6,963円に充当し、本人に還付するのは18,782円（設例の説明15）
+  { name: "nenmatsu_chosei_b", expect: (s) =>
+      s.kojoGo === 3070400 && s.kiso === 1040000 && s.kojoGokei === 2558075 && s.kazei === 512000 &&
+      s.nenzei === 26100 && s.kanpu === 25745 && s.juto === 6963 && s.kanpuGaku === 18782 &&
+      s.bigVal === 18782 && s.bigIsKanpu && !s.failed },
+  { name: "nenmatsu_chosei_fusoku", expect: (s) =>
+      s.nenzei === 147500 && s.fusoku === 47500 && s.bigVal === 47500 && s.bigIsFusoku && !s.failed },
+  { name: "nenmatsu_chosei_empty", expect: (s) => s.noInput && s.nenzei === null },
+  { name: "nenmatsu_chosei_nodata", data404: "nencho_r08.json",
+    expect: (s) => s.failed && s.nenzei === null },
+
   // ── 地震保険料控除 (/jishin-hoken-kojo/) ─────────────────────────────
   // ★手計算の鎖は tests/test_jishin_hoken_kojo.mjs §7: 地震30,000＋旧長期24,000・課税所得400万
   //   → 所得税45,000／住民税は35,000が上限25,000で頭打ち → 節税額11,689円。
