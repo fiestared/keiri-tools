@@ -8,6 +8,8 @@ const table = html.match(/<table[^>]*id="receipt-tax-table"[^>]*>([\s\S]*?)<\/ta
 assert.ok(table, '静的HTMLに第17号の表が必要');
 const tbody = table.match(/<tbody>([\s\S]*?)<\/tbody>/)?.[1];
 const rows = [...tbody.matchAll(/<tr><th scope="row">([^<]+)<\/th><td class="num">([^<]+)<\/td><\/tr>/g)];
+// 行見出しは「記載金額が」を前置して表の上の決め方と結び付ける（2026-10-07 照合の指摘）。比べるのは前置を除いた階級名。
+rows.slice(0,-1).forEach(r => { assert.ok(r[1].startsWith('記載金額が'), `行見出しに「記載金額が」: ${r[1]}`); r[1] = r[1].slice('記載金額が'.length); });
 const doc = data.docs.k17_uriage;
 assert.equal(rows.length, doc.brackets.length + 2, '非課税・全階級・金額記載なしを含める');
 assert.equal(Number(rows[0][1].replace(/円未満|,/g, '')), doc.hikazei_under);
