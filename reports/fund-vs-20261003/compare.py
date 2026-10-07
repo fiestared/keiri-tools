@@ -50,8 +50,11 @@ PAIRS = [('sbi-jhd', 'rakuten-jhd'), ('sbi-spyd4', 'sbi-vym4'), ('sbi-spyd4', 'r
          ('emaxis-emg', 'tawara-emg'), ('emaxis-bal8', 'tawara-bal8'),
          ('rakuten-sox', 'rakuten-ndx'), ('sbi-spyd4', 'rakuten-vym')]
 
-def series(key):
-    p = HERE / FILES[key]
+# 2026-10-07: 後の便で取り直したデータを、その組の記事だけで使う（既存記事の取得日・最終日の表示を動かさない）
+PAIR_FILES = {('sbi-spyd4', 'rakuten-vym'): {'sbi-spyd4': 'sbi_2024013002_20261007.xml'}}
+
+def series(key, pair=None):
+    p = HERE / PAIR_FILES.get(pair, {}).get(key, FILES[key])
     if p.suffix == '.xml':
         s, err = xml_nav(p)
         return s, err
@@ -69,6 +72,10 @@ if __name__ == '__main__':
         s, err = series(k)
         data[k] = {d: v for d, v in s.items() if d <= END}
         if err is not None: checks[k] = err
+    for pair, files in PAIR_FILES.items():  # the re-fetched file must agree with the saved one up to END
+        for k in files:
+            s, _ = series(k, pair)
+            assert {d: v for d, v in s.items() if d <= END} == data[k], (pair, k)
     out = {'as_of': str(END), 'xml_multiplier_max_error': checks, 'inception_in_data': {k: str(min(v)) for k, v in data.items()}, 'pairs': {}}
     for a, b in PAIRS:
         common = sorted(data[a].keys() & data[b].keys())

@@ -51,7 +51,7 @@ class Page:
         self.pair = pair
         self.r_ = CMP[pair]
         self.claims, self.frags, self.sources = {}, [], []
-        self.series = {k: {d: v for d, v in CP.series(k)[0].items() if d <= CP.END} for k in (a, b)}
+        self.series = {k: {d: v for d, v in CP.series(k, (a, b))[0].items() if d <= CP.END} for k in (a, b)}
 
     def claim(self, cid, text, src, quote, applies, exceptions, kind=None, scope=None):
         if cid not in self.claims:
@@ -219,7 +219,7 @@ def chart(p):
     cap = p.r('perf', f'<figcaption>開始日（{jd(r["起点"])}）を100に統一し、終了日（{jd(r["終点"])}）までを描画。実線：{E(p.A["short"])}。破線：{E(p.B["short"])}。税引前の分配金を再投資した推移で、数値は直上の表のとおりです。</figcaption>')
     return f'<figure class="figure">{svg}{cap}</figure>'
 
-FIELD_ROWS = [('fee', '信託報酬（税込年率・ファンド本体・貸付時の追加分を除く）'), ('eff', '投資先ETF等を加味した実質的な信託報酬'), ('ter', '総経費率（参考値・年率）'),
+FIELD_ROWS = [('fee', '信託報酬（税込年率・ファンド本体・貸付時の追加分を除く）'), ('eff', '投資先ETF等を加味した実質的な信託報酬（税込年率）'), ('ter', '総経費率（参考値・年率）'),
               ('ter_period', '総経費率の対象期間'), ('index', '連動対象・投資対象'), ('hedge', '為替ヘッジ'), ('settle', '決算'),
               ('incept', '設定日'), ('nofee', '購入時手数料／信託財産留保額')]
 
@@ -410,7 +410,7 @@ def method_section(p):
             h += p.r(f'{late}-incept', f'ただし{FUNDS[late]["short"]}の設定日（{jd(r["起点"])}）が終点の3年前（{y3}）より後なので、2本の基準価額がそろう最初の日であるこの設定日を起点にしました。')
     else:
         h += p.r('method', f'2本とも終点の3年前より前に設定されているため、起点は{jd(r["起点"])}です（3年前にあたる2023年9月30日が土曜日のため、その前の営業日）。')
-    lasts = [(FUNDS[k]['short'], str(max(CP.series(k)[0]))) for k in (p.a, p.b)]  # p.series is already cut at END; read the raw file's last day
+    lasts = [(FUNDS[k]['short'], str(max(CP.series(k, (p.a, p.b))[0]))) for k in (p.a, p.b)]  # p.series is already cut at END; read the raw file's last day
     got = f'{jd(lasts[0][1])}分まで' if lasts[0][1] == lasts[1][1] else '、'.join(f'{n}が{jd(d)}分まで' for n, d in lasts)
     h += p.r('method', f'終点は月末の{jd(r["終点"])}に固定しました（取得したデータは{got}ありますが、月末で区切っています）。') + '</p>'
     nofee = all(FUNDS[k].get('nofee_val', 'なし／なし') == 'なし／なし' for k in (p.a, p.b))
