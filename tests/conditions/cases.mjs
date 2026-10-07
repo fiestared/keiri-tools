@@ -102,3 +102,13 @@ extra.jidoshazei_core=[{name:'自動車税HTML初期値・登録車1.5L超2L以�
  if(!initialYear)throw Error('初期登録年が取得できない');
  return reviewJidoshazei({vehicle:d.getElementById('vehicle').value,cc:d.getElementById('cc').value,firstReg:initialYear+'-'+d.getElementById('regmonth').value.padStart(2,'0'),fuel:d.getElementById('fuel').value,jyuka:d.getElementById('jyuka').checked},load('jidoshazei_r08.json')).annual;
 },expected:36000,source:'https://www.tax.metro.tokyo.lg.jp/kazei/automobiles/shubetsu',quote:'1.5リットル超 ～2リットル以下',note:'HTMLの初期選択とJSの初期年2021を読む。自家用乗用新税率36,000円。'}];
+
+extra.nencho_core=[{name:'年末調整HTML初期は給与空欄で計算しない',run:d=>['kyuyo','choshu','shaho','last_tax','miharai_tax','ts'].map(id=>d.getElementById(id).value),
+ expected:['','','','','',''],source:'https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf',
+ quote:'年末調整の対象となる給与の総額と徴収税額の合計額を計算します。',
+ note:'金額欄はすべて空欄で始め、給与の総額が空なら計算せずに入力を促す（e2e nenmatsu_chosei_empty）。'}];
+
+extra.shotokuzei_core=[{name:'所得税HTML初期は金額欄が空欄',run:d=>['kyuyo','nenkin','jigyo','fudosan','zatsu','ichiji_shunyu','gensen','yotei','kifukin','ts'].map(id=>d.getElementById(id).value).concat([d.getElementById('iryohi_mode').value,String(d.getElementById('age65').checked)]),
+ expected:['','','','','','','','','','','none','false'],source:'https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/03/order4/3-4_26.htm',
+ quote:'所得金額の合計',
+ note:'金額欄はすべて空欄・医療費控除は「受けない」・65歳以上は未チェックで始め、収入が無ければ計算せずに入力を促す（e2e shotokuzei_empty）。'}];

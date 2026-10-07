@@ -417,6 +417,11 @@ const SCENES = [
   { name: "juminzei_kintou_nomi", expect: (s) =>
       s.total === 5000 && s.shotokuwari === 0 && s.kintouwari === 5000 &&
       s.showsKintouOnly && !s.hikazei && !s.failed },
+  // ★非課税限度額をわずかに超えた人の減額（附則3条の3第2項・第5項）。減額がなければ所得割33,000円。
+  //   鎖は harness.html の SCENES.juminzei_kinbo のコメント。
+  { name: "juminzei_kinbo", expect: (s) =>
+      s.total === 25000 && s.shotokuwari === 20000 && s.kintouwari === 5000 &&
+      s.kinboGengaku === 13000 && !s.hikazei && !s.failed },
   // ★超過課税。横浜市は市3,900+県1,300+森林環境税1,000 = **6,200円**(横浜市の公表額と一致)。
   //   所得割は指定都市の8%:2% に神奈川県の超過課税(+0.025%)が乗る → 市192,400円＋県48,700円＝241,100円（各100円未満切捨、地方税法20条の4の2第3項）
   { name: "juminzei_yokohama", expect: (s) =>
@@ -743,6 +748,51 @@ const SCENES = [
   // 参照データ配信不可 → 遺留分を出さずに断る（fail closed）。
   { name: "iryubun_nodata", data404: "iryubun_r08.json",
     expect: (s) => s.failed && s.shingai === null },
+
+  // ── 年末調整 計算機 (/nenmatsu-chosei/) ─────────────────────────────
+  // ★期待値は国税庁『令和8年分 年末調整のしかた』57〜59頁の設例: 年調年税額41,400円・超過額115,270円。
+  //   途中の欄（⑨7,020,000／⑩47,000／⑮120,000／⑯50,000／⑰380,000／⑱410,000／⑲1,860,000／⑳620,000／
+  //   ㉑4,826,102／㉒2,146,000）まで画面の表で照合する。
+  { name: "nenmatsu_chosei", expect: (s) =>
+      s.kojoGo === 7020000 && s.chosei === 47000 && s.seiho === 120000 && s.jishin === 50000 &&
+      s.haigu === 380000 && s.tokutei === 410000 && s.fuyoTou === 1860000 && s.kiso === 620000 &&
+      s.kojoGokei === 4826102 && s.kazei === 2146000 && s.nenzei === 41400 && s.kanpu === 115270 &&
+      s.bigVal === 115270 && s.bigIsKanpu && s.srcHasYear && !s.failed },
+  { name: "nenmatsu_chosei_slow", slow: true, expect: (s) =>
+      s.nenzei === 41400 && s.kanpu === 115270 && !s.failed },
+  // ★設例PDF 203（12月の税額計算を省略しない場合）: 基礎控除104万円・年調年税額26,100円・超過額25,745円
+  //   → 12月分の税額6,963円に充当し、本人に還付するのは18,782円（設例の説明15）
+  { name: "nenmatsu_chosei_b", expect: (s) =>
+      s.kojoGo === 3070400 && s.kiso === 1040000 && s.kojoGokei === 2558075 && s.kazei === 512000 &&
+      s.nenzei === 26100 && s.kanpu === 25745 && s.juto === 6963 && s.kanpuGaku === 18782 &&
+      s.bigVal === 18782 && s.bigIsKanpu && !s.failed },
+  { name: "nenmatsu_chosei_fusoku", expect: (s) =>
+      s.nenzei === 147500 && s.fusoku === 47500 && s.bigVal === 47500 && s.bigIsFusoku && !s.failed },
+  { name: "nenmatsu_chosei_empty", expect: (s) => s.noInput && s.nenzei === null },
+  { name: "nenmatsu_chosei_nodata", data404: "nencho_r08.json",
+    expect: (s) => s.failed && s.nenzei === null },
+
+  // ── 所得税 計算機（確定申告） (/shotokuzei/) ─────────────────────────
+  // ★年末調整の設例A（所得控除4,826,102円・年調年税額41,400円）に医療費30万円を足して確定申告:
+  //   所得金額の合計6,973,000 → 控除5,026,102 → 課税1,946,000 → 税額97,300 −住宅ローン控除76,500
+  //   → 基準所得税額20,800 → 復興436 → 21,236 − 源泉41,400 ＝ 還付20,164円（1円単位）
+  { name: "shotokuzei", expect: (s) =>
+      s.sotoShotoku === 6973000 && s.iryohi === 200000 && s.kojoGokei === 5026102 && s.kazei === 1946000 &&
+      s.zeigaku === 97300 && s.kijun === 20800 && s.fukko === 436 && s.zeigakuGokei === 21236 &&
+      s.kanpu === 20164 && s.bigVal === 20164 && s.bigIsKanpu && s.srcHasYear && !s.failed },
+  { name: "shotokuzei_slow", slow: true, expect: (s) =>
+      s.kazei === 1946000 && s.kanpu === 20164 && !s.failed },
+  // 給与300万（給与所得控除後2,020,000−所得金額調整控除2項100,000）＋年金200万・65歳以上（900,000）
+  // ＋一時所得360,000の2分の1（180,000）＝3,000,000 → 基礎控除104万・寄附金控除48,000
+  // → 課税1,912,000 → 95,600 → 復興2,007 → 97,607 − 源泉60,000 → 37,607 → 納める税金37,600
+  { name: "shotokuzei_nenkin", expect: (s) =>
+      s.kyuyoShotoku === 1920000 && s.nenkinZatsu === 900000 && s.ichijiHalf === 180000 &&
+      s.sotoShotoku === 3000000 && s.kiso === 1040000 && s.kifukin === 48000 && s.kazei === 1912000 &&
+      s.fukko === 2007 && s.zeigakuGokei === 97607 && s.nozei === 37600 && s.bigVal === 37600 && s.bigIsNozei && !s.failed },
+  { name: "shotokuzei_akaji", expect: (s) => s.akaji && s.kazei === null },
+  { name: "shotokuzei_empty", expect: (s) => s.noInput && s.kazei === null },
+  { name: "shotokuzei_nodata", data404: "shotokuzei_r08.json",
+    expect: (s) => s.failed && s.kazei === null },
 
   // ── 地震保険料控除 (/jishin-hoken-kojo/) ─────────────────────────────
   // ★手計算の鎖は tests/test_jishin_hoken_kojo.mjs §7: 地震30,000＋旧長期24,000・課税所得400万

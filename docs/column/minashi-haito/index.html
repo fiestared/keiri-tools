@@ -7,15 +7,15 @@
 <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>みなし配当とは｜自己株式の取得・資本剰余金の配当で1回の入金が2つに割れる</title>
-<meta name="description" content="みなし配当とは、会社から受け取った金銭のうち「株式に対応する資本金等の額」を超える部分をいいます（法人税法24条1項・所得税法25条1項）。自己株式の取得、資本剰余金を原資とする配当、残余財産の分配など7つの事由で生じ、1回の入金が配当所得と株式の譲渡収入に割れます。非上場株式では超える部分に20.42%が源泉徴収され、残りは申告分離課税になります。計算式、市場取得など12の除外事由、令和4年4月に施行令へ入った上限、会社側の通知義務、相続した株式を発行会社へ譲渡する場合の特例まで、条文を取得して整理しました。">
+<title>みなし配当とは｜計算方法と源泉徴収20.42%、自己株式の取得で入金が2つに割れる</title>
+<meta name="description" content="みなし配当とは、会社から受け取った金銭のうち株式に対応する資本金等の額を超える部分です（法人税法24条1項・所得税法25条1項）。自己株式の取得や資本剰余金の配当など7つの事由で生じ、非上場株式では超える部分に20.42%が源泉徴収されます。事由ごとの計算方法、12の除外事由、会社の通知義務を条文で整理します。">
 <meta name="card-desc" content="みなし配当は「受け取った金額」ではなく「交付金銭 − 株式に対応する資本金等の額」の差額。1回の入金が2つの所得に割れる。非上場なら みなし配当部分＝配当所得（源泉20.42%・総合課税・配当控除あり）／残り＝株式等の譲渡収入（申告分離20.315%）。自己株式の取得でも、市場での購入・単元未満株の買取り・端数処理など施行令23条4項の12事由なら みなし配当は生じない。資本の払戻しの計算には上限が2つ。うち「払戻等対応資本金額等 ≦ 減少した資本剰余金の額」の上限は2021-08-02施行版に無く、2022-04-01施行版（令和4年政令137号）で入った。割合の端数は小数点以下3位未満を切り上げ。会社は株主に1株当たりのみなし配当額を通知する義務がある（施行令23条5項2号）。相続で取得した非上場株式を発行会社に譲渡する場合、申告期限の翌日以後3年以内なら みなし配当課税をしない（措置法9条の7）。「みなし配当」という語は所得税法に本則・附則とも0回。法人税法の本則では132条の2（組織再編成の否認）にただ1回だけ。">
 <link rel="stylesheet" href="../../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/column/minashi-haito/">
 <!-- ogp:auto -->
 <meta property="og:type" content="article">
-<meta property="og:title" content="みなし配当とは｜自己株式の取得・資本剰余金の配当で1回の入金が2つに割れる">
-<meta property="og:description" content="みなし配当とは、会社から受け取った金銭のうち「株式に対応する資本金等の額」を超える部分をいいます（法人税法24条1項・所得税法25条1項）。自己株式の取得、資本剰余金を原資とする配当、残余財産の分配など7つの事由で生じ、1回の入金が配当所得と株式の譲渡収入に割れます。非上場株式では超える部分に20.42%が源泉徴収され、残りは申告分離課税になります。計算式、市場取得など12の除外事由、令和4年4月に施行令へ入った上限、会社側の通知義務、相続した株式を発行会社へ譲渡する場合の特例まで、条文を取得して整理しました。">
+<meta property="og:title" content="みなし配当とは｜計算方法と源泉徴収20.42%、自己株式の取得で入金が2つに割れる">
+<meta property="og:description" content="みなし配当とは、会社から受け取った金銭のうち株式に対応する資本金等の額を超える部分です（法人税法24条1項・所得税法25条1項）。自己株式の取得や資本剰余金の配当など7つの事由で生じ、非上場株式では超える部分に20.42%が源泉徴収されます。事由ごとの計算方法、12の除外事由、会社の通知義務を条文で整理します。">
 <meta property="og:url" content="https://keiri-tools.com/column/minashi-haito/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -28,9 +28,9 @@
   "@graph": [
     {
       "@type": "Article",
-      "headline": "みなし配当とは — 1回の入金が「配当所得」と「株式の譲渡収入」に割れる",
+      "headline": "みなし配当とは｜計算方法と源泉徴収20.42%、自己株式の取得で入金が2つに割れる",
       "datePublished": "2026-08-16",
-      "dateModified": "2026-08-26",
+      "dateModified": "2026-10-07",
       "author": {
         "@type": "Person",
         "name": "Masahiro Yasu",
@@ -182,7 +182,7 @@ gtag('config', 'G-E742DSDHPD');
 <article>
 
   <h1>みなし配当とは — 1回の入金が「配当所得」と「株式の譲渡収入」に割れる</h1>
-  <p class="article-meta">公開日: <time datetime="2026-08-16">2026年8月16日</time>（更新日: <time datetime="2026-08-26">2026年8月26日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-08-16">2026年8月16日</time>（更新日: <time datetime="2026-10-07">2026年10月7日</time>）</p>
   <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
 
   <p>結論から言うと、みなし配当とは「受け取った金額」ではなく「差額」です。会社から金銭の交付を受けたとき、その金額が<b>その株式に対応する資本金等の額</b>を超えるなら、<b>超えた部分だけ</b>が配当を受け取ったものとみなされます（法人税法24条1項、所得税法25条1項）。会社が「配当」と呼んだかどうかは関係ありません。</p>
@@ -605,7 +605,7 @@ gtag('config', 'G-E742DSDHPD');
   <p class="note">本記事は一般的な情報提供であり、個別の税務相談ではありません。記載は2026年8月16日時点で確認した法令に基づいています。みなし配当の額、源泉徴収の要否、譲渡損益の計算、特例の適用可否は、事由の区分、資本金等の額および発行済株式総数、事業年度、株主の属性によって変わりますので、実際の判断にあたっては顧問税理士または所轄の税務署へご確認ください。</p>
 
 </article>
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E3%81%BF%E3%81%AA%E3%81%97%E9%85%8D%E5%BD%93%E3%81%A8%E3%81%AF%E3%80%81%E4%BC%9A%E7%A4%BE%E3%81%8B%E3%82%89%E5%8F%97%E3%81%91%E5%8F%96%E3%81%A3%E3%81%9F%E9%87%91%E9%8A%AD%E3%81%AE%E3%81%86%E3%81%A1%E3%80%8C%E6%A0%AA%E5%BC%8F%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%81%99%E3%82%8B%E8%B3%87%E6%9C%AC%E9%87%91%E7%AD%89%E3%81%AE%E9%A1%8D%E3%80%8D%E3%82%92%E8%B6%85%E3%81%88%E3%82%8B%E9%83%A8%E5%88%86%E3%82%92%E3%81%84%E3%81%84%E3%81%BE%E3%81%99%EF%BC%88%E6%B3%95%E4%BA%BA%E7%A8%8E%E6%B3%9524%E6%9D%A11%E9%A0%85%E3%83%BB%E6%89%80%E5%BE%97%E7%A8%8E%E6%B3%9525%E6%9D%A11%E9%A0%85%EF%BC%89%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fminashi-haito%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E3%81%BF%E3%81%AA%E3%81%97%E9%85%8D%E5%BD%93%E3%81%A8%E3%81%AF%E3%80%81%E4%BC%9A%E7%A4%BE%E3%81%8B%E3%82%89%E5%8F%97%E3%81%91%E5%8F%96%E3%81%A3%E3%81%9F%E9%87%91%E9%8A%AD%E3%81%AE%E3%81%86%E3%81%A1%E6%A0%AA%E5%BC%8F%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%81%99%E3%82%8B%E8%B3%87%E6%9C%AC%E9%87%91%E7%AD%89%E3%81%AE%E9%A1%8D%E3%82%92%E8%B6%85%E3%81%88%E3%82%8B%E9%83%A8%E5%88%86%E3%81%A7%E3%81%99%EF%BC%88%E6%B3%95%E4%BA%BA%E7%A8%8E%E6%B3%9524%E6%9D%A11%E9%A0%85%E3%83%BB%E6%89%80%E5%BE%97%E7%A8%8E%E6%B3%9525%E6%9D%A11%E9%A0%85%EF%BC%89%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fminashi-haito%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site">
   <p>© 税金・経理・補助金ツールズ</p>
