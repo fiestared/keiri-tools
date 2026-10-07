@@ -417,6 +417,11 @@ const SCENES = [
   { name: "juminzei_kintou_nomi", expect: (s) =>
       s.total === 5000 && s.shotokuwari === 0 && s.kintouwari === 5000 &&
       s.showsKintouOnly && !s.hikazei && !s.failed },
+  // ★非課税限度額をわずかに超えた人の減額（附則3条の3第2項・第5項）。減額がなければ所得割33,000円。
+  //   鎖は harness.html の SCENES.juminzei_kinbo のコメント。
+  { name: "juminzei_kinbo", expect: (s) =>
+      s.total === 25000 && s.shotokuwari === 20000 && s.kintouwari === 5000 &&
+      s.kinboGengaku === 13000 && !s.hikazei && !s.failed },
   // ★超過課税。横浜市は市3,900+県1,300+森林環境税1,000 = **6,200円**(横浜市の公表額と一致)。
   //   所得割は指定都市の8%:2% に神奈川県の超過課税(+0.025%)が乗る → 市192,400円＋県48,700円＝241,100円（各100円未満切捨、地方税法20条の4の2第3項）
   { name: "juminzei_yokohama", expect: (s) =>
