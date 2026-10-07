@@ -375,7 +375,7 @@
       "where": [
         "p: 直近の運用報告書の作成対象期間について年率換算した総経費率（参考値）は、SBI・",
         "p: 総経費率の作成対象期間は、SBI・SPDRが約半年、楽天・VYMが1年で、時期も",
-        "p: 総経費率（参考値）はSBI・SPDRが0.17%（2025年11月21日〜202"
+        "p: 総経費率（年率換算の参考値で、原則として購入時手数料・売買委託手数料・有価証券取引"
       ],
       "numbers": [
         "0.17%",
@@ -393,12 +393,14 @@
       "covers": [
         "s-7474ed01f26f509cd587-1",
         "s-4139067671db620bb9e2-1",
-        "s-68348fdff05910d7759a-1"
+        "s-c1a54a0efe46233c4084-1"
       ],
       "must_with": [
         "総経費率|作成対象期間",
-        "参考値|作成対象期間|対象期間|2025"
-      ]
+        "参考値|作成対象期間|対象期間|2025",
+        "年率|年率換算|経費率"
+      ],
+      "corpus_ref": "corpus/sspyd_Ak.txt:187-229; corpus/rivuh_Ak.txt:151-192; corpus/sspyd_P.txt:769-784"
     },
     {
       "id": "desc",
@@ -429,10 +431,10 @@
       "scope": "2024年1月30日〜2026年9月30日の運用会社公表の基準価額（税引前分配金再投資）による過去の実績。購入時・換金時の手数料、信託財産留保額、投資者ごとの税金は含まない。将来の成果ではない",
       "source_url": "https://www.sbiam.co.jp/fund/pdf/26b89ec6cb0527ad0db83873046cd898fa7d9d6a.pdf",
       "source_quote": "ファンドの日々の純資産総額に年0.0638％（税抜：0.058％）",
-      "exceptions": "交付目論見書の費用欄で料率と適用条件を確認。純資産総額による段階制ではない。資料が「以内」と書いている場合は、その旨と現在の率を表示した。投資先ETF等の報酬は別の行（実質的な負担）に分けた。 比較相手: https://www.rakuten-toushin.co.jp/fund/nav/rivuh/pdf/rivuh_P.pdf「産の純資産総額に年0.132％（税抜0.12％）」 実績: https://apl.wealthadvisor.jp/xml/chart/funddata/2024013002.xml「<day value=\"30\" year=\"2024\" month=\"01\" price=\"10000\" volume=\"1229\" return_value=\"1\" indication=\"1\"/> / <day value=\"30\" year=\"2026\" month=\"09\" price=\"12543\" volume=\"7149\" return_value=\".99610864\" work_end=\"1\" indication=\"1\"/> / <day value=\"30\" year=\"2025\" month=\"09\" price=\"11331\" volume=\"6254\" return_value=\".99788639\" work_end=\"1\" indication=\"1\"/> / <day value=\"26\" year=\"2024\" month=\"11\" price=\"12490\" volume=\"4830\" return_value=\"1.00798967\" indication=\"1\"/> / <day value=\"09\" year=\"2025\" month=\"04\" price=\"9823\" volume=\"4846\" return_value=\".96322808\" indication=\"1\"/>」 / https://www.rakuten-toushin.co.jp/assets/csv/chart_100035.csv「基準日,基準価額(円),分配金再投資基準価額(円),純資産総額(億円),分配金(円) / 2024/01/30,19949,19949,152.44, / 2026/09/30,31258,31258,388.34, / 2025/09/30,26017,26017,279.50, / 2025/01/24,25447,25447,245.81, / 2025/04/09,20498,20498,207.24,」",
+      "exceptions": "交付目論見書の費用欄で料率と適用条件を確認。純資産総額による段階制ではない。資料が「以内」と書いている場合は、その旨と現在の率を表示した。投資先ETF等の報酬は別の行（実質的な負担）に分けた。 比較相手: https://www.rakuten-toushin.co.jp/fund/nav/rivuh/pdf/rivuh_P.pdf「産の純資産総額に年0.132％（税抜0.12％）」 実績: https://apl.wealthadvisor.jp/xml/chart/funddata/2024013002.xml「<day value=\"30\" year=\"2024\" month=\"01\" price=\"10000\" volume=\"1229\" return_value=\"1\" indication=\"1\"/> / <day value=\"30\" year=\"2026\" month=\"09\" price=\"12543\" volume=\"7149\" return_value=\".99610864\" work_end=\"1\" indication=\"1\"/> / <day value=\"30\" year=\"2025\" month=\"09\" price=\"11331\" volume=\"6254\" return_value=\".99788639\" work_end=\"1\" indication=\"1\"/> / <day value=\"26\" year=\"2024\" month=\"11\" price=\"12490\" volume=\"4830\" return_value=\"1.00798967\" indication=\"1\"/> / <day value=\"09\" year=\"2025\" month=\"04\" price=\"9823\" volume=\"4846\" return_value=\".96322808\" indication=\"1\"/>」 / https://www.rakuten-toushin.co.jp/assets/csv/chart_100035.csv「基準日,基準価額(円),分配金再投資基準価額(円),純資産総額(億円),分配金(円) / 2024/01/30,19949,19949,152.44, / 2026/09/30,31258,31258,388.34, / 2025/09/30,26017,26017,279.50, / 2025/01/24,25447,25447,245.81, / 2025/04/09,20498,20498,207.24,」 指数の均等加重の部分は、算出方法書の「Index shares are assigned based on prices seven business days prior to the rebalancing effective date」「the actual weight of each stock at the rebalancing differs from these weights due to market movements」（corpus/spdji_hd.txt:235-242）に合わせ、7営業日前の価格で決める設計で入れ替え時点でもずれると要約にも書いた。",
       "covers": [
-        "s-8d6d02d4ae11844e5118-1",
-        "s-51a64d9ce6e1b3b0d17f-1",
+        "s-a287fee85e50e229f5cf-1",
+        "s-75d607084ffda0cad10c-1",
         "s-c9e8c250237fa24c4c5f-1",
         "s-98261d53c8ed2a7b34be-1",
         "s-c08b6505582c0ac38d60-1",
@@ -645,7 +647,7 @@
         "p: 連動を目指す指数も違い、前者はS&P500高配当指数（配当込み、円換算ベース）、",
         "td: 【行】連動対象・投資対象 【列】SBI・SPDR・S&P500高配当（年4回） ",
         "td: 【行】連動対象・投資対象 【列】楽天・VYM 【値】FTSEハイディビデンド・イ",
-        "h2: 指数が違う：入れ替え時に80銘柄を均等にするか、時価総額の大きさで持つか",
+        "h2: 指数が違う：80銘柄の均等加重を目指す設計か、時価総額の大きさで持つか",
         "h3: Q. 2本の違いは何ですか？",
         "p: A. 連動を目指す指数が違います。",
         "p: 前者はS&P500高配当指数（配当込み、円換算ベース）、後者はFTSEハイディビ"
@@ -660,7 +662,7 @@
         "s-43d8e617b913043829fd-1",
         "s-0ef478bfe0139bc05f7b-1",
         "s-4e27400a053bfb0f9f46-1",
-        "s-0680bed20e290abc9f92-1",
+        "s-7725f14e4375cdd8aea9-1",
         "s-a6a37bb50fee7a0c8065-1",
         "s-224614d50d375328a10a-1",
         "s-7bc966ee82d55a980271-1"
@@ -772,10 +774,9 @@
     },
     {
       "id": "sp-eq",
-      "text": "S&P500高配当指数は、年2回（1月・7月の最終営業日の取引終了後に有効）の定期入れ替えのたびに80銘柄を均等加重にする",
+      "text": "S&P500高配当指数は、年2回（1月・7月の最終営業日の取引終了後に有効）の定期入れ替えのたびに80銘柄を均等加重にする設計（比率は有効日の7営業日前の価格で決めるため、入れ替え時点でも値動きで均等からずれる）",
       "where": [
         "p: 指数提供者の算出方法書では、1月と7月の最終営業日の取引終了後に有効となる年2回",
-        "p: ただし比率は入れ替えの有効日の7営業日前の価格で決めるため、入れ替えの時点でも値",
         "p: 無配・減配などの銘柄は、毎月の見直しで入れ替えを待たずに除かれることがあります。",
         "p: S&P500高配当指数は年2回の入れ替えのたびに80銘柄を均等の比率にする設計で"
       ],
@@ -786,14 +787,15 @@
       "source_quote": "Constituent Weightings. At each rebalancing, constituents are equal weighted.",
       "exceptions": "同じ算出方法書の「Rebalancing」の節: 「The indices rebalance semi-annually, effective after the close of the last business day of January and July. The rebalancing reference dates are the last business days of December and June, respectively.」同じ節の例外: 株数は入れ替えの有効日の7営業日前の価格で決めるため、入れ替え時点の実際の比率は値動きで均等からずれる（「the actual weight of each stock at the rebalancing differs from these weights due to market movements」）。入れ替えの間は値動きで比率が変わる。銘柄の追加はスピンオフを除き入れ替え時だけ。毎月の配当の見直し（Monthly Dividend Review）で、無配・減配などの銘柄が入れ替え日を待たずに除かれることがある。銘柄の選び方は、予想年間配当利回りの順に上位64位は自動で採用、既存の構成銘柄は96位以内なら残す（バッファ）。本文では「均等」「年2回」と、例外（値動きでずれる・毎月の見直しで除かれることがある）を同じ段落に書いた。 資料の日付: 「S&P Dow Jones Indices: S&P High Dividend Indices Methodology」。 併せて確認した資料: https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-high-dividend-indices.pdf「The indices rebalance semi-annually, effective after the close of the last business day of January and July.」 / https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-high-dividend-indices.pdf「Since index shares are assigned based on prices prior to the rebalancing effective date, the actual weight of each stock at the rebalancing differs from these weights due to market movements.」 / https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-high-dividend-indices.pdf「Monthly Dividend Review Index constituents are reviewed monthly for ongoing eligibility.」",
       "covers": [
-        "s-8b30efc43ce93fed1ed3-1",
-        "s-c94014c71c3ffeaa4a29-1",
+        "s-6fe6a98fb709b6fd638a-1",
         "s-5d49f98b42b6a0304820-1",
         "s-f449bccf60ae027acded-1"
       ],
       "must_with": [
-        "入れ替え|80銘柄"
-      ]
+        "入れ替え|80銘柄",
+        "7営業日前"
+      ],
+      "corpus_ref": "corpus/spdji_hd.txt:145,232-242"
     },
     {
       "id": "ftse-def",
@@ -848,7 +850,7 @@
       "text": "楽天・VYMの投資先ETFの投資銘柄数（604）・組入上位銘柄・業種別構成比（2026年7月末現在、ICB基準）",
       "where": [
         "p: 楽天・VYMの投資先ETFは2026年7月末現在で投資銘柄数が604、組入1位の",
-        "p: 2本の月次レポートは業種の分類の基準・比率の分母・時点が違うため、この記事では業"
+        "p: 2本の月次レポートは業種の分類の基準・時点が違うため、この記事では業種を行どうし"
       ],
       "numbers": [
         "2026年7月",
@@ -862,7 +864,7 @@
       "exceptions": "月次レポート（2026年8月31日作成基準）の投資先ETFのページは前月末（2026年7月末）の数値。比率はETFの純資産総額、業種別構成比は組入株式に対する評価額の比率（同じ注記）。業種はICB基準の分類で、SBI側の月次レポートの業種名・分母（ETFの株式評価額）とは違うため、本文で業種を行どうしで並べていない。四捨五入のため合計が100%にならない場合がある（同じ注記）。 資料の日付: 「作成基準日 ： 2026年8月31日」。",
       "covers": [
         "s-888a4e0515a131072b79-1",
-        "s-b5d4ed48f17255011fd4-1"
+        "s-f5378b4995971e5da903-1"
       ],
       "must_with": [
         "2026年7月末|時点|月次レポート"
@@ -1442,6 +1444,11 @@
       "phrase": "必ず",
       "context": "前）でした。楽天・VYMは年1回決算で、必ず分配を行うもので",
       "reviewed": "否定文・限定文（必ずしも〜とは限らない）として使い、断定していない。過去の実績と将来の関係について例外を述べる文。"
+    },
+    {
+      "phrase": "原則",
+      "context": "年率換算の参考値で、原則として購入時手数料・売買委託手数料・有価証券取引税を含まない",
+      "reviewed": "交付目論見書（参考情報）総経費率の注記「原則として、募集手数料、売買委託手数料及び有価証券取引税を除く」（corpus/sspyd_P.txt:774）と交付運用報告書の同じ注を写した。同じ注の残り（投資先ファンドの費用は概算値を使用している場合がある・計上された期間が異なる場合がある・参考であり実際の費用の比率とは異なる）は費用の節と表下の注に書いた。"
     }
   ],
   "tool_cases": [],
