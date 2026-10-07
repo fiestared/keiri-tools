@@ -87,9 +87,13 @@ export function kokyoNenkinKojo(shunyu, age, igaiShotoku, D) {
   const min = is65 ? b.min_65over : b.min_under65;
 
   // ロ: 収入から50万円を引いた残額を、残額の区分で按分する
+  // ★1円未満は**切り上げ**る。条文の控除額は1円未満を持ちうる（残額×25%など）が、確定申告の手引きの
+  //   雑所得の計算欄は「収入×75%−275,000円」で所得を出し「1円未満の端数があるときは、その端数を切り捨て
+  //   ます」とする＝所得の切捨てと控除額の切上げは同じ。控除額を切り捨てると所得が1円過大になる
+  //   （収入1,306,733円・65歳未満で 705,050円 ≠ 手引き 705,049円。2026-10-07 /shotokuzei/ 新設時に発見）。
   const zangaku = Math.max(0, s - N.ro_sashihiki);
   const rb = pickBracket(N.ro_brackets, zangaku);
-  const ro = rb.base + Math.floor((zangaku - rb.over) * rb.rate_pct / 100);
+  const ro = rb.base + Math.ceil((zangaku - rb.over) * rb.rate_pct / 100);
 
   return Math.max(b.i + ro, min);
 }
