@@ -1,0 +1,1091 @@
+{
+ "experiment": "keiri-ctr-titles-2026-10-07",
+ "engine": "Google（GSC sc-domain:keiri-tools.com, searchType=web）",
+ "change_date": "2026-10-07（作業場ブランチ wt/ctr-1007 にコミット。本番公開日は司令塔の push 日。判定日は公開日+28日）",
+ "judge_date": "公開日+28日（2026-10-07 公開なら 2026-11-04。GSC は2〜3日遅れなので実データ取得は 11-07 頃）",
+ "baseline_window": "2026-09-07〜2026-10-04（28日。GSC final の最終日が 10-04）",
+ "lever": "<title>・<meta name=description>・og:title/og:description（gen_ogp）・JSON-LD Article headline。本文・h1 は不変。",
+ "selection": {
+  "unit": "ページ×日（page,date）。page×query で名前が見える語は表示の約12%（1,933/16,330）しかなく、最大でも1語20表示のため、語単位では順位をつけられない。代わりに『その日の順位が10.5以内だった日』だけを足し、各日の表示×期待CTR(その日の順位)−実クリックを積み上げた（ページ平均順位が少数語に引っ張られる問題を日単位で避ける）。語は名前の見える語とサジェストで検索意図を決めた。",
+  "excluded": {
+   "/column/": "生成される一覧ページ（親が管理）",
+   "G-034 の12本（10-07 00:24 07d20ab1 で title/description 書き換え済み）": [
+    "gensen-zeigakuhyo-mikata",
+    "invoice-2wari-tokurei",
+    "juminzei-tokubetsu-choshu",
+    "kounenrei-koyou-keizoku",
+    "koyou-hokenryo-ritsu",
+    "rosai-hokenryoritsu",
+    "shakai-hoken-kanyu-joken",
+    "tsukin-teate-hikazei",
+    "furusato",
+    "gensen-choshu",
+    "inshi",
+    "jidoshazei"
+   ],
+   "shakai-hokenryo-choshu-jiki": "10-06 夜に照合便が7回修正（進行中扱い）",
+   "furikomi-tesuryo-hikaku": "Bing 最大の流入ページ（GA4 bing 3,945/28日）。title 変更が Bing を損なうリスク",
+   "hyojun-hoshu-gakuhyo": "Bing 982/28日（同上。対照にも使わない）",
+   "today_runs": [
+    "kiso-kojo-shinkokusho",
+    "nenmatsu-chosei-kakikata",
+    "kenpo-shikaku-soshitsu",
+    "nenmatsu-chosei-taishogai",
+    "ikukyu-nenmatsu-chosei(G-054 対照)",
+    "fuyo-teate",
+    "hojinzei-shinkokusho"
+   ]
+  }
+ },
+ "expected_ctr_curve": {
+  "source": "自サイト GSC page×date 2026-07-01〜10-04（90日・7,967行）を順位（四捨五入）で束ね、PAVA で単調非増加にした",
+  "blocks": [
+   {
+    "pos": [
+     1,
+     2
+    ],
+    "imp": 489,
+    "clk": 13,
+    "ctr": 2.66
+   },
+   {
+    "pos": [
+     3
+    ],
+    "imp": 757,
+    "clk": 11,
+    "ctr": 1.45
+   },
+   {
+    "pos": [
+     4,
+     5
+    ],
+    "imp": 4077,
+    "clk": 57,
+    "ctr": 1.4
+   },
+   {
+    "pos": [
+     6
+    ],
+    "imp": 2815,
+    "clk": 35,
+    "ctr": 1.24
+   },
+   {
+    "pos": [
+     7
+    ],
+    "imp": 2994,
+    "clk": 31,
+    "ctr": 1.04
+   },
+   {
+    "pos": [
+     8,
+     9,
+     10
+    ],
+    "imp": 5948,
+    "clk": 61,
+    "ctr": 1.03
+   }
+  ],
+  "note": "自サイトの曲線は1〜10位でほぼ平ら（1〜2位 2.66%、8〜10位 1.03%）。業界の曲線（1位で数十%）とかけ離れており、順位の割にクリックが少ない主因は title より表示の中身（匿名化された長い語。AI の検索が投げる条文検索のような語も見える）にある可能性が高い。28日の期待との差は最大のページでも約3クリックで、15本合計でも期待曲線まで戻した場合の上積みは約25クリック/28日（変更前は15本で表示2,013・クリック1・CTR 0.05%、対照6本は表示465・クリック0）。"
+ },
+ "treatment": [
+  {
+   "rank": 1,
+   "url": "https://keiri-tools.com/column/tsukitochu-nyusha-taishoku-kyuyo/",
+   "target_intent": "月途中入社 給与 日割り／社会保険料（実クエリ: 月給 日割り・未支給年金 日割り）",
+   "before": {
+    "title": "月途中入社・退職の給与の日割り｜社会保険料と税金",
+    "description": "月途中入社・退職の給与の日割り計算を具体例で解説。社会保険料は日割りしないこと、退職日の翌日が資格喪失日となる月末退職の注意、源泉税まで整理します。",
+    "headline": "月途中入社・退職の給与の日割り｜社会保険料と税金"
+   },
+   "after": {
+    "title": "月途中入社・退職の給与の日割り｜月給30万円の例・社会保険料は日割りしない",
+    "description": "月途中入社・退職の給与は就業規則の式で日割りし、健康保険・厚生年金保険料は日割りしません。月給30万円の例で、給与は半月分でも保険料は1か月分になる場合、月末退職で退職月分の保険料がかかる理由、源泉所得税・住民税まで整理します。",
+    "headline": "月途中入社・退職の給与の日割り｜月給30万円の例・社会保険料は日割りしない"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 304,
+     "clk": 1,
+     "ctr": 0.33,
+     "pos": 5.1
+    },
+    "top10_days": {
+     "impressions": 296,
+     "clicks": 1,
+     "expected_clicks": 4.08,
+     "gap": 3.08,
+     "days": 9,
+     "max_day_share": 0.33
+    },
+    "named_queries": [
+     {
+      "query": "未支給年金 日割り",
+      "impressions": 2,
+      "clicks": 0,
+      "position": 7.5
+     },
+     {
+      "query": "社会保険 日割り",
+      "impressions": 2,
+      "clicks": 0,
+      "position": 47.5
+     },
+     {
+      "query": "月給 日割り",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 10
+     },
+     {
+      "query": "給与計算 月の途中",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 32
+     }
+    ],
+    "named_query_impressions": 6,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 3,
+     "google": 1
+    }
+   }
+  },
+  {
+   "rank": 2,
+   "url": "https://keiri-tools.com/column/genshi/",
+   "target_intent": "減資とは／減資 手続き・登録免許税・仕訳（名前の見える語なし。サジェスト）",
+   "before": {
+    "title": "減資とは — 手続きの流れ・無償減資と有償減資の違い・均等割はいつ下がるかを条文で",
+    "description": "減資とは、会社法447条の「資本金の額の減少」。株主総会の決議（原則特別決議）と債権者異議手続（官報公告・個別催告・1か月以上）を経て効力が生じ、2週間以内に変更登記（登録免許税3万円）。減らした額はその他資本剰余金に移るだけで、お金は動かない。これを欠損填補に充てるのが無償減資、資本剰余金を原資に配当すれば有償減資（みなし配当）。法人税法の資本金等の額は無償減資では1円も動かず、法人住民税の均等割が下がるのは欠損填補に充てた額だけ（1年以内・その他利益剰余金の負の額まで）。条文と設例で整理する。",
+    "headline": "減資とは — 手続きの流れ・無償減資と有償減資の違い・均等割はいつ下がるかを条文で"
+   },
+   "after": {
+    "title": "減資とは｜手続きの流れ・登録免許税3万円・無償減資と有償減資の違いと仕訳",
+    "description": "減資とは資本金の額を減らす手続きです（会社法447条）。株主総会の決議、官報公告・個別催告による債権者異議手続（1か月以上）、効力発生から2週間以内の変更登記（登録免許税3万円）の流れと、無償減資・有償減資の違い、仕訳、法人住民税の均等割が下がる条件を整理します。",
+    "headline": "減資とは｜手続きの流れ・登録免許税3万円・無償減資と有償減資の違いと仕訳"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 213,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 5.2
+    },
+    "top10_days": {
+     "impressions": 213,
+     "clicks": 0,
+     "expected_clicks": 2.79,
+     "gap": 2.79,
+     "days": 18,
+     "max_day_share": 0.43
+    },
+    "named_queries": [],
+    "named_query_impressions": 0,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 1,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 3,
+   "url": "https://keiri-tools.com/column/minashi-haito/",
+   "target_intent": "みなし配当とは／計算方法・源泉徴収・税率（名前の見える語なし。サジェスト）",
+   "before": {
+    "title": "みなし配当とは｜自己株式の取得・資本剰余金の配当で1回の入金が2つに割れる",
+    "description": "みなし配当とは、会社から受け取った金銭のうち「株式に対応する資本金等の額」を超える部分をいいます（法人税法24条1項・所得税法25条1項）。自己株式の取得、資本剰余金を原資とする配当、残余財産の分配など7つの事由で生じ、1回の入金が配当所得と株式の譲渡収入に割れます。非上場株式では超える部分に20.42%が源泉徴収され、残りは申告分離課税になります。計算式、市場取得など12の除外事由、令和4年4月に施行令へ入った上限、会社側の通知義務、相続した株式を発行会社へ譲渡する場合の特例まで、条文を取得して整理しました。",
+    "headline": "みなし配当とは — 1回の入金が「配当所得」と「株式の譲渡収入」に割れる"
+   },
+   "after": {
+    "title": "みなし配当とは｜計算方法と源泉徴収20.42%、自己株式の取得で入金が2つに割れる",
+    "description": "みなし配当とは、会社から受け取った金銭のうち株式に対応する資本金等の額を超える部分です（法人税法24条1項・所得税法25条1項）。自己株式の取得や資本剰余金の配当など7つの事由で生じ、非上場株式では超える部分に20.42%が源泉徴収されます。事由ごとの計算方法、12の除外事由、会社の通知義務を条文で整理します。",
+    "headline": "みなし配当とは｜計算方法と源泉徴収20.42%、自己株式の取得で入金が2つに割れる"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 227,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 6.3
+    },
+    "top10_days": {
+     "impressions": 227,
+     "clicks": 0,
+     "expected_clicks": 2.75,
+     "gap": 2.75,
+     "days": 18,
+     "max_day_share": 0.22
+    },
+    "named_queries": [],
+    "named_query_impressions": 0,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 2,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 4,
+   "url": "https://keiri-tools.com/column/kakyu-nenkin/",
+   "target_intent": "加給年金 支給停止 条件／加給年金額 配偶者 子（実クエリ 1〜5位）",
+   "before": {
+    "title": "加給年金とは｜2028年4月に子は120月で付き、配偶者は減額",
+    "description": "加給年金は、厚生年金の被保険者期間が240月以上ある人が老齢厚生年金を受け取るとき、生計を維持している65歳未満の配偶者や高校生までの子がいると上乗せされる加算です。2028年4月1日に組み替わります。配偶者は240月のまま、子は120月で足り、子の単価は一人につき74,900円から269,600円へ上がり、「2人までは224,700円」という区別は消えて一律になります。配偶者の単価は224,700円から202,200円へ下がります。国内に住所のない子は対象外になり、配偶者側で同じ子の加算を受けている場合の停止規定が新設されます。根拠は厚生年金保険法44条・46条です。",
+    "headline": "加給年金とは — 2028年4月に配偶者と子で要件が分かれ、子は120月で付くようになる"
+   },
+   "after": {
+    "title": "加給年金とは｜要件（240月・65歳未満）・金額・いつ止まるか、2028年4月の改正",
+    "description": "加給年金は、厚生年金の被保険者期間が240月以上ある人が老齢厚生年金を受け取るとき、生計を維持している65歳未満の配偶者や高校生までの子がいると上乗せされる加算です。いくら加算されるか、条文が挙げる10個の失権事由、2028年4月に子は120月で付き配偶者の単価が下がる改正を、厚生年金保険法44条・46条で整理します。",
+    "headline": "加給年金とは｜要件（240月・65歳未満）・金額・いつ止まるか、2028年4月の改正"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 173,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 4.3
+    },
+    "top10_days": {
+     "impressions": 173,
+     "clicks": 0,
+     "expected_clicks": 2.41,
+     "gap": 2.41,
+     "days": 6,
+     "max_day_share": 0.32
+    },
+    "named_queries": [
+     {
+      "query": "加給年金 支給停止 条件 日本年金機構",
+      "impressions": 5,
+      "clicks": 0,
+      "position": 5.2
+     },
+     {
+      "query": "厚生年金 加給年金額 配偶者 子 令和6年度",
+      "impressions": 4,
+      "clicks": 0,
+      "position": 3.2
+     },
+     {
+      "query": "老齢厚生年金 加給年金額 配偶者 子 令和6年度",
+      "impressions": 4,
+      "clicks": 0,
+      "position": 3.2
+     },
+     {
+      "query": "老齢厚生年金 加給年金額 配偶者 令和6年度",
+      "impressions": 2,
+      "clicks": 0,
+      "position": 1
+     },
+     {
+      "query": "加給年金 なくなる",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 27
+     },
+     {
+      "query": "加給年金 受給要件 日本年金機構",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 1
+     },
+     {
+      "query": "加給年金 支給停止 要件",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 4
+     },
+     {
+      "query": "加給年金とは",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 14
+     }
+    ],
+    "named_query_impressions": 19,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 0,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 5,
+   "url": "https://keiri-tools.com/column/jigyo-joto/",
+   "target_intent": "事業譲渡とは／会社法・従業員（名前の見える語は機械的な条文検索のみ）",
+   "before": {
+    "title": "事業譲渡とは｜株主総会が要る場合と要らない場合。総資産5分の1と商号続用の責任",
+    "description": "事業譲渡で株主総会の特別決議が要るのは会社法467条1項が挙げる6つの行為です（1号・2号・2号の2・3号・4号・5号）。「事業の重要な一部の譲渡」でも、譲り渡す資産の帳簿価額が総資産額の5分の1を超えなければ2号のかっこ書きで除かれ、決議は要りません。その総資産額は貸借対照表の資産合計ではなく会社法施行規則134条が定める算式で出します。商号を続けて使うと譲受会社が債務を負う22条、詐害事業譲渡の23条の2、労働契約は民法625条1項で当然には移りません。",
+    "headline": "事業譲渡とは — 株主総会が要るのは467条1項の6つの行為。「重要な一部」でも総資産の5分の1以下なら決議は要らない"
+   },
+   "after": {
+    "title": "事業譲渡とは｜株主総会の決議が要る場合・従業員の扱い・商号続用の責任",
+    "description": "事業譲渡で株主総会の特別決議が要るのは会社法467条1項の6つの行為です。事業の重要な一部の譲渡でも、譲り渡す資産の帳簿価額が総資産額の5分の1を超えなければ決議は要りません。労働契約が当然には移らないこと（民法625条1項）、商号を続用した譲受会社の債務（22条）、消費税の扱い、会社分割との違いを条文で整理します。",
+    "headline": "事業譲渡とは｜株主総会の決議が要る場合・従業員の扱い・商号続用の責任"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 147,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 4.5
+    },
+    "top10_days": {
+     "impressions": 146,
+     "clicks": 0,
+     "expected_clicks": 1.99,
+     "gap": 1.99,
+     "days": 19,
+     "max_day_share": 0.27
+    },
+    "named_queries": [
+     {
+      "query": "+e-gov 会社法 第二十一条 譲渡会社の競業の禁止 第二十二条 商号 続用",
+      "impressions": 13,
+      "clicks": 0,
+      "position": 2.2
+     },
+     {
+      "query": "%\"譲渡会社の競業の禁止\" \"趣旨\"",
+      "impressions": 3,
+      "clicks": 0,
+      "position": 3.3
+     },
+     {
+      "query": "+\"譲渡会社の競業の禁止\" \"二十年間\"",
+      "impressions": 2,
+      "clicks": 0,
+      "position": 3
+     },
+     {
+      "query": "\"譲渡会社の競業の禁止\" \"趣旨\"",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 3
+     },
+     {
+      "query": "e-gov 会社法 第二十一条 譲渡会社の競業の禁止 第二十二条 商号 続用",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 1
+     },
+     {
+      "query": "e-gov 会社法 第二十一条 譲渡会社の競業の禁止 第二十二条 商号を引き続き使用",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 3
+     },
+     {
+      "query": "会社法 第二十一条 譲渡会社の競業の禁止 e-gov",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 3
+     }
+    ],
+    "named_query_impressions": 22,
+    "botlike_query_impressions": 22,
+    "ga4_organic_sessions_28d": {
+     "bing": 1,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 6,
+   "url": "https://keiri-tools.com/column/kabunushi-shihon-hendo-keisansho/",
+   "target_intent": "株主資本等変動計算書とは／わかりやすく・配当（サジェスト）",
+   "before": {
+    "title": "株主資本等変動計算書とは — 会社法に名前が無い計算書類。純資産の1年の動きを変動事由ごとに見せる",
+    "description": "株主資本等変動計算書とは、貸借対照表の純資産の部（資本金・準備金・繰越利益剰余金・自己株式など）が事業年度の初めから終わりまでに「いくら・どの理由で」動いたかを、項目ごと・変動事由ごとに並べた計算書類です。会社法に「株主資本等変動計算書」の語は無く、名前を与えているのは会社計算規則59条1項、法人税では施行規則35条1項2号（確定申告書の添付書類）です。4区分と株主資本の6項目（会社計算規則96条）、株主資本だけ変動事由ごとに書く理由、増資・配当・当期純利益・自己株式取得の設例（期首18,500千円→期末22,000千円）、配当すると準備金が10分の1動く445条4項と計算規則22条、定時株主総会の承認・10年保存・公告されない・臨時計算書類に無い、小さな会社でも省略できない注記（98条2項）、合同会社の社員資本等変動計算書、申告書への添付まで条文の原文で整理します。",
+    "headline": "株主資本等変動計算書とは — 会社法に名前が無い計算書類。純資産の1年の動きを変動事由ごとに見せる"
+   },
+   "after": {
+    "title": "株主資本等変動計算書とは｜作り方を設例で・配当で準備金が動く10分の1のルール",
+    "description": "株主資本等変動計算書は、貸借対照表の純資産の部が期首から期末までに、いくら・どの理由で動いたかを項目ごと・変動事由ごとに示す計算書類です。増資・配当・当期純利益・自己株式取得の設例（期首18,500千円→期末22,000千円）で作り方を示し、配当時の準備金10分の1、省略できない注記、法人税申告書への添付まで整理します。",
+    "headline": "株主資本等変動計算書とは｜作り方を設例で・配当で準備金が動く10分の1のルール"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 111,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 4.8
+    },
+    "top10_days": {
+     "impressions": 111,
+     "clicks": 0,
+     "expected_clicks": 1.55,
+     "gap": 1.55,
+     "days": 17,
+     "max_day_share": 0.26
+    },
+    "named_queries": [
+     {
+      "query": "e-gov 会社法 第440条 貸借対照表 損益計算書 公告",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 2
+     },
+     {
+      "query": "e-gov 会社法 第461条 分配可能額",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 3
+     },
+     {
+      "query": "e-gov 会社法 第461条 分配可能額 剰余金の配当",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 6
+     }
+    ],
+    "named_query_impressions": 3,
+    "botlike_query_impressions": 3,
+    "ga4_organic_sessions_28d": {
+     "bing": 0,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 7,
+   "url": "https://keiri-tools.com/column/mitsumorisho-kakikata/",
+   "target_intent": "見積書 書き方／有効期限・保存期間（サジェスト）",
+   "before": {
+    "title": "見積書の書き方 — 書式を定めた法律は無い。それでも5本の法令が「見積書」を名指しする",
+    "description": "見積書には法定の書式がありません。それでも法人税法施行規則・所得税法施行規則・電子帳簿保存法・印紙税法・建設業法の5本が条文で「見積書」を名指ししています。保存は7年とは限らず個人事業主は5年、メールでPDFを送った時点で電子取引になり、注文書に見積書番号を書くと印紙の記載金額が引っ張られます。条文にあたって整理します。",
+    "headline": "見積書の書き方 — 書式を定めた法律は無い。それでも5本の法令が「見積書」を名指しする"
+   },
+   "after": {
+    "title": "見積書の書き方｜記載項目・有効期限の意味・保存期間（個人事業主は5年）と印紙",
+    "description": "見積書の書式を定めた法律は建設業を除いてありませんが、実務で書く項目と条文由来で外せない項目があります。有効期限は撤回できるかどうかを分ける記載、保存期間は7年とは限らず個人事業主は5年、メールでPDFを送れば電子取引、見積書に印紙は不要でも注文書に見積書番号を書くと記載金額が引っ張られる点を条文で整理します。",
+    "headline": "見積書の書き方｜記載項目・有効期限の意味・保存期間（個人事業主は5年）と印紙"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 124,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 6.3
+    },
+    "top10_days": {
+     "impressions": 123,
+     "clicks": 0,
+     "expected_clicks": 1.46,
+     "gap": 1.46,
+     "days": 8,
+     "max_day_share": 0.23
+    },
+    "named_queries": [
+     {
+      "query": "+e-gov 民法 523条 承諾の期間を定めた申込み 撤回",
+      "impressions": 2,
+      "clicks": 0,
+      "position": 8
+     },
+     {
+      "query": "+e-gov 民法 第523条 承諾の期間を定めた申込み 撤回",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 3
+     }
+    ],
+    "named_query_impressions": 3,
+    "botlike_query_impressions": 3,
+    "ga4_organic_sessions_28d": {
+     "bing": 0,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 8,
+   "url": "https://keiri-tools.com/column/kyogyo-hishi-gimu/",
+   "target_intent": "競業避止義務とは／退職後・違反・有効性（サジェスト）",
+   "before": {
+    "title": "競業避止義務とは｜条文があるのは取締役と譲渡会社だけ・退職者の違約金は労基法16条で禁止",
+    "description": "競業避止義務という名前の制度は1本ではありません。条文があるのは在職中の取締役（会社法356条1項1号・365条）と、事業を譲渡した会社（同21条・20年間／同一市町村と隣接市町村）だけで、退職した従業員を縛る条文は1本もありません。だから退職後は誓約書などの契約があって初めて問題になります。一方、その誓約書に「競業したら違約金○万円」と書くことは労働基準法16条が禁じています。契約が無くても効くのが不正競争防止法で、2条1項7号は退職の有無を要件にしておらず、21条2項3号は役員・従業者を名指しで10年以下の拘禁刑としています。",
+    "headline": "競業避止義務とは — 条文があるのは取締役と譲渡会社だけ。退職者は契約、そして不正競争防止法"
+   },
+   "after": {
+    "title": "競業避止義務とは｜退職後は契約次第・違約金は労基法16条で禁止・不正競争防止法",
+    "description": "競業避止義務の条文があるのは在職中の取締役（会社法356条1項1号・365条）と事業を譲渡した会社（同21条）だけで、退職した従業員を縛る条文はありません。退職後は誓約書などの契約があって初めて問題になり、「競業したら違約金○万円」は労働基準法16条が禁じています。契約が無くても効く不正競争防止法まで条文で整理します。",
+    "headline": "競業避止義務とは｜退職後は契約次第・違約金は労基法16条で禁止・不正競争防止法"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 106,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 5.2
+    },
+    "top10_days": {
+     "impressions": 106,
+     "clicks": 0,
+     "expected_clicks": 1.42,
+     "gap": 1.42,
+     "days": 19,
+     "max_day_share": 0.2
+    },
+    "named_queries": [
+     {
+      "query": "会社法 356条 競業取引 e-gov",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 4
+     }
+    ],
+    "named_query_impressions": 1,
+    "botlike_query_impressions": 1,
+    "ga4_organic_sessions_28d": {
+     "bing": 0,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 9,
+   "url": "https://keiri-tools.com/column/zeimu-dairi-kengen-shosho/",
+   "target_intent": "税務代理権限証書とは／提出が必要な場合・記載例（サジェスト）",
+   "before": {
+    "title": "税務代理権限証書とは｜書面添付との違いと、調査の通知が税理士に届く条件",
+    "description": "税務代理権限証書は、税理士が税務代理をするときに税務官公署へ提出する書面です（税理士法30条・施行規則15条の別紙第八号様式）。顧問税理士がいることと、この1枚が出ていることは別で、国税通則法74条の9第3項2号は「30条の書面を提出している税理士」を税務代理人と定義しています。事前通知の届き先、法令が名指ししている2つの記載欄、書面添付（33条の2）との違い、そして令和8年9月1日から様式第八号が変わることまでを条文から確かめます。",
+    "headline": "税務代理権限証書とは — この1枚が出ていないと、税務調査の事前通知は税理士に届かない"
+   },
+   "after": {
+    "title": "税務代理権限証書とは｜税務代理と書類作成の線引き・記載欄・書面添付との違い",
+    "description": "税務代理権限証書は、税理士が税務代理をするときに税務官公署へ提出する書面です（税理士法30条）。この1枚が出ていないと、国税通則法74条の9の「税務代理人」がいないことになり、税務調査の事前通知は税理士に届きません。法令が名指しする2つの記載欄、書面添付（33条の2）との違い、令和8年9月1日からの様式第八号の変更を整理します。",
+    "headline": "税務代理権限証書とは｜税務代理と書類作成の線引き・記載欄・書面添付との違い"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 108,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 6.7
+    },
+    "top10_days": {
+     "impressions": 106,
+     "clicks": 0,
+     "expected_clicks": 1.28,
+     "gap": 1.28,
+     "days": 18,
+     "max_day_share": 0.34
+    },
+    "named_queries": [
+     {
+      "query": "+計算事項等記載書面 1面 税理士または税理士法人 書面作成に係る税理士",
+      "impressions": 3,
+      "clicks": 0,
+      "position": 3.7
+     },
+     {
+      "query": "e-gov 税理士法 33条の2 書面作成に係る税理士",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 10
+     }
+    ],
+    "named_query_impressions": 4,
+    "botlike_query_impressions": 4,
+    "ga4_organic_sessions_28d": {
+     "bing": 1,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 10,
+   "url": "https://keiri-tools.com/column/taishoku-yukyu-shoka/",
+   "target_intent": "有給消化 退職 拒否（サジェスト）",
+   "before": {
+    "title": "退職時の有給消化｜動かす先の労働日がなければ会社は拒否できない根拠（基収5554号）と退職日・社会保険料の関係",
+    "description": "退職日までの労働日に有給休暇を当てる請求は、動かす先の労働日が残っていなければ会社は拒否できません。時季変更権は他の時季に与える権利で、退職日の後ろには行使できないという行政解釈（昭和49年1月11日基収5554号）が根拠です。",
+    "headline": "退職時の有給消化｜動かす先の労働日がなければ会社は拒否できない根拠（基収5554号）と退職日・社会保険料の関係"
+   },
+   "after": {
+    "title": "退職時の有給消化は拒否できない｜根拠（基収5554号）と退職日・社会保険料",
+    "description": "退職日までの労働日に有給休暇を当てる請求は、動かす先の労働日が残っていなければ会社は拒否できません（昭和49年1月11日基収5554号）。最終出勤日・退職日・資格喪失日の並べ方、消化しきれない日数と買取、月末退職で社会保険料が1か月分多くなる点まで整理します。",
+    "headline": "退職時の有給消化は拒否できない｜根拠（基収5554号）と退職日・社会保険料"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 94,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 8.3
+    },
+    "top10_days": {
+     "impressions": 91,
+     "clicks": 0,
+     "expected_clicks": 1.11,
+     "gap": 1.11,
+     "days": 8,
+     "max_day_share": 0.55
+    },
+    "named_queries": [
+     {
+      "query": "退職 有給休暇 拒否",
+      "impressions": 2,
+      "clicks": 0,
+      "position": 94
+     }
+    ],
+    "named_query_impressions": 2,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 0,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 11,
+   "url": "https://keiri-tools.com/column/kyuyo-meisai-mikata/",
+   "target_intent": "給与明細 何年 保管／給与明細 見方（実クエリ 2位）",
+   "before": {
+    "title": "給与明細の見方｜交付は所得税法の義務・確認する3か所・保管の目安",
+    "description": "給与明細の交付は労働基準法ではなく所得税法231条が定める会社の義務で、交付しないと1年以下の拘禁刑又は50万円以下の罰金の対象です（242条7号）。支払明細書の記載事項、保険料控除の通知、賃金台帳への勤怠記録は別の義務です。東京都・月給30万円・35歳の実例で控除欄を1行ずつたどり、Web明細に必要な承諾、保管の目安（賃金請求権の時効・当分の間3年）まで条文にあたって整理します。",
+    "headline": "給与明細の見方｜交付は所得税法の義務・確認する3か所・保管の目安"
+   },
+   "after": {
+    "title": "給与明細の見方｜控除欄の実例・確認する3か所・何年保管するか",
+    "description": "東京都・月給30万円・35歳の実例で給与明細の控除欄を1行ずつ読み、毎月確認する3か所を示します。交付は労働基準法ではなく所得税法231条の義務で、Web明細には本人の承諾が要ります。何年とっておくかの目安は賃金請求権の時効（当分の間3年）です。条文にあたって整理します。",
+    "headline": "給与明細の見方｜控除欄の実例・確認する3か所・何年保管するか"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 82,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 5.1
+    },
+    "top10_days": {
+     "impressions": 82,
+     "clicks": 0,
+     "expected_clicks": 1.07,
+     "gap": 1.07,
+     "days": 13,
+     "max_day_share": 0.26
+    },
+    "named_queries": [
+     {
+      "query": "給与明細 何年 保管 日本",
+      "impressions": 2,
+      "clicks": 0,
+      "position": 2
+     },
+     {
+      "query": "給与明細 電子化 義務 日本",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 2
+     }
+    ],
+    "named_query_impressions": 3,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 7,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 12,
+   "url": "https://keiri-tools.com/column/gaichuhi-kyuyo-kubun/",
+   "target_intent": "外注費と給与の違い（サジェスト）",
+   "before": {
+    "title": "外注費と給与の区分｜消費税は課税仕入れの定義の外、源泉徴収は乙欄【令和8年分】",
+    "description": "外注費が給与と認定されると、消費税の仕入税額控除と源泉所得税の追徴が同時に来ます。よく「4つのチェックポイント」として紹介される消費税法基本通達1-1-1の項目は、通達の本文では「その区分が明らかでないとき」に総合勘案する予備的な基準です。第一次の基準は雇用契約又はこれに準ずる契約に基づく対価かどうか。消費税で控除できない根拠は控除の要件ではなく課税仕入れの定義そのもの（消費税法2条1項12号のかっこ書き）なので、適格請求書を受け取っていても救われません。年1,200万円の外注費が給与認定された場合の金額を、令和8年分の税額表と条文から実額で計算しました。",
+    "headline": "外注費と給与の区分 — 通達の4項目は「区分が明らかでないとき」の判定。第一次の基準は契約です"
+   },
+   "after": {
+    "title": "外注費と給与の違い｜判定基準と給与認定時の消費税・源泉税【令和8年分】",
+    "description": "外注費か給与かの第一次の基準は、雇用契約又はこれに準ずる契約に基づく対価かどうかです。通達1-1-1の4項目は区分が明らかでないときの判定です。給与と認定されると仕入税額控除が消え、徴収していなかった源泉所得税を会社が納めることになります。年1,200万円の外注費が給与認定された場合を令和8年分の税額表で実額計算しました。",
+    "headline": "外注費と給与の違い｜判定基準と給与認定時の消費税・源泉税【令和8年分】"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 79,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 6.3
+    },
+    "top10_days": {
+     "impressions": 79,
+     "clicks": 0,
+     "expected_clicks": 1.01,
+     "gap": 1.01,
+     "days": 18,
+     "max_day_share": 0.15
+    },
+    "named_queries": [],
+    "named_query_impressions": 0,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 0,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 13,
+   "url": "https://keiri-tools.com/column/kyugyo-teate/",
+   "target_intent": "休業手当 計算方法／休業補償 違い（サジェスト）",
+   "before": {
+    "title": "休業手当とは｜平均賃金60%以上の計算と、全額請求できる場合・休業補償との違い",
+    "description": "休業手当は労働基準法26条により平均賃金の60%以上を支払う制度です。分母は労働日数ではなく暦日数で、月給30万円・直前3か月90日なら平均賃金10,000円・休業手当は1日6,000円になります。時給制には賃金総額を労働日数で割って60%を掛ける最低保障があり、この60%は26条の60%とは別物です。26条は最低基準にすぎず、民法536条2項の要件を満たせば賃金全額を請求できます。休業補償は業務災害の最初の3日間を事業主が平均賃金の60%以上補償し、労災保険の休業補償給付は4日目以降で非課税、休業手当は賃金なので源泉徴収と社会保険料の対象です。",
+    "headline": "休業手当とは｜平均賃金60%以上の計算と、全額請求できる場合・休業補償との違い"
+   },
+   "after": {
+    "title": "休業手当とは｜計算方法（平均賃金の60%以上）の例と休業補償との違い",
+    "description": "休業手当は労働基準法26条により平均賃金の60%以上を支払う制度です。月給30万円・直前3か月90日なら平均賃金10,000円、休業手当は1日6,000円。分母は暦日数であること、時給制の最低保障、全額請求できる場合（民法536条2項）、休業補償との違い、税金・社会保険料の扱いを整理します。",
+    "headline": "休業手当とは｜計算方法（平均賃金の60%以上）の例と休業補償との違い"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 81,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 6.2
+    },
+    "top10_days": {
+     "impressions": 81,
+     "clicks": 0,
+     "expected_clicks": 0.98,
+     "gap": 0.98,
+     "days": 9,
+     "max_day_share": 0.27
+    },
+    "named_queries": [
+     {
+      "query": "+e-gov 労働基準法 第39条 第9項 年次有給休暇 賃金",
+      "impressions": 7,
+      "clicks": 0,
+      "position": 7
+     },
+     {
+      "query": "+e-gov 労働基準法 第26条 休業手当",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 4
+     },
+     {
+      "query": "e-gov 労働基準法 第26条 休業手当",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 9
+     }
+    ],
+    "named_query_impressions": 9,
+    "botlike_query_impressions": 9,
+    "ga4_organic_sessions_28d": {
+     "bing": 16,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 14,
+   "url": "https://keiri-tools.com/column/kumimodoshi/",
+   "target_intent": "組戻しとは／組戻し 拒否・手数料（サジェスト）",
+   "before": {
+    "title": "組戻しとは｜振込を間違えたときの取消手続きと手数料、戻らない場合の請求先",
+    "description": "組戻しは振込を「取り消す」手続きではありません。受取人の口座に入金が済んでいれば、そのお金はもう受取人の預金なので、銀行が依頼人の申し出だけで引き戻すことはできず、受取人の承諾がいります。承諾が得られないときの請求先は銀行ではなく受取人で、根拠は民法703条の不当利得です。三菱UFJ銀行の組戻手数料は880円（個人・法人とも同額）で、最初に払った振込手数料は戻りません。仕訳と消費税区分まで条文で整理しました。",
+    "headline": "組戻しとは — 振込は「取り消す」のではなく、受取人に返してもらう手続き"
+   },
+   "after": {
+    "title": "組戻しとは｜振込を間違えたときの手数料・受取人が拒否したときの請求先",
+    "description": "組戻しは振込の取り消しではなく、受取人の承諾を得て返してもらう手続きです。入金済みなら銀行は依頼人の申し出だけで引き戻せず、承諾が得られないときの請求先は受取人です（民法703条の不当利得）。三菱UFJ銀行の組戻手数料880円、最初に払った振込手数料は戻らない点、仕訳と消費税区分まで整理します。",
+    "headline": "組戻しとは｜振込を間違えたときの手数料・受取人が拒否したときの請求先"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 81,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 6.7
+    },
+    "top10_days": {
+     "impressions": 80,
+     "clicks": 0,
+     "expected_clicks": 0.97,
+     "gap": 0.97,
+     "days": 24,
+     "max_day_share": 0.11
+    },
+    "named_queries": [
+     {
+      "query": "https://laws.e-gov.go.jp/api/2/law_data/129ac0000000089",
+      "impressions": 3,
+      "clicks": 0,
+      "position": 5
+     },
+     {
+      "query": "\"https://laws.e-gov.go.jp/api/2/law_data/129ac0000000089\"",
+      "impressions": 2,
+      "clicks": 0,
+      "position": 5
+     }
+    ],
+    "named_query_impressions": 5,
+    "botlike_query_impressions": 5,
+    "ga4_organic_sessions_28d": {
+     "bing": 5,
+     "google": 0
+    }
+   }
+  },
+  {
+   "rank": 15,
+   "url": "https://keiri-tools.com/column/ikuji-kyugyo-kyufukin/",
+   "target_intent": "育児休業給付金 計算・いくら（サジェスト）",
+   "before": {
+    "title": "育児休業給付金はいくら？67%＋13%の計算と「手取り10割」の条件",
+    "description": "育児休業給付金は「休業開始時賃金日額×支給日数×67%（181日目以降50%）」。2025年4月に新設された出生後休業支援給付金13%を足すと給付率80%＝手取り10割相当になりますが、母親は「父親が14日以上育休を取ること」が条件です。上限額16,540円・賞与が入らない落とし穴を、雇用保険法61条の7〜61条の10と厚生労働省の資料で解説します。",
+    "headline": "育児休業給付金はいくら？67%＋13%の計算と「手取り10割」の条件"
+   },
+   "after": {
+    "title": "育児休業給付金はいくら？計算方法（67%・50%）と手取り10割の条件",
+    "description": "育児休業給付金は休業開始時賃金日額×支給日数×67%（181日目以降50%）。出生後休業支援給付金13%を足すと給付率80%＝手取り10割相当ですが、母親は原則として配偶者が14日以上の育休を取ることが条件です（配偶者がいない場合などは免除）。上限額16,540円、賞与が入らない点、いつ振り込まれるか、必要書類まで整理します。",
+    "headline": "育児休業給付金はいくら？計算方法（67%・50%）と手取り10割の条件"
+   },
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 83,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 6.8
+    },
+    "top10_days": {
+     "impressions": 80,
+     "clicks": 0,
+     "expected_clicks": 0.94,
+     "gap": 0.94,
+     "days": 16,
+     "max_day_share": 0.24
+    },
+    "named_queries": [],
+    "named_query_impressions": 0,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 4,
+     "google": 0
+    }
+   }
+  }
+ ],
+ "controls": [
+  {
+   "url": "https://keiri-tools.com/column/yakuin-shakai-hoken/",
+   "title": "役員の社会保険｜非常勤の判定と、令和8年3月通達が示した「適用なし」の線",
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 84,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 6.8
+    },
+    "top10_days": {
+     "impressions": 84,
+     "clicks": 0,
+     "expected_clicks": 0.94,
+     "gap": 0.94,
+     "days": 14,
+     "max_day_share": 0.17
+    },
+    "named_queries": [],
+    "named_query_impressions": 0,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 9,
+     "google": 0
+    }
+   }
+  },
+  {
+   "url": "https://keiri-tools.com/column/kurinobe-shisan/",
+   "title": "繰延資産とは｜開業費・創立費は任意償却、礼金は5年（20万円未満は一括）",
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 81,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 6.4
+    },
+    "top10_days": {
+     "impressions": 77,
+     "clicks": 0,
+     "expected_clicks": 0.93,
+     "gap": 0.93,
+     "days": 15,
+     "max_day_share": 0.31
+    },
+    "named_queries": [
+     {
+      "query": "e-gov 所得税法施行令 開発費 繰延資産",
+      "impressions": 3,
+      "clicks": 0,
+      "position": 7
+     },
+     {
+      "query": "e-gov 法人税法施行令 開発費 繰延資産",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 5
+     }
+    ],
+    "named_query_impressions": 4,
+    "botlike_query_impressions": 4,
+    "ga4_organic_sessions_28d": {
+     "bing": 4,
+     "google": 0
+    }
+   }
+  },
+  {
+   "url": "https://keiri-tools.com/column/taiyo-nensu/",
+   "title": "減価償却の耐用年数｜耐用年数表の引き方と中古資産の簡便法【令和8年】",
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 66,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 5.2
+    },
+    "top10_days": {
+     "impressions": 66,
+     "clicks": 0,
+     "expected_clicks": 0.92,
+     "gap": 0.92,
+     "days": 13,
+     "max_day_share": 0.32
+    },
+    "named_queries": [],
+    "named_query_impressions": 0,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 0,
+     "google": 0
+    }
+   }
+  },
+  {
+   "url": "https://keiri-tools.com/column/ryohi-kotsuhi/",
+   "title": "旅費交通費とは — 範囲・仕訳・通勤手当/交際費との境界・消費税区分を条文で",
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 69,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 5.9
+    },
+    "top10_days": {
+     "impressions": 69,
+     "clicks": 0,
+     "expected_clicks": 0.88,
+     "gap": 0.88,
+     "days": 14,
+     "max_day_share": 0.22
+    },
+    "named_queries": [],
+    "named_query_impressions": 0,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 0,
+     "google": 0
+    }
+   }
+  },
+  {
+   "url": "https://keiri-tools.com/column/shukko-zeimu/",
+   "title": "出向の税務｜給与負担金に消費税はかからない・「経営指導料」でも同じ",
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 88,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 7.4
+    },
+    "top10_days": {
+     "impressions": 76,
+     "clicks": 0,
+     "expected_clicks": 0.88,
+     "gap": 0.88,
+     "days": 17,
+     "max_day_share": 0.17
+    },
+    "named_queries": [],
+    "named_query_impressions": 0,
+    "botlike_query_impressions": 0,
+    "ga4_organic_sessions_28d": {
+     "bing": 3,
+     "google": 0
+    }
+   }
+  },
+  {
+   "url": "https://keiri-tools.com/column/rosai-kyugyo-hosho/",
+   "title": "労災の休業補償はいくら｜60%＋20%の二階建てと、待期3日の会社負担",
+   "baseline": {
+    "gsc_page_28d": {
+     "imp": 77,
+     "clk": 0,
+     "ctr": 0,
+     "pos": 6.7
+    },
+    "top10_days": {
+     "impressions": 77,
+     "clicks": 0,
+     "expected_clicks": 0.86,
+     "gap": 0.86,
+     "days": 9,
+     "max_day_share": 0.3
+    },
+    "named_queries": [
+     {
+      "query": "+e-gov 労働者災害補償保険法 第14条 休業補償給付",
+      "impressions": 2,
+      "clicks": 0,
+      "position": 10
+     },
+     {
+      "query": "e-gov 労働基準法 第76条 休業補償",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 10
+     },
+     {
+      "query": "e-gov 労働者災害補償保険法 第14条 休業補償給付",
+      "impressions": 1,
+      "clicks": 0,
+      "position": 10
+     }
+    ],
+    "named_query_impressions": 4,
+    "botlike_query_impressions": 4,
+    "ga4_organic_sessions_28d": {
+     "bing": 0,
+     "google": 0
+    }
+   }
+  }
+ ],
+ "control_choice": "候補順位の16〜22位（標準報酬月額表は Bing 流入が大きいので除外）。似た位置・似た表示規模・Bing 流入が小さい・10-07 時点で title 変更なし。期間中は title/description を触らない。",
+ "decision_rule": "公開日の翌日から28日の窓 vs 変更前28日（9/7〜10/4）。処置15本の合計 CTR の変化 − 対照6本の合計 CTR の変化（差の差）。順位（日別・表示加重）が±1以内のときだけ CTR を読む。表示が小さい（処置計 約2,000表示/28日）ので、+0.5ポイント未満の差は誤差扱い。処置群のクリックが対照比で 20%以上落ちたら戻す。Bing 側は GA4 bing セッションを同じ窓で見て、合計で 20%以上落ちたら戻す。",
+ "branch": "wt/ctr-1007",
+ "commit": null
+}
