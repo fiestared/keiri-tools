@@ -17,8 +17,8 @@ const block = `<!-- receipt-table:auto -->
   <p id="receipt-tax-basis">この表は<b>営業に関する紙の売上代金の領収書</b>が対象です。表の「記載金額」は次のとおり決めます。課税事業者が消費税額等を区分記載するか、税込・税抜価格の併記で明らかにしていれば、その額を除いた金額です（免税事業者は区分記載しても税込）。売上代金とそれ以外の金額を区分できる受取書は売上代金の金額で階級を選びますが、5万円未満で非課税かどうかは合計額で判定します。区分できなければ全額を売上代金の金額とします（国税庁 No.7105・No.6925）。</p>
   <div class="scroll-wrap">
   <table class="tbl num-nowrap" id="receipt-tax-table" aria-describedby="receipt-tax-basis">
-    <caption>営業に関する紙の売上代金の領収書（第17号文書）の収入印紙（記載金額は表の上の決め方による）</caption>
-    <thead><tr><th scope="col">記載金額の範囲（決め方は表の上）</th><th scope="col" class="num">印紙税額（1通／営業に関する紙の売上代金の領収書）</th></tr></thead>
+    <caption>営業に関する紙の売上代金の領収書（第17号文書）の収入印紙</caption>
+    <thead><tr><th scope="col">記載金額（決め方は表の上）</th><th scope="col" class="num">印紙税額（1通・営業に関する紙）</th></tr></thead>
     <tbody>
 ${rows.map(([label, tax]) => `      <tr><th scope="row">${esc(label)}</th><td class="num">${esc(tax)}</td></tr>`).join('\n')}
     </tbody>
