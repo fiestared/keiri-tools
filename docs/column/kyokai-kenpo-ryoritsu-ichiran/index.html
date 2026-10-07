@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>協会けんぽ 健康保険料率 一覧【令和8年度】47都道府県・介護込み・CSV</title>
+<meta name="description" content="協会けんぽの令和8年度の健康保険料率を47都道府県の一覧で掲載。一般被保険者は令和8年3月分から、最高は佐賀県10.55%・最低は新潟県9.21%。40〜64歳は介護保険料率1.62%を足し、令和8年4月分からは子ども・子育て支援金率0.23%が加わります。折半後の本人負担率と前年度からの増減つき。CSVでダウンロードでき、出典の書き方も載せています。">
+<meta name="card-desc" content="協会けんぽの令和8年度の健康保険料率を47都道府県すべて掲載（一般被保険者・令和8年3月分から）。最高は佐賀県10.55%、最低は新潟県9.21%。介護保険料率1.62%込みの率、折半後の本人負担率、令和7年度からの増減、CSVつき。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/kyokai-kenpo-ryoritsu-ichiran/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="協会けんぽ 健康保険料率 一覧【令和8年度】47都道府県・介護込み・CSV">
+<meta property="og:description" content="協会けんぽの令和8年度の健康保険料率を47都道府県の一覧で掲載。一般被保険者は令和8年3月分から、最高は佐賀県10.55%・最低は新潟県9.21%。40〜64歳は介護保険料率1.62%を足し、令和8年4月分からは子ども・子育て支援金率0.23%が加わります。折半後の本人負担率と前年度からの増減つき。CSVでダウンロードでき、出典の書き方も載せています。">
+<meta property="og:url" content="https://keiri-tools.com/column/kyokai-kenpo-ryoritsu-ichiran/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "協会けんぽの健康保険料率 一覧【令和8年度】47都道府県・介護保険料率込み・CSV",
+      "datePublished": "2026-10-07",
+      "dateModified": "2026-10-07",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/kyokai-kenpo-ryoritsu-ichiran/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "協会けんぽ 健康保険料率 一覧"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 令和8年度の協会けんぽの健康保険料率で、いちばん高い県と低い県はどこですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 協会けんぽの一般被保険者の令和8年度の健康保険料率（令和8年3月分から）は、最も高いのが佐賀県の10.55%、最も低いのが新潟県の9.21%で、差は1.34ポイントです。東京都は9.85%、大阪府は10.13%、愛知県は9.93%です。40〜64歳の介護保険第2号被保険者は、これに全国一律の介護保険料率1.62%が加わります。令和8年4月分以降は、年齢にかかわらず子ども・子育て支援金率0.23%もさらに加わります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 令和8年度の健康保険料率はいつから変わりましたか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 協会けんぽの一般被保険者の健康保険料率と介護保険料率は、令和8年3月分（4月納付分）から令和8年度の率に変わりました。任意継続被保険者と日雇特例被保険者は令和8年4月分からです。子ども・子育て支援金率0.23%は、一般被保険者は令和8年4月分（5月納付分）から加わるので、健康保険料率の改定と1か月ずれます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 表の率は、給与から引かれる本人の率ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 都道府県別の健康保険料率の列は、事業主と被保険者を合わせた全体の率です。協会けんぽの一般被保険者は健康保険法161条1項により労使で半分ずつ負担するので、本人の率は全体の率の2分の1で、表の「本人負担（折半）」の列がその値です。たとえば令和8年度の東京都の40歳未満なら、健康保険料率は全体9.85%に対して本人4.925%です。令和8年4月分以降は、これとは別に子ども・子育て支援金率0.23%の半分の0.115%が本人負担に加わるので、東京都の40歳未満の人が給与から引かれる率の合計は5.040%になります。任意継続被保険者は全額を自分で負担するので、全体の率がそのまま本人の率になります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 令和8年度は健康保険料率が上がった都道府県はありますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 協会けんぽの令和8年度の健康保険料率（一般被保険者・令和8年3月分から）は、令和7年度と比べて引き上げられた都道府県は1つもなく、40都道府県で引下げ、7県で据置でした。ただし令和8年4月分からは子ども・子育て支援金率0.23%が別に加わるため、40歳未満の人で比べると、健康保険料率の引下げ幅が0.23ポイントより小さい都道府県では、健康保険料と支援金を合わせた率が令和7年度より高くなります（同じ標準報酬月額の場合）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. この表をCSVで使ってもよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. はい。ページ内のCSVファイル（UTF-8・BOM付き）をダウンロードして、給与計算の設定や社内資料に使えます。資料やWebページに載せるときは、出典としてこのページの名前とURL（https://keiri-tools.com/column/kyokai-kenpo-ryoritsu-ichiran/）を書き、リンクを張ってください。率は協会けんぽの公表値なので、正式な資料では協会けんぽの「令和8年度都道府県単位保険料率」もあわせて示すと確実です。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--kenpo:dataset:S--><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "協会けんぽ 都道府県別 健康保険料率・介護保険料率（令和8年度）",
+  "description": "全国健康保険協会（協会けんぽ）が公表した令和8年度の都道府県単位保険料率（健康保険料率）47都道府県分と令和7年度の率、全国一律の介護保険料率1.62%・子ども・子育て支援金率0.23%、労使折半後の本人負担率をまとめた表。一般被保険者の健康保険料率・介護保険料率は令和8年3月分から、子ども・子育て支援金率は令和8年4月分から適用。",
+  "url": "https://keiri-tools.com/column/kyokai-kenpo-ryoritsu-ichiran/",
+  "inLanguage": "ja",
+  "spatialCoverage": "日本（47都道府県）",
+  "temporalCoverage": "2026-03/..",
+  "isBasedOn": "https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/rate_prefectures/r08",
+  "creator": {
+    "@type": "Person",
+    "name": "Masahiro Yasu",
+    "url": "https://keiri-tools.com/about/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "税金・経理・補助金ツールズ",
+    "url": "https://keiri-tools.com/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "text/csv",
+      "contentUrl": "https://keiri-tools.com/column/kyokai-kenpo-ryoritsu-ichiran/kyokai-kenpo-ryoritsu-r08.csv"
+    }
+  ]
+}
+</script><!--kenpo:dataset:E-->
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 協会けんぽ 健康保険料率 一覧</nav>
+<article>
+
+<h1>協会けんぽの健康保険料率 一覧【令和8年度】47都道府県・介護保険料率込み・CSV</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-07">2026年10月7日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p><b>全国健康保険協会（協会けんぽ）の令和8年度の健康保険料率を、47都道府県すべて1つの表にまとめました。</b>一般被保険者の率は令和8年3月分（4月納付分）から適用され、最も高い佐賀県が10.55%、最も低い新潟県が9.21%です。表には、令和7年度からの増減、40〜64歳の介護保険第2号被保険者が使う介護保険料率1.62%込みの率、労使で折半したあとの本人負担率も並べています。</p>
+
+<p>令和8年4月分（5月納付分）からは、協会けんぽの一般被保険者の全員に、年齢にかかわらず子ども・子育て支援金率0.23%が別に加わります。都道府県別の健康保険料率は協会けんぽの公表ページの値を転記したもので（増減・介護込み・折半の率は公表値から計算）、同じ基礎データを<a href="kyokai-kenpo-ryoritsu-r08.csv" download>CSVファイル</a>でも配布しています。給与計算の設定や社内資料に貼るときの出典の書き方は、<a href="#inyou">引用のしかた</a>にまとめました。</p>
+
+<p class="hint">健康保険組合・共済組合に加入している人には、この表の率は当てはまりません（<a href="#taisho">この表が当てはまらない人</a>）。</p>
+
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+  <li><a href="#ichiran">令和8年度の都道府県別 保険料率の一覧（47都道府県）</a></li>
+  <li><a href="#bunpu">高い県・低い県と、令和7年度からの変化</a></li>
+  <li><a href="#yomikata">表の読み方 — いつから・誰に・何を足すか</a></li>
+  <li><a href="#rei">計算例（東京都・標準報酬月額30万円）</a></li>
+  <li><a href="#taisho">この表が当てはまらない人</a></li>
+  <li><a href="#inyou">引用のしかた・CSVのダウンロード</a></li>
+  <li><a href="#faq">よくある質問</a></li>
+  <li><a href="#source">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../../shakai-hoken/">社会保険料 計算機</a></li><li><a href="../hyojun-hoshu-gakuhyo/">標準報酬月額表（等級表）</a></li><li><a href="../kodomo-kosodate-shienkin/">子ども・子育て支援金とは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+<h2 id="ichiran">令和8年度の都道府県別 保険料率の一覧（47都道府県）</h2>
+
+<p>協会けんぽの一般被保険者に適用される令和8年度の都道府県単位保険料率（健康保険料率）です。使う率は、勤務先の適用事業所が所在する都道府県の協会けんぽ支部の率です（健康保険法160条1項。住んでいる都道府県ではありません）。率はいずれも事業主負担と被保険者負担を合わせた全体の率で、本人負担の列は、健康保険法161条1項の「それぞれ保険料額の二分の一を負担する」に従って全体の率を2で割った値です。</p>
+
+<!--kenpo:table:S--><div class="scroll-wrap"><table class="kenpo-ichiran">
+<caption>協会けんぽの都道府県別 保険料率（令和8年度・一般被保険者は令和8年3月分から）</caption>
+<thead><tr><th scope="col">都道府県</th><th scope="col" class="num">健康保険料率</th><th scope="col" class="num">令和7年度からの増減</th><th scope="col" class="num">40〜64歳（介護保険料率1.62%込み）</th><th scope="col" class="num">本人負担（折半）40歳未満</th><th scope="col" class="num">本人負担（折半）40〜64歳</th></tr></thead>
+<tbody>
+<tr data-pref="北海道"><th scope="row" style="white-space:nowrap">北海道</th><td class="num"><span class="numeric-token">10.28%</span></td><td class="num">−0.03</td><td class="num"><span class="numeric-token">11.90%</span></td><td class="num"><span class="numeric-token">5.140%</span></td><td class="num"><span class="numeric-token">5.950%</span></td></tr>
+<tr data-pref="青森県"><th scope="row" style="white-space:nowrap">青森県</th><td class="num"><span class="numeric-token">9.85%</span></td><td class="num">±0.00</td><td class="num"><span class="numeric-token">11.47%</span></td><td class="num"><span class="numeric-token">4.925%</span></td><td class="num"><span class="numeric-token">5.735%</span></td></tr>
+<tr data-pref="岩手県"><th scope="row" style="white-space:nowrap">岩手県</th><td class="num"><span class="numeric-token">9.51%</span></td><td class="num">−0.11</td><td class="num"><span class="numeric-token">11.13%</span></td><td class="num"><span class="numeric-token">4.755%</span></td><td class="num"><span class="numeric-token">5.565%</span></td></tr>
+<tr data-pref="宮城県"><th scope="row" style="white-space:nowrap">宮城県</th><td class="num"><span class="numeric-token">10.10%</span></td><td class="num">−0.01</td><td class="num"><span class="numeric-token">11.72%</span></td><td class="num"><span class="numeric-token">5.050%</span></td><td class="num"><span class="numeric-token">5.860%</span></td></tr>
+<tr data-pref="秋田県"><th scope="row" style="white-space:nowrap">秋田県</th><td class="num"><span class="numeric-token">10.01%</span></td><td class="num">±0.00</td><td class="num"><span class="numeric-token">11.63%</span></td><td class="num"><span class="numeric-token">5.005%</span></td><td class="num"><span class="numeric-token">5.815%</span></td></tr>
+<tr data-pref="山形県"><th scope="row" style="white-space:nowrap">山形県</th><td class="num"><span class="numeric-token">9.75%</span></td><td class="num">±0.00</td><td class="num"><span class="numeric-token">11.37%</span></td><td class="num"><span class="numeric-token">4.875%</span></td><td class="num"><span class="numeric-token">5.685%</span></td></tr>
+<tr data-pref="福島県"><th scope="row" style="white-space:nowrap">福島県</th><td class="num"><span class="numeric-token">9.50%</span></td><td class="num">−0.12</td><td class="num"><span class="numeric-token">11.12%</span></td><td class="num"><span class="numeric-token">4.750%</span></td><td class="num"><span class="numeric-token">5.560%</span></td></tr>
+<tr data-pref="茨城県"><th scope="row" style="white-space:nowrap">茨城県</th><td class="num"><span class="numeric-token">9.52%</span></td><td class="num">−0.15</td><td class="num"><span class="numeric-token">11.14%</span></td><td class="num"><span class="numeric-token">4.760%</span></td><td class="num"><span class="numeric-token">5.570%</span></td></tr>
+<tr data-pref="栃木県"><th scope="row" style="white-space:nowrap">栃木県</th><td class="num"><span class="numeric-token">9.82%</span></td><td class="num">±0.00</td><td class="num"><span class="numeric-token">11.44%</span></td><td class="num"><span class="numeric-token">4.910%</span></td><td class="num"><span class="numeric-token">5.720%</span></td></tr>
+<tr data-pref="群馬県"><th scope="row" style="white-space:nowrap">群馬県</th><td class="num"><span class="numeric-token">9.68%</span></td><td class="num">−0.09</td><td class="num"><span class="numeric-token">11.30%</span></td><td class="num"><span class="numeric-token">4.840%</span></td><td class="num"><span class="numeric-token">5.650%</span></td></tr>
+<tr data-pref="埼玉県"><th scope="row" style="white-space:nowrap">埼玉県</th><td class="num"><span class="numeric-token">9.67%</span></td><td class="num">−0.09</td><td class="num"><span class="numeric-token">11.29%</span></td><td class="num"><span class="numeric-token">4.835%</span></td><td class="num"><span class="numeric-token">5.645%</span></td></tr>
+<tr data-pref="千葉県"><th scope="row" style="white-space:nowrap">千葉県</th><td class="num"><span class="numeric-token">9.73%</span></td><td class="num">−0.06</td><td class="num"><span class="numeric-token">11.35%</span></td><td class="num"><span class="numeric-token">4.865%</span></td><td class="num"><span class="numeric-token">5.675%</span></td></tr>
+<tr data-pref="東京都"><th scope="row" style="white-space:nowrap">東京都</th><td class="num"><span class="numeric-token">9.85%</span></td><td class="num">−0.06</td><td class="num"><span class="numeric-token">11.47%</span></td><td class="num"><span class="numeric-token">4.925%</span></td><td class="num"><span class="numeric-token">5.735%</span></td></tr>
+<tr data-pref="神奈川県"><th scope="row" style="white-space:nowrap">神奈川県</th><td class="num"><span class="numeric-token">9.92%</span></td><td class="num">±0.00</td><td class="num"><span class="numeric-token">11.54%</span></td><td class="num"><span class="numeric-token">4.960%</span></td><td class="num"><span class="numeric-token">5.770%</span></td></tr>
+<tr data-pref="新潟県"><th scope="row" style="white-space:nowrap">新潟県</th><td class="num"><span class="numeric-token">9.21%</span></td><td class="num">−0.34</td><td class="num"><span class="numeric-token">10.83%</span></td><td class="num"><span class="numeric-token">4.605%</span></td><td class="num"><span class="numeric-token">5.415%</span></td></tr>
+<tr data-pref="富山県"><th scope="row" style="white-space:nowrap">富山県</th><td class="num"><span class="numeric-token">9.59%</span></td><td class="num">−0.06</td><td class="num"><span class="numeric-token">11.21%</span></td><td class="num"><span class="numeric-token">4.795%</span></td><td class="num"><span class="numeric-token">5.605%</span></td></tr>
+<tr data-pref="石川県"><th scope="row" style="white-space:nowrap">石川県</th><td class="num"><span class="numeric-token">9.70%</span></td><td class="num">−0.18</td><td class="num"><span class="numeric-token">11.32%</span></td><td class="num"><span class="numeric-token">4.850%</span></td><td class="num"><span class="numeric-token">5.660%</span></td></tr>
+<tr data-pref="福井県"><th scope="row" style="white-space:nowrap">福井県</th><td class="num"><span class="numeric-token">9.71%</span></td><td class="num">−0.23</td><td class="num"><span class="numeric-token">11.33%</span></td><td class="num"><span class="numeric-token">4.855%</span></td><td class="num"><span class="numeric-token">5.665%</span></td></tr>
+<tr data-pref="山梨県"><th scope="row" style="white-space:nowrap">山梨県</th><td class="num"><span class="numeric-token">9.55%</span></td><td class="num">−0.34</td><td class="num"><span class="numeric-token">11.17%</span></td><td class="num"><span class="numeric-token">4.775%</span></td><td class="num"><span class="numeric-token">5.585%</span></td></tr>
+<tr data-pref="長野県"><th scope="row" style="white-space:nowrap">長野県</th><td class="num"><span class="numeric-token">9.63%</span></td><td class="num">−0.06</td><td class="num"><span class="numeric-token">11.25%</span></td><td class="num"><span class="numeric-token">4.815%</span></td><td class="num"><span class="numeric-token">5.625%</span></td></tr>
+<tr data-pref="岐阜県"><th scope="row" style="white-space:nowrap">岐阜県</th><td class="num"><span class="numeric-token">9.80%</span></td><td class="num">−0.13</td><td class="num"><span class="numeric-token">11.42%</span></td><td class="num"><span class="numeric-token">4.900%</span></td><td class="num"><span class="numeric-token">5.710%</span></td></tr>
+<tr data-pref="静岡県"><th scope="row" style="white-space:nowrap">静岡県</th><td class="num"><span class="numeric-token">9.61%</span></td><td class="num">−0.19</td><td class="num"><span class="numeric-token">11.23%</span></td><td class="num"><span class="numeric-token">4.805%</span></td><td class="num"><span class="numeric-token">5.615%</span></td></tr>
+<tr data-pref="愛知県"><th scope="row" style="white-space:nowrap">愛知県</th><td class="num"><span class="numeric-token">9.93%</span></td><td class="num">−0.10</td><td class="num"><span class="numeric-token">11.55%</span></td><td class="num"><span class="numeric-token">4.965%</span></td><td class="num"><span class="numeric-token">5.775%</span></td></tr>
+<tr data-pref="三重県"><th scope="row" style="white-space:nowrap">三重県</th><td class="num"><span class="numeric-token">9.77%</span></td><td class="num">−0.22</td><td class="num"><span class="numeric-token">11.39%</span></td><td class="num"><span class="numeric-token">4.885%</span></td><td class="num"><span class="numeric-token">5.695%</span></td></tr>
+<tr data-pref="滋賀県"><th scope="row" style="white-space:nowrap">滋賀県</th><td class="num"><span class="numeric-token">9.88%</span></td><td class="num">−0.09</td><td class="num"><span class="numeric-token">11.50%</span></td><td class="num"><span class="numeric-token">4.940%</span></td><td class="num"><span class="numeric-token">5.750%</span></td></tr>
+<tr data-pref="京都府"><th scope="row" style="white-space:nowrap">京都府</th><td class="num"><span class="numeric-token">9.89%</span></td><td class="num">−0.14</td><td class="num"><span class="numeric-token">11.51%</span></td><td class="num"><span class="numeric-token">4.945%</span></td><td class="num"><span class="numeric-token">5.755%</span></td></tr>
+<tr data-pref="大阪府"><th scope="row" style="white-space:nowrap">大阪府</th><td class="num"><span class="numeric-token">10.13%</span></td><td class="num">−0.11</td><td class="num"><span class="numeric-token">11.75%</span></td><td class="num"><span class="numeric-token">5.065%</span></td><td class="num"><span class="numeric-token">5.875%</span></td></tr>
+<tr data-pref="兵庫県"><th scope="row" style="white-space:nowrap">兵庫県</th><td class="num"><span class="numeric-token">10.12%</span></td><td class="num">−0.04</td><td class="num"><span class="numeric-token">11.74%</span></td><td class="num"><span class="numeric-token">5.060%</span></td><td class="num"><span class="numeric-token">5.870%</span></td></tr>
+<tr data-pref="奈良県"><th scope="row" style="white-space:nowrap">奈良県</th><td class="num"><span class="numeric-token">9.91%</span></td><td class="num">−0.11</td><td class="num"><span class="numeric-token">11.53%</span></td><td class="num"><span class="numeric-token">4.955%</span></td><td class="num"><span class="numeric-token">5.765%</span></td></tr>
+<tr data-pref="和歌山県"><th scope="row" style="white-space:nowrap">和歌山県</th><td class="num"><span class="numeric-token">10.06%</span></td><td class="num">−0.13</td><td class="num"><span class="numeric-token">11.68%</span></td><td class="num"><span class="numeric-token">5.030%</span></td><td class="num"><span class="numeric-token">5.840%</span></td></tr>
+<tr data-pref="鳥取県"><th scope="row" style="white-space:nowrap">鳥取県</th><td class="num"><span class="numeric-token">9.86%</span></td><td class="num">−0.07</td><td class="num"><span class="numeric-token">11.48%</span></td><td class="num"><span class="numeric-token">4.930%</span></td><td class="num"><span class="numeric-token">5.740%</span></td></tr>
+<tr data-pref="島根県"><th scope="row" style="white-space:nowrap">島根県</th><td class="num"><span class="numeric-token">9.94%</span></td><td class="num">±0.00</td><td class="num"><span class="numeric-token">11.56%</span></td><td class="num"><span class="numeric-token">4.970%</span></td><td class="num"><span class="numeric-token">5.780%</span></td></tr>
+<tr data-pref="岡山県"><th scope="row" style="white-space:nowrap">岡山県</th><td class="num"><span class="numeric-token">10.05%</span></td><td class="num">−0.12</td><td class="num"><span class="numeric-token">11.67%</span></td><td class="num"><span class="numeric-token">5.025%</span></td><td class="num"><span class="numeric-token">5.835%</span></td></tr>
+<tr data-pref="広島県"><th scope="row" style="white-space:nowrap">広島県</th><td class="num"><span class="numeric-token">9.78%</span></td><td class="num">−0.19</td><td class="num"><span class="numeric-token">11.40%</span></td><td class="num"><span class="numeric-token">4.890%</span></td><td class="num"><span class="numeric-token">5.700%</span></td></tr>
+<tr data-pref="山口県"><th scope="row" style="white-space:nowrap">山口県</th><td class="num"><span class="numeric-token">10.15%</span></td><td class="num">−0.21</td><td class="num"><span class="numeric-token">11.77%</span></td><td class="num"><span class="numeric-token">5.075%</span></td><td class="num"><span class="numeric-token">5.885%</span></td></tr>
+<tr data-pref="徳島県"><th scope="row" style="white-space:nowrap">徳島県</th><td class="num"><span class="numeric-token">10.24%</span></td><td class="num">−0.23</td><td class="num"><span class="numeric-token">11.86%</span></td><td class="num"><span class="numeric-token">5.120%</span></td><td class="num"><span class="numeric-token">5.930%</span></td></tr>
+<tr data-pref="香川県"><th scope="row" style="white-space:nowrap">香川県</th><td class="num"><span class="numeric-token">10.02%</span></td><td class="num">−0.19</td><td class="num"><span class="numeric-token">11.64%</span></td><td class="num"><span class="numeric-token">5.010%</span></td><td class="num"><span class="numeric-token">5.820%</span></td></tr>
+<tr data-pref="愛媛県"><th scope="row" style="white-space:nowrap">愛媛県</th><td class="num"><span class="numeric-token">9.98%</span></td><td class="num">−0.20</td><td class="num"><span class="numeric-token">11.60%</span></td><td class="num"><span class="numeric-token">4.990%</span></td><td class="num"><span class="numeric-token">5.800%</span></td></tr>
+<tr data-pref="高知県"><th scope="row" style="white-space:nowrap">高知県</th><td class="num"><span class="numeric-token">10.05%</span></td><td class="num">−0.08</td><td class="num"><span class="numeric-token">11.67%</span></td><td class="num"><span class="numeric-token">5.025%</span></td><td class="num"><span class="numeric-token">5.835%</span></td></tr>
+<tr data-pref="福岡県"><th scope="row" style="white-space:nowrap">福岡県</th><td class="num"><span class="numeric-token">10.11%</span></td><td class="num">−0.20</td><td class="num"><span class="numeric-token">11.73%</span></td><td class="num"><span class="numeric-token">5.055%</span></td><td class="num"><span class="numeric-token">5.865%</span></td></tr>
+<tr data-pref="佐賀県"><th scope="row" style="white-space:nowrap">佐賀県</th><td class="num"><span class="numeric-token">10.55%</span></td><td class="num">−0.23</td><td class="num"><span class="numeric-token">12.17%</span></td><td class="num"><span class="numeric-token">5.275%</span></td><td class="num"><span class="numeric-token">6.085%</span></td></tr>
+<tr data-pref="長崎県"><th scope="row" style="white-space:nowrap">長崎県</th><td class="num"><span class="numeric-token">10.06%</span></td><td class="num">−0.35</td><td class="num"><span class="numeric-token">11.68%</span></td><td class="num"><span class="numeric-token">5.030%</span></td><td class="num"><span class="numeric-token">5.840%</span></td></tr>
+<tr data-pref="熊本県"><th scope="row" style="white-space:nowrap">熊本県</th><td class="num"><span class="numeric-token">10.08%</span></td><td class="num">−0.04</td><td class="num"><span class="numeric-token">11.70%</span></td><td class="num"><span class="numeric-token">5.040%</span></td><td class="num"><span class="numeric-token">5.850%</span></td></tr>
+<tr data-pref="大分県"><th scope="row" style="white-space:nowrap">大分県</th><td class="num"><span class="numeric-token">10.08%</span></td><td class="num">−0.17</td><td class="num"><span class="numeric-token">11.70%</span></td><td class="num"><span class="numeric-token">5.040%</span></td><td class="num"><span class="numeric-token">5.850%</span></td></tr>
+<tr data-pref="宮崎県"><th scope="row" style="white-space:nowrap">宮崎県</th><td class="num"><span class="numeric-token">9.77%</span></td><td class="num">−0.32</td><td class="num"><span class="numeric-token">11.39%</span></td><td class="num"><span class="numeric-token">4.885%</span></td><td class="num"><span class="numeric-token">5.695%</span></td></tr>
+<tr data-pref="鹿児島県"><th scope="row" style="white-space:nowrap">鹿児島県</th><td class="num"><span class="numeric-token">10.13%</span></td><td class="num">−0.18</td><td class="num"><span class="numeric-token">11.75%</span></td><td class="num"><span class="numeric-token">5.065%</span></td><td class="num"><span class="numeric-token">5.875%</span></td></tr>
+<tr data-pref="沖縄県"><th scope="row" style="white-space:nowrap">沖縄県</th><td class="num"><span class="numeric-token">9.44%</span></td><td class="num">±0.00</td><td class="num"><span class="numeric-token">11.06%</span></td><td class="num"><span class="numeric-token">4.720%</span></td><td class="num"><span class="numeric-token">5.530%</span></td></tr>
+</tbody></table></div><!--kenpo:table:E-->
+
+<p class="hint">表の「40〜64歳」の列は、介護保険第2号被保険者に該当する人の率です。子ども・子育て支援金率0.23%（令和8年4月分から）は表の率に含めていません。CSVには支援金を足した合計の列もあります。</p>
+
+<h2 id="bunpu">高い県・低い県と、令和7年度からの変化</h2>
+
+<!--kenpo:summary:S--><p data-kenpo="summary">令和8年度の協会けんぽの健康保険料率（一般被保険者・令和8年3月分から）は、<b>最も高いのが佐賀県の10.55%</b>、<b>最も低いのが新潟県の9.21%</b>で、その差は1.34ポイントです。</p>
+<p data-kenpo="change">令和7年度と比べると、47都道府県のうち<b>引下げが40</b>、<b>据置が7</b>、<b>引上げが0</b>です。下げ幅が最も大きいのは長崎県（10.41% → 10.06%）の0.35ポイントです。</p>
+<p data-kenpo="band">47都道府県のうち37が9.50%以上10.10%以下に入ります。最高と最低の差1.34ポイントは、標準報酬月額300,000円なら健康保険料の全額で月4,020円、折半後の本人負担で月2,010円の違いです（40歳未満・令和8年3月分以降で、子ども・子育て支援金を除く）。</p><!--kenpo:summary:E-->
+
+<figure class="figure fig-wide" style="--figw:390px">
+<!--kenpo:figure:S--><svg viewBox="0 0 420 178" role="img" aria-labelledby="kenpo-fig-t" style="width:100%;height:auto;max-width:640px">
+<title id="kenpo-fig-t">令和8年度の協会けんぽ健康保険料率の分布（47都道府県）</title>
+<line x1="24" y1="128" x2="396" y2="128" stroke="currentColor"/><line x1="24.0" y1="128" x2="24.0" y2="134" stroke="currentColor"/><text x="24.0" y="150" font-size="11" text-anchor="middle" fill="currentColor">9.20</text><line x1="77.1" y1="128" x2="77.1" y2="134" stroke="currentColor"/><text x="77.1" y="150" font-size="11" text-anchor="middle" fill="currentColor">9.40</text><line x1="130.3" y1="128" x2="130.3" y2="134" stroke="currentColor"/><text x="130.3" y="150" font-size="11" text-anchor="middle" fill="currentColor">9.60</text><line x1="183.4" y1="128" x2="183.4" y2="134" stroke="currentColor"/><text x="183.4" y="150" font-size="11" text-anchor="middle" fill="currentColor">9.80</text><line x1="236.6" y1="128" x2="236.6" y2="134" stroke="currentColor"/><text x="236.6" y="150" font-size="11" text-anchor="middle" fill="currentColor">10.00</text><line x1="289.7" y1="128" x2="289.7" y2="134" stroke="currentColor"/><text x="289.7" y="150" font-size="11" text-anchor="middle" fill="currentColor">10.20</text><line x1="342.9" y1="128" x2="342.9" y2="134" stroke="currentColor"/><text x="342.9" y="150" font-size="11" text-anchor="middle" fill="currentColor">10.40</text><line x1="396.0" y1="128" x2="396.0" y2="134" stroke="currentColor"/><text x="396.0" y="150" font-size="11" text-anchor="middle" fill="currentColor">10.60</text><circle cx="26.7" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>新潟県 9.21%</title></circle><circle cx="87.8" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>沖縄県 9.44%</title></circle><circle cx="103.7" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>福島県 9.50%</title></circle><circle cx="106.4" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>岩手県 9.51%</title></circle><circle cx="109.0" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>茨城県 9.52%</title></circle><circle cx="117.0" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>山梨県 9.55%</title></circle><circle cx="127.6" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>富山県 9.59%</title></circle><circle cx="132.9" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>静岡県 9.61%</title></circle><circle cx="138.3" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>長野県 9.63%</title></circle><circle cx="148.9" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>埼玉県 9.67%</title></circle><circle cx="151.5" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>群馬県 9.68%</title></circle><circle cx="156.9" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>石川県 9.70%</title></circle><circle cx="159.5" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>福井県 9.71%</title></circle><circle cx="164.8" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>千葉県 9.73%</title></circle><circle cx="170.1" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>山形県 9.75%</title></circle><circle cx="175.5" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>三重県 9.77%</title></circle><circle cx="175.5" cy="111.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>宮崎県 9.77%</title></circle><circle cx="178.1" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>広島県 9.78%</title></circle><circle cx="183.4" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>岐阜県 9.80%</title></circle><circle cx="188.7" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>栃木県 9.82%</title></circle><circle cx="196.7" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>東京都 9.85%</title></circle><circle cx="196.7" cy="111.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>青森県 9.85%</title></circle><circle cx="199.4" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>鳥取県 9.86%</title></circle><circle cx="204.7" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>滋賀県 9.88%</title></circle><circle cx="207.3" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>京都府 9.89%</title></circle><circle cx="212.7" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>奈良県 9.91%</title></circle><circle cx="215.3" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>神奈川県 9.92%</title></circle><circle cx="218.0" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>愛知県 9.93%</title></circle><circle cx="220.6" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>島根県 9.94%</title></circle><circle cx="231.3" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>愛媛県 9.98%</title></circle><circle cx="239.2" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>秋田県 10.01%</title></circle><circle cx="241.9" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>香川県 10.02%</title></circle><circle cx="249.9" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>岡山県 10.05%</title></circle><circle cx="249.9" cy="111.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>高知県 10.05%</title></circle><circle cx="252.5" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>和歌山県 10.06%</title></circle><circle cx="252.5" cy="111.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>長崎県 10.06%</title></circle><circle cx="257.8" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>大分県 10.08%</title></circle><circle cx="257.8" cy="111.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>熊本県 10.08%</title></circle><circle cx="263.1" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>宮城県 10.10%</title></circle><circle cx="265.8" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>福岡県 10.11%</title></circle><circle cx="268.5" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>兵庫県 10.12%</title></circle><circle cx="271.1" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>大阪府 10.13%</title></circle><circle cx="271.1" cy="111.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>鹿児島県 10.13%</title></circle><circle cx="276.4" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>山口県 10.15%</title></circle><circle cx="300.3" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>徳島県 10.24%</title></circle><circle cx="311.0" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>北海道 10.28%</title></circle><circle cx="382.7" cy="120.0" r="4" fill="var(--accent)" fill-opacity="0.75"><title>佐賀県 10.55%</title></circle>
+<line x1="26.7" y1="36" x2="26.7" y2="128" stroke="var(--sub)" stroke-dasharray="3 3"/><text x="26.7" y="30" font-size="13" text-anchor="start" fill="currentColor">最低 新潟県 9.21%</text><line x1="382.7" y1="36" x2="382.7" y2="128" stroke="var(--sub)" stroke-dasharray="3 3"/><text x="382.7" y="30" font-size="13" text-anchor="end" fill="currentColor">最高 佐賀県 10.55%</text><line x1="196.7" y1="58" x2="196.7" y2="128" stroke="var(--sub)" stroke-dasharray="3 3"/><text x="196.7" y="52" font-size="13" text-anchor="middle" fill="currentColor">東京都 9.85%</text>
+<text x="396" y="172" font-size="11" text-anchor="end" fill="var(--sub)">健康保険料率（%）</text>
+</svg><!--kenpo:figure:E-->
+<figcaption>令和8年度の協会けんぽ健康保険料率（一般被保険者・令和8年3月分から）の47都道府県の分布。点1つが1都道府県で、同じ率の都道府県は上に積んでいます。40〜64歳の介護保険第2号被保険者は介護保険料率1.62%、令和8年4月分からは年齢にかかわらず子ども・子育て支援金率0.23%がさらに加わります。</figcaption>
+</figure>
+
+<p>都道府県の率が違うのは、協会けんぽの健康保険料率が都道府県単位保険料率として支部ごとに決められ、支部の加入者の医療費の水準などが反映されるためです（健康保険法160条）。</p>
+
+<h2 id="yomikata">表の読み方 — いつから・誰に・何を足すか</h2>
+
+<div class="scroll-wrap">
+<table>
+<thead><tr><th scope="col">項目</th><th scope="col">率（令和8年度）</th><th scope="col">誰に</th><th scope="col">いつから（一般被保険者）</th></tr></thead>
+<tbody>
+<tr><td>健康保険料率</td><td>都道府県別（9.21〜10.55%）</td><td>一般被保険者の全員</td><td>令和8年3月分（4月納付分）から</td></tr>
+<tr><td>介護保険料率</td><td>全国一律 1.62%</td><td>40〜64歳の介護保険第2号被保険者</td><td>令和8年3月分（4月30日納付期限分）から</td></tr>
+<tr><td>子ども・子育て支援金率</td><td>全国一律 0.23%</td><td>一般被保険者の全員（年齢にかかわらない）</td><td>令和8年4月分（5月納付分）から</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><b>適用の月が1か月ずれる点に注意してください。</b>令和8年度の健康保険料率と介護保険料率は3月分から変わりましたが、子ども・子育て支援金が加わるのは4月分からです。一般被保険者の毎月の保険料は翌月末日までに納める決まり（健康保険法164条1項）で、事業主が給与から控除できるのは前月分の保険料です（同法167条1項。被保険者がその事業所に使用されなくなった場合は、前月分とその月分を控除できます）。このため、3月分の保険料は4月に納付し、4月に支払う給与から控除するのが通常の流れです。</p>
+
+<p><b>介護保険料率は、介護保険の第2号被保険者にだけ足します。</b>第2号被保険者は、市区町村の区域内に住所がある40歳以上65歳未満の医療保険加入者です（介護保険法9条2号）。海外に住所を移した人は、日本の住所を有しなくなった日の翌日から第2号被保険者ではなくなります（同法11条1項）。資格を得るのは40歳に達したときで（同法10条1号）、40歳に達した月の分から介護保険料が加わります（その月に健康保険の資格を失ったなどで、その月分の保険料自体が算定されない場合を除きます。健康保険法156条3項）。65歳に達すると第1号被保険者に変わり、その月の分からは健康保険料とあわせて徴収されなくなります（健康保険法156条2項）。詳しくは<a href="../kaigo-hokenryo-itsukara/">介護保険料はいつから引かれるか</a>で解説しています。</p>
+
+<p><b>保険料額は、標準報酬月額に率を掛けて求めます。</b>実際の給与から引く額は、表の率を報酬そのものではなく、等級表で丸めた標準報酬月額に掛けます。等級の決め方と50等級の一覧は<a href="../hyojun-hoshu-gakuhyo/">標準報酬月額表（等級表）</a>を参照してください。</p>
+
+<h2 id="rei">計算例（東京都・標準報酬月額30万円）</h2>
+
+<!--kenpo:rei:S--><p data-kenpo="rei">協会けんぽ東京都支部の一般被保険者で標準報酬月額が300,000円の人なら、令和8年3月分以降の健康保険料（全額）は300,000円×9.85%＝29,550円で、本人負担（折半額）は<b>14,775円</b>です。東京都支部で40〜64歳の介護保険第2号被保険者なら300,000円×11.47%＝34,410円で、折半額は<b>17,205円</b>です。令和8年4月分以降は、年齢にかかわらず子ども・子育て支援金300,000円×0.23%＝690円（折半額345円）が加わります。</p><!--kenpo:rei:E-->
+
+<p>この3つの折半額は、協会けんぽ東京都支部が公表している令和8年度の保険料額表の第22級（標準報酬月額300,000円）の欄と一致します。折半額に円未満の端数が出る場合、給与から控除するときは50銭以下を切り捨て・50銭を超える部分を切り上げ、被保険者が現金で支払うときは50銭未満を切り捨て・50銭以上を切り上げます（事業主と被保険者の間に特約があれば、それに従います）。</p>
+
+<a class="tool-cta" href="../../shakai-hoken/">社会保険料 計算機で、都道府県・年齢・月給から本人負担額と会社負担額を試算する</a>
+
+<h2 id="taisho">この表が当てはまらない人</h2>
+
+<p>この一覧は<b>協会けんぽの一般被保険者</b>の率です。次の人は、別の率または別の負担方法になります。</p>
+
+<ul>
+<li><b>健康保険組合の加入者</b> — 料率は組合ごとに決まり、規約により事業主の負担割合を増やすこともできます（健康保険法162条）。率は勤務先の組合の通知で確認します。</li>
+<li><b>共済組合（公務員・私立学校の教職員など）・船員保険の加入者</b> — 協会けんぽの都道府県単位保険料率とは別の制度です。</li>
+<li><b>協会けんぽの任意継続被保険者</b> — 率は<b>住所地の都道府県</b>の率（健康保険法160条1項）で、事業主がいないので<b>保険料の全額を自分で負担</b>します（健康保険法161条1項ただし書）。率が変わるのは4月分からです（一般被保険者は3月分から）。詳しくは<a href="../kenko-hoken-nini-keizoku/">任意継続の解説</a>へ。</li>
+<li><b>日雇特例被保険者</b> — 率の改定は4月分からで、保険料額の決め方も一般被保険者と異なります。</li>
+<li><b>国民健康保険の加入者</b> — 保険料（税）は市区町村ごとの計算式で決まり、この表の率は使いません。<a href="../../kokuho/">国民健康保険料の計算機</a>で試算できます。</li>
+</ul>
+
+<h2 id="inyou">引用のしかた・CSVのダウンロード</h2>
+
+<p>この表は、社内の給与計算マニュアル、就業規則の説明資料、ブログ記事などに引用していただいてかまいません。引用するときは、<b>出典としてこのページの名前とURLを書き、リンクを張ってください</b>。率そのものは協会けんぽの公表値なので、正式な資料では一次資料（協会けんぽ「令和8年度都道府県単位保険料率」）もあわせて示すと確実です。</p>
+
+<p><b>出典の書き方の例（文章・スライド）</b></p>
+<pre><code>出典: 税金・経理・補助金ツールズ「協会けんぽの健康保険料率 一覧【令和8年度】」
+https://keiri-tools.com/column/kyokai-kenpo-ryoritsu-ichiran/
+（元資料: 全国健康保険協会「令和8年度都道府県単位保険料率」）</code></pre>
+
+<p><b>リンクの貼り方の例（HTML）</b></p>
+<pre><code>&lt;a href="https://keiri-tools.com/column/kyokai-kenpo-ryoritsu-ichiran/"&gt;協会けんぽの健康保険料率 一覧【令和8年度】（税金・経理・補助金ツールズ）&lt;/a&gt;</code></pre>
+
+<p><b>CSVファイル</b>: <a href="kyokai-kenpo-ryoritsu-r08.csv" download>kyokai-kenpo-ryoritsu-r08.csv</a>（UTF-8・BOM付き。Excelでそのまま開けます）。列は、都道府県、令和8年度と令和7年度の健康保険料率、増減、介護保険料率、子ども・子育て支援金率、40歳未満と40〜64歳それぞれの合計の率と本人負担の率（令和8年4月分以降・支援金込み）、適用開始月、出典URLです。表とCSVは、このサイトの料率データ1つから同時に作っています。ただし、ページの表の合計・本人負担は子ども・子育て支援金を含まず、CSVの合計・本人負担の列は支援金を含む点が違います。</p>
+
+<p>表の47都道府県の健康保険料率（令和8年度・令和7年度）は、2026年10月7日に協会けんぽの公表ページと1件ずつ照合し、不一致がないことを確かめています。協会けんぽが率を改定したときは、このページと計算機を同じデータから更新します。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>令和8年度の協会けんぽの健康保険料率で、いちばん高い県と低い県はどこですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>協会けんぽの一般被保険者の令和8年度の健康保険料率（令和8年3月分から）は、最も高いのが佐賀県の10.55%、最も低いのが新潟県の9.21%で、差は1.34ポイントです。東京都は9.85%、大阪府は10.13%、愛知県は9.93%です。40〜64歳の介護保険第2号被保険者は、これに全国一律の介護保険料率1.62%が加わります。令和8年4月分以降は、年齢にかかわらず子ども・子育て支援金率0.23%もさらに加わります。</p>
+
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>令和8年度の健康保険料率はいつから変わりましたか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>協会けんぽの一般被保険者の健康保険料率と介護保険料率は、令和8年3月分（4月納付分）から令和8年度の率に変わりました。任意継続被保険者と日雇特例被保険者は令和8年4月分からです。子ども・子育て支援金率0.23%は、一般被保険者は令和8年4月分（5月納付分）から加わるので、健康保険料率の改定と1か月ずれます。</p>
+
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>表の率は、給与から引かれる本人の率ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>都道府県別の健康保険料率の列は、事業主と被保険者を合わせた全体の率です。協会けんぽの一般被保険者は健康保険法161条1項により労使で半分ずつ負担するので、本人の率は全体の率の2分の1で、表の「本人負担（折半）」の列がその値です。たとえば令和8年度の東京都の40歳未満なら、健康保険料率は全体9.85%に対して本人4.925%です。令和8年4月分以降は、これとは別に子ども・子育て支援金率0.23%の半分の0.115%が本人負担に加わるので、東京都の40歳未満の人が給与から引かれる率の合計は5.040%になります。任意継続被保険者は全額を自分で負担するので、全体の率がそのまま本人の率になります。</p>
+
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>令和8年度は健康保険料率が上がった都道府県はありますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>協会けんぽの令和8年度の健康保険料率（一般被保険者・令和8年3月分から）は、令和7年度と比べて引き上げられた都道府県は1つもなく、40都道府県で引下げ、7県で据置でした。ただし令和8年4月分からは子ども・子育て支援金率0.23%が別に加わるため、40歳未満の人で比べると、健康保険料率の引下げ幅が0.23ポイントより小さい都道府県では、健康保険料と支援金を合わせた率が令和7年度より高くなります（同じ標準報酬月額の場合）。</p>
+
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>この表をCSVで使ってもよいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>はい。ページ内のCSVファイル（UTF-8・BOM付き）をダウンロードして、給与計算の設定や社内資料に使えます。資料やWebページに載せるときは、出典としてこのページの名前とURL（https://keiri-tools.com/column/kyokai-kenpo-ryoritsu-ichiran/）を書き、リンクを張ってください。率は協会けんぽの公表値なので、正式な資料では協会けんぽの「令和8年度都道府県単位保険料率」もあわせて示すと確実です。</p>
+
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../kokumin-nenkin-hokenryo/"><b>国民年金保険料 — 令和8年度は月額17,920円。納め方で納付総額が変わる</b><span>国民年金保険料は、令和8年度（令和8年4月分〜令和9年3月分）が月額17,920円、令和9年度（令和9年4月分〜令和10年3月分）が月額18,290円です（日本年金機構）。納付期限</span></a><a class="tool-card" href="../koyou-hoken-hihokenshasho/"><b>雇用保険被保険者証とは — 誰が誰に交付し、入社時に何をし、なくしたらどう再交付するか</b><span>被保険者証の名宛人は会社ではなく本人。入社時にするのは「提出」ではなく「提示」で、退職時に返す条文は無い。</span></a><a class="tool-card" href="../izoku-nenkin-jukyu-yoken/"><b>遺族年金は誰が受け取れるか — 保険料納付・遺族の範囲・生計維持の3つの門を条文で確かめる</b><span>遺族年金は「いくら」の前に「そもそも出るか」で決まる。門は3つで、1つでも欠けると1円も出ない。門①亡くなった人の保険料納付要件＝国民年金法37条ただし書・厚生年金保険法58条1項</span></a></div></section><!--next-read:E-->
+<section class="related">
+<div class="tool-grid">
+<a class="tool-card" href="../../shakai-hoken/"><b>社会保険料 計算機</b><span>都道府県・年齢・月給から、健康保険・介護保険・厚生年金・雇用保険の本人負担と会社負担を計算します。</span></a>
+<a class="tool-card" href="../hyojun-hoshu-gakuhyo/"><b>標準報酬月額表（等級表）</b><span>率を掛ける相手の標準報酬月額。全50等級と保険料の実額。</span></a>
+<a class="tool-card" href="../kodomo-kosodate-shienkin/"><b>子ども・子育て支援金</b><span>令和8年4月分から加わった0.23%の正体と、いくら引かれるか。</span></a>
+<a class="tool-card" href="../koyou-hokenryo-ritsu/"><b>雇用保険料率の一覧</b><span>都道府県で変わらず、事業の種類で変わる。令和8年度は一般の事業で労働者5/1,000。</span></a>
+</div>
+</section>
+
+<h2 id="source">出典</h2>
+<p class="source-method">全国健康保険協会（協会けんぽ）の公表ページ・保険料額表と、健康保険法の条文（e-Gov法令検索）で確認。</p>
+<ul>
+<li>全国健康保険協会「令和8年度の協会けんぽの保険料率は3月分（4月納付分）から改定されます」（令和8年度都道府県単位保険料率。令和7年度との比較つき）— https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/rate_prefectures/r08 （ページに公表日の記載なし。2026年10月7日に47件照合）</li>
+<li>全国健康保険協会「協会けんぽの介護保険料率について」— 一般被保険者は令和8年3月分（4月30日納付期限分）から1.62%（令和7年度は1.59%）。任意継続・日雇特例被保険者は令和8年4月分から</li>
+<li>全国健康保険協会「協会けんぽの子ども・子育て支援金率について」— 一般被保険者は令和8年4月分（5月納付分）から0.23%</li>
+<li>全国健康保険協会 東京支部「令和8年3月分（4月納付分）からの健康保険・厚生年金保険の保険料額表」— 第22級（標準報酬月額300,000円）の折半額、被保険者負担分の端数処理</li>
+<li>健康保険法（大正11年法律第70号）161条1項（保険料の負担）・162条（健康保険組合の負担割合の特例）（e-Gov法令検索）</li>
+</ul>
+
+<p class="note">この記事は令和8年度（協会けんぽの一般被保険者は令和8年3月分から）の保険料率にもとづく一般的な情報であり、個別の事案に対する助言ではありません。実際の保険料は、加入している保険者・標準報酬月額・年齢などによって異なります。判断に迷う場合は、協会けんぽの支部・年金事務所または社会保険労務士にご確認ください。</p>
+
+</article>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%8D%94%E4%BC%9A%E3%81%91%E3%82%93%E3%81%BD%E3%81%AE%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%BA%A6%E3%81%AE%E5%81%A5%E5%BA%B7%E4%BF%9D%E9%99%BA%E6%96%99%E7%8E%87%E3%82%9247%E9%83%BD%E9%81%93%E5%BA%9C%E7%9C%8C%E3%81%AE%E4%B8%80%E8%A6%A7%E3%81%A7%E6%8E%B2%E8%BC%89%E3%80%82%E4%B8%80%E8%88%AC%E8%A2%AB%E4%BF%9D%E9%99%BA%E8%80%85%E3%81%AF%E4%BB%A4%E5%92%8C8%E5%B9%B43%E6%9C%88%E5%88%86%E3%81%8B%E3%82%89%E3%80%81%E6%9C%80%E9%AB%98%E3%81%AF%E4%BD%90%E8%B3%80%E7%9C%8C10.55%25%E3%83%BB%E6%9C%80%E4%BD%8E%E3%81%AF%E6%96%B0%E6%BD%9F%E7%9C%8C9.21%25%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fkyokai-kenpo-ryoritsu-ichiran%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site">
+  <p>© 税金・経理・補助金ツールズ</p>
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body>
+</html>

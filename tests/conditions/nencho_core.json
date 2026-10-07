@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "core": "nencho_core",
+  "page": "docs/nenmatsu-chosei/index.html",
+  "priority_evidence": "2026-10-07 新規ツール（sol 6.1 照合3周の指摘から）",
+  "conditions": [
+    { "id": "taisho-2000man", "statute": "https://laws.e-gov.go.jp/api/2/law_data/340AC0000000033_20261201_508AC0000000012", "disposition": "input",
+      "input_ids": ["kyuyo"], "cases": ["給与2,000万円ちょうどは年末調整の対象", "給与2,000万円＋1円は年末調整の対象外"] },
+    { "id": "chosei-kojo", "statute": "https://laws.e-gov.go.jp/api/2/law_data/332AC0000000026_20261201_508AC0000000012?elm=Article_41_3_11", "disposition": "input",
+      "input_ids": ["kyuyo", "f_nensho", "f_1618", "f_tokutei", "fo_under23", "fo_tokubetsu"], "rounding": "ceil",
+      "cases": ["給与850万円ちょうどは所得金額調整控除0", "給与850万円＋1円は所得金額調整控除1円（切上げ）"] },
+    { "id": "tokutei-shinzoku", "statute": "https://laws.e-gov.go.jp/api/2/law_data/340AC0000000033_20261201_508AC0000000012", "disposition": "input",
+      "input_ids": ["ts"], "cases": ["特定親族 合計所得62万円は対象外（特定扶養親族）", "特定親族 合計所得62万円＋1円は63万円", "特定親族 合計所得85万円は63万円", "特定親族 合計所得85万円＋1円は61万円"] },
+    { "id": "kiso-kojo", "statute": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf", "disposition": "input",
+      "input_ids": ["kyuyo", "other_kyuyo", "nenkin", "other"], "cases": ["合計所得489万円ちょうどは基礎控除104万円", "合計所得489万円＋1円は基礎控除67万円"] },
+    { "id": "hitorioya-shotoku", "statute": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf", "disposition": "input",
+      "input_ids": ["kafu"], "cases": ["合計所得500万円ちょうどはひとり親控除35万円", "合計所得500万円＋1円はひとり親控除なし"] },
+    { "id": "haigu-62man", "statute": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf", "disposition": "input",
+      "input_ids": ["haigu", "haigu_gokei"], "cases": ["配偶者の合計所得62万円は配偶者控除", "配偶者の合計所得62万円＋1円は配偶者特別控除"] },
+    { "id": "sokusan", "statute": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf", "disposition": "fixed",
+      "scope_selector": "#sokusan-hyo tbody tr:first-child td:first-child", "scope_text": "1,950,000円以下",
+      "cases": ["課税給与所得1,950,000円は5%", "課税給与所得1,951,000円は10%−97,500円"] },
+    { "id": "kanpu-juto", "statute": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/203.pdf", "disposition": "input",
+      "input_ids": ["last_tax", "miharai_tax"], "cases": ["設例 超過額25,745円から12月分6,963円を充当し18,782円を還付", "設例 12月分の税額計算を省略した場合は超過額をそのまま還付（115,270円）"] }
+  ],
+  "default_cases": ["年末調整HTML初期は給与空欄で計算しない"]
+}
