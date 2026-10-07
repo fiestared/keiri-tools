@@ -165,14 +165,14 @@ def perf_section(p, intro_cid=None):
     r, A, B = p.r_, p.A, p.B
     yrs = r['年数']
     rows = [('比較期間', f"{jd(r['起点'])}〜{jd(r['終点'])}", f"{jd(r['起点'])}〜{jd(r['終点'])}", 'perf'),
-            ('累積騰落率（比較期間・分配金再投資）', pct(r['A累積']), pct(r['B累積']), None)]
+            ('累積騰落率（比較期間・税引前分配金再投資）', pct(r['A累積']), pct(r['B累積']), None)]
     if yrs >= 1:
-        rows.append(('年率換算（複利・比較期間・分配金再投資）', pct(r['A年率']), pct(r['B年率']), None))
-    rows.append(('100万円の終了時評価額（売却前・比較期間・分配金再投資）', yen(r['A100万円終価']), yen(r['B100万円終価']), None))
-    rows.append(('比較期間内の最大下落率（分配金再投資）', pct(r['A最大下落率']), pct(r['B最大下落率']), None))
+        rows.append(('年率換算（複利・比較期間・税引前分配金再投資）', pct(r['A年率']), pct(r['B年率']), None))
+    rows.append(('100万円の終了時評価額（売却前・税引前・比較期間・分配金再投資）', yen(r['A100万円終価']), yen(r['B100万円終価']), None))
+    rows.append(('比較期間内の最大下落率（税引前分配金再投資）', pct(r['A最大下落率']), pct(r['B最大下落率']), None))
     if '1年窓' in r:
         one = r['1年窓']
-        rows.append((f"直近1年の騰落率（{jd(one['起点'])}〜{jd(one['終点'])}・分配金再投資）", pct(one['A累積']), pct(one['B累積']), None))
+        rows.append((f"直近1年の騰落率（{jd(one['起点'])}〜{jd(one['終点'])}・税引前分配金再投資）", pct(one['A累積']), pct(one['B累積']), None))
     h = p.r('perf', '<h2 id="performance">同じ期間の実績を、分配金再投資で比べる</h2>')
     h += '<div class="scroll-wrap"><table><thead><tr><th scope="col">' + p.r('perf', f'項目（基準価額は{jd(r["終点"])}まで）') + '</th>'
     h += f'<th scope="col" class="num">{E(A["short"])}</th><th scope="col" class="num">{E(B["short"])}</th></tr></thead><tbody>'
@@ -219,8 +219,8 @@ def chart(p):
     cap = p.r('perf', f'<figcaption>開始日（{jd(r["起点"])}）を100に統一し、終了日（{jd(r["終点"])}）までを描画。実線：{E(p.A["short"])}。破線：{E(p.B["short"])}。税引前の分配金を再投資した推移で、数値は直上の表のとおりです。</figcaption>')
     return f'<figure class="figure">{svg}{cap}</figure>'
 
-FIELD_ROWS = [('fee', '信託報酬（税込年率・ファンド本体・貸付時の追加分を除く）'), ('eff', '投資先ETF等を加味した実質的な信託報酬（税込年率）'), ('ter', '総経費率（参考値・年率）'),
-              ('ter_period', '総経費率の対象期間'), ('index', '連動対象・投資対象'), ('hedge', '為替ヘッジ'), ('settle', '決算'),
+FIELD_ROWS = [('fee', '信託報酬（税込年率・ファンド本体・貸付時の追加分を除く）'), ('eff', '投資先ETF等を加味した実質的な信託報酬（税込年率・交付目論見書の概算。その他の費用と貸付時の報酬を除く）'), ('ter', '総経費率（年率換算の参考値。購入時手数料・売買委託手数料等を除く）'),
+              ('ter_period', '総経費率の対象期間'), ('index', '連動対象・投資対象'), ('hedge', '為替ヘッジ（交付目論見書の運用方針）'), ('settle', '決算'),
               ('incept', '設定日'), ('nofee', '購入時手数料／信託財産留保額')]
 
 def fee_section(p, show_eff=None):
@@ -419,8 +419,8 @@ def method_section(p):
     h += '<p>' + p.r('method', '比較期間の終了時評価額は「100万円×終点の再投資基準価額÷起点の再投資基準価額」で計算しました。基準価額は信託報酬などを差し引いた後の値なので、費用をもう一度引いてはいません。' + cost)
     if tax:
         h += p.r(tax, f'交付目論見書の税金の表（{tax_asof(p)}現在の記載）では、NISAなどの非課税の扱いを受けない個人投資者が受け取る普通分配金と、換金（解約）時・償還時の差益（譲渡益）に、源泉徴収時の税率でそれぞれ20.315%がかかります（課税方法などにより異なる場合があり、外国税額控除の適用となった場合は分配時の税金が異なる場合があり、法人の場合は異なります）。')
-        h += p.r(tax, '課税口座では、その税金の分だけ実際の手取り額はこの評価額より少なくなります。')
-        h += p.r(tax, '2本ともNISAの「成長投資枠」の対象で（販売会社により取扱いが異なる場合があります）、NISAを利用した場合は、一定の額を上限として毎年一定額の範囲で新たに購入した分から生じる配当所得と譲渡所得が非課税です。')
+        h += p.r(tax, '課税口座で課税される普通分配金や譲渡益が生じた場合は、その税金の分だけ実際の手取り額はこの評価額より少なくなります。')
+        h += p.r(tax, '2本ともNISAの「成長投資枠」の対象で（販売会社により取扱いが異なる場合があります）、非課税口座の開設など一定の条件に該当する方がNISAを利用した場合は、一定の額を上限として毎年一定額の範囲で新たに購入した分から生じる配当所得と譲渡所得が非課税です。')
     if nofee:
         h += p.r(nofee_pair(p), '2本とも、交付目論見書の購入時手数料と信託財産留保額は「ありません」と書かれています。')
     h += '</p>'
@@ -622,6 +622,7 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'sbi-spyd4-lend': {'must_with': ['貸付', '以内']},
         'rakuten-vym-lend': {'must_with': ['貸付', '品貸料']},
         'taxpair': {'must_with': ['源泉徴収|個人|一定の額']},
+        'rakuten-vym-effnote': {'must_with': ['2026年2月末|程度|変動']},
     },
     'rakuten-sox-vs-rakuten-nasdaq': {
         'perf': {'must_with': ['再投資|信託報酬', '2026年9月30日|比較期間|信託報酬'], 'derived': True, 'calc': _PERF_CALC_SOX},
