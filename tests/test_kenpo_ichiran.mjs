@@ -113,7 +113,7 @@ function check(html, csv) {
   if (!desc.includes(`最高は${nameOf(hi)}${p2(hi)}%・最低は${nameOf(lo)}${p2(lo)}%`)) fail(`meta description の最高・最低が正本と違う`);
   if (!desc.includes(`介護保険料率${p2(K)}%`) || !desc.includes(`子ども・子育て支援金率${p2(S)}%`)) fail("meta description の介護・支援金の率が正本と違う");
   const faq = html.slice(html.indexOf('<h2 id="faq">'));
-  const faqA = (q) => strip((faq.match(new RegExp(`<h3>Q\\. ${q}[\\s\\S]*?</h3>\\s*<p>([\\s\\S]*?)</p>`)) || [, ""])[1]);
+  const faqA = (q) => strip((faq.match(new RegExp(`<h3[^>]*>(?:<span[^>]*>)?Q\\. (?:</span>)?${q}[\\s\\S]*?</h3>\\s*<p[^>]*>([\\s\\S]*?)</p>`)) || [, ""])[1]);
   const f1 = faqA("令和8年度の協会けんぽの健康保険料率で、いちばん高い県");
   for (const p of [nameOf(hi), nameOf(lo), "東京都", "大阪府", "愛知県"]) {
     const v = p === nameOf(hi) ? hi : p === nameOf(lo) ? lo : exp[p].r;
@@ -161,13 +161,13 @@ ok(base.length === 0, `無傷のページ・CSVは緑（${base.length}件）${ba
 if (base.length === 0) {
   const t = exp["東京都"];
   const breaks = [
-    ["表: 東京都の健康保険料率", (h) => h.replace(`<th scope="row" style="white-space:nowrap">東京都</th><td class="num">${p2(t.r)}%`, `<th scope="row" style="white-space:nowrap">東京都</th><td class="num">${p2(t.r + 1)}%`), null],
-    ["表: 東京都の折半（40〜64歳）", (h) => h.replace(new RegExp(`(<th scope="row" style="white-space:nowrap">東京都</th>(?:<td[^>]*>[^<]*</td>){4})<td class="num">${p3(t.rk).replace(".", "\\.")}%`), `$1<td class="num">${p3(t.rk + 2)}%`), null],
+    ["表: 東京都の健康保険料率", (h) => h.replace(`<th scope="row" style="white-space:nowrap">東京都</th><td class="num"><span class="numeric-token">${p2(t.r)}%`, `<th scope="row" style="white-space:nowrap">東京都</th><td class="num"><span class="numeric-token">${p2(t.r + 1)}%`), null],
+    ["表: 東京都の折半（40〜64歳）", (h) => h.replace(new RegExp(`(<th scope="row" style="white-space:nowrap">東京都</th>(?:<td[^>]*>(?:<span[^>]*>)?[^<]*(?:</span>)?</td>){4})<td class="num"><span class="numeric-token">${p3(t.rk).replace(".", "\\.")}%`), `$1<td class="num"><span class="numeric-token">${p3(t.rk + 2)}%`), null],
     ["表: 1行消す", (h) => h.replace(/<tr data-pref="沖縄県">[\s\S]*?<\/tr>\n?/, ""), null],
     ["CSV: 佐賀県の令和7年度", null, (c) => c.replace(/佐賀県,10\.55,10\.78/, "佐賀県,10.55,10.77")],
     ["要約: 据置の件数", (h) => h.replace(/<b>据置が\d+<\/b>/, "<b>据置が8</b>"), null],
     ["計算例: 本人負担", (h) => h.replace(/（折半額）は<b>14,775円/, "（折半額）は<b>14,776円"), null],
-    ["FAQ1: 新潟県の率（本文の<p>を狙う。同じ文が先に FAQ の JSON-LD に出るので、素の replace は JSON-LD に当たる＝規則8）", (h) => h.replace("<p>A. 協会けんぽの一般被保険者の令和8年度の健康保険料率（令和8年3月分から）は、最も高いのが佐賀県の10.55%、最も低いのが新潟県の9.21%", "<p>A. 協会けんぽの一般被保険者の令和8年度の健康保険料率（令和8年3月分から）は、最も高いのが佐賀県の10.55%、最も低いのが新潟県の9.20%"), null],
+    ["FAQ1: 新潟県の率（本文の faq-answer の span 直後を狙う。同じ文が先に FAQ の JSON-LD に出るので、素の replace は JSON-LD に当たる＝規則8）", (h) => h.replace("</span>協会けんぽの一般被保険者の令和8年度の健康保険料率（令和8年3月分から）は、最も高いのが佐賀県の10.55%、最も低いのが新潟県の9.21%", "</span>協会けんぽの一般被保険者の令和8年度の健康保険料率（令和8年3月分から）は、最も高いのが佐賀県の10.55%、最も低いのが新潟県の9.20%"), null],
     ["meta description: 最高", (h) => h.replace("最高は佐賀県10.55%", "最高は佐賀県10.56%"), null],
   ];
   for (const [name, bh, bc] of breaks) {

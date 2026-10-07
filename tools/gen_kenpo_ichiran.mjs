@@ -40,6 +40,10 @@ export const toBp = (x) => {
 export const fmt = (bp, half = false) => half ? (bp / 200).toFixed(3) : (bp / 100).toFixed(2);
 export const fmtDiff = (bp) => bp === 0 ? "±0.00" : (bp > 0 ? "+" : "−") + (Math.abs(bp) / 100).toFixed(2);
 
+// gen_layout_markup.mjs と同じ組版（表の数値を numeric-token で包み、数値列の見出しに num）。ここで揃えないと、
+// あちらが包み直して本生成器の --check が赤になり、互いに書き換え合う。
+const tok = (v) => `<span class="numeric-token">${v}%</span>`;
+
 export function build(D) {
   const m = D._meta;
   const prefs = Object.keys(D.kenko_rates);
@@ -57,9 +61,9 @@ export function build(D) {
   // ---- table ----
   const table = `<div class="scroll-wrap"><table class="kenpo-ichiran">
 <caption>協会けんぽの都道府県別 保険料率（${m.year}・一般被保険者は${rateFrom}から）</caption>
-<thead><tr><th scope="col">都道府県</th><th scope="col">健康保険料率</th><th scope="col">${prevYear}からの増減</th><th scope="col">40〜64歳（介護保険料率${fmt(kaigo)}%込み）</th><th scope="col">本人負担（折半）40歳未満</th><th scope="col">本人負担（折半）40〜64歳</th></tr></thead>
+<thead><tr><th scope="col">都道府県</th><th scope="col" class="num">健康保険料率</th><th scope="col" class="num">${prevYear}からの増減</th><th scope="col" class="num">40〜64歳（介護保険料率${fmt(kaigo)}%込み）</th><th scope="col" class="num">本人負担（折半）40歳未満</th><th scope="col" class="num">本人負担（折半）40〜64歳</th></tr></thead>
 <tbody>
-${rows.map((x) => `<tr data-pref="${x.p}"><th scope="row" style="white-space:nowrap">${x.p}</th><td class="num">${fmt(x.r)}%</td><td class="num">${fmtDiff(x.diff)}</td><td class="num">${fmt(x.withKaigo)}%</td><td class="num">${fmt(x.r, true)}%</td><td class="num">${fmt(x.withKaigo, true)}%</td></tr>`).join("\n")}
+${rows.map((x) => `<tr data-pref="${x.p}"><th scope="row" style="white-space:nowrap">${x.p}</th><td class="num">${tok(fmt(x.r))}</td><td class="num">${fmtDiff(x.diff)}</td><td class="num">${tok(fmt(x.withKaigo))}</td><td class="num">${tok(fmt(x.r, true))}</td><td class="num">${tok(fmt(x.withKaigo, true))}</td></tr>`).join("\n")}
 </tbody></table></div>`;
 
   // ---- summary ----
