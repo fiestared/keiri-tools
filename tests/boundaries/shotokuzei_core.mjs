@@ -24,7 +24,7 @@ export const cases = [
     source: SHOTOKU, quote: "第一号に掲げる金額が第二号に掲げる金額を超えるときは、その超える金額を" },
   // 税率: 4,000万円以下40%、超45%（年末調整の速算表には無い段）
   { name: "課税される所得金額4,000万円は40%−2,796,000円", run: () => calcShotokuzei({ jigyo: 40000000 }, refs).zeigaku, expected: 13204000,
-    source: T_ZEIGAKU, quote: "18,000,000円～39,999,000円" },
+    source: SHOTOKU, quote: "千八百万円を超え四千万円以下の金額" },
   { name: "課税される所得金額4,000万1千円は45%−4,796,000円", run: () => calcShotokuzei({ jigyo: 40001000 }, refs).zeigaku, expected: 13204450,
     source: T_ZEIGAKU, quote: "40,000,000円～" },
   // 申告納税額: 黒字は100円未満切捨て（100円未満なら0）

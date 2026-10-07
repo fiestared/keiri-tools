@@ -148,7 +148,7 @@
     <input type="number" id="nenkin" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="nenkin-hint">
     <span id="nenkin-hint" class="hint">国民年金・厚生年金・企業年金（確定給付企業年金など）・確定拠出年金の年金など。死亡した人の勤務に基づいて支給される遺族年金など、課税されないものは入れません</span>
     <label style="display:flex;align-items:center;gap:8px;margin:10px 0 0"><input type="checkbox" id="age65" style="flex:none"><span>令和8年12月31日に65歳以上（昭和37年1月1日以前に生まれた人）</span></label>
-    <span class="hint">65歳以上は公的年金等控除の最低額が110万円になります（65歳未満は60万円）</span>
+    <span class="hint">公的年金等控除の最低額は、年金以外の所得（公的年金等に係る雑所得以外の合計所得金額）が1,000万円以下なら65歳以上110万円・65歳未満60万円、1,000万円超2,000万円以下なら100万円・50万円、2,000万円超なら90万円・40万円です</span>
     <label for="jigyo">事業所得の金額（青色申告特別控除の後）</label>
     <input type="number" id="jigyo" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="jigyo-hint">
     <span id="jigyo-hint" class="hint">青色申告決算書・収支内訳書で計算した所得金額（収入−必要経費−青色申告特別控除）。赤字の人はこの計算機の対象外です</span>
@@ -162,7 +162,7 @@
     <input type="number" id="ichiji_shunyu" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="ichiji-hint">
     <label for="ichiji_shishutsu">その収入を得るために支出した金額</label>
     <input type="number" id="ichiji_shishutsu" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric">
-    <span id="ichiji-hint" class="hint">生命保険の一時金や損害保険の満期返戻金（支出した金額は払い込んだ保険料）、懸賞の賞金、競馬の払戻金、ふるさと納税の返礼品など。特別控除50万円を引いた残りの<b>2分の1</b>が所得金額の合計に入ります</span>
+    <span id="ichiji-hint" class="hint">自分で保険料を負担した生命保険の満期保険金・解約返戻金や損害保険の満期返戻金（支出した金額は払い込んだ保険料）、懸賞の賞金、競馬の払戻金、ふるさと納税の返礼品など。<b>保険料を自分以外の人が負担した保険金（贈与税・相続税の対象）や、保険期間5年以下の一時払養老保険などの源泉分離課税の満期金・解約返戻金（源泉徴収だけで課税が終わる）は入れません</b>。特別控除50万円を引いた残りの<b>2分の1</b>が所得金額の合計に入ります</span>
   </fieldset>
 
   <fieldset class="member">
@@ -199,7 +199,7 @@
       <label for="haigu_gokei">配偶者の令和8年分の合計所得金額</label>
       <input type="number" id="haigu_gokei" min="0" step="1" placeholder="例: 0" inputmode="numeric" aria-describedby="haigu_gokei-hint">
       <span id="haigu_gokei-hint" class="hint">収入ではなく所得。給与だけなら給与収入136万円以下で62万円以下（令和8年分）</span>
-      <label style="display:flex;align-items:center;gap:8px;margin:10px 0 0"><input type="checkbox" id="haigu_rojin" style="flex:none"><span>配偶者は70歳以上（昭和32年1月1日以前に生まれた人）</span></label>
+      <label style="display:flex;align-items:center;gap:8px;margin:10px 0 0"><input type="checkbox" id="haigu_rojin" style="flex:none"><span>配偶者は70歳以上（昭和32年1月1日以前に生まれた人。年の中途で死亡した配偶者は死亡の時の年齢）</span></label>
       <label for="haigu_shogai">配偶者の障害</label>
       <select id="haigu_shogai">
         <option value="none" selected>障害者ではない</option>
@@ -212,7 +212,7 @@
 
   <fieldset class="member">
     <legend>5. 扶養親族（合計所得金額62万円以下の親族）の人数</legend>
-    <p class="hint">扶養親族は、あなたと<b>生計を一にする</b>親族（配偶者、青色事業専従者として給与を受ける人、白色事業専従者を除く）で、令和8年分の合計所得金額が62万円以下（給与だけなら給与収入136万円以下）の人です。<b>配偶者など他の人が扶養控除を受ける人は、ここには入れず</b>、下の「他の人が扶養控除を受けている扶養親族」に入れます。年齢は令和8年12月31日の現況で数えます。国外に住む親族を扶養控除の対象にするには、年齢などの要件と親族関係書類・送金関係書類が必要です</p>
+    <p class="hint">扶養親族は、あなたと<b>生計を一にする</b>親族（配偶者、青色事業専従者として給与を受ける人、白色事業専従者を除く）で、令和8年分の合計所得金額が62万円以下（給与だけなら給与収入136万円以下）の人です。<b>配偶者など他の人が扶養控除を受ける人は、ここには入れず</b>、下の「他の人が扶養控除を受けている扶養親族」に入れます。年齢は令和8年12月31日の現況で数えます（<b>年の中途で死亡した親族は、死亡の時の現況（年齢・所得）で判定</b>します。死亡の時に18歳だった子は、生年月日が下の区切りに当たっても16歳以上19歳未満に入れます）。<b>国外に住む親族</b>（非居住者）を扶養控除の対象にできるのは、16歳以上30歳未満・70歳以上の人と、30歳以上70歳未満で①留学により国内に住所・居所を有しなくなった人、②障害者、③あなたからその年に生活費や教育費に充てるための支払を38万円以上受けている人のどれかに当たる人だけです（30歳以上70歳未満でどれにも当たらない人は入れません）。国外居住親族について控除を受けるには、親族関係書類と送金関係書類（③の人は38万円送金書類、①の人は留学ビザ等書類も）の提出または提示が必要です</p>
     <div class="field-inline-help"><label for="f_nensho" style="flex:1;margin:0">16歳未満（平成23年1月2日以後に生まれた子など）</label><input type="number" id="f_nensho" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none" aria-describedby="f_nensho-hint">
       <span id="f_nensho-hint" class="hint" style="display:block;font-weight:400">扶養控除はありませんが、所得金額調整控除・生命保険料控除の特例・障害者控除の判定に使います</span></div>
     <div class="field-inline-help"><label for="f_1618" style="flex:1;margin:0">16歳以上19歳未満（平成20年1月2日〜平成23年1月1日生）</label><input type="number" id="f_1618" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none"></div>
@@ -231,7 +231,7 @@
 
   <fieldset class="member">
     <legend>6. 特定親族（19歳以上23歳未満で、合計所得金額62万円超123万円以下の親族）</legend>
-    <p class="hint">あなたと<b>生計を一にする</b>親族（配偶者・青色事業専従者等を除く）で、アルバイト収入が多く扶養親族に入らない大学生の子など。給与だけなら給与収入136万円超197万円以下です。扶養親族の人数には入れません。2人以上の所得者の特定親族に当たる人は、そのうち1人だけが控除を受けられます</p>
+    <p class="hint">あなたと<b>生計を一にする</b>親族（配偶者・青色事業専従者等を除く）で、アルバイト収入が多く扶養親族に入らない大学生の子など。給与だけなら給与収入136万円超197万円以下です。扶養親族の人数には入れません。2人以上の所得者の特定親族に当たる人は、そのうち1人だけが控除を受けられます。<b>他の人の配偶者特別控除や特定親族特別控除の対象とされている人</b>（結婚している子で、その配偶者が配偶者特別控除を受けている場合など）は入れません。親族の双方がお互いに特定親族に当たる場合は、どちらか一方だけが受けられます。年の中途で死亡した親族は、死亡の時の現況で判定します</p>
     <label for="ts">特定親族の合計所得金額（2人以上いる場合はカンマで区切る）</label>
     <input type="text" id="ts" placeholder="例: 900000, 1100000">
   </fieldset>
@@ -277,6 +277,8 @@
     <div id="iryohi-selfmed" hidden>
       <label for="selfmed">特定一般用医薬品等の購入費（スイッチOTC医薬品など）</label>
       <input type="number" id="selfmed" min="0" step="1" placeholder="円" inputmode="numeric">
+      <label for="selfmed_hoten">そのうち保険金などで補填される金額</label>
+      <input type="number" id="selfmed_hoten" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric">
     </div>
     <label for="kifukin">寄附金控除の対象となる寄附金の合計（ふるさと納税など）</label>
     <input type="number" id="kifukin" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="kifukin-hint">
@@ -330,7 +332,7 @@
   <g font-size="13" fill="#1f2a2a">
     <rect x="10" y="10" width="340" height="46" rx="6" fill="#eef6f2" stroke="#1f7a5a"/>
     <text x="180" y="29" text-anchor="middle">① 所得金額の合計</text>
-    <text x="180" y="47" text-anchor="middle">（給与所得＋雑所得＋事業所得＋一時所得×1/2 など）</text>
+    <text x="180" y="47" text-anchor="middle">（給与・雑・事業所得＋一時所得×1/2 など）</text>
     <rect x="10" y="70" width="340" height="46" rx="6" fill="#eef6f2" stroke="#1f7a5a"/>
     <text x="180" y="89" text-anchor="middle">② −所得から差し引かれる金額（所得控除）</text>
     <text x="180" y="107" text-anchor="middle">＝ 課税される所得金額（千円未満切捨て）</text>
@@ -402,7 +404,7 @@
 
 <div class="callout" id="nenkin-kojo">
 <b>公的年金等の雑所得は、収入金額から公的年金等控除額を引いて計算します（所得税法35条4項・租税特別措置法41条の15の3）。</b>
-控除額は、年金以外の所得（公的年金等に係る雑所得以外の合計所得金額）が1,000万円以下・1,000万円超2,000万円以下・2,000万円超のどれかで変わり、令和8年12月31日に65歳以上の人は最低額が110万円（65歳未満は60万円）です。給与と年金の両方がある人は、給与所得から最大10万円の所得金額調整控除が引かれます（租税特別措置法41条の3の11第2項。年末調整では引かれず、確定申告で引きます）。
+控除額は、年金以外の所得（公的年金等に係る雑所得以外の合計所得金額）が1,000万円以下・1,000万円超2,000万円以下・2,000万円超のどれかで変わり、最低額は、年金以外の所得が1,000万円以下なら65歳以上（令和8年12月31日の年齢）110万円・65歳未満60万円、1,000万円超2,000万円以下なら100万円・50万円、2,000万円超なら90万円・40万円です。給与と年金の両方がある人は、給与所得から最大10万円の所得金額調整控除が引かれます（租税特別措置法41条の3の11第2項。年末調整では引かれず、確定申告で引きます）。
 </div>
 
 <h2 id="kojo">この計算機で扱う控除</h2>
@@ -431,7 +433,7 @@
 <p style="margin:8px 0 0">所得税法の所得控除は16種類（72条〜86条）あり、この計算機が扱わないのは<b>雑損控除</b>（災害・盗難・横領の損失）だけです。</p>
 </div>
 
-<p>寄附金控除は「特定寄附金の合計額（所得金額の合計の40%が限度）−2,000円」です（所得税法78条1項）。医療費控除は「医療費−補填金−10万円（所得金額の合計の5%の方が少なければその額）」で、上限は200万円です（所得税法73条1項）。セルフメディケーション税制は「特定一般用医薬品等の購入費−12,000円」で、上限は88,000円です（租税特別措置法41条の17）。</p>
+<p>寄附金控除は「特定寄附金の合計額（所得金額の合計の40%が限度）−2,000円」です（所得税法78条1項）。医療費控除は「医療費−補填金−10万円（所得金額の合計の5%の方が少なければその額）」で、上限は200万円です（所得税法73条1項）。セルフメディケーション税制は「特定一般用医薬品等の購入費−補填金−12,000円」で、上限は88,000円です（租税特別措置法41条の17）。</p>
 
 <h2 id="taishogai">この計算機の対象にならない人</h2>
 
@@ -441,7 +443,7 @@
 <li>事業所得・不動産所得・雑所得のどれかが赤字の人（損益通算・雑所得の中での差引きが必要）</li>
 <li>前年以前の純損失・雑損失の繰越控除を受ける人</li>
 <li>申告分離課税の所得がある人（土地・建物の譲渡所得、株式等の譲渡所得、上場株式等の配当所得等を申告分離課税で申告する場合、先物取引の雑所得など）</li>
-<li>退職所得・山林所得を申告する人</li>
+<li>退職所得・山林所得がある人（退職所得を確定申告しない場合も、合計所得金額に入って基礎控除・配偶者控除などの判定が変わるため）</li>
 <li>総合課税の譲渡所得（ゴルフ会員権・金地金・書画骨とうなど）がある人</li>
 <li>配当所得を総合課税で申告する人（配当控除）や、利子所得を申告する人</li>
 <li>雑損控除を受ける人、災害減免法の減免を受ける人</li>
@@ -451,7 +453,7 @@
 <li>年の中途で死亡した人の準確定申告や、年の中途で出国する人の申告（判定の時点が令和8年11月30日以前だと、改正前の基礎控除などで計算することがあります）</li>
 <li>非居住者</li>
 </ol>
-<p style="margin:8px 0 0">これらに当てはまる人は、国税庁の<a href="https://www.keisan.nta.go.jp/">確定申告書等作成コーナー</a>で計算できます。</p>
+<p style="margin:8px 0 0">これらに当てはまる人は、国税庁の確定申告の手引きや<a href="https://www.keisan.nta.go.jp/">確定申告書等作成コーナー</a>などで計算してください（作成コーナーが対応していない申告もあります）。</p>
 </div>
 
 <h2 id="kaisei">令和8年分で変わった点</h2>
@@ -589,7 +591,7 @@ $("calc").addEventListener("click", async () => {
     fuyoShogai: { ippan: num("fs_ippan"), tokubetsu: num("fs_tokubetsu"), dokyo: num("fs_dokyo") },
     tokuteiShinzoku: tsList,
     honnin: { shogai: $("honnin_shogai").value, kafu: $("kafu").value, kinroGakusei: $("kinro").checked },
-    iryohi: { mode: $("iryohi_mode").value, shiharai: num("iryohi"), hoten: num("hoten"), selfmed: num("selfmed") },
+    iryohi: { mode: $("iryohi_mode").value, shiharai: num("iryohi"), hoten: num("hoten"), selfmed: num("selfmed"), selfmedHoten: num("selfmed_hoten") },
     kifukin: num("kifukin"),
     jutaku: num("jutaku"),
     gensen: num("gensen"),

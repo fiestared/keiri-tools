@@ -84,7 +84,7 @@ export function nozeiHasu(sa, K) {
  *   ichiji: { shunyu, shishutsu }, // 一時所得の総収入金額・その収入を得るために支出した金額
  *   shaho, kyosai,                 // 社会保険料・小規模企業共済等掛金（支払った全額）
  *   seiho, jishin, haigu, fuyo, fuyoShogai, fuyoOther, tokuteiShinzoku, honnin,  // nencho_core と同じ形
- *   iryohi: { mode: 'none'|'tsujo'|'selfmed', shiharai, hoten, selfmed },
+ *   iryohi: { mode: 'none'|'tsujo'|'selfmed', shiharai, hoten, selfmed, selfmedHoten },
  *   kifukin,                       // 特定寄附金（ふるさと納税など）の合計
  *   jutaku,                        // 住宅借入金等特別控除額（計算明細書・源泉徴収票の金額）
  *   gensen,                        // 源泉徴収税額の合計（給与・公的年金・報酬など）
@@ -162,7 +162,9 @@ export function calcShotokuzei(input, refs) {
       const hoten = n0(i.iryohi?.hoten);
       return iryohiKojo(i.iryohi?.shiharai, hoten, hoten, sotoShotoku, I).kojo;
     })();
-    const self = selfmedKojo(i.iryohi?.selfmed, I).kojo;
+    // ★セルフメディケーション税制も「補填される部分の金額を除く」（措法41条の17が所法73条1項を読み替えて適用。
+    //   読替えは補填の除外を消していない）
+    const self = selfmedKojo(Math.max(0, n0(i.iryohi?.selfmed) - n0(i.iryohi?.selfmedHoten)), I).kojo;
     iryohi = mode === 'tsujo' ? tsujo : self;
     iryohiAlt = mode === 'tsujo' ? self : tsujo;
     if (iryohiAlt > iryohi) {

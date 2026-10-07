@@ -192,6 +192,7 @@ eq("2項: 給与所得控除後200万・年金雑所得5万 → 5万",
   ok("選ばなかった方が大きいと注記する", s.notes.some((t) => /通常の医療費控除を選ぶと/.test(t)) === false && s.kojo.iryohiAlt === 37000);
   const s2 = calcShotokuzei({ kyuyo: 2000000, iryohi: { mode: "selfmed", selfmed: 20000, shiharai: 100000 } }, refs);
   ok("セルフメディ8,000 < 通常37,000 → 注記", s2.notes.some((t) => /通常の医療費控除を選ぶと控除額が37,000円/.test(t)));
+  eq("セルフメディ: 補填金を購入費から引く（5万−2万−1.2万＝18,000）", calcShotokuzei({ kyuyo: 5000000, iryohi: { mode: "selfmed", selfmed: 50000, selfmedHoten: 20000 } }, refs).kojo.iryohi, 18000);
   eq("補填金は医療費から引く", calcShotokuzei({ kyuyo: 5000000, iryohi: { mode: "tsujo", shiharai: 300000, hoten: 150000 } }, refs).kojo.iryohi, 50000);
 }
 
