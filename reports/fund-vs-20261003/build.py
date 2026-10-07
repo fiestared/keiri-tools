@@ -223,8 +223,10 @@ FIELD_ROWS = [('fee', '信託報酬（税込年率・ファンド本体・貸付
               ('ter_period', '総経費率の対象期間'), ('index', '連動対象・投資対象'), ('hedge', '為替ヘッジ（交付目論見書の運用方針）'), ('settle', '決算'),
               ('incept', '設定日'), ('nofee', '購入時手数料／信託財産留保額')]
 
-def fee_section(p, show_eff=None):
+def fee_section(p, show_eff=None, labels=None, vals=None):
+    """labels: {field: row label} and vals: {(fund key, field): cell text} override the shared rows for one page."""
     A, B = p.A, p.B
+    labels, vals = labels or {}, vals or {}
     show_eff = (A['etf'] or B['etf']) if show_eff is None else show_eff
     h = p.r('feehead', '<h2 id="fees">目論見書の料率と、総経費率（参考値）を分けて見る</h2>')
     h += '<div class="scroll-wrap"><table class="num-nowrap"><thead><tr><th scope="col">' + p.r('feehead', f'項目（{jd(GOT)}に確認した資料）') + '</th>'
@@ -247,9 +249,10 @@ def fee_section(p, show_eff=None):
                 cid = p.fc(k, 'nofee'); val = f.get('nofee_val', 'なし／なし')
             else:
                 cid = p.fc(k, field); val = f[field]
+            val = vals.get((k, field), val)
             cls = ' class="num"' if field in ('fee', 'ter') else ''
             cells.append(f'<td{cls}>{p.r(cid, E(val))}</td>')
-        h += f'<tr><th scope="row">{label}</th>{"".join(cells)}</tr>'
+        h += f'<tr><th scope="row">{labels.get(field, label)}</th>{"".join(cells)}</tr>'
     h += '</tbody></table></div>'
     return h
 
