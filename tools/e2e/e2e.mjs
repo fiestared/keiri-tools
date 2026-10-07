@@ -772,6 +772,28 @@ const SCENES = [
   { name: "nenmatsu_chosei_nodata", data404: "nencho_r08.json",
     expect: (s) => s.failed && s.nenzei === null },
 
+  // ── 所得税 計算機（確定申告） (/shotokuzei/) ─────────────────────────
+  // ★年末調整の設例A（所得控除4,826,102円・年調年税額41,400円）に医療費30万円を足して確定申告:
+  //   所得金額の合計6,973,000 → 控除5,026,102 → 課税1,946,000 → 税額97,300 −住宅ローン控除76,500
+  //   → 基準所得税額20,800 → 復興436 → 21,236 − 源泉41,400 ＝ 還付20,164円（1円単位）
+  { name: "shotokuzei", expect: (s) =>
+      s.sotoShotoku === 6973000 && s.iryohi === 200000 && s.kojoGokei === 5026102 && s.kazei === 1946000 &&
+      s.zeigaku === 97300 && s.kijun === 20800 && s.fukko === 436 && s.zeigakuGokei === 21236 &&
+      s.kanpu === 20164 && s.bigVal === 20164 && s.bigIsKanpu && s.srcHasYear && !s.failed },
+  { name: "shotokuzei_slow", slow: true, expect: (s) =>
+      s.kazei === 1946000 && s.kanpu === 20164 && !s.failed },
+  // 給与300万（給与所得控除後2,020,000−所得金額調整控除2項100,000）＋年金200万・65歳以上（900,000）
+  // ＋一時所得360,000の2分の1（180,000）＝3,000,000 → 基礎控除104万・寄附金控除48,000
+  // → 課税1,912,000 → 95,600 → 復興2,007 → 97,607 − 源泉60,000 → 37,607 → 納める税金37,600
+  { name: "shotokuzei_nenkin", expect: (s) =>
+      s.kyuyoShotoku === 1920000 && s.nenkinZatsu === 900000 && s.ichijiHalf === 180000 &&
+      s.sotoShotoku === 3000000 && s.kiso === 1040000 && s.kifukin === 48000 && s.kazei === 1912000 &&
+      s.fukko === 2007 && s.zeigakuGokei === 97607 && s.nozei === 37600 && s.bigVal === 37600 && s.bigIsNozei && !s.failed },
+  { name: "shotokuzei_akaji", expect: (s) => s.akaji && s.kazei === null },
+  { name: "shotokuzei_empty", expect: (s) => s.noInput && s.kazei === null },
+  { name: "shotokuzei_nodata", data404: "shotokuzei_r08.json",
+    expect: (s) => s.failed && s.kazei === null },
+
   // ── 地震保険料控除 (/jishin-hoken-kojo/) ─────────────────────────────
   // ★手計算の鎖は tests/test_jishin_hoken_kojo.mjs §7: 地震30,000＋旧長期24,000・課税所得400万
   //   → 所得税45,000／住民税は35,000が上限25,000で頭打ち → 節税額11,689円。

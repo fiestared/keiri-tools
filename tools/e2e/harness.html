@@ -4686,6 +4686,79 @@ SCENES.nenmatsu_chosei_fusoku = nenchoScene({ vals: { kyuyo: 6000000, choshu: 10
 SCENES.nenmatsu_chosei_empty = nenchoScene({ vals: {} });
 SCENES.nenmatsu_chosei_nodata = nenchoScene(NENCHO_A);
 
+// ── 所得税 計算機（確定申告） (/shotokuzei/) ─────────────────────────────
+// ★期待値は国税庁『令和8年分 年末調整のしかた』57〜59頁の設例A（所得控除の合計4,826,102円）に
+//   医療費30万円を足した手計算（tests/test_shotokuzei.mjs と同じ鎖）と、確定申告の手引きの一時所得の設例。
+//   単体は core しか見ないので、30個の入力欄の読み取り→6つの参照データの待ち合わせ→結果表の描画は
+//   ここでしか守れない。
+const shotokuzeiScene = (o) => async () => {
+  const doc = await open("/docs/shotokuzei/");
+  for (const [id, v] of Object.entries(o.vals || {})) set(doc, id, v);
+  for (const id of o.checks || []) { const el = doc.getElementById(id); el.checked = true; el.dispatchEvent(new doc.defaultView.Event("change", { bubbles: true })); }
+  if (o.haigu) {
+    set(doc, "haigu", "ari");
+    for (const [id, v] of Object.entries(o.haigu)) set(doc, id, v);
+  }
+  click(doc, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
+  await waitFor(
+    () => /¥|読み込めませんでした|入力してください|計算できません/.test(text(doc, "result")),
+    "所得税の計算結果",
+  );
+  const body = text(doc, "result");
+  const rows = [...(doc.querySelectorAll("#result table tr") || [])].map((tr) =>
+    [...tr.querySelectorAll("th,td")].map((e) => e.textContent.trim()));
+  const cell = (label) => {
+    const r = rows.find((x) => x[0] === label);
+    if (!r) return null;
+    const m = r[1].match(/¥([\d,]+)/);
+    return m ? Number(m[1].replace(/,/g, "")) : null;
+  };
+  const big = doc.getElementById("kekka-big");
+  return {
+    kyuyoShotoku: cell("給与所得"),
+    nenkinZatsu: cell("公的年金等の雑所得"),
+    ichijiHalf: cell("一時所得の2分の1"),
+    sotoShotoku: cell("所得金額の合計"),
+    iryohi: cell("医療費控除"),
+    kifukin: cell("寄附金控除"),
+    kiso: cell("基礎控除"),
+    kojoGokei: cell("所得から差し引かれる金額の合計"),
+    kazei: cell("課税される所得金額"),
+    zeigaku: cell("課税される所得金額に対する税額"),
+    kijun: cell("差引所得税額（基準所得税額）"),
+    fukko: cell("復興特別所得税額"),
+    zeigakuGokei: cell("所得税及び復興特別所得税の額"),
+    kanpu: cell("還付される税金"),
+    nozei: cell("納める税金"),
+    bigVal: big ? Number((big.textContent.match(/¥([\d,]+)/) || [, ""])[1].replace(/,/g, "")) : null,
+    bigIsKanpu: /確定申告で 還付される税金/.test(body),
+    bigIsNozei: /確定申告で 納める税金/.test(body),
+    srcHasYear: /令和8年分/.test(text(doc, "src-hint")),
+    failed: body.includes("読み込めませんでした"),
+    noInput: body.includes("入力してください"),
+    akaji: body.includes("赤字（マイナス）の場合は"),
+    body,
+  };
+};
+const SHOTOKU_A = {
+  vals: { kyuyo: 8970000, shaho: 1386102,
+          ippan_shin: 80000, ippan_kyu: 35000, kaigo: 80000, nenkin_shin: 30000, nenkin_kyu: 90000,
+          jishin: 42000, kyuchoki: 14800,
+          f_2369: 1, f_tokutei: 1, f_dokyo: 1, fs_ippan: 1, ts: "1000000", jutaku: 76500,
+          iryohi_mode: "tsujo", iryohi: 300000, gensen: 41400 },
+  haigu: { haigu_gokei: 500000 },
+};
+SCENES.shotokuzei = shotokuzeiScene(SHOTOKU_A);
+SCENES.shotokuzei_slow = SCENES.shotokuzei;   // 参照データの配信を遅らせる。6つとも待って正答すること
+// 給与300万＋年金200万（65歳以上）＋一時所得（手引きの設例 2,500,000−1,640,000）＋ふるさと納税5万
+SCENES.shotokuzei_nenkin = shotokuzeiScene({
+  vals: { kyuyo: 3000000, nenkin: 2000000, ichiji_shunyu: 2500000, ichiji_shishutsu: 1640000, kifukin: 50000, gensen: 60000 },
+  checks: ["age65"],
+});
+SCENES.shotokuzei_akaji = shotokuzeiScene({ vals: { kyuyo: 5000000, jigyo: -100000 } });
+SCENES.shotokuzei_empty = shotokuzeiScene({ vals: {} });
+SCENES.shotokuzei_nodata = shotokuzeiScene(SHOTOKU_A);
+
 // ── 国民年金の免除・納付猶予 ───────────────────────────────────────────
 // ★期待値の基準額は**施行令の条文から手で書き起こしたもの**（データJSONもコアも通さない）:
 //   全額免除・納付猶予 = (扶養親族等の数+1)×35万+32万（6条の7）
