@@ -246,7 +246,8 @@ ok("参照データが欠けたら答えない（fail closed）", threw);
   ok("page: 読み込み失敗を申告", /読み込めませんでした/.test(html));
   ok("page: 年分はデータから（_meta.year を使う）", /K\._meta\.year/.test(html));
   // 速算表（静的な表）の行がデータ（setsuzei_r08 の brackets）と一致する
-  const rows = [...html.matchAll(/<tr><td>([\d,]+)円(?:〜([\d,]+)円|以上)<\/td><td>×(\d+)%(?:−([\d,]+)円)?<\/td><\/tr>/g)];
+  const plain = html.replace(/<span class="numeric-token">([^<]*)<\/span>/g, "$1"); // gen_layout_markup が数字を span で包む
+  const rows = [...plain.matchAll(/<tr><td>([\d,]+)円(?:〜([\d,]+)円|以上)<\/td><td>×(\d+)%(?:−([\d,]+)円)?<\/td><\/tr>/g)];
   eq("page: 速算表は7行", rows.length, 7);
   rows.forEach((m, idx) => {
     const b = S.shotokuzei_brackets[idx];
