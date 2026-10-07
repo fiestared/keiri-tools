@@ -45,7 +45,7 @@ try {
     await page.locator('#shakai').fill('0');
     await page.locator('#calc').click();
     await page.waitForFunction(()=>document.querySelector('#result .big'));
-    check((await page.locator('#result').innerText()).includes('調整控除以外の税額控除'),path+' 結果内に未反映の税額控除を明示');
+    check((await page.locator('#result').innerText()).includes('税額控除（住宅ローン控除、寄附金税額控除など）を反映しません'),path+' 結果内に未反映の税額控除を明示');
   }
   await context.close();
 } finally {await browser.close();server.close();}
