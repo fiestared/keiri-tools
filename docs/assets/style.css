@@ -463,17 +463,19 @@ article blockquote p:last-child { margin-bottom: 0; }
    「社会保険料44,070円・所得税6,320円」が画面の外にあった＝壊れた表・図に見えた。
    実際にはみ出しているかは assets/empty-state.js が測って data-overflow-x を付ける
    （幅の広い画面では付かない＝合図も出ない）。右端まで送ると data-scroll-end でぼかしを外す。 */
-:is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x]::before {
+:is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide,main pre)[data-overflow-x]::before {
   content: "→ 横にスクロールできます"; display: block; width: max-content; padding: 4px 10px; font-size: 12.5px; line-height: 1.5; color: var(--sub); text-align: left;
 }
 .figure.fig-wide[data-overflow-x]::before { padding-left: 0; }
-:is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x]:not([data-scroll-end]) {
+/* 引用のしかた・仕訳例の <pre> もスマホで横に切れていた（2026-10-08 低）。改行は変えず、同じ合図を出す */
+main pre[data-overflow-x]::before { padding: 0 0 4px; font-family: inherit; white-space: normal; }
+:is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide,main pre)[data-overflow-x]:not([data-scroll-end]) {
   -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), rgba(0,0,0,.25));
   mask-image: linear-gradient(to right, #000 calc(100% - 36px), rgba(0,0,0,.25));
 }
 @media print {
-  :is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x]::before { content: none; }
-  :is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x] { -webkit-mask-image: none; mask-image: none; }
+  :is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide,main pre)[data-overflow-x]::before { content: none; }
+  :is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide,main pre)[data-overflow-x] { -webkit-mask-image: none; mask-image: none; }
 }
 .data-table { font-size: 13px; }
 .data-table th { position: sticky; top: 0; background: var(--accent-soft); z-index: 1; font-size: 12.5px; padding: 7px 6px; }
@@ -1228,6 +1230,63 @@ main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width
   :is(.num-nowrap,.num-nowrap-lg) thead th.num { white-space: normal; word-break: keep-all; }
   /* 8列以上の表は左右の余白を詰める（11px→6px。.data-table と同じ）。8列×22px の余白だけで本文の列の1/4を使っていた */
   main :is(.scroll-wrap,.retention-table):not([data-wide="ok"]) table:has(tr > :nth-child(8)) :is(td, th):not(.pr-block *) { padding-left: 6px; padding-right: 6px; }
+}
+
+/* ---- 2026-10-08 UI/UX レビュー（高1・高2・中9）: 表の「答え」を初期表示で見せる ----
+   「→ 横にスクロールできます」の合図があっても、答えの列が画面外なら答えは見えていない（前回 #10 は合図だけで終わった）。
+   検査: tests/layout/table-measure.mjs（数値の列が1つも見えない表／th[data-answer] の列が初期表示で隠れる表を落とす。全幅）。
+   (1) 長い表は見出し行をページのスクロールに付ける。横スクロール枠（overflow-x:auto）は sticky の基準になってしまい
+       見出しが付いてこない（住民税の早見表は見出しの無い数字が4,000px続いた）。PC幅では表は本文の列に収まる
+       （table-hscroll-desktop が保証）ので、枠を clip にして sticky をページに効かせる。--site-header-h は empty-state.js が実測して入れる。 */
+@media (min-width: 1024px) {
+  main .scroll-wrap:not([data-wide="ok"]):not(.table-cue ~ .scroll-wrap):has(> table > thead):has(> table > tbody > tr:nth-child(15)) { overflow: clip; }
+  main .scroll-wrap:not([data-wide="ok"]):not(.table-cue ~ .scroll-wrap):has(> table > tbody > tr:nth-child(15)) > table > thead th { position: sticky; top: var(--site-header-h, 61px); z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
+}
+/* (1b) 標準報酬月額表（PV2位）: PC では 640px の内側スクロール枠を外し、ページのスクロール1本で見出し行を付ける（PC主レビュー 中5）。
+   枠と「全50等級を広げて表示」はスマホ（1023px以下）だけに残す。案内文（枠の中でスクロール…）も PC では出さない */
+@media (min-width: 1024px) {
+  main .table-cue ~ .scroll-wrap:not([data-wide="ok"]) { max-height: none; overflow: clip; }
+  main .table-cue ~ .scroll-wrap:not([data-wide="ok"]) > table :is(thead th, tr:first-child > th[scope="col"]) { position: sticky; top: var(--site-header-h, 61px); z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
+  main .table-cue { display: none; }
+  /* 金額の桁が「101,30／6」と折れていた（合計の列）。PC幅なら折らずに本文の列へ収まる（1280/1920px 実測） */
+  .data-table td.num { white-space: nowrap; }
+}
+/* (1c) 印紙の全20号一覧（PC主レビュー 中4）: 税額の列が約164pxで、13階級が1行ずつ2段に折れて1行947pxになっていた。
+   文書名の列を4割に抑え、税額の各行は折らない（軽減税率の見出しだけは折ってよい） */
+@media (min-width: 601px) {
+  .go-table tr > :nth-child(2) { width: 40%; }
+  .go-table td:nth-child(3) { white-space: nowrap; }
+  .go-table td:nth-child(3) .hint { white-space: normal; }
+}
+/* (2) 1列目（行の見出し）を固定する表。横に送っても「どの行か」が残る */
+.scroll-wrap > table.sticky-first tr > :first-child { position: sticky; left: 0; z-index: 1; box-shadow: inset -1px 0 0 var(--line); }
+.scroll-wrap > table.sticky-first thead tr > :first-child { z-index: 3; }
+/* (3) スマホの数値の列は「3文字＋余白」まで詰める。文章の列の下限（4em+24px）を短い金額の列にまで課していたため、
+   4列の結果表で「合計」が、8列の付与日数表で後半の年数が画面外に出ていた。見出しの .num は語の切れ目で折る */
+@media (max-width: 600px) {
+  main :is(.scroll-wrap,.retention-table) :is(td.num, th.num):not(.pr-block *) { min-width: calc(3em + 12px); padding-left: 6px; padding-right: 6px; }
+  .num-nowrap-sm thead th.num { white-space: normal; }
+  /* 2列の表は横に送らせない（印紙の第17号: 左列が幅の2/3を取り、右寄せの税額が隠れた53pxに入った）。左列に上限 */
+  main .scroll-wrap > table:not(:has(tr > :nth-child(3))) tr > :first-child { width: 56%; }
+  /* 数の行列（有給の付与日数表など。値が「10日」程度の短い表）は、枠に収める */
+  .retention-table table.num-matrix, .scroll-wrap > table.num-matrix { min-width: 0; font-size: 12.5px; }
+  main :is(.scroll-wrap,.retention-table) table.num-matrix :is(td, th) { min-width: 0; padding: 7px 3px; }
+  main :is(.scroll-wrap,.retention-table) table.num-matrix tr > :first-child { padding-left: 6px; min-width: calc(3em + 9px); }
+  /* 計算結果の2列表（所得税・年末調整）: 項目の列が34%（約90px）で数文字ずつ折れていた */
+  .result table.res th { width: 50%; }
+}
+/* (4) スマホで列を絞る切替（住民税の早見表）。600px以下だけ出し、選んだ列だけにして表を枠に収める。
+   収まれば枠を clip にして見出し行をページに付ける。:has() の無いブラウザでは全列＋横スクロールのまま */
+.col-switch { display: none; }
+@media (max-width: 600px) {
+  .col-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 12px 0 0; font-size: 14px; }
+  .col-switch > span { color: var(--sub); }
+  .col-switch label { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; cursor: pointer; }
+  .col-switch label:has(input:checked) { background: var(--accent-soft); border-color: var(--accent); font-weight: 700; }
+  .col-switch:has(input[value="a"]:checked) + .scroll-wrap :is([data-col="b"],[data-col="x"]),
+  .col-switch:has(input[value="b"]:checked) + .scroll-wrap :is([data-col="a"],[data-col="x"]) { display: none; }
+  .col-switch:has(input:is([value="a"],[value="b"]):checked) + .scroll-wrap { overflow: clip; }
+  .col-switch:has(input:is([value="a"],[value="b"]):checked) + .scroll-wrap > table > thead th { position: sticky; top: var(--site-header-h, 104px); z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
 }
 
 /* Without JS the rail stays in normal flow, so every TOC link is reachable. */

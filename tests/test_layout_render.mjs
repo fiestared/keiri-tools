@@ -7,6 +7,7 @@ import {measure} from './layout/measure.mjs';
 import {measureEmpty} from './layout/empty-measure.mjs';
 import {measureUi} from './layout/ui-measure.mjs';
 import {measureToc} from './layout/toc-measure.mjs';
+import {measureTables} from './layout/table-measure.mjs';
 const pages=readdirSync(DOCS,{recursive:true}).filter(f=>f==='index.html'||f.endsWith('/index.html')).sort().map(f=>'/'+f.replace(/index.html$/,''));
 assert(pages.length>0,'No pages discovered');
 const sizes=[[1280,900],[1536,864],[1920,1080],[1200,800],[768,1024],[390,844]];
@@ -26,7 +27,7 @@ try{
    if(job.width===1280||job.width===390||page.url()!==server.origin+job.url)await ready(page,server.origin+job.url);
    else {await page.evaluate(()=>document.fonts.ready);await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));}
    const measured=await page.evaluate(measure);
-   measured.issues.push(...await page.evaluate(measureUi),...await page.evaluate(measureEmpty));
+   measured.issues.push(...await page.evaluate(measureUi),...await page.evaluate(measureEmpty),...await page.evaluate(measureTables));
    if(await page.locator('.rail-next').count())for(const kind of await page.evaluate(measureToc))measured.issues.push({kind,text:'TOC related rail'});
    if(job.width===1280){await page.emulateMedia({media:'print'});measured.issues.push(...await page.evaluate(measureUi),...await page.evaluate(measureEmpty));await page.emulateMedia({media:'screen'});}
    for(const error of errors)measured.issues.push({kind:'page-error',text:error});
