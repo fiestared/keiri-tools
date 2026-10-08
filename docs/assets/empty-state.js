@@ -35,9 +35,11 @@
   }
  }
  // Horizontal scrollers show a visible cue only while their content actually overflows (style.css).
- const scrollers='.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide';
+ const scrollers='.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide,main pre';
  function markEnd(e){const end=e.scrollLeft+e.clientWidth>=e.scrollWidth-2;if(end!==e.hasAttribute('data-scroll-end'))e.toggleAttribute('data-scroll-end',end);}
- function markOverflow(){for(const e of document.querySelectorAll(scrollers)){const over=e.scrollWidth>e.clientWidth+2;if(over!==e.hasAttribute('data-overflow-x'))e.toggleAttribute('data-overflow-x',over);markEnd(e);}}
+ // Sticky table headers sit just below the sticky site header (61px on PC, 97-104px when it wraps on phones).
+ function markHeader(){const h=document.querySelector('header.site');if(!h)return;const v=Math.round(h.getBoundingClientRect().height)+'px';if(document.documentElement.style.getPropertyValue('--site-header-h')!==v)document.documentElement.style.setProperty('--site-header-h',v);}
+ function markOverflow(){markHeader();for(const e of document.querySelectorAll(scrollers)){const over=e.scrollWidth>e.clientWidth+2;if(over!==e.hasAttribute('data-overflow-x'))e.toggleAttribute('data-overflow-x',over);markEnd(e);}}
  addEventListener('scroll',event=>{const e=event.target;if(e.nodeType===1&&e.matches(scrollers))markEnd(e);},{capture:true,passive:true});
  function sync(){for(const table of dirtyTables)if(table.isConnected)keepTableTokens(table);dirtyTables.clear();for(const e of document.querySelectorAll(selector)){const empty=e.childNodes.length>0&&!hasContent(e);if(empty!==e.hasAttribute('data-empty-surface'))e.toggleAttribute('data-empty-surface',empty);}markOverflow();}
  matchMedia('print').addEventListener('change',sync);

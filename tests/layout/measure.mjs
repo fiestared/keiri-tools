@@ -69,12 +69,13 @@ export function measure() {
  }
  }
  // 2026-09-30: body tables are not cropped to a vertical box inside the page scroll (only a table with the
- // .table-cue "expand" control, or the sticky 2D tax table, may be); every local horizontal scroller shows
+ // .table-cue "expand" control below 1024px — 2026-10-08 PC review: on PC it is one page scroll with a sticky header —
+ // or the sticky 2D tax table, may be); every local horizontal scroller shows
  // the shared cue (empty-state.js + style.css); phone figures keep text >= 9.5px or scroll as .fig-wide.
  for(const e of document.querySelectorAll('main *')){
   const cs=getComputedStyle(e);if(cs.overflowX==='visible'&&cs.overflowY==='visible')continue;if(!visible(e))continue;
-  if(/(auto|scroll)/.test(cs.overflowY)&&e.scrollHeight>e.clientHeight+2&&e.querySelector('table')&&!e.matches('.table-cue ~ .scroll-wrap,.gensen-monthly-table'))add('table-vertical-clip',e,{hidden:e.scrollHeight-e.clientHeight});
-  if(/(auto|scroll)/.test(cs.overflowX)&&e.scrollWidth>e.clientWidth+2&&(e.querySelector('table')||e.matches('figure'))&&getComputedStyle(e,'::before').content==='none')add('scroll-cue-missing',e,{hidden:e.scrollWidth-e.clientWidth});
+  if(/(auto|scroll)/.test(cs.overflowY)&&e.scrollHeight>e.clientHeight+2&&e.querySelector('table')&&!(innerWidth<1024&&e.matches('.table-cue ~ .scroll-wrap'))&&!e.matches('.gensen-monthly-table'))add('table-vertical-clip',e,{hidden:e.scrollHeight-e.clientHeight});
+  if(/(auto|scroll)/.test(cs.overflowX)&&e.scrollWidth>e.clientWidth+2&&(e.querySelector('table')||e.matches('figure,pre'))&&getComputedStyle(e,'::before').content==='none')add('scroll-cue-missing',e,{hidden:e.scrollWidth-e.clientWidth});
  }
  // 2026-10-01: on desktop (>= 1024px) a body table fits its column. A note inside a nowrap amount cell
  // pushed /column/furikomi-tesuryo-hikaku/ to 994px in the 670px column, so the 「3万円以上」 column was

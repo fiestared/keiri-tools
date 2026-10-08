@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-07-13",
-      "dateModified": "2026-10-05",
+      "dateModified": "2026-10-08",
       "name": "社会保険料 計算機",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -143,8 +143,7 @@
 
 <section class="hero">
   <h1>社会保険料 計算機</h1>
-<p class="note">この計算機は賞与が同じ月に1回支給される前提で試算します。同月に複数回支給する場合、厚生年金は合算した標準賞与額に月150万円の上限を適用するため、各回を別々に計算した結果は使えません。</p>
-  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-10-05">2026年10月5日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-10-08">2026年10月8日</time>）</p>
   <p>給与額を入れるだけで、<b>標準報酬月額の等級</b>・健康保険料・介護保険料・厚生年金保険料・<b>雇用保険料</b>を自動計算します。<b>令和8年度（2026年度）の都道府県別料率</b>に対応。</p>
 </section>
 
@@ -292,7 +291,7 @@
       <rect x="400" y="128" width="150" height="58" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
       <text x="475" y="144" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">⑦ 端数処理</text>
       <text x="475" y="162" text-anchor="middle" font-size="11.5" fill="var(--sub)">50銭以下切捨・超は切上</text>
-      <text x="475" y="178" text-anchor="middle" font-size="10" fill="var(--sub)">給与控除・特約なし</text>
+      <text x="475" y="178" text-anchor="middle" font-size="12" fill="var(--sub)">給与控除・特約なし</text>
 
       <rect x="590" y="128" width="150" height="58" rx="8" fill="#fff" stroke="var(--accent)" stroke-width="2.4"/>
       <text x="665" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">本人の控除額</text>
@@ -601,9 +600,9 @@
 <footer class="site" style="display:block">
   料率の出典: 全国健康保険協会「都道府県毎の保険料率」<span id="src-note"></span>／厚生年金保険料率18.3%（日本年金機構）／雇用保険料率（厚生労働省）<span id="src-koyou"></span>。<br>
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
-  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
+  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）</div><!-- /trust:auto -->
 </footer>
 
 <script type="module">
@@ -721,9 +720,9 @@ $("calc").addEventListener("click", async () => {
 
   const row = (label, o, show = true) => show ? `
     <tr><td style="padding:6px 8px">${label}</td>
-        <td style="padding:6px 8px;text-align:right">${yen(o.self)}</td>
-        <td style="padding:6px 8px;text-align:right;color:var(--sub)">${yen(o.company)}</td>
-        <td style="padding:6px 8px;text-align:right;color:var(--sub)">${yen(o.self + o.company)}</td></tr>` : "";
+        <td class="num" style="padding:6px 8px;text-align:right">${yen(o.self)}</td>
+        <td class="num" style="padding:6px 8px;text-align:right;color:var(--sub)">${yen(o.company)}</td>
+        <td class="num" style="padding:6px 8px;text-align:right;color:var(--sub)">${yen(o.self + o.company)}</td></tr>` : "";
 
   const kenkoLabel = r.kaigoApplies
     ? `健康保険＋介護保険（${pref} ${kRate.toFixed(2)}% ＋ ${RATES.kaigo_rate.toFixed(2)}% ＝ ${r.kenkoKaigo.rate.toFixed(2)}%）`
@@ -747,18 +746,18 @@ $("calc").addEventListener("click", async () => {
     <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
       <tr style="background:#e7f3f0">
         <th scope="col" style="text-align:left;padding:6px 8px">項目</th>
-        <th scope="col" style="text-align:right;padding:6px 8px">本人負担</th>
-        <th scope="col" style="text-align:right;padding:6px 8px">会社負担</th>
-        <th scope="col" style="text-align:right;padding:6px 8px">合計</th></tr>
+        <th scope="col" class="num" data-answer style="text-align:right;padding:6px 8px">本人負担</th>
+        <th scope="col" class="num" style="text-align:right;padding:6px 8px">会社負担</th>
+        <th scope="col" class="num" style="text-align:right;padding:6px 8px">合計</th></tr>
       ${row(kenkoLabel, r.kenkoKaigo)}
       ${row(`子ども・子育て支援金（${r.kosodate.rate.toFixed(2)}%）`, r.kosodate)}
       ${row(`厚生年金（${r.kosei.rate.toFixed(1)}%）`, r.kosei)}
       ${row(`雇用保険（${gy.label} 本人 ${gy.worker_permille}/1,000）`, k)}
       <tr style="border-top:2px solid var(--accent);font-weight:700">
         <td style="padding:6px 8px">合計</td>
-        <td style="padding:6px 8px;text-align:right">${yen(selfAll)}</td>
-        <td style="padding:6px 8px;text-align:right">${yen(companyAll)}</td>
-        <td style="padding:6px 8px;text-align:right">${yen(selfAll + companyAll)}</td></tr>
+        <td class="num" style="padding:6px 8px;text-align:right">${yen(selfAll)}</td>
+        <td class="num" style="padding:6px 8px;text-align:right">${yen(companyAll)}</td>
+        <td class="num" style="padding:6px 8px;text-align:right">${yen(selfAll + companyAll)}</td></tr>
     </table></div>
     <div style="font-size:12.5px;color:var(--sub);margin-top:8px">
       ${r.kaigoApplies
@@ -804,6 +803,7 @@ import { attachCopyButton } from "../assets/copy_result.js";
 attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
 <script src="../assets/a11y_error.js" defer></script>
+<script src="../assets/result_rail.js" defer></script>
 
 <script type="module">
 import { calculatorEnter, optionalSummary } from "../assets/calculator_keyboard.js";
