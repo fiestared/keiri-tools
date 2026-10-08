@@ -27,7 +27,7 @@
   if (rail) root.setAttribute("data-result-rail", "");
 
   function txt(el) { return (el ? el.textContent : "").replace(/\s+/g, " ").trim(); }
-  function money(s) { var m = s.match(/[−-]?\s*[¥￥]\s*[\d,]+|[\d,]+\s*(?:円|日|%|％)/); return m ? m[0].replace(/\s+/g, "") : ""; }
+  function money(s) { var m = s.match(/[−-]?\s*[¥￥]\s*[\d,]+(?:\.\d+)?|[\d,]+(?:\.\d+)?\s*(?:円|日|%|％)/); return m ? m[0].replace(/\s+/g, "") : ""; }
   function short(s, n) { return s.length > n ? s.slice(0, n - 1) + "…" : s; }
   function visible(el) { return !!el && el.getClientRects().length > 0 && getComputedStyle(el).visibility !== "hidden"; }
 

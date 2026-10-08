@@ -25,6 +25,8 @@ const TOOLS = [
   ['/bonus-tedori/', {bonus: '500000', zengetsu: '300000'}],
   ['/shotokuzei/', {kyuyo: '5000000', shaho: '750000', gensen: '98000'}],
   ['/nenmatsu-chosei/', {kyuyo: '5000000', choshu: '120000', shaho: '750000'}],
+  // 2026-10-08 第2周: 有給（着地4位）だけ部品から漏れていた
+  ['/yukyu/', {hire: '2024-04-01'}],
 ];
 // 静的: 9本とも部品を読み込んでいる（ページごとに手で書いた要約を足さない）
 for (const [path] of TOOLS) {
@@ -59,7 +61,7 @@ try {
           const r = panel.getBoundingClientRect();
           const btn = document.getElementById(b).getBoundingClientRect();
           const big = document.getElementById(res).querySelector('.big');
-          const m = (t) => ((t || '').match(/[−-]?[¥￥][\d,]+/) || [''])[0];
+          const m = (t) => ((t || '').match(/[−-]?[¥￥][\d,]+(?:\.\d+)?|[\d,]+(?:\.\d+)?\s*(?:円|日|%|％)/) || [''])[0].replace(/\s+/g, '');  // 有給は日数で答える
           return {
             y: Math.round(scrollY), railTop: Math.round(r.top), railBottom: Math.round(r.bottom), vh: innerHeight,
             btnInView: btn.top >= 0 && btn.bottom <= innerHeight,
@@ -67,6 +69,17 @@ try {
             bigVal: m(big?.textContent),
             rows: panel.querySelectorAll('.result-rail-rows dt').length,
             calculated: document.documentElement.hasAttribute('data-calculated'),
+            // 2026-10-08 第2周: 「84.895％」が「895％」になった（money() が小数点を拾えなかった）。¥ だけ比べる上の検査は素通しした
+            //   → 要約の値はすべて、結果欄の文字列にそのまま在ること（空白を除いて部分一致）
+            railMissing: [...panel.querySelectorAll('.result-rail-heads dd, .result-rail-rows dd')].map((e) => e.textContent.replace(/\s+/g, ''))
+              .filter((v) => {
+                if (!v) return false;
+                // ★部分一致では「895％」が「84.895％」の中に見つかって素通しした。前後が数字・小数点・カンマでない一致だけを認める
+                // 空白は消さずに1つへ（消すと「¥200 1通」が「¥2001通」になり境界が壊れる）。値の文字の間の空白は許す
+                const hay = document.getElementById(res).textContent.replace(/\s+/g, ' ');
+                const esc = [...v].map((c) => c.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('\\s?');
+                return !new RegExp('(^|[^\\d.,])' + esc + '(?![\\d])').test(hay);
+              }),
           };
         }, [btn, res]);
         log.push({tag, ...s});
@@ -76,9 +89,10 @@ try {
         if (s.railTop < 0 || s.railBottom > s.vh) bad.push(`要約が画面からはみ出す（${s.railTop}〜${s.railBottom} / ${s.vh}）`);
         if (!s.bigVal || s.railVal !== s.bigVal) bad.push(`要約の金額 ${s.railVal} ≠ 結果の金額 ${s.bigVal}`);
         if (!s.calculated) bad.push('data-calculated が立っていない');
+        if (s.railMissing.length) bad.push(`要約の値が結果欄に無い: ${s.railMissing.join(' / ')}`);
         // 入力を変えたら古いと示す
         const first = Object.keys(vals)[0];
-        if (first) {
+        if (first && /^\d+$/.test(vals[first])) {
           await page.fill('#' + first, String(Number(vals[first]) + 1000));
           const staleShown = await page.evaluate(() => !document.querySelector('#result-rail .result-rail-stale').hidden);
           if (!staleShown) bad.push('入力を変えても要約が古いと示さない');
