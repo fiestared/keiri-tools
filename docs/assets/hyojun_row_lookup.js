@@ -27,7 +27,8 @@ form.addEventListener('submit', event => {
   const c = [...row.cells].map(cell => cell.textContent.trim());
   summary.textContent = `該当：第${c[0]}級／報酬月額 ${c[2]}円（下限以上・上限未満）。標準報酬月額 ${c[1]}円。本人負担：健康保険（39歳以下）${c[3]}円、健保＋介護（40〜64歳）${c[4]}円、子ども支援金 ${c[5]}円、厚生年金 ${c[6]}円。合計（39歳以下）${c[7]}円。40〜64歳の合計ではありません。`;
   const wrap = table.parentElement;
-  if (wrap.classList.contains('is-expanded')) row.scrollIntoView({block:'center',behavior:'instant'});
+  // PC（1024px以上）は枠を外してページのスクロール1本にしている（style.css）。枠が無ければページを送る
+  if (wrap.classList.contains('is-expanded') || wrap.scrollHeight <= wrap.clientHeight + 2) row.scrollIntoView({block:'center',behavior:'instant'});
   else {
     const relativeTop = row.getBoundingClientRect().top - wrap.getBoundingClientRect().top + wrap.scrollTop;
     wrap.scrollTop = Math.max(0, relativeTop - wrap.clientHeight / 2);

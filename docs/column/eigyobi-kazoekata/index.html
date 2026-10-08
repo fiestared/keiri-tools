@@ -30,7 +30,7 @@
       "@type": "Article",
       "headline": "当日を数えず土日祝を除く「3営業日前」の数え方",
       "datePublished": "2026-07-13",
-      "dateModified": "2026-10-03",
+      "dateModified": "2026-10-08",
       "author": {
         "@type": "Person",
         "name": "Masahiro Yasu",
@@ -126,7 +126,7 @@
 <nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 営業日の数え方</nav>
 <article>
   <h1>当日を数えず土日祝を除く「3営業日前」の数え方</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-10-03">2026年10月3日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-10-08">2026年10月8日</time>）</p>
   <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
 
   <p>「3営業日以内にご連絡します」「3営業日前までにお申し込みください」——ビジネスでよく使われますが、<b>具体的にいつなのか</b>で迷ったことはないでしょうか。</p>
@@ -264,7 +264,7 @@
     <tr><td>金曜</td><td>木</td><td>水</td><td><b>火曜</b></td></tr>
     <tr><td>土曜・日曜</td><td>金</td><td>木</td><td><b>水曜</b></td></tr>
   </table></div>
-  <p><b>基準日が月曜・火曜・水曜のときは、「3営業日前」が前週まで戻ります。</b>暦の上では5日前です。木曜・金曜が基準日なら、同じ週の中（3日前）に収まります。「3営業日前」を「3日前」と読み替えると、<b>基準日が月〜水なら2日、日曜なら1日足りなくなります</b>（基準日が木曜・金曜・土曜なら、3営業日前は3日前と一致します）。</p>
+  <p>数える期間に祝日・振替休日・国民の休日などの休業日がなく、当日を含めず土日を除いて数える場合、<b>基準日が月曜・火曜・水曜のときは「3営業日前」が前週まで戻り</b>、暦の上では5日前です。同じく数える期間に祝日などの休業日がなく、当日を含めず土日を除いて数える場合、木曜・金曜が基準日なら、同じ週の中（3日前）に収まります。数える期間に祝日などの休業日がなく、当日を含めず土日を除いて数える場合に「3営業日前」を「3日前」と読み替えると、<b>基準日が月〜水なら2日、日曜なら1日足りなくなります</b>（同じ場合、基準日が木曜・金曜・土曜なら、3営業日前は3日前と一致します）。</p>
   <p>「◯営業日前」は、<b>土日をまたぐと一気に前へ飛びます</b>。締切を勘違いしやすいので、期限が近いときは実際に数えて確認してください。<b>「三営業日前」と漢数字で書かれていても、数え方は同じです。</b>土曜も営業している会社の場合は、土曜を1営業日として数えます（→<a href="#faq">よくある質問</a>）。</p>
 
   <h2 id="shukujitsu">数える期間に祝日が入ると早見表どおりにならない（2026年の実例）</h2>
@@ -349,6 +349,9 @@
   <p>祝日の一覧は<b>内閣府が公開しているデータ</b>（→<a href="#sources">出典</a>）をシートの空き列に貼り付け、その範囲を第3引数に指定します。振替休日も含まれています。</p>
   <p><b>土曜も営業している会社</b>は <b>WORKDAY.INTL関数</b> を使います。第3引数の「週末番号」に <b>11（日曜のみ休み）</b> を指定すると、土曜を営業日として数えられます。</p>
   <p><code>=WORKDAY.INTL(A1, -3, 11, 祝日リスト)</code></p>
+  <p>ExcelのWORKDAY.INTLでは、第3引数に週末番号（1〜7・11〜17）のほか、月曜から日曜の順に並べた7文字の文字列を指定できます。曜日を指定する文字列は、1が非稼働日、0が稼働日を表します。</p>
+  <p>ExcelのWORKDAY.INTLで土日を休みにする文字列は <code>"0000011"</code>、水曜も定休日にする場合は <code>"0010011"</code> です。会社独自の休業日は、祝日と一緒に日付の一覧へ入れ、WORKDAY.INTLの第4引数にそのセル範囲を指定します。</p>
+  <p>ExcelのWORKDAY.INTLで、水曜・土曜・日曜を除き、A1の基準日から3営業日後を求める式は <code>=WORKDAY.INTL(A1, 3, "0010011", 休業日リスト)</code> です（休業日リストは祝日と会社独自の休業日を入力したセル範囲）。ExcelのWORKDAY.INTLの曜日指定では、全曜日を非稼働日にする <code>"1111111"</code> は無効です。</p>
 
   <h2 id="faq">よくある質問</h2>
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>「3営業日以内」に当日は含まれますか？</h3>
@@ -383,13 +386,14 @@
     <li>国民の祝日に関する法律3条2項（「国民の祝日」が日曜日に当たるときは、その日後の最も近い祝日でない日を休日とする＝振替休日）— e-Gov法令検索</li>
     <li>国民の祝日に関する法律3条3項（その前日及び翌日が「国民の祝日」である日で、「国民の祝日」でない日に限り休日とする＝国民の休日。2026年は9月22日）— e-Gov法令検索</li>
     <li>内閣府「国民の祝日について」（祝日の一覧。当サイトの営業日計算はこのデータを使用しています）</li>
+    <li><a href="https://support.microsoft.com/ja-jp/office/workday-intl-%E9%96%A2%E6%95%B0-a378391c-9ba7-4678-8a39-39611a9bf81d">Microsoft「WORKDAY.INTL 関数」</a>（週末の文字列指定・休日の引数）</li>
   </ul>
   <p style="font-size:13px;color:var(--sub)">「営業日」は法令上の定義がある用語ではなく、上記は期間計算・金融機関の休日に関する一般的な根拠です。本記事は一般的な情報提供を目的としたものです。契約上の期限など重要な場面では、相手方・専門家にご確認ください。</p>
 </article>
 <!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E3%80%8C3%E5%96%B6%E6%A5%AD%E6%97%A5%E5%89%8D%E3%80%8D%E3%80%8C3%E5%96%B6%E6%A5%AD%E6%97%A5%E4%BB%A5%E5%86%85%E3%80%8D%E3%81%8C%E5%85%B7%E4%BD%93%E7%9A%84%E3%81%AB%E3%81%84%E3%81%A4%E3%81%AA%E3%81%AE%E3%81%8B%E3%82%92%E6%9B%9C%E6%97%A5%E5%88%A5%E3%81%AE%E6%97%A9%E8%A6%8B%E8%A1%A8%E3%81%A7%E8%A7%A3%E8%AA%AC%E3%80%82%E5%BD%93%E6%97%A5%E3%82%92%E6%95%B0%E3%81%88%E3%81%9A%E5%9C%9F%E6%97%A5%E7%A5%9D%E3%82%92%E9%99%A4%E3%81%8F%E5%89%8D%E6%8F%90%E3%81%A7%E3%80%81%E6%95%B0%E3%81%88%E3%82%8B%E6%9C%9F%E9%96%93%E3%81%AB%E7%A5%9D%E6%97%A5%E3%81%8C%E3%81%AA%E3%81%91%E3%82%8C%E3%81%B0%E3%80%81%E5%9F%BA%E6%BA%96%E6%97%A5%E3%81%8C%E6%9C%88%E3%80%9C%E6%B0%B4%E3%81%AE%E3%80%8C3%E5%96%B6%E6%A5%AD%E6%97%A5%E5%89%8D%E3%80%8D%E3%81%AF%E5%89%8D%E9%80%B1%E3%81%A7%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Feigyobi-kazoekata%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site" style="display:block">© 税金・経理・補助金ツールズ
-  <div style="margin-top:8px;font-size:12px"><a href="../../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
 </footer>
 <script src="../../assets/empty-state.js" defer></script>

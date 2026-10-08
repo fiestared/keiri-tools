@@ -319,6 +319,11 @@ footer.site .datasrc ul { list-style: none; padding-left: 0; }
 footer.site nav { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px 16px; }
 /* リンクの当たり判定を 24px 以上にする（SC 2.5.8）。文字は13pxのまま */
 footer.site a { color: var(--sub); padding: 6px 0; display: inline-block; }
+/* サイト共通の案内リンク（tools/gen_site_footer.mjs が全ページに入れる。2026-10-08）。
+   押せる高さを 44px にする（文字は13pxのまま。上下の余白で当たり判定を作る） */
+footer.site .site-links { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 0 16px; font-size: 13px; line-height: 20px; }
+footer.site .site-links a { padding: 12px 0; }
+footer.site .site-copy { margin: 0; }
 .tool-list a {
   display: block;
   background: #fff;
@@ -463,17 +468,19 @@ article blockquote p:last-child { margin-bottom: 0; }
    「社会保険料44,070円・所得税6,320円」が画面の外にあった＝壊れた表・図に見えた。
    実際にはみ出しているかは assets/empty-state.js が測って data-overflow-x を付ける
    （幅の広い画面では付かない＝合図も出ない）。右端まで送ると data-scroll-end でぼかしを外す。 */
-:is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x]::before {
+:is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide,main pre)[data-overflow-x]::before {
   content: "→ 横にスクロールできます"; display: block; width: max-content; padding: 4px 10px; font-size: 12.5px; line-height: 1.5; color: var(--sub); text-align: left;
 }
 .figure.fig-wide[data-overflow-x]::before { padding-left: 0; }
-:is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x]:not([data-scroll-end]) {
+/* 引用のしかた・仕訳例の <pre> もスマホで横に切れていた（2026-10-08 低）。改行は変えず、同じ合図を出す */
+main pre[data-overflow-x]::before { padding: 0 0 4px; font-family: inherit; white-space: normal; }
+:is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide,main pre)[data-overflow-x]:not([data-scroll-end]) {
   -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 36px), rgba(0,0,0,.25));
   mask-image: linear-gradient(to right, #000 calc(100% - 36px), rgba(0,0,0,.25));
 }
 @media print {
-  :is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x]::before { content: none; }
-  :is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide)[data-overflow-x] { -webkit-mask-image: none; mask-image: none; }
+  :is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide,main pre)[data-overflow-x]::before { content: none; }
+  :is(.scroll-wrap,.fee-scroll,.retention-table,.gensen-monthly-table,.figure.fig-wide,main pre)[data-overflow-x] { -webkit-mask-image: none; mask-image: none; }
 }
 .data-table { font-size: 13px; }
 .data-table th { position: sticky; top: 0; background: var(--accent-soft); z-index: 1; font-size: 12.5px; padding: 7px 6px; }
@@ -700,6 +707,16 @@ html.ss-lock, html.ss-lock body { overflow: hidden; }
 
 .post-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(480px, 100%), 1fr)); gap: 0 40px; }
 .post-list a { display: flex; gap: 12px; align-items: baseline; padding: 16px 8px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+/* コラム一覧の「残りN本を表示」（gen_index_sitemap.mjs が各カテゴリの9本目以降を畳む。2026-10-08） */
+.post-more { margin: 4px 0 0; }
+.post-more > summary { display: flex; align-items: center; min-height: 44px; padding: 0 8px; cursor: pointer; font-weight: 600; color: var(--accent); border-bottom: 1px solid var(--line); }
+.post-more > summary:hover { text-decoration: underline; }
+.post-more[open] > summary { color: var(--sub); }
+.post-more > summary::-webkit-details-marker { display: none; }
+/* 2026-10-08 第2周: summary の display:flex が hidden 属性に勝ち、検索中も「残りN本を表示」が出ていた */
+.post-more[hidden], .post-more > summary[hidden], .post-more [hidden] { display: none; }
+.post-more > summary::after { content: "＋"; margin-left: 8px; }
+.post-more[open] > summary::after { content: "−"; }
 .post-list a:hover .p-title { color: var(--accent); text-decoration: underline; }
 .post-list .p-date { flex: 0 0 84px; font-size: 12.5px; color: var(--sub); }
 .post-list .p-title { font-size: 16px; font-weight: 600; }
@@ -782,6 +799,8 @@ html.ss-lock, html.ss-lock body { overflow: hidden; }
 /* 金額セルの注記は折り返す（2026-10-01: 注記が nowrap のまま列を押し広げ、PC でも「3万円以上」の列が枠外に出た）。金額そのものは折り返さない */
 table td .cell-note { display: block; white-space: normal; font-size: 12px; line-height: 1.45; color: var(--sub); text-align: left; min-width: 6em; }
 .fee-table td:first-child { min-width: 8.5em; }
+/* 金額列の見出し（3万円未満／3万円以上）は折らない。金額の列を細くすると PC で「3万円以／上」に割れた（2026-10-08 C班からの引き継ぎ） */
+.fee-table th:nth-child(2), .fee-table th:nth-child(3) { white-space: nowrap; }
 @media (max-width: 600px) { .fee-table td:first-child { min-width: 6.5em; } .fee-table td:nth-child(4) { white-space: normal; } }
 .fee-table .flat { color: var(--sub); }
 .fee-table .step { color: var(--warn-ink); font-weight: 700; background: var(--warn-bg); }
@@ -1193,6 +1212,8 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
 .optional-fields { margin: 16px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 0 0 8px; }
 .optional-fields summary { font-weight: 700; }
 .optional-fields [data-optional-state] { font-size: 14px; color: var(--sub); font-weight: 400; }
+/* 畳んだ欄が続くとき（/shotokuzei/・/nenmatsu-chosei/ の 3〜8 など）は1本の罫線で区切る（二重線と隙間を作らない。2026-10-08） */
+.optional-fields + .optional-fields { margin-top: -9px; border-top: 0; }
 .retention-table { max-width: 100%; overflow: auto; margin: 16px 0; }
 .retention-table table { min-width: 640px; }
 .retention-table th { background: var(--accent-soft); }
@@ -1230,6 +1251,77 @@ main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width
   main :is(.scroll-wrap,.retention-table):not([data-wide="ok"]) table:has(tr > :nth-child(8)) :is(td, th):not(.pr-block *) { padding-left: 6px; padding-right: 6px; }
 }
 
+/* ---- 2026-10-08 UI/UX レビュー（高1・高2・中9）: 表の「答え」を初期表示で見せる ----
+   「→ 横にスクロールできます」の合図があっても、答えの列が画面外なら答えは見えていない（前回 #10 は合図だけで終わった）。
+   検査: tests/layout/table-measure.mjs（数値の列が1つも見えない表／th[data-answer] の列が初期表示で隠れる表を落とす。全幅）。
+   (1) 長い表は見出し行をページのスクロールに付ける。横スクロール枠（overflow-x:auto）は sticky の基準になってしまい
+       見出しが付いてこない（住民税の早見表は見出しの無い数字が4,000px続いた）。PC幅では表は本文の列に収まる
+       （table-hscroll-desktop が保証）ので、枠を clip にして sticky をページに効かせる。--site-header-h は empty-state.js が実測して入れる。
+       源泉徴収税額表（.gensen-monthly-table。行と列の見出しを固定した2次元の表）は意図した縦の枠なので除く。 */
+@media (min-width: 1024px) {
+  main .scroll-wrap:not([data-wide="ok"]):not(.table-cue ~ .scroll-wrap):not(.gensen-monthly-table):has(> table :is(thead, tr:first-child > th[scope="col"])):has(> table > tbody > tr:nth-child(15)) { overflow: clip; }
+  /* 振込手数料の比較（PV1位）の .fee-scroll も同じ（見出し「3万円未満／3万円以上」が送ると消えていた） */
+  main .fee-scroll:not([data-wide="ok"]):has(> table :is(thead, tr:first-child > th[scope="col"])):has(> table > tbody > tr:nth-child(15)) { overflow: clip; }
+  main .fee-scroll:not([data-wide="ok"]):has(> table > tbody > tr:nth-child(15)) > table :is(thead th, tr:first-child > th[scope="col"]) { top: var(--site-header-h, 61px); box-shadow: inset 0 -1px 0 var(--line); }
+  main .scroll-wrap:not([data-wide="ok"]):not(.table-cue ~ .scroll-wrap):not(.gensen-monthly-table):has(> table > tbody > tr:nth-child(15)) > table :is(thead th, tr:first-child > th[scope="col"]) { position: sticky; top: var(--site-header-h, 61px); z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
+}
+/* 見出しを sticky にした表は罫線を separate で描く。collapse のままだと Chromium が、見出しの下に送った行の文字を
+   見出しの上端に重ねて描く（振込手数料の比較で注記の文字が見出しの上に滲んだ。1280px 実測）。
+   上と左の線を消して右と下だけにし、見た目は collapse と同じ1本線に保つ（外枠は .scroll-wrap / .fee-scroll の枠） */
+@media (min-width: 1024px) {
+  main :is(.scroll-wrap,.fee-scroll):not([data-wide="ok"]):not(.gensen-monthly-table):has(> table > tbody > tr:nth-child(15)) > table { border-collapse: separate; border-spacing: 0; }
+  main :is(.scroll-wrap,.fee-scroll):not([data-wide="ok"]):not(.gensen-monthly-table):has(> table > tbody > tr:nth-child(15)) > table :is(td, th) { border-top-width: 0; border-left-width: 0; }
+  main .fee-scroll:not([data-wide="ok"]):has(> table > tbody > tr:nth-child(15)) > table tr > :last-child { border-right-width: 0; }
+  main .fee-scroll:not([data-wide="ok"]):has(> table > tbody > tr:nth-child(15)) > table tr:last-child > * { border-bottom-width: 0; }
+}
+/* (1b) 標準報酬月額表（PV2位）: PC では 640px の内側スクロール枠を外し、ページのスクロール1本で見出し行を付ける（PC主レビュー 中5）。
+   枠と「全50等級を広げて表示」はスマホ（1023px以下）だけに残す。案内文（枠の中でスクロール…）も PC では出さない */
+@media (min-width: 1024px) {
+  main .table-cue ~ .scroll-wrap:not([data-wide="ok"]) { max-height: none; overflow: clip; }
+  main .table-cue ~ .scroll-wrap:not([data-wide="ok"]) > table :is(thead th, tr:first-child > th[scope="col"]) { position: sticky; top: var(--site-header-h, 61px); z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
+  main .table-cue { display: none; }
+  /* 金額の桁が「101,30／6」と折れていた（合計の列）。PC幅なら折らずに本文の列へ収まる（1280/1920px 実測） */
+  .data-table td.num { white-space: nowrap; }
+}
+/* (1c) 印紙の全20号一覧（PC主レビュー 中4）: 税額の列が約164pxで、13階級が1行ずつ2段に折れて1行947pxになっていた。
+   文書名の列を4割に抑え、税額の各行は折らない（軽減税率の見出しだけは折ってよい） */
+@media (min-width: 601px) {
+  .go-table tr > :nth-child(2) { width: 40%; }
+  .go-table td:nth-child(3) { white-space: nowrap; }
+  .go-table td:nth-child(3) .hint { white-space: normal; }
+}
+/* (2) 1列目（行の見出し）を固定する表。横に送っても「どの行か」が残る */
+.scroll-wrap > table.sticky-first tr > :first-child { position: sticky; left: 0; z-index: 1; box-shadow: inset -1px 0 0 var(--line); }
+.scroll-wrap > table.sticky-first thead tr > :first-child { z-index: 3; }
+/* (3) スマホの数値の列は「3文字＋余白」まで詰める。文章の列の下限（4em+24px）を短い金額の列にまで課していたため、
+   4列の結果表で「合計」が、8列の付与日数表で後半の年数が画面外に出ていた。見出しの .num は語の切れ目で折る */
+@media (max-width: 600px) {
+  main :is(.scroll-wrap,.retention-table) :is(td.num, th.num):not(.pr-block *) { min-width: calc(3em + 12px); padding-left: 6px; padding-right: 6px; }
+  /* 金額の見出しは折ってよい（改行禁止の見出しが 335px になり、外形標準課税の比較表で金額が全部画面外に出た）。語の途中では割らない */
+  :is(.num-nowrap,.num-nowrap-sm) thead th.num { white-space: normal; }
+  /* 2列の表は横に送らせない（印紙の第17号: 左列が幅の2/3を取り、右寄せの税額が隠れた53pxに入った）。左列に上限 */
+  main .scroll-wrap > table:not(:has(tr > :nth-child(3))) tr > :first-child { width: 56%; }
+  /* 数の行列（有給の付与日数表など。値が「10日」程度の短い表）は、枠に収める */
+  .retention-table table.num-matrix, .scroll-wrap > table.num-matrix { min-width: 0; font-size: 12.5px; }
+  main :is(.scroll-wrap,.retention-table) table.num-matrix :is(td, th) { min-width: 0; padding: 7px 3px; }
+  main :is(.scroll-wrap,.retention-table) table.num-matrix tr > :first-child { padding-left: 6px; min-width: calc(3em + 9px); }
+  /* 計算結果の2列表（所得税・年末調整）: 項目の列が34%（約90px）で数文字ずつ折れていた */
+  .result table.res th { width: 50%; }
+}
+/* (4) スマホで列を絞る切替（住民税の早見表）。600px以下だけ出し、選んだ列だけにして表を枠に収める。
+   収まれば枠を clip にして見出し行をページに付ける。:has() の無いブラウザでは全列＋横スクロールのまま */
+.col-switch { display: none; }
+@media (max-width: 600px) {
+  .col-switch { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 12px 0 0; font-size: 14px; }
+  .col-switch > span { color: var(--sub); }
+  .col-switch label { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; background: #fff; cursor: pointer; }
+  .col-switch label:has(input:checked) { background: var(--accent-soft); border-color: var(--accent); font-weight: 700; }
+  .col-switch:has(input[value="a"]:checked) + .scroll-wrap :is([data-col="b"],[data-col="x"]),
+  .col-switch:has(input[value="b"]:checked) + .scroll-wrap :is([data-col="a"],[data-col="x"]) { display: none; }
+  .col-switch:has(input:is([value="a"],[value="b"]):checked) + .scroll-wrap { overflow: clip; }
+  .col-switch:has(input:is([value="a"],[value="b"]):checked) + .scroll-wrap > table > thead th { position: sticky; top: var(--site-header-h, 104px); z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
+}
+
 /* Without JS the rail stays in normal flow, so every TOC link is reachable. */
 .side-rail:has(.rail-next) { position: static; width: auto; max-height: none; display: flex; flex-direction: column; gap: 12px; margin: 24px 0; }
 .side-rail:has(.rail-next) > .toc { position: static; width: auto; max-height: none; overflow: visible; flex: none; margin: 0; padding: 14px 16px; }
@@ -1241,9 +1333,12 @@ main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width
 .toc [hidden] { display: none !important; }
 .toc:has(.toc-toggle:not([hidden])) > ol { margin-top: 8px; }
 .rail-next a { min-height: 44px; overflow-wrap: anywhere; }
-@media (min-width: 1200px) {
+/* ★右レールは 1024px から出す（2026-10-08 PCレビュー 中7。toc-rail.js の desktop と同じ値）。
+   1200px 未満では本文列の右の余白が 48px → 32px、レール幅が 300px → 最小288px に縮む（本文の列幅672pxは変えない）。
+   1200px 以上は従来どおり left 736px・幅 300px。 */
+@media (min-width: 1024px) {
   main:has(.toc-rail-track) { position: relative; }
-  .toc-rail-track { position: absolute; top: 0; bottom: 0; left: 736px; width: 300px; max-width: none; margin: 0; }
+  .toc-rail-track { position: absolute; top: 0; bottom: 0; left: clamp(720px, calc(100% - 416px), 736px); width: min(300px, calc(100% - 736px)); max-width: none; margin: 0; }
   .toc-rail-track > .side-rail { position: sticky; top: 84px; margin: 0; }
   /* ol がスクロール枠になると、枠の外に描かれる番号(list-style-position: outside)が切り抜かれ、
      「10.」が「0.」に見えていた（2026-09-30・目次10項目以上の約208ページ）。
@@ -1261,6 +1356,17 @@ main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width
 
 .side-rail:has(.rail-next) > .toc:has(.toc-toggle:not([hidden])) { padding: 0 16px; }
 .side-rail:has(.rail-next) > .toc:has(.toc-toggle[aria-expanded="true"]:not([hidden])) { padding-bottom: 4px; }
+/* PC の右レール: 見出し「目次」を残し、開閉は見出しの右の小さな操作（toc-rail.js が .toc-inline-toggle を付ける）。
+   いま読んでいる節（aria-current="location"）は面の色と太さで示す。左の線は使わない（gbrain design/ui-no-left-accent-border-cards）。
+   長い目次の後半が枠の下に隠れているときは、下端をぼかして「続き」と出す（.toc-more-below）。 */
+.side-rail:has(.rail-next) > .toc.toc-inline-toggle:has(.toc-toggle[aria-expanded]:not([hidden])) { position: relative; inset: auto; padding: 14px 16px 4px; }
+.toc.toc-inline-toggle > .toc-toggle { position: absolute; top: 2px; right: 8px; width: auto; min-height: 44px; padding: 0 8px; font-size: 12.5px; font-weight: 600; color: var(--accent); }
+.toc.toc-inline-toggle > .toc-toggle::after { content: none; }
+.toc.toc-inline-toggle > .toc-title { margin: 0 0 8px; line-height: 20px; }
+.toc a[aria-current="location"] { color: var(--accent); font-weight: 700; background: var(--accent-soft); border-radius: 4px; box-shadow: 0 0 0 3px var(--accent-soft); }
+.side-rail:has(.rail-next) > .toc.toc-more-below { position: relative; inset: auto; }
+.toc.toc-more-below::after { content: "▼ 続きがあります（枠の中をスクロール）"; position: absolute; left: 1px; right: 1px; bottom: 1px; height: 44px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; border-radius: 0 0 12px 12px; background: linear-gradient(rgba(255,255,255,0), #fff 65%); color: var(--sub); font-size: 12px; pointer-events: none; }
+@media print { .toc.toc-more-below::after { content: none; } }
 
 /* Keep tall PR creative proportional in short desktop windows; retain its full content. */
 @media (min-width: 1200px) and (max-height: 899.98px) {
@@ -1318,10 +1424,13 @@ footer [data-duplicate-note] { display: none !important; }
 
 /* ---- 「あわせて読む」を目次と見分けられる見た目に（2026-10-03 Masahiro「おすすめ記事のデザインをもう少し目立つようにできるかな、気付いてない可能性あるよね？」）
    目次と同じ白い箱・地の文字のリンクだったので、目次の続きに見えて押されていなかった（28日で rail 13クリック / 20,752PV）。
-   色の面・左の帯・カード状のリンク（右に ›）で「別の読みもの」だと分かるようにする。
+   色の面・カード状のリンク（右に ›）で「別の読みもの」だと分かるようにする。
    ★種類のラベル（ツール／記事）は付けない: 相対リンクで見分けるとツールのページで外れる（../bonus-tedori/ を記事と誤表示した）。
      付けるなら生成器（gen_toc_related.mjs）が data 属性で種類を書く。 */
-.rail-next { background: var(--accent-soft); border: 1px solid #b9dcd2; border-left: 4px solid var(--accent); }
+/* ★左の帯（border-left 4px）は外した（2026-10-08 UI/UX レビュー 中6）。gbrain design/ui-no-left-accent-border-cards の恒久方針
+   「注意・案内は淡い全面色＋四辺均一の1px枠」に従う。目立たせるのは面の色・見出しの色・カード状のリンクで足りる。
+   tests/test_no_left_accent.mjs が computed style で全主要ページを見ている（左だけ太い色線が戻ったら落ちる）。 */
+.rail-next { background: var(--accent-soft); border: 1px solid #b9dcd2; }
 .rail-next-title { color: var(--accent); font-size: 15px; margin-bottom: 8px; }
 .rail-next-title::before { content: "▶"; font-size: 10px; margin-right: 6px; vertical-align: 2px; }
 .rail-next li, .rail-next li:first-child { border-top: 0; margin: 0 0 8px; }
@@ -1329,3 +1438,43 @@ footer [data-duplicate-note] { display: none !important; }
 .rail-next a { position: relative; background: #fff; border: 1px solid #cfe5de; border-radius: 8px; padding: 10px 28px 10px 12px; font-weight: 600; box-shadow: 0 1px 2px rgba(31, 111, 92, .08); }
 .rail-next a::after { content: "›"; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 20px; color: var(--accent); }
 .rail-next a:hover { border-color: var(--accent); text-decoration: none; background: #fbfefd; }
+
+/* ==== 計算結果の右レール要約と、計算済みの印刷（B班 2026-10-08。assets/result_rail.js） ====
+   gbrain audits/keiri-uiux-review-pc-2026-10-08 中1・中2。
+   ≥1200px: 計算が成功したら、答えの金額と主な内訳を右レール（.side-rail）の先頭＝目次の上に出す。
+   左の太線アクセントは使わない（gbrain design/ui-no-left-accent-border-cards）。四辺1pxの枠。 */
+.result-rail, .print-stamp { display: none; }
+@media (min-width: 1200px) {
+  .side-rail > .result-rail:not([hidden]) { display: block; flex: 0 0 auto; margin: 0; background: #fff; border: 1px solid var(--accent); border-radius: 12px; padding: 12px 16px; }
+  .result-rail-title { font-weight: 700; font-size: 13px; color: var(--sub); margin-bottom: 4px; }
+  .result-rail dl { margin: 0; display: grid; grid-template-columns: 1fr auto; column-gap: 10px; row-gap: 2px; align-items: baseline; }
+  .result-rail dl[hidden] { display: none; }
+  .result-rail dt { font-size: 13px; color: var(--ink); overflow-wrap: anywhere; }
+  .result-rail dd { margin: 0; font-size: 14px; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  .result-rail-heads dd { font-size: 22px; font-weight: 800; color: var(--accent); }
+  .result-rail-heads dt { font-weight: 700; }
+  .result-rail-rows { border-top: 1px solid var(--line); margin-top: 8px !important; padding-top: 6px; }
+  .result-rail .is-strong { font-weight: 700; }
+  .result-rail-stale { margin: 8px 0 0; font-size: 12.5px; color: var(--warn-ink); }
+  .result-rail.is-stale dl { opacity: .55; }
+  .result-rail-more { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; }
+  /* 要約を出している間は「あわせて読む」を引っ込め、目次と要約を画面の高さに収める（ツールページでは結果を優先） */
+  .side-rail:has(> .result-rail:not([hidden])) > .rail-next { display: none; }
+}
+@media print {
+  .result-rail { display: none !important; }
+  /* 計算済みの印刷は「条件＋結果＋出典＋計算日・URL」だけにする（解説・FAQ・関連・目次は隠す） */
+  html[data-calculated] main > :not(.hero):not(.card):not(.breadcrumb),
+  html[data-calculated] main > .card:not(:has(.result)),
+  html[data-calculated] .hero > :not(h1),
+  html[data-calculated] .card .hint:not(:has(.warn)),
+  html[data-calculated] .card .callout,
+  html[data-calculated] .card .workflow-next,
+  html[data-calculated] .card .optional-fields:not([open]),
+  html[data-calculated] .card #optional-lead { display: none !important; }
+  html[data-calculated] .card { break-inside: auto; border: 0; padding: 0; }
+  html[data-calculated] .result { break-inside: auto; }
+  html[data-calculated] .card label, html[data-calculated] .card input, html[data-calculated] .card select { margin-top: 2px; margin-bottom: 2px; }
+  html[data-calculated] fieldset.member { margin-top: 8px; }
+  html[data-calculated] .print-stamp { display: block; margin: 8px 0 0; font-size: 10pt; color: #000; word-break: break-all; }
+}

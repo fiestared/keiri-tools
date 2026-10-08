@@ -36,6 +36,7 @@
 // ★ナビは tools/gen_nav.mjs が唯一の出所。ここに直書きすると、この生成器を
 //   流すたびにナビが古い形へ戻る（X導線で同じ事故が起きている。下のコメント参照）。
 import { buildHeader } from './gen_nav.mjs';
+import { siteLinks } from './gen_site_footer.mjs';
 
 // ★年収別ページはすべて nenshu/<slug>/ で深さが同じなので、ナビは1つで足りる。
 //   代表の slug で作る（現在地の印は「ツール」も「コラム」も付かない階層）。
@@ -170,8 +171,9 @@ ${NENSHU_HEADER}
 //   実測: 生成 → test_x_link 緑 → 再生成 → 赤、を確認して直した。
 //   x-link:auto の印は gen_x_link.mjs が「既に入っている」と判定するための目印なので必ず残す
 //   （消すと二重に挿入される）。
+// ★案内リンクは gen_site_footer.mjs の siteLinks() を使う（2026-10-08。手書きだと全ページの型からずれる）
 const FOOT = `</main>
-<footer class="site"><div><a href="/about/">運営者</a>／<a href="/privacy/">プライバシー</a>／<a href="/contact/">お問い合わせ</a></div><div class="copy">© 税金・経理・補助金ツールズ</div>
+<footer class="site">${siteLinks(1)}<div class="copy">© 税金・経理・補助金ツールズ</div>
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
 </footer>
 </body>

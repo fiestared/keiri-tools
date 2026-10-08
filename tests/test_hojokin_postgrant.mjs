@@ -34,6 +34,8 @@ const NETS = [
   ['事業完了後の手続き', (r) => /事業完了後/.test(r.title) || /完了後[^。]{0,20}手続き用/.test(head(r))],
   ['採択後の届出（中止届・変更届など）', (r) => /(撤回|中止|変更|廃止|辞退)届/.test(r.title)],
   ['練習用ダミー', (r) => /練習用/.test(r.title) || /実際に補助金が支払われることはありません/.test(head(r))],
+  // 2026-10-08 追加: 交付後の消費税報告（締切 2040-12-31 で3件並び続けていた）
+  ['消費税報告', (r) => /消費税(等|額)?の?報告/.test(r.title)],
 ];
 for (const [name, hit] of NETS) {
   const bad = S.filter(hit);
@@ -43,6 +45,11 @@ const ex = D._meta.excluded || [];
 ok(ex.every((e) => e.id && e.title && typeof e.reason === 'string' && e.reason.length > 0),
   `除外した行は全て理由を申告している（${ex.length}件）`);
 ok(D._meta.count === S.length, `_meta.count が一覧の件数と一致（${D._meta.count} / ${S.length}）`);
+// ★2026-10-08 追加: 説明の抜粋が罫線の連続にならない（持続化補助金・災害支援枠4件が「-----…」だった）。
+//   定時ジョブがデータを作り直すので、データだけでなく取り込み器の clean_text も下の②で見る。
+const RULE = /[-‐‑–—―−－─━═=＝_＿*＊~～〜]{4,}/;
+const ruled = S.filter((r) => RULE.test(r.summary || '') || RULE.test(r.subsidy_catch_phrase || ''));
+ok(ruled.length === 0, `要約・キャッチコピーに罫線の並びが無い${ruled.length ? `（${ruled.length}件: ${ruled.slice(0, 2).map((r) => r.title).join(' / ')}）` : ''}`);
 const ids = new Set(S.map((r) => r.id));
 ok(ex.every((e) => !ids.has(e.id)), '除外した行が一覧にも残っていない');
 
@@ -64,6 +71,7 @@ const DROP = [
   row('女性活躍情報公開促進奨励金　撤回届'),
   row('［第十三回］事業再構築補助金（交付申請等）'),
   row('申請練習用補助金【補助金の支払いはありません】'),
+  row('令和７年度 救命救急センター運営費補助金（消費税報告）'),
 ];
 const KEEP = [
   row('令和８年度ＡＩ×データ知財取得支援助成事業【第２回申請】'),                 // 題の途中の×
@@ -76,6 +84,7 @@ const KEEP = [
   row('ものづくり補助金', { summary: 'x'.repeat(130) + '採択後は実績報告と状況報告が必要です。' }), // 概要の奥の説明文
   row('東京都若者世代職場定着促進助成金（令和８年度第５回申請受付）',
     { summary: '≪ 交付申請受付期間は 令和８年９月１日 8時30分～９月30日 です ≫' }),
+  row('インボイス制度対応（消費税の免税事業者向け）支援補助金'),                    // 消費税を含む公募は残す
 ];
 const py = spawnSync('python3', ['-c', `
 import sys, json
@@ -87,6 +96,22 @@ ok(py.status === 0, `junk_reason を呼べる${py.status ? `（${py.stderr.trim(
 const got = py.status === 0 ? JSON.parse(py.stdout) : [];
 DROP.forEach((r, i) => ok(typeof got[i] === 'string' && got[i].length > 0, `落とす: ${r.title}${got[i] ? ` → ${got[i]}` : ''}`));
 KEEP.forEach((r, i) => ok(got[DROP.length + i] === null, `残す: ${r.title}`));
+
+console.log('★要約の罫線落とし（tools/fetch_jgrants.py の plain / clean_text）');
+const CASES = [
+  ['<p>-------------------------------</p><p>商工会地区の事業者はこちら</p><p>-----</p>【申請方法】', '商工会地区の事業者はこちら 【申請方法】'],
+  ['＊＊＊＊＊＊＊＊＊ 応募資格 ＊＊＊＊', '応募資格'],
+  ['補助率 1/2・上限50万円（A-B-C 区分）', '補助率 1/2・上限50万円（A-B-C 区分）'],   // 罫線でない記号は残す
+];
+const py2 = spawnSync('python3', ['-c', `
+import sys, json
+sys.path.insert(0, 'tools')
+from fetch_jgrants import plain
+print(json.dumps([plain(h) for h in json.load(sys.stdin)], ensure_ascii=False))
+`], { cwd: ROOT, input: JSON.stringify(CASES.map((c) => c[0])), encoding: 'utf8' });
+ok(py2.status === 0, `plain を呼べる${py2.status ? `（${py2.stderr.trim().split('\n').pop()}）` : ''}`);
+const got2 = py2.status === 0 ? JSON.parse(py2.stdout) : [];
+CASES.forEach(([, want], i) => ok(got2[i] === want, `plain → 「${want}」（実際: 「${got2[i]}」）`));
 
 console.log(`\n${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);

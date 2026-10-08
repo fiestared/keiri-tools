@@ -5460,9 +5460,28 @@ SCENES.ui_ideco_deguchi = async () => {
 // ★空欄のまま計算を押したら: 欄の直後に同じ文言・aria-invalid="true"・aria-describedby に
 //   エラーの id・フォーカスはその欄へ。直したら（input）欄のエラーは消える。
 //   noCoverage: 答えの正しさはこのシーンの主題ではない（正常系シーンは各ツールに別にある）。
-const fieldErrorScene = ({ path, field, button = "calc", result = "result", value, tab = null }) => async () => {
+// ★2026-10-08（keiri-uiux-review-2026-10-08 高3）: 新ツール（所得税・年末調整）がエラーを <p class="err"> で描き、
+//   **成功と同じ緑の枠**に「結果をコピー」まで出していた。欄への結び付けだけでなく、
+//   「エラーの枠の色が成功の枠の色と違う」「エラーのあいだはコピーを出さない」も見る。
+//   枠の色は「利用者に見えている枠」で比べる: 結果欄の枠が消えていれば（警告1枚）、中の警告の枠。
+const visibleFrame = (doc, box) => {
+  const win = doc.defaultView;
+  const cs = win.getComputedStyle(box);
+  if (parseFloat(cs.borderTopWidth) > 0 && cs.borderTopStyle !== "none") return cs.borderTopColor;
+  const w = box.querySelector(":scope > .warn") || box.firstElementChild;
+  if (!w) return "none";
+  const ws = win.getComputedStyle(w);
+  return parseFloat(ws.borderTopWidth) > 0 && ws.borderTopStyle !== "none" ? ws.borderTopColor : "none";
+};
+const copyShown = (doc) => {
+  const c = doc.getElementById("copy-result");
+  return !!c && c.getClientRects().length > 0 && doc.defaultView.getComputedStyle(c).display !== "none";
+};
+const fieldErrorScene = ({ path, field, button = "calc", result = "result", value, tab = null, fill = {} }) => async () => {
   const doc = await open(path);
   if (tab) click(doc, tab);
+  // 押す欄以外に要る入力（例: 年末調整は給与を入れてから徴収税額の空欄を試す）
+  for (const [id, v] of Object.entries(fill)) set(doc, id, v);
   const el = doc.getElementById(field);
   const hint = (el.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean)
     .map((id) => doc.getElementById(id)?.textContent || "").join(" ");
@@ -5478,17 +5497,22 @@ const fieldErrorScene = ({ path, field, button = "calc", result = "result", valu
   const onError = {
     focused: doc.activeElement === el,
     describedByError: (el.getAttribute("aria-describedby") || "").split(/\s+/).includes(errId),
-    errorVisible: !!err && !err.hidden && err.getClientRects().length > 0 && /入力してください/.test(err.textContent),
+    errorVisible: !!err && !err.hidden && err.getClientRects().length > 0 && /(入力|チェック|選ん|選び)[^。]*ください/.test(err.textContent),
     // 欄のエラーは欄の直後（または欄の説明の中）にある。ボタンの下の結果欄だけに出すのをやめたことを見る
     errorNearField: !!err && !err.closest(".result"),
     resultWarnLinked: !!doc.querySelector(`#${result} .warn[data-field="${field}"]`),
     fieldInView: (() => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= doc.defaultView.innerHeight; })(),
+    errorFrame: visibleFrame(doc, doc.getElementById(result)),
+    copyOnError: copyShown(doc),
   };
   set(doc, field, value);
   const cleared = el.getAttribute("aria-invalid") !== "true" && (!err || err.hidden);
   click(doc, button);
   await waitFor(() => doc.getElementById(result).dataset.resultState === "success" || /¥|日/.test(text(doc, result)), "直した後の計算結果");
-  return { ...initial, ...onError, cleared, resultAfter: text(doc, result).slice(0, 80) };
+  const successFrame = visibleFrame(doc, doc.getElementById(result));
+  return { ...initial, ...onError, cleared, successFrame,
+    errorFrameDiffers: onError.errorFrame !== successFrame && onError.errorFrame !== "none",
+    resultAfter: text(doc, result).slice(0, 80) };
 };
 SCENES.ux_field_error_shaho = fieldErrorScene({ path: "/docs/shakai-hoken/", field: "monthly", value: "300000" });
 SCENES.ux_field_error_tedori = fieldErrorScene({ path: "/docs/tedori/", field: "gross", value: "300000" });
@@ -5505,6 +5529,12 @@ SCENES.ux_field_error_papa_ikukyu = fieldErrorScene({ path: "/docs/papa-ikukyu/"
 SCENES.ux_field_error_juminzei = fieldErrorScene({ path: "/docs/juminzei/", field: "shunyu", value: "5000000" });
 SCENES.ux_field_error_taishokukin = fieldErrorScene({ path: "/docs/taishokukin/", field: "amount", value: "15000000" });
 SCENES.ux_field_error_jutaku = fieldErrorScene({ path: "/docs/jutaku/", field: "zandaka", value: "30000000" });
+// 2026-10-08: 9/30 の型を知らずに作られた新ツールと、取りこぼした印紙・賞与
+SCENES.ux_field_error_shotokuzei = fieldErrorScene({ path: "/docs/shotokuzei/", field: "kyuyo", value: "5000000" });
+SCENES.ux_field_error_nenmatsu_chosei = fieldErrorScene({ path: "/docs/nenmatsu-chosei/", field: "kyuyo", value: "5000000", fill: { choshu: "120000" } });
+SCENES.ux_field_error_nenmatsu_chosei_choshu = fieldErrorScene({ path: "/docs/nenmatsu-chosei/", field: "choshu", value: "120000", fill: { kyuyo: "5000000" } });
+SCENES.ux_field_error_inshi = fieldErrorScene({ path: "/docs/inshi/", field: "amount", value: "54800" });
+SCENES.ux_field_error_bonus_tedori = fieldErrorScene({ path: "/docs/bonus-tedori/", field: "bonus", value: "500000", fill: { zengetsu: "300000" } });
 // 計算ボタンを押して、結果が画面の下（見えない位置）に描かれたら、結果の頭が見えるところまでスクロールすること。
 // iframe を低くして「結果が折り目の下に出る」スマホの状態を作る
 SCENES.ux_result_scroll_shaho = async () => {

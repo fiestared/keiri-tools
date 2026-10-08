@@ -142,27 +142,32 @@
   <fieldset class="member">
     <legend>1. 給与と天引きされた税額（1〜12月の合計）</legend>
     <label for="kyuyo">本年分の給与の総額（給料・手当・賞与の合計）</label>
-    <input type="number" id="kyuyo" min="0" step="1000" placeholder="例: 5000000" inputmode="numeric" aria-describedby="kyuyo-hint">
-    <span id="kyuyo-hint" class="hint">源泉徴収簿の「計⑦」欄。通勤手当など非課税のものは含めません。年の中途で就職した人は、前の勤務先に扶養控除等（異動）申告書を出して受けていた給与（前職の源泉徴収票で確認）も含めます。前職で乙欄だった給与は含めず、下の「他の勤務先の給与」に入れます。本年中に支給日が来て支払が確定した給与は、未払でも含めます（前年分の未払給与を本年に支払ったものは含めません）</span>
+    <input type="number" id="kyuyo" min="0" step="1000" data-example="5000000" inputmode="numeric" aria-describedby="kyuyo-hint">
+    <span id="kyuyo-hint" class="hint"><b class="input-example">入力例：1年分の給与が500万円なら 5000000</b>源泉徴収簿の「計⑦」欄。通勤手当など非課税のものは含めません。年の中途で就職した人は、前の勤務先に扶養控除等（異動）申告書を出して受けていた給与（前職の源泉徴収票で確認）も含めます。前職で乙欄だった給与は含めず、下の「他の勤務先の給与」に入れます。本年中に支給日が来て支払が確定した給与は、未払でも含めます（前年分の未払給与を本年に支払ったものは含めません）</span>
     <label for="choshu">天引きされた所得税の合計（徴収税額）</label>
-    <input type="number" id="choshu" min="0" step="1" placeholder="例: 120000" inputmode="numeric" aria-describedby="choshu-hint">
-    <span id="choshu-hint" class="hint">給与明細の「所得税」欄の1年分の合計（源泉徴収簿の⑧）。本年分の未払給与の未徴収の税額も含め、前年分の未払給与を本年に支払ったときの税額は含めません。前年の年末調整の不足額を本年に徴収した額や、過納額を本年に充当・還付した額は関係させず、<b>本年の給与から徴収すべきであった税額</b>で集計します。12月の給与の税額計算を省略する会社では、12月分を含めません</span>
-    <label for="last_tax">上の合計のうち、最後の給与（賞与）の税額でまだ天引きしていない額</label>
-    <input type="number" id="last_tax" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="last_tax-hint">
-    <span id="last_tax-hint" class="hint">12月の給与の税額も計算してから年末調整する会社で、その税額を上の合計に含めた場合に入れます。超過額はまずこの税額に充当され、残りが還付されます（年末調整のしかた40頁）</span>
-    <label for="miharai_tax">上の合計のうち、未払給与の未徴収の税額</label>
-    <input type="number" id="miharai_tax" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="miharai_tax-hint">
-    <span id="miharai_tax-hint" class="hint">本年中に支給日が来たのにまだ支払っていない給与があり、その税額を上の合計に含めた場合に入れます。超過額から控除した部分は、その未払給与を支払うときに徴収すべき税額に充当されます</span>
+    <input type="number" id="choshu" min="0" step="1" data-example="120000" inputmode="numeric" aria-describedby="choshu-hint">
+    <span id="choshu-hint" class="hint"><b class="input-example">入力例：1年分で12万円なら 120000（天引きが無かったなら 0）</b>給与明細の「所得税」欄の1年分の合計（源泉徴収簿の⑧）。本年分の未払給与の未徴収の税額も含め、前年分の未払給与を本年に支払ったときの税額は含めません。前年の年末調整の不足額を本年に徴収した額や、過納額を本年に充当・還付した額は関係させず、<b>本年の給与から徴収すべきであった税額</b>で集計します。12月の給与の税額計算を省略する会社では、12月分を含めません</span>
     <label for="shaho">給与から引かれた社会保険料等</label>
-    <input type="number" id="shaho" min="0" step="1" placeholder="例: 750000" inputmode="numeric" aria-describedby="shaho-hint">
-    <span id="shaho-hint" class="hint">健康保険・介護保険・厚生年金・雇用保険の1年分の合計（賞与分も含む）。給与から天引きされている小規模企業共済等掛金（iDeCoなど）もここに含めます</span>
+    <input type="number" id="shaho" min="0" step="1" data-example="750000" inputmode="numeric" aria-describedby="shaho-hint">
+    <span id="shaho-hint" class="hint"><b class="input-example">入力例：1年分で75万円なら 750000</b>健康保険・介護保険・厚生年金・雇用保険の1年分の合計（賞与分も含む）。給与から天引きされている小規模企業共済等掛金（iDeCoなど）もここに含めます</span>
+    <details class="optional-fields" id="grp-self"><summary>自分で払った社会保険料・iDeCoなど（ある人だけ） <span data-optional-state>未設定</span></summary>
     <label for="shaho_shinkoku">自分で払った社会保険料（保険料控除申告書で申告する分）</label>
     <input type="number" id="shaho_shinkoku" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="shaho_shinkoku-hint">
     <span id="shaho_shinkoku-hint" class="hint">国民年金保険料・国民健康保険料など、給与から引かれていないもの</span>
     <label for="kyosai">小規模企業共済等掛金（iDeCoなど）</label>
     <input type="number" id="kyosai" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="kyosai-hint">
     <span id="kyosai-hint" class="hint">iDeCo（個人型確定拠出年金）・小規模企業共済の掛金で、給与から引かれていないもの</span>
-    <p class="hint" style="margin-top:12px">次の3つは、年末調整の税額の計算には足しませんが、基礎控除・配偶者控除・寡婦控除・ひとり親控除などの判定に使う<b>あなたの合計所得金額</b>に入ります（基礎控除申告書の「本年中の合計所得金額の見積額」）</p>
+    </details>
+    <details class="optional-fields" id="grp-last"><summary>最後の給与（賞与）・未払給与の税額をまだ天引きしていない場合 <span data-optional-state>未設定</span></summary>
+    <label for="last_tax">上の合計のうち、最後の給与（賞与）の税額でまだ天引きしていない額</label>
+    <input type="number" id="last_tax" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="last_tax-hint">
+    <span id="last_tax-hint" class="hint">12月の給与の税額も計算してから年末調整する会社で、その税額を上の合計に含めた場合に入れます。超過額はまずこの税額に充当され、残りが還付されます（年末調整のしかた40頁）</span>
+    <label for="miharai_tax">上の合計のうち、未払給与の未徴収の税額</label>
+    <input type="number" id="miharai_tax" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="miharai_tax-hint">
+    <span id="miharai_tax-hint" class="hint">本年中に支給日が来たのにまだ支払っていない給与があり、その税額を上の合計に含めた場合に入れます。超過額から控除した部分は、その未払給与を支払うときに徴収すべき税額に充当されます</span>
+    </details>
+    <details class="optional-fields" id="grp-other-income"><summary>他の勤務先の給与・特定支出控除・給与以外の所得（ある人だけ） <span data-optional-state>未設定</span></summary>
+    <p class="hint">次の3つは、年末調整の税額の計算には足しませんが、基礎控除・配偶者控除・寡婦控除・ひとり親控除などの判定に使う<b>あなたの合計所得金額</b>に入ります（基礎控除申告書の「本年中の合計所得金額の見積額」）</p>
     <label for="other_kyuyo">他の勤務先の給与の収入金額（この年末調整に含めないもの）</label>
     <input type="number" id="other_kyuyo" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="other_kyuyo-hint">
     <span id="other_kyuyo-hint" class="hint">2か所以上から給与を受けている人は、合計所得金額は給与の全部を基に計算します</span>
@@ -175,10 +180,11 @@
     <label for="other">それ以外の所得の合計額（損益通算後）</label>
     <input type="number" id="other" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="other-hint">
     <span id="other-hint" class="hint">合計所得金額に入る額で入れます（年末調整のしかた9頁）: 事業・不動産・総合課税の利子・配当・短期譲渡所得とその他の雑所得（損益通算後）＋総合課税の長期譲渡所得と一時所得の合計額の<b>2分の1</b>＋退職所得・山林所得＋申告分離課税の所得（譲渡所得は特別控除前）。純損失などの繰越控除は適用前の額です。源泉分離課税の利子、確定申告しないことを選んだ配当や源泉徴収選択口座の株式の譲渡などは含めません。損益通算できる赤字があるときは通算後の額（マイナスも入力できます）</span>
+    </details>
   </fieldset>
 
-  <fieldset class="member">
-    <legend>2. 保険料控除申告書（年間の支払保険料）</legend>
+  <p class="hint" id="optional-lead" style="margin-top:24px">2〜6は、当てはまる人だけ開いて入力します。開かずに計算すると、その控除は無いものとして計算します。</p>
+  <details class="optional-fields" id="grp-2"><summary>2. 保険料控除申告書（年間の支払保険料） <span data-optional-state>未設定</span></summary>
     <p class="hint">控除証明書の金額を入れます。控除額はこの計算機が条文どおりに計算します。該当しない欄は空欄で構いません。<b>一つの契約が地震保険料と旧長期損害保険料の両方に当たる場合は、どちらか一方の金額だけを入れます</b>（両方は控除できません。どちらが得かは<a href="../jishin-hoken-kojo/">地震保険料控除シミュレーター</a>で比べられます）</p>
     <div class="field-inline-help"><label for="ippan_shin" style="flex:1;margin:0">一般の生命保険料（新契約）</label><input type="number" id="ippan_shin" min="0" step="1" placeholder="円" inputmode="numeric" style="width:9em;flex:none"></div>
     <div class="field-inline-help"><label for="ippan_kyu" style="flex:1;margin:0">一般の生命保険料（旧契約）</label><input type="number" id="ippan_kyu" min="0" step="1" placeholder="円" inputmode="numeric" style="width:9em;flex:none"></div>
@@ -187,10 +193,9 @@
     <div class="field-inline-help"><label for="nenkin_kyu" style="flex:1;margin:0">個人年金保険料（旧契約）</label><input type="number" id="nenkin_kyu" min="0" step="1" placeholder="円" inputmode="numeric" style="width:9em;flex:none"></div>
     <div class="field-inline-help"><label for="jishin" style="flex:1;margin:0">地震保険料</label><input type="number" id="jishin" min="0" step="1" placeholder="円" inputmode="numeric" style="width:9em;flex:none"></div>
     <div class="field-inline-help"><label for="kyuchoki" style="flex:1;margin:0">旧長期損害保険料</label><input type="number" id="kyuchoki" min="0" step="1" placeholder="円" inputmode="numeric" style="width:9em;flex:none"></div>
-  </fieldset>
+  </details>
 
-  <fieldset class="member">
-    <legend>3. 配偶者</legend>
+  <details class="optional-fields" id="grp-3"><summary>3. 配偶者 <span data-optional-state>未設定</span></summary>
     <label for="haigu">配偶者</label>
     <select id="haigu">
       <option value="none" selected>いない（または生計を一にしていない・他の人の扶養親族・青色事業専従者等）</option>
@@ -199,7 +204,7 @@
     <p class="hint">内縁関係の人は配偶者に含まれません。他の所得者の扶養親族とされる人・青色事業専従者等も対象外です。<b>夫婦の双方がお互いに配偶者特別控除を受けることはできません</b>（どちらか一方だけ）。配偶者が他の所得者の特定親族にも当たる場合は、どちらか1人の控除の対象になります</p>
     <div id="haigu-rows" hidden>
       <label for="haigu_gokei">配偶者の本年中の合計所得金額の見積額</label>
-      <input type="number" id="haigu_gokei" min="0" step="1" placeholder="例: 0" inputmode="numeric" aria-describedby="haigu_gokei-hint">
+      <input type="number" id="haigu_gokei" min="0" step="1" placeholder="円" inputmode="numeric" aria-describedby="haigu_gokei-hint">
       <span id="haigu_gokei-hint" class="hint">収入ではなく所得。給与だけなら給与収入136万円以下で62万円以下（令和8年分）</span>
       <label style="display:flex;align-items:center;gap:8px;margin:10px 0 0"><input type="checkbox" id="haigu_rojin" style="flex:none"><span>配偶者は70歳以上（昭和32年1月1日以前に生まれた人）</span></label>
       <label for="haigu_shogai">配偶者の障害</label>
@@ -211,10 +216,9 @@
       </select>
       <span class="hint">同居特別障害者は、特別障害者のうち、あなた・あなたの配偶者・あなたと生計を一にするその他の親族のいずれかとの同居を常況としている人です（あなたと別居でも、生計を一にする他の親族と同居していれば当たります）</span>
     </div>
-  </fieldset>
+  </details>
 
-  <fieldset class="member">
-    <legend>4. 扶養親族（合計所得金額62万円以下の親族）の人数</legend>
+  <details class="optional-fields" id="grp-4"><summary>4. 扶養親族（合計所得金額62万円以下の親族）の人数 <span data-optional-state>未設定</span></summary>
     <p class="hint">扶養親族は、あなたと<b>生計を一にする</b>親族（配偶者、青色事業専従者として給与を受ける人、白色事業専従者を除く）で、合計所得金額が62万円以下（給与だけなら給与収入136万円以下）の人です。<b>配偶者など他の人が扶養控除を受ける人は、ここには入れず</b>、下の「他の人が扶養控除を受けている扶養親族」に入れます。年齢は令和8年12月31日の現況で数えます（その親族が年の中途で死亡した場合はその死亡の時、あなた自身が年の中途で死亡したり出国して非居住者になったりする場合はその時の現況）。親族は6親等内の血族と3親等内の姻族で、いわゆる里子や、市町村長から養護を委託された老人で一定の要件を満たす人も扶養親族に含まれます。<b>国外に住む親族</b>（非居住者）を<b>扶養控除</b>の対象にできるのは、16歳以上30歳未満・70歳以上の人と、30歳以上70歳未満で留学により国内に住所・居所を有しなくなった人・障害者・本年に生活費や教育費として38万円以上の支払を受けている人だけです（この年齢の制限は扶養控除の対象の範囲で、16歳未満の国外居住親族が障害者なら障害者控除の対象になります）。国外居住親族（配偶者・特定親族を含む）について控除を受けるには、親族関係書類（留学による場合は留学ビザ等書類も）と送金関係書類（38万円以上の支払による場合は38万円送金書類）の提出または提示が必要です</p>
     <div id="fuyo-kubun">
     <div class="field-inline-help"><label for="f_nensho" style="flex:1;margin:0">16歳未満（平成23年1月2日以後に生まれた子など）</label><input type="number" id="f_nensho" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none" aria-describedby="f_nensho-hint">
@@ -233,17 +237,16 @@
     <p class="hint" style="margin-top:10px">他の人（配偶者など）が扶養控除を受けている扶養親族の人数。あなたの扶養控除にはなりませんが、所得金額調整控除と生命保険料控除の特例は、誰が扶養控除を受けているかに関係なく判定します（夫婦の両方が所得金額調整控除を受けられます）</p>
     <div class="field-inline-help"><label for="fo_under23" style="flex:1;margin:0">そのうち23歳未満（16歳未満を含む）</label><input type="number" id="fo_under23" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none"></div>
     <div class="field-inline-help"><label for="fo_tokubetsu" style="flex:1;margin:0">そのうち特別障害者</label><input type="number" id="fo_tokubetsu" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none"></div>
-  </fieldset>
+  </details>
 
-  <fieldset class="member">
-    <legend>5. 特定親族（19歳以上23歳未満で、合計所得金額62万円超123万円以下の親族）</legend>
+  <details class="optional-fields" id="grp-5"><summary>5. 特定親族（19歳以上23歳未満で、合計所得金額62万円超123万円以下の親族） <span data-optional-state>未設定</span></summary>
     <p class="hint">あなたと<b>生計を一にする</b>親族（配偶者・青色事業専従者等を除く）で、アルバイト収入が多く扶養親族に入らない大学生の子など。給与だけなら給与収入136万円超197万円以下です。扶養親族の人数には入れません。2人以上の所得者の特定親族に当たる人は、そのうち1人だけが控除を受けられます。他の所得者の配偶者特別控除の対象となる配偶者にも当たる人は、どちらか1人の控除の対象になります。<b>その親族自身が特定親族特別控除を受けている場合は、その親族について控除を受けられません</b>（親族の双方がお互いに受けることもできません）</p>
     <label for="ts">特定親族の合計所得金額（2人以上いる場合はカンマで区切る）</label>
-    <input type="text" id="ts" placeholder="例: 900000, 1100000">
-  </fieldset>
+    <input type="text" id="ts" data-example="900000, 1100000" aria-describedby="ts-hint">
+    <span id="ts-hint" class="hint"><b class="input-example">入力例：2人なら 900000, 1100000</b></span>
+  </details>
 
-  <fieldset class="member">
-    <legend>6. あなた自身</legend>
+  <details class="optional-fields" id="grp-6"><summary>6. あなた自身・住宅ローン控除 <span data-optional-state>未設定</span></summary>
     <label for="honnin_shogai">あなたの障害</label>
     <select id="honnin_shogai">
       <option value="none" selected>障害者ではない</option>
@@ -265,7 +268,7 @@
     <label for="jutaku">住宅借入金等特別控除額（2年目以降）</label>
     <input type="number" id="jutaku" min="0" step="100" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="jutaku-hint">
     <span id="jutaku-hint" class="hint">住宅借入金等特別控除申告書の「住宅借入金等特別控除額」欄の金額。1年目は年末調整では受けられず、確定申告が必要です</span>
-  </fieldset>
+  </details>
 
   <button class="primary" id="calc">年末調整の還付・不足額を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -287,7 +290,7 @@
 <li><a href="#seisan">還付・不足額の精算</a></li>
 <li><a href="#faq">よくある質問</a></li>
 <li><a href="#source">出典</a></li>
-</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/nenmatsu-chosei-denshika/">年末調整の電子化とは</a></li><li><a href="../jishin-hoken-kojo/">地震保険料控除シミュレーター</a></li><li><a href="../hitorioya-kojo/">ひとり親控除・寡婦控除シミュレーター</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/nenmatsu-chosei-hitsuyo-shorui/">年末調整の必要書類</a></li><li><a href="../column/nenmatsu-chosei-denshika/">年末調整の電子化とは</a></li><li><a href="../jishin-hoken-kojo/">地震保険料控除シミュレーター</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
 <h2 id="tejun">年調年税額の計算の手順</h2>
 
@@ -461,14 +464,14 @@
 <!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%B9%B4%E6%9C%AB%E8%AA%BF%E6%95%B4%E3%81%A7%E3%81%84%E3%81%8F%E3%82%89%E6%88%BB%E3%82%8B%E3%81%8B%EF%BC%88%E8%B6%85%E9%81%8E%E9%A1%8D%E3%81%A8%E9%82%84%E4%BB%98%E9%A1%8D%EF%BC%89%E3%83%BB%E8%BF%BD%E5%8A%A0%E3%81%A7%E5%BC%95%E3%81%8B%E3%82%8C%E3%82%8B%E3%81%8B%EF%BC%88%E4%B8%8D%E8%B6%B3%E9%A1%8D%EF%BC%89%E3%82%92%E3%80%81%E5%9B%BD%E7%A8%8E%E5%BA%81%E3%80%8C%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%88%86+%E5%B9%B4%E6%9C%AB%E8%AA%BF%E6%95%B4%E3%81%AE%E3%81%97%E3%81%8B%E3%81%9F%E3%80%8D%E3%81%AE%E6%89%8B%E9%A0%86%E3%81%A8%E8%A1%A8%E3%81%A7%E8%A8%88%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fnenmatsu-chosei%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 <section class="faq rel-block">
 <h2>関連する解説</h2>
-<!--rel:S--><ul class="rel-list"><li><a href="../column/nenmatsu-chosei-denshika/">年末調整の電子化とは — 令和3年4月以降は承認申請も従業員の事前の承諾等も要らないが、会社と従業員が講じる措置がある</a><span class="rel-desc">年末調整の電子化は任意。承認申請・従業員の同意は不要で、会社はデータを受け取る措置を整える。データで出せる書類と時期、控除証明書データの扱い</span></li></ul><!--rel:E-->
+<!--rel:S--><ul class="rel-list"><li><a href="../column/nenmatsu-chosei-hitsuyo-shorui/">年末調整の必要書類 — 令和8年分の申告書と、添付又は提示する証明書類を「誰が何を出すか」で一覧にする</a><span class="rel-desc">令和8年分の年末調整で誰が何を出すかの一覧。申告書の種類、添付又は提示する証明書類、証明書類が要らない保険料、前職の源泉徴収票の扱い。</span></li><li><a href="../column/nenmatsu-chosei-denshika/">年末調整の電子化とは — 令和3年4月以降は承認申請も従業員の事前の承諾等も要らないが、会社と従業員が講じる措置がある</a><span class="rel-desc">年末調整の電子化は任意。承認申請・従業員の同意は不要で、会社はデータを受け取る措置を整える。データで出せる書類と時期、控除証明書データの扱い</span></li></ul><!--rel:E-->
 </section>
 </main>
 <footer class="site">
-  <p><a href="../">税金・経理・補助金ツールズ</a>｜<a href="../about/">運営者情報</a>｜<a href="../privacy/">プライバシーポリシー</a>｜<a href="../contact/">お問い合わせ</a></p>
+  <p class="site-copy">© 税金・経理・補助金ツールズ</p><!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
   <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月21日　／　<a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="noopener" style="color:var(--sub)">出典</a></li><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　一次情報の確認: 2026年10月7日</li></ul></div><!-- /datasrc:auto -->
-  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
+  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）</div><!-- /trust:auto -->
 </footer>
 
 <script type="module">
@@ -494,6 +497,28 @@ function showMeta() {
     `給与所得控除後の金額は「年末調整等のための給与所得控除後の給与等の金額の表」、税額は「年末調整のための算出所得税額の速算表」によります（国税庁『年末調整のしかた』）。`;
 }
 
+// コアの警告文 → 誤りのある欄（推測で結び付けない。文言が一致したものだけ）
+function errorField(t) {
+  if (/給与の総額が2,000万円を超える/.test(t)) return "kyuyo";
+  if (/^障害者に当てはまる扶養親族の人数/.test(t)) return "fs_ippan";
+  if (/^特定親族の合計所得金額/.test(t)) return "ts";
+  return null;
+}
+
+// 畳んだ欄の見出しに「設定あり／未設定」を出す（畳んだまま値が入っていることを隠さない）
+for (const d of document.querySelectorAll("details.optional-fields")) {
+  const st = d.querySelector("[data-optional-state]");
+  if (!st) continue;
+  const sync = () => {
+    const on = [...d.querySelectorAll("input,select")].some((el) =>
+      el.type === "checkbox" ? el.checked
+        : el.tagName === "SELECT" ? !el.options[el.selectedIndex]?.defaultSelected
+        : el.value.trim() !== "" && Number(el.value) !== 0);
+    st.textContent = on ? "設定あり" : "未設定";
+  };
+  d.addEventListener("input", sync); d.addEventListener("change", sync); sync();
+}
+
 $("haigu").addEventListener("change", (e) => { $("haigu-rows").hidden = e.target.value !== "ari"; });
 
 $("calc").addEventListener("click", async () => {
@@ -503,14 +528,20 @@ $("calc").addEventListener("click", async () => {
   const loaded = await Promise.all([jReady, sReady, nReady]);
   const ok = loaded.every(Boolean);
   if (!ok || !J || !S || !N) {
-    out.innerHTML = '<p class="err">計算に必要なデータを読み込めませんでした。通信環境を確認して再読み込みしてください。</p>';
+    out.innerHTML = '<div class="warn">計算に必要なデータを読み込めませんでした。通信環境を確認して再読み込みしてください。</div>';
     return;
   }
   const num = (id) => Math.max(0, Math.floor(Number($(id).value) || 0));
   const sint = (id) => Math.floor(Number($(id).value) || 0);   // マイナスも受ける（損益通算後の所得）
   const tsList = $("ts").value.split(/[,、，\s]+/).map((s) => s.replace(/[^\d]/g, "")).filter(Boolean).map(Number);
+  // エラーは成功の緑枠に入れない（.warn）。data-field で欄に結び付ける（a11y_error.js がフォーカス・aria-invalid）
   if (num("kyuyo") <= 0) {
-    out.innerHTML = '<p class="err">本年分の給与の総額を入力してください。</p>';
+    out.innerHTML = '<div class="warn" data-field="kyuyo">本年分の給与の総額を入力してください。</div>';
+    return;
+  }
+  // 徴収税額の空欄を 0 と読むと、年税額がまるごと「不足額」に化ける。0 のときは 0 と入れてもらう
+  if ($("choshu").value.trim() === "") {
+    out.innerHTML = '<div class="warn" data-field="choshu">天引きされた所得税の合計（徴収税額）を入力してください。天引きが無かった場合は 0 を入れます。</div>';
     return;
   }
   const input = {
@@ -533,7 +564,10 @@ $("calc").addEventListener("click", async () => {
   };
   const r = calcNencho(input, { J, S, N });
   if (!r.ok) {
-    out.innerHTML = r.errors.map((t) => `<p class="err">${t}</p>`).join("");
+    out.innerHTML = r.errors.map((t) => {
+      const f = errorField(t);
+      return `<div class="warn"${f ? ` data-field="${f}"` : ""}>${t}</div>`;
+    }).join("");
     return;
   }
   const k = r.kojo;
@@ -582,6 +616,7 @@ import { attachCopyButton } from "../assets/copy_result.js";
 attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
 <script src="../assets/a11y_error.js" defer></script>
+<script src="../assets/result_rail.js" defer></script>
 <script src="../assets/empty-state.js" defer></script>
 </body>
 </html>
