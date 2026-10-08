@@ -8,7 +8,7 @@
 
 import { createServer } from "node:http";
 import { readFile, mkdir, rm } from "node:fs/promises";
-import { spawn } from "node:child_process";
+import { spawnChrome, killChrome } from "../chrome_proc.mjs";
 import { join, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -89,9 +89,9 @@ for (const sc of SCENES.filter(s => !only || s.name === only)) {
   // ヘッドレスChromeは条件次第で終了しないことがある(実測)。ぶら下がったまま止まるより、
   // 殺して「撮れなかった」と言う方がよい
   await new Promise((ok, ng) => {
-    const p = spawn(CHROME, args, { stdio: "ignore" });
-    const kill = setTimeout(() => { p.kill("SIGKILL"); ok(); }, 90_000);
-    p.on("exit", () => { clearTimeout(kill); ok(); });
+    const p = spawnChrome(CHROME, args);
+    const kill = setTimeout(() => { killChrome(p).then(ok); }, 90_000);
+    p.on("exit", () => { clearTimeout(kill); killChrome(p).then(ok); });   // 本体が自分で終わっても子は残りうる
     p.on("error", e => { clearTimeout(kill); ng(e); });
   });
 

@@ -23,6 +23,9 @@ AI月30万円プロジェクト・柱Aのプロダクト。経理実務の「ち
 - `tools/e2e/e2e.mjs` — **公開中のツールを実ブラウザ(ヘッドレスChrome)で操作する結合テスト**。
   `node tools/e2e/e2e.mjs` (1シーンだけなら `E2E_ONLY=payday_slow node tools/e2e/e2e.mjs`)。
   実行すると `tools/e2e/.chrome-<scene>/` が出来る。**.gitignore済み — 絶対にコミットしない**(4千ファイル・69MB)
+- `tools/chrome_proc.mjs` — **Chrome を起動するときは必ず `spawnChrome` / `killChrome` を使う**(素の `spawn(CHROME…)` と `p.kill()` は禁止)。
+  素の書き方だと Chrome が親なしで残り、2026-10-08 に MBP が load 990 で固まった。`tests/test_chrome_proc.mjs` が番をする。
+  残骸の数は `ps -axo ppid,command | grep "Google Chrome" | awk '$1==1' | grep -c -E "T/(keiri-e2e|hscroll|secwidth|leftedge)-"` (0 が正常)
 
 ## 🧠 決めたこと・実行したことは gbrain に書く
 
