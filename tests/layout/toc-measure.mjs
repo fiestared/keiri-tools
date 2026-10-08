@@ -12,7 +12,7 @@ export function measureToc(){
   if(button.getAttribute('aria-expanded')!==String(!list.hidden))errors.push('toggle-state');
   if(button.getBoundingClientRect().height<44)errors.push('toggle-target');
  }
- if(innerWidth>=1200){
+ if(innerWidth>=1024){
   const r=rail.getBoundingClientRect();
   if(button?.getAttribute('aria-expanded')==='false'&&(r.top<60||r.bottom>innerHeight-16))errors.push('collapsed-rail-fit');
   if(r.left<document.querySelector('main').getBoundingClientRect().left+16+672+32)errors.push('rail-body-overlap');
