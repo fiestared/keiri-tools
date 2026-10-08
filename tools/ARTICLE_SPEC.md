@@ -177,6 +177,7 @@ node tools/gen_qa_index.mjs        # ★docs/assets/qa_index.json。FAQを持つ
 node tools/gen_tool_related.mjs    # 関連リンク（他ページ側にも被リンクが入る）
 node tools/gen_ogp.mjs             # og:title/og:description（title を触ったときも必要）
 node tools/gen_x_share.mjs && node tools/gen_x_link.mjs
+node tools/gen_site_footer.mjs     # ★フッタの案内リンク（site-links 区画）。2026-10-08 から全ページ共通。手で書かない
 node tools/gen_datemodified.mjs    # dateModified を git 履歴から焼く
 node tools/gen_index_sitemap.mjs   # ★下記のとおり --check が緑になるまで繰り返す
 ```
