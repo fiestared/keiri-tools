@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>住民税 計算機｜年収と家族構成から所得割・均等割を自動計算</title>
-<meta name="description" content="年収と家族構成を入れるだけで、住民税（市町村民税・道府県民税）の年額を概算（調整控除以外の税額控除は未反映）。所得割・均等割・森林環境税の内訳まで表示します。横浜市・神戸市・神奈川県などの超過課税にも対応。非課税限度額（均等割・所得割で別）も判定するので「均等割だけかかる人」も分かります。登録不要・無料。">
+<meta name="description" content="年収と家族構成を入れるだけで、住民税（市町村民税・道府県民税）の年額を概算（住宅ローン控除・寄附金税額控除などは未反映）。所得割・均等割・森林環境税の内訳まで表示します。横浜市・神戸市・神奈川県などの超過課税にも対応。非課税限度額（均等割・所得割で別）も判定するので「均等割だけかかる人」も分かります。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/juminzei/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="住民税 計算機｜年収と家族構成から所得割・均等割を自動計算">
-<meta property="og:description" content="年収と家族構成を入れるだけで、住民税（市町村民税・道府県民税）の年額を概算（調整控除以外の税額控除は未反映）。所得割・均等割・森林環境税の内訳まで表示します。横浜市・神戸市・神奈川県などの超過課税にも対応。非課税限度額（均等割・所得割で別）も判定するので「均等割だけかかる人」も分かります。登録不要・無料。">
+<meta property="og:description" content="年収と家族構成を入れるだけで、住民税（市町村民税・道府県民税）の年額を概算（住宅ローン控除・寄附金税額控除などは未反映）。所得割・均等割・森林環境税の内訳まで表示します。横浜市・神戸市・神奈川県などの超過課税にも対応。非課税限度額（均等割・所得割で別）も判定するので「均等割だけかかる人」も分かります。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/juminzei/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-14",
-  "dateModified": "2026-10-05",
+  "dateModified": "2026-10-09",
       "name": "住民税 計算機",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -37,7 +37,7 @@
         "price": "0",
         "priceCurrency": "JPY"
       },
-      "description": "給与収入と家族構成から、住民税（市町村民税・道府県民税）の年額を概算します。調整控除以外の税額控除は未反映です。所得割・均等割・森林環境税の内訳、調整控除、非課税限度額の判定にもとづく計算。"
+      "description": "給与収入と家族構成から、住民税（市町村民税・道府県民税）の年額を概算します。住宅ローン控除・寄附金税額控除などの税額控除は未反映です。所得割・均等割・森林環境税の内訳、調整控除、非課税限度額の判定と限度額付近の減額にもとづく計算。"
     },
     {
       "@type": "BreadcrumbList",
@@ -130,10 +130,9 @@
 
 <section class="hero">
   <h1>住民税 計算機</h1>
-<p class="note">所得割の確定額は、市町村民税・道府県民税ごとに100円未満を切り捨てて合計します。ふるさと納税の上限計算用の額とは区別しています。</p>
-  <p class="article-meta">公開日: <time datetime="2026-07-14">2026年7月14日</time>（更新日: <time datetime="2026-10-05">2026年10月5日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-14">2026年7月14日</time>（更新日: <time datetime="2026-10-09">2026年10月9日</time>）</p>
   <p>年収と家族構成から、<b>住民税（市町村民税・道府県民税）の年額</b>を概算します。<b>所得割・均等割・森林環境税の内訳</b>まで表示し、<b>非課税限度額</b>（均等割と所得割で別々に決まります）も判定します。横浜市・神戸市・神奈川県などの<b>超過課税</b>にも対応しています。</p>
-  <p class="note">この概算は調整控除以外の税額控除（住宅ローン控除、寄附金税額控除など）を反映しません。該当する控除がある場合、控除後の年税額とは異なります。</p>
+  <p class="note">この概算は、調整控除と非課税限度額付近の減額（地方税法附則3条の3）を除き、税額控除（住宅ローン控除、寄附金税額控除など）を反映しません。該当する控除がある場合、控除後の年税額とは異なります。</p>
 </section>
 
 
@@ -249,9 +248,10 @@
   <button class="primary" id="calc">住民税を計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
+  <p class="note" id="rounding-scope">所得割の確定額は、市町村民税・道府県民税ごとに100円未満を切り捨てて合計します。ふるさと納税の上限計算用の額とは区別しています。</p>
   <div id="handoff"></div>
 </div>
-<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機の見方</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/kiso-kojo/">基礎控除はいくら？令和8年分は居住者で最大104万円（12月1日以後の計算。11月30日以前の準確定申告は改正前の額）</a></li><li><a href="../column/kakutei-shinkoku-ikurakara/">確定申告はいくらから必要？</a></li><li><a href="../column/angoshisan-zeikin/">暗号資産（仮想通貨）の税金</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機の見方</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/shotoku-kojo-ichiran/">所得控除の一覧</a></li><li><a href="../column/kiso-kojo/">基礎控除はいくら？令和8年分は居住者で最大104万円（12月1日以後の計算。11月30日以前の準確定申告は改正前の額）</a></li><li><a href="../column/taishokugo-juminzei/">退職後の住民税はどうなる？退職月で変わる払い方・納付書が届く時期・翌年度の課税</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
 <section class="faq">
   <h2 id="tool-section-1">この計算機の見方</h2>
@@ -280,9 +280,13 @@
   </table></div>
   <p>東京23区で扶養等がいる場合の加算額が31万円と42万円で違うので、<b>そのあいだに「所得割はかからないが、均等割はかかる」帯</b>ができます。たとえば東京23区・扶養1人で障害者・未成年者・寡婦・ひとり親などの非課税特例がなく、合計所得金額と総所得金額等が同じ場合、101万円超112万円以下の帯では均等割は課税、所得割は非課税です。標準税率なら均等割4,000円と森林環境税1,000円の合計5,000円ですが、自治体の超過課税などで金額は異なります。</p>
 
+  <h3 id="kinbo-chosei">所得割の非課税限度額をわずかに超えた人は、所得割が減額されます</h3>
+  <p>所得割の非課税限度額は「以下なら0円」という線ですが、<b>1円でも超えたら所得割が満額かかるわけではありません</b>。地方税法附則3条の3第2項（道府県民税）・第5項（市町村民税）は、限度額が「総所得金額等 − 所得割の額」を上回るときは、<b>その上回る額を所得割から差し引く</b>と定めています（市町村民税と道府県民税の所得割の比で割り振ります）。差し引いた後の所得割の合計は、<b>総所得金額等が限度額を超えた額</b>までに抑えられます。</p>
+  <p id="kinbo-rei">たとえば、標準税率の自治体で、本人が障害者・未成年者・寡婦・ひとり親の非課税特例に当たらず、配偶者（収入なし）がいて扶養親族はなく、給与以外の所得・社会保険料・ほかの所得控除と税額控除がない人で、令和8年分の給与収入が<b>1,860,001円</b>の人は、総所得金額等が1,120,001円で、所得割の非課税限度額1,120,000円を<b>1円</b>だけ超えます。減額がなければ所得割は31,000円ですが、減額後は100円未満切捨てで<b>0円</b>です（標準税率の均等割と森林環境税の5,000円はかかります）。給与収入<b>1,880,000円</b>なら、減額前の33,000円が<b>20,000円</b>になります。社会保険料を払っている人は課税される所得が小さいので、この減額が効く幅はさらに狭くなります。この計算機はこの減額を反映して計算します。</p>
+
   <div class="note">
     <b>この計算機で正しく出ない人</b>
-    住宅ローン控除は所得税で控除しきれない額があるなど一定の要件を満たす場合に住民税の所得割から控除されます。この計算機は調整控除以外の税額控除を反映しません。医療費控除・雑損控除は「その他の所得控除」に入力してください。退職金や株式の譲渡所得は分離課税です。配当所得は一律の分離課税ではなく、非上場株式や大口株主の配当等は総合課税、上場株式等の配当等は申告不要・総合課税・分離課税の取扱いがあり、別途確認が必要です。均等割の非課税限度額は、地方税法295条3項により政令の基準に従い各自治体が条例で定めます。境界に近い方はお住まいの市区町村にご確認ください。
+    住宅ローン控除は所得税で控除しきれない額があるなど一定の要件を満たす場合に住民税の所得割から控除されます。この計算機は調整控除と非課税限度額付近の減額（附則3条の3）以外の税額控除を反映しません。医療費控除・雑損控除は「その他の所得控除」に入力してください。退職金や株式の譲渡所得は分離課税です。配当所得は一律の分離課税ではなく、非上場株式や大口株主の配当等は総合課税、上場株式等の配当等は申告不要・総合課税・分離課税の取扱いがあり、別途確認が必要です。均等割の非課税限度額は、地方税法295条3項により政令の基準に従い各自治体が条例で定めます。境界に近い方はお住まいの市区町村にご確認ください。
   </div>
 </section>
 
@@ -309,18 +313,18 @@
 </section>
 <section class="faq rel-block">
 <h2>関連する解説</h2>
-<!--rel:S--><ul class="rel-list"><li><a href="../column/kiso-kojo/">基礎控除はいくら？令和8年分は居住者で最大104万円（12月1日以後の計算。11月30日以前の準確定申告は改正前の額） — 所得2,350万円超で4段階に減る仕組み</a><span class="rel-desc">令和8年分の所得税の基礎控除は、居住者なら合計所得金額489万円以下で62万円＋42万円＝104万円、489万円超655万円以下で67万円、</span></li><li><a href="../column/kakutei-shinkoku-ikurakara/">確定申告はいくらから必要？【令和8年分】所得104万円・副業20万円・年金400万円</a><span class="rel-desc">確定申告が必要になるのは収入ではなく所得が所得控除の合計を超えたときです。令和8年分の基礎控除は48万円でも58万円でもなく104万円。個人</span></li><li><a href="../column/angoshisan-zeikin/">暗号資産（仮想通貨）の税金 — 原則は雑所得・総合課税。FXと違って分離課税は使えない</a><span class="rel-desc">暗号資産の利益は原則「雑所得・総合課税」。税率は5〜45%の累進（所法89）＋住民税。ただし収入金額が300万円を超えると分岐する — 帳簿</span></li><li><a href="../column/haitokin-kakutei-shinkoku/">配当金の確定申告 — 総合課税・申告分離・申告不要は「選べる単位」が違う</a><span class="rel-desc">配当の課税方式は3つ。総合課税は配当控除が使えるが累進税率、申告分離は一律20.315%で譲渡損失と通算でき、申告不要は源泉徴収で完結する。</span></li><li><a href="../column/gensen-choshuhyo-mikata/">源泉徴収票の見方｜「給与所得控除後の金額」「所得控除の額の合計額」とは</a><span class="rel-desc">源泉徴収票の「給与所得控除後の金額」「所得控除の額の合計額」が何を指すかを、国税庁の記載要領で確認して解説します。この2つを含む4つの数字（</span></li></ul><!--rel:E-->
+<!--rel:S--><ul class="rel-list"><li><a href="../column/shotoku-kojo-ichiran/">所得控除の一覧【令和8年分】16種類の額と条文、年末調整で受けられる13種類・確定申告が要る3種類</a><span class="rel-desc">令和8年分の所得税の所得控除は、所得税法72条から86条までに定める16種類です。このうち雑損控除・医療費控除・寄附金控除の3種類は年末調整</span></li><li><a href="../column/kiso-kojo/">基礎控除はいくら？令和8年分は居住者で最大104万円（12月1日以後の計算。11月30日以前の準確定申告は改正前の額） — 所得2,350万円超で4段階に減る仕組み</a><span class="rel-desc">令和8年分の所得税の基礎控除は、居住者なら合計所得金額489万円以下で62万円＋42万円＝104万円、489万円超655万円以下で67万円、</span></li><li><a href="../column/taishokugo-juminzei/">退職後の住民税はどうなる？退職月で変わる払い方・納付書が届く時期・翌年度の課税</a><span class="rel-desc">退職すると、給与から天引きされていた住民税の残りは、退職日・本人の申出・最後の給与や退職手当等の額・転職先での継続の有無で納め方が分かれます</span></li><li><a href="../column/kakutei-shinkoku-ikurakara/">確定申告はいくらから必要？【令和8年分】副業・2か所給与・年金・個人事業主の判定を条文で整理</a><span class="rel-desc">所得税の確定申告が必要かは収入の額ではなく、所得・所得控除・税額と源泉徴収税額などの関係（所得税法120条1項）と、給与や公的年金等の申告不</span></li><li><a href="../column/angoshisan-zeikin/">暗号資産（仮想通貨）の税金 — 原則は雑所得・総合課税。FXと違って分離課税は使えない</a><span class="rel-desc">暗号資産の利益は原則「雑所得・総合課税」。税率は5〜45%の累進（所法89）＋住民税。ただし収入金額が300万円を超えると分岐する — 帳簿</span></li></ul><!--rel:E-->
 </section>
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%B9%B4%E5%8F%8E%E3%81%A8%E5%AE%B6%E6%97%8F%E6%A7%8B%E6%88%90%E3%82%92%E5%85%A5%E3%82%8C%E3%82%8B%E3%81%A0%E3%81%91%E3%81%A7%E3%80%81%E4%BD%8F%E6%B0%91%E7%A8%8E%EF%BC%88%E5%B8%82%E7%94%BA%E6%9D%91%E6%B0%91%E7%A8%8E%E3%83%BB%E9%81%93%E5%BA%9C%E7%9C%8C%E6%B0%91%E7%A8%8E%EF%BC%89%E3%81%8C%E3%81%84%E3%81%8F%E3%82%89%E3%81%AB%E3%81%AA%E3%82%8B%E3%81%8B%E3%82%92%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%80%82%E6%89%80%E5%BE%97%E5%89%B2%E3%83%BB%E5%9D%87%E7%AD%89%E5%89%B2%E3%83%BB%E6%A3%AE%E6%9E%97%E7%92%B0%E5%A2%83%E7%A8%8E%E3%81%AE%E5%86%85%E8%A8%B3%E3%81%BE%E3%81%A7%E8%A1%A8%E7%A4%BA%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E6%A8%AA%E6%B5%9C%E5%B8%82%E3%83%BB%E7%A5%9E%E6%88%B8%E5%B8%82%E3%83%BB%E7%A5%9E%E5%A5%88%E5%B7%9D%E7%9C%8C%E3%81%AA%E3%81%A9%E3%81%AE%E8%B6%85%E9%81%8E%E8%AA%B2%E7%A8%8E%E3%81%AB%E3%82%82%E5%AF%BE%E5%BF%9C%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fjuminzei%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
-<p class="note">出典: <a href="https://www.city.osaka.lg.jp/zaisei/page/0000383147.html">公表元の資料</a>（2026年9月28日確認）</p>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%B9%B4%E5%8F%8E%E3%81%A8%E5%AE%B6%E6%97%8F%E6%A7%8B%E6%88%90%E3%82%92%E5%85%A5%E3%82%8C%E3%82%8B%E3%81%A0%E3%81%91%E3%81%A7%E3%80%81%E4%BD%8F%E6%B0%91%E7%A8%8E%EF%BC%88%E5%B8%82%E7%94%BA%E6%9D%91%E6%B0%91%E7%A8%8E%E3%83%BB%E9%81%93%E5%BA%9C%E7%9C%8C%E6%B0%91%E7%A8%8E%EF%BC%89%E3%81%AE%E5%B9%B4%E9%A1%8D%E3%82%92%E6%A6%82%E7%AE%97%EF%BC%88%E4%BD%8F%E5%AE%85%E3%83%AD%E3%83%BC%E3%83%B3%E6%8E%A7%E9%99%A4%E3%83%BB%E5%AF%84%E9%99%84%E9%87%91%E7%A8%8E%E9%A1%8D%E6%8E%A7%E9%99%A4%E3%81%AA%E3%81%A9%E3%81%AF%E6%9C%AA%E5%8F%8D%E6%98%A0%EF%BC%89%E3%80%82%E6%89%80%E5%BE%97%E5%89%B2%E3%83%BB%E5%9D%87%E7%AD%89%E5%89%B2%E3%83%BB%E6%A3%AE%E6%9E%97%E7%92%B0%E5%A2%83%E7%A8%8E%E3%81%AE%E5%86%85%E8%A8%B3%E3%81%BE%E3%81%A7%E8%A1%A8%E7%A4%BA%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fjuminzei%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<p class="note">出典: <a href="https://www.city.osaka.lg.jp/zaisei/page/0000383147.html" rel="nofollow">大阪市「税額の計算（個人市民税）」</a></p>
 </main>
 <footer class="site" style="display:block">
   出典: 地方税法 35条・314条の3（所得割の税率）／37条・314条の6（調整控除）／310条・38条（均等割）／295条（非課税）／同法附則3条の3（所得割の非課税限度額）／同法施行令47条の3（均等割の非課税限度額）／20条の4の2（端数計算）／森林環境税及び森林環境譲与税に関する法律 3条・5条／所得税法 28条・別表第五（給与所得）／総務省「超過課税の状況」<span id="src-note"></span>。<br>
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
-  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
   <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年分　／　適用開始: 2026年1月1日　／　一次情報の確認: 2026年7月21日　／　<a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="noopener" style="color:var(--sub)">出典</a></li></ul></div><!-- /datasrc:auto -->
-  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
+  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）</div><!-- /trust:auto -->
 </footer>
 
 <script type="module">
@@ -498,13 +502,16 @@ $("calc").addEventListener("click", async () => {
     : `
       <tr><th>課税総所得金額</th><td>${yen(r.kazeiSoShotoku)}（1,000円未満切捨）</td></tr>
       <tr><th>調整控除</th><td>${yen(r.choseiKojo.total)}</td></tr>
+      ${r.kinboChosei.applied
+        ? `<tr><th>非課税限度額付近の減額</th><td>−${yen(r.kinboChosei.gengaku)}（総所得金額等が所得割の非課税限度額 ${yen(H.shotokuLimit)} をわずかに超えるため。地方税法附則3条の3第2項・第5項）</td></tr>`
+        : ""}
       <tr><th>所得割・市町村民税</th><td>${yen(r.shotokuwariJissaiShichoson)}（税率 ${pct(J.shichoson_pct_x1000)}）</td></tr>
       <tr><th>所得割・道府県民税</th><td>${yen(r.shotokuwariJissaiDofuken)}（税率 ${pct(J.dofuken_pct_x1000)}）</td></tr>`;
 
   box.innerHTML = `
     <div class="big">住民税 ${yen(r.juminzeiTotal)}<span style="font-size:15px;font-weight:600">／年</span></div>
     <div class="hint" style="margin-bottom:10px">所得割 <b>${yen(r.shotokuwariJissai)}</b> ＋ 均等割・森林環境税 <b>${yen(r.kintouwari.total)}</b>（${D._meta.year}の所得にもとづく計算＝<b>${nouzeiNendo()}に納める住民税</b>）</div>
-    <div class="note">この概算は調整控除以外の税額控除（住宅ローン控除、寄附金税額控除など）を反映しません。該当する控除がある場合、控除後の年税額とは異なります。</div>
+    <div class="note">この概算は、調整控除と非課税限度額付近の減額（地方税法附則3条の3）を除き、税額控除（住宅ローン控除、寄附金税額控除など）を反映しません。該当する控除がある場合、控除後の年税額とは異なります。</div>
     ${kintouOnlyNote}
     <table class="res">
       <tr><th scope="row">給与所得</th><td>${yen(r.kyuyoShotoku)}（給与収入 ${yen(shunyu)} − 給与所得控除 − 所得金額調整控除）</td></tr>

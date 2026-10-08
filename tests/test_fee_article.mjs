@@ -31,9 +31,20 @@ const SCANNED = RAW.replace(ROUTE_TABLE, " "); // 行スキャン（1・2番）�
 //   → **出現ごとに全件突き合わせる**。CLAUDE.md 規則4「名指しは一意でなければ効かない」の同型。
 const occurrences = [];
 const bandTables = [...SCANNED.matchAll(/<table[^>]*>[\s\S]*?<\/table>/g)].map(m => m[0]).filter(t => t.includes('3万円未満') && t.includes('3万円以上')).join('\n');
+// ★2026-10-08（UI/UX 回帰 所見5）: 料金の条件（fee_note）は区分名のセルに1回だけ書く（金額セルは金額だけ）。
+//   照合の文字列は従来どおり「金額＋条件」なので、区分名セルの .cell-note を金額の後ろに足して比べる。
+//   同じ条件文が金額セルに戻ったら（＝1行に同じ注記が2回出たら）ここで落とす。
+const tagless = (s) => s.replace(/<[^>]*>/g, '').trim();
 for (const row of bandTables.matchAll(/<tr>([\s\S]*?)<\/tr>/g)) {
-  const cells = [...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map(m => m[1].replace(/<[^>]*>/g, '').trim());
-  if (cells.length >= 3 && (cells[1].match(/^\d+円/) || cells[1] === '未確認')) occurrences.push({name: cells[0], under30k: cells[1], over30k: cells[2]});
+  const raw = [...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map(m => m[1]);
+  if (raw.length < 3) continue;
+  const note = (raw[0].match(/<span class="cell-note">([\s\S]*?)<\/span>/) || [, ''])[1];
+  const name = tagless(raw[0].replace(/<span class="cell-note">[\s\S]*?<\/span>/, ''));
+  const amt = [tagless(raw[1]), tagless(raw[2])];
+  if (!(amt[0].match(/^\d+円/) || amt[0] === '未確認')) continue;
+  assert.ok(raw.slice(1).every((c) => !/cell-note/.test(c)), `${name}: 料金の条件が金額セルに入っている（条件は区分名のセルに1回だけ書く）`);
+  const withNote = (a) => a === '未確認' ? a : a + tagless(note);
+  occurrences.push({name, under30k: withNote(amt[0]), over30k: withNote(amt[1])});
 }
 const rows = new Map(occurrences.map((o) => [o.name, o]));
 
@@ -63,14 +74,17 @@ const cMin = Math.min(...corp.map((b) => b.over30k));
 const cMax = Math.max(...corp.map((b) => b.over30k));
 const pMin = Math.min(...pers.map((b) => b.over30k));
 const pMax = Math.max(...pers.map((b) => b.over30k));
-// auto20261001-t8-q1: 正本で未確認の5区分を件数の母数から除外する。
-const unconfirmed = new Set(['みずほ銀行（個人・みずほダイレクト）','みずほ銀行（法人・EB）','イオン銀行（個人）','フィンサーバンク（法人・フリープラン）','横浜銀行（個人IB）']);
+// auto20261001-t8-q1: 正本で未確認の区分を件数の母数から除外する。
+// 2026-10-08（rg36 3周目）: みずほ個人・法人EBは 2026-10-08 取得の公式料金表で照合できた（個人110円・法人EB 490円／660円）ので母数に戻す。
+//   未確認のまま除くのは3区分。みずほ法人を除いたままだと、3万円境界のある区分の列挙からみずほ法人が漏れる（照合の high）。
+const unconfirmed = new Set(['イオン銀行（個人）','フィンサーバンク（法人・フリープラン）','横浜銀行（個人IB）']);
 const reviewed = FEES.banks.filter(b=>!unconfirmed.has(b.name));
-assert.equal(reviewed.length,25,'公式資料で照合した25区分');
+assert.equal(reviewed.length,27,'公式資料で照合した27区分');
 const step = reviewed.filter(b=>b.under30k!==b.over30k).length;
-assert.equal(step,10);
+assert.equal(step,11);
 const flat = reviewed.filter(b=>b.under30k===b.over30k).length;
-assert.equal(flat,15);
+assert.equal(flat,16);
+assert.ok(!/照合できた25区分|境界あり10区分|確認できた10区分|未確認の5区分|未確認5区分/.test(HTML),'みずほを未確認として除いた旧集計（25区分・10区分）を残さない');
 
 assert.ok(HTML.includes(`${cMin}円〜${cMax}円`), `法人のレンジ ${cMin}円〜${cMax}円 が本文に無い`);
 assert.ok(HTML.includes(`${pMin}円〜${pMax}円`), `個人のレンジ ${pMin}円〜${pMax}円 が本文に無い`);

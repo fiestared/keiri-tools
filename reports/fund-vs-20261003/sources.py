@@ -53,6 +53,13 @@ doc('rirsox_M', f'{RK}/rirsox/pdf/rirsox_M202608.pdf', '楽天・プラス・Ｓ
 doc('rirndx_P', f'{RK}/rirndx/pdf/rirndx_P.pdf', '楽天・プラス・ＮＡＳＤＡＱ－１００インデックス・ファンド 交付目論見書（使用開始日2026年7月16日）')
 doc('rirndx_Ak', f'{RK}/rirndx/pdf/rirndx_Ak.pdf', '楽天・プラス・ＮＡＳＤＡＱ－１００インデックス・ファンド 交付運用報告書（第2期・作成対象期間2024年10月16日〜2025年10月15日）')
 doc('rirndx_M', f'{RK}/rirndx/pdf/rirndx_M202608.pdf', '楽天・プラス・ＮＡＳＤＡＱ－１００インデックス・ファンド 月次レポート（2026年8月31日作成基準）')
+doc('rivuh_P', f'{RK}/rivuh/pdf/rivuh_P.pdf', '楽天・米国高配当株式インデックス・ファンド 交付目論見書（使用開始日2026年4月16日）')
+doc('rivuh_Ak', f'{RK}/rivuh/pdf/rivuh_Ak.pdf', '楽天・米国高配当株式インデックス・ファンド 交付運用報告書（第9期・作成対象期間2025年7月16日〜2026年7月15日）')
+doc('rivuh_M', f'{RK}/rivuh/pdf/rivuh_M202608.pdf', '楽天・米国高配当株式インデックス・ファンド 月次レポート（2026年8月31日作成基準）')
+doc('rijepi_P', f'{RK}/rijepi/pdf/rijepi_P.pdf', '楽天・米国大型株式・プレミアム・インカム・ファンド（毎月決算型）交付目論見書（使用開始日2026年4月27日）')
+doc('rijepi_Ak', f'{RK}/rijepi/pdf/rijepi_Ak.pdf', '楽天・米国大型株式・プレミアム・インカム・ファンド（毎月決算型）交付運用報告書（第1期・作成対象期間2026年5月11日〜2026年7月15日）')
+doc('rijepi_M', f'{RK}/rijepi/pdf/rijepi_M202608.pdf', '楽天・米国大型株式・プレミアム・インカム・ファンド（毎月決算型）月次レポート（2026年8月31日作成基準）')
+doc('spdji_hd', 'https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-high-dividend-indices.pdf', 'S&P Dow Jones Indices：S&P High Dividend Indices Methodology（2026年10月7日に確認）')
 doc('nq_sox', 'https://indexes.nasdaqomx.com/docs/Methodology_SOX.pdf', 'Nasdaq：PHLX Semiconductor Sector Index（SOX）Index Methodology（2026年10月6日に確認）')
 doc('nq_ndx', 'https://indexes.nasdaqomx.com/docs/Methodology_NDX.pdf', 'Nasdaq：Nasdaq-100 Index（NDX）Index Methodology（2026年10月6日に確認）')
 
@@ -68,6 +75,8 @@ NAV = {
     'emaxis-bal8': ('mufg_252760.csv', 'https://www.am.mufg.jp/fund_file/setteirai/252760.csv'),
     'tawara-bal8': ('amone_313144.json', 'https://www.am-one.co.jp/chart_data/313144/dat.json'),
     'rakuten-sox': ('rakuten_100092.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100092.csv'),
+    'rakuten-vym': ('rakuten_100035.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100035.csv'),
+    'rakuten-jepi': ('rakuten_100127.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100127.csv'),
     'rakuten-ndx': ('rakuten_100091.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100091.csv'),
 }
 
