@@ -147,29 +147,32 @@
   <p>給与額を入れるだけで、<b>標準報酬月額の等級</b>・健康保険料・介護保険料・厚生年金保険料・<b>雇用保険料</b>を自動計算します。<b>令和8年度（2026年度）の都道府県別料率</b>に対応。</p>
 </section>
 
-<div class="card">
-  <label for="monthly">報酬月額（円）</label>
-  <input type="number" id="monthly" data-example="300000" inputmode="numeric" aria-describedby="monthly-hint">
-      <span id="monthly-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b>基本給・残業手当・住宅手当・役職手当・通勤手当など、報酬に該当する総額を入力してください。通勤手当は所得税で非課税の部分も含めます。</span>
-
+<div class="card fv-form">
   <div class="fee-pair field-pair">
+    <div>
+      <label for="monthly">報酬月額（円）</label>
+      <input type="number" id="monthly" data-example="300000" inputmode="numeric" aria-describedby="monthly-hint">
+      <span id="monthly-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b>手当を含む総額。通勤手当は所得税で非課税の部分も含めます（<a href="#input-help">含めるもの</a>）。</span>
+    </div>
     <div>
       <label for="pref">勤務先の都道府県</label>
       <select id="pref"></select>
-
-    </div>
-    <div>
-      <label for="age">年齢</label>
-<input type="number" id="age" value="35" min="15" max="74" step="1" required inputmode="numeric" aria-describedby="age-help age-error">
-<p class="hint" id="age-hint">70歳以上の厚生年金保険料は、高齢任意加入の場合を除き0円です。高齢任意加入は対象外です。</p>
-      <p class="hint" id="age-help">この計算機の入力範囲は15〜74歳です</p>
-      <p id="age-error" class="warn" hidden></p>
     </div>
   </div>
 
-  <label for="gyoshu">業種</label>
-  <select id="gyoshu" aria-describedby="gyoshu-hint"></select>
-      <span id="gyoshu-hint" class="hint">この計算機では、協会けんぽの選択県・標準報酬・年齢等を同じにして業種を変えると、雇用保険料率が変わります</span>
+  <div class="fee-pair field-pair fv-cols-narrow-wide">
+    <div>
+      <label for="age">年齢</label>
+<input type="number" id="age" value="35" min="15" max="74" step="1" required inputmode="numeric" aria-describedby="age-help age-error">
+      <p class="hint" id="age-help">この計算機の入力範囲は15〜74歳です</p>
+      <p id="age-error" class="warn" hidden></p>
+    </div>
+    <div>
+      <label for="gyoshu">業種</label>
+      <select id="gyoshu" aria-describedby="gyoshu-hint"></select>
+      <span id="gyoshu-hint" class="hint">業種を変えると、雇用保険料率が変わります</span>
+    </div>
+  </div>
 
   <details class="optional-fields" id="bonus-fields"><summary>賞与も計算する（任意） <span data-optional-state>未設定</span></summary>
   <label for="bonus">賞与額（円・任意）</label>
@@ -210,6 +213,12 @@
 </ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/hyojun-hoshu-gakuhyo/">標準報酬月額表（等級表）</a></li><li><a href="../column/teiji-kettei/">社会保険料は4月〜6月の給与で決まる</a></li><li><a href="../column/shoyo-shakaihoken/">賞与（ボーナス）の社会保険料</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
 <h2 id="tsukaikata">使い方と注意点</h2>
+  <h3 id="input-help">入力欄の詳しい説明</h3>
+  <ul class="fv-input-help">
+    <li><b>報酬月額</b>：基本給・残業手当・住宅手当・役職手当・通勤手当など、報酬に該当する総額を入力してください。通勤手当は所得税で非課税の部分も含めます。</li>
+    <li><b>年齢</b>：70歳以上の厚生年金保険料は、高齢任意加入の場合を除き0円です。高齢任意加入は対象外です。</li>
+    <li><b>業種</b>：この計算機では、協会けんぽの選択県・標準報酬・年齢等を同じにして業種を変えると、雇用保険料率が変わります</li>
+  </ul>
   <h3>報酬月額に含めるもの</h3>
   <p>基本給のほか、残業手当・通勤手当・住宅手当・役職手当など、<b>労働の対償として支給される給与を含みます</b>（通勤手当も含む点に注意）。社会保険適用促進手当は、標準報酬月額10.4万円以下の対象者について、新たに生じた本人負担保険料相当額を上限に最大2年間、標準報酬月額・標準賞与額の算定から除外します。臨時に支払われるもの、年3回以下の賞与は含みません。</p>
   <h3>賞与の保険料には上限があります</h3>

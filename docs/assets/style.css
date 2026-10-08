@@ -87,18 +87,12 @@ main > .section-head:has(+ .col-search) { max-width: 1120px; }
    本文ページの読み幅（672px）は維持し、明示したハブだけシェル幅に揃える。
    section-head の局所指定より後に置き、ハブでは全セクションを同じ器にする。 */
 main.hub-page > * { max-width: var(--shell); }
-/* ★右カラムも一覧グリッドも持たないページ（ツール・hojokin・about など63ページ）は、
-   **器ごと本文幅に落とす**（2026-08-27）。1120px の器に 672px しか入らず、
-   1280px 画面で 左80 : 本文672 : 右528 と左に寄って見えていた。
-   器を狭めると main も header も footer も同じ計算で中央に寄るので、
-   **ヘッダーとコンテンツの左端が一致したまま**、右の間延びだけが消える。
-   ★将来ここに広告レール（.side-rail）を置くときは、**この条件に既に入れてある**ので
-     その要素を持つページは自動で 1120px の器に戻る。CSS を書き換えなくてよい。 */
-@media (min-width: 1200px) {
-  body:not(:has(main nav.toc)):not(:has(main .tcat)):not(:has(main .cat)):not(:has(main .tool-grid)):not(:has(main .post-list)):not(:has(main .side-rail)) {
-    --shell: 672px;
-  }
-}
+/* ★本文の左端は、全ページでヘッダーのロゴの左端にそろえる（2026-10-08 Masahiro 承認。gbrain decisions/keiri-uiux-design-decisions-2026-10-08 の4）。
+   以前は、右カラムも一覧も持たないページ（補助金・運営者情報・問い合わせ・プライバシー・編集ポリシー・収益化方針）だけ
+   ≥1200px で器（--shell）を 672px に落とし、本文とフッタを中央へ寄せていた。ヘッダーは 1120px の器のままなので、
+   本文の左端がロゴより 224px（1280px 幅）右にずれ、ページを移るたびに本文が横に動いて見えた。
+   → 器は全ページ 1120px。本文の列は 672px・左寄せ（上の `main > *`）。ページごとに --shell を変えない。
+   検査: tests/test_left_edge.mjs（本文の左端＝ロゴの左端、を全ページで）。 */
 
 /* hero をシェル幅にするのは一覧系だけ。記事・ツールの hero は 672px のまま
    （.article-meta の下罫線が 1120px に伸びて本文と食い違うのを避ける）。 */
@@ -717,6 +711,18 @@ html.ss-lock, html.ss-lock body { overflow: hidden; }
 .post-more[hidden], .post-more > summary[hidden], .post-more [hidden] { display: none; }
 .post-more > summary::after { content: "＋"; margin-left: 8px; }
 .post-more[open] > summary::after { content: "−"; }
+/* ★検索中は、先頭8本と畳んだ残りを1つのグリッドに流す（2026-10-08 第3周 低L6）。
+   2つの .post-list が別々のグリッドだったので、先頭側の当たりが奇数だと右の列に穴が空いたまま、残りが次の段から始まっていた。
+   検索中の目印は、ページ内の script が隠す summary（[hidden]）。検索を空にすると summary が戻り、この指定も外れて畳みに戻る。
+   ::details-content は <details> の中身の箱（Chromium 131〜・Safari 18.4〜・Firefox 143〜）。無いブラウザでは従来の並びのまま。
+   :not([hidden]) を外さないこと（:has() の詳細度が .cat[hidden] に勝ち、当たり0本のカテゴリが見えてしまう）。
+   検査: tests/test_column_list_fold.mjs（検索中の並びに穴が無い・空にすると畳みに戻る） */
+.cat:not([hidden]):has(> .post-more > summary[hidden]) { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(480px, 100%), 1fr)); gap: 0 40px; }
+.cat:not([hidden]):has(> .post-more > summary[hidden]) > :not(.post-list):not(.post-more) { grid-column: 1 / -1; }
+.cat:not([hidden]):has(> .post-more > summary[hidden]) > .post-list,
+.cat:not([hidden]):has(> .post-more > summary[hidden]) > .post-more,
+.cat:not([hidden]):has(> .post-more > summary[hidden]) > .post-more > .post-list { display: contents; }
+.cat:not([hidden]):has(> .post-more > summary[hidden]) > .post-more::details-content { display: contents; }
 .post-list a:hover .p-title { color: var(--accent); text-decoration: underline; }
 .post-list .p-date { flex: 0 0 84px; font-size: 12.5px; color: var(--sub); }
 .post-list .p-title { font-size: 16px; font-weight: 600; }
@@ -1004,6 +1010,11 @@ main:focus { outline: none; }
   article th { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   article h2, article h3 { break-after: avoid; margin-top: 18px; }
   .figure { break-inside: avoid; }
+  /* ★長い表は、見出し行を各ページの頭に繰り返す（2026-10-08 第2周 低L5）。標準報酬月額表（50等級）は紙で4枚にまたがり、
+     3枚目から列見出しが無く、どの列が健康保険でどの列が厚生年金か分からなかった。見出し行が thead に入っていることが前提
+     （tests/test_long_table_thead.mjs が、データ行15以上の表すべてに thead を求める）。行の途中では切らない。 */
+  thead { display: table-header-group; }
+  tr { break-inside: avoid; }
   /* リンクは紙では踏めない。出典のURLを見えるようにする */
   article a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 9pt; color: #333; word-break: break-all; }
 }
@@ -1072,6 +1083,31 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
 .db-tag { margin-bottom: 3px; color: var(--sub); font-size: 12.5px; font-weight: 600; }
 .db-desc { margin-top: 4px; color: var(--sub); font-size: 14px; line-height: 1.6; }
 .db-go { margin-top: 8px; color: var(--accent); font-size: 13.5px; font-weight: 600; }
+
+/* ==== 最初の画面にツールと計算ボタンを入れる（2026-10-08 第4便F班。gbrain decisions/keiri-uiux-design-decisions-2026-10-08）====
+   トップ: PC 1280×800 の最初の画面にツールへのリンクが0件だった（見出し・検索・分野カード・対象者スイッチで埋まる）。
+   分野カードはツールの棚の下へ移し（HTML）、対象者スイッチを「ツール」の見出しと同じ行に置いて、棚を上へ詰める。
+   tests/test_first_view.mjs が「1280×800 にツールのカードが4枚以上」を実描画で見る。 */
+main > #tools.section-head { max-width: 1120px; align-items: center; flex-wrap: wrap; row-gap: 8px; margin-top: 24px; }
+.section-head > .persona-bar { margin: 0 0 0 auto; }
+.cat-nav + .tcat { margin-top: 24px; }
+@media (max-width: 899px) {
+  .section-head > .persona-bar { margin-left: 0; flex-basis: 100%; }
+}
+/* 計算機（試し: /shakai-hoken/・/tedori/ の2本だけ。対照は /gensen-choshu/・/furusato/。判定 2026-10-30）:
+   1280×800 で「必須の入力欄と計算ボタン」が最初の画面に入るよう、入力欄を2〜3列に並べる。
+   長い補足は消さずに「使い方と注意点 > 入力欄の詳しい説明」(#input-help) へ移した。
+   列の幅だけを決める（並べ方そのものは .fee-pair.field-pair の subgrid に任せる）。560px 以下は従来どおり1列。 */
+.fv-form > .field-pair:first-child > div:first-child > label:first-of-type { margin-top: 0; }
+main:has(> .fv-form) > .hero { padding-top: 12px; }
+main:has(> .fv-form) > .hero .article-meta { margin: 12px 0; }
+@media (min-width: 601px) {
+  .fv-form > .field-pair:first-child > div > label:first-of-type { margin-top: 0; }
+  .fee-pair.field-pair.fv-cols-narrow-wide { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
+  .fee-pair.field-pair.fv-cols-pref-age-wide { grid-template-columns: minmax(0, .9fr) minmax(0, .5fr) minmax(0, 1.4fr); }
+}
+.fv-input-help { margin: 8px 0 16px; padding-left: 1.4em; }
+.fv-input-help li { margin: 0 0 8px; }
 
 @media print {
   .domain-nav, .domain-bridge { display: none !important; }
@@ -1411,6 +1447,13 @@ footer [data-duplicate-note] { display: none !important; }
 .go-table td { vertical-align: top; }
 .go-tiers > summary { font-weight: 700; color: var(--accent); cursor: pointer; }
 .go-tiers[open] > summary { margin-bottom: 4px; }
+/* 階級と税額の定義リスト（2026-10-08 第2周 低L4）。階級は左、税額は右寄せ・等幅数字で桁をそろえる。
+   以前は「階級: 税額」を地の文で並べ、13階級の金額の位置が行ごとにずれていた。検査: tests/test_inshi_tier_list.mjs */
+.go-tier-list { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0 16px; margin: 0; }
+.go-tier-list > dt, .go-tier-list > dd { margin: 0; padding: 1px 0; border-top: 1px solid var(--line); font-weight: 400; }
+.go-tier-list > dt:first-of-type, .go-tier-list > dt:first-of-type + dd { border-top: 0; }
+.go-tier-list > dd { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.go-tier-head { margin: 8px 0 2px; white-space: normal; }
 @media (max-width: 600px) {
   .scroll-wrap:has(> .go-table) { border: 0; border-radius: 0; overflow: visible; }
   .go-table, .go-table tbody, .go-table tr, .go-table td { display: block; width: auto; }
@@ -1432,7 +1475,8 @@ footer [data-duplicate-note] { display: none !important; }
    tests/test_no_left_accent.mjs が computed style で全主要ページを見ている（左だけ太い色線が戻ったら落ちる）。 */
 .rail-next { background: var(--accent-soft); border: 1px solid #b9dcd2; }
 .rail-next-title { color: var(--accent); font-size: 15px; margin-bottom: 8px; }
-.rail-next-title::before { content: "▶"; font-size: 10px; margin-right: 6px; vertical-align: 2px; }
+/* ★見出しの前の ▶ は外した（2026-10-08 第3周 低L7）。▶ は「閉じた開閉部品」の記号で、同じレールの目次は本当に開閉する。
+   開閉しない見出しに付けると、押せる部品に見える。見分けは面の色と見出しの色で足りる。検査: tests/test_toc_rail_pc.mjs */
 .rail-next li, .rail-next li:first-child { border-top: 0; margin: 0 0 8px; }
 .rail-next li:last-child { margin-bottom: 0; }
 .rail-next a { position: relative; background: #fff; border: 1px solid #cfe5de; border-radius: 8px; padding: 10px 28px 10px 12px; font-weight: 600; box-shadow: 0 1px 2px rgba(31, 111, 92, .08); }
@@ -1441,10 +1485,12 @@ footer [data-duplicate-note] { display: none !important; }
 
 /* ==== 計算結果の右レール要約と、計算済みの印刷（B班 2026-10-08。assets/result_rail.js） ====
    gbrain audits/keiri-uiux-review-pc-2026-10-08 中1・中2。
-   ≥1200px: 計算が成功したら、答えの金額と主な内訳を右レール（.side-rail）の先頭＝目次の上に出す。
+   ≥1024px（右レールが出る幅。toc-rail.js・a11y_error.js と同じ値）: 計算が成功したら、答えの金額と主な内訳を
+   右レール（.side-rail）の先頭＝目次の上に出す。
+   ★以前は要約だけ ≥1200px だった（2026-10-08 第2周 低L2）。1024〜1199px はレールがあるのに要約が出ず、結果の下が切れていた。
    左の太線アクセントは使わない（gbrain design/ui-no-left-accent-border-cards）。四辺1pxの枠。 */
-.result-rail, .print-stamp { display: none; }
-@media (min-width: 1200px) {
+.result-rail, .print-stamp, .print-trust { display: none; }
+@media (min-width: 1024px) {
   .side-rail > .result-rail:not([hidden]) { display: block; flex: 0 0 auto; margin: 0; background: #fff; border: 1px solid var(--accent); border-radius: 12px; padding: 12px 16px; }
   .result-rail-title { font-weight: 700; font-size: 13px; color: var(--sub); margin-bottom: 4px; }
   .result-rail dl { margin: 0; display: grid; grid-template-columns: 1fr auto; column-gap: 10px; row-gap: 2px; align-items: baseline; }
@@ -1477,4 +1523,18 @@ footer [data-duplicate-note] { display: none !important; }
   html[data-calculated] .card label, html[data-calculated] .card input, html[data-calculated] .card select { margin-top: 2px; margin-bottom: 2px; }
   html[data-calculated] fieldset.member { margin-top: 8px; }
   html[data-calculated] .print-stamp { display: block; margin: 8px 0 0; font-size: 10pt; color: #000; word-break: break-all; }
+  /* ★計算済みの印刷の2枚目が「フッタのリンク行と免責だけ」になっていた（2026-10-08 第2周 低L1。10本とも2枚）。
+     - サイトの案内リンクと X の案内は紙では踏めない → 隠す
+     - 免責は結果の直後（計算日の下）に出す（result_rail.js が footer の .trust を写した .print-trust）。フッタ側の免責は重ねない
+     - main の下の余白とフッタの上下の余白を詰める（出典の行が次の紙へ1〜2行だけ送られるのを防ぐ）
+     検査: tests/test_result_rail_print.mjs（最後の紙がフッタだけでない・リンク行が紙に無い・免責が結果と同じ紙にある） */
+  html[data-calculated] .print-trust { display: block; margin: 6px 0 0; font-size: 9pt; line-height: 1.5; color: #000; }
+  html[data-calculated] main:has(.print-trust) ~ footer.site .trust,
+  html[data-calculated] footer.site .site-links,
+  html[data-calculated] footer.site > div:has(> a[href^="https://x.com/"]) { display: none !important; }
+  html[data-calculated] main { padding-bottom: 0; }
+  /* 紙の上の大きさを 86% にそろえる。リンク行を隠す前は、紙の幅からはみ出すリンク行に合わせて Chrome が版面全体を約86%に
+     縮めていた（＝今までの見た目）。隠すと等倍に戻り、入力欄と結果が1枚に収まらなくなる（社保・有給で実測）。 */
+  html[data-calculated] body { zoom: .86; }
+  html[data-calculated] footer.site { max-width: none; padding: 8px 0 0; font-size: 9pt; line-height: 1.5; color: #000; }
 }

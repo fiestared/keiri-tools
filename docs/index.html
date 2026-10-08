@@ -73,36 +73,15 @@
     </div>
   </section>
 
-  <div class="section-head" id="domains">
-    <h2 id="domains-h">分野から記事・ツールを探す</h2>
-  </div>
-  <nav class="domain-nav" data-bridge="top-strip" data-from="(top)" aria-labelledby="domains-h">
-    <a class="db-card" href="#tools" data-domain="keiri">
-      <b>事業のお金・経理</b>
-      <span class="db-desc">源泉・振込・社会保険。会社と個人事業主の実務計算と、条文にあたった解説。</span>
-      <span class="db-go">この分野を見る →</span>
-    </a>
-    <a class="db-card" href="toushi/" data-domain="shisan">
-      <b>個人のお金・資産形成</b>
-      <span class="db-desc">NISAの残り枠・積立・iDeCoの出口。制度と税金の側から、銘柄のおすすめなしで計算します。</span>
-      <span class="db-go">この分野を見る →</span>
-    </a>
-    <a class="db-card" href="hojokin/" data-domain="hojokin">
-      <b>補助金・事業支援</b>
-      <span class="db-desc">いま公募中の補助金を締切が近い順で検索。もらった後の経理・税務まで。</span>
-      <span class="db-go">この分野を見る →</span>
-    </a>
-  </nav>
-
   <div class="section-head" id="tools">
     <h2>ツール</h2>
     <span class="hint">登録不要・すぐ使えます</span>
-  </div>
-  <div class="persona-bar" id="persona-bar">
-    <span class="p-label">あなたに合わせて表示:</span>
-    <button type="button" data-p="kojin" aria-pressed="false">会社員・個人</button>
-    <button type="button" data-p="jigyo" aria-pressed="false">個人事業主・フリーランス</button>
-    <button type="button" data-p="keiri" aria-pressed="false">経理担当</button>
+    <div class="persona-bar" id="persona-bar">
+      <span class="p-label">あなたに合わせて表示:</span>
+      <button type="button" data-p="kojin" aria-pressed="false">会社員・個人</button>
+      <button type="button" data-p="jigyo" aria-pressed="false">個人事業主・フリーランス</button>
+      <button type="button" data-p="keiri" aria-pressed="false">経理担当</button>
+    </div>
   </div>
   <section id="favorite-tools" class="retention-panel" data-retention-control hidden aria-labelledby="favorite-heading">
     <h2 id="favorite-heading">経理の仕事を再開する</h2>
@@ -642,11 +621,42 @@
     </div>
   </section>
 
+  <!-- 分野の入口（2026-10-08 第4便F班）: 最初の画面にツールのカードを出すため、ツールの棚の下へ移した。文言は変えていない。
+       対象者スイッチは .tcat をこの見出し（#domains）の前へ差し込む。順番を変えるときは下のスクリプトも見ること -->
+  <div class="section-head" id="domains">
+    <h2 id="domains-h">分野から記事・ツールを探す</h2>
+  </div>
+  <nav class="domain-nav" data-bridge="top-strip" data-from="(top)" aria-labelledby="domains-h">
+    <a class="db-card" href="#tools" data-domain="keiri">
+      <b>事業のお金・経理</b>
+      <span class="db-desc">源泉・振込・社会保険。会社と個人事業主の実務計算と、条文にあたった解説。</span>
+      <span class="db-go">この分野を見る →</span>
+    </a>
+    <a class="db-card" href="toushi/" data-domain="shisan">
+      <b>個人のお金・資産形成</b>
+      <span class="db-desc">NISAの残り枠・積立・iDeCoの出口。制度と税金の側から、銘柄のおすすめなしで計算します。</span>
+      <span class="db-go">この分野を見る →</span>
+    </a>
+    <a class="db-card" href="hojokin/" data-domain="hojokin">
+      <b>補助金・事業支援</b>
+      <span class="db-desc">いま公募中の補助金を締切が近い順で検索。もらった後の経理・税務まで。</span>
+      <span class="db-go">この分野を見る →</span>
+    </a>
+  </nav>
+
+
   <div class="section-head" id="column-head">
     <h2>新着コラム</h2>
     <span class="hint"><a href="column/" style="color:var(--accent);text-decoration:none">すべて見る →</a></span>
   </div>
   <div class="post-list">
+    <a href="column/taishokugo-juminzei/">
+      <div class="p-date">2026.10.08</div>
+      <div>
+        <div class="p-title">退職後の住民税はどうなる？退職月で変わる払い方・納付書が届く時期・翌年度の課税</div>
+        <div class="p-desc">退職すると、給与から天引きされていた住民税の残りは、退職日・本人の申出・最後の給与や退職手当等の額・転職先での継続の有無で納め方が分かれます。地方税法321条の5第2項の区分、普通徴収の納税通知書の届き方と納期、転職先で特別徴収を続ける申出、翌年度の課税を、条文と総務省・東京都主税局・横浜市の案内で整理。</div>
+      </div>
+    </a>
     <a href="column/nenmatsu-chosei-hitsuyo-shorui/">
       <div class="p-date">2026.10.08</div>
       <div>
@@ -680,13 +690,6 @@
       <div>
         <div class="p-title">基礎控除申告書の書き方 — 令和8年分の「合計所得金額の見積額」の出し方と、判定欄・区分Ⅰの書き方</div>
         <div class="p-desc">令和8年分の基礎控除申告書の書き方。様式の裏面の計算式で見積額を出し、判定欄・基礎控除の額・区分Ⅰを書く手順と計算例。</div>
-      </div>
-    </a>
-    <a href="column/nenmatsu-chosei-taishogai/">
-      <div class="p-date">2026.10.07</div>
-      <div>
-        <div class="p-title">年末調整の対象とならない人 — 6つの区分と、年の途中で辞めた人でも年末調整をする4つの例外</div>
-        <div class="p-desc">年末調整の対象とならない6区分（令和8年分）と、中途退職でも退職時に年末調整をする4つの例外。対象外の人の税額は本人が確定申告で精算する。</div>
       </div>
     </a>
   </div><!--post-list:E-->
@@ -785,7 +788,8 @@ form.addEventListener("submit", (ev) => { ev.preventDefault(); clearTimeout(qaTi
     keiri: ["t-keiri", "t-kyuyo", "t-jigyo", "t-hojokin", "t-setsuzei", "t-kyufu", "t-kurashi"],
   };
   var bar = document.getElementById("persona-bar");
-  var columnHead = document.getElementById("column-head");
+  // .tcat を差し込む位置。ツールの棚の直後にある「分野から探す」(#domains) の前。無ければ新着コラムの前。
+  var columnHead = document.getElementById("domains") || document.getElementById("column-head");
   if (!bar || !columnHead) return;
   function apply(p, save) {
     var ids = ORDER[p];
