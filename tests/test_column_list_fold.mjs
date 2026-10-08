@@ -7,6 +7,9 @@
  * ★畳むことで壊れやすいもの（規則1・2で両方向を見る）:
  *   ① 記事が一覧から消える（畳んだ側に入れ忘れる）→ カテゴリの件数バッジ＝開いた本数＋畳んだ本数
  *   ② 検索で畳んだ記事が当たっても閉じた中に隠れる → 実ブラウザで、畳んだ記事だけに当たる語を入れて見えるか
+ *   ③ 検索中に右の列に穴が空く（2026-10-08 第3周 低L6）: 先頭8本と畳んだ残りが別々のグリッドだと、先頭側の当たりが奇数のとき
+ *      右の列が空いたまま、残りが次の段から始まる → 1280px で、カテゴリごとに「見えている記事が順に左・右・左・右…」と並ぶこと。
+ *      空にしたら畳みに戻ること（カテゴリがグリッドのまま残らない）。壊しテスト: 1つのグリッドに流す指定を打ち消すと赤。
  */
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -52,9 +55,35 @@ try{
  assert(await p.locator(sel).isVisible(),`検索で畳んだ記事（${href}）が見えない`);
  // 2026-10-08 第2周: summary の display:flex が hidden 属性に勝ち、検索中も「残りN本を表示」が出て見出しの件数と食い違った
  assert(!(await p.locator('details.post-more > summary').evaluateAll(es=>es.some(e=>e.offsetParent!==null))),'検索中も「残りN本を表示」の行が見えている');
+ // ③ 検索中の並びに穴が無い。先頭側の当たりが奇数で、残り側にも当たりがあるカテゴリ（＝穴が空きうる形）が実際に出る語で見る
+ const holes=()=>p.evaluate(()=>{const out={risky:0,holes:[],cols:0};
+  const all=[...document.querySelectorAll('section.cat:not([hidden]) a[data-s]')].filter(a=>a.getClientRects().length);
+  const xs=[...new Set(all.map(a=>Math.round(a.getBoundingClientRect().left)))].sort((a,b)=>a-b);out.cols=xs.length;
+  for(const s of document.querySelectorAll('section.cat:not([hidden])')){
+   const vis=l=>[...l.querySelectorAll('a[data-s]')].filter(a=>a.getClientRects().length);
+   const lists=[...s.querySelectorAll('.post-list')];const head=vis(lists[0]),rest=lists[1]?vis(lists[1]):[];
+   if(head.length%2===1&&rest.length)out.risky++;
+   [...head,...rest].forEach((a,i)=>{if(xs.indexOf(Math.round(a.getBoundingClientRect().left))!==i%2)out.holes.push(s.id+'#'+i);});
+  }
+  return out;});
+ await p.setViewportSize({width:1280,height:900});
+ let risky=0;
+ for(const term of ['標準報酬','有給','源泉','消費税','年金','控除','保険','税']){
+  await p.fill('#q',term);const h=await holes();
+  if(!h.risky)continue;risky+=h.risky;
+  assert.equal(h.cols,2,`1280px で一覧が2列になっていない（${h.cols}列）。この検査は2列を前提にしている`);
+  assert.deepEqual(h.holes,[],`「${term}」で検索中、右の列に穴が空いている: ${h.holes.slice(0,5).join(' ')}`);
+  // 壊すと赤: 1つのグリッドに流す指定を打ち消す（＝直す前の形）
+  const st=await p.addStyleTag({content:'section.cat{display:block!important}section.cat>.post-list,section.cat>.post-more>.post-list{display:grid!important}section.cat>.post-more{display:block!important}section.cat>.post-more::details-content{display:block!important}'});
+  assert((await holes()).holes.length>0,`「${term}」: グリッドを分けた形に戻しても穴を検出しない（検査が効いていない）`);
+  await st.evaluate(e=>e.remove());
+  assert.deepEqual((await holes()).holes,[],'壊しを外しても穴が残る');
+ }
+ assert(risky>0,'穴が空きうる形（先頭側の当たりが奇数・残り側にも当たり）が1つも出なかった。検索語を見直すこと');
  await p.fill('#q','');
  assert(!await p.locator(sel).isVisible(),'検索を空にしても畳み直さない');
+ assert.equal(await p.locator('section.cat').first().evaluate(e=>getComputedStyle(e).display),'block','検索を空にしてもカテゴリがグリッドのまま');
  await p.locator('details.post-more > summary').first().click();
  assert(await p.locator('details.post-more').first().evaluate(d=>d.open),'「残りN本を表示」で開かない');
 }finally{await b?.close();server.close();}
-console.log(`✓ コラム一覧: 各カテゴリ先頭${FIRST_N}本＋「残りN本」、件数一致、検索で畳んだ記事も見える（壊しテスト2種も赤）`);
+console.log(`✓ コラム一覧: 各カテゴリ先頭${FIRST_N}本＋「残りN本」、件数一致、検索で畳んだ記事も見える・検索中の並びに穴なし（壊しテスト3種も赤）`);
