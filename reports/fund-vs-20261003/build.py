@@ -635,6 +635,8 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'd-unpub': {'must_with': ['作成対象期間', '2026年10月8日']},
         'jepi-alloc': {'must_with': ['2026年8月31日', '純資産総額']},
         'jepi-etfpol': {'must_with': ['2026年1月末']},
+        'jepi-etfs': {'must_with': ['作成対象期間', '2026年1月末']},
+        'jepi-direct': {'must_with': ['投資制限']},
         'rakuten-schd-index': {'must_with': ['2026年2月末']},
         'comp-j': {'must_with': ['2026年8月末', '純資産総額']},
         'comp-s': {'must_with': ['2026年8月末', '純資産総額']},
