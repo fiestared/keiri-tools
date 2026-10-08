@@ -333,7 +333,7 @@ ${BUILT_FROM_NOTE}
 
 <div class="scroll-wrap">
 <table class="data-table num-nowrap-sm">
-<tr>
+<thead><tr>
   <th scope="col">年収</th>
   <th scope="col" style="text-align:right">手取り（月）</th>
   <th scope="col" style="text-align:right">手取り（年）</th>
@@ -341,7 +341,8 @@ ${BUILT_FROM_NOTE}
   <th scope="col" style="text-align:right">所得税（年）</th>
   <th scope="col" style="text-align:right">住民税（年）</th>
   <th scope="col" style="text-align:right">社会保険料（年）</th>
-</tr>
+</tr></thead>
+<tbody>
 ${T.map((x) => `<tr><td>${man(x.shunyu)}</td>`
   + `<td style="text-align:right">${yen(x.tedoriMonth)}円</td>`
   + `<td style="text-align:right"><b>${yen(x.tedoriYear)}円</b></td>`
@@ -349,6 +350,7 @@ ${T.map((x) => `<tr><td>${man(x.shunyu)}</td>`
   + `<td style="text-align:right">${yen(x.shotokuzeiYear)}円</td>`
   + `<td style="text-align:right">${yen(x.juminzeiYear)}円</td>`
   + `<td style="text-align:right">${yen(x.shahoYear)}円</td></tr>`).join("\n")}
+</tbody>
 </table>
 </div>
 
@@ -356,13 +358,15 @@ ${T.map((x) => `<tr><td>${man(x.shunyu)}</td>`
 <p>額面の増分25万円のうち、実際に手元に残るのはこれだけです。残りは税と社会保険料に消えます。</p>
 <div class="scroll-wrap">
 <table class="data-table">
-<tr><th scope="col">年収</th><th scope="col" style="text-align:right">手取りの増分（年）</th><th scope="col" style="text-align:right">25万円のうち残る割合</th></tr>
+<thead><tr><th scope="col">年収</th><th scope="col" style="text-align:right">手取りの増分（年）</th><th scope="col" style="text-align:right">25万円のうち残る割合</th></tr></thead>
+<tbody>
 ${T.slice(1).map((x, i) => {
   const d = x.tedoriYear - T[i].tedoriYear;
   return `<tr><td>${man(T[i].shunyu)} → ${man(x.shunyu)}</td>`
     + `<td style="text-align:right">${yen(d)}円</td>`
     + `<td style="text-align:right">${pct(d / 250_000)}</td></tr>`;
 }).join("\n")}
+</tbody>
 </table>
 </div>
 

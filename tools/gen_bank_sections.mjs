@@ -223,11 +223,14 @@ export function buildAmountIndex(rows) {
   out.push('  <h2 id="gyakubiki">この金額はどこの銀行？（金額から逆引き）</h2>');
   out.push('  <p>通帳や請求書で見た手数料の金額から、その金額になる銀行を引く表です。<b>上の一覧と同じ調査結果を金額の順に並べ替えています</b>ので、金額が食い違うことはありません。「3万円未満／以上で同じ額」の区分は「金額不問」と書いています。</p>');
   out.push('  <table>');
-  out.push('    <tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th></tr>');
+  // 長い表は見出し行を thead に入れる（印刷で各ページに見出しを繰り返す。tests/test_long_table_thead.mjs）
+  out.push('    <thead><tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th></tr></thead>');
+  out.push('    <tbody>');
   for (const [amount, list] of m) {
     const cells = list.map((x) => x.fullLabel ? x.name : `${x.name}（${x.range}）`).join('<br>');
     out.push(`    <tr><td><b>${amount}円</b></td><td>${cells}</td></tr>`);
   }
+  out.push('    </tbody>');
   out.push('  </table>');
   out.push('  <p class="note">この表が扱うのは<b>他行宛・30区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後の料金や、振込以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。主要5行については<a href="#keiro">窓口・ATM・同じ銀行あての実額</a>を別に載せています。それでも合わない場合はこの表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
   out.push(AMT_END);
