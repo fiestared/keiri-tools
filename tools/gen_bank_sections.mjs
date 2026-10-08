@@ -59,8 +59,13 @@ export function loadBanks() {
       rawOver: b.article?.over_unverified ? null : b.over30k,
       under: `${b.under30k}円${b.article?.fee_note || ''}`,
       over: b.article?.over_unverified ? '未確認' : `${b.over30k}円${b.article?.fee_note || ''}`,
-      underHTML: `${b.under30k}円${b.article?.fee_note ? '<br>' + esc(b.article.fee_note) : ''}`,
-      overHTML: b.article?.over_unverified ? '未確認' : `${b.over30k}円${b.article?.fee_note ? '<br>' + esc(b.article.fee_note) : ''}`,
+      // ★2026-10-08（UI/UX 回帰 所見5）: 料金の条件（fee_note）は 3万円未満・以上の両方に同じ文だったため、
+      //   金額セルに入れると同じ注記が1行に2回出て表が縦に伸びた。条件は区分名のセルに1回だけ書き、
+      //   金額セルは金額だけにする。under/over（照合用の文字列）は「金額＋条件」のまま変えない
+      //   （tests/test_fee_article・test_furikomi_bank_sections が区分名セルの注記を足して照合する）。
+      nameHTML: `${b.name}${b.article?.fee_note ? '<span class="cell-note">' + esc(b.article.fee_note) + '</span>' : ''}`,
+      underHTML: `${b.under30k}円`,
+      overHTML: b.article?.over_unverified ? '未確認' : `${b.over30k}円`,
       indexName: b.article?.index_name || b.name,
       indexFullLabel: b.article?.index_full_label || false,
       boundary: b.article?.over_unverified ? null : b.under30k !== b.over30k,
@@ -127,7 +132,7 @@ export function buildSections(rows) {
     out.push('    <tr><th scope="col">区分</th><th scope="col">3万円未満</th><th scope="col">3万円以上</th></tr>');
     for (const r of [kojin, hojin]) {
       if (!r) continue;
-      out.push(`    <tr><td>${r.name}</td><td>${r.underHTML}</td><td>${r.overHTML}</td></tr>`);
+      out.push(`    <tr><td>${r.nameHTML}</td><td>${r.underHTML}</td><td>${r.overHTML}</td></tr>`);
     }
     out.push('  </table>');
 
@@ -216,7 +221,7 @@ export function buildAmountIndex(rows) {
   const out = [];
   out.push(AMT_START);
   out.push('  <h2 id="gyakubiki">この金額はどこの銀行？（金額から逆引き）</h2>');
-  out.push('  <p>通帳や請求書で見た手数料の金額から、その金額になる銀行を引く表です。<b>上の一覧と同じ調査結果から機械的に並べ替えています</b>ので、金額が食い違うことはありません。「3万円未満／以上で同じ額」の区分は「金額不問」と書いています。</p>');
+  out.push('  <p>通帳や請求書で見た手数料の金額から、その金額になる銀行を引く表です。<b>上の一覧と同じ調査結果を金額の順に並べ替えています</b>ので、金額が食い違うことはありません。「3万円未満／以上で同じ額」の区分は「金額不問」と書いています。</p>');
   out.push('  <table>');
   out.push('    <tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th></tr>');
   for (const [amount, list] of m) {
