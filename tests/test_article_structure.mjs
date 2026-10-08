@@ -21,12 +21,8 @@ import { join } from "node:path";
 //  - 残り10本: 日付行か出典の見出しが本文と同じ1行に詰めて書かれており、直すとその行の数字全部が
 //    check_claims --changed の「足した行」になる。台帳が無い／数字が台帳に無いページなので、
 //    台帳を整えてから移す（gbrain implementation/keiri-ux-nav-fixes-2026-09-30）
-const META_TAIL_PENDING = new Set([
-  "nenshu-no-kabe",
-  "chinage-sokushin-zeisei", "kashidaore-hikiatekin", "kekkin-kojo-keisan", "kosaihi-kaigihi-chigai",
-  "kurikoshi-kessonkin", "kyuyo-keisan-yarikata", "orcan-sp500-holding-period",
-  "shuzenhi-shihonteki-shishutsu", "taiyo-nensu", "tsukitochu-nyusha-taishoku-kyuyo", "yakuin-hoshu-kimekata",
-]);
+// 2026-10-08: 保留していた12本（9/30）の日付行も出典の節へ移した。保留は0本。ここに足さないこと。
+const META_TAIL_PENDING = new Set([]);
 
 const DOCS = new URL("../docs/", import.meta.url).pathname;
 const COLUMN = join(DOCS, "column");

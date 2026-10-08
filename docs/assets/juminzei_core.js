@@ -507,6 +507,53 @@ export function hikazeiHantei(goukeiShotoku, sotShotokuTou, family, kyuchi, D) {
   };
 }
 
+/**
+ * 所得割の非課税限度額を「わずかに超えた」人の減額（地方税法附則3条の3第2項（道府県）・第5項（市町村））。
+ *
+ * 条文（2026-10-01施行版を e-Gov API v2 で逐語確認。2027-01-01版・2025-04-01版も第2項・第5項の算式は同じ）の骨格:
+ *   限度額 L（＝35万円×(本人＋同一生計配偶者＋扶養親族〔16歳未満を含む〕)＋10万円＋扶養等がいれば32万円。
+ *   第1項・第4項の非課税限度額と同じ式）が、
+ *   「総所得金額、退職所得金額及び山林所得金額の合計額 A」−「所得割の額（市 S＋県 D）」を超えるときは、
+ *   超える金額 E ×  S/(S＋D) を市町村民税の所得割から、× D/(S＋D) を道府県民税の所得割から控除する。
+ *   S・D は「314条の3（税率）・314条の6〜8（調整控除・寄附金税額控除・外国税額控除）・附則5条3項（配当控除）・
+ *   附則5条の4第5項（住宅借入金等特別税額控除）…を適用して計算した所得割の額」（県は35条・37条〜37条の3…）。
+ *   控除する先は314条の3・314条の6（県は35条・37条）適用後の額 B。
+ *   第3項・第6項は、この減額を37条の4・314条の9第1項（配当割額等の控除）の「前三条」に加える読替え。
+ *
+ * ★このコアは寄附金・外国税額・配当・住宅ローンの税額控除を確定所得割に反映しないので、B＝S・D。
+ *   そのときに限り、控除後の所得割は S×(A−L)/(S＋D)・D×(A−L)/(S＋D) と簡約でき、合計は「A − L」になる
+ *   （限度額を1円超えただけで所得割が数万円かかる、という逆転を防ぐ）。
+ *   他の税額控除がある一般の場合は B−E×S/(S＋D) で、S・D が小さくなると E も小さくなる（簡約式は使えない）。
+ * ★端数: 条文は按分の途中の1円未満の切捨てを定めていない。超過課税（例 4.025%）では税率を掛けた額に
+ *   小数が出るので、S・D は「×100000 した整数」で受け取り、有理数のまま按分して、
+ *   確定金額だけを市・県それぞれ100円未満切捨て（20条の4の2第3項）にする。
+ *
+ * 引数 S1e5・D1e5: 所得割の額 × 100000（整数）。戻り値の shichoson / dofuken は100円未満切捨て後の確定所得割。
+ * applied=false なら素の額を同じ丸めで返す。
+ */
+export function hikazeiKinboChosei(sotShotokuTou, shotokuLimit, S1e5, D1e5) {
+  const A = yen(sotShotokuTou);
+  const s = Math.max(0, Math.round(S1e5));
+  const d = Math.max(0, Math.round(D1e5));
+  const sum = s + d;
+  const floor100 = (v1e5) => Math.floor(v1e5 / 10_000_000) * 100; // (円×1e5) → 100円未満切捨て
+  // 適用条件: L > A −（S＋D） ⇔ (A − L)×1e5 < S＋D。A ≤ L は第1項・第4項で所得割そのものが非課税（ここに来ない）。
+  if (sum <= 0 || A <= shotokuLimit || (A - shotokuLimit) * 100_000 >= sum) {
+    return { applied: false, excess: 0, shichoson: floor100(s), dofuken: floor100(d) };
+  }
+  const over = A - shotokuLimit;                     // A − L（控除後の所得割の合計の上限）
+  const excess = shotokuLimit - A + sum / 100_000;   // 「当該超える金額」E（表示・記録用。小数のことがある）
+  // S − E×S/(S＋D) = S×(A−L)/(S＋D)（単位の1e5は約分で消える）。整数のまま割って100円未満を切り捨てる。
+  // 積が 2^53 を超えても丸めないよう BigInt で割る（s・d・over・sum はすべて 0 以上の整数）。
+  const q = (x) => Number((BigInt(x) * BigInt(over)) / (BigInt(sum) * 100n)) * 100;
+  return {
+    applied: true,
+    excess,
+    shichoson: q(s),
+    dofuken: q(d),
+  };
+}
+
 /** 均等割＋森林環境税。均等割が非課税なら森林環境税もかからない（森林環境税法4条）。 */
 export function kintouwariGaku(jichitai, kintouwariHikazei, D) {
   if (kintouwariHikazei) {
@@ -587,11 +634,33 @@ export function calc(input, D) {
   const aSPct1000 = hasJichitai ? J.shichoson_pct_x1000 : sPct * 1000;
   const aDPct1000 = hasJichitai ? J.dofuken_pct_x1000 : dPct * 1000;
   // 確定所得割は市町村・道府県ごとに100円未満切捨。上の特例控除上限用の額とは区別する。
-  const jissaiShichoson = hikazei.shotokuwariHikazei
-    ? 0 : Math.floor(Math.max(0, Math.floor(kazei * aSPct1000 / 100000) - chosei.shichoson) / 100) * 100;
-  const jissaiDofuken = hikazei.shotokuwariHikazei
-    ? 0 : Math.floor(Math.max(0, Math.floor(kazei * aDPct1000 / 100000) - chosei.dofuken) / 100) * 100;
+  // ★非課税限度額をわずかに超えた人は、附則3条の3第2項・第5項の減額を丸めの前に入れる。
+  //   （S・D は314条の3＝その自治体の税率で計算した額なので、超過課税・減税の率で計算した額を使う）
+  const rawJissaiS = Math.max(0, Math.floor(kazei * aSPct1000 / 100000) - chosei.shichoson);
+  const rawJissaiD = Math.max(0, Math.floor(kazei * aDPct1000 / 100000) - chosei.dofuken);
+  // 減額の按分には小数を落とさない額（×100000の整数）を渡す（超過課税で 1円未満が出るため）
+  const exactS1e5 = Math.max(0, kazei * aSPct1000 - chosei.shichoson * 100000);
+  const exactD1e5 = Math.max(0, kazei * aDPct1000 - chosei.dofuken * 100000);
+  const kinbo0 = hikazei.shotokuwariHikazei
+    ? { applied: false, excess: 0, shichoson: 0, dofuken: 0 }
+    : hikazeiKinboChosei(goukei, hikazei.shotokuLimit, exactS1e5, exactD1e5);
+  // 減額が効かない人は従来どおりの額（税率適用後の1円未満切捨て→100円未満切捨て。結果は同じ）
+  const kinbo = kinbo0.applied || hikazei.shotokuwariHikazei
+    ? kinbo0
+    : { ...kinbo0, shichoson: Math.floor(rawJissaiS / 100) * 100, dofuken: Math.floor(rawJissaiD / 100) * 100 };
+  const jissaiShichoson = kinbo.shichoson;
+  const jissaiDofuken = kinbo.dofuken;
   const shotokuwariJissai = jissaiShichoson + jissaiDofuken;
+  // 減額がなければいくらだったか（画面で「減額された額」を示すため。丸めは同じ100円未満切捨）
+  const kinboChosei = kinbo.applied
+    ? {
+        applied: true,
+        excess: kinbo.excess,
+        beforeShichoson: Math.floor(rawJissaiS / 100) * 100,
+        beforeDofuken: Math.floor(rawJissaiD / 100) * 100,
+        gengaku: Math.floor(rawJissaiS / 100) * 100 + Math.floor(rawJissaiD / 100) * 100 - shotokuwariJissai,
+      }
+    : { applied: false, excess: 0, beforeShichoson: jissaiShichoson, beforeDofuken: jissaiDofuken, gengaku: 0 };
 
   // ── ③ 均等割＋森林環境税 ────────────────────────────────────
   const kintou = kintouwariGaku(J, hikazei.kintouwariHikazei, D);
@@ -626,6 +695,7 @@ export function calc(input, D) {
     shotokuwariJissaiShichoson: jissaiShichoson,
     shotokuwariJissaiDofuken: jissaiDofuken,
     shotokuwariJissai,
+    kinboChosei,
     kintouwari: kintou,
     juminzeiTotal: shotokuwariJissai + kintou.total,
   };

@@ -29,4 +29,12 @@ const meta = JSON.parse(fs.readFileSync(new URL("../docs/assets/hojokin_jgrants.
 const shown = capturedLabel(meta.captured_jst);
 assert.ok(!/T|\+09:00/.test(shown), `★画面に出る文字列に ISO が残っている: ${shown}`);
 
+// ★2026-10-08（UI/UXレビュー 中10）: ページの「更新日 9/28」とデータの「取得 10/8」が説明なしに並び、
+//   どちらが一覧の新しさなのか分からなかった。日付行は「ページの説明の」更新日だと名乗り、
+//   データの取得日時は「一覧のデータ」の行で出す（どちらの日付かを文字で区別する）。
+const metaLine = (html.match(/<p class="article-meta">([\s\S]*?)<\/p>/) || [])[1] || "";
+assert.ok(/ページの説明の更新日/.test(metaLine), `★/hojokin/ の日付行が何の更新日かを名乗っていない: ${metaLine}`);
+assert.ok(/補助金の一覧は1日3回取り込み直して/.test(metaLine), "★日付行に、一覧のデータは別に取り込み直していることが書かれていない");
+assert.ok(/id="fresh">補助金の一覧のデータ: /.test(html), "★取得日時の行が「一覧のデータ」の日付だと名乗っていない");
+
 console.log("緑");
