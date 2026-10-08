@@ -1059,13 +1059,28 @@ if (uncategorized.length) {
 const catNav = groups.map((g) =>
   `    <a href="#cat-${g.id}"><span class="cat-label">${g.name === "健康保険・雇用保険・労災保険の給付" ? g.name.split("・").map((part, i) => `<span class="keep-phrase">${esc(part)}${i < 2 ? "・" : ""}</span>`).join("") : esc(g.name)}</span><span class="cat-count">(${g.items.length})</span></a>`).join("\n");
 
-const sections = groups.map((g) => `  <section class="cat" id="cat-${g.id}" data-cat>
+// ★カテゴリごとに需要の大きい順の先頭 FIRST_N 本だけを開いて出し、残りは「残りN本を表示」に畳む（2026-10-08 UI/UXレビュー 低）。
+//   429本を全部開いて並べていたので、一覧は PC で約38,000px・スマホで約89,900px あり、
+//   下のカテゴリ（固定資産・補助金の経理・相続）まで目で辿り着けなかった。
+//   畳んだ記事も DOM に残す（リンク・検索の data-s はそのまま）。検索中はページ内の script が全部開く。
+const FIRST_N = 8;
+const sections = groups.map((g) => {
+  const head = g.items.slice(0, FIRST_N), rest = g.items.slice(FIRST_N);
+  const more = rest.length ? `
+    <details class="post-more">
+      <summary>「${esc(g.name)}」の残り${rest.length}本を表示</summary>
+      <div class="post-list">
+${rest.map((a) => card(a, "        ")).join("\n")}
+      </div>
+    </details>` : "";
+  return `  <section class="cat" id="cat-${g.id}" data-cat>
     <h2>${esc(g.name)}<span class="cat-n">(${g.items.length})</span></h2>
     <p class="cat-desc">${esc(g.desc)}</p>
     <div class="post-list">
-${g.items.map((a) => card(a, "      ")).join("\n")}
-    </div>
-  </section>`).join("\n");
+${head.map((a) => card(a, "      ")).join("\n")}
+    </div>${more}
+  </section>`;
+}).join("\n");
 
 // ★索引は開いた状態で出す（2026-09-30）。閉じた「▶記事のカテゴリから探す」は
 //   スマホで押されず、第一画面が先頭カテゴリの記事だけになっていた（レビュー grok §4）。

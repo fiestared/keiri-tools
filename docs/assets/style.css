@@ -319,6 +319,11 @@ footer.site .datasrc ul { list-style: none; padding-left: 0; }
 footer.site nav { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px 16px; }
 /* リンクの当たり判定を 24px 以上にする（SC 2.5.8）。文字は13pxのまま */
 footer.site a { color: var(--sub); padding: 6px 0; display: inline-block; }
+/* サイト共通の案内リンク（tools/gen_site_footer.mjs が全ページに入れる。2026-10-08）。
+   押せる高さを 44px にする（文字は13pxのまま。上下の余白で当たり判定を作る） */
+footer.site .site-links { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 0 16px; font-size: 13px; line-height: 20px; }
+footer.site .site-links a { padding: 12px 0; }
+footer.site .site-copy { margin: 0; }
 .tool-list a {
   display: block;
   background: #fff;
@@ -700,6 +705,14 @@ html.ss-lock, html.ss-lock body { overflow: hidden; }
 
 .post-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(480px, 100%), 1fr)); gap: 0 40px; }
 .post-list a { display: flex; gap: 12px; align-items: baseline; padding: 16px 8px; border-bottom: 1px solid var(--line); text-decoration: none; color: var(--ink); }
+/* コラム一覧の「残りN本を表示」（gen_index_sitemap.mjs が各カテゴリの9本目以降を畳む。2026-10-08） */
+.post-more { margin: 4px 0 0; }
+.post-more > summary { display: flex; align-items: center; min-height: 44px; padding: 0 8px; cursor: pointer; font-weight: 600; color: var(--accent); border-bottom: 1px solid var(--line); }
+.post-more > summary:hover { text-decoration: underline; }
+.post-more[open] > summary { color: var(--sub); }
+.post-more > summary::-webkit-details-marker { display: none; }
+.post-more > summary::after { content: "＋"; margin-left: 8px; }
+.post-more[open] > summary::after { content: "−"; }
 .post-list a:hover .p-title { color: var(--accent); text-decoration: underline; }
 .post-list .p-date { flex: 0 0 84px; font-size: 12.5px; color: var(--sub); }
 .post-list .p-title { font-size: 16px; font-weight: 600; }
@@ -1241,9 +1254,12 @@ main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width
 .toc [hidden] { display: none !important; }
 .toc:has(.toc-toggle:not([hidden])) > ol { margin-top: 8px; }
 .rail-next a { min-height: 44px; overflow-wrap: anywhere; }
-@media (min-width: 1200px) {
+/* ★右レールは 1024px から出す（2026-10-08 PCレビュー 中7。toc-rail.js の desktop と同じ値）。
+   1200px 未満では本文列の右の余白が 48px → 32px、レール幅が 300px → 最小288px に縮む（本文の列幅672pxは変えない）。
+   1200px 以上は従来どおり left 736px・幅 300px。 */
+@media (min-width: 1024px) {
   main:has(.toc-rail-track) { position: relative; }
-  .toc-rail-track { position: absolute; top: 0; bottom: 0; left: 736px; width: 300px; max-width: none; margin: 0; }
+  .toc-rail-track { position: absolute; top: 0; bottom: 0; left: clamp(720px, calc(100% - 416px), 736px); width: min(300px, calc(100% - 736px)); max-width: none; margin: 0; }
   .toc-rail-track > .side-rail { position: sticky; top: 84px; margin: 0; }
   /* ol がスクロール枠になると、枠の外に描かれる番号(list-style-position: outside)が切り抜かれ、
      「10.」が「0.」に見えていた（2026-09-30・目次10項目以上の約208ページ）。
@@ -1261,6 +1277,17 @@ main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width
 
 .side-rail:has(.rail-next) > .toc:has(.toc-toggle:not([hidden])) { padding: 0 16px; }
 .side-rail:has(.rail-next) > .toc:has(.toc-toggle[aria-expanded="true"]:not([hidden])) { padding-bottom: 4px; }
+/* PC の右レール: 見出し「目次」を残し、開閉は見出しの右の小さな操作（toc-rail.js が .toc-inline-toggle を付ける）。
+   いま読んでいる節（aria-current="location"）は面の色と太さで示す。左の線は使わない（gbrain design/ui-no-left-accent-border-cards）。
+   長い目次の後半が枠の下に隠れているときは、下端をぼかして「続き」と出す（.toc-more-below）。 */
+.side-rail:has(.rail-next) > .toc.toc-inline-toggle:has(.toc-toggle[aria-expanded]:not([hidden])) { position: relative; inset: auto; padding: 14px 16px 4px; }
+.toc.toc-inline-toggle > .toc-toggle { position: absolute; top: 2px; right: 8px; width: auto; min-height: 44px; padding: 0 8px; font-size: 12.5px; font-weight: 600; color: var(--accent); }
+.toc.toc-inline-toggle > .toc-toggle::after { content: none; }
+.toc.toc-inline-toggle > .toc-title { margin: 0 0 8px; line-height: 20px; }
+.toc a[aria-current="location"] { color: var(--accent); font-weight: 700; background: var(--accent-soft); border-radius: 4px; box-shadow: 0 0 0 3px var(--accent-soft); }
+.side-rail:has(.rail-next) > .toc.toc-more-below { position: relative; inset: auto; }
+.toc.toc-more-below::after { content: "▼ 続きがあります（枠の中をスクロール）"; position: absolute; left: 1px; right: 1px; bottom: 1px; height: 44px; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; border-radius: 0 0 12px 12px; background: linear-gradient(rgba(255,255,255,0), #fff 65%); color: var(--sub); font-size: 12px; pointer-events: none; }
+@media print { .toc.toc-more-below::after { content: none; } }
 
 /* Keep tall PR creative proportional in short desktop windows; retain its full content. */
 @media (min-width: 1200px) and (max-height: 899.98px) {
@@ -1318,10 +1345,13 @@ footer [data-duplicate-note] { display: none !important; }
 
 /* ---- 「あわせて読む」を目次と見分けられる見た目に（2026-10-03 Masahiro「おすすめ記事のデザインをもう少し目立つようにできるかな、気付いてない可能性あるよね？」）
    目次と同じ白い箱・地の文字のリンクだったので、目次の続きに見えて押されていなかった（28日で rail 13クリック / 20,752PV）。
-   色の面・左の帯・カード状のリンク（右に ›）で「別の読みもの」だと分かるようにする。
+   色の面・カード状のリンク（右に ›）で「別の読みもの」だと分かるようにする。
    ★種類のラベル（ツール／記事）は付けない: 相対リンクで見分けるとツールのページで外れる（../bonus-tedori/ を記事と誤表示した）。
      付けるなら生成器（gen_toc_related.mjs）が data 属性で種類を書く。 */
-.rail-next { background: var(--accent-soft); border: 1px solid #b9dcd2; border-left: 4px solid var(--accent); }
+/* ★左の帯（border-left 4px）は外した（2026-10-08 UI/UX レビュー 中6）。gbrain design/ui-no-left-accent-border-cards の恒久方針
+   「注意・案内は淡い全面色＋四辺均一の1px枠」に従う。目立たせるのは面の色・見出しの色・カード状のリンクで足りる。
+   tests/test_no_left_accent.mjs が computed style で全主要ページを見ている（左だけ太い色線が戻ったら落ちる）。 */
+.rail-next { background: var(--accent-soft); border: 1px solid #b9dcd2; }
 .rail-next-title { color: var(--accent); font-size: 15px; margin-bottom: 8px; }
 .rail-next-title::before { content: "▶"; font-size: 10px; margin-right: 6px; vertical-align: 2px; }
 .rail-next li, .rail-next li:first-child { border-top: 0; margin: 0 0 8px; }
