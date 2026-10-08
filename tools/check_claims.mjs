@@ -223,7 +223,9 @@ export function addedClaimText(html, diff) {
   //   タグだけの変更なのに足した行になり、しかも分かれた「29日」が日数として拾われ、正しい記事8本を落とした。
   // ★日付行（article-meta）も比べる前に外す（2026-10-06）。h1 と日付行が同じ1行にある記事では、生成器が更新日だけ進めても
   //   行全体が「足した行」になり、h1 の「3か月」が足した数字として拾われて、台帳の無い既存記事が落ちた（yakuin-hoshu-kimekata）。
-  const visible = (s) => s.replace(/<p\b[^>]*class="[^"]*article-meta[^"]*"[\s\S]*?<\/p>/gi, "").replace(/<[^>]*>/g, "").replace(/\s+/g, "");
+  // ★source-method も同じ（2026-10-08）。日付行の「根拠の出所」を出典の節へ移すと、出典 h2 と ul が同じ1行にある記事では
+  //   行全体が「足した行」になり、ul の数字が台帳を要求して落ちた（9/30 に11本を保留した原因）。source-method は stripNonClaims でも主張から外している。
+  const visible = (s) => s.replace(/<p\b[^>]*class="[^"]*(?:article-meta|source-method)[^"]*"[\s\S]*?<\/p>/gi, "").replace(/<[^>]*>/g, "").replace(/\s+/g, "");
   const removed = new Map();
   for (const line of diff.split("\n")) {
     if (line.startsWith("-") && !line.startsWith("---")) { const v = visible(line.slice(1)); removed.set(v, (removed.get(v) || 0) + 1); }

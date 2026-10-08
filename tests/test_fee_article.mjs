@@ -31,9 +31,20 @@ const SCANNED = RAW.replace(ROUTE_TABLE, " "); // 行スキャン（1・2番）�
 //   → **出現ごとに全件突き合わせる**。CLAUDE.md 規則4「名指しは一意でなければ効かない」の同型。
 const occurrences = [];
 const bandTables = [...SCANNED.matchAll(/<table[^>]*>[\s\S]*?<\/table>/g)].map(m => m[0]).filter(t => t.includes('3万円未満') && t.includes('3万円以上')).join('\n');
+// ★2026-10-08（UI/UX 回帰 所見5）: 料金の条件（fee_note）は区分名のセルに1回だけ書く（金額セルは金額だけ）。
+//   照合の文字列は従来どおり「金額＋条件」なので、区分名セルの .cell-note を金額の後ろに足して比べる。
+//   同じ条件文が金額セルに戻ったら（＝1行に同じ注記が2回出たら）ここで落とす。
+const tagless = (s) => s.replace(/<[^>]*>/g, '').trim();
 for (const row of bandTables.matchAll(/<tr>([\s\S]*?)<\/tr>/g)) {
-  const cells = [...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map(m => m[1].replace(/<[^>]*>/g, '').trim());
-  if (cells.length >= 3 && (cells[1].match(/^\d+円/) || cells[1] === '未確認')) occurrences.push({name: cells[0], under30k: cells[1], over30k: cells[2]});
+  const raw = [...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map(m => m[1]);
+  if (raw.length < 3) continue;
+  const note = (raw[0].match(/<span class="cell-note">([\s\S]*?)<\/span>/) || [, ''])[1];
+  const name = tagless(raw[0].replace(/<span class="cell-note">[\s\S]*?<\/span>/, ''));
+  const amt = [tagless(raw[1]), tagless(raw[2])];
+  if (!(amt[0].match(/^\d+円/) || amt[0] === '未確認')) continue;
+  assert.ok(raw.slice(1).every((c) => !/cell-note/.test(c)), `${name}: 料金の条件が金額セルに入っている（条件は区分名のセルに1回だけ書く）`);
+  const withNote = (a) => a === '未確認' ? a : a + tagless(note);
+  occurrences.push({name, under30k: withNote(amt[0]), over30k: withNote(amt[1])});
 }
 const rows = new Map(occurrences.map((o) => [o.name, o]));
 
