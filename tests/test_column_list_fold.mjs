@@ -50,6 +50,8 @@ try{
  const title=await p.locator(sel+' .p-title').textContent();
  await p.fill('#q',title.trim());
  assert(await p.locator(sel).isVisible(),`検索で畳んだ記事（${href}）が見えない`);
+ // 2026-10-08 第2周: summary の display:flex が hidden 属性に勝ち、検索中も「残りN本を表示」が出て見出しの件数と食い違った
+ assert(!(await p.locator('details.post-more > summary').evaluateAll(es=>es.some(e=>e.offsetParent!==null))),'検索中も「残りN本を表示」の行が見えている');
  await p.fill('#q','');
  assert(!await p.locator(sel).isVisible(),'検索を空にしても畳み直さない');
  await p.locator('details.post-more > summary').first().click();
