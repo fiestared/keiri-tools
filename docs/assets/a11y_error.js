@@ -191,7 +191,17 @@
         var r = box.getBoundingClientRect();
         if (r.height > 0) {
           scrolledFor = submitSeq;   // 見えていても「この押下は処理済み」。後から飾りが足されてもページを動かさない
-          if (r.top > window.innerHeight - 120) scrollToTop(box);
+          // ★2026-10-08（keiri-uiux-review-2026-10-08 低「計算後の移動位置がばらばら」）:
+          //   以前は「頭が折り目の下にあるときだけ」送っていたので、押した位置しだいで
+          //   結果の頭が画面の上端に来たり下端に残ったりした。結果が画面に収まらず、頭が画面の
+          //   下半分にあるときも送り、計算後は**結果の頭が画面の上半分に来る**形に揃える。
+          //   収まる結果・頭が上半分にある結果は動かさない（読んでいる位置を奪わない）。
+          var vh = window.innerHeight;
+          // ★PC（≥1200px）で右レールに結果の要約が出るページ（result_rail.js が data-result-rail を立てる）は動かさない。
+          //   結果へ飛ぶと入力が全部画面から消える（PC レビュー中1）。答えは右レールで入力と並べて見せる。
+          var railShows = document.documentElement.hasAttribute("data-result-rail") &&
+            window.matchMedia && matchMedia("(min-width: 1200px)").matches;
+          if (!railShows && (r.top > vh - 120 || (r.top > vh / 2 && r.bottom > vh))) scrollToTop(box);
         }
       }
     });

@@ -33,15 +33,54 @@
   // 表示する件数は大見出しだけ。入れ子の小見出しまで数えると、開いたときに見える番号と合わない。
   const count = list.querySelectorAll(':scope > li').length;
   let chosen = null;
+  // ★PC（右レール）では見出し「目次」を残し、開閉は見出しの右の小さな操作にする（2026-10-08 PCレビュー 中3）。
+  //   以前は PC でもボタンが見出しを置き換え、レールの見出しが「目次を閉じる」という操作の名前になっていた。
+  //   スマホは目次が本文の前に並ぶので、見出しそのものを開閉の操作にする（従来どおり）。
+  let inline = false;
   function state(open) {
     button.setAttribute('aria-expanded', String(open));
-    button.textContent = open ? '目次を閉じる' : `目次を開く（${count}項目）`;
+    button.textContent = inline ? (open ? 'たたむ' : `開く（${count}項目）`) : (open ? '目次を閉じる' : `目次を開く（${count}項目）`);
     list.hidden = !open;
     toc.classList.toggle('toc-collapsed', !open);
+    cue();
   }
+  // ★長い目次は枠の中でスクロールする。後半が隠れていることを下端の合図で示す（2026-10-08 PCレビュー 中3）。
+  function cue() {
+    const more = !list.hidden && list.scrollHeight > list.clientHeight + 4 && list.scrollTop + list.clientHeight < list.scrollHeight - 4;
+    toc.classList.toggle('toc-more-below', more);
+  }
+  list.addEventListener('scroll', cue, {passive: true});
+  // ★いま読んでいる節を目次で示す（scrollspy）。強調は面の色と文字の太さで、左の線は使わない
+  //   （gbrain design/ui-no-left-accent-border-cards）。長い目次では、その項目が枠の中に見えるよう枠だけを動かす。
+  const links = [...list.querySelectorAll('a[href^="#"]')].map(a => [a, document.getElementById(decodeURIComponent(a.hash.slice(1)))]).filter(([, t]) => t);
+  let current = null;
+  function spy() {
+    const line = 100;   // 追随ヘッダ（約61px）の下
+    let hit = null;
+    for (const [a, t] of links) { if (t.getBoundingClientRect().top <= line) hit = a; else break; }
+    if (hit === current) return;
+    current?.removeAttribute('aria-current');
+    current = hit;
+    if (!hit) return;
+    hit.setAttribute('aria-current', 'location');
+    if (!list.hidden && list.scrollHeight > list.clientHeight + 4) {
+      const lr = list.getBoundingClientRect(), ar = hit.getBoundingClientRect();
+      if (ar.top < lr.top + 8 || ar.bottom > lr.bottom - 40) list.scrollTop += (ar.top - lr.top) - lr.height / 3;
+    }
+    cue();
+  }
+  let spyPending = false;
+  const spyLater = () => { if (!spyPending) { spyPending = true; requestAnimationFrame(() => { spyPending = false; spy(); }); } };
+  if (typeof IntersectionObserver === 'function') {
+    const io = new IntersectionObserver(spyLater, {rootMargin: '-100px 0px 0px 0px'});
+    links.forEach(([, t]) => io.observe(t));
+  }
+  addEventListener('scroll', spyLater, {passive: true});
   function layout() {
     const focused = document.activeElement === button;
-    const desktop = matchMedia('(min-width: 1200px)').matches;
+    // ★1024〜1199px でも右レールに出す（2026-10-08 PCレビュー 中7）。以前はこの帯で目次が本文の下に落ち、
+    //   右に約490pxの空白ができていた（110%拡大の1280画面・最大化していない窓がこの帯に入る）。style.css と同じ値。
+    const desktop = matchMedia('(min-width: 1024px)').matches;
     if (desktop && !track.isConnected) { main.append(track); track.append(rail); }
     if (!desktop && track.isConnected) { anchor.after(rail); track.remove(); }
     rail.classList.add('toc-rail-ready');
@@ -55,13 +94,16 @@
     // 48px button + 8px list gap + 4px bottom padding + 2px border.
     const room = desktop ? innerHeight - 104 - other - gaps - 62 : Math.min(320, innerHeight * 0.4);
     const long = count > 6 || full > Math.min(320, room);
+    inline = desktop;
+    toc.classList.toggle('toc-inline-toggle', desktop && long);
     button.hidden = !long;
-    heading.hidden = long;
+    heading.hidden = long && !desktop;
     if (desktop && long) list.style.maxHeight = Math.max(96, room) + 'px';
     // 長い目次も、PCでは最初から開いておく（右レールに場所があるので、読者が開く手間を省く。2026-09-29）。
     // スマホは目次が本文の前に並ぶので、開くと本文が下へ押し出される。最初は閉じたままにする。
     state(long ? (chosen ?? desktop) : true);
     rail.classList.toggle('toc-rail-tall', rail.getBoundingClientRect().height > innerHeight - 104);
+    current?.removeAttribute('aria-current'); current = null; spy(); cue();
     if (focused) button.focus({preventScroll:true});
   }
   button.addEventListener('click', () => {
