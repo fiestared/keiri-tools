@@ -3251,6 +3251,7 @@
   var nav = document.getElementById("cat-nav");
   var cats = [].slice.call(document.querySelectorAll("[data-cat]"));
   var cards = [].slice.call(document.querySelectorAll(".post-list a[data-s]"));
+  var mores = [].slice.call(document.querySelectorAll("details.post-more"));
   if (!box || !q || !cards.length) return;
 
   box.hidden = false;                       // JSが動いたときだけ検索欄を出す
@@ -3264,7 +3265,8 @@
 
   function run() {
     var terms = q.value.toLowerCase().split(/[\s　]+/).filter(Boolean);
-    if (!terms.length) {                    // 入力が空 → 全件表示に戻す
+    if (!terms.length) {                    // 入力が空 → 全件表示に戻す（畳んだ「残りN本」も閉じた状態へ戻す）
+      mores.forEach(function (d) { d.open = false; d.querySelector("summary").hidden = false; });
       cards.forEach(function (c) { c.hidden = false; });
       cats.forEach(function (s) { s.hidden = false; });
       badges.forEach(function (b) { if (b.el) b.el.textContent = b.full; });
@@ -3274,6 +3276,8 @@
       return;
     }
     var hit = 0;
+    // 畳んだ記事も検索の対象。当たった記事が閉じた中に隠れないよう、検索中は全部開いて「表示」の行を消す
+    mores.forEach(function (d) { d.open = true; d.querySelector("summary").hidden = true; });
     cards.forEach(function (c) {
       var s = c.getAttribute("data-s");
       var ok = terms.every(function (t) { return s.indexOf(t) !== -1; });   // AND検索
