@@ -14,12 +14,16 @@
  * ★測るのは main 直下の要素だけ。入れ子の中身は親の位置に従うので数えない。
  * ★共通ヘッダーはページ本文とは別の1120pxシェル。ページを移動しても位置が動かないことを
  *   全ページ横断で確かめる（本文が672pxのページでもヘッダーを狭めない）。
+ * ★本文の左端は、ヘッダーのロゴの左端と同じ位置（2026-10-08 Masahiro 承認。gbrain decisions/keiri-uiux-design-decisions-2026-10-08）。
+ *   以前は、右カラムも一覧も持たないページ（補助金・運営者情報・問い合わせ・プライバシー・編集ポリシー・収益化方針）だけ
+ *   器を 672px に落として中央へ寄せており、本文がロゴより 224px 右から始まっていた。「ページ内で1本」だけを見るこの検査は
+ *   それを通していた（ページの中では1本なので）。→ ロゴとの差も見る。LEFT_EDGE_BREAK=1 で壊しテスト（旧い指定を注入して赤になること）。
  * ★file:// では開かない（モジュールJSが読めず「全ページ壊れている」ように見える）。HTTP 越しに開く。
  */
 import { createServer } from 'node:http';
 import { readFile, readdir, mkdtemp, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
-import { spawn } from 'node:child_process';
+import { spawnChrome, killChrome } from '../tools/chrome_proc.mjs';
 import { tmpdir } from 'node:os';
 import { join, extname } from 'node:path';
 
@@ -72,6 +76,9 @@ const INJECT = (next) => `<script>
 })();
 </script>`;
 
+// 壊しテスト用: 直す前の指定（器を 672px に落として中央へ寄せる）を全ページに注入する
+const BREAK = process.env.LEFT_EDGE_BREAK === '1'
+  ? '<style>@media (min-width: 1200px){body:not(:has(main nav.toc)):not(:has(main .tcat)):not(:has(main .cat)):not(:has(main .tool-grid)):not(:has(main .post-list)):not(:has(main .side-rail)){--shell:672px}}</style>' : '';
 function stripBeacons(html) {
   return html.replace(/(<script[^>]*\ssrc=")(https?:)?\/\/(www\.googletagmanager\.com|pagead2\.googlesyndication\.com)\/[^"]*(")/gi,
     (_m, a, _p, _h, z) => a + 'data:text/javascript,' + z);
@@ -90,7 +97,7 @@ const server = createServer(async (req, res) => {
   try {
     const buf = await readFile(join(DOCS, p));
     if (isPage) { idx++; res.writeHead(200, { 'Content-Type': MIME['.html'] });
-      res.end(stripBeacons(buf.toString('utf8')) + INJECT(list[idx] || null)); }
+      res.end(stripBeacons(buf.toString('utf8')) + BREAK + INJECT(list[idx] || null)); }
     else { res.writeHead(200, { 'Content-Type': MIME[extname(p)] || 'application/octet-stream' }); res.end(buf); }
   } catch { res.writeHead(404); res.end('nf'); }
 });
@@ -105,14 +112,15 @@ if (listened.err) {
   process.exit(0);
 }
 const profile = await mkdtemp(join(tmpdir(), 'leftedge-'));
-const chrome = spawn(CHROME, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
+const chrome = spawnChrome(CHROME, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
   `--user-data-dir=${profile}`, `--window-size=${WIDTH},900`, `http://127.0.0.1:${PORT}${list[0]}`], { stdio: 'ignore' });
 const timeout = setTimeout(() => done(), 1000 * 60 * 10);
 await finished; clearTimeout(timeout);
-chrome.kill(); server.close();
+await killChrome(chrome); server.close();
 await rm(profile, { recursive: true, force: true }).catch(() => {});
 
 const bad = [];
+const offLogo = [];
 for (const r of results) {
   const keys = Object.keys(r.edges).map(Number).sort((a, b) => a - b);
   const groups = [];
@@ -121,14 +129,28 @@ for (const r of results) {
     if (g) g.names.push(...r.edges[k]); else groups.push({ k, names: [...r.edges[k]] });
   }
   if (groups.length > 1) bad.push({ path: r.path, groups });
+  // 本文の左端＝ロゴの左端（ページ内で割れている場合は上で報告済みなので、1本のときだけ比べる）
+  if (groups.length === 1 && r.header !== null && Math.abs(groups[0].k - r.header) > TOL) offLogo.push({ path: r.path, body: groups[0].k, logo: r.header });
 }
 const headerEdges = [...new Set(results.map((r) => r.header).filter((x) => x !== null))];
 const seen = new Set(results.map((r) => r.path));
 const missed = list.filter((p) => !seen.has(p));
 
-if (bad.length || headerEdges.length > 1 || missed.length > list.length * 0.1) {
+if (BREAK) {
+  // 壊しテスト: 旧い指定を入れたら、器を落としていた6ページが「ロゴとずれる」と報告されること
+  const want = ['/about/', '/contact/', '/hojokin/', '/privacy/'];
+  const got = offLogo.map((x) => x.path);
+  if (want.every((p) => got.includes(p))) { console.log(`✓ 壊しテスト: 旧い指定を注入すると ${got.length} ページでロゴとのずれを検出（${got.slice(0, 6).join(' ')}）`); process.exit(0); }
+  console.error(`✗ 壊しテスト: 旧い指定を注入してもロゴとのずれを検出しない（検出 ${got.join(' ') || 'なし'}）`); process.exit(1);
+}
+if (bad.length || offLogo.length || headerEdges.length > 1 || missed.length > list.length * 0.1) {
   if (headerEdges.length > 1) {
     console.error(`✗ 共通ヘッダーの左端がページ間で動いている: ${headerEdges.join(', ')}px`);
+  }
+  if (offLogo.length) {
+    console.error(`✗ ${WIDTH}px で本文の左端がヘッダーのロゴとずれているページ ${offLogo.length}件:`);
+    for (const o of offLogo.slice(0, 12)) console.error(`  - ${o.path}  本文 ${o.body}px / ロゴ ${o.logo}px（差 ${o.body - o.logo}px）`);
+    console.error('  器（--shell）をページごとに変えない。本文の列は 672px・左寄せ（docs/assets/style.css の `main > *`）。');
   }
   if (bad.length) {
     console.error(`✗ ${WIDTH}px で左端が割れているページ ${bad.length}件（測定 ${results.length}/${list.length}）:`);
@@ -145,4 +167,4 @@ if (bad.length || headerEdges.length > 1 || missed.length > list.length * 0.1) {
   }
   process.exit(1);
 }
-console.log(`✓ 左端は1本に揃っている（${results.length}ページ・${WIDTH}px）`);
+console.log(`✓ 左端は1本に揃い、ヘッダーのロゴの左端と同じ位置（${results.length}ページ・${WIDTH}px）`);

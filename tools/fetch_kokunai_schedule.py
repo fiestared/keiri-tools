@@ -105,8 +105,10 @@ def render_html(doc):
   <a href="../">補助金の検索</a>には出てきません。★<b>受付中・受付予定の掲載は{open_n}件</b>です。開始日前の公募を含むので各受付期間を確認してください。受付が終わった回は下に並べています
   （次回の日程は公式に発表されるまで分かりません）。</p>
   <div class="scroll-wrap"><table class="res" id="hj-sched-table">
-    <tr><th>補助金</th><th>申請受付期間</th></tr>
+    <thead><tr><th>補助金</th><th>申請受付期間</th></tr></thead>
+    <tbody>
 {chr(10).join(trs)}
+    </tbody>
   </table></div>
   <p class="note" id="sched-fresh" data-captured="{captured}">{attribution}　{day} 取得。最新の日程は各リンク先の公式ページでご確認ください。</p>
 <!--sched:E-->'''

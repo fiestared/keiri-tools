@@ -59,11 +59,12 @@ export function build(D) {
   const rateFrom = ym(m.rate_applies_from), shienFrom = ym(m.kosodate_applies_from);
 
   // ---- table ----
-  const table = `<div class="scroll-wrap"><table class="kenpo-ichiran">
+  // 2026-10-08 UI/UX: 答え（料率とその本人負担）を左から並べ、前年との増減は最後の列へ。1列目（都道府県）は横に送っても残す
+  const table = `<div class="scroll-wrap"><table class="kenpo-ichiran sticky-first">
 <caption>協会けんぽの都道府県別 保険料率（${m.year}・一般被保険者は${rateFrom}から）</caption>
-<thead><tr><th scope="col">都道府県</th><th scope="col" class="num">健康保険料率</th><th scope="col" class="num">${prevYear}からの増減</th><th scope="col" class="num">40〜64歳（介護保険料率${fmt(kaigo)}%込み）</th><th scope="col" class="num">本人負担（折半）40歳未満</th><th scope="col" class="num">本人負担（折半）40〜64歳</th></tr></thead>
+<thead><tr><th scope="col">都道府県</th><th scope="col" class="num" data-answer>健康保険料率</th><th scope="col" class="num" data-answer>本人負担（折半）40歳未満</th><th scope="col" class="num">40〜64歳（介護保険料率${fmt(kaigo)}%込み）</th><th scope="col" class="num">本人負担（折半）40〜64歳</th><th scope="col" class="num">${prevYear}からの増減</th></tr></thead>
 <tbody>
-${rows.map((x) => `<tr data-pref="${x.p}"><th scope="row" style="white-space:nowrap">${x.p}</th><td class="num">${tok(fmt(x.r))}</td><td class="num">${fmtDiff(x.diff)}</td><td class="num">${tok(fmt(x.withKaigo))}</td><td class="num">${tok(fmt(x.r, true))}</td><td class="num">${tok(fmt(x.withKaigo, true))}</td></tr>`).join("\n")}
+${rows.map((x) => `<tr data-pref="${x.p}"><th scope="row" style="white-space:nowrap">${x.p}</th><td class="num">${tok(fmt(x.r))}</td><td class="num">${tok(fmt(x.r, true))}</td><td class="num">${tok(fmt(x.withKaigo))}</td><td class="num">${tok(fmt(x.withKaigo, true))}</td><td class="num">${fmtDiff(x.diff)}</td></tr>`).join("\n")}
 </tbody></table></div>`;
 
   // ---- summary ----
