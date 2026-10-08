@@ -25,6 +25,7 @@ export const REGISTRY = [
   {url:'/column/juminzei-hayamihyo/', answers:1, why:'年収別の住民税（独身・配偶者ありの年額・月額）'},
   {url:'/column/kyokai-kenpo-ryoritsu-ichiran/', answers:1, why:'都道府県別の健康保険料率と本人負担'},
   {url:'/column/hyojun-hoshu-gakuhyo/', answers:1, why:'標準報酬月額表（PV2位。PCは枠を外してページのスクロール1本）'},
+  {url:'/column/furikomi-tesuryo-hikaku/', answers:0, why:'振込手数料の比較（PV1位。答えの列の印は付けず、PC の見出し sticky・見出し行・1行の高さだけを見る）'},
   {url:'/tedori/', answers:1, why:'額面→手取りの早見表'},
   {url:'/furusato/', answers:2, why:'上限額の早見表／自己負担の算術例'},
   {url:'/jidoshazei/', answers:1, why:'排気量別の年額（新税率）'},

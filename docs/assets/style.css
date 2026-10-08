@@ -784,6 +784,8 @@ html.ss-lock, html.ss-lock body { overflow: hidden; }
 /* 金額セルの注記は折り返す（2026-10-01: 注記が nowrap のまま列を押し広げ、PC でも「3万円以上」の列が枠外に出た）。金額そのものは折り返さない */
 table td .cell-note { display: block; white-space: normal; font-size: 12px; line-height: 1.45; color: var(--sub); text-align: left; min-width: 6em; }
 .fee-table td:first-child { min-width: 8.5em; }
+/* 金額列の見出し（3万円未満／3万円以上）は折らない。金額の列を細くすると PC で「3万円以／上」に割れた（2026-10-08 C班からの引き継ぎ） */
+.fee-table th:nth-child(2), .fee-table th:nth-child(3) { white-space: nowrap; }
 @media (max-width: 600px) { .fee-table td:first-child { min-width: 6.5em; } .fee-table td:nth-child(4) { white-space: normal; } }
 .fee-table .flat { color: var(--sub); }
 .fee-table .step { color: var(--warn-ink); font-weight: 700; background: var(--warn-bg); }
@@ -1237,10 +1239,23 @@ main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width
    検査: tests/layout/table-measure.mjs（数値の列が1つも見えない表／th[data-answer] の列が初期表示で隠れる表を落とす。全幅）。
    (1) 長い表は見出し行をページのスクロールに付ける。横スクロール枠（overflow-x:auto）は sticky の基準になってしまい
        見出しが付いてこない（住民税の早見表は見出しの無い数字が4,000px続いた）。PC幅では表は本文の列に収まる
-       （table-hscroll-desktop が保証）ので、枠を clip にして sticky をページに効かせる。--site-header-h は empty-state.js が実測して入れる。 */
+       （table-hscroll-desktop が保証）ので、枠を clip にして sticky をページに効かせる。--site-header-h は empty-state.js が実測して入れる。
+       源泉徴収税額表（.gensen-monthly-table。行と列の見出しを固定した2次元の表）は意図した縦の枠なので除く。 */
 @media (min-width: 1024px) {
-  main .scroll-wrap:not([data-wide="ok"]):not(.table-cue ~ .scroll-wrap):has(> table > thead):has(> table > tbody > tr:nth-child(15)) { overflow: clip; }
-  main .scroll-wrap:not([data-wide="ok"]):not(.table-cue ~ .scroll-wrap):has(> table > tbody > tr:nth-child(15)) > table > thead th { position: sticky; top: var(--site-header-h, 61px); z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
+  main .scroll-wrap:not([data-wide="ok"]):not(.table-cue ~ .scroll-wrap):not(.gensen-monthly-table):has(> table :is(thead, tr:first-child > th[scope="col"])):has(> table > tbody > tr:nth-child(15)) { overflow: clip; }
+  /* 振込手数料の比較（PV1位）の .fee-scroll も同じ（見出し「3万円未満／3万円以上」が送ると消えていた） */
+  main .fee-scroll:not([data-wide="ok"]):has(> table :is(thead, tr:first-child > th[scope="col"])):has(> table > tbody > tr:nth-child(15)) { overflow: clip; }
+  main .fee-scroll:not([data-wide="ok"]):has(> table > tbody > tr:nth-child(15)) > table :is(thead th, tr:first-child > th[scope="col"]) { top: var(--site-header-h, 61px); box-shadow: inset 0 -1px 0 var(--line); }
+  main .scroll-wrap:not([data-wide="ok"]):not(.table-cue ~ .scroll-wrap):not(.gensen-monthly-table):has(> table > tbody > tr:nth-child(15)) > table :is(thead th, tr:first-child > th[scope="col"]) { position: sticky; top: var(--site-header-h, 61px); z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
+}
+/* 見出しを sticky にした表は罫線を separate で描く。collapse のままだと Chromium が、見出しの下に送った行の文字を
+   見出しの上端に重ねて描く（振込手数料の比較で注記の文字が見出しの上に滲んだ。1280px 実測）。
+   上と左の線を消して右と下だけにし、見た目は collapse と同じ1本線に保つ（外枠は .scroll-wrap / .fee-scroll の枠） */
+@media (min-width: 1024px) {
+  main :is(.scroll-wrap,.fee-scroll):not([data-wide="ok"]):not(.gensen-monthly-table):has(> table > tbody > tr:nth-child(15)) > table { border-collapse: separate; border-spacing: 0; }
+  main :is(.scroll-wrap,.fee-scroll):not([data-wide="ok"]):not(.gensen-monthly-table):has(> table > tbody > tr:nth-child(15)) > table :is(td, th) { border-top-width: 0; border-left-width: 0; }
+  main .fee-scroll:not([data-wide="ok"]):has(> table > tbody > tr:nth-child(15)) > table tr > :last-child { border-right-width: 0; }
+  main .fee-scroll:not([data-wide="ok"]):has(> table > tbody > tr:nth-child(15)) > table tr:last-child > * { border-bottom-width: 0; }
 }
 /* (1b) 標準報酬月額表（PV2位）: PC では 640px の内側スクロール枠を外し、ページのスクロール1本で見出し行を付ける（PC主レビュー 中5）。
    枠と「全50等級を広げて表示」はスマホ（1023px以下）だけに残す。案内文（枠の中でスクロール…）も PC では出さない */
@@ -1265,7 +1280,8 @@ main :is(.scroll-wrap,.retention-table) :is(td, th):not(.pr-block *) { min-width
    4列の結果表で「合計」が、8列の付与日数表で後半の年数が画面外に出ていた。見出しの .num は語の切れ目で折る */
 @media (max-width: 600px) {
   main :is(.scroll-wrap,.retention-table) :is(td.num, th.num):not(.pr-block *) { min-width: calc(3em + 12px); padding-left: 6px; padding-right: 6px; }
-  .num-nowrap-sm thead th.num { white-space: normal; }
+  /* 金額の見出しは折ってよい（改行禁止の見出しが 335px になり、外形標準課税の比較表で金額が全部画面外に出た）。語の途中では割らない */
+  :is(.num-nowrap,.num-nowrap-sm) thead th.num { white-space: normal; }
   /* 2列の表は横に送らせない（印紙の第17号: 左列が幅の2/3を取り、右寄せの税額が隠れた53pxに入った）。左列に上限 */
   main .scroll-wrap > table:not(:has(tr > :nth-child(3))) tr > :first-child { width: 56%; }
   /* 数の行列（有給の付与日数表など。値が「10日」程度の短い表）は、枠に収める */

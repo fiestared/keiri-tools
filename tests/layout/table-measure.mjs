@@ -3,8 +3,8 @@
  * the table looked empty or read as 「1」「2」; 住民税の早見表: 「独身・月額」 254px off-screen). A cue is not visibility.
  * Runs in the page (page.evaluate) at every width (PC is 96% of sessions; on PC the desktop gate already keeps tables
  * inside the column, so this mainly guards data-wide="ok" tables there and every scrolling table on phones).
- *  - table-no-number-visible: a table whose value columns (any column after the first in which most body cells hold
- *    a digit) exist, but not one of them shows its first number inside the visible part of its horizontal clip box.
+ *  - table-no-number-visible: a table whose value columns (any column after the first in which most body cells are
+ *    td.num or numeric-only) exist, but not one of them shows its first number inside the visible part of its horizontal clip box.
  *  - answer-column-hidden: a column marked <th data-answer> (the column the reader came for) is displayed but its
  *    header or first value is not fully inside the visible part of the clip box at first paint.
  *  - answer-column-missing: a table that marks answer columns shows none of them at this width.
@@ -27,8 +27,11 @@ export function measureTables() {
   const cols=Math.max(0,...rows.map(r=>r.length?r.at(-1).c+1:0));if(cols<2||!body.length)continue;
   let numericCols=0,shown=0;
   for(let c=1;c<cols;c++){const cells=body.map(r=>r.find(x=>x.c===c&&x.cell.tagName==='TD')?.cell).filter(e=>e&&vis(e));
-   if(cells.length<1||cells.filter(e=>/\d/.test(e.textContent)).length*2<cells.length)continue;numericCols++;
-   const first=cells.find(e=>/\d/.test(e.textContent));const rs=firstNumber(first);if(rs&&inside(rs,box))shown++;}
+   // A value column: most body cells are td.num or numeric-only (amounts, rates, days). Prose cells that merely cite
+   // 「440条1項」 are not values (kessan-kokoku / maeukekin would otherwise count as number columns).
+   const isValue=e=>/\d/.test(e.textContent)&&(e.classList.contains('num')||/^[\s\d,.％%円万億千年月日人倍歳口件等級〜～–—+\-−±¥￥()（）]+$/.test(e.textContent.trim()));
+   if(cells.length<1||cells.filter(isValue).length*2<cells.length)continue;numericCols++;
+   const first=cells.find(isValue);const rs=firstNumber(first);if(rs&&inside(rs,box))shown++;}
   if(numericCols&&!shown)add('table-no-number-visible',t,{numericCols,clip:[Math.round(box.left),Math.round(box.right)]});
   const marked=[...t.querySelectorAll('th[data-answer]')];if(!marked.length)continue;
   const shownMarks=marked.filter(vis);if(!shownMarks.length){add('answer-column-missing',t);continue;}
