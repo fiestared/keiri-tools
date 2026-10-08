@@ -72,7 +72,7 @@ for(const width of only==='fee'?[320]:[1280,390]){
  }
  if(!only||only==='grade'){
   await page.goto(app.base+'/column/hyojun-hoshu-gakuhyo/');
-  for(const [value,grade] of [['300000','22'],['289999','21'],['290000','22'],['310000','23'],['0','1'],['62999','1'],['63000','2'],['1355000','50'],['9999999','50'],['３００，０００','22']]){
+  for(const [value,grade] of [['300000','22'],['289999','21'],['290000','22'],['310000','23'],['634999','34'],['635000','35'],['664999','35'],['665000','36'],['0','1'],['62999','1'],['63000','2'],['1355000','50'],['9999999','50'],['３００，０００','22']]){
    await page.locator('#grade-amount').fill(value);await page.keyboard.press('Enter');const matched=await page.locator('#grade-table .is-matched td').first().innerText();check(matched===grade,'grade boundary '+value);
    check(await page.locator('#grade-table tr').count()===51,'all 50 grades retained');log.push({width,value,grade:matched,summary:await page.locator('#grade-summary').innerText()});
   }
