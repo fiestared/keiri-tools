@@ -70,13 +70,31 @@ export function parseDt(s) {
   return Number.isFinite(t) ? new Date(t) : null;
 }
 
-/** 締切までの残り日数。null は「締切の記載が無い」＝日数で切れない */
+/**
+ * 締切を日本時間の「日・時刻」に直す。★0:00ちょうどの締切は「前日の24:00」として扱う。
+ * 2026-10-08 第3周の UI/UX レビュー: jGrants の締切が翌日 0:00（JST）の16件で「10/9(金)まで・あと1日」と出ていた。
+ * カードの説明文は「10月8日 23時59分」なので、日付だけを見ると1日遅く見え、締切を逃させる。
+ * 17:00・12:00 締切（95件）も時刻が出ていなかった。
+ * 端末の時刻帯に依らないよう、JST（+9h）で読む。
+ */
+function jstParts(d) {
+  const x = new Date(d.getTime() + 9 * 3600000);
+  return { y: x.getUTCFullYear(), m: x.getUTCMonth(), d: x.getUTCDate(), wd: x.getUTCDay(),
+    h: x.getUTCHours(), mi: x.getUTCMinutes(), s: x.getUTCSeconds() };
+}
+export function deadlineParts(end) {
+  const p = jstParts(end);
+  if (p.h === 0 && p.mi === 0 && p.s === 0) return { ...jstParts(new Date(end.getTime() - 1)), time: '24:00' };
+  const time = p.h === 23 && p.mi === 59 ? '' : `${p.h}:${String(p.mi).padStart(2, '0')}`;
+  return { ...p, time };
+}
+
+/** 締切までの残り日数（日本時間の暦日。0:00締切は前日の締切として数える）。null は「締切の記載が無い」＝日数で切れない */
 export function daysLeft(row, today) {
   const end = parseDt(row.acceptance_end_datetime);
   if (!end) return null;
-  const d0 = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-  const d1 = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-  return Math.round((d1 - d0) / 86400000);
+  const e = deadlineParts(end), t = jstParts(today);
+  return Math.round((Date.UTC(e.y, e.m, e.d) - Date.UTC(t.y, t.m, t.d)) / 86400000);
 }
 
 /**
@@ -139,7 +157,8 @@ export function fmtDeadline(row, today = new Date()) {
   const end = parseDt(row.acceptance_end_datetime);
   const n = daysLeft(row, today);
   if (!end || n === null) return { text: '締切の記載なし', cls: '' };
-  const date = `${end.getMonth() + 1}/${end.getDate()}(${'日月火水木金土'[end.getDay()]})`;
+  const e = deadlineParts(end);
+  const date = `${e.m + 1}/${e.d}(${'日月火水木金土'[e.wd]})${e.time ? ' ' + e.time : ''}`;
   if (!isOpen(row, today)) return { text: `${date}締切済み`, cls: '' };
   if (n === 0) return { text: `本日 ${date}締切`, cls: 'hj-soon' };
   return { text: `${date}まで・あと${n}日`, cls: n <= 7 ? 'hj-near' : '' };

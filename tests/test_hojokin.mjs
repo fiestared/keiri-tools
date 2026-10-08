@@ -49,6 +49,15 @@ eq(daysLeft(row({ acceptance_end_datetime: '2026-08-12T08:00:00.000Z' }), T), 0,
 eq(daysLeft(row({ acceptance_end_datetime: '2026-08-13T08:00:00.000Z' }), T), 1, '翌日は1日');
 eq(daysLeft(row({ acceptance_end_datetime: '2026-08-11T08:00:00.000Z' }), T), -1, '昨日は-1日');
 eq(daysLeft(row({ acceptance_end_datetime: null }), T), null, '記載が無ければ null');
+// ★2026-10-08 第3周: 翌日 0:00（JST）の締切が「翌日まで・あと1日」と1日遅く見えた（16件）。0:00 は前日の24:00
+//   T = 2026-08-12(水) 10:00 JST
+eq(daysLeft(row({ acceptance_end_datetime: '2026-08-12T15:00:00Z' }), T), 0, '翌日0:00(JST)締切は当日扱い（0日）');
+eq(fmtDeadline(row({ acceptance_end_datetime: '2026-08-12T15:00:00Z' }), T).text, '本日 8/12(水) 24:00締切', '0:00締切は前日の24:00と表示');
+eq(fmtDeadline(row({ acceptance_end_datetime: '2026-08-13T15:00:00Z' }), T).text, '8/13(木) 24:00まで・あと1日', '翌々日0:00締切は翌日24:00');
+eq(fmtDeadline(row({ acceptance_end_datetime: '2026-08-13T14:59:00Z' }), T).text, '8/13(木)まで・あと1日', '23:59締切は時刻を出さない');
+eq(fmtDeadline(row({ acceptance_end_datetime: '2026-08-13T08:00:00Z' }), T).text, '8/13(木) 17:00まで・あと1日', '17:00締切は時刻を出す');
+eq(fmtDeadline(row({ acceptance_end_datetime: '2026-08-13T03:00Z' }), T).text, '8/13(木) 12:00まで・あと1日', '12:00締切（秒なしの形式）');
+eq(daysLeft(row({ acceptance_end_datetime: '2026-08-12T15:00:01Z' }), T), 1, '0:00:01 は翌日扱い（境界の外）');
 ok(isOpen(row({ acceptance_end_datetime: '2026-08-12T08:00:00.000Z' }), T),
   '★当日締切はまだ公募中（当日を切ると、今日出す人を取りこぼす）');
 ok(!isOpen(row({ acceptance_end_datetime: '2026-08-11T08:00:00.000Z' }), T),

@@ -341,6 +341,7 @@ const ORDER = [
   "fuyo-teate",                // 扶養手当 14,800/月＋家族手当 2,400（keyword_demand.py 2026-10-06 実測。title/h1 0件・節保有は nenshu-no-kabe の FAQ1問）。在庫 topic_stock normal（season=nencho_kaisei）の未着手最大。★核: 会社の賃金規程で決まる手当で、所得税は給与所得（国税庁No.2508）・健保/厚年の報酬・雇保/徴収法の賃金に含む、割増賃金の基礎から外せるのは扶養家族数に応じて算定したものだけ（労基法37条5項・鳥取労働局）、最低賃金の比較では算入しない、有期契約社員への不支給を不合理とした最判令和2年10月15日、廃止は労契法9条・10条。統計は令和7年就労条件総合調査（17.6千円）と人事院令和6年表12。割増賃金の表は zangyodai-keisan、社保/税の扶養は shakai-hoken-fuyo-joken・fuyo-kojo-shinkokusho に文脈リンクで渡す
   "kiso-kojo-shinkokusho",    // 基礎控除申告書 14,800/月（keyword_demand.py 2026-10-07 午後便で実測。配偶者控除等申告書・所得金額調整控除申告書は同じ兼用様式なので1本）。被覆: 節保有は nenmatsu-chosei-kakikata の②節のみ（縮めずに相互リンク）・<title> 0件。控除額の表は kiso-kojo、配偶者控除の額は haigusha-tokubetsu-kojo へ渡す
   "nenmatsu-chosei-taishogai", // 年末調整の対象とならない人 1,900/月（「年末調整 退職者」で 2026-10-07 司令塔が実測。MF1便・新規）。被覆: slug taishogai 0件・<title>「年末調整の対象」0件。nenmatsu-chosei-kanpukin の節「そもそも年末調整の対象外の人」は表のみで、本記事へリンクで譲る。核: 令和8年分「年末調整のしかた」の対象とならない6区分、中途退職の4例外（パート等は令和8年分136万円以下・あらまし令和8年版は123万円のまま）、対象給与は支給日基準で未払も含む、速算表注の課税給与所得金額18,050,000円超、外国人も居住者なら同じ表で判定
+  "nenmatsu-chosei-hitsuyo-shorui",  // 年末調整の必要書類 6,600/月（「年末調整 必要書類」2026-10-08 実測 5,280＋1,320。MF1便・新規。誰が何を出すかの一覧。書き方は nenmatsu-chosei-kakikata、保険料の証明書の要否の条文は hokenryo-kojo-shinkokusho へ渡す）
   "nenmatsu-chosei-denshika",  // 年末調整の電子化 1,300/月（「年末調整 電子化」2026-10-07 実測 1,040＋260。MF2便・新規。被覆は hojin-jigyo-gaikyo-setsumeisho の欄名だけ）
   "doitsu-rodo-doitsu-chingin", // 同一労働同一賃金 11,840/月（同一労働同一賃金とは 1,040・パートタイム有期雇用労働法 1,040・不合理な待遇差 56 ＝クラスタ 13,976）。8条=不合理な待遇の禁止／9条=差別的取扱いの禁止で別物。18条2項の公表対象列挙に8条は入っていない。令和8年10月1日から則2条1項の特定事項が4→5（新4号=法14条2項の説明を求められる旨）
   "kasuhara",                   // カスハラ 32,400/月（カスタマーハラスメント 26,480・カスハラ 対策 1,920・カスハラ 定義 800・カスハラ 義務化 704・カスタマーハラスメント 定義 384・カスタマーハラスメント 義務化 72 ＝クラスタ 62,760）。令和8年10月1日施行＝執筆時点は未施行。新設33条1項が措置義務／パワハラの30条の2は同日に31条へ番号だけ変わる（本文はハッシュ一致）。中小の猶予は無い（附則に「中小」0回）。義務違反に罰則は無く、45条1項の報告懈怠が51条の過料20万円
@@ -644,7 +645,7 @@ const CATEGORIES = [
       "furusato-nozei-keisan", "kifukin-kojo",
       "teigaku-genzei-reiwa8",
       "shotokuzei-ritsu",
-      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-denshika", "kiso-kojo-shinkokusho",
+      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "kiso-kojo-shinkokusho",
       "shotoku-kingaku-chosei-kojo",
       "hokenryo-kojo-shinkokusho", "ideco-nenmatsu-chosei", "jutaku-kojo-shinkokusho", "fuyo-kojo-shinkokusho", "haigusha-tokubetsu-kojo", "tokutei-shinzoku-tokubetsu-kojo", "gensen-choshu-toha", "gensen-choshuhyo-mikata", "kyuyo-shotoku-kojo", "gensen-zeigakuhyo-mikata", "gensen-zeigakuhyo-r09", "gensen-choshubo",
       "hoteichosho-goukeihyo", "kyuyo-shiharai-hokokusho", "shiharai-chosho", "shakai-hokenryo-kojo", "seimei-hokenryo-kojo", "jishin-hokenryo-kojo", "jutaku-loan-kojo-yoken", "iryohi-kojo-ikura-kara", "tokutei-shishutsu-kojo", "zasson-kojo",
@@ -1060,13 +1061,28 @@ if (uncategorized.length) {
 const catNav = groups.map((g) =>
   `    <a href="#cat-${g.id}"><span class="cat-label">${g.name === "健康保険・雇用保険・労災保険の給付" ? g.name.split("・").map((part, i) => `<span class="keep-phrase">${esc(part)}${i < 2 ? "・" : ""}</span>`).join("") : esc(g.name)}</span><span class="cat-count">(${g.items.length})</span></a>`).join("\n");
 
-const sections = groups.map((g) => `  <section class="cat" id="cat-${g.id}" data-cat>
+// ★カテゴリごとに需要の大きい順の先頭 FIRST_N 本だけを開いて出し、残りは「残りN本を表示」に畳む（2026-10-08 UI/UXレビュー 低）。
+//   429本を全部開いて並べていたので、一覧は PC で約38,000px・スマホで約89,900px あり、
+//   下のカテゴリ（固定資産・補助金の経理・相続）まで目で辿り着けなかった。
+//   畳んだ記事も DOM に残す（リンク・検索の data-s はそのまま）。検索中はページ内の script が全部開く。
+const FIRST_N = 8;
+const sections = groups.map((g) => {
+  const head = g.items.slice(0, FIRST_N), rest = g.items.slice(FIRST_N);
+  const more = rest.length ? `
+    <details class="post-more">
+      <summary>「${esc(g.name)}」の残り${rest.length}本を表示</summary>
+      <div class="post-list">
+${rest.map((a) => card(a, "        ")).join("\n")}
+      </div>
+    </details>` : "";
+  return `  <section class="cat" id="cat-${g.id}" data-cat>
     <h2>${esc(g.name)}<span class="cat-n">(${g.items.length})</span></h2>
     <p class="cat-desc">${esc(g.desc)}</p>
     <div class="post-list">
-${g.items.map((a) => card(a, "      ")).join("\n")}
-    </div>
-  </section>`).join("\n");
+${head.map((a) => card(a, "      ")).join("\n")}
+    </div>${more}
+  </section>`;
+}).join("\n");
 
 // ★索引は開いた状態で出す（2026-09-30）。閉じた「▶記事のカテゴリから探す」は
 //   スマホで押されず、第一画面が先頭カテゴリの記事だけになっていた（レビュー grok §4）。

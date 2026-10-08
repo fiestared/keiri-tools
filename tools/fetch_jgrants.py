@@ -74,11 +74,24 @@ def fetch_detail(sid):
     return res[0] if res else None
 
 
+# ★罫線・記号だけの並び（「-----…」「＊＊＊＊」）。公式の本文は区切りに罫線を使うので、
+#   そのまま要約にすると一覧の説明が罫線の連続になる（2026-10-08 実測: 持続化補助金・災害支援枠4件）。
+RULE_RE = re.compile(r'[-‐‑–—―−－─━═=＝_＿*＊~～〜・･.。＿#＃+＋<>＜＞]{4,}')
+
+
+def clean_text(t):
+    """罫線を落として空白を詰める。要約・キャッチコピーの両方に使う（refilter で既存データにも掛ける）"""
+    if not t:
+        return t
+    t = WS_RE.sub(' ', RULE_RE.sub(' ', t)).strip()
+    return t or None
+
+
 def plain(html, limit=220):
     """detail は HTML。★そのまま画面に入れない（styleつきのタグが混ざる）。テキストにして要約に使う"""
     if not html:
         return None
-    t = WS_RE.sub(' ', TAG_RE.sub('', html)).strip()
+    t = clean_text(TAG_RE.sub(' ', html))
     if not t:
         return None
     return t[:limit] + ('…' if len(t) > limit else '')
@@ -130,6 +143,10 @@ JUNK_RULES = [
     ('事業完了後の手続き様式', re.compile(r'事業完了後'), re.compile(r'完了後[^。]{0,20}手続き用')),
     ('採択後の届出様式', re.compile(r'(撤回|中止|変更|廃止|辞退)届'), None),
     ('応募用ではない手続きフォーム', re.compile(r'交付申請等|実績報告|変更申請|廃止申請|中止申請'), None),
+    # ★2026-10-08 追加（UI/UXレビュー 中10）: 「令和７年度 救命救急センター運営費補助金（消費税報告）」等3件が
+    #   締切 2040-12-31 で並び続けていた。交付を受けた医療機関が後から出す消費税の報告様式で、公募ではない。
+    #   「消費税」を含む公募（インボイス対応の支援等）は残す。落とすのは「消費税（等）報告」だけ。
+    ('交付後の消費税報告の様式', re.compile(r'消費税(?:等|額)?(?:の)?報告'), None),
     ('練習用のダミー（補助金の支払いが無い）', re.compile(r'練習用'),
      re.compile(r'実際に補助金が支払われることはありません')),
 ]
@@ -179,7 +196,7 @@ def enrich(seen, verbose=False):
             if k == 'detail':
                 row['summary'] = plain(v)      # HTMLはテキストにして要約に使う
                 continue
-            row[k] = v
+            row[k] = clean_text(v) if k == 'subsidy_catch_phrase' and isinstance(v, str) else v
         filled += 1
         if verbose and i % 25 == 0:
             print(f'  詳細 {i}/{total}', file=sys.stderr)
@@ -197,6 +214,8 @@ def refilter():
     known = {e['id'] for e in excluded}
     keep = []
     for r in doc['subsidies']:
+        for k in ('summary', 'subsidy_catch_phrase'):
+            r[k] = clean_text(r.get(k))
         reason = junk_reason(r)
         if reason is None:
             keep.append(r)
