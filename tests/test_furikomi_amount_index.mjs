@@ -30,7 +30,7 @@ const block = html.slice(start, end);
 // --- 2. 正本の金額が、過不足なく行になっていること --------------------------
 // ★「在ること」だけでは足りない。**表にしか無い金額**＝改定で消えたのに残った行を落とす。
 const want = amountMap(loadBanks());
-const rowRe = /<tr><td><b>(\d+)円(?:<br>[^<]*)?<\/b><\/td><td>(.*?)<\/td><\/tr>/g;
+const rowRe = /<tr><th scope="row"><b>(\d+)円(?:<br>[^<]*)?<\/b><\/th><td>(.*?)<\/td><\/tr>/g;
 const got = new Map();
 for (const m of block.matchAll(rowRe)) got.set(Number(m[1]), m[2]);
 

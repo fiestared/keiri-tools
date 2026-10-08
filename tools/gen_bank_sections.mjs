@@ -145,7 +145,8 @@ export function buildSections(rows) {
     if (list.some(r => r.rawOver === null)) notes.push('横浜銀行の法人EBの他行宛は、3万円未満385円・3万円以上550円です。個人IBの3万円以上は掲載を保留しています');
     notes.push(withBoundary.length
       ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）`
-      : '金額にかかわらず<b>定額</b>');
+      // ★区分名を文に入れる: 「金額にかかわらず定額。」だけだと、どの銀行の話か文単体で読めず、照合で10銀行ぶんが同じ文になった。
+      : `${base}のこの表の料金は、金額にかかわらず<b>定額</b>`);
     out.push(`  <p>${notes.join('。')}。</p>`);
     for (const note of [...new Set(list.filter((x) => x.publicNote).map((x) => x.publicNote))]) {
       out.push(`  <p class="bank-note">${esc(note)}。</p>`);
@@ -170,7 +171,7 @@ export function buildSections(rows) {
         + '金額は表全体の調査時点のものです。<b>お手続き前に各行の公式ページでご確認ください。</b></p>');
     }
   }
-  out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」を確認できた10区分</a>に書いています。</p>');
+  out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」を確認できた11区分</a>に書いています。</p>');
   out.push(END);
   return out.join('\n');
 }
@@ -226,7 +227,8 @@ export function buildAmountIndex(rows) {
   out.push('    <tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th></tr>');
   for (const [amount, list] of m) {
     const cells = list.map((x) => x.fullLabel ? x.name : `${x.name}（${x.range}）`).join('<br>');
-    out.push(`    <tr><td><b>${amount}円</b></td><td>${cells}</td></tr>`);
+    // 金額は行の見出し（th scope="row"）。データのセルではない
+    out.push(`    <tr><th scope="row"><b>${amount}円</b></th><td>${cells}</td></tr>`);
   }
   out.push('  </table>');
   out.push('  <p class="note">この表が扱うのは<b>他行宛・30区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後の料金や、振込以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。主要5行については<a href="#keiro">窓口・ATM・同じ銀行あての実額</a>を別に載せています。それでも合わない場合はこの表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
@@ -265,6 +267,6 @@ if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
     html = put(html, AMT_START, AMT_END, amountIndex, START);
 
     writeFileSync(ARTICLE, html);
-    console.log(`銀行別セクション ${(section.match(/<h3 /g) || []).length}見出し / 逆引き ${(amountIndex.match(/<tr><td><b>/g) || []).length}金額 を書き込みました`);
+    console.log(`銀行別セクション ${(section.match(/<h3 /g) || []).length}見出し / 逆引き ${(amountIndex.match(/<tr><th scope="row"><b>/g) || []).length}金額 を書き込みました`);
   }
 }

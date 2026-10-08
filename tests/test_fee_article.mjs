@@ -74,14 +74,17 @@ const cMin = Math.min(...corp.map((b) => b.over30k));
 const cMax = Math.max(...corp.map((b) => b.over30k));
 const pMin = Math.min(...pers.map((b) => b.over30k));
 const pMax = Math.max(...pers.map((b) => b.over30k));
-// auto20261001-t8-q1: 正本で未確認の5区分を件数の母数から除外する。
-const unconfirmed = new Set(['みずほ銀行（個人・みずほダイレクト）','みずほ銀行（法人・EB）','イオン銀行（個人）','フィンサーバンク（法人・フリープラン）','横浜銀行（個人IB）']);
+// auto20261001-t8-q1: 正本で未確認の区分を件数の母数から除外する。
+// 2026-10-08（rg36 3周目）: みずほ個人・法人EBは 2026-10-08 取得の公式料金表で照合できた（個人110円・法人EB 490円／660円）ので母数に戻す。
+//   未確認のまま除くのは3区分。みずほ法人を除いたままだと、3万円境界のある区分の列挙からみずほ法人が漏れる（照合の high）。
+const unconfirmed = new Set(['イオン銀行（個人）','フィンサーバンク（法人・フリープラン）','横浜銀行（個人IB）']);
 const reviewed = FEES.banks.filter(b=>!unconfirmed.has(b.name));
-assert.equal(reviewed.length,25,'公式資料で照合した25区分');
+assert.equal(reviewed.length,27,'公式資料で照合した27区分');
 const step = reviewed.filter(b=>b.under30k!==b.over30k).length;
-assert.equal(step,10);
+assert.equal(step,11);
 const flat = reviewed.filter(b=>b.under30k===b.over30k).length;
-assert.equal(flat,15);
+assert.equal(flat,16);
+assert.ok(!/照合できた25区分|境界あり10区分|確認できた10区分|未確認の5区分|未確認5区分/.test(HTML),'みずほを未確認として除いた旧集計（25区分・10区分）を残さない');
 
 assert.ok(HTML.includes(`${cMin}円〜${cMax}円`), `法人のレンジ ${cMin}円〜${cMax}円 が本文に無い`);
 assert.ok(HTML.includes(`${pMin}円〜${pMax}円`), `個人のレンジ ${pMin}円〜${pMax}円 が本文に無い`);
