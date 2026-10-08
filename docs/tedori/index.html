@@ -135,11 +135,24 @@
 <section class="hero">
   <h1>手取り計算機</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-16">2026年7月16日</time>（更新日: <time datetime="2026-10-08">2026年10月8日</time>）</p>
-  <p>2026年度の料率・令和8年分の月額表（甲欄）では、東京都の協会けんぽ加入・一般の事業・30歳・甲欄の扶養親族等の数0人で、非課税手当を含まない額面月給30万円なら、住民税を除く手取り月額は<b>249,610円</b>が目安です。この計算機は社会保険料・源泉所得税を差し引き、住民税も概算・実額入力・含めないから選べます。非課税手当がある給与は試算対象外です。</p>
+  <p>額面の月給から、社会保険料・源泉所得税・住民税を引いた手取りを計算します。</p>
 </section>
 
-<div class="card">
+<div class="card fv-form">
   <div class="fee-pair field-pair">
+    <div>
+      <label for="gross">額面の月給（非課税手当がある給与は対象外／円）</label>
+      <input type="number" id="gross" data-example="300000" inputmode="numeric" aria-describedby="gross-hint">
+      <span id="gross-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b>税引き前の総支給額（<a href="#input-help">含めるもの</a>）</span>
+    </div>
+    <div>
+      <label for="dependents">扶養親族等の数</label>
+      <input type="number" id="dependents" value="0" min="0" max="20" inputmode="numeric" aria-describedby="dependents-hint">
+      <span id="dependents-hint" class="hint">扶養控除等申告書の人数。障害者・寡婦・ひとり親・勤労学生は加算あり（<a href="#input-help">数え方</a>）</span>
+    </div>
+  </div>
+
+  <div class="fee-pair field-pair fv-cols-pref-age-wide">
     <div>
       <label for="pref">勤務先の都道府県</label>
       <select id="pref"></select>
@@ -147,22 +160,15 @@
     <div>
       <label for="age">年齢</label>
       <input type="number" id="age" value="30" min="15" max="74" step="1" required inputmode="numeric" aria-describedby="age-help age-error">
-      <p class="hint" id="age-help">この計算機の入力範囲は15〜74歳です。70歳以上の厚生年金保険料は0円として計算します（高齢任意加入は対象外）</p>
+      <p class="hint" id="age-help">15〜74歳</p>
       <p id="age-error" class="warn" hidden></p>
     </div>
+    <div>
+      <label for="gyoshu">業種</label>
+      <select id="gyoshu" aria-describedby="gyoshu-hint"></select>
+      <span id="gyoshu-hint" class="hint">雇用保険料率だけが変わります</span>
+    </div>
   </div>
-
-  <label for="gross">額面の月給（非課税手当がある給与は対象外／円）</label>
-  <input type="number" id="gross" data-example="300000" inputmode="numeric" aria-describedby="gross-hint">
-      <span id="gross-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b>基本給＋残業手当など、税引き前の総支給額。この計算機は非課税通勤手当等を含まない給与が対象です。非課税手当がある場合は、社会保険と税の対象額を分けられないため試算対象外です。</span>
-
-  <label for="dependents">扶養親族等の数</label>
-  <input type="number" id="dependents" value="0" min="0" max="20" inputmode="numeric" aria-describedby="dependents-hint">
-      <span id="dependents-hint" class="hint">扶養控除等申告書に基づく扶養親族等の数を入力。令和8年分は源泉控除対象配偶者＋源泉控除対象親族（19〜22歳の特定親族のうち合計所得100万円以下も含む）が基本です。ただし、相互適用などにより扶養控除等申告書に記載がないものとされる源泉控除対象配偶者・源泉控除対象親族は除きます。本人の障害者・寡婦・ひとり親・勤労学生は、扶養控除等申告書に該当の記載があれば各1人加算。同一生計配偶者・扶養親族の障害者（16歳未満も対象）は各1人、同居特別障害者はさらに1人を加算。加算には申告書への記載が必要で、国外居住親族は親族関係書類（30歳以上70歳未満の留学者は留学を証する書類も）の添付または提示がある場合に限ります。該当なしは0。住民税はこの人数からの概算ではなく通知書の月額を確認してください。</span>
-
-  <label for="gyoshu">業種</label>
-  <select id="gyoshu" aria-describedby="gyoshu-hint"></select>
-      <span id="gyoshu-hint" class="hint">雇用保険料率だけが業種で変わります（健康保険・厚生年金は変わりません）</span>
 
   <fieldset style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:14px">
     <legend style="font-weight:700;font-size:14px;padding:0 6px">住民税の扱い</legend>
@@ -201,6 +207,14 @@
 </ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../bonus-tedori/">ボーナス手取り計算機</a></li><li><a href="../shakai-hoken/">社会保険料 計算機</a></li><li><a href="../gensen-choshu/">源泉徴収税額 計算機</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
 <h2 id="tsukaikata">使い方と注意点</h2>
+  <p id="lead-detail">2026年度の料率・令和8年分の月額表（甲欄）では、東京都の協会けんぽ加入・一般の事業・30歳・甲欄の扶養親族等の数0人で、非課税手当を含まない額面月給30万円なら、住民税を除く手取り月額は<b>249,610円</b>が目安です。この計算機は社会保険料・源泉所得税を差し引き、住民税も概算・実額入力・含めないから選べます。非課税手当がある給与は試算対象外です。</p>
+  <h3 id="input-help">入力欄の詳しい説明</h3>
+  <ul class="fv-input-help">
+    <li><b>額面の月給</b>：基本給＋残業手当など、税引き前の総支給額。この計算機は非課税通勤手当等を含まない給与が対象です。非課税手当がある場合は、社会保険と税の対象額を分けられないため試算対象外です。</li>
+    <li><b>扶養親族等の数</b>：扶養控除等申告書に基づく扶養親族等の数を入力。令和8年分は源泉控除対象配偶者＋源泉控除対象親族（19〜22歳の特定親族のうち合計所得100万円以下も含む）が基本です。ただし、相互適用などにより扶養控除等申告書に記載がないものとされる源泉控除対象配偶者・源泉控除対象親族は除きます。本人の障害者・寡婦・ひとり親・勤労学生は、扶養控除等申告書に該当の記載があれば各1人加算。同一生計配偶者・扶養親族の障害者（16歳未満も対象）は各1人、同居特別障害者はさらに1人を加算。加算には申告書への記載が必要で、国外居住親族は親族関係書類（30歳以上70歳未満の留学者は留学を証する書類も）の添付または提示がある場合に限ります。該当なしは0。住民税はこの人数からの概算ではなく通知書の月額を確認してください。</li>
+    <li><b>年齢</b>：この計算機の入力範囲は15〜74歳です。70歳以上の厚生年金保険料は0円として計算します（高齢任意加入は対象外）</li>
+    <li><b>業種</b>：雇用保険料率だけが業種で変わります（健康保険・厚生年金は変わりません）</li>
+  </ul>
   <div class="callout">
     <b>住民税は「去年の給料」にかかります</b>
     住民税は今の月給ではなく<b>前年の所得</b>で決まり（地方税法32条1項）、<b>6月から翌年5月まで</b>毎月天引きされます（321条の5第1項）。だから<b>今の額面からは住民税は出せません</b>。新卒1年目は前年に所得がないため引かれず、<b>2年目の6月から</b>引かれ始めて手取りが急に減ります。この計算機の「概算」は、<b>この年収が前年も続いたと仮定した2年目以降の目安</b>です。正確な額は給与明細の住民税額を入力してください。

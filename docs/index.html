@@ -73,36 +73,15 @@
     </div>
   </section>
 
-  <div class="section-head" id="domains">
-    <h2 id="domains-h">分野から記事・ツールを探す</h2>
-  </div>
-  <nav class="domain-nav" data-bridge="top-strip" data-from="(top)" aria-labelledby="domains-h">
-    <a class="db-card" href="#tools" data-domain="keiri">
-      <b>事業のお金・経理</b>
-      <span class="db-desc">源泉・振込・社会保険。会社と個人事業主の実務計算と、条文にあたった解説。</span>
-      <span class="db-go">この分野を見る →</span>
-    </a>
-    <a class="db-card" href="toushi/" data-domain="shisan">
-      <b>個人のお金・資産形成</b>
-      <span class="db-desc">NISAの残り枠・積立・iDeCoの出口。制度と税金の側から、銘柄のおすすめなしで計算します。</span>
-      <span class="db-go">この分野を見る →</span>
-    </a>
-    <a class="db-card" href="hojokin/" data-domain="hojokin">
-      <b>補助金・事業支援</b>
-      <span class="db-desc">いま公募中の補助金を締切が近い順で検索。もらった後の経理・税務まで。</span>
-      <span class="db-go">この分野を見る →</span>
-    </a>
-  </nav>
-
   <div class="section-head" id="tools">
     <h2>ツール</h2>
     <span class="hint">登録不要・すぐ使えます</span>
-  </div>
-  <div class="persona-bar" id="persona-bar">
-    <span class="p-label">あなたに合わせて表示:</span>
-    <button type="button" data-p="kojin" aria-pressed="false">会社員・個人</button>
-    <button type="button" data-p="jigyo" aria-pressed="false">個人事業主・フリーランス</button>
-    <button type="button" data-p="keiri" aria-pressed="false">経理担当</button>
+    <div class="persona-bar" id="persona-bar">
+      <span class="p-label">あなたに合わせて表示:</span>
+      <button type="button" data-p="kojin" aria-pressed="false">会社員・個人</button>
+      <button type="button" data-p="jigyo" aria-pressed="false">個人事業主・フリーランス</button>
+      <button type="button" data-p="keiri" aria-pressed="false">経理担当</button>
+    </div>
   </div>
   <section id="favorite-tools" class="retention-panel" data-retention-control hidden aria-labelledby="favorite-heading">
     <h2 id="favorite-heading">経理の仕事を再開する</h2>
@@ -642,16 +621,40 @@
     </div>
   </section>
 
+  <!-- 分野の入口（2026-10-08 第4便F班）: 最初の画面にツールのカードを出すため、ツールの棚の下へ移した。文言は変えていない。
+       対象者スイッチは .tcat をこの見出し（#domains）の前へ差し込む。順番を変えるときは下のスクリプトも見ること -->
+  <div class="section-head" id="domains">
+    <h2 id="domains-h">分野から記事・ツールを探す</h2>
+  </div>
+  <nav class="domain-nav" data-bridge="top-strip" data-from="(top)" aria-labelledby="domains-h">
+    <a class="db-card" href="#tools" data-domain="keiri">
+      <b>事業のお金・経理</b>
+      <span class="db-desc">源泉・振込・社会保険。会社と個人事業主の実務計算と、条文にあたった解説。</span>
+      <span class="db-go">この分野を見る →</span>
+    </a>
+    <a class="db-card" href="toushi/" data-domain="shisan">
+      <b>個人のお金・資産形成</b>
+      <span class="db-desc">NISAの残り枠・積立・iDeCoの出口。制度と税金の側から、銘柄のおすすめなしで計算します。</span>
+      <span class="db-go">この分野を見る →</span>
+    </a>
+    <a class="db-card" href="hojokin/" data-domain="hojokin">
+      <b>補助金・事業支援</b>
+      <span class="db-desc">いま公募中の補助金を締切が近い順で検索。もらった後の経理・税務まで。</span>
+      <span class="db-go">この分野を見る →</span>
+    </a>
+  </nav>
+
+
   <div class="section-head" id="column-head">
     <h2>新着コラム</h2>
     <span class="hint"><a href="column/" style="color:var(--accent);text-decoration:none">すべて見る →</a></span>
   </div>
   <div class="post-list">
-    <a href="column/shotoku-kojo-ichiran/">
+    <a href="column/taishokugo-juminzei/">
       <div class="p-date">2026.10.08</div>
       <div>
-        <div class="p-title">所得控除の一覧【令和8年分】16種類の額と条文、年末調整で受けられる13種類・確定申告が要る3種類</div>
-        <div class="p-desc">令和8年分の所得税の所得控除は、所得税法72条から86条までに定める16種類です。このうち雑損控除・医療費控除・寄附金控除の3種類は年末調整では受けられず、確定申告で受けます。16種類の条文番号、令和8年分の控除額、年末調整でどの申告書に書くか、住民税では15種類で額が違う控除を表にまとめました。</div>
+        <div class="p-title">退職後の住民税はどうなる？退職月で変わる払い方・納付書が届く時期・翌年度の課税</div>
+        <div class="p-desc">退職すると、給与から天引きされていた住民税の残りは、退職日・本人の申出・最後の給与や退職手当等の額・転職先での継続の有無で納め方が分かれます。地方税法321条の5第2項の区分、普通徴収の納税通知書の届き方と納期、転職先で特別徴収を続ける申出、翌年度の課税を、条文と総務省・東京都主税局・横浜市の案内で整理。</div>
       </div>
     </a>
     <a href="column/nenmatsu-chosei-hitsuyo-shorui/">
@@ -659,6 +662,13 @@
       <div>
         <div class="p-title">年末調整の必要書類 — 令和8年分の申告書と、添付又は提示する証明書類を「誰が何を出すか」で一覧にする</div>
         <div class="p-desc">令和8年分の年末調整で誰が何を出すかの一覧。申告書の種類、添付又は提示する証明書類、証明書類が要らない保険料、前職の源泉徴収票の扱い。</div>
+      </div>
+    </a>
+    <a href="column/rakuten-jepi-vs-rakuten-schd/">
+      <div class="p-date">2026.10.08</div>
+      <div>
+        <div class="p-title">楽天・JEPI vs 楽天・SCHD｜カバードコールと高配当株の仕組み・分配・費用を比較</div>
+        <div class="p-desc">楽天・JEPI（毎月決算型）と楽天・SCHD（四半期決算型）を、楽天・JEPIの設定日2026年5月11日から2026年9月30日までの142日間・分配金再投資（税引前）で比較。2026年5月11日に100万円を投資したと仮定した2026年9月30日の評価額は1,036,804円と1,055,466円（売却前。期間が短いため年率換算はしていません）。カバード・コール戦略で基準価額の上昇が制限される可能性、決算の頻度、NISAの対象かどうか、交付目論見書の実質的な信託報酬（概算）も確認します。</div>
       </div>
     </a>
     <a href="column/hojinzei-shinkokusho/">
@@ -680,13 +690,6 @@
       <div>
         <div class="p-title">協会けんぽの健康保険料率 一覧【令和8年度】47都道府県・介護保険料率込み・CSV</div>
         <div class="p-desc">協会けんぽの令和8年度の健康保険料率を47都道府県すべて掲載（一般被保険者・令和8年3月分から）。最高は佐賀県10.55%、最低は新潟県9.21%。介護保険料率1.62%込みの率、折半後の本人負担率、令和7年度からの増減、CSVつき。</div>
-      </div>
-    </a>
-    <a href="column/kiso-kojo-shinkokusho/">
-      <div class="p-date">2026.10.07</div>
-      <div>
-        <div class="p-title">基礎控除申告書の書き方 — 令和8年分の「合計所得金額の見積額」の出し方と、判定欄・区分Ⅰの書き方</div>
-        <div class="p-desc">令和8年分の基礎控除申告書の書き方。様式の裏面の計算式で見積額を出し、判定欄・基礎控除の額・区分Ⅰを書く手順と計算例。</div>
       </div>
     </a>
   </div><!--post-list:E-->
@@ -785,7 +788,8 @@ form.addEventListener("submit", (ev) => { ev.preventDefault(); clearTimeout(qaTi
     keiri: ["t-keiri", "t-kyuyo", "t-jigyo", "t-hojokin", "t-setsuzei", "t-kyufu", "t-kurashi"],
   };
   var bar = document.getElementById("persona-bar");
-  var columnHead = document.getElementById("column-head");
+  // .tcat を差し込む位置。ツールの棚の直後にある「分野から探す」(#domains) の前。無ければ新着コラムの前。
+  var columnHead = document.getElementById("domains") || document.getElementById("column-head");
   if (!bar || !columnHead) return;
   function apply(p, save) {
     var ids = ORDER[p];
