@@ -2040,6 +2040,171 @@
         "銀行",
         "休日"
       ]
+    },
+    {
+      "id": "rg35-workday-01",
+      "text": "ExcelのWORKDAY.INTLでは、第3引数に週末番号（1〜7・11〜17）のほか、月曜から日曜の順に並べた7文字の文字列を指定できます。",
+      "where": [
+        "p:s-54b50fde4863006d7561-1"
+      ],
+      "numbers": [
+        "1〜7",
+        "11〜17",
+        "7文字"
+      ],
+      "must_with": [
+        "WORKDAY.INTL",
+        "週末番号",
+        "月曜から日曜"
+      ],
+      "scope": "2026-10-08取得のMicrosoft公式ヘルプに記載されたExcel WORKDAY.INTLの仕様。Googleスプレッドシートへの適用は主張しない。",
+      "applies": "Microsoft公式ヘルプのExcel対応製品。",
+      "source_url": "https://support.microsoft.com/ja-jp/office/workday-intl-%E9%96%A2%E6%95%B0-a378391c-9ba7-4678-8a39-39611a9bf81d",
+      "source_quote": "必須。 開始日から起算する稼働日数を指定します。 正の値は将来の日付を生成します。負の値は過去の日付を生成します。0 を指定すると、既に指定したstart_dateが返されます\n。Day-offset\nは整数に切り捨てられます。\nweekend\nオプション。 使用する場合、これは週末であり、稼働日とは見なされない曜日を示します。 weekend 引数は、週末のいつが発生するかを指定する週末の番号または文字列です。\n次に示すように、\n週末\nの数値は週末を示します。\nWeekend Number\n週末の曜日\n1 (または省略)\n土曜日と日曜日\n2\n日曜日と月曜日\n3\n月曜日と火曜日\n4\n火曜日と水曜日\n5\n水曜日と木曜日\n6\n木曜日と金曜日\n7\n金曜日と土曜日\n11\n日曜日のみ\n12\n月曜日のみ\n13\n火曜日のみ\n14\n水曜日のみ\n15\n木曜日のみ\n16\n金曜日のみ\n17\n土曜日のみ\nWeekend の文字列値は 7 文字です。 文字列内の各文字は、月曜日から始まる曜日を表します。 文字\n1\nは非稼働日を表し、\n0\nは稼働日を表します。 文字列に使用できる文字は、\n1\nおよび\n0\nのみです。 また、\n1111111\nは無効な文字列です。\nたとえば、\n0000011\nと指定すると土曜日と日曜日が週末になります。",
+      "exceptions": "週末文字列は月曜始まりの7文字で0・1だけを使用し、1111111は無効。休日は別途第4引数に指定する。日付の範囲外は#NUM!、文字列の長さ・文字が無効なら#VALUE!（解説まで確認）。",
+      "covers": [
+        "s-54b50fde4863006d7561-1"
+      ],
+      "corpus_ref": "ms_workday_intl.txt:639-690",
+      "topic": [
+        "eigyobi-workday-intl"
+      ]
+    },
+    {
+      "id": "rg35-workday-02",
+      "text": "曜日を指定する文字列は、1が非稼働日、0が稼働日を表します。",
+      "where": [
+        "p:s-8c8f4dd6e255bbccd0c6-1"
+      ],
+      "numbers": [
+        "1が非稼働日",
+        "0が稼働日"
+      ],
+      "must_with": [
+        "曜日",
+        "文字列"
+      ],
+      "scope": "2026-10-08取得のMicrosoft公式ヘルプに記載されたExcel WORKDAY.INTLの仕様。Googleスプレッドシートへの適用は主張しない。",
+      "applies": "Microsoft公式ヘルプのExcel対応製品。",
+      "source_url": "https://support.microsoft.com/ja-jp/office/workday-intl-%E9%96%A2%E6%95%B0-a378391c-9ba7-4678-8a39-39611a9bf81d",
+      "source_quote": "Weekend の文字列値は 7 文字です。 文字列内の各文字は、月曜日から始まる曜日を表します。 文字\n1\nは非稼働日を表し、\n0\nは稼働日を表します。 文字列に使用できる文字は、\n1\nおよび\n0\nのみです。 また、\n1111111\nは無効な文字列です。",
+      "exceptions": "週末文字列は月曜始まりの7文字で0・1だけを使用し、1111111は無効。休日は別途第4引数に指定する。日付の範囲外は#NUM!、文字列の長さ・文字が無効なら#VALUE!（解説まで確認）。",
+      "covers": [
+        "s-8c8f4dd6e255bbccd0c6-1"
+      ],
+      "corpus_ref": "ms_workday_intl.txt:677-687",
+      "topic": [
+        "eigyobi-workday-intl"
+      ]
+    },
+    {
+      "id": "rg35-workday-03",
+      "text": "ExcelのWORKDAY.INTLで土日を休みにする文字列は \"0000011\"、水曜も定休日にする場合は \"0010011\" です。",
+      "where": [
+        "p:s-1f38f984ae6accebd924-1"
+      ],
+      "numbers": [
+        "\"0000011\"",
+        "\"0010011\""
+      ],
+      "must_with": [
+        "WORKDAY.INTL",
+        "土日|土曜・日曜",
+        "水曜"
+      ],
+      "scope": "2026-10-08取得のMicrosoft公式ヘルプに記載されたExcel WORKDAY.INTLの仕様。Googleスプレッドシートへの適用は主張しない。",
+      "applies": "Microsoft公式ヘルプのExcel対応製品。",
+      "source_url": "https://support.microsoft.com/ja-jp/office/workday-intl-%E9%96%A2%E6%95%B0-a378391c-9ba7-4678-8a39-39611a9bf81d",
+      "source_quote": "Weekend の文字列値は 7 文字です。 文字列内の各文字は、月曜日から始まる曜日を表します。 文字\n1\nは非稼働日を表し、\n0\nは稼働日を表します。 文字列に使用できる文字は、\n1\nおよび\n0\nのみです。 また、\n1111111\nは無効な文字列です。\nたとえば、\n0000011\nと指定すると土曜日と日曜日が週末になります。",
+      "exceptions": "週末文字列は月曜始まりの7文字で0・1だけを使用し、1111111は無効。休日は別途第4引数に指定する。日付の範囲外は#NUM!、文字列の長さ・文字が無効なら#VALUE!（解説まで確認）。",
+      "covers": [
+        "s-1f38f984ae6accebd924-1"
+      ],
+      "corpus_ref": "ms_workday_intl.txt:677-690",
+      "topic": [
+        "eigyobi-workday-intl"
+      ]
+    },
+    {
+      "id": "rg35-workday-04",
+      "text": "会社独自の休業日は、祝日と一緒に日付の一覧へ入れ、WORKDAY.INTLの第4引数にそのセル範囲を指定します。",
+      "where": [
+        "p:s-bd5b2a45f6b25dff5cf6-1"
+      ],
+      "numbers": [
+        "第4引数"
+      ],
+      "must_with": [
+        "WORKDAY.INTL",
+        "休業日",
+        "セル範囲"
+      ],
+      "scope": "2026-10-08取得のMicrosoft公式ヘルプに記載されたExcel WORKDAY.INTLの仕様。Googleスプレッドシートへの適用は主張しない。",
+      "applies": "Microsoft公式ヘルプのExcel対応製品。",
+      "source_url": "https://support.microsoft.com/ja-jp/office/workday-intl-%E9%96%A2%E6%95%B0-a378391c-9ba7-4678-8a39-39611a9bf81d",
+      "source_quote": "休日\nこれは構文末尾にある省略可能な引数です。 これは、稼働日カレンダーから除外する 1 つ以上の日付のオプションのセットを指定します。 祝日は、日付を含むセルの範囲、またはそれらの日付を表すシリアル値の配列定数であるものとします。 休日の日付またはシリアル値は、任意の順序で指定できます。",
+      "exceptions": "週末文字列は月曜始まりの7文字で0・1だけを使用し、1111111は無効。休日は別途第4引数に指定する。日付の範囲外は#NUM!、文字列の長さ・文字が無効なら#VALUE!（解説まで確認）。",
+      "covers": [
+        "s-bd5b2a45f6b25dff5cf6-1"
+      ],
+      "corpus_ref": "ms_workday_intl.txt:691-692",
+      "topic": [
+        "eigyobi-workday-intl"
+      ]
+    },
+    {
+      "id": "rg35-workday-05",
+      "text": "ExcelのWORKDAY.INTLで、水曜・土曜・日曜を除き、A1の基準日から3営業日後を求める式は =WORKDAY.INTL(A1, 3, \"0010011\", 休業日リスト) です（休業日リストは祝日と会社独自の休業日を入力したセル範囲）。",
+      "where": [
+        "p:s-f82adb51124f9f463133-1"
+      ],
+      "numbers": [
+        "=WORKDAY.INTL(A1, 3, \"0010011\", 休業日リスト)"
+      ],
+      "must_with": [
+        "WORKDAY.INTL",
+        "水曜・土曜・日曜",
+        "基準日",
+        "休業日リスト"
+      ],
+      "scope": "2026-10-08取得のMicrosoft公式ヘルプに記載されたExcel WORKDAY.INTLの仕様。Googleスプレッドシートへの適用は主張しない。",
+      "applies": "Microsoft公式ヘルプのExcel対応製品。",
+      "source_url": "https://support.microsoft.com/ja-jp/office/workday-intl-%E9%96%A2%E6%95%B0-a378391c-9ba7-4678-8a39-39611a9bf81d",
+      "source_quote": "構文\nWORKDAY.INTL(開始日, 日数, [週末], [休日])\nThe WORKDAY.INTL 関数の構文では、次の引数を使用します。\nstart_date\n必須。 開始日を指定します (小数点以下は切り捨てられます)。\nのうち\n必須。 開始日から起算する稼働日数を指定します。 正の値は将来の日付を生成します。負の値は過去の日付を生成します。0 を指定すると、既に指定したstart_dateが返されます\n。Day-offset\nは整数に切り捨てられます。\nweekend\nオプション。 使用する場合、これは週末であり、稼働日とは見なされない曜日を示します。 weekend 引数は、週末のいつが発生するかを指定する週末の番号または文字列です。\n次に示すように、\n週末\nの数値は週末を示します。\nWeekend Number\n週末の曜日\n1 (または省略)\n土曜日と日曜日\n2\n日曜日と月曜日\n3\n月曜日と火曜日\n4\n火曜日と水曜日\n5\n水曜日と木曜日\n6\n木曜日と金曜日\n7\n金曜日と土曜日\n11\n日曜日のみ\n12\n月曜日のみ\n13\n火曜日のみ\n14\n水曜日のみ\n15\n木曜日のみ\n16\n金曜日のみ\n17\n土曜日のみ\nWeekend の文字列値は 7 文字です。 文字列内の各文字は、月曜日から始まる曜日を表します。 文字\n1\nは非稼働日を表し、\n0\nは稼働日を表します。 文字列に使用できる文字は、\n1\nおよび\n0\nのみです。 また、\n1111111\nは無効な文字列です。\nたとえば、\n0000011\nと指定すると土曜日と日曜日が週末になります。\n休日\nこれは構文末尾にある省略可能な引数です。 これは、稼働日カレンダーから除外する 1 つ以上の日付のオプションのセットを指定します。 祝日は、日付を含むセルの範囲、またはそれらの日付を表すシリアル値の配列定数であるものとします。 休日の日付またはシリアル値は、任意の順序で指定できます。",
+      "exceptions": "週末文字列は月曜始まりの7文字で0・1だけを使用し、1111111は無効。休日は別途第4引数に指定する。日付の範囲外は#NUM!、文字列の長さ・文字が無効なら#VALUE!（解説まで確認）。",
+      "covers": [
+        "s-f82adb51124f9f463133-1"
+      ],
+      "corpus_ref": "ms_workday_intl.txt:633-692",
+      "topic": [
+        "eigyobi-workday-intl"
+      ]
+    },
+    {
+      "id": "rg35-workday-06",
+      "text": "ExcelのWORKDAY.INTLの曜日指定では、全曜日を非稼働日にする \"1111111\" は無効です。",
+      "where": [
+        "p:s-2e53ed903ac8809fab44-1"
+      ],
+      "numbers": [
+        "\"1111111\""
+      ],
+      "must_with": [
+        "WORKDAY.INTL",
+        "無効"
+      ],
+      "scope": "2026-10-08取得のMicrosoft公式ヘルプに記載されたExcel WORKDAY.INTLの仕様。Googleスプレッドシートへの適用は主張しない。",
+      "applies": "Microsoft公式ヘルプのExcel対応製品。",
+      "source_url": "https://support.microsoft.com/ja-jp/office/workday-intl-%E9%96%A2%E6%95%B0-a378391c-9ba7-4678-8a39-39611a9bf81d",
+      "source_quote": "Weekend の文字列値は 7 文字です。 文字列内の各文字は、月曜日から始まる曜日を表します。 文字\n1\nは非稼働日を表し、\n0\nは稼働日を表します。 文字列に使用できる文字は、\n1\nおよび\n0\nのみです。 また、\n1111111\nは無効な文字列です。",
+      "exceptions": "週末文字列は月曜始まりの7文字で0・1だけを使用し、1111111は無効。休日は別途第4引数に指定する。日付の範囲外は#NUM!、文字列の長さ・文字が無効なら#VALUE!（解説まで確認）。",
+      "covers": [
+        "s-2e53ed903ac8809fab44-1"
+      ],
+      "corpus_ref": "ms_workday_intl.txt:677-687",
+      "topic": [
+        "eigyobi-workday-intl"
+      ]
     }
   ],
   "absolutes": [],
@@ -2358,6 +2523,10 @@
     {
       "id": "s-313980f375839482f8d3-1",
       "why": "固定単位と前後を確認。SNS共有ボタンのUIラベルであり、主張ではないため"
+    },
+    {
+      "id": "s-1c9da1f46b2b63bbf472-1",
+      "why": "一次資料の書誌情報とリンク。本文の主張はrg35-workday各項目で被覆。"
     }
   ],
   "verified": [

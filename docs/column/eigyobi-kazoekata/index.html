@@ -30,7 +30,7 @@
       "@type": "Article",
       "headline": "当日を数えず土日祝を除く「3営業日前」の数え方",
       "datePublished": "2026-07-13",
-      "dateModified": "2026-10-03",
+      "dateModified": "2026-10-08",
       "author": {
         "@type": "Person",
         "name": "Masahiro Yasu",
@@ -126,7 +126,7 @@
 <nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 営業日の数え方</nav>
 <article>
   <h1>当日を数えず土日祝を除く「3営業日前」の数え方</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-10-03">2026年10月3日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-10-08">2026年10月8日</time>）</p>
   <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
 
   <p>「3営業日以内にご連絡します」「3営業日前までにお申し込みください」——ビジネスでよく使われますが、<b>具体的にいつなのか</b>で迷ったことはないでしょうか。</p>
@@ -349,6 +349,9 @@
   <p>祝日の一覧は<b>内閣府が公開しているデータ</b>（→<a href="#sources">出典</a>）をシートの空き列に貼り付け、その範囲を第3引数に指定します。振替休日も含まれています。</p>
   <p><b>土曜も営業している会社</b>は <b>WORKDAY.INTL関数</b> を使います。第3引数の「週末番号」に <b>11（日曜のみ休み）</b> を指定すると、土曜を営業日として数えられます。</p>
   <p><code>=WORKDAY.INTL(A1, -3, 11, 祝日リスト)</code></p>
+  <p>ExcelのWORKDAY.INTLでは、第3引数に週末番号（1〜7・11〜17）のほか、月曜から日曜の順に並べた7文字の文字列を指定できます。曜日を指定する文字列は、1が非稼働日、0が稼働日を表します。</p>
+  <p>ExcelのWORKDAY.INTLで土日を休みにする文字列は <code>"0000011"</code>、水曜も定休日にする場合は <code>"0010011"</code> です。会社独自の休業日は、祝日と一緒に日付の一覧へ入れ、WORKDAY.INTLの第4引数にそのセル範囲を指定します。</p>
+  <p>ExcelのWORKDAY.INTLで、水曜・土曜・日曜を除き、A1の基準日から3営業日後を求める式は <code>=WORKDAY.INTL(A1, 3, "0010011", 休業日リスト)</code> です（休業日リストは祝日と会社独自の休業日を入力したセル範囲）。ExcelのWORKDAY.INTLの曜日指定では、全曜日を非稼働日にする <code>"1111111"</code> は無効です。</p>
 
   <h2 id="faq">よくある質問</h2>
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>「3営業日以内」に当日は含まれますか？</h3>
@@ -383,6 +386,7 @@
     <li>国民の祝日に関する法律3条2項（「国民の祝日」が日曜日に当たるときは、その日後の最も近い祝日でない日を休日とする＝振替休日）— e-Gov法令検索</li>
     <li>国民の祝日に関する法律3条3項（その前日及び翌日が「国民の祝日」である日で、「国民の祝日」でない日に限り休日とする＝国民の休日。2026年は9月22日）— e-Gov法令検索</li>
     <li>内閣府「国民の祝日について」（祝日の一覧。当サイトの営業日計算はこのデータを使用しています）</li>
+    <li><a href="https://support.microsoft.com/ja-jp/office/workday-intl-%E9%96%A2%E6%95%B0-a378391c-9ba7-4678-8a39-39611a9bf81d">Microsoft「WORKDAY.INTL 関数」</a>（週末の文字列指定・休日の引数）</li>
   </ul>
   <p style="font-size:13px;color:var(--sub)">「営業日」は法令上の定義がある用語ではなく、上記は期間計算・金融機関の休日に関する一般的な根拠です。本記事は一般的な情報提供を目的としたものです。契約上の期限など重要な場面では、相手方・専門家にご確認ください。</p>
 </article>
