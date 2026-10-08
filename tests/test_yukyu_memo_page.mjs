@@ -17,7 +17,7 @@
  */
 import { createServer } from "node:http";
 import { readFile, mkdtemp, rm } from "node:fs/promises";
-import { spawn } from "node:child_process";
+import { spawnChrome, killChrome } from "../tools/chrome_proc.mjs";
 import { tmpdir } from "node:os";
 import { join, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -109,15 +109,14 @@ await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const port = server.address().port;
 
 const dir = await mkdtemp(join(tmpdir(), "keiri-memo-"));
-const p = spawn(CHROME, ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
+const p = spawnChrome(CHROME, ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
     // ★--virtual-time-budget / --dump-dom は使わない。結果はページからのPOSTで受け取るので
   //   DOMのダンプは要らず、仮想時間の予算は**4件目のナビゲーションを黙って落とした**
   //   （3件で必ず止まり、予算を20倍にしても3件のままだった。2026-09-08 に切り分け済み）。
   `--user-data-dir=${dir}`, "--window-size=1280,1000",
   `http://127.0.0.1:${port}/__frame?i=0`], { stdio: "ignore" });
-const exited = new Promise((r) => p.on("exit", r));
 await Promise.race([finished, new Promise((r) => setTimeout(r, 240_000))]);
-p.kill("SIGKILL"); await exited; await rm(dir, { recursive: true, force: true, maxRetries: 5 });
+await killChrome(p); await rm(dir, { recursive: true, force: true, maxRetries: 5 });
 server.close();
 
 /* ---- 判定 ---- */

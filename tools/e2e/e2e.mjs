@@ -11,7 +11,7 @@
 
 import { createServer } from "node:http";
 import { readFile, readdir, mkdtemp, rm } from "node:fs/promises";
-import { spawn } from "node:child_process";
+import { spawnChrome, killChrome } from "../chrome_proc.mjs";
 import { tmpdir } from "node:os";
 import { join, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -417,6 +417,11 @@ const SCENES = [
   { name: "juminzei_kintou_nomi", expect: (s) =>
       s.total === 5000 && s.shotokuwari === 0 && s.kintouwari === 5000 &&
       s.showsKintouOnly && !s.hikazei && !s.failed },
+  // ★非課税限度額をわずかに超えた人の減額（附則3条の3第2項・第5項）。減額がなければ所得割33,000円。
+  //   鎖は harness.html の SCENES.juminzei_kinbo のコメント。
+  { name: "juminzei_kinbo", expect: (s) =>
+      s.total === 25000 && s.shotokuwari === 20000 && s.kintouwari === 5000 &&
+      s.kinboGengaku === 13000 && !s.hikazei && !s.failed },
   // ★超過課税。横浜市は市3,900+県1,300+森林環境税1,000 = **6,200円**(横浜市の公表額と一致)。
   //   所得割は指定都市の8%:2% に神奈川県の超過課税(+0.025%)が乗る → 市192,400円＋県48,700円＝241,100円（各100円未満切捨、地方税法20条の4の2第3項）
   { name: "juminzei_yokohama", expect: (s) =>
@@ -766,6 +771,28 @@ const SCENES = [
   { name: "nenmatsu_chosei_empty", expect: (s) => s.noInput && s.nenzei === null },
   { name: "nenmatsu_chosei_nodata", data404: "nencho_r08.json",
     expect: (s) => s.failed && s.nenzei === null },
+
+  // ── 所得税 計算機（確定申告） (/shotokuzei/) ─────────────────────────
+  // ★年末調整の設例A（所得控除4,826,102円・年調年税額41,400円）に医療費30万円を足して確定申告:
+  //   所得金額の合計6,973,000 → 控除5,026,102 → 課税1,946,000 → 税額97,300 −住宅ローン控除76,500
+  //   → 基準所得税額20,800 → 復興436 → 21,236 − 源泉41,400 ＝ 還付20,164円（1円単位）
+  { name: "shotokuzei", expect: (s) =>
+      s.sotoShotoku === 6973000 && s.iryohi === 200000 && s.kojoGokei === 5026102 && s.kazei === 1946000 &&
+      s.zeigaku === 97300 && s.kijun === 20800 && s.fukko === 436 && s.zeigakuGokei === 21236 &&
+      s.kanpu === 20164 && s.bigVal === 20164 && s.bigIsKanpu && s.srcHasYear && !s.failed },
+  { name: "shotokuzei_slow", slow: true, expect: (s) =>
+      s.kazei === 1946000 && s.kanpu === 20164 && !s.failed },
+  // 給与300万（給与所得控除後2,020,000−所得金額調整控除2項100,000）＋年金200万・65歳以上（900,000）
+  // ＋一時所得360,000の2分の1（180,000）＝3,000,000 → 基礎控除104万・寄附金控除48,000
+  // → 課税1,912,000 → 95,600 → 復興2,007 → 97,607 − 源泉60,000 → 37,607 → 納める税金37,600
+  { name: "shotokuzei_nenkin", expect: (s) =>
+      s.kyuyoShotoku === 1920000 && s.nenkinZatsu === 900000 && s.ichijiHalf === 180000 &&
+      s.sotoShotoku === 3000000 && s.kiso === 1040000 && s.kifukin === 48000 && s.kazei === 1912000 &&
+      s.fukko === 2007 && s.zeigakuGokei === 97607 && s.nozei === 37600 && s.bigVal === 37600 && s.bigIsNozei && !s.failed },
+  { name: "shotokuzei_akaji", expect: (s) => s.akaji && s.kazei === null },
+  { name: "shotokuzei_empty", expect: (s) => s.noInput && s.kazei === null },
+  { name: "shotokuzei_nodata", data404: "shotokuzei_r08.json",
+    expect: (s) => s.failed && s.kazei === null },
 
   // ── 地震保険料控除 (/jishin-hoken-kojo/) ─────────────────────────────
   // ★手計算の鎖は tests/test_jishin_hoken_kojo.mjs §7: 地震30,000＋旧長期24,000・課税所得400万
@@ -2091,8 +2118,7 @@ for (const sc of SCENES.filter((s) => match(s.name))) {
   // **1シーン60秒 × 36シーン = 36分**かかり、**通しで走らせるのが現実的でなくなっていた**。
   // 全数実行を誰もやらなくなった結果が第14便の全損見逃し(社会保険料にシーンが無いことに
   // 7便気付かなかった)。**遅すぎる検査は、いずれ走らされなくなって存在しないのと同じになる**。
-  const p = spawn(CHROME, args, { stdio: "ignore" });
-  const exited = new Promise((r) => p.on("exit", r));
+  const p = spawnChrome(CHROME, args);
   try {
     await new Promise((ok, ng) => {
       const done = () => { clearTimeout(kill); onReceived = null; ok(); };
@@ -2102,8 +2128,9 @@ for (const sc of SCENES.filter((s) => match(s.name))) {
       p.on("error", (e) => { clearTimeout(kill); onReceived = null; ng(e); });
     });
   } finally {
-    p.kill("SIGKILL");
-    await exited;   // **死にきるまで待ってから消す**。死ぬ途中のChromeはまだプロファイルに
+    // ★本体だけでなく子プロセスごと殺す(2026-10-08)。p.kill("SIGKILL") は本体しか殺さず、
+    //   renderer が親なしで回り続けて MBP を固めた(155個・load 990) → tools/chrome_proc.mjs
+    await killChrome(p);   // **死にきるまで待ってから消す**。死ぬ途中のChromeはまだプロファイルに
                     // 書き込んでいるので、先に消すと ENOTEMPTY で落ちる(実際に踏んだ)
     await rm(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   }
