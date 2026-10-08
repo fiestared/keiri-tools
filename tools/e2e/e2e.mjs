@@ -1931,10 +1931,16 @@ const SCENES = [
   // ─── 入力欄に結び付いたエラー・初期値の方針（2026-09-30 UI/UX レビュー）───
   // 空欄で始まり（例は説明文に）、空欄で押すとその欄に aria-invalid・エラー文・フォーカスが移り、直すと消える
   ...["shaho", "tedori", "furusato", "yukyu", "embed_yukyu", "gensen", "gensen_hoshu",
-      "kihonteate", "saishushoku", "ikuji", "papa_ikukyu", "juminzei", "taishokukin", "jutaku"].map((t) => ({
-    name: `ux_field_error_${t}`, noCoverage: true, expect: (s) =>
+      "kihonteate", "saishushoku", "ikuji", "papa_ikukyu", "juminzei", "taishokukin", "jutaku",
+      // 2026-10-08（keiri-uiux-review-2026-10-08 高3・低）: 新ツール2本と、取りこぼした印紙・賞与
+      "shotokuzei", "nenmatsu_chosei", "nenmatsu_chosei_choshu", "inshi", "bonus_tedori"].map((t) => ({
+    name: `ux_field_error_${t}`, noCoverage: true, uxFieldError: true, expect: (s) =>
       s.initialEmpty && s.noPlaceholder && s.hasExample && s.focused && s.describedByError &&
-      s.errorVisible && s.errorNearField && s.resultWarnLinked && s.fieldInView && s.cleared })),
+      s.errorVisible && s.errorNearField && s.resultWarnLinked && s.fieldInView && s.cleared &&
+      // エラーを成功と同じ枠で出さない・エラーのあいだは「結果をコピー」を出さない
+      // ★embed_yukyu だけ枠の比較を外す: 埋め込みは結果欄が成功もエラーも灰色の枠（緑ではない）で、エラーは赤字。
+      //   成功と誤認する緑枠の問題とは別の見た目なので、埋め込みの型を揃える別便で扱う（2026-10-08 時点の既知）
+      (t === "embed_yukyu" || s.errorFrameDiffers) && !s.copyOnError })),
   // 押した後に結果が折り目の下に出たら、結果の頭まで自動で送る（見えないところに答えを出さない）
   { name: "ux_result_scroll_shaho", noCoverage: true, expect: (s) => s.visible && s.scrolled },
 
@@ -2091,6 +2097,7 @@ const port = server.address().port;
 const only = process.env.E2E_ONLY || process.argv[2];
 const fails = [];
 const covered = new Map(); // ページ → 正常条件で駆動したシーン名
+const uxCovered = new Map(); // ページ → 緑だった空欄押下のエラーシーン（ux_field_error_*）
 
 // 末尾に * を付けると前方一致（1つのツールのシーンだけまとめて回すため）。
 // 例: node tools/e2e/e2e.mjs 'jouto*' → jouto / jouto_slow / jouto_choki … を全部
@@ -2143,6 +2150,12 @@ for (const sc of SCENES.filter((s) => match(s.name))) {
   const normal = !sc.data404 && !sc.holidays && !sc.slow && !sc.noCoverage;
   // ★シーンが開いたページは全部数える(s.pages)。1シーンが複数ページを開くことがあり
   //   (/hojokin/ の3ページ分割)、最後の1本だけ数えると本体の網羅が黙って消える
+  if (ok && sc.uxFieldError && s.page) {
+    for (const p of (Array.isArray(s.pages) && s.pages.length ? s.pages : [s.page])) {
+      if (!uxCovered.has(p)) uxCovered.set(p, []);
+      uxCovered.get(p).push(sc.name);
+    }
+  }
   if (ok && normal && s.page) {
     for (const p of (Array.isArray(s.pages) && s.pages.length ? s.pages : [s.page])) {
       if (!covered.has(p)) covered.set(p, []);
@@ -2192,6 +2205,27 @@ if (!only) {
   } else {
     console.log(`\n📋 計算ツール ${toolPages.length}件すべてに正常系シーンあり`);
   }
+  // ── 網羅チェック2: 空欄押下のエラーシーン（ux_field_error_*）───────────────────────
+  // 2026-10-08（keiri-uiux-review-2026-10-08 高3）: 9/30 に決めたツールの型（空欄で始める・入力例は説明に・
+  // 空欄で押したら欄に結び付いたエラー・成功と違う枠・コピーを出さない）を、**後から作った新ツール2本が知らずに**
+  // 出た。型は gbrain に書いてあっても、新しいページを作る人が読むとは限らない → 機械で塞ぐ。
+  // 計算ツールには緑の ux_field_error_* が1つ要る。まだ型に揃っていない既存ページは ux_pending.mjs に
+  // **名前で**載せて猶予する（新しいページは載っていないので落ちる）。揃えたら一覧から消す（消し忘れも落とす）。
+  const { UX_FIELD_ERROR_PENDING } = await import("./ux_pending.mjs");
+  const uxMissing = toolPages.filter((p) => !uxCovered.has(p) && !UX_FIELD_ERROR_PENDING.has(p));
+  const uxStale = [...UX_FIELD_ERROR_PENDING.keys()].filter((p) => uxCovered.has(p) || !toolPages.includes(p));
+  if (uxMissing.length) {
+    console.error(`\n❌ 空欄押下のエラーシーン（ux_field_error_*）が無い計算ツール: ${uxMissing.join(", ")}`);
+    console.error("   ツールの型（gbrain implementation/keiri-ux-tools-fixes-2026-09-30）に揃え、harness.html に fieldErrorScene を足すこと");
+    fails.push(...uxMissing.map((p) => `ux-coverage:${p}`));
+  }
+  if (uxStale.length) {
+    console.error(`\n❌ 猶予一覧 ux_pending.mjs に、もう要らない行がある（型に揃った／ページが無い）: ${uxStale.join(", ")}`);
+    console.error("   tools/e2e/ux_pending.mjs から消すこと（残すと、次に型が崩れたときに猶予されてしまう）");
+    fails.push(...uxStale.map((p) => `ux-pending-stale:${p}`));
+  }
+  if (!uxMissing.length && !uxStale.length)
+    console.log(`📋 空欄押下のエラーシーン: ${uxCovered.size}件が型どおり・猶予 ${UX_FIELD_ERROR_PENDING.size}件`);
 }
 
 if (fails.length) {

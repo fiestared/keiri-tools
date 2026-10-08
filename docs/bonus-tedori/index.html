@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-16",
-  "dateModified": "2026-10-01",
+  "dateModified": "2026-10-08",
       "name": "ボーナス手取り計算機",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -126,8 +126,7 @@
 
 <section class="hero">
   <h1>ボーナス手取り計算機</h1>
-<p class="note">この計算機は賞与が同じ月に1回支給される前提で試算します。同月に複数回支給する場合、厚生年金は合算した標準賞与額に月150万円の上限を適用するため、各回を別々に計算した結果は使えません。</p>
-  <p class="article-meta">公開日: <time datetime="2026-07-16">2026年7月16日</time>（更新日: <time datetime="2026-10-01">2026年10月1日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-16">2026年7月16日</time>（更新日: <time datetime="2026-10-08">2026年10月8日</time>）</p>
   <p>ボーナス（賞与）の額面を入れるだけで、<b>社会保険料</b>（健康保険・厚生年金・雇用保険・子ども子育て支援金）と<b>源泉所得税</b>を差し引いた<b>手取り</b>を自動計算します。通常の甲欄の賞与税率は、前月の社会保険料等控除後給与と扶養親族等の数で決まります。前月給与なし等や控除後賞与が前月控除後給与の10倍を超える場合は、月額表による別計算です。前月の月給も入力してください。</p>
 </section>
 
@@ -146,16 +145,16 @@
   </div>
 
   <label for="bonus">ボーナスの額面（円）</label>
-  <input type="number" id="bonus" placeholder="例: 500000" inputmode="numeric" aria-describedby="bonus-hint">
-      <span id="bonus-hint" class="hint">支給明細の総支給額（税金・保険料が引かれる前） </span>
+  <input type="number" id="bonus" data-example="500000" inputmode="numeric" aria-describedby="bonus-hint">
+      <span id="bonus-hint" class="hint"><b class="input-example">入力例：額面50万円なら 500000</b>支給明細の総支給額（税金・保険料が引かれる前） </span>
 
   <fieldset style="border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:14px">
     <legend style="font-weight:700;font-size:14px;padding:0 6px">前月の給与（税率を決める鍵）</legend>
     <label style="font-weight:400;display:block;margin:2px 0"><input type="radio" name="zmode" value="paid" checked> 前月に給与の支払いがあった</label>
     <div id="zengetsu-wrap" style="margin:4px 0 6px 22px">
       <label for="zengetsu">前月の額面の月給（前月も同じ料率等の場合）（円）</label>
-      <input type="number" id="zengetsu" placeholder="例: 300000" inputmode="numeric" aria-describedby="zengetsu-hint">
-      <span id="zengetsu-hint" class="hint">基本給＋残業手当などの総支給額。前月給与に非課税通勤手当等がある場合は、この概算の対象外です。</span>
+      <input type="number" id="zengetsu" data-example="300000" inputmode="numeric" aria-describedby="zengetsu-hint">
+      <span id="zengetsu-hint" class="hint"><b class="input-example">入力例：前月の額面が30万円なら 300000</b>基本給＋残業手当などの総支給額。前月給与に非課税通勤手当等がある場合は、この概算の対象外です。</span>
     </div>
     <label style="font-weight:400;display:block;margin:2px 0"><input type="radio" name="zmode" value="nopaid"> 前月に給与の支払いがない（休職明け・新規入社など）</label>
   </fieldset>
@@ -171,9 +170,10 @@
   <label style="font-weight:400;display:block;margin-top:10px"><input type="checkbox" id="over6"> 賞与の計算期間が6か月を超える（年1回の決算賞与・役員賞与など）</label>
 
   <label for="yearpaid">今年度の既払標準賞与額の累計（円・任意）</label>
-<input type="number" id="yearpaid" placeholder="例: 0" inputmode="numeric" aria-describedby="yearpaid-hint">
+<input type="number" id="yearpaid" inputmode="numeric" aria-describedby="yearpaid-hint">
       <span id="yearpaid-hint" class="hint">健康保険の上限（年度累計573万円）の判定に使います。ふつうは空欄のままで大丈夫です 各支給分の1,000円未満を切り捨ててから年度内で合計してください。総支給額の累計ではありません。</span>
 
+  <p class="note" id="bonus-scope">この計算機は賞与が同じ月に1回支給される前提で試算します。同月に複数回支給する場合、厚生年金は合算した標準賞与額に月150万円の上限を適用するため、各回を別々に計算した結果は使えません。</p>
   <button class="primary" id="calc">計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
@@ -405,7 +405,7 @@ $("calc").addEventListener("click", async () => {
   const okShoyo = await shoyoReady;
   const okGensen = await gensenReady;
   if (!okShaho || !okShoyo || !okGensen || !SHAHO || !SHOYO || !GENSEN) {
-    box.innerHTML = `<div class="note"><b>料率・税額表を読み込めませんでした。</b>
+    box.innerHTML = `<div class="warn"><b>料率・税額表を読み込めませんでした。</b>
       通信環境を確認して再読み込みしてください。データが分からない状態で手取りを答えることはできません。</div>`;
     return;
   }
@@ -415,14 +415,14 @@ $("calc").addEventListener("click", async () => {
   const paid = zmode() === "paid";
   const zengetsu = Number($("zengetsu").value);
   if (paid && (!zengetsu || zengetsu <= 0)) {
-    box.innerHTML = `<div class="warn"><b>前月の額面の月給（前月も同じ料率等の場合）を入力してください。</b>
+    box.innerHTML = `<div class="warn" data-field="zengetsu"><b>前月の額面の月給（前月も同じ料率等の場合）を入力してください。</b>
       前月給与がある場合は、控除後給与と扶養親族等の数に応じた計算に必要なため、この欄を入力してください。
       前月に給与の支払いがなかった場合は、その選択肢に切り替えてください。</div>`;
     return;
   }
   const pref = $("pref").value;
   if (!SHAHO.kenko_rates[pref]) {
-    box.innerHTML = `<div class="note"><b>「${pref || "未選択"}」の健康保険料率が見つかりませんでした。</b>
+    box.innerHTML = `<div class="warn" data-field="pref"><b>「${pref || "未選択"}」の健康保険料率が見つかりませんでした。</b>
       都道府県を選び直してください。</div>`;
     return;
   }

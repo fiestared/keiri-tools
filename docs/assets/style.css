@@ -1193,6 +1193,8 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
 .optional-fields { margin: 16px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 0 0 8px; }
 .optional-fields summary { font-weight: 700; }
 .optional-fields [data-optional-state] { font-size: 14px; color: var(--sub); font-weight: 400; }
+/* 畳んだ欄が続くとき（/shotokuzei/・/nenmatsu-chosei/ の 3〜8 など）は1本の罫線で区切る（二重線と隙間を作らない。2026-10-08） */
+.optional-fields + .optional-fields { margin-top: -9px; border-top: 0; }
 .retention-table { max-width: 100%; overflow: auto; margin: 16px 0; }
 .retention-table table { min-width: 640px; }
 .retention-table th { background: var(--accent-soft); }
