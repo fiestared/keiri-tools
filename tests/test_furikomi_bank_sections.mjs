@@ -51,8 +51,19 @@ for (const [base, list] of banks) {
   const block = section.slice(h3, nextH3 < 0 ? undefined : nextH3);
 
   for (const r of list) {
+    // ★2026-10-08: 料金の条件は区分名のセルに .cell-note で1回だけ書く（金額セルは金額だけ）。
+    //   照合の文字列（r.under / r.over）は「金額＋条件」なので、区分名セルの条件を金額の後ろに足して比べる。
     const tr = (block.match(/<tr>[\s\S]*?<\/tr>/g) || [])
-      .map((t) => (t.match(/<td[^>]*>([\s\S]*?)<\/td>/g) || []).map(strip))
+      .map((t) => (t.match(/<td[^>]*>([\s\S]*?)<\/td>/g) || []))
+      .map((tds) => {
+        const inner = tds.map((td) => td.replace(/^<td[^>]*>|<\/td>$/g, ''));
+        if (!inner.length) return [];
+        const note = strip((inner[0].match(/<span class="cell-note">([\s\S]*?)<\/span>/) || [, ''])[1]);
+        const name = strip(inner[0].replace(/<span class="cell-note">[\s\S]*?<\/span>/, ''));
+        assert.ok(inner.slice(1).every((c) => !/cell-note|<br>/.test(c)), `${name}: 料金の条件が金額セルに入っている（区分名のセルに1回だけ書く）`);
+        const add = (c) => { const a = strip(c || ''); return a === '未確認' ? a : a + note; };
+        return [name, add(inner[1]), add(inner[2])];
+      })
       .find((c) => c[0] === r.name);
     assert.ok(tr, `「${r.name}」の行が ${base} のブロックにありません`);
     assert.strictEqual(tr[1], r.under, `${r.name} の3万円未満が fee_table.json(${r.under})と銀行別(${tr[1]})で食い違っています`);
