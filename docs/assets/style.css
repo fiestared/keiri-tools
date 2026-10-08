@@ -1073,6 +1073,31 @@ a.db-card:hover b { color: var(--accent); text-decoration: underline; }
 .db-desc { margin-top: 4px; color: var(--sub); font-size: 14px; line-height: 1.6; }
 .db-go { margin-top: 8px; color: var(--accent); font-size: 13.5px; font-weight: 600; }
 
+/* ==== 最初の画面にツールと計算ボタンを入れる（2026-10-08 第4便F班。gbrain decisions/keiri-uiux-design-decisions-2026-10-08）====
+   トップ: PC 1280×800 の最初の画面にツールへのリンクが0件だった（見出し・検索・分野カード・対象者スイッチで埋まる）。
+   分野カードはツールの棚の下へ移し（HTML）、対象者スイッチを「ツール」の見出しと同じ行に置いて、棚を上へ詰める。
+   tests/test_first_view.mjs が「1280×800 にツールのカードが4枚以上」を実描画で見る。 */
+main > #tools.section-head { max-width: 1120px; align-items: center; flex-wrap: wrap; row-gap: 8px; margin-top: 24px; }
+.section-head > .persona-bar { margin: 0 0 0 auto; }
+.cat-nav + .tcat { margin-top: 24px; }
+@media (max-width: 899px) {
+  .section-head > .persona-bar { margin-left: 0; flex-basis: 100%; }
+}
+/* 計算機（試し: /shakai-hoken/・/tedori/ の2本だけ。対照は /gensen-choshu/・/furusato/。判定 2026-10-30）:
+   1280×800 で「必須の入力欄と計算ボタン」が最初の画面に入るよう、入力欄を2〜3列に並べる。
+   長い補足は消さずに「使い方と注意点 > 入力欄の詳しい説明」(#input-help) へ移した。
+   列の幅だけを決める（並べ方そのものは .fee-pair.field-pair の subgrid に任せる）。560px 以下は従来どおり1列。 */
+.fv-form > .field-pair:first-child > div:first-child > label:first-of-type { margin-top: 0; }
+main:has(> .fv-form) > .hero { padding-top: 12px; }
+main:has(> .fv-form) > .hero .article-meta { margin: 12px 0; }
+@media (min-width: 601px) {
+  .fv-form > .field-pair:first-child > div > label:first-of-type { margin-top: 0; }
+  .fee-pair.field-pair.fv-cols-narrow-wide { grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); }
+  .fee-pair.field-pair.fv-cols-pref-age-wide { grid-template-columns: minmax(0, .9fr) minmax(0, .5fr) minmax(0, 1.4fr); }
+}
+.fv-input-help { margin: 8px 0 16px; padding-left: 1.4em; }
+.fv-input-help li { margin: 0 0 8px; }
+
 @media print {
   .domain-nav, .domain-bridge { display: none !important; }
 }
