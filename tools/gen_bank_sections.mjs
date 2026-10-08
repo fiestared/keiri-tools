@@ -134,7 +134,7 @@ export function buildSections(rows) {
     const notes = [];
     if (kojin && hojin && kojin.rawOver !== null && hojin.rawOver !== null && kojin.rawOver !== hojin.rawOver) {
       const ratio = (hojin.rawOver / kojin.rawOver).toFixed(1).replace(/\.0$/, '');
-      notes.push(`${base === "みずほ銀行" ? "" : (list.some(r => r.scoped) ? "上表の対象サービス・通常単価で、無料・別料金の宛先と優遇を除いて比べた" : "") + "他行宛ネット振込の3万円以上では、"}法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）`);
+      notes.push(`${(list.some(r => r.scoped) ? "上表の対象サービス・通常単価で、無料・別料金の宛先と優遇を除いて比べた" : "") + "他行宛ネット振込の3万円以上では、"}法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）`);
     }
     const withBoundary = list.filter((x) => x.boundary).map((x) => x.kubun);
     if (list.some(r => r.rawOver === null)) notes.push('横浜銀行の法人EBの他行宛は、3万円未満385円・3万円以上550円です。個人IBの3万円以上は掲載を保留しています');

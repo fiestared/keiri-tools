@@ -63,11 +63,12 @@ console.log("all senpou_core tests passed");
 // 正本の料金による境界ケース。プリセットと差額候補の双方を独立期待値で検査。
 const {cases: reviewedFees} = await import('./boundaries/senpou_core.mjs');
 for (const c of reviewedFees) assert.deepEqual(c.run(), c.expected, c.name);
-assert.ok(!COMMON_FEES.includes(99), 'auじぶんの誤った通常料金99円を候補に残さない');
+assert.ok(COMMON_FEES.includes(99) && !COMMON_FEES.includes(204), 'auじぶんのネット振込の通常料金は99円。電話振込の204円を候補に残さない');
 
-// 改定後の100円を差額候補として認識し、99円・101円と混同しない。
+// 改定後の100円を差額候補として認識し、101円と混同しない（99円差は auじぶんの通常料金に一致する）。
 assert.equal(explainShortfall(30000,29900).verdict, 'likely_fee');
-assert.equal(explainShortfall(30000,29901).verdict, 'near_fee');
+assert.equal(explainShortfall(30000,29901).verdict, 'likely_fee');
+assert.deepEqual(explainShortfall(30000,29901).hits, [99]);
 assert.equal(explainShortfall(30000,29899).verdict, 'near_fee');
 
 const {readFileSync}=await import('node:fs');
