@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>住民税 早見表【令和8年度】年収100万〜2,000万円・独身/配偶者あり</title>
+<meta name="description" content="令和8年度（令和7年分の所得・令和8年6月〜令和9年5月に納める分）の住民税を年収別の早見表に。東京23区・給与収入のみ・40歳未満・協会けんぽの会社員なら、独身で年収300万円は年115,700円、500万円は年243,200円。配偶者ありの列、特別徴収の月額、非課税になる年収、CSVつき。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/juminzei-hayamihyo/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="住民税 早見表【令和8年度】年収100万〜2,000万円・独身/配偶者あり">
+<meta property="og:description" content="令和8年度（令和7年分の所得・令和8年6月〜令和9年5月に納める分）の住民税を年収別の早見表に。東京23区・給与収入のみ・40歳未満・協会けんぽの会社員なら、独身で年収300万円は年115,700円、500万円は年243,200円。配偶者ありの列、特別徴収の月額、非課税になる年収、CSVつき。">
+<meta property="og:url" content="https://keiri-tools.com/column/juminzei-hayamihyo/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "住民税 早見表【令和8年度】年収100万〜2,000万円・独身/配偶者あり・月額つき",
+      "datePublished": "2026-10-07",
+      "dateModified": "2026-10-08",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/juminzei-hayamihyo/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "住民税 早見表"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 年収500万円の住民税はいくらですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 令和8年度（令和7年分の所得）の住民税は、東京23区に住む独身で、給与収入500万円だけの40歳未満の会社員（協会けんぽ・賞与なし）なら、森林環境税1,000円を含めて年243,200円です。この給与収入500万円・独身の例で特別徴収なら、令和8年7月〜令和9年5月の各月の住民税は20,200円、6月は21,000円です。同じ給与収入500万円で配偶者（収入なし）がいる場合は、配偶者控除33万円のぶん下がって年210,200円です。社会保険料の額や扶養家族、住んでいる自治体が違うと金額は変わります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 令和8年度の住民税は、いつの収入で決まりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 令和8年度の住民税の所得割は、前年である令和7年（2025年1月〜12月）の所得で決まります（地方税法313条1項）。会社員の特別徴収では、令和8年6月から令和9年5月までの12回に分けて給与から引かれます（地方税法321条の5第1項。税額が均等割額に相当する金額以下なら最初に徴収する月に一括、5月31日より後に通知を受け取った場合は残りの月数で分けて徴収）。令和8年（2026年）の所得にかかるのは令和9年度の住民税で、令和9年6月から引かれます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 住民税はなぜ年収の10%より少ないのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 令和8年度の住民税の所得割の標準税率は10%ですが、掛ける相手は年収ではなく、年収から給与所得控除・社会保険料控除・基礎控除43万円などを引いた課税総所得金額だからです。たとえば東京23区・独身・給与収入500万円（40歳未満・協会けんぽ・賞与なし）の人の課税総所得金額は2,408,000円で、年収の半分以下です。ここに10%を掛け、調整控除を引き、均等割と森林環境税5,000円を足した額が住民税の年額になります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 住民税は年収いくらからかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 令和8年度（令和7年分の所得）の住民税は、東京23区などの1級地で給与収入だけの独身の人なら、給与収入110万円以下では均等割も所得割もかかりません。配偶者（収入なし）がいる人は、給与収入166万円以下なら非課税、166万1円から177万円までは所得割がかからず均等割と森林環境税だけがかかります。障害者・未成年者・寡婦・ひとり親で前年の合計所得金額135万円以下の人も、退職所得の分離課税の所得割を除いて非課税です。均等割の非課税の上限は自治体の級地によって低くなることがあります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. この早見表をCSVで使ってもよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. はい。ページ内のCSVファイル（UTF-8・BOM付き）をダウンロードして、社内資料や記事に使えます。載せるときは、出典としてこのページの名前とURL（https://keiri-tools.com/column/juminzei-hayamihyo/）を書いてリンクを張り、令和8年度・東京23区・給与収入のみ・40歳未満・協会けんぽ・賞与なしという前提もあわせて示してください。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--jh:dataset:S--><script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "年収別 住民税 早見表（令和8年度・東京23区（特別区）・給与収入のみ）",
+  "description": "令和8年度（令和7年分の所得）の個人住民税（所得割・均等割）と森林環境税の合計額を、給与収入100万円から2,000万円まで年収別に計算した表。前提は東京23区（特別区）に住む40歳未満の会社員で、給与収入のみ・賞与なし、社会保険は協会けんぽ東京都支部の令和7年度の健康保険料率9.91%と厚生年金保険料率18.3%、雇用保険は一般の事業の労働者負担5.5/1,000で概算。独身と配偶者あり（配偶者の収入なし）の2通り。特別徴収の月額つき。",
+  "url": "https://keiri-tools.com/column/juminzei-hayamihyo/",
+  "inLanguage": "ja",
+  "spatialCoverage": "日本（東京都特別区。標準税率の自治体）",
+  "temporalCoverage": "2026-06/2027-05",
+  "isBasedOn": "https://laws.e-gov.go.jp/law/325AC0000000226",
+  "creator": {
+    "@type": "Person",
+    "name": "Masahiro Yasu",
+    "url": "https://keiri-tools.com/about/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "税金・経理・補助金ツールズ",
+    "url": "https://keiri-tools.com/"
+  },
+  "distribution": [
+    {
+      "@type": "DataDownload",
+      "encodingFormat": "text/csv",
+      "contentUrl": "https://keiri-tools.com/column/juminzei-hayamihyo/juminzei-hayamihyo-r08.csv"
+    }
+  ]
+}
+</script><!--jh:dataset:E-->
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 住民税 早見表</nav>
+<article>
+
+<h1>住民税 早見表【令和8年度】年収100万〜2,000万円・独身/配偶者あり・月額つき</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-07">2026年10月7日</time>（更新日: <time datetime="2026-10-08">2026年10月8日</time>）</p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<!--jh:lead:S--><p data-jh="lead"><b>令和8年度（令和7年分＝2025年1月〜12月の所得にかかり、令和8年6月〜令和9年5月（特別徴収）に納める分）の住民税は、東京23区（特別区）に住む独身・給与収入だけの会社員なら、年収300万円で年115,700円、年収500万円で年243,200円、年収700万円で年375,600円です。</b>いずれも、所得割（標準税率10％）と均等割（市区町村民税3,000円・都道府県民税1,000円）に、国税の森林環境税1,000円を足した額で、社会保険料は協会けんぽ東京都支部の40歳未満の会社員として概算しています。</p><!--jh:lead:E-->
+
+<p>住民税は前年の所得に対してかかるので、令和8年度の住民税を決めるのは令和7年（2025年）の1年間の給与です（地方税法313条1項）。この早見表は、令和8年度の住民税を、給与収入100万円から1,000万円までは10万円刻み、1,000万円から2,000万円までは100万円刻みで、独身と配偶者あり（配偶者の収入なし）の2通りに計算したものです。給与から天引きされる特別徴収の月額も並べ、同じ数字を<a href="juminzei-hayamihyo-r08.csv" download>CSVファイル</a>でも配布しています。</p>
+
+<p class="hint">前提（東京23区・40歳未満・協会けんぽ・賞与なし など）が自分と違う人は、<a href="#zentei">表の前提</a>と<a href="#zureru">表と金額がずれる人</a>を先に見てください。自分の数字で計算したい人は<a href="../../juminzei/">住民税 計算機</a>へ。</p>
+
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+  <li><a href="#hayami">年収別 住民税の早見表（令和8年度）</a></li>
+  <li><a href="#zentei">この表の前提 — 答えを1つに決めた条件</a></li>
+  <li><a href="#keisan">計算のしかた（年収500万円・独身の例）</a></li>
+  <li><a href="#hikazei">住民税がかからない年収（非課税の上限）</a></li>
+  <li><a href="#zureru">表と金額がずれる人・自治体による違い</a></li>
+  <li><a href="#inyou">引用のしかた・CSVのダウンロード</a></li>
+  <li><a href="#faq">よくある質問</a></li>
+  <li><a href="#source">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../../juminzei/">住民税 計算機</a></li><li><a href="../juminzei-hikazei-border/">住民税非課税のボーダーを1円超えたら、いくら損するか</a></li><li><a href="../juminzei-tokubetsu-choshu/">住民税の特別徴収とは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+<h2 id="hayami">年収別 住民税の早見表（令和8年度）</h2>
+
+<p>次の表は、令和8年度の住民税（区民税・都民税の所得割と均等割）に国税の森林環境税1,000円を足した年額です。前提は、東京23区に住む40歳未満の会社員で、令和7年中の収入は給与だけ（賞与なし）、社会保険は協会けんぽ東京都支部・厚生年金・雇用保険（一般の事業）に加入している人です。「月額」は特別徴収（給与天引き）の令和8年7月〜令和9年5月の各月の額で、6月の額は端数を足すぶんだけ少し多くなります（CSVに6月の額も載せています）。</p>
+
+<!--jh:table:S--><div class="col-switch" role="group" aria-label="スマホで表示する列"><span>表示する列</span><label><input type="radio" name="jh-cols" value="a" checked>独身</label><label><input type="radio" name="jh-cols" value="b">配偶者あり</label><label><input type="radio" name="jh-cols" value="all">すべての列</label></div><div class="scroll-wrap"><table class="juminzei-hayami sticky-first">
+<caption>年収別の住民税（令和8年度・東京23区（特別区）・給与収入のみ・40歳未満・協会けんぽ）</caption>
+<thead><tr><th scope="col">給与収入（年収）</th><th scope="col" class="num" data-col="a" data-answer>独身・年額</th><th scope="col" class="num" data-col="a" data-answer>独身・月額</th><th scope="col" class="num" data-col="b" data-answer>配偶者あり・年額</th><th scope="col" class="num" data-col="b" data-answer>配偶者あり・月額</th><th scope="col" class="num" data-col="x">社会保険料（前提）</th></tr></thead>
+<tbody>
+<tr data-nenshu="1000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">100万円</span></th><td class="num" data-col="a"><span class="numeric-token">0円</span></td><td class="num" data-col="a"><span class="numeric-token">0円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="x"><span class="numeric-token">154,444円</span></td></tr>
+<tr data-nenshu="1100000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">110万円</span></th><td class="num" data-col="a"><span class="numeric-token">0円</span></td><td class="num" data-col="a"><span class="numeric-token">0円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="x"><span class="numeric-token">154,994円</span></td></tr>
+<tr data-nenshu="1200000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">120万円</span></th><td class="num" data-col="a"><span class="numeric-token">5,000円</span></td><td class="num" data-col="a">—</td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="x"><span class="numeric-token">172,476円</span></td></tr>
+<tr data-nenshu="1300000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">130万円</span></th><td class="num" data-col="a"><span class="numeric-token">6,200円</span></td><td class="num" data-col="a"><span class="numeric-token">500円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="x"><span class="numeric-token">193,330円</span></td></tr>
+<tr data-nenshu="1400000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">140万円</span></th><td class="num" data-col="a"><span class="numeric-token">13,600円</span></td><td class="num" data-col="a"><span class="numeric-token">1,100円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="x"><span class="numeric-token">207,428円</span></td></tr>
+<tr data-nenshu="1500000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">150万円</span></th><td class="num" data-col="a"><span class="numeric-token">22,200円</span></td><td class="num" data-col="a"><span class="numeric-token">1,800円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="x"><span class="numeric-token">221,514円</span></td></tr>
+<tr data-nenshu="1600000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">160万円</span></th><td class="num" data-col="a"><span class="numeric-token">30,800円</span></td><td class="num" data-col="a"><span class="numeric-token">2,500円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="b"><span class="numeric-token">0円</span></td><td class="num" data-col="x"><span class="numeric-token">235,612円</span></td></tr>
+<tr data-nenshu="1700000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">170万円</span></th><td class="num" data-col="a"><span class="numeric-token">39,500円</span></td><td class="num" data-col="a"><span class="numeric-token">3,200円</span></td><td class="num" data-col="b"><span class="numeric-token">5,000円</span></td><td class="num" data-col="b">—</td><td class="num" data-col="x"><span class="numeric-token">249,698円</span></td></tr>
+<tr data-nenshu="1800000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">180万円</span></th><td class="num" data-col="a"><span class="numeric-token">48,000円</span></td><td class="num" data-col="a"><span class="numeric-token">4,000円</span></td><td class="num" data-col="b"><span class="numeric-token">12,500円</span></td><td class="num" data-col="b"><span class="numeric-token">1,000円</span></td><td class="num" data-col="x"><span class="numeric-token">263,784円</span></td></tr>
+<tr data-nenshu="1900000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">190万円</span></th><td class="num" data-col="a"><span class="numeric-token">56,200円</span></td><td class="num" data-col="a"><span class="numeric-token">4,600円</span></td><td class="num" data-col="b"><span class="numeric-token">20,700円</span></td><td class="num" data-col="b"><span class="numeric-token">1,700円</span></td><td class="num" data-col="x"><span class="numeric-token">281,266円</span></td></tr>
+<tr data-nenshu="2000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">200万円</span></th><td class="num" data-col="a"><span class="numeric-token">61,500円</span></td><td class="num" data-col="a"><span class="numeric-token">5,100円</span></td><td class="num" data-col="b"><span class="numeric-token">26,000円</span></td><td class="num" data-col="b"><span class="numeric-token">2,100円</span></td><td class="num" data-col="x"><span class="numeric-token">298,736円</span></td></tr>
+<tr data-nenshu="2100000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">210万円</span></th><td class="num" data-col="a"><span class="numeric-token">66,700円</span></td><td class="num" data-col="a"><span class="numeric-token">5,500円</span></td><td class="num" data-col="b"><span class="numeric-token">31,200円</span></td><td class="num" data-col="b"><span class="numeric-token">2,600円</span></td><td class="num" data-col="x"><span class="numeric-token">316,218円</span></td></tr>
+<tr data-nenshu="2200000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">220万円</span></th><td class="num" data-col="a"><span class="numeric-token">73,700円</span></td><td class="num" data-col="a"><span class="numeric-token">6,100円</span></td><td class="num" data-col="b"><span class="numeric-token">38,200円</span></td><td class="num" data-col="b"><span class="numeric-token">3,100円</span></td><td class="num" data-col="x"><span class="numeric-token">316,768円</span></td></tr>
+<tr data-nenshu="2300000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">230万円</span></th><td class="num" data-col="a"><span class="numeric-token">79,000円</span></td><td class="num" data-col="a"><span class="numeric-token">6,500円</span></td><td class="num" data-col="b"><span class="numeric-token">43,500円</span></td><td class="num" data-col="b"><span class="numeric-token">3,600円</span></td><td class="num" data-col="x"><span class="numeric-token">334,238円</span></td></tr>
+<tr data-nenshu="2400000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">240万円</span></th><td class="num" data-col="a"><span class="numeric-token">84,200円</span></td><td class="num" data-col="a"><span class="numeric-token">7,000円</span></td><td class="num" data-col="b"><span class="numeric-token">48,700円</span></td><td class="num" data-col="b"><span class="numeric-token">4,000円</span></td><td class="num" data-col="x"><span class="numeric-token">351,720円</span></td></tr>
+<tr data-nenshu="2500000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">250万円</span></th><td class="num" data-col="a"><span class="numeric-token">91,100円</span></td><td class="num" data-col="a"><span class="numeric-token">7,500円</span></td><td class="num" data-col="b"><span class="numeric-token">55,600円</span></td><td class="num" data-col="b"><span class="numeric-token">4,600円</span></td><td class="num" data-col="x"><span class="numeric-token">352,270円</span></td></tr>
+<tr data-nenshu="2600000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">260万円</span></th><td class="num" data-col="a"><span class="numeric-token">94,700円</span></td><td class="num" data-col="a"><span class="numeric-token">7,800円</span></td><td class="num" data-col="b"><span class="numeric-token">59,200円</span></td><td class="num" data-col="b"><span class="numeric-token">4,900円</span></td><td class="num" data-col="x"><span class="numeric-token">386,672円</span></td></tr>
+<tr data-nenshu="2700000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">270万円</span></th><td class="num" data-col="a"><span class="numeric-token">101,600円</span></td><td class="num" data-col="a"><span class="numeric-token">8,400円</span></td><td class="num" data-col="b"><span class="numeric-token">66,100円</span></td><td class="num" data-col="b"><span class="numeric-token">5,500円</span></td><td class="num" data-col="x"><span class="numeric-token">387,222円</span></td></tr>
+<tr data-nenshu="2800000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">280万円</span></th><td class="num" data-col="a"><span class="numeric-token">105,200円</span></td><td class="num" data-col="a"><span class="numeric-token">8,700円</span></td><td class="num" data-col="b"><span class="numeric-token">69,700円</span></td><td class="num" data-col="b"><span class="numeric-token">5,800円</span></td><td class="num" data-col="x"><span class="numeric-token">421,624円</span></td></tr>
+<tr data-nenshu="2900000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">290万円</span></th><td class="num" data-col="a"><span class="numeric-token">112,100円</span></td><td class="num" data-col="a"><span class="numeric-token">9,300円</span></td><td class="num" data-col="b"><span class="numeric-token">76,600円</span></td><td class="num" data-col="b"><span class="numeric-token">6,300円</span></td><td class="num" data-col="x"><span class="numeric-token">422,174円</span></td></tr>
+<tr data-nenshu="3000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">300万円</span></th><td class="num" data-col="a"><span class="numeric-token">115,700円</span></td><td class="num" data-col="a"><span class="numeric-token">9,600円</span></td><td class="num" data-col="b"><span class="numeric-token">80,200円</span></td><td class="num" data-col="b"><span class="numeric-token">6,600円</span></td><td class="num" data-col="x"><span class="numeric-token">456,576円</span></td></tr>
+<tr data-nenshu="3100000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">310万円</span></th><td class="num" data-col="a"><span class="numeric-token">122,600円</span></td><td class="num" data-col="a"><span class="numeric-token">10,200円</span></td><td class="num" data-col="b"><span class="numeric-token">87,100円</span></td><td class="num" data-col="b"><span class="numeric-token">7,200円</span></td><td class="num" data-col="x"><span class="numeric-token">457,126円</span></td></tr>
+<tr data-nenshu="3200000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">320万円</span></th><td class="num" data-col="a"><span class="numeric-token">129,600円</span></td><td class="num" data-col="a"><span class="numeric-token">10,800円</span></td><td class="num" data-col="b"><span class="numeric-token">94,100円</span></td><td class="num" data-col="b"><span class="numeric-token">7,800円</span></td><td class="num" data-col="x"><span class="numeric-token">457,676円</span></td></tr>
+<tr data-nenshu="3300000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">330万円</span></th><td class="num" data-col="a"><span class="numeric-token">133,100円</span></td><td class="num" data-col="a"><span class="numeric-token">11,000円</span></td><td class="num" data-col="b"><span class="numeric-token">97,600円</span></td><td class="num" data-col="b"><span class="numeric-token">8,100円</span></td><td class="num" data-col="x"><span class="numeric-token">492,078円</span></td></tr>
+<tr data-nenshu="3400000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">340万円</span></th><td class="num" data-col="a"><span class="numeric-token">140,100円</span></td><td class="num" data-col="a"><span class="numeric-token">11,600円</span></td><td class="num" data-col="b"><span class="numeric-token">104,600円</span></td><td class="num" data-col="b"><span class="numeric-token">8,700円</span></td><td class="num" data-col="x"><span class="numeric-token">492,628円</span></td></tr>
+<tr data-nenshu="3500000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">350万円</span></th><td class="num" data-col="a"><span class="numeric-token">143,600円</span></td><td class="num" data-col="a"><span class="numeric-token">11,900円</span></td><td class="num" data-col="b"><span class="numeric-token">108,100円</span></td><td class="num" data-col="b"><span class="numeric-token">9,000円</span></td><td class="num" data-col="x"><span class="numeric-token">527,030円</span></td></tr>
+<tr data-nenshu="3600000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">360万円</span></th><td class="num" data-col="a"><span class="numeric-token">150,600円</span></td><td class="num" data-col="a"><span class="numeric-token">12,500円</span></td><td class="num" data-col="b"><span class="numeric-token">115,100円</span></td><td class="num" data-col="b"><span class="numeric-token">9,500円</span></td><td class="num" data-col="x"><span class="numeric-token">527,580円</span></td></tr>
+<tr data-nenshu="3700000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">370万円</span></th><td class="num" data-col="a"><span class="numeric-token">158,500円</span></td><td class="num" data-col="a"><span class="numeric-token">13,200円</span></td><td class="num" data-col="b"><span class="numeric-token">123,000円</span></td><td class="num" data-col="b"><span class="numeric-token">10,200円</span></td><td class="num" data-col="x"><span class="numeric-token">528,130円</span></td></tr>
+<tr data-nenshu="3800000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">380万円</span></th><td class="num" data-col="a"><span class="numeric-token">163,100円</span></td><td class="num" data-col="a"><span class="numeric-token">13,500円</span></td><td class="num" data-col="b"><span class="numeric-token">127,600円</span></td><td class="num" data-col="b"><span class="numeric-token">10,600円</span></td><td class="num" data-col="x"><span class="numeric-token">562,532円</span></td></tr>
+<tr data-nenshu="3900000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">390万円</span></th><td class="num" data-col="a"><span class="numeric-token">171,000円</span></td><td class="num" data-col="a"><span class="numeric-token">14,200円</span></td><td class="num" data-col="b"><span class="numeric-token">135,500円</span></td><td class="num" data-col="b"><span class="numeric-token">11,200円</span></td><td class="num" data-col="x"><span class="numeric-token">563,082円</span></td></tr>
+<tr data-nenshu="4000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">400万円</span></th><td class="num" data-col="a"><span class="numeric-token">175,600円</span></td><td class="num" data-col="a"><span class="numeric-token">14,600円</span></td><td class="num" data-col="b"><span class="numeric-token">140,100円</span></td><td class="num" data-col="b"><span class="numeric-token">11,600円</span></td><td class="num" data-col="x"><span class="numeric-token">597,484円</span></td></tr>
+<tr data-nenshu="4100000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">410万円</span></th><td class="num" data-col="a"><span class="numeric-token">183,500円</span></td><td class="num" data-col="a"><span class="numeric-token">15,200円</span></td><td class="num" data-col="b"><span class="numeric-token">148,000円</span></td><td class="num" data-col="b"><span class="numeric-token">12,300円</span></td><td class="num" data-col="x"><span class="numeric-token">598,034円</span></td></tr>
+<tr data-nenshu="4200000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">420万円</span></th><td class="num" data-col="a"><span class="numeric-token">188,100円</span></td><td class="num" data-col="a"><span class="numeric-token">15,600円</span></td><td class="num" data-col="b"><span class="numeric-token">152,600円</span></td><td class="num" data-col="b"><span class="numeric-token">12,700円</span></td><td class="num" data-col="x"><span class="numeric-token">632,436円</span></td></tr>
+<tr data-nenshu="4300000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">430万円</span></th><td class="num" data-col="a"><span class="numeric-token">196,100円</span></td><td class="num" data-col="a"><span class="numeric-token">16,300円</span></td><td class="num" data-col="b"><span class="numeric-token">160,600円</span></td><td class="num" data-col="b"><span class="numeric-token">13,300円</span></td><td class="num" data-col="x"><span class="numeric-token">632,986円</span></td></tr>
+<tr data-nenshu="4400000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">440万円</span></th><td class="num" data-col="a"><span class="numeric-token">204,000円</span></td><td class="num" data-col="a"><span class="numeric-token">17,000円</span></td><td class="num" data-col="b"><span class="numeric-token">168,500円</span></td><td class="num" data-col="b"><span class="numeric-token">14,000円</span></td><td class="num" data-col="x"><span class="numeric-token">633,536円</span></td></tr>
+<tr data-nenshu="4500000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">450万円</span></th><td class="num" data-col="a"><span class="numeric-token">208,600円</span></td><td class="num" data-col="a"><span class="numeric-token">17,300円</span></td><td class="num" data-col="b"><span class="numeric-token">173,100円</span></td><td class="num" data-col="b"><span class="numeric-token">14,400円</span></td><td class="num" data-col="x"><span class="numeric-token">667,938円</span></td></tr>
+<tr data-nenshu="4600000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">460万円</span></th><td class="num" data-col="a"><span class="numeric-token">216,500円</span></td><td class="num" data-col="a"><span class="numeric-token">18,000円</span></td><td class="num" data-col="b"><span class="numeric-token">181,000円</span></td><td class="num" data-col="b"><span class="numeric-token">15,000円</span></td><td class="num" data-col="x"><span class="numeric-token">668,488円</span></td></tr>
+<tr data-nenshu="4700000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">470万円</span></th><td class="num" data-col="a"><span class="numeric-token">224,500円</span></td><td class="num" data-col="a"><span class="numeric-token">18,700円</span></td><td class="num" data-col="b"><span class="numeric-token">189,000円</span></td><td class="num" data-col="b"><span class="numeric-token">15,700円</span></td><td class="num" data-col="x"><span class="numeric-token">669,038円</span></td></tr>
+<tr data-nenshu="4800000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">480万円</span></th><td class="num" data-col="a"><span class="numeric-token">227,300円</span></td><td class="num" data-col="a"><span class="numeric-token">18,900円</span></td><td class="num" data-col="b"><span class="numeric-token">191,800円</span></td><td class="num" data-col="b"><span class="numeric-token">15,900円</span></td><td class="num" data-col="x"><span class="numeric-token">720,360円</span></td></tr>
+<tr data-nenshu="4900000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">490万円</span></th><td class="num" data-col="a"><span class="numeric-token">235,300円</span></td><td class="num" data-col="a"><span class="numeric-token">19,600円</span></td><td class="num" data-col="b"><span class="numeric-token">199,800円</span></td><td class="num" data-col="b"><span class="numeric-token">16,600円</span></td><td class="num" data-col="x"><span class="numeric-token">720,910円</span></td></tr>
+<tr data-nenshu="5000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">500万円</span></th><td class="num" data-col="a"><span class="numeric-token">243,200円</span></td><td class="num" data-col="a"><span class="numeric-token">20,200円</span></td><td class="num" data-col="b"><span class="numeric-token">210,200円</span></td><td class="num" data-col="b"><span class="numeric-token">17,500円</span></td><td class="num" data-col="x"><span class="numeric-token">721,460円</span></td></tr>
+<tr data-nenshu="5100000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">510万円</span></th><td class="num" data-col="a"><span class="numeric-token">246,100円</span></td><td class="num" data-col="a"><span class="numeric-token">20,500円</span></td><td class="num" data-col="b"><span class="numeric-token">213,100円</span></td><td class="num" data-col="b"><span class="numeric-token">17,700円</span></td><td class="num" data-col="x"><span class="numeric-token">772,794円</span></td></tr>
+<tr data-nenshu="5200000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">520万円</span></th><td class="num" data-col="a"><span class="numeric-token">254,000円</span></td><td class="num" data-col="a"><span class="numeric-token">21,100円</span></td><td class="num" data-col="b"><span class="numeric-token">221,000円</span></td><td class="num" data-col="b"><span class="numeric-token">18,400円</span></td><td class="num" data-col="x"><span class="numeric-token">773,344円</span></td></tr>
+<tr data-nenshu="5300000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">530万円</span></th><td class="num" data-col="a"><span class="numeric-token">262,000円</span></td><td class="num" data-col="a"><span class="numeric-token">21,800円</span></td><td class="num" data-col="b"><span class="numeric-token">229,000円</span></td><td class="num" data-col="b"><span class="numeric-token">19,000円</span></td><td class="num" data-col="x"><span class="numeric-token">773,894円</span></td></tr>
+<tr data-nenshu="5400000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">540万円</span></th><td class="num" data-col="a"><span class="numeric-token">270,000円</span></td><td class="num" data-col="a"><span class="numeric-token">22,500円</span></td><td class="num" data-col="b"><span class="numeric-token">237,000円</span></td><td class="num" data-col="b"><span class="numeric-token">19,700円</span></td><td class="num" data-col="x"><span class="numeric-token">774,444円</span></td></tr>
+<tr data-nenshu="5500000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">550万円</span></th><td class="num" data-col="a"><span class="numeric-token">272,800円</span></td><td class="num" data-col="a"><span class="numeric-token">22,700円</span></td><td class="num" data-col="b"><span class="numeric-token">239,800円</span></td><td class="num" data-col="b"><span class="numeric-token">19,900円</span></td><td class="num" data-col="x"><span class="numeric-token">825,766円</span></td></tr>
+<tr data-nenshu="5600000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">560万円</span></th><td class="num" data-col="a"><span class="numeric-token">280,700円</span></td><td class="num" data-col="a"><span class="numeric-token">23,300円</span></td><td class="num" data-col="b"><span class="numeric-token">247,700円</span></td><td class="num" data-col="b"><span class="numeric-token">20,600円</span></td><td class="num" data-col="x"><span class="numeric-token">826,316円</span></td></tr>
+<tr data-nenshu="5700000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">570万円</span></th><td class="num" data-col="a"><span class="numeric-token">288,700円</span></td><td class="num" data-col="a"><span class="numeric-token">24,000円</span></td><td class="num" data-col="b"><span class="numeric-token">255,700円</span></td><td class="num" data-col="b"><span class="numeric-token">21,300円</span></td><td class="num" data-col="x"><span class="numeric-token">826,866円</span></td></tr>
+<tr data-nenshu="5800000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">580万円</span></th><td class="num" data-col="a"><span class="numeric-token">296,600円</span></td><td class="num" data-col="a"><span class="numeric-token">24,700円</span></td><td class="num" data-col="b"><span class="numeric-token">263,600円</span></td><td class="num" data-col="b"><span class="numeric-token">21,900円</span></td><td class="num" data-col="x"><span class="numeric-token">827,416円</span></td></tr>
+<tr data-nenshu="5900000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">590万円</span></th><td class="num" data-col="a"><span class="numeric-token">299,500円</span></td><td class="num" data-col="a"><span class="numeric-token">24,900円</span></td><td class="num" data-col="b"><span class="numeric-token">266,500円</span></td><td class="num" data-col="b"><span class="numeric-token">22,200円</span></td><td class="num" data-col="x"><span class="numeric-token">878,750円</span></td></tr>
+<tr data-nenshu="6000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">600万円</span></th><td class="num" data-col="a"><span class="numeric-token">307,500円</span></td><td class="num" data-col="a"><span class="numeric-token">25,600円</span></td><td class="num" data-col="b"><span class="numeric-token">274,500円</span></td><td class="num" data-col="b"><span class="numeric-token">22,800円</span></td><td class="num" data-col="x"><span class="numeric-token">879,300円</span></td></tr>
+<tr data-nenshu="6100000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">610万円</span></th><td class="num" data-col="a"><span class="numeric-token">315,500円</span></td><td class="num" data-col="a"><span class="numeric-token">26,200円</span></td><td class="num" data-col="b"><span class="numeric-token">282,500円</span></td><td class="num" data-col="b"><span class="numeric-token">23,500円</span></td><td class="num" data-col="x"><span class="numeric-token">879,850円</span></td></tr>
+<tr data-nenshu="6200000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">620万円</span></th><td class="num" data-col="a"><span class="numeric-token">318,200円</span></td><td class="num" data-col="a"><span class="numeric-token">26,500円</span></td><td class="num" data-col="b"><span class="numeric-token">285,200円</span></td><td class="num" data-col="b"><span class="numeric-token">23,700円</span></td><td class="num" data-col="x"><span class="numeric-token">931,172円</span></td></tr>
+<tr data-nenshu="6300000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">630万円</span></th><td class="num" data-col="a"><span class="numeric-token">326,200円</span></td><td class="num" data-col="a"><span class="numeric-token">27,100円</span></td><td class="num" data-col="b"><span class="numeric-token">293,200円</span></td><td class="num" data-col="b"><span class="numeric-token">24,400円</span></td><td class="num" data-col="x"><span class="numeric-token">931,722円</span></td></tr>
+<tr data-nenshu="6400000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">640万円</span></th><td class="num" data-col="a"><span class="numeric-token">334,100円</span></td><td class="num" data-col="a"><span class="numeric-token">27,800円</span></td><td class="num" data-col="b"><span class="numeric-token">301,100円</span></td><td class="num" data-col="b"><span class="numeric-token">25,000円</span></td><td class="num" data-col="x"><span class="numeric-token">932,272円</span></td></tr>
+<tr data-nenshu="6500000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">650万円</span></th><td class="num" data-col="a"><span class="numeric-token">342,100円</span></td><td class="num" data-col="a"><span class="numeric-token">28,500円</span></td><td class="num" data-col="b"><span class="numeric-token">309,100円</span></td><td class="num" data-col="b"><span class="numeric-token">25,700円</span></td><td class="num" data-col="x"><span class="numeric-token">932,822円</span></td></tr>
+<tr data-nenshu="6600000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">660万円</span></th><td class="num" data-col="a"><span class="numeric-token">345,000円</span></td><td class="num" data-col="a"><span class="numeric-token">28,700円</span></td><td class="num" data-col="b"><span class="numeric-token">312,000円</span></td><td class="num" data-col="b"><span class="numeric-token">26,000円</span></td><td class="num" data-col="x"><span class="numeric-token">984,156円</span></td></tr>
+<tr data-nenshu="6700000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">670万円</span></th><td class="num" data-col="a"><span class="numeric-token">354,000円</span></td><td class="num" data-col="a"><span class="numeric-token">29,500円</span></td><td class="num" data-col="b"><span class="numeric-token">321,000円</span></td><td class="num" data-col="b"><span class="numeric-token">26,700円</span></td><td class="num" data-col="x"><span class="numeric-token">984,706円</span></td></tr>
+<tr data-nenshu="6800000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">680万円</span></th><td class="num" data-col="a"><span class="numeric-token">362,800円</span></td><td class="num" data-col="a"><span class="numeric-token">30,200円</span></td><td class="num" data-col="b"><span class="numeric-token">329,800円</span></td><td class="num" data-col="b"><span class="numeric-token">27,400円</span></td><td class="num" data-col="x"><span class="numeric-token">985,256円</span></td></tr>
+<tr data-nenshu="6900000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">690万円</span></th><td class="num" data-col="a"><span class="numeric-token">366,700円</span></td><td class="num" data-col="a"><span class="numeric-token">30,500円</span></td><td class="num" data-col="b"><span class="numeric-token">333,700円</span></td><td class="num" data-col="b"><span class="numeric-token">27,800円</span></td><td class="num" data-col="x"><span class="numeric-token">1,036,578円</span></td></tr>
+<tr data-nenshu="7000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">700万円</span></th><td class="num" data-col="a"><span class="numeric-token">375,600円</span></td><td class="num" data-col="a"><span class="numeric-token">31,300円</span></td><td class="num" data-col="b"><span class="numeric-token">342,600円</span></td><td class="num" data-col="b"><span class="numeric-token">28,500円</span></td><td class="num" data-col="x"><span class="numeric-token">1,037,128円</span></td></tr>
+<tr data-nenshu="7100000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">710万円</span></th><td class="num" data-col="a"><span class="numeric-token">384,600円</span></td><td class="num" data-col="a"><span class="numeric-token">32,000円</span></td><td class="num" data-col="b"><span class="numeric-token">351,600円</span></td><td class="num" data-col="b"><span class="numeric-token">29,300円</span></td><td class="num" data-col="x"><span class="numeric-token">1,037,678円</span></td></tr>
+<tr data-nenshu="7200000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">720万円</span></th><td class="num" data-col="a"><span class="numeric-token">393,500円</span></td><td class="num" data-col="a"><span class="numeric-token">32,700円</span></td><td class="num" data-col="b"><span class="numeric-token">360,500円</span></td><td class="num" data-col="b"><span class="numeric-token">30,000円</span></td><td class="num" data-col="x"><span class="numeric-token">1,038,228円</span></td></tr>
+<tr data-nenshu="7300000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">730万円</span></th><td class="num" data-col="a"><span class="numeric-token">397,500円</span></td><td class="num" data-col="a"><span class="numeric-token">33,100円</span></td><td class="num" data-col="b"><span class="numeric-token">364,500円</span></td><td class="num" data-col="b"><span class="numeric-token">30,300円</span></td><td class="num" data-col="x"><span class="numeric-token">1,089,562円</span></td></tr>
+<tr data-nenshu="7400000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">740万円</span></th><td class="num" data-col="a"><span class="numeric-token">406,300円</span></td><td class="num" data-col="a"><span class="numeric-token">33,800円</span></td><td class="num" data-col="b"><span class="numeric-token">373,300円</span></td><td class="num" data-col="b"><span class="numeric-token">31,100円</span></td><td class="num" data-col="x"><span class="numeric-token">1,090,112円</span></td></tr>
+<tr data-nenshu="7500000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">750万円</span></th><td class="num" data-col="a"><span class="numeric-token">415,300円</span></td><td class="num" data-col="a"><span class="numeric-token">34,600円</span></td><td class="num" data-col="b"><span class="numeric-token">382,300円</span></td><td class="num" data-col="b"><span class="numeric-token">31,800円</span></td><td class="num" data-col="x"><span class="numeric-token">1,090,662円</span></td></tr>
+<tr data-nenshu="7600000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">760万円</span></th><td class="num" data-col="a"><span class="numeric-token">424,200円</span></td><td class="num" data-col="a"><span class="numeric-token">35,300円</span></td><td class="num" data-col="b"><span class="numeric-token">391,200円</span></td><td class="num" data-col="b"><span class="numeric-token">32,600円</span></td><td class="num" data-col="x"><span class="numeric-token">1,091,212円</span></td></tr>
+<tr data-nenshu="7700000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">770万円</span></th><td class="num" data-col="a"><span class="numeric-token">428,100円</span></td><td class="num" data-col="a"><span class="numeric-token">35,600円</span></td><td class="num" data-col="b"><span class="numeric-token">395,100円</span></td><td class="num" data-col="b"><span class="numeric-token">32,900円</span></td><td class="num" data-col="x"><span class="numeric-token">1,142,534円</span></td></tr>
+<tr data-nenshu="7800000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">780万円</span></th><td class="num" data-col="a"><span class="numeric-token">437,000円</span></td><td class="num" data-col="a"><span class="numeric-token">36,400円</span></td><td class="num" data-col="b"><span class="numeric-token">404,000円</span></td><td class="num" data-col="b"><span class="numeric-token">33,600円</span></td><td class="num" data-col="x"><span class="numeric-token">1,143,084円</span></td></tr>
+<tr data-nenshu="7900000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">790万円</span></th><td class="num" data-col="a"><span class="numeric-token">446,000円</span></td><td class="num" data-col="a"><span class="numeric-token">37,100円</span></td><td class="num" data-col="b"><span class="numeric-token">413,000円</span></td><td class="num" data-col="b"><span class="numeric-token">34,400円</span></td><td class="num" data-col="x"><span class="numeric-token">1,143,634円</span></td></tr>
+<tr data-nenshu="8000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">800万円</span></th><td class="num" data-col="a"><span class="numeric-token">453,100円</span></td><td class="num" data-col="a"><span class="numeric-token">37,700円</span></td><td class="num" data-col="b"><span class="numeric-token">420,100円</span></td><td class="num" data-col="b"><span class="numeric-token">35,000円</span></td><td class="num" data-col="x"><span class="numeric-token">1,162,028円</span></td></tr>
+<tr data-nenshu="8100000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">810万円</span></th><td class="num" data-col="a"><span class="numeric-token">462,100円</span></td><td class="num" data-col="a"><span class="numeric-token">38,500円</span></td><td class="num" data-col="b"><span class="numeric-token">429,100円</span></td><td class="num" data-col="b"><span class="numeric-token">35,700円</span></td><td class="num" data-col="x"><span class="numeric-token">1,162,578円</span></td></tr>
+<tr data-nenshu="8200000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">820万円</span></th><td class="num" data-col="a"><span class="numeric-token">471,000円</span></td><td class="num" data-col="a"><span class="numeric-token">39,200円</span></td><td class="num" data-col="b"><span class="numeric-token">438,000円</span></td><td class="num" data-col="b"><span class="numeric-token">36,500円</span></td><td class="num" data-col="x"><span class="numeric-token">1,163,128円</span></td></tr>
+<tr data-nenshu="8300000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">830万円</span></th><td class="num" data-col="a"><span class="numeric-token">480,000円</span></td><td class="num" data-col="a"><span class="numeric-token">40,000円</span></td><td class="num" data-col="b"><span class="numeric-token">447,000円</span></td><td class="num" data-col="b"><span class="numeric-token">37,200円</span></td><td class="num" data-col="x"><span class="numeric-token">1,163,678円</span></td></tr>
+<tr data-nenshu="8400000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">840万円</span></th><td class="num" data-col="a"><span class="numeric-token">487,100円</span></td><td class="num" data-col="a"><span class="numeric-token">40,500円</span></td><td class="num" data-col="b"><span class="numeric-token">454,100円</span></td><td class="num" data-col="b"><span class="numeric-token">37,800円</span></td><td class="num" data-col="x"><span class="numeric-token">1,182,060円</span></td></tr>
+<tr data-nenshu="8500000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">850万円</span></th><td class="num" data-col="a"><span class="numeric-token">496,100円</span></td><td class="num" data-col="a"><span class="numeric-token">41,300円</span></td><td class="num" data-col="b"><span class="numeric-token">463,100円</span></td><td class="num" data-col="b"><span class="numeric-token">38,500円</span></td><td class="num" data-col="x"><span class="numeric-token">1,182,610円</span></td></tr>
+<tr data-nenshu="8600000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">860万円</span></th><td class="num" data-col="a"><span class="numeric-token">506,000円</span></td><td class="num" data-col="a"><span class="numeric-token">42,100円</span></td><td class="num" data-col="b"><span class="numeric-token">473,000円</span></td><td class="num" data-col="b"><span class="numeric-token">39,400円</span></td><td class="num" data-col="x"><span class="numeric-token">1,183,160円</span></td></tr>
+<tr data-nenshu="8700000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">870万円</span></th><td class="num" data-col="a"><span class="numeric-token">516,000円</span></td><td class="num" data-col="a"><span class="numeric-token">43,000円</span></td><td class="num" data-col="b"><span class="numeric-token">483,000円</span></td><td class="num" data-col="b"><span class="numeric-token">40,200円</span></td><td class="num" data-col="x"><span class="numeric-token">1,183,710円</span></td></tr>
+<tr data-nenshu="8800000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">880万円</span></th><td class="num" data-col="a"><span class="numeric-token">523,500円</span></td><td class="num" data-col="a"><span class="numeric-token">43,600円</span></td><td class="num" data-col="b"><span class="numeric-token">490,500円</span></td><td class="num" data-col="b"><span class="numeric-token">40,800円</span></td><td class="num" data-col="x"><span class="numeric-token">1,208,044円</span></td></tr>
+<tr data-nenshu="8900000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">890万円</span></th><td class="num" data-col="a"><span class="numeric-token">533,500円</span></td><td class="num" data-col="a"><span class="numeric-token">44,400円</span></td><td class="num" data-col="b"><span class="numeric-token">500,500円</span></td><td class="num" data-col="b"><span class="numeric-token">41,700円</span></td><td class="num" data-col="x"><span class="numeric-token">1,208,594円</span></td></tr>
+<tr data-nenshu="9000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">900万円</span></th><td class="num" data-col="a"><span class="numeric-token">543,500円</span></td><td class="num" data-col="a"><span class="numeric-token">45,200円</span></td><td class="num" data-col="b"><span class="numeric-token">510,500円</span></td><td class="num" data-col="b"><span class="numeric-token">42,500円</span></td><td class="num" data-col="x"><span class="numeric-token">1,209,144円</span></td></tr>
+<tr data-nenshu="9100000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">910万円</span></th><td class="num" data-col="a"><span class="numeric-token">553,500円</span></td><td class="num" data-col="a"><span class="numeric-token">46,100円</span></td><td class="num" data-col="b"><span class="numeric-token">520,500円</span></td><td class="num" data-col="b"><span class="numeric-token">43,300円</span></td><td class="num" data-col="x"><span class="numeric-token">1,209,694円</span></td></tr>
+<tr data-nenshu="9200000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">920万円</span></th><td class="num" data-col="a"><span class="numeric-token">563,300円</span></td><td class="num" data-col="a"><span class="numeric-token">46,900円</span></td><td class="num" data-col="b"><span class="numeric-token">530,300円</span></td><td class="num" data-col="b"><span class="numeric-token">44,100円</span></td><td class="num" data-col="x"><span class="numeric-token">1,210,244円</span></td></tr>
+<tr data-nenshu="9300000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">930万円</span></th><td class="num" data-col="a"><span class="numeric-token">571,000円</span></td><td class="num" data-col="a"><span class="numeric-token">47,500円</span></td><td class="num" data-col="b"><span class="numeric-token">538,000円</span></td><td class="num" data-col="b"><span class="numeric-token">44,800円</span></td><td class="num" data-col="x"><span class="numeric-token">1,234,578円</span></td></tr>
+<tr data-nenshu="9400000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">940万円</span></th><td class="num" data-col="a"><span class="numeric-token">580,800円</span></td><td class="num" data-col="a"><span class="numeric-token">48,400円</span></td><td class="num" data-col="b"><span class="numeric-token">547,800円</span></td><td class="num" data-col="b"><span class="numeric-token">45,600円</span></td><td class="num" data-col="x"><span class="numeric-token">1,235,128円</span></td></tr>
+<tr data-nenshu="9500000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">950万円</span></th><td class="num" data-col="a"><span class="numeric-token">590,800円</span></td><td class="num" data-col="a"><span class="numeric-token">49,200円</span></td><td class="num" data-col="b"><span class="numeric-token">557,800円</span></td><td class="num" data-col="b"><span class="numeric-token">46,400円</span></td><td class="num" data-col="x"><span class="numeric-token">1,235,678円</span></td></tr>
+<tr data-nenshu="9600000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">960万円</span></th><td class="num" data-col="a"><span class="numeric-token">600,700円</span></td><td class="num" data-col="a"><span class="numeric-token">50,000円</span></td><td class="num" data-col="b"><span class="numeric-token">567,700円</span></td><td class="num" data-col="b"><span class="numeric-token">47,300円</span></td><td class="num" data-col="x"><span class="numeric-token">1,236,228円</span></td></tr>
+<tr data-nenshu="9700000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">970万円</span></th><td class="num" data-col="a"><span class="numeric-token">610,700円</span></td><td class="num" data-col="a"><span class="numeric-token">50,800円</span></td><td class="num" data-col="b"><span class="numeric-token">577,700円</span></td><td class="num" data-col="b"><span class="numeric-token">48,100円</span></td><td class="num" data-col="x"><span class="numeric-token">1,236,778円</span></td></tr>
+<tr data-nenshu="9800000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">980万円</span></th><td class="num" data-col="a"><span class="numeric-token">618,200円</span></td><td class="num" data-col="a"><span class="numeric-token">51,500円</span></td><td class="num" data-col="b"><span class="numeric-token">585,200円</span></td><td class="num" data-col="b"><span class="numeric-token">48,700円</span></td><td class="num" data-col="x"><span class="numeric-token">1,261,112円</span></td></tr>
+<tr data-nenshu="9900000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">990万円</span></th><td class="num" data-col="a"><span class="numeric-token">628,200円</span></td><td class="num" data-col="a"><span class="numeric-token">52,300円</span></td><td class="num" data-col="b"><span class="numeric-token">595,200円</span></td><td class="num" data-col="b"><span class="numeric-token">49,600円</span></td><td class="num" data-col="x"><span class="numeric-token">1,261,662円</span></td></tr>
+<tr data-nenshu="10000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">1,000万円</span></th><td class="num" data-col="a"><span class="numeric-token">638,100円</span></td><td class="num" data-col="a"><span class="numeric-token">53,100円</span></td><td class="num" data-col="b"><span class="numeric-token">605,100円</span></td><td class="num" data-col="b"><span class="numeric-token">50,400円</span></td><td class="num" data-col="x"><span class="numeric-token">1,262,212円</span></td></tr>
+<tr data-nenshu="11000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">1,100万円</span></th><td class="num" data-col="a"><span class="numeric-token">731,600円</span></td><td class="num" data-col="a"><span class="numeric-token">60,900円</span></td><td class="num" data-col="b"><span class="numeric-token">709,600円</span></td><td class="num" data-col="b"><span class="numeric-token">59,100円</span></td><td class="num" data-col="x"><span class="numeric-token">1,327,172円</span></td></tr>
+<tr data-nenshu="12000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">1,200万円</span></th><td class="num" data-col="a"><span class="numeric-token">828,100円</span></td><td class="num" data-col="a"><span class="numeric-token">69,000円</span></td><td class="num" data-col="b"><span class="numeric-token">828,100円</span></td><td class="num" data-col="b"><span class="numeric-token">69,000円</span></td><td class="num" data-col="x"><span class="numeric-token">1,362,408円</span></td></tr>
+<tr data-nenshu="13000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">1,300万円</span></th><td class="num" data-col="a"><span class="numeric-token">921,000円</span></td><td class="num" data-col="a"><span class="numeric-token">76,700円</span></td><td class="num" data-col="b"><span class="numeric-token">921,000円</span></td><td class="num" data-col="b"><span class="numeric-token">76,700円</span></td><td class="num" data-col="x"><span class="numeric-token">1,433,308円</span></td></tr>
+<tr data-nenshu="14000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">1,400万円</span></th><td class="num" data-col="a"><span class="numeric-token">1,017,000円</span></td><td class="num" data-col="a"><span class="numeric-token">84,700円</span></td><td class="num" data-col="b"><span class="numeric-token">1,017,000円</span></td><td class="num" data-col="b"><span class="numeric-token">84,700円</span></td><td class="num" data-col="x"><span class="numeric-token">1,474,484円</span></td></tr>
+<tr data-nenshu="15000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">1,500万円</span></th><td class="num" data-col="a"><span class="numeric-token">1,109,200円</span></td><td class="num" data-col="a"><span class="numeric-token">92,400円</span></td><td class="num" data-col="b"><span class="numeric-token">1,109,200円</span></td><td class="num" data-col="b"><span class="numeric-token">92,400円</span></td><td class="num" data-col="x"><span class="numeric-token">1,551,336円</span></td></tr>
+<tr data-nenshu="16000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">1,600万円</span></th><td class="num" data-col="a"><span class="numeric-token">1,205,100円</span></td><td class="num" data-col="a"><span class="numeric-token">100,400円</span></td><td class="num" data-col="b"><span class="numeric-token">1,205,100円</span></td><td class="num" data-col="b"><span class="numeric-token">100,400円</span></td><td class="num" data-col="x"><span class="numeric-token">1,592,512円</span></td></tr>
+<tr data-nenshu="17000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">1,700万円</span></th><td class="num" data-col="a"><span class="numeric-token">1,301,000円</span></td><td class="num" data-col="a"><span class="numeric-token">108,400円</span></td><td class="num" data-col="b"><span class="numeric-token">1,301,000円</span></td><td class="num" data-col="b"><span class="numeric-token">108,400円</span></td><td class="num" data-col="x"><span class="numeric-token">1,633,688円</span></td></tr>
+<tr data-nenshu="18000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">1,800万円</span></th><td class="num" data-col="a"><span class="numeric-token">1,400,500円</span></td><td class="num" data-col="a"><span class="numeric-token">116,700円</span></td><td class="num" data-col="b"><span class="numeric-token">1,400,500円</span></td><td class="num" data-col="b"><span class="numeric-token">116,700円</span></td><td class="num" data-col="x"><span class="numeric-token">1,639,188円</span></td></tr>
+<tr data-nenshu="19000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">1,900万円</span></th><td class="num" data-col="a"><span class="numeric-token">1,500,000円</span></td><td class="num" data-col="a"><span class="numeric-token">125,000円</span></td><td class="num" data-col="b"><span class="numeric-token">1,500,000円</span></td><td class="num" data-col="b"><span class="numeric-token">125,000円</span></td><td class="num" data-col="x"><span class="numeric-token">1,644,688円</span></td></tr>
+<tr data-nenshu="20000000"><th scope="row" style="white-space:nowrap"><span class="numeric-token">2,000万円</span></th><td class="num" data-col="a"><span class="numeric-token">1,599,300円</span></td><td class="num" data-col="a"><span class="numeric-token">133,200円</span></td><td class="num" data-col="b"><span class="numeric-token">1,599,300円</span></td><td class="num" data-col="b"><span class="numeric-token">133,200円</span></td><td class="num" data-col="x"><span class="numeric-token">1,650,188円</span></td></tr>
+</tbody></table></div><!--jh:table:E-->
+
+<p class="hint">月額が「—」の行は、所得割がかからず均等割と森林環境税（合計5,000円）だけの行です。特別徴収税額が均等割額に相当する金額以下のときは、月割りせずに最初に徴収する月にまとめて徴収すると地方税法321条の5第1項ただし書が定めています。年額が0円の行は、均等割も所得割もかからない（非課税の）行です。</p>
+
+<figure class="figure fig-wide" style="--figw:390px">
+<!--jh:figure:S--><svg viewBox="0 0 420 250" role="img" aria-labelledby="jh-fig-t" style="width:100%;height:auto;max-width:640px">
+<title id="jh-fig-t">年収と令和8年度の住民税（年額）の関係</title>
+<line x1="46" y1="210.0" x2="404" y2="210.0" stroke="var(--sub)" stroke-opacity="0.25"/><text x="41" y="214" font-size="12" text-anchor="end" fill="currentColor">0万</text><line x1="46" y1="155.7" x2="404" y2="155.7" stroke="var(--sub)" stroke-opacity="0.25"/><text x="41" y="159.7" font-size="12" text-anchor="end" fill="currentColor">20万</text><line x1="46" y1="101.4" x2="404" y2="101.4" stroke="var(--sub)" stroke-opacity="0.25"/><text x="41" y="105.4" font-size="12" text-anchor="end" fill="currentColor">40万</text><line x1="46" y1="47.1" x2="404" y2="47.1" stroke="var(--sub)" stroke-opacity="0.25"/><text x="41" y="51.1" font-size="12" text-anchor="end" fill="currentColor">60万</text><line x1="46" y1="210" x2="404" y2="210" stroke="currentColor"/><line x1="46.0" y1="210" x2="46.0" y2="215" stroke="currentColor"/><text x="46.0" y="229" font-size="12" text-anchor="middle" fill="currentColor">100万</text><line x1="125.6" y1="210" x2="125.6" y2="215" stroke="currentColor"/><text x="125.6" y="229" font-size="12" text-anchor="middle" fill="currentColor">300万</text><line x1="205.1" y1="210" x2="205.1" y2="215" stroke="currentColor"/><text x="205.1" y="229" font-size="12" text-anchor="middle" fill="currentColor">500万</text><line x1="284.7" y1="210" x2="284.7" y2="215" stroke="currentColor"/><text x="284.7" y="229" font-size="12" text-anchor="middle" fill="currentColor">700万</text><line x1="404.0" y1="210" x2="404.0" y2="215" stroke="currentColor"/><text x="404.0" y="229" font-size="12" text-anchor="middle" fill="currentColor">1000万</text>
+<polyline fill="none" stroke="var(--accent)" stroke-width="2.5" points="46.0,210.0 50.0,210.0 54.0,208.6 57.9,208.3 61.9,206.3 65.9,204.0 69.9,201.6 73.8,199.3 77.8,197.0 81.8,194.7 85.8,193.3 89.8,191.9 93.7,190.0 97.7,188.6 101.7,187.1 105.7,185.3 109.6,184.3 113.6,182.4 117.6,181.4 121.6,179.6 125.6,178.6 129.5,176.7 133.5,174.8 137.5,173.9 141.5,172.0 145.4,171.0 149.4,169.1 153.4,167.0 157.4,165.7 161.4,163.6 165.3,162.3 169.3,160.2 173.3,158.9 177.3,156.8 181.2,154.6 185.2,153.4 189.2,151.2 193.2,149.1 197.2,148.3 201.1,146.1 205.1,144.0 209.1,143.2 213.1,141.1 217.0,138.9 221.0,136.7 225.0,136.0 229.0,133.8 233.0,131.6 236.9,129.5 240.9,128.7 244.9,126.5 248.9,124.4 252.8,123.6 256.8,121.5 260.8,119.3 264.8,117.1 268.8,116.4 272.7,113.9 276.7,111.5 280.7,110.5 284.7,108.1 288.6,105.6 292.6,103.2 296.6,102.1 300.6,99.7 304.6,97.3 308.5,94.9 312.5,93.8 316.5,91.4 320.5,88.9 324.4,87.0 328.4,84.6 332.4,82.2 336.4,79.7 340.4,77.8 344.3,75.3 348.3,72.7 352.3,69.9 356.3,67.9 360.2,65.2 364.2,62.5 368.2,59.8 372.2,57.1 376.2,55.0 380.1,52.4 384.1,49.6 388.1,47.0 392.1,44.2 396.0,42.2 400.0,39.5 404.0,36.8"/><polyline fill="none" stroke="var(--sub)" stroke-width="2.5" stroke-dasharray="6 4" points="46.0,210.0 50.0,210.0 54.0,210.0 57.9,210.0 61.9,210.0 65.9,210.0 69.9,210.0 73.8,208.6 77.8,206.6 81.8,204.4 85.8,202.9 89.8,201.5 93.7,199.6 97.7,198.2 101.7,196.8 105.7,194.9 109.6,193.9 113.6,192.1 117.6,191.1 121.6,189.2 125.6,188.2 129.5,186.4 133.5,184.5 137.5,183.5 141.5,181.6 145.4,180.7 149.4,178.8 153.4,176.6 157.4,175.4 161.4,173.2 165.3,172.0 169.3,169.8 173.3,168.6 177.3,166.4 181.2,164.3 185.2,163.0 189.2,160.9 193.2,158.7 197.2,157.9 201.1,155.8 205.1,152.9 209.1,152.2 213.1,150.0 217.0,147.8 221.0,145.7 225.0,144.9 229.0,142.8 233.0,140.6 236.9,138.5 240.9,137.7 244.9,135.5 248.9,133.3 252.8,132.6 256.8,130.4 260.8,128.3 264.8,126.1 268.8,125.3 272.7,122.9 276.7,120.5 280.7,119.4 284.7,117.0 288.6,114.6 292.6,112.1 296.6,111.1 300.6,108.7 304.6,106.2 308.5,103.8 312.5,102.8 316.5,100.3 320.5,97.9 324.4,96.0 328.4,93.5 332.4,91.1 336.4,88.7 340.4,86.7 344.3,84.3 348.3,81.6 352.3,78.9 356.3,76.9 360.2,74.2 364.2,71.4 368.2,68.7 372.2,66.1 376.2,64.0 380.1,61.3 384.1,58.6 388.1,55.9 392.1,53.2 396.0,51.2 400.0,48.4 404.0,45.8"/>
+<circle cx="205.1" cy="144.0" r="4" fill="var(--accent)"/><text x="199.1" y="135" font-size="12" text-anchor="end" fill="currentColor">500万円 243,200円</text>
+<circle cx="404.0" cy="36.8" r="4" fill="var(--accent)"/><text x="396" y="40.8" font-size="12" text-anchor="end" fill="currentColor">1,000万円 638,100円</text>
+<line x1="54" y1="26" x2="76" y2="26" stroke="var(--accent)" stroke-width="2.5"/><text x="81" y="30" font-size="12" fill="currentColor">独身</text>
+<line x1="54" y1="44" x2="76" y2="44" stroke="var(--sub)" stroke-width="2.5" stroke-dasharray="6 4"/><text x="81" y="48" font-size="12" fill="currentColor">配偶者あり</text>
+<text x="404" y="246" font-size="11" text-anchor="end" fill="var(--sub)">給与収入（年収）</text>
+</svg><!--jh:figure:E-->
+<figcaption>令和8年度の住民税（森林環境税を含む年額）と給与収入の関係。東京23区・給与収入のみ・40歳未満・協会けんぽの会社員を前提に、給与収入100万〜1,000万円を10万円刻みで計算。配偶者ありは配偶者の収入がない場合です。</figcaption>
+</figure>
+
+<p>住民税の所得割は、課税総所得金額に標準税率10%を掛けるので、所得割がかかる行では年収が上がるほどほぼ直線的に増えます。</p>
+
+<!--jh:diff:S--><p data-jh="diff">令和8年度の住民税（前提は表と同じ）で、独身と配偶者あり（配偶者の収入なし）の年額の差は、給与収入180万〜490万円の行で35,500円、500万〜1,000万円の行で33,000円、1,100万円の行で22,000円、1,200万円以上の行で0円です。</p><!--jh:diff:E-->
+
+<p>差の中心は、住民税の配偶者控除33万円（本人の合計所得金額900万円以下の場合）の10%にあたる33,000円です。課税総所得金額が低い行では、調整控除の「人的控除の差」が配偶者のぶん5万円増えるので、その5%の2,500円が差に加わります。本人の合計所得金額が900万円を超え950万円以下だと配偶者控除は22万円に下がり、1,000万円を超えると配偶者は控除対象配偶者に当たらなくなって配偶者控除がなくなるので、独身と配偶者ありが同じ額になります（地方税法292条1項8号・314条の2第1項10号）。</p>
+
+<a class="tool-cta" href="../../juminzei/">住民税 計算機で、自分の年収・社会保険料・家族構成・自治体から計算する</a>
+
+<h2 id="zentei">この表の前提 — 答えを1つに決めた条件</h2>
+
+<p>住民税の額は、収入だけでは決まりません。社会保険料・家族構成・住んでいる自治体によって変わるので、この表は次の条件を固定して、年収ごとに答えを1つに決めています。</p>
+
+<div class="scroll-wrap">
+<table>
+<thead><tr><th scope="col">項目</th><th scope="col">この表の前提</th><th scope="col">違うと何が変わるか</th></tr></thead>
+<tbody>
+<tr><td>年度</td><td>令和8年度（令和7年分の所得。令和8年6月〜令和9年5月に特別徴収）</td><td>令和9年度分は令和8年の所得と改正後の規則で計算するので別の額</td></tr>
+<tr><td>住所</td><td>東京23区（特別区。生活保護の1級地）</td><td>均等割の超過課税・非課税の上限（級地）が自治体で違う</td></tr>
+<tr><td>収入</td><td>給与収入だけ・賞与なし（年収を12等分した月給）</td><td>賞与がある・副業や年金がある場合は社会保険料や所得が変わる</td></tr>
+<tr><td>社会保険</td><td>協会けんぽ東京都支部・40歳未満・厚生年金・雇用保険（一般の事業）</td><td>健康保険組合・共済・国民健康保険、40〜64歳（介護保険料）は保険料が変わる</td></tr>
+<tr><td>家族</td><td>独身／配偶者あり（配偶者の収入なし・70歳未満・子なし）</td><td>16歳以上の子・親を扶養していると扶養控除が増え、16歳未満の子も非課税の上限の人数に入る</td></tr>
+<tr><td>その他の控除</td><td>生命保険料控除・iDeCo・医療費控除などなし</td><td>控除があれば所得割が下がる</td></tr>
+<tr><td>税額控除</td><td>住宅ローン控除・ふるさと納税（寄附金税額控除）なし</td><td>控除があれば住民税が下がる</td></tr>
+</tbody>
+</table>
+</div>
+
+<p><b>社会保険料は、令和7年度の料率で概算しています。</b>令和8年度の住民税は令和7年中に支払った社会保険料を控除するので、令和8年度の料率ではなく、協会けんぽ東京都支部の令和7年度（令和7年3月分から）の健康保険料率9.91%、厚生年金保険料率18.3%、令和7年度（令和7年4月〜令和8年3月）の雇用保険料率のうち一般の事業の労働者負担5.5/1,000を使い、それぞれの料率が令和7年中ずっと続いたものとして12か月分を足しています。健康保険と厚生年金は年収を12で割った月給から標準報酬月額を決めて本人負担（折半額）を出し、雇用保険は年収に5.5/1,000を掛けています。令和8年4月分から加わった子ども・子育て支援金は、令和7年中の給与にはないので含めていません。</p>
+
+<p>実際に令和7年中に給与から引かれた社会保険料は、令和7年1〜2月の天引き分に前年度の料率が使われることや、残業代で月給が変わることなどで、この概算と少しずれます。源泉徴収票の「社会保険料等の金額」がわかる人は、その額を<a href="../../juminzei/">住民税 計算機</a>に入れると、自分の額により近い試算ができます。</p>
+
+<h2 id="keisan">計算のしかた（年収500万円・独身の例）</h2>
+
+<p>表の1行がどう計算されているかを、令和8年度・東京23区・独身で給与収入500万円（令和7年中）の行で示します。住民税は「所得割」と「均等割」の2つでできていて、所得割は課税総所得金額に標準税率10%（区民税6%・都民税4%）を掛けて調整控除を引いた額、均等割は定額です。</p>
+
+<!--jh:rei:S--><div class="scroll-wrap"><table data-jh="rei">
+<caption>年収500万円・独身の令和8年度住民税の計算（東京23区（特別区）・前提は表と同じ）</caption>
+<thead><tr><th scope="col">段階</th><th scope="col" class="num">金額</th><th scope="col">計算</th></tr></thead>
+<tbody>
+<tr><th scope="row">給与所得</th><td class="num"><span class="numeric-token">3,560,000円</span></td><td>給与収入5,000,000円を4,000円未満切捨てた額×80%−440,000円（所得税法の別表第五の区分）</td></tr>
+<tr><th scope="row">社会保険料控除</th><td class="num"><span class="numeric-token">721,460円</span></td><td>健康保険243,780円＋厚生年金450,180円＋雇用保険27,500円（標準報酬月額410,000円）</td></tr>
+<tr><th scope="row">基礎控除</th><td class="num"><span class="numeric-token">430,000円</span></td><td>住民税の基礎控除（合計所得金額2,400万円以下）</td></tr>
+<tr><th scope="row">課税総所得金額</th><td class="num"><span class="numeric-token">2,408,000円</span></td><td>3,560,000円−721,460円−430,000円の1,000円未満切捨て</td></tr>
+<tr><th scope="row">所得割（区民税）</th><td class="num"><span class="numeric-token">142,900円</span></td><td>課税総所得金額×6%−調整控除1,500円（100円未満切捨て）</td></tr>
+<tr><th scope="row">所得割（都民税）</th><td class="num"><span class="numeric-token">95,300円</span></td><td>課税総所得金額×4%−調整控除1,000円（100円未満切捨て）</td></tr>
+<tr><th scope="row">均等割＋森林環境税</th><td class="num"><span class="numeric-token">5,000円</span></td><td>区民税3,000円＋都民税1,000円＋森林環境税1,000円</td></tr>
+<tr><th scope="row">年税額</th><td class="num"><span class="numeric-token">243,200円</span></td><td>特別徴収なら7月〜翌年5月は月20,200円、6月は21,000円</td></tr>
+</tbody></table></div><!--jh:rei:E-->
+
+<p>この計算の手順は、練馬区が公表している「住民税の計算例（令和8年度）」と同じです。練馬区の例のうち、給与収入1,650,000円・社会保険料240,000円・基礎控除430,000円の独身の人（ユリさんの例）を同じ手順で計算すると、課税総所得金額330,000円、区民税の所得割18,300円・都民税の所得割12,200円、均等割と森林環境税を足した年税額35,500円となり、練馬区の公表額と1円まで一致します。</p>
+
+<p><b>調整控除は、所得税と住民税の人的控除の差を埋めるためのものです。</b>合計所得金額が2,500万円以下の人で課税総所得金額が200万円を超える場合は、「人的控除の差の合計−（課税総所得金額−200万円）」（5万円を下回るときは5万円）の5%（区民税3%・都民税2%）が所得割から引かれます。独身の人の人的控除の差は基礎控除の差の5万円だけなので、この場合は下限の5万円の5%で、区民税1,500円・都民税1,000円です（地方税法314条の6・37条）。課税総所得金額が200万円以下なら、人的控除の差の合計と課税総所得金額の少ない方の5%です。</p>
+
+<h2 id="hikazei">住民税がかからない年収（非課税の上限）</h2>
+
+<p>住民税には、前年の所得が一定額以下なら課税しない「非課税」の上限があります。均等割の上限は自治体が条例で定め（地方税法295条3項）、所得割の上限は法律が全国一律に定めます（地方税法附則3条の3）。令和8年度の東京23区などの1級地で、給与収入だけの人の上限は次のとおりです。</p>
+
+<!--jh:hikazei:S--><div class="scroll-wrap"><table data-jh="hikazei">
+<caption>住民税が非課税になる給与収入の上限（令和8年度・東京23区（特別区）などの1級地・給与収入のみ）</caption>
+<thead><tr><th scope="col">家族</th><th scope="col" class="num">均等割・所得割とも非課税</th><th scope="col" class="num">所得割だけ非課税</th></tr></thead>
+<tbody>
+<tr><th scope="row">独身（扶養なし）</th><td class="num"><span class="numeric-token">1,100,000円以下</span></td><td class="num">（独身は同じ上限）</td></tr>
+<tr><th scope="row">配偶者あり（配偶者の収入なし・子なし）</th><td class="num"><span class="numeric-token">1,660,000円以下</span></td><td class="num"><span class="numeric-token">1,770,000円以下</span></td></tr>
+</tbody></table></div><!--jh:hikazei:E-->
+
+<p>独身の人は、合計所得金額45万円以下（35万円×1人＋10万円）が均等割・所得割とも非課税の目安で、令和7年分の給与収入に直すと110万円以下です。配偶者（収入なし）がいる人は、均等割の上限が合計所得金額101万円（35万円×2人＋10万円＋21万円）、所得割の上限が総所得金額等112万円（35万円×2人＋10万円＋32万円）と別々なので、給与収入166万1円〜177万円の人は均等割と森林環境税だけがかかります。いずれも練馬区が公表している「非課税となる基準」の給与収入の早見表（令和8年度）と一致します。</p>
+
+<p>障害者・未成年者・寡婦・ひとり親で前年の合計所得金額が135万円以下の人は、この上限にかかわらず均等割も所得割も非課税です（地方税法295条1項2号。退職所得に対する分離課税の所得割は除く）。16歳未満の子は扶養控除の対象になりませんが、非課税の上限の「扶養親族の数」には入ります。境界の1円単位の計算と給付金との関係は<a href="../juminzei-hikazei-border/">住民税非課税のボーダー</a>で解説しています。</p>
+
+<h2 id="zureru">表と金額がずれる人・自治体による違い</h2>
+
+<p>この表の額は、前提の条件どおりの人にとっての計算結果です。次に当てはまる人は、表の額と実際の住民税が違います。</p>
+
+<ul>
+<li><b>東京23区以外に住んでいる人</b> — 総務省の資料では、個人住民税の均等割の超過課税を37府県・2市が実施しています。神奈川県は所得割にも超過課税（水源環境保全税）があります。均等割の非課税の上限は、市町村が政令の基準（基本額35万円を超えない範囲で、生活保護の級地ごとの率を掛けた額を参酌）に従って条例で定めるので、2級地・3級地の市町村では1級地より低いことがあります（地方税法295条3項・施行令47条の3）。</li>
+<li><b>政令指定都市に住んでいる人</b> — 所得割の税率は市民税8%・道府県民税2%に、調整控除は市4%・県1%に配分が変わりますが、合計の税率（10%・5%）は同じです（地方税法314条の3・314条の6）。</li>
+<li><b>賞与がある人・残業代で月給が変わる人</b> — 社会保険料が年収を12等分した月給で計算した額と変わります。</li>
+<li><b>40〜64歳の人・健康保険組合や共済組合の人</b> — 介護保険料が加わる、または料率が違うので、社会保険料の控除額が変わります。</li>
+<li><b>扶養控除の対象になる16歳以上の子・親がいる人、生命保険料控除・iDeCoなどがある人</b> — 所得控除が増えるぶん所得割が下がります。16歳未満の子は扶養控除の対象になりませんが、非課税の上限の人数には入ります。</li>
+<li><b>住宅ローン控除・ふるさと納税をした人</b> — 所得割から税額控除が引かれるぶん住民税が下がります。ふるさと納税の上限は<a href="../../furusato/">ふるさと納税の上限計算</a>で試算できます。</li>
+<li><b>会社の社会保険に加入していない人</b> — 自分で払った国民健康保険・国民年金などの保険料が社会保険料控除になるので、その額が表の前提の社会保険料より少なければ、同じ年収でも所得割は表より高くなります。</li>
+<li><b>令和9年度（2027年6月から納める分）を知りたい人</b> — 令和9年度分は令和8年の所得で計算し、令和8年分・令和9年分の給与所得控除の最低額を74万円とする特例（租税特別措置法29条の4）が住民税の給与所得にも及ぶ（地方税法313条2項）ので、令和8年の給与収入が220万円未満の人は給与所得が変わります。社会保険料の料率も令和8年度の率になるため、令和9年度分はこの表とは別の額になります。<a href="../../juminzei/">住民税 計算機</a>は令和8年分の所得（令和9年度分）で計算します。</li>
+</ul>
+
+<p>実際に納める住民税の額は、毎年5〜6月ごろに届く住民税決定通知書（特別徴収税額の決定通知書）に書かれています。通知書の読み方は<a href="../juminzei-kettei-tsuchisho/">住民税決定通知書の見方</a>、6月だけ天引き額が違う理由は<a href="../juminzei-tokubetsu-choshu/">住民税の特別徴収</a>で解説しています。</p>
+
+<h2 id="inyou">引用のしかた・CSVのダウンロード</h2>
+
+<p>この早見表は、社内の説明資料、ブログ記事、家計の資料などに引用していただいてかまいません。引用するときは、<b>出典としてこのページの名前とURLを書き、リンクを張ってください</b>。表は令和8年度の住民税を前提つきで計算した試算なので、前提（東京23区・給与収入のみ・40歳未満・協会けんぽ・賞与なし）もあわせて示してください。</p>
+
+<p><b>出典の書き方の例（文章・スライド）</b></p>
+<pre><code>出典: 税金・経理・補助金ツールズ「住民税 早見表【令和8年度】」
+https://keiri-tools.com/column/juminzei-hayamihyo/
+（前提: 東京23区・給与収入のみ・40歳未満・協会けんぽ・賞与なしで計算した試算）</code></pre>
+
+<p><b>リンクの貼り方の例（HTML）</b></p>
+<pre><code>&lt;a href="https://keiri-tools.com/column/juminzei-hayamihyo/"&gt;住民税 早見表【令和8年度】（税金・経理・補助金ツールズ）&lt;/a&gt;</code></pre>
+
+<p><b>CSVファイル</b>: <a href="juminzei-hayamihyo-r08.csv" download>juminzei-hayamihyo-r08.csv</a>（UTF-8・BOM付き。Excelでそのまま開けます）。列は、給与収入、前提の社会保険料とその内訳（健康保険・厚生年金・雇用保険）、独身と配偶者ありのそれぞれの給与所得・課税総所得金額・所得割・均等割と森林環境税・年額・特別徴収の月額（7月〜翌年5月と6月）です。表とCSVは、このサイトの住民税の税率データと社会保険料の料率データから同時に作っていて、表の数字は別の手順で計算し直した結果と1円まで一致することを確かめています。</p>
+
+<h2 id="faq">よくある質問</h2>
+
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>年収500万円の住民税はいくらですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>令和8年度（令和7年分の所得）の住民税は、東京23区に住む独身で、給与収入500万円だけの40歳未満の会社員（協会けんぽ・賞与なし）なら、森林環境税1,000円を含めて年243,200円です。この給与収入500万円・独身の例で特別徴収なら、令和8年7月〜令和9年5月の各月の住民税は20,200円、6月は21,000円です。同じ給与収入500万円で配偶者（収入なし）がいる場合は、配偶者控除33万円のぶん下がって年210,200円です。社会保険料の額や扶養家族、住んでいる自治体が違うと金額は変わります。</p>
+
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>令和8年度の住民税は、いつの収入で決まりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>令和8年度の住民税の所得割は、前年である令和7年（2025年1月〜12月）の所得で決まります（地方税法313条1項）。会社員の特別徴収では、令和8年6月から令和9年5月までの12回に分けて給与から引かれます（地方税法321条の5第1項。税額が均等割額に相当する金額以下なら最初に徴収する月に一括、5月31日より後に通知を受け取った場合は残りの月数で分けて徴収）。令和8年（2026年）の所得にかかるのは令和9年度の住民税で、令和9年6月から引かれます。</p>
+
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>住民税はなぜ年収の10%より少ないのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>令和8年度の住民税の所得割の標準税率は10%ですが、掛ける相手は年収ではなく、年収から給与所得控除・社会保険料控除・基礎控除43万円などを引いた課税総所得金額だからです。たとえば東京23区・独身・給与収入500万円（40歳未満・協会けんぽ・賞与なし）の人の課税総所得金額は2,408,000円で、年収の半分以下です。ここに10%を掛け、調整控除を引き、均等割と森林環境税5,000円を足した額が住民税の年額になります。</p>
+
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>住民税は年収いくらからかかりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>令和8年度（令和7年分の所得）の住民税は、東京23区などの1級地で給与収入だけの独身の人なら、給与収入110万円以下では均等割も所得割もかかりません。配偶者（収入なし）がいる人は、給与収入166万円以下なら非課税、166万1円から177万円までは所得割がかからず均等割と森林環境税だけがかかります。障害者・未成年者・寡婦・ひとり親で前年の合計所得金額135万円以下の人も、退職所得の分離課税の所得割を除いて非課税です。均等割の非課税の上限は自治体の級地によって低くなることがあります。</p>
+
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>この早見表をCSVで使ってもよいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>はい。ページ内のCSVファイル（UTF-8・BOM付き）をダウンロードして、社内資料や記事に使えます。載せるときは、出典としてこのページの名前とURL（https://keiri-tools.com/column/juminzei-hayamihyo/）を書いてリンクを張り、令和8年度・東京23区・給与収入のみ・40歳未満・協会けんぽ・賞与なしという前提もあわせて示してください。</p>
+
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../taishokutodoke-kakikata/"><b>退職届と退職願の書き方 — 「届」と「願」の違いは書式ではなく法的効果。2週間は民法627条、1か月は就業規則</b><span>退職届と退職願の違いは書式ではなく法的効果です。届は民法627条1項の解約の申入れで、到達の翌日から2週間で雇用が終わります。願は合意解約の申込みで、会社が承諾するまで撤回できます</span></a><a class="tool-card" href="../refresh-kyuka/"><b>リフレッシュ休暇とは — 法律に定めはない。それでも就業規則には書く義務があり、無給にすると平均賃金が下がる場合がある</b><span>リフレッシュ休暇は労働基準法に定めのない法定外休暇で、日数・有給無給・対象者はすべて会社が決めます。ただし設けた瞬間に労基法89条1号の絶対的必要記載事項として就業規則に書く義務が</span></a><a class="tool-card" href="../matahara/"><b>マタハラとは — 均等法9条と11条の3は別の条文。禁じられていることと、防ぐ義務があること</b><span>マタニティハラスメントは1つの制度ではありません。妊娠・出産を理由とする不利益取扱いの禁止（均等法9条3項）と、就業環境が害されるのを防ぐ措置義務（11条の3）は別の条文で、名宛人</span></a></div></section><!--next-read:E-->
+<section class="related">
+<div class="tool-grid">
+<a class="tool-card" href="../../juminzei/"><b>住民税 計算機</b><span>年収・社会保険料・家族構成・自治体から、所得割・均等割・森林環境税の内訳まで計算します。</span></a>
+<a class="tool-card" href="../juminzei-hikazei-border/"><b>住民税非課税のボーダー</b><span>非課税の上限を1円超えたらいくら増えるか。家族構成別・級地別の境目。</span></a>
+<a class="tool-card" href="../juminzei-tokubetsu-choshu/"><b>住民税の特別徴収</b><span>6月〜翌年5月の天引きの流れと、退職したときの扱い。</span></a>
+<a class="tool-card" href="../kyokai-kenpo-ryoritsu-ichiran/"><b>協会けんぽ 健康保険料率 一覧</b><span>社会保険料控除のもとになる都道府県別の料率。</span></a>
+</div>
+</section>
+
+<h2 id="source">出典</h2>
+<p class="source-method">地方税法・森林環境税及び森林環境譲与税に関する法律・健康保険法・厚生年金保険法の条文（e-Gov法令検索）、全国健康保険協会と厚生労働省の公表資料、練馬区の公表計算例で確認して作成（2026年10月7日確認）。</p>
+<ul>
+<li>地方税法（昭和25年法律第226号）20条の4の2（端数計算）・295条（個人の市町村民税の非課税の範囲）・310条（均等割の標準税率3,000円）・313条（所得割の課税標準）・314条の2（所得控除）・314条の3（所得割の税率）・314条の6（調整控除）・320条（普通徴収の納期）・321条の5（特別徴収税額の納入）・38条（道府県民税の均等割1,000円）・附則3条の3（所得割の非課税の範囲）— https://laws.e-gov.go.jp/law/325AC0000000226</li>
+<li>森林環境税及び森林環境譲与税に関する法律（平成31年法律第3号）3条・4条・5条（税率1,000円）・7条（賦課徴収）— https://laws.e-gov.go.jp/law/431AC0000000003</li>
+<li>健康保険法（大正11年法律第70号）40条（標準報酬月額）・厚生年金保険法（昭和29年法律第115号）20条（標準報酬月額）・81条（保険料率）（e-Gov法令検索）</li>
+<li>租税特別措置法（昭和32年法律第26号）29条の4（給与所得控除の最低控除額等の特例。令和8年12月1日施行の版で、令和8年・令和9年の給与等に適用）— https://laws.e-gov.go.jp/law/332AC0000000026</li>
+<li>全国健康保険協会「令和8年度の協会けんぽの保険料率は3月分（4月納付分）から改定されます」（令和7年度との比較。東京都の令和7年度の健康保険料率9.91%）— https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/rate_prefectures/r08</li>
+<li>厚生労働省「令和7（2025）年度 雇用保険料率のご案内」— https://www.mhlw.go.jp/content/001401966.pdf</li>
+<li>練馬区「住民税の計算例（令和8年度）」— https://www.city.nerima.tokyo.jp/kurashi/zei/jyuminzei/keisan/keisanrei-26-1.html</li>
+<li>練馬区「住民税が課税されない場合」（非課税となる基準・扶養人数別の早見表）— https://www.city.nerima.tokyo.jp/kurashi/zei/jyuminzei/hikazeikijun/juuminzei-hikazei.html</li>
+<li>総務省「個人住民税」の概要資料（均等割の標準税率と「37府県・2市において、超過課税を実施」の注記）— https://www.soumu.go.jp/main_content/001005155.pdf</li>
+<li>神奈川県「水源環境を保全・再生するための個人県民税の超過課税について」— https://www.pref.kanagawa.jp/zei/kenzei/a001/b001/002.html</li>
+<li>地方税法施行令（昭和25年政令第245号）47条の3（均等割の非課税の基準）（e-Gov法令検索）</li>
+</ul>
+
+<p class="note">この記事は令和8年度（令和7年分の所得）の住民税について、前提を置いて計算した一般的な情報であり、個別の事案に対する助言ではありません。実際の税額は、所得・控除・家族構成・お住まいの自治体の条例などによって異なり、住民税決定通知書に記載された額が正しい額です。判断に迷う場合は、お住まいの市区町村の税務担当または税理士にご確認ください。</p>
+
+</article>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%BA%A6%EF%BC%88%E4%BB%A4%E5%92%8C7%E5%B9%B4%E5%88%86%E3%81%AE%E6%89%80%E5%BE%97%E3%83%BB%E4%BB%A4%E5%92%8C8%E5%B9%B46%E6%9C%88%E3%80%9C%E4%BB%A4%E5%92%8C9%E5%B9%B45%E6%9C%88%E3%81%AB%E7%B4%8D%E3%82%81%E3%82%8B%E5%88%86%EF%BC%89%E3%81%AE%E4%BD%8F%E6%B0%91%E7%A8%8E%E3%82%92%E5%B9%B4%E5%8F%8E%E5%88%A5%E3%81%AE%E6%97%A9%E8%A6%8B%E8%A1%A8%E3%81%AB%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fjuminzei-hayamihyo%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site">
+  <p>© 税金・経理・補助金ツールズ</p>
+  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body>
+</html>
