@@ -511,28 +511,35 @@ function renderTable(D) {
     } else if (doc.type === "per_year") {
       taxCell = `1年ごとに ${yen(doc.tax)}`;
     } else {
-      const lines = [];
-      if (doc.hikazei_under) lines.push(`${doc.hikazei_under.toLocaleString("ja-JP")}円未満: <b>非課税</b>`);
+      // ★階級と税額は定義リスト（<dl class="go-tier-list">）で出す（2026-10-08 第2周 低L4）。
+      //   以前は「階級: 税額」を <br> で並べた地の文で、13階級の金額の位置が行ごとにずれていた。
+      //   dt＝階級（左）、dd＝税額（右寄せ・等幅数字）。数字と文言はデータ（assets/inshi_r07.json）のまま。
+      //   軽減税率の見出しは階級ではないので、リストを2つに分けて間に置く。
+      const groups = [[]];                       // [ [ [階級, 税額HTML], … ], 見出しHTML, [ … ] ]
+      const add = (dt, dd) => groups[groups.length - 1].push([dt, dd]);
+      if (doc.hikazei_under) add(`${doc.hikazei_under.toLocaleString("ja-JP")}円未満`, `<b>非課税</b>`);
       const bt = (doc.keigen ? doc.keigen.brackets : doc.brackets);
       const label = doc.keigen ? `軽減税率（${esc(D._meta?.keigen_from_label || "")}〜${esc(D._meta?.keigen_until_label || "")}作成分・${doc.keigen.over.toLocaleString("ja-JP")}円超）` : "";
       if (doc.keigen) {
         // 軽減のある文書: 下限以下は本則、超は軽減表
         const honsoku = doc.brackets.filter((b) => b.upto !== null && b.upto <= doc.keigen.over);
-        for (const b of honsoku) lines.push(`${esc(b.label)}: ${yen(b.tax)}`);
-        lines.push(`<span class="hint">${label}</span>`);
-        for (const b of bt) lines.push(`${esc(b.label)}: ${yen(b.tax)}`);
+        for (const b of honsoku) add(esc(b.label), yen(b.tax));
+        groups.push(`<p class="hint go-tier-head">${label}</p>`, []);
+        for (const b of bt) add(esc(b.label), yen(b.tax));
       } else {
-        for (const b of doc.brackets) lines.push(`${esc(b.label)}: ${yen(b.tax)}`);
+        for (const b of doc.brackets) add(esc(b.label), yen(b.tax));
       }
       if (doc.noamount !== null && doc.noamount !== undefined) {
-        lines.push(doc.noamount === 0 ? `${esc(doc.unit)}の記載のないもの: <b>非課税</b>` : `${esc(doc.unit)}の記載のないもの: ${yen(doc.noamount)}`);
+        add(`${esc(doc.unit)}の記載のないもの`, doc.noamount === 0 ? `<b>非課税</b>` : yen(doc.noamount));
       }
-      if (doc.ichiranbarai) lines.push(`一覧払のもの等: ${doc.ichiranbarai.hikazei_under.toLocaleString("ja-JP")}円以上 一律 ${yen(doc.ichiranbarai.tax)}`);
+      if (doc.ichiranbarai) add(`一覧払のもの等: ${doc.ichiranbarai.hikazei_under.toLocaleString("ja-JP")}円以上 一律`, yen(doc.ichiranbarai.tax));
+      const tiers = groups.reduce((n, g) => n + (Array.isArray(g) ? g.length : 0), 0);
+      const body = groups.map((g) => !Array.isArray(g) ? g
+        : g.length ? `<dl class="go-tier-list">${g.map(([dt, dd]) => `<dt>${dt}</dt><dd>${dd}</dd>`).join("")}</dl>` : "").join("");
       // 階級が多い号は号ごとに畳める（スマホは閉じた状態で始め、号と文書名の一覧として読める）
-      const tiers = lines.filter((l) => !l.startsWith('<span class="hint">')).length;
       taxCell = tiers > 4
-        ? `<details class="go-tiers"${matchMedia("(min-width: 601px)").matches ? " open" : ""}><summary>金額ごとの税額（${tiers}行）</summary>${lines.join("<br>")}</details>`
-        : lines.join("<br>");
+        ? `<details class="go-tiers"${matchMedia("(min-width: 601px)").matches ? " open" : ""}><summary>金額ごとの税額（${tiers}行）</summary>${body}</details>`
+        : body;
     }
     return `<tr><td>${esc(doc.go)}</td><td>${esc(doc.name)}${doc._note ? `<br><span class="hint">${esc(doc._note)}</span>` : ""}</td><td>${taxCell}</td></tr>`;
   }).join("");
