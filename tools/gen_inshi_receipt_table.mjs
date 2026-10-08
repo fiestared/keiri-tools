@@ -18,7 +18,7 @@ const block = `<!-- receipt-table:auto -->
   <div class="scroll-wrap">
   <table class="tbl num-nowrap" id="receipt-tax-table" aria-describedby="receipt-tax-basis">
     <caption>営業に関する紙の売上代金の領収書（第17号文書）の収入印紙</caption>
-    <thead><tr><th scope="col">記載金額（決め方は表の上）</th><th scope="col" class="num">印紙税額（1通・営業に関する紙）</th></tr></thead>
+    <thead><tr><th scope="col">記載金額（決め方は表の上）</th><th scope="col" class="num" data-answer>印紙税額<wbr>（1通・<wbr>営業に<wbr>関する紙）</th></tr></thead>
     <tbody>
 ${rows.map(([label, tax]) => `      <tr><th scope="row">${esc(label)}</th><td class="num">${esc(tax)}</td></tr>`).join('\n')}
     </tbody>
