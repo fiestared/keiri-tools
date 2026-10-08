@@ -1,0 +1,45 @@
+{
+  "_meta": {
+    "nendo": "令和8年度",
+    "shotoku_year": "令和7年分",
+    "shotoku_calendar": "2025年1月〜12月",
+    "chosyu": "令和8年6月〜令和9年5月（特別徴収）",
+    "checked": "2026-10-07",
+    "note": "住民税の早見表（/column/juminzei-hayamihyo/）の前提。税額の計算は juminzei_core.js の calc（令和7年分の所得・既定の年分）に任せ、ここには前提だけを置く。社会保険料は令和7年度（令和7年3月分〜）の料率が1年続いたものとして概算する（令和8年度の率と子ども・子育て支援金は令和7年中の給与には無いので使わない）。",
+    "sources": {
+      "chihozei": "https://laws.e-gov.go.jp/law/325AC0000000226",
+      "kenko_r07": "https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/rate_prefectures/r08",
+      "koyou_r07": "https://www.mhlw.go.jp/content/001401966.pdf",
+      "kosei": "https://laws.e-gov.go.jp/law/329AC0000000115",
+      "oracle_nerima": "https://www.city.nerima.tokyo.jp/kurashi/zei/jyuminzei/keisan/keisanrei-26-1.html",
+      "oracle_nerima_hikazei": "https://www.city.nerima.tokyo.jp/kurashi/zei/jyuminzei/hikazeikijun/juuminzei-hikazei.html"
+    }
+  },
+  "premise": {
+    "area_label": "東京23区（特別区）",
+    "jichitai": "hyojun",
+    "kyuchi": 1,
+    "shitei_toshi": false,
+    "ken": "東京都",
+    "kenko_rate_key": "kenko_rates_prev",
+    "kenko_rate_pct": 9.91,
+    "kenko_label": "協会けんぽ東京都支部・令和7年度（令和7年3月分から）9.91%",
+    "age": 30,
+    "kosei_rate_pct": 18.3,
+    "koyou": {
+      "label": "一般の事業・令和7年度（令和7年4月〜令和8年3月）",
+      "total_permille": 14.5,
+      "jigyo2_permille": 3.5,
+      "worker_permille": 5.5
+    },
+    "bonus": 0
+  },
+  "incomes": [
+    { "from": 1000000, "to": 10000000, "step": 100000 },
+    { "from": 11000000, "to": 20000000, "step": 1000000 }
+  ],
+  "families": [
+    { "key": "single", "label": "独身（扶養なし）", "short": "独身", "family": {} },
+    { "key": "haigusha", "label": "配偶者あり（配偶者の収入なし・70歳未満・子なし）", "short": "配偶者あり", "family": { "haigusha": "ippan" } }
+  ]
+}

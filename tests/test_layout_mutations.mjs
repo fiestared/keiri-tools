@@ -2,6 +2,7 @@
 import assert from 'node:assert/strict';
 import {browserTools,serve,contextFor,ready} from './layout/browser.mjs';
 import {measure} from './layout/measure.mjs';
+import {measureTables} from './layout/table-measure.mjs';
 const {chromium}=await browserTools();const server=await serve();let browser;
 const base=`<main>
 <div class="hero"><h1>表示検査の正常なページ</h1></div>
@@ -71,6 +72,23 @@ try{
    await reset();await withController();await page.evaluate(()=>{document.querySelector('table').style.minWidth='900px';document.querySelector('.scroll-wrap').dataset.wide='ok';});await page.waitForTimeout(80);
    assert.deepEqual((await page.evaluate(measure)).issues,[],'data-wide="ok" table scrolls with cue @'+width);
   }
+ // 2026-10-08 (UI/UX review high 1/2): a scroll cue is not visibility. The number columns / the <th data-answer>
+  // column must be on screen at first paint, at every width (PC included).
+  const wideTable=(answerAt,firstWidth)=>'<table><thead><tr><th>区分</th>'+[1,2,3,4].map(i=>'<th class="num"'+(i===answerAt?' data-answer':'')+'>列'+i+'</th>').join('')+'</tr></thead><tbody>'+[1,2,3].map(r=>'<tr><th scope="row" style="min-width:'+firstWidth+'px">行'+r+'</th>'+[1,2,3,4].map(i=>'<td class="num" style="min-width:'+(i<answerAt?Math.round(width*0.45):40)+'px">'+(r*i*1000).toLocaleString()+'円</td>').join('')+'</tr>').join('')+'</tbody></table>';
+  await reset();await withController();assert.deepEqual(await page.evaluate(measureTables),[],'Healthy table fixture (measureTables) @'+width);
+  // /inshi/ 第17号: the label column takes the box, every amount sits in the hidden part.
+  await reset();await withController();await page.evaluate(()=>{const t=document.querySelector('.scroll-wrap table');t.rows[0].cells[0].style.minWidth=(innerWidth*2)+'px';});await page.waitForTimeout(80);
+  assert((await page.evaluate(measureTables)).some(i=>i.kind==='table-no-number-visible'),'Mutation not caught: table-no-number-visible @'+width);
+  // 住民税の早見表: some numbers are visible, but the marked answer column is scrolled out of sight.
+  await reset();await withController();await page.evaluate(html=>{document.querySelector('.scroll-wrap').innerHTML=html;},wideTable(4,80));await page.waitForTimeout(80);
+  let tableIssues=await page.evaluate(measureTables);
+  assert(tableIssues.some(i=>i.kind==='answer-column-hidden')&&!tableIssues.some(i=>i.kind==='table-no-number-visible'),'Mutation not caught: answer-column-hidden only @'+width+': '+JSON.stringify(tableIssues));
+  // The marked answer column hidden by CSS at this width (a column switch that hides every answer).
+  await reset();await withController();await page.evaluate(html=>{document.querySelector('.scroll-wrap').innerHTML=html;},wideTable(1,80));await page.evaluate(()=>{for(const c of document.querySelectorAll('tr > :nth-child(2)'))c.style.display='none';});await page.waitForTimeout(80);
+  assert((await page.evaluate(measureTables)).some(i=>i.kind==='answer-column-missing'),'Mutation not caught: answer-column-missing @'+width);
+  // Healthy: the same wide table with the answer as the 2nd column and a sticky first column passes.
+  await reset();await withController();await page.evaluate(html=>{document.querySelector('.scroll-wrap').innerHTML=html.replace('<table>','<table class="sticky-first">');},wideTable(1,80));await page.waitForTimeout(80);
+  assert.deepEqual(await page.evaluate(measureTables),[],'Answer-first wide table passes @'+width);
  }
 }finally{await browser?.close();server.close();}
-console.log(`✓ ${cases.length} independent broken HTML cases × 2 widths rejected; desktop table overflow (nowrap note) rejected, cell-note/data-wide accepted; healthy/scroll/bar controls accepted`);
+console.log(`✓ ${cases.length} independent broken HTML cases × 2 widths rejected; table number/answer visibility (3 broken, 2 healthy) at both widths; desktop table overflow (nowrap note) rejected, cell-note/data-wide accepted; healthy/scroll/bar controls accepted`);

@@ -177,6 +177,7 @@ node tools/gen_qa_index.mjs        # ★docs/assets/qa_index.json。FAQを持つ
 node tools/gen_tool_related.mjs    # 関連リンク（他ページ側にも被リンクが入る）
 node tools/gen_ogp.mjs             # og:title/og:description（title を触ったときも必要）
 node tools/gen_x_share.mjs && node tools/gen_x_link.mjs
+node tools/gen_site_footer.mjs     # ★フッタの案内リンク（site-links 区画）。2026-10-08 から全ページ共通。手で書かない
 node tools/gen_datemodified.mjs    # dateModified を git 履歴から焼く
 node tools/gen_index_sitemap.mjs   # ★下記のとおり --check が緑になるまで繰り返す
 ```
@@ -290,6 +291,10 @@ sitemap の実行自体が `docs/column/index.html` を書き換えるので**2�
 **流れ図（判定の分岐）・時系列（いつ何をするか）・内訳（金額の内わけ）**のどれかが有効。
 色は `var(--accent)` `var(--sub)` `var(--warn-line)` などCSS変数が使える。
 文字は `font-size="13"` 程度、`fill="currentColor"` で本文色に追従させる。
+
+## 表示の規則（2026-10-08・内容修正が UI/UX の修正を戻した回帰から）
+- ツールの h1 の直後（日付行の次）に注意（`.note`・`.callout`）を置かない。注意は結果欄の下か、該当する入力欄の details の中へ。表の1行の中で同じ条件を複数のセルに書かない（区分名のセルに `.cell-note` で1回、または表の下の※1行）。未確認の注記は表ごとに※1行と調査方法の1回だけ。
+- 読者に見える文（本文・出典・title・description）に作業記録の語（「API v2」「法令ID」「今回の資料」「機械的に」「…に基づいて作成」「実読」「木構造」）を書かない。出典は「e-Gov法令検索『○○法』△条」の形。`node tests/test_ux_content_regressions.mjs` が落とす（既存ページの件数は上限として固定）。
 
 ## 空の表示枠を出さない（2026-09-27）
 

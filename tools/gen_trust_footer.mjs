@@ -71,15 +71,13 @@ const firstCommit = new Map();
 }
 
 // ── 信頼ブロック ────────────────────────────────────────────────────────
-// depth = docs からの階層。ツールは docs/<slug>/ なので通常 1。
-const trustBlock = (depth) => {
-  const up = '../'.repeat(depth);
+const trustBlock = () => {
   return `<!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">`
     + `計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。`
     + `正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>`
-    + `作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　`
-    + `<a href="${up}policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　`
-    + `<a href="${up}policy/disclosure/" style="color:var(--sub)">収益化方針</a>`
+    + `作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）`
+    // 編集ポリシー・収益化方針へのリンクは全ページ共通の案内行（gen_site_footer.mjs）に移した（2026-10-08）。
+    // ここにも置くとツールのフッタだけ同じリンクが2回並ぶ。
     + `</div><!-- /trust:auto -->`;
 };
 
@@ -93,8 +91,7 @@ for (const fp of files) {
   let out = s;
 
   // 1) 信頼ブロック（冪等: マーカーごと差し替える）
-  const depth = rel.replace(/\\/g, '/').replace(/^docs\//, '').split('/').length - 1;
-  const block = trustBlock(depth);
+  const block = trustBlock();
   if (out.includes('<!-- trust:auto -->')) {
     out = out.replace(/<!-- trust:auto -->[\s\S]*?<!-- \/trust:auto -->/, block);
   } else {
