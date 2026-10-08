@@ -16,6 +16,7 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { productionGuard } from "./production-guard.mjs";
+import { settledCutoffHour } from "./settled.mjs";
 import { createSign } from "node:crypto";
 
 const DIR = dirname(fileURLToPath(import.meta.url));
@@ -416,8 +417,8 @@ async function fetchAll() {
       orderBys: [{ dimension: { dimensionName: "dateHourMinute" }, desc: true }], limit: 1,
     });
     const raw = cut.rows?.[0]?.dimensionValues?.[0]?.value ?? null; // YYYYMMDDHHMM
-    const cutoff = raw ? `${raw.slice(8, 10)}:${raw.slice(10, 12)}` : null;
-    const cutoffHour = raw ? Number(raw.slice(8, 10)) : Number(now.hour);
+    const rawCutoff = raw ? `${raw.slice(8, 10)}:${raw.slice(10, 12)}` : null;
+    const rawCutoffHour = raw ? Number(raw.slice(8, 10)) : Number(now.hour);
     // 欠測日（セッション0の日は行ごと返ってこない）を0で埋める
     const days = [];
     for (let i = FETCH_DAYS - 1; i >= 0; i--) {
@@ -430,6 +431,10 @@ async function fetchAll() {
       Array.from({ length: 24 }, (_, h) => hmap.get(`${date}|${String(h).padStart(2, "0")}`) ?? 0);
     const cumToHour = (date, hh) => hoursOf(date).slice(0, hh + 1).reduce((a, b) => a + b, 0);
     const yDate = addDays(today, -1), pwDate = addDays(today, -7);
+    // ★「1件でも入っている最新の分」は出そろった所ではない（settled.mjs）。出そろっていない最初の時間帯を途中として扱う
+    const cutoffHour = settledCutoffHour(hoursOf(today), hoursOf(pwDate), hoursOf(yDate), rawCutoffHour);
+    const cutoff = rawCutoff === null ? null
+      : cutoffHour === rawCutoffHour ? rawCutoff : `${String(cutoffHour).padStart(2, "0")}:00`;
     // 比較は「今の時刻まで」ではなく「GA4がデータを出しているところまで」で切る。
     // さらに cutoff の時間帯そのものは今日だけ途中（例: 13:01 なら13時台は1分ぶん）なので、
     // 完全に経過した時間帯（0〜cutoffHour-1）だけを両日から取る。

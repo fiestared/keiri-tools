@@ -139,13 +139,14 @@ export function buildSections(rows) {
     const notes = [];
     if (kojin && hojin && kojin.rawOver !== null && hojin.rawOver !== null && kojin.rawOver !== hojin.rawOver) {
       const ratio = (hojin.rawOver / kojin.rawOver).toFixed(1).replace(/\.0$/, '');
-      notes.push(`${base === "みずほ銀行" ? "" : (list.some(r => r.scoped) ? "上表の対象サービス・通常単価で、無料・別料金の宛先と優遇を除いて比べた" : "") + "他行宛ネット振込の3万円以上では、"}法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）`);
+      notes.push(`${(list.some(r => r.scoped) ? "上表の対象サービス・通常単価で、無料・別料金の宛先と優遇を除いて比べた" : "") + "他行宛ネット振込の3万円以上では、"}法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）`);
     }
     const withBoundary = list.filter((x) => x.boundary).map((x) => x.kubun);
     if (list.some(r => r.rawOver === null)) notes.push('横浜銀行の法人EBの他行宛は、3万円未満385円・3万円以上550円です。個人IBの3万円以上は掲載を保留しています');
     notes.push(withBoundary.length
       ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）`
-      : '金額にかかわらず<b>定額</b>');
+      // ★区分名を文に入れる: 「金額にかかわらず定額。」だけだと、どの銀行の話か文単体で読めず、照合で10銀行ぶんが同じ文になった。
+      : `${base}のこの表の料金は、金額にかかわらず<b>定額</b>`);
     out.push(`  <p>${notes.join('。')}。</p>`);
     for (const note of [...new Set(list.filter((x) => x.publicNote).map((x) => x.publicNote))]) {
       out.push(`  <p class="bank-note">${esc(note)}。</p>`);
@@ -170,7 +171,7 @@ export function buildSections(rows) {
         + '金額は表全体の調査時点のものです。<b>お手続き前に各行の公式ページでご確認ください。</b></p>');
     }
   }
-  out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」を確認できた10区分</a>に書いています。</p>');
+  out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」を確認できた11区分</a>に書いています。</p>');
   out.push(END);
   return out.join('\n');
 }
@@ -228,7 +229,8 @@ export function buildAmountIndex(rows) {
   out.push('    <tbody>');
   for (const [amount, list] of m) {
     const cells = list.map((x) => x.fullLabel ? x.name : `${x.name}（${x.range}）`).join('<br>');
-    out.push(`    <tr><td><b>${amount}円</b></td><td>${cells}</td></tr>`);
+    // 金額は行の見出し（th scope="row"）。データのセルではない
+    out.push(`    <tr><th scope="row"><b>${amount}円</b></th><td>${cells}</td></tr>`);
   }
   out.push('    </tbody>');
   out.push('  </table>');
@@ -268,6 +270,6 @@ if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
     html = put(html, AMT_START, AMT_END, amountIndex, START);
 
     writeFileSync(ARTICLE, html);
-    console.log(`銀行別セクション ${(section.match(/<h3 /g) || []).length}見出し / 逆引き ${(amountIndex.match(/<tr><td><b>/g) || []).length}金額 を書き込みました`);
+    console.log(`銀行別セクション ${(section.match(/<h3 /g) || []).length}見出し / 逆引き ${(amountIndex.match(/<tr><th scope="row"><b>/g) || []).length}金額 を書き込みました`);
   }
 }
