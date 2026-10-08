@@ -11,7 +11,7 @@
 
 import { createServer } from "node:http";
 import { readFile, readdir, mkdtemp, rm } from "node:fs/promises";
-import { spawn } from "node:child_process";
+import { spawnChrome, killChrome } from "../chrome_proc.mjs";
 import { tmpdir } from "node:os";
 import { join, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -2118,8 +2118,7 @@ for (const sc of SCENES.filter((s) => match(s.name))) {
   // **1シーン60秒 × 36シーン = 36分**かかり、**通しで走らせるのが現実的でなくなっていた**。
   // 全数実行を誰もやらなくなった結果が第14便の全損見逃し(社会保険料にシーンが無いことに
   // 7便気付かなかった)。**遅すぎる検査は、いずれ走らされなくなって存在しないのと同じになる**。
-  const p = spawn(CHROME, args, { stdio: "ignore" });
-  const exited = new Promise((r) => p.on("exit", r));
+  const p = spawnChrome(CHROME, args);
   try {
     await new Promise((ok, ng) => {
       const done = () => { clearTimeout(kill); onReceived = null; ok(); };
@@ -2129,8 +2128,9 @@ for (const sc of SCENES.filter((s) => match(s.name))) {
       p.on("error", (e) => { clearTimeout(kill); onReceived = null; ng(e); });
     });
   } finally {
-    p.kill("SIGKILL");
-    await exited;   // **死にきるまで待ってから消す**。死ぬ途中のChromeはまだプロファイルに
+    // ★本体だけでなく子プロセスごと殺す(2026-10-08)。p.kill("SIGKILL") は本体しか殺さず、
+    //   renderer が親なしで回り続けて MBP を固めた(155個・load 990) → tools/chrome_proc.mjs
+    await killChrome(p);   // **死にきるまで待ってから消す**。死ぬ途中のChromeはまだプロファイルに
                     // 書き込んでいるので、先に消すと ENOTEMPTY で落ちる(実際に踏んだ)
     await rm(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
   }
