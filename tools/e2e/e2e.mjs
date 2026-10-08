@@ -1913,7 +1913,7 @@ const SCENES = [
       s.tokubetsuShiwake && !s.assyukuShiwake && !s.tsumitateShiwake && !s.failed },
   // ★確定していても、対象の固定資産を取得していなければ42条では処理できない
   { name: "hojokin_zeimu_mishutoku", expect: (s) =>
-      s.jobun === "法人税法43条1項" && s.gendo === null && !s.assyukuShiwake && !s.failed },
+      s.jobun === "法人税法42条・43条・44条の要件を確認" && s.gendo === null && !s.tokubetsuShiwake && !s.assyukuShiwake && !s.failed },
   // ★特別勘定を持っていて確定 → 44条。特別勘定の取崩しと圧縮記帳が両方出る
   { name: "hojokin_zeimu_atode", expect: (s) =>
       s.jobun === "法人税法44条1項" && s.gendo === 3000000 &&

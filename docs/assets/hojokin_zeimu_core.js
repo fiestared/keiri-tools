@@ -31,6 +31,7 @@
 
 /** 分岐の判定に使うキー */
 export const BUNKI = {
+  TAISHOGAI: 'taishogai',      // 確定済み・未取得は42条・43条・44条の圧縮計算をしない
   KAKUTEI: 'kakutei_zumi',      // 42条: 期末までに返還不要が確定
   MIKAKUTEI: 'mikakutei',       // 43条: 未確定 → 特別勘定
   ATODE: 'ato_de_kakutei',      // 44条: 特別勘定を持っていて後で確定
@@ -45,21 +46,20 @@ export const BUNKI = {
  */
 export function bunki({ kakuteiZumi, shutokuZumi, tokubetsuArii = false }, D) {
   const b = D.bunki;
+  if (kakuteiZumi && !shutokuZumi) {
+    return {
+      key: BUNKI.TAISHOGAI,
+      jobun: '法人税法42条・43条・44条の要件を確認',
+      youken: '返還不要が確定済みのため43条1項の未確定要件を満たさず、対象資産の取得・改良がないため42条・44条の圧縮要件も満たしません。',
+      shori: '対象資産が未取得・未改良のため圧縮額・圧縮仕訳を計算しません。',
+      _note: tokubetsuArii ? '既存の特別勘定は、返還不要の確定による取崩しを43条2項・3項で確認してください。' : '対象資産の取得・改良と返還不要の確定を別々に確認してください。',
+    };
+  }
   if (tokubetsuArii && kakuteiZumi) {
     return { key: BUNKI.ATODE, ...b.ato_de_kakutei };
   }
   if (!kakuteiZumi) {
     return { key: BUNKI.MIKAKUTEI, ...b.mikakutei };
-  }
-  if (!shutokuZumi) {
-    // ★確定していても、対象の固定資産を取得していなければ42条の圧縮記帳はできない
-    return {
-      key: BUNKI.MIKAKUTEI,
-      jobun: b.mikakutei.jobun,
-      youken: b.mikakutei.youken,
-      shori: b.mikakutei.shori,
-      _note: '返還不要は確定していますが、交付の目的に適合した固定資産をまだ取得・改良していないため、42条の圧縮記帳はできません。',
-    };
   }
   return { key: BUNKI.KAKUTEI, ...b.kakutei_zumi };
 }
@@ -101,12 +101,13 @@ export function shiwake({ bunkiKey, hojokin, gendo, houshiki }) {
   const h = Math.floor(Number(hojokin) || 0);
   const g = Math.floor(Number(gendo) || 0);
   const rows = [];
+  if (bunkiKey === BUNKI.TAISHOGAI) return rows;
   rows.push({ when: '交付決定・入金', dr: '現金預金', drAmt: h, cr: '国庫補助金収入（特別利益）', crAmt: h,
     note: '補助金は益金に入ります（法人税法22条2項）。圧縮記帳は非課税にする制度ではありません。' });
   if (bunkiKey === BUNKI.MIKAKUTEI) {
     rows.push({ when: '期末（返還不要が未確定）', dr: '国庫補助金等特別勘定繰入額', drAmt: h,
       cr: '国庫補助金等特別勘定', crAmt: h,
-      note: '返還を要しないことが期末までに確定していないので、圧縮記帳ではなく特別勘定です（43条1項）。' });
+      note: '返還を要しないことが期末までに確定していないので、固定資産の取得・改良用の国庫補助金等について43条の特別勘定を検討します（清算中の法人と、被合併法人の非適格合併の日の前日を含む事業年度を除く）。損金算入には補助金額以下を確定した決算で経理し、申告明細を記載することが必要です（明細記載のやむを得ない事情は43条5項）。' });
     return rows;
   }
   if (houshiki === 'chokusetsu') {

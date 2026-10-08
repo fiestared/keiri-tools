@@ -116,6 +116,7 @@
   <h1>補助金の経理・税務</h1>
   <p class="lead">補助金をもらったときの<b>圧縮限度額・仕訳・減価償却</b>を計算します。分かれ目は「補助金をもらったか」ではなく<b>「返還を要しないことが期末までに確定したか」</b>です。</p>
 
+  <p id="scope-43">計算対象は清算中の法人と、被合併法人の非適格合併の日の前日を含む事業年度を除いた通常の事業年度です。固定資産の取得・改良に充てる国庫補助金等を受ける内国法人が対象です。43条の特別勘定は、清算中の法人と、被合併法人の非適格合併の日の前日を含む事業年度を除く範囲で、補助金額以下の金額を確定した決算で経理し、確定申告書に損金算入明細を記載する場合に検討します（明細の記載がないことにやむを得ない事情があると税務署長が認める場合は43条5項）。適格分割等の期中特別勘定・適格組織再編成による引継ぎは43条6項〜11項の別区分で、ここでは扱いません。</p>
   <div class="callout" id="wakaremichi">
     <p><b>確定していなければ、圧縮記帳ではありません。</b>法人税法43条1項は「返還を要しないことが当該事業年度終了の時までに<b>確定していない場合に限る</b>」として、<b>特別勘定</b>を設ける処理を定めています。「補助金をもらったから圧縮記帳」と進めると、確定していない年度に損金を立てることになります。</p>
   </div>
@@ -181,7 +182,7 @@
   <table id="bunki-hyo">
     <tr><th scope="col">状況</th><th scope="col">条文</th><th scope="col">処理</th></tr>
     <tr><td>返還不要が<b>期末までに確定</b>し、対象資産も取得済み</td><td>法人税法<b>42条</b>1項</td><td>圧縮記帳（直接減額／積立金）</td></tr>
-    <tr><td>返還不要が期末までに<b>確定していない</b></td><td>法人税法<b>43条</b>1項</td><td><b>特別勘定</b>を設けて損金算入</td></tr>
+    <tr><td>返還不要が期末までに<b>確定していない</b></td><td>法人税法<b>43条</b>1項</td><td><b>特別勘定</b>を検討（清算中の法人と、被合併法人の非適格合併の日の前日を含む事業年度を除く）。補助金額以下を確定した決算で経理し、申告明細を記載して損金算入（明細記載のやむを得ない事情は43条5項）</td></tr>
     <tr><td>特別勘定を持っていて、<b>あとで確定</b>した</td><td>法人税法<b>44条</b>1項</td><td>その確定した日の属する事業年度に圧縮記帳</td></tr>
   </table>
   </div>
@@ -289,6 +290,10 @@ async function render() {
     shutokuZumi: $("shutoku").checked,
     tokubetsuArii: $("tokubetsu").checked,
   }, D);
+  if (b.key === BUNKI.TAISHOGAI) {
+    $("result").innerHTML = `<div class="big" id="jobun">${b.jobun}</div><p id="shori">${b.shori}</p><p id="youken">${b.youken}</p><p id="bunki-note">${b._note}</p>`;
+    return;
+  }
   const assyuku = b.key === BUNKI.MIKAKUTEI ? { gendo: 0, capped: false }
     : assyukuGendo(hojokin, shutokuKagaku);
   const sh = { shutokuKagaku, gendo: assyuku.gendo, shoukyakuRitsu: Number($("ritsu").value) || 0,
