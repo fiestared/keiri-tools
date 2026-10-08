@@ -1331,3 +1331,43 @@ footer [data-duplicate-note] { display: none !important; }
 .rail-next a { position: relative; background: #fff; border: 1px solid #cfe5de; border-radius: 8px; padding: 10px 28px 10px 12px; font-weight: 600; box-shadow: 0 1px 2px rgba(31, 111, 92, .08); }
 .rail-next a::after { content: "›"; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 20px; color: var(--accent); }
 .rail-next a:hover { border-color: var(--accent); text-decoration: none; background: #fbfefd; }
+
+/* ==== 計算結果の右レール要約と、計算済みの印刷（B班 2026-10-08。assets/result_rail.js） ====
+   gbrain audits/keiri-uiux-review-pc-2026-10-08 中1・中2。
+   ≥1200px: 計算が成功したら、答えの金額と主な内訳を右レール（.side-rail）の先頭＝目次の上に出す。
+   左の太線アクセントは使わない（gbrain design/ui-no-left-accent-border-cards）。四辺1pxの枠。 */
+.result-rail, .print-stamp { display: none; }
+@media (min-width: 1200px) {
+  .side-rail > .result-rail:not([hidden]) { display: block; flex: 0 0 auto; margin: 0; background: #fff; border: 1px solid var(--accent); border-radius: 12px; padding: 12px 16px; }
+  .result-rail-title { font-weight: 700; font-size: 13px; color: var(--sub); margin-bottom: 4px; }
+  .result-rail dl { margin: 0; display: grid; grid-template-columns: 1fr auto; column-gap: 10px; row-gap: 2px; align-items: baseline; }
+  .result-rail dl[hidden] { display: none; }
+  .result-rail dt { font-size: 13px; color: var(--ink); overflow-wrap: anywhere; }
+  .result-rail dd { margin: 0; font-size: 14px; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+  .result-rail-heads dd { font-size: 22px; font-weight: 800; color: var(--accent); }
+  .result-rail-heads dt { font-weight: 700; }
+  .result-rail-rows { border-top: 1px solid var(--line); margin-top: 8px !important; padding-top: 6px; }
+  .result-rail .is-strong { font-weight: 700; }
+  .result-rail-stale { margin: 8px 0 0; font-size: 12.5px; color: var(--warn-ink); }
+  .result-rail.is-stale dl { opacity: .55; }
+  .result-rail-more { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; }
+  /* 要約を出している間は「あわせて読む」を引っ込め、目次と要約を画面の高さに収める（ツールページでは結果を優先） */
+  .side-rail:has(> .result-rail:not([hidden])) > .rail-next { display: none; }
+}
+@media print {
+  .result-rail { display: none !important; }
+  /* 計算済みの印刷は「条件＋結果＋出典＋計算日・URL」だけにする（解説・FAQ・関連・目次は隠す） */
+  html[data-calculated] main > :not(.hero):not(.card):not(.breadcrumb),
+  html[data-calculated] main > .card:not(:has(.result)),
+  html[data-calculated] .hero > :not(h1),
+  html[data-calculated] .card .hint:not(:has(.warn)),
+  html[data-calculated] .card .callout,
+  html[data-calculated] .card .workflow-next,
+  html[data-calculated] .card .optional-fields:not([open]),
+  html[data-calculated] .card #optional-lead { display: none !important; }
+  html[data-calculated] .card { break-inside: auto; border: 0; padding: 0; }
+  html[data-calculated] .result { break-inside: auto; }
+  html[data-calculated] .card label, html[data-calculated] .card input, html[data-calculated] .card select { margin-top: 2px; margin-bottom: 2px; }
+  html[data-calculated] fieldset.member { margin-top: 8px; }
+  html[data-calculated] .print-stamp { display: block; margin: 8px 0 0; font-size: 10pt; color: #000; word-break: break-all; }
+}

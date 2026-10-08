@@ -197,7 +197,11 @@
           //   下半分にあるときも送り、計算後は**結果の頭が画面の上半分に来る**形に揃える。
           //   収まる結果・頭が上半分にある結果は動かさない（読んでいる位置を奪わない）。
           var vh = window.innerHeight;
-          if (r.top > vh - 120 || (r.top > vh / 2 && r.bottom > vh)) scrollToTop(box);
+          // ★PC（≥1200px）で右レールに結果の要約が出るページ（result_rail.js が data-result-rail を立てる）は動かさない。
+          //   結果へ飛ぶと入力が全部画面から消える（PC レビュー中1）。答えは右レールで入力と並べて見せる。
+          var railShows = document.documentElement.hasAttribute("data-result-rail") &&
+            window.matchMedia && matchMedia("(min-width: 1200px)").matches;
+          if (!railShows && (r.top > vh - 120 || (r.top > vh / 2 && r.bottom > vh))) scrollToTop(box);
         }
       }
     });
