@@ -211,6 +211,43 @@ class OnePass(Base):
                 self.assertIn('resume sol models differ',(r/'STOPPED').read_text())
             finally:writable(root)
 
+    def test_changed_since_rereviews_units_whose_local_context_changed(self):
+        # 2026-10-09 局所文脈: 本文が同じでも、添えた文脈（表の前提）が変わったセルは照合し直す。前の run が旧出力なら従来どおり本文だけ
+        with tempfile.TemporaryDirectory() as tmp:
+            root,repo,a,git=self.fixture(tmp)
+            try:
+                p=repo/'docs/a/index.html';table='<table><tr><th>寄附額</th><th>控除</th></tr><tr><td>80,000円</td><td>58,621円</td></tr></table>'
+                p.write_text(p.read_text()+'<p>両税率5％の算術例です。</p>'+table+'<h2>別</h2><p>前置き。</p><table><tr><th>年</th><th>額</th></tr><tr><td>1年目</td><td>100円</td></tr></table>')
+                with patch.object(runner,'execute'):self.assertEqual(runner.run(a),0)
+                prev=a.run_dir;before=json.loads((prev/'segments.json').read_text())
+                self.assertTrue(all('context_hash' in u and u['context_hash'] is None for u in before))
+                # 無傷: 何も変えなければ0単位
+                b=argparse.Namespace(**{**vars(a),'run_dir':root/'recheck','changed_since':prev,'prepare_only':False})
+                with patch.object(runner,'execute') as worker:self.assertEqual(runner.run(b),0);worker.assert_not_called()
+                # 表の直前の段落に印を付ける（どの単位の本文も変わらない）→ その表のセルだけが照合の対象。別の表・段落自身は対象外
+                p.write_text(p.read_text().replace('<p>両税率5％の算術例です。</p>','<p data-review-context="before-table">両税率5％の算術例です。</p>'))
+                c=argparse.Namespace(**{**vars(a),'run_dir':root/'recheck2','changed_since':prev,'prepare_only':True})
+                with patch.object(runner,'execute'):self.assertEqual(runner.run(c),0)
+                got=json.loads((root/'recheck2/segments.json').read_text())
+                self.assertEqual(sorted(u['text'] for u in got),sorted(['寄附額','控除','80,000円','【行】80,000円 【列】控除 【値】58,621円']))
+                self.assertTrue(all(u['context']=='【表の直前の説明】両税率5％の算術例です。' for u in got))
+                self.assertEqual({u['id'] for u in got}-{u['id'] for u in before},set())
+                # 前提の文を書き換える → 段落自身（本文が変わった）と、その表のセル（文脈が変わった）
+                p.write_text(p.read_text().replace('両税率5％の算術例です。','両税率10％の算術例です。'))
+                d=argparse.Namespace(**{**vars(a),'run_dir':root/'recheck3','changed_since':root/'recheck2','prepare_only':True})
+                # recheck2 は変わった単位だけの segments.json。別の表・ほかの段落は「前に無い」ので対象に入る（従来どおりの保守的な挙動）
+                with patch.object(runner,'execute'):self.assertEqual(runner.run(d),0)
+                got3=json.loads((root/'recheck3/segments.json').read_text())
+                self.assertIn('両税率10％の算術例です。',[u['text'] for u in got3])
+                self.assertIn('【行】80,000円 【列】控除 【値】58,621円',[u['text'] for u in got3])
+                # 前の run が文脈より前の出力（context_hash の欄が無い）なら本文だけで比べる＝印を足しただけでは0単位
+                old=root/'old';old.mkdir();(old/'segments.json').write_text(json.dumps([{k:v for k,v in u.items() if k not in ('context','context_hash')} for u in before]))
+                p.write_text(p.read_text().replace('両税率10％の算術例です。','両税率5％の算術例です。'))
+                e=argparse.Namespace(**{**vars(a),'run_dir':root/'recheck4','changed_since':old,'prepare_only':False})
+                with patch.object(runner,'execute') as worker:self.assertEqual(runner.run(e),0);worker.assert_not_called()
+                self.assertIn('no changed units',(root/'recheck4/.finished').read_text())
+            finally:writable(root)
+
     def test_changed_since_reviews_only_changed_units(self):
         with tempfile.TemporaryDirectory() as tmp:
             root,repo,a,git=self.fixture(tmp)
