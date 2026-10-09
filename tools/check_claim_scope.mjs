@@ -12,6 +12,8 @@
  *   must_with の語がすべて同じ単位にあるかを見る。無ければ落とす。
  *   語の一致は NFKC・空白除去で比べる。言い換えを許すときは "令和8年分|令和8・9年分" のように | で並べる（どれか1つでよい）。
  *   must_with が無い主張は検査しない（新しく書いた主張には書く: prompts/write.md）。
+ *   2026-10-09: 単位に局所文脈（segment_claims の context。表の表題・`data-review-context="before-table"|"after-table"` の段落・FAQ の設問と答え）が
+ *   あれば、must_with の語は「同じ単位か、その文脈」にあればよい（tools/SEGMENTS.md）。離れた段落・記事の冒頭は数えない。
  *
  * 使い方: node tools/check_claim_scope.mjs <page.html> [--ledger claims/…json]   （複数ページ可）
  *   ledger を省くと docs/<x>/index.html → claims/<x>.json を読む。exit 1 で抜けあり。
@@ -66,7 +68,10 @@ for (const page of pages) {
       const t = normalize(u.text || '');
       if (!nums.some((n) => t.includes(n))) continue;
       checked++;
-      const missing = must.filter((m) => !m.split('|').some((alt) => t.includes(normalize(alt))));
+      // 2026-10-09 局所文脈: 単位に添えた文脈（表の表題・印を付けた表の直前の説明／直後の注・FAQ の設問と答え）にある語は「書いてある」と数える。
+      //   数字が出てくるかどうか（上の nums）は従来どおり単位の本文だけで見る。記事の別の場所の文は数えない
+      const scope = t + normalize(u.context || '');
+      const missing = must.filter((m) => !m.split('|').some((alt) => scope.includes(normalize(alt))));
       if (missing.length) {
         bad++;
         console.log(`✗ ${page} ${u.id}（${u.kind}/${u.zone}）主張 ${c.id}: 「${missing.join('」「')}」が同じ文に無い — ${(u.text || '').slice(0, 80)}`);
