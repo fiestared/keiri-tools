@@ -627,6 +627,7 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'tawara-nk-ter': {'must_with': ['総経費率', '対象期間']},
         'terpair': {'must_with': ['総経費率', '参考値|対象期間']},
         'tersrc': {'must_with': ['総経費率', '参考']},
+        'bmchg-t': {'must_with': ['ベンチマーク', '2025年1月16日']},
         'ternote-t': {'must_with': ['総経費率', '対象期間']},
         'emaxis-nk-terd': {'must_with': ['総経費率', '対象期間', '参考値']},
         'emaxis-nk-lend': {'must_with': ['貸付', '以内']},
