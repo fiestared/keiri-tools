@@ -52,7 +52,7 @@ function check(html, csv) {
   const trs = [...tbody[1].matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)].map((m) => m[1]);
   if (trs.length !== 47) fail(`表の行が ${trs.length} 行（47行でない）`);
   // ②' 見出しの順 = 値の順（列を並べ替えたときに見出しだけ取り残されると、全セルが別の列名で読まれる）
-  const heads = [...((html.match(/<table class="kenpo-ichiran[^"]*">[\s\S]*?<thead><tr>([\s\S]*?)<\/tr><\/thead>/) || [, ""])[1]).matchAll(/<th[^>]*>([\s\S]*?)<\/th>/g)].map((m) => strip(m[1]));
+  const heads = [...((html.match(/<table class="kenpo-ichiran[^"]*">[\s\S]*?<thead><tr>([\s\S]*?)<\/tr><\/thead>/) || [, ""])[1]).matchAll(/<th[^>]*>([\s\S]*?)<\/th>/g)].map((m) => strip(m[1].replace(/<details\b[\s\S]*?<\/details>/g, "")));  // 列名だけを比べる（見出しの中の「介護の条件」details は列名ではない）
   const wantHeads = ["都道府県", "健康保険料率", "本人負担（折半）40歳未満", /^40〜64歳（介護保険料率[\d.]+%込み）$/, "本人負担（折半）40〜64歳", /^令和\d+年度からの増減$/];
   if (heads.length !== wantHeads.length || !wantHeads.every((w, i) => typeof w === "string" ? heads[i] === w : w.test(heads[i]))) fail(`表の見出しの順が値の順と違う: ${JSON.stringify(heads)}`);
   for (const p of prefs) {

@@ -11,5 +11,5 @@ for(const u of money){assert.match(u.text,/東京支部の一般被保険者/);a
 assert.equal(units.filter(u=>u.text.includes('【値】83,000 〜 93,000（厚年は93,000円未満）')).length,1);
 assert.equal(units.filter(u=>u.text.includes('【値】635,000 〜 665,000（厚年は635,000円以上）')).length,1);
 execFileSync('node',['review-evidence/auto20261008-t3x-q08381/verify.mjs'],{stdio:'pipe'});
-const deposit=readFileSync('docs/column/azukarikin/index.html','utf8');assert.match(deposit,/2026年3月分[^。]*42,225円/);assert.match(deposit,/58,545円/);assert.match(deposit,/76,545円/);
-console.log('✓ 全50等級の公表料率との独立照合・250セルの対象条件・3月支援金開始前の設例');
+// 預り金の記事の3月分の設例（42,225円・58,545円・76,545円）は統合で見送った: main が 10-08 の書き直し（rg24）で設例を令和8年6月支給・9月決算に替えており、3月分の設例そのものが無い。
+console.log('✓ 全50等級の公表料率との独立照合・250セルの対象条件');
