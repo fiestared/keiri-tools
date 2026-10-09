@@ -16,7 +16,7 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { productionGuard } from "./production-guard.mjs";
-import { settledCutoffHour } from "./settled.mjs";
+import { settledCutoffHour, todayHeadline } from "./settled.mjs";
 import { createSign } from "node:crypto";
 
 const DIR = dirname(fileURLToPath(import.meta.url));
@@ -719,7 +719,7 @@ function chart(site) {
       <text x="${b.cx}" y="${H - PAD.b + 16}" class="xlab ${b.d.weekend ? "we" : ""}" text-anchor="middle">${b.d.wd}</text>
       <text x="${b.cx}" y="${H - PAD.b + 30}" class="xsub" text-anchor="middle">${b.d.date.slice(5).replace("-", "/")}</text>`).join("")}
     ${(() => { const b = bars[bars.length - 1]; return b.h > 0
-        ? `<text x="${b.cx}" y="${(b.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${b.d.sessions.toLocaleString("ja-JP")}</text>` : ""; })()}
+        ? `<text x="${b.cx}" y="${(b.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${b.d.sessions.toLocaleString("ja-JP")}${b.d.today ? "（集計中）" : ""}</text>` : ""; })()}
     ${bars.map((b, i) => `<rect class="hit" x="${PAD.l + (iw / site.shown.length) * i}" y="${PAD.t}"
         width="${iw / site.shown.length}" height="${ih}" fill="transparent"
         data-tip="${esc(`${b.d.date}(${b.d.wd})${b.d.today ? " ※途中" : ""} — ${b.d.sessions.toLocaleString("ja-JP")} セッション / ${b.d.users.toLocaleString("ja-JP")} ユーザー / ${(b.d.pageviews ?? 0).toLocaleString("ja-JP")} PV${b.d.prev !== null ? ` / 前週同曜日 ${b.d.prev.toLocaleString("ja-JP")}` : ""}${srcTip(b.d)}`)}"></rect>`).join("")}
@@ -1198,9 +1198,9 @@ function sitePanel(site, primary, extra = "", selected = true, asTab = false) {
 
   <div class="tiles">
     <div class="tile${primary ? " hero" : ""}">
-      <div class="label">今日 <span class="badge">${site.cutoff ? `${esc(site.cutoff)}まで` : "途中"}</span></div>
-      <div class="value">${site.today.toLocaleString("ja-JP")}</div>
-      ${pvLine(site.todayPv, site.today)}
+      <div class="label">今日 <span class="badge">${esc(todayHeadline(site).label)}</span></div>
+      <div class="value">${todayHeadline(site).value === null ? "—" : todayHeadline(site).value.toLocaleString("ja-JP")}</div>
+      <div class="metric-sub">${esc(todayHeadline(site).note)}</div>
       ${site.cmpHour >= 0
         ? delta(site.todayCum, site.prevWeekCum, `先週${esc(site.todayWd)} 0:00〜${hh}:59 比`)
           // ★昨日比も出す（2026-08-25 Masahiro依頼）。先週同曜日比の下に置いているのは
