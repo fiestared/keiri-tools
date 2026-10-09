@@ -18,11 +18,11 @@ from funds import FUNDS, check_all
 check_all()
 import compare as CP
 
-PUB_DEFAULT = '2026-10-08'  # この便で公開する記事の公開日
-PUB_BY_SLUG = {'sbi-spyd-vs-rakuten-schd': '2026-10-03', 'sbi-spyd-vs-sbi-vym': '2026-10-04', 'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07'}  # 既に公開した記事の公開日は動かさない
+PUB_DEFAULT = '2026-10-09'  # この便で公開する記事の公開日
+PUB_BY_SLUG = {'sbi-spyd-vs-rakuten-schd': '2026-10-03', 'sbi-spyd-vs-sbi-vym': '2026-10-04', 'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08'}  # 既に公開した記事の公開日は動かさない
 PUB = PUB_DEFAULT  # 公開日（datePublished・ページの公開日の表示）。Page ごとに差し替える
 GOT_DEFAULT = '2026-10-03'  # 資料・基準価額データの取得日（公開日と分けて持つ。2026-10-02 の TODO）
-GOT_BY_SLUG = {'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08'}  # 後の便で資料を取り直した記事
+GOT_BY_SLUG = {'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09'}  # 後の便で資料を取り直した記事
 GOT = GOT_DEFAULT
 CMP = json.loads((R / 'comparison.json').read_text())['pairs']
 E = H.escape
@@ -99,7 +99,7 @@ class Page:
             'terd': '交付目論見書の（参考情報）欄の総経費率は、小数第2位の表示と「上記の詳細な総経費率」（小数第5位）の2つがある。本文では詳細値を使い、小数第2位の値も併記した。',
             'terak': '交付運用報告書の総経費率は小数第2位までの表示。交付目論見書の詳細値を四捨五入した値と一致することを確認した。',
             'lend': ('有価証券の貸付の指図を行った場合だけの定めで、運用管理費用（信託報酬）に追加される額。貸付を行わない場合は追加されない。本文では原文の条件と対象（ファンドの品貸料およびマザーファンドの品貸料のうちファンドに属するとみなした額）を縮めずに書いた。' if f.get('lend_kind') == 'add' else
-                     'マザーファンドで有価証券の貸付の指図を行った場合だけの定めで、運用管理費用（信託報酬）の②として計算される額。率は「55%未満（税抜50%）」で、2026年7月14日現在は品貸料の49.5%（税抜45%）以内。①と②の合計（税抜）は純資産総額の年0.75%を超えないと同じ欄にある。本文では対象（マザーファンドの品貸料のうちファンドに属するとみなした額）と現在の率を縮めずに書いた。' if f.get('lend_kind') == 'tawara' else
+                     'マザーファンドで有価証券の貸付の指図を行った場合だけの定めで、運用管理費用（信託報酬）の②として計算される額。率は「55%未満（税抜50%）」で、2026年7月14日現在は品貸料の49.5%（税抜45%）以内。①と②の合計（税抜）は純資産総額の年' + f.get('lend_cap', '0.75%') + 'を超えないと同じ欄にある。本文では対象（マザーファンドの品貸料のうちファンドに属するとみなした額）と現在の率を縮めずに書いた。' if f.get('lend_kind') == 'tawara' else
                      '有価証券の貸付取引を行った場合だけの定め。楽天投信の交付目論見書は、信託報酬への追加ではなく「その他の費用・手数料」の一項目（貸付有価証券関連報酬）として書いており、本文でもその位置づけのまま書いた。費用欄は2段組で、抽出テキストでは隣の段の注記が引用の途中に挟まる。'),
             'tier': '交付目論見書の（ご参考）の実質信託報酬率の例。実際の率は純資産総額で変わる。',
             'incept': '設定日は交付目論見書・運用会社の基準価額データの初日で確認。',
@@ -354,6 +354,8 @@ NAME_PATS = {
     'rakuten-ndx': r'「楽天・プラス・ＮＡＳＤＡＱ－１００インデックス・ファンド」 ?の募集',
     'rakuten-vym': r'楽天・米国高配当株式インデックス・ファンド」 ?の募集',
     'rakuten-jepi': r'「楽天・米国大型株式・プレミアム・インカム・ファンド\(毎月決 ?算型\)」の募集',
+    'emaxis-nk': r'この目論見書により行う 「ｅＭＡＸ Ｉ ＳＳｌ ｉｍ 国内株式 （日経平均）」の募集',
+    'tawara-nk': r'この目論見書により行う 「たわらノーロード 日経２２５」の募集',
 }
 def _name_pat(f):
     k = next(k for k, v in FUNDS.items() if v is f)
@@ -377,6 +379,8 @@ DOCDATE = {
     'rijepi_P': r'使用開始日：2026年4月27日', 'rijepi_Ak': r'（作成対象期間 2026年5月11日～2026年7月15日）', 'rijepi_M': r'作成基準日 ： 2026年8月31日',
     'spdji_hd': r'S&P Dow Jones Indices: S&P High Dividend Indices Methodology',
     'nq_sox': r'INDEX METHODOLOGY \| © Copyright 2026, Nasdaq, Inc\. All Rights Reserved\.', 'nq_ndx': r'INDEX METHODOLOGY \| © Copyright 2026, Nasdaq, Inc\. All Rights Reserved\.',
+    'enk_P': r'使用開始日 2026\.７\.25', 'enk_Ak': r'作成対象期間：2025年４月26日〜2026年４月27日', 'enk_M': r'2026年09月30日現在',
+    'tnk_P': r'使用開始日 2026年７月15日', 'tnk_Ak': r'作成対象期間 2024年10月16日～2025年10月14日', 'tnk_M': r'2026年9月30日基準',
     'tbal_P': r'使用開始日 2026年７月15日', 'tbal_Ak': r'作成対象期間 2024年10月16日～2025年10月14日', 'tbal_M': r'2026年8月31日基準',
 }
 
@@ -587,7 +591,7 @@ def build_ledger(p):
     return errors
 
 # Ledgers reviewed claim by claim on a later day carry that date (check_claim_scope requires must_with from 2026-10-05).
-CHECKED = {'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08'}
+CHECKED = {'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09'}
 _PERF_CALC = ('python3（2026-10-05、compare.series の保存データから再計算）: 共通営業日 2025-02-07〜2026-09-30（暦日600日、600/365.25=1.64年）。'
               'SBI: 累積 19780.68269/11947.95801-1=+65.5570%、年率 (1.655570)^(1/1.6427)-1=+35.9203%、100万円×1.655570=1,655,570円、最大下落 -16.9911%、'
               '直近1年 19780.68269/14510.21310-1=+36.3225%。楽天: 累積 16063/9999-1=+60.6461%、年率 +33.4515%、1,606,461円、最大下落 -15.3947%、'
@@ -603,7 +607,48 @@ _PERF_CALC_SPYDV = ('python3（2026-10-07、compare.series の保存データ sb
 _PERF_CALC_JEPI = ('python3（2026-10-08、compare.series の保存データ rakuten_100127.csv / rakuten_100105_20261008.csv から再計算）: 共通営業日 2026-05-11〜2026-09-30（98営業日、暦日142日、142*12/365.25=4.67か月→約4か月半。1年未満のため年率換算なし）。'
                    '楽天・JEPI: 累積 10367/9999-1=+3.6804%、100万円×10367/9999=1,036,804円、最大下落 10137/10845-1=-6.5284%（高値2026-07-29 10845→安値2026-09-10 10137）。'
                    '楽天・SCHD: 累積 13720/12999-1=+5.5466%、100万円×13720/12999=1,055,466円、最大下落 13720/14769-1=-7.1027%（高値2026-08-25 14769→安値2026-09-30 13720）。comparison.json と一致。')
+_PERF_CALC_NK = ('python3（2026-10-09、compare.series の保存データ mufg_253144.csv / amone_313122.json から再計算）: 共通営業日 2023-09-29〜2026-09-30（731営業日、暦日1,097日、1097/365.25=3.0034年→3.00年）。'
+                 'eMAXIS Slim: 累積 33247/15122-1=+119.8585%、年率 (2.198585)^(1/3.0034)-1=+29.9923%、100万円×33247/15122=2,198,585円、最大下落 15074/20229-1=-25.4832%（高値2024-07-11 20229→安値2024-08-05 15074）、'
+                 '直近1年 33247/22053-1=+50.7595%。たわら: 累積 40759/18564-1=+119.5594%、年率 (2.195594)^(1/3.0034)-1=+29.9334%、100万円×40759/18564=2,195,594円、最大下落 18499/24827-1=-25.4884%（高値2024-07-11 24827→安値2024-08-05 18499）、'
+                 '直近1年 40759/27050-1=+50.6802%。日次騰落率の相関 0.99999645→小数第4位で1.0000。comparison.json と一致。月次レポート（2026年9月30日）の過去3年 119.9%・119.6% と小数第1位まで一致。')
 SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'calc': str}}
+    'emaxis-nikkei-vs-tawara-nikkei': {
+        'perf': {'must_with': ['再投資', '2026年9月30日|比較期間'], 'derived': True, 'calc': _PERF_CALC_NK},
+        'perfA': {'must_with': ['再投資', '2026年9月30日|比較期間'], 'derived': True, 'calc': _PERF_CALC_NK},
+        'perfB': {'must_with': ['再投資', '2026年9月30日|比較期間'], 'derived': True, 'calc': _PERF_CALC_NK},
+        'desc': {'must_with': ['再投資|信託報酬', '税込|比較期間|2026年9月30日']},
+        'method': {'must_with': ['比較期間|起点|終点|基準価額|データ|再投資|確認した|取得']},
+        'feehead': {'must_with': ['確認した|総経費率']},
+        'feepair': {'must_with': ['税込', '信託報酬']},
+        'emaxis-nk-fee': {'must_with': ['税込', '信託報酬']},
+        'tawara-nk-fee': {'must_with': ['税込', '信託報酬']},
+        'emaxis-nk-tier': {'must_with': ['税込', '使用開始日']},
+        'emaxis-nk-ter': {'must_with': ['総経費率', '参考値|対象期間']},
+        'tawara-nk-ter': {'must_with': ['総経費率', '参考値|対象期間']},
+        'terpair': {'must_with': ['総経費率', '参考値|対象期間']},
+        'tersrc': {'must_with': ['総経費率', '参考']},
+        'emaxis-nk-terd': {'must_with': ['総経費率', '対象期間']},
+        'emaxis-nk-lend': {'must_with': ['貸付', '以内']},
+        'tawara-nk-lend': {'must_with': ['貸付|総経費率', '品貸料|総経費率']},
+        'cap-t': {'must_with': ['税抜', '各計算期間']},
+        'emaxis-nk-settle': {'must_with': ['休業日|決算）']},
+        'tawara-nk-settle': {'must_with': ['休業日|決算）']},
+        'settlepair': {'must_with': ['休業日|決算）']},
+        'emaxis-nk-incept': {'must_with': ['設定日']},
+        'tawara-nk-incept': {'must_with': ['設定日']},
+        'fut-e': {'must_with': ['場合がある']},
+        'comp-e': {'must_with': ['2026年9月30日', '純資産総額']},
+        'comp-t': {'must_with': ['2026年9月30日', '純資産総額']},
+        'nav-e': {'must_with': ['2026年9月30日|信託報酬', '純資産総額']},
+        'nav-t': {'must_with': ['2026年9月30日', '純資産総額'], 'derived': True, 'calc': 'python3: 511999/100=5119.99（百万円→億円。マンスリーレポートの当月末の純資産総額 511,999百万円）。'},
+        'bmgap': {'must_with': ['2026年9月30日', '再投資|月次レポート']},
+        'dist-e': {'must_with': ['1万口当たり|過去の実績', '税引前|過去の実績']},
+        'dist-t': {'must_with': ['1万口当たり|過去の実績', '税引前|過去の実績']},
+        'nisapair': {'must_with': ['使用開始日', '販売会社']},
+        'doc-enk_P': {'must_with': ['交付目論見書']}, 'doc-tnk_P': {'must_with': ['交付目論見書']},
+        'doc-enk_Ak': {'must_with': ['交付運用報告書']}, 'doc-tnk_Ak': {'must_with': ['交付運用報告書']},
+        'doc-enk_M': {'must_with': ['月次レポート']}, 'doc-tnk_M': {'must_with': ['マンスリーレポート']},
+    },
     'rakuten-jepi-vs-rakuten-schd': {
         'perf': {'must_with': ['再投資|年率換算|1年分|142日間|仮定', '2026年9月30日|比較期間|1年未満|1年分|仮定'], 'derived': True, 'calc': _PERF_CALC_JEPI},
         'perfA': {'must_with': ['再投資|仮定', '比較期間|2026年9月30日|仮定'], 'derived': True, 'calc': _PERF_CALC_JEPI},
@@ -793,6 +838,8 @@ def NONCLAIM_WHY(u):
 
 def ABS_REVIEW(a):
     ctx = a['context']
+    if '原則として分配を抑制' in ctx:
+        return ('交付目論見書の分配方針の文言（信託財産の成長を優先し、原則として分配を抑制する方針）を写した。原則の外は同じ文のかっこ書「基準価額水準や市況動向等により変更する場合があります」で、本文の同じ文に書いた。将来の分配金の支払いと金額が保証されない旨も本文に書いた。')
     if '原則' in ctx and ('ヘッジ' in ctx or '為替' in ctx):
         return ('交付目論見書の文言（原則として為替ヘッジを行わない）を写した。例外は目論見書の「市況動向の急激な変化等の場合は上記の運用ができない場合がある」旨で、本文では「原則なし」と表示して断定していない。')
     if '原則' in ctx and ('決算' in ctx or '各20日' in ctx or '各25日' in ctx or '各10日' in ctx or '各12日' in ctx):

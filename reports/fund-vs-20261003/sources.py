@@ -59,6 +59,12 @@ doc('rivuh_M', f'{RK}/rivuh/pdf/rivuh_M202608.pdf', '楽天・米国高配当株
 doc('rijepi_P', f'{RK}/rijepi/pdf/rijepi_P.pdf', '楽天・米国大型株式・プレミアム・インカム・ファンド（毎月決算型）交付目論見書（使用開始日2026年4月27日）')
 doc('rijepi_Ak', f'{RK}/rijepi/pdf/rijepi_Ak.pdf', '楽天・米国大型株式・プレミアム・インカム・ファンド（毎月決算型）交付運用報告書（第1期・作成対象期間2026年5月11日〜2026年7月15日）')
 doc('rijepi_M', f'{RK}/rijepi/pdf/rijepi_M202608.pdf', '楽天・米国大型株式・プレミアム・インカム・ファンド（毎月決算型）月次レポート（2026年8月31日作成基準）')
+doc('enk_P', f'{M}/koumokuromi/253144/253144_20260725.pdf', 'eMAXIS Slim 国内株式（日経平均）交付目論見書（使用開始日2026年7月25日）')
+doc('enk_Ak', f'{M}/kouunyou/253144/253144_20260427_k.pdf', 'eMAXIS Slim 国内株式（日経平均）交付運用報告書（作成対象期間2025年4月26日〜2026年4月27日）')
+doc('enk_M', f'{M}/geppou/253144/253144_202609.pdf', 'eMAXIS Slim 国内株式（日経平均）月次レポート（2026年9月30日現在）')
+doc('tnk_P', 'https://www.am-one.co.jp/fund/pdf/313122/313122_pr_d.pdf', 'たわらノーロード 日経225 交付目論見書（使用開始日2026年7月15日）')
+doc('tnk_Ak', 'https://www.am-one.co.jp/fund/pdf/313122/313122_r_d.pdf', 'たわらノーロード 日経225 交付運用報告書（作成対象期間2024年10月16日〜2025年10月14日）')
+doc('tnk_M', 'https://www.am-one.co.jp/fund/pdf/313122/313122_mr.pdf', 'たわらノーロード 日経225 マンスリーレポート（2026年9月30日基準）')
 doc('spdji_hd', 'https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-high-dividend-indices.pdf', 'S&P Dow Jones Indices：S&P High Dividend Indices Methodology（2026年10月7日に確認）')
 doc('nq_sox', 'https://indexes.nasdaqomx.com/docs/Methodology_SOX.pdf', 'Nasdaq：PHLX Semiconductor Sector Index（SOX）Index Methodology（2026年10月6日に確認）')
 doc('nq_ndx', 'https://indexes.nasdaqomx.com/docs/Methodology_NDX.pdf', 'Nasdaq：Nasdaq-100 Index（NDX）Index Methodology（2026年10月6日に確認）')
@@ -77,6 +83,8 @@ NAV = {
     'rakuten-sox': ('rakuten_100092.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100092.csv'),
     'rakuten-vym': ('rakuten_100035.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100035.csv'),
     'rakuten-jepi': ('rakuten_100127.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100127.csv'),
+    'emaxis-nk': ('mufg_253144.csv', 'https://www.am.mufg.jp/fund_file/setteirai/253144.csv'),
+    'tawara-nk': ('amone_313122.json', 'https://www.am-one.co.jp/chart_data/313122/dat.json'),
     'rakuten-ndx': ('rakuten_100091.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100091.csv'),
 }
 
