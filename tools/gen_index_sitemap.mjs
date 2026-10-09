@@ -343,6 +343,7 @@ const ORDER = [
   "kiso-kojo-shinkokusho",    // 基礎控除申告書 14,800/月（keyword_demand.py 2026-10-07 午後便で実測。配偶者控除等申告書・所得金額調整控除申告書は同じ兼用様式なので1本）。被覆: 節保有は nenmatsu-chosei-kakikata の②節のみ（縮めずに相互リンク）・<title> 0件。控除額の表は kiso-kojo、配偶者控除の額は haigusha-tokubetsu-kojo へ渡す
   "gensen-taisho-gai-kyuyo", // 源泉徴収の対象とならない給与 2,400/月（keyword_demand.py 2026-10-08 MF2便・新規。言い換えは 現物給与 720・給与 非課税 390・非課税 手当 260）。被覆: slug taisho-gai/hikazei-kyuyo 0件・<title>に総覧なし（個別は tsukin-teate-hikazei・shokuji-hojo・shutcho-nittou-ryohi-kitei・einen-kinzoku-hyosho・shataku-chintairyo が主題保有）。核: 源泉徴収のあらまし（令和8年版）第2 Ⅱ の区分のまま、金銭の手当13行・現物給与14行の一覧＋条件を外れたときに超過分だけ課税か全額課税か。金額の表は個別記事へ渡す
   "nenmatsu-chosei-taishogai", // 年末調整の対象とならない人 1,900/月（「年末調整 退職者」で 2026-10-07 司令塔が実測。MF1便・新規）。被覆: slug taishogai 0件・<title>「年末調整の対象」0件。nenmatsu-chosei-kanpukin の節「そもそも年末調整の対象外の人」は表のみで、本記事へリンクで譲る。核: 令和8年分「年末調整のしかた」の対象とならない6区分、中途退職の4例外（パート等は令和8年分136万円以下・あらまし令和8年版は123万円のまま）、対象給与は支給日基準で未払も含む、速算表注の課税給与所得金額18,050,000円超、外国人も居住者なら同じ表で判定
+  "shokibo-kyosai-kakekin-kojo", // 小規模企業共済等掛金控除 4,400/月（2026-10-09 実測 3,520＋880。午後便・新規）。被覆: 主題保有0・節保有2（kakutei-kyoshutsu-nenkin・nenmatsu-chosei-kakikata）。iDeCo の申告書の書き方は ideco-nenmatsu-chosei、企業型の掛金は kakutei-kyoshutsu-nenkin、控除の対照表は shotoku-kojo-ichiran へリンクで譲り、この記事は控除の総覧（対象の掛金・控除額・年末調整での扱い・源泉徴収票の内書き）
   "nencho-misai", // 年調未済とは 1,600/月（「年調未済」2026-10-09 実測 1,280＋320。MF1便・新規）。被覆: docs 全体で「年調未済」0件。年末調整の対象外の区分は nenmatsu-chosei-taishogai、退職者の票の作り方は taishoku-gensen-choshuhyo へリンクで譲る
   "nenmatsu-chosei-hitsuyo-shorui",  // 年末調整の必要書類 6,600/月（「年末調整 必要書類」2026-10-08 実測 5,280＋1,320。MF1便・新規。誰が何を出すかの一覧。書き方は nenmatsu-chosei-kakikata、保険料の証明書の要否の条文は hokenryo-kojo-shinkokusho へ渡す）
   "nenmatsu-chosei-denshika",  // 年末調整の電子化 1,300/月（「年末調整 電子化」2026-10-07 実測 1,040＋260。MF2便・新規。被覆は hojin-jigyo-gaikyo-setsumeisho の欄名だけ）
@@ -650,7 +651,7 @@ const CATEGORIES = [
       "furusato-nozei-keisan", "kifukin-kojo",
       "teigaku-genzei-reiwa8",
       "shotokuzei-ritsu",
-      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "gensen-taisho-gai-kyuyo", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "kiso-kojo-shinkokusho",
+      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "gensen-taisho-gai-kyuyo", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "shokibo-kyosai-kakekin-kojo", "kiso-kojo-shinkokusho",
       "shotoku-kingaku-chosei-kojo",
       "hokenryo-kojo-shinkokusho", "ideco-nenmatsu-chosei", "jutaku-kojo-shinkokusho", "fuyo-kojo-shinkokusho", "haigusha-tokubetsu-kojo", "tokutei-shinzoku-tokubetsu-kojo", "gensen-choshu-toha", "gensen-choshuhyo-mikata", "kyuyo-shotoku-kojo", "gensen-zeigakuhyo-mikata", "gensen-zeigakuhyo-r09", "gensen-choshubo",
       "hoteichosho-goukeihyo", "kyuyo-shiharai-hokokusho", "shiharai-chosho", "shakai-hokenryo-kojo", "seimei-hokenryo-kojo", "jishin-hokenryo-kojo", "jutaku-loan-kojo-yoken", "iryohi-kojo-ikura-kara", "tokutei-shishutsu-kojo", "zasson-kojo",
