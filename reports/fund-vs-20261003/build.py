@@ -630,7 +630,7 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'ternote-t': {'must_with': ['総経費率', '対象期間']},
         'emaxis-nk-terd': {'must_with': ['総経費率', '対象期間', '参考値']},
         'emaxis-nk-lend': {'must_with': ['貸付', '以内']},
-        'tawara-nk-lend': {'must_with': ['貸付|総経費率', '品貸料|総経費率']},
+        'tawara-nk-lend': {'must_with': ['貸付|総経費率', '品貸料|総経費率', '合計（税抜）|総経費率|eMAXIS']},
         'cap-t': {'must_with': ['税抜', '各計算期間']},
         'emaxis-nk-settle': {'must_with': ['休業日|決算）']},
         'tawara-nk-settle': {'must_with': ['休業日|決算）']},
