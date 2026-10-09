@@ -10,21 +10,52 @@
 //   返すのは「途中として描く時間帯」＝出そろっていない最初の時間帯。それより後は描かない。
 export const RATIO = 0.35;
 export const MIN_BASE = 10;
+// ★集計中の時間帯の手前も、まだ増える（2026-10-09 Masahiro「セッションの積み上がり方おかしくない？」）:
+//   GA4 の当日データはまとめて届き、届く前は境目の手前の時間帯も途中までしか入っていない。
+//   17:13 に取得: 9時 149・10時 150・11時 116・12時 3 → 1分後（17:14）: 155・186・179・28。
+//   11時（先週 154 の 75%）は RATIO を超えるので確定扱いになり、同時刻比が -7% と出ていた（実際は +11%）。
+//   前日 20:11 も 12時は 89（確定値 118 の 75%）だった。集計中の時間帯が見つかったら、その手前 MARGIN 時間も途中として扱う。
+export const MARGIN = 2;
 
 /**
  * @param {number[]} today  今日の時間帯別セッション（24個）
  * @param {number[]} base   基準（先週同曜日。24個）
  * @param {number[]} fallback 基準が0の時間帯に使う値（前日。24個）
  * @param {number} rawHour  セッションが入っている最新の時間帯（旧 cutoffHour）
- * @returns {number} 途中として扱う時間帯（0〜23）。出そろっていれば rawHour のまま
+ * @returns {number} 途中として扱う時間帯（0〜23）。出そろっていれば rawHour のまま。集計中があれば、その手前 MARGIN 時間ぶん前
  */
 export function settledCutoffHour(today, base, fallback, rawHour) {
-  let h = rawHour;
+  let h = rawHour, lagging = false;
   for (let i = rawHour; i >= 0; i--) {
     const b = Math.max(base?.[i] ?? 0, 0) || Math.max(fallback?.[i] ?? 0, 0);
     if (b < MIN_BASE) break;                 // 比べる材料が無い時間帯で止める
     if ((today?.[i] ?? 0) >= b * RATIO) break; // ここは出そろっている
     h = i;                                    // まだ集計中 → さらに前を見る
+    lagging = true;
+  }
+  if (lagging) {
+    for (let k = 0; k < MARGIN && h > 0; k++) {
+      const b = Math.max(base?.[h - 1] ?? 0, 0) || Math.max(fallback?.[h - 1] ?? 0, 0);
+      if (b < MIN_BASE) break;               // 基準の無い時間帯（深夜）までは下げない
+      h--;
+    }
   }
   return h;
+}
+
+/**
+ * 「今日」のタイルに出す数字。**確定した時間帯までの累計だけを大きく出す**。
+ * ★2026-10-09 Masahiro「確定じゃない数字を確定かのように出すことをやめてもらえればそれでいい」:
+ *   旧実装は GA4 が今返す当日合計（集計中の時間帯の途中の値を含む）を大きく出し、「10:00まで」と添えていた。
+ *   数字とラベルが別物で、途中の値が確定に見えた。
+ * @param {{today:number, todayCum:number, cmpHour:number}} site
+ * @returns {{value:number|null, label:string, note:string}}
+ */
+export function todayHeadline(site) {
+  const raw = Number(site.today ?? 0).toLocaleString("ja-JP");
+  if (!(site.cmpHour >= 0)) {
+    return { value: null, label: "確定した時間帯はまだ無い", note: `集計中の値: ${raw}（まだ増える）` };
+  }
+  const hh = String(site.cmpHour).padStart(2, "0");
+  return { value: site.todayCum, label: `0:00〜${hh}:59 の確定分`, note: `その後の時間帯は集計中（途中の値を足すと ${raw}。まだ増える）` };
 }
