@@ -6,6 +6,8 @@ const C = JSON.parse(readFileSync(new URL("./stale_values.json", import.meta.url
 const E = Object.fromEntries(C.entries.map((e) => [e.id, e]));
 const t = (s, id, day = "2026-09-28") => staleHits(s, E[id], "p", day).length;
 const r = [
+  ["令和8年3月分に支援金込み42,570円を使う誤りを拒否", t("東京・標準報酬30万円・2026年3月分の本人負担は42,570円です。", "tokyo-march-r8-before-support", "2026-10-08") === 1],
+  ["支援金開始後の4月分を許可", t("東京・標準報酬30万円・2026年4月分以降の本人負担は42,570円です。", "tokyo-march-r8-before-support", "2026-10-08") === 0],
   ["基礎控除5万円加算の上限省略を捕まえる", t("基礎控除への加算：ロ 四百八十九万円を超える場合 五万円", "auto20261001-unbounded-kiso-addition", "2026-10-01") === 1],
   ["基礎控除5万円加算の655万円以下の限定は通す", t("基礎控除への加算：ロ 四百八十九万円を超える場合 五万円（加算対象は合計所得金額655万円以下）", "auto20261001-unbounded-kiso-addition", "2026-10-01") === 0],
   ["5.5か月を6か月到達とする旧説明を拒否", t("「5か月と半月」で6か月に届くケースがあります。", "kounenrei-five-and-half-months", "2026-10-01") === 1],
