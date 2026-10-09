@@ -46,6 +46,7 @@ function figureText(svg) {
 function reviewContextText(el) {
   const mode = el.getAttribute('data-review-context');
   if (!mode) return null;
+  if (mode === 'before-table' || mode === 'after-table') return null; // 表の局所文脈の印（tableContexts）。この段落自身の text は変えない
   if (mode === 'next' && /^h[2-6]$/.test(el.localName)) {
     const answer = el.nextElementSibling;
     if (!answer?.matches('p.faq-answer')) throw Error('data-review-context=next requires an adjacent FAQ answer');
@@ -61,6 +62,46 @@ function reviewContextText(el) {
   }
   throw Error('Invalid data-review-context: ' + mode);
 }
+// 局所文脈（2026-10-09 gbrain implementation/keiri-unit-context-2026-10-09）。単位の text・text_hash・id は変えず、別フィールド context に添える。
+//  照合は「その単位だけで正しいか」を見るが、表の直前の設例の仮定・表の注・FAQ の設問と答えは画面で必ず一緒に見えている。
+//  それを見ずに各セルへ仮定の再掲を求めたり、答えを断定しない設問を未解決にしたりしていた（実測は上の gbrain ページ）。
+//  束ねるのは局所だけ: ①表の caption ②書き手が印を付けた、表に隣り合う段落（before-table＝直前の前提／after-table＝直後の注）③FAQ の設問と答え。
+//  記事全体の前提は束ねない。文脈の元の文は、それ自身が確認単位として照合される（文脈に置いても照合から外れない）。
+export const TABLE_CONTEXT_MAX = 500;
+function soleTable(e) {
+  if (!e) return null;
+  if (e.localName === 'table') return e;
+  if (!/^(?:div|figure)$/.test(e.localName)) return null;
+  const tables = e.querySelectorAll('table'); if (tables.length !== 1) return null;
+  // 表だけを包む入れ物（.scroll-wrap・figure）に限る。ほかの文が入っている箱は「隣」と見なさない
+  const k = e.cloneNode(true); for (const x of k.querySelectorAll('table,figcaption,script,style')) x.remove();
+  return normalize(k.textContent) ? null : tables[0];
+}
+function tableContexts(d) {
+  const map = new Map(), slot = t => map.get(t) || map.set(t, {}).get(t);
+  for (const el of d.querySelectorAll('[data-review-context="before-table"],[data-review-context="after-table"]')) {
+    const mode = el.getAttribute('data-review-context'), side = mode === 'before-table' ? 'before' : 'after';
+    if (el.localName !== 'p' || el.closest('table')) throw Error(`data-review-context=${mode} is only for a <p> outside the table`);
+    const table = soleTable(side === 'before' ? el.nextElementSibling : el.previousElementSibling);
+    if (!table) throw Error(`data-review-context=${mode} requires the table to be the adjacent ${side === 'before' ? 'next' : 'previous'} element`);
+    const text = cellText(el);
+    if (normalize(text).length > TABLE_CONTEXT_MAX) throw Error(`data-review-context=${mode} is longer than ${TABLE_CONTEXT_MAX} characters; keep only the premise shared by the whole table`);
+    slot(table)[side] = text;
+  }
+  for (const table of d.querySelectorAll('table')) { const cap = table.querySelector(':scope > caption'); if (cap && normalize(cap.textContent)) slot(table).caption = cellText(cap); }
+  return map;
+}
+function localContext(el, tag, faq, tables) {
+  if (/^t[dh]$/.test(tag)) {
+    const c = tables.get(el.closest('table')); if (!c) return null;
+    return [c.caption && `【表題】${c.caption}`, c.before && `【表の直前の説明】${c.before}`, c.after && `【表の直後の注】${c.after}`].filter(Boolean).join(' ');
+  }
+  if (!faq) return null;
+  // FAQ は「h3 の設問＋直後の p ひとつ」（gen_faq_jsonld・gen_layout_markup と同じ形）。答えは検索結果にも設問と組で出る
+  if (/^h[3-6]$/.test(tag) && el.nextElementSibling?.localName === 'p') return el.getAttribute('data-review-context') === 'next' ? null : `【回答】${cellText(el.nextElementSibling)}`;
+  if (tag === 'p' && /^h[3-6]$/.test(el.previousElementSibling?.localName || '')) return `【質問】${cellText(el.previousElementSibling)} 【回答の全文】${cellText(el)}`;
+  return null;
+}
 const excluded = 'script,style,nav,header,footer,aside,.breadcrumb,.article-meta,.source-method,.related,.rel-block,.next-read,.article-next-read,.rail-next,.tool-related';
 function structuralNonclaim(tag, text) {
   if (/^[)）]+$/.test(text)) return true;
@@ -72,6 +113,7 @@ function structuralNonclaim(tag, text) {
 export function segmentClaims(html, page = '') {
   const dom = new JSDOM(html); const d = dom.window.document;
   const seen = new Map(), units = [];
+  const tables = tableContexts(d);
   let faq = false, afterH1 = false, summarySection = false;
   for (const el of d.querySelectorAll(selector)) {
     if (el.closest(excluded)) continue;
@@ -95,6 +137,7 @@ export function segmentClaims(html, page = '') {
     if (!normalize(text || '')) continue;
     const reviewContext = reviewContextText(el);
     if (reviewContext) text = reviewContext;
+    const local = localContext(el, tag, faq, tables), localFields = local ? {context: local, context_hash: hash(normalize(local))} : {context_hash: null}; // context_hash は常に出す（null＝文脈なし。欄の有無で新旧の出力を見分ける）
     const kind = tag === 'meta' ? (el.name || el.getAttribute('property')) : tag === 'svg' ? 'figure' : tag;
     const zone = summarySection || tag === 'title' || tag === 'meta' || tag === 'h1' || (tag === 'p' && afterH1) || el.closest('.lead,.summary,.callout') ? 'summary' : faq ? 'faq' : el.closest('table') ? 'table' : el.closest('label,select,form') || ['input','option','label','button'].includes(tag) ? 'ui' : 'body';
     // Pure organizational labels carry no assertion. Keep substantive headings/cells protected.
@@ -108,7 +151,7 @@ export function segmentClaims(html, page = '') {
       const text_hash = hash(normalized), key = `${kind}:${text_hash}`;
       const occurrence = (seen.get(key) || 0) + 1; seen.set(key, occurrence);
       const boundaryLabel = LABEL_TAGS.has(kind) && BOUNDARY.test(normalized);
-      units.push({id:`s-${hash(key)}-${occurrence}`,page,kind,zone,protected:(protectedUnit || boundaryLabel) && !structuralNonclaim(tag, normalized),text:part.trim(),text_hash,element_id:el.id || null});
+      units.push({id:`s-${hash(key)}-${occurrence}`,page,kind,zone,protected:(protectedUnit || boundaryLabel) && !structuralNonclaim(tag, normalized),text:part.trim(),text_hash,element_id:el.id || null,...localFields});
     }
     if (tag === 'p') afterH1 = false;
   }
@@ -133,7 +176,8 @@ export function validateSegments(units, ledger) {
   }
   // Exact text plus an independent review reference, not the claim's self-declared checked date.
   for (const v of ledger?.verified || []) {
-    if (map.get(v.id)?.text_hash === v.text_hash && links[v.id] && v.result === 'ok' && v.review_ref?.trim()) verified.add(v.id);
+    // 文脈つきで ok になった記録（context_hash あり）は、文脈が変わったら無効。旧記録（context_hash なし）は従来どおり
+    if (map.get(v.id)?.text_hash === v.text_hash && (v.context_hash === undefined || v.context_hash === (map.get(v.id).context_hash ?? null)) && links[v.id] && v.result === 'ok' && v.review_ref?.trim()) verified.add(v.id);
   }
   const unprocessed = units.filter(u=>!links[u.id] && !nonclaims.has(u.id)).map(u=>u.id);
   errors.push(...unprocessed.map(id=>`unprocessed segment: ${id}`));

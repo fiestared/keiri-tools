@@ -81,8 +81,12 @@ def prepare(r,repo,pages,since=None):
     units=json.loads(subprocess.check_output(['node',str(repo/'tools/segment_claims.mjs'),*pages],cwd=r/'site',text=True))
     if since is not None:
         # 2026-10-01 対策4: 修正で変わった単位だけを照合し直す（前の run の segments.json に同じページ・同じ本文の単位が無いもの）
-        before={(u['page'],u['text_hash']) for u in json.loads((since/'segments.json').read_text())}
-        units=[u for u in units if (u['page'],u['text_hash']) not in before]
+        # 2026-10-09 局所文脈: 本文が同じでも、添えた文脈（表の前提・注・FAQ の相手）が変わった単位は照合し直す。
+        # 前の run が文脈より前の出力（context_hash の欄が無い）なら、従来どおり本文だけで比べる（進行中の便を丸ごと照合し直さない）。
+        previous=json.loads((since/'segments.json').read_text());aware=any('context_hash' in u for u in previous)
+        sig=lambda u:(u['page'],u['text_hash'],u.get('context_hash') if aware else None)
+        before={sig(u) for u in previous}
+        units=[u for u in units if sig(u) not in before]
         if not units:
             (r/'segments.json').write_text('[]\n');(r/'segment-batches').mkdir()
             return {'segments.json':digest(r/'segments.json')}
@@ -253,7 +257,7 @@ def run(a,state,execute,stop):
     union=[]
     for u in units:
         k=(u['page'],u['id'])
-        union.append({'page':u['page'],'id':u['id'],'text':u['text'],'results':{m:per_model[m].get(k,{}).get('result') for m in models},
+        union.append({'page':u['page'],'id':u['id'],'text':u['text'],**({'context':u['context']} if u.get('context') else {}),'results':{m:per_model[m].get(k,{}).get('result') for m in models},
                       'conditions':{m:per_model[m][k].get('conditions') for m in models if per_model[m].get(k,{}).get('result')=='ok'},
                       'findings':findings_all.get(k,[])})
     (r/'sol-models.json').write_text(json.dumps(models)+'\n')
@@ -300,9 +304,9 @@ def run(a,state,execute,stop):
     if oc:
         opinion=r/'oc-opinion.json'
         if not opinion.exists() or opinion.stat().st_mtime_ns<verdict.stat().st_mtime_ns:
-            text={(u['page'],u['id']):u['text'] for u in units}
+            text={(u['page'],u['id']):u['text'] for u in units};context={(u['page'],u['id']):u.get('context') for u in units}
             listing=r/'oc-units.json'
-            listing.write_text(json.dumps([{'page':x['page'],'id':x['id'],'text':text[(x['page'],x['id'])],'adjudication_reason':x['reason'],'needed_source':x['needed_source']} for x in oc],ensure_ascii=False,indent=1)+'\n')
+            listing.write_text(json.dumps([{'page':x['page'],'id':x['id'],'text':text[(x['page'],x['id'])],**({'context':context[(x['page'],x['id'])]} if context.get((x['page'],x['id'])) else {}),'adjudication_reason':x['reason'],'needed_source':x['needed_source']} for x in oc],ensure_ascii=False,indent=1)+'\n')
             template=Path(__file__).resolve().parent/'review_templates/oc_opinion.md'
             prompt=template.read_text().replace('{{LIST}}',str(listing)).replace('{{OUT}}',str(opinion))
             (r/'oc-opinion.prompt.md').write_text(prompt)
