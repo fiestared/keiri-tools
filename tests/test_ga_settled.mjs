@@ -1,7 +1,7 @@
 // ga-dashboard/settled.mjs: GA4 の当日データが出そろっていない時間帯を「途中」として扱う。
 // 2026-10-08 20:11 の実測値（今日 12時 89・13時 27・14時 1・15時 1、前日 104・165・195・192）で固定する。
 import assert from 'node:assert/strict';
-import { settledCutoffHour, RATIO, MIN_BASE, MARGIN } from '../ga-dashboard/settled.mjs';
+import { settledCutoffHour, todayHeadline, RATIO, MIN_BASE, MARGIN } from '../ga-dashboard/settled.mjs';
 
 const H = (o) => Array.from({ length: 24 }, (_, i) => o[i] ?? 0);
 const yest = H({ 0: 4, 1: 3, 7: 15, 8: 53, 9: 142, 10: 180, 11: 212, 12: 104, 13: 165, 14: 195, 15: 192, 16: 166, 17: 125, 18: 70, 19: 30, 20: 23 });
@@ -30,4 +30,11 @@ assert.equal(MARGIN, 2);
 assert.equal(settledCutoffHour(pre, lw, lw, 12), 10, '12時が集計中 → 10・11時も途中。比較は9時まで（149 は確定値 155 の 96%）');
 const cum = (a, h) => a.slice(0, h).reduce((x, y) => x + y, 0);
 assert.ok(cum(pre, 10) > cum(lw, 10), '9時までの累計は先週を上回る（旧判定は11時までで -7% と出していた）');
+// ★「今日」のタイル: 大きく出すのは確定した時間帯までの累計。GA4 が今返す当日合計（途中の値を含む）は大きく出さない
+const hl = todayHeadline({ today: 605, todayCum: 261, cmpHour: 9 });
+assert.equal(hl.value, 261, '大きい数字は 0:00〜9:59 の累計');
+assert.match(hl.label, /0:00〜09:59 の確定分/);
+assert.match(hl.note, /集計中/); assert.match(hl.note, /605/);
+const none = todayHeadline({ today: 12, todayCum: 0, cmpHour: -1 });
+assert.equal(none.value, null, '確定した時間帯が無ければ数字を出さない'); assert.match(none.note, /集計中の値: 12/);
 console.log('✓ test_ga_settled: GA4 の集計中の時間帯の判定（実測値・境界・基準なし）');

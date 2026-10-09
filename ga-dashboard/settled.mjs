@@ -42,3 +42,20 @@ export function settledCutoffHour(today, base, fallback, rawHour) {
   }
   return h;
 }
+
+/**
+ * 「今日」のタイルに出す数字。**確定した時間帯までの累計だけを大きく出す**。
+ * ★2026-10-09 Masahiro「確定じゃない数字を確定かのように出すことをやめてもらえればそれでいい」:
+ *   旧実装は GA4 が今返す当日合計（集計中の時間帯の途中の値を含む）を大きく出し、「10:00まで」と添えていた。
+ *   数字とラベルが別物で、途中の値が確定に見えた。
+ * @param {{today:number, todayCum:number, cmpHour:number}} site
+ * @returns {{value:number|null, label:string, note:string}}
+ */
+export function todayHeadline(site) {
+  const raw = Number(site.today ?? 0).toLocaleString("ja-JP");
+  if (!(site.cmpHour >= 0)) {
+    return { value: null, label: "確定した時間帯はまだ無い", note: `集計中の値: ${raw}（まだ増える）` };
+  }
+  const hh = String(site.cmpHour).padStart(2, "0");
+  return { value: site.todayCum, label: `0:00〜${hh}:59 の確定分`, note: `その後の時間帯は集計中（途中の値を足すと ${raw}。まだ増える）` };
+}
