@@ -56,3 +56,12 @@ pendingは基点の既存coreから開始し、Git履歴上のpendingとの積�
 - **関門と high の数え方**: 修正の対象は unresolved 全部と別モデルが wrong とした正本外（`STOPPED` の unresolved findings）。
   徹底チェックの通過判定に使う high は「審査が high かつ sol のどれかが wrong/unclear」だけ（`gate.json` の `unresolved_high`。審査だけの high は `unresolved_high_adjudication_only`＝次の周の候補）。
 - **変わった単位だけの再照合（対策4）**: `--changed-since <前の run>` は、前の run の segments.json に同じページ・同じ本文の無い単位だけを照合する。0件ならモデルを呼ばずに `.finished`。
+
+## 2026-10-09 局所文脈（gbrain implementation/keiri-unit-context-2026-10-09）
+- 単位に `context`（文字列）と `context_hash` が付く。**id・text・text_hash は変わらない**（台帳の covers はそのまま）。`context_hash` は常に出る（null＝文脈なし。欄の有無で新旧の出力を見分ける）。
+- 自動で付くもの: FAQ（「よくある質問」の h3〜h6 と直後の `<p>`）は、設問に `【回答】…`、回答の各文に `【質問】… 【回答の全文】…`。表に `<caption>` があれば、その表のセル・見出しに `【表題】…`。
+- 書き手が印を付けるもの: 表の全行に共通する前提を書いた段落に `<p data-review-context="before-table">`（表の直前）／`<p data-review-context="after-table">`（表の直後の注）。
+  表（または表だけを包む `.scroll-wrap`・figure）と**隣り合っていない**と例外で止まる。`<p>` だけ・500字まで。印を付けた段落自身も従来どおり1単位として照合される。
+- 文脈に置けるのは表全体に共通する前提だけ（設例の仮定・対象者・年分・時点・料率・単位・端数処理・出典）。**その行だけで答えが変わる条件は行に書く**（ひな形が文脈に逃がすのを認めない）。記事全体の前提・離れた段落は束ねない。title・description・要約には付かない。
+- `--changed-since`: 本文が同じでも context_hash が変わった単位は照合し直す（前の run が旧出力なら本文だけで比べる）。台帳の `verified` に `context_hash` を書いた記録は、文脈が変わると無効。
+- 既存の `data-review-context="next"`／`"row"`（text を置き換える・ID が変わる）はそのまま使える。新しく書くときは使わない（FAQ は自動で束ねる）。
