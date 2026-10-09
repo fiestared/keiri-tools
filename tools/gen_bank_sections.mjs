@@ -230,7 +230,8 @@ export function buildAmountIndex(rows) {
   for (const [amount, list] of m) {
     const cells = list.map((x) => x.fullLabel ? x.name : `${x.name}（${x.range}）`).join('<br>');
     // 金額は行の見出し（th scope="row"）。データのセルではない
-    out.push(`    <tr><th scope="row"><b>${amount}円</b></th><td>${cells}</td></tr>`);
+    const reviewContext = list.some((x) => x.name.startsWith('auじぶん銀行')) ? ' data-review-context="row"' : '';
+    out.push(`    <tr><th scope="row"${reviewContext}><b>${amount}円</b></th><td>${cells}</td></tr>`);
   }
   out.push('    </tbody>');
   out.push('  </table>');
