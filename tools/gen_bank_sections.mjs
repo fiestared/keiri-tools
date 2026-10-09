@@ -142,7 +142,7 @@ export function buildSections(rows) {
       notes.push(`${(list.some(r => r.scoped) ? "上表の対象サービス・通常単価で、無料・別料金の宛先と優遇を除いて比べた" : "") + "他行宛ネット振込の3万円以上では、"}法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）`);
     }
     const withBoundary = list.filter((x) => x.boundary).map((x) => x.kubun);
-    if (list.some(r => r.rawOver === null)) notes.push('横浜銀行の法人EBの他行宛は、3万円未満385円・3万円以上550円です。個人IBの3万円以上は掲載を保留しています');
+    if (list.some(r => r.rawOver === null)) notes.push('横浜銀行の法人EBの通常の他行宛振込は、3万円未満385円・3万円以上550円です（振込訂正・組戻サービスの再振込は金額不問550円）。個人IBの3万円以上は掲載を保留しています');
     notes.push(withBoundary.length
       ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）`
       // ★区分名を文に入れる: 「金額にかかわらず定額。」だけだと、どの銀行の話か文単体で読めず、照合で10銀行ぶんが同じ文になった。
@@ -230,7 +230,8 @@ export function buildAmountIndex(rows) {
   for (const [amount, list] of m) {
     const cells = list.map((x) => x.fullLabel ? x.name : `${x.name}（${x.range}）`).join('<br>');
     // 金額は行の見出し（th scope="row"）。データのセルではない
-    out.push(`    <tr><th scope="row"><b>${amount}円</b></th><td>${cells}</td></tr>`);
+    const reviewContext = list.some((x) => x.name.startsWith('auじぶん銀行')) ? ' data-review-context="row"' : '';
+    out.push(`    <tr><th scope="row"${reviewContext}><b>${amount}円</b></th><td>${cells}</td></tr>`);
   }
   out.push('    </tbody>');
   out.push('  </table>');
