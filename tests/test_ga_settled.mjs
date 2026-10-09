@@ -1,7 +1,7 @@
 // ga-dashboard/settled.mjs: GA4 の当日データが出そろっていない時間帯を「途中」として扱う。
 // 2026-10-08 20:11 の実測値（今日 12時 89・13時 27・14時 1・15時 1、前日 104・165・195・192）で固定する。
 import assert from 'node:assert/strict';
-import { settledCutoffHour, todayHeadline, RATIO, MIN_BASE, MARGIN } from '../ga-dashboard/settled.mjs';
+import { settledCutoffHour, todayHeadline, todayPv, RATIO, MIN_BASE, MARGIN } from '../ga-dashboard/settled.mjs';
 
 const H = (o) => Array.from({ length: 24 }, (_, i) => o[i] ?? 0);
 const yest = H({ 0: 4, 1: 3, 7: 15, 8: 53, 9: 142, 10: 180, 11: 212, 12: 104, 13: 165, 14: 195, 15: 192, 16: 166, 17: 125, 18: 70, 19: 30, 20: 23 });
@@ -37,4 +37,11 @@ assert.match(hl.label, /0:00〜09:59 の確定分/);
 assert.match(hl.note, /集計中/); assert.match(hl.note, /605/);
 const none = todayHeadline({ today: 12, todayCum: 0, cmpHour: -1 });
 assert.equal(none.value, null, '確定した時間帯が無ければ数字を出さない'); assert.match(none.note, /集計中の値: 12/);
+// ★当日の PV: 確定した時間帯までの累計を出し、GA4 が今返す当日合計は「集計中」として添える（2026-10-10 PV の行が消えていた）
+const p1 = todayPv({ todayPv: 2100, todayPvCum: 930, cmpHour: 9 });
+assert.equal(p1.value, 930); assert.equal(p1.raw, 2100); assert.match(p1.rawNote, /集計中の値を足すと 2,100/);
+const p2 = todayPv({ todayPv: 40, todayPvCum: null, cmpHour: -1 });
+assert.equal(p2.value, null, '確定した時間帯が無ければ確定の PV は出さない'); assert.match(p2.rawNote, /集計中の値: 40。まだ増える/);
+const p3 = todayPv({ todayPv: null, todayPvCum: null, cmpHour: -1 });
+assert.equal(p3.value, null); assert.equal(p3.raw, null);
 console.log('✓ test_ga_settled: GA4 の集計中の時間帯の判定（実測値・境界・基準なし）');

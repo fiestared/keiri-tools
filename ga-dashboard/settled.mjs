@@ -59,3 +59,19 @@ export function todayHeadline(site) {
   const hh = String(site.cmpHour).padStart(2, "0");
   return { value: site.todayCum, label: `0:00〜${hh}:59 の確定分`, note: `その後の時間帯は集計中（途中の値を足すと ${raw}。まだ増える）` };
 }
+
+/**
+ * 「今日」のタイルに出す PV。セッションと同じく、確定した時間帯までの累計を主に出し、途中の値は「集計中」と書く。
+ * ★2026-10-10 Masahiro「PVみれなくなるの修正して、当日分」: b123901d で当日の PV の行を消していた。
+ * @param {{todayPv:number|null, todayPvCum:number|null, cmpHour:number}} site
+ * @returns {{value:number|null, raw:number|null, rawNote:string}}
+ */
+export function todayPv(site) {
+  const raw = site.todayPv == null ? null : Number(site.todayPv);
+  const settled = site.cmpHour >= 0 && site.todayPvCum != null;
+  return {
+    value: settled ? Number(site.todayPvCum) : null,
+    raw,
+    rawNote: raw === null ? "" : settled ? ` ／ 集計中の値を足すと ${raw.toLocaleString("ja-JP")}` : `（集計中の値: ${raw.toLocaleString("ja-JP")}。まだ増える）`,
+  };
+}
