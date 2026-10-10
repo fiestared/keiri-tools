@@ -13,3 +13,5 @@ for(const file of readdirSync(ROOT+'/docs',{recursive:true}).filter(f=>f==='inde
 }
 execFileSync(process.execPath,['tools/gen_layout_markup.mjs','--check'],{cwd:ROOT,stdio:'inherit'});
 execFileSync(process.execPath,['tools/gen_presentation_markup.mjs','--check'],{cwd:ROOT,stdio:'inherit'});
+// 図（インライン SVG）の中に HTML 要素が入ると、そこで図が切れる。公開の関門がこの検査を通るので、ここからも流す（2026-10-11）
+execFileSync(process.execPath,['tests/test_svg_no_html_breakout.mjs'],{cwd:ROOT,stdio:'inherit'});

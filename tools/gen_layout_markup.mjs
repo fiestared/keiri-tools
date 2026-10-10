@@ -86,7 +86,8 @@ for(const file of readdirSync(root,{recursive:true}).filter(f=>f==='index.html'|
    if(!/^[\d,.％%円万億千年月日人倍歳〜～–—+−\s]+$/.test(cell.textContent.trim())||!/\d/.test(cell.textContent))continue;
    const walker=d.createTreeWalker(cell,dom.window.NodeFilter.SHOW_TEXT);let n;
    while(n=walker.nextNode()){
-    if(n.parentElement.closest('.numeric-token'))continue;
+    // SVG の中には包みを入れない: HTML パーサーは SVG 内の <span> で SVG を閉じて外へ出る（以後の図形が描かれない。2026-10-11）
+    if(n.parentElement.closest('.numeric-token,svg'))continue;
     const l=dom.nodeLocation(n);if(!l)continue;
     const raw=source.slice(l.startOffset,l.endOffset);
     const next=raw.replace(/[0-9][0-9,.]*[億万千]?[％%円年月日人倍歳]/g,token=>'<span class="numeric-token">'+token+'</span>');
