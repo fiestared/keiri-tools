@@ -33,12 +33,12 @@ eq(bunki({ kakuteiZumi: true, shutokuZumi: true }, D).key, BUNKI.KAKUTEI,
   '確定＋取得済み → 42条の圧縮記帳');
 eq(bunki({ kakuteiZumi: false, shutokuZumi: true }, D).key, BUNKI.MIKAKUTEI,
   '★未確定なら、資産を取得していても43条の特別勘定');
-eq(bunki({ kakuteiZumi: true, shutokuZumi: false }, D).key, BUNKI.MIKAKUTEI,
+eq(bunki({ kakuteiZumi: true, shutokuZumi: false }, D).key, BUNKI.TAISHOGAI,
   '★確定していても、対象資産を取得していなければ42条では処理できない');
 eq(bunki({ kakuteiZumi: true, shutokuZumi: true, tokubetsuArii: true }, D).key, BUNKI.ATODE,
   '★特別勘定があって確定したら44条');
 eq(bunki({ kakuteiZumi: false, shutokuZumi: false }, D).key, BUNKI.MIKAKUTEI, '両方まだなら特別勘定');
-ok(bunki({ kakuteiZumi: true, shutokuZumi: false }, D)._note.includes('取得'),
+ok(bunki({ kakuteiZumi: true, shutokuZumi: false }, D).shori.includes('未取得'),
   '取得していないことを理由として名指しする');
 
 // ── ★圧縮限度額 ──────────────────────────────────────────────
@@ -130,4 +130,11 @@ console.log('★壊しテスト');
 }
 
 console.log(`\n${fail ? '✗' : '✓'} test_hojokin_zeimu: ${checks} checks, ${fail} failed`);
+
+// 正本42条1項・43条1項・44条1項の取得／確定境界。
+import assert from 'node:assert/strict';
+import {cases as scopeCases} from './boundaries/hojokin_zeimu_core.mjs';
+for (const c of scopeCases) assert.deepEqual(c.run(), c.expected, c.name);
+console.log(`✓ 43条の取得・確定境界 ${scopeCases.length}ケース`);
+
 process.exit(fail ? 1 : 0);

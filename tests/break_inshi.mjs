@@ -19,6 +19,7 @@ import { readFileSync, writeFileSync, mkdtempSync, cpSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const CORE = new URL('../docs/assets/inshi_core.js', import.meta.url);
 const DATA = new URL('../docs/assets/inshi_r07.json', import.meta.url);
@@ -80,7 +81,7 @@ const BREAKS = [
 ];
 
 // ── ベースライン: 無傷のコアで検査が緑であること（規則2。これが赤なら壊しは全部嘘）──
-const dir = mkdtempSync(join(tmpdir(), 'inshi-break-'));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), 'inshi-break-')));
 const run = () => {
   try {
     execFileSync(process.execPath, [join(dir, 'test_inshi.mjs')], { stdio: 'pipe', timeout: 60000 });

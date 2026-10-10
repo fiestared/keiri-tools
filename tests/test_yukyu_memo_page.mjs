@@ -18,6 +18,7 @@
 import { createServer } from "node:http";
 import { readFile, mkdtemp, rm } from "node:fs/promises";
 import { spawnChrome, killChrome } from "../tools/chrome_proc.mjs";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 import { tmpdir } from "node:os";
 import { join, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -108,7 +109,7 @@ const server = createServer(async (req, res) => {
 await new Promise((r) => server.listen(0, "127.0.0.1", r));
 const port = server.address().port;
 
-const dir = await mkdtemp(join(tmpdir(), "keiri-memo-"));
+const dir = cleanupOnExit(await mkdtemp(join(tmpdir(), "keiri-memo-")));
 const p = spawnChrome(CHROME, ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
     // ★--virtual-time-budget / --dump-dom は使わない。結果はページからのPOSTで受け取るので
   //   DOMのダンプは要らず、仮想時間の予算は**4件目のナビゲーションを黙って落とした**

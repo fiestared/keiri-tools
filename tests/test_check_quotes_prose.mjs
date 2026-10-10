@@ -22,11 +22,12 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 let fails = 0, checks = 0;
 const ok = (cond, msg) => { checks++; if (!cond) { fails++; console.log(`  ✗ ${msg}`); } };
 
-const dir = mkdtempSync(join(tmpdir(), "cq-prose-"));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), "cq-prose-")));
 
 const filler = "この法律において次の各号に掲げる用語の意義は当該各号に定めるところによる。".repeat(300);
 // 括弧書きが語の途中に入る条文＋接続詞を含む条文。どちらも実際の誤りの再現に使う。

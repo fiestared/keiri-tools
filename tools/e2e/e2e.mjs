@@ -12,6 +12,7 @@
 import { createServer } from "node:http";
 import { readFile, readdir, mkdtemp, rm } from "node:fs/promises";
 import { spawnChrome, killChrome } from "../chrome_proc.mjs";
+import { cleanupOnExit } from "../tmp_cleanup.mjs";
 import { tmpdir } from "node:os";
 import { join, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -1913,7 +1914,7 @@ const SCENES = [
       s.tokubetsuShiwake && !s.assyukuShiwake && !s.tsumitateShiwake && !s.failed },
   // ★確定していても、対象の固定資産を取得していなければ42条では処理できない
   { name: "hojokin_zeimu_mishutoku", expect: (s) =>
-      s.jobun === "法人税法43条1項" && s.gendo === null && !s.assyukuShiwake && !s.failed },
+      s.jobun === "法人税法42条・43条・44条の要件を確認" && s.gendo === null && !s.tokubetsuShiwake && !s.assyukuShiwake && !s.failed },
   // ★特別勘定を持っていて確定 → 44条。特別勘定の取崩しと圧縮記帳が両方出る
   { name: "hojokin_zeimu_atode", expect: (s) =>
       s.jobun === "法人税法44条1項" && s.gendo === 3000000 &&
@@ -2115,7 +2116,7 @@ for (const sc of SCENES.filter((s) => match(s.name))) {
   //   2. 壊れたプロファイルは次の実行でも**そのまま開かれる**ので、Chromeが復旧を試みて
   //      起動が数分に劣化する。テストが自分の残骸で遅くなっていく
   // 使い捨てなら、並走しても衝突せず、前回の残骸も引きずらない(リポジトリも汚れない)。
-  const dir = await mkdtemp(join(tmpdir(), "keiri-e2e-"));
+  const dir = cleanupOnExit(await mkdtemp(join(tmpdir(), "keiri-e2e-")));
   const args = ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
                 `--user-data-dir=${dir}`, "--window-size=1280,1000",
                 "--virtual-time-budget=20000", "--dump-dom", url];

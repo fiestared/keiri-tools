@@ -17,6 +17,7 @@ import { readFileSync, writeFileSync, mkdtempSync, copyFileSync, rmSync } from '
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const ROOT = new URL('../', import.meta.url);
 const D = JSON.parse(readFileSync(new URL('docs/assets/juminzei_r08.json', ROOT), 'utf8'));
@@ -220,7 +221,7 @@ const BREAKS = [
 if (realFails === 0 && failed === 0) {
   const src = readFileSync(new URL('docs/assets/juminzei_core.js', ROOT), 'utf8');
   for (const [name, needle, repl] of BREAKS) {
-    const dir = mkdtempSync(join(tmpdir(), 'kinbo-break-'));
+    const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), 'kinbo-break-')));
     try {
       if (src.split(needle).length !== 2) throw new Error(`壊し方が外れた（${name}: 置換対象が一意でない）`);
       writeFileSync(join(dir, 'juminzei_core.js'), src.replace(needle, repl));

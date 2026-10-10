@@ -3,12 +3,13 @@ import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 import { buildInventory, normalizeInternalHref } from "../tools/link_inventory.mjs";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 assert.equal(normalizeInternalHref("../target/#part", "/column/source/"), "/column/target/");
 assert.equal(normalizeInternalHref("https://keiri-tools.com/column/target/index.html", "/"), "/column/target/");
 assert.equal(normalizeInternalHref("https://example.com/column/target/", "/"), null);
 
-const docs = mkdtempSync(join(tmpdir(), "link-inventory-"));
+const docs = cleanupOnExit(mkdtempSync(join(tmpdir(), "link-inventory-")));
 function page(path, body, extraHead = "") {
   const dir = join(docs, path);
   mkdirSync(dir, { recursive: true });

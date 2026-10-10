@@ -14,6 +14,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const CORE = new URL('../docs/assets/shokibo_takuchi_core.js', import.meta.url);
 const DATA = new URL('../docs/assets/shokibo_takuchi_r08.json', import.meta.url);
@@ -140,7 +141,7 @@ const BREAKS = [
 ];
 
 // ── ベースライン: 無傷の実装で検査が緑であること（規則2）────────────────────────
-const dir = mkdtempSync(join(tmpdir(), 'shokibo-break-'));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), 'shokibo-break-')));
 const write = (k, s) => writeFileSync(join(dir, FILE[k]), s);
 /** @returns {{green:boolean, out:string}} */
 const run = () => {

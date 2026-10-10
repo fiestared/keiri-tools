@@ -27,6 +27,7 @@ import { createServer } from 'node:http';
 import { readFile, readdir, mkdtemp, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { spawnChrome, killChrome } from '../tools/chrome_proc.mjs';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 import { tmpdir } from 'node:os';
 import { join, extname } from 'node:path';
 
@@ -157,7 +158,7 @@ if (listened.err) {
   console.log('   ★これは「横スクロールが無い」という意味ではない。測っていないだけ。');
   process.exit(0);
 }
-const profile = await mkdtemp(join(tmpdir(), 'hscroll-'));
+const profile = cleanupOnExit(await mkdtemp(join(tmpdir(), 'hscroll-')));
 const chrome = spawnChrome(CHROME, [
   '--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
   `--user-data-dir=${profile}`, `--window-size=${WIDTH},800`,

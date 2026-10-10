@@ -10,9 +10,10 @@ import {contentHTML} from './layout/content-html.mjs';
 //   → 置換は必ず <article> 以降（＝検査が読む範囲）にだけ適用する。
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const SRC = 'docs/column/kenko-hoken-nini-keizoku/index.html';
-const TMP = '/tmp/break_nini.html';
+const TMP = cleanupOnExit('/tmp/break_nini.html');
 const original = contentHTML(fs.readFileSync(SRC, 'utf8')).replace(/<td class="num">/g, '<td>');
 const cut = original.indexOf('<article>');
 
