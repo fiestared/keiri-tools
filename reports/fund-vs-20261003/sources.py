@@ -26,6 +26,9 @@ doc('risude_M', f'{RK}/risude/pdf/risude_M202608.pdf', '楽天・シュワブ・
 doc('svym_P', f'{S}/89311241_ushighdiveq_koufu_20260821.pdf', 'SBI・V・米国高配当株式インデックス・ファンド（年4回決算型）交付目論見書（使用開始日2026年8月21日）')
 doc('svym_Ak', f'{S}/89313236_us%20highdiv_dis4_koufuunpou_20260520.pdf', 'SBI・V・米国高配当株式インデックス・ファンド（年4回決算型）交付運用報告書（作成対象期間2025年11月21日〜2026年5月20日）')
 doc('svym_M', f'{S}/89311241_us%20highdiv4_mr_2608.pdf', 'SBI・V・米国高配当株式インデックス・ファンド（年4回決算型）月次レポート（2026年8月31日基準）')
+doc('svy1_P', f'{S}/89312216_us%20highdiv_koufu_20260411.pdf', 'SBI・V・米国高配当株式インデックス・ファンド 交付目論見書（使用開始日2026年4月11日）')
+doc('svy1_Ak', f'{S}/89312216_us%20highdiv_koufuunpou_2026_07_13.pdf', 'SBI・V・米国高配当株式インデックス・ファンド 交付運用報告書（第5期・作成対象期間2025年7月12日〜2026年7月13日）')
+doc('svy1_M', f'{S}/89312216_us%20highdiv_mr_2608.pdf', 'SBI・V・米国高配当株式インデックス・ファンド 月次レポート（2026年8月31日基準）')
 doc('sspyd_P', f'{S}/26b89ec6cb0527ad0db83873046cd898fa7d9d6a.pdf', 'SBI・SPDR・S&P500高配当株式インデックス・ファンド（年4回決算型）交付目論見書（使用開始日2026年8月21日）')
 doc('sspyd_Ak', f'{S}/89312241_spdrsp500div4_koufuunpou_20260520.pdf', 'SBI・SPDR・S&P500高配当株式インデックス・ファンド（年4回決算型）交付運用報告書（作成対象期間2025年11月21日〜2026年5月20日）')
 doc('sspyd_M', f'{S}/89312241_spdrsp500div4_mr_2608.pdf', 'SBI・SPDR・S&P500高配当株式インデックス・ファンド（年4回決算型）月次レポート（2026年8月31日基準）')
@@ -85,6 +88,7 @@ NAV = {
     'rakuten-jepi': ('rakuten_100127.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100127.csv'),
     'emaxis-nk': ('mufg_253144.csv', 'https://www.am.mufg.jp/fund_file/setteirai/253144.csv'),
     'tawara-nk': ('amone_313122.json', 'https://www.am-one.co.jp/chart_data/313122/dat.json'),
+    'sbi-vym1': ('sbi_2021062902.xml', 'https://apl.wealthadvisor.jp/xml/chart/funddata/2021062902.xml'),
     'rakuten-ndx': ('rakuten_100091.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100091.csv'),
 }
 

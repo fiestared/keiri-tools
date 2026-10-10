@@ -1,0 +1,74 @@
+
+=== FAIL test_input_wiring.mjs ===
+✓ check_input_wiring: 639個の入力欄が答えを動かす（うち組み合わせ指定 15件）。動かないのが正しい 2件は理由つきで除外
+
+
+=== FAIL test_layout_render.mjs ===
+[2m  - navigating to "http://127.0.0.1:50771/embed/eigyobi/", waiting until "networkidle"[22m
+
+/embed/furusato/ @1280: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/furusato/ @1536: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/furusato/ @1920: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/furusato/ @1200: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/furusato/ @768: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/furusato/ @390: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/fuyo-kojo/ @1280: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/fuyo-kojo/ @1536: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/fuyo-kojo/ @1920: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/fuyo-kojo/ @1200: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/fuyo-kojo/ @768: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/fuyo-kojo/ @390: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/genka/ @1280: Error: page.setViewportSize: Target page, context or browser has been closed
+/embed/genka/ @1536: Error: page.setViewportSize: Target page, context or browser has been closed
+file:///Users/masahiroyasu/Scripts/keiri-tools-astra-auto20261010-t8-q08351/tests/test_layout_render.mjs:47
+if(bad.length){console.error(bad.slice(0,30).map(r=>`${r.url} @${r.width}: ${r.error||r.issues.map(x=>x.kind+': '+x.text).join('; ')}`).join('\n'));throw Error(`${bad.length}/${jobs.length} page/viewports failed. Full measurements: ${out}`);}
+                                                                                                                                                          ^
+
+Error: 634/3354 page/viewports failed. Full measurements: /Users/masahiroyasu/Scripts/keiri-tools-astra-auto20261010-t8-q08351/.layout-artifacts/render.json
+    at file:///Users/masahiroyasu/Scripts/keiri-tools-astra-auto20261010-t8-q08351/tests/test_layout_render.mjs:47:155
+
+Node.js v24.3.0
+
+
+=== FAIL test_layout_visual.mjs ===
+-   playwright: '1.62.1'
+  }
+
+    at file:///Users/masahiroyasu/Scripts/keiri-tools-astra-auto20261010-t8-q08351/tests/test_layout_visual.mjs:11:172 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: {
+    platform: 'darwin',
+    arch: 'arm64',
+    playwright: '1.58.2',
+    browser: '145.0.7632.6',
+    deviceScaleFactor: 1
+  },
+  expected: {
+    platform: 'darwin',
+    arch: 'arm64',
+    playwright: '1.62.1',
+    browser: '151.0.7922.34',
+    deviceScaleFactor: 1
+  },
+  operator: 'deepStrictEqual'
+}
+
+Node.js v24.3.0
+
+
+=== FAIL test_no_orphan.mjs ===
+✗ どこからもリンクされていない公開記事 2本（公開439本中）:
+  - /column/ifreenext-india-vs-rakuten-india/
+  - /column/orcan-vs-fang/
+
+  主題が近い記事・ツールの本文から、文脈のある1本を張ること。
+  ★一覧の羅列を足して数だけ satisfies しない（周辺の文脈ごと書く）。
+
+
+=== FAIL test_stale_values.mjs ===
+✗ docs/column/juminzei-hayamihyo/index.html: 古い値「5,600」（furusato-30000-5600: 寄附3万円・両税率20％・各限度内の内訳には復興特別所得税を加算。端数処理前は所得税5,717.6円、特例分19,482.4円。）… 独身/配偶者あり・月額つき 文責: Masahiro Yasu （クリニック・EC事業の経営者／経理実務者） 令和8年度（令和7年分＝2025年1月〜12月の所得にかかり、令和8年6月〜令和9年5月（特別徴収）に納める分）の住民税は、東京23区（特別区）に住む独身・給与収入だけの会社員なら、年収300万円で年115,700円、年収500万円で年243,200円、年収700万円で年375,600円です。 いずれも、所得割（標準税率10％）と均等割（市区町村民税3,000円・都道府県民税1,000円）に、国税の森林環境税1,000円を足した額で、社会保険料は協会けんぽ東京都支部の40歳未満の会社員として概算しています。 住民税は前年の所得に対してかかるので、令和8年度の住民税を決めるのは令和7年（2025年）の1年間の給与です（地方税法313条1項）。この早見表は、令和8年度の住民税
+★ 1件。直すか、過去として書かれているなら allow_near／allow_pages に理由つきで足す（tests/stale_values.json）
+
+
+❌ 5ファイル失敗 / 実行 257
