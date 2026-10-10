@@ -1,0 +1,51 @@
+tests/test_hojokin_sources.mjs                 ★赤
+    | ★公募スケジュール
+    | ★雇用関係助成金
+    | ★静的HTMLへの焼き込みとタブ
+    | ★混ざっていないか
+    | ★生成物が最新か
+    |   ✗ ★gen_hojokin_tabs.mjs --check が緑（赤なら node tools/gen_hojokin_tabs.mjs を流してコミットする）
+    | 
+    | ✗ test_hojokin_sources: 35 checks, 1 failed
+tests/test_layout_render.mjs                   ★赤
+    | /column/sbi-spyd-vs-rakuten-vym/ @1280: table-hscroll-desktop: 項目（2026年10月7日に確認した資料）SBI・SPDR・S&P500高配当（年4回）楽天・VYM信託報酬（税込年率・ファンド本体・貸付時の追加分を除く）年0.0638%（国内ファンド分）年0.132%（国内ファンド分
+    | /column/sbi-spyd-vs-rakuten-vym/ @1536: table-hscroll-desktop: 項目（2026年10月7日に確認した資料）SBI・SPDR・S&P500高配当（年4回）楽天・VYM信託報酬（税込年率・ファンド本体・貸付時の追加分を除く）年0.0638%（国内ファンド分）年0.132%（国内ファンド分
+    | /column/sbi-spyd-vs-rakuten-vym/ @1920: table-hscroll-desktop: 項目（2026年10月7日に確認した資料）SBI・SPDR・S&P500高配当（年4回）楽天・VYM信託報酬（税込年率・ファンド本体・貸付時の追加分を除く）年0.0638%（国内ファンド分）年0.132%（国内ファンド分
+    | /column/sbi-spyd-vs-rakuten-vym/ @1200: table-hscroll-desktop: 項目（2026年10月7日に確認した資料）SBI・SPDR・S&P500高配当（年4回）楽天・VYM信託報酬（税込年率・ファンド本体・貸付時の追加分を除く）年0.0638%（国内ファンド分）年0.132%（国内ファンド分
+    | file:///Users/masahiroyasu/Scripts/keiri-tools-astra-auto20261008-t20-q08387/tests/test_layout_render.mjs:43
+    | if(bad.length){console.error(bad.slice(0,30).map(r=>`${r.url} @${r.width}: ${r.error||r.issues.map(x=>x.kind+': '+x.text).join('; ')}`).join('\n'));throw Error(`${bad.length}/${jobs.length} page/viewports failed. Full measurements: ${out}`);}
+    |                                                                                                                                                           ^
+    | 
+    | Error: 10/3300 page/viewports failed. Full measurements: /Users/masahiroyasu/Scripts/keiri-tools-astra-auto20261008-t20-q08387/.layout-artifacts/render.json
+    |     at file:///Users/masahiroyasu/Scripts/keiri-tools-astra-auto20261008-t20-q08387/tests/test_layout_render.mjs:43:155
+    | 
+    | Node.js v24.3.0
+tests/test_layout_visual.mjs                   ★赤
+    |   },
+    |   expected: {
+    |     platform: 'darwin',
+    |     arch: 'arm64',
+    |     playwright: '1.62.1',
+    |     browser: '151.0.7922.34',
+    |     deviceScaleFactor: 1
+    |   },
+    |   operator: 'deepStrictEqual'
+    | }
+    | 
+    | Node.js v24.3.0
+tests/test_no_orphan.mjs                       ★赤
+    | ✗ どこからもリンクされていない公開記事 1本（公開429本中）:
+    |   - /column/ifreenext-india-vs-rakuten-india/
+    | 
+    |   主題が近い記事・ツールの本文から、文脈のある1本を張ること。
+    |   ★一覧の羅列を足して数だけ satisfies しない（周辺の文脈ごと書く）。
+tests/test_stale_values.mjs                    ★赤
+    | ✗ docs/column/juminzei-hayamihyo/index.html: 古い値「5,600」（furusato-30000-5600: 寄附3万円・両税率20％・各限度内の内訳には復興特別所得税を加算。端数処理前は所得税5,717.6円、特例分19,482.4円。）… 独身/配偶者あり・月額つき 文責: Masahiro Yasu （クリニック・EC事業の経営者／経理実務者） 令和8年度（令和7年分＝2025年1月〜12月の所得にかかり、令和8年6月〜令和9年5月（特別徴収）に納める分）の住民税は、東京23区（特別区）に住む独身・給与収入だけの会社員なら、年収300万円で年115,700円、年収500万円で年243,200円、年収700万円で年375,600円です。 いずれも、所得割（標準税率10％）と均等割（市区町村民税3,000円・都道府県民税1,000円）に、国税の森林環境税1,000円を足した額で、社会保険料は協会けんぽ東京都支部の40歳未満の会社員として概算しています。 住民税は前年の所得に対してかかるので、令和8年度の住民税を決めるのは令和7年（2025年）の1年間の給与です（地方税法313条1項）。この早見表は、令和8年度の住民税
+    | ★ 1件。直すか、過去として書かれているなら allow_near／allow_pages に理由つきで足す（tests/stale_values.json）
+
+★赤 5/308 件:
+  tests/test_hojokin_sources.mjs
+  tests/test_layout_render.mjs
+  tests/test_layout_visual.mjs
+  tests/test_no_orphan.mjs
+  tests/test_stale_values.mjs

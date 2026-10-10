@@ -87,7 +87,7 @@ const yuryoSection = (() => {
 })();
 
 /**
- * 行の特定は**1列目のセルの完全一致**で行う（規則4）。
+ * 行の特定は**1列目の区分名（条件の括弧書きを除く）の完全一致**で行う（規則4）。
  * `includes` だと「マイカーなど＋有料道路」が「マイカーなど＋有料道路＋駐車場等」の行にも当たり、
  * 3行目と4行目を区別できない（前者は後者の接頭辞）。
  */
@@ -95,7 +95,7 @@ const rowOf = (firstCell, label) => {
   const rows = yuryoSection.match(/<tr>[\s\S]*?<\/tr>/g) || [];
   const hit = rows.filter((r) => {
     const td = r.match(/<td>([\s\S]*?)<\/td>/);
-    return td && visible(td[1]) === firstCell;
+    return td && visible(td[1]).split("（")[0].trim() === firstCell;
   });
   assert.strictEqual(hit.length, 1, `${label}: 1列目が「${firstCell}」の行が ${hit.length} 本（1本であるべき）`);
   return visible(hit[0]);
