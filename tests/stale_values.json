@@ -498,16 +498,16 @@
       "correct": "同じ料率・介護保険条件"
     },
     {
-      "id": "au-jibun-normal-fee-99",
-      "value": "99円",
+      "id": "au-jibun-normal-fee-204",
+      "value": "204円",
       "context": "auじぶん",
       "window": 100,
-      "stale_from": "2026-09-30",
-      "allow_near": "誤記|誤った",
-      "reason": "取得正本の通常料金は他行宛（三菱UFJを除く）204円。99円の誤記の再混入を防ぐ。改定日の推定ではない。",
-      "source": "https://www.jibunbank.co.jp/interest_and_commission/commission/",
+      "stale_from": "2026-10-08",
+      "allow_near": "電話|誤記|誤った|読み違",
+      "reason": "ネット振込（スマートフォン・パソコン）の他行宛（三菱UFJを除く）の通常料金は99円。204円は電話での振込の料金で、2026-09-30 に電話の表を通常料金と読み違えた。204円の再混入を防ぐ。改定日の推定ではない。",
+      "source": "https://www.jibunbank.co.jp/announcement/2026/1001_01.html",
       "allow_pages": {},
-      "correct": "204円"
+      "correct": "99円"
     },
     {
       "id": "r14-medical-head-only",
@@ -1801,7 +1801,8 @@
     },
     {
       "id": "furusato-30000-5600",
-      "value": "5,600",
+      "value": "(?<![0-9,])5,600",
+      "value_note": "この行の value は正規表現。先頭の (?<![0-9,]) は「より大きい数の末尾」を値と読まないための境界（住民税の早見表の 375,600円＝年収700万円・独身の年額が、近くの「年収700」と合わさって 5,600 として落ちていた。375,600 は docs/assets/juminzei_r08.json から生成し tests/test_juminzei_hayami.mjs が独立計算で固定している別の数。2026-10-10）。",
       "context": "年収700|夫婦子なし|所得税率20|①\\s*5,600|③\\s*19,600|所得税5,600|特例分19,600",
       "window": 200,
       "stale_from": "2026-10-01",
@@ -1813,7 +1814,8 @@
     },
     {
       "id": "furusato-30000-19600",
-      "value": "19,600",
+      "value": "(?<![0-9,])19,600",
+      "value_note": "この行の value は正規表現。先頭の (?<![0-9,]) は「より大きい数の末尾」を値と読まないための境界（住民税の早見表の 375,600円＝年収700万円・独身の年額が、近くの「年収700」と合わさって 5,600 として落ちていた。375,600 は docs/assets/juminzei_r08.json から生成し tests/test_juminzei_hayami.mjs が独立計算で固定している別の数。2026-10-10）。",
       "context": "年収700|夫婦子なし|所得税率20|①\\s*5,600|③\\s*19,600|所得税5,600|特例分19,600",
       "window": 200,
       "stale_from": "2026-10-01",
@@ -1859,6 +1861,46 @@
       "allow_pages": {},
       "correct": "",
       "allow_scope": "sentence"
+    },
+    {
+      "id": "tokyo-march-r8-before-support",
+      "value": "42,570円",
+      "context": "2026年3月分|令和8年3月分",
+      "context_scope": "sentence",
+      "allow_scope": "sentence",
+      "window": 130,
+      "stale_from": "2026-03-01",
+      "allow_near": "4月分以降|4月分から|支援金開始後|支援金込みの比較",
+      "reason": "東京・標準報酬30万円・介護非該当・基金未加入の令和8年3月分は支援金開始前で42,225円。4月分以降は42,570円。",
+      "source": "https://www.kyoukaikenpo.or.jp/~/media/Files/shared/hokenryouritu/r8/ippan/R8_13tokyo.pdf",
+      "allow_pages": {},
+      "correct": "42,225円"
+    },
+    {
+      "id": "salary-minimum-r10-74man",
+      "value": "74万円",
+      "context": "令和10年分以後|令和10年分から",
+      "context_scope": "sentence",
+      "allow_scope": "sentence",
+      "window": 150,
+      "stale_from": "2028-01-01",
+      "allow_near": "令和8|令和9|令和８|令和９|比較|旧|改正前",
+      "correct": "69万円",
+      "allow_pages": {},
+      "reason": "令和8・9年分の74万円特例を令和10年分以後へ一般化しない。令和10年分以後の最低保障額は69万円。",
+      "source": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf"
+    },
+    {
+      "id": "hoteichosho-system-format-sep2026",
+      "value": "令和8年8月以降",
+      "context": "国税システム|法定調書の様式",
+      "window": 100,
+      "stale_from": "2026-09-01",
+      "allow_near": "誤記|訂正前|誤り",
+      "correct": "令和8年9月",
+      "reason": "令和8年9月の更改に伴う書面で税務署に提出する際の様式変更。corpus/01.txt:114-120",
+      "source": "https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/PDF/01.pdf",
+      "allow_pages": {}
     }
   ],
   "future_tense": {

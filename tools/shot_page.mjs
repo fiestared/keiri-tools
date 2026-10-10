@@ -22,7 +22,8 @@
  *   （原因未確認。過去のハングで孤児化したChromeとの競合の可能性）。**アンカー無しで撮り、
  *   長いページは高さを大きく指定して撮る**（例: 900x9000）。
  */
-import { spawn } from "node:child_process";
+import { spawnChrome, killChrome } from "./chrome_proc.mjs";
+import { cleanupOnExit } from "./tmp_cleanup.mjs";
 import { resolve, join, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
@@ -70,7 +71,7 @@ const server = createServer(async (req, res) => {
 await new Promise((r) => server.listen(0, r));
 const port = server.address().port;
 
-const profile = await mkdtemp(join(tmpdir(), "shot-chrome-"));
+const profile = cleanupOnExit(await mkdtemp(join(tmpdir(), "shot-chrome-")));
 const target = resolve(out);
 await rm(target, { force: true });        // 前回の画像が残っていると「撮れた」と誤判定する
 
@@ -79,7 +80,7 @@ await rm(target, { force: true });        // 前回の画像が残っている�
 //   (実測: 240秒超で無出力のままハング。2便続けて図解の目視が落ちた)。
 //   e2e.mjs は同じ挙動を2026-07-13に踏んで「終了を待たずSIGKILL」で解決済みだったが、
 //   こちらには反映されていなかった。→ **成果物(PNG)の出現を待ち、出たら殺す**。
-const p = spawn(CHROME, [
+const p = spawnChrome(CHROME, [
   "--headless=new", "--disable-gpu", "--hide-scrollbars", "--no-first-run",
   "--no-default-browser-check",
   `--user-data-dir=${profile}`,          // ★これが無いと既存プロファイルを掴んでハングする
@@ -100,8 +101,7 @@ while (waited < DEADLINE) {
   size = s.size;
   if (stable >= 2) break;
 }
-p.kill("SIGKILL");
-await new Promise((r) => p.on("exit", r));
+await killChrome(p);   // 子プロセスごと。本体だけ殺すと renderer が親なしで残る
 await rm(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
 server.close();
 

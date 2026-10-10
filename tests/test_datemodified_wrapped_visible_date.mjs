@@ -4,9 +4,10 @@ import { execFileSync, spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const dir = mkdtempSync(join(tmpdir(), 'datemod-wrapped-'));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), 'datemod-wrapped-')));
 const env = {
   ...process.env,
   GIT_AUTHOR_NAME: 't',

@@ -4,8 +4,9 @@ import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, copyFileSync, rmSy
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { execFileSync } from 'node:child_process';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 const root = new URL('../', import.meta.url).pathname;
-const fixture = mkdtempSync(join(tmpdir(), 'keiri-index-entities-'));
+const fixture = cleanupOnExit(mkdtempSync(join(tmpdir(), 'keiri-index-entities-')));
 try {
   mkdirSync(join(fixture, 'tools'));
   mkdirSync(join(fixture, 'docs/column/entity-fixture'), { recursive: true });

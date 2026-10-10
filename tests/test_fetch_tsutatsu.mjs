@@ -17,13 +17,14 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 const TOOL = new URL("../tools/fetch_tsutatsu.py", import.meta.url).pathname;
 const CHECK = new URL("../tools/check_quotes.py", import.meta.url).pathname;
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) { pass++; } else { fail++; console.error("  ✗ " + m); } };
 
-const dir = mkdtempSync(join(tmpdir(), "tsutatsu-"));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), "tsutatsu-")));
 const env = { ...process.env, PYTHONPYCACHEPREFIX: join(dir, "pyc") };
 
 // 通達本文そのままの体裁で fixture を作る（Shift_JIS・全角ハイフン・半角括弧の混在）。

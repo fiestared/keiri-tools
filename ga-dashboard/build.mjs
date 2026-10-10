@@ -16,6 +16,7 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { productionGuard } from "./production-guard.mjs";
+import { settledCutoffHour, todayHeadline, todayPv } from "./settled.mjs";
 import { createSign } from "node:crypto";
 
 const DIR = dirname(fileURLToPath(import.meta.url));
@@ -248,7 +249,9 @@ async function fetchAll() {
     const hourly = await runReport(token, s.property, {
       dimensionFilter: hostFilter,
       dimensions: [{ name: "date" }, { name: "hour" }],
-      metrics: [{ name: "sessions" }],
+      // ★PV も時間帯別に取る（2026-10-10 Masahiro「PVみれなくなるの修正して、当日分」）。
+      //   「今日」のタイルを確定分だけにしたとき（b123901d）に当日の PV の行ごと消していた。確定した時間帯までの PV を出すのに使う
+      metrics: [{ name: "sessions" }, { name: "screenPageViews" }],
       limit: 2000,
     });
     // 流入元別（2026-10-03 Masahiro「どこからのトラフィックかで色分けして棒グラフ出すようにできる？」）。
@@ -377,6 +380,7 @@ async function fetchAll() {
       });
     }
     const hmap = new Map(); // "YYYY-MM-DD|HH" -> sessions
+    const hpvmap = new Map(); // "YYYY-MM-DD|HH" -> PV
     for (const r of hourly.rows ?? []) {
       const raw = r.dimensionValues[0].value;
       const ymd = `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`;
@@ -386,6 +390,7 @@ async function fetchAll() {
       //   （cutoff が午前なら比較区間が全部 0〜9時なので、両日とも 0 になっていた）。
       const hh = String(r.dimensionValues[1].value).padStart(2, "0");
       hmap.set(`${ymd}|${hh}`, Number(r.metricValues[0].value));
+      hpvmap.set(`${ymd}|${hh}`, Number(r.metricValues[1]?.value ?? 0));
     }
     const ymdOf = (raw) => `${raw.slice(0, 4)}-${raw.slice(4, 6)}-${raw.slice(6, 8)}`;
     const pageRows = (pages.rows ?? []).map((r) => ({
@@ -416,8 +421,8 @@ async function fetchAll() {
       orderBys: [{ dimension: { dimensionName: "dateHourMinute" }, desc: true }], limit: 1,
     });
     const raw = cut.rows?.[0]?.dimensionValues?.[0]?.value ?? null; // YYYYMMDDHHMM
-    const cutoff = raw ? `${raw.slice(8, 10)}:${raw.slice(10, 12)}` : null;
-    const cutoffHour = raw ? Number(raw.slice(8, 10)) : Number(now.hour);
+    const rawCutoff = raw ? `${raw.slice(8, 10)}:${raw.slice(10, 12)}` : null;
+    const rawCutoffHour = raw ? Number(raw.slice(8, 10)) : Number(now.hour);
     // 欠測日（セッション0の日は行ごと返ってこない）を0で埋める
     const days = [];
     for (let i = FETCH_DAYS - 1; i >= 0; i--) {
@@ -430,6 +435,10 @@ async function fetchAll() {
       Array.from({ length: 24 }, (_, h) => hmap.get(`${date}|${String(h).padStart(2, "0")}`) ?? 0);
     const cumToHour = (date, hh) => hoursOf(date).slice(0, hh + 1).reduce((a, b) => a + b, 0);
     const yDate = addDays(today, -1), pwDate = addDays(today, -7);
+    // ★「1件でも入っている最新の分」は出そろった所ではない（settled.mjs）。出そろっていない最初の時間帯を途中として扱う
+    const cutoffHour = settledCutoffHour(hoursOf(today), hoursOf(pwDate), hoursOf(yDate), rawCutoffHour);
+    const cutoff = rawCutoff === null ? null
+      : cutoffHour === rawCutoffHour ? rawCutoff : `${String(cutoffHour).padStart(2, "0")}:00`;
     // 比較は「今の時刻まで」ではなく「GA4がデータを出しているところまで」で切る。
     // さらに cutoff の時間帯そのものは今日だけ途中（例: 13:01 なら13時台は1分ぶん）なので、
     // 完全に経過した時間帯（0〜cutoffHour-1）だけを両日から取る。
@@ -441,6 +450,10 @@ async function fetchAll() {
       feeDays: days.map(({ date }) => ({ date, ...(feeMap.get(date) ?? { pageviews: 0, clicks: 0 }) })),
       cutoff, cutoffHour, cmpHour: lastFull,
       todayCum: lastFull >= 0 ? cumToHour(today, lastFull) : 0,
+      // 確定した時間帯（0〜lastFull）までの当日 PV。確定した時間帯が無ければ null
+      todayPvCum: lastFull >= 0
+        ? Array.from({ length: lastFull + 1 }, (_, h) => hpvmap.get(`${today}|${String(h).padStart(2, "0")}`) ?? 0).reduce((a, b) => a + b, 0)
+        : null,
       prevWeekCum: lastFull >= 0 ? cumToHour(pwDate, lastFull) : 0,
       // 時間帯別チャート用。画面に出す3日ぶんだけ持つ（21日×24 を全部持つと data.json が10倍になる）
       hours: { [today]: hoursOf(today), [yDate]: hoursOf(yDate), [pwDate]: hoursOf(pwDate) },
@@ -714,7 +727,7 @@ function chart(site) {
       <text x="${b.cx}" y="${H - PAD.b + 16}" class="xlab ${b.d.weekend ? "we" : ""}" text-anchor="middle">${b.d.wd}</text>
       <text x="${b.cx}" y="${H - PAD.b + 30}" class="xsub" text-anchor="middle">${b.d.date.slice(5).replace("-", "/")}</text>`).join("")}
     ${(() => { const b = bars[bars.length - 1]; return b.h > 0
-        ? `<text x="${b.cx}" y="${(b.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${b.d.sessions.toLocaleString("ja-JP")}</text>` : ""; })()}
+        ? `<text x="${b.cx}" y="${(b.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${b.d.sessions.toLocaleString("ja-JP")}${b.d.today ? "（集計中）" : ""}</text>` : ""; })()}
     ${bars.map((b, i) => `<rect class="hit" x="${PAD.l + (iw / site.shown.length) * i}" y="${PAD.t}"
         width="${iw / site.shown.length}" height="${ih}" fill="transparent"
         data-tip="${esc(`${b.d.date}(${b.d.wd})${b.d.today ? " ※途中" : ""} — ${b.d.sessions.toLocaleString("ja-JP")} セッション / ${b.d.users.toLocaleString("ja-JP")} ユーザー / ${(b.d.pageviews ?? 0).toLocaleString("ja-JP")} PV${b.d.prev !== null ? ` / 前週同曜日 ${b.d.prev.toLocaleString("ja-JP")}` : ""}${srcTip(b.d)}`)}"></rect>`).join("")}
@@ -902,6 +915,18 @@ function table(site) {
  * ★セッションと必ず並べる。このサイトは「計算して離脱」が正常な使われ方で
  *   **PV/セッションが1前後**（記事メディアは3〜4）。PVだけ見せると相場と比べて誤読する。
  */
+/**
+ * 「今日」のタイルの PV の行（2026-10-10 Masahiro「PVみれなくなるの修正して、当日分」）。
+ * 大きい数字（確定した時間帯までのセッション）と同じ範囲の PV を出し、GA4 が今返す当日合計は「集計中」と書いて添える。
+ */
+const todayPvLine = (site) => {
+  const t = todayPv(site);
+  if (t.value === null && t.raw === null) return "";
+  const head = t.value === null ? "PV —" : `PV ${t.value.toLocaleString("ja-JP")}`
+    + `<span class="pvr">（${site.todayCum ? (t.value / site.todayCum).toFixed(2) : "—"} /セッション）</span>`;
+  const tail = t.raw === null ? "" : `<span class="pvr">${esc(t.rawNote)}</span>`;
+  return `<div class="pv">${head}${tail}</div>`;
+};
 const pvLine = (pv, sessions) => {
   if (pv == null) return "";
   const ratio = sessions ? (pv / sessions).toFixed(2) : "—";
@@ -1193,9 +1218,10 @@ function sitePanel(site, primary, extra = "", selected = true, asTab = false) {
 
   <div class="tiles">
     <div class="tile${primary ? " hero" : ""}">
-      <div class="label">今日 <span class="badge">${site.cutoff ? `${esc(site.cutoff)}まで` : "途中"}</span></div>
-      <div class="value">${site.today.toLocaleString("ja-JP")}</div>
-      ${pvLine(site.todayPv, site.today)}
+      <div class="label">今日 <span class="badge">${esc(todayHeadline(site).label)}</span></div>
+      <div class="value">${todayHeadline(site).value === null ? "—" : todayHeadline(site).value.toLocaleString("ja-JP")}</div>
+      ${todayPvLine(site)}
+      <div class="metric-sub">${esc(todayHeadline(site).note)}</div>
       ${site.cmpHour >= 0
         ? delta(site.todayCum, site.prevWeekCum, `先週${esc(site.todayWd)} 0:00〜${hh}:59 比`)
           // ★昨日比も出す（2026-08-25 Masahiro依頼）。先週同曜日比の下に置いているのは

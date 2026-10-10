@@ -17,6 +17,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 const CORE = new URL("../docs/assets/sozokuzei_core.js", import.meta.url);
 const TEST = new URL("./test_sozokuzei.mjs", import.meta.url);
@@ -75,7 +76,7 @@ const BREAKS = [
    "if (false) {"],
 ];
 
-const dir = mkdtempSync(join(tmpdir(), "breaksozoku-"));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), "breaksozoku-")));
 
 // ★規則2: 壊す前に、ベースラインが緑であることを確かめる
 try {

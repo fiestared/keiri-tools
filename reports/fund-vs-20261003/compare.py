@@ -1,6 +1,6 @@
 """2026-10-03 batch: compute same-period comparisons from saved issuer NAV files (no network).
 
-Sources (saved 2026-10-03 in this directory; rakuten_100091/100092 saved 2026-10-06; rakuten_100035 saved 2026-10-07):
+Sources (saved 2026-10-03 in this directory; rakuten_100091/100092 saved 2026-10-06; rakuten_100035 saved 2026-10-07; rakuten_100127 and rakuten_100105_20261008 saved 2026-10-08; mufg_253144 and amone_313122 saved 2026-10-09; sbi_2021062902 and rakuten_100035_20261010 saved 2026-10-10):
   MUFG  https://www.am.mufg.jp/fund_file/setteirai/<code>.csv
   Daiwa https://www.daiwa-am.co.jp/funds/detail/csv_out.php?code=<code>&type=1
   Rakuten https://www.rakuten-toushin.co.jp/assets/csv/chart_<n>.csv
@@ -45,13 +45,18 @@ FILES = {
     'emaxis-emg': 'mufg_252878.csv', 'tawara-emg': 'amone_313128.json',
     'emaxis-bal8': 'mufg_252760.csv', 'tawara-bal8': 'amone_313144.json',
     'rakuten-sox': 'rakuten_100092.csv', 'rakuten-ndx': 'rakuten_100091.csv', 'rakuten-vym': 'rakuten_100035.csv',
+    'rakuten-jepi': 'rakuten_100127.csv',
+    'emaxis-nk': 'mufg_253144.csv', 'tawara-nk': 'amone_313122.json', 'sbi-vym1': 'sbi_2021062902.xml',
 }
 PAIRS = [('sbi-jhd', 'rakuten-jhd'), ('sbi-spyd4', 'sbi-vym4'), ('sbi-spyd4', 'rakuten-schd'),
          ('emaxis-emg', 'tawara-emg'), ('emaxis-bal8', 'tawara-bal8'),
-         ('rakuten-sox', 'rakuten-ndx'), ('sbi-spyd4', 'rakuten-vym')]
+         ('rakuten-sox', 'rakuten-ndx'), ('sbi-spyd4', 'rakuten-vym'), ('rakuten-jepi', 'rakuten-schd'),
+         ('emaxis-nk', 'tawara-nk'), ('sbi-vym1', 'rakuten-vym')]
 
 # 2026-10-07: 後の便で取り直したデータを、その組の記事だけで使う（既存記事の取得日・最終日の表示を動かさない）
-PAIR_FILES = {('sbi-spyd4', 'rakuten-vym'): {'sbi-spyd4': 'sbi_2024013002_20261007.xml'}}
+PAIR_FILES = {('sbi-spyd4', 'rakuten-vym'): {'sbi-spyd4': 'sbi_2024013002_20261007.xml'},
+              ('rakuten-jepi', 'rakuten-schd'): {'rakuten-schd': 'rakuten_100105_20261008.csv'},
+              ('sbi-vym1', 'rakuten-vym'): {'rakuten-vym': 'rakuten_100035_20261010.csv'}}
 
 def series(key, pair=None):
     p = HERE / PAIR_FILES.get(pair, {}).get(key, FILES[key])

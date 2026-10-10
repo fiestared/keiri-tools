@@ -24,6 +24,7 @@
  */
 import { execFileSync } from "node:child_process";
 import { readdirSync, existsSync, writeFileSync, rmSync } from "node:fs";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -118,7 +119,7 @@ for (const kw of ["バナナ 輸入 関税", "犬 しつけ"]) {
 // ＝ このプロジェクトが繰り返す「測定失敗が"該当なし"に化ける」型。
 //   既存の検査が位置引数でしか run() を呼んでいなかったため、5日間だれも踏まなかった。
 const runFile = (...kws) => {
-  const tmp = join(tmpdir(), `kwdemand_test_${process.pid}.txt`);
+  const tmp = cleanupOnExit(join(tmpdir(), `kwdemand_test_${process.pid}.txt`));
   writeFileSync(tmp, kws.join("\n") + "\n");
   try {
     return execFileSync("python3",
@@ -141,7 +142,7 @@ ok(JSON.stringify(viaFile) === JSON.stringify(viaArgs),
 // --file と位置引数の**併用**でも両方が検査されること(片方が消えない)。
 const both = execFileSync(
   "python3", ["tools/keyword_demand.py", "--check-dupes", "随時改定", "--file",
-              (() => { const p = join(tmpdir(), `kwdemand_both_${process.pid}.txt`);
+              (() => { const p = cleanupOnExit(join(tmpdir(), `kwdemand_both_${process.pid}.txt`));
                        writeFileSync(p, "倒産防止共済\n"); return p; })()],
   { cwd: root, encoding: "utf8" }).trim().split("\n").map((l) => l.split("\t"));
 ok(both.some((r) => r[0] === "TITLE" && r[2] === "zuiji-kaitei"),

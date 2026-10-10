@@ -10,6 +10,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const CORE = new URL('../docs/assets/kotei_shisanzei_core.js', import.meta.url);
 const PAGE = new URL('../docs/kotei-shisanzei/index.html', import.meta.url);
@@ -126,7 +127,7 @@ const BREAKS = [
    '§7 canonical が正しい'],
 ];
 
-const dir = mkdtempSync(join(tmpdir(), 'break-kotei-'));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), 'break-kotei-')));
 const write = (key, text) => writeFileSync(join(dir, FILE[key]), text);
 const run = () => {
   try {

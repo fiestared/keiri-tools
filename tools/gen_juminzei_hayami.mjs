@@ -103,11 +103,14 @@ export function build(H, D, S) {
   const get = (y) => rows.find((x) => x.y === y);
 
   const cell = (v) => v === null ? "—" : tok(n(v) + "円");
-  const table = `<div class="scroll-wrap"><table class="juminzei-hayami">
+  // 2026-10-08 UI/UX: 答え（家族構成ごとの年額・月額）を2列目から並べ、前提の社会保険料は最後の列へ。
+  // 1列目（年収）は横に送っても残す。600px以下は「独身／配偶者あり」で列を絞ると表が枠に収まり、見出し行がページに付く。
+  const col = (i) => i === 0 ? "a" : "b";
+  const table = `<div class="col-switch" role="group" aria-label="スマホで表示する列"><span>表示する列</span>${fams.map((f, i) => `<label><input type="radio" name="jh-cols" value="${col(i)}"${i === 0 ? " checked" : ""}>${f.short}</label>`).join("")}<label><input type="radio" name="jh-cols" value="all">すべての列</label></div><div class="scroll-wrap"><table class="juminzei-hayami sticky-first">
 <caption>年収別の住民税（${m.nendo}・${P.area_label}・給与収入のみ・40歳未満・協会けんぽ）</caption>
-<thead><tr><th scope="col">給与収入（年収）</th><th scope="col" class="num">社会保険料（前提）</th>${fams.map((f) => `<th scope="col" class="num">${f.short}・年額</th><th scope="col" class="num">${f.short}・月額</th>`).join("")}</tr></thead>
+<thead><tr><th scope="col">給与収入（年収）</th>${fams.map((f, i) => `<th scope="col" class="num" data-col="${col(i)}" data-answer>${f.short}・年額</th><th scope="col" class="num" data-col="${col(i)}" data-answer>${f.short}・月額</th>`).join("")}<th scope="col" class="num" data-col="x">社会保険料（前提）</th></tr></thead>
 <tbody>
-${rows.map((x) => `<tr data-nenshu="${x.y}"><th scope="row" style="white-space:nowrap">${tok(man(x.y))}</th><td class="num">${cell(x.sh.total)}</td>${fams.map((f) => { const c = x.fam[f.key]; return `<td class="num">${cell(c.total)}</td><td class="num">${cell(c.monthly)}</td>`; }).join("")}</tr>`).join("\n")}
+${rows.map((x) => `<tr data-nenshu="${x.y}"><th scope="row" style="white-space:nowrap">${tok(man(x.y))}</th>${fams.map((f, i) => { const c = x.fam[f.key]; return `<td class="num" data-col="${col(i)}">${cell(c.total)}</td><td class="num" data-col="${col(i)}">${cell(c.monthly)}</td>`; }).join("")}<td class="num" data-col="x">${cell(x.sh.total)}</td></tr>`).join("\n")}
 </tbody></table></div>`;
 
   // ---- lead ----

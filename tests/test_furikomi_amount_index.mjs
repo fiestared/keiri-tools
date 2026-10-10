@@ -30,7 +30,7 @@ const block = html.slice(start, end);
 // --- 2. 正本の金額が、過不足なく行になっていること --------------------------
 // ★「在ること」だけでは足りない。**表にしか無い金額**＝改定で消えたのに残った行を落とす。
 const want = amountMap(loadBanks());
-const rowRe = /<tr><td><b>(\d+)円(?:<br>[^<]*)?<\/b><\/td><td>(.*?)<\/td><\/tr>/g;
+const rowRe = /<tr><th scope="row"(?: data-review-context="row")?><b>(\d+)円(?:<br>[^<]*)?<\/b><\/th><td>(.*?)<\/td><\/tr>/g;
 const got = new Map();
 for (const m of block.matchAll(rowRe)) got.set(Number(m[1]), m[2]);
 
@@ -69,5 +69,5 @@ assert.ok(note.includes('この表に当てはめず') && note.includes('銀行�
 console.log(`✓ 逆引き表 ${got.size}金額 が fee_table.json と一致（目次・収録範囲の申告も確認）`);
 
 // The missing >=30k source cell cannot become a flat-rate reverse lookup.
-const yokohamaBands = [...want.entries()].flatMap(([amount, entries]) => entries.filter(e => e.name === '横浜銀行（個人IB）【ゼロ手数料の無料回数適用外】').map(e => ({amount, range:e.range})));
+const yokohamaBands = [...want.entries()].flatMap(([amount, entries]) => entries.filter(e => e.name === '横浜銀行（個人IB）【他行宛。ゼロ手数料の無料回数適用外】').map(e => ({amount, range:e.range})));
 assert.deepStrictEqual(yokohamaBands, [{amount:154, range:'3万円未満'}]);

@@ -23,11 +23,12 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 let fails = 0, checks = 0;
 const ok = (cond, msg) => { checks++; if (!cond) { fails++; console.log(`  ✗ ${msg}`); } };
 
-const dir = mkdtempSync(join(tmpdir(), "cq-cascade-"));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), "cq-cascade-")));
 
 const py = (code) => execFileSync("python3", ["-c", code], { encoding: "utf8" }).trim();
 const load = `

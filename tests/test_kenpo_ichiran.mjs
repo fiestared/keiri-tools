@@ -47,16 +47,21 @@ function check(html, csv) {
   const fail = (m) => errs.push(m);
 
   // ② 表
-  const tbody = html.match(/<table class="kenpo-ichiran">[\s\S]*?<tbody>([\s\S]*?)<\/tbody>/);
+  const tbody = html.match(/<table class="kenpo-ichiran[^"]*">[\s\S]*?<tbody>([\s\S]*?)<\/tbody>/);
   if (!tbody) { fail("一覧の表（table.kenpo-ichiran）が無い"); return errs; }
   const trs = [...tbody[1].matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)].map((m) => m[1]);
   if (trs.length !== 47) fail(`表の行が ${trs.length} 行（47行でない）`);
+  // ②' 見出しの順 = 値の順（列を並べ替えたときに見出しだけ取り残されると、全セルが別の列名で読まれる）
+  const heads = [...((html.match(/<table class="kenpo-ichiran[^"]*">[\s\S]*?<thead><tr>([\s\S]*?)<\/tr><\/thead>/) || [, ""])[1]).matchAll(/<th[^>]*>([\s\S]*?)<\/th>/g)].map((m) => strip(m[1].replace(/<details\b[\s\S]*?<\/details>/g, "")));  // 列名だけを比べる（見出しの中の「介護の条件」details は列名ではない）
+  const wantHeads = ["都道府県", "健康保険料率", "本人負担（折半）40歳未満", /^40〜64歳（介護保険料率[\d.]+%込み）$/, "本人負担（折半）40〜64歳", /^令和\d+年度からの増減$/];
+  if (heads.length !== wantHeads.length || !wantHeads.every((w, i) => typeof w === "string" ? heads[i] === w : w.test(heads[i]))) fail(`表の見出しの順が値の順と違う: ${JSON.stringify(heads)}`);
   for (const p of prefs) {
     const row = trs.filter((t) => t.includes(`<th scope="row" style="white-space:nowrap">${p}</th>`));
     if (row.length !== 1) { fail(`表で ${p} の行が ${row.length} 件`); continue; }
     const cells = [...row[0].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((m) => strip(m[1]));
     const e = exp[p];
-    const want = [`${p2(e.r)}%`, diffTxt(e.d), `${p2(e.rk)}%`, `${p3(e.r)}%`, `${p3(e.rk)}%`];
+    // 2026-10-08: 料率と本人負担を左から（増減は最後の列）。見出しの順は下の ②' で名指し
+    const want = [`${p2(e.r)}%`, `${p3(e.r)}%`, `${p2(e.rk)}%`, `${p3(e.rk)}%`, diffTxt(e.d)];
     if (JSON.stringify(cells) !== JSON.stringify(want)) fail(`表 ${p}: ${JSON.stringify(cells)} ≠ 正本 ${JSON.stringify(want)}`);
   }
   const cap = strip((html.match(/<caption>([\s\S]*?)<\/caption>/) || [, ""])[1]);
@@ -162,7 +167,8 @@ if (base.length === 0) {
   const t = exp["東京都"];
   const breaks = [
     ["表: 東京都の健康保険料率", (h) => h.replace(`<th scope="row" style="white-space:nowrap">東京都</th><td class="num"><span class="numeric-token">${p2(t.r)}%`, `<th scope="row" style="white-space:nowrap">東京都</th><td class="num"><span class="numeric-token">${p2(t.r + 1)}%`), null],
-    ["表: 東京都の折半（40〜64歳）", (h) => h.replace(new RegExp(`(<th scope="row" style="white-space:nowrap">東京都</th>(?:<td[^>]*>(?:<span[^>]*>)?[^<]*(?:</span>)?</td>){4})<td class="num"><span class="numeric-token">${p3(t.rk).replace(".", "\\.")}%`), `$1<td class="num"><span class="numeric-token">${p3(t.rk + 2)}%`), null],
+    ["表: 東京都の折半（40〜64歳）", (h) => h.replace(new RegExp(`(<th scope="row" style="white-space:nowrap">東京都</th>(?:<td[^>]*>(?:<span[^>]*>)?[^<]*(?:</span>)?</td>){3})<td class="num"><span class="numeric-token">${p3(t.rk).replace(".", "\\.")}%`), `$1<td class="num"><span class="numeric-token">${p3(t.rk + 2)}%`), null],
+    ["表: 見出しの順（本人負担と増減を入れ替え）", (h) => h.replace(">本人負担（折半）40歳未満</th>", ">令和7年度からの増減</th>"), null],
     ["表: 1行消す", (h) => h.replace(/<tr data-pref="沖縄県">[\s\S]*?<\/tr>\n?/, ""), null],
     ["CSV: 佐賀県の令和7年度", null, (c) => c.replace(/佐賀県,10\.55,10\.78/, "佐賀県,10.55,10.77")],
     ["要約: 据置の件数", (h) => h.replace(/<b>据置が\d+<\/b>/, "<b>据置が8</b>"), null],

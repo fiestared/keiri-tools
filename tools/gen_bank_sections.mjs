@@ -59,8 +59,13 @@ export function loadBanks() {
       rawOver: b.article?.over_unverified ? null : b.over30k,
       under: `${b.under30k}円${b.article?.fee_note || ''}`,
       over: b.article?.over_unverified ? '未確認' : `${b.over30k}円${b.article?.fee_note || ''}`,
-      underHTML: `${b.under30k}円${b.article?.fee_note ? '<br>' + esc(b.article.fee_note) : ''}`,
-      overHTML: b.article?.over_unverified ? '未確認' : `${b.over30k}円${b.article?.fee_note ? '<br>' + esc(b.article.fee_note) : ''}`,
+      // ★2026-10-08（UI/UX 回帰 所見5）: 料金の条件（fee_note）は 3万円未満・以上の両方に同じ文だったため、
+      //   金額セルに入れると同じ注記が1行に2回出て表が縦に伸びた。条件は区分名のセルに1回だけ書き、
+      //   金額セルは金額だけにする。under/over（照合用の文字列）は「金額＋条件」のまま変えない
+      //   （tests/test_fee_article・test_furikomi_bank_sections が区分名セルの注記を足して照合する）。
+      nameHTML: `${b.name}${b.article?.fee_note ? '<span class="cell-note">' + esc(b.article.fee_note) + '</span>' : ''}`,
+      underHTML: `${b.under30k}円`,
+      overHTML: b.article?.over_unverified ? '未確認' : `${b.over30k}円`,
       indexName: b.article?.index_name || b.name,
       indexFullLabel: b.article?.index_full_label || false,
       boundary: b.article?.over_unverified ? null : b.under30k !== b.over30k,
@@ -127,20 +132,21 @@ export function buildSections(rows) {
     out.push('    <tr><th scope="col">区分</th><th scope="col">3万円未満</th><th scope="col">3万円以上</th></tr>');
     for (const r of [kojin, hojin]) {
       if (!r) continue;
-      out.push(`    <tr><td>${r.name}</td><td>${r.underHTML}</td><td>${r.overHTML}</td></tr>`);
+      out.push(`    <tr><td>${r.nameHTML}</td><td>${r.underHTML}</td><td>${r.overHTML}</td></tr>`);
     }
     out.push('  </table>');
 
     const notes = [];
     if (kojin && hojin && kojin.rawOver !== null && hojin.rawOver !== null && kojin.rawOver !== hojin.rawOver) {
       const ratio = (hojin.rawOver / kojin.rawOver).toFixed(1).replace(/\.0$/, '');
-      notes.push(`${base === "みずほ銀行" ? "" : (list.some(r => r.scoped) ? "上表の対象サービス・通常単価で、無料・別料金の宛先と優遇を除いて比べた" : "") + "他行宛ネット振込の3万円以上では、"}法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）`);
+      notes.push(`${(list.some(r => r.scoped) ? "上表の対象サービス・通常単価で、無料・別料金の宛先と優遇を除いて比べた" : "") + "他行宛ネット振込の3万円以上では、"}法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）`);
     }
     const withBoundary = list.filter((x) => x.boundary).map((x) => x.kubun);
-    if (list.some(r => r.rawOver === null)) notes.push('横浜銀行の法人EBの他行宛は、3万円未満385円・3万円以上550円です。個人IBの3万円以上は掲載を保留しています');
+    if (list.some(r => r.rawOver === null)) notes.push('横浜銀行の法人EBの通常の他行宛振込は、3万円未満385円・3万円以上550円です（振込訂正・組戻サービスの再振込は金額不問550円）。個人IBの3万円以上は掲載を保留しています');
     notes.push(withBoundary.length
-      ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）`
-      : '金額にかかわらず<b>定額</b>');
+      ? base === "みずほ銀行" ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）` : `<b>${base === "楽天銀行" ? "楽天銀行の法人の基本振込（給与・賞与・総合振込を除く）は、通常の他行宛振込に3万円の境界あり" : `${base}の上表に掲載したサービスの通常の他行宛振込は3万円の境界あり`}</b>（${withBoundary.join('・')}。無料・別料金の宛先と優遇を除く${base === "楽天銀行" ? "。法人の基本振込に限り、給与・賞与・総合振込は除く" : base === "横浜銀行" ? "。再振込を除く" : ""}）`
+      // ★区分名を文に入れる: 「金額にかかわらず定額。」だけだと、どの銀行の話か文単体で読めず、照合で10銀行ぶんが同じ文になった。
+      : `${base}のこの表の料金は、金額にかかわらず<b>定額</b>`);
     out.push(`  <p>${notes.join('。')}。</p>`);
     for (const note of [...new Set(list.filter((x) => x.publicNote).map((x) => x.publicNote))]) {
       out.push(`  <p class="bank-note">${esc(note)}。</p>`);
@@ -165,7 +171,7 @@ export function buildSections(rows) {
         + '金額は表全体の調査時点のものです。<b>お手続き前に各行の公式ページでご確認ください。</b></p>');
     }
   }
-  out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」を確認できた10区分</a>に書いています。</p>');
+  out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」を確認できた11区分</a>に書いています。</p>');
   out.push(END);
   return out.join('\n');
 }
@@ -216,13 +222,18 @@ export function buildAmountIndex(rows) {
   const out = [];
   out.push(AMT_START);
   out.push('  <h2 id="gyakubiki">この金額はどこの銀行？（金額から逆引き）</h2>');
-  out.push('  <p>通帳や請求書で見た手数料の金額から、その金額になる銀行を引く表です。<b>上の一覧と同じ調査結果から機械的に並べ替えています</b>ので、金額が食い違うことはありません。「3万円未満／以上で同じ額」の区分は「金額不問」と書いています。</p>');
+  out.push('  <p>通帳や請求書で見た手数料の金額から、その金額になる銀行を引く表です。<b>上の一覧と同じ調査結果を金額の順に並べ替えています</b>ので、金額が食い違うことはありません。「3万円未満／以上で同じ額」の区分は「金額不問」と書いています。</p>');
   out.push('  <table>');
-  out.push('    <tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th></tr>');
+  // 長い表は見出し行を thead に入れる（印刷で各ページに見出しを繰り返す。tests/test_long_table_thead.mjs）
+  out.push('    <thead><tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th></tr></thead>');
+  out.push('    <tbody>');
   for (const [amount, list] of m) {
     const cells = list.map((x) => x.fullLabel ? x.name : `${x.name}（${x.range}）`).join('<br>');
-    out.push(`    <tr><td><b>${amount}円</b></td><td>${cells}</td></tr>`);
+    // 金額は行の見出し（th scope="row"）。データのセルではない
+    const reviewContext = list.some((x) => x.name.startsWith('auじぶん銀行')) ? ' data-review-context="row"' : '';
+    out.push(`    <tr><th scope="row"${reviewContext}><b>${amount}円</b></th><td>${cells}</td></tr>`);
   }
+  out.push('    </tbody>');
   out.push('  </table>');
   out.push('  <p class="note">この表が扱うのは<b>他行宛・30区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後の料金や、振込以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。主要5行については<a href="#keiro">窓口・ATM・同じ銀行あての実額</a>を別に載せています。それでも合わない場合はこの表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
   out.push(AMT_END);
@@ -260,6 +271,6 @@ if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
     html = put(html, AMT_START, AMT_END, amountIndex, START);
 
     writeFileSync(ARTICLE, html);
-    console.log(`銀行別セクション ${(section.match(/<h3 /g) || []).length}見出し / 逆引き ${(amountIndex.match(/<tr><td><b>/g) || []).length}金額 を書き込みました`);
+    console.log(`銀行別セクション ${(section.match(/<h3 /g) || []).length}見出し / 逆引き ${(amountIndex.match(/<tr><th scope="row"><b>/g) || []).length}金額 を書き込みました`);
   }
 }

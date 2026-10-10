@@ -5,12 +5,13 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 const TOOL = new URL("../tools/check_quotes.py", import.meta.url).pathname;
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) { pass++; } else { fail++; console.error("  ✗ " + m); } };
 
-const dir = mkdtempSync(join(tmpdir(), "ckq-"));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), "ckq-")));
 const w = (n, o) => { const p = join(dir, n); writeFileSync(p, typeof o === "string" ? o : JSON.stringify(o)); return p; };
 
 // e-Gov の形をした最小の法令JSON。本文は children にだけ入り、

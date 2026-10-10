@@ -72,13 +72,16 @@ for(const width of only==='fee'?[320]:[1280,390]){
  }
  if(!only||only==='grade'){
   await page.goto(app.base+'/column/hyojun-hoshu-gakuhyo/');
-  for(const [value,grade] of [['300000','22'],['289999','21'],['290000','22'],['310000','23'],['0','1'],['62999','1'],['63000','2'],['1355000','50'],['9999999','50'],['３００，０００','22']]){
+  for(const [value,grade] of [['300000','22'],['289999','21'],['290000','22'],['310000','23'],['92999','4'],['93000','5'],['634999','34'],['635000','35'],['664999','35'],['665000','36'],['0','1'],['62999','1'],['63000','2'],['1355000','50'],['9999999','50'],['３００，０００','22']]){
    await page.locator('#grade-amount').fill(value);await page.keyboard.press('Enter');const matched=await page.locator('#grade-table .is-matched td').first().innerText();check(matched===grade,'grade boundary '+value);
    check(await page.locator('#grade-table tr').count()===51,'all 50 grades retained');log.push({width,value,grade:matched,summary:await page.locator('#grade-summary').innerText()});
   }
   await page.locator('#grade-amount').fill('300000');await page.keyboard.press('Tab');check(await page.locator('#grade-lookup button').evaluate(el=>el===document.activeElement),'grade Tab');await page.keyboard.press('Enter');await record(page,`grade-summary-${width}`);
   const row=await page.locator('#grade-table .is-matched').boundingBox();const wrap=await page.locator('#hyou-wrap').boundingBox();check(row.y>=wrap.y&&row.y+row.height<=wrap.y+wrap.height,'grade row scrolled into frame');
-  await page.locator('#hyou-wrap').scrollIntoViewIfNeeded();await record(page,`grade-table-${width}`);await page.locator('#hyou-expand').click();check(await page.locator('#hyou-wrap').evaluate(el=>el.clientHeight>=el.scrollHeight-2),'grade expand preserved');await record(page,`grade-expanded-${width}`);
+  // 2026-10-08 PC review 中5: from 1024px the table is one page scroll (no 640px frame, no expand control); the
+  // looked-up row is scrolled into the viewport instead. The frame and the expand control remain below 1024px.
+  if(width>=1024){check(!(await page.locator('#hyou-expand').isVisible()),'PC: no expand control');check(await page.locator('#hyou-wrap').evaluate(el=>el.clientHeight>=el.scrollHeight-2),'PC: no inner frame');check(row.y>=0&&row.y+row.height<=(page.viewportSize().height),'PC: grade row in viewport');await record(page,`grade-table-${width}`);}
+  else{await page.locator('#hyou-wrap').scrollIntoViewIfNeeded();await record(page,`grade-table-${width}`);await page.locator('#hyou-expand').click();check(await page.locator('#hyou-wrap').evaluate(el=>el.clientHeight>=el.scrollHeight-2),'grade expand preserved');await record(page,`grade-expanded-${width}`);}
   for(const value of ['','-1','3.5']){await page.locator('#grade-amount').fill(value);await page.keyboard.press('Enter');check(await page.locator('#grade-amount').getAttribute('aria-invalid')==='true','grade invalid');check(await page.locator('#grade-table .is-matched').count()===0,'no outdated grade selection');}
  }
  if(!only||only==='table'){

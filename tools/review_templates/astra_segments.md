@@ -5,6 +5,12 @@ segments.json と sol-union.json を読み、全IDの判定を審査する。sol
 RUN/segment-adjudication.json: {"segments":[{"page":"...","id":"...","decision":"ok|nonclaim|out_of_corpus|unresolved","reason":"正本の箇所と採否理由","needed_source":"正本外の場合の必要資料","conditions":[...]}]}。
 全IDが必須。protected=true の nonclaim は禁止。未解決highをokへ変えて通さない。
 ok にする前の条件・例外の走査（2026-10-01 必須）: sol の ok を写すだけにしない。数字・境界・対象者・期限・義務・列挙を含む単位を ok にするときは、同じ条・同じ表・同じ節のただし書・かっこ書・注・備考・別区分を自分で開き、conditions: [{"condition":"...","corpus_ref":"corpus/<ファイル>:<行>","covered":"yes|no|irrelevant"}] を書く（sol の conditions を確かめて足りなければ足す）。no が1つでもあれば ok にせず unresolved。列挙は正本の全件と突き合わせる。主張の主語（銀行名・制度名・対象者）と別の主語の資料を根拠にした ok は認めない（例: PayPay銀行の料金表で SMTB の手数料を ok にしない）。
+局所文脈（2026-10-09）: segments.json・sol-union.json の単位に context があるときは、その単位と画面で必ず一緒に見えている文だけ（表の表題・表の直前の説明・表の直後の注、FAQ の設問と回答）。判定の対象は従来どおり text の単位で、context は次の範囲でだけ使う。
+- 表の全行に共通する前提（設例の仮定・対象者・年分・時点・料率・単位・端数処理・出典）が context にあれば、書いてあるものとして扱う（covered は yes）。**context にある共通の前提を各行・各セルへ再掲させる指摘は採らない。**
+- その行・そのセルだけで答えが変わる条件（特定の行の例外・別区分・境界の向き・年分で額が変わる列など）は context に逃がせない。その行か見出しに無ければ unresolved。text や見出しが context より広い範囲を名乗るとき、context と食い違うとき、**context を読んでも典型的な読者が額・期限・該当を誤るときは、従来どおり unresolved。**
+- FAQ の設問（context が【回答】で始まる）は回答と1組で審査する。設問が誤った前提を断定している・回答が設問に答えていない・設問と回答が食い違う、のどれかのときだけ unresolved。**「設問だけでは採否が決まらない」「protected なので nonclaim にできない」を unresolved の理由にしない**（回答を照合した結果で ok にする。conditions は回答の根拠）。
+- FAQ の回答の文（context が【質問】で始まる）は、設問と同じ回答の前後の文に書いてある条件を書いてあるものとして扱う。回答の全文を読んでも欠ける条件は unresolved。
+- context に無い文（別の節・離れた段落・記事冒頭の前提）は根拠にしない。title・description・要約部には context が付かない。context の文そのものの誤りは、その文の単位で未解決にする（同じ指摘を各セルに重ねない）。
 正本外（out_of_corpus）: 照合できない主張は、別モデルが wrong と判断しない限り残す（2026-10-01 Masahiro「Aに統一」。直すかどうかはこのあとの別モデルの意見で決まるので、ここでは裏付けの無さを unresolved の理由にしない）。ただし照合できる部分を含む単位を丸ごと out_of_corpus にしない。照合できる部分は ok/unresolved を出す。
 unresolved の行には severity（high|medium|low）を必ず付ける。sol の付けた重要度をそのまま写さず、下の基準で付け直す。
 sol のどのモデルも wrong/unclear にしていない単位を unresolved にするときは、reason に正本の行を必ず書く（審査だけの指摘は修正の対象だが、徹底チェックの通過判定の high には数えない＝次の周の候補）。

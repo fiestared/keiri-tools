@@ -12,6 +12,7 @@
 set -u
 SRC="$1"                       # 検査したい wt.sh
 T=$(mktemp -d)
+trap 'rm -rf "$T"' EXIT          # 途中で落ちても・殺されても残さない（末尾の rm だけだと正常終了でしか消えない）
 pass=0; fail=0
 ok(){ echo "  ✓ $1"; pass=$((pass+1)); }
 ng(){ echo "  ✗ $1"; fail=$((fail+1)); }

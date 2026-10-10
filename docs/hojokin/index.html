@@ -143,10 +143,10 @@
 <main id="main" tabindex="-1">
   <nav class="breadcrumb"><a href="../">ホーム</a> › 補助金の検索</nav>
   <h1>補助金の検索</h1>
-<p class="article-meta">更新日: <time datetime="2026-09-28">2026年9月28日</time></p>
+<p class="article-meta">このページの説明の更新日: <time datetime="2026-09-28">2026年9月28日</time>（補助金の一覧は1日3回取り込み直しています。データの取得日時は件数の下に出します）</p>
 
   <nav class="hj-tabs" aria-label="補助金のデータの種類">
-    <a href="./" aria-current="page"><b>公募中を探す</b><span class="hj-tab-n" id="hj-tab-n1">317件</span></a>
+    <a href="./" aria-current="page"><b>公募中を探す</b><span class="hj-tab-n" id="hj-tab-n1">309件</span></a>
     <a href="schedule/"><b>国の主要補助金</b><span class="hj-tab-n" id="hj-tab-n2">23件</span></a>
     <a href="koyou/"><b>雇用関係助成金</b><span class="hj-tab-n" id="hj-tab-n3">47制度</span></a>
   </nav>
@@ -286,7 +286,7 @@
 <footer class="site">
   掲載内容は取得時点のもので、網羅を約束するものではありません。締切・要件は変更されることがあります。応募の前に必ず公式ページでご確認ください。当サイトは行政書士でも税理士でもなく、申請の支援は行っていません。入力した条件はブラウザの外へ送信されません。<br>
   © 税金・経理・補助金ツールズ
-  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
 </footer>
 <script type="module">
@@ -476,7 +476,7 @@ async function render() {
       <br><span class="hint">${koyouHit.slice(0, 3).map(esc).join('／')}${koyouHit.length > 3 ? ' ほか' : ''}</span>
     </div>` : ''}
     ${hit.length && active ? `<div class="hj-chips" id="hj-active">${active}</div>` : ''}
-    <p class="hint" id="fresh">${esc(f.text)}（${esc(capturedLabel(D._meta.captured_jst))}）／${esc(D._meta.attribution || SOURCE_NOTICE)}</p>
+    <p class="hint" id="fresh">補助金の一覧のデータ: ${esc(f.text)}（取得 ${esc(capturedLabel(D._meta.captured_jst))}）／${esc(D._meta.attribution || SOURCE_NOTICE)}</p>
     ${body}
     <div class="note" style="margin-top:12px">
       掲載は取得時点のもので、<b>網羅を約束するものではありません</b>（データ元のAPIが全件取得に対応していないため、50語の検索の和集合です）。

@@ -110,10 +110,14 @@ export function check(html, csv) {
     if (!m) { errs.push(`表に ${x.y} の行が無い`); continue; }
     const tds = [...m[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)].map((t) => strip(t[1]));
     const c = (v) => v === null ? "—" : `${fmt(v)}円`;
-    const exp = [c(x.s.total), c(x.a.total), c(x.ma.m), c(x.b.total), c(x.mb.m)];
+    // 2026-10-08: 答えの列（独身・配偶者あり）を2列目から並べ、前提の社会保険料は最後の列（見出しの順も下で名指し）
+    const exp = [c(x.a.total), c(x.ma.m), c(x.b.total), c(x.mb.m), c(x.s.total)];
     want(JSON.stringify(tds) === JSON.stringify(exp), `表 ${x.y}: ${JSON.stringify(tds)} ≠ ${JSON.stringify(exp)}`);
   }
   want((html.match(/<tr data-nenshu=/g) || []).length === expected.length, "表の行数が違う");
+  const head = (html.match(/<table class="juminzei-hayami[^"]*">[\s\S]*?<thead><tr>([\s\S]*?)<\/tr><\/thead>/) || [, ""])[1];
+  const heads = [...head.matchAll(/<th[^>]*>([\s\S]*?)<\/th>/g)].map((t) => strip(t[1]));
+  want(JSON.stringify(heads) === JSON.stringify(["給与収入（年収）", "独身・年額", "独身・月額", "配偶者あり・年額", "配偶者あり・月額", "社会保険料（前提）"]), `表の見出しの順が値の順と違う: ${JSON.stringify(heads)}`);
   // 2) CSV
   const lines = csv.replace(/^﻿/, "").trim().split("\r\n");
   want(lines.length === expected.length + 1, `CSV の行数 ${lines.length}`);
@@ -205,7 +209,8 @@ catch (e) { ok(false, "gen_juminzei_hayami.mjs --check が赤: " + String(e.stde
 // ── 壊しテスト（無傷が緑のときだけ） ───────────────────────────────
 if (base.length === 0) {
   const breaks = [
-    ["表のセル（500万円・独身の年額）", (h) => h.replace(/(<tr data-nenshu="5000000">[\s\S]*?<td class="num">[\s\S]*?<\/td><td class="num"><span class="numeric-token">)243,200円/, "$1243,300円"), (c) => c],
+    ["表のセル（500万円・独身の年額）", (h) => h.replace(/(<tr data-nenshu="5000000">[\s\S]*?<td class="num" data-col="a"><span class="numeric-token">)243,200円/, "$1243,300円"), (c) => c],
+    ["表の見出しの順（答えの列が値とずれる）", (h) => h.replace(">独身・年額</th>", ">社会保険料（前提）</th>"), (c) => c],
     ["表の月額（300万円・配偶者あり）", (h) => h.replace(/(<tr data-nenshu="3000000">[\s\S]*?)6,600円/, "$16,700円"), (c) => c],
     ["CSV の値（800万円・独身の年額）", (h) => h, (c) => c.replace(/^(8000000,(?:[^,]*,){8})453100,/m, "$1453000,")],
     ["冒頭の700万円", (h) => h.replace(/(<p data-jh="lead">[\s\S]*?年収700万円で年)375,600円/, "$1375,700円"), (c) => c],

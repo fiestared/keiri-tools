@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-07-13",
-      "dateModified": "2026-10-05",
+      "dateModified": "2026-10-10",
       "name": "社会保険料 計算機",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -37,7 +37,7 @@
         "price": "0",
         "priceCurrency": "JPY"
       },
-      "description": "標準報酬月額から健康保険・介護保険・厚生年金の保険料と、賃金総額から雇用保険料を計算します。令和8年度の都道府県別料率・雇用保険料率対応。"
+      "description": "給与額を入れるだけで、標準報酬月額の等級・健康保険料・介護保険料・厚生年金保険料・雇用保険料を自動計算。令和8年度（2026年度）の都道府県別料率・雇用保険料率に対応。本人負担と会社負担、賞与の保険料も計算できます。登録不要・無料。"
     },
     {
       "@type": "BreadcrumbList",
@@ -71,7 +71,7 @@
           "name": "Q. 通勤手当も社会保険料の対象ですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. 対象です。所得税では公共交通機関の合理的な運賃等は月15万円まで、自動車・自転車等は距離等に応じた限度額まで非課税ですが、社会保険では非課税枠がなく、通勤手当も全額が報酬月額に含まれます。残業手当・住宅手当・役職手当も同じで、現物給与（通勤定期券・社宅・食事など）も金銭に換算して含めます。ただし食事・社宅は厚生労働大臣が定める価額から本人負担分を差し引き、食事は本人がその価額の2/3以上を負担する場合は算入しません。数か月分をまとめて支給した通勤手当は、月数で割って各月の報酬月額に含めます。"
+            "text": "A. 対象です。所得税では公共交通機関の合理的な運賃等は月15万円まで、自動車・自転車等は距離等に応じた限度額まで非課税ですが、社会保険では非課税枠がなく、通勤手当も全額が報酬月額に含まれます。残業手当・住宅手当・役職手当も同じで、現物給与（通勤定期券・社宅・食事など）も金銭に換算して含めます。ただし食事・社宅は厚生労働大臣が定める価額（健康保険組合では現物給与の価額を規約により別段に定めている場合があります）から本人負担分を差し引き、食事は本人がその価額の2/3以上を負担する場合は算入しません。数か月分をまとめて支給した通勤手当は、月数で割って各月の報酬月額に含めます。"
           }
         },
         {
@@ -95,7 +95,7 @@
           "name": "Q. 給与計算ソフトの金額が、協会けんぽの保険料額表と1円合いません。",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. まず、健康保険料と介護保険料を別々に端数処理していないかを確認してください。給与から控除し、事業主と被保険者間に端数処理の特約がない場合、40〜64歳の人は健康保険料率と介護保険料率を合算した料率（東京都なら11.47%）で1本で計算し、最後に1回だけ端数処理します。別々に計算して足すと、一部の等級で額表と1円ずれます。それでも合わない場合は、端数処理の特約の有無を確認し、特約があればその取り決めを確認してください。給与からの控除で特約がなければ「50銭以下切捨・50銭超切上」（50銭ちょうどは切捨て）かを確認してください。"
+            "text": "A. まず、健康保険料と介護保険料を別々に端数処理していないかを確認してください。給与から控除し、事業主と被保険者間に端数処理の特約がない場合、市町村区域内に住所を有する40歳以上65歳未満の医療保険加入者（介護第2号）は健康保険料率と介護保険料率を合算した料率（東京都なら11.47%）で1本で計算し、最後に1回だけ端数処理します。別々に計算して足すと、一部の等級で額表と1円ずれます。それでも合わない場合は、端数処理の特約の有無を確認し、特約があればその取り決めを確認してください。給与からの控除で特約がなければ「50銭以下切捨・50銭超切上」（50銭ちょうどは切捨て）かを確認してください。"
           }
         },
         {
@@ -143,34 +143,36 @@
 
 <section class="hero">
   <h1>社会保険料 計算機</h1>
-<p class="note">この計算機は賞与が同じ月に1回支給される前提で試算します。同月に複数回支給する場合、厚生年金は合算した標準賞与額に月150万円の上限を適用するため、各回を別々に計算した結果は使えません。</p>
-  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-10-05">2026年10月5日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-10-10">2026年10月10日</time>）</p>
   <p>給与額を入れるだけで、<b>標準報酬月額の等級</b>・健康保険料・介護保険料・厚生年金保険料・<b>雇用保険料</b>を自動計算します。<b>令和8年度（2026年度）の都道府県別料率</b>に対応。</p>
 </section>
 
-<div class="card">
-  <label for="monthly">報酬月額（円）</label>
-  <input type="number" id="monthly" data-example="300000" inputmode="numeric" aria-describedby="monthly-hint">
-      <span id="monthly-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b>基本給・残業手当・住宅手当・役職手当・通勤手当など、報酬に該当する総額を入力してください。通勤手当は所得税で非課税の部分も含めます。</span>
-
+<div class="card fv-form">
   <div class="fee-pair field-pair">
+    <div>
+      <label for="monthly">報酬月額（円）</label>
+      <input type="number" id="monthly" data-example="300000" inputmode="numeric" aria-describedby="monthly-hint">
+      <span id="monthly-hint" class="hint"><b class="input-example">入力例：月30万円なら 300000</b>手当を含む総額。通勤手当は所得税で非課税の部分も含めます（<a href="#input-help">含めるもの</a>）。</span>
+    </div>
     <div>
       <label for="pref">勤務先の都道府県</label>
       <select id="pref"></select>
-
-    </div>
-    <div>
-      <label for="age">年齢</label>
-<input type="number" id="age" value="35" min="15" max="74" step="1" required inputmode="numeric" aria-describedby="age-help age-error">
-<p class="hint" id="age-hint">70歳以上の厚生年金保険料は、高齢任意加入の場合を除き0円です。高齢任意加入は対象外です。</p>
-      <p class="hint" id="age-help">この計算機の入力範囲は15〜74歳です</p>
-      <p id="age-error" class="warn" hidden></p>
     </div>
   </div>
 
-  <label for="gyoshu">業種</label>
-  <select id="gyoshu" aria-describedby="gyoshu-hint"></select>
-      <span id="gyoshu-hint" class="hint">この計算機では、協会けんぽの選択県・標準報酬・年齢等を同じにして業種を変えると、雇用保険料率が変わります</span>
+  <div class="fee-pair field-pair fv-cols-narrow-wide">
+    <div>
+      <label for="age">年齢</label>
+<input type="number" id="age" value="35" min="15" max="74" step="1" required inputmode="numeric" aria-describedby="age-help age-error">
+      <p class="hint" id="age-help">この計算機の入力範囲は15〜74歳です</p>
+      <p id="age-error" class="warn" hidden></p>
+    </div>
+    <div>
+      <label for="gyoshu">業種</label>
+      <select id="gyoshu" aria-describedby="gyoshu-hint"></select>
+      <span id="gyoshu-hint" class="hint">業種を変えると、雇用保険料率が変わります</span>
+    </div>
+  </div>
 
   <details class="optional-fields" id="bonus-fields"><summary>賞与も計算する（任意） <span data-optional-state>未設定</span></summary>
   <label for="bonus">賞与額（円・任意）</label>
@@ -211,12 +213,18 @@
 </ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/hyojun-hoshu-gakuhyo/">標準報酬月額表（等級表）</a></li><li><a href="../column/teiji-kettei/">社会保険料は4月〜6月の給与で決まる</a></li><li><a href="../column/shoyo-shakaihoken/">賞与（ボーナス）の社会保険料</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
 <h2 id="tsukaikata">使い方と注意点</h2>
+  <h3 id="input-help">入力欄の詳しい説明</h3>
+  <ul class="fv-input-help">
+    <li><b>報酬月額</b>：基本給・残業手当・住宅手当・役職手当・通勤手当など、報酬に該当する総額を入力してください。通勤手当は所得税で非課税の部分も含めます。</li>
+    <li><b>年齢</b>：70歳以上の厚生年金保険料は、高齢任意加入の場合を除き0円です。高齢任意加入は対象外です。</li>
+    <li><b>業種</b>：この計算機では、協会けんぽの選択県・標準報酬・年齢等を同じにして業種を変えると、雇用保険料率が変わります</li>
+  </ul>
   <h3>報酬月額に含めるもの</h3>
-  <p>基本給のほか、残業手当・通勤手当・住宅手当・役職手当など、<b>労働の対償として支給される給与を含みます</b>（通勤手当も含む点に注意）。社会保険適用促進手当は、標準報酬月額10.4万円以下の対象者について、新たに生じた本人負担保険料相当額を上限に最大2年間、標準報酬月額・標準賞与額の算定から除外します。臨時に支払われるもの、年3回以下の賞与は含みません。</p>
+  <p>基本給のほか、残業手当・通勤手当・住宅手当・役職手当など、<b>労働の対償として支給される給与を含みます</b>（通勤手当も含む点に注意）。短時間労働者の社会保険加入を促進する目的で「社会保険適用促進手当」の名称で支給する手当は、標準報酬月額10.4万円以下の対象者について、被用者保険適用に伴い新たに生じた本人負担保険料相当額を上限に労使双方の合意を前提に、最大2年間、標準報酬月額・標準賞与額の算定から除外します（労働者が除外を希望しない場合は別の名称で支給し、算定に含めます；健保・厚年の片方のみの加入でも対象で、加入する制度の本人負担分が上限です）。臨時に支払われるもの、年3回以下の賞与は含みません。</p>
   <h3>賞与の保険料には上限があります</h3>
   <p>標準賞与額（1,000円未満切捨）に同じ料率を掛けますが、<b>健康保険・介護保険・子ども・子育て支援金は年度累計573万円、厚生年金・子ども・子育て拠出金は1か月あたり150万円（同月内の賞与は合算）</b>が上限です。上限を超えた分には保険料がかかりません。</p>
   <h3>子ども・子育て支援金（令和8年4月から新設）</h3>
-  <p>令和8年（2026年）4月分から、<b>子ども・子育て支援金</b>（0.23%）の徴収が始まりました。<b>年齢に関係なく全員が対象</b>で、労使折半です。医療保険料とあわせて徴収されますが、給与明細で支援金を分けて表示することは法令上の義務ではありません。</p>
+  <p>令和8年（2026年）4月分から、<b>子ども・子育て支援金</b>（0.23%）の徴収が始まりました。<b>年齢に関係なく被保険者が折半負担（被扶養者本人の負担ではありません）</b>で、労使折半です。医療保険料とあわせて徴収されますが、給与明細で支援金を分けて表示することは法令上の義務ではありません。</p>
   <h3>雇用保険料は「賃金総額」にかかります（等級は関係ありません）</h3>
   <p>健康保険・厚生年金は標準報酬月額（等級）に料率を掛けますが、<b>雇用保険料だけは、実際に支払われた賃金の総額にそのまま料率がかかります</b>（労働保険徴収法11条1項）。等級表を経由しないので、<b>同じ等級でも賃金が違えば雇用保険料は違います</b>。通勤手当・残業代・賞与もすべて含まれ、<b>賞与には1,000円未満切捨も上限もありません</b>。</p>
   <h3>この計算機の前提</h3>
@@ -241,7 +249,7 @@
   <div class="callout">
     <b>報酬月額に含めるもの・含めないもの</b>
     等級を決めるもとになる「報酬月額」は、<b>税引き前の給与の総額</b>です。基本給だけでなく <b>残業手当・通勤手当・住宅手当・役職手当</b>、さらに<b>現物給与</b>（通勤定期券・社宅・食事など）も金銭に換算して含めます。食事・社宅は厚生労働大臣が定める価額から本人負担分を差し引き、食事は本人がその価額の2/3以上を負担する場合は算入しません。<br>
-    逆に、<b>年3回以下の賞与</b>は報酬に含めません（賞与は「標準賞与額」として別に計算します）。一時的な見舞金は対象外ですが、継続支給する見舞金は報酬に含めます。社会保険適用促進手当は、標準報酬月額10.4万円以下の対象者について、新たに生じた本人負担保険料相当額を上限に最大2年間、標準報酬月額・標準賞与額の算定から除外します。
+    逆に、<b>年3回以下の賞与</b>は報酬に含めません（賞与は「標準賞与額」として別に計算します）。一時的な見舞金は対象外ですが、継続支給する見舞金は報酬に含めます。短時間労働者の社会保険加入を促進する目的で「社会保険適用促進手当」の名称で支給する手当は、標準報酬月額10.4万円以下の対象者について、被用者保険適用に伴い新たに生じた本人負担保険料相当額を上限に労使双方の合意を前提に、最大2年間、標準報酬月額・標準賞与額の算定から除外します（労働者が除外を希望しない場合は別の名称で支給し、算定に含めます；健保・厚年の片方のみの加入でも対象で、加入する制度の本人負担分が上限です）。
   </div>
   <p class="lead">※ 通勤手当は、所得税では公共交通機関の合理的な運賃等は月15万円まで、自動車・自転車等は距離等に応じた限度額まで非課税ですが、<b>社会保険では非課税枠がなく全額が報酬</b>です。ここは所得税と扱いが違うので注意してください。</p>
 
@@ -292,7 +300,7 @@
       <rect x="400" y="128" width="150" height="58" rx="8" fill="var(--accent-soft)" stroke="var(--accent)"/>
       <text x="475" y="144" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">⑦ 端数処理</text>
       <text x="475" y="162" text-anchor="middle" font-size="11.5" fill="var(--sub)">50銭以下切捨・超は切上</text>
-      <text x="475" y="178" text-anchor="middle" font-size="10" fill="var(--sub)">給与控除・特約なし</text>
+      <text x="475" y="178" text-anchor="middle" font-size="12" fill="var(--sub)">給与控除・特約なし</text>
 
       <rect x="590" y="128" width="150" height="58" rx="8" fill="#fff" stroke="var(--accent)" stroke-width="2.4"/>
       <text x="665" y="151" text-anchor="middle" font-size="13" font-weight="700" fill="currentColor">本人の控除額</text>
@@ -305,7 +313,7 @@
       <text x="380" y="214" text-anchor="middle" font-size="12" fill="var(--sub)">※ 40〜64歳は、⑤で健康保険料率に介護保険料率1.62%を「合算してから」掛ける</text>
       <text x="380" y="232" text-anchor="middle" font-size="12" fill="var(--sub)">（別々に計算して足すと、公式の保険料額表と1円ずれることがある）</text>
     </svg>
-    <figcaption>給与額 → 報酬月額 → 等級 → 標準報酬月額 → ×料率 → ÷2 の流れ（東京都・報酬月額30万円・35歳・令和8年4月分以降、厚生年金基金加入員を除く、雇用保険は別）</figcaption>
+    <figcaption>給与額 → 報酬月額 → 等級 → 標準報酬月額 → ×料率 → ÷2 の流れ（東京都・報酬月額30万円・35歳・令和8年4月分以降、厚生年金基金加入員を除く、雇用保険は別）介護加算は市町村区域内に住所を有する40歳以上65歳未満の医療保険加入者（介護第2号）の場合です。</figcaption>
   </figure>
 
   <p>②から③の「等級への当てはめ」が、給与額と保険料がズレる原因です。等級の幅は、標準報酬月額30万円のあたりでは <b>290,000円以上310,000円未満</b> と2万円もあります。給与が29万円でも31万円直前でも、保険料は同じになります。</p>
@@ -315,7 +323,7 @@
     <div class="t">東京都の社会保険料率（令和8年度・協会けんぽ）</div>
     <ul>
       <li>健康保険：<b>9.85%</b></li>
-      <li>介護保険（40〜64歳のみ）：<b>1.62%</b>（健康保険と<b>合算して11.47%</b>で計算）</li>
+      <li>介護保険（市町村区域内に住所を有する40歳以上65歳未満の医療保険加入者（介護第2号））：<b>1.62%</b>（健康保険と<b>合算して11.47%</b>で計算）</li>
       <li>厚生年金：<b>18.3%</b>（厚生年金基金加入員を除く）</li>
       <li>子ども・子育て支援金：<b>0.23%</b>（令和8年4月新設・年齢問わず全員）</li>
       <li>→ 東京都・令和8年4月分以降、健康保険と厚生年金の標準報酬月額が同額で、厚生年金基金加入員を除く場合、端数処理前の本人負担（雇用保険は別）は <b>標準報酬月額の14.19%</b>（40歳未満）／<b>15.00%</b>（40〜64歳）</li>
@@ -328,7 +336,7 @@
     <tr><td>健康保険</td><td class="num"><span class="numeric-token">9.85%</span></td><td class="num"><span class="numeric-token">29,550円</span></td><td class="num"><b><span class="numeric-token">14,775円</span></b></td></tr>
     <tr><td>子ども・子育て支援金</td><td class="num"><span class="numeric-token">0.23%</span></td><td class="num"><span class="numeric-token">690円</span></td><td class="num"><b><span class="numeric-token">345円</span></b></td></tr>
     <tr><td>厚生年金</td><td class="num"><span class="numeric-token">18.3%</span></td><td class="num"><span class="numeric-token">54,900円</span></td><td class="num"><b><span class="numeric-token">27,450円</span></b></td></tr>
-    <tr style="font-weight:700;border-top:2px solid var(--accent)"><td>合計</td><td class="num"><span class="numeric-token">28.38%</span></td><td class="num"><span class="numeric-token">85,140円</span></td><td class="num"><span class="numeric-token">42,570円</span></td></tr>
+    <tr style="font-weight:700;border-top:2px solid var(--accent)"><td>合計<details><summary>設例の条件</summary>協会けんぽ東京支部・一般被保険者・2026年4月分以降・35歳・健保と厚年の標準報酬月額ともに30万円・基金未加入・雇用保険を除く設例</details></td><td class="num"><span class="numeric-token">28.38%</span></td><td class="num"><span class="numeric-token">85,140円</span></td><td class="num"><span class="numeric-token">42,570円</span></td></tr>
   </table></div>
   <p>本人負担は <b>42,570円</b>。東京都・令和8年4月分以降、35歳・厚生年金基金加入員を除く設例では、健康保険と厚生年金の標準報酬月額300,000円に対して <b>14.19%</b>（28.38% ÷ 2、雇用保険は別）です。会社も同じ42,570円を負担します。</p>
 
@@ -341,7 +349,7 @@
   <p>同じ条件で年齢だけを <b>42歳</b> にすると、介護保険料（全国一律1.62%）が加わります。</p>
   <div class="scroll-wrap"><table class="num-nowrap">
     <tr><th scope="col">保険</th><th scope="col">料率</th><th scope="col">全額</th><th scope="col">本人負担</th></tr>
-    <tr><td>健康保険＋介護保険（合算）</td><td class="num"><span class="numeric-token">11.47%</span></td><td class="num"><span class="numeric-token">34,410円</span></td><td class="num"><b><span class="numeric-token">17,205円</span></b></td></tr>
+    <tr><td>健康保険＋介護保険（合算）<details><summary>介護の条件</summary>市町村区域内に住所を有する40歳以上65歳未満の医療保険加入者（介護第2号）。令和8年度・一般被保険者は3月分から（任意継続・日雇は4月分から）。</details></td><td class="num"><span class="numeric-token">11.47%</span></td><td class="num"><span class="numeric-token">34,410円</span></td><td class="num"><b><span class="numeric-token">17,205円</span></b></td></tr>
     <tr><td>子ども・子育て支援金</td><td class="num"><span class="numeric-token">0.23%</span></td><td class="num"><span class="numeric-token">690円</span></td><td class="num"><b><span class="numeric-token">345円</span></b></td></tr>
     <tr><td>厚生年金</td><td class="num"><span class="numeric-token">18.3%</span></td><td class="num"><span class="numeric-token">54,900円</span></td><td class="num"><b><span class="numeric-token">27,450円</span></b></td></tr>
     <tr style="font-weight:700;border-top:2px solid var(--accent)"><td>合計</td><td class="num"><span class="numeric-token">30.00%</span></td><td class="num"><span class="numeric-token">90,000円</span></td><td class="num"><span class="numeric-token">45,000円</span></td></tr>
@@ -353,7 +361,7 @@
     <tr><th scope="col">月給（報酬月額）</th><th scope="col">標準報酬月額（等級）</th><th scope="col">40歳未満</th><th scope="col">40〜<span class="numeric-token">64歳</span></th></tr>
     <tr><td class="num"><span class="numeric-token">200,000円</span></td><td>200,000円（健保第17級・厚年第14級）</td><td class="num"><span class="numeric-token">28,380円</span></td><td class="num"><span class="numeric-token">30,000円</span></td></tr>
     <tr><td class="num"><span class="numeric-token">250,000円</span></td><td><b>260,000円</b>（健保第20級・厚年第17級）</td><td class="num"><span class="numeric-token">36,894円</span></td><td class="num"><span class="numeric-token">39,000円</span></td></tr>
-    <tr><td class="num"><span class="numeric-token">300,000円</span></td><td>300,000円（健保第22級・厚年第19級）</td><td class="num"><span class="numeric-token">42,570円</span></td><td class="num"><span class="numeric-token">45,000円</span></td></tr>
+    <tr><td class="num"><span class="numeric-token">300,000円</span><details><summary>設例の条件</summary>協会けんぽ東京支部・一般被保険者・2026年4月分以降・35歳・健保と厚年の標準報酬月額ともに30万円・基金未加入・雇用保険を除く設例</details></td><td>300,000円（健保第22級・厚年第19級）</td><td class="num"><span class="numeric-token">42,570円</span></td><td class="num"><span class="numeric-token">45,000円</span></td></tr>
     <tr><td class="num"><span class="numeric-token">400,000円</span></td><td><b>410,000円</b>（健保第27級・厚年第24級）</td><td class="num"><span class="numeric-token">58,178円</span></td><td class="num"><span class="numeric-token">61,499円</span></td></tr>
     <tr><td class="num"><span class="numeric-token">500,000円</span></td><td>500,000円（健保第30級・厚年第27級）</td><td class="num"><span class="numeric-token">70,950円</span></td><td class="num"><span class="numeric-token">75,000円</span></td></tr>
     <tr><td class="num"><span class="numeric-token">700,000円</span></td><td>健保710,000円（第37級）／厚年650,000円（第32級）※</td><td class="num"><span class="numeric-token">95,258円</span></td><td class="num"><span class="numeric-token">101,009円</span></td></tr>
@@ -363,7 +371,7 @@
 
   <h2 id="gassan">落とし穴：健康保険と介護保険は「合算した料率」で端数処理する</h2>
   <p>ここは、端数処理によって<b>一部の等級で1円合わなくなる</b>ポイントです。</p>
-  <p>給与から控除し、事業主と被保険者間に端数処理の特約がない場合、40〜64歳の人の健康保険料と介護保険料は<b>合算した額に対して端数処理します。</b>この前提では、合算した料率（東京都なら 9.85% + 1.62% = <b>11.47%</b>）で1本で計算し、<b>最後に1回だけ端数処理</b>します。</p>
+  <p>給与から控除し、事業主と被保険者間に端数処理の特約がない場合、市町村区域内に住所を有する40歳以上65歳未満の医療保険加入者（介護第2号）の健康保険料と介護保険料は<b>合算した額に対して端数処理します。</b>この前提では、合算した料率（東京都なら 9.85% + 1.62% = <b>11.47%</b>）で1本で計算し、<b>最後に1回だけ端数処理</b>します。</p>
 
   <h3>実際にズレる例：東京都・標準報酬月額134,000円（第10等級）・45歳</h3>
   <div class="scroll-wrap"><table>
@@ -371,7 +379,7 @@
     <tr><td rowspan="3">✗ 誤</td><td>健康保険だけ先に</td><td>134,000円 × 9.85% = 13,199円 → 折半 6,599.50円 → 50銭以下は切捨</td><td><span class="numeric-token">6,599円</span></td></tr>
     <tr><td>介護保険だけ先に</td><td>134,000円 × 1.62% = 2,170.80円 → 折半 1,085.40円 → 切捨</td><td><span class="numeric-token">1,085円</span></td></tr>
     <tr><td>足す</td><td><span class="numeric-token">6,599円</span> + <span class="numeric-token">1,085円</span></td><td><b><span class="numeric-token">7,684円</span></b></td></tr>
-    <tr style="border-top:2px solid var(--accent)"><td>✓ 正</td><td>合算料率で1本</td><td>134,000円 × <b>11.47%</b> = 15,369.80円 → 折半 7,684.90円 → <b>50銭超なので切上</b></td><td><b><span class="numeric-token">7,685円</span></b></td></tr>
+    <tr style="border-top:2px solid var(--accent)"><td>✓ 正<details><summary>介護の条件</summary>市町村区域内に住所を有する40歳以上65歳未満の医療保険加入者（介護第2号）。令和8年度・一般被保険者は3月分から（任意継続・日雇は4月分から）。</details></td><td>合算料率で1本</td><td>134,000円 × <b>11.47%</b> = 15,369.80円 → 折半 7,684.90円 → <b>50銭超なので切上</b></td><td><b><span class="numeric-token">7,685円</span></b></td></tr>
   </table></div>
   <p><b>1円ずれます。</b>協会けんぽの公式の保険料額表（東京支部）で第10等級の「介護保険第2号被保険者に該当する場合」の折半額を見ると <b>7,684.9円</b> と書かれており、正しい控除額は <b>7,685円</b> です。</p>
   <p>なぜこうなるかというと、切り捨てられた端数が<b>2回発生する</b>からです。別々に処理すると 0.50円 + 0.40円 = 0.90円 が両方とも捨てられますが、合算すれば 0.90円 は「50銭超」として1円に切り上がります。</p>
@@ -452,7 +460,7 @@
     <tr><td>給与明細に出るか</td><td>出る（健康保険料に含めて表示されることも）</td><td><b>出ない</b>（本人は払わないため）</td></tr>
     <tr><td>ベース</td><td>標準報酬月額・標準賞与額</td><td>標準報酬月額・標準賞与額</td></tr>
   </table></div>
-  <p>標準報酬月額300,000円なら、拠出金は 300,000円 × 0.36% = <b>1,080円</b>。健康保険等の会社負担と拠出金の小計は 42,570円 + 1,080円 = <b>43,650円</b> です。一般の事業の雇用保険の会社負担は給与30万円×8.5/1,000＝2,550円なので、合計は46,200円、給与込みで346,200円です。このほかに業種別の労災保険料がかかります。</p>
+  <p>標準報酬月額300,000円なら、拠出金は 300,000円 × 0.36% = <b>1,080円</b>。健康保険等の会社負担と拠出金の小計は 42,570円 + 1,080円 = <b>43,650円</b> です。一般の事業の雇用保険の会社負担は給与30万円×8.5/1,000＝2,550円なので、合計は46,200円、給与込みで346,200円です。このほかに業種別の労災保険料がかかります。（協会けんぽ東京支部・一般被保険者・2026年4月分以降・35歳・健保と厚年の標準報酬月額ともに30万円・基金未加入・雇用保険を除く設例。）</p>
 
   <h2 id="tenbiki">いつの給与から天引きされるか（1日違いで1か月分変わる）</h2>
   <p>計算ができても、<b>「どの月の給与から引くか」</b>を間違えると結局合いません。ルールは3つです。</p>
@@ -503,7 +511,7 @@
 
   <div class="callout">
     <b>ただし「月末退職は損」とは限りません</b>
-    退職後の負担は、次に加入する制度によって変わります。国民健康保険や任意継続へ切り替えるほか、要件を満たせば家族の健康保険の被扶養者となる選択肢もあり、被扶養者本人の保険料負担はありません。<br>
+    退職後の負担は、次に加入する制度によって変わります。各制度の加入要件を満たす場合に、国民健康保険や任意継続への切替、家族の健康保険の被扶養者となることを検討します。被扶養者となった場合、被扶養者本人の保険料負担はありません。任意継続は資格喪失日の前日まで継続2か月以上の加入と、資格喪失時に加入していた保険者への申出による継続などが要件です。被扶養者は生計維持・国内住所・親族範囲、区分により同一世帯の要件を確認します。主な例外: 任意継続の期間要件から日雇特例・任意継続・共済組合の組合員である被保険者の期間を除き、船員保険の被保険者や後期高齢者医療の被保険者等は任意継続の対象外です。被扶養者には、日本国内に生活の基礎があると認められる省令指定の海外留学等の住所例外があり、後期高齢者医療の被保険者等や省令指定の適用除外者は含まれません。親族の全区分と同一世帯の要件は<a href="../column/tsukitochu-nyusha-taishoku-kyuyo/#check">退職後の健康保険の加入要件</a>で確認してください。<br>
     年金も、要件を満たす配偶者は国民年金第3号被保険者となり、個別の保険料納付は不要です。再就職先で健康保険・厚生年金に加入する場合もあるため、<b>退職日だけで損得は決まりません</b>。
   </div>
 
@@ -530,13 +538,13 @@
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>社会保険料は給与の何％くらいですか？</h3>
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>東京都・令和8年4月分以降で健康保険と厚生年金の標準報酬月額が同じ場合、端数処理前の本人負担の目安は、その標準報酬月額の<b>14.19%</b>（40歳未満）、<b>15.00%</b>（40〜64歳）です。健康保険と厚生年金では標準報酬月額の上下限が異なり、端数処理でも差が出ます。健康保険9.85%＋子ども・子育て支援金0.23%＋厚生年金18.3%＝28.38%を労使折半するためです。ただし掛ける相手は給与額ではなく標準報酬月額なので、給与に対する実際の比率は等級によって多少前後します。</p>
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>通勤手当も社会保険料の対象ですか？</h3>
-  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>対象です。</b>所得税では公共交通機関の合理的な運賃等は月15万円まで、自動車・自転車等は距離等に応じた限度額まで非課税ですが、社会保険では非課税枠がなく、通勤手当も全額が報酬月額に含まれます。残業手当・住宅手当・役職手当も同じで、現物給与（通勤定期券・社宅・食事など）も金銭に換算して含めます。ただし食事・社宅は厚生労働大臣が定める価額から本人負担分を差し引き、食事は本人がその価額の2/3以上を負担する場合は算入しません。数か月分をまとめて支給した通勤手当は、月数で割って各月の報酬月額に含めます。</p>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>対象です。</b>所得税では公共交通機関の合理的な運賃等は月15万円まで、自動車・自転車等は距離等に応じた限度額まで非課税ですが、社会保険では非課税枠がなく、通勤手当も全額が報酬月額に含まれます。残業手当・住宅手当・役職手当も同じで、現物給与（通勤定期券・社宅・食事など）も金銭に換算して含めます。ただし食事・社宅は厚生労働大臣が定める価額（健康保険組合では現物給与の価額を規約により別段に定めている場合があります）から本人負担分を差し引き、食事は本人がその価額の2/3以上を負担する場合は算入しません。数か月分をまとめて支給した通勤手当は、月数で割って各月の報酬月額に含めます。</p>
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>残業が増えたら、すぐに保険料も上がりますか？</h3>
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>すぐには上がりません。</b>標準報酬月額は原則として4〜6月に支払われた給与の平均で決まり、その年の9月分から翌年8月分まで使われます（定時決定）。随時改定は、固定的賃金の変動後の継続3か月すべての支払基礎日数が17日以上（特定適用事業所の短時間労働者は11日以上）で、その3か月の報酬平均による標準報酬月額と従前の額に2等級以上の差があることが基本要件です。固定的賃金の増減と標準報酬月額の増減が逆方向の場合は対象外です。該当する場合は、変動した報酬を支払った月から数えて4か月目に適用されます。残業代だけが増えても随時改定の対象にはなりません。</p>
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>40歳になったら、いつから介護保険料が引かれますか？</h3>
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>40歳の誕生日の前日（応当日がない年はその月の末日）が属する月分から</b>です。たとえば5月2日生まれの人は5月1日が40歳到達日なので5月分から、<b>5月1日生まれの人は4月30日が到達日</b>なので<b>4月分</b>から徴収が始まります。1日生まれの人だけ1か月早くなるので注意してください。徴収が終わるのは65歳の誕生日の前日（応当日がない年はその月の末日）が属する月からで、以後は市区町村が第1号被保険者として徴収します。</p>
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>給与計算ソフトの金額が、協会けんぽの保険料額表と1円合いません。</h3>
-  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>まず、健康保険料と介護保険料を<b>別々に端数処理していないか</b>を確認してください。給与から控除し、事業主と被保険者間に端数処理の特約がない場合、40〜64歳の人は健康保険料率と介護保険料率を合算した料率（東京都なら11.47%）で1本で計算し、最後に1回だけ端数処理します。別々に計算して足すと、一部の等級で額表と1円ずれます。それでも合わない場合は、端数処理の特約の有無を確認し、特約があればその取り決めを確認してください。給与からの控除で特約がなければ「50銭以下切捨・50銭超切上」（50銭ちょうどは切捨て）かを確認してください。</p>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>まず、健康保険料と介護保険料を<b>別々に端数処理していないか</b>を確認してください。給与から控除し、事業主と被保険者間に端数処理の特約がない場合、市町村区域内に住所を有する40歳以上65歳未満の医療保険加入者（介護第2号）は健康保険料率と介護保険料率を合算した料率（東京都なら11.47%）で1本で計算し、最後に1回だけ端数処理します。別々に計算して足すと、一部の等級で額表と1円ずれます。それでも合わない場合は、端数処理の特約の有無を確認し、特約があればその取り決めを確認してください。給与からの控除で特約がなければ「50銭以下切捨・50銭超切上」（50銭ちょうどは切捨て）かを確認してください。</p>
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>会社の負担額はいくらですか？</h3>
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>協会けんぽの健康保険・介護保険・子ども・子育て支援金と厚生年金は原則労使折半です。端数処理で異なる場合がありますが、<b>この設例では本人と同額</b>です（東京都・令和8年4月分以降、35歳で健康保険と厚生年金の標準報酬月額がともに30万円なら42,570円、厚生年金基金加入員を除く、雇用保険は別）。これに加えて会社は <b>子ども・子育て拠出金0.36%</b> を全額負担します（本人負担はゼロ）。標準報酬月額30万円なら拠出金は1,080円で、健康保険等と拠出金の会社負担の小計は43,650円です（雇用保険・労災保険は別）。</p>
 
@@ -594,16 +602,16 @@
 </article>
 <section class="faq rel-block">
 <h2>関連する解説</h2>
-<!--rel:S--><ul class="rel-list"><li><a href="../column/iryo-hoken-toha/">医療保険とは — 公的医療保険は3つに分かれる。窓口で払う割合と、受けられる給付の違いを条文で確かめる</a><span class="rel-desc">公的医療保険は、勤め先で加入の条件を満たして使用される人・退職後の任意継続被保険者とその被扶養者が入る被用者保険（健康保険・共済など）、国民</span></li><li><a href="../column/kogaku-ryoyohi/">高額療養費の自己負担限度額【令和8年】年齢・標準報酬月額・非課税区分で確認</a><span class="rel-desc">限度額の区分を決めるのは年収ではなく標準報酬月額。報酬月額が1円違うだけで等級が上がり、医療費100万円・令和8年7月診療分までの自己負担が</span></li><li><a href="../column/kyuyo-meisai-mikata/">給与明細の見方 — 交付を義務づけるのは労働基準法ではなく所得税法。確認する3か所と保管の目安</a><span class="rel-desc">東京都・月給30万円・35歳の実例で給与明細の控除欄を1行ずつ読み、毎月確認する3か所を示します。交付は労働基準法ではなく所得税法231条の</span></li><li><a href="../column/azukarikin/">預り金（預かり金）とは — 会社の金ではない。源泉所得税は翌月10日、健保・厚年は翌月末、雇用保険は年度更新の負債</a><span class="rel-desc">預り金は、給与から天引きした源泉所得税・住民税・社会保険料のように、他人のお金を預かっている負債です。会社の金ではありません。源泉所得税と住</span></li><li><a href="../column/hojin-nari/">法人成りとは — 個人事業を会社にするとき何が変わるか。届出の期限・資産の引継ぎ・消費税・社会保険を条文で</a><span class="rel-desc">法人成りとは、個人事業を廃止して会社を設立し、事業を会社に引き継ぐこと。「法人成り」の語は法令に無く、実体は個人の廃業届（期限は令和8年1月</span></li></ul><!--rel:E-->
+<!--rel:S--><ul class="rel-list"><li><a href="../column/iryo-hoken-toha/">医療保険とは — 公的医療保険は3つに分かれる。窓口で払う割合と、受けられる給付の違いを条文で確かめる</a><span class="rel-desc">公的医療保険は、勤め先で加入の条件を満たして使用される人・退職後の任意継続被保険者とその被扶養者が入る被用者保険（健康保険・共済など）、国民</span></li><li><a href="../column/kogaku-ryoyohi/">高額療養費の自己負担限度額【令和8年】年齢・標準報酬月額・非課税区分で確認</a><span class="rel-desc">限度額の区分を決めるのは年収ではなく標準報酬月額。報酬月額が1円違うだけで等級が上がり、医療費100万円・令和8年7月診療分までの自己負担が</span></li><li><a href="../column/kyuyo-meisai-mikata/">給与明細の見方 — 交付を義務づけるのは労働基準法ではなく所得税法。確認する3か所と保管の目安</a><span class="rel-desc">東京都・月給30万円・35歳の実例で給与明細の控除欄を1行ずつ読み、毎月確認する3か所を示します。交付は労働基準法ではなく所得税法231条の</span></li><li><a href="../column/azukarikin/">預り金（預かり金）とは — 会社の金ではない。天引きした源泉所得税・住民税・社会保険料を納めるまでの負債</a><span class="rel-desc">預り金は、給与から天引きした源泉所得税・住民税・社会保険料のように、他人のお金を預かっている負債です。会社の金ではありません。天引きした税金</span></li><li><a href="../column/hojin-nari/">法人成りとは — 個人事業を会社にするとき何が変わるか。届出の期限・資産の引継ぎ・消費税・社会保険を条文で</a><span class="rel-desc">法人成りとは、個人事業を廃止して会社を設立し、事業を会社に引き継ぐこと。「法人成り」の語は法令に無く、実体は個人の廃業届（期限は令和8年1月</span></li></ul><!--rel:E-->
 </section>
 <!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E7%B5%A6%E4%B8%8E%E9%A1%8D%E3%82%92%E5%85%A5%E3%82%8C%E3%82%8B%E3%81%A0%E3%81%91%E3%81%A7%E3%80%81%E6%A8%99%E6%BA%96%E5%A0%B1%E9%85%AC%E6%9C%88%E9%A1%8D%E3%81%AE%E7%AD%89%E7%B4%9A%E3%83%BB%E5%81%A5%E5%BA%B7%E4%BF%9D%E9%99%BA%E6%96%99%E3%83%BB%E4%BB%8B%E8%AD%B7%E4%BF%9D%E9%99%BA%E6%96%99%E3%83%BB%E5%8E%9A%E7%94%9F%E5%B9%B4%E9%87%91%E4%BF%9D%E9%99%BA%E6%96%99%E3%83%BB%E9%9B%87%E7%94%A8%E4%BF%9D%E9%99%BA%E6%96%99%E3%82%92%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%80%82%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%BA%A6%EF%BC%882026%E5%B9%B4%E5%BA%A6%EF%BC%89%E3%81%AE%E9%83%BD%E9%81%93%E5%BA%9C%E7%9C%8C%E5%88%A5%E6%96%99%E7%8E%87%E3%83%BB%E9%9B%87%E7%94%A8%E4%BF%9D%E9%99%BA%E6%96%99%E7%8E%87%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fshakai-hoken%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site" style="display:block">
   料率の出典: 全国健康保険協会「都道府県毎の保険料率」<span id="src-note"></span>／厚生年金保険料率18.3%（日本年金機構）／雇用保険料率（厚生労働省）<span id="src-koyou"></span>。<br>
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
-  <div style="margin-top:8px;font-size:12px"><a href="../about/" style="color:var(--sub)">このサイトについて</a>　<a href="../privacy/" style="color:var(--sub)">プライバシーポリシー</a>　<a href="../contact/" style="color:var(--sub)">お問い合わせ</a></div>
+  <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）　<a href="../policy/editorial/" style="color:var(--sub)">編集ポリシー</a>　<a href="../policy/disclosure/" style="color:var(--sub)">収益化方針</a></div><!-- /trust:auto -->
+  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）</div><!-- /trust:auto -->
 </footer>
 
 <script type="module">
@@ -721,9 +729,9 @@ $("calc").addEventListener("click", async () => {
 
   const row = (label, o, show = true) => show ? `
     <tr><td style="padding:6px 8px">${label}</td>
-        <td style="padding:6px 8px;text-align:right">${yen(o.self)}</td>
-        <td style="padding:6px 8px;text-align:right;color:var(--sub)">${yen(o.company)}</td>
-        <td style="padding:6px 8px;text-align:right;color:var(--sub)">${yen(o.self + o.company)}</td></tr>` : "";
+        <td class="num" style="padding:6px 8px;text-align:right">${yen(o.self)}</td>
+        <td class="num" style="padding:6px 8px;text-align:right;color:var(--sub)">${yen(o.company)}</td>
+        <td class="num" style="padding:6px 8px;text-align:right;color:var(--sub)">${yen(o.self + o.company)}</td></tr>` : "";
 
   const kenkoLabel = r.kaigoApplies
     ? `健康保険＋介護保険（${pref} ${kRate.toFixed(2)}% ＋ ${RATES.kaigo_rate.toFixed(2)}% ＝ ${r.kenkoKaigo.rate.toFixed(2)}%）`
@@ -747,18 +755,18 @@ $("calc").addEventListener("click", async () => {
     <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
       <tr style="background:#e7f3f0">
         <th scope="col" style="text-align:left;padding:6px 8px">項目</th>
-        <th scope="col" style="text-align:right;padding:6px 8px">本人負担</th>
-        <th scope="col" style="text-align:right;padding:6px 8px">会社負担</th>
-        <th scope="col" style="text-align:right;padding:6px 8px">合計</th></tr>
+        <th scope="col" class="num" data-answer style="text-align:right;padding:6px 8px">本人負担</th>
+        <th scope="col" class="num" style="text-align:right;padding:6px 8px">会社負担</th>
+        <th scope="col" class="num" style="text-align:right;padding:6px 8px">合計</th></tr>
       ${row(kenkoLabel, r.kenkoKaigo)}
       ${row(`子ども・子育て支援金（${r.kosodate.rate.toFixed(2)}%）`, r.kosodate)}
       ${row(`厚生年金（${r.kosei.rate.toFixed(1)}%）`, r.kosei)}
       ${row(`雇用保険（${gy.label} 本人 ${gy.worker_permille}/1,000）`, k)}
       <tr style="border-top:2px solid var(--accent);font-weight:700">
         <td style="padding:6px 8px">合計</td>
-        <td style="padding:6px 8px;text-align:right">${yen(selfAll)}</td>
-        <td style="padding:6px 8px;text-align:right">${yen(companyAll)}</td>
-        <td style="padding:6px 8px;text-align:right">${yen(selfAll + companyAll)}</td></tr>
+        <td class="num" style="padding:6px 8px;text-align:right">${yen(selfAll)}</td>
+        <td class="num" style="padding:6px 8px;text-align:right">${yen(companyAll)}</td>
+        <td class="num" style="padding:6px 8px;text-align:right">${yen(selfAll + companyAll)}</td></tr>
     </table></div>
     <div style="font-size:12.5px;color:var(--sub);margin-top:8px">
       ${r.kaigoApplies
@@ -766,7 +774,7 @@ $("calc").addEventListener("click", async () => {
         : $("age").value === ""
         ? "※ 年齢が未入力のため、介護保険料はかからない（40歳未満）ものとして計算しています（40歳以上65歳未満は介護保険料がかかります）。"
         : `※ ${age}歳のため介護保険料はかかりません（40歳以上65歳未満が対象）。`}
-      <br>※ 子ども・子育て支援金は令和8年4月分から。年齢に関係なく全員が対象で、労使折半です。
+      <br>※ 子ども・子育て支援金は令和8年4月分から。年齢に関係なく被保険者が折半負担（被扶養者本人の負担ではありません）で、労使折半です。
       <br>※ <b>雇用保険料だけは標準報酬月額ではなく、賃金総額（${yen(k.base)}）にそのままかかります。</b>
       また<b>労使折半ではありません</b>（本人 ${gy.worker_permille}/1,000 ⇔ 会社 ${gy.employer_permille}/1,000）。
       差の ${gy.jigyo2_permille}/1,000 は<b>会社だけが負担する「雇用保険二事業」</b>の分です。
@@ -804,6 +812,7 @@ import { attachCopyButton } from "../assets/copy_result.js";
 attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
 </script>
 <script src="../assets/a11y_error.js" defer></script>
+<script src="../assets/result_rail.js" defer></script>
 
 <script type="module">
 import { calculatorEnter, optionalSummary } from "../assets/calculator_keyboard.js";

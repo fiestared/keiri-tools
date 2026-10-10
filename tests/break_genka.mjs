@@ -18,6 +18,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const CORE = new URL('../docs/assets/genka_core.js', import.meta.url);
 const DATA = new URL('../docs/assets/genka_rates.json', import.meta.url);
@@ -137,7 +138,7 @@ const BREAKS = [
 ];
 
 // ── ベースライン: 無傷のコアで検査が緑であること（規則2）──────────────────────────
-const dir = mkdtempSync(join(tmpdir(), 'genka-break-'));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), 'genka-break-')));
 const run = () => {
   try {
     execFileSync(process.execPath, [join(dir, 'test_genka.mjs')], { stdio: 'pipe', timeout: 60000 });
