@@ -144,7 +144,7 @@ export function buildSections(rows) {
     const withBoundary = list.filter((x) => x.boundary).map((x) => x.kubun);
     if (list.some(r => r.rawOver === null)) notes.push('横浜銀行の法人EBの通常の他行宛振込は、3万円未満385円・3万円以上550円です（振込訂正・組戻サービスの再振込は金額不問550円）。個人IBの3万円以上は掲載を保留しています');
     notes.push(withBoundary.length
-      ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）`
+      ? `<b>${base}の上表に掲載したサービスの通常の他行宛振込は3万円の境界あり</b>（${withBoundary.join('・')}。無料・別料金の宛先と優遇を除く${base === "楽天銀行" ? "。法人の基本振込に限り、給与・賞与・総合振込は除く" : base === "横浜銀行" ? "。再振込を除く" : ""}）`
       // ★区分名を文に入れる: 「金額にかかわらず定額。」だけだと、どの銀行の話か文単体で読めず、照合で10銀行ぶんが同じ文になった。
       : `${base}のこの表の料金は、金額にかかわらず<b>定額</b>`);
     out.push(`  <p>${notes.join('。')}。</p>`);
