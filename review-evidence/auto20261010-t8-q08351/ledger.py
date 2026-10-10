@@ -63,8 +63,9 @@ for x in old:
   L['out_of_corpus'].append({'id':y['id'],'text_hash':y['text_hash'],'needed_source':a['needed_source'],'result':'out_of_corpus','review_ref':str(E/'segment-adjudication.json')+'#'+x['id'],'note':'not_wrong/unsureを保持。条件付加による行見出し変更がある場合も未確認部分は維持。'})
   # An unresolved source request is coverage, never verified. Reuse historical documentation source only.
   prior=next((c for c in previous if x['id'] in c.get('covers',[])),None)
+  if not prior:prior=max(previous,key=lambda c:difflib.SequenceMatcher(None,x['text'][:600],c.get('text','')[:600]).ratio())
   if prior:
-   c=dict(prior);c['id']='t8q08351-oc-'+y['id'];c['covers']=[y['id']];c['scope']='この単位の未確認部分。'+y['text'][:160];c['exceptions']='正本外のため未確認。needed_sourceに必要な一次資料を記録。';c['status']='out_of_corpus';c['needed_source']=a['needed_source'];L['claims'].append(c);covered.add(y['id'])
+   c=dict(prior);c['id']='t8q08351-oc-'+y['id'];c['covers']=[y['id']];c['scope']='この単位の未確認部分。'+y['text'][:160];c['exceptions']='正本外のため未確認。needed_sourceに必要な一次資料を記録。';c['status']='out_of_corpus';c['verification_status']='未確認。過去の出典記録を保持するが、今回の正本による裏付けには数えない';c['needed_source']=a['needed_source'];L['claims'].append(c);covered.add(y['id'])
   continue
  if not refs:refs=fallback
  c={'id':'t8q08351-'+y['id'],'text':y['text'],'numbers':[],'applies':'2026年9月30日取得の正本。SMTB法人の改定は2026年10月1日以後受付。歴史は記述された時点。','scope':'対象はこの単位に記載された銀行・経路・金額帯と時点。'+y['text'][:450],'exceptions':[q['condition'] for q in a.get('conditions',[])]+['同じ料金表の宛先・個人/法人・経路・金額帯・注を走査。本文の主な例外と限定の範囲に限る。'], 'covers':[y['id']],**refs[0],'sources':refs,'review_ref':str(E/'segment-adjudication.json')+'#'+x['id'],'status':'repairer_checked_pending_independent_review' if changed or decision=='unresolved' else 'ok'}
