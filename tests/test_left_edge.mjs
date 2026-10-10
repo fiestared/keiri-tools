@@ -24,6 +24,7 @@ import { createServer } from 'node:http';
 import { readFile, readdir, mkdtemp, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { spawnChrome, killChrome } from '../tools/chrome_proc.mjs';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 import { tmpdir } from 'node:os';
 import { join, extname } from 'node:path';
 
@@ -111,7 +112,7 @@ if (listened.err) {
   console.log('   ★これは「左端が揃っている」という意味ではない。測っていないだけ。');
   process.exit(0);
 }
-const profile = await mkdtemp(join(tmpdir(), 'leftedge-'));
+const profile = cleanupOnExit(await mkdtemp(join(tmpdir(), 'leftedge-')));
 const chrome = spawnChrome(CHROME, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check',
   `--user-data-dir=${profile}`, `--window-size=${WIDTH},900`, `http://127.0.0.1:${PORT}${list[0]}`], { stdio: 'ignore' });
 const timeout = setTimeout(() => done(), 1000 * 60 * 10);

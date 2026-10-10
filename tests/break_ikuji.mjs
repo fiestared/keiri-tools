@@ -15,6 +15,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 const CORE = new URL("../docs/assets/ikuji_core.js", import.meta.url);
 const TEST = new URL("./test_ikuji.mjs", import.meta.url);
@@ -110,7 +111,7 @@ const BREAKS = [
    "const floored = false;"],
 ];
 
-const dir = mkdtempSync(join(tmpdir(), "breakikuji-"));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), "breakikuji-")));
 let caught = 0, missed = 0;
 
 // ★規則2: 壊す前に、ベースラインが緑であることを確かめる

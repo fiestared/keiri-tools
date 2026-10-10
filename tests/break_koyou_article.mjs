@@ -9,9 +9,10 @@ import {contentHTML} from './layout/content-html.mjs';
 //    2つの行を**入れ替えるだけ**の壊し方を必ず入れる（集合一致では絶対に捕まらない）
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const SRC = 'docs/column/koyou-hokenryo-ritsu/index.html';
-const TMP = '/tmp/koyou_broken.html';
+const TMP = cleanupOnExit('/tmp/koyou_broken.html');
 const orig = contentHTML(fs.readFileSync(SRC, 'utf8')).replace(/<td class="num">/g, '<td>');
 
 const BREAKS = [

@@ -9,6 +9,7 @@
 import { writeFile, mkdtemp } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
+import { cleanupOnExit } from "./tmp_cleanup.mjs";
 
 const BASE = "https://keiri-tools.com";
 let pass = 0, fail = 0;
@@ -66,7 +67,7 @@ ok("トップにツールカードのリンクがある", top.text.includes('hre
 ok("sitemap に載っている", sm.text.includes("https://keiri-tools.com/fudosan-jouto/"));
 
 // ── 4. ★本番のcoreと参照データを実際に走らせて検算する ───────────────
-const dir = await mkdtemp(join(tmpdir(), "prodjouto-"));
+const dir = cleanupOnExit(await mkdtemp(join(tmpdir(), "prodjouto-")));
 const corePath = join(dir, "jouto_core.js");
 await writeFile(corePath, core.text);
 const D = JSON.parse(data.text);

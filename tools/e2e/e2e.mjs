@@ -12,6 +12,7 @@
 import { createServer } from "node:http";
 import { readFile, readdir, mkdtemp, rm } from "node:fs/promises";
 import { spawnChrome, killChrome } from "../chrome_proc.mjs";
+import { cleanupOnExit } from "../tmp_cleanup.mjs";
 import { tmpdir } from "node:os";
 import { join, extname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -2115,7 +2116,7 @@ for (const sc of SCENES.filter((s) => match(s.name))) {
   //   2. 壊れたプロファイルは次の実行でも**そのまま開かれる**ので、Chromeが復旧を試みて
   //      起動が数分に劣化する。テストが自分の残骸で遅くなっていく
   // 使い捨てなら、並走しても衝突せず、前回の残骸も引きずらない(リポジトリも汚れない)。
-  const dir = await mkdtemp(join(tmpdir(), "keiri-e2e-"));
+  const dir = cleanupOnExit(await mkdtemp(join(tmpdir(), "keiri-e2e-")));
   const args = ["--headless=new", "--disable-gpu", "--no-first-run", "--no-default-browser-check",
                 `--user-data-dir=${dir}`, "--window-size=1280,1000",
                 "--virtual-time-budget=20000", "--dump-dom", url];

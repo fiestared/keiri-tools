@@ -17,6 +17,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import assert from "node:assert";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const TOOL = join(root, "tools", "check_homoglyph.py");
@@ -31,7 +32,7 @@ function run(file) {
   }
 }
 
-const base = mkdtempSync(join(tmpdir(), "homoglyph-"));
+const base = cleanupOnExit(mkdtempSync(join(tmpdir(), "homoglyph-")));
 let n = 0, bad = 0;
 function t(name, ok, why) {
   n++;

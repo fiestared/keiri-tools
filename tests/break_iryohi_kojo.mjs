@@ -17,9 +17,10 @@ import {contentHTML} from './layout/content-html.mjs';
 //    replace がそちらに当たり、本文が無傷のまま「素通し」に見える。→ タグごと・要素ごと狙う。
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const SRC = 'docs/column/iryohi-kojo-ikura-kara/index.html';
-const TMP = '/tmp/break_iryohi_kojo.html';
+const TMP = cleanupOnExit('/tmp/break_iryohi_kojo.html');
 const CHECKER = 'tests/test_iryohi_kojo_article.mjs';
 const orig = contentHTML(fs.readFileSync(SRC, 'utf8')).replace(/<td class="num">/g, '<td>');
 

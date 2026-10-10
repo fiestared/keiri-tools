@@ -23,6 +23,7 @@
  *   長いページは高さを大きく指定して撮る**（例: 900x9000）。
  */
 import { spawnChrome, killChrome } from "./chrome_proc.mjs";
+import { cleanupOnExit } from "./tmp_cleanup.mjs";
 import { resolve, join, extname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
@@ -70,7 +71,7 @@ const server = createServer(async (req, res) => {
 await new Promise((r) => server.listen(0, r));
 const port = server.address().port;
 
-const profile = await mkdtemp(join(tmpdir(), "shot-chrome-"));
+const profile = cleanupOnExit(await mkdtemp(join(tmpdir(), "shot-chrome-")));
 const target = resolve(out);
 await rm(target, { force: true });        // 前回の画像が残っていると「撮れた」と誤判定する
 

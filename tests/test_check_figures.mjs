@@ -16,6 +16,7 @@ import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import assert from "node:assert";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const TOOL = join(root, "tools", "check_figures.py");
@@ -29,7 +30,7 @@ function run(args, cwd) {
   }
 }
 
-const base = mkdtempSync(join(tmpdir(), "figcheck-"));
+const base = cleanupOnExit(mkdtempSync(join(tmpdir(), "figcheck-")));
 
 const CASES = [
   // [名前, HTML, 種別, 発火すべきか]

@@ -20,11 +20,12 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 let fails = 0, checks = 0;
 const ok = (cond, msg) => { checks++; if (!cond) { fails++; console.log(`  ✗ ${msg}`); } };
 
-const dir = mkdtempSync(join(tmpdir(), "cq-elided-"));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), "cq-elided-")));
 
 // 最小の法令コーパス。e-Gov の law_data と同じ「children で降りる」形にする。
 // MIN_CORPUS_CHARS = 10,000 を超えさせるため、無関係な条文で嵩を作る。

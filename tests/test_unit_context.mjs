@@ -99,7 +99,8 @@ const page = (pre, post = '') => `<title>題</title><meta name="description" con
 {
   const { mkdtempSync, writeFileSync, mkdirSync } = await import('node:fs'); const { tmpdir } = await import('node:os'); const { spawnSync } = await import('node:child_process');
   const { fileURLToPath } = await import('node:url');
-  const dir = mkdtempSync(tmpdir() + '/unit-context-'); mkdirSync(dir + '/docs/x', { recursive: true });
+  const { cleanupOnExit } = await import('../tools/tmp_cleanup.mjs');
+  const dir = cleanupOnExit(mkdtempSync(tmpdir() + '/unit-context-')); mkdirSync(dir + '/docs/x', { recursive: true });
   const ledger = dir + '/ledger.json'; writeFileSync(ledger, JSON.stringify({ claims: [{ id: 'c1', text: '控除の合計', numbers: ['58,621円'], must_with: ['両税率5％'] }] }));
   const table = '<table><tr><th>寄附額</th><th>控除</th></tr><tr><td>80,000円</td><td>58,621円</td></tr></table>';
   const run = html => { writeFileSync(dir + '/docs/x/index.html', html); return spawnSync('node', [fileURLToPath(new URL('../tools/check_claim_scope.mjs', import.meta.url)), dir + '/docs/x/index.html', '--ledger', ledger], { encoding: 'utf8' }); };

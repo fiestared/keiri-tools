@@ -22,6 +22,7 @@ import { readFileSync, writeFileSync, mkdtempSync, cpSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const CORE = new URL('../docs/assets/invoice_bangou_core.js', import.meta.url);
 const TEST = new URL('./test_invoice_bangou.mjs', import.meta.url);
@@ -83,7 +84,7 @@ const BREAKS = [
    '    else if (false) s.notHoujin++;'],
 ];
 
-const dir = mkdtempSync(join(tmpdir(), 'break-invoice-bangou-'));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), 'break-invoice-bangou-')));
 cpSync(new URL('../docs', import.meta.url), join(dir, 'docs'), { recursive: true });
 cpSync(new URL('.', import.meta.url), join(dir, 'tests'), { recursive: true });
 const coreCopy = join(dir, 'docs/assets/invoice_bangou_core.js');

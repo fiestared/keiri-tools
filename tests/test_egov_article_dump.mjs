@@ -6,11 +6,12 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 const TOOL = new URL("../tools/egov_elm.py", import.meta.url).pathname;
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) { pass++; } else { fail++; console.error("  ✗ " + m); } };
-const dir = mkdtempSync(join(tmpdir(), "egovart-"));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), "egovart-")));
 const w = (n, o) => { const p = join(dir, n); writeFileSync(p, JSON.stringify(o)); return p; };
 
 const sent = (t) => ({ tag: "ParagraphSentence", children: [{ tag: "Sentence", children: [t] }] });

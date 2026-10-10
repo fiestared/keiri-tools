@@ -16,6 +16,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const SRC = {
   core: new URL('../docs/assets/hikazei_setai_core.js', import.meta.url),
@@ -198,7 +199,7 @@ const BREAKS = [
 ];
 
 // ── ベースライン: 無傷の実装で検査が緑であること（規則2）────────────────────────
-const dir = mkdtempSync(join(tmpdir(), 'hikazei-setai-break-'));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), 'hikazei-setai-break-')));
 const write = (k, s) => writeFileSync(join(dir, FILE[k]), s);
 const run = () => {
   try {

@@ -13,6 +13,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 const CORE = new URL("../docs/assets/shaho_core.js", import.meta.url);
 const ORACLE = new URL("./test_koyou_oracle.mjs", import.meta.url);
@@ -58,7 +59,7 @@ const BREAKS = [
    "const selfRaw = wage * (r.workerPermille / 100);"],
 ];
 
-const dir = mkdtempSync(join(tmpdir(), "breakkoyou-"));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), "breakkoyou-")));
 let caught = 0, missed = 0;
 
 for (const [name, from, to] of BREAKS) {

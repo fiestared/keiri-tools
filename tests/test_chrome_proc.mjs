@@ -13,6 +13,7 @@ import { tmpdir } from "node:os";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnChrome, killChrome } from "../tools/chrome_proc.mjs";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 if (!existsSync(CHROME)) { console.log("↷ Chrome が無いので測定を飛ばします"); process.exit(0); }
@@ -31,7 +32,7 @@ const check = (ok, msg) => { console.log(`${ok ? "✅" : "❌"} ${msg}`); if (!o
 
 // 1. killChrome で子プロセスごと消える
 {
-  const dir = await mkdtemp(join(tmpdir(), "keiri-procguard-"));
+  const dir = cleanupOnExit(await mkdtemp(join(tmpdir(), "keiri-procguard-")));
   const p = spawnChrome(CHROME, ARGS(dir));
   const up = await waitFor(() => using(dir) >= 2, 20_000);   // 本体 + 子が1つ以上
   check(up, `Chrome が子プロセスつきで起動した（${using(dir)} 個）`);
@@ -43,7 +44,7 @@ const check = (ok, msg) => { console.log(`${ok ? "✅" : "❌"} ${msg}`); if (!o
 
 // 2. 起動した node が SIGKILL されても、番人が Chrome を片付ける
 {
-  const dir = await mkdtemp(join(tmpdir(), "keiri-procguard-"));
+  const dir = cleanupOnExit(await mkdtemp(join(tmpdir(), "keiri-procguard-")));
   const child = join(dir, "child.mjs");
   await writeFile(child, `import { spawnChrome } from ${JSON.stringify(join(HERE, "../tools/chrome_proc.mjs"))};
 spawnChrome(${JSON.stringify(CHROME)}, ${JSON.stringify(ARGS(dir))});

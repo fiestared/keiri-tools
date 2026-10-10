@@ -15,6 +15,7 @@ import { readFileSync, writeFileSync, mkdtempSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { cleanupOnExit } from "../tools/tmp_cleanup.mjs";
 
 const CORE = new URL("../docs/assets/iryohi_core.js", import.meta.url);
 const TEST = new URL("./test_iryohi.mjs", import.meta.url);
@@ -86,7 +87,7 @@ const BREAKS = [
    "const i = input || {};"],
 ];
 
-const dir = mkdtempSync(join(tmpdir(), "breakiryohi-"));
+const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), "breakiryohi-")));
 
 // ★規則2: 壊す前に、ベースラインが緑であることを確かめる
 try {

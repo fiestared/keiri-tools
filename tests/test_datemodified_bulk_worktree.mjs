@@ -21,6 +21,7 @@ import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ja = (ymd) => { const [y, m, d] = ymd.split('-').map(Number); return `${y}年${m}月${d}日`; };
@@ -44,7 +45,7 @@ const article = (slug, dateModified) => `<!doctype html><html lang="ja"><head>
  *     公開日に丸まって「今日ではない」だけの弱い検査になってしまう。
  */
 function makeRepo(n) {
-  const dir = mkdtempSync(join(tmpdir(), 'datemod-'));
+  const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), 'datemod-')));
   const env = { ...process.env, GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t',
                 GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t' };
   const git = (...a) => execFileSync('git', a, { cwd: dir, encoding: 'utf8', env });

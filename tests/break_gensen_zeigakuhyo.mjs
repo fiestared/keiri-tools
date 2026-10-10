@@ -13,9 +13,10 @@ import {contentHTML} from './layout/content-html.mjs';
 // replace が別の場所に当たり、本文が無傷のまま「素通し」に見える。→ タグごと狙う。
 import fs from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const SRC = 'docs/column/gensen-zeigakuhyo-mikata/index.html';
-const TMP = '/tmp/break_gensen_zeigakuhyo.html';
+const TMP = cleanupOnExit('/tmp/break_gensen_zeigakuhyo.html');
 const orig = contentHTML(fs.readFileSync(SRC, 'utf8'));
 
 const MUT = [

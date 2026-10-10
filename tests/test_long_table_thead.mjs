@@ -21,6 +21,7 @@ import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {execFileSync} from 'node:child_process';
 import {browserTools, serve, contextFor, ready, DOCS} from './layout/browser.mjs';
+import { cleanupOnExit } from '../tools/tmp_cleanup.mjs';
 
 const MIN_ROWS = 15;
 export function longTablesWithoutThead(html) {
@@ -99,7 +100,7 @@ try {
       await p.emulateMedia({media: 'print'});
       const pdf = await p.pdf({format: 'A4', printBackground: true});
       await p.emulateMedia({media: 'screen'});
-      const dir = mkdtempSync(join(tmpdir(), 'thead-pdf-'));
+      const dir = cleanupOnExit(mkdtempSync(join(tmpdir(), 'thead-pdf-')));
       try {
         const f = join(dir, 'grade.pdf');
         writeFileSync(f, pdf);
