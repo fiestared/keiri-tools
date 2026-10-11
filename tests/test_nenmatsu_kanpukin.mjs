@@ -217,7 +217,9 @@ ok(!!seihoCallout, '生命保険料と控除額を区別する注記が存在す
 if (seihoCallout) {
   ok(seihoCallout.includes('23歳未満の扶養親族') && seihoCallout.includes('上限6万円'), '特例の年齢条件と上限6万円');
   ok(seihoCallout.includes('年8万円の支払いなら控除5万円'), '年8万円→控除5万円');
-  ok(seihoCallout.includes('全額使え') && seihoCallout.includes('区分内') && seihoCallout.includes('税額控除や端数処理'), '減税概算の成立条件を明示');
+  // 2026-10-11 読みやすさの作り直し: 成立条件は直前の式の下の箇条書きに1回だけ書き、注記からはそこを指す。
+  ok(seihoCallout.includes('条件は上の式と同じ')
+    && strip(HTML).includes('控除を使い切れ、税率区分をまたがず、税額控除と端数処理の影響を除いた場合の概算です'), '減税概算の成立条件を明示');
   ok(seihoCallout.includes('還付額や保険加入の適否を示す額ではありません'), '減税概算を還付総額・加入判断と混同しない');
 }
 // FAQ(可視側)の答えにも特例がある(JSON-LDは生成物なのでここでは見ない)
