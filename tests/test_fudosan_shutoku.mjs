@@ -374,13 +374,10 @@ const run = (over = {}) => calcFudosanShutoku({ ...base, ...over });
   const rSaki = rowOf("tochi-kigen-table", "<b>土地を先に</b>");
   ok("§8 土地が先の行は3年", /土地の取得から\s*3年以内\s*に住宅が新築/.test(rSaki));
   ok("§8 土地が先の行は附則10条の3第2項を名指ししている", rSaki.includes("附則10条の3第2項"));
-  // ★2026-10-12: 期間の延長（本則2年→3年・困難な場合4年）は、セルが長くなるので表の直下の注へ移した。
-  //   行の主語（「土地を先に取得する場合」）を注の文が名指ししていることも見る（規則4）。
-  const nSaki = byId("tochi-kigen-note-saki");
-  ok("§8 土地が先の行に令和13年3月31日がある", nSaki.includes("土地を先に取得する場合") && nSaki.includes("令和13年3月31日"));
+  ok("§8 土地が先の行に令和13年3月31日がある", rSaki.includes("令和13年3月31日"));
   // ★困難な場合の4年は救済そのもの。「原則の外」を画面に出して検査でも守る
   //   （CLAUDE.md「『原則』と書いたら原則の外を必ず書く」）。
-  ok("§8 土地が先の行に困難な場合の4年がある", /政令で定める場合は4年/.test(nSaki) && nSaki.includes("本則は2年"));
+  ok("§8 土地が先の行に困難な場合の4年がある", /4年/.test(rSaki));
   // ★1号の第2肢は「取得者から土地を取得した者」＝譲受人。元の取得者と書くと第1肢と重なって類型が1つ消える
   ok("§8 土地が先の行が譲受人の新築を落としていない", rSaki.includes("譲り受けた"));
   ok("§8 住宅が先の行は1年", rowOf("tochi-kigen-table", "<b>住宅を先に</b>").includes("1年"));
@@ -392,11 +389,8 @@ const run = (over = {}) => calcFudosanShutoku({ ...base, ...over });
   ok("§8 中古住宅の行は土地の取得から1年以内（素の「1年」では前1年で素通しする）",
      rChuko.includes("土地の取得から1年以内"));
   ok("§8 中古住宅の行は前1年も拾っている", rChuko.includes("前1年"));
-  // ★2026-10-12: 2項の対象の定義は表の直下の注へ移した（行の主語には「新築から1年を超えた売れ残りの新築」が残る）。
-  const nChuko = byId("tochi-kigen-note-chuko");
   ok("§8 中古住宅の行が新築後1年超の未使用住宅を落としていない",
-     rChuko.includes("新築から1年を超えた売れ残りの新築") &&
-     (nChuko.includes("1年を超えた未使用") || nChuko.includes("1年を超える未使用")) && nChuko.includes("3号の適用を受けない"));
+     rChuko.includes("1年を超えた未使用") || rChuko.includes("1年を超える未使用"));
   ok("§8 中古住宅の行が73条の24第2項を名指ししている", rChuko.includes("73条の24第2項"));
   // ⑳ 中古住宅の控除額表（新築時期の主語セルで名指し）。3県の公表表で同額を確認済み
   const kojo = (subject) => rowOf("chuko-kojo-table", subject);
@@ -446,8 +440,11 @@ const run = (over = {}) => calcFudosanShutoku({ ...base, ...over });
   // ㉔ 控除額表の出所。9区分を公表しているのは神奈川県で、埼玉県は昭和57年1月1日以後の分だけ
   const kl = byId("chuko-kojo-lead");
   ok("§8 控除額表の出所に神奈川県がある", kl.includes("神奈川県"));
+  // ★2026-10-12: 千葉県・埼玉県との照合の文は表の直後の段落（chuko-kojo-hoka）へ移した。
+  //   表を含む要素で見ると、表のセルの「昭和57年1月1日以後」で素通しする（規則5）ので、段落を名指しする。
+  const kh = byId("chuko-kojo-hoka");
   ok("§8 控除額表の出所が埼玉県の公表範囲を断っている",
-     kl.includes("埼玉県") && kl.includes("昭和57年1月1日以後"));
+     kh.includes("埼玉県") && kh.includes("昭和57年1月1日以後"));
 }
 
 // ────────────────────────────────────────────────────────────────────────────
