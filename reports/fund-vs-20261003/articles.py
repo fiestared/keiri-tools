@@ -2031,5 +2031,6 @@ def a_schd_schd():
     sections = std_sections('mechanism', '投資先のETFと、決算月・分配金の実績', 'ETFの報酬をどう数えるかで、表示の料率が変わる')
     related = [('../rakuten-schd-vs-rakuten-vym/', '楽天・SCHD vs 楽天・VYM', '楽天・SCHDをVYM型と比べる'),
                ('../sbi-spyd-vs-rakuten-schd/', 'SBI・SPDR・S&P500高配当 vs 楽天・SCHD', '楽天・SCHDをS&P500高配当型と比べる'),
-               ('../rakuten-jepi-vs-rakuten-schd/', '楽天・JEPI vs 楽天・SCHD', '楽天・SCHDをカバードコール型と比べる')]
+               ('../rakuten-jepi-vs-rakuten-schd/', '楽天・JEPI vs 楽天・SCHD', '楽天・SCHDをカバードコール型と比べる'),
+               ('../sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou/', 'SBI日本高配当 vs 楽天・高配当株式・日本', '日本株の高配当ファンドどうしを比べる')]
     return p, title, desc, body, sections, related
