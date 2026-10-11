@@ -36,11 +36,18 @@ const SCENES = [
       /請求額 110,000円/.test(s.copied) && /振込予定額 109,450円/.test(s.copied) &&
       /utm_source=invoice_line/.test(s.copied) && !/[?&](invoice|fee|transfer)=/.test(s.copied) &&
       /コピーしました/.test(s.status) && s.eventCount === 1 },
-  // 最低賃金: 47都道府県が描かれ、時給1,100円(東京1,226円)が「下回っている」と出ること
+  // 最低賃金: 47都道府県が描かれ、時給1,100円が「下回っている」と出ること。
+  // ★判定日はハーネスが固定する(発効日 令和8年10月1日の当日と前日)。当日は改定後の1,280円で180円不足、
+  //   前日は改定前の1,226円で126円不足。「今日」のまま流すと発効日をまたいだ日に期待値が変わる。
   { name: "saitei_hourly", expect: (s) =>
-      s.options > 45 && /1226/.test(s.prefBox) && /下回っています/.test(s.out) &&
-      /126/.test(s.out) && s.tableRows === 47 && /答申/.test(s.nextBox) },
-  // 月給196,000円(240日×8h)は東京の最低賃金割れ。「上回っています」と出たら換算の分母が誤り
+      s.options > 45 && /1280円／時間/.test(s.prefBox) && !/それまでは改定前/.test(s.prefBox) &&
+      /下回っています/.test(s.out) && /最低賃金 1280円/.test(s.out) && /1時間あたり180円不足/.test(s.out) &&
+      !/改定前/.test(s.out) && s.tableRows === 47 && /47都道府県すべてで決定済み/.test(s.nextBox) },
+  { name: "saitei_hourly_before", expect: (s) =>
+      /それまでは改定前の1226円が有効/.test(s.prefBox) &&
+      /下回っています/.test(s.out) && /最低賃金 1226円/.test(s.out) && /1時間あたり126円不足/.test(s.out) &&
+      /改定前の1226円で判定しました/.test(s.out) },
+  // 月給204,700円(240日×8h=月160時間・時間額1,279円)は東京1,280円の最低賃金割れ。「上回っています」と出たら換算の分母が誤り
   { name: "saitei_monthly", expect: (s) =>
       /下回っています/.test(s.out) && !/上回っています/.test(s.out) && /160時間/.test(s.out) },
   { name: "zengin", expect: (s) =>
