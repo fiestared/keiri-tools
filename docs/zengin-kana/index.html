@@ -31,7 +31,7 @@
       "name": "振込名義で「株式会社」はどう書きますか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "位置によって形式が変わります。先頭なら「カ)」(例: 株式会社ヤマダ → ｶ)ﾔﾏﾀﾞ)、末尾なら「(カ」(例: ヤマダ株式会社 → ﾔﾏﾀﾞ(ｶ)、中間なら「(カ)」です。有限会社=ユ、合同会社=ド、医療法人=イなど、法人格ごとに略語が定められています。"
+        "text": "位置によって形式が変わります。先頭は「カ)」、末尾は「(カ」、中間は「(カ)」です。たとえば株式会社ヤマダは「ｶ)ﾔﾏﾀﾞ」、ヤマダ株式会社は「ﾔﾏﾀﾞ(ｶ」になります。有限会社=ユ、合同会社=ド、医療法人=イなど、法人格ごとに略語が定められています。"
       }
     },
     {
@@ -89,15 +89,15 @@
 </header>
 <main id="main" tabindex="-1">
   <h1>振込名義カナ変換（全銀フォーマット一括正規化）</h1>
-  <p class="lead">総合振込の受取人名を貼り付けると、半角カナ・法人略語(先頭の株式会社→ｶ)等)・使用可能文字・文字数まで一括で整えます。1行に1名義。データはブラウザの外へ送信されません。</p>
+  <p class="lead">総合振込の受取人名を貼り付けると、半角カナ・法人略語・使用可能文字・文字数まで一括で整えます。1行に1名義。データはブラウザの外へ送信されません。</p>
 
 
   <div class="card">
     <label for="names">名義リスト（1行1名義）</label>
 
-    <textarea id="names" rows="8" style="width:100%;font-size:15px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px" aria-describedby="names-hint"></textarea>
+    <textarea id="names" rows="8" style="width:100%;font-size:15px;padding:10px 12px;border:1px solid var(--line-strong);border-radius:8px" aria-describedby="names-hint" placeholder="株式会社ヤマダ&#10;すずき商店&#10;タナカ健康保険組合"></textarea>
     <button class="primary" id="run">全銀フォーマットに変換する</button>
-    <p class="hint" id="names-hint" style="margin-top:8px">例: 株式会社ヤマダ ／ すずき商店 ／ タナカ健康保険組合</p>
+    <p class="hint" id="names-hint" style="margin-top:8px">法人格(株式会社等)以外の漢字は自動変換しません。カナ読みで入力してください。</p>
     <div id="out" role="status" aria-live="polite" aria-atomic="true" style="margin-top:16px"></div>
     <button class="primary" id="copyAll" style="display:none;background:#5b6b7b">変換結果をすべてコピー</button>
     <div id="copyErr" class="note" role="alert" aria-atomic="true" style="margin-top:8px;color:#a33"></div>
@@ -134,9 +134,16 @@
 </table>
 </div>
     <p data-review-context="after-table">「先頭のみ」の法人は、略語の後に「)」を付けます。対応しない位置にあるときは、本ツールは原語を残して警告します。</p>
-    <p>営業所は先頭「エイ)」・中間「(エイ)」・末尾「(エイ」、出張所は先頭「シユツ)」・中間「(シユツ)」・末尾「(シユツ」です。</p>
+    <h3>営業所・出張所の略語</h3>
+    <ul>
+      <li>営業所は先頭「エイ)」・中間「(エイ)」・末尾「(エイ」です。</li>
+      <li>出張所は先頭「シユツ)」・中間「(シユツ)」・末尾「(シユツ」です。</li>
+    </ul>
+    <h3>事業略語</h3>
     <p>事業略語は、連合会=レン、協同組合=キヨウクミ、健康保険組合=ケンポ、生活協同組合=セイキヨウです。本ツールの事業略語は括弧なしです。銀行によっては先頭の事業略語に「)」を付けるため、出力を振込先の登録名義と照合してください。</p>
+    <h3>本ツールで未対応の法人名</h3>
     <p>三菱UFJ信託銀行の<a href="https://www.faq.direct.tr.mufg.jp/%E3%80%90%E6%8C%AF%E8%BE%BC%E3%80%91%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%8D%E3%83%83%E3%83%88%E3%83%90%E3%83%B3%E3%82%AD%E3%83%B3%E3%82%B0%E3%81%A7%E3%81%AE%E6%B3%95%E4%BA%BA%E7%AD%89%E7%95%A5%E7%A7%B0%E4%B8%80%E8%A6%A7-67da1ff6db97d084eb531431" rel="nofollow">法人等略称一覧</a>には、行政書士法人＝ギヨ、司法書士法人＝シホウ、社会保険労務士法人＝ロウム、地方独立行政法人＝チドク、農事組合法人＝ノウ、管理組合法人＝カンリ、相互会社＝ソも載っています。本ツールで未対応の法人名を手直しする際の参照先です。略語を使える位置は利用銀行の表で確認してください。</p>
+    <h3>略語の組み合わせ</h3>
     <p><a href="https://www.zenginkyo.or.jp/fileadmin/res/abstract/efforts/system/jba_protocol_pc.pdf" rel="nofollow">全銀協の通信プロトコル付録2</a>では、法人略語は一法人名につき一個とし、法人略語・事業略語・営業所略語は組み合わせて使えるとしています。社名と営業所の略語が同じ名義にあっても、法人略語の重複とは限りません。</p>
     <h3>文字の置き換え</h3>
     <ul>
@@ -157,7 +164,7 @@
   <section class="faq">
     <h2 id="faq">よくある質問</h2>
     <h3 class="faq-question">振込名義で「株式会社」はどう書きますか？</h3>
-    <p class="faq-answer">位置によって形式が変わります。先頭なら「カ)」(例: 株式会社ヤマダ → ｶ)ﾔﾏﾀﾞ)、末尾なら「(カ」(例: ヤマダ株式会社 → ﾔﾏﾀﾞ(ｶ)、中間なら「(カ)」です。有限会社=ユ、合同会社=ド、医療法人=イなど、法人格ごとに略語が定められています。</p>
+    <p class="faq-answer">位置によって形式が変わります。先頭は「カ)」、末尾は「(カ」、中間は「(カ)」です。たとえば株式会社ヤマダは「ｶ)ﾔﾏﾀﾞ」、ヤマダ株式会社は「ﾔﾏﾀﾞ(ｶ」になります。有限会社=ユ、合同会社=ド、医療法人=イなど、法人格ごとに略語が定められています。</p>
     <h3 class="faq-question">振込名義に使える文字は？</h3>
     <p class="faq-answer">半角カタカナ(小文字を除く。総合振込では「ヲ」を含む)、濁点・半濁点、英大文字、数字、半角スペース、記号の括弧・ハイフン・ピリオドです。本ツールの総合振込ファイル向け変換では、小文字カナを大文字に、長音「ー」をハイフンに、中黒「・」をピリオドにします。SMBCダイレクトの画面入力では、中黒の代わりに全角スペースを入力します。ファイルの文字・置換規則は利用銀行の仕様と登録名義を確認してください。</p>
     <h3 class="faq-question">文字数の上限はありますか？</h3>
