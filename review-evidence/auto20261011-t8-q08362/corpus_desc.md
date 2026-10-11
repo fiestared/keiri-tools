@@ -1,0 +1,5 @@
+- `www_*.txt`・`gmo_*.txt`・`support_*.txt`・`faqsearch_*.txt` … 各銀行の公式の振込手数料・サービスのページ（ファイルの1行目に URL）。**2026-09-30 に取得した版**。銀行名・経路（窓口／ATM／ネット／法人EB）・同行宛／他行宛・3万円の境目・消費税込みかどうかを、ページごとに読み分ける。
+- **みずほ銀行・イオン銀行の料金ページはボット遮断（HTTP 403）で取得できなかった**。その2行の料金の主張は out_of_corpus（needed_source に URL）にし、ok にしない。
+- `www_gunmabank_*_z_format1_pdf.txt`（全銀協規定フォーマットの説明）・`www_smbc_co_jp_direct_*help_furikomi*`・`www_zenginkyo_*`（全銀協）… 全銀フォーマット・振込の仕組み。
+- `www8_cao_go_jp_chosei_shukujitsu_gaiyou_html.txt`（内閣府「国民の祝日について」）、`egov_minpo_140〜143.txt`（民法の期間の計算）、`egov_ginkoho_15.txt`（銀行法15条＝休日）… 営業日・期限の数え方。
+- 年度・時点が変わる数字（手数料の改定日）は、ページに書かれた適用日と照らす。
