@@ -631,7 +631,7 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'desc': {'must_with': ['再投資|仮定', '2026年9月30日|仮定|比較期間']},
         'period': {'must_with': ['設定日|比較期間'], 'derived': True, 'calc': 'python3: (date(2026,9,30)-date(2024,12,20)).days=649、649*12/365.25=21.32か月→約1年9か月。'},
         'method': {'must_with': ['比較期間|起点|終点|基準価額|データ|再投資|確認した|取得|仮定']},
-        'feehead': {'must_with': ['確認した|総経費率']},
+        'feehead': {'must_with': ['確認した|総経費率|程度|管理報酬等']},
         'rakuten-schd-fee': {'must_with': ['税込|信託報酬']},
         'sbi-schd4-fee': {'must_with': ['税込|信託報酬']},
         'rakuten-schd-ter': {'must_with': ['総経費率|比率|程度|管理報酬等', '対象期間|作成対象期間|交付目論見書|交付運用報告書|充当|国内ファンド分']},
