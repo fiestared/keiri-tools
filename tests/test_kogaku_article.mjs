@@ -370,7 +370,8 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
 
 // ───────── 8. 端数規則（施行令42条が明記）— 節を名指し ─────────
 {
-  const sec = body.slice(body.indexOf('id="keisan"'), body.indexOf('id="ninteisho"'));
+  // 2026-10-12: 7月診療分までの3節（早見表・区分・計算例）を FAQ の手前へまとめたので、計算の節の終わりは #faq。
+  const sec = body.slice(body.indexOf('id="keisan"'), body.indexOf('id="faq"'));
   const t = strip(sec);
   if (!t.includes('端数が50銭未満なら切り捨て、50銭以上なら1円に切り上げ')) fail('端数規則（50銭未満切捨/50銭以上切上）が計算の節に無い');
   else ok('端数規則: 50銭未満切捨・50銭以上切上（政令が明記）');
