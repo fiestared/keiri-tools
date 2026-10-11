@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>有給休暇の付与日数 計算機｜入社日から自動計算（パート・アルバイトの比例付与も対応）</title>
-<meta name="description" content="入社日・週所定労働日数・週所定労働時間を入力し、出勤率8割以上を前提に、年次有給休暇の付与日数と付与日を自動計算。パート・アルバイトの比例付与、年5日の取得義務の対象判定、次回付与日までのスケジュールも表示。年間所定労働日数での判定には非対応。労働基準法39条に基づく無料ツール。">
+<meta name="description" content="入社日と週の所定労働日数・時間から、年次有給休暇の付与日数・付与日・次回付与日を自動計算。パート・アルバイトの比例付与と年5日の取得義務の判定にも対応。出勤率8割以上が前提で、年間所定労働日数での判定には非対応。労働基準法39条に基づく無料ツール。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/yukyu/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="有給休暇の付与日数 計算機｜入社日から自動計算（パート・アルバイトの比例付与も対応）">
-<meta property="og:description" content="入社日・週所定労働日数・週所定労働時間を入力し、出勤率8割以上を前提に、年次有給休暇の付与日数と付与日を自動計算。パート・アルバイトの比例付与、年5日の取得義務の対象判定、次回付与日までのスケジュールも表示。年間所定労働日数での判定には非対応。労働基準法39条に基づく無料ツール。">
+<meta property="og:description" content="入社日と週の所定労働日数・時間から、年次有給休暇の付与日数・付与日・次回付与日を自動計算。パート・アルバイトの比例付与と年5日の取得義務の判定にも対応。出勤率8割以上が前提で、年間所定労働日数での判定には非対応。労働基準法39条に基づく無料ツール。">
 <meta property="og:url" content="https://keiri-tools.com/yukyu/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -119,7 +119,7 @@
 <section class="hero">
   <h1>有給休暇の付与日数 計算機</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-10-08">2026年10月8日</time>）</p>
-  <p>入社日・週所定労働日数・週所定労働時間を入力し、出勤率8割以上を前提に、<b>付与日数・付与日・次回付与日</b>を計算します。<b>週日数で判定するパート・アルバイトの比例付与</b>と、<b>年5日の取得義務</b>の判定にも対応。年間所定労働日数で判定する勤務形態には対応していません。</p>
+  <p>入社日と週の所定労働日数・時間から、有給休暇の<b>付与日数・付与日・次回付与日</b>を計算します。<b>パート・アルバイトの比例付与</b>と<b>年5日の取得義務</b>の判定にも対応しています。出勤率8割以上が前提で、年間の所定労働日数で決まる勤務には対応していません。</p>
 </section>
 
 
@@ -145,12 +145,10 @@
       <input type="number" id="whours" value="40" inputmode="numeric" step="0.5">
     </div>
   </div>
-  <div style="font-size:12.5px;color:var(--sub);margin-top:6px">
-    ※ <b>週30時間以上</b>なら、週4日以下でも通常どおり（10日〜）の付与になります。
-  </div>
 
   <button class="primary" id="calc">計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
+  <p class="hint">※ <b>週30時間以上</b>なら、週4日以下でも通常どおり（10日〜）の付与になります。</p>
   <p class="hint">計算後、入社日と勤務条件を任意でこのブラウザに保存できます。名前の入力は不要です。共有PCでは保存せず使えます。</p>
   <p id="memo-status" role="status" aria-live="polite"></p>
   <div id="memo-actions" style="display:none;margin-top:8px">
@@ -175,14 +173,19 @@
   <h2 id="tool-section-2">有給休暇のしくみ</h2>
 
   <h3>付与のルール（労働基準法39条）</h3>
-  <p>通常付与（週30時間以上、週5日以上、または週以外の期間で所定を定め年間217日以上）は、入社から<b>6か月継続勤務し、全労働日の8割以上出勤</b>すると10日付与されます。以後も各1年間の出勤率8割以上が必要で、通常付与は<b>勤続6年6か月以降の年20日</b>が上限です。週30時間未満の比例付与の上限は週4日15日・週3日11日・週2日7日・週1日3日です。</p>
+  <p>入社から<b>6か月継続勤務し、全労働日の8割以上出勤</b>すると、10日が付与されます。その後は1年ごとに、その1年間の出勤率が8割以上なら下の表の日数が付与されます。上限は<b>勤続6年6か月以降の年20日</b>です。</p>
   <div class="retention-table" tabindex="0" role="region" aria-label="有給休暇の付与日数表。横にスクロールできます"><table class="num-matrix">
     <tr><th scope="col">勤続年数</th><th scope="col">6か月</th><th scope="col">1年6か月</th><th scope="col">2年6か月</th><th scope="col">3年6か月</th><th scope="col">4年6か月</th><th scope="col">5年6か月</th><th scope="col">6年6か月〜</th></tr>
     <tr><td>付与日数</td><td><span class="numeric-token">10日</span></td><td><span class="numeric-token">11日</span></td><td><span class="numeric-token">12日</span></td><td><span class="numeric-token">14日</span></td><td><span class="numeric-token">16日</span></td><td><span class="numeric-token">18日</span></td><td><b><span class="numeric-token">20日</span></b></td></tr>
   </table></div>
+  <p class="hint" data-review-context="after-table">この表は通常付与の日数です。対象は、週30時間以上、週5日以上、または週以外の期間で所定労働日数を定めて年間217日以上の人です。</p>
 
   <h3>パート・アルバイトの比例付与</h3>
-  <p><b>週30時間未満</b>で、週所定労働日数4日以下、または週以外の期間で定める年間所定労働日数48日以上216日以下なら比例付与されます。この計算機は週日数が定まっている人向けです。年間日数で判定する場合は法定の比例付与表を確認してください。</p>
+  <p>週の所定労働時間が<b>30時間未満</b>で、次のどちらかに当たる人は、下の表の日数が付与されます。付与の要件は通常付与と同じです。</p>
+  <ul>
+    <li>週の所定労働日数が4日以下</li>
+    <li>週以外の期間で日数を定めていて、年間の所定労働日数が48日以上216日以下</li>
+  </ul>
   <div class="retention-table" tabindex="0" role="region" aria-label="有給休暇の付与日数表。横にスクロールできます"><table class="num-matrix">
     <tr><th scope="col">週の日数</th><th scope="col">6か月</th><th scope="col">1年6か月</th><th scope="col">2年6か月</th><th scope="col">3年6か月</th><th scope="col">4年6か月</th><th scope="col">5年6か月</th><th scope="col">6年6か月〜</th></tr>
     <tr><td>週4日</td><td><span class="numeric-token">7日</span></td><td><span class="numeric-token">8日</span></td><td><span class="numeric-token">9日</span></td><td><span class="numeric-token">10日</span></td><td><span class="numeric-token">12日</span></td><td><span class="numeric-token">13日</span></td><td><span class="numeric-token">15日</span></td></tr>
@@ -190,9 +193,10 @@
     <tr><td>週2日</td><td><span class="numeric-token">3日</span></td><td><span class="numeric-token">4日</span></td><td><span class="numeric-token">4日</span></td><td><span class="numeric-token">5日</span></td><td><span class="numeric-token">6日</span></td><td><span class="numeric-token">6日</span></td><td><span class="numeric-token">7日</span></td></tr>
     <tr><td>週1日</td><td><span class="numeric-token">1日</span></td><td><span class="numeric-token">2日</span></td><td><span class="numeric-token">2日</span></td><td><span class="numeric-token">2日</span></td><td><span class="numeric-token">3日</span></td><td><span class="numeric-token">3日</span></td><td><span class="numeric-token">3日</span></td></tr>
   </table></div>
+  <p class="hint">この計算機は、週の日数が決まっている人向けです。年間の日数で判定する場合は、法定の比例付与表を確認してください。</p>
   <div class="callout">
     <b>間違えやすいポイント</b>
-    週4日勤務でも、<b>週所定労働時間30時間以上なら通常付与</b>です。6か月継続勤務し全労働日の8割以上出勤した初回は10日、以後も出勤率の要件を満たすと勤続期間に応じて11〜20日になります。日数だけで判断しないよう注意してください。
+    週4日勤務でも、<b>週所定労働時間30時間以上なら通常付与</b>です。日数は「付与のルール」の表のとおりで、初回は10日です。日数だけで判断しないよう注意してください。
   </div>
 
   <h3>年5日の取得義務（2019年4月〜）</h3>
@@ -216,7 +220,7 @@
   <h3 class="faq-question">有給休暇はいつ付与されますか？</h3>
   <p class="faq-answer">通常付与の対象者は、入社から<b>6か月継続勤務</b>し、全労働日の8割以上出勤した時点で10日付与されます。以後も各1年間の出勤率8割以上が必要で、通常付与は勤続6年6か月以降の年20日が上限となります。比例付与の対象者は同じ発生要件のもと、勤務条件に応じて初回1〜7日です。</p>
   <h3 class="faq-question">パート・アルバイトにも有給休暇はありますか？</h3>
-  <p class="faq-answer">あります。週所定労働時間30時間未満で、週所定労働日数4日以下、または週以外の期間で日数を定める場合は年間所定労働日数48日以上216日以下なら<b>比例付与</b>の対象です（週4日なら6か月経過時点で7日）。この計算機は週日数で試算するため、年間日数で判定するシフト等には対応していません。年間日数に対応する法定の比例付与表を確認してください。なお週所定労働時間30時間以上なら、週4日でも通常付与です。6か月継続勤務・全労働日の8割以上出勤を満たす初回は10日、以後も出勤率の要件を満たすと勤続期間に応じて11〜20日になります。</p>
+  <p class="faq-answer">あります。週所定労働時間30時間未満で週所定労働日数4日以下の人は、<b>比例付与</b>の対象です。週以外の期間で日数を定める場合は、週30時間未満で年間所定労働日数48日以上216日以下なら対象です。週4日なら、6か月継続勤務・全労働日の8割以上出勤で7日です。週所定労働時間30時間以上なら、週4日でも通常付与で、同じ要件を満たす初回は10日です。</p>
   <h3 class="faq-question">年5日の取得義務とは？</h3>
   <p class="faq-answer">労基法39条1〜3項により年10日以上の有給休暇を与えなければならない労働者について、会社は<b>年5日を確実に取得させる義務</b>があります（2019年4月から）。違反すると30万円以下の罰金の対象です。パート・アルバイトでも当年度の法定付与日数が10日以上なら対象になります。</p>
 </section>
