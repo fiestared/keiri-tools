@@ -18,11 +18,11 @@ from funds import FUNDS, check_all
 check_all()
 import compare as CP
 
-PUB_DEFAULT = '2026-10-10'  # この便で公開する記事の公開日
-PUB_BY_SLUG = {'sbi-spyd-vs-rakuten-schd': '2026-10-03', 'sbi-spyd-vs-sbi-vym': '2026-10-04', 'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09'}  # 既に公開した記事の公開日は動かさない
+PUB_DEFAULT = '2026-10-11'  # この便で公開する記事の公開日
+PUB_BY_SLUG = {'sbi-spyd-vs-rakuten-schd': '2026-10-03', 'sbi-spyd-vs-sbi-vym': '2026-10-04', 'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09', 'sbi-vym-vs-rakuten-vym': '2026-10-10'}  # 既に公開した記事の公開日は動かさない
 PUB = PUB_DEFAULT  # 公開日（datePublished・ページの公開日の表示）。Page ごとに差し替える
 GOT_DEFAULT = '2026-10-03'  # 資料・基準価額データの取得日（公開日と分けて持つ。2026-10-02 の TODO）
-GOT_BY_SLUG = {'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09', 'sbi-vym-vs-rakuten-vym': '2026-10-10'}  # 後の便で資料を取り直した記事
+GOT_BY_SLUG = {'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09', 'sbi-vym-vs-rakuten-vym': '2026-10-10', 'rakuten-schd-vs-sbi-schd': '2026-10-11'}  # 後の便で資料を取り直した記事
 GOT = GOT_DEFAULT
 CMP = json.loads((R / 'comparison.json').read_text())['pairs']
 E = H.escape
@@ -354,6 +354,7 @@ NAME_PATS = {
     'rakuten-ndx': r'「楽天・プラス・ＮＡＳＤＡＱ－１００インデックス・ファンド」 ?の募集',
     'rakuten-vym': r'楽天・米国高配当株式インデックス・ファンド」 ?の募集',
     'sbi-vym1': r'この目論見書により行う 「ＳＢ Ｉ・V・米国高配当株式インデックス・ファンド」 の募集',
+    'sbi-schd4': r'この目論見書により行う「ＳＢ Ｉ・S・米国高配当株式ファンド （年4回決算型）」 の募集',
     'rakuten-jepi': r'「楽天・米国大型株式・プレミアム・インカム・ファンド\(毎月決 ?算型\)」の募集',
     'emaxis-nk': r'この目論見書により行う 「ｅＭＡＸ Ｉ ＳＳｌ ｉｍ 国内株式 （日経平均）」の募集',
     'tawara-nk': r'この目論見書により行う 「たわらノーロード 日経２２５」の募集',
@@ -383,6 +384,8 @@ DOCDATE = {
     'enk_P': r'使用開始日 2026\.７\.25', 'enk_Ak': r'作成対象期間：2025年４月26日〜2026年４月27日', 'enk_M': r'2026年09月30日現在',
     'tnk_P': r'使用開始日 2026年７月15日', 'tnk_Ak': r'作成対象期間 2024年10月16日～2025年10月14日', 'tnk_M': r'2026年9月30日基準',
     'svy1_P': r'使用開始日 2026\.4\.11', 'svy1_Ak': r'作成対象期間（2025年７月12日〜2026年７月13日）', 'svy1_M': r'2026.8月31日基準',
+    'sschd_P': r'使用開始日 2026\.7\.1', 'sschd_Ak': r'作成対象期間（2025年９月30日〜2026年３月30日）', 'sschd_M': r'2026.9月30日基準',
+    'sschd_N1': r'2025 年 5 月吉日', 'sschd_N2': r'2025 年 8 月吉日',
     'tbal_P': r'使用開始日 2026年７月15日', 'tbal_Ak': r'作成対象期間 2024年10月16日～2025年10月14日', 'tbal_M': r'2026年8月31日基準',
 }
 
@@ -593,7 +596,7 @@ def build_ledger(p):
     return errors
 
 # Ledgers reviewed claim by claim on a later day carry that date (check_claim_scope requires must_with from 2026-10-05).
-CHECKED = {'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09', 'sbi-vym-vs-rakuten-vym': '2026-10-10'}
+CHECKED = {'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09', 'sbi-vym-vs-rakuten-vym': '2026-10-10', 'rakuten-schd-vs-sbi-schd': '2026-10-11'}
 _PERF_CALC = ('python3（2026-10-05、compare.series の保存データから再計算）: 共通営業日 2025-02-07〜2026-09-30（暦日600日、600/365.25=1.64年）。'
               'SBI: 累積 19780.68269/11947.95801-1=+65.5570%、年率 (1.655570)^(1/1.6427)-1=+35.9203%、100万円×1.655570=1,655,570円、最大下落 -16.9911%、'
               '直近1年 19780.68269/14510.21310-1=+36.3225%。楽天: 累積 16063/9999-1=+60.6461%、年率 +33.4515%、1,606,461円、最大下落 -15.3947%、'
@@ -616,7 +619,52 @@ _PERF_CALC_NK = ('python3（2026-10-09、compare.series の保存データ mufg_
 _PERF_CALC_VV = ('python3（2026-10-10、compare.series の保存データ sbi_2021062902.xml（return_value 連乗）/ rakuten_100035_20261010.csv から再計算）: 共通営業日 2023-09-29〜2026-09-30（731営業日、暦日1,097日、1097/365.25=3.0034年→3.00年）。'
                  'SBI・V・米国高配当株式: 累積 24205.0019/14274.0020-1=+69.5740%、年率 (1.695740)^(1/3.0034)-1=+19.2246%、100万円×1.695740=1,695,740円、最大下落 -19.1658%（高値2025-01-24→安値2025-04-09）、直近1年（2025-09-30起点）+20.0645%。'
                  '楽天・VYM: 累積 31258/18391-1=+69.9636%、年率 (1.699636)^(1/3.0034)-1=+19.3158%、1,699,636円、最大下落 -19.4483%（高値2025-01-24→安値2025-04-09）、直近1年 +20.1445%。日次騰落率の相関 0.99990→小数第4位で0.9999。comparison.json と一致。')
+_PERF_CALC_SS = ('python3（2026-10-11、compare.series の保存データ rakuten_100105_20261011.csv / sbi_2024122003.xml（return_value 連乗）から再計算）: 共通営業日 2024-12-20〜2026-09-30（430営業日、暦日649日、649/365.25=1.7769年→1.78年）。'
+                 '楽天・SCHD: 累積 13720/10712-1=+28.0807%、年率 (1.280807)^(1/1.7769)-1=+14.9451%、100万円×13720/10712=1,280,807円、最大下落 8941/11112-1=-19.5374%（高値2025-01-28→安値2025-04-22）、直近1年（2025-09-30起点）13720/10420-1=+31.6699%。'
+                 'SBI・SCHD: 累積 12752.2433/10000-1=+27.5224%、年率 (1.275224)^(1/1.7769)-1=+14.6629%、1,275,224円、最大下落 8323.0001/10318.0002-1=-19.3351%（高値2025-01-28→安値2025-04-22）、直近1年 12752.2433/9672.3623-1=+31.8421%。'
+                 '日次騰落率の相関 0.99954518→小数第4位で0.9995。comparison.json と一致。SBI側の月次レポート（2026年9月30日基準）の期間収益率 設定来27.52%・1年31.84% と小数第2位まで一致。')
 SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'calc': str}}
+    'rakuten-schd-vs-sbi-schd': {
+        'perf': {'must_with': ['再投資|仮定|相関', '2026年9月30日|比較期間|仮定'], 'derived': True, 'calc': _PERF_CALC_SS},
+        'perfA': {'must_with': ['再投資', '2026年9月30日|比較期間'], 'derived': True, 'calc': _PERF_CALC_SS},
+        'perfB': {'must_with': ['再投資', '2026年9月30日|比較期間'], 'derived': True, 'calc': _PERF_CALC_SS},
+        'desc': {'must_with': ['再投資|仮定', '2026年9月30日|仮定|比較期間']},
+        'period': {'must_with': ['設定日|比較期間'], 'derived': True, 'calc': 'python3: (date(2026,9,30)-date(2024,12,20)).days=649、649*12/365.25=21.32か月→約1年9か月。'},
+        'method': {'must_with': ['比較期間|起点|終点|基準価額|データ|再投資|確認した|取得|仮定']},
+        'feehead': {'must_with': ['確認した|総経費率']},
+        'rakuten-schd-fee': {'must_with': ['税込|信託報酬']},
+        'sbi-schd4-fee': {'must_with': ['税込|信託報酬']},
+        'rakuten-schd-ter': {'must_with': ['総経費率|比率|程度|管理報酬等', '対象期間|作成対象期間|交付目論見書|交付運用報告書|充当|国内ファンド分']},
+        'sbi-schd4-ter': {'must_with': ['総経費率|比率', '対象期間|作成対象期間|参考値|比率']},
+        'terpair': {'must_with': ['総経費率|比率|充当', '参考値|作成期間|比率|充当']},
+        'tersrc': {'must_with': ['総経費率', '参考']},
+        'rakuten-schd-terfund': {'must_with': ['総経費率|比率|程度|管理報酬等', '充当|比率|程度|参考値|管理報酬等']},
+        'sbi-schd4-terbrk': {'must_with': ['交付運用報告書|程度|総経費率|比率|管理報酬等', '比率|程度|総経費率|管理報酬等']},
+        'sbi-schd4-terfig': {'must_with': ['内訳|その他費用']}, 'rakuten-schd-terfig': {'must_with': ['内訳|その他費用']},
+        'otherfee': {'must_with': ['その他費用']},
+        'rakuten-schd-eff': {'must_with': ['程度|国内ファンド分|ファンド本体|管理報酬等|税込|比率', '税込|交付目論見書|概算|充当|比率']},
+        'sbi-schd4-eff': {'must_with': ['程度|国内ファンド分|ファンド本体|管理報酬等|税込|比率', '税込|交付目論見書|概算|充当|比率']},
+        'effpair': {'must_with': ['程度|税込', '税込|概算|交付目論見書']},
+        'effgap': {'must_with': ['概算|再投資', '仮定|再投資', '実際の利益差ではありません|目安|再投資'], 'derived': True, 'calc': 'python3: round(0.1238 - 0.1227, 4) = 0.0011（年0.0011ポイント）、round(0.0011 / 100 * 1_000_000) = 11（約11円）。'},
+        'feecut': {'must_with': ['2025年5月20日|国内ファンド分', '税込']},
+        'rakuten-schd-effnote': {'must_with': ['2026年2月末|程度|税込', '概算|変動|程度|税込']},
+        'sbi-schd4-effnote': {'must_with': ['2026年3月末|程度|比率', '変更|程度|比率']},
+        'sbi-schd4-lend': {'must_with': ['貸付', '以内']},
+        'rakuten-schd-settle': {'must_with': ['原則として|決算日|作成対象期間', '休業日|決算日|作成対象期間']},
+        'sbi-schd4-settle': {'must_with': ['原則として|決算日|作成対象期間', '休業日|決算日|作成対象期間']},
+        'settlepair': {'must_with': ['原則として|決算月|決算日|作成対象期間', '休業日|年4回|決算月|決算日|作成対象期間']},
+        'schg': {'must_with': ['2025年8月13日|原則として|決算日', '約款変更|休業日|決算日']},
+        'distA': {'must_with': ['1万口当たり', '税引前|利回り']},
+        'distB': {'must_with': ['1万口当たり', '税引前|利回り']},
+        'nav-a': {'must_with': ['2026年9月30日', '純資産総額']},
+        'nav-b': {'must_with': ['2026年9月30日', '純資産総額']},
+        'nisapair': {'must_with': ['交付目論見書', '販売会社']},
+        'rakuten-schd-incept': {'must_with': ['設定日']}, 'sbi-schd4-incept': {'must_with': ['設定日']},
+        'doc-risude_P': {'must_with': ['交付目論見書']}, 'doc-sschd_P': {'must_with': ['交付目論見書']},
+        'doc-risude_Ak': {'must_with': ['交付運用報告書']}, 'doc-sschd_Ak': {'must_with': ['交付運用報告書']},
+        'doc-risude_M': {'must_with': ['月次レポート']}, 'doc-sschd_M': {'must_with': ['月次レポート']},
+        'doc-sschd_N1': {'must_with': ['お知らせ']}, 'doc-sschd_N2': {'must_with': ['お知らせ']},
+    },
     'sbi-vym-vs-rakuten-vym': {
         'perf': {'must_with': ['再投資|仮定', '2026年9月30日|比較期間|仮定'], 'derived': True, 'calc': _PERF_CALC_VV},
         'perfA': {'must_with': ['再投資', '2026年9月30日|比較期間'], 'derived': True, 'calc': _PERF_CALC_VV},
