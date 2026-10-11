@@ -131,6 +131,36 @@ function readPaydayRows(doc) {
 }
 
 // ── シーン ────────────────────────────────────────────────────────────────
+// 開いたページの「今日」を固定する(引数なしの new Date() だけ。引数つきと Date.now() は本物のまま)。
+// ページのスクリプトは押下のたびに new Date() を呼ぶので、load の後に差し替えれば効く。
+// ★「今日」で答えが変わるページのシーンは必ずこれを通す(実行日によって落ちる/通るシーンを作らない)。
+const fixToday = (doc, ymd) => {
+  const win = doc.defaultView, Real = win.Date;
+  const at = new Real(ymd + "T12:00:00").getTime();
+  win.Date = class extends Real { constructor(...a) { if (a.length) super(...a); else super(at); } };
+};
+
+// 最低賃金: 都道府県の選択→判定までが実際に動くか。
+// コアのテスト(tests/test_saitei.mjs)は純ロジックだけを見ており、
+// 「セレクトが47件描かれるか」「月給の入力欄が出るか」「判定文が出るか」は無検査だった。
+const saiteiHourlyScene = (ymd) => async () => {
+  const doc = await open("/docs/saitei-chingin/");
+  fixToday(doc, ymd);
+  await waitFor(() => doc.querySelectorAll("#pref option").length > 40, "都道府県セレクトの描画");
+  set(doc, "pref", "東京");
+  await waitFor(() => text(doc, "prefBox").includes("東京都"), "選んだ県の額の表示");
+  set(doc, "amount", "1100");
+  click(doc, "run");
+  await waitFor(() => text(doc, "out").length > 0, "判定結果の描画");
+  return {
+    options: doc.querySelectorAll("#pref option").length,
+    prefBox: text(doc, "prefBox"),
+    out: text(doc, "out"),
+    tableRows: doc.querySelectorAll("#table tbody tr").length,
+    nextBox: text(doc, "nextBox"),
+  };
+};
+
 const SCENES = {
   // 銀行プリセットを選ぶと手数料欄が本当に埋まるか(fetch→select→input の配線)
   async senpou_preset() {
@@ -221,33 +251,24 @@ const SCENES = {
   // 最低賃金: 都道府県の選択→判定までが実際に動くか。
   // コアのテスト(tests/test_saitei.mjs)は純ロジックだけを見ており、
   // 「セレクトが47件描かれるか」「月給の入力欄が出るか」「判定文が出るか」は無検査だった。
-  async saitei_hourly() {
-    const doc = await open("/docs/saitei-chingin/");
-    await waitFor(() => doc.querySelectorAll("#pref option").length > 40, "都道府県セレクトの描画");
-    set(doc, "pref", "東京");
-    await waitFor(() => text(doc, "prefBox").includes("1226"), "選んだ県の額の表示");
-    set(doc, "amount", "1100");
-    click(doc, "run");
-    await waitFor(() => text(doc, "out").length > 0, "判定結果の描画");
-    return {
-      options: doc.querySelectorAll("#pref option").length,
-      prefBox: text(doc, "prefBox"),
-      out: text(doc, "out"),
-      tableRows: doc.querySelectorAll("#table tbody tr").length,
-      nextBox: text(doc, "nextBox"),
-    };
-  },
+  // ★判定日は固定する(fixToday)。ページは「今日」に有効な額で判定するので、固定しないと
+  //   発効日(東京は令和8年10月1日)をまたいだ日から期待値が変わる。実際に 2026-10-01 から
+  //   このシーンは「1226円・126円不足」を待ったまま赤になり、10日間だれも気づかなかった。
+  //   発効日の当日(1280円)と前日(改定前の1226円)の2本で、境目の両側を固定する。
+  saitei_hourly: saiteiHourlyScene("2026-10-01"),
+  saitei_hourly_before: saiteiHourlyScene("2026-09-30"),
 
   // 月給制: 分母(1か月平均所定労働時間)を使って換算しているか。
-  // 240日×8時間÷12=160時間 → 東京1226円×160=196,160円。196,000円は「割れ」でなければならない。
+  // 240日×8時間÷12=160時間 → 東京1280円×160=204,800円。204,700円は「割れ」でなければならない。
   // ここが「月の暦日数×8」等になっていると、同じ月給が「クリア」に化ける。
   async saitei_monthly() {
     const doc = await open("/docs/saitei-chingin/");
+    fixToday(doc, "2026-10-01");
     await waitFor(() => doc.querySelectorAll("#pref option").length > 40, "都道府県セレクトの描画");
     set(doc, "pref", "東京");
     doc.querySelector('input[name="wt"][value="monthly"]').click();
     await waitFor(() => doc.getElementById("monthlyInputs").style.display === "block", "月給欄の出現");
-    set(doc, "amount", "196000");
+    set(doc, "amount", "204700");
     set(doc, "days", "240");
     set(doc, "hpd", "8");
     click(doc, "run");
@@ -1868,7 +1889,15 @@ const iryohiScene = ({ iryohi, hoten = 0, hotenTaisho, shunyu, rate, selfmed, no
     iryohi, shunyu,
     kojo: num(/医療費控除の控除額 ¥([\d,]+)/),
     ashikiri: num(/足切り額[^¥]*¥([\d,]+)/),
-    keigen: num(/戻ってくる税金の目安 ¥([\d,]+)/), // 最初の一致＝通常の医療費控除の軽減額
+    // ★行(.row)をラベルで名指しして、その中の見出し値(.big)を読む。最初の一致＝通常の医療費控除の軽減額。
+    //   2026-10-01 にラベルが「戻ってくる税金の目安」→「税負担の軽減目安」に変わったとき、本文への
+    //   正規表現が外れて keigen が常に null になり、iryohi は赤・iryohi_norate は「null なら緑」で空回りした。
+    keigen: (() => {
+      const row = [...doc.querySelectorAll("#result .row")]
+        .find((el) => el.textContent.trim().startsWith("税負担の軽減目安"));
+      const big = row && row.querySelector(".big");
+      return big ? Number(big.textContent.replace(/[^\d]/g, "")) : null;
+    })(),
     selfmedKojo: num(/セルフメディケーション税制[\s\S]*?控除額 ¥([\d,]+)/),
     recommendsSelf: /おすすめ：② セルフメディケーション/.test(body),
     // ★足切り・上限の表示が**データ由来**であることを実行時に固定する（静的HTMLを読む単体テストには
@@ -4471,8 +4500,16 @@ const EMBED_PARITY = {
   },
   "bonus-tedori": {
     wait: '#pref option[value="東京都"]',
+    // ★前月給与の欄(#zengetsu)は id が同じでも**意味が違う**(2026-09-28〜29 から):
+    //   本体 = 前月の額面(社保は本体が概算で引く)／embed = 前月の社会保険料等控除後の給与(実額)。
+    //   同じ 300000 を両方に入れると、embed は社保を引かない 300,000 で率を引くので
+    //   手取りが 409,130 と 400,420 に割れる(入力が別物なので、どちらも正しい)。
+    //   embed には、本体が額面30万から出す社保後の額 255,930 を入れて**同じ条件**にする
+    //   (255,930 は本体の結果に「前月の社保後給与 ¥255,930」と出る額。料率が変わったら直す)。
     ops: [["set", "pref", "東京都"], ["set", "age", 30], ["set", "bonus", 500000],
-          ["set", "dependents", 0], ["set", "zengetsu", 300000]],
+          ["set", "dependents", 0]],
+    mainOps: [["set", "zengetsu", 300000]],
+    embedOps: [["set", "zengetsu", 255930]],
   },
   // ★賞与も入れる。賞与を入れないと**賞与ブロックが1行も描かれない**ので、本体だけ直して
   //   embed に古い実装が残った状態(2026-08-03: 健保の年度累計573万円上限がembedだけ効かず
@@ -5537,7 +5574,11 @@ SCENES.ux_field_error_inshi = fieldErrorScene({ path: "/docs/inshi/", field: "am
 SCENES.ux_field_error_bonus_tedori = fieldErrorScene({ path: "/docs/bonus-tedori/", field: "bonus", value: "500000", fill: { zengetsu: "300000" } });
 // 計算ボタンを押して、結果が画面の下（見えない位置）に描かれたら、結果の頭が見えるところまでスクロールすること。
 // iframe を低くして「結果が折り目の下に出る」スマホの状態を作る
+// ★幅も 390px にする。1024px 以上は右レールに結果の要約が出るので、ページを動かさないのが正しい
+//   (a11y_error.js の railShows。2026-10-08 に 1200→1024px へ下げた)。iframe の既定幅 1100px のまま
+//   高さだけ縮めていたので、その日からこのシーンは「PC で動かない」を赤と数えていた。
 SCENES.ux_result_scroll_shaho = async () => {
+  document.getElementById("f").style.width = "390px";
   document.getElementById("f").style.height = "560px";
   const doc = await open("/docs/shakai-hoken/");
   const win = doc.defaultView;
