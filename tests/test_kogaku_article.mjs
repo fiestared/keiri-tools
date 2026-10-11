@@ -135,8 +135,11 @@ const KYOKAI_CELL = {
   エ: '<td>28万円未満（区分オを除く）</td>',
   オ: '<td>被保険者が住民税非課税（区分ア・イを除く）</td>',
 };
+// ★行は早見表の節（#hayami〜#kubun）の中だけで探す。2026-10-12 に8月からの表を先頭の節 #genko へ移したので、
+//   ページ全体で探すと <td><b>ア</b></td> の最初の一致が8月からの表になる（規則4）。
+const hayamiRows = [...body.slice(body.indexOf('id="hayami"'), body.indexOf('id="kubun"')).matchAll(/<tr>[\s\S]*?<\/tr>/g)].map(m => m[0]);
 for (const [k, v] of Object.entries(SEIREI)) {
-  const r = rowBy(`<td><b>${k}</b></td>`);
+  const r = hayamiRows.find(x => x.includes(`<td><b>${k}</b></td>`));
   if (!r) { fail(`早見表に区分${k}の行が無い`); continue; }
   const t = strip(r);
   const want = v.flat != null
@@ -265,7 +268,12 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
   else ok('改正: 「変わらない」と書いていたのは誤りだったと明示して訂正している');
 
   // 7-2. 新表の5行を、節の中で区分セルを名指しして照合（規則4・5）
-  const secRows = [...sec.matchAll(/<tr>[\s\S]*?<\/tr>/g)].map(m => m[0]);
+  // ★8月からの表は 2026-10-12 に先頭の節 #genko（#hayami の手前）へ移した。その節の中だけで行を探す。
+  const genko = body.slice(body.indexOf('<h2 id="genko">'), body.indexOf('<h2 id="hayami">'));
+  if (!/<h2 id="genko">[^<]*令和8年8月～令和9年7月診療分[^<]*<\/h2>/.test(genko)) fail('8月からの表の節 #genko のh2が期間を名乗っていない');
+  else ok('8月からの表のh2が「令和8年8月～令和9年7月診療分」と期間を名乗っている');
+  const secRows = [...genko.matchAll(/<tr>[\s\S]*?<\/tr>/g)].map(m => m[0]);
+  if (/<td><b>[アイウエオ]<\/b><\/td>/.test(sec)) fail('改正の節に区分ア〜オの表が残っている（8月からの表は #genko の1か所だけ）');
   for (const [k, v] of Object.entries(SHINPYO)) {
     const r = secRows.find(x => x.includes(`<td><b>${k}</b></td>`));
     if (!r) { fail(`8月からの表に区分${k}の行が無い`); continue; }
@@ -401,7 +409,8 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
 
   // 1年の区切り（暦年・年度と取り違えると全部ずれる）。callout 内の p を名指し
   const co = body.slice(body.indexOf('<b>年間上限の「1年」は、8月診療分から翌年7月診療分までです</b>'));
-  const coP = strip((co.match(/<p>([\s\S]*?)<\/p>/) || [])[1] || '');
+  // 2026-10-12: この callout の段落を2つに分けた（1年の区切り／先行制度）。callout の中だけを見る。
+  const coP = strip(co.slice(0, co.indexOf('</div>')));
   if (!coP.includes('暦年（1月〜12月）でも年度（4月〜3月）でもありません'))
     fail('年間上限の1年が「暦年でも年度でもない」と否定されていない');
   else ok('年間上限: 暦年でも年度でもないことを明示');
