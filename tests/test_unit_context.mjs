@@ -77,7 +77,13 @@ const page = (pre, post = '') => `<title>題</title><meta name="description" con
 }
 // 6. 本物のページで: 無傷で緑（規則2）→ 印を1つ足すと、その表のセルだけに文脈が付き、全単位の id・text は不変
 {
-  const path = new URL('../docs/furusato/index.html', import.meta.url), html = readFileSync(path, 'utf8');
+  // 2026-10-11: 読みやすさの作り直しで、この段落に before-table の印が本文の側に付いた（行見出しのかっこ書きの書き写しをやめたため）。
+  //   ここでは印を外した形を「無傷」として、印を1つ足したときの動きを確かめる（見るものは従来と同じ）。
+  const path = new URL('../docs/furusato/index.html', import.meta.url);
+  const marked = '<p data-review-context="before-table">次は、確定申告をする場合について、特例分の天井46,840円・両税率5％を固定した算術例です。';
+  const raw = readFileSync(path, 'utf8');
+  assert.equal(raw.split(marked).length, 2, '本文の側の印つきの段落は1つだけ');
+  const html = raw.replace(marked, marked.replace(' data-review-context="before-table"', ''));
   const before = segmentClaims(html, 'docs/furusato/index.html');
   const target = '<p>次は、確定申告をする場合について、特例分の天井46,840円・両税率5％を固定した算術例です。';
   assert.equal(html.split(target).length, 2, '印を足す段落は本文に1つだけ（規則8: 壊し方を一意に）');
