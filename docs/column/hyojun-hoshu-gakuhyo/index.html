@@ -154,10 +154,10 @@
 
   <h2 id="hyou">標準報酬月額表（全50等級・保険料の実額つき）</h2>
   <form id="grade-lookup" novalidate>
-    <p id="grade-help" class="hint">基本給・残業手当・通勤手当などを含む月の報酬を入れます（<a href="#hoshu">含めるもの・除くもの</a>）。</p>
     <label for="grade-amount">報酬月額から該当行を探す（円）</label>
     <input id="grade-amount" type="text" inputmode="numeric" aria-describedby="grade-help grade-summary">
     <button type="submit" class="primary">該当行を探す</button>
+    <p id="grade-help" class="hint">基本給・残業手当・通勤手当などを含む月の報酬を入れます（<a href="#hoshu">含めるもの・除くもの</a>）。</p>
     <p id="grade-summary" role="status" aria-live="polite"></p>
   </form>
   <!--nav-exp:table-cue S--><p class="table-cue">表は枠の中でスクロールすると、50等級（報酬月額135万5,000円以上）まで続きます。スマホなど幅の狭い画面では、右へスクロールすると「健保＋介護（40〜64歳）」「子ども支援金」「厚生年金」「合計」の列が出ます。<a href="#hyou" role="button" id="hyou-expand" aria-expanded="false">全50等級を広げて表示</a></p><script>document.addEventListener("DOMContentLoaded",function(){var a=document.getElementById("hyou-expand");if(!a)return;var w=a.closest("p").nextElementSibling;while(w&&(w.tagName==="SCRIPT"||w.matches('p[data-review-context="before-table"]')))w=w.nextElementSibling;if(!w||!w.classList.contains("scroll-wrap"))return;w.id="hyou-wrap";a.setAttribute("aria-controls","hyou-wrap");function t(e){if(e.type==="keydown"&&e.key!==" ")return;e.preventDefault();var on=w.classList.toggle("is-expanded");a.setAttribute("aria-expanded",on?"true":"false");a.textContent=on?"枠の中の表示に戻す":"全50等級を広げて表示";if(!on)a.scrollIntoView({block:"nearest"});}a.addEventListener("click",t);a.addEventListener("keydown",t);});</script><!--nav-exp:table-cue E-->

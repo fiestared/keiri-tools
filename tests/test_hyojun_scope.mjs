@@ -14,7 +14,7 @@ for(const c of COLS)assert.equal(money.filter(u=>u.text.includes(`【列】${c} 
 for(const u of money){const c=u.context||'';assert.match(c,/【表の直前の説明】/);assert.match(c,/【表の直後の注】/);assert.match(c,/東京支部の一般被保険者の本人負担分（月額）/);assert.match(c,/保険料免除や保険料調整制度の利用がなく/);assert.match(c,/50銭以下切捨・50銭超切上/);assert.match(c,/健康保険・介護は2026年3月分から、子ども支援金と合計は2026年4月分から/);assert.match(c,/厚生年金と合計は、厚生年金基金未加入/);}
 // 列ごとの注（介護第2号・厚年の読み替え・合計の中身・任意継続・範囲の読み方）は、表の直後の「表の注」の段落に1回だけ
 {const notes=units.filter(u=>u.kind==='p').map(u=>u.text);for(const re of [/報酬月額の範囲は、下限以上・上限未満です/,/区域内.*40歳以上65歳未満.*医療保険加入者/,/93,000円未満なら標準報酬月額88,000円（第1級）、635,000円以上なら650,000円（第32級）/,/雇用保険料は含みません/,/任意継続の人は、この一般被保険者の表を使えません/])assert.equal(notes.filter(t=>re.test(t)).length,1,String(re));}
-// 入力欄とボタンの間に補足を挟まない（2026-10-11 Masahiro）。補足はラベルの上に1行・80字まで
+// 入力欄とボタンの間に補足を挟まない（2026-10-11 Masahiro）。補足はボタンの下に1行・80字まで（入力欄より上に置くと tests/layout/measure.mjs の help-position が落とし、入力欄の直前に置くと gen_layout_markup が入力欄の直後＝ボタンの上へ移す）
 {const html=readFileSync(path,'utf8');const form=html.slice(html.indexOf('<form id="grade-lookup"'),html.indexOf('</form>'));assert.match(form,/<input id="grade-amount"[^>]*>\s*<button type="submit"/);const help=form.match(/<p id="grade-help"[^>]*>([\s\S]*?)<\/p>/)[1].replace(/<[^>]+>/g,'');assert(help.length<=80,`入力欄の補足が ${help.length} 字`);}
 assert.equal(units.filter(u=>u.text.includes('【値】83,000 〜 93,000（厚年は93,000円未満）')).length,1);
 assert.equal(units.filter(u=>u.text.includes('【値】635,000 〜 665,000（厚年は635,000円以上）')).length,1);
