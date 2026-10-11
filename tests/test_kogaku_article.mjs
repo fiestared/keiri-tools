@@ -281,6 +281,10 @@ const SHINPYO = {   // 厚労省PDF「（令和８年８月～令和９年７月
     const need = [`${v.base.toLocaleString()}円`, `${v.tasuukai.toLocaleString()}円`, v.nenkan];
     if (v.start) need.push(`${v.start.toLocaleString()}円`);
     const miss = need.filter(n => !rt.includes(n));
+    // ★境目のセル（標準報酬月額）も見る。協会けんぽの表「令和8年8月～令和9年7月」の等級での書き方
+    const SHIN_KYOKAI = { ア: '83万円以上', イ: '53万～79万円', ウ: '28万～50万円', エ: '26万円以下', オ: '被保険者が住民税非課税（区分ア・イを除く）' };
+    const kyokaiCell = strip(([...r.matchAll(/<td>([\s\S]*?)<\/td>/g)][1] || [])[1] || '').replace(/\s+/g, '');
+    if (kyokaiCell !== SHIN_KYOKAI[k]) { fail(`8月からの表 区分${k}の境目のセルが ${SHIN_KYOKAI[k]} でない: ${kyokaiCell}`); continue; }
     // ★旧表の額がこの行に紛れ込んでいたら落とす（期間の入れ替えの検出）
     const oldBase = SEIREI[k].flat != null ? SEIREI[k].flat : SEIREI[k].base;
     if (miss.length) fail(`8月からの表 区分${k}の行に ${miss} が無い: ${rt}`);
