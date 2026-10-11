@@ -99,7 +99,8 @@ t('境界callout の <p> が「1,500cc は 1リットル超1.5リットル以下
 // ── 5. 早見表の見出しと目次が一致している（見出しを変えたら目次も変える）────────
 t('早見表の h2 と目次のリンク文字列が一致する', () => {
   const h2 = el(/<h2 id="ichiran">([\s\S]*?)<\/h2>/, 'h2#ichiran');
-  const toc = el(/<a href="#ichiran">([\s\S]*?)<\/a>/, '目次の #ichiran リンク');
+  // リードと FAQ からも #ichiran へリンクするので、目次（nav.toc）の中のリンクを名指しする
+  const toc = el(/<nav class="toc">[\s\S]*?<a href="#ichiran">([\s\S]*?)<\/a>/, '目次の #ichiran リンク');
   assert.strictEqual(visible(toc), visible(h2), '目次と h2 の文字列が食い違う');
   assert.ok(visible(h2).includes('早見表'), 'h2#ichiran に「早見表」が無い');
 });
