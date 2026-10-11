@@ -8,7 +8,7 @@ const units=segmentClaims(readFileSync(path,'utf8'),path);
 // 2026-10-11: 列見出しを短い語にし、全行に共通する条件は表の直前の説明・直後の注（局所文脈 u.context）へ1回ずつにまとめた。
 // 金額のセル250個すべてに、その文脈が付いていることを確かめる（列見出しに条件を書き写さない）。
 const COLS=['健康保険（介護なし）','健保＋介護（40〜64歳）','子ども支援金','厚生年金','合計（39歳以下）'];
-const money=units.filter(u=>u.kind==='td'&&COLS.some(c=>u.text.includes(`【列】${c} 【値】`)));
+const money=units.filter(u=>u.kind==='td'&&/^【行】\d+ 【列】/.test(u.text)&&COLS.some(c=>u.text.includes(`【列】${c} 【値】`)));
 assert.equal(money.length,250);
 for(const c of COLS)assert.equal(money.filter(u=>u.text.includes(`【列】${c} 【値】`)).length,50,c);
 for(const u of money){const c=u.context||'';assert.match(c,/【表の直前の説明】/);assert.match(c,/【表の直後の注】/);assert.match(c,/東京支部の一般被保険者の本人負担分（月額）/);assert.match(c,/保険料免除や保険料調整制度の利用がなく/);assert.match(c,/50銭以下切捨・50銭超切上/);assert.match(c,/健康保険・介護は2026年3月分から、子ども支援金と合計は2026年4月分から/);assert.match(c,/厚生年金と合計は、厚生年金基金未加入/);assert.match(c,/区域内.*40歳以上65歳未満.*医療保険加入者/);assert.match(c,/93,000円未満なら標準報酬月額88,000円（第1級）、635,000円以上なら650,000円（第32級）/);assert.match(c,/雇用保険料は含みません/);assert.match(c,/任意継続の人は、この一般被保険者の表を使えません/);}
