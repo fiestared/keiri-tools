@@ -656,6 +656,8 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'schg': {'must_with': ['2025年8月13日|原則として|決算日', '約款変更|休業日|決算日']},
         'distA': {'must_with': ['1万口当たり', '税引前|利回り']},
         'distB': {'must_with': ['1万口当たり', '税引前|利回り']},
+        'cum-a': {'must_with': ['1万口当たり|設定来', '税引前|設定来']}, 'cum-b': {'must_with': ['1万口当たり|設定来', '税引前|設定来']},
+        'distover': {'must_with': ['交付目論見書']},
         'nav-a': {'must_with': ['2026年9月30日', '純資産総額']},
         'nav-b': {'must_with': ['2026年9月30日', '純資産総額']},
         'nisapair': {'must_with': ['交付目論見書', '販売会社']},
