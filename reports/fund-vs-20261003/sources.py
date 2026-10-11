@@ -29,6 +29,11 @@ doc('svym_M', f'{S}/89311241_us%20highdiv4_mr_2608.pdf', 'SBI・V・米国高配
 doc('svy1_P', f'{S}/89312216_us%20highdiv_koufu_20260411.pdf', 'SBI・V・米国高配当株式インデックス・ファンド 交付目論見書（使用開始日2026年4月11日）')
 doc('svy1_Ak', f'{S}/89312216_us%20highdiv_koufuunpou_2026_07_13.pdf', 'SBI・V・米国高配当株式インデックス・ファンド 交付運用報告書（第5期・作成対象期間2025年7月12日〜2026年7月13日）')
 doc('svy1_M', f'{S}/89312216_us%20highdiv_mr_2608.pdf', 'SBI・V・米国高配当株式インデックス・ファンド 月次レポート（2026年8月31日基準）')
+doc('sschd_P', f'{S}/353339144d660aa13d2af2f387d6a729ebfd3e2a.pdf', 'SBI・S・米国高配当株式ファンド（年4回決算型）交付目論見書（使用開始日2026年7月1日）')
+doc('sschd_Ak', f'{S}/8931224C_s_us%20highdiv4_koufuunpou_2026-03-30.pdf', 'SBI・S・米国高配当株式ファンド（年4回決算型）交付運用報告書（作成対象期間2025年9月30日〜2026年3月30日）')
+doc('sschd_M', f'{S}/8931224C_s_us%20highdiv4_mr_2609.pdf', 'SBI・S・米国高配当株式ファンド（年4回決算型）月次レポート（2026年9月30日基準）')
+doc('sschd_N1', f'{S}/b3281dc45f6aedb23974acf5e48a3764691e777e.pdf', 'SBIアセットマネジメント「信託報酬引き下げに関するお知らせ」（SBI・S・米国高配当株式ファンド（年4回決算型）・2025年5月）')
+doc('sschd_N2', f'{S}/43beab1750daf53c0fc9fa6baede5fa44a7d8bf6.pdf', 'SBIアセットマネジメント「信託約款変更に関するお知らせ」（SBI・S・米国高配当株式ファンド（年4回決算型）・2025年8月）')
 doc('sspyd_P', f'{S}/26b89ec6cb0527ad0db83873046cd898fa7d9d6a.pdf', 'SBI・SPDR・S&P500高配当株式インデックス・ファンド（年4回決算型）交付目論見書（使用開始日2026年8月21日）')
 doc('sspyd_Ak', f'{S}/89312241_spdrsp500div4_koufuunpou_20260520.pdf', 'SBI・SPDR・S&P500高配当株式インデックス・ファンド（年4回決算型）交付運用報告書（作成対象期間2025年11月21日〜2026年5月20日）')
 doc('sspyd_M', f'{S}/89312241_spdrsp500div4_mr_2608.pdf', 'SBI・SPDR・S&P500高配当株式インデックス・ファンド（年4回決算型）月次レポート（2026年8月31日基準）')
@@ -89,6 +94,7 @@ NAV = {
     'emaxis-nk': ('mufg_253144.csv', 'https://www.am.mufg.jp/fund_file/setteirai/253144.csv'),
     'tawara-nk': ('amone_313122.json', 'https://www.am-one.co.jp/chart_data/313122/dat.json'),
     'sbi-vym1': ('sbi_2021062902.xml', 'https://apl.wealthadvisor.jp/xml/chart/funddata/2021062902.xml'),
+    'sbi-schd4': ('sbi_2024122003.xml', 'https://apl.wealthadvisor.jp/xml/chart/funddata/2024122003.xml'),
     'rakuten-ndx': ('rakuten_100091.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100091.csv'),
 }
 
