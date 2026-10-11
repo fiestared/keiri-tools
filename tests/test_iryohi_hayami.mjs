@@ -110,9 +110,15 @@ function rows(tableId) {
 
 // ── 結論ファーストのリード（検索者が最初に読む1文）────────────────
 {
-  const v = visible(elem("lead-answer", "p"));
-  ok(/医療費 − 対象医療費を限度とする補填金 − 足切り/.test(v), "#lead-answer に戻る額の式が無い");
-  ok(/所得税率×1.021＋10%/.test(v), "#lead-answer に住民税10%を含む式が無い");
+  // 2026-10-11: 式はリード（#lead-answer）から「使い方と注意点」の #keisan-shiki・#keigen-shiki へ移した
+  //   （リードは平易な言葉で結論だけにした。式の文言は同じ）。
+  const v = visible(elem("keisan-shiki", "p"));
+  ok(/医療費 − 対象医療費を限度とする補填金 − 足切り/.test(v), "#keisan-shiki に控除額の式が無い");
+  const k = visible(elem("keigen-shiki", "p"));
+  ok(/所得税率×1.021＋10%/.test(k), "#keigen-shiki に住民税10%を含む式が無い");
+  const lead = visible(elem("lead-answer", "p"));
+  ok(/医療費 − 保険金などの補填金 − 足切り/.test(lead), "#lead-answer に控除額の決まり方が無い");
+  ok(/控除額0円/.test(lead), "#lead-answer が『ちょうど10万円は控除額0円』を言っていない");
 }
 
 // ── 確定申告の節（国税庁No.1120の逐語確認に基づく）──────────────
