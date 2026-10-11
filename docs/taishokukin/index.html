@@ -127,7 +127,8 @@
 <section class="hero">
   <h1>退職金の税金（退職所得）計算機</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-14">2026年7月14日</time>（更新日: <time datetime="2026-10-11">2026年10月11日</time>）</p>
-  <p>退職金の額と勤続年数を入れると、<b>退職所得控除額</b>・<b>所得税</b>・<b>住民税</b>・<b>手取り額</b>を計算します。<b>勤続年数は1年未満を切り上げる</b>ので、退職日が1か月違うことで勤続年数の切上げ境界をまたぐと、税額が数万円変わる場合があります。その差額も出します。</p>
+  <p>退職金の額と勤続年数を入れると、<b>退職所得控除額</b>・<b>所得税</b>・<b>住民税</b>・<b>手取り額</b>を計算します。申告書を提出していれば、勤続20年なら800万円、勤続30年なら1,500万円まで、所得税等の源泉徴収税額は0円です。</p>
+  <p><b>勤続年数は1年未満を切り上げる</b>ので、退職日が1か月違うことで勤続年数の切上げ境界をまたぐと、税額が数万円変わる場合があります。その差額も出します。</p>
 </section>
 
 
@@ -163,7 +164,7 @@
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
 </div>
-<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機の見方</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/taishokugo-juminzei/">退職後の住民税はどうなる？退職月で変わる払い方・納付書が届く時期・翌年度の課税</a></li><li><a href="../column/chutaikyo/">中退共（中小企業退職金共済）とは</a></li><li><a href="../column/taishokukin-soba/">退職金の相場は1,896万円か1,149万円か</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機の見方</a></li><li><a href="#taishogai">この計算機で計算できないケース</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/taishokugo-juminzei/">退職後の住民税はどうなる？退職月で変わる払い方・納付書が届く時期・翌年度の課税</a></li><li><a href="../column/chutaikyo/">中退共（中小企業退職金共済）とは</a></li><li><a href="../column/taishokukin-soba/">退職金の相場は1,896万円か1,149万円か</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
 <section class="faq">
   <h2 id="tool-section-1">この計算機の見方</h2>
@@ -191,12 +192,19 @@
   <p>勤続年数は<b>1年未満の端数を1年に切り上げて</b>数えます（所得税法施行令69条2項）。つまり<b>勤続20年ちょうど</b>で辞めると控除は800万円ですが、<b>20年と1日</b>勤めれば<b>勤続21年</b>として扱われ、控除は<b>870万円</b>になります。1日の勤務で控除が70万円増えるということです。この計算機は「あと1か月勤めたら税金がいくら変わるか」も併せて表示します。</p>
 
   <h3 id="half">2分の1課税が効かない人が2種類います</h3>
-  <p><b>役員等としての勤続年数が5年以下</b>の人（特定役員退職手当等）は、<b>2分の1が丸ごと適用されません</b>。また<b>役員以外でも勤続5年以下</b>の人（短期退職手当等）は、控除を引いた残額のうち<b>300万円を超える部分にだけ</b>2分の1が適用されません（所得税法30条2項）。短期のほうは2022年1月1日以後の退職金から適用されています。</p>
+  <ul>
+    <li><b>役員等としての勤続年数が5年以下</b>の人（特定役員退職手当等）：<b>2分の1が丸ごと適用されません</b></li>
+    <li><b>役員以外で勤続5年以下</b>の人（短期退職手当等）：控除を引いた残額のうち<b>300万円を超える部分にだけ</b>2分の1が適用されません</li>
+  </ul>
+  <p>根拠は所得税法30条2項です。短期のほうは2022年1月1日以後の退職金から適用されています。</p>
 
   <h3>住民税は、退職金を受け取るときに引かれて終わりです</h3>
   <p>ふつうの住民税は前年の所得に対して翌年6月から払いますが、<b>退職金の住民税だけは他の所得と分離して、支払いのときに天引き</b>されます（地方税法50条の2・328条）。税率は<b>市町村民税6％＋道府県民税4％＝10％</b>（地方税法328条の3・50条の4）。<b>翌年に請求が来ることはありません。</b></p>
 
-  <h3 id="taishogai">ご注意：この計算機で計算できないケース</h3>
+</section>
+
+<section class="faq">
+  <h2 id="taishogai">この計算機で計算できないケース</h2>
   <p>この計算機は、その年に受け取る退職金が1か所からの1回だけである場合を計算します。次の場合は対象外です。</p>
   <ul>
     <li>同じ年に2か所以上から退職金を受け取る場合</li>
