@@ -119,7 +119,7 @@
 
     <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
 
-    <label>あなたの賃金</label>
+    <label>あなたの賃金（円）</label>
     <div style="margin:6px 0 10px">
       <label style="font-weight:400;margin-right:14px"><input type="radio" name="wt" value="hourly" checked> 時給</label>
       <label style="font-weight:400"><input type="radio" name="wt" value="monthly"> 月給</label>
@@ -230,7 +230,13 @@
     </ul>
     <p><b>これらを足した額で比べると違反を見逃します。</b></p>
     <h3>月給制の換算</h3>
-    <p>月給 は月の所定労働時間で割り、月によって所定時間が異なる場合は年間の月平均所定労働時間で割って、最低賃金と比較します。1か月平均所定労働時間は「年間所定労働日数 × 1日の所定労働時間 ÷ 12」です。<b>月の暦日数で割るのではありません。</b>分母を小さく取ると、実際は下回っているのに「クリア」と出てしまいます。</p>
+    <p>月給は、時間額に直してから最低賃金と比べます。</p>
+    <ul>
+      <li>月ごとの所定時間が同じなら、月給 ÷ 月の所定労働時間</li>
+      <li>月によって所定時間が異なる場合は、月給 ÷ 年間の月平均所定労働時間</li>
+      <li>1か月平均所定労働時間 ＝ 年間所定労働日数 × 1日の所定労働時間 ÷ 12</li>
+    </ul>
+    <p><b>月の暦日数で割るのではありません。</b>分母を小さく取ると、実際は下回っているのに「クリア」と出てしまいます。</p>
     <p>年間所定労働日数は、就業規則やカレンダーで確認できます。入力欄の初期値は、土日・祝日が休みの会社のおおよその日数です。</p>
     <h3>下回っていたら</h3>
     <p>最低賃金額より低い賃金の定めは<b>無効</b>となり、最低賃金額と同じ定めをしたものとみなされます（最低賃金法4条2項）。地域別最低賃金を下回った場合、使用者には50万円以下の罰金の定めがあります（同法40条）。まずはお近くの労働基準監督署・総合労働相談コーナーへご相談ください。</p>
@@ -351,7 +357,7 @@ $("run").addEventListener("click", async () => {
   if (!r.ok) { $("out").innerHTML = `<div class="note" style="color:#a33">${esc(r.error)}</div>`; return; }
 
   const head = r.clears
-    ? `<div style="font-size:22px;font-weight:700;color:#1a7a4a">最低賃金を上回っています</div>`
+    ? `<div style="font-size:22px;font-weight:700;color:#1a7a4a">最低賃金以上です</div>`
     : `<div style="font-size:22px;font-weight:700;color:#a33">最低賃金を下回っています</div>`;
 
   const detail = r.clears
