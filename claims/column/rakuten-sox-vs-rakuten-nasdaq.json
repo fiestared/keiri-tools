@@ -246,8 +246,6 @@
       "exceptions": "税引前分配金を再投資した基準価額による計算。購入・換金時の手数料と投資者の税金は含まない（本文の計算条件に明記）。最大下落率は高値2024年7月11日から安値2025年4月9日まで。 比較相手の値は https://www.rakuten-toushin.co.jp/assets/csv/chart_100091.csv の「基準日,基準価額(円),分配金再投資基準価額(円),純資産総額(億円),分配金(円) / 2024/01/30,10000,10000,1.50, / 2026/09/30,19178,19178,3294.39, / 2025/09/30,14674,14674,1281.54, / 2024/12/27,13750,13750,707.90, / 2025/04/09,9933,9933,714.46,」。",
       "covers": [
         "s-501f03900150492195e0-1",
-        "s-0960fbedd990a7201324-1",
-        "s-4c009874e70c19c9acc0-1",
         "s-a6a08510f4f663dda000-1",
         "s-c718bc7a40da47c83b4b-1",
         "s-2c724406f56e3ac95514-1",
@@ -268,19 +266,24 @@
         "s-fca57cd4ab7f4daf99f2-1",
         "s-39003cb0756fbf326f3a-1",
         "s-e2c41b19730a16adbdec-1",
-        "s-f053f17a627c2cd19a7c-1",
         "s-e34cfdcaf716704fdf04-1",
         "s-5f67e57bbb3b0a982b75-1",
         "s-bebdccbbbfdf3d34a55b-1",
         "s-db13287b40b69bfdabad-1",
-        "s-d6fd6b38456b037510e7-1"
+        "s-d6fd6b38456b037510e7-1",
+        "s-1d9716f3d4066ef85c8e-1",
+        "s-07e199cf35a64cf00f2e-1",
+        "s-71d4502c8466a597beb2-1",
+        "s-38d32fbf29cfa60175df-1",
+        "s-3290efc85e396168acb9-1"
       ],
       "must_with": [
-        "再投資|信託報酬",
-        "2026年9月30日|比較期間|信託報酬"
+        "再投資|信託報酬|高値から",
+        "2026年9月30日|比較期間|信託報酬|高値から"
       ],
       "derived": true,
-      "calc": "python3（2026-10-06、compare.series の保存データ rakuten_100092.csv / rakuten_100091.csv から再計算）: 共通営業日 2024-01-30〜2026-09-30（暦日974日、974/365.25=2.6667年）。SOX: 累積 31777/10000-1=+217.77%、年率 (3.1777)^(1/2.6667)-1=+54.27%、100万円×3.1777=3,177,700円、最大下落 8341/15211-1=-45.16%（高値2024-07-11 15211→安値2025-04-09 8341）、直近1年 31777/15096-1=+110.50%。NASDAQ-100: 累積 19178/10000-1=+91.78%、年率 (1.9178)^(1/2.6667)-1=+27.66%、1,917,800円、最大下落 9933/13750-1=-27.76%（高値2024-12-27 13750→安値2025-04-09 9933）、直近1年 19178/14674-1=+30.69%。日次騰落率の相関 0.8933→0.89。comparison.json と一致。"
+      "calc": "python3（2026-10-06、compare.series の保存データ rakuten_100092.csv / rakuten_100091.csv から再計算）: 共通営業日 2024-01-30〜2026-09-30（暦日974日、974/365.25=2.6667年）。SOX: 累積 31777/10000-1=+217.77%、年率 (3.1777)^(1/2.6667)-1=+54.27%、100万円×3.1777=3,177,700円、最大下落 8341/15211-1=-45.16%（高値2024-07-11 15211→安値2025-04-09 8341）、直近1年 31777/15096-1=+110.50%。NASDAQ-100: 累積 19178/10000-1=+91.78%、年率 (1.9178)^(1/2.6667)-1=+27.66%、1,917,800円、最大下落 9933/13750-1=-27.76%（高値2024-12-27 13750→安値2025-04-09 9933）、直近1年 19178/14674-1=+30.69%。日次騰落率の相関 0.8933→0.89。comparison.json と一致。",
+      "must_with_note": "2026-10-12 読みやすさの作り直し: 最大下落率の期間を箇条書き2つ（「…の最大下落率（-45.16%）：2024年7月11日の高値から2025年4月9日の安値まで」）に分けた。比較期間と分配金再投資基準価額で測った値である旨は、直前の導入の文に1回だけ書いている。箇条書きの各項目に書き写さないため「高値から」を代替語に足した。ほかの単位（リード・表・FAQ）は従来どおり再投資と比較期間（または終点の日付）を同じ単位に持つ。"
     },
     {
       "id": "feepair",
@@ -300,9 +303,9 @@
       "source_quote": "財産の純資産総額に年0.176％（税抜0.16％）",
       "exceptions": "交付目論見書の費用欄で料率と適用条件を確認。純資産総額による段階制ではない。資料が「以内」と書いている場合は、その旨と現在の率を表示した。投資先ETF等の報酬は別の行（実質的な負担）に分けた。 比較相手: https://www.rakuten-toushin.co.jp/fund/nav/rirndx/pdf/rirndx_P.pdf「財産の純資産総額に年0.198％（税抜0.18％）」",
       "covers": [
-        "s-0aedd58cf6790e59285d-1",
         "s-76cae1cfdc67c95a3597-1",
-        "s-35e820fda87e1d9b8a97-1"
+        "s-35e820fda87e1d9b8a97-1",
+        "s-67b88a097062c7038cdf-1"
       ],
       "must_with": [
         "税込",
@@ -378,9 +381,8 @@
       "source_quote": "対象期間：2024年10月16日～ 2025年10月15日 総経費率（①＋②） ①運用管理費用の比率 ②その他費用の比率 0.20% 0.18% 0.02%",
       "exceptions": "総経費率は対象期間の運用・管理にかかった費用の総額から算出した年率換算の値で、資料は「これらの値はあくまでも参考であり、実際に発生した費用の比率とは異なります」と注記している（本文では参考値と表示し、この注記も書いた）。購入時手数料・売買委託手数料・有価証券取引税を含まない（本文に明記）。対象期間が2本で異なる場合は表に期間を併記した。 比較相手: https://www.rakuten-toushin.co.jp/fund/nav/rirndx/pdf/rirndx_P.pdf「対象期間：2024年10月16日～ 2025年10月15日 総経費率（①＋②） ①運用管理費用の比率 ②その他費用の比率 0.21% 0.20% 0.01%」",
       "covers": [
-        "s-4397a60b86f0cd9a8d7d-1",
-        "s-cdf5c2d7a4746f79f40e-1",
-        "s-35f5635fc4995221b5e7-1"
+        "s-35f5635fc4995221b5e7-1",
+        "s-99396eed5cf9d9170b87-1"
       ],
       "must_with": [
         "総経費率",
@@ -416,8 +418,6 @@
       "source_quote": "財産の純資産総額に年0.176％（税抜0.16％）",
       "exceptions": "交付目論見書の費用欄で料率と適用条件を確認。純資産総額による段階制ではない。資料が「以内」と書いている場合は、その旨と現在の率を表示した。投資先ETF等の報酬は別の行（実質的な負担）に分けた。 比較相手: https://www.rakuten-toushin.co.jp/fund/nav/rirndx/pdf/rirndx_P.pdf「財産の純資産総額に年0.198％（税抜0.18％）」 実績: https://www.rakuten-toushin.co.jp/assets/csv/chart_100092.csv「基準日,基準価額(円),分配金再投資基準価額(円),純資産総額(億円),分配金(円) / 2024/01/30,10000,10000,1.00, / 2026/09/30,31777,31777,597.87, / 2025/09/30,15096,15096,174.12, / 2024/07/11,15211,15211,152.11, / 2025/04/09,8341,8341,97.75,」 / https://www.rakuten-toushin.co.jp/assets/csv/chart_100091.csv「基準日,基準価額(円),分配金再投資基準価額(円),純資産総額(億円),分配金(円) / 2024/01/30,10000,10000,1.50, / 2026/09/30,19178,19178,3294.39, / 2025/09/30,14674,14674,1281.54, / 2024/12/27,13750,13750,707.90, / 2025/04/09,9933,9933,714.46,」",
       "covers": [
-        "s-aee0d3eba6c5541cf484-1",
-        "s-36d814c7c11cc80a523c-1",
         "s-317f216e3162ef1bd183-1",
         "s-bc1993e1e98f79c76628-1",
         "s-7438c07813dbd4fbf1a5-1",
@@ -427,7 +427,9 @@
         "s-13579eac927a19b84048-1",
         "s-295d4655dac0ff3cf627-1",
         "s-7f753978619dedbca427-1",
-        "s-729a409066f9b7b56cfb-1"
+        "s-729a409066f9b7b56cfb-1",
+        "s-9a850819d1ea414aa147-1",
+        "s-580b452f7739cf5a4ab9-1"
       ],
       "must_with": [
         "税込|2026年9月30日",
@@ -453,7 +455,8 @@
         "s-015c4866e9dddd2b55cb-1",
         "s-8935e22dc0ab3cb5849b-1",
         "s-9fd937b6d192f806bb41-1",
-        "s-9da21d123aeb22c6debb-1"
+        "s-9da21d123aeb22c6debb-1",
+        "s-b95b53c1f99f1a782537-1"
       ]
     },
     {
@@ -469,7 +472,8 @@
       "source_quote": "「Ｎａｓｄａｑ－１００インデックス」 は、米国のナスダック市場に上場している銘柄のうち、時価総額 の大きい金融を除く100社の株式で構成される株価指数です。",
       "exceptions": "指数提供者の算出方法書では、時価総額上位の会社が一時的に追加されて100銘柄を超える場合がある（Fast Entry）。本文の指数の節に書いた。円換算ベースは委託会社が日々の為替レートを乗じて算出したもの（同資料）。 資料の日付: 「使用開始日：2026年7月16日」。 根拠: https://indexes.nasdaqomx.com/docs/Methodology_NDX.pdf「A Fast Entry inclusion will not require the removal of another security, and may temporarily increase the constituent count to more than 100.」",
       "covers": [
-        "s-a6fdea27b6eb8598e864-1"
+        "s-b95b53c1f99f1a782537-1",
+        "s-370f4885350eb2294a0e-1"
       ]
     },
     {
@@ -504,8 +508,8 @@
       "source_quote": "The weights of the top three (3) Index Securities by market capitalization, may not exceed 12%, 10%, 8%, respectively. The weight of a top three (3) Index Security is only adjusted downward if it exceeds its respective constraint. • The individual weights of other Index Securities may not exceed 4%; only the top three (3) may exceed this constraint.",
       "exceptions": "上限は四半期ごとのリバランス（Rebalance）で当てる値で、次のリバランスまでの間は株価の動きで比率が上限を上回ることがある（算出方法書は四半期ごとに調整すると書き、日々の上限維持は書いていない）。本文では「四半期ごとの調整で当てる上限」と書き、月次レポートの比率（2026年8月31日）が上限を上回っていることと矛盾しない旨を書いた。超過分は時価総額の小さい銘柄へ配分し直す。 資料の日付: 「INDEX METHODOLOGY | © Copyright 2026, Nasdaq, Inc. All Rights Reserved.」。 併せて確認した資料: https://indexes.nasdaqomx.com/docs/Methodology_SOX.pdf「An index rebalance is conducted quarterly based on the Rebalance Reference Date.」 / https://indexes.nasdaqomx.com/docs/Methodology_SOX.pdf「The Index is a modified market capitalization-weighted index.」",
       "covers": [
-        "s-c2579682f18c1d7a0c0f-1",
-        "s-721a3835a8183a67c4f4-1"
+        "s-0f6598f5f397fdab395b-1",
+        "s-4fe3d1b240d279cfdb16-1"
       ],
       "must_with": [
         "上限",
@@ -525,7 +529,8 @@
       "source_quote": "The Nasdaq-100 Index® (the “Index”) is designed to measure the performance of 100 of the largest Nasdaq-listed non-financial companies. The Index employs a modified market capitalization weighting scheme.",
       "exceptions": "同じ算出方法書: 年次の見直し（Annual Reconstitution & Rebalance）は12月、リバランスは3・6・9月。比率が一定の水準を超えた場合に会社単位・銘柄単位で下げる多段階の調整があり、条件つきのため本文には数値を書かず「詳細は算出方法書」とした。REITは対象外。時価総額上位40に入る銘柄は臨時に追加され、銘柄数が一時的に100を超えることがある。 資料の日付: 「INDEX METHODOLOGY | © Copyright 2026, Nasdaq, Inc. All Rights Reserved.」。 併せて確認した資料: https://indexes.nasdaqomx.com/docs/Methodology_NDX.pdf「An Annual Reconstitution & Rebalance is conducted in December」 / https://indexes.nasdaqomx.com/docs/Methodology_NDX.pdf「A Rebalance is conducted in March, June, and September.」",
       "covers": [
-        "s-08d1929591f9d537a3f2-1"
+        "s-dbd29e26f510bdf69f4c-1",
+        "s-80c8b9ce5188af26e354-1"
       ]
     },
     {
@@ -542,8 +547,8 @@
       "source_quote": "At market open on the first trading day after the Reconstitution Effective Dates third Friday in September",
       "exceptions": "定期の入れ替え以外の除外・補充（Deletion Policy / Replacement Policy）: 「If, at any time other than an index reconstitution, Nasdaq determines that an Index Security has or will undergo a fundamental alteration that would make it ineligible for index inclusion, the Index Security is removed as soon as practicable.」「The issuer with the largest market capitalization which is not in the Index and meets all security eligibility criteria will replace the deleted security.」。同じ表のリバランスの適用日（Rebalance Effective Dates）は3・6・9・12月の第3金曜日の翌取引日の取引開始時。基準日（Reference Date）は入れ替えが7月の最終取引日、リバランスが2・5・8・11月の最終取引日。抽出テキストは2段組のため表の行見出しが文の途中に挟まる。 資料の日付: 「INDEX METHODOLOGY | © Copyright 2026, Nasdaq, Inc. All Rights Reserved.」。 併せて確認した資料: https://indexes.nasdaqomx.com/docs/Methodology_SOX.pdf「At market open on the first trading day after the Rebalance Effective Dates third Friday in March, June, September, and」",
       "covers": [
-        "s-71014d1cbba1bce462c3-1",
-        "s-f98110ccc4b8ef51e0a4-1"
+        "s-fac152b658a33835f675-1",
+        "s-4aedc102a7a970f1ece1-1"
       ],
       "must_with": [
         "9月"
@@ -564,7 +569,7 @@
       "source_quote": "4/22/2024 Constituent SOX employs a two-stage weight",
       "exceptions": "算出方法書の付録A（METHODOLOGY CHANGE LOG）の 4/22/2024 の行。Previous 欄に Stage 1「No Index Security weight may exceed 8%.」、Stage 2「For Index Securities with the five largest market capitalizations, Stage 1 weights are maintained.」「For all other Index Securities, no weight may exceed 4%.」。抽出テキストは3段組で行が交互に混ざるため、source_quote は行の先頭だけにした。同じ表の 7/6/2026 の行は上場取引所の要件の変更（本文の「米国の取引所に上場」は変更後の定め）。 資料の日付: 「INDEX METHODOLOGY | © Copyright 2026, Nasdaq, Inc. All Rights Reserved.」。 併せて確認した資料: https://indexes.nasdaqomx.com/docs/Methodology_SOX.pdf「• No Index Security weight may constraints. exceed 8% of the index; five may exceed 4%.」 / https://indexes.nasdaqomx.com/docs/Methodology_SOX.pdf「• For all other Index Securities, no the lower weighted Index Securities by weight may exceed 4%.」",
       "covers": [
-        "s-2a5445f79e7bf41b81b6-1"
+        "s-d0ff20188a54d1d6ab65-1"
       ],
       "must_with": [
         "2024年4月22日"
@@ -583,7 +588,7 @@
       "source_quote": "A Special Rebalance may be triggered, if either of the following weighting constraints are breached, based on end-of-day (EOD) values: • No company’s weight may exceed 24%. • The aggregate weight of the companies whose weights exceed 4.5% may not exceed 48%.",
       "exceptions": "同じ節: 臨時リバランスの適用日・基準日は事前に公表され、3・6・9月のリバランスの節にある会社単位の調整の手順に従う。本文は「行われることがあります」と書き、必ず行うとは書いていない。 資料の日付: 「INDEX METHODOLOGY | © Copyright 2026, Nasdaq, Inc. All Rights Reserved.」。",
       "covers": [
-        "s-6598c2dbd26d2aa9872e-1"
+        "s-e2828e23bcd520672a0d-1"
       ],
       "must_with": [
         "臨時"
@@ -602,7 +607,8 @@
       "source_quote": "If any company’s initial weight exceeds 24%: Company-Level Weighting Constraints Stage 1: The weights are adjusted such that no company’s weight exceeds 20%. Stage 2: Any resulting company weights that exceed 4.5% are added together. If the sum of those weights is 48% or greater, then that group of companies will have its aggregate weight adjusted down to 40%.",
       "exceptions": "同じ節の続き: 銘柄単位（Security-Level）の調整（当初比率15%超の銘柄があれば14%以下、上位5銘柄の合計が40%以上なら38.5%へ等）。会社単位の調整は「当初の比率が24%を超える会社がある場合」の条件つきで、本文は条件ごと書き、銘柄単位は「銘柄単位の調整を重ねる」とだけ書いた。3・6・9月のリバランスにも別の定めがある。 資料の日付: 「INDEX METHODOLOGY | © Copyright 2026, Nasdaq, Inc. All Rights Reserved.」。",
       "covers": [
-        "s-89ef3f912aa2881d82e2-1"
+        "s-78e2dbf3f4359e5f90a9-1",
+        "s-ccb2ffec45d5ae85b1d9-1"
       ],
       "must_with": [
         "年次見直し",
@@ -673,44 +679,47 @@
       "exceptions": "比率はマザーファンドの純資産総額比。業種別構成比はETF・先物を含まない（同資料の注記）。上位10銘柄にはETF（ISHARES SEMICONDUCTOR ETF 4.8%）が含まれ、本文の表にも載せた。投資銘柄数31にETFを数えているかは資料に書かれていない。 資料の日付: 「作成基準日 ： 2026年8月31日」。",
       "covers": [
         "s-b47e4842b708d69ce8bd-1",
-        "s-25505e5a738eb6745802-1",
-        "s-08532b0d4ee0f8f79fdf-1",
-        "s-70bed4d8c54193317776-1",
         "s-00d4500194b4768a70c2-1",
-        "s-145e85852c47284f7c32-1",
-        "s-003cc25e0b3b212306ab-1",
-        "s-7484ce10a9db3a3f423c-1",
         "s-fa920becbd41bbbdc7af-1",
-        "s-ec0944614bc9a34505cb-1",
-        "s-2aaa41afccf4b90de30b-1",
         "s-597fe75ad2bc399754f8-1",
-        "s-d7d3850674b112980249-1",
-        "s-3906f265df8ad91fca87-1",
         "s-ff684a7023eca9f2980f-1",
-        "s-ddef5ee94783b64d3a00-1",
-        "s-46c6586e56fced7d46e0-1",
         "s-683731cc20c4ef51f85d-1",
-        "s-c8a40abef4473f921e7b-1",
-        "s-f45a1e998046ce7098fc-1",
-        "s-8a4900ed9fc8793f3de8-1",
         "s-ea5bbfc6754ab3c85701-1",
-        "s-cd5c8126202ef9135a5d-1",
-        "s-8e3e50f8eae439ca5711-1",
         "s-c0414c77b22566ae95a6-1",
-        "s-b8a69b3051817f35cd81-1",
-        "s-7a6319033cba5c0f6b08-1",
         "s-58ebe2e07ea81b5fe9d2-1",
-        "s-7b20cc9e226b3f933d06-1",
-        "s-c7162b835c1fd3e8d45c-1",
         "s-732ef8b92c6b39cfffa9-1",
-        "s-608fbe00a43af704584f-1",
-        "s-7786584cef0a17c08b7b-1",
         "s-2476c5a57335f7331617-1",
-        "s-9e3d9e158e8358054551-1",
-        "s-01031aceac633dce387d-1",
-        "s-2a12c58b20d617b5f4a6-1",
-        "s-d89b502262be2ec0b903-1",
-        "s-fba1ebb844a5b0b5c9fe-1"
+        "s-633a2ef17c0a2139ae58-1",
+        "s-76f30504fd474002456b-1",
+        "s-cbe3359818649cbc268f-1",
+        "s-9ae87ea29cd4027bb01a-1",
+        "s-0a3f28560e835d6c0d2f-1",
+        "s-8b605b3d23af2cf4c6a1-1",
+        "s-623b3548960a7bdc78c1-1",
+        "s-5cf857d04f92700af32c-1",
+        "s-7e0feee72e363ab21571-1",
+        "s-ad4285274b8bb8809f9e-1",
+        "s-0597620685b2f0f34a48-1",
+        "s-5a23d191d94f592ec0be-1",
+        "s-dd932567f06f1df424fc-1",
+        "s-c5d6d660705f8b045360-1",
+        "s-db2bad55a150e47c46ba-1",
+        "s-6798fb124e761a80f948-1",
+        "s-ed157d645b1c9fa6af65-1",
+        "s-b16d6902fc5773f03092-1",
+        "s-ee863a43a4a4acb1f33b-1",
+        "s-97e312f25e7f9679b062-1",
+        "s-0d5d431665bef5f7df5d-1",
+        "s-c63f73be50bb137ec371-1",
+        "s-639ca2ff8c7b5f660675-1",
+        "s-f511f96d0c74fc6b525f-1",
+        "s-cf2d6a394dad1a333d76-1",
+        "s-c7915d91a2e462ed4bf1-1",
+        "s-fde33188067ed5dfa5f1-1",
+        "s-da8e12a38080eb52d245-1",
+        "s-abfe65d7f897f2747efe-1",
+        "s-d953a9e6dc4b821f708c-1",
+        "s-7eceba6c5a10be9a4c5a-1"
       ],
       "must_with": [
         "2026年8月31日|2026年8月末"
@@ -762,26 +771,30 @@
       "source_quote": "投資銘柄数 103 株式 93.9% 投資信託証券 4.9% 短期金融資産等 1.3% 合計 100.0% 株式先物 1.4% 業種別構成比 業種 比率 情報技術 54.6% コミュニケーション・サービス 12.7% 一般消費財・サービス 10.1% 生活必需品 5.8% 資本財・サービス 4.2% ヘルスケア 3.8% 公益事業 1.1% 素材 0.9% エネルギー 0.5% 金融 0.2% ※ 業種別構成比には、ETF（上場投資信託証券）および先物は含みません。 組入上位10銘柄 銘柄 業種 比率 NVIDIA CORP 情報技術 7.9% APPLE INC 情報技術 7.0% MICROSOFT CORP 情報技術 5.7% INVESCO QQQ TRUST SERIES 1 その他 4.9% MICRON TECHNOLOGY INC 情報技術 4.4% AMAZON COM INC 一般消費財・サービス 4.3% ADVANCED MICRO DEVICES INC 情報技術 3.1% ALPHABET INC コミュニケーション・サービス 3.0% ALPHABET INC コミュニケーション・サービス 2.8% BROADCOM INC 情報技術 2.6% ※ 比率は、マザーファンドの純資産総額に対する各資産の評価額の比率です。",
       "exceptions": "比率はマザーファンドの純資産総額比。業種別構成比はETF・先物を含まない。上位10銘柄にはETF（INVESCO QQQ TRUST SERIES 1 4.9%）が含まれ、ALPHABET INC が2行（3.0%と2.8%、株式の種類が違うと見られるが資料に種類の記載は無い）ある。本文の表は資料の行どおりに載せた。 資料の日付: 「作成基準日 ： 2026年8月31日」。",
       "covers": [
-        "s-112e83bb48bd1e758d36-1",
-        "s-003154965d6d05cd1571-1",
-        "s-89f82f30aaf765f15d85-1",
-        "s-dc51609b6d141b9a1e80-1",
-        "s-1f0a00deeb1749bed710-1",
-        "s-61c5a6ec761f943b8930-1",
-        "s-bed9666b8b8415b5ab9d-1",
-        "s-5b18e807ab3d786fba59-1",
-        "s-f9402844461f983bed79-1",
-        "s-9c36b43ae4f22ff79608-1",
-        "s-a9735c2d0259f7da0335-1",
-        "s-af6eb3f162fa58a8e8e5-1",
-        "s-573986311e18a217338a-1",
-        "s-e999833c5407559a9c08-1",
-        "s-a5455d50ffed1629b15c-1",
-        "s-38a656e1589067b355ee-1",
-        "s-42ede7670a885377b72a-1",
-        "s-f00b16b1364e77266f50-1",
-        "s-e5b8d577729b103d5fed-1",
-        "s-44fbfb58cf55dc363aa6-1"
+        "s-633a2ef17c0a2139ae58-1",
+        "s-62dd2958fb9e2b657319-1",
+        "s-76f30504fd474002456b-1",
+        "s-cbe3359818649cbc268f-1",
+        "s-9ae87ea29cd4027bb01a-1",
+        "s-97c7cb10019fd0df749d-1",
+        "s-028dde34765c9de7c5f9-1",
+        "s-4c05834d382e5c07e03c-1",
+        "s-2201b133b45d49be17e3-1",
+        "s-d4be170af6def4794827-1",
+        "s-ae2db197328fdb5b3e03-1",
+        "s-62d34c73d9367392d402-1",
+        "s-faa08d213d044d182f65-1",
+        "s-1095a6767c747be7b368-1",
+        "s-9b6807fcdf68d2545a3c-1",
+        "s-8534bd0674da1c79788d-1",
+        "s-09146584097482ee8e19-1",
+        "s-3dcd27bd06de1a155cba-1",
+        "s-777147a82390e17dcf9e-1",
+        "s-2fdf3a43a50f2cfd9351-1",
+        "s-3b5c6aee90d777a10810-1",
+        "s-c029ab90f05f0a7988ce-1",
+        "s-624c5e38c791297b65fc-1",
+        "s-1c56278f7b4a9c433022-1"
       ],
       "must_with": [
         "2026年8月31日|2026年8月末"
@@ -851,7 +864,7 @@
       "source_quote": "マザーファンドにおいては、ベンチマークとの連動性を維持するため、米国株式の指数との連動をめ ざすETF（上場投資信託証券）、米国株式の指数を対象とした株価指数先物取引を利用することが あります。",
       "exceptions": "2本の交付目論見書に同じ文。同じ欄に、投資信託財産の規模や資金流出入の規模によってはETFや株価指数先物取引への投資割合が相対的に大きくなることがある旨。比較相手: https://www.rakuten-toushin.co.jp/fund/nav/rirndx/pdf/rirndx_P.pdf「マザーファンドにおいては、ベンチマークとの連動性を維持するため、米国株式の指数との連動をめ ざすETF（上場投資信託証券）、米国株式の指数を対象とした株価指数先物取引を利用することが あります。」 資料の日付: 「使用開始日：2026年7月16日」。",
       "covers": [
-        "s-6feb65036f805eaa24b4-1"
+        "s-2120707cc9b015a476de-1"
       ]
     },
     {
@@ -870,7 +883,7 @@
       "source_quote": "株式先物 2.2% ※当ファンドの純資産総額に対し、楽天･SOXインデックス･マザーファンドを100.0％組入れています。 ※投資比率は、 マザーファンドの純資産総額に対する各資産の評価額の比率です。 ※業種は、GICS(世界産業分類基準)による分類です。 ※株式先物は、NASDAQ-100 株価指数先物です。",
       "exceptions": "交付目論見書の「運用実績（2026年4月30日現在）」の欄。2026年8月31日の月次レポートの株式先物1.4%については先物の種類の記載が無いため、本文では2026年4月30日現在と時点を限って書いた。 資料の日付: 「使用開始日：2026年7月16日」。 時点: 「2026年4月30日現在 ※過去の実績を示したものであり、将来の成果を示唆・保証するものではありません。」",
       "covers": [
-        "s-03b60ef0d70eb18c1782-1"
+        "s-6ed3a969470c247f4b06-1"
       ],
       "must_with": [
         "2026年4月30日"
@@ -1228,13 +1241,16 @@
       "source_quote": "以下の表は、個人投資者の源泉徴収時の税率であり、課税方法等により異なる場合があります。 時期 項目 税金 所得税および 配当所得として課税されます。 分配時 地方税 普通分配金に対して20.315% 換金（解約）時 所得税および 譲渡所得として課税されます。 および償還時 地方税 換金（解約）時および償還時の差益（譲渡益）に対して20.315%",
       "exceptions": "同じ節・同じ欄の例外を全件（本文の計算条件の節とFAQに書いた）: 源泉徴収時の税率で課税方法などにより異なる場合がある／外国税額控除の適用となった場合は分配時の税金が異なる場合がある／法人の場合は異なる／税法改正等で税率等が変わる場合がある（資料の時点）／NISAの成長投資枠の取扱いは販売会社により異なる場合がある／NISAは非課税口座の開設など一定の条件に該当する方が対象。課税されるのは分配時は普通分配金、換金（解約）時・償還時は差益（譲渡益）で、差益が無ければ譲渡益の税金はかからない。 根拠: https://www.rakuten-toushin.co.jp/fund/nav/rirsox/pdf/rirsox_P.pdf「以下の表は、個人投資者の源泉徴収時の税率であり、課税方法等により異なる場合があります。 時期 項目 税金 所得税および 配当所得として課税されます。 分配時 地方税 普通分配金に対して20.315% 換金（解約）時 所得税および 譲渡所得として課税されます。 および償還時 地方税 換金（解約）時および償還時の差益（譲渡益）に対して20.315%」「当ファンドは、NISAの 「成長投資枠（特定非課税管理勘定）」 の対象ですが、販売会社に より取扱いが異なる場合があります。」「NISA（ニーサ）」 をご利用の場合 NISAは、少額上場株式等に関する非課税制度です。 NISAをご利用の場合、一定の額を上限として、毎年、一定額の範囲で新たに購入した公募株式投資信託などから生じる配当所得および譲渡所得が 無期限で非課税となります。ご利用になれるのは、販売会社で非課税口座を開設し、税法上の要件を満たした商品を購入するなど、一定の条件に該 当する方が対象となります。」「外国税額控除の適用となった場合には、分配時の税金が上記と異なる場合があります。」「法人の場合は、上記と異なります。」「上記は、2026年4月末現在のものです。税法が改正された場合等には、税率等が変更される場合があります。」 / https://www.rakuten-toushin.co.jp/fund/nav/rirndx/pdf/rirndx_P.pdf「以下の表は、個人投資者の源泉徴収時の税率であり、課税方法等により異なる場合があります。 時期 項目 税金 所得税および 配当所得として課税されます。 分配時 地方税 普通分配金に対して20.315% 換金（解約）時 所得税および 譲渡所得として課税されます。 および償還時 地方税 換金（解約）時および償還時の差益（譲渡益）に対して20.315%」「当ファンドは、NISAの 「成長投資枠（特定非課税管理勘定）」 の対象ですが、販売会社に より取扱いが異なる場合があります。」「NISA（ニーサ）」 をご利用の場合 NISAは、少額上場株式等に関する非課税制度です。 NISAをご利用の場合、一定の額を上限として、毎年、一定額の範囲で新たに購入した公募株式投資信託などから生じる配当所得および譲渡所得が 無期限で非課税となります。ご利用になれるのは、販売会社で非課税口座を開設し、税法上の要件を満たした商品を購入するなど、一定の条件に該 当する方が対象となります。」「外国税額控除の適用となった場合には、分配時の税金が上記と異なる場合があります。」「法人の場合は、上記と異なります。」「上記は、2026年4月末現在のものです。税法が改正された場合等には、税率等が変更される場合があります。」",
       "covers": [
-        "s-b755e78ae3568a81f209-1",
         "s-867a8e9c679b04df1b12-1",
-        "s-0a21ee2c72cd83cd77ec-1",
         "s-7c6dc703ad4d81801882-1",
-        "s-5e594d17bc5f2530d130-1",
-        "s-4a2557fcdaec66933895-1",
-        "s-7164ada18fbbf20944f8-1"
+        "s-03b4b858fd579f878baf-1",
+        "s-647b2a06913d0e06b965-1",
+        "s-d5b463083bcce83de48b-1",
+        "s-d5cd5e0b57e57afc3ecb-1",
+        "s-962e0cf0b61b5d28f88c-1",
+        "s-167ba773d61f882c4553-1",
+        "s-cfef75395971d2ea47c8-1",
+        "s-db2a96b93d4e48c7517b-1"
       ],
       "must_with": [
         "源泉徴収|個人|一定の額"
@@ -1254,8 +1270,7 @@
       "source_quote": "購入時手数料 ありません。 信託財産留保額 ありません。",
       "exceptions": "購入時手数料・信託財産留保額は交付目論見書の費用欄で確認。販売会社が別に定める場合の注記がある資料は、その旨を確認した。 比較相手: https://www.rakuten-toushin.co.jp/fund/nav/rirndx/pdf/rirndx_P.pdf「購入時手数料 ありません。 信託財産留保額 ありません。」 同じ節の「投資者が直接的に負担する費用」はこの2項目だけで、換金手数料の項目は無い。手取りとの差になるのは同じ節の「税金」の表（分配時は普通分配金に、換金（解約）時・償還時は差益に課税。個人の源泉徴収時の税率で、NISA・外国税額控除・法人の場合は異なる）で、本文では税金を含めていないと書いた: https://www.rakuten-toushin.co.jp/fund/nav/rirsox/pdf/rirsox_P.pdf「時期 項目 税金 所得税および 配当所得として課税されます。 分配時 地方税 普通分配金に対して20.315% 換金（解約）時 所得税および 譲渡所得として課税されます。 および償還時 地方税 換金（解約）時および償還時の差益（譲渡益）に対して20.315%」 / https://www.rakuten-toushin.co.jp/fund/nav/rirndx/pdf/rirndx_P.pdf「時期 項目 税金 所得税および 配当所得として課税されます。 分配時 地方税 普通分配金に対して20.315% 換金（解約）時 所得税および 譲渡所得として課税されます。 および償還時 地方税 換金（解約）時および償還時の差益（譲渡益）に対して20.315%」",
       "covers": [
-        "s-772a7c60088354db10ce-1",
-        "s-772a7c60088354db10ce-2"
+        "s-b94f9e4afcdb2ff0695e-1"
       ]
     },
     {
@@ -1444,10 +1459,6 @@
       "why": "非主張。ナビゲーション・ツールへの導線・共有リンクなどの構成要素の文字で、商品の仕様や数値を述べていない。"
     },
     {
-      "id": "s-91bf7a4337718fcb4982-1",
-      "why": "非主張。構成要素の文字で、金融商品の仕様・数値の主張を含まない。"
-    },
-    {
       "id": "s-f6ac90a492d02183138b-1",
       "why": "非主張。表の項目名（列・行の見出し）で、値は隣のセルの主張として台帳に載せている。"
     },
@@ -1478,6 +1489,30 @@
     {
       "id": "s-313980f375839482f8d3-1",
       "why": "非主張。ナビゲーション・ツールへの導線・共有リンクなどの構成要素の文字で、商品の仕様や数値を述べていない。"
+    },
+    {
+      "id": "s-f974824c62378a25a3c7-1",
+      "why": "非主張。節の小見出しで、具体的な数値・要件の断定を含まない。"
+    },
+    {
+      "id": "s-b2739a0b6c5a78a3f00d-1",
+      "why": "非主張。表の項目名（列の見出し）で、値は隣のセルの主張として台帳に載せている。"
+    },
+    {
+      "id": "s-6e9899e60bbfc93a2b86-1",
+      "why": "非主張。直後の箇条書きへの案内文で、商品の仕様や数値を述べていない。"
+    },
+    {
+      "id": "s-74db19cd2533301dee3b-1",
+      "why": "非主張。節の小見出しで、具体的な数値・要件の断定を含まない。"
+    },
+    {
+      "id": "s-e5cc12d06098cd572180-1",
+      "why": "非主張。節の小見出しで、具体的な数値・要件の断定を含まない。"
+    },
+    {
+      "id": "s-ceaa056bb38085d24aaa-1",
+      "why": "非主張。節の小見出しで、具体的な数値・要件の断定を含まない。"
     }
   ],
   "verified": [
@@ -1509,5 +1544,12 @@
       "needed_source": "運営者が金融商品取引業者として登録していないことを示す資料（金融庁の登録業者一覧での不在確認など）。",
       "review_reason": "segment-review 2026-10-06（write-2026-10-06-fin）: 正本（目論見書・運用報告書・月次・算出方法書・基準価額データ）に無い、サイト自身の記述。数値の誤りの指摘は無いので書き換えず未確認のまま残す。"
     }
-  ]
+  ],
+  "_readable20261012": {
+    "note": "読みやすさの作り直し（2026-10-12）。文を箇条書き・小見出しに分け、上位10銘柄の表の見出しを短くしたので単位 ID が変わった。covers は旧単位→新単位の対応（同じ文・同じ行と列と値）で付け替えた。数字・年月日・境界は変えていない。新しい単位は書き手が正本（runs/write-2026-10-06-fin/segment-review-3/corpus）と見比べただけで、独立の再照合はしていない。",
+    "units_before": 220,
+    "units_after": 234,
+    "kept_ids": 145,
+    "retired_claims": []
+  }
 }
