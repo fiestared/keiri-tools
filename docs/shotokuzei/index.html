@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>所得税 計算機｜確定申告の税額・還付金を計算【令和8年分・基礎控除104万円】</title>
-<meta name="description" content="給与・年金・事業などの所得と所得控除から、令和8年分の所得税と復興特別所得税、確定申告で納める税金・還付される税金を計算します。基礎控除104万円・給与所得控除の最低74万円、医療費控除・寄附金控除（ふるさと納税）・住宅ローン控除・源泉徴収税額と予定納税に対応。登録不要・無料。">
+<meta name="description" content="給与・年金・事業などの所得と所得控除から、令和8年分の所得税と復興特別所得税、確定申告で納める税金・還付される税金を計算します。医療費控除・寄附金控除（ふるさと納税）・住宅ローン控除・予定納税に対応。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/shotokuzei/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="所得税 計算機｜確定申告の税額・還付金を計算【令和8年分・基礎控除104万円】">
-<meta property="og:description" content="給与・年金・事業などの所得と所得控除から、令和8年分の所得税と復興特別所得税、確定申告で納める税金・還付される税金を計算します。基礎控除104万円・給与所得控除の最低74万円、医療費控除・寄附金控除（ふるさと納税）・住宅ローン控除・源泉徴収税額と予定納税に対応。登録不要・無料。">
+<meta property="og:description" content="給与・年金・事業などの所得と所得控除から、令和8年分の所得税と復興特別所得税、確定申告で納める税金・還付される税金を計算します。医療費控除・寄附金控除（ふるさと納税）・住宅ローン控除・予定納税に対応。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/shotokuzei/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -135,7 +135,7 @@
 <section class="hero">
   <h1>所得税 計算機（確定申告の税額・還付金）</h1>
   <p class="article-meta">公開日: <time datetime="2026-10-07">2026年10月7日</time>（更新日: <time datetime="2026-10-11">2026年10月11日</time>）</p>
-  <p>1年分の<b>給与・年金・事業などの所得</b>と<b>所得控除</b>を入れると、国税庁「確定申告の手引き」の手順どおりに<b>所得税と復興特別所得税</b>を計算し、源泉徴収された税額と予定納税額を引いて、確定申告で<b>納める税金</b>か<b>還付される税金</b>の目安を出します。<b>令和8年分の改正（基礎控除104万円・給与所得控除の最低74万円）</b>に対応し、年末調整では受けられない<b>医療費控除・寄附金控除（ふるさと納税）</b>も入れられます。</p>
+  <p>1年分の<b>所得と所得控除</b>を入れると、<b>令和8年分の所得税と復興特別所得税</b>、確定申告で<b>納める税金か還付される税金</b>の目安を計算します。年末調整では受けられない<b>医療費控除・寄附金控除（ふるさと納税）</b>も入れられます。</p>
 </section>
 
 <div class="card">
@@ -147,9 +147,9 @@
     <details class="optional-fields" id="grp-other-income"><summary>給与以外の収入・所得（公的年金・事業・不動産・副業・一時所得） <span data-optional-state>未設定</span></summary>
     <label for="nenkin">公的年金等の収入金額（源泉徴収票の「支払金額」）</label>
     <input type="number" id="nenkin" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="nenkin-hint">
-    <span id="nenkin-hint" class="hint">国民年金・厚生年金・企業年金（確定給付企業年金など）・確定拠出年金の年金など。死亡した人の勤務に基づいて支給される遺族年金など、課税されないものは入れません</span>
+    <span id="nenkin-hint" class="hint">国民年金・厚生年金・企業年金・確定拠出年金の年金など。遺族年金など課税されないものは入れません（<a href="#in-shotoku">入れるもの</a>）</span>
     <label style="display:flex;align-items:center;gap:8px;margin:10px 0 0"><input type="checkbox" id="age65" style="flex:none"><span>令和8年12月31日に65歳以上（昭和37年1月1日以前に生まれた人）</span></label>
-    <span class="hint">公的年金等控除の最低額は、年金以外の所得（公的年金等に係る雑所得以外の合計所得金額）が1,000万円以下なら65歳以上110万円・65歳未満60万円、1,000万円超2,000万円以下なら100万円・50万円、2,000万円超なら90万円・40万円です</span>
+    <span class="hint">公的年金等控除の額は、年齢と年金以外の所得で変わります（<a href="#nenkin-kojo">公的年金等控除の最低額</a>）</span>
     <label for="jigyo">事業所得の金額（青色申告特別控除の後）</label>
     <input type="number" id="jigyo" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="jigyo-hint">
     <span id="jigyo-hint" class="hint">青色申告決算書・収支内訳書で計算した所得金額（収入−必要経費−青色申告特別控除）。赤字の人はこの計算機の対象外です</span>
@@ -163,7 +163,7 @@
     <input type="number" id="ichiji_shunyu" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="ichiji-hint">
     <label for="ichiji_shishutsu">その収入を得るために支出した金額</label>
     <input type="number" id="ichiji_shishutsu" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric">
-    <span id="ichiji-hint" class="hint">自分で保険料を負担した生命保険の満期保険金・解約返戻金や損害保険の満期返戻金（支出した金額は払い込んだ保険料）、懸賞の賞金、競馬の払戻金、ふるさと納税の返礼品など。<b>保険料を自分以外の人が負担した保険金（贈与税・相続税の対象）や、一時払養老保険などで保険期間が5年以下のものや、保険期間が5年超でも5年以内に解約したものの満期金・解約返戻金（源泉分離課税で、源泉徴収だけで課税が終わる）は入れません</b>。特別控除50万円を引いた残りの<b>2分の1</b>が所得金額の合計に入ります</span>
+    <span id="ichiji-hint" class="hint">保険の満期保険金・懸賞の賞金・競馬の払戻金・ふるさと納税の返礼品など。入れない保険金もあります（<a href="#ichiji">一時所得に入れるもの</a>）</span>
     </details>
   </fieldset>
 
@@ -171,7 +171,7 @@
     <legend>2. 社会保険料・小規模企業共済等掛金</legend>
     <label for="shaho">社会保険料（1年間に支払った全額）</label>
     <input type="number" id="shaho" min="0" step="1" data-example="750000" inputmode="numeric" aria-describedby="shaho-hint">
-    <span id="shaho-hint" class="hint"><b class="input-example">入力例：年75万円なら 750000</b>源泉徴収票の「社会保険料等の金額」のうち社会保険料の分と、自分で払った国民年金保険料・国民健康保険料（税）・介護保険料（年金から天引きされた分を含む）などの合計。生計を一にする家族の分を払った場合も含みます</span>
+    <span id="shaho-hint" class="hint"><b class="input-example">入力例：年75万円なら 750000</b>源泉徴収票の社会保険料の分と、自分で払った国民年金・国民健康保険・介護保険の保険料などの合計（<a href="#in-shotoku">含めるもの</a>）</span>
     <label for="kyosai">小規模企業共済等掛金（iDeCoなど）</label>
     <input type="number" id="kyosai" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="kyosai-hint">
     <span id="kyosai-hint" class="hint">iDeCo（個人型確定拠出年金）・小規模企業共済の掛金。給与から引かれた分は源泉徴収票の「社会保険料等の金額」の内書きにあります</span>
@@ -179,7 +179,7 @@
 
   <p class="hint" id="optional-lead" style="margin-top:24px">3〜8は、当てはまる人だけ開いて入力します。開かずに計算すると、その控除は無いものとして計算します。</p>
   <details class="optional-fields" id="grp-3"><summary>3. 生命保険料・地震保険料（年間の支払保険料） <span data-optional-state>未設定</span></summary>
-    <p class="hint">控除証明書の金額を入れます。控除額はこの計算機が条文どおりに計算します。年末調整を受けた人は、源泉徴収票の生命保険料・地震保険料の控除額の元になった支払額と、年末調整後に払った分を合わせて入れます。<b>一つの契約が地震保険料と旧長期損害保険料の両方に当たる場合は、どちらか一方の金額だけを入れます</b></p>
+    <p class="hint">控除証明書の金額を入れます。年末調整を受けた人と、地震保険料と旧長期損害保険料の両方に当たる契約は、<a href="#hokenryo">入れ方</a>を確かめてください</p>
     <div class="field-inline-help"><label for="ippan_shin" style="flex:1;margin:0">一般の生命保険料（新契約）</label><input type="number" id="ippan_shin" min="0" step="1" placeholder="円" inputmode="numeric" style="width:9em;flex:none"></div>
     <div class="field-inline-help"><label for="ippan_kyu" style="flex:1;margin:0">一般の生命保険料（旧契約）</label><input type="number" id="ippan_kyu" min="0" step="1" placeholder="円" inputmode="numeric" style="width:9em;flex:none"></div>
     <div class="field-inline-help"><label for="kaigo" style="flex:1;margin:0">介護医療保険料</label><input type="number" id="kaigo" min="0" step="1" placeholder="円" inputmode="numeric" style="width:9em;flex:none"></div>
@@ -195,7 +195,7 @@
       <option value="none" selected>いない（または生計を一にしていない・他の人の扶養親族・青色事業専従者等）</option>
       <option value="ari">いる（婚姻の届出をしている配偶者で、生計を一にしている）</option>
     </select>
-    <p class="hint">内縁関係の人は配偶者に含まれません。他の所得者の扶養親族とされる人・青色事業専従者として給与の支払を受ける人・白色事業専従者は対象外です。<b>夫婦の双方がお互いに配偶者特別控除を受けることはできません</b></p>
+    <p class="hint">内縁関係の人は配偶者に含まれません。対象外になる人は<a href="#haigusha">配偶者の条件</a>で確かめられます</p>
     <div id="haigu-rows" hidden>
       <label for="haigu_gokei">配偶者の令和8年分の合計所得金額</label>
       <input type="number" id="haigu_gokei" min="0" step="1" placeholder="円" inputmode="numeric" aria-describedby="haigu_gokei-hint">
@@ -212,7 +212,7 @@
   </details>
 
   <details class="optional-fields" id="grp-5"><summary>5. 扶養親族（合計所得金額62万円以下の親族）の人数 <span data-optional-state>未設定</span></summary>
-    <p class="hint">扶養親族は、あなたと<b>生計を一にする</b>親族（配偶者、青色事業専従者として給与を受ける人、白色事業専従者を除く）で、令和8年分の合計所得金額が62万円以下（給与だけなら給与収入136万円以下）の人です。児童福祉法の措置で里親に委託された児童、老人福祉法の措置で養護受託者に委託された老人で、あなたと生計を一にする人も扶養親族に含まれます（年齢・所得の要件は同じ。委託老人は「同居老親等」には入れません）。<b>配偶者など他の人が扶養控除を受ける人は、ここには入れず</b>、下の「他の人が扶養控除を受けている扶養親族」に入れます。年齢は令和8年12月31日の現況で数えます（<b>年の中途で死亡した親族は、死亡の時の現況（年齢・所得）で判定</b>します。死亡の時に18歳だった子は、生年月日が下の区切りに当たっても16歳以上19歳未満に入れます）。<b>国外に住む親族</b>（非居住者）を扶養控除の対象にできるのは、16歳以上30歳未満・70歳以上の人と、30歳以上70歳未満で①留学により国内に住所・居所を有しなくなった人、②障害者、③あなたからその年に生活費や教育費に充てるための支払を38万円以上受けている人のどれかに当たる人だけです（30歳以上70歳未満でどれにも当たらない人は入れません）。国外居住親族について控除を受けるには、親族関係書類と送金関係書類（③の人は38万円送金書類、①の人は留学ビザ等書類も）の提出または提示が必要です</p>
+    <p class="hint">あなたと生計を一にする親族の人数を入れます。国外に住む親族・年の中途で死亡した親族がいる人は、<a href="#fuyo-kazoekata">扶養親族の数え方</a>を先に確かめてください</p>
     <div class="field-inline-help"><label for="f_nensho" style="flex:1;margin:0">16歳未満（平成23年1月2日以後に生まれた子など）</label><input type="number" id="f_nensho" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none" aria-describedby="f_nensho-hint">
       <span id="f_nensho-hint" class="hint" style="display:block;font-weight:400">扶養控除はありませんが、所得金額調整控除・生命保険料控除の特例・障害者控除の判定に使います</span></div>
     <div class="field-inline-help"><label for="f_1618" style="flex:1;margin:0">16歳以上19歳未満（平成20年1月2日〜平成23年1月1日生）</label><input type="number" id="f_1618" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none"></div>
@@ -224,13 +224,13 @@
     <div class="field-inline-help"><label for="fs_ippan" style="flex:1;margin:0">障害者（特別障害者以外）</label><input type="number" id="fs_ippan" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none"></div>
     <div class="field-inline-help"><label for="fs_tokubetsu" style="flex:1;margin:0">特別障害者（同居特別障害者以外）</label><input type="number" id="fs_tokubetsu" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none"></div>
     <div class="field-inline-help"><label for="fs_dokyo" style="flex:1;margin:0">同居特別障害者</label><input type="number" id="fs_dokyo" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none"></div>
-    <p class="hint" style="margin-top:10px">他の人（配偶者など）が扶養控除を受けている扶養親族の人数。あなたの扶養控除にはなりませんが、所得金額調整控除と生命保険料控除の特例は、誰が扶養控除を受けているかに関係なく判定します</p>
+    <p class="hint" style="margin-top:10px">他の人（配偶者など）が扶養控除を受けている扶養親族の人数。所得金額調整控除と生命保険料控除の特例の判定に使います</p>
     <div class="field-inline-help"><label for="fo_under23" style="flex:1;margin:0">そのうち23歳未満（16歳未満を含む）</label><input type="number" id="fo_under23" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none"></div>
     <div class="field-inline-help"><label for="fo_tokubetsu" style="flex:1;margin:0">そのうち特別障害者</label><input type="number" id="fo_tokubetsu" min="0" max="20" step="1" placeholder="人" inputmode="numeric" style="width:6em;flex:none"></div>
   </details>
 
   <details class="optional-fields" id="grp-6"><summary>6. 特定親族（19歳以上23歳未満で、合計所得金額62万円超123万円以下の親族） <span data-optional-state>未設定</span></summary>
-    <p class="hint">あなたと<b>生計を一にする</b>親族（配偶者・青色事業専従者等を除く）で、アルバイト収入が多く扶養親族に入らない大学生の子など（児童福祉法の措置で里親に委託された児童も含みます）。給与だけなら給与収入136万円超197万円以下です。扶養親族の人数には入れません。2人以上の所得者の特定親族に当たる人は、そのうち1人だけが控除を受けられます。<b>他の人の配偶者特別控除や特定親族特別控除の対象とされている人</b>（結婚している子で、その配偶者が配偶者特別控除を受けている場合など）は入れません。親族の双方がお互いに特定親族に当たる場合は、どちらか一方だけが受けられます。年の中途で死亡した親族は、死亡の時の現況で判定します</p>
+    <p class="hint">アルバイト収入が多く扶養親族に入らない大学生の子など。扶養親族の人数には入れません（<a href="#tokutei-shinzoku">特定親族の条件</a>）</p>
     <label for="ts">特定親族の合計所得金額（2人以上いる場合はカンマで区切る）</label>
     <input type="text" id="ts" data-example="900000, 1100000" aria-describedby="ts-hint">
     <span id="ts-hint" class="hint"><b class="input-example">入力例：2人なら 900000, 1100000</b></span>
@@ -249,11 +249,7 @@
       <option value="hitorioya">ひとり親（下の条件をすべて満たす）</option>
       <option value="kafu">寡婦（下の条件をすべて満たす）</option>
     </select>
-    <div id="kafu-hint" class="hint">
-      <b>ひとり親</b>: 現に婚姻をしていない人（または配偶者の生死が明らかでない人）で、①生計を一にする子（他の人の同一生計配偶者・扶養親族とされている子を除き、総所得金額等が62万円以下の子）がいる、②合計所得金額500万円以下、③事実上婚姻関係と同様の事情にある人がいない、のすべてに当たる人。<br>
-      <b>寡婦</b>: ひとり親に当たらない人で、(1) 夫と離婚した後婚姻をしていない人で、扶養親族がいる・合計所得金額500万円以下・事実婚の相手がいない、のすべてに当たる人、または (2) 夫と死別した後婚姻をしていない人か夫の生死が明らかでない人で、合計所得金額500万円以下・事実婚の相手がいない人。<br>
-      判定は<a href="../hitorioya-kojo/">ひとり親控除・寡婦控除シミュレーター</a>でもできます
-    </div>
+    <div id="kafu-hint" class="hint">条件は下の<a href="#hitorioya-kafu">ひとり親・寡婦の条件</a>にあります。判定は<a href="../hitorioya-kojo/">ひとり親控除・寡婦控除シミュレーター</a>でもできます</div>
     <label style="display:flex;align-items:center;gap:8px;margin:10px 0 0"><input type="checkbox" id="kinro" style="flex:none"><span>勤労学生に当てはまる（学校教育法の学校などの学生で、合計所得金額89万円以下＝給与だけなら163万円以下、かつ勤労によらない所得が10万円以下）</span></label>
   </details>
 
@@ -270,7 +266,7 @@
       <input type="number" id="iryohi" min="0" step="1" placeholder="円" inputmode="numeric">
       <label for="hoten">保険金などで補填される金額</label>
       <input type="number" id="hoten" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="hoten-hint">
-      <span id="hoten-hint" class="hint">生命保険の入院給付金・健康保険の高額療養費など。補填金は、その給付の目的となった医療費の金額を限度に引きます（入院給付金が入院費を上回っても、はみ出した分は他の医療費から引きません）。限度を超える分を除いた額を入れます</span>
+      <span id="hoten-hint" class="hint">生命保険の入院給付金・健康保険の高額療養費など。その給付の目的となった医療費の金額までを入れます（<a href="#iryohi-kifukin">補填金の入れ方</a>）</span>
     </div>
     <div id="iryohi-selfmed" hidden>
       <label for="selfmed">特定一般用医薬品等の購入費（スイッチOTC医薬品など）</label>
@@ -280,18 +276,18 @@
     </div>
     <label for="kifukin">寄附金控除の対象となる寄附金の合計（ふるさと納税など）</label>
     <input type="number" id="kifukin" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="kifukin-hint">
-    <span id="kifukin-hint" class="hint">国・地方公共団体（ふるさと納税）・特定公益増進法人・認定NPO法人などへの特定寄附金。<b>確定申告をするとふるさと納税のワンストップ特例の申請は無効になる</b>ので、ワンストップ特例を申請した分も含めて入れます。政党等寄附金特別控除・認定NPO法人等寄附金特別控除・公益社団法人等寄附金特別控除（税額控除）を選ぶ寄附金は含めません</span>
+    <span id="kifukin-hint" class="hint">ふるさと納税などの特定寄附金。ワンストップ特例を申請した分も含めて入れます（<a href="#iryohi-kifukin">含めない寄附金</a>）</span>
   </details>
 
   <fieldset class="member">
     <legend>9. 税額控除と、すでに納めた税金</legend>
     <label for="gensen">源泉徴収税額の合計</label>
     <input type="number" id="gensen" min="0" step="1" data-example="98000" inputmode="numeric" aria-describedby="gensen-hint">
-    <span id="gensen-hint" class="hint"><b class="input-example">入力例：源泉徴収票の源泉徴収税額が9万8千円なら 98000</b>給与・公的年金等の源泉徴収票の「源泉徴収税額」と、原稿料・報酬などの支払調書の源泉徴収税額の合計（復興特別所得税を含む額）。確定申告をしないことを選んだ配当などの源泉徴収税額は含めません。源泉徴収票の「源泉徴収税額」欄に<b>内書き（未納付の源泉徴収税額）</b>がある場合も合計に含めますが、その分は支払者が納付するまで還付されません</span>
+    <span id="gensen-hint" class="hint"><b class="input-example">入力例：源泉徴収票の源泉徴収税額が9万8千円なら 98000</b>源泉徴収票と支払調書の源泉徴収税額の合計。復興特別所得税を含む額です（<a href="#gensen-jutaku">含めないもの・内書き</a>）</span>
     <details class="optional-fields" id="grp-9"><summary>住宅借入金等特別控除・予定納税（ある人だけ） <span data-optional-state>未設定</span></summary>
     <label for="jutaku">住宅借入金等特別控除額</label>
     <input type="number" id="jutaku" min="0" step="100" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="jutaku-hint">
-    <span id="jutaku-hint" class="hint">1年目は「（特定増改築等）住宅借入金等特別控除額の計算明細書」で計算した金額。2年目以降で年末調整を受けた人は、源泉徴収票の「住宅借入金等特別控除の額」（摘要欄に「住宅借入金等特別控除可能額」があればその額）。<b>給与以外の所得も足した令和8年分の合計所得金額で、控除の所得要件を満たすかを確かめてから</b>入れます（令和4年以後に入居した住宅は、控除を受ける年分の合計所得金額が2,000万円以下、床面積40㎡以上50㎡未満の特例居住用家屋などは1,000万円以下。入居した年によって要件が異なります）</span>
+    <span id="jutaku-hint" class="hint">1年目は計算明細書の金額、2年目以降は源泉徴収票の額。所得要件を確かめてから入れます（<a href="#gensen-jutaku">入れ方と所得要件</a>）</span>
     <label for="yotei">予定納税額（第1期分・第2期分の合計）</label>
     <input type="number" id="yotei" min="0" step="100" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="yotei-hint">
     <span id="yotei-hint" class="hint">税務署から届いた「予定納税額の通知書」の金額。実際に納めたかどうかにかかわらず、通知書の金額を入れます</span>
@@ -302,15 +298,21 @@
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
   <p class="hint" id="src-hint" style="margin-top:10px"></p>
+  <p class="hint" id="scope-note" style="margin-top:10px">赤字の所得や分離課税の所得がある人などは、正しい税額が出ません（<a href="#taishogai">この計算機の対象にならない人</a>）。</p>
 </div>
 
 <article>
 
 <p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
 
-<p>所得税は、1年間（1月1日〜12月31日）の所得から所得控除を引いた<b>課税される所得金額</b>に、5%から45%の税率を掛けて計算します。そこに<b>復興特別所得税（2.1%）</b>を足し、給与や年金から天引きされた<b>源泉徴収税額</b>と<b>予定納税額</b>を引いた残りが、確定申告で納める税金（マイナスなら還付される税金）です。<b>令和8年分は、基礎控除の引上げなどの改正が令和8年12月1日に施行され、附則で令和8年分から適用</b>されるので、令和9年2〜3月の確定申告は改正後の額で計算します。上の計算機は、国税庁「確定申告の手引き」の手順と所得税法の条文で計算します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+<p>所得税は、1年間（1月1日〜12月31日）の所得から所得控除を引いた<b>課税される所得金額</b>に、5%から45%の税率を掛けて計算します。そこに<b>復興特別所得税（2.1%）</b>を足し、給与や年金から天引きされた<b>源泉徴収税額</b>と<b>予定納税額</b>を引いた残りが、確定申告で納める税金です。マイナスなら還付される税金です。</p>
+
+<p><b>令和8年分は、基礎控除の引上げなどの改正が令和8年12月1日に施行され、附則で令和8年分から適用</b>されます。令和9年2〜3月の確定申告は改正後の額で計算します。</p>
+
+<p>上の計算機は、国税庁「確定申告の手引き」の手順と所得税法の条文で計算します。一般的な計算方法の説明であり、個別の税務相談ではありません。</p>
 
 <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#nyuryoku">入力で迷いやすいところ</a></li>
 <li><a href="#tejun">所得税の計算の手順</a></li>
 <li><a href="#shurui">この計算機で扱う所得</a></li>
 <li><a href="#kojo">この計算機で扱う控除</a></li>
@@ -320,6 +322,105 @@
 <li><a href="#faq">よくある質問</a></li>
 <li><a href="#source">出典</a></li>
 </ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/nenmatsu-chosei-kakutei-shinkoku-chigai/">年末調整と確定申告の違い</a></li><li><a href="../hitorioya-kojo/">ひとり親控除・寡婦控除シミュレーター</a></li><li><a href="../nenmatsu-chosei/">年末調整 計算機（還付・不足額）</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+<h2 id="nyuryoku">入力で迷いやすいところ</h2>
+
+<div class="callout" id="nencho-sumi">
+<b>年末調整を受けた会社員が、医療費控除やふるさと納税の控除のために確定申告をする場合</b>
+源泉徴収票の「支払金額」を給与の収入金額に、「源泉徴収税額」を源泉徴収税額に入れ、源泉徴収票に載っている社会保険料・生命保険料・地震保険料・配偶者・扶養親族・住宅借入金等特別控除の内容を入れたうえで、医療費控除・寄附金控除を足します。年末調整で精算済みの部分は差し引きゼロになり、医療費控除・寄附金控除で下がった分が還付される税金として出ます。
+</div>
+
+<h3 id="in-shotoku">年金の収入と社会保険料</h3>
+<ul>
+<li><b>公的年金等の収入金額</b>: 国民年金・厚生年金・企業年金（確定給付企業年金など）・確定拠出年金の年金などを入れます。死亡した人の勤務に基づいて支給される遺族年金など、課税されないものは入れません。</li>
+<li><b>社会保険料</b>: 源泉徴収票の「社会保険料等の金額」のうち社会保険料の分と、自分で払った国民年金保険料・国民健康保険料（税）・介護保険料（年金から天引きされた分を含む）などの合計です。生計を一にする家族の分を払った場合も含みます。</li>
+</ul>
+
+<h3 id="ichiji">一時所得に入れるもの・入れないもの</h3>
+<p>一時所得は、収入金額と、その収入を得るために支出した金額を入れます。特別控除50万円を引いた残りの<b>2分の1</b>が所得金額の合計に入ります。</p>
+<ul>
+<li><b>入れるもの</b>: 自分で保険料を負担した生命保険の満期保険金・解約返戻金、損害保険の満期返戻金、懸賞の賞金、競馬の払戻金、ふるさと納税の返礼品など。保険の「支出した金額」は、払い込んだ保険料です。</li>
+<li><b>入れないもの</b>: 保険料を自分以外の人が負担した保険金。贈与税・相続税の対象です。</li>
+<li><b>入れないもの</b>: 一時払養老保険などで、保険期間が5年以下のものと、保険期間が5年超でも5年以内に解約したものの満期金・解約返戻金。源泉分離課税で、源泉徴収だけで課税が終わります。</li>
+</ul>
+
+<h3 id="hokenryo">生命保険料・地震保険料</h3>
+<ul>
+<li>控除証明書の金額を入れます。控除額はこの計算機が条文どおりに計算します。</li>
+<li>年末調整を受けた人は、源泉徴収票の生命保険料・地震保険料の控除額の元になった支払額と、年末調整後に払った分を合わせて入れます。</li>
+<li>一つの契約が地震保険料と旧長期損害保険料の両方に当たる場合は、どちらか一方の金額だけを入れます。</li>
+</ul>
+
+<h3 id="haigusha">配偶者の条件</h3>
+<ul>
+<li>内縁関係の人は配偶者に含まれません。</li>
+<li>他の所得者の扶養親族とされる人・青色事業専従者として給与の支払を受ける人・白色事業専従者は対象外です。</li>
+<li>夫婦の双方がお互いに配偶者特別控除を受けることはできません。</li>
+</ul>
+
+<h3 id="fuyo-kazoekata">扶養親族の数え方</h3>
+<p>扶養親族は、あなたと<b>生計を一にする</b>親族で、令和8年分の合計所得金額が62万円以下の人です。給与だけなら給与収入136万円以下です。</p>
+<ul>
+<li>配偶者、青色事業専従者として給与を受ける人、白色事業専従者は除きます。</li>
+<li>児童福祉法の措置で里親に委託された児童と、老人福祉法の措置で養護受託者に委託された老人も、あなたと生計を一にしていれば扶養親族に含まれます。年齢・所得の要件は同じです。委託老人は「同居老親等」には入れません。</li>
+<li>配偶者など他の人が扶養控除を受ける人は、年齢別の欄には入れず、「他の人が扶養控除を受けている扶養親族」の欄に入れます。</li>
+<li>年齢は令和8年12月31日の現況で数えます。</li>
+<li><b>年の中途で死亡した親族</b>は、死亡の時の現況（年齢・所得）で判定します。死亡の時に18歳だった子は、入力欄の生年月日の区切りにかかわらず、16歳以上19歳未満に入れます。</li>
+</ul>
+<p><b>国外に住む親族</b>（非居住者）を扶養控除の対象にできるのは、次の人だけです。</p>
+<ul>
+<li>16歳以上30歳未満の人と、70歳以上の人</li>
+<li>30歳以上70歳未満で、次のどれかに当たる人: ①留学により国内に住所・居所を有しなくなった人、②障害者、③あなたからその年に生活費や教育費に充てるための支払を38万円以上受けている人</li>
+</ul>
+<p>30歳以上70歳未満でどれにも当たらない人は入れません。国外居住親族について控除を受けるには、親族関係書類と送金関係書類の提出または提示が必要です。③の人は38万円送金書類、①の人は留学ビザ等書類も必要です。</p>
+
+<h3 id="tokutei-shinzoku">特定親族の条件</h3>
+<p>特定親族は、あなたと<b>生計を一にする</b>19歳以上23歳未満の親族で、合計所得金額が62万円超123万円以下の人です。給与だけなら給与収入136万円超197万円以下です。アルバイト収入が多く扶養親族に入らない大学生の子などが当たります。</p>
+<ul>
+<li>配偶者・青色事業専従者等は除きます。児童福祉法の措置で里親に委託された児童は含みます。</li>
+<li>扶養親族の人数には入れません。</li>
+<li>2人以上の所得者の特定親族に当たる人は、そのうち1人だけが控除を受けられます。</li>
+<li><b>他の人の配偶者特別控除や特定親族特別控除の対象とされている人</b>は入れません。結婚している子で、その配偶者が配偶者特別控除を受けている場合などです。</li>
+<li>親族の双方がお互いに特定親族に当たる場合は、どちらか一方だけが受けられます。</li>
+<li>年の中途で死亡した親族は、死亡の時の現況で判定します。</li>
+</ul>
+
+<h3 id="hitorioya-kafu">ひとり親・寡婦の条件</h3>
+<p><b>ひとり親</b>は、現に婚姻をしていない人か配偶者の生死が明らかでない人で、次のすべてに当たる人です。</p>
+<ul>
+<li>生計を一にする子がいる。他の人の同一生計配偶者・扶養親族とされている子を除き、総所得金額等が62万円以下の子に限ります。</li>
+<li>合計所得金額が500万円以下</li>
+<li>事実上婚姻関係と同様の事情にある人がいない</li>
+</ul>
+<p><b>寡婦</b>は、ひとり親に当たらない人で、次のどちらかに当たる人です。</p>
+<ul>
+<li>夫と離婚した後婚姻をしていない人で、扶養親族がいる・合計所得金額500万円以下・事実婚の相手がいない、のすべてに当たる人</li>
+<li>夫と死別した後婚姻をしていない人か夫の生死が明らかでない人で、合計所得金額500万円以下・事実婚の相手がいない人</li>
+</ul>
+<p>判定は<a href="../hitorioya-kojo/">ひとり親控除・寡婦控除シミュレーター</a>でもできます。</p>
+
+<h3 id="iryohi-kifukin">医療費の補填金と寄附金</h3>
+<ul>
+<li><b>保険金などで補填される金額</b>: 生命保険の入院給付金・健康保険の高額療養費などです。補填金は、その給付の目的となった医療費の金額を限度に引きます。入院給付金が入院費を上回っても、はみ出した分は他の医療費から引きません。限度を超える分を除いた額を入れます。</li>
+<li><b>寄附金</b>: 国・地方公共団体（ふるさと納税）・特定公益増進法人・認定NPO法人などへの特定寄附金を入れます。</li>
+<li>確定申告をするとふるさと納税のワンストップ特例の申請は無効になるので、ワンストップ特例を申請した分も含めて入れます。</li>
+<li>政党等寄附金特別控除・認定NPO法人等寄附金特別控除・公益社団法人等寄附金特別控除（税額控除）を選ぶ寄附金は含めません。</li>
+</ul>
+
+<h3 id="gensen-jutaku">源泉徴収税額と住宅借入金等特別控除</h3>
+<p><b>源泉徴収税額の合計</b>には、次のものを入れます。</p>
+<ul>
+<li>給与・公的年金等の源泉徴収票の「源泉徴収税額」と、原稿料・報酬などの支払調書の源泉徴収税額の合計を入れます。復興特別所得税を含む額です。</li>
+<li>確定申告をしないことを選んだ配当などの源泉徴収税額は含めません。</li>
+<li>源泉徴収票の「源泉徴収税額」欄に<b>内書き（未納付の源泉徴収税額）</b>がある場合も合計に含めます。その分は支払者が納付するまで還付されません。</li>
+</ul>
+<p><b>住宅借入金等特別控除額</b>は、次の金額を入れます。</p>
+<ul>
+<li>1年目は「（特定増改築等）住宅借入金等特別控除額の計算明細書」で計算した金額です。</li>
+<li>2年目以降で年末調整を受けた人は、源泉徴収票の「住宅借入金等特別控除の額」です。摘要欄に「住宅借入金等特別控除可能額」があればその額を入れます。</li>
+<li>給与以外の所得も足した令和8年分の合計所得金額で、控除の所得要件を満たすかを確かめてから入れます。</li>
+<li>令和4年以後に入居した住宅は、控除を受ける年分の合計所得金額が2,000万円以下、床面積40㎡以上50㎡未満の特例居住用家屋などは1,000万円以下です。入居した年によって要件が異なります。</li>
+</ul>
 
 <h2 id="tejun">所得税の計算の手順</h2>
 
@@ -404,7 +505,18 @@
 
 <div class="callout" id="nenkin-kojo">
 <b>公的年金等の雑所得は、収入金額から公的年金等控除額を引いて計算します（所得税法35条4項・租税特別措置法41条の15の3）。</b>
-控除額は、年金以外の所得（公的年金等に係る雑所得以外の合計所得金額）が1,000万円以下・1,000万円超2,000万円以下・2,000万円超のどれかで変わり、最低額は、年金以外の所得が1,000万円以下なら65歳以上（令和8年12月31日の年齢）110万円・65歳未満60万円、1,000万円超2,000万円以下なら100万円・50万円、2,000万円超なら90万円・40万円です。給与と年金の両方がある人は、給与所得から最大10万円の所得金額調整控除が引かれます（租税特別措置法41条の3の11第2項。年末調整では引かれず、確定申告で引きます）。
+<p style="margin:8px 0 0">控除額の最低額は、年金以外の所得（公的年金等に係る雑所得以外の合計所得金額）と、令和8年12月31日の年齢で変わります。</p>
+<div class="scroll-wrap">
+<table id="nenkin-kojo-hyo">
+<thead><tr><th scope="col">年金以外の所得</th><th scope="col">65歳以上</th><th scope="col">65歳未満</th></tr></thead>
+<tbody>
+<tr><td>1,000万円以下</td><td>110万円</td><td>60万円</td></tr>
+<tr><td>1,000万円超2,000万円以下</td><td>100万円</td><td>50万円</td></tr>
+<tr><td>2,000万円超</td><td>90万円</td><td>40万円</td></tr>
+</tbody>
+</table>
+</div>
+<p style="margin:8px 0 0">給与と年金の両方がある人は、給与所得から最大10万円の所得金額調整控除が引かれます（租税特別措置法41条の3の11第2項）。年末調整では引かれず、確定申告で引きます。</p>
 </div>
 
 <h2 id="kojo">この計算機で扱う控除</h2>
@@ -433,7 +545,12 @@
 <p style="margin:8px 0 0">所得税法の所得控除は16種類（72条〜86条）あり、この計算機が扱わないのは<b>雑損控除</b>（災害・盗難・横領の損失）だけです。</p>
 </div>
 
-<p>寄附金控除は「特定寄附金の合計額（所得金額の合計の40%が限度）−2,000円」です（所得税法78条1項）。医療費控除は「医療費−補填金−10万円（所得金額の合計の5%の方が少なければその額）」で、上限は200万円です（所得税法73条1項）。セルフメディケーション税制は「特定一般用医薬品等の購入費−補填金−12,000円」で、上限は88,000円です（租税特別措置法41条の17）。</p>
+<p>確定申告で足すことの多い3つの控除は、次の式で計算します。</p>
+<ul>
+<li>寄附金控除は「特定寄附金の合計額（所得金額の合計の40%が限度）−2,000円」です（所得税法78条1項）。</li>
+<li>医療費控除は「医療費−補填金−10万円（所得金額の合計の5%の方が少なければその額）」で、上限は200万円です（所得税法73条1項）。</li>
+<li>セルフメディケーション税制は「特定一般用医薬品等の購入費−補填金−12,000円」で、上限は88,000円です（租税特別措置法41条の17）。</li>
+</ul>
 
 <h2 id="taishogai">この計算機の対象にならない人</h2>
 
@@ -478,12 +595,9 @@
 
 <h2 id="nozei">納める税金と還付される税金</h2>
 
-<p>「所得税及び復興特別所得税の額」から源泉徴収税額を引いた<b>申告納税額</b>が黒字なら100円未満を切り捨て、赤字ならそのままの金額です。そこから予定納税額を引いた<b>第3期分の税額</b>が、黒字なら<b>納める税金</b>（100円未満切捨て）、赤字なら<b>還付される税金</b>（1円単位）です（確定申告の手引き「申告納税額」「第3期分の税額」）。令和8年分の確定申告の期間は<b>令和9年2月16日（火）から3月15日（月）まで</b>で、納める税金の納期限も3月15日です（所得税法120条1項・128条）。還付を受けるための申告は、令和9年1月1日から5年間提出できます。</p>
+<p>「所得税及び復興特別所得税の額」から源泉徴収税額を引いた<b>申告納税額</b>が黒字なら100円未満を切り捨て、赤字ならそのままの金額です。そこから予定納税額を引いた<b>第3期分の税額</b>が、黒字なら<b>納める税金</b>（100円未満切捨て）、赤字なら<b>還付される税金</b>（1円単位）です（確定申告の手引き「申告納税額」「第3期分の税額」）。</p>
 
-<div class="callout" id="nencho-sumi">
-<b>年末調整を受けた会社員が、医療費控除やふるさと納税の控除のために確定申告をする場合</b>
-源泉徴収票の「支払金額」を給与の収入金額に、「源泉徴収税額」を源泉徴収税額に入れ、源泉徴収票に載っている社会保険料・生命保険料・地震保険料・配偶者・扶養親族・住宅借入金等特別控除の内容を入れたうえで、医療費控除・寄附金控除を足します。年末調整で精算済みの部分は差し引きゼロになり、医療費控除・寄附金控除で下がった分が還付される税金として出ます。
-</div>
+<p>令和8年分の確定申告の期間は<b>令和9年2月16日（火）から3月15日（月）まで</b>で、納める税金の納期限も3月15日です（所得税法120条1項・128条）。還付を受けるための申告は、令和9年1月1日から5年間提出できます。</p>
 
 <h2 id="faq">よくある質問</h2>
 
@@ -505,9 +619,24 @@
 <h2 id="source">出典</h2>
 <ul>
 <li>国税庁 <a href="https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/index.htm">令和7年分 所得税及び復興特別所得税の確定申告の手引き</a>（手順2 所得金額の計算、手順3 所得控除、手順4 税金の計算。令和8年分の手引きは令和9年1月ごろの公表予定のため、計算の手順は令和7年分の手引きによります）</li>
-<li>所得税法22条（総所得金額）・28条（給与所得）・34条（一時所得）・35条（雑所得・公的年金等控除）・73条（医療費控除）・78条（寄附金控除）・86条（基礎控除）・89条（税率）・120条（確定所得申告）、令和8年法律第12号 附則2条・3条・9条（令和8年分以後の所得税について適用）— <a href="https://laws.e-gov.go.jp/law/340AC0000000033">e-Gov法令検索</a></li>
-<li>租税特別措置法29条の4（給与所得控除の最低控除額等の特例）・41条の3の11（所得金額調整控除）・41条の15の3（65歳以上の公的年金等控除）・41条の16の2（基礎控除の特例）・41条の17（セルフメディケーション税制）— <a href="https://laws.e-gov.go.jp/law/332AC0000000026">e-Gov法令検索</a></li>
-<li>東日本大震災からの復興のための施策を実施するために必要な財源の確保に関する特別措置法9条・10条・13条（復興特別所得税＝基準所得税額×2.1%）、令和8年法律第12号 附則88条1項（税率の改正は令和9年分以後）— <a href="https://laws.e-gov.go.jp/law/423AC0000000117">e-Gov法令検索</a></li>
+<li>所得税法 — <a href="https://laws.e-gov.go.jp/law/340AC0000000033">e-Gov法令検索</a>
+<ul>
+<li>22条（総所得金額）・28条（給与所得）・34条（一時所得）・35条（雑所得・公的年金等控除）</li>
+<li>73条（医療費控除）・78条（寄附金控除）・86条（基礎控除）</li>
+<li>89条（税率）・120条（確定所得申告）</li>
+<li>令和8年法律第12号 附則2条・3条・9条（令和8年分以後の所得税について適用）</li>
+</ul></li>
+<li>租税特別措置法 — <a href="https://laws.e-gov.go.jp/law/332AC0000000026">e-Gov法令検索</a>
+<ul>
+<li>29条の4（給与所得控除の最低控除額等の特例）</li>
+<li>41条の3の11（所得金額調整控除）・41条の15の3（65歳以上の公的年金等控除）</li>
+<li>41条の16の2（基礎控除の特例）・41条の17（セルフメディケーション税制）</li>
+</ul></li>
+<li>東日本大震災からの復興のための施策を実施するために必要な財源の確保に関する特別措置法 — <a href="https://laws.e-gov.go.jp/law/423AC0000000117">e-Gov法令検索</a>
+<ul>
+<li>9条・10条・13条（復興特別所得税＝基準所得税額×2.1%）</li>
+<li>令和8年法律第12号 附則88条1項（税率の改正は令和9年分以後）</li>
+</ul></li>
 </ul>
 
 <h2 id="related">関連するツール・記事</h2>
