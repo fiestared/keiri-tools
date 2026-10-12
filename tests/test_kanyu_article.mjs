@@ -398,10 +398,12 @@ ok(/31日以上/.test(desc), "meta description に「31日以上」が無い");
 ok(/学生は昼間学生だけが除外/.test(desc), "★meta description の「除外は昼間学生だけ」が壊れている");
 ok(/適用除外は6条に6号/.test(desc), "meta description から「適用除外は6条に6号」が消えている（学生だけが除外と読める）");
 ok(/夜間学部・定時制/.test(desc), "meta description から夜間学部・定時制が消えている");
-ok(/雇用関係を維持して会社の命令・承認により大学院に通う人/.test(desc), "★meta description の大学院生の雇用継続・命令承認要件が消えている");
-ok(/出席日数を修了要件とせず同種業務の他の労働者と同様に勤務できる通信制学生/.test(desc), "★meta description の通信制学生の勤務条件が消えている");
-ok(/卒業後も同じ事業に継続雇用される卒業予定者/.test(desc), "★meta description の卒業後継続雇用の要件が消えている");
-ok(/適用除外等に該当せず両方を満たせば/.test(desc), "★meta description で適用除外を飛ばして加入を断定している");
+// 2026-10-12 読みやすさの作り直し（gbrain decisions/keiri-review-add-readability-uiux-2026-10-11）:
+//   以前はここで昼間学生の4つの例外の要件（大学院・通信制・卒業予定）を description に全部書くことを求めていた。
+//   description が 333 字になった原因なので、要件の全文は本文の学生の表（上の JOIN の行）で守り、
+//   description には「昼間学生にも例外がある」ことと「適用除外が前提」であることだけを求める。
+ok(/昼間学生だけが除外[^。]*例外/.test(desc), "★meta description が昼間学生を例外なく除外と読ませる（卒業予定者などの例外の案内が無い）");
+ok(/適用除外に当たらず/.test(desc), "★meta description で適用除外を飛ばして加入を断定している");
 ok(!/懲役/.test(text) || /拘禁刑/.test(text), "本文が「懲役」とだけ書いている（現行は拘禁刑）");
 
 console.log(fail === 0

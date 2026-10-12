@@ -663,7 +663,7 @@ const CATEGORIES = [
   {
     id: "nenmatsu-gensen",
     name: "年末調整・源泉徴収・控除",
-    desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、医療費控除・ふるさと納税など各種控除と確定申告。税務署へ出す法定調書合計表と、市区町村へ1月31日までに出す給与支払報告書（30万円以下で省略できるのは退職者だけ）の違いもここ。開業届と青色申告承認申請の期限もここ。出した申告を後から直す修正申告（国税通則法19条・期限の定めなし）と更正の請求（同23条・法定申告期限から5年）、それに伴う加算税と延滞税（令和8年は年2.8%／年9.1%）もここ。税務調査の手続（事前通知10項目・さかのぼれるのは原則5年／不正なら7年／法人税の欠損金は10年・終了時に交付される書面）もここ。",
+    desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、医療費控除・ふるさと納税など各種控除と確定申告。税務署へ出す法定調書合計表と、市区町村へ出す給与支払報告書の違いもここ。開業届と青色申告承認申請の期限、修正申告と更正の請求、加算税と延滞税、税務調査の手続もここ。",
     slugs: [
       "furusato-nozei-keisan", "kifukin-kojo",
       "teigaku-genzei-reiwa8",
@@ -702,7 +702,7 @@ const CATEGORIES = [
   {
     id: "kyuyo",
     name: "給与計算・手取り",
-    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、1か月・1年・1週間の3つに分かれる変形労働時間制、裁量労働制のみなし時間、入社時に明示すべき労働条件、22時以降の深夜手当、会社都合で休ませたときの休業手当、予告なしで解雇するときの解雇予告手当、休日出勤の振替休日と代休の違い、6時間・8時間で切り替わる休憩時間の下限、常時10人以上で義務になる就業規則の作成・届出・周知、労働基準法に定めがなく会社が日数を決める忌引き休暇（慶弔休暇）と香典・祝金の経理、予告なしの解雇が14日までに限られる試用期間、深夜業を含む業務だと年2回になる健康診断の実施義務と費用負担・受診時間の賃金、割増賃金の単価から外せる賃金が7つの限定列挙であることと分割回数で報酬と賞与が入れ替わる年俸制、令和8年10月1日から事業主の義務になるカスタマーハラスメント（カスハラ）対策とそれに伴うパワハラの条番号の付け替え、懲戒処分の減給に労働基準法91条が課す2つの上限（1回は平均賃金の1日分の半額まで・総額は一賃金支払期の賃金総額の10分の1まで）と、戒告・譴責・出勤停止といった処分名が労働基準法にも労働契約法にも書かれていないこと、有期契約が通算5年を超えたときに労働者が申し込める無期転換（労働契約法18条）の通算の起点が2013年4月1日以後を初日とする契約に限られることと、通算がリセットされるクーリング期間が直前の契約期間の2分の1（端数は1か月に切り上げ）であること。",
+    desc: "額面から手取りまでの引かれ方と、残業代・通勤手当・住民税の実務。労働時間と休憩・休日の決まり、就業規則と労働条件の明示、試用期間・解雇・懲戒処分・無期転換、健康診断・忌引き休暇・年俸制・カスタマーハラスメント対策もここ。",
     slugs: [
       "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "kinmukan-interval", "flextime", "henkei-roudou-jikan", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kanri-kantokusha", "kenko-shindan", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "kyukei-jikan", "shugyo-kisoku", "kibiki-keicho-kyuka", "shiyo-kikan", "tsukin-teate-hikazei", "nenpousei", "hiseiki-koyo", "rodo-kumiai", "fuyo-teate", "doitsu-rodo-doitsu-chingin", "gisou-ukeoi", "haken-3nen-teishokubi", "zesei-kankoku", "kasuhara", "chokai-shobun", "muki-tenkan", "anzen-eisei-iinkai", "anzen-eisei-suishinsha", "roudousha-shishobyo-houkoku", "hotei-koyoritsu", "naitei-torikeshi", "taishoku-kansho", "taishoku-shomeisho", "mimoto-hosho", "kyogyo-hishi-gimu", "anzen-hairyo-gimu", "fukugyo-rodojikan-tsusan", "sangyoi", "josei-katsuyaku-suishinho",
       "juminzei-hayamihyo", "juminzei-tokubetsu-choshu", "juminzei-kettei-tsuchisho", "juminzei-hikazei-border", "taishokugo-juminzei", "nenmatsu-chosei-juminzei", "juminzei-fuyo-kojo",
@@ -746,7 +746,7 @@ const CATEGORIES = [
   {
     id: "keiri",
     name: "振込・支払の実務",
-    desc: "振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日の数え方、収入印紙。支払期日の法的な上限（令和8年1月に下請法から改称された中小受託取引適正化法の60日ルールと、フリーランス法との違い）もここ。",
+    desc: "振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日の数え方、収入印紙。支払期日の上限を定める中小受託取引適正化法（旧・下請法）の60日ルールと、フリーランス法との違いもここ。",
     slugs: [
       "furikomi-tesuryo-hikaku", "furikomi-hanei-jikan", "furikomi-furikae-chigai", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "kumimodoshi", "koza-furikae-iraisho", "kotora-sokin", "pay-easy",
@@ -770,7 +770,7 @@ const CATEGORIES = [
   {
     id: "kyuyo-jitsumu",
     name: "給与計算の実務（会社側）",
-    desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務、掛金納付月数によって退職金が3段階に変わること、解約しても解約手当金が事業主ではなく従業員に支払われることもここ。",
+    desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務もここ。",
     slugs: [
       "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
       "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
@@ -783,7 +783,7 @@ const CATEGORIES = [
   {
     id: "hojokin-keiri",
     name: "補助金の経理・税務",
-    desc: "補助金を受け取った後の処理。仕訳と計上時期、圧縮記帳と特別勘定（法人税法42〜44条）、消費税、個人事業主の場合。雇用保険法施行規則118条の2が定めるキャリアアップ助成金の6コースと支給額、正社員化コースの額が通算勤続5年を境に4分の1へ下がること、本則の短時間労働者労働時間延長コースが附則で適用停止になっていることもここ。設備投資とセットで賃上げする業務改善助成金（令和8年度は9月1日受付開始・締切は都道府県ごとの最低賃金の発効日の前日）の上限額と助成率もここ。",
+    desc: "補助金を受け取った後の処理。仕訳と計上時期、圧縮記帳と特別勘定（法人税法42〜44条）、消費税、個人事業主の場合。キャリアアップ助成金のコースと支給額、設備投資とセットで賃上げする業務改善助成金の上限額と助成率もここ。",
     slugs: [
       "career-up-joseikin", "gyomu-kaizen-joseikin", "jinzai-kaihatsu-joseikin",
       "hojokin-shiwake", "hojokin-tokubetsu-kanjo", "assyuku-kicho-houshiki",
