@@ -132,8 +132,19 @@ console.log("── 条文の額は今日の実額ではない、の callout（1
 }
 
 console.log("── 6か月の数え方（14条1項の11日）と賃金の範囲（17条1項の除外） ──");
-pHas("rokkagetsu", ["11日以上", "17条1項", "14条1項", "80時間以上", "有給休暇等も賃金支払基礎日数に含まれ", "欠勤が多いだけでその月を除外するわけではありません"],
-  "h3 6か月は賃金支払基礎日数11日以上の月で数える");
+// 2026-10-12: この節は「段落＋箇条書き＋段落」にした（読みやすさの作り直し）。名指しは h3#rokkagetsu から次の h3 までの塊
+//   （h3 の id はページ内で一意。次の h3 は #chingin-hani で、そちらは別に名指しする）。
+{
+  const m = [...HTML.matchAll(/<h3[^>]*\sid="rokkagetsu"[^>]*>[\s\S]*?<\/h3>([\s\S]*?)<h3 /g)];
+  const need = ["11日以上", "17条1項", "14条1項", "80時間以上", "有給休暇等も賃金支払基礎日数に含まれ", "欠勤が多いだけでその月を除外するわけではありません"];
+  const label = "h3 6か月は賃金支払基礎日数11日以上の月で数える";
+  if (m.length !== 1) bad(label, `h3#rokkagetsu の塊が${m.length}件（一意でない／無い）`);
+  else {
+    const text = strip(m[0][1]);
+    const missing = need.filter((x) => !text.includes(x));
+    if (missing.length) bad(label, `h3#rokkagetsu の節に欠落: ${missing.join(" / ")}`); else ok(label);
+  }
+}
 pHas("chingin-hani", ["臨時に支払われる賃金", "3か月を超える期間ごとに支払われる賃金", "通勤手当", "残業代", "総支給額"],
   "h3 賞与は除き通勤手当・残業代は含む（17条1項の除外そのまま）");
 

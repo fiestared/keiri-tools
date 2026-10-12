@@ -19,7 +19,7 @@ check('賞与: その年限りの臨時支給を回数に含めない',()=>{cons
 check('令和8年3月: 支援金開始前の賞与60万円は84,450円',()=>{const fig=[...shoyo.querySelectorAll('figure')].find(f=>f.textContent.includes('資格喪失'));assert.match(text({body:fig}),/令和8年3月/);assert.match(fig.querySelector('figcaption').textContent,/84,450円/);assert.doesNotMatch(fig.textContent,/85,140円/)});
 check('退職: 国保・国年1号への加入を一律化しない',()=>{const a=[...shoyo.querySelectorAll('.faq-answer')].find(p=>p.textContent.includes('資格喪失日は'));assert.match(a.textContent,/再就職先/);assert.match(a.textContent,/被扶養者.*第3号/)});
 check('介護対象と給与上限',()=>{assert.doesNotMatch(text(shoyo),/40歳以上は90,000円|給与にはない上限/);assert.match(text(shoyo),/健康保険139万円・厚生年金65万円/)});
-check('拠出金は全額会社負担・支援金は折半',()=>{const h=norm(hotei.getElementById('hyojun-hint').textContent);assert.match(h,/拠出金.*0.36%.*全額を会社/);assert.match(h,/支援金.*0.23%.*折半/)});
+check('拠出金は全額会社負担・支援金は折半',()=>{const li=[...hotei.querySelectorAll('#zentei-list > li')].map(x=>norm(x.textContent));assert.equal(li.filter(x=>/拠出金.*0.36%.*全額を会社/.test(x)).length,1);assert.equal(li.filter(x=>/支援金.*0.23%.*折半/.test(x)).length,1);assert.ok(norm(hotei.getElementById('hyojun-hint').textContent).length<=80,'入力欄の補足は80字まで（条件は #zentei に1回）')});
 check('養育特例: FAQにも基準月と下回る対象月',()=>{const a=[...zuiji.querySelectorAll('.faq-answer')].find(p=>p.textContent.includes('養育期間の特例'));assert.match(a.textContent,/養育開始月の前月/);assert.match(a.textContent,/下回る対象月/)});
 for(const d of [shoyo,teiji,zuiji,hotei])d.defaultView.close();
 assert.deepEqual(failures,[],`regression failures: ${failures.join(', ')}`);

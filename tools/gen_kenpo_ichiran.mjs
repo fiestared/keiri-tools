@@ -60,9 +60,10 @@ export function build(D) {
 
   // ---- table ----
   // 2026-10-08 UI/UX: 答え（料率とその本人負担）を左から並べ、前年との増減は最後の列へ。1列目（都道府県）は横に送っても残す
+  // 2026-10-12 読みやすさ: 見出しの「介護の条件」details は外した。第2号の定義は表の直後の注と「表の読み方」に1回だけ書く
   const table = `<div class="scroll-wrap"><table class="kenpo-ichiran sticky-first">
-<caption>協会けんぽの都道府県別 保険料率（${m.year}・一般被保険者は${rateFrom}から）</caption>
-<thead><tr><th scope="col">都道府県</th><th scope="col" class="num" data-answer>健康保険料率</th><th scope="col" class="num" data-answer>本人負担（折半）40歳未満</th><th scope="col" class="num">40〜64歳（介護保険料率${fmt(kaigo)}%込み）<details><summary>介護の条件</summary>市町村区域内に住所を有する40歳以上65歳未満の医療保険加入者（介護第2号）。一般被保険者は令和8年3月分から、任意継続・日雇特例は4月分から。</details></th><th scope="col" class="num">本人負担（折半）40〜64歳<details><summary>介護の条件</summary>市町村区域内に住所を有する40歳以上65歳未満の医療保険加入者（介護第2号）。一般被保険者は令和8年3月分から、任意継続・日雇特例は4月分から。</details></th><th scope="col" class="num">${prevYear}からの増減</th></tr></thead>
+<caption>協会けんぽの都道府県別 保険料率（${m.year}・一般被保険者は${rateFrom}から。子ども・子育て支援金は含まない）</caption>
+<thead><tr><th scope="col">都道府県</th><th scope="col" class="num" data-answer>健康保険料率</th><th scope="col" class="num" data-answer>本人負担（折半）40歳未満</th><th scope="col" class="num">40〜64歳（介護保険料率${fmt(kaigo)}%込み）</th><th scope="col" class="num">本人負担（折半）40〜64歳</th><th scope="col" class="num">${prevYear}からの増減（ポイント）</th></tr></thead>
 <tbody>
 ${rows.map((x) => `<tr data-pref="${x.p}"><th scope="row" style="white-space:nowrap">${x.p}</th><td class="num">${tok(fmt(x.r))}</td><td class="num">${tok(fmt(x.r, true))}</td><td class="num">${tok(fmt(x.withKaigo))}</td><td class="num">${tok(fmt(x.withKaigo, true))}</td><td class="num">${fmtDiff(x.diff)}</td></tr>`).join("\n")}
 </tbody></table></div>`;
@@ -104,7 +105,7 @@ ${label(lo, `最低 ${names(lo)} ${fmt(lo)}%`, 30, "start")}${label(hi, `最高 
   const STD = 300000;
   const yen = (bp, half) => { const v = STD * bp / 10000 / (half ? 2 : 1); return v.toLocaleString("ja-JP", { minimumFractionDigits: 0, maximumFractionDigits: 1 }); };
   const rei = `<p data-kenpo="rei">協会けんぽ東京都支部の一般被保険者で標準報酬月額が300,000円の人なら、${rateFrom}以降の健康保険料（全額）は300,000円×${fmt(tokyo.r)}%＝${yen(tokyo.r)}円で、本人負担（折半額）は<b>${yen(tokyo.r, true)}円</b>です。` +
-    `東京都支部で市町村区域内に住所を有する40歳以上65歳未満の医療保険加入者（介護第2号）なら300,000円×${fmt(tokyo.withKaigo)}%＝${yen(tokyo.withKaigo)}円で、折半額は<b>${yen(tokyo.withKaigo, true)}円</b>です。` +
+    `40〜64歳で介護保険の第2号被保険者に当たる人なら300,000円×${fmt(tokyo.withKaigo)}%＝${yen(tokyo.withKaigo)}円で、折半額は<b>${yen(tokyo.withKaigo, true)}円</b>です。` +
     `${shienFrom}以降は、年齢にかかわらず子ども・子育て支援金300,000円×${fmt(shien)}%＝${yen(shien)}円（折半額${yen(shien, true)}円）が加わります。</p>`;
 
   // ---- Dataset JSON-LD ----

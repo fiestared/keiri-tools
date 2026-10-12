@@ -9,7 +9,8 @@ const schema=[...doc.querySelectorAll('script[type="application/ld+json"]')].map
 const checks=[
  ['可視FAQとJSON-LDの同一性',()=>assert.deepEqual(schema.mainEntity.map(x=>x.acceptedAnswer.text),answers)],
  ['30暦日と翌月末を区別',()=>{assert(!answers[0].includes('翌月末払い相当'));assert(answers[0].includes('締め日の翌日から30暦日'));}],
- ['発注者と受注者の適用要件・再委託例外',()=>{for(const text of ['特定業務委託事業者','従業員を使用する個人','役員が2人以上','特定受託事業者','代表者1人のみ','再委託である旨','元委託者の氏名または名称','元委託の支払期日から30日以内'])assert(answers[3].includes(text),text);}],
+ // 2026-10-12 読みやすさの作り直し: フリーランス法の要件は FAQ の回答から「60日ルールの補足」の節（#freelance）へ移した。FAQ は節へ案内する
+ ['発注者と受注者の適用要件・再委託例外',()=>{const h=doc.querySelector('h3#freelance');assert(h,'#freelance');let body='';for(let el=h.nextElementSibling;el&&!/^H[23]$/.test(el.tagName);el=el.nextElementSibling)body+=el.textContent;for(const text of ['特定業務委託事業者','従業員を使用する個人','役員が2人以上','特定受託事業者','代表者1人のみ','再委託である旨','元委託者の氏名または名称','元委託の支払期日から30日以内'])assert(body.includes(text),text);assert(doc.querySelectorAll('.faq-answer')[3].querySelector('a[href="#rokujunichi"]'),'FAQ から節への案内');}],
  ['非主張だけを保護対象から外す',()=>{const us=segmentClaims('<h2>FAQ</h2><p>契約と適用法令を確認してください。支払期日は必ず翌営業日です。</p><div>この内容をXで共有</div>');assert.equal(us.find(x=>x.text==='契約と適用法令を確認してください。').protected,false);assert.equal(us.find(x=>x.text==='この内容をXで共有').protected,false);assert.equal(us.find(x=>x.text==='支払期日は必ず翌営業日です。').protected,true);}],
 ];
 let bad=0;for(const [name,run]of checks){try{run();console.log('PASS '+name);}catch(e){bad++;console.log('FAIL '+name+': '+e.message);}}

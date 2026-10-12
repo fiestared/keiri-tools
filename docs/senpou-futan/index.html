@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>振込手数料 先方負担 計算ツール｜差引額がすぐわかる【無料】</title>
-<meta name="description" content="取適法の対象外で、振込手数料の先方負担を合意した取引について、請求額からいくら差し引いて振り込めばよいかを自動計算。銀行実務の3方式(据置型・未満手数料加算型・以上手数料加算型)と一律差引に対応、主要銀行の手数料プリセットつき。入金額が請求額より少ないときの手数料差引チェックも。登録不要・無料。">
+<meta name="description" content="振込手数料が先方負担のとき、請求額からいくら差し引いて振り込めばよいかを自動計算。銀行実務の3方式と一律差引に対応、主要銀行の手数料プリセットつき。入金差額の手数料差引チェックも。取適法の対象外で、先方負担を合意した取引が前提です。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/senpou-futan/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="振込手数料 先方負担 計算ツール｜差引額がすぐわかる【無料】">
-<meta property="og:description" content="取適法の対象外で、振込手数料の先方負担を合意した取引について、請求額からいくら差し引いて振り込めばよいかを自動計算。銀行実務の3方式(据置型・未満手数料加算型・以上手数料加算型)と一律差引に対応、主要銀行の手数料プリセットつき。入金額が請求額より少ないときの手数料差引チェックも。登録不要・無料。">
+<meta property="og:description" content="振込手数料が先方負担のとき、請求額からいくら差し引いて振り込めばよいかを自動計算。銀行実務の3方式と一律差引に対応、主要銀行の手数料プリセットつき。入金差額の手数料差引チェックも。取適法の対象外で、先方負担を合意した取引が前提です。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/senpou-futan/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -99,10 +99,10 @@
 
     <label>差引方式（取引先・自社の規程に合わせて選択）</label>
     <div class="radio-row" id="method">
-      <label><input type="radio" name="method" value="sueoki" checked>据置型<br><small>差引前基準・当方有利。多くの銀行の初期設定</small></label>
-      <label><input type="radio" name="method" value="mikan_kasan">未満手数料加算型<br><small>基準額＝3万円＋未満手数料</small></label>
-      <label><input type="radio" name="method" value="ijo_kasan">以上手数料加算型<br><small>差引後基準・先方有利</small></label>
-      <label><input type="radio" name="method" value="flat">一律差引<br><small>550円などの固定額</small></label>
+      <label style="flex-basis:45%"><input type="radio" name="method" value="sueoki" checked>据置型<br><small>差引前基準・当方有利。多くの銀行の初期設定</small></label>
+      <label style="flex-basis:45%"><input type="radio" name="method" value="mikan_kasan">未満手数料加算型<br><small>基準額＝3万円＋未満手数料</small></label>
+      <label style="flex-basis:45%"><input type="radio" name="method" value="ijo_kasan">以上手数料加算型<br><small>差引後基準・先方有利</small></label>
+      <label style="flex-basis:45%"><input type="radio" name="method" value="flat">一律差引<br><small>550円などの固定額</small></label>
     </div>
 
     <div id="fee-inputs">
@@ -132,6 +132,7 @@
     <button id="copy-invoice-line" class="btn-outline invoice-line-share" style="display:none">請求書に貼る1行をコピー</button>
     <p id="invoice-line-help" class="invoice-line-help" style="display:none">請求額・手数料・振込予定額と、この計算ページへのリンクを1行でコピーします。</p>
     <p id="invoice-line-status" class="invoice-line-status" role="status" aria-live="polite"></p>
+    <p class="hint" id="method-help" style="margin:10px 0 0">差引方式は支払側の銀行設定や規程で決まります。分からないときは支払担当者に確認してください。<a href="#hoshiki">3方式の違いを見る</a></p>
   </div>
 
   <div class="card">
@@ -165,7 +166,8 @@
 
 <h2 id="kihon">そもそも「先方負担」とは</h2>
   <p><b>振込手数料を受取側（請求した側）が負担する取り決め</b>のことです。支払側は請求額から振込手数料相当額を差し引いた金額を振り込みます。反対に、支払側が手数料を負担して請求額を満額振り込むのが「当方負担」です。</p>
-  <p><b>2026年1月1日施行の取適法の対象取引では、合意の有無にかかわらず、振込手数料を中小受託事業者の代金から差し引くことは違反</b>になります。この計算機は、取適法・フリーランス法等の減額禁止が適用されない取引で、手数料を受取側の負担にする合意がある取引の金額を試算するものです。取適法の対象外でも、フリーランス法の報酬減額禁止が適用される業務委託では、合意があっても振込手数料を差し引けません。差引き前にこれらの規定と契約・取引条件を確認してください。</p>
+  <p><b>2026年1月1日施行の取適法の対象取引では、合意の有無にかかわらず、振込手数料を中小受託事業者の代金から差し引くことは違反</b>になります。</p>
+  <p>この計算機は、取適法・フリーランス法等の減額禁止が適用されない取引で、手数料を受取側の負担にする合意がある取引の金額を試算するものです。取適法の対象外でも、フリーランス法の報酬減額禁止が適用される業務委託では、合意があっても振込手数料を差し引けません。差引き前にこれらの規定と契約・取引条件を確認してください。</p>
 
   <h2 id="3man">前提：多くの銀行では振込手数料が「3万円」を境に変わる</h2>
   <p>多くの銀行では、他行宛の振込手数料が<b>振込金額3万円未満／3万円以上</b>の2段階に分かれています。</p>
@@ -179,7 +181,7 @@
     <tr><td>ゆうちょダイレクト<span class="cell-note">他金融機関宛・居住者による送金</span></td><td colspan="2" style="text-align:center">165円（金額区分なし・居住者）</td></tr>
   </table></div>
   <p style="font-size:13px;color:var(--sub)">※他行宛・税込。2026年7月に各行の公式サイトで確認。無料回数の特典は含みません。</p>
-  <p class="hint">三菱UFJダイレクトの三菱UFJ信託銀行・auじぶん銀行あては当行扱いで0円です。りそなマイゲートは2025年4月1日現在の税込料金で、ルビーは月間3回82円、ダイヤモンドは月間3回0円です。ゆうちょダイレクトで外為法上の非居住者が他行へ送金する料金は1回3,000円です。</p>
+  <p class="hint" style="margin-bottom:18px">三菱UFJダイレクトの三菱UFJ信託銀行・auじぶん銀行あては当行扱いで0円です。りそなマイゲートは2025年4月1日現在の税込料金で、ルビーは月間3回82円、ダイヤモンドは月間3回0円です。ゆうちょダイレクトで外為法上の非居住者が他行へ送金する料金は1回3,000円です。</p>
   <p>ここで問題になるのが、先方負担のときに<b>「3万円の判定を、どの金額に対して行うのか」</b>です。請求額（差し引く前）で判定するのか、実際に振り込む額（差し引いた後）で判定するのか——これが3方式の分かれ目になります。</p>
   <p>なお、りそな銀行やゆうちょ銀行のように<b>金額区分がない銀行では、そもそも方式の違いが影響しません</b>。悩む必要があるのは「区分がある銀行」のときだけです。</p>
 
@@ -187,10 +189,10 @@
   <p>北陸銀行が公開しているビジネスIBの利用者ガイドには、先方負担の計算方法として次の3方式が明記されています。群馬銀行、スルガ銀行なども同様の選択肢を持っており、<b>どの方式を使うかは支払側の会社が設定で決めます</b>。</p>
 
   <div class="scroll-wrap"><table>
-    <tr><th scope="col">方式</th><th scope="col">3万円判定に使う基準額</th><th scope="col">特徴</th></tr>
-    <tr><td><b>据置型</b><br><span style="font-size:12px;color:var(--sub)">（差引前基準）</span></td><td><span class="numeric-token">30,000円</span></td><td>請求額をそのまま3万円と比較。多くの銀行の初期設定。<b>支払側に有利</b></td></tr>
-    <tr><td><b>未満手数料加算型</b></td><td>30,000円＋<br>3万円未満の手数料</td><td>中間的な方式</td></tr>
-    <tr><td><b>以上手数料加算型</b><br><span style="font-size:12px;color:var(--sub)">（差引後基準）</span></td><td>30,000円＋<br>3万円以上の手数料</td><td>差し引いた後の額で判定する運用に相当。<b>受取側に有利</b></td></tr>
+    <tr><th scope="col">方式</th><th scope="col" style="white-space:nowrap">3万円判定に使う基準額</th><th scope="col">特徴</th></tr>
+    <tr><td style="white-space:nowrap"><b>据置型</b><br><span style="font-size:12px;color:var(--sub)">（差引前基準）</span></td><td><span class="numeric-token">30,000円</span></td><td>請求額をそのまま3万円と比較。多くの銀行の初期設定。<b>支払側に有利</b></td></tr>
+    <tr><td style="white-space:nowrap"><b>未満手数料加算型</b></td><td>30,000円＋<br>3万円未満の手数料</td><td>中間的な方式</td></tr>
+    <tr><td style="white-space:nowrap"><b>以上手数料加算型</b><br><span style="font-size:12px;color:var(--sub)">（差引後基準）</span></td><td>30,000円＋<br>3万円以上の手数料</td><td>差し引いた後の額で判定する運用に相当。<b style="white-space:nowrap">受取側に有利</b></td></tr>
   </table></div>
 
   <h3 id="zukai">図解：3方式の違い</h3>
@@ -230,10 +232,11 @@
     <rect x="120" y="170" width="470" height="26" rx="4" fill="#5b9e8c"/>
     <text x="128" y="188" class="fg-tag">220円を差引</text>
     <rect x="590" y="170" width="50" height="26" rx="4" fill="#c1553f"/>
+    <text x="598" y="188" class="fg-tag">440円</text>
 
     <text x="120" y="26" class="fg-s">← 請求額</text>
-    <rect x="320" y="8" width="270" height="18" rx="3" fill="#fff3d6" stroke="#e6c47a"/>
-    <text x="330" y="21" class="fg-s">この帯（30,000〜30,440円）で方式ごとに差引額が変わる</text>
+    <rect x="320" y="8" width="320" height="18" rx="3" fill="#fff3d6" stroke="#e6c47a"/>
+    <text x="328" y="21" class="fg-s">30,000〜30,440円の帯は、方式ごとに差引額が変わる</text>
   </svg>
   <figcaption>手数料220円／440円の銀行の場合。緑＝220円差引、赤＝440円差引。基準額が方式ごとにズレるため、3万円台前半で結果が分かれる。</figcaption>
   </figure>
@@ -243,7 +246,7 @@
   <div class="scroll-wrap"><table class="num-nowrap">
     <tr><th scope="col">方式</th><th scope="col">基準額との比較</th><th scope="col">差引額</th><th scope="col">振込額</th></tr>
     <tr><td>据置型</td><td>30,300 ≧ 30,000 → 3万円以上</td><td class="num"><span class="numeric-token">440円</span></td><td class="num"><b><span class="numeric-token">29,860円</span></b></td></tr>
-    <tr><td>未満加算型</td><td>30,300 ＜ 30,220? → いいえ…3万円以上</td><td class="num"><span class="numeric-token">440円</span></td><td class="num"><span class="numeric-token">29,860円</span></td></tr>
+    <tr><td>未満加算型</td><td>30,300 ≧ 30,220 → 3万円以上</td><td class="num"><span class="numeric-token">440円</span></td><td class="num"><span class="numeric-token">29,860円</span></td></tr>
     <tr><td>以上加算型</td><td>30,300 ＜ 30,440 → 3万円未満</td><td class="num"><span class="numeric-token">220円</span></td><td class="num"><b><span class="numeric-token">30,080円</span></b></td></tr>
   </table></div>
   <p>同じ請求額なのに、方式によって振込額が <b>220円</b> 変わります。受取側からすると「入金が請求より220円足りない」という状態になり、消込が合いません。滋賀銀行のFAQでは、この境界帯で生じた差額を雑益・雑損で処理する例が示されています。</p>
@@ -257,7 +260,7 @@
   <p>先方負担で差し引かれた手数料を、帳簿上どう処理するか。<b>受取側と支払側で扱いが変わります</b>。</p>
 
   <h3 id="shiwake-uke">受取側の仕訳 — 支払手数料か売上値引きか</h3>
-  <p>請求110,000円に対し、手数料440円が差し引かれて109,560円が入金されたケース。処理は<b>2通り</b>あり、選び方で消費税の扱いが変わります。</p>
+  <p>請求110,000円に対し、手数料440円が差し引かれて109,560円が入金されたケース。ここでは処理を<b>2通り</b>示します。選び方で消費税の扱いが変わります。<b>インボイス制度の開始後は、方法2（売上値引き）を選ぶ会社が増えています</b>。</p>
 
   <p><b>方法1: 支払手数料として処理する</b></p>
   <div class="scroll-wrap"><table>
@@ -277,10 +280,10 @@
 
   <div class="callout">
     <b>インボイス制度との関係（実務上とても重要）</b>
-    <b>方法1</b>で課税仕入れにするには、買手から代金決済上の役務提供を受ける取引として、原則として<b>買手の適格請求書、または買手の確認を受けた仕入明細書等</b>を保存します。少額特例の要件を満たす場合は、一定の事項を記載した帳簿のみで仕入税額控除できます。<br>
-    <b>方法2</b>なら、本来必要な<b>返還インボイス</b>は<b>税込1万円未満の値引きについて交付が免除される特例</b>があるため、振込手数料（数百円）では発行不要です。<br>
-    → このため<b>インボイス制度の開始後は、方法2（売上値引き）を選ぶ会社が増えています</b>。
+    <p style="font-size:inherit"><b>方法1</b>で課税仕入れにするには、買手から代金決済上の役務提供を受ける取引として、原則として<b>買手の適格請求書、または買手の確認を受けた仕入明細書等</b>を保存します。少額特例の要件を満たす場合は、一定の事項を記載した帳簿のみで仕入税額控除できます。</p>
+    <p style="font-size:inherit"><b>方法2</b>なら、本来必要な<b>返還インボイス</b>は<b>税込1万円未満の値引きについて交付が免除される特例</b>があるため、振込手数料（数百円）では発行不要です。</p>
   </div>
+  <p style="font-size:13.5px">このほか、買手が銀行手数料を立替払いしたものとして処理する方法もあります。立替払いは差引額が実際の銀行手数料と同額である必要があります。</p>
 
   <h3 id="shiwake-harai">支払側の仕訳</h3>
   <p>支払側は受取人へ109,560円、銀行へ440円を支払うので、預金の減少は合計110,000円です。この設例では控除額と実払銀行手数料が同額で、差額収益はありません。</p>
@@ -319,7 +322,8 @@
       <li>「一律550円差引」の商慣行もある。差額は雑収入・雑損失で処理</li>
       <li>取適法の対象取引では差引不可。対象外で先方負担を合意する場合は、<b>契約書・発注書に負担条件と方式を明記</b>しておく</li>
       <li>手数料は改定されるため、最新の金額は各銀行の公式サイトで確認する</li>
-      <li><b>処理方法</b>は、契約関係等に応じて「買手の役務提供への対価」「売上値引き」「買手による銀行手数料の立替払い」の3通り。立替払いは差引額が実際の銀行手数料と同額である必要があります。インボイス制度以降は<b>売上値引き</b>が主流（返還インボイスは税込1万円未満なら交付免除）</li>
+      <li><b>処理方法</b>は、契約関係等に応じて「買手の役務提供への対価」「売上値引き」「買手による銀行手数料の立替払い」の3通り</li>
+      <li>インボイス制度以降は<b>売上値引き</b>が主流（返還インボイスは税込1万円未満なら交付免除）</li>
     </ul>
   </div>
 
@@ -381,9 +385,9 @@
 <!--domain-bridge:E-->
 <section class="faq rel-block">
 <h2>関連する解説</h2>
-<!--rel:S--><ul class="rel-list"><li><a href="../column/invoice-wakariyasuku/">インボイス制度とは？わかりやすく3行で｜買い手の控除と売り手の負担</a><span class="rel-desc">インボイス制度を3行で。本則課税の買い手の控除と、登録して課税となる売り手の負担に影響します。免税事業者からの仕入れは所定の限度内で2026</span></li><li><a href="../column/kyuyo-sashiosae/">給与の差押え（強制執行） — 会社は本人より先に知る。しかも裁判所と税務署では計算式が違う</a><span class="rel-desc">給与の差押えは会社への送達で効力が生じる。裁判所と税務署では差押禁止額の計算式が別物で、手取り24万円独身なら6万円対10万6,400円。逆</span></li><li><a href="../column/sousai/">相殺とは — 相手の同意は要らない。ただし条件も期限も付けられず、賃金と差押禁止債権では止まる</a><span class="rel-desc">相殺は相手の同意が要らない一方的な意思表示。ただし条件も期限も付けられず、届いて初めて効く。効力は相殺適状の日にさかのぼるので遅延損害金がそ</span></li><li><a href="../column/furikomi-tesuryo-kanjo-kamoku/">振込手数料の勘定科目｜支払手数料でよい理由と、取適法の対象取引で売手負担が違反になる新ルール</a><span class="rel-desc">自社負担なら「支払手数料」。売手負担は契約関係等により売上値引き・支払手数料・立替金に分かれて消費税の扱いが変わり、2026年1月の取適法の</span></li><li><a href="../column/furikomi-tesuryo-hikaku/">銀行別 振込手数料 一覧【2026年9月更新】三菱UFJ・みずほ・ゆうちょ等30区分を比較</a><span class="rel-desc">個人・法人の他行宛の振込手数料を一覧に。無料回数などの優遇と混同せず比較できます。</span></li></ul><!--rel:E-->
+<!--rel:S--><ul class="rel-list"><li><a href="../column/invoice-wakariyasuku/">インボイス制度とは？わかりやすく3行で｜買い手の控除と売り手の負担</a><span class="rel-desc">インボイス制度を3行で。本則課税の買い手と、登録して課税事業者になる売り手に影響します。免税事業者からの仕入れの控除は2026年9月30日ま</span></li><li><a href="../column/kyuyo-sashiosae/">給与の差押え（強制執行） — 会社は本人より先に知る。しかも裁判所と税務署では計算式が違う</a><span class="rel-desc">給与の差押えは会社への送達で効力が生じる。裁判所と税務署では差押禁止額の計算式が別物で、手取り24万円独身なら6万円対10万6,400円。逆</span></li><li><a href="../column/sousai/">相殺とは — 相手の同意は要らない。ただし条件も期限も付けられず、賃金と差押禁止債権では止まる</a><span class="rel-desc">相殺は相手の同意が要らない一方的な意思表示。ただし条件も期限も付けられず、届いて初めて効く。効力は相殺適状の日にさかのぼるので遅延損害金がそ</span></li><li><a href="../column/furikomi-tesuryo-kanjo-kamoku/">振込手数料の勘定科目｜支払手数料でよい理由と、取適法の対象取引で売手負担が違反になる新ルール</a><span class="rel-desc">自社負担なら「支払手数料」。売手負担は契約関係等により売上値引き・支払手数料・立替金に分かれて消費税の扱いが変わり、2026年1月の取適法の</span></li><li><a href="../column/furikomi-tesuryo-hikaku/">銀行別 振込手数料 一覧【2026年9月更新】三菱UFJ・みずほ・ゆうちょ等30区分を比較</a><span class="rel-desc">個人・法人の他行宛の振込手数料を一覧に。無料回数などの優遇と混同せず比較できます。</span></li></ul><!--rel:E-->
 </section>
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E6%8C%AF%E8%BE%BC%E6%89%8B%E6%95%B0%E6%96%99%E3%81%8C%E5%85%88%E6%96%B9%E8%B2%A0%E6%8B%85%E3%81%AE%E3%81%A8%E3%81%8D%E3%80%81%E8%AB%8B%E6%B1%82%E9%A1%8D%E3%81%8B%E3%82%89%E3%81%84%E3%81%8F%E3%82%89%E5%B7%AE%E3%81%97%E5%BC%95%E3%81%84%E3%81%A6%E6%8C%AF%E3%82%8A%E8%BE%BC%E3%82%81%E3%81%B0%E3%82%88%E3%81%84%E3%81%8B%E3%82%92%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%80%82%E9%8A%80%E8%A1%8C%E5%AE%9F%E5%8B%99%E3%81%AE3%E6%96%B9%E5%BC%8F%28%E6%8D%AE%E7%BD%AE%E5%9E%8B%E3%83%BB%E6%9C%AA%E6%BA%80%E6%89%8B%E6%95%B0%E6%96%99%E5%8A%A0%E7%AE%97%E5%9E%8B%E3%83%BB%E4%BB%A5%E4%B8%8A%E6%89%8B%E6%95%B0%E6%96%99%E5%8A%A0%E7%AE%97%E5%9E%8B%29%E3%81%A8%E4%B8%80%E5%BE%8B%E5%B7%AE%E5%BC%95%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%80%81%E4%B8%BB%E8%A6%81%E9%8A%80%E8%A1%8C%E3%81%AE%E6%89%8B%E6%95%B0%E6%96%99%E3%83%97%E3%83%AA%E3%82%BB%E3%83%83%E3%83%88%E3%81%A4%E3%81%8D%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fsenpou-futan%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E6%8C%AF%E8%BE%BC%E6%89%8B%E6%95%B0%E6%96%99%E3%81%8C%E5%85%88%E6%96%B9%E8%B2%A0%E6%8B%85%E3%81%AE%E3%81%A8%E3%81%8D%E3%80%81%E8%AB%8B%E6%B1%82%E9%A1%8D%E3%81%8B%E3%82%89%E3%81%84%E3%81%8F%E3%82%89%E5%B7%AE%E3%81%97%E5%BC%95%E3%81%84%E3%81%A6%E6%8C%AF%E3%82%8A%E8%BE%BC%E3%82%81%E3%81%B0%E3%82%88%E3%81%84%E3%81%8B%E3%82%92%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%80%82%E9%8A%80%E8%A1%8C%E5%AE%9F%E5%8B%99%E3%81%AE3%E6%96%B9%E5%BC%8F%E3%81%A8%E4%B8%80%E5%BE%8B%E5%B7%AE%E5%BC%95%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%80%81%E4%B8%BB%E8%A6%81%E9%8A%80%E8%A1%8C%E3%81%AE%E6%89%8B%E6%95%B0%E6%96%99%E3%83%97%E3%83%AA%E3%82%BB%E3%83%83%E3%83%88%E3%81%A4%E3%81%8D%E3%80%82%E5%85%A5%E9%87%91%E5%B7%AE%E9%A1%8D%E3%81%AE%E6%89%8B%E6%95%B0%E6%96%99%E5%B7%AE%E5%BC%95%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%82%82%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fsenpou-futan%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site">
   本ツールの計算結果は目安です。実際の差引額は取引先との取り決め・各銀行の最新の手数料をご確認ください。金額データはブラウザの外へ送信されません。<br>
