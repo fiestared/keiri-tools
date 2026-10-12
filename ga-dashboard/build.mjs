@@ -11,13 +11,12 @@
 // 取得に失敗しても index.html は前回の data.json から描き直す（画面に「取得失敗・N分前のデータ」
 // と出る）。＝ 画面が黙って古い数字を出し続けることは無い。
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { productionGuard } from "./production-guard.mjs";
 import { settledCutoffHour, todayHeadline, todayPv } from "./settled.mjs";
-import { applyFetch, summarize, normalizeState, emptyState, rowsFromRealtime } from "./rt-accum.mjs";
 import { createSign } from "node:crypto";
 
 const DIR = dirname(fileURLToPath(import.meta.url));
@@ -25,9 +24,6 @@ const SA_PATH = process.env.KEIRI_SA_JSON ?? join(homedir(), ".keiri-analytics/s
 const DATA_PATH = join(DIR, "data.json");
 const OUT_HTML = join(DIR, "index.html");
 const OUT_ARTIFACT = join(DIR, "artifact.html");
-// 速報（Realtime API の分ごとの件数の積み上げ）。git には入れない（.gitignore 済み。毎分変わる）。
-// ★ここに未追跡のファイルを置くと production-guard が本番送信を止める。名前を変えるなら .gitignore も直す
-const RT_PATH = join(DIR, "rt-accum.json");
 // 毎分走るので launchd のログに毎回書くと1日1,400行になる。
 // 「走ったかどうか」はこの1行のファイルを毎回上書きして残し、標準出力は変化時とエラー時だけにする。
 // （＝ログが伸びていない ≠ 動いていない。見るのはこのファイル）
@@ -180,57 +176,6 @@ const runReport = (token, property, body) =>
     if (!r.ok) throw new Error(d?.error?.message ?? `HTTP ${r.status}`);
     return d;
   });
-
-// Realtime API: 直近30分の session_start・page_view を minutesAgo 別に取る（1サイト1リクエスト）。
-// ★Realtime に sessions 指標は無い。session_start の eventCount で代える（GA4 の sessions とは数え方が違う）。
-// ★hostName の次元も無いので、自ドメイン以外（検査が localhost で開いたページ）を除けない。
-// ★クォータは runReport と別枠。1回 30〜40 トークン（2026-10-12 実測。runReport は1回1）。
-//   毎分だと1日 約55,000 ＝ 上限 200,000 の 27%。サイトを足す・間隔を詰めるときは returnPropertyQuota を見る。
-const runRealtime = (token, property) =>
-  fetchRetry(`https://analyticsdata.googleapis.com/v1beta/${property}:runRealtimeReport`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      dimensions: [{ name: "minutesAgo" }, { name: "eventName" }],
-      metrics: [{ name: "eventCount" }],
-      dimensionFilter: { filter: { fieldName: "eventName", inListFilter: { values: ["session_start", "page_view"] } } },
-      returnPropertyQuota: true,
-      limit: 200,
-    }),
-  }).then(async (r) => {
-    const d = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(d?.error?.message ?? `HTTP ${r.status}`);
-    return d;
-  });
-
-// 保存データが無い・壊れているときは空から始める（速報が出ないだけで、日次の画面は止めない）
-function loadRt() {
-  try { return normalizeState(JSON.parse(readFileSync(RT_PATH, "utf8"))); }
-  catch { return emptyState(); }
-}
-function saveRt(state) {
-  // 書いている途中で読まれても壊れた JSON を渡さないよう、別名に書いてから置き換える
-  writeFileSync(RT_PATH + ".tmp", JSON.stringify(state));
-  renameSync(RT_PATH + ".tmp", RT_PATH);
-}
-/** 全サイトの速報を取って積む。サイトごとに失敗を分ける。@returns {{state:object, errors:Record<string,string>}} */
-async function fetchRealtimeAll(state) {
-  const errors = {};
-  let token;
-  try { token = await accessToken(); }
-  catch (e) { for (const s of SITES) errors[s.key] = e.message; return { state, errors }; }
-  for (const s of SITES) {
-    try {
-      const resp = await runRealtime(token, s.property);
-      // minutesAgo は応答を作った時刻から数えた分。受け取った直後の時刻を基準にする
-      const n = jstFields();
-      state = applyFetch(state, s.key, { date: `${n.year}-${n.month}-${n.day}`, hm: `${n.hour}:${n.minute}` }, rowsFromRealtime(resp));
-      const q = resp.propertyQuota;
-      if (q) state.sites[s.key].quota = { day: q.tokensPerDay, hour: q.tokensPerHour, projectHour: q.tokensPerProjectPerHour };
-    } catch (e) { errors[s.key] = e.message; }
-  }
-  return { state, errors };
-}
 
 // Search Console（日次のクリック・表示・順位）。siteUrl は sc-domain:… を URL エンコードして path に置く
 const searchAnalytics = (token, siteUrl, body) =>
@@ -1258,61 +1203,8 @@ function siteTabs(sites, selectedKey) {
   }).join("")}</div>`;
 }
 
-/**
- * 速報（リアルタイム集計）の欄。「今日」のタイルのすぐ下に置く。
- * ★GA4 の確定値と別物であることを、欄の中の文で言う（数字だけ並べると「今日」の正しい値に見える）。
- * ★日次の棒・先週比には混ぜない（分子と分母の集計が違ってしまう）。
- */
-function rtBlock(site) {
-  const rt = site.rt;
-  if (!rt) return "";   // 速報を持たない描画（古い呼び出し）では何も出さない
-  const x = rt.sum;
-  const fail = rt.error
-    ? `<div class="rt-warn">速報は取得できなかった（${x ? `${esc(x.to)} 時点の積み上げ` : "積み上げはまだ無い"}）<br><code>${esc(rt.error)}</code></div>`
-    : "";
-  const nums = x ? `
-    <div class="rt-nums">
-      <span><b>${x.s.toLocaleString("ja-JP")}</b> セッション</span>
-      <span><b>${x.pv.toLocaleString("ja-JP")}</b> ページビュー</span>
-      <span class="rt-range">集計の範囲 <b>${esc(x.from)}〜${esc(x.to)}</b></span>
-    </div>
-    ${x.gaps.length ? `<div class="rt-warn">うち ${x.gaps.map((g) => `<b>${esc(g.from)}〜${esc(g.to)}</b>`).join("・")} は未取得（計${x.gapMin}分。その間の訪問は数えていない）</div>` : ""}
-    ${x.from !== "00:00" ? `<div class="rt-sub">この日の積み上げは ${esc(x.from)} から。それより前の訪問は入っていない。</div>` : ""}`
-    : (rt.error ? "" : `<div class="rt-sub">速報はまだ無い（次の更新から積み上がる）。</div>`);
-  return `
-  <div class="rt">
-    <div class="rt-head">速報（リアルタイム集計） <span class="badge">GA4 の確定値とは別物</span></div>
-    ${fail}${nums}
-    <p class="rt-note">GA4 の Realtime API が返す直近30分の「セッション開始」と「ページ表示」のイベント件数を、Mac が毎分取りに行って分ごとに積み上げた数。
-    GA4 の「セッション」とは数え方が違い、数件〜数%ずれる。自ドメイン以外で開いたページも除けない。
-    「今日」のタイル・日次の棒・先週比は GA4 の値のままで、後から GA4 の確定値が入る。速報はそれまでの目安。</p>
-  </div>`;
-}
-
-/**
- * GA4 が当日の行を1行も返していないときの「今日」のタイル。
- * ★0 を 0 と見せない（2026-10-12 Masahiro「ずっと0はありえない」）。訪問が無いのではなく、GA4 が当日集計を出していない。
- *   速報があればそれを主に見せる。比較は出さない（GA4 の先週の値と速報を比べると集計が違ってしまう）。
- */
-function todayTileNoGa(site, primary) {
-  const x = site.rt?.sum ?? null;
-  const raw = Number(site.today ?? 0);
-  return `
-    <div class="tile${primary ? " hero" : ""}">
-      <div class="label">今日 <span class="badge">GA4 は今日ぶんをまだ出していない</span></div>
-      <div class="value">${x ? x.s.toLocaleString("ja-JP") : "—"}</div>
-      ${x ? `<div class="pv">PV ${x.pv.toLocaleString("ja-JP")}</div>
-      <div class="metric-sub">速報（リアルタイム集計・${esc(x.from)}〜${esc(x.to)}${x.from !== "00:00" ? " の分だけ" : ""}）。GA4 の確定値ではない${x.gaps.length ? "。未取得の時間帯あり" : ""}${site.rt?.error ? "。今回は取得できなかった" : ""}</div>`
-      : `<div class="metric-sub">速報もまだ無い</div>`}
-      ${raw > 0 ? `<div class="metric-sub">GA4 の集計中の値: ${raw.toLocaleString("ja-JP")}（まだ増える）</div>` : ""}
-      <span class="delta flat">— <span class="dnote">先週との比較は GA4 が今日ぶんを出してから</span></span>
-    </div>`;
-}
-
 function sitePanel(site, primary, extra = "", selected = true, asTab = false) {
   const hh = String(site.cmpHour).padStart(2, "0");
-  // cutoff が null ＝ GA4 が当日の行（dateHourMinute）を1行も返していない
-  const noGa = site.cutoff == null;
   const tabAttrs = asTab
     ? ` role="tabpanel" aria-labelledby="tab-${esc(site.key)}"${selected ? "" : " hidden"}`
     : "";
@@ -1325,7 +1217,7 @@ function sitePanel(site, primary, extra = "", selected = true, asTab = false) {
   </header>
 
   <div class="tiles">
-    ${noGa ? todayTileNoGa(site, primary) : `<div class="tile${primary ? " hero" : ""}">
+    <div class="tile${primary ? " hero" : ""}">
       <div class="label">今日 <span class="badge">${esc(todayHeadline(site).label)}</span></div>
       <div class="value">${todayHeadline(site).value === null ? "—" : todayHeadline(site).value.toLocaleString("ja-JP")}</div>
       ${todayPvLine(site)}
@@ -1338,7 +1230,7 @@ function sitePanel(site, primary, extra = "", selected = true, asTab = false) {
           + (site.hCumYest === null ? ""
             : delta(site.todayCum, site.hCumYest, `昨日${esc(site.yesterdayWd)} 0:00〜${hh}:59 比`))
         : `<span class="delta flat">— <span class="dnote">比較できる時間帯がまだ無い</span></span>`}
-    </div>`}
+    </div>
     <div class="tile">
       <div class="label">昨日（${esc(site.yesterdayWd)}）</div>
       <div class="value">${site.yesterday.toLocaleString("ja-JP")}</div>
@@ -1355,9 +1247,7 @@ function sitePanel(site, primary, extra = "", selected = true, asTab = false) {
 
   ${site.cutoff ? `<p class="lag">GA4が当日ぶんを出しているのは <b>${esc(site.cutoff)}</b> まで${
       site.lagMin !== null ? `（<b>${site.lagMin}分</b>遅れ）` : ""
-    }。それ以降の訪問はまだこの数字に入っていない。取りに行く頻度を上げても、この遅れは縮まらない。</p>`
-    : `<p class="lag">GA4 は今日ぶんをまだ1行も出していない。訪問が無いのではなく、GA4 の当日集計が出ていない。下の速報が今の目安。</p>`}
-  ${rtBlock(site)}
+    }。それ以降の訪問はまだこの数字に入っていない。取りに行く頻度を上げても、この遅れは縮まらない。</p>` : ""}
   ${goalBlock(site)}
   ${retentionBlock(site)}
   ${insights(site)}
@@ -1480,16 +1370,6 @@ h1{font-size:20px; font-weight:650; margin:0; letter-spacing:.01em}
   border-left:3px solid var(--axis); padding-left:10px;
 }
 .lag b{color:var(--ink); font-variant-numeric:tabular-nums}
-/* 速報（リアルタイム集計）。GA4 の値のタイルと見分けがつくよう、枠を破線にする */
-.rt{border:1px dashed var(--axis); border-radius:10px; padding:12px 14px; margin:0 0 18px; background:var(--plane)}
-.rt-head{font-size:12px; color:var(--ink2); font-weight:600; margin-bottom:6px}
-.rt-nums{display:flex; flex-wrap:wrap; gap:4px 20px; align-items:baseline; font-size:13px; color:var(--ink2); font-variant-numeric:tabular-nums}
-.rt-nums b{font-size:24px; font-weight:650; color:var(--ink); letter-spacing:-.01em; margin-right:2px}
-.rt-nums .rt-range b{font-size:13px; font-weight:600}
-.rt-warn{font-size:12.5px; line-height:1.6; color:var(--ink); border-left:3px solid var(--warn); padding-left:10px; margin:6px 0}
-.rt-warn code{font-size:11px; color:var(--ink2); word-break:break-all}
-.rt-sub{font-size:12px; color:var(--ink2); margin-top:4px}
-.rt-note{font-size:11.5px; line-height:1.6; color:var(--muted); margin:8px 0 0}
 
 .insights{margin:20px 0 24px; border-top:1px solid var(--border); padding-top:18px}
 .insights>h3{font-size:15px; margin:0 0 12px; font-weight:650}
@@ -1877,26 +1757,6 @@ if (!data) {
 }
 
 const m = model(data);
-
-// 速報。★日次の取得とは別の try に置く: 速報だけ落ちても、日次の画面・/ga への送信・終了コードは変えない。
-//   失敗は速報の欄と last-run.txt に出す。--offline は取りに行かず、保存ぶんから描くだけ。
-let rtState = loadRt();
-let rtErrors = {};
-if (!OFFLINE) {
-  try {
-    const r = await fetchRealtimeAll(rtState);
-    rtState = r.state; rtErrors = r.errors;
-    saveRt(rtState);
-  } catch (e) {
-    for (const s of SITES) rtErrors[s.key] ??= e.message;
-  }
-}
-for (const s of m.sites) {
-  let sum = null;
-  try { sum = summarize(rtState, s.key, m.today); } catch { /* 速報が描けなくても画面は出す */ }
-  s.rt = { sum, error: rtErrors[s.key] ?? null };
-}
-
 const html = standalone(m, err);
 writeFileSync(OUT_HTML, html);
 if (WANT_ARTIFACT) writeFileSync(OUT_ARTIFACT, fragment(m, err));
@@ -1911,11 +1771,7 @@ if (production && !err) {
 
 const f = jstFields(new Date(m.fetchedAt));
 const stamp = `${f.year}-${f.month}-${f.day} ${f.hour}:${f.minute}`;
-const rtNote = (s) => {
-  const x = s.rt?.sum;
-  return `（速報 ${s.rt?.error ? "取得失敗 " : ""}${x ? `s=${x.s} pv=${x.pv} ${x.from}〜${x.gaps.length ? ` 欠け${x.gapMin}分` : ""}` : "なし"}）`;
-};
-const nums = m.sites.map((s) => `${s.label} 今日=${s.today}${rtNote(s)} 昨日=${s.yesterday} 直近7日=${s.last7}`).join(" / ");
+const nums = m.sites.map((s) => `${s.label} 今日=${s.today} 昨日=${s.yesterday} 直近7日=${s.last7}`).join(" / ");
 const summary = `${stamp} JST ${err ? "FAIL" : "OK"} ${nums}`
   + `${err ? ` — ${err}` : ""}${pushErr ? ` — /ga への送信に失敗: ${pushErr}` : ""}`;
 
