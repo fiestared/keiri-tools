@@ -62,8 +62,8 @@ export function build(D) {
   // 2026-10-08 UI/UX: 答え（料率とその本人負担）を左から並べ、前年との増減は最後の列へ。1列目（都道府県）は横に送っても残す
   // 2026-10-12 読みやすさ: 見出しの「介護の条件」details は外した。第2号の定義は表の直後の注と「表の読み方」に1回だけ書く
   const table = `<div class="scroll-wrap"><table class="kenpo-ichiran sticky-first">
-<caption>協会けんぽの都道府県別 保険料率（${m.year}・一般被保険者は${rateFrom}から）</caption>
-<thead><tr><th scope="col">都道府県</th><th scope="col" class="num" data-answer>健康保険料率</th><th scope="col" class="num" data-answer>本人負担（折半）40歳未満</th><th scope="col" class="num">40〜64歳（介護保険料率${fmt(kaigo)}%込み）</th><th scope="col" class="num">本人負担（折半）40〜64歳</th><th scope="col" class="num">${prevYear}からの増減</th></tr></thead>
+<caption>協会けんぽの都道府県別 保険料率（${m.year}・一般被保険者は${rateFrom}から。子ども・子育て支援金は含まない）</caption>
+<thead><tr><th scope="col">都道府県</th><th scope="col" class="num" data-answer>健康保険料率</th><th scope="col" class="num" data-answer>本人負担（折半）40歳未満</th><th scope="col" class="num">40〜64歳（介護保険料率${fmt(kaigo)}%込み）</th><th scope="col" class="num">本人負担（折半）40〜64歳</th><th scope="col" class="num">${prevYear}からの増減（ポイント）</th></tr></thead>
 <tbody>
 ${rows.map((x) => `<tr data-pref="${x.p}"><th scope="row" style="white-space:nowrap">${x.p}</th><td class="num">${tok(fmt(x.r))}</td><td class="num">${tok(fmt(x.r, true))}</td><td class="num">${tok(fmt(x.withKaigo))}</td><td class="num">${tok(fmt(x.withKaigo, true))}</td><td class="num">${fmtDiff(x.diff)}</td></tr>`).join("\n")}
 </tbody></table></div>`;
