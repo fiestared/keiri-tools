@@ -73,6 +73,11 @@ doc('enk_M', f'{M}/geppou/253144/253144_202609.pdf', 'eMAXIS Slim 国内株式�
 doc('tnk_P', 'https://www.am-one.co.jp/fund/pdf/313122/313122_pr_d.pdf', 'たわらノーロード 日経225 交付目論見書（使用開始日2026年7月15日）')
 doc('tnk_Ak', 'https://www.am-one.co.jp/fund/pdf/313122/313122_r_d.pdf', 'たわらノーロード 日経225 交付運用報告書（作成対象期間2024年10月16日〜2025年10月14日）')
 doc('tnk_M', 'https://www.am-one.co.jp/fund/pdf/313122/313122_mr.pdf', 'たわらノーロード 日経225 マンスリーレポート（2026年9月30日基準）')
+doc('ricgld_P', f'{RK}/ricgld/pdf/ricgld_P.pdf', '楽天・ゴールド・ファンド（為替ヘッジあり）／（為替ヘッジなし）交付目論見書（使用開始日2026年1月13日）')
+doc('ricgld_M', f'{RK}/ricgld/pdf/ricgld_M202608.pdf', '楽天・ゴールド・ファンド（為替ヘッジあり）／（為替ヘッジなし）月次レポート（2026年8月31日作成基準）')
+doc('mgold_P', f'{M}/koumokuromi/251065/251065_20260418.pdf', '三菱UFJ 純金ファンド 交付目論見書（使用開始日2026年4月18日）')
+doc('mgold_Ak', f'{M}/kouunyou/251065/251065_20260120_k.pdf', '三菱UFJ 純金ファンド 交付運用報告書（作成対象期間2025年1月21日〜2026年1月20日）')
+doc('mgold_M', f'{M}/geppou/251065/251065_202609.pdf', '三菱UFJ 純金ファンド 月次レポート（2026年9月30日現在）')
 doc('spdji_hd', 'https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-high-dividend-indices.pdf', 'S&P Dow Jones Indices：S&P High Dividend Indices Methodology（2026年10月7日に確認）')
 doc('nq_sox', 'https://indexes.nasdaqomx.com/docs/Methodology_SOX.pdf', 'Nasdaq：PHLX Semiconductor Sector Index（SOX）Index Methodology（2026年10月6日に確認）')
 doc('nq_ndx', 'https://indexes.nasdaqomx.com/docs/Methodology_NDX.pdf', 'Nasdaq：Nasdaq-100 Index（NDX）Index Methodology（2026年10月6日に確認）')
@@ -95,6 +100,8 @@ NAV = {
     'tawara-nk': ('amone_313122.json', 'https://www.am-one.co.jp/chart_data/313122/dat.json'),
     'sbi-vym1': ('sbi_2021062902.xml', 'https://apl.wealthadvisor.jp/xml/chart/funddata/2021062902.xml'),
     'sbi-schd4': ('sbi_2024122003.xml', 'https://apl.wealthadvisor.jp/xml/chart/funddata/2024122003.xml'),
+    'rakuten-gold': ('rakuten_100123.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100123.csv'),
+    'mufg-gold': ('mufg_251065.csv', 'https://www.am.mufg.jp/fund_file/setteirai/251065.csv'),
     'rakuten-ndx': ('rakuten_100091.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100091.csv'),
 }
 
