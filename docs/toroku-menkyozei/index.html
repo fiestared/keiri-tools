@@ -143,7 +143,7 @@
 <section class="hero">
   <h1>不動産の登録免許税 計算機（売買・新築）</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-30">2026年7月30日</time>（更新日: <time datetime="2026-10-12">2026年10月12日</time>）</p>
-  <p>家を<b>買う・建てる</b>ときの登録免許税を、土地の売買による移転・建物の保存か移転・住宅ローンの抵当権設定の<b>登記ごとの税率で別々に</b>計算します。たとえば土地の評価額1,500万円・建物1,000万円・ローン3,500万円の住宅を売買で買い、土地1.5%・建物0.3%・抵当権0.1%の軽減を使える場合は、合計<b>290,000円</b>です。</p>
+  <p>家を<b>買う・建てる</b>ときの登録免許税を、土地の売買による移転・建物の保存か移転・住宅ローンの抵当権設定の<b>登記ごとの税率で別々に</b>計算します。軽減を使える場合の例では、合計<b>290,000円</b>です。土地の評価額1,500万円・建物1,000万円・ローン3,500万円の住宅を売買で買い、土地1.5%・建物0.3%・抵当権0.1%で計算した額です。</p>
   <p><b id="hero-kigen">軽減の期限は2つ別々にあります</b>——土地の売買の1.5%は<b>令和11年3月31日</b>まで、住宅用家屋の軽減は<b>令和9年3月31日</b>までです。</p>
 </section>
 
@@ -243,7 +243,7 @@
         <option value="none" selected>認定なし</option>
         <option value="chouki">特定認定長期優良住宅</option>
         <option value="teitanso">認定低炭素住宅</option>
-      </select>
+      </select><p class="hint" id="nintei-hint"></p>
     </div>
     <div>
       <label for="kodate">一戸建てかマンションか</label>
@@ -295,7 +295,7 @@
 
 <h2 id="kigen">軽減の期限は2つ別々にある（土地は令和11年・住宅は令和9年）</h2>
 
-<p id="kigen-honbun">土地の1.5%は<b>令和11年3月31日</b>まで、住宅用家屋の軽減は<b>令和9年3月31日</b>までで、<b>2年ずれています</b>。<b>土地の売買</b>の軽減（租税特別措置法72条）と<b>住宅用家屋</b>の軽減（同72条の2・73・74・74条の2・74条の3・75）は別の条文にあり、<b>適用期限も別々</b>だからです。</p>
+<p id="kigen-honbun">土地の1.5%は<b>令和11年3月31日</b>まで、住宅用家屋の軽減は<b>令和9年3月31日</b>までで、<b>2年ずれています</b>。<b>土地の売買</b>の軽減と<b>住宅用家屋</b>の軽減は別の条文にあり、<b>適用期限も別々</b>だからです。条文は、土地が租税特別措置法72条、住宅が同72条の2・73・74・74条の2・74条の3・75です。</p>
 
 <figure class="figure fig-wide" style="--figw:700px">
 <svg viewBox="0 0 760 268" width="100%" role="img" aria-label="登録免許税の軽減の適用期限が2つに分かれていることを示す時間軸の図。住宅用家屋の軽減は令和9年3月31日まで、土地の売買の1.5パーセントは令和11年3月31日まで続き、住宅は期限内取得後1年以内の登記も対象">
@@ -398,7 +398,7 @@
 
 <h2 id="teitoken">抵当権の課税標準は「借入額」で、家の評価額ではない</h2>
 
-<p id="teitoken-honbun">所有権の保存・移転の課税標準は不動産の価額ですが、<b>抵当権の設定だけは違います</b>。登録免許税法 別表第一 第一号（五）が課税標準を次のように定めています。</p>
+<p id="teitoken-honbun">抵当権の設定は、家の評価額ではなく<b>住宅ローンの借入額</b>で計算します。所有権の保存・移転の課税標準は不動産の価額ですが、<b>抵当権の設定だけは違います</b>。登録免許税法 別表第一 第一号（五）が課税標準を次のように定めています。</p>
 
 <blockquote id="teitoken-jouban">先取特権の保存、質権若しくは抵当権の設定、処分の制限又は転質の登記又は登録　<b>債権金額、極度金額又は不動産工事費用の予算金額</b></blockquote>
 
@@ -513,8 +513,9 @@ function paintMeta() {
     `<span id="keiraku-hint">競落は、土地の${pct(K.tochi_baibai.ritsu)}を使えません</span>。`;
   $("yoken-hint").innerHTML =
     `床面積<b>${Y.yukamenseki_min}㎡以上</b>、新築・取得から<b>${Y.toki_kigen_months}か月以内</b>の登記が要件です。` +
-    `中古は<b id="chuko-kijun">${Y.chuko_kenchiku_kijun_hyoji}以後の建築</b>か、耐震基準適合の証明が必要です。` +
-    `<span id="nintei-hint">認定住宅の一戸建ての移転は、長期優良${pct(K.chouki_yuryo.iten_kodate_ritsu)}・低炭素${pct(K.tei_tanso.iten_ritsu)}です。</span>`;
+    `中古は<b id="chuko-kijun">${Y.chuko_kenchiku_kijun_hyoji}以後の建築</b>か、耐震基準適合の証明が必要です。`;
+  $("nintei-hint").innerHTML =
+    `一戸建ての移転は、長期優良${pct(K.chouki_yuryo.iten_kodate_ritsu)}・低炭素${pct(K.tei_tanso.iten_ritsu)}です。`;
   $("saiken-hint").innerHTML =
     `<span id="saiken-hint-honbun">家の評価額ではなく<b>借入額（債権金額）</b>を入れます</span>。根抵当権なら極度金額を入れてください。`;
   $("hanni-hint").innerHTML =
