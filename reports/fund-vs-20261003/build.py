@@ -646,7 +646,7 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'effgap': {'must_with': ['概算|再投資', '仮定|再投資', '実際の利益差ではありません|目安|再投資'], 'derived': True, 'calc': 'python3: round(0.99 - 0.2925, 4) = 0.6975（年0.6975ポイント）、round(0.6975 / 100 * 1_000_000) = 6975（約6,975円）。'},
         'rakuten-gold-ter': {'must_with': ['総経費率|再投資|貸付', '未掲載|参考値|再投資|以内']},
         'mufg-gold-ter': {'must_with': ['総経費率', '参考値|2025/1/21']},
-        'mg-terbrk': {'must_with': ['総経費率|ファンド本体|信託報酬', '参考値|ファンド本体|信託報酬', '2025年1月21日|2025/1/21|ファンド本体|信託報酬']},
+        'mg-ternote': {'must_with': ['総経費率']},
         'rakuten-gold-settle': {'must_with': ['原則として|決算', '休業日|決算日']},
         'mufg-gold-settle': {'must_with': ['休業日|決算|作成対象期間|交付運用報告書']},
         'rakuten-gold-incept': {'must_with': ['設定日']}, 'mufg-gold-incept': {'must_with': ['設定日']},
