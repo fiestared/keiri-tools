@@ -87,7 +87,7 @@
           "name": "省エネ基準を満たさない「その他の住宅」でも控除は受けられますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "2024年以降に新築で入居した「その他の住宅」は、原則として控除の対象になりません（借入限度額0円。2026年入居も同じです）。ただし2023年末までに建築確認を受けたもの、または2024年6月末までに建築されたものは、経過措置として借入限度額2,000万円・控除期間10年で受けられます。40㎡以上50㎡未満は、2023年末までの建築確認が必要です。2024年以降の入居でも、買取再販住宅と中古は0円にならず、2,000万円・10年で受けられます。"
+            "text": "2024年以降に新築で入居した「その他の住宅」は、原則として控除の対象になりません（借入限度額0円。2026年入居も同じです）。ただし2023年末までに建築確認を受けたもの、または2024年6月末までに建築されたものは、経過措置として借入限度額2,000万円・控除期間10年で受けられます。2024年以降の入居でも、買取再販住宅と中古は0円になりません。"
           }
         },
         {
@@ -151,8 +151,8 @@
 <section class="hero">
   <h1>住宅ローン控除 計算機</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-15">2026年7月15日</time>（更新日: <time datetime="2026-10-13">2026年10月13日</time>）</p>
-  <p>住宅の種類・入居した年・年末のローン残高から、住宅ローン控除（住宅借入金等特別控除）の1年あたりの控除額・控除期間・総額のめやすを計算します。2022〜2030年入居の控除率0.7％の制度に対応しています。</p>
-  <p>たとえば2026年に新築の省エネ基準適合住宅へ入居した場合、借入限度額2,000万円 × 0.7％ ＝ 年14万円が控除額の上限で、控除期間は13年です。省エネ基準を満たさない「その他の住宅」へ2024年以降に新築で入居した場合は、<a href="#sonota">原則0円</a>です。</p>
+  <p>住宅の種類・入居した年・年末のローン残高から、住宅ローン控除の1年あたりの控除額・控除期間・総額のめやすを計算します（2022〜2030年入居の控除率0.7％の制度）。</p>
+  <p>たとえば2026年入居の新築・省エネ基準適合住宅は、借入限度額2,000万円 × 0.7％ ＝ 年14万円が上限で、控除期間は13年です。新築の「その他の住宅」は、2024年以降の入居で<a href="#sonota">原則0円</a>です。</p>
 </section>
 
 
@@ -164,20 +164,20 @@
     <option value="chuko">中古（既存住宅）を個人などから購入した</option>
     <option value="zokaichiku">増改築・リフォーム</option>
   </select>
-  <div class="hint">新築・買取再販・中古で、借入限度額と控除期間が違います。増改築・リフォームは、この計算機では扱いません。</div>
+  <div class="hint">増改築・リフォームは、この計算機では扱いません。</div>
 
   <label for="kubun" style="margin-top:12px">住宅の種類（省エネ性能）</label>
   <select id="kubun">
     <option value="nintei">認定住宅（認定長期優良住宅・認定低炭素住宅）</option>
-    <option value="zeh">ZEH水準省エネ住宅（断熱等性能等級5以上かつ一次エネルギー消費量等級6以上）</option>
-    <option value="shoene" selected>省エネ基準適合住宅（断熱等性能等級4以上かつ一次エネルギー消費量等級4以上。2026年以降入居は気候風土適応住宅も含む）</option>
-    <option value="sonota">その他の住宅（認定・ZEH・省エネ基準適合住宅に該当しない住宅）</option>
+    <option value="zeh">ZEH水準省エネ住宅</option>
+    <option value="shoene" selected>省エネ基準適合住宅</option>
+    <option value="sonota">その他の住宅（上の3つに該当しない住宅）</option>
   </select>
-  <div class="hint">分からないときは、いちばん条件のきびしい「その他の住宅」で見てください（<a href="#shiki">省エネ性能の確かめ方</a>）。</div>
+  <div class="hint">分からないときは「その他の住宅」で見てください（<a href="#shurui">種類の見分け方</a>）。</div>
 
   <label for="year" style="margin-top:12px">入居した年（住み始めた年）</label>
   <select id="year"></select>
-  <div class="hint">購入契約の年でも、ローンを組んだ年でもありません。2021年までの入居は別の制度なので、この計算機では扱いません。</div>
+  <div class="hint">購入契約の年でも、ローンを組んだ年でもありません。</div>
 
   <label for="zandaka" style="margin-top:12px">年末のローン残高（その年の12月31日時点／円）</label>
   <input type="number" id="zandaka" data-example="30000000" inputmode="numeric" aria-describedby="zandaka-hint">
@@ -186,7 +186,32 @@
   <details style="margin-top:12px">
     <summary>くわしく計算する（実際に戻る額・取得対価・所得・床面積・子育て世帯の特例）</summary>
     <div style="margin-top:10px">
-      <label style="font-weight:400;display:block;margin-top:2px">
+      <label for="shotokuzei" style="margin-top:2px">その年の所得税額（住宅ローン控除を受ける前・円）</label>
+      <input type="number" id="shotokuzei" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="shotokuzei-hint">
+      <span id="shotokuzei-hint" class="hint">任意</span>
+      <div class="hint">入れると<b>実際に戻る（軽減される）税額</b>を計算します。源泉徴収票の「源泉徴収税額」はそのまま使えません（<a href="#zeigaku">入力する額</a>）。</div>
+
+      <label for="kazei" style="margin-top:12px">課税総所得金額等（円）</label>
+      <input type="number" id="kazei" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="kazei-hint">
+      <span id="kazei-hint" class="hint">任意</span>
+      <div class="hint">住民税から引ける上限の計算に使います。<b>空欄のときは上限97,500円で概算</b>します（<a href="#zeigaku">入力する額</a>）。</div>
+
+      <label for="taika" style="margin-top:12px">住宅の取得対価等（円）</label>
+      <input type="number" id="taika" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="taika-hint">
+      <span id="taika-hint" class="hint">任意</span>
+      <div class="hint">ローン残高より<b>少ない</b>ときに入れます。分からなければ空欄でOKです（<a href="#shiki">取得対価等とは</a>）。</div>
+
+      <label for="shotoku" style="margin-top:12px">その年の合計所得金額（円）</label>
+      <input type="number" id="shotoku" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="shotoku-hint">
+      <span id="shotoku-hint" class="hint">任意</span>
+      <div class="hint"><b>2,000万円を超える年は、その年は控除を受けられません。</b>空欄のときは所得の判定をせずに計算します。</div>
+
+      <label for="menseki" style="margin-top:12px">床面積（㎡）</label>
+      <input type="number" id="menseki" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="menseki-hint">
+      <span id="menseki-hint" class="hint">任意</span>
+      <div class="hint">登記事項証明書の床面積（マンションは専有部分）です。50㎡未満のときの条件は<a href="#yoken">床面積と所得の要件</a>にまとめました。</div>
+
+      <label style="font-weight:400;display:block;margin-top:12px">
         <input type="checkbox" id="tokurei"> <b>特例対象個人（子育て世帯・若者夫婦世帯）</b>である
       </label>
       <div class="hint">次のいずれかに当てはまる人です。上乗せがあるのは2024年以降の入居で、住宅の種類などの条件があります（<a href="#kosodate">上乗せの条件</a>）。</div>
@@ -214,30 +239,6 @@
         <option value="yes">該当する（区域内で例外もない）</option>
       </select>
       <div class="hint" id="redzone-hint">未確認のままでは区域の要件を判定しません。区域と例外は自治体等に確認してください（<a href="#r10">除外の条件</a>）。</div>
-      <label for="taika" style="margin-top:12px">住宅の取得対価等（円）</label>
-      <input type="number" id="taika" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="taika-hint">
-      <span id="taika-hint" class="hint">任意</span>
-      <div class="hint">ローン残高より<b>少ない</b>ときに入れます。分からなければ空欄でOKです（<a href="#shiki">取得対価等とは</a>）。</div>
-
-      <label for="shotoku" style="margin-top:12px">その年の合計所得金額（円）</label>
-      <input type="number" id="shotoku" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="shotoku-hint">
-      <span id="shotoku-hint" class="hint">任意</span>
-      <div class="hint"><b>2,000万円を超える年は、その年は控除を受けられません。</b>空欄のときは所得の判定をせずに計算します。</div>
-
-      <label for="menseki" style="margin-top:12px">床面積（㎡）</label>
-      <input type="number" id="menseki" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="menseki-hint">
-      <span id="menseki-hint" class="hint">任意</span>
-      <div class="hint">登記事項証明書の床面積（マンションは専有部分）です。50㎡未満のときの条件は<a href="#yoken">床面積と所得の要件</a>にまとめました。</div>
-
-      <label for="shotokuzei" style="margin-top:12px">その年の所得税額（住宅ローン控除を受ける前・円）</label>
-      <input type="number" id="shotokuzei" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="shotokuzei-hint">
-      <span id="shotokuzei-hint" class="hint">任意</span>
-      <div class="hint">入れると<b>実際に戻る（軽減される）税額</b>を計算します。源泉徴収票の「源泉徴収税額」はそのまま使えません（<a href="#zeigaku">入力する額</a>）。</div>
-
-      <label for="kazei" style="margin-top:12px">課税総所得金額等（円）</label>
-      <input type="number" id="kazei" value="" placeholder="空欄でOK" inputmode="numeric" aria-describedby="kazei-hint">
-      <span id="kazei-hint" class="hint">任意</span>
-      <div class="hint">住民税から引ける上限の計算に使います。<b>空欄のときは上限97,500円で概算</b>します（<a href="#zeigaku">入力する額</a>）。</div>
     </div>
   </details>
 
@@ -251,14 +252,14 @@
   <h2 id="tool-section-1">この計算機の見方</h2>
 
   <h3 id="shiki">控除額の出しかた（この計算機が扱う0.7％制度）</h3>
+  <p>住宅ローン控除（住宅借入金等特別控除）の各年の控除額は、次の式で決まります。</p>
   <div class="callout">
-    <b>各年の控除額 ＝ min（年末のローン残高, 借入限度額, 取得対価等）× 0.7％</b>（100円未満は切り捨て）
+    <b>各年の控除額 ＝ min（年末のローン残高, 借入限度額, 取得対価等）× 0.7％</b>min は「3つのうち最も少ない額」という意味です。100円未満は切り捨てます。
   </div>
   <p>この計算機は2022〜2030年入居の0.7％制度専用です。2022年入居でも、旧1％制度の特別特例取得・特例特別特例取得は対象外です。</p>
   <ul>
     <li><b>借入限度額</b>：住宅の種類と入居した年で決まります（<a href="#gendo">借入限度額と控除期間</a>）。</li>
     <li><b>取得対価等</b>：住宅の取得価額（消費税込み・土地代を含む）から、補助金等と住宅取得等資金の贈与税特例の適用額を差し引いた額です。ローン残高より少ないときは、こちらが控除の対象になります。</li>
-    <li><b>住宅の種類</b>：省エネ性能は、登録住宅性能評価機関の建設住宅性能評価書や、建築士等の住宅省エネルギー性能証明書などで分かります。</li>
     <li><b>入居した年</b>：居住を開始した年です。借入限度額は、この年で決まります。</li>
   </ul>
   <p>たとえば新築・買取再販の認定住宅に2022年に入居した場合（0.7％制度）、控除額は次のようになります。</p>
@@ -267,6 +268,15 @@
     <li>取得対価等が2,000万円以上で、年末残高が2,000万円：2,000万円 × 0.7％ ＝ 14万円です。</li>
   </ul>
   <p>残高が借入限度額や取得対価等を上回る間は、返済しても控除額が変わらない場合があります。</p>
+
+  <h3 id="shurui">住宅の種類（省エネ性能）の見分け方</h3>
+  <ul>
+    <li><b>認定住宅</b>：認定長期優良住宅・認定低炭素住宅</li>
+    <li><b>ZEH水準省エネ住宅</b>：断熱等性能等級5以上かつ一次エネルギー消費量等級6以上</li>
+    <li><b>省エネ基準適合住宅</b>：断熱等性能等級4以上かつ一次エネルギー消費量等級4以上。2026年以降の入居は気候風土適応住宅も含みます。</li>
+    <li><b>その他の住宅</b>：認定・ZEH・省エネ基準適合住宅に該当しない住宅</li>
+  </ul>
+  <p>省エネ性能は、登録住宅性能評価機関の建設住宅性能評価書や、建築士等の住宅省エネルギー性能証明書などで分かります。分からないときは、いちばん条件のきびしい「その他の住宅」で見てから、性能証明を確認してください。</p>
 </section>
 
 <section class="faq">
@@ -307,7 +317,7 @@
   </table></div>
   <ul>
     <li><b>新築省エネの経過措置</b>：2027年12月31日までの建築確認、又は2028年6月30日までの建築が条件です。詳細欄に日付を入れないと、この経過措置は適用しません。</li>
-    <li><b>新築の「その他」の経過措置</b>：2023年12月31日までの建築確認、又は2024年6月30日までの建築が条件です。40〜50㎡未満は建築確認だけで判定します。</li>
+    <li><b>新築の「その他」の経過措置</b>：条件は<a href="#sonota">次の節</a>にまとめました。</li>
     <li>どちらの経過措置にも、子育て世帯等の上乗せはありません。</li>
     <li><b>災害危険区域等</b>：2028年以後、対象となる災害危険区域等での新築・未使用住宅の取得は控除対象外です。建築確認時に土地全部が区域外だった場合や、所定の特定建替えには例外があります。</li>
   </ul>
@@ -316,7 +326,7 @@
   <p>省エネ基準を満たさない「その他の住宅」は、2024年以降の入居で借入限度額が0円になりました（2023年までは3,000万円。2026年入居も0円のままです）。所定の建築確認日・建築日を満たす経過措置に該当しなければ、住宅ローンを組んでも控除は受けられません。</p>
   <p><b>経過措置に当たれば復活します（借入限度額2,000万円・控除期間10年）</b></p>
   <ul>
-    <li>対象は、<b>2023年末までに建築確認を受けた</b>、または<b>2024年6月末までに建築された</b>「その他の住宅」です。建築の日付で決まるので、2026年入居でも有効です。</li>
+    <li>対象は、<b>2023年12月31日までに建築確認を受けた</b>、または<b>2024年6月30日までに建築された</b>「その他の住宅」です。建築の日付で決まるので、2026年入居でも有効です。</li>
     <li>床面積50㎡以上：詳細欄で<b>「経過措置に該当する」にチェック</b>してください。</li>
     <li>40〜50㎡未満：<b>2023年末までの建築確認日を入力</b>する必要があります。建築日やチェックだけでは判定できません。</li>
   </ul>
@@ -422,7 +432,7 @@
   <h3 class="faq-question">2027年に入居した場合も計算できますか？</h3>
   <p class="faq-answer">できます。2027年入居の借入限度額・控除期間は2026年入居と同じです。2028〜2030年入居にも対応しています。2028年以降の新築の省エネ基準適合住宅は原則対象外ですが、2027年末までの建築確認又は2028年6月末までの建築なら2,000万円・10年です。買取再販・中古の省エネ住宅は2,000万円・13年です。</p>
   <h3 class="faq-question">省エネ基準を満たさない「その他の住宅」でも控除は受けられますか？</h3>
-  <p class="faq-answer">2024年以降に新築で入居した「その他の住宅」は、原則として控除の対象になりません（借入限度額0円。2026年入居も同じです）。ただし2023年末までに建築確認を受けたもの、または2024年6月末までに建築されたものは、経過措置として借入限度額2,000万円・控除期間10年で受けられます。40㎡以上50㎡未満は、2023年末までの建築確認が必要です。2024年以降の入居でも、買取再販住宅と中古は0円にならず、2,000万円・10年で受けられます。</p>
+  <p class="faq-answer">2024年以降に新築で入居した「その他の住宅」は、原則として控除の対象になりません（借入限度額0円。2026年入居も同じです）。ただし2023年末までに建築確認を受けたもの、または2024年6月末までに建築されたものは、経過措置として借入限度額2,000万円・控除期間10年で受けられます。2024年以降の入居でも、買取再販住宅と中古は0円になりません。</p>
   <h3 class="faq-question">計算に出た「総控除額」はそのまま戻ってくる金額ですか？</h3>
   <p class="faq-answer">いいえ、上限のめやすです。総控除額は「年間控除額×控除期間」で出した上限の概算です。各年の控除額は年末残高・借入限度額・取得対価等の最小額で決まります。さらに、控除しきれない分はその年の所得税額が上限で、余りは翌年度の住民税から一定額まで引かれ、それでも余ると戻りません。</p>
   <h3 class="faq-question">収入が高くても住宅ローン控除は受けられますか？</h3>
