@@ -701,7 +701,7 @@ const CATEGORIES = [
   {
     id: "kyuyo",
     name: "給与計算・手取り",
-    desc: "額面から手取りまでの引かれ方と、残業代・通勤手当・住民税の実務。労働時間の決まりは、36協定・フレックスタイム制・変形労働時間制・裁量労働制・休憩時間・深夜手当・振替休日と代休。雇用の決まりは、労働条件の明示・就業規則・試用期間・解雇予告手当・休業手当・懲戒処分の減給・無期転換。健康診断・忌引き休暇・年俸制・カスタマーハラスメント対策もここ。",
+    desc: "額面から手取りまでの引かれ方と、残業代・通勤手当・住民税の実務。労働時間と休憩・休日の決まり、就業規則と労働条件の明示、試用期間・解雇・懲戒処分・無期転換、健康診断・忌引き休暇・年俸制・カスタマーハラスメント対策もここ。",
     slugs: [
       "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "kinmukan-interval", "flextime", "henkei-roudou-jikan", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kanri-kantokusha", "kenko-shindan", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "kyukei-jikan", "shugyo-kisoku", "kibiki-keicho-kyuka", "shiyo-kikan", "tsukin-teate-hikazei", "nenpousei", "hiseiki-koyo", "rodo-kumiai", "fuyo-teate", "doitsu-rodo-doitsu-chingin", "gisou-ukeoi", "haken-3nen-teishokubi", "zesei-kankoku", "kasuhara", "chokai-shobun", "muki-tenkan", "anzen-eisei-iinkai", "anzen-eisei-suishinsha", "roudousha-shishobyo-houkoku", "hotei-koyoritsu", "naitei-torikeshi", "taishoku-kansho", "taishoku-shomeisho", "mimoto-hosho", "kyogyo-hishi-gimu", "anzen-hairyo-gimu", "fukugyo-rodojikan-tsusan", "sangyoi", "josei-katsuyaku-suishinho",
       "juminzei-hayamihyo", "juminzei-tokubetsu-choshu", "juminzei-kettei-tsuchisho", "juminzei-hikazei-border", "taishokugo-juminzei", "nenmatsu-chosei-juminzei", "juminzei-fuyo-kojo",
@@ -745,7 +745,7 @@ const CATEGORIES = [
   {
     id: "keiri",
     name: "振込・支払の実務",
-    desc: "振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日の数え方、収入印紙。支払期日の法的な上限（令和8年1月に下請法から改称された中小受託取引適正化法の60日ルールと、フリーランス法との違い）もここ。",
+    desc: "振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日の数え方、収入印紙。支払期日の上限を定める中小受託取引適正化法（旧・下請法）の60日ルールと、フリーランス法との違いもここ。",
     slugs: [
       "furikomi-tesuryo-hikaku", "furikomi-hanei-jikan", "furikomi-furikae-chigai", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "kumimodoshi", "koza-furikae-iraisho", "kotora-sokin", "pay-easy",
@@ -769,7 +769,7 @@ const CATEGORIES = [
   {
     id: "kyuyo-jitsumu",
     name: "給与計算の実務（会社側）",
-    desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務、掛金納付月数によって退職金が3段階に変わること、解約しても解約手当金が事業主ではなく従業員に支払われることもここ。",
+    desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務もここ。",
     slugs: [
       "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
       "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
