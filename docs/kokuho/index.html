@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>国民健康保険料 計算機｜令和8年度から賦課は4区分（子ども・子育て支援金分）</title>
-<meta name="description" content="市町村の料率と世帯の状況を入れると、令和8年度の国民健康保険料（税）の年額を概算します。子ども・子育て支援金分を加えた4区分で、7割・5割・2割の軽減、未就学児と18歳未満の減額、区分ごとの賦課限度額を計算します。無料・登録不要。">
+<meta name="description" content="市町村の料率と世帯の状況を入れると、令和8年度の国民健康保険料（税）の年額を概算します。子ども・子育て支援金分を加えた4区分で、7割・5割・2割の軽減、未就学児の減額、18歳到達年度末までの子育て分均等割の全額減額、区分ごとの賦課限度額を計算します。無料・登録不要。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/kokuho/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="国民健康保険料 計算機｜令和8年度から賦課は4区分（子ども・子育て支援金分）">
-<meta property="og:description" content="市町村の料率と世帯の状況を入れると、令和8年度の国民健康保険料（税）の年額を概算します。子ども・子育て支援金分を加えた4区分で、7割・5割・2割の軽減、未就学児と18歳未満の減額、区分ごとの賦課限度額を計算します。無料・登録不要。">
+<meta property="og:description" content="市町村の料率と世帯の状況を入れると、令和8年度の国民健康保険料（税）の年額を概算します。子ども・子育て支援金分を加えた4区分で、7割・5割・2割の軽減、未就学児の減額、18歳到達年度末までの子育て分均等割の全額減額、区分ごとの賦課限度額を計算します。無料・登録不要。">
 <meta property="og:url" content="https://keiri-tools.com/kokuho/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -172,6 +172,7 @@
   <select id="ninzu"></select>
   <div id="members" style="margin-top:10px"></div>
   <p class="hint" style="margin-top:6px" id="age-hint"></p>
+  <p class="hint" style="margin-top:6px" id="shotoku-hint">総所得金額等は、基礎控除を引く前の額です。「給与所得者等」に当たる人は<a href="../column/kokuho-hokenryo/#keigen">国保料の解説</a>で確かめられます。</p>
 
   <label style="margin-top:16px">③ 世帯主・特定同一世帯所属者</label>
   <div>
@@ -197,7 +198,7 @@
     </div>
     <div>
       <label for="tokuteiN">特定同一世帯所属者の人数</label>
-      <input type="number" id="tokuteiN" min="0" max="8" inputmode="numeric" value="0"><span class="hint" id="tokutei-hint">後期高齢者医療制度に移った後も、同じ世帯にいるかたです。</span>
+      <input type="number" id="tokuteiN" min="0" max="8" inputmode="numeric" value="0"><span class="hint" id="tokutei-hint">後期高齢者医療制度に移った後も、継続して同じ世帯にいるかたです。</span>
     </div>
   </div>
   <div style="margin-top:10px">
@@ -341,7 +342,7 @@
 <ul id="hantei-list">
   <li><b>国保に加入している被保険者</b></li>
   <li><b>世帯主</b> — 国保に加入していない世帯主（擬制世帯主）<b>でも</b>、その所得を算入します。</li>
-  <li><b>特定同一世帯所属者</b> — 後期高齢者医療制度に移って国保を抜けた後も、同じ世帯にいるかたです。保険料はかかりませんが、所得にも人数にも算入します。</li>
+  <li><b>特定同一世帯所属者</b> — 後期高齢者医療制度に移って国保の資格を失った日の前日から、継続して同じ世帯にいるかたです。保険料はかかりませんが、所得にも人数にも算入します。</li>
 </ul>
 
 <p id="hantei-setainushi">世帯主や特定同一世帯所属者の所得を落とすと、軽減が過大になる場合があります。所得が0円の場合や基準をまたがない場合は、段階が変わりません。</p>
@@ -380,7 +381,8 @@
 <ul id="kodomo-junjo-list">
   <li>未就学児の5割は、<b>7割・5割・2割の軽減を当てた「後」の額</b>から減額します。7割軽減世帯なら元の額の0.3×0.5＝15%が残ります。</li>
   <li>未就学児の5割減額の対象は、医療分・後期高齢者支援金等分・子ども・子育て支援金分の均等割です。このうち子育て分は、18歳未満の全額減額で0円になります。</li>
-  <li>子育て分の一般均等割は全年齢に賦課した上で、18歳に達する日以後の最初の3月31日までは全額減額します。その翌日以後の被保険者には十八歳以上被保険者均等割額を加算します（同条5項3号）。</li>
+  <li>子育て分の一般均等割は全年齢に賦課した上で、上の期間は全額減額します。</li>
+  <li>その期間を過ぎた被保険者には、十八歳以上被保険者均等割額を加算します（同条5項3号）。</li>
 </ul>
 
 <p id="kodomo-shotokuwari">どちらも均等割の減額で、所得割は別に計算します。医療分・後期高齢者支援金等分・子育て分の所得割には、年齢による対象制限がありません。高校生等でも、基礎控除後の総所得金額等があれば子育て分の所得割の対象です。給与所得控除と基礎控除の範囲内のアルバイト収入には、所得割はかかりません。</p>
@@ -393,15 +395,16 @@
   <li><b>産前産後期間の免除</b>（第6項8号・9号）— 出産する被保険者本人の所得割と均等割を、出産予定月の前月から翌々月までの<b>4か月分</b>減額します。多胎妊娠は3月前からの<b>6か月分</b>です。出産予定月は、厚生労働省令で定める場合は出産の日の属する月を指します。</li>
   <li><b>非自発的失業者の軽減</b>（施行令29条の7の2）— 特定受給資格者と、受給資格のある特定理由離職者が対象です。離職日の翌日が属する年度の翌年度末まで、給与所得を30%として計算します。</li>
   <li><b>軽減の別方式</b>（第6項4号・5号）— 7割・5割に代えて、6割・4割または5割・3割で軽減する市町村の方式。</li>
-  <li><b>特定世帯・特定継続世帯の平等割の減額</b>（第2項8号など）— 特定同一世帯所属者がいて、国保の被保険者が1人だけの世帯の平等割を減らす措置。</li>
+  <li><b>特定世帯・特定継続世帯の平等割の減額</b>（第2項8号など）— 特定同一世帯所属者がいて、国保の被保険者が1人だけの世帯の平等割を減らす措置。特定月（国保の資格を失った日の前日の属する月）から5年を経過する月までが特定世帯、その翌月から8年を経過する月までが特定継続世帯です。</li>
   <li><b>事業専従者がいる世帯の判定所得</b>（第6項2号）— 軽減の判定では、専従者給与・専従者控除を適用しない所得で計算し直します。</li>
   <li><b>所得の補正</b>（第2項4号ただし書）— 賦課額が限度額を上回ることが確実と見込まれる場合に、基礎控除後の総所得金額等を補正する措置。</li>
   <li><b>資産割</b>（第2項2号イ）— 固定資産税額に応じた賦課。採用している市町村は少数です。</li>
   <li><b>市町村の条例による独自の減免</b>（国民健康保険法77条）— 災害・所得の激減などに応じた減免。</li>
   <li><b>年度途中の資格取得・喪失にともなう月割</b>— このツールは年額（12か月分）を出します。</li>
   <li><b>期別の割り振り</b>— 実際の納付は8〜10期などに分割され、1期目だけ端数を寄せる市町村が多くあります。</li>
-  <li><b>保険料と保険税の別</b>— 賦課の枠組みは同じですが、根拠が国民健康保険法76条（保険料）か地方税法703条の4（保険税）かで、時効や滞納処分の扱いが変わります。金額の計算はどちらも同じ形です。</li>
 </ul>
+
+<p id="hani-zei"><b>保険料と保険税の別</b>— 賦課の枠組みは同じですが、根拠が国民健康保険法76条（保険料）か地方税法703条の4（保険税）かで、時効や滞納処分の扱いが変わります。金額の計算はどちらも同じ形です。</p>
 
 <p id="hani-nenkin"><b>公的年金を受けているかた</b>は、判定所得の取り扱いがこのツールと異なる場合があります。確定した金額は必ず納付通知書か市町村の窓口でご確認ください。</p>
 
@@ -519,7 +522,7 @@ for (let i = 0; i < MAX_MEMBERS; i++) {
     `<div><label for="shotoku${i}">総所得金額等（円）</label>` +
     `<input type="number" id="shotoku${i}" min="0" inputmode="numeric" value="0"></div>` +
     `<div><label for="gokei${i}">合計所得金額（円・基礎控除判定用）</label>` +
-    `<input type="number" id="gokei${i}" min="0" inputmode="numeric" placeholder="空欄なら総所得金額等と同額"><span class="hint">繰越控除などで異なる場合は入力</span></div>` +
+    `<input type="number" id="gokei${i}" min="0" inputmode="numeric" placeholder="空欄可"><span class="hint">空欄なら総所得金額等と同額。繰越控除などで異なる場合に入力</span></div>` +
     `<div><label for="kyuyo${i}">給与所得者等か</label>` +
     `<select id="kyuyo${i}"><option value="0" selected>いいえ</option><option value="1">はい</option></select></div>`;
   $("members").appendChild(row);
@@ -653,8 +656,7 @@ $("calc").addEventListener("click", async () => {
   const capped = r.kubun.filter((k) => k.capped);
   const cappedLine = capped.length
     ? `<div class="note" style="margin-top:12px"><b id="capped">賦課限度額を適用しました — ${capped.map((k) => `${k.name}（${yenF(k.cap)}）`).join("・")}</b>
-       <span id="capped-hanbun">限度額は<b>区分ごとに個別に</b>かかります。合計${man(DATA.genkoku_total_yen)}という上限が1本あるのではありません
-       （合計にだけ上限を当てる実装は、1区分だけ張り付くこの世帯で保険料を過大に出します）。</span></div>`
+       <span id="capped-hanbun">限度額は<b>区分ごとに個別に</b>かかります。合計${man(DATA.genkoku_total_yen)}という上限が1本あるのではありません。</span></div>`
     : "";
 
   const keigenLine = K.key
