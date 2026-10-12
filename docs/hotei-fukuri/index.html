@@ -52,10 +52,26 @@
     },
     {
       "@type": "Question",
+      "name": "Q. 賞与にも労災保険料はかかりますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. かかります。労災保険料の基礎になる賃金には、労働の対償として支払う賞与が含まれるためです（徴収法2条2項）。全額が事業主負担なので、賞与からも労災保険料は引かれません。"
+      }
+    },
+    {
+      "@type": "Question",
       "name": "Q. 法定福利費は給与の何%くらいですか？",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "A. 業種によります。その他の各種事業（労災3／1000）なら給与の15%前後ですが、労災保険率は業種で2.5／1000〜88／1000と35倍の開きがあるため、建設・林業・鉱業ではもっと高くなります。上の欄で業種を選んで計算してください。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Q. 法定福利費と福利厚生費は別に計算しますか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A. 別です。このツールが計算するのは法定福利費（社会保険料・労働保険料の会社負担分）だけで、健康診断や慶弔見舞金などの福利厚生費（法定外福利費）は含みません。違いは福利厚生費とはで解説しています。"
       }
     },
     {
@@ -116,7 +132,7 @@
   <nav class="breadcrumb"><a href="../">ホーム</a> › 法定福利費の計算</nav>
   <h1>法定福利費の計算</h1>
 <p class="article-meta">更新日: <time datetime="2026-09-28">2026年9月28日</time></p>
-  <p class="lead">従業員1人あたり、会社が給与に<b>上乗せして</b>負担している額を出します。<b>折半でないものが3つあります</b> — 労災保険と子ども・子育て拠出金は<b>全額事業主負担</b>、雇用保険は労使で率が違います。</p>
+  <p class="lead"><b>法定福利費</b>（会社が負担する社会保険料・労働保険料）を、従業員1人あたりの月額で計算します。<b>折半でないものが3つあります</b> — 労災保険と子ども・子育て拠出金は<b>全額事業主負担</b>、雇用保険は労使で率が違います。</p>
 
   <div class="card">
     <div class="fee-pair field-pair">
@@ -158,7 +174,9 @@
 
   <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
     <li><a href="#orikan">折半でないものが3つ</a></li>
+    <li><a href="#futan-ritsu">法定福利費率（会社負担率）の計算式</a></li>
     <li><a href="#base-setsu">標準報酬月額と賃金総額</a></li>
+    <li><a href="#rousai-keisan">労災保険料の計算式 — 給与からは引かれない</a></li>
     <li><a href="#gyoshu-setsu">労災保険率は業種で35倍違う</a></li>
     <li><a href="#dekinai">このツールが計算しないこと</a></li>
     <li><a href="#faq">よくある質問</a></li>
@@ -182,6 +200,25 @@
     <p><b>雇用保険を「折半」と書くと会社の負担を過少に見せます。</b>一般の事業なら本人5／1000・事業主8.5／1000で、差の3.5／1000が<b>雇用保険二事業</b>（雇用安定事業・能力開発事業）の分です（徴収法31条1項1号）。</p>
   </div>
 
+  <h2 id="futan-ritsu">法定福利費率（会社負担率）の計算式</h2>
+  <p>標準報酬月額と賃金総額が同じ額なら、法定福利費率は保険ごとの会社負担の率の合計です。令和8年度の協会けんぽ東京都・一般の事業・労災保険率3／1000（その他の各種事業）の例では、標準報酬月額と賃金総額が同じ額で介護保険のない人なら<b>15.7%</b>です。</p>
+  <p id="ritsu-zentei" data-review-context="before-table">表の前提: 令和8年度（支援金は令和8年4月分から）の料率。協会けんぽ東京都に加入し、厚生年金基金に加入していない70歳未満の人。雇用保険は一般の事業、労災保険はその他の各種事業でメリット制の適用なし。標準報酬月額と賃金総額が同じ額のときの率です。</p>
+  <div class="scroll-wrap">
+  <table id="ritsu-hyo">
+    <tr><th scope="col">保険料</th><th scope="col">料率（労使の合計）</th><th scope="col">会社負担の率</th></tr>
+    <tr><td>健康保険</td><td class="num"><span class="numeric-token">9.85%</span></td><td class="num"><span class="numeric-token">4.925%</span></td></tr>
+    <tr><td>子ども・子育て支援金</td><td class="num"><span class="numeric-token">0.23%</span></td><td class="num"><span class="numeric-token">0.115%</span></td></tr>
+    <tr><td>厚生年金</td><td class="num"><span class="numeric-token">18.3%</span></td><td class="num"><span class="numeric-token">9.15%</span></td></tr>
+    <tr><td>子ども・子育て拠出金</td><td class="num"><span class="numeric-token">0.36%</span></td><td class="num"><span class="numeric-token">0.36%</span></td></tr>
+    <tr><td>雇用保険</td><td class="num">13.5／1000</td><td class="num"><span class="numeric-token">0.85%</span></td></tr>
+    <tr><td>労災保険</td><td class="num">3／1000</td><td class="num"><span class="numeric-token">0.3%</span></td></tr>
+    <tr><td><b>合計（介護保険のない人）</b></td><td>上の6つの計</td><td class="num"><b><span class="numeric-token">15.7%</span></b></td></tr>
+    <tr><td>介護保険（40歳以上65歳未満）</td><td class="num"><span class="numeric-token">1.62%</span></td><td class="num"><span class="numeric-token">0.81%</span></td></tr>
+    <tr><td><b>合計（40歳以上65歳未満）</b></td><td>介護保険を足した計</td><td class="num"><b><span class="numeric-token">16.51%</span></b></td></tr>
+  </table>
+  </div>
+  <p>標準報酬月額と賃金総額が違う人には、この合計の率はそのままは当てはまりません。上の欄に両方の額を入れると、その人の賃金総額に対する率が出ます。法定福利費の定義や賞与・仕訳は<a href="../column/hotei-fukurihi-keisan/">法定福利費とは</a>で解説しています。</p>
+
   <h2 id="base-setsu">標準報酬月額と賃金総額</h2>
   <p>社会保険（健保・介護・厚年）の保険料は<b>標準報酬月額</b>という等級表の額にかかります。実際の給与そのものではありません。一方、労働保険（雇用・労災）は<b>賃金総額</b>＝実際に支払った額にかかります（徴収法11条1項）。</p>
   <p>標準報酬月額と実際の賃金総額は一致するとは限らず、労働保険料まで標準報酬月額で計算すると過少にも過大にもなり得ます。</p>
@@ -194,6 +231,11 @@
     <li>拠出金は厚生年金の標準報酬月額（下限8.8万円・上限65万円）に0.36%を掛け、全額を会社が負担します。</li>
     <li>支援金は健康保険の標準報酬月額に0.23%を掛け、本人と会社で折半します。</li>
   </ul>
+
+  <h2 id="rousai-keisan">労災保険料の計算式 — 給与からは引かれない</h2>
+  <p>労災保険料は、労働者に支払う<b>賃金総額×労災保険率</b>で計算し、<b>全額を会社が負担</b>します（徴収法11条・12条1項）。従業員の給与から引かれる労働保険料は、雇用保険の本人負担分です（徴収法31条・32条）。</p>
+  <p>たとえば賃金総額が月32万円で、労災保険率が3／1000（その他の各種事業・メリット制の適用なし）の会社なら、月あたりの目安は960円です。賃金には賞与も含まれるので（徴収法2条2項）、労働の対償として支払う賞与にも労災保険料が同じ率でかかります。</p>
+  <p class="hint" id="rousai-chu">この月額は目安です。継続事業の実際の申告は、保険年度の賃金総額（千円未満切捨て）をもとに年度更新でおこないます。概算・確定の計算と期限は<a href="../column/rosai-hokenryoritsu/">労災保険料率の解説</a>へ。請負による建設の事業の特例とメリット制は<a href="#dekinai">このツールが計算しないこと</a>へ。</p>
 
   <h2 id="gyoshu-setsu">労災保険率は業種で35倍違う</h2>
   <p>労災保険率は徴収法施行規則の<b>別表第1（労災保険率表）</b>に53の事業の種類ごとに定められています。<b style="white-space:nowrap">最小2.5／1000</b>（通信・放送・新聞・出版、金融・保険・不動産）から<b style="white-space:nowrap">最大88／1000</b>（金属鉱業・非金属鉱業・石炭鉱業）まで、<b>35倍</b>の開きがあります。</p>
@@ -211,6 +253,7 @@
       <li><b>建設業の請負金額×労務費率</b>による賃金総額の特例（徴収法11条3項・施行規則13条・別表第2）</li>
       <li><b>健康保険組合・厚生年金基金</b>の独自料率 — ここは協会けんぽの都道府県料率で計算します</li>
       <li><b>年度更新の申告額</b> — 概算・確定の精算はこのツールの外です</li>
+      <li><b>一般拠出金</b> — 労災保険の適用事業主が、賃金総額をもとに労働保険料とは別に納める負担です（石綿健康被害救済法35条・37条）</li>
       <li><b>法定外福利費</b>（住宅手当・健康診断・慶弔見舞金など）</li>
     </ul>
     <p>当サイトは社会保険労務士ではありません。実際の申告は年金事務所・労働局または顧問の社会保険労務士にご確認ください。</p>
@@ -227,8 +270,14 @@
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>労災保険料は給与から引かれますか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>引かれません。全額が事業主負担</b>です。徴収法31条は雇用保険の被保険者負担額だけを定めており、労災保険には対応する規定がありません。</p>
 
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>賞与にも労災保険料はかかりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>かかります。</b>労災保険料の基礎になる賃金には、労働の対償として支払う賞与が含まれるためです（徴収法2条2項）。全額が事業主負担なので、賞与からも労災保険料は引かれません。</p>
+
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>法定福利費は給与の何%くらいですか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>業種によります。</b>その他の各種事業（労災3／1000）なら給与の15%前後ですが、労災保険率は業種で2.5／1000〜88／1000と35倍の開きがあるため、建設・林業・鉱業ではもっと高くなります。上の欄で業種を選んで計算してください。</p>
+
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>法定福利費と福利厚生費は別に計算しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>別です。</b>このツールが計算するのは法定福利費（社会保険料・労働保険料の会社負担分）だけで、健康診断や慶弔見舞金などの福利厚生費（法定外福利費）は含みません。違いは<a href="../column/fukuri-koseihi/">福利厚生費とは</a>で解説しています。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>標準報酬月額と賃金総額のどちらを入れればよいですか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>両方です。</b>健保・厚年・子育て支援金・拠出金は標準報酬月額、雇用保険と労災は賃金総額（実際の支払額）にかかるためです。標準報酬月額は<a href="../santei/">算定基礎届の計算</a>で出せます。</p>
@@ -242,6 +291,12 @@
 
 <h2 id="shutten">出典</h2>
 <p class="note"><a href="https://laws.e-gov.go.jp/law/347M50002000008" rel="nofollow">労働保険の保険料の徴収等に関する法律施行規則</a> 別表第1（労災保険率表。53の事業の種類と率を e-Gov 法令API v2 のレスポンスから機械抽出。手で書き写していません）。<a href="https://laws.e-gov.go.jp/law/344AC0000000084" rel="nofollow">労働保険の保険料の徴収等に関する法律</a> 11条1項（賃金総額）・12条3項（メリット制）・31条1項1号（雇用保険の被保険者負担＝労災には対応する規定が無い）。健康保険・介護保険・厚生年金・子ども子育て支援金・拠出金の料率と雇用保険料率は<a href="../about/">このサイトについて</a>に出典を書いています（協会けんぽ・厚生労働省の公表値）。条文は 2026-08-08 に確認しています。</p>
+
+<ul id="shutten-tsuika">
+  <li>e-Gov法令検索「<a href="https://laws.e-gov.go.jp/law/344AC0000000084" rel="nofollow">労働保険の保険料の徴収等に関する法律</a>」2条2項・4項、11条、12条1項、15条、19条、31条、32条</li>
+  <li>e-Gov法令検索「<a href="https://laws.e-gov.go.jp/law/418AC0000000004" rel="nofollow">石綿による健康被害の救済に関する法律</a>」35条・37条</li>
+  <li>全国健康保険協会「<a href="https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/rate_prefectures/r08/" rel="nofollow">令和8年度都道府県単位保険料率</a>」、日本年金機構「厚生年金保険料額表」、厚生労働省「<a href="https://www.mhlw.go.jp/content/001692566.pdf" rel="nofollow">令和8年度 雇用保険料率のご案内</a>」</li>
+</ul>
 
 <section class="faq rel-block">
 <h2>関連する解説</h2>
