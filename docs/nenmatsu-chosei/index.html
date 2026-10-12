@@ -607,7 +607,7 @@ nReady.then((ok) => { if (ok) showMeta(); }).catch(() => {});
 function showMeta() {
   if (!N?._meta) return;
   $("src-hint").innerHTML =
-    `<span id="year-from-data">対象: ${N._meta.label}</span>。` +
+    `<span id="year-from-data">対象: ${N._meta.year}の年末調整${String(N._meta.label).replace(`${N._meta.year}の年末調整`, "")}</span>。` +
     `給与所得控除後の金額は「年末調整等のための給与所得控除後の給与等の金額の表」、税額は「年末調整のための算出所得税額の速算表」によります（国税庁『年末調整のしかた』）。`;
 }
 
