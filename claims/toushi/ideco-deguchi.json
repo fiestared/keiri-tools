@@ -205,15 +205,16 @@
       "kind": "primary",
       "review_status": "author_checked",
       "covers": [
-        "s-2dd2ad5793143b75c3aa-1",
         "s-d1d061ac0fa7117a9df0-1",
-        "s-d7b83f7ca422ddc99ae6-1",
         "s-2854a290a40d5c3a24b1-1",
         "s-daf8e03c95c37bfa2805-1",
         "s-3ebe812f99f62030b76b-1",
-        "s-b56a9007f2a100d16417-1",
         "s-d4ad156c5977d760261c-1",
-        "s-a7f16a672b4a95c90185-1"
+        "s-a7f16a672b4a95c90185-1",
+        "s-1b3af7a679d3439303d0-1",
+        "s-3e6b6add491575c8d813-1",
+        "s-a0d623eeda2e36c6c1a2-1",
+        "s-96dcc7b014e0255a83bb-1"
       ]
     },
     {
@@ -277,13 +278,17 @@
     },
     {
       "id": "readable1014-ui",
-      "text": "入力欄のラベル・初期値（前の受取の支払日・空き年数・勤続年数・重複年数・受取額）。",
-      "numbers": [],
+      "text": "入力欄のラベル・初期値（前の受取の支払日・空き年数・勤続年数・重複年数・受取額）。 計算機は重複調整後の退職所得控除と退職所得を計算する。「前の受取から今回まで（年）」は前の受取の年と今回の年の差（ideco_deguchi_core.js needsChofuku の akiNen の定義）。",
+      "numbers": [
+        "2026年",
+        "2033年",
+        "7"
+      ],
       "applies": "令和8年1月1日以後に支払を受ける退職手当等（所得税法施行令70条・2026-10-14 に e-Gov で確認した版）",
       "source_url": "https://laws.e-gov.go.jp/law/340CO0000000096",
       "source_quote": "その重複している部分の期間を法第三十条第三項の勤続年数とみなして",
       "exceptions": [
-        "無し: 入力欄は書き直しで変えていない（ラベル・初期値は origin/main のまま）"
+        "無し: 入力欄・初期値は変えていない。補足の『年の差』は docs/assets/ideco_deguchi_core.js の needsChofuku(akiNen, nensu) の注記『前の受取の年から今回の受取の年までの差（年）』と、条文の『その年の前年以前N年内』（差がN以下で対象）に合わせたことを確認"
       ],
       "scope": "この計算機の入力欄",
       "corpus_ref": "~/Scripts/keiri-commander/runs/readable/ideco-deguchi/corpus/shotokuzeihou-sekourei-70.txt",
@@ -300,7 +305,9 @@
         "s-a6e1c22a16608400560b-1",
         "s-f410f9cfa8b7ea4ca178-1",
         "s-5a4b462a44fd6f86c2dc-1",
-        "s-579656363673e1ede18a-1"
+        "s-579656363673e1ede18a-1",
+        "s-d982756472228544889e-1",
+        "s-dd6ff4fe9b196b4ec844-1"
       ]
     },
     {
