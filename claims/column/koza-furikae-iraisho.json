@@ -1,0 +1,66 @@
+{
+ "page": "docs/column/koza-furikae-iraisho/index.html",
+ "checked": "2026-10-13",
+ "_readable20261013": "読みやすさの作り直し（リードの組み直し・節の並べ替え）で足した行の数字だけを載せた台帳。作り直し前から台帳は無く、ページ全体の単位の被覆（--segments）は未着手。原資料の写しは keiri-commander/runs/readable/koza-furikae-iraisho/corpus/（2026-10-13 に curl で取得）。",
+ "claims": [
+  {
+   "id": "readable20261013-r7-kakutei-furikae",
+   "text": "令和7年分の申告所得税（確定申告分）は、納期限が令和8年3月16日（月）、振替日が令和8年4月23日（木）で、38日の開きがある。",
+   "numbers": [
+    "令和7年分",
+    "令和8年3月16日",
+    "令和8年4月23日",
+    "38日"
+   ],
+   "applies": "令和7年分の申告所得税及び復興特別所得税の確定申告分（振替納税）",
+   "scope": "国税庁「主な国税の納期限（法定納期限）及び振替日」の［申告所得税及び復興特別所得税］[令和７年分] の「確定申告」行。予定納税・延納の行は納期限と振替日が同じ日",
+   "source_url": "https://www.nta.go.jp/taxes/nozei/nofu/24200042/noufu_kigen.htm",
+   "source_quote": "確定申告 令和８年３月16日（月） 令和８年４月23日（木）",
+   "exceptions": [
+    "予定納税第1期・第2期と確定申告延納は、納期限と振替日が同じ日（記事の表の0日の行）",
+    "38日は暦日の差（2026-04-23 − 2026-03-16 = 38。python の datetime で計算）"
+   ],
+   "derived": true,
+   "calc": "(date(2026,4,23)-date(2026,3,16)).days = 38（2026-10-13 に実行）",
+   "corpus_ref": "keiri-commander/runs/readable/koza-furikae-iraisho/corpus/noufu_kigen.txt:5-20",
+   "review_status": "author_checked",
+   "covers": []
+  },
+  {
+   "id": "readable20261013-shutoku-bi",
+   "text": "国税通則法・同施行令・同施行規則の条文は、e-Gov法令検索で2026年8月26日に確認した（記事の作成時の取得日）。",
+   "numbers": [
+    "2026年8月26日"
+   ],
+   "applies": "出典の節の法令3項目",
+   "scope": "記事の出典の節の source-method に元から書かれている取得日（「いずれも2026年8月26日取得」）を、各法令の項目の末尾に写したもの。作り直しで「法令API v2」の作業記録の語を外した",
+   "source_url": "https://laws.e-gov.go.jp/law/337AC0000000066",
+   "source_quote": "国税通則法・同施行令・同施行規則はe-Gov法令検索、振替納税の手続と納期限・振替日は国税庁、口座振替の申出と割引額は日本年金機構の公表資料（いずれも2026年8月26日取得）を読んで作成。",
+   "exceptions": [
+    "2026-10-13 に国税通則法34条の2第2項を e-Gov 法令API v2 で取り直し、記事の引用と一致を確認（corpus/tsusoku_34_2.json）"
+   ],
+   "corpus_ref": "keiri-commander/runs/readable/koza-furikae-iraisho/corpus/tsusoku_34_2.json",
+   "review_status": "author_checked",
+   "covers": []
+  },
+  {
+   "id": "readable20261013-kakutei-3-15",
+   "text": "申告所得税の確定申告分は、3月15日（休日なら翌日）が申告期限であると同時に納期限である。",
+   "numbers": [
+    "3月15日"
+   ],
+   "applies": "申告所得税の確定申告（第三期）。段落を箇条書きに分けた際に「足した行」になった既存の文（文言は書き直し前と同じ）",
+   "scope": "所得税法120条1項（第三期＝翌年2月16日から3月15日まで）の申告と、128条（第三期において納付）。休日は国税通則法10条2項で翌日",
+   "source_url": "https://laws.e-gov.go.jp/law/340AC0000000033",
+   "source_quote": "第三期（その年の翌年二月十六日から三月十五日までの期間をいう。以下この節において同じ。）において、税務署長に対し、次に掲げる事項を記載した申告書を提出しなければならない。／第三期において、当該金額に相当する所得税を国に納付しなければならない。／（通則法10条2項）日曜日、国民の祝日に関する法律…に規定する休日その他一般の休日又は政令で定める日に当たるときは、これらの日の翌日をもつてその期限とみなす。",
+   "exceptions": [
+    "確定損失申告（123条1項）の場合を除く"
+   ],
+   "corpus_ref": "keiri-commander/runs/readable/koza-furikae-iraisho/corpus/shotokuzei_120.txt・shotokuzei_128.txt・tsusoku_10.txt（e-Gov API v2・2026-10-13 取得・所得税法は revision 20261001）",
+   "review_status": "author_checked",
+   "covers": []
+  }
+ ],
+ "nonclaims": [],
+ "verified": []
+}
