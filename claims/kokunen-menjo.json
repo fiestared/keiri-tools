@@ -1,0 +1,116 @@
+{
+  "page": "docs/kokunen-menjo/index.html",
+  "checked": "2026-10-13",
+  "_readable20261013": "2026-10-13 読みやすさの作り直しで新設（keiri-commander の readable 列）。origin/main に台帳が無かったため、書き直しで変えた・足した単位だけを主張に結んだ。変えていない単位は未処理のまま（SEGMENTS_STRICT は書き直し前も台帳なしで赤）。正本は ~/Scripts/keiri-commander/runs/readable/kokunen-menjo/corpus/（e-Gov 法令API v1 の国民年金法・同施行令・同施行規則と日本年金機構の免除のページを 2026-10-13 に curl）。",
+  "claims": [
+    {
+      "id": "readable20261013-gaiyo",
+      "text": "国民年金保険料には全額免除・4分の3免除・半額免除・4分の1免除・納付猶予・学生納付特例があり、前年所得の基準で判定する。免除は本人・世帯主・配偶者の所得を見る。この計算機は区分・基準を超えた人・毎月の保険料・老齢基礎年金への影響を示す。",
+      "where": [
+        "リード（hero の段落）"
+      ],
+      "numbers": [],
+      "applies": "令和8年度（ページの判定データ kokunen_menjo_r08.json）",
+      "scope": "国民年金の第1号被保険者の保険料免除・納付猶予・学生納付特例",
+      "source_url": "https://www.nenkin.go.jp/service/kokunen/menjo/20150428.html",
+      "source_quote": "免除・納付猶予を受けるための所得の基準は、前年所得が以下の計算式で計算した金額の範囲内であることです。全額免除…4分の3免除…半額免除…4分の1免除…納付猶予制度／本人・配偶者・世帯主 の前年所得（※）が一定額以下の場合や失業した場合など…承認されると保険料の納付が免除されます。",
+      "exceptions": [
+        "1月から6月までの月分は前々年の所得（学生納付特例は1月から3月までの月分）＝readable20261013-zenzennen",
+        "学生納付特例の基準は本人の所得だけ（本文の表）",
+        "失業等の特例免除・法定免除・産前産後免除はこの計算機の対象外（本文の注意ボックス）"
+      ],
+      "covers": [
+        "s-2a1349c3b03d4b375f5a-1",
+        "s-1c383cba36ed9154e0d7-1"
+      ],
+      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/readable/kokunen-menjo/corpus/nenkin_menjo.txt:159-163,236-248",
+      "review_status": "author_checked"
+    },
+    {
+      "id": "readable20261013-zenzennen",
+      "text": "免除・納付猶予の所得は前年の所得で判定し、1月から6月までの月分の保険料は前々年の所得で判定する。学生納付特例で前々年の所得を使うのは1月から3月までの月分。",
+      "where": [
+        "入力欄「あなたの前年の所得」の補足",
+        "h2『使い方と注意点』の段落",
+        "出典の施行規則77条の2の行"
+      ],
+      "numbers": [],
+      "applies": "現行の国民年金法90条1項1号・施行規則77条の2（2026-10-13 に e-Gov で確認）",
+      "scope": "国民年金の第1号被保険者の保険料免除（90条・90条の2）・納付猶予（平成26年改正法附則14条）・学生納付特例（90条の3）の所得の判定年",
+      "source_url": "https://laws.e-gov.go.jp/law/335M50000100012",
+      "source_quote": "法第九十条第一項第一号、平成十六年改正法附則第十九条第一項第一号及び第二項第一号並びに平成二十六年年金事業運営改善法附則第十四条第一項第一号に規定する厚生労働省令で定める月は、六月（法第九十条の三第一項第一号に規定する前年の所得にあつては、三月）とする。／国民年金法90条1項1号: 当該保険料を納付することを要しないものとすべき月の属する年の前年の所得（一月から厚生労働省令で定める月までの月分の保険料については、前々年の所得とする。以下この章において同じ。）",
+      "exceptions": [
+        "判定年は申請した時期ではなく保険料の月分で決まる（書き直し前の『1月から6月までに申請する場合は前々年』を条文どおりに訂正）",
+        "学生納付特例は省令の月が三月（施行規則77条の2のかっこ書き）",
+        "失業等による特例免除は前年所得を除外して判定する（本文の注意ボックスと FAQ に既にある）"
+      ],
+      "covers": [
+        "s-8877ab1ffd64b2577362-1",
+        "s-1923469bf286c1aa618a-1",
+        "s-887cff1ca4c5f99b5804-1",
+        "s-32b6c4fbc0513f60d1ee-1",
+        "s-3ee09abca8efc60a3131-1"
+      ],
+      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/readable/kokunen-menjo/corpus/kisoku.txt:11949-11954; /Users/masahiroyasu/Scripts/keiri-commander/runs/readable/kokunen-menjo/corpus/ho.txt:3419-3431",
+      "review_status": "author_checked"
+    },
+    {
+      "id": "readable20261013-kojo",
+      "text": "全額免除の所得（施行令6条の11）は控除を引かない。一部免除と学生納付特例の所得（施行令6条の12）は、雑損・医療費・社会保険料・小規模企業共済等掛金・配偶者特別・特定親族特別の各控除額と、障害者27万円（特別障害者40万円）・寡婦27万円・ひとり親35万円・勤労学生27万円を差し引く。",
+      "where": [
+        "h2『全額免除だけ、社会保険料控除を引かない』の注意ボックス・段落・箇条書き"
+      ],
+      "numbers": [
+        "27万円",
+        "40万円",
+        "35万円"
+      ],
+      "applies": "現行の国民年金法施行令6条の11・6条の12（2026-10-13 に e-Gov で確認）",
+      "scope": "国民年金の保険料免除・学生納付特例の所得基準の判定に使う所得の額の計算",
+      "source_url": "https://laws.e-gov.go.jp/law/334CO0000000184",
+      "source_quote": "第六条の十二 ２ 次の各号に該当する者については、当該各号に掲げる額を前項の規定によつて計算した額からそれぞれ控除するものとする。一 …当該雑損控除額、医療費控除額、社会保険料控除額、小規模企業共済等掛金控除額、配偶者特別控除額又は特定親族特別控除額に相当する額 二 …障害者一人につき二十七万円（当該障害者が同号に規定する特別障害者である場合には、四十万円）、同項第八号に規定する控除を受けた者については当該控除を受けた者につき二十七万円、同項第八号の二に規定する控除を受けた者については当該控除を受けた者につき三十五万円、同項第九号に規定する控除を受けた者については当該控除を受けた者につき二十七万円",
+      "exceptions": [
+        "各控除は当該年度分の市町村民税でその控除を受けた者に限る（6条の12第2項各号の前置き）。本文は控除の名前と額だけを書き、書き直し前と同じ範囲",
+        "6条の11は法90条1項1号・3号（全額免除）の所得、6条の12は法90条の2各項・90条の3（一部免除・学生納付特例）の所得"
+      ],
+      "covers": [
+        "s-4be02be5505ed794e041-1",
+        "s-08034bc0c1ca332fdd70-1",
+        "s-c3ddc1290c408ce1e961-1",
+        "s-beaa2a9bdca8e83c7f44-1",
+        "s-f4ebd693bea89cb9a6d9-1"
+      ],
+      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/readable/kokunen-menjo/corpus/rei.txt:1723-1760; /Users/masahiroyasu/Scripts/keiri-commander/runs/readable/kokunen-menjo/corpus/nenkin_menjo.txt:236-248",
+      "review_status": "author_checked"
+    },
+    {
+      "id": "readable20261013-setainushi",
+      "text": "免除は本人・世帯主・配偶者の所得で判定し、世帯主か配偶者のいずれかが各号のいずれにも該当しないときは免除しない（法90条1項ただし書）。納付猶予は本人と配偶者の所得で判定し、世帯主の所得を見ない。",
+      "where": [
+        "h2『誰の所得を見るか』の注意ボックス",
+        "meta description・og:description"
+      ],
+      "numbers": [],
+      "applies": "現行の国民年金法90条1項・日本年金機構の案内（2026-10-13 に確認）",
+      "scope": "国民年金の第1号被保険者の保険料免除と納付猶予（50歳未満）",
+      "source_url": "https://www.nenkin.go.jp/service/kokunen/menjo/20150428.html",
+      "source_quote": "本人・配偶者・世帯主 の前年所得（※）が一定額以下の場合や失業した場合など…承認されると保険料の納付が免除されます。／20歳以上50歳未満の方で、本人・配偶者の前年所得（※）が一定額以下の場合には…承認されると保険料の納付が猶予されます。／国民年金法90条1項: ただし、世帯主又は配偶者のいずれかが次の各号のいずれにも該当しないときは、この限りでない。",
+      "exceptions": [
+        "納付猶予は50歳未満が対象（本文の区分の表と年齢の入力欄にある）",
+        "失業等による特例免除は失業した方の前年所得を除外（本文の注意ボックスと FAQ にある）",
+        "学生は免除・納付猶予の対象外で学生納付特例（本人の所得だけ）"
+      ],
+      "covers": [
+        "s-d1760558657b1b042116-1",
+        "s-ffe48f9020a8ecff3dd9-1",
+        "s-b069998472f50621e9a3-1"
+      ],
+      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/readable/kokunen-menjo/corpus/nenkin_menjo.txt:159-163; /Users/masahiroyasu/Scripts/keiri-commander/runs/readable/kokunen-menjo/corpus/ho.txt:3419-3431",
+      "review_status": "author_checked"
+    }
+  ],
+  "absolutes": [],
+  "tool_cases": [],
+  "nonclaims": [],
+  "verified": []
+}
