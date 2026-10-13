@@ -71,7 +71,7 @@
           "name": "Q. 検査に合わないと出ました。相手が番号を間違えているということですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. 断定できません。個人事業者や人格のない社団等の登録番号は法人番号と別体系なので、法人番号の算式に合っても合わなくても、正否は判定できません。 このツールが出すのは「法人番号ではない」までで、誤りだとは言いません。公表サイトで引いてください。"
+            "text": "A. 断定できません。個人事業者など法人番号を持たない事業者の登録番号は法人番号と別体系なので、法人番号の算式に合っても合わなくても、正否は判定できません。 このツールが出すのは「法人番号ではない」までで、誤りだとは言いません。公表サイトで引いてください。"
           }
         },
         {
@@ -144,7 +144,8 @@
   <p class="article-meta">公開日: <time datetime="2026-07-26">2026年7月26日</time>（更新日: <time datetime="2026-10-13">2026年10月13日</time>）</p>
   <p class="lead">請求書の <b>T＋13桁</b> の登録番号や法人番号を貼り付けると、<b>何十件でもまとめて</b>桁の整合（チェックデジット）と形式を確認します。
   <b>入力はブラウザの中だけで処理し、どこにも送信しません。</b>
-  桁が合っても、その番号が実在する証明にはなりません。実在と登録の状態は国税庁の公表サイトで確認してください。</p>
+  桁が合っても、その番号が実在する証明にはなりません。実在と登録の状態は国税庁の公表サイトで確認してください。
+  個人事業者など法人番号を持たない事業者の登録番号は別体系なので、正否までは判定できません。</p>
 </section>
 <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool">番号を貼って確かめる</a></li><li><a href="#kousei">登録番号の構成 — 「T」＋13桁</a></li><li><a href="#checkdigit">チェックデジットの計算方法</a></li><li><a href="#genkai">0と9の打ち間違いは、この検査では見つけられない</a></li><li><a href="#houjin">法人番号と登録番号が「同じとき」と「違うとき」</a></li><li><a href="#denai">番号が実在するのに公表サイトで出てこない理由</a></li><li><a href="#hikaku">まとめて確かめる3つの方法（比較）</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#shutten">出典</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/tsushinhi/">通信費とは</a></li><li><a href="../column/chidai-yachin/">地代家賃とは</a></li><li><a href="../column/kokoku-sendenhi/">広告宣伝費とは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
@@ -155,7 +156,7 @@
   <textarea id="input" rows="8" aria-describedby="input-hint"></textarea>
   <div class="row">
     <button id="run" type="button" class="primary">まとめて確認する</button>
-    <button id="clear" type="button" class="sub">消す</button>
+    <button id="clear" type="button" class="btn-outline">入力を消す</button>
   </div>
   <p class="hint" id="input-hint">1行に1件（例: T7000012050002）。社名・タブ・全角・<code>T</code>の有無・ハイフン・空白が混ざっても番号だけ取り出します。</p>
   <div id="result" class="result" aria-live="polite"></div>
@@ -184,7 +185,7 @@
   </table></div>
   <div class="note" id="kojin-note"><b>だから、このツールは「誤り」と断定しません。
   検査に合わなかった番号について出すのは「法人番号ではない」までです。
-  個人事業者や人格のない社団等の登録番号は法人番号と別の体系なので、
+  個人事業者など法人番号を持たない事業者の登録番号は法人番号と別の体系なので、
   合わないことが誤りの証拠になりません。実在や登録の状態は国税庁の公表サイト、Web-API、ダウンロードした公表情報で確認できます。</b></div>
 </section>
 
@@ -210,10 +211,7 @@
 
 <section>
   <h2 id="genkai">0と9の打ち間違いは、この検査では見つけられない</h2>
-  <p>チェックデジットの目的は打ち間違いの検出ですが、<b>この算式には原理的な穴が1つあります</b>。
-  9で割った余りを使うので、<b>重み付き和の変化が9の倍数だと素通りします</b>。
-  1桁だけ書き換えて変化量が±9になるのは <b>0と9の入れ替えだけ</b>です
-  （偶数桁は重みが2ですが、2と9に共通の約数がないため同じ結論になります）。</p>
+  <p>基礎番号の<b>0と9を打ち間違えた番号は、チェックデジットが合ったまま通ります</b>。ほかの1桁の打ち間違いは見つけられます。</p>
   <div class="scroll-wrap"><table id="genkai-table">
     <thead><tr><th scope="col">打ち間違いの種類</th><th scope="col">検出できるか</th></tr></thead>
     <tbody>
@@ -224,6 +222,10 @@
       <tr><td>2桁以上を同時に間違えた</td><td>組み合わせによる（保証はない）</td></tr>
     </tbody>
   </table></div>
+  <p>チェックデジットの目的は打ち間違いの検出ですが、<b>この算式には原理的な穴が1つあります</b>。
+  9で割った余りを使うので、<b>重み付き和の変化が9の倍数だと素通りします</b>。
+  1桁だけ書き換えて変化量が±9になるのは <b>0と9の入れ替えだけ</b>です
+  （偶数桁は重みが2ですが、2と9に共通の約数がないため同じ結論になります）。</p>
   <p class="hint">具体例: <code>7000012050002</code>（国税庁の法人番号）の1桁を書き換える組み合わせは117通りありますが、
   検出できるのは<b>109通り</b>です。残る8通りは、基礎番号に含まれる8個の 0 をそれぞれ 9 にしたもので、
   <b>検査用数字が変わらないため見分けがつきません</b>。</p>
@@ -238,12 +240,13 @@
   <p>混同されやすいところです。<b>株式会社などの設立登記をした法人には、登録の有無に関係なく法人番号が指定されます。</b>
   一方、登録番号は<b>登録を受けた事業者にだけ</b>あります。</p>
   <div class="scroll-wrap"><table id="houjin-table">
-    <thead><tr><th scope="col">ケース</th><th scope="col">法人番号</th><th scope="col">登録番号</th><th scope="col">関係</th></tr></thead>
+    <thead><tr><th scope="col">ケース</th><th scope="col" style="white-space:nowrap">法人番号</th><th scope="col" style="white-space:nowrap">登録番号</th><th scope="col">関係</th></tr></thead>
     <tbody>
       <tr><td>登録した法人</td><td>ある</td><td>ある</td><td><b>「T」＋法人番号</b>＝13桁は同じ数字</td></tr>
       <tr><td>登録していない法人（免税事業者など）</td><td><b>ある</b></td><td><b>ない</b></td><td>法人番号があっても登録番号にはならない</td></tr>
       <tr><td>登録した個人事業者</td><td>ない</td><td>ある</td><td>13桁は<b>法人番号と無関係</b>の別体系</td></tr>
-      <tr><td>登録した人格のない社団等</td><td>場合による</td><td>ある</td><td>個人事業者と同じ扱い（法人番号とも重複しない番号）</td></tr>
+      <tr><td>登録した人格のない社団等（法人番号あり）</td><td>ある</td><td>ある</td><td>法人と同じく「T」＋法人番号</td></tr>
+      <tr><td>登録した人格のない社団等（法人番号なし）</td><td>ない</td><td>ある</td><td>個人事業者と同じ別体系（法人番号とも重複しない番号）</td></tr>
     </tbody>
   </table></div>
   <p class="hint">「相手に法人番号があるからインボイスを出せる」は成り立ちません。
@@ -268,7 +271,7 @@
   <p>件数が増えると、確認のやり方を変える必要があります。国税庁が用意している手段はこの3つです。</p>
   <div class="scroll-wrap"><table id="hikaku-table">
     <thead><tr>
-      <th scope="col">方法</th><th scope="col">1回に確認できる件数</th><th scope="col">氏名・名称</th><th scope="col">申請</th><th scope="col">更新</th>
+      <th scope="col" style="white-space:nowrap">方法</th><th scope="col">1回に確認できる件数</th><th scope="col">氏名・名称</th><th scope="col">申請</th><th scope="col">更新</th>
     </tr></thead>
     <tbody>
       <tr>
@@ -279,7 +282,7 @@
         <td>公表済みの情報を確認</td>
       </tr>
       <tr>
-        <td><b>公表情報ダウンロード</b><br>（全件・差分）</td>
+        <td style="white-space:nowrap"><b>公表情報<br>ダウンロード</b><br>（全件・差分）</td>
         <td>まとめて（CSV／XML／JSON）</td>
         <td><b>氏名等の一部項目は値が削除されている</b></td>
         <td>不要</td>
@@ -289,7 +292,7 @@
         <td><b>Web-API</b></td>
         <td>まとめて（システム連携）</td>
         <td>出る</td>
-        <td><b>アプリケーションIDが必要（メール仮登録→届いたURLで本登録・資料提出→国税庁の審査）</b></td>
+        <td><b>必要</b>（アプリケーションID）</td>
         <td>随時</td>
       </tr>
       <tr>
@@ -301,6 +304,7 @@
       </tr>
     </tbody>
   </table></div>
+  <p class="hint">Web-APIのアプリケーションIDは、メールアドレスを仮登録し、届いたURLで本登録と資料の提出をしたあと、国税庁の審査を経て発行されます。</p>
   <p class="hint">ダウンロードデータは<b>氏名等の一部項目について値が削除されて提供</b>されるため、
   「番号から個人事業者の氏名を引く」用途には使えません。そこはWeb-APIか公表サイトになります。
   国税庁のWeb-API案内では、取得情報を利用したサービスを公開する場合、所定の文言で取得元を明示するよう求めています。</p>
@@ -315,7 +319,7 @@
   取引先として登録する際は、国税庁の公表サイトやWeb-API等で実在・名称・登録の状態を確認してください。</p>
 
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>検査に合わないと出ました。相手が番号を間違えているということですか？</h3>
-  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>断定できません。個人事業者や人格のない社団等の登録番号は法人番号と別体系なので、法人番号の算式に合っても合わなくても、正否は判定できません。
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>断定できません。個人事業者など法人番号を持たない事業者の登録番号は法人番号と別体系なので、法人番号の算式に合っても合わなくても、正否は判定できません。
   このツールが出すのは「<b>法人番号ではない</b>」までで、誤りだとは言いません。公表サイトで引いてください。</p>
 
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>先頭が 0 の13桁を見かけました。ありえますか？</h3>
