@@ -223,8 +223,8 @@ FIELD_ROWS = [('fee', '信託報酬（税込年率・ファンド本体・貸付
               ('ter_period', '総経費率の対象期間'), ('index', '連動対象・投資対象'), ('hedge', '為替ヘッジ（交付目論見書の運用方針）'), ('settle', '決算'),
               ('incept', '設定日'), ('nofee', '購入時手数料／信託財産留保額')]
 
-def fee_section(p, show_eff=None, labels=None, vals=None):
-    """labels: {field: row label} and vals: {(fund key, field): cell text} override the shared rows for one page."""
+def fee_section(p, show_eff=None, labels=None, vals=None, skip=()):
+    """labels: {field: row label} and vals: {(fund key, field): cell text} override the shared rows for one page. skip: fields shown elsewhere on the page."""
     A, B = p.A, p.B
     labels, vals = labels or {}, vals or {}
     show_eff = (A['etf'] or B['etf']) if show_eff is None else show_eff
@@ -232,6 +232,8 @@ def fee_section(p, show_eff=None, labels=None, vals=None):
     h += '<div class="scroll-wrap"><table class="num-nowrap"><thead><tr><th scope="col">' + p.r('feehead', f'項目（{jd(GOT)}に確認した資料）') + '</th>'
     h += f'<th scope="col">{E(A["short"])}</th><th scope="col">{E(B["short"])}</th></tr></thead><tbody>'
     for field, label in FIELD_ROWS:
+        if field in skip:
+            continue
         if field == 'eff' and not show_eff:
             continue
         if field == 'hedge' and all(FUNDS[k].get('hedge') is None for k in (p.a, p.b)):
