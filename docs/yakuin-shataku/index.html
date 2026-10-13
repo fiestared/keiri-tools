@@ -96,7 +96,7 @@
 </header>
 <main id="main" tabindex="-1">
   <h1>役員社宅の賃貸料相当額 計算ツール</h1>
-  <p class="lead">役員に社宅を貸すとき、<b>いくら家賃を受け取れば給与として課税されないか</b>（賃貸料相当額）を計算します。所得税基本通達36-40・36-41の算式どおりに計算し、入力値はブラウザの外へ送信されません。</p>
+  <p class="lead">役員に社宅を貸すとき、<b>いくら家賃を受け取れば給与として課税されないか</b>（賃貸料相当額）を計算します。所得税基本通達36-40・36-41の算式どおりに計算し、入力値はブラウザの外へ送信されません。課税標準額の調べ方は<a href="#faq-kazei-hyojun">よくある質問</a>にあります。</p>
 
   <div class="card">
     <label for="kubun">社宅の区分</label>
@@ -132,7 +132,7 @@
     </div>
 
     <div class="fee-pair field-pair">
-      <div id="yachin-wrap" hidden>
+      <div id="yachin-wrap" hidden style="display:none">
         <label for="yachin">会社が家主に支払う家賃（月額・円）</label>
         <input type="number" id="yachin" value="300000" min="0" step="1000" inputmode="numeric">
       </div>
@@ -163,15 +163,15 @@
   <table id="keisan-hyo">
     <tr><th scope="col">区分</th><th scope="col">算式（月額）</th></tr>
     <tr>
-      <td>小規模な住宅</td>
+      <td style="white-space:nowrap">小規模な住宅</td>
       <td>①建物の固定資産税の課税標準額 × <b>0.2%</b><br>＋②<b>12円 × 総床面積㎡ ÷ 3.3</b><br>＋③敷地の固定資産税の課税標準額 × <b>0.22%</b></td>
     </tr>
     <tr>
-      <td>小規模でない・自社所有</td>
-      <td>（イ 建物の課税標準額 × <b>12%</b>［耐用年数30年超は<b>10%</b>］<br>＋ロ 敷地の課税標準額 × <b>6%</b>）<b>÷ 12</b></td>
+      <td style="white-space:nowrap">小規模でない・自社所有</td>
+      <td>（イ＋ロ）<b>÷ 12</b><br>イ 建物の課税標準額 × <b>12%</b>（耐用年数30年超は<b>10%</b>）<br>ロ 敷地の課税標準額 × <b>6%</b></td>
     </tr>
     <tr>
-      <td>小規模でない・借上</td>
+      <td style="white-space:nowrap">小規模でない・借上</td>
       <td>上の自社所有の算式で出した額と、<b>会社が支払う家賃の50%</b>の<b>いずれか多い金額</b></td>
     </tr>
   </table>
@@ -204,7 +204,12 @@
   <div class="callout" id="dekinai-note">
     <p>このツールは<b>入力した条件での計算例</b>を出すもので、次の判定はしていません。</p>
     <ul>
-      <li><b>いわゆる豪華社宅にあたるか</b> — 床面積240㎡超のうち、取得価額・支払賃貸料・内外装の状況等を総合勘案して判定します。240㎡以下でもプール等の設備や役員個人のし好を著しく反映した設備があれば該当することがあります。該当する場合は通達の算式を使えず、通常支払うべき使用料が賃貸料相当額になります。</li>
+      <li><b>いわゆる豪華社宅にあたるか</b> — 該当する場合は通達の算式を使えず、通常支払うべき使用料が賃貸料相当額になります。
+        <ul>
+          <li>床面積240㎡超のうち、取得価額・支払賃貸料・内外装の状況等を総合勘案して判定します。</li>
+          <li>240㎡以下でもプール等の設備や役員個人のし好を著しく反映した設備があれば該当することがあります。</li>
+        </ul>
+      </li>
       <li><b>区分所有の建物の小規模判定</b> — 共用部分の床面積をあん分し、専用部分に加えたところで判定します。このツールは入力された床面積をそのまま使います。</li>
       <li><b>使用人（従業員）への貸与</b> — 別の取扱い（No.2597）です。このツールは役員への貸与を前提にしています。</li>
     </ul>
@@ -222,7 +227,7 @@
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>住宅手当を現金で払うのではだめですか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>現金支給の住宅手当や、入居者が直接契約している家賃の負担は<b>社宅の貸与と認められず全額が給与課税</b>されます。会社が借りて役員に貸す形にしていることが前提です。</p>
 
-<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>固定資産税の課税標準額はどこで分かりますか？</h3>
+<h3 class="faq-question" id="faq-kazei-hyojun"><span class="faq-existing-marker" aria-hidden="true">Q. </span>固定資産税の課税標準額はどこで分かりますか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>市区町村から届く<b>固定資産税の課税明細書</b>に載っています。借上で自社が所有していない場合は、所有者の同意を得て市区町村に固定資産課税台帳の閲覧を申請する方法があります。<b>評価額と課税標準額は別の欄</b>なので取り違えに注意してください。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>賃貸料相当額より多く受け取ったらどうなりますか？</h3>
@@ -340,6 +345,8 @@ function syncFields() {
   const k = $("kubun").value;
   $("kubun-hint").textContent = HINT[k];
   $("yachin-wrap").hidden = k !== "karikage";
+  // ★.field-pair > div は style.css で display:grid のため hidden 属性だけでは消えない（小規模でも家賃欄が出ていた）
+  $("yachin-wrap").style.display = k === "karikage" ? "" : "none";
   $("menseki-wrap").hidden = false;
   render();          // ★中で await dataReady している
 }
