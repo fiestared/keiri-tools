@@ -18,11 +18,11 @@ from funds import FUNDS, check_all
 check_all()
 import compare as CP
 
-PUB_DEFAULT = '2026-10-12'  # この便で公開する記事の公開日
-PUB_BY_SLUG = {'sbi-spyd-vs-rakuten-schd': '2026-10-03', 'sbi-spyd-vs-sbi-vym': '2026-10-04', 'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09', 'sbi-vym-vs-rakuten-vym': '2026-10-10', 'rakuten-schd-vs-sbi-schd': '2026-10-11'}  # 既に公開した記事の公開日は動かさない
+PUB_DEFAULT = '2026-10-13'  # この便で公開する記事の公開日
+PUB_BY_SLUG = {'sbi-spyd-vs-rakuten-schd': '2026-10-03', 'sbi-spyd-vs-sbi-vym': '2026-10-04', 'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09', 'sbi-vym-vs-rakuten-vym': '2026-10-10', 'rakuten-schd-vs-sbi-schd': '2026-10-11', 'rakuten-gold-vs-mufg-gold': '2026-10-12'}  # 既に公開した記事の公開日は動かさない
 PUB = PUB_DEFAULT  # 公開日（datePublished・ページの公開日の表示）。Page ごとに差し替える
 GOT_DEFAULT = '2026-10-03'  # 資料・基準価額データの取得日（公開日と分けて持つ。2026-10-02 の TODO）
-GOT_BY_SLUG = {'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09', 'sbi-vym-vs-rakuten-vym': '2026-10-10', 'rakuten-schd-vs-sbi-schd': '2026-10-11', 'rakuten-gold-vs-mufg-gold': '2026-10-12'}  # 後の便で資料を取り直した記事
+GOT_BY_SLUG = {'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09', 'sbi-vym-vs-rakuten-vym': '2026-10-10', 'rakuten-schd-vs-sbi-schd': '2026-10-11', 'rakuten-gold-vs-mufg-gold': '2026-10-12', 'emaxis-orcan-vs-rakuten-schd': '2026-10-13'}  # 後の便で資料を取り直した記事
 GOT = GOT_DEFAULT
 CMP = json.loads((R / 'comparison.json').read_text())['pairs']
 E = H.escape
@@ -223,8 +223,8 @@ FIELD_ROWS = [('fee', '信託報酬（税込年率・ファンド本体・貸付
               ('ter_period', '総経費率の対象期間'), ('index', '連動対象・投資対象'), ('hedge', '為替ヘッジ（交付目論見書の運用方針）'), ('settle', '決算'),
               ('incept', '設定日'), ('nofee', '購入時手数料／信託財産留保額')]
 
-def fee_section(p, show_eff=None, labels=None, vals=None):
-    """labels: {field: row label} and vals: {(fund key, field): cell text} override the shared rows for one page."""
+def fee_section(p, show_eff=None, labels=None, vals=None, skip=()):
+    """labels: {field: row label} and vals: {(fund key, field): cell text} override the shared rows for one page. skip: fields shown elsewhere on the page."""
     A, B = p.A, p.B
     labels, vals = labels or {}, vals or {}
     show_eff = (A['etf'] or B['etf']) if show_eff is None else show_eff
@@ -232,6 +232,8 @@ def fee_section(p, show_eff=None, labels=None, vals=None):
     h += '<div class="scroll-wrap"><table class="num-nowrap"><thead><tr><th scope="col">' + p.r('feehead', f'項目（{jd(GOT)}に確認した資料）') + '</th>'
     h += f'<th scope="col">{E(A["short"])}</th><th scope="col">{E(B["short"])}</th></tr></thead><tbody>'
     for field, label in FIELD_ROWS:
+        if field in skip:
+            continue
         if field == 'eff' and not show_eff:
             continue
         if field == 'hedge' and all(FUNDS[k].get('hedge') is None for k in (p.a, p.b)):
@@ -360,6 +362,7 @@ NAME_PATS = {
     'tawara-nk': r'この目論見書により行う 「たわらノーロード 日経２２５」の募集',
     'rakuten-gold': r'「楽天・ゴールド・ファンド（為替ヘッジあり）」および「楽天・ ゴールド・ファンド（為替ヘッジなし）」の募集',
     'mufg-gold': r'この目論見書により行う 「三菱ＵＦＪ 純金ファンド」 の募集',
+    'orcan': r'この目論見書により行う「ｅＭＡＸ ＩＳＳ ｌｉｍ 全世界株式（オール・カントリー） 」の募集',
 }
 def _name_pat(f):
     k = next(k for k, v in FUNDS.items() if v is f)
@@ -389,6 +392,7 @@ DOCDATE = {
     'sschd_P': r'使用開始日 2026\.7\.1', 'sschd_Ak': r'作成対象期間（2025年９月30日〜2026年３月30日）', 'sschd_M': r'2026.9月30日基準',
     'ricgld_P': r'使 用 開 始日：2026年1月13日', 'ricgld_M': r'作成基準日 ： 2026年8月31日',
     'mgold_P': r'使用開始日 2026\.４\.18', 'mgold_Ak': r'作成対象期間：2025年１月21日〜2026年１月20日', 'mgold_M': r'月次レポート 〈愛称：ファインゴールド〉 2026年 追加型投信／国内／その他資産（商品） 09月30日現在',
+    'orcan_P': r'使用開始日 2026\.７\.25', 'orcan_Ak': r'作成対象期間：2025年４月26日～2026年４月27日', 'orcan_M': r'全世界株式（オール・カントリー） 月次レポート 〈愛称：オルカン〉 2026年 追加型投信／内外／株式／インデックス型 09月30日現在',
     'sschd_N1': r'2025 年 5 月吉日', 'sschd_N2': r'2025 年 8 月吉日',
     'tbal_P': r'使用開始日 2026年７月15日', 'tbal_Ak': r'作成対象期間 2024年10月16日～2025年10月14日', 'tbal_M': r'2026年8月31日基準',
 }
@@ -600,7 +604,7 @@ def build_ledger(p):
     return errors
 
 # Ledgers reviewed claim by claim on a later day carry that date (check_claim_scope requires must_with from 2026-10-05).
-CHECKED = {'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09', 'sbi-vym-vs-rakuten-vym': '2026-10-10', 'rakuten-schd-vs-sbi-schd': '2026-10-11', 'rakuten-gold-vs-mufg-gold': '2026-10-12'}
+CHECKED = {'sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou': '2026-10-05', 'rakuten-sox-vs-rakuten-nasdaq': '2026-10-06', 'sbi-spyd-vs-rakuten-vym': '2026-10-07', 'rakuten-jepi-vs-rakuten-schd': '2026-10-08', 'emaxis-nikkei-vs-tawara-nikkei': '2026-10-09', 'sbi-vym-vs-rakuten-vym': '2026-10-10', 'rakuten-schd-vs-sbi-schd': '2026-10-11', 'rakuten-gold-vs-mufg-gold': '2026-10-12', 'emaxis-orcan-vs-rakuten-schd': '2026-10-13'}
 _PERF_CALC = ('python3（2026-10-05、compare.series の保存データから再計算）: 共通営業日 2025-02-07〜2026-09-30（暦日600日、600/365.25=1.64年）。'
               'SBI: 累積 19780.68269/11947.95801-1=+65.5570%、年率 (1.655570)^(1/1.6427)-1=+35.9203%、100万円×1.655570=1,655,570円、最大下落 -16.9911%、'
               '直近1年 19780.68269/14510.21310-1=+36.3225%。楽天: 累積 16063/9999-1=+60.6461%、年率 +33.4515%、1,606,461円、最大下落 -15.3947%、'
@@ -631,7 +635,39 @@ _PERF_CALC_GM = ('python3（2026-10-12、compare.series の保存データ rakut
                  '楽天・ゴールド（為替ヘッジなし）: 累積 8581/10000-1=-14.1900%、100万円×8581/10000=858,100円、最大下落 8243/10970-1=-24.8587%（高値2026-03-03 10970→安値2026-08-03 8243）。'
                  '三菱UFJ 純金ファンド: 累積 49532/59807-1=-17.1803%、100万円×49532/59807=828,197円、最大下落 48343/66958-1=-27.8010%（高値2026-01-29 66958→安値2026-08-03 48343）。'
                  '日次騰落率の相関 0.5864→0.59。comparison.json と一致。外部の公表値との照合: 三菱UFJ側の月次レポート（2026年9月30日現在）の過去1ヵ月 -7.4%＝49532/(49532+3934)-1=-7.36%、設定来 395.3%＝49532/10000-1。楽天側の月次レポート（2026年8月31日作成基準）の設定来 △6.9%＝9313/10000-1=-6.87%。')
+_PERF_CALC_OS = ('python3（2026-10-13、compare.series の保存データ mufg_253425.csv / rakuten_100105_20261011.csv から再計算）: 共通営業日 2024-09-18〜2026-09-30（494営業日、暦日742日、742/365.25=2.0315年→約2年）。'
+                 'eMAXIS Slimオルカン: 累積 37791/24062-1=+57.0568%、年率 (1.570568)^(1/2.0315)-1=+24.8846%、100万円×37791/24062=1,570,568円、最大下落 22305/28060-1=-20.5096%（高値2025-01-24 28060→安値2025-04-09 22305）、直近1年（2025-09-30起点）37791/30410-1=+24.2716%。'
+                 '楽天・SCHD: 累積 13720/9999-1=+37.2137%、年率 (1.372137)^(1/2.0315)-1=+16.8514%、100万円×13720/9999=1,372,137円、最大下落 8941/11352-1=-21.2385%（高値2024-11-26 11352→安値2025-04-22 8941）、直近1年 13720/10420-1=+31.6699%。'
+                 '日次騰落率の相関 0.70169→0.70。comparison.json と一致。外部の公表値との照合: eMAXIS Slimオルカンの月次レポート（2026年9月30日現在）の過去1年 24.3%（24.27%の小数第1位）・設定来 277.9%＝37791/10000-1。楽天・SCHDの分配金 85+90+90+95=360円。')
 SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'calc': str}}
+    'emaxis-orcan-vs-rakuten-schd': {
+        'perf': {'must_with': ['再投資|仮定|相関|業種|分配金', '2026年9月30日|比較期間|直近1年|仮定|業種|分配金'], 'derived': True, 'calc': _PERF_CALC_OS},
+        'perfA': {'must_with': ['再投資', '2026年9月30日|比較期間'], 'derived': True, 'calc': _PERF_CALC_OS},
+        'perfB': {'must_with': ['再投資', '2026年9月30日|比較期間'], 'derived': True, 'calc': _PERF_CALC_OS},
+        'desc': {'must_with': ['再投資|仮定', '2026年9月30日|仮定|比較期間']},
+        'period': {'must_with': ['設定日|比較期間'], 'derived': True, 'calc': 'python3: (date(2026,9,30)-date(2024,9,18)).days=742、742/365.25=2.03年→約2年。'},
+        'method': {'must_with': ['比較期間|起点|終点|基準価額|データ|再投資|確認した|取得|仮定|設定日']},
+        'feehead': {'must_with': ['確認した|総経費率|程度|管理報酬等|運用方針|基準日']},
+        'orcan-fee': {'must_with': ['段階制|税込|信託報酬|純資産総額']}, 'rakuten-schd-fee': {'must_with': ['税込|信託報酬|運用管理費用']},
+        'orcan-tier': {'must_with': ['例', '実質信託報酬率|税込']},
+        'orcan-ter': {'must_with': ['総経費率|比率|詳細', '対象期間|作成対象期間|参考値|交付目論見書|詳細']},
+        'orcan-terd': {'must_with': ['総経費率|詳細|交付目論見書', '小数第|参考値|対象期間']},
+        'rakuten-schd-ter': {'must_with': ['総経費率|比率|程度|管理報酬等', '対象期間|作成対象期間|交付目論見書|交付運用報告書|充当|参考値']},
+        'rakuten-schd-terfund': {'must_with': ['総経費率|比率|程度|管理報酬等', '充当|比率|程度|参考値|管理報酬等']},
+        'rakuten-schd-eff': {'must_with': ['程度|ファンド本体|管理報酬等|税込|比率', '税込|交付目論見書|概算|充当|比率']},
+        'rakuten-schd-effnote': {'must_with': ['2026年2月末|程度|税込', '概算|変動|程度|税込']},
+        'orcan-lend': {'must_with': ['貸付', '以内']},
+        'orcan-settle': {'must_with': ['休業日|決算']}, 'rakuten-schd-settle': {'must_with': ['原則として|決算|使用開始日|作成対象期間', '休業日|決算日|年4回|使用開始日|作成対象期間']},
+        'or-comp': {'must_with': ['2026年9月30日|上位|基準日|分母|業種|純資産総額|資料|目安']},
+        'or-alloc': {'must_with': ['2026年9月30日|資産構成|新興国株式']},
+        'rs-comp': {'must_with': ['2026年8月末|投資先ETF|基準日|分母|目安']},
+        'rs-hold': {'must_with': ['2026年8月31日', '純資産総額|マザーファンド']},
+        'or-dist': {'must_with': ['決算|分配', '1万口当たり|年1回|抑制|決算']},
+        'rs-dist': {'must_with': ['1万口当たり|年4回', '税引前|年4回']},
+        'nav-o': {'must_with': ['2026年9月30日', '純資産総額']}, 'nav-r': {'must_with': ['公表データ|2026年9月30日', '純資産総額|公表データ']},
+        'or-mret': {'must_with': ['2026年9月30日', '過去1年|月次レポート']},
+        'identity': {'must_with': ['ファンド|オルカン|SCHD']},
+    },
     'rakuten-gold-vs-mufg-gold': {
         'perf': {'must_with': ['再投資|相関|1年未満|仮定', '2026年9月30日|比較期間|共通期間|仮定'], 'derived': True, 'calc': _PERF_CALC_GM},
         'perfA': {'must_with': ['再投資', '2026年9月30日|比較期間'], 'derived': True, 'calc': _PERF_CALC_GM},

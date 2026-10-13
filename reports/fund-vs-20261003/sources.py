@@ -78,6 +78,9 @@ doc('ricgld_M', f'{RK}/ricgld/pdf/ricgld_M202608.pdf', '楽天・ゴールド・
 doc('mgold_P', f'{M}/koumokuromi/251065/251065_20260418.pdf', '三菱UFJ 純金ファンド 交付目論見書（使用開始日2026年4月18日）')
 doc('mgold_Ak', f'{M}/kouunyou/251065/251065_20260120_k.pdf', '三菱UFJ 純金ファンド 交付運用報告書（作成対象期間2025年1月21日〜2026年1月20日）')
 doc('mgold_M', f'{M}/geppou/251065/251065_202609.pdf', '三菱UFJ 純金ファンド 月次レポート（2026年9月30日現在）')
+doc('orcan_P', f'{M}/koumokuromi/253425/253425_20260725.pdf', 'eMAXIS Slim 全世界株式（オール・カントリー）交付目論見書（使用開始日2026年7月25日）')
+doc('orcan_Ak', f'{M}/kouunyou/253425/253425_20260427_k.pdf', 'eMAXIS Slim 全世界株式（オール・カントリー）交付運用報告書（作成対象期間2025年4月26日〜2026年4月27日）')
+doc('orcan_M', f'{M}/geppou/253425/253425_202609.pdf', 'eMAXIS Slim 全世界株式（オール・カントリー）月次レポート（2026年9月30日現在）')
 doc('spdji_hd', 'https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-high-dividend-indices.pdf', 'S&P Dow Jones Indices：S&P High Dividend Indices Methodology（2026年10月7日に確認）')
 doc('nq_sox', 'https://indexes.nasdaqomx.com/docs/Methodology_SOX.pdf', 'Nasdaq：PHLX Semiconductor Sector Index（SOX）Index Methodology（2026年10月6日に確認）')
 doc('nq_ndx', 'https://indexes.nasdaqomx.com/docs/Methodology_NDX.pdf', 'Nasdaq：Nasdaq-100 Index（NDX）Index Methodology（2026年10月6日に確認）')
@@ -102,6 +105,7 @@ NAV = {
     'sbi-schd4': ('sbi_2024122003.xml', 'https://apl.wealthadvisor.jp/xml/chart/funddata/2024122003.xml'),
     'rakuten-gold': ('rakuten_100123.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100123.csv'),
     'mufg-gold': ('mufg_251065.csv', 'https://www.am.mufg.jp/fund_file/setteirai/251065.csv'),
+    'orcan': ('mufg_253425.csv', 'https://www.am.mufg.jp/fund_file/setteirai/253425.csv'),
     'rakuten-ndx': ('rakuten_100091.csv', 'https://www.rakuten-toushin.co.jp/assets/csv/chart_100091.csv'),
 }
 
