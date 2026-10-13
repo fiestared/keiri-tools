@@ -1,0 +1,121 @@
+{
+  "page": "docs/column/taishokukin-soba/index.html",
+  "checked": "2026-10-14",
+  "_readable20261014": "2026-10-14 読みやすさの作り直しで新設（それまで台帳なし）。足した行（description・FAQ 2問・勤続年数の節の導入・出典の入れ子）の数字だけを載せた。一次資料は curl で取得し keiri-commander/runs/readable/taishokukin-soba/corpus/ に保存。全単位の被覆（SEGMENTS_STRICT）は未対応＝作り直し前から未処理 447。must_with は付けていない（短い文に条件語の書き写しを強いるため）。",
+  "claims": [
+    {
+      "id": "readable20261014-futatsu",
+      "text": "よく引かれる定年退職金は、厚生労働省の令和5年就労条件総合調査（常用労働者30人以上・令和4年の退職者）で大学・大学院卒（管理・事務・技術職）1,896万円、東京都の令和6年版（従業員10〜299人の都内中小企業・モデル退職金）で大学卒の定年1,149万円。比は約1.65倍（筆者の計算）。",
+      "numbers": [
+        "1,896",
+        "1,149",
+        "1.65倍",
+        "299人",
+        "令和5年",
+        "令和6年"
+      ],
+      "applies": "厚生労働省 令和5年調査（令和4年1年間の退職者）／東京都 令和6年版（定年制・退職金は隔年調査）",
+      "scope": "定年退職・勤続20年以上かつ45歳以上の退職者（厚労省）／モデル退職金・調査産業計・大学卒・会社都合の定年（東京都）",
+      "derived": true,
+      "calc": "python3: 18960/11495 = 1.6494 → 約1.65倍（1,896万円＝18,960千円、東京都 11,495千円）",
+      "source_url": "https://www.mhlw.go.jp/toukei/itiran/roudou/jikan/syurou/23/dl/gaikyou.pdf",
+      "source_quote": "「大学・大学院卒（管理・事務・技術職）」1,896 万円、「高校卒（管理・事務・技術職）」1,682 万円、「高校卒（現業職）」1,183 万円となっている。（第 22 表）／東京都（https://www.sangyo-rodo.metro.tokyo.lg.jp/documents/d/sangyo-rodo/r6chincho_3-8-xlsx 第８表－① 大学卒 定年 会社都合 金額Ｃ 11495 千円）／東京都の案内ページ: 従業員が10人～299人の都内中小企業を対象とした賃金についての調査を毎年実施",
+      "exceptions": [
+        "東京都の金額は千円単位（11,495千円）を万円に直した値で、本文の注に明記",
+        "厚生労働省の数字は退職給付制度がある企業の勤続20年以上かつ45歳以上の退職者に限る（本文 #kosei に記載）",
+        "東京都はモデル退職金（実額ではない）で本文 #tokyo に記載"
+      ],
+      "corpus_ref": "keiri-commander/runs/readable/taishokukin-soba/corpus/mhlw_r5_syurou_gaikyou.txt:1012-1015; keiri-commander/runs/readable/taishokukin-soba/corpus/tokyo_r6chincho_3-8_sheet1.tsv:36; keiri-commander/runs/readable/taishokukin-soba/corpus/tokyo_r6chincho_page.txt:3763",
+      "review_status": "author_checked",
+      "covers": []
+    },
+    {
+      "id": "readable20261014-jiko",
+      "text": "厚生労働省 第22表で、自己都合の平均は定年の76〜78%（大学・大学院卒 1,441÷1,896＝76.0%、高校卒（管理・事務・技術職）1,280÷1,682＝76.1%、高校卒（現業職）921÷1,183＝77.9%。筆者の計算）。",
+      "numbers": [
+        "78%",
+        "76.0%",
+        "76.1%",
+        "77.9%"
+      ],
+      "applies": "令和5年調査（令和4年1年間の退職者）",
+      "scope": "勤続20年以上かつ45歳以上の退職者・学歴職種の3区分",
+      "derived": true,
+      "calc": "python3: 1441/1896=0.7600, 1280/1682=0.7610, 921/1183=0.7785",
+      "source_url": "https://www.mhlw.go.jp/toukei/itiran/roudou/jikan/syurou/23/dl/gaikyou.pdf",
+      "source_quote": "定年 526 1,896 36.0 435 1,682 38.6 345 1,183 34.3 ／ 自己都合 476 1,441 30.3 384 1,280 33.3 312 921 29.5（第 22 表 令和５年調査計）",
+      "exceptions": "無し: 第22表の同じ表（注1・2は所定内賃金と月収換算の定義）を読んで確認。実際の減額率は各社の規程による旨を FAQ に記載",
+      "corpus_ref": "keiri-commander/runs/readable/taishokukin-soba/corpus/mhlw_r5_syurou_gaikyou.txt:1019-1035",
+      "review_status": "author_checked",
+      "covers": []
+    },
+    {
+      "id": "readable20261014-tokyo-hi",
+      "text": "東京都のモデル退職金（大学卒）で、会社都合÷自己都合は勤続5年1.33倍・勤続30年1.03倍（筆者の計算）。",
+      "numbers": [
+        "1.33倍",
+        "1.03倍"
+      ],
+      "applies": "東京都 令和6年版",
+      "scope": "第８表－① 調査産業計・大学卒",
+      "derived": true,
+      "calc": "python3: 574/432=1.3287, 7762/7507=1.0340（千円単位の金額Ｃ÷金額Ｂ）",
+      "source_url": "https://www.sangyo-rodo.metro.tokyo.lg.jp/documents/d/sangyo-rodo/r6chincho_3-8-xlsx",
+      "source_quote": "大学卒 5 27 … 金額Ｂ 432 … 金額Ｃ 574 ／ 30 52 … 金額Ｂ 7507 … 金額Ｃ 7762（第８表－① モデル退職金（調査産業計）【単位：年、歳、社、千円】）",
+      "exceptions": "勤続33年で1.12倍に戻る（単調ではない）ことを本文 #jiyu に記載",
+      "corpus_ref": "keiri-commander/runs/readable/taishokukin-soba/corpus/tokyo_r6chincho_3-8_sheet1.tsv:29,34",
+      "review_status": "author_checked",
+      "covers": []
+    },
+    {
+      "id": "readable20261014-suii",
+      "text": "厚生労働省の定年退職者の平均（第22表）は平成30年調査→令和5年調査で、大学・大学院卒 1,983→1,896万円（87万円減）、高校卒（管理・事務・技術職）1,618→1,682万円（64万円増）、高校卒（現業職）1,159→1,183万円（24万円増）。退職給付制度がある企業割合は80.5%→74.9%（5.6ポイント減）。",
+      "numbers": [
+        "平成30年",
+        "1,983",
+        "1,618",
+        "1,682",
+        "1,159",
+        "1,183",
+        "87万円",
+        "64万円",
+        "24万円",
+        "80.5%",
+        "74.9%"
+      ],
+      "applies": "平成30年調査と令和5年調査の比較",
+      "scope": "定年退職・勤続20年以上かつ45歳以上の退職者／常用労働者30人以上の企業",
+      "derived": true,
+      "calc": "python3: 1983-1896=87, 1682-1618=64, 1183-1159=24, 80.5-74.9=5.6",
+      "source_url": "https://www.mhlw.go.jp/toukei/itiran/roudou/jikan/syurou/23/dl/gaikyou.pdf",
+      "source_quote": "平成30年調査計 定年 513 1,983 38.6 398 1,618 40.6 320 1,159 36.3（第22表）／令和５年調査計 100.0 74.9 … 平成30年調査計 100.0 80.5（第16表）／退職給付（一時金・年金）制度がある企業割合は 74.9％となっている。",
+      "exceptions": "5年の間の賃金・物価の変化があり、増減をそのまま制度の手厚さの変化と読めない旨を本文 #suii の注に記載",
+      "corpus_ref": "keiri-commander/runs/readable/taishokukin-soba/corpus/mhlw_r5_syurou_gaikyou.txt:681,705,727,1032,1037",
+      "review_status": "author_checked",
+      "covers": []
+    },
+    {
+      "id": "readable20261014-shutten",
+      "text": "出典: 厚生労働省 令和5年就労条件総合調査の概況（調査客体数6,421・有効回答数3,768・有効回答率58.7%、第16〜18・21〜23表）と東京都 令和6年版（従業員10〜299人）。いずれも2026年8月26日取得。第22表は勤続20年以上かつ45歳以上の退職者の1人平均退職給付額。",
+      "numbers": [
+        "6,421",
+        "3,768",
+        "58.7%",
+        "2026年8月26日",
+        "20年以上",
+        "1人"
+      ],
+      "applies": "令和5年調査",
+      "scope": "出典の節の表名・調査の規模",
+      "source_url": "https://www.mhlw.go.jp/toukei/itiran/roudou/jikan/syurou/23/dl/gaikyou.pdf",
+      "source_quote": "調査客体数 6,421 有効回答数 3,768 有効回答率 58.7 ％／第 22 表 退職者１人平均退職給付額（勤続 20 年以上かつ 45 歳以上の退職者）",
+      "exceptions": "無し: 調査の概要と第22表の表題を読んで確認（取得日 2026年8月26日は記事の元の記載のまま）",
+      "corpus_ref": "keiri-commander/runs/readable/taishokukin-soba/corpus/mhlw_r5_syurou_gaikyou.txt:98,1019",
+      "review_status": "author_checked",
+      "covers": []
+    }
+  ],
+  "absolutes": [],
+  "nonclaims": [],
+  "verified": []
+}
