@@ -1,0 +1,115 @@
+{
+  "page": "docs/column/genshi/index.html",
+  "checked": "2026-10-13",
+  "_note": "2026-10-13 読みやすさの作り直し（readable/genshi）で新設。書き直しで足した行（リードの箇条書き・FAQ の登録免許税の文）に出てくる数字だけを覆う。ページ全体の主張はまだ台帳に無い（--segments は書き直し前から 0 covered）。逐語は e-Gov 法令API v2 を 2026-10-13 に curl した XML（~/Scripts/keiri-commander/~/Scripts/keiri-commander/runs/readable/genshi/ctx/）。",
+  "claims": [
+    {
+      "id": "readable1013-hojin-shihonkinto-fuhen",
+      "text": "法人税法の資本金等の額は、株主に払い戻さない減資では減らない（施行令8条1項12号が減少額を加算する）",
+      "numbers": [],
+      "source_url": "https://laws.e-gov.go.jp/api/2/law_data/340CO0000000097?response_format=xml",
+      "source_quote": "資本金の額又は出資金の額を減少した場合（第十四号に規定する場合を除く。）のその減少した金額に相当する金額",
+      "scope": "株式会社が会社法447条で資本金の額を減らし、株主に金銭等を交付しない場合（無償減資）の法人税法上の資本金等の額",
+      "exceptions": [
+        "資本の払戻し等（有償減資）では施行令8条1項18号で減資資本金額を減算する（本文の税務の節・設例2に記載）",
+        "12号かっこ書の14号の場合（本文では扱っていない）"
+      ],
+      "corpus_ref": "~/Scripts/keiri-commander/runs/readable/genshi/ctx/340CO0000000097.txt:1162,1182",
+      "review_status": "author_checked",
+      "covers": [
+        "s-c91a6658a45c2132fa93-1"
+      ]
+    },
+    {
+      "id": "readable1013-kintowari-kesson-1nen",
+      "text": "均等割の判定に使う資本金等の額から引けるのは、減資で計上した剰余金を1年以内に損失の填補に充てた額で、その他利益剰余金の負の額が上限",
+      "numbers": [
+        "1年以内"
+      ],
+      "applies": "地方税法施行規則1条の9の6（2026-10-13 取得の現行版）",
+      "source_url": "https://laws.e-gov.go.jp/api/2/law_data/329M50000002023?response_format=xml",
+      "source_quote": "前項各号に定める額は、会社法第四百五十二条の規定により損失の塡補に充てた日以前一年間において剰余金として計上した額に限るものとする。／法第二十三条第一項第四号の二イ（３）に規定する総務省令で定める損失は、会社法第四百五十二条の規定により損失の塡補に充てた日における会社計算規則第二十九条に規定するその他利益剰余金の額が零を下回る場合における当該零を下回る額とする。",
+      "scope": "法人住民税の均等割の税率区分を決める地方税法23条1項4号の2の資本金等の額（減資による剰余金を損失の填補に充てた場合）",
+      "exceptions": [
+        "地方税法52条4項・312条6項: 資本金等の額が資本金と資本準備金の合算額に満たないときは合算額で判定（本文の税務の節・設例・FAQに記載）",
+        "準備金を減らした剰余金も同じ扱い（施行規則1条の9の6第2項2号。本文の主題外）"
+      ],
+      "corpus_ref": "~/Scripts/keiri-commander/runs/readable/genshi/ctx/329M50000002023.txt:125-136",
+      "review_status": "author_checked",
+      "covers": [
+        "s-e6a24955c0dac8476b0e-1",
+        "s-811d15a6e09acac81b62-1"
+      ]
+    },
+    {
+      "id": "readable1013-kintowari-1000man",
+      "text": "均等割の段は資本金の額ではなく地方税法の資本金等の額（千万円以下・千万円超など）で決まるので、資本金を1,000万円以下にしても下がるとは限らない",
+      "numbers": [
+        "1,000万円",
+        "1,000"
+      ],
+      "applies": "地方税法52条1項（2026-10-13 取得の現行版・標準税率）",
+      "source_url": "https://laws.e-gov.go.jp/api/2/law_data/325AC0000000226?response_format=xml",
+      "source_quote": "ホ 資本金等の額を有する法人（法人税法別表第二に規定する独立行政法人で収益事業を行わないもの及びニに掲げる法人を除く。以下この表において同じ。）で資本金等の額が千万円以下であるもの",
+      "scope": "資本金等の額を有する法人の道府県民税の均等割（標準税率）の区分。市町村民税は312条1項で従業者数も加わる",
+      "exceptions": [
+        "52条4項: 資本金等の額が資本金＋資本準備金の合算額に満たないときは合算額で判定",
+        "312条1項: 市町村民税は従業者数50人以下かどうかでも区分",
+        "自治体の超過課税（本文の設例の前置きに記載）"
+      ],
+      "corpus_ref": "~/Scripts/keiri-commander/runs/readable/genshi/ctx/325AC0000000226.txt:2980-2997,3013",
+      "review_status": "author_checked",
+      "covers": [
+        "s-235b3bc3f96b457808f6-1"
+      ]
+    },
+    {
+      "id": "readable1013-genshi-tomenzei",
+      "text": "減資の変更登記の登録免許税は申請1件につき3万円（登録免許税法別表第一24号（一）ツ）",
+      "numbers": [
+        "1件",
+        "3万円"
+      ],
+      "applies": "登録免許税法別表第一（2026-10-13 取得の現行版）",
+      "source_url": "https://laws.e-gov.go.jp/api/2/law_data/342AC0000000035?response_format=xml",
+      "source_quote": "ツ 登記事項の変更、消滅又は廃止の登記（これらの登記のうちイからソまでに掲げるものを除く。） 申請件数 一件につき三万円",
+      "scope": "株式会社が資本金の額の減少による変更の登記を本店所在地で申請する場合",
+      "exceptions": [
+        "無し: 別表第一24号（一）のイからソ（設立・資本金の増加・合併・分割・新株予約権・支店・役員等・解散・継続など）に資本金の額の減少の区分が無いことを同じ号で確認（ツが受け皿）"
+      ],
+      "corpus_ref": "~/Scripts/keiri-commander/runs/readable/genshi/ctx/342AC0000000035.txt:5160-5162",
+      "review_status": "author_checked",
+      "covers": [
+        "s-433bdf5905ca514e809e-1",
+        "s-be3d02823d2784072367-1",
+        "s-70095600a51d25d04da9-1"
+      ]
+    },
+    {
+      "id": "readable1013-henko-toki-2shukan",
+      "text": "登記事項に変更が生じたときは2週間以内に本店所在地で変更の登記をする（会社法915条1項）",
+      "numbers": [
+        "2週間"
+      ],
+      "source_url": "https://laws.e-gov.go.jp/api/2/law_data/417AC0000000086?response_format=xml",
+      "source_quote": "会社において第九百十一条第三項各号又は前三条各号に掲げる事項に変更が生じたときは、二週間以内に、その本店の所在地において、変更の登記をしなければならない。",
+      "scope": "株式会社の資本金の額（911条3項5号）が減資の効力発生で変わったときの変更登記の期限",
+      "exceptions": [
+        "無し: 915条2項（払込期間を定めた株式の発行は期間の末日から2週間）・3項（新株予約権の行使などは毎月末日から2週間）はどちらも資本金の額の減少による変更ではないことを同条で確認"
+      ],
+      "corpus_ref": "~/Scripts/keiri-commander/runs/readable/genshi/ctx/417AC0000000086.txt:12913",
+      "review_status": "author_checked"
+    }
+  ],
+  "absolutes": [],
+  "nonclaims": [
+    {
+      "id": "s-8a7bf5832e31b44f7943-1",
+      "why": "次の箇条書きへの導入文。数字・条件を含まない"
+    },
+    {
+      "id": "s-cd7fc1cc41c0103ab050-1",
+      "why": "関連記事への案内文（どの話題をどの記事に譲るか）。事実の主張ではない"
+    }
+  ]
+}
