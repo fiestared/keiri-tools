@@ -151,16 +151,12 @@
 <section class="hero">
   <h1>遺留分計算機</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-25">2026年7月25日</time>（更新日: <time datetime="2026-10-13">2026年10月13日</time>）</p>
-  <p>家族構成と遺産額を入れるだけで、<b>遺留分の割合</b>（民法1042条）と、実際に請求できる<b>遺留分侵害額</b>（民法1046条2項）を計算します。<b>兄弟姉妹に遺留分がない</b>こと、<b id="hero-zoyo">相続人への生前贈与を10年分さかのぼって足す</b>こと（同1044条3項）、<b>相続放棄・養子の扱いが相続税と逆になる</b>ことまで条文どおりに処理します。<b>法定相続分</b>も同時に表示します。</p>
+  <p>家族構成と遺産額から、<b>あなたの遺留分の割合</b>と、実際に請求できる<b>遺留分侵害額</b>（民法1046条2項）を計算します。</p>
+  <p>遺留分は、相続人全体で原則<b>2分の1</b>（直系尊属だけが相続人なら3分の1）に、各自の法定相続分を掛けた割合です（同1042条）。<b>兄弟姉妹には遺留分がありません</b>。<b id="hero-zoyo">相続人への生前贈与は10年分さかのぼって足し</b>（同1044条3項）、相続放棄と養子は民法どおりに数えます。法定相続分も同時に表示します。</p>
 </section>
 
 <div class="card">
-  <div class="callout" style="margin-bottom:12px">
-    <b id="konsen-caution">生前贈与をさかのぼる年数は、相続税の「7年」ではありません</b>
-    足し戻す生前贈与は、<b id="konsen-sozokunin">相続人への贈与は10年分</b>（特別受益に限る）、<b id="konsen-daisansha">相続人以外への贈与は1年分</b>です（民法1044条1項・3項）。相続税の生前贈与加算（最長7年）とは別の制度です。対象の詳しい範囲は<a href="#zoyo">生前贈与の節</a>にまとめました。
-  </div>
-
-  <div>
+  <div class="fee-pair field-pair">
     <div>
       <label for="kaishiDate">相続開始日（亡くなった日）</label>
       <input type="date" id="kaishiDate" value="2026-04-01" aria-describedby="kaishiDate-hint">
@@ -173,35 +169,8 @@
     </div>
   </div>
 
-  <label style="margin-top:14px">遺産と債務</label>
-  <div>
-    <div>
-      <label for="isanTotal">相続開始の時にあった財産（円）</label>
-      <input type="number" id="isanTotal" min="0" inputmode="numeric" value="100000000">
-    </div>
-    <div>
-      <label for="saimuTotal">債務の全額（円）</label>
-      <input type="number" id="saimuTotal" min="0" inputmode="numeric" value="0">
-    </div>
-  </div>
-  <div>
-    <div>
-      <label for="zoyoSozokunin">相続人への特別受益の贈与（10年内・円）</label>
-      <input type="number" id="zoyoSozokunin" min="0" inputmode="numeric" value="0">
-    </div>
-    <div>
-      <label for="zoyoDaisansha">相続人以外への贈与（1年内・円）</label>
-      <input type="number" id="zoyoDaisansha" min="0" inputmode="numeric" value="0">
-    </div>
-  </div>
-  <div>
-    <label for="zoyoSongaiShiri">期間外だが、双方が遺留分権利者に損害を加えることを知ってした贈与（円）</label>
-    <input type="number" id="zoyoSongaiShiri" min="0" inputmode="numeric" value="0" aria-describedby="zoyoSongaiShiri-hint">
-      <span id="zoyoSongaiShiri-hint" class="hint">民法1044条1項後段</span>
-  </div>
-
   <label style="margin-top:14px">相続人（相続を放棄した人は「放棄」の欄に入れてください）</label>
-  <div>
+  <div class="fee-pair field-pair">
     <div>
       <label for="hasSpouse">配偶者</label>
       <select id="hasSpouse">
@@ -215,7 +184,7 @@
       <input type="number" id="numChildrenReal" min="0" inputmode="numeric" value="2">
     </div>
   </div>
-  <div>
+  <div class="fee-pair field-pair">
     <div>
       <label for="numChildrenAdopted">養子の数</label>
       <input type="number" id="numChildrenAdopted" min="0" inputmode="numeric" value="0" aria-describedby="numChildrenAdopted-hint">
@@ -226,7 +195,7 @@
       <input type="number" id="numChildrenRenounced" min="0" inputmode="numeric" value="0">
     </div>
   </div>
-  <div>
+  <div class="fee-pair field-pair">
     <div>
       <label for="numParents">父母（直系尊属）の数</label>
       <input type="number" id="numParents" min="0" inputmode="numeric" value="0" aria-describedby="numParents-hint">
@@ -239,8 +208,40 @@
     </div>
   </div>
 
-  <label style="margin-top:14px">あなた自身のこと（遺留分侵害額を出すために使います）</label>
+  <label style="margin-top:14px">遺産と債務</label>
+  <div class="fee-pair field-pair">
+    <div>
+      <label for="isanTotal">相続開始の時にあった財産（円）</label>
+      <input type="number" id="isanTotal" min="0" inputmode="numeric" value="100000000">
+    </div>
+    <div>
+      <label for="saimuTotal">債務の全額（円）</label>
+      <input type="number" id="saimuTotal" min="0" inputmode="numeric" value="0">
+    </div>
+  </div>
+
+  <div class="callout" style="margin:14px 0 4px">
+    <b id="konsen-caution">生前贈与をさかのぼる年数は、相続税の「7年」ではありません</b>
+    足し戻す生前贈与は、<b id="konsen-sozokunin">相続人への贈与は10年分</b>（特別受益に限る）、<b id="konsen-daisansha">相続人以外への贈与は1年分</b>です（民法1044条1項・3項）。相続税の生前贈与加算（最長7年）とは別の制度です。対象の詳しい範囲は<a href="#zoyo">生前贈与の節</a>にまとめました。
+  </div>
+  <div class="fee-pair field-pair">
+    <div>
+      <label for="zoyoSozokunin">相続人への特別受益の贈与（10年内・円）</label>
+      <input type="number" id="zoyoSozokunin" min="0" inputmode="numeric" value="0">
+    </div>
+    <div>
+      <label for="zoyoDaisansha">相続人以外への贈与（1年内・円）</label>
+      <input type="number" id="zoyoDaisansha" min="0" inputmode="numeric" value="0">
+    </div>
+  </div>
   <div>
+    <label for="zoyoSongaiShiri">期間より前でも足す贈与（円）</label>
+    <input type="number" id="zoyoSongaiShiri" min="0" inputmode="numeric" value="0" aria-describedby="zoyoSongaiShiri-hint">
+      <span id="zoyoSongaiShiri-hint" class="hint">当事者双方が遺留分権利者に損害を加えることを知ってした贈与（民法1044条1項後段）</span>
+  </div>
+
+  <label style="margin-top:14px">あなた自身のこと（遺留分侵害額を出すために使います）</label>
+  <div class="fee-pair field-pair">
     <div>
       <label for="me">あなたの立場</label>
       <select id="me">
@@ -256,7 +257,7 @@
       <input type="number" id="meJuizo" min="0" inputmode="numeric" value="0">
     </div>
   </div>
-  <div>
+  <div class="fee-pair field-pair">
     <div>
       <label for="meShutoku">あなたが取得する遺産（円）</label>
       <input type="number" id="meShutoku" min="0" inputmode="numeric" value="0">
@@ -371,7 +372,10 @@
 <p>遺留分の割合が分かっても、その金額をそのまま請求できるわけではありません。実際に請求できるのは<b>遺留分侵害額</b>で、民法1046条2項が計算式を定めています。</p>
 
 <blockquote id="shingai-shiki">
-遺留分侵害額 ＝ <b>個別的遺留分の額</b> −（1号）自分が受けた<b>遺贈・特別受益</b>の価額 −（2号）自分が<b>取得する遺産</b>の価額 ＋（3号）自分が<b>承継する債務</b>の額
+遺留分侵害額 ＝ <b>個別的遺留分の額</b><br>
+−（1号）自分が受けた<b>遺贈・特別受益</b>の価額<br>
+−（2号）自分が<b>取得する遺産</b>の価額<br>
+＋（3号）自分が<b>承継する債務</b>の額
 </blockquote>
 
 <p><b>3号だけが加算</b>である点に注意してください。借金を引き継ぐ人は、その分だけ手元に残るものが減るため、取り戻すべき額は<b>増えます</b>。ここを控除だと思い込むと、請求できる額を二重に少なく見積もります。</p>
