@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-07-21",
-      "dateModified": "2026-10-12",
+      "dateModified": "2026-10-13",
       "name": "小規模企業共済 節税シミュレーター",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -63,7 +63,7 @@
           "name": "Q. 小規模企業共済でいくら節税できますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. この計算機は掛金控除前の課税所得と月額から節税額を概算します。実際の税負担の差は、税額控除や住民税の非課税・課税所得不足などによっても変わります。課税される所得金額500万円の人が上限の月70,000円（年84万円）を払うと、所得税・復興特別所得税・住民税を合わせて年間255,528円の節税になります（掛金の30.4%）。同じ所得でも掛金が少なければ節税額もほぼ比例して小さくなり、月30,000円（年36万円）なら109,512円です。上の計算機に課税される所得金額と掛金月額を入れると、あなたの年間節税額が出ます。"
+            "text": "A. 課税される所得金額500万円の人が上限の月70,000円（年84万円）を払うと、所得税・復興特別所得税・住民税を合わせて年間255,528円の節税になります（掛金の30.4%）。同じ所得でも掛金が少なければ節税額もほぼ比例して小さくなり、月30,000円（年36万円）なら109,512円です。この計算機は掛金控除前の課税所得と月額から節税額を概算します。実際の税負担の差は、税額控除や住民税の非課税・課税所得不足などによっても変わります。"
           }
         },
         {
@@ -95,7 +95,7 @@
           "name": "Q. 課税される所得金額とは何ですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. 年収でも、事業の売上でもありません。確定申告書に載る「課税される所得金額」で、所得から基礎控除・扶養控除・社会保険料控除などをすべて引いた後の、税率をかける直前の金額です。この額が大きい人ほど高い税率がかかるため、同じ掛金でも節税額は大きくなります。確定申告書の課税所得に今回の掛金控除が含まれる場合は、そのまま使わず控除前の課税所得を計算して入力します。源泉徴収票にはこの名前の欄がないので、会社員は「給与所得控除後の金額」から「所得控除の額の合計額」を引いた額を使ってください。"
+            "text": "A. 確定申告書に載る「課税される所得金額」で、所得から基礎控除・扶養控除・社会保険料控除などをすべて引いた後の、税率をかける直前の金額です。年収でも、事業の売上でもありません。確定申告書の課税所得に今回の掛金控除が含まれる場合は、そのまま使わず控除前の課税所得を計算して入力します。源泉徴収票にはこの名前の欄がないので、会社員は「給与所得控除後の金額」から「所得控除の額の合計額」を引いた額を使ってください。"
           }
         }
       ]
@@ -134,7 +134,7 @@
 
 <section class="hero">
   <h1>小規模企業共済 節税シミュレーター</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-21">2026年7月21日</time>（更新日: <time datetime="2026-10-12">2026年10月12日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-21">2026年7月21日</time>（更新日: <time datetime="2026-10-13">2026年10月13日</time>）</p>
   <p><b>課税される所得金額</b>と<b>月額掛金</b>を入れるだけで、小規模企業共済の掛金による<b>年間の節税額</b>（所得税・復興特別所得税・住民税の減少）を自動計算します。掛金は<b>全額が小規模企業共済等掛金控除</b>。国税庁の所得税速算表で計算します。</p>
 </section>
 
@@ -146,7 +146,7 @@
   <input type="number" id="monthly" value="30000" min="1000" max="70000" step="500" inputmode="numeric" aria-describedby="calc-help">
 
   <button class="primary" id="calc">節税額を計算する</button>
-  <p id="calc-help" class="hint">今回の掛金控除を引く前の課税所得を入れます（<a href="#tsukaikata">見つけ方</a>）。年収や売上ではありません。月額掛金は1,000〜70,000円の範囲・500円きざみです。</p>
+  <p id="calc-help" class="hint" style="margin-top:10px">今回の掛金控除を引く前の課税所得を入れます（<a href="#tsukaikata">見つけ方</a>）。年収や売上ではありません。月額掛金は1,000〜70,000円の範囲・500円きざみです。</p>
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
 </div>
@@ -399,7 +399,7 @@
 <h2>関連する解説</h2>
 <!--rel:S--><ul class="rel-list"><li><a href="../column/shotoku-kojo-ichiran/">所得控除の一覧【令和8年分】16種類の額と条文、年末調整で受けられる13種類・確定申告が要る3種類</a><span class="rel-desc">令和8年分の所得税の所得控除は16種類です。雑損控除・医療費控除・寄附金控除の3種類は年末調整では受けられず、確定申告で受けます。16種類の</span></li><li><a href="../column/shokibo-kyosai-uketori/">小規模企業共済は出口が4通りある — 元本割れしうるのは任意解約が典型で、所得区分も分かれる</a><span class="rel-desc">小規模企業共済は出口が「共済金」と「解約手当金」の2つの条文に分かれ、元本割れしうる計算は12条3項1号です。任意解約が典型で、機構による解</span></li><li><a href="../column/chutaikyo/">中退共（中小企業退職金共済）とは — 掛金は法人の損金・個人の必要経費に全額算入。解約手当金は事業主ではなく従業員に支払われる</a><span class="rel-desc">中退共は中小企業退職金共済法に基づく国の退職金制度です。一般の掛金は月5,000円から30,000円の16種類（短時間労働者には特例あり）で</span></li><li><a href="../column/shokibo-kyosai-kakekin-kojo/">小規模企業共済等掛金控除とは — 対象の掛金3種類と、年末調整での扱い（令和8年分）</a><span class="rel-desc">小規模企業共済等掛金控除の対象になる掛金の種類と、給与から差し引かれる掛金・本人が直接支払った掛金の年末調整での扱い、源泉徴収票での表示。</span></li><li><a href="../column/kakutei-kyoshutsu-nenkin/">確定拠出年金とは — 2026年12月1日に限度額が一本化され、企業型DCは月6.2万円になる</a><span class="rel-desc">確定拠出年金の拠出限度額は、2026年12月1日に全面的に書き換わります。企業型DCは月5.5万円から6.2万円へ、iDeCoの第2号加入者</span></li></ul><!--rel:E-->
 </section>
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%B0%8F%E8%A6%8F%E6%A8%A1%E4%BC%81%E6%A5%AD%E5%85%B1%E6%B8%88%E3%81%AE%E6%8E%9B%E9%87%91%E3%81%A7%E3%81%84%E3%81%8F%E3%82%89%E7%AF%80%E7%A8%8E%E3%81%A7%E3%81%8D%E3%82%8B%E3%81%8B%E3%82%92%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fshokibo-kyosai%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%B0%8F%E8%A6%8F%E6%A8%A1%E4%BC%81%E6%A5%AD%E5%85%B1%E6%B8%88%E3%81%AE%E6%8E%9B%E9%87%91%E3%81%A7%E3%81%84%E3%81%8F%E3%82%89%E7%AF%80%E7%A8%8E%E3%81%A7%E3%81%8D%E3%82%8B%E3%81%8B%E3%82%92%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%80%82%E8%AA%B2%E7%A8%8E%E3%81%95%E3%82%8C%E3%82%8B%E6%89%80%E5%BE%97%E9%87%91%E9%A1%8D%E3%81%A8%E6%9C%88%E9%A1%8D%E6%8E%9B%E9%87%91%EF%BC%881%2C000%E3%80%9C70%2C000%E5%86%86%EF%BC%89%E3%82%92%E5%85%A5%E3%82%8C%E3%82%8B%E3%81%A8%E3%80%81%E6%89%80%E5%BE%97%E7%A8%8E%E3%83%BB%E5%BE%A9%E8%88%88%E7%89%B9%E5%88%A5%E6%89%80%E5%BE%97%E7%A8%8E%E3%83%BB%E4%BD%8F%E6%B0%91%E7%A8%8E%E3%82%92%E5%90%88%E3%82%8F%E3%81%9B%E3%81%9F%E5%B9%B4%E9%96%93%E3%81%AE%E7%AF%80%E7%A8%8E%E9%A1%8D%E3%81%AE%E7%9B%AE%E5%AE%89%E3%81%8C%E3%82%8F%E3%81%8B%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fshokibo-kyosai%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site" style="display:block">
   計算の出典: 国税庁「所得税の税率（速算表・No.2260）」／国税庁「小規模企業共済等掛金控除（No.1135）」／中小機構「小規模企業共済の掛金」<span id="src-note"></span>。<br>
