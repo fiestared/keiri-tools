@@ -144,7 +144,7 @@
   <p class="article-meta">公開日: <time datetime="2026-07-26">2026年7月26日</time>（更新日: <time datetime="2026-10-13">2026年10月13日</time>）</p>
   <p class="lead">請求書の <b>T＋13桁</b> の登録番号や法人番号を貼り付けると、<b>何十件でもまとめて</b>桁の整合（チェックデジット）と形式を確認します。
   <b>入力はブラウザの中だけで処理し、どこにも送信しません。</b>
-  桁が合っても、その番号が実在する証明にはなりません。実在と登録の状態は国税庁の公表サイトで確認してください。
+  桁が合っても、その番号が実在する証明にはなりません。実在と登録の状態は<a href="https://www.invoice-kohyo.nta.go.jp/" rel="nofollow">国税庁の公表サイト</a>で確認してください。
   個人事業者など法人番号を持たない事業者の登録番号は別体系なので、正否までは判定できません。</p>
 </section>
 <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool">番号を貼って確かめる</a></li><li><a href="#kousei">登録番号の構成 — 「T」＋13桁</a></li><li><a href="#checkdigit">チェックデジットの計算方法</a></li><li><a href="#genkai">0と9の打ち間違いは、この検査では見つけられない</a></li><li><a href="#houjin">法人番号と登録番号が「同じとき」と「違うとき」</a></li><li><a href="#denai">番号が実在するのに公表サイトで出てこない理由</a></li><li><a href="#hikaku">まとめて確かめる3つの方法（比較）</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#shutten">出典</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/tsushinhi/">通信費とは</a></li><li><a href="../column/chidai-yachin/">地代家賃とは</a></li><li><a href="../column/kokoku-sendenhi/">広告宣伝費とは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
@@ -223,8 +223,8 @@
   </table></div>
   <p>チェックデジットの目的は打ち間違いの検出ですが、<b>この算式には原理的な穴が1つあります</b>。
   9で割った余りを使うので、<b>重み付き和の変化が9の倍数だと素通りします</b>。
-  1桁だけ書き換えて変化量が±9になるのは <b>0と9の入れ替えだけ</b>です
-  （偶数桁は重みが2ですが、2と9に共通の約数がないため同じ結論になります）。</p>
+  1桁だけ書き換えて変化量が±9になるのは <b>0と9の入れ替えだけ</b>です。</p>
+  <p class="hint">偶数桁は重みが2ですが、2と9に共通の約数がないため同じ結論になります。</p>
   <p class="hint">具体例: <code>7000012050002</code>（国税庁の法人番号）の1桁を書き換える組み合わせは117通りありますが、
   検出できるのは<b>109通り</b>です。残る8通りは、基礎番号に含まれる8個の 0 をそれぞれ 9 にしたもので、
   <b>検査用数字が変わらないため見分けがつきません</b>。</p>
@@ -291,7 +291,7 @@
         <td><b>Web-API</b></td>
         <td>まとめて（システム連携）</td>
         <td>出る</td>
-        <td><b>必要</b>（アプリケーションID）</td>
+        <td><b>必要</b>（<span style="white-space:nowrap">アプリケーションID</span>）</td>
         <td>随時</td>
       </tr>
       <tr>

@@ -1121,7 +1121,8 @@
       "source_quote": "出典: https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf\nチェックデジットの計算\n\n 法人番号は、12桁の基礎番号及びその前に付された１桁の検査用数字（チェックデ\nジット）の数字のみで構成される13桁の番号になります。\n 例えば、株式会社など、設立登記法人の法人番号を構成する基礎番号は、法務省から提\n供を受ける商業登記法に基づく「会社法人等番号(12桁)」となります。\n この12桁の基礎番号の前に１桁の検査用数字を付した番号を法人番号として指定するこ\nとになります。\n 検査用数字（チェックデジット）の計算方法は、以下を参考としてください。\n\n    ※    チェックデジットとは番号の『誤読』『誤入力』『偽造』を防止するため、コード\n        に特定のアルゴリズムを適用して計算する数値等をいいます。\n\n\n○ 会社法人等番号を「７００１１０００５９０１」と仮定した場合のチェックデジットの\n 計算方法\n\n\n\n    7       0       0       1    １          0   ０ ０ ５ ９ ０ １\n                                                                                 最下位から\n                                                                                 偶数桁の和\n\n    ７               ０               １               ０            ５       ０        １３\n\n\n                                                                                 最下位から\n                                                                                 奇数桁の和\n            ０               １               ０               ０        ９       １    １1\n\n         最下位から                  最下位から\n         偶数桁の和                  奇数桁の和\n\n            １3      ×２＋ １1 ＝ 37\n\n            37      ÷9= 無視 余り                   1\n\n            9－ 1        ＝        8 （チェックデジット）\n\n○    法人番号の算出方法\n     この場合の法人番号は、会社法人等番号「７００１１０００５９０１」の前に\n    チェックデジット「８」を付した「８７００１１０００５９０１」となります。\n\n\n        8       7       0       0       1       １       0       ０ ０ ５ ９ ０ １\n",
       "exceptions": "正本 corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:30-45。検査用数字は偶数桁の和×2と奇数桁の和を加え、9で割った余りを9から引く（余り0なら9）。0と9の差は9で、重み1でも2でも差は9の倍数になり検出できない。変化量を重み付き和と読むと偶数桁は±18だが、検出不能という結論は変わらない。",
       "covers": [
-        "s-eb700c080e4c83ee8e19-1"
+        "s-4845b854bd869f6cbe20-1",
+        "s-0469359574fa3ce7db4f-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -3272,12 +3273,6 @@
     {
       "id": "s-6bec6fe35ef75bb4107e-1",
       "text_hash": "76c39399eed4442188bb",
-      "result": "ok",
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0071.json;segment-adjudication.json"
-    },
-    {
-      "id": "s-eb700c080e4c83ee8e19-1",
-      "text_hash": "02067e6597224394b18f",
       "result": "ok",
       "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0071.json;segment-adjudication.json"
     },
