@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>遺留分計算機｜割合と侵害額を自動計算・民法1042条</title>
-<meta name="description" content="家族構成と遺産額を入れるだけで、遺留分の割合（直系尊属のみ3分の1・それ以外2分の1）と、実際に請求できる遺留分侵害額（民法1046条2項）を自動計算。兄弟姉妹に遺留分がないこと、相続人への生前贈与を10年分さかのぼって足すこと（民法1044条3項・相続税の7年とは別）、相続放棄・養子の扱いが相続税と逆になることまで条文どおりに処理します。法定相続分も同時に表示。無料・登録不要。">
+<meta name="description" content="家族構成と遺産額から、遺留分の割合（直系尊属のみ3分の1・それ以外2分の1）と、実際に請求できる遺留分侵害額を計算します。相続人への生前贈与は10年分さかのぼって足します（相続税の7年とは別）。無料・登録不要。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/iryubun/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="遺留分計算機｜割合と侵害額を自動計算・民法1042条">
-<meta property="og:description" content="家族構成と遺産額を入れるだけで、遺留分の割合（直系尊属のみ3分の1・それ以外2分の1）と、実際に請求できる遺留分侵害額（民法1046条2項）を自動計算。兄弟姉妹に遺留分がないこと、相続人への生前贈与を10年分さかのぼって足すこと（民法1044条3項・相続税の7年とは別）、相続放棄・養子の扱いが相続税と逆になることまで条文どおりに処理します。法定相続分も同時に表示。無料・登録不要。">
+<meta property="og:description" content="家族構成と遺産額から、遺留分の割合（直系尊属のみ3分の1・それ以外2分の1）と、実際に請求できる遺留分侵害額を計算します。相続人への生前贈与は10年分さかのぼって足します（相続税の7年とは別）。無料・登録不要。">
 <meta property="og:url" content="https://keiri-tools.com/iryubun/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-07-25",
-  "dateModified": "2026-08-25",
+  "dateModified": "2026-10-14",
       "name": "遺留分計算機",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -150,17 +150,13 @@
 
 <section class="hero">
   <h1>遺留分計算機</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-25">2026年7月25日</time>（更新日: <time datetime="2026-08-25">2026年8月25日</time>）</p>
-  <p>家族構成と遺産額を入れるだけで、<b>遺留分の割合</b>（民法1042条）と、実際に請求できる<b>遺留分侵害額</b>（民法1046条2項）を計算します。<b>兄弟姉妹に遺留分がない</b>こと、<b id="hero-zoyo">相続人への生前贈与を10年分さかのぼって足す</b>こと（同1044条3項）、<b>相続放棄・養子の扱いが相続税と逆になる</b>ことまで条文どおりに処理します。<b>法定相続分</b>も同時に表示します。</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-25">2026年7月25日</time>（更新日: <time datetime="2026-10-14">2026年10月14日</time>）</p>
+  <p>家族構成と遺産額から、<b>あなたの遺留分の割合</b>と、実際に請求できる<b>遺留分侵害額</b>（民法1046条2項）を計算します。法定相続分も同時に表示します。</p>
+  <p>遺留分は、相続人全体で原則<b>2分の1</b>（直系尊属だけが相続人なら3分の1）に、各自の法定相続分を掛けた割合です（同1042条）。<b>兄弟姉妹には遺留分がありません</b>。<b id="hero-zoyo">相続人への生前贈与は10年分さかのぼって足します</b>（同1044条3項）。</p>
 </section>
 
 <div class="card">
-  <div class="callout" style="margin-bottom:12px">
-    <b id="konsen-caution">生前贈与をさかのぼる年数は、相続税の「7年」ではありません</b>
-    遺留分を計算するときに足し戻す生前贈与は、<b id="konsen-sozokunin">相続人に対するものは10年分</b>（婚姻・養子縁組のため又は生計の資本として受けた贈与に限る）、<b id="konsen-daisansha">相続人以外に対するものは1年分</b>です（民法1044条1項・3項）。相続税の生前贈与加算（相続税法19条・最長7年）とは<b>別の制度・別の年数・別の対象</b>で、取り違えると遺留分の額が大きく狂います。
-  </div>
-
-  <div>
+  <div class="fee-pair field-pair">
     <div>
       <label for="kaishiDate">相続開始日（亡くなった日）</label>
       <input type="date" id="kaishiDate" value="2026-04-01" aria-describedby="kaishiDate-hint">
@@ -173,35 +169,8 @@
     </div>
   </div>
 
-  <label style="margin-top:14px">遺産と債務</label>
-  <div>
-    <div>
-      <label for="isanTotal">相続開始の時にあった財産（円）</label>
-      <input type="number" id="isanTotal" min="0" inputmode="numeric" value="100000000">
-    </div>
-    <div>
-      <label for="saimuTotal">債務の全額（円）</label>
-      <input type="number" id="saimuTotal" min="0" inputmode="numeric" value="0">
-    </div>
-  </div>
-  <div>
-    <div>
-      <label for="zoyoSozokunin">相続人への特別受益の贈与（10年内・円）</label>
-      <input type="number" id="zoyoSozokunin" min="0" inputmode="numeric" value="0">
-    </div>
-    <div>
-      <label for="zoyoDaisansha">相続人以外への贈与（1年内・円）</label>
-      <input type="number" id="zoyoDaisansha" min="0" inputmode="numeric" value="0">
-    </div>
-  </div>
-  <div>
-    <label for="zoyoSongaiShiri">期間外だが、双方が遺留分権利者に損害を加えることを知ってした贈与（円）</label>
-    <input type="number" id="zoyoSongaiShiri" min="0" inputmode="numeric" value="0" aria-describedby="zoyoSongaiShiri-hint">
-      <span id="zoyoSongaiShiri-hint" class="hint">民法1044条1項後段</span>
-  </div>
-
-  <label style="margin-top:14px">相続人（相続を放棄した人は「放棄」の欄に入れてください）</label>
-  <div>
+  <label style="margin-top:14px">相続人（放棄した子も実子・養子の数に含め、その人数を「うち相続を放棄した子の数」に入れます）</label>
+  <div class="fee-pair field-pair">
     <div>
       <label for="hasSpouse">配偶者</label>
       <select id="hasSpouse">
@@ -215,7 +184,7 @@
       <input type="number" id="numChildrenReal" min="0" inputmode="numeric" value="2">
     </div>
   </div>
-  <div>
+  <div class="fee-pair field-pair">
     <div>
       <label for="numChildrenAdopted">養子の数</label>
       <input type="number" id="numChildrenAdopted" min="0" inputmode="numeric" value="0" aria-describedby="numChildrenAdopted-hint">
@@ -226,7 +195,7 @@
       <input type="number" id="numChildrenRenounced" min="0" inputmode="numeric" value="0">
     </div>
   </div>
-  <div>
+  <div class="fee-pair field-pair">
     <div>
       <label for="numParents">父母（直系尊属）の数</label>
       <input type="number" id="numParents" min="0" inputmode="numeric" value="0" aria-describedby="numParents-hint">
@@ -239,8 +208,40 @@
     </div>
   </div>
 
-  <label style="margin-top:14px">あなた自身のこと（遺留分侵害額を出すために使います）</label>
+  <label style="margin-top:14px">遺産と債務</label>
+  <div class="fee-pair field-pair">
+    <div>
+      <label for="isanTotal">相続開始の時にあった財産（円）</label>
+      <input type="number" id="isanTotal" min="0" inputmode="numeric" value="100000000">
+    </div>
+    <div>
+      <label for="saimuTotal">債務の全額（円）</label>
+      <input type="number" id="saimuTotal" min="0" inputmode="numeric" value="0">
+    </div>
+  </div>
+
+  <div class="callout" style="margin:14px 0 4px">
+    <b id="konsen-caution">生前贈与をさかのぼる年数は、相続税の「7年」ではありません</b>
+    足し戻す生前贈与は、<b id="konsen-sozokunin">相続人への贈与は10年分</b>（特別受益に限る）、<b id="konsen-daisansha">相続人以外への贈与は1年分</b>です（民法1044条1項・3項）。相続税の生前贈与加算（最長7年）とは別の制度です。対象の詳しい範囲は<a href="#zoyo">生前贈与の節</a>にまとめました。
+  </div>
+  <div class="fee-pair field-pair">
+    <div>
+      <label for="zoyoSozokunin">相続人への特別受益の贈与（10年内・円）</label>
+      <input type="number" id="zoyoSozokunin" min="0" inputmode="numeric" value="0">
+    </div>
+    <div>
+      <label for="zoyoDaisansha">相続人以外への贈与（1年内・円）</label>
+      <input type="number" id="zoyoDaisansha" min="0" inputmode="numeric" value="0">
+    </div>
+  </div>
   <div>
+    <label for="zoyoSongaiShiri">期間より前でも足す贈与（円）</label>
+    <input type="number" id="zoyoSongaiShiri" min="0" inputmode="numeric" value="0" aria-describedby="zoyoSongaiShiri-hint">
+      <span id="zoyoSongaiShiri-hint" class="hint">当事者双方が遺留分権利者に損害を加えることを知ってした贈与（民法1044条1項後段）</span>
+  </div>
+
+  <label style="margin-top:14px">あなた自身のこと（遺留分侵害額を出すために使います）</label>
+  <div class="fee-pair field-pair">
     <div>
       <label for="me">あなたの立場</label>
       <select id="me">
@@ -256,7 +257,7 @@
       <input type="number" id="meJuizo" min="0" inputmode="numeric" value="0">
     </div>
   </div>
-  <div>
+  <div class="fee-pair field-pair">
     <div>
       <label for="meShutoku">あなたが取得する遺産（円）</label>
       <input type="number" id="meShutoku" min="0" inputmode="numeric" value="0">
@@ -371,7 +372,10 @@
 <p>遺留分の割合が分かっても、その金額をそのまま請求できるわけではありません。実際に請求できるのは<b>遺留分侵害額</b>で、民法1046条2項が計算式を定めています。</p>
 
 <blockquote id="shingai-shiki">
-遺留分侵害額 ＝ <b>個別的遺留分の額</b> −（1号）自分が受けた<b>遺贈・特別受益</b>の価額 −（2号）自分が<b>取得する遺産</b>の価額 ＋（3号）自分が<b>承継する債務</b>の額
+遺留分侵害額 ＝ <b>個別的遺留分の額</b><br>
+−（1号）自分が受けた<b>遺贈・特別受益</b>の価額<br>
+−（2号）自分が<b>取得する遺産</b>の価額<br>
+＋（3号）自分が<b>承継する債務</b>の額
 </blockquote>
 
 <p><b>3号だけが加算</b>である点に注意してください。借金を引き継ぐ人は、その分だけ手元に残るものが減るため、取り戻すべき額は<b>増えます</b>。ここを控除だと思い込むと、請求できる額を二重に少なく見積もります。</p>
@@ -395,8 +399,13 @@
 <p>遺留分侵害額の請求権は、<b>相続の開始および遺留分を侵害する贈与・遺贈があったことを知った時から1年</b>で時効消滅します。また<b>相続開始の時から10年</b>を経過したときも消滅します（民法1048条）。1年は極めて短いため、実務では内容証明郵便で請求の意思表示をして時効の完成を止めるのが一般的です。</p>
 
 <div class="note">
-<b>2019年7月1日より前に開始した相続には、この計算は当てはまりません。</b>遺留分の規定は同日に条番号ごと入れ替わり、現行1042条にあたる規定は改正前は<b>1028条</b>でした（改正前の1042条は「減殺請求権の期間の制限」というまったく別の条文です）。改正法の附則2条が「施行日前に開始した相続については……なお従前の例による」と定めており、旧法には相続人への贈与を10年に区切る規定もありません。本ツールは相続開始日が2019年7月1日より前のときは<b>計算せず</b>、弁護士への相談を案内します。
+<b>2019年7月1日より前に開始した相続には、この計算は当てはまりません。</b>本ツールは相続開始日が2019年7月1日より前のときは<b>計算せず</b>、弁護士への相談を案内します。改正法の附則2条が「施行日前に開始した相続については……なお従前の例による」と定めているためです。
 </div>
+
+<ul>
+  <li>遺留分の規定は同日に条番号ごと入れ替わりました。現行1042条にあたる規定は、改正前は<b>1028条</b>です。改正前の1042条は「減殺請求権の期間の制限」というまったく別の条文です。</li>
+  <li>旧法には、相続人への贈与を10年に区切る規定もありません。</li>
+</ul>
 
 <h2 id="faq">よくある質問</h2>
 
@@ -437,7 +446,7 @@
 </ul>
 
 </article>
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%AE%B6%E6%97%8F%E6%A7%8B%E6%88%90%E3%81%A8%E9%81%BA%E7%94%A3%E9%A1%8D%E3%82%92%E5%85%A5%E3%82%8C%E3%82%8B%E3%81%A0%E3%81%91%E3%81%A7%E3%80%81%E9%81%BA%E7%95%99%E5%88%86%E3%81%AE%E5%89%B2%E5%90%88%EF%BC%88%E7%9B%B4%E7%B3%BB%E5%B0%8A%E5%B1%9E%E3%81%AE%E3%81%BF3%E5%88%86%E3%81%AE1%E3%83%BB%E3%81%9D%E3%82%8C%E4%BB%A5%E5%A4%962%E5%88%86%E3%81%AE1%EF%BC%89%E3%81%A8%E3%80%81%E5%AE%9F%E9%9A%9B%E3%81%AB%E8%AB%8B%E6%B1%82%E3%81%A7%E3%81%8D%E3%82%8B%E9%81%BA%E7%95%99%E5%88%86%E4%BE%B5%E5%AE%B3%E9%A1%8D%EF%BC%88%E6%B0%91%E6%B3%951046%E6%9D%A12%E9%A0%85%EF%BC%89%E3%82%92%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Firyubun%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%AE%B6%E6%97%8F%E6%A7%8B%E6%88%90%E3%81%A8%E9%81%BA%E7%94%A3%E9%A1%8D%E3%81%8B%E3%82%89%E3%80%81%E9%81%BA%E7%95%99%E5%88%86%E3%81%AE%E5%89%B2%E5%90%88%EF%BC%88%E7%9B%B4%E7%B3%BB%E5%B0%8A%E5%B1%9E%E3%81%AE%E3%81%BF3%E5%88%86%E3%81%AE1%E3%83%BB%E3%81%9D%E3%82%8C%E4%BB%A5%E5%A4%962%E5%88%86%E3%81%AE1%EF%BC%89%E3%81%A8%E3%80%81%E5%AE%9F%E9%9A%9B%E3%81%AB%E8%AB%8B%E6%B1%82%E3%81%A7%E3%81%8D%E3%82%8B%E9%81%BA%E7%95%99%E5%88%86%E4%BE%B5%E5%AE%B3%E9%A1%8D%E3%82%92%E8%A8%88%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E7%9B%B8%E7%B6%9A%E4%BA%BA%E3%81%B8%E3%81%AE%E7%94%9F%E5%89%8D%E8%B4%88%E4%B8%8E%E3%81%AF10%E5%B9%B4%E5%88%86%E3%81%95%E3%81%8B%E3%81%AE%E3%81%BC%E3%81%A3%E3%81%A6%E8%B6%B3%E3%81%97%E3%81%BE%E3%81%99%EF%BC%88%E7%9B%B8%E7%B6%9A%E7%A8%8E%E3%81%AE7%E5%B9%B4%E3%81%A8%E3%81%AF%E5%88%A5%EF%BC%89%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Firyubun%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 <section class="faq rel-block">
 <h2>関連する解説</h2>
 <!--rel:S--><ul class="rel-list"><li><a href="../column/sozoku-hoki/">相続放棄の期限と手続き — 「3か月」は死亡日から数えない。放棄しても消えない義務が民法940条に残る</a><span class="rel-desc">相続放棄の「3か月」は死亡日から数えない。起算点は自己のために相続の開始があったことを知った時（民法915条1項）。放棄しても現に占有してい</span></li></ul><!--rel:E-->
