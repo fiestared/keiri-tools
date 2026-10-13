@@ -195,14 +195,14 @@
 
   <div class="fee-pair field-pair">
     <div>
-      <label for="koReal">子の数（実子）</label>
+      <label for="koReal">実子の数</label>
       <input type="number" id="koReal" value="0" min="0" inputmode="numeric" aria-describedby="koReal-hint">
       <span id="koReal-hint" class="hint">亡くなった人の子。先に亡くなった子がいる場合はその孫（代襲相続人）も含める</span>
     </div>
     <div>
-      <label for="koYoshi">うち養子の数</label>
+      <label for="koYoshi">養子の数（実子とは別に）</label>
       <input type="number" id="koYoshi" value="0" min="0" inputmode="numeric" aria-describedby="koYoshi-hint">
-      <span id="koYoshi-hint" class="hint">法定相続人に数える養子は、実子がいれば1人まで・いなければ2人まで（相続税法15条）</span>
+      <span id="koYoshi-hint" class="hint">法定相続人に数えるのは、実子がいれば1人まで・いなければ2人まで（相続税法15条）</span>
     </div>
   </div>
 
@@ -234,9 +234,9 @@
 <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
 <li><a href="#tsukaikata">使い方と注意点</a></li>
 <li><a href="#kiso">基礎控除は「3,000万円＋600万円×法定相続人の数」</a></li>
+<li><a href="#hayami">家族構成別の早見表</a></li>
 <li><a href="#seimi">「正味の遺産額」に何を数えるか</a></li>
 <li><a href="#keisan">超えたらいくら？計算は3段階</a></li>
-<li><a href="#hayami">家族構成別の早見表</a></li>
 <li><a href="#haigusha">配偶者の税額軽減で大きく減る</a></li>
 <li><a href="#shinkoku">申告と納税は10か月以内</a></li>
 <li><a href="#faq">よくある質問</a></li>
@@ -300,6 +300,30 @@
 <b>「法定相続人の数」は、相続放棄があっても減らない</b>
 <p>基礎控除の「法定相続人の数」は、<b>相続の放棄をした人がいても、その放棄がなかったものとした場合の人数</b>で数えます（国税庁No.4152）。子が放棄しても基礎控除は減りません。また<b>養子は、実子がいる場合は1人まで、実子がいない場合は2人まで</b>しか数に含められません。養子縁組を増やせば基礎控除が無制限に増える、とはならないようにする制限です。</p>
 </div>
+
+<h2 id="hayami">家族構成別の早見表</h2>
+
+<p>正味の遺産額と家族構成ごとの<b>「実際に納める相続税の合計」</b>です（当サイトの相続税 計算機と同じ計算式で算出）。前提は「法定相続分どおりに分けた場合」で、配偶者の分は税額軽減（<a href="#haigusha">後の節</a>）で0円になった後の金額です。小規模宅地等の特例など個別の特例は反映していません。</p>
+
+<div class="scroll-wrap">
+<table class="num-nowrap-sm">
+<thead>
+<tr><th scope="col">正味の遺産額</th><th scope="col" class="num">配偶者と子1人</th><th scope="col" class="num">配偶者と子2人</th><th scope="col" class="num">子1人だけ</th><th scope="col" class="num">子2人だけ</th></tr>
+</thead>
+<tbody>
+<tr><td><b><span class="numeric-token">4,000万円</span></b></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">400,000円</span></td><td class="num"><span class="numeric-token">0円</span></td></tr>
+<tr><td><b><span class="numeric-token">5,000万円</span></b></td><td class="num"><span class="numeric-token">400,000円</span></td><td class="num"><span class="numeric-token">100,000円</span></td><td class="num"><span class="numeric-token">1,600,000円</span></td><td class="num"><span class="numeric-token">800,000円</span></td></tr>
+<tr><td><b><span class="numeric-token">6,000万円</span></b></td><td class="num"><span class="numeric-token">900,000円</span></td><td class="num"><span class="numeric-token">600,000円</span></td><td class="num"><span class="numeric-token">3,100,000円</span></td><td class="num"><span class="numeric-token">1,800,000円</span></td></tr>
+<tr><td><b><span class="numeric-token">8,000万円</span></b></td><td class="num"><span class="numeric-token">2,350,000円</span></td><td class="num"><span class="numeric-token">1,750,000円</span></td><td class="num"><span class="numeric-token">6,800,000円</span></td><td class="num"><span class="numeric-token">4,700,000円</span></td></tr>
+<tr><td><b><span class="numeric-token">1億円</span></b></td><td class="num"><span class="numeric-token">3,850,000円</span></td><td class="num"><span class="numeric-token">3,150,000円</span></td><td class="num"><span class="numeric-token">12,200,000円</span></td><td class="num"><span class="numeric-token">7,700,000円</span></td></tr>
+<tr><td><b>1億<span class="numeric-token">5,000万円</span></b></td><td class="num"><span class="numeric-token">9,200,000円</span></td><td class="num"><span class="numeric-token">7,475,000円</span></td><td class="num"><span class="numeric-token">28,600,000円</span></td><td class="num"><span class="numeric-token">18,400,000円</span></td></tr>
+<tr><td><b><span class="numeric-token">2億円</span></b></td><td class="num"><span class="numeric-token">16,700,000円</span></td><td class="num"><span class="numeric-token">13,500,000円</span></td><td class="num"><span class="numeric-token">48,600,000円</span></td><td class="num"><span class="numeric-token">33,400,000円</span></td></tr>
+<tr><td><b><span class="numeric-token">3億円</span></b></td><td class="num"><span class="numeric-token">34,600,000円</span></td><td class="num"><span class="numeric-token">28,600,000円</span></td><td class="num"><span class="numeric-token">91,800,000円</span></td><td class="num"><span class="numeric-token">69,200,000円</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<p>表を見比べると、同じ遺産額でも<b>「配偶者がいるかどうか」で税額が大きく違う</b>ことが分かります。遺産1億円なら、配偶者と子2人で315万円、子1人だけなら1,220万円 — 約4倍の差です。これは基礎控除の人数差に加えて、後の節の配偶者の税額軽減が効いているためです。</p>
 
 <h2 id="seimi">「正味の遺産額」に何を数えるか</h2>
 
@@ -385,6 +409,7 @@
 <p>妻（法定相続分1/2 ＝ 7,600万円）: 7,600万円 × 30％ − 700万円 ＝ <b>1,580万円</b><br>
 子（法定相続分1/4 ＝ 3,800万円）: 3,800万円 × 20％ − 200万円 ＝ <b>560万円</b>（2人で1,120万円）</p>
 <p>相続税の総額 ＝ 1,580万円 ＋ 560万円 ＋ 560万円 ＝ <b>2,700万円</b></p>
+<p>この総額を、実際に取得した割合（法定相続分どおりなら妻1/2・子1/4ずつ）で割り振ると、妻1,350万円・子675万円ずつです。</p>
 <p>法定相続分どおりに分けた場合、妻の分は配偶者の税額軽減で0円になり、実際に納めるのは<b>子の675万円×2人 ＝ 合計1,350万円</b>です。</p>
 </div>
 
@@ -423,30 +448,6 @@
 <figcaption>正味の遺産額2億円・妻と子2人の計算の流れ。課税遺産総額を法定相続分で按分してから速算表を当て、総額2,700万円。配偶者の税額軽減を使うと、実際に納める合計は1,350万円 — 遺産2億円の6.75％です。</figcaption>
 </figure>
 
-<h2 id="hayami">家族構成別の早見表</h2>
-
-<p>正味の遺産額と家族構成ごとの<b>「実際に納める相続税の合計」</b>です（当サイトの相続税 計算機と同じ計算式で算出）。前提は「法定相続分どおりに分けた場合」で、配偶者の分は税額軽減（次章）で0円になった後の金額です。小規模宅地等の特例など個別の特例は反映していません。</p>
-
-<div class="scroll-wrap">
-<table class="num-nowrap-sm">
-<thead>
-<tr><th scope="col">正味の遺産額</th><th scope="col" class="num">配偶者と子1人</th><th scope="col" class="num">配偶者と子2人</th><th scope="col" class="num">子1人だけ</th><th scope="col" class="num">子2人だけ</th></tr>
-</thead>
-<tbody>
-<tr><td><b><span class="numeric-token">4,000万円</span></b></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">400,000円</span></td><td class="num"><span class="numeric-token">0円</span></td></tr>
-<tr><td><b><span class="numeric-token">5,000万円</span></b></td><td class="num"><span class="numeric-token">400,000円</span></td><td class="num"><span class="numeric-token">100,000円</span></td><td class="num"><span class="numeric-token">1,600,000円</span></td><td class="num"><span class="numeric-token">800,000円</span></td></tr>
-<tr><td><b><span class="numeric-token">6,000万円</span></b></td><td class="num"><span class="numeric-token">900,000円</span></td><td class="num"><span class="numeric-token">600,000円</span></td><td class="num"><span class="numeric-token">3,100,000円</span></td><td class="num"><span class="numeric-token">1,800,000円</span></td></tr>
-<tr><td><b><span class="numeric-token">8,000万円</span></b></td><td class="num"><span class="numeric-token">2,350,000円</span></td><td class="num"><span class="numeric-token">1,750,000円</span></td><td class="num"><span class="numeric-token">6,800,000円</span></td><td class="num"><span class="numeric-token">4,700,000円</span></td></tr>
-<tr><td><b><span class="numeric-token">1億円</span></b></td><td class="num"><span class="numeric-token">3,850,000円</span></td><td class="num"><span class="numeric-token">3,150,000円</span></td><td class="num"><span class="numeric-token">12,200,000円</span></td><td class="num"><span class="numeric-token">7,700,000円</span></td></tr>
-<tr><td><b>1億<span class="numeric-token">5,000万円</span></b></td><td class="num"><span class="numeric-token">9,200,000円</span></td><td class="num"><span class="numeric-token">7,475,000円</span></td><td class="num"><span class="numeric-token">28,600,000円</span></td><td class="num"><span class="numeric-token">18,400,000円</span></td></tr>
-<tr><td><b><span class="numeric-token">2億円</span></b></td><td class="num"><span class="numeric-token">16,700,000円</span></td><td class="num"><span class="numeric-token">13,500,000円</span></td><td class="num"><span class="numeric-token">48,600,000円</span></td><td class="num"><span class="numeric-token">33,400,000円</span></td></tr>
-<tr><td><b><span class="numeric-token">3億円</span></b></td><td class="num"><span class="numeric-token">34,600,000円</span></td><td class="num"><span class="numeric-token">28,600,000円</span></td><td class="num"><span class="numeric-token">91,800,000円</span></td><td class="num"><span class="numeric-token">69,200,000円</span></td></tr>
-</tbody>
-</table>
-</div>
-
-<p>表を見比べると、同じ遺産額でも<b>「配偶者がいるかどうか」で税額が大きく違う</b>ことが分かります。遺産1億円なら、配偶者と子2人で315万円、子1人だけなら1,220万円 — 約4倍の差です。これは基礎控除の人数差に加えて、次章の配偶者の税額軽減が効いているためです。</p>
-
 <h2 id="haigusha">配偶者の税額軽減で大きく減る</h2>
 
 <p>配偶者が実際に取得した正味の遺産額のうち、<b>「1億6,000万円」と「配偶者の法定相続分相当額」のどちらか多い金額までは、配偶者に相続税はかかりません</b>（相続税法19条の2・国税庁No.4158）。</p>
@@ -458,7 +459,9 @@
 
 <div class="callout">
 <b>この軽減は「申告するから」受けられる — 0円でも申告が要る</b>
-<p>配偶者の税額軽減は、税額軽減の明細を記載した<b>相続税の申告書に、遺言書の写しや遺産分割協議書の写しなど配偶者の取得した財産が分かる書類を添えて提出する</b>ことで受けられます（国税庁No.4158）。軽減を使った結果、納める税金が0円になる場合でも申告は必要です。また、<b>申告期限までに分割されていない財産は軽減の対象になりません</b>（「申告期限後3年以内の分割見込書」を添付して後から分割すれば対象にできます）。</p>
+<p>軽減を使った結果、納める税金が0円になる場合でも<b>申告は必要</b>です。</p>
+<p>提出するのは、税額軽減の明細を記載した相続税の申告書です。遺言書の写しや遺産分割協議書の写しなど、配偶者の取得した財産が分かる書類を添えます（国税庁No.4158）。</p>
+<p><b>申告期限までに分割されていない財産は軽減の対象になりません</b>。「申告期限後3年以内の分割見込書」を添付して後から分割すれば、対象にできます。</p>
 </div>
 
 <p>もう1つ、教科書があまり書かない実務の注意点として、<b>配偶者に寄せすぎると「二次相続」で子の負担が増える</b>ことがあります。配偶者が多く取得するほど今回（一次相続）の税額は減りますが、次にその配偶者が亡くなったとき（二次相続）は配偶者の税額軽減が使えず、基礎控除の人数も1人減った状態で、一次で寄せた財産にまとめて課税されます。目先の軽減だけで分け方を決めないことが大事です。</p>
