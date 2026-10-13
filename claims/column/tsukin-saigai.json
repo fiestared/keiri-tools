@@ -1,0 +1,441 @@
+{
+ "page": "docs/column/tsukin-saigai/index.html",
+ "checked": "2026-10-13",
+ "_readable20261013": {
+  "note": "台帳は origin/main に無かった（記事は 2026-08-15 公開・review-loop r4〜r6 は旧形式で corpus・segment-adjudication なし＝正本なし）。読みやすさの作り直しで変えた単位だけを主張に結んだ。変えていない単位は結んでいない＝確認済みとはしていない。主張は書き手が e-Gov 法令API v2 の生テキスト（curl・2026-10-13）と照合しただけ（author_checked）。",
+  "base": "origin/main ca5d6b3d7",
+  "corpus": "keiri-commander/runs/readable/tsukin-saigai/corpus/（rosaiho・rosaiho_sekokisoku・rokiho・kenpoho の .txt。e-Gov 法令API v2 の law_full_text を base64 デコードしてタグを外したもの）",
+  "must_with": "どの主張にも must_with を付けていない（手本 shakai-hoken-kanyu-joken・tatekaekin-seisansho と同じ扱い。条件を各文へ書き写す向きになるため）。"
+ },
+ "claims": [
+  {
+   "id": "readable20261013-teigi",
+   "text": "通勤災害は労災保険法7条1項3号の通勤による負傷・疾病・障害・死亡で、同項1号の業務災害とは別の類型。",
+   "numbers": [],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "労災保険法の保険給付の類型（7条1項）",
+   "exceptions": [
+    "無し: 7条1項の各号（1号業務災害・2号複数業務要因災害・3号通勤災害）を読んで確認。通勤の定義（7条2項・3項）は readable20261013-itsudatsu と本文 #teigi"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/322AC0000000050",
+   "source_quote": "労働者の通勤による負傷、疾病、障害又は死亡（以下「通勤災害」という。）に関する保険給付",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/rosaiho.txt:57"
+   ],
+   "covers": [
+    "s-6e8ce7d84c3984693ab0-1",
+    "s-09ef7b75e7e05191157c-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-chigai",
+   "text": "業務災害との違いは給付名から「補償」が落ちることだけでなく、待期3日間に事業主の休業補償義務がないこと（労基法75条・76条1項は業務上の負傷が対象）と、労基法19条の解雇制限が及ばないこと。200円の一部負担金は最初の休業給付から減額される。",
+   "numbers": [
+    "3日",
+    "7条2項",
+    "3類型",
+    "19条"
+   ],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "通勤災害（労災保険法7条1項3号）と業務災害（同項1号）の比較。リード・description",
+   "exceptions": [
+    "休業補償義務がないのは労基法上の義務の話。有給休暇や就業規則の独自補償は会社の判断（本文 #taiki）",
+    "19条が適用されないことは解雇が有効になることを意味しない（解雇権濫用法理など。本文 #kaiko）",
+    "一部負担金を徴収しない者（施行規則44条の2第1項）は readable20261013-ichibu"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/322AC0000000049",
+   "source_quote": "労働者が前条の規定による療養のため、労働することができないために賃金を受けない場合においては、使用者は、労働者の療養中平均賃金の百分の六十の休業補償を行わなければならない。",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/rokiho.txt:519",
+    "runs/readable/tsukin-saigai/corpus/rokiho.txt:114"
+   ],
+   "covers": [
+    "s-dd00c2ab73d6aa3e7e07-1",
+    "s-0c8027a05704eb2910ce-1",
+    "s-51096ba2e4e26c55ed15-1",
+    "s-3269b824375272ceb0d8-1",
+    "s-d1130b59e8f324f0e102-1",
+    "s-c0e316e9b099f3e4b79e-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-taiki",
+   "text": "休業給付は賃金を受けない日の第4日目から支給され、最初の3日間は労災保険から出ない。業務災害なら労基法76条1項で使用者が平均賃金の60%を補償するが、前提の75条は業務上の負傷が対象で、通勤災害には事業主の補償義務がない。",
+   "numbers": [
+    "3日",
+    "60%"
+   ],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "通勤災害で休業した最初の3日間（待期期間）",
+   "exceptions": [
+    "有給休暇を充てるか独自の補償を設けるかは会社ごとの判断（労基法が求めるものではない）。4日目以降の額は業務災害と同じ給付基礎日額の60%（特別支給金は別制度）"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/322AC0000000050",
+   "source_quote": "賃金を受けない日の第四日目から支給するものとし、その額は、一日につき給付基礎日額の百分の六十に相当する額とする。",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/rosaiho.txt:188",
+    "runs/readable/tsukin-saigai/corpus/rokiho.txt:515"
+   ],
+   "covers": [
+    "s-f965d54450a26e1a7491-1",
+    "s-54437243627e5ed825ea-1",
+    "s-18eaec108cedfe26c61e-1",
+    "s-dfc604431eefcff3f32b-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-kaiko",
+   "text": "労基法19条の解雇制限は業務上の負傷・疾病による療養休業期間とその後30日間を対象とし、通勤災害には及ばない。19条が適用されないことは解雇が有効になることを意味しない。",
+   "numbers": [],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "通勤災害で療養のため休業している労働者の解雇",
+   "exceptions": [
+    "19条が並べて保護する産前産後の休業期間（65条）は通勤とは別の話で、本文 #kaiko の条文引用にある",
+    "解雇権濫用法理など別の規律は残る（記事に明記）"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/322AC0000000049",
+   "source_quote": "使用者は、労働者が業務上負傷し、又は疾病にかかり療養のために休業する期間及びその後三十日間",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/rokiho.txt:114"
+   ],
+   "covers": [
+    "s-7fe1d831fe51eeb83be5-1",
+    "s-b1ac5d20025cfe366153-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-ichibu",
+   "text": "通勤災害の一部負担金は200円（日雇特例被保険者は100円、療養の費用の総額が満たないときはその総額）で、最初に支給すべき事由の生じた日に係る休業給付から減額される。施行規則44条の2第1項の3者（第三者行為事故・療養開始後3日以内の死亡その他休業給付を受けない者・既に納付した者）からは徴収しない。",
+   "numbers": [
+    "200円",
+    "100円",
+    "3日"
+   ],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "通勤災害の療養給付を受ける労働者の一部負担金（労災保険法31条2項・22条の2第3項、施行規則44条の2）",
+   "exceptions": [
+    "徴収しない者3号は施行規則44条の2第1項（本文 #ichibu の表に全件）",
+    "減額した休業給付の支給を受けた労働者からは重ねて徴収しない（法31条2項ただし書）",
+    "控除は休業給付を支給すべき場合に限る（施行規則44条の2第3項）"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/330M50002000022",
+   "source_quote": "法第三十一条第二項の一部負担金の額は、二百円（健康保険法（大正十一年法律第七十号）第三条第二項に規定する日雇特例被保険者である労働者については、百円）とする。",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/rosaiho_sekokisoku.txt:1341",
+    "runs/readable/tsukin-saigai/corpus/rosaiho.txt:369",
+    "runs/readable/tsukin-saigai/corpus/rosaiho_sekokisoku.txt:1337"
+   ],
+   "covers": [
+    "s-31cf72432bf7bdbb018e-1",
+    "s-985225a9b7f6e27badfd-1",
+    "s-95e82e14b1978ca9dca7-1",
+    "s-75ae3146378134f83365-1",
+    "s-1f4d02e114cb88576003-1",
+    "s-bce069685de613e57f2c-1",
+    "s-f3f9b577548fd2a0e11f-1",
+    "s-67994677a6922bab5935-1",
+    "s-117286925ef8b9b12399-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-itsudatsu",
+   "text": "通勤の途中で逸脱・中断をすると、原則としてその間とその後の移動は通勤としない（労災保険法7条3項本文）。施行規則8条の日常生活上必要な行為をやむを得ない事由により最小限度で行う場合は、逸脱・中断の間を除き通勤に戻る（ただし書）。飲食・懇親は8条の5つの行為に含まれない。",
+   "numbers": [],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "通勤（労災保険法7条2項）の途中の逸脱・中断",
+   "exceptions": [
+    "ただし書は行為の種類・やむを得ない事由・最小限度の3つがすべて要る（本文 #nichijo）",
+    "最小限度の時間・距離は条文に無く個別の判断（本文 #nichijo）"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/322AC0000000050",
+   "source_quote": "ただし、当該逸脱又は中断が、日常生活上必要な行為であつて厚生労働省令で定めるものをやむを得ない事由により行うための最小限度のものである場合は、当該逸脱又は中断の間を除き、この限りでない。",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/rosaiho.txt:68",
+    "runs/readable/tsukin-saigai/corpus/rosaiho.txt:67",
+    "runs/readable/tsukin-saigai/corpus/rosaiho_sekokisoku.txt:127"
+   ],
+   "covers": [
+    "s-523cd8c134d37f12962d-1",
+    "s-1b24094a52ab564e80ff-1",
+    "s-f7fdcbf39345784fbd8d-1",
+    "s-22b3a53673937cb03aa5-1",
+    "s-a2cd2a169f83b617a259-1",
+    "s-aa250ed6de9c374738b3-1",
+    "s-8214b1a1857c609b9421-1",
+    "s-4c784375d4132c09f0a5-1",
+    "s-2c0ed15cb536d8d455b2-1",
+    "s-1c3d8e0188b99acb6307-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-kyufu",
+   "text": "通勤災害の保険給付は7種類（療養給付・休業給付・障害給付・遺族給付・葬祭給付・傷病年金・介護給付）で、業務災害の給付名から「補償」が落ちたもの。葬祭だけは業務災害が葬祭料、通勤災害が葬祭給付。",
+   "numbers": [],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "労災保険法21条（通勤災害）と12条の8第1項（業務災害）の給付の名称",
+   "exceptions": [
+    "無し: 21条・12条の8第1項の各号を読んで確認（複数事業労働者の給付は別の号で、この記事の対象外）"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/322AC0000000050",
+   "source_quote": "葬祭給付は、労働者が通勤により死亡した場合に、葬祭を行なう者に対し、その請求に基づいて行なう。",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/rosaiho.txt:381"
+   ],
+   "covers": [
+    "s-b970fa0ab482eab5af0b-1",
+    "s-c81fa3ef43a51866915c-1",
+    "s-9780acfe15693e6e24d8-1",
+    "s-19f0b460caebf6c3faa9-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-kenpo",
+   "text": "健康保険法55条1項は、労災保険法の規定で相当する給付を受けることができる場合に療養の給付・傷病手当金などを行わないと定める。通勤災害は労災保険法21条の療養給付の対象なので健康保険の給付は行われず、休業給付を受けられる場面では傷病手当金も出ない。健保法1条の括弧書きが名指しするのは業務災害だけ。",
+   "numbers": [],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "通勤災害と健康保険の給付の調整",
+   "exceptions": [
+    "無し: 健保法55条1項・1条を読んで確認。55条2項以下（介護保険法との調整など）は別の場面"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/211AC0000000070",
+   "source_quote": "同一の疾病、負傷又は死亡について、労働者災害補償保険法、国家公務員災害補償法",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/kenpoho.txt:1011"
+   ],
+   "covers": [
+    "s-36f94d0e79c1a2cddf55-1",
+    "s-57e522076a50d5d2005c-1",
+    "s-3c6cb13b420aea2084ad-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-yoshiki",
+   "text": "通勤災害の療養給付の請求書には、施行規則18条の5第1項2号により、災害が発生した場面の区分（イ〜ホ）に応じた事項を書く。",
+   "numbers": [],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "施行規則18条の5第1項の記載事項（表のセル）",
+   "exceptions": [
+    "無し: 18条の5第1項各号・第2項を読んで確認"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/330M50002000022",
+   "source_quote": "災害の発生の時刻及び場所",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/rosaiho_sekokisoku.txt:806"
+   ],
+   "covers": [
+    "s-067c24ba48ba083c0138-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-shuten-rosaiho",
+   "text": "出典の節の「労働者災害補償保険法」の条文の列挙と逐語の引用（書き直し前の1項目を法令ごと・条ごとに区切っただけで、条番号・引用の文言は変えていない）。",
+   "numbers": [],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "出典の節（労働者災害補償保険法）",
+   "exceptions": [
+    "無し: 労働者災害補償保険法の該当条を e-Gov の生テキストで読み、引用の文言が一致することを確認（区切り直しのみ）"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/322AC0000000050",
+   "source_quote": "前項第三号の通勤とは、労働者が、就業に関し、次に掲げる移動を、合理的な経路及び方法により行うことをいい、業務の性質を有するものを除くものとする。",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/rosaiho.txt:60"
+   ],
+   "covers": [
+    "s-b91098292e0e3a4949ae-1",
+    "s-5948305abc25a9627035-1",
+    "s-14518fc6376d9a5fa6f0-1",
+    "s-1e645729513f274fded8-1",
+    "s-bf32f334333b11cadc5a-1",
+    "s-74b1fdf028a043ead6a5-1",
+    "s-d17381c4379c51f1b7c2-1",
+    "s-a1cad7547ec1ea4b66a9-1",
+    "s-be7531fb2c06ba3fb3ee-1",
+    "s-6ad39544309801e5453f-1",
+    "s-f30205fa03e3ce5f043d-1",
+    "s-043f328fd0252a9e6d06-1",
+    "s-e753cda8fb783f17ebc8-1",
+    "s-fa7b2f8b12c3546d482a-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-shuten-rosaiho-sekokisoku",
+   "text": "出典の節の「労働者災害補償保険法施行規則」の条文の列挙と逐語の引用（書き直し前の1項目を法令ごと・条ごとに区切っただけで、条番号・引用の文言は変えていない）。",
+   "numbers": [],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "出典の節（労働者災害補償保険法施行規則）",
+   "exceptions": [
+    "無し: 労働者災害補償保険法施行規則の該当条を e-Gov の生テキストで読み、引用の文言が一致することを確認（区切り直しのみ）"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/330M50002000022",
+   "source_quote": "厚生労働大臣が別に定めて告示するところによらなければならない。",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/rosaiho_sekokisoku.txt:1608"
+   ],
+   "covers": [
+    "s-a9c979dbd7dbd4cb4913-1",
+    "s-fea6ff6c0e592570f26f-1",
+    "s-bc71b77dad2c2ab1bca8-1",
+    "s-b2b16bf849c67da579f6-1",
+    "s-59a189122f9c5c795dcf-1",
+    "s-d26e26df2f30c9b0555f-1",
+    "s-9b8dba014797438574e7-1",
+    "s-fc9187f3c08e35e59b5e-1",
+    "s-0079293c59d25b6724cd-1",
+    "s-56e772f0fb836d64f903-1",
+    "s-ed8921023f2afe1bd7f4-1",
+    "s-afc3127a0d2f62d0cf80-1",
+    "s-5983167e1f031d808d0e-1",
+    "s-2a4aa9bc5b48b2db3e54-1",
+    "s-33ad380f2a6333ed7013-1",
+    "s-1bddcca5d5a700918969-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-shuten-rokiho",
+   "text": "出典の節の「労働基準法」の条文の列挙と逐語の引用（書き直し前の1項目を法令ごと・条ごとに区切っただけで、条番号・引用の文言は変えていない）。",
+   "numbers": [],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "出典の節（労働基準法）",
+   "exceptions": [
+    "無し: 労働基準法の該当条を e-Gov の生テキストで読み、引用の文言が一致することを確認（区切り直しのみ）"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/322AC0000000049",
+   "source_quote": "使用者は、補償の責を免れる。",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/rokiho.txt:547"
+   ],
+   "covers": [
+    "s-ad2a861dfe102684080d-1",
+    "s-f26db29638b39fe27beb-1",
+    "s-4eaea7e7e29833a80e04-1",
+    "s-355bf703e8e3431fd641-1",
+    "s-a92fff913c81e00fc570-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  },
+  {
+   "id": "readable20261013-shuten-kenpoho",
+   "text": "出典の節の「健康保険法」の条文の列挙と逐語の引用（書き直し前の1項目を法令ごと・条ごとに区切っただけで、条番号・引用の文言は変えていない）。",
+   "numbers": [],
+   "applies": "2026年10月13日に e-Gov法令API v2 で取得した現行の条文（労災保険法 2026-07-17 施行版・施行規則 2026-05-21 施行版・労働基準法 2026-07-17 施行版・健康保険法 2026-10-01 施行版）",
+   "scope": "出典の節（健康保険法）",
+   "exceptions": [
+    "無し: 健康保険法の該当条を e-Gov の生テキストで読み、引用の文言が一致することを確認（区切り直しのみ）"
+   ],
+   "source_url": "https://laws.e-gov.go.jp/law/211AC0000000070",
+   "source_quote": "第七条第一項第一号に規定する業務災害をいう。",
+   "corpus_ref": [
+    "runs/readable/tsukin-saigai/corpus/kenpoho.txt:62"
+   ],
+   "covers": [
+    "s-0dfa2978c9e85f2e1141-1",
+    "s-d36e672fbe52c9024955-1",
+    "s-fdacea2cbc488dfc25a6-1",
+    "s-cc0d0604d7fbed73fe5e-1",
+    "s-2cb420a35938e17da4cb-1"
+   ],
+   "checked": "2026-10-13",
+   "review_status": "author_checked"
+  }
+ ],
+ "nonclaims": [
+  {
+   "id": "s-0ffe8b11e391ef36fc08-1",
+   "why": "条文引用の閉じかっこだけの断片（区切り直しで生じた単位）"
+  },
+  {
+   "id": "s-0ffe8b11e391ef36fc08-2",
+   "why": "条文引用の閉じかっこだけの断片（区切り直しで生じた単位）"
+  },
+  {
+   "id": "s-0ffe8b11e391ef36fc08-3",
+   "why": "条文引用の閉じかっこだけの断片（区切り直しで生じた単位）"
+  },
+  {
+   "id": "s-0ffe8b11e391ef36fc08-4",
+   "why": "条文引用の閉じかっこだけの断片（区切り直しで生じた単位）"
+  },
+  {
+   "id": "s-0ffe8b11e391ef36fc08-5",
+   "why": "条文引用の閉じかっこだけの断片（区切り直しで生じた単位）"
+  },
+  {
+   "id": "s-0ffe8b11e391ef36fc08-6",
+   "why": "条文引用の閉じかっこだけの断片（区切り直しで生じた単位）"
+  },
+  {
+   "id": "s-0ffe8b11e391ef36fc08-7",
+   "why": "条文引用の閉じかっこだけの断片（区切り直しで生じた単位）"
+  },
+  {
+   "id": "s-0ffe8b11e391ef36fc08-8",
+   "why": "条文引用の閉じかっこだけの断片（区切り直しで生じた単位）"
+  },
+  {
+   "id": "s-0ffe8b11e391ef36fc08-9",
+   "why": "条文引用の閉じかっこだけの断片（区切り直しで生じた単位）"
+  },
+  {
+   "id": "s-0ffe8b11e391ef36fc08-10",
+   "why": "条文引用の閉じかっこだけの断片（区切り直しで生じた単位）"
+  },
+  {
+   "id": "s-d3c2aa5d81622fbfec96-1",
+   "why": "出典の確認方法の1行（e-Gov法令検索で確認）"
+  },
+  {
+   "id": "s-d3c2aa5d81622fbfec96-2",
+   "why": "出典の確認方法の1行（e-Gov法令検索で確認）"
+  },
+  {
+   "id": "s-d3c2aa5d81622fbfec96-3",
+   "why": "出典の確認方法の1行（e-Gov法令検索で確認）"
+  },
+  {
+   "id": "s-d3c2aa5d81622fbfec96-4",
+   "why": "出典の確認方法の1行（e-Gov法令検索で確認）"
+  },
+  {
+   "id": "s-7854b295f823abd4d310-1",
+   "why": "FAQ の質問文（主張ではない）"
+  },
+  {
+   "id": "s-6f3a8786e09b6c58bc49-1",
+   "why": "節への案内文（数字・条件なし）"
+  },
+  {
+   "id": "s-a532f587d642fc5608fb-1",
+   "why": "節の表への案内文（数字・条件なし）"
+  }
+ ],
+ "absolutes": [
+  {
+   "phrase": "原則",
+   "context": "寄り道をすると、原則としてその後の移動も通勤ではなくなります",
+   "reviewed": "2026-10-13 労災保険法7条3項本文（間及びその後は通勤としない）とただし書（施行規則8条の行為をやむを得ない事由により最小限度で行う場合は間を除き通勤）を生テキストで確認。例外は直後の文に書いてある"
+  }
+ ]
+}
