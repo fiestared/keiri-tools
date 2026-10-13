@@ -143,21 +143,21 @@
 <section class="hero">
   <h1>青色申告特別控除シミュレーター</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-23">2026年7月23日</time>（更新日: <time datetime="2026-10-13">2026年10月13日</time>）</p>
-  <p>青色申告特別控除が<b>65万円・55万円・10万円のどれになるか</b>を要件から判定し、実際に安くなる<b>年間の節税額</b>を計算します。<b>1つ上の区分にあと何が足りないか</b>と、そこに届いたら<b>いくら得するか</b>も出します。</p>
+  <p>青色申告特別控除が<b>65万円・55万円・10万円のどれになるか</b>を判定し、<b>年間の節税額</b>を計算します。<b>1つ上の区分に足りない要件</b>と、届いたら<b>いくら得するか</b>も出します。</p>
 </section>
 
 <div class="card">
   <label>所得の金額（青色申告特別控除を引く前・円）<span class="hint">赤字の所得はマイナスで入れて構いません。無い所得は空欄のまま</span></label>
   <div id="income-rows"><p class="hint">読み込み中…</p></div>
 
-  <label style="margin-top:14px">あてはまるものにチェック<span class="hint">控除の区分はこの要件で決まります</span></label>
+  <label style="margin-top:14px">あてはまるものにチェック（控除の区分はこの要件で決まります）</label>
   <div id="req-rows"><p class="hint">読み込み中…</p></div>
 
-  <label for="kazei" style="margin-top:14px">青色申告特別控除を引く前の課税所得（円）</label>
+  <label for="kazei" style="margin-top:14px">青色申告特別控除を引く前の課税所得（円・空欄可）</label>
   <input type="number" id="kazei" placeholder="例: 3000000" inputmode="numeric" min="0" step="10000" aria-describedby="kazei-hint">
 
   <button class="primary" id="calc">控除額と節税額を計算する</button>
-  <p id="kazei-hint" class="hint">課税所得は売上でも所得でもなく、青色申告特別控除を引く前の額です。確定申告書の控除後の金額をそのまま入れないでください。</p>
+  <p id="kazei-hint" class="hint">所得から基礎控除などを引いた額で、青色申告特別控除は引く前です（申告書の控除後の額は不可）。空欄なら控除額だけ出します。</p>
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
   <p class="hint" id="src-hint" style="margin-top:10px"></p>
@@ -172,10 +172,10 @@
 <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
 <li><a href="#tsukaikata">使い方と注意点</a></li>
 <li><a href="#kubun">3つの区分と要件 — 65万円・55万円・10万円</a></li>
+<li><a href="#reidai">節税額の例</a></li>
 <li><a href="#gendo">控除額は「所得の額」が限度 — 赤字は相殺しない</a></li>
 <li><a href="#juminzei">住民税にも同額が効く — 所得控除との違い</a></li>
 <li><a href="#kaisei">令和9年分からの改正 — 55万円が無くなり75万円ができる</a></li>
-<li><a href="#reidai">節税額の例</a></li>
 <li><a href="#faq">よくある質問</a></li>
 <li><a href="#source">出典</a></li>
 </ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/kakutei-shinkoku-itsumade/">確定申告はいつまで？</a></li><li><a href="../column/kakutei-shinkoku-zeirishi-hiyo/">確定申告を税理士に依頼する費用</a></li><li><a href="../column/gyomuitaku-kakutei-shinkoku/">業務委託の確定申告</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
@@ -230,6 +230,7 @@
 
   <text x="40" y="88" font-size="11" fill="currentColor">はい ↓</text>
   <text x="300" y="88" font-size="11" fill="currentColor">いいえ →</text>
+  <path d="M352 84 H550 V94" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
 
   <rect x="20" y="96" width="440" height="34" rx="6" fill="var(--accent)" opacity="0.10"/>
   <text x="34" y="117" font-size="12" fill="currentColor">② 複式簿記・決算書等の添付・期限内申告（注）</text>
@@ -241,12 +242,13 @@
 
   <text x="40" y="146" font-size="11" fill="currentColor">はい ↓</text>
   <text x="300" y="146" font-size="11" fill="currentColor">いいえ →</text>
+  <path d="M352 142 H478" fill="none" stroke="currentColor" stroke-width="1" opacity="0.6"/>
 
   <rect x="20" y="154" width="440" height="34" rx="6" fill="var(--accent)" opacity="0.10"/>
   <text x="34" y="175" font-size="12" fill="currentColor">③ 期限内e-Tax送信／優良電子帳簿と届出（注）</text>
 
   <text x="40" y="204" font-size="11" fill="currentColor">はい ↓</text>
-  <text x="300" y="204" font-size="11" fill="currentColor">いいえ →</text>
+  <text x="300" y="204" font-size="11" fill="currentColor">いいえ ↓</text>
 
   <rect x="20" y="212" width="200" height="52" rx="6" fill="var(--accent)" opacity="0.55"/>
   <text x="86" y="236" font-size="15" font-weight="bold" fill="currentColor">65万円</text>
@@ -268,6 +270,28 @@
 <li><b>不動産貸付けが「事業」か</b>：社会通念上の規模で実質的に判定します。独立家屋おおむね5棟以上、アパート等おおむね10室以上は事業扱いの目安で、未達でも直ちに対象外とはなりません。事業所得を生ずべき事業を併営する場合も含め、55万円・65万円の他の要件と合わせて確認します。</li>
 <li><b>現金主義の特例の適用者は10万円</b>：55万円・65万円の対象外です。特例は、前々年分の事業所得・不動産所得の合計が300万円以下の人が対象で、青色事業専従者給与等の特例を適用せずに計算します。届出のほか、過去に適用をやめた人の再適用には税務署長の承認も必要です。</li>
 </ul>
+
+<h2 id="reidai">節税額の例</h2>
+
+<p>課税される所得金額が500万円（所得税率20％）の個人事業主の場合です。</p>
+
+<div class="scroll-wrap">
+<table class="num-nowrap-lg">
+<thead>
+<tr><th scope="col">区分</th><th scope="col" class="num">所得税の減少</th><th scope="col" class="num">復興特別所得税</th><th scope="col" class="num">住民税の減少</th><th scope="col" class="num">年間の節税額</th></tr>
+</thead>
+<tbody>
+<tr><td><b>65万円</b>の控除</td><td class="num"><span class="numeric-token">130,000円</span></td><td class="num"><span class="numeric-token">2,730円</span></td><td class="num"><span class="numeric-token">65,000円</span></td><td class="num"><b><span class="numeric-token">197,730円</span></b></td></tr>
+<tr><td><b>55万円</b>の控除</td><td class="num"><span class="numeric-token">110,000円</span></td><td class="num"><span class="numeric-token">2,310円</span></td><td class="num"><span class="numeric-token">55,000円</span></td><td class="num"><b><span class="numeric-token">167,310円</span></b></td></tr>
+<tr><td><b>10万円</b>の控除</td><td class="num"><span class="numeric-token">20,000円</span></td><td class="num"><span class="numeric-token">420円</span></td><td class="num"><span class="numeric-token">10,000円</span></td><td class="num"><b><span class="numeric-token">30,420円</span></b></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="callout">
+<b>55万円から65万円になると、上の例では年30,420円の税負担減少です</b>
+55万円の全要件を満たす人が、申告書・貸借対照表・損益計算書等を期限内にe-Tax送信すれば、控除が10万円増えます。控除前の課税所得500万円で、住民税側も控除が全額効く上の例なら、197,730円−167,310円＝30,420円です。これは還付額ではありません。源泉徴収・予定納税の状況により、納付額の減少となる場合もあります。
+</div>
 
 <h2 id="gendo">控除額は「所得の額」が限度 — 赤字は相殺しない</h2>
 
@@ -310,31 +334,9 @@
 <ul>
 <li><b>いつの分から</b>：令和9年分は2027年の所得で、2028年に申告する分です。令和8年分（2026年の所得）は65万円・55万円・10万円の区分です。</li>
 <li><b>65万円</b>：令和9年分から、65万円・75万円には期限内のe-Tax送信が必要になります。</li>
-<li><b>75万円</b>：65万円に上乗せする形で、<b>優良な電子帳簿</b>（新5項1号）または<b>デジタルシームレス</b>（同2号・電子帳簿保存法8条5項の「特定電磁的記録」）のどちらかを満たした場合です。</li>
+<li><b>75万円</b>：65万円に上乗せする区分で、<b>優良な電子帳簿</b>か<b>デジタルシームレス</b>のどちらかを満たした場合です。根拠は新5項1号・2号で、デジタルシームレスは電子帳簿保存法8条5項の「特定電磁的記録」の保存を指します。</li>
 <li><b>1,000万円超の事業者</b>：前々年の事業所得と不動産所得の総収入金額を合算せず各別に判定し、1,000万円を超える対象事業者は、65万円の要件を満たさなければ10万円も受けられません。現金主義の特例適用者はこの10万円排除の対象外です。</li>
 </ul>
-
-<h2 id="reidai">節税額の例</h2>
-
-<p>課税される所得金額が500万円（所得税率20％）の個人事業主の場合です。</p>
-
-<div class="scroll-wrap">
-<table class="num-nowrap-lg">
-<thead>
-<tr><th scope="col">区分</th><th scope="col" class="num">所得税の減少</th><th scope="col" class="num">復興特別所得税</th><th scope="col" class="num">住民税の減少</th><th scope="col" class="num">年間の節税額</th></tr>
-</thead>
-<tbody>
-<tr><td><b>65万円</b>の控除</td><td class="num"><span class="numeric-token">130,000円</span></td><td class="num"><span class="numeric-token">2,730円</span></td><td class="num"><span class="numeric-token">65,000円</span></td><td class="num"><b><span class="numeric-token">197,730円</span></b></td></tr>
-<tr><td><b>55万円</b>の控除</td><td class="num"><span class="numeric-token">110,000円</span></td><td class="num"><span class="numeric-token">2,310円</span></td><td class="num"><span class="numeric-token">55,000円</span></td><td class="num"><b><span class="numeric-token">167,310円</span></b></td></tr>
-<tr><td><b>10万円</b>の控除</td><td class="num"><span class="numeric-token">20,000円</span></td><td class="num"><span class="numeric-token">420円</span></td><td class="num"><span class="numeric-token">10,000円</span></td><td class="num"><b><span class="numeric-token">30,420円</span></b></td></tr>
-</tbody>
-</table>
-</div>
-
-<div class="callout">
-<b>55万円から65万円になると、上の例では年30,420円の税負担減少です</b>
-55万円の全要件を満たす人が、申告書・貸借対照表・損益計算書等を期限内にe-Tax送信すれば、控除が10万円増えます。控除前の課税所得500万円で、住民税側も控除が全額効く上の例なら、197,730円−167,310円＝30,420円です。これは還付額ではありません。源泉徴収・予定納税の状況により、納付額の減少となる場合もあります。
-</div>
 
 <h2 id="faq">よくある質問</h2>
 
@@ -342,7 +344,7 @@
 <p class="faq-answer">課税される所得金額が500万円（所得税率20％）の人で年197,730円、青色申告特別控除前の課税所得300万円（税率10％）の人なら年131,365円（約13.1万円）が目安です。控除額そのものが戻るのではなく、控除前後の税額の差です。控除の前後で所得税率が変わらなければ、所得税率×1.021に住民税10％を足した率で効きます。税率区分をまたぐ場合は、65万円に一つの税率を掛けるだけでは計算できません（令和8年分）。</p>
 
 <h3 class="faq-question">白色申告から青色申告に変えるには、いつまでに何をすればいいですか？</h3>
-<p class="faq-answer">適用を受けたい年の3月15日までに、青色申告承認申請書を出します。土日・祝日等なら翌開庁日で、令和8年は3月16日です。その年の1月16日以後に開業した場合は、開業の日から2か月以内です。手数料はかからず、e-Taxでも出せます。承認を受けると、要件を満たす場合に特別控除や純損失の3年間の繰越控除（継続申告が必要）を使えます。青色事業専従者給与は、生計を一にする15歳以上の親族の専従等・相当な額・別途の期限内届出などが要件です。</p>
+<p class="faq-answer">適用を受けたい年の3月15日までに、青色申告承認申請書を出します。土日・祝日等なら翌開庁日で、令和8年は3月16日です。その年の1月16日以後に開業した場合は、開業の日から2か月以内です。手数料はかからず、e-Taxでも出せます。</p>
 
 <h3 class="faq-question">複式簿記ができません。10万円しか受けられませんか？</h3>
 <p class="faq-answer">手で複式簿記を書く必要はなく、市販の会計ソフトに日々の取引を入力すれば、貸借対照表と損益計算書は自動で作られます。国税庁は正規の簿記の原則（一般的には複式簿記）による記帳を求めています。55万円・65万円には、その帳簿に基づく貸借対照表・損益計算書等の作成・添付、控除額の記載と期限内申告も必要です。会計ソフトの年間費用は1万円台からで、55万円と10万円の差（課税所得500万円なら年約13.7万円）を大きく下回ります。</p>
@@ -405,25 +407,27 @@ r08Ready.then(ok => { if (ok) showMeta(); }).catch(() => {});
 
 // 所得の行・要件の行はページに手書きせず、参照データから描く。
 const INCOMES = [
-  { key: "jigyo",   label: "事業所得",   hint: "売上 − 必要経費（青色申告特別控除を引く前）" },
-  { key: "fudosan", label: "不動産所得", hint: "家賃収入 − 必要経費（青色申告特別控除を引く前）" },
-  { key: "sanrin",  label: "山林所得",   hint: "10万円の区分だけが対象です" },
+  { key: "jigyo",   label: "事業所得",   hint: "売上 − 必要経費" },
+  { key: "fudosan", label: "不動産所得", hint: "家賃収入 − 必要経費" },
+  { key: "sanrin",  label: "山林所得",   hint: "10万円の区分だけが対象" },
 ];
 const REQS = [
   { key: "jigyoteki",   label: "不動産所得・事業所得を「事業」として営んでいる",
-    hint: "不動産は社会通念上の規模で実質判定します。5棟10室は目安で、事業所得を生ずべき事業の併営も確認します" },
+    hint: "不動産は社会通念上の規模で実質判定します（5棟10室は目安）" },
   { key: "fukushiki",   label: "正規の簿記の原則（複式簿記）で記帳している",
-    hint: "正規の簿記で取引を記録し、その帳簿に基づき決算書を作成していることを確認してください" },
+    hint: "正規の簿記で記録し、その帳簿に基づいて決算書を作成していること" },
   { key: "kigennai",    label: "決算書等を添付し、控除額を記載して法定期限内に申告する",
-    hint: "貸借対照表・損益計算書・所得金額の計算明細書が必要です。通常は翌年3月15日、土日・祝日等なら翌開庁日です" },
+    hint: "貸借対照表・損益計算書・所得金額の計算明細書。期限は通常、翌年3月15日です" },
   { key: "etaxOrYuryo", label: "申告書・決算書等の期限内e-Tax送信、または優良電子帳簿と届出の要件を満たす",
-    hint: "電子帳簿はその年分の仕訳帳・総勘定元帳の備付け・保存と期限内届出が必要です（継続適用者は届出不要）。55万円の要件も必要です" },
+    hint: "電子帳簿は仕訳帳・総勘定元帳の保存と期限内届出が必要です（継続適用者は届出不要）" },
   { key: "genkinShugi", label: "現金主義の特例（所得税法67条1項）を選んでいる",
     hint: "選んでいる場合は10万円のみになります。ほとんどの人は該当しません" },
 ];
 
 function fillRows(d) {
   const iw = $("income-rows"); iw.innerHTML = "";
+  // PC では3つの所得を横に並べ、計算ボタンまでを最初の画面に収める（狭い画面では折り返す）
+  Object.assign(iw.style, { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", columnGap: "12px" });
   for (const it of INCOMES) {
     const box = document.createElement("div");
     box.style.margin = "8px 0";
@@ -435,7 +439,7 @@ function fillRows(d) {
   const rw = $("req-rows"); rw.innerHTML = "";
   for (const r of REQS) {
     const box = document.createElement("div");
-    box.style.margin = "8px 0";
+    box.style.margin = "4px 0";
     box.innerHTML = `<label style="display:flex;align-items:center;gap:8px;margin:0">
         <input type="checkbox" id="req-${r.key}" style="flex:none">
         <span>${r.label}</span></label>
