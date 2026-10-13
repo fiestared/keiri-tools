@@ -1,0 +1,49 @@
+{
+ "page": "docs/column/koza-furikae-iraisho/index.html",
+ "checked": "2026-10-13",
+ "_readable20261013": "読みやすさの作り直し（リードの組み直し・節の並べ替え）で足した行の数字だけを載せた台帳。作り直し前から台帳は無く、ページ全体の単位の被覆（--segments）は未着手。原資料の写しは keiri-commander/runs/readable/koza-furikae-iraisho/corpus/（2026-10-13 に curl で取得）。",
+ "claims": [
+  {
+   "id": "readable20261013-r7-kakutei-furikae",
+   "text": "令和7年分の申告所得税（確定申告分）は、納期限が令和8年3月16日（月）、振替日が令和8年4月23日（木）で、38日の開きがある。",
+   "numbers": [
+    "令和7年分",
+    "令和8年3月16日",
+    "令和8年4月23日",
+    "38日"
+   ],
+   "applies": "令和7年分の申告所得税及び復興特別所得税の確定申告分（振替納税）",
+   "scope": "国税庁「主な国税の納期限（法定納期限）及び振替日」の［申告所得税及び復興特別所得税］[令和７年分] の「確定申告」行。予定納税・延納の行は納期限と振替日が同じ日",
+   "source_url": "https://www.nta.go.jp/taxes/nozei/nofu/24200042/noufu_kigen.htm",
+   "source_quote": "確定申告 令和８年３月16日（月） 令和８年４月23日（木）",
+   "exceptions": [
+    "予定納税第1期・第2期と確定申告延納は、納期限と振替日が同じ日（記事の表の0日の行）",
+    "38日は暦日の差（2026-04-23 − 2026-03-16 = 38。python の datetime で計算）"
+   ],
+   "derived": true,
+   "calc": "(date(2026,4,23)-date(2026,3,16)).days = 38（2026-10-13 に実行）",
+   "corpus_ref": "keiri-commander/runs/readable/koza-furikae-iraisho/corpus/noufu_kigen.txt:5-20",
+   "review_status": "author_checked",
+   "covers": []
+  },
+  {
+   "id": "readable20261013-shutoku-bi",
+   "text": "国税通則法・同施行令・同施行規則の条文は、e-Gov法令検索で2026年8月26日に確認した（記事の作成時の取得日）。",
+   "numbers": [
+    "2026年8月26日"
+   ],
+   "applies": "出典の節の法令3項目",
+   "scope": "記事の出典の節の source-method に元から書かれている取得日（「いずれも2026年8月26日取得」）を、各法令の項目の末尾に写したもの。作り直しで「法令API v2」の作業記録の語を外した",
+   "source_url": "https://laws.e-gov.go.jp/law/337AC0000000066",
+   "source_quote": "国税通則法・同施行令・同施行規則はe-Gov法令検索、振替納税の手続と納期限・振替日は国税庁、口座振替の申出と割引額は日本年金機構の公表資料（いずれも2026年8月26日取得）を読んで作成。",
+   "exceptions": [
+    "2026-10-13 に国税通則法34条の2第2項を e-Gov 法令API v2 で取り直し、記事の引用と一致を確認（corpus/tsusoku_34_2.json）"
+   ],
+   "corpus_ref": "keiri-commander/runs/readable/koza-furikae-iraisho/corpus/tsusoku_34_2.json",
+   "review_status": "author_checked",
+   "covers": []
+  }
+ ],
+ "nonclaims": [],
+ "verified": []
+}
