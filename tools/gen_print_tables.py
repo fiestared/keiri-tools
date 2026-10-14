@@ -97,7 +97,7 @@ def write(path, value, check):
         path.write_bytes(value)
 
 
-def table(id_, headers, rows, numeric_cols, old=None):
+def table(id_, headers, rows, numeric_cols, old=None, old_year=None):
     body = []
     for i, row in enumerate(rows):
         cells = []
@@ -107,7 +107,7 @@ def table(id_, headers, rows, numeric_cols, old=None):
             else:
                 content = escape(str(v))
                 if old and j in numeric_cols:
-                    content += f'<br><span class="hint">（令和7年度 {old[i][j-1]}/1,000）</span>'
+                    content += f'<br><span class="hint">（{escape(old_year)} {old[i][j-1]}/1,000）</span>'
             tag = 'th scope="row"' if j == 0 else 'td'
             cls = ' class="num"' if j in numeric_cols else ''
             cells.append(f'<{tag}{cls}>{content}</{tag.split()[0]}>')
@@ -154,10 +154,10 @@ def main():
         write(directory/filename,xlsx(title,meta,headers,rows,widths,numeric_cols),args.check)
         display = [[((('非課税（印紙不要）' if v==0 else f'{v:,}円') if name=='inshi' else f'{v:g}/1,000' if name=='koyou' else f'{v:g}') if isinstance(v,(int,float)) else v) for v in row] for row in rows]
         lead = '<p id="receipt-tax-basis">この表は<b>営業に関する紙の売上代金の領収書</b>が対象です。記載金額の決め方は<a href="#ryoshusho">領収書はいくらから？</a>で説明します。</p>' if name=='inshi' else ''
-        current = f'・<a href="{escape(rosai["_meta"]["current_url"])}">令和8年度の据え置きの案内</a>' if name=='rosai' else ''
+        current = f'・<a href="{escape(rosai["_meta"]["current_url"])}">{escape(rosai["_meta"]["year"])}の据え置きの案内</a>' if name=='rosai' else ''
         scope_source = f' <a href="{stamp["_meta"]["url_shohizei"]}">消費税額等の扱い（国税庁）</a>' if name=='inshi' else ''
-        history = ('\n<details class="rate-history"><summary>令和7年度との比較を開く</summary>' +
-            table('koyou-rate-history',headers,display,numeric_cols,old)+'</details>') if old else ''
+        history = (f'\n<details class="rate-history"><summary>{escape(koyou["previous"]["year"])}との比較を開く</summary>' +
+            table('koyou-rate-history',headers,display,numeric_cols,old,koyou['previous']['year'])+'</details>') if old else ''
         block = (f'<!-- {marker}:auto -->\n<section class="card print-table-sheet print-table-{name}" id="{name}-print-table" data-print-tables="{name}" aria-label="{title}">\n'
             f'<div class="table-actions"><button type="button" data-print-table>この表を印刷する</button> <a href="{filename}" download>Excel（.xlsx）をダウンロード</a></div>\n'
             f'<p class="print-table-title">{title}</p>\n<p class="table-basis">適用：{escape(basis)}<br>確認日：<time datetime="{checked}">{checked}</time><br>'
