@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>法人税の簡易計算｜軽減税率15%は「年800万円以下の部分」だけ</title>
-<meta name="description" content="所得金額から法人税と地方法人税を計算します。軽減税率15%がかかるのは年800万円以下の部分だけで、超えた部分は23.2%。所得全体に15%を掛けると過少になります。所得が年10億円を超える事業年度は15%でなく17%。適用除外事業者・通算法人は19%のまま。地方法人税の課税標準は所得ではなく法人税額。登録不要・無料。">
+<meta name="description" content="所得金額から法人税と地方法人税を計算します。軽減税率15%は年800万円以下の部分だけで、超えた部分は23.2%。所得が年10億円を超える事業年度は17%、適用除外事業者・通算法人は19%のままです。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/hojinzei/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="法人税の簡易計算｜軽減税率15%は「年800万円以下の部分」だけ">
-<meta property="og:description" content="所得金額から法人税と地方法人税を計算します。軽減税率15%がかかるのは年800万円以下の部分だけで、超えた部分は23.2%。所得全体に15%を掛けると過少になります。所得が年10億円を超える事業年度は15%でなく17%。適用除外事業者・通算法人は19%のまま。地方法人税の課税標準は所得ではなく法人税額。登録不要・無料。">
+<meta property="og:description" content="所得金額から法人税と地方法人税を計算します。軽減税率15%は年800万円以下の部分だけで、超えた部分は23.2%。所得が年10億円を超える事業年度は17%、適用除外事業者・通算法人は19%のままです。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/hojinzei/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -114,11 +114,7 @@
 <main id="main" tabindex="-1">
   <nav class="breadcrumb"><a href="../">ホーム</a> › 法人税の簡易計算</nav>
   <h1>法人税の簡易計算</h1>
-  <p class="lead">所得金額から<b>法人税</b>と<b>地方法人税</b>（どちらも国税）を計算します。<b>軽減税率15%がかかるのは年800万円以下の部分だけ</b>で、超えた部分は23.2%です（法人税法66条2項）。</p>
-
-  <div class="callout" id="handan">
-    <p><b>「中小企業だから15%」ではありません。</b>条文の当てはめは3段階です。①資本金1億円以下かどうかで<b>軽減の枠</b>ができる（66条2項・19%）②措置法42条の3の2でその19%が<b>15%</b>に読み替わる ③ただし<b>所得が年10億円を超える事業年度は17%</b>。さらに適用除外事業者・通算法人などは②が使えず<b>19%のまま</b>です。</p>
-  </div>
+  <p class="lead">所得金額から<b>法人税</b>と<b>地方法人税</b>（どちらも国税）を計算します。<b>軽減税率15%がかかるのは年800万円以下の部分だけ</b>で、超えた部分は23.2%です。この800万円以下の部分も、所得が年10億円を超える事業年度は17%、適用除外事業者・通算法人などは19%です（<a href="#han">税率の当てはめは3段階</a>）。</p>
 
   <div class="card">
     <div class="fee-pair field-pair">
@@ -138,8 +134,8 @@
 
     <fieldset id="kubun-set">
       <legend>法人の区分</legend>
-      <label><input type="checkbox" id="chusho" checked> 各事業年度終了の時の<b>資本金・出資金が1億円以下</b>（または資本・出資を有しない）</label>
-      <label><input type="checkbox" id="tokurei" checked> 措置法42条の3の2の<b>特例が使える</b>（適用除外事業者・通算法人・66条5項各号のいずれにも当たらない）</label>
+      <label><input type="checkbox" id="chusho" checked> 事業年度末の<b>資本金・出資金が1億円以下</b>（資本・出資が無い法人を含む）</label>
+      <label><input type="checkbox" id="tokurei" checked> 軽減税率15%の<b>特例が使える</b>（<a href="#jogai">特例が使えない法人</a>に当たらない）</label>
     </fieldset>
 
     <div class="result" id="result" aria-live="polite"></div>
@@ -157,6 +153,12 @@
   </ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/genka-haifu/">配賦とは？配賦基準の選び方と計算例、予定配賦と配賦差異の仕訳</a></li><li><a href="../column/kabunushi-shihon-hendo-keisansho/">株主資本等変動計算書とは</a></li><li><a href="../column/hojin-nari/">法人成りとは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
   <h2 id="han">税率の当てはめは3段階</h2>
+  <p>「中小企業だから15%」ではありません。条文は次の順に当てはめます。</p>
+  <ol id="handan">
+    <li>資本金1億円以下の法人は、年800万円以下の部分に<b>軽減の枠</b>ができる（法人税法66条2項・19%）</li>
+    <li>租税特別措置法42条の3の2で、その19%が<b>15%</b>に読み替わる</li>
+    <li>ただし<b>所得が年10億円を超える事業年度は17%</b>。適用除外事業者・通算法人などは2が使えず<b>19%のまま</b>（<a href="#jogai">特例が使えない法人</a>）</li>
+  </ol>
   <div class="scroll-wrap">
   <table id="rate-hyo">
     <tr><th scope="col">所得の部分</th><th scope="col">資本金1億円以下＋特例あり</th><th scope="col">特例が使えない</th><th scope="col">資本金1億円超</th></tr>
@@ -229,7 +231,32 @@
 </section>
 
 <h2 id="shutten">出典</h2>
-<p class="note"><a href="https://laws.e-gov.go.jp/law/340AC0000000034" rel="nofollow">法人税法</a> 66条（1項＝23.2%、2項＝資本金1億円以下の年800万円以下は19%、4項＝1年未満の按分、5項＝軽減を適用しない法人）。<a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">租税特別措置法</a> 42条の3の2（中小企業者等の法人税率の特例＝19%を15%に読み替え。所得が年10億円を超える事業年度は17%。適用除外事業者・通算法人は対象外。令和9年3月31日までに開始する事業年度）。<a href="https://laws.e-gov.go.jp/law/426AC0000000011" rel="nofollow">地方法人税法</a> 10条1項（課税標準法人税額に10.3%）。条文は e-Gov 法令API v2 で実読しています（2026-08-08 確認）。</p>
+<ul class="note">
+  <li><a href="https://laws.e-gov.go.jp/law/340AC0000000034" rel="nofollow">法人税法</a>
+    <ul>
+      <li><a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">66条</a> 1項＝23.2%</li>
+      <li>66条2項＝資本金1億円以下の年800万円以下は19%</li>
+      <li>66条4項＝1年未満の按分</li>
+      <li>66条5項＝軽減を適用しない法人</li>
+      <li>e-Gov法令検索で2026年8月8日に確認（2026年10月14日に再確認）</li>
+    </ul>
+  </li>
+  <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">租税特別措置法</a>
+    <ul>
+      <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_42_3_2" rel="nofollow">42条の3の2</a>（中小企業者等の法人税率の特例）＝19%を15%に読み替え</li>
+      <li>所得が年10億円を超える事業年度は17%</li>
+      <li>適用除外事業者・通算法人は対象外</li>
+      <li>令和9年3月31日までに開始する事業年度</li>
+      <li>e-Gov法令検索で2026年8月8日に確認（2026年10月14日に再確認）</li>
+    </ul>
+  </li>
+  <li><a href="https://laws.e-gov.go.jp/law/426AC0000000011" rel="nofollow">地方法人税法</a>
+    <ul>
+      <li><a href="https://laws.e-gov.go.jp/law/426AC0000000011#Mp-At_10" rel="nofollow">10条1項</a>＝課税標準法人税額に10.3%</li>
+      <li>e-Gov法令検索で2026年8月8日に確認（2026年10月14日に再確認）</li>
+    </ul>
+  </li>
+</ul>
 
 <section class="faq rel-block">
 <h2>関連する解説</h2>
