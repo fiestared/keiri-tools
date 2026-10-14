@@ -28,6 +28,7 @@ import { loadNavExperiment, navOnlyCommitFiles, worktreeNavOnly, DATE_LINE } fro
 import { execFileSync } from "node:child_process";
 
 const DOCS = new URL("../docs/", import.meta.url).pathname;
+const SAITEI_PREF_PAGES = JSON.parse(readFileSync(new URL('./saitei_pref_pages.json', import.meta.url), 'utf8')).prefectures;
 const COLUMN = join(DOCS, "column");
 const CHECK = process.argv.includes("--check");
 
@@ -867,6 +868,7 @@ const CATEGORIES = [
 
 /** sitemap に載せるツール・固定ページ(記事は自動で追加される) */
 const STATIC_PAGES = [
+  ...Object.values(SAITEI_PREF_PAGES).map(p => `saitei-chingin/${p.slug}/`),
   "", "tedori/", "bonus-tedori/", "genka/", "inshi/", "jidoshazei/", "kabe/", "iryohi/", "sozokuzei/", "zoyozei/", "jutaku/", "furusato/", "shobyo/", "shussan/", "ikuji/", "papa-ikukyu/", "juminzei/", "shakai-hoken/", "gensen-choshu/", "kihonteate/", "taishokukin/", "zangyodai/", "shohizei/", "eigyobi/",
   "yukyu/", "denchoho-index/", "senpou-futan/", "zengin-kana/", "shiharai-site/", "saitei-chingin/",
   "shokibo-kyosai/", "ideco-setsuzei/", "fuyo-kojo/", "haigusha-kojo/", "seimei-hoken-kojo/", "aoiro-kojo/", "tosan-boshi-kyosai/", "hitorioya-kojo/", "kinro-gakusei/", "seizen-zoyo/", "sozoku-toki-menkyozei/", "iryubun/", "shokibo-takuchi/", "jishin-hoken-kojo/", "hikazei-setai/", "fudosan-jouto/", "invoice-bangou/", "kotei-shisanzei/", "fudosan-shutoku/", "kokuho/", "nenkin/", "toroku-menkyozei/", "chukai-tesuryo/", "izoku/", "zaishoku/", "saishushoku/", "kogaku-ryoyohi/", "kokunen-menjo/", "yakuin-shataku/", "nenmatsu-chosei/", "riekiritsu/", "soneki-bunkiten/", "shotokuzei/", "teichaku/",
