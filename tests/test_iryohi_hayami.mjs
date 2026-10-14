@@ -113,29 +113,30 @@ function rows(tableId) {
   // 2026-10-11: 式はリード（#lead-answer）から「使い方と注意点」の #keisan-shiki・#keigen-shiki へ移した
   //   （リードは平易な言葉で結論だけにした。式の文言は同じ）。
   const v = visible(elem("keisan-shiki", "p"));
-  ok(/医療費 − 対象医療費を限度とする補填金 − 足切り/.test(v), "#keisan-shiki に控除額の式が無い");
+  ok(/補填後医療費の足切り超過分/.test(v) && /0〜200万円/.test(v), "#keisan-shiki に控除の上下限が無い");
+  ok(/href="#hoten-hikikata"/.test(elem("keisan-shiki", "p")), "#keisan-shiki に補填限度の参照が無い");
   const k = visible(elem("keigen-shiki", "p"));
   ok(/所得税率×1.021＋10%/.test(k), "#keigen-shiki に住民税10%を含む式が無い");
   const lead = visible(elem("lead-answer", "p"));
-  ok(/医療費 − 保険金などの補填金 − 足切り/.test(lead), "#lead-answer に控除額の決まり方が無い");
-  ok(/控除額0円/.test(lead), "#lead-answer が『ちょうど10万円は控除額0円』を言っていない");
+  ok(/補填後の医療費から足切りを超えた部分/.test(lead) && /最高200万円/.test(lead), "#lead-answer に控除額の上下限が無い");
+  ok(/足切りが10万円.*医療費10万円.*控除額は0円/.test(lead), "#lead-answer が『ちょうど10万円は控除額0円』を言っていない");
 }
 
 // ── 確定申告の節（国税庁No.1120の逐語確認に基づく）──────────────
 {
   const v = visible(elem("meisaisho", "p"));
   ok(/医療費控除の明細書/.test(v), "#meisaisho が『医療費控除の明細書』を言っていない");
-  ok(/領収書そのものの添付・提示は不要/.test(v), "#meisaisho が『領収書の添付・提示は不要』を言っていない");
+  ok(/領収書の添付・提示は不要/.test(v), "#meisaisho が『領収書の添付・提示は不要』を言っていない");
   // ★2026-08-07: 年数をベタ書き（/確定申告期限等から5年/）していた。データが改正で
   //   変わったとき、本文と検査が**一緒に古くなって気づけない**（検査が独立した外部オラクルでなくなる）。
   //   iryohi_r08.json の meisaisho_hozon_years から取る。
-  ok(new RegExp(`確定申告期限等から${I.iryohi_kojo.meisaisho_hozon_years}年を経過する日`).test(v),
+  ok(new RegExp(`確定申告期限等から${I.iryohi_kojo.meisaisho_hozon_years}年を経過する日`).test(visible(elem("receipt-note", "p"))),
     "#meisaisho の保存期間の起算・年数がNo.1120と違う");
 }
 {
   const v = visible(elem("tsuchi", "p"));
   ok(/簡略化/.test(v), "#tsuchi が医療費通知による『簡略化』を言っていない");
-  ok(/市販薬・通院の交通費・自由診療/.test(v), "#tsuchi が通知に載らない分の書き足しを言っていない");
+  ok(/通知にない費用は.*控除対象となるもの.*明細書に追加/.test(v), "#tsuchi が追加費用を適格医療費に限っていない");
 }
 {
   const v = visible(elem("gensen-futen", "p"));
@@ -155,38 +156,17 @@ function rows(tableId) {
   ok(/翌年1月1日から5年間/.test(v), "#kojo-cap-note が還付申告の5年を言っていない");
 }
 
-// ── 明細書に添える領収書の保存期間 ────────────────────────────────
-// ★2026-08-07 追加。壊しテストが「5年 → 3年」の書き換えを**素通しする**と
-//   報告していた（11/12捕捉）。金額はすべて照合していたのに、**何年保存するか**を
-//   誰も見ていなかった。ここを短く誤ると、読者は税務署の確認より前に領収書を捨てる
-//   （＝控除を否認されうる。金額の誤りより実害が大きい種類の間違い）。
-// ★年数はデータ（iryohi_r08.json の meisaisho_hozon_years）に持たせた。
-//   本文にベタ書きしたままだと、改正時に本文だけが古くなり、誰も気づけない。
+// 120条5項の保存例外を局所の注で検証。FAQはその注へ参照する。
 {
-  const v = visible(elem("meisaisho", "p"));
+  const v = visible(elem("receipt-note", "p"));
   const y = I.iryohi_kojo.meisaisho_hozon_years;
-  ok(Number.isInteger(y) && y > 0, `データに meisaisho_hozon_years が無い（保存期間を検証できない）`);
-  ok(new RegExp(`確定申告期限等から${y}年を経過する日までの間`).test(v),
-    `#meisaisho の「確定申告期限等から◯年」がデータ（${y}年）と違う`);
-  ok(new RegExp(`領収書は${y}年間保存`).test(v),
-    `#meisaisho の「領収書は◯年間保存」がデータ（${y}年）と違う`);
-  // ★2箇所が食い違ったまま両方データと合わない、を防ぐ（片方だけ直す事故が起こりやすい）
-  const nums = [...v.matchAll(/(\d+)年/g)].map((m) => +m[1]);
-  ok(nums.length >= 2 && nums.every((n) => n === y),
-    `#meisaisho に ${y} 以外の年数が混ざっている: ${nums.join(', ')}`);
-
-  // ★head の JSON-LD（FAQ構造化データ）も見る。
-  //   2026-08-07 に判明: 同じ文言が **head の JSON-LD と本文の2箇所**にあり、
-  //   壊しテストの置換（indexOf＝最初の1件）は **JSON-LD の方**に当たっていた。
-  //   そして **JSON-LD を見ている検査が1つも無かった**。
-  //   構造化データは検索結果のリッチリザルトに出る＝**本文より先に読まれることがある**。
-  //   本文だけ正しくても、そこが嘘なら読者は嘘を読む。
-  const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)]
-    .map((m) => m[1]).join(' ');
-  const ldHits = [...ld.matchAll(/確定申告期限等から(\d+)年/g)].map((m) => +m[1]);
-  ok(ldHits.length > 0, 'JSON-LD に「確定申告期限等から◯年」の記述が無い（本文と対で持つべき）');
-  ok(ldHits.every((n) => n === y),
-    `JSON-LD の保存期間がデータ（${y}年）と違う: ${ldHits.join(', ')}年`);
+  ok(new RegExp(`確定申告期限等から${y}年を経過する日`).test(v), "#receipt-note 保存期間の起算・年数がNo.1120と違う");
+  ok(/医療費通知を添付した分は除き/.test(v), "#receipt-note に通知添付分の除外が無い");
+  ok(/5年経過日前6か月以内.*請求日から6か月経過/.test(v), "#receipt-note に更正請求の延長が無い");
+  ok(/href="[^"]*kanpu-shinkoku\/#ryoshusho"/.test(elem("receipt-note", "p")), "#receipt-note に起算点の参照が無い");
+  const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m=>JSON.parse(m[1]));
+  const faq = ld.flatMap(x=>x['@graph']||[x]).find(x=>x['@type']==='FAQPage');
+  const a = faq.mainEntity.find(x=>/領収書/.test(x.name)).acceptedAnswer.text;
+  ok(/期間延長.*起算点|起算点.*期間延長/.test(a) && /保存期間の注/.test(a), "JSON-LD の保存期間の例外・参照が無い");
 }
-
 console.log(`✓ test_iryohi_hayami: ${checks} checks`);

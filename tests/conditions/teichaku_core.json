@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "core": "teichaku_core",
+  "page": "docs/teichaku/index.html",
+  "priority_evidence": "2026-10-14 新規ツール（/teichaku/）",
+  "conditions": [
+    { "id": "jogen-20", "statute": "https://www.mhlw.go.jp/content/001730830.pdf", "disposition": "input",
+      "input_ids": ["daily", "remaining"], "cases": ["計算額59,911円は上限60,000円未満でそのまま", "計算額60,092円は上限60,000円で頭打ち"] },
+    { "id": "r7-4-start", "statute": "https://www.mhlw.go.jp/content/001730830.pdf", "disposition": "input",
+      "input_ids": ["shushoku"], "cases": ["2025-03-31就職は計算しない（旧率）", "2025-04-01就職は20%で計算する"] },
+    { "id": "nikkyu-saitei-hosho", "statute": "https://www.mhlw.go.jp/content/001689749.pdf", "disposition": "input",
+      "input_ids": ["type", "kiso"], "rounding": "round2-then-floor",
+      "cases": ["日給 労働日数126日は5,555円（(a)と同額）", "日給 労働日数125日は最低保障5,600円", "日給 (a)は第3位四捨五入で5,555.56円"] },
+    { "id": "kagen-zen", "statute": "https://www.mhlw.go.jp/content/001730830.pdf", "disposition": "input",
+      "input_ids": ["zen"], "cases": ["離職前の賃金日額が下限3,203円なら0円", "離職前の賃金日額3,204円・再就職後は下限3,203円で1円×184日"] },
+    { "id": "rokkagetsu-kishu", "statute": "https://www.mhlw.go.jp/content/001730830.pdf", "disposition": "input",
+      "input_ids": ["shushoku", "closing"], "cases": ["末日締め・1日就職は就職日から", "末日締め・2日就職は翌月1日から"] },
+    { "id": "teika", "statute": "https://www.hellowork.mhlw.go.jp/doc/syuugyousokushin.pdf", "disposition": "input",
+      "input_ids": ["zen", "w1"], "cases": ["離職前と同額なら0円", "1円下がれば1円×181日"] },
+    { "id": "konzai", "statute": "https://www.mhlw.go.jp/content/001689749.pdf", "disposition": "out_of_scope",
+      "scope_text": "月給と日給・時給が混ざった給料：月給部分と日給・時給部分を分けて最低保障を計算するため、この計算機では扱いません。",
+      "cases": ["月給と日給・時給の混在は対象外と画面に書いてある"] }
+  ],
+  "default_cases": ["就業促進定着手当HTML初期は金額欄が空欄"]
+}
