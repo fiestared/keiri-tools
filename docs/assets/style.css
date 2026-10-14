@@ -962,6 +962,10 @@ th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
 /* 逆に、スマホ幅では収まらないがPC幅(481px以上)なら改行禁止でも枠に収まる表（44表。481/600/768/1024/1280pxで実測） */
 @media (min-width: 481px) { .num-nowrap-lg th.num, .num-nowrap-lg td.num { white-space: nowrap; } }
 @media (max-width: 359px) { .num-nowrap th.num, .num-nowrap td.num { white-space: normal; } .num-nowrap thead th { word-break: normal; } }
+/* 範囲・式の列（「所得者900万円以下・配偶者58万円超95万円以下」「30万円×9.85%÷2」）を PC 幅でだけ折り返さない。
+   2026-10-12 の読みやすさの作り直しで style="white-space:nowrap" を全幅に付けた結果、390幅で値の列が枠外へ押し出され
+   test_layout_render（table-no-number-visible）が赤になった（2026-10-14）。スマホ幅は折り返して値の列を最初の画面に見せる */
+@media (min-width: 481px) { .nowrap-lg { white-space: nowrap; } }
 
 /* ---- 本文へ移動（SC 2.4.1）----
    キーボード利用者がヘッダーのリンク群を毎ページ読み飛ばせるようにする。
