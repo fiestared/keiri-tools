@@ -11,7 +11,7 @@ for(const page of ['inshi','column/koyou-hokenryo-ritsu','column/rosai-hokenryor
 }
 const rosai=readFileSync(new URL('../docs/column/rosai-hokenryoritsu/index.html',import.meta.url),'utf8');
 test('R8 leaflet links to the exact MHLW document, not a different annual-renewal guide',()=>{
- assert.equal(rosai.match(/<a href="([^"]+)">事業主向けリーフレット/)[1],'https://www.mhlw.go.jp/content/roumuhiritu_r05.pdf');
+ assert.equal(rosai.match(/事業主向けリーフレット「?<a href="([^"]+)"|<a href="([^"]+)">事業主向けリーフレット/).slice(1).find(Boolean),'https://www.mhlw.go.jp/content/roumuhiritu_r05.pdf');
 });
 test('merit SVG alt describes limited base and logging exception',()=>{
  const label=rosai.match(/<svg[^>]+aria-label="(メリット制。[^"]+)"/)[1];

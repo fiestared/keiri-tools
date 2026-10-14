@@ -29,20 +29,69 @@
  *     言い切らない）。
  */
 
-/** 年間所定労働日数と1日の所定労働時間から、1か月平均所定労働時間を出す。 */
-export function monthlyHours(daysPerYear, hoursPerDay) {
-  const d = Number(daysPerYear), h = Number(hoursPerDay);
-  if (!(d > 0) || !(h > 0)) return null;
-  if (d > 366) return null; // 年間日数が366を超えるのは入力誤り
-  return (d * h) / 12;
+const PREFECTURES = new Set("北海道 青森 岩手 宮城 秋田 山形 福島 茨城 栃木 群馬 埼玉 千葉 東京 神奈川 新潟 富山 石川 福井 山梨 長野 岐阜 静岡 愛知 三重 滋賀 京都 大阪 兵庫 奈良 和歌山 鳥取 島根 岡山 広島 山口 徳島 香川 愛媛 高知 福岡 佐賀 長崎 熊本 大分 宮崎 鹿児島 沖縄".split(" "));
+const nonempty = v => typeof v === "string" && v.trim().length > 0;
+function validDate(v) {
+  if (typeof v !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+  const [y,m,d] = v.split("-").map(Number);
+  const leap = y % 4 === 0 && (y % 100 !== 0 || y % 400 === 0);
+  return y > 0 && m >= 1 && m <= 12 && d >= 1 && d <= [31,leap ? 29 : 28,31,30,31,30,31,31,30,31,30,31][m-1];
+}
+const validPref = p => p && PREFECTURES.has(p.pref) && nonempty(p.full) && nonempty(p.region)
+  && Number.isSafeInteger(p.wage) && p.wage > 0 && Number.isSafeInteger(p.prev) && p.prev > 0
+  && Number.isSafeInteger(p.up) && p.up === p.wage - p.prev && Number.isFinite(p.rate)
+  && validDate(p.effective) && nonempty(p.effective_wa);
+
+/** fetchのHTTP成功だけでは不足。空・欠損・重複も読み込み失敗として扱う。 */
+export function validateSaiteiData(D) {
+  const m = D?._meta, n = D?.next_revision;
+  if (!Array.isArray(D?.prefectures) || D.prefectures.length !== 47
+      || new Set(D.prefectures.map(p => p?.pref)).size !== 47 || !D.prefectures.every(validPref)
+      || !nonempty(m?.year) || !validDate(m?.checked) || !nonempty(m?.source_url)
+      || !Number.isSafeInteger(m?.national_average?.wage) || m.national_average.wage <= 0
+      || !nonempty(n?.status) || !nonempty(n?.headline) || !nonempty(n?.detail)
+      || !nonempty(n?.source_url) || !nonempty(n?.source)) {
+    return { ok: false, error: "最低賃金のデータを読み込めませんでした。再読み込みしてください。" };
+  }
+  return { ok: true };
 }
 
-/** 判定日時点で有効な最低賃金額を返す。発効日前なら改定前の額（急所3）。 */
+// 入力文字列の十進精度を保ち、整数の分子・分母へ変換する。指数表記も扱う。
+function decimal(v) {
+  if (!["number", "string"].includes(typeof v)) return null;
+  const text = String(v).trim(), value = Number(text);
+  if (!Number.isFinite(value) || !(value > 0) || value > Number.MAX_SAFE_INTEGER || text.length > 400) return null;
+  const m = text.replace(/^\+?\./, "0.").match(/^\+?(\d+)(?:\.(\d*))?(?:e([+-]?\d+))?$/i);
+  if (!m) return null;
+  const scale = (m[2] || "").length - Number(m[3] || 0);
+  if (Math.abs(scale) > 400) return null;
+  const digits = BigInt(m[1] + (m[2] || ""));
+  return scale >= 0 ? { n: digits, d: 10n ** BigInt(scale) } : { n: digits * 10n ** BigInt(-scale), d: 1n };
+}
+// BigIntの巨大な分母を先にNumberへ変換するとInfinityになるため、比を指数表記で返す。
+function ratioNumber(n, d) {
+  if (n === 0n) return 0;
+  const sign = n < 0n ? -1 : 1, a = (n < 0n ? -n : n).toString(), b = d.toString();
+  const aHead = a.slice(0, 16), bHead = b.slice(0, 16);
+  return sign * Number(String(Number(aHead) / Number(bHead)) + "e" + (a.length-aHead.length-b.length+bHead.length));
+}
+function annualHours(days, hours) {
+  const d = decimal(days), h = decimal(hours);
+  if (!d || !h || d.n > 366n*d.d || h.n > 24n*h.d) return null;
+  return { n: d.n*h.n, d: d.d*h.d };
+}
+/** 年間日数は0超366以下、1日時間は0超24以下。計算結果も有限の正値を要求。 */
+export function monthlyHours(daysPerYear, hoursPerDay) {
+  const a = annualHours(daysPerYear, hoursPerDay);
+  if (!a) return null;
+  const h = ratioNumber(a.n, a.d*12n);
+  return Number.isFinite(h) && h > 0 ? h : null;
+}
+
+/** 判定日時点で有効な最低賃金額を返す。 */
 export function effectiveWage(pref, onDate) {
-  if (!pref) return null;
-  if (!onDate) return { wage: pref.wage, applied: "current", effective: pref.effective };
-  const on = String(onDate).slice(0, 10);
-  if (on >= pref.effective) return { wage: pref.wage, applied: "current", effective: pref.effective };
+  if (!validPref(pref) || (onDate != null && onDate !== "" && !validDate(onDate))) return null;
+  if (!onDate || onDate >= pref.effective) return { wage: pref.wage, applied: "current", effective: pref.effective };
   return { wage: pref.prev, applied: "previous", effective: pref.effective };
 }
 
@@ -58,11 +107,15 @@ export function effectiveWage(pref, onDate) {
  * D … saitei_chingin_r08.json
  */
 export function judgeSaitei(input, D) {
+  const dataCheck = validateSaiteiData(D);
+  if (!dataCheck.ok) return dataCheck;
+  if (!input || !["hourly", "monthly"].includes(input.wageType)) return { ok: false, error: "時給か月給を選んでください。" };
   const notes = [];
-  const pref = (D.prefectures || []).find((p) => p.pref === input.prefCode);
+  const pref = D.prefectures.find((p) => p.pref === input.prefCode);
   if (!pref) return { ok: false, error: "都道府県が選ばれていません。" };
 
   const eff = effectiveWage(pref, input.onDate);
+  if (!eff) return { ok: false, error: "有効な判定日を入力してください。" };
   if (eff.applied === "previous") {
     // ★年度名をここに直書きしない（2026-09-22 に実害）。
     //   「令和7年度額」と固定で書いてあったため、データを令和8年度に差し替えた瞬間に
@@ -73,26 +126,31 @@ export function judgeSaitei(input, D) {
   }
   const minWage = eff.wage;
 
-  const amount = Number(input.amount);
-  if (!(amount > 0)) return { ok: false, error: "賃金額を入力してください。" };
+  const amount = decimal(input.amount);
+  if (!amount) return { ok: false, error: "賃金額を入力してください。" };
 
-  let hourly, hours = null;
-  if (input.wageType === "monthly") {
-    hours = monthlyHours(input.daysPerYear, input.hoursPerDay);
-    if (hours == null) return { ok: false, error: "年間所定労働日数と1日の所定労働時間を入力してください。" };
-    hourly = amount / hours; // 急所4: ここでは丸めない
-    notes.push(`1か月平均所定労働時間は ${input.daysPerYear}日 × ${input.hoursPerDay}時間 ÷ 12 = ${round1(hours)}時間 として計算しました。`);
-  } else {
-    hourly = amount;
+  const isMonthly = input.wageType === "monthly";
+  const hasHours = isMonthly || (input.daysPerYear != null && input.daysPerYear !== "") || (input.hoursPerDay != null && input.hoursPerDay !== "");
+  const annual = hasHours ? annualHours(input.daysPerYear, input.hoursPerDay) : null;
+  const hoursForMonth = hasHours ? monthlyHours(input.daysPerYear, input.hoursPerDay) : null;
+  if (hasHours && (annual == null || hoursForMonth == null)) return { ok: false, error: "年間所定労働日数は0超366以下、1日の所定労働時間は0超24以下で入力してください。" };
+  const hours = isMonthly ? hoursForMonth : null;
+  // 月給×12 と 最低賃金×年間所定時間を共通の整数単位で比較する。
+  // 時間額への浮動小数変換は表示専用であり、等額の判定には使わない。
+  const hourlyN = isMonthly ? amount.n * 12n * annual.d : amount.n;
+  const hourlyD = isMonthly ? amount.d * annual.n : amount.d;
+  const gapN = hourlyN - BigInt(minWage) * hourlyD;
+  const clears = gapN >= 0n;
+  const hourly = ratioNumber(hourlyN, hourlyD), diff = ratioNumber(gapN, hourlyD);
+  const shortPerHour = clears ? 0 : -diff;
+  const shortPerMonth = !annual ? null : clears ? 0 : ratioNumber(-gapN * annual.n, hourlyD * annual.d * 12n);
+  const shortPerYear = shortPerMonth == null ? null : shortPerMonth * 12;
+  const hourlyRounded = Number(hourly.toFixed(2));
+  if (![hourly, hourlyRounded, diff, shortPerHour, shortPerMonth, shortPerYear].every(v => v == null || Number.isFinite(v))
+      || !(hourly > 0) || (gapN !== 0n && diff === 0)) {
+    return { ok: false, error: "この賃金額・所定労働時間では計算できません。入力値を確認してください。" };
   }
-
-  const diff = hourly - minWage;              // 正なら上回り、負なら不足
-  const clears = diff >= 0;
-  const shortPerHour = clears ? 0 : minWage - hourly;
-
-  // 不足額の月・年換算（月給制なら実際の所定時間、時給制なら仮に月の所定時間を使う）
-  const hoursForMonth = hours != null ? hours : monthlyHours(input.daysPerYear || 0, input.hoursPerDay || 0);
-  const shortPerMonth = hoursForMonth ? shortPerHour * hoursForMonth : null;
+  if (isMonthly) notes.push(`1か月平均所定労働時間は ${input.daysPerYear}日 × ${input.hoursPerDay}時間 ÷ 12 = ${round1(hours)}時間 として計算しました。`);
 
   return {
     ok: true,
@@ -102,13 +160,13 @@ export function judgeSaitei(input, D) {
     effective: pref.effective,
     effectiveWa: pref.effective_wa,
     hourly,                                   // 生の値（丸めない）
-    hourlyRounded: Math.round(hourly * 100) / 100,
+    hourlyRounded,
     monthlyHours: hours,
     clears,
     diff,
     shortPerHour,
     shortPerMonth,
-    shortPerYear: shortPerMonth == null ? null : shortPerMonth * 12,
+    shortPerYear,
     notes,
   };
 }
@@ -117,6 +175,7 @@ const round1 = (v) => Math.round(v * 10) / 10;
 
 /** 全国順位（高い順・同額は同順位）。 */
 export function rankOf(prefCode, D) {
+  if (!validateSaiteiData(D).ok) return null;
   const list = (D.prefectures || []).slice().sort((a, b) => b.wage - a.wage);
   const me = list.find((p) => p.pref === prefCode);
   if (!me) return null;
@@ -125,6 +184,7 @@ export function rankOf(prefCode, D) {
 
 /** 全国最高・最低との差。 */
 export function spread(D) {
+  if (!validateSaiteiData(D).ok) return null;
   const list = (D.prefectures || []);
   if (!list.length) return null;
   const hi = list.reduce((a, b) => (b.wage > a.wage ? b : a));
