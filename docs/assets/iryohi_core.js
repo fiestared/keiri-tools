@@ -87,10 +87,9 @@ export function selfmedKojo(purchase, I) {
 /** 速算表から、課税される所得金額に対応する限界税率(%)を引く（No.2260）。 */
 export function rateFromKazei(kazei, I) {
   const B = I.keigen.shotokuzei_brackets;
-  const v = Math.floor(yen(kazei) / 1000) * 1000;
-  if (v === 0) return 0;
+  const v = yen(kazei);
   for (const b of B) {
-    if (b.kazei_upto === null || b.kazei_upto === undefined || v < b.kazei_upto) return b.rate_pct;
+    if (b.kazei_upto === null || b.kazei_upto === undefined || v <= b.kazei_upto) return b.rate_pct;
   }
   return B[B.length - 1].rate_pct;
 }
