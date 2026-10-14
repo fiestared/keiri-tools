@@ -231,6 +231,23 @@ const SCENES = [
   { name: "saishushoku_nodata", data404: "kihonteate_r07.json",
     expect: (s) => s.failed && s.amount === null && s.dailyUsed === null },
 
+  // ── 就業促進定着手当 (/teichaku/) ────────────────────────────────────────
+  // ★和歌山労働局しおりの公表例: (10,000−9,500)×183日 ＝ 91,500円、上限 6,307×90×20% ＝ 113,526円
+  { name: "teichaku", expect: (s) =>
+      s.amount === 91500 && s.gross === 91500 && s.cap === 113526 && s.minashi === 9500 &&
+      s.calendarDays === 183 && /2026年4月1日〜2026年9月30日/.test(s.periodLabel) &&
+      /4\/1〜4\/30・30日/.test(s.w1Label) && !s.failed },
+  { name: "teichaku_slow", slow: true, expect: (s) => s.amount === 91500 && !s.failed },
+  // 時給の最低保障(合計÷労働日数×70%)と上限での頭打ち: 7,000円 → 180,000円 → 上限120,000円
+  { name: "teichaku_jikyu", expect: (s) =>
+      s.usedMinimum && s.minashi === 7000 && s.gross === 180000 && s.cap === 120000 && s.amount === 120000 && !s.failed },
+  { name: "teichaku_notlower", expect: (s) => s.saysNotLower && s.amount === null && !s.failed },
+  { name: "teichaku_before", expect: (s) => s.saysBefore && s.amount === null && s.cap === null },
+  { name: "teichaku_nodata", data404: "kihonteate_r07.json",
+    expect: (s) => s.failed && s.amount === null && s.cap === null },
+  { name: "teichaku_nodata_hist", data404: "teichaku_history.json",
+    expect: (s) => s.failed && s.amount === null && s.cap === null },
+
   // ── 高額療養費 ────────────────────────────────────────────────────────
   // ★期待値は**協会けんぽ／自サイトの記事が公表している実額**。区分ウ・医療費100万 → 87,430円。
   //   基準額80,100・起点26.7万・1%・50銭の四捨五入の**どれか1つでも間違っていたらこの額にならない**。
@@ -785,6 +802,20 @@ const SCENES = [
   { name: "nenmatsu_chosei_fusoku", expect: (s) =>
       s.nenzei === 147500 && s.fusoku === 47500 && s.bigVal === 47500 && s.bigIsFusoku && !s.failed },
   { name: "nenmatsu_chosei_empty", expect: (s) => s.noInput && s.nenzei === null },
+  // ★最小入力（3欄だけ）で結果まで行く: 給与所得3,560,000（表）・基礎控除104万・課税1,770,000×5%＝88,500
+  //   ×102.1%＝90,358→90,300・超過29,700。頭の要約は［年調年税額, 天引きの合計, 差額］、改正の適用をデータから申告
+  { name: "nenmatsu_chosei_min", expect: (s) =>
+      s.nenzei === 90300 && s.kanpu === 29700 && s.bigVal === 29700 &&
+      JSON.stringify(s.sumVals) === JSON.stringify([90300, 120000, 29700]) &&
+      /令和8年12月1日施行/.test(s.kaisei) && /源泉徴収税額/.test(s.ranNenzei) && /⑦/.test(s.ranKyuyo) && !s.failed },
+  // ★法定調書の手引 記載例1（令和8年分）: 源泉徴収票の見本の値 支払金額9,620,000／給与所得控除後の金額（調整控除後）
+  //   7,558,000／所得控除の額の合計額4,564,283／源泉徴収税額206,000／社会保険料等の金額1,659,483・超過額166,460
+  { name: "nenmatsu_chosei_kisai1", expect: (s) =>
+      s.choseiGo === 7558000 && s.kojoGokei === 4564283 && s.shaho === 1659483 && s.tokutei === 510000 &&
+      s.fuyoTou === 1230000 && s.kazei === 2993000 && s.nenzei === 206000 && s.kanpu === 166460 &&
+      s.bigVal === 166460 && s.bigIsKanpu &&
+      /源泉徴収票「源泉徴収税額」/.test(s.ranNenzei) && /調整控除後/.test(s.ranChoseiGo) &&
+      /所得控除の額の合計額/.test(s.ranKojoGokei) && /社会保険料等の金額/.test(s.ranShaho) && !s.failed },
   { name: "nenmatsu_chosei_nodata", data404: "nencho_r08.json",
     expect: (s) => s.failed && s.nenzei === null },
 
