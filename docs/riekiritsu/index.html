@@ -237,7 +237,8 @@
     <tr><td>40,000円（8%）</td><td>40,000円×8/108≒2,962円</td><td><span class="numeric-token">37,038円</span></td></tr>
   </tbody>
 </table></div>
-<p>消費税額の1円未満の端数処理は、切捨て・切上げ・四捨五入のどれでもよいとされています（国税庁タックスアンサーNo.6371）。この計算機は切捨てを初期値にし、ほかの方法も選べます。端数処理のちがいで、税込から出した税抜の金額は1円変わることがあります。消費税そのものの計算は<a href="../shohizei/">消費税計算ツール</a>でできます。</p>
+<p>適格請求書（インボイス）に記載する消費税額等の1円未満の端数処理は、切捨て・切上げ・四捨五入のどれでもよいとされています（国税庁タックスアンサーNo.6371）。請求書では、請求書ごと・税率ごとに1回だけ端数処理します。商品ごとに丸めた税額を合計することはできません（国税庁インボイスQ&amp;A問57）。</p>
+<p>この計算機は1つの金額を税込・税抜に直す価格の試算で、同じ3つの方法を選べます（初期値は切捨て）。端数処理のちがいで、税込から出した税抜の金額は1円変わることがあります。消費税そのものの計算は<a href="../shohizei/">消費税計算ツール</a>でできます。</p>
 
 <h2 id="gyakusan">目標の率から売価を逆算するしくみ</h2>
 <p>逆算は「入力した率以上になる、1円単位で最も安い売価」を探します。たとえば原価800円（税抜）・粗利率20%なら税抜1,000円で、1円安い999円では20%に届きません。答えの売価を税込で求めると、端数処理の方法によって答えが変わります。消費税の端数を切り捨てると、税込1,099円の税抜は1,000円（消費税99円）になり、粗利率20%に届きます。四捨五入なら税込1,099円の税抜は999円なので、答えは1,100円になります。</p>
@@ -350,11 +351,16 @@ $("calc_r").addEventListener("click", () => {
     if (r.reason === "margin_100") return warn(box, "r_percent", "粗利率は100%未満を入力してください。原価がある限り、売価をいくら上げても粗利率は100%に届きません。");
     if (r.reason === "invalid_percent") return warn(box, "r_percent", "目標の率は0以上で、小数第2位までを入力してください。");
     if (r.reason === "no_cost") return warn(box, "r_cost", "原価は1円以上を入力してください。");
+    if (r.reason === "too_large") return warn(box, "r_cost", "答えの売価が1兆円を超えるため、この計算機では求められません。原価か目標の率を見直してください。");
     return warn(box, "r_cost", "金額は0以上の整数（円）で、1兆円以下を入力してください。");
   }
   const kindLabel = kind === "margin" ? "粗利率" : "上乗せ率";
   const got = kind === "margin" ? r.result.grossMargin : r.result.markup;
-  const lessGot = r.oneYenLess ? (kind === "margin" ? r.oneYenLess.grossMargin : r.oneYenLess.markup) : null;
+  // 1円安い売価の税抜が0円だと率を定義できない（no_price）。率を出さずにそう申告する
+  const less = r.oneYenLess;
+  const lessText = !less ? "" : less.ok
+    ? `${yen(r.price - 1)} で${kindLabel} ${pct(kind === "margin" ? less.grossMargin : less.markup)}（目標に届きません）`
+    : `${yen(r.price - 1)} では税抜の売価が0円になるため、${kindLabel}を計算できません（目標に届きません）`;
   box.innerHTML = `
     <div class="row"><b>${kindLabel} ${r.percent}% 以上になる最も安い売価（${TAX[out.tax]}）</b> <span class="big" id="r_price">${yen(r.price)}</span></div>
     <div class="scroll-wrap"><table class="res"><tbody>
@@ -362,7 +368,7 @@ $("calc_r").addEventListener("click", () => {
       ${row(`この売価の${kindLabel}`, `${pct(got)}（${TAX[basis]}でそろえて判定）`)}
       ${row(`利益額（${TAX[basis]}）`, yen(r.result.profit))}
       ${row(`計算に使った原価（${TAX[basis]}）`, yen(r.cost))}
-      ${r.oneYenLess ? row("1円安いと", `${yen(r.price - 1)} で${kindLabel} ${pct(lessGot)}（目標に届きません）`) : ""}
+      ${less ? row("1円安いと", `<span id="r_less">${lessText}</span>`) : ""}
     </tbody></table></div>
     <div style="font-size:12.5px;color:var(--sub);margin-top:8px">※ 入力した率を満たす最も安い1円単位の売価です。率の表示は小数第2位を四捨五入しているため、目標と同じ数字に見えても判定は1円単位で正確に行っています。</div>`;
   box.dataset.resultState = "success";

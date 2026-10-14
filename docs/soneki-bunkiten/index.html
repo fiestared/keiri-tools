@@ -119,12 +119,12 @@
 <section class="hero">
   <h1>損益分岐点 計算ツール</h1>
   <p class="article-meta">公開日: <time datetime="2026-10-14">2026年10月14日</time></p>
-  <p>利益がちょうどゼロになる売上高（<b>損益分岐点売上高</b>）と、そのために売る数量を計算します。<b>売上高・変動費・固定費</b>の総額から出す方法と、<b>販売単価・1個当たり変動費</b>から出す方法の2つがあります。目標の利益を得るのに要る売上高と、今の売上高との差も出します。入力した金額はブラウザの外へ送信されません。</p>
+  <p>利益がゼロになる売上高（<b>損益分岐点売上高</b>）と、そのために売る数量を計算します。答えは、利益が0円以上になる最小の売上高（1円単位）と販売数量（1個単位）です。<b>売上高・変動費・固定費</b>の総額から出す方法と、<b>販売単価・1個当たり変動費</b>から出す方法の2つがあります。目標の利益を得るのに要る売上高と、今の売上高との差も出します。入力した金額はブラウザの外へ送信されません。</p>
 </section>
 
 <div class="card">
   <h2 id="sogaku" style="font-size:17px;margin-top:0">売上高・変動費・固定費から計算する</h2>
-  <p class="hint" style="margin-top:0">損益計算書などから、同じ期間（1か月・1年など）の総額を入れます。</p>
+  <p class="hint" style="margin-top:0">損益計算書などから、同じ期間（1か月・1年など）の総額を入れます。金額は税込か税抜のどちらかにそろえてください。売上高だけ税込で費用は税抜、のようにまざっていても、この計算機は補正しません。</p>
   <label for="sales">売上高（円）</label>
   <input id="sales" aria-describedby="sales-hint" type="number" inputmode="numeric" min="1" step="1" data-example="1200000">
   <span id="sales-hint" class="hint"><b class="input-example">入力例：1,200,000円なら 1200000</b></span>
@@ -143,7 +143,7 @@
 
 <div class="card">
   <h2 id="tanka" style="font-size:17px;margin-top:0">販売単価・1個当たり変動費から計算する</h2>
-  <p class="hint" style="margin-top:0">1個（1件・1人）単位で考えるときの入れ方です。何個売れば利益がゼロになるかが分かります。</p>
+  <p class="hint" style="margin-top:0">1個（1件・1人）単位で考えるときの入れ方です。何個売れば利益が0円以上になるかが分かります。単価・変動費・固定費も、税込か税抜のどちらかにそろえて入れてください（まざっていても補正しません）。</p>
   <div class="field-pair">
     <div>
       <label for="price">販売単価（円）</label>
@@ -250,7 +250,9 @@
 <p>同じ科目でも、事業によってどちらに置くかは変わります。J-Net21の回答も「費用を変動費と固定費に明確に分類することは困難」としたうえで、実状に合わせて簡便的に分類して使うよう述べています。勘定科目ごとの振り分け方は<a href="../column/soneki-bunkiten/">損益分岐点の計算と求め方</a>で、損益計算書のどこから数字を拾うかは<a href="../column/soneki-keisansho-mikata/">損益計算書の見方</a>で解説しています。固定費に入れる減価償却費は<a href="../genka/">減価償却費の計算機</a>で確かめられます。</p>
 
 <h2 id="mainasu">限界利益がゼロ以下のときは計算しない</h2>
-<p>変動費が売上高以上（販売単価が1個当たり変動費以下）だと、売れば売るほど赤字が増え、どれだけ売っても固定費を回収できません。式に入れると負の数や「割る0」が出ますが、それは損益分岐点ではありません。この計算機は、その場合に答えを出さず「前提が成り立たない」と表示します。</p>
+<p>限界利益がマイナスのとき（変動費が売上高より大きい・販売単価が1個当たり変動費より安い）は、売れば売るほど赤字が増え、どれだけ売っても固定費を回収できません。</p>
+<p>限界利益がちょうど0円のとき（変動費と売上高が同じ・販売単価と1個当たり変動費が同じ）は、売上を増やしても利益は増えも減りもしません。固定費があれば回収できず、固定費も0円ならどの売上でも利益は0円で、損益分岐点は1つに決まりません。</p>
+<p>どちらも、式に入れると負の数や「割る0」が出ますが、それは損益分岐点ではありません。この計算機は、その場合に答えを出さず「前提が成り立たない」と表示します。</p>
 
 <h2 id="hasu">割り切れないときの扱い</h2>
 <p>固定費が限界利益で割り切れないときは、販売数量は1個未満を、売上高は1円未満を切り上げて表示します。切り上げた数量・売上高なら利益は0円以上になり、1つ少ないと赤字です。数量から出す方法の損益分岐点売上高は「販売単価 × 切り上げた数量」なので、総額から出す方法の答えとわずかに違うことがあります。</p>
@@ -316,7 +318,13 @@ const read = (id) => { const v = $(id).value.trim(); return v === "" ? null : Nu
 const warn = (box, field, msg) => { box.dataset.resultState = "error"; box.innerHTML = `<div class="warn" data-field="${field}">${msg}</div>`; };
 const row = (k, v) => `<tr><th scope="row">${k}</th><td>${v}</td></tr>`;
 
-const NO_MARGIN = "限界利益が0円以下なので、損益分岐点は計算できません（前提が成り立ちません）。売れば売るほど赤字が増え、どれだけ売っても固定費を回収できない状態です。";
+// 限界利益がマイナスか0円かで、言えることがちがう（0円なら売っても赤字は増えない）
+const noMargin = (label, margin, fixed) => margin < 0
+  ? `${label}がマイナスなので、損益分岐点は計算できません。売れば売るほど赤字が増え、どれだけ売っても固定費を回収できない状態です。`
+  : fixed > 0
+    ? `${label}が0円なので、損益分岐点は計算できません。売上を増やしても利益は増えないため、固定費を回収できない状態です。`
+    : `${label}も固定費も0円なので、どの売上でも利益は0円です。損益分岐点は1つに決まりません。`;
+const NOTE_ROUND = "比率は切り上げる前の理論値から計算し、小数第2位を四捨五入しています。";
 
 $("calc").addEventListener("click", () => {
   const box = $("result");
@@ -327,11 +335,11 @@ $("calc").addEventListener("click", () => {
   if (fixed === null) return warn(box, "fixed", "固定費を入力してください（無ければ 0）。");
   const r = calcByTotals({ sales, variable, fixed, target });
   if (!r.ok) {
-    if (r.reason === "no_margin") return warn(box, "variable", NO_MARGIN);
+    if (r.reason === "no_margin") return warn(box, "variable", noMargin("限界利益", r.marginal, fixed));
     if (r.reason === "no_sales") return warn(box, "sales", "売上高は1円以上を入力してください。");
     return warn(box, "sales", "金額は0以上の整数（円）で、1兆円以下を入力してください。");
   }
-  const gapText = r.gap >= 0 ? `${yen(r.gap)}（損益分岐点を上回っています）` : `${yen(r.gap)}（損益分岐点まで ${yen(-r.gap)} 足りません）`;
+  const gapText = r.gap === 0 ? `${yen(0)}（損益分岐点に到達しています）` : r.gap > 0 ? `${yen(r.gap)}（損益分岐点を上回っています）` : `${yen(r.gap)}（損益分岐点まで ${yen(-r.gap)} 足りません）`;
   box.innerHTML = `
     <div class="row"><b>損益分岐点売上高</b> <span class="big" id="bep">${yen(r.bepSales)}</span></div>
     <div class="scroll-wrap"><table class="res"><tbody>
@@ -344,7 +352,7 @@ $("calc").addEventListener("click", () => {
       ${row("損益分岐点比率", pct(r.bepRatio))}
       ${r.target !== undefined ? row(`目標利益 ${yen(r.target)} を得る売上高`, `${yen(r.targetSales)}${r.targetGap > 0 ? `（今より ${yen(r.targetGap)} 多く）` : "（今の売上高で届いています）"}`) : ""}
     </tbody></table></div>
-    <div style="font-size:12.5px;color:var(--sub);margin-top:8px">※ 損益分岐点売上高 ＝ 固定費 ÷（1 − 変動費 ÷ 売上高）。${r.bepExact ? "" : "1円未満は切り上げています。"}率は小数第2位を四捨五入しています。</div>`;
+    <div style="font-size:12.5px;color:var(--sub);margin-top:8px">※ 損益分岐点売上高 ＝ 固定費 ÷（1 − 変動費 ÷ 売上高）。${r.bepExact ? "" : "1円未満は切り上げています。"}<br>※ 損益分岐点売上高は、利益が0円以上になる最小の1円単位の売上高です。${NOTE_ROUND}</div>`;
   box.dataset.resultState = "success";
 });
 
@@ -357,13 +365,13 @@ $("calc_u").addEventListener("click", () => {
   if (fixed === null) return warn(box, "fixed_u", "固定費を入力してください（無ければ 0）。");
   const r = calcByUnits({ price, unitVar, fixed, target, qty });
   if (!r.ok) {
-    if (r.reason === "no_margin") return warn(box, "unit_var", NO_MARGIN.replace("限界利益", "1個当たり限界利益"));
+    if (r.reason === "no_margin") return warn(box, "unit_var", noMargin("1個当たり限界利益", r.unitMargin, fixed));
     if (r.reason === "no_sales") return warn(box, "price", "販売単価は1円以上を入力してください。");
     return warn(box, "price", "金額・数量は0以上の整数で、1兆以下を入力してください。");
   }
   const qtyRows = r.qty === undefined ? "" :
     row("今の販売数量での利益", yen(r.currentProfit)) +
-    row("今の販売数量との差", r.qtyGap >= 0 ? `${r.qtyGap.toLocaleString("ja-JP")}個（損益分岐点を上回っています）` : `−${(-r.qtyGap).toLocaleString("ja-JP")}個（あと ${(-r.qtyGap).toLocaleString("ja-JP")}個 足りません）`);
+    row("今の販売数量との差", r.qtyGap === 0 ? "0個（損益分岐点に到達しています）" : r.qtyGap > 0 ? `${r.qtyGap.toLocaleString("ja-JP")}個（損益分岐点を上回っています）` : `−${(-r.qtyGap).toLocaleString("ja-JP")}個（あと ${(-r.qtyGap).toLocaleString("ja-JP")}個 足りません）`);
   box.innerHTML = `
     <div class="row"><b>損益分岐点の販売数量</b> <span class="big" id="bep_qty">${r.bepQty.toLocaleString("ja-JP")}個</span></div>
     <div class="scroll-wrap"><table class="res"><tbody>
@@ -373,7 +381,7 @@ $("calc_u").addEventListener("click", () => {
       ${r.target !== undefined ? row(`目標利益 ${yen(r.target)} を得る販売数量`, `${r.targetQty.toLocaleString("ja-JP")}個（売上高 ${yen(r.targetSales)}・損益分岐点より ${r.targetQtyOverBep.toLocaleString("ja-JP")}個多い）`) : ""}
       ${qtyRows}
     </tbody></table></div>
-    <div style="font-size:12.5px;color:var(--sub);margin-top:8px">※ 損益分岐点の販売数量 ＝ 固定費 ÷ 1個当たり限界利益。${r.bepExact ? "" : "1個未満は切り上げています。"}</div>`;
+    <div style="font-size:12.5px;color:var(--sub);margin-top:8px">※ 損益分岐点の販売数量 ＝ 固定費 ÷ 1個当たり限界利益。${r.bepExact ? "" : "1個未満は切り上げています。"}<br>※ 損益分岐点の販売数量は、利益が0円以上になる最小の整数の数量です。${NOTE_ROUND}</div>`;
   box.dataset.resultState = "success";
 });
 </script>

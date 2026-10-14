@@ -6,6 +6,7 @@
 //   国税庁 インボイスQ&A 問57 の記載例（税込60,000円×10/110≒5,454円・40,000円×8/108≒2,962円）
 //     — shohizei_core.js と同じ公表例で、税込→税抜のそろえ方を統合検査する
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { calcMargin, reversePrice, toBasis, percentToBp } from "../docs/assets/rieki_core.js";
 import { taxFromIncluded } from "../docs/assets/shohizei_core.js";
 
@@ -96,6 +97,46 @@ assert.equal(reversePrice({ cost: ex(0), target: { kind: "margin", percent: 20 }
 assert.equal(reversePrice({ cost: ex(800), target: { kind: "markup", percent: 150 }, out: { tax: "excluded", rate: "standard" } }).price, 2000);
 // 粗利率99.99%（原価1円）→ 1/0.0001 = 10,000円
 assert.equal(reversePrice({ cost: ex(1), target: { kind: "margin", percent: 99.99 }, out: { tax: "excluded", rate: "standard" } }).price, 10000);
+// ── H1（2026-10-14 sol 事実確認）: 答えの売価が入力上限（1兆円）を超えると、内部の calcMargin が失敗する。
+//    成功扱いで NaN を出さず、too_large として断る ──
+r = reversePrice({ cost: ex(1e12), target: { kind: "margin", percent: 50 }, out: { tax: "excluded", rate: "standard" } });
+assert.equal(r.ok, false);
+assert.equal(r.reason, "too_large");
+r = reversePrice({ cost: ex(100000000), target: { kind: "margin", percent: 99.99 }, out: { tax: "included", rate: "standard" }, rounding: "floor" });
+assert.equal(r.ok, false);
+assert.equal(r.reason, "too_large");
+// 上限ちょうど（1兆円）の答えは出す: 原価5,000億円・粗利率50% → 1兆円
+r = reversePrice({ cost: ex(5e11), target: { kind: "margin", percent: 50 }, out: { tax: "excluded", rate: "standard" } });
+assert.equal(r.ok, true);
+assert.equal(r.price, 1e12);
+assert.ok(Number.isFinite(r.result.grossMargin) && Number.isFinite(r.result.profit));
+// ── L1: 1円安い売価の税抜が0円になると率を定義できない（no_price）。主結果は2円・粗利率0% ──
+r = reversePrice({ cost: ex(1), target: { kind: "margin", percent: 0 }, out: { tax: "included", rate: "standard" }, rounding: "ceil" });
+assert.equal(r.ok, true);
+assert.equal(r.price, 2);
+assert.equal(r.result.grossMargin, 0);
+assert.equal(r.oneYenLess.ok, false);
+assert.equal(r.oneYenLess.reason, "no_price");
+// ── L3: 台帳 claims/riekiritsu.json の tool_cases を実引数で実行し、期待値（部分一致）と照合する ──
+//    （台帳に実行できない略記が残ると、照合したつもりで何も確かめていない状態になるので落とす）
+const ledger = JSON.parse(readFileSync(new URL("../claims/riekiritsu.json", import.meta.url), "utf8"));
+const FN = { calcMargin, reversePrice };
+const subset = (got, exp, path) => {
+  if (exp !== null && typeof exp === "object") {
+    assert.ok(got && typeof got === "object", `${path}: 戻り値に無い`);
+    for (const [k, v] of Object.entries(exp)) subset(got[k], v, `${path}.${k}`);
+  } else if (typeof exp === "number") assert.ok(close(got, exp), `${path}: ${got} ≠ ${exp}`);
+  else assert.equal(got, exp, path);
+};
+assert.ok(ledger.tool_cases.length >= 2);
+for (const t of ledger.tool_cases) {
+  const [[name, args]] = Object.entries(t.input);
+  assert.ok(FN[name], `tool_cases: 未知の関数 ${name}`);
+  subset(FN[name](args), t.expected, name);
+}
+const gy = reversePrice(ledger.tool_cases.find((t) => t.input.reversePrice).input.reversePrice);
+assert.ok(gy.result.grossMargin >= 0.2 && gy.oneYenLess.grossMargin < 0.2); // 1円安いと目標未満
+
 assert.equal(percentToBp(20), 2000);
 assert.equal(percentToBp(33.33), 3333);
 assert.equal(percentToBp(0.1), 10);

@@ -796,7 +796,9 @@ const SCENES = [
   { name: "soneki_bunkiten_sogaku", expect: (s) =>
       s.big === 1000000 && s.profit === 120000 && s.safety === "16.7%" && s.bepRatio === "83.3%" && s.state === "success" },
   // 限界利益0円: 負の損益分岐点を出さず、前提が成り立たないと言う
-  { name: "soneki_bunkiten_no_margin", noCoverage: true, expect: (s) => s.noMargin && s.big === null },
+  { name: "soneki_bunkiten_no_margin", noCoverage: true, expect: (s) => s.noMargin && s.big === null && !s.marginMinus && !s.redGrows },
+  // 限界利益マイナス（変動費が売上高を1円超える）: 売るほど赤字が増える、と言い分ける
+  { name: "soneki_bunkiten_no_margin_minus", noCoverage: true, expect: (s) => s.noMargin && s.big === null && s.marginMinus && s.redGrows },
 
   // ── 利益率・原価率 計算ツール (/riekiritsu/) ───────────────────────
   // ★J-Net21: 売価1,000円・仕入800円の差額200円。粗利率20%・原価率80%・上乗せ率25%（分母のちがい）
@@ -808,6 +810,10 @@ const SCENES = [
   // 逆算: 原価800円・粗利率20%以上 → 税抜1,000円／税込で答えると（消費税の端数切捨て）1,099円
   { name: "riekiritsu_gyakusan", expect: (s) => s.rPrice === 1000 && s.state === "success" },
   { name: "riekiritsu_gyakusan_zeikomi", expect: (s) => s.rPrice === 1099 },
+  // 答えの売価が1兆円超: 成功扱いで NaN を出さず、失敗として申告する
+  { name: "riekiritsu_gyakusan_too_large", noCoverage: true, expect: (s) => s.state === "error" && !s.nan && s.rPrice === null && /1兆円を超える/.test(s.body) },
+  // 1円安い売価の税抜が0円: 主結果2円は出し、比較欄は率を出さずに「計算できません」
+  { name: "riekiritsu_gyakusan_less_noprice", expect: (s) => s.state === "success" && s.rPrice === 2 && !s.nan && /計算できません/.test(s.less ?? "") },
 
   // ── 所得税 計算機（確定申告） (/shotokuzei/) ─────────────────────────
   // ★年末調整の設例A（所得控除4,826,102円・年調年税額41,400円）に医療費30万円を足して確定申告:

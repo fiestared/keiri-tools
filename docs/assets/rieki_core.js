@@ -20,6 +20,7 @@
  * そろえ方は利用者が選ぶ（税抜でそろえる／税込でそろえる）。
  *
  * 逆算は「利用者が指定した率以上になる、1円単位で最も安い売価」を返す。売価そのものを勧めるものではない。
+ * 答えの売価が1兆円（MAX_YEN）を超えるときは reason: "too_large" で断る（入力の上限と同じ線）。
  * 率の判定は整数どうしの掛け算で行い、浮動小数点の丸めで境目の1円を取り違えないようにする。
  */
 import { convert, RATES } from "./shohizei_core.js";
@@ -113,7 +114,10 @@ export function reversePrice({ cost, basis = "excluded", target, out, rounding =
     if (ok(mid)) hi = mid; else lo = mid;
   }
   const P = hi;
+  // 答えの売価にも入力と同じ上限（1兆円）を当てる。超えたら calcMargin が invalid を返すので、成功扱いにせず断る
+  if (P > MAX_YEN) return { ok: false, reason: "too_large" };
   const atP = calcMargin({ cost, price: { amount: P, tax: out.tax, rate: out.rate }, basis, rounding });
+  if (!atP.ok) return { ok: false, reason: atP.reason };
   const below = P > 1 ? calcMargin({ cost, price: { amount: P - 1, tax: out.tax, rate: out.rate }, basis, rounding }) : null;
   return {
     ok: true,
@@ -123,6 +127,6 @@ export function reversePrice({ cost, basis = "excluded", target, out, rounding =
     priceBasis: atP.price,                      // 基準にそろえた売価
     other: convert(P, out.rate, rounding, out.tax), // 税抜・税込の両方
     result: atP,                                // その売価での利益額・各率
-    oneYenLess: below,                          // 1円安いと目標に届かないことの確認用
+    oneYenLess: below,                          // 1円安いと目標に届かないことの確認用。税抜0円なら {ok:false, reason:"no_price"}
   };
 }
