@@ -48,7 +48,8 @@ export function attachBankPresets({ select, under, over, note, fetcher = fetch, 
       banks.forEach((bank, index) => {
         const option = select.ownerDocument.createElement('option');
         option.value = index;
-        option.textContent = `${bank.name}　${bank.under30k}円 / ${bank.over30k}円`;
+        // 2026-10-15: 公式資料で額を確認できていない行は、選択肢の見た目で分かるようにする（未検証の額を確定額に見せない）
+        option.textContent = `${bank.name}　${bank.under30k}円 / ${bank.over30k}円${bank.article?.unverified ? '（掲載額は未確認）' : ''}`;
         select.appendChild(option);
       });
       applyHash();
