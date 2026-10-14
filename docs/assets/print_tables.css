@@ -1,0 +1,69 @@
+.table-actions { display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:16px; }
+.table-actions button.primary { width:auto; margin-top:0; }
+.print-table-sheet { scroll-margin-top:84px; }
+.print-table-title { font-size:1.2rem; font-weight:700; margin:0 0 10px; }
+.table-basis { font-size:.9rem; line-height:1.7; overflow-wrap:anywhere; }
+.print-table-sheet .print-data-table { width:100%; min-width:0; }
+.print-data-table th, .print-data-table td { white-space:normal; overflow-wrap:anywhere; }
+.print-data-table .num { white-space:nowrap; }
+.print-table-inshi th.num { white-space:normal; }
+.print-data-table td:last-child { white-space:nowrap; font-size:.8rem; }
+.print-table-scope { font-size:.9rem; line-height:1.7; }
+.print-table-koyou .print-data-table { table-layout:fixed; }
+.print-table-koyou .print-data-table th:first-child { width:28%; }
+.print-table-koyou .print-data-table th:last-child { width:11%; }
+.print-table-koyou .print-data-table th { white-space:normal; }
+.print-table-koyou .print-data-table td { font-size:.9rem; }
+.rate-history { margin:16px 0; }
+.rate-history summary { cursor:pointer; }
+.rate-history .print-data-table { table-layout:fixed; }
+.rate-history .print-data-table th:first-child { width:22%; }
+.rate-history .print-data-table th:last-child { width:12%; }
+.rate-history .print-data-table .num, .rate-history .hint { white-space:normal; }
+@media (max-width:600px) {
+  .print-table-koyou .print-data-table { min-width:610px; }
+  .print-table-rosai .print-data-table { min-width:370px; table-layout:fixed; }
+  .print-table-rosai .print-data-table th:first-child { width:60px; }
+  .print-table-rosai .print-data-table th:nth-child(2) { width:176px; }
+  .print-table-rosai .print-data-table th:nth-child(3) { width:64px; white-space:normal; }
+  .print-table-rosai .print-data-table th:last-child { width:70px; }
+  .rate-history .print-data-table { min-width:650px; }
+  .print-table-inshi .print-data-table { table-layout:fixed; }
+  .print-table-inshi .print-data-table th:first-child { width:52%; }
+  .print-table-inshi .print-data-table th:nth-child(2) { width:28%; }
+  .print-table-inshi .print-data-table th:last-child { width:20%; }
+  .print-table-inshi .print-data-table th, .print-table-inshi .print-data-table td { padding:8px; }
+  .print-table-inshi .print-data-table td.num { white-space:normal; font-size:13px; }
+  .print-table-inshi .print-data-table td:last-child { font-size:11px; }
+}
+@media print {
+  @page { size:A4 portrait; margin:10mm; }
+  :is(html:not([data-calculated]), html[data-print-table]) body.print-tables-page :is(body > *, main > *, article > *):not(:has([data-print-tables])):not([data-print-tables]):not([data-print-tables] *) { display:none !important; }
+  :is(html:not([data-calculated]), html[data-print-table]) body.print-tables-page, :is(html:not([data-calculated]), html[data-print-table]) body.print-tables-page main, :is(html:not([data-calculated]), html[data-print-table]) body.print-tables-page article,
+  :is(html:not([data-calculated]), html[data-print-table]) body.print-tables-page .page-shell, :is(html:not([data-calculated]), html[data-print-table]) body.print-tables-page .main-content {
+    display:block !important; width:auto !important; max-width:none !important; margin:0 !important; padding:0 !important;
+    background:#fff !important; color:#000 !important;
+  }
+  :is(html:not([data-calculated]), html[data-print-table]) body.print-tables-page { width:190mm !important; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page [data-print-tables].print-table-sheet { display:block !important; margin:0; padding:0; border:0; box-shadow:none; background:#fff; color:#000; }
+  html[data-print-table] body.print-tables-page { zoom:1; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .table-actions { display:none !important; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-table-title { font-size:14pt; margin:0 0 3mm; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .table-basis, :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-table-scope,
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page #receipt-tax-basis { font-size:8pt; line-height:1.4; margin:2mm 0; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .scroll-wrap { overflow:visible !important; margin:0; border:0; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-table-sheet,
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .scroll-wrap,
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-data-table { break-inside:auto !important; page-break-inside:auto !important; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-data-table { width:100% !important; min-width:0 !important; font-size:9pt; border-collapse:collapse; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-data-table th, .print-tables-page .print-data-table td { padding:1.5mm; border:1px solid #aaa; background:#fff; color:#000; line-height:1.35; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-data-table th { position:static; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-data-table tr { break-inside:avoid; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-data-table thead { display:table-header-group; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page a { color:#000; text-decoration:underline; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page a::after { content:none !important; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-table-rosai .print-data-table { font-size:8pt; table-layout:auto !important; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-table-rosai th, .print-tables-page .print-table-rosai td { padding:1mm; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-table-rosai .print-data-table th { width:auto !important; }
+  :is(html:not([data-calculated]), html[data-print-table]) .print-tables-page .print-table-rosai .print-data-table th:first-child { width:19% !important; }
+}

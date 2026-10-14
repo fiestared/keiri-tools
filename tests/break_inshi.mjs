@@ -63,8 +63,12 @@ const BREAKS = [
    "return { ...base, tax: 200, taxable: true }; notes.push('営業に関しない受取書"],
 
   ['★fail closed を外す（データ無しでも空データで計算に進む）', 'core',
-   "if (!D || !D.docs) throw new Error('参照データ（inshi_r07.json）が渡されていません');",
-   'D = D || { docs: {} };'],
+   'if (!data.ok) return data;',
+   'if (false) return data;'],
+
+  ['★消費税額等の不正入力を拒否せず0円とみなす', 'core',
+   "if (!Number.isSafeInteger(v) || v < 0) throw new Error(label + 'は0以上の整数（円）で入力してください');",
+   'if (!Number.isSafeInteger(v) || v < 0) return 0;'],
 
   // ── データ側の壊し（JSONの逐語転記ミスの再現）─────────────────────────────
   ['★データ: 軽減表の5,000万超1億以下を30,000→10,000に壊す（NTA例30,000円で捕捉）', 'data',
