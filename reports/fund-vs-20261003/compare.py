@@ -1,6 +1,6 @@
 """2026-10-03 batch: compute same-period comparisons from saved issuer NAV files (no network).
 
-Sources (saved 2026-10-03 in this directory; rakuten_100091/100092 saved 2026-10-06; rakuten_100035 saved 2026-10-07; rakuten_100127 and rakuten_100105_20261008 saved 2026-10-08; mufg_253144 and amone_313122 saved 2026-10-09; sbi_2021062902 and rakuten_100035_20261010 saved 2026-10-10; sbi_2024122003 and rakuten_100105_20261011 saved 2026-10-11; rakuten_100123 and mufg_251065 saved 2026-10-12; mufg_253425 saved 2026-10-13; rakuten_100035 / rakuten_100127 re-fetched 2026-10-14 and identical to the saved files up to 2026-10-06/10-07):
+Sources (saved 2026-10-03 in this directory; rakuten_100091/100092 saved 2026-10-06; rakuten_100035 saved 2026-10-07; rakuten_100127 and rakuten_100105_20261008 saved 2026-10-08; mufg_253144 and amone_313122 saved 2026-10-09; sbi_2021062902 and rakuten_100035_20261010 saved 2026-10-10; sbi_2024122003 and rakuten_100105_20261011 saved 2026-10-11; rakuten_100123 and mufg_251065 saved 2026-10-12; mufg_253425 saved 2026-10-13; rakuten_100035_20261014 / rakuten_100127_20261014 saved 2026-10-14, identical to the earlier files on every shared day):
   MUFG  https://www.am.mufg.jp/fund_file/setteirai/<code>.csv
   Daiwa https://www.daiwa-am.co.jp/funds/detail/csv_out.php?code=<code>&type=1
   Rakuten https://www.rakuten-toushin.co.jp/assets/csv/chart_<n>.csv
@@ -62,7 +62,8 @@ PAIR_FILES = {('sbi-spyd4', 'rakuten-vym'): {'sbi-spyd4': 'sbi_2024013002_202610
               ('rakuten-jepi', 'rakuten-schd'): {'rakuten-schd': 'rakuten_100105_20261008.csv'},
               ('sbi-vym1', 'rakuten-vym'): {'rakuten-vym': 'rakuten_100035_20261010.csv'},
               ('rakuten-schd', 'sbi-schd4'): {'rakuten-schd': 'rakuten_100105_20261011.csv'},
-              ('orcan', 'rakuten-schd'): {'rakuten-schd': 'rakuten_100105_20261011.csv'}}
+              ('orcan', 'rakuten-schd'): {'rakuten-schd': 'rakuten_100105_20261011.csv'},
+              ('rakuten-vym', 'rakuten-jepi'): {'rakuten-vym': 'rakuten_100035_20261014.csv', 'rakuten-jepi': 'rakuten_100127_20261014.csv'}}
 
 def series(key, pair=None):
     p = HERE / PAIR_FILES.get(pair, {}).get(key, FILES[key])
