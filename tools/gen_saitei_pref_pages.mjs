@@ -17,7 +17,6 @@ const CHECK = process.argv.includes('--check');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const yen = n => n.toLocaleString('ja-JP') + '円';
 const date = s => s.split('-').map(Number).map((n,i) => n + ['年','月','日'][i]).join('');
-const monthday = s => s.split('-').slice(1).map(Number).map((n,i) => n + ['月','日'][i]).join('');
 const prevDay = s => { const d = new Date(s + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate()-1); return d.toISOString().slice(0,10); };
 const row = name => D.prefectures.find(p => p.pref === name);
 const SOURCE = `<a href="${esc(D._meta.source_pdf)}">厚生労働省の全国一覧（${esc(D._meta.year)}）</a>`;
@@ -34,10 +33,10 @@ export function prefContent(p) {
   return `<h1>${esc(p.full)}の最低賃金｜時間額・発効日・月給換算</h1>
 <p class="article-meta">確認日: <time datetime="${m.checked}">${date(m.checked)}</time>　対象: ${esc(m.year)}</p>
 <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（経理実務者）</p>
-<p id="pref-lead">${esc(p.full)}の${esc(m.year)}の地域別最低賃金は、<b>${monthday(p.effective)}から時間額${yen(p.wage)}</b>です。発効日は${esc(p.effective_wa)}です。</p>
-<p id="pref-current">${date(m.checked)}の確認日時点で有効な${esc(p.full)}の地域別最低賃金は、時間額<b>${yen(current)}</b>です。</p>
+<p id="pref-lead">${esc(p.full)}の${esc(m.year)}の地域別最低賃金は、<b>${esc(p.effective_wa)}から時間額${yen(p.wage)}</b>です。</p>
+${m.checked < p.effective ? `<p id="pref-current">${date(m.checked)}の確認日時点では、改定前の時間額<b>${yen(current)}</b>が有効です。</p>` : ""}
 <p id="pref-delta">${esc(p.full)}の${esc(m.year)}の改定は、改定前の時間額${yen(p.prev)}から<b>${yen(p.up)}の引上げ（${p.rate}%）</b>です。${SOURCE}に掲載されています。</p>
-<p class="saitei-actions"><a class="tool-cta" id="pref-calculator" href="../?pref=${encodeURIComponent(p.pref)}#calculator">${esc(p.full)}を選んで時給・月給を比較する</a><button type="button" id="pref-print">この県の表を印刷</button></p>
+<p class="saitei-actions"><a class="tool-cta" id="pref-calculator" href="../?pref=${encodeURIComponent(p.pref)}#calculator">${esc(p.full)}を選んで時給・月給を比較する</a><button type="button" class="primary" id="pref-print">この県の表を印刷</button></p>
 <h2 id="boundary">${esc(p.full)}の改定前・改定後の境界</h2>
 <p>地域別最低賃金の時間額は発効日を境に切り替わります。${esc(p.full)}の${esc(m.year)}の改定をまたぐ期間は、次の区分で確認してください。出典: ${SOURCE}。</p>
 <div class="scroll-wrap"><table id="pref-boundary"><thead><tr><th scope="col">適用する期間</th><th scope="col">地域別最低賃金の時間額</th></tr></thead><tbody>
@@ -52,7 +51,10 @@ ${monthly}
 </tbody></table></div>
 <p><a id="pref-monthly-calculator" href="../?pref=${encodeURIComponent(p.pref)}&amp;wage_type=monthly#calculator">年間所定労働日数・一日の所定労働時間を入力して比較する</a>。<a href="../#monthly-conversion">所定時間の換算方法</a>も親ページにあります。</p>
 <h3 id="excluded">最低賃金に含めない賃金の確認</h3>
-<p id="pref-exclusions">臨時に支払われる賃金、一か月を超える期間ごとの賃金、所定時間を超える労働への賃金、所定休日の労働への賃金、深夜労働の通常賃金を超える部分、精皆勤手当、通勤手当、家族手当は除きます。</p>
+<p>次の賃金は最低賃金の比較から除きます。</p>
+<ul id="pref-exclusions">
+${["臨時に支払われる賃金", "一か月を超える期間ごとの賃金", "所定時間を超える労働への賃金", "所定休日の労働への賃金", "深夜労働の通常賃金を超える部分", "精皆勤手当", "通勤手当", "家族手当"].map(t => `<li>${t}</li>`).join("\n")}
+</ul>
 <p><a href="../#sannyu">対象外の賃金の詳しい列挙と固定残業代の扱い</a>は親ページで確認できます。根拠: <a href="https://laws.e-gov.go.jp/law/334AC0000000137">最低賃金法</a>・<a href="${REGULATION}">同法施行規則</a>・<a href="https://saiteichingin.mhlw.go.jp/point/page_point_targetwages.html">厚生労働省「最低賃金の対象となる賃金」</a>。</p>
 <h2 id="nearby">近隣の都道府県の改定額・発効日</h2>
 <p>次は${esc(m.year)}の地域別最低賃金の改定額です。発効前の県の現行額は、リンク先の県ページで確認できます。近隣には海を挟んだ県を含みます。出典: ${SOURCE}。</p>

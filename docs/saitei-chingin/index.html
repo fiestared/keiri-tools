@@ -227,7 +227,7 @@
       <li>1か月を超える期間ごとに支払われる賃金（賞与など）</li>
       <li>所定労働時間を超える時間の労働に対して支払われる賃金（時間外労働の賃金。割増部分だけではなく通常賃金部分も除く）</li>
       <li>所定労働日以外の日の労働に対して支払われる賃金（所定休日の労働の賃金。割増部分だけではなく通常賃金部分も除く）</li>
-      <li>午後10時から午前5時までの深夜労働の賃金のうち、通常の労働時間の賃金を超える部分（深夜割増部分を除く。労働基準法の規定により厚生労働大臣が定める地域・期間は午後11時から午前6時まで）</li>
+      <li>午後10時から午前5時までの深夜労働の賃金のうち、通常の労働時間の賃金を超える部分（深夜割増部分を除く）。労働基準法の規定により厚生労働大臣が定める地域・期間は、午後11時から午前6時までが対象です。</li>
       <li>精皆勤手当</li>
       <li>通勤手当</li>
       <li>家族手当</li>
@@ -277,13 +277,14 @@
   <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年度　／　一次情報の確認: 2026年10月14日</li></ul></div><!-- /datasrc:auto -->
 </footer>
 <script type="module">
-import { judgeSaitei, rankOf } from "../assets/saitei_core.js";
+import { judgeSaitei, rankOf, validateSaiteiData } from "../assets/saitei_core.js";
 import { attachCopyButton } from "../assets/copy_result.js";
 
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g,
   (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const yen = (v) => "¥" + Math.round(v).toLocaleString("ja-JP");
+const yen = (v) => Math.round(v) === 0 && v > 0 ? "1円未満" : "¥" + Math.round(v).toLocaleString("ja-JP");
+const hourlyShort = (v) => Number(v.toFixed(2)) === 0 && v > 0 ? "0.01円未満" : Number(v.toFixed(2)) + "円";
 const today = () => new Date().toLocaleDateString("sv-SE"); // YYYY-MM-DD（ローカル日付）
 
 let D = null;
@@ -292,7 +293,7 @@ let D = null;
 // 待たずに判定すると「データが無いので何も起きない」＝黙って答えを出さない事故になる。
 const saiteiReady = fetch("../assets/saitei_chingin_r08.json")
   .then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-  .then((d) => { D = d; return true; })
+  .then((d) => { if (!validateSaiteiData(d).ok) throw new Error("invalid reference data"); D = d; return true; })
   .catch(() => false);
 
 saiteiReady.then((loaded) => {
@@ -375,8 +376,8 @@ $("run").addEventListener("click", async () => {
     : `<div style="font-size:22px;font-weight:700;color:#a33">最低賃金を下回っています</div>`;
 
   const detail = r.clears
-    ? `<div style="margin-top:6px">${esc(r.pref)}の最低賃金 <b>${r.minWage}円</b> に対し、あなたの時間額は <b>${r.hourlyRounded}円</b>（+${Math.round(r.diff * 100) / 100}円）です。</div>`
-    : `<div style="margin-top:6px">${esc(r.pref)}の最低賃金 <b>${r.minWage}円</b> に対し、あなたの時間額は <b>${r.hourlyRounded}円</b> で、<b>1時間あたり${Math.round(r.shortPerHour * 100) / 100}円</b>不足しています。</div>`
+    ? `<div style="margin-top:6px">${esc(r.pref)}の最低賃金 <b>${r.minWage}円</b> に対し、あなたの時間額は <b>${r.hourlyRounded}円</b>（+${Number(r.diff.toFixed(2))}円）です。</div>`
+    : `<div style="margin-top:6px">${esc(r.pref)}の最低賃金 <b>${r.minWage}円</b> に対し、あなたの時間額は <b>${r.hourlyRounded}円</b> で、<b>1時間あたり${hourlyShort(r.shortPerHour)}</b>不足しています。</div>`
       + (r.shortPerMonth ? `<div style="margin-top:4px">この所定労働時間なら、月あたり約<b>${yen(r.shortPerMonth)}</b>、年あたり約<b>${yen(r.shortPerYear)}</b>の差になります。</div>` : "")
       + `<div class="note" style="margin-top:8px">最低賃金額より低い賃金の定めは無効となり、最低賃金額と同じ定めをしたものとみなされます（最低賃金法4条2項）。差額の支払いを求めることができます。お近くの労働基準監督署・総合労働相談コーナーへご相談ください。</div>`;
 

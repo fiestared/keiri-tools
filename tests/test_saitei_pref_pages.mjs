@@ -33,7 +33,8 @@ for(const p of D.prefectures){
  assert.ok(doc.title.includes(D._meta.year));
  assert.ok(doc.querySelector('meta[name=description]').content.includes(p.effective_wa));
  assert.ok(text(doc.querySelector('#pref-lead')).includes(money(p.wage)));
- assert.ok(text(doc.querySelector('#pref-current')).includes(money(D._meta.checked<p.effective?p.prev:p.wage)));
+ if(D._meta.checked<p.effective)assert.ok(text(doc.querySelector('#pref-current')).includes(money(p.prev)));
+ else assert.equal(doc.querySelector('#pref-current'),null,'発効後の冒頭で同じ額を繰り返さない');
  assert.ok(text(doc.querySelector('#pref-delta')).includes(money(p.up)));
  assert.ok(text(doc.querySelector('#pref-delta')).includes(p.rate+'%'));
  assert.equal(doc.querySelector('.article-meta time').dateTime,D._meta.checked);

@@ -16,7 +16,7 @@ try{
    await page.screenshot({path:join(out,`saitei-${slug}-${width}.png`),fullPage:true});
   }
   await page.emulateMedia({media:'print'});
-  for(const selector of ['#pref-lead','#pref-current','#pref-boundary','#pref-monthly','#pref-sources'])assert.ok(await page.locator(selector).isVisible(),slug+' print '+selector);
+  for(const selector of ['#pref-lead','#pref-boundary','#pref-monthly','#pref-sources'])assert.ok(await page.locator(selector).isVisible(),slug+' print '+selector);
   assert.ok(!(await page.locator('#pref-print').isVisible()));
   const pdf=await page.pdf({path:join(out,`saitei-${slug}.pdf`),format:'A4',printBackground:true});
   assert.equal((pdf.toString('latin1').match(/\/Type \/Page\b/g)||[]).length,1,slug+' must print on one A4 page');
