@@ -903,12 +903,12 @@ function hourChart(site) {
   </div>
   <figcaption>${cum}。<b>今日の棒は ${site.cutoff ? esc(site.cutoff) : "現在"} で終わっている</b>のが正常で、
     その先は「0件」ではなく<b>GA4がまだ出していない</b>。前日の合計とではなく、同じ時間帯どうしで比べること。</figcaption>
-  ${hourTable(site)}
 </figure>`;
 }
 
 // チャートは色と形で読ませているので、数値そのものはここで担保する（マウスを使えない場合の経路）
 function hourTable(site) {
+  if (!site.hToday || !site.hYest) return "";
   const rows = site.hToday.map((v, hh) => {
     const drawn = hh <= site.cutoffHour;
     const yv = site.hYest[hh];
@@ -1388,6 +1388,7 @@ function sitePanel(site, primary, extra = "", selected = true, asTab = false) {
   ${table(site)}
   ${hourChart(site)}
   ${rtHourChart(site)}
+  ${hourTable(site)}
   ${extra}
 </section>`;
 }
@@ -1560,7 +1561,8 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
 .sw-yest{height:8px; background:var(--series-2-wash); border-top:1.5px solid var(--series-2); border-radius:0}
 .sw-prevweek{height:0; width:16px; border-top:2px dashed var(--series-3); border-radius:0}
 .sw-rt{background:var(--series-rt)}
-.chart.rt-est{border-top:1px dashed var(--axis)}
+/* 推定は「時間帯別のセッション数」の直後。日次との区切り（.chart.hourly の実線）は重ねない */
+.chart.hourly.rt-est{margin-top:4px; border-top:1px dashed var(--axis); padding-top:12px}
 .rt-warn{font-size:12.5px; line-height:1.6; color:var(--ink); border-left:3px solid var(--warn); padding-left:10px; margin:6px 0}
 .rt-warn code{font-size:11px; color:var(--ink2); word-break:break-all}
 .chart.hourly figcaption b{color:var(--ink)}
