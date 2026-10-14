@@ -54,38 +54,34 @@ for (const e of reg.entries) {
       && !(e.note || "").includes("年度で変わらない")) {
     errs.push(`${at}: url_kind=in_place の理由が note に無い`);
   }
-  if (e.year_label_suffix !== undefined && !["分", "度"].includes(e.year_label_suffix)) {
-    errs.push(`${at}: year_label_suffix は「分」または「度」であること`);
+  // 「令和N年」の後ろに付く語。分/度 のほか、資料見出しが「令和N年版」なら 版、
+  // 同じURLに年ごとの行が足される型（延滞税の割合「令和N年1月1日から」）なら 月日 を許す（2026-10-15）。
+  // 自由文字列にはしない（「年」だけにすると本文の「令和9年分以後」等の予告に当たり、偽の found を出す）
+  if (e.year_label_suffix !== undefined && !/^(?:分|度|版|(?:[1-9]|1[0-2])月(?:[1-9]|[12][0-9]|3[01])日)$/.test(e.year_label_suffix)) {
+    errs.push(`${at}: year_label_suffix は「分」「度」「版」または「M月D日」であること（今: ${JSON.stringify(e.year_label_suffix)}）`);
   }
   // ★未調査を「監視できている」と見せない。url が null なら note に理由を書かせる
   if (e.url === null && !(e.note || "").includes("未調査")) {
     errs.push(`${at}: url が null なのに note に「未調査」の明示が無い（未調査と未公表を混同する）`);
   }
-  if (e.url && e.probe_next === false && !(e.note || "")) {
-    errs.push(`${at}: probe_next=false なのに理由(note)が無い`);
+  // probe_next=false は「登録はあるが次の年度版を見ていない」。理由を専用の欄に書かせる（note は実測の記録）
+  if (e.probe_next === false && !(e.probe_off_reason || "").trim()) {
+    errs.push(`${at}: probe_next=false なのに probe_off_reason（なぜ次の年度版を probe できないか）が無い`);
+  }
+  if (e.probe_next === false && !e.url) {
+    errs.push(`${at}: probe_next=false でも url（一次資料）は書くこと`);
   }
 }
 
-// 年度が刻印された記事のうち、登録から漏れていて、かつBing表示が大きいものを警告する
-// （表示データはこのrepoに無いので、ここでは件数だけ数えて見落としの規模を可視化する）
-const columnDirs = fs.readdirSync(path.join(root, "docs/column"), { withFileTypes: true })
-  .filter((d) => d.isDirectory()).map((d) => d.name);
-let stamped = 0;
-for (const slug of columnDirs) {
-  const f = path.join(root, "docs/column", slug, "index.html");
-  if (!fs.existsSync(f)) continue;
-  const html = fs.readFileSync(f, "utf8");
-  const m = html.match(/<title>([^<]*)/);
-  if (m && /令和\d+年/.test(m[1])) stamped++;
-}
+// 「title に年度があるのに登録が無い」コラムを落とすのは tests/test_source_year_coverage.mjs（2026-10-15〜）。
+// ここは登録の形だけを見る（以前ここにあった「残りは順次登録すること」の警告は、新規分を止めないので
+// 漏れが増え続けた。coverage 側で新規分は必ず落とし、既存の未登録は許可リストで減らす一方にした）。
 
 if (errs.length) {
   console.error(`✗ 年度監視の登録に ${errs.length}件の問題:`);
   for (const e of errs) console.error("  - " + e);
   console.error("");
-  console.error(`  参考: titleに令和N年を持つコラムは ${stamped}本、登録済みは ${reg.entries.length}件。`);
-  console.error("  登録は少しずつ増やしてよいが、url:null は「監視できていない」として数えること。");
   process.exit(1);
 }
-console.log(`✓ 年度監視の登録 OK（${reg.entries.length}件 / うち監視可能 ${reg.entries.filter((e) => e.url).length}件）`);
-console.log(`  ※ titleに令和N年を持つコラム ${stamped}本に対して登録 ${reg.entries.length}件。残りは順次登録すること。`);
+console.log(`✓ 年度監視の登録 OK（${reg.entries.length}件 / うち次の年度版を probe ${reg.entries.filter((e) => e.url && e.probe_next !== false).length}件・probe_next=false ${reg.entries.filter((e) => e.probe_next === false).length}件）`);
+console.log(`  ※ title に年度を持つコラムの登録漏れは node tests/test_source_year_coverage.mjs が見る`);
