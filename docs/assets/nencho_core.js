@@ -325,3 +325,63 @@ export function calcNencho(input, refs) {
     otherKyuyo, nenkinZatsu, allChosei2,
   };
 }
+
+/**
+ * 計算結果の各金額が「源泉徴収簿（年末調整欄）」と「給与所得の源泉徴収票」の**どの欄に当たるか**。
+ *
+ * 正本（いずれも令和8年分）:
+ *  - 源泉徴収簿の欄番号 ⑦〜㉗ … 国税庁『令和8年分 年末調整のしかた』57頁の設例の源泉徴収簿
+ *  - 源泉徴収票の欄名 … 国税庁『令和8年分 給与所得の源泉徴収票等の法定調書の作成と提出の手引』
+ *    5〜7頁「記載すべき事項」と、13〜15頁の記載例1（源泉徴収簿の欄から源泉徴収票の同じ記号の欄へ転記）
+ *
+ * ★急所:
+ *  1. ★★源泉徴収票の「源泉徴収税額」は**年調年税額（㉖）**で、毎月天引きされた合計（⑧）ではない。
+ *     利用者が源泉徴収票の「源泉徴収税額」を「天引きされた所得税の合計」欄に入れると、過不足が常に0に見える。
+ *  2. 「給与所得控除後の金額（調整控除後）」は⑪（所得金額調整控除を引いた後）で、⑨ではない。
+ *  3. 「社会保険料等の金額」は⑫＋⑬＋⑭の合計（申告分の国民年金保険料・小規模企業共済等掛金を含む）。
+ *  4. 「住宅借入金等特別控除の額」は算出所得税額を限度とした額（㉔）。引ききれない分は書かない（手引⑰の注）。
+ *
+ * 画面の結果表は、この対応を**ここから**描く（ページに手書きすると、欄の名前と金額が別々に腐る）。
+ * @param r calcNencho の戻り値（ok のもの）
+ * @returns {Array<{key:string, label:string, value:number, bo:string|null, hyo:string|null}>}
+ *   bo = 源泉徴収簿の欄番号、hyo = 源泉徴収票の欄名（無ければ null）
+ */
+export function kisaiRan(r) {
+  const k = r.kojo;
+  return [
+    { key: 'kyuyo', label: '給与の総額', value: r.kyuyo, bo: '⑦', hyo: '支払金額' },
+    { key: 'kojoGo', label: '給与所得控除後の給与等の金額', value: r.kojoGo, bo: '⑨', hyo: null },
+    { key: 'chosei', label: '所得金額調整控除', value: r.chosei, bo: '⑩', hyo: '所得金額調整控除額' },
+    { key: 'choseiGo', label: '給与所得控除後の給与等の金額（調整控除後）', value: r.choseiGo, bo: '⑪', hyo: '給与所得控除後の金額（調整控除後）' },
+    { key: 'shaho', label: '社会保険料等の控除額', value: k.shaho, bo: '⑫＋⑬＋⑭', hyo: '社会保険料等の金額' },
+    { key: 'seiho', label: '生命保険料の控除額', value: k.seiho, bo: '⑮', hyo: '生命保険料の控除額' },
+    { key: 'jishin', label: '地震保険料の控除額', value: k.jishin, bo: '⑯', hyo: '地震保険料の控除額' },
+    { key: 'haigu', label: '配偶者（特別）控除額', value: k.haigu, bo: '⑰', hyo: '配偶者（特別）控除の額' },
+    { key: 'tokutei', label: '特定親族特別控除額', value: k.tokutei, bo: '⑱', hyo: '特定親族特別控除の額' },
+    { key: 'fuyoTou', label: '扶養控除額及び障害者等の控除額の合計額', value: k.fuyoTou, bo: '⑲', hyo: null },
+    { key: 'kiso', label: '基礎控除額', value: k.kiso, bo: '⑳', hyo: '基礎控除の額' },
+    { key: 'kojoGokei', label: '所得控除額の合計額', value: k.gokei, bo: '㉑', hyo: '所得控除の額の合計額' },
+    { key: 'kazei', label: '課税給与所得金額', value: r.kazei, bo: '㉒', hyo: null },
+    { key: 'sanshutsu', label: '算出所得税額', value: r.sanshutsu, bo: '㉓', hyo: null },
+    { key: 'jutaku', label: '住宅借入金等特別控除額', value: r.jutaku, bo: '㉔', hyo: '住宅借入金等特別控除の額' },
+    { key: 'nenchoShotoku', label: '年調所得税額', value: r.nenchoShotoku, bo: '㉕', hyo: null },
+    { key: 'nenzei', label: '年調年税額（復興特別所得税を含む）', value: r.nenzei, bo: '㉖', hyo: '源泉徴収税額' },
+    { key: 'choshu', label: '徴収税額の合計（未徴収分を含む）', value: r.choshu, bo: '⑧', hyo: null },
+    { key: 'sagaku', label: r.fusoku > 0 ? '不足額' : '超過額', value: r.fusoku > 0 ? r.fusoku : r.kanpu, bo: '㉗', hyo: null },
+  ];
+}
+
+/**
+ * 結果の要約（画面の頭に出す3つの数字と、適用した改正の申告）。年分・改正の文言はデータ（_meta）から取る。
+ */
+export function kekkaYoyaku(r, N) {
+  const m = N?._meta || {};
+  return {
+    year: m.year || '',
+    nenzei: r.nenzei,
+    choshu: r.choshu,
+    kubun: r.fusoku > 0 ? 'fusoku' : (r.kanpu > 0 ? 'kanpu' : 'nashi'),
+    sagaku: r.fusoku > 0 ? r.fusoku : r.kanpu,
+    kaisei: m.kaisei_short || '',
+  };
+}
