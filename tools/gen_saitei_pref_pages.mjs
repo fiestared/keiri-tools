@@ -96,6 +96,7 @@ function sync(p) {
   const dir = join(ROOT, 'docs/saitei-chingin', ROUTES[p.pref].slug), file = join(dir,'index.html'), wanted = freshHtml(p);
   if (!existsSync(file)) { if (CHECK) throw Error(`未生成: ${file}`); mkdirSync(dir,{recursive:true}); writeFileSync(file,wanted); return; }
   const before = readFileSync(file,'utf8');
+  if (!before.includes('<!--saitei-pref:S-->') || !before.includes('<!--saitei-pref:E-->')) throw Error(`県ページの生成マーカーがありません: ${file}`);
   let after = before.replace(/<title>[\s\S]*?<\/title>/,`<title>${esc(titleOf(p))}</title>`)
     .replace(/<meta name="description" content="[^"]*">/,`<meta name="description" content="${esc(descOf(p))}">`);
   after = after.replace(/<article id="pref-content"[^>]*>/, '<article id="pref-content" data-generated-from="../../assets/saitei_chingin_r08.json">');

@@ -22,6 +22,8 @@ for(const p of D.prefectures){
  assert.ok(published,p.pref+' must exist in the curl-fetched national PDF');
  assert.deepEqual(published.slice(1,4).map(s=>Number(s.replaceAll(',',''))),[p.wage,p.prev,p.up]);
  assert.equal(Number(published[4]),p.rate);assert.equal(published[5],p.effective_wa);
+ const officialDate=published[5].match(/令和(\d+)年(\d+)月(\d+)日/);
+ assert.equal(p.effective,`${2018+Number(officialDate[1])}-${officialDate[2].padStart(2,'0')}-${officialDate[3].padStart(2,'0')}`);
  const r=routes[p.pref],html=read(`docs/saitei-chingin/${r.slug}/index.html`),dom=new JSDOM(html),doc=dom.window.document;
  const url=`https://keiri-tools.com/saitei-chingin/${r.slug}/`;
  assert.equal(doc.querySelector('link[rel=canonical]').href,url);
@@ -58,6 +60,10 @@ const file=ROOT+'docs/saitei-chingin/okinawa/index.html',original=readFileSync(f
 try{
  const dom=new JSDOM(original),td=dom.window.document.querySelector('#pref-boundary tbody tr:last-child td');td.textContent='9,999円';writeFileSync(file,dom.serialize());
  assert.throws(check,/データと県ページが不一致/);dom.window.close();
+}finally{writeFileSync(file,original);}
+try{
+ writeFileSync(file,original.replace('<!--saitei-pref:S-->',''));
+ assert.throws(check,/生成マーカーがありません/);
 }finally{writeFileSync(file,original);}
 check();
 console.log('✓ 最低賃金47県: 正本の金額・年度・発効日・確認日・月給例・相互リンク・境界の誤額検知');

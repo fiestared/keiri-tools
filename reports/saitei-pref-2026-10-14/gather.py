@@ -2,7 +2,7 @@ import json,re,subprocess,concurrent.futures
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import urljoin
-root=Path('/Users/masahiroyasu/Scripts/keiri-tools-saitei-pref'); out=root/'reports/saitei-pref-2026-10-14/sources'
+root=Path(__file__).resolve().parents[2]; out=root/'reports/saitei-pref-2026-10-14/sources'
 class Links(HTMLParser):
  def __init__(self): super().__init__();self.links=[];self.a=None
  def handle_starttag(self,t,a):
