@@ -4,7 +4,10 @@
  "_readable20261014": {
   "note": "台帳は origin/main に無かった（記事は 2026-08-14 公開・review-loop r4〜r6 は全ページ一斉の旧形式で corpus・segment-adjudication なし＝正本なし）。読みやすさの作り直しで行が変わり、数字が『足した行』になった箇所だけを主張3件で台帳に載せた。本文の数字・条文番号は作り直し前の版のまま（段落を分けた・FAQ を短くした・出典を入れ子にしてリンクを付けた）。変えていない単位は結んでいない＝確認済みとはしていない。主張は書き手が一次資料の生テキスト（2026-10-14 に e-Gov API v2 を curl。WebFetch 不使用）と照合しただけ（author_checked）。",
   "base": "origin/main 8d1a73341",
-  "corpus": "keiri-commander runs/readable/cash-flow-keisansho/src/（417AC0000000086 会社法・418M60000010013 会社計算規則・338M50000040059 財務諸表等規則・351M50000040028 連結財務諸表規則・340AC0000000034 法人税法・340CO0000000097 法人税法施行令。.json は API の応答、.txt は law_full_text）"
+  "corpus": "keiri-commander runs/readable/cash-flow-keisansho/src/（417AC0000000086 会社法・418M60000010013 会社計算規則・338M50000040059 財務諸表等規則・351M50000040028 連結財務諸表規則。.json は API の応答、.txt は law_full_text）",
+  "removed_claims": [
+   "readable20261014-gaika-hotei（sol 画面 medium を受けて外貨の注を短くし、満期1年以内などの条件は /column/gaika-kansan/ に任せた。リンク先に同じ条件があることを grep で確認）"
+  ]
  },
  "claims": [
   {
@@ -53,28 +56,6 @@
    "source_quote": "税引前当期純利益金額又は税引前当期純損失金額に、次に掲げる項目を加算又は減算して表示する方法",
    "corpus_ref": [
     "runs/readable/cash-flow-keisansho/src/338M50000040059.txt"
-   ],
-   "covers": [],
-   "checked": "2026-10-14",
-   "review_status": "author_checked"
-  },
-  {
-   "id": "readable20261014-gaika-hotei",
-   "text": "期末換算の方法を届け出なかった場合、短期の外貨建債権債務と満期1年以内の外貨預金は期末時換算法になる（それ以外は発生時換算法）。手元の外貨現金は法人税法61条の9第1項4号で期末時換算法だけ。",
-   "numbers": [
-    "1年以内"
-   ],
-   "applies": "法人税法61条の9第1項・法人税法施行令122条の4・122条の7（2026-10-14 e-Gov 取得）",
-   "scope": "記事の『キャッシュフロー計算書とは — 7つの区分』の換算差額の注（リンク文字『外貨建取引の換算 — TTMが原則。届出をしないと、短期の債権債務と満期1年以内の外貨預金が期末時換算法になる』）。作り直しで段落を注に分けただけで、文言は元の版のまま。詳細は /column/gaika-kansan/（同じ内容が書いてあることを grep で確認）",
-   "exceptions": [
-    "満期1年以内＝満期日が事業年度終了の日の翌日から1年を経過した日の前日までに到来するもの（施行令122条の4第5号）",
-    "売買目的外有価証券など有価証券の区分は記事では触れていない"
-   ],
-   "source_url": "https://laws.e-gov.go.jp/law/340CO0000000097#Mp-At_122_7",
-   "source_quote": "一第百二十二条の四第一号及び第五号に掲げる外貨建資産等法第六十一条の九第一項第一号ロに掲げる期末時換算法二外貨建資産等のうち前号に掲げるもの以外のもの法第六十一条の九第一項第一号イに掲げる発生時換算法／五外貨預金のうちその満期日が当該事業年度終了の日の翌日から一年を経過した日の前日までに到来するもの",
-   "corpus_ref": [
-    "runs/readable/cash-flow-keisansho/src/340CO0000000097.txt",
-    "runs/readable/cash-flow-keisansho/src/340AC0000000034.txt"
    ],
    "covers": [],
    "checked": "2026-10-14",
