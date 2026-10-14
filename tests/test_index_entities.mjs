@@ -11,6 +11,7 @@ try {
   mkdirSync(join(fixture, 'tools'));
   mkdirSync(join(fixture, 'docs/column/entity-fixture'), { recursive: true });
   copyFileSync(join(root, 'tools/gen_index_sitemap.mjs'), join(fixture, 'tools/gen_index_sitemap.mjs'));
+  copyFileSync(join(root, 'tools/saitei_pref_pages.json'), join(fixture, 'tools/saitei_pref_pages.json'));
   copyFileSync(join(root, 'tools/verified_content_dates.mjs'), join(fixture, 'tools/verified_content_dates.mjs'));
   // 生成器は tools/nav_experiment.mjs（と名簿 nav_experiment.json）を import する（2026-09-16〜）。
   // 実物を写す。基点コミットは使い捨てリポジトリに無いが、その場合は空＝従来どおりの判定になる設計。

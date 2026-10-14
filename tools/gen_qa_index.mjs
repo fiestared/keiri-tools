@@ -153,6 +153,59 @@ function searchSummary(html, url, answer) {
   return SEARCH_SUMMARIES[url] || strip(html.match(/<meta name="card-desc" content="([^"]*)"/)?.[1]) || answer;
 }
 
+/**
+ * 検索語の辞書（2026-10-14 サイト内検索の品質改善。gbrain implementation/keiri-site-search-quality-2026-10-14）。
+ *   tools/search_aliases.json   … 手で持つ読み・略語・言い換え（keys / aliases / readings）
+ *   tools/search_queries_gsc.json … Google 検索で実際に打たれ、Clef-flash で「このページが答え」と判定した語
+ * エントリに付けるもの:
+ *   keys    … 空白を除いた完全一致で1位にする語（qa_search.js が先頭に固定する）。重複は許さない（後述の検査）
+ *   aliases … 見出しと同じ重さで効く言い換え（" | " 区切り）。terms にも入る（df と被覆の計算に乗せるため）
+ * ★正解セット tests/fixtures/site_search_gold.json の split=test の語はここに入れない（評価の水増しになる）。
+ *   tests/test_site_search_quality.mjs がこの漏れを落とす。
+ */
+const ALIAS_SRC = JSON.parse(readFileSync(join(DOCS, "..", "tools", "search_aliases.json"), "utf8"));
+const GSC_SRC = JSON.parse(readFileSync(join(DOCS, "..", "tools", "search_queries_gsc.json"), "utf8"));
+const compactKey = (s) => s.normalize("NFKC").toLowerCase().replace(/[\s　]+/g, "");
+const GENERIC_IN_QUERY = /(?:の)?(?:仕方|しかた|やり方|やりかた|方法|とは|って何|ってなに|意味|わかりやすく|分かりやすく|教えて|知りたい|ください|どうする|どうなる)/g;
+const KEYS = new Map();    // url -> Set(compact key)
+const ALIASES = new Map(); // url -> Set(alias text)
+const keyOwner = new Map();
+const addTo = (m, url, v) => { if (!m.has(url)) m.set(url, new Set()); m.get(url).add(v); };
+for (const [url, list] of Object.entries(ALIAS_SRC.keys || {})) {
+  for (const k of list) {
+    const ck = compactKey(k);
+    if (keyOwner.has(ck) && keyOwner.get(ck) !== url) {
+      console.error(`✗ search_aliases.json: key「${k}」が ${keyOwner.get(ck)} と ${url} の両方にある`);
+      process.exit(1);
+    }
+    keyOwner.set(ck, url); addTo(KEYS, url, ck); addTo(ALIASES, url, k.toLowerCase());
+  }
+}
+for (const [url, list] of Object.entries(ALIAS_SRC.aliases || {})) for (const a of list) addTo(ALIASES, url, a.toLowerCase());
+for (const { q, url, strong } of GSC_SRC.queries || []) {
+  const ck = compactKey(q);
+  // 手の keys が先に持っている語は手を優先する（GSC の1件より、名前として決めた行き先が正）
+  if (strong && !keyOwner.has(ck)) { keyOwner.set(ck, url); addTo(KEYS, url, ck); }
+  // 言い換えとして足すときは、主題を持たない語（仕方・方法・とは…）を落とす。残すと「犬のしつけの仕方」が
+  //   「給与計算の仕方」を持つ記事に当たる（df=1 の珍しい断片として最大の重みが付く。qa_search.js の被覆の説明と同じ穴）。
+  const text = q.normalize("NFKC").toLowerCase().replace(GENERIC_IN_QUERY, " ").replace(/\s+/g, " ").trim();
+  if (text) addTo(ALIASES, url, text);
+}
+const READINGS = ALIAS_SRC.readings || [];
+function withAliases(e) {
+  const al = new Set(ALIASES.get(e.url) || []);
+  // 読みは見出しの頭（「｜」「—」より前＝そのページの主題）に語があるページだけに付ける。
+  //   見出しのどこかに有れば付ける形だと「げんせん」で地代家賃・脱退一時金の記事が2位・3位に並んだ（2026-10-14 目視）
+  const lead = e.title.split(/[｜|—]/, 1)[0];
+  for (const [kanji, yomi] of READINGS) if (lead.includes(kanji)) al.add(yomi);
+  const keys = [...(KEYS.get(e.url) || [])].sort();
+  const aliases = [...al].sort().join(" | ");
+  const out = { ...e };
+  if (aliases) out.aliases = aliases; // terms には足さない（索引が太る）。qa_search.js が terms と aliases の両方を見る
+  if (keys.length) out.keys = keys;
+  return out;
+}
+
 const catOf = loadCategories();
 const entries = [];
 
@@ -176,8 +229,9 @@ for (const slug of readdirSync(COLUMN)) {
   const requiredTerms=(html.match(/<meta name="qa-required-terms" content="([^"]*)"/)?.[1] || "").split("|").filter(Boolean);
   const category = catOf.get(slug) || "";
   const base = `${title} ${answer}`;
+  const url = `/column/${slug}/`;
   const terms = buildTerms(title, answer, category, ...synonymsFor(base), ...(ENTRY_ALIASES.get(slug) || []), ...requiredTerms);
-  entries.push({ type: "article", url: `/column/${slug}/`, title, answer, summary: searchSummary(html, `/column/${slug}/`, answer), tool, terms, ...(requiredTerms.length ? {requiredTerms} : {}) });
+  entries.push(withAliases({ type: "article", url, title, answer, summary: searchSummary(html, url, answer), tool, terms, ...(requiredTerms.length ? {requiredTerms} : {}) }));
 }
 
 // ---- ツール ----
@@ -198,7 +252,7 @@ for (const name of readdirSync(DOCS)) {
   const base = `${rawTitle} ${answer}`;
   const terms = buildTerms(rawTitle, answer, ...synonymsFor(base));
   // ツールは自分自身が「計算ツール」なので tool にも自分を入れ、CTA を出せるようにする。
-  entries.push({ type: "tool", url, title, answer, summary: searchSummary(html, url, answer), tool: url, terms });
+  entries.push(withAliases({ type: "tool", url, title, answer, summary: searchSummary(html, url, answer), tool: url, terms }));
 }
 
 // --check の安定のため url で決定的に並べる(索引の順序はマッチングに影響しない)。

@@ -26,8 +26,19 @@ const STOP = new Set([
 ]);
 
 /** 全角英数→半角、英字→小文字、記号・空白を単一スペースへ。日本語はそのまま。 */
+// よくある誤字・表記ゆれ。検索語の側で直す（索引は正しい表記で書かれている）。
+// 「シュミレーション」は Google 検索の実測で最多の誤字（GSC 2026-07〜10 で 40語以上）。
+const TYPOS = [
+  [/シュミュレーション|シュミレーション|シミレーション/g, "シミュレーション"],
+  [/シュミレーター|シミレーター/g, "シミュレーター"],
+  [/徴集/g, "徴収"],
+  [/保険量/g, "保険料"],
+];
+
 export function normalize(s) {
-  return (s || "")
+  let t = (s || "").normalize("NFKC"); // 半角カナ（ｷｬｯｼｭﾌﾛｰ）・全角英数を揃える
+  for (const [re, to] of TYPOS) t = t.replace(re, to);
+  return t
     .replace(/[Ａ-Ｚａ-ｚ０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0))
     .toLowerCase()
     .replace(/[、。，．・…‥！？!?()（）「」『』【】\[\]{}<>"'`~|｜/\\:;=+*#@¥$%&＆・\-_—–\s]+/g, " ")
@@ -56,7 +67,13 @@ const SCRIPTS = /[ァ-ヴー]+|[^ァ-ヴー]+/g;
 export function tokenize(s) {
   const tokens = new Set();
   const add = (t) => { if (t.length >= 2 && !STOP.has(t)) tokens.add(t); };
-  for (const seg of normalize(s).split(" ")) {
+  const nq = normalize(s);
+  // Google 検索の語は「仮 払 消費 税」「社会 保険 料」のように1〜2字ずつ空白で切られて届く。
+  //   1字の断片はトークンにならない（2字未満は捨てる）ので、日本語どうしの空白を詰めた形からも作る。
+  const segs = nq.split(" ");
+  const glued = nq.replace(/(?<=[^\x00-\x7f]) (?=[^\x00-\x7f])/g, "");
+  if (glued !== nq) segs.push(...glued.split(" "));
+  for (const seg of segs) {
     if (!seg) continue;
     for (const w of seg.match(/[a-z0-9]+/g) || []) {
       if (w.length >= 2 || /[0-9]/.test(w)) tokens.add(w);
@@ -98,6 +115,7 @@ function queryProfile(query) {
     definition: INTENT_PATTERNS.definition.test(compact),
     amount: INTENT_PATTERNS.amount.test(compact),
     selection: INTENT_PATTERNS.selection.test(compact),
+    calc: /(?:計算(?!方法|式|の仕方|のしかた|のやり方)|シミュレーション|シミュレーター|ツール|計算機|早見表|自動計算)/.test(compact),
     topic,
     topicTokens: [...tokenize(topic)],
   };
@@ -252,16 +270,39 @@ const COVERAGE_STOPWORD_DF_RATIO = 0.15;
 const HIRAGANA = /[ぁ-ゖ]/;
 
 /** 正規化済みクエリのうち、内容文字(ひらがな以外)の位置。空なら分母が無い＝この門は適用外。 */
-function contentPositions(nq) {
+// 被覆の分母に入れない「添え語」。答えのページを特定しないのに、分母だけを膨らませて本物の質問を門で落としていた
+//   （2026-10-14 実測: 「50000 円 収入 印紙」「1500cc 税金 いくら」「相模原市 住民税 いくらから」
+//   「加給年金 受給要件 日本年金機構」が全部「見つかりませんでした」）。
+//   ・数字とその単位（金額・年・排気量・日数）… 記事は数字ではなく主題で引く
+//   ・出典の名前（国税庁・厚生労働省…）… 「どこの情報か」を添えているだけ
+//   ・「◯◯市」… 全国共通の制度（住民税等）を自分の市で引いている。都道府県は外さない
+//     （「北海道 旅行 3泊」が社員旅行の記事に当たった。東京都は協会けんぽの料率表の見出しにあるので外さなくても当たる）
+//   ★分母から外すだけで、当たった語として数えることはしない（無関係な質問が通る向きには動かない）。
+const QUALIFIER = new RegExp([
+  "\\d[\\d,.]*(?:万円|千円|円|万|億|cc|年度|年分|年|か月|ヶ月|カ月|月|日|歳|%|人|時間|分)?",
+  "国税庁|厚生労働省|厚労省|日本年金機構|年金機構|協会けんぽ|総務省|財務省|法務省|経済産業省|中小企業庁|e-tax|etax",
+  "[一-龥]{2,4}市(?![民場])",
+].join("|"), "g");
+
+function contentPositions(nq, dropQualifiers = false) {
   const idx = [];
-  for (let i = 0; i < nq.length; i++) if (!HIRAGANA.test(nq[i])) idx.push(i);
+  const skip = new Set();
+  if (dropQualifiers) {
+    for (const m of nq.matchAll(QUALIFIER)) for (let k = m.index; k < m.index + m[0].length; k++) skip.add(k);
+    // 全部が添え語なら外さない（「2026」だけの検索は分母が無い＝何も分かっていない）
+    if (skip.size >= [...nq].filter((c) => !HIRAGANA.test(c)).length) skip.clear();
+  }
+  for (let i = 0; i < nq.length; i++) if (!HIRAGANA.test(nq[i]) && !skip.has(i)) idx.push(i);
+  // ひらがなだけの語（「げんせん」「ねんちょう」）は分母が空になり、門が素通しになっていた
+  //   （2026-10-14 実測: 「じどうしゃぜい」→ FANG+ の比較記事が1位）。読みで引くときは全部の字を分母にする。
+  if (idx.length === 0 && nq.length >= 2) for (let i = 0; i < nq.length; i++) idx.push(i);
   return idx;
 }
 
 /** entry が当たった語で、内容文字のうち何割を覆えたか。分母が無いときは 1(素通し)。 */
 function contentCoverage(entry, qtokens, nq, contentIdx, df, N) {
   if (contentIdx.length === 0) return 1;
-  const terms = entry.terms || "";
+  const terms = textOf(entry);
   // エントリ自身が書いている文。生成器が足した同義語は入らない。
   const honbun = (entry.title || "") + " " + (entry.answer || "");
   const covered = new Set();
@@ -273,7 +314,7 @@ function contentCoverage(entry, qtokens, nq, contentIdx, df, N) {
     //     ② 索引の大半に出る          ＝ 話題を特定しない
     //   「計算」のように本文にある語は①で残る(df が高くても内容語なので数える)。
     //   「バイト」のような話題を特定する同義語は②で残る(df が小さい)。
-    if (df && N && !honbun.includes(t) && df.get(t) > N * COVERAGE_STOPWORD_DF_RATIO) continue;
+    if (df && N && !honbun.includes(t) && !aliasOf(entry).includes(t) && df.get(t) > N * COVERAGE_STOPWORD_DF_RATIO) continue;
     let i = nq.indexOf(t);
     while (i !== -1) {
       for (let k = i; k < i + t.length; k++) covered.add(k);
@@ -290,10 +331,22 @@ function contentCoverage(entry, qtokens, nq, contentIdx, df, N) {
  * 「方法」「計算」のように多くのエントリに出る一般語は軽く、「産休」「離職票」のように
  * 少数にしか出ない語は重く効く ── これで一般語だけの誤ヒット(例: 宇宙旅行の"方法")を抑える。
  */
+// 検索に使う文字列 ＝ terms（本文・同義語）＋ aliases（読み・略語・実際の検索語。gen_qa_index.mjs が付ける）。
+//   aliases を terms に焼き込まないのは索引を太らせないため。初回に連結して持つ。
+function aliasOf(entry) {
+  if (entry._al === undefined) entry._al = (entry.aliases || "").toLowerCase();
+  return entry._al;
+}
+function textOf(entry) {
+  if (entry._tx === undefined) entry._tx = (entry.terms || "") + (entry.aliases ? " | " + aliasOf(entry) : "");
+  return entry._tx;
+}
+
 function scoreEntry(entry, qtokens, df, N, profile) {
-  const terms = entry.terms || "";
+  const terms = textOf(entry);
   if (entry._tl === undefined) entry._tl = (entry.title || "").toLowerCase();
   const title = entry._tl;
+  const alias = aliasOf(entry);
   let s = 0;
   for (const t of qtokens) {
     if (!terms.includes(t)) continue;
@@ -306,6 +359,8 @@ function scoreEntry(entry, qtokens, df, N, profile) {
     //   一般的な2-gram(「いくら」「方法」等)は df が大きいのでこの枝に入らない。
     if (t.length === 2 && df.get(t) <= 2) w = 1.6;
     if (title.includes(t)) w += t.length >= 3 ? 1.8 : 1.2; // タイトル一致は重く
+    // 読み・略語・実際に打たれた検索語での一致は、見出しに次ぐ重さ（見出しと重ねては足さない）
+    else if (alias && alias.includes(t)) w += t.length >= 3 ? ALIAS_W3 : ALIAS_W2;
     s += w * idf;
   }
   if (entry.tool) s *= 1.06; // 関連ツールがあるものを優先的に見せる
@@ -316,13 +371,30 @@ function scoreEntry(entry, qtokens, df, N, profile) {
   // 定義質問は「とは・わかりやすく」を主題部に持つ記事、金額質問は計算ツールが自然な入口。
   if (profile.definition && /(?:とは|わかりやす)/.test(titleLead(entry))) s *= 1.18;
   if (profile.amount && entry.type === "tool") s *= 1.22;
+  // 「計算」「シミュレーション」「ツール」「早見表」は計算ツールが入口（「計算方法」「計算式」は解説記事なので除く）。
+  //   2026-10-14 実測: 「扶養 控除 計算」「社会 保険 料 計算 ツール」が記事に負けてツールが2位だった。
+  if (profile.calc && entry.type === "tool") s *= CALC_TOOL_BOOST;
   return s;
 }
+const ALIAS_W3 = 1.4;
+const ALIAS_W2 = 0.2;
+const CALC_TOOL_BOOST = 1.6;
 
 /**
  * index(qa_index.json の配列)を query で検索し、上位 limit 件を返す。
  * @returns {{ results: object[], best: number, matched: boolean, scores: number[] }}
  */
+const KEY_CACHE = new WeakMap();
+function keyMap(index) {
+  let m = KEY_CACHE.get(index);
+  if (!m) {
+    m = new Map();
+    for (const e of index) for (const k of e.keys || []) m.set(normalize(k).replace(/ /g, ""), e);
+    KEY_CACHE.set(index, m);
+  }
+  return m;
+}
+
 export function search(index, query, limit = 3) {
   const qtokens = [...tokenize(query)];
   if (qtokens.length === 0) return { results: [], best: 0, matched: false, scores: [] };
@@ -332,7 +404,7 @@ export function search(index, query, limit = 3) {
   const df = new Map();
   for (const t of qtokens) {
     let c = 0;
-    for (const e of index) if ((e.terms || "").includes(t)) c++;
+    for (const e of index) if (textOf(e).includes(t)) c++;
     df.set(t, c);
   }
   // 被覆は「最後の門」ではなく**候補の絞り込み**に使う。matched を落とすだけだと、
@@ -342,14 +414,19 @@ export function search(index, query, limit = 3) {
   // 意図語（「なに」「仕組み」「いくら」等）は全候補が本文に持つ必要はない。
   // 被覆の分母も主題側に寄せ、意図語をたまたま持つ別主題の記事が居座るのを防ぐ。
   const nq = profile.topic || normalize(query).replace(/ /g, "");
-  const contentIdx = contentPositions(nq);
+  const contentIdx = contentPositions(nq, true);
   // Pages about a named subject participate only when the query names it.
   // Keep broad bank-transfer queries on the comparison, timing and method pages.
   const normalizedQuery = normalize(query);
+  // ひらがなだけの語は「ちょう」「せん」のような断片が別の読みに当たりやすい（「ねんちょう」→ でんしちょうぼ…）。門を高くする
+  //   さらに2字の断片（ねん・ちょう の「ねん」）は被覆に数えない。2字ずつなら別々のページの読みで全部覆えてしまう
+  const hiraOnly = /^[ぁ-ゖー]+$/.test(nq);
+  const minCover = hiraOnly ? 0.85 : MIN_CONTENT_COVERAGE; // 0.8 では「ねんちょう」が でん“ちょう”ほう で 4/5 覆われて通った
+  const coverTokens = hiraOnly ? qtokens.filter((t) => t.length >= 3) : qtokens;
   const scored = index
     .filter(e => !e.requiredTerms?.length || e.requiredTerms.some(t => normalizedQuery.includes(normalize(t))))
     .map((e) => ({ e, s: scoreEntry(e, qtokens, df, N, profile), leadCoverage: leadCharCoverage(e, profile) }))
-    .filter((x) => x.s > 0 && contentCoverage(x.e, qtokens, nq, contentIdx, df, N) >= MIN_CONTENT_COVERAGE)
+    .filter((x) => x.s > 0 && contentCoverage(x.e, coverTokens, nq, contentIdx, df, N) >= minCover)
     // 「◯◯の選び方」は、◯◯を主題にしていない記事へ偶然「選び方」が刺さっても返さない。
     .filter((x) => !profile.selection || x.leadCoverage >= 0.8)
     .sort((a, b) => b.s - a.s || (b.e.tool ? 1 : 0) - (a.e.tool ? 1 : 0));
@@ -366,7 +443,10 @@ export function search(index, query, limit = 3) {
   const prefixTool = !direct && nqs.length >= 2
     ? scored.find(x => x.e.type === 'tool' && titleLead(x.e).replace(/[\s　]/g, '').startsWith(nqs))?.e
     : null;
-  const entry = (direct && index.find(e => e.type === 'tool' && e.url === `/${direct}/`)) || prefixTool;
+  // 索引の keys（tools/search_aliases.json の名前・読み・略語と、Google 検索で GSC と Clef が一致した語）に
+  //   空白を除いてそのまま一致したら、そのページを先頭にする。対応表を qa_search.js に書き足さずに済むよう、行き先はデータに持つ。
+  const keyed = keyMap(index).get(nqs);
+  const entry = keyed || (direct && index.find(e => e.type === 'tool' && e.url === `/${direct}/`)) || prefixTool;
   if (entry) {
     const at = scored.findIndex(x => x.e === entry);
     const priority = Math.max(MATCH_MIN + 1, (scored[0]?.s || 0) + 1);
@@ -377,7 +457,7 @@ export function search(index, query, limit = 3) {
   const best = scored.length ? scored[0].s : 0;
   // 最上位のエントリが、クエリのどのトークンで当たったか(質の門に使う)
   const bestTokens = scored.length
-    ? qtokens.filter((t) => (scored[0].e.terms || "").includes(t))
+    ? qtokens.filter((t) => textOf(scored[0].e).includes(t))
     : [];
   return {
     results: top.map((x) => x.e),

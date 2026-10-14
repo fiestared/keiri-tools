@@ -117,3 +117,12 @@ extra.teichaku_core=[{name:'就業促進定着手当HTML初期は金額欄が空
  expected:['','','','','','','','','','','','getsukyu','31'],source:'https://www.hellowork.mhlw.go.jp/doc/syuugyousokushin.pdf',
  quote:'再就職後６か月間の賃金*¹の合計額      ÷   180',
  note:'金額欄・就職日はすべて空欄、給料の形態は月給・締切日は末日で始め、空欄のまま押せば計算せずにその欄へ入力を促す。'}];
+
+extra.soneki_core=[{name:'損益分岐点HTML初期は空欄で計算しない',run:d=>['sales','variable','fixed','target','price','unit_var','fixed_u','target_u','qty'].map(id=>d.getElementById(id).value),
+ expected:['','','','','','','','',''],source:'https://j-net21.smrj.go.jp/solution/qa/accounting/Q0240.html',
+ quote:'費用を変動費と固定費に分けることによって算出することができます',
+ note:'金額欄はすべて空欄で始め、空欄で押したら欄に結び付いたエラーを出す（e2e ux_field_error_soneki_bunkiten）。どの費用を固定費・変動費にするかは利用者が入れる。'}];
+extra.rieki_core=[{name:'利益率HTML初期は空欄・税抜10%・切捨て',run:d=>['cost','price','cost_tax','cost_rate','price_tax','price_rate','basis','rounding','r_cost','r_percent','r_kind','r_out_tax','r_out_rate','r_basis','r_rounding'].map(id=>d.getElementById(id).value),
+ expected:['','','excluded','standard','excluded','standard','excluded','floor','','','margin','excluded','standard','excluded','floor'],source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6371.htm',
+ quote:'切上げ、切捨て、四捨五入などの端数処理の方法については、任意の方法とすることができます',
+ note:'金額欄は空欄で始める。税区分の初期値は税抜・10%、端数処理の初期値は切捨て（3つとも選べる）。'}];
