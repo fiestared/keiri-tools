@@ -36,8 +36,10 @@ for(const bank of pages){
  for(const [from,to,key] of [
   [`<title>${rendered.title}</title>`,'<title>誤ったタイトル</title>','title'],
   [`content="${rendered.desc}"`,'content="古い説明"','description'],
-  [`datetime="${bank.rows[0].verified_date}"`, 'datetime="2000-01-01"','other'],
  ]){const broken=html.replace(from,to);assert.notEqual(broken,html);assert.ok(freshnessErrors(broken,rendered).includes(key));}
+ // 確認日は表の行の中で壊す。確認日が更新日と同じ日だと、素の replace は先に出る「更新日」の time に当たって表が無傷のまま（2026-10-15）
+ {const broken=html.replace(/(<tr data-fee-row="0">[\s\S]*?<time[^>]*datetime=")[^"]*(")/,(_,a,b)=>a+'2000-01-01'+b);
+  assert.notEqual(broken,html);assert.ok(freshnessErrors(broken,rendered).includes('other'));}
  d.defaultView.close();
 }
 // fee_table差し替えに追従する。同じ値がある他のセルではなく指定セルで照合。
@@ -98,3 +100,19 @@ const broad=search(qa,'銀行振込').results.map(r=>r.url);
 assert.ok(!broad.some(u=>pages.some(b=>u===`/column/${b.slug}/`)));
 for(const [query,slug] of [['ゆうちょ 振込手数料','yucho-furikomi-tesuryo'],['ＵＦＪ 振込手数料','mufg-furikomi-tesuryo']])assert.ok(search(qa,query).results.some(r=>r.url===`/column/${slug}/`),query);
 console.log('✓ 質問検索は銀行名を指定した個別ページと汎用の比較・反映時間を区別');
+// 2026-10-15: 比較記事（furikomi-tesuryo-hikaku）の直しに合わせ、ゆうちょのことら送金の月5回の上限をゆうちょのページにも出す。
+//   回数の主張は「ことら送金」の見出しの直後の段落を名指しする（同じ「月5回」が同行宛ての電信振替の注にもあるため、本文一致では素通しする）
+{
+ const html=readFileSync('docs/column/yucho-furikomi-tesuryo/index.html','utf8'),d=new JSDOM(html).window.document;
+ const h=[...d.querySelectorAll('h3')].find(e=>e.textContent.startsWith('別サービス：ことら送金'));
+ assert.ok(h,'ことら送金の見出し');
+ const ps=[];for(let e=h.nextElementSibling;e&&e.tagName==='P';e=e.nextElementSibling)ps.push(e);
+ const limit=ps.find(p=>/使える回数は月5回までで、6回目以降はことら送金を使えません/.test(p.textContent.replace(/\s+/g,'')));
+ assert.ok(limit,'ことら送金の月5回の上限');
+ assert.equal(limit.querySelector('a').href,'https://www.jp-bank.japanpost.jp/kojin/sokin/cotra/kj_sk_cotra_index.html');
+ const bank=pages.find(b=>b.name==='ゆうちょ銀行'),rendered=renderPage(bank,data);
+ const broken=html.replace('使える回数は月5回まで','使える回数は月10回まで');
+ assert.notEqual(broken,html);assert.ok(freshnessErrors(broken,rendered).includes('conditions'));
+ d.defaultView.close();
+}
+console.log('✓ test_bank_fee_pages');

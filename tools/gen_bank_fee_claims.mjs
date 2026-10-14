@@ -12,7 +12,7 @@ const data=pageData(),root=resolve(new URL('..',import.meta.url).pathname);
 for(const b of eligiblePages()){
  const page=`docs/column/${b.slug}/index.html`,html=readFileSync(resolve(root,page),'utf8');
  const units=segmentClaims(html,page);
- const quotes=b.rows.map(r=>r.details.quote).join('\n')+'\n'+b.extra_sources.map(s=>s.quote).join('\n');
+ const quotes=b.rows.map(r=>r.details.quote).join('\n')+'\n'+b.extra_sources.map(s=>s.quote).join('\n')+'\n'+(b.service_notes||[]).map(n=>n.quote).join('\n');
  const claims=units.map((u,i)=>{
   const row=b.rows.find(r=>u.text.includes(r.name)) || b.rows.find(r=>u.text.includes('法人')&&/（法人/.test(r.name)) || b.rows[0];
   const own=/確認日|公開日|文責|印刷|計算ツール|このページ|この表|差引|方式|計算する|個別の相談|一般的な情報|先方負担/.test(u.text)&&!/【値】|円/.test(u.text);
