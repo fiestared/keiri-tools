@@ -115,7 +115,8 @@ ${rows.map((x) => `<tr data-nenshu="${x.y}"><th scope="row" style="white-space:n
 
   // ---- lead ----
   const s = (y) => get(y).fam.single;
-  const lead = `<p data-jh="lead"><b>${m.nendo}（${m.shotoku_year}＝${m.shotoku_calendar}の所得にかかり、${m.chosyu}に納める分）の住民税は、${P.area_label}に住む独身・給与収入だけの会社員なら、年収300万円で年${n(s(3000000).total)}円、年収500万円で年${n(s(5000000).total)}円、年収700万円で年${n(s(7000000).total)}円です。</b>` +
+  // 2026-10-12 読みやすさ: 年度の説明（所得の年・納める期間）は次の段落に1回だけ書く（ここに置くとかっこが入れ子になる）。
+  const lead = `<p data-jh="lead"><b>${m.nendo}の住民税は、${P.area_label}に住む独身・給与収入だけの会社員なら、年収300万円で年${n(s(3000000).total)}円、年収500万円で年${n(s(5000000).total)}円、年収700万円で年${n(s(7000000).total)}円です。</b>` +
     `いずれも、所得割（標準税率10％）と均等割（市区町村民税3,000円・都道府県民税1,000円）に、国税の森林環境税1,000円を足した額で、社会保険料は協会けんぽ東京都支部の40歳未満の会社員として概算しています。</p>`;
 
   // ---- 計算例（年収500万円・独身） ----
@@ -154,7 +155,8 @@ ${rows.map((x) => `<tr data-nenshu="${x.y}"><th scope="row" style="white-space:n
   const X = (y) => (x0 + (y - 1_000_000) / 9_000_000 * (x1 - x0)).toFixed(1);
   const Y = (v) => (y0 - v / maxV * (y0 - y1)).toFixed(1);
   const line = (k, stroke, dash) => `<polyline fill="none" stroke="${stroke}" stroke-width="2.5"${dash ? ` stroke-dasharray="${dash}"` : ""} points="${pts.map((x) => `${X(x.y)},${Y(x.fam[k].total)}`).join(" ")}"/>`;
-  const xt = [1, 3, 5, 7, 10].map((v) => `<line x1="${X(v * 1e6)}" y1="${y0}" x2="${X(v * 1e6)}" y2="${y0 + 5}" stroke="currentColor"/><text x="${X(v * 1e6)}" y="${y0 + 19}" font-size="12" text-anchor="middle" fill="currentColor">${v * 100}万</text>`).join("");
+  // 右端の「1000万」は中央揃えだと viewBox の右へはみ出す（test_layout_render）→ 右揃えにする。
+  const xt = [1, 3, 5, 7, 10].map((v) => `<line x1="${X(v * 1e6)}" y1="${y0}" x2="${X(v * 1e6)}" y2="${y0 + 5}" stroke="currentColor"/><text x="${X(v * 1e6)}" y="${y0 + 19}" font-size="12" text-anchor="${v === 10 ? "end" : "middle"}" fill="currentColor">${v * 100}万</text>`).join("");
   const yt = []; for (let v = 0; v <= maxV; v += 200000) yt.push(`<line x1="${x0}" y1="${Y(v)}" x2="${x1}" y2="${Y(v)}" stroke="var(--sub)" stroke-opacity="0.25"/><text x="${x0 - 5}" y="${Number(Y(v)) + 4}" font-size="12" text-anchor="end" fill="currentColor">${v / 10000}万</text>`);
   const p5 = get(5000000).fam.single.total, p10 = get(10000000).fam.single.total;
   const svg = `<svg viewBox="0 0 ${W} ${Hh}" role="img" aria-labelledby="jh-fig-t" style="width:100%;height:auto;max-width:640px">

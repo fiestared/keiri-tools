@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>賞与の源泉所得税｜前月給与なし・扶養人数変更時の計算</title>
-<meta name="description" content="令和8年分の賞与の源泉所得税を、前月給与と扶養親族等の数から求める手順を解説。前月給与がない、賞与が前月給与の10倍超、扶養人数が変わった場合の月額表による例外計算も整理します。">
+<meta name="description" content="令和8年分の賞与の源泉所得税を、前月給与と扶養親族等の数から求める手順を解説。前月給与がない・賞与が前月給与の10倍超の場合の月額表による例外計算と、扶養人数が変わったときの確認点も整理します。">
 <link rel="stylesheet" href="../../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/column/shoyo-gensen-shotokuzei/">
 <!-- ogp:auto -->
 <meta property="og:type" content="article">
 <meta property="og:title" content="賞与の源泉所得税｜前月給与なし・扶養人数変更時の計算">
-<meta property="og:description" content="令和8年分の賞与の源泉所得税を、前月給与と扶養親族等の数から求める手順を解説。前月給与がない、賞与が前月給与の10倍超、扶養人数が変わった場合の月額表による例外計算も整理します。">
+<meta property="og:description" content="令和8年分の賞与の源泉所得税を、前月給与と扶養親族等の数から求める手順を解説。前月給与がない・賞与が前月給与の10倍超の場合の月額表による例外計算と、扶養人数が変わったときの確認点も整理します。">
 <meta property="og:url" content="https://keiri-tools.com/column/shoyo-gensen-shotokuzei/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -29,7 +29,7 @@
       "@type": "Article",
       "headline": "賞与の源泉所得税｜前月給与がない・扶養人数が変わった場合",
       "datePublished": "2026-08-13",
-      "dateModified": "2026-08-13",
+      "dateModified": "2026-10-14",
       "author": {
         "@type": "Person",
         "name": "Masahiro Yasu",
@@ -122,10 +122,16 @@
 <a href="../../">ホーム</a> › <a href="../">コラム</a> › 賞与の源泉所得税</nav>
 <article>
 <h1>賞与の源泉所得税｜前月給与がない・扶養人数が変わった場合</h1>
-<p class="article-meta">公開日: <time datetime="2026-08-13">2026年8月13日</time></p>
+<p class="article-meta">公開日: <time datetime="2026-08-13">2026年8月13日</time>（更新日: <time datetime="2026-10-14">2026年10月14日</time>）</p>
 <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
 <p>結論から言うと、通常の賞与の源泉所得税は、<b>前月の社会保険料等控除後給与</b>と<b>賞与支給時点の扶養親族等の数</b>で算出率を引き、<b>賞与の社会保険料等控除後額×算出率</b>で求めます。令和8年中に支払う賞与には、令和8年分の表を使います。</p>
-<p>ただし、前月給与がない、前月給与が社会保険料等以下、または賞与の社会保険料等控除後額が前月給与の社会保険料等控除後額の10倍を超える場合は、賞与算出率表を使いません。<b>月額表による例外計算</b>へ切り替わります。</p>
+<p>ただし、次の場合は賞与算出率表を使わず、<b>月額表による例外計算</b>へ切り替わります。</p>
+<ul>
+<li>前月給与がない</li>
+<li>前月給与が社会保険料等以下</li>
+<li>賞与の社会保険料等控除後額が、前月給与の社会保険料等控除後額の10倍を超える</li>
+</ul>
+<p>前月給与がない場合の基本は、社会保険料等控除後の賞与を6で割って月額表に当て、その税額を6倍する計算です。12を使う場合は<a href="#no-salary">前月給与がない場合</a>の節で説明します。扶養人数が変わった場合は、<a href="#dependents">異動申告を反映した賞与支払時の人数</a>で表を引きます。</p>
 <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc">
 <div class="toc-title">目次</div>
 <ol>
@@ -178,7 +184,7 @@
 <text x="585" y="83" text-anchor="middle" fill="currentColor">×算出率</text>
 <path d="M210 65h40M445 65h40" stroke="var(--accent)" stroke-width="3"/>
 <text x="350" y="150" text-anchor="middle" fill="currentColor">前月給与なし・10倍超なら</text>
-<path d="M350 100v68" stroke="var(--warn-line)" stroke-width="3"/>
+<path d="M350 100v28M350 160v16" stroke="var(--warn-line)" stroke-width="3"/>
 <text x="350" y="195" text-anchor="middle" fill="currentColor">月額表による例外計算へ</text>
 </svg>
 <figcaption>通常計算と例外計算の分岐。前月給与がないと率を引く基準がないため月額表へ切り替える</figcaption>
@@ -204,7 +210,8 @@
 </ol>
 <p>境界は「10倍<b>を超える</b>」です。ちょうど10倍ならこの例外要件には該当せず、通常の算出率表を使います。比較する双方を社会保険料等控除後でそろえることも重要です。</p>
 <h2 id="dependents">扶養人数が変わった場合は賞与支給時の申告内容を見る</h2>
-<p>算出率表の甲欄で使う「扶養親族等の数」は、前月給与を計算したときの古い人数を固定するものではありません。賞与の支払時までに扶養控除等申告書の異動申告が提出されていれば、<b>更新後の扶養親族等の数</b>で表を引きます。前月給与の金額は前月実績、扶養人数は支払時点の申告内容という組合せです。</p>
+<p>算出率表の甲欄で使う「扶養親族等の数」は、前月給与を計算したときの古い人数を固定するものではありません。扶養控除等申告書の異動申告が賞与の支払時に反映されていれば、<b>更新後の扶養親族等の数</b>で表を引きます。前月給与の金額は前月実績、扶養人数は支払時点の申告内容という組合せです。</p>
+<p>異動申告書の提出期限は、異動があった日の後、最初に給与の支払を受ける日の前日までです。</p>
 <div class="scroll-wrap"><table>
 <tr>
 <th scope="col">確認項目</th>
@@ -258,20 +265,28 @@
 </table></div>
 <p>
 <a href="../shoyo-shakaihoken/">賞与の社会保険料</a>を先に確定しないと所得税の課税対象額も確定しません。また、賞与の所得税と住民税は仕組みが異なり、通常、賞与から住民税を別建てで計算して控除するものではありません。</p>
+<h3>隔月給与は「前月給与なし」と即断しない</h3>
+<p>給与の支給期が2か月ごとなど、月の整数倍の期間ごとと定められている場合は特則があります。賞与直前に支払を受けた、または受けるべき給与とその社会保険料等を、その月数で割った金額を前月給与・前月社会保険料等とみなします。前月に振込みがなかったという事実だけで、前月給与なしの6倍計算へ切り替えないようにします。</p>
+<h3>名称ではなく支給の性質を確認する</h3>
+<p>国税庁 No.2523 は、純益を基準に支給するもの、あらかじめ支給額や支給基準の定めがないもの、支給期ごとの支給額が異なるものなど、賞与の性質がある給与を賞与として扱う場合を示しています。「特別手当」という名称でも実質が賞与なら賞与表を使い、毎月固定の手当を都合よく賞与扱いにはしません。</p>
+<h3>計算後に残す記録</h3>
+<p>計算後は、次の項目を賃金台帳へ残します。</p>
+<ul>
+<li>賞与支払日・総支給額・社会保険料等</li>
+<li>前月給与・扶養人数・甲欄か乙欄か</li>
+<li>使用した算出率と源泉税額</li>
+<li>月額表へ切り替えた場合は、前月給与なしか10倍超かの判定と、6倍・12倍のどちらを使ったか</li>
+</ul>
+<p>後日の年末調整で年税額との差を精算しますが、賞与支払時の源泉徴収を省略できるわけではありません。</p>
 <div class="summary-box">
 <div class="t">要点</div>
 <ul>
 <li>前月の社保控除後給与と扶養人数で率を決める</li>
 <li>税額は賞与の社保控除後額に率を掛ける</li>
-<li>前月給与なし・前月給与以下・10倍超は月額表計算</li>
+<li>前月給与なし・前月給与が社保以下・10倍超は月額表で計算</li>
 <li>扶養異動は賞与支払時の有効な申告内容を反映</li>
 </ul>
 </div>
-<h3>隔月給与は「前月給与なし」と即断しない</h3>
-<p>給与の支給期が2か月ごとなど月の整数倍の期間ごとと定められている場合、賞与直前に支払を受けた、または受けるべき給与とその社会保険料等を、その月数で割った金額を前月給与・前月社会保険料等とみなす特則があります。前月に振込みがなかったという事実だけで、前月給与なしの6倍計算へ切り替えないようにします。</p>
-<h3>名称ではなく支給の性質を確認する</h3>
-<p>国税庁 No.2523 は、純益を基準に支給するもの、あらかじめ支給額や支給基準の定めがないもの、支給期ごとの支給額が異なるものなど、賞与の性質がある給与を賞与として扱う場合を示しています。「特別手当」という名称でも実質が賞与なら賞与表を使い、毎月固定の手当を都合よく賞与扱いにはしません。</p>
-<p>計算後は、賞与支払日、総支給額、社会保険料等、前月給与、扶養人数、甲欄・乙欄、使用した算出率と源泉税額を賃金台帳へ残します。前月給与なしや10倍超で月額表へ切り替えた場合は、その判定と6倍・12倍のどちらを使ったかも記録します。後日の年末調整で年税額との差を精算しますが、賞与支払時の源泉徴収を省略できるわけではありません。</p>
 <h2 id="faq">よくある質問</h2>
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>前月は休職で給与0円でした。算出率は0％ですか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>0％とは限りません。</b>前月給与がない場合に該当するため、賞与の社会保険料等控除後額を6（一定の場合は12）で割り、令和8年分月額表で求めた税額を6倍（または12倍）します。</p>
@@ -279,7 +294,7 @@
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>扶養控除等申告書の異動申告が賞与支払時までに反映され、その子が表上の扶養親族等に該当するなら、更新後の人数で算出率を引きます。年齢だけで所得控除の対象外でも、源泉徴収上の人数に含む場合があるため表の注記を確認します。</p>
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>税額の最終調整はいつですか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>賞与時の源泉徴収は概算の前払いです。年末調整の対象者は、その年の給与・賞与を合計して年税額を計算し、源泉徴収済み額との差を年末調整します。</p>
-<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../spot-work-romu/"><b>スポットワークの労務と経理｜応募で契約成立・労災は初日・丙欄・仕訳【令和8年】</b><span>スポットワーク（単発バイトのマッチング）で働く人の使用者は仲介事業者ではなく受け入れ先の会社です。応募で労働契約が成立し、やむを得ない事由がなければ期間途中の解約はできません。労災</span></a><a class="tool-card" href="../kyuyo-meisai-mikata/"><b>給与明細の見方 — 交付を義務づけるのは労働基準法ではなく所得税法。確認する3か所と保管の目安</b><span>東京都・月給30万円・35歳の実例で給与明細の控除欄を1行ずつ読み、毎月確認する3か所を示します。交付は労働基準法ではなく所得税法231条の義務で、Web明細には本人の承諾が要りま</span></a><a class="tool-card" href="../fukuri-koseihi/"><b>福利厚生費とは — 法律に定義は無い。給与・交際費・寄附金から「除かれた残り」がこの科目になる</b><span>福利厚生費とは、役員・従業員の生活や健康のために会社が負担する費用の勘定科目ですが、法人税法がこの語を使うのは25条の2・37条の括弧書き「交際費、接待費及び福利厚生費とされるべき</span></a></div></section><!--next-read:E-->
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../spot-work-romu/"><b>スポットワークの労務と経理｜応募で契約成立・労災は初日・丙欄・仕訳【令和8年】</b><span>スポットワーク（単発バイトのマッチング）で働く人の使用者は、仲介事業者ではなく受け入れ先の会社です。応募で労働契約が成立し、労災は初日から適用。源泉徴収は日額表の丙欄で、令和8年分</span></a><a class="tool-card" href="../kyuyo-meisai-mikata/"><b>給与明細の見方 — 交付を義務づけるのは労働基準法ではなく所得税法。確認する3か所と保管の目安</b><span>東京都・月給30万円・35歳の実例で給与明細の控除欄を1行ずつ読み、毎月確認する3か所を示します。交付は所得税法231条が定める会社の義務で、Web明細には本人の承諾が要ります。保</span></a><a class="tool-card" href="../fukuri-koseihi/"><b>福利厚生費とは — 法律に定義は無い。給与・交際費・寄附金から「除かれた残り」がこの科目になる</b><span>福利厚生費とは、役員・従業員の生活や健康のために会社が負担する費用のうち、給与・交際費等・寄附金のどれにも当たらないものを入れる勘定科目です。法律に定義は無く、通達の基準で決まりま</span></a></div></section><!--next-read:E-->
 <section class="related">
 <h2>関連記事・ツール</h2>
 <div class="tool-grid">
@@ -318,7 +333,7 @@
 </ul>
 <p class="note">本記事は一般的な情報提供を目的としたものです。個別の判断は税務署・税理士にご確認ください。</p>
 </article>
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%88%86%E3%81%AE%E8%B3%9E%E4%B8%8E%E3%81%AE%E6%BA%90%E6%B3%89%E6%89%80%E5%BE%97%E7%A8%8E%E3%82%92%E3%80%81%E5%89%8D%E6%9C%88%E7%B5%A6%E4%B8%8E%E3%81%A8%E6%89%B6%E9%A4%8A%E8%A6%AA%E6%97%8F%E7%AD%89%E3%81%AE%E6%95%B0%E3%81%8B%E3%82%89%E6%B1%82%E3%82%81%E3%82%8B%E6%89%8B%E9%A0%86%E3%82%92%E8%A7%A3%E8%AA%AC%E3%80%82%E5%89%8D%E6%9C%88%E7%B5%A6%E4%B8%8E%E3%81%8C%E3%81%AA%E3%81%84%E3%80%81%E8%B3%9E%E4%B8%8E%E3%81%8C%E5%89%8D%E6%9C%88%E7%B5%A6%E4%B8%8E%E3%81%AE10%E5%80%8D%E8%B6%85%E3%80%81%E6%89%B6%E9%A4%8A%E4%BA%BA%E6%95%B0%E3%81%8C%E5%A4%89%E3%82%8F%E3%81%A3%E3%81%9F%E5%A0%B4%E5%90%88%E3%81%AE%E6%9C%88%E9%A1%8D%E8%A1%A8%E3%81%AB%E3%82%88%E3%82%8B%E4%BE%8B%E5%A4%96%E8%A8%88%E7%AE%97%E3%82%82%E6%95%B4%E7%90%86%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fshoyo-gensen-shotokuzei%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%88%86%E3%81%AE%E8%B3%9E%E4%B8%8E%E3%81%AE%E6%BA%90%E6%B3%89%E6%89%80%E5%BE%97%E7%A8%8E%E3%82%92%E3%80%81%E5%89%8D%E6%9C%88%E7%B5%A6%E4%B8%8E%E3%81%A8%E6%89%B6%E9%A4%8A%E8%A6%AA%E6%97%8F%E7%AD%89%E3%81%AE%E6%95%B0%E3%81%8B%E3%82%89%E6%B1%82%E3%82%81%E3%82%8B%E6%89%8B%E9%A0%86%E3%82%92%E8%A7%A3%E8%AA%AC%E3%80%82%E5%89%8D%E6%9C%88%E7%B5%A6%E4%B8%8E%E3%81%8C%E3%81%AA%E3%81%84%E3%83%BB%E8%B3%9E%E4%B8%8E%E3%81%8C%E5%89%8D%E6%9C%88%E7%B5%A6%E4%B8%8E%E3%81%AE10%E5%80%8D%E8%B6%85%E3%81%AE%E5%A0%B4%E5%90%88%E3%81%AE%E6%9C%88%E9%A1%8D%E8%A1%A8%E3%81%AB%E3%82%88%E3%82%8B%E4%BE%8B%E5%A4%96%E8%A8%88%E7%AE%97%E3%81%A8%E3%80%81%E6%89%B6%E9%A4%8A%E4%BA%BA%E6%95%B0%E3%81%8C%E5%A4%89%E3%82%8F%E3%81%A3%E3%81%9F%E3%81%A8%E3%81%8D%E3%81%AE%E7%A2%BA%E8%AA%8D%E7%82%B9%E3%82%82%E6%95%B4%E7%90%86%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fshoyo-gensen-shotokuzei%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site" style="display:block">© 税金・経理・補助金ツールズ<!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>

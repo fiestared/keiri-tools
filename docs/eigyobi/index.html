@@ -27,8 +27,8 @@
   "@graph": [
     {
       "@type": "WebApplication",
-  "datePublished": "2026-07-13",
-  "dateModified": "2026-10-01",
+      "datePublished": "2026-07-13",
+      "dateModified": "2026-10-14",
       "name": "日数計算・営業日計算ツール",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -71,7 +71,7 @@
           "name": "日数計算で開始日は含みますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "日・週・月・年で定める期間は、初日を算入しないのが原則です（民法140条）。ただし、午前零時から始まる期間は初日を算入します。契約期間の計算では初日不算入が原則（民法140条）ですが、宿泊日数・在籍日数などは両端を含めて数えることがあります。本ツールは切り替えられます。"
+            "text": "日・週・月・年で定める期間は、初日を算入しないのが原則です（民法140条）。ただし、午前零時から始まる期間は初日を算入します。宿泊日数・在籍日数などは両端を含めて数えることがあります。本ツールは「両端を含む」と「片端のみ（開始日を含まない）」を切り替えられます。"
           }
         },
         {
@@ -126,8 +126,7 @@
 
 <section class="hero">
   <h1>日数計算・営業日計算</h1>
-<p class="hint">内閣府公表の1955年以降の祝日を収録しています。1954年以前の日付は試算対象外です。将来の祝日は公表・法改正により変わる場合があります。</p>
-  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-10-01">2026年10月1日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time>（更新日: <time datetime="2026-10-14">2026年10月14日</time>）</p>
   <p>期間の日数、<b>「◯営業日後」の日付</b>、期間内の営業日数を計算します。土日・祝日・年末年始に対応（祝日データは内閣府の公表分）。</p>
 </section>
 <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-calc">計算ツール</a></li><li><a href="#faq">よくある質問</a><ol><li><a href="#faq-q1">「3営業日後」はいつですか？</a></li><li><a href="#faq-q2">日数計算で開始日は含みますか？</a></li><li><a href="#faq-q3">銀行が休みになるのはいつですか？</a></li><li><a href="#faq-q4">支払日（月末締め翌月末払いなど）を計算したいときは？</a></li></ol></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../shiharai-site/">支払サイト・支払日計算ツール</a></li><li><a href="../column/furikomi-hanei-jikan/">振込の反映時間</a></li><li><a href="../column/keiri-nenkan-schedule/">経理の年間スケジュール</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
@@ -178,14 +177,16 @@
   <button class="primary" id="calc">計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
+  <p class="hint" style="margin-top:12px">内閣府公表の1955年以降の祝日を収録しています。1954年以前の日付は試算対象外です。将来の祝日は公表・法改正により変わる場合があります。</p>
 </div>
 
 <section class="faq">
-  <h2 id="faq">よくある質問</h2>
+  <p class="workflow-next"><a href="../nenrei-hayami/">生まれ年から年齢や和暦を確認する → 年齢早見表・和暦西暦変換</a></p>
+<h2 id="faq">よくある質問</h2>
   <h3 class="faq-question" id="faq-q1">「3営業日後」はいつですか？</h3>
   <p class="faq-answer">土日・祝日を除いて3日進めた日です。<b>起算日は翌日から</b>で、当日は数えません。たとえば金曜日の3営業日後は、翌週の水曜日になります（間に祝日がなければ）。</p>
   <h3 class="faq-question" id="faq-q2">日数計算で開始日は含みますか？</h3>
-  <p class="faq-answer">日・週・月・年で定める期間は、初日を算入しないのが原則です（民法140条）。ただし、午前零時から始まる期間は初日を算入します。契約期間の計算では<b>初日不算入</b>が原則（民法140条）ですが、宿泊日数・在籍日数などは両端を含めて数えることがあります。本ツールは切り替えられます。</p>
+  <p class="faq-answer">日・週・月・年で定める期間は、<b>初日を算入しない</b>のが原則です（民法140条）。ただし、午前零時から始まる期間は初日を算入します。宿泊日数・在籍日数などは両端を含めて数えることがあります。本ツールは「両端を含む」と「片端のみ（開始日を含まない）」を切り替えられます。</p>
   <h3 class="faq-question" id="faq-q3">銀行が休みになるのはいつですか？</h3>
   <p class="faq-answer">銀行は土日祝に加えて<b>12月31日〜1月3日も休業</b>します。振込の着金日は、即時振込サービスの登録、モアタイムへの対応、受取口座の条件やメンテナンスによって異なります。即時振込が利用できる場合は年末年始でも当日入金されることがあります。翌銀行営業日扱いとなる振込の日付を数える場合に「年末年始」をチェックしてください。</p>
   <h3 class="faq-question" id="faq-q4">支払日（月末締め翌月末払いなど）を計算したいときは？</h3>
@@ -197,7 +198,7 @@
 </section>
 <section class="faq rel-block">
 <h2>関連する解説</h2>
-<!--rel:S--><ul class="rel-list"><li><a href="../column/taishokutodoke-kakikata/">退職届と退職願の書き方 — 「届」と「願」の違いは書式ではなく法的効果。2週間は民法627条、1か月は就業規則</a><span class="rel-desc">退職届と退職願の違いは書式ではなく法的効果です。届は民法627条1項の解約の申入れで、到達の翌日から2週間で雇用が終わります。願は合意解約の</span></li><li><a href="../column/fufuku-moshitate/">不服申立てとは — 条文は「選択」と書いている。8割が再調査の請求を飛ばし、認容割合は令和7年度で7.2%</a><span class="rel-desc">再調査の請求と審査請求は上下関係ではなく選択。令和7年度は79.8%が直接審査請求。認容割合は7.2%で、5年間の実測レンジは7.1%〜17</span></li><li><a href="../column/naitei-torikeshi/">内定の取消しと辞退 — 「内定期間」は法令用語。取り消す側は解雇と同じ規制、辞める側は2週間</a><span class="rel-desc">「内定期間」は法令に定義がある。取消しだけでなく募集の中止と入社日の延期も通知対象。取り消す側は解雇の規制、辞める側は2週間。</span></li><li><a href="../column/taishoku-shomeisho/">退職証明書 — 労働基準法22条は「請求されたら」しか義務にしていない。そして、書いてよい事項を選ぶのは労働者の側</a><span class="rel-desc">退職証明書は請求されて初めて義務になる。書ける事項は5つ。しかも労働者が請求しない事項は書いてはいけない。解雇理由証明書は退職日で締め切られ</span></li><li><a href="../column/mimoto-hosho/">身元保証書 — 金額の上限を書いていないと無効。それを決めたのは身元保証法ではなく、2020年の民法だった</a><span class="rel-desc">身元保証書は2020年4月から、極度額（上限金額）を書いていないと無効。期間は定めなければ3年、定めても5年まで。金額の上限を作ったのは19</span></li></ul><!--rel:E-->
+<!--rel:S--><ul class="rel-list"><li><a href="../column/taishokutodoke-kakikata/">退職届と退職願の書き方 — 「届」と「願」の違いは書式ではなく法的効果。2週間は民法627条、1か月は就業規則</a><span class="rel-desc">退職届と退職願の違いは書式ではなく法的効果です。届は民法627条1項の解約の申入れで、期間の定めのない雇用なら到達の翌日から2週間で終わりま</span></li><li><a href="../column/fufuku-moshitate/">不服申立てとは — 条文は「選択」と書いている。8割が再調査の請求を飛ばし、認容割合は令和7年度で7.2%</a><span class="rel-desc">再調査の請求と審査請求は上下関係ではなく選択。令和7年度は79.8%が直接審査請求。認容割合は7.2%で、5年間の実測レンジは7.1%〜17</span></li><li><a href="../column/naitei-torikeshi/">内定の取消しと辞退 — 「内定期間」は法令用語。取り消す側は解雇と同じ規制、辞める側は2週間</a><span class="rel-desc">「内定期間」は法令に定義がある。取消しだけでなく募集の中止と入社日の延期も通知対象。取り消す側は解雇の規制、辞める側は2週間。</span></li><li><a href="../column/taishoku-shomeisho/">退職証明書 — 労働基準法22条は「請求されたら」しか義務にしていない。そして、書いてよい事項を選ぶのは労働者の側</a><span class="rel-desc">退職証明書は請求されて初めて義務になる。書ける事項は5つ。しかも労働者が請求しない事項は書いてはいけない。解雇理由証明書は退職日で締め切られ</span></li><li><a href="../column/mimoto-hosho/">身元保証書 — 金額の上限を書いていないと無効。それを決めたのは身元保証法ではなく、2020年の民法だった</a><span class="rel-desc">身元保証書は2020年4月から、極度額（上限金額）を書いていないと無効。期間は定めなければ3年、定めても5年まで。金額の上限を作ったのは19</span></li></ul><!--rel:E-->
 </section>
 <!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=2%E3%81%A4%E3%81%AE%E6%97%A5%E4%BB%98%E3%81%AE%E6%97%A5%E6%95%B0%E3%82%92%E6%95%B0%E3%81%88%E3%82%8B%E3%80%81%E3%80%8C3%E5%96%B6%E6%A5%AD%E6%97%A5%E5%BE%8C%E3%80%8D%E3%82%92%E8%A8%88%E7%AE%97%E3%81%99%E3%82%8B%E3%80%81%E6%9C%9F%E9%96%93%E5%86%85%E3%81%AE%E5%96%B6%E6%A5%AD%E6%97%A5%E6%95%B0%E3%82%92%E6%95%B0%E3%81%88%E3%82%8B%E2%80%94%E2%80%94%E5%9C%9F%E6%97%A5%E3%83%BB%E7%A5%9D%E6%97%A5%E3%83%BB%E5%B9%B4%E6%9C%AB%E5%B9%B4%E5%A7%8B%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%81%97%E3%81%9F%E7%84%A1%E6%96%99%E3%81%AE%E6%97%A5%E6%95%B0%E8%A8%88%E7%AE%97%E3%83%84%E3%83%BC%E3%83%AB%E3%80%82%E7%A5%9D%E6%97%A5%E3%83%87%E3%83%BC%E3%82%BF%E3%81%AF%E5%86%85%E9%96%A3%E5%BA%9C%E3%81%AE%E5%85%AC%E8%A1%A8%E5%88%86%E3%82%92%E4%BD%BF%E7%94%A8%E3%80%82%E7%99%BB%E9%8C%B2%E4%B8%8D%E8%A6%81%E3%83%BB%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6%E5%86%85%E3%81%A7%E5%AE%8C%E7%B5%90%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Feigyobi%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
@@ -205,7 +206,7 @@
   祝日データ: 内閣府「国民の祝日について」。計算結果は目安です。<br>© 税金・経理・補助金ツールズ
   <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ（運営者は税理士・社会保険労務士ではありません）</div><!-- /trust:auto -->
+  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ</div><!-- /trust:auto -->
 </footer>
 
 <script type="module">

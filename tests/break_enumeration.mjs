@@ -9,6 +9,7 @@ import { readFile, writeFile } from "node:fs/promises";
 import { execSync } from "node:child_process";
 import { resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { JSDOM } from "jsdom";
 
 const ROOT = resolve(fileURLToPath(new URL("../", import.meta.url)));
 const P = (p) => join(ROOT, p);
@@ -26,12 +27,27 @@ const run = () => {
 const KH = "docs/kihonteate/index.html";
 const IK = "docs/ikuji/index.html";
 const PP = "docs/papa-ikukyu/index.html";
+const SAITEI = "docs/saitei-chingin/index.html";
+const OKINAWA = "docs/saitei-chingin/okinawa/index.html";
 
 const originals = new Map();
-for (const p of [KH, IK, PP]) originals.set(p, await readFile(P(p), "utf8"));
+for (const p of [KH, IK, PP, SAITEI, OKINAWA]) originals.set(p, await readFile(P(p), "utf8"));
+
+function dropSaiteiItem(html, selector, term, removeRow) {
+  const dom = new JSDOM(html), items = [...dom.window.document.querySelectorAll(selector)];
+  const matches = items.filter(e => e.textContent.includes(term));
+  if (matches.length !== 1) throw Error(`壊し先が一意でない: ${selector} / ${term}`);
+  if (removeRow) matches[0].remove();
+  else matches[0].textContent = matches[0].textContent.replace(term, "");
+  const changed = dom.serialize(); dom.window.close(); return changed;
+}
 
 /** 壊し方の一覧。「法が列挙する事由を画面から消す」＝利用者が自分を見つけられなくなる事故そのもの */
 const BREAKS = [
+  ...["臨時", "1か月", "所定労働時間を超える", "所定労働日以外", "午後10時", "午後11時", "精皆勤手当", "通勤手当", "家族手当"].map(term =>
+    [SAITEI, `最低賃金の算入除外「${term}」を親の列挙から消す`, h => dropSaiteiItem(h, "#saitei-exclusions > li", term, true)]),
+  ...["臨時に支払われる賃金", "一か月を超える期間ごとの賃金", "所定時間を超える労働への賃金", "所定休日の労働への賃金", "深夜労働の通常賃金を超える部分", "精皆勤手当", "通勤手当", "家族手当"].map(term =>
+    [OKINAWA, `最低賃金の算入除外「${term}」を県の確認欄から消す`, h => dropSaiteiItem(h, "#pref-exclusions > li", term, true)]),
   [KH, "パワハラ・セクハラを消す", (h) => h.replace(/<li><b>事業主や同僚から、就業環境が著しく害されるような言動を受けた<\/b>（パワハラ・セクハラ）<\/li>/, "")],
   [KH, "退職勧奨を消す", (h) => h.replace(/<li>会社から退職するよう勧奨された（退職勧奨）<\/li>/, "")],
   [KH, "月100時間以上を消す", (h) => h.replace(/<li>1か月に100時間以上[^<]*<\/li>/, "")],
@@ -54,7 +70,7 @@ const BREAKS = [
   [IK, "②特例基準日（母親の救済）を消す", (h) => h.replace(/<li><b>② 母親は「産前休業を開始した日」で数え直せます<\/b>[\s\S]*?<\/ul>\s*<\/li>/, "")],
   [IK, "③80時間ルールを消す", (h) => h.replace(/<li><b>③ 11日以上の月が12か月に足りないときは[\s\S]*?<\/li>/, "")],
   [IK, "救済ブロックごとidを外す", (h) => h.replace('id="ikuji-shikaku-list"', 'id="gone-ikuji"')],
-  [PP, "★①の理由から「出産」を消す", (h) => h.replace("<b>出産</b>・<b>事業所の休業</b>", "<b>事業所の休業</b>")],
+  [PP, "★①の理由から「出産」を消す", (h) => h.replace("<li>出産</li>", "")], // 2026-10-12: 理由を箇条書きにした（ikuji と同じ形）
   [PP, "①2年→4年の救済をまるごと消す", (h) => h.replace(/<li><b>① 「2年間」を最大4年間まで延ばせます<\/b>[\s\S]*?<\/li>/, "")],
   [PP, "②80時間ルールを消す", (h) => h.replace(/<li><b>② 11日以上の月が12か月に足りないときは[\s\S]*?<\/li>/, "")],
   // ★父母の非対称を消す壊し: 「特例基準日は産後パパ育休には無い」を消すと、

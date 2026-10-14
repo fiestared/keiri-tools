@@ -21,6 +21,21 @@ const ROOT = resolve(fileURLToPath(new URL("../../", import.meta.url)));
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const SCENES = [
+  { name: "nenrei", expect: s => s.initialRows === 121 && s.nextRows === 121 && s.row2026 === "2000年 平成12年 25歳 26歳" && s.row2027 === "2000年 平成12年 26歳 27歳" && s.before === "平成31年4月30日" && s.after === "令和元年5月1日" && s.reverse === "2019年5月1日" && s.alternateEra === "2019年4月30日" && s.invalid && s.cleared && s.recalculated && s.leapBefore && s.leapAfter },
+
+  { name: "print_table_inshi", expect: s => s.rows === 16 && s.first === '非課税（印紙不要）' && s.tax === '200円' && s.last === '200円' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
+  { name: "print_table_koyou", expect: s => s.rows === 3 && s.rates === '5/1,000|8.5/1,000|13.5/1,000' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
+  { name: "print_table_rosai", expect: s => s.rows === 53 && s.first === '52' && s.last === '3' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
+  ...[
+    ['tokyo','東京',1280,1226,'2026-10-01',204800],
+    ['akita','秋田',1090,1031,'2026-10-14',174400],
+    ['kyoto','京都',1180,1122,'2026-11-16',188800],
+    ['iwate','岩手',1090,1031,'2026-12-01',174400],
+    ['okinawa','沖縄',1086,1023,'2026-12-02',173760],
+  ].map(([slug,pref,wage,prev,effective,monthly]) => ({name:`saitei_pref_${slug}`,expect:s=>
+    s.selected===pref && s.wage===wage && s.prev===prev && s.effective===effective && s.monthly===monthly &&
+    s.checked==='2026-10-14' && s.printCalls===1 && s.parentLink && s.neighborLinks &&
+    s.beforeMin===prev && s.afterMin===wage && s.beforePass && s.afterPass && s.afterFail && s.mobileOverflow===0 && s.monthlySelected })),
   { name: "senpou_preset", expect: (s) =>
       s.filled.under === s.expectFilled.under && s.filled.over === s.expectFilled.over &&
       s.result.includes(s.expectTransfer) },
@@ -47,11 +62,19 @@ const SCENES = [
       /それまでは改定前の1226円が有効/.test(s.prefBox) &&
       /下回っています/.test(s.out) && /最低賃金 1226円/.test(s.out) && /1時間あたり126円不足/.test(s.out) &&
       /改定前の1226円で判定しました/.test(s.out) },
-  // 月給204,700円(240日×8h=月160時間・時間額1,279円)は東京1,280円の最低賃金割れ。「上回っています」と出たら換算の分母が誤り
+  // 月給204,700円(240日×8h=月160時間・時間額1,279円)は東京1,280円の最低賃金割れ。「最低賃金以上です」と出たら換算の分母が誤り
+  // （2026-10-12: 同額でも「上回っています」と出ていたので、満たすときの見出しを「最低賃金以上です」にした＝最低賃金法4条1項「以上」）
   { name: "saitei_monthly", expect: (s) =>
-      /下回っています/.test(s.out) && !/上回っています/.test(s.out) && /160時間/.test(s.out) },
+      /下回っています/.test(s.out) && !/最低賃金以上です/.test(s.out) && /160時間/.test(s.out) },
   { name: "zengin", expect: (s) =>
       /ｶ\)ﾔﾏﾀﾞ/.test(s.out) && s.injectedImg === 0 && !s.pwned && s.copyShown },
+  { name: "zengin_examples", expect: (s) =>
+      s.rows === 8 && s.mismatches.length === 0 && s.copied === 'ｶ)ﾔﾏﾀﾞ' &&
+      s.beforeEvents === 0 && s.resultEvents.length === 1 &&
+      JSON.stringify(s.resultEvents[0]) === JSON.stringify({ tool: 'zengin-kana' }) && s.limitWarning },
+  { name: "denchoho_xlsx", expect: (s) =>
+      s.files.length === 4 && s.files.every(f => f.ok && f.download) &&
+      s.files.filter(f => f.format === 'xlsx').length === 2 && s.noCsvOnlyClaim },
   // 未変換の行が黙ってクリップボード(=総合振込ファイル)へ流れないこと
   { name: "zengin_ng_copy", expect: (s) =>
       s.blocked && /組戻し/.test(s.errText) &&
@@ -222,6 +245,23 @@ const SCENES = [
   // 上限額が配信できないときは、額を出さずに断る(fail closed)
   { name: "saishushoku_nodata", data404: "kihonteate_r07.json",
     expect: (s) => s.failed && s.amount === null && s.dailyUsed === null },
+
+  // ── 就業促進定着手当 (/teichaku/) ────────────────────────────────────────
+  // ★和歌山労働局しおりの公表例: (10,000−9,500)×183日 ＝ 91,500円、上限 6,307×90×20% ＝ 113,526円
+  { name: "teichaku", expect: (s) =>
+      s.amount === 91500 && s.gross === 91500 && s.cap === 113526 && s.minashi === 9500 &&
+      s.calendarDays === 183 && /2026年4月1日〜2026年9月30日/.test(s.periodLabel) &&
+      /4\/1〜4\/30・30日/.test(s.w1Label) && !s.failed },
+  { name: "teichaku_slow", slow: true, expect: (s) => s.amount === 91500 && !s.failed },
+  // 時給の最低保障(合計÷労働日数×70%)と上限での頭打ち: 7,000円 → 180,000円 → 上限120,000円
+  { name: "teichaku_jikyu", expect: (s) =>
+      s.usedMinimum && s.minashi === 7000 && s.gross === 180000 && s.cap === 120000 && s.amount === 120000 && !s.failed },
+  { name: "teichaku_notlower", expect: (s) => s.saysNotLower && s.amount === null && !s.failed },
+  { name: "teichaku_before", expect: (s) => s.saysBefore && s.amount === null && s.cap === null },
+  { name: "teichaku_nodata", data404: "kihonteate_r07.json",
+    expect: (s) => s.failed && s.amount === null && s.cap === null },
+  { name: "teichaku_nodata_hist", data404: "teichaku_history.json",
+    expect: (s) => s.failed && s.amount === null && s.cap === null },
 
   // ── 高額療養費 ────────────────────────────────────────────────────────
   // ★期待値は**協会けんぽ／自サイトの記事が公表している実額**。区分ウ・医療費100万 → 87,430円。
@@ -777,8 +817,49 @@ const SCENES = [
   { name: "nenmatsu_chosei_fusoku", expect: (s) =>
       s.nenzei === 147500 && s.fusoku === 47500 && s.bigVal === 47500 && s.bigIsFusoku && !s.failed },
   { name: "nenmatsu_chosei_empty", expect: (s) => s.noInput && s.nenzei === null },
+  // ★最小入力（3欄だけ）で結果まで行く: 給与所得3,560,000（表）・基礎控除104万・課税1,770,000×5%＝88,500
+  //   ×102.1%＝90,358→90,300・超過29,700。頭の要約は［年調年税額, 天引きの合計, 差額］、改正の適用をデータから申告
+  { name: "nenmatsu_chosei_min", expect: (s) =>
+      s.nenzei === 90300 && s.kanpu === 29700 && s.bigVal === 29700 &&
+      JSON.stringify(s.sumVals) === JSON.stringify([90300, 120000, 29700]) &&
+      /令和8年12月1日施行/.test(s.kaisei) && /源泉徴収税額/.test(s.ranNenzei) && /⑦/.test(s.ranKyuyo) && !s.failed },
+  // ★法定調書の手引 記載例1（令和8年分）: 源泉徴収票の見本の値 支払金額9,620,000／給与所得控除後の金額（調整控除後）
+  //   7,558,000／所得控除の額の合計額4,564,283／源泉徴収税額206,000／社会保険料等の金額1,659,483・超過額166,460
+  { name: "nenmatsu_chosei_kisai1", expect: (s) =>
+      s.choseiGo === 7558000 && s.kojoGokei === 4564283 && s.shaho === 1659483 && s.tokutei === 510000 &&
+      s.fuyoTou === 1230000 && s.kazei === 2993000 && s.nenzei === 206000 && s.kanpu === 166460 &&
+      s.bigVal === 166460 && s.bigIsKanpu &&
+      /源泉徴収票「源泉徴収税額」/.test(s.ranNenzei) && /調整控除後/.test(s.ranChoseiGo) &&
+      /所得控除の額の合計額/.test(s.ranKojoGokei) && /社会保険料等の金額/.test(s.ranShaho) && !s.failed },
   { name: "nenmatsu_chosei_nodata", data404: "nencho_r08.json",
     expect: (s) => s.failed && s.nenzei === null },
+
+  // ── 損益分岐点 計算ツール (/soneki-bunkiten/) ───────────────────────
+  // ★J-Net21 Q0240: 300,000円÷200円＝1,500個／1,000円×1,500個＝1,500,000円／目標利益15万円で2,250個
+  { name: "soneki_bunkiten", expect: (s) =>
+      s.big === 1500 && s.bepSalesU === 1500000 && s.targetQty === 2250 && s.state === "success" },
+  // ★日本政策金融公庫: 売上高120・変動費48・固定費60（万円）→ 損益分岐点100。安全余裕率 20÷120＝16.7%
+  { name: "soneki_bunkiten_sogaku", expect: (s) =>
+      s.big === 1000000 && s.profit === 120000 && s.safety === "16.7%" && s.bepRatio === "83.3%" && s.state === "success" },
+  // 限界利益0円: 負の損益分岐点を出さず、前提が成り立たないと言う
+  { name: "soneki_bunkiten_no_margin", noCoverage: true, expect: (s) => s.noMargin && s.big === null && !s.marginMinus && !s.redGrows },
+  // 限界利益マイナス（変動費が売上高を1円超える）: 売るほど赤字が増える、と言い分ける
+  { name: "soneki_bunkiten_no_margin_minus", noCoverage: true, expect: (s) => s.noMargin && s.big === null && s.marginMinus && s.redGrows },
+
+  // ── 利益率・原価率 計算ツール (/riekiritsu/) ───────────────────────
+  // ★J-Net21: 売価1,000円・仕入800円の差額200円。粗利率20%・原価率80%・上乗せ率25%（分母のちがい）
+  { name: "riekiritsu", expect: (s) =>
+      s.profit === 200 && s.margin === "20.0%" && s.costRatio === "80.0%" && s.markup === "25.0%" && s.state === "success" },
+  // ★国税庁 問57 の記載例の税額で税抜にそろえる: 税込40,000円(8%)→37,038円・税込60,000円(10%)→54,546円
+  { name: "riekiritsu_zei", expect: (s) =>
+      s.costB === 37038 && s.priceB === 54546 && s.profit === 17508 },
+  // 逆算: 原価800円・粗利率20%以上 → 税抜1,000円／税込で答えると（消費税の端数切捨て）1,099円
+  { name: "riekiritsu_gyakusan", expect: (s) => s.rPrice === 1000 && s.state === "success" },
+  { name: "riekiritsu_gyakusan_zeikomi", expect: (s) => s.rPrice === 1099 },
+  // 答えの売価が1兆円超: 成功扱いで NaN を出さず、失敗として申告する
+  { name: "riekiritsu_gyakusan_too_large", noCoverage: true, expect: (s) => s.state === "error" && !s.nan && s.rPrice === null && /1兆円を超える/.test(s.body) },
+  // 1円安い売価の税抜が0円: 主結果2円は出し、比較欄は率を出さずに「計算できません」
+  { name: "riekiritsu_gyakusan_less_noprice", expect: (s) => s.state === "success" && s.rPrice === 2 && !s.nan && /計算できません/.test(s.less ?? "") },
 
   // ── 所得税 計算機（確定申告） (/shotokuzei/) ─────────────────────────
   // ★年末調整の設例A（所得控除4,826,102円・年調年税額41,400円）に医療費30万円を足して確定申告:
@@ -1938,10 +2019,12 @@ const SCENES = [
 
   // ─── 入力欄に結び付いたエラー・初期値の方針（2026-09-30 UI/UX レビュー）───
   // 空欄で始まり（例は説明文に）、空欄で押すとその欄に aria-invalid・エラー文・フォーカスが移り、直すと消える
-  ...["shaho", "tedori", "furusato", "yukyu", "embed_yukyu", "gensen", "gensen_hoshu",
+  ...["nenrei", "shaho", "tedori", "furusato", "yukyu", "embed_yukyu", "gensen", "gensen_hoshu",
       "kihonteate", "saishushoku", "ikuji", "papa_ikukyu", "juminzei", "taishokukin", "jutaku",
       // 2026-10-08（keiri-uiux-review-2026-10-08 高3・低）: 新ツール2本と、取りこぼした印紙・賞与
-      "shotokuzei", "nenmatsu_chosei", "nenmatsu_chosei_choshu", "inshi", "bonus_tedori"].map((t) => ({
+      "shotokuzei", "nenmatsu_chosei", "nenmatsu_chosei_choshu", "inshi", "bonus_tedori",
+      // 2026-10-14 新ツール2本
+      "soneki_bunkiten", "riekiritsu"].map((t) => ({
     name: `ux_field_error_${t}`, noCoverage: true, uxFieldError: true, expect: (s) =>
       s.initialEmpty && s.noPlaceholder && s.hasExample && s.focused && s.describedByError &&
       s.errorVisible && s.errorNearField && s.resultWarnLinked && s.fieldInView && s.cleared &&
@@ -2017,6 +2100,10 @@ const SCENES = [
       s.emptyLinks.some((h) => /#tools$/.test(h)) && s.emptyLinks.some((h) => /\/column\/$/.test(h)) &&
       s.weakQuestion.matched === false && s.weakQuestion.top === "" }),
   ),
+  // ★検索の順位（2026-10-14）: 読み・誤字・添え語・空白で切られた語で、ダイアログの1位が意図したページ
+  ...[390, 1280].map((w) => ({ name: `site_search_quality_${w}`, noCoverage: true, expect: (s) =>
+      s.width === w && s.got.length === s.want.length &&
+      s.got.every((g, i) => g.matched === true && g.first === s.want[i][1]) })),
   // トップ: ヘッダの検索とインラインの質問欄が両方動く（互いの描画を混ぜない）
   { name: "site_search_top", noCoverage: true, expect: (s) =>
       /\/docs\/shakai-hoken\/$/.test(s.headerFirst) && s.inlineFirst === "/gensen-choshu/" &&

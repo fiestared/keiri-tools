@@ -28,6 +28,7 @@ import { loadNavExperiment, navOnlyCommitFiles, worktreeNavOnly, DATE_LINE } fro
 import { execFileSync } from "node:child_process";
 
 const DOCS = new URL("../docs/", import.meta.url).pathname;
+const SAITEI_PREF_PAGES = JSON.parse(readFileSync(new URL('./saitei_pref_pages.json', import.meta.url), 'utf8')).prefectures;
 const COLUMN = join(DOCS, "column");
 const CHECK = process.argv.includes("--check");
 
@@ -61,6 +62,8 @@ const ORDER = [
   "refresh-kyuka",  // リフレッシュ休暇 — 6,600/月（Google 5,280・Bing実測 3,439）。★被覆は着手時 title/h1 0件、BODY は kibiki-keicho-kyuka の言及のみ。核は ①法定外休暇で労基法に定めが無い ②だが労基法89条1号の絶対的必要記載事項になる ③年休との違いを8軸で比較 ④実施率15.4%・企業規模で4倍以上の開き（一次統計） ⑤★無給にすると平均賃金を下げる（労基法12条3項の5つに入っていない） ⑥年5日の取得義務にカウントされない ⑦助成金の交付要綱に「リフレッシュ休暇」の名は無い ⑧年休管理簿の対象外。
   "ichiji-shotoku",  // 一時所得とは — 5,400/月（Google 4,320・Bing実測 2,350）。★被覆は着手時 title/h1 0件、BODY は yotei-nozei-toha・shokibo-kyosai-uketori の言及のみ。核は ①所得税法34条2項の算式と3項の特別控除50万円（e-Gov v2 で「五十万円」を確認済み） ②1/2して総所得へ入る ③一時所得と雑所得の境界 ④満期保険金は契約者・被保険者・受取人の組合せで贈与税になる ⑤★解約損は内部通算できても、収入のない掛け捨て保険は通算できない境界。
   "gasolindai-kanjo-kamoku",  // ガソリン代の勘定科目 — 4,400/月（Google 3,520・Bing実測 4,747）。★被覆は着手時 title/h1 0件。核は ①旅費交通費・車両費・燃料費・消耗品費の使い分けと継続適用 ②★ガソリン税（揮発油税・地方揮発油税）には消費税がかかるが軽油引取税だけ不課税＝課税標準の扱いの違い ③軽油引取税の除外に必要な販売者の条件 ④インボイスの要否 ⑤従業員へのガソリン代精算が非課税になる限度と、出張実費精算・会社の直接購入の違い。
+  "jisshitsu-chingin",  // 実質賃金 — 14,800/月（google 11,840＋yahoo 2,960。keyword_demand.py 2026-10-12 実測）。D0 の需要順。★被覆ゲート: 連続一致0（語を割ると zangyodai-keisan に当たるだけ）。核は ①毎月勤労統計調査の計算式 ②2025年3月分速報からの2系列（持家の帰属家賃を除く総合／総合）の違いと名称の入れ替わり ③2025年確報・2026年8月速報の公表値 ④ベースアップと定期昇給・自社の昇給率と物価の比べ方
+  "genka-haifu",  // 配賦 49,500/月（google 39,600＋yahoo 9,900。keyword_demand.py 2026-10-12 実測）。在庫 mf。★被覆ゲート: 主題保有0・節保有1（genka-keisan の通達5-1-5 の節。税務の原価計算はそちらへリンクで譲る）。核は ①配賦率・配賦額の式と架空の計算例（基準を変えると負担が変わる）②配賦基準の表 ③原価計算基準 一七・一八・三三・四五・四七 ④予定配賦と配賦差異の仕訳 ⑤本社費の配賦
   "danjo-koyo-kikai-kintoho",  // 男女雇用機会均等法 — 14,800/月（google 11,840＋yahoo 2,960。keyword_demand.py 2026-10-11 実測）。D0 補欠。★被覆ゲート: 主題保有0（題名に「均等法」を持つ matahara は9条3項と措置義務が主題）。核は ①2026年10月1日施行の条番号での条文一覧 ②新旧の条番号の対応表（改正前後の2つの版を突き合わせ）③13条（求職者等へのセクシュアルハラスメント）④紛争解決・公表・過料。妊娠・出産等のハラスメントの中身は matahara、カスハラは kasuhara に譲る
   "kanpu-shinkoku",  // 還付申告とは — 還付申告 8,100/月・還付申告 必要書類 1,000/月（keyword_demand.py 2026-10-11 実測）。★被覆ゲート: 主題保有0・節保有8（期間の条文の読みは kakutei-shinkoku-itsumade・kakutei-shinkoku-kanpukin-itsu、書類の全体表は kakutei-shinkoku-hitsuyo-shorui に譲りリンク）。核は ①年分ごとの提出できる期間の早見表（国税庁の質疑応答 令和2年分→令和7年12月31日 と同じ数え方）②還付申告に絞った添付・提示・保存の表 ③年末調整だけの年は還付申告、申告済みの年は更正の請求。消費税の還付は shohizei-kanpu
   "kakutei-shinkoku-kanpukin-itsu",  // 確定申告の還付金はいつ — 確定申告 還付金 いつ 22,200/月（keyword_demand.py 2026-09-08 実測。Bing半年428）。★被覆は nenmatsu-chosei-kanpukin（会社が12月給与で戻す還付）・shohizei-kanpu（消費税・52条の月末起算）と役割分担、kakutei-shinkoku-itsumade は本文に「振り込」0回で還付時期を未保有だった。核は ①e-Tax3週間/繁忙期の書面1〜1.5か月（Q41）②処理状況の3表示と確認可能時期 ③屋号口座・ゆうちょ記号番号・公金受取口座の丸印 ④所法138条3項の起算日は期限内→期限翌日・期限後→提出日翌日＝期限前の支払決定なら期間ゼロ、5年遡りに利息は付かない ⑤通則法120条の切捨てで大半の還付に加算金は付かない（設例A〜E・令和8年1.3%）⑥138条2項の支払者未納・4項の充当。
@@ -93,6 +96,9 @@ const ORDER = [
   "kokuho-hokenryo",             // 国民健康保険料 72,400/月（国民健康保険 計算 4,400・国民健康保険 減免 4,400・国民健康保険料 いくら 2,400・退職 国民健康保険 1,900 ＝クラスタ 85,500。keyword_demand.py で実測）★着手時、全277ページで「国民健康保険」を title/h1 に持つのは /kokuho/（国民健康保険料 計算機）1件だけで、コラム側の主題保有は0＝ツールはあるのに記事が無い受け皿。記事はツールと役割を分けている＝ツール側が自治体の料率を当てはめた金額、記事側は**どの数字が全国一律でどこから自治体の裁量か**。踏み込みは①★★**「保険料」か「保険税」かで遡られる年数が2年と5年に変わる**＝法76条1項ただし書きが地方税法703条の4への分岐を作っており、時効は法110条1項の2年 vs 地方税法18条1項の5年、賦課決定の期間制限も法110条の2の2年 vs 地方税法17条の5の5年②★★**令和8年度から賦課は4区分**（施行令29条の7第1項4号に子ども・子育て支援納付金賦課額が追加）で、**賦課限度額は区分ごとに独立して当たる**＝67万（2項9号）＋26万（3項8号）＋17万（4項8号）＋3万（5項10号）＝合計113万円。★基礎賦課額を66万円と書いた解説は改正前の数字。介護分は法76条3項で介護保険法9条2号（40歳以上65歳未満）だけなので、いない世帯の上限は96万円③★★**軽減判定の所得は所得税の所得と違う**＝施行令29条の7第6項2号が所得税法57条1項3項4項の例によらず地方税法313条3項〜5項も適用しないと定めており、**専従者給与を戻した額で判定される**（所得税側と住民税側の両方から専従者規定を外している）④★★**世帯主が国保でなくてもその所得が判定に入る**＝6項1号が「世帯主並びに……被保険者及び特定同一世帯所属者」と世帯主を別建てで並べている。保険税側も地方税法703条の4第38項がみなし規定を置く⑤★**7割5割2割は政令上は一律ではない**＝6項4号が6割4割、5号が5割3割を「困難であると認める市町村」に認めている。しきい値は43万円（地方税法314条の2第2項1号）＋31万円/57万円×被保険者等の数⑥★★**産前産後は所得割も免除**（6項8号が所得割額を明記）＝単胎は予定月の前月〜翌々月の4か月、多胎は3月前からの6か月（9号）⑦★★**18歳未満は子ども・子育て支援納付金分の均等割が全額減額**（6項10号11号は割合を乗じる文言が無い）。未就学児の均等割半額（6号7号）は所得軽減の**後**の額に乗るので7割軽減世帯では元の15%まで下がる⑧非自発的失業は給与所得を100分の30（29条の7の2第1項）・対象期間は「離職の日の翌日の属する年度の翌年度の末日まで」（同2項）＝離職日が年度末をまたぐかで長さが1年近く変わる
   "haigusha-tokubetsu-kojo",    // 配偶者特別控除 74,000/月 ＋ 配偶者控除 60,500 ＝クラスタ 134,500（配偶者控除 いくら 4,400・配偶者控除 条件 880 も同記事で受ける。keyword_demand.py で実測）★着手時、全278ページで「配偶者控除」を title/h1 に持つのは /haigusha-kojo/ と /embed/haigusha-kojo/ の2件だけで、コラム側の主題保有は0＝ツールはあるのに記事が無い受け皿。記事はツールと役割を分けている＝ツール側が「いくら税金が安くなるか」の試算、記事側は**控除額がどこから出てくるか**。踏み込みは①★★**条文に早見表は無い**＝所得税法83条の2第1項1号ロにあるのは「93万1円」という定数を使った1本の式だけで、合計所得から93万1円を引き、余りを「5万円の整数倍−3万円」＝2万・7万・12万…へ切り下げ、38万円から引く。**この式と2号3号の3分の2・3分の1（1万円未満切上げ）だけから早見表27セルを計算し、国税庁No.1195の公表値と27/27一致を実測**。93万1円は切り下げの区切りを95万・100万・105万…にぴったり合わせるための定数（95万円ちょうどは余り1万9,999円→0円で満額38万円、95万1円で余りがちょうど2万円になり36万円へ落ちる）②★★**源泉控除対象配偶者だけ基準が違う**＝2条1項33号の4が「本人900万円以下・配偶者95万円以下」で、控除対象配偶者（33号・33号の2）の58万円とずれている。毎月の天引きが減っている＝配偶者控除が使える、ではない（58万円超95万円以下の人が年末に使うのは配偶者特別控除）③★★**令和8年12月1日施行版で判定額が58万円→62万円・給与所得控除の最低保障が65万円→69万円**（e-Govでリビジョンを突き合わせて実測）＝給与収入なら123万円→131万円。一方**83条・83条の2・33号の4は現行版と1文字も差分なし**（diffで確認）＝動くのは入口の判定額だけ。★適用年分は改正法の附則で決まるため断定していない。ただし国税庁No.1191/No.1195は58万円について「令和7年12月1日に施行され、令和7年分から適用される金額です」と明記＝同じ組み立てが前年に使われている④★85条3項ただし書き＝**年の途中で配偶者が死亡した年は死亡の時の現況で判定**するので対象になり得る⑤83条の2第2項1号＝**夫婦が互いに配偶者特別控除を取ることはできない**・85条4項＝配偶者控除と他人の扶養控除の重複も一方のみ⑥合計所得金額（2条1項30号）は**純損失・雑損失の繰越控除の前**で判定する
   "36-kyotei",                  // 36協定 74,000/月（特別条項 9,900・わかりやすく 4,400・三六協定 4,
+  "chokai-kaiko",  // 懲戒解雇 — 14,800/月（google 11,840＋yahoo 2,960。keyword_demand.py 2026-10-13 実測）。MF1 の D0 需要順。被覆ゲート: 主題保有0・節保有3（chokai-shobun の予告の節・chutaikyo の減額の節・kaiko-yokoku-teate の FAQ）。新記事は有効性の枠組み・除外認定の基準と申請・退職金の規定・重責解雇の認定基準・退職時の届出を持ち、処分の種類と減給は chokai-shobun、予告手当の計算は kaiko-yokoku-teate、中退共の減額は chutaikyo へ譲る
+  "kenko-hoken-kumiai",  // 健康保険組合 — 12,100/月（google 9,680＋yahoo 2,420。keyword_demand.py 2026-10-14 実測）。MF1 の D0 需要順。被覆ゲート: 主題保有0・節保有4（hifuyosha-ido-todoke・hyojun-hoshu-gakuhyo の FAQ、iryo-hoken-toha の国保組合の項、kenpo-shikaku-soshitsu の組合の節）。新記事は保険者の定め・協会けんぽとの違い・料率と負担割合の特例・付加給付・設立と解散・届出先・国保組合との区別を持ち、届出の手順は kenpo-shikaku-soshitsu・hifuyosha-ido-todoke、料率一覧は kyokai-kenpo-ryoritsu-ichiran、任意継続の計算は kenko-hoken-nini-keizoku へ譲る
+  "shikko-yakuin",  // 執行役員 — 9,900/月（google 7,920＋yahoo 1,980。keyword_demand.py 2026-10-14 実測）。MF2 の D0 需要順。被覆ゲート: 主題保有0・節保有0。会社法上の位置づけ・執行役／取締役との違い・雇用型と委任型・就任時の一時金（所基通30-2の2）を持ち、使用人兼務役員は shiyonin-kenmu-yakuin、役員の雇用保険・労災は yakuin-koyou-hoken、役員の社会保険は yakuin-shakai-hoken へ譲る
   "chokai-shobun",              // 懲戒処分 74,000/月（懲戒処分とは 27,100・減給 22,200・譴責 18,100・懲戒解雇 14,800・戒告 9,900・諭旨解雇 8,100・けん責 4,400・出勤停止 1,600）★着手時に全285ページで「懲戒処分」がtitle/節/本文とも0ヒットの完全な空白だった。踏み込みは①労基法に「懲戒」の語は0回・使うのは「制裁」3回、逆に労契法は「懲戒」5回・「制裁」0回＝2法が同じ現象を別の語で呼ぶ ②戒告/譴責/出勤停止/降格/諭旨は両法とも0回＝法律が名前を出す懲戒処分は「減給」だけ ③91条の2上限のうち先に効くのは「1回＝平均賃金の半額」で、月給30万なら約4,891円・6回重ねても10分の1(30,000円)に届かない ④平均賃金の分母は暦日数なので同じ月給でも処分の時期で上限が動く(92日→4,891円 / 90日→5,000円) ⑤20条3項が19条2項を準用し、19条2項単体は「但書後段(天災事変)」のみなのに準用先は20条1項但書全体＝懲戒解雇にも除外認定が要る400・届出 1,900 も同記事で受ける）
   "shobyo-teate-kin-shinseisho", // 傷病手当金 申請書 74,000/月 ＋ 傷病手当金 申請方法 3,600・傷病手当金 支給申請書 2,400・傷病手当金 書き方 1,600・傷病手当金 必要書類 590・傷病手当金 時効 260 ＝クラスタ 82,450（keyword_demand.py 2026-08-27 第3便に実測。★「傷病手当金 期間 14,800」「傷病手当金 いつもらえる 2,400」は shobyo-teate-kin が h2「いつから・いつまで（待期3日と通算1年6か月）」で主題保有しているのでクラスタに算入していない＝答えている語を二重に数えない。★対照実験として同じ実行で 傷病手当金 事業主記入 0＝測定不能 が返り、語ごとに違う値＝バケット failure ではないことを確認）。★被覆調査: 全421ページを keyword_demand.py で走査し「傷病手当金 支給申請書」は主題保有0・節保有0。title/h1 に「傷病手当金」を持つのは /shobyo/・/embed/shobyo/・shobyo-teate-kin の3つだけで、**shobyo-teate-kin は「支給申請書」を本文で0回しか書いていない**（grep -c で実測）＝金額と期間の記事であって書類の記事ではない。役割を分けた: shobyo-teate-kin＝いくら・いつまで／本記事＝申請書の書き方・添付・時効。★核は ①★★★**申請書は全4ページで、半分は自分では書けない**＝1〜2ページ目が被保険者記入用・3ページ目が事業主記入用・4ページ目が療養担当者記入用（協会けんぽ様式 k_shoute2607.pdf を pdfplumber で全4ページ実読）。施行規則84条2項の添付2件（意見書・事業主の証明書）が、様式では申請書そのものに組み込まれている ②★★★**協会けんぽは「賃金台帳や出勤簿の写し等、不要な書類の添付はしないよう」と明示**＝実務の通説（証拠として添える）と逆。事業主の証明書が同じ内容を証明済みなので重複になる ③★★★**時効の起算日は「労務不能であった日ごとにその翌日」**（協会けんぽ申請書ページ）＝法193条1項の2年が**休んだ日1日ごとに別々に進む**。まとめて出すと古い日から落ちる／逆に2年超でも申請全体が死ぬわけではない ④★★**事業主記入用は欠勤日ではなく「出勤した日」を〇で囲む**様式＝法108条1項が報酬を受けられる期間を不支給とし、ただし書で差額支給とするので、保険者は「いくら出たか」を要する。様式は有給の賃金だけでなく**出勤の有無に関わらず支給する手当（扶養手当・住宅手当等）・現物支給**も記入対象と明記 ⑤★★**療養費を受ける場合は意見書の添付が不要**（84条4項）。ただし**その旨を申請書に記載**する＝黙って省くのではない ⑥★★★**意見書が外国語なら日本語訳が要る**（84条8項が66条3項を準用）＝84条だけ読んでも到達できない要件。準用の一文（本文は「第六十六条第三項の規定は…準用する。」の1行）に翻訳文という語は出てこない ⑦★84条1項の号は **11個**（egov_elm.py --items で計数。目で数えない）。11号イが公金受取口座で、選ぶと様式上も振込先情報の記入が不要 ⑧★10号は労災に**請求中**でも「受けようとする場合」に当たるので記入が要る ⑨★84条7項1号＝支給開始日前12か月以内に事業所が変わっていたら「各事業所の名称、所在地及び各事業所に使用されていた期間」の書類（協会けんぽでは健康保険加入状況等申告書）。99条2項の平均が12か月ぶんなので保険者が前職の期間を要する ⑩★84条5項ただし書＝番号利用法22条1項で保険者が情報提供を受けられるなら添付不要＝年金関係の添付が「マイナンバー照会を希望しない場合」に限られる条文上の理由 ⑪★84条3項＝意見書には診断年月日と氏名の記載が要る ⑫★**84条は2026年10月1日施行リビジョン（215M10000008036_20261001_508M60000100018）でも本文が現行と同一**であることを両方取得しテキスト比較で確認＝未施行の変更は無い（変わると書かないための確認）⑬★様式の勤務状況欄は3か月分しかない＝長期休業は申請を分ける ⑭★ゆうちょは3桁漢数字の支店名と振込専用の7桁口座番号（通帳の記号・番号では振込不可）。★譲った隣接: 金額と期間＝shobyo-teate-kin／会社都合の休業＝kyugyo-teate／休職中の保険料＝kyushoku-shakai-hokenryo
   "kyuyo-shotoku-kojo",        // 給与所得控除 60,500/月（keyword_demand.py 2026-10-03 朝便に実測: google 48,400＋yahoo 12,100。D0 の表 data/keyword_gap_2026-10-01.md の第2位・★語）。★被覆: title/h1 に「給与所得控除」を主題として持つページは 0本（ディレクトリ 0件・title grep 3本はいずれも別主題＝gensen-choshuhyo-mikata は源泉徴収票の欄名、tokutei-shishutsu-kojo は判定額の分母、gensen-hyo は②欄の計算）。節保有3本（kanai-rodosha-tokurei・shunyu-shotoku-chigai・gensen-hyo）には文脈リンクで譲り、同じ説明を書き直していない。★食い合わない形: 別表第五の表そのものは /gensen-hyo/ に渡し再掲しない（台帳 G-040 §2）、特定支出控除は tokutei-shishutsu-kojo、所得金額調整控除は shotoku-kingaku-chosei-kojo、収入と所得の分かれ目は shunyu-shotoku-chigai、家内労働者等の69万円は kanai-rodosha-tokurei へ。★核は ①令和8・9年分の最低控除額74万円は措置法29条の4第1項の2年限りの特例で、所得税法28条3項1号の本則69万円と5万円ずれる＝令和10年分から下がる ②★★措置法29条の4第2項は「控除額」ではなく給与所得の金額そのものを5区分で定める（なし／収入−74万円／145万1,000円／145万3,000円／145万6,000円）＝収入74万1,000円未満は給与所得0円 ③★★収入660万円未満は所得税法28条4項で別表第五（4,000円刻み・帯の起点で計算した値）なので速算表の手計算と数千円ずれる（年収299万9,000円で2,100円） ④★★令和8年11月までの源泉徴収事務に変更はなく12月の年末調整で精算、源泉徴収税額表が改正されるのは令和9年分以後（年末調整のしかた「昨年と比べて変わった点」） ⑤2か所給与は合計してから1回だけ（No.1410 注4） ⑥★住民税は地方税法32条2項・313条2項の「計算の例により算定」で給与所得控除が流入するが、基礎控除は314条の2第2項1号の43万円のまま＝反映は令和9年度分から ⑦220万円・360万円・660万円・850万円の各境目で控除額が連続する（段差なし）
@@ -301,6 +307,7 @@ const ORDER = [
   "tokutei-shinzoku-tokubetsu-kojo", // 特定親族特別控除 18,100/月（特定扶養親族 5,400 ＝クラスタ 23,500。★受け皿の /fuyo-kojo/ ツールは「段階的な控除額はこのツールでは計算していません」と自分で明言しており、記事も無かった＝片肺。所得税法84条の2の9段階を条文から導出したのがこの記事）
   "gensen-choshu-toha",        // 源泉徴収とは 74,000/月（google 59,200＋yahoo 14,800。keyword_demand.py 2026-10-04 実測）。★被覆ゲート: ⚠️主題保有0件・slug gensen-choshu-toha は0件・<title>に「源泉徴収」を含む13本の h1 を全数読み、/gensen-choshu/＝「源泉徴収税額 計算機」（道具）・/gensen-hyo/＝源泉徴収票の書き方・gensen-choshubo＝帳簿・gensen-zeigakuhyo-mikata/r09＝税額表・nofusho＝納付書・noki-tokurei＝納期の特例・shoyo＝賞与・taishoku＝退職・gaichuhi-kyuyo-kubun＝区分・gyomuitaku＝受け取る側の申告・tokutei-koza＝特定口座・chidai-yachin／kakutei-shinkoku-zeirishi-hiyo＝別主題の付随言及で、「源泉徴収という制度そのもの」を主題に持つページは0。★食い合わない形: 税額の計算は /gensen-choshu/ と gensen-zeigakuhyo-mikata へ、帳簿は gensen-choshubo、納付書は nofusho、納期特例は noki-tokurei、賞与は shoyo-gensen-shotokuzei、退職は taishoku-gensen-choshuhyo、区分は gaichuhi-kyuyo-kubun、受け取る側は gyomuitaku-kakutei-shinkoku、年末調整の対象者は nenmatsu-chosei-itsumade、開設届は kyuyo-shiharai-jimusho-kaisetsu へ渡し、表・計算例・税額表は複製しない。★核は ①源泉徴収義務者は「支払う人」で会社・学校・官公庁・個人・人格のない社団等を含み、外れるのは常時2人以下の家事使用人のみに給与を払う個人（所法184・200）と給与について源泉徴収義務を有しない個人が払う報酬・料金等（204②二。ホステス等を除く）の2つだけ ②居住者13区分／内国法人8区分（給与・報酬が入らない）③給与183・185条と報酬204・205条の2系統の対比（税額表か率か・年末調整の有無・納期特例の範囲・納付書） ④徴収は「現実に支払う時」で未払なら引かない＋例外5つ（配当1年・役員賞与1年・組合2か月・割引債2つ）＋「支払」は債務が消滅する一切の行為（所基通181〜223共−1） ⑤年末調整は「支払うことが確定した給与」で未払も含める＝源泉徴収と物差しが違う ⑥納税地は支払事務を取り扱う事務所等の所在地（所法17）＝支店ごと ⑦合計税率＝所得税率×102.1% の表と、租税条約の限度税率適用時は復興特別所得税が課されない例外（復興財確法33⑨一・33④一）。一次資料は registry t1 の固定正本（aramashi2026 の 03/04/07/15）
   "gensen-choshuhyo-itsu",     // 源泉徴収票 いつもらえる 33,100/月（google 26,480＋yahoo 6,620。keyword_demand.py 2026-10-11 実測）。被覆ゲート: 主題保有0・節保有0（言及 gensen-choshuhyo-mikata 3回）。見方・再発行・書き方・退職所得はリンクで譲る
+  "nenmatsu-chosei-iryohi-kojo", // 年末調整 医療費控除 12,100/月（google 9,680＋yahoo 2,420。keyword_demand.py 2026-10-12 実測）。被覆ゲート: 主題保有0・節保有4（iryohi-kojo-ikura-kara・nenmatsu-chosei-kakutei-shinkoku-chigai・shotoku-kojo-ichiran の FAQ と /nenmatsu-chosei/ の FAQ）。控除額の計算は iryohi-kojo-ikura-kara と /iryohi/、還付申告の書類は kanpu-shinkoku、全体の違いは nenmatsu-chosei-kakutei-shinkoku-chigai へ譲り、この記事は「年末調整では受けられない理由（190条2号）・確定申告で受ける流れ・会社の担当者の答え方」に絞った
   "nenmatsu-chosei-kakutei-shinkoku-chigai", // 年末調整 確定申告 違い 14,800/月（google 11,840＋yahoo 2,960。keyword_demand.py 2026-10-11 実測）。「年末調整 自分で」5,400 も同じ1本で受ける。被覆ゲート: 主題保有0・節保有0。確定申告の要否・対象外・医療費・ふるさと納税はリンクで譲る
   "gensen-choshuhyo-saihakko",  // 源泉徴収票 再発行 22,200/月（google 17,760＋yahoo 4,440。keyword_demand.py 2026-10-06 実測）。★被覆ゲート: 再発行を主題に持つページ0本。節保有2本（gensen-choshuhyo-mikata のFAQ・taishoku-gensen-choshuhyo のFAQ）は答えを縮めず文脈リンクで双方向。欄の読み方は mikata、退職所得の様式は taishoku-gensen-choshuhyo へ渡す。核は所得税法226条に再交付の定めが無いこと・226条4項ただし書（電子交付後の書面請求）・242条6号7号・国税庁F5-4（再発行は対象外）。台帳 G-050 の賭け1本目
   "kenpo-shikaku-soshitsu",  // 健康保険資格喪失証明書 27,100/月（google 21,680＋yahoo 5,420。keyword_demand.py 2026-10-07 実測。資格喪失届 2,900 を寄せる）。★被覆ゲート: 主題保有・節保有の警告0、slug grep 0件、title「資格喪失」0件。喪失届の細かな例外は tsukitochu-nyusha-taishoku-kyuyo#todoke、資格確認書は maina-hokensho、扶養は hifuyosha-ido-todoke へ譲る。核は証明書が健保法48条・規則29条の届と別物であること・市区町村の書式例の項目・健保法51条の確認の請求。台帳 G-050 の賭け2本目
@@ -323,6 +330,8 @@ const ORDER = [
   "taishoku-kansho",            // 退職勧奨 12,100/月 ＋ 労働審判 4,400・特定受給資格者 2,400・退職勧奨 会社都合 1,300・退職合意書 480・退職勧奨 解雇 違い 390・退職勧奨 違法 390・解決金 320・退職勧奨 失業保険 260・退職勧奨 退職金 210・退職勧奨 拒否 140・退職勧奨 とは 110・退職勧奨 助成金 50 ＝クラスタ 約22,350（keyword_demand.py 2026-08-25 第9便に実測。あっせん 27,100 は語の意味が広すぎるのでクラスタに数えていない）。★被覆調査（条文用語で数える・申し送り1503/1507）: 全390ページで **合意解約0／下関商業0／労働審判0／解決金0／退職合意書0／民法627条0／労働契約法16条0／事業主都合0**。「退職勧奨」は4ページに散在するが **title/h1h2 保有は0**（kaiko-yokoku-teate 8回・rishokuhyo 4回・kihonteate 1回・embed 1回）。★ヒットの中身を見て**譲る相手**を決めた（申し送り1513）——`kaiko-yokoku-teate` は解雇予告手当の計算と所得区分を保有、`rishokuhyo` は「離職理由」を title/h1h2 に27回持ち離職票の様式を保有、`shitsugyo-hoken-keisan` は「会社都合」36回で給付日額を保有、`taishokukin-zeikin`／`taishoku-shotoku-shinkokusho` は退職所得課税を保有。**いずれも書き直さずリンクで譲り、本記事は「合意解約という法的性質」の面だけを書いた**。★同時に測って落とした候補: eLTAX 74,000（ポータルへの案内意図で、記事で受けられない）／減資 8,100（`genshi` が title で主題保有）／フリーランス法 12,100・フリーランス新法 8,100（`shitaukeho-toritekiho` が title に「フリーランス法」を持ち主題保有）／事業所税 4,400（`jigyoshozei` が主題保有）／一括償却資産 9,900（`shogaku-genka-shokyaku` が title 保有）／でんさい 6,600・電子記録債権 3,600（`tegata-toha` が title 保有）／買掛金 5,400（`miharai-hiyo-miharaikin` が title 保有）／納付書 5,400（`gensen-shotokuzei-nofusho` が title 保有）／労使協定 5,400（`kyuyo-kojo-dekirumono`・`kango-kaigo-kyuka` が title 保有）／経費精算 4,400・立替金 3,600・決算公告 2,900・是正勧告 2,400（過去の便が却下済み）。核は ①★★★**「退職勧奨」という語が法令の本文に一度も出てこない**＝民法・労基法・労契法・雇保法・労働審判法・個別労働関係紛争解決促進法の6法令で出現0回。唯一の居場所が**雇用保険法施行規則36条9号「事業主から退職するよう勧奨を受けたこと」**で、しかも名詞ですらなく出来事の記述。★0を主張する前に対照実験をした（労契法「解雇」5回・個別紛争法「あっせん」48回・労働審判法「労働審判」129回・雇保法「特定受給資格者」13回＝検索経路は生存）②★★★**解雇を縛る条文が条文自身の文言で外れる**＝労契法16条は「解雇は、…無効とする」、労基法20条1項は「使用者は、労働者を解雇しようとする場合においては」＝**合意解約には30日前の予告も予告手当も条文上要らない** ③★★★**労働契約法には合意による終了を規律する条が1つも無い**（全条の見出しを木構造から機械で列挙して確認。終了に触れるのは16条・17条・18条・19条だけ・8条は「変更」）＝合意解約は労働法ではなく民法の契約一般で動いている ④★★★**歯止めは「行為」ではなく「意思表示」の側にある**＝民法96条1項（強迫）・95条1項（重要な錯誤）で退職の意思表示が取り消されると**退職は成立していなかった**ことになる ⑤★★★**雇用保険だけ解雇と横並びになる**＝雇保法23条2項2号が「解雇（…）その他の厚生労働省令で定める理由」と書き、その省令が則36条＝**合意で終わったのに失業給付の場面だけ解雇と同じ箱**。効果は2つで、所定給付日数が22条1項の150日（20年以上）→23条1項2号イの330日（45歳以上60歳未満・20年以上）＝**差180日**（10〜20年なら120→270で差150日）、かつ33条1項の給付制限が付かない（同項が対象にしているのは「自己の責めに帰すべき重大な理由による解雇」と「正当な理由がなく自己の都合によつて退職した場合」の2つだけで、勧奨に応じた退職はどちらの文言にも当たらない）⑥★★**則36条8号がもう1つの受け皿**＝「事業主又は当該事業主に雇用される労働者から就業環境が著しく害されるような言動を受けたこと」＝9号に当たらなくても8号で特定受給資格者になる ⑦★★★**労基法22条1項のかっこ書きが働かない**＝「（退職の事由が解雇の場合にあつては、その理由を含む。）」なので、解雇でない退職勧奨では証明の対象は「退職の事由」まで。しかも3項「前二項の証明書には、労働者の請求しない事項を記入してはならない」＝**親切のつもりで経緯を書き足すと違反**（退職勧奨はいちばん書きたくなる場面） ⑧★★★**上乗せ金・解決金の所得区分は名前ではなく計算基準で決まる**＝所基通30-1が1つの文の中で前段（本来退職しなかったとしたならば支払われなかったもので、退職したことに基因して一時に支払われることとなった給与＝認める側）と後段（支払金額の計算基準等からみて引き続き勤務している者に支払われる賞与等と同性質であるものは該当しない＝外す側）の**二段構え**。賞与の査定と同じ基準で算定すると後段に触れる余地 ⑨★★同じ第30条関係の**30-5が「解雇予告手当は退職手当等に該当する」と明記**＝名前が「手当」でも退職所得になりうる ⑩★★**合意解約に様式も記載事項も無い＝書かなかった項目は何も決まらない**（条文が補ってくれない）⑪★★**あっせんは申し込まれたこと自体が保護される**＝個別紛争法4条3項の不利益取扱い禁止を5条2項があっせんに準用 ⑫★★**労働審判は15条2項で「三回以内の期日」**＝1回目までに主張と証拠をそろえることになる。21条1項の異議は「2週間の不変期間」、**異議が無ければ21条4項で「裁判上の和解と同一の効力」＝債務名義**（kosei-shosho・kyuyo-sashiosae へ接続）
   "kanjo-kamoku-ichiran",       // 勘定科目一覧 9,900/月（keyword_demand.py で実測。本日測った22語中で最大かつ主題保有ゼロ。複式簿記 9,900 は同率だが /aoiro-kojo/・/column/aoiro-tokubetsu-kojo/ が節保有、建設仮勘定 4,400・中小企業投資促進税制 3,600・税効果会計 5,400 は下位。★核は「勘定科目の名前を定めた法律は無い。決まっているのは区分だけ」＝会社計算規則73条2項「適当な名称」・88条7項も同文・88条1項1号は売上高すら「売上高以外の名称を付すことが適当な場合には、当該名称を付した項目」と明記。★踏み込み: ①実務で毎日使う費目（旅費交通費・通信費・消耗品費・水道光熱費・接待交際費・会議費・広告宣伝費・福利厚生費・法定福利費・支払手数料・役員報酬・雑費・雑収入・仮払金・仮受金・立替金・車両運搬具・荷造運賃）は会社計算規則/財務諸表等規則/所得税法施行規則の条文本文で**すべて0回**（e-Gov API v2 で全文取得して実測）②「勘定科目」という語は会社計算規則に7回しかなく、全部が分配可能額の計算（149・150・156〜158条・附則5条）＝計算書類の条文（73〜98条）には0回。財務諸表等規則では0回（代わりに「科目」282回）③流動/固定は一年基準より先に「通常の取引」（74条3項1号ロの定義）で決まる・「一年内」の起算日は事業年度の末日の翌日（74条4項）④上場企業だけ科目名を条文が名指し（財規17条13項目・23条10項目・27条14項目・32条15項目・49条15項目・52条10項目）＋5%/10%/20%の別掲記基準⑤個人事業主は所得税法施行規則47条の3で必要経費9区分だけ・条文自身が「準ずる他の項目によることができる」と差し替えを許している。★役割分担: 個別の科目の識別は /column/miharai-hiyo-miharaikin/・/column/urikake-mishunyukin-mishushueki/ に譲り、こちらは全体の見取り図。会社計算規則はサイトで3ページしか引いていない未使用の一次情報だった。blockquote 12断片を素・改ざんの両方向で逐語照合済み）
   "genka-keisan",               // 原価計算 9,900/月（原価計算基準 2,900・製造原価報告書 2,400・製造間接費 880・原価差額 590・総製造費用 20 ＝クラスタ 18,690。keyword_demand.py で本便に実測し直した。候補13語中で最大かつ**被覆警告ゼロ**＝言及は前便の /column/uriage-genka/ が「本記事は原価計算基準を扱わない」と明示的に譲った1回だけ。★核は「税法は原価の積み方を定めていない」＝法人税法施行令32条2項が、自社の算定額が1項2号の金額と異なっても「その原価の額が適正な原価計算に基づいて算定されているとき」はその金額を取得価額と**みなす**（適正な原価計算の定義は条文にも政令にも無い）。★税法が代わりに書いているのは2つだけ＝①外していい費用 ②ズレの始末。踏み込み: ①通達5-1-4は製造原価に算入しないことが**できる**費用を13項目（機械で計数）。事業税・特別法人事業税(7)・休止期間の費用(9)・工場が支出した寄附金(12)・借入金の利子(13)＝製品1個と結びつかない支出は外せる＝外せる分だけ当期の損金 ②通達5-1-3の3%は分母が「製造原価」、購入側の5-1-1は分母が「購入の代価」＝**分母が違う**。判定単位も製造側だけ「工場別に原価計算を行っている場合は工場ごと」 ③通達5-3-3の1%は**金額要件と書類要件の2本**＝「明細書を確定申告書に添付したときは」で、1%以内なら自動的に不要ではない ④1%の判定単位は 事業の種類ごと→製品の種類ごと(継続適用)→**工場ごと**(5-3-4)→上期下期(5-3-2の2) と細分できる ⑤5-3-5の簡便法の算式は国税庁が**画像(sansiki01.gif)で掲載**しており本文に無い＝画像を実読して転記。注3「直接原価計算制度を採用している場合には、この調整方法の適用はない」（税務署長の承認があれば別） ⑥★調整義務は**片側だけ** — 5-3-1は「満たない場合」しか書かず「加算する」と言い切るのに対し、過大な側の5-3-9は対象を「自己否認した金額から成る部分」に絞り「できる」にとどめる＝所得が増える向きだけ塞いでいる。★役割分担: 評価方法6種は /column/tanaoroshi-hyoka-hoho/、損金算入の時期は /column/uriage-genka/ に譲り、本記事は「製造原価をどう積み、ズレをどう始末するか」を担当。blockquote 14断片を通達(国税庁原文8ページ)＋e-Gov施行令32条の合成コーパス15,968字で逐語照合＝14/14一致・改ざん14/14不一致。★通達の照合を tools/fetch_tsutatsu.py で道具化した（従来は毎便 /tmp の書き捨て）
+  "seimei-hokenryo-kojo-shomeisho",  // 生命保険料控除証明書 9,900/月（keyword_demand.py 2026-10-12 実測 google 7,920＋yahoo 1,980。Opus執筆便午後・新規）。★被覆ゲート: 連続一致0・slug 0・題名に「控除証明書」0。語を割ると hokenryo-kojo-shinkokusho ほか5ページに当たるが、証明書そのものは主題でない。証明書の要否の全体は hokenryo-kojo-shinkokusho、控除額は seimei-hokenryo-kojo、会社の電子化は nenmatsu-chosei-denshika へ譲る。核は ①届く時期の例（各社の2026年分の案内）②申告に書く額と月払の証明書（1〜9月の払込状況でよい）③後日提出を条件に控除する扱い（翌年1月末日）と出なかったときのやり直し ④配偶者名義・新旧両方記載の扱い
+  "kokumin-nenkin-kojo-shomeisho",  // 国民年金 控除証明書 9,900/月（keyword_demand.py 2026-10-13 実測 google 7,920＋yahoo 1,980。Opus執筆便朝枠・新規）。★被覆ゲート: 主題保有0・slug 0（kokumin-nenkin-hokenryo＝保険料の額・kokumin-nenkin-kikin＝基金）。言及だけの4ページ（nenmatsu-chosei-hitsuyo-shorui・hokenryo-kojo-shinkokusho・kakutei-shinkoku-hitsuyo-shorui・shakai-hokenryo-kojo）へは、控除の仕組み・申告書の書き方・前納の計算をリンクで譲る。核は ①令和8年分の送付日（電子と書面を分ける）②金額欄の見方（再発行は納付済額の期間が違う・見込額が載らない場合）③再交付の目安と納付の反映 ④お客様控えのPDFは使えない ⑤翌年1月末日までの後日提出 ⑥確定申告は明細書で代用できるが年末調整はできない（所得税法120条6項）
   "kyugyo-teate",               // 休業手当 9,900/月（とは 2,400・条件 1,900・計算 1,300・会社都合 720・計算方法 390・休業補償 違い 390・期間 390・労働基準法 260 ＝クラスタ 17,650）
   "yakuin-taishokukin",         // 役員退職金 4,400/月（役員退職慰労金 1,000・役員退職金 税金 880・計算 720・相場 480・功績倍率 390・損金 260 ＝クラスタ 8,130）★着手時に全302ページで「役員退職金」が title/h1h2 とも0ヒット・本文も taishokukin-zeikin のFAQ1問のみ（受け取る個人側の記事で、法人側の損金算入は扱っていない）。対照実験「控除」31ページ・「保険料」49ページで検索経路の生存を確認済み。踏み込みは①**役員退職金は34条1項の3類型の外**（1項柱書のかっこ書きが「退職給与で業績連動給与に該当しないもの」を除いている）＝効くのは34条2項だけで、否認されても全額ではなく「不相当に高額な部分」だけ ②**施行令70条2号が名指しする判断要素は3つ**（業務に従事した期間・退職の事情・同種で事業規模が類似する法人の支給状況）で、**実務が使う「最終報酬月額」は名指しされていない**（末尾が「等に照らし」なので限定列挙ではない点も明記）③**「功績倍率」「功績」「最終報酬」「分掌変更」は法人税法・法人税法施行令の全文で0回**（両法令をe-Gov API v2で全文取得して計数。「退職給与」は法55回・令151回あるのに、額を算定する語だけが0回）④**「功績倍率」が現れるのは法人税基本通達9-2-27の3だけ**（第9章第2節の全8款を取得して計数＝第7款の本文と(注)の2回のみ）で、その役割は算定基準を与えることではなく**業績連動給与に該当しないと確認すること**。同族会社は34条1項3号柱書のかっこ書きで入口から外れ有価証券報告書も出さないので、業績連動給与に分類されると全額損金不算入になりうる ⑤**第6款「過大な役員給与の額」(9-2-21〜27)は施行令70条の1号イ1回・1号ロ3回・3号1回を引くだけで2号を一度も引いていない**＝退職給与の過大性の基準を示した箇条がその款に無い ⑥**損金算入時期は決議日が原則・支払日＋損金経理も可**（9-2-28）だが**取締役会の内定額を未払金計上しても不可**（国税庁No.5208注1）。退職年金は逆に支給すべき時（9-2-29）⑦**分掌変更(9-2-32)は「おおむね50%以上の減少」を満たしても経営上主要な地位を占める者は(1)(2)(3)すべてのかっこ書きで除かれる**・**未払金計上は原則として退職給与に含まれない**（(注)。「原則として」の例外は通達の文面から特定できないのでfail-closedで明記）⑧**使用人兼務役員は区分支給しても合計額で判定**（9-2-30）・企業年金からの給付も勘案（9-2-31）⑨**受け取る側は役員等勤続5年以下だと2分の1が一切使えない**（所法30条2項・5項の特定役員退職手当等）。従業員の短期退職手当等との差は**残額300万円超でちょうど150万円に頭打ち**（30条2項2号の式 150万+(収入-(300万+控除)) が 残額-150万 に整理できることから導出。数値でも検算済み）
   "shinya-teate",               // 深夜手当 8,100/月（計算 3,600・何時から 590・いくら 320・とは 210・何時から何時まで 170・法律 170・計算方法 110／深夜割増 720・深夜労働 720 ＝クラスタ 14,710）
@@ -344,6 +353,7 @@ const ORDER = [
   "yotei-nozei-toha",           // 予定納税 11,840/月（減額申請 1,040・払えない 312・予定納税基準額 256 ＝クラスタ 13,448）。基準額は譲渡・一時・雑・臨時所得を除いて作る（所法104条1項1号）
   "kyokai-kenpo-ryoritsu-ichiran", // 協会けんぽ 保険料率 1,280＋社会保険料 早見表 800 ほか（keyword_demand.py 2026-10-07）。引用される早見表（被リンク狙い）。47都道府県の全件・CSV・Dataset。表は shaho_rates_r08.json から gen_kenpo_ichiran.mjs が生成。shakai-hoken の高い順・低い順5件とは役割分担（計算はツール、全件の参照はここ）
   "rosai-hokenryoritsu",        // 労災保険料率 5,400/月（労災保険料 2,400・労災保険率 390 ＝クラスタ 8,190）。法令上の名前は「労災保険率」で"料"が入らない
+  "part-arbeit-chigai",        // パート アルバイト 違い 33,100/月（keyword_demand.py 2026-10-13 実測）。★核: 法律上の区別は無く、所定労働時間が通常の労働者より短ければどちらもパート有期法2条1項の短時間労働者。明示・有給・最賃・社保・雇保・年調は呼び名でなく実態。学生の除外。統計の区分は hiseiki-koyo に譲る
   "hiseiki-koyo",              // 非正規雇用 27,100/月（keyword_demand.py 2026-10-05 実測・重複警告0件）。在庫 topic_stock.json の mf で未着手の最大。★核: 「非正規雇用」は法律の用語でなく労働力調査が役員を除く雇用者を勤め先での呼称で7区分し正規以外の6区分をまとめた統計上の呼び名。2026年8月分（基本集計）で役員を除く雇用者5,861万人・非正規2,126万人・36.3%（男22.6%・女51.0%）。令和7年 賃金構造基本統計調査の358.8/241.7千円・格差67.4は「一般労働者」どうしで短時間労働者（1時間当たり1,518円）を含まない。詳細集計 2026年4〜6月期の理由別は分母が理由不詳を除く2,097万人。★既存の doitsu-rodo-doitsu-chingin（8条9条）・muki-tenkan（5年・クーリング）・shakai-hoken-kanyu-joken・koyou-hoken-kanyu-joken・haken-3nen-teishokubi は複製せず文脈リンクで渡す
   "rodo-kumiai",               // 労働組合 18,100/月（keyword_demand.py 2026-10-05 実測・節保有の警告1件＝haken-3nen-teishokubi の FAQ「意見聴取で労働組合が反対したら」）。在庫 mf の未着手2位。労働組合法5,400・労働協約1,600も同じ1本で扱う。★核: 労組法2条の定義と但書4号、労基法24条・90条の相手方は事業場ごとに過半数組合→なければ過半数代表者（労基則6条の2）で少数組合・社外合同労組は協定の相手にならない、7条の4類型と3号の経理上の援助、14〜18条の労働協約、チェックオフは最高裁平成元年12月11日判決で24条1項ただし書の要件が要る。★意見聴取の各論は shugyo-kisoku・kyuyo-kojo-dekirumono・36-kyotei・anzen-eisei-iinkai・haken-3nen-teishokubi に文脈リンクで渡す
   "fuyo-teate",                // 扶養手当 14,800/月＋家族手当 2,400（keyword_demand.py 2026-10-06 実測。title/h1 0件・節保有は nenshu-no-kabe の FAQ1問）。在庫 topic_stock normal（season=nencho_kaisei）の未着手最大。★核: 会社の賃金規程で決まる手当で、所得税は給与所得（国税庁No.2508）・健保/厚年の報酬・雇保/徴収法の賃金に含む、割増賃金の基礎から外せるのは扶養家族数に応じて算定したものだけ（労基法37条5項・鳥取労働局）、最低賃金の比較では算入しない、有期契約社員への不支給を不合理とした最判令和2年10月15日、廃止は労契法9条・10条。統計は令和7年就労条件総合調査（17.6千円）と人事院令和6年表12。割増賃金の表は zangyodai-keisan、社保/税の扶養は shakai-hoken-fuyo-joken・fuyo-kojo-shinkokusho に文脈リンクで渡す
@@ -354,6 +364,9 @@ const ORDER = [
   "tomobataraki-nenmatsu-chosei", // 共働き 扶養 1,600/月・配偶者控除 共働き 1,000/月・共働き 年末調整 480/月（keyword_demand.py 2026-10-10 実測・MF2便・新規）。被覆: 主題保有0（/fuyo-kojo/ の FAQ 1問と言及のみ）
   "nenmatsu-chosei-keisan-hoho", // 年末調整 やり方 4,400/月・年末調整 計算方法 1,900/月（keyword_demand.py 2026-10-10 実測・MF1便・新規）。被覆: 計算手順を主題に持つページ0（計算機 /nenmatsu-chosei/ は道具）。核は年税額を求める6つの手順・端数処理・国税庁の設例・過不足額の精算。申告書の書き方＝nenmatsu-chosei-kakikata／源泉徴収簿＝gensen-choshubo／還付金＝nenmatsu-chosei-kanpukin／対象外＝nenmatsu-chosei-taishogai へリンクで譲る
   "chuto-nyusha-nenmatsu-chosei", // 転職した年の年末調整（中途入社者） 3,600/月（「年末調整 転職」keyword_demand.py 2026-10-10 実測 2,880＋720。午後便・新規）。被覆: 主題保有0・節保有1（nenmatsu-chosei-itsumade の FAQ 1問）・slug tenshoku/chuto 0件。会社側の手順が主題。前職の源泉徴収票が出ないときは gensen-choshuhyo-saihakko、対象外の区分は nenmatsu-chosei-taishogai に譲る
+  "nenmatsu-chosei-shinai", // 年末調整 しないとどうなる 5,400/月（2026-10-14 実測 google 4,320＋yahoo 1,080。朝便・新規）。被覆: 主題保有0。会社がしない場合（所得税法190条・不納付加算税・240条/242条3号・222条の請求）と本人が申告書を出さない場合（乙欄・保険料控除申告書）に分け、期限と遅れの率は nenmatsu-chosei-itsumade、区分は nenmatsu-chosei-taishogai、源泉徴収票は nencho-misai、取り戻し方は kanpu-shinkoku へリンクで譲る
+  "nenmatsu-chosei-fukugyo", // 年末調整 副業 6,600/月（2026-10-13 実測 google 5,280＋yahoo 1,320。午後便・新規）。被覆: 主題保有0（nenmatsu-chosei-taishogai の③が乙欄の区分を1節で持つ→本記事は本業・副業先・本人の作業に絞り区分の全部は taishogai へ）。確定申告の20万円の線は fukugyo-20man-kakutei-shinkoku・kakutei-shinkoku-ikurakara、住民税は nenmatsu-chosei-juminzei へリンクで譲る
+  "nenmatsu-chosei-kojin-jigyonushi", // 年末調整 個人事業主 2,900/月（2026-10-14 実測 google 2,320＋yahoo 580。午後便・新規）。被覆: 主題保有0・節保有0・slug 0件。本人は確定申告・人を雇えば事業主が年末調整・青色事業専従者・兼業。対象外の区分は nenmatsu-chosei-taishogai、副業は nenmatsu-chosei-fukugyo、届出は kyuyo-shiharai-jimusho-kaisetsu へリンクで譲る
   "nencho-misai", // 年調未済とは 1,600/月（「年調未済」2026-10-09 実測 1,280＋320。MF1便・新規）。被覆: docs 全体で「年調未済」0件。年末調整の対象外の区分は nenmatsu-chosei-taishogai、退職者の票の作り方は taishoku-gensen-choshuhyo へリンクで譲る
   "nenmatsu-chosei-hitsuyo-shorui",  // 年末調整の必要書類 6,600/月（「年末調整 必要書類」2026-10-08 実測 5,280＋1,320。MF1便・新規。誰が何を出すかの一覧。書き方は nenmatsu-chosei-kakikata、保険料の証明書の要否の条文は hokenryo-kojo-shinkokusho へ渡す）
   "nenmatsu-chosei-denshika",  // 年末調整の電子化 1,300/月（「年末調整 電子化」2026-10-07 実測 1,040＋260。MF2便・新規。被覆は hojin-jigyo-gaikyo-setsumeisho の欄名だけ）
@@ -607,6 +620,14 @@ const ORDER = [
   // 2026-10-10 金融アドオン。VYM 18,100（keyword_demand.py 2026-10-10 実測・google 14,480＋yahoo 3,620）。同じバンガード・米国高配当株式ETFに投資する SBI（年1回決算）と楽天の2本。既存の VYM 記事は相手が違う組。
   // 2026-10-11 金融アドオン。楽天SCHD 40,500（keyword_demand.py 2026-10-11 実測）。同じシュワブ・米国配当株式ETFに投資する楽天と SBI（年4回決算型）の2本。既存の SCHD 記事4本は相手が違う組。
   "rakuten-schd-vs-sbi-schd",
+  // 2026-10-13 金融アドオン。オルカン×楽天SCHD 14,800（在庫 finance の値・vs_rows 2026-10-10）。全世界株式の指数と米国の配当株ETFの指数違いの組。既存のオルカン4本・SCHD5本は相手が違う。
+  "emaxis-orcan-vs-rakuten-schd",
+  "shintaku-hoshu",
+  // 2026-10-14 金融アドオン3本目。楽天SCHD 分配金 2,400（keyword_demand.py 2026-10-14 実測・google 1,920＋yahoo 480）。vs記事は2本の比較、本記事は保有口数からの受取額・普通分配金/元本払戻金の区分・税の計算を担当。
+  "rakuten-schd-bunpaikin",
+  // 2026-10-14 金融アドオン。楽天VYM×楽天JEPI 14,480（在庫 finance の値）。高配当株の指数連動とカバード・コール戦略の型違いの組。既存の VYM 4本・JEPI 1本は相手が違う。
+  "rakuten-vym-vs-rakuten-jepi",
+  "rakuten-gold-vs-mufg-gold",
   "sbi-vym-vs-rakuten-vym",
   "ifreenext-india-vs-rakuten-india",
   "rakuten-schd-vs-sbi-vym",
@@ -627,14 +648,14 @@ const CATEGORIES = [
     id: "shisan",
     name: "資産形成・投資",
     desc: "インデックス投資の考え方と、費用・分散・元本割れの扱い。具体的な商品名で投資信託を比較し、費用と同期間の実績、投資対象の違いを示します。特定の商品を勧めるものではありません。",
-    slugs: ["index-toushi", "dollar-cost-heikin", "orcan-sp500-holding-period", "orcan-sp500-recovery-days", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold", "orcan-vs-fang", "ifreenext-india-vs-rakuten-india", "rakuten-schd-vs-sbi-vym", "tawara-vs-emaxis-sensinkoku", "orcan-vs-emaxis-sensinkoku", "rakuten-gold-vs-sbi-gold", "sbi-yukidaruma-vs-orcan", "rakuten-schd-vs-rakuten-vym", "sbi-spyd-vs-rakuten-schd", "sbi-spyd-vs-sbi-vym", "sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou", "rakuten-sox-vs-rakuten-nasdaq", "sbi-spyd-vs-rakuten-vym", "rakuten-jepi-vs-rakuten-schd", "emaxis-nikkei-vs-tawara-nikkei", "sbi-vym-vs-rakuten-vym", "rakuten-schd-vs-sbi-schd"],
+    slugs: ["index-toushi", "shintaku-hoshu", "dollar-cost-heikin", "orcan-sp500-holding-period", "orcan-sp500-recovery-days", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold", "orcan-vs-fang", "ifreenext-india-vs-rakuten-india", "rakuten-schd-vs-sbi-vym", "tawara-vs-emaxis-sensinkoku", "orcan-vs-emaxis-sensinkoku", "rakuten-gold-vs-sbi-gold", "sbi-yukidaruma-vs-orcan", "rakuten-schd-vs-rakuten-vym", "sbi-spyd-vs-rakuten-schd", "sbi-spyd-vs-sbi-vym", "sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou", "rakuten-sox-vs-rakuten-nasdaq", "sbi-spyd-vs-rakuten-vym", "rakuten-jepi-vs-rakuten-schd", "emaxis-nikkei-vs-tawara-nikkei", "sbi-vym-vs-rakuten-vym", "rakuten-schd-vs-sbi-schd", "rakuten-gold-vs-mufg-gold", "emaxis-orcan-vs-rakuten-schd", "rakuten-schd-bunpaikin", "rakuten-vym-vs-rakuten-jepi"],
   },
   {
     id: "shakai-hoken",
     name: "社会保険・年金",
     desc: "加入の条件、保険料の決まり方(標準報酬月額・定時決定・随時改定)、賞与支払届などの手続、扶養と年収の壁。",
     slugs: [
-      "iryo-hoken-toha",
+      "iryo-hoken-toha", "kenko-hoken-kumiai",
       "shakai-hoken-kanyu-joken", "shakai-hokenryo-keisan", "hyojun-hoshu-gakuhyo", "kyokai-kenpo-ryoritsu-ichiran",
       "teiji-kettei", "zuiji-kaitei", "sanzen-sango-kyugyo", "sango-papa-ikukyu", "shoyo-shakaihoken", "shoyo-shiharaitodoke", "kaigo-hokenryo-itsukara",
       "kodomo-kosodate-shienkin", "kodomo-kosodate-kyoshutsukin", "shakai-hoken-fuyo-joken", "hifuyosha-ido-todoke", "kenpo-shikaku-soshitsu", "nenshu-no-kabe",
@@ -662,16 +683,16 @@ const CATEGORIES = [
   {
     id: "nenmatsu-gensen",
     name: "年末調整・源泉徴収・控除",
-    desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、医療費控除・ふるさと納税など各種控除と確定申告。税務署へ出す法定調書合計表と、市区町村へ1月31日までに出す給与支払報告書（30万円以下で省略できるのは退職者だけ）の違いもここ。開業届と青色申告承認申請の期限もここ。出した申告を後から直す修正申告（国税通則法19条・期限の定めなし）と更正の請求（同23条・法定申告期限から5年）、それに伴う加算税と延滞税（令和8年は年2.8%／年9.1%）もここ。税務調査の手続（事前通知10項目・さかのぼれるのは原則5年／不正なら7年／法人税の欠損金は10年・終了時に交付される書面）もここ。",
+    desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、医療費控除・ふるさと納税など各種控除と確定申告。税務署へ出す法定調書合計表と、市区町村へ出す給与支払報告書の違いもここ。開業届と青色申告承認申請の期限、修正申告と更正の請求、加算税と延滞税、税務調査の手続もここ。",
     slugs: [
       "furusato-nozei-keisan", "kifukin-kojo",
       "teigaku-genzei-reiwa8",
       "shotokuzei-ritsu",
-      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "chuto-nyusha-nenmatsu-chosei", "tomobataraki-nenmatsu-chosei", "gensen-taisho-gai-kyuyo", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "nenmatsu-chosei-keisan-hoho", "shokibo-kyosai-kakekin-kojo", "kiso-kojo-shinkokusho",
+      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-fukugyo", "nenmatsu-chosei-shinai", "chuto-nyusha-nenmatsu-chosei", "tomobataraki-nenmatsu-chosei", "gensen-taisho-gai-kyuyo", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "nenmatsu-chosei-keisan-hoho", "nenmatsu-chosei-kojin-jigyonushi", "shokibo-kyosai-kakekin-kojo", "kiso-kojo-shinkokusho",
       "shotoku-kingaku-chosei-kojo",
-      "hokenryo-kojo-shinkokusho", "ideco-nenmatsu-chosei", "jutaku-kojo-shinkokusho", "fuyo-kojo-shinkokusho", "haigusha-tokubetsu-kojo", "gensen-kojo-taisho-haigusha", "tokutei-shinzoku-tokubetsu-kojo", "gensen-choshu-toha", "gensen-choshuhyo-mikata", "kyuyo-shotoku-kojo", "gensen-zeigakuhyo-mikata", "gensen-zeigakuhyo-r09", "gensen-choshubo",
+      "hokenryo-kojo-shinkokusho", "seimei-hokenryo-kojo-shomeisho", "kokumin-nenkin-kojo-shomeisho", "ideco-nenmatsu-chosei", "jutaku-kojo-shinkokusho", "fuyo-kojo-shinkokusho", "haigusha-tokubetsu-kojo", "gensen-kojo-taisho-haigusha", "tokutei-shinzoku-tokubetsu-kojo", "gensen-choshu-toha", "gensen-choshuhyo-mikata", "kyuyo-shotoku-kojo", "gensen-zeigakuhyo-mikata", "gensen-zeigakuhyo-r09", "gensen-choshubo",
       "hoteichosho-goukeihyo", "kyuyo-shiharai-hokokusho", "shiharai-chosho", "shakai-hokenryo-kojo", "seimei-hokenryo-kojo", "jishin-hokenryo-kojo", "jutaku-loan-kojo-yoken", "iryohi-kojo-ikura-kara", "tokutei-shishutsu-kojo", "zasson-kojo",
-      "taishokukin-zeikin", "taishoku-shotoku-shinkokusho", "taishoku-gensen-choshuhyo", "gensen-choshuhyo-saihakko", "gensen-choshuhyo-itsu", "nenmatsu-chosei-kakutei-shinkoku-chigai", "shokibo-kyosai-uketori", "fukugyo-20man-kakutei-shinkoku", "angoshisan-zeikin", "tokutei-koza-gensen-ari", "haitokin-kakutei-shinkoku", "nisa-kakutei-shinkoku", "jugyoin-mochikabukai", "gaikoku-zeigaku-kojo", "kaigyo-todoke", "aoiro-tokubetsu-kojo", "aoiro-shonin-shinseisho", "shiroiro-shinkoku", "kakutei-shinkoku-hitsuyo-shorui", "kakutei-shinkoku-itsumade", "junkakutei-shinkoku", "kaji-anbun", "kanai-rodosha-tokurei", "jigyonushi-kashi-kari", "yotei-nozei-toha", "kojin-jigyozei",
+      "taishokukin-zeikin", "taishoku-shotoku-shinkokusho", "taishoku-gensen-choshuhyo", "gensen-choshuhyo-saihakko", "gensen-choshuhyo-itsu", "nenmatsu-chosei-kakutei-shinkoku-chigai", "nenmatsu-chosei-iryohi-kojo", "shokibo-kyosai-uketori", "fukugyo-20man-kakutei-shinkoku", "angoshisan-zeikin", "tokutei-koza-gensen-ari", "haitokin-kakutei-shinkoku", "nisa-kakutei-shinkoku", "jugyoin-mochikabukai", "gaikoku-zeigaku-kojo", "kaigyo-todoke", "aoiro-tokubetsu-kojo", "aoiro-shonin-shinseisho", "shiroiro-shinkoku", "kakutei-shinkoku-hitsuyo-shorui", "kakutei-shinkoku-itsumade", "junkakutei-shinkoku", "kaji-anbun", "kanai-rodosha-tokurei", "jigyonushi-kashi-kari", "yotei-nozei-toha", "kojin-jigyozei",
       "shusei-shinkoku-kosei-seikyu", "zeimu-chosa", "zeimu-dairi-kengen-shosho", "fufuku-moshitate", "nozei-shomeisho",
     
       "kakutei-shinkoku-yarikata",
@@ -701,9 +722,9 @@ const CATEGORIES = [
   {
     id: "kyuyo",
     name: "給与計算・手取り",
-    desc: "額面から手取りまでの引かれ方、残業代・通勤手当・住民税の実務と、36協定による労働時間の上限、フレックスタイム制の清算期間、1か月・1年・1週間の3つに分かれる変形労働時間制、裁量労働制のみなし時間、入社時に明示すべき労働条件、22時以降の深夜手当、会社都合で休ませたときの休業手当、予告なしで解雇するときの解雇予告手当、休日出勤の振替休日と代休の違い、6時間・8時間で切り替わる休憩時間の下限、常時10人以上で義務になる就業規則の作成・届出・周知、労働基準法に定めがなく会社が日数を決める忌引き休暇（慶弔休暇）と香典・祝金の経理、予告なしの解雇が14日までに限られる試用期間、深夜業を含む業務だと年2回になる健康診断の実施義務と費用負担・受診時間の賃金、割増賃金の単価から外せる賃金が7つの限定列挙であることと分割回数で報酬と賞与が入れ替わる年俸制、令和8年10月1日から事業主の義務になるカスタマーハラスメント（カスハラ）対策とそれに伴うパワハラの条番号の付け替え、懲戒処分の減給に労働基準法91条が課す2つの上限（1回は平均賃金の1日分の半額まで・総額は一賃金支払期の賃金総額の10分の1まで）と、戒告・譴責・出勤停止といった処分名が労働基準法にも労働契約法にも書かれていないこと、有期契約が通算5年を超えたときに労働者が申し込める無期転換（労働契約法18条）の通算の起点が2013年4月1日以後を初日とする契約に限られることと、通算がリセットされるクーリング期間が直前の契約期間の2分の1（端数は1か月に切り上げ）であること。",
+    desc: "額面から手取りまでの引かれ方と、残業代・通勤手当・住民税の実務。労働時間と休憩・休日の決まり、就業規則と労働条件の明示、試用期間・解雇・懲戒処分・無期転換、健康診断・忌引き休暇・年俸制・カスタマーハラスメント対策もここ。",
     slugs: [
-      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "kinmukan-interval", "flextime", "henkei-roudou-jikan", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kanri-kantokusha", "kenko-shindan", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "kyukei-jikan", "shugyo-kisoku", "kibiki-keicho-kyuka", "shiyo-kikan", "tsukin-teate-hikazei", "nenpousei", "hiseiki-koyo", "rodo-kumiai", "fuyo-teate", "doitsu-rodo-doitsu-chingin", "gisou-ukeoi", "haken-3nen-teishokubi", "zesei-kankoku", "kasuhara", "chokai-shobun", "muki-tenkan", "anzen-eisei-iinkai", "anzen-eisei-suishinsha", "roudousha-shishobyo-houkoku", "hotei-koyoritsu", "naitei-torikeshi", "taishoku-kansho", "taishoku-shomeisho", "mimoto-hosho", "kyogyo-hishi-gimu", "anzen-hairyo-gimu", "fukugyo-rodojikan-tsusan", "sangyoi", "josei-katsuyaku-suishinho",
+      "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "kinmukan-interval", "flextime", "henkei-roudou-jikan", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kanri-kantokusha", "kenko-shindan", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "kyukei-jikan", "shugyo-kisoku", "kibiki-keicho-kyuka", "shiyo-kikan", "tsukin-teate-hikazei", "nenpousei", "hiseiki-koyo", "part-arbeit-chigai", "rodo-kumiai", "fuyo-teate", "doitsu-rodo-doitsu-chingin", "gisou-ukeoi", "haken-3nen-teishokubi", "zesei-kankoku", "kasuhara", "chokai-shobun", "muki-tenkan", "anzen-eisei-iinkai", "anzen-eisei-suishinsha", "roudousha-shishobyo-houkoku", "hotei-koyoritsu", "naitei-torikeshi", "taishoku-kansho", "taishoku-shomeisho", "mimoto-hosho", "kyogyo-hishi-gimu", "anzen-hairyo-gimu", "fukugyo-rodojikan-tsusan", "sangyoi", "josei-katsuyaku-suishinho",
       "juminzei-hayamihyo", "juminzei-tokubetsu-choshu", "juminzei-kettei-tsuchisho", "juminzei-hikazei-border", "taishokugo-juminzei", "nenmatsu-chosei-juminzei", "juminzei-fuyo-kojo",
       "kazei-shomeisho",
     
@@ -711,6 +732,8 @@ const CATEGORIES = [
       "refresh-kyuka",
       "matahara",
       "danjo-koyo-kikai-kintoho",
+      "jisshitsu-chingin",
+      "chokai-kaiko",
       "kyujitsu-shukkin-teate",
     ],
   },
@@ -745,7 +768,7 @@ const CATEGORIES = [
   {
     id: "keiri",
     name: "振込・支払の実務",
-    desc: "振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日の数え方、収入印紙。支払期日の法的な上限（令和8年1月に下請法から改称された中小受託取引適正化法の60日ルールと、フリーランス法との違い）もここ。",
+    desc: "振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日の数え方、収入印紙。支払期日の上限を定める中小受託取引適正化法（旧・下請法）の60日ルールと、フリーランス法との違いもここ。",
     slugs: [
       "furikomi-tesuryo-hikaku", "furikomi-hanei-jikan", "furikomi-furikae-chigai", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "kumimodoshi", "koza-furikae-iraisho", "kotora-sokin", "pay-easy",
@@ -769,7 +792,7 @@ const CATEGORIES = [
   {
     id: "kyuyo-jitsumu",
     name: "給与計算の実務（会社側）",
-    desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務、掛金納付月数によって退職金が3段階に変わること、解約しても解約手当金が事業主ではなく従業員に支払われることもここ。",
+    desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務もここ。",
     slugs: [
       "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
       "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
@@ -782,7 +805,7 @@ const CATEGORIES = [
   {
     id: "hojokin-keiri",
     name: "補助金の経理・税務",
-    desc: "補助金を受け取った後の処理。仕訳と計上時期、圧縮記帳と特別勘定（法人税法42〜44条）、消費税、個人事業主の場合。雇用保険法施行規則118条の2が定めるキャリアアップ助成金の6コースと支給額、正社員化コースの額が通算勤続5年を境に4分の1へ下がること、本則の短時間労働者労働時間延長コースが附則で適用停止になっていることもここ。設備投資とセットで賃上げする業務改善助成金（令和8年度は9月1日受付開始・締切は都道府県ごとの最低賃金の発効日の前日）の上限額と助成率もここ。",
+    desc: "補助金を受け取った後の処理。仕訳と計上時期、圧縮記帳と特別勘定（法人税法42〜44条）、消費税、個人事業主の場合。キャリアアップ助成金のコースと支給額、設備投資とセットで賃上げする業務改善助成金の上限額と助成率もここ。",
     slugs: [
       "career-up-joseikin", "gyomu-kaizen-joseikin", "jinzai-kaihatsu-joseikin",
       "hojokin-shiwake", "hojokin-tokubetsu-kanjo", "assyuku-kicho-houshiki",
@@ -809,7 +832,7 @@ const CATEGORIES = [
     desc: "会社設立後の税務届出と法人税の税率、キャッシュフロー計算書、役員報酬・使用人兼務役員・交際費・決算賞与・繰越欠損金・引当金・経過勘定と、賃上げ促進税制などの優遇措置。",
     slugs: [
       "kaisha-setsuritsu", "hojin-nari", "shihonkin", "genshi", "hojinzei-toha", "hojinzei-shinkokusho", "hojinzei-ritsu", "gaikei-hyojun-kazei", "kigyo-ban-furusato-nozei", "jigyoshozei", "cash-flow-keisansho", "taishaku-taishohyo-mikata", "soneki-keisansho-mikata", "soukanjo-motocho-kakikata", "shiwakecho", "shisanhyo-mikata", "genkin-suitocho-kakikata",
-      "yakuin-hoshu-kimekata", "shiyonin-kenmu-yakuin", "yakuin-taishokukin", "kosaihi-kaigihi-chigai", "shutcho-nittou-ryohi-kitei", "ryohi-kotsuhi", "shomohinhi", "tsushinhi", "chidai-yachin", "shikikin-hoshokin", "kyosankin-kanjo-kamoku", "kokoku-sendenhi", "noren", "genson-sonshitsu", "shisan-jokyo-saimu", "genka-shokyaku-ruikeigaku",
+      "yakuin-hoshu-kimekata", "shiyonin-kenmu-yakuin", "shikko-yakuin", "yakuin-taishokukin", "kosaihi-kaigihi-chigai", "shutcho-nittou-ryohi-kitei", "ryohi-kotsuhi", "shomohinhi", "tsushinhi", "chidai-yachin", "shikikin-hoshokin", "kyosankin-kanjo-kamoku", "kokoku-sendenhi", "noren", "genson-sonshitsu", "shisan-jokyo-saimu", "genka-shokyaku-ruikeigaku",
       "kessan-shoyo", "kurikoshi-kessonkin", "chinage-sokushin-zeisei", "shukko-zeimu", "kabunushi-soukai-gijiroku",
       "chusho-toshi-sokushin-zeisei", "chusho-keiei-kyoka-zeisei", "keiei-safety-kyosai-shiwake", "jigyo-shokei-zeisei", "sentan-setsubi-dounyu-keikaku",
       "kashidaore-hikiatekin", "kashidaore-sonshitsu", "minashi-haito", "uketori-haito-ekikin-fusannyu", "dozoku-kaisha", "stock-option-zeikin", "shueki-ninshiki-kijun", "maebarai-hiyo",
@@ -827,6 +850,7 @@ const CATEGORIES = [
       "zandaka-shomeisho",
       "hojin-jigyo-gaikyo-setsumeisho",
       "genka-keisan",
+      "genka-haifu",
       "soneki-bunkiten",
       "uriage-genka",
       "zeiko-kaikei",
@@ -844,9 +868,10 @@ const CATEGORIES = [
 
 /** sitemap に載せるツール・固定ページ(記事は自動で追加される) */
 const STATIC_PAGES = [
-  "", "tedori/", "bonus-tedori/", "genka/", "inshi/", "jidoshazei/", "kabe/", "iryohi/", "sozokuzei/", "zoyozei/", "jutaku/", "furusato/", "shobyo/", "shussan/", "ikuji/", "papa-ikukyu/", "juminzei/", "shakai-hoken/", "gensen-choshu/", "kihonteate/", "taishokukin/", "zangyodai/", "shohizei/", "eigyobi/",
+  ...Object.values(SAITEI_PREF_PAGES).map(p => `saitei-chingin/${p.slug}/`),
+  "", "tedori/", "bonus-tedori/", "genka/", "inshi/", "jidoshazei/", "kabe/", "iryohi/", "sozokuzei/", "zoyozei/", "jutaku/", "furusato/", "shobyo/", "shussan/", "ikuji/", "papa-ikukyu/", "juminzei/", "shakai-hoken/", "gensen-choshu/", "kihonteate/", "taishokukin/", "zangyodai/", "shohizei/", "eigyobi/", "nenrei-hayami/",
   "yukyu/", "denchoho-index/", "senpou-futan/", "zengin-kana/", "shiharai-site/", "saitei-chingin/",
-  "shokibo-kyosai/", "ideco-setsuzei/", "fuyo-kojo/", "haigusha-kojo/", "seimei-hoken-kojo/", "aoiro-kojo/", "tosan-boshi-kyosai/", "hitorioya-kojo/", "kinro-gakusei/", "seizen-zoyo/", "sozoku-toki-menkyozei/", "iryubun/", "shokibo-takuchi/", "jishin-hoken-kojo/", "hikazei-setai/", "fudosan-jouto/", "invoice-bangou/", "kotei-shisanzei/", "fudosan-shutoku/", "kokuho/", "nenkin/", "toroku-menkyozei/", "chukai-tesuryo/", "izoku/", "zaishoku/", "saishushoku/", "kogaku-ryoyohi/", "kokunen-menjo/", "yakuin-shataku/", "nenmatsu-chosei/", "shotokuzei/",
+  "shokibo-kyosai/", "ideco-setsuzei/", "fuyo-kojo/", "haigusha-kojo/", "seimei-hoken-kojo/", "aoiro-kojo/", "tosan-boshi-kyosai/", "hitorioya-kojo/", "kinro-gakusei/", "seizen-zoyo/", "sozoku-toki-menkyozei/", "iryubun/", "shokibo-takuchi/", "jishin-hoken-kojo/", "hikazei-setai/", "fudosan-jouto/", "invoice-bangou/", "kotei-shisanzei/", "fudosan-shutoku/", "kokuho/", "nenkin/", "toroku-menkyozei/", "chukai-tesuryo/", "izoku/", "zaishoku/", "saishushoku/", "kogaku-ryoyohi/", "kokunen-menjo/", "yakuin-shataku/", "nenmatsu-chosei/", "riekiritsu/", "soneki-bunkiten/", "shotokuzei/", "teichaku/",
   // ★資産形成セクション（2026-08-08 新設）。column/ と並ぶ独立カテゴリ
   "toushi/", "toushi/tsumitate/", "toushi/nisa-waku/", "toushi/ideco-deguchi/", "yotei-nozei/", "santei/", "hojinzei/", "hotei-fukuri/", "gensen-hyo/", "hojokin/", "hojokin/schedule/", "hojokin/koyou/", "hojokin-zeimu/",
   // "ext/amazon-receipt/" は 2026-08-03 に提供終了(ストア掲載削除済み)。ページごと削除したので載せない
@@ -917,8 +942,10 @@ articles.sort((a, b) => {
 //   (` M path` の状態カラム)まで削れ、**dirty一覧の先頭ファイルだけ** slice(3) が path を
 //   1文字食う(`docs/…`→`ocs/…`)→照合が外れ lastmod が古いまま/新規ページなら丸ごと落ちる
 //   (2026-07-17 第12便で実発生: 先頭の denchoho-index だけ lastmod が更新されなかった)。
+// ★maxBuffer を明示する（2026-10-14 実測）。既定の 1MiB だと、一括コミットを数える `git log --name-only` の出力
+//   （origin/main で 1,100,484 バイト）が ENOBUFS で落ち、下の catch が "" を返して **一括コミットが0件**になっていた。
 const git = (...a) => {
-  try { return execFileSync("git", a, { cwd: DOCS, encoding: "utf8" }).replace(/\s+$/, ""); }
+  try { return execFileSync("git", a, { cwd: DOCS, encoding: "utf8", maxBuffer: 512 * 1024 * 1024 }).replace(/\s+$/, ""); }
   catch { return ""; }
 };
 const TODAY = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }); // YYYY-MM-DD
@@ -963,7 +990,12 @@ const bulkCommits = new Set();
   // ★`git()` は **cwd が DOCS** なので、パス指定は `.`（docs 配下）にする。
   //   ここを `docs` と書くと docs/docs を見に行き、**黙って空を返す**（実測。
   //   単体では動くのに生成器の中だけ効かない、という形で1回踏んだ）。
-  for (const line of git("log", "--format=@@%H", "--name-only", "--", ".").split("\n")) {
+  // ★ここは失敗を "" に化けさせない（2026-10-14: 出力が 1MiB を超えて黙って空になり、一括の除外が丸ごと効いていなかった）。
+  //   コミットが1つも無いリポジトリ（テストの使い捨て）だけは、一括コミットが無いのが正しいので空でよい。
+  const hasHead = git("rev-parse", "--verify", "-q", "HEAD") !== "";
+  const bulkLog = hasHead ? execFileSync("git", ["log", "--format=@@%H", "--name-only", "--", "."],
+    { cwd: DOCS, encoding: "utf8", maxBuffer: 512 * 1024 * 1024 }) : "";
+  for (const line of bulkLog.split("\n")) {
     if (line.startsWith("@@")) { flush(); hash = line.slice(2); n = 0; }
     else if (line.trim()) n++;
   }
@@ -988,7 +1020,10 @@ if (BULK_WORKTREE) {
 const lastmodOf = (file) => {
   if (!BULK_WORKTREE && dirty.has(file)) return TODAY;
   // 一括コミットを飛ばして、そのファイル自身の「意味のある更新」を探す
-  const log = git("log", "--format=%H %cs", "--", file).split("\n").filter(Boolean);
+  // ★マージコミットは数えない（2026-10-14）。マージの中身は取り込んだ側のコミットに日付つきで既に在る。
+  //   数えると「main を取り込んだ日」が両側の変わったページの lastmod になる（公開用の枝で main を取り込むたびに起きる）。
+  //   gen_datemodified.mjs は `--name-only` がマージにファイルを出さないので、もともとマージを数えていない（基準を2つ持たない）。
+  const log = git("log", "--no-merges", "--format=%H %cs", "--", file).split("\n").filter(Boolean);
   // ★★ 履歴がまったく無い＝**まだ一度もコミットされていない新規ページ**。
   //   このときは BULK_WORKTREE でも TODAY を返す（2026-08-23 実測で回帰を1件出した）。
   //   一括を弾く目的は「中身が変わっていない既存ページが今日を名乗ること」の防止であって、

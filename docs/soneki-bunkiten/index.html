@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>損益分岐点 計算ツール｜売上高・販売数量・目標利益の売上を計算【無料】</title>
+<meta name="description" content="固定費・変動費・売上高、または販売単価と1個当たり変動費から、損益分岐点売上高・損益分岐点の販売数量・目標利益を得る売上高・安全余裕率を計算します。中小機構J-Net21の例題（固定費30万円・限界利益200円で1,500個）と同じ答えになります。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/soneki-bunkiten/">
+<!-- ogp:auto -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="損益分岐点 計算ツール｜売上高・販売数量・目標利益の売上を計算【無料】">
+<meta property="og:description" content="固定費・変動費・売上高、または販売単価と1個当たり変動費から、損益分岐点売上高・損益分岐点の販売数量・目標利益を得る売上高・安全余裕率を計算します。中小機構J-Net21の例題（固定費30万円・限界利益200円で1,500個）と同じ答えになります。登録不要・無料。">
+<meta property="og:url" content="https://keiri-tools.com/soneki-bunkiten/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "datePublished": "2026-10-14",
+      "dateModified": "2026-10-14",
+      "name": "損益分岐点 計算ツール",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "売上高・変動費・固定費、または販売単価・1個当たり変動費・固定費から、損益分岐点売上高と販売数量、目標利益を得る売上高、安全余裕率、損益分岐点比率を計算します。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "損益分岐点 計算ツール"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 安全余裕率がマイナスになりました。",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 今の売上高が損益分岐点売上高より少なく、赤字の状態です。結果の「今の売上高との差」がマイナスの額だけ、売上高が足りていません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 目標利益は税引前の利益ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. この計算機の利益は、売上高から変動費と固定費を引いた額です。J-Net21の回答は、損益分岐点の利益を「通常は営業利益」としています。支払利息を固定費に入れたかどうかで、どの段階の利益かが変わります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 利益率や原価率も計算できますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 原価と売価からの粗利率・原価率・上乗せ率と、目標の粗利率からの売価の逆算は利益率・原価率 計算ツールで計算できます。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../assets/track.js" defer></script>
+<!--nav-exp:toc-script S--><script src="../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site">
+  <a class="brand" href="../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../#tools">ツール</a>
+    <a href="../hojokin/">補助金</a>
+    <a href="../column/">コラム</a>
+    <a href="../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../">ホーム</a> › 損益分岐点 計算ツール</nav>
+
+<section class="hero">
+  <h1>損益分岐点 計算ツール</h1>
+  <p class="article-meta">公開日: <time datetime="2026-10-14">2026年10月14日</time></p>
+  <p>利益がゼロになる売上高（<b>損益分岐点売上高</b>）と、そのために売る数量を計算します。答えは、利益が0円以上になる最小の売上高（1円単位）と販売数量（1個単位）です。<b>売上高・変動費・固定費</b>の総額から出す方法と、<b>販売単価・1個当たり変動費</b>から出す方法の2つがあります。目標の利益を得るのに要る売上高と、今の売上高との差も出します。入力した金額はブラウザの外へ送信されません。</p>
+</section>
+
+<div class="card">
+  <h2 id="sogaku" style="font-size:17px;margin-top:0">売上高・変動費・固定費から計算する</h2>
+  <p class="hint" style="margin-top:0">損益計算書などから、同じ期間（1か月・1年など）の総額を入れます。金額は税込か税抜のどちらかにそろえてください。売上高だけ税込で費用は税抜、のようにまざっていても、この計算機は補正しません。</p>
+  <label for="sales">売上高（円）</label>
+  <input id="sales" aria-describedby="sales-hint" type="number" inputmode="numeric" min="1" step="1" data-example="1200000">
+  <span id="sales-hint" class="hint"><b class="input-example">入力例：1,200,000円なら 1200000</b></span>
+  <label for="variable">変動費（円）</label>
+  <input id="variable" type="number" inputmode="numeric" min="0" step="1" data-example="480000" aria-describedby="variable-hint">
+  <span id="variable-hint" class="hint"><b class="input-example">入力例：480,000円なら 480000</b>売上高に連動して増減する費用の合計（仕入原価・材料費・外注費など）</span>
+  <label for="fixed">固定費（円）</label>
+  <input id="fixed" type="number" inputmode="numeric" min="0" step="1" data-example="600000" aria-describedby="fixed-hint">
+  <span id="fixed-hint" class="hint"><b class="input-example">入力例：600,000円なら 600000</b>売上高に関わらずかかる費用の合計（賃借料・減価償却費・従業員の人件費など）</span>
+  <label for="target">目標利益（円・空欄でも可）</label>
+  <input id="target" aria-describedby="target-hint" type="number" inputmode="numeric" min="0" step="1" data-example="120000">
+  <span id="target-hint" class="hint"><b class="input-example">入力例：120,000円なら 120000</b></span>
+  <button class="primary" id="calc">損益分岐点を計算する</button>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+</div>
+
+<div class="card">
+  <h2 id="tanka" style="font-size:17px;margin-top:0">販売単価・1個当たり変動費から計算する</h2>
+  <p class="hint" style="margin-top:0">1個（1件・1人）単位で考えるときの入れ方です。何個売れば利益が0円以上になるかが分かります。単価・変動費・固定費も、税込か税抜のどちらかにそろえて入れてください（まざっていても補正しません）。</p>
+  <div class="field-pair">
+    <div>
+      <label for="price">販売単価（円）</label>
+      <input id="price" aria-describedby="price-hint" type="number" inputmode="numeric" min="1" step="1" data-example="1000">
+  <span id="price-hint" class="hint"><b class="input-example">入力例：1,000円なら 1000</b></span>
+    </div>
+    <div>
+      <label for="unit_var">1個当たり変動費（円）</label>
+      <input id="unit_var" aria-describedby="unit_var-hint" type="number" inputmode="numeric" min="0" step="1" data-example="800">
+  <span id="unit_var-hint" class="hint"><b class="input-example">入力例：800円なら 800</b></span>
+    </div>
+  </div>
+  <label for="fixed_u">固定費（円）</label>
+  <input id="fixed_u" aria-describedby="fixed_u-hint" type="number" inputmode="numeric" min="0" step="1" data-example="300000">
+  <span id="fixed_u-hint" class="hint"><b class="input-example">入力例：300,000円なら 300000</b></span>
+  <div class="field-pair">
+    <div>
+      <label for="target_u">目標利益（円・空欄でも可）</label>
+      <input id="target_u" aria-describedby="target_u-hint" type="number" inputmode="numeric" min="0" step="1" data-example="150000">
+  <span id="target_u-hint" class="hint"><b class="input-example">入力例：150,000円なら 150000</b></span>
+    </div>
+    <div>
+      <label for="qty">今の販売数量（個・空欄でも可）</label>
+      <input id="qty" aria-describedby="qty-hint" type="number" inputmode="numeric" min="0" step="1" data-example="1200">
+  <span id="qty-hint" class="hint"><b class="input-example">入力例：1,200個なら 1200</b></span>
+    </div>
+  </div>
+  <button class="primary" id="calc_u">販売数量を計算する</button>
+  <div role="status" aria-live="polite" class="result" id="result_u"></div>
+  <p class="hint" style="margin:10px 0 0">どの費用を固定費・変動費に入れるかは、入力する人が決めます。このツールは分類の判断をしません（<a href="#bunrui">分け方の目安</a>）。</p>
+</div>
+
+<article>
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p>上の計算機の式と、公表されている例題での確かめ方をまとめます（一般的な計算方法の説明であり、個別の経営相談への回答ではありません）。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#shiki">損益分岐点の計算式</a></li>
+<li><a href="#rei">公表されている例題で確かめる</a></li>
+<li><a href="#bunrui">固定費と変動費の分け方</a></li>
+<li><a href="#mainasu">限界利益がゼロ以下のときは計算しない</a></li>
+<li><a href="#hasu">割り切れないときの扱い</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../riekiritsu/">利益率・原価率 計算ツール（粗利率・上乗せ率・売価の逆算）</a></li><li><a href="../column/soneki-bunkiten/">損益分岐点の求め方</a></li><li><a href="../column/soneki-keisansho-mikata/">損益計算書の見方</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+<h2 id="shiki">損益分岐点の計算式</h2>
+<p>損益分岐点は、売上高と総費用（変動費＋固定費）が等しくなり、利益がゼロになる売上規模です。売上高から変動費を引いた額を<b>限界利益</b>といい、限界利益で固定費をちょうど回収できたところが損益分岐点になります。</p>
+<div class="scroll-wrap"><table>
+  <thead><tr><th scope="col">求めるもの</th><th scope="col">計算式</th></tr></thead>
+  <tbody>
+    <tr><td>限界利益</td><td>売上高 − 変動費</td></tr>
+    <tr><td>損益分岐点売上高</td><td>固定費 ÷（1 − 変動費 ÷ 売上高）</td></tr>
+    <tr><td>損益分岐点の販売数量</td><td>固定費 ÷ 1個当たり限界利益（販売単価 − 1個当たり変動費）</td></tr>
+    <tr><td>目標利益を得る販売数量</td><td>（固定費 ＋ 目標利益）÷ 1個当たり限界利益</td></tr>
+    <tr><td>安全余裕率</td><td>（売上高 − 損益分岐点売上高）÷ 売上高</td></tr>
+    <tr><td>損益分岐点比率</td><td>損益分岐点売上高 ÷ 売上高</td></tr>
+  </tbody>
+</table></div>
+<p>安全余裕率は、売上高がどこまで減っても損失が出ないかを示す比率です。損益分岐点比率と足すと100%になります。目標利益を得る売上高は、損益分岐点売上高の式の固定費を「固定費＋目標利益」に置き換えて求めます。</p>
+<figure class="figure fig-wide" style="--figw:540px">
+<svg viewBox="0 0 640 270" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="販売数量と売上高・総費用の関係。固定費30万円・単価1,000円・1個当たり変動費800円のとき、売上高の線と総費用の線は1,500個・150万円で交わる">
+  <line x1="60" y1="220" x2="610" y2="220" stroke="#b8c4cf" stroke-width="1.5"/>
+  <line x1="60" y1="220" x2="60" y2="20" stroke="#b8c4cf" stroke-width="1.5"/>
+  <line x1="60" y1="201" x2="600" y2="201" stroke="#8a97a3" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <line x1="60" y1="201" x2="600" y2="49" stroke="#c1553f" stroke-width="2.5"/>
+  <line x1="60" y1="220" x2="600" y2="30" stroke="#2f6f9f" stroke-width="2.5"/>
+  <line x1="330" y1="125" x2="330" y2="220" stroke="#8a97a3" stroke-width="1" stroke-dasharray="3 3"/>
+  <circle cx="330" cy="125" r="5" fill="#2f6f9f"/>
+  <text x="322" y="108" font-size="13" text-anchor="end" fill="currentColor">損益分岐点 1,500個・150万円</text>
+  <line x1="80" y1="30" x2="110" y2="30" stroke="#2f6f9f" stroke-width="2.5"/>
+  <text x="116" y="35" font-size="12" fill="currentColor">売上高</text>
+  <line x1="80" y1="50" x2="110" y2="50" stroke="#c1553f" stroke-width="2.5"/>
+  <text x="116" y="55" font-size="12" fill="currentColor">総費用（固定費＋変動費）</text>
+  <line x1="80" y1="70" x2="110" y2="70" stroke="#8a97a3" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="116" y="75" font-size="12" fill="currentColor">固定費 30万円</text>
+  <text x="322" y="214" font-size="12" text-anchor="end" fill="#c1553f">← 赤字</text>
+  <text x="338" y="214" font-size="12" fill="#2f6f9f">黒字 →</text>
+  <text x="54" y="238" font-size="12" fill="currentColor">0</text>
+  <text x="312" y="238" font-size="12" fill="currentColor">1,500個</text>
+  <text x="566" y="238" font-size="12" fill="currentColor">3,000個</text>
+  <text x="270" y="260" font-size="12" fill="currentColor">販売数量</text>
+</svg>
+<figcaption>J-Net21の例題（販売単価1,000円・1個当たり変動費800円・固定費30万円）を図にしたもの。1,500個より少なければ赤字、多ければ黒字です。</figcaption>
+</figure>
+
+<h2 id="rei">公表されている例題で確かめる</h2>
+<p data-review-context="before-table">次の2つの例題は、この計算機に同じ数字を入れると同じ答えになります（1円単位で一致）。</p>
+<div class="scroll-wrap"><table>
+  <thead><tr><th scope="col">例題</th><th scope="col">入力</th><th scope="col">公表されている答え</th></tr></thead>
+  <tbody>
+    <tr><td>中小機構 J-Net21</td><td>販売単価1,000円・1個当たり変動費800円・固定費300,000円</td><td>損益分岐点販売量1,500個・損益分岐点売上高1,500,000円</td></tr>
+    <tr><td>中小機構 J-Net21（目標利益）</td><td>上と同じで目標利益150,000円</td><td>目標販売数量2,250個（損益分岐点より750個多い）</td></tr>
+    <tr><td>日本政策金融公庫</td><td>売上高120万円・変動費48万円・固定費60万円</td><td>損益分岐点100万円</td></tr>
+  </tbody>
+</table></div>
+<p>J-Net21の例題は、改善策を1つずつ試した場合も示しています。この例題（販売単価1,000円・1個当たり変動費800円・固定費30万円）で、販売価格を100円上げる、または1個当たり変動費を100円下げると損益分岐点の販売量は1,000個に、固定費を15万円減らすと750個に下がります。上の「販売単価・1個当たり変動費から計算する」に入れると、同じ数量になります。</p>
+
+<h2 id="bunrui">固定費と変動費の分け方</h2>
+<p>損益分岐点を出すには、総費用を変動費と固定費に分けます。売上に連動して増減するかどうかで振り分けます。日本政策金融公庫の解説は、次のような例を挙げています。</p>
+<ul>
+  <li>変動費（売上高と連動して増減する費用）の例: 原材料費、仕入原価、外注費、水道光熱費、アルバイト人件費</li>
+  <li>固定費（売上に関わらず常に一定に掛かる費用）の例: 賃借料、減価償却費、役員・従業員人件費、支払利息</li>
+</ul>
+<p>同じ科目でも、事業によってどちらに置くかは変わります。J-Net21の回答も「費用を変動費と固定費に明確に分類することは困難」としたうえで、実状に合わせて簡便的に分類して使うよう述べています。勘定科目ごとの振り分け方は<a href="../column/soneki-bunkiten/">損益分岐点の計算と求め方</a>で、損益計算書のどこから数字を拾うかは<a href="../column/soneki-keisansho-mikata/">損益計算書の見方</a>で解説しています。固定費に入れる減価償却費は<a href="../genka/">減価償却費の計算機</a>で確かめられます。</p>
+
+<h2 id="mainasu">限界利益がゼロ以下のときは計算しない</h2>
+<p>限界利益がマイナスのとき（変動費が売上高より大きい・販売単価が1個当たり変動費より安い）は、売れば売るほど赤字が増え、どれだけ売っても固定費を回収できません。</p>
+<p>限界利益がちょうど0円のとき（変動費と売上高が同じ・販売単価と1個当たり変動費が同じ）は、売上を増やしても利益は増えも減りもしません。固定費があれば回収できず、固定費も0円ならどの売上でも利益は0円で、損益分岐点は1つに決まりません。</p>
+<p>どちらも、式に入れると負の数や「割る0」が出ますが、それは損益分岐点ではありません。この計算機は、その場合に答えを出さず「前提が成り立たない」と表示します。</p>
+
+<h2 id="hasu">割り切れないときの扱い</h2>
+<p>固定費が限界利益で割り切れないときは、販売数量は1個未満を、売上高は1円未満を切り上げて表示します。切り上げた数量・売上高なら利益は0円以上になり、1つ少ないと赤字です。数量から出す方法の損益分岐点売上高は「販売単価 × 切り上げた数量」なので、総額から出す方法の答えとわずかに違うことがあります。</p>
+
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>安全余裕率がマイナスになりました。</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>今の売上高が損益分岐点売上高より少なく、赤字の状態です。結果の「今の売上高との差」がマイナスの額だけ、売上高が足りていません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>目標利益は税引前の利益ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>この計算機の利益は、売上高から変動費と固定費を引いた額です。J-Net21の回答は、損益分岐点の利益を「通常は営業利益」としています。支払利息を固定費に入れたかどうかで、どの段階の利益かが変わります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>利益率や原価率も計算できますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>原価と売価からの粗利率・原価率・上乗せ率と、目標の粗利率からの売価の逆算は<a href="../riekiritsu/">利益率・原価率 計算ツール</a>で計算できます。</p>
+
+<section class="related">
+  <h2>関連記事・ツール</h2>
+  <div class="tool-list">
+    <a href="../riekiritsu/">
+      <div class="name">利益率・原価率 計算ツール</div>
+      <div class="desc">原価と売価の税込・税抜をそろえて、粗利率・原価率・上乗せ率と売価の逆算。</div>
+    </a>
+    <a href="../column/soneki-bunkiten/">
+      <div class="name">損益分岐点の計算と求め方</div>
+      <div class="desc">決算書の勘定科目を変動費と固定費へ振り分ける手順。</div>
+    </a>
+    <a href="../column/soneki-keisansho-mikata/">
+      <div class="name">損益計算書の見方</div>
+      <div class="desc">売上総利益・営業利益など、どの利益がどこに出るか。</div>
+    </a>
+    <a href="../column/uriage-genka/">
+      <div class="name">売上原価とは</div>
+      <div class="desc">期首棚卸高＋当期仕入高−期末棚卸高の考え方。</div>
+    </a>
+  </div>
+</section>
+
+<h2 id="source">出典</h2>
+<p class="source-method">中小機構と日本政策金融公庫の公表資料を読み、例題の数字をこの計算機で再現して確認。</p>
+<ul>
+  <li><a href="https://j-net21.smrj.go.jp/solution/qa/accounting/Q0240.html" rel="nofollow">中小機構 J-Net21「損益分岐点の計算方法と経営改善に向けた活用方法を教えてください。」</a></li>
+  <li><a href="https://www.jfc.go.jp/n/service/pdf/shindanshi_20220921.pdf" rel="nofollow">日本政策金融公庫「ベテラン中小企業診断士が、分かりやすく解説 ～アフターコロナを見据えた『収益改善策』を考える～」（2022年9月）</a></li>
+</ul>
+<p style="font-size:13px;color:var(--sub)">このページは一般的な計算方法の説明です。個別の経営判断・税務の相談への回答ではありません。</p>
+</article>
+<section class="faq rel-block">
+<h2>関連する解説</h2>
+<!--rel:S--><ul class="rel-list"><li><a href="../column/soneki-bunkiten/">損益分岐点の求め方 — 決算書には「変動費」も「固定費」も1回も出てこない。だから並べ替えから始まる</a><span class="rel-desc">損益分岐点＝固定費÷限界利益率。ただし決算書には変動費も固定費も存在しない。財規にも会社計算規則にも変動費・固定費・限界利益は無い。決算書の</span></li><li><a href="../column/soneki-keisansho-mikata/">損益計算書の見方 — 条文が区分するのは7つの収益と費用。5つの利益は計算結果</a><span class="rel-desc">損益計算書は、会社計算規則88条1項の7区分（売上高・売上原価・販管費・営業外収益・営業外費用・特別利益・特別損失）と、89〜94条が定める</span></li></ul><!--rel:E-->
+</section>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%9B%BA%E5%AE%9A%E8%B2%BB%E3%83%BB%E5%A4%89%E5%8B%95%E8%B2%BB%E3%83%BB%E5%A3%B2%E4%B8%8A%E9%AB%98%E3%80%81%E3%81%BE%E3%81%9F%E3%81%AF%E8%B2%A9%E5%A3%B2%E5%8D%98%E4%BE%A1%E3%81%A81%E5%80%8B%E5%BD%93%E3%81%9F%E3%82%8A%E5%A4%89%E5%8B%95%E8%B2%BB%E3%81%8B%E3%82%89%E3%80%81%E6%90%8D%E7%9B%8A%E5%88%86%E5%B2%90%E7%82%B9%E5%A3%B2%E4%B8%8A%E9%AB%98%E3%83%BB%E6%90%8D%E7%9B%8A%E5%88%86%E5%B2%90%E7%82%B9%E3%81%AE%E8%B2%A9%E5%A3%B2%E6%95%B0%E9%87%8F%E3%83%BB%E7%9B%AE%E6%A8%99%E5%88%A9%E7%9B%8A%E3%82%92%E5%BE%97%E3%82%8B%E5%A3%B2%E4%B8%8A%E9%AB%98%E3%83%BB%E5%AE%89%E5%85%A8%E4%BD%99%E8%A3%95%E7%8E%87%E3%82%92%E8%A8%88%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fsoneki-bunkiten%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site">
+  本ツールの計算結果は、入力した数字による計算です。金額データはブラウザの外へ送信されません。<br>
+  © 税金・経理・補助金ツールズ
+  <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ</div><!-- /trust:auto -->
+</footer>
+<script type="module">
+import { calcByTotals, calcByUnits } from "../assets/soneki_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => `${n < 0 ? "−" : ""}${Math.abs(n).toLocaleString("ja-JP")}円`;
+const pct = (x) => `${(Math.round(x * 1000) / 10).toFixed(1)}%`;
+// 空欄は null（任意の欄）。数字でないもの・小数・負の数はそのまま core に渡して断らせる
+const read = (id) => { const v = $(id).value.trim(); return v === "" ? null : Number(v); };
+const warn = (box, field, msg) => { box.dataset.resultState = "error"; box.innerHTML = `<div class="warn" data-field="${field}">${msg}</div>`; };
+const row = (k, v) => `<tr><th scope="row">${k}</th><td>${v}</td></tr>`;
+
+// 限界利益がマイナスか0円かで、言えることがちがう（0円なら売っても赤字は増えない）
+const noMargin = (label, margin, fixed) => margin < 0
+  ? `${label}がマイナスなので、損益分岐点は計算できません。売れば売るほど赤字が増え、どれだけ売っても固定費を回収できない状態です。`
+  : fixed > 0
+    ? `${label}が0円なので、損益分岐点は計算できません。売上を増やしても利益は増えないため、固定費を回収できない状態です。`
+    : `${label}も固定費も0円なので、どの売上でも利益は0円です。損益分岐点は1つに決まりません。`;
+const NOTE_ROUND = "比率は切り上げる前の理論値から計算し、小数第2位を四捨五入しています。";
+
+$("calc").addEventListener("click", () => {
+  const box = $("result");
+  box.style.display = "block";
+  const sales = read("sales"), variable = read("variable"), fixed = read("fixed"), target = read("target");
+  if (sales === null) return warn(box, "sales", "売上高を入力してください。");
+  if (variable === null) return warn(box, "variable", "変動費を入力してください（無ければ 0）。");
+  if (fixed === null) return warn(box, "fixed", "固定費を入力してください（無ければ 0）。");
+  const r = calcByTotals({ sales, variable, fixed, target });
+  if (!r.ok) {
+    if (r.reason === "no_margin") return warn(box, "variable", noMargin("限界利益", r.marginal, fixed));
+    if (r.reason === "no_sales") return warn(box, "sales", "売上高は1円以上を入力してください。");
+    return warn(box, "sales", "金額は0以上の整数（円）で、1兆円以下を入力してください。");
+  }
+  const gapText = r.gap === 0 ? `${yen(0)}（損益分岐点に到達しています）` : r.gap > 0 ? `${yen(r.gap)}（損益分岐点を上回っています）` : `${yen(r.gap)}（損益分岐点まで ${yen(-r.gap)} 足りません）`;
+  box.innerHTML = `
+    <div class="row"><b>損益分岐点売上高</b> <span class="big" id="bep">${yen(r.bepSales)}</span></div>
+    <div class="scroll-wrap"><table class="res"><tbody>
+      ${row("限界利益（売上高−変動費）", yen(r.marginal))}
+      ${row("限界利益率", pct(r.marginalRatio))}
+      ${row("変動費率", pct(r.variableRatio))}
+      ${row("今の利益（売上高−変動費−固定費）", yen(r.currentProfit))}
+      ${row("今の売上高との差", gapText)}
+      ${row("安全余裕率", pct(r.safetyRatio))}
+      ${row("損益分岐点比率", pct(r.bepRatio))}
+      ${r.target !== undefined ? row(`目標利益 ${yen(r.target)} を得る売上高`, `${yen(r.targetSales)}${r.targetGap > 0 ? `（今より ${yen(r.targetGap)} 多く）` : "（今の売上高で届いています）"}`) : ""}
+    </tbody></table></div>
+    <div style="font-size:12.5px;color:var(--sub);margin-top:8px">※ 損益分岐点売上高 ＝ 固定費 ÷（1 − 変動費 ÷ 売上高）。${r.bepExact ? "" : "1円未満は切り上げています。"}<br>※ 損益分岐点売上高は、利益が0円以上になる最小の1円単位の売上高です。${NOTE_ROUND}</div>`;
+  box.dataset.resultState = "success";
+});
+
+$("calc_u").addEventListener("click", () => {
+  const box = $("result_u");
+  box.style.display = "block";
+  const price = read("price"), unitVar = read("unit_var"), fixed = read("fixed_u"), target = read("target_u"), qty = read("qty");
+  if (price === null) return warn(box, "price", "販売単価を入力してください。");
+  if (unitVar === null) return warn(box, "unit_var", "1個当たり変動費を入力してください（無ければ 0）。");
+  if (fixed === null) return warn(box, "fixed_u", "固定費を入力してください（無ければ 0）。");
+  const r = calcByUnits({ price, unitVar, fixed, target, qty });
+  if (!r.ok) {
+    if (r.reason === "no_margin") return warn(box, "unit_var", noMargin("1個当たり限界利益", r.unitMargin, fixed));
+    if (r.reason === "no_sales") return warn(box, "price", "販売単価は1円以上を入力してください。");
+    return warn(box, "price", "金額・数量は0以上の整数で、1兆以下を入力してください。");
+  }
+  const qtyRows = r.qty === undefined ? "" :
+    row("今の販売数量での利益", yen(r.currentProfit)) +
+    row("今の販売数量との差", r.qtyGap === 0 ? "0個（損益分岐点に到達しています）" : r.qtyGap > 0 ? `${r.qtyGap.toLocaleString("ja-JP")}個（損益分岐点を上回っています）` : `−${(-r.qtyGap).toLocaleString("ja-JP")}個（あと ${(-r.qtyGap).toLocaleString("ja-JP")}個 足りません）`);
+  box.innerHTML = `
+    <div class="row"><b>損益分岐点の販売数量</b> <span class="big" id="bep_qty">${r.bepQty.toLocaleString("ja-JP")}個</span></div>
+    <div class="scroll-wrap"><table class="res"><tbody>
+      ${row("1個当たり限界利益（単価−変動費）", yen(r.unitMargin))}
+      ${row("限界利益率", pct(r.marginalRatio))}
+      ${row("損益分岐点売上高（単価×数量）", yen(r.bepSales))}
+      ${r.target !== undefined ? row(`目標利益 ${yen(r.target)} を得る販売数量`, `${r.targetQty.toLocaleString("ja-JP")}個（売上高 ${yen(r.targetSales)}・損益分岐点より ${r.targetQtyOverBep.toLocaleString("ja-JP")}個多い）`) : ""}
+      ${qtyRows}
+    </tbody></table></div>
+    <div style="font-size:12.5px;color:var(--sub);margin-top:8px">※ 損益分岐点の販売数量 ＝ 固定費 ÷ 1個当たり限界利益。${r.bepExact ? "" : "1個未満は切り上げています。"}<br>※ 損益分岐点の販売数量は、利益が0円以上になる最小の整数の数量です。${NOTE_ROUND}</div>`;
+  box.dataset.resultState = "success";
+});
+</script>
+<script src="../assets/a11y_error.js" defer></script>
+<script src="../assets/empty-state.js" defer></script>
+</body>
+</html>
