@@ -112,6 +112,13 @@ export function checkDiffRule() {
   if (isNavOnlyDiff(['  <p>30万円</p>'], ['  <p>31万円</p><!--next-read:S--><!--next-read:E-->'])) errs.push("判定: 本文の数字を変えた差分を導線だけと数えた");
   if (isNavOnlyDiff(['<p>a</p>'], ['<p>b</p>'])) errs.push("判定: 導線に触れない差分を導線だけと数えた");
   if (!isNavOnlyDiff([], ['<!--nav-exp:style S--><style>.x{}</style><!--nav-exp:style E-->'])) errs.push("判定: ページ内CSSの追加を本文の変更と数えた");
+  const source = '<li>労働基準法 第38条（時間計算）</li>';
+  const linked = '<li><a href="https://laws.e-gov.go.jp/law/322AC0000000049#Mp-Ch_4-At_38">労働基準法 第38条（時間計算）</a></li>';
+  if (!isNavOnlyDiff([source], [linked]) || !isNavOnlyDiff([linked], [source])) errs.push("判定: 出典リンクの付け外しで本文の更新日を進めた");
+  if (!isNavOnlyDiff([linked.replace('Mp-Ch_4-At_38', 'Mp-At_38')], [linked])) errs.push("判定: 出典URLの訂正で本文の更新日を進めた");
+  if (isNavOnlyDiff([source], [linked.replace('第38条', '第39条')])) errs.push("判定: 出典の条文番号の変更までリンクだけと数えた");
+  if (isNavOnlyDiff([linked, '<p>30万円</p>'], [linked, '<p>31万円</p>'])) errs.push("判定: リンクと併せた本文の数字変更を見逃した");
+  if (isNavOnlyDiff([source], [linked.replace('https://laws.e-gov.go.jp/law/322AC0000000049#Mp-Ch_4-At_38', '/column/rodojikan/')])) errs.push("判定: 本文のサイト内リンクまで出典リンクの例外に含めた");
   return errs;
 }
 
