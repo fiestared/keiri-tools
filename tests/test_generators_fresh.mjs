@@ -30,6 +30,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
  *   形: { "script": "tools/gen_x.mjs", "args": ["--check"], "why": "なぜ要るか" }
  *   全ブランチがこの配列の末尾に1行足す形だと、並行して作ったブランチが公開のたびに衝突した（10-15 夜）。 */
 const CHECKABLE = [
+  ['tools/gen_bank_fee_pages.mjs', ['--check']],
   ['tools/gen_saitei_pref_pages.mjs', ['--check']],
   ['tools/gen_index_sitemap.mjs', ['--check']],
   // ★2026-08-19 追加。dateModified は ARTICLE_SPEC に書いてあるだけで生成器が無く、

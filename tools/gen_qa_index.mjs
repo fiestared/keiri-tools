@@ -226,11 +226,12 @@ for (const slug of readdirSync(COLUMN)) {
   const ctaTag = html.match(/<a\b[^>]*\btool-cta\b[^>]*>/)?.[0];
   const ctaHref = ctaTag?.match(/href="([^"]+)"/)?.[1] ?? null;
   const tool = ctaHref ? ctaHref.replace(/^(\.\.\/)+/, "/") : null;
+  const requiredTerms=(html.match(/<meta name="qa-required-terms" content="([^"]*)"/)?.[1] || "").split("|").filter(Boolean);
   const category = catOf.get(slug) || "";
   const base = `${title} ${answer}`;
   const url = `/column/${slug}/`;
-  const terms = buildTerms(title, answer, category, ...synonymsFor(base), ...(ENTRY_ALIASES.get(slug) || []));
-  entries.push(withAliases({ type: "article", url, title, answer, summary: searchSummary(html, url, answer), tool, terms }));
+  const terms = buildTerms(title, answer, category, ...synonymsFor(base), ...(ENTRY_ALIASES.get(slug) || []), ...requiredTerms);
+  entries.push(withAliases({ type: "article", url, title, answer, summary: searchSummary(html, url, answer), tool, terms, ...(requiredTerms.length ? {requiredTerms} : {}) }));
 }
 
 // ---- ツール ----

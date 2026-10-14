@@ -22,6 +22,8 @@ const ROOT = resolve(fileURLToPath(new URL("../../", import.meta.url)));
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const SCENES = [
+  { name: "bank_fee_mufg", expect: s => s.correct && s.printCalled && s.transferCorrect && s.noOverflow },
+  { name: "bank_fee_yucho", expect: s => s.correct && s.printCalled && s.transferCorrect && s.noOverflow },
   { name: "nenrei", expect: s => s.initialRows === 121 && s.nextRows === 121 && s.row2026 === "2000年 平成12年 25歳 26歳" && s.row2027 === "2000年 平成12年 26歳 27歳" && s.before === "平成31年4月30日" && s.after === "令和元年5月1日" && s.reverse === "2019年5月1日" && s.alternateEra === "2019年4月30日" && s.invalid && s.cleared && s.recalculated && s.leapBefore && s.leapAfter },
 
   { name: "print_table_inshi", expect: s => s.rows === 16 && s.first === '非課税（印紙不要）' && s.tax === '200円' && s.last === '200円' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
@@ -44,6 +46,7 @@ const SCENES = [
       /方式によって差引額が変わります/.test(s.result) &&
       /据置型/.test(s.result) && /未満手数料加算型/.test(s.result) && /以上手数料加算型/.test(s.result) },
   { name: "senpou_check", expect: (s) => /550 円/.test(s.result) && /先方負担/.test(s.result) },
+  { name: "senpou_invalid", expect: s => s.failures.length === 8 && s.failures.every(r => r.rejected) && s.recovered },
   // 手数料(550円) > 請求額(300円) → マイナスの振込額を黙って出さず、警告を出すこと
   { name: "senpou_fee_over", expect: (s) =>
       /振込額がマイナスになります/.test(s.result) && /当方負担/.test(s.result) },
