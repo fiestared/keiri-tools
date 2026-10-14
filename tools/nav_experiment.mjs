@@ -93,9 +93,11 @@ export function stripNavSegments(line) {
 export function isNavOnlyDiff(removed, added) {
   // 出典の外部リンクの追加・削除・URL訂正は、文言が同じなら本文の改稿ではない。
   // コミット済み履歴と作業ツリーの両方で、更新日を偽って進めない。
-  const links = [...removed, ...added].flatMap((l) => l.match(/<a\b[^>]*>/gi) ?? []);
-  if (links.length && links.every((tag) => /\bhref=["']https?:\/\//i.test(tag))) {
-    const stripLinks = (ls) => ls.map((l) => l.replace(/<\/?a\b[^>]*>/gi, ""));
+  const externalLink = /<a\b[^>]*\bhref=(["'])https?:\/\/[^"']*\1[^>]*>([\s\S]*?)<\/a>/gi;
+  const links = [...removed, ...added].flatMap((l) => l.match(externalLink) ?? []);
+  if (links.length) {
+    // 同じ行に既存のサイト内リンクがあっても、それは残して外部リンクだけを比較する。
+    const stripLinks = (ls) => ls.map((l) => l.replace(externalLink, (_, quote, label) => label));
     const r = stripLinks(removed), a = stripLinks(added);
     if (r.length === a.length && r.every((l, i) => l === a[i])) return true;
   }

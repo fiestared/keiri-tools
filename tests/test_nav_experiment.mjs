@@ -119,6 +119,9 @@ export function checkDiffRule() {
   if (isNavOnlyDiff([source], [linked.replace('第38条', '第39条')])) errs.push("判定: 出典の条文番号の変更までリンクだけと数えた");
   if (isNavOnlyDiff([linked, '<p>30万円</p>'], [linked, '<p>31万円</p>'])) errs.push("判定: リンクと併せた本文の数字変更を見逃した");
   if (isNavOnlyDiff([source], [linked.replace('https://laws.e-gov.go.jp/law/322AC0000000049#Mp-Ch_4-At_38', '/column/rodojikan/')])) errs.push("判定: 本文のサイト内リンクまで出典リンクの例外に含めた");
+  const internal = '<a href="/column/rodojikan/">労働時間</a>';
+  if (!isNavOnlyDiff([source + internal], [linked + internal])) errs.push("判定: 既存のサイト内リンクが同じ行にある出典リンク修正で更新日を進めた");
+  if (isNavOnlyDiff([source + internal], [linked + internal.replace('/column/rodojikan/', '/column/yukyu/')])) errs.push("判定: 出典リンクと併せたサイト内リンクの変更を見逃した");
   return errs;
 }
 
