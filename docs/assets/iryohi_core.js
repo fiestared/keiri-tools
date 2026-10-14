@@ -73,7 +73,7 @@ export function iryohiKojo(iryohi, hoten, hotenTaisho, sotoShotoku, I) {
 
 /**
  * セルフメディケーション税制の控除額（措法41条の17）。
- *   控除額 ＝ min( max(0, 特定一般用医薬品等の購入費 − 12,000円), 88,000円 )
+ *   控除額 ＝ min( max(0, 補填部分を除いた対象薬の購入費 − 12,000円), 88,000円 )
  * ★通常の医療費控除との選択（どちらか一方だけ）。
  */
 export function selfmedKojo(purchase, I) {
@@ -130,7 +130,7 @@ export function keigenGaku(kojo, rate, I) {
  *   kyuyoShunyu,     // 給与収入（年収）→ 総所得金額等の算出（足切りの5%に使う）
  *   sotoShotoku,     // （任意）総所得金額等を直接指定。あれば kyuyoShunyu より優先
  *   shotokuzeiRate,  // 所得税の限界税率（%）— 課税所得帯のドロップダウンから
- *   selfmedPurchase, // （任意）セルフメディケーション：特定一般用医薬品等の購入費（円）
+ *   selfmedPurchase, // （任意）セルフメディケーション：補填部分を除いた対象薬の購入費（円）
  * }
  * refs = { iryohiData, juminzeiData }
  */
