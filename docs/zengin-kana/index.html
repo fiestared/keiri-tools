@@ -103,7 +103,30 @@
     <div id="copyErr" class="note" role="alert" aria-atomic="true" style="margin-top:8px;color:#a33"></div>
     <a href="#" id="forceCopy" style="display:none;font-size:12px;color:var(--sub)">未変換の行も含めてコピーする</a>
   </div>
-<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">変換ルール（出典つき）</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/zengin-format-guide/">全銀フォーマットとは</a></li><li><a href="../column/csv-mojibake/">CSVの文字化けの直し方</a></li><li><a href="../column/kumimodoshi/">組戻しとは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#examples">変換例を試す</a></li><li><a href="#tool-section-1">変換ルール（出典つき）</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/zengin-format-guide/">全銀フォーマットとは</a></li><li><a href="../column/csv-mojibake/">CSVの文字化けの直し方</a></li><li><a href="../column/kumimodoshi/">組戻しとは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+  <section class="faq">
+    <h2 id="examples">変換例を試す</h2>
+    <p>「試す」を押すと、その例を入力して変換します。総合振込の受取人名向けの例です。出力は銀行の登録名義と照合してください。</p>
+    <!--zengin-examples:S-->
+<div class="scroll-wrap">
+<table id="zengin-examples">
+<thead><tr><th scope="col">用途</th><th scope="col">入力例</th><th scope="col">変換結果</th><th scope="col">確認すること</th><th scope="col">操作</th></tr></thead>
+<tbody>
+<tr data-example="company-head"><th scope="row">会社名・先頭</th><td><code>株式会社ヤマダ</code></td><td><code>ｶ)ﾔﾏﾀﾞ</code><br><span class="hint">6文字・使用可能</span></td><td>株式会社を先頭の法人略語へ。</td><td><button type="button" data-example-input="株式会社ヤマダ" aria-label="会社名・先頭の例を試す">試す</button></td></tr>
+<tr data-example="company-tail"><th scope="row">会社名・末尾</th><td><code>ヤマダ株式会社</code></td><td><code>ﾔﾏﾀﾞ(ｶ</code><br><span class="hint">6文字・使用可能</span></td><td>末尾では括弧の向きが変わります。</td><td><button type="button" data-example-input="ヤマダ株式会社" aria-label="会社名・末尾の例を試す">試す</button></td></tr>
+<tr data-example="long-vowel"><th scope="row">長音・中黒</th><td><code>スーパー・マーケット</code></td><td><code>ｽ-ﾊﾟ-.ﾏ-ｹﾂﾄ</code><br><span class="hint">11文字・使用可能</span></td><td>長音はハイフン、中黒はピリオドへ。</td><td><button type="button" data-example-input="スーパー・マーケット" aria-label="長音・中黒の例を試す">試す</button></td></tr>
+<tr data-example="voiced"><th scope="row">濁点・半濁点</th><td><code>ガギグ パピプ</code></td><td><code>ｶﾞｷﾞｸﾞ ﾊﾟﾋﾟﾌﾟ</code><br><span class="hint">13文字・使用可能</span></td><td>濁点・半濁点もそれぞれ一文字です。</td><td><button type="button" data-example-input="ガギグ パピプ" aria-label="濁点・半濁点の例を試す">試す</button></td></tr>
+<tr data-example="small-kana"><th scope="row">小書きカナ</th><td><code>きゃっしゅ</code></td><td><code>ｷﾔﾂｼﾕ</code><br><span class="hint">5文字・使用可能</span></td><td>小書きカナを大文字へ。</td><td><button type="button" data-example-input="きゃっしゅ" aria-label="小書きカナの例を試す">試す</button></td></tr>
+<tr data-example="symbols"><th scope="row">使えない記号</th><td><code>エービー／シー</code></td><td><code>ｴ-ﾋﾞ-/ｼ-</code><br><span class="hint">8文字・要確認</span></td><td>「/」は残して警告。登録名義を確認して直してください。</td><td><button type="button" data-example-input="エービー／シー" aria-label="使えない記号の例を試す">試す</button></td></tr>
+<tr data-example="limit"><th scope="row">受取人名・上限</th><td><code>ガガガガガガガガガガガガガガガ</code></td><td><code>ｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞ</code><br><span class="hint">30文字・使用可能</span></td><td>本ツールの上限内です。</td><td><button type="button" data-example-input="ガガガガガガガガガガガガガガガ" aria-label="受取人名・上限の例を試す">試す</button></td></tr>
+<tr data-example="over-limit"><th scope="row">受取人名・超過</th><td><code>ガガガガガガガガガガガガガガガア</code></td><td><code>ｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｶﾞｱ</code><br><span class="hint">31文字・要確認</span></td><td>切り捨てずに警告します。</td><td><button type="button" data-example-input="ガガガガガガガガガガガガガガガア" aria-label="受取人名・超過の例を試す">試す</button></td></tr>
+</tbody>
+</table>
+</div>
+<!--zengin-examples:E-->
+    <p class="hint">文字数は変換後の半角文字で数えます。本ツールの上限は30文字です。銀行・フォーマットによって上限が異なるため、利用銀行の仕様も確認してください。</p>
+  </section>
 
   <section class="faq">
     <h2 id="tool-section-1">変換ルール（出典つき）</h2>
@@ -162,7 +185,9 @@
   </section>
 
   <section class="faq">
-    <h2 id="faq">よくある質問</h2>
+    <p>名義を整えたら、<a href="../column/zengin-format-guide/#tsukurikata">全銀データの作成方法</a>へ進みます。銀行に取り込めないときは、<a href="../column/zengin-format-guide/#torikomi-error">全銀ファイルのエラー確認</a>で名義以外の項目も確認してください。</p>
+
+<h2 id="faq">よくある質問</h2>
     <h3 class="faq-question">振込名義で「株式会社」はどう書きますか？</h3>
     <p class="faq-answer">位置によって形式が変わります。先頭は「カ)」、末尾は「(カ」、中間は「(カ)」です。たとえば株式会社ヤマダは「ｶ)ﾔﾏﾀﾞ」、ヤマダ株式会社は「ﾔﾏﾀﾞ(ｶ」になります。有限会社=ユ、合同会社=ド、医療法人=イなど、法人格ごとに略語が定められています。</p>
     <h3 class="faq-question">振込名義に使える文字は？</h3>
@@ -174,7 +199,7 @@
   </section>
 <section class="faq rel-block">
 <h2>関連する解説</h2>
-<!--rel:S--><ul class="rel-list"><li><a href="../column/zengin-format-guide/">全銀フォーマットとは｜作り方・120バイトのレコードレイアウトと、振込名義に使える文字・法人略語</a><span class="rel-desc">株式会社＝カ、有限会社＝ユ、合同会社＝ド。先頭・末尾・中間で変わる括弧の付け方と、使える文字の範囲を一覧に。</span></li><li><a href="../column/csv-mojibake/">CSVの文字化けの直し方 — Excelで化けるのは「文字コードの読み違い」。開き方で直る場合と、もう直らない場合</a><span class="rel-desc">CSVの文字化けの多くは読み違い。UTF-8はBOM付きなら通常どおり開け、BOMが無ければ「テキストまたはCSVから」で文字コードを選ぶ。</span></li><li><a href="../column/kumimodoshi/">組戻しとは — 振込は「取り消す」のではなく、受取人に返してもらう手続き</a><span class="rel-desc">組戻しは取り消しではない。入金が済めばお金は受取人の預金なので、承諾がなければ戻らない。そのときの請求先は銀行ではなく受取人（民法703条）</span></li></ul><!--rel:E-->
+<!--rel:S--><ul class="rel-list"><li><a href="../column/zengin-format-guide/">全銀フォーマットとは｜作り方・120バイトのレコードレイアウトと、振込名義に使える文字・法人略語</a><span class="rel-desc">株式会社＝カ、有限会社＝ユ、合同会社＝ド。先頭・末尾・中間で変わる括弧の付け方と、使える文字の範囲を一覧に。</span></li><li><a href="../column/csv-mojibake/">CSVの文字化けの直し方 — Excelで化けるのは「文字コードの読み違い」。開き方で直る場合と、もう直らない場合</a><span class="rel-desc">CSVの文字化けの多くは読み違い。UTF-8はBOM付きなら通常どおり開け、BOMが無ければ「テキストまたはCSVから」で文字コードを選ぶ。</span></li><li><a href="../column/kumimodoshi/">組戻しとは — 振込は「取り消す」のではなく、受取人に返してもらう手続き</a><span class="rel-desc">組戻しは取り消しではない。入金が済めばお金は受取人の預金なので、承諾がなければ戻らない。そのときの請求先は銀行ではなく受取人（民法703条）</span></li><li><a href="../column/kyuyo-keisan-yarikata/">給与計算のやり方｜勤怠締めから振込・納付まで毎月の手順</a><span class="rel-desc">給与計算のやり方を、勤怠締め、総支給額、社会保険料、源泉所得税、住民税、手取り、振込・納付の順に実務例つきで解説します。</span></li></ul><!--rel:E-->
 </section>
 <nav aria-label="記事の共有"><!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E7%B7%8F%E5%90%88%E6%8C%AF%E8%BE%BC%E3%81%AE%E5%8F%97%E5%8F%96%E4%BA%BA%E5%90%8D%E3%82%92%E5%85%A8%E9%8A%80%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88%E3%81%B8%E4%B8%80%E6%8B%AC%E5%A4%89%E6%8F%9B%E3%80%82%E5%8D%8A%E8%A7%92%E3%82%AB%E3%83%8A%E5%A4%89%E6%8F%9B%E3%80%81%E5%85%88%E9%A0%AD%E3%81%AE%E6%A0%AA%E5%BC%8F%E4%BC%9A%E7%A4%BE%E2%86%92%E3%82%AB%29%E3%81%AA%E3%81%A9%E3%81%AE%E6%B3%95%E4%BA%BA%E7%95%A5%E8%AA%9E%E3%80%81%E5%B0%8F%E6%96%87%E5%AD%97%E3%83%BB%E9%95%B7%E9%9F%B3%E3%83%BB%E4%B8%AD%E9%BB%92%E3%81%AE%E7%BD%AE%E6%8F%9B%E3%80%81%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E6%96%87%E5%AD%97%E3%81%A830%E6%96%87%E5%AD%97%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%81%BE%E3%81%A7%E8%87%AA%E5%8B%95%E3%80%82%E8%A4%87%E6%95%B0%E5%90%8D%E7%BE%A9%E3%82%92%E3%81%BE%E3%81%A8%E3%82%81%E3%81%A6%E5%87%A6%E7%90%86%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fzengin-kana%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto --></nav>
 </main>
@@ -189,6 +214,16 @@ import { normalizeBatch } from "../assets/zengin_core.js";
 
 const $ = (id) => document.getElementById(id);
 let lastResults = [];
+let resultTracked = false;
+
+document.querySelectorAll('[data-example-input]').forEach((button) => {
+  button.addEventListener('click', () => {
+    $("names").value = button.dataset.exampleInput;
+    $("names").dispatchEvent(new Event('input', { bubbles: true }));
+    $("run").click();
+    $("names").focus();
+  });
+});
 
 $("run").addEventListener("click", () => {
   const rs = normalizeBatch($("names").value);
@@ -209,6 +244,15 @@ $("run").addEventListener("click", () => {
   $("copyAll").textContent = copyLabel();
   $("copyErr").textContent = "";
   $("forceCopy").style.display = "none";
+  // Same event as the shared tool tracker. Send no recipient names or outputs.
+  if (!resultTracked) {
+    try {
+      if (typeof window.gtag === 'function') {
+        window.gtag('event', 'tool_result', { tool: 'zengin-kana' });
+        resultTracked = true;
+      }
+    } catch { /* Analytics must not block conversion. */ }
+  }
 });
 
 // 未変換の行(漢字が残っている・30文字超)をそのままコピーさせない。
