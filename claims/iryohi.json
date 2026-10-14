@@ -2162,7 +2162,6 @@
         "s-33a96368d579a52385c6-1",
         "s-3edd18bc0b0bd98354fe-1",
         "s-3fdc7af2d51417f74c1d-1",
-        "s-d8772065ad48b5416d42-1",
         "s-caa6f8acdaa79d492bbe-1",
         "s-7b1d8971b42854a6aa18-1",
         "s-7d65fa3bcd18d4db357c-1",
@@ -2500,6 +2499,21 @@
         "s-702f5312c20e4229214c-1",
         "s-e60c66b3d7a10fe6fcb4-1"
       ]
+    },
+    {
+      "id": "auto20261014-special-expense-product-scope",
+      "text": "この計算機の給与換算は特定支出控除を入力・反映しない仕様。制度資料による確認ではない。",
+      "kind": "own_site",
+      "source_url": "https://keiri-tools.com/iryohi/",
+      "source_quote": "sotoShotoku = i.zeisei === 'r8'\n      ? kyuyoShotokuR8(yen(i.kyuyoShunyu), D)\n      : kyuyoShotoku(yen(i.kyuyoShunyu), D);",
+      "implementation_ref": "docs/assets/iryohi_core.js: calcIryohiの給与所得換算、inputの全項目",
+      "scope": "本計算機の給与換算仕様。法令による特定支出控除の説明はauto20261014-salaryで照合。",
+      "exceptions": "無し: inputの全項目と給与所得換算の実装を確認。制度正本には製品仕様の裏付けがないため独立確認とはしない。",
+      "covers": [
+        "s-d8772065ad48b5416d42-1"
+      ],
+      "result": "out_of_corpus",
+      "needed_source": "本ツールの特定支出控除を反映しない仕様を説明する提供者資料。実装と入力項目を根拠としてwriterが確認済み。制度正本には未収録。"
     }
   ],
   "absolutes": [],
@@ -3725,6 +3739,12 @@
       "result": "out_of_corpus",
       "needed_source": "このサイトの執筆者がリンク先の記事で条文・国税庁資料を確認したことを示す確認記録。",
       "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/auto20261014/t14-q08381/segment-adjudication.json"
+    },
+    {
+      "id": "s-d8772065ad48b5416d42-1",
+      "result": "out_of_corpus",
+      "needed_source": "本ツールの特定支出控除を反映しない仕様の提供者資料。docs/assets/iryohi_core.jsの入力・換算実装はwriterが確認。",
+      "review_ref": "writer: auto20261014 t14-q08381; new product-scope note"
     }
   ]
 }
