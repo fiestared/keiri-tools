@@ -1,0 +1,192 @@
+
+=== FAIL test_answer_columns.mjs ===
+/inshi/ @1280: data-answer の表が 0（登録は 1。第17号の早見表（印紙税額））
+/inshi/ @1440: data-answer の表が 0（登録は 1。第17号の早見表（印紙税額））
+/inshi/ @1920: data-answer の表が 0（登録は 1。第17号の早見表（印紙税額））
+/inshi/ @390: data-answer の表が 0（登録は 1。第17号の早見表（印紙税額））
+
+
+=== FAIL test_empty_surfaces.mjs ===
+node:internal/modules/run_main:105
+    triggerUncaughtException(
+    ^
+
+locator.fill: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#names')[22m
+
+    at /Users/masahiroyasu/Scripts/keiri-tools-print-tables/tests/test_empty_surfaces.mjs:39:29 {
+  log: [ "  - waiting for locator('#names')" ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.3.0
+
+
+=== FAIL test_generators_fresh.mjs ===
+node:internal/modules/run_main:105
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: tools/gen_index_sitemap.mjs --check が失敗しました。
+✗ sitemap.xml が古い。node tools/gen_index_sitemap.mjs を流すこと
+  → node tools/gen_index_sitemap.mjs を流してから commit すること
+    at file:///Users/masahiroyasu/Scripts/keiri-tools-print-tables/tests/test_generators_fresh.mjs:51:12
+    at ModuleJob.run (node:internal/modules/esm/module_job:365:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:99:5) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: undefined,
+  expected: undefined,
+  operator: 'fail'
+}
+
+Node.js v24.3.0
+
+
+=== FAIL test_hojokin_sources.mjs ===
+★公募スケジュール
+★雇用関係助成金
+★静的HTMLへの焼き込みとタブ
+★混ざっていないか
+★生成物が最新か
+  ✗ ★gen_hojokin_tabs.mjs --check が緑（赤なら node tools/gen_hojokin_tabs.mjs を流してコミットする）
+
+✗ test_hojokin_sources: 35 checks, 1 failed
+
+
+=== FAIL test_kogaku_article.mjs ===
+  ✓ 70歳以上[8月から] 現役並みⅢ: 外来なし／世帯270,300円／多数回140,100円／年間168万円
+  ✓ 70歳以上[8月から] 現役並みⅡ: 外来なし／世帯179,100円／多数回93,000円／年間111万円
+  ✓ 70歳以上[8月から] 現役並みⅠ: 外来なし／世帯85,800円／多数回44,400円／年間53万円
+  ✓ 70歳以上[8月から] 一般: 外来22,000円／世帯61,500円／多数回44,400円／年間53万円
+  ✓ 70歳以上[8月から] 低所得者Ⅱ: 外来11,000円／世帯25,700円／多数回24,600円／年間29万円
+  ✓ 70歳以上[8月から] 低所得者Ⅰ: 外来8,000円／世帯15,700円／多数回なし／年間18万円
+  ✓ 70歳以上: ①外来を個人ごと(42条5項)→②世帯で合算(42条3項)の順序と、現役並みの例外を明記
+  ✓ 70歳以上: ①を飛ばすと自己負担が22,000円→61,500円（戻る額 58,000円→18,500円）
+  ✓ 70歳以上: 2.8倍・39,500円と、①が効く条件の限定が同じ段落にある
+  ✓ 70歳以上: 21,000円の足切りは70歳未満だけ（協会けんぽの逐語）
+  ✓ 70歳以上: 現役並みは標報だけで決まらない（520万/383万の収入要件）
+  ✓ 70歳以上: 低所得者Ⅰに多数回該当が無い根拠（6号にただし書が無い）
+  ✓ 70歳以上: 外来の年間上限（41条の2・8/1〜翌7/31・216,000/144,000/96,000円・事後の償還払い）
+  ✓ 目次と70歳以上のh2が一致
+  ✓ 金額の網: カンマ金額 79種すべてが想定内・70歳未満(旧/R8.8/R9.8の13区分)と70歳以上(新旧)の金額がすべて本文にある
+  ✓ 等級の網: 第30・31・39・40級（崖と80万円台の不在）がすべて本文にある
+  ✓ 第30級 ＝ 標準報酬月額50万円（本番の等級表と一致）
+  ✓ 第31級 ＝ 標準報酬月額53万円（本番の等級表と一致）
+  ✓ 第39級 ＝ 標準報酬月額79万円（本番の等級表と一致）
+  ✓ 第40級 ＝ 標準報酬月額83万円（本番の等級表と一致）
+  ✓ title（37字）: 区分は年収でなく標準報酬月額
+
+✗ 記事「高額療養費」: 1件の不一致
+  ✗ 認定証の節に 健康保険法施行規則129条の2第2項 が無い
+
+
+=== FAIL test_layout_render.mjs ===
+/column/koyou-hokenryo-ritsu/ @1280: table-hscroll-desktop: 事業の種類労働者負担（/1,000）事業主負担（/1,000）合計（/1,000）出典
+一般の事業5/1,000（令和7年度 5.5/1,000）8.5/1,000（令和7年度 9/1,000）13.5/1,000（令和
+/column/koyou-hokenryo-ritsu/ @1536: table-hscroll-desktop: 事業の種類労働者負担（/1,000）事業主負担（/1,000）合計（/1,000）出典
+一般の事業5/1,000（令和7年度 5.5/1,000）8.5/1,000（令和7年度 9/1,000）13.5/1,000（令和
+/column/koyou-hokenryo-ritsu/ @1920: table-hscroll-desktop: 事業の種類労働者負担（/1,000）事業主負担（/1,000）合計（/1,000）出典
+一般の事業5/1,000（令和7年度 5.5/1,000）8.5/1,000（令和7年度 9/1,000）13.5/1,000（令和
+/column/koyou-hokenryo-ritsu/ @1200: table-hscroll-desktop: 事業の種類労働者負担（/1,000）事業主負担（/1,000）合計（/1,000）出典
+一般の事業5/1,000（令和7年度 5.5/1,000）8.5/1,000（令和7年度 9/1,000）13.5/1,000（令和
+/column/rosai-hokenryoritsu/ @390: table-no-number-visible: 分類事業の種類基準率（/1,000）出典
+file:///Users/masahiroyasu/Scripts/keiri-tools-print-tables/tests/test_layout_render.mjs:47
+if(bad.length){console.error(bad.slice(0,30).map(r=>`${r.url} @${r.width}: ${r.error||r.issues.map(x=>x.kind+': '+x.text).join('; ')}`).join('\n'));throw Error(`${bad.length}/${jobs.length} page/viewports failed. Full measurements: ${out}`);}
+                                                                                                                                                          ^
+
+Error: 5/3492 page/viewports failed. Full measurements: /Users/masahiroyasu/Scripts/keiri-tools-print-tables/.layout-artifacts/render.json
+    at file:///Users/masahiroyasu/Scripts/keiri-tools-print-tables/tests/test_layout_render.mjs:47:155
+
+Node.js v24.3.0
+
+
+=== FAIL test_layout_visual.mjs ===
+-   playwright: '1.62.1'
+  }
+
+    at file:///Users/masahiroyasu/Scripts/keiri-tools-print-tables/tests/test_layout_visual.mjs:11:172 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: {
+    platform: 'darwin',
+    arch: 'arm64',
+    playwright: '1.58.2',
+    browser: '145.0.7632.6',
+    deviceScaleFactor: 1
+  },
+  expected: {
+    platform: 'darwin',
+    arch: 'arm64',
+    playwright: '1.62.1',
+    browser: '151.0.7922.34',
+    deviceScaleFactor: 1
+  },
+  operator: 'deepStrictEqual'
+}
+
+Node.js v24.3.0
+
+
+=== FAIL test_long_table_thead.mjs ===
+node:internal/modules/run_main:105
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: /inshi/ の表（zeigaku-table）: 印刷時の thead が none（各ページに繰り返されない）
++ actual - expected
+
++ 'none'
+- 'table-header-group'
+
+    at file:///Users/masahiroyasu/Scripts/keiri-tools-print-tables/tests/test_long_table_thead.mjs:95:54 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'none',
+  expected: 'table-header-group',
+  operator: 'strictEqual'
+}
+
+Node.js v24.3.0
+
+
+=== FAIL test_nav.mjs ===
+✗ グローバルナビが揃っていないページ 1件:
+  - column/shintaku-hoshu/index.html
+
+  node tools/gen_nav.mjs を実行してコミットすること。
+
+✗ グローバルナビが揃っていない。node tools/gen_nav.mjs を実行してコミットすること。
+
+
+=== FAIL test_no_orphan.mjs ===
+✗ どこからもリンクされていない公開記事 1本（公開461本中）:
+  - /column/emaxis-nikkei-vs-tawara-nikkei/
+
+  主題が近い記事・ツールの本文から、文脈のある1本を張ること。
+  ★一覧の羅列を足して数だけ satisfies しない（周辺の文脈ごと書く）。
+
+
+=== FAIL test_site_search.mjs ===
+★column/shintaku-hoshu/index.html: ヘッダに検索ボタンが無い（node tools/gen_nav.mjs）
+
+★赤 1件（静的な検査で落ちたので実ブラウザは見ない）
+
+
+=== FAIL test_toc_render.mjs ===
+node:internal/modules/run_main:105
+    triggerUncaughtException(
+    ^
+
+page.waitForFunction: Timeout 5000ms exceeded.
+    at /Users/masahiroyasu/Scripts/keiri-tools-print-tables/tests/test_toc_render.mjs:28:66 {
+  log: [],
+  name: 'TimeoutError'
+}
+
+Node.js v24.3.0
+
+
+❌ 12ファイル失敗 / 実行 264

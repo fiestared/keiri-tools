@@ -1,0 +1,142 @@
+{
+  "date_jst": "2026-10-14",
+  "branch": "wt/nenrei",
+  "page_url": "https://keiri-tools.com/nenrei-hayami/",
+  "published": false,
+  "all_tests_mjs": {
+    "executed": 322,
+    "passed_after_rechecks": 315,
+    "remaining_red": 7,
+    "introduced_red": 0,
+    "not_executed": 0
+  },
+  "normal": {
+    "executed": 264,
+    "raw_failed": [
+      "test_generators_fresh.mjs",
+      "test_hojokin_sources.mjs",
+      "test_kogaku_article.mjs",
+      "test_layout_visual.mjs",
+      "test_nav.mjs",
+      "test_no_orphan.mjs",
+      "test_site_search.mjs"
+    ],
+    "fixed_after_raw_run": [
+      "test_generators_fresh.mjs"
+    ],
+    "remaining_red": [
+      "test_hojokin_sources.mjs",
+      "test_kogaku_article.mjs",
+      "test_layout_visual.mjs",
+      "test_nav.mjs",
+      "test_no_orphan.mjs",
+      "test_site_search.mjs"
+    ]
+  },
+  "breaks": {
+    "executed": 58,
+    "passed": 57,
+    "remaining_red": [
+      "break_kogaku.mjs"
+    ],
+    "fixed_after_initial_break_run": [
+      "break_izoku_page.mjs"
+    ]
+  },
+  "origin_at_start": {
+    "sha": "22519fef49e11b3666545b8b1b4dec2695250c50",
+    "normal_executed": 262,
+    "normal_red": [
+      "test_kogaku_article.mjs",
+      "test_layout_visual.mjs",
+      "test_nav.mjs",
+      "test_no_orphan.mjs",
+      "test_site_search.mjs"
+    ],
+    "break_executed": 58,
+    "break_red": [
+      "break_kogaku.mjs"
+    ]
+  },
+  "latest_origin_rechecks": {
+    "sha": "8b344dcc79cf06693428c9452f13eeb7b88ea385",
+    "still_red": [
+      "test_hojokin_sources.mjs",
+      "test_nav.mjs",
+      "test_no_orphan.mjs",
+      "test_site_search.mjs",
+      "test_layout_visual.mjs"
+    ],
+    "fixed_upstream_but_remaining_at_fork": [
+      "test_kogaku_article.mjs",
+      "break_kogaku.mjs"
+    ],
+    "results": [
+      {
+        "file": "test_hojokin_sources.mjs",
+        "exit": 1
+      },
+      {
+        "file": "test_kogaku_article.mjs",
+        "exit": 0
+      },
+      {
+        "file": "break_kogaku.mjs",
+        "exit": 0
+      },
+      {
+        "file": "test_generators_fresh.mjs",
+        "exit": 0
+      },
+      {
+        "file": "test_nav.mjs",
+        "exit": 1
+      },
+      {
+        "file": "test_no_orphan.mjs",
+        "exit": 1
+      },
+      {
+        "file": "test_site_search.mjs",
+        "exit": 1
+      },
+      {
+        "file": "test_layout_visual.mjs",
+        "exit": 1,
+        "environment": "Playwright 1.58.2 / Chromium 145.0.7632.6",
+        "failure": "非表示要素へのlocator.screenshotがタイムアウト。開始時の基点と作業場でも同じ。"
+      }
+    ]
+  },
+  "notes": [
+    "補助金タブ件数は時刻で変動。開始時の通常検査では緑だったが、時刻経過後の開始時固定コピーと最新originでも赤。今回の変更によらない。",
+    "画像比較の通常実行は保存基準と版が不一致。保存基準のPlaywright1.58.2/Chromium145を作業場内に用意して再検査したが、非表示要素の撮影で開始時・作業場・最新originすべてタイムアウト。基準画像は更新していない。",
+    "新規ツールの令和表記は生まれ年の和暦対応であり料率データの年度ではない。該当表セルだけを歴史的対応に登録。242行の正しさは別の単体テストで照合。"
+  ],
+  "new_tool": {
+    "unit": "pass",
+    "static_age_and_era_cells": "242 rows pass",
+    "boundary_cases": "pass",
+    "condition_table": "pass",
+    "claims_units": 1094,
+    "claim_scope_missing": 0,
+    "e2e": [
+      "nenrei: pass",
+      "ux_field_error_nenrei: pass"
+    ],
+    "input_wiring": "7 inputs pass; era also exercised in reverse-conversion E2E",
+    "browser": "1280/390, invalid→clear→recalculate, leap birth, print, JS disabled: pass",
+    "layout_all_sizes": [
+      1280,
+      1536,
+      1920,
+      1200,
+      768,
+      390
+    ],
+    "print": "A4 3 pages, selected year, repeated headers, sources and checked date"
+  },
+  "generation": "publishと同じ順の生成器とOGP・X共有等を実行。sitemap等のcheckが緑。",
+  "source_links_http200": 8,
+  "gbrain_slug": "implementation/keiri-nenrei-wareki-2026-10-14"
+}

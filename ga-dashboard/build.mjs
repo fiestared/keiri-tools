@@ -903,12 +903,12 @@ function hourChart(site) {
   </div>
   <figcaption>${cum}。<b>今日の棒は ${site.cutoff ? esc(site.cutoff) : "現在"} で終わっている</b>のが正常で、
     その先は「0件」ではなく<b>GA4がまだ出していない</b>。前日の合計とではなく、同じ時間帯どうしで比べること。</figcaption>
-  ${hourTable(site)}
 </figure>`;
 }
 
 // チャートは色と形で読ませているので、数値そのものはここで担保する（マウスを使えない場合の経路）
 function hourTable(site) {
+  if (!site.hToday || !site.hYest) return "";
   const rows = site.hToday.map((v, hh) => {
     const drawn = hh <= site.cutoffHour;
     const yv = site.hYest[hh];
@@ -948,7 +948,7 @@ function rtHourChart(site) {
     return `<figure class="chart hourly rt-est"><figcaption class="chart-title">推定セッション（Realtime 積み上げ） <span class="badge">GA4 の確定値ではない</span></figcaption>
       <p class="rt-warn">推定は取得できなかった<br><code>${esc(rt.error)}</code></p></figure>`;
   }
-  const W = 720, H = 210, PAD = { t: 18, r: 12, b: 34, l: 44 };
+  const W = 720, H = 222, PAD = { t: 28, r: 12, b: 34, l: 44 };
   const iw = W - PAD.l - PAD.r, ih = H - PAD.t - PAD.b;
   const band = iw / 24;
   const bw = Math.min(18, band - 8);
@@ -970,7 +970,6 @@ function rtHourChart(site) {
         `M${x.toFixed(1)} ${(yy + ht).toFixed(1)} L${x.toFixed(1)} ${(yy + r).toFixed(1)} Q${x.toFixed(1)} ${yy.toFixed(1)} ${(x + r).toFixed(1)} ${yy.toFixed(1)} L${(x + bw - r).toFixed(1)} ${yy.toFixed(1)} Q${(x + bw).toFixed(1)} ${yy.toFixed(1)} ${(x + bw).toFixed(1)} ${(yy + r).toFixed(1)} L${(x + bw).toFixed(1)} ${(yy + ht).toFixed(1)} Z`,
     };
   }).filter(Boolean);
-  const last = [...bars].reverse().find((b) => b.ht > 0);
   const fail = rt.error ? `<div class="rt-warn">今回の取得は失敗（${esc(h.to)} 時点の積み上げ）<br><code>${esc(rt.error)}</code></div>` : "";
   const gap = h.gaps.length
     ? `<div class="rt-warn">うち ${h.gaps.map((g) => `<b>${esc(g.from)}〜${esc(g.to)}</b>`).join("・")} は未取得（計${h.gapMin}分）</div>` : "";
@@ -993,7 +992,7 @@ function rtHourChart(site) {
     ${[0, 3, 6, 9, 12, 15, 18, 21].map((hh) =>
       `<text x="${(x0(hh) + band / 2).toFixed(1)}" y="${H - PAD.b + 18}" class="xlab" text-anchor="middle">${hh}</text>`).join("")}
     <text x="${(PAD.l + iw / 2).toFixed(1)}" y="${H - PAD.b + 31}" class="xsub" text-anchor="middle">時（JST）</text>
-    ${last ? `<text x="${last.cx.toFixed(1)}" y="${(last.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${last.v.toLocaleString("ja-JP")}</text>` : ""}
+    ${bars.map((b) => `<text x="${b.cx.toFixed(1)}" y="${Math.max(12, b.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${b.v.toLocaleString("ja-JP")}</text>`).join("")}
     ${h.hours.map((v, hh) => {
       const tip = h.seen[hh]
         ? `${hh}時台 — 推定 ${v.toLocaleString("ja-JP")} ／ PV ${h.hourPv[hh].toLocaleString("ja-JP")}`
@@ -1388,6 +1387,7 @@ function sitePanel(site, primary, extra = "", selected = true, asTab = false) {
   ${table(site)}
   ${hourChart(site)}
   ${rtHourChart(site)}
+  ${hourTable(site)}
   ${extra}
 </section>`;
 }
@@ -1560,7 +1560,8 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
 .sw-yest{height:8px; background:var(--series-2-wash); border-top:1.5px solid var(--series-2); border-radius:0}
 .sw-prevweek{height:0; width:16px; border-top:2px dashed var(--series-3); border-radius:0}
 .sw-rt{background:var(--series-rt)}
-.chart.rt-est{border-top:1px dashed var(--axis)}
+/* 推定は「時間帯別のセッション数」の直後。日次との区切り（.chart.hourly の実線）は重ねない */
+.chart.hourly.rt-est{margin-top:4px; border-top:1px dashed var(--axis); padding-top:12px}
 .rt-warn{font-size:12.5px; line-height:1.6; color:var(--ink); border-left:3px solid var(--warn); padding-left:10px; margin:6px 0}
 .rt-warn code{font-size:11px; color:var(--ink2); word-break:break-all}
 .chart.hourly figcaption b{color:var(--ink)}

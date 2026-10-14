@@ -43,12 +43,13 @@ export function attachBankPresets({ select, under, over, note, fetcher = fetch, 
   return fetcher('../assets/fee_table.json')
     .then(response => { if (!response.ok) throw new Error('fee table unavailable'); return response.json(); })
     .then(data => {
-      if (!Array.isArray(data.banks) || data.banks.some(b => !Number.isFinite(b.under30k) || !Number.isFinite(b.over30k))) throw new Error('invalid fee table');
+      if (!Array.isArray(data?.banks) || data.banks.length === 0 || data.banks.some(b => !b || !b.name || ![b.under30k, b.over30k].every(n => Number.isSafeInteger(n) && n >= 0))) throw new Error('invalid fee table');
       banks = data.banks;
       banks.forEach((bank, index) => {
         const option = select.ownerDocument.createElement('option');
         option.value = index;
-        option.textContent = `${bank.name}　${bank.under30k}円 / ${bank.over30k}円`;
+        // 2026-10-15: 公式資料で額を確認できていない行は、選択肢の見た目で分かるようにする（未検証の額を確定額に見せない）
+        option.textContent = `${bank.name}　${bank.under30k}円 / ${bank.over30k}円${bank.article?.unverified ? '（掲載額は未確認）' : ''}`;
         select.appendChild(option);
       });
       applyHash();
