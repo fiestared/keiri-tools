@@ -53,6 +53,13 @@ const SCENES = [
       /下回っています/.test(s.out) && !/最低賃金以上です/.test(s.out) && /160時間/.test(s.out) },
   { name: "zengin", expect: (s) =>
       /ｶ\)ﾔﾏﾀﾞ/.test(s.out) && s.injectedImg === 0 && !s.pwned && s.copyShown },
+  { name: "zengin_examples", expect: (s) =>
+      s.rows === 8 && s.mismatches.length === 0 && s.copied === 'ｶ)ﾔﾏﾀﾞ' &&
+      s.beforeEvents === 0 && s.resultEvents.length === 1 &&
+      JSON.stringify(s.resultEvents[0]) === JSON.stringify({ tool: 'zengin-kana' }) && s.limitWarning },
+  { name: "denchoho_xlsx", expect: (s) =>
+      s.files.length === 4 && s.files.every(f => f.ok && f.download) &&
+      s.files.filter(f => f.format === 'xlsx').length === 2 && s.noCsvOnlyClaim },
   // 未変換の行が黙ってクリップボード(=総合振込ファイル)へ流れないこと
   { name: "zengin_ng_copy", expect: (s) =>
       s.blocked && /組戻し/.test(s.errText) &&

@@ -290,6 +290,55 @@ const SCENES = {
     };
   },
 
+  async zengin_examples() {
+    const doc = await open("/docs/zengin-kana/");
+    const events = [];
+    doc.defaultView.gtag = (...args) => events.push(args);
+    const resultEvents = () => events.filter(e => e[0] === 'event' && e[1] === 'tool_result').map(e => e[2]);
+    const beforeEvents = resultEvents().length;
+    click(doc, 'run'); // Empty input must not count as a conversion.
+    if (resultEvents().length) throw new Error('Empty input emitted tool_result');
+    const rows = [...doc.querySelectorAll('#zengin-examples tbody tr')];
+    const mismatches = [];
+    let limitWarning = false;
+    for (const row of rows) {
+      row.querySelector('button').click();
+      const codes = [...row.querySelectorAll('code')].map(c => c.textContent);
+      await waitFor(() => doc.querySelector('#out > div'), 'example conversion');
+      const card = doc.querySelector('#out > div');
+      if (doc.getElementById('names').value !== codes[0] || card.children[1].textContent !== codes[1]) mismatches.push(row.dataset.example);
+      const expectedStatus = row.querySelector('.hint').textContent.split('・')[0];
+      if (!card.children[2].textContent.includes(expectedStatus)) mismatches.push(row.dataset.example + ':length');
+      if (row.dataset.example === 'symbols' && !text(doc, 'out').includes('使用できない文字')) mismatches.push('symbols:warning');
+      if (row.dataset.example === 'over-limit') limitWarning = text(doc, 'out').includes('上限30文字');
+    }
+    // Complete a normal operation through the result's copy button.
+    rows[0].querySelector('button').click();
+    let copied = '';
+    Object.defineProperty(doc.defaultView.navigator, 'clipboard', {
+      configurable: true, value: { writeText: async t => { copied = t; } },
+    });
+    click(doc, 'copyAll');
+    await waitFor(() => copied, 'normal result copied');
+    return { rows: rows.length, mismatches, copied, beforeEvents, resultEvents: resultEvents(), limitWarning };
+  },
+
+  async denchoho_xlsx() {
+    const doc = await open('/docs/denchoho-index/');
+    const links = [...doc.querySelectorAll('.summary-box a[download]')];
+    const files = [];
+    for (const a of links) {
+      const response = await fetch(a.href);
+      const bytes = new Uint8Array(await response.arrayBuffer());
+      const format = new URL(a.href).pathname.endsWith('.xlsx') ? 'xlsx' : 'csv';
+      files.push({ format, download: a.hasAttribute('download'), ok: response.ok &&
+        (format === 'xlsx' ? bytes[0] === 0x50 && bytes[1] === 0x4b && bytes[2] === 3 && bytes[3] === 4 :
+          bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf) });
+    }
+    const answer = [...doc.querySelectorAll('.faq-question')].find(h => h.textContent.includes('Excelファイル')).nextElementSibling;
+    return { files, noCsvOnlyClaim: !answer.textContent.includes('CSV形式で配布しています') && answer.textContent.includes('.xlsx') };
+  },
+
   // 一括コピーは総合振込ファイルへの貼り付けが前提。未変換の行(漢字が残っている・30文字超)を
   // そのままクリップボードに載せると、銀行で弾かれるか名義相違で組戻しになる。
   // clipboardを差し替えて「何が実際に書き込まれたか」を見る(画面の警告だけでは足りない)。
