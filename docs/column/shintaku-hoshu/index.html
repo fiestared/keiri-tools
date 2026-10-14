@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>信託報酬はいつ・いくら引かれる？100万円の例で税込・総経費率まで検算</title>
+<meta name="description" content="信託報酬は、評価額に税込の年率を掛けて日割りした額が日々計上され、基準価額に反映済みです。架空の税込年率0.5%・100万円・1年なら5,000円。税込と税抜のそろえ方、支払いの時期、総経費率との違いを目論見書で確かめます。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/shintaku-hoshu/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="信託報酬はいつ・いくら引かれる？100万円の例で税込・総経費率まで検算">
+<meta property="og:description" content="信託報酬は、評価額に税込の年率を掛けて日割りした額が日々計上され、基準価額に反映済みです。架空の税込年率0.5%・100万円・1年なら5,000円。税込と税抜のそろえ方、支払いの時期、総経費率との違いを目論見書で確かめます。">
+<meta property="og:url" content="https://keiri-tools.com/column/shintaku-hoshu/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "信託報酬はいつ・いくら引かれる？100万円の例で税込・総経費率まで検算",
+      "datePublished": "2026-10-14",
+      "dateModified": "2026-10-14",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/shintaku-hoshu/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "信託報酬はいつ・いくら引かれる？",
+          "item": "https://keiri-tools.com/column/shintaku-hoshu/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 信託報酬は口座から引き落とされますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 引き落とされません。ファンドの中で日々計上されて基準価額に反映され、ファンドから運用会社などへ支払われます。オルカンの交付目論見書では、支払いは毎計算期間の6か月終了時、毎決算時または償還時です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 税込と税抜、どちらの年率で計算しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 税込の年率で計算します。オルカンの交付目論見書（使用開始日2026年7月25日）は税込年率0.05775%（税抜0.0525%）以内と両方を載せており、総経費率も消費税等のかかる費用は消費税等を含めて計算されています。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 基準価額の騰落率から、さらに信託報酬を引くべきですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 引きません。基準価額は信託報酬を控除した後の値なので、基準価額から計算した騰落率にはすでに信託報酬が反映されています。購入時手数料と税金は基準価額の外でかかるので、別に考えます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 総経費率が信託報酬率より高いのはなぜですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 総経費率は信託報酬にその他費用（保管費用や監査費用など）を足した率だからです。オルカンの交付運用報告書の作成対象期間（2025年4月26日〜2026年4月27日）では、総経費率0.07061%のうち0.01315%がその他費用でした。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 売買委託手数料は総経費率に入りますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 原則として入りません。総経費率は購入時手数料・売買委託手数料・有価証券取引税を原則として除いて計算します。これらは交付運用報告書の「1万口当たりの費用明細」で確かめられます。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578" crossorigin="anonymous"></script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 信託報酬はいつ・いくら引かれる？</nav>
+<article>
+  <h1>信託報酬はいつ・いくら引かれる？100万円の例で税込・総経費率まで検算</h1>
+  <p class="article-meta">公開日: <time datetime="2026-10-14">2026年10月14日</time></p>
+  <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+  <p>結論から言うと、信託報酬は口座から引き落とされる費用ではなく、<b>ファンドの評価額に税込の年率を掛けて日割りした額がファンドの中で日々計上され、基準価額にはすでに反映されています</b>。架空の税込年率0.5%のファンドを100万円分持ち、評価額が1年（365日）変わらなければ、1年の信託報酬は5,000円、1日あたり約13.7円です。</p>
+  <p>運用会社などへ実際に支払われる時期と、総経費率との違いは下の節で目論見書を使って確かめます。</p>
+
+  <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+    <li><a href="#keisan">計算式と100万円の早見表</a></li>
+    <li><a href="#zeikomi">税込と税抜をそろえる</a></li>
+    <li><a href="#itsu">いつ引かれるか</a></li>
+    <li><a href="#zandaka">評価額が変わるときの計算</a></li>
+    <li><a href="#sokeihi">総経費率との違い</a></li>
+    <li><a href="#faq">よくある質問</a></li>
+    <li><a href="#source">出典</a></li>
+  </ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../orcan-hikaku/">eMAXIS Slimオルカン vs 楽天・プラス・オルカン</a></li><li><a href="../index-toushi/">インデックス投資とは</a></li><li><a href="../../toushi/tsumitate/">積立シミュレーター</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+  <h2 id="keisan">計算式と100万円の早見表</h2>
+  <p>1年分の信託報酬は「評価額×税込年率×保有日数÷365」で概算できます。eMAXIS Slim 全世界株式（オール・カントリー）の交付目論見書（使用開始日2026年7月25日）も、1万口当たりの信託報酬を「保有期間中の平均基準価額 × 信託報酬率 ×（保有日数／ 365）」とし、簡便法による概算値と注記しています。</p>
+  <p data-review-context="before-table">次の表の年率は説明用の架空の税込年率で、実在のファンドの料率ではありません。100万円の評価額が1年（365日）変わらない前提で計算し、1日あたりは小数第3位を四捨五入しています。</p>
+  <div class="scroll-wrap">
+  <table>
+    <thead><tr><th scope="col">税込年率（架空）</th><th scope="col" class="num">1年の信託報酬</th><th scope="col" class="num">1日あたり</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><span class="numeric-token">0.1%</span></th><td class="num"><span class="numeric-token">1,000円</span></td><td class="num">約2.74円</td></tr>
+      <tr><th scope="row"><span class="numeric-token">0.5%</span></th><td class="num"><span class="numeric-token">5,000円</span></td><td class="num">約13.70円</td></tr>
+      <tr><th scope="row"><span class="numeric-token">1.0%</span></th><td class="num"><span class="numeric-token">10,000円</span></td><td class="num">約27.40円</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>年率が同じなら、評価額が増えれば信託報酬の額も増え、減れば額も減ります。評価額が動く場合の足し上げ方は<a href="#zandaka">評価額が変わるときの計算</a>にまとめました。</p>
+
+  <h2 id="zeikomi">税込と税抜をそろえる</h2>
+  <p>計算には税込の年率を使います。オルカンの交付目論見書（使用開始日2026年7月25日・10ページ）は、信託報酬を「日々の純資産総額に対して、年率0.05775％（税抜 年率0.0525％）以内をかけた額」と、税込と税抜を並べて書いています。</p>
+  <p>オルカンの2つの率は、税抜0.0525%に1.1を掛けると税込0.05775%になる関係です。1.1は、消費税と地方消費税を合わせた標準税率10%（国税庁 No.6303、令和8年4月1日現在法令等）を上乗せした倍率です。</p>
+  <p>比べるときに一方を税込、他方を税抜で並べると、標準税率10%の分だけ差がずれます。架空の「税抜0.5%」のファンドを100万円・1年（評価額は変わらない前提）で計算すると、税込0.55%で5,500円になり、税抜の率のまま計算した5,000円より500円多くなります。</p>
+  <p>純資産総額に応じて率が段階的に下がるファンドは「以内」と書かれます。オルカンの交付目論見書は、純資産総額が10兆9,000億円・11兆4,000億円・11兆9,000億円の3つの例で、実質信託報酬率をいずれも税込年率0.05755%と示しています（有価証券の貸付を行った場合の追加分は含まない率）。</p>
+
+  <h2 id="itsu">いつ引かれるか</h2>
+  <p>引かれるのは日々で、ファンドから実際に支払われるのは決算時などです。オルカンの交付目論見書（10ページ）は、信託報酬と監査費用は「日々計上され、ファンドの基準価額に反映されます」とし、「毎計算期間の６ヵ月終了時、毎決算時または償還時にファンドから支払われます」と書いています。</p>
+  <figure class="figure fig-wide" style="--figw:540px">
+    <svg viewBox="0 0 640 230" role="img" aria-label="信託報酬が日々計上されて基準価額に反映され、6か月終了時や決算時にファンドから支払われる流れの図">
+      <text x="20" y="26" font-size="13" fill="currentColor">ファンドの中（オルカンの交付目論見書の記載）</text>
+      <rect x="20" y="40" width="180" height="56" fill="none" stroke="var(--accent)"></rect>
+      <text x="110" y="64" font-size="13" text-anchor="middle" fill="currentColor">日々計上</text>
+      <text x="110" y="84" font-size="12" text-anchor="middle" fill="currentColor">評価額×年率を日割り</text>
+      <line x1="200" y1="68" x2="236" y2="68" stroke="currentColor"></line>
+      <polygon points="236,63 246,68 236,73" fill="currentColor"></polygon>
+      <rect x="246" y="40" width="170" height="56" fill="none" stroke="var(--accent)"></rect>
+      <text x="331" y="64" font-size="13" text-anchor="middle" fill="currentColor">基準価額に反映</text>
+      <text x="331" y="84" font-size="12" text-anchor="middle" fill="currentColor">公表値は控除後</text>
+      <line x1="416" y1="68" x2="452" y2="68" stroke="currentColor"></line>
+      <polygon points="452,63 462,68 452,73" fill="currentColor"></polygon>
+      <rect x="462" y="40" width="158" height="56" fill="none" stroke="var(--warn-line)"></rect>
+      <text x="541" y="64" font-size="13" text-anchor="middle" fill="currentColor">ファンドから支払い</text>
+      <text x="541" y="84" font-size="12" text-anchor="middle" fill="currentColor">6か月終了時・決算時</text>
+      <text x="20" y="140" font-size="13" fill="currentColor">投資家の側</text>
+      <rect x="20" y="152" width="600" height="40" fill="none" stroke="currentColor"></rect>
+      <text x="320" y="177" font-size="13" text-anchor="middle" fill="currentColor">口座からの引き落としはない。基準価額×口数の評価額に、控除後の値として表れる</text>
+      <text x="20" y="218" font-size="12" fill="currentColor">※ 支払いの時期はファンドごとに目論見書の「ファンドの費用」で確かめる</text>
+    </svg>
+    <figcaption>信託報酬は日々計上されて基準価額に反映され、ファンドからの支払いは6か月終了時・決算時・償還時（オルカンの例）。</figcaption>
+  </figure>
+  <p>投資家の側では、毎日の基準価額がすでに信託報酬を引いた後の値です。金融庁も信託報酬を「保有している期間中に自動的に引かれていくもの」と説明しています。基準価額は通常1万口当たりの値段で表示され、購入や売却を受け付けている営業日に1回だけ算出されます（金融庁）。</p>
+
+  <h3>実績から二重に引かない</h3>
+  <p>オルカンの交付目論見書（8ページ）の運用実績のグラフには、「基準価額は運用報酬（信託報酬）控除後です」と注記があります。架空の例で、基準価額が1年で10,000円から11,000円になったなら、その10%の上昇は信託報酬を引いた後の伸びです。ここからさらに架空の年率0.5%を引くと、同じ費用を二重に引くことになります。</p>
+  <p>購入時手数料と税金は基準価額の外でかかるので、手取りを考えるときは別に引きます。分配金が支払われると基準価額はその分下がるため、分配金のあるファンドは基準価額の変化だけでは騰落率になりません（金融庁）。</p>
+
+  <h2 id="zandaka">評価額が変わるときの計算</h2>
+  <p>評価額が動く場合は、日ごとの「評価額×税込年率÷365」を足し上げます。</p>
+  <p data-review-context="before-table">次の表は、架空の税込年率0.5%で、前半182日は評価額100万円、後半183日は120万円だった1年（365日）の計算です。金額は1円未満を四捨五入しています。</p>
+  <div class="scroll-wrap">
+  <table>
+    <thead><tr><th scope="col">期間</th><th scope="col">計算</th><th scope="col" class="num">信託報酬</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">前半182日</th><td>100万円×0.5%×182÷365</td><td class="num"><span class="numeric-token">2,493円</span></td></tr>
+      <tr><th scope="row">後半183日</th><td>120万円×0.5%×183÷365</td><td class="num"><span class="numeric-token">3,008円</span></td></tr>
+      <tr><th scope="row">1年の合計</th><td>前半＋後半</td><td class="num">約5,501円</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>評価額が100万円のままだった早見表の5,000円より多いのは、後半の評価額が増えたためです。</p>
+  <p>運用報告書は、同じ考え方を1万口当たりで示しています。オルカンの交付運用報告書（作成対象期間2025年4月26日〜2026年4月27日）は、1万口当たりの信託報酬を18円、期中の平均基準価額に対する比率を0.058%としています。計算式は「期中の平均基準価額×信託報酬率×（期中の日数÷年間日数）」で、期中の平均基準価額は30,894円です。</p>
+  <a class="tool-cta" href="../../toushi/tsumitate/">積立シミュレーターで信託報酬の率を変えて試算する</a>
+
+  <h2 id="sokeihi">総経費率との違い</h2>
+  <p>総経費率は、信託報酬（運用管理費用）にその他費用を足した、過去の期間の実績の率です。総経費率は、購入時手数料・売買委託手数料・有価証券取引税を原則として含みません。</p>
+  <p data-review-context="before-table">次の表は、オルカンの交付目論見書（使用開始日2026年7月25日）と交付運用報告書（作成対象期間2025年4月26日〜2026年4月27日）の記載です。総経費率は年率、費用明細の比率は期中の費用を期中の平均基準価額で割った率で、各資料の表示桁数のまま載せています。</p>
+  <div class="scroll-wrap">
+  <table>
+    <thead><tr><th scope="col">指標</th><th scope="col">含むもの</th><th scope="col" class="num">オルカンの値</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">信託報酬率</th><td>運用管理費用だけ（目論見書の料率）</td><td class="num">税込0.05775%以内</td></tr>
+      <tr><th scope="row">総経費率</th><td>運用管理費用＋その他費用</td><td class="num"><span class="numeric-token">0.07061%</span></td></tr>
+      <tr><th scope="row">費用明細の合計</th><td>信託報酬・売買委託手数料・有価証券取引税・その他費用</td><td class="num">1万口当たり26円（0.085%）</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>総経費率0.07061%の内訳は、運用管理費用0.05746%とその他費用0.01315%です（交付目論見書11ページ）。オルカンのその他費用には、海外での保管費用や監査費用などが入ります（交付運用報告書の費用明細）。</p>
+  <p>費用明細の合計（0.085%）は総経費率より大きく、差の多くは総経費率に入らない有価証券取引税（1万口当たり3円・0.011%）と売買委託手数料（1円・0.003%）です（交付運用報告書の1万口当たりの費用明細）。</p>
+  <p>同じ100万円に当てはめると、評価額が1年間100万円のままで率も変わらない前提では、信託報酬率（税込0.05775%）で577.5円、総経費率（0.07061%）で706.1円です。総経費率は過去の期間の値で、交付運用報告書は「あくまでも参考であり、実際に発生した費用の比率とは異なります」と注記しています。</p>
+  <p class="hint">主な例外: オルカンは有価証券の貸付を行った場合、品貸料の49.5%（税抜45.0%）以内の額が信託報酬に追加されます（交付目論見書10ページ）。</p>
+
+  <h2 id="faq">よくある質問</h2>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>信託報酬は口座から引き落とされますか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>引き落とされません。ファンドの中で日々計上されて基準価額に反映され、ファンドから運用会社などへ支払われます。オルカンの交付目論見書では、支払いは毎計算期間の6か月終了時、毎決算時または償還時です。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>税込と税抜、どちらの年率で計算しますか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>税込の年率で計算します。オルカンの交付目論見書（使用開始日2026年7月25日）は税込年率0.05775%（税抜0.0525%）以内と両方を載せており、総経費率も消費税等のかかる費用は消費税等を含めて計算されています。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>基準価額の騰落率から、さらに信託報酬を引くべきですか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>引きません。基準価額は信託報酬を控除した後の値なので、基準価額から計算した騰落率にはすでに信託報酬が反映されています。購入時手数料と税金は基準価額の外でかかるので、別に考えます。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>総経費率が信託報酬率より高いのはなぜですか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>総経費率は信託報酬にその他費用（保管費用や監査費用など）を足した率だからです。オルカンの交付運用報告書の作成対象期間（2025年4月26日〜2026年4月27日）では、総経費率0.07061%のうち0.01315%がその他費用でした。</p>
+  <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>売買委託手数料は総経費率に入りますか？</h3>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>原則として入りません。総経費率は購入時手数料・売買委託手数料・有価証券取引税を原則として除いて計算します。これらは交付運用報告書の「1万口当たりの費用明細」で確かめられます。</p>
+
+  <!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../orcan-sp500-holding-period/"><b>オルカンとS&amp;P500、始めた月で結果は変わる？保有12か月を84通りで比較</b><span>オルカンとS&amp;P500を同じ日に買い、12か月後の差を84通りで比較。S&amp;P500−オルカンの差は−6.76〜＋11.27ポイントでした。保存データの計算方法と限界</span></a><a class="tool-card" href="../orcan-sp500-recovery-days/"><b>オルカンとS&amp;P500、下落から戻るまで何日かかったか</b><span>設定来の基準価額から10%以上下落した局面を数え、最高値へ戻るまでの日数を比較。最深の下落と最長の回復期間が異なることを表で確認します。</span></a><a class="tool-card" href="../orcan-hikaku/"><b>eMAXIS Slimオルカン vs 楽天・プラス・オルカン｜費用と実績を比較</b><span>eMAXIS Slim全世界株式（オール・カントリー）と楽天・プラス・オールカントリーを比較。信託報酬と総経費率、同期間の分配金再投資実績、100万円あたりの差、ベンチマークかい離</span></a></div></section><!--next-read:E-->
+<section class="related">
+    <h2>関連記事・ツール</h2>
+    <div class="tool-grid">
+      <a class="tool-card" href="../orcan-hikaku/"><b>eMAXIS Slimオルカン vs 楽天・プラス・オルカン</b><span>2本の信託報酬と総経費率、同じ期間の実績を一次資料で比べます。</span></a>
+      <a class="tool-card" href="../index-toushi/"><b>インデックス投資とは</b><span>パッシブ運用の仕組みと費用の考え方を整理します。</span></a>
+      <a class="tool-card" href="../../toushi/tsumitate/"><b>積立シミュレーター</b><span>積立額・期間・信託報酬を変えて試算します。</span></a>
+    </div>
+  </section>
+
+  <h2 id="source">出典</h2>
+  <p class="source-method">ファンドの例は運用会社の交付目論見書・交付運用報告書、用語の説明は金融庁、消費税の税率は国税庁のページで確認して作成。100万円の例は架空の料率による計算です。</p>
+  <ul>
+    <li><a href="https://www.am.mufg.jp/pdf/koumokuromi/253425/253425_20260725.pdf" target="_blank" rel="noopener">三菱UFJアセットマネジメント「eMAXIS Slim 全世界株式（オール・カントリー）交付目論見書」（使用開始日2026年7月25日）</a> — 8ページ（基準価額は信託報酬控除後）、10ページ（信託報酬の率・計算方法・計上と支払いの時期・貸付時の追加）、11ページ（総経費率）</li>
+    <li><a href="https://www.am.mufg.jp/pdf/kouunyou/253425/253425_20260427_k.pdf" target="_blank" rel="noopener">三菱UFJアセットマネジメント「eMAXIS Slim 全世界株式（オール・カントリー）交付運用報告書」（作成対象期間2025年4月26日〜2026年4月27日）</a> — 1万口当たりの費用明細、総経費率</li>
+    <li><a href="https://www.fsa.go.jp/policy/nisa2/attention/01/01_06.html" target="_blank" rel="noopener">金融庁「教えて虫とり先生（第6回）」</a> — 信託報酬の説明、基準価額の算出と分配金の影響</li>
+    <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6303.htm" target="_blank" rel="noopener">国税庁 タックスアンサー No.6303「消費税および地方消費税の税率」</a> — 標準税率10%</li>
+  </ul>
+
+  <p class="note">本記事は一般的な情報提供を目的とし、特定の金融商品の取得・売買を勧めるものではありません。当サイトは金融商品取引業者ではなく、投資助言を行うものでもありません。率の例は架空のもので、実在ファンドの値は記載した資料の時点のものです。費用は変更されるため、最新の交付目論見書をご確認ください。</p>
+</article>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E4%BF%A1%E8%A8%97%E5%A0%B1%E9%85%AC%E3%81%AF%E3%80%81%E8%A9%95%E4%BE%A1%E9%A1%8D%E3%81%AB%E7%A8%8E%E8%BE%BC%E3%81%AE%E5%B9%B4%E7%8E%87%E3%82%92%E6%8E%9B%E3%81%91%E3%81%A6%E6%97%A5%E5%89%B2%E3%82%8A%E3%81%97%E3%81%9F%E9%A1%8D%E3%81%8C%E6%97%A5%E3%80%85%E8%A8%88%E4%B8%8A%E3%81%95%E3%82%8C%E3%80%81%E5%9F%BA%E6%BA%96%E4%BE%A1%E9%A1%8D%E3%81%AB%E5%8F%8D%E6%98%A0%E6%B8%88%E3%81%BF%E3%81%A7%E3%81%99%E3%80%82%E6%9E%B6%E7%A9%BA%E3%81%AE%E7%A8%8E%E8%BE%BC%E5%B9%B4%E7%8E%870.5%25%E3%83%BB100%E4%B8%87%E5%86%86%E3%83%BB1%E5%B9%B4%E3%81%AA%E3%82%895%2C000%E5%86%86%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fshintaku-hoshu%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site">© 税金・経理・補助金ツールズ
+  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body>
+</html>
