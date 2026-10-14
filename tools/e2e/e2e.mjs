@@ -23,6 +23,8 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const SCENES = [
   { name: "bank_fee_mufg", expect: s => s.correct && s.printCalled && s.transferCorrect && s.noOverflow },
   { name: "bank_fee_yucho", expect: s => s.correct && s.printCalled && s.transferCorrect && s.noOverflow },
+  { name: "nenrei", expect: s => s.initialRows === 121 && s.nextRows === 121 && s.row2026 === "2000年 平成12年 25歳 26歳" && s.row2027 === "2000年 平成12年 26歳 27歳" && s.before === "平成31年4月30日" && s.after === "令和元年5月1日" && s.reverse === "2019年5月1日" && s.alternateEra === "2019年4月30日" && s.invalid && s.cleared && s.recalculated && s.leapBefore && s.leapAfter },
+
   { name: "print_table_inshi", expect: s => s.rows === 16 && s.first === '非課税（印紙不要）' && s.tax === '200円' && s.last === '200円' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
   { name: "print_table_koyou", expect: s => s.rows === 3 && s.rates === '5/1,000|8.5/1,000|13.5/1,000' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
   { name: "print_table_rosai", expect: s => s.rows === 53 && s.first === '52' && s.last === '3' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
@@ -2020,7 +2022,7 @@ const SCENES = [
 
   // ─── 入力欄に結び付いたエラー・初期値の方針（2026-09-30 UI/UX レビュー）───
   // 空欄で始まり（例は説明文に）、空欄で押すとその欄に aria-invalid・エラー文・フォーカスが移り、直すと消える
-  ...["shaho", "tedori", "furusato", "yukyu", "embed_yukyu", "gensen", "gensen_hoshu",
+  ...["nenrei", "shaho", "tedori", "furusato", "yukyu", "embed_yukyu", "gensen", "gensen_hoshu",
       "kihonteate", "saishushoku", "ikuji", "papa_ikukyu", "juminzei", "taishokukin", "jutaku",
       // 2026-10-08（keiri-uiux-review-2026-10-08 高3・低）: 新ツール2本と、取りこぼした印紙・賞与
       "shotokuzei", "nenmatsu_chosei", "nenmatsu_chosei_choshu", "inshi", "bonus_tedori",

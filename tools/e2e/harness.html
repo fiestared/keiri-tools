@@ -535,6 +535,36 @@ SCENES.payday_stale = SCENES.payday;
 // 営業日計算: 「祝日を除いて数える」ことがこのツールの存在意義そのもの。
 // 祝日データが効いていなければ必ず数がズレる期間を選ぶ = 常設の祝日プローブ。
 // GW(5/1〜5/10)は祝日が4日入るので、祝日を落とすと営業日が 3 → 6 に倍増する。
+SCENES.nenrei = async () => {
+  const doc = await open("/docs/nenrei-hayami/");
+  await waitFor(() => doc.querySelector('.nenrei-year[data-year="2027"]').hidden, "年齢表の初期化");
+  const row = year => doc.querySelector(`.nenrei-year[data-year="${year}"] [data-birth-year="2000"]`).innerText.replace(/\s+/g," ").trim();
+  const initialRows = doc.querySelectorAll('.nenrei-year[data-year="2026"] tbody tr').length;
+  const row2026 = row(2026);
+  set(doc,"table-year","2027");
+  const row2027 = row(2027);
+  const nextRows = doc.querySelectorAll('.nenrei-year[data-year="2027"] tbody tr').length;
+  set(doc,"convert-year","2019"); set(doc,"convert-month","4"); set(doc,"convert-day","30"); click(doc,"convert-submit");
+  const before = text(doc,"convert-result");
+  set(doc,"convert-month","5"); set(doc,"convert-day","1"); click(doc,"convert-submit");
+  const after = text(doc,"convert-result");
+  set(doc,"direction","wareki"); set(doc,"era","令和"); set(doc,"convert-year","元"); click(doc,"convert-submit");
+  const reverse = text(doc,"convert-result");
+  set(doc,"era","平成"); set(doc,"convert-year","31"); set(doc,"convert-month","4"); set(doc,"convert-day","30"); click(doc,"convert-submit");
+  const alternateEra = text(doc,"convert-result");
+  set(doc,"era","令和"); set(doc,"convert-year","元");
+  set(doc,"convert-month","4"); set(doc,"convert-day","30"); click(doc,"convert-submit");
+  const invalid = /期間外/.test(text(doc,"convert-result"));
+  set(doc,"convert-year",""); const cleared = doc.getElementById("convert-result").hidden && !doc.getElementById("convert-result").textContent;
+  set(doc,"convert-year","1"); set(doc,"convert-month","5"); set(doc,"convert-day","1"); click(doc,"convert-submit");
+  const recalculated = text(doc,"convert-result") === "2019年5月1日";
+  set(doc,"birth","2000-02-29"); set(doc,"reference","2026-02-28"); click(doc,"age-submit");
+  const leapBefore = text(doc,"age-result").includes("25歳");
+  set(doc,"reference","2026-03-01"); click(doc,"age-submit");
+  const leapAfter = text(doc,"age-result").includes("26歳");
+  return {initialRows,nextRows,row2026,row2027,before,after,reverse,alternateEra,invalid,cleared,recalculated,leapBefore,leapAfter};
+};
+
 const eigyobiScene = (FROM, TO) => async () => {
   const doc = await open("/docs/eigyobi/");
   const holidays = await (await fetch("/docs/assets/holidays_jp.json?raw=1")).json();
@@ -5867,6 +5897,7 @@ const fieldErrorScene = ({ path, field, button = "calc", result = "result", valu
     errorFrameDiffers: onError.errorFrame !== successFrame && onError.errorFrame !== "none",
     resultAfter: text(doc, result).slice(0, 80) };
 };
+SCENES.ux_field_error_nenrei = fieldErrorScene({ path: "/docs/nenrei-hayami/", field: "convert-year", button: "convert-submit", result: "convert-result", value: "2019" });
 SCENES.ux_field_error_shaho = fieldErrorScene({ path: "/docs/shakai-hoken/", field: "monthly", value: "300000" });
 SCENES.ux_field_error_tedori = fieldErrorScene({ path: "/docs/tedori/", field: "gross", value: "300000" });
 SCENES.ux_field_error_furusato = fieldErrorScene({ path: "/docs/furusato/", field: "shunyu", value: "5000000" });
