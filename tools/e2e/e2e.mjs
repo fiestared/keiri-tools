@@ -802,6 +802,20 @@ const SCENES = [
   { name: "nenmatsu_chosei_fusoku", expect: (s) =>
       s.nenzei === 147500 && s.fusoku === 47500 && s.bigVal === 47500 && s.bigIsFusoku && !s.failed },
   { name: "nenmatsu_chosei_empty", expect: (s) => s.noInput && s.nenzei === null },
+  // ★最小入力（3欄だけ）で結果まで行く: 給与所得3,560,000（表）・基礎控除104万・課税1,770,000×5%＝88,500
+  //   ×102.1%＝90,358→90,300・超過29,700。頭の要約は［年調年税額, 天引きの合計, 差額］、改正の適用をデータから申告
+  { name: "nenmatsu_chosei_min", expect: (s) =>
+      s.nenzei === 90300 && s.kanpu === 29700 && s.bigVal === 29700 &&
+      JSON.stringify(s.sumVals) === JSON.stringify([90300, 120000, 29700]) &&
+      /令和8年12月1日施行/.test(s.kaisei) && /源泉徴収税額/.test(s.ranNenzei) && /⑦/.test(s.ranKyuyo) && !s.failed },
+  // ★法定調書の手引 記載例1（令和8年分）: 源泉徴収票の見本の値 支払金額9,620,000／給与所得控除後の金額（調整控除後）
+  //   7,558,000／所得控除の額の合計額4,564,283／源泉徴収税額206,000／社会保険料等の金額1,659,483・超過額166,460
+  { name: "nenmatsu_chosei_kisai1", expect: (s) =>
+      s.choseiGo === 7558000 && s.kojoGokei === 4564283 && s.shaho === 1659483 && s.tokutei === 510000 &&
+      s.fuyoTou === 1230000 && s.kazei === 2993000 && s.nenzei === 206000 && s.kanpu === 166460 &&
+      s.bigVal === 166460 && s.bigIsKanpu &&
+      /源泉徴収票「源泉徴収税額」/.test(s.ranNenzei) && /調整控除後/.test(s.ranChoseiGo) &&
+      /所得控除の額の合計額/.test(s.ranKojoGokei) && /社会保険料等の金額/.test(s.ranShaho) && !s.failed },
   { name: "nenmatsu_chosei_nodata", data404: "nencho_r08.json",
     expect: (s) => s.failed && s.nenzei === null },
 

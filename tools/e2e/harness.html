@@ -4779,7 +4779,21 @@ const nenchoScene = (o) => async () => {
     return m ? Number(m[1].replace(/,/g, "")) : null;
   };
   const big = doc.getElementById("kekka-big");
+  // 3列目（源泉徴収票・源泉徴収簿の欄）と、頭の要約（年調年税額・天引きの合計・差額）
+  const ran = (label) => { const r = rows.find((x) => x[0] === label); return r ? (r[2] || "") : null; };
+  const sumVals = [...(doc.querySelectorAll("#kekka-sum b") || [])].map((b) =>
+    Number((b.textContent.match(/¥([\d,]+)/) || [, ""])[1].replace(/,/g, "")));
+  const kaiseiEl = doc.getElementById("kekka-kaisei");
   return {
+    ranNenzei: ran("年調年税額（復興特別所得税を含む）"),
+    ranKyuyo: ran("給与の総額"),
+    ranChoseiGo: ran("給与所得控除後の給与等の金額（調整控除後）"),
+    ranKojoGokei: ran("所得控除額の合計額"),
+    ranShaho: ran("社会保険料等の控除額"),
+    choseiGo: cell("給与所得控除後の給与等の金額（調整控除後）"),
+    shaho: cell("社会保険料等の控除額"),
+    sumVals,
+    kaisei: kaiseiEl ? kaiseiEl.textContent : "",
     kojoGo: cell("給与所得控除後の給与等の金額"),
     chosei: cell("所得金額調整控除"),
     seiho: cell("生命保険料の控除額"),
@@ -4821,6 +4835,16 @@ SCENES.nenmatsu_chosei_b = nenchoScene({
 // 不足額: 給与600万・社保90万・徴収10万 → 年調年税額147,500円 → 不足47,500円（tests/test_nencho.mjs の手計算）
 SCENES.nenmatsu_chosei_fusoku = nenchoScene({ vals: { kyuyo: 6000000, choshu: 100000, shaho: 900000 } });
 SCENES.nenmatsu_chosei_empty = nenchoScene({ vals: {} });
+// 最初の3欄だけ（給与500万・徴収12万・社保75万）で結果まで行けること＋要約と欄の列が出ること
+SCENES.nenmatsu_chosei_min = nenchoScene({ vals: { kyuyo: 5000000, choshu: 120000, shaho: 750000 } });
+// ★国税庁『令和8年分 法定調書の作成と提出の手引』13〜15頁の記載例1（給与9,620,000円）。
+//   地震保険料30,000円は控除額44,800円−旧長期の控除14,800円からの逆算（tests/test_nencho.mjs の注）
+SCENES.nenmatsu_chosei_kisai1 = nenchoScene({
+  vals: { kyuyo: 9620000, choshu: 372460, shaho: 1483023, shaho_shinkoku: 176460,
+          ippan_shin: 24000, ippan_kyu: 36000, kaigo: 48000, nenkin_shin: 53000, nenkin_kyu: 72000,
+          jishin: 30000, kyuchoki: 19600, f_1618: 1, f_dokyo: 1, f_nensho: 1, fs_ippan: 1, ts: "950000" },
+  haigu: { haigu_gokei: 400000 },
+});
 SCENES.nenmatsu_chosei_nodata = nenchoScene(NENCHO_A);
 
 // ── 所得税 計算機（確定申告） (/shotokuzei/) ─────────────────────────────
