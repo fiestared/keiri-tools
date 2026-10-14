@@ -55,7 +55,7 @@
       "name": "Q. 固定資産税の課税標準額はどこで分かりますか？",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "A. 市区町村から届く固定資産税の課税明細書に載っています。借上で自社が所有していない場合は、所有者の同意を得て市区町村に固定資産課税台帳の閲覧を申請する方法があります。評価額と課税標準額は別の欄なので取り違えに注意してください。"
+        "text": "A. 市区町村から届く固定資産税の課税明細書に載っています。借上で自社が所有していない場合も、会社が有償で借りている家屋なら、借家人としてその家屋と敷地の固定資産課税台帳を市区町村で閲覧できます。評価額と課税標準額は別の欄なので取り違えに注意してください。"
       }
     },
     {
@@ -96,7 +96,7 @@
 </header>
 <main id="main" tabindex="-1">
   <h1>役員社宅の賃貸料相当額 計算ツール</h1>
-  <p class="lead">役員に社宅を貸すとき、<b>いくら家賃を受け取れば給与として課税されないか</b>（賃貸料相当額）を計算します。所得税基本通達36-40・36-41の算式どおりに計算し、入力値はブラウザの外へ送信されません。</p>
+  <p class="lead">役員に社宅を貸すとき、<b>いくら家賃を受け取れば給与として課税されないか</b>（賃貸料相当額）を計算します。所得税基本通達36-40・36-41の算式どおりに計算し、入力値はブラウザの外へ送信されません。初期値は入力例です。課税標準額の調べ方は<a href="#faq-kazei-hyojun">よくある質問</a>にあります。</p>
 
   <div class="card">
     <label for="kubun">社宅の区分</label>
@@ -132,7 +132,7 @@
     </div>
 
     <div class="fee-pair field-pair">
-      <div id="yachin-wrap" hidden>
+      <div id="yachin-wrap" hidden style="display:none">
         <label for="yachin">会社が家主に支払う家賃（月額・円）</label>
         <input type="number" id="yachin" value="300000" min="0" step="1000" inputmode="numeric">
       </div>
@@ -163,15 +163,15 @@
   <table id="keisan-hyo">
     <tr><th scope="col">区分</th><th scope="col">算式（月額）</th></tr>
     <tr>
-      <td>小規模な住宅</td>
+      <td style="white-space:nowrap">小規模な住宅</td>
       <td>①建物の固定資産税の課税標準額 × <b>0.2%</b><br>＋②<b>12円 × 総床面積㎡ ÷ 3.3</b><br>＋③敷地の固定資産税の課税標準額 × <b>0.22%</b></td>
     </tr>
     <tr>
-      <td>小規模でない・自社所有</td>
-      <td>（イ 建物の課税標準額 × <b>12%</b>［耐用年数30年超は<b>10%</b>］<br>＋ロ 敷地の課税標準額 × <b>6%</b>）<b>÷ 12</b></td>
+      <td style="white-space:nowrap">小規模でない・自社所有</td>
+      <td>（イ＋ロ）<b>÷ 12</b><br>イ 建物の課税標準額 × <b>12%</b>（耐用年数30年超は<b>10%</b>）<br>ロ 敷地の課税標準額 × <b>6%</b></td>
     </tr>
     <tr>
-      <td>小規模でない・借上</td>
+      <td style="white-space:nowrap">小規模でない・借上</td>
       <td>上の自社所有の算式で出した額と、<b>会社が支払う家賃の50%</b>の<b>いずれか多い金額</b></td>
     </tr>
   </table>
@@ -184,7 +184,7 @@
   <p>小規模な住宅かどうかは床面積で分かれます。法定耐用年数が<b>30年以下</b>の建物は<b>132㎡以下</b>、<b>30年を超える</b>建物は<b>99㎡以下</b>が小規模な住宅です。耐用年数は<b>この床面積の境目</b>と<b>自社所有の場合の率（12%／10%）</b>の2か所に効きます。</p>
 
   <h2 id="karikage">借上社宅は「家賃の50%」だけでは足りないことがある</h2>
-  <p>借上社宅で最もよくある誤解が「会社が払う家賃の半分を役員から受け取れば足りる」というものです。通達は<b>50%と固定資産税ベースの額のいずれか多い金額</b>としているので、固定資産税ベースが上回る物件では50%では足りません。</p>
+  <p>小規模な住宅にあたらない借上社宅で最もよくある誤解が「会社が払う家賃の半分を役員から受け取れば足りる」というものです。通達は<b>50%と固定資産税ベースの額のいずれか多い金額</b>としているので、固定資産税ベースが上回る物件では50%では足りません。</p>
   <div class="callout">
     <p>足りない分は<b>差額が役員給与として課税</b>されます。源泉徴収漏れの方向の誤りなので、あとから指摘されると本税に加えて不納付加算税・延滞税の話になります。上のツールは両方を計算して、<b>どちらが採用されたか</b>を表示します。</p>
   </div>
@@ -204,11 +204,16 @@
   <div class="callout" id="dekinai-note">
     <p>このツールは<b>入力した条件での計算例</b>を出すもので、次の判定はしていません。</p>
     <ul>
-      <li><b>いわゆる豪華社宅にあたるか</b> — 床面積240㎡超のうち、取得価額・支払賃貸料・内外装の状況等を総合勘案して判定します。240㎡以下でもプール等の設備や役員個人のし好を著しく反映した設備があれば該当することがあります。該当する場合は通達の算式を使えず、通常支払うべき使用料が賃貸料相当額になります。</li>
+      <li><b>いわゆる豪華社宅にあたるか</b> — 該当する場合は通達の算式を使えず、通常支払うべき使用料が賃貸料相当額になります。
+        <ul>
+          <li>床面積240㎡超のうち、取得価額・支払賃貸料・内外装の状況等を総合勘案して判定します。</li>
+          <li>240㎡以下でもプール等の設備や役員個人のし好を著しく反映した設備があれば該当することがあります。</li>
+        </ul>
+      </li>
       <li><b>区分所有の建物の小規模判定</b> — 共用部分の床面積をあん分し、専用部分に加えたところで判定します。このツールは入力された床面積をそのまま使います。</li>
       <li><b>使用人（従業員）への貸与</b> — 別の取扱い（No.2597）です。このツールは役員への貸与を前提にしています。</li>
     </ul>
-    <p>当サイトは税理士・社会保険労務士ではありません。実際の取扱いは顧問の税理士または所轄の税務署にご確認ください。</p>
+    <p>実際の取扱いは顧問の税理士または所轄の税務署にご確認ください。</p>
   </div>
 
 <section class="faq">
@@ -222,8 +227,8 @@
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>住宅手当を現金で払うのではだめですか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>現金支給の住宅手当や、入居者が直接契約している家賃の負担は<b>社宅の貸与と認められず全額が給与課税</b>されます。会社が借りて役員に貸す形にしていることが前提です。</p>
 
-<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>固定資産税の課税標準額はどこで分かりますか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>市区町村から届く<b>固定資産税の課税明細書</b>に載っています。借上で自社が所有していない場合は、所有者の同意を得て市区町村に固定資産課税台帳の閲覧を申請する方法があります。<b>評価額と課税標準額は別の欄</b>なので取り違えに注意してください。</p>
+<h3 class="faq-question" id="faq-kazei-hyojun"><span class="faq-existing-marker" aria-hidden="true">Q. </span>固定資産税の課税標準額はどこで分かりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>市区町村から届く<b>固定資産税の課税明細書</b>に載っています。借上で自社が所有していない場合も、会社が有償で借りている家屋なら、借家人としてその家屋と敷地の固定資産課税台帳を市区町村で閲覧できます。<b>評価額と課税標準額は別の欄</b>なので取り違えに注意してください。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>賃貸料相当額より多く受け取ったらどうなりますか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>給与課税される差額は生じません（マイナスにはなりません）。受け取った家賃は会社の収入になります。</p>
@@ -234,7 +239,7 @@
 
 <section class="faq rel-block">
 <h2>関連する解説</h2>
-<!--rel:S--><ul class="rel-list"><li><a href="../column/fukuri-koseihi/">福利厚生費とは — 法律に定義は無い。給与・交際費・寄附金から「除かれた残り」がこの科目になる</a><span class="rel-desc">福利厚生費とは、役員・従業員の生活や健康のために会社が負担する費用の勘定科目ですが、法人税法がこの語を使うのは25条の2・37条の括弧書き「</span></li><li><a href="../column/shataku-chintairyo/">社宅の賃貸料相当額 — 従業員は「50%」で課税ゼロ。ただし社会保険に、その50%ルールは無い</a><span class="rel-desc">従業員社宅の賃貸料相当額は床面積を問わず1つの算式で計算し、徴収額がその50%以上なら所得税は課税されません。社会保険にこの50%ルールは無</span></li><li><a href="../column/gensen-taisho-gai-kyuyo/">源泉徴収の対象とならない給与 — 課税されない手当・現物給与の一覧と、条件を外れたときの扱い</a><span class="rel-desc">課税されない手当・現物給与の一覧（源泉徴収のあらまし 令和8年版）。条件を外れたときの扱いと、源泉徴収票・社会保険との関係。</span></li><li><a href="../column/yakuin-hoshu-kimekata/">役員報酬の決め方｜定期同額給与の3か月ルールと事前確定届出給与の期限</a><span class="rel-desc">3か月ルールと届出期限。届出は「4か月以内」ではなく早い方で切れる。</span></li><li><a href="../column/kyuyo-kojo-dekirumono/">給与から控除できるもの・できないもの｜法定控除と労使協定</a><span class="rel-desc">給与から天引きできる原則的な根拠は、所得税・住民税・社会保険料など法令に根拠がある控除と、書面の労使協定で定めた控除です。社宅費、食事代、親</span></li></ul><!--rel:E-->
+<!--rel:S--><ul class="rel-list"><li><a href="../column/fukuri-koseihi/">福利厚生費とは — 法律に定義は無い。給与・交際費・寄附金から「除かれた残り」がこの科目になる</a><span class="rel-desc">福利厚生費とは、役員・従業員の生活や健康のために会社が負担する費用のうち、給与・交際費等・寄附金のどれにも当たらないものを入れる勘定科目です</span></li><li><a href="../column/shataku-chintairyo/">社宅の賃貸料相当額 — 従業員は「50%」で課税ゼロ。ただし社会保険に、その50%ルールは無い</a><span class="rel-desc">従業員社宅の賃貸料相当額は床面積を問わず1つの算式で計算し、徴収額がその50%以上なら所得税は課税されません。社会保険にこの50%ルールは無</span></li><li><a href="../column/gensen-taisho-gai-kyuyo/">源泉徴収の対象とならない給与 — 課税されない手当・現物給与の一覧と、条件を外れたときの扱い</a><span class="rel-desc">課税されない手当・現物給与の一覧（源泉徴収のあらまし 令和8年版）。条件を外れたときの扱いと、源泉徴収票・社会保険との関係。</span></li><li><a href="../column/yakuin-hoshu-kimekata/">役員報酬の決め方｜定期同額給与の3か月ルールと事前確定届出給与の期限</a><span class="rel-desc">3か月ルールと届出期限。届出は「4か月以内」ではなく早い方で切れる。</span></li><li><a href="../column/kyuyo-kojo-dekirumono/">給与から控除できるもの・できないもの｜法定控除と労使協定</a><span class="rel-desc">給与から天引きできる原則的な根拠は、所得税・住民税・社会保険料など法令に根拠がある控除と、書面の労使協定で定めた控除です。社宅費、食事代、親</span></li></ul><!--rel:E-->
 </section>
 <!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%BD%B9%E5%93%A1%E7%A4%BE%E5%AE%85%E3%81%AE%E8%B3%83%E8%B2%B8%E6%96%99%E7%9B%B8%E5%BD%93%E9%A1%8D%E3%81%AF%E5%B0%8F%E8%A6%8F%E6%A8%A1%E4%BD%8F%E5%AE%85%E3%81%A8%E3%81%9D%E3%82%8C%E4%BB%A5%E5%A4%96%E3%81%A7%E7%AE%97%E5%BC%8F%E3%81%8C%E7%95%B0%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E5%B0%8F%E8%A6%8F%E6%A8%A1%E3%81%A7%E3%81%AA%E3%81%84%E5%80%9F%E4%B8%8A%E4%BD%8F%E5%AE%85%EF%BC%88%E8%B1%AA%E8%8F%AF%E7%A4%BE%E5%AE%85%E3%82%92%E9%99%A4%E3%81%8F%EF%BC%89%E3%81%AF%E3%80%81%E4%BC%9A%E7%A4%BE%E5%AE%B6%E8%B3%83%E3%81%AE50%25%E3%81%A8%E5%9B%BA%E5%AE%9A%E8%B3%87%E7%94%A3%E7%A8%8E%E3%83%99%E3%83%BC%E3%82%B9%E3%81%AE%E7%AE%97%E5%BC%8F%E3%81%AE%E5%A4%9A%E3%81%84%E6%96%B9%E3%82%92%E4%BD%BF%E3%81%84%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fyakuin-shataku%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
@@ -243,7 +248,7 @@
   © 税金・経理・補助金ツールズ
   <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
-  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和7年4月1日現在法令等　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年4月1日現在法令等　／　一次情報の確認: 2026年8月8日</li></ul></div><!-- /datasrc:auto -->
 </footer>
 <script type="module">
 import {
@@ -340,6 +345,8 @@ function syncFields() {
   const k = $("kubun").value;
   $("kubun-hint").textContent = HINT[k];
   $("yachin-wrap").hidden = k !== "karikage";
+  // ★.field-pair > div は style.css で display:grid のため hidden 属性だけでは消えない（小規模でも家賃欄が出ていた）
+  $("yachin-wrap").style.display = k === "karikage" ? "" : "none";
   $("menseki-wrap").hidden = false;
   render();          // ★中で await dataReady している
 }
