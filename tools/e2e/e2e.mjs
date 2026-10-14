@@ -23,6 +23,9 @@ const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const SCENES = [
   { name: "nenrei", expect: s => s.initialRows === 121 && s.nextRows === 121 && s.row2026 === "2000年 平成12年 25歳 26歳" && s.row2027 === "2000年 平成12年 26歳 27歳" && s.before === "平成31年4月30日" && s.after === "令和元年5月1日" && s.reverse === "2019年5月1日" && s.alternateEra === "2019年4月30日" && s.invalid && s.cleared && s.recalculated && s.leapBefore && s.leapAfter },
 
+  { name: "print_table_inshi", expect: s => s.rows === 16 && s.first === '非課税（印紙不要）' && s.tax === '200円' && s.last === '200円' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
+  { name: "print_table_koyou", expect: s => s.rows === 3 && s.rates === '5/1,000|8.5/1,000|13.5/1,000' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
+  { name: "print_table_rosai", expect: s => s.rows === 53 && s.first === '52' && s.last === '3' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
   ...[
     ['tokyo','東京',1280,1226,'2026-10-01',204800],
     ['akita','秋田',1090,1031,'2026-10-14',174400],

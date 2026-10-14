@@ -161,6 +161,29 @@ const saiteiHourlyScene = (ymd) => async () => {
   };
 };
 
+async function printTable(name, path, id, rateCol) {
+  const doc = await open(path);
+  const win = doc.defaultView;
+  const section = doc.querySelector('[data-print-tables="' + name + '"]');
+  const rows = [...doc.getElementById(id).tBodies[0].rows];
+  const cell = (r, i) => [...r.cells[i].childNodes].filter(n => n.nodeType === 3 || n.tagName === 'SPAN' && n.className !== 'hint').map(n => n.textContent).join('').trim();
+  const a = section.querySelector('a[download]');
+  const response = await fetch(a.href);
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  let printCalled = false;
+  win.print = () => { printCalled = doc.documentElement.hasAttribute('data-print-table'); };
+  section.querySelector('[data-print-table]').click();
+  win.dispatchEvent(new win.Event('afterprint'));
+  document.getElementById('f').style.width = '390px';
+  await new Promise(resolve => win.requestAnimationFrame(resolve));
+  return { rows: rows.length, first: cell(rows[0], rateCol), tax: cell(rows[1], rateCol), last: cell(rows.at(-1), rateCol),
+    rates: name === 'koyou' ? [1,2,3].map(i => cell(rows[0],i)).join('|') : '',
+    sources: rows.every(r => r.cells[r.cells.length-1].querySelector('a[href^="https://"]')),
+    xlsx: response.ok && a.hasAttribute('download') && bytes[0] === 0x50 && bytes[1] === 0x4b && bytes[2] === 3 && bytes[3] === 4,
+    printCalled, printReset: !doc.documentElement.hasAttribute('data-print-table'),
+    noOverflow: doc.documentElement.scrollWidth <= 390 };
+}
+
 function saiteiPrefScene(slug) {
   return async () => {
     const doc = await open(`/docs/saitei-chingin/${slug}/`);
@@ -203,6 +226,9 @@ function saiteiPrefScene(slug) {
 }
 
 const SCENES = {
+  async print_table_inshi() { return await printTable('inshi', '/docs/inshi/', 'receipt-tax-table', 1); },
+  async print_table_koyou() { return await printTable('koyou', '/docs/column/koyou-hokenryo-ritsu/', 'koyou-rate-table', 1); },
+  async print_table_rosai() { return await printTable('rosai', '/docs/column/rosai-hokenryoritsu/', 'rosai-rate-table', 2); },
   saitei_pref_tokyo: saiteiPrefScene('tokyo'),
   saitei_pref_akita: saiteiPrefScene('akita'),
   saitei_pref_kyoto: saiteiPrefScene('kyoto'),
