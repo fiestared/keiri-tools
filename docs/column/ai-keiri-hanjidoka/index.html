@@ -203,22 +203,25 @@
 
   <line x1="390" y1="50" x2="428" y2="50" stroke="currentColor"/>
   <polygon points="428,50 420,46 420,54" fill="currentColor"/>
+  <text x="409" y="42" font-size="10" fill="var(--sub)" text-anchor="middle">不一致</text>
   <rect x="430" y="30" width="200" height="40" rx="6" fill="#fff" stroke="var(--accent)"/>
   <text x="530" y="47" font-size="12.5" fill="currentColor" text-anchor="middle">② 学習済みの取引先？</text>
   <text x="530" y="62" font-size="11" fill="var(--sub)" text-anchor="middle">人が教えたルール</text>
 
   <line x1="290" y1="70" x2="290" y2="150" stroke="var(--accent)" stroke-width="2"/>
   <polygon points="290,150 286,142 294,142" fill="var(--accent)"/>
-  <line x1="530" y1="70" x2="530" y2="110" stroke="currentColor" stroke-dasharray="3 2"/>
-  <line x1="530" y1="110" x2="290" y2="110" stroke="currentColor" stroke-dasharray="3 2"/>
+  <line x1="490" y1="70" x2="490" y2="110" stroke="currentColor" stroke-dasharray="3 2"/>
+  <line x1="490" y1="110" x2="290" y2="110" stroke="currentColor" stroke-dasharray="3 2"/>
+  <text x="484" y="86" font-size="10" fill="var(--sub)" text-anchor="end">一致</text>
   <text x="300" y="92" font-size="11.5" fill="var(--accent)">どちらか一致 → 科目確定</text>
 
   <rect x="180" y="150" width="220" height="42" rx="6" fill="var(--accent)"/>
   <text x="290" y="170" font-size="12.5" fill="#fff" text-anchor="middle">自動でfreeeに登録</text>
   <text x="290" y="185" font-size="11" fill="#fff" text-anchor="middle">（人の手を介さない）</text>
 
-  <line x1="530" y1="70" x2="530" y2="200" stroke="var(--warn-line)" stroke-width="2"/>
-  <polygon points="530,200 526,192 534,192" fill="var(--warn-line)"/>
+  <line x1="570" y1="70" x2="570" y2="200" stroke="var(--warn-line)" stroke-width="2"/>
+  <polygon points="570,200 566,192 574,192" fill="var(--warn-line)"/>
+  <text x="578" y="140" font-size="10" fill="var(--sub)">不一致</text>
   <rect x="420" y="200" width="220" height="42" rx="6" fill="var(--warn-bg)" stroke="var(--warn-line)"/>
   <text x="530" y="220" font-size="12.5" fill="currentColor" text-anchor="middle">どちらも不一致 → 人に確認</text>
   <text x="530" y="235" font-size="11" fill="currentColor" text-anchor="middle">返信で科目を教える＝次から学習</text>
@@ -240,7 +243,12 @@
 
 <div class="callout">
 <p><b>では、AIはどこで効くのか</b></p>
-<p>私の環境でAIが担っているのは、<b>①対話での照会</b>（「今月の広告費は？」とチャットで聞くと試算表を読んで答える）と、<b>②非定型の読み取り</b>（PDF請求書から金額・取引先・品目を抜き出す）です。どちらも「決まった形がない」作業で、ここはルールでは書ききれず、<b>言語モデルの読解力が活きます</b>。逆に、形が決まっている記帳の科目付けは、ルールと人の学習に任せる——これが役割分担の結論です。</p>
+<p>私の環境でAIが担っているのは、次の2つです。</p>
+<ul>
+<li><b>対話での照会</b>: 「今月の広告費は？」とチャットで聞くと、試算表を読んで答えます。</li>
+<li><b>非定型の読み取り</b>: PDF請求書から、金額・取引先・品目を抜き出します。</li>
+</ul>
+<p>どちらも「決まった形がない」作業で、ここはルールでは書ききれず、<b>言語モデルの読解力が活きます</b>。逆に、形が決まっている記帳の科目付けは、ルールと人の学習に任せる——これが役割分担の結論です。</p>
 </div>
 
 <p>言い換えると、経理におけるAIの正しい使いどころは<b>「推測」より「読解と対話」</b>です。定型はルールで固め、AIには人間がやると時間のかかる読み取り・要約・応答をやらせる。この切り分けが、正確さとコストの両方で効きました。</p>
@@ -282,7 +290,7 @@
 <li>経理は全自動にはできないが、<b>定型の記帳は半自動化できる</b>。人は「新顔の取引先」だけを見ればよくなる。</li>
 <li>科目付けの中心は<b>ルール＋人のフィードバック学習</b>。AIの推測より、正確・安価・監査可能。</li>
 <li>AI（言語モデル）が効くのは<b>対話での照会と、PDF等の非定型の読み取り</b>。「推測」より「読解と対話」。</li>
-<li><b>お金に触る操作（消込）は自動で確定させない</b>。組合せが一意なときだけ自動、曖昧なら人へ。</li>
+<li><b>お金に触る消込は、組合せが一意に決まるときだけ自動で確定</b>し、曖昧なものは人が確認する。</li>
 <li>freeeは消込の推測が未入力に出ない・二重計上しやすい・取引作成APIと画面操作の対応範囲が異なる——この3点に注意。</li>
 </ul>
 </div>
@@ -317,7 +325,7 @@
 <h2 id="source">出典</h2>
   <p class="source-method" data-source-nolink="この記事の根拠の出所を説明する文で、資料そのものではないため">自社の経理（freee会計）を自動化した実装にもとづく、一般的な情報の解説です。</p>
 <ul>
-<li><a href="https://developer.freee.co.jp/reference/accounting/reference">freee会計 APIリファレンス（freee Developers）</a>— 取引（deals）・試算表（reports）・口座明細（wallet_txns）の各エンドポイント。認証はOAuth2。照会に加え、取引の作成（POST /api/1/deals）と口座明細の作成（POST /api/1/wallet_txns）も公開されている（<a href="https://raw.githubusercontent.com/freee/freee-api-schema/master/v2020_06_15/open-api-3/api-schema.json">freee公式のAPI仕様（OpenAPI）</a>で確認）</li>
+<li><a href="https://developer.freee.co.jp/reference/accounting/reference">freee会計 APIリファレンス（freee Developers）</a>— 取引（deals）・試算表（reports）・口座明細（wallet_txns）の各エンドポイント。認証はOAuth2。照会に加え、取引の作成（POST /api/1/deals）と口座明細の作成（POST /api/1/wallet_txns）も公開されている。<a href="https://raw.githubusercontent.com/freee/freee-api-schema/master/v2020_06_15/open-api-3/api-schema.json">freee公式のAPI仕様（OpenAPI）</a>で確認</li>
 <li>国税庁<a href="https://www.nta.go.jp/taxes/shiraberu/shinkoku/kojin_jigyo/kichou03.pdf">「帳簿の記帳のしかた（事業所得者用）」</a>— 勘定科目による記帳の基本。事業所得の記帳義務は<a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_232">所得税法232条</a>ほか</li>
 <li><a href="https://laws.e-gov.go.jp/law/410AC0000000025">電子帳簿保存法（電子計算機を使用して作成する国税関係帳簿書類の保存方法等の特例に関する法律）</a>— e-Gov法令検索。電子取引データの保存要件</li>
 <li data-source-nolink="筆者が自社で構築・運用している実装の経験で、公開された資料がないため">本文の自動化の仕組み・件数・注意点は、筆者が自社（クリニック・EC事業）のfreee会計を対象に構築・運用している記帳自動化の実装にもとづく（一次情報）。特定の取引先名・金額などの機密情報は含めていない</li>
