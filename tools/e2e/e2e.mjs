@@ -2056,6 +2056,10 @@ const SCENES = [
       s.emptyLinks.some((h) => /#tools$/.test(h)) && s.emptyLinks.some((h) => /\/column\/$/.test(h)) &&
       s.weakQuestion.matched === false && s.weakQuestion.top === "" }),
   ),
+  // ★検索の順位（2026-10-14）: 読み・誤字・添え語・空白で切られた語で、ダイアログの1位が意図したページ
+  ...[390, 1280].map((w) => ({ name: `site_search_quality_${w}`, noCoverage: true, expect: (s) =>
+      s.width === w && s.got.length === s.want.length &&
+      s.got.every((g, i) => g.matched === true && g.first === s.want[i][1]) })),
   // トップ: ヘッダの検索とインラインの質問欄が両方動く（互いの描画を混ぜない）
   { name: "site_search_top", noCoverage: true, expect: (s) =>
       /\/docs\/shakai-hoken\/$/.test(s.headerFirst) && s.inlineFirst === "/gensen-choshu/" &&
