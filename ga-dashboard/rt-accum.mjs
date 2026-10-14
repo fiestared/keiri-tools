@@ -178,6 +178,29 @@ export function summarize(state, siteKey, date) {
 }
 
 /**
+ * その日の分ごとの積み上げを時間帯 24 本に足す。積み上げが無ければ null。
+ * ★未取得の時間帯は seen=false（0 と「来ていない」を混ぜない）。
+ */
+export function hoursOfDay(state, siteKey, date) {
+  const sum = summarize(state, siteKey, date);
+  if (!sum) return null;
+  const day = state.sites[siteKey].days[date];
+  const hours = Array(24).fill(0);
+  const pv = Array(24).fill(0);
+  const seen = Array(24).fill(false);
+  for (const [hm, v] of Object.entries(day.minutes)) {
+    if (hm < day.start) continue;
+    const h = Number(hm.slice(0, 2));
+    if (!Number.isInteger(h) || h < 0 || h > 23) continue;
+    hours[h] += v.s;
+    pv[h] += v.pv;
+    seen[h] = true;
+  }
+  // summarize の pv（日合計の数）が配列を上書きしないよう、時間帯は hourPv
+  return { ...sum, hours, hourPv: pv, seen };
+}
+
+/**
  * Realtime API の応答（次元 minutesAgo・eventName、指標 eventCount）を applyFetch の rows にする。
  * ★minutesAgo は "00"〜"29" の文字列で返る。件数 0 の分は行ごと返らない。
  */

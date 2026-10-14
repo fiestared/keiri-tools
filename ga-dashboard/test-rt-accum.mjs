@@ -6,7 +6,7 @@
 //   同じ入力に通し、正しい期待値と一致しないことを確かめる。期待値が緩くて何でも通る検査になっていないかの確認。
 import assert from "node:assert/strict";
 import {
-  applyFetch, summarize, emptyState, normalizeState, rowsFromRealtime, toAbs, fromAbs,
+  applyFetch, summarize, hoursOfDay, emptyState, normalizeState, rowsFromRealtime, toAbs, fromAbs,
   WINDOW_MIN, GAP_MIN, KEEP_DAYS,
 } from "./rt-accum.mjs";
 
@@ -36,6 +36,13 @@ const sameMinute = [
   assert.equal(sum.from, "13:41");   // 最初の取得 14:10 − 29分
   assert.equal(sum.to, "14:12");
   assert.deepEqual(sum.gaps, []);
+  {
+    const h = hoursOfDay(st, K, "2026-10-12");
+    assert.equal(h.hours[14], 4); assert.equal(h.hourPv[14], 6); assert.equal(h.seen[14], true);
+    assert.equal(h.seen[12], false); assert.equal(h.hours[12], 0);
+    assert.equal(h.s, 4); assert.equal(h.pv, 6);
+    assert.equal(typeof h.pv, "number"); assert.equal(Array.isArray(h.hourPv), true);
+  }
   // 後の回で値が小さく返っても減らさない（Realtime は遅れて増えることはあっても、見た最大値を保つ）
   const st2 = applyFetch(st, K, at("2026-10-12", "14:13"), [{ minutesAgo: 3, s: 1, pv: 1 }]);
   assert.deepEqual(st2.sites[K].days["2026-10-12"].minutes["14:10"], { s: 3, pv: 4 });
