@@ -143,7 +143,7 @@ else ok(`カンマ金額の網: 記事の ${foundYen.size} 個の数がすべて
 const rows = body.match(/<tr>[\s\S]*?<\/tr>/g) || [];
 const rowFor = (label, guard) => rows.find(r => strip(r).includes(label) && (!guard || guard(r)));
 for (const m of Object.values(MHLW)) {
-  const row = rowFor(m.label, r => /\/1,000/.test(r));
+  const row = rowFor(m.label, r => /\/1,000/.test(r) && /令和7年度/.test(r));
   if (!row) { fail(`料率表に「${m.label}」の行が無い`); continue; }
   const t = strip(row);
   const want = [`${m.worker}/1,000`, `${m.employer}/1,000`, `${m.total}/1,000`,
