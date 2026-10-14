@@ -100,7 +100,10 @@
    "text": "代金800万円以下の低廉な空家等の売買・交換の媒介は、媒介に要する費用を勘案して原則を超えて受け取れ、上限は30万円の1.1倍（33万円）。",
    "numbers": [
     "800万円",
-    "33万円"
+    "33万円",
+    "30万円",
+    "1.1倍",
+    "800万円未満"
    ],
    "applies": "令和6年7月1日施行（告示 第七）",
    "source_url": "https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/content/001750143.pdf",
@@ -110,8 +113,6 @@
    "corpus_ref": "正本（review-loop の corpus）なし（このページを照合した回は r4・r5・r6 の一括確認だけ）。2026-10-14 に curl で取得（WebFetch 不使用）。控え ~/Scripts/keiri-commander/runs/readable/chukai-tesuryo/src/001750143.txt:49-57",
    "review_status": "author_checked",
    "covers": [
-    "s-0fa6f9b70d776e2d8402-1",
-    "s-157f90afe0e4be61bb17-1",
     "s-3dbf49f59ac7151e1f1e-1",
     "s-649fb651305c8dec5143-1",
     "s-6b4da8c8de4234261c07-1",
@@ -119,13 +120,15 @@
     "s-8caa3cdf4548c196f830-1",
     "s-8d06e886268d3a09dbf2-1",
     "s-b94d97a11df48e1ab2e8-1",
-    "s-d54206edc0f110c2c0f6-1",
     "s-d715c0b4ffac0d0211eb-1",
     "s-df39f328270facf66619-1",
     "s-f2a06f41c5cf147b027a-1",
     "s-f2f27c488f63d1fc26d6-1",
     "s-f3f831a642f83ad79b6a-1",
-    "s-fb4c14ffb672688ae6ad-1"
+    "s-fb4c14ffb672688ae6ad-1",
+    "s-c1f2ad2afee943cf92a9-1",
+    "s-4307ea48f6e37287872c-1",
+    "s-22a0a85b4e9db7082cfb-1"
    ]
   },
   {
@@ -148,10 +151,10 @@
     "s-6cae3dfbc4c5229cc387-1",
     "s-89d482fef27e0356f289-1",
     "s-acd218faaa9f252972ce-1",
-    "s-afbdc63193019e97f45e-1",
-    "s-b7ba464ca1038c2f3dfa-1",
-    "s-f12adf712bdff7ade83a-1",
-    "s-9b23bbfdd46cd34c4ec7-1"
+    "s-9b23bbfdd46cd34c4ec7-1",
+    "s-161fdca2371a13744df6-1",
+    "s-54a4aa02571c80f15af8-1",
+    "s-581052464d5bb753c3e7-1"
    ]
   },
   {
@@ -222,10 +225,10 @@
     "s-255fc430652ca98fc543-1",
     "s-6a7a3051acf33438f974-1",
     "s-6b4da8c8de4234261c07-1",
-    "s-8bf211cda12d824d747e-1",
     "s-b94d97a11df48e1ab2e8-1",
     "s-d03830ec998a324cad82-1",
-    "s-fb34360fc4cf36dfa734-1"
+    "s-fb34360fc4cf36dfa734-1",
+    "s-35326c9259357d5840e4-1"
    ]
   },
   {
@@ -237,10 +240,18 @@
     "96万円",
     "105万6,000円",
     "4万円",
-    "2万円"
+    "2万円",
+    "5%",
+    "4%",
+    "2%",
+    "1%",
+    "200万円",
+    "1.1",
+    "3％",
+    "6万円"
    ],
    "derived": true,
-   "calc": "python3: f(d)=min(d,200万)*5.5%+max(0,min(d,400万)-200万)*4.4%+max(0,d-400万)*3.3% → f(3000万)=1056000・速算 3000万*3%+6万=960000→*1.1=1056000／建物税 2200万*10/110=2000000・f(3800万)=1320000・f(4000万)=1386000・差 66000／f(200万)=110000・f(400万)=198000・f(800万)=330000（110000+88000+132000）",
+   "calc": "python3: f(d)=min(d,200万)*5.5%+max(0,min(d,400万)-200万)*4.4%+max(0,d-400万)*3.3% → f(3000万)=1056000・速算 3000万*3%+6万=960000→*1.1=1056000／建物税 2200万*10/110=2000000・f(3800万)=1320000・f(4000万)=1386000・差 66000／f(200万)=110000・f(400万)=198000・f(800万)=330000（110000+88000+132000）／6万円の内訳: (5%-3%)*200万=40000・(4%-3%)*200万=20000 → 60000",
    "applies": "告示 第二（令和6年改正後）",
    "source_url": "https://www.mlit.go.jp/tochi_fudousan_kensetsugyo/const/content/001750143.pdf",
    "source_quote": "二百万円以下の金額 百分の五・五 二百万円を超え四百万円以下の金額 百分の四・四 四百万円を超える金額 百分の三・三",
@@ -365,7 +376,6 @@
    "corpus_ref": "正本（review-loop の corpus）なし。2026-10-14 に curl で取得（WebFetch 不使用）。控え ~/Scripts/keiri-commander/runs/readable/chukai-tesuryo/src/001750144.txt:6-24",
    "review_status": "author_checked",
    "covers": [
-    "s-15c061bb13cbef18ed92-1",
     "s-4d62b290d76e62908e54-1",
     "s-7f1a7628dc750a8f62f7-1",
     "s-814f1a555c350b03bbcd-1",
@@ -374,7 +384,8 @@
     "s-8ecf35f1e3c745be9278-1",
     "s-99a78ff8877c2637beff-1",
     "s-cf6dc78dd55e6312877e-1",
-    "s-e6adf3841dada47e7ee0-1"
+    "s-e6adf3841dada47e7ee0-1",
+    "s-836c3b5c1f18f9ccb050-1"
    ]
   },
   {
