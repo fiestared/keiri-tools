@@ -370,9 +370,9 @@
 <p>次のものは、金額を出さずに範囲外として申告します。<b>分からないことを、それらしい数字で埋めない</b>ためです。画面の結果欄にも同じ一覧を出しています。</p>
 
 <ul id="hanigai-list">
-  <li><b>受給できるかどうかの判定</b> — 保険料納付要件（死亡日の前々月までの1年間に未納がない等）と生計維持要件（原則として前年収入850万円未満）は、入力だけでは確定できません</li>
+  <li><b>受給できるかどうかの判定</b> — 保険料納付要件（死亡日の前々月までの1年間に未納がない等）と<a href="https://www.nenkin.go.jp/service/yougo/sagyo/20160824.html" rel="nofollow">生計維持要件</a>（原則として前年収入850万円未満）は、入力だけでは確定できません</li>
   <li><b>寡婦年金・死亡一時金</b> — 国民年金の第1号被保険者が亡くなり遺族基礎年金が出ないときの給付（国民年金法<a href="https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_5-Ss_2-At_49" rel="nofollow">49条</a>・<a href="https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_5-Ss_3-At_52_2" rel="nofollow">52条の2</a>）で、別の納付要件の判定が要ります</li>
-  <li><b>経過的寡婦加算</b> — 中高齢寡婦加算が65歳で終わったあと、昭和31年4月1日以前生まれの妻に加算されるもので、生年月日ごとに額が決まっています</li>
+  <li><b>経過的寡婦加算</b> — 中高齢寡婦加算が65歳で終わったあと、昭和31年4月1日以前生まれの妻に加算されるもので、生年月日ごとに額が決まっています（<a href="https://www.nenkin.go.jp/service/jukyu/seido/izokunenkin/jukyu-yoken/20150424.html" rel="nofollow">日本年金機構「遺族厚生年金」</a>）</li>
   <li><b>子自身が受け取る遺族基礎年金</b> — 配偶者が受け取れない場合は子が受給権者になり、加算の構造が変わります（<a href="https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_4-At_39_2" rel="nofollow">国民年金法39条の2</a>）</li>
   <li><b>30歳未満で子のない妻の5年有期</b> — 年額は同じですが、受給できる期間が5年で終わります（<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_63" rel="nofollow">厚生年金保険法63条1項5号</a>）</li>
   <li><b>令和10年4月1日施行の遺族厚生年金の見直し</b> — 令和7年の年金制度改正法により、20代から50代の配偶者が新たに受け取る遺族厚生年金は原則5年間の有期給付になり、夫にも同じ要件で支給されるようになります。中高齢寡婦加算も段階的に縮小します。令和8年度の額には影響しませんが、これから受給が始まる方には関わります</li>
@@ -583,10 +583,15 @@ $("calc").addEventListener("click", async () => {
 
   // ★収録範囲はデータに持たせる（ページに手書きすると、データを増やしたときに嘘になる）。
   html += `<p class="hint"><b>このツールが計算しないもの</b></p><ul id="hanigai-list-data">`;
+  // データの文は変えず、エスケープした後に条文名だけをリンクにする
+  const LAW_LINKS = [["厚年法59条1項", "https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_59"]];
+  const linkLaw = (t) => LAW_LINKS.reduce((a, [name, url]) => a.replace(name, `<a href="${url}" rel="nofollow">${name}</a>`), t);
   for (const o of D.out_of_scope) {
-    html += `<li>${esc(o.label)} — ${esc(o.why)}</li>`;
+    html += `<li>${esc(o.label)} — ${linkLaw(esc(o.why))}</li>`;
   }
   html += `</ul>`;
+  html += `<p class="hint">生計維持の要件は日本年金機構「<a href="https://www.nenkin.go.jp/service/yougo/sagyo/20160824.html" rel="nofollow">生計維持</a>」、
+    経過的寡婦加算は「<a href="https://www.nenkin.go.jp/service/jukyu/seido/izokunenkin/jukyu-yoken/20150424.html" rel="nofollow">遺族厚生年金</a>」のページで確かめられます。</p>`;
 
   box.innerHTML = html;
 });
