@@ -21,6 +21,8 @@ const ROOT = resolve(fileURLToPath(new URL("../../", import.meta.url)));
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const SCENES = [
+  { name: "nenrei", expect: s => s.initialRows === 121 && s.nextRows === 121 && s.row2026 === "2000年 平成12年 25歳 26歳" && s.row2027 === "2000年 平成12年 26歳 27歳" && s.before === "平成31年4月30日" && s.after === "令和元年5月1日" && s.reverse === "2019年5月1日" && s.invalid && s.cleared && s.recalculated && s.leapBefore && s.leapAfter },
+
   { name: "senpou_preset", expect: (s) =>
       s.filled.under === s.expectFilled.under && s.filled.over === s.expectFilled.over &&
       s.result.includes(s.expectTransfer) },
@@ -1977,7 +1979,7 @@ const SCENES = [
 
   // ─── 入力欄に結び付いたエラー・初期値の方針（2026-09-30 UI/UX レビュー）───
   // 空欄で始まり（例は説明文に）、空欄で押すとその欄に aria-invalid・エラー文・フォーカスが移り、直すと消える
-  ...["shaho", "tedori", "furusato", "yukyu", "embed_yukyu", "gensen", "gensen_hoshu",
+  ...["nenrei", "shaho", "tedori", "furusato", "yukyu", "embed_yukyu", "gensen", "gensen_hoshu",
       "kihonteate", "saishushoku", "ikuji", "papa_ikukyu", "juminzei", "taishokukin", "jutaku",
       // 2026-10-08（keiri-uiux-review-2026-10-08 高3・低）: 新ツール2本と、取りこぼした印紙・賞与
       "shotokuzei", "nenmatsu_chosei", "nenmatsu_chosei_choshu", "inshi", "bonus_tedori"].map((t) => ({
