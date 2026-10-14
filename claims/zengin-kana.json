@@ -579,6 +579,26 @@
       "fix_review": "修正担当が正本照合。独立再照合待ち。",
       "review_status": "author_checked",
       "readable_note": "2026-10-11 読みやすさの作り直しで文を分けた・言い換えた。事実・根拠は同じ。独立の再照合はしていない。"
+    },
+    {
+      "id": "gsc1014-examples",
+      "kind": "own_site",
+      "text": "本ツールの短い使用例は、会社名の先頭・末尾、長音と中黒、濁点と半濁点、小書き、使えない記号、30文字と31文字の入力を実装normalizeに通した結果。使用不可文字と上限超過は削除せず要確認と表示。",
+      "where": [
+        "h2#examples・table#zengin-examples"
+      ],
+      "numbers": [
+        "30文字",
+        "31文字"
+      ],
+      "applies": "2026-10-14時点の本ツールの動作。総合振込の受取人名向け。",
+      "scope": "既存の変換実装の例示。制度や全銀行共通仕様の新規主張ではない。",
+      "exceptions": "銀行・フォーマットの上限や登録名義は別途確認。使用不可記号を自動で消さない。",
+      "source_url": "https://keiri-tools.com/zengin-kana/",
+      "source_quote": "export const MAX_LEN_DEFAULT = 30; return { output: out, warnings, length: out.length, ok: bad.length === 0 && out.length <= maxLen };",
+      "corpus_ref": "docs/assets/zengin_core.js normalize; tools/gen_zengin_examples.mjs; tests/test_zengin_examples.mjs; tools/e2e/harness.html zengin_examples",
+      "covers": [],
+      "review_status": "author_checked"
     }
   ],
   "absolutes": [],
@@ -596,7 +616,7 @@
       "note": "医療法人の先頭・末尾の位置境界。tests/boundaries/zengin_core.mjsで実行。"
     }
   ],
-  "checked": "2026-10-08",
+  "checked": "2026-10-14",
   "scope": "r14/t8-b 固定正本・Astra審査に基づく単位被覆。正本外はpending_segmentsに保持。修正文の照合は修正担当者によるもので、独立再審査ではない。",
   "nonclaims": [
     {
