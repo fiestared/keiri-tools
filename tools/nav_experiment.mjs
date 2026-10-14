@@ -12,7 +12,9 @@
  *   多数のページの更新日が一斉に動く。判定を変えるのは base（公開中の e9e1abc0）より後のコミットだけ。
  *   🚫 20ファイルの閾値（BULK_FILES）はここに持たない。基準を2つ持たない。
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, mkdtempSync, openSync, closeSync, readSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { StringDecoder } from "node:string_decoder";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
@@ -26,8 +28,11 @@ export const CONFIG_PATH = join(ROOT, "tools/nav_experiment.json");
  */
 export const DATE_LINE = /"dateModified"|class="article-meta"|公開日:|更新日:|<time datetime=/;
 
-/** 導線の目印。生成器が書くブロックは必ず1行に収め、この目印を同じ行に持つ */
-export const NAV_LINE = /<!--(?:next-read|rail-next|nav-exp)\b[^>]*-->/;
+/** 導線の目印。生成器が書くブロックは必ず1行に収め、この目印を同じ行に持つ
+ * ★rel（ツール末尾の「関連する解説」。gen_tool_related.mjs が `<!--rel:S-->…<!--rel:E-->` を1行で書く）も導線（2026-10-14）。
+ *   コラムを1本足すと、そのコラムがリンクしたツールの rel が書き換わる。20ファイル未満の生成物コミットだと
+ *   **ツールの本文は1文字も変わっていないのに**更新日・lastmod が今日になっていた（2026-10-14 に14ツールで実測）。 */
+export const NAV_LINE = /<!--(?:next-read|rail-next|nav-exp|rel)\b[^>]*-->/;
 
 /** 名簿を読み、欠落・重複・衝突で止める（未指定を「全件」の意味にしない） */
 export function loadNavExperiment(path = CONFIG_PATH) {
@@ -72,6 +77,7 @@ export function stripNavSegments(line) {
   return line
     .replace(/<!--next-read:S-->[\s\S]*?<!--next-read:E-->/g, "")
     .replace(/<!--rail-next:S-->[\s\S]*?<!--rail-next:E-->/g, "")
+    .replace(/<!--rel:S-->[\s\S]*?<!--rel:E-->/g, "")
     .replace('<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap">', "")
     .replace("</div><!--rail-next:wrapE-->", "")
     .replace(/<!--nav-exp:style S-->[\s\S]*?<!--nav-exp:style E-->/g, "")
@@ -128,20 +134,60 @@ const gitAt = (args) => execFileSync("git", args, { cwd: ROOT, encoding: "utf8",
 /**
  * base より後のコミットで「導線の行しか変えていない」ファイル。Map<コミットhash, Set<リポジトリ相対パス>>
  * base が履歴に無い（別リポジトリ・浅いクローン）ときは空を返す＝従来どおりの判定になる。
+ *
+ * ★★★ git の出力をメモリに溜めない（2026-10-14 実測）。
+ *   以前は `execFileSync(maxBuffer: 512MiB)` で `git log -p` 全体を1本の文字列に受け、失敗したら黙って空の Map を返していた。
+ *   履歴が育って出力が 512MiB を超えた瞬間に ENOBUFS → catch → **空 ＝「導線だけのコミット」が1件も無い**扱いになり、
+ *   次に読むのカードを差し替えただけの小さな生成物コミットが全部「本文の改稿」に化けた。
+ *   実測: origin/main は 536,728,943 バイト（上限まで残り 141,969 バイト）で辛うじて動いており、
+ *   新記事1本と main を取り込んだ公開用の枝は 539,014,608 バイトで上限を超えた。
+ *   その枝で生成器を流すと、本文の変わっていない約80ページの dateModified と sitemap の lastmod が今日になり、
+ *   test_generators_fresh が「lastmod が 2026-10-14 に集中（51%）」で執筆便 2026-10-14 の公開を2回止めた。
+ *   maxBuffer を上げるだけでは直らない（V8 の文字列の上限が約512MiB）。→ 一時ファイルに書いてコミット単位で読む。
+ * ★失敗を「空」に化けさせない。base が無いときだけ空を返し、それ以外の失敗は投げる（黙って間違えない）。
  */
 export function navOnlyCommitFiles(base, extra = null) {
   const map = new Map();
-  let patch;
-  try { patch = gitAt(["log", "--format=%x01%H", "-U0", "-p", `${base}..HEAD`, "--", "docs"]); }
-  catch { return map; }
-  for (const chunk of patch.split("\x01").filter(Boolean)) {
-    const nl = chunk.indexOf("\n");
-    const hash = chunk.slice(0, nl).trim();
-    const files = new Set();
-    for (const [f, d] of changedLinesByFile(chunk.slice(nl + 1))) if (isNavOrExtraOnly(d, extra)) files.add(f);
-    if (files.size) map.set(hash, files);
-  }
+  try { gitAt(["cat-file", "-e", `${base}^{commit}`]); } catch { return map; }
+  const dir = mkdtempSync(join(tmpdir(), "nav-only-"));
+  const path = join(dir, "log.patch");
+  try {
+    const out = openSync(path, "w");
+    try {
+      execFileSync("git", ["log", "--format=%x01%H", "-U0", "-p", `${base}..HEAD`, "--", "docs"],
+        { cwd: ROOT, stdio: ["ignore", out, "pipe"] });
+    } finally { closeSync(out); }
+    let hash = null, lines = [];
+    const flush = () => {
+      if (!hash) return;
+      const files = new Set();
+      for (const [f, d] of changedLinesByFile(lines.join("\n"))) if (isNavOrExtraOnly(d, extra)) files.add(f);
+      if (files.size) map.set(hash, files);
+    };
+    forEachLine(path, (line) => {
+      if (line.startsWith("\x01")) { flush(); hash = line.slice(1).trim(); lines = []; }
+      else lines.push(line);
+    });
+    flush();
+  } finally { rmSync(dir, { recursive: true, force: true }); }
   return map;
+}
+
+/** ファイルを 16MiB ずつ読み、1行ずつ渡す（全体を1本の文字列にしない） */
+function forEachLine(path, fn) {
+  const fd = openSync(path, "r");
+  const buf = Buffer.alloc(16 * 1024 * 1024);
+  const dec = new StringDecoder("utf8");
+  let rest = "";
+  try {
+    for (let n; (n = readSync(fd, buf, 0, buf.length, null)) > 0;) {
+      const parts = (rest + dec.write(buf.subarray(0, n))).split("\n");
+      rest = parts.pop();
+      for (const l of parts) fn(l);
+    }
+    rest += dec.end();
+    if (rest) fn(rest);
+  } finally { closeSync(fd); }
 }
 
 /**

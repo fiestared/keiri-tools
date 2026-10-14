@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "core": "soneki_core",
+  "page": "docs/soneki-bunkiten/index.html",
+  "priority_evidence": "2026-10-14 新規ツール。条件は J-Net21 Q0240 と日本政策金融公庫の解説の算式から",
+  "conditions": [
+    { "id": "genkai-rieki-plus", "statute": "https://j-net21.smrj.go.jp/solution/qa/accounting/Q0240.html", "disposition": "input",
+      "input_ids": ["price", "unit_var"], "cases": ["単価801円・変動費800円は計算する／単価800円は前提不成立", "J-Net21 例題 損益分岐点販売量1,500個"] },
+    { "id": "sogaku-shiki", "statute": "https://www.jfc.go.jp/n/service/pdf/shindanshi_20220921.pdf", "disposition": "input",
+      "input_ids": ["sales", "variable", "fixed"], "cases": ["公庫 例 損益分岐点100（万円）", "売上高と変動費が等しい（変動費率100%）は前提不成立"] },
+    { "id": "kiriage", "statute": "https://j-net21.smrj.go.jp/solution/qa/accounting/Q0240.html", "disposition": "input",
+      "input_ids": ["fixed_u"], "rounding": "ceil",
+      "cases": ["固定費300,000円は1,500個・300,001円は1,501個（切上げ）", "J-Net21 例題 損益分岐点売上高1,500,000円"] },
+    { "id": "mokuhyo-rieki", "statute": "https://j-net21.smrj.go.jp/solution/qa/accounting/Q0240.html", "disposition": "input",
+      "input_ids": ["target_u"], "cases": ["J-Net21 目標利益15万円の目標販売数量2,250個", "J-Net21 例題 損益分岐点販売量1,500個"] }
+  ],
+  "default_cases": ["損益分岐点HTML初期は空欄で計算しない"]
+}
