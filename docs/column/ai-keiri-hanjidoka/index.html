@@ -29,7 +29,7 @@
       "@type": "Article",
       "headline": "AIで経理を半自動化する — freee記帳を自動化して分かったこと",
       "datePublished": "2026-07-16",
-      "dateModified": "2026-09-27",
+      "dateModified": "2026-10-14",
       "author": {
         "@type": "Person",
         "name": "Masahiro Yasu",
@@ -87,7 +87,7 @@
           "name": "Q. freeeを自動化するとき、まず何に気をつけるべきですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. freeeが「金額の近い取引の消込」を勝手に推測する挙動です。推測された明細は「未入力」の一覧に出てこないため見落としやすく、また推測を鵜呑みにすると未払と入金を二重計上します。登録の前に「同額の未決済取引が実在するか」を突き合わせるのが安全です。あわせて、記帳（取引登録）の公開APIが実質ないため、書き込みの自動化は画面操作になる点も想定しておきます。"
+            "text": "A. freeeが「金額の近い取引の消込」を勝手に推測する挙動です。推測された明細は「未入力」の一覧に出てこないため見落としやすく、また推測を鵜呑みにすると未払と入金を二重計上します。登録の前に「同額の未決済取引が実在するか」を突き合わせるのが安全です。また、取引作成のAPIと「自動で経理」の画面操作では扱える範囲が違います。自動化したい操作をAPIで扱えるか、先に公式仕様で確かめておきます。"
           }
         },
         {
@@ -142,7 +142,7 @@
 
 <article>
 <h1>AIで経理を半自動化する — freee記帳を自動化して分かったこと</h1>
-<p class="article-meta">公開日: <time datetime="2026-07-16">2026年7月16日</time>（更新日: <time datetime="2026-09-27">2026年9月27日</time>）</p>
+<p class="article-meta">公開日: <time datetime="2026-07-16">2026年7月16日</time>（更新日: <time datetime="2026-10-14">2026年10月14日</time>）</p>
 <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
 
 <p>結論から言うと、経理は「全自動」にはできませんが、「半自動」にはできます。私は自社（クリニックとEC事業）の記帳を freee で行っていますが、口座明細に科目を付ける定型作業を自動化し、判断に迷う取引だけを人が確認する形にしています。この記事は、その仕組みを実装した経験から、<b>どこまで自動化でき、どこは人が残るのか</b>を一般的な話としてまとめたものです。</p>
@@ -326,7 +326,7 @@
 <p class="note" data-source-nolink="一般的な情報であることの断り書きで、資料ではないため">この記事は令和8年7月時点の一般的な情報であり、個別の事案に対する助言ではありません。会計ソフトの仕様は変更されることがあります。税務・会計上の個別の判断は、顧問の税理士または所轄の税務署にご確認ください。</p>
 
 </article>
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=freee%E3%81%AE%E8%A8%98%E5%B8%B3%EF%BC%88%E5%8F%A3%E5%BA%A7%E6%98%8E%E7%B4%B0%E3%81%AE%E7%A7%91%E7%9B%AE%E4%BB%98%E3%81%91%EF%BC%89%E3%82%92%E8%87%AA%E5%8B%95%E5%8C%96%E3%81%97%E3%81%9F%E5%AE%9F%E4%BE%8B%E3%82%92%E3%82%82%E3%81%A8%E3%81%AB%E3%80%81AI%E3%82%92%E4%BD%BF%E3%81%A3%E3%81%9F%E7%B5%8C%E7%90%86%E3%81%AE%E5%8D%8A%E8%87%AA%E5%8B%95%E5%8C%96%E3%81%8C%E3%81%A9%E3%81%93%E3%81%BE%E3%81%A7%E3%81%A7%E3%81%8D%E3%82%8B%E3%81%8B%E3%82%92%E8%A7%A3%E8%AA%AC%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fai-keiri-hanjidoka%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=freee%E3%81%AE%E8%A8%98%E5%B8%B3%EF%BC%88%E5%8F%A3%E5%BA%A7%E6%98%8E%E7%B4%B0%E3%81%AE%E7%A7%91%E7%9B%AE%E4%BB%98%E3%81%91%EF%BC%89%E3%82%92%E8%87%AA%E5%8B%95%E5%8C%96%E3%81%97%E3%81%9F%E5%AE%9F%E4%BE%8B%E3%81%8B%E3%82%89%E3%80%81AI%E3%81%A7%E7%B5%8C%E7%90%86%E3%82%92%E3%81%A9%E3%81%93%E3%81%BE%E3%81%A7%E5%8D%8A%E8%87%AA%E5%8B%95%E5%8C%96%E3%81%A7%E3%81%8D%E3%82%8B%E3%81%8B%E3%82%92%E8%A7%A3%E8%AA%AC%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fai-keiri-hanjidoka%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site">
   <div>© 税金・経理・補助金ツールズ</div>
