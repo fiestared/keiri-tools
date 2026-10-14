@@ -140,23 +140,23 @@ t('医療費が大きければ通常を推奨', () => {
 
 // R9: 国税庁No.2260の速算表。境界直前と境界ちょうどを独立定数で照合。
 for (const [boundary, below, at] of [[1950000,5,10],[3300000,10,20],[6950000,20,23],[9000000,23,33],[18000000,33,40],[40000000,40,45]]) {
-  t(`r16 所得税法89条の境界 ${boundary}`, () => {
+  t(`auto20261014 No.2260速算表の境界 ${boundary}`, () => {
     assert.strictEqual(rateFromKazei(boundary - 1, I), below);
     assert.strictEqual(rateFromKazei(boundary + 1, I), at);
-    assert.strictEqual(rateFromKazei(boundary, I), below);
+    assert.strictEqual(rateFromKazei(boundary, I), at);
   });
 }
-t('r16 表示区分は所得税法89条に一致', () => {
-  assert.deepStrictEqual(I.keigen.shotokuzei_brackets.map(b=>b.label), ['課税所得0円（所得税非課税）','195万円以下','195万円超 330万円以下','330万円超 695万円以下','695万円超 900万円以下','900万円超 1,800万円以下','1,800万円超 4,000万円以下','4,000万円超']);
+t('auto20261014 表示区分はNo.2260に一致', () => {
+  assert.deepStrictEqual(I.keigen.shotokuzei_brackets.map(b=>b.label), ['課税所得0円（所得税非課税）','195万円未満','195万円以上 330万円未満','330万円以上 695万円未満','695万円以上 900万円未満','900万円以上 1,800万円未満','1,800万円以上 4,000万円未満','4,000万円以上']);
 });
 // ── 7. 速算表: 課税所得帯 → 限界税率（No.2260・7区分） ───────────────────────
 t('速算表: 課税所得の帯ごとに正しい限界税率を引く', () => {
-  assert.strictEqual(rateFromKazei(1950000, I), 5, '195万以上=10%');
+  assert.strictEqual(rateFromKazei(1950000, I), 10, '195万以上=10%');
   assert.strictEqual(rateFromKazei(2000000, I), 10, '195万超=10%');
-  assert.strictEqual(rateFromKazei(6950000, I), 20, '695万以上=23%');
-  assert.strictEqual(rateFromKazei(9000000, I), 23, '900万以上=33%');
-  assert.strictEqual(rateFromKazei(18000000, I), 33, '1,800万以上=40%');
-  assert.strictEqual(rateFromKazei(40000000, I), 40, '4,000万以上=45%');
+  assert.strictEqual(rateFromKazei(6950000, I), 23, '695万以上=23%');
+  assert.strictEqual(rateFromKazei(9000000, I), 33, '900万以上=33%');
+  assert.strictEqual(rateFromKazei(18000000, I), 40, '1,800万以上=40%');
+  assert.strictEqual(rateFromKazei(40000000, I), 45, '4,000万以上=45%');
   assert.strictEqual(rateFromKazei(50000000, I), 45, '4,000万超=45%');
 });
 
@@ -227,3 +227,10 @@ t('r10 非課税なら所得税・復興税0、住民税だけ概算',()=>{
 });
 console.log(`\n${fail ? '❌' : '✓'} 医療費控除コア: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
+
+t('auto20261014 課税所得の千円未満を切り捨てる', () => {
+  assert.strictEqual(rateFromKazei(999, I), 0);
+  assert.strictEqual(rateFromKazei(1000, I), 5);
+  assert.strictEqual(rateFromKazei(1949999, I), 5);
+  assert.strictEqual(rateFromKazei(1950999, I), 10);
+});

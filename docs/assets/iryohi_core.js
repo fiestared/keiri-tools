@@ -16,7 +16,7 @@
  *
  *  1. **足切りの10万円は「上限（キャップ）」であって「下限」ではない。**（所法73条1項）
  *     足切り ＝ min(総所得金額等 × 5%, 10万円)。
- *     総所得金額等が200万円未満の人（令和8年分の給与所得のみなら給与収入2,972,000円未満）は5%側が効いて足切りが10万円より小さくなる。
+ *     総所得金額等が200万円未満の人（令和8年分の給与所得のみ・特定支出控除なしなら給与収入2,972,000円未満）は5%側が効いて足切りが10万円より小さくなる。
  *     → 「医療費が10万円を超えないと使えない」は誤り。低所得の人ほど少ない医療費で使える。
  *     ここを「足切り＝一律10万円」と実装すると、いちばん救われるべき低所得の人が黙って控除を失う。
  *
@@ -87,9 +87,10 @@ export function selfmedKojo(purchase, I) {
 /** 速算表から、課税される所得金額に対応する限界税率(%)を引く（No.2260）。 */
 export function rateFromKazei(kazei, I) {
   const B = I.keigen.shotokuzei_brackets;
-  const v = yen(kazei);
+  const v = Math.floor(yen(kazei) / 1000) * 1000;
+  if (v === 0) return 0;
   for (const b of B) {
-    if (b.kazei_upto === null || b.kazei_upto === undefined || v <= b.kazei_upto) return b.rate_pct;
+    if (b.kazei_upto === null || b.kazei_upto === undefined || v < b.kazei_upto) return b.rate_pct;
   }
   return B[B.length - 1].rate_pct;
 }

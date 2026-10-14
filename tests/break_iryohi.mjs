@@ -74,9 +74,9 @@ const BREAKS = [
    "if (!isValidRate(rate, I)) return null;",
    "if (false) return null;"],
 
-  ["所得税法89条の以下境界を未満に戻す（195万ちょうどを10%にする）",
-   "if (b.kazei_upto === null || b.kazei_upto === undefined || v <= b.kazei_upto) return b.rate_pct;",
-   "if (b.kazei_upto === null || b.kazei_upto === undefined || v < b.kazei_upto) return b.rate_pct;"],
+  ["速算表の未満境界を以下に戻す（195万ちょうどを5%にする）",
+   "if (b.kazei_upto === null || b.kazei_upto === undefined || v < b.kazei_upto) return b.rate_pct;",
+   "if (b.kazei_upto === null || b.kazei_upto === undefined || v <= b.kazei_upto) return b.rate_pct;"],
 
   ["★渡し忘れガードを外す（年収も総所得も無いと足切り0で控除額を過大に）",
    "if (!hasSoto && !hasShunyu) {",
