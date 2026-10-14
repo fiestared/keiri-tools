@@ -316,7 +316,7 @@
     </marker>
   </defs>
 </svg>
-<figcaption>子が2人いる妻が40歳で受給を始めた場合の年額の移り変わり。遺族基礎年金と中高齢寡婦加算は入れ替わりで、重なりません。帯の高さは額の大きさのイメージで、正確な比率ではありません。</figcaption>
+<figcaption>子が2人いる妻が40歳で受給を始めた場合の年額の移り変わり。遺族基礎年金と中高齢寡婦加算は入れ替わりで、重なりません（<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_65" rel="nofollow">厚生年金保険法65条</a>）。帯の高さは額の大きさのイメージで、正確な比率ではありません。</figcaption>
 </figure>
 
 <h2 id="kosei">遺族厚生年金と、短期要件のときだけ効く300月みなし</h2>
@@ -571,6 +571,10 @@ $("calc").addEventListener("click", async () => {
       上の内訳と合計の遺族厚生年金は60条1項2号で決まる額で、自分の老齢厚生年金に相当する額は支給停止になります
       （<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_64_2" rel="nofollow">厚生年金保険法64条の2</a>）。
       実際の受け取りは、自分の老齢厚生年金の全額＋上乗せ額です。</p>`;
+  } else if (r.is65plus && input.ownRoureiYen > 0) {
+    html += `<p class="hint" id="heikyu-teishi">65歳以降で自分の老齢厚生年金があるため、遺族厚生年金のうち
+      自分の老齢厚生年金に相当する額は支給停止になります（<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_64_2" rel="nofollow">厚生年金保険法64条の2</a>）。
+      上の内訳と合計の遺族厚生年金は、停止前の額です。</p>`;
   }
 
   html += `<div class="note" id="gaisan-note"><b>これは制度の式による概算額です。</b>
