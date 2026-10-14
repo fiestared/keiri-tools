@@ -476,6 +476,19 @@ dataReady.then(() => {
   $("src-note").textContent = D?._meta?.checked ? `（${D._meta.checked} 時点）` : "";
 }).catch(() => {});
 
+// データと core の文は変えず、エスケープした後に条文名だけを e-Gov の条リンクにする
+const LAW_LINKS = [
+  ["国民年金法39条の2", "https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_4-At_39_2"],
+  ["国民年金法49条", "https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_5-Ss_2-At_49"],
+  ["52条の2", "https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_5-Ss_3-At_52_2"],
+  ["国民年金法20条", "https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_1-At_20"],
+  ["厚年法59条1項", "https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_59"],
+  ["厚年法62条1項", "https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_62"],
+  ["厚年法63条1項5号", "https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_63"],
+  ["厚年法65条", "https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_65"],
+];
+const linkLaw = (t) => LAW_LINKS.reduce((a, [name, url]) => a.split(name).join(`<a href="${url}" rel="nofollow">${name}</a>`), t);
+
 $("calc").addEventListener("click", async () => {
   const box = $("result");
   box.style.display = "block";
@@ -559,7 +572,7 @@ $("calc").addEventListener("click", async () => {
   //   （「妻でない」と「240月未満」を取り違えないため）。
   if (!r.chukorei.eligible) {
     html += `<p class="hint" id="chukorei-${r.chukorei.reasonKey}">中高齢寡婦加算は付きません:
-      ${esc(r.chukorei.reason)}</p>`;
+      ${linkLaw(esc(r.chukorei.reason))}</p>`;
   }
 
   // ★65歳以降の併給は、どちらの号で決まったかで意味がまるで違う。
@@ -583,9 +596,6 @@ $("calc").addEventListener("click", async () => {
 
   // ★収録範囲はデータに持たせる（ページに手書きすると、データを増やしたときに嘘になる）。
   html += `<p class="hint"><b>このツールが計算しないもの</b></p><ul id="hanigai-list-data">`;
-  // データの文は変えず、エスケープした後に条文名だけをリンクにする
-  const LAW_LINKS = [["厚年法59条1項", "https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_59"]];
-  const linkLaw = (t) => LAW_LINKS.reduce((a, [name, url]) => a.replace(name, `<a href="${url}" rel="nofollow">${name}</a>`), t);
   for (const o of D.out_of_scope) {
     html += `<li>${esc(o.label)} — ${linkLaw(esc(o.why))}</li>`;
   }
