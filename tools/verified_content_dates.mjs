@@ -9,103 +9,103 @@ export const verifiedContentDates = [{
 {
   "path": "docs/column/gensen-shotokuzei-nofusho/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/gensen-zeigakuhyo-mikata/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/haitokin-kakutei-shinkoku/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/ikuji-kyugyo-kyufukin/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/kaigo-kyugyo-kyufukin/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/kyoiku-kunren-kyufukin/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/nenshu-no-kabe/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/part-yukyu/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/senpou-futan-3hoshiki/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/shakai-hokenryo-keisan/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/shitaukeho-toritekiho/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/shobyo-teate-kin/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/taishokukin-zeikin/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/column/yakuin-shakai-hoken/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/iryohi/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/kihonteate/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
   "path": "docs/santei/index.html",
   "date": "2026-09-28",
-  "commit": "d9b7a82f38fe7a58adf1601560f1c777c425b04b",
+  "commit": "ebf8a9bf5c5f9d92ff8f750e2da19b62bb270066",
   "reason": "R9一次資料再審査に基づく本文・表・FAQの訂正。差分は対応するclaims台帳に記録。"
 },
 {
