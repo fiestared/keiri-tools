@@ -996,7 +996,7 @@ function rtHourChart(site) {
     ${last ? `<text x="${last.cx.toFixed(1)}" y="${(last.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${last.v.toLocaleString("ja-JP")}</text>` : ""}
     ${h.hours.map((v, hh) => {
       const tip = h.seen[hh]
-        ? `${hh}時台 — 推定 ${v.toLocaleString("ja-JP")} ／ PV ${h.pv[hh].toLocaleString("ja-JP")}`
+        ? `${hh}時台 — 推定 ${v.toLocaleString("ja-JP")} ／ PV ${h.hourPv[hh].toLocaleString("ja-JP")}`
         : `${hh}時台 — 未取得（0ではない）`;
       return `<rect class="hit" x="${x0(hh).toFixed(1)}" y="${PAD.t}" width="${band.toFixed(1)}" height="${ih}"
         fill="transparent" data-tip="${esc(tip)}"></rect>`;
@@ -1012,7 +1012,7 @@ function rtHourChart(site) {
       <tbody>${h.hours.map((v, hh) => `<tr>
         <td>${hh}時台</td>
         <td class="num strong">${h.seen[hh] ? v.toLocaleString("ja-JP") : "—"}</td>
-        <td class="num">${h.seen[hh] ? h.pv[hh].toLocaleString("ja-JP") : "—"}</td>
+        <td class="num">${h.seen[hh] ? h.hourPv[hh].toLocaleString("ja-JP") : "—"}</td>
       </tr>`).join("")}</tbody>
     </table></div>
   </details>

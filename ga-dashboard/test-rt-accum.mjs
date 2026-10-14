@@ -38,9 +38,10 @@ const sameMinute = [
   assert.deepEqual(sum.gaps, []);
   {
     const h = hoursOfDay(st, K, "2026-10-12");
-    assert.equal(h.hours[14], 4); assert.equal(h.seen[14], true);
+    assert.equal(h.hours[14], 4); assert.equal(h.hourPv[14], 6); assert.equal(h.seen[14], true);
     assert.equal(h.seen[12], false); assert.equal(h.hours[12], 0);
-    assert.equal(h.s, 4);
+    assert.equal(h.s, 4); assert.equal(h.pv, 6);
+    assert.equal(typeof h.pv, "number"); assert.equal(Array.isArray(h.hourPv), true);
   }
   // 後の回で値が小さく返っても減らさない（Realtime は遅れて増えることはあっても、見た最大値を保つ）
   const st2 = applyFetch(st, K, at("2026-10-12", "14:13"), [{ minutesAgo: 3, s: 1, pv: 1 }]);

@@ -196,7 +196,8 @@ export function hoursOfDay(state, siteKey, date) {
     pv[h] += v.pv;
     seen[h] = true;
   }
-  return { hours, pv, seen, ...sum };
+  // summarize の pv（日合計の数）が配列を上書きしないよう、時間帯は hourPv
+  return { ...sum, hours, hourPv: pv, seen };
 }
 
 /**
