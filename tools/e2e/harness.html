@@ -5798,7 +5798,8 @@ const copyShown = (doc) => {
   const c = doc.getElementById("copy-result");
   return !!c && c.getClientRects().length > 0 && doc.defaultView.getComputedStyle(c).display !== "none";
 };
-const fieldErrorScene = ({ path, field, button = "calc", result = "result", value, tab = null, fill = {} }) => async () => {
+// onError(doc): 誤りが出ている間（直す前）の状態を足して返す任意の口（tools/e2e/scenes/ のシーンが使う）
+const fieldErrorScene = ({ path, field, button = "calc", result = "result", value, tab = null, fill = {}, onError: extraOnError = null }) => async () => {
   const doc = await open(path);
   if (tab) click(doc, tab);
   // 押す欄以外に要る入力（例: 年末調整は給与を入れてから徴収税額の空欄を試す）
@@ -5825,6 +5826,7 @@ const fieldErrorScene = ({ path, field, button = "calc", result = "result", valu
     fieldInView: (() => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= doc.defaultView.innerHeight; })(),
     errorFrame: visibleFrame(doc, doc.getElementById(result)),
     copyOnError: copyShown(doc),
+    ...(extraOnError ? extraOnError(doc) : {}),
   };
   set(doc, field, value);
   const cleared = el.getAttribute("aria-invalid") !== "true" && (!err || err.hidden);
@@ -6028,8 +6030,24 @@ SCENES.site_search_top = async () => {
     dialogCardsLeak: dlg.querySelectorAll(".qa-card").length };
 };
 
+// ── tools/e2e/scenes/<ページ>.mjs のシーン（2026-10-15）──────────────────────────────
+// 新しいページのシーンはこのファイルに足さず、scenes/ にファイルを1つ置く（共有の SCENES の末尾に足す形は、
+// 並行したブランチが公開のたびに衝突した）。e2e.mjs が ?mod=<ファイル名> を付けて開くので、そのファイルだけ読む。
+const SCENE_HELPERS = Object.freeze({ sleep, waitFor, open, set, click, text, check, pickRadio, fixToday,
+  fieldErrorScene, visibleFrame, copyShown, gaEvents, gaNames });
+async function loadSceneModule(mod) {
+  if (!/^[a-z0-9][a-z0-9_-]*\.mjs$/.test(mod)) throw new Error(`mod の名前が不正: ${mod}`);
+  const m = await import(`./scenes/${mod}`);
+  for (const [name, fn] of Object.entries(m.harness(SCENE_HELPERS))) {
+    if (Object.prototype.hasOwnProperty.call(SCENES, name)) throw new Error(`scenes/${mod} のシーン ${name} が harness.html の既存シーンと重なる`);
+    SCENES[name] = fn;
+  }
+}
+
 let state;
 try {
+  if (q.get("mod")) await loadSceneModule(q.get("mod"));
+  if (typeof SCENES[scene] !== "function") throw new Error(`シーン ${scene} が無い`);
   state = { scene, ...(await SCENES[scene]()), page: openedPages[0] || null, pages: openedPages };
 } catch (e) {
   state = { scene, error: String(e && e.message || e), page: openedPages[0] || null, pages: openedPages };
