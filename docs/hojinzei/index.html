@@ -134,7 +134,7 @@
 
     <fieldset id="kubun-set">
       <legend>法人の区分</legend>
-      <label><input type="checkbox" id="chusho" checked> 事業年度末の<b>資本金・出資金が1億円以下</b>で、<a href="#jogai">大法人の100%子会社など</a>に当たらない</label>
+      <label><input type="checkbox" id="chusho" checked> 事業年度末の<b>資本金・出資金が1億円以下</b>（資本・出資が無い法人を含む）で、<a href="#jogai">大法人の100%子会社など</a>に当たらない</label>
       <label><input type="checkbox" id="tokurei" checked> <a href="#jogai">適用除外事業者</a>に当たらない（<b>15%の特例が使える</b>）</label>
       <p class="hint">通算法人はこのツールでは計算できません。</p>
     </fieldset>
@@ -156,7 +156,7 @@
   <h2 id="han">税率の当てはめは3段階</h2>
   <p>「中小企業だから15%」ではありません。条文は次の順に当てはめます。</p>
   <ol id="handan">
-    <li>資本金1億円以下の法人は、年800万円以下の部分に<b>軽減の枠</b>ができる（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条2項</a>・19%）</li>
+    <li>資本金1億円以下の法人は、年800万円以下の部分に<b>19%の軽減税率</b>がかかる（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条2項</a>）</li>
     <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_42_3_2" rel="nofollow">租税特別措置法42条の3の2</a>で、その19%が<b>15%</b>に読み替わる</li>
     <li>ただし<b>所得が年10億円を超える事業年度は17%</b>。適用除外事業者・通算法人などは2が使えない（<a href="#jogai">特例が使えない法人</a>）</li>
   </ol>
@@ -180,8 +180,8 @@
   <h2 id="jogai">特例が使えない法人</h2>
   <p>資本金1億円以下でも、次に当たると15%・17%は使えません（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_42_3_2" rel="nofollow">措置法42条の3の2第1項</a>の括弧書き）。800万円以下の部分の税率は、区分ごとに違います。</p>
   <ul>
-    <li><b>適用除外事業者：19%のまま</b>。開始の日前3年以内に終了した事業年度の所得を年平均にした額が15億円を超える法人です。設立3年未満などは調整があります（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_42_4" rel="nofollow">措置法42条の4第19項8号</a>）</li>
-    <li><b>通算法人：このツールの対象外</b>。19%は中小通算法人だけで、800万円をグループ内の所得の割合で分けた額が対象です（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条6項・7項</a>）</li>
+    <li><b>適用除外事業者：19%のまま</b>。開始の日前3年以内に終了した事業年度の所得の合計を月数の合計で割り、12を掛けた額が15億円を超える法人です。設立3年未満などは調整があります（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_42_4" rel="nofollow">措置法42条の4第19項8号</a>）</li>
+    <li><b>通算法人：このツールの対象外</b>。19%は中小通算法人だけで、対象は原則として800万円をグループ内の所得の割合で分けた額です。通算親法人と事業年度の終了日が違う通算子法人は、800万円を月数で按分します（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条6項・7項</a>）</li>
     <li><b>大法人の100%子会社：全額23.2%</b>。資本金5億円以上の大法人による完全支配関係がある普通法人は、軽減の枠そのものがありません（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条5項2号</a>）</li>
     <li><b>相互会社・投資法人・特定目的会社・受託法人など：全額23.2%</b>（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条5項各号</a>）</li>
   </ul>
@@ -311,7 +311,7 @@ async function render() {
     <div class="hint" style="margin-bottom:10px">所得 ${yen(r.shotoku)}${tsukisu < 12 ? `／事業年度 ${tsukisu}か月` : ""}</div>
     <table class="res">
       <tr><th scope="row">年800万円以下の部分</th><td id="keigen">${r.keigenRate === null
-        ? "軽減の枠がありません（資本金1億円超）"
+        ? "軽減の枠がありません（資本金1億円超・大法人の100%子会社など）"
         : `${yen(r.keigenBase)} × <b>${r.keigenRate}%</b> = ${yen(r.keigenBun)}`}${
         r.kogakuTekiyo ? "　<b>所得が年10億円を超えるため17%</b>" : ""}</td></tr>
       <tr><th scope="row">それを超える部分</th><td id="honsoku">${yen(r.honsokuBase)} × ${D.hojinzei.honsoku_pct}% = ${yen(r.honsokuBun)}</td></tr>
