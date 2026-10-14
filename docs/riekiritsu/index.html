@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>利益率・原価率 計算ツール｜税込・税抜まじりもそろえて粗利率と売価を逆算</title>
+<meta name="description" content="原価と売価から利益額・粗利率・原価率・上乗せ率を計算し、目標の粗利率（または上乗せ率）以上になる1円単位の売価を逆算します。仕入は税込・売価は税抜のように税区分や税率（10%・8%）がちがっても、同じ基準にそろえてから計算します。登録不要・無料。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/riekiritsu/">
+<!-- ogp:auto -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="利益率・原価率 計算ツール｜税込・税抜まじりもそろえて粗利率と売価を逆算">
+<meta property="og:description" content="原価と売価から利益額・粗利率・原価率・上乗せ率を計算し、目標の粗利率（または上乗せ率）以上になる1円単位の売価を逆算します。仕入は税込・売価は税抜のように税区分や税率（10%・8%）がちがっても、同じ基準にそろえてから計算します。登録不要・無料。">
+<meta property="og:url" content="https://keiri-tools.com/riekiritsu/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "datePublished": "2026-10-14",
+      "dateModified": "2026-10-14",
+      "name": "利益率・原価率 計算ツール",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "原価と売価から利益額・粗利率（売上総利益率）・原価率・上乗せ率を計算し、目標の率からの売価を逆算します。原価と売価の税込・税抜と税率を別々に指定でき、同じ基準にそろえてから計算します。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "利益率・原価率 計算ツール"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 利益率と粗利率は同じですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 「利益率」は営業利益や経常利益の率を指すこともあります。この計算機の粗利率は、売価から原価を引いた利益額を売価で割った率で、日本政策金融公庫の手引きの売上総利益率（粗利益率）と同じ考え方です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 値引きした後の粗利率はどう出しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 値引き後の売価を「売価」に入れて計算し直してください。値引き前と並べると、値引きでどれだけ粗利率が下がるかが分かります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 損益分岐点も計算できますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 固定費と変動費から損益分岐点売上高や販売数量を出すのは損益分岐点 計算ツールです。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../assets/track.js" defer></script>
+<!--nav-exp:toc-script S--><script src="../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site">
+  <a class="brand" href="../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../#tools">ツール</a>
+    <a href="../hojokin/">補助金</a>
+    <a href="../column/">コラム</a>
+    <a href="../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../">ホーム</a> › 利益率・原価率 計算ツール</nav>
+
+<section class="hero">
+  <h1>利益率・原価率 計算ツール（粗利率・上乗せ率・売価の逆算）</h1>
+  <p class="article-meta">公開日: <time datetime="2026-10-14">2026年10月14日</time></p>
+  <p>原価と売価から、<b>利益額・粗利率・原価率・上乗せ率</b>を計算します。目標の粗利率（または上乗せ率）から、その率以上になる<b>1円単位の売価</b>も逆算できます。仕入は税込・売価は税抜のように、原価と売価で税込・税抜や税率がちがっても、<b>同じ基準にそろえてから</b>計算します。入力した金額はブラウザの外へ送信されません。</p>
+</section>
+
+<div class="card">
+  <h2 id="keisan" style="font-size:17px;margin-top:0">原価と売価から利益率を計算する</h2>
+  <label for="cost">原価・仕入値（円）</label>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <input style="flex:2 1 160px;margin:0" id="cost" aria-describedby="cost-hint" type="number" inputmode="numeric" min="0" step="1" data-example="800">
+    <select style="flex:1 1 90px;width:auto;margin:0" id="cost_tax" aria-label="原価の税区分"><option value="excluded" selected>税抜</option><option value="included">税込</option></select>
+    <select style="flex:1 1 110px;width:auto;margin:0" id="cost_rate" aria-label="原価の税率"><option value="standard" selected>10%</option><option value="reduced">8%（軽減）</option></select>
+  </div>
+  <span id="cost-hint" class="hint"><b class="input-example">入力例：800円なら 800</b></span>
+  <label for="price">売価・販売価格（円）</label>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <input style="flex:2 1 160px;margin:0" id="price" aria-describedby="price-hint" type="number" inputmode="numeric" min="1" step="1" data-example="1000">
+    <select style="flex:1 1 90px;width:auto;margin:0" id="price_tax" aria-label="売価の税区分"><option value="excluded" selected>税抜</option><option value="included">税込</option></select>
+    <select style="flex:1 1 110px;width:auto;margin:0" id="price_rate" aria-label="売価の税率"><option value="standard" selected>10%</option><option value="reduced">8%（軽減）</option></select>
+  </div>
+  <span id="price-hint" class="hint"><b class="input-example">入力例：1,000円なら 1000</b></span>
+  <details class="opt">
+    <summary>そろえる基準と端数処理（ふつうは変えなくてよい）</summary>
+    <label for="basis">どちらの基準にそろえて計算するか</label>
+    <select id="basis"><option value="excluded" selected>税抜でそろえる</option><option value="included">税込でそろえる</option></select>
+    <label for="rounding">税込から税抜にするときの消費税の端数処理</label>
+    <select id="rounding"><option value="floor" selected>切捨て</option><option value="ceil">切上げ</option><option value="round">四捨五入</option></select>
+  </details>
+  <button class="primary" id="calc">利益率を計算する</button>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+</div>
+
+<div class="card">
+  <h2 id="gyakusan-tool" style="font-size:17px;margin-top:0">目標の率から売価を逆算する</h2>
+  <label for="r_cost">原価・仕入値（円）</label>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <input style="flex:2 1 160px;margin:0" id="r_cost" aria-describedby="r_cost-hint" type="number" inputmode="numeric" min="1" step="1" data-example="800">
+    <select style="flex:1 1 90px;width:auto;margin:0" id="r_cost_tax" aria-label="逆算の原価の税区分"><option value="excluded" selected>税抜</option><option value="included">税込</option></select>
+    <select style="flex:1 1 110px;width:auto;margin:0" id="r_cost_rate" aria-label="逆算の原価の税率"><option value="standard" selected>10%</option><option value="reduced">8%（軽減）</option></select>
+  </div>
+  <span id="r_cost-hint" class="hint"><b class="input-example">入力例：800円なら 800</b></span>
+  <div class="field-pair">
+    <div>
+      <label for="r_kind">目標にする率</label>
+      <select id="r_kind"><option value="margin" selected>粗利率（売価に対する利益の割合）</option><option value="markup">上乗せ率（原価に対する利益の割合）</option></select>
+    </div>
+    <div>
+      <label for="r_percent">目標の率（%・小数第2位まで）</label>
+      <input id="r_percent" aria-describedby="r_percent-hint" type="number" inputmode="decimal" min="0" step="0.01" data-example="20">
+  <span id="r_percent-hint" class="hint"><b class="input-example">入力例：20%なら 20</b></span>
+    </div>
+  </div>
+  <label for="r_out_tax">答えてほしい売価</label>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <select style="flex:2 1 160px;width:auto;margin:0" id="r_out_tax" aria-label="答える売価の税区分"><option value="excluded" selected>税抜の売価</option><option value="included">税込の売価</option></select>
+    <select style="flex:1 1 110px;width:auto;margin:0" id="r_out_rate" aria-label="答える売価の税率"><option value="standard" selected>10%</option><option value="reduced">8%（軽減）</option></select>
+  </div>
+  <details class="opt">
+    <summary>そろえる基準と端数処理（ふつうは変えなくてよい）</summary>
+    <label for="r_basis">どちらの基準で率を判定するか</label>
+    <select id="r_basis"><option value="excluded" selected>税抜でそろえる</option><option value="included">税込でそろえる</option></select>
+    <label for="r_rounding">税込と税抜を行き来するときの消費税の端数処理</label>
+    <select id="r_rounding"><option value="floor" selected>切捨て</option><option value="ceil">切上げ</option><option value="round">四捨五入</option></select>
+  </details>
+  <button class="primary" id="calc_r">売価を逆算する</button>
+  <div role="status" aria-live="polite" class="result" id="result_r"></div>
+  <p class="hint" style="margin:10px 0 0">逆算の答えは、入力した率を満たす最も安い1円単位の売価です。その価格で売るべきかどうかを示すものではありません。</p>
+</div>
+
+<article>
+<p class="byline">文責: <a href="../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p>上の計算機の式と、税込・税抜をそろえるしくみをまとめます（一般的な計算方法の説明であり、個別の経営・税務の相談への回答ではありません）。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#shiki">利益率・原価率・上乗せ率の計算式</a></li>
+<li><a href="#chigai">粗利率と上乗せ率を取り違えない</a></li>
+<li><a href="#zei">税込と税抜がまざっているとき</a></li>
+<li><a href="#gyakusan">目標の率から売価を逆算するしくみ</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#source">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../soneki-bunkiten/">損益分岐点 計算ツール</a></li><li><a href="../shohizei/">消費税計算（税込・税抜・端数処理）</a></li><li><a href="../column/uriage-genka/">売上原価とは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+<h2 id="shiki">利益率・原価率・上乗せ率の計算式</h2>
+<p>日本政策金融公庫の手引きは、売上総利益率（粗利益率）を「売上総利益／売上高」としています。1つの商品で考えると、売価から原価を引いた利益額を、売価で割ったものが粗利率です。</p>
+<div class="scroll-wrap"><table>
+  <thead><tr><th scope="col">求めるもの</th><th scope="col">計算式</th><th scope="col">分母</th></tr></thead>
+  <tbody>
+    <tr><td>利益額（粗利）</td><td>売価 − 原価</td><td>—</td></tr>
+    <tr><td>粗利率（売上総利益率・利益率）</td><td>利益額 ÷ 売価</td><td>売価</td></tr>
+    <tr><td>原価率</td><td>原価 ÷ 売価</td><td>売価</td></tr>
+    <tr><td>上乗せ率（マークアップ率）</td><td>利益額 ÷ 原価</td><td>原価</td></tr>
+  </tbody>
+</table></div>
+<p>粗利率と原価率は分母がどちらも売価なので、足すと100%になります。上乗せ率だけは分母が原価なので、同じ商品でも粗利率より大きな数字になります。</p>
+<figure class="figure fig-wide" style="--figw:500px">
+<svg viewBox="0 0 640 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="売価1,000円を原価800円と利益200円に分けた図。粗利率は200÷1,000で20%、上乗せ率は200÷800で25%">
+  <rect x="40" y="40" width="448" height="44" rx="4" fill="#8a97a3"/>
+  <rect x="488" y="40" width="112" height="44" rx="4" fill="#2f6f9f"/>
+  <text x="240" y="67" font-size="14" fill="#fff">原価 800円</text>
+  <text x="508" y="67" font-size="14" fill="#fff">利益 200円</text>
+  <text x="40" y="30" font-size="13" fill="currentColor">売価 1,000円</text>
+  <text x="40" y="115" font-size="13" fill="currentColor">粗利率 ＝ 利益200円 ÷ 売価1,000円 ＝ 20%（原価率は800円 ÷ 1,000円 ＝ 80%）</text>
+  <text x="40" y="145" font-size="13" fill="currentColor">上乗せ率 ＝ 利益200円 ÷ 原価800円 ＝ 25%</text>
+</svg>
+<figcaption>J-Net21の例題と同じ、売価1,000円・仕入800円の商品。同じ利益200円でも、売価で割るか原価で割るかで率がちがいます。</figcaption>
+</figure>
+<p>J-Net21の例題（売価1,000円・仕入800円）では、差額は200円です。日本政策金融公庫の手引きの記入例（売上原価32,400千円・売上高90,000千円）では、原価率は36%です。どちらも、この計算機に入れると同じ利益額・原価率になります。</p>
+
+<h2 id="chigai">粗利率と上乗せ率を取り違えない</h2>
+<p>「原価に25%乗せる」と「粗利率25%」は別の価格になります。原価800円に25%を上乗せした1,000円の粗利率は20%です。粗利率を25%以上にしたいなら、800円 ÷（1 − 25%）＝ 1,066.66…円なので、1円単位では1,067円が必要です。逆算では、目標にする率が粗利率か上乗せ率かを選んでから計算してください。</p>
+
+<h2 id="zei">税込と税抜がまざっているとき</h2>
+<p>仕入の領収書は税込、取引先への売価は税抜、のように基準がちがう金額をそのまま引き算すると、利益額も率もずれます。この計算機は、原価と売価それぞれに税込・税抜と税率（10%・8%）を指定でき、指定した基準（税抜または税込）にそろえてから計算します。</p>
+<p data-review-context="before-table">税込の金額から税抜の金額を出すときは、税込の金額に10/110（軽減税率8%なら8/108）を掛けた消費税額の1円未満を端数処理し、税込から引きます。国税庁のインボイスQ&Aの記載例と同じ数字で確かめると、次のとおりです。</p>
+<div class="scroll-wrap"><table>
+  <thead><tr><th scope="col">税込の金額</th><th scope="col">消費税額（記載例）</th><th scope="col">この計算機の税抜</th></tr></thead>
+  <tbody>
+    <tr><td>60,000円（10%）</td><td>60,000円×10/110≒5,454円</td><td><span class="numeric-token">54,546円</span></td></tr>
+    <tr><td>40,000円（8%）</td><td>40,000円×8/108≒2,962円</td><td><span class="numeric-token">37,038円</span></td></tr>
+  </tbody>
+</table></div>
+<p>消費税額の1円未満の端数処理は、切捨て・切上げ・四捨五入のどれでもよいとされています（国税庁タックスアンサーNo.6371）。この計算機は切捨てを初期値にし、ほかの方法も選べます。端数処理のちがいで、税込から出した税抜の金額は1円変わることがあります。消費税そのものの計算は<a href="../shohizei/">消費税計算ツール</a>でできます。</p>
+
+<h2 id="gyakusan">目標の率から売価を逆算するしくみ</h2>
+<p>逆算は「入力した率以上になる、1円単位で最も安い売価」を探します。たとえば原価800円（税抜）・粗利率20%なら税抜1,000円で、1円安い999円では20%に届きません。答えの売価を税込で求めると、端数処理の方法によって答えが変わります。消費税の端数を切り捨てると、税込1,099円の税抜は1,000円（消費税99円）になり、粗利率20%に届きます。四捨五入なら税込1,099円の税抜は999円なので、答えは1,100円になります。</p>
+<p>粗利率は100%以上にはできません（売価をいくら上げても、原価がある限り100%に届かないため）。上乗せ率は100%を超えても計算できます。</p>
+
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>利益率と粗利率は同じですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>「利益率」は営業利益や経常利益の率を指すこともあります。この計算機の粗利率は、売価から原価を引いた利益額を売価で割った率で、日本政策金融公庫の手引きの売上総利益率（粗利益率）と同じ考え方です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>値引きした後の粗利率はどう出しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>値引き後の売価を「売価」に入れて計算し直してください。値引き前と並べると、値引きでどれだけ粗利率が下がるかが分かります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>損益分岐点も計算できますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>固定費と変動費から損益分岐点売上高や販売数量を出すのは<a href="../soneki-bunkiten/">損益分岐点 計算ツール</a>です。</p>
+
+<section class="related">
+  <h2>関連記事・ツール</h2>
+  <div class="tool-list">
+    <a href="../soneki-bunkiten/">
+      <div class="name">損益分岐点 計算ツール</div>
+      <div class="desc">固定費・変動費から、利益がゼロになる売上高と販売数量を計算。</div>
+    </a>
+    <a href="../shohizei/">
+      <div class="name">消費税計算ツール</div>
+      <div class="desc">税込・税抜の変換と端数処理、インボイスの税額。</div>
+    </a>
+    <a href="../column/uriage-genka/">
+      <div class="name">売上原価とは</div>
+      <div class="desc">粗利の計算に使う売上原価の考え方。</div>
+    </a>
+    <a href="../column/soneki-keisansho-mikata/">
+      <div class="name">損益計算書の見方</div>
+      <div class="desc">売上総利益（粗利）が損益計算書のどこに出るか。</div>
+    </a>
+  </div>
+</section>
+
+<h2 id="source">出典</h2>
+<p class="source-method">日本政策金融公庫・中小機構・国税庁の公表資料を読み、記載例の数字をこの計算機で再現して確認。</p>
+<ul>
+  <li><a href="https://www.jfc.go.jp/n/service/pdf/keieikaizentebiki_230403n.pdf" rel="nofollow">日本政策金融公庫 国民生活事業「経営改善計画書策定の手引」</a></li>
+  <li><a href="https://j-net21.smrj.go.jp/solution/qa/accounting/Q0240.html" rel="nofollow">中小機構 J-Net21「損益分岐点の計算方法と経営改善に向けた活用方法を教えてください。」</a></li>
+  <li><a href="https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/57.pdf" rel="nofollow">国税庁「消費税の仕入税額控除制度における適格請求書等保存方式に関するQ&amp;A」問57</a></li>
+  <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6371.htm" rel="nofollow">国税庁 タックスアンサー No.6371「端数計算」</a></li>
+</ul>
+<p style="font-size:13px;color:var(--sub)">このページは一般的な計算方法の説明です。個別の価格設定・税務の相談への回答ではありません。</p>
+</article>
+<section class="faq rel-block">
+<h2>関連する解説</h2>
+<!--rel:S--><ul class="rel-list"><li><a href="../column/soneki-bunkiten/">損益分岐点の求め方 — 決算書には「変動費」も「固定費」も1回も出てこない。だから並べ替えから始まる</a><span class="rel-desc">損益分岐点＝固定費÷限界利益率。ただし決算書には変動費も固定費も存在しない。財規にも会社計算規則にも変動費・固定費・限界利益は無い。決算書の</span></li><li><a href="../column/uriage-genka/">売上原価とは — 確定していない原価は「見積るものとする」。条文が債務の確定を求めているのは販管費の側だけ</a><span class="rel-desc">売上原価と販売費及び一般管理費を分ける実益は、決算書の見た目ではなく損金算入のタイミングにあります。法人税法22条3項は1号に売上原価、2号</span></li><li><a href="../column/soneki-keisansho-mikata/">損益計算書の見方 — 条文が区分するのは7つの収益と費用。5つの利益は計算結果</a><span class="rel-desc">損益計算書は、会社計算規則88条1項の7区分（売上高・売上原価・販管費・営業外収益・営業外費用・特別利益・特別損失）と、89〜94条が定める</span></li></ul><!--rel:E-->
+</section>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%8E%9F%E4%BE%A1%E3%81%A8%E5%A3%B2%E4%BE%A1%E3%81%8B%E3%82%89%E5%88%A9%E7%9B%8A%E9%A1%8D%E3%83%BB%E7%B2%97%E5%88%A9%E7%8E%87%E3%83%BB%E5%8E%9F%E4%BE%A1%E7%8E%87%E3%83%BB%E4%B8%8A%E4%B9%97%E3%81%9B%E7%8E%87%E3%82%92%E8%A8%88%E7%AE%97%E3%81%97%E3%80%81%E7%9B%AE%E6%A8%99%E3%81%AE%E7%B2%97%E5%88%A9%E7%8E%87%EF%BC%88%E3%81%BE%E3%81%9F%E3%81%AF%E4%B8%8A%E4%B9%97%E3%81%9B%E7%8E%87%EF%BC%89%E4%BB%A5%E4%B8%8A%E3%81%AB%E3%81%AA%E3%82%8B1%E5%86%86%E5%8D%98%E4%BD%8D%E3%81%AE%E5%A3%B2%E4%BE%A1%E3%82%92%E9%80%86%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Friekiritsu%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site">
+  本ツールの計算結果は、入力した数字による計算です。金額データはブラウザの外へ送信されません。<br>
+  © 税金・経理・補助金ツールズ
+  <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ</div><!-- /trust:auto -->
+</footer>
+<script type="module">
+import { calcMargin, reversePrice } from "../assets/rieki_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => `${n < 0 ? "−" : ""}${Math.abs(n).toLocaleString("ja-JP")}円`;
+const pct = (x) => x === null ? "—（原価0円では計算できません）" : `${(Math.round(x * 1000) / 10).toFixed(1)}%`;
+const read = (id) => { const v = $(id).value.trim(); return v === "" ? null : Number(v); };
+const warn = (box, field, msg) => { box.dataset.resultState = "error"; box.innerHTML = `<div class="warn" data-field="${field}">${msg}</div>`; };
+const row = (k, v) => `<tr><th scope="row">${k}</th><td>${v}</td></tr>`;
+const TAX = { excluded: "税抜", included: "税込" };
+const RATE = { standard: "10%", reduced: "8%" };
+const side = (p) => ({ amount: read(p), tax: $(`${p}_tax`).value, rate: $(`${p}_rate`).value });
+const convNote = (label, input, conv, basis) => conv.converted
+  ? `${label}: ${TAX[input.tax]}${yen(input.amount)}（${RATE[input.rate]}）→ ${TAX[basis]}${yen(conv.value)}（消費税 ${yen(conv.tax)}）`
+  : `${label}: ${TAX[input.tax]}${yen(input.amount)}（変換なし）`;
+
+$("calc").addEventListener("click", () => {
+  const box = $("result");
+  box.style.display = "block";
+  const cost = side("cost"), price = side("price");
+  if (cost.amount === null) return warn(box, "cost", "原価を入力してください。");
+  if (price.amount === null) return warn(box, "price", "売価を入力してください。");
+  const basis = $("basis").value, rounding = $("rounding").value;
+  const r = calcMargin({ cost, price, basis, rounding });
+  if (!r.ok) {
+    if (r.reason === "no_price") return warn(box, "price", "売価は1円以上を入力してください。");
+    return warn(box, "cost", "金額は0以上の整数（円）で、1兆円以下を入力してください。");
+  }
+  box.innerHTML = `
+    <div class="row"><b>粗利率（利益額 ÷ 売価）</b> <span class="big" id="margin">${pct(r.grossMargin)}</span></div>
+    <div class="scroll-wrap"><table class="res"><tbody>
+      ${row(`利益額（${TAX[basis]}）`, `<span id="profit">${yen(r.profit)}</span>${r.belowCost ? "（原価割れ）" : ""}`)}
+      ${row("原価率（原価 ÷ 売価）", `<span id="cost_ratio">${pct(r.costRatio)}</span>`)}
+      ${row("上乗せ率（利益額 ÷ 原価）", `<span id="markup">${pct(r.markup)}</span>`)}
+      ${row(`計算に使った原価（${TAX[basis]}）`, `<span id="cost_b">${yen(r.cost)}</span>`)}
+      ${row(`計算に使った売価（${TAX[basis]}）`, `<span id="price_b">${yen(r.price)}</span>`)}
+    </tbody></table></div>
+    <div style="font-size:12.5px;color:var(--sub);margin-top:8px">※ ${convNote("原価", cost, r.costConverted, basis)}<br>※ ${convNote("売価", price, r.priceConverted, basis)}<br>※ 率は小数第2位を四捨五入しています。</div>`;
+  box.dataset.resultState = "success";
+});
+
+$("calc_r").addEventListener("click", () => {
+  const box = $("result_r");
+  box.style.display = "block";
+  const cost = side("r_cost");
+  const percent = read("r_percent");
+  if (cost.amount === null) return warn(box, "r_cost", "原価を入力してください。");
+  if (percent === null) return warn(box, "r_percent", "目標の率を入力してください。");
+  const kind = $("r_kind").value, basis = $("r_basis").value, rounding = $("r_rounding").value;
+  const out = { tax: $("r_out_tax").value, rate: $("r_out_rate").value };
+  const r = reversePrice({ cost, basis, target: { kind, percent }, out, rounding });
+  if (!r.ok) {
+    if (r.reason === "margin_100") return warn(box, "r_percent", "粗利率は100%未満を入力してください。原価がある限り、売価をいくら上げても粗利率は100%に届きません。");
+    if (r.reason === "invalid_percent") return warn(box, "r_percent", "目標の率は0以上で、小数第2位までを入力してください。");
+    if (r.reason === "no_cost") return warn(box, "r_cost", "原価は1円以上を入力してください。");
+    return warn(box, "r_cost", "金額は0以上の整数（円）で、1兆円以下を入力してください。");
+  }
+  const kindLabel = kind === "margin" ? "粗利率" : "上乗せ率";
+  const got = kind === "margin" ? r.result.grossMargin : r.result.markup;
+  const lessGot = r.oneYenLess ? (kind === "margin" ? r.oneYenLess.grossMargin : r.oneYenLess.markup) : null;
+  box.innerHTML = `
+    <div class="row"><b>${kindLabel} ${r.percent}% 以上になる最も安い売価（${TAX[out.tax]}）</b> <span class="big" id="r_price">${yen(r.price)}</span></div>
+    <div class="scroll-wrap"><table class="res"><tbody>
+      ${row("税抜・税込", `税抜 ${yen(r.other.excluded)}／税込 ${yen(r.other.included)}（${RATE[out.rate]}・消費税 ${yen(r.other.tax)}）`)}
+      ${row(`この売価の${kindLabel}`, `${pct(got)}（${TAX[basis]}でそろえて判定）`)}
+      ${row(`利益額（${TAX[basis]}）`, yen(r.result.profit))}
+      ${row(`計算に使った原価（${TAX[basis]}）`, yen(r.cost))}
+      ${r.oneYenLess ? row("1円安いと", `${yen(r.price - 1)} で${kindLabel} ${pct(lessGot)}（目標に届きません）`) : ""}
+    </tbody></table></div>
+    <div style="font-size:12.5px;color:var(--sub);margin-top:8px">※ 入力した率を満たす最も安い1円単位の売価です。率の表示は小数第2位を四捨五入しているため、目標と同じ数字に見えても判定は1円単位で正確に行っています。</div>`;
+  box.dataset.resultState = "success";
+});
+</script>
+<script src="../assets/a11y_error.js" defer></script>
+<script src="../assets/empty-state.js" defer></script>
+</body>
+</html>

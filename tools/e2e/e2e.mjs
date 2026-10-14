@@ -788,6 +788,27 @@ const SCENES = [
   { name: "nenmatsu_chosei_nodata", data404: "nencho_r08.json",
     expect: (s) => s.failed && s.nenzei === null },
 
+  // ── 損益分岐点 計算ツール (/soneki-bunkiten/) ───────────────────────
+  // ★J-Net21 Q0240: 300,000円÷200円＝1,500個／1,000円×1,500個＝1,500,000円／目標利益15万円で2,250個
+  { name: "soneki_bunkiten", expect: (s) =>
+      s.big === 1500 && s.bepSalesU === 1500000 && s.targetQty === 2250 && s.state === "success" },
+  // ★日本政策金融公庫: 売上高120・変動費48・固定費60（万円）→ 損益分岐点100。安全余裕率 20÷120＝16.7%
+  { name: "soneki_bunkiten_sogaku", expect: (s) =>
+      s.big === 1000000 && s.profit === 120000 && s.safety === "16.7%" && s.bepRatio === "83.3%" && s.state === "success" },
+  // 限界利益0円: 負の損益分岐点を出さず、前提が成り立たないと言う
+  { name: "soneki_bunkiten_no_margin", noCoverage: true, expect: (s) => s.noMargin && s.big === null },
+
+  // ── 利益率・原価率 計算ツール (/riekiritsu/) ───────────────────────
+  // ★J-Net21: 売価1,000円・仕入800円の差額200円。粗利率20%・原価率80%・上乗せ率25%（分母のちがい）
+  { name: "riekiritsu", expect: (s) =>
+      s.profit === 200 && s.margin === "20.0%" && s.costRatio === "80.0%" && s.markup === "25.0%" && s.state === "success" },
+  // ★国税庁 問57 の記載例の税額で税抜にそろえる: 税込40,000円(8%)→37,038円・税込60,000円(10%)→54,546円
+  { name: "riekiritsu_zei", expect: (s) =>
+      s.costB === 37038 && s.priceB === 54546 && s.profit === 17508 },
+  // 逆算: 原価800円・粗利率20%以上 → 税抜1,000円／税込で答えると（消費税の端数切捨て）1,099円
+  { name: "riekiritsu_gyakusan", expect: (s) => s.rPrice === 1000 && s.state === "success" },
+  { name: "riekiritsu_gyakusan_zeikomi", expect: (s) => s.rPrice === 1099 },
+
   // ── 所得税 計算機（確定申告） (/shotokuzei/) ─────────────────────────
   // ★年末調整の設例A（所得控除4,826,102円・年調年税額41,400円）に医療費30万円を足して確定申告:
   //   所得金額の合計6,973,000 → 控除5,026,102 → 課税1,946,000 → 税額97,300 −住宅ローン控除76,500
@@ -1949,7 +1970,9 @@ const SCENES = [
   ...["shaho", "tedori", "furusato", "yukyu", "embed_yukyu", "gensen", "gensen_hoshu",
       "kihonteate", "saishushoku", "ikuji", "papa_ikukyu", "juminzei", "taishokukin", "jutaku",
       // 2026-10-08（keiri-uiux-review-2026-10-08 高3・低）: 新ツール2本と、取りこぼした印紙・賞与
-      "shotokuzei", "nenmatsu_chosei", "nenmatsu_chosei_choshu", "inshi", "bonus_tedori"].map((t) => ({
+      "shotokuzei", "nenmatsu_chosei", "nenmatsu_chosei_choshu", "inshi", "bonus_tedori",
+      // 2026-10-14 新ツール2本
+      "soneki_bunkiten", "riekiritsu"].map((t) => ({
     name: `ux_field_error_${t}`, noCoverage: true, uxFieldError: true, expect: (s) =>
       s.initialEmpty && s.noPlaceholder && s.hasExample && s.focused && s.describedByError &&
       s.errorVisible && s.errorNearField && s.resultWarnLinked && s.fieldInView && s.cleared &&
