@@ -161,7 +161,43 @@ const saiteiHourlyScene = (ymd) => async () => {
   };
 };
 
+async function bankFeePage(slug, base, invoice, expectedTransfer) {
+  const doc = await open('/docs/column/' + slug + '/');
+  const fees = await (await fetch('/docs/assets/fee_table.json?raw=1')).json();
+  const rows = fees.banks.filter(r => r.name.startsWith(base + '（'));
+  const correct = rows.every((r,i) => {
+    const cells = doc.querySelector('#other-fees tr[data-fee-row="'+i+'"]').cells;
+    const bounds = doc.querySelector('#boundary-fees tr[data-boundary-row="'+i+'"]').cells;
+    return cells[1].textContent.trim() === r.under30k+'円' && cells[2].textContent.trim() === r.over30k+'円' &&
+      cells[3].querySelector('a').href === r.source && cells[3].querySelector('time').dateTime === r.verified_date &&
+      [r.under30k,r.over30k,r.over30k].every((n,j) => bounds[j+1].textContent.trim() === n+'円');
+  });
+  let printCalled = false;
+  doc.defaultView.print = () => {printCalled = true;};
+  click(doc,'print-fees');
+  const viewports=[];
+  for (const width of [1280,390]) {
+    document.getElementById('f').style.width=width+'px';
+    await sleep(50);
+    viewports.push({width,actual:doc.defaultView.innerWidth,scroll:doc.documentElement.scrollWidth});
+  }
+  const noOverflow = viewports.every(v=>v.actual===v.width && v.scroll<=v.width+1);
+  document.getElementById('f').style.width='1100px';
+  const link=doc.querySelector('.tool-cta').getAttribute('href');
+  const tool=await open(new URL(link,doc.location.href).pathname + new URL(link,doc.location.href).hash);
+  await waitFor(() => tool.getElementById('bankPreset').options.length > 1, '手数料プリセット');
+  const bank = rows.find(r => /（法人/.test(r.name));
+  if (!bank.id) {
+    const i=fees.banks.findIndex(r => r.name===bank.name);
+    set(tool,'bankPreset',String(i));
+  }
+  pickRadio(tool,'method','sueoki');set(tool,'invoice',String(invoice));click(tool,'calc');
+  const transferCorrect = text(tool,'result').includes(expectedTransfer);
+  return {correct,printCalled,transferCorrect,noOverflow,viewports,result:text(tool,'result')};
+}
 const SCENES = {
+  async bank_fee_mufg() { return bankFeePage('mufg-furikomi-tesuryo','三菱UFJ銀行',30000,'29,340'); },
+  async bank_fee_yucho() { return bankFeePage('yucho-furikomi-tesuryo','ゆうちょ銀行',30000,'29,835'); },
   // 銀行プリセットを選ぶと手数料欄が本当に埋まるか(fetch→select→input の配線)
   async senpou_preset() {
     const doc = await open("/docs/senpou-futan/");

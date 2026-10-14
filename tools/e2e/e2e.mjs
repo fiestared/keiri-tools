@@ -21,6 +21,8 @@ const ROOT = resolve(fileURLToPath(new URL("../../", import.meta.url)));
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const SCENES = [
+  { name: "bank_fee_mufg", expect: s => s.correct && s.printCalled && s.transferCorrect && s.noOverflow },
+  { name: "bank_fee_yucho", expect: s => s.correct && s.printCalled && s.transferCorrect && s.noOverflow },
   { name: "senpou_preset", expect: (s) =>
       s.filled.under === s.expectFilled.under && s.filled.over === s.expectFilled.over &&
       s.result.includes(s.expectTransfer) },

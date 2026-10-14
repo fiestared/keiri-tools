@@ -523,6 +523,8 @@ const ORDER = [
   "kodomo-kosodate-kyoshutsukin",
   "yukyu-nen5ka",
   "eigyobi-kazoekata",
+  "yucho-furikomi-tesuryo", // 銀行別ページ: 公式確認済みの個人・法人、同行宛て、境界と印刷
+  "mufg-furikomi-tesuryo",
   "furikomi-tesuryo-hikaku",
   "senpou-futan-3hoshiki",
   "zengin-format-guide",
@@ -763,7 +765,7 @@ const CATEGORIES = [
     name: "振込・支払の実務",
     desc: "振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日の数え方、収入印紙。支払期日の上限を定める中小受託取引適正化法（旧・下請法）の60日ルールと、フリーランス法との違いもここ。",
     slugs: [
-      "furikomi-tesuryo-hikaku", "furikomi-hanei-jikan", "furikomi-furikae-chigai", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
+      "yucho-furikomi-tesuryo", "mufg-furikomi-tesuryo", "furikomi-tesuryo-hikaku", "furikomi-hanei-jikan", "furikomi-furikae-chigai", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "kumimodoshi", "koza-furikae-iraisho", "kotora-sokin", "pay-easy",
       "zengin-format-guide", "csv-mojibake", "eigyobi-kazoekata", "shunyu-inshi-warihan",
       "ryoshusho-kakikata", "mitsumorisho-kakikata", "nohinsho-toha", "seikyusho-kakikata", "chumon-ukesho", "tatekaekin-seisansho", "shukkin-denpyo",

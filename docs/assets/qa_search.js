@@ -343,7 +343,11 @@ export function search(index, query, limit = 3) {
   // 被覆の分母も主題側に寄せ、意図語をたまたま持つ別主題の記事が居座るのを防ぐ。
   const nq = profile.topic || normalize(query).replace(/ /g, "");
   const contentIdx = contentPositions(nq);
+  // Pages about a named subject participate only when the query names it.
+  // Keep broad bank-transfer queries on the comparison, timing and method pages.
+  const normalizedQuery = normalize(query);
   const scored = index
+    .filter(e => !e.requiredTerms?.length || e.requiredTerms.some(t => normalizedQuery.includes(normalize(t))))
     .map((e) => ({ e, s: scoreEntry(e, qtokens, df, N, profile), leadCoverage: leadCharCoverage(e, profile) }))
     .filter((x) => x.s > 0 && contentCoverage(x.e, qtokens, nq, contentIdx, df, N) >= MIN_CONTENT_COVERAGE)
     // 「◯◯の選び方」は、◯◯を主題にしていない記事へ偶然「選び方」が刺さっても返さない。
