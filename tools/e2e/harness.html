@@ -4877,6 +4877,64 @@ SCENES.nenmatsu_chosei_kisai1 = nenchoScene({
 });
 SCENES.nenmatsu_chosei_nodata = nenchoScene(NENCHO_A);
 
+// ── 損益分岐点 計算ツール (/soneki-bunkiten/) ───────────────────────────────
+// ★期待値は一次資料の公表値: J-Net21 Q0240（販売単価1,000円・変動費800円・固定費30万円 → 1,500個・1,500,000円、
+//   目標利益15万円 → 2,250個）と、日本政策金融公庫 shindanshi_20220921.pdf（売上高120・変動費48・固定費60（万円）→ 100）。
+const numOf = (t) => { const m = (t || "").match(/[−-]?[\d,]+/); return m ? Number(m[0].replace(/,/g, "").replace("−", "-")) : null; };
+const resRows = (doc, id) => Object.fromEntries([...doc.querySelectorAll(`#${id} table tr`)].map((tr) =>
+  [tr.querySelector("th")?.textContent.trim(), tr.querySelector("td")?.textContent.trim()]));
+const sonekiScene = (o) => async () => {
+  const doc = await open("/docs/soneki-bunkiten/");
+  for (const [id, v] of Object.entries(o.vals)) set(doc, id, v);
+  const btn = o.units ? "calc_u" : "calc", res = o.units ? "result_u" : "result";
+  click(doc, btn);
+  await waitFor(() => /円|個|計算できません|決まりません/.test(text(doc, res)), "損益分岐点の結果");
+  const rows = resRows(doc, res);
+  const row = (k) => { const key = Object.keys(rows).find((x) => x && x.startsWith(k)); return key ? rows[key] : null; };
+  return {
+    big: numOf(doc.getElementById(o.units ? "bep_qty" : "bep")?.textContent),
+    bepSalesU: numOf(row("損益分岐点売上高")),
+    targetQty: numOf(row("目標利益")),
+    safety: row("安全余裕率"), bepRatio: row("損益分岐点比率"), profit: numOf(row("今の利益")),
+    noMargin: /損益分岐点は(計算できません|1つに決まりません)/.test(text(doc, res)),
+    // マイナスと0円で言い分けているか（0円なのに「赤字が増え」と言わない）
+    marginMinus: /マイナス/.test(text(doc, res)), redGrows: /赤字が増え/.test(text(doc, res)),
+    state: doc.getElementById(res).dataset.resultState,
+    body: text(doc, res).slice(0, 300),
+  };
+};
+SCENES.soneki_bunkiten = sonekiScene({ units: true, vals: { price: "1000", unit_var: "800", fixed_u: "300000", target_u: "150000" } });
+SCENES.soneki_bunkiten_sogaku = sonekiScene({ vals: { sales: "1200000", variable: "480000", fixed: "600000" } });
+SCENES.soneki_bunkiten_no_margin = sonekiScene({ vals: { sales: "1200000", variable: "1200000", fixed: "600000" } });
+SCENES.soneki_bunkiten_no_margin_minus = sonekiScene({ vals: { sales: "1200000", variable: "1200001", fixed: "600000" } });
+
+// ── 利益率・原価率 計算ツール (/riekiritsu/) ───────────────────────────────
+// ★期待値: J-Net21 の売価1,000円・仕入800円の差額200円／国税庁 インボイスQ&A 問57 の記載例
+//   （60,000円×10/110≒5,454円・40,000円×8/108≒2,962円 → 税抜 54,546円・37,038円）。逆算は粗利率の定義（公庫の手引）から。
+const riekiScene = (o) => async () => {
+  const doc = await open("/docs/riekiritsu/");
+  for (const [id, v] of Object.entries(o.vals)) set(doc, id, v);
+  const btn = o.rev ? "calc_r" : "calc", res = o.rev ? "result_r" : "result";
+  click(doc, btn);
+  await waitFor(() => /円|%/.test(text(doc, res)), "利益率の結果");
+  const g = (id) => doc.getElementById(id)?.textContent.trim() ?? null;
+  return {
+    margin: g("margin"), profit: numOf(g("profit")), costRatio: g("cost_ratio"), markup: g("markup"),
+    costB: numOf(g("cost_b")), priceB: numOf(g("price_b")), rPrice: numOf(g("r_price")), less: g("r_less"),
+    nan: /NaN/.test(text(doc, res)),
+    state: doc.getElementById(res).dataset.resultState,
+    body: text(doc, res).slice(0, 300),
+  };
+};
+SCENES.riekiritsu = riekiScene({ vals: { cost: "800", price: "1000" } });
+SCENES.riekiritsu_zei = riekiScene({ vals: { cost: "40000", cost_tax: "included", cost_rate: "reduced", price: "60000", price_tax: "included", price_rate: "standard" } });
+SCENES.riekiritsu_gyakusan = riekiScene({ rev: true, vals: { r_cost: "800", r_percent: "20" } });
+SCENES.riekiritsu_gyakusan_zeikomi = riekiScene({ rev: true, vals: { r_cost: "800", r_percent: "20", r_out_tax: "included" } });
+// 答えが1兆円を超える（原価1兆円・粗利率50% → 2兆円）: NaN を成功として出さず、断る（2026-10-14 sol H1）
+SCENES.riekiritsu_gyakusan_too_large = riekiScene({ rev: true, vals: { r_cost: "1000000000000", r_percent: "50" } });
+// 原価1円・粗利率0%・税込で答える・切上げ → 2円。1円安い税込1円は税抜0円で率を定義できない（同 L1）
+SCENES.riekiritsu_gyakusan_less_noprice = riekiScene({ rev: true, vals: { r_cost: "1", r_percent: "0", r_out_tax: "included", r_rounding: "ceil" } });
+
 // ── 所得税 計算機（確定申告） (/shotokuzei/) ─────────────────────────────
 // ★期待値は国税庁『令和8年分 年末調整のしかた』57〜59頁の設例A（所得控除の合計4,826,102円）に
 //   医療費30万円を足した手計算（tests/test_shotokuzei.mjs と同じ鎖）と、確定申告の手引きの一時所得の設例。
@@ -5727,6 +5785,9 @@ SCENES.ux_field_error_nenmatsu_chosei = fieldErrorScene({ path: "/docs/nenmatsu-
 SCENES.ux_field_error_nenmatsu_chosei_choshu = fieldErrorScene({ path: "/docs/nenmatsu-chosei/", field: "choshu", value: "120000", fill: { kyuyo: "5000000" } });
 SCENES.ux_field_error_inshi = fieldErrorScene({ path: "/docs/inshi/", field: "amount", value: "54800" });
 SCENES.ux_field_error_bonus_tedori = fieldErrorScene({ path: "/docs/bonus-tedori/", field: "bonus", value: "500000", fill: { zengetsu: "300000" } });
+// 2026-10-14 新ツール2本（損益分岐点・利益率）
+SCENES.ux_field_error_soneki_bunkiten = fieldErrorScene({ path: "/docs/soneki-bunkiten/", field: "sales", value: "1200000", fill: { variable: "480000", fixed: "600000" } });
+SCENES.ux_field_error_riekiritsu = fieldErrorScene({ path: "/docs/riekiritsu/", field: "cost", value: "800", fill: { price: "1000" } });
 // 計算ボタンを押して、結果が画面の下（見えない位置）に描かれたら、結果の頭が見えるところまでスクロールすること。
 // iframe を低くして「結果が折り目の下に出る」スマホの状態を作る
 // ★幅も 390px にする。1024px 以上は右レールに結果の要約が出るので、ページを動かさないのが正しい
