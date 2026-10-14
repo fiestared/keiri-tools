@@ -21,6 +21,16 @@ const ROOT = resolve(fileURLToPath(new URL("../../", import.meta.url)));
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const SCENES = [
+  ...[
+    ['tokyo','東京',1280,1226,'2026-10-01',204800],
+    ['akita','秋田',1090,1031,'2026-10-14',174400],
+    ['kyoto','京都',1180,1122,'2026-11-16',188800],
+    ['iwate','岩手',1090,1031,'2026-12-01',174400],
+    ['okinawa','沖縄',1086,1023,'2026-12-02',173760],
+  ].map(([slug,pref,wage,prev,effective,monthly]) => ({name:`saitei_pref_${slug}`,expect:s=>
+    s.selected===pref && s.wage===wage && s.prev===prev && s.effective===effective && s.monthly===monthly &&
+    s.checked==='2026-10-14' && s.printCalls===1 && s.parentLink && s.neighborLinks &&
+    s.beforeMin===prev && s.afterMin===wage && s.beforePass && s.afterPass && s.afterFail && s.mobileOverflow===0 && s.monthlySelected })),
   { name: "senpou_preset", expect: (s) =>
       s.filled.under === s.expectFilled.under && s.filled.over === s.expectFilled.over &&
       s.result.includes(s.expectTransfer) },

@@ -37,6 +37,37 @@ const ROOT = resolve(fileURLToPath(new URL("../", import.meta.url)));
  */
 const ENUMERATIONS = [
   {
+    page: "docs/saitei-chingin/index.html", element: "saitei-exclusions",
+    law: "最低賃金法4条3項・施行規則1条・厚生労働省『最低賃金の対象となる賃金』",
+    why: "時間外・所定休日は通常賃金部分も除き、深夜は割増部分だけを除く。手当も省略しない。",
+    items: [
+      { id: "temporary", label: "臨時の賃金", must: /臨時に支払われる賃金/ },
+      { id: "long-period", label: "一か月を超える期間の賃金", must: /1か月を超える期間ごとに支払われる賃金/ },
+      { id: "overtime", label: "所定時間外の賃金全体", must: /所定労働時間を超える時間の労働に対して支払われる賃金（時間外労働の賃金。割増部分だけではなく通常賃金部分も除く）/ },
+      { id: "holiday", label: "所定休日の賃金全体", must: /所定労働日以外の日の労働に対して支払われる賃金（所定休日の労働の賃金。割増部分だけではなく通常賃金部分も除く）/ },
+      { id: "night", label: "深夜割増部分", must: /午後10時から午前5時までの深夜労働の賃金のうち、通常の労働時間の賃金を超える部分/ },
+      { id: "night-exception", label: "大臣指定の地域・期間", must: /厚生労働大臣が定める地域・期間は午後11時から午前6時まで/ },
+      { id: "attendance", label: "精皆勤手当", must: /精皆勤手当/ },
+      { id: "commuting", label: "通勤手当", must: /通勤手当/ },
+      { id: "family", label: "家族手当", must: /家族手当/ },
+    ],
+  },
+  ...Object.values(JSON.parse(await readFile(join(ROOT, "tools/saitei_pref_pages.json"), "utf8")).prefectures).map(p => ({
+    page: `docs/saitei-chingin/${p.slug}/index.html`, element: "pref-exclusions",
+    law: "最低賃金法4条3項・施行規則1条・地域別最低賃金の算入除外",
+    why: "県の月給換算を総支給額と取り違えないためのチェックリスト。詳細は親ページ。",
+    items: [
+      { id: "temporary", label: "臨時", must: /臨時に支払われる賃金/ },
+      { id: "long-period", label: "一か月超", must: /一か月を超える期間ごとの賃金/ },
+      { id: "overtime", label: "所定時間外", must: /所定時間を超える労働への賃金/ },
+      { id: "holiday", label: "所定休日", must: /所定休日の労働への賃金/ },
+      { id: "night", label: "深夜割増部分", must: /深夜労働の通常賃金を超える部分/ },
+      { id: "attendance", label: "精皆勤", must: /精皆勤手当/ },
+      { id: "commuting", label: "通勤", must: /通勤手当/ },
+      { id: "family", label: "家族", must: /家族手当/ },
+    ],
+  })),
+  {
     page: "docs/column/yakuin-koyou-hoken/index.html",
     element: "dokyo-shinzoku-youken",
     law: "厚生労働省「雇用保険制度 Q＆A～事業主の皆様へ」Q5",
