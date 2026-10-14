@@ -962,6 +962,10 @@ th.num, td.num { text-align: right; font-variant-numeric: tabular-nums; }
 /* 逆に、スマホ幅では収まらないがPC幅(481px以上)なら改行禁止でも枠に収まる表（44表。481/600/768/1024/1280pxで実測） */
 @media (min-width: 481px) { .num-nowrap-lg th.num, .num-nowrap-lg td.num { white-space: nowrap; } }
 @media (max-width: 359px) { .num-nowrap th.num, .num-nowrap td.num { white-space: normal; } .num-nowrap thead th { word-break: normal; } }
+/* 範囲・式の列（「所得者900万円以下・配偶者58万円超95万円以下」「30万円×9.85%÷2」）を PC 幅でだけ折り返さない。
+   2026-10-12 の読みやすさの作り直しで style="white-space:nowrap" を全幅に付けた結果、390幅で値の列が枠外へ押し出され
+   test_layout_render（table-no-number-visible）が赤になった（2026-10-14）。スマホ幅は折り返して値の列を最初の画面に見せる */
+@media (min-width: 481px) { .nowrap-lg { white-space: nowrap; } }
 
 /* ---- 本文へ移動（SC 2.4.1）----
    キーボード利用者がヘッダーのリンク群を毎ページ読み飛ばせるようにする。
@@ -1537,4 +1541,24 @@ footer [data-duplicate-note] { display: none !important; }
      縮めていた（＝今までの見た目）。隠すと等倍に戻り、入力欄と結果が1枚に収まらなくなる（社保・有給で実測）。 */
   html[data-calculated] body { zoom: .86; }
   html[data-calculated] footer.site { max-width: none; padding: 8px 0 0; font-size: 9pt; line-height: 1.5; color: #000; }
+}
+
+/* 年末調整 計算機: 結果の要約（年調年税額・天引きの合計・差額）と、源泉徴収票・源泉徴収簿の欄の列 */
+.kekka-sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0 6px; }
+.kekka-sum > div { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.kekka-sum span { display: block; font-size: 13px; color: var(--sub); }
+.kekka-sum b { display: block; font-size: 20px; margin: 2px 0; }
+.kekka-sum small { display: block; font-size: 12px; color: var(--sub); line-height: 1.5; }
+.kekka-sum .kekka-sum-sa { border-color: var(--accent); }
+/* .result table.res の overflow:hidden が残ると、15行超の表で付く sticky 見出し（top: --site-header-h）の基準が表自身になり、
+   見出しが1行目に61px食い込んで重なる（2026-10-14 1440px 実測）。この表は visible にしてページを基準にする */
+.result table.res-ran { overflow: visible; }
+.result table.res-ran thead th { width: auto; white-space: nowrap; font-size: 13px; }
+.result table.res-ran tbody th { width: 38%; white-space: normal; }
+.result table.res-ran td.ran { font-size: 12px; color: var(--sub); line-height: 1.5; width: 30%; }
+.sagasu-hyo { font-size: 13px; }
+.sagasu-hyo th[scope="row"] { white-space: nowrap; }
+@media (max-width: 560px) {
+  .kekka-sum { grid-template-columns: 1fr; }
+  .result table.res-ran td.ran { min-width: 9em; }
 }
