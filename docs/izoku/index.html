@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>遺族年金 計算機｜遺族基礎・遺族厚生・中高齢寡婦加算をまとめて計算</title>
-<meta name="description" content="遺族基礎年金・遺族厚生年金・中高齢寡婦加算の年額を、令和8年度の額で計算します。遺族基礎年金は18歳年度末までの子がいるときだけ。中高齢寡婦加算は遺族基礎年金を受けるあいだ支給停止で、長期要件は加入240月以上が条件です。">
+<meta name="description" content="遺族基礎年金・遺族厚生年金・中高齢寡婦加算の年額を、令和8年度の額で計算します。遺族基礎年金は対象となる子がいるときだけ。中高齢寡婦加算は遺族基礎年金を受けるあいだ支給停止で、長期要件は加入240月以上が条件です。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/izoku/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="遺族年金 計算機｜遺族基礎・遺族厚生・中高齢寡婦加算をまとめて計算">
-<meta property="og:description" content="遺族基礎年金・遺族厚生年金・中高齢寡婦加算の年額を、令和8年度の額で計算します。遺族基礎年金は18歳年度末までの子がいるときだけ。中高齢寡婦加算は遺族基礎年金を受けるあいだ支給停止で、長期要件は加入240月以上が条件です。">
+<meta property="og:description" content="遺族基礎年金・遺族厚生年金・中高齢寡婦加算の年額を、令和8年度の額で計算します。遺族基礎年金は対象となる子がいるときだけ。中高齢寡婦加算は遺族基礎年金を受けるあいだ支給停止で、長期要件は加入240月以上が条件です。">
 <meta property="og:url" content="https://keiri-tools.com/izoku/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -151,7 +151,7 @@
 <section class="hero">
   <h1>遺族年金 計算機</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-31">2026年7月31日</time>（更新日: <time datetime="2026-10-14">2026年10月14日</time>）</p>
-  <p>亡くなった方に生計を維持されていた配偶者が受け取る<b>遺族基礎年金・遺族厚生年金・中高齢寡婦加算</b>の年額を、令和8年度の額で計算します。<b id="hero-kiso">遺族基礎年金は、18歳年度末までの子がいるときだけ</b>出ます。<b id="hero-teishi">中高齢寡婦加算は、遺族基礎年金を受け取っているあいだは支給停止</b>です。</p>
+  <p>亡くなった方に生計を維持されていた配偶者が受け取る<b>遺族基礎年金・遺族厚生年金・中高齢寡婦加算</b>の年額を、令和8年度の額で計算します。<b id="hero-kiso">遺族基礎年金は、18歳年度末までの子（障害等級1級・2級の子は20歳未満）がいるときだけ</b>出ます。<b id="hero-teishi">中高齢寡婦加算は、遺族基礎年金を受け取っているあいだは支給停止</b>です。</p>
 </section>
 
 <div class="card">
@@ -252,24 +252,27 @@
 
 <div class="callout">
   <b id="nidan-junjo">子が卒業したときに、受け取るものが入れ替わる</b>
-  子がいるあいだは遺族基礎年金＋遺族厚生年金、子が18歳到達年度の末日を過ぎると遺族基礎年金が終わり、かわりに（妻が40歳以上65歳未満なら）中高齢寡婦加算が始まります。<b>両方を同時に受け取ることはありません</b>（<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_65" rel="nofollow">厚生年金保険法65条</a>）。年額が段階的に変わるので、子の年齢を変えて2回計算してみると、これから起きることが見えます。
+  子がいるあいだは遺族基礎年金＋遺族厚生年金、子が18歳到達年度の末日を過ぎると遺族基礎年金が終わり、かわりに（妻が40歳以上65歳未満なら）中高齢寡婦加算が始まります。<b>両方を同時に受け取ることはありません</b>（<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_65" rel="nofollow">厚生年金保険法65条</a>）。年額が段階的に変わるので、子の人数を0人に変えてもう一度計算すると、子が卒業した後の額が見えます。
 </div>
 
 <h2 id="kiso">遺族基礎年金は「18歳年度末までの子」がいないと出ない</h2>
+
+<p>令和8年度の遺族基礎年金は、<b>基本額847,300円に子の加算を足した額</b>です。子の加算は1人目・2人目が各243,800円、3人目以降が各81,300円です（表）。</p>
+
+<div class="scroll-wrap"><table>
+  <thead><tr><th scope="col">項目</th><th scope="col">本則の額</th><th scope="col">令和8年度の額</th></tr></thead>
+  <tbody id="kiso-table">
+    <tr><td>基本額（<a href="https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_4-At_38" rel="nofollow">国民年金法38条</a>）</td><td><span class="numeric-token">780,900円</span></td><td><span class="numeric-token">847,300円</span></td></tr>
+    <tr><td>子の加算 1人目・2人目（<a href="https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_4-At_39" rel="nofollow">39条1項</a>かっこ書）</td><td>各 224,700円</td><td>各 243,800円</td></tr>
+    <tr><td>子の加算 3人目以降（<a href="https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_4-At_39" rel="nofollow">39条1項</a>本文）</td><td>各 74,900円</td><td>各 81,300円</td></tr>
+    <tr><td>中高齢寡婦加算（<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_62" rel="nofollow">厚生年金保険法62条1項</a>）</td><td>基本額の4分の3</td><td><span class="numeric-token">635,500円</span></td></tr>
+  </tbody>
+</table></div>
 
 <p>遺族基礎年金の額は、<a href="https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_4-At_38" rel="nofollow">国民年金法38条</a>が定める<b>78万900円に改定率を掛けた額</b>（100円単位に丸め）に、<a href="https://laws.e-gov.go.jp/law/334AC0000000141#Mp-Ch_3-Se_4-At_39" rel="nofollow">39条1項</a>の<b>子の加算</b>を足したものです。子の加算は1人につき7万4,900円に改定率を掛けた額が原則ですが、<b id="kasan-kakko">かっこ書きで「そのうち二人までについては」22万4,700円に改定率を掛けた額に読み替え</b>られます。</p>
 
 <p>つまり<b>低い額が本文の原則で、2人までだけが高い額に読み替えられている</b>という構造です。子が3人以上いると、3人目からは低い額で加算されます。</p>
 
-<div class="scroll-wrap"><table>
-  <thead><tr><th scope="col">項目</th><th scope="col">本則の額</th><th scope="col">令和8年度の額</th></tr></thead>
-  <tbody id="kiso-table">
-    <tr><td>基本額（国民年金法38条）</td><td><span class="numeric-token">780,900円</span></td><td><span class="numeric-token">847,300円</span></td></tr>
-    <tr><td>子の加算 1人目・2人目（39条1項かっこ書）</td><td>各 224,700円</td><td>各 243,800円</td></tr>
-    <tr><td>子の加算 3人目以降（39条1項本文）</td><td>各 74,900円</td><td>各 81,300円</td></tr>
-    <tr><td>中高齢寡婦加算（厚生年金保険法62条1項）</td><td>基本額の4分の3</td><td><span class="numeric-token">635,500円</span></td></tr>
-  </tbody>
-</table></div>
 
 <p><b id="ko-teigi">ここでいう「子」は、18歳に達する日以後の最初の3月31日までの間にある子</b>（または20歳未満で障害等級1級・2級に該当する子）です。高校を卒業する年の3月31日で終わるため、大学生の子は数に入りません。この要件に当たる子が1人もいない配偶者には、遺族基礎年金は<b>1円も支給されません</b>。</p>
 
@@ -319,6 +322,8 @@
 <h2 id="kosei">遺族厚生年金と、短期要件のときだけ効く300月みなし</h2>
 
 <p>遺族厚生年金の額は、<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_60" rel="nofollow">厚生年金保険法60条1項1号</a>により<b>亡くなった方の報酬比例部分の4分の3</b>です。報酬比例部分は、平成15年3月以前が「平均標準報酬<b>月額</b>×7.125/1000×月数」、平成15年4月以後が「平均標準報酬<b>額</b>×5.481/1000×月数」で計算します。平成15年4月から賞与も年金額に反映されるようになったため、平均のとり方と乗率が変わりました。</p>
+
+<p>短期要件では、加入が300月に満たなくても<b>300月として計算</b>します。長期要件は実際の加入月数で計算します。</p>
 
 <p>ここでいちばん間違えやすいのが<b id="minashi-shugo">300月みなしの適用範囲</b>です。60条1項1号のただし書は、<b>「第五十八条第一項第一号から第三号までのいずれかに該当することにより支給される遺族厚生年金については」</b>と主語を絞ったうえで、被保険者期間が300月に満たないときは300月として計算すると定めています。</p>
 
@@ -389,7 +394,7 @@
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>受け取れません。<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_65" rel="nofollow">厚生年金保険法65条</a>により、遺族基礎年金を受けられるあいだは中高齢寡婦加算が支給停止になります。子が18歳到達年度の末日を過ぎて遺族基礎年金が終わったあと、妻が65歳になるまでのあいだ加算されます。つまり両方を同時に受け取ることはなく、子がいるあいだは遺族基礎年金、子が卒業したあとは中高齢寡婦加算、という順に切り替わります。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>中高齢寡婦加算が付かないと言われました。なぜですか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>中高齢寡婦加算には4つの条件があり、どれか1つでも欠けると付きません。①受け取るのが妻であること、②40歳以上65歳未満であること、③遺族基礎年金を受けていないこと（厚生年金保険法65条）、④長期要件で支給される遺族厚生年金の場合は、厚生年金の被保険者期間が240月（20年）以上あること（<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_62" rel="nofollow">同法62条1項</a>かっこ書）です。とくに④は見落としやすく、自営業の期間が長かった方が老齢厚生年金の受給権者として亡くなった場合、加入が240月に届かず加算されないことがあります。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>中高齢寡婦加算には4つの条件があり、どれか1つでも欠けると付きません。①受け取るのが妻であること。②40歳以上65歳未満であること。③遺族基礎年金を受けていないこと（<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_65" rel="nofollow">厚生年金保険法65条</a>）。④長期要件で支給される遺族厚生年金の場合は、厚生年金の被保険者期間が240月（20年）以上あること（<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_62" rel="nofollow">同法62条1項</a>かっこ書）です。とくに④は見落としやすく、自営業の期間が長かった方が老齢厚生年金の受給権者として亡くなった場合、加入が240月に届かず加算されないことがあります。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>65歳になって自分の老齢厚生年金が出ると、遺族厚生年金は止まりますか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>止まりませんが、額の決め方が変わります。<a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-Ch_3-Se_4-At_60" rel="nofollow">厚生年金保険法60条1項2号</a>により、老齢厚生年金の受給権がある配偶者の遺族厚生年金は、①報酬比例の4分の3の額と、②その3分の2に自分の老齢厚生年金の2分の1を足した額の、いずれか多い額になります。そのうえで自分の老齢厚生年金は全額支給され、その差額が遺族厚生年金として上乗せされます。したがって受け取る合計額は、自分の老齢厚生年金が増えても遺族厚生年金の分だけ単純に足し算されるわけではありません。</p>
