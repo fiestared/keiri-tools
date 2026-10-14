@@ -21,6 +21,21 @@ const ROOT = resolve(fileURLToPath(new URL("../../", import.meta.url)));
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 const SCENES = [
+  { name: "nenrei", expect: s => s.initialRows === 121 && s.nextRows === 121 && s.row2026 === "2000年 平成12年 25歳 26歳" && s.row2027 === "2000年 平成12年 26歳 27歳" && s.before === "平成31年4月30日" && s.after === "令和元年5月1日" && s.reverse === "2019年5月1日" && s.alternateEra === "2019年4月30日" && s.invalid && s.cleared && s.recalculated && s.leapBefore && s.leapAfter },
+
+  { name: "print_table_inshi", expect: s => s.rows === 16 && s.first === '非課税（印紙不要）' && s.tax === '200円' && s.last === '200円' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
+  { name: "print_table_koyou", expect: s => s.rows === 3 && s.rates === '5/1,000|8.5/1,000|13.5/1,000' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
+  { name: "print_table_rosai", expect: s => s.rows === 53 && s.first === '52' && s.last === '3' && s.sources && s.xlsx && s.printCalled && s.printReset && s.noOverflow },
+  ...[
+    ['tokyo','東京',1280,1226,'2026-10-01',204800],
+    ['akita','秋田',1090,1031,'2026-10-14',174400],
+    ['kyoto','京都',1180,1122,'2026-11-16',188800],
+    ['iwate','岩手',1090,1031,'2026-12-01',174400],
+    ['okinawa','沖縄',1086,1023,'2026-12-02',173760],
+  ].map(([slug,pref,wage,prev,effective,monthly]) => ({name:`saitei_pref_${slug}`,expect:s=>
+    s.selected===pref && s.wage===wage && s.prev===prev && s.effective===effective && s.monthly===monthly &&
+    s.checked==='2026-10-14' && s.printCalls===1 && s.parentLink && s.neighborLinks &&
+    s.beforeMin===prev && s.afterMin===wage && s.beforePass && s.afterPass && s.afterFail && s.mobileOverflow===0 && s.monthlySelected })),
   { name: "senpou_preset", expect: (s) =>
       s.filled.under === s.expectFilled.under && s.filled.over === s.expectFilled.over &&
       s.result.includes(s.expectTransfer) },
@@ -2004,7 +2019,7 @@ const SCENES = [
 
   // ─── 入力欄に結び付いたエラー・初期値の方針（2026-09-30 UI/UX レビュー）───
   // 空欄で始まり（例は説明文に）、空欄で押すとその欄に aria-invalid・エラー文・フォーカスが移り、直すと消える
-  ...["shaho", "tedori", "furusato", "yukyu", "embed_yukyu", "gensen", "gensen_hoshu",
+  ...["nenrei", "shaho", "tedori", "furusato", "yukyu", "embed_yukyu", "gensen", "gensen_hoshu",
       "kihonteate", "saishushoku", "ikuji", "papa_ikukyu", "juminzei", "taishokukin", "jutaku",
       // 2026-10-08（keiri-uiux-review-2026-10-08 高3・低）: 新ツール2本と、取りこぼした印紙・賞与
       "shotokuzei", "nenmatsu_chosei", "nenmatsu_chosei_choshu", "inshi", "bonus_tedori",
@@ -2085,6 +2100,10 @@ const SCENES = [
       s.emptyLinks.some((h) => /#tools$/.test(h)) && s.emptyLinks.some((h) => /\/column\/$/.test(h)) &&
       s.weakQuestion.matched === false && s.weakQuestion.top === "" }),
   ),
+  // ★検索の順位（2026-10-14）: 読み・誤字・添え語・空白で切られた語で、ダイアログの1位が意図したページ
+  ...[390, 1280].map((w) => ({ name: `site_search_quality_${w}`, noCoverage: true, expect: (s) =>
+      s.width === w && s.got.length === s.want.length &&
+      s.got.every((g, i) => g.matched === true && g.first === s.want[i][1]) })),
   // トップ: ヘッダの検索とインラインの質問欄が両方動く（互いの描画を混ぜない）
   { name: "site_search_top", noCoverage: true, expect: (s) =>
       /\/docs\/shakai-hoken\/$/.test(s.headerFirst) && s.inlineFirst === "/gensen-choshu/" &&

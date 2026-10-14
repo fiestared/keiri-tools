@@ -51,7 +51,7 @@
 
   <label for="iryohi">1年間に支払った医療費の合計（円）</label>
   <input id="iryohi" type="number" inputmode="numeric" placeholder="例: 300000" min="0" aria-describedby="iryohi-hint">
-      <span id="iryohi-hint" class="hint">本人が支払った生計同一の家族分も対象。通院の電車・バス代等を含み、車のガソリン・駐車料金は対象外。タクシーは公共交通を使えない場合等に限ります。</span>
+      <span id="iryohi-hint" class="hint">本人が支払った生計同一の家族分も合算。<a href="#eligible-costs">対象費用の注</a>へ</span>
 
   <label for="hoten">保険金などで補填される金額（円）</label>
   <input id="hoten" type="number" inputmode="numeric" value="0" min="0" aria-describedby="hoten-hint">
@@ -82,13 +82,21 @@
 
   <label for="selfmed">（任意）セルフメディケーション税制の購入費（円）</label>
   <input id="selfmed" type="number" inputmode="numeric" placeholder="例: 30000" min="0" aria-describedby="selfmed-hint">
-      <span id="selfmed-hint" class="hint">スイッチOTC等の年間購入費。通常の控除とは選択</span>
+      <span id="selfmed-hint" class="hint">対象薬の補填後購入費を入力。<a href="#selfmed-conditions">適用要件の注</a>へ</span>
 
   <button id="calc" type="button" class="primary">計算する</button>
 
   <div role="status" aria-live="polite" class="result" id="result"></div>
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
 
+
+  <div class="note" id="input-notes">
+    <p class="hint" id="medical-period">対象は居住者がその年に実際に支払った医療費です。未払い分は支払った年に含めます（所得税法73条・国税庁No.1120）。</p>
+    <p class="hint" id="eligible-costs">通常の医療費控除の対象は、治療・療養に必要な医薬品や、診療等に直接必要で通常要する通院費などです。一般的な支出水準を著しく超える部分は含めません。</p>
+    <p class="hint">通常の医療費控除では、予防・健康増進用の薬、自家用車のガソリン代・駐車料金は対象外です。タクシー代は公共交通を利用できない場合に限ります。</p>
+    <p class="hint" id="selfmed-conditions">セルフメディケーション税制は、申告者本人が適用年中に健診・予防接種など所定の取組を行うことが要件です。本人が支払った自己・生計同一家族の対象薬購入費から補填部分を除き、取組自体の費用は含めません。</p>
+    <p class="hint">通常の医療費控除とは選択で、併用できません。申告後は更正の請求や修正申告で選択を変更できません。</p>
+  </div>
   <div class="brand">
     <a href="https://keiri-tools.com/iryohi/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
     の計算エンジンで動いています（所得税法73条・国税庁 No.1120 ほか）。
