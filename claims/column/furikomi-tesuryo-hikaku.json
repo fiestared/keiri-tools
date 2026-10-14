@@ -68371,6 +68371,203 @@
         "docs/column/furikomi-tesuryo-hikaku/index.html: 法人口座は窓口・ATMの額が別に定められている銀行があります（たとえば"
       ],
       "snapshot_ref": "review-evidence/auto20261011-t8-q08362/corpus/www_bk_mufg_jp_tesuuryou_furikomi_html.txt:49-82"
+    },
+    {
+      "id": "fix1015-acquisition-date",
+      "text": "各行の公式料金資料の取得日（2026年10月15日。みずほ銀行は2026年10月8日、イオン銀行は取得できず未確認）",
+      "numbers": [
+        "2026年10月15日",
+        "2026年10月8日"
+      ],
+      "scope": "他行宛ネット振込30区分と主要5行の窓口・ATM表、ことら送金の出典欄に書く資料取得日",
+      "applies": "取得日の表示であり、料金の改定日・適用開始日ではない",
+      "exceptions": [
+        "みずほ銀行の2ページとイオン銀行の料金ページは2026-10-15のcurlで403のため、みずほは2026-10-08取得の料金表のまま、イオン個人は未確認と書く。各行の公式本文の基準日（横浜2026年7月1日現在・りそな2025年4月1日現在・三井住友法人2025年9月時点など）は別"
+      ],
+      "source_url": "https://www.boy.co.jp/fee/furikomi.html",
+      "source_quote": "（2026年7月1日現在）\n表示手数料は、税込みの金額です。",
+      "evidence": "/Users/masahiroyasu/Scripts/keiri-commander/runs/furikomi-fix-1015/evidence/fetch-log.tsv",
+      "checked": "2026-10-15",
+      "covers": [],
+      "topic": [
+        "振込手数料"
+      ]
+    },
+    {
+      "id": "fix1015-zengin-2021",
+      "text": "3万円の境界の由来の資料：全銀ネット「為替取引に係る銀行間手数料の見直しについて」（2021年3月18日）",
+      "numbers": [
+        "2021年3月18日",
+        "2021年10月1日"
+      ],
+      "scope": "旧銀行間手数料（3万円未満／以上）から内国為替制度運営費（金額不問の一律を原則）への移行の資料",
+      "applies": "令和3年（2021年）10月1日適用開始。国庫金・公金は適用時期が別",
+      "exceptions": [
+        "国庫金・公金の適用開始時期は仕向銀行（指定金融機関）で別に定める（同PDF※）。内国為替制度運営費は5年ごとに見直し（次回は令和8年10月から適用）。銀行が顧客に設定する振込手数料の額はこの資料の対象外"
+      ],
+      "source_url": "https://www.zengin-net.jp/announcement/pdf/announcement_20210318.pdf",
+      "source_quote": "為替取引の種類や金額に関わらず被仕向対応費用が生じていることから、一律に内国為替制度運営費を設定することを原則とする。…令和３年 10 月１日（金）",
+      "evidence": "/Users/masahiroyasu/Scripts/keiri-commander/runs/furikomi-fix-1015/evidence/zengin-2021.txt",
+      "checked": "2026-10-15",
+      "covers": [],
+      "topic": [
+        "振込手数料"
+      ]
+    },
+    {
+      "id": "fix1015-finswer-monthly",
+      "text": "フィンサーバンクの月額：スタンダード2,980円（税抜）・プロ7,980円（税抜）。他行宛はフリー110円・有料プラン90円、同行宛13円。振込手数料の欄に税込・税抜の表記なし",
+      "numbers": [
+        "2,980円",
+        "7,980円",
+        "110円",
+        "90円",
+        "13円"
+      ],
+      "scope": "フィンサーバンク（北國銀行フィンサー支店の口座を使う法人向けサービス）の料金テーブル",
+      "applies": "2026年10月15日取得の公式料金テーブル（基準日の表記なし）",
+      "exceptions": [
+        "月額料金だけに（税抜）の表記があり、振込手数料の欄には税込・税抜の表記がない。給与振込（110円・50円・21円）は本表の対象外。申込は株式会社・有限会社・合同会社のみ"
+      ],
+      "source_url": "https://finswer-bank.finswer.jp/price-list",
+      "source_quote": "月額料金\n無料\n月額2,980円（税抜）口座振替（※2）\n月額7,980円（税抜）口座振替（※2）\n…\n他行宛振込手数料（都度・総合）\n110円\n90円\n90円\n同行宛振込手数料（都度・総合）\n13円",
+      "evidence": "/Users/masahiroyasu/Scripts/keiri-commander/runs/furikomi-fix-1015/evidence/finswer.txt",
+      "checked": "2026-10-15",
+      "covers": [],
+      "topic": [
+        "振込手数料"
+      ]
+    },
+    {
+      "id": "fix1015-smbc-web21-lite",
+      "text": "三井住友銀行 法人 Web21＜ライト＞の他行あては3万円未満165円・3万円以上330円（1日あたり300万円までの振込）。エキスパート・デビュー等は495円／660円。給与振込（EB）は他行あて330円",
+      "numbers": [
+        "165円",
+        "330円",
+        "300万円",
+        "495円",
+        "660円"
+      ],
+      "scope": "三井住友銀行の法人・団体の振込手数料（EB）",
+      "applies": "公式ページ「2025年9月時点」の料金（2026年10月15日取得）",
+      "exceptions": [
+        "Web21＜ライト＞は1日あたり300万円までの振込（※2）。窓口（口座出金）605円・ATMは別の行。Trunk等の他サービスはこの表に無い"
+      ],
+      "source_url": "https://www.smbc.co.jp/hojin/fee/furikomi.html",
+      "source_quote": "2025年9月時点\n…\n[rs2]EB(※3)\nWeb21<ライト>(※2)\n165円\n330円\nWeb21<エキスパート><デビュー>、コンピュータバンク、パソコンバンク、e承認サービス（総合振込利用版）等\n495円\n660円\n…\n（※2）1日あたり300万円までのお振込となります。",
+      "evidence": "/Users/masahiroyasu/Scripts/keiri-commander/runs/furikomi-fix-1015/evidence/smbc-hojin.txt",
+      "checked": "2026-10-15",
+      "covers": [],
+      "topic": [
+        "振込手数料"
+      ]
+    },
+    {
+      "id": "fix1015-smbc-trust",
+      "text": "三井住友銀行（個人）からSMBC信託銀行あては、SMBCダイレクトと当行キャッシュカードのATMで3万円未満・以上とも無料。ATM（現金）550円、窓口は口座出金605円・現金990円",
+      "numbers": [
+        "550円",
+        "605円",
+        "990円"
+      ],
+      "scope": "三井住友銀行の個人の振込手数料（SMBC信託銀行あて）",
+      "applies": "2026年10月15日取得の公式ページの料金",
+      "exceptions": [
+        "無料はSMBCダイレクトと当行キャッシュカードのATMだけ。ATM（現金）・窓口・定額自動送金（385円／550円、Oliveは無料）は有料。イーネット・ローソン銀行ATMは別途利用料"
+      ],
+      "source_url": "https://www.smbc.co.jp/kojin/fee/furikomi.html",
+      "source_quote": "SMBC信託銀行あて\n3万円未満\n3万円以上\nSMBCダイレクト ※6\n…\n無料\n無料\nATM（当行のキャッシュカード）※1 ※6\n無料\n無料\nATM（現金）\n550円\n550円\n窓口（口座出金）\n605円\n605円\n窓口（現金）\n990円\n990円",
+      "evidence": "/Users/masahiroyasu/Scripts/keiri-commander/runs/furikomi-fix-1015/evidence/smbc-kojin.txt",
+      "checked": "2026-10-15",
+      "covers": [],
+      "topic": [
+        "振込手数料"
+      ]
+    },
+    {
+      "id": "fix1015-yokohama-ratio",
+      "text": "横浜銀行 個人IBの他行あて154円（3万円未満・以上の結合セル）→法人EB 3万円以上550円で約3.6倍",
+      "numbers": [
+        "154円",
+        "550円",
+        "3.6倍"
+      ],
+      "scope": "横浜銀行の個人IB（マイダイレクト・はまぎん365）と法人EBの他行宛・通常料金",
+      "applies": "個人は2026年7月1日現在の料金表、法人EBは公式ページ（2026年10月15日取得）",
+      "exceptions": [
+        "個人はゼロ手数料の条件を満たすと毎月15日〜翌月14日に合計3回まで0円。法人の振込訂正・組戻サービスの再振込は金額不問550円。550÷154=3.57…で約3.6倍"
+      ],
+      "source_url": "https://www.boy.co.jp/fee/furikomi.html",
+      "source_quote": "他行あて\nお振込金額\n振込手数料\n3万円未満\n<td rowspan=\"2\" class=\"center\">154円</td>\n3万円以上",
+      "evidence": "/Users/masahiroyasu/Scripts/keiri-commander/runs/furikomi-fix-1015/evidence/boy-kojin.raw",
+      "checked": "2026-10-15",
+      "covers": [],
+      "topic": [
+        "振込手数料"
+      ]
+    },
+    {
+      "id": "fix1015-yucho-cotra-5",
+      "text": "ゆうちょ銀行のことら送金は月5回まで（6回目以降は使えない）、1回10万円まで、個人口座かつ居住者口座",
+      "numbers": [
+        "5回",
+        "10万円"
+      ],
+      "scope": "ゆうちょ銀行のことら送金（ゆうちょ通帳アプリ）",
+      "applies": "2026年10月15日取得の公式ページ",
+      "exceptions": [
+        "法人口座（個人事業主を含む）の可能性があるとゆうちょ銀行が判断した口座・非居住者口座では使えない。ゆうちょダイレクトの振替の月5回無料とは別の制限"
+      ],
+      "source_url": "https://www.jp-bank.japanpost.jp/kojin/sokin/cotra/kj_sk_cotra_index.html",
+      "source_quote": "送金上限金額\n1回あたり最大10万円まで\n送金手数料\n…\n送金可能回数\n5回／月（6回目以降は、ことら送金をご利用いただけません）",
+      "evidence": "/Users/masahiroyasu/Scripts/keiri-commander/runs/furikomi-fix-1015/evidence/yucho-cotra.txt",
+      "checked": "2026-10-15",
+      "covers": [],
+      "topic": [
+        "振込手数料"
+      ]
+    },
+    {
+      "id": "fix1015-yucho-nonresident-tax",
+      "text": "ゆうちょ銀行の非居住者関連の振込・振替の料金（窓口7,500円、ゆうちょダイレクト等3,000円）は消費税を含まない料金",
+      "numbers": [
+        "7,500円",
+        "3,000円"
+      ],
+      "scope": "ゆうちょ銀行の送金料金（外為法上の非居住者に関連する振込・電信振替）",
+      "applies": "2026年10月15日取得の公式「送金料金」ページ",
+      "exceptions": [
+        "ATM・ゆうちょBizダイレクト・国内非居住者円貨建て送金の取扱いがない郵便局の貯金窓口では取り扱わない。他行の非居住者あては所定の貯金窓口のみ。通常の国内送金の料金は消費税込み"
+      ],
+      "source_url": "https://www.jp-bank.japanpost.jp/ryokin/rkn_sokin.html",
+      "source_quote": "※外為法上の非居住者のお客さまに関連する振込の場合は、窓口では1回につき7,500円、Madotab*、ゆうちょダイレクト*およびゆうちょ通帳アプリ*では3,000円の料金（消費税は含みません）がかかります。",
+      "evidence": "/Users/masahiroyasu/Scripts/keiri-commander/runs/furikomi-fix-1015/evidence/yucho-sokin.txt",
+      "checked": "2026-10-15",
+      "covers": [],
+      "topic": [
+        "振込手数料"
+      ]
+    },
+    {
+      "id": "fix1015-resona-club",
+      "text": "りそなクラブの振込手数料の優遇はマイゲート等と、りそなグループATMで契約取引店のキャッシュカードを使う振込が対象。ATMのカード振込はダイヤモンドのみ月3回0円（翌月第2営業日にキャッシュバック）。ATM現金振込は支店併設ATM・1回10万円まで・平日8:45〜18:00",
+      "numbers": [
+        "3回",
+        "10万円"
+      ],
+      "scope": "りそな銀行・埼玉りそな銀行の個人（りそなクラブのステータス）",
+      "applies": "2026年10月15日取得の公式ページ",
+      "exceptions": [
+        "※e 契約がある取引店のキャッシュカードを利用した場合の本支店宛・他行宛の振込が対象。クイックナビATM（店頭モード）は店頭扱い。※f 1口座あたり月初から3回目まで、キャッシュバックは翌月第2営業日。ルビーはATMカード振込の優遇なし（マイゲートは半額・月3回）"
+      ],
+      "source_url": "https://www.resonabank.co.jp/club/modal/status.html",
+      "source_quote": "りそなグループATM キャッシュカード 利用時のみ ※e … ※eりそな銀行、埼玉りそな銀行、関西みらい銀行、みなと銀行のATMでりそなクラブの契約がある取引店のキャッシュカードを利用した場合の、本支店宛、他行宛の振込が対象となります。… ※f1口座あたり月初から3回目までのご利用が対象となります。キャッシュバックはご利用月の翌月第2営業日に、ご利用口座…にまとめて入金となります。",
+      "evidence": "/Users/masahiroyasu/Scripts/keiri-commander/runs/furikomi-fix-1015/evidence/resona-status.raw",
+      "checked": "2026-10-15",
+      "covers": [],
+      "topic": [
+        "振込手数料"
+      ]
     }
   ],
   "absolutes": [
@@ -68428,6 +68625,21 @@
       "phrase": "一律",
       "context": "の費用は2021年10月に金額不問の原則一律へ移行しています。本記事で掲載ネット振込の対象サービス・",
       "reviewed": "本周の固定正本の対象・宛先・例外と照合。主張のscope/exceptionsに範囲を記録。"
+    },
+    {
+      "phrase": "原則",
+      "context": "店番号が異なる支店と出張所の間の振込は、原則として本支店あての扱いです",
+      "reviewed": "りそな銀行「手数料情報」の注記「店番号が異なる支店と出張所の間のお振込みは、原則、本支店あてとしてお取扱いいたします。」をそのまま写した。原則の外（同一支店扱いになる場合）は公式に例示がなく、記事でも断定しない。出典: https://www.resonabank.co.jp/kojin/kinri_kawase/tesuryo/index.html"
+    },
+    {
+      "phrase": "原則",
+      "context": "店番号が異なる支店と出張所の間は、原則として本支店あての扱いです",
+      "reviewed": "同上（りそな銀行「手数料情報」の注記の写し）。原則の外は公式に例示がない"
+    },
+    {
+      "phrase": "一律",
+      "context": "ただし、一律差引で取り決めた額（550円など）が実際の手数料と違えば",
+      "reviewed": "「一律差引」は差引方式の名前（取引先と取り決めた固定額を差し引く方式）で、言い切りではない。定額の銀行でも、取り決めた額（例550円）と実際の手数料（例GMOあおぞら法人100円）が違えば差引額は変わる、という反例を本文に書いた。出典: https://gmo-aozora.com/business/contents/fee.html"
     }
   ],
   "nonclaims": [
