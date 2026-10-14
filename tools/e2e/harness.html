@@ -246,6 +246,32 @@ const SCENES = {
     return { result: text(doc, "result") };
   },
 
+  async senpou_invalid() {
+    const doc = await open('/docs/senpou-futan/');
+    set(doc,'invoice','30000');set(doc,'feeUnder','484');set(doc,'feeOver','660');
+    pickRadio(doc,'method','sueoki');click(doc,'calc');
+    await waitFor(()=>doc.getElementById('copy-result').disabled===false,'正常結果のコピー');
+    const failures=[];
+    for(const input of [
+      ['sueoki','29999','-1','660','550'],['sueoki','30000','484','660.5','550'],
+      ['flat','30000','484','660',''],['sueoki','29999.000000000001','484','660','550'],
+      ['sueoki','9007199254740990.5','484','660','550'],['sueoki','30000.5','484','660','550'],
+      ['sueoki','','484','660','550'],['sueoki','30000','','660','550'],
+    ]) {
+      pickRadio(doc,'method',input[0]);
+      ['invoice','feeUnder','feeOver','flatFee'].forEach((id,i)=>set(doc,id,input[i+1]));
+      click(doc,'calc');await sleep(0);
+      failures.push({input,rejected:doc.getElementById('result').dataset.resultState==='error'
+        && !!doc.querySelector('#result > .warn') && doc.getElementById('copy-result').disabled
+        && doc.defaultView.getComputedStyle(doc.getElementById('copy-invoice-line')).display==='none'});
+    }
+    pickRadio(doc,'method','sueoki');
+    set(doc,'invoice','30000');set(doc,'feeUnder','0');set(doc,'feeOver','0');click(doc,'calc');
+    await sleep(0);
+    return {failures,recovered:doc.getElementById('result').dataset.resultState==='success'
+      && text(doc,'result').includes('30,000 円') && !doc.getElementById('copy-result').disabled};
+  },
+
   // 入金差額チェック(550円=一律差引の商慣行)
   async senpou_check() {
     const doc = await open("/docs/senpou-futan/");

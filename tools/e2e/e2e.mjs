@@ -30,6 +30,7 @@ const SCENES = [
       /方式によって差引額が変わります/.test(s.result) &&
       /据置型/.test(s.result) && /未満手数料加算型/.test(s.result) && /以上手数料加算型/.test(s.result) },
   { name: "senpou_check", expect: (s) => /550 円/.test(s.result) && /先方負担/.test(s.result) },
+  { name: "senpou_invalid", expect: s => s.failures.length === 8 && s.failures.every(r => r.rejected) && s.recovered },
   // 手数料(550円) > 請求額(300円) → マイナスの振込額を黙って出さず、警告を出すこと
   { name: "senpou_fee_over", expect: (s) =>
       /振込額がマイナスになります/.test(s.result) && /当方負担/.test(s.result) },

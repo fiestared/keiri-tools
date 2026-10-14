@@ -358,11 +358,11 @@
 <h2 id="source">出典</h2>
 <p class="note"><a href="https://www.jftc.go.jp/toriteki/toriteki_qa.html" rel="nofollow">公正取引委員会「取適法Q&A」</a> — 振込手数料の代金からの控除は、合意の有無にかかわらず違反。（2026年9月26日確認）</p>
   <ul style="font-size:13px;color:var(--sub)">
-    <li>北陸銀行「ビジネスIB 利用者ガイド（振込手数料の計算方法）」</li>
-    <li>群馬銀行FAQ「先方負担手数料の計算方法」／スルガ銀行「先方負担手数料の設定」</li>
-    <li>滋賀銀行FAQ（3万円境界の差額処理）</li>
-    <li>各銀行公式サイトの振込手数料ページ（2026年7月確認）</li>
-    <li>国税庁「少額な対価の返還等に係る返還インボイスの交付義務免除」</li>
+    <li><a href="https://www.hokugin.co.jp/business/kessai/ib/data/BIBWebjrDatadenso.pdf">北陸銀行「データ伝送サービス 操作マニュアル」</a></li>
+    <li><a href="https://faq-gunmabank.dga.jp/faq_detail.html?id=175">群馬銀行FAQ「先方負担手数料機能とはなんですか」</a>／<a href="https://www.surugabank.co.jp/surugabank/houjin/business/service/senpou/index.html">スルガ銀行「先方負担手数料の設定」</a></li>
+    <li><a href="https://faq.shigagin.com/faq_detail.html?id=313">滋賀銀行FAQ（3万円境界の差額処理）</a></li>
+    <li><a href="https://www.bk.mufg.jp/tesuuryou/furikomi.html">三菱UFJ銀行の振込手数料</a>・<a href="https://www.jp-bank.japanpost.jp/direct/pc/price/dr_pc_pr_index.html">ゆうちょダイレクトの料金</a></li>
+    <li><a href="https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/28.pdf">国税庁「少額な対価返還等に係る適格返還請求書の交付義務免除に係る1万円未満の判定単位」</a></li>
   </ul>
 
 </article>
@@ -417,6 +417,19 @@ const presetsReady = attachBankPresets({
   select: $("bankPreset"), under: $("feeUnder"), over: $("feeOver"), note: $("preset-note"),
 });
 
+const invalidateResult = () => {
+  const box = $("result");
+  box.dataset.resultState = "stale";
+  box.replaceChildren();
+  box.style.display = "none";
+  hideInvoiceLineShare();
+};
+document.querySelectorAll('#invoice, #feeUnder, #feeOver, #flatFee, #bankPreset, input[name="method"]').forEach(el => {
+  el.addEventListener('input', invalidateResult);
+  el.addEventListener('change', invalidateResult);
+});
+window.addEventListener('hashchange', invalidateResult);
+
 document.querySelectorAll('input[name="method"]').forEach((r) =>
   r.addEventListener("change", () => {
     const flat = document.querySelector('input[name="method"]:checked').value === "flat";
@@ -426,25 +439,39 @@ document.querySelectorAll('input[name="method"]').forEach((r) =>
 );
 
 $("calc").addEventListener("click", () => {
-  const invoice = Number($("invoice").value);
+  const amount = id => {
+    const raw = $(id).value.trim();
+    // Numberへの変換で小数が整数に丸められる前に、整数円であることを確かめる。
+    if (!/^\d+(?:\.0+)?$/.test(raw)) return NaN;
+    const exact = BigInt(raw.split('.')[0]);
+    return exact <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(exact) : NaN;
+  };
+  const invoice = amount("invoice");
   const method = document.querySelector('input[name="method"]:checked').value;
   const box = $("result");
   box.style.display = "block";
+  box.dataset.resultState = "error";
   hideInvoiceLineShare();
-  if (!invoice || invoice <= 0) { box.innerHTML = '<div class="warn" data-field="invoice">請求額を入力してください。</div>'; return; }
+  const reportFailure = r => {
+    const warning = document.createElement('div');
+    warning.className = 'warn';
+    warning.dataset.field = r.field;
+    warning.textContent = r.error;
+    box.replaceChildren(warning);
+  };
 
   if (method === "flat") {
-    const flatFee = Number($("flatFee").value) || 0;
+    const flatFee = amount("flatFee");
     const r = calcFlat(invoice, flatFee);
+    if (!r.ok) { reportFailure(r); return; }
     box.innerHTML = render(invoice, r.fee, r.transfer);
+    box.dataset.resultState = "success";
     if (r.transfer > 0) showInvoiceLineShare({ invoice, fee: r.fee, transfer: r.transfer });
     return;
   }
-  const feeTable = { under30k: Number($("feeUnder").value), over30k: Number($("feeOver").value) };
-  if ($("feeUnder").value === "" || $("feeOver").value === "") {
-    box.innerHTML = "振込手数料(3万円未満/以上)を入力するか、銀行を選んでください。"; return;
-  }
+  const feeTable = { under30k: amount("feeUnder"), over30k: amount("feeOver") };
   const r = calc(method, invoice, feeTable);
+  if (!r.ok) { reportFailure(r); return; }
   let html = render(invoice, r.fee, r.transfer, METHODS[method].label);
   if (methodsDisagree(invoice, feeTable)) {
     const rows = ["sueoki", "mikan_kasan", "ijo_kasan"].map((m) => {
@@ -454,17 +481,14 @@ $("calc").addEventListener("click", () => {
     html += `<div class="note">この請求額は3万円境界の付近で、<b>方式によって差引額が変わります</b>。取引先の規程を確認してください。<br>${rows.join("<br>")}</div>`;
   }
   box.innerHTML = html;
+  box.dataset.resultState = "success";
   if (r.transfer > 0) showInvoiceLineShare({ invoice, fee: r.fee, transfer: r.transfer });
 });
 
 function render(invoice, fee, transfer, methodLabel) {
-  // ★手数料が請求額以上の少額請求で、マイナス（や0円）の振込額を黙って出さない（2026-07-19レビュー）
-  const warn = transfer <= 0
-    ? `<div class="note" style="margin-top:10px"><b>差し引く手数料（${yen(fee)}）が請求額（${yen(invoice)}）以上のため、振込額が${transfer < 0 ? "マイナスに" : "0円に"}なります。</b>この請求は手数料の先方負担（差引）に適しません。手数料を当方負担にするか、取引先と取り決めを確認してください。</div>`
-    : "";
   return `
     <div class="row">振込額 <span class="big">${yen(transfer)}</span></div>
-    <div class="row">差し引く手数料: ${yen(fee)}（請求額 ${yen(invoice)}${methodLabel ? "・" + methodLabel : ""}）</div>${warn}`;
+    <div class="row">差し引く手数料: ${yen(fee)}（請求額 ${yen(invoice)}${methodLabel ? "・" + methodLabel : ""}）</div>`;
 }
 
 $("check").addEventListener("click", () => {

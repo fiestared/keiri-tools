@@ -24,14 +24,40 @@ const mark = (id, html) => `<!--bank-page:${id}:S-->\n${html}\n<!--bank-page:${i
 export function eligiblePages(fees = feeData(), data = pageData()) {
   if(data.threshold!==30000)throw Error('fee_tableのunder30k/over30kは3万円の区分です');
   return data.banks.filter(b => b.status === 'verified').flatMap(b => {
+    if (b.direct_fee_limit && (![b.direct_fee_limit.min,b.direct_fee_limit.max].every(n=>Number.isSafeInteger(n)&&n>=0)
+      || b.direct_fee_limit.min>b.direct_fee_limit.max || !b.direct_fee_limit.source)) throw Error(`${b.name}: invalid fee limit`);
     const rows = fees.banks.filter(r => r.name.replace(/（.*$/, '') === b.name && r.source && /^\d{4}-\d{2}-\d{2}$/.test(r.verified_date || '') && !r.article?.over_unverified && !/未確認/.test(r.article?.source_note || ''));
     // A page must complete both customer types, with verified same-bank data.
     if (!/^\d{4}-\d{2}-\d{2}$/.test(b.supplement_checked || '')) return [];
     if (!rows.some(r => /（個人/.test(r.name)) || !rows.some(r => /（法人/.test(r.name))) return [];
     if (rows.some(r => !b.rows.find(s => s.name === r.name)?.same?.length)) return [];
-    if (rows.some(r => ![r.under30k,r.over30k].every(n=>Number.isInteger(n)&&n>=0))) throw Error(`${b.name}: invalid fee`);
+    if (rows.some(r => ![r.under30k,r.over30k].every(n=>Number.isSafeInteger(n)&&n>=0)
+      || b.rows.find(s=>s.name===r.name).same.some(s=>![s.under30k,s.over30k].every(n=>Number.isSafeInteger(n)&&n>=0)))) throw Error(`${b.name}: invalid fee`);
     return [{...b, rows: rows.map(r => ({...r, details: b.rows.find(s => s.name === r.name)}))}];
   });
+}
+function conditionParagraphs(r) {
+  const note = r.public_note || r.scope_note || r.article?.fee_note;
+  if (!r.details.separate_contract_conditions) return note.split(/。/).filter(Boolean).map(s=>`${r.name}：${s}。`);
+  // 条件文の料金もfee_tableを正本にする。補助データへ金額を複写しない。
+  const payroll = note.match(/給与振込([\d,]+)円/);
+  const standard = note.match(/スタンダードプランは契約([\d,]+)円・月額([\d,]+)円/);
+  const expert = note.match(/エキスパートプランは契約([\d,]+)円・月額([\d,]+)円/);
+  const change = note.match(/契約料金は差額([\d,]+)円/);
+  if (!payroll || !standard || !expert || !change || r.under30k !== r.over30k
+    || !note.includes('総合・給与振込は依頼データ件数で課金し、不成立分も課金')
+    || !note.includes('非居住者関連の送金はゆうちょBizダイレクトでは取扱なし')
+    || !note.includes('契約法人ID単位')) throw Error(`${r.name}: invalid fee conditions`);
+  const amounts = [payroll[1],...standard.slice(1),...expert.slice(1),change[1]].map(s=>Number(s.replaceAll(',','')));
+  if (!amounts.every(n=>Number.isSafeInteger(n)&&n>=0)) throw Error(`${r.name}: invalid fee conditions`);
+  const [salary,standardContract,standardMonthly,expertContract,expertMonthly,changeContract] = amounts;
+  return [
+    `${r.name}の他金融機関宛ては、通常振込・総合振込が${yen(r.under30k)}、給与振込が${yen(salary)}です。`,
+    `${r.name}の総合振込・給与振込は依頼データ件数で課金し、不成立分も課金します。非居住者関連の送金は取り扱いません。`,
+    `${r.name}の新規契約では、契約法人ID単位でスタンダードプランに契約料金${yen(standardContract)}・月額料金${yen(standardMonthly)}がかかります。`,
+    `${r.name}の新規契約では、契約法人ID単位でエキスパートプランに契約料金${yen(expertContract)}・月額料金${yen(expertMonthly)}がかかります。`,
+    `${r.name}のスタンダードプランからエキスパートプランへの変更では、契約料金の差額${yen(changeContract)}がかかります。`,
+  ];
 }
 const sourceLink = (r, date = r.verified_date) => `<a href="${esc(r.source)}" target="_blank" rel="noopener">公式料金</a><br><time class="numeric-token" datetime="${date}">${date}</time>`;
 const table = (id, caption, rows, data) => `<div class="scroll-wrap"><table id="${id}"><caption>${caption}</caption><thead><tr><th scope="col">対象サービス・条件</th><th scope="col" class="num">${band(data)}未満</th><th scope="col" class="num">${band(data)}以上</th><th scope="col">出典・確認日</th></tr></thead><tbody>\n${rows.join('\n')}\n</tbody></table></div>`;
@@ -46,12 +72,14 @@ export function renderPage(bank, data = pageData()) {
   const same = table('same-fees', `${bank.name}の同行宛てネット振込・振替手数料（税込）`, rows.flatMap((r,i)=>r.details.same.map((s,j)=>`<tr data-same-row="${i}-${j}"><td>${esc(s.label)}<span class="cell-note">${esc(s.note)}</span></td><td class="num">${yen(s.under30k)}</td><td class="num">${yen(s.over30k)}</td><td>${sourceLink(r, bank.supplement_checked)}</td></tr>`)), data);
   const amounts = [threshold-1, threshold, threshold+1];
   const boundary = `<div class="scroll-wrap"><table id="boundary-fees"><caption>${bank.name}の他行宛てネット振込・境界前後の税込料金（上の他行宛て表と同じ対象・優遇適用前）</caption><thead><tr><th scope="col">サービス</th>${amounts.map(a=>`<th scope="col" class="num">振込額 ${yen(a)}</th>`).join('')}<th scope="col">出典</th></tr></thead><tbody>${rows.map((r,i)=>`<tr data-boundary-row="${i}"><td>${esc(r.name)}</td>${amounts.map(a=>`<td class="num">${yen(a < threshold ? r.under30k : r.over30k)}</td>`).join('')}<td>${sourceLink(r)}</td></tr>`).join('\n')}</tbody></table></div>`;
+  const directLimit = bank.direct_fee_limit;
+  const directNotice = directLimit ? `<p id="direct-fee-limit">個人の${bank.name}・三菱UFJダイレクトの他行宛て振込では、「手数料を含んだ金額」方式は${yen(directLimit.min)}〜${yen(directLimit.max)}（手数料を含む金額）の帯で利用できません。「手数料を含まない金額」方式を選び、振込手数料を含まない金額を指定してください。<a href="${esc(directLimit.source)}">公式の利用条件</a></p>` : '';
   const sections = {
-    intro: `<p>${bank.name}のネット振込手数料は、<b>個人向けサービスと法人向けサービスを分けて確認します</b>。他行宛ての通常料金は下の表、同じ銀行への振込・振替は次の表で確認できます。</p>\n<p>ATMや窓口の料金とは別です。無料回数・優遇がある場合は、表の通常料金と実際に適用される料金を分けて確認してください。<a href="../furikomi-tesuryo-hikaku/">複数の銀行を横並びで比較する一覧</a>もあります。</p>\n<nav class="toc"><div class="toc-title">目次</div><ol>${[['other','他行宛て'],['same','同行宛て'],['boundary','振込金額の境界'],['conditions','サービスと優遇の違い'],['print','表の印刷・差引計算'],['faq','よくある質問'],['source','出典']].map(([id,t])=>`<li><a href="#${id}">${t}</a></li>`).join('')}</ol></nav>`,
+    intro: `${rows.map(r=>`<p>${esc(r.name)}の他行宛てネット振込の通常料金（税込・優遇適用前）は、${r.under30k===r.over30k ? `金額にかかわらず${yen(r.under30k)}` : `${b}未満が${yen(r.under30k)}、${b}以上が${yen(r.over30k)}`}です。<a href="${esc(r.source)}">公式料金</a></p>`).join('\n')}\n<p>ATMや窓口の料金とは別です。無料回数・優遇がある場合は、表の通常料金と実際に適用される料金を分けて確認してください。<a href="../furikomi-tesuryo-hikaku/">複数の銀行を横並びで比較する一覧</a>もあります。</p>\n<nav class="toc"><div class="toc-title">目次</div><ol>${[['other','他行宛て'],['same','同行宛て'],['boundary','振込金額の境界'],['conditions','サービスと優遇の違い'],['print','表の印刷・差引計算'],['faq','よくある質問'],['source','出典']].map(([id,t])=>`<li><a href="#${id}">${t}</a></li>`).join('')}</ol></nav>`,
     other: `<h2 id="other">他行宛ての振込手数料</h2>\n${other}\n<p>確認日は各サービスの料金を確認した日です。掲載したネットサービスの料金を示しています。同行宛て、無料回数、別料金の宛先は区分名の条件と次の表を参照してください。</p>`,
     same: `<h2 id="same">同行宛ての振込・振替手数料</h2>\n${same}\n<p>${esc(bank.same_note)} <a href="${esc(rows[0].source)}">個人の公式料金</a>・<a href="${esc(rows[1].source)}">法人の公式料金</a></p>`,
-    boundary: `<h2 id="boundary">${bank.name}のネット振込と${b}の境界</h2>\n<p>${bank.name}の掲載したネット振込で金額による料金区分がある場合、${b}ちょうどの振込は「${b}以上」です。境界の前後を下の表に示します。</p>\n${boundary}\n<p>${rows.map(r=>`${esc(r.name)}の他行宛て通常料金は、${r.under30k === r.over30k ? 'この境界の前後で変わりません' : 'この境界で変わります'}。`).join('')} <a href="${esc(rows[0].source)}">個人の公式料金</a>・<a href="${esc(rows[1].source)}">法人の公式料金</a></p>\n<figure class="figure"><svg viewBox="0 0 360 170" role="img" aria-label="ネット振込手数料を確認する順序"><rect x="10" y="10" width="340" height="40" rx="6" fill="none" stroke="currentColor"/><text x="180" y="36" text-anchor="middle" font-size="15" fill="currentColor">個人・法人のサービスを選ぶ</text><path d="M180 50v20m-5-5 5 5 5-5" fill="none" stroke="currentColor"/><rect x="10" y="70" width="340" height="40" rx="6" fill="none" stroke="currentColor"/><text x="180" y="96" text-anchor="middle" font-size="15" fill="currentColor">同行宛て・他行宛てと優遇を確認</text><path d="M180 110v20m-5-5 5 5 5-5" fill="none" stroke="currentColor"/><text x="180" y="154" text-anchor="middle" font-size="15" fill="currentColor">振込金額の区分で料金を見る</text></svg><figcaption>サービス、宛先、優遇、振込金額の順に確認します。</figcaption></figure>`,
-    conditions: `<h2 id="conditions">サービスと優遇を取り違えない</h2>\n${rows.map(r=>`<h3>${esc(r.name)}</h3>\n<p>${esc(r.name)}：${esc((r.public_note || r.scope_note || r.article?.fee_note).replace(/。(?=.)/g, "。"+r.name+"："))} <a href="${esc(r.source)}">公式料金と条件を確認</a></p>`).join('\n')}\n${bank.extra_sources.map(s=>`<p>${esc(bank.name)}の他行宛て振込：${esc(s.quote)} <a href="${esc(s.url)}">${esc(s.title)}</a></p>`).join('\n')}\n<div class="summary-box"><b>差引計算の前に確認すること</b><p>請求額から手数料を差し引くと、実際の振込額が料金区分の境界をまたぐ場合があります。差引額の決め方は取引先との取り決めで確認し、計算ツールで方式ごとの結果を見比べます。</p></div>`,
+    boundary: `<h2 id="boundary">${bank.name}のネット振込と${b}の境界</h2>\n<p>${bank.name}の掲載したネット振込で金額による料金区分がある場合、${b}ちょうどの振込は「${b}以上」です。境界の前後を下の表に示します。</p>\n${boundary}\n<p>${rows.map(r=>`${esc(r.name)}の他行宛て通常料金は、${r.under30k === r.over30k ? 'この境界の前後で変わりません' : 'この境界で変わります'}。`).join('')} <a href="${esc(rows[0].source)}">個人の公式料金</a>・<a href="${esc(rows[1].source)}">法人の公式料金</a></p>\n${directNotice}\n<figure class="figure"><svg viewBox="0 0 360 170" role="img" aria-label="ネット振込手数料を確認する順序"><rect x="10" y="10" width="340" height="40" rx="6" fill="none" stroke="currentColor"/><text x="180" y="36" text-anchor="middle" font-size="15" fill="currentColor">個人・法人のサービスを選ぶ</text><path d="M180 50v20m-5-5 5 5 5-5" fill="none" stroke="currentColor"/><rect x="10" y="70" width="340" height="40" rx="6" fill="none" stroke="currentColor"/><text x="180" y="96" text-anchor="middle" font-size="15" fill="currentColor">同行宛て・他行宛てと優遇を確認</text><path d="M180 110v20m-5-5 5 5 5-5" fill="none" stroke="currentColor"/><text x="180" y="154" text-anchor="middle" font-size="15" fill="currentColor">振込金額の区分で料金を見る</text></svg><figcaption>サービス、宛先、優遇、振込金額の順に確認します。</figcaption></figure>`,
+    conditions: `<h2 id="conditions">サービスと優遇を取り違えない</h2>\n${rows.map(r=>`<h3>${esc(r.name)}</h3>\n${conditionParagraphs(r).map(s=>`<p>${esc(s)} <a href="${esc(r.source)}">公式料金と条件を確認</a></p>`).join('\n')}`).join('\n')}\n${bank.extra_sources.map(s=>`<p>${esc(bank.name)}の他行宛て振込：${esc(s.quote)} <a href="${esc(s.url)}">${esc(s.title)}</a></p>`).join('\n')}\n<div class="summary-box"><b>差引計算の前に確認すること</b><p>請求額から手数料を差し引くと、実際の振込額が料金区分の境界をまたぐ場合があります。差引額の決め方は取引先との取り決めで確認し、計算ツールで方式ごとの結果を見比べます。</p></div>`,
     print: `<h2 id="print">料金表を印刷・差引額を計算する</h2>\n<p>印刷すると、料金表、条件、公式ページの出典、確認日を紙やPDFに残せます。印刷前に公式の最新料金と利用するサービスを確認してください。</p>\n<button type="button" id="print-fees">料金表を印刷する</button>\n<a class="tool-cta" href="../../senpou-futan/${rows.find(r=>r.id)?.id ? '#bank='+rows.find(r=>r.id).id : ''}">先方負担の振込手数料・差引額を計算する</a>\n<p>計算ツールでは銀行・サービスを選んで他行宛ての手数料を設定します。同行宛てや優遇後の料金を使う場合は、手数料欄を適用額に合わせます。</p>`,
     faq: `<h2 id="faq">よくある質問</h2>\n<h3>Q. 個人と法人で同じ料金表を使えますか？</h3><p>A. サービスを分けて確認してください。このページでは個人向けネットサービスと法人向けネットサービスを別の行に掲載しています。</p>\n<h3>Q. 無料回数は他行宛ての表に含みますか？</h3><p>A. 他行宛ての表は優遇適用前の通常料金です。無料回数や別料金の宛先は、区分名の条件と公式ページで確認してください。</p>\n<h3>Q. ATMや窓口からの振込にも使えますか？</h3><p>A. このページの表は掲載したネットサービスの料金です。ATM・窓口・電話での取扱いは、銀行の公式料金表の該当欄で確認してください。</p>`,
     related: `<section class="related"><h2>関連記事・ツール</h2><div class="tool-grid"><a class="tool-card" href="../furikomi-tesuryo-hikaku/"><b>銀行別の振込手数料を比較</b><span>他行宛ての料金を横並びで確認</span></a><a class="tool-card" href="../../senpou-futan/"><b>先方負担の差引計算</b><span>差引方式による振込額の違いを確認</span></a><a class="tool-card" href="../senpou-futan-3hoshiki/"><b>差引方式の違い</b><span>境界をまたぐときの考え方</span></a></div></section>`,
