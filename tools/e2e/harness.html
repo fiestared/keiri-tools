@@ -161,7 +161,53 @@ const saiteiHourlyScene = (ymd) => async () => {
   };
 };
 
+function saiteiPrefScene(slug) {
+  return async () => {
+    const doc = await open(`/docs/saitei-chingin/${slug}/`);
+    const number = el => Number(el.textContent.replace(/[^\d]/g,''));
+    const boundaries = [...doc.querySelectorAll('#pref-boundary tbody tr')];
+    const prev = number(boundaries[0].querySelector('td')), wage = number(boundaries[1].querySelector('td'));
+    const parts = boundaries[1].querySelector('th').textContent.match(/(\d+)年(\d+)月(\d+)日/);
+    const effective = `${parts[1]}-${parts[2].padStart(2,'0')}-${parts[3].padStart(2,'0')}`;
+    const monthly = number(doc.querySelector('#pref-monthly tbody tr td:nth-child(3)'));
+    const checked = doc.querySelector('.article-meta time').dateTime;
+    const parentLink = !!doc.querySelector('a[href="../#ichiran"]');
+    const neighborLinks = doc.querySelectorAll('#pref-nearby tbody a').length > 0;
+    let printCalls=0; doc.defaultView.print=()=>{printCalls++;};click(doc,'pref-print');
+    const f=document.getElementById('f');f.style.width='390px';
+    await sleep(60);
+    const mobileOverflow=Math.max(0,doc.documentElement.scrollWidth-doc.documentElement.clientWidth);
+    f.style.width='1100px';
+    const destination = new URL(doc.querySelector('#pref-calculator').getAttribute('href'),doc.location.href);
+    const monthlyDestination = new URL(doc.querySelector('#pref-monthly-calculator').getAttribute('href'),doc.location.href);
+    const calculator = await open(destination.pathname+destination.search+destination.hash);
+    await waitFor(()=>calculator.getElementById('pref').value,'リンク先の県選択');
+    const selected=calculator.getElementById('pref').value;
+    pickRadio(calculator,'wt','monthly');set(calculator,'days','240');set(calculator,'hpd','8');
+    const beforeDate=new Date(effective+'T00:00:00Z');beforeDate.setUTCDate(beforeDate.getUTCDate()-1);
+    const calculate=async (ymd,amount)=>{
+      fixToday(calculator,ymd);set(calculator,'amount',String(amount));
+      calculator.getElementById('out').innerHTML='';click(calculator,'run');
+      await waitFor(()=>text(calculator,'out').length>0,'月給換算結果');return text(calculator,'out');
+    };
+    const before=await calculate(beforeDate.toISOString().slice(0,10),prev*160);
+    const after=await calculate(effective,wage*160);
+    const below=await calculate(effective,wage*160-1);
+    const monthlyDoc=await open(monthlyDestination.pathname+monthlyDestination.search+monthlyDestination.hash);
+    await waitFor(()=>monthlyDoc.getElementById('pref').value,'月給リンク先の県選択');
+    const monthlySelected=monthlyDoc.querySelector('input[name="wt"]:checked').value==='monthly' && monthlyDoc.getElementById('monthlyInputs').style.display==='block';
+    return {selected,prev,wage,effective,monthly,checked,parentLink,neighborLinks,printCalls,mobileOverflow,
+      beforeMin:Number(before.match(/最低賃金 (\d+)円/)[1]),afterMin:Number(after.match(/最低賃金 (\d+)円/)[1]),
+      beforePass:before.includes('最低賃金以上です'),afterPass:after.includes('最低賃金以上です'),afterFail:below.includes('下回っています'),monthlySelected};
+  };
+}
+
 const SCENES = {
+  saitei_pref_tokyo: saiteiPrefScene('tokyo'),
+  saitei_pref_akita: saiteiPrefScene('akita'),
+  saitei_pref_kyoto: saiteiPrefScene('kyoto'),
+  saitei_pref_iwate: saiteiPrefScene('iwate'),
+  saitei_pref_okinawa: saiteiPrefScene('okinawa'),
   // 銀行プリセットを選ぶと手数料欄が本当に埋まるか(fetch→select→input の配線)
   async senpou_preset() {
     const doc = await open("/docs/senpou-futan/");
