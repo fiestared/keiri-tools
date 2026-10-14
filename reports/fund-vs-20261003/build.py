@@ -656,7 +656,7 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'rakuten-vym-fee': {'must_with': ['税込|信託報酬|国内ファンド分']}, 'rakuten-jepi-fee': {'must_with': ['税込|信託報酬|国内ファンド分']},
         'rakuten-vym-eff': {'must_with': ['程度|概算', '2026年2月末|概算|税込|2026年2月2日']}, 'rakuten-jepi-eff': {'must_with': ['程度|概算', '2026年1月末|概算|税込']},
         'effpair': {'must_with': ['程度|概算', '税込|概算|交付目論見書']},
-        'effgap': {'must_with': ['概算|程度|再投資|評価額', '仮定|再投資|評価額', '実際の損益の差ではありません|目安|再投資|評価額'], 'derived': True, 'calc': 'python3: round(0.658 - 0.172, 4) = 0.486（年0.486ポイント）、round(0.486 / 100 * 1_000_000) = 4860（約4,860円）。'},
+        'effgap': {'must_with': ['概算|程度|再投資|評価額', '仮定|再投資|評価額', '実際の損益の差ではありません|目安|再投資|評価額', '組入状況|再投資|評価額'], 'derived': True, 'calc': 'python3: round(0.658 - 0.172, 4) = 0.486（年0.486ポイント）、round(0.486 / 100 * 1_000_000) = 4860（約4,860円）。'},
         'rakuten-vym-etfchg': {'must_with': ['2026年2月2日|2026年2月末|程度']},
         'rakuten-vym-ter': {'must_with': ['総経費率|参考値', '2025/7/16|2025年7月16日|対象期間']}, 'rakuten-jepi-ter': {'must_with': ['総経費率|参考値', '2026/5/11|2026年5月11日|対象期間']},
         'terpair': {'must_with': ['総経費率|参考値|期間', '2025年7月16日|2025/7/16|2026/5/11|対象期間|期間']},
@@ -674,7 +674,7 @@ SCOPE_RULES = {  # slug -> {claim id: {'must_with': [...], 'derived': bool, 'cal
         'jepi-etfs': {'must_with': ['交付運用報告書|第1期']},
         'comp-v': {'must_with': ['2026年7月末|基準日', 'ETF|純資産総額|基準日']}, 'comp-j': {'must_with': ['2026年8月末|基準日', 'ETF|純資産総額|基準日']},
         'nav-v': {'must_with': ['2026年9月30日', '純資産総額']}, 'nav-j': {'must_with': ['同じ日|2026年9月30日', '純資産総額']},
-        'jepi-tokka': {'must_with': ['特化型']},
+        'jepi-tokka': {'must_with': ['特化型|寄与度|エクスポージャー|程度', '規則|エクスポージャー|あり|程度']},  # 「0.35%程度」の35%が同じ数字として拾われる
         'term-j': {'must_with': ['延長|信託期間']}, 'term-v': {'must_with': ['繰上償還|信託期間']},
         'nisa-v': {'must_with': ['交付目論見書|使用開始日']}, 'jepi-nisa': {'must_with': ['交付目論見書|使用開始日']},
         'identity': {'must_with': ['ファンド|VYM|JEPI']},
