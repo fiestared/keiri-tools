@@ -934,8 +934,10 @@ articles.sort((a, b) => {
 //   (` M path` の状態カラム)まで削れ、**dirty一覧の先頭ファイルだけ** slice(3) が path を
 //   1文字食う(`docs/…`→`ocs/…`)→照合が外れ lastmod が古いまま/新規ページなら丸ごと落ちる
 //   (2026-07-17 第12便で実発生: 先頭の denchoho-index だけ lastmod が更新されなかった)。
+// ★maxBuffer を明示する（2026-10-14 実測）。既定の 1MiB だと、一括コミットを数える `git log --name-only` の出力
+//   （origin/main で 1,100,484 バイト）が ENOBUFS で落ち、下の catch が "" を返して **一括コミットが0件**になっていた。
 const git = (...a) => {
-  try { return execFileSync("git", a, { cwd: DOCS, encoding: "utf8" }).replace(/\s+$/, ""); }
+  try { return execFileSync("git", a, { cwd: DOCS, encoding: "utf8", maxBuffer: 512 * 1024 * 1024 }).replace(/\s+$/, ""); }
   catch { return ""; }
 };
 const TODAY = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }); // YYYY-MM-DD
@@ -980,7 +982,12 @@ const bulkCommits = new Set();
   // ★`git()` は **cwd が DOCS** なので、パス指定は `.`（docs 配下）にする。
   //   ここを `docs` と書くと docs/docs を見に行き、**黙って空を返す**（実測。
   //   単体では動くのに生成器の中だけ効かない、という形で1回踏んだ）。
-  for (const line of git("log", "--format=@@%H", "--name-only", "--", ".").split("\n")) {
+  // ★ここは失敗を "" に化けさせない（2026-10-14: 出力が 1MiB を超えて黙って空になり、一括の除外が丸ごと効いていなかった）。
+  //   コミットが1つも無いリポジトリ（テストの使い捨て）だけは、一括コミットが無いのが正しいので空でよい。
+  const hasHead = git("rev-parse", "--verify", "-q", "HEAD") !== "";
+  const bulkLog = hasHead ? execFileSync("git", ["log", "--format=@@%H", "--name-only", "--", "."],
+    { cwd: DOCS, encoding: "utf8", maxBuffer: 512 * 1024 * 1024 }) : "";
+  for (const line of bulkLog.split("\n")) {
     if (line.startsWith("@@")) { flush(); hash = line.slice(2); n = 0; }
     else if (line.trim()) n++;
   }
@@ -1005,7 +1012,10 @@ if (BULK_WORKTREE) {
 const lastmodOf = (file) => {
   if (!BULK_WORKTREE && dirty.has(file)) return TODAY;
   // 一括コミットを飛ばして、そのファイル自身の「意味のある更新」を探す
-  const log = git("log", "--format=%H %cs", "--", file).split("\n").filter(Boolean);
+  // ★マージコミットは数えない（2026-10-14）。マージの中身は取り込んだ側のコミットに日付つきで既に在る。
+  //   数えると「main を取り込んだ日」が両側の変わったページの lastmod になる（公開用の枝で main を取り込むたびに起きる）。
+  //   gen_datemodified.mjs は `--name-only` がマージにファイルを出さないので、もともとマージを数えていない（基準を2つ持たない）。
+  const log = git("log", "--no-merges", "--format=%H %cs", "--", file).split("\n").filter(Boolean);
   // ★★ 履歴がまったく無い＝**まだ一度もコミットされていない新規ページ**。
   //   このときは BULK_WORKTREE でも TODAY を返す（2026-08-23 実測で回帰を1件出した）。
   //   一括を弾く目的は「中身が変わっていない既存ページが今日を名乗ること」の防止であって、
