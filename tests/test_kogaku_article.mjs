@@ -231,7 +231,9 @@ for (const [hoshu, want] of [[514999, CLIFF[514999]], [515000, CLIFF[515000]]]) 
   const sec = body.slice(body.indexOf('id="ninteisho"'), body.indexOf('id="gassan"'));
   const t = strip(sec);
   const need = ['健康保険法施行規則129条の2第2項', '資格確認書の交付又は提供を受けているものに限る'];
-  const miss = need.filter(n => !t.includes(n));
+  // 条文名だけがリンクされると strip が空白を挟む。本文の同じ節で空白を除いて照合する。
+  const tc = t.replace(/\s+/g, '');
+  const miss = need.filter(n => !tc.includes(n));
   if (miss.length) fail(`認定証の節に ${miss} が無い`);
   else ok('認定証: 施行規則129条の2第2項が交付対象を「資格確認書の交付を受けているものに限る」と限定');
   const exceptions = ['通常はこの事前申請を省けます', '低所得者区分', '協会けんぽの低所得者区分等は認定申請が必要です。', '非対応の施設', '番号未登録'];

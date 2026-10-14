@@ -72,27 +72,30 @@ for name,path,id,source in [
         def value(c):
             return float(c.find('s:v',ns).text) if c.attrib.get('t')=='n' else (c.find('s:is/s:t',ns).text or '')
         values=[[value(c) for c in r] for r in rows]
-        assert len(values)==6+len(expected[name])
+        header=6 if name=='rosai' else 5
+        assert len(values)==header+1+len(expected[name])
         assert values[2]==['確認日：2026-10-14']
         assert values[3]==['一次資料：'+source]
-        assert len(table.rows[0])==len(values[5])
-        assert values[5]==table.rows[0]
-        assert [row[:-1] for row in values[6:]]==expected[name]
-        assert [row[-1] for row in values[6:]]==[source]*len(expected[name])
+        assert len(table.rows[0])==len(values[header])
+        assert values[header]==table.rows[0]
+        assert [row[:-1] for row in values[header+1:]]==expected[name]
+        assert [row[-1] for row in values[header+1:]]==[source]*len(expected[name])
         rels=E.fromstring(z.read('xl/worksheets/_rels/sheet1.xml.rels'))
         targets={r.attrib['Id']:r.attrib['Target'] for r in rels}
         hyperlinks=sheet.findall('s:hyperlinks/s:hyperlink',ns)
-        assert len(hyperlinks)==len(expected[name])
-        for link in hyperlinks:assert targets[link.attrib['{'+ns['s'].replace('/spreadsheetml/2006/main','/officeDocument/2006/relationships')+'}id']]==source
-        for actual,expected_row in zip(table.rows[1:],values[6:]):
+        assert len(hyperlinks)==len(expected[name])+1+(name=='rosai')
+        for link in hyperlinks:
+            target=targets[link.attrib['{'+ns['s'].replace('/spreadsheetml/2006/main','/officeDocument/2006/relationships')+'}id']]
+            assert target==(rosai['_meta']['current_url'] if name=='rosai' and link.attrib['ref']=='A6' else source)
+        for actual,expected_row in zip(table.rows[1:],values[header+1:]):
             for a,e in zip(actual[:-1],expected_row[:-1]):
                 if isinstance(e,(int,float)):
                     assert a==('非課税（印紙不要）' if name=='inshi' and e==0 else f'{int(e):,}円' if name=='inshi' else f'{e:g}/1,000' if name=='koyou' else f'{e:g}')
                 else:assert a==e
         # Rates/amounts stay usable as numbers; strings never turn into formulas.
-        for r in rows[6:]:
+        for r in rows[header+1:]:
             for c in r:assert c.find('s:f',ns) is None
-        assert all(c.attrib['t']=='n' for r in rows[6:] for c in r if c.attrib['r'][0] in ({'B'} if name=='inshi' else {'B','C','D'} if name=='koyou' else {'C'}))
+        assert all(c.attrib['t']=='n' for r in rows[header+1:] for c in r if c.attrib['r'][0] in ({'B'} if name=='inshi' else {'B','C','D'} if name=='koyou' else {'C'}))
     print('PASS: primary oracle / all HTML & XLSX rows / types / source links / print settings:',name)
 `], {cwd:root,stdio:'inherit'});
 // Preserve the experiment's title and H1, including original inline markup.

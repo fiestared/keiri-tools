@@ -40,14 +40,18 @@ def xlsx(title, metadata, headers, rows, widths, numeric_cols):
             cells.append(cell)
         # Long industry names and conditions must remain readable in Excel.
         height = 42 if i > header_row and max(len(str(v)) for v in row[:-1]) > 35 else 30
-        if i == 4:
+        if len(row) == 1 and 'https://' in str(row[0]):
             height = 42  # Source URL wraps across the merged row.
         if i == 5:
             height = 90  # Conditions are part of the usable table, not a clipped footnote.
         sheet_rows.append(f'<row r="{i}" ht="{height}" customHeight="1">{"".join(cells)}</row>')
     merges = ''.join(f'<mergeCell ref="A{i}:{last_col}{i}"/>' for i in range(1, header_row))
-    links = ''.join(f'<hyperlink ref="{last_col}{i}" r:id="rId{i}"/>' for i in range(header_row+1, len(data)+1))
-    rels = ''.join(f'<Relationship Id="rId{i}" Type="{REL}/hyperlink" Target="{escape(str(data[i-1][-1]), quote=True)}" TargetMode="External"/>' for i in range(header_row+1, len(data)+1))
+    targets = [(f'A{i}', str(row[0]).split('https://',1)[1]) for i,row in enumerate(data[:header_row-1],1)
+               if len(row) == 1 and 'https://' in str(row[0])]
+    targets = [(ref,'https://'+url) for ref,url in targets]
+    targets += [(f'{last_col}{i}',str(data[i-1][-1])) for i in range(header_row+1,len(data)+1)]
+    links = ''.join(f'<hyperlink ref="{ref}" r:id="rId{n}"/>' for n,(ref,url) in enumerate(targets,1))
+    rels = ''.join(f'<Relationship Id="rId{n}" Type="{REL}/hyperlink" Target="{escape(url,quote=True)}" TargetMode="External"/>' for n,(ref,url) in enumerate(targets,1))
     parts['[Content_Types].xml'] = ('<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
         '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
         '<Default Extension="xml" ContentType="application/xml"/>'
@@ -151,6 +155,8 @@ def main():
         directory = ROOT/directory
         filename = f'{name}-table.xlsx'
         meta = [f'適用：{basis}',f'確認日：{checked}',f'一次資料：{source}',note]
+        if name == 'rosai':
+            meta.append(f'令和8年度の据え置きの案内：{rosai["_meta"]["current_url"]}')
         write(directory/filename,xlsx(title,meta,headers,rows,widths,numeric_cols),args.check)
         display = [[((('非課税（印紙不要）' if v==0 else f'{v:,}円') if name=='inshi' else f'{v:g}/1,000' if name=='koyou' else f'{v:g}') if isinstance(v,(int,float)) else v) for v in row] for row in rows]
         lead = '<p id="receipt-tax-basis">この表は<b>営業に関する紙の売上代金の領収書</b>が対象です。記載金額の決め方は<a href="#ryoshusho">領収書はいくらから？</a>で説明します。</p>' if name=='inshi' else ''
@@ -159,7 +165,7 @@ def main():
         history = (f'\n<details class="rate-history"><summary>{escape(koyou["previous"]["year"])}との比較を開く</summary>' +
             table('koyou-rate-history',headers,display,numeric_cols,old,koyou['previous']['year'])+'</details>') if old else ''
         block = (f'<!-- {marker}:auto -->\n<section class="card print-table-sheet print-table-{name}" id="{name}-print-table" data-print-tables="{name}" aria-label="{title}">\n'
-            f'<div class="table-actions"><button type="button" data-print-table>この表を印刷する</button> <a href="{filename}" download>Excel（.xlsx）をダウンロード</a></div>\n'
+            f'<div class="table-actions"><button type="button" class="primary" data-print-table>この表を印刷する</button> <a href="{filename}" download>Excel（.xlsx）をダウンロード</a></div>\n'
             f'<p class="print-table-title">{title}</p>\n<p class="table-basis">適用：{escape(basis)}<br>確認日：<time datetime="{checked}">{checked}</time><br>'
             f'一次資料：<a href="{escape(source)}">{"国税庁 印紙税額の一覧表" if name=="inshi" else "厚生労働省 料率表（PDF）"}</a>{current}</p>\n'
             f'{lead}\n{table(id_,headers,display,numeric_cols)}\n<p class="print-table-scope" data-review-context="after-table">{escape(note)}{scope_source}</p>\n</section>{history}\n<!-- /{marker}:auto -->')
