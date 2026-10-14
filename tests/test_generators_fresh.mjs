@@ -19,14 +19,18 @@
  */
 import assert from 'node:assert';
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-/** `--check` を持つ生成器は、全部ここに並べる（増えたら足す） */
+/** `--check` を持つ生成器の一覧。
+ * ★2026-10-15: **新しい生成器はこの配列に足さない。** tests/generators_fresh.d/<生成器名>.json を1つ置く（下で読む）。
+ *   形: { "script": "tools/gen_x.mjs", "args": ["--check"], "why": "なぜ要るか" }
+ *   全ブランチがこの配列の末尾に1行足す形だと、並行して作ったブランチが公開のたびに衝突した（10-15 夜）。 */
 const CHECKABLE = [
+  ['tools/gen_bank_fee_pages.mjs', ['--check']],
   ['tools/gen_saitei_pref_pages.mjs', ['--check']],
   ['tools/gen_index_sitemap.mjs', ['--check']],
   // ★2026-08-19 追加。dateModified は ARTICLE_SPEC に書いてあるだけで生成器が無く、
@@ -43,6 +47,20 @@ const CHECKABLE = [
   ['tools/gen_data_source_note.mjs', ['--check']],
   ['tools/gen_domain_bridge.mjs', ['--check']],
 ];
+
+{
+  const dir = join(ROOT, 'tests/generators_fresh.d');
+  const seen = new Set(CHECKABLE.map(([sc]) => sc));
+  for (const f of existsSync(dir) ? readdirSync(dir).filter((n) => n.endsWith('.json')).sort() : []) {
+    const j = JSON.parse(readFileSync(join(dir, f), 'utf-8'));
+    assert.ok(typeof j.script === 'string' && /^tools\/[\w.-]+\.mjs$/.test(j.script) && Array.isArray(j.args) && typeof j.why === 'string' && j.why,
+      `tests/generators_fresh.d/${f}: { "script": "tools/<名前>.mjs", "args": [...], "why": "..." } の形にする`);
+    assert.ok(!seen.has(j.script), `tests/generators_fresh.d/${f}: ${j.script} は登録済み（二重登録）`);
+    assert.ok(existsSync(join(ROOT, j.script)), `tests/generators_fresh.d/${f}: ${j.script} が無い`);
+    seen.add(j.script);
+    CHECKABLE.push([j.script, j.args]);
+  }
+}
 
 for (const [script, args] of CHECKABLE) {
   try {
