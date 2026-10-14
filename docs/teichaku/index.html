@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>就業促進定着手当 計算機｜6か月の給料から支給額を自動計算</title>
+<meta name="description" content="就業促進定着手当の支給額を、再就職後6か月の給料と離職前の賃金日額から計算。就職日と締切日から対象の6か月と暦日数を出し、月給・日給・時給の1日分の額、賃金の低下額、上限（基本手当日額×支給残日数×20%）、支給額の順に表示します。令和7年4月以降の就職に対応。">
+<link rel="stylesheet" href="../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/teichaku/">
+<!-- ogp:auto -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="就業促進定着手当 計算機｜6か月の給料から支給額を自動計算">
+<meta property="og:description" content="就業促進定着手当の支給額を、再就職後6か月の給料と離職前の賃金日額から計算。就職日と締切日から対象の6か月と暦日数を出し、月給・日給・時給の1日分の額、賃金の低下額、上限（基本手当日額×支給残日数×20%）、支給額の順に表示します。令和7年4月以降の就職に対応。">
+<meta property="og:url" content="https://keiri-tools.com/teichaku/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "datePublished": "2026-10-14",
+      "dateModified": "2026-10-14",
+      "name": "就業促進定着手当 計算機",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "雇用保険の就業促進定着手当について、再就職後6か月の賃金・賃金支払基礎日数と離職前の賃金日額から、再就職後の賃金日額、賃金の低下額、上限額、支給額を計算します。上限額・下限額は就職日の適用期間の額を使います。"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "就業促進定着手当 計算機"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "就業促進定着手当はいくらもらえますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "「（離職前の賃金日額 − 再就職後6か月の賃金の1日分の額）× 賃金支払基礎日数」と「基本手当日額 × 支給残日数 × 20%」の少ない方です。公表例では、離職前の賃金日額10,000円・再就職後9,500円・月給制で183日なら91,500円で、上限113,526円（6,307円×90日×20%）より少ないので91,500円が支給されます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "上限は30%や40%ではないのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "令和7年4月1日以後に就職した人は20%です。30%（再就職手当の給付率が70%の場合）と40%（60%の場合）は、令和7年3月31日以前に就職した人の率です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "月給制の賃金支払基礎日数は何日ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "6か月の暦日数です。4月1日〜9月30日なら183日、10月1日〜3月31日なら182日（うるう年は183日）のように、期間によって181日〜184日になります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "賞与は6か月の賃金に入れますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "夏・冬の賞与など3か月を超える期間ごとに支払われる賃金は入れません。通勤手当・残業代・皆勤手当などは入れます。税金や社会保険料を引く前の総支給額で数えます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "再就職後の給料が上がった場合はどうなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "支給されません。就業促進定着手当は、再就職後6か月の賃金の1日分の額が離職前の賃金日額を下回ったときだけの給付です。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../assets/track.js" defer></script>
+<!--nav-exp:toc-script S--><script src="../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site">
+  <a class="brand" href="../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../#tools">ツール</a>
+    <a href="../hojokin/">補助金</a>
+    <a href="../column/">コラム</a>
+    <a href="../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../">ホーム</a> › 就業促進定着手当 計算機</nav>
+
+<section class="hero">
+  <h1>就業促進定着手当 計算機</h1>
+  <p class="article-meta">公開日: <time datetime="2026-10-14">2026年10月14日</time></p>
+  <p>再就職手当を受けた人が、再就職後6か月の給料が離職前より下がったときにもらえる<b>就業促進定着手当</b>の額を計算します。額は<b>「（離職前の賃金日額 − 再就職後の賃金日額）× 賃金支払基礎日数」</b>で、<b>上限は「基本手当日額 × 支給残日数 × 20%」</b>です。給料明細6か月分の金額を入れれば、再就職後の賃金日額を自分で出す必要はありません。</p>
+</section>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機の見方</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/saishushoku-teate/">再就職手当はいくらもらえる？計算方法と支給条件</a></li><li><a href="../saishushoku/">再就職手当 計算機</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+
+<div class="card">
+  <div class="fee-pair field-pair">
+    <div>
+      <label for="shushoku">再就職した日（就職日）</label>
+      <input type="date" id="shushoku" min="2025-04-01" aria-describedby="shushoku-hint">
+      <span id="shushoku-hint" class="hint">再就職手当の支給を受けた就職の日。<b>令和7年4月1日以後の就職</b>が対象です。</span>
+    </div>
+    <div>
+      <label for="closing">再就職先の給料の締切日</label>
+      <select id="closing" aria-describedby="closing-hint">
+        <option value="31" selected>末日</option>
+        <option value="5">5日</option>
+        <option value="10">10日</option>
+        <option value="15">15日</option>
+        <option value="20">20日</option>
+        <option value="25">25日</option>
+      </select>
+      <span id="closing-hint" class="hint">給料明細の「○日締め」。対象の6か月は締切日で決まります。</span>
+    </div>
+  </div>
+
+  <p class="hint" id="period-label" style="margin-top:10px">就職日を入れると、対象になる6か月の期間を表示します。</p>
+
+  <label for="type" style="margin-top:12px">給料の形態</label>
+  <select id="type" aria-describedby="type-hint">
+    <option value="getsukyu" selected>月給（休んでも減らない）</option>
+    <option value="nikkyu_gekkyu">日給月給（月給制で、欠勤した日の分が引かれる）</option>
+    <option value="nikkyu">日給・時給</option>
+  </select>
+  <p class="hint" id="type-hint">日給・時給は、働いた日数が少ないときの<b>最低保障</b>（1日あたりの額の70%）が付きます。</p>
+
+  <fieldset class="wage-months" style="border:0;padding:0;margin:12px 0 0">
+    <legend style="font-weight:700">6か月の給料（総支給額・円）</legend>
+    <p class="hint" style="margin:2px 0 8px"><b class="input-example">入力例：月28万5千円なら 285000</b>税金・社会保険料を引く前の総支給額。通勤手当・残業代・皆勤手当を含め、<b>夏・冬の賞与など3か月を超える期間ごとの賃金は含めません</b>。</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:4px 16px">
+      <div><label for="w1" id="w1-label">1か月目</label><input type="number" id="w1" min="0" inputmode="numeric" data-example="285000"></div>
+      <div><label for="w2" id="w2-label">2か月目</label><input type="number" id="w2" min="0" inputmode="numeric" data-example="285000"></div>
+      <div><label for="w3" id="w3-label">3か月目</label><input type="number" id="w3" min="0" inputmode="numeric" data-example="285000"></div>
+      <div><label for="w4" id="w4-label">4か月目</label><input type="number" id="w4" min="0" inputmode="numeric" data-example="285000"></div>
+      <div><label for="w5" id="w5-label">5か月目</label><input type="number" id="w5" min="0" inputmode="numeric" data-example="285000"></div>
+      <div><label for="w6" id="w6-label">6か月目</label><input type="number" id="w6" min="0" inputmode="numeric" data-example="285000"></div>
+    </div>
+  </fieldset>
+
+  <div id="kiso-row" style="display:none">
+    <label for="kiso" style="margin-top:12px">6か月の賃金支払基礎日数（合計）</label>
+    <input type="number" id="kiso" min="1" max="184" inputmode="numeric" aria-describedby="kiso-hint">
+    <p class="hint" id="kiso-hint">日給・時給は<b>実際に働いた日数</b>（有給休暇の日を含む）。日給月給は給料の計算の基礎になった日数です。</p>
+  </div>
+  <p class="hint" id="kiso-auto">月給制の賃金支払基礎日数は、6か月の<b>暦日数</b>（183日など）を自動で使います。</p>
+
+  <div class="fee-pair field-pair" style="margin-top:12px">
+    <div>
+      <label for="zen">離職前の賃金日額（円）</label>
+      <input type="number" id="zen" min="0" inputmode="numeric" data-example="10000" aria-describedby="zen-hint">
+      <span id="zen-hint" class="hint"><b class="input-example">入力例：10000</b>雇用保険受給資格者証の「賃金日額」の欄（リーフレットでは1面14欄）。</span>
+    </div>
+    <div>
+      <label for="daily">基本手当日額（円）</label>
+      <input type="number" id="daily" min="0" inputmode="numeric" data-example="6307" aria-describedby="daily-hint">
+      <span id="daily-hint" class="hint"><b class="input-example">入力例：6307</b>受給資格者証に記載の、失業保険の1日あたりの額。</span>
+    </div>
+  </div>
+  <div class="fee-pair field-pair">
+    <div>
+      <label for="age">離職時の年齢</label>
+      <input type="number" id="age" value="35" min="15" max="64" inputmode="numeric" aria-describedby="age-hint">
+      <span id="age-hint" class="hint">賃金日額の上限と、基本手当日額の上限（60歳が境目）に使います。</span>
+    </div>
+    <div>
+      <label for="remaining">支給残日数（再就職手当を受ける前）</label>
+      <input type="number" id="remaining" min="1" max="360" inputmode="numeric" data-example="90" aria-describedby="remaining-hint">
+      <span id="remaining-hint" class="hint"><b class="input-example">入力例：90</b>就職日の前日時点の残日数。再就職手当の計算に使った日数と同じです。</span>
+    </div>
+  </div>
+
+  <button class="primary" id="calc">計算する</button>
+  <div role="status" aria-live="polite" class="result" id="result"></div>
+  <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
+
+</div>
+
+<section class="faq">
+  <h2 id="tool-section-1">この計算機の見方</h2>
+  <h3 id="shiki">支給額の計算式と上限</h3>
+  <p>就業促進定着手当は、次の2つのうち<b>少ない方</b>です（雇用保険業務取扱要領57264）。</p>
+  <ul>
+    <li><b>計算額</b>：（離職前の賃金日額 − 再就職後6か月間の賃金の1日分の額）× 6か月間の賃金支払基礎日数</li>
+    <li><b>上限額</b>：基本手当日額 × 再就職手当を受ける前の支給残日数 × 20%</li>
+  </ul>
+  <p>計算結果は「再就職後の賃金日額 → 賃金の低下額 → 計算額 → 上限額 → 支給額」の順に表示します。1円未満は切り捨てです。<b>再就職後の賃金日額が離職前より下がっていなければ0円</b>です。</p>
+  <h3 id="rokkagetsu">対象の6か月は「最初の締切日の翌日」から</h3>
+  <p>就職日が締切日の翌日（末日締めで1日に就職など）なら、就職日から6か月です。そうでなければ、<b>就職後最初の締切日の翌日から6か月</b>を使います（要領57263）。</p>
+  <p>たとえば末日締めで4月10日に就職したなら、4月分は使わず<b>5月1日〜10月31日</b>の6か月です。就職日と締切日を入れると、画面に期間と各月の日数を表示します。</p>
+  <h3 id="nichigaku">再就職後の賃金日額の出し方（月給・日給・時給）</h3>
+  <ul>
+    <li><b>月給・日給月給</b>：6か月の賃金の合計 ÷ 180</li>
+    <li><b>日給・時給</b>：「合計 ÷ 180」と「合計 ÷ 賃金支払基礎日数 × 70%」の<b>高い方</b></li>
+  </ul>
+  <p>途中の計算は小数点以下第3位を四捨五入し、最後に1円未満を切り捨てます（要領50615）。賃金支払基礎日数は、月給制なら<b>暦日数</b>、日給月給はその基礎となる日数、日給・時給は<b>働いた日数</b>です。</p>
+  <p>離職前の賃金日額と再就職後の賃金日額には、どちらも賃金日額の上限額と下限額がかかります。<b>離職前の賃金日額が下限額なら支給されません</b>（再就職後の賃金日額がそれを下回ることがないため）。</p>
+  <h3 id="jogen">上限額・下限額は毎年8月1日に変わります</h3>
+  <p>上限額の計算に使う基本手当日額には、再就職手当と同じ上限（令和8年8月1日からは59歳以下<span id="cap-now">6,745円</span>・60〜64歳<span id="cap-now-60">5,454円</span>）があります。</p>
+  <p>この計算機は<b>就職日が属する適用期間の額</b>を使い、どの期間の額で計算したかを結果に表示します。令和7年8月1日〜令和8年7月31日の就職なら6,570円・5,310円、令和7年4月1日〜7月31日の就職なら6,395円・5,170円です。</p>
+  <h3 id="taishogai">この計算機で扱わないもの</h3>
+  <ul>
+    <li><b>令和7年3月31日以前の就職</b>：上限が支給残日数の40%（再就職手当の給付率が70%なら30%）で、計算のしかたが違います。</li>
+    <li><b>受給資格の判定</b>：要件を満たすかどうかはハローワークが決めます。ここでは「要件を満たした場合の額」を出します。</li>
+    <li data-scope-note="konzai"><b>月給と日給・時給が混ざった給料</b>：月給部分と日給・時給部分を分けて最低保障を計算するため、この計算機では扱いません。</li>
+  </ul>
+  <div class="callout" id="teichaku-youken">
+    <b>受けられる人（すべて満たすこと）</b>
+    <ul style="margin:6px 0 0">
+      <li>再就職手当の支給を受けた</li>
+      <li>その就職先に、同じ事業主のもとで<b>6か月以上、雇用保険の被保険者として</b>雇用された（起業して再就職手当を受けた人は対象外。事業主の都合による出向などでも、6か月たつ前に被保険者でなくなったら対象外）</li>
+      <li>再就職後6か月の賃金の1日分の額が、離職前の賃金日額を下回った</li>
+    </ul>
+    <p style="margin:8px 0 0">申請は、就職日から6か月を経過した日の翌日から2か月以内です（<a href="https://www.hellowork.mhlw.go.jp/doc/syuugyousokushin.pdf" rel="nofollow">ハローワーク「再就職手当を受給した皆さまへ」</a>・2026年10月14日確認）。この計算機の結果は目安で、支給の可否と額はハローワークが決定します。</p>
+  </div>
+</section>
+
+<section class="faq">
+  <h2 id="faq">よくある質問</h2>
+  <h3 class="faq-question">就業促進定着手当はいくらもらえますか？</h3>
+  <p class="faq-answer">「（離職前の賃金日額 − 再就職後6か月の賃金の1日分の額）× 賃金支払基礎日数」と「基本手当日額 × 支給残日数 × 20%」の少ない方です。公表例では、離職前の賃金日額10,000円・再就職後9,500円・月給制で183日なら91,500円で、上限113,526円（6,307円×90日×20%）より少ないので91,500円が支給されます。</p>
+  <h3 class="faq-question">上限は30%や40%ではないのですか？</h3>
+  <p class="faq-answer">令和7年4月1日以後に就職した人は20%です。30%（再就職手当の給付率が70%の場合）と40%（60%の場合）は、令和7年3月31日以前に就職した人の率です。</p>
+  <h3 class="faq-question">月給制の賃金支払基礎日数は何日ですか？</h3>
+  <p class="faq-answer">6か月の暦日数です。4月1日〜9月30日なら183日、10月1日〜3月31日なら182日（うるう年は183日）のように、期間によって181日〜184日になります。</p>
+  <h3 class="faq-question">賞与は6か月の賃金に入れますか？</h3>
+  <p class="faq-answer">夏・冬の賞与など3か月を超える期間ごとに支払われる賃金は入れません。通勤手当・残業代・皆勤手当などは入れます。税金や社会保険料を引く前の総支給額で数えます。</p>
+  <h3 class="faq-question">再就職後の給料が上がった場合はどうなりますか？</h3>
+  <p class="faq-answer">支給されません。就業促進定着手当は、再就職後6か月の賃金の1日分の額が離職前の賃金日額を下回ったときだけの給付です。</p>
+</section>
+<section class="faq rel-block">
+<h2>関連する解説</h2>
+<!--rel:S--><ul class="rel-list"><li><a href="../column/saishushoku-teate/">再就職手当はいくらもらえる？計算方法と支給条件【令和8年度】</a><span class="rel-desc">再就職手当＝基本手当日額×支給残日数×60%（残日数が所定給付日数の3分の2以上なら70%）。日額には6,745円の上限があり高給の人ほど削</span></li></ul><!--rel:E-->
+</section>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%B0%B1%E6%A5%AD%E4%BF%83%E9%80%B2%E5%AE%9A%E7%9D%80%E6%89%8B%E5%BD%93%E3%81%AE%E6%94%AF%E7%B5%A6%E9%A1%8D%E3%82%92%E3%80%81%E5%86%8D%E5%B0%B1%E8%81%B7%E5%BE%8C6%E3%81%8B%E6%9C%88%E3%81%AE%E7%B5%A6%E6%96%99%E3%81%A8%E9%9B%A2%E8%81%B7%E5%89%8D%E3%81%AE%E8%B3%83%E9%87%91%E6%97%A5%E9%A1%8D%E3%81%8B%E3%82%89%E8%A8%88%E7%AE%97%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fteichaku%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site" style="display:block">
+  出典: 雇用保険法56条の3／雇用保険業務取扱要領57261〜57264・50603・50615／ハローワーク「再就職手当を受給した皆さまへ」（LL080801保03）<span id="src-note"></span>。<br>
+  入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
+<!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+  <!-- datasrc:auto --><div class="datasrc" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7"><ul style="margin:0"><li style="margin:2px 0"><b>適用</b>: 令和8年　／　適用開始: 2026年8月1日　／　次回改定: 2027年8月1日　／　一次情報の確認: 2026年8月1日　／　<a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000160564_00050.html" rel="noopener" style="color:var(--sub)">出典</a></li><li style="margin:2px 0">一次情報の確認: 2026年10月14日</li></ul></div><!-- /datasrc:auto -->
+  <!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>作成・検証: 税金・経理・補助金ツールズ</div><!-- /trust:auto -->
+</footer>
+
+<script type="module">
+import { calcTeichaku, wagePeriod, limitsFor, START } from "../assets/teichaku_core.js";
+import { saishushokuCap } from "../assets/saishushoku_core.js";
+
+const $ = (id) => document.getElementById(id);
+const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
+const md = (s) => { const [, m, d] = s.split("-").map(Number); return `${m}/${d}`; };
+const jdate = (s) => { const [y, m, d] = s.split("-").map(Number); return `${y}年${m}月${d}日`; };
+
+// 上限額・下限額（今の適用期間と、前の適用期間）は非同期で届く。**届く前に押されても待つ**。
+// 上限・下限が分からないまま答えると、改定をまたいだ人に違う額を見せる。
+let D = null, H = null;
+const getJson = (p) => fetch(p).then((r) => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); });
+const dataReady = Promise.all([getJson("../assets/kihonteate_r07.json"), getJson("../assets/teichaku_history.json")])
+  .then(([d, h]) => { D = d; H = h; return true; })
+  .catch(() => false);
+
+// 出典・現行の上限額の表示は飾り。ここで転んでも計算は止めない。
+dataReady.then((ok) => {
+  if (!ok || !D) return;
+  $("src-note").textContent = `（${D._meta.label}）`;
+  $("cap-now").textContent = yen(saishushokuCap(45, D)).replace("¥", "") + "円";
+  $("cap-now-60").textContent = yen(saishushokuCap(61, D)).replace("¥", "") + "円";
+}).catch(() => {});
+
+// 6か月の期間を入力欄の見出しに出す（どの明細を入れればよいかを先に見せる）
+const syncPeriod = () => {
+  const p = wagePeriod($("shushoku").value, Number($("closing").value));
+  for (let i = 0; i < 6; i++) {
+    $(`w${i + 1}-label`).textContent = p
+      ? `${i + 1}か月目（${md(p.months[i].from)}〜${md(p.months[i].to)}・${p.months[i].days}日）`
+      : `${i + 1}か月目`;
+  }
+  $("period-label").innerHTML = p
+    ? `対象の6か月：<b>${jdate(p.start)}〜${jdate(p.end)}</b>（暦日数 ${p.calendarDays}日）`
+    : "就職日を入れると、対象になる6か月の期間を表示します。";
+};
+const syncType = () => {
+  const getsu = $("type").value === "getsukyu";
+  $("kiso-row").style.display = getsu ? "none" : "block";
+  $("kiso-auto").style.display = getsu ? "block" : "none";
+};
+$("shushoku").addEventListener("input", syncPeriod);
+$("shushoku").addEventListener("change", syncPeriod);
+$("closing").addEventListener("change", syncPeriod);
+$("type").addEventListener("change", syncType);
+syncPeriod();
+syncType();
+
+const warn = (field, msg) => `<div class="warn" data-field="${field}">${msg}</div>`;
+
+$("calc").addEventListener("click", async () => {
+  const box = $("result");
+  box.style.display = "block";   // .result は既定 display:none(style.css)
+  box.innerHTML = "計算中…";
+  const ready = await dataReady;
+  if (!ready || !D || !H) {
+    box.innerHTML = `<div class="callout"><b>上限額・下限額を読み込めませんでした。</b>` +
+      `通信環境を確認して、ページを再読み込みしてください。就職日の時点の上限額・下限額が` +
+      `分からないまま額を答えると、違う額をお見せすることになるため、計算を止めています。</div>`;
+    return;
+  }
+
+  const shushoku = $("shushoku").value;
+  const closing = Number($("closing").value);
+  const type = $("type").value;
+  const age = Number($("age").value);
+  const wagesRaw = [1, 2, 3, 4, 5, 6].map((i) => $(`w${i}`).value);
+  const zen = Number($("zen").value);
+  const daily = Number($("daily").value);
+  const remaining = Number($("remaining").value);
+  const kiso = Number($("kiso").value);
+
+  if (!shushoku) { box.innerHTML = warn("shushoku", "再就職した日（就職日）を入力してください。"); return; }
+  const emptyIdx = wagesRaw.findIndex((v) => v === "" || !(Number(v) >= 0));
+  if (emptyIdx >= 0) {
+    box.innerHTML = warn(`w${emptyIdx + 1}`, `${emptyIdx + 1}か月目の給料（総支給額）を入力してください。休職などで0円の月は 0 と入れてください。`);
+    return;
+  }
+  if (type !== "getsukyu" && !(kiso >= 1)) { box.innerHTML = warn("kiso", "6か月の賃金支払基礎日数（合計）を入力してください。"); return; }
+  if (!(zen > 0)) { box.innerHTML = warn("zen", "離職前の賃金日額を入力してください。"); return; }
+  if (!(daily > 0)) { box.innerHTML = warn("daily", "基本手当日額を入力してください。"); return; }
+  if (!(age >= 15 && age < 65)) { box.innerHTML = warn("age", "離職時の年齢を15〜64歳で入力してください（この計算機は64歳までの離職に対応しています）。"); return; }
+  if (!(remaining >= 1)) { box.innerHTML = warn("remaining", "支給残日数を入力してください。"); return; }
+
+  const wages = wagesRaw.map(Number);
+  const r = calcTeichaku({ age, shushoku, closing, zenNichigaku: zen, kihonDaily: daily, remaining, type, wages, baseDays: kiso }, D, H);
+
+  if (!r.ok) {
+    // 適用期間の外を、今の額で黙って計算しない（fail closed）
+    const beyondData = r.reason === "beyond_data" || r.reason === "no_period";
+    box.innerHTML = r.reason === "before_start"
+      ? `<div class="callout"><b>令和7年3月31日以前の就職は、この計算機の対象外です。</b>` +
+        `上限が支給残日数の40%（再就職手当の給付率が70%なら30%）で、令和7年4月1日以後の就職（20%）と計算が違います。</div>`
+      : beyondData
+      ? `<div class="callout"><b>この就職日に適用される上限額・下限額は、まだ収録していません。</b>` +
+        `収録しているのは${jdate(START)}から${D._meta.next_revision ? jdate(D._meta.next_revision) + "の前日" : "現在"}までの就職です。` +
+        `違う年度の額で計算すると誤った額になるため、概算も出していません。</div>`
+      : warn("shushoku", "就職日を正しく入力してください。");
+    return;
+  }
+
+  if (type !== "getsukyu" && kiso > r.period.calendarDays) {
+    box.innerHTML = warn("kiso", `賃金支払基礎日数が、6か月の暦日数（${r.period.calendarDays}日）を超えています。`);
+    return;
+  }
+
+  const L = r.limits;
+  const m = r.minashi;
+  const cents = (c) => (c / 100).toLocaleString("ja-JP", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const minashiHow = type === "nikkyu"
+    ? `(a) ${yen(r.total)} ÷ 180 ＝ ${cents(m.w1Cents)}円<br>(b) ${yen(r.total)} ÷ ${r.baseDays}日 × 70% ＝ ${cents(m.w2Cents)}円<br>` +
+      `高い方の<b>${m.usedMinimum ? "(b) 最低保障" : "(a)"}</b>を使い、1円未満を切り捨てて <b>${yen(m.raw)}</b>`
+    : `${yen(r.total)} ÷ 180 ＝ ${cents(m.w1Cents)}円 → <b>${yen(m.raw)}</b>（1円未満切捨て）`;
+  const clampNote = (x, what) => x.raisedToMin ? `（下限額 ${yen(L.min)} に引き上げ）` : x.cappedAtMax ? `（上限額 ${yen(L.max)} で頭打ち）` : "";
+
+  const rows = `
+    <table class="res">
+      <tr><th scope="row">対象の6か月</th><td>${jdate(r.period.start)}〜${jdate(r.period.end)}（暦日数 ${r.period.calendarDays}日）</td></tr>
+      <tr><th scope="row">① 再就職後の賃金日額</th><td>${minashiHow}${m.clamped !== m.raw ? `<br>→ <b>${yen(m.clamped)}</b>${clampNote(r.minashi)}` : ""}</td></tr>
+      <tr><th scope="row">② 離職前の賃金日額</th><td><b>${yen(r.zen.clamped)}</b>${clampNote(r.zen)}</td></tr>
+      <tr><th scope="row">③ 賃金の低下額（1日あたり）</th><td>${yen(r.zen.clamped)} − ${yen(m.clamped)} ＝ <b>${yen(r.diff)}</b></td></tr>
+      <tr><th scope="row">④ 計算額</th><td>${yen(r.diff)} × ${r.baseDays}日（${type === "getsukyu" ? "暦日数" : "賃金支払基礎日数"}）＝ <b>${yen(r.gross)}</b></td></tr>
+      <tr><th scope="row">⑤ 上限額</th><td>${yen(r.dailyUsed)} × ${r.remaining}日 × 20% ＝ <b>${yen(r.cap)}</b>${r.dailyCapped ? `（基本手当日額 ${yen(daily)} は上限 ${yen(L.saiCap)} で頭打ち）` : ""}</td></tr>
+    </table>
+    <p class="hint">上限額・下限額は就職日の適用期間（${L.label}）の額で計算しました：賃金日額の上限 ${yen(L.max)}・下限 ${yen(L.min)}、基本手当日額の上限 ${yen(L.saiCap)}。</p>`;
+
+  if (r.zenAtMin) {
+    box.innerHTML = `<div class="big">就業促進定着手当は支給されません</div>${rows}
+      <div class="callout"><b>離職前の賃金日額が下限額（${yen(L.min)}）です。</b>再就職後の賃金日額も下限額より下にはならないため、差額が生じません（要領57262）。</div>`;
+    return;
+  }
+  if (r.notLower) {
+    box.innerHTML = `<div class="big">就業促進定着手当は支給されません</div>${rows}
+      <div class="callout"><b>再就職後の賃金日額（${yen(m.clamped)}）が、離職前の賃金日額（${yen(r.zen.clamped)}）を下回っていません。</b>就業促進定着手当は、賃金が下がった人への給付です。</div>`;
+    return;
+  }
+  box.innerHTML = `
+    <div class="big">就業促進定着手当　${yen(r.amount)}</div>
+    ${rows}
+    <table class="res">
+      <tr><th scope="row">支給額</th><td>④ ${yen(r.gross)} と ⑤ ${yen(r.cap)} の少ない方 ＝ <b>${yen(r.amount)}</b>${r.capApplied ? "（上限額で頭打ち）" : ""}</td></tr>
+    </table>
+    <div class="hint">要件を満たした場合の額です。申請は就職日から6か月を経過した日の翌日から2か月以内に、再就職手当を申請したハローワークへ（6か月分の給与明細または賃金台帳、出勤簿の写しを添付）。</div>`;
+});
+
+/* ---------- 結果をコピー（共通部品） ---------- */
+import { attachCopyButton } from "../assets/copy_result.js";
+attachCopyButton(document.getElementById("copy-result"), document.getElementById("result"));
+</script>
+<script src="../assets/a11y_error.js" defer></script>
+<script src="../assets/empty-state.js" defer></script>
+</body>
+</html>

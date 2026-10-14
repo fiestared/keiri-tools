@@ -11,12 +11,13 @@
 // 取得に失敗しても index.html は前回の data.json から描き直す（画面に「取得失敗・N分前のデータ」
 // と出る）。＝ 画面が黙って古い数字を出し続けることは無い。
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, renameSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { productionGuard } from "./production-guard.mjs";
 import { settledCutoffHour, todayHeadline, todayPv } from "./settled.mjs";
+import { applyFetch, summarize, hoursOfDay, normalizeState, emptyState, rowsFromRealtime } from "./rt-accum.mjs";
 import { createSign } from "node:crypto";
 
 const DIR = dirname(fileURLToPath(import.meta.url));
@@ -24,6 +25,9 @@ const SA_PATH = process.env.KEIRI_SA_JSON ?? join(homedir(), ".keiri-analytics/s
 const DATA_PATH = join(DIR, "data.json");
 const OUT_HTML = join(DIR, "index.html");
 const OUT_ARTIFACT = join(DIR, "artifact.html");
+// 推定（Realtime の分ごとの件数の積み上げ）。git には入れない（.gitignore 済み）。
+// ★未追跡ファイルを置くと production-guard が本番送信を止める。名前を変えるなら .gitignore も直す
+const RT_PATH = join(DIR, "rt-accum.json");
 // 毎分走るので launchd のログに毎回書くと1日1,400行になる。
 // 「走ったかどうか」はこの1行のファイルを毎回上書きして残し、標準出力は変化時とエラー時だけにする。
 // （＝ログが伸びていない ≠ 動いていない。見るのはこのファイル）
@@ -176,6 +180,52 @@ const runReport = (token, property, body) =>
     if (!r.ok) throw new Error(d?.error?.message ?? `HTTP ${r.status}`);
     return d;
   });
+
+// Realtime API: 直近30分の session_start・page_view を minutesAgo 別に取る（1サイト1リクエスト）。
+// ★sessions 指標は無い。session_start の eventCount で代える（GA4 の sessions とは数え方が違う）。
+// ★hostName 次元も無いので自ドメイン以外を除けない。
+// ★クォータは runReport と別枠。1回 30〜40 トークン（2026-10-12 実測）。毎分で1日 約55,000＝上限の約27%。
+const runRealtime = (token, property) =>
+  fetchRetry(`https://analyticsdata.googleapis.com/v1beta/${property}:runRealtimeReport`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      dimensions: [{ name: "minutesAgo" }, { name: "eventName" }],
+      metrics: [{ name: "eventCount" }],
+      dimensionFilter: { filter: { fieldName: "eventName", inListFilter: { values: ["session_start", "page_view"] } } },
+      returnPropertyQuota: true,
+      limit: 200,
+    }),
+  }).then(async (r) => {
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(d?.error?.message ?? `HTTP ${r.status}`);
+    return d;
+  });
+
+function loadRt() {
+  try { return normalizeState(JSON.parse(readFileSync(RT_PATH, "utf8"))); }
+  catch { return emptyState(); }
+}
+function saveRt(state) {
+  writeFileSync(RT_PATH + ".tmp", JSON.stringify(state));
+  renameSync(RT_PATH + ".tmp", RT_PATH);
+}
+async function fetchRealtimeAll(state) {
+  const errors = {};
+  let token;
+  try { token = await accessToken(); }
+  catch (e) { for (const s of SITES) errors[s.key] = e.message; return { state, errors }; }
+  for (const s of SITES) {
+    try {
+      const resp = await runRealtime(token, s.property);
+      const n = jstFields();
+      state = applyFetch(state, s.key, { date: `${n.year}-${n.month}-${n.day}`, hm: `${n.hour}:${n.minute}` }, rowsFromRealtime(resp));
+      const q = resp.propertyQuota;
+      if (q) state.sites[s.key].quota = { day: q.tokensPerDay, hour: q.tokensPerHour, projectHour: q.tokensPerProjectPerHour };
+    } catch (e) { errors[s.key] = e.message; }
+  }
+  return { state, errors };
+}
 
 // Search Console（日次のクリック・表示・順位）。siteUrl は sc-domain:… を URL エンコードして path に置く
 const searchAnalytics = (token, siteUrl, body) =>
@@ -853,12 +903,12 @@ function hourChart(site) {
   </div>
   <figcaption>${cum}。<b>今日の棒は ${site.cutoff ? esc(site.cutoff) : "現在"} で終わっている</b>のが正常で、
     その先は「0件」ではなく<b>GA4がまだ出していない</b>。前日の合計とではなく、同じ時間帯どうしで比べること。</figcaption>
-  ${hourTable(site)}
 </figure>`;
 }
 
 // チャートは色と形で読ませているので、数値そのものはここで担保する（マウスを使えない場合の経路）
 function hourTable(site) {
+  if (!site.hToday || !site.hYest) return "";
   const rows = site.hToday.map((v, hh) => {
     const drawn = hh <= site.cutoffHour;
     const yv = site.hYest[hh];
@@ -884,6 +934,88 @@ function hourTable(site) {
     <tbody>${rows}</tbody>
   </table></div>
 </details>`;
+}
+
+/**
+ * 推定セッションの時間帯グラフ。既存の「時間帯別のセッション数」は GA4 確定分のまま触らない。
+ * ★未取得の時間帯は棒を描かない（0 と混ぜない）。
+ */
+function rtHourChart(site) {
+  const rt = site.rt;
+  const h = rt?.hours;
+  if (!h && !rt?.error) return "";
+  if (rt?.error && !h) {
+    return `<figure class="chart hourly rt-est"><figcaption class="chart-title">推定セッション（Realtime 積み上げ） <span class="badge">GA4 の確定値ではない</span></figcaption>
+      <p class="rt-warn">推定は取得できなかった<br><code>${esc(rt.error)}</code></p></figure>`;
+  }
+  const W = 720, H = 222, PAD = { t: 28, r: 12, b: 34, l: 44 };
+  const iw = W - PAD.l - PAD.r, ih = H - PAD.t - PAD.b;
+  const band = iw / 24;
+  const bw = Math.min(18, band - 8);
+  const hourMax = Math.max(1, ...h.hours);
+  const st = niceStep(hourMax), top = Math.ceil(hourMax / st) * st;
+  const y = (v) => PAD.t + ih - (v / top) * ih;
+  const x0 = (hh) => PAD.l + band * hh;
+  const ticks = [];
+  for (let v = 0; v <= top + 1e-9; v += st) ticks.push(v);
+  const bars = h.hours.map((v, hh) => {
+    if (!h.seen[hh]) return null;
+    const x = x0(hh) + (band - bw) / 2;
+    const ht = Math.max(v > 0 ? 2 : 0, (v / top) * ih);
+    const yy = PAD.t + ih - ht;
+    const r = Math.min(4, bw / 2, ht);
+    return {
+      v, hh, x, yy, ht, cx: x0(hh) + band / 2,
+      path: ht <= 0 ? "" :
+        `M${x.toFixed(1)} ${(yy + ht).toFixed(1)} L${x.toFixed(1)} ${(yy + r).toFixed(1)} Q${x.toFixed(1)} ${yy.toFixed(1)} ${(x + r).toFixed(1)} ${yy.toFixed(1)} L${(x + bw - r).toFixed(1)} ${yy.toFixed(1)} Q${(x + bw).toFixed(1)} ${yy.toFixed(1)} ${(x + bw).toFixed(1)} ${(yy + r).toFixed(1)} L${(x + bw).toFixed(1)} ${(yy + ht).toFixed(1)} Z`,
+    };
+  }).filter(Boolean);
+  const fail = rt.error ? `<div class="rt-warn">今回の取得は失敗（${esc(h.to)} 時点の積み上げ）<br><code>${esc(rt.error)}</code></div>` : "";
+  const gap = h.gaps.length
+    ? `<div class="rt-warn">うち ${h.gaps.map((g) => `<b>${esc(g.from)}〜${esc(g.to)}</b>`).join("・")} は未取得（計${h.gapMin}分）</div>` : "";
+  return `
+<figure class="chart hourly rt-est">
+  <figcaption class="chart-title">推定セッション（Realtime 積み上げ・時間帯別） <span class="badge">GA4 の確定値ではない</span></figcaption>
+  <div class="legend">
+    <span><i class="sw sw-rt"></i>推定（session_start）</span>
+    <span>範囲 ${esc(h.from)}〜${esc(h.to)} ／ 計 ${h.s.toLocaleString("ja-JP")} ／ PV ${h.pv.toLocaleString("ja-JP")}</span>
+  </div>
+  ${fail}${gap}
+  <div class="chart-scroll">
+  <svg viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet"
+       aria-label="${esc(site.label)} の推定セッション。Realtime の時間帯別。数値は下の表。">
+    ${ticks.map((v) => `<line x1="${PAD.l}" x2="${W - PAD.r}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"
+        stroke="${v === 0 ? "var(--axis)" : "var(--grid)"}" stroke-width="1" shape-rendering="crispEdges"/>`).join("")}
+    ${ticks.map((v) => `<text x="${PAD.l - 8}" y="${(y(v) + 4).toFixed(1)}" class="tick" text-anchor="end">${v.toLocaleString("ja-JP")}</text>`).join("")}
+    ${bars.map((b) => b.path
+      ? `<path d="${b.path}" fill="var(--series-rt)" stroke="var(--surface)" stroke-width="2" paint-order="stroke"/>` : "").join("")}
+    ${[0, 3, 6, 9, 12, 15, 18, 21].map((hh) =>
+      `<text x="${(x0(hh) + band / 2).toFixed(1)}" y="${H - PAD.b + 18}" class="xlab" text-anchor="middle">${hh}</text>`).join("")}
+    <text x="${(PAD.l + iw / 2).toFixed(1)}" y="${H - PAD.b + 31}" class="xsub" text-anchor="middle">時（JST）</text>
+    ${bars.map((b) => `<text x="${b.cx.toFixed(1)}" y="${Math.max(12, b.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${b.v.toLocaleString("ja-JP")}</text>`).join("")}
+    ${h.hours.map((v, hh) => {
+      const tip = h.seen[hh]
+        ? `${hh}時台 — 推定 ${v.toLocaleString("ja-JP")} ／ PV ${h.hourPv[hh].toLocaleString("ja-JP")}`
+        : `${hh}時台 — 未取得（0ではない）`;
+      return `<rect class="hit" x="${x0(hh).toFixed(1)}" y="${PAD.t}" width="${band.toFixed(1)}" height="${ih}"
+        fill="transparent" data-tip="${esc(tip)}"></rect>`;
+    }).join("")}
+  </svg>
+  </div>
+  <figcaption>Mac が毎分取った Realtime の session_start を時間帯に足した数。上の「時間帯別のセッション数」とは別物。
+    ${h.from !== "00:00" ? `積み上げは ${esc(h.from)} から。` : ""}未取得の時間帯は棒を描いていない。</figcaption>
+  <details class="tbl">
+    <summary>表で見る（推定の時間帯別）</summary>
+    <div class="tbl-scroll"><table>
+      <thead><tr><th>時間帯</th><th class="num">推定セッション</th><th class="num">推定 PV</th></tr></thead>
+      <tbody>${h.hours.map((v, hh) => `<tr>
+        <td>${hh}時台</td>
+        <td class="num strong">${h.seen[hh] ? v.toLocaleString("ja-JP") : "—"}</td>
+        <td class="num">${h.seen[hh] ? h.hourPv[hh].toLocaleString("ja-JP") : "—"}</td>
+      </tr>`).join("")}</tbody>
+    </table></div>
+  </details>
+</figure>`;
 }
 
 function table(site) {
@@ -1254,6 +1386,8 @@ function sitePanel(site, primary, extra = "", selected = true, asTab = false) {
   ${chart(site)}
   ${table(site)}
   ${hourChart(site)}
+  ${rtHourChart(site)}
+  ${hourTable(site)}
   ${extra}
 </section>`;
 }
@@ -1269,6 +1403,7 @@ const CSS = `
   --series-2:#8a8580; --series-2-wash:rgba(138,133,128,.15);
   /* 先週同曜日＝破線で他の2系列と区別する */
   --series-3:#a55400;
+  --series-rt:#0f766e;
   --up:#006300; --down:#d03b3b; --warn:#fab219;
   /* 流入元（積み上げ棒）。隣り合う群が見分けられる明度差をつける */
   --src-bing:#2a78d6; --src-google:#1f9d55; --src-ai:#8a4fd1; --src-search:#d08c00; --src-x:#111111; --src-direct:#8a8580; --src-other:#c9c7bf; --src-unset:#e9e7e0;
@@ -1284,6 +1419,7 @@ const CSS = `
     --series-1:#3987e5; --series-wash:rgba(57,135,229,.18);
     --series-2:#8f8b85; --series-2-wash:rgba(143,139,133,.20);
     --series-3:#f0a24a;
+    --series-rt:#2dd4bf;
     --up:#0ca30c; --down:#e66767;
     --src-bing:#3987e5; --src-google:#2fbf6c; --src-ai:#a77be6; --src-search:#f0a830; --src-x:#e8e8e8; --src-direct:#8f8b85; --src-other:#55534e; --src-unset:#33322f;
   }
@@ -1423,6 +1559,11 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
 .sw-part{background:repeating-linear-gradient(45deg,var(--series-1) 0 2.5px,var(--series-wash) 2.5px 6px)}
 .sw-yest{height:8px; background:var(--series-2-wash); border-top:1.5px solid var(--series-2); border-radius:0}
 .sw-prevweek{height:0; width:16px; border-top:2px dashed var(--series-3); border-radius:0}
+.sw-rt{background:var(--series-rt)}
+/* 推定は「時間帯別のセッション数」の直後。日次との区切り（.chart.hourly の実線）は重ねない */
+.chart.hourly.rt-est{margin-top:4px; border-top:1px dashed var(--axis); padding-top:12px}
+.rt-warn{font-size:12.5px; line-height:1.6; color:var(--ink); border-left:3px solid var(--warn); padding-left:10px; margin:6px 0}
+.rt-warn code{font-size:11px; color:var(--ink2); word-break:break-all}
 .chart.hourly figcaption b{color:var(--ink)}
 .chart.hourly .tbl{margin-top:10px}
 .chart.hourly figcaption .up{color:var(--up); font-weight:650}
@@ -1757,6 +1898,25 @@ if (!data) {
 }
 
 const m = model(data);
+
+let rtState = loadRt();
+let rtErrors = {};
+if (!OFFLINE) {
+  try {
+    const r = await fetchRealtimeAll(rtState);
+    rtState = r.state; rtErrors = r.errors;
+    saveRt(rtState);
+  } catch (e) {
+    for (const s of SITES) rtErrors[s.key] ??= e.message;
+  }
+}
+for (const s of m.sites) {
+  let sum = null, hours = null;
+  try { sum = summarize(rtState, s.key, m.today); } catch { /* 推定が描けなくても画面は出す */ }
+  try { hours = hoursOfDay(rtState, s.key, m.today); } catch { /* 同上 */ }
+  s.rt = { sum, hours, error: rtErrors[s.key] ?? null };
+}
+
 const html = standalone(m, err);
 writeFileSync(OUT_HTML, html);
 if (WANT_ARTIFACT) writeFileSync(OUT_ARTIFACT, fragment(m, err));
@@ -1771,7 +1931,11 @@ if (production && !err) {
 
 const f = jstFields(new Date(m.fetchedAt));
 const stamp = `${f.year}-${f.month}-${f.day} ${f.hour}:${f.minute}`;
-const nums = m.sites.map((s) => `${s.label} 今日=${s.today} 昨日=${s.yesterday} 直近7日=${s.last7}`).join(" / ");
+const rtNote = (s) => {
+  const x = s.rt?.sum;
+  return `（推定 ${s.rt?.error ? "取得失敗 " : ""}${x ? `s=${x.s} pv=${x.pv} ${x.from}〜${x.to}${x.gaps.length ? ` 欠け${x.gapMin}分` : ""}` : "なし"}）`;
+};
+const nums = m.sites.map((s) => `${s.label} 今日=${s.today}${rtNote(s)} 昨日=${s.yesterday} 直近7日=${s.last7}`).join(" / ");
 const summary = `${stamp} JST ${err ? "FAIL" : "OK"} ${nums}`
   + `${err ? ` — ${err}` : ""}${pushErr ? ` — /ga への送信に失敗: ${pushErr}` : ""}`;
 

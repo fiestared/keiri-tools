@@ -112,3 +112,8 @@ extra.shotokuzei_core=[{name:'所得税HTML初期は金額欄が空欄',run:d=>[
  expected:['','','','','','','','','','','none','false'],source:'https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/03/order4/3-4_26.htm',
  quote:'所得金額の合計',
  note:'金額欄はすべて空欄・医療費控除は「受けない」・65歳以上は未チェックで始め、収入が無ければ計算せずに入力を促す（e2e shotokuzei_empty）。'}];
+
+extra.teichaku_core=[{name:'就業促進定着手当HTML初期は金額欄が空欄',run:d=>['shushoku','w1','w2','w3','w4','w5','w6','kiso','zen','daily','remaining'].map(id=>d.getElementById(id).value).concat([d.getElementById('type').value,d.getElementById('closing').value]),
+ expected:['','','','','','','','','','','','getsukyu','31'],source:'https://www.hellowork.mhlw.go.jp/doc/syuugyousokushin.pdf',
+ quote:'再就職後６か月間の賃金*¹の合計額      ÷   180',
+ note:'金額欄・就職日はすべて空欄、給料の形態は月給・締切日は末日で始め、空欄のまま押せば計算せずにその欄へ入力を促す。'}];
