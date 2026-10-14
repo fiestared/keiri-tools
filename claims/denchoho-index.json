@@ -1,6 +1,6 @@
 {
   "page": "docs/denchoho-index/index.html",
-  "checked": "2026-10-12",
+  "checked": "2026-10-14",
   "claims": [
     {
       "id": "r10-44",
@@ -750,7 +750,7 @@
     {
       "id": "readable1012-template",
       "kind": "own_site",
-      "text": "当サイトが配布する索引簿テンプレート: 登録不要・無料、CSV形式（UTF-8 BOM付き）、記入例つき（3件）と空（30行）の2種類。列は 連番・取引年月日・取引先・取引金額・書類種別・書類番号・保存ファイル名・備考。",
+      "text": "当サイトの索引簿テンプレート: 登録不要・無料。Excel形式（.xlsx）とUTF-8 BOM付きCSVを配布。記入例つき3件と空30行。Excel版はシート名「索引簿」、取引年月日は日付シリアル値とyyyy-mm-dd表示、取引金額は数値、見出し固定とフィルターを設定。",
       "where": [
         "title・description・h1",
         "ダウンロードの箱",
@@ -761,15 +761,15 @@
         "30行",
         "3件"
       ],
-      "applies": "2026-10-12 時点の配布ファイル。",
-      "scope": "このサイトの配布物（docs/denchoho-index/ の CSV 2つ）の仕様。制度上の主張ではない。",
+      "applies": "2026-10-14時点の配布ファイル。",
+      "scope": "このサイトの配布物の仕様。制度の主張ではない。",
       "exceptions": [
-        "無し: 配布ファイルの実物を 2026-10-12 に確認。2つとも先頭3バイトが EF BB BF（UTF-8 BOM）、見出し行は8列、記入例つきはデータ3行、空は見出し1行＋30行。表の「例」の列は記入例つきの1行目と一致（保存ファイル名は表では途中を「…」で省略）。Excel・Googleスプレッドシート・Numbers で開けること、.xlsx で保存できることは実機で確かめていない（r16/t20-a でも out_of_corpus）。"
+        "Excelアプリ自体での実機確認は未実施。tests/test_denchoho_xlsx.mjsでZIP CRC・OOXMLのパーツと関連付け・日本語テキスト・日付/金額の型・フィルター・CSVとの値一致・再生成のバイト一致を確認する。CSVの他ソフトでの読込は今回の確認対象外。"
       ],
       "partial_out_of_corpus": true,
       "source_url": "https://keiri-tools.com/denchoho-index/",
-      "source_quote": "連番,取引年月日,取引先,取引金額,書類種別,書類番号,保存ファイル名,備考 / 1,2026-07-08,Amazon.co.jp,8978,領収書,249-3524887-3291000,20260708_amazon_8978_249-3524887-3291000.pdf,事務用デスク",
-      "corpus_ref": "docs/denchoho-index/索引簿テンプレート_記入例つき.csv・索引簿テンプレート.csv（このリポジトリの配布物）",
+      "source_quote": "シート名=索引簿 / B2: t=n, numFmt=yyyy-mm-dd / D2: t=n, v=8978 / autoFilter=A1:H4（記入例つき）またはA1:H31（空）",
+      "corpus_ref": "docs/denchoho-index/索引簿テンプレート.xlsx・索引簿テンプレート_記入例つき.xlsx・既存CSV2つ; tools/gen_denchoho_xlsx.py; tests/test_denchoho_xlsx.mjs",
       "covers": [
         "s-6a848d0be96a2d5fac88-1",
         "s-6243ab15a78b670429d0-1",
