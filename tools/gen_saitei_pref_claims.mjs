@@ -31,7 +31,7 @@ for(const p of D.prefectures){
   const t=u.text;
   if((t.includes('確認日') && !/円|%/.test(t)) || /文責|Masahiro|この県の表を印刷|入力して比較|選んで時給|一般的な情報提供|親ページ|戻る/.test(t)){
    source_url='https://keiri-tools.com/about/';source_quote=`このサイトの生成仕様と取得記録: 正本確認日 ${D._meta.checked}、県 ${p.full}、労働局のリンク確認日 ${routes[p.pref].bureau_checked}。gen_saitei_pref_pages.mjs / tools/e2e/harness.html / reports/saitei-pref-2026-10-14/sources/。`;extra.kind='own_site';
-  }else if(/算入|対象外|賞与|臨時|精皆勤|通勤手当|家族手当|固定残業|一か月|所定時間を超える労働|所定休日の労働|深夜労働/.test(t)){
+  }else if(/算入|対象外|比較から除き|賞与|臨時|精皆勤|通勤手当|家族手当|固定残業|一か月|所定時間を超える労働|所定休日の労働|深夜労働/.test(t)){
    source_url='https://saiteichingin.mhlw.go.jp/point/page_point_targetwages.html';source_quote=administrativeExclusions;
    // 法令の引用と手当の行政列挙を別々の出所で保持する。
    extra.source_refs=[{url:'https://laws.e-gov.go.jp/law/334M50002000016',quote:excluded},{url:source_url,quote:allowances}];
