@@ -416,6 +416,9 @@ SCENES.nenrei = async () => {
   const after = text(doc,"convert-result");
   set(doc,"direction","wareki"); set(doc,"era","令和"); set(doc,"convert-year","元"); click(doc,"convert-submit");
   const reverse = text(doc,"convert-result");
+  set(doc,"era","平成"); set(doc,"convert-year","31"); set(doc,"convert-month","4"); set(doc,"convert-day","30"); click(doc,"convert-submit");
+  const alternateEra = text(doc,"convert-result");
+  set(doc,"era","令和"); set(doc,"convert-year","元");
   set(doc,"convert-month","4"); set(doc,"convert-day","30"); click(doc,"convert-submit");
   const invalid = /期間外/.test(text(doc,"convert-result"));
   set(doc,"convert-year",""); const cleared = doc.getElementById("convert-result").hidden && !doc.getElementById("convert-result").textContent;
@@ -425,7 +428,7 @@ SCENES.nenrei = async () => {
   const leapBefore = text(doc,"age-result").includes("25歳");
   set(doc,"reference","2026-03-01"); click(doc,"age-submit");
   const leapAfter = text(doc,"age-result").includes("26歳");
-  return {initialRows,nextRows,row2026,row2027,before,after,reverse,invalid,cleared,recalculated,leapBefore,leapAfter};
+  return {initialRows,nextRows,row2026,row2027,before,after,reverse,alternateEra,invalid,cleared,recalculated,leapBefore,leapAfter};
 };
 
 const eigyobiScene = (FROM, TO) => async () => {
