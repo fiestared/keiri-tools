@@ -62,6 +62,14 @@ if [ -r "$STAMP" ] && [ "$(cat "$STAMP")" = "$TODAY" ]; then
   exit 0
 fi
 
+# ★専用クローンを使う他の定時ジョブ（00:10 の rebake_hojokin_tabs.sh）と同時に reset --hard し合わない（2026-10-15）。
+#   Mac が夜に閉じていると、起きた直後に取りこぼした起動がまとめて走るので時刻を離すだけでは足りない。
+#   取れなければ STAMP を書かずに降りる＝次の起動（1日3回）でやり直す。
+if ! . "$(dirname "$0")/autodata_lock.sh" || ! autodata_lock 900; then
+  say "★専用クローンのロックを15分待っても取れない。次の起動でやり直す"
+  exit 1
+fi
+
 # ★専用クローンが無ければ作る。ローカルから複製してから origin を GitHub に向け直す
 #   （ネットワークから 82MB を引き直さない）。
 if [ ! -d "$WORK/.git" ]; then
@@ -118,8 +126,13 @@ fi
 # ★データが同じでも、タブの「公募中」件数は締切が過ぎるたびに減る（今日の日付で数えるため）。
 #   ここで降りるとタブだけ古い件数のまま残り、test_hojokin_sources が赤になる（2026-10-01 に 319→316 で実測）。
 #   → タブが今日の件数と一致しているときだけ「変化なし」で降りる。ずれていれば下で焼き直して commit する。
+# ★★2026-10-15: --check は「焼き込んだ時刻（data-asof）で数え直して整合」を見る形に変わった
+#   （「今」で数えると日付が変わった瞬間に main が赤になるため）。--check だけでは基準時刻が進まないので、
+#   **基準日が今日でなければ（--is-today が非0）焼き直す**。これで data-asof は毎日この時刻に進む。
+#   進まないまま48時間たつと test_hojokin_sources の --check-age が赤になる。
 if git diff --quiet -- docs/assets/hojokin_jgrants.json docs/assets/hojokin_schedule.json docs/assets/koyou_joseikin.json \
-   && node tools/gen_hojokin_tabs.mjs --check >/dev/null 2>&1; then
+   && node tools/gen_hojokin_tabs.mjs --check >/dev/null 2>&1 \
+   && node tools/gen_hojokin_tabs.mjs --is-today >/dev/null 2>&1; then
   say "変化なし（${n}件）"
   echo "$TODAY" > "$STAMP"   # ★取得は成功している＝今日の確認は済み
   exit 0

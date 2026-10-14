@@ -1,0 +1,114 @@
+{
+  "baseline_ref": "22519fef49e11b3666545b8b1b4dec2695250c50",
+  "implementation_commit": "370afc4bd",
+  "branch": "wt/saitei-pref",
+  "baseline": {
+    "total": 320,
+    "initial_failures": [
+      {
+        "file": "break_kogaku.mjs",
+        "exit": 1,
+        "status": "fail"
+      },
+      {
+        "file": "test_kogaku_article.mjs",
+        "exit": 1,
+        "status": "fail"
+      },
+      {
+        "file": "test_layout_visual.mjs",
+        "exit": 1,
+        "status": "fail"
+      },
+      {
+        "file": "test_nav.mjs",
+        "exit": 1,
+        "status": "fail"
+      },
+      {
+        "file": "test_no_orphan.mjs",
+        "exit": 1,
+        "status": "fail"
+      },
+      {
+        "file": "test_site_search.mjs",
+        "exit": 1,
+        "status": "fail"
+      }
+    ],
+    "same_time_retest": "test_hojokin_sources.mjs: origin/main clone also failed after deadline"
+  },
+  "current": {
+    "total": 322,
+    "pass": 317,
+    "fail": 5,
+    "unmeasurable": 0,
+    "failures": [
+      "break_kogaku.mjs",
+      "test_hojokin_sources.mjs",
+      "test_kogaku_article.mjs",
+      "test_layout_visual.mjs",
+      "test_no_orphan.mjs"
+    ],
+    "new_failures": []
+  },
+  "retests": {
+    "test_toc_related.mjs": {
+      "status": "pass",
+      "log": "retest-test_toc_related.log"
+    },
+    "break_izoku_page.mjs": {
+      "status": "pass",
+      "log": "retest-break_izoku_page.log"
+    },
+    "break_measurement_wiring.mjs": {
+      "status": "pass",
+      "log": "retest-break_measurement_wiring.log"
+    },
+    "test_generators_fresh.mjs": {
+      "status": "pass",
+      "log": "generators-fresh-after-commit.log"
+    },
+    "test_index_entities.mjs": {
+      "status": "pass",
+      "log": "retest-test_index_entities.log"
+    },
+    "break_enumeration.mjs": {
+      "status": "pass",
+      "log": "retest-break_enumeration.log"
+    },
+    "test_saitei_pref_pages.mjs": {
+      "status": "pass",
+      "log": "test-pref-final.log"
+    },
+    "test_saitei_pref_layout.mjs": {
+      "status": "pass",
+      "log": "layout-check.log"
+    },
+    "test_year_staleness.mjs": {
+      "status": "pass",
+      "log": "year-check.log"
+    }
+  },
+  "checks": {
+    "prefectures": 47,
+    "primary_pdf_all_fields_match": 47,
+    "source_urls_http_200": true,
+    "e2e": 8,
+    "layout": {
+      "prefectures": 5,
+      "widths": [
+        1280,
+        390
+      ],
+      "a4_pages": 1
+    },
+    "enumeration": {
+      "mutations": 49,
+      "misses": 0
+    },
+    "claim_scope_issues": 0,
+    "unprocessed_new_page_segments": 0
+  },
+  "note": "原本のHTMLはsources/raw-primary-sources.zip。県ページの現行額は正本の確認日時点を明記。親の計算機は判定日の有効額を使用。publishと同じ生成器の順を実行し、必要な追加生成器も実行。pushなし。"
+}

@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "core": "rieki_core",
+  "page": "docs/riekiritsu/index.html",
+  "priority_evidence": "2026-10-14 新規ツール。粗利率の定義は公庫の手引、税込→税抜は国税庁 問57 の記載例",
+  "conditions": [
+    { "id": "zeikubun-zeiritsu", "statute": "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/57.pdf", "disposition": "input",
+      "input_ids": ["cost_tax", "cost_rate", "price_tax", "price_rate"], "cases": ["問57 税込60,000円(10%)・40,000円(8%)を税抜にそろえる", "J-Net21 売価1,000円・仕入800円の差額200円"] },
+    { "id": "arariritsu-teigi", "statute": "https://www.jfc.go.jp/n/service/pdf/keieikaizentebiki_230403n.pdf", "disposition": "input",
+      "input_ids": ["cost", "price"], "cases": ["J-Net21 売価1,000円・仕入800円の差額200円", "公庫の手引 売上原価32,400千円／売上高90,000千円＝36%"] },
+    { "id": "gyakusan-saiyasu", "statute": "https://www.jfc.go.jp/n/service/pdf/keieikaizentebiki_230403n.pdf", "disposition": "input",
+      "input_ids": ["r_cost", "r_percent", "r_kind"], "rounding": "ceil",
+      "cases": ["原価800円・粗利率20%の最安売価は1,000円（999円は届かない）", "原価701円・粗利率30%は1,002円（1,001円は29.97…%）", "粗利率100%は売価をいくら上げても届かない"] }
+  ],
+  "default_cases": ["利益率HTML初期は空欄・税抜10%・切捨て"]
+}

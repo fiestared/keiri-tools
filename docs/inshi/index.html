@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-07-17",
-      "dateModified": "2026-10-12",
+      "dateModified": "2026-10-14",
       "name": "収入印紙の金額 判定機（印紙税額一覧表）",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -138,8 +138,10 @@
   gtag('config', 'G-E742DSDHPD');
 </script>
 <script src="../assets/track.js" defer></script>
+<link rel="stylesheet" href="../assets/print_tables.css">
+<script src="../assets/print_tables.js" defer></script>
 <!--nav-exp:toc-script S--><script src="../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
-<body>
+<body class="print-tables-page">
 <a class="skip-link" href="#main">本文へ移動</a>
 
 <header class="site">
@@ -158,8 +160,8 @@
 
 <section class="hero">
   <h1>収入印紙の金額 判定機＋<span class="keep-phrase">印紙税額一覧表</span><span class="keep-phrase">（全20号）</span></h1>
-  <p class="tool-jump"><a href="#inshi-calculator">金額を判定する ↓</a></p>
-  <p class="article-meta">公開日: <time datetime="2026-07-17">2026年7月17日</time><span class="keep-phrase">（更新日: <time datetime="2026-10-12">2026年10月12日</time>）</span></p>
+  <p class="tool-jump"><a href="#inshi-calculator">金額を判定する ↓</a> · <a href="#inshi-print-table">領収書の表を印刷・Excelで保存 ↓</a></p>
+  <p class="article-meta">公開日: <time datetime="2026-07-17">2026年7月17日</time><span class="keep-phrase">（更新日: <time datetime="2026-10-14">2026年10月14日</time>）</span></p>
   <p><b>令和8年4月1日現在、営業に関する紙の、売上代金だけの領収書は、受取金額5万円未満なら非課税、5万円以上100万円以下なら1通200円です。</b>課税事業者が消費税額等を区分記載していれば、その額を除いて判定します。営業に関しない領収書と、電子で渡す領収書に印紙は不要です。</p>
 </section>
 
@@ -172,9 +174,9 @@
       <option value="k16">配当金領収証・配当金振込通知書〔16号〕</option>
     </optgroup>
     <optgroup label="契約書（1号・2号・5〜7号・12〜15号）">
-      <option value="k1_fudosan">不動産売買契約書・不動産交換契約書・不動産売渡証書（不動産の譲渡）〔1号・平成26年4月1日〜令和9年3月31日作成で10万円超は軽減〕</option>
+      <option value="k1_fudosan">不動産売買契約書・交換契約書・売渡証書〔1号〕</option>
       <option value="k1_other">土地賃貸借契約書・金銭借用証書（消費貸借）・運送に関する契約書〔1号〕</option>
-      <option value="k2_kensetsu">工事請負契約書・工事注文請書（建設工事の請負）〔2号・平成26年4月1日〜令和9年3月31日作成で100万円超は軽減〕</option>
+      <option value="k2_kensetsu">建設工事請負契約書・工事注文請書〔2号〕</option>
       <option value="k2_other">建設工事以外の請負契約書（物品加工・修理・広告・システム開発など）〔2号〕</option>
       <option value="k5">合併契約書・吸収分割契約書・新設分割計画書〔5号〕</option>
       <option value="k6">定款（会社設立時の原本。株式会社・相互会社は公証人が保存するもののみ）〔6号〕</option>
@@ -231,34 +233,30 @@
 </div>
 
 <!-- receipt-table:auto -->
-<section class="card" aria-label="領収書の収入印紙早見表">
-  <p id="receipt-tax-basis">この表は<b>営業に関する紙の売上代金の領収書</b>が対象です。消費税額等を区分記載した場合や、売上代金以外の金額が混ざる場合の「記載金額」の決め方は、<a href="#ryoshusho">領収書はいくらから？</a>で説明します。</p>
-  <div class="scroll-wrap">
-  <table class="tbl num-nowrap" id="receipt-tax-table" aria-describedby="receipt-tax-basis">
-    <caption>営業に関する紙の売上代金の領収書（第17号文書）の収入印紙</caption>
-    <thead><tr><th scope="col">記載金額</th><th scope="col" class="num" data-answer>印紙税額<wbr>（1通・<wbr>営業に<wbr>関する紙）</th></tr></thead>
-    <tbody>
-      <tr><th scope="row">記載金額が50,000円未満</th><td class="num">非課税（印紙不要）</td></tr>
-      <tr><th scope="row">記載金額が5万円以上100万円以下</th><td class="num"><span class="numeric-token">200円</span></td></tr>
-      <tr><th scope="row">記載金額が100万円を超え200万円以下</th><td class="num"><span class="numeric-token">400円</span></td></tr>
-      <tr><th scope="row">記載金額が200万円を超え300万円以下</th><td class="num"><span class="numeric-token">600円</span></td></tr>
-      <tr><th scope="row">記載金額が300万円を超え500万円以下</th><td class="num"><span class="numeric-token">1,000円</span></td></tr>
-      <tr><th scope="row">記載金額が500万円を超え1千万円以下</th><td class="num"><span class="numeric-token">2,000円</span></td></tr>
-      <tr><th scope="row">記載金額が1千万円を超え2千万円以下</th><td class="num"><span class="numeric-token">4,000円</span></td></tr>
-      <tr><th scope="row">記載金額が2千万円を超え3千万円以下</th><td class="num"><span class="numeric-token">6,000円</span></td></tr>
-      <tr><th scope="row">記載金額が3千万円を超え5千万円以下</th><td class="num"><span class="numeric-token">10,000円</span></td></tr>
-      <tr><th scope="row">記載金額が5千万円を超え1億円以下</th><td class="num"><span class="numeric-token">20,000円</span></td></tr>
-      <tr><th scope="row">記載金額が1億円を超え2億円以下</th><td class="num"><span class="numeric-token">40,000円</span></td></tr>
-      <tr><th scope="row">記載金額が2億円を超え3億円以下</th><td class="num"><span class="numeric-token">60,000円</span></td></tr>
-      <tr><th scope="row">記載金額が3億円を超え5億円以下</th><td class="num"><span class="numeric-token">100,000円</span></td></tr>
-      <tr><th scope="row">記載金額が5億円を超え10億円以下</th><td class="num"><span class="numeric-token">150,000円</span></td></tr>
-      <tr><th scope="row">記載金額が10億円を超えるもの</th><td class="num"><span class="numeric-token">200,000円</span></td></tr>
-      <tr><th scope="row">受取金額の記載がないもの（営業に関するもの）</th><td class="num"><span class="numeric-token">200円</span></td></tr>
-    </tbody>
-  </table>
-  </div>
-  <p>電子交付だけの領収書と、営業に関しない受取書に印紙は不要です。借入金など売上代金以外の受取書は、上の判定機で文書の種類を選んでください。</p>
-  <p class="hint">出典：<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">国税庁 No.7141 印紙税額の一覧表</a>（令和8年4月1日現在法令等。第17号の税額は2026年9月12日に再照合）。</p>
+<section class="card print-table-sheet print-table-inshi" id="inshi-print-table" data-print-tables="inshi" aria-label="領収書の収入印紙税額表">
+<div class="table-actions"><button type="button" class="primary" data-print-table>この表を印刷する</button> <a href="inshi-table.xlsx" download>Excel（.xlsx）をダウンロード</a></div>
+<p class="print-table-title">領収書の収入印紙税額表</p>
+<p class="table-basis">適用：令和8年4月1日現在法令等<br>確認日：<time datetime="2026-10-14">2026-10-14</time><br>一次資料：<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">国税庁 印紙税額の一覧表</a></p>
+<p id="receipt-tax-basis">この表は<b>営業に関する紙の売上代金の領収書</b>が対象です。記載金額の決め方は<a href="#ryoshusho">領収書はいくらから？</a>で説明します。</p>
+<div class="scroll-wrap"><table class="tbl print-data-table" id="receipt-tax-table"><thead><tr><th scope="col">記載金額</th><th scope="col" class="num" data-answer>印紙税額（円・1通）</th><th scope="col">出典</th></tr></thead><tbody>
+<tr><th scope="row">記載金額が50,000円未満</th><td class="num">非課税（印紙不要）</td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が5万円以上100万円以下</th><td class="num"><span class="numeric-token">200円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が100万円を超え200万円以下</th><td class="num"><span class="numeric-token">400円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が200万円を超え300万円以下</th><td class="num"><span class="numeric-token">600円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が300万円を超え500万円以下</th><td class="num"><span class="numeric-token">1,000円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が500万円を超え1千万円以下</th><td class="num"><span class="numeric-token">2,000円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が1千万円を超え2千万円以下</th><td class="num"><span class="numeric-token">4,000円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が2千万円を超え3千万円以下</th><td class="num"><span class="numeric-token">6,000円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が3千万円を超え5千万円以下</th><td class="num"><span class="numeric-token">10,000円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が5千万円を超え1億円以下</th><td class="num"><span class="numeric-token">20,000円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が1億円を超え2億円以下</th><td class="num"><span class="numeric-token">40,000円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が2億円を超え3億円以下</th><td class="num"><span class="numeric-token">60,000円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が3億円を超え5億円以下</th><td class="num"><span class="numeric-token">100,000円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が5億円を超え10億円以下</th><td class="num"><span class="numeric-token">150,000円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">記載金額が10億円を超えるもの</th><td class="num"><span class="numeric-token">200,000円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+<tr><th scope="row">受取金額の記載がないもの（営業に関するもの）</th><td class="num"><span class="numeric-token">200円</span></td><td><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">一次資料</a></td></tr>
+</tbody></table></div>
+<p class="print-table-scope" data-review-context="after-table">営業に関する紙の売上代金の領収書が対象。電子交付・営業に関しない受取書は対象外。 課税事業者が消費税額等を区分記載した場合はその額を除きます。免税事業者は除けません。売上代金とそれ以外が混ざる場合、非課税の判定は合計額、税額の階級は区分できた売上代金で判定します。 <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6925.htm">消費税額等の扱い（国税庁）</a></p>
 </section>
 <!-- /receipt-table:auto -->
 
@@ -448,14 +446,14 @@
 
 <h2 id="source">出典</h2>
 <ul>
-<li>国税庁 タックスアンサー No.7140「印紙税額の一覧表（その1）第1号文書から第4号文書まで」— 1号〜4号の金額階級と税額、手形の非課税（10万円未満・金額の記載のないもの）と一覧払等の特例、株券の券面金額の考え方</li>
-<li>国税庁 タックスアンサー No.7141「印紙税額の一覧表（その2）第5号文書から第20号文書まで」— 5号〜20号の税額、17号（売上代金5万円未満非課税・階級表／売上代金以外は5万円未満非課税・5万円以上200円／営業に関しないものは非課税）、通帳類の「1年ごとに」、売上代金とそれ以外の合計額による5万円未満判定（注1）</li>
-<li>国税庁 タックスアンサー No.7108「不動産の譲渡、建設工事の請負に関する契約書に係る印紙税の軽減措置」— 軽減税率の階級表と適用期間・適用下限（不動産10万円超・建設工事100万円超）、計算例（6,000万円→3万円・5,500万円→3万円）</li>
-<li>国税庁 タックスアンサー No.7105「金銭又は有価証券の受取書、領収書」— 受取書の範囲（レシート・「代済」の記入等を含む）、売上代金の定義、営業に関しない受取書の非課税（公益法人・商人以外の個人）</li>
-<li>国税庁 タックスアンサー No.6925「消費税等と印紙税」— 消費税額等の区分記載があれば第1号・第2号・第17号文書の記載金額に含めないこと、免税事業者は含めること、区分記載の具体例</li>
-<li>国税庁 タックスアンサー No.7131「印紙税を納めなかったとき」— 過怠税（3倍・自主申出で1.1倍・消印なしは額面相当）、過怠税の損金不算入</li>
-<li>福岡国税局 文書回答事例「請負契約に係る注文請書を電磁的記録に変換して電子メールで送信した場合の印紙税の課税関係について」（平成20年10月24日）— 電磁的記録での作成・送信は課税文書の「作成」に当たらないこと</li>
-<li>印紙税法（e-Gov 法令検索）— 4条（通帳等への付込み）、5条（非課税文書）、8条（印紙による納付と消印）、20条（過怠税）、別表第一 課税物件表と通則</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7140.htm">国税庁 タックスアンサー No.7140「印紙税額の一覧表（その1）第1号文書から第4号文書まで」</a>— 1号〜4号の金額階級と税額、手形の非課税（10万円未満・金額の記載のないもの）と一覧払等の特例、株券の券面金額の考え方</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">国税庁 タックスアンサー No.7141「印紙税額の一覧表（その2）第5号文書から第20号文書まで」</a>— 5号〜20号の税額、17号（売上代金5万円未満非課税・階級表／売上代金以外は5万円未満非課税・5万円以上200円／営業に関しないものは非課税）、通帳類の「1年ごとに」、売上代金とそれ以外の合計額による5万円未満判定（注1）</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7108.htm">国税庁 タックスアンサー No.7108「不動産の譲渡、建設工事の請負に関する契約書に係る印紙税の軽減措置」</a>— 軽減税率の階級表と適用期間・適用下限（不動産10万円超・建設工事100万円超）、計算例（6,000万円→3万円・5,500万円→3万円）</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7105.htm">国税庁 タックスアンサー No.7105「金銭又は有価証券の受取書、領収書」</a>— 受取書の範囲（レシート・「代済」の記入等を含む）、売上代金の定義、営業に関しない受取書の非課税（公益法人・商人以外の個人）</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6925.htm">国税庁 タックスアンサー No.6925「消費税等と印紙税」</a>— 消費税額等の区分記載があれば第1号・第2号・第17号文書の記載金額に含めないこと、免税事業者は含めること、区分記載の具体例</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7131.htm">国税庁 タックスアンサー No.7131「印紙税を納めなかったとき」</a>— 過怠税（3倍・自主申出で1.1倍・消印なしは額面相当）、過怠税の損金不算入</li>
+<li><a href="https://www.nta.go.jp/about/organization/fukuoka/bunshokaito/inshi_sonota/081024/01.htm">福岡国税局 文書回答事例「請負契約に係る注文請書を電磁的記録に変換して電子メールで送信した場合の印紙税の課税関係について」</a>（平成20年10月24日）— 電磁的記録での作成・送信は課税文書の「作成」に当たらないこと</li>
+<li><a href="https://laws.e-gov.go.jp/api/2/law_data/342AC0000000023?response_format=xml">印紙税法（e-Gov 法令検索）</a>— 4条（通帳等への付込み）、5条（非課税文書）、8条（印紙による納付と消印）、20条（過怠税）、別表第一 課税物件表と通則</li>
 </ul>
 
 <p class="note">この記事は現行法令（一覧表の基準日はページ内に表示）にもとづく一般的な情報であり、個別の事案に対する助言ではありません。文書がどの号の課税文書に当たるか（所属の決定）や記載金額の計算は、実際の文書の記載内容によって異なる場合があります。判断に迷う場合は、所轄の税務署または税理士にご確認ください。</p>
@@ -477,7 +475,7 @@
 </footer>
 
 <script type="module">
-import { calcInshi } from "../assets/inshi_core.js";
+import { calcInshi, validateInshiData } from "../assets/inshi_core.js";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
@@ -500,7 +498,7 @@ let INSHI = null;
 // この catch が拾ってよいのは「データが手に入らなかった」ことだけ（飾りの描画は別に処理する）。
 const inshiReady = fetch("../assets/inshi_r07.json")
   .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-  .then(d => { INSHI = d; return true; })
+  .then(d => { if (!validateInshiData(d).ok) throw new Error("参照データの空・欠損"); INSHI = d; return true; })
   .catch(() => false);
 
 // 年・軽減期間・一覧表の描画は飾り＋一覧表。ここで転んでも判定は止めない。
@@ -587,6 +585,9 @@ function refreshForm() {
   $("amount-unit").textContent = "　" + (UNIT_HINT[doc] || "文書に記載された金額");
   // 選んだ文書の注意（データの _note）を出す。データ未着なら空のまま（飾り）
   $("doc-note").textContent = INSHI?.docs?.[doc]?._note ? "※ " + INSHI.docs[doc]._note : "";
+  const keigen = INSHI?.docs?.[doc]?.keigen;
+  if (keigen) $("doc-note").textContent = "※ " + INSHI._meta.keigen_from_label + "〜" + INSHI._meta.keigen_until_label +
+    "に作成される契約書で、契約金額（区分記載の消費税額等を除く）が" + (keigen.over / 10000) + "万円超は軽減。以下は本則です。";
 }
 $("doc").addEventListener("change", refreshForm);
 inshiReady.then(refreshForm).catch(() => {});
@@ -615,13 +616,21 @@ $("calc").addEventListener("click", async () => {
     box.dataset.resultState = "error"; box.innerHTML = '<div class="warn" data-field="amount"><b>入力を確認してください</b>記載金額（円）を入力するか、「金額の記載がない文書」にチェックしてください。</div>'; return;
   }
 
+  const taxVisible = /^k1_|^k2_|^k17_/.test(doc) && !noamount;
+  for (const [id, active] of [["amount", !isFixed && !noamount], ["taxpart", taxVisible]]) {
+    if (active && !$(id).validity.valid) {
+      box.dataset.resultState = "error";
+      box.innerHTML = '<div class="warn" data-field="' + id + '"><b>入力を確認してください。</b>金額は0以上の整数（円）で入力してください。</div>';
+      return;
+    }
+  }
   let r;
   try {
     r = calcInshi({
       doc,
       amount,
       noamount,
-      taxPart: Number($("taxpart").value) || 0,
+      taxPart: taxVisible ? $("taxpart").value : 0,
       menzei: $("menzei").checked,
       hieigyo: /^k17_/.test(doc) && $("hieigyo").checked,
       ichiranbarai: doc === "k3" && $("ichiranbarai").checked,
@@ -629,6 +638,15 @@ $("calc").addEventListener("click", async () => {
   } catch (e) {
     box.dataset.resultState = "error";
     box.innerHTML = `<div class="warn"><b>判定できませんでした。</b>入力を確認してください。（${e.message}）</div>`;
+    return;
+  }
+
+  if (!r.ok) {
+    box.dataset.resultState = "error";
+    box.innerHTML = r.errorType === "data"
+      ? '<div class="warn"><b>データを読み込めませんでした。</b>通信環境を確認して再読み込みしてください。</div>'
+      : '<div class="warn"><b>判定できませんでした。</b>入力を確認してください。</div>';
+    if (r.errorType !== "data") box.querySelector(".warn").append(document.createTextNode("（" + r.error + "）"));
     return;
   }
 
