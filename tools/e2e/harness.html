@@ -1143,6 +1143,57 @@ SCENES.saishushoku_unmet = saiScene({ age: 35, monthly: 300000, period: "y10_20"
 // 上限が分からないまま答えると、給料の高い人に数十万円の過大な額を見せる。
 SCENES.saishushoku_nodata = SCENES.saishushoku;
 
+// ── 就業促進定着手当 (/teichaku/) ────────────────────────────────────────────
+// 期待値は**和歌山労働局「受給資格者のしおり」の公表例**を直に置く(teichaku_core.js は通さない)。
+//   離職前の賃金日額10,000円・再就職後月給28.5万円(÷180＝9,500円)・暦日数183日(4/1〜9/30)
+//   → (10,000−9,500)×183 ＝ 91,500円、上限 6,307×90×20% ＝ 113,526円 → 支給 91,500円。
+const teichakuScene = ({ shushoku, closing = "31", type = "getsukyu", wages, kiso = "", zen, daily, age = "35", remaining }) => async () => {
+  const doc = await open("/docs/teichaku/");
+  set(doc, "shushoku", shushoku);
+  set(doc, "closing", closing);
+  set(doc, "type", type);
+  wages.forEach((w, i) => set(doc, `w${i + 1}`, String(w)));
+  if (kiso !== "") set(doc, "kiso", String(kiso));
+  set(doc, "zen", String(zen));
+  set(doc, "daily", String(daily));
+  set(doc, "age", String(age));
+  set(doc, "remaining", String(remaining));
+  const periodLabel = text(doc, "period-label");
+  const w1Label = doc.getElementById("w1-label").textContent;
+  click(doc, "calc"); // ← 上限額JSONの到着を待たずに押す(実ユーザーと同じ)
+  await waitFor(() => /上限額|読み込めませんでした|対象外|収録していません|支給されません/.test(text(doc, "result")),
+    "就業促進定着手当の計算結果");
+  const body = text(doc, "result");
+  const num = (re) => { const m = body.match(re); return m ? Number(m[1].replace(/,/g, "")) : null; };
+  return {
+    periodLabel, w1Label,
+    amount: num(/就業促進定着手当\s*¥([\d,]+)/),
+    minashi: num(/再就職後の賃金日額.*?→\s*¥([\d,]+)/) ?? num(/最低保障\)?\s*を使い、1円未満を切り捨てて\s*¥([\d,]+)/),
+    gross: num(/④ 計算額.*?＝\s*¥([\d,]+)/),
+    cap: num(/⑤ 上限額.*?＝\s*¥([\d,]+)/),
+    calendarDays: num(/暦日数\s*(\d+)日/),
+    saysNotLower: /下回っていません/.test(body),
+    saysBefore: /令和7年3月31日以前の就職は、この計算機の対象外/.test(body),
+    usedMinimum: /\(b\) 最低保障/.test(body),
+    failed: body.includes("読み込めませんでした"),
+    body,
+  };
+};
+SCENES.teichaku = teichakuScene({ shushoku: "2026-04-01", wages: Array(6).fill(285000), zen: 10000, daily: 6307, remaining: 90 });
+SCENES.teichaku_slow = SCENES.teichaku;
+// 時給: 合計900,000円・労働日数90日 → (a) 5,000.00 (b) 10,000.00×70%＝7,000.00 → 7,000円(最低保障)
+//   2026-09-01就職・末日締め → 9/1〜翌2/28 の181日だが、基礎日数は**労働日数90日**を使う
+//   (9,000−7,000)×90 ＝ 180,000円、上限 6,000×100×20% ＝ 120,000円 → 120,000円
+SCENES.teichaku_jikyu = teichakuScene({ shushoku: "2026-09-01", type: "nikkyu", wages: Array(6).fill(150000), kiso: 90,
+  zen: 9000, daily: 6000, remaining: 100 });
+// 給料が下がっていない → 0円と言う(額を出さない)
+SCENES.teichaku_notlower = teichakuScene({ shushoku: "2026-04-01", wages: Array(6).fill(300000), zen: 10000, daily: 6307, remaining: 90 });
+// 令和7年3月31日以前の就職 → 旧率(40%/30%)なので計算しない
+SCENES.teichaku_before = teichakuScene({ shushoku: "2025-03-31", wages: Array(6).fill(285000), zen: 10000, daily: 6307, remaining: 90 });
+// 上限額・下限額を配信できない → 額を出さず申告(fail closed)
+SCENES.teichaku_nodata = SCENES.teichaku;
+SCENES.teichaku_nodata_hist = SCENES.teichaku;
+
 // ── 高額療養費 ────────────────────────────────────────────────────────────
 // 期待値は**健康保険法施行令42条1項の式をここに書き直したもの**(kogaku_core.js は通さない)。
 //   限度額 = 基準額 + (合算対象の医療費[10割] − 起点額) × 1%   ← 1%部分は50銭で四捨五入
@@ -4728,7 +4779,21 @@ const nenchoScene = (o) => async () => {
     return m ? Number(m[1].replace(/,/g, "")) : null;
   };
   const big = doc.getElementById("kekka-big");
+  // 3列目（源泉徴収票・源泉徴収簿の欄）と、頭の要約（年調年税額・天引きの合計・差額）
+  const ran = (label) => { const r = rows.find((x) => x[0] === label); return r ? (r[2] || "") : null; };
+  const sumVals = [...(doc.querySelectorAll("#kekka-sum b") || [])].map((b) =>
+    Number((b.textContent.match(/¥([\d,]+)/) || [, ""])[1].replace(/,/g, "")));
+  const kaiseiEl = doc.getElementById("kekka-kaisei");
   return {
+    ranNenzei: ran("年調年税額（復興特別所得税を含む）"),
+    ranKyuyo: ran("給与の総額"),
+    ranChoseiGo: ran("給与所得控除後の給与等の金額（調整控除後）"),
+    ranKojoGokei: ran("所得控除額の合計額"),
+    ranShaho: ran("社会保険料等の控除額"),
+    choseiGo: cell("給与所得控除後の給与等の金額（調整控除後）"),
+    shaho: cell("社会保険料等の控除額"),
+    sumVals,
+    kaisei: kaiseiEl ? kaiseiEl.textContent : "",
     kojoGo: cell("給与所得控除後の給与等の金額"),
     chosei: cell("所得金額調整控除"),
     seiho: cell("生命保険料の控除額"),
@@ -4770,7 +4835,75 @@ SCENES.nenmatsu_chosei_b = nenchoScene({
 // 不足額: 給与600万・社保90万・徴収10万 → 年調年税額147,500円 → 不足47,500円（tests/test_nencho.mjs の手計算）
 SCENES.nenmatsu_chosei_fusoku = nenchoScene({ vals: { kyuyo: 6000000, choshu: 100000, shaho: 900000 } });
 SCENES.nenmatsu_chosei_empty = nenchoScene({ vals: {} });
+// 最初の3欄だけ（給与500万・徴収12万・社保75万）で結果まで行けること＋要約と欄の列が出ること
+SCENES.nenmatsu_chosei_min = nenchoScene({ vals: { kyuyo: 5000000, choshu: 120000, shaho: 750000 } });
+// ★国税庁『令和8年分 法定調書の作成と提出の手引』13〜15頁の記載例1（給与9,620,000円）。
+//   地震保険料30,000円は控除額44,800円−旧長期の控除14,800円からの逆算（tests/test_nencho.mjs の注）
+SCENES.nenmatsu_chosei_kisai1 = nenchoScene({
+  vals: { kyuyo: 9620000, choshu: 372460, shaho: 1483023, shaho_shinkoku: 176460,
+          ippan_shin: 24000, ippan_kyu: 36000, kaigo: 48000, nenkin_shin: 53000, nenkin_kyu: 72000,
+          jishin: 30000, kyuchoki: 19600, f_1618: 1, f_dokyo: 1, f_nensho: 1, fs_ippan: 1, ts: "950000" },
+  haigu: { haigu_gokei: 400000 },
+});
 SCENES.nenmatsu_chosei_nodata = nenchoScene(NENCHO_A);
+
+// ── 損益分岐点 計算ツール (/soneki-bunkiten/) ───────────────────────────────
+// ★期待値は一次資料の公表値: J-Net21 Q0240（販売単価1,000円・変動費800円・固定費30万円 → 1,500個・1,500,000円、
+//   目標利益15万円 → 2,250個）と、日本政策金融公庫 shindanshi_20220921.pdf（売上高120・変動費48・固定費60（万円）→ 100）。
+const numOf = (t) => { const m = (t || "").match(/[−-]?[\d,]+/); return m ? Number(m[0].replace(/,/g, "").replace("−", "-")) : null; };
+const resRows = (doc, id) => Object.fromEntries([...doc.querySelectorAll(`#${id} table tr`)].map((tr) =>
+  [tr.querySelector("th")?.textContent.trim(), tr.querySelector("td")?.textContent.trim()]));
+const sonekiScene = (o) => async () => {
+  const doc = await open("/docs/soneki-bunkiten/");
+  for (const [id, v] of Object.entries(o.vals)) set(doc, id, v);
+  const btn = o.units ? "calc_u" : "calc", res = o.units ? "result_u" : "result";
+  click(doc, btn);
+  await waitFor(() => /円|個|計算できません|決まりません/.test(text(doc, res)), "損益分岐点の結果");
+  const rows = resRows(doc, res);
+  const row = (k) => { const key = Object.keys(rows).find((x) => x && x.startsWith(k)); return key ? rows[key] : null; };
+  return {
+    big: numOf(doc.getElementById(o.units ? "bep_qty" : "bep")?.textContent),
+    bepSalesU: numOf(row("損益分岐点売上高")),
+    targetQty: numOf(row("目標利益")),
+    safety: row("安全余裕率"), bepRatio: row("損益分岐点比率"), profit: numOf(row("今の利益")),
+    noMargin: /損益分岐点は(計算できません|1つに決まりません)/.test(text(doc, res)),
+    // マイナスと0円で言い分けているか（0円なのに「赤字が増え」と言わない）
+    marginMinus: /マイナス/.test(text(doc, res)), redGrows: /赤字が増え/.test(text(doc, res)),
+    state: doc.getElementById(res).dataset.resultState,
+    body: text(doc, res).slice(0, 300),
+  };
+};
+SCENES.soneki_bunkiten = sonekiScene({ units: true, vals: { price: "1000", unit_var: "800", fixed_u: "300000", target_u: "150000" } });
+SCENES.soneki_bunkiten_sogaku = sonekiScene({ vals: { sales: "1200000", variable: "480000", fixed: "600000" } });
+SCENES.soneki_bunkiten_no_margin = sonekiScene({ vals: { sales: "1200000", variable: "1200000", fixed: "600000" } });
+SCENES.soneki_bunkiten_no_margin_minus = sonekiScene({ vals: { sales: "1200000", variable: "1200001", fixed: "600000" } });
+
+// ── 利益率・原価率 計算ツール (/riekiritsu/) ───────────────────────────────
+// ★期待値: J-Net21 の売価1,000円・仕入800円の差額200円／国税庁 インボイスQ&A 問57 の記載例
+//   （60,000円×10/110≒5,454円・40,000円×8/108≒2,962円 → 税抜 54,546円・37,038円）。逆算は粗利率の定義（公庫の手引）から。
+const riekiScene = (o) => async () => {
+  const doc = await open("/docs/riekiritsu/");
+  for (const [id, v] of Object.entries(o.vals)) set(doc, id, v);
+  const btn = o.rev ? "calc_r" : "calc", res = o.rev ? "result_r" : "result";
+  click(doc, btn);
+  await waitFor(() => /円|%/.test(text(doc, res)), "利益率の結果");
+  const g = (id) => doc.getElementById(id)?.textContent.trim() ?? null;
+  return {
+    margin: g("margin"), profit: numOf(g("profit")), costRatio: g("cost_ratio"), markup: g("markup"),
+    costB: numOf(g("cost_b")), priceB: numOf(g("price_b")), rPrice: numOf(g("r_price")), less: g("r_less"),
+    nan: /NaN/.test(text(doc, res)),
+    state: doc.getElementById(res).dataset.resultState,
+    body: text(doc, res).slice(0, 300),
+  };
+};
+SCENES.riekiritsu = riekiScene({ vals: { cost: "800", price: "1000" } });
+SCENES.riekiritsu_zei = riekiScene({ vals: { cost: "40000", cost_tax: "included", cost_rate: "reduced", price: "60000", price_tax: "included", price_rate: "standard" } });
+SCENES.riekiritsu_gyakusan = riekiScene({ rev: true, vals: { r_cost: "800", r_percent: "20" } });
+SCENES.riekiritsu_gyakusan_zeikomi = riekiScene({ rev: true, vals: { r_cost: "800", r_percent: "20", r_out_tax: "included" } });
+// 答えが1兆円を超える（原価1兆円・粗利率50% → 2兆円）: NaN を成功として出さず、断る（2026-10-14 sol H1）
+SCENES.riekiritsu_gyakusan_too_large = riekiScene({ rev: true, vals: { r_cost: "1000000000000", r_percent: "50" } });
+// 原価1円・粗利率0%・税込で答える・切上げ → 2円。1円安い税込1円は税抜0円で率を定義できない（同 L1）
+SCENES.riekiritsu_gyakusan_less_noprice = riekiScene({ rev: true, vals: { r_cost: "1", r_percent: "0", r_out_tax: "included", r_rounding: "ceil" } });
 
 // ── 所得税 計算機（確定申告） (/shotokuzei/) ─────────────────────────────
 // ★期待値は国税庁『令和8年分 年末調整のしかた』57〜59頁の設例A（所得控除の合計4,826,102円）に
@@ -5621,6 +5754,9 @@ SCENES.ux_field_error_nenmatsu_chosei = fieldErrorScene({ path: "/docs/nenmatsu-
 SCENES.ux_field_error_nenmatsu_chosei_choshu = fieldErrorScene({ path: "/docs/nenmatsu-chosei/", field: "choshu", value: "120000", fill: { kyuyo: "5000000" } });
 SCENES.ux_field_error_inshi = fieldErrorScene({ path: "/docs/inshi/", field: "amount", value: "54800" });
 SCENES.ux_field_error_bonus_tedori = fieldErrorScene({ path: "/docs/bonus-tedori/", field: "bonus", value: "500000", fill: { zengetsu: "300000" } });
+// 2026-10-14 新ツール2本（損益分岐点・利益率）
+SCENES.ux_field_error_soneki_bunkiten = fieldErrorScene({ path: "/docs/soneki-bunkiten/", field: "sales", value: "1200000", fill: { variable: "480000", fixed: "600000" } });
+SCENES.ux_field_error_riekiritsu = fieldErrorScene({ path: "/docs/riekiritsu/", field: "cost", value: "800", fill: { price: "1000" } });
 // 計算ボタンを押して、結果が画面の下（見えない位置）に描かれたら、結果の頭が見えるところまでスクロールすること。
 // iframe を低くして「結果が折り目の下に出る」スマホの状態を作る
 // ★幅も 390px にする。1024px 以上は右レールに結果の要約が出るので、ページを動かさないのが正しい
@@ -5736,6 +5872,37 @@ const siteSearchScene = (width, path = "/docs/column/furikomi-tesuryo-hikaku/") 
 };
 SCENES.site_search_390 = siteSearchScene(390);
 SCENES.site_search_1280 = siteSearchScene(1280);
+// ★検索の順位（2026-10-14 gbrain implementation/keiri-site-search-quality-2026-10-14）。読み・誤字・添え語・空白で切られた語で、
+//   意図したページが画面の1位に出ること。順位の網は tests/test_site_search_quality.mjs（node で直接）が張っていて、
+//   ここは「ブラウザに配られた索引と qa_search.js で、ダイアログの1位が同じになる」ことを見る（配信・描画の取り違えを拾う）。
+const SITE_SEARCH_CASES = [
+  ["げんせん", "/gensen-choshu/"],
+  ["ねんちょう", "/nenmatsu-chosei/"],
+  ["社会保険料 シュミレーション", "/shakai-hoken/"],
+  ["4000cc 自動車 税", "/jidoshazei/"],
+  ["仮 払 消費 税 資産", "/column/karibaraikin-kariukekin/"],
+];
+const siteSearchQualityScene = (width) => async () => {
+  document.getElementById("f").style.width = width + "px";
+  const doc = await open("/docs/column/furikomi-tesuryo-hikaku/");
+  const btn = doc.querySelector("header.site button[data-site-search]");
+  btn.click();
+  const dlg = await waitFor(() => doc.querySelector("dialog.ss-dialog[open]"), "検索ダイアログが開く");
+  const input = dlg.querySelector("input");
+  const got = [];
+  for (const [q] of SITE_SEARCH_CASES) {
+    const before = gaNames(doc).filter((n) => n === "question").length;
+    input.value = q;
+    dlg.querySelector("form").requestSubmit();
+    await waitFor(() => gaNames(doc).filter((n) => n === "question").length > before, `「${q}」の確定`);
+    const first = dlg.querySelector(".ss-list a.ss-item");
+    got.push({ q, first: first && !dlg.querySelector(".ss-list").hidden ? first.getAttribute("href").replace(/^.*\/docs/, "") : null,
+      matched: gaEvents(doc).filter((e) => e.name === "question").pop().params.matched });
+  }
+  return { width, got, want: SITE_SEARCH_CASES };
+};
+SCENES.site_search_quality_390 = siteSearchQualityScene(390);
+SCENES.site_search_quality_1280 = siteSearchQualityScene(1280);
 // トップでは、ヘッダの検索と既存の質問欄（インライン）が両方動くこと（同じ索引・別の描画）
 SCENES.site_search_top = async () => {
   document.getElementById("f").style.width = "1280px";
