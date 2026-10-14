@@ -1,0 +1,750 @@
+{
+  "page": "docs/column/kaiko-yokoku-teate/index.html",
+  "checked": "2026-10-14",
+  "_readable20261014": "2026-10-14 読みやすさの作り直し（readable/kaiko-yokoku-teate）で新設。それまでこのページに台帳は無かった。主張は節ごとに束ね、正本は e-Gov API v2 と国税庁タックスアンサーを curl した生テキスト（corpus_ref）。独立の再照合はしていない（review_status: author_checked）。",
+  "claims": [
+    {
+      "id": "readable20261014-santei",
+      "text": "解雇予告手当は、30日前に予告しない使用者が支払う30日分以上の平均賃金。30日分は下限。予告した日数を差し引いた日数分（即日解雇なら30日分）。計算例: 令和8年5月1日〜7月31日（92日）の賃金総額920,000円→平均賃金10,000円→30日分300,000円。支払は解雇の効力が生じる時点まで。",
+      "applies": "現行の労働基準法20条1項（2026-10-14 取得版）。計算例は令和8年8月20日に解雇を告げた設例",
+      "scope": "労働基準法が適用され、21条の適用除外・20条1項ただし書（除外認定）に当たらない労働者を解雇する使用者",
+      "source_url": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "source_quote": "使用者は、労働者を解雇しようとする場合においては、少くとも三十日前にその予告をしなければならない。三十日前に予告をしない使用者は、三十日分以上の平均賃金を支払わなければならない。",
+      "corpus_ref": "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_roukihou.txt:91",
+      "exceptions": [
+        "20条1項ただし書（天災事変等で事業継続不可能・労働者の責に帰すべき事由）＋20条3項で19条2項準用＝行政官庁の認定（本文 h2#hitsuyo-nai に記載）",
+        "21条の4類型（日日雇い入れ・2か月以内・季節的4か月以内・試用期間中）は適用除外（本文に記載）",
+        "20条2項: 平均賃金を支払った日数だけ予告日数を短縮できる（本文 h2#heiyo）"
+      ],
+      "derived": true,
+      "calc": "920000/92=10000、10000*30=300000、10000*10=100000（python3 で確認）",
+      "covers": [
+        "s-8905b91cee5fa4b19923-1",
+        "s-7c4dadb12ece7c5e8534-1",
+        "s-34932b55559c1d1accab-1",
+        "s-4342a55a6fb94334372d-1",
+        "s-11d64a1d6a2ec2f929dd-1",
+        "s-b24cebdeef5e26cbdd6d-1",
+        "s-98c0e7a1e48d50c3a2f1-1",
+        "s-3c78960bda6a4a2466de-1",
+        "s-3b3b3d8d9570cae9556f-1",
+        "s-1bfe3101459a10def441-1",
+        "s-9c4210af24959bc37bca-1",
+        "s-fff45d27dd2477115450-1",
+        "s-385f8afb608499184658-1",
+        "s-7a9bf2c46b055b1ac96e-1",
+        "s-d140ba3b511e21b21922-1",
+        "s-8c1e163a00ac42a32d0c-1",
+        "s-61ad85bc138ca8def07f-1",
+        "s-2b41a748cc625e0978dc-1",
+        "s-c28795bdf696d56766b1-1",
+        "s-04db7fda1c6f8c5af836-1",
+        "s-76f6c91d2f15c3da9fbf-1",
+        "s-4d47c4985465a4cd717b-1",
+        "s-3f9ecb412fde4b1a4bf4-1",
+        "s-8a876798e4916953f7be-1",
+        "s-0ec3246d52e61b9377ad-1",
+        "s-fb880472c99fabc52d7a-1",
+        "s-bdf17f0c920cf5f45a21-1",
+        "s-e97513f5043be06ad0db-1",
+        "s-d720ecc5c7009ec33db1-1",
+        "s-911ed932372bd644c0b9-1",
+        "s-827f1c09fae598025113-1",
+        "s-9ce3b86f8bbac1009ad4-1",
+        "s-924d029f78d3ce2d11cc-1",
+        "s-4ff8b52854fe07cfff83-1",
+        "s-965e30ef760949cfcced-1",
+        "s-ea655babc4ec32d1e442-1",
+        "s-d58405c5fc6b8f6fb0f0-1",
+        "s-fb49b9e5369dce0de38c-1",
+        "s-ae54a349789ee2850590-1",
+        "s-fa9184c642e192e7c53c-1",
+        "s-c8c0dc291a9774809aa9-1",
+        "s-0e531608d59326b30ca5-1",
+        "s-e934f3a9d52fd40b25c2-1",
+        "s-d782b3ffa51a45862614-1",
+        "s-2f707a35b9ee88cafc6b-1",
+        "s-a082f1f38382a7d16744-1",
+        "s-9925dc22cffe9d5f0748-1",
+        "s-04a9a7025e49436c3a24-1",
+        "s-727a880240d294d318c2-1",
+        "s-a9146dc59200d72050cf-1",
+        "s-d7e1a7c4d20730d96179-1",
+        "s-d04a113eb76e2fd31c74-1",
+        "s-5ff28983f9b76aafb3a9-1",
+        "s-9587fb3914c8f255fbfb-1",
+        "s-f4325dce3dbe4f2530f8-1",
+        "s-a08173682eef1e3fc869-1"
+      ],
+      "numbers": [
+        "令和8年8月20日",
+        "令和8年5月1日",
+        "7月31日",
+        "300,000円",
+        "320,000円",
+        "920,000円",
+        "10,000円",
+        "61,260円",
+        "2,552円",
+        "92万円",
+        "1万円",
+        "30万円",
+        "20.42%",
+        "30日",
+        "14日",
+        "3か月",
+        "92日",
+        "0日"
+      ],
+      "review_status": "author_checked",
+      "where": [
+        "本文・FAQ・出典の該当箇所（covers）"
+      ]
+    },
+    {
+      "id": "readable20261014-heikin",
+      "text": "平均賃金は算定事由の発生日以前3か月間の賃金総額をその期間の総日数（暦日数）で除した額。賃金締切日があれば直前の締切日から起算。日給・時給制等は労働日数で除した額の60%の最低保障。12条3項の期間（試みの使用期間等）は日数・賃金から控除するが、試用期間中に事由が発生した場合は施行規則3条により算入。労働日60日で割ると15,333円・460,000円近くになり約16万円多い。",
+      "applies": "現行の労働基準法12条・労働基準法施行規則3条（2026-10-14 取得版）",
+      "scope": "解雇予告手当（20条）など平均賃金で計算する手当の算定",
+      "source_url": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "source_quote": "これを算定すべき事由の発生した日以前三箇月間にその労働者に対し支払われた賃金の総額を、その期間の総日数で除した金額をいう",
+      "corpus_ref": "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_roukihou.txt:35",
+      "corpus_ref_more": [
+        "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_roukisoku.txt:8"
+      ],
+      "exceptions": [
+        "12条1項ただし書1号・2号（日給・時給・出来高払制等の最低保障、一部が月給等の場合の合算）",
+        "12条3項各号の期間の控除",
+        "施行規則3条（試用期間中に事由発生なら算入）",
+        "12条4項（臨時の賃金・3か月を超える期間ごとの賃金は算入しない）"
+      ],
+      "derived": true,
+      "calc": "920000/60=15333.3 → 15,333円、15333*30=459990（約460,000円）、差 459990-300000=159990（約16万円）",
+      "covers": [
+        "s-f09706371cdbf93fa084-1",
+        "s-2c084d5d45cea85e2ae2-1",
+        "s-07e11c8d9014ef0297a1-1",
+        "s-996d929c4bd1ab2ef6d3-1",
+        "s-042a00f0b19df2d72a50-1",
+        "s-4019ab3a183a7ef97c0f-1",
+        "s-ec9abdc9a3d295d9adcc-1",
+        "s-59aa0b82b29a1d0c1b1e-1",
+        "s-06afab666e11a7a4858a-1",
+        "s-3d63fa45c3972bfe5e64-1",
+        "s-6bbb7626dc9836f3d125-1",
+        "s-763d020d32af8dc0a6a4-1",
+        "s-f23f12d42ea2c14f2d27-1",
+        "s-10fe4b25280c36166ad7-1",
+        "s-303a079293bd94aa8c68-1",
+        "s-204886256ae80f98e9dd-1",
+        "s-f976fc2a14b9b1436c39-1",
+        "s-4f866bcf699daf7f70cf-1",
+        "s-b95eb48238f8bed042f5-1",
+        "s-6ab6b378b099f7c073bb-1"
+      ],
+      "numbers": [
+        "2026年10月14日",
+        "920,000円",
+        "15,333円",
+        "460,000円",
+        "16万円",
+        "60%",
+        "60日",
+        "3か月"
+      ],
+      "review_status": "author_checked",
+      "where": [
+        "本文・FAQ・出典の該当箇所（covers）"
+      ]
+    },
+    {
+      "id": "readable20261014-heiyo",
+      "text": "20条2項により、1日について平均賃金を支払えばその日数だけ予告日数を短縮できる。10日分（100,000円）を払えば予告は20日前で足りる。予告日数と手当日数の合計が30日に達していればよい。",
+      "applies": "現行の労働基準法20条2項（2026-10-14 取得版）",
+      "scope": "20条の解雇予告が必要な労働者を解雇する使用者",
+      "source_url": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "source_quote": "前項の予告の日数は、一日について平均賃金を支払つた場合においては、その日数を短縮することができる。",
+      "corpus_ref": "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_roukihou.txt:94",
+      "exceptions": [
+        "20条1項ただし書・21条に当たる場合は予告自体が不要（本文に記載）"
+      ],
+      "derived": true,
+      "calc": "10000*10=100000、30-10=20",
+      "covers": [
+        "s-611ae38eab962707d0aa-1",
+        "s-f85f6ada63cae7e87fae-1",
+        "s-a29487262d7623b07c77-1",
+        "s-9f75d488f6e84440c25b-1",
+        "s-ff3c3df82051f73e7596-1",
+        "s-d4be5b012d063262b946-1",
+        "s-cb4acbc9638fac705004-1",
+        "s-7c5afdfa9fd17d7c4f10-1",
+        "s-9c8984c12437ba007677-1",
+        "s-73d2263c1e27411a0088-1",
+        "s-9783bfc9e656f1bfcdcc-1",
+        "s-65cd7c8275f692569d67-1",
+        "s-52fb5f24a04ab101e7f1-1",
+        "s-85e77c1ceab04742405e-1",
+        "s-54ccf2483357b65f2a19-1",
+        "s-d14a59c4ff3f88bd062a-1",
+        "s-e8fa37af3d84675cbdd9-1",
+        "s-9ae3a1004997b1518708-1",
+        "s-dbde14e5e0a8213e62c9-1"
+      ],
+      "numbers": [
+        "10,000円",
+        "300,000円",
+        "100,000円",
+        "30日",
+        "10日",
+        "20日",
+        "0日",
+        "3週間"
+      ],
+      "review_status": "author_checked",
+      "where": [
+        "本文・FAQ・出典の該当箇所（covers）"
+      ]
+    },
+    {
+      "id": "readable20261014-21jo",
+      "text": "21条の4類型（日日雇い入れ・2か月以内の期間・季節的業務4か月以内・試の使用期間中）には20条を適用しない。ただし1号は1か月、2・3号は所定の期間、4号は14日を超えて引き続き使用されると適用。試用期間を3か月と定めても20条が外れるのは最初の14日だけ。解雇の有効性は労働契約法16条等で別に判断。",
+      "applies": "現行の労働基準法21条・労働契約法16条（2026-10-14 取得版）",
+      "scope": "21条各号に当たる労働者の解雇予告",
+      "source_url": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "source_quote": "第四号に該当する者が十四日を超えて引き続き使用されるに至つた場合においては、この限りでない",
+      "corpus_ref": "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_roukihou.txt:98",
+      "corpus_ref_more": [
+        "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_rodokeiyakuho.txt:56"
+      ],
+      "exceptions": [
+        "21条ただし書（1か月・所定の期間・14日を超えて引き続き使用されたら20条適用）",
+        "解雇の有効性は手続とは別（労働契約法16条）"
+      ],
+      "covers": [
+        "s-ac8ccf1108a843a6ce97-1",
+        "s-1f459eca175ce3da02c6-1",
+        "s-a62077c7f714f772bbd5-1",
+        "s-377a541e6970406e6494-1",
+        "s-b3d8f21c745a7c1c3d53-1",
+        "s-6f3ed5a93e997c5fb907-1",
+        "s-cf7bb7bd2eec6ca3483a-1",
+        "s-393a0ee925f5d1eb72d2-1",
+        "s-5027b3770066a5e74d93-1",
+        "s-f3c231981de88aab1682-1",
+        "s-015db3da8855cd2de0ef-1",
+        "s-4707f692d6781947e7a0-1",
+        "s-be00681e7d391aa0e807-1",
+        "s-485909156e7976a6f227-1",
+        "s-5782c6b83e499866000b-1",
+        "s-92205af491846ca383e6-1",
+        "s-185019be613de2d422a7-1",
+        "s-10e98ea722b826daeb39-1",
+        "s-cb3b49de3cabaf2dde19-1",
+        "s-82a53e3a86ce55e19cb9-1",
+        "s-8ced98e13b234f3f0976-1",
+        "s-9ce11c0b23fc9d4da8cd-1",
+        "s-bdadbcee09795cf840f7-1",
+        "s-0b87d3adf6ce6baed45d-1",
+        "s-bf4dbb69e61534df87ef-1",
+        "s-3996c30f1310b28ff85a-1",
+        "s-967a146108462a578823-1",
+        "s-6ba892e51fc380121d84-1",
+        "s-d73f45a0e2e0a8a3f98c-1",
+        "s-dc3e7642a7d496397dae-1",
+        "s-af6fb480bad5621d2b3a-1",
+        "s-b44d1009d50897d47c2c-1",
+        "s-70411049537b9f5f58bf-1",
+        "s-4cb6a46b8917160764bc-1",
+        "s-4ce5aea0408036cdcfcf-1",
+        "s-75bb5e7314b05161db3e-1",
+        "s-4c361571ae195e6a8342-1",
+        "s-04cd494983600ea38eca-1"
+      ],
+      "numbers": [
+        "2026年10月14日",
+        "1か月",
+        "2か月",
+        "4か月",
+        "14日",
+        "3か月",
+        "15日",
+        "30日"
+      ],
+      "review_status": "author_checked",
+      "where": [
+        "本文・FAQ・出典の該当箇所（covers）"
+      ]
+    },
+    {
+      "id": "readable20261014-jogai",
+      "text": "20条1項ただし書（天災事変その他やむを得ない事由で事業継続不可能・労働者の責に帰すべき事由）の場合でも、20条3項が19条2項を準用し、行政官庁（労働基準監督署長）の認定（解雇予告除外認定）が要る。認定なしに予告も手当もなく解雇すれば20条違反（114条・119条1号）。",
+      "applies": "現行の労働基準法20条1項ただし書・3項・19条2項（2026-10-14 取得版）",
+      "scope": "懲戒解雇など20条1項ただし書を理由に予告・手当なしで解雇する使用者",
+      "source_url": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "source_quote": "前条第二項の規定は、第一項但書の場合にこれを準用する。",
+      "corpus_ref": "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_roukihou.txt:95",
+      "exceptions": [
+        "除外認定の申請先・書類・認定基準は懲戒解雇の記事（/column/chokai-kaiko/#yokoku）に記載",
+        "19条2項の認定は19条1項ただし書後段（天災事変等）にも掛かる"
+      ],
+      "covers": [
+        "s-b1c11c1554173c6c32f1-1",
+        "s-962f4c0cc78434720adc-1",
+        "s-a431e4388c6e6046a737-1",
+        "s-6fa520815163c38430a8-1",
+        "s-ce6dedc2a6dcb9a4fa01-1",
+        "s-c97eb74fcfe6dec18cbb-1",
+        "s-d38ee75bf4fa23dd0e78-1",
+        "s-ac9b2aeeb254885005e1-1",
+        "s-56998876839738da8e9e-1",
+        "s-def3f453195c3fc3d4fa-1",
+        "s-34f8e5472dedcec0b45e-1",
+        "s-bd3cd4e59e4cd94b2922-1",
+        "s-f2585060529c16145e81-1",
+        "s-86fd0242e0cc7e24c93c-1",
+        "s-7858ea82eea5672eea64-1",
+        "s-e69915fb1776aeab0ffc-1",
+        "s-69df161930481581358a-1",
+        "s-1dd84d2a3c0e016af245-1",
+        "s-52e21f0b890e7146f53e-1"
+      ],
+      "numbers": [],
+      "review_status": "author_checked",
+      "where": [
+        "本文・FAQ・出典の該当箇所（covers）"
+      ]
+    },
+    {
+      "id": "readable20261014-zeikin",
+      "text": "解雇予告手当は退職所得とされる退職手当等（No.2736）。退職所得＝（収入−退職所得控除額）×1/2、控除額は勤続20年以下で40万円×勤続年数（1年未満切上げ）、80万円に満たなければ80万円。30万円だけなら課税0円。申告書を出さないと支給額に一律20.42%（30万円なら61,260円）が源泉徴収され、本人が確定申告で精算。退職金100万円と合算・勤続3年なら課税退職所得50,000円、税額2,552円。",
+      "applies": "所得税法30条（2026-10-14 取得の現行版。2026-12-01 施行版も30条は同文）・国税庁タックスアンサー No.2732［令和8年4月1日現在法令等］",
+      "scope": "労働基準法20条により解雇予告手当を受け取る居住者（同じ年に退職金を受け取る場合を含む）",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2736.htm",
+      "source_quote": "労働基準法第20条（解雇の予告）の規定により、使用者が30日前までに予告をしないで労働者を解雇する場合に、その使用者から支払われる予告手当は、退職所得とされる退職手当等に該当します。",
+      "corpus_ref": "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/nta_gensen_2736.txt:14",
+      "corpus_ref_more": [
+        "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/nta_gensen_2732.txt:90",
+        "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_shotokuzeiho.txt:412"
+      ],
+      "exceptions": [
+        "勤続20年超は800万円＋70万円×(勤続年数−20年)（30条3項2号・出典に記載）",
+        "障害者になったことに直接基因する退職は100万円加算（30条6項3号・出典に記載）",
+        "申告書を出さない場合は20.42%の源泉徴収（No.2732）",
+        "同じ年の退職金と合算（本文に記載）"
+      ],
+      "derived": true,
+      "calc": "300000*0.2042=61260、(1300000-1200000)/2=50000、50000*0.05=2500、2500*1.021=2552.5→2552",
+      "covers": [
+        "s-bc70ecf95a4ebd6a5f20-1",
+        "s-a2defef3e3db6a1efb88-1",
+        "s-c5facd30dc069378a623-1",
+        "s-c3e31e0447296ba84d74-1",
+        "s-403a8b20780dc51e9460-1",
+        "s-76e05b79d0cded00b140-1",
+        "s-0e144c555e80e5bb0f89-1",
+        "s-bf75d3f7d42ed3c37f3c-1",
+        "s-0044ccf8eb6ed63eda21-1",
+        "s-01c9cc20ef841f012d44-1",
+        "s-d9e7f92f79903b523e06-1",
+        "s-41b934fc1e452ce0140d-1",
+        "s-18e06306b27a1d59bcdc-1",
+        "s-783c27383e62f428d50d-1",
+        "s-44adea79cddde2d931f2-1",
+        "s-99bfb7f56e5f72712bec-1",
+        "s-d7393cef7551b1b655f1-1",
+        "s-3343ae5c96061bb3338c-1",
+        "s-1d79a6dc54553b826205-1",
+        "s-628a26d0e61651ca5802-1",
+        "s-b1659b0cf9ad77aa39a0-1",
+        "s-5dfa2447977c197b10dd-1",
+        "s-f238793e72ab8850045e-1",
+        "s-6fda840abfaf9e6f3a90-1",
+        "s-37a29915b7c45f84ed5d-1",
+        "s-61ee880ca42e206c061c-1",
+        "s-ce4ed3122f9461960cd1-1",
+        "s-64094107faba86466b38-1",
+        "s-7433b22e8d4468456e48-1",
+        "s-f6cd28665ae128da4e76-1",
+        "s-2b57c5ac49a35cc6838b-1",
+        "s-26637f14a4f1f30069d2-1",
+        "s-5242958e6ad4638ba031-1",
+        "s-83e702f70fd4b97b0fe9-1",
+        "s-bd9e9581f20885d54318-1",
+        "s-58eaf13f490946c43678-1",
+        "s-e81b41f9917142d34ca5-1",
+        "s-d8b8a357d1d71c98af2c-1",
+        "s-dfc4615724346cba74f6-1",
+        "s-2a17e6e7e30fafb6f901-1",
+        "s-2f9e179e5621616570cb-1",
+        "s-a41ab9594ab4cc6895cd-1",
+        "s-24223d2872d1c7649563-1",
+        "s-e2367951161321f681f2-1",
+        "s-8b40eb89f247be93c397-1",
+        "s-710e9ecac0b7134dc145-1",
+        "s-73cf63d527374d997307-1",
+        "s-302356db50583b1e3e67-1",
+        "s-0ff8567d48d2ab4621ea-1",
+        "s-68cd188e0f8cd99493a1-1",
+        "s-c2c357dad3b96eef99b3-1",
+        "s-7fdc73a09ac92f674d45-1",
+        "s-a5080853c494df54f05a-1",
+        "s-3e7d6abfe8eac58ae5e0-1",
+        "s-0fed8dd4255d25f9f4df-1",
+        "s-e145162cb7683905fd22-1",
+        "s-e9adc91d60e9e034e67f-1",
+        "s-dc3214957a4eb26f3acc-1",
+        "s-e2e5c27ac6e6769aa288-1",
+        "s-0f68335b07f210d5f2fa-1",
+        "s-10de4df4ca691b86bfca-1",
+        "s-53f589fbf03ee9bf7cf6-1",
+        "s-a875fd07b5f503dbe377-1",
+        "s-cd64b2b0c79517f3b501-1",
+        "s-1b5fd7de6c4557db6dbc-1",
+        "s-40a0cdbde6b8c0dfb819-1",
+        "s-883ef631f48963742768-1",
+        "s-871906a7724e31430f05-1",
+        "s-aeec43f44c896dccb1d2-1",
+        "s-e53f52809fb7c6013661-1",
+        "s-6fd83a55fb758ca51d1c-1",
+        "s-3b2d52f7dd349025e66d-1",
+        "s-d963cea45d4fb9647da9-1",
+        "s-080dba53babe5c19da87-1",
+        "s-13eed6cc75956426e344-1"
+      ],
+      "numbers": [
+        "令和8年4月1日",
+        "61,260円",
+        "1,000,000円",
+        "300,000円",
+        "1,300,000円",
+        "1,200,000円",
+        "1,300,000",
+        "1,200,000",
+        "50,000円",
+        "2,500円",
+        "2,552円",
+        "80万円",
+        "30万円",
+        "6万円",
+        "40万円",
+        "120万円",
+        "400万円",
+        "100万円",
+        "20.42%",
+        "5%",
+        "102.1%",
+        "1枚",
+        "1年未満",
+        "8か月",
+        "30日"
+      ],
+      "review_status": "author_checked",
+      "where": [
+        "本文・FAQ・出典の該当箇所（covers）"
+      ]
+    },
+    {
+      "id": "readable20261014-hoken",
+      "text": "健康保険法3条5項の報酬・雇用保険法4条4項の賃金はいずれも労働の対償。解雇予告手当は予告をしなかったことに対して支払われ、実務上、社会保険料・雇用保険料の対象外として扱われる。最終判断は年金事務所・ハローワーク。",
+      "applies": "現行の健康保険法3条5項・雇用保険法4条4項（2026-10-14 取得版）",
+      "scope": "解雇予告手当の社会保険料・雇用保険料の扱い",
+      "source_url": "https://laws.e-gov.go.jp/law/211AC0000000070",
+      "source_quote": "労働者が、労働の対償として受けるすべてのもの",
+      "corpus_ref": "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_kenkohokenho.txt:51",
+      "corpus_ref_more": [
+        "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_koyohokenho.txt:16"
+      ],
+      "exceptions": [
+        "個別の支給が報酬・賃金に当たるかの最終判断は年金事務所・ハローワークの取扱いによる（本文に記載）"
+      ],
+      "covers": [
+        "s-02db7a5c681c5f514f06-1",
+        "s-dfabfec699f2f8788e7d-1",
+        "s-98297ceaf31b1a7d27d1-1",
+        "s-8ff0e517221f263849a6-1",
+        "s-abdc6fb544775c851471-1",
+        "s-e91e4975f316b62f7168-1",
+        "s-b5f4f1814fc83e342aca-1",
+        "s-fb804088d2348e3b5f13-1",
+        "s-54ca5d1817e7b57a5927-1",
+        "s-8235840602244b565219-1",
+        "s-07c4af744542ed824fbe-1",
+        "s-c1f59cb1b67dd7ffaa30-1",
+        "s-92c76b3d26bf42880f27-1",
+        "s-95bf9441d7a4efa0e558-1",
+        "s-071bc02a3adeaa11151e-1",
+        "s-18e09fd5282d720859a3-1",
+        "s-406fea1c9209e0413f40-1",
+        "s-a97f052a9a62e0fbfc7a-1",
+        "s-bfd63e1c4e54dcd4d8d9-1",
+        "s-e69fc521da42e70fd09a-1",
+        "s-e2c2d179efc9a5d38219-1",
+        "s-266e7914d30a0fdbc1cd-1",
+        "s-95cc82c1fa8a6ad3cc12-1",
+        "s-e923677e5049ee55e620-1",
+        "s-7197a9272f656c3a26c9-1",
+        "s-e47f563df061bc05e2ac-1"
+      ],
+      "numbers": [
+        "2026年10月14日",
+        "30万円",
+        "30日"
+      ],
+      "review_status": "author_checked",
+      "where": [
+        "本文・FAQ・出典の該当箇所（covers）"
+      ]
+    },
+    {
+      "id": "readable20261014-hassei",
+      "text": "20条は解雇の規定で、自己都合退職・退職勧奨に応じた合意退職・期間満了・定年には適用されない。22条2項で解雇予告日から退職日までに解雇理由の証明書を請求でき、1項で退職の事由（解雇の理由を含む）の証明書を請求できる。勧奨による退職は雇用保険法施行規則36条9号で特定受給資格者となり、所定給付日数が最大180日増え、33条1項の給付制限も付かない。",
+      "applies": "現行の労働基準法20条・22条、雇用保険法22条・23条・33条、雇用保険法施行規則36条（2026-10-14 取得版）",
+      "scope": "解雇以外の理由で労働契約が終了する労働者",
+      "source_url": "https://laws.e-gov.go.jp/law/350M50002000003",
+      "source_quote": "事業主から退職するよう勧奨を受けたこと",
+      "corpus_ref": "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_koyohokensoku.txt:451",
+      "corpus_ref_more": [
+        "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_roukihou.txt:106",
+        "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_koyohokenho.txt:198"
+      ],
+      "exceptions": [
+        "22条2項ただし書: 予告後に解雇以外の事由で退職したら、その日以後は交付不要",
+        "最大180日は特定受給資格者（45歳以上60歳未満・算定基礎期間20年以上）330日と一般150日の差",
+        "解雇か退職勧奨かの評価は個別（本文に記載）"
+      ],
+      "derived": true,
+      "calc": "330-150=180",
+      "covers": [
+        "s-0d955be8fd0d42514922-1",
+        "s-048b1a6bff0c65d7d948-1",
+        "s-c85890da0a4d76b4b75d-1",
+        "s-b5adda9694b27ce52e93-1",
+        "s-8f2eebbfd8b4b6d72531-1",
+        "s-f42cd7176e5fbac27e6e-1",
+        "s-c5d52f123c3d5bfc190e-1",
+        "s-85208f7551887544e841-1",
+        "s-9ce8fa3c8538716a27fd-1",
+        "s-4ea0bf96dbfd3de41759-1",
+        "s-c7622ab0c23ad1e1a9fc-1",
+        "s-9483be0c85490f7ca0a5-1",
+        "s-9ac9e6029bc7de510794-1",
+        "s-56fc9f1b8617d7152e0f-1",
+        "s-e64094a6172f970f7bff-1",
+        "s-d7578b4c144401063349-1",
+        "s-3ddbbbc699bff0737ca0-1",
+        "s-a400de0a55cfefbbd56e-1",
+        "s-2dab0afde87267f12339-1",
+        "s-e0742ee3038357dac96e-1",
+        "s-bc50636cdba6736dac12-1",
+        "s-52b5d6f94c9dacfd3524-1",
+        "s-ffb628ee9d020e1ba2ac-1",
+        "s-0a2ff85c413a914db62e-1",
+        "s-7c218a4844ea1ce68017-1",
+        "s-8e5bf1b9ce352048afac-1",
+        "s-527d354218d0bc20bf98-1",
+        "s-8f0df1c5280a23c463b5-1",
+        "s-1b5774b38a85839ffbee-1",
+        "s-17f8908646b8f737506e-1",
+        "s-8dcd69414bdabaa3b446-1",
+        "s-4f564a005ffca17a714b-1",
+        "s-22b15149cc9ca1664dc0-1",
+        "s-29e7e95549a604f1b0bf-1",
+        "s-0e8e55488b0cefef9c86-1",
+        "s-4796bf168010c74bfb83-1",
+        "s-6a7b192fbfa33838ec99-1",
+        "s-dfc9eaec015ad406f57c-1",
+        "s-6cb5628cffbdd77ce694-1",
+        "s-1089d535edbad84f2b75-1",
+        "s-2b5ba5c08891166b7435-1",
+        "s-def35848f16fcd283da5-1",
+        "s-ba041903276101de83b7-1",
+        "s-c09986e1091d2e1ef1c8-1",
+        "s-65a1fc4dd28eeb386dbb-1",
+        "s-e0f2da093c04c76c89e8-1"
+      ],
+      "numbers": [
+        "2026年10月14日",
+        "30日",
+        "180日"
+      ],
+      "review_status": "author_checked",
+      "where": [
+        "本文・FAQ・出典の該当箇所（covers）"
+      ]
+    },
+    {
+      "id": "readable20261014-19jo",
+      "text": "19条1項: 業務上の傷病の療養休業期間とその後30日間、産前産後の休業期間とその後30日間は解雇できない（解雇予告手当を払っても不可）。例外は打切補償（81条）と天災事変等で事業継続不可能の場合で、後者は19条2項の認定が必要。",
+      "applies": "現行の労働基準法19条（2026-10-14 取得版）",
+      "scope": "19条1項の期間中の労働者を解雇しようとする使用者",
+      "source_url": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "source_quote": "療養のために休業する期間及びその後三十日間並びに産前産後の女性が第六十五条の規定によつて休業する期間及びその後三十日間は、解雇してはならない",
+      "corpus_ref": "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_roukihou.txt:86",
+      "exceptions": [
+        "19条1項ただし書（打切補償・天災事変等）",
+        "19条2項（天災事変等の場合は行政官庁の認定）"
+      ],
+      "covers": [
+        "s-2a55ece89af10d1747df-1",
+        "s-d989b12a1cf5455d0c28-1",
+        "s-655c3ad385e5ee57b04e-1",
+        "s-62c67c9d41e1bbf4ba86-1",
+        "s-2951069930066372915c-1",
+        "s-d27876403d578b9a990f-1",
+        "s-e8c1c8753719ebf5d01c-1",
+        "s-47a4e4d5fa0f9c0f34e3-1",
+        "s-5bb7849ffca41fc90b83-1"
+      ],
+      "numbers": [
+        "30日"
+      ],
+      "review_status": "author_checked",
+      "where": [
+        "本文・FAQ・出典の該当箇所（covers）"
+      ]
+    },
+    {
+      "id": "readable20261014-harawarenai",
+      "text": "114条: 裁判所は20条・26条・37条違反・39条9項の賃金未払に対し、労働者の請求で未払金と同一額の付加金を命じうる。請求は本則で違反時から5年、附則143条2項により当分の間3年。119条1号: 19条・20条・22条4項違反は6か月以下の拘禁刑または30万円以下の罰金。120条1号: 22条1項〜3項違反は30万円以下の罰金。拘禁刑は2025年6月1日施行の刑法等改正後の表記。",
+      "applies": "現行の労働基準法114条・119条・120条・附則143条（2026-10-14 取得版。拘禁刑は2025年6月1日施行後）",
+      "scope": "解雇予告手当を支払わない使用者・22条違反の使用者",
+      "source_url": "https://laws.e-gov.go.jp/law/322AC0000000049",
+      "source_quote": "これと同一額の付加金の支払を命ずることができる。ただし、この請求は、違反のあつた時から五年以内にしなければならない。",
+      "corpus_ref": "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_roukihou.txt:597",
+      "corpus_ref_more": [
+        "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_roukihou.txt:699",
+        "keiri-commander/runs/readable/kaiko-yokoku-teate/corpus/egov_roukihou.txt:615"
+      ],
+      "exceptions": [
+        "付加金は裁判所が命じるもので監督署は課さない（本文に記載）",
+        "附則143条2項の3年は当分の間の経過措置"
+      ],
+      "derived": true,
+      "calc": "300000*2=600000（付加金同額で実質60万円）",
+      "covers": [
+        "s-38e438ed853a078bf9bc-1",
+        "s-46691dc7ce372dfdab34-1",
+        "s-b8d712dde563e823a41c-1",
+        "s-84de79dbf60c59859139-1",
+        "s-8ef055424435e7e607c4-1",
+        "s-84b47e9be7a8618c59cc-1",
+        "s-4bde84a56a6eb5b56e3c-1",
+        "s-6f0c8fefb0f107b4521e-1",
+        "s-0ee39a217e2e6b9b6054-1",
+        "s-1a47b0e050733a3815c1-1",
+        "s-5e4ea97a4130fdc36653-1",
+        "s-31db708b80deac11537e-1",
+        "s-81ff99183921c035dd91-1",
+        "s-f11c15edef1d28aabd64-1",
+        "s-cff9e9bcc649e1a9fd6f-1",
+        "s-f3a8c5ccacbdb567e513-1",
+        "s-fa8660fc86ece33ac1f7-1",
+        "s-f22a3d020e194b73423b-1",
+        "s-5216037c77a43727404b-1",
+        "s-895d14f66e5b9199f962-1",
+        "s-60fa3e8cc33038b24604-1",
+        "s-afd74ee342bfe23b9230-1",
+        "s-ca7a1923acf6d8ed70ae-1"
+      ],
+      "numbers": [
+        "2025年6月1日",
+        "30万円",
+        "60万円",
+        "6か月"
+      ],
+      "review_status": "author_checked",
+      "where": [
+        "本文・FAQ・出典の該当箇所（covers）"
+      ]
+    },
+    {
+      "id": "readable20261014-byline",
+      "kind": "own_site",
+      "text": "記事の文責は Masahiro Yasu（クリニック・EC事業の経営者／経理実務者）。",
+      "scope": "記事の著者表示。制度の要件・期限を述べない（作り直し前から同じ文）。",
+      "exceptions": [
+        "無し: 著者表示で、制度の条件・例外を持たない。/about/ に『クリニックとEC（ネット通販）事業を経営し…経理実務を、自分の手で続けてきました』とあることを確認"
+      ],
+      "source_url": "https://keiri-tools.com/about/",
+      "source_quote": "このサイトは Masahiro Yasu が個人で運営しています／クリニックとEC（ネット通販）事業を経営し、その中で給与計算・社会保険の手続き・源泉徴収・日々の記帳といった経理実務を、自分の手で続けてきました",
+      "numbers": [],
+      "review_status": "author_checked",
+      "covers": [
+        "s-334220e4b41c156035ae-1"
+      ]
+    }
+  ],
+  "absolutes": [
+    {
+      "phrase": "常に",
+      "context": "試用期間は常に控除するように見えますが",
+      "reviewed": "「見えますが」と打ち消す文。直後に施行規則3条（試用期間中に事由発生なら算入）を書いた"
+    },
+    {
+      "phrase": "一律",
+      "context": "支給額に一律20.42%",
+      "reviewed": "No.2732 の『提出を受けていない場合』の扱いに限って書いた。提出がある場合は退職所得として計算（本文に記載）"
+    },
+    {
+      "phrase": "一律",
+      "context": "支給額に一律20.42パーセント",
+      "reviewed": "FAQ でも『提出がない場合』に限定。提出がある場合の計算は本文に記載"
+    }
+  ],
+  "nonclaims": [
+    {
+      "id": "s-99bb12bc812e31019e28-1",
+      "why": "パンくず（ナビゲーション）"
+    },
+    {
+      "id": "s-80aee356c764ea50cc12-1",
+      "why": "見出し「よくある質問」（主張を含まない）"
+    },
+    {
+      "id": "s-c561e91b5c2bbaf7e71f-1",
+      "why": "見出し「出典」"
+    },
+    {
+      "id": "s-ad2a861dfe102684080d-1",
+      "why": "出典の見出し行（法令名と法令番号）"
+    },
+    {
+      "id": "s-a2d51604d6e17e4ffc0f-1",
+      "why": "出典の確認日（作業記録）"
+    },
+    {
+      "id": "s-a2d51604d6e17e4ffc0f-2",
+      "why": "出典の確認日（作業記録）"
+    },
+    {
+      "id": "s-a2d51604d6e17e4ffc0f-3",
+      "why": "出典の確認日（作業記録）"
+    },
+    {
+      "id": "s-494e07c12236dbafebb5-1",
+      "why": "免責（一般的な情報提供である旨）"
+    },
+    {
+      "id": "s-72e75ca5957bee04dd69-1",
+      "why": "免責（確認した資料の範囲）"
+    },
+    {
+      "id": "s-d24270224419a1a0a9eb-1",
+      "why": "免責（含まない判断の範囲）"
+    },
+    {
+      "id": "s-64339419f2eb93f4a1af-1",
+      "why": "免責"
+    },
+    {
+      "id": "s-affe98fe77e6963643e4-1",
+      "why": "免責（個別の相談先の案内）"
+    },
+    {
+      "id": "s-313980f375839482f8d3-1",
+      "why": "共有ボタン"
+    }
+  ],
+  "verified": []
+}
