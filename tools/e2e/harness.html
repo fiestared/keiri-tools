@@ -5872,6 +5872,37 @@ const siteSearchScene = (width, path = "/docs/column/furikomi-tesuryo-hikaku/") 
 };
 SCENES.site_search_390 = siteSearchScene(390);
 SCENES.site_search_1280 = siteSearchScene(1280);
+// ★検索の順位（2026-10-14 gbrain implementation/keiri-site-search-quality-2026-10-14）。読み・誤字・添え語・空白で切られた語で、
+//   意図したページが画面の1位に出ること。順位の網は tests/test_site_search_quality.mjs（node で直接）が張っていて、
+//   ここは「ブラウザに配られた索引と qa_search.js で、ダイアログの1位が同じになる」ことを見る（配信・描画の取り違えを拾う）。
+const SITE_SEARCH_CASES = [
+  ["げんせん", "/gensen-choshu/"],
+  ["ねんちょう", "/nenmatsu-chosei/"],
+  ["社会保険料 シュミレーション", "/shakai-hoken/"],
+  ["4000cc 自動車 税", "/jidoshazei/"],
+  ["仮 払 消費 税 資産", "/column/karibaraikin-kariukekin/"],
+];
+const siteSearchQualityScene = (width) => async () => {
+  document.getElementById("f").style.width = width + "px";
+  const doc = await open("/docs/column/furikomi-tesuryo-hikaku/");
+  const btn = doc.querySelector("header.site button[data-site-search]");
+  btn.click();
+  const dlg = await waitFor(() => doc.querySelector("dialog.ss-dialog[open]"), "検索ダイアログが開く");
+  const input = dlg.querySelector("input");
+  const got = [];
+  for (const [q] of SITE_SEARCH_CASES) {
+    const before = gaNames(doc).filter((n) => n === "question").length;
+    input.value = q;
+    dlg.querySelector("form").requestSubmit();
+    await waitFor(() => gaNames(doc).filter((n) => n === "question").length > before, `「${q}」の確定`);
+    const first = dlg.querySelector(".ss-list a.ss-item");
+    got.push({ q, first: first && !dlg.querySelector(".ss-list").hidden ? first.getAttribute("href").replace(/^.*\/docs/, "") : null,
+      matched: gaEvents(doc).filter((e) => e.name === "question").pop().params.matched });
+  }
+  return { width, got, want: SITE_SEARCH_CASES };
+};
+SCENES.site_search_quality_390 = siteSearchQualityScene(390);
+SCENES.site_search_quality_1280 = siteSearchQualityScene(1280);
 // トップでは、ヘッダの検索と既存の質問欄（インライン）が両方動くこと（同じ索引・別の描画）
 SCENES.site_search_top = async () => {
   document.getElementById("f").style.width = "1280px";
