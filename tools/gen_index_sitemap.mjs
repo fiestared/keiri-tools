@@ -362,7 +362,9 @@ const ORDER = [
   "tomobataraki-nenmatsu-chosei", // 共働き 扶養 1,600/月・配偶者控除 共働き 1,000/月・共働き 年末調整 480/月（keyword_demand.py 2026-10-10 実測・MF2便・新規）。被覆: 主題保有0（/fuyo-kojo/ の FAQ 1問と言及のみ）
   "nenmatsu-chosei-keisan-hoho", // 年末調整 やり方 4,400/月・年末調整 計算方法 1,900/月（keyword_demand.py 2026-10-10 実測・MF1便・新規）。被覆: 計算手順を主題に持つページ0（計算機 /nenmatsu-chosei/ は道具）。核は年税額を求める6つの手順・端数処理・国税庁の設例・過不足額の精算。申告書の書き方＝nenmatsu-chosei-kakikata／源泉徴収簿＝gensen-choshubo／還付金＝nenmatsu-chosei-kanpukin／対象外＝nenmatsu-chosei-taishogai へリンクで譲る
   "chuto-nyusha-nenmatsu-chosei", // 転職した年の年末調整（中途入社者） 3,600/月（「年末調整 転職」keyword_demand.py 2026-10-10 実測 2,880＋720。午後便・新規）。被覆: 主題保有0・節保有1（nenmatsu-chosei-itsumade の FAQ 1問）・slug tenshoku/chuto 0件。会社側の手順が主題。前職の源泉徴収票が出ないときは gensen-choshuhyo-saihakko、対象外の区分は nenmatsu-chosei-taishogai に譲る
+  "nenmatsu-chosei-shinai", // 年末調整 しないとどうなる 5,400/月（2026-10-14 実測 google 4,320＋yahoo 1,080。朝便・新規）。被覆: 主題保有0。会社がしない場合（所得税法190条・不納付加算税・240条/242条3号・222条の請求）と本人が申告書を出さない場合（乙欄・保険料控除申告書）に分け、期限と遅れの率は nenmatsu-chosei-itsumade、区分は nenmatsu-chosei-taishogai、源泉徴収票は nencho-misai、取り戻し方は kanpu-shinkoku へリンクで譲る
   "nenmatsu-chosei-fukugyo", // 年末調整 副業 6,600/月（2026-10-13 実測 google 5,280＋yahoo 1,320。午後便・新規）。被覆: 主題保有0（nenmatsu-chosei-taishogai の③が乙欄の区分を1節で持つ→本記事は本業・副業先・本人の作業に絞り区分の全部は taishogai へ）。確定申告の20万円の線は fukugyo-20man-kakutei-shinkoku・kakutei-shinkoku-ikurakara、住民税は nenmatsu-chosei-juminzei へリンクで譲る
+  "nenmatsu-chosei-kojin-jigyonushi", // 年末調整 個人事業主 2,900/月（2026-10-14 実測 google 2,320＋yahoo 580。午後便・新規）。被覆: 主題保有0・節保有0・slug 0件。本人は確定申告・人を雇えば事業主が年末調整・青色事業専従者・兼業。対象外の区分は nenmatsu-chosei-taishogai、副業は nenmatsu-chosei-fukugyo、届出は kyuyo-shiharai-jimusho-kaisetsu へリンクで譲る
   "nencho-misai", // 年調未済とは 1,600/月（「年調未済」2026-10-09 実測 1,280＋320。MF1便・新規）。被覆: docs 全体で「年調未済」0件。年末調整の対象外の区分は nenmatsu-chosei-taishogai、退職者の票の作り方は taishoku-gensen-choshuhyo へリンクで譲る
   "nenmatsu-chosei-hitsuyo-shorui",  // 年末調整の必要書類 6,600/月（「年末調整 必要書類」2026-10-08 実測 5,280＋1,320。MF1便・新規。誰が何を出すかの一覧。書き方は nenmatsu-chosei-kakikata、保険料の証明書の要否の条文は hokenryo-kojo-shinkokusho へ渡す）
   "nenmatsu-chosei-denshika",  // 年末調整の電子化 1,300/月（「年末調整 電子化」2026-10-07 実測 1,040＋260。MF2便・新規。被覆は hojin-jigyo-gaikyo-setsumeisho の欄名だけ）
@@ -621,6 +623,8 @@ const ORDER = [
   "shintaku-hoshu",
   // 2026-10-14 金融アドオン3本目。楽天SCHD 分配金 2,400（keyword_demand.py 2026-10-14 実測・google 1,920＋yahoo 480）。vs記事は2本の比較、本記事は保有口数からの受取額・普通分配金/元本払戻金の区分・税の計算を担当。
   "rakuten-schd-bunpaikin",
+  // 2026-10-14 金融アドオン。楽天VYM×楽天JEPI 14,480（在庫 finance の値）。高配当株の指数連動とカバード・コール戦略の型違いの組。既存の VYM 4本・JEPI 1本は相手が違う。
+  "rakuten-vym-vs-rakuten-jepi",
   "rakuten-gold-vs-mufg-gold",
   "sbi-vym-vs-rakuten-vym",
   "ifreenext-india-vs-rakuten-india",
@@ -642,7 +646,7 @@ const CATEGORIES = [
     id: "shisan",
     name: "資産形成・投資",
     desc: "インデックス投資の考え方と、費用・分散・元本割れの扱い。具体的な商品名で投資信託を比較し、費用と同期間の実績、投資対象の違いを示します。特定の商品を勧めるものではありません。",
-    slugs: ["index-toushi", "shintaku-hoshu", "dollar-cost-heikin", "orcan-sp500-holding-period", "orcan-sp500-recovery-days", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold", "orcan-vs-fang", "ifreenext-india-vs-rakuten-india", "rakuten-schd-vs-sbi-vym", "tawara-vs-emaxis-sensinkoku", "orcan-vs-emaxis-sensinkoku", "rakuten-gold-vs-sbi-gold", "sbi-yukidaruma-vs-orcan", "rakuten-schd-vs-rakuten-vym", "sbi-spyd-vs-rakuten-schd", "sbi-spyd-vs-sbi-vym", "sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou", "rakuten-sox-vs-rakuten-nasdaq", "sbi-spyd-vs-rakuten-vym", "rakuten-jepi-vs-rakuten-schd", "emaxis-nikkei-vs-tawara-nikkei", "sbi-vym-vs-rakuten-vym", "rakuten-schd-vs-sbi-schd", "rakuten-gold-vs-mufg-gold", "emaxis-orcan-vs-rakuten-schd", "rakuten-schd-bunpaikin"],
+    slugs: ["index-toushi", "shintaku-hoshu", "dollar-cost-heikin", "orcan-sp500-holding-period", "orcan-sp500-recovery-days", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold", "orcan-vs-fang", "ifreenext-india-vs-rakuten-india", "rakuten-schd-vs-sbi-vym", "tawara-vs-emaxis-sensinkoku", "orcan-vs-emaxis-sensinkoku", "rakuten-gold-vs-sbi-gold", "sbi-yukidaruma-vs-orcan", "rakuten-schd-vs-rakuten-vym", "sbi-spyd-vs-rakuten-schd", "sbi-spyd-vs-sbi-vym", "sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou", "rakuten-sox-vs-rakuten-nasdaq", "sbi-spyd-vs-rakuten-vym", "rakuten-jepi-vs-rakuten-schd", "emaxis-nikkei-vs-tawara-nikkei", "sbi-vym-vs-rakuten-vym", "rakuten-schd-vs-sbi-schd", "rakuten-gold-vs-mufg-gold", "emaxis-orcan-vs-rakuten-schd", "rakuten-schd-bunpaikin", "rakuten-vym-vs-rakuten-jepi"],
   },
   {
     id: "shakai-hoken",
@@ -682,7 +686,7 @@ const CATEGORIES = [
       "furusato-nozei-keisan", "kifukin-kojo",
       "teigaku-genzei-reiwa8",
       "shotokuzei-ritsu",
-      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-fukugyo", "chuto-nyusha-nenmatsu-chosei", "tomobataraki-nenmatsu-chosei", "gensen-taisho-gai-kyuyo", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "nenmatsu-chosei-keisan-hoho", "shokibo-kyosai-kakekin-kojo", "kiso-kojo-shinkokusho",
+      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-fukugyo", "nenmatsu-chosei-shinai", "chuto-nyusha-nenmatsu-chosei", "tomobataraki-nenmatsu-chosei", "gensen-taisho-gai-kyuyo", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "nenmatsu-chosei-keisan-hoho", "nenmatsu-chosei-kojin-jigyonushi", "shokibo-kyosai-kakekin-kojo", "kiso-kojo-shinkokusho",
       "shotoku-kingaku-chosei-kojo",
       "hokenryo-kojo-shinkokusho", "seimei-hokenryo-kojo-shomeisho", "kokumin-nenkin-kojo-shomeisho", "ideco-nenmatsu-chosei", "jutaku-kojo-shinkokusho", "fuyo-kojo-shinkokusho", "haigusha-tokubetsu-kojo", "gensen-kojo-taisho-haigusha", "tokutei-shinzoku-tokubetsu-kojo", "gensen-choshu-toha", "gensen-choshuhyo-mikata", "kyuyo-shotoku-kojo", "gensen-zeigakuhyo-mikata", "gensen-zeigakuhyo-r09", "gensen-choshubo",
       "hoteichosho-goukeihyo", "kyuyo-shiharai-hokokusho", "shiharai-chosho", "shakai-hokenryo-kojo", "seimei-hokenryo-kojo", "jishin-hokenryo-kojo", "jutaku-loan-kojo-yoken", "iryohi-kojo-ikura-kara", "tokutei-shishutsu-kojo", "zasson-kojo",
@@ -864,7 +868,7 @@ const CATEGORIES = [
 const STATIC_PAGES = [
   "", "tedori/", "bonus-tedori/", "genka/", "inshi/", "jidoshazei/", "kabe/", "iryohi/", "sozokuzei/", "zoyozei/", "jutaku/", "furusato/", "shobyo/", "shussan/", "ikuji/", "papa-ikukyu/", "juminzei/", "shakai-hoken/", "gensen-choshu/", "kihonteate/", "taishokukin/", "zangyodai/", "shohizei/", "eigyobi/",
   "yukyu/", "denchoho-index/", "senpou-futan/", "zengin-kana/", "shiharai-site/", "saitei-chingin/",
-  "shokibo-kyosai/", "ideco-setsuzei/", "fuyo-kojo/", "haigusha-kojo/", "seimei-hoken-kojo/", "aoiro-kojo/", "tosan-boshi-kyosai/", "hitorioya-kojo/", "kinro-gakusei/", "seizen-zoyo/", "sozoku-toki-menkyozei/", "iryubun/", "shokibo-takuchi/", "jishin-hoken-kojo/", "hikazei-setai/", "fudosan-jouto/", "invoice-bangou/", "kotei-shisanzei/", "fudosan-shutoku/", "kokuho/", "nenkin/", "toroku-menkyozei/", "chukai-tesuryo/", "izoku/", "zaishoku/", "saishushoku/", "kogaku-ryoyohi/", "kokunen-menjo/", "yakuin-shataku/", "nenmatsu-chosei/", "shotokuzei/", "teichaku/",
+  "shokibo-kyosai/", "ideco-setsuzei/", "fuyo-kojo/", "haigusha-kojo/", "seimei-hoken-kojo/", "aoiro-kojo/", "tosan-boshi-kyosai/", "hitorioya-kojo/", "kinro-gakusei/", "seizen-zoyo/", "sozoku-toki-menkyozei/", "iryubun/", "shokibo-takuchi/", "jishin-hoken-kojo/", "hikazei-setai/", "fudosan-jouto/", "invoice-bangou/", "kotei-shisanzei/", "fudosan-shutoku/", "kokuho/", "nenkin/", "toroku-menkyozei/", "chukai-tesuryo/", "izoku/", "zaishoku/", "saishushoku/", "kogaku-ryoyohi/", "kokunen-menjo/", "yakuin-shataku/", "nenmatsu-chosei/", "riekiritsu/", "soneki-bunkiten/", "shotokuzei/", "teichaku/",
   // ★資産形成セクション（2026-08-08 新設）。column/ と並ぶ独立カテゴリ
   "toushi/", "toushi/tsumitate/", "toushi/nisa-waku/", "toushi/ideco-deguchi/", "yotei-nozei/", "santei/", "hojinzei/", "hotei-fukuri/", "gensen-hyo/", "hojokin/", "hojokin/schedule/", "hojokin/koyou/", "hojokin-zeimu/",
   // "ext/amazon-receipt/" は 2026-08-03 に提供終了(ストア掲載削除済み)。ページごと削除したので載せない
@@ -935,8 +939,10 @@ articles.sort((a, b) => {
 //   (` M path` の状態カラム)まで削れ、**dirty一覧の先頭ファイルだけ** slice(3) が path を
 //   1文字食う(`docs/…`→`ocs/…`)→照合が外れ lastmod が古いまま/新規ページなら丸ごと落ちる
 //   (2026-07-17 第12便で実発生: 先頭の denchoho-index だけ lastmod が更新されなかった)。
+// ★maxBuffer を明示する（2026-10-14 実測）。既定の 1MiB だと、一括コミットを数える `git log --name-only` の出力
+//   （origin/main で 1,100,484 バイト）が ENOBUFS で落ち、下の catch が "" を返して **一括コミットが0件**になっていた。
 const git = (...a) => {
-  try { return execFileSync("git", a, { cwd: DOCS, encoding: "utf8" }).replace(/\s+$/, ""); }
+  try { return execFileSync("git", a, { cwd: DOCS, encoding: "utf8", maxBuffer: 512 * 1024 * 1024 }).replace(/\s+$/, ""); }
   catch { return ""; }
 };
 const TODAY = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }); // YYYY-MM-DD
@@ -981,7 +987,12 @@ const bulkCommits = new Set();
   // ★`git()` は **cwd が DOCS** なので、パス指定は `.`（docs 配下）にする。
   //   ここを `docs` と書くと docs/docs を見に行き、**黙って空を返す**（実測。
   //   単体では動くのに生成器の中だけ効かない、という形で1回踏んだ）。
-  for (const line of git("log", "--format=@@%H", "--name-only", "--", ".").split("\n")) {
+  // ★ここは失敗を "" に化けさせない（2026-10-14: 出力が 1MiB を超えて黙って空になり、一括の除外が丸ごと効いていなかった）。
+  //   コミットが1つも無いリポジトリ（テストの使い捨て）だけは、一括コミットが無いのが正しいので空でよい。
+  const hasHead = git("rev-parse", "--verify", "-q", "HEAD") !== "";
+  const bulkLog = hasHead ? execFileSync("git", ["log", "--format=@@%H", "--name-only", "--", "."],
+    { cwd: DOCS, encoding: "utf8", maxBuffer: 512 * 1024 * 1024 }) : "";
+  for (const line of bulkLog.split("\n")) {
     if (line.startsWith("@@")) { flush(); hash = line.slice(2); n = 0; }
     else if (line.trim()) n++;
   }
@@ -1006,7 +1017,10 @@ if (BULK_WORKTREE) {
 const lastmodOf = (file) => {
   if (!BULK_WORKTREE && dirty.has(file)) return TODAY;
   // 一括コミットを飛ばして、そのファイル自身の「意味のある更新」を探す
-  const log = git("log", "--format=%H %cs", "--", file).split("\n").filter(Boolean);
+  // ★マージコミットは数えない（2026-10-14）。マージの中身は取り込んだ側のコミットに日付つきで既に在る。
+  //   数えると「main を取り込んだ日」が両側の変わったページの lastmod になる（公開用の枝で main を取り込むたびに起きる）。
+  //   gen_datemodified.mjs は `--name-only` がマージにファイルを出さないので、もともとマージを数えていない（基準を2つ持たない）。
+  const log = git("log", "--no-merges", "--format=%H %cs", "--", file).split("\n").filter(Boolean);
   // ★★ 履歴がまったく無い＝**まだ一度もコミットされていない新規ページ**。
   //   このときは BULK_WORKTREE でも TODAY を返す（2026-08-23 実測で回帰を1件出した）。
   //   一括を弾く目的は「中身が変わっていない既存ページが今日を名乗ること」の防止であって、
