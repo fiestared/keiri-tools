@@ -1538,3 +1538,23 @@ footer [data-duplicate-note] { display: none !important; }
   html[data-calculated] body { zoom: .86; }
   html[data-calculated] footer.site { max-width: none; padding: 8px 0 0; font-size: 9pt; line-height: 1.5; color: #000; }
 }
+
+/* 年末調整 計算機: 結果の要約（年調年税額・天引きの合計・差額）と、源泉徴収票・源泉徴収簿の欄の列 */
+.kekka-sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin: 12px 0 6px; }
+.kekka-sum > div { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; }
+.kekka-sum span { display: block; font-size: 13px; color: var(--sub); }
+.kekka-sum b { display: block; font-size: 20px; margin: 2px 0; }
+.kekka-sum small { display: block; font-size: 12px; color: var(--sub); line-height: 1.5; }
+.kekka-sum .kekka-sum-sa { border-color: var(--accent); }
+/* .result table.res の overflow:hidden が残ると、15行超の表で付く sticky 見出し（top: --site-header-h）の基準が表自身になり、
+   見出しが1行目に61px食い込んで重なる（2026-10-14 1440px 実測）。この表は visible にしてページを基準にする */
+.result table.res-ran { overflow: visible; }
+.result table.res-ran thead th { width: auto; white-space: nowrap; font-size: 13px; }
+.result table.res-ran tbody th { width: 38%; white-space: normal; }
+.result table.res-ran td.ran { font-size: 12px; color: var(--sub); line-height: 1.5; width: 30%; }
+.sagasu-hyo { font-size: 13px; }
+.sagasu-hyo th[scope="row"] { white-space: nowrap; }
+@media (max-width: 560px) {
+  .kekka-sum { grid-template-columns: 1fr; }
+  .result table.res-ran td.ran { min-width: 9em; }
+}
