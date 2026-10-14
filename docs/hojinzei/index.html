@@ -134,8 +134,9 @@
 
     <fieldset id="kubun-set">
       <legend>法人の区分</legend>
-      <label><input type="checkbox" id="chusho" checked> 事業年度末の<b>資本金・出資金が1億円以下</b>（資本・出資が無い法人を含む）</label>
-      <label><input type="checkbox" id="tokurei" checked> 軽減税率15%の<b>特例が使える</b>（<a href="#jogai">適用除外事業者・通算法人</a>に当たらない）</label>
+      <label><input type="checkbox" id="chusho" checked> 事業年度末の<b>資本金・出資金が1億円以下</b>で、<a href="#jogai">大法人の100%子会社など</a>に当たらない</label>
+      <label><input type="checkbox" id="tokurei" checked> <a href="#jogai">適用除外事業者</a>に当たらない（<b>15%の特例が使える</b>）</label>
+      <p class="hint">通算法人はこのツールでは計算できません。</p>
     </fieldset>
 
     <div class="result" id="result" aria-live="polite"></div>
@@ -179,13 +180,13 @@
   <h2 id="jogai">特例が使えない法人</h2>
   <p>資本金1億円以下でも、次に当たると15%・17%は使えません（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_42_3_2" rel="nofollow">措置法42条の3の2第1項</a>の括弧書き）。800万円以下の部分の税率は、区分ごとに違います。</p>
   <ul>
-    <li><b>適用除外事業者</b> — <b>19%のまま</b>。その事業年度の開始の日前3年以内に終了した各事業年度の所得を、月数で年あたりにならした額が<b>15億円を超える</b>法人です。設立後3年未満などは政令で調整します（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_42_4" rel="nofollow">措置法42条の4第19項8号</a>）</li>
-    <li><b>通算法人</b>（グループ通算制度を適用している法人） — 19%は中小通算法人だけで、対象は800万円をグループ内の所得の割合で分けた額です（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条6項・7項</a>）。<b>このツールでは計算できません</b></li>
-    <li><b>資本金5億円以上の大法人による完全支配関係がある普通法人</b>（大法人の100%子会社） — 軽減の枠そのものが無く、<b>全額23.2%</b>（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条5項2号</a>）</li>
-    <li><b>相互会社・投資法人・特定目的会社・受託法人など</b> — 同じく全額23.2%（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条5項各号</a>）</li>
+    <li><b>適用除外事業者：19%のまま</b>。開始の日前3年以内に終了した事業年度の所得を年平均にした額が15億円を超える法人です。設立3年未満などは調整があります（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_42_4" rel="nofollow">措置法42条の4第19項8号</a>）</li>
+    <li><b>通算法人：このツールの対象外</b>。19%は中小通算法人だけで、800万円をグループ内の所得の割合で分けた額が対象です（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条6項・7項</a>）</li>
+    <li><b>大法人の100%子会社：全額23.2%</b>。資本金5億円以上の大法人による完全支配関係がある普通法人は、軽減の枠そのものがありません（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条5項2号</a>）</li>
+    <li><b>相互会社・投資法人・特定目的会社・受託法人など：全額23.2%</b>（<a href="https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_66" rel="nofollow">法人税法66条5項各号</a>）</li>
   </ul>
   <div class="callout">
-    <p>とくに<b>大法人の100%子会社</b>は見落とされがちです。自社の資本金が1億円以下でも、親会社の資本金が5億円以上で完全支配関係があれば、軽減税率そのものが使えません。このツールでは、上の「資本金・出資金が1億円以下」のチェックを外すと全額23.2%で計算します。</p>
+    <p>とくに<b>大法人の100%子会社</b>は見落とされがちです。自社の資本金が1億円以下でも、親会社の資本金が5億円以上で完全支配関係があれば、軽減税率そのものが使えません。このツールでは、上の1つ目のチェックを外すと全額23.2%で計算します。</p>
   </div>
 
   <h2 id="chiho">地方法人税は「法人税額」にかかる</h2>
