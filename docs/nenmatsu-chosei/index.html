@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-10-07",
-      "dateModified": "2026-10-13",
+      "dateModified": "2026-10-14",
       "name": "年末調整 計算機（還付・不足額）",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -134,23 +134,37 @@
 
 <section class="hero">
   <h1>年末調整 計算機（還付・不足額）</h1>
-  <p class="article-meta">公開日: <time datetime="2026-10-07">2026年10月7日</time>（更新日: <time datetime="2026-10-13">2026年10月13日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-10-07">2026年10月7日</time>（更新日: <time datetime="2026-10-14">2026年10月14日</time>）</p>
   <p>1年分の<b>給与の総額</b>と<b>天引きされた所得税</b>を入れると、12月の年末調整で<b>いくら戻るか（超過額と還付額）・いくら追加で引かれるか（不足額）</b>の目安が分かります。</p>
   <p>国税庁「年末調整のしかた」の手順どおりに<b>年調年税額</b>を計算します。令和8年分の改正と特定親族特別控除に対応しています（<a href="#kaisei">令和8年分で変わった点</a>）。</p>
 </section>
 
-<div class="card">
+<div class="card" id="keisan">
+  <p class="hint" id="min-lead" style="margin-top:0"><b>まずは最初の3欄（給与の総額・天引きされた所得税・社会保険料等）だけで計算できます。</b>保険料控除・配偶者・扶養親族などは、当てはまる人だけ下の欄を開いて足します。</p>
   <fieldset class="member">
     <legend>1. 給与と天引きされた税額（1〜12月の合計）</legend>
     <label for="kyuyo">本年分の給与の総額（給料・手当・賞与の合計）</label>
     <input type="number" id="kyuyo" min="0" step="1000" data-example="5000000" inputmode="numeric" aria-describedby="kyuyo-hint">
-    <span id="kyuyo-hint" class="hint"><b class="input-example">入力例：1年分の給与が500万円なら 5000000</b>源泉徴収簿の「計⑦」欄。通勤手当など非課税のものは含めません（<a href="#in-kyuyo">前職の給与・未払の給与</a>）</span>
+    <span id="kyuyo-hint" class="hint"><b class="input-example">入力例：1年分の給与が500万円なら 5000000</b>給与明細・賞与明細の課税される支給額（非課税の通勤手当などを除く）の1年分の合計。会社の源泉徴収簿なら「⑦」欄です（<a href="#in-kyuyo">前職の給与・未払の給与</a>・<a href="#sagasu">書類のどこを見るか</a>）</span>
     <label for="choshu">天引きされた所得税の合計（徴収税額）</label>
     <input type="number" id="choshu" min="0" step="1" data-example="120000" inputmode="numeric" aria-describedby="choshu-hint">
-    <span id="choshu-hint" class="hint"><b class="input-example">入力例：1年分で12万円なら 120000（天引きが無かったなら 0）</b>給与明細の「所得税」欄の1年分の合計。未払給与の未徴収の税額も含めます（<a href="#in-choshu">集計の注意</a>）</span>
+    <span id="choshu-hint" class="hint"><b class="input-example">入力例：1年分で12万円なら 120000（天引きが無かったなら 0）</b>給与明細・賞与明細の「所得税」欄の1年分の合計（源泉徴収簿の「⑧」欄）。<b>源泉徴収票の「源泉徴収税額」は年末調整後の年税額なので、ここには入れません</b>（<a href="#in-choshu">集計の注意</a>）</span>
     <label for="shaho">給与から引かれた社会保険料等</label>
     <input type="number" id="shaho" min="0" step="1" data-example="750000" inputmode="numeric" aria-describedby="shaho-hint">
-    <span id="shaho-hint" class="hint"><b class="input-example">入力例：1年分で75万円なら 750000</b>健康保険・介護保険・厚生年金・雇用保険の合計（賞与分も含む）。天引きの小規模企業共済等掛金（iDeCoなど）も含めます</span>
+    <span id="shaho-hint" class="hint"><b class="input-example">入力例：1年分で75万円なら 750000</b>給与明細・賞与明細の健康保険・介護保険・厚生年金・雇用保険の1年分の合計（源泉徴収簿の「⑫」欄）。天引きの小規模企業共済等掛金（iDeCoなど）も含めます</span>
+    <details class="optional-fields sagasu" id="sagasu"><summary>この3欄の金額を、書類のどこで探すか（早見表）</summary>
+    <div class="scroll-wrap">
+    <table class="sagasu-hyo">
+    <thead><tr><th scope="col">入力欄</th><th scope="col">給与明細・賞与明細</th><th scope="col">源泉徴収簿（会社の帳簿）</th><th scope="col">入れないもの</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">給与の総額</th><td>課税される支給額（総支給額から非課税の通勤手当などを除いた額）を、1〜12月の給与と賞与の全部について合計</td><td>⑦欄（①給料・手当等＋④賞与等）</td><td>非課税の通勤手当、前年分の未払給与を本年に支払ったもの</td></tr>
+    <tr><th scope="row">天引きされた所得税</th><td>「所得税」欄を、給与と賞与の全部について合計</td><td>⑧欄（③＋⑥）</td><td><b>源泉徴収票の「源泉徴収税額」</b>（年末調整後の年税額で、天引きの合計ではありません）、住民税</td></tr>
+    <tr><th scope="row">社会保険料等</th><td>健康保険・介護保険・厚生年金・雇用保険の欄を、給与と賞与の全部について合計</td><td>⑫欄（②＋⑤）</td><td>自分で払った国民年金保険料など（これは「自分で払った社会保険料」の欄へ）</td></tr>
+    </tbody>
+    </table>
+    </div>
+    <p class="hint">12月の給与・賞与がまだ支給されていないときは、見込みの額を足して計算します（12月の給与の税額計算を省略する会社では、12月分の税額を⑧に含めません。<a href="#in-choshu">集計の注意</a>）。年末調整が終わった後に結果と見比べるときは、計算結果の表の右の列に<b>源泉徴収票のどの欄に当たるか</b>を出しています。</p>
+    </details>
     <details class="optional-fields" id="grp-self"><summary>自分で払った社会保険料・iDeCoなど（ある人だけ） <span data-optional-state>未設定</span></summary>
     <label for="shaho_shinkoku">自分で払った社会保険料（保険料控除申告書で申告する分）</label>
     <input type="number" id="shaho_shinkoku" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="shaho_shinkoku-hint">
@@ -324,6 +338,7 @@
 <ul style="margin:8px 0 0;padding-left:1.3em">
 <li>給与8,970,000円・徴収税額156,670円・社会保険料等1,386,102円・配偶者控除・扶養3人・特定親族1人・住宅借入金等特別控除76,500円の人は、年調年税額<b>41,400円</b>で、<b>115,270円</b>が還付されます。</li>
 <li>給与4,390,000円・徴収税額51,845円の設例（12月の税額計算を省略しない場合）は、年調年税額26,100円・超過額25,745円です。</li>
+<li>国税庁「法定調書の作成と提出の手引」の記載例1（給与9,620,000円・徴収税額372,460円）は、年調年税額206,000円・超過額166,460円で、源泉徴収票の各欄の金額まで一致します。</li>
 </ul>
 </div>
 
@@ -574,6 +589,8 @@
 <h2 id="source">出典</h2>
 <ul>
 <li>国税庁 <a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/01.htm">令和8年分 年末調整のしかた</a>（3〜4頁 改正点、5〜6頁 対象となる人、35〜41頁 年税額の計算と過不足額の精算、47〜54頁 給与所得控除後の給与等の金額の表、55〜56頁 速算表・控除額の表、57〜59頁 設例）</li>
+<li>国税庁 <a href="https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/PDF/02.pdf">令和8年分 給与所得の源泉徴収票等の法定調書の作成と提出の手引（給与所得の源泉徴収票）</a>（5〜7頁 各欄に記載すべき事項、13〜15頁 記載例1）</li>
+<li>国税庁 <a href="https://www.nta.go.jp/publication/pamph/gensen/2026kaisei.pdf">源泉所得税の改正のあらまし（令和8年4月）</a>（1〜2頁 基礎控除・給与所得控除の改正と適用時期）</li>
 <li>国税庁 <a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/203.pdf">過不足額の精算の設例（本年最後に支払う給与（賞与）についての税額計算を省略しないで年末調整を行う場合）</a></li>
 <li>所得税法190条（年末調整）・79条（障害者控除）・84条（扶養控除）・84条の2（特定親族特別控除）・86条（基礎控除）、令和8年法律第12号 附則2条・3条・9条（令和8年分以後の所得税について適用）— <a href="https://laws.e-gov.go.jp/law/340AC0000000033">e-Gov法令検索</a></li>
 <li>租税特別措置法29条の4（給与所得控除の最低控除額等の特例）・41条の3の11／41条の3の12（所得金額調整控除）・41条の15の5（生命保険料控除の特例）・41条の16の2（基礎控除の特例）— <a href="https://laws.e-gov.go.jp/law/332AC0000000026">e-Gov法令検索</a></li>
@@ -605,7 +622,7 @@
 </footer>
 
 <script type="module">
-import { calcNencho } from "../assets/nencho_core.js";
+import { calcNencho, kisaiRan, kekkaYoyaku } from "../assets/nencho_core.js";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
@@ -701,41 +718,55 @@ $("calc").addEventListener("click", async () => {
     return;
   }
   const k = r.kojo;
-  const row = (label, v, cls = "") => `<tr><th scope="row">${label}</th><td${cls}>${v}</td></tr>`;
+  // 3列目: その金額が源泉徴収票・源泉徴収簿のどの欄か（対応は core の kisaiRan が持つ。ページに手書きしない）
+  const ran = (x) => x ? [x.hyo ? `源泉徴収票「${x.hyo}」` : "", x.bo ? `源泉徴収簿 ${x.bo}` : ""].filter(Boolean).join("<br>") : "";
+  const row = (label, v, x = null) => `<tr><th scope="row">${label}</th><td>${v}</td><td class="ran">${ran(x)}</td></tr>`;
   let head;
   if (r.kanpuGaku > 0) head = `<p>年末調整で <b>戻る額</b>${r.juto > 0 ? `（超過額${yen(r.kanpu)}から、まだ天引きしていない税額への充当${yen(r.juto)}を引いた残り）` : "（超過額）"}</p><p class="big" id="kekka-big">${yen(r.kanpuGaku)}</p>`;
   else if (r.juto > 0 && r.lastChoshu === 0 && r.kanpuGaku === 0) head = `<p>超過額${yen(r.kanpu)}は、まだ天引きしていない税額に全部充当され、<b>戻る額はありません</b></p><p class="big" id="kekka-big">${yen(0)}</p>`;
   else if (r.lastChoshu > 0 && r.fusoku === 0 && r.kanpuGaku === 0) head = `<p>戻る額はなく、まだ天引きしていない税額のうち <b>最後の給与で天引きされる額</b>${r.kanpu > 0 ? `（超過額${yen(r.kanpu)}を充当した残り）` : ""}</p><p class="big" id="kekka-big">${yen(r.lastChoshu)}</p>`;
   else if (r.fusoku > 0) head = `<p>年末調整で <b>追加で引かれる額（不足額）</b></p><p class="big" id="kekka-big">${yen(r.fusoku)}</p>`;
   else head = `<p>過不足は <b>ありません</b></p><p class="big" id="kekka-big">${yen(0)}</p>`;
-  let html = head + `<div class="scroll-wrap"><table class="res">` +
-    row("給与の総額", yen(r.kyuyo)) +
-    row("給与所得控除後の給与等の金額", yen(r.kojoGo)) +
-    row("所得金額調整控除", r.chosei > 0 ? yen(r.chosei) : (r.kyuyo > 8500000 ? "¥0（対象の家族・障害の条件なし）" : "¥0（給与850万円以下）")) +
+  // 要約: 年調年税額 − 天引きの合計 ＝ 超過額／不足額。年分・改正の申告はデータ（_meta）から
+  const y = kekkaYoyaku(r, N);
+  const sagakuLabel = y.kubun === "fusoku" ? "不足額（追加で引かれる）" : y.kubun === "kanpu" ? "超過額（戻る額の元）" : "過不足";
+  head += `<div class="kekka-sum" id="kekka-sum">` +
+    `<div><span>年調年税額（${y.year}）</span><b>${yen(y.nenzei)}</b><small>源泉徴収票の「源泉徴収税額」に当たる額</small></div>` +
+    `<div><span>天引きされた所得税の合計</span><b>${yen(y.choshu)}</b><small>入力した徴収税額</small></div>` +
+    `<div class="kekka-sum-sa"><span>${sagakuLabel}</span><b>${yen(y.sagaku)}</b><small>${y.kubun === "fusoku" ? "年調年税額 − 天引きの合計" : "天引きの合計 − 年調年税額"}</small></div>` +
+    `</div>` + (y.kaisei ? `<p class="hint" id="kekka-kaisei">※ ${y.kaisei}</p>` : "");
+  const X = Object.fromEntries(kisaiRan(r).map((x) => [x.key, x]));
+  const v = (key) => yen(X[key].value);
+  let html = head + `<div class="scroll-wrap"><table class="res res-ran">` +
+    `<thead><tr><th scope="col">項目</th><th scope="col">金額</th><th scope="col">源泉徴収票・源泉徴収簿の欄</th></tr></thead><tbody>` +
+    row(X.kyuyo.label, v("kyuyo"), X.kyuyo) +
+    row(X.kojoGo.label, v("kojoGo"), X.kojoGo) +
+    row("所得金額調整控除", r.chosei > 0 ? yen(r.chosei) : (r.kyuyo > 8500000 ? "¥0（対象の家族・障害の条件なし）" : "¥0（給与850万円以下）"), X.chosei) +
+    row(X.choseiGo.label, v("choseiGo"), X.choseiGo) +
     row("あなたの合計所得金額（見積額）", yen(r.gokei)) +
-    row("社会保険料等の控除額", yen(k.shaho)) +
-    row("生命保険料の控除額", yen(k.seiho) + (r.seihoTokurei ? '<span class="hint">（23歳未満の扶養親族がいるため、一般の新契約は上限6万円で計算）</span>' : "")) +
-    row("地震保険料の控除額", yen(k.jishin)) +
-    row("配偶者（特別）控除額", yen(k.haigu)) +
-    row("特定親族特別控除額", yen(k.tokutei)) +
-    row("扶養控除額及び障害者等の控除額の合計額", yen(k.fuyoTou) +
-      `<span class="hint">（扶養控除${yen(k.fuyo)}・障害者控除${yen(k.shogai)}・寡婦/ひとり親控除${yen(k.kafu)}・勤労学生控除${yen(k.kinro)}）</span>`) +
-    row("基礎控除額", yen(k.kiso)) +
-    row("所得控除額の合計額", yen(k.gokei)) +
-    row("課税給与所得金額", yen(r.kazei)) +
-    row("算出所得税額", yen(r.sanshutsu)) +
-    row("住宅借入金等特別控除額", yen(r.jutaku) + (r.jutakuKirisute > 0 ? `<span class="hint">（控除しきれない${yen(r.jutakuKirisute)}は切り捨て。源泉徴収票の「住宅借入金等特別控除可能額」欄に申告書の控除額を書きます）</span>` : "")) +
-    row("年調所得税額", yen(r.nenchoShotoku)) +
-    row("年調年税額（復興特別所得税を含む）", `<b>${yen(r.nenzei)}</b>`) +
-    row("徴収税額の合計（未徴収分を含む）", yen(r.choshu)) +
-    row(r.fusoku > 0 ? "不足額" : "超過額", `<b>${yen(r.fusoku > 0 ? r.fusoku : r.kanpu)}</b>`) +
+    row(X.shaho.label, v("shaho"), X.shaho) +
+    row(X.seiho.label, v("seiho") + (r.seihoTokurei ? '<span class="hint">（23歳未満の扶養親族がいるため、一般の新契約は上限6万円で計算）</span>' : ""), X.seiho) +
+    row(X.jishin.label, v("jishin"), X.jishin) +
+    row(X.haigu.label, v("haigu"), X.haigu) +
+    row(X.tokutei.label, v("tokutei"), X.tokutei) +
+    row(X.fuyoTou.label, v("fuyoTou") +
+      `<span class="hint">（扶養控除${yen(k.fuyo)}・障害者控除${yen(k.shogai)}・寡婦/ひとり親控除${yen(k.kafu)}・勤労学生控除${yen(k.kinro)}）</span>`, X.fuyoTou) +
+    row(X.kiso.label, v("kiso"), X.kiso) +
+    row(X.kojoGokei.label, v("kojoGokei"), X.kojoGokei) +
+    row(X.kazei.label, v("kazei"), X.kazei) +
+    row(X.sanshutsu.label, v("sanshutsu"), X.sanshutsu) +
+    row(X.jutaku.label, v("jutaku") + (r.jutakuKirisute > 0 ? `<span class="hint">（控除しきれない${yen(r.jutakuKirisute)}は切り捨て。源泉徴収票の「住宅借入金等特別控除可能額」欄に申告書の控除額を書きます）</span>` : ""), X.jutaku) +
+    row(X.nenchoShotoku.label, v("nenchoShotoku"), X.nenchoShotoku) +
+    row(X.nenzei.label, `<b>${v("nenzei")}</b>`, X.nenzei) +
+    row(X.choshu.label, v("choshu"), X.choshu) +
+    row(X.sagaku.label, `<b>${v("sagaku")}</b>`, X.sagaku) +
     (r.jutoLast > 0 ? row("最後の給与の税額に充当する額", yen(r.jutoLast)) : "") +
     (r.jutoMiharai > 0 ? row("未払給与の税額に充当する額", yen(r.jutoMiharai) + '<span class="hint">（その未払給与を支払うときに徴収すべき税額に充当）</span>') : "") +
     (r.juto > 0 ? row("本人に還付する額", `<b>${yen(r.kanpuGaku)}</b>`) : "") +
     (r.fusoku === 0 && r.lastChoshu > 0 ? row("最後の給与で天引きされる額", yen(r.lastChoshu)) : "") +
     (r.miharaiChoshu > 0 ? row("未払給与を支払うときに天引きされる額", yen(r.miharaiChoshu)) : "") +
     (r.fusoku > 0 && r.lastTax > 0 ? row("最後の給与で天引きされる額", yen(r.lastTax + r.fusoku) + `<span class="hint">（その給与の通常の税額${yen(r.lastTax)}＋不足額）</span>`) : "") +
-    `</table></div>`;
+    `</tbody></table></div>`;
   if (r.notes.length) html += r.notes.map((t) => `<p class="hint">※ ${t}</p>`).join("");
   html += `<p class="hint">※ ${r.year}の年末調整の目安です。勤務先の年末調整の結果（源泉徴収票）が正式な金額です。</p>`;
   out.innerHTML = html;
