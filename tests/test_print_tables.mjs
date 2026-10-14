@@ -31,7 +31,9 @@ class Table(HTMLParser):
         if t=='table':self.active=False
 
 fixture=json.loads(Path('tests/fixtures/print_tables_primary.json').read_text())
-stamp=json.loads(Path('docs/assets/inshi_r07.json').read_text())['docs']['k17_uriage']
+stamp_data=json.loads(Path('docs/assets/inshi_r07.json').read_text())
+stamp=stamp_data['docs']['k17_uriage']
+assert stamp['hikazei_under']==50000 and stamp_data['_meta']['year']=='令和8年'
 koyou=json.loads(Path('docs/assets/shaho_rates_r08.json').read_text())['koyou']
 rosai=json.loads(Path('docs/assets/rosai_rates_r08.json').read_text())
 expected={
@@ -47,6 +49,7 @@ assert [koyou['previous'][key] for key in koyou['types']]==fixture['koyou_previo
 assert koyou['year']=='令和8年度' and koyou['applies_from']=='2026-04' and koyou['applies_to']=='2027-03'
 assert [r[2] for r in expected['rosai']]==[r[2] for r in fixture['rosai']]
 assert [r[1] for r in expected['rosai']]==[r[1] for r in fixture['rosai']]
+assert [r[0] for r in expected['rosai']]==[category for category,count in fixture['rosai_categories'] for _ in range(count)]
 assert len(expected['rosai'])==53
 ns={'s':'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
 rel={'r':'http://schemas.openxmlformats.org/package/2006/relationships'}

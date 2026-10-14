@@ -25,3 +25,19 @@
 生成器は司令塔 `pub_worktree.sh` と同じ順（faq→qa→article_next_read→tool_related→layout→presentation→footer→favicon→datemodified→sitemap）で実行。ARTICLE_SPECのOGP・X導線も実行したが、今回と無関係なX共有テキストだけの既存差分は含めない。共有CSS style.css は変更せず、対象ページだけが読む print_tables.css を追加した。
 
 全テストの最終集計と固定した origin/main（22519fef49e11b3666545b8b1b4dec2695250c50）の比較は `test-summary.json` に記録する。原本・ログ・画面・PDFはこのディレクトリに保存し、baseline-site は検査用の独立コピーなのでコミットしない。
+
+## 最終結果
+
+全264本を実行。バッチ中に出た12本の赤は、修正・生成器の再実行・タイムアウトの再試行後に6本を解消し、258本が緑。未解消6本はすべて開始時 origin/main（22519fef49e11b3666545b8b1b4dec2695250c50）の独立コピーでも同じ失敗を再現した。今回の未解消の赤は0。
+
+- `test_hojokin_sources`：既存の補助金タブ生成物が古い。
+- `test_kogaku_article`：既存の認定証の節に施行規則129条の2第2項の記載がない。
+- `test_nav` / `test_site_search`：既存 `column/shintaku-hoshu` のヘッダが不一致。
+- `test_no_orphan`：既存 `column/emaxis-nikkei-vs-tawara-nikkei` に被リンクがない。
+- `test_layout_visual`：比較用の環境はPlaywright 1.62.1 / Chromium 151だが、実行環境は1.58.2 / 145。製品の画面差を測れない環境不一致で、開始時originでも同じ。
+
+修正後の全サイト画面検査は582ページ×6幅=3,492件すべて緑。前年度比較のPC横スクロールと、労災のスマホで数値が最初に見えない問題を直し、開いた比較表も検査に含めた。印刷は祖先コンテナを隠す方式にして、非印刷の表のthead指定も維持する。追加の画面・PDF検査は6幅すべてで緑、A4は1・1・2枚。既存の計算結果印刷の検査も全件バッチで通過。
+
+`check_claims --changed` は緑。補足で流した `check_claim_scope` は、既存のmust_with未登録135件が開始時originでも同数（条件の抜けは0）。個別の税務・労務判断は検査の対象にしない。
+
+`final-tests.log` は修正途中を含む全件バッチの原記録。再実行後の有効な結果と対応するログは `test-summary.json`。必要な原本・ログ・PNG/PDFだけを明示してコミットした。

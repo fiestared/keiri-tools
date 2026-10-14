@@ -6,6 +6,10 @@ import {join} from 'node:path';
 import {tmpdir} from 'node:os';
 import {browserTools, serve, contextFor, ready, ROOT} from './layout/browser.mjs';
 import {spawnChrome, killChrome} from '../tools/chrome_proc.mjs';
+import {measure} from './layout/measure.mjs';
+import {measureUi} from './layout/ui-measure.mjs';
+import {measureEmpty} from './layout/empty-measure.mjs';
+import {measureTables} from './layout/table-measure.mjs';
 const out=join(ROOT,'reports/print-tables-20261014');
 await mkdir(out,{recursive:true});
 const profile=await mkdtemp(join(tmpdir(),'print-tables-chrome-'));
@@ -30,13 +34,21 @@ try {
  for(const [name,path,id,count,maxPages] of cases){
   const context=await contextFor(browser,server.origin);
   const page=await context.newPage();
-  for(const width of [1280,390]){
+  for(const width of [1280,1536,1920,1200,768,390]){
    await page.setViewportSize({width,height:900});await ready(page,server.origin+path);
+   const measured=await page.evaluate(measure);
+   measured.issues.push(...await page.evaluate(measureUi),...await page.evaluate(measureEmpty),...await page.evaluate(measureTables));
+   assert.deepEqual(measured.issues,[],`${name} @${width}: full page geometry`);
+   if(name==='koyou'){
+    await page.locator('.rate-history summary').click();
+    assert.deepEqual(await page.evaluate(measureTables),[],`expanded history @${width}`);
+    await page.locator('.rate-history summary').click();
+   }
    await page.locator(`[data-print-tables="${name}"]`).scrollIntoViewIfNeeded();
    await page.evaluate(name=>document.querySelector('[data-print-tables="'+name+'"]').scrollIntoView({block:'start'}),name);
    const geometry=await page.evaluate(id=>({viewport:innerWidth,width:document.documentElement.scrollWidth,rows:document.getElementById(id).tBodies[0].rows.length}),id);
    assert.equal(geometry.viewport,width);assert(geometry.width<=width,`${name}: viewport overflow`);assert.equal(geometry.rows,count);
-   await page.screenshot({path:join(out,`${name}-${width}.png`)});
+   if(width===1280||width===390)await page.screenshot({path:join(out,`${name}-${width}.png`)});
   }
   await page.emulateMedia({media:'print'});
   const pdf=await page.pdf({format:'A4',preferCSSPageSize:true,printBackground:true});
@@ -49,7 +61,7 @@ try {
   const rowNames=await page.locator('#'+id+' tbody tr').evaluateAll(rows=>rows.map(r=>r.cells[r.cells.length===4?1:0].textContent));
   const normalize=s=>s.replace(/\s/g,'');
   for(const label of rowNames)assert(normalize(text).includes(normalize(label)),`${name}: PDF missing ${label}`);
-  results.push({name,pages,rows:count,widths:[1280,390]});
+  results.push({name,pages,rows:count,widths:[1280,1536,1920,1200,768,390]});
   if(name==='inshi'){
    await page.emulateMedia({media:'screen'});await page.setViewportSize({width:1280,height:900});
    await page.fill('#amount','54800');await page.click('#calc');
