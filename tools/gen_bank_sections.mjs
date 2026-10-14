@@ -66,7 +66,13 @@ export function loadBanks() {
       nameHTML: `${b.name}${b.article?.fee_note ? '<span class="cell-note">' + esc(b.article.fee_note) + '</span>' : ''}`,
       underHTML: `${b.under30k}円`,
       overHTML: b.article?.over_unverified ? '未確認' : `${b.over30k}円`,
-      indexName: b.article?.index_name || b.name,
+      // ★2026-10-15: 逆引きの区分名は「名前【条件】」を fee_note から作る（手で2か所に書かない）
+      indexName: b.article?.index_name || (b.article?.fee_note ? `${b.name}【${b.article.fee_note}】` : b.name),
+      // ★2026-10-15: 公式資料で掲載額を確認できていない行。表の「区分」欄・逆引き・計算機の選択肢で未確認と分かるようにする
+      unverified: Boolean(b.article?.unverified),
+      // ★2026-10-15: 同じ行の別プラン（三井住友 Web21＜ライト＞）。30区分の外だが、逆引きでは金額から引けるようにする
+      variants: Array.isArray(b.article?.variants) ? b.article.variants : [],
+      sourceLabel: b.article?.source_label || null,
       indexFullLabel: b.article?.index_full_label || false,
       boundary: b.article?.over_unverified ? null : b.under30k !== b.over30k,
       source: b.source || null,
@@ -144,8 +150,10 @@ export function buildSections(rows) {
       notes.push(`${(list.some(r => r.scoped) ? "上表の対象サービス・通常単価で、無料・別料金の宛先と優遇を除いて比べた" : "") + "他行宛ネット振込の3万円以上では、"}${hojin.comparisonSubject ? esc(hojin.comparisonSubject) : '法人は個人の'}<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${hojin.comparisonAmounts ? esc(hojin.comparisonAmounts) : `${kojin.rawOver}円→${hojin.rawOver}円`}）`);
     }
     const withBoundary = list.filter((x) => x.boundary).map((x) => x.kubun);
-    if (list.some(r => r.rawOver === null)) notes.push('横浜銀行の法人EBの通常の他行宛振込は、3万円未満385円・3万円以上550円です（振込訂正・組戻サービスの再振込は金額不問550円）。個人IBの3万円以上は掲載を保留しています');
-    notes.push(withBoundary.length
+    notes.push(list.every((x) => x.unverified)
+      // ★2026-10-15: 未確認の額について「定額」と断定しない（3モデルレビュー #7）
+      ? `${base}の掲載額は、公式資料で確認できていません。利用前に公式の料金ページをご確認ください`
+      : withBoundary.length
       ? base === "みずほ銀行" ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）` : `<b>${base === "楽天銀行" ? "楽天銀行の法人の基本振込（給与・賞与・総合振込を除く）は、通常の他行宛振込に3万円の境界あり" : `${base}の上表に掲載したサービスの通常の他行宛振込は3万円の境界あり`}</b>（${withBoundary.join('・')}。無料・別料金の宛先と優遇を除く${base === "楽天銀行" ? "。法人の基本振込に限り、給与・賞与・総合振込は除く" : base === "横浜銀行" ? "。再振込を除く" : ""}）`
       // ★区分名を文に入れる: 「金額にかかわらず定額。」だけだと、どの銀行の話か文単体で読めず、照合で10銀行ぶんが同じ文になった。
       : `${base}のこの表の料金は、金額にかかわらず<b>定額</b>`);
@@ -162,7 +170,16 @@ export function buildSections(rows) {
     // ★出典は行ごとに出す。未照合の行は「未照合」と書く（黙って伏せない）
     const srcs = [...new Set(list.filter((x) => x.source).map((x) => x.source))];
     if (srcs.length) {
-      const links = srcs.map((u) => `<a href="${u}" rel="nofollow">公式ページ</a>`).join('・');
+      // ★2026-10-15（3モデルレビュー #9）: リンクの文言が全部「公式ページ」で、どれが何の資料か読めなかった。
+      //   行の source_label か、個人／法人の別から資料名を付ける（同じURLを個人・法人で共有するなら両方の料金）。
+      const label = (u) => {
+        const owners = list.filter((x) => x.source === u);
+        const own = owners.find((x) => x.sourceLabel)?.sourceLabel;
+        if (own) return own;
+        const kinds = [...new Set(owners.map((x) => x.kubun))];
+        return kinds.length > 1 ? '振込手数料（個人・法人）' : `${kinds[0]}の振込手数料`;
+      };
+      const links = srcs.map((u) => `<a href="${u}" rel="nofollow">${base}「${esc(label(u))}」</a>`).join('・');
       out.push(`  <p class="src">出典: ${links}（${esc(list.find(r => r.sourceNote)?.sourceNote || "確認範囲は調査方法と出典をご参照ください")}）</p>`);
     } else {
       // ★2026-08-14: 文言を読者向けに直した。旧文「★この行はまだ一次情報での再照合が
@@ -175,6 +192,35 @@ export function buildSections(rows) {
   }
   out.push('  <p>金額の出典と調査日は<a href="#shutten">調査方法と出典</a>に、境界の仕組みは<a href="#kyoukai">「3万円の境界」を確認できた11区分</a>に書いています。</p>');
   out.push(END);
+  return out.join('\n');
+}
+
+// ---------------------------------------------------------------------------
+// 冒頭の比較表（個人・法人）
+// ★2026-10-15: 以前は手管理で、test_fee_article が JSON との一致を見ていた。3モデルレビューで
+//   セルの条件文の書き換えが14行に及んだので、同じ正本から生成する（手で2か所を同期しない）。
+// ---------------------------------------------------------------------------
+export const tableMarkers = (kubun) => [
+  `<!-- FEE_TABLE_${kubun === '個人' ? 'KOJIN' : 'HOJIN'}:START 自動生成。手で編集しない。tools/gen_bank_sections.mjs -->`,
+  `<!-- FEE_TABLE_${kubun === '個人' ? 'KOJIN' : 'HOJIN'}:END -->`,
+];
+export function buildFeeTable(rows, kubun) {
+  const [s, e] = tableMarkers(kubun);
+  const list = rows.map((r, i) => ({ r, i })).filter(({ r }) => r.kubun === kubun)
+    .sort((a, b) => a.r.rawOver - b.r.rawOver || a.r.rawUnder - b.r.rawUnder || a.i - b.i).map(({ r }) => r);
+  const out = [s];
+  out.push('  <div class="fee-scroll" tabindex="0" role="region" aria-label="銀行別振込手数料の比較表"><table class="fee-table">');
+  out.push('    <thead><tr><th scope="col">銀行・サービス</th><th scope="col" class="num">3万円未満</th><th scope="col" class="num">3万円以上</th><th scope="col">区分</th></tr></thead>');
+  out.push('    <tbody>');
+  for (const r of list) {
+    const link = `<a href="#${bankId(baseName(r.name))}">${r.name}</a>`;
+    const note = r.nameHTML.slice(r.name.length);
+    const kind = r.unverified ? '<td class="flat">未確認</td>' : r.boundary ? '<td class="step">境界あり</td>' : '<td class="flat">定額</td>';
+    out.push(`    <tr><td>${link}${note}</td><td class="num">${r.underHTML}</td><td class="num">${r.overHTML}</td>${kind}</tr>`);
+  }
+  out.push('    </tbody>');
+  out.push('  </table></div>');
+  out.push(e);
   return out.join('\n');
 }
 
@@ -198,9 +244,17 @@ export function amountMap(rows) {
     m.get(v).push({ name, range, fullLabel });
   };
   for (const r of rows) {
-    if (r.rawOver === null) add(r.rawUnder, r.indexName, '3万円未満');
+    // ★2026-10-15（sol 1周目 medium）: 未確認の行に「金額不問」と料金体系を断定しない
+    if (r.unverified) add(r.rawUnder, r.indexName, '金額区分も未確認');
+    else if (r.rawOver === null) add(r.rawUnder, r.indexName, '3万円未満');
     else if (!r.boundary) add(r.rawUnder, r.indexName, '金額不問', r.indexFullLabel);
     else { add(r.rawUnder, r.indexName, '3万円未満'); add(r.rawOver, r.indexName, '3万円以上'); }
+    // 同じ行の別プラン（30区分の外）。名前に条件を付けて、どの契約の額かを読めるようにする
+    for (const v of r.variants) {
+      const vname = `${v.label}【${v.cond}。30区分の外】`;
+      if (v.under30k === v.over30k) add(v.under30k, vname, '金額不問');
+      else { add(v.under30k, vname, '3万円未満'); add(v.over30k, vname, '3万円以上'); }
+    }
   }
   return new Map([...m.entries()].sort((a, b) => a[0] - b[0]));
 }
@@ -237,7 +291,7 @@ export function buildAmountIndex(rows) {
   }
   out.push('    </tbody>');
   out.push('  </table>');
-  out.push('  <p class="note">この表が扱うのは<b>他行宛・30区分</b>だけです。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後の料金や、振込以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。主要5行については<a href="#keiro">窓口・ATM・同じ銀行あての実額</a>を別に載せています。それでも合わない場合はこの表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
+  out.push('  <p class="note">この表が扱うのは<b>他行宛・30区分</b>（と三井住友銀行のWeb21＜ライト＞）だけです。<b>【掲載額は公式資料で未確認】</b>と付けた区分は、公式資料で額を確認できていません。ここに無い金額は、同行宛・ATM・窓口経由・優遇適用後の料金や、振込以外の手数料など、<b>この一覧が調べていない条件</b>の可能性があります。主要5行については<a href="#keiro">窓口・ATM・同じ銀行あての実額</a>を別に載せています。それでも合わない場合はこの表に当てはめず、通帳の摘要欄や銀行の料金ページでご確認ください。</p>');
   out.push(AMT_END);
   return out.join('\n');
 }
@@ -267,6 +321,11 @@ if (import.meta.url === pathToFileURL(process.argv[1] || '').href) {
       return src.slice(0, at) + body + '\n\n' + src.slice(at);
     };
 
+    for (const k of ['個人', '法人']) {
+      const [s, e] = tableMarkers(k);
+      if (!html.includes(s)) throw new Error(`比較表の生成区間（${s}）が記事にありません`);
+      html = put(html, s, e, buildFeeTable(rows, k), null);
+    }
     // 銀行別は「法人は銀行選びで年6万円変わる」の直前（＝比較表の直後）
     html = put(html, START, END, section, '  <h2 id="gap">');
     // 逆引きは銀行別のさらに前。銀行名が分からない人向けなので、銀行別より先に置く
