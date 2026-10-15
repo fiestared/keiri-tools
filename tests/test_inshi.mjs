@@ -216,5 +216,60 @@ t('fail closed: 17号以外に「営業に関しない」・3号以外に「一�
   rejects({ doc: 'k17_uriage', amount: 100000, ichiranbarai: true }, D, /3号|約束手形/);
 });
 
+// ── 12. ★手形の複本・謄本は非課税（急所7）──────────────────────────────────
+// 外部オラクル: 印紙税法 別表第一 第3号 非課税物件「３ 手形の複本又は謄本」
+//   （e-Gov v2 342AC0000000023_20261001 を 2026-10-16 curl）・国税庁 No.7140 注3「手形の複本または謄本は非課税です。」
+t('3号: 手形金額500万円の原本は1,000円、同じ金額の複本・謄本は非課税（対）', () => {
+  assert.strictEqual(calcInshi({ doc: 'k3', amount: 5000000 }, D).tax, 1000);
+  const r = calcInshi({ doc: 'k3', amount: 5000000, billCopy: true }, D);
+  assert.strictEqual(r.ok, true);
+  assert.strictEqual(r.tax, 0);
+  assert.strictEqual(r.taxable, false);
+  assert.match(r.notes.join(' '), /複本又は謄本/);
+});
+t('3号: 一覧払の複本も非課税（一覧払の200円特例より先に非課税）', () => {
+  assert.strictEqual(calcInshi({ doc: 'k3', amount: 5000000, ichiranbarai: true }, D).tax, 200);
+  assert.strictEqual(calcInshi({ doc: 'k3', amount: 5000000, ichiranbarai: true, billCopy: true }, D).tax, 0);
+});
+t('fail closed: 3号以外に「複本・謄本」は ok:false', () => {
+  rejects({ doc: 'k17_uriage', amount: 100000, billCopy: true }, D, /3号/);
+  rejects({ doc: 'k1_other', amount: 100000, billCopy: true }, D, /3号/);
+});
+
+// ── 13. ★売上代金とそれ以外が混在する17号受取書（急所8）────────────────────────
+// 外部オラクル: 国税庁 No.7141 注1「売上代金に係る金額と売上代金以外の金額が記載された…受取書は、
+//   その合計金額で50,000円未満かどうかを判断しますので、その合計額が50,000円未満の場合に非課税」／
+//   No.7105「区分することができるときは、売上代金に係る金額のみが記載金額…ただし、…50,000円未満の受取書で
+//   あるかどうかの判断は、…合計額により行います」／印紙税法 別表第一 課税物件表の適用に関する通則4ハ（一）。
+// amount は記載された受取金額の合計、otherReceiptAmount はそのうち売上代金以外の額。
+t('混在: 売上代金3万円＋売上代金以外3万円＝合計6万円 → 課税200円（売上代金だけ見て非課税にしない）', () => {
+  const r = calcInshi({ doc: 'k17_uriage', amount: 60000, otherReceiptAmount: 30000 }, D);
+  assert.strictEqual(r.tax, 200);
+  assert.strictEqual(r.judgeAmount, 60000);
+  assert.strictEqual(r.rateAmount, 30000);
+});
+t('混在: 合計49,999円は非課税／合計50,000円は200円（5万円の境界は合計で）', () => {
+  assert.strictEqual(calcInshi({ doc: 'k17_uriage', amount: 49999, otherReceiptAmount: 20000 }, D).tax, 0);
+  assert.strictEqual(calcInshi({ doc: 'k17_uriage', amount: 50000, otherReceiptAmount: 20000 }, D).tax, 200);
+});
+t('混在: 税額の階級は売上代金の金額（合計150万円・うち売上代金以外60万円 → 売上代金90万円で200円）', () => {
+  assert.strictEqual(calcInshi({ doc: 'k17_uriage', amount: 1500000 }, D).tax, 400);
+  assert.strictEqual(calcInshi({ doc: 'k17_uriage', amount: 1500000, otherReceiptAmount: 600000 }, D).tax, 200);
+  assert.strictEqual(calcInshi({ doc: 'k17_uriage', amount: 1500000, otherReceiptAmount: 499999 }, D).tax, 400);
+  assert.strictEqual(calcInshi({ doc: 'k17_uriage', amount: 1500000, otherReceiptAmount: 500000 }, D).tax, 200);
+});
+t('混在＋消費税の区分記載: 合計54,800円・うち消費税等4,981円・うち売上代金以外10,000円 → 合計49,819円で非課税', () => {
+  assert.strictEqual(calcInshi({ doc: 'k17_uriage', amount: 54800, taxPart: 4981, otherReceiptAmount: 10000 }, D).tax, 0);
+});
+t('fail closed: 売上代金以外が合計以上・売上代金以外の受取書・記載なしでの入力は ok:false', () => {
+  rejects({ doc: 'k17_uriage', amount: 60000, otherReceiptAmount: 60000 }, D, /売上代金以外の金額が受取金額/);
+  rejects({ doc: 'k17_other', amount: 60000, otherReceiptAmount: 10000 }, D, /売上代金の受取書/);
+  rejects({ doc: 'k1_other', amount: 60000, otherReceiptAmount: 10000 }, D, /売上代金の受取書/);
+  rejects({ doc: 'k17_uriage', noamount: true, otherReceiptAmount: 10000 }, D, /記載がない/);
+  for (const otherReceiptAmount of [-1, NaN, 0.5, '1e309']) {
+    rejects({ doc: 'k17_uriage', amount: 60000, otherReceiptAmount }, D, /整数/);
+  }
+});
+
 console.log(`\n${fail ? '❌' : '✓'} 収入印紙コア: ${pass} passed, ${fail} failed`);
 process.exit(fail ? 1 : 0);
