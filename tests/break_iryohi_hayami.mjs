@@ -103,8 +103,8 @@ const cases = [
     //   いまは両方を検査するので、狙いを本文（#meisaisho）に定め直す。
     name: "⑨ #meisaisho の保存期間を「5年」→「3年」にする（No.1120と食い違う）",
     expect: "保存期間の起算・年数がNo.1120と違う",
-    apply: () => editPage("<p class=\"hint\" id=\"receipt-note\">領収書は、確定申告期限等から5年を経過する日まで保存します",
-                          "<p class=\"hint\" id=\"receipt-note\">領収書は、確定申告期限等から3年を経過する日まで保存します"),
+    apply: () => editPage("<p class=\"hint\" id=\"receipt-note\">医療費通知を添付した分は除き、領収書は確定申告期限等から5年を経過する日まで保存します",
+                          "<p class=\"hint\" id=\"receipt-note\">医療費通知を添付した分は除き、領収書は確定申告期限等から3年を経過する日まで保存します"),
   },
   {
     // ★JSON-LD（検索結果のリッチリザルトに出る）も本文と同じ数字を名乗る。
