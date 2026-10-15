@@ -528,6 +528,8 @@ const ORDER = [
   "kodomo-kosodate-kyoshutsukin",
   "yukyu-nen5ka",
   "eigyobi-kazoekata",
+  "yucho-furikomi-tesuryo", // 銀行別ページ: 公式確認済みの個人・法人、同行宛て、境界と印刷
+  "mufg-furikomi-tesuryo",
   "furikomi-tesuryo-hikaku",
   "senpou-futan-3hoshiki",
   "zengin-format-guide",
@@ -770,7 +772,7 @@ const CATEGORIES = [
     name: "振込・支払の実務",
     desc: "振込手数料の比較と勘定科目、先方負担の差引方式、全銀フォーマット、営業日の数え方、収入印紙。支払期日の上限を定める中小受託取引適正化法（旧・下請法）の60日ルールと、フリーランス法との違いもここ。",
     slugs: [
-      "furikomi-tesuryo-hikaku", "furikomi-hanei-jikan", "furikomi-furikae-chigai", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
+      "yucho-furikomi-tesuryo", "mufg-furikomi-tesuryo", "furikomi-tesuryo-hikaku", "furikomi-hanei-jikan", "furikomi-furikae-chigai", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "kumimodoshi", "koza-furikae-iraisho", "kotora-sokin", "pay-easy",
       "zengin-format-guide", "csv-mojibake", "eigyobi-kazoekata", "shunyu-inshi-warihan",
       "ryoshusho-kakikata", "mitsumorisho-kakikata", "nohinsho-toha", "seikyusho-kakikata", "chumon-ukesho", "tatekaekin-seisansho", "shukkin-denpyo",
@@ -866,7 +868,10 @@ const CATEGORIES = [
   },
 ];
 
-/** sitemap に載せるツール・固定ページ(記事は自動で追加される) */
+/** sitemap に載せるツール・固定ページ(記事は自動で追加される)
+ * ★2026-10-15: **新しいページはこの配列に足さない。** tools/static_pages.d/<ページ名>.json を1つ置く（下の STATIC_PAGES_D）。
+ *   全ブランチがこの配列の同じ行に足す形だと、並行して作ったブランチが公開のたびに衝突した（10-15 夜に計5回）。
+ *   この配列は既存の登録を動かさないために残している（並びも sitemap の並びとして効いている）。 */
 const STATIC_PAGES = [
   ...Object.values(SAITEI_PREF_PAGES).map(p => `saitei-chingin/${p.slug}/`),
   "", "tedori/", "bonus-tedori/", "genka/", "inshi/", "jidoshazei/", "kabe/", "iryohi/", "sozokuzei/", "zoyozei/", "jutaku/", "furusato/", "shobyo/", "shussan/", "ikuji/", "papa-ikukyu/", "juminzei/", "shakai-hoken/", "gensen-choshu/", "kihonteate/", "taishokukin/", "zangyodai/", "shohizei/", "eigyobi/", "nenrei-hayami/",
@@ -880,6 +885,31 @@ const STATIC_PAGES = [
   "policy/editorial/", "policy/disclosure/",
   "nenshu/",
 ];
+
+/** ページごとの登録ファイル tools/static_pages.d/*.json（2026-10-15）。
+ *  形: { "pages": ["teichaku/"], "why": "何のページか" }。ファイル名はページ名にする（衝突しない）。
+ *  ★黙って間違えない: 同じページの二重登録・実体（docs/<page>/index.html）の無いページ・形の崩れたファイルは止める。 */
+const STATIC_PAGES_D = (() => {
+  const dir = new URL("./static_pages.d/", import.meta.url).pathname;
+  if (!existsSync(dir)) return [];
+  const seen = new Map(STATIC_PAGES.map((p) => [p, "gen_index_sitemap.mjs の STATIC_PAGES"]));
+  const out = [];
+  for (const f of readdirSync(dir).filter((n) => n.endsWith(".json")).sort()) {
+    let j;
+    try { j = JSON.parse(readFileSync(join(dir, f), "utf8")); }
+    catch (e) { console.error(`✗ static_pages.d/${f}: JSON が読めない（${e.message}）`); process.exit(1); }
+    if (!Array.isArray(j.pages) || !j.pages.length || !j.pages.every((p) => typeof p === "string" && /^[a-z0-9][a-z0-9/-]*\/$/.test(p))) {
+      console.error(`✗ static_pages.d/${f}: "pages" は "teichaku/" の形（末尾 /）の文字列の配列にする`); process.exit(1);
+    }
+    for (const p of j.pages) {
+      if (seen.has(p)) { console.error(`✗ static_pages.d/${f}: ${p} は ${seen.get(p)} に登録済み（二重登録）`); process.exit(1); }
+      if (!existsSync(join(DOCS, p, "index.html"))) { console.error(`✗ static_pages.d/${f}: docs/${p}index.html が無い`); process.exit(1); }
+      seen.set(p, `static_pages.d/${f}`);
+      out.push(p);
+    }
+  }
+  return out;
+})();
 
 /** 年収別ページ（tools/gen_nenshu_pages.mjs が生成）。★固定リストにせず実体を走査する。
  *  刻みや範囲を変えたときに、ここを直し忘れて sitemap から漏れるのを防ぐ。 */
@@ -1262,7 +1292,7 @@ hub = hub.slice(0, hOpen + hubOpen.length) + hubBlock + hub.slice(hClose);
 // 新着生成で本文が変わる場合は、この実行でハブのlastmodも更新する。
 const hubChanged = hub !== readFileSync(hubPath, "utf8");
 const urls = [
-  ...[...STATIC_PAGES, ...NENSHU_PAGES].map((p) => ({ loc: `https://keiri-tools.com/${p}`, file: join(DOCS, p, "index.html") })),
+  ...[...STATIC_PAGES, ...STATIC_PAGES_D, ...NENSHU_PAGES].map((p) => ({ loc: `https://keiri-tools.com/${p}`, file: join(DOCS, p, "index.html") })),
   ...articles.map((a) => ({ loc: `https://keiri-tools.com/column/${a.slug}/`,
                             file: join(COLUMN, a.slug, "index.html") })),
 ];

@@ -161,6 +161,40 @@ const saiteiHourlyScene = (ymd) => async () => {
   };
 };
 
+async function bankFeePage(slug, base, invoice, expectedTransfer) {
+  const doc = await open('/docs/column/' + slug + '/');
+  const fees = await (await fetch('/docs/assets/fee_table.json?raw=1')).json();
+  const rows = fees.banks.filter(r => r.name.startsWith(base + '（'));
+  const correct = rows.every((r,i) => {
+    const cells = doc.querySelector('#other-fees tr[data-fee-row="'+i+'"]').cells;
+    const bounds = doc.querySelector('#boundary-fees tr[data-boundary-row="'+i+'"]').cells;
+    return cells[1].textContent.trim() === r.under30k+'円' && cells[2].textContent.trim() === r.over30k+'円' &&
+      cells[3].querySelector('a').href === r.source && cells[3].querySelector('time').dateTime === r.verified_date &&
+      [r.under30k,r.over30k,r.over30k].every((n,j) => bounds[j+1].textContent.trim() === n+'円');
+  });
+  let printCalled = false;
+  doc.defaultView.print = () => {printCalled = true;};
+  click(doc,'print-fees');
+  const viewports=[];
+  for (const width of [1280,390]) {
+    document.getElementById('f').style.width=width+'px';
+    await sleep(50);
+    viewports.push({width,actual:doc.defaultView.innerWidth,scroll:doc.documentElement.scrollWidth});
+  }
+  const noOverflow = viewports.every(v=>v.actual===v.width && v.scroll<=v.width+1);
+  document.getElementById('f').style.width='1100px';
+  const link=doc.querySelector('.tool-cta').getAttribute('href');
+  const tool=await open(new URL(link,doc.location.href).pathname + new URL(link,doc.location.href).hash);
+  await waitFor(() => tool.getElementById('bankPreset').options.length > 1, '手数料プリセット');
+  const bank = rows.find(r => /（法人/.test(r.name));
+  if (!bank.id) {
+    const i=fees.banks.findIndex(r => r.name===bank.name);
+    set(tool,'bankPreset',String(i));
+  }
+  pickRadio(tool,'method','sueoki');set(tool,'invoice',String(invoice));click(tool,'calc');
+  const transferCorrect = text(tool,'result').includes(expectedTransfer);
+  return {correct,printCalled,transferCorrect,noOverflow,viewports,result:text(tool,'result')};
+}
 async function printTable(name, path, id, rateCol) {
   const doc = await open(path);
   const win = doc.defaultView;
@@ -226,6 +260,8 @@ function saiteiPrefScene(slug) {
 }
 
 const SCENES = {
+  async bank_fee_mufg() { return bankFeePage('mufg-furikomi-tesuryo','三菱UFJ銀行',30000,'29,340'); },
+  async bank_fee_yucho() { return bankFeePage('yucho-furikomi-tesuryo','ゆうちょ銀行',30000,'29,835'); },
   async print_table_inshi() { return await printTable('inshi', '/docs/inshi/', 'receipt-tax-table', 1); },
   async print_table_koyou() { return await printTable('koyou', '/docs/column/koyou-hokenryo-ritsu/', 'koyou-rate-table', 1); },
   async print_table_rosai() { return await printTable('rosai', '/docs/column/rosai-hokenryoritsu/', 'rosai-rate-table', 2); },
@@ -280,6 +316,32 @@ const SCENES = {
     set(doc, "invoice", "300"); // 3万円未満 → 差引550円 > 請求300円
     click(doc, "calc");
     return { result: text(doc, "result") };
+  },
+
+  async senpou_invalid() {
+    const doc = await open('/docs/senpou-futan/');
+    set(doc,'invoice','30000');set(doc,'feeUnder','484');set(doc,'feeOver','660');
+    pickRadio(doc,'method','sueoki');click(doc,'calc');
+    await waitFor(()=>doc.getElementById('copy-result').disabled===false,'正常結果のコピー');
+    const failures=[];
+    for(const input of [
+      ['sueoki','29999','-1','660','550'],['sueoki','30000','484','660.5','550'],
+      ['flat','30000','484','660',''],['sueoki','29999.000000000001','484','660','550'],
+      ['sueoki','9007199254740990.5','484','660','550'],['sueoki','30000.5','484','660','550'],
+      ['sueoki','','484','660','550'],['sueoki','30000','','660','550'],
+    ]) {
+      pickRadio(doc,'method',input[0]);
+      ['invoice','feeUnder','feeOver','flatFee'].forEach((id,i)=>set(doc,id,input[i+1]));
+      click(doc,'calc');await sleep(0);
+      failures.push({input,rejected:doc.getElementById('result').dataset.resultState==='error'
+        && !!doc.querySelector('#result > .warn') && doc.getElementById('copy-result').disabled
+        && doc.defaultView.getComputedStyle(doc.getElementById('copy-invoice-line')).display==='none'});
+    }
+    pickRadio(doc,'method','sueoki');
+    set(doc,'invoice','30000');set(doc,'feeUnder','0');set(doc,'feeOver','0');click(doc,'calc');
+    await sleep(0);
+    return {failures,recovered:doc.getElementById('result').dataset.resultState==='success'
+      && text(doc,'result').includes('30,000 円') && !doc.getElementById('copy-result').disabled};
   },
 
   // 入金差額チェック(550円=一律差引の商慣行)
@@ -5798,7 +5860,8 @@ const copyShown = (doc) => {
   const c = doc.getElementById("copy-result");
   return !!c && c.getClientRects().length > 0 && doc.defaultView.getComputedStyle(c).display !== "none";
 };
-const fieldErrorScene = ({ path, field, button = "calc", result = "result", value, tab = null, fill = {} }) => async () => {
+// onError(doc): 誤りが出ている間（直す前）の状態を足して返す任意の口（tools/e2e/scenes/ のシーンが使う）
+const fieldErrorScene = ({ path, field, button = "calc", result = "result", value, tab = null, fill = {}, onError: extraOnError = null }) => async () => {
   const doc = await open(path);
   if (tab) click(doc, tab);
   // 押す欄以外に要る入力（例: 年末調整は給与を入れてから徴収税額の空欄を試す）
@@ -5825,6 +5888,7 @@ const fieldErrorScene = ({ path, field, button = "calc", result = "result", valu
     fieldInView: (() => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= doc.defaultView.innerHeight; })(),
     errorFrame: visibleFrame(doc, doc.getElementById(result)),
     copyOnError: copyShown(doc),
+    ...(extraOnError ? extraOnError(doc) : {}),
   };
   set(doc, field, value);
   const cleared = el.getAttribute("aria-invalid") !== "true" && (!err || err.hidden);
@@ -6028,8 +6092,24 @@ SCENES.site_search_top = async () => {
     dialogCardsLeak: dlg.querySelectorAll(".qa-card").length };
 };
 
+// ── tools/e2e/scenes/<ページ>.mjs のシーン（2026-10-15）──────────────────────────────
+// 新しいページのシーンはこのファイルに足さず、scenes/ にファイルを1つ置く（共有の SCENES の末尾に足す形は、
+// 並行したブランチが公開のたびに衝突した）。e2e.mjs が ?mod=<ファイル名> を付けて開くので、そのファイルだけ読む。
+const SCENE_HELPERS = Object.freeze({ sleep, waitFor, open, set, click, text, check, pickRadio, fixToday,
+  fieldErrorScene, visibleFrame, copyShown, gaEvents, gaNames });
+async function loadSceneModule(mod) {
+  if (!/^[a-z0-9][a-z0-9_-]*\.mjs$/.test(mod)) throw new Error(`mod の名前が不正: ${mod}`);
+  const m = await import(`./scenes/${mod}`);
+  for (const [name, fn] of Object.entries(m.harness(SCENE_HELPERS))) {
+    if (Object.prototype.hasOwnProperty.call(SCENES, name)) throw new Error(`scenes/${mod} のシーン ${name} が harness.html の既存シーンと重なる`);
+    SCENES[name] = fn;
+  }
+}
+
 let state;
 try {
+  if (q.get("mod")) await loadSceneModule(q.get("mod"));
+  if (typeof SCENES[scene] !== "function") throw new Error(`シーン ${scene} が無い`);
   state = { scene, ...(await SCENES[scene]()), page: openedPages[0] || null, pages: openedPages };
 } catch (e) {
   state = { scene, error: String(e && e.message || e), page: openedPages[0] || null, pages: openedPages };
