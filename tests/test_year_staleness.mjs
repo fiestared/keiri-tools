@@ -29,6 +29,14 @@ const DOCS = join(ROOT, "docs");
 // 「制度の事実」= 年が変わっても真であり続ける記述。機械置換の対象にしてはいけない。
 // snippet はページに**そのまま含まれる**文字列。文言を変えたら免除が外れて落ちる。
 const HISTORICAL_FACTS = [
+  // Birth-year labels are calendar conversions, not the vintage of tax data.
+  // Exempt only exact table cells; test_nenrei independently checks all 242 rows.
+  ...Array.from({length: 8}, (_, i) => i + 2).map(year => ({
+    file: 'nenrei-hayami/index.html', snippet: `<td>令和${year}年</td>`,
+    reason: '出生年の和暦対応（西暦2018+和暦年）。令和の改元日は2019-05-01（https://laws.e-gov.go.jp/law/431CO0000000143）。'
+      + '税額・料率データの年の申告ではなく、現在公表されている改元日による出生年の対応。将来分は現元号が継続する仮定を画面に明記。表のセルだけを名指しし、全242行の和暦・満年齢は test_nenrei.mjs が別に照合する。'
+  })),
+
   // 2026-10-14 新規 /teichaku/: 就職日で決まる制度の区切り（データの年の申告ではない）。
   ...["令和7年4月以降の就職に対応"].map(snippet => ({
     file: "teichaku/index.html", snippet,
@@ -236,9 +244,11 @@ const HISTORICAL_FACTS = [
             "参照データを差し替えても真であり続ける。むしろ機械置換すると適用年分を書き換えて" +
             "『令和8年分にも新ルールが効く』という逆向きの嘘になる(aoiro-kojoの75万円と同型)。" +
             "正本は iryohi_r08.json の selfmed.kigen.r9_onward" },
+  { file: "iryohi/index.html", snippet: "令和3年分以後は、支払基金・国保連合会の所定書類や、所定の電子証明情報と二次元コードを含む出力書面を代わりに添付する方法もあります",
+    reason: "国税庁No.1120注2（固定正本54〜59行）の代替通知等による添付の適用年分。令和3年分以後という制度の条件であり、計算データが令和8年分という申告とは区別する。全文一致だけを許可。" },
   { file: "iryohi/index.html", snippet: "（附則46条により令和9年分以後の所得税に適用）",
     reason: "同上(附則46条の適用年分そのもの＝制度の事実)" },
-  { file: "iryohi/index.html", snippet: "それ以外（体外診断用医薬品など）は令和13年12月31日まで",
+  { file: "iryohi/index.html", snippet: "それ以外の対象購入費は令和13年12月31日まで",
     reason: "★改正後の措法41条の17第1項第2号が定める法定期限そのもの＝制度の事実" +
             "(2026-07-25にe-Gov v2の2027-01-01施行版で『平成二十九年一月一日から令和十三年十二月三十一日" +
             "までの期間』を逐語確認。2027-05-20以降の版まで md5 で不変も確認)。このページのデータ年" +
