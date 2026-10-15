@@ -11,16 +11,10 @@ export const cases = [
   { name: "セルフメディ購入12,001円で控除1円", run: () => (selfmedKojo(12001, iryohiData).kojo), expected: 1, source: "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1129.htm", quote: "特定一般用医薬品等購入費の合計額（保険金などで補填される部分を除きます。）から12,000円を差し引いた金額（最高88,000円）" },
 ];
 
-// r16: 法89条は「以下／超える」。境界の両側と補填対象未入力を検証。
-const rateSourceQuote = `百九十五万円以下の金額 | 百分の五 | 
-百九十五万円を超え三百三十万円以下の金額 | 百分の十 | 
-三百三十万円を超え六百九十五万円以下の金額 | 百分の二十 | 
-六百九十五万円を超え九百万円以下の金額 | 百分の二十三 | 
-九百万円を超え千八百万円以下の金額 | 百分の三十三 | 
-千八百万円を超え四千万円以下の金額 | 百分の四十 | 
-四千万円を超える金額 | 百分の四十五 |`;
+// No.2260の速算表と千円未満切捨て。各部分に税率を掛ける法89条の表とは区別。
+const rateSourceQuote = '課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。） / 1,950,000円 から 3,299,000円まで 10％';
 for (const [n,lo,hi] of [[1950000,5,10],[3300000,10,20],[6950000,20,23],[9000000,23,33],[18000000,33,40],[40000000,40,45]]) {
- for (const [delta,expected] of [[-1,lo],[0,lo],[1,hi]]) cases.push({name:`r16税率${n}${delta}`,run:()=>rateFromKazei(n+delta,iryohiData),expected,source:'https://laws.e-gov.go.jp/law/340AC0000000033',quote:rateSourceQuote});
+ for (const [delta,expected] of [[-1,lo],[0,hi],[1,hi]]) cases.push({name:`r16税率${n}${delta}`,run:()=>rateFromKazei(n+delta,iryohiData),expected,source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm',quote:rateSourceQuote});
 }
 cases.push(
  {name:'r16補填対象未入力',run:()=>{try{iryohiKojo(300000,200000,null,3000000,iryohiData);return '計算続行';}catch(e){return /対象医療費/.test(e.message);}},expected:true,source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm',quote:'その給付の目的となった医療費の金額を限度として差し引きます'},
@@ -31,3 +25,8 @@ cases.push(
 );
 
 cases.push({name:'r16給与160万円は所得税0',run:()=>calcIryohi({iryohi:100000,kyuyoShunyu:1600000,zeisei:'r8',shotokuzeiRate:5},{iryohiData,juminzeiData:load('juminzei_r08.json')}).normal.keigen.total,expected:5700,source:'https://laws.e-gov.go.jp/api/2/law_data/332AC0000000026_20261201_508AC0000000012?elm=Article_41_16_2',quote:'合計所得金額が四百八十九万円以下である場合四十二万円'});
+
+cases.push(
+ {name:'速算表千円未満999円',run:()=>rateFromKazei(999,iryohiData),expected:0,source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm',quote:rateSourceQuote},
+ {name:'速算表最小課税所得1000円',run:()=>rateFromKazei(1000,iryohiData),expected:5,source:'https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm',quote:rateSourceQuote}
+);

@@ -26,12 +26,12 @@
  *     ★所得税を1円も納めていない人（課税所得0・住宅ローン控除で所得税0など）は、
  *       所得控除を増やしても所得税は戻らない（住民税は課税されていれば戻る）。
  *
- * ★補填金は「その給付の目的となった医療費」を限度に引く（No.1125）。入院給付金が入院費を上回っても、
+ * ★補填金は「その給付の目的となった医療費」を限度に引く（No.1120）。入院給付金が入院費を上回っても、
  *   はみ出した分を他の医療費（通院・薬代）からは引かない。hotenTaisho（補填がひも付く医療費）を渡すと
  *   その限度で引く。補填金がある場合の対象医療費の省略はエラーとする。
  *
  * 一次情報: 所得税法73条・89条／復興財源確保法13条／租税特別措置法41条の17／
- *           国税庁 No.1120・No.1122・No.1125・No.1129・No.2260・No.1410。
+ *           国税庁 No.1120・No.1122・No.1120・No.1129・No.2260・No.1410。
  */
 
 import { kyuyoShotoku, kyuyoShotokuR8, shotokuzeiKisoKojo } from './juminzei_core.js';
@@ -87,7 +87,8 @@ export function selfmedKojo(purchase, I) {
 /** 速算表から、課税される所得金額に対応する限界税率(%)を引く（No.2260）。 */
 export function rateFromKazei(kazei, I) {
   const B = I.keigen.shotokuzei_brackets;
-  const v = yen(kazei);
+  // No.2260: 課税所得の千円未満を切り捨てた後の速算表を使う。
+  const v = Math.floor(yen(kazei) / 1000) * 1000;
   for (const b of B) {
     if (b.kazei_upto === null || b.kazei_upto === undefined || v <= b.kazei_upto) return b.rate_pct;
   }

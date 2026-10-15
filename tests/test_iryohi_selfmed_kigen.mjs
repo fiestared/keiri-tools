@@ -83,6 +83,7 @@ ok(/一万二千円/.test(R9._kingaku) && /八万八千円/.test(R9._kingaku),
 const noteR8 = visible(elementById(PAGE, "selfmed-kigen-r8"));
 const noteR9 = visible(elementById(PAGE, "selfmed-kigen-r9"));
 const noteTaisho = visible(elementById(PAGE, "selfmed-kigen-taisho"));
+const noteExceptions = visible(elementById(PAGE, "selfmed-kigen-exceptions"));
 const noteAll = visible(elementById(PAGE, "selfmed-kigen-note"));
 
 ok(/令和8年12月31日まで/.test(noteR8), "ページ: 令和8年分の窓の終わりを書いている");
@@ -93,9 +94,9 @@ ok(/制度の終了ではありません|終わる』ではありません/.test
 ok(/令和8年法律第12号/.test(noteR9), "ページ: 改正法を名指ししている");
 ok(/附則46条/.test(noteR9), "ページ: 適用年分の根拠（附則46条）を書いている");
 ok(/令和9年分以後/.test(noteR9), "ページ: 適用年分が令和9年分以後であること");
-ok(/期限なし.*第2項1号の政令指定医薬品/.test(noteR9) && /薬局製造販売医薬品を除く/.test(noteR9), "★ページ: 1号＝適用期限なし、政令指定品と薬局製造販売除外");
+ok(/期限なし.*第2項1号の政令指定医薬品/.test(noteExceptions) && /薬局製造販売医薬品を除く/.test(noteExceptions), "★ページ: 1号＝適用期限なし、政令指定品と薬局製造販売除外");
 ok(/適正化効果が低い.*除き/.test(visible(elementById(PAGE, "selfmed-kigen-exceptions"))), "ページ: 効果の低い除外品");
-ok(/令和13年12月31日まで/.test(noteR9), "★ページ: 2号＝令和13年12月31日まで");
+ok(/令和13年12月31日まで/.test(noteExceptions), "★ページ: 2号＝令和13年12月31日まで");
 ok(/12,000円超・88,000円限度|12,000円/.test(noteR9), "ページ: 金額が据え置きであること");
 ok(/体外診断用医薬品/.test(noteTaisho), "ページ: 対象拡大（体外診断用医薬品）を書いている");
 ok(/令和8年分にはこの拡大は適用されない/.test(noteTaisho),
@@ -111,7 +112,7 @@ const jpDate = (iso) => {
   return `令和${y - 2018}年${m}月${d}日`;
 };
 ok(noteR8.includes(jpDate(K.r8_window_end)), `ページの令和8年分の終期がデータと一致（${jpDate(K.r8_window_end)}）`);
-ok(noteR9.includes(jpDate(R9.track2_sonota.expires)), `ページの2号の終期がデータと一致（${jpDate(R9.track2_sonota.expires)}）`);
+ok(noteExceptions.includes(jpDate(R9.track2_sonota.expires)), `ページの2号の終期がデータと一致（${jpDate(R9.track2_sonota.expires)}）`);
 ok(noteR9.includes(R9.amend_law.replace(/八/g, "8").replace(/十二/, "12")) || noteR9.includes("令和8年法律第12号"),
   "ページの改正法名がデータと一致");
 
