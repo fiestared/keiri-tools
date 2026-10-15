@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>予定納税の減額申請｜承認が義務になる「10分の7」の線と申請期限</title>
-<meta name="description" content="予定納税額（前年の所得税額−源泉徴収税額が15万円以上なら各期3分の1）と、減額申請が通るかを判定します。見積額が基準額の10分の7以下なら税務署長は承認しなければならない（所得税法113条2項2号）。医療費の支払・失業・廃業は10分の7を超えていても承認義務。通知が遅れると期限も延びます。登録不要・無料。">
+<meta name="description" content="予定納税額（基準額15万円以上で各期3分の1）と、減額申請が通るかを判定します。見積額が基準額の10分の7以下、または失業・廃業・医療費の支払などに当たれば承認は義務。通知が遅れると申請期限も延びます。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/yotei-nozei/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="予定納税の減額申請｜承認が義務になる「10分の7」の線と申請期限">
-<meta property="og:description" content="予定納税額（前年の所得税額−源泉徴収税額が15万円以上なら各期3分の1）と、減額申請が通るかを判定します。見積額が基準額の10分の7以下なら税務署長は承認しなければならない（所得税法113条2項2号）。医療費の支払・失業・廃業は10分の7を超えていても承認義務。通知が遅れると期限も延びます。登録不要・無料。">
+<meta property="og:description" content="予定納税額（基準額15万円以上で各期3分の1）と、減額申請が通るかを判定します。見積額が基準額の10分の7以下、または失業・廃業・医療費の支払などに当たれば承認は義務。通知が遅れると申請期限も延びます。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/yotei-nozei/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -114,11 +114,8 @@
 <main id="main" tabindex="-1">
   <nav class="breadcrumb"><a href="../">ホーム</a> › 予定納税の減額申請</nav>
   <h1>予定納税の減額申請</h1>
-  <p class="lead">前年の所得税額から源泉徴収税額を引いた額（<b>予定納税基準額</b>）が15万円以上だと、7月と11月にその<b>3分の1ずつ</b>を前払いします。今年の見込みが下がっているなら減額申請ができます。<b>見積額が基準額の10分の7以下なら、税務署長は承認「しなければならない」</b>（所得税法113条2項2号）。</p>
+  <p class="lead">前年の所得税額から源泉徴収税額を引いた額（<b>予定納税基準額</b>）が15万円以上だと、7月と11月にその<b>3分の1ずつ</b>を前払いします。今年の見込みが下がっているなら減額申請ができます。<b>見積額が基準額の10分の7以下なら、税務署長は承認「しなければならない」</b>（<a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_113" rel="nofollow">所得税法113条2項2号</a>）。廃業・失業・医療費の支払などで基準額に満たなくなる場合も同じです（同項1号・<a href="#nanawari">詳しく</a>）。</p>
 
-  <div class="callout" id="gimu">
-    <p><b>「申請できます」と「承認されます」は別です。</b>条文には承認が<b>義務</b>になる線が引いてあります。①見積額が基準額の<b>10分の7以下</b>になる場合、または②<b>廃業・休業・転換・失業・災害・盗難・横領・医療費の支払</b>により基準額に満たなくなる場合。②に当たれば10分の7を超えていても承認義務です。それ以外でも申請自体はできますが、税務署長の調査による判断になります。</p>
-  </div>
 
   <div class="card">
     <div class="fee-pair field-pair">
@@ -126,7 +123,7 @@
         <label for="zennen">前年分の所得税額（円）</label>
 
     <input aria-describedby="zennen-hint" type="number" id="zennen" value="500000" min="0" step="1000" inputmode="numeric">
-    <p class="hint" id="zennen-hint">譲渡所得・一時所得・雑所得・臨時所得に係る税額は<b>除いた</b>額を入れてください（下記参照）。</p>
+    <p class="hint" id="zennen-hint">譲渡所得・一時所得・雑所得・臨時所得に係る税額は<b>除いた</b>額を入れてください（<a href="#nozoku">理由</a>）。</p>
       </div>
       <div>
         <label for="gensen">うち源泉徴収された所得税額（円）</label>
@@ -144,7 +141,7 @@
       <div>
         <label for="ki">どちらの申請か</label>
         <select id="ki">
-          <option value="ki1" selected>第1期（6月30日の現況・第1期と第2期の両方が減る）</option>
+          <option value="ki1" selected>第1期・第2期（6月30日の現況）</option>
           <option value="ki2">第2期のみ（10月31日の現況）</option>
         </select>
       </div>
@@ -165,7 +162,7 @@
         <label for="tsuchi">通知書面が発せられた日（分かれば）</label>
 
     <input aria-describedby="tsuchi-hint" type="date" id="tsuchi" value="">
-    <p class="hint" id="tsuchi-hint">6月15日（第2期は10月15日）より後なら、申請期限が延びます。</p>
+    <p class="hint" id="tsuchi-hint">6月15日より後に発せられていれば、申請期限が延びます（<a href="#kigen">詳しく</a>）。</p>
       </div>
       <div>
         <label for="year">対象の年（西暦）</label>
@@ -188,7 +185,7 @@
   </ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/yotei-nozei-toha/">予定納税とは</a></li><li><a href="../column/shusei-shinkoku-kosei-seikyu/">修正申告と更正の請求</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
   <h2 id="kijun">予定納税基準額の出しかた</h2>
-  <p><b>予定納税基準額＝前年分の課税総所得金額に係る所得税額 − その基礎となった各種所得につき源泉徴収された（されるべきであった）所得税額</b>（所得税法104条1項）。これが<b>15万円以上</b>だと納付義務が生じます。15万円ちょうども対象です。</p>
+  <p><b>予定納税基準額＝前年分の課税総所得金額に係る所得税額 − その基礎となった各種所得につき源泉徴収された（されるべきであった）所得税額</b>（<a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_104" rel="nofollow">所得税法104条1項</a>）。これが<b>15万円以上</b>だと納付義務が生じます。15万円ちょうども対象です。</p>
   <div class="callout">
     <p><b>端数の切り捨ては「3分の1にした後」です。</b>条文は「予定納税基準額の三分の一に相当する金額に百円未満の端数があるときは、その端数を切り捨てる」（104条3項）。四捨五入ではありません。基準額250,100円なら各期<b>83,300円</b>で、四捨五入すると83,400円になり100円ずれます。</p>
   </div>
@@ -200,7 +197,7 @@
   </div>
 
   <h2 id="nanawari">承認が義務になる「10分の7」</h2>
-  <p>113条2項は、次のいずれかに該当するとき税務署長は承認を<b>「しなければならない」</b>と書いています。裁量ではありません。</p>
+  <p>「申請できる」と「承認される」は別です。113条2項は、次のどちらかに当たれば税務署長は承認を<b>「しなければならない」</b>と書いています。裁量ではありません。</p>
   <div class="scroll-wrap">
   <table id="gimu-hyo">
     <tr><th scope="col">号</th><th scope="col">要件</th><th scope="col">10分の7を超えていても効くか</th></tr>
@@ -211,9 +208,14 @@
   <p>どちらにも当たらない場合でも、見積額が基準額に満たない見込みなら<b>申請そのものはできます</b>（111条は事由を限定していません）。ただし承認は税務署長の調査による判断で、却下もありえます（113条1項）。</p>
 
   <h2 id="kigen">期限は7月15日で固定ではない</h2>
-  <p>原則は、第1期が<b>6月30日の現況で7月15日まで</b>（第1期・第2期の両方が減額対象）、第2期のみが<b>10月31日の現況で11月15日まで</b>です。</p>
+  <p>原則の期限は次のとおりです。</p>
+  <ul>
+    <li><b>第1期・第2期の両方を減らす</b>: 6月30日の現況で、<b>7月15日まで</b>（<a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_111" rel="nofollow">111条1項</a>）</li>
+    <li><b>第2期だけを減らす</b>: 10月31日の現況で、<b>11月15日まで</b>（111条2項）</li>
+  </ul>
   <div class="callout">
-    <p><b>111条3項。</b>通知の書面が6月15日まで（第2期は10月15日まで）に発せられなかった場合、申請期限は<b>その通知が発せられた日から起算して1月を経過した日</b>まで延期されます。通知が遅れたぶん、申請の時間も延びます。翌月に同じ日がないときは月末となります（民法143条2項ただし書）。例えば10月31日発送なら11月30日です。</p>
+    <p><b>通知が遅れると期限も延びます。</b>通知の書面が6月15日までに発せられなかった場合、申請期限は<b>その書面が発せられた日から起算して1月を経過した日</b>まで延期されます（111条3項）。翌月に同じ日がないときは月末です（<a href="https://laws.e-gov.go.jp/law/129AC0000000089#Mp-At_143" rel="nofollow">民法143条2項ただし書</a>）。例えば10月31日発送なら11月30日です。</p>
+    <p>第2期だけの申請は、延びた期限が11月15日より後になるとき、つまり書面が10月15日より後に発せられたときに、このツールは延びた期限を表示します。条文の「10月15日まで」は特別農業所得者への通知（109条1項）の期限です。</p>
   </div>
 
   <h2 id="dekinai">このツールが判定しないこと</h2>
@@ -244,7 +246,7 @@
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>113条2項1号に「医療費の支払」が明文で入っています</b>（所得税法73条2項の医療費）。医療費控除で見積額が基準額を下回るなら、10分の7を超えていても承認が義務になります。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>7月15日を過ぎてしまいました。</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>第1期分は間に合いませんが、<b>10月31日の現況で11月15日まで</b>に第2期分の減額申請ができます（111条2項）。また通知の書面が6月15日より後に発せられていた場合は、第1期の期限自体が<b>通知の日から1月を経過した日</b>まで延びています（111条3項）。通知書の日付をご確認ください。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>第1期分は間に合いませんが、<b>10月31日の現況で11月15日まで</b>に第2期分の減額申請ができます（111条2項）。また通知の書面が6月15日より後に発せられていた場合は、第1期の期限自体が<b>書面が発せられた日から1月を経過した日</b>まで延びています（111条3項）。通知書の日付をご確認ください。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>減額申請をしないとどうなりますか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>予定納税額をそのまま納付し、払いすぎた分は確定申告で精算（還付）されます。損をするわけではなく、その年の資金繰りの問題です。</p>
@@ -254,7 +256,25 @@
 </section>
 
 <h2 id="shutten">出典</h2>
-<p class="note"><a href="https://laws.e-gov.go.jp/law/340AC0000000033" rel="nofollow">所得税法</a> 104条（予定納税額の納付＝15万円以上・各期3分の1・100円未満切り捨て・譲渡等を除く括弧書き）／105条（基準額は5月15日の現況）／106条（6月15日までに書面で通知）／111条（減額の承認の申請＝6月30日現況で7月15日まで・10月31日現況で11月15日まで・3項の期限延長）／113条（申請に対する処分＝2項1号の事由・2項2号の10分の7）。条文は e-Gov 法令API v2 で実読しています（2026-08-08 確認）。</p>
+<ul class="note">
+  <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033" rel="nofollow">所得税法</a>
+    <ul>
+      <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_104" rel="nofollow">104条</a>（予定納税額の納付＝15万円以上・各期3分の1・100円未満切り捨て・譲渡等を除く括弧書き）</li>
+      <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_105" rel="nofollow">105条</a>（基準額は5月15日の現況）</li>
+      <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_106" rel="nofollow">106条</a>（6月15日までに書面で通知）</li>
+      <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_111" rel="nofollow">111条</a>（減額の承認の申請＝6月30日現況で7月15日まで・10月31日現況で11月15日まで・3項の期限延長）</li>
+      <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_113" rel="nofollow">113条</a>（申請に対する処分＝2項1号の事由・2項2号の10分の7）</li>
+      <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_73" rel="nofollow">73条</a>（2項の医療費）</li>
+      <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_109" rel="nofollow">109条</a>（特別農業所得者に対する通知＝10月15日まで）</li>
+    </ul>
+  </li>
+  <li><a href="https://laws.e-gov.go.jp/law/129AC0000000089" rel="nofollow">民法</a>
+    <ul>
+      <li><a href="https://laws.e-gov.go.jp/law/129AC0000000089#Mp-At_143" rel="nofollow">143条</a>（2項ただし書＝応当日がないときは月末）</li>
+    </ul>
+  </li>
+  <li>条文は e-Gov法令検索で2026年10月15日に確認（所得税法は令和8年10月1日施行の版）。</li>
+</ul>
 
 <section class="faq rel-block">
 <h2>関連する解説</h2>
