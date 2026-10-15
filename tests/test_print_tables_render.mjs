@@ -10,7 +10,10 @@ import {measure} from './layout/measure.mjs';
 import {measureUi} from './layout/ui-measure.mjs';
 import {measureEmpty} from './layout/empty-measure.mjs';
 import {measureTables} from './layout/table-measure.mjs';
-const out=join(ROOT,'reports/print-tables-20261014');
+// 撮影物・PDFは既定で一時ディレクトリに書く（2026-10-15）。以前は追跡済みの reports/print-tables-20261014/ を
+// 毎回上書きし、公開の検査が作業場を書き換えたまま残していた。記録として残したいときだけ PRINT_TABLES_OUT=<dir> を渡す。
+const keepOut=process.env.PRINT_TABLES_OUT;
+const out=keepOut?keepOut:await mkdtemp(join(tmpdir(),'print-tables-out-'));
 await mkdir(out,{recursive:true});
 const profile=await mkdtemp(join(tmpdir(),'print-tables-chrome-'));
 const {chromium}=await browserTools();
@@ -83,4 +86,5 @@ try {
 } finally {
  await browser?.close();await killChrome(chrome);server.close();
  await rm(profile,{recursive:true,force:true,maxRetries:5,retryDelay:100});
+ if(!keepOut)await rm(out,{recursive:true,force:true,maxRetries:5,retryDelay:100});
 }
