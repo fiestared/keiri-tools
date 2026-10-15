@@ -3677,7 +3677,7 @@ SCENES.gensen_kojo_nodata = gensenKojoScene({});
 // ★文書の種類＋記載金額から印紙税額を判定。独立オラクル: 期待値は国税庁ページの税額そのもの
 //   （No.7108の計算例6,000万円→30,000円／No.7141の階級表）で、コアを一切通さない。
 //   消費税の区分記載（No.6925）はハーネス側でも 54,800−4,981=49,819<50,000 を素朴に確かめる。
-const inshiScene = ({ doc = "k17_uriage", amount = "", taxPart = 0, menzei = false }) => async () => {
+const inshiScene = ({ doc = "k17_uriage", amount = "", taxPart = 0, menzei = false, other = 0, billCopy = false }) => async () => {
   const d = await open("/docs/inshi/");
   if (doc !== "k17_uriage") {
     const el = d.getElementById("doc");
@@ -3687,6 +3687,8 @@ const inshiScene = ({ doc = "k17_uriage", amount = "", taxPart = 0, menzei = fal
   if (amount !== "") set(d, "amount", String(amount));
   if (taxPart) set(d, "taxpart", String(taxPart));
   if (menzei) check(d, "menzei", true);
+  if (other) set(d, "other-receipt", String(other));
+  if (billCopy) check(d, "billcopy", true);
   click(d, "calc"); // ← 参照データの到着を待たずに押す（実ユーザーと同じ）
 
   await waitFor(
@@ -3701,6 +3703,8 @@ const inshiScene = ({ doc = "k17_uriage", amount = "", taxPart = 0, menzei = fal
     hikazei: /収入印紙は不要です（非課税）/.test(body),
     judge: num(/判定金額（税抜）: ¥([\d,]+)/),      // No.6925 を使ったときだけ出る
     keigen: /軽減税率を適用/.test(body),
+    kongoNote: /合計 [\d,]+円、税額の階級は売上代金の [\d,]+円/.test(body),
+    fukuhonNote: /複本又は謄本/.test(body),
     showsYear: /令和\d+年/.test(body),
     failed: body.includes("読み込めませんでした"),
     // 一覧表（全20号=行23: 1号・2号・17号は2区分ずつ）が正本データから描かれていること
@@ -3721,6 +3725,13 @@ SCENES.inshi_keigen = inshiScene({ doc: "k1_fudosan", amount: 60000000 });
 SCENES.inshi_50k = inshiScene({ amount: 50000 });
 // 参照データ配信不可 → 印紙額を出さずに断る（fail closed）。
 SCENES.inshi_nodata = inshiScene({ amount: 54800, taxPart: 4981 });
+// ★混在する17号受取書（No.7105・No.7141 注1・通則4ハ）: 受取金額150万円・うち売上代金以外60万円
+//   → 5万円判定は合計150万円で課税、税額の階級は売上代金90万円で200円（合計で引くと400円）。
+//   「うち売上代金以外の金額」を core に渡し忘れる配線は400円を出して落ちる。
+SCENES.inshi_kongo = inshiScene({ amount: 1500000, other: 600000 });
+// ★手形の複本・謄本（別表第一 第3号 非課税物件3・No.7140 注3）: 手形金額500万円でも非課税。
+//   チェックを渡し忘れる配線は原本の1,000円を出して落ちる。
+SCENES.inshi_fukuhon = inshiScene({ doc: "k3", amount: 5000000, billCopy: true });
 
 // ── 自動車税 (/jidoshazei/) ──────────────────────────────────────────────────
 // ★総排気量＋初度登録の年月から自動車税（種別割）の年額を判定。独立オラクル: 期待値は東京都主税局

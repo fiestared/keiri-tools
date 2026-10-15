@@ -219,10 +219,16 @@
 
   <div id="k17-block">
     <label style="display:block;font-weight:400;margin:0 0 10px"><input type="checkbox" id="hieigyo"> <b>営業に関しない</b>受取書（公益法人や、商人でない個人が事業と関係なく作成するもの）</label>
+    <div id="other-receipt-block">
+      <label for="other-receipt">うち売上代金以外の金額（円）</label>
+      <input type="number" id="other-receipt" value="0" min="0" inputmode="numeric" data-example="30000" aria-describedby="other-receipt-hint">
+        <span id="other-receipt-hint" class="hint"><b class="input-example">入力例：「うち貸付金の返済 30,000円」なら 30000</b>売上代金以外と分かる金額だけ入れます（無ければ0）。5万円未満かは合計、税額は売上代金の額で判定します</span>
+    </div>
   </div>
 
   <div id="k3-block" style="display:none">
     <label style="display:block;font-weight:400;margin:0 0 10px"><input type="checkbox" id="ichiranbarai"> 一覧払のもの・金融機関相互間のもの・外国通貨表示・非居住者円表示・円建銀行引受手形</label>
+    <label style="display:block;font-weight:400;margin:0 0 10px"><input type="checkbox" id="billcopy"> 手形の<b>複本</b>または<b>謄本</b>（手形金額にかかわらず非課税）</label>
   </div>
 
   <button class="primary" id="calc">収入印紙の金額を判定する</button>
@@ -349,7 +355,7 @@
 <p>17号文書には「営業に関しないものは非課税」という大きな例外があります。ここでいう営業とは<b>営利を目的として同種の行為を反復継続すること</b>で、株式会社などの営利法人や個人商人の行為は営業ですが、<b>公益法人や、商人でない個人の行為は営業に当たりません</b>（国税庁 No.7105）。個人が事業と関係なく<b>マイホームやマイカーを売った代金の領収書</b>に印紙は不要です。</p>
 </div>
 
-<p>なお、売上代金とそれ以外が1枚に混ざった受取書は、区分記載できるときは売上代金側の金額で税額を決めますが、<b>「5万円未満で非課税かどうか」だけは合計額で判定</b>します（No.7141 注1・No.7105）。区分できないときは、売上代金以外と明らかな部分を除いた金額を、売上代金の金額とします。</p>
+<p>なお、売上代金とそれ以外が1枚に混ざった受取書は、区分記載できるときは売上代金側の金額で税額を決めますが、<b>「5万円未満で非課税かどうか」だけは合計額で判定</b>します（No.7141 注1・No.7105）。区分できないときは、売上代金以外と明らかな部分を除いた金額を、売上代金の金額とします。上の判定機では、売上代金の受取書を選んで「うち売上代金以外の金額」に入れると、この順で判定します。</p>
 
 <h2 id="keiyakusho">契約書の収入印紙 — 不動産と建設工事には軽減税率</h2>
 
@@ -379,7 +385,7 @@
 
 <div class="callout">
 <b>金額の記載がない契約書・領収書は「0円」ではない</b>
-<p>契約金額・受取金額の記載のない<b>1号・2号・15号・16号・17号文書は200円</b>です（17号の営業に関しない受取書は非課税）。「金額を書いていないから印紙は不要」は誤りです。例外は<b>手形（3号）</b>で、手形金額の記載のない手形は非課税ですが、<b>後から金額を補充した人が手形を「作成した」ものとみなされて納税義務者になります</b>（No.7140 注1）。</p>
+<p>契約金額・受取金額の記載のない<b>1号・2号・15号・16号・17号文書は200円</b>です（17号の営業に関しない受取書は非課税）。「金額を書いていないから印紙は不要」は誤りです。例外は<b>手形（3号）</b>で、手形金額の記載のない手形は非課税ですが、<b>後から金額を補充した人が手形を「作成した」ものとみなされて納税義務者になります</b>（No.7140 注1）。手形の<b>複本・謄本</b>は、手形金額にかかわらず非課税です（No.7140 注3）。</p>
 </div>
 
 <p>次の場合は「金額の記載がない文書」に当たりません（課税物件表の通則4）。</p>
@@ -446,7 +452,7 @@
 
 <h2 id="source">出典</h2>
 <ul>
-<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7140.htm">国税庁 タックスアンサー No.7140「印紙税額の一覧表（その1）第1号文書から第4号文書まで」</a>— 1号〜4号の金額階級と税額、手形の非課税（10万円未満・金額の記載のないもの）と一覧払等の特例、株券の券面金額の考え方</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7140.htm">国税庁 タックスアンサー No.7140「印紙税額の一覧表（その1）第1号文書から第4号文書まで」</a>— 1号〜4号の金額階級と税額、手形の非課税（10万円未満・金額の記載のないもの・複本または謄本）と一覧払等の特例、株券の券面金額の考え方</li>
 <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7141.htm">国税庁 タックスアンサー No.7141「印紙税額の一覧表（その2）第5号文書から第20号文書まで」</a>— 5号〜20号の税額、17号（売上代金5万円未満非課税・階級表／売上代金以外は5万円未満非課税・5万円以上200円／営業に関しないものは非課税）、通帳類の「1年ごとに」、売上代金とそれ以外の合計額による5万円未満判定（注1）</li>
 <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7108.htm">国税庁 タックスアンサー No.7108「不動産の譲渡、建設工事の請負に関する契約書に係る印紙税の軽減措置」</a>— 軽減税率の階級表と適用期間・適用下限（不動産10万円超・建設工事100万円超）、計算例（6,000万円→3万円・5,500万円→3万円）</li>
 <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7105.htm">国税庁 タックスアンサー No.7105「金銭又は有価証券の受取書、領収書」</a>— 受取書の範囲（レシート・「代済」の記入等を含む）、売上代金の定義、営業に関しない受取書の非課税（公益法人・商人以外の個人）</li>
@@ -581,6 +587,8 @@ function refreshForm() {
   $("amount-block").style.display = isFixed ? "none" : "";
   $("tax-block").style.display = /^k1_|^k2_|^k17_/.test(doc) ? "" : "none";
   $("k17-block").style.display = /^k17_/.test(doc) ? "" : "none";
+  // 売上代金とそれ以外の混在は「売上代金の受取書」だけ（売上代金以外の受取書は全額が売上代金以外）
+  $("other-receipt-block").style.display = doc === "k17_uriage" ? "" : "none";
   $("k3-block").style.display = doc === "k3" ? "" : "none";
   $("amount-unit").textContent = "　" + (UNIT_HINT[doc] || "文書に記載された金額");
   // 選んだ文書の注意（データの _note）を出す。データ未着なら空のまま（飾り）
@@ -612,12 +620,15 @@ $("calc").addEventListener("click", async () => {
   const isFixed = !!FIXED[doc];
   const noamount = !isFixed && $("noamount").checked;
   const amount = Number($("amount").value) || 0;
-  if (!isFixed && !noamount && amount <= 0) {
+  // 手形の複本・謄本は金額によらず非課税なので、金額が空でも判定する
+  const billCopy = doc === "k3" && $("billcopy").checked;
+  if (!isFixed && !noamount && !billCopy && amount <= 0) {
     box.dataset.resultState = "error"; box.innerHTML = '<div class="warn" data-field="amount"><b>入力を確認してください</b>記載金額（円）を入力するか、「金額の記載がない文書」にチェックしてください。</div>'; return;
   }
 
   const taxVisible = /^k1_|^k2_|^k17_/.test(doc) && !noamount;
-  for (const [id, active] of [["amount", !isFixed && !noamount], ["taxpart", taxVisible]]) {
+  const otherVisible = doc === "k17_uriage" && !noamount;
+  for (const [id, active] of [["amount", !isFixed && !noamount && !billCopy], ["taxpart", taxVisible], ["other-receipt", otherVisible]]) {
     if (active && !$(id).validity.valid) {
       box.dataset.resultState = "error";
       box.innerHTML = '<div class="warn" data-field="' + id + '"><b>入力を確認してください。</b>金額は0以上の整数（円）で入力してください。</div>';
@@ -633,6 +644,8 @@ $("calc").addEventListener("click", async () => {
       taxPart: taxVisible ? $("taxpart").value : 0,
       menzei: $("menzei").checked,
       hieigyo: /^k17_/.test(doc) && $("hieigyo").checked,
+      otherReceiptAmount: otherVisible ? $("other-receipt").value : 0,
+      billCopy,
       ichiranbarai: doc === "k3" && $("ichiranbarai").checked,
     }, INSHI);
   } catch (e) {

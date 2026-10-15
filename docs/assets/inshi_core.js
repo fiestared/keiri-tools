@@ -30,6 +30,15 @@
  *  6. **電磁的記録（電子契約・電子領収書）は「作成」に当たらず印紙不要**（画面で常時明示。
  *     コアは紙の文書についてのみ答える）。
  *
+ *  7. **手形の複本・謄本は金額によらず非課税。**（別表第一 第3号 非課税物件3・No.7140 注3）
+ *     原本と同じ手形金額が書いてあっても、複本・謄本に階級表の税額を答えない。
+ *
+ *  8. **売上代金とそれ以外が混在する17号受取書は、5万円未満の判定と税額の階級で金額が違う。**
+ *     非課税の判定は「記載された受取金額」＝合計額（第17号 非課税物件1・No.7141 注1）、
+ *     税額の階級は売上代金に係る金額（課税物件表の適用に関する通則4ハ・No.7105）。
+ *     売上代金3万円＋貸付金の返済3万円なら、合計6万円で課税・売上代金3万円は100万円以下の200円。
+ *     売上代金側だけで5万円未満と判定すると非課税と誤答する。
+ *
  * 一次情報: 国税庁 No.7140/No.7141（印紙税額の一覧表）・No.7108（軽減措置）・
  *   No.7105（受取書・営業に関しない）・No.6925（消費税等と印紙税）。
  */
@@ -100,6 +109,9 @@ function pickBracket(amount, brackets) {
  *   taxPart,      // うち消費税額等（円）。区分記載されている場合のみ入力（1号/2号/17号だけ有効）
  *   menzei,       // true = 作成者が免税事業者（消費税額等を引かない＝税込で判定。No.6925）
  *   hieigyo,      // true = 営業に関しない受取書（17号のみ・非課税）
+ *   otherReceiptAmount, // 17号の1（売上代金）の受取書のうち、売上代金以外と明らかな金額（円）。
+ *                 //   amount（記載された受取金額の合計）に含まれる「うち」の額。急所8
+ *   billCopy,     // true = 手形（3号）の複本又は謄本（非課税。急所7）
  *   ichiranbarai, // true = 一覧払・金融機関相互間・外貨表示など（3号のみ・特例税率）
  * }
  * D = inshi_r07.json
@@ -123,12 +135,23 @@ function calculate(input, D) {
   const doc = D.docs[i.doc];
   if (!doc) throw new Error('文書の種類を選んでください');
   const taxPart = yen(i.taxPart, '消費税額等', true);
+  const otherReceipt = yen(i.otherReceiptAmount, '売上代金以外の金額', true);
+  if (otherReceipt > 0 && i.doc !== 'k17_uriage') {
+    throw new Error('売上代金以外の金額（混在する受取書）は、売上代金の受取書（17号）だけで入力できます');
+  }
 
   const notes = [];
   const base = {
     go: doc.go, docName: doc.name, perYear: false, judgeAmount: null,
     usedTaxExclusion: false, keigenApplied: false, bracketLabel: '', notes,
   };
+
+  // 急所7: 手形の複本・謄本は非課税（3号のみ）。金額の記載にかかわらない
+  if (i.billCopy) {
+    if (doc.go !== '3号') throw new Error('複本・謄本の非課税は約束手形・為替手形（3号）だけです');
+    notes.push('手形の複本又は謄本は、手形金額にかかわらず非課税です（印紙税法別表第一 第3号 非課税物件3・No.7140 注3）。');
+    return { ...base, tax: 0, taxable: false, bracketLabel: '手形の複本又は謄本' };
+  }
 
   // 定額の号（5号〜14号）・通帳（18号〜20号）は金額を使わない
   if (doc.type === 'fixed') {
@@ -151,6 +174,7 @@ function calculate(input, D) {
 
   // 急所5: 金額の記載のない文書は号ごとに扱いが違う（0円と決めつけない）
   if (i.noamount) {
+    if (otherReceipt > 0) throw new Error('受取金額の記載がない受取書では、売上代金以外の金額は入力できません');
     if (doc.noamount === null || doc.noamount === undefined) {
       throw new Error(doc.noamount_note || 'この文書は金額（' + doc.unit + '）の入力が必要です');
     }
@@ -180,8 +204,18 @@ function calculate(input, D) {
     }
   }
 
+  // 急所8: 混在する受取書。非課税の判定は合計（judgeAmount）、税額の階級は売上代金の金額（rateAmount）
+  let rateAmount = judgeAmount;
+  if (otherReceipt > 0) {
+    rateAmount = judgeAmount - otherReceipt;
+    if (rateAmount <= 0) {
+      throw new Error('売上代金以外の金額が受取金額（消費税額等を除いた額）以上です。売上代金の部分が無いなら「売上代金以外の受取書」を選んでください');
+    }
+  }
+
   // 非課税の下限（1号/2号=1万円未満・3号=10万円未満・17号=5万円未満・15号=1万円未満・16号=3千円未満）
   if (doc.hikazei_under !== null && doc.hikazei_under !== undefined && judgeAmount < doc.hikazei_under) {
+    if (otherReceipt > 0) notes.push('売上代金とそれ以外が混在する受取書は、5万円未満かどうかを合計 ' + judgeAmount.toLocaleString('ja-JP') + '円で判定します（No.7141 注1）。');
     return { ...base, tax: 0, taxable: false, judgeAmount, usedTaxExclusion,
       bracketLabel: doc.unit + 'が' + doc.hikazei_under.toLocaleString('ja-JP') + '円未満のもの' };
   }
@@ -201,7 +235,16 @@ function calculate(input, D) {
       keigenApplied: true, bracketLabel: b.label };
   }
 
-  const b = pickBracket(judgeAmount, doc.brackets);
+  const b = pickBracket(rateAmount, doc.brackets);
+  if (otherReceipt > 0) {
+    notes.push('売上代金とそれ以外が混在する受取書です。5万円未満かどうかは合計 ' + judgeAmount.toLocaleString('ja-JP') +
+      '円、税額の階級は売上代金の ' + rateAmount.toLocaleString('ja-JP') + '円で判定しました（課税物件表の適用に関する通則4ハ・No.7105・No.7141 注1）。');
+    const first = doc.brackets[0];
+    const label = b === first
+      ? '売上代金が' + (first.upto / 10000).toLocaleString('ja-JP') + '万円以下（受取金額の合計は' + (doc.hikazei_under / 10000).toLocaleString('ja-JP') + '万円以上）'
+      : '売上代金が' + b.label;
+    return { ...base, tax: b.tax, taxable: true, judgeAmount, rateAmount, usedTaxExclusion, bracketLabel: label };
+  }
   if (doc._note) notes.push(doc._note);
   return { ...base, tax: b.tax, taxable: true, judgeAmount, usedTaxExclusion, bracketLabel: b.label };
 }
