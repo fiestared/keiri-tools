@@ -18,7 +18,7 @@ import { search } from "../docs/assets/qa_search.js";
 const DOCS = new URL("../docs/", import.meta.url).pathname;
 const COLUMN = join(DOCS, "column");
 // embed はウィジェット配信面(noindex)なので質問箱索引の対象外(gen_qa_index.mjs と同期)
-const EXCLUDE_TOP = new Set(["assets", "column", "ext", "about", "privacy", "contact", "embed"]);
+const EXCLUDE_TOP = new Set(["assets", "column", "ext", "about", "privacy", "contact", "embed", "link"]); // link = リンク・ご紹介について（ツールではない。2026-10-15）
 
 let fails = 0;
 const ok = (c, msg) => { console.log(`${c ? "✅" : "❌"} ${msg}`); if (!c) fails++; };

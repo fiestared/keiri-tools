@@ -28,7 +28,7 @@ const CHECK = process.argv.includes("--check");
 
 // docs 直下でツールとして扱わないディレクトリ(素材・記事・固定ページ・拡張)。
 // embed = 他サイト設置用ウィジェット群(noindex・sitemap外)。質問箱の答えとして出す面ではない
-const EXCLUDE_TOP = new Set(["assets", "column", "ext", "about", "privacy", "contact", "embed"]);
+const EXCLUDE_TOP = new Set(["assets", "column", "ext", "about", "privacy", "contact", "embed", "link"]); // link = リンク・ご紹介について（2026-10-15）。ツールではないので答えに出さない
 
 const strip = (s) => (s || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 
@@ -226,11 +226,12 @@ for (const slug of readdirSync(COLUMN)) {
   const ctaTag = html.match(/<a\b[^>]*\btool-cta\b[^>]*>/)?.[0];
   const ctaHref = ctaTag?.match(/href="([^"]+)"/)?.[1] ?? null;
   const tool = ctaHref ? ctaHref.replace(/^(\.\.\/)+/, "/") : null;
+  const requiredTerms=(html.match(/<meta name="qa-required-terms" content="([^"]*)"/)?.[1] || "").split("|").filter(Boolean);
   const category = catOf.get(slug) || "";
   const base = `${title} ${answer}`;
   const url = `/column/${slug}/`;
-  const terms = buildTerms(title, answer, category, ...synonymsFor(base), ...(ENTRY_ALIASES.get(slug) || []));
-  entries.push(withAliases({ type: "article", url, title, answer, summary: searchSummary(html, url, answer), tool, terms }));
+  const terms = buildTerms(title, answer, category, ...synonymsFor(base), ...(ENTRY_ALIASES.get(slug) || []), ...requiredTerms);
+  entries.push(withAliases({ type: "article", url, title, answer, summary: searchSummary(html, url, answer), tool, terms, ...(requiredTerms.length ? {requiredTerms} : {}) }));
 }
 
 // ---- ツール ----
