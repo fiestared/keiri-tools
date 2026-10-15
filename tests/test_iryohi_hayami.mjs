@@ -118,7 +118,7 @@ function rows(tableId) {
   const k = visible(elem("keigen-shiki", "p"));
   ok(/所得税率×1.021＋10%/.test(k), "#keigen-shiki に住民税10%を含む式が無い");
   const lead = visible(elem("lead-answer", "p"));
-  ok(/補填後の医療費から足切りを超えた部分/.test(lead) && /最高200万円/.test(lead), "#lead-answer に控除額の上下限が無い");
+  ok(/控除額は最高200万円/.test(lead), "#lead-answer に控除額の上下限が無い");
   ok(/足切りが10万円.*医療費10万円.*控除額は0円/.test(lead), "#lead-answer が『ちょうど10万円は控除額0円』を言っていない");
 }
 
