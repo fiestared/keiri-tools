@@ -102,7 +102,7 @@ t('r16 給与160万円のみは基礎控除104万円で所得税0、住民税の
  assert.deepStrictEqual([r.normal.keigen.shotokuzei,r.normal.keigen.fukko,r.normal.keigen.jumin,r.normal.keigen.total],[0,0,5700,5700]);
 });
 
-// ── 4. ★補填金は「その給付の目的となった医療費」を限度に引く（No.1125） ──────────────
+// ── 4. ★補填金は「その給付の目的となった医療費」を限度に引く（No.1120） ──────────────
 t('補填ひも付き: 医療費27万(入院15万+通院12万)・入院給付20万 → 控除額20,000（総額から引く誤りなら0）', () => {
   // ひも付き対象=入院費15万 → 引くのは min(20万,15万)=15万 → 27万−15万=12万 −足切り10万 = 20,000
   const r = calcIryohi({ iryohi: 270000, hoten: 200000, hotenTaisho: 150000, kyuyoShunyu: 5000000, shotokuzeiRate: 10 }, refs);
@@ -138,26 +138,38 @@ t('医療費が大きければ通常を推奨', () => {
   assert.strictEqual(r.recommended, 'normal', '通常控除の方が大きい');
 });
 
-// R9: 国税庁No.2260の速算表。境界直前と境界ちょうどを独立定数で照合。
+// 所得税法89条1項は「以下／超える」。課税所得は千円未満を切り捨ててから比べる（国税通則法118条1項）。
+// ★2026-10-15 司令塔決定: 境界は条文どおり「以下／超」。国税庁No.2260 の千円表記（未満／以上・1,949,000円まで）へ変えない
+//   （税額は境界でも同じ: 1,950,000円は 5%→97,500円 ＝ 10%−控除97,500円）。レビュー便ごとに反転していたので固定する。
 for (const [boundary, below, at] of [[1950000,5,10],[3300000,10,20],[6950000,20,23],[9000000,23,33],[18000000,33,40],[40000000,40,45]]) {
-  t(`r16 所得税法89条の境界 ${boundary}`, () => {
-    assert.strictEqual(rateFromKazei(boundary - 1, I), below);
-    assert.strictEqual(rateFromKazei(boundary + 1, I), at);
-    assert.strictEqual(rateFromKazei(boundary, I), below);
+  t(`r16 所得税法89条の境界 ${boundary}（以下は下の率・千円切捨て後に超えたら上の率）`, () => {
+    assert.strictEqual(rateFromKazei(boundary - 1, I), below, '境界の1円前');
+    assert.strictEqual(rateFromKazei(boundary, I), below, '境界ちょうど＝以下');
+    assert.strictEqual(rateFromKazei(boundary + 999, I), below, '千円未満切捨てで境界ちょうどに戻る');
+    assert.strictEqual(rateFromKazei(boundary + 1000, I), at, '千円単位で超える');
   });
 }
-t('r16 表示区分は所得税法89条に一致', () => {
+t('r16 表示区分は所得税法89条に一致（以下／超）', () => {
   assert.deepStrictEqual(I.keigen.shotokuzei_brackets.map(b=>b.label), ['課税所得0円（所得税非課税）','195万円以下','195万円超 330万円以下','330万円超 695万円以下','695万円超 900万円以下','900万円超 1,800万円以下','1,800万円超 4,000万円以下','4,000万円超']);
 });
-// ── 7. 速算表: 課税所得帯 → 限界税率（No.2260・7区分） ───────────────────────
-t('速算表: 課税所得の帯ごとに正しい限界税率を引く', () => {
-  assert.strictEqual(rateFromKazei(1950000, I), 5, '195万以上=10%');
-  assert.strictEqual(rateFromKazei(2000000, I), 10, '195万超=10%');
-  assert.strictEqual(rateFromKazei(6950000, I), 20, '695万以上=23%');
-  assert.strictEqual(rateFromKazei(9000000, I), 23, '900万以上=33%');
-  assert.strictEqual(rateFromKazei(18000000, I), 33, '1,800万以上=40%');
-  assert.strictEqual(rateFromKazei(40000000, I), 40, '4,000万以上=45%');
-  assert.strictEqual(rateFromKazei(50000000, I), 45, '4,000万超=45%');
+// ── 7. 課税所得帯 → 限界税率（所得税法89条・7区分） ───────────────────────
+t('課税所得の帯ごとに正しい限界税率を引く', () => {
+  assert.strictEqual(rateFromKazei(1950000, I), 5, '195万円以下=5%');
+  assert.strictEqual(rateFromKazei(2000000, I), 10, '195万円超=10%');
+  assert.strictEqual(rateFromKazei(6950000, I), 20, '695万円以下=20%');
+  assert.strictEqual(rateFromKazei(9000000, I), 23, '900万円以下=23%');
+  assert.strictEqual(rateFromKazei(18000000, I), 33, '1,800万円以下=33%');
+  assert.strictEqual(rateFromKazei(40000000, I), 40, '4,000万円以下=40%');
+  assert.strictEqual(rateFromKazei(50000000, I), 45, '4,000万円超=45%');
+});
+// 千円未満切捨て（国税通則法118条1項）: 司令塔指定の境界4点と、ゼロ帯・最小課税所得。
+t('課税所得の千円未満切捨て（国税通則法118条1項）', () => {
+  assert.strictEqual(rateFromKazei(1949999, I), 5);
+  assert.strictEqual(rateFromKazei(1950000, I), 5);
+  assert.strictEqual(rateFromKazei(1950999, I), 5);
+  assert.strictEqual(rateFromKazei(1951000, I), 10);
+  assert.strictEqual(rateFromKazei(999, I), 0);
+  assert.strictEqual(rateFromKazei(1000, I), 5);
 });
 
 // ── 8. ★税率が選ばれていなければ軽減額は null（黙って0円で答えない・控除額は出す） ──────
