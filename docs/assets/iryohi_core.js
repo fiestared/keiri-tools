@@ -31,7 +31,7 @@
  *   その限度で引く。補填金がある場合の対象医療費の省略はエラーとする。
  *
  * 一次情報: 所得税法73条・89条／復興財源確保法13条／租税特別措置法41条の17／
- *           国税庁 No.1120・No.1122・No.1120・No.1129・No.2260・No.1410。
+ *           国税庁 No.1120・No.1122・No.1129・No.2260・No.1410／国税通則法118条1項。
  */
 
 import { kyuyoShotoku, kyuyoShotokuR8, shotokuzeiKisoKojo } from './juminzei_core.js';
@@ -84,10 +84,13 @@ export function selfmedKojo(purchase, I) {
   return { kojo, purchase: p, floor: S.floor, cap: S.cap };
 }
 
-/** 速算表から、課税される所得金額に対応する限界税率(%)を引く（No.2260）。 */
+/**
+ * 課税される所得金額に対応する限界税率(%)を引く（所得税法89条1項の「以下／超える」）。
+ * 課税所得は千円未満を切り捨ててから比べる（国税通則法118条1項。e-Gov API v2 で確認）。
+ * 切捨て後に「以下」で比べると、1,950,999円→1,950,000円→5%、1,951,000円→10% で条文と一致する。
+ */
 export function rateFromKazei(kazei, I) {
   const B = I.keigen.shotokuzei_brackets;
-  // No.2260: 課税所得の千円未満を切り捨てた後の速算表を使う。
   const v = Math.floor(yen(kazei) / 1000) * 1000;
   for (const b of B) {
     if (b.kazei_upto === null || b.kazei_upto === undefined || v <= b.kazei_upto) return b.rate_pct;

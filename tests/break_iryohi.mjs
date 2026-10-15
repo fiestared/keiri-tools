@@ -74,7 +74,7 @@ const BREAKS = [
    "if (!isValidRate(rate, I)) return null;",
    "if (false) return null;"],
 
-  ["速算表の上限までを未満にする（194万9000円を10%にする）",
+  ["所得税法89条の以下境界を未満に戻す（195万ちょうどを10%にする）",
    "if (b.kazei_upto === null || b.kazei_upto === undefined || v <= b.kazei_upto) return b.rate_pct;",
    "if (b.kazei_upto === null || b.kazei_upto === undefined || v < b.kazei_upto) return b.rate_pct;"],
 

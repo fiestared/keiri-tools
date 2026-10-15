@@ -118,7 +118,7 @@ function rows(tableId) {
   const k = visible(elem("keigen-shiki", "p"));
   ok(/所得税率×1.021＋10%/.test(k), "#keigen-shiki に住民税10%を含む式が無い");
   const lead = visible(elem("lead-answer", "p"));
-  ok(/控除額は最高200万円/.test(lead), "#lead-answer に控除額の上下限が無い");
+  ok(/補填後の医療費から足切りを超えた部分/.test(lead) && /最高200万円/.test(lead), "#lead-answer に控除額の上下限が無い");
   ok(/足切りが10万円.*医療費10万円.*控除額は0円/.test(lead), "#lead-answer が『ちょうど10万円は控除額0円』を言っていない");
 }
 
@@ -161,8 +161,8 @@ function rows(tableId) {
   const v = visible(elem("receipt-note", "p"));
   const y = I.iryohi_kojo.meisaisho_hozon_years;
   ok(new RegExp(`確定申告期限等から${y}年を経過する日`).test(v), "#receipt-note 保存期間の起算・年数がNo.1120と違う");
-  ok(/医療費通知添付分を除く/.test(v), "#receipt-note に通知添付分の除外が無い");
-  ok(/5年を経過する日.*その日前6か月以内.*請求日から6か月経過/.test(v), "#receipt-note に更正請求の延長が無い");
+  ok(/医療費通知を添付した分は除き/.test(v), "#receipt-note に通知添付分の除外が無い");
+  ok(/5年経過日前6か月以内.*請求日から6か月経過/.test(v), "#receipt-note に更正請求の延長が無い");
   ok(/href="[^"]*kanpu-shinkoku\/#ryoshusho"/.test(elem("receipt-note", "p")), "#receipt-note に起算点の参照が無い");
   const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m=>JSON.parse(m[1]));
   const faq = ld.flatMap(x=>x['@graph']||[x]).find(x=>x['@type']==='FAQPage');

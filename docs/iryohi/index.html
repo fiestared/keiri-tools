@@ -136,7 +136,7 @@
   <h1>医療費控除 計算機</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-16">2026年7月16日</time>（更新日: <time datetime="2026-10-15">2026年10月15日</time>）</p>
   <p>1年間の医療費・給与収入・所得税率を入れると、<b>医療費控除の控除額</b>と、<b>税負担の軽減額の目安</b>を計算します。給与所得のみの人向け・<b>令和8年分</b>です。</p>
-  <p id="lead-answer" style="margin-top:10px"><b>控除額は最高200万円です</b>。足切りは、総所得金額等の5%と10万円の低いほうです。<b>足切りが10万円なら、医療費10万円で通常の控除額は0円です</b>。目安は<a href="#hayami">早見表</a>、式の決まりは<a href="#keisan">控除額の計算式</a>で確認できます。</p>
+  <p id="lead-answer" style="margin-top:10px"><b>控除額は、補填後の医療費から足切りを超えた部分で、最高200万円です</b>（補填金の限度は<a href="#hoten-hikikata">下の説明</a>）。足切りは、総所得金額等の5%と10万円の低いほうです。<b>足切りが10万円なら、医療費10万円で通常の控除額は0円です</b>。目安は<a href="#hayami">早見表</a>、式の決まりは<a href="#keisan">控除額の計算式</a>で確認できます。</p>
 </section>
 
 
@@ -161,13 +161,13 @@
   <select id="zeiritsu" aria-describedby="zeiritsu-hint">
     <option value="">選択してください</option>
     <option value="0">課税所得0円（所得税非課税・税率0%）</option>
-    <option value="5">195万円未満（税率5%）</option>
-    <option value="10">195万円以上 330万円未満（税率10%）</option>
-    <option value="20">330万円以上 695万円未満（税率20%）</option>
-    <option value="23">695万円以上 900万円未満（税率23%）</option>
-    <option value="33">900万円以上 1,800万円未満（税率33%）</option>
-    <option value="40">1,800万円以上 4,000万円未満（税率40%）</option>
-    <option value="45">4,000万円以上（税率45%）</option>
+    <option value="5">195万円以下（税率5%）</option>
+    <option value="10">195万円超 330万円以下（税率10%）</option>
+    <option value="20">330万円超 695万円以下（税率20%）</option>
+    <option value="23">695万円超 900万円以下（税率23%）</option>
+    <option value="33">900万円超 1,800万円以下（税率33%）</option>
+    <option value="40">1,800万円超 4,000万円以下（税率40%）</option>
+    <option value="45">4,000万円超（税率45%）</option>
   </select>
       <span id="zeiritsu-hint" class="hint">税負担の軽減目安の計算に使います。未選択でも控除額は計算できます（<a href="#keigen">税率の選び方</a>）</span>
 
@@ -243,7 +243,7 @@
   <p>医療費控除は<b>年末調整では受けられません</b>。会社員でも自分で確定申告をします（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm">国税庁No.1120</a>）。</p>
   <h3>提出するもの＝「医療費控除の明細書」。領収書は添付しません</h3>
   <p id="meisaisho">提出するのは「医療費控除の明細書」で、領収書の添付・提示は不要です。セルフメディケーション税制なら専用の明細書を添付します。領収書の保存期間と例外は下の注を確認してください。</p>
-  <p class="hint" id="receipt-note">領収書は確定申告期限等から5年を経過する日まで保存し、その日前6か月以内に更正の請求をした場合は請求日から6か月経過まで保存します（医療費通知添付分を除く、<a href="https://laws.e-gov.go.jp/api/2/law_data/340AC0000000033?elm=Article_120">所得税法120条</a>5項）。起算点の違いは<a href="../column/kanpu-shinkoku/#ryoshusho">還付申告の保存期間</a>へ。</p>
+  <p class="hint" id="receipt-note">領収書は、確定申告期限等から5年を経過する日まで保存します。医療費通知を添付した分は除きます。5年経過日前6か月以内に更正の請求をすると、請求日から6か月経過まで提示・提出を求められます（<a href="https://laws.e-gov.go.jp/api/2/law_data/340AC0000000033?elm=Article_120">所得税法120条</a>5項）。起算点の違いは<a href="../column/kanpu-shinkoku/#ryoshusho">還付申告の保存期間</a>へ。</p>
   <h3>必要事項を備えた医療費通知なら明細書を簡略化できる</h3>
   <p id="tsuchi">医療保険者が発行する医療費通知で、必要事項を備えたもの等を添付すれば、医療費控除の明細書の記載を簡略化できます。通知にない費用は、<a href="#eligible-costs">控除対象となるもの</a>だけ明細書に追加します。</p>
   <p id="tsuchi-jiko">必要事項は、被保険者等の氏名・療養年月・療養を受けた者・医療機関名・支払額・保険者名です（後期高齢者医療広域連合の通知は「療養を受けた者」を除く）。</p>
