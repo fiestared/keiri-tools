@@ -13,8 +13,106 @@
       "exceptions": "日付表示だけの訂正。本文の家事按分解説の再審査とはしない。",
       "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shotoku_2210_htm.txt:8-10",
       "covers": []
+    },
+    {
+      "id": "readable1014-gowari",
+      "text": "家事按分の割合に上限を定めた規定はない。「50％を超えるかどうか」の基準は所得税基本通達45-2にあり、同じ通達のただし書きが50%以下でも明らかに区分できる部分は必要経費に算入して差し支えないとしている。",
+      "where": [
+        "description・og:description",
+        "リード1段落目"
+      ],
+      "numbers": [
+        "50％",
+        "50%"
+      ],
+      "scope": "所得税法45条1項1号・施行令96条1号の家事関連費（不動産・事業・山林・雑所得を生ずべき業務）。通達45-2は96条1号の「主たる部分」の判定。",
+      "exceptions": [
+        "施行令96条2号（青色申告の承認を受けた居住者・雑所得を除く）は「主たる部分」の要件が無く、取引の記録等に基づく「直接必要」で判定する（#goukaku に1回）。",
+        "生計を一にする親族への家賃は56条で按分以前に必要経費に算入されない（#seikei に1回。description から案内）。"
+      ],
+      "must_with": [
+        "通達|ただし書き"
+      ],
+      "must_with_note": "「50％」「50%」のある単位に求める語は、出所が通達であること（通達・ただし書き）だけにした。96条1号・2号の別や56条まで各文に求めると、リードの各文へのかっこ書きの書き写しに戻る（decisions/keiri-review-add-readability-uiux-2026-10-11）。条件は #goukaku・#gowari・#seikei に1回ずつ。",
+      "source_url": "https://www.nta.go.jp/law/tsutatsu/kihon/shotoku/07/01.htm#a-01",
+      "source_quote": "45－2　令第96条第1号に規定する「主たる部分が不動産所得、事業所得、山林所得又は雑所得を生ずべき業務の遂行上必要」であるかどうかは、その支出する金額のうち当該業務の遂行上必要な部分が50％を超えるかどうかにより判定するものとする。ただし、当該必要な部分の金額が50%以下であっても、その必要である部分を明らかに区分することができる場合には、当該必要である部分に相当する金額を必要経費に算入して差し支えない。",
+      "corpus_ref": "~/Scripts/keiri-commander/runs/readable/kaji-anbun/corpus/nta_tsutatsu_shotoku_07_01.txt:59-60",
+      "covers": [
+        "s-d8d0b7a07362ca17f877-1",
+        "s-132dd44c39e7891f8525-1",
+        "s-8bb074b4cd7a2ad36c95-1",
+        "s-0b49c858ab379592733f-1",
+        "s-3639a9997217115f9a04-1",
+        "s-e031b30bdc89c93881fb-1",
+        "s-b62c5ce5b6c694709b49-1",
+        "s-12ee6777f9533a87bc60-1",
+        "s-2d2a36d945bf5c3de4f5-1"
+      ],
+      "review_status": "author_checked",
+      "applies": "現行の所得税基本通達45-2（2026-10-14 に国税庁サイトの原文で確認）。年分による違いは無い。"
+    },
+    {
+      "id": "readable1014-shutten-egov",
+      "text": "出典欄の確認記録: 所得税法・所得税法施行令の条文を e-Gov法令検索で2026年8月19日に確認（所得税法は2026年8月12日施行、施行令は2026年5月22日施行のリビジョン）。令和8年12月1日施行のリビジョンでも所得税法45条・56条が同一であることを確認。",
+      "where": [
+        "出典の節（法令ごとの入れ子の箇条書き）"
+      ],
+      "numbers": [
+        "2026年8月19日",
+        "2026年8月12日",
+        "2026年5月22日",
+        "令和8年12月1日"
+      ],
+      "scope": "記事の作成時（2026-08-19）の確認記録。書き直し（2026-10-14）では書き直し前の出典欄の1項目（API のパスと照合メモを含む 269 字）を法令ごとに区切っただけで、日付は変えていない。",
+      "exceptions": [
+        "2026-10-14 時点の e-Gov API v2 では所得税法の最新リビジョンの施行日は 2026-10-01。45条・56条の文言は本文の引用と同じ（corpus/egov_shotokuzeiho_45_56.txt）。日付は「いつ確認したか」の記録なので書き換えていない。"
+      ],
+      "source_url": "https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_45",
+      "source_quote": "条文は e-Gov法令API v2（/api/2/law_data/{law_id}）で2026年8月19日に取得（所得税法は2026年8月12日施行、所得税法施行令は2026年5月22日施行のリビジョン）。あわせて asof=2026-12-01 で令和8年12月1日施行のリビジョンも取得し、第45条・第56条が現行と同一であることを確認した。",
+      "corpus_ref": "~/Scripts/keiri-commander/runs/readable/kaji-anbun/corpus/kaji-anbun_origin-main_before.html:401",
+      "covers": [
+        "s-9d66c3c01da77588f881-1",
+        "s-c0a1edebcaa90c7b88c6-1",
+        "s-cab06c15080d35b05007-1",
+        "s-da43b9adda555538cf16-1",
+        "s-b3415d0a1bae7e7b0b3a-1",
+        "s-c7cdc7b399d63c596cdc-1",
+        "s-f4fe002c9cd319c7f033-1",
+        "s-259ee7df76f44c99e343-1"
+      ],
+      "review_status": "author_checked"
+    },
+    {
+      "id": "readable1014-seikei-tacs",
+      "text": "国税庁タックスアンサー No.2210 は、生計を一にする父から業務のために借りた土地・建物に課される固定資産税等の費用は子が営む業務の必要経費になる、という例を挙げている。",
+      "where": [
+        "#seikei の2段落目",
+        "#seikei の「根拠は所得税法56条」の文（sol の画面レビュー medium を受けて、平易な説明の段落を引用より前へ移した）"
+      ],
+      "numbers": [],
+      "scope": "所得税法56条（生計を一にする親族に支払う対価）。",
+      "exceptions": [
+        "家賃そのものは必要経費にならない（同じ段落・同じ節の callout）。"
+      ],
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2210.htm",
+      "source_quote": "ただし、例えば子が生計を一にする父から業務のために借りた土地・建物に課される固定資産税等の費用は、子が営む業務の必要経費になります。",
+      "corpus_ref": "~/Scripts/keiri-commander/runs/readable/kaji-anbun/corpus/nta_taxanswer_2210.txt:96-97",
+      "covers": [
+        "s-5e2b636fa1a7512e9cc1-1",
+        "s-fbab24d50b9aa65f26fe-1"
+      ],
+      "review_status": "author_checked"
     }
   ],
-  "nonclaims": [],
-  "verified": []
+  "nonclaims": [
+    {
+      "id": "s-72bb82a94c1de2bf5633-1",
+      "why": "記事の案内文（何をたどる記事か）。主張を含まない。書き直し前のリード1段落目の問題提起を1文にまとめたもの"
+    }
+  ],
+  "verified": [],
+  "_readable20261014": {
+    "note": "2026-10-14 読みやすさの書き直し（readable/kaji-anbun）。変わった・足した単位だけを結んだ。書き直し前から全文の台帳は無い（origin/main で 0/191 covered）。",
+    "retired_claims": []
+  }
 }

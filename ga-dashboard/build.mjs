@@ -948,7 +948,7 @@ function rtHourChart(site) {
     return `<figure class="chart hourly rt-est"><figcaption class="chart-title">推定セッション（Realtime 積み上げ） <span class="badge">GA4 の確定値ではない</span></figcaption>
       <p class="rt-warn">推定は取得できなかった<br><code>${esc(rt.error)}</code></p></figure>`;
   }
-  const W = 720, H = 210, PAD = { t: 18, r: 12, b: 34, l: 44 };
+  const W = 720, H = 222, PAD = { t: 28, r: 12, b: 34, l: 44 };
   const iw = W - PAD.l - PAD.r, ih = H - PAD.t - PAD.b;
   const band = iw / 24;
   const bw = Math.min(18, band - 8);
@@ -970,7 +970,6 @@ function rtHourChart(site) {
         `M${x.toFixed(1)} ${(yy + ht).toFixed(1)} L${x.toFixed(1)} ${(yy + r).toFixed(1)} Q${x.toFixed(1)} ${yy.toFixed(1)} ${(x + r).toFixed(1)} ${yy.toFixed(1)} L${(x + bw - r).toFixed(1)} ${yy.toFixed(1)} Q${(x + bw).toFixed(1)} ${yy.toFixed(1)} ${(x + bw).toFixed(1)} ${(yy + r).toFixed(1)} L${(x + bw).toFixed(1)} ${(yy + ht).toFixed(1)} Z`,
     };
   }).filter(Boolean);
-  const last = [...bars].reverse().find((b) => b.ht > 0);
   const fail = rt.error ? `<div class="rt-warn">今回の取得は失敗（${esc(h.to)} 時点の積み上げ）<br><code>${esc(rt.error)}</code></div>` : "";
   const gap = h.gaps.length
     ? `<div class="rt-warn">うち ${h.gaps.map((g) => `<b>${esc(g.from)}〜${esc(g.to)}</b>`).join("・")} は未取得（計${h.gapMin}分）</div>` : "";
@@ -993,7 +992,7 @@ function rtHourChart(site) {
     ${[0, 3, 6, 9, 12, 15, 18, 21].map((hh) =>
       `<text x="${(x0(hh) + band / 2).toFixed(1)}" y="${H - PAD.b + 18}" class="xlab" text-anchor="middle">${hh}</text>`).join("")}
     <text x="${(PAD.l + iw / 2).toFixed(1)}" y="${H - PAD.b + 31}" class="xsub" text-anchor="middle">時（JST）</text>
-    ${last ? `<text x="${last.cx.toFixed(1)}" y="${(last.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${last.v.toLocaleString("ja-JP")}</text>` : ""}
+    ${bars.map((b) => `<text x="${b.cx.toFixed(1)}" y="${Math.max(12, b.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${b.v.toLocaleString("ja-JP")}</text>`).join("")}
     ${h.hours.map((v, hh) => {
       const tip = h.seen[hh]
         ? `${hh}時台 — 推定 ${v.toLocaleString("ja-JP")} ／ PV ${h.hourPv[hh].toLocaleString("ja-JP")}`

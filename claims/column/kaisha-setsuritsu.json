@@ -1,0 +1,147 @@
+{
+  "page": "docs/column/kaisha-setsuritsu/index.html",
+  "checked": "2026-10-14",
+  "scope": "2026-10-14 の読みやすさの作り直しで新設した台帳。作り直しで動いた行（description・消費税の節の例外の一覧・7か月の節・FAQ・出典の節）の数字と言い切りだけを、e-Gov 法令API v2 の XML と国税庁 No.6503 の生 HTML（curl）と突き合わせた。ページ全体の単位（--segments）は未対応で、作り直し前から台帳が無かった。review_status は author_checked（独立の再照合はしていない）。",
+  "claims": [
+    {
+      "id": "readable20261014-kaikai-1kagetsu",
+      "text": "給与支払事務所等の開設届出書は、その事実があった日から1か月以内に出す（所得税法230条）。",
+      "numbers": [
+        "1か月"
+      ],
+      "applies": "所得税法（2026年10月1日施行の版で確認）",
+      "source_url": "https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_230",
+      "source_quote": "国内において給与等の支払事務を取り扱う事務所、事業所その他これらに準ずるものを設け、又はこれらを移転し、若しくは廃止した者は、財務省令で定めるところにより、その旨その他必要な事項を記載した届出書を、その事実があつた日から一月以内に、税務署長に提出しなければならない。",
+      "scope": "description・リード・表・FAQ1 の「1か月以内」。作り直し前と同じ中身。",
+      "exceptions": "無し: 230条の本文で確認（期限に例外の定めは無い）",
+      "corpus_ref": "正本（review-loop の corpus・segment-adjudication）なし（このページを照合した回は r4・r5・r6 の全数レビューだけ）。2026-10-14 に e-Gov 法令API v2 の XML を curl で取得（WebFetch 不使用）。控え ~/Scripts/keiri-commander/runs/readable/kaisha-setsuritsu/work/ev/340AC0000000033-230.xml",
+      "review_status": "author_checked"
+    },
+    {
+      "id": "readable20261014-setsuritsu-2kagetsu",
+      "text": "法人設立届出書は設立の日以後2か月以内に、定款の写しなどを添付して出す（法人税法148条1項）。会計期間の届出（定款等に定めが無い法人のみ）も設立の日以後2か月以内（13条2項1号）。",
+      "numbers": [
+        "2か月"
+      ],
+      "applies": "法人税法（2026年10月1日施行の版で確認）",
+      "source_url": "https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_148",
+      "source_quote": "新たに設立された内国法人である普通法人又は協同組合等は、その設立の日以後二月以内に、次に掲げる事項を記載した届出書に定款の写しその他の財務省令で定める書類を添付し、これを納税地の所轄税務署長に提出しなければならない。",
+      "scope": "description・リード・表・FAQ1 の「2か月以内」。",
+      "exceptions": "添付書類の範囲は財務省令（本文で所轄の税務署での確認を案内）。地方税の設立届は条例で別（本文の注記）。",
+      "corpus_ref": "正本（review-loop の corpus・segment-adjudication）なし（このページを照合した回は r4・r5・r6 の全数レビューだけ）。2026-10-14 に e-Gov 法令API v2 の XML を curl で取得（WebFetch 不使用）。控え ~/Scripts/keiri-commander/runs/readable/kaisha-setsuritsu/work/ev/340AC0000000034-148.xml",
+      "review_status": "author_checked"
+    },
+    {
+      "id": "readable20261014-aoiro-3kagetsu",
+      "text": "設立第1期の青色申告の承認申請の期限は、設立の日以後3か月を経過した日と第1期の事業年度終了の日のいずれか早い日の前日（法人税法122条2項1号）。第1期が3か月に満たないと決算日の前日が期限になる。",
+      "numbers": [
+        "3か月"
+      ],
+      "applies": "法人税法（2026年10月1日施行の版で確認）",
+      "source_url": "https://laws.e-gov.go.jp/law/340AC0000000034#Mp-At_122",
+      "source_quote": "一 内国法人である普通法人又は協同組合等の設立の日の属する事業年度 同日以後三月を経過した日と当該事業年度終了の日とのうちいずれか早い日",
+      "scope": "description・リード・表・青色申告の節・FAQ2・3。",
+      "exceptions": "第1期が3か月に満たない場合の翌事業年度の期限の延長（122条2項4号）は本文の青色申告の節と FAQ3 に書いてある。",
+      "corpus_ref": "正本（review-loop の corpus・segment-adjudication）なし（このページを照合した回は r4・r5・r6 の全数レビューだけ）。2026-10-14 に e-Gov 法令API v2 の XML を curl で取得（WebFetch 不使用）。控え ~/Scripts/keiri-commander/runs/readable/kaisha-setsuritsu/work/ev/340AC0000000034-122.xml",
+      "review_status": "author_checked"
+    },
+    {
+      "id": "readable20261014-tokutei-7kagetsu",
+      "text": "法人の特定期間は原則として前事業年度開始の日以後6か月だが、前事業年度が7か月以下などの短期事業年度なら2号の対象から外れ、3号が見る前々事業年度も設立2期目には無いので、第2期に特定期間が生じない（消費税法9条の2第4項2号・3号）。",
+      "numbers": [
+        "7か月"
+      ],
+      "applies": "消費税法（2026年10月1日施行の版で確認）",
+      "source_url": "https://laws.e-gov.go.jp/law/363AC0000000108#Mp-At_9_2",
+      "source_quote": "二 その事業年度の前事業年度（七月以下であるものその他の政令で定めるもの（次号において「短期事業年度」という。）を除く。）がある法人 当該前事業年度開始の日以後六月の期間 三 その事業年度の前事業年度が短期事業年度である法人 その事業年度の前々事業年度",
+      "scope": "7か月の節の流れ（ol）と FAQ5。作り直しで流れを箇条書きにし、FAQ5 を結論から並べ直しただけ。",
+      "exceptions": "短期事業年度の範囲は政令にも委ねられている（本文の注記・FAQ5 で税理士への確認を案内）。インボイス登録などの例外は消費税の節の一覧（#menzei-reigai）。",
+      "corpus_ref": "正本（review-loop の corpus・segment-adjudication）なし（このページを照合した回は r4・r5・r6 の全数レビューだけ）。2026-10-14 に e-Gov 法令API v2 の XML を curl で取得（WebFetch 不使用）。控え ~/Scripts/keiri-commander/runs/readable/kaisha-setsuritsu/work/ev/363AC0000000108-9_2.xml",
+      "review_status": "author_checked"
+    },
+    {
+      "id": "readable20261014-shihonkin-1000",
+      "text": "事業年度開始の日の資本金の額または出資の金額が1,000万円以上の法人（新設法人）は、基準期間がない事業年度に免税の規定が適用されない（消費税法12条の2第1項）。資本金1,000万円未満でも、インボイス登録・課税事業者選択・特定新規設立法人・合併分割の特例・第2期の特定期間の課税売上高等1,000万円超のどれかに当たる期は免税にならない（国税庁 No.6503）。",
+      "numbers": [
+        "1,000",
+        "900万円"
+      ],
+      "applies": "消費税（No.6503 は令和8年4月1日現在法令等）",
+      "source_url": "https://laws.e-gov.go.jp/law/363AC0000000108#Mp-At_12_2",
+      "source_quote": "当該事業年度開始の日における資本金の額又は出資の金額が千万円以上である法人（以下この項及び次項において「新設法人」という。）については、当該新設法人の基準期間がない事業年度に含まれる各課税期間…における課税資産の譲渡等及び特定課税仕入れについては、第九条第一項本文の規定は、適用しない。",
+      "scope": "消費税の節の例外の一覧（作り直しで、各所に書き写していた例外の列挙を1か所にまとめた）・FAQ4。 「資本金を900万円に抑えても…インボイス登録をすれば第1期から課税事業者」（インボイスの節。作り直しで段落の順を入れ替えただけ）の900万円は、1,000万円未満の例としての数字。",
+      "exceptions": "社会福祉法人等は12条の2の新設法人から除かれる（ページの対象外）。例外の5項目は No.6503 の「①適格請求書発行事業者である場合、②特定期間における課税売上高等が1,000万円超える場合（設立2期目）、③消費税課税事業者選択届出書を提出して課税事業者となっている場合、④合併、分割があった場合の納税義務の免除の特例（消費税法第11条、第12条）の適用がある場合、⑤特定新規設立法人に該当する場合」をそのまま並べた。",
+      "corpus_ref": "正本（review-loop の corpus・segment-adjudication）なし（このページを照合した回は r4・r5・r6 の全数レビューだけ）。2026-10-14 に e-Gov 法令API v2 の XML を curl で取得（WebFetch 不使用）。控え ~/Scripts/keiri-commander/runs/readable/kaisha-setsuritsu/work/ev/363AC0000000108-12_2.xml ・ 6503.html",
+      "review_status": "author_checked"
+    },
+    {
+      "id": "readable20261014-noki-tokurei",
+      "text": "納期の特例の申請書を8月に出すと、翌月末日の9月30日までに承認も却下も無ければ同日にみなし承認となり、承認の日の属する月（9月）から12月までの支払分が対象。8月支払分は原則どおり翌月10日＝9月10日までに納付する（所得税法217条5項・216条・183条1項）。",
+      "numbers": [
+        "9月30日",
+        "9月10日"
+      ],
+      "applies": "所得税法（2026年10月1日施行の版で確認）",
+      "source_url": "https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_217",
+      "source_quote": "５ 第一項の申請書の提出があつた場合において、その申請書の提出があつた日の属する月の翌月末日までにその申請につき承認又は却下の処分がなかつたときは、同日においてその承認があつたものとみなす。",
+      "scope": "FAQ7（作り直しで結論から並べ直しただけ）と本文の納期の特例の節。",
+      "exceptions": "216条のかっこ書き「その承認を受けた日の属する期間については、その日の属する月から当該期間の最終月までの期間とする」。原則の納期は183条1項「その徴収の日の属する月の翌月十日まで」（控え 340AC0000000033-183.xml）。常時10人未満の事務所に限る（216条）。",
+      "corpus_ref": "正本（review-loop の corpus・segment-adjudication）なし（このページを照合した回は r4・r5・r6 の全数レビューだけ）。2026-10-14 に e-Gov 法令API v2 の XML を curl で取得（WebFetch 不使用）。控え ~/Scripts/keiri-commander/runs/readable/kaisha-setsuritsu/work/ev/340AC0000000033-217.xml ・ 340AC0000000033-216.xml ・ 340AC0000000033-183.xml",
+      "review_status": "author_checked"
+    },
+    {
+      "id": "readable20261014-toki-2shukan",
+      "text": "発起設立の設立の登記は、調査が終了した日と発起人が定めた日のいずれか遅い日から2週間以内に本店の所在地でする（会社法911条1項）。",
+      "numbers": [
+        "2週間"
+      ],
+      "applies": "会社法（2026年8月12日施行の版で確認）",
+      "source_url": "https://laws.e-gov.go.jp/law/417AC0000000086#Mp-At_911",
+      "source_quote": "株式会社の設立の登記は、その本店の所在地において、次に掲げる日のいずれか遅い日から二週間以内にしなければならない。 一 第四十六条第一項の規定による調査が終了した日… 二 発起人が定めた日",
+      "scope": "FAQ1（作り直しで本文と同じ「発起設立なら」を足した）。本文の設立の日の節。",
+      "exceptions": "募集設立は911条2項（創立総会の終結の日など）で別。ページは発起設立の場合だけを書く。",
+      "corpus_ref": "正本（review-loop の corpus・segment-adjudication）なし（このページを照合した回は r4・r5・r6 の全数レビューだけ）。2026-10-14 に e-Gov 法令API v2 の XML を curl で取得（WebFetch 不使用）。控え ~/Scripts/keiri-commander/runs/readable/kaisha-setsuritsu/work/ev/417AC0000000086-911.xml",
+      "review_status": "author_checked"
+    },
+    {
+      "id": "readable20261014-shutten-kakunin",
+      "text": "出典の各法令は 2026年10月14日に e-Gov 法令API v2 で取得して確認した。取得した版は会社法が2026年8月12日施行、法人税法・所得税法・消費税法が2026年10月1日施行。国税庁 No.6503 は令和8年4月1日現在法令等。",
+      "numbers": [
+        "2026年10月14日",
+        "2026年8月12日",
+        "2026年10月1日",
+        "令和8年4月1日"
+      ],
+      "applies": "出典の確認日と版",
+      "source_url": "https://laws.e-gov.go.jp/law/363AC0000000108",
+      "source_quote": "law_revision_id: 417AC0000000086_20260812_508AC0000000064 / 340AC0000000034_20261001_508AC0000000012 / 340AC0000000033_20261001_507AC0000000070 / 363AC0000000108_20261001_507AC0000000070。No.6503「[令和8年4月1日現在法令等]」",
+      "scope": "出典の節の各法令の末尾の1行と No.6503 の項目。作り直し前は API の版 ID を出典に書いていた（2026年8月12日・4月1日の版）。引用した条文の文言は今の版でも同じことを確かめた。",
+      "exceptions": "無し: 取得した XML の law_revision_id と No.6503 の見出しで確認",
+      "corpus_ref": "正本（review-loop の corpus・segment-adjudication）なし（このページを照合した回は r4・r5・r6 の全数レビューだけ）。2026-10-14 に e-Gov 法令API v2 の XML を curl で取得（WebFetch 不使用）。控え ~/Scripts/keiri-commander/runs/readable/kaisha-setsuritsu/work/ev/*.xml ・ 6503.html",
+      "review_status": "author_checked"
+    }
+  ],
+  "absolutes": [
+    {
+      "phrase": "原則",
+      "context": "基準期間とは原則として2期前の事業年度なので",
+      "reviewed": "作り直し前と同じ文。前々事業年度が1年未満の法人の基準期間の取り方（No.6503 の注）は、設立1・2期目には基準期間がない、という結論に影響しない。"
+    },
+    {
+      "phrase": "原則",
+      "context": "第1期・第2期は原則として免税になります。",
+      "reviewed": "原則の外（12条の2の新設法人・インボイス登録・課税事業者選択・特定新規設立法人・合併分割の特例・第2期の特定期間）は同じ節の直後の段落と一覧（#menzei-reigai）に書いた。No.6503 の「設立1期目および2期目は原則として納税義務が免除されますが」と同じ形。"
+    },
+    {
+      "phrase": "原則",
+      "context": "第1期と第2期の両方が原則として免税",
+      "reviewed": "同じ文に「インボイス登録など上の例外に当たる場合を除く」と一覧へのリンクを置いた。作り直し前は例外4つを同じ文に並べていた。"
+    },
+    {
+      "phrase": "原則",
+      "context": "第1期・第2期は原則として免税です。消費税法12条の2は",
+      "reviewed": "FAQ4。同じ回答に1,000万円以上の扱い・増資の扱いと、例外の一覧（#menzei-reigai）へのリンクを置いた。"
+    }
+  ],
+  "nonclaims": []
+}
