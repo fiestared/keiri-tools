@@ -43,7 +43,7 @@ export function attachBankPresets({ select, under, over, note, fetcher = fetch, 
   return fetcher('../assets/fee_table.json')
     .then(response => { if (!response.ok) throw new Error('fee table unavailable'); return response.json(); })
     .then(data => {
-      if (!Array.isArray(data.banks) || data.banks.some(b => !Number.isFinite(b.under30k) || !Number.isFinite(b.over30k))) throw new Error('invalid fee table');
+      if (!Array.isArray(data?.banks) || data.banks.length === 0 || data.banks.some(b => !b || !b.name || ![b.under30k, b.over30k].every(n => Number.isSafeInteger(n) && n >= 0))) throw new Error('invalid fee table');
       banks = data.banks;
       banks.forEach((bank, index) => {
         const option = select.ownerDocument.createElement('option');
