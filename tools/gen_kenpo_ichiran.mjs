@@ -6,7 +6,8 @@
  *       table   … 47都道府県の表（健康保険料率・前年度比・介護込み・折半後の本人負担）
  *       summary … 最高・最低・差、引下げ・据置・引上げの件数、下げ幅の最大
  *       figure  … 47都道府県の分布（インラインSVG）
- *       dataset … Dataset の JSON-LD（CSV の配布先・年度・出典）
+ *       dataset … Dataset の JSON-LD（CSV の配布先・年度・出典・license=CC BY 4.0）
+ *       license … 引用のしかたの可視の利用条件（CC BY 4.0。tools/dataset_license.mjs が正本）
  *   - docs/column/kyokai-kenpo-ryoritsu-ichiran/kyokai-kenpo-ryoritsu-r08.csv
  *
  * なぜ静的に焼くか: 一覧は入力のいらない事実の表で、引用されること自体が目的。
@@ -20,6 +21,7 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { LICENSE_URL, licenseNote } from "./dataset_license.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 export const SLUG = "kyokai-kenpo-ryoritsu-ichiran";
@@ -119,6 +121,7 @@ ${label(lo, `最低 ${names(lo)} ${fmt(lo)}%`, 30, "start")}${label(hi, `最高 
     spatialCoverage: "日本（47都道府県）",
     temporalCoverage: `${m.rate_applies_from}/..`,
     isBasedOn: m.url,
+    license: LICENSE_URL,
     creator: { "@type": "Person", name: "Masahiro Yasu", url: "https://keiri-tools.com/about/" },
     publisher: { "@type": "Organization", name: "税金・経理・補助金ツールズ", url: "https://keiri-tools.com/" },
     distribution: [{ "@type": "DataDownload", encodingFormat: "text/csv", contentUrl: URL_PAGE + CSV_NAME }],
@@ -136,7 +139,9 @@ ${label(lo, `最低 ${names(lo)} ${fmt(lo)}%`, 30, "start")}${label(hi, `最高 
   }
   const csv = "﻿" + lines.join("\r\n") + "\r\n";
 
-  return { table, summary, svg, datasetTag, csv, rei, rows, kaigo, shien };
+  const license = licenseNote("この表とCSV（当サイトがまとめた一覧）");
+
+  return { table, summary, svg, datasetTag, csv, rei, rows, kaigo, shien, license };
 }
 
 function fill(html, name, inner) {
@@ -147,8 +152,8 @@ function fill(html, name, inner) {
 
 export function render(html, D) {
   const b = build(D);
-  for (const k of ["table", "summary", "figure", "dataset", "rei"]) {
-    html = fill(html, k, { table: b.table, summary: b.summary, figure: b.svg, dataset: b.datasetTag, rei: b.rei }[k]);
+  for (const k of ["table", "summary", "figure", "dataset", "rei", "license"]) {
+    html = fill(html, k, { table: b.table, summary: b.summary, figure: b.svg, dataset: b.datasetTag, rei: b.rei, license: b.license }[k]);
   }
   return { html, csv: b.csv };
 }

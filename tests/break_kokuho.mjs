@@ -15,6 +15,7 @@
  *   8. 子ども・子育て支援金分の均等割を18歳未満にも賦課する
  *   9. 介護分を40歳未満・65歳以上にも賦課する
  *  10. 所得割の基礎控除を引かない
+ *  12〜13. 子育て分の十八歳以上均等割（加算を落とす・軽減を当てない。18歳未満への加算は 8 が isKintouwariTaisho で見る）
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
@@ -136,6 +137,14 @@ breakCore('10. 所得割の基礎控除を引かないと赤になる',
 breakCore('11. 基礎控除を一律43万円に戻すと赤になる',
   'const deduction = band ? nz(band.deduction_yen) : 0;',
   'const deduction = kisoKojo;');
+
+// 2026-10-16: 子育て分の十八歳以上被保険者均等割額（加算）を落とす／軽減を当てない
+breakCore('12. 十八歳以上均等割の加算を落とすと赤になる',
+  "const adultUnit = kubun.kintouwari_taisho === 'over18' ? nz(r.adultKintouwari) : 0;",
+  "const adultUnit = 0;");
+breakCore('13. 十八歳以上均等割に軽減を当てないと赤になる',
+  'const adultAfter = kintouwaraiAfterKeigen(adultUnit, keigenRate);',
+  'const adultAfter = adultUnit;');
 
 // ── 壊しを戻したあと、本当に緑へ戻ることを確認する ──────────────────────────
 {

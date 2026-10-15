@@ -1058,6 +1058,10 @@ const SCENES = [
   // ★参照データ配信不可 → 金額を出さずに断る（fail closed）
   { name: "kokuho_nodata", data404: "kokuho_r08.json", expect: (s) =>
       s.failed && s.total === null },
+  // ★子育て分の18歳以上均等割（加算）の配線。特別区の公表値で 6,112円（加算を落とすと 6,039円）。
+  { name: "kokuho_seijin", expect: (s) =>
+      s.total === 6112 && s.kosodate === 6112 &&
+      /18歳以上均等割\s*¥?73/.test(s.adultKosodate || "") && !s.noRates && !s.failed },
 
   // ── 老齢年金の受給見込額 (/nenkin/) ──────────────────────────────────
   // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず出した期待値）。
@@ -1377,6 +1381,12 @@ const SCENES = [
   // 参照データ配信不可 → 印紙額を出さずに断る(fail closed)。誤った印紙額を信じさせない
   { name: "inshi_nodata", data404: "inshi_r07.json",
     expect: (s) => s.failed && s.tax === null },
+  // ★混在する17号受取書: 合計150万円・うち売上代金以外60万円 → 売上代金90万円の階級で200円（合計で引くと400円）。
+  { name: "inshi_kongo", expect: (s) =>
+      s.tax === 200 && !s.hikazei && s.kongoNote && !s.failed },
+  // ★手形の複本・謄本: 手形金額500万円でも非課税（原本なら1,000円）。
+  { name: "inshi_fukuhon", expect: (s) =>
+      s.hikazei && s.tax === null && s.fukuhonNote && !s.failed },
 
   // ── 自動車税 (/jidoshazei/) ──────────────────────────────────────────
   // ★新税率(令和元10月以降)・1.5L超2L以下=36,000。一覧表11区分・6L超まで描かれること。
