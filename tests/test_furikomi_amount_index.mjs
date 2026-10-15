@@ -46,7 +46,7 @@ for (const [amount, list] of want) {
     assert.ok(cell.includes(fullLabel ? name : `${name}（${range}）`),
       `${amount}円 の行に「${name}（${range}）」がありません。実際: ${cell}`);
   }
-  const n = (cell.match(/(?:（|、)(金額不問|3万円未満|3万円以上)）/g) || []).length;
+  const n = (cell.match(/(?:（|、)(金額不問|3万円未満|3万円以上|金額区分も未確認)）/g) || []).length;
   assert.strictEqual(n, list.length,
     `${amount}円 の行の区分数が合いません（表 ${n} / 正本 ${list.length}）。実際: ${cell}`);
 }
@@ -68,6 +68,12 @@ assert.ok(note.includes('この表に当てはめず') && note.includes('銀行�
 
 console.log(`✓ 逆引き表 ${got.size}金額 が fee_table.json と一致（目次・収録範囲の申告も確認）`);
 
-// The missing >=30k source cell cannot become a flat-rate reverse lookup.
-const yokohamaBands = [...want.entries()].flatMap(([amount, entries]) => entries.filter(e => e.name === '横浜銀行（個人IB）【他行宛。ゼロ手数料の無料回数適用外】').map(e => ({amount, range:e.range})));
-assert.deepStrictEqual(yokohamaBands, [{amount:154, range:'3万円未満'}]);
+// 2026-10-15: 横浜個人IBは公式表の結合セルで3万円以上も154円（金額不問）。
+const yokohamaBands = [...want.entries()].flatMap(([amount, entries]) => entries.filter(e => e.name.startsWith('横浜銀行（個人IB）')).map(e => ({amount, range:e.range})));
+assert.deepStrictEqual(yokohamaBands, [{amount:154, range:'金額不問'}]);
+// 三井住友 Web21＜ライト＞（30区分の外）は 165円・330円の行から引けること（3モデルレビュー #3）
+for (const [amount, range] of [[165, '3万円未満'], [330, '3万円以上']]) {
+  assert.ok(got.get(amount)?.includes(`三井住友銀行（法人・Web21＜ライト＞）【1日300万円まで。30区分の外】（${range}）`), `${amount}円の行に Web21＜ライト＞がありません`);
+}
+// 未確認の額は逆引きでも未確認と分かること（3モデルレビュー #7）
+assert.ok(got.get(110)?.includes('イオン銀行（個人）【掲載額は公式資料で未確認】（金額区分も未確認）'), '110円の行でイオン個人が未確認と分からない（金額不問と断定しない）');

@@ -69,7 +69,7 @@ withBreak('壊し1: 桁数が1つずれると赤になる（合計が120でな�
 
 // ── 壊し2: HTMLの位置だけ書き換わる ────────────────────────────────────
 withBreak('壊し2: 表のバイト位置だけ書き換わると赤になる',
-  ({ article, data }) => ({ article: article.replace('<td>15〜54</td>', '<td>15〜55</td>'), data }),
+  ({ article, data }) => ({ article: article.replace('<td style="white-space:nowrap">15〜54</td>', '<td style="white-space:nowrap">15〜55</td>'), data }),
   '食い違って');
 
 // ── 壊し3: 出典・確認日・但し書きが消える ★この記事固有の最重要ケース ─────────
@@ -102,7 +102,7 @@ withBreak('壊し6: 全項目を「共通」にすると赤になる（銀行差
   ({ article, data }) => {
     const a = article.indexOf('<!-- ZENGIN_LAYOUT:START');
     const b = article.indexOf('<!-- ZENGIN_LAYOUT:END -->');
-    return { article: article.slice(0, a) + article.slice(a, b).replaceAll('<td>要確認</td>', '<td>共通</td>') + article.slice(b), data };
+    return { article: article.slice(0, a) + article.slice(a, b).replaceAll('<td style="white-space:nowrap">要確認</td>', '<td style="white-space:nowrap">共通</td>') + article.slice(b), data };
   },
   '要確認');
 
