@@ -160,9 +160,14 @@
         <td><input type="number" id="kosodate_s" min="0" step="0.01" inputmode="decimal" aria-describedby="ryoritsu-hint"></td>
         <td><input type="number" id="kosodate_k" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td>
         <td><input type="number" id="kosodate_h" min="0" inputmode="numeric" aria-describedby="ryoritsu-hint"></td></tr>
+      <tr><td><b>子育て分の18歳以上均等割</b><br><span class="hint">18歳以上だけに加算</span></td>
+        <td class="hint">—</td>
+        <td><input type="number" id="kosodate_a" min="0" inputmode="numeric" aria-label="子育て分の18歳以上均等割（円／18歳以上の被保険者1人）" aria-describedby="kosodate-a-hint"></td>
+        <td class="hint">—</td></tr>
     </tbody>
   </table></div>
   <p class="hint" id="ryoritsu-hint" style="margin-top:6px">所得割率は％（例: 8.00）、均等割と平等割は円（例: 50000）で入れます。平等割が無い市町村は 0 です。</p>
+  <p class="hint" id="kosodate-a-hint" style="margin-top:6px">子育て分の均等割が2つに分かれていれば両方を入れます（例: 東京23区は1,800円と73円）。合計だけなら均等割に合計を入れ、この欄は空欄です。</p>
   <p class="hint" style="margin-top:6px">
     <button type="button" id="sample" style="background:none;border:none;padding:0;font:inherit;color:var(--accent);text-decoration:underline;cursor:pointer">記入例（架空の料率）を入れて動きを見る</button>
     — <b id="sample-caution">実在する市町村の料率ではありません。</b>
@@ -389,7 +394,7 @@
   <li>未就学児の5割は、<b>7割・5割・2割の軽減を当てた「後」の額</b>から減額します。7割軽減世帯なら元の額の0.3×0.5＝15%が残ります。</li>
   <li>未就学児の5割減額の対象は、医療分・後期高齢者支援金等分・子ども・子育て支援金分の均等割です。このうち子育て分は、18歳未満の全額減額で0円になります。</li>
   <li>子育て分の一般均等割は全年齢に賦課した上で、上の期間は全額減額します。</li>
-  <li>その期間を過ぎた被保険者には、十八歳以上被保険者均等割額を加算します（同条5項3号）。</li>
+  <li>その期間を過ぎた被保険者には、十八歳以上被保険者均等割額を加算します（同条5項3号）。7割・5割・2割の軽減は、この加算額にも当たります（同条6項1号・3号）。</li>
 </ul>
 
 <p id="kodomo-shotokuwari">どちらも均等割の減額で、所得割は別に計算します。医療分・後期高齢者支援金等分・子育て分の所得割には、年齢による対象制限がありません。高校生等でも、基礎控除後の総所得金額等があれば子育て分の所得割の対象です。給与所得控除と基礎控除の範囲内のアルバイト収入には、所得割はかかりません。</p>
@@ -577,6 +582,7 @@ const SAMPLE = {
   iryo: [8, 50000, 0], shien: [2.5, 16000, 0], kaigo: [2, 17000, 0], kosodate: [0.3, 2000, 0],
 };
 $("sample").addEventListener("click", () => {
+  $("kosodate_a").value = "0";
   for (const [key, [s, k, h]] of Object.entries(SAMPLE)) {
     $(`${key}_s`).value = String(s);
     $(`${key}_k`).value = String(k);
@@ -589,6 +595,8 @@ function readRates() {
   let any = false;
   for (const key of ["iryo", "shien", "kaigo", "kosodate"]) {
     const r = { shotokuwari: num(`${key}_s`), kintouwari: num(`${key}_k`), heitouwari: num(`${key}_h`) };
+    // ★子育て分の十八歳以上被保険者均等割額（施行令29条の7第5項3号）。加算は core が18歳以上だけに当てる。
+    if (key === "kosodate") { r.adultKintouwari = num("kosodate_a"); if (r.adultKintouwari > 0) any = true; }
     if (r.shotokuwari > 0 || r.kintouwari > 0 || r.heitouwari > 0) any = true;
     rates[key] = r;
   }
@@ -654,7 +662,7 @@ $("calc").addEventListener("click", async () => {
     <tr>
       <td>${k.name}${k.capped ? '<br><span class="hint">限度額適用</span>' : ""}</td>
       <td>${yenF(k.shotokuwari)}</td>
-      <td>${yenF(k.kintouwari)}${k.mishugakujiGenzoku > 0 ? `<br><span class="hint">未就学児 −${yenF(k.mishugakujiGenzoku)}</span>` : ""}</td>
+      <td>${yenF(k.kintouwari)}${k.mishugakujiGenzoku > 0 ? `<br><span class="hint">未就学児 −${yenF(k.mishugakujiGenzoku)}</span>` : ""}${k.adultKintouwari > 0 ? `<br><span class="hint" id="adult-${k.key}">うち18歳以上均等割 ${yenF(k.adultKintouwari)}</span>` : ""}</td>
       <td>${yenF(k.heitouwari)}</td>
       <td>${k.kintouwariCount}人</td>
       <td><b id="kubun-${k.key}">${yenF(k.amount)}</b></td>

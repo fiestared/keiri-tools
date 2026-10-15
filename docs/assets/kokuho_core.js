@@ -40,6 +40,11 @@
  *  8. **子ども・子育て支援金分の均等割は18歳以上だけが負担する。**（5項3号・6項10号11号）
  *     一般均等割は全年齢に賦課し、18歳到達年度末まで6項10号・11号で全額減額する。
  *     その翌日以後は十八歳以上被保険者均等割額を加算する。全員に掛けると子どものいる世帯で過大になる。
+ *     ★加算額（rates.kosodate.adultKintouwari）は一般均等割とは別の額として受け取る。
+ *       市町村の表が「均等割1,800円＋18歳以上均等割73円」と内訳で載せている場合、
+ *       1,800円だけを入れると18歳以上1人あたり73円を落とす（特別区 令和8年度）。
+ *       7割・5割・2割の軽減はこの加算額にも当たる（6項1号・3号「被保険者均等割額及び
+ *       十八歳以上被保険者均等割額」）。未就学児の5割減額（6項6号）は被保険者均等割額だけが対象。
  *
  *  9. **介護分は40歳以上65歳未満だけ。**（1項3号）所得割も均等割も、
  *     介護納付金賦課被保険者でない人の分は積まない。
@@ -172,7 +177,9 @@ function isShotokuwariTaisho(member, kubun) {
  *   - setainushiIsHihokensha: 世帯主が被保険者か（false＝擬制世帯主）
  *   - setainushiShotoku / setainushiKyuyoShotokusha: 擬制世帯主のときだけ使う
  *   - rates: {iryo:{shotokuwari,kintouwari,heitouwari}, shien:{...}, kaigo:{...}, kosodate:{...}}
- *     shotokuwari は百分率（7.5 なら 7.5%）、kintouwari は1人あたり円、heitouwari は1世帯あたり円
+ *     shotokuwari は百分率（7.5 なら 7.5%）、kintouwari は1人あたり円、heitouwari は1世帯あたり円。
+ *     kosodate.adultKintouwari は十八歳以上被保険者均等割額（18歳以上の被保険者1人あたり円。
+ *     施行令29条の7第5項3号・8号）。均等割に合計額（例 1,873円）を入れた場合は 0 のままでよい
  * @param {object} data kokuho_r08.json
  */
 export function calcKokuho(input, data) {
@@ -197,6 +204,8 @@ export function calcKokuho(input, data) {
     const shotokuwariRate = nz(r.shotokuwari) / 100;
     const kintouwariUnit = nz(r.kintouwari);
     const heitouwariUnit = nz(r.heitouwari);
+    // ★十八歳以上被保険者均等割額は子育て分（kintouwari_taisho が over18 の区分）だけ（急所8）。
+    const adultUnit = kubun.kintouwari_taisho === 'over18' ? nz(r.adultKintouwari) : 0;
 
     // ① 所得割 ― 各被保険者の「基礎控除後の総所得金額等」の合計に率を掛ける。
     // ★基礎控除は人ごとに引く（世帯合計から1回だけ引くと多人数世帯で過大になる）。
@@ -215,6 +224,7 @@ export function calcKokuho(input, data) {
     let kintouwari = 0;
     let mishugakujiGenzoku = 0;
     let kintouwariCount = 0;
+    let adultKintouwari = 0;
     for (const m of members) {
       if (!isKintouwariTaisho(m, kubun)) continue;
       kintouwariCount += 1;
@@ -225,6 +235,12 @@ export function calcKokuho(input, data) {
         kintouwari += afterKeigen - genzoku;
       } else {
         kintouwari += afterKeigen;
+      }
+      // 加算額は18歳以上だけ（isKintouwariTaisho が over18 で絞っている）。軽減は当てる（6項1号・3号）。
+      if (adultUnit > 0) {
+        const adultAfter = kintouwaraiAfterKeigen(adultUnit, keigenRate);
+        adultKintouwari += adultAfter;
+        kintouwari += adultAfter;
       }
     }
 
@@ -247,6 +263,7 @@ export function calcKokuho(input, data) {
       kintouwari: yen(kintouwari),
       heitouwari: yen(heitouwari),
       mishugakujiGenzoku: yen(mishugakujiGenzoku),
+      adultKintouwari: yen(adultKintouwari),
       kintouwariCount,
       kazeiHyojun,
       beforeCap: yen(beforeCap),
