@@ -35,6 +35,7 @@ function fill(html, name, inner) {
 }
 
 const D = JSON.parse(readFileSync(DATA, "utf8"));
+const ROUTES = JSON.parse(readFileSync(join(ROOT, "tools/saitei_pref_pages.json"), "utf8")).prefectures;
 const rows = D.prefectures || [];
 if (rows.length !== 47) { console.error(`✗ 都道府県が ${rows.length} 件（47件でない）`); process.exit(1); }
 const m = D._meta, na = m.national_average;
@@ -47,7 +48,7 @@ const table = `<div class="scroll-wrap"><table style="width:100%;border-collapse
 <th scope="col" style="text-align:left;padding:6px;border-bottom:2px solid var(--line)">発効日</th>
 </tr></thead><tbody>
 ${rows.map((p) => `<tr>` +
-  `<td style="padding:6px;border-bottom:1px solid var(--line)">${esc(p.full)}の最低賃金</td>` +
+  `<td style="padding:6px;border-bottom:1px solid var(--line)"><a href="${esc(ROUTES[p.pref].slug)}/">${esc(p.full)}の最低賃金</a></td>` +
   `<td style="padding:6px;border-bottom:1px solid var(--line);text-align:right"><b>${p.wage}</b>円 <span style="color:var(--sub);font-size:12px">(${p.prev})</span></td>` +
   `<td style="padding:6px;border-bottom:1px solid var(--line);text-align:right">+<span class="numeric-token">${p.up}円</span> <span style="color:var(--sub);font-size:12px">+<span class="numeric-token">${p.rate}%</span></span></td>` +
   `<td style="padding:6px;border-bottom:1px solid var(--line)">${esc(p.effective_wa)}</td></tr>`).join("\n")}

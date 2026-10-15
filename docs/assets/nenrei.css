@@ -1,0 +1,35 @@
+.nenrei-controls { display: flex; align-items: end; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+.nenrei-controls label { margin-top: 0; }
+.nenrei-controls select { width: auto; }
+.nenrei-table { width: 100%; table-layout: fixed; }
+.nenrei-table th, .nenrei-table td { padding: 8px 10px; }
+.nenrei-table th:first-child { width: 19%; }
+.nenrei-table th:nth-child(2) { width: 31%; }
+.nenrei-table td, .nenrei-table tbody th { font-variant-numeric: tabular-nums; }
+.nenrei-table tbody th { font-weight: normal; text-align: left; }
+.nenrei-table caption { text-align: left; font-weight: 700; margin: 8px 0; }
+.nenrei-note { color: var(--sub); font-size: 14px; }
+.nenrei-form .result[hidden], .nenrei-year[hidden], #era-field[hidden] { display: none !important; }
+@media (max-width: 560px) {
+  .nenrei-table th, .nenrei-table td { padding: 8px 4px; font-size: 14px; }
+}
+@media print {
+  @page { size: A4 portrait; margin: 12mm; }
+  body { background: white; color: black; }
+  header.site, footer.site, .breadcrumb, .toc, .nenrei-controls, .no-print, .nenrei-form, #faq, .faq-content, .related { display: none !important; }
+  main, .hero, #hayami { max-width: none; width: auto; margin: 0; padding: 0; }
+  .hero p, #hayami > p:not(.nenrei-note), #hayami > h2 { display: none; }
+  h1 { font-size: 18pt; }
+  .nenrei-table th, .nenrei-table td { padding: 2mm; font-size: 9pt; }
+  .nenrei-table thead { display: table-header-group; }
+  .nenrei-table tr { break-inside: avoid; }
+  .nenrei-note, #sources { font-size: 9pt; }
+  #sources a { color: black; text-decoration: none; overflow-wrap: anywhere; }
+}
+.nenrei-form .result:not([hidden]) { display: block; }
+.nenrei-controls .primary { width: auto; min-width: 200px; margin: 0; }
+@media print {
+  .nenrei-page .side-rail, .nenrei-page .toc,
+  .nenrei-page main > div:has(> a[href*="x.com/intent"]) { display: none !important; }
+  .nenrei-page .nenrei-table th, .nenrei-page .nenrei-table td { padding: .5mm 1mm; line-height: 1.25; font-size: 9pt; }
+}

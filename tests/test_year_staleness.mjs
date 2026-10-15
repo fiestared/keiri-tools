@@ -29,6 +29,14 @@ const DOCS = join(ROOT, "docs");
 // 「制度の事実」= 年が変わっても真であり続ける記述。機械置換の対象にしてはいけない。
 // snippet はページに**そのまま含まれる**文字列。文言を変えたら免除が外れて落ちる。
 const HISTORICAL_FACTS = [
+  // Birth-year labels are calendar conversions, not the vintage of tax data.
+  // Exempt only exact table cells; test_nenrei independently checks all 242 rows.
+  ...Array.from({length: 8}, (_, i) => i + 2).map(year => ({
+    file: 'nenrei-hayami/index.html', snippet: `<td>令和${year}年</td>`,
+    reason: '出生年の和暦対応（西暦2018+和暦年）。令和の改元日は2019-05-01（https://laws.e-gov.go.jp/law/431CO0000000143）。'
+      + '税額・料率データの年の申告ではなく、現在公表されている改元日による出生年の対応。将来分は現元号が継続する仮定を画面に明記。表のセルだけを名指しし、全242行の和暦・満年齢は test_nenrei.mjs が別に照合する。'
+  })),
+
   // 2026-10-14 新規 /teichaku/: 就職日で決まる制度の区切り（データの年の申告ではない）。
   ...["令和7年4月以降の就職に対応"].map(snippet => ({
     file: "teichaku/index.html", snippet,
@@ -225,10 +233,10 @@ const HISTORICAL_FACTS = [
             "読ませることを否定するために置いてある(令和8年法律第12号で延長・一部恒久化が既に立法済み)ので、" +
             "機械置換すると否定の対象を書き換えて文の意味を壊す。正本は iryohi_r08.json の" +
             "selfmed.kigen.r8_window_end で、test_iryohi_selfmed_kigen.mjs がページとの一致を守っている" },
-  { file: "iryohi/index.html", snippet: "条文どおり<b>令和8年12月31日まで</b>です（措法41条の17第1項）",
+  { file: "iryohi/index.html", snippet: "条文どおり<b>令和8年12月31日まで</b>です",
     reason: "同上(令和8年分の窓の終期。措法41条の17第1項の逐語)。" +
             "直前で『このツールが計算する令和8年分の』と限定しているので、データ年の申告ではなく条文の内容" },
-  { file: "iryohi/index.html", snippet: "<b>令和9年分以後は、令和8年法律第12号によって延長・一部恒久化が既に決まっています</b>",
+  { file: "iryohi/index.html", snippet: "<b>令和9年分以後は、<a href=\"https://laws.e-gov.go.jp/api/2/law_data/332AC0000000026_20270101_508AC0000000012\">令和8年法律第12号</a>によって延長・一部恒久化が既に決まっています</b>",
     reason: "★令和8年法律第12号 附則第46条が『新租税特別措置法第四十一条の十七の規定は、令和九年分以後の" +
             "所得税について適用し、令和八年分以前の所得税については、なお従前の例による』と定めている" +
             "適用開始年分そのもの＝制度の事実(2026-07-25にe-Gov v2の2027-01-01施行版の附則で逐語確認)。" +
@@ -236,9 +244,8 @@ const HISTORICAL_FACTS = [
             "参照データを差し替えても真であり続ける。むしろ機械置換すると適用年分を書き換えて" +
             "『令和8年分にも新ルールが効く』という逆向きの嘘になる(aoiro-kojoの75万円と同型)。" +
             "正本は iryohi_r08.json の selfmed.kigen.r9_onward" },
-  { file: "iryohi/index.html", snippet: "（附則46条により令和9年分以後の所得税に適用）",
-    reason: "同上(附則46条の適用年分そのもの＝制度の事実)" },
-  { file: "iryohi/index.html", snippet: "それ以外（体外診断用医薬品など）は令和13年12月31日まで",
+
+  { file: "iryohi/index.html", snippet: "対象購入費の期限は、令和9年分以後、<a href=\"https://laws.e-gov.go.jp/api/2/law_data/332AC0000000026_20270101_508AC0000000012?elm=Article_41_17\">措法41条の17</a>第2項1号の政令指定医薬品が期限なし、それ以外が令和13年12月31日までです（対象の薬局製造販売医薬品は後者）",
     reason: "★改正後の措法41条の17第1項第2号が定める法定期限そのもの＝制度の事実" +
             "(2026-07-25にe-Gov v2の2027-01-01施行版で『平成二十九年一月一日から令和十三年十二月三十一日" +
             "までの期間』を逐語確認。2027-05-20以降の版まで md5 で不変も確認)。このページのデータ年" +
@@ -382,7 +389,7 @@ const HISTORICAL_FACTS = [
             "★率が改定されても『令和7年度改正でこの区分ができた』は何年経っても真で、" +
             "機械置換すると改正の年そのものを書き換えて嘘にする" },
   { file: "hojinzei/index.html",
-    snippet: "です（措置法42条の3の2第1項）。令和7年度改正で入りました。判定は所得全体で行い",
+    snippet: "措置法42条の3の2第1項</a>）。令和7年度改正で入りました。判定は所得全体で行い",
     reason: "★上と同じ改正の時点を答えるFAQ本文（JSON-LDはここから gen_faq_jsonld.mjs が生成する）。" +
             "「中小企業なら常に15%」という改正前の解説が世に多く残っていることへの答えなので、" +
             "この『令和7年度』は年が変わっても真であり続ける" },

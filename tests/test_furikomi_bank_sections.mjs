@@ -113,12 +113,18 @@ assert.ok(toc.includes('href="#ginkobetsu"'),
 
 console.log(`✓ test_furikomi_bank_sections: ${banks.size}銀行 / ${checked}区分が比較表と一致`);
 
-// r17: the text corpus omits the merged 30,000+ cell; regeneration must not
-// turn that unverified band back into a quoted price or a personal/corporate ratio.
+// 2026-10-15: 横浜個人IBの3万円以上は、公式表の結合セル（rowspan="2" の154円）で確認できた。
+//   テキスト化すると3万円以上の行が空に見えるが、資料の欠落ではない（3モデルレビュー #6）。
 const regenerated = buildSections(rows);
 const yokohama = regenerated.split('id="bank-yokohama"')[1].split('<h3 ')[0];
-assert.ok(yokohama.includes('未確認'), '横浜個人IBの未確認額を再生成で確定額に戻さない');
-assert.ok(!yokohama.includes('約3.6倍'), '未確認の個人料金から法人倍率を生成しない');
-for (const note of ['三井住友信託銀行あて0円', 'スタンダード・パール', '非居住者による送金は1回3,000円']) {
+assert.ok(!yokohama.includes('未確認') && !yokohama.includes('掲載を保留'), '横浜個人IBの3万円以上（154円）を未確認に戻さない');
+for (const note of ['三井住友信託銀行あては0円', 'スタンダード・パール', '非居住者による送金は1回3,000円',
+  // 3モデルレビュー #1・#3・#4: 三井住友の SMBC信託銀行あて無料（窓口は有料）、Web21＜ライト＞、フィンサーの税抜の月額
+  'SMBC信託銀行あては無料', '窓口は口座出金605円・現金990円', 'Web21＜ライト＞は165円／330円（1日300万円まで）', '月額2,980円（税抜）', '月額7,980円（税抜）']) {
   assert.ok(regenerated.includes(note), `再生成で料金条件が消えた: ${note}`);
 }
+// 未確認の額（イオン個人）について「定額」と断定しない（3モデルレビュー #7）
+const aeon = regenerated.split('id="bank-aeon"')[1].split('<h3 ')[0];
+assert.ok(aeon.includes('掲載額は公式資料で未確認') && !aeon.includes('<b>定額</b>'), 'イオン個人の未確認額を定額と断定している');
+// 出典の文言が全部「公式ページ」だと、どれが何の資料か読めない（3モデルレビュー #9）
+assert.ok(!/>公式ページ<\/a>/.test(regenerated), '出典リンクの文言が「公式ページ」のまま');

@@ -7,7 +7,7 @@ const data = JSON.parse(readFileSync(new URL('../docs/assets/inshi_r07.json', im
 const table = html.match(/<table[^>]*id="receipt-tax-table"[^>]*>([\s\S]*?)<\/table>/)?.[1];
 assert.ok(table, '静的HTMLに第17号の表が必要');
 const tbody = table.match(/<tbody>([\s\S]*?)<\/tbody>/)?.[1];
-const rows = [...tbody.matchAll(/<tr><th scope="row">([^<]+)<\/th><td class="num">([^<]+)<\/td><\/tr>/g)];
+const rows = [...tbody.matchAll(/<tr><th scope="row">([^<]+)<\/th><td class="num">([^<]+)<\/td><td><a href="https:\/\/www\.nta\.go\.jp\/taxes\/shiraberu\/taxanswer\/inshi\/7141\.htm">一次資料<\/a><\/td><\/tr>/g)];
 // 行見出しは「記載金額が」を前置して表の上の決め方と結び付ける（2026-10-07 照合の指摘）。比べるのは前置を除いた階級名。
 rows.slice(0,-1).forEach(r => { assert.ok(r[1].startsWith('記載金額が'), `行見出しに「記載金額が」: ${r[1]}`); r[1] = r[1].slice('記載金額が'.length); });
 const doc = data.docs.k17_uriage;

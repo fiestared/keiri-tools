@@ -59,26 +59,28 @@ export function buildLayout(D) {
   const L = D._meta.record_length;
   const out = [START];
   out.push('  <h2 id="layout">レコードレイアウト（全4種・バイト位置つき）</h2>');
-  out.push(`  <p>4種類のレコードの全項目を、<b>各レコードの先頭から何バイト目に何が入るか</b>まで並べたものです。位置は桁数の累計から出しており、<b>各レコードの合計が${L}バイトに一致することを機械で確認</b>しています（合わなければ表を出さない作りです）。</p>`);
+  out.push(`  <p>4種類のレコードの全項目を、<b>各レコードの先頭から何バイト目に何が入るか</b>まで並べたものです。1レコードは${L}バイトです。内訳は下表。</p>`);
   out.push('  <div class="callout">');
-  out.push(`    <p>★<b>出典は特定の1行の公開仕様書です。</b>${esc(D._meta.source_name)}（<a href="${esc(D._meta.source_url)}" rel="nofollow">PDF</a>・${esc(D._meta.verified_at)}確認）を基準に再構成しました。全銀協規定に準拠する一般的な構成ですが、<b>必須／省略可・改行の有無・文字コード・固定値・未使用項目の扱いは銀行ごとに差があります。実際にファイルを作るときは、必ず取引銀行の最新の仕様書を優先してください。</b></p>`);
+  out.push(`    <p><b>出典は特定の1行の公開仕様書です。</b>${esc(D._meta.source_name)}（<a href="${esc(D._meta.source_url)}" rel="nofollow">PDF</a>・${esc(D._meta.verified_at)}確認）を基準に再構成しました。全銀協規定に準拠する一般的な構成ですが、<b>必須／省略可・改行の有無・文字コード・固定値・未使用項目の扱いは銀行ごとに差があります。実際にファイルを作るときは、必ず取引銀行の最新の仕様書を優先してください。</b></p>`);
   out.push(`    <p>表の「区分」列は、<b>共通</b>＝複数の仕様で共通している骨格、<b>要確認</b>＝銀行や契約サービスで差が出やすい項目、という意味です。</p>`);
   out.push('  </div>');
-  out.push(`  <p>文字コードは${esc(D._meta.charset)}。1行${L}バイト（${esc(D._meta.newline_note)}）。${esc(D._meta.padding)}。</p>`);
+  out.push(`  <p>文字コードは${esc(D._meta.charset)}。1行${L}バイト。${esc(D._meta.newline_note)}。${esc(D._meta.padding)}。</p>`);
 
   for (const rec of D.records) {
     const fields = withPositions(rec, L);
     out.push(`  <h3 id="layout-${rec.kubun}">${esc(rec.name)}（データ区分 ${esc(rec.kubun)}）</h3>`);
     out.push(`  <p>${esc(rec.role)}。</p>`);
-    out.push('  <table>');
-    out.push('    <tr><th scope="col">No</th><th scope="col">項目</th><th scope="col">位置<br>(バイト)</th><th scope="col">桁数・型</th><th scope="col">区分</th><th scope="col">内容</th></tr>');
-    for (const f of fields) {
+    // データ行が15行以上の表は thead/tbody を持たせる（印刷で見出しを各ページに繰り返す。tests/test_long_table_thead.mjs の MIN_ROWS）
+    const long = fields.length + 1 >= 15;
+    out.push('  <div class="scroll-wrap"><table>');
+    out.push((long ? '    <thead>' : '    ') + '<tr><th scope="col">No</th><th scope="col">項目</th><th scope="col">位置<br>(バイト)</th><th scope="col">桁数・型</th><th scope="col">区分</th><th scope="col">内容</th></tr>' + (long ? '</thead>' : ''));
+    for (const [i, f] of fields.entries()) {
       const scope = f.scope === 'bank' ? '要確認' : '共通';
       const pos = f.from === f.to ? `${f.from}` : `${f.from}〜${f.to}`;
-      out.push(`    <tr><td>${f.no}</td><td>${esc(f.name)}</td><td>${pos}</td><td>${f.type}(${f.len})</td><td>${scope}</td><td>${esc(f.content)}</td></tr>`);
+      out.push(`${long && i === 0 ? '<tbody>' : ''}    <tr><td>${f.no}</td><td>${esc(f.name)}</td><td style="white-space:nowrap">${pos}</td><td>${f.type}(${f.len})</td><td style="white-space:nowrap">${scope}</td><td>${esc(f.content)}</td></tr>`);
     }
-    out.push(`    <tr><td colspan="2"><b>合計</b></td><td><b>1〜${L}</b></td><td colspan="3"><b>${L}バイト</b></td></tr>`);
-    out.push('  </table>');
+    out.push(`    <tr><td colspan="2"><b>合計</b></td><td><b>1〜${L}</b></td><td colspan="3"><b>${L}バイト</b></td></tr>${long ? '</tbody>' : ''}`);
+    out.push('  </table></div>');
   }
   out.push('  <p>群馬銀行の受取人名はC(30)です。<a href="#moji">使用できる文字</a>と<a href="#ryakugo">法人略語</a>は、利用銀行・サービスの入力案内と登録名義を確認してください。名義を実際に変換するなら<a href="../../zengin-kana/">振込名義カナ変換ツール</a>が使えます。</p>');
   out.push(END);
