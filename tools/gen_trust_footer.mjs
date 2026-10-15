@@ -71,7 +71,11 @@ const firstCommit = new Map();
 }
 
 // ── 信頼ブロック ────────────────────────────────────────────────────────
-const trustBlock = () => {
+const trustBlock = (utility = false) => {
+  if (utility) return `<!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">`
+    + `計算結果は入力した条件に対する<b>参考値</b>です。制度ごとの取扱いや個別事案の判断を示すものではありません。<br>`
+    + `作成・検証: 税金・経理・補助金ツールズ</div><!-- /trust:auto -->`;
+
   return `<!-- trust:auto --><div class="trust" style="margin-top:10px;font-size:12px;color:var(--sub);line-height:1.7">`
     + `計算結果は、公表されている計算式に入力値を当てはめた<b>参考値</b>です。特例・経過措置・自治体差・個別事情により実際の金額と異なることがあります。`
     + `正式な申告・給与計算の確定は、税理士・社会保険労務士等の専門家または所轄の窓口にご確認ください。<br>`
@@ -91,7 +95,7 @@ for (const fp of files) {
   let out = s;
 
   // 1) 信頼ブロック（冪等: マーカーごと差し替える）
-  const block = trustBlock();
+  const block = trustBlock(/"applicationCategory"\s*:\s*"UtilitiesApplication"/.test(s));
   if (out.includes('<!-- trust:auto -->')) {
     out = out.replace(/<!-- trust:auto -->[\s\S]*?<!-- \/trust:auto -->/, block);
   } else {

@@ -161,7 +161,115 @@ const saiteiHourlyScene = (ymd) => async () => {
   };
 };
 
+async function bankFeePage(slug, base, invoice, expectedTransfer) {
+  const doc = await open('/docs/column/' + slug + '/');
+  const fees = await (await fetch('/docs/assets/fee_table.json?raw=1')).json();
+  const rows = fees.banks.filter(r => r.name.startsWith(base + '（'));
+  const correct = rows.every((r,i) => {
+    const cells = doc.querySelector('#other-fees tr[data-fee-row="'+i+'"]').cells;
+    const bounds = doc.querySelector('#boundary-fees tr[data-boundary-row="'+i+'"]').cells;
+    return cells[1].textContent.trim() === r.under30k+'円' && cells[2].textContent.trim() === r.over30k+'円' &&
+      cells[3].querySelector('a').href === r.source && cells[3].querySelector('time').dateTime === r.verified_date &&
+      [r.under30k,r.over30k,r.over30k].every((n,j) => bounds[j+1].textContent.trim() === n+'円');
+  });
+  let printCalled = false;
+  doc.defaultView.print = () => {printCalled = true;};
+  click(doc,'print-fees');
+  const viewports=[];
+  for (const width of [1280,390]) {
+    document.getElementById('f').style.width=width+'px';
+    await sleep(50);
+    viewports.push({width,actual:doc.defaultView.innerWidth,scroll:doc.documentElement.scrollWidth});
+  }
+  const noOverflow = viewports.every(v=>v.actual===v.width && v.scroll<=v.width+1);
+  document.getElementById('f').style.width='1100px';
+  const link=doc.querySelector('.tool-cta').getAttribute('href');
+  const tool=await open(new URL(link,doc.location.href).pathname + new URL(link,doc.location.href).hash);
+  await waitFor(() => tool.getElementById('bankPreset').options.length > 1, '手数料プリセット');
+  const bank = rows.find(r => /（法人/.test(r.name));
+  if (!bank.id) {
+    const i=fees.banks.findIndex(r => r.name===bank.name);
+    set(tool,'bankPreset',String(i));
+  }
+  pickRadio(tool,'method','sueoki');set(tool,'invoice',String(invoice));click(tool,'calc');
+  const transferCorrect = text(tool,'result').includes(expectedTransfer);
+  return {correct,printCalled,transferCorrect,noOverflow,viewports,result:text(tool,'result')};
+}
+async function printTable(name, path, id, rateCol) {
+  const doc = await open(path);
+  const win = doc.defaultView;
+  const section = doc.querySelector('[data-print-tables="' + name + '"]');
+  const rows = [...doc.getElementById(id).tBodies[0].rows];
+  const cell = (r, i) => [...r.cells[i].childNodes].filter(n => n.nodeType === 3 || n.tagName === 'SPAN' && n.className !== 'hint').map(n => n.textContent).join('').trim();
+  const a = section.querySelector('a[download]');
+  const response = await fetch(a.href);
+  const bytes = new Uint8Array(await response.arrayBuffer());
+  let printCalled = false;
+  win.print = () => { printCalled = doc.documentElement.hasAttribute('data-print-table'); };
+  section.querySelector('[data-print-table]').click();
+  win.dispatchEvent(new win.Event('afterprint'));
+  document.getElementById('f').style.width = '390px';
+  await new Promise(resolve => win.requestAnimationFrame(resolve));
+  return { rows: rows.length, first: cell(rows[0], rateCol), tax: cell(rows[1], rateCol), last: cell(rows.at(-1), rateCol),
+    rates: name === 'koyou' ? [1,2,3].map(i => cell(rows[0],i)).join('|') : '',
+    sources: rows.every(r => r.cells[r.cells.length-1].querySelector('a[href^="https://"]')),
+    xlsx: response.ok && a.hasAttribute('download') && bytes[0] === 0x50 && bytes[1] === 0x4b && bytes[2] === 3 && bytes[3] === 4,
+    printCalled, printReset: !doc.documentElement.hasAttribute('data-print-table'),
+    noOverflow: doc.documentElement.scrollWidth <= 390 };
+}
+
+function saiteiPrefScene(slug) {
+  return async () => {
+    const doc = await open(`/docs/saitei-chingin/${slug}/`);
+    const number = el => Number(el.textContent.replace(/[^\d]/g,''));
+    const boundaries = [...doc.querySelectorAll('#pref-boundary tbody tr')];
+    const prev = number(boundaries[0].querySelector('td')), wage = number(boundaries[1].querySelector('td'));
+    const parts = boundaries[1].querySelector('th').textContent.match(/(\d+)年(\d+)月(\d+)日/);
+    const effective = `${parts[1]}-${parts[2].padStart(2,'0')}-${parts[3].padStart(2,'0')}`;
+    const monthly = number(doc.querySelector('#pref-monthly tbody tr td:nth-child(3)'));
+    const checked = doc.querySelector('.article-meta time').dateTime;
+    const parentLink = !!doc.querySelector('a[href="../#ichiran"]');
+    const neighborLinks = doc.querySelectorAll('#pref-nearby tbody a').length > 0;
+    let printCalls=0; doc.defaultView.print=()=>{printCalls++;};click(doc,'pref-print');
+    const f=document.getElementById('f');f.style.width='390px';
+    await sleep(60);
+    const mobileOverflow=Math.max(0,doc.documentElement.scrollWidth-doc.documentElement.clientWidth);
+    f.style.width='1100px';
+    const destination = new URL(doc.querySelector('#pref-calculator').getAttribute('href'),doc.location.href);
+    const monthlyDestination = new URL(doc.querySelector('#pref-monthly-calculator').getAttribute('href'),doc.location.href);
+    const calculator = await open(destination.pathname+destination.search+destination.hash);
+    await waitFor(()=>calculator.getElementById('pref').value,'リンク先の県選択');
+    const selected=calculator.getElementById('pref').value;
+    pickRadio(calculator,'wt','monthly');set(calculator,'days','240');set(calculator,'hpd','8');
+    const beforeDate=new Date(effective+'T00:00:00Z');beforeDate.setUTCDate(beforeDate.getUTCDate()-1);
+    const calculate=async (ymd,amount)=>{
+      fixToday(calculator,ymd);set(calculator,'amount',String(amount));
+      calculator.getElementById('out').innerHTML='';click(calculator,'run');
+      await waitFor(()=>text(calculator,'out').length>0,'月給換算結果');return text(calculator,'out');
+    };
+    const before=await calculate(beforeDate.toISOString().slice(0,10),prev*160);
+    const after=await calculate(effective,wage*160);
+    const below=await calculate(effective,wage*160-1);
+    const monthlyDoc=await open(monthlyDestination.pathname+monthlyDestination.search+monthlyDestination.hash);
+    await waitFor(()=>monthlyDoc.getElementById('pref').value,'月給リンク先の県選択');
+    const monthlySelected=monthlyDoc.querySelector('input[name="wt"]:checked').value==='monthly' && monthlyDoc.getElementById('monthlyInputs').style.display==='block';
+    return {selected,prev,wage,effective,monthly,checked,parentLink,neighborLinks,printCalls,mobileOverflow,
+      beforeMin:Number(before.match(/最低賃金 (\d+)円/)[1]),afterMin:Number(after.match(/最低賃金 (\d+)円/)[1]),
+      beforePass:before.includes('最低賃金以上です'),afterPass:after.includes('最低賃金以上です'),afterFail:below.includes('下回っています'),monthlySelected};
+  };
+}
+
 const SCENES = {
+  async bank_fee_mufg() { return bankFeePage('mufg-furikomi-tesuryo','三菱UFJ銀行',30000,'29,340'); },
+  async bank_fee_yucho() { return bankFeePage('yucho-furikomi-tesuryo','ゆうちょ銀行',30000,'29,835'); },
+  async print_table_inshi() { return await printTable('inshi', '/docs/inshi/', 'receipt-tax-table', 1); },
+  async print_table_koyou() { return await printTable('koyou', '/docs/column/koyou-hokenryo-ritsu/', 'koyou-rate-table', 1); },
+  async print_table_rosai() { return await printTable('rosai', '/docs/column/rosai-hokenryoritsu/', 'rosai-rate-table', 2); },
+  saitei_pref_tokyo: saiteiPrefScene('tokyo'),
+  saitei_pref_akita: saiteiPrefScene('akita'),
+  saitei_pref_kyoto: saiteiPrefScene('kyoto'),
+  saitei_pref_iwate: saiteiPrefScene('iwate'),
+  saitei_pref_okinawa: saiteiPrefScene('okinawa'),
   // 銀行プリセットを選ぶと手数料欄が本当に埋まるか(fetch→select→input の配線)
   async senpou_preset() {
     const doc = await open("/docs/senpou-futan/");
@@ -208,6 +316,32 @@ const SCENES = {
     set(doc, "invoice", "300"); // 3万円未満 → 差引550円 > 請求300円
     click(doc, "calc");
     return { result: text(doc, "result") };
+  },
+
+  async senpou_invalid() {
+    const doc = await open('/docs/senpou-futan/');
+    set(doc,'invoice','30000');set(doc,'feeUnder','484');set(doc,'feeOver','660');
+    pickRadio(doc,'method','sueoki');click(doc,'calc');
+    await waitFor(()=>doc.getElementById('copy-result').disabled===false,'正常結果のコピー');
+    const failures=[];
+    for(const input of [
+      ['sueoki','29999','-1','660','550'],['sueoki','30000','484','660.5','550'],
+      ['flat','30000','484','660',''],['sueoki','29999.000000000001','484','660','550'],
+      ['sueoki','9007199254740990.5','484','660','550'],['sueoki','30000.5','484','660','550'],
+      ['sueoki','','484','660','550'],['sueoki','30000','','660','550'],
+    ]) {
+      pickRadio(doc,'method',input[0]);
+      ['invoice','feeUnder','feeOver','flatFee'].forEach((id,i)=>set(doc,id,input[i+1]));
+      click(doc,'calc');await sleep(0);
+      failures.push({input,rejected:doc.getElementById('result').dataset.resultState==='error'
+        && !!doc.querySelector('#result > .warn') && doc.getElementById('copy-result').disabled
+        && doc.defaultView.getComputedStyle(doc.getElementById('copy-invoice-line')).display==='none'});
+    }
+    pickRadio(doc,'method','sueoki');
+    set(doc,'invoice','30000');set(doc,'feeUnder','0');set(doc,'feeOver','0');click(doc,'calc');
+    await sleep(0);
+    return {failures,recovered:doc.getElementById('result').dataset.resultState==='success'
+      && text(doc,'result').includes('30,000 円') && !doc.getElementById('copy-result').disabled};
   },
 
   // 入金差額チェック(550円=一律差引の商慣行)
@@ -401,6 +535,36 @@ SCENES.payday_stale = SCENES.payday;
 // 営業日計算: 「祝日を除いて数える」ことがこのツールの存在意義そのもの。
 // 祝日データが効いていなければ必ず数がズレる期間を選ぶ = 常設の祝日プローブ。
 // GW(5/1〜5/10)は祝日が4日入るので、祝日を落とすと営業日が 3 → 6 に倍増する。
+SCENES.nenrei = async () => {
+  const doc = await open("/docs/nenrei-hayami/");
+  await waitFor(() => doc.querySelector('.nenrei-year[data-year="2027"]').hidden, "年齢表の初期化");
+  const row = year => doc.querySelector(`.nenrei-year[data-year="${year}"] [data-birth-year="2000"]`).innerText.replace(/\s+/g," ").trim();
+  const initialRows = doc.querySelectorAll('.nenrei-year[data-year="2026"] tbody tr').length;
+  const row2026 = row(2026);
+  set(doc,"table-year","2027");
+  const row2027 = row(2027);
+  const nextRows = doc.querySelectorAll('.nenrei-year[data-year="2027"] tbody tr').length;
+  set(doc,"convert-year","2019"); set(doc,"convert-month","4"); set(doc,"convert-day","30"); click(doc,"convert-submit");
+  const before = text(doc,"convert-result");
+  set(doc,"convert-month","5"); set(doc,"convert-day","1"); click(doc,"convert-submit");
+  const after = text(doc,"convert-result");
+  set(doc,"direction","wareki"); set(doc,"era","令和"); set(doc,"convert-year","元"); click(doc,"convert-submit");
+  const reverse = text(doc,"convert-result");
+  set(doc,"era","平成"); set(doc,"convert-year","31"); set(doc,"convert-month","4"); set(doc,"convert-day","30"); click(doc,"convert-submit");
+  const alternateEra = text(doc,"convert-result");
+  set(doc,"era","令和"); set(doc,"convert-year","元");
+  set(doc,"convert-month","4"); set(doc,"convert-day","30"); click(doc,"convert-submit");
+  const invalid = /期間外/.test(text(doc,"convert-result"));
+  set(doc,"convert-year",""); const cleared = doc.getElementById("convert-result").hidden && !doc.getElementById("convert-result").textContent;
+  set(doc,"convert-year","1"); set(doc,"convert-month","5"); set(doc,"convert-day","1"); click(doc,"convert-submit");
+  const recalculated = text(doc,"convert-result") === "2019年5月1日";
+  set(doc,"birth","2000-02-29"); set(doc,"reference","2026-02-28"); click(doc,"age-submit");
+  const leapBefore = text(doc,"age-result").includes("25歳");
+  set(doc,"reference","2026-03-01"); click(doc,"age-submit");
+  const leapAfter = text(doc,"age-result").includes("26歳");
+  return {initialRows,nextRows,row2026,row2027,before,after,reverse,alternateEra,invalid,cleared,recalculated,leapBefore,leapAfter};
+};
+
 const eigyobiScene = (FROM, TO) => async () => {
   const doc = await open("/docs/eigyobi/");
   const holidays = await (await fetch("/docs/assets/holidays_jp.json?raw=1")).json();
@@ -5696,7 +5860,8 @@ const copyShown = (doc) => {
   const c = doc.getElementById("copy-result");
   return !!c && c.getClientRects().length > 0 && doc.defaultView.getComputedStyle(c).display !== "none";
 };
-const fieldErrorScene = ({ path, field, button = "calc", result = "result", value, tab = null, fill = {} }) => async () => {
+// onError(doc): 誤りが出ている間（直す前）の状態を足して返す任意の口（tools/e2e/scenes/ のシーンが使う）
+const fieldErrorScene = ({ path, field, button = "calc", result = "result", value, tab = null, fill = {}, onError: extraOnError = null }) => async () => {
   const doc = await open(path);
   if (tab) click(doc, tab);
   // 押す欄以外に要る入力（例: 年末調整は給与を入れてから徴収税額の空欄を試す）
@@ -5723,6 +5888,7 @@ const fieldErrorScene = ({ path, field, button = "calc", result = "result", valu
     fieldInView: (() => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= doc.defaultView.innerHeight; })(),
     errorFrame: visibleFrame(doc, doc.getElementById(result)),
     copyOnError: copyShown(doc),
+    ...(extraOnError ? extraOnError(doc) : {}),
   };
   set(doc, field, value);
   const cleared = el.getAttribute("aria-invalid") !== "true" && (!err || err.hidden);
@@ -5733,6 +5899,7 @@ const fieldErrorScene = ({ path, field, button = "calc", result = "result", valu
     errorFrameDiffers: onError.errorFrame !== successFrame && onError.errorFrame !== "none",
     resultAfter: text(doc, result).slice(0, 80) };
 };
+SCENES.ux_field_error_nenrei = fieldErrorScene({ path: "/docs/nenrei-hayami/", field: "convert-year", button: "convert-submit", result: "convert-result", value: "2019" });
 SCENES.ux_field_error_shaho = fieldErrorScene({ path: "/docs/shakai-hoken/", field: "monthly", value: "300000" });
 SCENES.ux_field_error_tedori = fieldErrorScene({ path: "/docs/tedori/", field: "gross", value: "300000" });
 SCENES.ux_field_error_furusato = fieldErrorScene({ path: "/docs/furusato/", field: "shunyu", value: "5000000" });
@@ -5872,6 +6039,37 @@ const siteSearchScene = (width, path = "/docs/column/furikomi-tesuryo-hikaku/") 
 };
 SCENES.site_search_390 = siteSearchScene(390);
 SCENES.site_search_1280 = siteSearchScene(1280);
+// ★検索の順位（2026-10-14 gbrain implementation/keiri-site-search-quality-2026-10-14）。読み・誤字・添え語・空白で切られた語で、
+//   意図したページが画面の1位に出ること。順位の網は tests/test_site_search_quality.mjs（node で直接）が張っていて、
+//   ここは「ブラウザに配られた索引と qa_search.js で、ダイアログの1位が同じになる」ことを見る（配信・描画の取り違えを拾う）。
+const SITE_SEARCH_CASES = [
+  ["げんせん", "/gensen-choshu/"],
+  ["ねんちょう", "/nenmatsu-chosei/"],
+  ["社会保険料 シュミレーション", "/shakai-hoken/"],
+  ["4000cc 自動車 税", "/jidoshazei/"],
+  ["仮 払 消費 税 資産", "/column/karibaraikin-kariukekin/"],
+];
+const siteSearchQualityScene = (width) => async () => {
+  document.getElementById("f").style.width = width + "px";
+  const doc = await open("/docs/column/furikomi-tesuryo-hikaku/");
+  const btn = doc.querySelector("header.site button[data-site-search]");
+  btn.click();
+  const dlg = await waitFor(() => doc.querySelector("dialog.ss-dialog[open]"), "検索ダイアログが開く");
+  const input = dlg.querySelector("input");
+  const got = [];
+  for (const [q] of SITE_SEARCH_CASES) {
+    const before = gaNames(doc).filter((n) => n === "question").length;
+    input.value = q;
+    dlg.querySelector("form").requestSubmit();
+    await waitFor(() => gaNames(doc).filter((n) => n === "question").length > before, `「${q}」の確定`);
+    const first = dlg.querySelector(".ss-list a.ss-item");
+    got.push({ q, first: first && !dlg.querySelector(".ss-list").hidden ? first.getAttribute("href").replace(/^.*\/docs/, "") : null,
+      matched: gaEvents(doc).filter((e) => e.name === "question").pop().params.matched });
+  }
+  return { width, got, want: SITE_SEARCH_CASES };
+};
+SCENES.site_search_quality_390 = siteSearchQualityScene(390);
+SCENES.site_search_quality_1280 = siteSearchQualityScene(1280);
 // トップでは、ヘッダの検索と既存の質問欄（インライン）が両方動くこと（同じ索引・別の描画）
 SCENES.site_search_top = async () => {
   document.getElementById("f").style.width = "1280px";
@@ -5894,8 +6092,24 @@ SCENES.site_search_top = async () => {
     dialogCardsLeak: dlg.querySelectorAll(".qa-card").length };
 };
 
+// ── tools/e2e/scenes/<ページ>.mjs のシーン（2026-10-15）──────────────────────────────
+// 新しいページのシーンはこのファイルに足さず、scenes/ にファイルを1つ置く（共有の SCENES の末尾に足す形は、
+// 並行したブランチが公開のたびに衝突した）。e2e.mjs が ?mod=<ファイル名> を付けて開くので、そのファイルだけ読む。
+const SCENE_HELPERS = Object.freeze({ sleep, waitFor, open, set, click, text, check, pickRadio, fixToday,
+  fieldErrorScene, visibleFrame, copyShown, gaEvents, gaNames });
+async function loadSceneModule(mod) {
+  if (!/^[a-z0-9][a-z0-9_-]*\.mjs$/.test(mod)) throw new Error(`mod の名前が不正: ${mod}`);
+  const m = await import(`./scenes/${mod}`);
+  for (const [name, fn] of Object.entries(m.harness(SCENE_HELPERS))) {
+    if (Object.prototype.hasOwnProperty.call(SCENES, name)) throw new Error(`scenes/${mod} のシーン ${name} が harness.html の既存シーンと重なる`);
+    SCENES[name] = fn;
+  }
+}
+
 let state;
 try {
+  if (q.get("mod")) await loadSceneModule(q.get("mod"));
+  if (typeof SCENES[scene] !== "function") throw new Error(`シーン ${scene} が無い`);
   state = { scene, ...(await SCENES[scene]()), page: openedPages[0] || null, pages: openedPages };
 } catch (e) {
   state = { scene, error: String(e && e.message || e), page: openedPages[0] || null, pages: openedPages };

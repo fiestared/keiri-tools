@@ -34,11 +34,54 @@
  *   No.7105（受取書・営業に関しない）・No.6925（消費税等と印紙税）。
  */
 
-/** 円に整える（負・NaNは0）。NaNを素通しすると判定金額が丸ごとNaNになる。 */
-const yen = (n) => {
-  const v = Math.floor(Number(n));
-  return Number.isFinite(v) && v > 0 ? v : 0;
-};
+/** 円は安全な整数のまま比較する。不正入力を丸めたり0に置換しない。 */
+function yen(n, label, optional = false) {
+  if (optional && (n === undefined || (typeof n === 'string' && n.trim() === ''))) return 0;
+  const v = typeof n === 'number' || (typeof n === 'string' && n.trim() !== '') ? Number(n) : NaN;
+  if (!Number.isSafeInteger(v) || v < 0) throw new Error(label + 'は0以上の整数（円）で入力してください');
+  return v;
+}
+
+const DOC_KEYS = ['k1_fudosan','k1_other','k2_kensetsu','k2_other','k3','k4',
+  'k5','k6','k7','k8','k9','k10','k11','k12','k13','k14','k15','k16',
+  'k17_uriage','k17_other','k18','k19','k20'];
+const isYen = n => Number.isSafeInteger(n) && n >= 0;
+function validBrackets(rows) {
+  if (!Array.isArray(rows) || !rows.length) return false;
+  let previous = 0;
+  return rows.every((r,index) => {
+    if (!r || !isYen(r.tax) || r.tax === 0 || typeof r.label !== 'string' || !r.label.trim()) return false;
+    if (r.upto === null) return index === rows.length - 1;
+    if (!isYen(r.upto) || r.upto <= previous) return false;
+    previous = r.upto;
+    return index < rows.length - 1; // 終端は上限なし。欠損を最大階級で補わない。
+  });
+}
+
+/** 空・欠損・破損した参照データは取得失敗として扱う（画面とcoreで共用）。 */
+export function validateInshiData(D) {
+  const error = {ok:false,errorType:'data',error:'参照データ（inshi_r07.json）が空・欠損または不正です。読み込めませんでした'};
+  if (!D || !D.docs || !D._meta || !['year','keigen_from_label','keigen_until_label'].every(k => typeof D._meta[k] === 'string' && D._meta[k].trim())) return error;
+  const eligible = D.kubun_shohizei?.applies_to;
+  const expected = ['k1_fudosan','k1_other','k2_kensetsu','k2_other','k17_uriage','k17_other'];
+  if (!Array.isArray(eligible) || eligible.length !== expected.length || !expected.every(k => eligible.includes(k))) return error;
+  for (const key of DOC_KEYS) {
+    const d = D.docs[key];
+    if (!d || typeof d.go !== 'string' || !d.go || typeof d.name !== 'string' || !d.name) return error;
+    if (d.type === 'fixed' || d.type === 'per_year') {
+      if (!isYen(d.tax) || !d.tax) return error;
+    } else if (d.type === 'bracket') {
+      if (typeof d.unit !== 'string' || !d.unit || !validBrackets(d.brackets) ||
+          !(d.hikazei_under === null || isYen(d.hikazei_under)) ||
+          !(d.noamount === null || isYen(d.noamount))) return error;
+      if (d.keigen && (!isYen(d.keigen.over) || !validBrackets(d.keigen.brackets))) return error;
+      if (d.ichiranbarai && (!isYen(d.ichiranbarai.tax) || !isYen(d.ichiranbarai.hikazei_under))) return error;
+      if ((key === 'k1_fudosan' || key === 'k2_kensetsu') && !d.keigen) return error;
+      if (key === 'k3' && !d.ichiranbarai) return error;
+    } else return error;
+  }
+  return {ok:true};
+}
 
 /** 金額階級表から該当する行を返す（upto: null は上限なし）。 */
 function pickBracket(amount, brackets) {
@@ -62,6 +105,7 @@ function pickBracket(amount, brackets) {
  * D = inshi_r07.json
  *
  * 返り値 = {
+ *   ok,              // true = 検証済みの結果。false のときは error/errorType のみ（税額なし）
  *   tax,             // 印紙税額（円）。非課税は 0
  *   taxable,         // false = 非課税（印紙は不要）
  *   perYear,         // true = 「1年ごとに」の額（18号〜20号）
@@ -73,11 +117,12 @@ function pickBracket(amount, brackets) {
  *   notes: [],       // 画面に出すべき注意（非課税の理由・軽減の適用期間など）
  * }
  */
-export function calcInshi(input, D) {
+function calculate(input, D) {
   if (!D || !D.docs) throw new Error('参照データ（inshi_r07.json）が渡されていません');
   const i = input || {};
   const doc = D.docs[i.doc];
   if (!doc) throw new Error('文書の種類を選んでください');
+  const taxPart = yen(i.taxPart, '消費税額等', true);
 
   const notes = [];
   const base = {
@@ -114,13 +159,13 @@ export function calcInshi(input, D) {
     return { ...base, tax: doc.noamount, taxable: true, bracketLabel: doc.unit + 'の記載のないもの' };
   }
 
-  const amount = yen(i.amount);
+  const amount = yen(i.amount, '記載金額');
   if (amount <= 0) throw new Error('記載金額（' + doc.unit + '・円）を入力してください');
 
   // 急所1: 消費税額等の区分記載（No.6925）。対象は1号・2号・17号だけ。免税事業者は引かない
   let judgeAmount = amount;
   let usedTaxExclusion = false;
-  const taxPart = yen(i.taxPart);
+  if (taxPart >= amount) throw new Error('消費税額等が記載金額以上になっています。入力を確認してください');
   if (taxPart > 0) {
     const eligible = (D.kubun_shohizei?.applies_to || []).includes(i.doc);
     if (!eligible) {
@@ -159,4 +204,20 @@ export function calcInshi(input, D) {
   const b = pickBracket(judgeAmount, doc.brackets);
   if (doc._note) notes.push(doc._note);
   return { ...base, tax: b.tax, taxable: true, judgeAmount, usedTaxExclusion, bracketLabel: b.label };
+}
+
+/** 公開入口。入力・参照データ・結果を検証し、失敗時は税額を返さない。 */
+export function calcInshi(input, D) {
+  const data = validateInshiData(D);
+  if (!data.ok) return data;
+  try {
+    const r = calculate(input, D);
+    if (!isYen(r.tax) || typeof r.taxable !== 'boolean' || r.taxable !== (r.tax > 0) ||
+        !(r.judgeAmount === null || isYen(r.judgeAmount))) {
+      return {ok:false,errorType:'data',error:'参照データによる計算結果が不正です。データを読み込めませんでした'};
+    }
+    return {ok:true,...r};
+  } catch (e) {
+    return {ok:false,errorType:'input',error:e.message};
+  }
 }
