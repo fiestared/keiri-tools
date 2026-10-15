@@ -11,10 +11,16 @@
 //  ④ 同 36〜38頁の例（給与7,654,321円→5,788,888円／所得金額調整控除 8,765,432円→26,544円／
 //     速算表 2,696,000円→172,100円）
 //  ⑤ 所得税法84条の2第1項（特定親族特別控除）の**算式を書き下した独立実装**と、データの表を全域照合
+//  ⑥ 『令和8年分 給与所得の源泉徴収票等の法定調書の作成と提出の手引』13〜15頁の記載例1
+//     （給与9,620,000円 → 年調年税額206,000円・超過額166,460円）。源泉徴収簿の⑨〜㉗と、
+//     源泉徴収票の各欄（支払金額・給与所得控除後の金額（調整控除後）・所得控除の額の合計額・源泉徴収税額 ほか）を照合
+//     https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/PDF/02.pdf
+//  ⑦ 『源泉所得税の改正のあらまし』（令和8年4月）1〜2頁の境目（給与だけの場合の収入金額の換算）
+//     https://www.nta.go.jp/publication/pamph/gensen/2026kaisei.pdf
 // 一次資料: https://www.nta.go.jp/publication/pamph/gensen/nencho2026/01.htm
 import { strict as assert } from "node:assert";
 import { readFileSync } from "node:fs";
-import { calcNencho, choseiKojoGaku, tokuteiShinzokuKojo, sanshutsuZeigaku } from "../docs/assets/nencho_core.js";
+import { calcNencho, choseiKojoGaku, tokuteiShinzokuKojo, sanshutsuZeigaku, kisaiRan, kekkaYoyaku } from "../docs/assets/nencho_core.js";
 import { kyuyoShotokuR8 } from "../docs/assets/juminzei_core.js";
 
 const rd = (p) => JSON.parse(readFileSync(new URL(p, import.meta.url)));
@@ -282,6 +288,108 @@ function tokuteiByStatute(x) {
   eq("特定支出 → 年調年税額147,500", r.nenzei, 147500);
 }
 
+// ── ⑥ 法定調書の手引 記載例1（年末調整を行った一般の受給者）──────────────
+// 入力は手引13〜15頁の源泉徴収簿・保険料控除申告書・配偶者控除等申告書・特定親族特別控除申告書・
+// 扶養控除等申告書から。国税次郎は平成21年2月2日生（令和8年12月31日に17歳＝16〜18歳）、
+// 国税孝男は昭和15年生で同居老親等、障害者（一般）は扶養親族に1人、国税三郎は16歳未満。
+// ★地震保険料の支払額は手引に載っていない。地震保険料の控除額⑯44,800円から、旧長期損害保険料19,600円の
+//   控除額14,800円（19,600×1/2＋5,000）を引いた30,000円を地震保険料として入れる（5万円以下は全額控除なので一意）。
+const KISAI_1 = {
+  kyuyo: 9620000, choshu: 372460, shaho: 1483023, shahoShinkoku: 176460,
+  seiho: { ippan_shin: 24000, ippan_kyu: 36000, kaigo: 48000, nenkin_shin: 53000, nenkin_kyu: 72000 },
+  jishin: { jishin: 30000, kyuChoki: 19600 },
+  haigu: { ari: true, gokei: 400000, rojin: false, shogai: "none" },
+  fuyo: { ippan1618: 1, dokyoRojin: 1, nensho: 1 },
+  fuyoShogai: { ippan: 1 },
+  tokuteiShinzoku: [950000],
+};
+{
+  const r = calcNencho(KISAI_1, refs);
+  eq("記載例1 ok", r.ok, true);
+  eq("記載例1 ⑨", r.kojoGo, 7670000);
+  eq("記載例1 ⑩ 所得金額調整控除", r.chosei, 112000);
+  eq("記載例1 ⑪ 調整控除後", r.choseiGo, 7558000);
+  eq("記載例1 ⑫＋⑬＋⑭ 社会保険料等", r.kojo.shaho, 1659483);
+  eq("記載例1 ⑮ 生命保険料（特例で上限12万）", r.kojo.seiho, 120000);
+  eq("記載例1 ⑯ 地震保険料", r.kojo.jishin, 44800);
+  eq("記載例1 ⑰ 配偶者控除", r.kojo.haigu, 380000);
+  eq("記載例1 ⑱ 特定親族特別控除（95万→51万）", r.kojo.tokutei, 510000);
+  eq("記載例1 ⑲ 扶養控除等（38万＋58万＋27万）", r.kojo.fuyoTou, 1230000);
+  eq("記載例1 ⑳ 基礎控除", r.kojo.kiso, 620000);
+  eq("記載例1 ㉑ 所得控除合計", r.kojo.gokei, 4564283);
+  eq("記載例1 ㉒ 課税給与所得", r.kazei, 2993000);
+  eq("記載例1 ㉓ 算出所得税額", r.sanshutsu, 201800);
+  eq("記載例1 ㉕ 年調所得税額", r.nenchoShotoku, 201800);
+  eq("記載例1 ㉖ 年調年税額", r.nenzei, 206000);
+  eq("記載例1 ㉗ 超過額", r.kanpu, 166460);
+  eq("記載例1 ㉚ 差引還付する金額", r.kanpuGaku, 166460);
+
+  // 源泉徴収票の欄（手引15頁の見本の値）
+  const hyo = Object.fromEntries(kisaiRan(r).filter((x) => x.hyo).map((x) => [x.hyo, x.value]));
+  eq("記載例1 票: 欄の集合", Object.keys(hyo).sort(), [
+    "住宅借入金等特別控除の額", "基礎控除の額", "所得控除の額の合計額", "所得金額調整控除額",
+    "源泉徴収税額", "特定親族特別控除の額", "生命保険料の控除額", "社会保険料等の金額",
+    "給与所得控除後の金額（調整控除後）", "支払金額", "地震保険料の控除額", "配偶者（特別）控除の額"].sort());
+  eq("記載例1 票: 支払金額", hyo["支払金額"], 9620000);
+  eq("記載例1 票: 給与所得控除後の金額（調整控除後）", hyo["給与所得控除後の金額（調整控除後）"], 7558000);
+  eq("記載例1 票: 所得控除の額の合計額", hyo["所得控除の額の合計額"], 4564283);
+  eq("記載例1 票: 源泉徴収税額＝年調年税額（天引きの合計ではない）", hyo["源泉徴収税額"], 206000);
+  eq("記載例1 票: 配偶者（特別）控除の額", hyo["配偶者（特別）控除の額"], 380000);
+  eq("記載例1 票: 特定親族特別控除の額", hyo["特定親族特別控除の額"], 510000);
+  eq("記載例1 票: 社会保険料等の金額", hyo["社会保険料等の金額"], 1659483);
+  eq("記載例1 票: 生命保険料の控除額", hyo["生命保険料の控除額"], 120000);
+  eq("記載例1 票: 地震保険料の控除額", hyo["地震保険料の控除額"], 44800);
+  eq("記載例1 票: 基礎控除の額", hyo["基礎控除の額"], 620000);
+  eq("記載例1 票: 所得金額調整控除額", hyo["所得金額調整控除額"], 112000);
+  ok("記載例1 票: 源泉徴収税額は徴収税額の合計と違う（取り違えを落とす）", hyo["源泉徴収税額"] !== r.choshu);
+  // 源泉徴収簿の欄番号（年末調整のしかた57頁）
+  const bo = Object.fromEntries(kisaiRan(r).map((x) => [x.bo, x.value]));
+  eq("記載例1 簿: ⑦⑧⑪㉑㉖㉗", [bo["⑦"], bo["⑧"], bo["⑪"], bo["㉑"], bo["㉖"], bo["㉗"]],
+     [9620000, 372460, 7558000, 4564283, 206000, 166460]);
+  const y = kekkaYoyaku(r, N);
+  eq("記載例1 要約", [y.year, y.nenzei, y.choshu, y.kubun, y.sagaku], ["令和8年分", 206000, 372460, "kanpu", 166460]);
+  ok("要約: 改正の適用をデータから申告", /令和8年12月1日施行/.test(y.kaisei) && /令和8年分以後/.test(y.kaisei));
+}
+// 設例A（年末調整のしかた57頁）でも票の欄を照合: 住宅借入金等特別控除の額は㉔の76,500円
+{
+  const r = calcNencho(SETTEI_A, refs);
+  const hyo = Object.fromEntries(kisaiRan(r).filter((x) => x.hyo).map((x) => [x.hyo, x.value]));
+  eq("設例A 票: 支払金額・調整控除後・控除合計・源泉徴収税額・住宅",
+    [hyo["支払金額"], hyo["給与所得控除後の金額（調整控除後）"], hyo["所得控除の額の合計額"], hyo["源泉徴収税額"], hyo["住宅借入金等特別控除の額"]],
+    [8970000, 6973000, 4826102, 41400, 76500]);
+  // 住宅ローン控除が算出所得税額を超えるときは、票には算出所得税額を限度に書く（手引⑰の注）
+  const big = calcNencho({ kyuyo: 4390000, choshu: 51845, shaho: 641525, jutaku: 300000 }, refs);
+  const hb = Object.fromEntries(kisaiRan(big).filter((x) => x.hyo).map((x) => [x.hyo, x.value]));
+  eq("票: 住宅借入金等特別控除の額は算出所得税額が限度", hb["住宅借入金等特別控除の額"], big.sanshutsu);
+  // 不足のときは区分が不足・差額は不足額
+  const f = kekkaYoyaku(calcNencho({ kyuyo: 6000000, choshu: 100000, shaho: 900000 }, refs), N);
+  eq("要約: 不足", [f.kubun, f.sagaku, f.nenzei], ["fusoku", 47500, 147500]);
+}
+
+// ── ⑦ 改正のあらまし（令和8年4月）の境目 ──────────────────────────────
+// 基礎控除: 合計所得489万円以下＝104万（給与だけなら665万5,556円以下）／655万円以下＝67万（850万円以下）
+{
+  const kiso = (kyuyo) => calcNencho({ kyuyo, choshu: 0 }, refs).kojo.kiso;
+  eq("あらまし 給与6,655,556円 → 基礎控除104万", kiso(6655556), 1040000);
+  eq("あらまし 給与6,655,557円 → 基礎控除67万", kiso(6655557), 670000);
+  eq("あらまし 給与8,500,000円 → 基礎控除67万", kiso(8500000), 670000);
+  eq("あらまし 給与8,500,001円 → 基礎控除62万", kiso(8500001), 620000);
+  // 1頁ハ: 令和8・9年分の給与所得の金額（69万1,000円以上220万円未満）
+  eq("あらまし ハ 691,000円 → なし(0)", kyuyoShotokuR8(691000, J), 0);
+  eq("あらまし ハ 741,000円 → 収入−74万", kyuyoShotokuR8(741000, J), 1000);
+  eq("あらまし ハ 2,190,999円 → 収入−74万", kyuyoShotokuR8(2190999, J), 1450999);
+  eq("あらまし ハ 2,191,000円 → 145万1,000円", kyuyoShotokuR8(2191000, J), 1451000);
+  eq("あらまし ハ 2,192,999円 → 145万1,000円", kyuyoShotokuR8(2192999, J), 1451000);
+  eq("あらまし ハ 2,193,000円 → 145万3,000円", kyuyoShotokuR8(2193000, J), 1453000);
+  eq("あらまし ハ 2,196,000円 → 145万6,000円", kyuyoShotokuR8(2196000, J), 1456000);
+  eq("あらまし ハ 2,199,999円 → 145万6,000円", kyuyoShotokuR8(2199999, J), 1456000);
+  // 2頁⑶ 所得要件の給与換算（扶養62万＝136万／特定親族123万＝197万／配偶者特別133万＝207万／勤労学生89万＝163万）
+  eq("あらまし 給与136万 → 所得62万", kyuyoShotokuR8(1360000, J), 620000);
+  eq("あらまし 給与197万 → 所得123万", kyuyoShotokuR8(1970000, J), 1230000);
+  eq("あらまし 給与207万 → 所得133万", kyuyoShotokuR8(2070000, J), 1330000);
+  eq("あらまし 給与163万 → 所得89万", kyuyoShotokuR8(1630000, J), 890000);
+}
+
 // ── 壊しテスト（規則2: 無傷が緑であることは上で確かめ済み）──
 {
   const N2 = JSON.parse(JSON.stringify(N)); N2.nenzei.rate_num = 1000;
@@ -298,6 +406,8 @@ function tokuteiByStatute(x) {
   ok("page: 3つの参照データを await", /await\s+Promise\.all\(\[jReady, sReady, nReady\]\)/.test(html));
   ok("page: 読み込み失敗を申告", /読み込めませんでした/.test(html));
   ok("page: 年分はデータから（_meta.year を使う）", /_meta\?*\.year|_meta\.year/.test(html));
+  ok("page: 欄の対応は core の kisaiRan から描く", /kisaiRan\(r\)/.test(html));
+  ok("page: 要約は core の kekkaYoyaku から描く", /kekkaYoyaku\(r, N\)/.test(html));
 }
 
 console.log(`test_nencho: ${pass} passed, ${fail} failed`);

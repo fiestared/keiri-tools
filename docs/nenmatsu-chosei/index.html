@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-10-07",
-      "dateModified": "2026-10-13",
+      "dateModified": "2026-10-14",
       "name": "年末調整 計算機（還付・不足額）",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -134,23 +134,37 @@
 
 <section class="hero">
   <h1>年末調整 計算機（還付・不足額）</h1>
-  <p class="article-meta">公開日: <time datetime="2026-10-07">2026年10月7日</time>（更新日: <time datetime="2026-10-13">2026年10月13日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-10-07">2026年10月7日</time>（更新日: <time datetime="2026-10-14">2026年10月14日</time>）</p>
   <p>1年分の<b>給与の総額</b>と<b>天引きされた所得税</b>を入れると、12月の年末調整で<b>いくら戻るか（超過額と還付額）・いくら追加で引かれるか（不足額）</b>の目安が分かります。</p>
-  <p>国税庁「年末調整のしかた」の手順どおりに<b>年調年税額</b>を計算します。令和8年分の改正と特定親族特別控除に対応しています（<a href="#kaisei">令和8年分で変わった点</a>）。</p>
+  <p>国税庁「<a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf">年末調整のしかた</a>」の手順どおりに<b>年調年税額</b>を計算します。令和8年分の改正と特定親族特別控除に対応しています（<a href="#kaisei">令和8年分で変わった点</a>）。</p>
 </section>
 
-<div class="card">
+<div class="card" id="keisan">
+  <p class="hint" id="min-lead" style="margin-top:0"><b>まずは最初の3欄（給与の総額・天引きされた所得税・社会保険料等）だけで計算できます。</b>保険料控除・配偶者・扶養親族などは、当てはまる人だけ下の欄を開いて足します。</p>
   <fieldset class="member">
     <legend>1. 給与と天引きされた税額（1〜12月の合計）</legend>
     <label for="kyuyo">本年分の給与の総額（給料・手当・賞与の合計）</label>
     <input type="number" id="kyuyo" min="0" step="1000" data-example="5000000" inputmode="numeric" aria-describedby="kyuyo-hint">
-    <span id="kyuyo-hint" class="hint"><b class="input-example">入力例：1年分の給与が500万円なら 5000000</b>源泉徴収簿の「計⑦」欄。通勤手当など非課税のものは含めません（<a href="#in-kyuyo">前職の給与・未払の給与</a>）</span>
+    <span id="kyuyo-hint" class="hint"><b class="input-example">入力例：1年分の給与が500万円なら 5000000</b>給与明細・賞与明細の課税される支給額（非課税の通勤手当などを除く）の1年分の合計。会社の源泉徴収簿なら「⑦」欄です（<a href="#in-kyuyo">前職の給与・未払の給与</a>・<a href="#sagasu">書類のどこを見るか</a>）</span>
     <label for="choshu">天引きされた所得税の合計（徴収税額）</label>
     <input type="number" id="choshu" min="0" step="1" data-example="120000" inputmode="numeric" aria-describedby="choshu-hint">
-    <span id="choshu-hint" class="hint"><b class="input-example">入力例：1年分で12万円なら 120000（天引きが無かったなら 0）</b>給与明細の「所得税」欄の1年分の合計。未払給与の未徴収の税額も含めます（<a href="#in-choshu">集計の注意</a>）</span>
+    <span id="choshu-hint" class="hint"><b class="input-example">入力例：1年分で12万円なら 120000（天引きが無かったなら 0）</b>給与明細・賞与明細の「所得税」欄の1年分の合計（源泉徴収簿の「⑧」欄）。<b>源泉徴収票の「源泉徴収税額」は年末調整後の年税額なので、ここには入れません</b>（<a href="#in-choshu">集計の注意</a>）</span>
     <label for="shaho">給与から引かれた社会保険料等</label>
     <input type="number" id="shaho" min="0" step="1" data-example="750000" inputmode="numeric" aria-describedby="shaho-hint">
-    <span id="shaho-hint" class="hint"><b class="input-example">入力例：1年分で75万円なら 750000</b>健康保険・介護保険・厚生年金・雇用保険の合計（賞与分も含む）。天引きの小規模企業共済等掛金（iDeCoなど）も含めます</span>
+    <span id="shaho-hint" class="hint"><b class="input-example">入力例：1年分で75万円なら 750000</b>給与明細・賞与明細の健康保険・介護保険・厚生年金・雇用保険の1年分の合計（源泉徴収簿の「⑫」欄）。天引きの小規模企業共済等掛金（iDeCoなど）も含めます</span>
+    <details class="optional-fields sagasu" id="sagasu"><summary>この3欄の金額を、書類のどこで探すか（早見表）</summary>
+    <div class="scroll-wrap">
+    <table class="sagasu-hyo">
+    <thead><tr><th scope="col">入力欄</th><th scope="col">給与明細・賞与明細</th><th scope="col">源泉徴収簿（会社の帳簿）</th><th scope="col">入れないもの</th></tr></thead>
+    <tbody>
+    <tr><th scope="row">給与の総額</th><td>課税される支給額（総支給額から非課税の通勤手当などを除いた額）を、1〜12月の給与と賞与の全部について合計</td><td>⑦欄（①給料・手当等＋④賞与等）</td><td>非課税の通勤手当、前年分の未払給与を本年に支払ったもの</td></tr>
+    <tr><th scope="row">天引きされた所得税</th><td>「所得税」欄を、給与と賞与の全部について合計</td><td>⑧欄（③＋⑥）</td><td><b>源泉徴収票の「源泉徴収税額」</b>（年末調整後の年税額で、天引きの合計ではありません）、住民税</td></tr>
+    <tr><th scope="row">社会保険料等</th><td>健康保険・介護保険・厚生年金・雇用保険の欄を、給与と賞与の全部について合計</td><td>⑫欄（②＋⑤）</td><td>自分で払った国民年金保険料など（これは「自分で払った社会保険料」の欄へ）</td></tr>
+    </tbody>
+    </table>
+    </div>
+    <p class="hint">12月の給与・賞与がまだ支給されていないときは、見込みの額を足して計算します（12月の給与の税額計算を省略する会社では、12月分の税額を⑧に含めません。<a href="#in-choshu">集計の注意</a>）。年末調整が終わった後に結果と見比べるときは、計算結果の表の右の列に<b>源泉徴収票のどの欄に当たるか</b>を出しています。</p>
+    </details>
     <details class="optional-fields" id="grp-self"><summary>自分で払った社会保険料・iDeCoなど（ある人だけ） <span data-optional-state>未設定</span></summary>
     <label for="shaho_shinkoku">自分で払った社会保険料（保険料控除申告書で申告する分）</label>
     <input type="number" id="shaho_shinkoku" min="0" step="1" placeholder="円（なければ空欄）" inputmode="numeric" aria-describedby="shaho_shinkoku-hint">
@@ -284,7 +298,18 @@
 <li><b>少ないとき</b>：12月の給与から追加で引かれます（不足額）。</li>
 </ul>
 <p><b>令和8年分は、基礎控除の引上げなどの改正が令和8年12月1日に施行され、11月までの天引きは改正前の税額表のまま</b>なので、改正の効果がまとめて12月の年末調整に出ます。</p>
-<p>上の計算機は、国税庁「令和8年分 年末調整のしかた」の手順と表で計算します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+<p>上の計算機は、国税庁「<a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf">令和8年分 年末調整のしかた</a>」の手順と表で計算します（一般的な計算方法の説明であり、個別の税務相談ではありません）。</p>
+
+<nav class="summary-box" aria-labelledby="workflow-title">
+<p id="workflow-title"><b>この順で進める</b></p>
+<ol>
+<li>書類をそろえる：<a href="../column/nenmatsu-chosei-hitsuyo-shorui/">必要書類の一覧</a> → <a href="../column/nenmatsu-chosei-kakikata/">申告書の書き方</a>。</li>
+<li>控除を確認する：<a href="../column/shotoku-kojo-ichiran/">所得控除の一覧</a>・<a href="../column/tokutei-shinzoku-tokubetsu-kojo/">特定親族特別控除</a>。</li>
+<li>年税額を計算する：このページの計算機と<a href="#tejun">年調年税額の計算手順</a>。</li>
+<li>過不足を確認する：<a href="../column/nenmatsu-chosei-kanpukin/">還付金の時期と条件</a>・<a href="#seisan">不足額の精算</a>。</li>
+<li>源泉徴収票を確認する：<a href="../gensen-hyo/">欄の書き方</a>・<a href="../column/gensen-choshuhyo-mikata/">受け取った票の見方</a>。</li>
+</ol>
+</nav>
 
 <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
 <li><a href="#seisan">還付・不足額の精算</a></li>
@@ -295,11 +320,11 @@
 <li><a href="#nyuryoku">入力欄の詳しい説明</a></li>
 <li><a href="#faq">よくある質問</a></li>
 <li><a href="#source">出典</a></li>
-</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/nenmatsu-chosei-juminzei/">年末調整と住民税の関係</a></li><li><a href="../column/nenmatsu-chosei-iryohi-kojo/">年末調整で医療費控除はできる？受けられない理由と確定申告の流れ</a></li><li><a href="../column/nenmatsu-chosei-kakutei-shinkoku-chigai/">年末調整と確定申告の違い</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/kiso-kojo/">基礎控除はいくら？令和8年分は居住者で最大104万円</a></li><li><a href="../column/nenmatsu-chosei-juminzei/">年末調整と住民税の関係</a></li><li><a href="../column/nenmatsu-chosei-kakikata/">年末調整の書き方</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
 <h2 id="seisan">還付・不足額の精算</h2>
 
-<p>徴収税額の合計と年調年税額を比べて、多ければ<b>超過額</b>、少なければ<b>不足額</b>が出ます（年末調整のしかた39〜41頁）。</p>
+<p>徴収税額の合計と年調年税額を比べて、多ければ<b>超過額</b>、少なければ<b>不足額</b>が出ます（<a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf">年末調整のしかた</a>39〜41頁）。</p>
 <ul>
 <li><b>超過額の充当</b>：最後の給与の税額や未払給与の税額をまだ天引きしていないときは、超過額をまずその税額に充当し、残りを本人に還付します。未払給与の税額に充当した部分は、その未払給与を支払うときに徴収すべき税額に充てられます。</li>
 <li><b>還付の方法</b>：勤務先は、年末調整をした月分（通常は12月分）として納める源泉所得税から差し引いて還付し、引ききれないときはその後に納める源泉所得税から順次還付します。</li>
@@ -309,16 +334,17 @@
 <p class="hint">繰延べを受ける人は、最後の給与の税額計算を省略せずに年末調整をします。その月の給与の通常の税額は繰り延べられないためです。</p>
 
 <div class="callout">
-<b>国税庁の設例（年末調整のしかた57〜59頁）を、この計算機に入れると1円まで一致します。</b>
+<b>国税庁の設例（<a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf#page=58">年末調整のしかた57〜59頁</a>）を、この計算機に入れると1円まで一致します。</b>
 <ul style="margin:8px 0 0;padding-left:1.3em">
 <li>給与8,970,000円・徴収税額156,670円・社会保険料等1,386,102円・配偶者控除・扶養3人・特定親族1人・住宅借入金等特別控除76,500円の人は、年調年税額<b>41,400円</b>で、<b>115,270円</b>が還付されます。</li>
 <li>給与4,390,000円・徴収税額51,845円の設例（12月の税額計算を省略しない場合）は、年調年税額26,100円・超過額25,745円です。</li>
+<li>国税庁「法定調書の作成と提出の手引」の記載例1（給与9,620,000円・徴収税額372,460円）は、年調年税額206,000円・超過額166,460円で、源泉徴収票の各欄の金額まで一致します。</li>
 </ul>
 </div>
 
 <h2 id="tejun">年調年税額の計算の手順</h2>
 
-<p>年末調整の年税額（年調年税額）は、次の順で計算します（年末調整のしかた37〜39頁）。</p>
+<p>年末調整の年税額（年調年税額）は、次の順で計算します（<a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf">年末調整のしかた</a>37〜39頁）。</p>
 
 <figure class="figure" style="--figw:360px">
 <figcaption>年末調整の計算の流れ（令和8年分）</figcaption>
@@ -364,17 +390,17 @@
 </tbody>
 </table>
 </div>
-<p class="hint">令和8年分の年末調整のための算出所得税額の速算表（年末調整のしかた55頁）。課税給与所得金額が18,050,000円を超える場合は年末調整の対象になりません。</p>
+<p class="hint">令和8年分の年末調整のための算出所得税額の速算表（<a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf">年末調整のしかた</a>55頁）。課税給与所得金額が18,050,000円を超える場合は年末調整の対象になりません。</p>
 
 <div class="callout" id="kazei-kyuyo-dake">
 <b>課税されるのは給与だけです。</b>年末調整で精算するのは給与にかかる所得税だけなので、課税給与所得金額は「給与所得控除後の給与等の金額（調整控除後）−所得控除の合計額」で求め、<b>給与以外の所得は足しません</b>。
 <span style="display:block;margin-top:8px">ただし、基礎控除・配偶者控除・寡婦控除・ひとり親控除・勤労学生控除が受けられるか、いくらかは<b>給与以外の所得も足した合計所得金額</b>で決まります。</span>
-<span style="display:block;margin-top:8px">給与所得・退職所得以外の所得が20万円を超える人は、確定申告を要しない場合（所得税法121条1項1号）に当たらないため、確定申告が必要になることがあります。</span>
+<span style="display:block;margin-top:8px">給与所得・退職所得以外の所得が20万円を超える人は、確定申告を要しない場合（<a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-At_121">所得税法121条</a>1項1号）に当たらないため、確定申告が必要になることがあります。</span>
 </div>
 
 <h2 id="kaisei">令和8年分で変わった点</h2>
 
-<p>令和8年度税制改正は令和8年12月1日に施行されますが、附則で<b>令和8年分以後の所得税について適用</b>すると定められています。11月までの給与の源泉徴収には変更がなく、<b>12月の年末調整で改正後の額を使って1年間の税額を計算し、改正前の税額表で引いた税額と精算</b>します（年末調整のしかた4頁）。</p>
+<p>令和8年度税制改正は令和8年12月1日に施行されますが、附則で<b>令和8年分以後の所得税について適用</b>すると定められています。11月までの給与の源泉徴収には変更がなく、<b>12月の年末調整で改正後の額を使って1年間の税額を計算し、改正前の税額表で引いた税額と精算</b>します（<a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf#page=5">年末調整のしかた4頁</a>）。</p>
 
 <div class="scroll-wrap">
 <table id="kaisei-hyo">
@@ -397,7 +423,7 @@
 <p>年末調整で受けられるのは、次の15の控除です。医療費控除・寄附金控除（ふるさと納税など）・雑損控除と、住宅借入金等特別控除の1年目は、確定申告で受けます。</p>
 
 <div class="callout" id="nencho-kojo-list">
-<b>年末調整で受けられる控除（所得税法190条2号・租税特別措置法41条の3の12）</b>
+<b>年末調整で受けられる控除（<a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-At_190">所得税法190条</a>2号・<a href="https://laws.e-gov.go.jp/law/332AC0000000026/20261201_508AC0000000012#Mp-At_41_3_12">租税特別措置法41条の3の12</a>）</b>
 <ol style="margin:8px 0 0;padding-left:1.3em">
 <li>社会保険料控除</li>
 <li>小規模企業共済等掛金控除</li>
@@ -426,12 +452,12 @@
 <li>住宅借入金等特別控除の1年目</li>
 </ul>
 </div>
-<p>所得税法190条2号が年末調整で差し引くと定めているのは、上の一覧の1〜13の所得控除だけです。医療費控除（73条）・寄附金控除（78条）・雑損控除（72条）は入っていません。</p>
+<p><a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-At_190">所得税法190条</a>2号が年末調整で差し引くと定めているのは、上の一覧の1〜13の所得控除だけです。医療費控除（73条）・寄附金控除（78条）・雑損控除（72条）は入っていません。</p>
 
 <h2 id="taisho">年末調整の対象にならない人</h2>
 
 <div class="callout" id="nencho-taishogai">
-<b>次のいずれかに当てはまる人は、勤務先で年末調整をしません（年末調整のしかた5頁）。</b>
+<b>次のいずれかに当てはまる人は、勤務先で年末調整をしません（<a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf">年末調整のしかた</a>5頁）。</b>
 <ol style="margin:8px 0 0;padding-left:1.3em">
 <li>本年中の主たる給与の収入金額が2,000万円を超える人</li>
 <li>災害により被害を受けて、災害減免法の規定により本年分の給与に対する源泉所得税及び復興特別所得税の徴収猶予又は還付を受けた人</li>
@@ -446,7 +472,7 @@
 <li>非居住者（ただし、年の中途で海外の支店へ転勤したことなどにより非居住者となった人は、非居住者となった時に年末調整をします）</li>
 <li>継続して同一の雇用主に雇用されない日雇労働者など（丙欄の人）</li>
 </ol>
-<p style="margin:8px 0 0">対象にならない人は、原則として自分で確定申告をして精算します。確定申告を要しない場合（所得税法121条）に当たる人もいます。</p>
+<p style="margin:8px 0 0">対象にならない人は、原則として自分で確定申告をして精算します。確定申告を要しない場合（<a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-At_121">所得税法121条</a>）に当たる人もいます。</p>
 </div>
 
 <h2 id="nyuryoku">入力欄の詳しい説明</h2>
@@ -468,7 +494,7 @@
 </ul>
 
 <h3 id="in-gokei">「それ以外の所得の合計額」に入れる額</h3>
-<p>合計所得金額に入る額で入れます（年末調整のしかた9頁）。次の①〜③の合計です。</p>
+<p>合計所得金額に入る額で入れます（<a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf">年末調整のしかた</a>9頁）。次の①〜③の合計です。</p>
 <ul style="list-style:none;padding-left:0.2em">
 <li>① 事業・不動産・総合課税の利子・配当・短期譲渡所得とその他の雑所得（損益通算後）</li>
 <li>② 総合課税の長期譲渡所得と一時所得の合計額の<b>2分の1</b></li>
@@ -549,7 +575,7 @@
 <p class="faq-answer">合計所得金額489万円以下の人の基礎控除が104万円になり、給与所得控除の最低額が74万円になりました。扶養親族の所得要件などの変更は<a href="#kaisei">令和8年分で変わった点</a>の表にあります。改正は令和8年12月1日施行で令和8年分から適用されますが、11月までの天引きは改正前の税額表のままなので、改正による減税分は12月の年末調整でまとめて精算されます。</p>
 
 <h3 class="faq-question">年末調整で医療費控除やふるさと納税の控除は受けられますか？</h3>
-<p class="faq-answer">受けられません。年末調整で差し引くのは所得税法190条2号が定める社会保険料控除・生命保険料控除・扶養控除などの13の所得控除と、所得金額調整控除・住宅借入金等特別控除だけで、医療費控除・寄附金控除（ふるさと納税）・雑損控除は確定申告で受けます。住宅借入金等特別控除も1年目は確定申告が必要で、2年目以降は年末調整で受けられます。医療費控除を確定申告で受ける流れは<a href="../column/nenmatsu-chosei-iryohi-kojo/">年末調整と医療費控除</a>の記事にあります。</p>
+<p class="faq-answer">受けられません。年末調整で差し引くのは<a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-At_190">所得税法190条</a>2号が定める社会保険料控除・生命保険料控除・扶養控除などの13の所得控除と、所得金額調整控除・住宅借入金等特別控除だけで、医療費控除・寄附金控除（ふるさと納税）・雑損控除は確定申告で受けます。住宅借入金等特別控除も1年目は確定申告が必要で、2年目以降は年末調整で受けられます。医療費控除を確定申告で受ける流れは<a href="../column/nenmatsu-chosei-iryohi-kojo/">年末調整と医療費控除</a>の記事にあります。</p>
 
 <h3 class="faq-question">年末調整の還付金はいつ戻りますか？</h3>
 <p class="faq-answer">勤務先が還付します。年末調整をした月分（通常は12月分）として納める源泉所得税から差し引いて、本人に戻します。それだけでは還付しきれないときは、その後に納める源泉所得税から順次還付します。還付することとなった日の翌月から2か月を経過しても還付しきれない見込みのときなどは、勤務先が税務署に還付請求書を出し、税務署から還付されます。</p>
@@ -563,9 +589,11 @@
 <h2 id="source">出典</h2>
 <ul>
 <li>国税庁 <a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/01.htm">令和8年分 年末調整のしかた</a>（3〜4頁 改正点、5〜6頁 対象となる人、35〜41頁 年税額の計算と過不足額の精算、47〜54頁 給与所得控除後の給与等の金額の表、55〜56頁 速算表・控除額の表、57〜59頁 設例）</li>
+<li>国税庁 <a href="https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/PDF/02.pdf">令和8年分 給与所得の源泉徴収票等の法定調書の作成と提出の手引（給与所得の源泉徴収票）</a>（5〜7頁 各欄に記載すべき事項、13〜15頁 記載例1）</li>
+<li>国税庁 <a href="https://www.nta.go.jp/publication/pamph/gensen/2026kaisei.pdf">源泉所得税の改正のあらまし（令和8年4月）</a>（1〜2頁 基礎控除・給与所得控除の改正と適用時期）</li>
 <li>国税庁 <a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/203.pdf">過不足額の精算の設例（本年最後に支払う給与（賞与）についての税額計算を省略しないで年末調整を行う場合）</a></li>
-<li>所得税法190条（年末調整）・79条（障害者控除）・84条（扶養控除）・84条の2（特定親族特別控除）・86条（基礎控除）、令和8年法律第12号 附則2条・3条・9条（令和8年分以後の所得税について適用）— <a href="https://laws.e-gov.go.jp/law/340AC0000000033">e-Gov法令検索</a></li>
-<li>租税特別措置法29条の4（給与所得控除の最低控除額等の特例）・41条の3の11／41条の3の12（所得金額調整控除）・41条の15の5（生命保険料控除の特例）・41条の16の2（基礎控除の特例）— <a href="https://laws.e-gov.go.jp/law/332AC0000000026">e-Gov法令検索</a></li>
+<li><a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-At_190">所得税法190条</a>（年末調整）・<a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-At_79">79条</a>（障害者控除）・<a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-At_84">84条</a>（扶養控除）・<a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-At_84_2">84条の2</a>（特定親族特別控除）・<a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-At_86">86条</a>（基礎控除）、令和8年法律第12号 附則2条・3条・9条（令和8年分以後の所得税について適用）— <a href="https://laws.e-gov.go.jp/law/340AC0000000033">e-Gov法令検索</a></li>
+<li><a href="https://laws.e-gov.go.jp/law/332AC0000000026/20261201_508AC0000000012#Mp-At_29_4">租税特別措置法29条の4</a>（給与所得控除の最低控除額等の特例）・<a href="https://laws.e-gov.go.jp/law/332AC0000000026/20261201_508AC0000000012#Mp-At_41_3_11">41条の3の11</a>／<a href="https://laws.e-gov.go.jp/law/332AC0000000026/20261201_508AC0000000012#Mp-At_41_3_12">41条の3の12</a>（所得金額調整控除）・<a href="https://laws.e-gov.go.jp/law/332AC0000000026/20261201_508AC0000000012#Mp-At_41_15_5">41条の15の5</a>（生命保険料控除の特例）・<a href="https://laws.e-gov.go.jp/law/332AC0000000026/20261201_508AC0000000012#Mp-At_41_16_2">41条の16の2</a>（基礎控除の特例）— <a href="https://laws.e-gov.go.jp/law/332AC0000000026">e-Gov法令検索</a></li>
 </ul>
 
 <h2 id="related">関連するツール・記事</h2>
@@ -583,7 +611,7 @@
 <!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%B9%B4%E6%9C%AB%E8%AA%BF%E6%95%B4%E3%81%A7%E3%81%84%E3%81%8F%E3%82%89%E6%88%BB%E3%82%8B%E3%81%8B%EF%BC%88%E8%B6%85%E9%81%8E%E9%A1%8D%E3%81%A8%E9%82%84%E4%BB%98%E9%A1%8D%EF%BC%89%E3%83%BB%E8%BF%BD%E5%8A%A0%E3%81%A7%E5%BC%95%E3%81%8B%E3%82%8C%E3%82%8B%E3%81%8B%EF%BC%88%E4%B8%8D%E8%B6%B3%E9%A1%8D%EF%BC%89%E3%82%92%E3%80%81%E5%9B%BD%E7%A8%8E%E5%BA%81%E3%80%8C%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%88%86+%E5%B9%B4%E6%9C%AB%E8%AA%BF%E6%95%B4%E3%81%AE%E3%81%97%E3%81%8B%E3%81%9F%E3%80%8D%E3%81%AE%E6%89%8B%E9%A0%86%E3%81%A8%E8%A1%A8%E3%81%A7%E8%A8%88%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E5%9F%BA%E7%A4%8E%E6%8E%A7%E9%99%A4104%E4%B8%87%E5%86%86%E3%83%BB%E7%B5%A6%E4%B8%8E%E6%89%80%E5%BE%97%E6%8E%A7%E9%99%A4%E3%81%AE%E6%9C%80%E4%BD%8E74%E4%B8%87%E5%86%86%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fnenmatsu-chosei%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 <section class="faq rel-block">
 <h2>関連する解説</h2>
-<!--rel:S--><ul class="rel-list"><li><a href="../column/nenmatsu-chosei-juminzei/">年末調整と住民税の関係｜住民税は年末調整で精算されない・給与支払報告書で翌年度に届くしくみ</a><span class="rel-desc">年末調整で精算するのは所得税と復興特別所得税で、住民税は年末調整では精算されません。年末調整の内容は、会社が給与支払報告書を市区町村に提出し</span></li><li><a href="../column/nenmatsu-chosei-iryohi-kojo/">年末調整で医療費控除はできる？受けられない理由と確定申告の流れ【令和8年分】</a><span class="rel-desc">医療費控除は年末調整では受けられません。年末調整で差し引く所得控除を挙げる所得税法190条2号に入っていないためで、受けるときは本人が確定申</span></li><li><a href="../column/nenmatsu-chosei-kakutei-shinkoku-chigai/">年末調整と確定申告の違い — 誰が計算し、いつ行い、どの控除を受けるか【令和8年分】</a><span class="rel-desc">年末調整は会社が対象者の給与について所得税の過不足を精算する手続、確定申告は本人が税務署長へ申告書を提出する手続です。令和8年分の所得税につ</span></li><li><a href="../column/kokumin-nenkin-kojo-shomeisho/">国民年金の控除証明書とは｜令和8年分の届く時期・見方・再発行</a><span class="rel-desc">国民年金の控除証明書の令和8年分の送付日、金額欄の見方、再交付の目安、電子データとお客様控えの違い、年末調整に間に合わないときの後日提出、確</span></li><li><a href="../column/shokibo-kyosai-kakekin-kojo/">小規模企業共済等掛金控除とは — 対象の掛金3種類と、年末調整での扱い（令和8年分）</a><span class="rel-desc">小規模企業共済等掛金控除の対象になる掛金の種類と、給与から差し引かれる掛金・本人が直接支払った掛金の年末調整での扱い、源泉徴収票での表示。</span></li></ul><!--rel:E-->
+<!--rel:S--><ul class="rel-list"><li><a href="../column/kiso-kojo/">基礎控除はいくら？令和8年分は居住者で最大104万円 — 所得2,350万円超で4段階に減る仕組み</a><span class="rel-desc">令和8年分の所得税の基礎控除は、居住者で合計所得金額489万円以下なら104万円、489万円超655万円以下は67万円、655万円超2,35</span></li><li><a href="../column/nenmatsu-chosei-juminzei/">年末調整と住民税の関係｜住民税は年末調整で精算されない・給与支払報告書で翌年度に届くしくみ</a><span class="rel-desc">年末調整で精算するのは所得税と復興特別所得税で、住民税は年末調整では精算されません。年末調整の内容は、会社が給与支払報告書を市区町村に提出し</span></li><li><a href="../column/nenmatsu-chosei-kakikata/">年末調整の書き方｜令和8年分・4種類の書類はどの欄に何を書くか</a><span class="rel-desc">令和8年分の年末調整で会社に出す書類は4種類。扶養控除等申告書・基礎控除申告書・保険料控除申告書・住宅ローン控除申告書について、誰が出すか、</span></li><li><a href="../column/seimei-hokenryo-kojo/">生命保険料控除 — 令和8年の「6万円」は所得税法の改正ではない。12万円の上限は読み替えられていない</a><span class="rel-desc">令和8・9年分だけ、23歳未満の扶養親族がいる人は、新契約の一般の生命保険料の控除上限が6万円になる。3区分の合計12万円の上限は据え置きな</span></li><li><a href="../column/nenmatsu-chosei-iryohi-kojo/">年末調整で医療費控除はできる？受けられない理由と確定申告の流れ【令和8年分】</a><span class="rel-desc">医療費控除は年末調整では受けられません。年末調整で差し引く所得控除を挙げる所得税法190条2号に入っていないためで、受けるときは本人が確定申</span></li></ul><!--rel:E-->
 </section>
 </main>
 <footer class="site">
@@ -594,7 +622,7 @@
 </footer>
 
 <script type="module">
-import { calcNencho } from "../assets/nencho_core.js";
+import { calcNencho, kisaiRan, kekkaYoyaku } from "../assets/nencho_core.js";
 
 const $ = (id) => document.getElementById(id);
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
@@ -690,41 +718,55 @@ $("calc").addEventListener("click", async () => {
     return;
   }
   const k = r.kojo;
-  const row = (label, v, cls = "") => `<tr><th scope="row">${label}</th><td${cls}>${v}</td></tr>`;
+  // 3列目: その金額が源泉徴収票・源泉徴収簿のどの欄か（対応は core の kisaiRan が持つ。ページに手書きしない）
+  const ran = (x) => x ? [x.hyo ? `源泉徴収票「${x.hyo}」` : "", x.bo ? `源泉徴収簿 ${x.bo}` : ""].filter(Boolean).join("<br>") : "";
+  const row = (label, v, x = null) => `<tr><th scope="row">${label}</th><td>${v}</td><td class="ran">${ran(x)}</td></tr>`;
   let head;
   if (r.kanpuGaku > 0) head = `<p>年末調整で <b>戻る額</b>${r.juto > 0 ? `（超過額${yen(r.kanpu)}から、まだ天引きしていない税額への充当${yen(r.juto)}を引いた残り）` : "（超過額）"}</p><p class="big" id="kekka-big">${yen(r.kanpuGaku)}</p>`;
   else if (r.juto > 0 && r.lastChoshu === 0 && r.kanpuGaku === 0) head = `<p>超過額${yen(r.kanpu)}は、まだ天引きしていない税額に全部充当され、<b>戻る額はありません</b></p><p class="big" id="kekka-big">${yen(0)}</p>`;
   else if (r.lastChoshu > 0 && r.fusoku === 0 && r.kanpuGaku === 0) head = `<p>戻る額はなく、まだ天引きしていない税額のうち <b>最後の給与で天引きされる額</b>${r.kanpu > 0 ? `（超過額${yen(r.kanpu)}を充当した残り）` : ""}</p><p class="big" id="kekka-big">${yen(r.lastChoshu)}</p>`;
   else if (r.fusoku > 0) head = `<p>年末調整で <b>追加で引かれる額（不足額）</b></p><p class="big" id="kekka-big">${yen(r.fusoku)}</p>`;
   else head = `<p>過不足は <b>ありません</b></p><p class="big" id="kekka-big">${yen(0)}</p>`;
-  let html = head + `<div class="scroll-wrap"><table class="res">` +
-    row("給与の総額", yen(r.kyuyo)) +
-    row("給与所得控除後の給与等の金額", yen(r.kojoGo)) +
-    row("所得金額調整控除", r.chosei > 0 ? yen(r.chosei) : (r.kyuyo > 8500000 ? "¥0（対象の家族・障害の条件なし）" : "¥0（給与850万円以下）")) +
+  // 要約: 年調年税額 − 天引きの合計 ＝ 超過額／不足額。年分・改正の申告はデータ（_meta）から
+  const y = kekkaYoyaku(r, N);
+  const sagakuLabel = y.kubun === "fusoku" ? "不足額（追加で引かれる）" : y.kubun === "kanpu" ? "超過額（戻る額の元）" : "過不足";
+  head += `<div class="kekka-sum" id="kekka-sum">` +
+    `<div><span>年調年税額（${y.year}）</span><b>${yen(y.nenzei)}</b><small>源泉徴収票の「源泉徴収税額」に当たる額</small></div>` +
+    `<div><span>天引きされた所得税の合計</span><b>${yen(y.choshu)}</b><small>入力した徴収税額</small></div>` +
+    `<div class="kekka-sum-sa"><span>${sagakuLabel}</span><b>${yen(y.sagaku)}</b><small>${y.kubun === "fusoku" ? "年調年税額 − 天引きの合計" : "天引きの合計 − 年調年税額"}</small></div>` +
+    `</div>` + (y.kaisei ? `<p class="hint" id="kekka-kaisei">※ ${y.kaisei}</p>` : "");
+  const X = Object.fromEntries(kisaiRan(r).map((x) => [x.key, x]));
+  const v = (key) => yen(X[key].value);
+  let html = head + `<div class="scroll-wrap"><table class="res res-ran">` +
+    `<thead><tr><th scope="col">項目</th><th scope="col">金額</th><th scope="col">源泉徴収票・源泉徴収簿の欄</th></tr></thead><tbody>` +
+    row(X.kyuyo.label, v("kyuyo"), X.kyuyo) +
+    row(X.kojoGo.label, v("kojoGo"), X.kojoGo) +
+    row("所得金額調整控除", r.chosei > 0 ? yen(r.chosei) : (r.kyuyo > 8500000 ? "¥0（対象の家族・障害の条件なし）" : "¥0（給与850万円以下）"), X.chosei) +
+    row(X.choseiGo.label, v("choseiGo"), X.choseiGo) +
     row("あなたの合計所得金額（見積額）", yen(r.gokei)) +
-    row("社会保険料等の控除額", yen(k.shaho)) +
-    row("生命保険料の控除額", yen(k.seiho) + (r.seihoTokurei ? '<span class="hint">（23歳未満の扶養親族がいるため、一般の新契約は上限6万円で計算）</span>' : "")) +
-    row("地震保険料の控除額", yen(k.jishin)) +
-    row("配偶者（特別）控除額", yen(k.haigu)) +
-    row("特定親族特別控除額", yen(k.tokutei)) +
-    row("扶養控除額及び障害者等の控除額の合計額", yen(k.fuyoTou) +
-      `<span class="hint">（扶養控除${yen(k.fuyo)}・障害者控除${yen(k.shogai)}・寡婦/ひとり親控除${yen(k.kafu)}・勤労学生控除${yen(k.kinro)}）</span>`) +
-    row("基礎控除額", yen(k.kiso)) +
-    row("所得控除額の合計額", yen(k.gokei)) +
-    row("課税給与所得金額", yen(r.kazei)) +
-    row("算出所得税額", yen(r.sanshutsu)) +
-    row("住宅借入金等特別控除額", yen(r.jutaku) + (r.jutakuKirisute > 0 ? `<span class="hint">（控除しきれない${yen(r.jutakuKirisute)}は切り捨て。源泉徴収票の「住宅借入金等特別控除可能額」欄に申告書の控除額を書きます）</span>` : "")) +
-    row("年調所得税額", yen(r.nenchoShotoku)) +
-    row("年調年税額（復興特別所得税を含む）", `<b>${yen(r.nenzei)}</b>`) +
-    row("徴収税額の合計（未徴収分を含む）", yen(r.choshu)) +
-    row(r.fusoku > 0 ? "不足額" : "超過額", `<b>${yen(r.fusoku > 0 ? r.fusoku : r.kanpu)}</b>`) +
+    row(X.shaho.label, v("shaho"), X.shaho) +
+    row(X.seiho.label, v("seiho") + (r.seihoTokurei ? '<span class="hint">（23歳未満の扶養親族がいるため、一般の新契約は上限6万円で計算）</span>' : ""), X.seiho) +
+    row(X.jishin.label, v("jishin"), X.jishin) +
+    row(X.haigu.label, v("haigu"), X.haigu) +
+    row(X.tokutei.label, v("tokutei"), X.tokutei) +
+    row(X.fuyoTou.label, v("fuyoTou") +
+      `<span class="hint">（扶養控除${yen(k.fuyo)}・障害者控除${yen(k.shogai)}・寡婦/ひとり親控除${yen(k.kafu)}・勤労学生控除${yen(k.kinro)}）</span>`, X.fuyoTou) +
+    row(X.kiso.label, v("kiso"), X.kiso) +
+    row(X.kojoGokei.label, v("kojoGokei"), X.kojoGokei) +
+    row(X.kazei.label, v("kazei"), X.kazei) +
+    row(X.sanshutsu.label, v("sanshutsu"), X.sanshutsu) +
+    row(X.jutaku.label, v("jutaku") + (r.jutakuKirisute > 0 ? `<span class="hint">（控除しきれない${yen(r.jutakuKirisute)}は切り捨て。源泉徴収票の「住宅借入金等特別控除可能額」欄に申告書の控除額を書きます）</span>` : ""), X.jutaku) +
+    row(X.nenchoShotoku.label, v("nenchoShotoku"), X.nenchoShotoku) +
+    row(X.nenzei.label, `<b>${v("nenzei")}</b>`, X.nenzei) +
+    row(X.choshu.label, v("choshu"), X.choshu) +
+    row(X.sagaku.label, `<b>${v("sagaku")}</b>`, X.sagaku) +
     (r.jutoLast > 0 ? row("最後の給与の税額に充当する額", yen(r.jutoLast)) : "") +
     (r.jutoMiharai > 0 ? row("未払給与の税額に充当する額", yen(r.jutoMiharai) + '<span class="hint">（その未払給与を支払うときに徴収すべき税額に充当）</span>') : "") +
     (r.juto > 0 ? row("本人に還付する額", `<b>${yen(r.kanpuGaku)}</b>`) : "") +
     (r.fusoku === 0 && r.lastChoshu > 0 ? row("最後の給与で天引きされる額", yen(r.lastChoshu)) : "") +
     (r.miharaiChoshu > 0 ? row("未払給与を支払うときに天引きされる額", yen(r.miharaiChoshu)) : "") +
     (r.fusoku > 0 && r.lastTax > 0 ? row("最後の給与で天引きされる額", yen(r.lastTax + r.fusoku) + `<span class="hint">（その給与の通常の税額${yen(r.lastTax)}＋不足額）</span>`) : "") +
-    `</table></div>`;
+    `</tbody></table></div>`;
   if (r.notes.length) html += r.notes.map((t) => `<p class="hint">※ ${t}</p>`).join("");
   html += `<p class="hint">※ ${r.year}の年末調整の目安です。勤務先の年末調整の結果（源泉徴収票）が正式な金額です。</p>`;
   out.innerHTML = html;
