@@ -32,15 +32,18 @@ say() { echo "$(date '+%Y-%m-%d %H:%M:%S') $*" >> "$LOG"; }
 if [ -z "${REBAKE_COPY:-}" ]; then
   tmp="$(mktemp -t rebake_hojokin_tabs)" || { say "★一時コピーを作れない"; exit 1; }
   cp "$0" "$tmp" || { say "★一時コピーに失敗"; exit 1; }
-  REBAKE_COPY=1 exec /bin/bash "$tmp" "$@"
+  REBAKE_COPY="$tmp" exec /bin/bash "$tmp" "$@"
 fi
-rm -f "$0"   # 一時コピー（開いたまま消してよい）
+[ "$REBAKE_COPY" = "$0" ] && rm -f "$0"   # 一時コピーだけを消す（開いたまま消してよい）。REBAKE_COPY=1 を手で付けて本体を消さない
 
 TODAY="$(TZ=Asia/Tokyo date '+%Y-%m-%d')"
 NOW_ARG=()
 # 検査用: REBAKE_NOW=<JSTのISO> で時計を差し替え、REBAKE_DRY=1 で commit/push しない
 if [ -n "${REBAKE_NOW:-}" ]; then NOW_ARG=("--now=$REBAKE_NOW"); TODAY="${REBAKE_NOW:0:10}"; fi
 DRY="${REBAKE_DRY:-}"
+# 🚫 時計を差し替えたまま本番の専用クローンから push しない（未来の data-asof が本番に出る）。
+#   REBAKE_NOW は検査用のクローン（REBAKE_WORK）を指したときだけ push まで進める。
+if [ -n "${REBAKE_NOW:-}" ] && [ -z "${REBAKE_WORK:-}" ]; then DRY=1; fi
 
 [ -d "$WORK/.git" ] || { say "★専用クローン $WORK が無い（update_hojokin.sh が作る）"; exit 1; }
 . "$WORK/tools/autodata_lock.sh" 2>/dev/null || . "$DIR/tools/autodata_lock.sh" 2>/dev/null \
