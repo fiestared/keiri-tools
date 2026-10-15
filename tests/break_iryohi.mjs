@@ -42,7 +42,7 @@ const BREAKS = [
    "const kojo = Math.min(Math.max(0, netIryohi - ashikiri), K.kojo_cap);",
    "const kojo = Math.max(0, netIryohi - ashikiri);"],
 
-  ["★補填金をひも付き医療費でなく総額から引く（No.1125を無視＝控除額を過小に）",
+  ["★補填金をひも付き医療費でなく総額から引く（No.1120を無視＝控除額を過小に）",
    "const netHoten = Math.min(yen(hoten), taisho);",
    "const netHoten = yen(hoten);"],
 
