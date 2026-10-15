@@ -1,3 +1,4 @@
+import {eligiblePages} from './gen_bank_fee_pages.mjs';
 /**
  * `/column/furikomi-tesuryo-hikaku/` に「銀行別」セクションを、**fee_table.json から生成**する。
  *
@@ -111,6 +112,7 @@ export const bankId = (base) => {
 };
 
 export function buildSections(rows) {
+  const bankPages = eligiblePages();
   const banks = new Map();
   for (const r of rows) {
     const b = baseName(r.name);
@@ -136,6 +138,8 @@ export function buildSections(rows) {
     const kojin = list.find((x) => x.kubun === '個人');
     const hojin = list.find((x) => x.kubun === '法人');
     out.push(`  <h3 id="${bankId(base)}">${base}の振込手数料</h3>`);
+    const page = bankPages.find(b => b.name === base);
+    if (page) out.push(`  <p class="bank-note"><a href="/column/${page.slug}/">${base}の同行宛て・他行宛て、境界と印刷用の表</a></p>`);
     out.push('  <table>');
     out.push('    <tr><th scope="col">区分</th><th scope="col">3万円未満</th><th scope="col">3万円以上</th></tr>');
     for (const r of [kojin, hojin]) {
