@@ -10,6 +10,7 @@
  *   ⑥ 給与所得者等の加算は「2以上」のときだけ
  *   ⑦ 未就学児の5割減額は軽減の「後」に当てる
  *   ⑧ 子ども・子育て支援金分の均等割は18歳以上だけ
+ *   ⑩ 子育て分の十八歳以上被保険者均等割額（加算）は18歳以上だけ・軽減は当たる
  *
  * 検査の作り:
  *   §1 データの自己整合（区分・限度額・軽減の段階）
@@ -381,6 +382,39 @@ for (const [income, deduction] of [
   const r=calcKokuho({members:[member({shotoku:1000000,gokeiShotoku:25000001})],rates:{iryo:{shotokuwari:1}}},D);
   eq('r16 繰越控除後の総所得と合計所得を区別',r.kubun[0].kazeiHyojun,1000000);
   eq('r16 合計所得による控除消失後の保険料',r.total,10000);
+}
+
+// ⑩ 子育て分の十八歳以上被保険者均等割額（施行令29条の7第5項3号・8号、6項1号・3号）。
+// 外部オラクル: 足立区「令和８年度の国民健康保険料」（特別区の統一保険料）
+//   https://www.city.adachi.tokyo.jp/kokuho/kurashi/hoken/hokenryoukimekata.html （2026-10-16 curl）
+//   「18歳以上の方 ▷ 所得割（0.27%）＋ 均等割（1,800円）＋ 18歳以上均等割（73円）」
+//   「18歳未満の方 ▷ 所得割（0.27%）＋ 均等割（0円）＋ 18歳以上均等割（0円）」
+// 19歳・総所得200万: (200万−43万)×0.27%＝4,239 ＋1,800＝6,039 ＋73＝6,112円。
+// 加算を落とす実装は 6,039円 を出す（公表表を内訳どおりに入れた利用者だけが73円少なく見る）。
+{
+  const R = { kosodate: { shotokuwari: 0.27, kintouwari: 1800, heitouwari: 0, adultKintouwari: 73 } };
+  const one = (age, shotoku, rates = R) =>
+    calcKokuho({ members: [member({ shotoku, ...classifyByAge(age) })], rates }, D).kubun.find((k) => k.key === "kosodate");
+  eq("§6 特別区 19歳・所得200万の子育て分（1,800＋73）", one(19, 2000000).amount, 6112);
+  eq("§6 特別区 19歳の十八歳以上均等割の内訳", one(19, 2000000).adultKintouwari, 73);
+  eq("§6 加算なし（旧実装）なら6,039円＝対の片方",
+    one(19, 2000000, { kosodate: { ...R.kosodate, adultKintouwari: 0 } }).amount, 6039);
+  eq("§6 合計1,873円を均等割に入れても同じ6,112円",
+    one(19, 2000000, { kosodate: { shotokuwari: 0.27, kintouwari: 1873, heitouwari: 0 } }).amount, 6112);
+  // 年度末18歳（18歳到達年度末以前）は一般均等割が全額減額・加算もなし → 所得割だけ
+  eq("§6 年度末18歳は加算されない（所得割4,239円だけ）", one(18, 2000000).amount, 4239);
+  eq("§6 年度末18歳の十八歳以上均等割は0円", one(18, 2000000).adultKintouwari, 0);
+  // 7割軽減は加算額にも当たる（6項1号「被保険者均等割額及び十八歳以上被保険者均等割額」）
+  // (1,800＋73)×0.3＝561.9 → 561円。加算に軽減を当てない実装は 540＋73＝613円。
+  eq("§6 7割軽減は加算額にも当たる（561円）", one(19, 0).amount, 561);
+  // 混在世帯: 45歳＋16歳、所得0（7割軽減）。加算は45歳の1人分だけ。
+  const mix = calcKokuho({ members: [member({ shotoku: 0, ...classifyByAge(45) }), member({ shotoku: 0, ...classifyByAge(16) })], rates: R }, D)
+    .kubun.find((k) => k.key === "kosodate");
+  eq("§6 混在世帯の子育て分は18歳以上1人分（561円）", mix.amount, 561);
+  // 加算は子育て分だけ（他の区分に adultKintouwari を渡しても無視する）
+  const other = calcKokuho({ members: [member({ shotoku: 0, ...classifyByAge(45) })],
+    rates: { iryo: { shotokuwari: 0, kintouwari: 1000, heitouwari: 0, adultKintouwari: 500 } } }, D);
+  eq("§6 医療分に加算は無い", other.kubun.find((k) => k.key === "iryo").amount, 300);
 }
 
 if (fails.length) {

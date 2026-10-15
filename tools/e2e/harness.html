@@ -2974,6 +2974,7 @@ const kokuhoScene = (o) => async () => {
       set(doc, `${key}_s`, s); set(doc, `${key}_k`, k); set(doc, `${key}_h`, h);
     }
   }
+  if (o.adult != null) set(doc, "kosodate_a", o.adult);
   const members = o.members ?? [[45, 3000000, "1"]];
   set(doc, "ninzu", String(members.length));
   members.forEach(([age, shotoku, kyuyo], i) => {
@@ -3015,6 +3016,7 @@ const kokuhoScene = (o) => async () => {
     // ★主張ごとに別の要素を読む。軽減の見出しには「所得割は軽減されない」という別の主張が
     //   入っていないので、見出しだけを見て判定すると素通しする（規則5）。
     keigenTaisho: byId("keigen-taisho"),
+    adultKosodate: byId("adult-kosodate"),
     capped: byId("capped"),
     cappedHanbun: byId("capped-hanbun"),
     hanteiNote: byId("hantei-note"),
@@ -3055,6 +3057,15 @@ SCENES.kokuho_tokutei = kokuhoScene({
 SCENES.kokuho_norates = kokuhoScene({ rates: null });
 // ★参照データ配信不可 → 金額を出さずに断る（fail closed）。
 SCENES.kokuho_nodata = kokuhoScene({});
+// ★子育て分の十八歳以上被保険者均等割額（施行令29条の7第5項3号）。特別区の公表値
+//   （足立区 令和8年度: 均等割1,800円＋18歳以上均等割73円・所得割0.27%）を内訳どおりに入れる。
+//   30歳・総所得200万・1人（判定所得200万 > 43万+57万 → 軽減なし）:
+//   (200万−43万)×0.27%＝4,239 ＋1,800＋73＝6,112円。加算欄を rates に渡し忘れる配線は 6,039円。
+SCENES.kokuho_seijin = kokuhoScene({
+  rates: { iryo: [0, 0, 0], shien: [0, 0, 0], kaigo: [0, 0, 0], kosodate: [0.27, 1800, 0] },
+  adult: 73,
+  members: [[30, 2000000, "1"]],
+});
 
 // ── 老齢年金の受給見込額 (/nenkin/) ─────────────────────────────────────────
 // ★単体（tests/test_nenkin.mjs）は core しか見ないので、次の配線はここでしか守れない:

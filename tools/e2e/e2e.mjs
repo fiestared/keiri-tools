@@ -1058,6 +1058,10 @@ const SCENES = [
   // ★参照データ配信不可 → 金額を出さずに断る（fail closed）
   { name: "kokuho_nodata", data404: "kokuho_r08.json", expect: (s) =>
       s.failed && s.total === null },
+  // ★子育て分の18歳以上均等割（加算）の配線。特別区の公表値で 6,112円（加算を落とすと 6,039円）。
+  { name: "kokuho_seijin", expect: (s) =>
+      s.total === 6112 && s.kosodate === 6112 &&
+      /18歳以上均等割\s*¥?73/.test(s.adultKosodate || "") && !s.noRates && !s.failed },
 
   // ── 老齢年金の受給見込額 (/nenkin/) ──────────────────────────────────
   // ★手計算の鎖は harness.html の同名シーンのコメント（コアを通さず出した期待値）。
