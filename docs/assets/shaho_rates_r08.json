@@ -148,13 +148,20 @@
   "kodomo_kyoshutsu_rate": 0.36,
   "kosei_nenkin_rate": 18.3,
   "koyou": {
+    "year": "令和8年度",
     "note": "雇用保険料率(1000分率)。労働者負担は労使折半ではない: 事業主だけが「雇用保険二事業」(jigyo2_permille)を負担するため。徴収法31条1項1号 = (雇用保険率 - 二事業率分) ÷ 2 が労働者負担。worker/employer は厚労省の公表値で、実装は total と jigyo2 から導出し tests/test_koyou_oracle.mjs で公表値と照合する",
     "source": "厚生労働省「令和8年度 雇用保険料率のご案内」(LL080312保01)",
     "url": "https://www.mhlw.go.jp/content/001692566.pdf",
     "applies_from": "2026-04",
     "applies_to": "2027-03",
-    "checked": "2026-07-14",
+    "checked": "2026-10-14",
     "base": "賃金総額(標準報酬月額ではない。通勤手当・残業代・賞与を含む実際の支払額。徴収法11条1項・2条2項)",
+    "previous": {
+      "year": "令和7年度",
+      "general": [5.5, 9, 14.5],
+      "agri_sake": [6.5, 10, 16.5],
+      "construction": [6.5, 11, 17.5]
+    },
     "types": {
       "general": {
         "label": "一般の事業",

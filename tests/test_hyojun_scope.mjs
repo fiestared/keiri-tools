@@ -7,13 +7,24 @@ const path='docs/column/hyojun-hoshu-gakuhyo/index.html';
 const units=segmentClaims(readFileSync(path,'utf8'),path);
 // 2026-10-11: 列見出しを短い語にし、全行に共通する条件は表の直前の説明・直後の注（局所文脈 u.context）へ1回ずつにまとめた。
 // 金額のセル250個すべてに、その文脈が付いていることを確かめる（列見出しに条件を書き写さない）。
-const COLS=['健康保険（介護なし）','健保＋介護（40〜64歳）','子ども支援金','厚生年金','合計（39歳以下）'];
+const COLS=['健康保険（介護なし）','健保＋介護第2号','子ども支援金','厚生年金加入者','合計（39歳以下）'];
 const money=units.filter(u=>u.kind==='td'&&/^【行】\d+ 【列】/.test(u.text)&&COLS.some(c=>u.text.includes(`【列】${c} 【値】`)));
 assert.equal(money.length,250);
 for(const c of COLS)assert.equal(money.filter(u=>u.text.includes(`【列】${c} 【値】`)).length,50,c);
-for(const u of money){const c=u.context||'';assert.match(c,/【表の直前の説明】/);assert.match(c,/【表の直後の注】/);assert.match(c,/東京支部の一般被保険者の本人負担分（月額）/);assert.match(c,/保険料免除や保険料調整制度の利用がなく/);assert.match(c,/50銭以下切捨・50銭超切上/);assert.match(c,/健康保険・介護は2026年3月分から、子ども支援金と合計は2026年4月分から/);assert.match(c,/厚生年金と合計は、厚生年金基金未加入/);}
-// 列ごとの注（介護第2号・厚年の読み替え・合計の中身・任意継続・範囲の読み方）は、表の直後の「表の注」の段落に1回だけ
-{const notes=units.filter(u=>u.kind==='p').map(u=>u.text);for(const re of [/報酬月額の範囲は、下限以上・上限未満です/,/区域内.*40歳以上65歳未満.*医療保険加入者/,/93,000円未満なら標準報酬月額88,000円（第1級）、635,000円以上なら650,000円（第32級）/,/雇用保険料は含みません/,/任意継続の人は、この一般被保険者の表を使えません/])assert.equal(notes.filter(t=>re.test(t)).length,1,String(re));}
+for(const u of money){
+ const c=u.context||'';
+ assert.match(c,/【表の直前の説明】/);assert.match(c,/【表の直後の注】/);
+ assert.match(c,/東京支部の一般被保険者/);assert.match(c,/本人負担分.*計算例.*月額/);
+ assert.match(c,/保険料免除・調整制度.*任意継続.*対象外/);
+ assert.match(c,/給与控除・特約なし/);assert.match(c,/50銭以下は切捨、50銭超は切上/);
+ assert.match(c,/一般被保険者の健康保険・介護は2026年3月分.*支援金・合計は4月分/);
+ assert.match(c,/厚生年金と合計は基金未加入者/);
+ if(/【列】健保＋介護/.test(u.text))assert.match(c,/区域内.*40歳以上65歳未満.*医療保険加入者/);
+ if(/【列】厚生年金|【列】合計/.test(u.text))assert.match(c,/厚生年金・合計欄は70歳未満の加入者のみ/);
+}
+// 適用条件は共有の前提に、範囲の向きは列名に一度だけ示す。対象外・住所条件の複写を防ぐ。
+assert.equal(units.filter(u=>u.kind==='th'&&/報酬月額の範囲.*以上〜未満/.test(u.text)).length,1);
+{const notes=units.filter(u=>u.kind==='p').map(u=>u.text);for(const re of [/区域内.*40歳以上65歳未満.*医療保険加入者/,/93,000円未満なら標準報酬月額88,000円（第1級）、635,000円以上なら650,000円（第32級）/,/雇用保険料は含みません/,/保険料免除・調整制度.*任意継続.*対象外/])assert.equal(notes.filter(t=>re.test(t)).length,1,String(re));}
 // 入力欄とボタンの間に補足を挟まない（2026-10-11 Masahiro）。補足はボタンの下に1行・80字まで（入力欄より上に置くと tests/layout/measure.mjs の help-position が落とし、入力欄の直前に置くと gen_layout_markup が入力欄の直後＝ボタンの上へ移す）
 {const html=readFileSync(path,'utf8');const form=html.slice(html.indexOf('<form id="grade-lookup"'),html.indexOf('</form>'));assert.match(form,/<input id="grade-amount"[^>]*>\s*<button type="submit"/);const help=form.match(/<p id="grade-help"[^>]*>([\s\S]*?)<\/p>/)[1].replace(/<[^>]+>/g,'');assert(help.length<=80,`入力欄の補足が ${help.length} 字`);}
 assert.equal(units.filter(u=>u.text.includes('【値】83,000 〜 93,000（厚年は93,000円未満）')).length,1);

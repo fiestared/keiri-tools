@@ -1,7 +1,7 @@
 {
   "_doc": "年度が刻印された自社ページと、その一次資料の『次の年度版』のURLパターン。check_source_year.py が読む。",
   "_why": "2026-09-07の実害: 国税庁が令和9年分 源泉徴収税額表を令和8年8月31日に公表していたのに、こちらは9月7日まで気づかなかった。競合は改正が決まった4月から書いている（mt-tax.com 2026-04-23）。原因は『需要を測ってから書く』という選定規則で、年度刻印の語は需要が立つ前に書かないと間に合わないのに、規則が逆を強制していたこと。加えて一次資料の更新を見る計器が無かった。",
-  "_howto": "entries に足す。url は {y} を西暦(int)、{r} を令和年(int)で置換する。資料見出しが『令和N年度』なら year_label_suffix を『度』にする（既定は『分』）。covers は自社ページが現在カバーしている西暦。probe_next=true なら covers+1 の存在を毎回確かめる。URLパターンが不明なものは url を null にして note に理由を書く（未調査と未公表を混同しないため）。",
+  "_howto": "entries に足す。url は {y} を西暦(int)、{r} を令和年(int)で置換する。資料見出しが『令和N年度』なら year_label_suffix を『度』にする（既定は『分』）。covers は自社ページが現在カバーしている西暦。probe_next=true なら covers+1 の存在を毎回確かめる。URLパターンが不明なものは url を null にして note に理由を書く（未調査と未公表を混同しないため）。 次の年度版を probe できないもの（年度版が無い資料・期限が法律で固定・本文に翌年の予定が既に載る等）は url に一次資料を入れ probe_next:false と probe_off_reason（理由）を書く。title に年度・年分を持つコラムは tests/test_source_year_coverage.mjs が登録を強制する（2026-10-15〜）。",
   "entries": [
     {
       "slug": "gensen-zeigakuhyo-mikata",
@@ -9,7 +9,8 @@
       "source": "国税庁",
       "url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo{y}/01.htm",
       "covers": 2026,
-      "probe_next": true,
+      "probe_next": false,
+      "probe_off_reason": "2026-10-15: 令和9年分は公表済みで、別記事 gensen-zeigakuhyo-r09（covers 2027）が担う。本記事は年内の現行（令和8年分）として残し、2027年1月に令和9年分へ改稿する（keiri-commander owner/calendar.json）。probe したままだと毎日 found を出し、本物の発見が埋もれる",
       "note": "令和N年分 = 西暦N+2018。令和9年分=2027。2026-08-31に令和9年分が公表され、7日間気づかなかった"
     },
     {
@@ -27,7 +28,8 @@
       "source": "国税庁",
       "url": "https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo{y}/01.htm",
       "covers": 2026,
-      "probe_next": true,
+      "probe_next": false,
+      "probe_off_reason": "2026-10-15: 令和9年分は公表済みで、月額表データ gensen_getsugaku_r09.json は収録済み・画面も2027-01-01の切替を告知済み。残る仕事（2027年1月1日から r09 で計算・賞与表 r09 の収録）は keiri-commander owner/calendar.json の期日で追う。probe したままだと毎日 found を出し、本物の発見が埋もれる",
       "note": "計算機。税額表が変わったら data も差し替える必要がある"
     },
     {
@@ -82,6 +84,296 @@
       "probe_next": true,
       "year_label_suffix": "度",
       "note": "2026-09-30、全国一覧の令和8年度への差し替えを確認。全国一覧PDFと47件の改定後額・改定前額・発効日が一致したため、_meta.status を confirmed、出典を全国一覧に更新。発効日は県ごとに令和8年10月1日〜12月2日（10月1日は15都道府県）。発効日前は改定前の額を使い、effectiveWage が県別に切り替える。covers は監視先の掲載年度。 URLは年度で変わらないため、本文の年度を監視する。"
+    },
+    {
+      "slug": "furikomi-tesuryo-hikaku",
+      "name": "銀行別 振込手数料 一覧",
+      "source": "各銀行（代表: 三菱UFJ銀行）",
+      "url": "https://www.bk.mufg.jp/tesuuryou/furikomi.html",
+      "covers": 2026,
+      "probe_next": false,
+      "probe_off_reason": "銀行の手数料ページは年度版を出さず、同じURLの中身を随時改定する。title の「2026年10月更新」は自社の更新月で、次の年度版という概念が無い。手数料の改定は docs/assets/fee_table.json の banks[].source を個別に照合して追う",
+      "note": "2026-10-15 curl で実測: HTTP 200。URLは年度で変わらない（in_place）。30区分の出典は fee_table.json の各 source",
+      "url_kind": "in_place"
+    },
+    {
+      "slug": "taishokukin-zeikin",
+      "name": "退職金の税金（退職所得）",
+      "source": "国税庁（源泉徴収のあらまし）",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi{y}/index.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "year_label_suffix": "版",
+      "note": "2026-10-15 curl で実測: aramashi2026/index.htm=「令和８年版 源泉徴収のあらまし」(HTTP 200・本文一致)、aramashi2027 は HTTP 302（未公表）。資料の見出しが「令和N年版」なので year_label_suffix=版"
+    },
+    {
+      "slug": "nenshu-no-kabe",
+      "name": "年収の壁（所得税の側）",
+      "source": "国税庁（年末調整のしかた）",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/nencho{y}/01.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 curl で実測: nencho2026/01.htm=「令和8年分 年末調整のしかた」(HTTP 200・本文一致)、nencho2027 は HTTP 302（未公表）。税の壁（基礎控除・給与所得控除）は年末調整のしかたの年分で追う。社会保険の壁（106万・130万）は hyojun-hoshu-gakuhyo 等の社保側の登録が担う。財務省の税制改正ページ fy{y} は8月末の各省要望で次年度ページが先に生えるため（fy2027 は 2026-08-31 から HTTP 200）監視先にしない"
+    },
+    {
+      "slug": "furikomi-hanei-jikan",
+      "name": "振込の反映時間",
+      "source": "各銀行（代表: 三菱UFJ銀行）",
+      "url": "https://www.bk.mufg.jp/tsukau/furikomi/direct/index.html",
+      "covers": 2026,
+      "probe_next": false,
+      "probe_off_reason": "銀行の取扱時間・全銀システムの稼働時間は年度版が無く、同じURLの中身が随時変わる。title の「2026年8月」は自社の確認月",
+      "note": "2026-10-15 curl で実測: HTTP 200。URLは年度で変わらない（in_place）",
+      "url_kind": "in_place"
+    },
+    {
+      "slug": "tsukin-teate-hikazei",
+      "name": "通勤手当の非課税限度額",
+      "source": "国税庁（源泉徴収のあらまし）",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi{y}/index.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "year_label_suffix": "版",
+      "note": "2026-10-15 curl で実測: aramashi2026/index.htm=「令和８年版 源泉徴収のあらまし」(HTTP 200・本文一致)、aramashi2027 は HTTP 302（未公表）。資料の見出しが「令和N年版」なので year_label_suffix=版"
+    },
+    {
+      "slug": "taishoku-gensen-choshuhyo",
+      "name": "退職所得の源泉徴収票",
+      "source": "国税庁（法定調書の作成と提出の手引）",
+      "url": "https://www.nta.go.jp/publication/pamph/hotei/tebiki{y}/index.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 curl で実測: tebiki2025/index.htm=「令和7年分 給与所得の源泉徴収票等の法定調書の作成と提出の手引」、tebiki2026=「令和8年分」(HTTP 200・本文一致)、tebiki2027 は HTTP 302（未公表）"
+    },
+    {
+      "slug": "hoteichosho-goukeihyo",
+      "name": "法定調書合計表",
+      "source": "国税庁（法定調書の作成と提出の手引）",
+      "url": "https://www.nta.go.jp/publication/pamph/hotei/tebiki{y}/index.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 curl で実測: tebiki2025/index.htm=「令和7年分 給与所得の源泉徴収票等の法定調書の作成と提出の手引」、tebiki2026=「令和8年分」(HTTP 200・本文一致)、tebiki2027 は HTTP 302（未公表）"
+    },
+    {
+      "slug": "tokutei-shinzoku-tokubetsu-kojo",
+      "name": "特定親族特別控除",
+      "source": "国税庁（年末調整のしかた）",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/nencho{y}/01.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 curl で実測: nencho2025/01.htm=「令和7年分 年末調整のしかた」、nencho2026/01.htm=「令和8年分」(HTTP 200・本文一致)、nencho2027/01.htm は HTTP 302（未公表）。令和N年分 = nencho(N+2018)。令和9年分が出たら年分の数字・様式を見直す"
+    },
+    {
+      "slug": "gensen-shotokuzei-nofusho",
+      "name": "所得税徴収高計算書（納付書）",
+      "source": "国税庁（源泉徴収のあらまし）",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/aramashi{y}/index.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "year_label_suffix": "版",
+      "note": "2026-10-15 curl で実測: aramashi2026/index.htm=「令和８年版 源泉徴収のあらまし」(HTTP 200・本文一致)、aramashi2027 は HTTP 302（未公表）。資料の見出しが「令和N年版」なので year_label_suffix=版"
+    },
+    {
+      "slug": "seimei-hokenryo-kojo",
+      "name": "生命保険料控除",
+      "source": "国税庁（年末調整のしかた）",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/nencho{y}/01.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 curl で実測: nencho2025/01.htm=「令和7年分 年末調整のしかた」、nencho2026/01.htm=「令和8年分」(HTTP 200・本文一致)、nencho2027/01.htm は HTTP 302（未公表）。令和N年分 = nencho(N+2018)。令和9年分が出たら年分の数字・様式を見直す"
+    },
+    {
+      "slug": "kounenrei-koyou-keizoku",
+      "name": "高年齢雇用継続給付金",
+      "source": "厚生労働省（ハローワーク）",
+      "url": "https://www.hellowork.mhlw.go.jp/insurance/insurance_continue.html",
+      "covers": 2026,
+      "probe_next": false,
+      "probe_off_reason": "案内ページに年度ラベルが無く（2026-10-15 実測で「令和N年度」0件）、in_place の照合が成立しない。支給限度額は毎年8月1日の基本手当日額の改定と同時に変わるので、雇用保険給付テーマ（teichaku と同じ8月の差し替え）で追う",
+      "note": "2026-10-15 curl で実測: HTTP 200。URLは年度で変わらない（in_place）",
+      "url_kind": "in_place"
+    },
+    {
+      "slug": "invoice-2wari-tokurei",
+      "name": "インボイス2割特例",
+      "source": "国税庁",
+      "url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6505.htm",
+      "covers": 2026,
+      "probe_next": false,
+      "probe_off_reason": "title の「令和8年9月30日」は法律で固定された適用期限で、年度ごとに次の版が出る資料ではない。期限の延長・後継措置は税制改正大綱（12月）で決まる",
+      "note": "2026-10-15 curl で実測: HTTP 200。URLは年度で変わらない（in_place）",
+      "url_kind": "in_place"
+    },
+    {
+      "slug": "nenmatsu-chosei-kanpukin",
+      "name": "年末調整の還付金",
+      "source": "国税庁（年末調整のしかた）",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/nencho{y}/01.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 curl で実測: nencho2025/01.htm=「令和7年分 年末調整のしかた」、nencho2026/01.htm=「令和8年分」(HTTP 200・本文一致)、nencho2027/01.htm は HTTP 302（未公表）。令和N年分 = nencho(N+2018)。令和9年分が出たら年分の数字・様式を見直す"
+    },
+    {
+      "slug": "shiharai-chosho",
+      "name": "支払調書",
+      "source": "国税庁（法定調書の作成と提出の手引）",
+      "url": "https://www.nta.go.jp/publication/pamph/hotei/tebiki{y}/index.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 curl で実測: tebiki2025/index.htm=「令和7年分 給与所得の源泉徴収票等の法定調書の作成と提出の手引」、tebiki2026=「令和8年分」(HTTP 200・本文一致)、tebiki2027 は HTTP 302（未公表）"
+    },
+    {
+      "slug": "shataku-chintairyo",
+      "name": "現物給与の価額（社宅）",
+      "source": "日本年金機構",
+      "url": "https://www.nenkin.go.jp/service/kounen/hokenryo/hoshu/20150511.html",
+      "url_kind": "in_place",
+      "covers": 2026,
+      "probe_next": true,
+      "year_label_suffix": "度",
+      "note": "2026-10-15 curl で実測: 全国現物給与価額一覧表のページは URLが年度で変わらない（in_place）。本文に「令和8年度」あり・「令和9年度」なし（HTTP 200）。令和9年度の告示が載ったら現物給与の価額を見直す"
+    },
+    {
+      "slug": "kogaku-ryoyohi",
+      "name": "高額療養費の自己負担限度額",
+      "source": "厚生労働省",
+      "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryouhoken/juuyou/kougakuiryou/index.html",
+      "covers": 2026,
+      "probe_next": false,
+      "probe_off_reason": "見直しは段階施行で、本文に既に「令和9年」の予定が載っている（2026-10-15 実測 令和8年 8回・令和9年 5回）。翌年ラベルの出現では公表を判定できない。段階の日付は政令で既定なので、その日付で見直す",
+      "note": "2026-10-15 curl で実測: HTTP 200。URLは年度で変わらない（in_place）",
+      "url_kind": "in_place"
+    },
+    {
+      "slug": "nenmatsu-chosei-kakikata",
+      "name": "年末調整の書き方",
+      "source": "国税庁（年末調整のしかた）",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/nencho{y}/01.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 curl で実測: nencho2025/01.htm=「令和7年分 年末調整のしかた」、nencho2026/01.htm=「令和8年分」(HTTP 200・本文一致)、nencho2027/01.htm は HTTP 302（未公表）。令和N年分 = nencho(N+2018)。令和9年分が出たら年分の数字・様式を見直す"
+    },
+    {
+      "slug": "gensen-choshuhyo-mikata",
+      "name": "源泉徴収票の見方（令和7年分）",
+      "source": "国税庁（法定調書の作成と提出の手引）",
+      "url": "https://www.nta.go.jp/publication/pamph/hotei/tebiki{y}/index.htm",
+      "covers": 2025,
+      "probe_next": false,
+      "probe_off_reason": "記事は手元に届いている令和7年分の源泉徴収票を読む記事で、令和8年分の手引（tebiki2026）は既に公表済み。probe すると毎日 found になる。令和8年分の源泉徴収票が交付される 2026年12月〜2027年1月に令和8年分へ改稿する",
+      "note": "2026-10-15 curl で実測: tebiki2025=令和7年分・tebiki2026=令和8年分（どちらも HTTP 200・本文一致）"
+    },
+    {
+      "slug": "shohizei-kanpu",
+      "name": "還付加算金の割合（消費税の還付）",
+      "source": "国税庁（延滞税の割合）",
+      "url": "https://www.nta.go.jp/taxes/nozei/entaizei/keisan/entai_wariai.htm",
+      "url_kind": "in_place",
+      "covers": 2026,
+      "probe_next": true,
+      "year_label_suffix": "1月1日",
+      "note": "2026-10-15 curl で実測: 延滞税の割合のページは URLが年度で変わらない（in_place）。年ごとに「令和N年1月1日から令和N年12月31日まで」の行が足される。本文に「令和8年1月1日」あり・「令和9年1月1日」なし（HTTP 200）。特例基準割合が変わると還付加算金の割合も変わる"
+    },
+    {
+      "slug": "shokyaku-shisanzei",
+      "name": "償却資産税の申告期限",
+      "source": "e-Gov法令検索（地方税法383条）",
+      "url": "https://laws.e-gov.go.jp/law/325AC0000000226",
+      "covers": 2026,
+      "probe_next": false,
+      "probe_off_reason": "申告期限は地方税法383条の1月31日で、年度版の一次資料が無い。title の「令和8年度の申告期限2月2日」は1月31日の曜日送り。毎年1月に暦で更新する",
+      "note": "2026-10-15 curl で実測: HTTP 200。法令のURLは年度で変わらない（in_place）",
+      "url_kind": "in_place"
+    },
+    {
+      "slug": "invoice-wakariyasuku",
+      "name": "インボイス制度（80%控除の経過措置）",
+      "source": "国税庁",
+      "url": "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/invoice-review/index.htm",
+      "covers": 2026,
+      "probe_next": false,
+      "probe_off_reason": "title の「2026年9月まで」は法律で固定された経過措置の期限で、年度ごとに次の版が出る資料ではない。後継措置は税制改正大綱で決まる",
+      "note": "2026-10-15 curl で実測: HTTP 200（令和８年度税制改正特集）。URLは年度で変わらない（in_place）",
+      "url_kind": "in_place"
+    },
+    {
+      "slug": "gensen-choshubo",
+      "name": "源泉徴収簿",
+      "source": "国税庁（年末調整のしかた）",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/nencho{y}/01.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 curl で実測: nencho2025/01.htm=「令和7年分 年末調整のしかた」、nencho2026/01.htm=「令和8年分」(HTTP 200・本文一致)、nencho2027/01.htm は HTTP 302（未公表）。令和N年分 = nencho(N+2018)。令和9年分が出たら年分の数字・様式を見直す"
+    },
+    {
+      "slug": "kanai-rodosha-tokurei",
+      "name": "家内労働者等の必要経費の特例",
+      "source": "国税庁（タックスアンサー No.1810）",
+      "url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1810.htm",
+      "url_kind": "in_place",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 curl で実測: タックスアンサーは URLが年度で変わらない（in_place）。本文に令和6年分・令和7年分・令和8年分の額があり「令和9年分」なし（HTTP 200）。令和9年分の額が載ったら見直す"
+    },
+    {
+      "slug": "kyuyo-shiharai-hokokusho",
+      "name": "給与支払報告書",
+      "source": "国税庁（法定調書の作成と提出の手引）",
+      "url": "https://www.nta.go.jp/publication/pamph/hotei/tebiki{y}/index.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 curl で実測: tebiki2025/index.htm=「令和7年分 給与所得の源泉徴収票等の法定調書の作成と提出の手引」、tebiki2026=「令和8年分」(HTTP 200・本文一致)、tebiki2027 は HTTP 302（未公表）"
+    },
+    {
+      "slug": "koyou-hoken-kanyu-joken",
+      "name": "雇用保険の加入条件",
+      "source": "厚生労働省",
+      "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000134526.html",
+      "covers": 2026,
+      "probe_next": false,
+      "probe_off_reason": "加入条件のページに年度ラベルが無く（2026-10-15 実測で令和N年 0件）、in_place の照合が成立しない。適用拡大（週10時間）は改正法で施行日が既定なので、その日付で見直す",
+      "note": "2026-10-15 curl で実測: HTTP 200。URLは年度で変わらない（in_place）",
+      "url_kind": "in_place"
+    },
+    {
+      "slug": "nenmatsu-chosei-gakushi-hoken",
+      "name": "年末調整のしかた（年末調整の学資保険）",
+      "source": "国税庁",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/nencho{y}/01.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 新設。title の「令和8年分」は年末調整のしかた（nencho2026）と令和8年分の保険料控除申告書に対応。nencho2027/01.htm は 2026-10-15 時点で 302（未公表）。令和9年分が出たら申告書の欄名と23歳未満の扶養親族の特例（令和8・9年分）の記述を見直す"
+    },
+    {
+      "slug": "nenmatsu-chosei-teisei",
+      "name": "年末調整のしかた（年末調整の訂正・やり直し）",
+      "source": "国税庁",
+      "url": "https://www.nta.go.jp/publication/pamph/gensen/nencho{y}/01.htm",
+      "covers": 2026,
+      "probe_next": true,
+      "note": "2026-10-15 新設。title の「令和8年分」は年末調整のしかた（nencho2026）43ページの再調整と、令和8年分の法定調書の手引（源泉徴収票の交付期限 令和9年2月1日）に対応。nencho2027/01.htm は 2026-10-15 時点で未公表（curl で確認）。令和9年分が出たら43ページの再調整の期限と、手引の交付期限・みなし提出の記述を見直す"
+    },
+    {
+      "slug": "nisa-kinyu-kikan-henko",
+      "name": "NISA口座の金融機関変更の手続",
+      "source": "国税庁",
+      "url": "https://www.nta.go.jp/users/gensen/nisa/tetsuzuki.htm",
+      "covers": 2027,
+      "probe_next": false,
+      "probe_off_reason": "提出期間は租税特別措置法37条の14第13項（2027年1月施行版は第19項）で「前年10月1日〜その年9月30日」と固定され、年度版の資料が無い（tetsuzuki.htm は年度ラベル無しの in_place）。2027年分の受付が終わる2027年10月1日に、題と年表を2028年分へ改稿する",
+      "note": "2026-10-15 curl で実測: HTTP 200・Shift_JIS。URLは年度で変わらない（in_place）。本文の例示に令和６〜８年分の語あり",
+      "url_kind": "in_place"
+    },
+    {
+      "slug": "ideco-jogen-kaisei",
+      "name": "iDeCoの拠出限度額の引き上げ（2025年の制度改正）",
+      "source": "厚生労働省",
+      "url": "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/nenkin/nenkin/kyoshutsu/2025kaisei.html",
+      "covers": 2026,
+      "probe_next": false,
+      "probe_off_reason": "題の「2026年12月分」「2027年1月引落」は令和7年政令第442号の施行日（2026年12月1日）と個人型年金規約76条の納付日で固定され、年度版の資料が無い。特例期間が終わる2027年11月30日の翌月に、題と本文を施行後の現行表へ改稿する",
+      "note": "2026-10-15 curl で実測: HTTP 200・UTF-8。URLは年度で変わらない（in_place）。本文に2026年12月１日施行の記載あり",
+      "url_kind": "in_place"
     }
   ]
 }

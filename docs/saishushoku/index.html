@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
   "datePublished": "2026-08-01",
-  "dateModified": "2026-10-13",
+  "dateModified": "2026-10-14",
       "name": "再就職手当 計算機",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -142,7 +142,7 @@
 
 <section class="hero">
   <h1>再就職手当 計算機</h1>
-  <p class="article-meta">公開日: <time datetime="2026-08-01">2026年8月1日</time>（更新日: <time datetime="2026-10-13">2026年10月13日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-08-01">2026年8月1日</time>（更新日: <time datetime="2026-10-14">2026年10月14日</time>）</p>
   <p>失業保険（基本手当）を残したまま再就職したときにもらえる<b>再就職手当</b>の額を計算します。額は<b>「基本手当日額 × 支給残日数 × 60%か70%」</b>で、<b>支給残日数が所定給付日数の3分の2以上なら70%、3分の1以上なら60%</b>。<b>3分の1に届かないと1円も出ません</b>。支給要件も1つずつ確認できます。</p>
 </section>
 
@@ -212,7 +212,7 @@
   <button id="copy-result" class="btn-outline" style="display:none">結果をコピー</button>
 
 </div>
-<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機の見方</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/saishushoku-teate/">再就職手当はいくらもらえる？計算方法と支給条件</a></li><li><a href="../kihonteate/">失業保険（基本手当）計算機</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool-section-1">この計算機の見方</a></li><li><a href="#faq">よくある質問</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/saishushoku-teate/">再就職手当はいくらもらえる？計算方法と支給条件</a></li><li><a href="../kihonteate/">失業保険（基本手当）計算機</a></li><li><a href="../teichaku/">就業促進定着手当 計算機</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
 <section class="faq">
   <h2 id="tool-section-1">この計算機の見方</h2>
@@ -250,6 +250,7 @@
     <li>実際の支給額は「（離職前の賃金日額 − 再就職後6か月の賃金日額）× 賃金支払基礎日数」で決まります。</li>
     <li><b>再就職後の賃金が下がっていなければ0円</b>です。手元にない数字を推測で埋めることはしません。</li>
   </ul>
+  <p>6か月の給料が分かったら、<a href="../teichaku/">就業促進定着手当 計算機</a>で実際の支給額を計算できます。</p>
   <h3>上限額は毎年8月1日に変わります</h3>
   <p>再就職手当の日額上限は<b>毎年8月1日に改定</b>されます。この計算機は<span id="src-label">厚生労働省が公表している最新の額</span>で計算しています。</p>
   <p>上限は、雇用保険法16条の給付率区分の境界額（18条の自動変更対象額）に50%（60〜64歳は45%）を掛けて導かれるため、境界額と一緒に変わります。</p>
@@ -445,7 +446,7 @@ $("calc").addEventListener("click", async () => {
     ${base}
     <table class="res">
       <tr><th scope="row">支給額</th><td>${yen(r.dailyUsed)} × ${r.remaining}日 × 10分の${r.tenths} ＝ <b>${yen(r.amount)}</b></td></tr>
-      <tr><th scope="row">就業促進定着手当</th><td>上限 <b>${yen(r.teichakuCap)}</b>（実額は再就職後6か月の賃金の下がり方で決まります）</td></tr>
+      <tr><th scope="row">就業促進定着手当</th><td>上限 <b>${yen(r.teichakuCap)}</b>（実額は再就職後6か月の賃金の下がり方で決まります。<a href="../teichaku/">就業促進定着手当 計算機</a>）</td></tr>
     </table>
     ${capNote}
     ${cliffNote}

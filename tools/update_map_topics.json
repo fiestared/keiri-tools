@@ -1,0 +1,971 @@
+{
+  "schema_version": 1,
+  "_doc": "更新箇所の分類辞書。正誤判定・自動修正・公開ゲートではない。URLは既存登録・参照JSONが優先。",
+  "_calendar": "monthsは改定確定日でなく重点確認の目安。基準月が現在の窓なら当日、以後の最短月で並べる。期限が確定したJSON next_reviewは別候補として使用。",
+  "topics": [
+    {
+      "name": "協会けんぽ料率",
+      "pattern": "協会けんぽ|健康保険料率|健保(?:料率|料|＋)|(?<!国民)健康保険(?=[:：\\s]|$)",
+      "source_year_slugs": [
+        "hyojun-hoshu-gakuhyo"
+      ],
+      "reference_json": [
+        "docs/assets/shaho_rates_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/"
+      ],
+      "next_revision": {
+        "months": [
+          2,
+          3
+        ],
+        "status": "planning_estimate",
+        "note": "毎年2〜3月を重点確認、通常3月分から。任意継続等は当年度資料で確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "介護保険料率",
+      "pattern": "介護保険|介護(?:料率|料|納付|第2号)|健保＋介護",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/shaho_rates_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/"
+      ],
+      "next_revision": {
+        "months": [
+          2,
+          3
+        ],
+        "status": "planning_estimate",
+        "note": "健保と合わせ2〜3月を重点確認。第1号は自治体の計画改定も確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "子ども・子育て支援金",
+      "pattern": "子ども.{0,5}支援(?:金|納付)|子育て支援金|支援金率",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/shaho_rates_r08.json",
+        "docs/assets/kokuho_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/003/"
+      ],
+      "next_revision": {
+        "months": [
+          2,
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "翌年度率を年度末に確認。令和8年4月の開始は単発の制度沿革",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "子ども・子育て拠出金",
+      "pattern": "子ども.{0,5}拠出金|子育て拠出金",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/shaho_rates_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nenkin.go.jp/service/kounen/hokenryo/ryogaku/ryogakuhyo/"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "年度末に告示・事業主負担を確認。支援金と別の制度",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "雇用保険料率",
+      "pattern": "雇用保険料率|雇用保険料|労働者負担の料率",
+      "source_year_slugs": [
+        "koyou-hokenryo-ritsu"
+      ],
+      "reference_json": [
+        "docs/assets/shaho_rates_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000108634.html"
+      ],
+      "next_revision": {
+        "months": [
+          2,
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "2〜3月を重点監視、年度料率は通常4月適用。公表日は固定しない",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "労災保険率",
+      "pattern": "労災保険|労災(?:料率|保険率)",
+      "source_year_slugs": [
+        "rosai-hokenryoritsu"
+      ],
+      "reference_json": [
+        "docs/assets/rousai_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/rousai/"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "改定年の4月適用を重点確認。毎年必ず改定とはしない",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "厚生年金",
+      "pattern": "厚生年金|厚年|標準賞与額",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/shaho_rates_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nenkin.go.jp/service/kounen/hokenryo/ryogaku/ryogakuhyo/"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "年度末に上限・料率・適用拡大の法改正を確認。料率を毎年変えない",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "標準報酬・算定基礎",
+      "pattern": "標準報酬|報酬月額|等級|算定基礎|定時決定|随時改定|支払基礎日数",
+      "source_year_slugs": [
+        "hyojun-hoshu-gakuhyo",
+        "shataku-chintairyo"
+      ],
+      "reference_json": [
+        "docs/assets/santei_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nenkin.go.jp/service/kounen/hokenryo/hoshu/20121017.html"
+      ],
+      "next_revision": {
+        "months": [
+          4,
+          5,
+          6
+        ],
+        "status": "planning_estimate",
+        "note": "4〜6月に算定ガイドを重点確認、定時決定は9月適用。等級改正は別に確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "源泉徴収税額表",
+      "pattern": "源泉徴収税額表|月額表|日額表|賞与.{0,12}(?:税率|源泉)|源泉徴収税額",
+      "source_year_slugs": [
+        "gensen-zeigakuhyo-mikata",
+        "gensen-zeigakuhyo-r09",
+        "gensen-choshu"
+      ],
+      "reference_json": [
+        "docs/assets/gensen_getsugaku_r08.json",
+        "docs/assets/gensen_getsugaku_r09.json",
+        "docs/assets/gensen_shoyo_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/publication/pamph/01.htm"
+      ],
+      "next_revision": {
+        "months": [
+          1,
+          8,
+          9
+        ],
+        "status": "planning_estimate",
+        "note": "翌年分の公表を8〜9月に重点監視、翌年1月の支払分から。R9の2026-08-31公表を毎年の固定日にはしない",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "基礎控除・給与所得控除（令和8年改正）",
+      "pattern": "基礎控除|給与所得控除|年収の壁|所得税.{0,6}壁",
+      "source_year_slugs": [
+        "nenshu-no-kabe"
+      ],
+      "reference_json": [
+        "docs/assets/shotokuzei_r08.json",
+        "docs/assets/kabe_thresholds_r08.json",
+        "docs/assets/gensen_kojo_r07.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1199.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "12月の大綱・施行と翌年の適用年分を別々に確認。毎年額が変わるとはしない",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "特定親族特別控除",
+      "pattern": "特定親族|源泉控除対象親族",
+      "source_year_slugs": [
+        "tokutei-shinzoku-tokubetsu-kojo"
+      ],
+      "reference_json": [
+        "docs/assets/nencho_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1177.htm"
+      ],
+      "next_revision": {
+        "months": [
+          10,
+          11,
+          12
+        ],
+        "status": "planning_estimate",
+        "note": "年末調整の新版・翌年の源泉控除定義を確認。施行日と適用年分を区別",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "扶養・配偶者控除",
+      "pattern": "扶養控除|配偶者(?:特別)?控除|扶養親族.{0,12}所得|同一生計配偶者",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/gensen_kojo_r07.json",
+        "docs/assets/nencho_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1180.htm"
+      ],
+      "next_revision": {
+        "months": [
+          10,
+          11,
+          12
+        ],
+        "status": "planning_estimate",
+        "note": "年末調整の新版と12月の大綱で所得要件・年分を確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "住民税",
+      "pattern": "住民税|市民税|県民税|森林環境税|非課税世帯",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/juminzei_r08.json",
+        "docs/assets/juminzei_hayami_r08.json",
+        "docs/assets/hikazei_setai_r08.json"
+      ],
+      "primary_urls": [
+        "https://laws.e-gov.go.jp/law/325AC0000000226"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1,
+          5,
+          6
+        ],
+        "status": "planning_estimate",
+        "note": "12月の改正と翌年度課税を確認、自治体の6月通知も参照。所得年と課税年度を分ける",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "最低賃金",
+      "pattern": "最低賃金|最賃",
+      "source_year_slugs": [
+        "saitei-chingin"
+      ],
+      "reference_json": [
+        "docs/assets/saitei_chingin_r07.json",
+        "docs/assets/saitei_chingin_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/minimumichiran/"
+      ],
+      "next_revision": {
+        "months": [
+          10,
+          11,
+          12,
+          8,
+          9
+        ],
+        "status": "planning_estimate",
+        "note": "夏の審議・公表、秋の発効を確認。令和8年度は県別に10月1日〜12月2日、10月一斉ではない",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "年金額",
+      "pattern": "年金額|老齢(?:基礎|厚生)年金|在職老齢|遺族年金|加給年金|国民年金保険料",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/nenkin_r08.json",
+        "docs/assets/zaishoku_r08.json",
+        "docs/assets/izoku_r08.json",
+        "docs/assets/kokunen_menjo_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nenkin.go.jp/service/jukyu/seido/roureinenkin/jukyu-yoken/20150401-02.html"
+      ],
+      "next_revision": {
+        "months": [
+          1,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "1月頃に翌年度改定を重点確認、4月分から。毎年の実資料で再確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "高額療養費",
+      "pattern": "高額療養費|自己負担限度額|多数回該当",
+      "source_year_slugs": [
+        "kogaku-ryoyohi"
+      ],
+      "reference_json": [
+        "docs/assets/kogaku_r08.json"
+      ],
+      "primary_urls": [
+        "https://laws.e-gov.go.jp/law/215IO0000000243"
+      ],
+      "next_revision": {
+        "months": [
+          6,
+          7,
+          8
+        ],
+        "status": "planning_estimate",
+        "note": "施行予定・延期も随時確認。参照JSONは2027年8月版を収録、next_reviewを優先",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "育休給付",
+      "pattern": "育児休業給付|育休給付|出生時育児|出生後休業|育児時短就業|育児休業.{0,8}(?:給付|上限)",
+      "source_year_slugs": [],
+      "reference_json": [],
+      "primary_urls": [
+        "https://shussan.ikukyu-simu.mhlw.go.jp/faq/"
+      ],
+      "next_revision": {
+        "months": [
+          7,
+          8
+        ],
+        "status": "planning_estimate",
+        "note": "賃金日額・上限を7〜8月に重点確認、制度改正の施行日は別に確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "雇用保険給付",
+      "pattern": "基本手当|失業(?:保険|給付)|再就職手当|高年齢雇用|教育訓練給付",
+      "source_year_slugs": [
+        "kounenrei-koyou-keizoku"
+      ],
+      "reference_json": [
+        "docs/assets/kihonteate_r07.json"
+      ],
+      "primary_urls": [
+        "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000160564_00050.html"
+      ],
+      "next_revision": {
+        "months": [
+          7,
+          8
+        ],
+        "status": "planning_estimate",
+        "note": "毎年8月の基本手当日額・上限を重点確認、給付制度改正は随時",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "NISA・iDeCo",
+      "pattern": "NISA|iDeCo|個人型確定拠出|確定拠出年金",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/tsumitate_r08.json",
+        "docs/assets/ideco_deguchi_r08.json"
+      ],
+      "primary_urls": [
+        "https://laws.e-gov.go.jp/law/332AC0000000026"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "12月の大綱・公布法・拠出限度額の適用日を確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "ふるさと納税",
+      "pattern": "ふるさと納税|ワンストップ|寄附金控除",
+      "source_year_slugs": [],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1155.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "年末の寄附・翌年申告と税制改正を確認。住民税側の年度にも注意",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "印紙税",
+      "pattern": "印紙税|収入印紙|印紙(?:代|額)",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/inshi_r07.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7140.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1,
+          2
+        ],
+        "status": "planning_estimate",
+        "note": "税制改正・軽減期限を年末〜年度末に確認。毎年改定とはしない",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "消費税・インボイス",
+      "pattern": "消費税|インボイス|仕入税額|簡易課税|[23２３]割特例|適格請求書",
+      "source_year_slugs": [
+        "invoice-2wari-tokurei",
+        "invoice-wakariyasuku",
+        "shohizei-kanpu"
+      ],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6102.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1,
+          9,
+          10
+        ],
+        "status": "planning_estimate",
+        "note": "12月改正・9〜10月経過措置期限を確認。適用課税期間を先に確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "国民健康保険",
+      "pattern": "国民健康保険|国保|賦課限度額",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/kokuho_r08.json"
+      ],
+      "primary_urls": [
+        "https://laws.e-gov.go.jp/law/333CO0000000362"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "年度末の限度額と自治体別料率・軽減基準を確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "傷病・出産給付",
+      "pattern": "傷病手当|出産手当|出産育児一時金",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/shobyo_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.kyoukaikenpo.or.jp/g3/sb3040/r139/"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "年度の平均標準報酬月額と給付改正を確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "住宅ローン控除",
+      "pattern": "住宅ローン控除|住宅借入金等特別控除|住宅ローン減税",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/jutaku_r07.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1211-1.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "12月大綱と翌年の入居年・住宅区分を確認。ファイル名r07でもmetaの年版を読む",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "所得税・年末調整",
+      "pattern": "所得税|年末調整|確定申告|予定納税|源泉徴収|復興特別|防衛特別",
+      "source_year_slugs": [
+        "taishokukin-zeikin",
+        "taishoku-gensen-choshuhyo",
+        "hoteichosho-goukeihyo",
+        "gensen-shotokuzei-nofusho",
+        "nenmatsu-chosei-kanpukin",
+        "shiharai-chosho",
+        "nenmatsu-chosei-kakikata",
+        "gensen-choshuhyo-mikata",
+        "gensen-choshubo",
+        "kanai-rodosha-tokurei",
+        "kyuyo-shiharai-hokokusho",
+        "tsukin-teate-hikazei"
+      ],
+      "reference_json": [
+        "docs/assets/nencho_r08.json",
+        "docs/assets/shotokuzei_r08.json",
+        "docs/assets/yotei_nozei_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/publication/pamph/01.htm"
+      ],
+      "next_revision": {
+        "months": [
+          10,
+          11,
+          12
+        ],
+        "status": "planning_estimate",
+        "note": "年末調整の最新版と12月施行・翌年分の適用を確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": true
+    },
+    {
+      "name": "保険料・医療費控除",
+      "pattern": "生命保険料控除|地震保険料控除|医療費控除|社会保険料控除|小規模企業共済等掛金控除",
+      "source_year_slugs": [
+        "seimei-hokenryo-kojo"
+      ],
+      "reference_json": [
+        "docs/assets/iryohi_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1120.htm"
+      ],
+      "next_revision": {
+        "months": [
+          10,
+          11,
+          12
+        ],
+        "status": "planning_estimate",
+        "note": "年末調整・控除証明書の発送時期と税制改正を確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "相続・贈与税",
+      "pattern": "相続税|贈与税|相続時精算|生前贈与|小規模宅地",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/sozokuzei_r08.json",
+        "docs/assets/zoyozei_r08.json",
+        "docs/assets/seizen_zoyo_r08.json",
+        "docs/assets/shokibo_takuchi_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4152.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "大綱・適用年・特例期限を年末に確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "登録免許税・不動産税",
+      "pattern": "登録免許税|不動産取得税|固定資産税|住宅用家屋|登記.{0,10}免税",
+      "source_year_slugs": [
+        "shokyaku-shisanzei"
+      ],
+      "reference_json": [
+        "docs/assets/toroku_menkyo_r08.json",
+        "docs/assets/toroku_jutaku_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/inshi/7191.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1,
+          3
+        ],
+        "status": "planning_estimate",
+        "note": "住宅・相続登記の軽減期限を年度末前に確認。meta.next_reviewも参照",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "自動車税",
+      "pattern": "自動車税|軽自動車税|環境性能割|種別割",
+      "source_year_slugs": [
+        "jidoshazei"
+      ],
+      "reference_json": [
+        "docs/assets/jidoshazei_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.tax.metro.tokyo.lg.jp/kazei/automobiles/shubetsu"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "年度版と重課・軽課の期限を年度末に確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "法人税・減価償却",
+      "pattern": "法人税|減価償却|耐用年数|少額減価|償却率|交際費|損金",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/hojinzei_r08.json",
+        "docs/assets/genka_rates.json",
+        "docs/assets/hojokin_zeimu_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/hojin/5759.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "税制改正・少額資産等の特例期限を確認",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "労働時間・休暇・労務制度",
+      "pattern": "有給|年次有給|時間外|残業|割増賃金|労働時間|休業|解雇|労働基準|36協定",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/zangyodai_rates.json"
+      ],
+      "primary_urls": [
+        "https://laws.e-gov.go.jp/law/322AC0000000049"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "法改正・通達・経過措置を随時確認。年度末は棚卸しの目安",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": true
+    },
+    {
+      "name": "補助金・助成金",
+      "pattern": "補助金|助成金|公募|募集期限",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/hojokin_schedule.json",
+        "docs/assets/hojokin_jgrants.json",
+        "docs/assets/koyou_joseikin.json"
+      ],
+      "primary_urls": [
+        "https://mirasapo-plus.go.jp/"
+      ],
+      "next_revision": {
+        "months": [
+          10,
+          11,
+          12,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9
+        ],
+        "status": "planning_estimate",
+        "note": "公募・締切ごとに確認。既存の自動更新を再利用",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "振込手数料",
+      "pattern": "振込手数料|振り込み手数料|銀行.{0,6}手数料",
+      "source_year_slugs": [
+        "furikomi-tesuryo-hikaku"
+      ],
+      "reference_json": [
+        "docs/assets/fee_table.json"
+      ],
+      "primary_urls": [],
+      "next_revision": {
+        "months": [],
+        "status": "planning_estimate",
+        "note": "各行の改定告知時（固定の改定月なし）",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false,
+      "source_note": "一次URLはfee_table.jsonのbanks[].sourceから継承。協会のトップページを各行の料金の根拠にしない。"
+    },
+    {
+      "name": "祝日・営業日",
+      "pattern": "祝日|営業日|振替休日",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/holidays_jp.json"
+      ],
+      "primary_urls": [
+        "https://www8.cao.go.jp/chosei/shukujitsu/gaiyou.html"
+      ],
+      "next_revision": {
+        "months": [
+          2,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "翌年の祝日を2月頃に確認、特例の休日変更は随時",
+        "basis": [
+          "designs/keiri-source-driven-updates-2026-09-29 §7",
+          "tools/source_year_registry.json",
+          "参照JSONの_meta（該当する場合）"
+        ]
+      },
+      "fallback": false
+    }
+  ]
+}
