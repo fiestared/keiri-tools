@@ -692,7 +692,9 @@
         "matagu の前提の段落"
       ],
       "numbers": [
-        "2.1%"
+        "2.1%",
+        "令和9年1月1日",
+        "1.1%"
       ],
       "scope": "令和8年分・非永住者以外の居住者。",
       "exceptions": [
@@ -700,11 +702,18 @@
         "令和9年分以後は1.1%（No.2260 の※）"
       ],
       "applies": "平成25年分から（復興財源確保法13条）",
-      "source_url": "https://laws.e-gov.go.jp/api/2/law_data/423AC0000000117?response_format=json",
-      "source_quote": "個人に対して課する復興特別所得税の額は、その個人のその年分の基準所得税額に百分の二・一の税率を乗じて計算した金額とする。",
-      "corpus_ref": "runs/write-2026-10-15-rw/sources/fukko13.txt:4",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "※　令和9年1月1日以後に生ずる所得については、復興特別所得税の税率が1.1パーセントに引き下げられ、防衛特別所得税（源泉徴収すべき所得税の額の1パーセント相当額）が併せて源泉徴収されます。",
+      "corpus_ref": "runs/write-2026-10-15-rw/sources/nta2260.txt:51",
       "review_status": "author_checked",
-      "covers": []
+      "covers": [],
+      "supporting_sources": [
+        {
+          "url": "https://laws.e-gov.go.jp/api/2/law_data/423AC0000000117?response_format=json",
+          "quote": "個人に対して課する復興特別所得税の額は、その個人のその年分の基準所得税額に百分の二・一の税率を乗じて計算した金額とする。",
+          "corpus_ref": "runs/write-2026-10-15-rw/sources/fukko13.txt:4"
+        }
+      ]
     },
     {
       "id": "rw1015-premise",
@@ -787,11 +796,41 @@
       "covers": [
         "s-047a4c73c35b5ef13fe5-1",
         "s-531f0688f1bd10b2a002-1",
-        "s-5675855509f129aa4279-1",
+        "s-8e93ca7cd14369f8606e-1",
         "s-e214d8e93ba18d56c947-1",
         "s-e662be495d4be62fa4ef-1",
         "s-e662be495d4be62fa4ef-2",
         "s-e662be495d4be62fa4ef-3"
+      ]
+    },
+    {
+      "id": "rw1015-reit-faq",
+      "text": "J-REITの分配金（配当控除なし）を総合課税にした場合の実効税率: 令和8年分で、分配金を含める前も後も課税総所得金額が195万円以上330万円未満（税率10%）なら10×1.021＋10＝20.21%、195万円未満（税率5%）なら5×1.021＋10＝15.105%。照合1周目で旧文『10%以下なら20.21%』が5%帯で誤り（high）と指摘され、正本で再計算して直した。",
+      "numbers": [
+        "15.105%",
+        "20.21%"
+      ],
+      "must_with": [
+        "195万円"
+      ],
+      "derived": true,
+      "calc": "python3: 5*1.021+10=15.105, 10*1.021+10=20.21",
+      "scope": "令和8年分・投資法人（J-REIT）の分配金を総合課税にした居住者で、分配金を含める前後とも同じ税率の帯に収まる場合。",
+      "exceptions": [
+        "J-REITは配当控除の対象外（措置法9条1項7号、No.1250 の(9)）",
+        "帯をまたぐ場合は帯ごとに按分（matagu の節と同じ考え方）",
+        "国民健康保険料・扶養への影響は含めない（同じ回答の後段に記載）",
+        "令和9年1月1日以後に生ずる所得は復興特別所得税1.1%＋防衛特別所得税1%（合計は同じ2.1%相当）"
+      ],
+      "applies": "令和8年分",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "1,000円 から 1,949,000円まで | ",
+      "corpus_ref": "runs/write-2026-10-15-rw/sources/nta2260.txt:22-24",
+      "review_status": "author_checked",
+      "covers": [
+        "s-6bfcc6ed6cea334b7c8c-1",
+        "s-a360444950c470177d6b-1",
+        "s-ec3c09209297a4abdc3b-1"
       ]
     }
   ],
