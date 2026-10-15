@@ -1,7 +1,7 @@
 /**
  * 振込手数料「先方負担」計算の純ロジック(DOM非依存・テスト対象)。
  *
- * 銀行実務の3方式(一次ソース: 北陸銀行 BIBUsersGuide.pdf、群馬銀行FAQ id=175):
+ * 銀行実務の3方式(一次ソース: 群馬銀行FAQ id=175、スルガ銀行「先方負担手数料の設定」):
  *  - sueoki      (据置型・当方有利):      基準額 30,000円         を請求額と比較して手数料区分を決定
  *  - mikan_kasan (未満手数料加算型):      基準額 30,000円+未満手数料
  *  - ijo_kasan   (以上手数料加算型・先方有利): 基準額 30,000円+以上手数料 (いわゆる差引後基準)
@@ -41,21 +41,36 @@ export function basisAmount(method, feeTable) {
 
 /** 3方式共通: 請求額と基準額の比較で手数料を決め、差引後の振込額を返す */
 export function calc(method, invoice, feeTable) {
-  const basis = basisAmount(method, feeTable);
-  const fee = invoice >= basis ? feeTable.over30k : feeTable.under30k;
-  return { method, basis, fee, transfer: invoice - fee };
+  if (!Number.isSafeInteger(invoice) || invoice <= 0) return failure('invoice', '請求額を正の整数円で入力してください（安全に計算できる範囲まで）。');
+  if (!['sueoki', 'mikan_kasan', 'ijo_kasan'].includes(method)) return failure('method', '差引方式を選んでください。');
+  if (!validFee(feeTable?.under30k)) return failure('feeUnder', '3万円未満の手数料を0円以上の整数円で入力してください。');
+  if (!validFee(feeTable?.over30k)) return failure('feeOver', '3万円以上の手数料を0円以上の整数円で入力してください。');
+  // 円単位の整数で基準額を作る。加算が安全整数を超える場合も丸めて比較しない。
+  const exactBasis = BigInt(THRESHOLD) + BigInt(method === 'mikan_kasan' ? feeTable.under30k : method === 'ijo_kasan' ? feeTable.over30k : 0);
+  if (exactBasis > BigInt(Number.MAX_SAFE_INTEGER)) return failure(method === 'mikan_kasan' ? 'feeUnder' : 'feeOver', '手数料から求めた基準額が安全に計算できる範囲を超えています。');
+  const basis = Number(exactBasis);
+  const fee = BigInt(invoice) >= exactBasis ? feeTable.over30k : feeTable.under30k;
+  return validatedResult({ method, basis, fee, transfer: invoice - fee });
 }
 
 export function calcFlat(invoice, flatFee) {
-  return { method: "flat", fee: flatFee, transfer: invoice - flatFee };
+  if (!Number.isSafeInteger(invoice) || invoice <= 0) return failure('invoice', '請求額を正の整数円で入力してください（安全に計算できる範囲まで）。');
+  if (!validFee(flatFee)) return failure('flatFee', '一律の差引額を0円以上の整数円で入力してください。');
+  return validatedResult({ method: "flat", fee: flatFee, transfer: invoice - flatFee });
+}
+
+const validFee = n => Number.isSafeInteger(n) && n >= 0;
+const failure = (field, error) => ({ ok: false, field, error });
+function validatedResult(result) {
+  if (!Number.isSafeInteger(result.transfer)) return failure('invoice', '振込額が安全に計算できる範囲を超えています。');
+  if (result.transfer <= 0) return failure('invoice', `差し引く手数料が請求額以上のため、振込額が${result.transfer < 0 ? 'マイナスになります' : '0円になります'}。この請求は先方負担の差引に適しません。手数料を当方負担にするか、取引先と取り決めを確認してください。`);
+  return { ok: true, ...result };
 }
 
 /** 3方式の結果が分かれる帯かどうか(注意喚起用) */
 export function methodsDisagree(invoice, feeTable) {
-  const fees = ["sueoki", "mikan_kasan", "ijo_kasan"].map(
-    (m) => calc(m, invoice, feeTable).fee
-  );
-  return new Set(fees).size > 1;
+  const results = ["sueoki", "mikan_kasan", "ijo_kasan"].map(m => calc(m, invoice, feeTable));
+  return results.every(r => r.ok) && new Set(results.map(r => r.fee)).size > 1;
 }
 
 /**

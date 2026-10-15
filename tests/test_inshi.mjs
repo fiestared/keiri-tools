@@ -190,17 +190,30 @@ t('軽減は本則より高くならない（全金額帯で 軽減 ≤ 本則�
   }
 });
 
-// ── 11. fail closed: データ・入力が無ければ throw（黙って答えない）───────────────────
-t('fail closed: データ無し・文書未選択・金額0・消費税額等≧記載金額は throw', () => {
-  assert.throws(() => calcInshi({ doc: 'k17_uriage', amount: 100000 }, null), /inshi_r07/);
-  assert.throws(() => calcInshi({ doc: 'nonexistent', amount: 100000 }, D), /文書の種類/);
-  assert.throws(() => calcInshi({ doc: 'k17_uriage', amount: 0 }, D), /入力してください/);
-  assert.throws(() => calcInshi({ doc: 'k17_uriage', amount: 50000, taxPart: 50000 }, D), /消費税額等が記載金額以上/);
-  assert.throws(() => calcInshi({ doc: 'k4', noamount: true }, D), /券面金額/);
+// ── 11. fail closed: データ・入力が無ければ ok:false（黙って答えない）────────────────
+const rejects = (input, data, pattern) => {
+  const r = calcInshi(input, data);
+  assert.strictEqual(r.ok, false);
+  assert.strictEqual(r.tax, undefined);
+  assert.strictEqual(r.errorType, data === null ? 'data' : 'input');
+  assert.match(r.error, pattern);
+};
+t('fail closed: データ無し・文書未選択・金額0・消費税額等≧記載金額は ok:false', () => {
+  rejects({ doc: 'k17_uriage', amount: 100000 }, null, /inshi_r07/);
+  rejects({ doc: 'nonexistent', amount: 100000 }, D, /文書の種類/);
+  rejects({ doc: 'k17_uriage', amount: 0 }, D, /入力してください/);
+  rejects({ doc: 'k17_uriage', amount: 50000, taxPart: 50000 }, D, /消費税額等が記載金額以上/);
+  rejects({ doc: 'k4', noamount: true }, D, /券面金額/);
 });
-t('fail closed: 17号以外に「営業に関しない」・3号以外に「一覧払」を渡すと throw', () => {
-  assert.throws(() => calcInshi({ doc: 'k1_fudosan', amount: 100000, hieigyo: true }, D), /17号/);
-  assert.throws(() => calcInshi({ doc: 'k17_uriage', amount: 100000, ichiranbarai: true }, D), /3号|約束手形/);
+
+t('不正な消費税額等を0円に置換しない（独立確認の再現）', () => {
+  for (const taxPart of [-4981, NaN, Infinity, '1e309', 0.5]) {
+    rejects({ doc: 'k17_uriage', amount: 54800, taxPart }, D, /整数/);
+  }
+});
+t('fail closed: 17号以外に「営業に関しない」・3号以外に「一覧払」は ok:false', () => {
+  rejects({ doc: 'k1_fudosan', amount: 100000, hieigyo: true }, D, /17号/);
+  rejects({ doc: 'k17_uriage', amount: 100000, ichiranbarai: true }, D, /3号|約束手形/);
 });
 
 console.log(`\n${fail ? '❌' : '✓'} 収入印紙コア: ${pass} passed, ${fail} failed`);

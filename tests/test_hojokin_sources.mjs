@@ -123,6 +123,14 @@ console.log('★生成物が最新か');
     catch { green = false; }
     ok(green, `★${g}.mjs --check が緑（赤なら node tools/${g}.mjs を流してコミットする）`);
   }
+  // ★2026-10-15: タブの --check は「焼き込んだ時刻（data-asof）で数え直して整合」を見る形になった
+  //   （「今」で数えると日付が変わった瞬間に main が赤になっていた）。その代わり、
+  //   焼き込みが古いまま放置されて締切を過ぎた公募が件数に残り続けることは、**別の検査**で落とす。
+  //   赤なら定時ジョブ tools/update_hojokin.sh（1日3回・成功は1日1回）が止まっていないかを見る。
+  let fresh = true, msg = '';
+  try { execFileSync('node', ['tools/gen_hojokin_tabs.mjs', '--check-age'], { cwd: root, stdio: 'pipe' }); }
+  catch (e) { fresh = false; msg = String(e.stderr || '').trim().split('\n').slice(1, 2).join(''); }
+  ok(fresh, `★タブの件数の焼き込みが48時間以内（${msg || 'data-asof'}。赤なら update_hojokin.sh の停止を疑う）`);
 }
 
 console.log(`\n${fail ? '✗' : '✓'} test_hojokin_sources: ${checks} checks, ${fail} failed`);

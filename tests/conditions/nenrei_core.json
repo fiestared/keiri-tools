@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "core": "nenrei_core",
+  "page": "docs/nenrei-hayami/index.html",
+  "conditions": [
+    {"id":"table-year","statute":"https://laws.e-gov.go.jp/law/135AC1000000050","disposition":"input","input_ids":["table-year"],"cases":["2026年版・2000年生まれの年齢","2027年版・2000年生まれの年齢"]},
+    {"id":"era-date","statute":"https://laws.e-gov.go.jp/law/431CO0000000143","disposition":"input","input_ids":["direction","era","convert-year","convert-month","convert-day"],"cases":["令和改元日前日","令和改元日","令和元年の和暦逆変換","令和元年の改元前は対象外"]},
+    {"id":"birth-date","statute":"https://laws.e-gov.go.jp/law/129AC0000000089#Mp-At_143","disposition":"input","input_ids":["birth","reference"],"cases":["平年・閏日生まれの満了日の始まり","平年・閏日生まれの満了日の翌日","通常の誕生日前","通常の誕生日当日"]},
+    {"id":"calendar-range","statute":"https://eco2.mtk.nao.ac.jp/koyomi/topics/html/topics1990.html","disposition":"out_of_scope","scope_selector":"#calendar-scope","scope_text":"年の対応は明治元年から扱います。年月日の変換は、太陽暦を採用した1873年1月1日以降が対象です。明治元年〜5年の旧暦の日付は変換しません。出典: 国立天文台「閏年と旧暦について」。","cases":["明治元年の年対応","明治より前の年は対象外","旧暦の月日は対象外"]},
+    {"id":"civil-day-start","statute":"https://laws.e-gov.go.jp/law/129AC0000000089#Mp-At_143","disposition":"fixed","scope_selector":"#age-scope","scope_text":"2月29日生まれは、平年では2月28日の終了時に年齢が加算されるため、この計算欄は3月1日から加算後の年齢を表示します。出典: 民法143条・年齢計算ニ関スル法律。","cases":["平年・閏日生まれの満了日の始まり","平年・閏日生まれの満了日の翌日"]}
+  ],
+  "default_cases":["HTML初期値は2026年版・計算欄は空"]
+}

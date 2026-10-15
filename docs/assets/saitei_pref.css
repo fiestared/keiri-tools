@@ -1,0 +1,44 @@
+/* 県ページだけの組版。全国共通のstyle.cssを上書きしない。 */
+.saitei-pref-page #pref-content { min-width: 0; }
+.saitei-pref-page .saitei-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.saitei-pref-page .tool-cta { margin: 0; }
+.saitei-pref-page #pref-print { width: auto; margin: 0; }
+.saitei-pref-page table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.saitei-pref-page th, .saitei-pref-page td { padding: 10px 12px; border-bottom: 1px solid var(--line); text-align: left; }
+.saitei-pref-page thead th { background: var(--accent-soft); }
+.saitei-pref-page .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.saitei-pref-page caption { text-align: left; margin-bottom: 8px; }
+.saitei-pref-page #pref-current { font-size: 18px; }
+.saitei-pref-page #pref-lead { font-size: 20px; line-height: 1.8; }
+@media (max-width: 600px) {
+  .saitei-pref-page table { font-size: 12px; }
+  .saitei-pref-page th, .saitei-pref-page td { padding: 6px 4px; }
+  .saitei-pref-page .scroll-hint { display: none; }
+}
+@media print {
+  .saitei-pref-page header, .saitei-pref-page footer, .saitei-pref-page nav,
+  .saitei-pref-page .side-rail, .saitei-pref-page .saitei-actions,
+  .saitei-pref-page #nearby, .saitei-pref-page #pref-nearby,
+  .saitei-pref-page #nearby + p, .saitei-pref-page #pref-nearby + p,
+  .saitei-pref-page .scroll-wrap:has(#pref-nearby),
+  .saitei-pref-page .scroll-wrap:has(#pref-nearby) + p,
+  .saitei-pref-page .byline, .saitei-pref-page #boundary + p,
+  .saitei-pref-page #monthly-assumption + p,
+  .saitei-pref-page .scroll-wrap:has(#pref-monthly) + p,
+  .saitei-pref-page #pref-exclusions + p,
+  .saitei-pref-page main > div:has(a[href^="https://x.com/"]) { display: none !important; }
+  .saitei-pref-page main { display: block; max-width: none; padding: 0; }
+  .saitei-pref-page .scroll-wrap { overflow: visible; }
+  .saitei-pref-page table { min-width: 0 !important; font-size: 9pt; }
+  .saitei-pref-page table, .saitei-pref-page tr, .saitei-pref-page h2 { break-inside: avoid; }
+  .saitei-pref-page #pref-content { font-size: 9pt; line-height: 1.45; }
+  .saitei-pref-page p, .saitei-pref-page li { font-size: 8.5pt; line-height: 1.4; margin: 4pt 0; }
+  .saitei-pref-page h1 { font-size: 15pt; margin: 0 0 7pt; }
+  .saitei-pref-page h2 { font-size: 11pt; margin: 9pt 0 5pt; }
+  .saitei-pref-page h3 { font-size: 10pt; margin: 8pt 0 5pt; }
+  .saitei-pref-page #pref-lead, .saitei-pref-page #pref-current { font-size: 10pt; line-height: 1.4; }
+  .saitei-pref-page #pref-exclusions { columns: 2; column-gap: 18pt; margin: 4pt 0; padding-left: 14pt; }
+  .saitei-pref-page #pref-exclusions li { break-inside: avoid; }
+  .saitei-pref-page a::after { content: none !important; }
+  .saitei-pref-page #pref-sources > li:nth-child(-n+2) a::after { content: " (" attr(href) ")" !important; font-size: 8pt; word-break: break-all; }
+}
