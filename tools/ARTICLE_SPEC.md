@@ -205,6 +205,23 @@ sitemap の実行自体が `docs/column/index.html` を書き換えるので**2�
 ＝ **前回のコミットが触ったファイルの分が、次に記事を書くときに出てくる**のが正常。
 🚫 「前回テストが緑だった」を「前回に問題が無かった」の根拠にしない。
 
+## title に年度・年分を入れたら、年度監視に登録する（2026-10-15〜・テストが落とす）
+
+title に「令和N年」「20XX年」を入れた記事は、`tools/source_year_registry.json` の `entries` に登録する。
+登録が無いと `node tests/test_source_year_coverage.mjs` が落ち、公開の関門（pub_worktree / publish_article）で止まる。
+既存の未登録は `tools/source_year_unregistered_allowlist.json`（減らす一方）で通しているが、**新しい記事をここに足してはいけない**。
+
+- 書く項目: `slug` / `name` / `source` / `url`（一次資料）/ `covers`（記事が扱う西暦）/ `probe_next` / `note`（curl で実測した日と結果）
+- 年度ごとに URL が変わる資料は `{y}`（西暦）か `{r:02d}`（令和年）で書く（例: 年末調整のしかた `nencho{y}/01.htm`、
+  法定調書の手引 `tebiki{y}/index.htm`、源泉徴収のあらまし `aramashi{y}/index.htm` ＋ `"year_label_suffix": "版"`）
+- 同じ URL の中身が差し替わる資料は `"url_kind": "in_place"`（note に「in_place」か「年度で変わらない」と書く）
+- 次の年度版を probe できない資料（年度版が無い・期限が法律で固定・本文に翌年の予定が既に載っている）は
+  `url` に一次資料を書き、`"probe_next": false` と `probe_off_reason`（理由）を書く。`url: null` は登録とみなさない
+- 書いたら `python3 tools/check_source_year.py --slug <slug>` が「未公表」か「発見」を出すことを見る（「確認不能」は URL の誤り）。
+  `covers` の年で probe して「本文に令和N年分あり」になること（陽性の確認）も見る
+- その記事の数字・年度がどの改定テーマ（`tools/update_map_topics.json`）にも結び付かないと、公開の関門が
+  `tools/update_map_gaps.mjs` の一覧で知らせる（止めない）。出たら該当テーマの `pattern` に語を足すか、`source_year_slugs` に slug を足す
+
 ## 型（テストが見ている）
 
 ```
