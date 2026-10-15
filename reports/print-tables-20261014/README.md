@@ -41,3 +41,5 @@
 `check_claims --changed` は緑。補足で流した `check_claim_scope` は、既存のmust_with未登録135件が開始時originでも同数（条件の抜けは0）。個別の税務・労務判断は検査の対象にしない。
 
 `final-tests.log` は修正途中を含む全件バッチの原記録。再実行後の有効な結果と対応するログは `test-summary.json`。必要な原本・ログ・PNG/PDFだけを明示してコミットした。
+
+2026-10-15: `tests/test_print_tables_render.mjs` は撮影物を既定で一時ディレクトリに書く（このフォルダの png/pdf は 10-14 時点の記録で、以後は検査で上書きされない）。撮り直すときは `PRINT_TABLES_OUT=reports/print-tables-20261014 node tests/test_print_tables_render.mjs`。
