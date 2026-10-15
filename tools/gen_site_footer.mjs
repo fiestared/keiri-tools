@@ -46,6 +46,8 @@ export function siteLinks(depth) {
   const up = '../'.repeat(depth);
   const links = [...LINKS];
   if (depth === 0) links.push(['embed/', 'ウィジェットを自分のサイトに埋め込む']);
+  // ★リンク・ご紹介について（2026-10-15）: 紹介してくれる人の入口。全ページに足すと全ファイルが変わり並行作業と衝突するので、埋め込みと同じくトップだけに置く
+  if (depth === 0) links.push(['link/', 'リンク・ご紹介について']);
   return `${MARK}<div class="site-links">`
     + links.map(([href, label]) => `<a href="${up}${href}">${label}</a>`).join('')
     + `</div>${END}`;
