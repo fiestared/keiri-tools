@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>インボイス登録番号チェック｜貼り付けて一括検証（法人番号のチェックデジット）</title>
-<meta name="description" content="インボイスの登録番号（T＋13桁）と法人番号を貼り付けて、何十件でもまとめて検証。国税庁の算式でチェックデジットを確かめます。0と9の打ち間違いは検出できず、個人事業者の番号は別体系です。無料・入力は送信されません。">
+<meta name="description" content="インボイスの登録番号（T＋13桁）と法人番号を貼り付けて、何十件でもまとめて検証。国税庁の算式でチェックデジットを確かめます。基礎番号の0と9の打ち間違いは検出できず、個人事業者の番号は別体系です。無料・入力は送信されません。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/invoice-bangou/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="インボイス登録番号チェック｜貼り付けて一括検証（法人番号のチェックデジット）">
-<meta property="og:description" content="インボイスの登録番号（T＋13桁）と法人番号を貼り付けて、何十件でもまとめて検証。国税庁の算式でチェックデジットを確かめます。0と9の打ち間違いは検出できず、個人事業者の番号は別体系です。無料・入力は送信されません。">
+<meta property="og:description" content="インボイスの登録番号（T＋13桁）と法人番号を貼り付けて、何十件でもまとめて検証。国税庁の算式でチェックデジットを確かめます。基礎番号の0と9の打ち間違いは検出できず、個人事業者の番号は別体系です。無料・入力は送信されません。">
 <meta property="og:url" content="https://keiri-tools.com/invoice-bangou/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-07-26",
-      "dateModified": "2026-10-14",
+      "dateModified": "2026-10-16",
       "name": "インボイス登録番号チェック（一括）",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -63,7 +63,7 @@
           "name": "Q. チェックデジットが合えば、その登録番号は本物ですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. いいえ。合うのは桁の整合だけで、実在しない番号でも算式を満たすものは無数にあります。0と9の打ち間違いも検出できません（0と9の打ち間違い）。 取引先として登録する際は、国税庁の公表サイトやWeb-API等で実在・名称・登録の状態を確認してください。"
+            "text": "A. いいえ。合うのは桁の整合だけで、実在しない番号でも算式を満たすものは無数にあります。基礎番号の0と9の打ち間違いも検出できません（0と9の打ち間違い）。 取引先として登録する際は、国税庁の公表サイトやWeb-API等で実在・名称・登録の状態を確認してください。"
           }
         },
         {
@@ -87,7 +87,7 @@
           "name": "Q. 法人番号と登録番号は、いつも同じ数字ですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. 法人が登録している場合は同じで、「T」＋法人番号が登録番号になります。 ただし法人番号があっても登録していなければ登録番号はありません。 逆に個人事業者は法人番号を持ちませんが、登録すれば登録番号（法人番号と無関係の13桁）を持ちます。"
+            "text": "A. 法人番号のある法人が登録している場合は同じで、「T」＋法人番号が登録番号になります。 ただし法人番号があっても登録していなければ登録番号はありません。 逆に個人事業者は法人番号を持ちませんが、登録すれば「T」＋数字13桁の登録番号を持ちます（数字は法人番号と重複しない別の番号）。"
           }
         },
         {
@@ -96,6 +96,14 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "A. されません。計算はすべてブラウザの中で行い、外部に送信していません。 国税庁のWeb-APIも呼んでいません。公表されている算式だけで動いています。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "自社の登録番号を忘れたら？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "登録通知書で確認できます。e-Taxで申請し、通知書の電子受領を希望した場合は、e-Taxの「通知書等一覧」で確認できます。既に登録を受けていて番号が分からない場合は、各国税局（所）のインボイス登録センターの問合せ先へ照会します。法人番号を持つ登録済みの法人なら、「T」＋自社の法人番号が登録番号です。"
           }
         },
         {
@@ -141,13 +149,13 @@
 
 <section class="hero">
   <h1>インボイス登録番号チェック（貼り付けて一括検証）</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-26">2026年7月26日</time>（更新日: <time datetime="2026-10-14">2026年10月14日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-26">2026年7月26日</time>（更新日: <time datetime="2026-10-16">2026年10月16日</time>）</p>
   <p class="lead">請求書の <b>T＋13桁</b> の登録番号や法人番号を貼り付けると、<b>何十件でもまとめて</b>桁の整合（チェックデジット）と形式を確認します。
   <b>入力はブラウザの中だけで処理し、どこにも送信しません。</b>
   桁が合っても、その番号が実在する証明にはなりません。実在と登録の状態は<a href="https://www.invoice-kohyo.nta.go.jp/" rel="nofollow">国税庁の公表サイト</a>で確認してください。
   個人事業者など法人番号を持たない事業者の登録番号は別体系なので、正否までは判定できません。</p>
 </section>
-<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool">番号を貼って確かめる</a></li><li><a href="#kousei">登録番号の構成 — 「T」＋13桁</a></li><li><a href="#checkdigit">チェックデジットの計算方法</a></li><li><a href="#genkai">0と9の打ち間違いは、この検査では見つけられない</a></li><li><a href="#houjin">法人番号と登録番号が「同じとき」と「違うとき」</a></li><li><a href="#denai">番号が実在するのに公表サイトで出てこない理由</a></li><li><a href="#hikaku">まとめて確かめる3つの方法（比較）</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#shutten">出典</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/tsushinhi/">通信費とは</a></li><li><a href="../column/chidai-yachin/">地代家賃とは</a></li><li><a href="../column/kokoku-sendenhi/">広告宣伝費とは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><!--layout-toc:start--><nav class="toc" aria-label="このページの目次"><div class="toc-title">目次</div><ol><li><a href="#tool">番号を貼って確かめる</a></li><li><a href="#kousei">登録番号の構成 — 「T」＋13桁</a></li><li><a href="#checkdigit">チェックデジットの計算方法</a></li><li><a href="#genkai">基礎番号の0と9の打ち間違いは、この検査では見つけられない</a></li><li><a href="#houjin">法人番号と登録番号が「同じとき」と「違うとき」</a></li><li><a href="#denai">番号が実在するのに公表サイトで出てこない理由</a></li><li><a href="#hikaku">まとめて確かめる3つの方法（比較）</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#shutten">出典</a></li></ol></nav><!--layout-toc:end--><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../column/tsushinhi/">通信費とは</a></li><li><a href="../column/chidai-yachin/">地代家賃とは</a></li><li><a href="../column/kokoku-sendenhi/">広告宣伝費とは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 
 <section class="tool">
   <h2 id="tool">番号を貼って確かめる</h2>
@@ -209,7 +217,7 @@
 </section>
 
 <section>
-  <h2 id="genkai">0と9の打ち間違いは、この検査では見つけられない</h2>
+  <h2 id="genkai">基礎番号の0と9の打ち間違いは、この検査では見つけられない</h2>
   <p>基礎番号の<b>0と9を打ち間違えた番号は、チェックデジットが合ったまま通ります</b>。ほかの1桁の打ち間違いは見つけられます。</p>
   <div class="scroll-wrap"><table id="genkai-table">
     <thead><tr><th scope="col">打ち間違いの種類</th><th scope="col">検出できるか</th></tr></thead>
@@ -230,7 +238,7 @@
   <b>検査用数字が変わらないため見分けがつきません</b>。</p>
   <div class="note" id="genkai-note"><b>ここが実務の分かれ目です。</b>
   チェックデジットが合っても「その番号が実在する」ことにはなりません。合うのは<b>桁の整合</b>だけです。
-  <b>0と9を打ち間違えた番号は、合ったまま通ります。</b>
+  <b>基礎番号の0と9を打ち間違えた番号は、合ったまま通ります。</b>
   取引先として登録する番号は、必ず<b>国税庁の公表サイトで実在と氏名・名称を確認</b>してください。</div>
 </section>
 
@@ -241,13 +249,14 @@
   <div class="scroll-wrap"><table id="houjin-table">
     <thead><tr><th scope="col">ケース</th><th scope="col" style="white-space:nowrap">法人番号</th><th scope="col" style="white-space:nowrap">登録番号</th><th scope="col">関係</th></tr></thead>
     <tbody>
-      <tr><td>登録した法人</td><td>ある</td><td>ある</td><td><b>「T」＋法人番号</b>＝13桁は同じ数字</td></tr>
-      <tr><td>登録していない法人（免税事業者など）</td><td><b>ある</b></td><td><b>ない</b></td><td>法人番号があっても登録番号にはならない</td></tr>
-      <tr><td>登録した個人事業者</td><td>ない</td><td>ある</td><td>13桁は<b>法人番号と無関係</b>の別体系</td></tr>
+      <tr><td>法人番号のある法人（登録あり）</td><td>ある</td><td>ある</td><td><b>「T」＋法人番号</b>＝13桁は同じ数字</td></tr>
+      <tr><td>法人番号のある法人（登録なし）</td><td><b>ある</b></td><td><b>ない</b></td><td>法人番号があっても登録番号にはならない</td></tr>
+      <tr><td>登録した個人事業者</td><td>ない</td><td>ある</td><td>「T」＋<b>法人番号と重複しない</b>数字13桁</td></tr>
       <tr><td>登録した人格のない社団等（法人番号あり）</td><td>ある</td><td>ある</td><td>法人と同じく「T」＋法人番号</td></tr>
       <tr><td>登録した人格のない社団等（法人番号なし）</td><td>ない</td><td>ある</td><td>個人事業者と同じ別体系（法人番号とも重複しない番号）</td></tr>
     </tbody>
   </table></div>
+  <p>相手が法人で登録番号が分からないときは、<a href="https://www.houjin-bangou.nta.go.jp/" rel="nofollow">国税庁法人番号公表サイト</a>で名称・所在地から法人番号を探せます。その数字をインボイスの公表サイトに入力し、登録の有無を確認します。個人事業者にはこの方法は使えないため、請求書等に記載された登録番号で検索します。</p>
   <p class="hint">「相手に法人番号があるからインボイスを出せる」は成り立ちません。
   <b>法人番号の存在は、登録の証拠になりません。</b></p>
 </section>
@@ -258,16 +267,26 @@
   <ul>
     <li><b>登録されていない</b> — 相手が免税事業者などで、そもそも登録番号を持っていない
       （桁が合うのは偶然か、法人番号を登録番号と誤って書いている）。</li>
-    <li><b>公表されていない項目を探している</b> — 個人事業者の氏名は法定の公表事項です。屋号（主たる屋号）や主たる事務所の所在地等は、本人の申出により追加される事項です。</li>
+    <li><b>公表されていない項目を探している</b> — 個人事業者の氏名は法定の公表事項です。個人事業者・人格のない社団等の屋号（主たる屋号）や主たる事務所の所在地等は、本人の申出により追加される事項です。</li>
   </ul>
-  <p>失効・取消は、見つからない理由とは別に考えます。公表情報には<b>失効年月日・取消年月日</b>が載るので、<b>取引日</b>の時点で有効だったかを見ます。</p>
+  <p>インボイスの公表サイトには、氏名又は名称・登録番号・登録年月日・登録取消年月日・登録失効年月日が載ります。法人は本店又は主たる事務所の所在地も公表されますが、人格のない社団等は除かれます。</p>
+  <p>失効・取消は、見つからない理由とは別に考えます。<b>登録年月日も取引日と比べます。</b>登録年月日が取引日より後なら、その取引の時点では登録されていません。取消・失効年月日と合わせ、取引時点の登録状態を確認します。</p>
+  <h3 id="houjin-denai">法人番号公表サイトで出てこないとき</h3>
+  <p>名称・所在地で探す法人番号公表サイトは、登録番号で引くインボイスの公表サイトとは別です。法人番号公表サイトで見つからない場合は、次の点を確認します。</p>
+  <ul>
+    <li><b>所在地の表記</b>：丁目・番地の漢数字やハイフンの違いで見つからないことがあります。名称と所在地を組み合わせて検索するときは、まず都道府県・市区町村までで検索します。</li>
+    <li><b>法人種別の文字</b>：前方一致検索や読み仮名で検索するときは、「株式会社」などを省いて入力します。</li>
+    <li><b>公表への同意</b>：人格のない社団等が公表に同意していない場合は表示されません。</li>
+    <li><b>法人番号の指定がない</b>：設立登記のない法人や人格のない社団等で、税務署への税法上の届出も国税庁への番号指定の届出もない団体には指定されません。支店・支部・事業所、個人事業者、民法上の組合、有限責任事業組合等にも指定されません。</li>
+    <li><b>検索対象からの除外</b>：「検索対象除外法人を検索対象に含める」にチェックすると、除外されていた法人も含めて検索できます。</li>
+  </ul>
   <div class="note" id="denai-note"><b>「桁が合う」と「実在する」は別のことです。
   このツールは前者だけを見ます。後者は国税庁の公表サイト、Web-API、ダウンロードした公表情報で確認します。</b></div>
 </section>
 
 <section>
   <h2 id="hikaku">まとめて確かめる3つの方法（比較）</h2>
-  <p>件数が増えると、確認のやり方を変える必要があります。国税庁が用意している手段はこの3つです。</p>
+  <p>公表サイトで複数の登録番号を調べるときは、「登録番号でまとめて検索する」を開きます。入力するのは、登録番号のTを除く13桁の半角数字です。多数の番号を一括照合する場合は、公表情報ダウンロードかWeb-APIが使えます。</p>
   <div class="scroll-wrap"><table id="hikaku-table">
     <thead><tr>
       <th scope="col" style="white-space:nowrap">方法</th><th scope="col">1回に確認できる件数</th><th scope="col">氏名・名称</th><th scope="col">申請</th><th scope="col">更新</th>
@@ -283,9 +302,9 @@
       <tr>
         <td style="white-space:nowrap"><b>公表情報<br>ダウンロード</b><br>（全件・差分）</td>
         <td>まとめて（CSV／XML／JSON）</td>
-        <td><b>氏名等の一部項目は値が削除されている</b></td>
+        <td><b>個人事業者の氏名等は値が削除されている</b></td>
         <td>不要</td>
-        <td>全件は休日を除く月初に作成、原則翌平日6時以降公開／差分は日次</td>
+        <td>前月末時点の全件を休日を除く月初に作成、原則翌平日6時以降公開／差分は日次</td>
       </tr>
       <tr>
         <td><b>Web-API</b></td>
@@ -312,7 +331,7 @@
 <section>
   <h2 id="faq">よくある質問</h2>
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>チェックデジットが合えば、その登録番号は本物ですか？</h3>
-  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>いいえ。合うのは<b>桁の整合だけ</b>で、実在しない番号でも算式を満たすものは無数にあります。<b>0と9の打ち間違いも検出できません</b>（<a href="#genkai">0と9の打ち間違い</a>）。
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>いいえ。合うのは<b>桁の整合だけ</b>で、実在しない番号でも算式を満たすものは無数にあります。<b>基礎番号の0と9の打ち間違いも検出できません</b>（<a href="#genkai">0と9の打ち間違い</a>）。
   取引先として登録する際は、国税庁の公表サイトやWeb-API等で実在・名称・登録の状態を確認してください。</p>
 
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>検査に合わないと出ました。相手が番号を間違えているということですか？</h3>
@@ -325,13 +344,16 @@
   書き写しの誤りです。</p>
 
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>法人番号と登録番号は、いつも同じ数字ですか？</h3>
-  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>法人が登録している場合は同じで、<b>「T」＋法人番号</b>が登録番号になります。
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>法人番号のある法人が登録している場合は同じで、<b>「T」＋法人番号</b>が登録番号になります。
   ただし<b>法人番号があっても登録していなければ登録番号はありません</b>。
-  逆に個人事業者は法人番号を持ちませんが、登録すれば登録番号（法人番号と無関係の13桁）を持ちます。</p>
+  逆に個人事業者は法人番号を持ちませんが、登録すれば「T」＋数字13桁の登録番号を持ちます（数字は法人番号と重複しない別の番号）。</p>
 
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>入力した番号はどこかに送信されますか？</h3>
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>されません。計算は<b>すべてブラウザの中</b>で行い、外部に送信していません。
   国税庁のWeb-APIも呼んでいません。公表されている算式だけで動いています。</p>
+
+  <h3 class="faq-question">自社の登録番号を忘れたら？</h3>
+  <p class="faq-answer">登録通知書で確認できます。e-Taxで申請し、通知書の電子受領を希望した場合は、e-Taxの「通知書等一覧」で確認できます。既に登録を受けていて番号が分からない場合は、各国税局（所）のインボイス登録センターの問合せ先へ照会します。法人番号を持つ登録済みの法人なら、「T」＋自社の法人番号が登録番号です。</p>
 
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>何件までまとめて確認できますか？</h3>
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>上限は設けていません。処理時間は入力件数や使用端末によって異なります。
@@ -341,8 +363,12 @@
 <section>
   <h2 id="shutten">出典</h2>
   <ul>
+    <li>国税庁 <a href="https://www.invoice-kohyo.nta.go.jp/about-toroku/touroku_no_info.html" rel="nofollow">登録番号に関する情報</a></li>
+    <li>国税庁 <a href="https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/04.pdf" rel="nofollow">インボイスQ&amp;A（登録の通知）</a></li>
+    <li>国税庁 <a href="https://www.houjin-bangou.nta.go.jp/shitsumon/shosai.html?selQaId=00046" rel="nofollow">法人番号公表サイトのよくある質問（検索）</a></li>
+    <li>国税庁 <a href="https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/21.pdf" rel="nofollow">インボイスQ&amp;A（効率的な確認方法）</a>・<a href="https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/21-2.pdf" rel="nofollow">インボイスQ&amp;A（公表サイトの利用）</a></li>
     <li>国税庁 適格請求書発行事業者公表サイト「登録番号とは」
-      — 登録番号の構成（法人は「T」＋法人番号13桁、それ以外は「T」＋数字13桁で
+      — 登録番号の構成（法人番号を有する課税事業者は「T」＋法人番号13桁、それ以外は「T」＋数字13桁で
       マイナンバーは用いず法人番号とも重複しない）
       <br><a href="https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html" rel="nofollow">https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html</a></li>
     <li>国税庁 適格請求書発行事業者公表サイト トップページ — 「一度に10件まで検索することができます」
@@ -353,10 +379,10 @@
       — 13桁＝検査用数字1桁＋基礎番号12桁、算式と計算例
       <br><a href="https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf" rel="nofollow">国税庁「チェックデジットの算式」（PDF）</a></li>
     <li>国税庁 適格請求書発行事業者公表サイト「公表情報ダウンロード」— 全件は休日を除く毎月初日に前月末時点で作成し、原則翌平日の午前6時以降に公開。差分は日次で作成します。CSV／XML／JSON。
-      氏名等の一部項目について値を削除して提供
+      個人事業者の氏名等の値を削除して提供（インボイスQ&amp;A 問21）
       <br><a href="https://www.invoice-kohyo.nta.go.jp/download/index.html" rel="nofollow">https://www.invoice-kohyo.nta.go.jp/download/index.html</a></li>
     <li>国税庁 適格請求書発行事業者公表システム Web-API機能／同 利用規約
-      — アプリケーションIDの届出・申請、取得元の明示義務
+      — アプリケーションIDの届出・申請、サービスを公開する場合の取得元の明示
       <br><a href="https://www.invoice-kohyo.nta.go.jp/web-api/index.html" rel="nofollow">https://www.invoice-kohyo.nta.go.jp/web-api/index.html</a></li>
   </ul>
   <p class="hint">内容は2026年7月26日に上記の一次情報を確認して作成しています（公表サイトのトップページと法人番号のよくある質問は2026年10月13日に確認）。
@@ -374,7 +400,7 @@
 </section>
 
 
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E3%82%A4%E3%83%B3%E3%83%9C%E3%82%A4%E3%82%B9%E3%81%AE%E7%99%BB%E9%8C%B2%E7%95%AA%E5%8F%B7%EF%BC%88T%EF%BC%8B13%E6%A1%81%EF%BC%89%E3%81%A8%E6%B3%95%E4%BA%BA%E7%95%AA%E5%8F%B7%E3%82%92%E8%B2%BC%E3%82%8A%E4%BB%98%E3%81%91%E3%81%A6%E3%80%81%E4%BD%95%E5%8D%81%E4%BB%B6%E3%81%A7%E3%82%82%E3%81%BE%E3%81%A8%E3%82%81%E3%81%A6%E6%A4%9C%E8%A8%BC%E3%80%82%E5%9B%BD%E7%A8%8E%E5%BA%81%E3%81%AE%E7%AE%97%E5%BC%8F%E3%81%A7%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%83%87%E3%82%B8%E3%83%83%E3%83%88%E3%82%92%E7%A2%BA%E3%81%8B%E3%82%81%E3%81%BE%E3%81%99%E3%80%820%E3%81%A89%E3%81%AE%E6%89%93%E3%81%A1%E9%96%93%E9%81%95%E3%81%84%E3%81%AF%E6%A4%9C%E5%87%BA%E3%81%A7%E3%81%8D%E3%81%9A%E3%80%81%E5%80%8B%E4%BA%BA%E4%BA%8B%E6%A5%AD%E8%80%85%E3%81%AE%E7%95%AA%E5%8F%B7%E3%81%AF%E5%88%A5%E4%BD%93%E7%B3%BB%E3%81%A7%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Finvoice-bangou%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E3%82%A4%E3%83%B3%E3%83%9C%E3%82%A4%E3%82%B9%E3%81%AE%E7%99%BB%E9%8C%B2%E7%95%AA%E5%8F%B7%EF%BC%88T%EF%BC%8B13%E6%A1%81%EF%BC%89%E3%81%A8%E6%B3%95%E4%BA%BA%E7%95%AA%E5%8F%B7%E3%82%92%E8%B2%BC%E3%82%8A%E4%BB%98%E3%81%91%E3%81%A6%E3%80%81%E4%BD%95%E5%8D%81%E4%BB%B6%E3%81%A7%E3%82%82%E3%81%BE%E3%81%A8%E3%82%81%E3%81%A6%E6%A4%9C%E8%A8%BC%E3%80%82%E5%9B%BD%E7%A8%8E%E5%BA%81%E3%81%AE%E7%AE%97%E5%BC%8F%E3%81%A7%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%83%87%E3%82%B8%E3%83%83%E3%83%88%E3%82%92%E7%A2%BA%E3%81%8B%E3%82%81%E3%81%BE%E3%81%99%E3%80%82%E5%9F%BA%E7%A4%8E%E7%95%AA%E5%8F%B7%E3%81%AE0%E3%81%A89%E3%81%AE%E6%89%93%E3%81%A1%E9%96%93%E9%81%95%E3%81%84%E3%81%AF%E6%A4%9C%E5%87%BA%E3%81%A7%E3%81%8D%E3%81%9A%E3%80%81%E5%80%8B%E4%BA%BA%E4%BA%8B%E6%A5%AD%E8%80%85%E3%81%AE%E7%95%AA%E5%8F%B7%E3%81%AF%E5%88%A5%E4%BD%93%E7%B3%BB%E3%81%A7%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Finvoice-bangou%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 <section class="faq rel-block">
 <h2>関連する解説</h2>
 <!--rel:S--><ul class="rel-list"><li><a href="../column/tsushinhi/">通信費とは — 範囲・隣の科目との境界・切手と国際電話の消費税・在宅勤務の通信費・仕訳を条文で</a><span class="rel-desc">通信費とは、電話・インターネット・郵便・書類の送付など情報のやり取りにかかる費用の科目。何が入るか、荷造運賃・消耗品費などとの境界、切手と国</span></li><li><a href="../column/chidai-yachin/">地代家賃とは — 消費税が非課税と課税に割れる線・駐車場・インボイス・源泉徴収を条文で</a><span class="rel-desc">地代家賃とは、土地の地代と建物の家賃をまとめる経費の科目です。事務所・店舗の家賃や舗装した駐車場は消費税が課税、住宅の家賃と更地の地代は非課</span></li><li><a href="../column/kokoku-sendenhi/">広告宣伝費とは — 交際費との境界、看板の贈与が繰延資産になる線、国外広告の消費税</a><span class="rel-desc">広告宣伝費とは、不特定多数の人に向けた宣伝のための費用の科目。税法上の定義は無く、交際費等にも繰延資産にも当たらなければ損金です。社名入りカ</span></li><li><a href="../column/noren/">のれんとは — 会計は原則20年以内で償却、税務は資産調整勘定を60ヶ月で落とす</a><span class="rel-desc">のれんとは、事業を取得したときの対価が、受け入れた純資産を上回る部分です。会計は原則20年以内で規則償却し、税務は「資産調整勘定」として60</span></li><li><a href="../column/seikyusho-kakikata/">請求書の書き方 — 一般の書式は自由。インボイス交付義務と支払期限・時効・保存</a><span class="rel-desc">請求書に全国共通の法定書式はありません。インボイスとして使うなら6項目が必須です。支払期限を決めていなければ請求を受けた時から遅滞になり、遅</span></li></ul><!--rel:E-->
@@ -449,7 +475,7 @@ $("run").addEventListener("click", () => {
 
   if (s.houjin) {
     html += `<div class="note" id="jitsuzai-note"><b>桁が合っても、実在の証明にはなりません。</b>
-      とくに<b>0と9の打ち間違いは、この算式では検出できません</b>。
+      とくに<b>基礎番号の0と9の打ち間違いは、この算式では検出できません</b>。
       取引先として登録する番号は
       <a href="https://www.invoice-kohyo.nta.go.jp/" rel="nofollow">国税庁の公表サイト</a>で
       実在と名称を確認してください。</div>`;
