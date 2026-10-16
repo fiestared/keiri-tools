@@ -30,7 +30,7 @@
       "@type": "Article",
       "headline": "全銀フォーマットとは｜作り方と120バイトのレコードレイアウト・使用可能文字・法人略語",
       "datePublished": "2026-07-12",
-      "dateModified": "2026-10-11",
+      "dateModified": "2026-10-17",
       "author": {
         "@type": "Person",
         "name": "Masahiro Yasu",
@@ -166,7 +166,7 @@
 <nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 振込名義の書き方ガイド</nav>
 <article>
   <h1>全銀フォーマットとは｜作り方・120バイトのレコードレイアウトと、振込名義に使える文字・法人略語</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-12">2026年7月12日</time> ／ 最終更新: <time datetime="2026-10-11">2026年10月11日</time></p>
+  <p class="article-meta">公開日: <time datetime="2026-07-12">2026年7月12日</time> ／ 最終更新: <time datetime="2026-10-17">2026年10月17日</time></p>
   <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
 
   <p><b>全銀フォーマット</b>（全銀協規定形式）は、総合振込・給与振込のデータを銀行に渡すための標準ファイル仕様です。1レコード<b>120バイトの固定長</b>で、ヘッダー・データ・トレーラ・エンドの4種類のレコードを並べて1ファイルにします。</p>
@@ -276,6 +276,9 @@
 
   <p class="note">レコード長120バイト・4種類のレコード構成・種別コード21などの骨格は共通ですが、<b>項目の省略可否など細部は銀行ごとに差があります</b>。実際にファイルを作るときは、必ず利用する銀行が公開しているレコードフォーマット仕様書を確認してください。</p>
 
+  <p>全銀形式には、振込とは別に口座振替の仕様もあります。帯広信用金庫の口座振替仕様では、種別コードは91です。</p>
+  <p>帯広信用金庫の口座振替仕様では、データ・レコードに振替結果コードの欄があり、トレーラ・レコードには振替済・振替不能それぞれの件数と金額の欄があります。総合振込のレイアウトをそのまま口座振替に使わず、口座振替用の仕様を確認してください。</p>
+
   <h2 id="tsukurikata">作り方 — 自分でバイト列を組む前に、経路は3つある</h2>
   <p><b>振込ファイル（FBデータ）</b>を作る経路は3つあり、<b>自分でバイト列を組むのは最後の手段</b>です。固定長ファイルは1バイトずれただけで取り込めず、しかも扱っているのは実際に動くお金だからです。</p>
 
@@ -326,6 +329,8 @@
     <tr><td>13</td><td>ダミー</td><td style="white-space:nowrap">104〜120</td><td>C(17)</td><td style="white-space:nowrap">共通</td><td>スペース</td></tr>
     <tr><td colspan="2"><b>合計</b></td><td><b>1〜120</b></td><td colspan="3"><b>120バイト</b></td></tr>
   </table></div>
+  <p>総合振込と給与・賞与振込では、業務を示す種別コードを使い分けます。帯広信用金庫の仕様では、総合振込は21、給与振込は11、賞与振込は12です。</p>
+  <p>帯広信用金庫の振込仕様では、依頼人コードは同金庫が指定します。総合振込の例を給与データに流用するときは、利用サービスの仕様と契約内容を確認してください。</p>
   <h3 id="layout-2">データ・レコード（データ区分 2）</h3>
   <p>振込1件ごとに1行。振込先と金額を収容。</p>
   <div class="scroll-wrap"><table>
@@ -560,6 +565,7 @@
   <h2>出典</h2>
   <p class="source-method">更新内容: ヘッダー・トレーラの複数配置と財団・社団法人の略語を、<a href="https://www.zenginkyo.or.jp/fileadmin/res/abstract/efforts/system/jba_protocol_pc.pdf" rel="nofollow">全銀協パーソナル・コンピュータ用標準通信プロトコル別冊（令和8年10月版）</a>の「7. レコード・シークェンス」と付録2で確認。C項目の文字種制限の説明も訂正。</p>
   <ul style="font-size:13px">
+    <li>帯広信用金庫「<a href="https://www.shinkin.co.jp/obishin/webfb2/service/fmt_zengin/">外部ファイル持込用 全銀ファイル フォーマット</a>」</li>
     <li>全国銀行協会「<a href="https://www.zenginkyo.or.jp/fileadmin/res/abstract/efforts/system/jba_protocol_pc.pdf#page=179">パソコン用標準通信プロトコル 別冊（使用文字一覧）</a>」</li>
     <li>第四北越銀行「<a href="https://www.dhbk.co.jp/business/efficiency/ib/qa.html">法人略語一覧</a>」／きらぼし銀行「受取人名の入力方法」／<a href="https://www.smbc.co.jp/direct/sousa/help_furikomi/15.html">三井住友銀行FAQ（法人略語）</a></li>
     <li>三井住友銀行「<a href="https://www.smbc.co.jp/direct/help_furikomi/14.html">受取人名の入力方法と入力例</a>」（姓と名の間に全角スペース／半角・全角どちらでも可・確認画面で半角に自動変換）</li>
