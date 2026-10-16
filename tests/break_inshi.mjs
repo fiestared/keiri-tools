@@ -14,6 +14,7 @@
  *   - 記載なし文書を0円にする
  *   - 軽減表の税額をデータごと壊す（30,000→10,000）
  *   - fail closed を外す（データ無しでも計算する）
+ *   - 混在する17号受取書の5万円判定・階級の金額を取り違える／手形の複本・謄本に課税する（2026-10-16）
  */
 import { readFileSync, writeFileSync, mkdtempSync, cpSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -69,6 +70,19 @@ const BREAKS = [
   ['★消費税額等の不正入力を拒否せず0円とみなす', 'core',
    "if (!Number.isSafeInteger(v) || v < 0) throw new Error(label + 'は0以上の整数（円）で入力してください');",
    'if (!Number.isSafeInteger(v) || v < 0) return 0;'],
+
+  // 2026-10-16: 混在する17号受取書（No.7141 注1・通則4ハ）と手形の複本・謄本（3号 非課税物件3）
+  ['★混在受取書の5万円判定を売上代金側だけで行う（売上3万＋その他3万に非課税と誤答）', 'core',
+   'doc.hikazei_under !== undefined && judgeAmount < doc.hikazei_under',
+   'doc.hikazei_under !== undefined && rateAmount < doc.hikazei_under'],
+
+  ['★混在受取書の税額の階級を合計で引く（合計150万・売上90万に400円と誤答）', 'core',
+   'const b = pickBracket(rateAmount, doc.brackets);',
+   'const b = pickBracket(judgeAmount, doc.brackets);'],
+
+  ['★手形の複本・謄本の非課税を落とす（500万円の複本に1,000円と誤答）', 'core',
+   'if (i.billCopy) {',
+   'if (false) {'],
 
   // ── データ側の壊し（JSONの逐語転記ミスの再現）─────────────────────────────
   ['★データ: 軽減表の5,000万超1億以下を30,000→10,000に壊す（NTA例30,000円で捕捉）', 'data',

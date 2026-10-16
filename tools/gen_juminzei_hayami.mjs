@@ -14,7 +14,8 @@
  *   figure  … 年収と住民税の折れ線（インラインSVG）
  *   rei     … 計算の流れ（年収500万円・独身）
  *   hikazei … 非課税になる年収の上限（独身・配偶者あり）
- *   dataset … Dataset の JSON-LD
+ *   dataset … Dataset の JSON-LD（license=CC BY 4.0）
+ *   license … 引用のしかたの可視の利用条件（CC BY 4.0。tools/dataset_license.mjs が正本）
  *   CSV     … juminzei-hayamihyo-r08.csv（UTF-8 BOM・CRLF）
  *
  *   node tools/gen_juminzei_hayami.mjs          生成（冪等）
@@ -23,6 +24,7 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
+import { LICENSE_URL, licenseNote } from "./dataset_license.mjs";
 import { calc } from "../docs/assets/juminzei_core.js";
 import { calcMonthly, calcKoyou } from "../docs/assets/shaho_core.js";
 
@@ -192,6 +194,7 @@ ${line("single", "var(--accent)")}${line("haigusha", "var(--sub)", "6 4")}
     spatialCoverage: "日本（東京都特別区。標準税率の自治体）",
     temporalCoverage: "2026-06/2027-05",
     isBasedOn: m.sources.chihozei,
+    license: LICENSE_URL,
     creator: { "@type": "Person", name: "Masahiro Yasu", url: "https://keiri-tools.com/about/" },
     publisher: { "@type": "Organization", name: "税金・経理・補助金ツールズ", url: "https://keiri-tools.com/" },
     distribution: [{ "@type": "DataDownload", encodingFormat: "text/csv", contentUrl: URL_PAGE + CSV_NAME }],
@@ -212,7 +215,9 @@ ${line("single", "var(--accent)")}${line("haigusha", "var(--sub)", "6 4")}
   }
   const csv = "﻿" + lines.join("\r\n") + "\r\n";
 
-  return { table, lead, rei, hikazei, svg, datasetTag, csv, diff, runs, rows, limits: { hs, hk, hsh } };
+  const license = licenseNote("この早見表とCSV（当サイトが計算してまとめた表）", "計算に使った税率・料率は各出典の公表値です。");
+
+  return { table, lead, rei, hikazei, svg, datasetTag, csv, diff, license, runs, rows, limits: { hs, hk, hsh } };
 }
 
 function fill(html, name, inner) {
@@ -223,7 +228,7 @@ function fill(html, name, inner) {
 
 export function render(html, data) {
   const b = build(data.H, data.D, data.S);
-  const parts = { table: b.table, lead: b.lead, rei: b.rei, hikazei: b.hikazei, figure: b.svg, dataset: b.datasetTag, diff: b.diff };
+  const parts = { table: b.table, lead: b.lead, rei: b.rei, hikazei: b.hikazei, figure: b.svg, dataset: b.datasetTag, diff: b.diff, license: b.license };
   for (const k of Object.keys(parts)) html = fill(html, k, parts[k]);
   return { html, csv: b.csv };
 }
