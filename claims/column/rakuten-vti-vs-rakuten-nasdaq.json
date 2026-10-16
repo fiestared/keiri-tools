@@ -348,6 +348,74 @@
         "s-44973593b532af83b228-1",
         "s-c0f8c7863ebe105931b0-1"
       ]
+    },
+    {
+      "id": "gap-nisa-vti",
+      "text": "楽天VTIのNISA対象枠",
+      "numbers": [],
+      "applies": "curlで取得した交付目論見書の記載",
+      "scope": "楽天VTIと楽天・プラス・NASDAQ100の通常型の商品仕様",
+      "exceptions": "販売会社により取扱いが異なる場合がある。",
+      "source_url": "https://www.rakuten-toushin.co.jp/fund/nav/rivue/pdf/rivue_P.pdf",
+      "source_quote": "                    毎決算時および償還時に交付運用報告書を作成し、販売会社を通じて知れている受益者に\n運   用   報   告   書\n                    交付します。\n\n                    課税上は株式投資信託として取り扱われます。\n                    ・公募株式投資信託は税法上、一定の要件を満たした場合に少額投資非課税制度（NISA）",
+      "corpus_ref": "rivue.txt:532-537",
+      "must_with": [],
+      "covers": [
+        "s-e3c8415340ab070077c9-1",
+        "s-ed47d9485ef8696ca1c3-1"
+      ]
+    },
+    {
+      "id": "gap-nisa-nasdaq",
+      "text": "楽天・プラス・NASDAQ100のNISA対象枠と商品別の確認",
+      "numbers": [],
+      "applies": "curlで取得した交付目論見書の記載",
+      "scope": "楽天VTIと楽天・プラス・NASDAQ100の通常型の商品仕様",
+      "exceptions": "販売会社により取扱いが異なる場合がある。他のNASDAQ100連動商品へ対象枠を流用しない。",
+      "source_url": "https://www.rakuten-toushin.co.jp/fund/nav/rirndx/pdf/rirndx_P.pdf",
+      "source_quote": "                            https://www.rakuten-toushin.co.jp/\n                            毎決算時および償還時に交付運用報告書を作成し、販売会社を通じて知れている受益者\n運   用       報       告   書\n                            に交付します。",
+      "corpus_ref": "rirndx.txt:541-544",
+      "must_with": [],
+      "covers": [
+        "s-8a215beafa8ecfb86a47-1",
+        "s-ea7e0a01a0699d3e3c76-1",
+        "s-b269f3d7b11ea1506232-1",
+        "s-23b87e9b79088927637c-1"
+      ]
+    },
+    {
+      "id": "gap-fx-vti",
+      "text": "両ファンドの円建て基準価額と為替レートの関係",
+      "numbers": [],
+      "applies": "curlで取得した交付目論見書の記載",
+      "scope": "楽天VTIと楽天・プラス・NASDAQ100の通常型の商品仕様",
+      "exceptions": "為替ヘッジを行わないのは原則。円高は下落要因であり株価等の要因もあるため必ず下落するとはしない。",
+      "source_url": "https://www.rakuten-toushin.co.jp/fund/nav/rivue/pdf/rivue_P.pdf",
+      "source_quote": "                  治・経済情勢、発行企業の業績、市場の需給関係等の影響を受け変動します。当該株\nリ       ス       ク\n                  式の価格が下落した場合には、基準価額の下落要因となります。\n                  当ファンドは実質的な外貨建資産について原則として為替ヘッジを行わないため、為替\n為   替       変   動",
+      "corpus_ref": "rivue.txt:224-228",
+      "must_with": [],
+      "covers": [
+        "s-b4941b84202393ecbda0-1",
+        "s-f74fe944a37f5b9c560d-1",
+        "s-20690ad57fc1f22b5d2b-1"
+      ]
+    },
+    {
+      "id": "gap-fx-nasdaq",
+      "text": "両ファンドの円建て基準価額と為替レートの関係",
+      "numbers": [],
+      "applies": "curlで取得した交付目論見書の記載",
+      "scope": "楽天VTIと楽天・プラス・NASDAQ100の通常型の商品仕様",
+      "exceptions": "為替ヘッジを行わないのは原則。円高は下落要因であり必ず下落するとはしない。",
+      "source_url": "https://www.rakuten-toushin.co.jp/fund/nav/rirndx/pdf/rirndx_P.pdf",
+      "source_quote": "株   価       変   動\n                  績、市場の需給関係等の影響を受け変動します。当該株式の価格が下落した場合には、\nリ       ス       ク\n                  基準価額の下落要因となります。\n",
+      "corpus_ref": "rirndx.txt:264-268",
+      "must_with": [],
+      "covers": [
+        "s-b4941b84202393ecbda0-1",
+        "s-f74fe944a37f5b9c560d-1",
+        "s-20690ad57fc1f22b5d2b-1"
+      ]
     }
   ],
   "absolutes": [
@@ -392,6 +460,12 @@
       "context": "必ず4.3倍上がりますか",
       "reviewed": "設問の言い回しで、回答は「日々の値動きについての目標で、複数日の騰落率に4.3を掛けても同じにならない」と打ち消している。",
       "audit": "2026-10-02"
+    },
+    {
+      "phrase": "原則",
+      "context": "実質的な外貨建資産には原則として為替ヘッジを行わない",
+      "reviewed": "両目論見書の為替変動リスク欄を確認。必ずヘッジしないとは断定しない。",
+      "audit": "2026-10-17"
     }
   ],
   "tool_cases": [],
