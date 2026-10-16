@@ -2807,23 +2807,18 @@
         "s-076d6a10f5e284918d79-1",
         "s-31fb78d9c479fb6b0f52-1",
         "s-8f66c842bffdce684b56-1",
-        "s-98ba0f8bcf69bf507d3e-1",
         "s-9a894a250dcf6893cad1-1",
         "s-6e2e07df2fc9d0201276-1",
         "s-639222305b83abc63d7a-1",
         "s-38a76ab03f7ef960783c-1",
         "s-ea3269d19329c1b01de3-1",
-        "s-9675cdac594e451f2f1e-1",
         "s-593c6dd0a74ed8c27a8a-1",
-        "s-9c3da8bf4377e810f102-1",
-        "s-fbfd9fbc1afe12412661-1",
         "s-b5ad5327bf416776b0bf-1",
         "s-98f27bf309d2958960d5-1",
         "s-5a885a6580096f459efd-1",
         "s-79311ed94f3d350f772e-1",
         "s-613830fc8af6aa7342b6-1",
-        "s-ebf56ed5ced090aea9d0-1",
-        "s-2c7d293e8656ea54b572-1"
+        "s-ebf56ed5ced090aea9d0-1"
       ],
       "review_status": "author_checked（2026-10-12 読みやすさの作り直し。書き手が正本を開いて照合。独立の再照合はしていない）"
     },
@@ -2881,7 +2876,6 @@
       "corpus_ref": "corpus/nencho/nencho_all.txt:676-685; corpus/nencho/nencho_all.txt:921-939",
       "covers": [
         "s-7e90d6d83e5a911643e8-1",
-        "s-faeb6fbd8c07fe090a2f-1",
         "s-924c799d8f8f3e30399c-1",
         "s-b1ef904b1ab5d06c9b22-1",
         "s-278bc39eaef9bdc16070-1"
@@ -3000,7 +2994,6 @@
         "s-0b12b5bafd8ee91fd1e1-1",
         "s-076d6a10f5e284918d79-1",
         "s-31fb78d9c479fb6b0f52-1",
-        "s-fbfd9fbc1afe12412661-1",
         "s-67e144f9cc90cbf1cc7c-1"
       ]
     },
@@ -3119,9 +3112,7 @@
       "must_with": [
         "扶養|非居住者|判定|同居老親等"
       ],
-      "covers": [
-        "s-68e96cb2c58136ac3ad8-1"
-      ],
+      "covers": [],
       "checked": "2026-10-16",
       "review_status": "writer_checked_pending_independent_review"
     },
@@ -4033,6 +4024,53 @@
         "s-c1ab4075c34b77d77afa-1"
       ],
       "review_status": "author_checked; 独立再照合待ち"
+    },
+    {
+      "id": "rg18f6-hospital",
+      "text": "同居老親等の同居には、普段同居していた老親等が治療のため入院して別居する場合も含みます。",
+      "numbers": [],
+      "must_with": [
+        "普段同居"
+      ],
+      "scope": "同居を常況としていた老親等の治療入院による別居",
+      "exceptions": [
+        "老人ホーム入所は同居でない。",
+        "同一敷地内の別棟は食事など日常生活を共にする場合に同居。",
+        "転勤による別居は同居でない。",
+        "年末調整を行う日の現況で判定。"
+      ],
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "所得者等と同居を常況としている老親等が、病気などの治療のため入院していることにより、所得者等と別居している場合……同居老親等に該当します。",
+      "corpus_ref": "segment-review-6/corpus/r5-source-7.txt:1034-1060",
+      "covers": [
+        "s-c32ce1b8dfd4c5378f61-1"
+      ],
+      "review_status": "writer_checked_pending_independent_review"
+    },
+    {
+      "id": "rg18f6-omitted-cells",
+      "text": "特定扶養親族1人の計算例は200万円・700万円・900万円の行で省略。対象外という意味ではない。",
+      "numbers": [
+        "200万円",
+        "700万円",
+        "900万円"
+      ],
+      "must_with": [
+        "課税所得"
+      ],
+      "scope": "課税所得別の節税額の例の省略セル。数値の税額を示さない。",
+      "exceptions": [
+        "無し: 計算例省略という表示の範囲。税額計算は総合課税・税額控除なし・住民税所得割10%概算の既存の共通前提による。"
+      ],
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
+      "source_quote": "課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。）に対する所得税の金額は、次の「所得税の速算表」を使用すると簡単に求められます。",
+      "corpus_ref": "segment-review-6/corpus/r5-source-11.txt:103-154; segment-review-6/corpus/1180.txt:15-33",
+      "covers": [
+        "s-b5380a288826fcf3b322-1",
+        "s-04c6d88ac9fc6c3c7684-1",
+        "s-93d3856bfef29b649a46-1"
+      ],
+      "review_status": "writer_checked_pending_independent_review"
     }
   ],
   "absolutes": [
@@ -4216,6 +4254,16 @@
     {
       "id": "s-3889162edd9f4abde6da-1",
       "why": "既存の関連計算機への案内。リンク先の用途を述べるナビゲーション。"
+    },
+    {
+      "id": "s-fa25848f65cc87c34f64-1",
+      "why": "資料への案内。書類の網羅的説明ではない。",
+      "scope": "必要書類は、国税庁「年末調整のしかた」で確認できます。",
+      "exceptions": [
+        "無し: 参照案内・表示の範囲"
+      ],
+      "must_with": [],
+      "corpus_ref": "segment-review-6/corpus/r5-source-7.txt:1241-1264"
     }
   ],
   "verified": [
@@ -4466,13 +4514,6 @@
       "review_ref": "segment-review-4/segment-adjudication.json#s-b5ad5327bf416776b0bf-1"
     },
     {
-      "id": "s-98ba0f8bcf69bf507d3e-1",
-      "result": "out_of_corpus",
-      "needed_source": "この設例の入力額又は省略欄を選んだ編集仕様。法令上の事実を主張する数値ではない。",
-      "reason": "設例の仮定又は未掲載欄として確認。税制正本には掲載選択の根拠がなく、wrong所見もないため保持する。protectedのためnonclaimにはしない。",
-      "review_ref": "segment-review-4/segment-adjudication.json#s-98ba0f8bcf69bf507d3e-1"
-    },
-    {
       "id": "s-98f27bf309d2958960d5-1",
       "result": "out_of_corpus",
       "needed_source": "この設例の入力額又は省略欄を選んだ編集仕様。法令上の事実を主張する数値ではない。",
@@ -4494,25 +4535,11 @@
       "review_ref": "segment-review-4/segment-adjudication.json#s-79311ed94f3d350f772e-1"
     },
     {
-      "id": "s-9675cdac594e451f2f1e-1",
-      "result": "out_of_corpus",
-      "needed_source": "この設例の入力額又は省略欄を選んだ編集仕様。法令上の事実を主張する数値ではない。",
-      "reason": "設例の仮定又は未掲載欄として確認。税制正本には掲載選択の根拠がなく、wrong所見もないため保持する。protectedのためnonclaimにはしない。",
-      "review_ref": "segment-review-4/segment-adjudication.json#s-9675cdac594e451f2f1e-1"
-    },
-    {
       "id": "s-613830fc8af6aa7342b6-1",
       "result": "out_of_corpus",
       "needed_source": "この設例の入力額又は省略欄を選んだ編集仕様。法令上の事実を主張する数値ではない。",
       "reason": "設例の仮定又は未掲載欄として確認。税制正本には掲載選択の根拠がなく、wrong所見もないため保持する。protectedのためnonclaimにはしない。",
       "review_ref": "segment-review-4/segment-adjudication.json#s-613830fc8af6aa7342b6-1"
-    },
-    {
-      "id": "s-9c3da8bf4377e810f102-1",
-      "result": "out_of_corpus",
-      "needed_source": "この設例の入力額又は省略欄を選んだ編集仕様。法令上の事実を主張する数値ではない。",
-      "reason": "設例の仮定又は未掲載欄として確認。税制正本には掲載選択の根拠がなく、wrong所見もないため保持する。protectedのためnonclaimにはしない。",
-      "review_ref": "segment-review-4/segment-adjudication.json#s-9c3da8bf4377e810f102-1"
     },
     {
       "id": "s-cf6a223d0d4bbe4fb13e-1",
@@ -5121,5 +5148,60 @@
     "out_of_corpus_wrong": 0,
     "out_of_corpus_retained": 11,
     "independent_recheck": "pending"
+  },
+  "_rg18_finish_r6": {
+    "fixed": [
+      {
+        "issue": "入院前の同居条件",
+        "page": "docs/fuyo-kojo/index.html",
+        "old_id": "s-68e96cb2c58136ac3ad8-1",
+        "kind": "narrow",
+        "new_id": "s-c32ce1b8dfd4c5378f61-1"
+      },
+      {
+        "issue": "必要書類の参照",
+        "page": "docs/fuyo-kojo/index.html",
+        "old_id": "s-faeb6fbd8c07fe090a2f-1",
+        "kind": "link",
+        "new_id": "s-fa25848f65cc87c34f64-1"
+      },
+      {
+        "issue": "省略セルの明示",
+        "page": "docs/fuyo-kojo/index.html",
+        "old_id": "s-98ba0f8bcf69bf507d3e-1",
+        "kind": "replace",
+        "new_id": "s-b5380a288826fcf3b322-1"
+      },
+      {
+        "issue": "省略セルの明示",
+        "page": "docs/fuyo-kojo/index.html",
+        "old_id": "s-9675cdac594e451f2f1e-1",
+        "kind": "replace",
+        "new_id": "s-04c6d88ac9fc6c3c7684-1"
+      },
+      {
+        "issue": "省略セルの明示",
+        "page": "docs/fuyo-kojo/index.html",
+        "old_id": "s-9c3da8bf4377e810f102-1",
+        "kind": "replace",
+        "new_id": "s-93d3856bfef29b649a46-1"
+      },
+      {
+        "issue": "不要になった省略注",
+        "page": "docs/fuyo-kojo/index.html",
+        "old_id": "s-2c7d293e8656ea54b572-1",
+        "kind": "delete",
+        "new_id": null
+      },
+      {
+        "issue": "条件不足の金額例",
+        "page": "docs/fuyo-kojo/index.html",
+        "old_id": "s-fbfd9fbc1afe12412661-1",
+        "kind": "delete",
+        "new_id": null
+      }
+    ],
+    "out_of_corpus_retained": 3,
+    "independent_review": "pending"
   }
 }
