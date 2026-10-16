@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-07-26",
-      "dateModified": "2026-10-14",
+      "dateModified": "2026-10-16",
       "name": "インボイス登録番号チェック（一括）",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -100,6 +100,14 @@
         },
         {
           "@type": "Question",
+          "name": "自社の登録番号を忘れたら？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "登録通知書で確認できます。e-Taxで申請し、通知書の電子受領を希望した場合は、e-Taxの「通知書等一覧」で確認できます。既に登録を受けていて番号が分からない場合は、各国税局（所）のインボイス登録センターの問合せ先へ照会します。法人番号を持つ登録済みの法人なら、「T」＋自社の法人番号が登録番号です。"
+          }
+        },
+        {
+          "@type": "Question",
           "name": "Q. 何件までまとめて確認できますか？",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -141,7 +149,7 @@
 
 <section class="hero">
   <h1>インボイス登録番号チェック（貼り付けて一括検証）</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-26">2026年7月26日</time>（更新日: <time datetime="2026-10-14">2026年10月14日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-26">2026年7月26日</time>（更新日: <time datetime="2026-10-16">2026年10月16日</time>）</p>
   <p class="lead">請求書の <b>T＋13桁</b> の登録番号や法人番号を貼り付けると、<b>何十件でもまとめて</b>桁の整合（チェックデジット）と形式を確認します。
   <b>入力はブラウザの中だけで処理し、どこにも送信しません。</b>
   桁が合っても、その番号が実在する証明にはなりません。実在と登録の状態は<a href="https://www.invoice-kohyo.nta.go.jp/" rel="nofollow">国税庁の公表サイト</a>で確認してください。
@@ -248,6 +256,7 @@
       <tr><td>登録した人格のない社団等（法人番号なし）</td><td>ない</td><td>ある</td><td>個人事業者と同じ別体系（法人番号とも重複しない番号）</td></tr>
     </tbody>
   </table></div>
+  <p>相手が法人で登録番号が分からないときは、<a href="https://www.houjin-bangou.nta.go.jp/" rel="nofollow">国税庁法人番号公表サイト</a>で名称・所在地から法人番号を探せます。その数字をインボイスの公表サイトに入力し、登録の有無を確認します。個人事業者にはこの方法は使えないため、請求書等に記載された登録番号で検索します。</p>
   <p class="hint">「相手に法人番号があるからインボイスを出せる」は成り立ちません。
   <b>法人番号の存在は、登録の証拠になりません。</b></p>
 </section>
@@ -260,14 +269,24 @@
       （桁が合うのは偶然か、法人番号を登録番号と誤って書いている）。</li>
     <li><b>公表されていない項目を探している</b> — 個人事業者の氏名は法定の公表事項です。屋号（主たる屋号）や主たる事務所の所在地等は、本人の申出により追加される事項です。</li>
   </ul>
-  <p>失効・取消は、見つからない理由とは別に考えます。公表情報には<b>失効年月日・取消年月日</b>が載るので、<b>取引日</b>の時点で有効だったかを見ます。</p>
+  <p>インボイスの公表サイトには、氏名又は名称・登録番号・登録年月日・登録取消年月日・登録失効年月日が載ります。法人は本店又は主たる事務所の所在地も公表されますが、人格のない社団等は除かれます。</p>
+  <p>失効・取消は、見つからない理由とは別に考えます。<b>登録年月日も取引日と比べます。</b>登録年月日が取引日より後なら、その取引の時点では登録されていません。取消・失効年月日と合わせ、取引時点の登録状態を確認します。</p>
+  <h3 id="houjin-denai">法人番号公表サイトで出てこないとき</h3>
+  <p>名称・所在地で探す法人番号公表サイトは、登録番号で引くインボイスの公表サイトとは別です。法人番号公表サイトで見つからない場合は、次の点を確認します。</p>
+  <ul>
+    <li><b>所在地の表記</b>：丁目・番地の漢数字やハイフンの違いで見つからないことがあります。まず都道府県・市区町村までで検索します。</li>
+    <li><b>法人種別の文字</b>：前方一致検索や読み仮名で検索するときは、「株式会社」などを省いて入力します。</li>
+    <li><b>公表への同意</b>：人格のない社団等が公表に同意していない場合は表示されません。</li>
+    <li><b>法人番号の指定がない</b>：設立登記のない法人や人格のない社団等で、税務署への税法上の届出も国税庁への番号指定の届出もない団体には指定されません。支店・支部・事業所、個人事業者、民法上の組合、有限責任事業組合等にも指定されません。</li>
+    <li><b>検索対象からの除外</b>：「検索対象除外法人を検索対象に含める」にチェックすると、除外されていた法人も含めて検索できます。</li>
+  </ul>
   <div class="note" id="denai-note"><b>「桁が合う」と「実在する」は別のことです。
   このツールは前者だけを見ます。後者は国税庁の公表サイト、Web-API、ダウンロードした公表情報で確認します。</b></div>
 </section>
 
 <section>
   <h2 id="hikaku">まとめて確かめる3つの方法（比較）</h2>
-  <p>件数が増えると、確認のやり方を変える必要があります。国税庁が用意している手段はこの3つです。</p>
+  <p>公表サイトで複数の登録番号を調べるときは、「登録番号でまとめて検索する」を開きます。入力するのは、登録番号のTを除く13桁の半角数字です。多数の番号を一括照合する場合は、公表情報ダウンロードかWeb-APIが使えます。</p>
   <div class="scroll-wrap"><table id="hikaku-table">
     <thead><tr>
       <th scope="col" style="white-space:nowrap">方法</th><th scope="col">1回に確認できる件数</th><th scope="col">氏名・名称</th><th scope="col">申請</th><th scope="col">更新</th>
@@ -333,6 +352,9 @@
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>されません。計算は<b>すべてブラウザの中</b>で行い、外部に送信していません。
   国税庁のWeb-APIも呼んでいません。公表されている算式だけで動いています。</p>
 
+  <h3 class="faq-question">自社の登録番号を忘れたら？</h3>
+  <p class="faq-answer">登録通知書で確認できます。e-Taxで申請し、通知書の電子受領を希望した場合は、e-Taxの「通知書等一覧」で確認できます。既に登録を受けていて番号が分からない場合は、各国税局（所）のインボイス登録センターの問合せ先へ照会します。法人番号を持つ登録済みの法人なら、「T」＋自社の法人番号が登録番号です。</p>
+
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>何件までまとめて確認できますか？</h3>
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>上限は設けていません。処理時間は入力件数や使用端末によって異なります。
   社名やタブが混ざった行でも、その行から番号を取り出します。</p>
@@ -341,6 +363,10 @@
 <section>
   <h2 id="shutten">出典</h2>
   <ul>
+    <li>国税庁 <a href="https://www.invoice-kohyo.nta.go.jp/about-toroku/touroku_no_info.html" rel="nofollow">登録番号に関する情報</a></li>
+    <li>国税庁 <a href="https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/04.pdf" rel="nofollow">インボイスQ&amp;A（登録の通知）</a></li>
+    <li>国税庁 <a href="https://www.houjin-bangou.nta.go.jp/shitsumon/shosai.html?selQaId=00046" rel="nofollow">法人番号公表サイトのよくある質問（検索）</a></li>
+    <li>国税庁 <a href="https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/21.pdf" rel="nofollow">インボイスQ&amp;A（効率的な確認方法）</a>・<a href="https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/21-2.pdf" rel="nofollow">インボイスQ&amp;A（公表サイトの利用）</a></li>
     <li>国税庁 適格請求書発行事業者公表サイト「登録番号とは」
       — 登録番号の構成（法人は「T」＋法人番号13桁、それ以外は「T」＋数字13桁で
       マイナンバーは用いず法人番号とも重複しない）
