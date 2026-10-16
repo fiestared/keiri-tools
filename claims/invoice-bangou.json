@@ -8,13 +8,14 @@
         "og:description / summary"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:1-47",
       "source_url": "https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf",
       "source_quote": "出典: https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf\nチェックデジットの計算\n\n 法人番号は、12桁の基礎番号及びその前に付された１桁の検査用数字（チェックデ\nジット）の数字のみで構成される13桁の番号になります。\n 例えば、株式会社など、設立登記法人の法人番号を構成する基礎番号は、法務省から提\n供を受ける商業登記法に基づく「会社法人等番号(12桁)」となります。\n この12桁の基礎番号の前に１桁の検査用数字を付した番号を法人番号として指定するこ\nとになります。\n 検査用数字（チェックデジット）の計算方法は、以下を参考としてください。\n\n    ※    チェックデジットとは番号の『誤読』『誤入力』『偽造』を防止するため、コード\n        に特定のアルゴリズムを適用して計算する数値等をいいます。\n\n\n○ 会社法人等番号を「７００１１０００５９０１」と仮定した場合のチェックデジットの\n 計算方法\n\n\n\n    7       0       0       1    １          0   ０ ０ ５ ９ ０ １\n                                                                                 最下位から\n                                                                                 偶数桁の和\n\n    ７               ０               １               ０            ５       ０        １３\n\n\n                                                                                 最下位から\n                                                                                 奇数桁の和\n            ０               １               ０               ０        ９       １    １1\n\n         最下位から                  最下位から\n         偶数桁の和                  奇数桁の和\n\n            １3      ×２＋ １1 ＝ 37\n\n            37      ÷9= 無視 余り                   1\n\n            9－ 1        ＝        8 （チェックデジット）\n\n○    法人番号の算出方法\n     この場合の法人番号は、会社法人等番号「７００１１０００５９０１」の前に\n    チェックデジット「８」を付した「８７００１１０００５９０１」となります。\n\n\n        8       7       0       0       1       １       0       ０ ０ ５ ９ ０ １\n",
-      "exceptions": "照合範囲: この文が根拠にした正本の該当箇所。採否: 複合した確認単位。登録番号の構成と法人番号の算式は正本にあるが、公表サイトが1件ずつに限定されること、個人番号の検査規則が未公表であること、無料・登録不要・入力未送信等の全主張を裏付ける資料がない。0と9の検出不能も基礎番号部分と検査用数字部分を区別しておらず、全体を照合済みとはできない。 重要度medium: 大多数には当たるが、特定できる条件の欠落、過剰な断定、または正本にない主張。",
+      "exceptions": "正本 corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:4-9,35-43。 ／旧: 照合範囲: この文が根拠にした正本の該当箇所。採否: 複合した確認単位。登録番号の構成と法人番号の算式は正本にあるが、公表サイトが1件ずつに限定されること、個人番号の検査規則が未公表であること、無料・登録不要・入力未送信等の全主張を裏付ける資料がない。0と9の検出不能も基礎番号部分と検査用数字部分を区別しておらず、全体を照合済みとはできない。 重要度medium: 大多数には当たるが、特定できる条",
       "covers": [
-        "s-be912883b69a2623b16f-1"
+        "s-be912883b69a2623b16f-1",
+        "s-d5cf51e6aa25999d2fc5-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -36,7 +37,8 @@
           "source_quote": " 登録番号とは、適格請求書発行事業者の登録を受けようとする事業者が、納税地を所轄する税務署長に「適格請求書発行事業者の登録申請書」（以下「登録申請書」といいます。）を提出し、税務署長の登録を受けた場合に事業者に通知される番号です。\n また、登録番号は事業者へ通知されます。\n 登録番号の構成は、次のとおりです\n法人番号を有する課税事業者\n「T」（ローマ字） ＋ 法人番号（数字13桁）\n上記以外の課税事業者（個人事業者、人格のない社団等）\n「T」（ローマ字） ＋ 数字13桁（注）\n （注）13桁の数字には、マイナンバー（個人番号）は用いず、法人番号とも重複しない事業者ごとの番号になります。\n なお、適格請求書等保存方式（いわゆるインボイス制度）の概要は\n国税庁ホームページのインボイス制度特設サイト（外部サイト）\nに掲載していますのでご覧ください。\nページの先頭へ戻る\nホーム\n登録番号とは\n登録番号に関する情報"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0070.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0070.json",
+      "scope": "法人番号の基礎番号の0↔9の打ち間違い（要約）"
     },
     {
       "id": "r16-s-6692bf447f6a7f18bc20-1",
@@ -1029,18 +1031,18 @@
     },
     {
       "id": "r16-s-57c5891b37acf927977a-1",
-      "text": "0と9の打ち間違いは、この検査では見つけられない",
+      "text": "基礎番号の0と9の打ち間違いは、この検査では見つけられない",
       "where": [
         "h2 / body"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:35-39",
       "source_url": "https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf",
       "source_quote": "            １3      ×２＋ １1 ＝ 37\n\n            37      ÷9= 無視 余り                   1\n\n            9－ 1        ＝        8 （チェックデジット）",
-      "exceptions": "照合範囲: corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:35-39。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "正本 corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:4-9,35-43。先頭の検査用数字の9→0は不一致になり検出できる（表の「検査用数字を間違えた」行）。ほかの例外は無し: 確かめた範囲 ／旧: 照合範囲: corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:35-39。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
       "covers": [
-        "s-57c5891b37acf927977a-1"
+        "s-3fa26399620c696d3b95-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -1052,7 +1054,8 @@
           "source_quote": "            １3      ×２＋ １1 ＝ 37\n\n            37      ÷9= 無視 余り                   1\n\n            9－ 1        ＝        8 （チェックデジット）"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0071.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0071.json",
+      "scope": "法人番号の基礎番号（12桁）の1桁を0↔9に打ち間違えた場合"
     },
     {
       "id": "r16-s-6ee9816ce17a45d61d94-1",
@@ -1489,15 +1492,15 @@
         "td / table"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-6",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html",
       "source_quote": " 登録番号とは、適格請求書発行事業者の登録を受けようとする事業者が、納税地を所轄する税務署長に「適格請求書発行事業者の登録申請書」（以下「登録申請書」といいます。）を提出し、税務署長の登録を受けた場合に事業者に通知される番号です。",
-      "exceptions": "照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-6。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "corpus/designation.txt:34-40。外国法人は設立登記法人に当たらず、(4)(5)に該当する場合だけ指定される。指定のない法人は表の対象外。 ／旧: 照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-6。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
       "covers": [
-        "s-187b7f3d6d8c8863d320-1",
-        "s-7cebfdb3697742873a34-1",
-        "s-0ffec36282021aebf1ff-1",
+        "s-1293beee88b71290862d-1",
+        "s-44dac7f6c1d94005364f-1",
+        "s-0a2e571033fb64f31b45-1",
         "s-15b2e898f1bff9970e62-1"
       ],
       "topic": [
@@ -1510,7 +1513,8 @@
           "source_quote": " 登録番号とは、適格請求書発行事業者の登録を受けようとする事業者が、納税地を所轄する税務署長に「適格請求書発行事業者の登録申請書」（以下「登録申請書」といいます。）を提出し、税務署長の登録を受けた場合に事業者に通知される番号です。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json",
+      "scope": "法人番号の指定を受けた法人（表の行を「法人番号のある法人」に限定）"
     },
     {
       "id": "r16-s-90ceceaf4754b572a1b6-1",
@@ -1519,13 +1523,13 @@
         "td / table"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:9-10",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html",
       "source_quote": "法人番号を有する課税事業者\n「T」（ローマ字） ＋ 法人番号（数字13桁）",
-      "exceptions": "照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:9-10。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "corpus/corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:9-13。法人番号のない人格のない社団等は別体系（表の別行）。 ／旧: 照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:9-10。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
       "covers": [
-        "s-d9aa978f44d9fc454377-1"
+        "s-e3befa2a87b739016a9c-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -1537,7 +1541,8 @@
           "source_quote": "法人番号を有する課税事業者\n「T」（ローマ字） ＋ 法人番号（数字13桁）"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json",
+      "scope": "法人番号を有する課税事業者で登録を受けたもの"
     },
     {
       "id": "r16-s-3664b4b8b399a9b47b34-1",
@@ -1546,13 +1551,13 @@
         "td / table"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-6",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html",
       "source_quote": " 登録番号とは、適格請求書発行事業者の登録を受けようとする事業者が、納税地を所轄する税務署長に「適格請求書発行事業者の登録申請書」（以下「登録申請書」といいます。）を提出し、税務署長の登録を受けた場合に事業者に通知される番号です。",
-      "exceptions": "照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-6。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "無し: 確かめた範囲（about_toroku:6-13 登録を受けた場合に通知される番号） ／旧: 照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-6。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
       "covers": [
-        "s-c874969080d0d80973bc-1",
+        "s-5b74546bb07c1e190ed7-1",
         "s-345128cac7e82671a0fe-1"
       ],
       "topic": [
@@ -1565,7 +1570,8 @@
           "source_quote": " 登録番号とは、適格請求書発行事業者の登録を受けようとする事業者が、納税地を所轄する税務署長に「適格請求書発行事業者の登録申請書」（以下「登録申請書」といいます。）を提出し、税務署長の登録を受けた場合に事業者に通知される番号です。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json",
+      "scope": "法人番号のある法人で登録を受けていないもの"
     },
     {
       "id": "r16-s-c08cec948fe1e2ce4566-1",
@@ -1574,13 +1580,13 @@
         "td / table"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-6",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html",
       "source_quote": " 登録番号とは、適格請求書発行事業者の登録を受けようとする事業者が、納税地を所轄する税務署長に「適格請求書発行事業者の登録申請書」（以下「登録申請書」といいます。）を提出し、税務署長の登録を受けた場合に事業者に通知される番号です。",
-      "exceptions": "照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-6。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "無し: 確かめた範囲（about_toroku:6-13） ／旧: 照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-6。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
       "covers": [
-        "s-262ab6613e8e1308c3e6-1"
+        "s-2fb36006e2e3bab59183-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -1592,22 +1598,23 @@
           "source_quote": " 登録番号とは、適格請求書発行事業者の登録を受けようとする事業者が、納税地を所轄する税務署長に「適格請求書発行事業者の登録申請書」（以下「登録申請書」といいます。）を提出し、税務署長の登録を受けた場合に事業者に通知される番号です。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json",
+      "scope": "法人番号のある法人で登録を受けていないもの"
     },
     {
       "id": "r16-s-8539def667c61f069215-1",
-      "text": "13桁は法人番号と無関係の別体系",
+      "text": "「T」＋法人番号と重複しない数字13桁",
       "where": [
         "td / table"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認。登録を受けた個人事業者に限る。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:11-13",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html",
       "source_quote": "上記以外の課税事業者（個人事業者、人格のない社団等）\n「T」（ローマ字） ＋ 数字13桁（注）\n （注）13桁の数字には、マイナンバー（個人番号）は用いず、法人番号とも重複しない事業者ごとの番号になります。",
-      "exceptions": "照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:11-13。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "無し: 確かめた範囲 corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-13（登録番号の構成の2区分と注を全件確認。法人番号を有する課税事業者は「T」＋法人番号、それ以外は「T」＋数字13桁で個人番号を用いず法人番号とも重複しない）。",
       "covers": [
-        "s-4ccda4ac5d8aa95f0db4-1"
+        "s-17518e6463dcec916490-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -1619,7 +1626,8 @@
           "source_quote": "上記以外の課税事業者（個人事業者、人格のない社団等）\n「T」（ローマ字） ＋ 数字13桁（注）\n （注）13桁の数字には、マイナンバー（個人番号）は用いず、法人番号とも重複しない事業者ごとの番号になります。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json",
+      "scope": "登録した個人事業者（法人番号の指定を受けていない課税事業者）の登録番号の構成"
     },
     {
       "id": "r16-s-083a6b5fc763197dd825-1",
@@ -1790,18 +1798,18 @@
     },
     {
       "id": "r16-s-a3c47a2527c23641caf5-1",
-      "text": "屋号（主たる屋号）や主たる事務所の所在地等は、本人の申出により追加される事項です。",
+      "text": "個人事業者・人格のない社団等の屋号（主たる屋号）や主たる事務所の所在地等は、本人の申出により追加される事項です。",
       "where": [
         "li / body"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shohi_6498_htm.txt:32-34",
       "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6498.htm",
       "source_quote": "（注4）個人事業者等で、「主たる屋号」や「主たる事務所の所在地」の公表を希望される場合は、別途\n「適格請求書発行事業者の公表事項の公表（変更）申出書」\nを提出する必要があります。",
-      "exceptions": "照合範囲: corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shohi_6498_htm.txt:32-34。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "corpus/info.txt:58-59、corpus/qa21-2.txt:58-63。法人は「主たる屋号」を公表できる仕組みになっていない。 ／旧: 照合範囲: corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shohi_6498_htm.txt:32-34。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
       "covers": [
-        "s-a3c47a2527c23641caf5-1"
+        "s-4a668a14a74e6c522a15-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -1813,7 +1821,8 @@
           "source_quote": "（注4）個人事業者等で、「主たる屋号」や「主たる事務所の所在地」の公表を希望される場合は、別途\n「適格請求書発行事業者の公表事項の公表（変更）申出書」\nを提出する必要があります。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0072.json",
+      "scope": "個人事業者・人格のない社団等の公表事項の追加"
     },
     {
       "id": "r16-s-4949bba32468ec2092c9-1",
@@ -2021,18 +2030,18 @@
     },
     {
       "id": "r16-s-1401d4043430748b4421-1",
-      "text": "氏名等の一部項目は値が削除されている",
+      "text": "個人事業者の氏名等は値が削除されている",
       "where": [
         "td / summary"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ3周目）。2026-10-01確認。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_download_index_html.txt:19-19",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/download/index.html",
       "source_quote": "全件データ及び差分データについて、氏名等の一部項目について値を削除して提供しています。",
-      "exceptions": "要約部。照合範囲: corpus/www_invoice_kohyo_nta_go_jp_download_index_html.txt:19-19。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "無し: qa21.txt:14-18 とダウンロード案内19-22行を確かめた範囲。削除は個人事業者の氏名等に限る（法人の名称は削除対象と書かれていない）。",
       "covers": [
-        "s-83027cc4fc0a3b4be6e0-1"
+        "s-2119920ec723c9c5570a-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -2042,24 +2051,33 @@
           "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_download_index_html.txt:19-19",
           "source_url": "https://www.invoice-kohyo.nta.go.jp/download/index.html",
           "source_quote": "全件データ及び差分データについて、氏名等の一部項目について値を削除して提供しています。"
+        },
+        {
+          "source_url": "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/21.pdf",
+          "source_quote": "  ② 公表情報ダウンロード機能\n      前月末時点に公表しているデータの最新情報を、全件データファイルとして提供するとと\n  もに、新規に適格請求書発行事業者として登録された事業者の情報のほか、公表情報の変更・\n  追加や失効年月日等の情報をダウンロードすることができます。\n  ※ 個人事業者については氏名等の情報を削除して提供しています。",
+          "corpus_ref": "qa21.txt:14-18"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0073.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0073.json",
+      "scope": "公表情報ダウンロード（全件・差分）で値が削除される対象（個人事業者の氏名等）",
+      "must_with": [
+        "個人事業者"
+      ]
     },
     {
       "id": "r16-s-0a3230edf269fc6a854a-1",
-      "text": "全件は休日を除く月初に作成、原則翌平日6時以降公開／差分は日次",
+      "text": "前月末時点の全件を休日を除く月初に作成、原則翌平日6時以降公開／差分は日次",
       "where": [
         "td / summary"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_download_index_html.txt:26-33",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/download/index.html",
       "source_quote": "ファイル作成周期\n全件データファイル\n 毎月初日（土曜日、日曜日、祝日、年末年始（12月29日から１月３日）（以下、「休日」という。）を除く）に前月末時点の全件データファイルを作成し、原則として作成日の翌日の午前６時以降に公開しています。\n なお、作成日の翌日が休日に該当する場合は、その直後の平日となります。\n差分データファイル\n 日次で差分データファイルを作成し、原則として作成日の翌日の午前６時以降に公開しています（休日を除く）。 \n なお、過去40日分をダウンロードすることができます。\n また、提供可能な差分データがない場合は、差分データファイルは公開いたしません。",
-      "exceptions": "照合範囲: corpus/www_invoice_kohyo_nta_go_jp_download_index_html.txt:26-33。採否: 全件は毎月初日（休日を除く）に前月末時点を作り、原則作成日の翌日午前6時以降に公開。「毎月初日」無条件は休日の月で入手日を誤る。税額そのものではない。 重要度medium: 大多数には当たるが、特定できる条件の欠落、過剰な断定、または正本にない主張。 solの重要度はhighで、審査でmediumに付け直した。",
+      "exceptions": "corpus/www_invoice_kohyo_nta_go_jp_download_index_html.txt:16,26-33。作成日の翌日が休日なら直後の平日に公開。差分は休日を除き、過去40日分、提供可能な差分が無い日は非公開。 ／旧: 照合範囲: corpus/www_invoice_kohyo_nta_go_jp_download_index_html.txt:26-33。採否: 全件は毎月初日（休日を除く）に前月末時点を作り、原則作成日の翌日午前6時以降に公開。「毎月初日」無条件は休日の月で入手日を誤る。税額そのものではない。 重要度medium: 大多数には当たるが、特定できる条件の欠落、過剰な断定、または正本にない主張。",
       "covers": [
-        "s-ec6412b9196054cf2efe-1"
+        "s-0f3a4f88337432e35ab3-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -2076,7 +2094,11 @@
           "source_quote": "ファイル作成周期\n全件データファイル\n 毎月初日（土曜日、日曜日、祝日、年末年始（12月29日から１月３日）（以下、「休日」という。）を除く）に前月末時点の全件データファイルを作成し、原則として作成日の翌日の午前６時以降に公開しています。\n なお、作成日の翌日が休日に該当する場合は、その直後の平日となります。\n差分データファイル\n 日次で差分データファイルを作成し、原則として作成日の翌日の午前６時以降に公開しています（休日を除く）。 \n なお、過去40日分をダウンロードすることができます。\n また、提供可能な差分データがない場合は、差分データファイルは公開いたしません。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0073.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0073.json",
+      "scope": "公表情報ダウンロードの全件・差分データファイル",
+      "must_with": [
+        "前月末"
+      ]
     },
     {
       "id": "r16-s-4227bc525185f6595fb7-1",
@@ -2284,13 +2306,13 @@
         "p / faq"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:16-43",
       "source_url": "https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf",
       "source_quote": "○ 会社法人等番号を「７００１１０００５９０１」と仮定した場合のチェックデジットの\n 計算方法\n\n\n\n    7       0       0       1    １          0   ０ ０ ５ ９ ０ １\n                                                                                 最下位から\n                                                                                 偶数桁の和\n\n    ７               ０               １               ０            ５       ０        １３\n\n\n                                                                                 最下位から\n                                                                                 奇数桁の和\n            ０               １               ０               ０        ９       １    １1\n\n         最下位から                  最下位から\n         偶数桁の和                  奇数桁の和\n\n            １3      ×２＋ １1 ＝ 37\n\n            37      ÷9= 無視 余り                   1\n\n            9－ 1        ＝        8 （チェックデジット）\n\n○    法人番号の算出方法\n     この場合の法人番号は、会社法人等番号「７００１１０００５９０１」の前に\n    チェックデジット「８」を付した「８７００１１０００５９０１」となります。",
-      "exceptions": "照合範囲: corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:16-43。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "正本 corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:4-9,35-43。先頭の検査用数字の変更は検出できる。 ／旧: 照合範囲: corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:16-43。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
       "covers": [
-        "s-16401d26c046ec69d5eb-1"
+        "s-b68202b567917ad0b61f-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -2302,7 +2324,8 @@
           "source_quote": "○ 会社法人等番号を「７００１１０００５９０１」と仮定した場合のチェックデジットの\n 計算方法\n\n\n\n    7       0       0       1    １          0   ０ ０ ５ ９ ０ １\n                                                                                 最下位から\n                                                                                 偶数桁の和\n\n    ７               ０               １               ０            ５       ０        １３\n\n\n                                                                                 最下位から\n                                                                                 奇数桁の和\n            ０               １               ０               ０        ９       １    １1\n\n         最下位から                  最下位から\n         偶数桁の和                  奇数桁の和\n\n            １3      ×２＋ １1 ＝ 37\n\n            37      ÷9= 無視 余り                   1\n\n            9－ 1        ＝        8 （チェックデジット）\n\n○    法人番号の算出方法\n     この場合の法人番号は、会社法人等番号「７００１１０００５９０１」の前に\n    チェックデジット「８」を付した「８７００１１０００５９０１」となります。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0073.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0073.json",
+      "scope": "法人番号の基礎番号（12桁）の0↔9の打ち間違い"
     },
     {
       "id": "r16-s-fa25acd8a8657b028182-1",
@@ -2311,15 +2334,15 @@
         "p / faq"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:1-47",
       "source_url": "https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf",
       "source_quote": "出典: https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf\nチェックデジットの計算\n\n 法人番号は、12桁の基礎番号及びその前に付された１桁の検査用数字（チェックデ\nジット）の数字のみで構成される13桁の番号になります。\n 例えば、株式会社など、設立登記法人の法人番号を構成する基礎番号は、法務省から提\n供を受ける商業登記法に基づく「会社法人等番号(12桁)」となります。\n この12桁の基礎番号の前に１桁の検査用数字を付した番号を法人番号として指定するこ\nとになります。\n 検査用数字（チェックデジット）の計算方法は、以下を参考としてください。\n\n    ※    チェックデジットとは番号の『誤読』『誤入力』『偽造』を防止するため、コード\n        に特定のアルゴリズムを適用して計算する数値等をいいます。\n\n\n○ 会社法人等番号を「７００１１０００５９０１」と仮定した場合のチェックデジットの\n 計算方法\n\n\n\n    7       0       0       1    １          0   ０ ０ ５ ９ ０ １\n                                                                                 最下位から\n                                                                                 偶数桁の和\n\n    ７               ０               １               ０            ５       ０        １３\n\n\n                                                                                 最下位から\n                                                                                 奇数桁の和\n            ０               １               ０               ０        ９       １    １1\n\n         最下位から                  最下位から\n         偶数桁の和                  奇数桁の和\n\n            １3      ×２＋ １1 ＝ 37\n\n            37      ÷9= 無視 余り                   1\n\n            9－ 1        ＝        8 （チェックデジット）\n\n○    法人番号の算出方法\n     この場合の法人番号は、会社法人等番号「７００１１０００５９０１」の前に\n    チェックデジット「８」を付した「８７００１１０００５９０１」となります。\n\n\n        8       7       0       0       1       １       0       ０ ０ ５ ９ ０ １\n",
-      "exceptions": "照合範囲: この文が根拠にした正本の該当箇所。採否: 公表サイトで確認する勧奨は理解できるが、「必ず公表サイト」という手段の限定は正本で裏付けられない。収録Web-APIページ6行は登録番号による情報取得という別手段を示す。取引先登録時に公表サイトで確認する義務を定めた資料もない。 重要度medium: 大多数には当たるが、特定できる条件の欠落、過剰な断定、または正本にない主張。",
+      "exceptions": "正本 corpus/www_houjin_bangou_nta_go_jp_documents_checkdigit_pdf.txt:4-9,35-43。先頭の検査用数字の変更は検出できる。 ／旧: 照合範囲: この文が根拠にした正本の該当箇所。採否: 公表サイトで確認する勧奨は理解できるが、「必ず公表サイト」という手段の限定は正本で裏付けられない。収録Web-APIページ6行は登録番号による情報取得という別手段を示す。取引先登録時に公表サイトで確認する義務を定めた資料もない。 重要度medium: 大多数には当たるが、特定できる条件の欠落、過剰な断定、または正本にない主張。",
       "covers": [
         "s-fa25acd8a8657b028182-1",
         "s-cf179ccff7b6bbe88e92-1",
-        "s-7c9e0ecad82a0ef477aa-1",
+        "s-b8a277c5a13e2d5a0c18-1",
         "s-32f8e75a3ac4ed1f2bdc-1"
       ],
       "topic": [
@@ -2342,7 +2365,8 @@
           "source_quote": " 登録番号とは、適格請求書発行事業者の登録を受けようとする事業者が、納税地を所轄する税務署長に「適格請求書発行事業者の登録申請書」（以下「登録申請書」といいます。）を提出し、税務署長の登録を受けた場合に事業者に通知される番号です。\n また、登録番号は事業者へ通知されます。\n 登録番号の構成は、次のとおりです\n法人番号を有する課税事業者\n「T」（ローマ字） ＋ 法人番号（数字13桁）\n上記以外の課税事業者（個人事業者、人格のない社団等）\n「T」（ローマ字） ＋ 数字13桁（注）\n （注）13桁の数字には、マイナンバー（個人番号）は用いず、法人番号とも重複しない事業者ごとの番号になります。\n なお、適格請求書等保存方式（いわゆるインボイス制度）の概要は\n国税庁ホームページのインボイス制度特設サイト（外部サイト）\nに掲載していますのでご覧ください。\nページの先頭へ戻る\nホーム\n登録番号とは\n登録番号に関する情報"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0073.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0073.json",
+      "scope": "法人番号の基礎番号の0↔9の打ち間違い／実在確認"
     },
     {
       "id": "r16-s-5bf45dc816611e757ea3-1",
@@ -2492,18 +2516,18 @@
     },
     {
       "id": "r16-s-c3efbd4e7e0f58186184-1",
-      "text": "A. 法人が登録している場合は同じで、「T」＋法人番号が登録番号になります。",
+      "text": "A. 法人番号のある法人が登録している場合は同じで、「T」＋法人番号が登録番号になります。",
       "where": [
         "p / faq"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-13",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html",
       "source_quote": " 登録番号とは、適格請求書発行事業者の登録を受けようとする事業者が、納税地を所轄する税務署長に「適格請求書発行事業者の登録申請書」（以下「登録申請書」といいます。）を提出し、税務署長の登録を受けた場合に事業者に通知される番号です。\n また、登録番号は事業者へ通知されます。\n 登録番号の構成は、次のとおりです\n法人番号を有する課税事業者\n「T」（ローマ字） ＋ 法人番号（数字13桁）\n上記以外の課税事業者（個人事業者、人格のない社団等）\n「T」（ローマ字） ＋ 数字13桁（注）\n （注）13桁の数字には、マイナンバー（個人番号）は用いず、法人番号とも重複しない事業者ごとの番号になります。",
-      "exceptions": "照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-13。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "corpus/designation.txt:34-40。外国法人など法人番号の指定がない法人は「T」＋法人番号にならない（about_toroku:11-13 の別体系）。 ／旧: 照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-13。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
       "covers": [
-        "s-c3efbd4e7e0f58186184-1"
+        "s-826a682a89b48f3e8a87-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -2515,7 +2539,8 @@
           "source_quote": " 登録番号とは、適格請求書発行事業者の登録を受けようとする事業者が、納税地を所轄する税務署長に「適格請求書発行事業者の登録申請書」（以下「登録申請書」といいます。）を提出し、税務署長の登録を受けた場合に事業者に通知される番号です。\n また、登録番号は事業者へ通知されます。\n 登録番号の構成は、次のとおりです\n法人番号を有する課税事業者\n「T」（ローマ字） ＋ 法人番号（数字13桁）\n上記以外の課税事業者（個人事業者、人格のない社団等）\n「T」（ローマ字） ＋ 数字13桁（注）\n （注）13桁の数字には、マイナンバー（個人番号）は用いず、法人番号とも重複しない事業者ごとの番号になります。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0074.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0074.json",
+      "scope": "法人番号を有する課税事業者で登録を受けたもの"
     },
     {
       "id": "r16-s-58499a312e3a0bd115dd-1",
@@ -2546,18 +2571,18 @@
     },
     {
       "id": "r16-s-64cfc107e88b56abff1e-1",
-      "text": "逆に個人事業者は法人番号を持ちませんが、登録すれば登録番号（法人番号と無関係の13桁）を持ちます。",
+      "text": "逆に個人事業者は法人番号を持ちませんが、登録すれば「T」＋数字13桁の登録番号を持ちます（数字は法人番号と重複しない別の番号）。",
       "where": [
         "p / faq"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認。登録を受けた個人事業者に限る。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:9-13",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html",
       "source_quote": "法人番号を有する課税事業者\n「T」（ローマ字） ＋ 法人番号（数字13桁）\n上記以外の課税事業者（個人事業者、人格のない社団等）\n「T」（ローマ字） ＋ 数字13桁（注）\n （注）13桁の数字には、マイナンバー（個人番号）は用いず、法人番号とも重複しない事業者ごとの番号になります。",
-      "exceptions": "照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:9-13。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "無し: 確かめた範囲 corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:6-13（登録番号の構成の2区分と注を全件確認。法人番号を有する課税事業者は「T」＋法人番号、それ以外は「T」＋数字13桁で個人番号を用いず法人番号とも重複しない）。",
       "covers": [
-        "s-64cfc107e88b56abff1e-1"
+        "s-0ba742a1b88c6ede1bab-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -2569,7 +2594,8 @@
           "source_quote": "法人番号を有する課税事業者\n「T」（ローマ字） ＋ 法人番号（数字13桁）\n上記以外の課税事業者（個人事業者、人格のない社団等）\n「T」（ローマ字） ＋ 数字13桁（注）\n （注）13桁の数字には、マイナンバー（個人番号）は用いず、法人番号とも重複しない事業者ごとの番号になります。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0074.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0074.json",
+      "scope": "適格請求書発行事業者の登録を受けた個人事業者の登録番号の構成"
     },
     {
       "id": "r16-s-54b56823154312b55255-1",
@@ -2610,18 +2636,18 @@
     },
     {
       "id": "r16-s-20f01be50b6d5ff790e6-1",
-      "text": "国税庁 適格請求書発行事業者公表サイト「登録番号とは」\n      — 登録番号の構成（法人は「T」＋法人番号13桁、それ以外は「T」＋数字13桁で\n      マイナンバーは用いず法人番号とも重複しない）\n      https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html",
+      "text": "国税庁 適格請求書発行事業者公表サイト「登録番号とは」\n      — 登録番号の構成（法人番号を有する課税事業者は「T」＋法人番号13桁、それ以外は「T」＋数字13桁で\n      マイナンバーは用いず法人番号とも重複しない）\n      https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html",
       "where": [
         "li / body"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:9-13",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/index.html",
       "source_quote": "法人番号を有する課税事業者\n「T」（ローマ字） ＋ 法人番号（数字13桁）\n上記以外の課税事業者（個人事業者、人格のない社団等）\n「T」（ローマ字） ＋ 数字13桁（注）\n （注）13桁の数字には、マイナンバー（個人番号）は用いず、法人番号とも重複しない事業者ごとの番号になります。",
-      "exceptions": "照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:9-13。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "無し: 確かめた範囲（about_toroku:9-13 の2区分と注） ／旧: 照合範囲: corpus/www_invoice_kohyo_nta_go_jp_about_toroku_index_html.txt:9-13。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
       "covers": [
-        "s-20f01be50b6d5ff790e6-1"
+        "s-e24f2f550d8d95a8a59f-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -2633,7 +2659,8 @@
           "source_quote": "法人番号を有する課税事業者\n「T」（ローマ字） ＋ 法人番号（数字13桁）\n上記以外の課税事業者（個人事業者、人格のない社団等）\n「T」（ローマ字） ＋ 数字13桁（注）\n （注）13桁の数字には、マイナンバー（個人番号）は用いず、法人番号とも重複しない事業者ごとの番号になります。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0074.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0074.json",
+      "scope": "登録番号の構成（出典の要約）"
     },
     {
       "id": "r16-s-32d79e923d9a8e5ae92f-1",
@@ -2755,18 +2782,18 @@
     },
     {
       "id": "r16-s-c3d3064d37a5e1964628-1",
-      "text": "氏名等の一部項目について値を削除して提供\n      https://www.invoice-kohyo.nta.go.jp/download/index.html",
+      "text": "個人事業者の氏名等の値を削除して提供（インボイスQ&A 問21）\n      https://www.invoice-kohyo.nta.go.jp/download/index.html",
       "where": [
         "li / body"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ3周目）。2026-10-01確認。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_download_index_html.txt:19-22",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/download/index.html",
       "source_quote": "全件データ及び差分データについて、氏名等の一部項目について値を削除して提供しています。\n詳しくはお知らせの\n「全件データファイル及び差分データファイルの提供再開について（令和５年４月４日更新）」\nをご覧ください。",
-      "exceptions": "照合範囲: corpus/www_invoice_kohyo_nta_go_jp_download_index_html.txt:19-22。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "無し: qa21.txt:14-18 とダウンロード案内19-22行を確かめた範囲。",
       "covers": [
-        "s-c3d3064d37a5e1964628-1",
+        "s-aa3c047dda77326b34d0-1",
         "s-41df6b5f36ce35cd8f47-1",
         "s-242b8c751ab27f8641a7-1"
       ],
@@ -2778,24 +2805,33 @@
           "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_download_index_html.txt:19-22",
           "source_url": "https://www.invoice-kohyo.nta.go.jp/download/index.html",
           "source_quote": "全件データ及び差分データについて、氏名等の一部項目について値を削除して提供しています。\n詳しくはお知らせの\n「全件データファイル及び差分データファイルの提供再開について（令和５年４月４日更新）」\nをご覧ください。"
+        },
+        {
+          "source_url": "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/21.pdf",
+          "source_quote": "  ② 公表情報ダウンロード機能\n      前月末時点に公表しているデータの最新情報を、全件データファイルとして提供するとと\n  もに、新規に適格請求書発行事業者として登録された事業者の情報のほか、公表情報の変更・\n  追加や失効年月日等の情報をダウンロードすることができます。\n  ※ 個人事業者については氏名等の情報を削除して提供しています。",
+          "corpus_ref": "qa21.txt:14-18"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0074.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0074.json",
+      "scope": "出典欄のダウンロード案内の要約（削除対象は個人事業者の氏名等）",
+      "must_with": [
+        "個人事業者"
+      ]
     },
     {
       "id": "r16-s-843c3061d07c9a221a78-1",
-      "text": "国税庁 適格請求書発行事業者公表システム Web-API機能／同 利用規約\n      — アプリケーションIDの届出・申請、取得元の明示義務\n      https://www.invoice-kohyo.nta.go.jp/web-api/index.html",
+      "text": "国税庁 適格請求書発行事業者公表システム Web-API機能／同 利用規約\n      — アプリケーションIDの届出・申請、サービスを公開する場合の取得元の明示\n      https://www.invoice-kohyo.nta.go.jp/web-api/index.html",
       "where": [
         "li / body"
       ],
       "numbers": [],
-      "applies": "2026-10-01確認。本文の適用期間・前提条件に限る。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-01確認。本文の適用期間・前提条件に限る。",
       "corpus_ref": "corpus/www_invoice_kohyo_nta_go_jp_web_api_index_html.txt:24-41",
       "source_url": "https://www.invoice-kohyo.nta.go.jp/web-api/index.html",
       "source_quote": "アプリケーションIDについて\n Web-APIを利用するためには、アプリケーションIDが必要です。\n アプリケーションIDをお持ちでない方は、アプリケーションIDの発行申請を行ってください（発行無料）。\n種類\n アプリケーションIDには「インボイスWeb-API」及び「法人番号システムWeb-API」※を利用できるアプリケーションID（以下「インボイス用アプリケーションID」といいます。）と、「法人番号システムWeb-API」のみ利用できるアプリケーションID（以下「法人番号用アプリケーションID」といいます。）の２種類があります。\n ※ 法人番号システムWeb-APIの情報は、以下のリンク先ページをご参照ください。\n発行申請手続を行う場合\n 「インボイス用アプリケーションID」の発行を受ける場合、次の「発行届出」ボタンからメールアドレスを仮登録してください。仮登録したメールアドレスに届いたURLから基本情報等の入力を行い、「公表情報の取得方法及び利用方法」が分かる資料を提出してください（これを「本登録」といいます。）。本登録後、国税庁で審査を行い、不備がなければ「インボイス用アプリケーションID」を発行します。本登録の内容に不備があった場合には、国税庁から基本情報の連絡先に連絡を行い、ご登録内容の確認を行う場合があります。\n 「法人番号用アプリケーションID」の発行を受ける場合、次の「発行届出」ボタンからメールアドレスを仮登録してください。次に、仮登録したメールアドレスに届いたURLから基本情報等の入力を行うと１か月程度で「法人番号用アプリケーションID」を発行します。\n登録情報を変更する場合、法人番号用アプリケーションIDにインボイスWeb-APIの権限を追加する場合\n アプリケーションIDの発行を受ける前に提出した登録情報の変更や、「法人番号用アプリケーションID」を取得した後に「インボイスWeb-API」の権限を追加することができます。この場合、次の「登録情報変更届出」ボタンからメールアドレスを仮登録してください。仮登録したメールアドレスに届いたURLから変更する登録情報等の入力を行ってください。国税庁では、入力いただいた情報で審査を行い、不備がなければ、ご希望に応じた情報の更新を行います。入力いただいた情報に不備があった場合には、国税庁から基本情報等の連絡先に連絡を行い、ご登録内容の確認を行う場合があります。\n利用停止を行う場合\n アプリケーションIDの利用を停止する場合には、次の「停止届出」ボタンからメールアドレスを仮登録してください。\n 仮登録したメールアドレスに届いたURLから停止届出を提出してください。\n情報取得元の明示\nWeb-API機能を使用したサービスを公開される場合には、下記の情報の取得元の明示をお願いします。\n「このサービスは、適格請求書発行事業者公表システムWeb-API機能を利用して取得した情報をもとに作成しているが、サービスの内容は国税庁によって保証されたものではない」\n 利用される方が参照できる場所であれば、表示場所の指定はありません。",
-      "exceptions": "照合範囲: corpus/www_invoice_kohyo_nta_go_jp_web_api_index_html.txt:24-41。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
+      "exceptions": "corpus/corpus/www_invoice_kohyo_nta_go_jp_web_api_index_html.txt:20-41。公開しない利用には取得元明示の記載なし。 ／旧: 照合範囲: corpus/www_invoice_kohyo_nta_go_jp_web_api_index_html.txt:24-41。この範囲の記述は、この文が置く条件の内側では主張と矛盾しない。",
       "covers": [
-        "s-843c3061d07c9a221a78-1"
+        "s-44d4a3ed69b99ecafecf-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -2807,7 +2843,8 @@
           "source_quote": "アプリケーションIDについて\n Web-APIを利用するためには、アプリケーションIDが必要です。\n アプリケーションIDをお持ちでない方は、アプリケーションIDの発行申請を行ってください（発行無料）。\n種類\n アプリケーションIDには「インボイスWeb-API」及び「法人番号システムWeb-API」※を利用できるアプリケーションID（以下「インボイス用アプリケーションID」といいます。）と、「法人番号システムWeb-API」のみ利用できるアプリケーションID（以下「法人番号用アプリケーションID」といいます。）の２種類があります。\n ※ 法人番号システムWeb-APIの情報は、以下のリンク先ページをご参照ください。\n発行申請手続を行う場合\n 「インボイス用アプリケーションID」の発行を受ける場合、次の「発行届出」ボタンからメールアドレスを仮登録してください。仮登録したメールアドレスに届いたURLから基本情報等の入力を行い、「公表情報の取得方法及び利用方法」が分かる資料を提出してください（これを「本登録」といいます。）。本登録後、国税庁で審査を行い、不備がなければ「インボイス用アプリケーションID」を発行します。本登録の内容に不備があった場合には、国税庁から基本情報の連絡先に連絡を行い、ご登録内容の確認を行う場合があります。\n 「法人番号用アプリケーションID」の発行を受ける場合、次の「発行届出」ボタンからメールアドレスを仮登録してください。次に、仮登録したメールアドレスに届いたURLから基本情報等の入力を行うと１か月程度で「法人番号用アプリケーションID」を発行します。\n登録情報を変更する場合、法人番号用アプリケーションIDにインボイスWeb-APIの権限を追加する場合\n アプリケーションIDの発行を受ける前に提出した登録情報の変更や、「法人番号用アプリケーションID」を取得した後に「インボイスWeb-API」の権限を追加することができます。この場合、次の「登録情報変更届出」ボタンからメールアドレスを仮登録してください。仮登録したメールアドレスに届いたURLから変更する登録情報等の入力を行ってください。国税庁では、入力いただいた情報で審査を行い、不備がなければ、ご希望に応じた情報の更新を行います。入力いただいた情報に不備があった場合には、国税庁から基本情報等の連絡先に連絡を行い、ご登録内容の確認を行う場合があります。\n利用停止を行う場合\n アプリケーションIDの利用を停止する場合には、次の「停止届出」ボタンからメールアドレスを仮登録してください。\n 仮登録したメールアドレスに届いたURLから停止届出を提出してください。\n情報取得元の明示\nWeb-API機能を使用したサービスを公開される場合には、下記の情報の取得元の明示をお願いします。\n「このサービスは、適格請求書発行事業者公表システムWeb-API機能を利用して取得した情報をもとに作成しているが、サービスの内容は国税庁によって保証されたものではない」\n 利用される方が参照できる場所であれば、表示場所の指定はありません。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0074.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0074.json",
+      "scope": "Web-API機能を使用したサービスを公開する場合"
     },
     {
       "id": "readable1013-kohyo-10ken",
@@ -2832,7 +2869,10 @@
         "t10-consumption-tax"
       ],
       "review_status": "author_checked",
-      "review_ref": "readable/invoice-bangou 2026-10-13（書き手の照合のみ・独立の再照合は未了）"
+      "review_ref": "readable/invoice-bangou 2026-10-13（書き手の照合のみ・独立の再照合は未了）",
+      "must_with": [
+        "一度に|1回に"
+      ]
     },
     {
       "id": "readable1013-houjin-shitei",
@@ -2926,7 +2966,10 @@
         "t10-consumption-tax"
       ],
       "review_status": "author_checked",
-      "review_ref": "readable/invoice-bangou 2026-10-13（書き手の照合のみ・独立の再照合は未了）"
+      "review_ref": "readable/invoice-bangou 2026-10-13（書き手の照合のみ・独立の再照合は未了）",
+      "must_with": [
+        "方法|手段"
+      ]
     },
     {
       "id": "readable1013-tool",
@@ -2939,7 +2982,7 @@
         "2026年7月26日",
         "2026年10月13日"
       ],
-      "applies": "2026-10-13確認。",
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026-10-13確認。",
       "scope": "このページのツールの動作（docs/assets/invoice_bangou_core.js とページ内のスクリプト）",
       "exceptions": "個人事業者等の登録番号は算式に合わなくても誤りと断定しない（「法人番号ではない」と表示）。0と9の入替えは検出できない（#genkai）。",
       "source_url": "https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf",
@@ -2947,7 +2990,7 @@
       "source_quote": "出典: https://www.houjin-bangou.nta.go.jp/documents/checkdigit.pdf\nチェックデジットの計算\n\n 法人番号は、12桁の基礎番号及びその前に付された１桁の検査用数字（チェックデ\nジット）の数字のみで構成される13桁の番号になります。\n 例えば、株式会社など、設立登記法人の法人番号を構成する基礎番号は、法務省から提\n供を受ける商業登記法に基づく「会社法人等番号(12桁)」となります。\n この12桁の基礎番号の前に１桁の検査用数字を付した番号を法人番号として指定するこ\nとになります。\n 検査用数字（チェックデジット）の計算方法は、以下を参考としてください。\n\n    ※    チェックデジットとは番号の『誤読』『誤入力』『偽造』を防止するため、コード",
       "covers": [
         "s-cfd4c98dfccbfc7f259c-1",
-        "s-7801e03d5e5581aa6f47-1",
+        "s-9944a68524a3a71c0162-1",
         "s-b9bf96ebd2913bd0bd47-1",
         "s-ea86b24aaa034f784c9c-1",
         "s-3698c503457882feaf2d-1",
@@ -2969,7 +3012,168 @@
       ],
       "review_status": "author_checked",
       "review_ref": "readable/invoice-bangou 2026-10-13（書き手の照合のみ・独立の再照合は未了）",
-      "must_with_note": "must_with は付けない。1件＝入力の書き方（1行に1件）。日付は出典の節の確認日（7月26日は作成時、10月13日は公表サイトのトップページと法人番号FAQを curl で確認した日）。"
+      "must_with_note": "must_with は付けない。1件＝入力の書き方（1行に1件）。日付は出典の節の確認日（7月26日は作成時、10月13日は公表サイトのトップページと法人番号FAQを curl で確認した日）。",
+      "must_with": [
+        "1行|一次情報"
+      ]
+    },
+    {
+      "id": "rg1-search",
+      "text": "公表サイトのまとめて検索はTを除く13桁の半角数字で一度に10件まで。件数が多い場合は公表情報ダウンロードかWeb-API。",
+      "numbers": [
+        "10件"
+      ],
+      "applies": "2026年10月16日に国税庁の案内を確認",
+      "scope": "登録番号によるまとめて検索と多数の番号の照合。",
+      "exceptions": "10件は検索画面の1回の上限。ダウンロードには個人氏名等が含まれない。全件データは前月末時点、その後の変更等は差分で確認する。本文の既存の比較表に全件・差分を記載。全件データは前月末時点、その後の変更等は差分で確認する。本文の既存の比較表に全件・差分を記載。",
+      "must_with": [
+        "一度に|1回に"
+      ],
+      "covers": [
+        "s-4dbfe20d7ab3440b91e7-1",
+        "s-e50e0c714ff8f1797c67-1",
+        "s-af859b692081f124edad-1",
+        "s-2674cae26af90ae4a1b1-1"
+      ],
+      "sources": [
+        {
+          "source_url": "https://www.invoice-kohyo.nta.go.jp/",
+          "source_quote": "登録番号を検索する\n登録番号（\"T\"を除く13桁の半角数字）を入力して「検索」ボタンを押すと、検索結果が表示されます。一度に10件まで検索することができます。\n検索方法について調べたい場合は、「ご利用方法について」を押してください。\nご利用方法について\n登録番号\nT\n登録番号でまとめて検索する\n2件目以降を非表示にする",
+          "corpus_ref": "top.txt:48-55"
+        },
+        {
+          "source_url": "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/21.pdf",
+          "source_quote": "  登録番号の有効性を効率的に確認する方法として、「国税庁適格請求書発行事業者公表サイ\n ト」の Web-API 機能又は公表情報ダウンロード機能を利用する、あるいはこれらの機能に対応\n している会計ソフト等を導入するなどの方法が考えられます。\n ① Web-API 機能\n      利用者の皆様が保有するシステムからインターネットを経由して、簡単なリクエストを送\n  信していただくことで、指定した登録番号で抽出した情報、指定した期間で抽出した更新（差\n  分）情報を取得するための、システム間連携インターフェース（データ授受の方式）を提供\n  するものです。\n ② 公表情報ダウンロード機能\n      前月末時点に公表しているデータの最新情報を、全件データファイルとして提供するとと\n  もに、新規に適格請求書発行事業者として登録された事業者の情報のほか、公表情報の変更・\n  追加や失効年月日等の情報をダウンロードすることができます。\n  ※ 個人事業者については氏名等の情報を削除して提供しています。",
+          "corpus_ref": "qa21.txt:6-18"
+        }
+      ],
+      "source_url": "https://www.invoice-kohyo.nta.go.jp/",
+      "source_quote": "登録番号を検索する\n登録番号（\"T\"を除く13桁の半角数字）を入力して「検索」ボタンを押すと、検索結果が表示されます。一度に10件まで検索することができます。\n検索方法について調べたい場合は、「ご利用方法について」を押してください。\nご利用方法について\n登録番号\nT\n登録番号でまとめて検索する\n2件目以降を非表示にする",
+      "corpus_ref": "top.txt:48-55"
+    },
+    {
+      "id": "rg1-info",
+      "text": "公表される氏名又は名称、登録番号、登録・取消・失効年月日と法人の所在地。登録年月日が取引日より後なら取引時点では未登録。",
+      "numbers": [],
+      "applies": "2026年10月16日に国税庁の案内を確認",
+      "scope": "適格請求書発行事業者公表サイトの公表事項と取引日の登録状態。",
+      "exceptions": "法人の所在地は人格のない社団等を除く。国外事業者には国内事務所等の所在地の公表がある。個人の通称・旧姓は選択、屋号等は申出。",
+      "must_with": [],
+      "covers": [
+        "s-53a909a53037520538e7-1",
+        "s-232a2b0b3b5d999b2cfc-1",
+        "s-7d645a256490f8af899f-1",
+        "s-41bbec7f1157608eb10f-1",
+        "s-0553bbf9c23643439f7d-1"
+      ],
+      "sources": [
+        {
+          "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/touroku_no_info.html",
+          "source_quote": "登録番号は、インターネットを通じて、当サイトで公表されます。\n当サイトで公表される情報は次のとおりです。\n適格請求書発行事業者の氏名又は名称\n登録番号\n登録年月日、登録取消年月日、登録失効年月日\n法人（人格のない社団等を除きます。）については、本店又は主たる事務所の所在地\n特定国外事業者（国内において行う資産の譲渡等に係る事務所、事業所、その他これらに準ずるものを国内に有しない国外事業者）以外の国外事業者については、国内において行う資産の譲渡等に係る事務所、事業所、その他これらに準ずるものの所在地\n氏名については、適格請求書発行事業者の氏名のほか、個人事業者の選択により、住民票に記載されている外国人住民の通称又は旧姓氏名を公表します（戸籍上の氏名と併記することも選択できます）。\n個人事業者や人格のない社団等の方は、上記の情報以外に、主たる屋号や主たる事務所の所在地等を公表することができます。\n主たる屋号や主たる事務所の所在地等の公表を希望される場合は、「適格請求書発行事業者の公表事項の公表（変更）申出書」を提出してください。\n※　税務当局において、法人の名称又は本店若しくは主たる事務所の所在地に関する登記事項の変更を把握した場合、当サイトの公表事項の変更を行うことがあります。",
+          "corpus_ref": "info.txt:50-60"
+        },
+        {
+          "source_url": "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/21-2.pdf",
+          "source_quote": "   この点、本サイトは、取引先から受領した請求書等に記載されている登録番号が取引時点に\n おいて有効なものかを確認するために利用されるものであるため、その登録番号の有効性が確\n 認できれば、一義的には有効な適格請求書等として取り扱うこととして差し支えありません（注）。",
+          "corpus_ref": "qa21-2.txt:39-41"
+        }
+      ],
+      "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/touroku_no_info.html",
+      "source_quote": "登録番号は、インターネットを通じて、当サイトで公表されます。\n当サイトで公表される情報は次のとおりです。\n適格請求書発行事業者の氏名又は名称\n登録番号\n登録年月日、登録取消年月日、登録失効年月日\n法人（人格のない社団等を除きます。）については、本店又は主たる事務所の所在地\n特定国外事業者（国内において行う資産の譲渡等に係る事務所、事業所、その他これらに準ずるものを国内に有しない国外事業者）以外の国外事業者については、国内において行う資産の譲渡等に係る事務所、事業所、その他これらに準ずるものの所在地\n氏名については、適格請求書発行事業者の氏名のほか、個人事業者の選択により、住民票に記載されている外国人住民の通称又は旧姓氏名を公表します（戸籍上の氏名と併記することも選択できます）。\n個人事業者や人格のない社団等の方は、上記の情報以外に、主たる屋号や主たる事務所の所在地等を公表することができます。\n主たる屋号や主たる事務所の所在地等の公表を希望される場合は、「適格請求書発行事業者の公表事項の公表（変更）申出書」を提出してください。\n※　税務当局において、法人の名称又は本店若しくは主たる事務所の所在地に関する登記事項の変更を把握した場合、当サイトの公表事項の変更を行うことがあります。",
+      "corpus_ref": "info.txt:50-60"
+    },
+    {
+      "id": "rg1-route",
+      "text": "法人の登録番号が不明なら名称・所在地で法人番号を探し、その数字でインボイス公表サイトの登録を確認。個人は請求書等の登録番号で検索。",
+      "numbers": [],
+      "applies": "2026年10月16日に国税庁の案内を確認",
+      "scope": "法人番号を持つ法人と個人事業者の登録番号の確認。",
+      "exceptions": "法人番号の存在だけでは登録済みといえない。個人事業者には法人番号が指定されない。",
+      "must_with": [],
+      "covers": [
+        "s-d0243f26a0014ee9661f-1",
+        "s-da5be67d26176c3598c4-1",
+        "s-0e802efe5b85af6ef290-1"
+      ],
+      "sources": [
+        {
+          "source_url": "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/04.pdf",
+          "source_quote": "  （注）１    法人番号を有する法人の登録番号は「T＋13 桁の法人番号」となります。法人番号\n         については、「国税庁法人番号公表サイト」で検索できます。\n       ２ 登録通知を e-Tax（電子データ）で受領することを希望された場合、e-Tax（電子デ\n         ータ）で確認ができます。具体的な確認手順は、\n                              「インボイス制度特設サイト」の「イ\n         ンボイス発行事業者登録申請手続」にある「登録通知データ確認マニュアル」をご参\n         照ください。",
+          "corpus_ref": "qa04.txt:21-27"
+        },
+        {
+          "source_url": "https://www.houjin-bangou.nta.go.jp/shitsumon/shosai.html?selQaId=00046",
+          "source_quote": "国税庁法人番号公表サイトで、名称・所在地から法人番号を検索しましたが、検索結果に対象の法人が表示されませんでした。原因は何が考えられますか。\n名称・所在地から法人番号を検索しても検索結果に表示されない原因としては、以下のケースが考えられます。\n１　所在地の入力が一致していないケース\n都道府県・市区町村に加え、丁目番地等を入力して検索する場合、漢数字と算用数字などの違いにより検索できないケースがあります。名称と所在地を組み合わせて検索する場合、まずは都道府県・市区町村まで選択した状態で検索してください。\n丁目番地等を入力する場合には、例えば「三丁目」の「三」を算用数字の「３」に、「１番１号」を「１－１」に置き換えて入力してください。\n２　商号又は名称欄に法人種別を入力しているケース\n前方一致検索又は読み仮名で検索する場合には、株式会社（カブシキガイシャ）などの法人種別を表す文字を省略して入力してください。\n例：「株式会社国税商事」を前方一致検索する場合\n「商号又は名称」欄に「国税商事」と入力\n３　人格のない社団等で公表に同意していないケース\n人格のない社団等で公表に同意していない場合、国税庁法人番号公表サイト（以下「公表サイト」といいます。）で検索しても表示されません。\n４　法人番号が指定されていないケース\n以下に該当する場合には、法人番号は指定されないため、公表サイトで検索しても表示されません。\n・設立登記のない法人や人格のない社団等で税務署へ税法上の届出書を提出しておらず、かつ国税庁へ法人番号の指定を受けるための届出書を提出していない団体\n・法人等の支店・支部・事業所等\n・個人事業者、民法上の組合、有限責任事業組合等",
+          "corpus_ref": "search.txt:33-48"
+        },
+        {
+          "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/touroku_no_info.html",
+          "source_quote": "検索・閲覧機能\n登録番号を入力して適格請求書発行事業者の公表情報を検索・閲覧することができます。\n複数の登録番号について、まとめて検索することもできます。",
+          "corpus_ref": "info.txt:65-67"
+        }
+      ],
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/04.pdf",
+      "source_quote": "  （注）１    法人番号を有する法人の登録番号は「T＋13 桁の法人番号」となります。法人番号\n         については、「国税庁法人番号公表サイト」で検索できます。\n       ２ 登録通知を e-Tax（電子データ）で受領することを希望された場合、e-Tax（電子デ\n         ータ）で確認ができます。具体的な確認手順は、\n                              「インボイス制度特設サイト」の「イ\n         ンボイス発行事業者登録申請手続」にある「登録通知データ確認マニュアル」をご参\n         照ください。",
+      "corpus_ref": "qa04.txt:21-27"
+    },
+    {
+      "id": "rg1-missing",
+      "text": "法人番号公表サイトで出ない理由は所在地表記、前方一致・読み仮名検索の法人種別、公表不同意、番号未指定、検索対象除外。",
+      "numbers": [],
+      "applies": "2026-10-16確認（rg1 仕上げ1周目）。2026年10月16日に国税庁の案内を確認",
+      "scope": "名称・所在地による法人番号公表サイトの検索。インボイスの検索とは別。",
+      "exceptions": "法人種別の省略は前方一致又は読み仮名検索。番号未指定には設立登記なし・税法上と番号指定の双方の届出なしの団体、支店等、個人事業者、民法上の組合、有限責任事業組合等。",
+      "must_with": [],
+      "covers": [
+        "s-fc3c326cbfcee85b34e9-1",
+        "s-ba25878c0864f58135a6-1",
+        "s-b7eb28ab20ee5b3a7ff1-1",
+        "s-a4a2fea0a443cefdfadd-1",
+        "s-818bf38fca630c03f174-1",
+        "s-2fcdb42563a6f45e62a9-1",
+        "s-620b0387ec57c48b2064-1",
+        "s-a4a0b29be0aab3bb3fde-1"
+      ],
+      "sources": [
+        {
+          "source_url": "https://www.houjin-bangou.nta.go.jp/shitsumon/shosai.html?selQaId=00046",
+          "source_quote": "国税庁法人番号公表サイトで、名称・所在地から法人番号を検索しましたが、検索結果に対象の法人が表示されませんでした。原因は何が考えられますか。\n名称・所在地から法人番号を検索しても検索結果に表示されない原因としては、以下のケースが考えられます。\n１　所在地の入力が一致していないケース\n都道府県・市区町村に加え、丁目番地等を入力して検索する場合、漢数字と算用数字などの違いにより検索できないケースがあります。名称と所在地を組み合わせて検索する場合、まずは都道府県・市区町村まで選択した状態で検索してください。\n丁目番地等を入力する場合には、例えば「三丁目」の「三」を算用数字の「３」に、「１番１号」を「１－１」に置き換えて入力してください。\n２　商号又は名称欄に法人種別を入力しているケース\n前方一致検索又は読み仮名で検索する場合には、株式会社（カブシキガイシャ）などの法人種別を表す文字を省略して入力してください。\n例：「株式会社国税商事」を前方一致検索する場合\n「商号又は名称」欄に「国税商事」と入力\n３　人格のない社団等で公表に同意していないケース\n人格のない社団等で公表に同意していない場合、国税庁法人番号公表サイト（以下「公表サイト」といいます。）で検索しても表示されません。\n４　法人番号が指定されていないケース\n以下に該当する場合には、法人番号は指定されないため、公表サイトで検索しても表示されません。\n・設立登記のない法人や人格のない社団等で税務署へ税法上の届出書を提出しておらず、かつ国税庁へ法人番号の指定を受けるための届出書を提出していない団体\n・法人等の支店・支部・事業所等\n・個人事業者、民法上の組合、有限責任事業組合等\n５　検索対象除外法人に該当しているケース\n一定の条件で検索対象除外法人に設定されているケースがあります。検索条件の設定で「検索対象除外法人を検索対象に含める」のチェックボックスにチェックしていただくことで、検索対象除外法人を含めて検索できるようになります。",
+          "corpus_ref": "search.txt:33-50"
+        }
+      ],
+      "source_url": "https://www.houjin-bangou.nta.go.jp/shitsumon/shosai.html?selQaId=00046",
+      "source_quote": "国税庁法人番号公表サイトで、名称・所在地から法人番号を検索しましたが、検索結果に対象の法人が表示されませんでした。原因は何が考えられますか。\n名称・所在地から法人番号を検索しても検索結果に表示されない原因としては、以下のケースが考えられます。\n１　所在地の入力が一致していないケース\n都道府県・市区町村に加え、丁目番地等を入力して検索する場合、漢数字と算用数字などの違いにより検索できないケースがあります。名称と所在地を組み合わせて検索する場合、まずは都道府県・市区町村まで選択した状態で検索してください。\n丁目番地等を入力する場合には、例えば「三丁目」の「三」を算用数字の「３」に、「１番１号」を「１－１」に置き換えて入力してください。\n２　商号又は名称欄に法人種別を入力しているケース\n前方一致検索又は読み仮名で検索する場合には、株式会社（カブシキガイシャ）などの法人種別を表す文字を省略して入力してください。\n例：「株式会社国税商事」を前方一致検索する場合\n「商号又は名称」欄に「国税商事」と入力\n３　人格のない社団等で公表に同意していないケース\n人格のない社団等で公表に同意していない場合、国税庁法人番号公表サイト（以下「公表サイト」といいます。）で検索しても表示されません。\n４　法人番号が指定されていないケース\n以下に該当する場合には、法人番号は指定されないため、公表サイトで検索しても表示されません。\n・設立登記のない法人や人格のない社団等で税務署へ税法上の届出書を提出しておらず、かつ国税庁へ法人番号の指定を受けるための届出書を提出していない団体\n・法人等の支店・支部・事業所等\n・個人事業者、民法上の組合、有限責任事業組合等\n５　検索対象除外法人に該当しているケース\n一定の条件で検索対象除外法人に設定されているケースがあります。検索条件の設定で「検索対象除外法人を検索対象に含める」のチェックボックスにチェックしていただくことで、検索対象除外法人を含めて検索できるようになります。",
+      "corpus_ref": "search.txt:33-50"
+    },
+    {
+      "id": "rg1-own",
+      "text": "自社の登録番号は登録通知書で確認。e-Taxで申請し電子受領を希望した場合は通知書等一覧。分からなければ登録センター。登録済みで法人番号を持つ法人はT＋法人番号。",
+      "numbers": [],
+      "applies": "2026年10月16日に国税庁の案内を確認",
+      "scope": "既に登録を受けた事業者の自分の登録番号の確認。",
+      "exceptions": "電子通知はe-Tax申請・電子受領希望の場合。番号の再発行の可否には触れない。T＋法人番号は登録済みで法人番号のある法人に限る。",
+      "must_with": [],
+      "covers": [
+        "s-70bd60d40c5539405e3a-1",
+        "s-7dc14fcfa9275851f269-1",
+        "s-828d1686f0071357770e-1",
+        "s-0754af98693e1760ecb4-1"
+      ],
+      "sources": [
+        {
+          "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/touroku_no_info.html",
+          "source_quote": "登録番号の通知\n適格請求書発行事業者の登録を受けた場合、登録番号は「適格請求書発行事業者の登録通知書」（以下「登録通知書」といいます。）により通知されます。\nなお、e-Taxで申請された事業者で、「登録通知書」をe-Taxで受領することを希望した場合は、e-Taxで「登録通知書」が通知されます。",
+          "corpus_ref": "info.txt:45-47"
+        },
+        {
+          "source_url": "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/pdf/qa/04.pdf",
+          "source_quote": "   また、ご自身の登録番号が分からなくなった場合などの理由により、既に登録を受けている\n  事業者の方が自身の登録番号を確認したい場合には、各国税局（所）インボイス登録センター\n  の案内ページに記載の問合せ先にお問合せください。\n   なお、登録申請書を e-Tax で提出し、登録通知を電子データで受け取ることを希望される場\n  合は、事前にメールアドレスを登録すると、登録したメールアドレス宛に、登録通知が「通知\n  書等一覧」に格納されたことをお知らせするメールが送信され、すぐに登録通知を確認できま\n  すので、ぜひご利用ください。\n  （注）１    法人番号を有する法人の登録番号は「T＋13 桁の法人番号」となります。法人番号\n         については、「国税庁法人番号公表サイト」で検索できます。\n       ２ 登録通知を e-Tax（電子データ）で受領することを希望された場合、e-Tax（電子デ\n         ータ）で確認ができます。具体的な確認手順は、\n                              「インボイス制度特設サイト」の「イ\n         ンボイス発行事業者登録申請手続」にある「登録通知データ確認マニュアル」をご参\n         照ください。",
+          "corpus_ref": "qa04.txt:14-27"
+        }
+      ],
+      "source_url": "https://www.invoice-kohyo.nta.go.jp/about-toroku/touroku_no_info.html",
+      "source_quote": "登録番号の通知\n適格請求書発行事業者の登録を受けた場合、登録番号は「適格請求書発行事業者の登録通知書」（以下「登録通知書」といいます。）により通知されます。\nなお、e-Taxで申請された事業者で、「登録通知書」をe-Taxで受領することを希望した場合は、e-Taxで「登録通知書」が通知されます。",
+      "corpus_ref": "info.txt:45-47"
     }
   ],
   "absolutes": [
@@ -2990,7 +3194,7 @@
     }
   ],
   "tool_cases": [],
-  "checked": "2026-10-01",
+  "checked": "2026-10-16",
   "nonclaims": [
     {
       "id": "s-0716a2283c857e932ca4-1",
@@ -3073,11 +3277,11 @@
       "why": "非主張。表の列名であり、単独の事実主張ではない。"
     },
     {
-      "id": "s-431b3baa896baa134ec6-1",
+      "id": "s-57997e2a0a72d50e841c-1",
       "why": "非主張。表の行の対象者を示すラベル。番号の有無・構成はそれぞれのセルで判定する。"
     },
     {
-      "id": "s-73b93d7a0149de5a1be8-1",
+      "id": "s-3402e0216139117587a2-1",
       "why": "非主張。表の行の対象者を示すラベル。番号の有無・構成はそれぞれのセルで判定する。"
     },
     {
@@ -3147,6 +3351,34 @@
     {
       "id": "s-0d4c2f9eedbf778754c6-1",
       "why": "非主張。操作ボタンのラベル（readable 2026-10-13）。"
+    },
+    {
+      "id": "s-389be4d274dc35d0badc-1",
+      "why": "追加した節又はFAQの設問。答えの主張は別に台帳へ登録。"
+    },
+    {
+      "id": "s-575a87fe61b217369ed3-1",
+      "why": "出典の資料名又は確認項目への案内。制度の独立した主張は含まない。"
+    },
+    {
+      "id": "s-ac1ddf08a23bad684848-1",
+      "why": "追加した節又はFAQの設問。答えの主張は別に台帳へ登録。"
+    },
+    {
+      "id": "s-088eb5f9e33f5d5d985a-1",
+      "why": "出典の資料名又は確認項目への案内。制度の独立した主張は含まない。"
+    },
+    {
+      "id": "s-8fe30d6d8b96e4c9c762-1",
+      "why": "出典の資料名又は確認項目への案内。制度の独立した主張は含まない。"
+    },
+    {
+      "id": "s-73e62bb421e1144edf72-1",
+      "why": "出典の資料名又は確認項目への案内。制度の独立した主張は含まない。"
+    },
+    {
+      "id": "s-8faae8148341b4ba3443-1",
+      "why": "出典の資料名又は確認項目への案内。制度の独立した主張は含まない。"
     }
   ],
   "verified": [
@@ -3561,8 +3793,8 @@
       "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0071.json"
     },
     {
-      "id": "s-7c9e0ecad82a0ef477aa-1",
-      "text_hash": "8aa57c34f428afe23a4d",
+      "id": "s-b8a277c5a13e2d5a0c18-1",
+      "text_hash": "0241d89c0535e82d7ca6",
       "result": "out_of_corpus",
       "needed_source": "チェックデジット一致と実在確認の相違、取引先登録時に公表サイトで実在・氏名名称を必ず確認するという推奨を裏付ける国税庁の案内。正本の計算資料から桁の整合と0↔9の検出不能は導けるが、この確認単位全体の実務上の指示を裏付ける資料は収録されていない。",
       "reason": "正本の範囲では採否を確定できない。誤りとはしない。",
