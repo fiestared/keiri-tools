@@ -67,6 +67,7 @@ const ORDER = [
   "gasolindai-kanjo-kamoku",  // ガソリン代の勘定科目 — 4,400/月（Google 3,520・Bing実測 4,747）。★被覆は着手時 title/h1 0件。核は ①旅費交通費・車両費・燃料費・消耗品費の使い分けと継続適用 ②★ガソリン税（揮発油税・地方揮発油税）には消費税がかかるが軽油引取税だけ不課税＝課税標準の扱いの違い ③軽油引取税の除外に必要な販売者の条件 ④インボイスの要否 ⑤従業員へのガソリン代精算が非課税になる限度と、出張実費精算・会社の直接購入の違い。
   "jisshitsu-chingin",  // 実質賃金 — 14,800/月（google 11,840＋yahoo 2,960。keyword_demand.py 2026-10-12 実測）。D0 の需要順。★被覆ゲート: 連続一致0（語を割ると zangyodai-keisan に当たるだけ）。核は ①毎月勤労統計調査の計算式 ②2025年3月分速報からの2系列（持家の帰属家賃を除く総合／総合）の違いと名称の入れ替わり ③2025年確報・2026年8月速報の公表値 ④ベースアップと定期昇給・自社の昇給率と物価の比べ方
   "genka-haifu",  // 配賦 49,500/月（google 39,600＋yahoo 9,900。keyword_demand.py 2026-10-12 実測）。在庫 mf。★被覆ゲート: 主題保有0・節保有1（genka-keisan の通達5-1-5 の節。税務の原価計算はそちらへリンクで譲る）。核は ①配賦率・配賦額の式と架空の計算例（基準を変えると負担が変わる）②配賦基準の表 ③原価計算基準 一七・一八・三三・四五・四七 ④予定配賦と配賦差異の仕訳 ⑤本社費の配賦
+  "godo-gaisha",  // 合同会社 49,500/月（2026-10-16 実測 google 39,600＋yahoo 9,900）。被覆: hojin-nari の設立費用FAQ・kabunushi-shihon-hendo-keisansho・shihonkin・taishaku-taishohyo-mikata の節だけ＝株式会社との違いと経理・税務の要点に限定し、各節へリンクで譲る
   "danjo-koyo-kikai-kintoho",  // 男女雇用機会均等法 — 14,800/月（google 11,840＋yahoo 2,960。keyword_demand.py 2026-10-11 実測）。D0 補欠。★被覆ゲート: 主題保有0（題名に「均等法」を持つ matahara は9条3項と措置義務が主題）。核は ①2026年10月1日施行の条番号での条文一覧 ②新旧の条番号の対応表（改正前後の2つの版を突き合わせ）③13条（求職者等へのセクシュアルハラスメント）④紛争解決・公表・過料。妊娠・出産等のハラスメントの中身は matahara、カスハラは kasuhara に譲る
   "kanpu-shinkoku",  // 還付申告とは — 還付申告 8,100/月・還付申告 必要書類 1,000/月（keyword_demand.py 2026-10-11 実測）。★被覆ゲート: 主題保有0・節保有8（期間の条文の読みは kakutei-shinkoku-itsumade・kakutei-shinkoku-kanpukin-itsu、書類の全体表は kakutei-shinkoku-hitsuyo-shorui に譲りリンク）。核は ①年分ごとの提出できる期間の早見表（国税庁の質疑応答 令和2年分→令和7年12月31日 と同じ数え方）②還付申告に絞った添付・提示・保存の表 ③年末調整だけの年は還付申告、申告済みの年は更正の請求。消費税の還付は shohizei-kanpu
   "kakutei-shinkoku-kanpukin-itsu",  // 確定申告の還付金はいつ — 確定申告 還付金 いつ 22,200/月（keyword_demand.py 2026-09-08 実測。Bing半年428）。★被覆は nenmatsu-chosei-kanpukin（会社が12月給与で戻す還付）・shohizei-kanpu（消費税・52条の月末起算）と役割分担、kakutei-shinkoku-itsumade は本文に「振り込」0回で還付時期を未保有だった。核は ①e-Tax3週間/繁忙期の書面1〜1.5か月（Q41）②処理状況の3表示と確認可能時期 ③屋号口座・ゆうちょ記号番号・公金受取口座の丸印 ④所法138条3項の起算日は期限内→期限翌日・期限後→提出日翌日＝期限前の支払決定なら期間ゼロ、5年遡りに利息は付かない ⑤通則法120条の切捨てで大半の還付に加算金は付かない（設例A〜E・令和8年1.3%）⑥138条2項の支払者未納・4項の充当。
@@ -841,7 +842,7 @@ const CATEGORIES = [
     id: "hojinzei-kessan",
     name: "法人税・決算の実務",
     desc: "会社設立後の税務届出と法人税の税率、キャッシュフロー計算書、役員報酬・使用人兼務役員・交際費・決算賞与・繰越欠損金・引当金・経過勘定と、賃上げ促進税制などの優遇措置。",
-    slugs: [
+    slugs: ["godo-gaisha", 
       "kaisha-setsuritsu", "hojin-nari", "shihonkin", "genshi", "hojinzei-toha", "hojinzei-shinkokusho", "hojinzei-ritsu", "gaikei-hyojun-kazei", "kigyo-ban-furusato-nozei", "jigyoshozei", "cash-flow-keisansho", "taishaku-taishohyo-mikata", "soneki-keisansho-mikata", "soukanjo-motocho-kakikata", "shiwakecho", "shisanhyo-mikata", "genkin-suitocho-kakikata",
       "yakuin-hoshu-kimekata", "shiyonin-kenmu-yakuin", "shikko-yakuin", "yakuin-taishokukin", "kosaihi-kaigihi-chigai", "shutcho-nittou-ryohi-kitei", "ryohi-kotsuhi", "shomohinhi", "tsushinhi", "chidai-yachin", "shikikin-hoshokin", "kyosankin-kanjo-kamoku", "kokoku-sendenhi", "noren", "genson-sonshitsu", "shisan-jokyo-saimu", "genka-shokyaku-ruikeigaku",
       "kessan-shoyo", "kurikoshi-kessonkin", "chinage-sokushin-zeisei", "shukko-zeimu", "kabunushi-soukai-gijiroku",
