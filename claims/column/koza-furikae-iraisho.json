@@ -18,16 +18,18 @@
    "source_quote": "確定申告 令和８年３月16日（月） 令和８年４月23日（木）",
    "exceptions": [
     "予定納税第1期・第2期と確定申告延納は、納期限と振替日が同じ日（記事の表の0日の行）",
-    "38日は暦日の差（2026-04-23 − 2026-03-16 = 38。python の datetime で計算）"
+    "38日は暦日の差（2026-04-23 − 2026-03-16 = 38。python の datetime で計算）",
+    "引き落とせなかった場合は法定納期限の翌日から延滞税（g21.txt:228）。38日は令和7年分の申告所得税の例に限って書く"
    ],
    "derived": true,
    "calc": "(date(2026,4,23)-date(2026,3,16)).days = 38（2026-10-13 に実行）",
    "corpus_ref": "keiri-commander/runs/readable/koza-furikae-iraisho/corpus/noufu_kigen.txt:5-20",
    "review_status": "author_checked",
    "covers": [
+    "s-3f3f47c9a2ccffa86fd6-1",
     "s-5da1bf3f8ab148c1bf07-1",
-    "s-da2eeb06ad279a25aa54-1",
-    "s-3f3f47c9a2ccffa86fd6-1"
+    "s-ab5b275fc4ee5aeef58a-1",
+    "s-da2eeb06ad279a25aa54-1"
    ],
    "must_with": [
     "申告所得税|所得税|振替"
@@ -52,12 +54,12 @@
   },
   {
    "id": "readable20261013-kakutei-3-15",
-   "text": "申告所得税の確定申告分は、3月15日（休日なら翌日）が申告期限であると同時に納期限である。",
+   "text": "申告所得税の確定申告分は、申告期限が同時に納期限で、原則3月15日（休日なら休日明けの日）。",
    "numbers": [
     "3月15日"
    ],
    "applies": "申告所得税の確定申告（第三期）。段落を箇条書きに分けた際に「足した行」になった既存の文（文言は書き直し前と同じ）",
-   "scope": "所得税法120条1項（第三期＝翌年2月16日から3月15日まで）の申告と、128条（第三期において納付）。休日は国税通則法10条2項で翌日",
+   "scope": "所得税法120条1項（第三期＝翌年2月16日から3月15日まで）の申告と、128条（第三期において納付）。期限が休日等に当たるときは国税通則法10条2項でその翌日（休日等が続けば休日明けの日）。2026-10-16 oc-opinion wrong（「休日なら翌日」）を受けて「休日明けの日」に改めた",
    "source_url": "https://laws.e-gov.go.jp/law/340AC0000000033",
    "source_quote": "第三期（その年の翌年二月十六日から三月十五日までの期間をいう。以下この節において同じ。）において、税務署長に対し、次に掲げる事項を記載した申告書を提出しなければならない。／第三期において、当該金額に相当する所得税を国に納付しなければならない。／（通則法10条2項）日曜日、国民の祝日に関する法律…に規定する休日その他一般の休日又は政令で定める日に当たるときは、これらの日の翌日をもつてその期限とみなす。",
    "exceptions": [
@@ -65,7 +67,10 @@
    ],
    "corpus_ref": "keiri-commander/runs/readable/koza-furikae-iraisho/corpus/shotokuzei_120.txt・shotokuzei_128.txt・tsusoku_10.txt（e-Gov API v2・2026-10-13 取得・所得税法は revision 20261001）",
    "review_status": "author_checked",
-   "covers": [],
+   "covers": [
+    "s-45125553940047e1863a-1",
+    "s-b2495f14fc729a8503f6-1"
+   ],
    "must_with": [
     "申告|納期限"
    ]
@@ -305,7 +310,7 @@
   },
   {
    "id": "rg2-r1-entaizei-yokujitsu",
-   "text": "引き落とせなかった場合は、法定納期限の翌日から延滞税がかかる。",
+   "text": "振替日の前日までに残高を確認する。引き落とせなかった場合は、法定納期限の翌日から延滞税がかかる。",
    "numbers": [],
    "applies": "振替納税で口座引落しができなかった場合",
    "scope": "振替納税の対象国税",
@@ -313,18 +318,21 @@
     "無し: g21.txt 納付手続の節（225-233行）を読んで確認"
    ],
    "source_url": "https://www.nta.go.jp/taxes/nozei/nofu/24100020.htm",
-   "source_quote": "なお、振替納税による口座引落しができなかった場合は、法定納期限の翌日から 延滞税がかかることになりますので",
-   "corpus_ref": "keiri-commander/runs/write-2026-10-16-rg2/segment-review/corpus/g21.txt:228",
+   "source_quote": "振替納税を希望する国税の振替日を確認し、振替日の前日までに預貯金口座の残高を確認してください。／なお、振替納税による口座引落しができなかった場合は、法定納期限の翌日から 延滞税がかかることになりますので",
+   "corpus_ref": "keiri-commander/runs/write-2026-10-16-rg2/segment-review-5/corpus/g21.txt:222-228",
    "covers": [
-    "s-044e88b4eadd6df013bb-1"
+    "s-044e88b4eadd6df013bb-1",
+    "s-d815ab86ba6f678c6ae3-1"
    ],
    "review_status": "author_checked"
   },
   {
    "id": "rg2-r1-tenkyo",
    "text": "転居等で所轄税務署が変わっても、転居前と同じ振替口座なら引き続き振替納税を使える。",
-   "numbers": [],
-   "applies": "振替納税の利用者の転居",
+   "numbers": [
+    "2026年9月26日"
+   ],
+   "applies": "振替納税の利用者の転居。2026年9月26日は国税庁No.2091（https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2091.htm）を確認した日",
    "scope": "転居前の振替口座を継続する場合",
    "exceptions": [
     "口座を変える場合は新しい口座の振替依頼書を提出（取りやめ申出書は不要）",
@@ -334,6 +342,7 @@
    "source_quote": "転居等により、納税地を所轄する税務署が変わった場合でも、引き続き転居前の振替口座で振替納税をご利用いただけます。",
    "corpus_ref": "keiri-commander/runs/write-2026-10-16-rg2/segment-review/corpus/g21.txt:90-92",
    "covers": [
+    "s-88c1521a7680c7c2e727-1",
     "s-f9d7f784eceef1292372-1"
    ],
    "review_status": "author_checked"
@@ -351,9 +360,10 @@
    "source_quote": "指定預貯金残高が振替日において、納付書の金額に満たないときは、私に通知することなく納付書を返却されても差し支えありません。",
    "corpus_ref": "keiri-commander/runs/write-2026-10-16-rg2/segment-review/corpus/guide.txt:13-14,53-54,71-74",
    "covers": [
+    "s-2571600515b0e2a35e2f-1",
+    "s-462cfbcfd287f97f36b3-1",
     "s-9c04f437a6c31809b45b-1",
-    "s-d7a6ea4ac4498e135736-1",
-    "s-462cfbcfd287f97f36b3-1"
+    "s-d7a6ea4ac4498e135736-1"
    ],
    "review_status": "author_checked",
    "must_with": [
@@ -555,6 +565,11 @@
    "phrase": "原則",
    "context": "社会保険料控除は原則としてその年に実際に支払った額",
    "reviewed": "所得税法74条1項（その年中に支払った社会保険料）。前納の各年分控除の選択などの例外があるため「原則」と書いた。12月分の例示は年末年始の振替日の扱いで誤るため削除（oc-opinion wrong）。"
+  },
+  {
+   "phrase": "原則",
+   "context": "申告所得税の確定申告分であれば原則として3月15日（休日なら休日明けの日）",
+   "reviewed": "所得税法120条1項・128条で第三期は3月15日まで。休日等は国税通則法10条2項で繰り下がる（連続すれば休日明けの日）ため「原則」と書いた。確定損失申告（123条）は除く。"
   }
  ]
 }
