@@ -55,9 +55,21 @@ export function loadTopics(root = ROOT) {
   });
 }
 export function classify(text, context, topics) {
-  for (const [basis,scope] of [['local',text],['table',context.table||''],['h3',context.h3||''],['h2',context.h2||''],['page_title',context.title||'']]) {
+  const scopes = [['local',text],['table',context.column||''],['table',context.row||context.table||''],['h3',context.h3||''],['h2',context.h2||''],['page_title',context.title||'']];
+  const specific = hits => hits.filter(t=>!hits.some(child=>child.refines?.includes(t.name)));
+  for (let i=0;i<scopes.length;i++) {
+    const [basis,scope]=scopes[i];
     if (!scope) continue;
     let hits=topics.filter(t=>t.regex.test(half(scope)));
+    // A general fallback mention may be narrowed by its own child in a heading,
+    // never by an unrelated制度 in the rest of the page.
+    if (hits.length && hits.every(t=>t.fallback)) {
+      for (const [childBasis,childScope] of scopes.slice(i+1)) {
+        const children=topics.filter(t=>t.refines?.some(name=>hits.some(h=>h.name===name))&&t.regex.test(half(childScope)));
+        if(children.length)return {topics:specific(children).map(t=>t.name),basis:childBasis};
+      }
+    }
+    hits=specific(hits);
     if (hits.some(t=>!t.fallback)) hits=hits.filter(t=>!t.fallback);
     if (hits.length) return {topics:hits.map(t=>t.name),basis};
   }
@@ -69,7 +81,7 @@ function cssPath(el) {
     parts.unshift(`${e.localName}:nth-of-type(${n})`);
   } return parts.join(' > ');
 }
-const UNIT = 'title,desc,h1,h2,h3,h4,h5,h6,p,li,td,th,caption,text,figcaption,label,option,button,dt,dd,summary,pre,blockquote,div,section,article,main,body';
+const UNIT = 'title,desc,h1,h2,h3,h4,h5,h6,p,li,td,th,caption,text,figcaption,label,option,button,dt,dd,summary,pre,blockquote,div,section,article,main,body,a.tool-card';
 const BLOCK = new Set('text title desc h1 h2 h3 h4 h5 h6 p li td th caption figcaption dt dd summary pre div section article main table tr ul ol header footer nav aside'.split(' '));
 function ownText(el) {
   if (el.localName==='meta') return el.content;
@@ -96,6 +108,16 @@ function tableLocations(d) {
       const loc=map.get(cell), labels=[];
       for(let y=0;y<r;y++) {const h=grid[y]?.[loc.column_index-1]; if(h?.localName==='th'&&h!==grid[r][0]&&!labels.includes(clean(h.textContent)))labels.push(clean(h.textContent));}
       loc.column_heading=labels.join(' / ');
+      // Some tables start with a circled row number, then the制度 name. Keep
+      // row_subject as the positional key and use only that label, not sibling
+      // amount/rate cells, as extra classification context.
+      const rowCells=[...rows[r].cells], first=rowCells[0];
+      let label=first;
+      if(/^[①-⑳\d０-９\s.．、()（）]+$/u.test(clean(first?.textContent||''))) {
+        const next=rowCells[1];
+        label=next&&/制度|種類|調書|区分|名称/.test(map.get(next)?.column_heading||'')?next:null;
+      }
+      loc.row_heading=label&&rowCells.indexOf(label)<rowCells.indexOf(cell)?clean(label.textContent):'';
     }
   } return map;
 }
@@ -126,6 +148,8 @@ export function extractPage(html, page, topics, file='docs'+page+'index.html') {
   const add = (el,text,field='text',extra={}) => {
     const values=extractValues(text);
     const table=tables.get(el.closest('td,th'))||null;
+    const card=el.closest('a.tool-card');
+    const cardTitle=card?clean(card.querySelector('b,strong')?.textContent||''):null;
     if(table && el.localName==='td' && /^[0-9０-９]/.test(text)) {
       for(const m of half(text).matchAll(/\d[\d,]*(?:\.\d+)?/g)) {
         if(values.some(v=>m.index<v.offset+v.value.length&&m.index+m[0].length>v.offset))continue;
@@ -142,7 +166,7 @@ export function extractPage(html, page, topics, file='docs'+page+'index.html') {
       const left=Math.max(before.lastIndexOf('。'),before.lastIndexOf('；'))+1;
       const end=after.indexOf('。');
       const local=text.slice(left,end<0?text.length:v.offset+end+1);
-      Object.assign(v,classify(local,{table:table?`${table.column_heading} ${table.row_subject}`:'',h3:h3?.text,h2:h2?.text,title},topics));
+      Object.assign(v,classify(local,{column:table?.column_heading,row:table?`${table.row_heading} ${table.row_subject}`:'',h3:card?null:h3?.text,h2:card?null:h2?.text,title:card?cardTitle:title},topics));
     }
     const id='u-'+digest(file+'|'+location.selector+'|'+field).slice(0,16);
     occurrences.push({id,location,topics:[...new Set(values.flatMap(v=>v.topics))],values,excerpts:snippet(text,values),text});
@@ -177,7 +201,7 @@ export function extractPage(html, page, topics, file='docs'+page+'index.html') {
     if(node.nodeType===3)return node.textContent;
     if(node.nodeType!==1&&node.nodeType!==9)return '';
     if(['script','style','template'].includes(node.localName))return '';
-    const txt=[...node.childNodes].map(visible).join('');return BLOCK.has(node.localName)?'\u0000'+txt+'\u0000':txt;
+    const txt=[...node.childNodes].map(visible).join('');return BLOCK.has(node.localName)||node.matches?.('a.tool-card')?'\u0000'+txt+'\u0000':txt;
   };
   const audit=extractValues(visible(d.body)).filter(v=>COUNTED.has(v.kind));
   for(const el of d.querySelectorAll('head > title,meta[name="description"],meta[name="card-desc"],meta[property="og:title"],meta[property="og:description"],meta[name="twitter:title"],meta[name="twitter:description"],[aria-label],[placeholder]')) {
@@ -303,7 +327,7 @@ const md=s=>String(s??'').replace(/\|/g,'\\|').replace(/[\r\n]/g,' ').replace(/<
 function locationText(o) {
   const l=o.location;
   return [l.h2?`h2 ${l.h2.id?'#'+l.h2.id:'(idなし)「'+l.h2.text+'」'}`:null,l.h3?`h3 ${l.h3.id?'#'+l.h3.id:'(idなし)「'+l.h3.text+'」'}`:null,
-    `${l.element} / ${l.field}`,l.table?`行${l.table.row_index}「${l.table.row_subject}」列${l.table.column_index}「${l.table.column_heading}」`:null,`${l.element==='dependency'?l.file+':':'行'}${l.line??'?'}`,l.element_id?'要素 #'+l.element_id:null].filter(Boolean).join(' · ');
+    `${l.element} / ${l.field}`,l.table?`行${l.table.row_index}「${l.table.row_subject}${l.table.row_heading&&l.table.row_heading!==l.table.row_subject?' / '+l.table.row_heading:''}」列${l.table.column_index}「${l.table.column_heading}」`:null,`${l.element==='dependency'?l.file+':':'行'}${l.line??'?'}`,l.element_id?'要素 #'+l.element_id:null].filter(Boolean).join(' · ');
 }
 function occurrenceLine(o,topic=null) {
   const values=o.values.filter(v=>!topic||v.topics.includes(topic));
