@@ -303,6 +303,8 @@ async function render() {
   // ★調整の対象でなければ重複はゼロとして計算する（期間が離れていれば控除は満額）
   const chofuku = hits ? chofukuIn : 0;
   const k = kojoAfterChofuku({ nensu, chofukuNen: chofuku }, T, taishokuKojo);
+  // 調整後も退職所得控除の最低額を適用（国税庁2732の控除額の注）。
+  k.after = Math.max(taishokuKojo(1, false, T), k.after);
   const shotoku = taishokuShotoku(shunyu, k.after);
   const shotokuFull = taishokuShotoku(shunyu, k.full);
 
