@@ -87,7 +87,7 @@
           "name": "Q. ボーナスの社会保険料は月給と同じ計算ですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. 料率は同じですが、かかる土台が違います。月給は標準報酬月額という等級表で丸めた額にかかるのに対し、賞与は標準賞与額（額面の1,000円未満を切り捨てた額）にかかり、等級表はありません。また健康保険は年度累計573万円、厚生年金は1か月150万円という賞与専用の上限があります。雇用保険だけは月給・賞与とも実額にそのまま料率がかかります。"
+            "text": "A. 料率は同じですが、かかる土台が違います。賞与には標準賞与額の上限があり、年4回以上の支給は報酬として扱われます。雇用保険だけは月給・賞与とも実額にそのまま料率がかかります。"
           }
         }
       ]
@@ -140,7 +140,7 @@
     <div>
       <label for="age">年齢</label>
 <input type="number" id="age" value="30" min="15" max="74" inputmode="numeric" aria-describedby="age-hint">
-<p class="hint" id="age-hint">70歳以上は厚生年金保険料を0円で計算します。</p>
+<p class="hint" id="age-hint">高齢任意加入の方は、<a href="#zentei">試算の対象外</a>です。</p>
     </div>
   </div>
 
@@ -174,9 +174,9 @@
 
   <label style="font-weight:400;display:block;margin-top:10px"><input type="checkbox" id="over6"> 賞与の計算期間が6か月を超える（年1回の決算賞与・役員賞与など）</label>
 
+      <span id="yearpaid-hint" class="hint">健康保険の上限判定に使います。<a href="#yearpaid-help">入力する累計額の確認方法</a>をご覧ください。</span>
   <label for="yearpaid">今年度の既払標準賞与額の累計（円・任意）</label>
 <input type="number" id="yearpaid" inputmode="numeric" aria-describedby="yearpaid-hint">
-      <span id="yearpaid-hint" class="hint">ふつうは空欄で大丈夫です。健康保険の年度累計573万円の上限の判定用です（<a href="#yearpaid-help">入れる額</a>）。</span>
 
   <button class="primary" id="calc">計算する</button>
   <div role="status" aria-live="polite" class="result" id="result"></div>
@@ -204,12 +204,12 @@
 <h2 id="tsukaikata">使い方と注意点</h2>
   <div class="callout">
     <b>賞与の税率は、前月の給与と扶養親族等の数で決まります</b>
-    通常の甲欄は、国税庁「賞与に対する源泉徴収税額の算出率の表」を<b>前月の社会保険料等控除後給与と扶養親族等の数</b>で引きます。同じ税率帯なら前月給与が違っても同率です。前月に給与がない場合などは、<a href="#reigai">月額表による別計算</a>になります。
+    通常の甲欄は、国税庁「<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15-16.pdf">賞与に対する源泉徴収税額の算出率の表</a>」を<b>前月の社会保険料等控除後給与と扶養親族等の数</b>で引きます。同じ税率帯なら前月給与が違っても同率です。前月に給与がない場合などは、<a href="#reigai">月額表による別計算</a>になります。
   </div>
   <h3 id="zentei">この計算機の前提</h3>
   <ul>
     <li><b>健康保険</b>：協会けんぽ（全国健康保険協会）の都道府県別料率で計算します。<b>健康保険組合に加入している場合は料率が異なります</b>。</li>
-    <li><b>厚生年金</b>：18.3%（全国一律）です。70歳以上の厚生年金保険料は0円として計算します。高齢任意加入は対象外です。</li>
+    <li><b>厚生年金</b>：18.3%（全国一律）です。70歳以上の厚生年金保険料は0円として計算します（高齢任意加入を除く）。</li>
     <li><b>雇用保険</b>：選んだ業種の料率で計算します。</li>
     <li><b>料率の年度</b>：2026年度4月以後の料率を用います。2026年1〜3月は対象外です。</li>
     <li><b>源泉所得税</b>：<b>甲欄</b>（主たる勤務先に扶養控除等申告書を出している人）で計算します。</li>
@@ -256,7 +256,7 @@
 <tr><th scope="col">&nbsp;</th><th scope="col">毎月の給与</th><th scope="col">ボーナス（賞与）</th></tr>
 </thead>
 <tbody>
-<tr><td>社会保険料のかかる土台</td><td>標準報酬<b>月額</b>（等級表で丸める）</td><td><b>標準賞与額</b>（1,000円未満切捨・等級表なし）</td></tr>
+<tr><td>社会保険料のかかる土台</td><td>標準報酬<b>月額</b>（等級表で丸める）</td><td><a href="#jogen">上限を適用した標準賞与額</a>（年4回以上の支給は報酬扱い）</td></tr>
 <tr><td>所得税の決まり方</td><td>月額表を<b>その月の社会保険料等控除後給与</b>で引く（甲欄は扶養親族等の数にも応じる）</td><td>通常の甲欄は算出率の表を<b>前月の社会保険料等控除後給与と扶養親族等の数</b>で引く（前月給与なし等・10倍超は月額表）</td></tr>
 <tr><td>住民税</td><td>月割で天引きされる</td><td><b>天引きされない</b></td></tr>
 </tbody>
@@ -264,7 +264,7 @@
 
 <div class="callout">
 <p><b>住民税はボーナスから引かれません</b></p>
-<p>住民税（特別徴収）は、地方税法321条の5第1項が年税額の<b>「十二分の一の額を六月から翌年五月まで」</b>毎月徴収すると定めており、この月割は<b>毎月の給与</b>から引かれます。賞与支給時に住民税の行はありません。ただし<b>ボーナスも前年の所得には含まれる</b>ので、翌年度の住民税（毎月の給与からの天引き額）はその分増えます。「引かれない」のではなく「引かれる場所と時期が違う」と理解するのが正確です。</p>
+<p>住民税（特別徴収）は、<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_321_5">地方税法321条の5第1項</a>が年税額の<b>「十二分の一の額を六月から翌年五月まで」</b>毎月徴収すると定めており、この月割は<b>毎月の給与</b>から引かれます。賞与支給時に住民税の行はありません。ただし<b>ボーナスも前年の所得には含まれる</b>ので、翌年度の住民税（毎月の給与からの天引き額）はその分増えます。「引かれない」のではなく「引かれる場所と時期が違う」と理解するのが正確です。</p>
 </div>
 
 <h2 id="rei">計算例 — 賞与50万円の手取り</h2>
@@ -283,11 +283,11 @@
 <a class="tool-cta" href="../tedori/">毎月の給与の手取りは「手取り計算機」で計算する</a>
 
 <h3 id="hasu">賞与明細と端数処理の違い</h3>
-<p>賞与から天引きする健康保険・厚生年金の本人負担額は、1円未満の端数が50銭以下なら切り捨て、50銭を超えれば切り上げます。ただし、事業主と被保険者の特約があれば、その定めによる端数処理も可能です。単純な四捨五入とは異なるため、賞与明細との差を見る際は勤務先の端数処理も確認してください。</p>
+<p>賞与から天引きする健康保険・厚生年金の本人負担額は、1円未満の端数が50銭以下なら切り捨て、50銭を超えれば切り上げます（労使の特約がある場合を除く）。単純な四捨五入とは異なるため、賞与明細との差を見る際は勤務先の端数処理も確認してください。</p>
 
 <h2 id="reigai">算出率の表が使えない3つの場合 — 月額表による例外計算</h2>
 
-<p>算出率の表の備考は、次の場合に<b>この表を使わず、月額表で計算する</b>と定めています（計算式は国税庁タックスアンサー No.2523）。この計算機は3つとも自動で判定し、例外計算に切り替えたときは結果にその旨を表示します。</p>
+<p>算出率の表の備考は、次の場合に<b>この表を使わず、月額表で計算する</b>と定めています（計算式は国税庁タックスアンサー <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm">No.2523</a>）。この計算機は3つとも自動で判定し、例外計算に切り替えたときは結果にその旨を表示します。</p>
 
 <ol>
 <li><b>前月中に給与の支払がない</b>（休職明け・新規入社の直後など）</li>
@@ -302,36 +302,36 @@
 <li>BがPの10倍を超える場合：n×{T(P＋B÷n)−T(P)}</li>
 </ul>
 
-<p>国税庁No.2523の設例では、1,668,062円÷6を278,010円、769,300円÷6を128,216円として、1円未満を切り捨てています。月額表は申告書の提出区分と扶養親族等の数に応じて適用します。</p>
+<p>国税庁<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm">No.2523</a>の設例では、1,668,062円÷6を278,010円、769,300円÷6を128,216円として、1円未満を切り捨てています。月額表は申告書の提出区分と扶養親族等の数に応じて適用します。</p>
 
 <p>前月給与がない人の少額の賞与は、月額表の非課税帯に収まって<b>源泉所得税が0円</b>になることもあります。この場合も、年末調整または確定申告で最終的な税額に精算されます。</p>
 
 <h2 id="jogen">賞与の社会保険料には上限がある</h2>
 
-<p>賞与の社会保険料は<b>標準賞与額</b>（額面の1,000円未満を切り捨てた額）にかかりますが、上限があります。</p>
+<p><b>標準賞与額には、保険ごとの上限があります。</b>年4回以上の支給は報酬として扱われます。保険料免除や資格喪失月については、<a href="#kyugyo-taishoku">対象外となる場合</a>を確認してください。</p>
 
 <div class="scroll-wrap"><table>
 <thead>
 <tr><th scope="col">保険</th><th scope="col">上限</th><th scope="col">根拠</th></tr>
 </thead>
 <tbody>
-<tr><td>健康保険（＋介護保険・支援金）</td><td><b>年度の累計573万円</b>まで</td><td>健康保険法45条1項</td></tr>
-<tr><td>厚生年金</td><td><b>同月内の支給を合算して150万円</b>まで</td><td>厚生年金保険法24条の4・令和2年政令第246号2条</td></tr>
-<tr><td>雇用保険</td><td><b>上限なし</b>（実額にそのまま料率）</td><td>労働保険徴収法11条1項（賃金総額）</td></tr>
+<tr><td>健康保険（＋介護保険・支援金）</td><td><b>同一保険者で年度累計573万円</b>まで</td><td><a href="https://laws.e-gov.go.jp/law/211AC0000000070#Mp-At_45">健康保険法45条1項</a></td></tr>
+<tr><td>厚生年金</td><td><b>同月内の支給を合算して150万円</b>まで</td><td><a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-At_24_4">厚生年金保険法24条の4</a>・<a href="https://laws.e-gov.go.jp/law/502CO0000000246#Mp-At_2">令和2年政令第246号2条</a></td></tr>
+<tr><td>雇用保険</td><td><b>上限なし</b>（実額にそのまま料率）</td><td><a href="https://laws.e-gov.go.jp/law/344AC0000000084#Mp-At_11">労働保険徴収法11条1項</a>（賃金総額）</td></tr>
 </tbody>
 </table></div>
 
 <p>たとえば200万円のボーナスなら、厚生年金保険料は150万円分までしかかかりません。一方、<b>雇用保険だけは切り捨ても上限もなく</b>、支給額の実額に料率（一般の事業は本人5/1,000）がかかります。高額の賞与を入力すると、この計算機は上限を適用した旨を結果に表示します。</p>
 
 <ul>
-<li id="yearpaid-help"><b>「今年度の既払標準賞与額の累計」に入れる額</b>：同一保険者内の各支給分を、1,000円未満切捨後に年度内で合計します。保険者が異なる既払分は含めません。</li>
+<li id="yearpaid-help"><b>「今年度の既払標準賞与額の累計」に入れる額</b>：同一保険者で年度内に決定された標準賞与額を合計します。同月の賞与は合算してから1,000円未満を切り捨てます。育休免除中や資格喪失月に決定された額も含めます。</li>
 <li><b>同じ月に複数回支給する場合</b>：厚生年金は合算した標準賞与額に月150万円の上限を適用するため、各回を別々に計算した結果は使えません。この計算機は賞与が同じ月に1回支給される前提で試算します。</li>
 </ul>
 
 <h2 id="faq">よくある質問</h2>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>ボーナスから住民税は引かれますか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>引かれません。住民税の特別徴収は、地方税法321条の5第1項により年税額の12分の1を6月から翌年5月まで毎月の給与から天引きする仕組みで、賞与からは徴収されません。ただしボーナスも前年の所得に含まれるため、翌年度の住民税（毎月の給与からの天引き額）はその分増えます。引かれる場所と時期が給与に寄っているだけで、住民税がかからない収入というわけではありません。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>引かれません。住民税の特別徴収は、<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_321_5">地方税法321条の5第1項</a>により年税額の12分の1を6月から翌年5月まで毎月の給与から天引きする仕組みで、賞与からは徴収されません。ただしボーナスも前年の所得に含まれるため、翌年度の住民税（毎月の給与からの天引き額）はその分増えます。引かれる場所と時期が給与に寄っているだけで、住民税がかからない収入というわけではありません。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>ボーナスの手取りは額面の何割ですか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>手取り率は条件により変わります。東京都・30歳・扶養親族0人・前月の月給30万円なら、額面50万円のボーナスの手取りは409,130円（81.8%）です。税率は前月の給与と扶養親族等の数で変わり、40〜64歳の人は介護保険料も加わります。上の計算機の<a href="#zentei">前提</a>を確認して試算し、実際の金額は賞与明細で確認してください。</p>
@@ -340,7 +340,7 @@
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>国税庁の算出率の表は、賞与が年間を通じて給与の5か月分支払われるものとして算出されています。通常の甲欄では、この表を社会保険料等控除後の前月給与と扶養親族等の数に応じて使います。前月に給与がない場合などは、<a href="#reigai">月額表による別計算</a>です。年末調整の対象者は年末調整で過不足を精算します。対象外の場合などは確定申告による精算が必要になることがあります。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>ボーナスの社会保険料は月給と同じ計算ですか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>料率は同じですが、かかる土台が違います。月給は標準報酬月額という等級表で丸めた額にかかるのに対し、賞与は標準賞与額（額面の1,000円未満を切り捨てた額）にかかり、等級表はありません。また健康保険は年度累計573万円、厚生年金は1か月150万円という賞与専用の上限があります。雇用保険だけは月給・賞与とも実額にそのまま料率がかかります。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>料率は同じですが、かかる土台が違います。賞与には<a href="#jogen">標準賞与額の上限</a>があり、年4回以上の支給は報酬として扱われます。雇用保険だけは月給・賞与とも実額にそのまま料率がかかります。</p>
 
 <section class="related">
 <div class="tool-grid">
@@ -358,8 +358,8 @@
 <li>日本年金機構「<a href="https://www.nenkin.go.jp/service/kounen/hokenryo/nofu/20121026.html">保険料の計算方法</a>」</li>
 
 <li>国税庁「<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15-16.pdf">賞与に対する源泉徴収税額の算出率の表（令和8年分）</a>」— 通常の甲欄は「前月の社会保険料等控除後の給与等の金額」と扶養親族等の数で率を引く。備考に、前月中に給与等の支払がない場合・前月中の給与等が前月中の社会保険料等以下の場合・賞与（社会保険料等控除後）が前月の給与（同）の10倍を超える場合は、この表によらず月額表を使うと定める</li>
-<li>国税庁 タックスアンサー <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm">No.2523</a>「賞与に対する源泉徴収」— 月額表による例外計算（控除後賞与B、前月控除後給与P、月額表税額T、n＝6、計算期間6か月超ならn＝12）。前月給与なしはn×T(B÷n)、10倍超はn×{T(P＋B÷n)−T(P)}。No.2523の設例では769,300円÷6＝128,216円（1円未満切捨て）</li>
-<li><a href="https://laws.e-gov.go.jp/law/211AC0000000070#Mp-At_45">健康保険法 第45条</a>第1項（標準賞与額の決定）— e-Gov法令検索。賞与額の千円未満を切り捨てた額を標準賞与額とし、年度における標準賞与額の累計額が573万円を超えるときは、累計573万円に達するまでの額とする</li>
+<li>国税庁 タックスアンサー <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm">No.2523</a>「賞与に対する源泉徴収」— 月額表による例外計算（控除後賞与B、前月控除後給与P、月額表税額T、n＝6、計算期間6か月超ならn＝12）。前月給与なしはn×T(B÷n)、10倍超はn×{T(P＋B÷n)−T(P)}。<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2523.htm">No.2523</a>の設例では769,300円÷6＝128,216円（1円未満切捨て）</li>
+<li><a href="https://laws.e-gov.go.jp/law/211AC0000000070#Mp-At_45">健康保険法 第45条</a>第1項（標準賞与額の決定）— e-Gov法令検索。計算上の扱いは<a href="#jogen">標準賞与額の上限</a>を参照</li>
 <li><a href="https://laws.e-gov.go.jp/law/329AC0000000115#Mp-At_24_4">厚生年金保険法 第24条の4</a>第1項（標準賞与額の決定）／<a href="https://laws.e-gov.go.jp/law/502CO0000000246#Mp-At_2">厚生年金保険法の標準報酬月額の等級区分の改定等に関する政令（令和2年政令第246号）第2条</a> — 賞与の標準賞与額の上限を1か月につき150万円と定める</li>
 <li><a href="https://laws.e-gov.go.jp/law/344AC0000000084#Mp-At_11">労働保険の保険料の徴収等に関する法律 第11条</a>第1項 — 雇用保険料の課税ベースは「賃金総額」。賞与も実額のまま含まれ、標準賞与額の切り捨ても上限もない</li>
 <li><a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_321_5">地方税法 第321条の5</a>第1項（給与所得に係る特別徴収）— 特別徴収税額の「十二分の一の額を六月から翌年五月まで…毎月徴収」と定める（賞与からの徴収ではない）</li>
@@ -377,7 +377,7 @@
 <!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E3%83%9C%E3%83%BC%E3%83%8A%E3%82%B9%EF%BC%88%E8%B3%9E%E4%B8%8E%EF%BC%89%E3%81%AE%E9%A1%8D%E9%9D%A2%E3%81%8B%E3%82%89%E3%80%81%E7%A4%BE%E4%BC%9A%E4%BF%9D%E9%99%BA%E6%96%99%E3%81%A8%E6%BA%90%E6%B3%89%E6%89%80%E5%BE%97%E7%A8%8E%E3%82%92%E5%BC%95%E3%81%84%E3%81%9F%E6%89%8B%E5%8F%96%E3%82%8A%E3%82%92%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%80%82%E8%B3%9E%E4%B8%8E%E3%81%AE%E7%A8%8E%E7%8E%87%E3%81%AF%E5%8E%9F%E5%89%87%E3%81%A8%E3%81%97%E3%81%A6%E5%89%8D%E6%9C%88%E3%81%AE%E7%A4%BE%E4%BC%9A%E4%BF%9D%E9%99%BA%E6%96%99%E7%AD%89%E6%8E%A7%E9%99%A4%E5%BE%8C%E3%81%AE%E7%B5%A6%E4%B8%8E%E3%81%A8%E6%89%B6%E9%A4%8A%E8%A6%AA%E6%97%8F%E7%AD%89%E3%81%AE%E6%95%B0%E3%81%A7%E6%B1%BA%E3%81%BE%E3%82%8A%E3%80%81%E4%BD%8F%E6%B0%91%E7%A8%8E%E3%81%AF%E8%B3%9E%E4%B8%8E%E3%81%8B%E3%82%89%E5%A4%A9%E5%BC%95%E3%81%8D%E3%81%95%E3%82%8C%E3%81%BE%E3%81%9B%E3%82%93%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fbonus-tedori%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site" style="display:block">
-  料率・税額表の出典: 全国健康保険協会「都道府県毎の保険料率」<span id="src-note"></span>／厚生年金保険料率18.3%（日本年金機構）／雇用保険料率（厚生労働省）／国税庁「賞与に対する源泉徴収税額の算出率の表」<span id="src-shoyo"></span>。<br>
+  料率・税額表の出典: 全国健康保険協会「<a href="https://www.kyoukaikenpo.or.jp/about/business/insurance_rate/rate_prefectures/r08">都道府県毎の保険料率</a>」<span id="src-note"></span>／<a href="https://www.kyoukaikenpo.or.jp/assets/R8_13tokyo.pdf">厚生年金保険料率18.3%</a>（協会けんぽ保険料額表）／<a href="https://www.mhlw.go.jp/content/001692566.pdf">雇用保険料率</a>（厚生労働省）／国税庁「<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15-16.pdf">賞与に対する源泉徴収税額の算出率の表</a>」<span id="src-shoyo"></span>。<br>
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
