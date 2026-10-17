@@ -156,6 +156,7 @@ class JudgeModel(unittest.TestCase):
                 os.environ['KEIRI_ALLOW_ASTRA']='1'
                 theme_round.execute(str(w),'gpt-6-astra','p',d,d/'b.log')
                 theme_round.execute(str(w),'gpt-6.1-sol','p',d,d/'c.log')
+                theme_round.execute(str(w),'gpt-5.6-sol','p',d,d/'d.log')
             finally:
                 os.environ.pop('KEIRI_ALLOW_ASTRA',None)
                 if old is not None:os.environ['KEIRI_ALLOW_ASTRA']=old
@@ -163,5 +164,6 @@ class JudgeModel(unittest.TestCase):
             self.assertIn('-m gpt-6.1-sol',lines[0])   # 既定: 審査も sol
             self.assertIn('-m gpt-6-astra',lines[1])   # 明示したときだけ Astra
             self.assertIn('-m gpt-6.1-sol',lines[2])   # sol はそのまま
+            self.assertIn('-m gpt-6.1-sol',lines[3])   # 5.6 も 6.1 で動く（KEIRI_ALLOW_56 が無ければ）
 
 if __name__=='__main__':unittest.main()
