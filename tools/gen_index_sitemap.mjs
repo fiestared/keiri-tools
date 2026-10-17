@@ -72,6 +72,7 @@ const ORDER = [
   "kanpu-shinkoku",  // 還付申告とは — 還付申告 8,100/月・還付申告 必要書類 1,000/月（keyword_demand.py 2026-10-11 実測）。★被覆ゲート: 主題保有0・節保有8（期間の条文の読みは kakutei-shinkoku-itsumade・kakutei-shinkoku-kanpukin-itsu、書類の全体表は kakutei-shinkoku-hitsuyo-shorui に譲りリンク）。核は ①年分ごとの提出できる期間の早見表（国税庁の質疑応答 令和2年分→令和7年12月31日 と同じ数え方）②還付申告に絞った添付・提示・保存の表 ③年末調整だけの年は還付申告、申告済みの年は更正の請求。消費税の還付は shohizei-kanpu
   "kakutei-shinkoku-kanpukin-itsu",  // 確定申告の還付金はいつ — 確定申告 還付金 いつ 22,200/月（keyword_demand.py 2026-09-08 実測。Bing半年428）。★被覆は nenmatsu-chosei-kanpukin（会社が12月給与で戻す還付）・shohizei-kanpu（消費税・52条の月末起算）と役割分担、kakutei-shinkoku-itsumade は本文に「振り込」0回で還付時期を未保有だった。核は ①e-Tax3週間/繁忙期の書面1〜1.5か月（Q41）②処理状況の3表示と確認可能時期 ③屋号口座・ゆうちょ記号番号・公金受取口座の丸印 ④所法138条3項の起算日は期限内→期限翌日・期限後→提出日翌日＝期限前の支払決定なら期間ゼロ、5年遡りに利息は付かない ⑤通則法120条の切捨てで大半の還付に加算金は付かない（設例A〜E・令和8年1.3%）⑥138条2項の支払者未納・4項の充当。
   "taishoku-yukyu-shoka",  // 退職時の有給消化 — 退職 有給消化 14,800/月（keyword_demand.py 2026-09-08 実測。Bing半年451）。★被覆は taishokutodoke-kakikata と part-yukyu が節保有だったので役割分け＝退職届は民法627条、買取は yukyu-kaitori、本記事は退職時の消化の全体。核は ①39条5項の「他の時季」は退職日の後ろに無い ②基収5554号の原文は「解雇予定日」（大阪府 労働相談資料29で確認）③退職日10/31と10/30で本人42,570円・労使85,140円が動く（健保156条3項・厚年19条1項・81条2項）④健保167条・厚年84条の括弧書き＝最終給与から2か月分控除 ⑤13条・92条で消化禁止条項は無効 ⑥附則136条は訓示で、減額の無効は判例。
+  "jukyo-kakuho-kyufukin", // Google11,840/月（2026-10-17 MF1需要実測）
   "kakutei-shinkoku-ikurakara",  // 確定申告はいくらから — 確定申告 いくらから 12,100/月（Bing半年1,024）。副業20万は fukugyo-20man に譲り、本記事は120条1項の「所得の合計＞所得控除の合計」を物差しに5ケースで判定。核は ①令和8年分の基礎控除は48万でも95万でもなく62万＋42万＝104万（所法86条・措法41条の16の2 の20261201版。国税庁No.1199は確認時点で95万のまま）②境目は基礎控除ではなく所得控除の合計 ③青色65万で申告不要は措法25条の2第6項で循環 ④令和8年分は勤労学生控除が所得税に効かない（89万＜104万）⑤住民税は地方税法317条の2で20万の例外なし ⑥報酬の源泉は100万円超が(A−100万)×20.42%＋102,100円＝200万で306,300円 ⑦65歳未満の年金は収入1,753,334円が境目（35条4項1号の60万保障は収入130万まで）。
   "spot-work-romu",  // スポットワークの労務と経理 — スポットワーク 8,100/月（Bing半年1,716）。被覆は koyou-hoken-kanyu-joken の日雇FAQ と gensen-zeigakuhyo-mikata の丙欄節のみで、両方へリンクで譲る。核は ①雇用主は仲介事業者でなく受け入れ先（厚労省 2025-07-04 リーフレット＝応募時点で労働契約成立・キャンセルは26条休業手当）②労災は初日から全員 ③健保3条1項2号ロ/厚年12条1号の「2か月以内」が R4.10.1 改正で「見込まれないもの」に変わった条文比較＋3条1項9号・12条5号の短時間除外 ④雇用保険印紙176/146/96円は折半、一般保険料も別に要る ⑤令和8年分丙欄は9,800円未満0円・10,000円で乙欄と1,792円差 ⑥源泉徴収票は令和8年分から中途退職30万円以下を除く全員（No.7411。50万円超は令和8年12月31日以前の提出）⑦賃金台帳は様式21号・労働者名簿は日雇不要（107条）。
   "haigyo-todoke",  // 廃業届 8,100/月（2026-10-16 実測 google 6,480＋yahoo 1,620。被覆: hojin-nari の1節・kaigyo-todoke のFAQ1問だけ＝記入欄ごとの書き方と一緒に出す届出に限定）
@@ -759,6 +760,7 @@ const CATEGORIES = [
     name: "健康保険・雇用保険・労災保険の給付",
     desc: "医療費が高額になったとき、病気・出産・育児・家族の介護で働けないとき、通勤中にケガをしたとき、失業したとき、60歳以後に賃金が下がった状態で働き続けるときに受け取れるお金。",
     slugs: [
+      "jukyo-kakuho-kyufukin",
       "kogaku-ryoyohi", "shobyo-teate-kin", "shobyo-teate-kin-shinseisho", "shussan-teate-kin", "shussan-ikuji-ichijikin",
       "ikuji-kyugyo-kyufukin", "ikuji-jitan-kyufukin", "kaigo-kyugyo-kyufukin", "tsukin-saigai", "rosai-kyugyo-hosho", "shitsugyo-hoken-keisan",
       "saishushoku-teate", "rishokuhyo", "kounenrei-koyou-keizoku", "kounenrei-kyushokusha-kyufukin", "kyoiku-kunren-kyufukin",
