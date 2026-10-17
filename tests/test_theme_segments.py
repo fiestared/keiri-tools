@@ -295,6 +295,15 @@ class QuoteRefFormats(unittest.TestCase):
             self.assertTrue(qp(run,'corpus/d.csv:2','2026/09/30,13022'))                           # Shift_JIS の CSV（2026-10-03）
             self.assertTrue(qp(run,'corpus/d.csv:1','基準日,基準価額(円)'))
             self.assertFalse(qp(run,'corpus/d.csv:2','2026/09/30,99999'))                          # CSV でも逐語でなければ不成立
+            (run/'corpus/source-2').write_bytes('\ufeff<html><p>基準価額は13,022円です。</p></html>\r\n'.encode('utf-8'))
+            (run/'corpus/source-6.raw').write_bytes('2026/09/30,13022\r\n'.encode('cp932'))
+            (run/'corpus/fang').write_bytes(b'%PDF-1.7\n')
+            (run/'corpus/bin.raw').write_bytes(b'\x00\x01')
+            self.assertTrue(qp(run,'corpus/source-2:1','基準価額は13,022円です。'))                  # 拡張子なしの取得 HTML（2026-10-17 rg23）
+            self.assertTrue(qp(run,'corpus/source-6.raw:1','2026/09/30,13022'))                    # .raw の Shift_JIS CSV（2026-10-17 rg21）
+            self.assertFalse(qp(run,'corpus/source-2:1','基準価額は99,999円です。'))                 # 拡張子なしでも逐語でなければ不成立
+            self.assertFalse(qp(run,'corpus/fang:1','PDF'))                                         # 拡張子なしの PDF は不成立
+            self.assertFalse(qp(run,'corpus/bin.raw:1','x'))                                        # NUL を含む .raw は不成立
             import json as _j
             (run/'corpus/law.json').write_text(_j.dumps({'law':{'Sentence':['市町村は指定しなければならない。','この場合においては通知する。']}},ensure_ascii=False))
             self.assertTrue(qp(run,'corpus/law.json:1','指定しなければならない。この場合において'))   # JSON の文の区切りをまたぐ引用（e-Gov・2026-10-04）
