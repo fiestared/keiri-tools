@@ -225,9 +225,9 @@
   </div>
 
   <div id="akiya-block" style="display:none;margin-top:10px">
+      <span id="sozokuninSu-hint" class="hint">人数要件は<a href="#akiya">空き家特例の解説</a>で確認してください</span>
     <label for="sozokuninSu">その家屋・敷地を相続・遺贈で取得した相続人の数</label>
     <input type="number" id="sozokuninSu" min="1" max="20" inputmode="numeric" value="1" aria-describedby="sozokuninSu-hint">
-      <span id="sozokuninSu-hint" class="hint">人数要件は<a href="#akiya">空き家特例の解説</a>で確認してください</span>
   </div>
 
   <button id="calc" style="margin-top:16px" class="primary">税額を計算する</button>
@@ -562,7 +562,7 @@ $("calc").addEventListener("click", async () => {
   }
   if (r.akiyaBlocked === "taika") {
     html += `<div class="note" id="akiya-block-note"><b>空き家特例は使えません。</b>
-      譲渡対価が1億円を超えているためです（措置法35条3項）。</div>`;
+      譲渡対価が1億円を超えているためです（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_35">措置法35条3項</a>）。</div>`;
   } else if (r.akiyaBlocked === "kigen") {
     html += `<div class="note" id="akiya-block-note"><b>空き家特例は使えません。</b>
       この特例の適用期限は${D.tokubetsu_kojo.akiya.kigen_label}で、それより後の譲渡だからです。
