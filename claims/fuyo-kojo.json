@@ -79,8 +79,7 @@
       ],
       "covers": [
         "s-c00c80e07ae02c50fa98-1",
-        "s-1eb8734b0c80372a3f59-1",
-        "s-bf3281c7551fae4dd5fc-1"
+        "s-1eb8734b0c80372a3f59-1"
       ]
     },
     {
@@ -2409,9 +2408,7 @@
       "source_quote": "ロ 徴収税額の合計額が年調年税額よりも多いときは、その差額分だけ納め過ぎていたことになります\n     から、その差額（過納額）は、その過納となった人に還付します。\n     これに対し、徴収税額の合計額が年調年税額よりも少ないときは、その差額だけ納め足りないこと\n     になりますから、その差額（不足額）はその不足となった人から徴収します。",
       "source_scope": "引用は年税額と徴収額の比較という関連原則のみ。上記の数値・計算例や申告期限を裏付ける引用ではない。",
       "exceptions": "正本外・未確認。住民税の扶養控除額・所得割税率・調整控除と、所得税及び復興特別所得税を含む試算条件を示す資料。正本では所得税の控除額は確認できるが、記載された合計節税額全体は照合できない。",
-      "covers": [
-        "s-67e144f9cc90cbf1cc7c-1"
-      ],
+      "covers": [],
       "result": "out_of_corpus",
       "needed_source": "住民税の扶養控除額・所得割税率・調整控除と、所得税及び復興特別所得税を含む試算条件を示す資料。正本では所得税の控除額は確認できるが、記載された合計節税額全体は照合できない。",
       "original_segment": "s-070040b76fcb3be5969b-1"
@@ -2960,8 +2957,7 @@
       "covers": [
         "s-0b12b5bafd8ee91fd1e1-1",
         "s-076d6a10f5e284918d79-1",
-        "s-31fb78d9c479fb6b0f52-1",
-        "s-67e144f9cc90cbf1cc7c-1"
+        "s-31fb78d9c479fb6b0f52-1"
       ]
     },
     {
@@ -3759,9 +3755,7 @@
         "税額控除",
         "概算"
       ],
-      "covers": [
-        "s-984d1e78765f366cd49d-1"
-      ],
+      "covers": [],
       "review_status": "author_checked; 新snapshotの独立照合待ち",
       "derived": true,
       "calc": "令和8年分: 所得税(5000000×0.2−427500)−(4370000×0.2−427500)=126000。復興税floor(572500×0.021)−floor(446500×0.021)=2646。住民税概算450000×0.1=45000。合計173646円。"
@@ -4301,6 +4295,30 @@
         "s-ece139d4ebbcdc3448ef-1"
       ],
       "review_status": "author_checked_pending_independent_review"
+    },
+    {
+      "id": "rg18f9-s-70906ec393824bf2d8f4-1",
+      "text": "復興特別所得税の減少額は、控除前後それぞれの復興特別所得税額の1円未満を切り捨ててから、その差を求めます。",
+      "covers": [
+        "s-70906ec393824bf2d8f4-1"
+      ],
+      "scope": "令和8年分の総合課税。分離課税・高額所得加算特例は対象外。",
+      "exceptions": [
+        "税額控除等の適用で税額差が異なる。",
+        "復興特別所得税額の1円未満を控除前後それぞれ切り捨てる。納付段階の端数処理とは異なる。"
+      ],
+      "review_status": "author_checked_pending_independent_review",
+      "numbers": [
+        "1円未満"
+      ],
+      "applies": "令和8年分の復興特別所得税額の差",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/03/order4/3-4_45.htm",
+      "source_quote": "基準所得税額に2.1％の税率を乗じて計算した金額。1円未満の端数があるときは、その端数を切り捨てます。",
+      "corpus_ref": "segment-review-9/corpus/r8-link-12.txt:12-26",
+      "must_with": [
+        "復興特別所得税",
+        "切り捨て"
+      ]
     }
   ],
   "absolutes": [
@@ -4610,13 +4628,6 @@
       "review_ref": "segment-review-3/segment-adjudication.json#s-4e7fee61a77e4712b670-1"
     },
     {
-      "id": "s-bf3281c7551fae4dd5fc-1",
-      "text_hash": "fa1bc23e9dda58a18943",
-      "result": "out_of_corpus",
-      "needed_source": "このツールにおける扶養控除前後の税額と端数処理の計算仕様。正本の年末調整の合計税額処理だけでは、表示用の差額計算を照合できない。",
-      "review_ref": "segment-review-3/segment-adjudication.json#s-bf3281c7551fae4dd5fc-1"
-    },
-    {
       "id": "s-266722c45cb1f5a202cc-1",
       "text_hash": "41ff57e5b01d9aa1b4ee",
       "result": "out_of_corpus",
@@ -4687,39 +4698,11 @@
       "review_ref": "segment-review-5/segment-adjudication.json#s-be7e4697692bdee018c6-1"
     },
     {
-      "id": "s-2e07f13a1c0547da97bf-1",
-      "result": "out_of_corpus",
-      "needed_source": "計算機の実装及び動作検証。",
-      "reason": "正本は税制資料であり、この単位の筆者情報・画面機能・入力案内自体を直接は照合できない。wrong/unclear の所見はなく、裏付け不足を修正要求にはしない。",
-      "review_ref": "segment-review-5/segment-adjudication.json#s-2e07f13a1c0547da97bf-1"
-    },
-    {
       "id": "s-2f33dd4442d5f2bdd6a8-1",
       "result": "out_of_corpus",
       "needed_source": "計算機が一律10%を使うことの実装仕様。",
       "reason": "正本は税制資料であり、この単位の筆者情報・画面機能・入力案内自体を直接は照合できない。wrong/unclear の所見はなく、裏付け不足を修正要求にはしない。",
       "review_ref": "segment-review-5/segment-adjudication.json#s-2f33dd4442d5f2bdd6a8-1"
-    },
-    {
-      "id": "s-fc01fc489470b5181c42-1",
-      "result": "out_of_corpus",
-      "needed_source": "当該シミュレーターで扶養親族1人の税負担減少額を算出できることを確認する仕様・実行検証資料。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-fc01fc489470b5181c42-1"
-    },
-    {
-      "id": "s-be7aa9205b62b54953f3-1",
-      "result": "out_of_corpus",
-      "needed_source": "当該シミュレーターの機能仕様・実行検証資料。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-be7aa9205b62b54953f3-1"
-    },
-    {
-      "id": "s-c5fd6d82075b1303d557-1",
-      "result": "out_of_corpus",
-      "needed_source": "当該ページのシミュレーターとしての機能仕様資料。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-c5fd6d82075b1303d557-1"
     },
     {
       "id": "s-d12e0285f5d556e87357-1",
@@ -4736,13 +4719,6 @@
       "review_ref": "segment-review-7/segment-adjudication.json#s-05314cbb264a139cb64f-1"
     },
     {
-      "id": "s-334220e4b41c156035ae-1",
-      "result": "out_of_corpus",
-      "needed_source": "Masahiro Yasuの経歴・職業・文責を確認できる資料。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-334220e4b41c156035ae-1"
-    },
-    {
       "id": "s-6e360f625fc0df0deb29-1",
       "result": "out_of_corpus",
       "needed_source": "当該ツールの計算仕様・年間節税額の実行検証資料。",
@@ -4750,74 +4726,11 @@
       "review_ref": "segment-review-7/segment-adjudication.json#s-6e360f625fc0df0deb29-1"
     },
     {
-      "id": "s-32609cc29bd37f68e376-1",
-      "result": "out_of_corpus",
-      "needed_source": "当該ツールの入力仕様資料。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-32609cc29bd37f68e376-1"
-    },
-    {
-      "id": "s-8d86f55b00ad616f61f9-1",
-      "result": "out_of_corpus",
-      "needed_source": "確定申告書の様式と課税される所得金額欄の記載要領。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-8d86f55b00ad616f61f9-1"
-    },
-    {
       "id": "s-1eb8734b0c80372a3f59-1",
       "result": "out_of_corpus",
       "needed_source": "当該ツールの入力仕様および扶養控除前後の課税所得・端数処理を説明した資料。",
       "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
       "review_ref": "segment-review-7/segment-adjudication.json#s-1eb8734b0c80372a3f59-1"
-    },
-    {
-      "id": "s-29219e45d5b0583865b8-1",
-      "result": "out_of_corpus",
-      "needed_source": "このツールが所得税と住民税を分けて計算することを規定する仕様書又は実装の正本。税制資料はツールの動作を記載していない。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-29219e45d5b0583865b8-1"
-    },
-    {
-      "id": "s-d8fedc9fb7c6f10f0a6e-1",
-      "result": "out_of_corpus",
-      "needed_source": "このツールの前提欄と住民税の計算仕様を規定する正本。正本の税制資料に、このサイトの説明配置はない。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-d8fedc9fb7c6f10f0a6e-1"
-    },
-    {
-      "id": "s-157aa655f77a71c18819-1",
-      "result": "out_of_corpus",
-      "needed_source": "ツールが反映しない項目の全件を定める計算仕様書。調整控除等の制度の存在だけでは、実装で除外する項目の列挙は確認できない。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-157aa655f77a71c18819-1"
-    },
-    {
-      "id": "s-f50e5067eeb75af18950-1",
-      "result": "out_of_corpus",
-      "needed_source": "このツールの表示が税額本体の差額であることを定めた計算・表示仕様の正本。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-f50e5067eeb75af18950-1"
-    },
-    {
-      "id": "s-08c4a1b50afbea4d4dce-1",
-      "result": "out_of_corpus",
-      "needed_source": "当該ツールで特定親族特別控除を計算対象外とすることを定めた実装仕様の正本。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-08c4a1b50afbea4d4dce-1"
-    },
-    {
-      "id": "s-36a8c2e92a2f0a27c72c-1",
-      "result": "out_of_corpus",
-      "needed_source": "リンク先解説の掲載内容を確認するためのサイト記事の正本。税制資料ではこのサイトの解説への収録を確認できない。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-36a8c2e92a2f0a27c72c-1"
-    },
-    {
-      "id": "s-e05296f2f03a4f593094-1",
-      "result": "out_of_corpus",
-      "needed_source": "扶養控除の申告漏れについての還付申告の可否、5年間の期間と起算日、既に申告済みの場合の更正の請求との区別を説明する国税庁資料。今回の正本に該当説明なし。",
-      "reason": "corpus_desc.md及び関連税制資料を確認したが、当該ツールの入力・出力仕様、サイト内の掲載内容、人物経歴又は還付請求制度の当該主張を直接照合する正本がない。全モデルにwrong/unclearの指摘がないため、裏付け不足だけで未解決とはせず残す。",
-      "review_ref": "segment-review-7/segment-adjudication.json#s-e05296f2f03a4f593094-1"
     },
     {
       "id": "s-b51936724310d5350b56-1",
@@ -4842,6 +4755,108 @@
       "result": "out_of_corpus",
       "needed_source": "こども家庭庁の児童手当制度改正資料（適用日・対象年齢・受給要件）。",
       "review_ref": "segment-review-8/segment-adjudication.json#s-cf6a223d0d4bbe4fb13e-1"
+    },
+    {
+      "id": "s-fc01fc489470b5181c42-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該シミュレーターの名称・機能仕様・計算結果の検証資料。正本は税制度の資料であり、この製品が計算できることを裏付ける資料ではない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-fc01fc489470b5181c42-1"
+    },
+    {
+      "id": "s-be7aa9205b62b54953f3-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該シミュレーターの名称・機能仕様・計算結果の検証資料。正本は税制度の資料であり、この製品が計算できることを裏付ける資料ではない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-be7aa9205b62b54953f3-1"
+    },
+    {
+      "id": "s-c5fd6d82075b1303d557-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該シミュレーターの名称・機能仕様・計算結果の検証資料。正本は税制度の資料であり、この製品が計算できることを裏付ける資料ではない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-c5fd6d82075b1303d557-1"
+    },
+    {
+      "id": "s-334220e4b41c156035ae-1",
+      "result": "out_of_corpus",
+      "needed_source": "Masahiro Yasu氏の職歴・事業経営・経理実務経験を確認できる資料。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-334220e4b41c156035ae-1"
+    },
+    {
+      "id": "s-32609cc29bd37f68e376-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該計算機の入力仕様、および確定申告書の「課税される所得金額」欄の記載要領。正本の所得税率表だけでは製品の入力方法や申告書の欄を検証できない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-32609cc29bd37f68e376-1"
+    },
+    {
+      "id": "s-8d86f55b00ad616f61f9-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該計算機の入力仕様、および確定申告書の「課税される所得金額」欄の記載要領。正本の所得税率表だけでは製品の入力方法や申告書の欄を検証できない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-8d86f55b00ad616f61f9-1"
+    },
+    {
+      "id": "s-29219e45d5b0583865b8-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該ツールが所得税と住民税を分けて計算することを検証する仕様または実装・実行記録。正本は税法資料で、当該ツールの動作を記述していない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-29219e45d5b0583865b8-1"
+    },
+    {
+      "id": "s-d8fedc9fb7c6f10f0a6e-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該ツールの前提節に何がまとめられているかというサイト内部の説明であり、正本には当該ツールの仕様・記載内容がない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-d8fedc9fb7c6f10f0a6e-1"
+    },
+    {
+      "id": "s-0e3fd4c06aa52f201f2a-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該ツールまたは案内先計算機の実装・計算仕様・動作検証記録。税法資料からツールがその処理を実施または省略することは検証できない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-0e3fd4c06aa52f201f2a-1"
+    },
+    {
+      "id": "s-2e07f13a1c0547da97bf-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該ツールまたは案内先計算機の実装・計算仕様・動作検証記録。税法資料からツールがその処理を実施または省略することは検証できない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-2e07f13a1c0547da97bf-1"
+    },
+    {
+      "id": "s-3889162edd9f4abde6da-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該ツールまたは案内先計算機の実装・計算仕様・動作検証記録。税法資料からツールがその処理を実施または省略することは検証できない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-3889162edd9f4abde6da-1"
+    },
+    {
+      "id": "s-157aa655f77a71c18819-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該ツールまたは案内先計算機の実装・計算仕様・動作検証記録。税法資料からツールがその処理を実施または省略することは検証できない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-157aa655f77a71c18819-1"
+    },
+    {
+      "id": "s-f50e5067eeb75af18950-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該ツールの表示が税額本体の差額であることを検証する表示仕様・実装または実行記録。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-f50e5067eeb75af18950-1"
+    },
+    {
+      "id": "s-08c4a1b50afbea4d4dce-1",
+      "result": "out_of_corpus",
+      "needed_source": "当該ツールが扶養控除のみ計算し特定親族特別控除を計算しないという実装・仕様。正本に当該サイトの仕様・掲載内容を示す資料がない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-08c4a1b50afbea4d4dce-1"
+    },
+    {
+      "id": "s-36a8c2e92a2f0a27c72c-1",
+      "result": "out_of_corpus",
+      "needed_source": "リンク先解説に段階別控除額が掲載されているというサイト内部の内容。正本に当該サイトの仕様・掲載内容を示す資料がない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-36a8c2e92a2f0a27c72c-1"
+    },
+    {
+      "id": "s-e97634c7e76d1bf0e87c-1",
+      "result": "out_of_corpus",
+      "needed_source": "案内先の年末調整計算機が年間の精算額を確認できる機能を備えることを検証する仕様・実装・実行記録。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-e97634c7e76d1bf0e87c-1"
+    },
+    {
+      "id": "s-e05296f2f03a4f593094-1",
+      "result": "out_of_corpus",
+      "needed_source": "申告漏れの扶養控除を還付申告で取り戻す手続、翌年からの5年期限、申告済みの場合の更正の請求を定める資料。正本のr8-qa.txt:498-531は国外転出時の改正適用という別条件であり一般期限の根拠にできない。",
+      "review_ref": "segment-review-9/segment-adjudication.json#s-e05296f2f03a4f593094-1"
     }
   ],
   "superseded_verified": [
