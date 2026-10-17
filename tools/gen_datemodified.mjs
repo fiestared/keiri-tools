@@ -170,13 +170,36 @@ if (BULK_WORKTREE && !CHECK) {
   console.log('     「今日更新」を焼きません。コミット済み履歴の日付を使います（偽の鮮度信号を出さないため）。');
 }
 
-let changed = 0, skipped = 0, noPub = 0;
+let changed = 0, skipped = 0, noPub = 0, tools = 0;
+function isTool(rel, html) {
+  if (/^docs\/(embed|hojokin)\//.test(rel)) return false;
+  return /assets\/[a-z0-9_]+_core\.js/.test(html);
+}
 const changedList = [];
 for (const fp of files) {
   const rel = relative(ROOT, fp);
   let s = readFileSync(fp, 'utf8');
-  if (!s.includes('"dateModified"')) { skipped++; continue; }
   const pub = s.match(/"datePublished"\s*:\s*"(\d{4}-\d{2}-\d{2})"/)?.[1];
+  // ★ツール（公開日を持たず、計算コア *_core.js を読むページ）も、本文が変わったら更新日を進める（2026-10-17 Masahiro「更新日変わるようにして、ツール」）。
+  //   それまで datePublished 無しは丸ごと対象外で、/senpou-futan/ は 10-17 に本文を追記しても「更新日: 2026年9月29日」のままだった。
+  //   公開日が無いので「公開日へ丸める」は使えない → 今の日付より戻さない（一括コミットで直した日付を古い履歴で巻き戻さない）。
+  //   embed/（埋め込み用の写し）と hojokin/（一覧は1日3回の自動取り込み。可視の日付は「説明の更新日」）は対象外のまま。
+  if (!pub && isTool(rel, s)) {
+    const cur = s.match(/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})"/)?.[1]
+      ?? s.match(/<p class="article-meta">\s*更新日:\s*<time datetime="(\d{4}-\d{2}-\d{2})"/)?.[1];
+    if (!cur) { noPub++; continue; }
+    const hist = dirty.has(rel) ? todayJST() : lastContentCommit.get(rel);
+    const eff = verifiedContentDate(rel, hist && hist > cur ? hist : cur);
+    let out = s.replace(/("dateModified"\s*:\s*")\d{4}-\d{2}-\d{2}(")/, `$1${eff}$2`)
+      .replace(/(<p class="article-meta">\s*更新日:\s*)<time datetime="\d{4}-\d{2}-\d{2}">[^<]*<\/time>/, `$1<time datetime="${eff}">${ja(eff)}</time>`);
+    if (out !== s) {
+      changed++; changedList.push(`${rel.replace('docs/', '')} → ${eff}（ツール）`);
+      if (!CHECK && !DRY) writeFileSync(fp, out);
+    }
+    tools++;
+    continue;
+  }
+  if (!s.includes('"dateModified"')) { skipped++; continue; }
   if (!pub) { noPub++; continue; }
 
   const date = dirty.has(rel) ? todayJST() : (lastContentCommit.get(rel) ?? pub);
@@ -238,5 +261,5 @@ if (CHECK && changed) {
   process.exit(1);
 }
 console.log(`${CHECK ? '✓ 更新日は最新' : DRY ? '(dry)' : '✓'} 対象${files.length - skipped}本 / ${DRY || CHECK ? '要更新' : '更新'} ${changed}本` +
-  (noPub ? ` / datePublished無し ${noPub}本` : ''));
+  (tools ? ` / ツール${tools}本` : '') + (noPub ? ` / datePublished無し ${noPub}本` : ''));
 if (DRY) for (const l of changedList) console.log(`   ${l}`);
