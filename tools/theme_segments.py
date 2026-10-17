@@ -149,7 +149,13 @@ def quote_present(run,ref,quote):
             c=candidate.resolve()
             if any(c.is_relative_to(base/folder) for folder in ('corpus','t1-corpus')) and c.is_file():path=c;break
         # 2026-10-03: 投信の基準価額 CSV（楽天）・SBI の XML は Shift_JIS。.csv を許さず UTF-8 でしか読まなかったので、正しい引用 33 件が不成立になった（write-2026-10-03-fin）
-        if path is None or path.suffix.lower() not in ('.txt','.md','.htm','.html','.xml','.json','.csv','.tsv'):return False
+        # 2026-10-17: 取得した生のファイル（拡張子なしの HTML・.raw の CSV）は拡張子では弾かず、中身が文字（NUL を含まない）なら読む。
+        #   弾いていたため、正しい逐語の引用 14 単位が不成立になり照合が止まった（write-2026-10-16-rg21・rg23）。画像・PDF は従来どおり不成立
+        if path is None:return False
+        if path.suffix.lower() not in ('.txt','.md','.htm','.html','.xml','.json','.csv','.tsv'):
+            if path.suffix.lower() not in ('','.raw'):return False
+            with open(path,'rb') as fh:head=fh.read(8192)
+            if b'\x00' in head or head.startswith(b'%PDF'):return False
         loaded=_corpus_text(str(path),path.stat().st_mtime_ns)
         if loaded is None:return False
         nlines,texts=loaded
