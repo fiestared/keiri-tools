@@ -7,14 +7,14 @@
 <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>源泉徴収税額表【令和8年分】給与・賞与の計算機と報酬の区分別計算</title>
-<meta name="description" content="給与・賞与・報酬の源泉徴収税額を、国税庁の税額表（令和8年分）で自動計算します。給与は月額表の甲欄・乙欄と扶養親族等の数、障害者・寡婦・ひとり親の加算に対応。賞与は算出率の表、報酬・料金は原稿料・士業などの区分別に計算できます。無料・登録不要。">
+<title>源泉徴収税額表【令和8年分】月額表の甲欄・乙欄と自動計算</title>
+<meta name="description" content="令和8年分の源泉徴収税額表（月額表）の代表行と公式PDFを確認でき、給与の甲欄・乙欄、扶養親族等の数で税額を自動計算。賞与と所定の報酬・料金の計算にも対応。無料・登録不要。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/gensen-choshu/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="源泉徴収税額表【令和8年分】給与・賞与の計算機と報酬の区分別計算">
-<meta property="og:description" content="給与・賞与・報酬の源泉徴収税額を、国税庁の税額表（令和8年分）で自動計算します。給与は月額表の甲欄・乙欄と扶養親族等の数、障害者・寡婦・ひとり親の加算に対応。賞与は算出率の表、報酬・料金は原稿料・士業などの区分別に計算できます。無料・登録不要。">
+<meta property="og:title" content="源泉徴収税額表【令和8年分】月額表の甲欄・乙欄と自動計算">
+<meta property="og:description" content="令和8年分の源泉徴収税額表（月額表）の代表行と公式PDFを確認でき、給与の甲欄・乙欄、扶養親族等の数で税額を自動計算。賞与と所定の報酬・料金の計算にも対応。無料・登録不要。">
 <meta property="og:url" content="https://keiri-tools.com/gensen-choshu/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-07-13",
-      "dateModified": "2026-10-12",
+      "dateModified": "2026-10-18",
       "name": "源泉徴収税額 計算機",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -158,8 +158,8 @@
 <nav class="breadcrumb"><a href="../">ホーム</a> › 源泉徴収税額 計算機</nav>
 
 <section class="hero">
-  <h1>源泉徴収税額 計算機</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time><span class="keep-phrase">（更新日: <time datetime="2026-10-12">2026年10月12日</time>）</span></p>
+  <h1>源泉徴収税額表<span class="keep-phrase">（令和8年分）</span>と計算機</h1>
+  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time><span class="keep-phrase">（更新日: <time datetime="2026-10-18">2026年10月18日</time>）</span></p>
   <p><b>給与・賞与・報酬の源泉徴収税額を、国税庁の税額表（令和8年分）で計算します。</b>月払給与は月額表、賞与は算出率の表か月額表、報酬・料金は区分別の式を使います。PDFの表を目で追う必要はありません。</p>
 </section>
 
@@ -312,6 +312,17 @@
 <section class="faq">
   <h2 id="tool-section-1">給与の源泉徴収税額の計算方法</h2>
 
+  <h3 id="monthly-sample">月額表の代表行</h3>
+  <p data-review-context="before-table">令和8年分の月額表から抜粋した、居住者の月払給与について、社会保険料等控除後の金額に対応する税額です。甲欄は扶養控除等申告書の提出がある人、乙欄は提出がない人に使います。甲欄の人数は障害者等の加算を含む表参照人数で、計算機に入力する基本人数とは異なります（<a href="#fuyo-kazoekata">人数と加算の数え方</a>）。</p>
+  <div class="scroll-wrap"><table id="monthly-sample-table">
+    <thead><tr><th scope="col">その月の社会保険料等控除後の給与等の金額</th><th scope="col" class="num">甲欄・0人</th><th scope="col" class="num">甲欄・1人</th><th scope="col" class="num">乙欄</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">105,000円以上107,000円未満</th><td class="num"><span class="numeric-token">170円</span></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">3,800円</span></td></tr>
+      <tr><th scope="row">107,000円以上109,000円未満</th><td class="num"><span class="numeric-token">280円</span></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">3,800円</span></td></tr>
+      <tr><th scope="row">119,000円以上121,000円未満</th><td class="num"><span class="numeric-token">890円</span></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">4,300円</span></td></tr>
+    </tbody>
+  </table></div>
+
   <h3>給与は税額表の金額・率・算式で計算します</h3>
   <p>月払給与は、<b>社会保険料等控除後の給与額と扶養親族等の数</b>から、国税庁の<b>給与所得の源泉徴収税額表（月額表）</b>で税額を求めます。</p>
   <ul>
@@ -321,6 +332,19 @@
   <p>上の計算機は、この表（令和8年分・231行）を機械的に引いています。</p>
 
 <a class="tool-cta" href="../column/gensen-zeigakuhyo-mikata/">源泉徴収税額表【令和8年分】月額表の早見表と見方<span>105,000円から740,000円まで全231区分の表そのものを見る。甲欄・乙欄と「扶養親族等の数」の数え方も。</span></a>
+
+  <h3 id="official-pdfs">公式PDFを開く（月額・日額・賞与）</h3>
+  <p data-review-context="before-table">令和8年分の国税庁の公式PDFです。居住者に支払う給与・賞与について、支払方法に合う表を確認できます。</p>
+  <table id="official-pdf-table">
+    <thead><tr><th scope="col">資料</th><th scope="col">使う場面</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf">月額表</a></th><td>月払い・半月ごと・10日ごと・月の整数倍の期間ごとの給与。</td></tr>
+      <tr><th scope="row"><a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/08-14.pdf">日額表</a></th><td>日払い・週払い・日割の給与。所定の日雇賃金は丙欄を使います（条件は下の注）。本計算機は日額表の計算に対応していません。</td></tr>
+      <tr><th scope="row"><a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15-16.pdf">賞与の算出率の表</a></th><td>賞与。<a href="#shoyo-getsugaku">月額表を使う例外</a>も確認してください。</td></tr>
+    </tbody>
+  </table>
+  <p class="hint">令和8年分の日額表の丙欄で扱う日雇賃金は、日々雇い入れられる人が、労働した日・時間で算定され、働いた日ごとに受ける給与等です（別の日に支払うものも含みます）。同じ支払者から継続して2か月を超えて支払われる場合、その2か月を超える期間の給与等は、この日雇賃金に含まれません。</p>
+  <p class="hint">出典：国税庁「<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/01.htm">源泉徴収税額表</a>」「<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/19-22.pdf">給与所得の源泉徴収税額の求め方</a>」。</p>
 
   <h3>甲欄と乙欄の違い</h3>
   <p>月払給与では、従業員から「<b>給与所得者の扶養控除等（異動）申告書</b>」の提出を受けていれば<b>甲欄</b>、受けていなければ<b>乙欄</b>を使います。乙欄は税額がかなり高くなります（掛け持ち勤務の「従たる勤務先」が典型です）。提出を受けているのに乙欄で引くと、過大に天引きするおそれがあります。</p>
@@ -457,7 +481,7 @@
 <h2>関連する解説</h2>
 <!--rel:S--><ul class="rel-list"><li><a href="../column/gensen-kojo-taisho-haigusha/">源泉控除対象配偶者とは — 控除対象配偶者との違いと、扶養控除等申告書・税額表での扱い</a><span class="rel-desc">源泉控除対象配偶者の定義と、控除対象配偶者・同一生計配偶者との違い。扶養控除等申告書・税額表・年末調整での扱い。</span></li><li><a href="../column/spot-work-romu/">スポットワークの労務と経理｜応募で契約成立・労災は初日・丙欄・仕訳【令和8年】</a><span class="rel-desc">スポットワーク（単発バイトのマッチング）で働く人の使用者は、仲介事業者ではなく受け入れ先の会社です。応募で労働契約が成立し、労災は初日から適</span></li><li><a href="../column/kakutei-shinkoku-zeirishi-hiyo/">確定申告を税理士に依頼する費用｜相場の決まり方と源泉徴収10.21%</a><span class="rel-desc">確定申告の税理士費用に法定の料金表はありません。2002年の報酬規定廃止後、費用は記帳・取引数・消費税・申告の種類の4要素で決まります。個人</span></li><li><a href="../column/gyomuitaku-kakutei-shinkoku/">業務委託の確定申告【令和8年分】源泉徴収の対象と税率・所得区分</a><span class="rel-desc">業務委託の報酬は、事業所得か雑所得として自分で所得を計算し、確定申告が必要かを判断します。源泉徴収は所得税法204条の報酬の内容と支払者の条</span></li><li><a href="../column/chushajodai-kanjo-kamoku/">駐車場代の勘定科目｜月極は地代家賃・時間貸しは旅費交通費【仕訳7例】</a><span class="rel-desc">駐車場代の勘定科目は、月極なら地代家賃、業務中の時間貸し・コインパーキングなら旅費交通費に入れるのが一般的です。消費税が課税か非課税かの分か</span></li></ul><!--rel:E-->
 </section>
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E7%B5%A6%E4%B8%8E%E3%83%BB%E8%B3%9E%E4%B8%8E%E3%83%BB%E5%A0%B1%E9%85%AC%E3%81%AE%E6%BA%90%E6%B3%89%E5%BE%B4%E5%8F%8E%E7%A8%8E%E9%A1%8D%E3%82%92%E3%80%81%E5%9B%BD%E7%A8%8E%E5%BA%81%E3%81%AE%E7%A8%8E%E9%A1%8D%E8%A1%A8%EF%BC%88%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%88%86%EF%BC%89%E3%81%A7%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E7%B5%A6%E4%B8%8E%E3%81%AF%E6%9C%88%E9%A1%8D%E8%A1%A8%E3%81%AE%E7%94%B2%E6%AC%84%E3%83%BB%E4%B9%99%E6%AC%84%E3%81%A8%E6%89%B6%E9%A4%8A%E8%A6%AA%E6%97%8F%E7%AD%89%E3%81%AE%E6%95%B0%E3%80%81%E9%9A%9C%E5%AE%B3%E8%80%85%E3%83%BB%E5%AF%A1%E5%A9%A6%E3%83%BB%E3%81%B2%E3%81%A8%E3%82%8A%E8%A6%AA%E3%81%AE%E5%8A%A0%E7%AE%97%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fgensen-choshu%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%88%86%E3%81%AE%E6%BA%90%E6%B3%89%E5%BE%B4%E5%8F%8E%E7%A8%8E%E9%A1%8D%E8%A1%A8%EF%BC%88%E6%9C%88%E9%A1%8D%E8%A1%A8%EF%BC%89%E3%81%AE%E4%BB%A3%E8%A1%A8%E8%A1%8C%E3%81%A8%E5%85%AC%E5%BC%8FPDF%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%A7%E3%81%8D%E3%80%81%E7%B5%A6%E4%B8%8E%E3%81%AE%E7%94%B2%E6%AC%84%E3%83%BB%E4%B9%99%E6%AC%84%E3%80%81%E6%89%B6%E9%A4%8A%E8%A6%AA%E6%97%8F%E7%AD%89%E3%81%AE%E6%95%B0%E3%81%A7%E7%A8%8E%E9%A1%8D%E3%82%92%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%80%82%E8%B3%9E%E4%B8%8E%E3%81%A8%E6%89%80%E5%AE%9A%E3%81%AE%E5%A0%B1%E9%85%AC%E3%83%BB%E6%96%99%E9%87%91%E3%81%AE%E8%A8%88%E7%AE%97%E3%81%AB%E3%82%82%E5%AF%BE%E5%BF%9C%E3%80%82%E7%84%A1%E6%96%99%E3%83%BB%E7%99%BB%E9%8C%B2%E4%B8%8D%E8%A6%81%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fgensen-choshu%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site" style="display:block">
   出典: 国税庁タックスアンサー No.2795（原稿料や講演料等）／No.2798（弁護士や税理士等）／No.2801（司法書士等）。<br>
