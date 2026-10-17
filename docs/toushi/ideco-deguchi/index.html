@@ -149,6 +149,7 @@
   <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
     <li><a href="#nen">遡る年数は「向き」で違う</a></li>
     <li><a href="#keisan">重複調整は「年数」で計算する</a></li>
+    <li><a href="#sameyear">同じ年に受け取る場合の検算例</a></li>
     <li><a href="#nenkin">年金で受け取る場合</a></li>
     <li><a href="#dekinai">このツールが判定しないこと</a></li>
     <li><a href="#faq">よくある質問</a></li>
@@ -182,6 +183,30 @@
     <li>前回収入額が800万円以下：収入額÷40万円</li>
     <li>前回収入額が800万円超：（収入額−800万円）÷70万円＋20</li>
   </ul>
+
+  <h2 id="sameyear">同じ年に受け取る場合の検算例</h2>
+  <p>会社の退職金とiDeCoの老齢一時金を同じ年に受け取る場合は、収入を合算して計算します。<b>それぞれに控除を使ってから税額を足す計算ではありません。</b>以下は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2735.htm">国税庁「同じ年に2か所以上から退職手当等が支払われるとき」</a>の方法を当てはめた架空例です。</p>
+  <p data-review-context="before-table">令和8年中に、居住者が会社退職金2,000万円を5月、iDeCo老齢一時金800万円を9月に受け取る設例です。この例では、会社の勤続期間35年にiDeCoの計算基礎期間20年が完全に含まれます。どちらも一般退職手当等に当たり、退職所得の受給に関する申告書は支払時までに提出済みとします。前年以前の調整対象給付・障害退職加算はありません。課税退職所得金額は1,000円未満、所得税・復興特別所得税の源泉徴収額は1円未満を切り捨てます。住民税・給付手数料・保険料は含めません。</p>
+  <div class="scroll-wrap">
+  <table id="sameyear-example">
+    <caption>同年受取の設例：合算した源泉徴収額と後払分</caption>
+    <thead><tr><th scope="col">確認する項目</th><th scope="col">この例の計算</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">使う期間</th><td>会社35年にiDeCo20年が完全包含するため35年</td></tr>
+      <tr><th scope="row">収入の合計</th><td>2,000万円＋800万円＝2,800万円</td></tr>
+      <tr><th scope="row">退職所得控除</th><td>800万円＋70万円×（35年−20年）＝1,850万円</td></tr>
+      <tr><th scope="row">合算後の課税退職所得金額</th><td>（2,800万円−1,850万円）÷2＝475万円</td></tr>
+      <tr><th scope="row">合算後の所得税・復興特別所得税</th><td>（475万円×20％−427,500円）×102.1％＝533,472円</td></tr>
+      <tr><th scope="row">会社分だけの課税退職所得金額</th><td>（2,000万円−1,850万円）÷2＝75万円</td></tr>
+      <tr><th scope="row">会社が先に源泉徴収した額</th><td>75万円×5％×102.1％＝38,287円</td></tr>
+      <tr><th scope="row">後払のiDeCo側が源泉徴収する額</th><td>533,472円−38,287円＝495,185円</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="hint">同年受取でも、最長の期間と重ならない期間があれば、その部分を加えて勤続年数を求めます。算出した勤続年数の1年未満の端数は切り上げます。この例は完全に重なるため加算はありません。税率と速算控除は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2732_besshi.htm">国税庁「退職所得の源泉徴収税額の速算表」</a>で確認できます。</p>
+  <p>この例では、後払のiDeCo側へ、同年の会社退職金の支払済額などを記入した退職所得の受給に関する申告書と、会社分の退職所得の源泉徴収票を、支払を受ける時までに提出します。</p>
+  <p class="hint">一般に、同年の既徴収額を差し引いた結果がマイナスなら、後払側の源泉徴収額はありません。マイナス分の還付には本人の確定申告が必要です。同時に複数の支払者へ申告書を出す場合は提出順位を記載します（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2735.htm">国税庁の同年受取の計算方法</a>）。</p>
+  <p><b>上の計算機は同年合算には対応していません。</b>この表は本文の検算例であり、空き年数にゼロを入れて再現するものではありません。</p>
 
   <h2 id="nenkin">年金で受け取る場合</h2>
   <p>iDeCoを年金形式で受け取ると<b>雑所得（公的年金等）</b>になり、公的年金等控除の対象です。老齢基礎年金・老齢厚生年金と<b>合算して</b>控除枠を使うため、公的年金だけで枠を使い切っている場合は控除が効きにくくなります。年金額の計算は<a href="../../nenkin/">年金の計算機</a>をご覧ください。</p>
@@ -221,15 +246,15 @@
 <ul>
 <li><a href="https://laws.e-gov.go.jp/law/340CO0000000096#Mp-At_70">70条</a>1項2号（退職所得控除額の計算の特例＝前の退職手当等との重複調整）。イ＝4年内、ロ＝令和8年1月1日以後のiDeCo一時金は9年内・同日前は4年内、ハ＝19年内</li>
 <li><a href="https://laws.e-gov.go.jp/law/340CO0000000096#Mp-At_72">72条</a>3項7号（確定拠出年金の老齢給付金の一時金を退職手当等とみなす）</li>
-<li>e-Gov法令検索で2026年8月8日に確認</li>
 </ul>
 </li>
 <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033" rel="nofollow">所得税法</a>
 <ul>
 <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_30">30条</a>（退職所得）・<a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_35">35条</a>（雑所得）</li>
-<li>e-Gov法令検索で2026年8月8日に確認</li>
 </ul>
 </li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2735.htm">国税庁「No.2735 同じ年に2か所以上から退職手当等が支払われるとき」</a>（令和8年4月1日現在法令等）</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2732.htm">国税庁「No.2732 退職手当等に対する源泉徴収」</a>・<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2732_besshi.htm">別紙の速算表</a>（令和8年4月1日現在法令等）</li>
 </ul>
 
 <section class="faq rel-block">
