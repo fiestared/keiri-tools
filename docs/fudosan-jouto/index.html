@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-07-26",
-      "dateModified": "2026-10-12",
+      "dateModified": "2026-10-18",
       "name": "不動産売却の税金 計算機（譲渡所得税シミュレーター）",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -142,7 +142,7 @@
 
 <section class="hero">
   <h1>不動産売却の税金 計算機</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-26">2026年7月26日</time>（更新日: <time datetime="2026-10-12">2026年10月12日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-26">2026年7月26日</time>（更新日: <time datetime="2026-10-18">2026年10月18日</time>）</p>
   <p>土地・建物を売ったときの<b>譲渡所得税・住民税</b>を計算します。税率を決める所有期間は、<b id="hero-1jan">売った日ではなく「売った年の1月1日」時点</b>で数えます。<b id="hero-tanki">実際に5年を超えて持っていても、売った年の1月1日で5年以下なら短期譲渡（39.63%）</b>で、長期譲渡（20.315%）のおよそ2倍の税率です。建物の減価償却・概算取得費5%・3,000万円特別控除・10年超の軽減税率も含めて計算します。</p>
 </section>
 
@@ -297,6 +297,7 @@
 </svg>
 <figcaption>譲渡所得の計算の流れ。税率は「売った年の1月1日」時点の所有期間で決まる。</figcaption>
 </figure>
+<p>譲渡費用に入るのは、売るために直接かかった費用です。入力例の仲介手数料・売主負担の印紙税・売却のための取壊し費用のほか、貸家を売るために借家人に家屋を明け渡してもらう際の立退料も含まれます。</p>
 
 <p data-review-context="before-table">税率の内訳は次のとおりです。合計には、所得税額にかかる復興特別所得税を含みます。</p>
 <div class="scroll-wrap"><table id="uchiwake-table"><thead><tr><th scope="col">区分</th><th scope="col">所得税</th><th scope="col">住民税</th><th scope="col">合計</th></tr></thead>
@@ -318,6 +319,12 @@
 <p id="hizuke">取得日と譲渡日は、原則として資産の引渡しがあった日です。売買契約の効力が発生した日で申告することも選べます。その場合は契約の日を入力してください（所得税基本通達33-9・36-12）。</p>
 
 <h2 id="shutokuhi">取得費 — 建物は減価償却する／分からなければ5%</h2>
+<p data-review-context="before-table">取得費には購入代金以外の費用も含まれます。建物は、これらを含む取得価額から減価償却費相当額を差し引きます。</p>
+<div class="scroll-wrap"><table id="shutokuhi-hiyo"><thead><tr><th scope="col">費用の例</th><th scope="col">取得費に含める範囲</th></tr></thead><tbody>
+<tr><th scope="row">設備費・改良費など</th><td>購入代金・建築代金・購入手数料とともに取得価額に含めます。</td></tr>
+<tr><th scope="row">非業務用資産の取得時の税金など</th><td>登録免許税（登記費用を含む）・不動産取得税・特別土地保有税（取得分）・印紙税など。既に事業所得などの必要経費に算入したものは除きます。</td></tr>
+</tbody></table></div>
+<p class="hint">国税庁の注記では、業務用資産の取得時に納めた上記の税金は取得費に含めません。</p>
 <p><b id="shutokuhi-tatemono">土地は減価しませんが、建物は買った金額をそのまま取得費にできません。</b>所有期間中の減価償却費相当額を差し引きます（所得税法38条2項）。自宅など事業に使っていなかった建物は次の算式です。</p>
 
 <p style="text-align:center"><b id="shokyaku-shiki">建物の取得価額 × 0.9 × 償却率 × 経過年数 ＝ 減価償却費相当額</b></p>
@@ -394,6 +401,7 @@
 
 <h2 id="shutten">出典</h2>
 <ul id="shutten-list">
+  <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3252.htm" rel="nofollow">国税庁「取得費となるもの」</a>・<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3255.htm" rel="nofollow">国税庁「譲渡費用となるもの」</a></li>
   <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026" rel="nofollow">租税特別措置法（昭和三十二年法律第二十六号）</a>
     <ul>
       <li>31条1項（長期譲渡所得＝その年1月1日において所有期間が5年を超えるもの・百分の十五）・31条2項（所有期間は取得の日の翌日から）</li>
