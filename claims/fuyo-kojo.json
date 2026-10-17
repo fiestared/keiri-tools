@@ -2563,7 +2563,8 @@
         "s-2e07f13a1c0547da97bf-1"
       ],
       "review_status": "author_checked（2026-10-12 読みやすさの作り直し。書き手が正本を開いて照合。独立の再照合はしていない）",
-      "revision_r7": "条件を省略した重複文を削除。残る単位の説明は変更しない。"
+      "revision_r7": "条件を省略した重複文を削除。残る単位の説明は変更しない。",
+      "needed_source": "計算機の入力仕様、計算実装及び検証結果。"
     },
     {
       "id": "readable20261012-kojogaku-shotoku",
@@ -2735,8 +2736,8 @@
         "復興特別所得税は令和8年分の2.1%で控除前後それぞれ1円未満を切捨て。納付段階の端数処理とは異なる。",
         "令和9年以後の復興特別所得税・防衛特別所得税への組替えは対象外。"
       ],
-      "calc": "node で docs/assets/setsuzei_core.js の fuyoKojoTotal → taxSavingSplit を setsuzei_r08.json で実行（2026-10-12）: 一般1人 200万=54951(21500+451+33000)／300万=71798(38000+798+33000)／500万=110596(76000+1596+33000)／700万=112128(77500+1628+33000)／900万=122236(87400+1836+33000)。特定1人 300万=109323(63000+1323+45000)／500万=173646(126000+2646+45000)。同居老親等1人 400万=163436(116000+2436+45000)",
-      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "calc": "python3で2026-10-17に再計算。速算表の税額T(x)=x×税率−控除額。減少額=T(所得)−T(所得−扶養控除)+floor(T(所得)×21/1000)−floor(T(所得−扶養控除)×21/1000)+住民税控除/10。所得/所得税控除/住民税控除 => 円: 2000000/380000/330000 => 54951; 3000000/380000/330000 => 71798; 5000000/380000/330000 => 110596; 7000000/380000/330000 => 112128; 9000000/380000/330000 => 122236; 3000000/630000/450000 => 109323; 5000000/630000/450000 => 173646",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm",
       "source_quote": "課税される所得金額（1,000円未満の端数金額を切り捨てた後の金額です。）に対する所得税の金額は、次の「所得税の速算表」を使用すると簡単に求められます。\n令和9年1月1日以後に生ずる所得については、復興特別所得税の税率が1.1パーセントに引き下げられ、防衛特別所得税（源泉徴収すべき所得税の額の1パーセント相当額）が併せて源泉徴収されます。",
       "corpus_ref": "segment-review-10/corpus/r8-link-1.txt:69-106; segment-review-10/corpus/r3-source-6.txt:126-183",
       "partial_out_of_corpus": true,
@@ -3432,7 +3433,7 @@
       ],
       "checked": "2026-10-16",
       "review_status": "writer_checked_pending_independent_review",
-      "needed_source": "児童手当の支給要件の一次資料。正本外not_wrongを維持。"
+      "needed_source": "こども家庭庁の児童手当制度案内又は改正児童手当法の施行日・対象年齢・適用条件を含む資料。"
     },
     {
       "id": "rg18f3-s-f48c534f9246a20fdf8e-1",
@@ -3618,7 +3619,7 @@
       ],
       "checked": "2026-10-16",
       "review_status": "writer_checked_pending_independent_review",
-      "needed_source": "当該計算機の仕様と実装検証。税負担の必然的減少を主張せず試算への案内に限定。"
+      "needed_source": "計算機の入力仕様、計算実装及び検証結果。"
     },
     {
       "id": "rg18f3-s-d905bcf748f903fb7c1b-1",
@@ -4708,28 +4709,10 @@
       "review_ref": "segment-review-7/segment-adjudication.json#s-1eb8734b0c80372a3f59-1"
     },
     {
-      "id": "s-b51936724310d5350b56-1",
-      "result": "out_of_corpus",
-      "needed_source": "対象snapshotの計算機仕様・実装と動作検証記録。",
-      "review_ref": "segment-review-8/segment-adjudication.json#s-b51936724310d5350b56-1"
-    },
-    {
-      "id": "s-e76313351314cde5cbbd-1",
-      "result": "out_of_corpus",
-      "needed_source": "対象snapshotの計算機仕様・実装と動作検証記録。",
-      "review_ref": "segment-review-8/segment-adjudication.json#s-e76313351314cde5cbbd-1"
-    },
-    {
       "id": "s-c00c80e07ae02c50fa98-1",
       "result": "out_of_corpus",
       "needed_source": "対象snapshotの計算機仕様・実装と動作検証記録。",
       "review_ref": "segment-review-8/segment-adjudication.json#s-c00c80e07ae02c50fa98-1"
-    },
-    {
-      "id": "s-cf6a223d0d4bbe4fb13e-1",
-      "result": "out_of_corpus",
-      "needed_source": "こども家庭庁の児童手当制度改正資料（適用日・対象年齢・受給要件）。",
-      "review_ref": "segment-review-8/segment-adjudication.json#s-cf6a223d0d4bbe4fb13e-1"
     },
     {
       "id": "s-fc01fc489470b5181c42-1",
@@ -4828,10 +4811,22 @@
       "review_ref": "segment-review-9/segment-adjudication.json#s-e97634c7e76d1bf0e87c-1"
     },
     {
-      "id": "s-e05296f2f03a4f593094-1",
+      "id": "s-b51936724310d5350b56-1",
       "result": "out_of_corpus",
-      "needed_source": "申告漏れの扶養控除を還付申告で取り戻す手続、翌年からの5年期限、申告済みの場合の更正の請求を定める資料。正本のr8-qa.txt:498-531は国外転出時の改正適用という別条件であり一般期限の根拠にできない。",
-      "review_ref": "segment-review-9/segment-adjudication.json#s-e05296f2f03a4f593094-1"
+      "needed_source": "計算機の入力仕様、計算実装及び検証結果。",
+      "review_ref": "segment-review-10/segment-adjudication.json#s-b51936724310d5350b56-1"
+    },
+    {
+      "id": "s-e76313351314cde5cbbd-1",
+      "result": "out_of_corpus",
+      "needed_source": "計算機の入力仕様、計算実装及び検証結果。",
+      "review_ref": "segment-review-10/segment-adjudication.json#s-e76313351314cde5cbbd-1"
+    },
+    {
+      "id": "s-cf6a223d0d4bbe4fb13e-1",
+      "result": "out_of_corpus",
+      "needed_source": "こども家庭庁の児童手当制度案内又は改正児童手当法の施行日・対象年齢・適用条件を含む資料。",
+      "review_ref": "segment-review-10/segment-adjudication.json#s-cf6a223d0d4bbe4fb13e-1"
     }
   ],
   "superseded_verified": [
