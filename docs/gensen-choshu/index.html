@@ -7,14 +7,14 @@
 <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>源泉徴収税額表【令和8年分】給与・賞与の計算機と報酬の区分別計算</title>
-<meta name="description" content="給与・賞与・報酬の源泉徴収税額を、国税庁の税額表（令和8年分）で自動計算します。給与は月額表の甲欄・乙欄と扶養親族等の数、障害者・寡婦・ひとり親の加算に対応。賞与は算出率の表、報酬・料金は原稿料・士業などの区分別に計算できます。無料・登録不要。">
+<title>源泉徴収税額表【令和8年分】月額表の甲欄・乙欄と自動計算</title>
+<meta name="description" content="令和8年分の源泉徴収税額表（月額表）の代表行と公式PDFを確認でき、給与の甲欄・乙欄、扶養親族等の数で税額を自動計算。賞与と所定の報酬・料金の計算にも対応。無料・登録不要。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/gensen-choshu/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
-<meta property="og:title" content="源泉徴収税額表【令和8年分】給与・賞与の計算機と報酬の区分別計算">
-<meta property="og:description" content="給与・賞与・報酬の源泉徴収税額を、国税庁の税額表（令和8年分）で自動計算します。給与は月額表の甲欄・乙欄と扶養親族等の数、障害者・寡婦・ひとり親の加算に対応。賞与は算出率の表、報酬・料金は原稿料・士業などの区分別に計算できます。無料・登録不要。">
+<meta property="og:title" content="源泉徴収税額表【令和8年分】月額表の甲欄・乙欄と自動計算">
+<meta property="og:description" content="令和8年分の源泉徴収税額表（月額表）の代表行と公式PDFを確認でき、給与の甲欄・乙欄、扶養親族等の数で税額を自動計算。賞与と所定の報酬・料金の計算にも対応。無料・登録不要。">
 <meta property="og:url" content="https://keiri-tools.com/gensen-choshu/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-07-13",
-      "dateModified": "2026-10-12",
+      "dateModified": "2026-10-18",
       "name": "源泉徴収税額 計算機",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
@@ -63,7 +63,7 @@
           "name": "給与の源泉徴収税額はどうやって計算しますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "月払給与では国税庁の給与所得の源泉徴収税額表（月額表）を使います。月額表甲欄の金額記載区分では、「その月の社会保険料等控除後の給与等の金額」と「扶養親族等の数」の組み合わせで税額が直接書かれています。表に定める率・算式で計算する区分もあります。日払・週払・日割払などには日額表を使い、日雇賃金には丙欄を適用します。"
+            "text": "月額表を使います（居住者への月払給与）。甲欄の参照方法は、月額表の備考で確認してください。表に定める率・算式で計算する区分もあります。日額表の使用区分は公式PDFの案内を確認してください。"
           }
         },
         {
@@ -71,7 +71,7 @@
           "name": "甲欄と乙欄はどちらを使えばよいですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "月払給与では、従業員から「給与所得者の扶養控除等（異動）申告書」の提出を受けていれば甲欄、受けていなければ乙欄です。乙欄は税額が高くなるため、提出を受けているのに乙欄で引くと過大に天引きするおそれがあります。"
+            "text": "甲欄・乙欄は、居住者への月払給与について「給与所得者の扶養控除等（異動）申告書」の提出があれば甲欄、なければ乙欄を使います。"
           }
         },
         {
@@ -87,7 +87,7 @@
           "name": "給与ソフトの源泉徴収税額と金額が合わないのはなぜですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "給与ソフトが「電算機計算の特例」（給与額から算式で求める方法）で計算していると、月額表の税額とは必ずしも一致しません。税額表は給与額の階級の中間値を基にする一方、特例は社会保険料等控除後の給与額そのものを基に計算するため、差が生じます。特例を使える給与と差額の扱いは、給与ソフトの税額と合わない場合の説明を参照してください。"
+            "text": "月額表の税額と一致しない場合があります。給与ソフトが月額表甲欄の電算機計算の特例を使っている場合です。特例を使える給与と差額の扱いは、給与ソフトの税額と合わない場合の説明を参照してください。"
           }
         },
         {
@@ -103,7 +103,7 @@
           "name": "源泉徴収税額の計算式は？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "税額は、対象報酬額が100万円以下なら「対象報酬額 × 10.21%」、超える場合は「(対象報酬額 − 100万円) × 20.42% ＋ 102,100円」です（原稿料・弁護士・税理士等の所定の報酬の同一人への1回支払分）。この式で求めた税額は、1円未満を切り捨てます。給与・司法書士報酬・ホステス等の報酬には、それぞれ別の計算方法を用います。"
+            "text": "計算式は報酬の種類で異なります。居住者への原稿料・弁護士・税理士等の所定の報酬は、報酬の計算式と対象額を確認してください。給与・司法書士報酬・ホステス等の報酬には、それぞれ別の計算方法を用います。"
           }
         },
         {
@@ -119,7 +119,7 @@
           "name": "司法書士への報酬は計算式が違うのですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "はい。司法書士・土地家屋調査士・海事代理士については、1回の支払額から10,000円を差し引いた残額に10.21%を掛けます。弁護士・税理士とは計算式が異なります。"
+            "text": "はい。弁護士・税理士とは計算式が異なります。司法書士・土地家屋調査士・海事代理士への報酬の対象額と計算方法は、国税庁No.2801で確認してください。"
           }
         }
       ]
@@ -158,9 +158,9 @@
 <nav class="breadcrumb"><a href="../">ホーム</a> › 源泉徴収税額 計算機</nav>
 
 <section class="hero">
-  <h1>源泉徴収税額 計算機</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time><span class="keep-phrase">（更新日: <time datetime="2026-10-12">2026年10月12日</time>）</span></p>
-  <p><b>給与・賞与・報酬の源泉徴収税額を、国税庁の税額表（令和8年分）で計算します。</b>月払給与は月額表、賞与は算出率の表か月額表、報酬・料金は区分別の式を使います。PDFの表を目で追う必要はありません。</p>
+  <h1>源泉徴収税額表<span class="keep-phrase">（令和8年分）</span>と計算機</h1>
+  <p class="article-meta">公開日: <time datetime="2026-07-13">2026年7月13日</time><span class="keep-phrase">（更新日: <time datetime="2026-10-18">2026年10月18日</time>）</span></p>
+  <p><b>源泉徴収税額を計算できます。給与・賞与は居住者向けの国税庁の税額表（令和8年分）に対応しています。</b>居住者への月払給与は月額表、賞与は算出率の表か月額表を使います。報酬・料金は区分別の式を使います。PDFの表を目で追う必要はありません。</p>
 </section>
 
 
@@ -178,20 +178,20 @@
     <input type="number" id="amount" data-example="250000" inputmode="numeric" aria-describedby="salary-amount-help">
     <div class="hint" id="salary-amount-help">
       <b class="input-example">入力例：控除後の金額が25万円なら 250000</b>
-      <b>総支給額ではありません。</b>課税支給額から<b>社会保険料等を差し引いた後</b>の金額です。
+      課税支給額から<b>社会保険料等を差し引いた後</b>の金額です。
       社会保険料の額は<a href="../shakai-hoken/">社会保険料 計算機</a>で計算できます。
     </div>
 
     <label>税額表の欄</label>
     <div class="radio-row">
-      <label><input type="radio" name="ran" value="kou" checked>甲欄<br><small>「扶養控除等申告書」の提出<b>あり</b>（通常の従業員）</small></label>
-      <label><input type="radio" name="ran" value="otsu">乙欄<br><small>提出<b>なし</b>（掛け持ちの従たる勤務先など）</small></label>
+      <label><input type="radio" name="ran" value="kou" checked>甲欄<br><small>「給与所得者の扶養控除等申告書」の提出<b>あり</b>（通常の従業員）</small></label>
+      <label><input type="radio" name="ran" value="otsu">乙欄<br><small>提出<b>なし</b>（掛け持ちの従たる勤務先など。従たる給与用の申告書は乙欄）</small></label>
     </div>
 
     <div id="kou-only">
       <label for="fuyo">扶養親族等の数</label>
       <select id="fuyo"></select>
-      <div class="hint">源泉控除対象配偶者と源泉控除対象親族の合計です。16歳未満は基本人数に含めません（<a href="#fuyo-kazoekata">数え方</a>）。</div>
+      <div class="hint"><a href="#fuyo-kazoekata">申告書に基づく基本人数の確認方法</a>をご確認ください。</div>
 
       <details class="optional-fields" id="additional"><summary>障害者・寡婦・ひとり親などの加算（該当する場合） <span data-optional-state>未設定</span></summary>
       <label>扶養控除等申告書に本人の該当の記載がある（各1人加算）</label>
@@ -204,7 +204,7 @@
 
       <label for="fuyoShogai">同一生計配偶者・扶養親族の障害者加算人数</label>
       <select id="fuyoShogai"></select>
-      <div class="hint">障害者（特別障害者を含む）は1人分、同居特別障害者は計2人分として入力します。16歳未満の扶養親族も対象です（<a href="#kasan">加算の条件</a>）。</div>
+      <div class="hint"><a href="#kasan">申告書の記載・国外親族の書類と加算人数</a>を確認して入力してください。</div>
       </details>
     </div>
 
@@ -223,7 +223,7 @@
   <!-- ── 賞与（算出率の表） ───────────────────────────── -->
   <div class="pane" role="tabpanel" tabindex="0" aria-labelledby="tab-shoyo" id="pane-shoyo">
     <div class="note" style="margin-bottom:14px">
-      前月の給与から算出率の表の率を選び、賞与に掛けます。月額表を使う場合は<a href="#shoyo">賞与の計算方法</a>にまとめました。
+      税額は、原則として社会保険料等控除後の賞与に率を掛けて求めます。率の選択や月額表を使う例外は、<a href="#shoyo">賞与の計算方法</a>をご確認ください。
     </div>
 
     <label for="shoyoAmt">賞与の支給額</label>
@@ -235,7 +235,7 @@
     <div class="hint" id="shoyoIns-hint"><b class="input-example">入力例：85593</b>健康保険・厚生年金・雇用保険など、賞与から実際に控除される社会保険料等を入力してください。控除がなければ0円です。</div>
 
     <label><input type="checkbox" id="zenPaid" checked style="margin-right:6px">前月に給与の支払があった</label>
-    <div class="hint">入社直後などで前月に普通給与がない場合はチェックを外してください。給与が数か月ごとの支払いなら、外さずに<a href="#shoyo-tsukiwari">月割額</a>を入力します。</div>
+    <div class="hint">入社直後などで前月に普通給与がない場合はチェックを外してください。数か月払いの入力方法は<a href="#shoyo-tsukiwari">下の案内</a>を確認してください。</div>
 
     <div id="zen-only">
       <label for="zenAmt">前月の給与等の金額（賞与を除く）</label>
@@ -244,19 +244,19 @@
 
       <label for="zenIns">前月の給与から控除された社会保険料等</label>
       <input type="number" id="zenIns" data-example="45000" inputmode="numeric" aria-describedby="zenIns-hint">
-      <div class="hint" id="zenIns-hint"><b class="input-example">入力例：45000</b>前月の給与から<b>社会保険料等を差し引いた額</b>で算出率表を引きます。</div>
+      <div class="hint" id="zenIns-hint"><b class="input-example">入力例：45000</b><a href="#shoyo">率の選択と例外</a>を確認してください。</div>
     </div>
 
     <label>税額表の欄</label>
     <div class="radio-row">
-      <label><input type="radio" name="ranS" value="kou" checked>甲欄<br><small>「扶養控除等申告書」の提出<b>あり</b></small></label>
-      <label><input type="radio" name="ranS" value="otsu">乙欄<br><small>提出<b>なし</b></small></label>
+      <label><input type="radio" name="ranS" value="kou" checked>甲欄<br><small>「給与所得者の扶養控除等申告書」の提出<b>あり</b></small></label>
+      <label><input type="radio" name="ranS" value="otsu">乙欄<br><small>提出<b>なし</b>・従たる給与用の申告書を提出</small></label>
     </div>
 
     <div id="kouS-only">
       <label for="fuyoS">扶養親族等の数</label>
       <select id="fuyoS"></select>
-      <div class="hint">源泉控除対象配偶者と源泉控除対象親族の合計です。16歳未満は基本人数に含めません（<a href="#fuyo-kazoekata">数え方</a>）。</div>
+      <div class="hint"><a href="#fuyo-kazoekata">申告書に基づく基本人数の確認方法</a>をご確認ください。</div>
 
       <details class="optional-fields" id="additionalS"><summary>障害者・寡婦・ひとり親などの加算（該当する場合） <span data-optional-state>未設定</span></summary>
       <label>扶養控除等申告書に本人の該当の記載がある（各1人加算）</label>
@@ -291,7 +291,7 @@
 
     <label for="fee">報酬額（税抜・円）</label>
     <input type="number" id="fee" data-example="100000" inputmode="numeric" aria-describedby="fee-hint">
-    <div class="hint" id="fee-hint"><b class="input-example">入力例：報酬10万円（税抜）なら 100000</b> 登記・申請等で支払者が本来納付する登録免許税・官公庁手数料への充当が明らかな金額を除いた報酬額を入力してください。</div>
+    <div class="hint" id="fee-hint"><b class="input-example">入力例：報酬10万円（税抜）なら 100000</b> 登記・申請等で支払者が本来納付する登録免許税・官公庁手数料への充当が明らかな金額を除いた報酬額です。</div>
 
     <label>消費税</label>
     <div class="radio-row">
@@ -312,23 +312,46 @@
 <section class="faq">
   <h2 id="tool-section-1">給与の源泉徴収税額の計算方法</h2>
 
+  <h3 id="monthly-sample">月額表の代表行</h3>
+  <p data-review-context="before-table">令和8年分の月額表から抜粋した、居住者の月払給与について、社会保険料等控除後の金額に対応する税額です。甲欄は「給与所得者の扶養控除等申告書」の提出がある人に使います。乙欄には、申告書未提出者と従たる給与用の申告書の提出者が含まれます。甲欄の人数は障害者等の加算を含む表参照人数で、計算機に入力する基本人数とは異なります（<a href="#fuyo-kazoekata">人数と加算の数え方</a>）。乙欄は、従たる給与についての扶養控除等申告書による控除前の税額です。</p>
+  <div class="scroll-wrap"><table id="monthly-sample-table">
+    <thead><tr><th scope="col">その月の社会保険料等控除後の給与等の金額</th><th scope="col" class="num">甲欄・0人</th><th scope="col" class="num">甲欄・1人</th><th scope="col" class="num">乙欄</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">105,000円以上107,000円未満</th><td class="num"><span class="numeric-token">170円</span></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">3,800円</span></td></tr>
+      <tr><th scope="row">107,000円以上109,000円未満</th><td class="num"><span class="numeric-token">280円</span></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">3,800円</span></td></tr>
+      <tr><th scope="row">119,000円以上121,000円未満</th><td class="num"><span class="numeric-token">890円</span></td><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">4,300円</span></td></tr>
+    </tbody>
+  </table></div>
+
   <h3>給与は税額表の金額・率・算式で計算します</h3>
-  <p>月払給与は、<b>社会保険料等控除後の給与額と扶養親族等の数</b>から、国税庁の<b>給与所得の源泉徴収税額表（月額表）</b>で税額を求めます。</p>
+  <p>税額は、国税庁の<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf">月額表と備考の計算方法</a>で求めます（居住者への月払給与）。欄の選択・人数の加算・別計算は、同表の備考で確認してください。</p>
   <ul>
-    <li>甲欄の金額記載区分では、金額の階級（○円以上 ○円未満）と扶養親族等の数の組み合わせで税額が直接書かれています。</li>
+    <li>甲欄の参照方法は、<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf">月額表の備考</a>で確認してください。金額の範囲を示す行と、特定の金額だけを示す行があります。</li>
     <li>一定の区分では、表に定める率・算式で計算します。</li>
   </ul>
-  <p>上の計算機は、この表（令和8年分・231行）を機械的に引いています。</p>
 
-<a class="tool-cta" href="../column/gensen-zeigakuhyo-mikata/">源泉徴収税額表【令和8年分】月額表の早見表と見方<span>105,000円から740,000円まで全231区分の表そのものを見る。甲欄・乙欄と「扶養親族等の数」の数え方も。</span></a>
+<a class="tool-cta" href="../column/gensen-zeigakuhyo-mikata/">源泉徴収税額表【令和8年分】月額表の早見表と見方<span>月額表の早見表と、甲欄・乙欄や「扶養親族等の数」の数え方を確認する。</span></a>
+
+  <h3 id="official-pdfs">公式PDFを開く（月額・日額・賞与）</h3>
+  <p data-review-context="before-table">令和8年分の国税庁の公式PDFです。居住者に支払う給与・賞与について、支払方法に合う表を確認できます。</p>
+  <div class="scroll-wrap"><table id="official-pdf-table">
+    <thead><tr><th scope="col">資料</th><th scope="col">使う場面</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf">月額表</a></th><td>月払い・半月ごと・10日ごと・月の整数倍の期間ごとの給与。</td></tr>
+      <tr><th scope="row"><a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/08-14.pdf">日額表</a></th><td>日払い・週払い・日割の給与。所定の日雇賃金は丙欄を使います（条件は下の注）。本計算機は日額表の計算に対応していません。</td></tr>
+      <tr><th scope="row"><a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15-16.pdf">賞与の算出率の表</a></th><td>賞与。<a href="#shoyo-getsugaku">月額表を使う例外</a>も確認してください。</td></tr>
+    </tbody>
+  </table></div>
+  <p class="hint">丙欄の日雇賃金の定義・継続雇用による除外は、<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/19-22.pdf">令和8年分「給与所得の源泉徴収税額の求め方」19ページの注</a>を確認してください。</p>
+  <p class="hint">出典：国税庁「<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/01.htm">源泉徴収税額表</a>」「<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/19-22.pdf">給与所得の源泉徴収税額の求め方</a>」。</p>
 
   <h3>甲欄と乙欄の違い</h3>
-  <p>月払給与では、従業員から「<b>給与所得者の扶養控除等（異動）申告書</b>」の提出を受けていれば<b>甲欄</b>、受けていなければ<b>乙欄</b>を使います。乙欄は税額がかなり高くなります（掛け持ち勤務の「従たる勤務先」が典型です）。提出を受けているのに乙欄で引くと、過大に天引きするおそれがあります。</p>
+  <p>甲欄・乙欄は、居住者への月払給与について「<b>給与所得者の扶養控除等（異動）申告書</b>」の提出があれば甲欄、なければ乙欄を使います。提出を受けているのに乙欄で引くと、過大に天引きするおそれがあります。</p>
 
   <div class="callout" id="nyuryoku">
     <b>入力する金額を確認してください</b>
-    <p>表を引くのは「その月の社会保険料等控除後の給与等の金額」です。</p>
-    <p><b>課税支給額 − 社会保険料等 ＝ 表を引く金額</b></p>
+    <p>表を引くのは「その月の社会保険料等控除後の給与等の金額」です。総支給額ではありません。</p>
+    <p><b>課税支給額 − その給与から控除する社会保険料等 ＝ 表を引く金額</b></p>
     <ul>
       <li>課税支給額は、通勤手当などの非課税分を除いた支給額です。</li>
       <li>社会保険料等は、給与支払時に控除する社会保険料（健康保険・介護保険・厚生年金・雇用保険など）と小規模企業共済等掛金の合計額です。</li>
@@ -337,27 +360,28 @@
   </div>
 
   <h3 id="fuyo-kazoekata">扶養親族等の数の数え方</h3>
-  <p>税額表で使う人数は、源泉控除対象配偶者と源泉控除対象親族の合計に、障害者などの加算を足した数です。計算機の「扶養親族等の数」には加算を含めず、加算は下の加算欄で指定してください。</p>
+  <p>基本人数と加算を分けて入力します。基本人数の対象・除外は下の一覧を確認してください。計算機の「扶養親族等の数」には加算を含めず、加算は下の加算欄で指定してください。</p>
   <ul>
-    <li><b>数える人</b>：源泉控除対象配偶者と源泉控除対象親族です。令和8年分は、19歳以上23歳未満の特定親族のうち合計所得100万円以下の人も含みます。</li>
+    <li><b>基本人数の対象</b>：<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/19-22.pdf">令和8年分「給与所得の源泉徴収税額の求め方」19〜20ページ</a>の定義・除外・国外居住親族の書類要件で判定してください。</li>
     <li><b>特定親族の年齢</b>：令和8年分の19歳以上23歳未満は、平成16年1月2日から平成20年1月1日生まれの人です。</li>
     <li><b>数えない人</b>：<b>16歳未満の子は基本人数には含めません</b>。相互適用などにより扶養控除等申告書に記載がないものとされる人も除きます。</li>
-    <li><b>本人の加算</b>：本人の障害者・寡婦・ひとり親・勤労学生の各該当につき1人を加算します。</li>
-    <li><b>家族の障害者加算</b>：同一生計配偶者・扶養親族の障害者は1人、同居特別障害者は計2人を加算します。16歳未満の扶養親族も対象です。</li>
-    <li><b>7人を超える場合</b>：7人の税額から、超える1人につき1,610円を控除します。</li>
+    <li><b>本人の加算</b>：扶養控除等申告書に記載した該当項目を、計算機の加算欄で選択してください。</li>
+    <li><b>家族の障害者加算</b>：人数は<a href="#kasan">下の加算の条件</a>で確認してください。</li>
+    <li><b>月額表甲欄で7人を超える場合</b>：7人の税額から、超える1人につき1,610円を控除します。</li>
   </ul>
+  <p class="hint">注：国外居住親族の必要書類は、上記の公式資料で確認してください。</p>
   <p id="kasan"><b>加算の条件</b></p>
   <ul>
-    <li>加算には扶養控除等申告書への記載が必要です。</li>
-    <li>国外居住親族は、親族関係書類の添付または提示がある場合に限ります。外国語で作成された書類は、訳文も必要です。</li>
+    <li>家族の障害者加算人数は、<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf">月額表7ページ・備考1⑷</a>で確認してください。申告書の記載と、国外居住親族の書類要件があります。</li>
+    <li>家族の障害者加算で国外居住親族を含めるには、申告書への親族関係書類の添付または提出時の提示が必要です。外国語で作成された書類は、訳文も必要です。</li>
     <li>合計所得58万円超100万円以下の特定親族は扶養親族に該当しないため、障害者・同居特別障害者の加算対象にはなりません。</li>
   </ul>
 
   <h3 id="denshi">給与ソフトの税額と1円単位で合わないことがあります</h3>
-  <p>給与ソフトは「<b>電算機計算の特例</b>」（給与額から算式で求める方法）で計算することがあります。特例の税額と月額表の税額は、<b>必ずしも一致しません</b>（特例の資料に明記されています）。</p>
+  <p>給与ソフトは「<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/18.pdf"><b>電算機計算の特例</b></a>」（給与額から算式で求める方法）で計算することがあります。特例の税額と月額表の税額は、<b>必ずしも一致しません</b>（特例の資料に明記されています）。</p>
   <ul>
     <li><b>特例を使える給与</b>：給与計算を電子計算機等で処理する場合の、月額表の甲欄を適用する給与に限ります。</li>
-    <li><b>国税庁の設例</b>：社会保険料等控除後の給与175,000円・扶養親族等2人で、月額表250円に対し電算機特例210円です。この比較範囲外の差の上限を示すものではありません。</li>
+    <li><b>月額表甲欄との比較例</b>：令和8年分は、社会保険料等控除後の給与175,000円・扶養親族等2人で、月額表250円に対し電算機特例210円です。この比較範囲外の差の上限を示すものではありません。</li>
     <li><b>差額の扱い</b>：特例の対象条件を満たす場合はどちらの方法も認められ、年末調整の対象者は差額を年末調整で精算します。対象外の人は確定申告の要否を確認してください。</li>
   </ul>
   <p>上の計算機は<b>月額表の額</b>を主として表示し、特例の額が異なる場合は参考として併記します。</p>
@@ -365,40 +389,35 @@
 
 <section class="faq">
   <h2 id="shoyo">賞与の源泉徴収税額の計算方法</h2>
-  <p>賞与は、原則として「<b>賞与に対する源泉徴収税額の算出率の表</b>」で率を選び、社会保険料等控除後の賞与に掛けます。</p>
+  <p>賞与は、原則として「<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15-16.pdf"><b>賞与に対する源泉徴収税額の算出率の表</b></a>」で率を選び、社会保険料等控除後の賞与に掛けます。</p>
   <ul>
-    <li><b>甲欄</b>：社会保険料等控除後の前月普通給与と、扶養親族等の数に応じて率を選びます。</li>
-    <li><b>乙欄</b>：社会保険料等控除後の前月普通給与だけで率を選びます。扶養親族等の数は使いません。</li>
+    <li>算出率表の率は、<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15-16.pdf">同表の備考</a>に従って選びます。給与を数か月ごとに支払う場合は、<a href="#shoyo-tsukiwari">月割額での判定</a>を確認してください。</li>
     <li><b>1,610円の控除</b>：算出率の表では、甲欄・乙欄とも行いません。</li>
   </ul>
 
-  <h3 id="shoyo-getsugaku">算出率の表ではなく月額表を使う場合</h3>
-  <p>次のどれかに当たる賞与は、月額表を使って計算します。</p>
-  <ul>
-    <li>前月に普通給与がない場合</li>
-    <li>前月の普通給与が、前月の社会保険料等以下の場合</li>
-    <li>社会保険料等控除後の賞与が、同控除後の前月普通給与の10倍を超える場合</li>
-  </ul>
-  <p>この計算では、賞与の計算期間が6か月以内なら6、6か月を超えるなら12を使います。賞与の計算の基礎となった実際の期間を確認して選択してください。</p>
+  <h3 id="shoyo-getsugaku">算出率表を使わない例外</h3>
+  <p class="hint">注：月額表を使う例外は、<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15-16.pdf">賞与の算出率の表16ページ・備考4</a>で確認してください。前月給与の有無・社会保険料等との比較・賞与額によって判定します。</p>
+  <p>月額表を使う例外の計算では、社会保険料等控除後の賞与を、計算期間が6か月以内なら6、6か月を超えるなら12で割ります。賞与の計算の基礎となった実際の期間を確認して選択してください。</p>
 
   <h3 id="shoyo-tsukiwari">給与を数か月ごとに支払っている場合</h3>
-  <p>普通給与を月の整数倍の期間ごとに支払う場合は、直前の普通給与の月割額を前月の給与として判定します。前月に支払がない場合や、前月にまとめ払いした場合が当たります。</p>
-  <p>計算機では「前月に給与の支払があった」にチェックを入れます。賞与の直前に支払を受けた、または支払を受けるべき普通給与と、そこから控除される社会保険料等を、それぞれ月割りして前月欄に入力してください。</p>
+  <p>月割額で判定するのは、普通給与の支給期が月の整数倍と定められている場合で、賞与直前に支払を受けた、または受けるべき普通給与と、そこから控除される社会保険料等をそれぞれ月割りします。</p>
+  <p class="hint">注：<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15-16.pdf">賞与の算出率の表16ページ・備考5</a>を確認してください。計算機の前月欄に月割額を入力する際は、「前月に給与の支払があった」にチェックを入れてください。</p>
 </section>
 
 <section class="faq">
   <h2 id="tool-section-2">報酬・料金の源泉徴収 — 計算のしくみと注意点</h2>
 
   <h3>計算式（原稿料・弁護士・税理士など一般のケース）</h3>
+  <p data-review-context="before-table">Aは居住者への所定の報酬のうち源泉徴収の対象となる金額です。対象外となる公納金は、支払者が国等への登記・申請のため本来納付すべき登録免許税・手数料等への充当が明らかな分です（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2798.htm">No.2798</a>）。</p>
   <div class="scroll-wrap"><table>
-    <tr><th scope="col">支払金額（A）</th><th scope="col">源泉徴収税額</th></tr>
+    <tr><th scope="col">対象報酬額（A）</th><th scope="col">源泉徴収税額</th></tr>
     <tr><td>100万円以下</td><td>A × <b>10.21%</b></td></tr>
     <tr><td>100万円超</td><td>（A − 100万円）× <b>20.42%</b> ＋ 102,100円</td></tr>
   </table></div>
-  <p>10.21% は「所得税10% ＋ 復興特別所得税0.21%」です。求めた税額の<b>1円未満の端数は切り捨て</b>ます（国税庁<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2795.htm">No.2795</a>・<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2798.htm">No.2798</a>の計算方法の注記）。</p>
+  <p data-review-context="after-table">10.21% は「所得税10% ＋ 復興特別所得税0.21%」です。求めた税額の<b>1円未満の端数は切り捨て</b>ます（国税庁<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2795.htm">No.2795</a>・<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2798.htm">No.2798</a>の計算方法の注記）。</p>
 
   <h3>消費税の扱い — ここが実務で一番間違えます</h3>
-  <p><b>原則は「消費税込みの金額」が源泉徴収の対象</b>です。ただし、請求書等で報酬額と消費税額が明確に区分されている場合は、税抜の報酬額のみを対象にできます（平元直法6-1、最終改正平26課法9-1）。</p>
+  <p><b>原則は「消費税込みの金額」が源泉徴収の対象</b>です。ただし、請求書等で報酬額と消費税額が明確に区分されている場合は、税抜の報酬額のみを対象にできます（<a href="https://www.nta.go.jp/law/tsutatsu/kobetsu/shotoku/gensen/890130/01.htm">平元直法6-1、最終改正平26課法9-1</a>）。</p>
   <div class="callout">
     <b>例: 報酬10万円＋消費税1万円</b>
     <ul>
@@ -409,16 +428,15 @@
   </div>
 
   <h3>司法書士等は計算式が違います</h3>
-  <p><b>司法書士・土地家屋調査士・海事代理士</b>への報酬は、<b>1回の支払額から10,000円を差し引いた残額に10.21%</b>を掛けます。弁護士・税理士とは別の式なので注意してください。</p>
-  <p>例: 5万円の支払い → （50,000 − 10,000）× 10.21% = <b>4,084円</b></p>
+  <p>司法書士・土地家屋調査士・海事代理士への報酬は、弁護士・税理士とは計算式が異なります。対象額と計算方法は、国税庁<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2801.htm">No.2801</a>で確認してください。</p>
 
-  <h3>源泉徴収が必要な報酬の例</h3>
+  <h3>報酬の対象範囲を確認する</h3>
   <p>以下は支払者にも源泉徴収義務がある場合の説明です。</p>
   <ul>
-    <li>原稿料・講演料・デザイン料・翻訳料・通訳料</li>
-    <li>弁護士・公認会計士・税理士・社会保険労務士・弁理士など</li>
-    <li>司法書士・土地家屋調査士・海事代理士（計算式が異なる）</li>
-    <li>プロスポーツ選手・モデル・外交員・芸能人</li>
+    <li>原稿料・講演料・デザイン料・翻訳料・通訳料（対象範囲・例外は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2795.htm">No.2795</a>等を確認）</li>
+    <li>資格業務の対象範囲：<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2798.htm">国税庁No.2798</a></li>
+    <li>司法書士等の対象範囲：<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2801.htm">国税庁No.2801</a></li>
+    <li>その他の報酬の対象範囲：<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2792.htm">国税庁No.2792</a></li>
     <li>ホステス等（別の計算式）</li>
   </ul>
   <p style="font-size:13.5px;color:var(--sub)">※ 支払者が給与を支払わない個人、又は常時2人以下の家事使用人だけに給与を払う個人である場合、ホステス等への報酬を除き源泉徴収は不要です。</p>
@@ -426,7 +444,7 @@
   <p style="font-size:13.5px;color:var(--sub)">※ 弁護士・税理士などへの報酬の対象範囲は業務ごとに確認してください。建築代理士業務など源泉徴収対象業務への報酬は別判定です。</p>
 
   <h3>納付の期限</h3>
-  <p>源泉徴収した税額は、原則として<b>支払った月の翌月10日まで</b>に納付します。納期の特例は、承認を受けた場合の給与・退職手当や一定の士業報酬等が対象で、1〜6月分は7月10日、7〜12月分は翌年1月20日が期限です。原稿料・講演料等は特例の対象外で、翌月10日までに納付します。</p>
+  <p>源泉徴収した税額は、原則として支払った月の翌月10日までに納付します（休日に当たる場合は休日明け）。納期の特例の対象と期限は、国税庁<a href="https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/03.pdf">源泉徴収のあらまし「納期の特例」</a>で確認してください。原稿料・講演料等は特例の対象外です。</p>
 
   <div class="callout">
     <b>ご注意</b>
@@ -437,30 +455,30 @@
 <section class="faq">
   <h2 id="faq">よくある質問</h2>
   <h3 class="faq-question">給与の源泉徴収税額はどうやって計算しますか？</h3>
-  <p class="faq-answer">月払給与では国税庁の給与所得の源泉徴収税額表（月額表）を使います。月額表甲欄の金額記載区分では、「その月の社会保険料等控除後の給与等の金額」と「扶養親族等の数」の組み合わせで税額が直接書かれています。表に定める率・算式で計算する区分もあります。日払・週払・日割払などには日額表を使い、日雇賃金には丙欄を適用します。</p>
+  <p class="faq-answer">月額表を使います（居住者への月払給与）。甲欄の参照方法は、<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/01-07.pdf">月額表の備考</a>で確認してください。表に定める率・算式で計算する区分もあります。日額表の使用区分は<a href="#official-pdfs">公式PDFの案内</a>を確認してください。</p>
   <h3 class="faq-question">甲欄と乙欄はどちらを使えばよいですか？</h3>
-  <p class="faq-answer">月払給与では、従業員から「給与所得者の扶養控除等（異動）申告書」の提出を受けていれば<b>甲欄</b>、受けていなければ<b>乙欄</b>です。乙欄は税額が高くなるため、提出を受けているのに乙欄で引くと過大に天引きするおそれがあります。</p>
+  <p class="faq-answer">甲欄・乙欄は、居住者への月払給与について「給与所得者の扶養控除等（異動）申告書」の提出があれば甲欄、なければ乙欄を使います。</p>
   <h3 class="faq-question">扶養親族等の数に16歳未満の子は含めますか？</h3>
   <p class="faq-answer"><b>基本人数には含めませんが、障害者加算は別に判定します。</b>扶養控除等申告書に記載した16歳未満の扶養親族が障害者なら1人、同居特別障害者なら計2人を加算します。国外居住親族は、親族関係書類の添付または提示がある場合に限ります。</p>
   <h3 class="faq-question">給与ソフトの源泉徴収税額と金額が合わないのはなぜですか？</h3>
-  <p class="faq-answer">給与ソフトが「電算機計算の特例」（給与額から算式で求める方法）で計算していると、月額表の税額とは<b>必ずしも一致しません</b>。税額表は給与額の階級の中間値を基にする一方、特例は社会保険料等控除後の給与額そのものを基に計算するため、差が生じます。特例を使える給与と差額の扱いは、<a href="#denshi">給与ソフトの税額と合わない場合の説明</a>を参照してください。</p>
+  <p class="faq-answer">月額表の税額と一致しない場合があります。給与ソフトが月額表甲欄の<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/18.pdf">電算機計算の特例</a>を使っている場合です。特例を使える給与と差額の扱いは、<a href="#denshi">給与ソフトの税額と合わない場合の説明</a>を参照してください。</p>
   <h3 class="faq-question">表を引く金額は総支給額ですか？</h3>
   <p class="faq-answer">いいえ。<b>「その月の社会保険料等控除後の給与等の金額」</b>です。課税支給額（通勤手当などの非課税分を除く）から健康保険・厚生年金・雇用保険などの社会保険料等を差し引いた後の金額で表を引きます。</p>
   <h3 class="faq-question">源泉徴収税額の計算式は？</h3>
-  <p class="faq-answer">税額は、対象報酬額が100万円以下なら「対象報酬額 × 10.21%」、超える場合は「(対象報酬額 − 100万円) × 20.42% ＋ 102,100円」です（原稿料・弁護士・税理士等の所定の報酬の同一人への1回支払分）。この式で求めた税額は、1円未満を切り捨てます。給与・司法書士報酬・ホステス等の報酬には、それぞれ別の計算方法を用います。</p>
+  <p class="faq-answer">計算式は報酬の種類で異なります。居住者への原稿料・弁護士・税理士等の所定の報酬は、<a href="#tool-section-2">報酬の計算式と対象額</a>を確認してください。給与・司法書士報酬・ホステス等の報酬には、それぞれ別の計算方法を用います。</p>
   <h3 class="faq-question">消費税込みの金額から源泉徴収しますか？</h3>
-  <p class="faq-answer">原則は<b>消費税込みの金額</b>が対象です。ただし請求書等で報酬額と消費税額が明確に区分されている場合は、税抜の報酬額のみを対象にすることができます（平元直法6-1、最終改正平26課法9-1）。</p>
+  <p class="faq-answer">原則は<b>消費税込みの金額</b>が対象です。ただし請求書等で報酬額と消費税額が明確に区分されている場合は、税抜の報酬額のみを対象にすることができます（<a href="https://www.nta.go.jp/law/tsutatsu/kobetsu/shotoku/gensen/890130/01.htm">平元直法6-1、最終改正平26課法9-1</a>）。</p>
   <h3 class="faq-question">司法書士への報酬は計算式が違うのですか？</h3>
-  <p class="faq-answer">はい。司法書士・土地家屋調査士・海事代理士については、<b>1回の支払額から10,000円を差し引いた残額に10.21%</b>を掛けます。弁護士・税理士とは計算式が異なります。</p>
+  <p class="faq-answer">はい。弁護士・税理士とは計算式が異なります。司法書士・土地家屋調査士・海事代理士への報酬の対象額と計算方法は、国税庁<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2801.htm">No.2801</a>で確認してください。</p>
 </section>
 <section class="faq rel-block">
 <h2>関連する解説</h2>
 <!--rel:S--><ul class="rel-list"><li><a href="../column/gensen-kojo-taisho-haigusha/">源泉控除対象配偶者とは — 控除対象配偶者との違いと、扶養控除等申告書・税額表での扱い</a><span class="rel-desc">源泉控除対象配偶者の定義と、控除対象配偶者・同一生計配偶者との違い。扶養控除等申告書・税額表・年末調整での扱い。</span></li><li><a href="../column/spot-work-romu/">スポットワークの労務と経理｜応募で契約成立・労災は初日・丙欄・仕訳【令和8年】</a><span class="rel-desc">スポットワーク（単発バイトのマッチング）で働く人の使用者は、仲介事業者ではなく受け入れ先の会社です。応募で労働契約が成立し、労災は初日から適</span></li><li><a href="../column/kakutei-shinkoku-zeirishi-hiyo/">確定申告を税理士に依頼する費用｜相場の決まり方と源泉徴収10.21%</a><span class="rel-desc">確定申告の税理士費用に法定の料金表はありません。2002年の報酬規定廃止後、費用は記帳・取引数・消費税・申告の種類の4要素で決まります。個人</span></li><li><a href="../column/gyomuitaku-kakutei-shinkoku/">業務委託の確定申告【令和8年分】源泉徴収の対象と税率・所得区分</a><span class="rel-desc">業務委託の報酬は、事業所得か雑所得として自分で所得を計算し、確定申告が必要かを判断します。源泉徴収は所得税法204条の報酬の内容と支払者の条</span></li><li><a href="../column/chushajodai-kanjo-kamoku/">駐車場代の勘定科目｜月極は地代家賃・時間貸しは旅費交通費【仕訳7例】</a><span class="rel-desc">駐車場代の勘定科目は、月極なら地代家賃、業務中の時間貸し・コインパーキングなら旅費交通費に入れるのが一般的です。消費税が課税か非課税かの分か</span></li></ul><!--rel:E-->
 </section>
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E7%B5%A6%E4%B8%8E%E3%83%BB%E8%B3%9E%E4%B8%8E%E3%83%BB%E5%A0%B1%E9%85%AC%E3%81%AE%E6%BA%90%E6%B3%89%E5%BE%B4%E5%8F%8E%E7%A8%8E%E9%A1%8D%E3%82%92%E3%80%81%E5%9B%BD%E7%A8%8E%E5%BA%81%E3%81%AE%E7%A8%8E%E9%A1%8D%E8%A1%A8%EF%BC%88%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%88%86%EF%BC%89%E3%81%A7%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E7%B5%A6%E4%B8%8E%E3%81%AF%E6%9C%88%E9%A1%8D%E8%A1%A8%E3%81%AE%E7%94%B2%E6%AC%84%E3%83%BB%E4%B9%99%E6%AC%84%E3%81%A8%E6%89%B6%E9%A4%8A%E8%A6%AA%E6%97%8F%E7%AD%89%E3%81%AE%E6%95%B0%E3%80%81%E9%9A%9C%E5%AE%B3%E8%80%85%E3%83%BB%E5%AF%A1%E5%A9%A6%E3%83%BB%E3%81%B2%E3%81%A8%E3%82%8A%E8%A6%AA%E3%81%AE%E5%8A%A0%E7%AE%97%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fgensen-choshu%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E4%BB%A4%E5%92%8C8%E5%B9%B4%E5%88%86%E3%81%AE%E6%BA%90%E6%B3%89%E5%BE%B4%E5%8F%8E%E7%A8%8E%E9%A1%8D%E8%A1%A8%EF%BC%88%E6%9C%88%E9%A1%8D%E8%A1%A8%EF%BC%89%E3%81%AE%E4%BB%A3%E8%A1%A8%E8%A1%8C%E3%81%A8%E5%85%AC%E5%BC%8FPDF%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%A7%E3%81%8D%E3%80%81%E7%B5%A6%E4%B8%8E%E3%81%AE%E7%94%B2%E6%AC%84%E3%83%BB%E4%B9%99%E6%AC%84%E3%80%81%E6%89%B6%E9%A4%8A%E8%A6%AA%E6%97%8F%E7%AD%89%E3%81%AE%E6%95%B0%E3%81%A7%E7%A8%8E%E9%A1%8D%E3%82%92%E8%87%AA%E5%8B%95%E8%A8%88%E7%AE%97%E3%80%82%E8%B3%9E%E4%B8%8E%E3%81%A8%E6%89%80%E5%AE%9A%E3%81%AE%E5%A0%B1%E9%85%AC%E3%83%BB%E6%96%99%E9%87%91%E3%81%AE%E8%A8%88%E7%AE%97%E3%81%AB%E3%82%82%E5%AF%BE%E5%BF%9C%E3%80%82%E7%84%A1%E6%96%99%E3%83%BB%E7%99%BB%E9%8C%B2%E4%B8%8D%E8%A6%81%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fgensen-choshu%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site" style="display:block">
-  出典: 国税庁タックスアンサー No.2795（原稿料や講演料等）／No.2798（弁護士や税理士等）／No.2801（司法書士等）。<br>
+  出典: 国税庁タックスアンサー <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2795.htm">No.2795（原稿料や講演料等）</a>／<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2798.htm">No.2798（弁護士や税理士等）</a>／<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2801.htm">No.2801（司法書士等）</a>。<br>
   入力した金額はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
@@ -615,7 +633,7 @@ $("calcK").addEventListener("click", async () => {
       <b>${TABLE.year}</b>の月額表による税額です。${rowNote}${extraNote}${over7}
     </div>
     ${denshiRow ? `<div class="hint" style="margin-top:8px">
-      給与ソフトは「電算機計算の特例」で計算することがあり、その額は <b>${yen(denshi)}</b> です。
+      給与ソフトは別の計算方法を使うことがあり、その額は <b>${yen(denshi)}</b> です。
       月額表の額と一致しないことがありますが（国税庁も明記）、<b>どちらも適法</b>で、
       年末調整の対象者は差額を年末調整で精算します。対象外の人は確定申告の要否を確認してください。手元の税額表と突き合わせるなら上の額を使ってください。
     </div>` : ""}`;
