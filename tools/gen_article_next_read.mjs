@@ -69,8 +69,10 @@ const card = (it) => {
   return `<a class="tool-card" href="${esc(rel(it.path))}"><b>${esc(unesc(it.title))}</b><span>${esc(d)}</span></a>`;
 };
 /** 旧来の選択と90文字の切断位置を保ち、表示時の二重エスケープだけを防ぐ */
-const legacyCard = (s) => {
-  const p = articles.get(s); const d = unesc(p.desc.replace(/\s+/g, " ").slice(0, 90));
+const legacyCard = (s, completeSentence = false) => {
+  const p = articles.get(s); let d = unesc(p.desc.replace(/\s+/g, " ").slice(0, 90));
+  // 読みやすさの確認済みページは、紹介文を文末で閉じる。
+  if (completeSentence && p.desc.length > 90) d = d.includes("。") ? d.slice(0, d.lastIndexOf("。") + 1) : d + "…";
   return `<a class="tool-card" href="../${esc(s)}/"><b>${esc(unesc(p.h1))}</b><span>${esc(d)}</span></a>`;
 };
 /** 記事（/column/<slug>/）から見た相対パス */
@@ -209,7 +211,7 @@ for (const [slug, a] of articles) {
   if (exp.T.has(path)) {
     try { html = buildTreatment(slug, a); treated++; } catch (e) { failures.push(e.message); continue; }
   } else {
-    const block = `<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid">${legacyPicks(slug, a).map(legacyCard).join("")}</div></section><!--next-read:E-->`;
+    const block = `<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid">${legacyPicks(slug, a).map((s) => legacyCard(s, slug === "fuyo-kojo-shinkokusho")).join("")}</div></section><!--next-read:E-->`;
     html = a.html;
     if (MARK.test(html)) html = html.replace(MARK, block);
     else {
@@ -219,6 +221,10 @@ for (const [slug, a] of articles) {
       if (at < 0) continue;
       html = html.slice(0, at) + block + "\n" + html.slice(at);
     }
+  }
+  if (slug === 'tokutei-shinzoku-tokubetsu-kojo') {
+    html = html.replace(MARK, block => block.replace(/<span>([^<]*)<\/span>/g,
+      (span, text) => text.length === 90 && !/[。！？…]$/.test(text) ? '<span>' + text + '…</span>' : span));
   }
   html = foldLongRelated(html);
   if (html !== a.html) { changed++; if (!CHECK) writeFileSync(a.file, html); }
