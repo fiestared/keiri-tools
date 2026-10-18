@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>金の税金：売却益・50万円控除・所有期間を同じ条件で検算</title>
+<meta name="description" content="現物金地金の税金を、売却代金・取得費・譲渡費用から整理。短期と長期が同じ年にある設例で、ほかの総合課税の譲渡益と共有する特別控除の順序、総所得へ加える額を検算します。金投資口座との違いも確認できます。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/kin-zeikin-joto/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="金の税金：売却益・50万円控除・所有期間を同じ条件で検算">
+<meta property="og:description" content="現物金地金の税金を、売却代金・取得費・譲渡費用から整理。短期と長期が同じ年にある設例で、ほかの総合課税の譲渡益と共有する特別控除の順序、総所得へ加える額を検算します。金投資口座との違いも確認できます。">
+<meta property="og:url" content="https://keiri-tools.com/column/kin-zeikin-joto/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "金の税金：売却益・50万円控除・所有期間を同じ条件で検算",
+      "datePublished": "2026-10-18",
+      "dateModified": "2026-10-18",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/kin-zeikin-joto/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "金の税金"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "金を売った代金がそのまま所得になりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "なりません。個人の現物金地金が総合課税の譲渡所得になる場合、売却代金から取得費と売却に直接かかった費用を引いて譲渡益を求め、特別控除と所有期間による計算へ進みます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "短期と長期で別々の特別控除を使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "使えません。総合課税の譲渡所得の特別控除は、同年の金以外を含む短期・長期の譲渡益で共有し、利益合計を上限に短期から先に差し引きます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "金投資口座の利益にも現物金の式を使いますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "使いません。金投資口座・金貯蓄口座等の利益は金融類似商品の源泉分離課税です。源泉徴収で課税が終了し、ほかの所得と合算して確定申告はできず、扶養親族等の判定に使う所得からも除かれます。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script><!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 金の税金</nav>
+
+<article>
+<h1>金の税金：売却益・50万円控除・所有期間を同じ条件で検算</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-18">2026年10月18日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><b>個人の現物金地金の売却益は、通常、給与などと合算する総合課税の譲渡所得です。</b>売却代金をそのまま所得にせず、取得費と売却に直接かかった費用を引き、所有期間と同年のほかの譲渡益を確認します。</p>
+<p>ここでは営利目的の継続売買を除き、購入資料がある現物金地金を扱います。金投資口座・金貯蓄口座、投資信託、相続・贈与で取得した金の計算は対象外です。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#type">現物金と口座の利益を分ける</a></li>
+<li><a href="#period">所有期間と控除の早見表</a></li>
+<li><a href="#example">同じ年の短期・長期を検算する</a></li>
+<li><a href="#documents">購入・売却資料から集計する</a></li>
+<li><a href="#tax">所得から税額へ進むときの注意</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#sources">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../sbi-gold-vs-mufg-gold/">SBI・iシェアーズ・ゴールド vs 三菱UFJ純金</a></li><li><a href="../ichiji-shotoku/">一時所得とは</a></li><li><a href="../kakutei-shinkoku-ikurakara/">確定申告はいくらから必要？</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="type">現物金と口座の利益を分ける</h2>
+<p>最初に確認するのは、売却したものが現物金地金なのか、金融商品の契約なのかです。名称に「金」が入っていても、同じ式は使えません。</p>
+<div class="scroll-wrap"><table><caption>個人の金取引と所得の区分</caption><thead><tr><th scope="col">取引</th><th scope="col">扱い</th></tr></thead><tbody>
+<tr><th scope="row">現物金地金の売却（営利目的の継続売買を除く）</th><td>通常は譲渡所得・総合課税。本記事の計算対象</td></tr>
+<tr><th scope="row">営利目的の継続的な金地金売買</th><td>実態に応じて事業所得または雑所得</td></tr>
+<tr><th scope="row">金投資口座・金貯蓄口座などの利益</th><td>金融類似商品として源泉分離課税。現物金の式は使わない</td></tr>
+</tbody></table></div>
+<p class="hint">金投資口座等の利益は源泉徴収で課税が終了し、ほかの所得と合算して確定申告はできず、扶養親族等の判定に使う所得からも除かれます。根拠は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3161.htm">国税庁「金地金の譲渡による所得」</a>です。</p>
+<p>金の投資信託の仕組みは<a href="../sbi-gold-vs-mufg-gold/">金ファンドの比較記事</a>で扱います。また、資産を売った対価は、臨時の入金だからという理由で<a href="../ichiji-shotoku/">一時所得</a>にはしません。</p>
+<h2 id="period">所有期間と控除の早見表</h2>
+<p>現物金地金の譲渡益は「売却代金−取得費−譲渡費用」で求めます。取得費には購入代金や購入手数料を含め、譲渡費用には売るために直接かかった費用を入れます。</p>
+<p data-review-context="before-table">令和8年分の個人の現物金地金について、総合課税の譲渡所得を整理した表です。営利継続売買・相続贈与・損失がある場合は対象外とし、特別控除は同年のほかの総合課税の譲渡益と共通で、短期から先に使います。</p>
+<div class="scroll-wrap"><table><caption>現物金地金：所有期間と総所得への算入</caption><thead><tr><th scope="col">所有期間</th><th scope="col">区分</th><th scope="col">総所得へ加える額</th></tr></thead><tbody>
+<tr><th scope="row">所有期間が5年以内</th><td>短期譲渡所得</td><td>短期の譲渡益から配分された特別控除を引いた額</td></tr>
+<tr><th scope="row">所有期間が5年超</th><td>長期譲渡所得</td><td>長期の譲渡益から配分された特別控除を引いた額の2分の1</td></tr>
+</tbody></table></div>
+<p><b>令和8年分の総合課税の譲渡所得の特別控除は、同年の金以外を含む短期・長期の譲渡益合計に対し最高50万円です。</b>利益合計を超えて控除はできず、短期・長期の両方があるときは短期から先に差し引きます。</p>
+<p>金の売却ごと・買取先ごとに控除枠を取り直す計算ではありません。土地建物や通常の株式の売却は分離課税なので、この総合課税の集計に混ぜません。</p>
+<h2 id="example">同じ年の短期・長期を検算する</h2>
+<p>先に取引ごとの利益を出し、次に所有期間ごとに合計します。以下では、金以外の短期譲渡益も同じ年にある例を使います。</p>
+<p data-review-context="before-table">令和8年分の居住者個人の架空の設例です。営利継続売買・相続贈与・損失はなく、現物金地金と投資用美術品の総合課税の譲渡益だけを集計します。美術品は時の経過により減価しないものと仮定します。取得費・譲渡費用は確定済み、金額は万円単位で、計算に端数はありません。</p>
+<div class="scroll-wrap"><table><caption>設例：各取引の売却代金から譲渡益へ</caption><thead><tr><th scope="col">売った資産・区分</th><th scope="col">売却代金</th><th scope="col">取得費</th><th scope="col">譲渡費用</th><th scope="col">譲渡益</th></tr></thead><tbody>
+<tr><th scope="row">現物金地金・短期</th><td><span class="numeric-token">180万円</span></td><td><span class="numeric-token">145万円</span></td><td><span class="numeric-token">5万円</span></td><td>180−145−5＝30万円</td></tr>
+<tr><th scope="row">現物金地金・長期</th><td><span class="numeric-token">260万円</span></td><td><span class="numeric-token">160万円</span></td><td><span class="numeric-token">10万円</span></td><td>260−160−10＝90万円</td></tr>
+<tr><th scope="row">投資用美術品・短期</th><td><span class="numeric-token">40万円</span></td><td><span class="numeric-token">18万円</span></td><td><span class="numeric-token">2万円</span></td><td>40−18−2＝20万円</td></tr>
+</tbody></table></div>
+<p data-review-context="before-table">同じ令和8年分の設例で、同年の総合課税の譲渡益を短期・長期に集計します。特別控除は短期優先で配分し、長期は控除後に半額を算入します。万円単位・端数なしで、所得控除前の総所得への算入額を示し、税額は示していません。</p>
+<div class="scroll-wrap"><table><caption>設例：共通の特別控除から総所得への算入まで</caption><thead><tr><th scope="col">計算段階</th><th scope="col">短期</th><th scope="col">長期</th></tr></thead><tbody>
+<tr><th scope="row">同年の譲渡益を合計</th><td>金30万円＋美術品20万円＝50万円</td><td>金90万円</td></tr>
+<tr><th scope="row">特別控除の配分</th><td>50万円を控除</td><td>残りの控除枠は0万円</td></tr>
+<tr><th scope="row">特別控除後の譲渡所得</th><td>50万円−50万円＝0万円</td><td><span class="numeric-token">90万円</span></td></tr>
+<tr><th scope="row">総所得へ加える額</th><td><span class="numeric-token">0万円</span></td><td>90万円÷2＝45万円</td></tr>
+</tbody></table></div>
+<p>この設例で総所得へ加える額は、短期と長期を合わせて45万円です。美術品の利益を集計から落とすと控除の配分が変わるため、金の取引資料だけでは計算を終えられません。</p>
+<figure class="figure"><svg viewBox="0 0 440 310" role="img" aria-label="総合課税の譲渡所得の計算順。取引ごとの利益、同年の短期と長期の集計、短期優先で特別控除、長期の控除後を半額算入。">
+<g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="20" y="10" width="400" height="55" rx="7"/><path d="M220 65v25m-6-6 6 6 6-6"/><rect x="20" y="90" width="400" height="55" rx="7"/><path d="M220 145v25m-6-6 6 6 6-6"/><rect x="20" y="170" width="400" height="55" rx="7"/><path d="M220 225v25m-6-6 6 6 6-6"/></g>
+<g fill="currentColor" font-size="18" text-anchor="middle"><text x="220" y="44">売却代金 − 取得費 − 譲渡費用</text><text x="220" y="124">同年の短期・長期に集計</text><text x="220" y="204">特別控除は短期から先に配分</text><text x="220" y="280">長期の控除後は半額を総所得へ</text></g></svg><figcaption>個人の総合課税の譲渡益を集計する順序。分離課税の売却益は混ぜません。</figcaption></figure>
+<h2 id="documents">購入・売却資料から集計する</h2>
+<p>購入時の計算書と売却時の明細を、売った現物に対応させます。購入手数料を取得費に含めた場合に、同じ手数料を譲渡費用へ重ねて入れないようにします。</p>
+<div class="scroll-wrap"><table><caption>集計表へ転記する前の確認</caption><thead><tr><th scope="col">資料</th><th scope="col">確認する内容</th></tr></thead><tbody>
+<tr><th scope="row">購入時の計算書・領収書</th><td>売った金の購入日、数量、購入代金、購入手数料</td></tr>
+<tr><th scope="row">売却明細・入金記録</th><td>売却日、数量、売却代金、売却に直接かかった費用</td></tr>
+<tr><th scope="row">同年のほかの資産の売却資料</th><td>総合課税の譲渡益に当たるか、短期か長期か</td></tr>
+</tbody></table></div>
+<p>売却手数料が入金前に引かれているときは、売却代金と手数料を明細で分けて確かめます。購入資料がない場合や、複数回購入した金の一部を売る場合は、取得費と所有期間をこの単純例だけで決めないでください。</p>
+<h2 id="tax">所得から税額へ進むときの注意</h2>
+<p><b>長期譲渡所得で半分にするのは、特別控除後に総所得へ加える額です。</b>所得税額そのものを半分にする仕組みではありません。ほかの所得と合計した後の控除や累進税率によって、年間の税額は変わります。</p>
+<p>所得の計算と確定申告の要否も分けて確認します。金の利益が特別控除で消えることだけで、給与やほかの所得を含めた申告が不要とは決まりません。申告の入口は<a href="../kakutei-shinkoku-ikurakara/">確定申告はいくらから必要か</a>、作成・提出の流れは<a href="../kakutei-shinkoku-yarikata/">確定申告のやり方</a>を参照してください。</p>
+<a class="tool-cta" href="../../shotokuzei/">所得税計算機の対応範囲を確認する</a>
+<p class="hint">当サイトの所得税計算機は、現物金地金など総合課税の譲渡所得に対応していません。本記事の設例の額を、一時所得や雑所得の欄へ置き換えて入力しないでください。</p>
+<div class="summary-box"><p><b>確認の順序：</b>現物か金融商品かを分ける → 取引ごとの譲渡益を出す → 同年の総合課税の短期・長期に集計する → 特別控除を短期から配分する → 長期の控除後を半額にして合算する。</p></div>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question">金を売った代金がそのまま所得になりますか？</h3>
+<p class="faq-answer">なりません。個人の現物金地金が総合課税の譲渡所得になる場合、売却代金から取得費と売却に直接かかった費用を引いて譲渡益を求め、特別控除と所有期間による計算へ進みます。</p>
+<h3 class="faq-question">短期と長期で別々の特別控除を使えますか？</h3>
+<p class="faq-answer">使えません。総合課税の譲渡所得の特別控除は、同年の金以外を含む短期・長期の譲渡益で共有し、利益合計を上限に短期から先に差し引きます。</p>
+<h3 class="faq-question">金投資口座の利益にも現物金の式を使いますか？</h3>
+<p class="faq-answer">使いません。金投資口座・金貯蓄口座等の利益は金融類似商品の源泉分離課税です。源泉徴収で課税が終了し、ほかの所得と合算して確定申告はできず、扶養親族等の判定に使う所得からも除かれます。</p>
+<h2 id="sources">出典</h2>
+<ul>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3161.htm">国税庁「金地金の譲渡による所得」</a>：所得区分、所有期間、控除の共通枠と順序。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3152.htm">国税庁「譲渡所得の計算のしかた（総合課税）」</a>：取得費、譲渡費用、総所得への算入。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3105.htm">国税庁「譲渡所得の対象となる資産と課税方法」</a>：総合課税と分離課税、生活用動産との区別。</li>
+</ul>
+<p class="source-method"><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3161.htm">国税庁の令和8年4月1日現在法令等の解説</a>を参照。設例は架空の取引です。</p>
+<p class="disclaimer" data-source-nolink="サイトの一般情報提供と個別相談の範囲">この記事は一般的な情報提供です。個別の税務・労務相談には応じられません。実際の申告や取扱いは、税理士・所轄の税務署等にご確認ください。</p>
+
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../rsu-zeikin-vest-baikyaku/"><b>RSUとは：付与・権利確定・売却の3時点で給与税と譲渡税を検算</b><span>RSUは勤務継続などの条件を満たした後に株式等を受け取る報酬制度です。付与・Vest・売却を整理し、給与収入から売却時の取得費へつなぐ円換算例を掲載。SOやRSとの違い、契約と申告</span></a><a class="tool-card" href="../orcan-sp500-holding-period/"><b>オルカンとS&amp;P500、始めた月で結果は変わる？保有12か月を84通りで比較</b><span>オルカンとS&amp;P500を同じ日に買い、12か月後の差を84通りで比較。S&amp;P500−オルカンの差は−6.76〜＋11.27ポイントでした。保存データの計算方法と限界</span></a><a class="tool-card" href="../orcan-sp500-recovery-days/"><b>オルカンとS&amp;P500、下落から戻るまで何日かかったか</b><span>設定来の基準価額から10%以上下落した局面を数え、最高値へ戻るまでの日数を比較。最深の下落と最長の回復期間が異なることを表で確認します。</span></a></div></section><!--next-read:E-->
+</article>
+
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E7%8F%BE%E7%89%A9%E9%87%91%E5%9C%B0%E9%87%91%E3%81%AE%E7%A8%8E%E9%87%91%E3%82%92%E3%80%81%E5%A3%B2%E5%8D%B4%E4%BB%A3%E9%87%91%E3%83%BB%E5%8F%96%E5%BE%97%E8%B2%BB%E3%83%BB%E8%AD%B2%E6%B8%A1%E8%B2%BB%E7%94%A8%E3%81%8B%E3%82%89%E6%95%B4%E7%90%86%E3%80%82%E7%9F%AD%E6%9C%9F%E3%81%A8%E9%95%B7%E6%9C%9F%E3%81%8C%E5%90%8C%E3%81%98%E5%B9%B4%E3%81%AB%E3%81%82%E3%82%8B%E8%A8%AD%E4%BE%8B%E3%81%A7%E3%80%81%E3%81%BB%E3%81%8B%E3%81%AE%E7%B7%8F%E5%90%88%E8%AA%B2%E7%A8%8E%E3%81%AE%E8%AD%B2%E6%B8%A1%E7%9B%8A%E3%81%A8%E5%85%B1%E6%9C%89%E3%81%99%E3%82%8B%E7%89%B9%E5%88%A5%E6%8E%A7%E9%99%A4%E3%81%AE%E9%A0%86%E5%BA%8F%E3%80%81%E7%B7%8F%E6%89%80%E5%BE%97%E3%81%B8%E5%8A%A0%E3%81%88%E3%82%8B%E9%A1%8D%E3%82%92%E6%A4%9C%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E9%87%91%E6%8A%95%E8%B3%87%E5%8F%A3%E5%BA%A7%E3%81%A8%E3%81%AE%E9%81%95%E3%81%84%E3%82%82%E7%A2%BA%E8%AA%8D%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fkin-zeikin-joto%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site">© 税金・経理・補助金ツールズ
+  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body>
+</html>
