@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "kosei-nenkin-kikin", // Google月間推定6,480（2026-10-18 MF2実測）。代行・上乗せと解散後の受取先。
   "kojin-nenkin-zeikin", // Google月間4,320、2026-10-18。本人受取の私的年金の税金。
   "zaisan-saimu-chosho", // 財産債務調書 Google4,320/月（2026-10-18）。年末財産評価と提出要件の照合表。
   "taishoku-tetsuzuki", // 退職手続き Google月間6,480（2026-10-18）。会社側の期限・提出先総覧。
@@ -699,6 +700,7 @@ const CATEGORIES = [
       "maina-hokensho",
       "kakutei-kyoshutsu-nenkin",
       "kigyogata-dc-taishoku",
+      "kosei-nenkin-kikin",
       "kokumin-nenkin-kikin",
       "kakyu-nenkin",
       "nenkin-teikibin-mikata",
