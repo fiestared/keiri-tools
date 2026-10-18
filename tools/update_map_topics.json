@@ -246,7 +246,10 @@
           "参照JSONの_meta（該当する場合）"
         ]
       },
-      "fallback": false
+      "fallback": false,
+      "refines": [
+        "所得税・年末調整"
+      ]
     },
     {
       "name": "基礎控除・給与所得控除（令和8年改正）",
@@ -394,7 +397,7 @@
     },
     {
       "name": "年金額",
-      "pattern": "年金額|老齢(?:基礎|厚生)年金|在職老齢|遺族年金|加給年金|国民年金保険料",
+      "pattern": "年金額|老齢(?:基礎|厚生)年金|在職老齢|遺族年金|加給年金|国民年金保険料|障害(?:基礎|厚生)?年金.{0,8}(?:金額|年額)",
       "source_year_slugs": [],
       "reference_json": [
         "docs/assets/nenkin_r08.json",
@@ -501,7 +504,12 @@
     {
       "name": "NISA・iDeCo",
       "pattern": "NISA|iDeCo|個人型確定拠出|確定拠出年金",
-      "source_year_slugs": [],
+      "source_year_slugs": [
+        "nisa-kinyu-kikan-henko",
+        "ideco-jogen-kaisei",
+        "kodomo-nisa-2027-tetsuzuki",
+        "kyu-nisa-kazei-ikou"
+      ],
       "reference_json": [
         "docs/assets/tsumitate_r08.json",
         "docs/assets/ideco_deguchi_r08.json"
@@ -575,12 +583,8 @@
     },
     {
       "name": "消費税・インボイス",
-      "pattern": "消費税|インボイス|仕入税額|簡易課税|[23２３]割特例|適格請求書",
-      "source_year_slugs": [
-        "invoice-2wari-tokurei",
-        "invoice-wakariyasuku",
-        "shohizei-kanpu"
-      ],
+      "pattern": "消費税|簡易課税",
+      "source_year_slugs": [],
       "reference_json": [],
       "primary_urls": [
         "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shohi/6102.htm"
@@ -589,11 +593,10 @@
         "months": [
           12,
           1,
-          9,
-          10
+          3
         ],
         "status": "planning_estimate",
-        "note": "12月改正・9〜10月経過措置期限を確認。適用課税期間を先に確認",
+        "note": "消費税の一般事項・簡易課税の残余候補。12月改正・申告期に確認。インボイス経過措置と還付加算金は別テーマ",
         "basis": [
           "designs/keiri-source-driven-updates-2026-09-29 §7",
           "tools/source_year_registry.json",
@@ -679,37 +682,21 @@
     },
     {
       "name": "所得税・年末調整",
-      "pattern": "所得税|年末調整|確定申告|予定納税|源泉徴収|復興特別|防衛特別",
-      "source_year_slugs": [
-        "taishokukin-zeikin",
-        "taishoku-gensen-choshuhyo",
-        "hoteichosho-goukeihyo",
-        "gensen-shotokuzei-nofusho",
-        "nenmatsu-chosei-kanpukin",
-        "shiharai-chosho",
-        "nenmatsu-chosei-kakikata",
-        "gensen-choshuhyo-mikata",
-        "gensen-choshubo",
-        "kanai-rodosha-tokurei",
-        "kyuyo-shiharai-hokokusho",
-        "tsukin-teate-hikazei"
-      ],
-      "reference_json": [
-        "docs/assets/nencho_r08.json",
-        "docs/assets/shotokuzei_r08.json",
-        "docs/assets/yotei_nozei_r08.json"
-      ],
+      "pattern": "所得税|確定申告|源泉徴収|復興特別|防衛特別",
+      "source_year_slugs": [],
+      "reference_json": [],
       "primary_urls": [
         "https://www.nta.go.jp/publication/pamph/01.htm"
       ],
       "next_revision": {
         "months": [
-          10,
-          11,
-          12
+          12,
+          1,
+          2,
+          3
         ],
         "status": "planning_estimate",
-        "note": "年末調整の最新版と12月施行・翌年分の適用を確認",
+        "note": "一般的な所得税・申告の残余候補。税率表・年末調整・法定調書・源泉納付等は別テーマで確認。12月改正、1〜3月の申告案内を棚卸し",
         "basis": [
           "designs/keiri-source-driven-updates-2026-09-29 §7",
           "tools/source_year_registry.json",
@@ -722,7 +709,8 @@
       "name": "保険料・医療費控除",
       "pattern": "生命保険料控除|地震保険料控除|医療費控除|社会保険料控除|小規模企業共済等掛金控除",
       "source_year_slugs": [
-        "seimei-hokenryo-kojo"
+        "seimei-hokenryo-kojo",
+        "nenmatsu-chosei-gakushi-hoken"
       ],
       "reference_json": [
         "docs/assets/iryohi_r08.json"
@@ -748,8 +736,10 @@
     },
     {
       "name": "相続・贈与税",
-      "pattern": "相続税|贈与税|相続時精算|生前贈与|小規模宅地",
-      "source_year_slugs": [],
+      "pattern": "相続税|贈与税|相続時精算|生前贈与|小規模宅地|借地権.{0,8}(?:相続|評価)|教育資金.{0,8}贈与",
+      "source_year_slugs": [
+        "kyoiku-shikin-zoyo-shuryo"
+      ],
       "reference_json": [
         "docs/assets/sozokuzei_r08.json",
         "docs/assets/zoyozei_r08.json",
@@ -775,8 +765,31 @@
       "fallback": false
     },
     {
+      "name": "財産債務調書・国外財産調書",
+      "pattern": "財産債務調書|国外財産調書|財産総額|財産の価額",
+      "source_year_slugs": [],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/hotei/7457.htm",
+        "https://www.nta.go.jp/publication/pamph/hotei/zaisan_saimu/pdf/zaisan_faq.pdf"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "税制改正大綱（12月）と翌年の国税庁FAQ改訂で提出要件・様式を確認",
+        "basis": [
+          "tools/source_year_registry.json",
+          "国税庁 No.7457"
+        ]
+      },
+      "fallback": false
+    },
+    {
       "name": "登録免許税・不動産税",
-      "pattern": "登録免許税|不動産取得税|固定資産税|住宅用家屋|登記.{0,10}免税",
+      "pattern": "登録免許税|不動産取得税|固定資産税|住宅用家屋|登記.{0,10}免税|償却資産税",
       "source_year_slugs": [
         "shokyaku-shisanzei"
       ],
@@ -832,11 +845,10 @@
     },
     {
       "name": "法人税・減価償却",
-      "pattern": "法人税|減価償却|耐用年数|少額減価|償却率|交際費|損金",
+      "pattern": "法人税|交際費|損金",
       "source_year_slugs": [],
       "reference_json": [
         "docs/assets/hojinzei_r08.json",
-        "docs/assets/genka_rates.json",
         "docs/assets/hojokin_zeimu_r08.json"
       ],
       "primary_urls": [
@@ -848,7 +860,7 @@
           1
         ],
         "status": "planning_estimate",
-        "note": "税制改正・少額資産等の特例期限を確認",
+        "note": "法人税・交際費・損金の残余候補。12月の大綱と翌年の適用事業年度を確認。償却資産の金額基準・率表は別テーマ",
         "basis": [
           "designs/keiri-source-driven-updates-2026-09-29 §7",
           "tools/source_year_registry.json",
@@ -859,11 +871,9 @@
     },
     {
       "name": "労働時間・休暇・労務制度",
-      "pattern": "有給|年次有給|時間外|残業|割増賃金|労働時間|休業|解雇|労働基準|36協定",
+      "pattern": "労働基準|休業|解雇|労務制度",
       "source_year_slugs": [],
-      "reference_json": [
-        "docs/assets/zangyodai_rates.json"
-      ],
+      "reference_json": [],
       "primary_urls": [
         "https://laws.e-gov.go.jp/law/322AC0000000049"
       ],
@@ -873,7 +883,7 @@
           4
         ],
         "status": "planning_estimate",
-        "note": "法改正・通達・経過措置を随時確認。年度末は棚卸しの目安",
+        "note": "休業・解雇・労働基準の残余候補。法改正・通達は随時、3〜4月に棚卸し。割増賃金と年次有給休暇は別テーマ",
         "basis": [
           "designs/keiri-source-driven-updates-2026-09-29 §7",
           "tools/source_year_registry.json",
@@ -885,7 +895,9 @@
     {
       "name": "補助金・助成金",
       "pattern": "補助金|助成金|公募|募集期限",
-      "source_year_slugs": [],
+      "source_year_slugs": [
+        "tokutei-kyushokusha-joseikin"
+      ],
       "reference_json": [
         "docs/assets/hojokin_schedule.json",
         "docs/assets/hojokin_jgrants.json",
@@ -966,6 +978,494 @@
         ]
       },
       "fallback": false
+    },
+    {
+      "name": "年末調整の様式・計算",
+      "pattern": "年末調整|年調(?:年税額|所得税額)|源泉徴収簿|(?:扶養控除等|保険料控除|基礎控除).{0,4}申告書",
+      "source_year_slugs": [
+        "nenmatsu-chosei-kanpukin",
+        "nenmatsu-chosei-kakikata",
+        "gensen-choshubo",
+        "nenmatsu-chosei-teisei"
+      ],
+      "reference_json": [
+        "docs/assets/nencho_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/01.htm"
+      ],
+      "next_revision": {
+        "months": [
+          9,
+          10,
+          11,
+          12
+        ],
+        "status": "planning_estimate",
+        "note": "9〜10月の年末調整資料・各種申告書を重点確認し、11〜12月の実務前に再確認。nencho_r08のnext_review=2027-10-01も継承",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/01.htm"
+        ]
+      },
+      "fallback": false,
+      "refines": [
+        "所得税・年末調整"
+      ]
+    },
+    {
+      "name": "所得税の税率表・付加税",
+      "pattern": "所得税.{0,12}(?:税率|速算)|課税(?:総)?所得.{0,10}(?:税率|速算)|復興特別所得税|防衛特別所得税|金融所得課税",
+      "source_year_slugs": [
+        "kinyu-shotoku-kazei-2027"
+      ],
+      "reference_json": [
+        "docs/assets/shotokuzei_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "12月の税制改正と1月の確定申告手引を確認。shotokuzei_r08のnext_review=2027-01-15を継承。源泉徴収税額表の8〜9月公表と分ける",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm"
+        ]
+      },
+      "fallback": false,
+      "refines": [
+        "所得税・年末調整"
+      ]
+    },
+    {
+      "name": "源泉徴収票・法定調書",
+      "pattern": "源泉徴収票|法定調書|支払調書|給与支払報告書",
+      "source_year_slugs": [
+        "taishoku-gensen-choshuhyo",
+        "hoteichosho-goukeihyo",
+        "shiharai-chosho",
+        "gensen-choshuhyo-mikata",
+        "kyuyo-shiharai-hokokusho"
+      ],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/index.htm"
+      ],
+      "next_revision": {
+        "months": [
+          9,
+          10,
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "法定調書手引は9月の訂正掲載実績も含め9〜10月から確認。12〜1月の交付・提出時はregistryの対象年分も確認",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/publication/pamph/hotei/tebiki2026/index.htm"
+        ]
+      },
+      "fallback": false,
+      "refines": [
+        "所得税・年末調整"
+      ]
+    },
+    {
+      "name": "源泉徴収の手続・納付",
+      "pattern": "所得税徴収高計算書|源泉.{0,8}(?:納付|納期|納税)|納期の特例|報酬.{0,10}(?:源泉|税率)|源泉徴収(?!税額|票|簿)",
+      "source_year_slugs": [
+        "gensen-shotokuzei-nofusho"
+      ],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/index.htm",
+        "https://www.nta.go.jp/publication/pamph/01.htm"
+      ],
+      "next_revision": {
+        "months": [
+          9,
+          12,
+          1,
+          7
+        ],
+        "status": "planning_estimate",
+        "note": "源泉徴収のあらましは前年12月掲載、納付書の記載のしかたは9月改訂の実績。公表・改訂を重点確認し、納期の特例は1・7月にも確認。給与の月額・日額・賞与表は別テーマ",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/index.htm",
+          "https://www.nta.go.jp/publication/pamph/01.htm"
+        ]
+      },
+      "fallback": false,
+      "refines": [
+        "所得税・年末調整"
+      ]
+    },
+    {
+      "name": "予定納税",
+      "pattern": "予定納税|減額申請",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/yotei_nozei_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2040.htm"
+      ],
+      "next_revision": {
+        "months": [
+          5,
+          6,
+          7,
+          11
+        ],
+        "status": "planning_estimate",
+        "note": "5月の基準日・6月通知前、7月と11月の納付・減額申請前に期限を確認",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2040.htm"
+        ]
+      },
+      "fallback": false,
+      "refines": [
+        "所得税・年末調整"
+      ]
+    },
+    {
+      "name": "退職所得・退職所得控除",
+      "pattern": "退職所得(?!以外)|退職(?:金|手当).{0,12}(?:税|控除)|短期退職手当|特定役員退職",
+      "source_year_slugs": [
+        "taishokukin-zeikin"
+      ],
+      "reference_json": [
+        "docs/assets/taishoku_rates_r08.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1420.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "12月改正と翌年分の退職所得控除・重複期間の適用を確認。法定調書の様式は別テーマ",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1420.htm"
+        ]
+      },
+      "fallback": false,
+      "refines": [
+        "所得税・年末調整"
+      ]
+    },
+    {
+      "name": "給与の非課税・現物給与",
+      "pattern": "通勤手当|食事補助|食事の支給|現物給与|賃貸料相当額",
+      "source_year_slugs": [
+        "tsukin-teate-hikazei"
+      ],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2585.htm"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4,
+          9,
+          10
+        ],
+        "status": "planning_estimate",
+        "note": "通勤手当は令和8年4月の改正掲載実績、現物給与はregistryの10月改定注記も参照。3〜4月と9〜10月に棚卸し、改正告知時は随時確認。毎年改定とはしない",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2585.htm",
+          "https://www.nta.go.jp/publication/pamph/01.htm"
+        ]
+      },
+      "fallback": false,
+      "refines": [
+        "所得税・年末調整"
+      ]
+    },
+    {
+      "name": "青色申告・必要経費の特例",
+      "pattern": "青色申告|青色(?:特別|申告特別)?控除|家内労働者|専従者控除|白色申告",
+      "source_year_slugs": [
+        "kanai-rodosha-tokurei"
+      ],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2072.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1,
+          3
+        ],
+        "status": "planning_estimate",
+        "note": "12月改正と翌年の申告手引で控除額・帳簿要件・適用年分を確認。家内労働者の年版は既存監視を継承",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2072.htm"
+        ]
+      },
+      "fallback": false,
+      "refines": [
+        "所得税・年末調整"
+      ]
+    },
+    {
+      "name": "インボイス・仕入税額控除の経過措置",
+      "pattern": "インボイス|仕入税額|[23２３]割特例|適格請求書",
+      "source_year_slugs": [
+        "invoice-2wari-tokurei",
+        "invoice-wakariyasuku"
+      ],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/invoice-review/index.htm"
+      ],
+      "next_revision": {
+        "months": [
+          9,
+          10,
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "9〜10月の経過措置切替と12月改正を確認。年度版の有無・適用課税期間はregistryを優先",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/taxes/shiraberu/zeimokubetsu/shohi/keigenzeiritsu/invoice-review/index.htm"
+        ]
+      },
+      "fallback": false,
+      "refines": [
+        "消費税・インボイス"
+      ]
+    },
+    {
+      "name": "延滞税・加算税・還付加算金",
+      "pattern": "延滞税|加算税|還付加算金|特例基準割合",
+      "source_year_slugs": [
+        "shohizei-kanpu"
+      ],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/nozei/entaizei/keisan/entai_wariai.htm"
+      ],
+      "next_revision": {
+        "months": [
+          11,
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "翌年1月適用の特例基準割合・年別割合を年末に確認。shohizei-kanpuの監視先（延滞税の割合）を継承",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/taxes/nozei/entaizei/keisan/entai_wariai.htm"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "減価償却・少額資産・修繕費",
+      "pattern": "減価償却|耐用年数|少額減価|償却率|一括償却|修繕費|資本的支出|消耗品費",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/genka_rates.json"
+      ],
+      "primary_urls": [
+        "https://www.nta.go.jp/taxes/shiraberu/taxanswer/hojin/5402.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1,
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "12月の大綱・年度末の特例期限と新年度の償却率・少額資産要件を確認",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/taxes/shiraberu/taxanswer/hojin/5402.htm"
+        ]
+      },
+      "fallback": false,
+      "refines": [
+        "法人税・減価償却"
+      ]
+    },
+    {
+      "name": "労働時間・割増賃金",
+      "pattern": "時間外|残業|割増賃金|労働時間|36協定|深夜(?:割増|手当)|休日(?:割増|手当)",
+      "source_year_slugs": [],
+      "reference_json": [
+        "docs/assets/zangyodai_rates.json"
+      ],
+      "primary_urls": [
+        "https://laws.e-gov.go.jp/law/322AC0000000049"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "法改正・通達・猶予期限を随時確認。3〜4月は割増率・労働時間制度の棚卸し",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://laws.e-gov.go.jp/law/322AC0000000049"
+        ]
+      },
+      "fallback": true,
+      "refines": [
+        "労働時間・休暇・労務制度"
+      ]
+    },
+    {
+      "name": "年次有給休暇",
+      "pattern": "有給|年次有給|年休",
+      "source_year_slugs": [],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.mhlw.go.jp/bunya/roudoukijun/faq_kijyunhou_15.html"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "付与日数・比例付与・取得義務の改正を随時確認。年度末に棚卸し",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.mhlw.go.jp/bunya/roudoukijun/faq_kijyunhou_15.html"
+        ]
+      },
+      "fallback": true,
+      "refines": [
+        "労働時間・休暇・労務制度"
+      ]
+    },
+    {
+      "name": "社会保険の加入・扶養条件",
+      "pattern": "社会保険.{0,8}(?:加入|扶養|適用)|被扶養者|短時間労働者|適用拡大",
+      "source_year_slugs": [],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.nenkin.go.jp/service/kounen/tekiyo/jigyosho/tanjikan.html"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4,
+          9,
+          10
+        ],
+        "status": "planning_estimate",
+        "note": "適用拡大の施行・扶養認定の通知を随時確認。年度・下期の切替を棚卸し",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nenkin.go.jp/service/kounen/tekiyo/jigyosho/tanjikan.html"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "雇用保険の加入条件",
+      "pattern": "雇用保険.{0,10}(?:加入|適用|被保険者)|週.{0,4}時間.{0,8}雇用保険",
+      "source_year_slugs": [
+        "koyou-hoken-kanyu-joken"
+      ],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000134526.html"
+      ],
+      "next_revision": {
+        "months": [
+          3,
+          4
+        ],
+        "status": "planning_estimate",
+        "note": "加入条件の法改正・施行日を確認。年度版がないためregistryのprobe_off_reasonを継承し、年度末に棚卸し",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000134526.html"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "電子帳簿保存法",
+      "pattern": "電子帳簿|電帳法|電子取引|スキャナ保存",
+      "source_year_slugs": [],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.nta.go.jp/law/joho-zeikaishaku/sonota/jirei/index.htm"
+      ],
+      "next_revision": {
+        "months": [
+          12,
+          1
+        ],
+        "status": "planning_estimate",
+        "note": "税制改正と国税庁の一問一答・検索要件・猶予措置の更新を随時確認。年末年始に棚卸し",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.nta.go.jp/law/joho-zeikaishaku/sonota/jirei/index.htm"
+        ]
+      },
+      "fallback": false
+    },
+    {
+      "name": "振込の反映・全銀システム",
+      "pattern": "振込.{0,8}反映|振り込み.{0,8}反映|全銀システム|モアタイム",
+      "source_year_slugs": [
+        "furikomi-hanei-jikan"
+      ],
+      "reference_json": [],
+      "primary_urls": [
+        "https://www.zengin-net.jp/"
+      ],
+      "next_revision": {
+        "months": [],
+        "status": "planning_estimate",
+        "note": "参加金融機関・取扱時間・メンテナンスの告知時に確認（固定の公表月なし）",
+        "basis": [
+          "tools/source_year_registry.json",
+          "参照JSONの_meta.next_review（該当する場合）",
+          "https://www.zengin-net.jp/"
+        ]
+      },
+      "fallback": false
     }
-  ]
+  ],
+  "_maintenance_note": "2026-10-18: 既存テーマ名は残余候補用に維持。refinesで同じ文脈の広い親テーマを具体テーマに置き換える。値だけのパターンは禁止。確認月は公表の目安で、reference_jsonのnext_reviewとsource_year_registryの注記を継承する。"
 }

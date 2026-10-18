@@ -220,6 +220,10 @@ for (const [slug, a] of articles) {
       html = html.slice(0, at) + block + "\n" + html.slice(at);
     }
   }
+  if (slug === 'tokutei-shinzoku-tokubetsu-kojo') {
+    html = html.replace(MARK, block => block.replace(/<span>([^<]*)<\/span>/g,
+      (span, text) => text.length === 90 && !/[。！？…]$/.test(text) ? '<span>' + text + '…</span>' : span));
+  }
   html = foldLongRelated(html);
   if (html !== a.html) { changed++; if (!CHECK) writeFileSync(a.file, html); }
 }
