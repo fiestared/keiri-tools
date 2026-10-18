@@ -198,16 +198,19 @@ const strip = (s) => s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
   }
 }
 
-// 7-2. 看板callout(#muko-callout): 89万<104万の関係と「0円」の主張
+// 7-2. 看板の主張「所得税は控除がなくても0円」と基礎控除104万円
+// 2026-10-18 の書き直し(rg40)で #muko-callout は消え、主張は h2#shotokuzei 直後の段落へ言い換えて移った。
+// 根拠の基礎控除104万円は、その直後の hint に移った。h2 からの隣接関係で名指しする(一意)。
+// ※書き直しで「89万円は104万円の範囲内なので」という導出の一文は本文から消えた
+//   (大小関係そのものは下の §6 前後とオラクルでデータ側を固定している)。
 {
-  const m = HTML.match(/<div class="callout" id="muko-callout">([\s\S]*?)<\/div>/);
-  ok("所得税0のcalloutがある", !!m);
+  const m = HTML.match(/<h2 id="shotokuzei">[^<]*<\/h2>\s*<p>([\s\S]*?)<\/p>\s*<p class="hint">([\s\S]*?)<\/p>/);
+  ok("所得税0の主張(h2#shotokuzei直後の段落)がある", !!m);
   if (m) {
-    const t = strip(m[1]);
-    ok("calloutに89万円", t.includes("89万円"));
-    ok("calloutに基礎控除104万円", t.includes("基礎控除104万円"));
-    ok("calloutに所得税が0円", t.includes("所得税が0円"));
-    ok("calloutに『控除がなくても』", t.includes("控除がなくても"));
+    const t = strip(m[1]), h = strip(m[2]);
+    ok("段落に『勤労学生控除がなくても0円』", t.includes("勤労学生控除がなくても0円"));
+    ok("段落に令和8年分の要件を満たす居住者という限定", t.includes("令和8年分の勤労学生の要件を満たす居住者"));
+    ok("直後のhintに基礎控除104万円", h.includes("基礎控除104万円"));
   }
 }
 
@@ -228,10 +231,13 @@ const strip = (s) => s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
   const title = (HTML.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || "";
   ok("titleに163万円", title.includes("163万円"));
   const desc = (HTML.match(/<meta name="description" content="([\s\S]*?)">/) || [])[1] || "";
-  ok("meta descに89万円", desc.includes("89万円"));
-  ok("meta descに163万円", desc.includes("163万円"));
-  ok("meta descに26,500円", desc.includes("26,500円"));
-  ok("meta descに104万円", desc.includes("104万円"));
+  // rg40 で meta description から数字を外した(年分と確認できる内容だけを書く形)。
+  // 数字が戻ってきたときに検証済みの値以外を名乗らないよう、金額は既知の集合に限る(規則6・9)。
+  ok("meta descに令和8年分", desc.includes("令和8年分"));
+  const ALLOWED = new Set(["27万円", "26万円", "89万円", "163万円", "104万円", "26,500円"]);
+  const amounts = desc.match(/\d[\d,]*万?円/g) || [];
+  eq("meta descの金額は検証済みの値だけ", amounts.filter((x) => !ALLOWED.has(x)), []);
+  ok("meta descが空でない", desc.length > 20);
 }
 
 // 7-5. FAQの数値の主張(h3を名指し)
@@ -243,15 +249,34 @@ const strip = (s) => s.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
   const imi = faq("所得税が減らないなら、申告する意味はありますか？");
   ok("FAQ(意味)に26,500円", imi.includes("26,500円"));
   ok("FAQ(意味)に143万円", imi.includes("143万円"));
-  ok("FAQ(意味)に119万円", imi.includes("119万円"));
-  ok("FAQ(意味)に209万円", imi.includes("209万円"));
+  // rg40 で 119万円・209万円は答えから外れ、非課税の人は軽減なし＋自治体差の申告に言い換えた。
+  // 119万円は例表#jumin-reiの行(7-1で照合済み)、209万円は未成年のcalloutに残る。
+  ok("FAQ(意味)に非課税なら軽減なし", imi.includes("住民税がもともと非課税の人は、この控除による住民税の軽減はありません"));
+  ok("FAQ(意味)に非課税限度額の自治体差", imi.includes("非課税限度額は自治体によって異なります"));
+  {
+    const m = HTML.match(/<div class="callout">\s*<b>未成年者は住民税が非課税になる場合があります<\/b>([\s\S]*?)<\/div>/);
+    const t = m ? strip(m[1]) : "";
+    ok("未成年calloutに135万円以下", t.includes("合計所得金額135万円以下"));
+    ok("未成年calloutに年収209万円以下", t.includes("年収209万円以下"));
+  }
   const kakemochi = faq("バイトをかけもちしています。年収はいくらまでなら対象ですか？");
   ok("FAQ(かけもち)に163万円", kakemochi.includes("163万円"));
-  ok("FAQ(かけもち)に89万円", kakemochi.includes("89万円"));
-  ok("FAQ(かけもち)に74万円", kakemochi.includes("74万円"));
+  // rg40 で 89万円・74万円は答えから外れ、#yoken(3つの要件) と #zentei(前提の換算表) へのリンクに移った。
+  ok("FAQ(かけもち)に全部の給与を合算", kakemochi.includes("全部のバイト給与を合算"));
+  {
+    const y = HTML.match(/<tr><td><b>③ 所得が少ないこと<\/b><\/td><td>([\s\S]*?)<\/td>/);
+    ok("要件表③に合計所得金額89万円以下", y && strip(y[1]).includes("合計所得金額89万円以下"));
+    const k = HTML.match(/<table id="kyuyo-kansan">[\s\S]*?<tr><td>74万1,000円以上219万1,000円未満<\/td><td>([\s\S]*?)<\/td>/);
+    ok("換算表に年収から74万円を引いた額", k && strip(k[1]).includes("年収から74万円を引いた額"));
+  }
   const oya = faq("勤労学生控除を使うと、親の扶養から外れますか？");
   ok("FAQ(親)に62万円", oya.includes("62万円"));
-  ok("FAQ(親)に136万円", oya.includes("136万円"));
+  // rg40 で年収136万円の換算は答えから外れ、#fuyo の対比表(判定に使う所得の行)に残る。
+  {
+    const r = HTML.match(/<tr><td><b>判定に使う所得<\/b><\/td><td>([\s\S]*?)<\/td><td>([\s\S]*?)<\/td><\/tr>/);
+    ok("扶養対比表(勤労学生側)に89万円以下（年収163万円以下）", r && strip(r[1]).includes("合計所得89万円以下（年収163万円以下）"));
+    ok("扶養対比表(親の扶養側)に62万円以下（年収136万円以下）", r && strip(r[2]).includes("合計所得62万円以下（年収136万円以下）"));
+  }
   // 62万円+74万円=136万円の導出(扶養親族の所得要件はhitorioyaのfuyo_income_limitが正本)
   eq("136万円 = 62万+74万", D.hitorioya.fuyo_income_limit + J.kyuyo_shotoku_r8.flat_kojo, 1_360_000);
 }
