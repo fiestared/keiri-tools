@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>個人年金の税金：年金額・対応保険料・源泉徴収から年間税額を検算</title>
+<meta name="description" content="個人年金の税金は、保険料負担者と受取人、受取方法で変わります。本人が受け取る私的年金の雑所得を、対応保険料と源泉徴収の通知から確認。同じ架空例で年間の所得税と翌年度の住民税所得割を検算し、公的年金や一括受取との違いも整理します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/kojin-nenkin-zeikin/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="個人年金の税金：年金額・対応保険料・源泉徴収から年間税額を検算">
+<meta property="og:description" content="個人年金の税金は、保険料負担者と受取人、受取方法で変わります。本人が受け取る私的年金の雑所得を、対応保険料と源泉徴収の通知から確認。同じ架空例で年間の所得税と翌年度の住民税所得割を検算し、公的年金や一括受取との違いも整理します。">
+<meta property="og:url" content="https://keiri-tools.com/column/kojin-nenkin-zeikin/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "個人年金の税金：年金額・対応保険料・源泉徴収から年間税額を検算",
+      "datePublished": "2026-10-18",
+      "dateModified": "2026-10-18",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/kojin-nenkin-zeikin/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "個人年金の税金",
+          "item": "https://keiri-tools.com/column/kojin-nenkin-zeikin/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "個人年金に公的年金等控除は使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "本人が保険料を負担して受け取る私的保険年金は、公的年金等以外の雑所得です。公的年金等控除を使う計算ではなく、年金額に対応する保険料・掛金を必要経費として差し引きます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "源泉徴収されていなければ申告不要ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "それだけでは決まりません。本人負担の私的年金で源泉徴収がなくても、雑所得を他の所得と合わせて申告要否を確認します。給与所得者や公的年金受給者の申告不要制度は、それぞれの要件によります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "対応保険料は払込保険料の総額ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "払込総額とは区別します。本人が保険料を負担して年金で受け取る私的保険年金の雑所得では、その年に受け取った年金額に対応する払込保険料・掛金を差し引きます。支払通知の対応保険料を確認します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "源泉徴収された税金は戻りますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "申告全体で既納付税額が年間の税額を超えていれば、還付の対象です。還付申告書は、その年の翌年1月1日から5年間提出できます。ただし、期限内申告が要件となる特例は、還付申告でも法定申告期限までの提出が必要です。期間・手続は国税庁No.2030 還付申告を参照してください。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1"><nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 個人年金の税金</nav><article>
+<h1>個人年金の税金：年金額・対応保険料・源泉徴収から年間税額を検算</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-18">2026年10月18日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+
+<p><b>保険料を負担した本人が受け取る個人年金は、年金額から対応する保険料を引いた差額が、公的年金等以外の雑所得になります。</b>将来の年金総額に代えて一括で受け取る場合は、別の扱いです。</p>
+<p>年金から引かれる源泉徴収税は前払いで、年間の税額そのものではありません。まず支払通知で収入・対応保険料・源泉徴収税額を分け、その後に総合課税の他の所得と合わせて計算します。</p>
+<p>以下は、本人負担の私的保険年金を毎年受け取る人の一般解説です。一括受取は<a href="../ichiji-shotoku/">一時所得の記事</a>、公的年金は<a href="../nenkin-jukyusha-kakutei-shinkoku/">年金受給者の確定申告</a>に分けています。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol><li><a href="#kubun">先に負担者と受取方法を分ける</a></li><li><a href="#tsuchi">通知の収入・対応保険料・源泉税を分ける</a></li><li><a href="#gensen">源泉徴収なしと非課税は別</a></li><li><a href="#nenzei">年間の所得税を同じ設例で検算する</a></li><li><a href="#juminzei">住民税は翌年度の所得割を別に計算する</a></li><li><a href="#shinkoku">申告前に通知と他の所得をそろえる</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#related">関連記事・ツール</a></li><li><a href="#shutten">出典</a></li></ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../ichiji-shotoku/">一時所得とは</a></li><li><a href="../nenkin-jukyusha-kakutei-shinkoku/">年金受給者の確定申告</a></li><li><a href="../juminzei-hikazei-border/">住民税非課税のボーダーを1円超えたら、いくら損するか</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="kubun">先に負担者と受取方法を分ける</h2>
+<div class="scroll-wrap"><table><caption>私的個人年金の受取区分</caption><thead><tr><th scope="col">受取の条件</th><th scope="col">税の扱いと確認先</th></tr></thead><tbody>
+<tr><th scope="row">保険料負担者本人が年金で受取</th><td>公的年金等以外の雑所得。本記事の設例の対象</td></tr>
+<tr><th scope="row">保険料負担者本人が将来の年金総額に代えて一時金で受取</th><td>一時所得。<a href="../ichiji-shotoku/">一括受取の計算</a>へ</td></tr>
+<tr><th scope="row">生存する保険料負担者とは別人が年金で受取</th><td>給付事由発生時の年金受給権に贈与税。毎年の年金の所得税も本人負担とは別計算</td></tr>
+</tbody></table></div>
+<p class="hint">別人負担の年金は、贈与税の納税額がなくても本人負担の算式にはなりません。毎年の年金の所得税計算・相続取得は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1620.htm">国税庁No.1620</a>を参照してください。本記事では受給権の評価額や各年の課税部分は計算しません。</p>
+<h2 id="tsuchi">通知の収入・対応保険料・源泉税を分ける</h2>
+<p>保険料負担者本人の年金受取では、雑所得は「その年の年金額−その年金額に対応する保険料・掛金」です。根拠は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1610.htm">国税庁No.1610</a>です。</p>
+<p>保険会社の支払通知などにある年金額、必要経費に当たる対応保険料、源泉徴収税額を照合します。通帳の振込額だけでは、税引前の年金額と源泉税を区別できません。</p>
+<p>払込保険料の総額を受取初年にまとめて引く計算ではありません。通知の対応保険料が分からなければ、保険会社へ内訳を確認します。</p>
+<p data-review-context="before-table">令和8年分の架空の設例です。居住者である保険料負担者本人が、私的個人年金を年一括で受け取ります。対応保険料が通知で確定していると仮定し、他の私的年金・相続贈与取得・一時金はありません。</p>
+<div class="scroll-wrap"><table><caption>通知から雑所得と源泉徴収税額へ</caption><thead><tr><th scope="col">確認項目</th><th scope="col">設例の金額・式</th></tr></thead><tbody>
+<tr><th scope="row">税引前の年金年額</th><td><span class="numeric-token">120万円</span></td></tr>
+<tr><th scope="row">年金額に対応する保険料</th><td><span class="numeric-token">80万円</span></td></tr>
+<tr><th scope="row">公的年金等以外の雑所得</th><td>120万円−80万円＝40万円</td></tr>
+<tr><th scope="row">年一括支払時の源泉徴収税額</th><td>40万円×10.21％＝40,840円</td></tr>
+</tbody></table></div>
+<figure class="figure"><svg viewBox="0 0 360 245" role="img" aria-labelledby="flow-title"><title id="flow-title">本人負担の私的年金を毎年受け取る場合の確認順</title><rect x="15" y="10" width="330" height="54" rx="7" fill="none" stroke="currentColor"/><text x="180" y="33" text-anchor="middle" font-size="16" fill="currentColor">年金額 − 対応保険料</text><text x="180" y="53" text-anchor="middle" font-size="14" fill="currentColor">公的年金等以外の雑所得</text><path d="M180 64v26m-5-6 5 6 5-6" fill="none" stroke="currentColor"/><rect x="15" y="90" width="330" height="54" rx="7" fill="none" stroke="currentColor"/><text x="180" y="113" text-anchor="middle" font-size="16" fill="currentColor">総合課税の所得・控除と合わせる</text><text x="180" y="133" text-anchor="middle" font-size="14" fill="currentColor">年間の所得税額を計算</text><path d="M180 144v26m-5-6 5 6 5-6" fill="none" stroke="currentColor"/><rect x="15" y="170" width="330" height="54" rx="7" fill="none" stroke="currentColor"/><text x="180" y="193" text-anchor="middle" font-size="16" fill="currentColor">源泉徴収税額などを差し引く</text><text x="180" y="213" text-anchor="middle" font-size="14" fill="currentColor">納付・還付は申告全体で精算</text></svg><figcaption>本人負担の私的年金を年金で受け取る場合。将来の年金総額に代える一時金は除きます。</figcaption></figure>
+<h2 id="gensen">源泉徴収なしと非課税は別</h2>
+<p>令和8年分の私的年金を保険料負担者本人が受け取る場合、年金年額から対応する保険料・掛金を引いた残額が25万円未満なら、源泉徴収されません。これは所得税が非課税になる基準ではありません。</p>
+<p>支払通知の源泉徴収税額は、年内の支払分を合計して確認します。</p>
+<p class="hint">主な対象外：負担者と受取人が異なる年金は源泉徴収されず、毎年の課税部分も別計算です。</p>
+<h2 id="nenzei">年間の所得税を同じ設例で検算する</h2>
+<p>所得税の税率は、私的年金と他の総合課税の所得を合わせ、所得控除を引いた課税所得に適用します。年金収入に税率を掛けたり、年税額へ源泉税をもう一度足したりしません。</p>
+<p data-review-context="before-table">令和8年分の同じ本人受取の設例です。課税所得は表の仮定額です。所得控除は計算済みで変動せず、分離課税・税額控除・超高所得の特例はありません。令和8年分の設例の復興特別所得税は、基準所得税額の2.1％で1円未満切捨てです。課税所得は千円未満切捨てです。表は源泉税控除前です。</p>
+<div class="scroll-wrap"><table><caption>年間の所得税・復興特別所得税（源泉税控除前）</caption><thead><tr><th scope="col">計算項目</th><th scope="col" class="num">年金なしの比較</th><th scope="col" class="num">年金あり</th></tr></thead><tbody>
+<tr><th scope="row">所得控除後の課税所得</th><td class="num"><span class="numeric-token">200万円</span></td><td class="num"><span class="numeric-token">240万円</span></td></tr>
+<tr><th scope="row">所得税の速算式</th><td class="num">200万円×10％−97,500円</td><td class="num">240万円×10％−97,500円</td></tr>
+<tr><th scope="row">所得税</th><td class="num"><span class="numeric-token">102,500円</span></td><td class="num"><span class="numeric-token">142,500円</span></td></tr>
+<tr><th scope="row">復興特別所得税</th><td class="num"><span class="numeric-token">2,152円</span></td><td class="num"><span class="numeric-token">2,992円</span></td></tr>
+<tr><th scope="row">合計（源泉税控除前）</th><td class="num"><span class="numeric-token">104,652円</span></td><td class="num"><span class="numeric-token">145,492円</span></td></tr>
+</tbody></table></div>
+<p>表の合計から給与・公的年金・私的年金などの源泉徴収税額と予定納税額を差し引いて、申告全体の納付・還付を計算します。表の年金なしとの比較額を、そのまま追加納付額や還付額として使うことはできません。</p>
+<p>この設例は所得控除後からの検算です。基礎控除などを引く前の所得から計算する場合は、対象年分と所得条件に合う控除を使います。計算の根拠は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm">国税庁No.2260 所得税の税率</a>と<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2020.htm">No.2020 確定申告</a>です。</p>
+<h2 id="juminzei">住民税は翌年度の所得割を別に計算する</h2>
+<p>住民税は前年の所得を基に翌年度に計算されます。所得税と所得控除の額が異なるため、所得税の課税所得をそのまま使う計算にはしません。</p>
+<p data-review-context="before-table">同じ令和8年分の私的年金を使う令和9年度の設例は、課税年度の元日に東京23区内に住所がある居住者について、所得割の調整措置を適用せず、税額控除前所得割を特別区民税6％・都民税4％で計算します。所得控除後の課税所得を表のとおり別に仮定し、所得控除は変動しません。設例の課税所得に千円未満の端数はありません。</p>
+<div class="scroll-wrap"><table><caption>翌年度の税額控除前所得割（均等割等を除く）</caption><thead><tr><th scope="col">区分</th><th scope="col">所得割の計算</th></tr></thead><tbody>
+<tr><th scope="row">年金なしの比較</th><td>240万円×合計税率＝24万円</td></tr>
+<tr><th scope="row">年金あり</th><td>280万円×合計税率＝28万円</td></tr>
+<tr><th scope="row">年金による増加</th><td>28万円−24万円＝4万円</td></tr>
+</tbody></table></div>
+<p class="hint">住民税の納付総額ではありません。調整控除などの税額控除、均等割、森林環境税は含めていません。私的年金から引かれた所得税の源泉税を、この住民税所得割から差し引くものでもありません。</p>
+<p>非課税判定や所得に連動する保険料・扶養への影響も、上の所得割の増加だけでは判定できません。家族構成や自治体の条件は<a href="../juminzei-hikazei-border/">住民税非課税のボーダー</a>で確認してください。</p>
+<h2 id="shinkoku">申告前に通知と他の所得をそろえる</h2>
+<p>源泉徴収の有無だけでは確定申告の要否は決まりません。年金の雑所得を整理したうえで、他の所得・所得控除・申告不要制度に照らします。</p>
+<div class="scroll-wrap"><table><caption>本人受取の年金で確認する資料</caption><thead><tr><th scope="col">資料</th><th scope="col">確認すること</th></tr></thead><tbody>
+<tr><th scope="row">保険証券・保険料の支払記録</th><td>実際の保険料負担者と受取人が同じか</td></tr>
+<tr><th scope="row">年金の支払通知など</th><td>税引前の年金額、対応保険料、源泉徴収税額</td></tr>
+<tr><th scope="row">給与や公的年金の源泉徴収票</th><td>私的年金以外の所得・源泉徴収税額</td></tr>
+<tr><th scope="row">控除証明書など</th><td>所得控除・税額控除に使う条件と金額</td></tr>
+</tbody></table></div>
+<p>公的年金を受け取っている人も、私的保険年金の雑所得を公的年金等の収入へ混ぜません。公的年金の申告不要制度でいう「公的年金等以外の所得」の側を確認します。要件の全体は<a href="../nenkin-jukyusha-kakutei-shinkoku/">年金受給者の確定申告</a>にまとめています。</p>
+<p>申告の準備から提出までの流れは<a href="../kakutei-shinkoku-yarikata/">確定申告のやり方</a>を参照してください。保険料を払った年の所得控除と、年金を受け取った年の必要経費は別の計算です。</p>
+<a class="tool-cta" href="../../seimei-hoken-kojo/">保険料を支払った年の控除は生命保険料控除計算機へ</a>
+<p class="hint">この計算機は支払保険料の所得控除用です。受取年金の雑所得や、本記事の年間税額を計算するものではありません。</p>
+<div class="summary-box"><b>確認の順序</b><p>本人負担の私的保険年金を年金で受け取る場合、通知の年金額から対応保険料を差し引きます。総合課税の他の所得と合わせて年税額を計算し、源泉税は前払いとして精算します。翌年度の住民税は別に確認します。</p></div>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question">個人年金に公的年金等控除は使えますか？</h3><p class="faq-answer">本人が保険料を負担して受け取る私的保険年金は、公的年金等以外の雑所得です。公的年金等控除を使う計算ではなく、年金額に対応する保険料・掛金を必要経費として差し引きます。</p>
+<h3 class="faq-question">源泉徴収されていなければ申告不要ですか？</h3><p class="faq-answer">それだけでは決まりません。本人負担の私的年金で源泉徴収がなくても、雑所得を他の所得と合わせて申告要否を確認します。給与所得者や公的年金受給者の申告不要制度は、それぞれの要件によります。</p>
+<h3 class="faq-question">対応保険料は払込保険料の総額ですか？</h3><p class="faq-answer">払込総額とは区別します。本人が保険料を負担して年金で受け取る私的保険年金の雑所得では、その年に受け取った年金額に対応する払込保険料・掛金を差し引きます。支払通知の対応保険料を確認します。</p>
+<h3 class="faq-question">源泉徴収された税金は戻りますか？</h3><p class="faq-answer">申告全体で既納付税額が年間の税額を超えていれば、還付の対象です。還付申告書は、その年の翌年1月1日から5年間提出できます。ただし、期限内申告が要件となる特例は、還付申告でも法定申告期限までの提出が必要です。期間・手続は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2030.htm">国税庁No.2030 還付申告</a>を参照してください。</p>
+<h2 id="related">関連記事・ツール</h2>
+<ul><li><a href="../ichiji-shotoku/">一括受取の一時所得</a></li><li><a href="../nenkin-jukyusha-kakutei-shinkoku/">公的年金受給者の確定申告</a></li><li><a href="../juminzei-hikazei-border/">住民税非課税のボーダー</a></li></ul>
+<h2 id="shutten">出典</h2>
+<p class="source-method">所得の区分と源泉徴収は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1610.htm">国税庁No.1610</a>、年間の精算は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2020.htm">No.2020</a>を参照しています。</p>
+<ul>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1610.htm">国税庁「保険契約者（保険料の負担者）である本人が支払を受ける個人年金」</a>：雑所得、対応保険料、源泉徴収、別人受取の扱い。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1620.htm">国税庁「相続等により取得した年金受給権に係る生命保険契約等に基づく年金の課税関係」</a>：相続・贈与取得の別計算。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm">国税庁「所得税の税率」</a>：課税所得の端数処理、速算表、復興特別所得税。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/03/order4/3-4_45.htm">国税庁「手順4 税金の計算をする・復興特別所得税額」</a>：復興特別所得税の端数処理。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2020.htm">国税庁「確定申告」</a>、<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2030.htm">「還付申告」</a>：年間の精算、申告不要制度、還付の期間。</li>
+<li><a href="https://www.city.kita.lg.jp/living/tax/1001899/1001900/1001902.html">東京都北区「個人住民税の構成」</a>：特別区民税・都民税の所得割。</li>
+<li><a href="https://www.city.shinjuku.lg.jp/hoken/file04_04_00001.html">新宿区「納付のご案内」</a>：前年所得への翌年度課税。</li>
+</ul>
+<p class="note" data-source-nolink="本サイトの情報提供と個別相談への対応方針">本記事は一般的な情報提供を目的としたものです。個別の税務・労務相談には応じられません。実際の判断は税務署・税理士にご確認ください。特定の商品・受取方法の推奨や投資助言を行うものではありません。</p>
+
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../zaisan-saimu-chosho/"><b>財産債務調書：所得・金融資産・債務の3つの金額と2026年末の評価例</b><span>財産債務調書の提出要件と年末評価を参照表で整理。普通預金・上場株式・借入金を同じ架空例で照合し、所得・有価証券等・財産総額・純資産を区別します。取得価額の別記、合計表、提出方法も確</span></a><a class="tool-card" href="../kin-zeikin-joto/"><b>金の税金：売却益・50万円控除・所有期間を同じ条件で検算</b><span>現物金地金の税金を、売却代金・取得費・譲渡費用から整理。短期と長期が同じ年にある設例で、ほかの総合課税の譲渡益と共有する特別控除の順序、総所得へ加える額を検算します。金投資口座との</span></a><a class="tool-card" href="../rsu-zeikin-vest-baikyaku/"><b>RSUとは：付与・権利確定・売却の3時点で給与税と譲渡税を検算</b><span>RSUは勤務継続などの条件を満たした後に株式等を受け取る報酬制度です。付与・Vest・売却を整理し、給与収入から売却時の取得費へつなぐ円換算例を掲載。SOやRSとの違い、契約と申告</span></a></div></section><!--next-read:E-->
+</article><!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%80%8B%E4%BA%BA%E5%B9%B4%E9%87%91%E3%81%AE%E7%A8%8E%E9%87%91%E3%81%AF%E3%80%81%E4%BF%9D%E9%99%BA%E6%96%99%E8%B2%A0%E6%8B%85%E8%80%85%E3%81%A8%E5%8F%97%E5%8F%96%E4%BA%BA%E3%80%81%E5%8F%97%E5%8F%96%E6%96%B9%E6%B3%95%E3%81%A7%E5%A4%89%E3%82%8F%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E6%9C%AC%E4%BA%BA%E3%81%8C%E5%8F%97%E3%81%91%E5%8F%96%E3%82%8B%E7%A7%81%E7%9A%84%E5%B9%B4%E9%87%91%E3%81%AE%E9%9B%91%E6%89%80%E5%BE%97%E3%82%92%E3%80%81%E5%AF%BE%E5%BF%9C%E4%BF%9D%E9%99%BA%E6%96%99%E3%81%A8%E6%BA%90%E6%B3%89%E5%BE%B4%E5%8F%8E%E3%81%AE%E9%80%9A%E7%9F%A5%E3%81%8B%E3%82%89%E7%A2%BA%E8%AA%8D%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fkojin-nenkin-zeikin%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main><footer class="site"><p>© 税金・経理・補助金ツールズ</p>  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script></body></html>

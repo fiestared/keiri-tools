@@ -92,6 +92,146 @@ test('同値のFAQを残して本文だけ変更すると本文の位置だけ�
   assert(!byValue(removed,'9.85%').some(o=>o.location.element_id==='body-rate'));
   assert(byValue(removed,'9.85%').some(o=>o.location.element==='div')); // callout headline still present
 });
+// Weekly maintenance regressions: context must carry the制度, never the number.
+test('同じ100万円・10%を文脈で分類し、未知制度や設例だけなら未分類のまま',()=>{
+  for(const [label,expected] of [
+    ['青色申告特別控除','青色申告・必要経費の特例'],
+    ['電子帳簿保存法','電子帳簿保存法'],
+    ['償却資産税','登録免許税・不動産税'],
+    ['通勤手当','給与の非課税・現物給与'],
+    ['障害基礎年金の金額','年金額'],
+    ['修繕費と資本的支出','減価償却・少額資産・修繕費'],
+    ['雇用保険の加入条件','雇用保険の加入条件']
+  ]) {
+    for(const body of [`<p>${label}の基準は100万円、率は10%。</p>`,`<h2>${label}</h2><p>100万円、10%。</p>`,`<h2>案内</h2><h3>${label}</h3><p>100万円、10%。</p>`]) {
+      const p=extract(body);
+      for(const value of ['100万円','10%'])assert(byValue(p,value).at(-1).values.filter(v=>v.value===value).every(v=>v.topics.includes(expected)),label);
+    }
+  }
+  for(const label of ['未知制度','設例','投資の想定収益','商品の割引']) {
+    const p=extract(`<h2>${label}</h2><p>100万円、10%。</p>`);
+    for(const value of ['100万円','10%'])assert.deepEqual(byValue(p,value)[0].values.find(v=>v.value===value).topics,['未分類']);
+  }
+  const separate=extract('<p>青色申告特別控除は65万円。未知制度の上限100万円、率10%。</p>');
+  assert.deepEqual(byValue(separate,'100万円')[0].values.find(v=>v.value==='100万円').topics,['未分類']);
+  assert.deepEqual(byValue(separate,'10%')[0].values.find(v=>v.value==='10%').topics,['未分類']);
+  assert(!byValue(extract('<p>NISAの非課税限度額は100万円。</p>'),'100万円')[0].topics.includes('給与の非課税・現物給与'));
+  assert(!byValue(extract('<p>給与所得及び退職所得以外の所得金額が20万円以下。</p>'),'20万円')[0].topics.includes('退職所得・退職所得控除'));
+  assert(!byValue(extract('<p>障害基礎年金の受給権者は27万円・40万円の計算に入れません。</p>'),'27万円')[0].topics.includes('年金額'));
+});
+test('隣接する関連記事カードは別箇所・別文脈。掲載先の制度にも寄せない',()=>{
+  const p=extract(`<title>年末調整</title><h2>次に読む</h2><div class="tool-grid">
+    <a class="tool-card" id="card-income"><b>所得税の税率</b><span>10%</span></a><a class="tool-card" id="card-bank"><b>振込の反映時間</b><span>接続率74%</span></a><a class="tool-card" id="card-penalty"><b>延滞税</b><span>10%</span></a><a class="tool-card" id="card-unknown"><b>未知制度</b><span>100万円</span></a>
+    </div><p id="inline">青色申告特別控除は<a href="#x">65万円</a>です。</p>`);
+  const at=id=>p.occurrences.find(o=>o.location.element_id===id);
+  assert.deepEqual(at('card-income').topics,['所得税の税率表・付加税']);
+  assert.deepEqual(at('card-bank').topics,['振込の反映・全銀システム']);
+  assert.deepEqual(at('card-penalty').topics,['延滞税・加算税・還付加算金']);
+  assert.deepEqual(at('card-unknown').topics,['未分類']);
+  assert.deepEqual(at('inline').topics,['青色申告・必要経費の特例']);
+  assert.equal(p.audit.total,5);assert.equal(p.audit.missed.length,0);
+  assert.equal(byValue(p,'10%').length,2);
+  assert(!p.occurrences.some(o=>o.location.element==='div'));
+});
+test('表の列を優先し、番号の次の制度名を使い、隣のデータセルへは漏らさない',()=>{
+  const p=extract(`<h2>比較</h2><table><thead><tr><th>番号</th><th>制度</th><th>上限</th></tr></thead><tbody>
+    <tr><td>①</td><td>青色申告特別控除</td><td id="blue">100万円</td></tr>
+    <tr><td>②</td><td>未知制度</td><td id="other">100万円</td></tr></tbody></table>
+    <table><tr><th>区分</th><th>所得税の税率</th><th>法人税率</th><th>不明な率</th></tr>
+    <tr><td>比較</td><td id="income">10%</td><td id="corp">10%</td><td id="unknown-rate">10%</td></tr></table>`);
+  const at=id=>p.occurrences.find(o=>o.location.element_id===id);
+  assert.deepEqual(at('blue').topics,['青色申告・必要経費の特例']);
+  assert.equal(at('blue').location.table.row_subject,'①');
+  assert.equal(at('blue').location.table.row_heading,'青色申告特別控除');
+  assert.deepEqual(at('other').topics,['未分類']);
+  assert.deepEqual(at('income').topics,['所得税の税率表・付加税']);
+  assert.deepEqual(at('corp').topics,['法人税・減価償却']);
+  assert.deepEqual(at('unknown-rate').topics,['未分類']);
+  const isolated=extract('<table><tr><td>比較</td><td>通勤手当100万円</td><td id="isolated">10%</td></tr></table>');
+  assert.deepEqual(isolated.occurrences.find(o=>o.location.element_id==='isolated').topics,['未分類']);
+  const numbered=extract('<table><tr><th>番号</th><th>金額の説明</th><th>率</th></tr><tr><td>①</td><td>通勤手当100万円</td><td id="numbered-rate">10%</td></tr></table>');
+  assert.deepEqual(numbered.occurrences.find(o=>o.location.element_id==='numbered-rate').topics,['未分類']);
+});
+test('改定単位の子テーマへ分け、無関係な見出しで明示制度を上書きしない',()=>{
+  for(const [label,expected,parent] of [
+    ['年末調整','年末調整の様式・計算','所得税・年末調整'],
+    ['所得税の速算表','所得税の税率表・付加税','所得税・年末調整'],
+    ['源泉徴収税額表','源泉徴収税額表','所得税・年末調整'],
+    ['法定調書','源泉徴収票・法定調書','所得税・年末調整'],
+    ['予定納税','予定納税','所得税・年末調整'],
+    ['インボイスの仕入税額控除','インボイス・仕入税額控除の経過措置','消費税・インボイス'],
+    ['減価償却の償却率','減価償却・少額資産・修繕費','法人税・減価償却'],
+    ['時間外の割増賃金','労働時間・割増賃金','労働時間・休暇・労務制度'],
+    ['年次有給休暇','年次有給休暇','労働時間・休暇・労務制度']
+  ]) {
+    const o=byValue(extract(`<h2>${label}</h2><p>100万円、10%。</p>`),'10%')[0];
+    assert(o.topics.includes(expected),label);assert(!o.topics.includes(parent),label);
+  }
+  const refined=byValue(extract('<h2>年末調整</h2><p>所得税は100万円。</p>'),'100万円')[0];
+  assert.deepEqual(refined.topics,['年末調整の様式・計算']);
+  const explicit=byValue(extract('<h2>年末調整</h2><p>住民税は100万円。</p>'),'100万円')[0];
+  assert.deepEqual(explicit.topics,['住民税']);
+  const unrelated=byValue(extract('<h2>高額療養費</h2><p>所得税は100万円。</p>'),'100万円')[0];
+  assert.deepEqual(unrelated.topics,['所得税・年末調整']);
+});
+test('正本監視の未接続11スラッグと既存スラッグを改定テーマへ結ぶ',()=>{
+  const expected={
+    'furikomi-hanei-jikan':'振込の反映・全銀システム',
+    'koyou-hoken-kanyu-joken':'雇用保険の加入条件',
+    'nenmatsu-chosei-gakushi-hoken':'保険料・医療費控除',
+    'nenmatsu-chosei-teisei':'年末調整の様式・計算',
+    'nisa-kinyu-kikan-henko':'NISA・iDeCo','ideco-jogen-kaisei':'NISA・iDeCo',
+    'tokutei-kyushokusha-joseikin':'補助金・助成金','kodomo-nisa-2027-tetsuzuki':'NISA・iDeCo',
+    'kyu-nisa-kazei-ikou':'NISA・iDeCo','kyoiku-shikin-zoyo-shuryo':'相続・贈与税',
+    'kinyu-shotoku-kazei-2027':'所得税の税率表・付加税'
+  };
+  for(const [slug,name] of Object.entries(expected))assert(topics.find(t=>t.name===name).source_year_watches.some(w=>w.slug===slug),slug);
+  // Freeze the previously connected slugs, too. A future, unconnected watch is
+  // still a health-report warning, not a new publication gate via this test.
+  const prior=[
+    'hyojun-hoshu-gakuhyo','koyou-hokenryo-ritsu','rosai-hokenryoritsu','shataku-chintairyo',
+    'gensen-zeigakuhyo-mikata','gensen-zeigakuhyo-r09','gensen-choshu','nenshu-no-kabe',
+    'tokutei-shinzoku-tokubetsu-kojo','saitei-chingin','kogaku-ryoyohi','kounenrei-koyou-keizoku',
+    'invoice-2wari-tokurei','invoice-wakariyasuku','shohizei-kanpu','taishokukin-zeikin',
+    'taishoku-gensen-choshuhyo','hoteichosho-goukeihyo','gensen-shotokuzei-nofusho',
+    'nenmatsu-chosei-kanpukin','shiharai-chosho','nenmatsu-chosei-kakikata','gensen-choshuhyo-mikata',
+    'gensen-choshubo','kanai-rodosha-tokurei','kyuyo-shiharai-hokokusho','tsukin-teate-hikazei',
+    'seimei-hokenryo-kojo','shokyaku-shisanzei','jidoshazei','furikomi-tesuryo-hikaku'
+  ];
+  for(const slug of prior)assert(topics.some(t=>t.source_year_watches.some(w=>w.slug===slug)),slug);
+  for(const t of topics)for(const parent of t.refines||[])assert(topics.some(p=>p.name===parent),parent);
+});
+test('実ページの本文・表・metaにも接続し、名簿への登録だけで満足しない',()=>{
+  for(const [slug,name] of [
+    ['nenmatsu-chosei-teisei','年末調整の様式・計算'],
+    ['nenmatsu-chosei-gakushi-hoken','保険料・医療費控除'],
+    ['kinyu-shotoku-kazei-2027','所得税の税率表・付加税'],
+    ['koyou-hoken-kanyu-joken','雇用保険の加入条件'],
+    ['hoteichosho-goukeihyo','源泉徴収票・法定調書'],
+    ['aoiro-tokubetsu-kojo','青色申告・必要経費の特例'],
+    ['tsukin-teate-hikazei','給与の非課税・現物給与']
+  ]) {
+    const file=`docs/column/${slug}/index.html`;
+    const p=extractPage(readFileSync(join(ROOT,file),'utf8'),`/column/${slug}/`,topics,file);
+    assert(p.occurrences.some(o=>!o.location.generated_copy&&!o.location.candidate&&o.location.element!=='a'&&o.location.field==='text'&&o.values.some(v=>['amount','percent','date'].includes(v.kind)&&v.topics.includes(name))),slug);
+    if(['hoteichosho-goukeihyo','aoiro-tokubetsu-kojo','tsukin-teate-hikazei'].includes(slug)) {
+      assert(p.occurrences.some(o=>o.location.table&&o.values.some(v=>v.kind==='amount'&&v.topics.includes(name))),slug+' table');
+      assert(p.occurrences.some(o=>o.location.element==='meta'&&o.values.some(v=>['amount','date'].includes(v.kind)&&v.topics.includes(name))),slug+' meta');
+    }
+  }
+});
+test('確認窓を年末調整・所得税率表・源泉表・法定調書・納付で分け、参照JSONの期日を継承',()=>{
+  const get=name=>topics.find(t=>t.name===name);
+  for(const [name,month] of [['年末調整の様式・計算',9],['所得税の税率表・付加税',1],['源泉徴収税額表',8],['源泉徴収票・法定調書',9],['源泉徴収の手続・納付',12]]) {
+    const t=get(name);assert(t.next_revision.months.includes(month),name);
+    for(const d of t.reference_data.filter(d=>d.next_review))assert(nextRevision(t,'2026-10-18').date<=d.next_review);
+  }
+  assert.deepEqual(get('所得税の税率表・付加税').reference_json,['docs/assets/shotokuzei_r08.json']);
+  assert.deepEqual(get('年末調整の様式・計算').reference_json,['docs/assets/nencho_r08.json']);
+  assert(!get('源泉徴収票・法定調書').reference_json.includes('docs/assets/nencho_r08.json'));
+  assert.equal(nextRevision({...get('所得税の税率表・付加税'),reference_data:[]},'2026-10-18').date,'2026-12-01');
+  assert.equal(nextRevision({...get('源泉徴収税額表'),reference_data:[]},'2026-10-18').date,'2027-01-01');
+});
 test('確認目安は現在の窓→翌月、過ぎたdata.next_reviewは本日',()=>{
   const t=topics.find(t=>t.name==='最低賃金');assert.equal(nextRevision(t,'2026-10-14').date,'2026-10-14');
   assert.equal(nextRevision({...t,reference_data:[]},'2026-12-31').date,'2026-12-31');
