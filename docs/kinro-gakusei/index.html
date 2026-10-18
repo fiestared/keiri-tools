@@ -523,7 +523,7 @@ dataReady.then(ok => { if (ok) showMeta(); }).catch(() => {});
 // (「その他」に丸めない。いちばん多い利用者=大学生を既定にする)。
 const SCHOOLS = [
   { key: "ichijo", checked: true,
-    label: "大学・大学院・短大・高専・高校・中学など（学校教育法1条の学校）",
+    label: "大学・大学院・短大・高専・高校・中学など（<a href='https://laws.e-gov.go.jp/law/322AC0000000026#Mp-At_1'>学校教育法1条</a>の学校）",
     hint: "通信制・定時制・放送大学も含みます。無条件で対象です" },
   { key: "senshu",
     label: "専修学校・各種学校（専門学校・看護学校など）",
@@ -554,13 +554,26 @@ function fillRows() {
 }
 
 // 年分・額は**データが持っている値**を出す(ページに手書きしない)。
+function lawLinks(text) {
+  const refs = [
+    ["所得税法82条", "https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_82"],
+    ["2条1項32号", "https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-At_2"],
+    ["地方税法34条1項9号", "https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_34"],
+    ["314条の2第1項9号", "https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_314_2"],
+    ["9項で所法32号を準用", "https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_314_2"],
+  ];
+  let html = text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+  for (const [label, url] of refs) html = html.replaceAll(label, `<a href="${url}">${label}</a>`);
+  return html;
+}
+
 function showMeta() {
   const K = R08?.kinro_gakusei;
   if (!K) return;
-  $("src-hint").textContent =
+  $("src-hint").innerHTML =
     `※ ${K.year}の勤労学生控除(所得税${man(K.kojo.shotoku)}・住民税${man(K.kojo.jumin)})。`
     + `要件: 合計所得${man(K.income_limit)}以下(給与だけなら${man(K.income_limit + J08.kyuyo_shotoku_r8.flat_kojo)}以下)・`
-    + `働きによらない所得${man(K.hikinro_limit)}以下。${K.law}。`;
+    + `働きによらない所得${man(K.hikinro_limit)}以下。${lawLinks(K.law)}。`;
 }
 
 $("calc").addEventListener("click", async () => {
@@ -588,7 +601,7 @@ $("calc").addEventListener("click", async () => {
   const shaho = Math.max(0, Number($("shaho").value) || 0);
   const miseinen = $("miseinen").checked;
 
-  // 給与収入は令和8年分の給与所得の求め方(措法29条の4)で所得に換算する(コアの正本=juminzei_core)。
+  // 給与収入は令和8年分の給与所得の求め方(<a href='https://laws.e-gov.go.jp/law/332AC0000000026/20261201_508AC0000000012#Mp-At_29_4'>措法29条の4</a>)で所得に換算する(コアの正本=juminzei_core)。
   const kyuyoShotoku = kyuyoShotokuR8(kyuyoRaw, J08);
   const kinro = kyuyoShotoku + kinroSonota;
 
@@ -607,7 +620,7 @@ $("calc").addEventListener("click", async () => {
     + ` ＝ 合計所得金額${yen(r.gokei)}(${K.year}の給与所得の求め方で換算)`;
 
   const REASON_TEXT = {
-    not_student: `勤労学生控除は、学校教育法1条の学校の学生・生徒、要件を満たす専修学校・各種学校の生徒、認定職業訓練の訓練生のための控除です。学生でない人は対象になりません。`,
+    not_student: `勤労学生控除は、<a href='https://laws.e-gov.go.jp/law/322AC0000000026#Mp-At_1'>学校教育法1条</a>の学校の学生・生徒、要件を満たす専修学校・各種学校の生徒、認定職業訓練の訓練生のための控除です。学生でない人は対象になりません。`,
     no_kinro: `働いて得た所得(バイト給与・自分の事業など)がないため対象外です。条文が「自己の勤労に基づいて得た…所得を有するもの」と定めており、奨学金・仕送り・配当だけでは受けられません(奨学金・仕送りはそもそも所得ではありません)。`,
     income_over: `合計所得金額が${man(K.income_limit)}を超えているため対象外です(あなたの合計所得: ${yen(r.gokei)})。給与収入だけなら${man(kyuyoLine)}以下がこのラインです(${K.year})。`,
     hikinro_over: `働きによらない所得(配当・不動産など)が${man(K.hikinro_limit)}を超えているため対象外です(あなた: ${yen(hikinro)})。合計所得が${man(K.income_limit)}以下でも、給与所得等以外の所得が${man(K.hikinro_limit)}を超えると受けられません。`,
@@ -620,7 +633,7 @@ $("calc").addEventListener("click", async () => {
       box.innerHTML = `
         <div class="row">判定 <span class="big">控除の出番はありません</span></div>
         <div class="note" style="margin-top:10px">給与収入${yen(kyuyoRaw)}は、${K.year}の求め方では給与所得0円と扱われます
-          (収入${man(J08.kyuyo_shotoku_r8.zero_under)}未満は給与所得なし＝措法29条の4)。所得が0円なので、勤労学生控除を使うまでもなく所得税・住民税とも0円です。</div>
+          (収入${man(J08.kyuyo_shotoku_r8.zero_under)}未満は給与所得なし＝<a href='https://laws.e-gov.go.jp/law/332AC0000000026/20261201_508AC0000000012#Mp-At_29_4'>措法29条の4</a>)。所得が0円なので、勤労学生控除を使うまでもなく所得税・住民税とも0円です。</div>
         <p class="hint" style="margin-top:8px">${incomeNote}</p>`;
       return;
     }
@@ -658,7 +671,7 @@ $("calc").addEventListener("click", async () => {
 
   if (r.courseNote) {
     html += `<div class="note" style="margin-top:10px">専修学校・各種学校・職業訓練は、課程の要件を満たす場合だけ対象です。
-      職業に必要な技術を教えること・修業期間1年以上など(所得税法施行令11条の3)。学校の窓口で
+      職業に必要な技術を教えること・修業期間1年以上など(<a href='https://laws.e-gov.go.jp/law/340CO0000000096#Mp-At_11_3'>所得税法施行令11条の3</a>)。学校の窓口で
       「勤労学生控除の証明書」を発行してもらえるか確認してください(発行されれば要件を満たしています。
       年末調整・確定申告にはその証明書を添えます)。</div>`;
   }
@@ -685,7 +698,7 @@ $("calc").addEventListener("click", async () => {
     html += miseinen && off.hikazei.jonrei295
       ? `<div class="callout" style="margin-top:10px">あなたの住民税はもともと全額非課税なので、控除の出番はありません。
           未成年者は前年の合計所得${man(limit135)}以下(給与収入だけなら${man(limit135 + J08.kyuyo_shotoku_r8.flat_kojo)}以下)なら
-          住民税が非課税です(地方税法295条1項2号)。あなたの合計所得${yen(r.gokei)}はこのライン以下です。</div>`
+          住民税が非課税です(<a href='https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_295'>地方税法295条1項2号</a>)。あなたの合計所得${yen(r.gokei)}はこのライン以下です。</div>`
       : `<div class="callout" style="margin-top:10px">あなたの住民税はもともと非課税なので、控除の出番はありません。
           合計所得${man(off.hikazei.shotokuLimit)}以下(給与収入だけなら${man(off.hikazei.shotokuLimit + J08.kyuyo_shotoku_r8.flat_kojo)}以下)は
           住民税がかかりません。勤労学生控除を申告しても損はしませんが、税額は変わりません。</div>`;
