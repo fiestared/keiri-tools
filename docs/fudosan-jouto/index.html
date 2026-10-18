@@ -37,7 +37,7 @@
         "price": "0",
         "priceCurrency": "JPY"
       },
-      "description": "土地・建物の譲渡価額・取得費・譲渡費用・取得日・譲渡日から、譲渡所得と所得税・復興特別所得税・住民税を計算します。所有期間の1月1日判定、建物の減価償却費相当額、概算取得費5%、居住用財産の3,000万円特別控除、10年超所有の軽減税率、相続空き家の特別控除に対応。"
+      "description": "土地・建物の譲渡価額・取得費・譲渡費用・取得日・譲渡日から、譲渡所得と所得税・復興特別所得税・住民税を計算します。所有期間の1月1日判定、建物の減価償却費相当額、概算取得費5%、居住用財産の3,000万円特別控除、要件を満たすマイホーム売却の軽減税率、相続空き家の特別控除に対応。"
     },
     {
       "@type": "BreadcrumbList",
@@ -143,7 +143,7 @@
 <section class="hero">
   <h1>不動産売却の税金 計算機</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-26">2026年7月26日</time>（更新日: <time datetime="2026-10-18">2026年10月18日</time>）</p>
-  <p>土地・建物を売ったときの<b>譲渡所得税・住民税</b>を計算します。税率を決める所有期間は、<b id="hero-1jan">売った日ではなく「売った年の1月1日」時点</b>で数えます。<b id="hero-tanki">実際に5年を超えて持っていても、売った年の1月1日で5年以下なら短期譲渡</b>になります。建物の減価償却・概算取得費5%・3,000万円特別控除・10年超の軽減税率も含めて計算します。</p>
+  <p>土地・建物を売ったときの<b>譲渡所得税・住民税</b>を計算します。税率を決める所有期間は、<b id="hero-1jan">売った日ではなく「売った年の1月1日」時点</b>で数えます。<b id="hero-tanki">実際に5年を超えて持っていても、売った年の1月1日で5年以下なら短期譲渡</b>になります。建物の減価償却や、要件を満たすマイホーム売却の特例にも対応しています。</p>
 </section>
 
 
@@ -217,7 +217,7 @@
 
   <div id="kyojuyo-block" style="display:none;margin-top:10px">
       <span id="keigenZeiritsu-hint" class="hint">適用できるかは<a href="#keigen-10">軽減税率の要件</a>で確認してください</span>
-    <label for="keigenZeiritsu">10年超所有の軽減税率</label>
+    <label for="keigenZeiritsu">マイホーム売却の軽減税率</label>
     <select id="keigenZeiritsu" aria-describedby="keigenZeiritsu-hint">
       <option value="yes" selected>使う（要件を確認済み）</option>
       <option value="no">使わない</option>
@@ -359,13 +359,13 @@
 <p>相続で取得した被相続人の居住用家屋とその敷地を売った場合にも、一定の要件で特別控除を受けられます（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_35">措置法35条3項</a>。いわゆる空き家特例）。ただし条件が細かく、次の2つは金額に直接効きます。</p>
 <ul>
   <li><b id="akiya-3nin">控除上限が2,000万円になるのは、2024年1月1日以後の譲渡で、その家屋・敷地を相続・遺贈で取得した相続人が3人以上いる場合です</b>（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_35">35条4項</a>）。</li>
-  <li><b id="akiya-1oku">譲渡対価が1億円を超えると、特例そのものが使えません</b>（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_35">35条3項</a>かっこ書）。合算する売却の範囲・期間・例外は、<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_35">措置法35条6項・7項</a>で確認してください。</li>
+  <li>売却代金の要件と、合算する売却の範囲・期間・例外は、<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_35">措置法35条3項・6項・7項</a>で確認してください。</li>
 </ul>
 <p>このほか、次の要件があります。</p>
 <ul>
   <li>家屋が<b>昭和56年5月31日以前に建築</b>されたもので、区分所有建物でないこと</li>
   <li>相続開始の直前に被相続人が1人で住んでいたこと（老人ホーム入所などの例外あり）</li>
-  <li>相続の時から譲渡の時まで<b>事業・貸付け・居住の用に供されていない</b>こと</li>
+  <li>相続後の利用に関する要件を満たすこと（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/joto/3306.htm">国税庁 No.3306の売却形態別の要件</a>を確認）</li>
   <li>相続の開始があった日から<b>3年を経過する日の属する年の12月31日まで</b>に譲渡すること</li>
 </ul>
 <p class="note" id="akiya-kigen-note">この特例の適用期限は<b>令和9年12月31日</b>（2027年12月31日）です。これより後の譲渡についてこのツールは控除を適用せず、その旨を表示します。延長されるかどうかは改正法が成立してからでないと分からないためです。</p>
@@ -388,7 +388,7 @@
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>併用できます。働く場所が違うためで、3,000万円控除（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_35">35条</a>）は課税される金額そのものを減らし、軽減税率（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_31_3">31条の3</a>）はその金額に掛ける税率を下げます。控除限度と計算順序は<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_35">措置法35条1項</a>で確認してください。<b>軽減税率の6,000万円という区切りは、特別控除後の課税長期譲渡所得金額で判定します</b>。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>税金はいつ払いますか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>所得税と復興特別所得税は、売った年の翌年<b>2月16日から3月15日</b>の確定申告で申告・納付します。<b>住民税は売った年の翌年度に課税</b>され、6月ごろに納税通知書が届いて、普通徴収なら原則として年4回に分けて納めます（給与から天引きされている人は翌年6月以降の給与から引かれます）。納期と回数は市区町村の納税通知書で確認してください。売った年にすぐ引かれるわけではないので、納税資金を使ってしまわないよう注意してください。なお特別控除を使って税額が0円になる場合でも、特例の適用には確定申告が必要です。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>所得税は原則として売った年の翌年の確定申告で申告・納付します。申告期限は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2024.htm">国税庁の確定申告の案内</a>で確認してください。<b>住民税は売った年の翌年度に課税</b>され、6月ごろに納税通知書が届いて、普通徴収なら原則として年4回に分けて納めます（給与から天引きされている人は翌年6月以降の給与から引かれます）。納期と回数は市区町村の納税通知書で確認してください。売った年にすぐ引かれるわけではないので、納税資金を使ってしまわないよう注意してください。なお特別控除を使って税額が0円になる場合でも、特例の適用には確定申告が必要です。</p>
 
 <h2 id="shutten">出典</h2>
 <ul id="shutten-list">
@@ -398,7 +398,7 @@
       <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_31">31条1項</a>（長期譲渡所得＝その年1月1日において所有期間が5年を超えるもの・百分の十五）・<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_31">31条2項</a>（所有期間は取得の日の翌日から）</li>
       <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_32">32条1項</a>（短期譲渡所得＝百分の三十）</li>
       <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_31_3">31条の3</a>第1項 — 居住用財産の軽減税率の計算方法</li>
-      <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_31_4">31条の4第1項（概算取得費＝収入金額の百分の五）</a></li>
+      <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_31_4">31条の4（長期譲渡所得の概算取得費控除）</a></li>
       <li><a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_35">35条（居住用財産・空き家の特別控除）</a> — <a href="#akiya">空き家特例の解説</a></li>
     </ul>
   </li>
