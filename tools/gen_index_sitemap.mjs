@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "taishoku-tetsuzuki", // 退職手続き Google月間6,480（2026-10-18）。会社側の期限・提出先総覧。
   "kin-zeikin-joto", // 金 税金 Google月間推定4,320（2026-10-18）。現物金の総合譲渡所得、短期優先控除の検算。
   "rsu-zeikin-vest-baikyaku", // RSU: Google 108,000/月、2026-10-17需要ゲート。
   "orcan-sp500-holding-period",
@@ -820,7 +821,7 @@ const CATEGORIES = [
     name: "給与計算の実務（会社側）",
     desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務もここ。",
     slugs: [
-      "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
+      "taishoku-tetsuzuki", "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
       "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
       "shakai-hokenryo-choshu-jiki", "kyushoku-shakai-hokenryo", "shoyo-gensen-shotokuzei",
       "gensen-shotokuzei-noki-tokurei", "kyuyo-shiharai-jimusho-kaisetsu", "gensen-shotokuzei-nofusho", "gaichuhi-kyuyo-kubun", "hotei-fukurihi-keisan", "rodo-hoken-nendo-koshin", "roudou-hoken-bango",
