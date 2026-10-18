@@ -67,6 +67,14 @@ def stop(r,reason):
 SOL_MODEL=os.environ.get('KEIRI_SOL_MODEL','gpt-6.1-sol')
 
 def execute(worker,model,prompt,r,log):
+    # 2026-10-17 Masahiro（codex のクレジット節約・案3）: 審査役（gpt-6-astra）も sol 6.1 で動かす。
+    #   write_finish 経由は bin/codex が差し替えていたが、書き手が自分で回す照合は本物の codex を直接呼ぶので、
+    #   審査だけ本物の Astra で動いていた（write-2026-10-17-fin3/segment-review-2 の astra-run.log が gpt-6-astra）。
+    #   Astra を使うのは呼び元が KEIRI_ALLOW_ASTRA=1 を明示したときだけ。
+    if model=='gpt-6-astra' and os.environ.get('KEIRI_ALLOW_ASTRA')!='1':model='gpt-6.1-sol'
+    # 2026-10-17: 照合の組（6.1＋5.6）も 5.6 側を 6.1 で動かす（2026-10-04 Masahiro「レビューはsol6.1で頼む」。bin/codex の印 SOL56_TO_61 と同じ扱い）。
+    #   書き手が自分で回す照合は bin/codex を通らないので、gpt-5.6-sol が本物で動いていた（10-17 12:45〜 mf1・fin2 で21本）。
+    if model=='gpt-5.6-sol' and os.environ.get('KEIRI_ALLOW_56')!='1':model='gpt-6.1-sol'
     with log.open('w') as f:
         p=subprocess.run([worker,'exec','-m',model,'-s','danger-full-access','--skip-git-repo-check','-C',str(r),prompt],stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT)
     return p.returncode, bool(re.search(r'usage limit|rate limit|quota exceeded',log.read_text(),re.I))
