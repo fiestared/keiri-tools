@@ -804,13 +804,17 @@ $("calc").addEventListener("click", async () => {
       （生計を一にしているか等の事実によります）。</div>`;
   }
 
-  // 年金だけの人の目安（同じ級地・扶養なしの単身で、いくらまでなら非課税か）
-  const b65 = nenkinBorder(70, Number($("in-kyuchi").value), 0, false, D, J);
-  const bU65 = nenkinBorder(64, Number($("in-kyuchi").value), 0, false, D, J);
-  html += `<p class="hint" id="border-note">${r.kyuchiLabel}で扶養がいない単身の場合、
-    年金収入だけなら <b>65歳以上は${yenF(b65.shunyuMax)}</b>まで、
-    <b>65歳未満は${yenF(bU65.shunyuMax)}</b>まで非課税です
-    （均等割の限度額 ${yenF(b65.limit)}）。</p>`;
+  // 特例ありの結果には、通常例の年金上限を併記しない。
+  if (j295.length) {
+    html += `<p class="hint" id="border-note">年金収入の目安は、<a href="#nenkin">年齢別の図</a>と<a href="#kyuchi">級地別の表</a>で確認できます。</p>`;
+  } else {
+    const b65 = nenkinBorder(70, Number($("in-kyuchi").value), 0, false, D, J);
+    const bU65 = nenkinBorder(64, Number($("in-kyuchi").value), 0, false, D, J);
+    html += `<p class="hint" id="border-note">選択した級地の通常の設例です。
+      課税対象の公的年金のみ・扶養なし・障害者等の非課税特例なしなら、
+      <b>65歳以上は${yenF(b65.shunyuMax)}</b>まで、<b>65歳未満は${yenF(bU65.shunyuMax)}</b>までが目安です
+      （年齢の基準日・例外は<a href="#nenkin">図</a>）。</p>`;
+  }
 
   html += `<p class="hint">このツールは<b>均等割の非課税</b>だけを判定します。
     均等割の非課税限度額は各市区町村の条例で定まるため（<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_295">地方税法295条3項</a>）、
