@@ -57,6 +57,7 @@ const ORDER = [
   "shunyu-shotoku-chigai",  // 収入と所得の違い — 9,900/月（Google 7,920・Bing実測 2,925）。★被覆は着手時 title/h1 0件。核は ①所得税法21条の10種類区分 ②給与所得控除は令和8年分で最低74万円（措法29条の4・20261201リビジョン） ③年収→所得→課税所得→税額の4段階 ④「合計所得金額」の定義が寡婦の定義の括弧内にある ⑤★社会保険の「収入130万円」と税の「所得」は別のものを数えている ⑥手取りは収入から引く ⑦源泉徴収票のどの欄がどの数か。
   "gensen-kojo-taisho-haigusha",  // 源泉控除対象配偶者とは — 9,900/月（keyword_demand.py 2026-10-10 実測 google 7,920＋yahoo 1,980。Opus執筆便・新規）。被覆: 主題保有0・節保有2（fuyo-kojo-shinkokusho の A欄・haigusha-tokubetsu-kojo の95万円の節）。様式の欄の書き方・給与収入換算の経緯は fuyo-kojo-shinkokusho、控除額の段階は haigusha-tokubetsu-kojo、人数の加算と月額表の引き方は gensen-zeigakuhyo-mikata へ譲り、この記事は区分の違い・税額表での数え方・年末調整との関係を持つ
   "shotoku-kojo-ichiran",  // 所得控除（一覧） 12,100/月（google 9,680＋yahoo 2,420。keyword_demand.py 2026-10-08 実測）。被覆: 所得控除の全種を並べた総覧を title/h1 に持つページは0本（個別の控除の記事と給与所得控除＝別物だけ）。核は ①数は所得税法87条1項の列挙で16種類（特定親族特別控除＝84条の2が令和7年分から） ②年末調整で受けられるのは190条2号の13種類、雑損・医療費・寄附金の3種類は確定申告 ③引く順番（87条） ④住民税は地方税法314条の2で15種類（寄附金は税額控除）・額が違う11種類の対照表。額・要件の詳細は個別記事へ渡す
+  "zeigaku-kojo", // 税額控除 Google月間59,200（2026-10-18）。個人所得税の制度別入口。各論の率・適用判定は既存記事へ。
   "kiso-kojo",  // 基礎控除 — 60,500/月（Google 48,400・Yahoo 12,100。keyword_demand.py 2026-10-04 実測）。★被覆ゲート: slug に kiso-kojo は0件、title に「基礎控除」を含むのは sozokuzei-ikura（相続税）と teigaku-genzei-reiwa8（主題は定額減税）の2本で、所得税の基礎控除そのものを主題に持つページは無かった。節保有9本（gensen-choshuhyo-mikata・kakutei-shinkoku-ikurakara・nenmatsu-chosei-kakikata・sozoku-hoki・gensen-hyo・kinro-gakusei・kokuho・sozokuzei・zoyozei）とは双方向リンクで役割を分け、相続税・贈与税の基礎控除は主題にしない。核は ①令和8年分は所法86条1項1号の62万＋措法41条の16の2第1項1号イの42万＝104万で、104万という数字はどの条文にも書かれていない ②加算の対象が「同項第一号に定める金額」に限られ、柱書で合計所得金額655万円以下に区切られている ③2,350万超で48万・32万・16万と落ち、2,500万超は「号が0円」ではなく柱書の対象外で0円 ④適用年分は附則9条1項（令和8年分以後。施行は令和8年12月1日） ⑤★附則9条2項＝11月30日までに令和8年分の準確定申告（所法125条・127条、166条準用）を出した人は12月1日から5年以内の更正の請求で改正後の額にできる（No.1199 注2）⑥★No.1199 注3＝非居住者は加算が乗らず令和8年分以後は62万が最高額 ⑦★附則101条＝令和10年分以後は2年ごとに全国消費者物価指数の変化率で見直すことを基本とする ⑧住民税の基礎控除は地税法314条の2第2項の43万・29万・15万で段の切り方も違う。
   "nenmatsu-chosei-teisei", // 年末調整 訂正 1,600/月（google 1,280＋yahoo 320。2026-10-15 指示書の実測・Opus執筆便・新規）＋年末調整 修正 720・再年調 170。被覆: 題名・slug に「訂正」「再年調」0、itsumade は期限の非対称を1節で持つだけ。核は ①差額の向きで期限が分かれる（減る向き＝源泉徴収票の作成まで・所基通190-5、不足＝1月末日の後も・No.2671）②所基通194〜198共-1・共-2 ③源泉徴収票の再交付・法定調書の訂正（詳細は hoteichosho-goukeihyo）④本人の還付申告（kanpu-shinkoku）
   "kaigo-hoken-ho", // 介護保険法 12,100/月（google 9,680＋yahoo 2,420。keyword_demand.py 2026-10-15 実測・Opus執筆便MF1・新規。保険料の始期・料率は kaigo-hokenryo-itsukara / kyokai-kenpo-ryoritsu-ichiran に譲る）。
@@ -724,7 +725,7 @@ const CATEGORIES = [
       "kakutei-shinkoku-kanpukin-itsu",
       "kanpu-shinkoku",
       "kakutei-shinkoku-ikurakara",
-      "shotoku-kojo-ichiran",
+      "shotoku-kojo-ichiran", "zeigaku-kojo",
       "kiso-kojo",
       "zeisei-kaisei-taiko",
       "kakutei-shinkoku-zeirishi-hiyo",
