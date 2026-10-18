@@ -140,4 +140,30 @@ class Round(unittest.TestCase):
             p.write_text(json.dumps({'quote_missing':[{'page':'../../oops'}]}))
             with self.assertRaises(ValueError):runner.pages_from(p)
 
+
+class JudgeModel(unittest.TestCase):
+    """審査役（gpt-6-astra）は KEIRI_ALLOW_ASTRA=1 が無ければ sol 6.1 で動く（2026-10-17）。"""
+    def test_astra_role_runs_on_sol_unless_allowed(self):
+        import os,tempfile,stat
+        from pathlib import Path
+        import theme_round
+        with tempfile.TemporaryDirectory() as d:
+            d=Path(d);w=d/'worker';rec=d/'args'
+            w.write_text('#!/bin/sh\necho "$@" >> '+str(rec)+'\n');w.chmod(w.stat().st_mode|stat.S_IEXEC)
+            old=os.environ.pop('KEIRI_ALLOW_ASTRA',None)
+            try:
+                theme_round.execute(str(w),'gpt-6-astra','p',d,d/'a.log')
+                os.environ['KEIRI_ALLOW_ASTRA']='1'
+                theme_round.execute(str(w),'gpt-6-astra','p',d,d/'b.log')
+                theme_round.execute(str(w),'gpt-6.1-sol','p',d,d/'c.log')
+                theme_round.execute(str(w),'gpt-5.6-sol','p',d,d/'d.log')
+            finally:
+                os.environ.pop('KEIRI_ALLOW_ASTRA',None)
+                if old is not None:os.environ['KEIRI_ALLOW_ASTRA']=old
+            lines=rec.read_text().splitlines()
+            self.assertIn('-m gpt-6.1-sol',lines[0])   # 既定: 審査も sol
+            self.assertIn('-m gpt-6-astra',lines[1])   # 明示したときだけ Astra
+            self.assertIn('-m gpt-6.1-sol',lines[2])   # sol はそのまま
+            self.assertIn('-m gpt-6.1-sol',lines[3])   # 5.6 も 6.1 で動く（KEIRI_ALLOW_56 が無ければ）
+
 if __name__=='__main__':unittest.main()
