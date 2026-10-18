@@ -74,7 +74,18 @@ withBreak('壊し2: 表のバイト位置だけ書き換わると赤になる',
 
 // ── 壊し3: 出典・確認日・但し書きが消える ★この記事固有の最重要ケース ─────────
 withBreak('壊し3: 出典PDFのURLが消えると赤になる',
-  ({ article, data }) => ({ article: article.replace('https://www.gunmabank.co.jp/hojin/biznb/service/pdf/z_format1.pdf', '#'), data }),
+  // ★2026-10-17: 本文（生成範囲の外）にも同じ URL が3か所入った（rg34 の書き直し）。素の replace は最初の1つ＝外側を壊し、
+  //   検査対象の生成セクションは無傷のまま「捕まえられない」と誤判定した。**生成セクションの内側だけ**を狙う（壊し4と同じ）。
+  ({ article, data }) => {
+    const a = article.indexOf('<!-- ZENGIN_LAYOUT:START');
+    const b = article.indexOf('<!-- ZENGIN_LAYOUT:END -->');
+    return {
+      article: article.slice(0, a)
+        + article.slice(a, b).replaceAll('https://www.gunmabank.co.jp/hojin/biznb/service/pdf/z_format1.pdf', '#')
+        + article.slice(b),
+      data,
+    };
+  },
   '出典PDFのURL');
 
 // ★注意: 「銀行ごとに差があります」は記事の構造セクション（生成範囲の外）にも出てくる。

@@ -393,11 +393,6 @@ const HISTORICAL_FACTS = [
     reason: "★上と同じ改正の時点を答えるFAQ本文（JSON-LDはここから gen_faq_jsonld.mjs が生成する）。" +
             "「中小企業なら常に15%」という改正前の解説が世に多く残っていることへの答えなので、" +
             "この『令和7年度』は年が変わっても真であり続ける" },
-  { file: "toushi/ideco-deguchi/index.html",
-    snippet: "<p>A. <b>令和7年までの話です。</b>所得税法施行令70条1項2号ロにより、令和8年1月1日以後に支払を受けるiDeCo一時金は",
-    reason: "★改正の**境目**そのもの＝制度の事実（所得税法施行令70条1項2号ロ(1)(2)の経過措置。2026-10-14 の読みやすさの作り直しで hero 直下の callout#kaisei を消し、このFAQに1か所にした）を答えるFAQ本文（JSON-LDはここから gen_faq_jsonld.mjs が生成する）。" +
-            "『iDeCoは5年空ければよい』という令和7年までの解説が世に大量に残っていることへの答えなので、" +
-            "この『令和7年』は年が変わっても真であり続ける" },
   { file: "shohizei/index.html", snippet: "3割特例は令和8年度税制改正によります",
     reason: "★根拠として挙げている**改正法の固有名詞**（令和8年度税制改正）＝制度の事実。" +
             "みなし仕入率(施行令57条5項)・2割特例(平成28年改正法附則51条の2)と並ぶ出典表記で、" +
@@ -515,6 +510,13 @@ function stripArticleBody(html) {
 // 突き合わせると二重になり、しかも本文がgen_faq_jsonldで生成した歴史的事実(令和2年政令 等)を
 // **head の JSON-LD が抱えるため <article> 免除をすり抜けて誤検知する**。写しは外す。
 // ⚠️ 外すのは ld+json だけ。**結果欄を描く <script type="module"> は外さない**(可視文字列を描くため)。
+// 生成された回遊の区画（あわせて読む・関連・次に読む）は「別のページの title」を並べるだけで、このページの申告ではない。
+// 2026-10-18: /gensen-choshu/ の title を「源泉徴収税額表（令和8年分）と計算機」にしたら、そこへリンクする /shohizei/ が
+// 「令和8年分と書いているのに年つきデータを読んでいない」で落ちた。リンク先の年はリンク先のページ自身の検査が見る
+function stripNavBlocks(html) {
+  return html.replace(/<!--(rail-next|rel|next-read):S-->[\s\S]*?<!--\1:E-->/g, "");
+}
+
 function stripLdJson(html) {
   return html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/gi, "");
 }
@@ -542,7 +544,7 @@ for (const page of pages) {
   const rel = relative(DOCS, page);
   const raw = contentHTML(await readFile(page, "utf8"));
   rawByRel.set(rel, raw);
-  const html = stripScheduleDisasterNames(stripRelBlock(stripLdJson(stripArticleBody(stripArticleCards(stripComments(raw))))));
+  const html = stripScheduleDisasterNames(stripRelBlock(stripNavBlocks(stripLdJson(stripArticleBody(stripArticleCards(stripComments(raw)))))));
 
   // このページが fetch している年つきデータ = 名乗ってよい年
   const fetched = [...raw.matchAll(/assets\/([\w.-]+\.json)/g)].map((m) => m[1]);
