@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>住民税非課税世帯 判定シミュレーター｜年金・給与から自動判定</title>
-<meta name="description" content="世帯全員の年金・給与の収入と年齢から、住民税非課税世帯にあたるかを判定。東京23区・扶養なし・年金だけなら、非課税の上限は65歳以上155万円、65歳未満105万円（障害者等の非課税特例なしの場合）。級地・子のアルバイト代・扶養の付け方にも対応。無料・登録不要。">
+<meta name="description" content="世帯全員の年金・給与の収入と年齢から、住民税非課税世帯にあたるかを判定。級地・子のアルバイト代・扶養の付け方にも対応。無料・登録不要。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/hikazei-setai/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="住民税非課税世帯 判定シミュレーター｜年金・給与から自動判定">
-<meta property="og:description" content="世帯全員の年金・給与の収入と年齢から、住民税非課税世帯にあたるかを判定。東京23区・扶養なし・年金だけなら、非課税の上限は65歳以上155万円、65歳未満105万円（障害者等の非課税特例なしの場合）。級地・子のアルバイト代・扶養の付け方にも対応。無料・登録不要。">
+<meta property="og:description" content="世帯全員の年金・給与の収入と年齢から、住民税非課税世帯にあたるかを判定。級地・子のアルバイト代・扶養の付け方にも対応。無料・登録不要。">
 <meta property="og:url" content="https://keiri-tools.com/hikazei-setai/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -87,7 +87,7 @@
           "name": "Q. 子どものアルバイト代で世帯が課税になることはありますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. あります。子ども本人が均等割を課されると世帯全体が非課税世帯でなくなります。東京23区・扶養なしの子どもの通常の限度額は合計所得45万円で、給与収入のみなら令和8年度（令和7年所得）は110万円、令和9年度（令和8年所得）は119万円です。ただし18歳未満の未成年者は合計所得135万円以下なら非課税になるため（地方税法295条1項2号）、同じ収入でも年齢によって結果が反転します。給与収入115万円の例は子のアルバイト代の節にあります。"
+            "text": "A. あります。子ども本人が均等割を課されると世帯全体が非課税世帯でなくなります。年齢や特例によって結果が変わります。<a href="#special-note">未成年者などの非課税特例</a>も確認してください。給与収入115万円の例は子のアルバイト代の節にあります。"
           }
         },
         {
@@ -156,7 +156,7 @@
   <h1>住民税非課税世帯 判定シミュレーター</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-26">2026年7月26日</time>（更新日: <time datetime="2026-10-19">2026年10月19日</time>）</p>
   <p>世帯全員の<b>年金収入・給与収入と年齢</b>を入れるだけで、<b>住民税非課税世帯</b>にあたるかを判定します。<b>子のアルバイト代</b>や<b>扶養の付け方</b>で結果が変わるケースも判定します。</p>
-  <p>目安：東京23区・扶養なしなら、<b id="hero-155">年金収入の非課税上限は65歳以上155万円、65歳未満105万円</b>です（公的年金以外の所得なし・障害者等の非課税特例なしの場合）。</p>
+  <p id="hero-155">年金の非課税の目安は年齢と扶養人数で変わります。<a href="#nenkin">年金収入の境界の図</a>で確認できます。</p>
 </section>
 
 <div class="card">
@@ -244,7 +244,7 @@
           <option value="kafu">寡婦</option>
           <option value="hitorioya">ひとり親</option>
         </select>
-      <span id="m1_tokurei-hint" class="hint">前年の合計所得135万円以下なら非課税</span>
+      <span id="m1_tokurei-hint" class="hint"><a href="#special-note">障害者・寡婦・ひとり親の非課税特例は下の注へ</a></span>
       </div>
     </div>
   </div>
@@ -503,11 +503,12 @@
 
 <p>住民税には<b>均等割</b>（定額）と<b>所得割</b>（所得に比例）の2つがあり、非課税の限度額は<b>それぞれ別に定められています</b>。この計算機で判定する「住民税非課税世帯」は、<b>世帯全員が均等割非課税</b>である世帯を指します。</p>
 
+<p data-review-context="before-table">次の表は東京23区の通常の基準です。人数には本人と同一生計配偶者、扶養親族を数えます。扶養親族は16歳未満または控除対象扶養親族に限ります。</p>
 <div class="scroll-wrap"><table id="kintou-shotoku-table">
   <thead><tr><th></th><th scope="col">均等割の非課税限度額</th><th scope="col">所得割の非課税限度額</th></tr></thead>
   <tbody>
     <tr id="row-konkyo"><td><b>根拠</b></td><td><a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_295">地方税法295条3項</a>＋<a href="https://laws.e-gov.go.jp/law/325CO0000000245#Mp-At_47_3">施行令47条の3</a><br>（政令の基準に従い<b>条例</b>で定める）</td><td><a href="https://laws.e-gov.go.jp/law/325AC0000000226#325AC0000000226-Sp-At_3_3">地方税法附則3条の3</a><br>（<b>法律</b>が直接定める）</td></tr>
-    <tr id="row-kihon"><td><b>基本額</b></td><td>35万円 ×（本人＋同一生計配偶者＋扶養親族）<br><b>級地で1.0/0.9/0.8倍される</b></td><td>35万円 ×（同左）<br>全国一律</td></tr>
+    <tr id="row-kihon"><td><b>基本額</b></td><td>35万円 × 人数</td><td>35万円 × 人数</td></tr>
     <tr id="row-kasan"><td><b>加算額</b></td><td>10万円 ＋（扶養等がいれば）<b>21万円</b></td><td>10万円 ＋（扶養等がいれば）<b>32万円</b></td></tr>
   </tbody>
 </table></div>
@@ -519,7 +520,7 @@
 
 <h2 id="nenkin">年金収入の境界は年齢によって変わる</h2>
 
-<p>年金暮らしの世帯の判定を左右するのは<b>公的年金等控除</b>です。最低保障額は65歳未満が60万円、<b>65歳以上が110万円</b>です。</p>
+<p>年金暮らしの世帯の判定を左右するのは<b>公的年金等控除</b>です。図は課税対象の公的年金だけを受け取り、ほかの所得がない人の設例です。</p>
 
 <figure class="figure fig-wide" style="--figw:660px">
 <svg viewBox="0 0 720 300" width="100%" role="img" aria-labelledby="nenkin-title">
@@ -558,12 +559,12 @@
   <text x="14" y="224" font-size="11" fill="#7a8aa8">同じ「合計所得45万円」でも、そこに届く年金収入は50万円ちがう（＝控除の差そのもの）</text>
 
   <rect x="14" y="240" width="692" height="46" rx="6" fill="#fff6e5" stroke="#d08a1e"/>
-  <text x="28" y="260" font-size="12" fill="#5b3d05" font-weight="bold">65歳以上かどうかは、住民税の課税年度の前年12月31日の年齢で判定する</text>
-  <text x="28" y="278" font-size="11" fill="#7a5a1e">東京23区・扶養なし・年金のみ・障害者等の特例なしでは、年金155万円の判定が64歳と65歳で変わる</text>
+  <text x="28" y="260" font-size="12" fill="#5b3d05" font-weight="bold">年齢は前年12月31日時点。年途中の死亡・法定の出国はその時点</text>
+  <text x="28" y="278" font-size="11" fill="#7a5a1e">東京23区・扶養なし・課税対象の公的年金のみ・障害者等の特例なし</text>
 </svg>
-<figcaption>65歳以上と65歳未満で公的年金等控除の最低保障額が50万円違うため、非課税でいられる年金収入の境界も50万円ずれる</figcaption>
+<figcaption>課税対象の公的年金のみ・扶養なし・障害者等の特例なしの設例。年齢の例外は<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_41_15_3">租税特別措置法41条の15の3第4項</a>によります。</figcaption>
 </figure>
-<p><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_35">所得税法35条4項</a>が定める最低保障額は60万円ですが、<b>65歳以上はこれが110万円に読み替えられます</b>（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_41_15_3">租税特別措置法41条の15の3第1項</a>）。住民税の所得計算は「所得税法<b>その他の所得税に関する法令</b>の規定による…計算の例による」と定められているため（<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_313">地方税法313条2項</a>）、<b>この特例は住民税にも及びます</b>。</p>
+<p>公的年金等控除の額は年齢とほかの所得によって異なります。根拠は<a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_35">所得税法35条4項</a>と<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_41_15_3">租税特別措置法41条の15の3</a>です。</p>
 
 <p id="pension-tax-exempt">遺族年金・障害年金は、受給額にかかわらず住民税がかからず、非課税世帯の判定に使う公的年金収入にも含めません。老齢年金などと両方を受け取る場合も、遺族年金・障害年金の分は除きます。</p>
 
@@ -571,28 +572,34 @@
 
 <p>均等割の非課税限度額は<b>「政令で定める基準に従い条例で定める」</b>もので（<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_295">地方税法295条3項</a>）、その基準となる基本額と加算額が<b><a href="https://www.mhlw.go.jp/file/06-Seisakujouhou-12000000-Shakaiengokyoku-Shakai/kyuchi30.pdf">生活保護法の級地区分</a></b>によって1.0倍・0.9倍・0.8倍されます（<a href="https://laws.e-gov.go.jp/law/329M50000002023#Mp-At_9_21">同法施行規則9条の21第2項</a>）。所得割の限度額が法律で全国一律なのとは対照的です。</p>
 
+<p data-review-context="before-table">次の表は級地率を当てはめた通常の目安です。限度額と年金欄は国内に住所があり、扶養なし・障害者等の非課税特例なしの人の目安です。年金欄は65歳以上で課税対象の公的年金のみの場合です。年途中の死亡・法定の出国ではその時点の年齢を使います。</p>
 <div class="scroll-wrap"><table id="kyuchi-table">
-  <thead><tr><th scope="col">級地</th><th scope="col">基本額</th><th scope="col">加算額</th><th scope="col">単身の限度額</th><th scope="col">年金だけなら（65歳以上）</th></tr></thead>
+  <thead><tr><th scope="col">級地</th><th scope="col">基本額</th><th scope="col">扶養等がある場合の追加額</th><th scope="col">単身の限度額</th><th scope="col">年金だけなら（65歳以上）</th></tr></thead>
   <tbody>
-    <tr id="kyuchi-1"><td><b>1級地</b>（東京23区・大阪市など）</td><td style="white-space:nowrap"><span class="numeric-token">35万円</span></td><td><span class="numeric-token">21万円</span>＋固定の10万円（計31万円）</td><td style="white-space:nowrap"><b><span class="numeric-token">45万円</span></b></td><td style="white-space:nowrap"><b><span class="numeric-token">155万円</span></b></td></tr>
+    <tr id="kyuchi-1"><td><b>1級地</b>（東京23区・大阪市など）</td><td style="white-space:nowrap"><span class="numeric-token">35万円</span></td><td><span class="numeric-token">21万円</span></td><td style="white-space:nowrap"><b><span class="numeric-token">45万円</span></b></td><td style="white-space:nowrap"><b><span class="numeric-token">155万円</span></b></td></tr>
     <tr id="kyuchi-2"><td><b>2級地</b>（新潟市・熊本市など）</td><td style="white-space:nowrap">31万<span class="numeric-token">5千円</span></td><td style="white-space:nowrap">18万<span class="numeric-token">9千円</span></td><td style="white-space:nowrap"><b>41万<span class="numeric-token">5千円</span></b></td><td style="white-space:nowrap"><b>151万<span class="numeric-token">5千円</span></b></td></tr>
     <tr id="kyuchi-3"><td><b>3級地</b>（1級地・2級地以外）</td><td style="white-space:nowrap"><span class="numeric-token">28万円</span></td><td style="white-space:nowrap">16万<span class="numeric-token">8千円</span></td><td style="white-space:nowrap"><b><span class="numeric-token">38万円</span></b></td><td style="white-space:nowrap"><b><span class="numeric-token">148万円</span></b></td></tr>
   </tbody>
 </table></div>
 
-<p>境界に近いときは、お住まいの市区町村の住民税担当窓口で確認してください。</p>
+<p class="hint" data-review-context="after-table">限度額には級地にかかわらず固定の10万円を加えます。表の追加額は扶養等がある場合だけ加えます。実際の基本額と追加額は級地率を参酌して条例で定めるため、自治体に確認してください。</p>
 
 <h2 id="kodomo">子のアルバイト代が、世帯の非課税を壊すことがある</h2>
 
-<p>非課税世帯の条件は<b>世帯全員</b>が均等割非課税であることなので、<b>子ども本人が課税されると世帯全体が該当しなくなります</b>。東京23区・扶養なし・障害者等の非課税特例なしで給与収入のみなら、子ども自身の合計所得の限度額は45万円です。給与収入では<b>令和8年度（令和7年所得）は110万円、令和9年度（令和8年所得）は119万円</b>が上限です。</p>
+<p>非課税世帯の条件は<b>世帯全員</b>が均等割非課税であることなので、<b>子ども本人が課税されると世帯全体が該当しなくなります</b>。東京23区・扶養なし・障害者等の非課税特例なしで給与収入のみなら、子ども自身の合計所得の限度額は45万円です。給与収入への換算は、<a href="#faq-salary">給与収入のFAQ</a>で確認できます。</p>
 
-<div class="note">
-<b>未成年者・障害者・寡婦・ひとり親は、前年の合計所得135万円以下なら非課税です</b>（<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_295">地方税法295条1項2号</a>）。東京23区・扶養なし・給与収入のみの例では、<b id="kodomo-hanten">令和8年度（令和7年所得）の給与収入115万円は所得50万円となり、特例のない成人は課税、未成年者は非課税</b>です。令和9年度（令和8年所得）は所得41万円となるため、特例がなくても非課税です。
+<div class="note" id="special-note">
+<p>均等割と所得割が非課税になる特例です。国内に住所がある障害者・未成年者・寡婦・ひとり親は、前年の合計所得135万円以下なら適用されます（例外は下の注）。</p>
+<p class="hint">退職手当等の分離課税に係る所得割は除きます（<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_295">地方税法295条1項2号</a>）。</p>
+</div>
+
+<div class="note" id="kodomo-hanten">
+東京23区・扶養なし・給与収入のみで特定支出控除なしの例です。令和8年度の給与収入115万円は所得50万円となり、障害者等の特例のない成人は課税されます。未成年者の非課税は<a href="#special-note">上の注</a>の条件によります。令和9年度は同じ給与収入で所得41万円となり、特例がなくても非課税です。
 </div>
 
 <h2 id="fuyo">扶養の付け方を変えると、非課税になることがある</h2>
 
-<p>均等割の限度額は<b>本人＋同一生計配偶者＋扶養親族の人数</b>で決まります。したがって共働きで子どもが複数いる世帯では、<b>子どもを誰の扶養に付けるかで世帯の判定が変わることがあります</b>。</p>
+<p>均等割の限度額は<b>本人＋同一生計配偶者＋扶養親族の人数</b>で決まります（扶養親族は16歳未満か控除対象扶養親族）。したがって共働きで子どもが複数いる世帯では、<b>子どもを誰の扶養に付けるかで世帯の判定が変わることがあります</b>。</p>
 
 <blockquote id="tsukekae-rei">
 東京23区・令和8年度で、夫の合計所得100万円・妻60万円・子2人が無収入、夫婦に障害者等の非課税特例がない場合 —
@@ -619,22 +626,22 @@
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>世帯全員が住民税の均等割を課されない世帯</b>のことです。世帯のうち1人でも均等割を課される人がいれば、その世帯は住民税非課税世帯ではありません。このツールの世帯判定では、所得割だけが非課税でも該当しません。判定は<b>前年の合計所得金額</b>で行い、令和8年度（2026年度）の判定なら令和7年（2025年）1年間の所得を使います。給付金などで用いられる区分ですが、制度ごとに判定する人の範囲は異なります。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>年金収入がいくらまでなら住民税非課税ですか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>65歳以上は年金収入155万円まで、65歳未満は105万円まで</b>です（東京23区・扶養なし・公的年金以外の所得なし・障害者等の非課税特例なしの場合）。差が出るのは公的年金等控除の最低保障額で、65歳以上は110万円、65歳未満は60万円だからです（<a href="https://laws.e-gov.go.jp/law/332AC0000000026#Mp-At_41_15_3">租税特別措置法41条の15の3</a>）。65歳以上かどうかは<b>住民税の課税年度の前年12月31日の年齢</b>で判定します。2級地は151万5千円まで、3級地は148万円までと、お住まいの市区町村の級地によって境界が変わります。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>年齢・扶養人数・地域によって変わります。<a href="#nenkin">年金収入の境界の図</a>と<a href="#kyuchi">級地別の表</a>で確認できます。遺族年金・障害年金は判定に使う年金収入から除きます。</p>
 
-<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>給与収入だけの単身者はいくらまで非課税ですか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b>令和8年度（令和7年所得）は給与収入110万円まで、令和9年度（令和8年所得）は119万円まで</b>です（東京23区・扶養なし・障害者等の非課税特例なしの場合）。合計所得の限度額45万円に、給与所得控除の最低保障額（令和8年度65万円、令和9年度74万円）を足した額です。令和7年分から給与所得控除の最低保障額が55万円から65万円に引き上げられたため、この境界は100万円から110万円に上がりました。所得税がかからない範囲（いわゆる160万円の壁）とは別の基準です。</p>
+<h3 class="faq-question" id="faq-salary"><span class="faq-existing-marker" aria-hidden="true">Q. </span>給与収入だけの単身者はいくらまで非課税ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>給与収入の目安は令和8年度が110万円、令和9年度が119万円です（東京23区・扶養なし・障害者等の非課税特例なし）。給与収入のみで、特定支出控除を適用しない場合です。所得年は課税年度の前年です。所得税がかからない範囲（いわゆる160万円の壁）とは別の基準です。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>子どものアルバイト代で世帯が課税になることはありますか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>あります。<b>子ども本人が均等割を課されると世帯全体が非課税世帯でなくなります</b>。東京23区・扶養なしの子どもの通常の限度額は合計所得45万円で、給与収入のみなら令和8年度（令和7年所得）は110万円、令和9年度（令和8年所得）は119万円です。ただし18歳未満の未成年者は合計所得135万円以下なら非課税になるため（<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_295">地方税法295条1項2号</a>）、同じ収入でも年齢によって結果が反転します。給与収入115万円の例は<a href="#kodomo">子のアルバイト代の節</a>にあります。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>あります。<b>子ども本人が均等割を課されると世帯全体が非課税世帯でなくなります</b>。年齢や特例によって結果が変わります。<a href="#special-note">未成年者などの非課税特例</a>も確認してください。給与収入115万円の例は<a href="#kodomo">子のアルバイト代の節</a>にあります。</p>
 
 <h3 class="faq-question" id="faq-kyuchi"><span class="faq-existing-marker" aria-hidden="true">Q. </span>級地とは何ですか。自分の市区町村の級地はどこで分かりますか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span><b><a href="https://laws.e-gov.go.jp/law/325AC0000000144#Mp-At_8">生活保護法8条1項</a>の保護の基準における地域の級地区分</b>のことで、均等割の非課税限度額の基本額がこれによって1.0倍・0.9倍・0.8倍されます（<a href="https://laws.e-gov.go.jp/law/325CO0000000245#Mp-At_47_3">地方税法施行令47条の3</a>、<a href="https://laws.e-gov.go.jp/law/329M50000002023#Mp-At_9_21">同法施行規則9条の21第2項</a>）。東京23区・横浜市・大阪市・札幌市などが1級地、新潟市・静岡市・熊本市などが2級地で、県庁所在地でも2級地の市が多くあります。各市区町村は<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_295">地方税法295条3項</a>により政令で定める基準に従い条例で非課税限度額を定めるため、境界に近い場合はお住まいの市区町村の住民税担当窓口でご確認ください。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>扶養の付け方で判定が変わることがあるのはなぜですか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>均等割の非課税限度額が<b>本人＋同一生計配偶者＋扶養親族の人数</b>で決まるからです。共働きで子どもが複数いる場合、子どもを1人にまとめて扶養させるより1人ずつ分けたほうが、両親それぞれの限度額が上がって世帯全体が非課税になることがあります。本ツールは付け方を全通り試し、非課税になる付け方があればそれを表示します。金額の例は<a href="#fuyo">扶養の付け方の節</a>にあります。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>均等割の非課税限度額に扶養人数が影響するからです。数える扶養親族は16歳未満または控除対象扶養親族に限ります。共働きで子どもが複数いる場合、子どもを1人にまとめて扶養させるより1人ずつ分けたほうが、両親それぞれの限度額が上がって世帯全体が非課税になることがあります。本ツールは付け方を全通り試し、非課税になる付け方があればそれを表示します。金額の例は<a href="#fuyo">扶養の付け方の節</a>にあります。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>障害者や寡婦・ひとり親には別の基準がありますか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>あります。障害者・未成年者・寡婦・ひとり親にあたる人は、<b>前年の合計所得金額が135万円以下</b>であれば均等割も所得割も課されません（<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_295">地方税法295条1項2号</a>）。この判定は人数による限度額の計算より先に効くので、限度額を超えていてもこちらで非課税になることがあります。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>あります。対象者と除外される税は<a href="#special-note">障害者等の非課税特例の注</a>を確認してください。この判定は人数による限度額の計算より先に効くので、限度額を超えていてもこちらで非課税になることがあります。</p>
 
 <h2 id="shutten">出典</h2>
 <ul id="shutten-list">
@@ -643,13 +650,13 @@
     <ul>
       <li><a href="https://laws.e-gov.go.jp/law/325AC0000000226/20270101_508AC0000000002#Mp-At_292">292条</a>1項7号・9号 — 同一生計配偶者・扶養親族の合計所得金額は令和8年度58万円以下、令和9年度以後62万円以下</li>
       <li><a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_295">295条</a>1項2号・3項 — 障害者等の135万円・均等割の非課税限度額</li>
-      <li><a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_313">313条</a>2項 — 所得の計算は所得税法その他の所得税に関する法令の例による</li>
+      <li><a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_313">313条</a>2項 — 所得計算の原則と特則</li>
       <li><a href="https://laws.e-gov.go.jp/law/325AC0000000226#325AC0000000226-Sp-At_3_3">附則3条の3</a> — 所得割の非課税限度額</li>
     </ul>
   </li>
   <li><a href="https://laws.e-gov.go.jp/law/325CO0000000245" rel="nofollow">地方税法施行令47条の3</a>・<a href="https://laws.e-gov.go.jp/law/329M50000002023" rel="nofollow">地方税法施行規則9条の21第2項</a> — 均等割の非課税限度額の基準額（35万円・21万円）と級地区分による1.0/0.9/0.8倍</li>
   <li><a href="https://www.mhlw.go.jp/file/06-Seisakujouhou-12000000-Shakaiengokyoku-Shakai/kyuchi30.pdf" rel="nofollow">厚生労働省「級地区分（平成30年4月1日現在）」</a> — 市区町村ごとの級地の一覧</li>
-  <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_35" rel="nofollow">所得税法35条</a> — 公的年金等控除額（4項1号のイ40万円＋ロ、最低保障60万円）</li>
+  <li><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_35" rel="nofollow">所得税法35条</a> — 公的年金等控除額の所得別区分</li>
   <li><a href="https://www.tax.metro.tokyo.lg.jp/kazei/life/kojin_ju" rel="nofollow">東京都主税局「個人住民税」</a> — 公的年金等控除の表と年齢判定（住民税の課税年度の前年12月31日）、給与所得と公的年金等の双方がある場合の所得金額調整控除</li>
   <li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1600.htm" rel="nofollow">国税庁 No.1600 公的年金等の課税関係</a> — 公的年金等に係る雑所得の速算表（本ツールの計算がこの表を全区分で再現することを機械で確認しています）</li>
   <li><a href="https://www.kyoukaikenpo.or.jp/benefit/high_cost_medical_expenses/002/001/" rel="nofollow">協会けんぽ「高額療養費簡易試算（70歳未満用）」</a></li>
