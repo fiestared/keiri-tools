@@ -434,8 +434,14 @@ sec("§15 ページ本文 ⇔ 参照データの一致");
     has("shokyaku-gendo", `${D.shokyaku.gendo_pct}%`), true);
   eq("木造の償却率が本文にある",
     has("shokyaku-mokuzo", String(D.shokyaku.kozo.find((k) => k.key === "mokuzo").ritsu)), true);
-  eq("耐用年数の1.5倍が本文にある",
-    has("shokyaku-15", `${D.shokyaku.taiyo_bairitsu}倍`), true);
+  // 2026-10-18 の書き直し（rg5）で #shokyaku-15 の li は消え、1.5倍の主張は償却率の表
+  // (#kozo-table) の直前の段落に移った。その段落を「表の直前」という位置で名指しする（一意）。
+  {
+    const m = html.match(/<p data-review-context="before-table">([^<]*)<\/p>\s*<div class="scroll-wrap"><table id="kozo-table">/);
+    const t = m ? m[1] : "";
+    eq("耐用年数の1.5倍が本文にある（償却率の表の直前の段落）",
+      t.includes(`法定耐用年数を${D.shokyaku.taiyo_bairitsu}倍し`) && t.includes("1年未満を切り捨て"), true);
+  }
   eq("概算取得費の割合が本文にある",
     has("gaisan-callout", `${D.shutokuhi.gaisan_rate * 100}%`), true);
   eq("空き家特例の適用期限が本文にある",
@@ -447,10 +453,24 @@ sec("§15 ページ本文 ⇔ 参照データの一致");
   eq("判定基準日の主張が本文にある", has("kijunbi-callout", "譲渡した年の1月1日"), true);
   eq("短期の具体例（4年7か月）が本文にある", has("kijunbi-kotoba", "4年7か月"), true);
   eq("3,000万円控除が短期にも効くと書いてある", has("kojo-tanki", "短期譲渡にも使えます"), true);
+  // rg5 で #keigen-note は「3,000万円を控除した『後』」から「特別控除を引いた後」へ言い換え
+  // （空き家特例など3,000万円以外の特別控除も含む一般形）。主張の核心「控除の後で判定」は同じ要素に残る。
   eq("軽減税率の6,000万判定は控除の『後』だと書いてある",
-    has("keigen-note", "3,000万円を控除した"), true);
-  eq(`  その6,000万円という区切りがデータと一致する`,
-    has("keigen-ritsu", "6,000万円") && D.zeiritsu.keigen.kijun_en === 60000000, true);
+    has("keigen-note", "特別控除を引いた後の課税長期譲渡所得金額に当てはめます"), true);
+  // 6,000万円の区切りは #keigen-ritsu から消え、FAQ「併用できますか」の答えだけに残った。
+  // FAQ は設問(h3)で名指しし、その直後の答えの <p> だけを見る（規則4: 主語で一意に特定）。
+  const faqAns = (q) => {
+    const i = html.indexOf(`</span>${q}</h3>`);
+    if (i < 0) return null;
+    const m = html.slice(i).match(/<p class="faq-answer">([\s\S]*?)<\/p>/);
+    return m ? m[1].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() : null;
+  };
+  {
+    const t = faqAns("マイホーム売却の特別控除と軽減税率は併用できますか？") || "";
+    eq(`  その6,000万円という区切りがデータと一致し、控除後で判定と書いてある（FAQ）`,
+      t.includes("6,000万円という区切りは、特別控除後の課税長期譲渡所得金額で判定します")
+        && D.zeiritsu.keigen.kijun_en === 60000000, true);
+  }
 }
 
 console.log(T.join("\n"));
