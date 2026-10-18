@@ -510,6 +510,13 @@ function stripArticleBody(html) {
 // 突き合わせると二重になり、しかも本文がgen_faq_jsonldで生成した歴史的事実(令和2年政令 等)を
 // **head の JSON-LD が抱えるため <article> 免除をすり抜けて誤検知する**。写しは外す。
 // ⚠️ 外すのは ld+json だけ。**結果欄を描く <script type="module"> は外さない**(可視文字列を描くため)。
+// 生成された回遊の区画（あわせて読む・関連・次に読む）は「別のページの title」を並べるだけで、このページの申告ではない。
+// 2026-10-18: /gensen-choshu/ の title を「源泉徴収税額表（令和8年分）と計算機」にしたら、そこへリンクする /shohizei/ が
+// 「令和8年分と書いているのに年つきデータを読んでいない」で落ちた。リンク先の年はリンク先のページ自身の検査が見る
+function stripNavBlocks(html) {
+  return html.replace(/<!--(rail-next|rel|next-read):S-->[\s\S]*?<!--\1:E-->/g, "");
+}
+
 function stripLdJson(html) {
   return html.replace(/<script type="application\/ld\+json">[\s\S]*?<\/script>/gi, "");
 }
@@ -537,7 +544,7 @@ for (const page of pages) {
   const rel = relative(DOCS, page);
   const raw = contentHTML(await readFile(page, "utf8"));
   rawByRel.set(rel, raw);
-  const html = stripScheduleDisasterNames(stripRelBlock(stripLdJson(stripArticleBody(stripArticleCards(stripComments(raw))))));
+  const html = stripScheduleDisasterNames(stripRelBlock(stripNavBlocks(stripLdJson(stripArticleBody(stripArticleCards(stripComments(raw)))))));
 
   // このページが fetch している年つきデータ = 名乗ってよい年
   const fetched = [...raw.matchAll(/assets\/([\w.-]+\.json)/g)].map((m) => m[1]);
