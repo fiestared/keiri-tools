@@ -1,6 +1,12 @@
 {
   "page": "docs/column/kotei-zangyodai/index.html",
-  "absolutes": [],
+  "absolutes": [
+    {
+      "phrase": "一律",
+      "context": "一律定額の手当は基礎に含めます",
+      "reviewed": "家族手当・通勤手当に限った記述。扶養家族数、通勤費用・距離に関係ない一律額は除外できない。corpus/jsite_mhlw_go_jp_aichi_roudoukyoku_var_rev0_0119_6635_warimashikiso_pdf.txt:19-21,46。"
+    }
+  ],
   "tool_cases": [],
   "checked": "2026-10-19",
   "scope": "auto20261019 t13-q08446: 審査okを独立確認済みとして記録。修正単位は再照合待ち、正本外14単位は未確認。",
@@ -2801,7 +2807,11 @@
         "p/faq",
         "p/faq"
       ],
-      "numbers": [],
+      "numbers": [
+        "10時間",
+        "30時間",
+        "40時間"
+      ],
       "checked": "2026-10-19",
       "applies": "2026-10-19確認。本文の設例条件による。",
       "scope": "労基法37条の割増賃金が必要な労働者。例は30時間分の法定額と同額の固定残業代・同じ割増率の40時間。",
@@ -2818,7 +2828,9 @@
       ],
       "topic": [
         "auto20261019-t13-q08446"
-      ]
+      ],
+      "derived": true,
+      "calc": "同じ割増率・時間単価で、固定残業代が法定時間外30時間の法定額と同額の設例。Python実行: 40 - 30 = 10時間。割増率は労基法37条1項・4項、基礎時間額の計算は労基則19条。"
     },
     {
       "id": "auto20261019-t13-allowance",
