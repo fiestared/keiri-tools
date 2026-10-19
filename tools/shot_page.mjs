@@ -89,7 +89,7 @@ const p = spawnChrome(CHROME, [
   `http://127.0.0.1:${port}/${narrow ? "__frame" : page}`,
 ], { stdio: "ignore" });
 
-const DEADLINE = 60_000, STEP = 500;
+const DEADLINE = Number(process.env.SHOT_DEADLINE_MS) || 60_000, STEP = 500; // 2026-10-19: 高負荷時に呼び元が延ばせるように（既定は従来どおり60秒）
 let size = -1, stable = 0, waited = 0;
 while (waited < DEADLINE) {
   await new Promise((r) => setTimeout(r, STEP));

@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "kakutei-shinkokusho-kakikata", // 確定申告書 Google月間26,480（2026-10-19実測）。各表の役割・転記元の参照表。
   "kosei-nenkin-kikin", // Google月間推定6,480（2026-10-18 MF2実測）。代行・上乗せと解散後の受取先。
   "kojin-nenkin-zeikin", // Google月間4,320、2026-10-18。本人受取の私的年金の税金。
   "zaisan-saimu-chosho", // 財産債務調書 Google4,320/月（2026-10-18）。年末財産評価と提出要件の照合表。
@@ -726,7 +727,7 @@ const CATEGORIES = [
       "taishokukin-zeikin", "taishoku-shotoku-shinkokusho", "taishoku-gensen-choshuhyo", "gensen-choshuhyo-saihakko", "gensen-choshuhyo-itsu", "nenmatsu-chosei-kakutei-shinkoku-chigai", "nenmatsu-chosei-iryohi-kojo", "shokibo-kyosai-uketori", "fukugyo-20man-kakutei-shinkoku", "kinyu-shotoku-kazei-2027", "angoshisan-zeikin", "tokutei-koza-gensen-ari", "haitokin-kakutei-shinkoku", "nisa-kakutei-shinkoku", "jugyoin-mochikabukai", "gaikoku-zeigaku-kojo", "kaigyo-todoke", "haigyo-todoke", "aoiro-tokubetsu-kojo", "aoiro-shonin-shinseisho", "shiroiro-shinkoku", "kakutei-shinkoku-hitsuyo-shorui", "kakutei-shinkoku-itsumade", "junkakutei-shinkoku", "kaji-anbun", "kanai-rodosha-tokurei", "jigyonushi-kashi-kari", "yotei-nozei-toha", "kojin-jigyozei",
       "shusei-shinkoku-kosei-seikyu", "zeimu-chosa", "zeimu-dairi-kengen-shosho", "fufuku-moshitate", "nozei-shomeisho",
     
-      "kakutei-shinkoku-yarikata",
+      "kakutei-shinkokusho-kakikata", "kakutei-shinkoku-yarikata",
       "shunyu-shotoku-chigai",
       "ichiji-shotoku",
       "kakutei-shinkoku-kanpukin-itsu",
