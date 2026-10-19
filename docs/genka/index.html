@@ -235,7 +235,7 @@
     <input aria-describedby="chuko-shishutsu-hint" id="chuko-shishutsu" type="number" inputmode="numeric" min="0" step="1" placeholder="0" value="0">
 
   <button class="primary" id="chuko-calc">簡便法で耐用年数を計算する</button>
-      <span id="chuko-shishutsu-hint" class="hint">使えるようにするための改良・改造費。中古資産の<b>取得価額の50％を超えると簡便法は使えません</b>（<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐令3条1項ただし書</a>）。無ければ0</span>
+      <span id="chuko-shishutsu-hint" class="hint">通常の購入では、供用のための改良・改造費が<b>取得価額の50％を超えると簡便法は使えません</b>（<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐令3条1項ただし書</a>）。無ければ0</span>
   <div role="status" aria-live="polite" class="result" id="chuko-result"></div>
 </div>
 
@@ -264,16 +264,16 @@
 <p>減価償却は、資産の取得費を使用可能期間にわたって各年の必要経費へ配分する手続きです。これが減価償却です。平成19年4月1日以後に取得した資産の一般的な方法は<b>定額法</b>と<b>定率法</b>の2つです。少額な資産には別の取扱いがあります（<a href="#shogaku">少額な資産の取扱い</a>）。</p>
 
 <div class="summary-box">
-<p>定額法の基本年額は<b>取得価額×償却率</b>です。定率法の基本年額は<b>期首未償却残高×償却率</b>で、保証額未満になった年から改定取得価額×改定償却率に切り替わります。年途中の取得・取壊し等では、業務使用月数で月割します。</p>
+<p>定額法の基本年額は<b>取得価額×償却率</b>です。定率法の基本年額は<b>期首未償却残高×償却率</b>で、保証額未満になった年から改定取得価額×改定償却率に切り替わります。月割は、個人の定額法・定率法で年途中に取得・取壊し等があった場合に行います。</p>
 <p>100万円・10年・通年供用の有形資産の例では、定額法は1～9年目10万円、10年目99,999円で、200%定率法は初年20万円・翌年16万円等となります。</p>
 </div>
 
-<p>償却方法は資産の区分と取得時期で決まります。方法の選定には届出、変更には承認が必要です。定額法に限られる主な資産は次のとおりです。</p>
+<p>償却方法は資産の区分と取得時期で決まります。変更には承認が必要です。選定の届出には、旧方式からの「みなし選定」による例外があります。定額法に限られる主な資産は次のとおりです。</p>
 
 <ul id="teigaku-nomi">
-<li><b>鉱業用以外の建物</b>（平成19年4月1日以後に取得したもの）</li>
-<li><b>鉱業用以外の建物附属設備・構築物</b>のうち、平成28年4月1日以後に取得したもの</li>
-<li><b>ソフトウエア</b>と<b>生物</b>（<a href="https://laws.e-gov.go.jp/law/340CO0000000096#Mp-At_120_2">所得税法施行令120条の2第1項4号</a>）</li>
+<li>建物は定額法です（鉱業用・所有権移転外リース資産を除き、平成19年4月1日以後取得）。</li>
+<li>建物附属設備・構築物は定額法です（鉱業用・所有権移転外リース資産を除き、平成28年4月1日以後取得）。</li>
+<li>ソフトウエア・生物は定額法です（所有権移転外リース資産を除く）。</li>
 </ul>
 
 <p class="note">鉱業用の資産・鉱業権・貯留権・リース資産には、別の償却方法の定めがあります（<a href="https://laws.e-gov.go.jp/law/340CO0000000096#Mp-At_120_2">所得税法施行令120条の2第1項3号・5号・6号</a>）。</p>
@@ -326,12 +326,12 @@
 <p>定率法の償却率は、<b>取得した時期で使う表が違います</b>。同じ耐用年数でも取得時期で毎年の額が変わるので、取得年月を正しく入れることが大切です。</p>
 
 <ul>
-<li><b>平成24年4月1日以後に取得</b> … 原則200%定率法（<a href="https://laws.e-gov.go.jp/law/340M50000040015">耐用年数省令 別表第十</a>の率）</li>
-<li><b>平成19年4月1日〜平成24年3月31日に取得</b> … 原則250%定率法（<a href="https://laws.e-gov.go.jp/law/340M50000040015">別表第九</a>の率）</li>
+<li>定率法を適用する資産は、<b>平成24年4月1日以後取得なら原則200%定率法</b>（<a href="https://laws.e-gov.go.jp/law/340M50000040015">耐用年数省令 別表第十</a>の率）</li>
+<li>定率法を適用する資産は、<b>平成19年4月1日〜平成24年3月31日取得なら原則250%定率法</b>（<a href="https://laws.e-gov.go.jp/law/340M50000040015">別表第九</a>の率）</li>
 <li><b>平成19年3月31日以前に取得</b> … 旧定率法（このツールの対象外）</li>
 </ul>
 
-<p class="note">平成24年中に取得した資産などには経過措置があります（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2106.htm">国税庁 No.2106</a> の注）。平成19年3月31日以前に取得した資産は、旧定額法・旧定率法などで計算します。旧定額法・旧定率法には残存価額・5%均等償却があり、計算が異なるため、このツールの対象外です。</p>
+<p class="note">平成24年中に取得した資産などには経過措置があります（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2106.htm">国税庁 No.2106</a> の注）。平成19年3月31日以前に取得した資産は、旧定額法・旧定率法などで計算します。旧定額法・旧定率法は計算が異なるため、このツールの対象外です。</p>
 
 <p>定額法の償却率（<a href="https://laws.e-gov.go.jp/law/340M50000040015">別表第八</a>）は平成19年4月1日以後は一律で、取得時期による違いはありません。上の計算機は取得年月による原則の表を選び、平成24年改正の経過措置は対象外です。</p>
 
@@ -354,7 +354,7 @@
 
 <p>個人の定額法・定率法の初年度は<b>年額×業務使用月数÷12</b>で計算します。年末まで業務に使う場合は、供用月から12月までを数えます。たとえば4月に使い始めたなら9か月分です。</p>
 
-<p class="hint">死亡・出国・業務外転用がある場合は、その日までの業務使用月数で計算します。月数は暦で数え、1月未満の端数は1月とします（<a href="https://laws.e-gov.go.jp/law/340CO0000000096#Mp-At_132">所得税法施行令132条</a>）。</p>
+<p class="hint">月割はその日までの業務使用月数で計算します（個人の定額法・定率法で死亡・出国・業務外転用がある場合）。月数は暦で数え、1月未満の端数は1月とします（<a href="https://laws.e-gov.go.jp/law/340CO0000000096#Mp-At_132">所得税法施行令132条</a>）。</p>
 <p>月割をした場合に償却がいつ終わるかは、償却方法・償却率・残高によって変わります。上の計算機のスケジュール表で確認できます。</p>
 
 <h2 id="gendo">1円を残す資産・残さない資産（償却の限度額）</h2>
@@ -363,12 +363,12 @@
 
 <div class="scroll-wrap">
 <table class="tbl" id="gendo-table">
-<caption>平成19年4月1日以後取得の資産。イは坑道・ハを除く有形資産と生物</caption>
+<caption>平成19年4月1日以後取得の資産。イ・ロはハのリース資産を除く</caption>
 <thead><tr><th scope="col">区分</th><th scope="col">資産</th><th scope="col">償却の限度額（帳簿に残る額）</th></tr></thead>
 <tbody>
 <tr id="gendo-i"><td>イ</td><td>建物・建物附属設備・構築物・機械装置・船舶・航空機・車両運搬具・工具器具備品・<b>生物</b>（坑道とハを除く）</td><td>取得価額から<b>1円を控除した金額</b>（＝<b>1円が残る</b>）</td></tr>
 <tr id="gendo-ro"><td>ロ</td><td><b>坑道</b>および<b>無形固定資産</b>（ソフトウエア・特許権・営業権・水道施設利用権など）</td><td><b>その取得価額に相当する金額</b>（＝<b>1円を残さず0円まで</b>）</td></tr>
-<tr id="gendo-ha"><td>ハ</td><td>所有権移転外リースのリース資産（令和9年3月31日以前契約・借主側）</td><td>令和9年3月31日以前契約分は取得価額から残価保証額を控除<br><span class="hint">※ この区分は当ツールでは計算できません</span></td></tr>
+<tr id="gendo-ha"><td>ハ</td><td>所有権移転外リースのリース資産（平成20年4月1日〜令和9年3月31日契約・借主側）</td><td>平成20年4月1日〜令和9年3月31日契約分は取得価額から残価保証額を控除<br><span class="hint">※ この区分は当ツールでは計算できません</span></td></tr>
 </tbody>
 </table>
 </div>
@@ -377,7 +377,7 @@
 
 <h2 id="chuko-kaisetsu">中古資産は「簡便法」で耐用年数を短くできる</h2>
 
-<p>中古資産は<b>使用可能期間として見積もった年数</b>で償却できます（採掘権等を除く）。見積りの起点は供用時ですが、個人が取得後すぐ供用しない場合は取得時です。<b>簡便法</b>の対象は、<a href="https://laws.e-gov.go.jp/law/340M50000040015">耐用年数省令の別表第一・第二・第五・第六</a>の資産のうち、使用可能期間の見積りが困難なものです。供用のための資本的支出による制限は下の注を確認してください。<a href="#chuko">上の計算機</a>で計算できます。</p>
+<p>中古資産の耐用年数は、<b>使用可能期間の見積りや簡便法の条件</b>を確認して決めます（下の注を参照）。見積りの起点は供用時ですが、個人が取得後すぐ供用しない場合は取得時です。<b>簡便法</b>には対象資産・見積りの難しさ・資本的支出の制限があります（<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐用年数省令3条1項</a>）。対象外の資産・見積り・資本的支出の条件は下の注を確認してください。<a href="#chuko">上の計算機</a>で計算できます。</p>
 
 <ul id="chuko-list">
 <li id="chuko-zenbu"><b>法定耐用年数の全部を経過した資産</b> … 法定耐用年数 × <b>20％</b></li>
@@ -388,9 +388,9 @@
 
 <p id="chuko-rei">たとえば法定耐用年数22年の木造アパートを<b>築10年3か月</b>で買った場合は、(264か月−123か月) ＋ 123か月×20％ ＝ 165.6か月 ＝ 13.8年 → <b>13年</b>です。年だけで「築10年」と丸めると14年になり、1年ずれます。</p>
 
-<p class="note" id="chuko-tadashi"><b>供用のための資本的支出が中古資産の取得価額の50％を超えると、簡便法は使えません</b>（<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐令3条1項ただし書</a>）。この場合は使用可能期間を見積もる方法によります。法人では、さらに<b>供用のための資本的支出が再取得価額（同じ新品を買う場合の価額）の50％も超える</b>ときは、<b>法定耐用年数</b>によります（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hojin/5404.htm">国税庁 No.5404</a> 注）。</p>
+<p class="note" id="chuko-tadashi"><b>通常の購入で簡便法は使えません</b>（供用のための資本的支出が取得価額の50％を超える場合）。適格合併等による引継ぎでは所定の帳簿価額で判定します（<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐令3条1項ただし書</a>）。使用可能期間の見積りにも条件があります。採掘権等は対象外です。法人では、<b>供用のための資本的支出が再取得価額の50％を超える</b>ときは、<b>法定耐用年数</b>によります（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hojin/5404.htm">国税庁 No.5404</a> 注）。</p>
 
-<p class="note" id="chuko-jiki">中古資産の耐用年数の見積りは<b>事業に使い始めた年にしかできません</b>。その年にしなかった場合、翌年以後に見積もり直すことはできません。</p>
+<p class="note" id="chuko-jiki">法人の中古資産の耐用年数は、<b>供用した事業年度に算定</b>します。その事業年度に算定しなかった場合、後の事業年度には算定できません（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hojin/5404.htm">国税庁 No.5404</a>）。</p>
 
 <h2 id="shogaku">少額な資産の取扱い</h2>
 <p>少額な資産には、通常の減価償却とは別の取扱いがあります。取得日・供用日・対象者・手続きで適用が変わるため、金額だけで選ばず、一次資料で条件を確認してください。</p>
@@ -405,13 +405,13 @@
 <h2 id="faq">よくある質問</h2>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>減価償却費はどうやって計算しますか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>基本年額は、定額法が取得価額×償却率、定率法が期首未償却残高×償却率です。平成19年4月1日以後取得の計算で、定率法は保証額未満になった年から改定取得価額×改定償却率に切り替わります。年途中の取得・取壊し等は業務使用月数で月割します。償却率は耐用年数ごとに国税庁の表（<a href="https://laws.e-gov.go.jp/law/340M50000040015">別表第八</a>〜第十）で決まっています。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>基本年額は、定額法が取得価額×償却率、定率法が期首未償却残高×償却率です。平成19年4月1日以後取得の計算で、定率法は保証額未満になった年から改定取得価額×改定償却率に切り替わります。月割は、個人の定額法・定率法で年途中に取得・取壊し等があった場合に行います。償却率は耐用年数ごとに国税庁の表（<a href="https://laws.e-gov.go.jp/law/340M50000040015">別表第八〜第十</a>）で決まっています。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>定額法と定率法はどちらを選べますか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>選べる方法は資産の区分と取得時期で異なります。選定には届出、変更には承認が必要です。建物等の制限や鉱業用・リース等の別区分は、<a href="#ikura">償却方法の節</a>で確認してください。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>選べる方法は資産の区分と取得時期で異なります。変更には承認が必要です。選定の届出には例外があります（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2100.htm">国税庁 No.2100</a>）。建物等の制限や鉱業用・リース等の別区分は、<a href="#ikura">償却方法の節</a>で確認してください。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>ソフトウエアも最後に1円を残しますか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>残しません。通常のソフトウエアは取得価額の全額を償却します（<a href="https://laws.e-gov.go.jp/law/340CO0000000096#Mp-At_134">所得税法施行令134条1項2号ロ</a>）。所定のリース資産には別の限度額があります。つまり無形固定資産の帳簿価額は最後に0円になります。有形固定資産で1円を残すのは、その資産をまだ持っていることを帳簿に残すためです。上の計算機の「資産の種類」で切り替わります。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>残しません。通常のソフトウエアは取得価額の全額を償却します（<a href="https://laws.e-gov.go.jp/law/340CO0000000096#Mp-At_134">所得税法施行令134条1項2号ロ</a>）。所定のリース資産には別の限度額があります。つまり無形固定資産の帳簿価額は最後に0円になります。坑道を除く通常の有形固定資産は、帳簿価額に1円を残します。上の計算機の「資産の種類」で切り替わります。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>中古で買った資産の耐用年数はどうなりますか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>使用可能期間の見積りや簡便法で算定できる場合があります。適用には対象資産・見積りの起点・資本的支出の条件があります。簡便法が使えない場合は、上の<a href="#chuko-kaisetsu">中古資産の節</a>で確認してください。</p>
@@ -430,7 +430,7 @@
 
 <h2 id="ichiran">償却率一覧表（定額法・定率法200%）</h2>
 
-<p>耐用年数ごとの償却率です（<span id="hyo-year">読み込み中…</span>）。定率法の列は200%（平成24年4月1日以後の取得）の率です。平成19年4月1日〜平成24年3月31日取得は原則250%定率法です。平成24年改正の経過措置は計算機の対象外です。</p>
+<p>耐用年数ごとの償却率です（<span id="hyo-year">読み込み中…</span>）。定率法の列は200%（平成24年4月1日以後の取得）の率です。定率法を適用する資産は、平成19年4月1日〜平成24年3月31日取得なら原則250%定率法です。平成24年改正の経過措置は計算機の対象外です。</p>
 
 <div class="scroll-wrap">
 <table class="tbl" id="ritsu-table">
@@ -472,7 +472,7 @@
 <!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%8F%96%E5%BE%97%E4%BE%A1%E9%A1%8D%E3%83%BB%E8%80%90%E7%94%A8%E5%B9%B4%E6%95%B0%E3%83%BB%E5%84%9F%E5%8D%B4%E6%96%B9%E6%B3%95%E3%82%92%E5%85%A5%E3%82%8C%E3%82%8B%E3%81%A8%E3%80%81%E6%B8%9B%E4%BE%A1%E5%84%9F%E5%8D%B4%E8%B2%BB%E3%81%8C%E6%AF%8E%E5%B9%B4%E3%81%84%E3%81%8F%E3%82%89%E3%81%AB%E3%81%AA%E3%82%8B%E3%81%8B%EF%BC%88%E5%84%9F%E5%8D%B4%E3%82%B9%E3%82%B1%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB%EF%BC%89%E3%82%92%E8%A9%A6%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E5%AE%9A%E9%A1%8D%E6%B3%95%E3%81%A8%E5%AE%9A%E7%8E%87%E6%B3%95%EF%BC%88200%25%E3%83%BB250%25%EF%BC%89%E3%80%81%E5%88%9D%E5%B9%B4%E5%BA%A6%E3%81%AE%E6%9C%88%E5%89%B2%E3%80%81%E4%B8%AD%E5%8F%A4%E8%B3%87%E7%94%A3%E3%81%AE%E7%B0%A1%E4%BE%BF%E6%B3%95%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fgenka%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site" style="display:block">
-  出典: 国税庁 タックスアンサー <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2106.htm">No.2106</a>／<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2100.htm">No.2100</a> 添付「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/pdf/2100_02.pdf">償却率等表</a>」（<a href="https://laws.e-gov.go.jp/law/340M50000040015">別表第八</a>・第九）／「<a href="https://www.nta.go.jp/publication/pamph/hojin/kaisei_gaiyo2011/pdf/1112kaisei_faq.pdf">法人の減価償却制度の改正に関するQ&A</a>」（別表第十）<span id="src-note"></span>。<br>
+  出典: 国税庁 タックスアンサー <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2106.htm">No.2106</a>／<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2100.htm">No.2100</a> 添付「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/pdf/2100_02.pdf">償却率等表</a>」（<a href="https://laws.e-gov.go.jp/law/340M50000040015">別表第八・第九</a>）／「<a href="https://www.nta.go.jp/publication/pamph/hojin/kaisei_gaiyo2011/pdf/1112kaisei_faq.pdf">法人の減価償却制度の改正に関するQ&A</a>」（別表第十）<span id="src-note"></span>。<br>
   入力した内容はブラウザの外へ送信されません。<br>© 税金・経理・補助金ツールズ
   <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
