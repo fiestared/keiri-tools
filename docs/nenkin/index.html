@@ -685,9 +685,7 @@ function paintMeta() {
   const m = DATA.kiso.mangaku_yen.map((x) => `${x.label} ${yenF(x.yen)}`).join("／");
   $("meta-note").innerHTML =
     `<span id="year-from-data">${DATA._meta.year}</span>の年金額で計算しています。`
-    + `満額は ${m}（<a href="https://laws.e-gov.go.jp/law/334AC0000000141">国民年金法27条</a>本文の${yenF(DATA.kiso.hongaku_yen)}に改定率を乗じた額）、`
-    + `付加年金は月あたり${yenF(DATA.fuka.yen_per_month)}、`
-    + `繰上げ${pct(DATA.kuriage.rate_per_month)}／繰下げ${pct(DATA.kurisage.rate_per_month)}（1か月あたり）です。`;
+    + `満額は ${m}（<a href="https://laws.e-gov.go.jp/law/334AC0000000141">国民年金法27条</a>本文の${yenF(DATA.kiso.hongaku_yen)}に改定率を乗じた額）です。`;
 }
 
 /* ---------- 結果をコピー（共通部品）2026-08-23 展開 ---------- */
