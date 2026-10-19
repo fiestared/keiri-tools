@@ -34,9 +34,9 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
-  "shogu-kaizen-teate", // 処遇改善手当 Google月間6,480（2026-10-19実測）
   "kakutei-shinkokusho-kakikata", // 確定申告書 Google月間26,480（2026-10-19実測）。各表の役割・転記元の参照表。
   "kosei-nenkin-kikin", // Google月間推定6,480（2026-10-18 MF2実測）。代行・上乗せと解散後の受取先。
+  "shogu-kaizen-teate", // 処遇改善手当 Google月間6,480（2026-10-19実測）
   "kojin-nenkin-zeikin", // Google月間4,320、2026-10-18。本人受取の私的年金の税金。
   "zaisan-saimu-chosho", // 財産債務調書 Google4,320/月（2026-10-18）。年末財産評価と提出要件の照合表。
   "taishoku-tetsuzuki", // 退職手続き Google月間6,480（2026-10-18）。会社側の期限・提出先総覧。
