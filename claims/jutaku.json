@@ -562,7 +562,7 @@
       "id": "sol-d50ad7448d2dccde",
       "text": "中古は昭和57年1月1日以後建築、または耐震基準適合等が要件",
       "numbers": [
-        "1月1日"
+        "昭和57年1月1日"
       ],
       "where": [
         "本文274",
@@ -3751,7 +3751,7 @@
         "s-946d5671f81e743aa9de-1"
       ],
       "numbers": [
-        "1月1日",
+        "昭和57年1月1日",
         "2年以内"
       ],
       "applies": "本文の対象年・取得区分に限る。0.7％制度の計算機。",
@@ -5289,7 +5289,7 @@
         "s-946d5671f81e743aa9de-2"
       ],
       "numbers": [
-        "1月1日",
+        "昭和57年1月1日",
         "2年以内"
       ],
       "applies": "本文の対象年・取得区分に限る。0.7％制度の計算機。",
@@ -8932,6 +8932,46 @@
         "#shiki 取得対価等の箇条書き"
       ],
       "applies": "2026-10-20確認。2022〜2030年入居の0.7％制度のうち、各文に記す入居年・取得区分に限る。"
+    },
+    {
+      "id": "finish-r9-s-e3e394c035a1d65335de-1",
+      "text": "床面積は登記事項証明書の面積で判断し、マンションは共用部分を除く専有部分を使います。",
+      "covers": [
+        "s-e3e394c035a1d65335de-1"
+      ],
+      "numbers": [],
+      "must_with": [
+        "登記事項証明書",
+        "専有部分"
+      ],
+      "scope": "中古住宅表の床面積の判定基準。2022〜2030年入居の0.7％制度。",
+      "exceptions": "併用住宅は店舗等を含む建物全体、共有住宅は共有持分を乗じず建物全体。区分所有住宅は専有部分。マンションの共用部分は含めない。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1211-3.htm",
+      "source_quote": "床面積は、「登記事項証明書」に表示されている床面積により判断します。",
+      "corpus_ref": "segment-review-9/corpus/nta_1211-3.txt:125-130",
+      "where": [
+        "中古表の直前の共通説明"
+      ]
+    },
+    {
+      "id": "finish-r9-s-9a11f145195d3e82f4aa-1",
+      "text": "併用住宅・共有住宅は建物全体で判断しますが、区分所有住宅は専有部分で判断します。",
+      "covers": [
+        "s-9a11f145195d3e82f4aa-1"
+      ],
+      "numbers": [],
+      "must_with": [
+        "登記事項証明書",
+        "専有部分"
+      ],
+      "scope": "中古住宅表の床面積の判定基準。2022〜2030年入居の0.7％制度。",
+      "exceptions": "併用住宅は店舗等を含む建物全体、共有住宅は共有持分を乗じず建物全体。区分所有住宅は専有部分。マンションの共用部分は含めない。",
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1211-3.htm",
+      "source_quote": "床面積は、「登記事項証明書」に表示されている床面積により判断します。",
+      "corpus_ref": "segment-review-9/corpus/nta_1211-3.txt:125-130",
+      "where": [
+        "中古表の直前の共通説明"
+      ]
     }
   ],
   "absolutes": [
@@ -10266,6 +10306,114 @@
       "reason": "住民税所得割額によって軽減額がさらに下がり得る点は妥当。ただし「くわしく計算する」の入力と計算機能の実際は今回の制度資料だけでは判断できない。",
       "status": "未確認",
       "needed_source": "当該snapshotの画面・計算コード・操作仕様と、対象年度の住民税控除の承認済み正本。"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-dc1f871fda754eb6fd21-1",
+      "verdict": "not_wrong",
+      "reason": "住宅ローン控除の住民税分は所得割額から控除するため、その税額が小さければ実際の軽減額も制限される。地方税法附則5条の4第1項・第5項（https://laws.e-gov.go.jp/law/325AC0000000226）。",
+      "status": "未確認",
+      "needed_source": "正本として採用する地方税法附則5条の4（旧5条の4の2を含む）、適用年別の改正文・施行附則及び所得割額による上限の資料。",
+      "review_ref": "segment-review-9/oc-opinion.json"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-1fc3cb1faec88c56a266-1",
+      "verdict": "not_wrong",
+      "reason": "所得税で控除しきれない額について翌年度の住民税所得割から限度額内で控除するという一般的説明として妥当。地方税法附則5条の4第1項・第5項（https://laws.e-gov.go.jp/law/325AC0000000226）。",
+      "status": "未確認",
+      "needed_source": "正本として採用する地方税法附則5条の4（旧5条の4の2を含む）、適用年別の改正文・施行附則及び所得割額による上限の資料。",
+      "review_ref": "segment-review-9/oc-opinion.json"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-2d173c677d406b1fac13-1",
+      "verdict": "not_wrong",
+      "reason": "地方税法附則5条の4は住宅借入金等特別税額控除の上限及び計算に用いる所得税額を定めている。第1項・第5項及び各第2号（https://laws.e-gov.go.jp/law/325AC0000000226）。",
+      "status": "未確認",
+      "needed_source": "正本として採用する地方税法附則5条の4（旧5条の4の2を含む）、適用年別の改正文・施行附則及び所得割額による上限の資料。",
+      "review_ref": "segment-review-9/oc-opinion.json"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-7c36be7ac5e4e07b26dc-1",
+      "verdict": "not_wrong",
+      "reason": "住民税控除は所得割額から行われるため、所得税額等から算出した控除可能額より実際の軽減額が小さくなる場合があるという説明は妥当。地方税法附則5条の4第1項・第5項（https://laws.e-gov.go.jp/law/325AC0000000226）。",
+      "status": "未確認",
+      "needed_source": "正本として採用する地方税法附則5条の4（旧5条の4の2を含む）、適用年別の改正文・施行附則及び所得割額による上限の資料。",
+      "review_ref": "segment-review-9/oc-opinion.json"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-bf584ae2e1a3f015a883-1",
+      "verdict": "not_wrong",
+      "reason": "住宅ローン控除の計算で用いる所得税額は通常、当該控除前の所得税本税額であり、復興特別所得税を加算した額ではない。住民税計算の例外を留保している点も妥当。地方税法附則5条の4第1項2号・第5項2号（https://laws.e-gov.go.jp/law/325AC0000000226）。",
+      "status": "未確認",
+      "needed_source": "正本として採用する地方税法附則5条の4（旧5条の4の2を含む）、適用年別の改正文・施行附則及び所得割額による上限の資料。",
+      "review_ref": "segment-review-9/oc-opinion.json"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-1a601bc01e7abaf0ddac-1",
+      "verdict": "not_wrong",
+      "reason": "取得できた地方税法附則5条の4第1項・第5項は、課税総所得金額・課税退職所得金額・課税山林所得金額の合計に基礎控除額の48万円超過分（負ならゼロ）を加算する規定を置く。2022〜2025年入居はその対象期間内であり、記載は妥当（https://laws.e-gov.go.jp/law/325AC0000000226）。",
+      "status": "未確認",
+      "needed_source": "正本として採用する地方税法附則5条の4（旧5条の4の2を含む）、適用年別の改正文・施行附則及び所得割額による上限の資料。",
+      "review_ref": "segment-review-9/oc-opinion.json"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-a04bba5a05c93bd0e522-1",
+      "verdict": "not_wrong",
+      "reason": "他の税額控除や災害減免等について、列挙された規定の適用がなかったものとして所得税額を計算する旨が明記されている。地方税法附則5条の4第1項2号・第5項2号（https://laws.e-gov.go.jp/law/325AC0000000226）。",
+      "status": "未確認",
+      "needed_source": "正本として採用する地方税法附則5条の4（旧5条の4の2を含む）、適用年別の改正文・施行附則及び所得割額による上限の資料。",
+      "review_ref": "segment-review-9/oc-opinion.json"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-fc0452453dfe15f4a34a-1",
+      "verdict": "not_wrong",
+      "reason": "直前の所得税額の再計算について参照する条項として正しい。地方税法附則5条の4第1項2号・第5項2号に対象規定の列挙がある（https://laws.e-gov.go.jp/law/325AC0000000226）。",
+      "status": "未確認",
+      "needed_source": "正本として採用する地方税法附則5条の4（旧5条の4の2を含む）、適用年別の改正文・施行附則及び所得割額による上限の資料。",
+      "review_ref": "segment-review-9/oc-opinion.json"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-cfc7337ab27fff5184e4-1",
+      "verdict": "unsure",
+      "reason": "取得できたe-Gov地方税法本文は令和7年までの入居を対象とする版で、令和8年法律第2号の本文はAPIで取得できなかった。指定された改正法附則の項番号及び令和8〜12年入居への適用を確認できず、旧本文だけで誤りとは断定しない。",
+      "status": "未確認",
+      "needed_source": "正本として採用する地方税法附則5条の4（旧5条の4の2を含む）、適用年別の改正文・施行附則及び所得割額による上限の資料。",
+      "review_ref": "segment-review-9/oc-opinion.json"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-e9f966feb86b454f1efb-1",
+      "verdict": "unsure",
+      "reason": "対象拡張に係る令和8年改正法の施行期日・経過措置を一次資料で確認できなかった。2027年施行と2026年以後入居への適用は住民税の翌年度課税と整合し得るが、正否は断定できない。",
+      "status": "未確認",
+      "needed_source": "正本として採用する地方税法附則5条の4（旧5条の4の2を含む）、適用年別の改正文・施行附則及び所得割額による上限の資料。",
+      "review_ref": "segment-review-9/oc-opinion.json"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-5db620fc08b45b3963c5-1",
+      "verdict": "unsure",
+      "reason": "計算機の選択肢・操作の指示であり、制度の一般知識だけでは機能の正否を判断できない。操作確認をしていないため留保する。",
+      "status": "未確認",
+      "needed_source": "計算機の機能仕様及び動作確認記録。",
+      "review_ref": "segment-review-9/oc-opinion.json"
+    },
+    {
+      "page": "docs/jutaku/index.html",
+      "id": "s-731e8021e1a9a5cb0f29-1",
+      "verdict": "not_wrong",
+      "reason": "住宅ローン控除で所得税から控除しきれない額が、限度額内で住民税所得割の控除対象となることの短い案内として妥当。地方税法附則5条の4第1項・第5項（https://laws.e-gov.go.jp/law/325AC0000000226）。",
+      "status": "未確認",
+      "needed_source": "正本として採用する地方税法附則5条の4（旧5条の4の2を含む）、適用年別の改正文・施行附則及び所得割額による上限の資料。",
+      "review_ref": "segment-review-9/oc-opinion.json"
     }
   ]
 }
