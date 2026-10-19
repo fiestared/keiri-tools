@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>減価償却費の計算機｜定額法・定率法で毎年いくら？償却スケジュール表</title>
-<meta name="description" content="取得価額・耐用年数・償却方法を入れると、減価償却費が毎年いくらになるか（償却スケジュール）を試算します。定額法と定率法（200%・250%）、初年度の月割、中古資産の簡便法に対応。平成19年4月1日以後に取得した資産が対象です。">
+<meta name="description" content="減価償却費の毎年の額を試算します。取得価額・耐用年数・償却方法を入力して償却スケジュールを確認。平成19年4月1日以後に取得した資産が対象です。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/genka/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="減価償却費の計算機｜定額法・定率法で毎年いくら？償却スケジュール表">
-<meta property="og:description" content="取得価額・耐用年数・償却方法を入れると、減価償却費が毎年いくらになるか（償却スケジュール）を試算します。定額法と定率法（200%・250%）、初年度の月割、中古資産の簡便法に対応。平成19年4月1日以後に取得した資産が対象です。">
+<meta property="og:description" content="減価償却費の毎年の額を試算します。取得価額・耐用年数・償却方法を入力して償却スケジュールを確認。平成19年4月1日以後に取得した資産が対象です。">
 <meta property="og:url" content="https://keiri-tools.com/genka/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -159,7 +159,7 @@
 <section class="hero">
   <h1>減価償却費の計算機（定額法・定率法）</h1>
   <p class="article-meta">公開日: <time datetime="2026-07-17">2026年7月17日</time>（更新日: <time datetime="2026-10-20">2026年10月20日</time>）</p>
-  <p><b>取得価額</b>・<b>耐用年数</b>・<b>償却方法</b>・取得年月・供用年月などを入力して、減価償却費が<b>毎年いくらになるか（償却スケジュール）</b>を計算します。定額法・定率法の違いは<a href="#zu">下の図と解説</a>で確認できます。<b>中古資産</b>の耐用年数を<b>簡便法</b>で見積もる計算機もあります。事業専用割合を入れれば<b>必要経費算入額</b>も出ます。</p>
+  <p><b>取得価額</b>・<b>耐用年数</b>・<b>償却方法</b>・取得年月・供用年月などを入力して、減価償却費が<b>毎年いくらになるか（償却スケジュール）</b>を計算します。定額法・定率法の違いは<a href="#zu">下の図と解説</a>で確認できます。中古資産については<a href="#chuko-kaisetsu">簡便法の適用条件</a>も確認してください。</p>
 </section>
 
 <div class="card">
@@ -339,12 +339,7 @@
 <div class="callout">
 <b>切替後の計算（定率法の核心）</b>
 <p>切替後の基本年額は<b>改定取得価額×改定償却率</b>です。改定取得価額は、調整前償却額が初めて保証額未満となった年の期首未償却残高に固定します。年途中の供用等は月割し、最終年は償却限度額に合わせて調整します。</p>
-<p><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2106.htm">国税庁No.2106</a>の取得価額100万円・10年・200%定率法・通年供用の例です。通常の非リース有形資産（坑道を除く）について、次のようになります。</p>
-<ul>
-<li><b>切替の判定</b>：7年目の調整前償却額52,429円が償却保証額65,520円を下回ります。</li>
-<li><b>切替後の年額</b>：7～9年目は262,144円×0.250＝65,536円です。</li>
-<li><b>償却の終わり</b>：10年目は限度額に合わせて調整し、1円を残します。</li>
-</ul>
+
 </div>
 
 <h2 id="getsuwari">年途中の供用と月割</h2>
@@ -356,7 +351,7 @@
 
 <h2 id="gendo">1円を残す資産・残さない資産（償却の限度額）</h2>
 
-<p>最後に残す額は<b>資産の区分で異なります</b>（所定のリース資産は別区分）。平成19年4月1日以後に取得した資産の償却の限度額は、資産の区分に応じて次の3つに分かれます（<a href="https://laws.e-gov.go.jp/law/340CO0000000096#Mp-At_134">所得税法施行令134条1項2号</a>）。上の計算機の「資産の種類」で切り替わります。</p>
+<p>最後に残す額は<b>資産の区分で異なります</b>（所定のリース資産は別区分）。下表は平成19年4月1日以後取得の資産の限度額で、所有権移転外リースは平成20年4月1日以後の契約が対象です（<a href="https://laws.e-gov.go.jp/law/340CO0000000096#Mp-At_134">所得税法施行令134条1項2号</a>）。上の計算機の「資産の種類」で切り替わります。</p>
 
 <div class="scroll-wrap">
 <table class="tbl" id="gendo-table">
@@ -378,7 +373,7 @@
 <p>見積りの起点は供用時ですが、個人が取得後すぐ供用しない場合は取得時です。使用可能期間の見積りにも条件があります。採掘権等は対象外です。</p>
 <h3>簡便法を使える条件</h3>
 <p>簡便法は、別表第一・第二・第五・第六の資産で、使用可能期間の見積りが困難かつ資本的支出の制限を満たす場合に使えます（<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐用年数省令3条1項</a>）。</p>
-<p id="chuko-tadashi" data-review-context="before-table">通常の購入では、供用のための資本的支出が取得価額の50％を超える場合を除きます。適格合併等による引継ぎでは所定の帳簿価額で判定します（<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐令3条1項ただし書</a>）。法人では、<b>供用のための資本的支出が再取得価額の50％を超える</b>ときは、<b>法定耐用年数</b>によります（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hojin/5404.htm">国税庁 No.5404</a> 注）。</p>
+<p id="chuko-tadashi" data-review-context="before-table">通常の購入では、供用のための資本的支出が取得価額の50％を超える場合を除きます。適格合併等による引継ぎの取扱いは、<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐用年数省令3条1項ただし書</a>をご確認ください。法人では、<b>供用のための資本的支出が再取得価額の50％を超える</b>ときは、<b>法定耐用年数</b>によります（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hojin/5404.htm">国税庁 No.5404</a> 注）。</p>
 <div class="scroll-wrap"><table class="tbl" id="chuko-list">
 <caption>簡便法を適用できる中古資産の算式</caption>
 <thead><tr><th scope="col">経過状況</th><th scope="col">算式</th></tr></thead>
@@ -387,7 +382,7 @@
 <tr id="chuko-ichibu"><th scope="row">法定耐用年数の一部を経過した資産</th><td>（法定耐用年数 − 経過年数）＋ 経過年数 × 20％</td></tr>
 </tbody></table></div>
 
-<p id="chuko-hasu">出た年数に<b>1年未満の端数があるときは切り捨て</b>、<b>2年に満たないときは2年</b>とします（<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐用年数省令3条</a>）。経過年数は<b>「暦に従つて計算」する</b>ので（<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐令3条5項</a>）、築年数は<b>月まで数えます</b>。</p>
+<p id="chuko-hasu" data-review-context="after-table">出た年数に<b>1年未満の端数があるときは切り捨て</b>、<b>2年に満たないときは2年</b>とします（<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐用年数省令3条</a>）。経過年数は<b>「暦に従つて計算」する</b>ので（<a href="https://laws.e-gov.go.jp/law/340M50000040015#Mp-At_3">耐令3条5項</a>）、築年数は<b>月まで数えます</b>。</p>
 
 <p id="chuko-rei">簡便法を適用できる法定耐用年数22年の木造アパートを<b>築10年3か月</b>で買った場合は、(264か月−123か月) ＋ 123か月×20％ ＝ 165.6か月 ＝ 13.8年 → <b>13年</b>です。法定耐用年数22年・築10年3か月の簡便法の例を「築10年」と丸めると、結果が14年になり1年ずれます。</p>
 
