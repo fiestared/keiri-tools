@@ -444,7 +444,7 @@ function fillKubunRows(d) {
 function showMeta() {
   if (R08?.fuyo?.income_limit != null) {
     $("yoken-note").textContent =
-      `※ 対象は生計を一にする配偶者以外の親族で、合計所得金額${man(R08.fuyo.income_limit)}以下の人です（給与だけで特定支出控除を使わない場合は収入${man(R08.fuyo.income_limit_kyuyo)}以下）。16歳未満は対象外です。`;
+      `※ 対象親族の要件と所得要件の適用時期は、本文の「扶養親族の要件」で確認してください。`;
   }
   if (R08?._meta?.year) $("src-note").textContent = `（${R08._meta.year}の所得税速算表）`;
 }
@@ -514,7 +514,7 @@ $("calc").addEventListener("click", async () => {
   }
 
   html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
-      ※ 扶養親族の要件（合計所得金額${R08.fuyo.income_limit != null ? man(R08.fuyo.income_limit) : ""}以下・生計一など）を満たしている前提で計算しています。
+      ※ 本文の扶養親族の要件と所得要件の適用時期を確認済みの前提で計算しています。
       所得税は速算表（超過累進）、住民税は所得割10%だけの概算で、調整控除の増減・非課税判定・控除しきれない額は未反映です。
       ${r.year ? `<span class="hint">（${r.year}の所得税速算表で計算）</span>` : ""}<br>
       ※ 19歳以上23歳未満で収入が要件を超える場合は、扶養控除でなく特定親族特別控除（段階的・本ツール対象外）になります。本文の「対象にならないケース」を参照してください。</div>`;
