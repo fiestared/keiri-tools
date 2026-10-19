@@ -1173,8 +1173,8 @@
       "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0061.json"
     },
     {
-      "id": "r16-s-dd34760bd5c2f6893367-1",
-      "text": "起算日 … 提出期限の翌日＝令和9年3月2日（2月28日が日曜のため期限は3月1日。",
+      "id": "r16-s-812dc39f7a4786c1b7ba-1",
+      "text": "起算日 … この法人の提出期限の翌日＝令和9年3月2日（2月28日が日曜のため期限は3月1日。",
       "where": [
         "li / body"
       ],
@@ -1187,9 +1187,9 @@
       "corpus_ref": "corpus/egov_shohizeiho_52.txt:8-11",
       "source_url": "https://laws.e-gov.go.jp/api/2/law_data/363AC0000000108?response_format=xml",
       "source_quote": " 前項の規定による還付金について還付加算金（国税通則法第五十八条第一項（還付加算金）に規定する還付加算金をいう。以下この章において同じ。）を計算する場合には、その計算の基礎となる同項の期間は、当該還付に係る申告書が次の各号に掲げる申告書のいずれに該当するかに応じ、当該各号に定める期限又は日の翌日からその還付のための支払決定をする日又はその還付金につき充当（同法第五十七条第一項（充当）の規定による充当をいう。以下この章において同じ。）をする日（同日前に充当をするのに適することとなつた日がある場合には、その適することとなつた日）までの期間とする。\n一 \n 第四十五条第一項の規定による申告書（当該申告書の提出期限内に提出されたものに限る。）\n 当該申告書の提出期限",
-      "exceptions": "照合範囲: corpus/egov_shohizeiho_52.txt:8-11;corpus/egov_shohizeiho_45.txt:6-6;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shohi_6601_htm.txt:15-16;corpus/www_nta_go_jp_taxes_shiraberu_zeimokubetsu_shohi_keigenzeiritsu_pdf_qa_117_pdf.txt:24-28。採否: 12月決算法人の45条申告期限は、課税期間の末日の翌日から2か月以内で、令和8年12月31日終了なら令和9年2月28日である。令和9年2月28日は日曜日なので、確定申告期限は翌日の3月1日になる。52条2項1号は、期限内に出された45条申告の還付加算金を、その提出期限の翌日から計算する。起算日は3月2日であり、3月1日とすると期間と金額が1日分ずれる。 重要度high: 典型的なケースで金額・税額・給付・期限・該当または義務を誤る。",
+      "exceptions": "照合範囲: corpus/egov_shohizeiho_52.txt:8-11;corpus/egov_shohizeiho_45.txt:6-6;corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shohi_6601_htm.txt:15-16;corpus/www_nta_go_jp_taxes_shiraberu_zeimokubetsu_shohi_keigenzeiritsu_pdf_qa_117_pdf.txt:24-28。採否: 12月決算法人の45条申告期限は、課税期間の末日の翌日から2か月以内で、令和8年12月31日終了なら令和9年2月28日である。令和9年2月28日は日曜日なので、確定申告期限は翌日の3月1日になる。52条2項1号は、期限内に出された45条申告の還付加算金を、その提出期限の翌日から計算する。起算日は3月2日であり、3月1日とすると期間と金額が1日分ずれる。 重要度high: 典型的なケースで金額・税額・給付・期限・該当または義務を誤る。 個人事業者は措置法86条の4で期限が翌年3月31日のため起算日が異なる（corpus/egov_sochiho_86_4.txt:6）→項目に「この法人の」と限定。期限の休日の翌日化は国税通則法10条2項（corpus/tsusoku.xml:598）。",
       "covers": [
-        "s-dd34760bd5c2f6893367-1"
+        "s-812dc39f7a4786c1b7ba-1"
       ],
       "topic": [
         "t10-consumption-tax"
@@ -1236,7 +1236,11 @@
           "source_quote": "      ２   翌課税期間に係る確定申告期限が、日曜日、国民の祝日に関する法律に規定する休\n      日その他一般の休日、土曜日又は12月29日、同月30日若しくは同月31日に当たる場合\n      はこれらの日の翌日、法人の確定申告書の提出期限の特例（消法45の２①）その他の\n      規定により消費税申告書の提出期限が延長される場合は、その延長後の提出期限とな\n      ります。"
         }
       ],
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0061.json"
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/out/s0061.json",
+      "scope": "設例の12月決算法人（令和8年12月31日終了の課税期間）の、期限内の45条1項申告書による還付。",
+      "must_with": [
+        "法人|期限内"
+      ]
     },
     {
       "id": "r16-s-3acafed89e4ec15b0745-1",
@@ -2283,7 +2287,8 @@
         "簡易課税では設備投資による還付は通常生じない→「3つの型」の章の注意に記載",
         "課税事業者選択後の2年・3年の制限→「2年縛りと3年縛り」の章に記載",
         "還付加算金が付かない場合（120条3項・4項、52条3項）→「還付加算金が付かない・切り捨てられる場合」に記載",
-        "3つの型と典型例は条文の区分ではなく記事の整理"
+        "3つの型と典型例は条文の区分ではなく記事の整理",
+        "中間納付額の控除不足による還付（53条1項・45条1項7号）は3つの型の外→h2を「仕入税額の控除不足で還付になる3つの型」に限定（2026-10-19 r3）"
       ],
       "corpus_ref": "corpus/egov_shohizeiho_52.txt:5-6; corpus/egov_shohizeiho_45.txt:24-28; corpus/egov_shohizeiho_7.txt:5-6",
       "corpus_root": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/corpus",
@@ -2296,7 +2301,7 @@
       "covers": [
         "s-7a64f56541bb1bf6f67b-1",
         "s-9a7f75752a8dcef13f83-1",
-        "s-0d7a530c450adf669944-1",
+        "s-8c370cb032230e03d7f7-1",
         "s-3a502a06454f8ebd9ec9-1",
         "s-b82ef2d4fc74d1a0ba32-1",
         "s-3a6166780b6ad58d815b-1",
@@ -2310,7 +2315,7 @@
         "td s-7a64f56541bb1bf6f67b-1",
         "td s-8e76bc711098e4d6f413-1",
         "td s-9a7f75752a8dcef13f83-1",
-        "h2 s-0d7a530c450adf669944-1",
+        "h2 s-8c370cb032230e03d7f7-1",
         "td s-3a502a06454f8ebd9ec9-1",
         "td s-b82ef2d4fc74d1a0ba32-1",
         "td s-3a6166780b6ad58d815b-1",
@@ -2401,7 +2406,8 @@
       "exceptions": [
         "事業を開始した課税期間の例外→同じ章の注意と落とし穴3に記載",
         "やむを得ない事情の承認の特例（事情がやんだ日から2か月以内の申請）→落とし穴3に「承認を受ける特例」として記載。申請期限は記事に書いていない",
-        "インボイス登録による経路の適用時期・制限は記事では「経路ごとに確認」として個別に書いていない"
+        "インボイス登録による経路の適用時期・制限は記事では「経路ごとに確認」として個別に書いていない",
+        "落とし穴3の見出しは「原則、前の期の末日まで」（9条4項：適用を受けようとする課税期間の初日の前日まで）と原則に限定し、創業期の例外は同じ節の箇条書きに記載（2026-10-19 r3）"
       ],
       "corpus_ref": "corpus/egov_shohizeiho_9.txt:23; corpus/egov_shohizeiho_9.txt:33-34; corpus/www_nta_go_jp_taxes_shiraberu_taxanswer_shohi_6629_htm.txt:90-91",
       "corpus_root": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/corpus",
@@ -2418,7 +2424,7 @@
         "s-648ee0cfb356727a59f2-1",
         "s-1a45a8c9e50f9e473374-1",
         "s-4a95a4e83c5655ab4722-1",
-        "s-cac1b6538dadc6abeadd-1"
+        "s-59ac2c53cbcb1dcf221f-1"
       ],
       "where": [
         "p s-f9a1f30690666a0627f5-1",
@@ -2427,12 +2433,12 @@
         "li s-648ee0cfb356727a59f2-1",
         "li s-1a45a8c9e50f9e473374-1",
         "p s-4a95a4e83c5655ab4722-1",
-        "h3 s-cac1b6538dadc6abeadd-1"
+        "h3 s-59ac2c53cbcb1dcf221f-1"
       ]
     },
     {
       "id": "readable20261012-kani",
-      "text": "簡易課税（37条）は、課税標準額に対する消費税額にみなし仕入率を掛けた額を仕入れに係る消費税額とみなすので、実際の設備購入の税額による控除不足の還付は通常生じない。中間納付額の控除不足額（45条1項7号）は53条で還付される。",
+      "text": "簡易課税（37条）は、課税標準額に対する消費税額にみなし仕入率を掛けた額を仕入れに係る消費税額とみなすので、実際の設備購入の税額による控除不足の還付は通常生じない。",
       "numbers": [
         "37条"
       ],
@@ -2441,10 +2447,10 @@
       "source_url": "https://laws.e-gov.go.jp/law/363AC0000000108",
       "source_quote": "中間申告書を提出した者からその中間申告書に係る課税期間の第四十五条第一項又は第四十六条第一項の規定による申告書の提出があつた場合において、これらの申告書に第四十五条第一項第七号に掲げる不足額の記載があるときは、税務署長は、これらの申告書を提出した者に対し、当該不足額に相当する中間納付額を還付する。",
       "exceptions": [
-        "売上税額がゼロなら税額はゼロ、中間納付の過納は還付される→同じ注意ボックスに記載",
+        "中間納付額の控除不足の還付（53条）は申告書の提出が前提で、売上税額ゼロなら46条の還付申告が必要（45条1項ただし書・46条1項）→誤読を招くため注意ボックスから記述を削除（2026-10-19 r3）",
         "貸倒れ・売上対価の返還等による控除で不足額が出る場合は記事では扱わず「通常生じません」としている"
       ],
-      "corpus_ref": "corpus/egov_shohizeiho_37.txt:5-6; corpus/egov_shohizeiho_53.txt:5-6",
+      "corpus_ref": "corpus/egov_shohizeiho_37.txt:5-6",
       "corpus_root": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/corpus",
       "checked": "2026-10-12",
       "review_status": "author_checked",
@@ -2453,10 +2459,10 @@
         "kani"
       ],
       "covers": [
-        "s-3986b5910784b1e296e5-1"
+        "s-cd696d7c30f95e016928-1"
       ],
       "where": [
-        "div s-3986b5910784b1e296e5-1"
+        "div s-cd696d7c30f95e016928-1"
       ]
     },
     {
@@ -2483,7 +2489,8 @@
         "死亡・清算・法人の期限延長の場合の期限→表のセルに「別途確認」と記載",
         "個人事業者の3月31日は45条1項の申告書だけが対象→手続の章に記載",
         "所得税の申告期限3月15日は今回の正本（消費税）の範囲外（所得税法120条）",
-        "還付を受ける権利は5年で時効消滅（通則法74条1項）→落とし穴2に記載"
+        "還付を受ける権利は5年で時効消滅（通則法74条1項）→落とし穴2に記載",
+        "免税事業者・46条の還付申告だけを出す個人事業者には消費税の3月31日の期限は無い→本文の主語を「確定申告義務のある個人事業者」に限定（2026-10-19 r3、措置法86条の4 corpus/egov_sochiho_86_4.txt:6）"
       ],
       "corpus_ref": "corpus/egov_shohizeiho_45.txt:5-7; corpus/egov_shohizeiho_45.txt:41; corpus/egov_shohizeiho_46.txt:6-9; corpus/egov_sochiho_86_4.txt:6",
       "corpus_root": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t10-a/corpus",
@@ -2499,7 +2506,7 @@
         "s-08142a9224dea20ad8a0-1",
         "s-83fd84faa63501b663ec-1",
         "s-6da0c1bfadb52bbd38a2-1",
-        "s-d323f2dbf96bfb8ce89e-1",
+        "s-744889edb2bf3d201926-1",
         "s-a2a3e32aecf1b66a42ea-1",
         "s-0377069b95931d8f94f8-1",
         "s-2cffce712bf695fc71aa-1",
@@ -2514,7 +2521,7 @@
         "td s-83fd84faa63501b663ec-1",
         "td s-6da0c1bfadb52bbd38a2-1",
         "td s-388d3ac16535d783e49e-1",
-        "p s-d323f2dbf96bfb8ce89e-1",
+        "p s-744889edb2bf3d201926-1",
         "p s-a2a3e32aecf1b66a42ea-1",
         "p s-f4d927b8e42c30325fb7-1",
         "p s-395117a571b9c78143a3-1",
@@ -4775,7 +4782,7 @@
     {
       "phrase": "原則",
       "at": 7150,
-      "context": "限を年度末と取り違える 提出期限は原則、適用を受けようとする課税期間の初日の前日までです。確定",
+      "context": "提出期限は原則、適用を受けようとする課税期間の初日の前日までです",
       "reviewed": "正本の対象・但書・別区分を確認。残した正本外実務説明はnot_wrongとして未確認を維持。"
     },
     {
@@ -4825,6 +4832,11 @@
       "at": 3022,
       "context": "、受け取った日で確認します。 A. 原則として適用開始課税期間の初日から2年の継続が必要です。 ",
       "reviewed": "9条の事業開始・廃業・固定資産の特則、45条の死亡・清算等と期限延長、保存の例外を正本全文で確認。原則の外を否定しない。"
+    },
+    {
+      "phrase": "原則",
+      "context": "届出書は原則、前の期の末日までに出す",
+      "reviewed": "9条4項（corpus/egov_shohizeiho_9.txt:23）の原則＝適用を受けようとする課税期間の初日の前日まで。原則の外は同じ節の箇条書きに記載: 事業を開始した課税期間は期末までの提出で適用（No.6629 注3 :90）、やむを得ない事情の承認の特例（9条9項・No.6629 注4 :91）。2026-10-19 r3"
     }
   ],
   "tool_cases": [],
@@ -5280,18 +5292,6 @@
     },
     {
       "page": "docs/column/shohizei-kanpu/index.html",
-      "id": "s-0d7a530c450adf669944-1",
-      "decision": "out_of_corpus",
-      "reason": "設備投資・輸出・赤字在庫という実務上の類型・例示の整理は正本に同じ分類がない。法定の全要件列挙ではなくwrong所見もないので残す。",
-      "needed_source": "実務類型の妥当性を示す統計・税務実務資料。",
-      "conditions": [],
-      "text_hash": "0593864ba08b27c51c2e",
-      "result": "out_of_corpus",
-      "opinion": "not_wrong",
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-16-rg51/segment-review/segment-adjudication.json"
-    },
-    {
-      "page": "docs/column/shohizei-kanpu/index.html",
       "id": "s-a76a8c15268e9f34097e-1",
       "decision": "out_of_corpus",
       "reason": "設備投資・輸出・赤字在庫という実務上の類型・例示の整理は正本に同じ分類がない。法定の全要件列挙ではなくwrong所見もないので残す。",
@@ -5421,10 +5421,6 @@
       "why": "非主張。記事の構成・説明方針の案内。"
     },
     {
-      "id": "s-0d7a530c450adf669944-1",
-      "why": "非主張。本文の独自整理を示す節見出し。3つが法定の限定類型という主張ではない。"
-    },
-    {
       "id": "s-3a502a06454f8ebd9ec9-1",
       "why": "非主張。独自分類の項目名。具体的な還付条件は別の確認単位。"
     },
@@ -5479,10 +5475,6 @@
     {
       "id": "s-0527a6e7c89c3e56aed2-1",
       "why": "非主張。税込金額の差引欄が空であることを示す記号で、事実の断定ではない。"
-    },
-    {
-      "id": "s-cac1b6538dadc6abeadd-1",
-      "why": "非主張。落とし穴の見出しで、提出期限の日付自体はこの単位にない。"
     },
     {
       "id": "s-adbd33948ae2cda196f7-1",
@@ -5607,13 +5599,6 @@
       "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-16-rg51/segment-review/segment-adjudication.json"
     },
     {
-      "id": "s-0d7a530c450adf669944-1",
-      "needed_source": "実務類型の妥当性を示す統計・税務実務資料。",
-      "status": "unconfirmed",
-      "scope": "whole_unit",
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-16-rg51/segment-review/segment-adjudication.json"
-    },
-    {
       "id": "s-a76a8c15268e9f34097e-1",
       "needed_source": "実務類型の妥当性を示す統計・税務実務資料。",
       "status": "unconfirmed",
@@ -5656,7 +5641,7 @@
       "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-16-rg51/segment-review/segment-adjudication.json"
     },
     {
-      "id": "s-d323f2dbf96bfb8ce89e-1",
+      "id": "s-744889edb2bf3d201926-1",
       "needed_source": "所得税の確定申告期限3月15日とその例外・休日調整を確認できる所得税法又は国税庁資料。",
       "status": "unconfirmed",
       "scope": "part_of_unit",
@@ -5677,7 +5662,7 @@
       "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-16-rg51/segment-review/segment-adjudication.json"
     },
     {
-      "id": "s-dd34760bd5c2f6893367-1",
+      "id": "s-812dc39f7a4786c1b7ba-1",
       "needed_source": "申告期限が日曜等に当たるとき翌日とする国税通則法10条等の正本。",
       "status": "unconfirmed",
       "scope": "part_of_unit",
