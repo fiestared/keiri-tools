@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>一般口座の確定申告：複数回購入の取得費・売却費用・税額を自分で検算</title>
+<meta name="description" content="一般口座で上場株式を売った年の確定申告を、取引報告書から自分で計算する手順で整理。同じ銘柄を複数回買ったときの総平均法に準ずる方法と手数料の扱いを、設例で1株の単価から税額まで検算します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/ippan-koza-kakutei-shinkoku/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="一般口座の確定申告：複数回購入の取得費・売却費用・税額を自分で検算">
+<meta property="og:description" content="一般口座で上場株式を売った年の確定申告を、取引報告書から自分で計算する手順で整理。同じ銘柄を複数回買ったときの総平均法に準ずる方法と手数料の扱いを、設例で1株の単価から税額まで検算します。">
+<meta property="og:url" content="https://keiri-tools.com/column/ippan-koza-kakutei-shinkoku/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "一般口座の確定申告：複数回購入の取得費・売却費用・税額を自分で検算",
+      "datePublished": "2026-10-19",
+      "dateModified": "2026-10-19",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/ippan-koza-kakutei-shinkoku/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "一般口座の確定申告"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "会社員が一般口座で利益を出したら確定申告は必要ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "給与を1か所から受けその全部が源泉徴収の対象で、給与収入が2,000万円以下の会社員なら、給与・退職所得以外の所得金額の合計が20万円を超えるときに所得税の申告が必要です。源泉徴収ありの特定口座で申告しないことを選んだ所得は、この合計に含めません。20万円以下なら所得税の申告は不要ですが、住民税の申告は別に確認します。同族会社の役員などは条件が違います。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "同じ銘柄を何度も買ったとき、取得費はどの単価で計算しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "売るたびに総平均法に準ずる方法で出した1株当たりの金額を使います。初めて売るときは購入価額の総額を株数の総数で割り、2回目以降は直前の売却時の単価×残りの株数とその後の購入価額の合計を、株数の合計で割ります。国税庁の計算例では1円未満の端数を切り上げています。株式分割・併合などがあった銘柄は、1株当たりの金額を調整してから計算します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "一般口座の損失を特定口座の利益と相殺できますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "上場株式等どうしなら確定申告で相殺できます（NISA内の損失を除く）。源泉徴収ありの特定口座の利益と相殺するときは、その特定口座の所得も申告に含めます。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script><!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 一般口座の確定申告</nav>
+
+<article>
+<h1>一般口座の確定申告：複数回購入の取得費・売却費用・税額を自分で検算</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-19">2026年10月19日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><b>一般口座で上場株式を売った年は、売却ごとに「譲渡価額−（取得費＋委託手数料等）」を自分で計算し、年間で合計します。</b>申告が要るかは、その合計などで決まります（<a href="#need">申告の要否</a>）。同じ銘柄を何回かに分けて買っていれば、取得費は総平均法に準ずる方法で出した1株当たりの金額から求めます。</p>
+<p>この記事は、居住者が証券会社を通じて上場株式等を売買した令和8年分を前提に、設例で1株の単価から税額までを順に検算します。特定口座の中の取引は証券会社が計算し、源泉徴収ありの特定口座の申告は<a href="../tokutei-koza-gensen-ari/">特定口座（源泉徴収あり）の記事</a>で扱います。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#records">計算に使う記録と式</a></li>
+<li><a href="#heikin">複数回購入の取得費：総平均法に準ずる方法</a></li>
+<li><a href="#example">設例：2回の売却で取得費と譲渡益を検算</a></li>
+<li><a href="#tax">令和8年分の税額を検算する</a></li>
+<li><a href="#loss">損失が出た年と特定口座との関係</a></li>
+<li><a href="#need">申告が要るかの確認と取得費が分からないとき</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#sources">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../tokutei-koza-gensen-ari/">特定口座（源泉徴収あり）と確定申告</a></li><li><a href="../../shotokuzei/">所得税 計算機（確定申告の税額・還付金）</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="records">計算に使う記録と式</h2>
+<p>特定口座の中の取引は証券会社が区分して計算しますが、一般口座は特定口座の外なので、約定ごとの取引報告書から自分で数字を集めます（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1476.htm">国税庁「特定口座制度」</a>）。</p>
+<div class="scroll-wrap"><table><caption>一般口座の申告で集める記録</caption><thead><tr><th>記録</th><th>拾う数字</th><th>計算での使い道</th></tr></thead><tbody>
+<tr><th scope="row">買付の取引報告書</th><td>約定日・株数・約定代金・手数料（税込）</td><td>取得費のもとになる購入価額</td></tr>
+<tr><th scope="row">売付の取引報告書</th><td>約定日・株数・約定代金・手数料（税込）</td><td>譲渡価額と委託手数料等</td></tr>
+<tr><th scope="row">株式分割・併合などの通知</th><td>割当ての比率と効力の発生日</td><td>1株当たりの金額の調整</td></tr>
+<tr><th scope="row">相続・贈与の記録</th><td>前の持ち主の取得費がわかる資料。NISA内から払い出された株は相続開始日・贈与の日の終値がわかる資料</td><td>引き継ぐ取得費。NISA内からの払出しは相続開始日・贈与の日の終値</td></tr>
+<tr><th scope="row">NISAからの移管の記録</th><td>移管の日と、その日の終値</td><td>移管した株の取得費</td></tr>
+</tbody></table></div>
+<p>計算式は「譲渡価額−（取得費＋委託手数料等）＝譲渡所得等の金額」です（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1463.htm">国税庁「株式等を譲渡したときの課税（申告分離課税）」</a>）。取得費には購入代金のほか、購入手数料とその消費税も含めます（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1464.htm">国税庁「譲渡した株式等の取得費」</a>）。</p>
+<figure class="figure fig-wide" style="--figw:430px"><svg viewBox="0 0 600 330" role="img" aria-label="一般口座の譲渡所得の計算順序。取引報告書を銘柄ごとに並べ、売却のたびに1株当たりの金額を出し、譲渡益を年間で合計して税率を掛ける。">
+<rect x="20" y="10" width="560" height="58" rx="8" fill="none" stroke="currentColor"/><text x="300" y="35" font-size="18" text-anchor="middle" fill="currentColor">取引報告書を銘柄ごとに日付順で並べる</text><text x="300" y="57" font-size="14" text-anchor="middle" fill="currentColor">買い・売り・分割などを1本の時系列にする</text>
+<path d="M300 72V92M292 84L300 92L308 84" fill="none" stroke="currentColor"/>
+<rect x="20" y="96" width="560" height="58" rx="8" fill="none" stroke="currentColor"/><text x="300" y="121" font-size="18" text-anchor="middle" fill="currentColor">売るたびに1株当たりの金額を出す</text><text x="300" y="143" font-size="14" text-anchor="middle" fill="currentColor">（A＋B）÷（C＋D）。端数は切り上げ</text>
+<path d="M300 158V178M292 170L300 178L308 170" fill="none" stroke="currentColor"/>
+<rect x="20" y="182" width="560" height="58" rx="8" fill="none" stroke="currentColor"/><text x="300" y="207" font-size="18" text-anchor="middle" fill="currentColor">譲渡価額 −（取得費 ＋ 委託手数料等）</text><text x="300" y="229" font-size="14" text-anchor="middle" fill="currentColor">売却ごとの損益を年間で合計する</text>
+<path d="M300 244V264M292 256L300 264L308 256" fill="none" stroke="currentColor"/>
+<rect x="20" y="268" width="560" height="52" rx="8" fill="none" stroke="currentColor"/><text x="300" y="300" font-size="18" text-anchor="middle" fill="currentColor">端数を処理して所得税・住民税を計算する</text>
+</svg><figcaption>一般口座の上場株式等の譲渡所得を自分で計算する順序。</figcaption></figure>
+<h2 id="heikin">複数回購入の取得費：総平均法に準ずる方法</h2>
+<p>同じ銘柄を2回以上に分けて買い、その一部を売ったときは、売るたびに次の記号で1株当たりの金額を出します（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1466.htm">国税庁「同一銘柄の株式等を2回以上にわたって購入している場合の取得費」</a>）。種類と銘柄ごとに分けて計算します。株式分割・併合などがあった銘柄は、1株当たりの金額を調整します（No.1464）。</p>
+<div class="scroll-wrap"><table><caption>総平均法に準ずる方法の記号</caption><thead><tr><th>記号</th><th>中身</th></tr></thead><tbody>
+<tr><th scope="row">A</th><td>最初に買った時の購入価額の総額。既に売っていれば、直前の売却時の単価×残った株数</td></tr>
+<tr><th scope="row">B</th><td>A の時点の後から今回の売却までに買った購入価額の総額</td></tr>
+<tr><th scope="row">C・D</th><td>A・B に対応する株数</td></tr>
+</tbody></table></div>
+<p>1株当たりの金額は（A＋B）÷（C＋D）で、国税庁の計算例では1円未満の端数を切り上げています。2回目以降の売却では、直前の売却時の1株当たりの金額×残った株数を A に使います。</p>
+<p>この式で国税庁の計算例（手数料なし）を計算し直すと、1回目の売却の単価は815円・取得費2,445,000円、2回目は846円・取得費5,076,000円となり、国税庁の数字と一致します。</p>
+<h2 id="example">設例：2回の売却で取得費と譲渡益を検算</h2>
+<p data-review-context="before-table">設例は架空の1銘柄を一般口座で売買した場合です。2025年に2回買い、2026年（令和8年分）に2回売り、その間に1回買い増したとします。設例の手数料は売買とも1回1,100円（税込）で、株式分割などはない前提です。</p>
+<div class="scroll-wrap"><table><caption>設例の取引</caption><thead><tr><th>取引</th><th class="num">株数</th><th class="num">単価</th><th class="num">約定代金</th><th class="num">計算に使う額</th></tr></thead><tbody>
+<tr><th scope="row">①2025年4月 買い</th><td class="num">300株</td><td class="num"><span class="numeric-token">1,200円</span></td><td class="num"><span class="numeric-token">360,000円</span></td><td class="num">購入価額 361,100円</td></tr>
+<tr><th scope="row">②2025年10月 買い</th><td class="num">200株</td><td class="num"><span class="numeric-token">1,500円</span></td><td class="num"><span class="numeric-token">300,000円</span></td><td class="num">購入価額 301,100円</td></tr>
+<tr><th scope="row">③2026年3月 売り</th><td class="num">250株</td><td class="num"><span class="numeric-token">1,800円</span></td><td class="num"><span class="numeric-token">450,000円</span></td><td class="num">譲渡価額 450,000円</td></tr>
+<tr><th scope="row">④2026年6月 買い</th><td class="num">250株</td><td class="num"><span class="numeric-token">1,400円</span></td><td class="num"><span class="numeric-token">350,000円</span></td><td class="num">購入価額 351,100円</td></tr>
+<tr><th scope="row">⑤2026年11月 売り</th><td class="num">300株</td><td class="num"><span class="numeric-token">1,700円</span></td><td class="num"><span class="numeric-token">510,000円</span></td><td class="num">譲渡価額 510,000円</td></tr>
+</tbody></table></div>
+<p data-review-context="after-table">設例の購入価額は、約定代金に購入手数料（消費税込み）を足した額です。売却手数料は譲渡価額から引かず、次の表で委託手数料等として差し引きます。</p>
+<div class="scroll-wrap"><table><caption>設例の売却ごとの計算</caption><thead><tr><th>項目</th><th>③の売却</th><th>⑤の売却</th></tr></thead><tbody>
+<tr><th scope="row">1株当たりの金額の計算</th><td>（361,100円＋301,100円）÷500株＝1,324.4円</td><td>（1,325円×250株＋351,100円）÷500株＝1,364.7円</td></tr>
+<tr><th scope="row">1株当たりの金額（切り上げ）</th><td class="num"><span class="numeric-token">1,325円</span></td><td class="num"><span class="numeric-token">1,365円</span></td></tr>
+<tr><th scope="row">取得費</th><td class="num">1,325円×250株＝331,250円</td><td class="num">1,365円×300株＝409,500円</td></tr>
+<tr><th scope="row">委託手数料等</th><td class="num"><span class="numeric-token">1,100円</span></td><td class="num"><span class="numeric-token">1,100円</span></td></tr>
+<tr><th scope="row">譲渡所得等の金額</th><td class="num"><span class="numeric-token">117,650円</span></td><td class="num"><span class="numeric-token">99,400円</span></td></tr>
+</tbody></table></div>
+<p>設例の令和8年分の譲渡所得等の金額は、2回の合計で217,050円です。設例で⑤の売却後に残る200株の取得価額は1,365円×200株＝273,000円で、次に売るときの A になります。</p>
+<div class="callout"><b>ずれやすい3点</b><ul>
+<li>同じ銘柄は、買うたびの単価で売却分を割り当てず、売るたびに混ぜ直した1株当たりの金額を使う</li>
+<li>購入手数料は取得費に、売却手数料は委託手数料等に入れる。同じ手数料を二重に引かない</li>
+<li>1株当たりの金額の端数は切り上げる（国税庁の計算例）</li>
+</ul></div>
+<h2 id="tax">令和8年分の税額を検算する</h2>
+<p>令和8年分の上場株式等の譲渡所得等の税率は所得税15%・住民税5%で、所得税には基準所得税額の2.1%の復興特別所得税が加わります（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1463.htm">国税庁「株式等を譲渡したときの課税（申告分離課税）」</a>）。</p>
+<p>国税の課税標準は千円未満の端数を切り捨てるので、設例の217,050円は217,000円になります（<a href="https://laws.e-gov.go.jp/law/337AC0000000066#Mp-Ch_9-At_118">e-Gov法令検索「国税通則法」118条</a>）。</p>
+<p data-review-context="before-table">次の表は設例の令和8年分の算出額です。所得控除はすべて給与などの所得から引ける前提で、源泉徴収・税額控除を精算する前の額です。</p>
+<div class="scroll-wrap"><table><caption>設例の令和8年分の算出額</caption><thead><tr><th>税目</th><th>計算</th><th class="num">算出額</th></tr></thead><tbody>
+<tr><th scope="row">所得税</th><td>217,000円×15%</td><td class="num"><span class="numeric-token">32,550円</span></td></tr>
+<tr><th scope="row">復興特別所得税</th><td>基準所得税額の全体×2.1%</td><td class="num">この分だけなら683.55円</td></tr>
+<tr><th scope="row">住民税の所得割（翌年度）</th><td>217,000円×5%</td><td class="num">10,850円の見込み</td></tr>
+</tbody></table></div>
+<p class="hint">復興特別所得税は給与などを含む基準所得税額の全体に2.1%を掛けて1円未満を切り捨てるので、設例の株式分だけの683.55円は目安です（端数処理は<a href="https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/03/order4/3-4_45.htm">令和7年分の手引き</a>の記載）。住民税は市区町村が計算します。</p>
+<h2 id="loss">損失が出た年と特定口座との関係</h2>
+<p>一般口座で売った上場株式は「上場株式等」の区分に入ります。口座の名前は一般でも、非上場株式などの「一般株式等」とは別の区分です。上場株式等の損失は一般株式等の利益から引けず、一般株式等の損失も原則として上場株式等から引けません（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1463.htm">国税庁No.1463</a>）。</p>
+<p class="hint">一般株式等の損失の例外は、エンジェル税制の対象となる特定中小会社の株式の一定の損失です（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1465.htm">国税庁No.1465</a>）。</p>
+<p data-review-context="before-table">次の表は、令和8年分に一般口座で証券会社を通じて上場株式等を売り、損失が出た場合の扱いです（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1474.htm">国税庁「上場株式等に係る譲渡損失の損益通算及び繰越控除」</a>）。</p>
+<div class="scroll-wrap"><table><caption>上場株式等の譲渡損失の扱い</caption><thead><tr><th>やりたいこと</th><th>扱い</th></tr></thead><tbody>
+<tr><th scope="row">上場株式等の配当と通算</th><td>確定申告でできる。配当は申告分離課税を選んだものに限る</td></tr>
+<tr><th scope="row">翌年以後への繰越</th><td>3年間できる。損失の年から連続して申告し、売らなかった年も申告する</td></tr>
+<tr><th scope="row">一般株式等の利益と相殺</th><td>できない。繰り越した損失も同じ</td></tr>
+<tr><th scope="row">相対取引・NISA内の損失</th><td>通算も繰越もできない</td></tr>
+</tbody></table></div>
+<p>源泉徴収ありの特定口座は口座ごとに申告するかを選べますが、一般口座の損益と相殺するなら、その特定口座の所得も申告に含めます。その特定口座の損失を申告するときは、口座で受け入れた配当等も申告に含めます（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1476.htm">国税庁No.1476</a>）。</p>
+<h2 id="need">申告が要るかの確認と取得費が分からないとき</h2>
+<p>給与を1か所から受け、その全部が源泉徴収の対象で、給与収入が2,000万円以下の人は、給与・退職所得以外の所得金額の合計が20万円以下なら所得税の確定申告が要りません。同族会社の役員などで、その同族会社から貸付金の利子や資産の賃貸料などを受け取る人、源泉徴収義務のない者から給与を受ける人、災害減免法で源泉徴収の猶予などを受けている人などは、20万円以下でも申告が要ります（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1900.htm">国税庁「給与所得者で確定申告が必要な人」</a>）。</p>
+<p>源泉徴収ありの特定口座で申告しないことを選んだ所得や、申告しないことを選んだ上場株式等の配当は、この合計に含めません。</p>
+<p>給与以外の所得の20万円は売却代金ではなく、取得費と手数料を引いた後の所得金額で見ます。給与以外の所得が設例の217,050円だけでも20万円を超えるので、その給与所得者は申告が要ります。</p>
+<p>給与を2か所以上から受ける人、公的年金等を受け取る人などは条件が違います。所得税の申告が要らない場合も住民税の申告は別に確認し、損失を繰り越すなら申告します。</p>
+<p>令和8年分の確定申告期間は、原則として2027年2月16日（火）から3月15日（月）までです（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2020.htm">国税庁「確定申告」</a>）。</p>
+<h3 id="fumei">取得費が分からないとき</h3>
+<p>令和8年分の申告で取得費が分からない銘柄は、同一銘柄ごとに売却代金の5%を取得費にすることも認められ、300万円で売った銘柄なら15万円です（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1464.htm">国税庁No.1464</a>）。</p>
+<p>相続・贈与で受け取った株式は、前の持ち主の取得費を引き継ぎます。ただし、NISA内の株式が相続・贈与で払い出された場合は、原則として相続開始日・贈与の日の終値に相当する金額です。NISA口座から一般口座へ移した株式は、移管の日の終値に相当する金額が取得費です。</p>
+<p>給与などの総合課税の所得税は計算機で試算できます。株式の譲渡所得は計算機の対象外なので、この記事の手順で別に計算します。</p>
+<p><a class="tool-cta" href="../../shotokuzei/">所得税計算機で給与などの所得税を試算する（株式の譲渡所得は対象外）</a></p>
+<div class="summary-box"><b>まとめ</b><ul>
+<li>上場株式等と一般株式等を分け、売却ごとに譲渡価額−（取得費＋委託手数料等）を計算して区分ごとに年間で合計する</li>
+<li>同じ銘柄の取得費は、売るたびに混ぜ直した1株当たりの金額（端数は切り上げ）で出す。分割・併合などがあれば単価を調整する</li>
+<li>上場株式等の損失を繰り越すなら、売らなかった年も続けて申告する</li>
+</ul></div>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question">会社員が一般口座で利益を出したら確定申告は必要ですか？</h3>
+<p class="faq-answer">給与を1か所から受けその全部が源泉徴収の対象で、給与収入が2,000万円以下の会社員なら、給与・退職所得以外の所得金額の合計が20万円を超えるときに所得税の申告が必要です。源泉徴収ありの特定口座で申告しないことを選んだ所得は、この合計に含めません。20万円以下なら所得税の申告は不要ですが、住民税の申告は別に確認します。同族会社の役員などは条件が違います。</p>
+<h3 class="faq-question">同じ銘柄を何度も買ったとき、取得費はどの単価で計算しますか？</h3>
+<p class="faq-answer">売るたびに総平均法に準ずる方法で出した1株当たりの金額を使います。初めて売るときは購入価額の総額を株数の総数で割り、2回目以降は直前の売却時の単価×残りの株数とその後の購入価額の合計を、株数の合計で割ります。国税庁の計算例では1円未満の端数を切り上げています。株式分割・併合などがあった銘柄は、1株当たりの金額を調整してから計算します。</p>
+<h3 class="faq-question">一般口座の損失を特定口座の利益と相殺できますか？</h3>
+<p class="faq-answer">上場株式等どうしなら確定申告で相殺できます（NISA内の損失を除く）。源泉徴収ありの特定口座の利益と相殺するときは、その特定口座の所得も申告に含めます。</p>
+<h2 id="sources">出典</h2>
+<ul>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1463.htm">国税庁 タックスアンサーNo.1463「株式等を譲渡したときの課税（申告分離課税）」</a>：計算式、区分、税率。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1464.htm">国税庁 タックスアンサーNo.1464「譲渡した株式等の取得費」</a>：購入手数料、購入以外の取得、取得費が分からない場合。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1466.htm">国税庁 タックスアンサーNo.1466「同一銘柄の株式等を2回以上にわたって購入している場合の取得費」</a>：総平均法に準ずる方法と計算例。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1465.htm">国税庁 タックスアンサーNo.1465「株式等の譲渡損失（赤字）の取扱い」</a>：一般株式等の損失の例外。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1474.htm">国税庁 タックスアンサーNo.1474「上場株式等に係る譲渡損失の損益通算及び繰越控除」</a>：通算・繰越の範囲と手続。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1476.htm">国税庁 タックスアンサーNo.1476「特定口座制度」</a>：源泉徴収口座の申告の選択。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1900.htm">国税庁 タックスアンサーNo.1900「給与所得者で確定申告が必要な人」</a>：20万円の判定。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2020.htm">国税庁 タックスアンサーNo.2020「確定申告」</a>：申告の期間。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/shinkoku/tebiki/2025/03/order4/3-4_45.htm">国税庁「令和7年分 確定申告の手引き・復興特別所得税額」</a>：復興特別所得税の端数処理。</li>
+<li><a href="https://laws.e-gov.go.jp/law/337AC0000000066#Mp-Ch_9-At_118">e-Gov法令検索「国税通則法」118条</a>：課税標準の端数計算。</li>
+</ul>
+<p class="disclaimer" data-source-nolink="記事の一般情報提供と個別相談の範囲を示すサイト運営方針">この記事は一般的な情報提供です。個別の税務・労務相談には応じられません。実際の申告や取扱いは、税理士・所轄の税務署等にご確認ください。</p>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../kaigai-fx-zeikin/"><b>海外FXの税金：総合課税の税額と国内FXとの通算範囲を検算</b><span>海外FXの税金を、取引先による課税特例の対象判定から確認。総合課税の雑所得として扱う場合の所得控除・復興特別所得税・翌年度の住民税所得割を、条件を固定した計算表で検算します。国内F</span></a><a class="tool-card" href="../toshi-shintaku-zeikin/"><b>投資信託の税金：分配金と売却の手取りを検算</b><span>国内公募株式投信の分配金と売却益を、個別元本・源泉税・手取り額から検算します。</span></a><a class="tool-card" href="../kojin-nenkin-zeikin/"><b>個人年金の税金：年金額・対応保険料・源泉徴収から年間税額を検算</b><span>個人年金の税金は、保険料負担者と受取人、受取方法で変わります。本人が受け取る私的年金の雑所得を、対応保険料と源泉徴収の通知から確認。同じ架空例で年間の所得税と翌年度の住民税所得割を</span></a></div></section><!--next-read:E-->
+</article>
+
+
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E4%B8%80%E8%88%AC%E5%8F%A3%E5%BA%A7%E3%81%A7%E4%B8%8A%E5%A0%B4%E6%A0%AA%E5%BC%8F%E3%82%92%E5%A3%B2%E3%81%A3%E3%81%9F%E5%B9%B4%E3%81%AE%E7%A2%BA%E5%AE%9A%E7%94%B3%E5%91%8A%E3%82%92%E3%80%81%E5%8F%96%E5%BC%95%E5%A0%B1%E5%91%8A%E6%9B%B8%E3%81%8B%E3%82%89%E8%87%AA%E5%88%86%E3%81%A7%E8%A8%88%E7%AE%97%E3%81%99%E3%82%8B%E6%89%8B%E9%A0%86%E3%81%A7%E6%95%B4%E7%90%86%E3%80%82%E5%90%8C%E3%81%98%E9%8A%98%E6%9F%84%E3%82%92%E8%A4%87%E6%95%B0%E5%9B%9E%E8%B2%B7%E3%81%A3%E3%81%9F%E3%81%A8%E3%81%8D%E3%81%AE%E7%B7%8F%E5%B9%B3%E5%9D%87%E6%B3%95%E3%81%AB%E6%BA%96%E3%81%9A%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%A8%E6%89%8B%E6%95%B0%E6%96%99%E3%81%AE%E6%89%B1%E3%81%84%E3%82%92%E3%80%81%E8%A8%AD%E4%BE%8B%E3%81%A71%E6%A0%AA%E3%81%AE%E5%8D%98%E4%BE%A1%E3%81%8B%E3%82%89%E7%A8%8E%E9%A1%8D%E3%81%BE%E3%81%A7%E6%A4%9C%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fippan-koza-kakutei-shinkoku%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site" style="display:block">© 税金・経理・補助金ツールズ
+  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
+  <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body>
+</html>
