@@ -59,6 +59,9 @@ function makeRepo(n) {
   // 導線だけの変更を数えない判定（2026-09-16）を生成器が読む。基点が無い使い捨てリポジトリでは従来どおりの判定になる
   copyFileSync(join(ROOT, 'tools/nav_experiment.mjs'), join(dir, 'tools/nav_experiment.mjs'));
   copyFileSync(join(ROOT, 'tools/nav_experiment.json'), join(dir, 'tools/nav_experiment.json'));
+  // 2026-10-19: 日付の決め方は body_lastmod.mjs（本文の定義は page_body.mjs）に移った
+  copyFileSync(join(ROOT, 'tools/body_lastmod.mjs'), join(dir, 'tools/body_lastmod.mjs'));
+  copyFileSync(join(ROOT, 'tools/page_body.mjs'), join(dir, 'tools/page_body.mjs'));
 
   git('init', '-q');
   for (let i = 0; i < n; i++) {
@@ -119,14 +122,24 @@ const dateModifiedOf = (dir, i) =>
     `更新日に datetime="${OLD}" が付いていること`);
 }
 
-// ── ② 少数（3件 < 20）→ 今日を焼く（門が広すぎないことの確認）────────
+// ── ② 少数の未コミット変更（2026-10-19 に「本文が変わったときだけ」へ変えた）────────
+//   旧規則は「20件未満なら何でも本物の改稿」だったので、skip-link（本文の外）3件でも今日を焼いていた。
+//   新規則（tools/page_body.mjs の本文）では、本文の外は何件でも今日にしない／本文が変われば今日にする。
+//   両側を当てる（片側だけだと「常に焼かない」「常に焼く」実装でも緑になる）。
 {
   const { dir } = makeRepo(25);
   touchBulk(dir, 3);
   run(dir);
+  assert.equal(dateModifiedOf(dir, 0), OLD,
+    `本文の外（skip-link）だけの未コミット変更で「今日」を焼いてはいけない。実際: ${dateModifiedOf(dir, 0)}`);
+  for (let i = 0; i < 3; i++) {
+    const p = join(dir, 'docs', 'column', `a${i}`, 'index.html');
+    writeFileSync(p, readFileSync(p, 'utf8').replace('<p>本文（加筆）</p>', '<p>本文（加筆・さらに改稿）</p>'));
+  }
+  run(dir);
   const got = dateModifiedOf(dir, 0);
   assert.equal(got, todayJST(),
-    `少数(3件)の未コミット変更は本物の改稿なので「今日」を焼くこと。実際: ${got}`);
+    `本文の未コミット変更は本物の改稿なので「今日」を焼くこと。実際: ${got}`);
   // 触っていない記事は据え置き
   assert.equal(dateModifiedOf(dir, 10), PUB,
     '触っていない記事の日付を動かしてはいけない（本文改稿の履歴が無いので公開日）');

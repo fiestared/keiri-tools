@@ -23,7 +23,7 @@ const commitAt = (message, date) => execFileSync(
 
 mkdirSync(join(dir, 'tools'), { recursive: true });
 mkdirSync(join(dir, 'docs/column/example'), { recursive: true });
-for (const name of ['gen_datemodified.mjs', 'verified_content_dates.mjs', 'nav_experiment.mjs', 'nav_experiment.json']) {
+for (const name of ['gen_datemodified.mjs', 'verified_content_dates.mjs', 'nav_experiment.mjs', 'nav_experiment.json', 'body_lastmod.mjs', 'page_body.mjs']) {
   copyFileSync(join(ROOT, 'tools', name), join(dir, 'tools', name));
 }
 writeFileSync(join(dir, 'docs/column/example/index.html'), `<!doctype html><html lang="ja"><head>
