@@ -201,7 +201,7 @@
     },
     {
       "id": "sol-1b6f69b8c176c0d8",
-      "text": "企業型DCマッチング拠出も給与天引きなら申告書に書かない",
+      "text": "企業型DCのマッチング拠出も給与天引きなら申告書に書かない。マッチング拠出をしている人はiDeCoに加入できない（iDeCo公式FAQ）ので、両方がある年は年の途中で切り替えた場合などで、申告書に載せるのは個人払込のiDeCoの年額だけ",
       "numbers": [],
       "where": [
         "本文237-243"
@@ -212,21 +212,26 @@
         "axis": "unspecified",
         "review_theme": "t1"
       },
-      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
-      "source_quote": "                  小規模企業共済等掛金とは\n                 ⑴ 小規模企業共済等掛金とは、次に掲げるものをいいます。\n                 ① 独立行政法人中小企業基盤整備機構と契約した共済契約（旧第２種共済契約を除きます。\n                                                          ）\n                      に基づいて支払った掛金\n                 ② 確定拠出年金法に規定する企業型年金加入者掛金又は個人型年金加入者掛金（iDeCo の掛\n                      金など）\n                 ③ 地方公共団体が条例の規定により実施するいわゆる心身障害者扶養共済制度で一定の要件\n                      を備えているものに基づいて支払った掛金\n                 （注） 掛金を前納したことにより前納減額金の支払を受けているときは、支払った掛金の額からその前納減額\n                      金を差し引いた残額が控除の対象となります。\n\n                 ⑵    この小規模企業共済等掛金には、①毎月の給与から差し引かれるものと②本人が直接支払っ\n                     ているものなどがあり、その全額が控除されます。このうち、②の本人が直接支払ったものに\n                     ついては、本人から提出された保険料控除申告書の金額に基づいて控除することになっていま\n年末調整のしかた             す。\n\n・手         順      証明書類\n・控 除 額 の 確 認      上記⑵ ①の毎月の給与から差し引かれる小規模企業共済等掛金については、掛金を支払ったこ",
+      "source_url": "https://www.ideco-koushiki.jp/faq/",
+      "source_quote": "企業型確定拠出年金でマッチング拠出を行っていない（加入者掛金を拠出していない）場合は、iDeCoに加入することが可能です。",
       "supporting_sources": [],
-      "exceptions": "sol の ok 判定を移行。要件・例外は引用範囲を参照。別途の例外審査済みとはしない。",
+      "exceptions": [
+        "マッチング拠出を行っていない場合はiDeCoに加入できる（ideco-faq.txt:119-120）"
+      ],
       "import_keys": [
         "t1/t02/docs/column/ideco-nenmatsu-chosei/index.html/p3-c07"
       ],
       "import_inputs": {
         "t1/t02/docs/column/ideco-nenmatsu-chosei/index.html/p3-c07": "07df01d4a6adc9ab89ef1059aae9e8de0d4d8b4342da9d866f5dcb95a156e35f"
       },
-      "corpus_ref": "t1/corpus/nencho/nencho_all.txt:2205-2223",
+      "corpus_ref": "ideco-nencho（runs/write-2026-10-19-rw/sources） ideco-faq.txt:119-120・egov-arts.txt（196条1項2号）",
       "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
       "review_result": "sol_ok",
       "sol_quote": "企業型年金加入者掛金又は個人型年金加入者掛金…毎月の給与から差し引かれるものと本人が直接支払っているもの",
-      "covers": []
+      "covers": [
+        "s-8f917ded914b2775e4a4-1"
+      ],
+      "scope": "企業型DCのマッチング拠出とiDeCoの両方がある年の給与所得者"
     },
     {
       "id": "sol-f0311548ebac72b7",
@@ -290,7 +295,10 @@
       "source_text_sha256": "8ff887785627ff8dbbaeb00bd06ad0d15ef3b9231ad571c1645226d356786f54",
       "review_result": "sol_ok",
       "sol_quote": "電子証明書等に係る電磁的記録印刷書面を…添付…電磁的方法により提供…『小規模企業共済等掛金控除』…においても同様",
-      "covers": []
+      "covers": [
+        "s-731a08ff7809973f6a08-1",
+        "s-5437177f49c54baca97c-1"
+      ]
     },
     {
       "id": "sol-83ac5f2bc5557914",
@@ -366,9 +374,10 @@
     },
     {
       "id": "sol-01c1343040f44191",
-      "text": "給与収入2000万円超の人は年末調整対象外",
+      "text": "その年の主たる給与の収入金額が2,000万円を超える人は年末調整の対象外（所得税法190条本文）",
       "numbers": [
-        "2,000万円"
+        "2,000万円",
+        "2,000"
       ],
       "where": [
         "本文300"
@@ -394,10 +403,12 @@
       "review_result": "sol_ok",
       "sol_quote": "本年中の主たる給与の収入金額が2,000万円を超える人",
       "must_with": [
-        "給与"
+        "給与|個人払込|所得"
       ],
       "scope": "給与等の収入金額がその年2,000万円を超える給与所得者",
-      "covers": []
+      "covers": [
+        "s-5d1bf31d30de4b83e3d2-1"
+      ]
     },
     {
       "id": "sol-9e51114d9ad08c7e",
@@ -594,7 +605,6 @@
         "s-82a916db9552cff0b8aa-1",
         "s-534236dc09f44fc1864f-1",
         "s-5218246fb97e44391791-1",
-        "s-6f7b5dd8a14ef1adfab2-1",
         "s-fa776008ebc3ababb9b6-1",
         "s-c92f87f39c8bf4c568dd-1",
         "s-7b6767140da76c0e308b-1",
@@ -618,14 +628,12 @@
         "s-531e8e8956102285705d-1",
         "s-f02ecce12c2fb7005ea5-1",
         "s-12cccf067f7766e5b232-1",
-        "s-b365482d56e6106b8a08-1",
         "s-65e282e2ac953bace3c5-1",
         "s-c340f5019516c4d70b73-1",
         "s-f8da2ebc6e0932eac495-1",
         "s-162491a21ffdbd0a32f7-1",
         "s-13e1f79a7da1b0103a6d-1",
         "s-f1a260ba2cee673b9cf8-1",
-        "s-aa95916b27813ef90e2e-1",
         "s-04e9a22dd8b7eecd3aaa-1",
         "s-59e82827b644540aefb1-1",
         "s-cf5d44c7558be1e16b77-1",
@@ -635,7 +643,8 @@
         "s-92bee25df7e55cff13e8-1",
         "s-2cd1862f3876d60edb72-1",
         "s-205ceabc649c73bf8c69-1",
-        "s-e2814a9a5d95e2c787a6-1"
+        "s-e2814a9a5d95e2c787a6-1",
+        "s-cd3563e75382e3ab108b-1"
       ],
       "review_status": "author_checked",
       "partial_out_of_corpus": true,
@@ -675,7 +684,6 @@
         "s-10f561a18a2481db6d89-1",
         "s-1255adf92aa5d0b248f1-1",
         "s-210915407ddaf4deb5bf-1",
-        "s-2a12548653235454dabd-1",
         "s-2cb618c6c119f62cae3e-1",
         "s-2f82fcf8c16379b7297a-1",
         "s-38d4e41a5f71dbf9f31a-1",
@@ -688,7 +696,6 @@
         "s-848b0f98b2a559dfb71b-1",
         "s-852bc68f1ad6e213b1c5-1",
         "s-8810c3341ebf6a4f5d4d-1",
-        "s-890316b7348be9705841-1",
         "s-89d24a8727efb06039d4-1",
         "s-8cc5651bccccc93e0c83-1",
         "s-8feb95af0e85cf7a54cd-1",
@@ -707,7 +714,9 @@
         "s-dea8f1810db4af4c53a4-1",
         "s-e4d5b208e77d59720110-3",
         "s-e7b2e4ad514ed06829e6-1",
-        "s-f7bc6527c9b0290c27e2-1"
+        "s-f7bc6527c9b0290c27e2-1",
+        "s-50f11f6f1b2849875560-1",
+        "s-c680180773ab4b2a24bb-1"
       ],
       "review_status": "author_checked",
       "partial_out_of_corpus": true,
@@ -739,7 +748,6 @@
       "applies": "令和8年分（2026-10-14 時点の本文）",
       "covers": [
         "s-7732730309b7fb774102-1",
-        "s-eb6cfeced318569c0641-1",
         "s-66e2bbee6a1767559bc5-1",
         "s-b57d7eff4d13591a7c9b-1",
         "s-4c166bea6722a4cfd97e-1",
@@ -760,7 +768,6 @@
         "s-2267e504f1ee9c32d07f-1",
         "s-03ccc239a3b574837694-1",
         "s-a7be38bee2c6d08e7beb-1",
-        "s-0f7e9c63e8c5130186a5-1",
         "s-5f3cccbe558ca45b640c-1",
         "s-bbcc7ed84bdc724f8498-1",
         "s-1de462087ef6a2318603-1",
@@ -769,38 +776,39 @@
         "s-804e8cbe1db9cd5a47f4-1",
         "s-13be190b1c9698fd5cb9-1",
         "s-2d8527816eb099759374-1",
-        "s-bd2905c40b0e44a9aaed-1",
         "s-1d8b421987594d53df6c-1",
         "s-8b3e6713ebbace829b41-1",
         "s-12448a2f64f0c48e4ad3-1",
         "s-ab17a9c2877b25561086-1",
         "s-6092345e63e13e32a512-1",
-        "s-cbc3a30eadab77790388-1",
         "s-f17a8a5645c04bc9749b-1",
         "s-06eef606bea42bff0788-1",
         "s-20c2c50b4503768aec95-1",
         "s-baa68768eaa356098e57-1",
         "s-fab8520d56f467b7a2be-1",
         "s-a38778a4d1cf0ef2820b-1",
-        "s-65f08e5e645c39765b1d-1",
         "s-18e40810965c49eda0f2-1",
         "s-3e7805df0d9a0d12475e-1",
         "s-1d6d6ba7ee4416203c43-1",
-        "s-a8fff2c3f46827b7dfe7-1",
         "s-8740b5bbf71f6ef6f7af-1",
-        "s-41c971873fda3ca2ac32-1",
-        "s-063c4fa14468da57c0c8-1",
         "s-018dde7f5ac2955d6a8d-1",
         "s-96f3e4e120976a090cca-1",
         "s-c855070e8a3a0c3e48ef-1",
         "s-e7ebf1a49b990dd9e68e-1",
-        "s-2d2d2321dad53f5909c0-1",
         "s-b9c4895c92ff50ccb43c-1",
         "s-274d56b4de7daec06ce9-1",
         "s-d7f973fd4b962c2de773-1",
         "s-bbc56c70eb4483b212be-1",
         "s-a8ce312219b5db661abe-1",
-        "s-19cf75a4d25f3ebd4b37-1"
+        "s-19cf75a4d25f3ebd4b37-1",
+        "s-5598222de8483be83136-1",
+        "s-a792fa92dafddb012a6e-1",
+        "s-bd3bb02e26f7771521ce-1",
+        "s-0173d28035f617d9e9b0-1",
+        "s-b536e6e30d6cece95704-1",
+        "s-a8378b406b3227b02e2e-1",
+        "s-707375c67ef261f4c890-1",
+        "s-3dcfffd91b37535e9c44-1"
       ],
       "review_status": "author_checked",
       "partial_out_of_corpus": true,
@@ -814,9 +822,10 @@
       "numbers": [
         "1枚"
       ],
-      "scope": "年の途中で転職・退職したiDeCo加入者",
+      "scope": "年の途中で転職し、新しい勤務先で年末調整を受ける人（前職で扶養控除等申告書を提出していた場合）",
       "exceptions": [
-        "年末調整の対象外なら確定申告で控除"
+        "年末調整の対象外なら確定申告で控除",
+        "前職分を通算するのは、前の勤務先に扶養控除等（異動）申告書を提出して支払を受けた給与から差し引かれた分（令和8年分 年末調整のしかた nencho2026-107.txt:423-426）。2026-10-19 本文の各出現に追記"
       ],
       "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2025/pdf/107.pdf",
       "source_quote": "本年中に他から転職してきた人については、その人が前の勤務先に扶養控除等（異動）申告書を提出して支払を受けた給与から差し引かれた社会保険料等も含めて集計してください",
@@ -827,7 +836,6 @@
       "applies": "令和8年分（2026-10-14 時点の本文）",
       "covers": [
         "s-84098742645f14ade9ba-1",
-        "s-7f4c7a4e994027571c51-1",
         "s-bbb2b9a4218a4d5813a0-1",
         "s-0da119dd8a3a3c17b8b3-1",
         "s-0e73a92a20771dc0423f-1",
@@ -835,7 +843,6 @@
         "s-184f9be40ccda89f655e-1",
         "s-0ccb86952788a384cddb-1",
         "s-b8c02930a3e50d07406e-1",
-        "s-bf47fe7c767be8146e95-1",
         "s-c1e5e2527803d3ff0b4a-1",
         "s-ecadb61e422f0bf223e7-1",
         "s-bf5b8b9c1e5a2a3f947d-1",
@@ -857,15 +864,16 @@
         "s-721e36d7d2551744ae97-1",
         "s-5b652713e023a0224b67-1",
         "s-113e0f36815502ed86fd-1",
-        "s-8000ca914566435080fb-1",
-        "s-17e20c2420051e361edc-1",
         "s-a6bcd539435a8d450987-1",
         "s-ab90e49c60a3a59c9518-1",
         "s-be42ebd80ba282ecabf4-1",
         "s-64e638dcb7c04173bf65-1",
-        "s-5fc646f6760a0e09ebb8-1",
         "s-54cbe4b5993809c9eb8f-1",
-        "s-5d892cef3af0e3ece2c7-1"
+        "s-5d892cef3af0e3ece2c7-1",
+        "s-7f2c1233727bb5c09255-1",
+        "s-fdeefcc98d2f99cae5df-1",
+        "s-381dc41f46c6619e8416-1",
+        "s-738149f0cbbed4e1124a-1"
       ],
       "review_status": "author_checked",
       "partial_out_of_corpus": true,
@@ -898,7 +906,6 @@
       "covers": [
         "s-2c727ff8c9e18c6d25c3-1",
         "s-3816f2487968d15680cc-1",
-        "s-4bff5c40e860bcb7fe9f-1",
         "s-4fa5c9534234d3ce9f59-1",
         "s-55527289d72e65aded5d-1",
         "s-55c8373d7f5034665759-1",
@@ -908,7 +915,6 @@
         "s-9d562d938e966edc4300-1",
         "s-a4429f13e53bb2aeccfc-1",
         "s-a650bf87cc19861c4c3f-1",
-        "s-c3568373620432e09610-1",
         "s-d24144dcacc6fd86b450-1",
         "s-d94325c4c6a4d8f88540-1",
         "s-dfe1bb7e62da57e95d41-1",
@@ -920,7 +926,9 @@
         "s-3e3b459e8468d4614aa1-1",
         "s-aa5978f9515fc97ba0e8-1",
         "s-eb006f613970d1058e4f-1",
-        "s-bf17e80d110ec0b72edc-1"
+        "s-bf17e80d110ec0b72edc-1",
+        "s-407456c986d00e698a51-1",
+        "s-f0cd0747586046a6b012-1"
       ],
       "review_status": "author_checked",
       "partial_out_of_corpus": true,
@@ -955,16 +963,16 @@
         "s-c7e393f7285f68dd785c-1",
         "s-c5955ab7e2939b8bcbe7-1",
         "s-88f699d10c55f346eca8-1",
-        "s-a4e86eab0fc7de4f8f7a-1",
         "s-94cd865d9dbe3e42517a-1",
         "s-c16eb1029c45360eedf3-1",
         "s-73832c2cdfd078ed53f7-1",
-        "s-de403afa548d4f1100c2-1",
         "s-cb08aff97487271ae809-1",
         "s-a75d683c218cd95aad2d-1",
-        "s-167e526d4056e35c38d5-1",
-        "s-9fdf88502f7f681e9c25-1",
-        "s-7be665c6141db9daa05b-1"
+        "s-7be665c6141db9daa05b-1",
+        "s-698e5dfbdc4e36ce7f51-1",
+        "s-bc92258fc31c50e32cec-1",
+        "s-7e727c4cfd62aed98fb6-1",
+        "s-57e2b794fcd1ed14370f-1"
       ],
       "review_status": "author_checked",
       "partial_out_of_corpus": true,
@@ -1087,7 +1095,6 @@
       "covers": [
         "s-065d10fcaa39902bd0aa-1",
         "s-448f50c071ea07ed436b-1",
-        "s-56d710974c4686a1554e-1",
         "s-5b90c541e42ed2880baf-1",
         "s-6aacc75777a3184ce73f-1",
         "s-9e095ac39d3093a6fe9a-1",
@@ -1096,7 +1103,8 @@
         "s-cfb9000d0660093f457a-1",
         "s-f5ce439b8b825fcefaf9-1",
         "s-1142c46efa406505cd29-1",
-        "s-5c6d7d0d4798cca07ae0-1"
+        "s-5c6d7d0d4798cca07ae0-1",
+        "s-0c1816ca28c810208b1f-1"
       ],
       "review_status": "author_checked"
     },
@@ -1157,13 +1165,13 @@
       "applies": "令和8年分",
       "covers": [
         "s-039600bc75ff7a8cef7b-1",
-        "s-1a7c66c7c372ac5b637e-1",
         "s-3aec7d909363650cc917-1",
         "s-5c9879339e74d16d152d-1",
         "s-5e0a503fd5044a5b9760-1",
         "s-b9e5d50333d74d80e39d-1",
         "s-8264640b09498af68a7a-1",
-        "s-bfe56adc3866f86b849a-1"
+        "s-bfe56adc3866f86b849a-1",
+        "s-fda8954fed6945d6d778-1"
       ],
       "review_status": "author_checked"
     },
@@ -1268,9 +1276,10 @@
       "covers": [
         "s-874f9ffdcfa99bfc481e-1",
         "s-6f3740638855c8f9338d-1",
-        "s-b07a2c1434387a5ed8de-1",
+        "s-f4ed2270b11dfabd04cf-1",
+        "s-b3c60943526f34fd372a-1",
         "s-5c29b81752cbfe861284-1",
-        "s-f4ed2270b11dfabd04cf-1"
+        "s-d58168f691f3b304701a-1"
       ],
       "review_status": "author_checked"
     },
@@ -1325,7 +1334,8 @@
         "s-f49865c8fec65e80a177-1",
         "s-8ced686a9f870f55cf9c-1",
         "s-d9a99aa57607793d8ffd-1",
-        "s-a630b8c6c8421745e0fe-1"
+        "s-9e9301697965b11afddc-1",
+        "s-30389a68e3d92d03de3a-1"
       ],
       "review_status": "author_checked"
     },
