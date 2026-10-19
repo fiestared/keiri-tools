@@ -147,7 +147,7 @@
 
   <label for="leaveDays" style="margin-top:12px">産後パパ育休の日数</label>
   <input type="number" id="leaveDays" value="28" min="1" max="28" inputmode="numeric">
-  <div class="hint">土日祝を含む<b>暦の日数</b>です。支給は28日までです（<a href="#nissu">分割の申出と日数</a>）。</div>
+  <div class="hint">土日祝を含む<b>暦の日数</b>です。支給日数には上限があります（<a href="#nissu">分割の申出と日数</a>）。</div>
 
   <label for="otherEligibleDays">同じ対象期間の通常の育休の給付対象日数</label>
   <input id="otherEligibleDays" type="number" value="0" min="0" step="1" inputmode="numeric">
@@ -452,7 +452,7 @@ $("calc").addEventListener("click", async () => {
       ? `<div class="callout">賃金日額は下限${yen(r.min)}で計算しています（令和9年7月31日まで）。</div>`
       : "";
   const daysNote = r.cappedDays
-    ? `<div class="callout">支給の対象は28日までです。<a href="#nissu">日数と申出の確認</a></div>`
+    ? `<div class="callout">同じ子の分割休業も合算して28日が支給の上限です。<a href="#nissu">日数と申出の確認</a></div>`
     : "";
 
   // ★13%の行は**必ず出す**（乗るときは金額、乗らないときは理由）。
@@ -461,7 +461,7 @@ $("calc").addEventListener("click", async () => {
   const s = r.shien;
   let shienRow, shienNote = "";
   if (s.eligible) {
-    shienRow = `<tr><th>出生後休業支援給付金（＋13%）</th><td><b>${yen(s.amount)}</b>（${s.days}日分・最大28日）</td></tr>`;
+    shienRow = `<tr><th>出生後休業支援給付金（＋13%）</th><td><b>${yen(s.amount)}</b>（${s.days}日分・同じ子につき最大28日）</td></tr>`;
   } else if (s.reason === "work_exceeded") {
     shienRow = `<tr><td>出生後休業支援給付金（＋13%）</td><td>¥0</td></tr>`;
     shienNote = `<div class="callout">就業日数・時間が給付の上限を超えるため、出生時育児休業給付金と出生後休業支援給付金は不支給です。今回の上限は${r.work.maxDays}日、これを超える場合は${r.work.maxHours}時間です。</div>`;
