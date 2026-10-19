@@ -13,6 +13,9 @@ try {
   copyFileSync(join(root, 'tools/gen_index_sitemap.mjs'), join(fixture, 'tools/gen_index_sitemap.mjs'));
   copyFileSync(join(root, 'tools/saitei_pref_pages.json'), join(fixture, 'tools/saitei_pref_pages.json'));
   copyFileSync(join(root, 'tools/verified_content_dates.mjs'), join(fixture, 'tools/verified_content_dates.mjs'));
+  // gen_index_sitemap の lastmod は本文の比較で決める（2026-10-19）。その2本も写す
+  copyFileSync(join(root, 'tools/body_lastmod.mjs'), join(fixture, 'tools/body_lastmod.mjs'));
+  copyFileSync(join(root, 'tools/page_body.mjs'), join(fixture, 'tools/page_body.mjs'));
   // 生成器は tools/nav_experiment.mjs（と名簿 nav_experiment.json）を import する（2026-09-16〜）。
   // 実物を写す。基点コミットは使い捨てリポジトリに無いが、その場合は空＝従来どおりの判定になる設計。
   copyFileSync(join(root, 'tools/nav_experiment.mjs'), join(fixture, 'tools/nav_experiment.mjs'));

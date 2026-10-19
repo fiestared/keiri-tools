@@ -24,8 +24,8 @@ import { verifiedContentDate } from './verified_content_dates.mjs';
  */
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
-import { loadNavExperiment, navOnlyCommitFiles, worktreeNavOnly, DATE_LINE } from "./nav_experiment.mjs";
-import { execFileSync } from "node:child_process";
+import { bodyLastmods } from "./body_lastmod.mjs";
+import { bodyHash } from "./page_body.mjs";
 
 const DOCS = new URL("../docs/", import.meta.url).pathname;
 const SAITEI_PREF_PAGES = JSON.parse(readFileSync(new URL('./saitei_pref_pages.json', import.meta.url), 'utf8')).prefectures;
@@ -995,111 +995,18 @@ articles.sort((a, b) => {
 });
 
 // ---- sitemap.xml ----
-// lastmod は「そのページが最後に変わった日」= gitのコミット日から採る。
-// **生成日(今日)を全URLに押すと嘘になる**: 中身が変わっていない69本まで「今日更新した」と
+// lastmod は「そのページの**本文**が最後に変わった日」（2026-10-19 に作り直し。tools/body_lastmod.mjs）。
+// **生成日(今日)を全URLに押すと嘘になる**: 中身が変わっていないページまで「今日更新した」と
 // 名乗ることになり、Googleは lastmod が当てにならないと学習して**以後この値を無視する**
 // (= 本当に更新した日を伝える手段を自分で捨てる)。
-// 未コミット/未追跡のファイルだけは「今まさに変わっている」ので今日でよい(こちらも真)。
-// ★末尾の改行だけ落とす。`.trim()` にすると status --porcelain の**1行目の先頭スペース**
-//   (` M path` の状態カラム)まで削れ、**dirty一覧の先頭ファイルだけ** slice(3) が path を
-//   1文字食う(`docs/…`→`ocs/…`)→照合が外れ lastmod が古いまま/新規ページなら丸ごと落ちる
-//   (2026-07-17 第12便で実発生: 先頭の denchoho-index だけ lastmod が更新されなかった)。
-// ★maxBuffer を明示する（2026-10-14 実測）。既定の 1MiB だと、一括コミットを数える `git log --name-only` の出力
-//   （origin/main で 1,100,484 バイト）が ENOBUFS で落ち、下の catch が "" を返して **一括コミットが0件**になっていた。
-const git = (...a) => {
-  try { return execFileSync("git", a, { cwd: DOCS, encoding: "utf8", maxBuffer: 512 * 1024 * 1024 }).replace(/\s+$/, ""); }
-  catch { return ""; }
-};
+// ★2026-10-19 までの実装は「最終コミット日」から例外を引く形だった（20ファイル以上の一括コミット・
+//   導線の行だけのコミット・更新日の行だけのコミット・作業ツリーの一括変更）。例外の外で生成器が動くたびに
+//   lastmod が動き、origin/main の 630 URL で 10-12 に100・10-13 に100・10-14 に223、以降も毎日30前後が
+//   「今日更新」を名乗った（10-14 時点で改稿 334 中 330 が Google に未再クロール）。
+//   → 例外を数えるのをやめ、**本文（tools/page_body.mjs の定義）そのものを版ごとに比べる**。
+//   一括コミットの中の本物の改稿も拾うので、tools/verified_content_dates.mjs の手書きの救済は保険として残すだけになる。
+// 未コミット/未追跡のファイルは、本文が HEAD と違うときだけ今日（導線・更新日・装飾だけなら履歴の日付）。
 const TODAY = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }); // YYYY-MM-DD
-const root = git("rev-parse", "--show-toplevel");
-// 作業ツリーで変更中のファイル(未追跡を含む)を1回で集める。git status の経路は root からの相対。
-// ★`-uall` が要る: 既定の git status は**未追跡ディレクトリを1行に畳む**(`?? docs/juminzei/`)。
-//   畳まれると dirty に入るのは**ディレクトリ**なので、`docs/juminzei/index.html` の照合が外れ、
-//   git log にも履歴が無い(まだコミット前)ため **lastmod が丸ごと落ちる**。
-//   = **新しく作ったページ**、つまり lastmod がいちばん要るページだけが黙って lastmod 無しで出る。
-//   実際に /juminzei/ を lastmod 無しで本番へ出した(2026-07-14 第23便)。
-// ★導線（次に読む・右レール）の行しか変わっていないファイルは dirty に数えない（2026-09-16）。
-//   判定は nav_experiment.mjs に1つだけ持つ（gen_datemodified.mjs と同じ関数・同じ基点）。
-const dirty = new Set(
-  git("status", "--porcelain", "-uall", "--", DOCS).split("\n").filter(Boolean)
-    .map((l) => l.slice(3).split(" -> ").pop().replace(/^"|"$/g, ""))
-    .filter((p) => !worktreeNavOnly(p))
-    .map((p) => join(root, p)),
-);
-// ★更新日の行だけのコミット（gen_datemodified の追いつき）も本文の改稿に数えない（2026-09-23）。
-//   数えると dateModified と lastmod が食い違う（/yukyu/ で dateModified 09-19・lastmod 09-23 になった）。
-const navOnlyCommits = navOnlyCommitFiles(loadNavExperiment().base, DATE_LINE);
-// ★サイト全体の一括変更は「更新日」に数えない（2026-08-16 追加）。
-//   実測: 2026-08-16 に全ページ末尾へ「Xで共有」リンクを1行足しただけで、
-//   **sitemap 270本中267本の lastmod が同じ日に潰れた**。
-//   Google は lastmod を *"consistently and verifiably accurate"* な場合にのみ使うと明記し、
-//   lastmod を *"the last significant update"* と定義して軽微な変更と区別せよと言っている。
-//   https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap
-//   → フッターに1行足しただけで全ページが「今日更新した」と名乗ると、
-//     **Google が lastmod を当てにしなくなり、本当に改定した日を伝える手段を失う**。
-//   ★閾値20は ai-income-daily の bing_check.py が「最終改稿」を数えるときと同じ基準
-//     （20ファイル以上を触るコミットは本文の改稿と数えない）。基準を2つ持たない。
-// ★`--name-only` の出力は「ハッシュ / 空行 / ファイル一覧」の順なので、
-//   `\n\n` で切ると**次のコミットのハッシュが前のコミットのファイル一覧に混ざる**。
-//   最初そう書いて、一括コミットを1つも正しく拾えなかった（分布が変わらないので気づいた）。
-//   → 行頭の目印で切る。
-const BULK_FILES = 20;
-const bulkCommits = new Set();
-{
-  let hash = null;
-  let n = 0;
-  const flush = () => { if (hash && n >= BULK_FILES) bulkCommits.add(hash); };
-  // ★`git()` は **cwd が DOCS** なので、パス指定は `.`（docs 配下）にする。
-  //   ここを `docs` と書くと docs/docs を見に行き、**黙って空を返す**（実測。
-  //   単体では動くのに生成器の中だけ効かない、という形で1回踏んだ）。
-  // ★ここは失敗を "" に化けさせない（2026-10-14: 出力が 1MiB を超えて黙って空になり、一括の除外が丸ごと効いていなかった）。
-  //   コミットが1つも無いリポジトリ（テストの使い捨て）だけは、一括コミットが無いのが正しいので空でよい。
-  const hasHead = git("rev-parse", "--verify", "-q", "HEAD") !== "";
-  const bulkLog = hasHead ? execFileSync("git", ["log", "--format=@@%H", "--name-only", "--", "."],
-    { cwd: DOCS, encoding: "utf8", maxBuffer: 512 * 1024 * 1024 }) : "";
-  for (const line of bulkLog.split("\n")) {
-    if (line.startsWith("@@")) { flush(); hash = line.slice(2); n = 0; }
-    else if (line.trim()) n++;
-  }
-  flush();
-}
-
-// ★★★ 一括の除外を**作業ツリー側にも**効かせる（2026-08-23 実測）。
-//   下の bulkCommits は「20ファイル以上のコミット」を弾いているのに、
-//   `dirty`（未コミット）は素通りで TODAY を返していた＝**同じ規則が片方の枝にしか無い**。
-//   実測: サイト全体に skip-link を足す 355ファイルの未コミット変更があったとき、
-//   sitemap の lastmod が **317/318 = 100% 今日**に潰れた（tests/test_generators_fresh.mjs が検知）。
-//   これは上のコメントが 2026-08-16 の事故として書き残しているもの（267/270）と**同じ形**で、
-//   そのとき直したのはコミット側だけだった。
-//   Google は lastmod を "consistently and verifiably accurate" なときだけ使うと明記している。
-//   🚫 独自の閾値を作らない。コミット側と同じ BULK_FILES を使う（基準を2つ持たない）。
-const BULK_WORKTREE = dirty.size >= BULK_FILES;
-if (BULK_WORKTREE) {
-  console.log(`  ⚠️  未コミットの変更が ${dirty.size} 件（>= ${BULK_FILES}）= 一括変更とみなし、`);
-  console.log("     lastmod を今日に塗り替えません（コミット済み履歴の日付を使います）。");
-}
-
-const lastmodOf = (file) => {
-  if (!BULK_WORKTREE && dirty.has(file)) return TODAY;
-  // 一括コミットを飛ばして、そのファイル自身の「意味のある更新」を探す
-  // ★マージコミットは数えない（2026-10-14）。マージの中身は取り込んだ側のコミットに日付つきで既に在る。
-  //   数えると「main を取り込んだ日」が両側の変わったページの lastmod になる（公開用の枝で main を取り込むたびに起きる）。
-  //   gen_datemodified.mjs は `--name-only` がマージにファイルを出さないので、もともとマージを数えていない（基準を2つ持たない）。
-  const log = git("log", "--no-merges", "--format=%H %cs", "--", file).split("\n").filter(Boolean);
-  // ★★ 履歴がまったく無い＝**まだ一度もコミットされていない新規ページ**。
-  //   このときは BULK_WORKTREE でも TODAY を返す（2026-08-23 実測で回帰を1件出した）。
-  //   一括を弾く目的は「中身が変わっていない既存ページが今日を名乗ること」の防止であって、
-  //   本当に今日生まれたページから lastmod を奪うことではない。落とすと、
-  //   **lastmod がいちばん要る新規ページだけが黙って lastmod 無しで出る**
-  //   （このファイルが 2026-07-14 の /juminzei/ で踏んだ事故と同じ結果になる）。
-  if (!log.length) return TODAY;
-  for (const line of log) {
-    const [hash, date] = [line.slice(0, 40), line.slice(41)];
-    if (!bulkCommits.has(hash) && !navOnlyCommits.get(hash)?.has(relative(root, file))) return date;
-  }
-  // 一括コミットしか無い＝新規ページが一括の中で生まれた場合。最古の日付を使う
-  return log[log.length - 1].slice(41);
-};
 
 // ---- column/index.html の記事リスト(カテゴリ別セクション) ----
 // CATEGORIES の記述ミス(存在しない記事・同じ記事を2つのカテゴリに登録)は黙って通すと
@@ -1321,17 +1228,21 @@ ${hubLatest.map((a) => card(a, "    ").replace(`href="${a.slug}/"`, `href="../co
   `;
 hub = hub.slice(0, hOpen + hubOpen.length) + hubBlock + hub.slice(hClose);
 
-// 新着生成で本文が変わる場合は、この実行でハブのlastmodも更新する。
-const hubChanged = hub !== readFileSync(hubPath, "utf8");
+// この実行で書き換える一覧（コラム一覧・トップの新着・資産形成の新着）は、書く前の本文と比べる。
+// 新着の並びはこれらのページの本文そのものなので、本文が変わるならこの実行で今日にする
+// （でないと、記事を足した日の一覧が1回遅れて前の日付を名乗る）。
+const rewrittenToday = new Set([[colPath, col], [topPath, top], [hubPath, hub]]
+  .filter(([p, next]) => bodyHash(next) !== bodyHash(readFileSync(p, "utf8"))).map(([p]) => p));
 const urls = [
   ...[...STATIC_PAGES, ...STATIC_PAGES_D, ...NENSHU_PAGES].map((p) => ({ loc: `https://keiri-tools.com/${p}`, file: join(DOCS, p, "index.html") })),
   ...articles.map((a) => ({ loc: `https://keiri-tools.com/column/${a.slug}/`,
                             file: join(COLUMN, a.slug, "index.html") })),
 ];
+const lastmods = bodyLastmods({ cwd: DOCS, files: urls.map((u) => u.file), today: TODAY });
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(({ loc, file }) => {
-  const d = file === hubPath && hubChanged ? TODAY : verifiedContentDate(`docs/${relative(DOCS, file)}`, lastmodOf(file));
+  const d = rewrittenToday.has(file) ? TODAY : verifiedContentDate(`docs/${relative(DOCS, file)}`, lastmods.get(file));
   return `  <url><loc>${loc}</loc>${d ? `<lastmod>${d}</lastmod>` : ""}</url>`;
 }).join("\n")}
 </urlset>
