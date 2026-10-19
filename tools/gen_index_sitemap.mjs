@@ -24,8 +24,8 @@ import { verifiedContentDate } from './verified_content_dates.mjs';
  */
 import { readdirSync, readFileSync, writeFileSync, existsSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
-import { loadNavExperiment, navOnlyCommitFiles, worktreeNavOnly, DATE_LINE } from "./nav_experiment.mjs";
-import { execFileSync } from "node:child_process";
+import { bodyLastmods } from "./body_lastmod.mjs";
+import { bodyHash } from "./page_body.mjs";
 
 const DOCS = new URL("../docs/", import.meta.url).pathname;
 const SAITEI_PREF_PAGES = JSON.parse(readFileSync(new URL('./saitei_pref_pages.json', import.meta.url), 'utf8')).prefectures;
@@ -34,7 +34,12 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "ippan-koza-kakutei-shinkoku", // 一般口座 確定申告 Google月間2,880（2026-10-19）
+  "kaigai-fx-zeikin", // 海外FX 税金 Google月間2,320（2026-10-19）
+  "toshi-shintaku-zeikin", // Google月間2,320（2026-10-19）。公募株式投信の分配と換金の税額。
+  "kakutei-shinkokusho-kakikata", // 確定申告書 Google月間26,480（2026-10-19実測）。各表の役割・転記元の参照表。
   "kosei-nenkin-kikin", // Google月間推定6,480（2026-10-18 MF2実測）。代行・上乗せと解散後の受取先。
+  "shogu-kaizen-teate", // 処遇改善手当 Google月間6,480（2026-10-19実測）
   "kojin-nenkin-zeikin", // Google月間4,320、2026-10-18。本人受取の私的年金の税金。
   "zaisan-saimu-chosho", // 財産債務調書 Google4,320/月（2026-10-18）。年末財産評価と提出要件の照合表。
   "taishoku-tetsuzuki", // 退職手続き Google月間6,480（2026-10-18）。会社側の期限・提出先総覧。
@@ -278,6 +283,7 @@ const ORDER = [
   "tokutei-koza-gensen-ari",    // 特定口座 源泉徴収あり 12,100/月 ＋ 特定口座 確定申告 8,100・特定口座 源泉徴収あり 確定申告 4,400・特定口座 源泉徴収なし 1,600・年間取引報告書 1,300 ＝クラスタ約27,500（keyword_demand.py 2026-08-27 に実測。頭語「特定口座」単体も12,100で同値＝同一意図とみて二重に数えない。「一般口座」320は本文の比較表が受ける）。★被覆調査: 「特定口座 源泉徴収あり」を主題に持つページは全429ページで0。節保有は /column/gaikoku-zeigaku-kojo/ のFAQ 1問（「源泉徴収ありの特定口座で申告不要にしていますが、外国税額控除は自動で受けられますか？」）だけで、同FAQからのリンクで主題を本記事へ譲り受けた。/column/uketori-haito-ekikin-fusannyu/ は法人側（益金不算入）で別主題。/toushi/tsumitate/ は積立の税引後計算ツール＝本記事のCTA先。踏み込みは ①★★申告不要の根拠は措置法37条の11の5で、文末は「適用することができる」＝口座ごとの選択であること ②★★同条2項は税務署長が国税通則法25条の決定をする場面ですら源泉徴収選択口座の金額を課税標準等に含めないと明記 ③★★年末までの損失で口座内還付される直接根拠は37条の11の4第3項の「その都度…還付しなければならない」（1項の翌年1月10日は納付期限であって還付の根拠ではない — codexレビューで因果の置き換えを指摘され是正） ④★★現行の地方税法32条13項・15項は住民税側の除外解除の条件を「所得税の確定申告書への記載」だけに紐づけており、住民税だけ申告不要を選ぶ余地が無い ⑤★★合計所得金額は繰越控除**適用前**で判定（国税庁用語集）＝繰越損失で税額ゼロでも扶養（58万円以下・令和7年分以後）から外れる逆転が起きる ⑥★特別徴収済みの5%は申告時に道府県2/5・市町村3/5で所得割から控除・還付（地方税法37条の4・314条の9）⑦★令和9年からは復興1.1%＋防衛特別所得税1%で合計2.1%不変（両法の20270101リビジョンを実読）⑧★配当の15.315%は大口株主等（基準日に3%以上・同族会社合算を含む）を除く（措置法8条の4第1項1号・9条の3第1号・9条の3の2第1項の百分の二十）⑨★年間取引報告書は取引の無かった年は交付不要・請求時のみ（37条の11の3第8項）⑩★所得70万円の配偶者は配偶者特別控除（所法83条の2・95万以下同額／住民税は地方税法34条1項10号の2・100万以下同額）に移行するので控除は減らない。受け皿が無いのは配偶者以外の扶養親族（19〜22歳の特定親族特別控除を除く）— 初稿はここを配偶者の例で書いて誤り、codexレビューで差し戻し→扶養親族の例に書き直した。★措置法の罠対策: 現行20260812と20261201施行版の両方で37条の11の3〜6を取得しバイト同一を確認。★地方税法32条は本則と附則に同番号の条があり、附則側は「政令への委任」＝MainProvisionを木構造で確認して引用。blockquote 8断片を5法令コーパス9,822,314字で逐語照合（素8/8・改ざん8/8・③候補0・④の★6件は目視で2件がNTA/法令名の逐語・4件が筆者の言葉と確認）
   "haitokin-kakutei-shinkoku",  // 配当金 確定申告 6,600/月 ＋ 配当控除 6,600・配当所得 総合課税 480（keyword_demand.py 2026-08-27 実測）。★被覆調査: 「配当金 確定申告」「配当控除」を主題（title/h1）に持つページは全433ページで0。節保有は /column/minashi-haito/（配当控除6回・ただし主題はみなし配当の計算＝法人の資本の払戻し側）、/column/uketori-haito-ekikin-fusannyu/（法人の益金不算入で別主題）、/column/zatsushunyu/（3回・雑所得の周辺言及）、/column/tokutei-koza-gensen-ari/（同日公開・口座単位の申告不要が主題で、配当控除0回）。役割分担は「あちらは口座、こちらは配当の課税方式」。踏み込みは ①★★3つの方式は**選べる単位**が違う（申告分離＝措置法8条の4第2項でその年の全部／申告不要＝同8条の5第4項で1回の支払ごと／源泉徴収選択口座だけ口座単位）②★★3%の大口株主判定は**源泉徴収と申告とで条文が違う** — 8条の4第1項1号は同族会社と合算するかっこ書きを持つのに 9条の3第1号は「有する個人」だけ＝合算だけで3%に届く人は15.315%で源泉徴収されたうえ総合課税になる（令和5年10月1日前のリビジョン20230701を取得して、このかっこ書きが元は無かったことまで確認）③★★配当控除は1,000万円で全部が5%になるのではなく92条1項3号により**下側10%・上側5%に割れる**、かつ1,000万円の判定から証券投資信託の配当所得を先に除く（同項2号）④★★住民税の配当控除は地方税法**附則5条**にあり、政令指定都市では道府県0.56%・市2.24%と内訳が入れ替わる（合計2.8%は不変）⑤★★令和6年度分から住民税だけ別方式は選べない — 旧32条13項の「特定配当等申告書」が現行では45条の3第1項の確定申告書だけに置き換わっており、適用時期は令和4年法律第1号附則4条1項が「令和六年度以後の年度分」と明示 ⑥★★非上場の少額配当は所得税で申告不要でも**住民税の申告義務が残る**（23条1項15号の特定配当等に非上場配当が入らない＝32条12項の除外に乗らない・317条の2第1項ただし書の免除にも乗らない）⑦★分岐点は課税総所得金額**695万円**（23%の帯で総合課税の実効20.47% > 20.315%）で、通説の「900万円以下なら総合課税」は695万〜900万の帯で結論を逆に導く ⑧★J-REIT（措置法9条1項7号）・外国法人からの配当（所法92条1項本文かっこ書き）・特定外貨建等証券投資信託（同9条1項4号）は配当控除**0%**、株式ETFは同3項で剰余金の配当等と同じ10% ⑨★配当割額控除は道府県2/5・市町村3/5で、引ききれない分は314条の9第2項が「還付しなければならない」と義務で書く。★措置法の罠対策: 現行20260812と20261201施行版の両方で8条の4・8条の5の全文を突き合わせ、バイト同一を確認（12月1日施行の改正はこれらの条に触れていない）。所得税法24条・25条・92条・181条・182条も両リビジョンで同一を確認
   "jiko-shihon-hiritsu", // 自己資本比率 Google21,680/月（2026-10-17）。★新規指示、単体・連結の参照表。
+  "roe-roa", // ROE とは Google21,680/月（2026-10-19）。決算短信・法人企業統計の式と期首期末平均の計算例。
   "nenkan-kyujitsu", // 年間休日 Google月間推定21,680（2026-10-17）。会社カレンダーと調査の平均。
   "junior-nisa-haraidashi",     // ジュニアNISA 21,680/月（keyword_demand.py 2026-10-15 実測 27,100）。既存は成人NISAの申告（nisa-kakutei-shinkoku）と枠計算（/toushi/nisa-waku/）だけで、ジュニアNISAの非課税期間・継続管理勘定・払出しを主題とするページは0。2026-10-15 Opus執筆便 fin2
   "kyu-nisa-kazei-ikou",        // 旧NISA 5,280/月（keyword_demand.py 2026-10-16 実測 6,600・旧NISA 非課税期間 5,400）。2022年の勘定の課税口座への移管と取得価額
@@ -678,7 +684,7 @@ const CATEGORIES = [
     id: "shisan",
     name: "資産形成・投資",
     desc: "インデックス投資の考え方と、費用・分散・元本割れの扱い。具体的な商品名で投資信託を比較し、費用と同期間の実績、投資対象の違いを示します。特定の商品を勧めるものではありません。",
-    slugs: ["zaisan-saimu-chosho", "kojin-nenkin-zeikin", "kin-zeikin-joto", "rsu-zeikin-vest-baikyaku", "fx-zeikin-keisan", "index-toushi", "shintaku-hoshu", "junior-nisa-haraidashi", "kyu-nisa-kazei-ikou", "kodomo-nisa-2027-tetsuzuki", "nisa-kinyu-kikan-henko", "ideco-jogen-kaisei", "dollar-cost-heikin", "orcan-sp500-holding-period", "orcan-sp500-recovery-days", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold", "orcan-vs-fang", "ifreenext-india-vs-rakuten-india", "rakuten-schd-vs-sbi-vym", "tawara-vs-emaxis-sensinkoku", "orcan-vs-emaxis-sensinkoku", "rakuten-gold-vs-sbi-gold", "sbi-yukidaruma-vs-orcan", "rakuten-schd-vs-rakuten-vym", "sbi-spyd-vs-rakuten-schd", "sbi-spyd-vs-sbi-vym", "sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou", "rakuten-sox-vs-rakuten-nasdaq", "sbi-spyd-vs-rakuten-vym", "rakuten-jepi-vs-rakuten-schd", "emaxis-nikkei-vs-tawara-nikkei", "sbi-vym-vs-rakuten-vym", "rakuten-schd-vs-sbi-schd", "rakuten-gold-vs-mufg-gold", "emaxis-orcan-vs-rakuten-schd", "rakuten-schd-bunpaikin", "rakuten-vym-vs-rakuten-jepi"],
+    slugs: ["toshi-shintaku-zeikin", "kaigai-fx-zeikin", "ippan-koza-kakutei-shinkoku", "zaisan-saimu-chosho", "kojin-nenkin-zeikin", "kin-zeikin-joto", "rsu-zeikin-vest-baikyaku", "fx-zeikin-keisan", "index-toushi", "shintaku-hoshu", "junior-nisa-haraidashi", "kyu-nisa-kazei-ikou", "kodomo-nisa-2027-tetsuzuki", "nisa-kinyu-kikan-henko", "ideco-jogen-kaisei", "dollar-cost-heikin", "orcan-sp500-holding-period", "orcan-sp500-recovery-days", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold", "orcan-vs-fang", "ifreenext-india-vs-rakuten-india", "rakuten-schd-vs-sbi-vym", "tawara-vs-emaxis-sensinkoku", "orcan-vs-emaxis-sensinkoku", "rakuten-gold-vs-sbi-gold", "sbi-yukidaruma-vs-orcan", "rakuten-schd-vs-rakuten-vym", "sbi-spyd-vs-rakuten-schd", "sbi-spyd-vs-sbi-vym", "sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou", "rakuten-sox-vs-rakuten-nasdaq", "sbi-spyd-vs-rakuten-vym", "rakuten-jepi-vs-rakuten-schd", "emaxis-nikkei-vs-tawara-nikkei", "sbi-vym-vs-rakuten-vym", "rakuten-schd-vs-sbi-schd", "rakuten-gold-vs-mufg-gold", "emaxis-orcan-vs-rakuten-schd", "rakuten-schd-bunpaikin", "rakuten-vym-vs-rakuten-jepi"],
   },
   {
     id: "shakai-hoken",
@@ -726,7 +732,7 @@ const CATEGORIES = [
       "taishokukin-zeikin", "taishoku-shotoku-shinkokusho", "taishoku-gensen-choshuhyo", "gensen-choshuhyo-saihakko", "gensen-choshuhyo-itsu", "nenmatsu-chosei-kakutei-shinkoku-chigai", "nenmatsu-chosei-iryohi-kojo", "shokibo-kyosai-uketori", "fukugyo-20man-kakutei-shinkoku", "kinyu-shotoku-kazei-2027", "angoshisan-zeikin", "tokutei-koza-gensen-ari", "haitokin-kakutei-shinkoku", "nisa-kakutei-shinkoku", "jugyoin-mochikabukai", "gaikoku-zeigaku-kojo", "kaigyo-todoke", "haigyo-todoke", "aoiro-tokubetsu-kojo", "aoiro-shonin-shinseisho", "shiroiro-shinkoku", "kakutei-shinkoku-hitsuyo-shorui", "kakutei-shinkoku-itsumade", "junkakutei-shinkoku", "kaji-anbun", "kanai-rodosha-tokurei", "jigyonushi-kashi-kari", "yotei-nozei-toha", "kojin-jigyozei",
       "shusei-shinkoku-kosei-seikyu", "zeimu-chosa", "zeimu-dairi-kengen-shosho", "fufuku-moshitate", "nozei-shomeisho",
     
-      "kakutei-shinkoku-yarikata",
+      "kakutei-shinkokusho-kakikata", "kakutei-shinkoku-yarikata",
       "shunyu-shotoku-chigai",
       "ichiji-shotoku",
       "kakutei-shinkoku-kanpukin-itsu",
@@ -826,7 +832,7 @@ const CATEGORIES = [
     name: "給与計算の実務（会社側）",
     desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務もここ。",
     slugs: [
-      "taishoku-tetsuzuki", "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
+      "shogu-kaizen-teate", "taishoku-tetsuzuki", "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
       "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
       "shakai-hokenryo-choshu-jiki", "kyushoku-shakai-hokenryo", "shoyo-gensen-shotokuzei",
       "gensen-shotokuzei-noki-tokurei", "kyuyo-shiharai-jimusho-kaisetsu", "gensen-shotokuzei-nofusho", "gaichuhi-kyuyo-kubun", "hotei-fukurihi-keisan", "rodo-hoken-nendo-koshin", "roudou-hoken-bango",
@@ -862,7 +868,7 @@ const CATEGORIES = [
     id: "hojinzei-kessan",
     name: "法人税・決算の実務",
     desc: "会社設立後の税務届出と法人税の税率、キャッシュフロー計算書、役員報酬・使用人兼務役員・交際費・決算賞与・繰越欠損金・引当金・経過勘定と、賃上げ促進税制などの優遇措置。",
-    slugs: ["jiko-shihon-hiritsu", "godo-gaisha", 
+    slugs: ["jiko-shihon-hiritsu", "roe-roa", "godo-gaisha", 
       "kaisha-setsuritsu", "hojin-nari", "shihonkin", "genshi", "hojinzei-toha", "hojinzei-shinkokusho", "hojinzei-ritsu", "gaikei-hyojun-kazei", "kigyo-ban-furusato-nozei", "jigyoshozei", "zaimu-toha", "cash-flow-keisansho", "taishaku-taishohyo-mikata", "soneki-keisansho-mikata", "soukanjo-motocho-kakikata", "shiwakecho", "shisanhyo-mikata", "genkin-suitocho-kakikata",
       "yakuin-hoshu-kimekata", "shiyonin-kenmu-yakuin", "shikko-yakuin", "yakuin-taishokukin", "kosaihi-kaigihi-chigai", "shutcho-nittou-ryohi-kitei", "ryohi-kotsuhi", "shomohinhi", "tsushinhi", "chidai-yachin", "shikikin-hoshokin", "kyosankin-kanjo-kamoku", "kokoku-sendenhi", "noren", "genson-sonshitsu", "shisan-jokyo-saimu", "genka-shokyaku-ruikeigaku",
       "kessan-shoyo", "kurikoshi-kessonkin", "chinage-sokushin-zeisei", "shukko-zeimu", "kabunushi-soukai-gijiroku",
@@ -993,111 +999,18 @@ articles.sort((a, b) => {
 });
 
 // ---- sitemap.xml ----
-// lastmod は「そのページが最後に変わった日」= gitのコミット日から採る。
-// **生成日(今日)を全URLに押すと嘘になる**: 中身が変わっていない69本まで「今日更新した」と
+// lastmod は「そのページの**本文**が最後に変わった日」（2026-10-19 に作り直し。tools/body_lastmod.mjs）。
+// **生成日(今日)を全URLに押すと嘘になる**: 中身が変わっていないページまで「今日更新した」と
 // 名乗ることになり、Googleは lastmod が当てにならないと学習して**以後この値を無視する**
 // (= 本当に更新した日を伝える手段を自分で捨てる)。
-// 未コミット/未追跡のファイルだけは「今まさに変わっている」ので今日でよい(こちらも真)。
-// ★末尾の改行だけ落とす。`.trim()` にすると status --porcelain の**1行目の先頭スペース**
-//   (` M path` の状態カラム)まで削れ、**dirty一覧の先頭ファイルだけ** slice(3) が path を
-//   1文字食う(`docs/…`→`ocs/…`)→照合が外れ lastmod が古いまま/新規ページなら丸ごと落ちる
-//   (2026-07-17 第12便で実発生: 先頭の denchoho-index だけ lastmod が更新されなかった)。
-// ★maxBuffer を明示する（2026-10-14 実測）。既定の 1MiB だと、一括コミットを数える `git log --name-only` の出力
-//   （origin/main で 1,100,484 バイト）が ENOBUFS で落ち、下の catch が "" を返して **一括コミットが0件**になっていた。
-const git = (...a) => {
-  try { return execFileSync("git", a, { cwd: DOCS, encoding: "utf8", maxBuffer: 512 * 1024 * 1024 }).replace(/\s+$/, ""); }
-  catch { return ""; }
-};
+// ★2026-10-19 までの実装は「最終コミット日」から例外を引く形だった（20ファイル以上の一括コミット・
+//   導線の行だけのコミット・更新日の行だけのコミット・作業ツリーの一括変更）。例外の外で生成器が動くたびに
+//   lastmod が動き、origin/main の 630 URL で 10-12 に100・10-13 に100・10-14 に223、以降も毎日30前後が
+//   「今日更新」を名乗った（10-14 時点で改稿 334 中 330 が Google に未再クロール）。
+//   → 例外を数えるのをやめ、**本文（tools/page_body.mjs の定義）そのものを版ごとに比べる**。
+//   一括コミットの中の本物の改稿も拾うので、tools/verified_content_dates.mjs の手書きの救済は保険として残すだけになる。
+// 未コミット/未追跡のファイルは、本文が HEAD と違うときだけ今日（導線・更新日・装飾だけなら履歴の日付）。
 const TODAY = new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Tokyo" }); // YYYY-MM-DD
-const root = git("rev-parse", "--show-toplevel");
-// 作業ツリーで変更中のファイル(未追跡を含む)を1回で集める。git status の経路は root からの相対。
-// ★`-uall` が要る: 既定の git status は**未追跡ディレクトリを1行に畳む**(`?? docs/juminzei/`)。
-//   畳まれると dirty に入るのは**ディレクトリ**なので、`docs/juminzei/index.html` の照合が外れ、
-//   git log にも履歴が無い(まだコミット前)ため **lastmod が丸ごと落ちる**。
-//   = **新しく作ったページ**、つまり lastmod がいちばん要るページだけが黙って lastmod 無しで出る。
-//   実際に /juminzei/ を lastmod 無しで本番へ出した(2026-07-14 第23便)。
-// ★導線（次に読む・右レール）の行しか変わっていないファイルは dirty に数えない（2026-09-16）。
-//   判定は nav_experiment.mjs に1つだけ持つ（gen_datemodified.mjs と同じ関数・同じ基点）。
-const dirty = new Set(
-  git("status", "--porcelain", "-uall", "--", DOCS).split("\n").filter(Boolean)
-    .map((l) => l.slice(3).split(" -> ").pop().replace(/^"|"$/g, ""))
-    .filter((p) => !worktreeNavOnly(p))
-    .map((p) => join(root, p)),
-);
-// ★更新日の行だけのコミット（gen_datemodified の追いつき）も本文の改稿に数えない（2026-09-23）。
-//   数えると dateModified と lastmod が食い違う（/yukyu/ で dateModified 09-19・lastmod 09-23 になった）。
-const navOnlyCommits = navOnlyCommitFiles(loadNavExperiment().base, DATE_LINE);
-// ★サイト全体の一括変更は「更新日」に数えない（2026-08-16 追加）。
-//   実測: 2026-08-16 に全ページ末尾へ「Xで共有」リンクを1行足しただけで、
-//   **sitemap 270本中267本の lastmod が同じ日に潰れた**。
-//   Google は lastmod を *"consistently and verifiably accurate"* な場合にのみ使うと明記し、
-//   lastmod を *"the last significant update"* と定義して軽微な変更と区別せよと言っている。
-//   https://developers.google.com/search/docs/crawling-indexing/sitemaps/build-sitemap
-//   → フッターに1行足しただけで全ページが「今日更新した」と名乗ると、
-//     **Google が lastmod を当てにしなくなり、本当に改定した日を伝える手段を失う**。
-//   ★閾値20は ai-income-daily の bing_check.py が「最終改稿」を数えるときと同じ基準
-//     （20ファイル以上を触るコミットは本文の改稿と数えない）。基準を2つ持たない。
-// ★`--name-only` の出力は「ハッシュ / 空行 / ファイル一覧」の順なので、
-//   `\n\n` で切ると**次のコミットのハッシュが前のコミットのファイル一覧に混ざる**。
-//   最初そう書いて、一括コミットを1つも正しく拾えなかった（分布が変わらないので気づいた）。
-//   → 行頭の目印で切る。
-const BULK_FILES = 20;
-const bulkCommits = new Set();
-{
-  let hash = null;
-  let n = 0;
-  const flush = () => { if (hash && n >= BULK_FILES) bulkCommits.add(hash); };
-  // ★`git()` は **cwd が DOCS** なので、パス指定は `.`（docs 配下）にする。
-  //   ここを `docs` と書くと docs/docs を見に行き、**黙って空を返す**（実測。
-  //   単体では動くのに生成器の中だけ効かない、という形で1回踏んだ）。
-  // ★ここは失敗を "" に化けさせない（2026-10-14: 出力が 1MiB を超えて黙って空になり、一括の除外が丸ごと効いていなかった）。
-  //   コミットが1つも無いリポジトリ（テストの使い捨て）だけは、一括コミットが無いのが正しいので空でよい。
-  const hasHead = git("rev-parse", "--verify", "-q", "HEAD") !== "";
-  const bulkLog = hasHead ? execFileSync("git", ["log", "--format=@@%H", "--name-only", "--", "."],
-    { cwd: DOCS, encoding: "utf8", maxBuffer: 512 * 1024 * 1024 }) : "";
-  for (const line of bulkLog.split("\n")) {
-    if (line.startsWith("@@")) { flush(); hash = line.slice(2); n = 0; }
-    else if (line.trim()) n++;
-  }
-  flush();
-}
-
-// ★★★ 一括の除外を**作業ツリー側にも**効かせる（2026-08-23 実測）。
-//   下の bulkCommits は「20ファイル以上のコミット」を弾いているのに、
-//   `dirty`（未コミット）は素通りで TODAY を返していた＝**同じ規則が片方の枝にしか無い**。
-//   実測: サイト全体に skip-link を足す 355ファイルの未コミット変更があったとき、
-//   sitemap の lastmod が **317/318 = 100% 今日**に潰れた（tests/test_generators_fresh.mjs が検知）。
-//   これは上のコメントが 2026-08-16 の事故として書き残しているもの（267/270）と**同じ形**で、
-//   そのとき直したのはコミット側だけだった。
-//   Google は lastmod を "consistently and verifiably accurate" なときだけ使うと明記している。
-//   🚫 独自の閾値を作らない。コミット側と同じ BULK_FILES を使う（基準を2つ持たない）。
-const BULK_WORKTREE = dirty.size >= BULK_FILES;
-if (BULK_WORKTREE) {
-  console.log(`  ⚠️  未コミットの変更が ${dirty.size} 件（>= ${BULK_FILES}）= 一括変更とみなし、`);
-  console.log("     lastmod を今日に塗り替えません（コミット済み履歴の日付を使います）。");
-}
-
-const lastmodOf = (file) => {
-  if (!BULK_WORKTREE && dirty.has(file)) return TODAY;
-  // 一括コミットを飛ばして、そのファイル自身の「意味のある更新」を探す
-  // ★マージコミットは数えない（2026-10-14）。マージの中身は取り込んだ側のコミットに日付つきで既に在る。
-  //   数えると「main を取り込んだ日」が両側の変わったページの lastmod になる（公開用の枝で main を取り込むたびに起きる）。
-  //   gen_datemodified.mjs は `--name-only` がマージにファイルを出さないので、もともとマージを数えていない（基準を2つ持たない）。
-  const log = git("log", "--no-merges", "--format=%H %cs", "--", file).split("\n").filter(Boolean);
-  // ★★ 履歴がまったく無い＝**まだ一度もコミットされていない新規ページ**。
-  //   このときは BULK_WORKTREE でも TODAY を返す（2026-08-23 実測で回帰を1件出した）。
-  //   一括を弾く目的は「中身が変わっていない既存ページが今日を名乗ること」の防止であって、
-  //   本当に今日生まれたページから lastmod を奪うことではない。落とすと、
-  //   **lastmod がいちばん要る新規ページだけが黙って lastmod 無しで出る**
-  //   （このファイルが 2026-07-14 の /juminzei/ で踏んだ事故と同じ結果になる）。
-  if (!log.length) return TODAY;
-  for (const line of log) {
-    const [hash, date] = [line.slice(0, 40), line.slice(41)];
-    if (!bulkCommits.has(hash) && !navOnlyCommits.get(hash)?.has(relative(root, file))) return date;
-  }
-  // 一括コミットしか無い＝新規ページが一括の中で生まれた場合。最古の日付を使う
-  return log[log.length - 1].slice(41);
-};
 
 // ---- column/index.html の記事リスト(カテゴリ別セクション) ----
 // CATEGORIES の記述ミス(存在しない記事・同じ記事を2つのカテゴリに登録)は黙って通すと
@@ -1319,17 +1232,21 @@ ${hubLatest.map((a) => card(a, "    ").replace(`href="${a.slug}/"`, `href="../co
   `;
 hub = hub.slice(0, hOpen + hubOpen.length) + hubBlock + hub.slice(hClose);
 
-// 新着生成で本文が変わる場合は、この実行でハブのlastmodも更新する。
-const hubChanged = hub !== readFileSync(hubPath, "utf8");
+// この実行で書き換える一覧（コラム一覧・トップの新着・資産形成の新着）は、書く前の本文と比べる。
+// 新着の並びはこれらのページの本文そのものなので、本文が変わるならこの実行で今日にする
+// （でないと、記事を足した日の一覧が1回遅れて前の日付を名乗る）。
+const rewrittenToday = new Set([[colPath, col], [topPath, top], [hubPath, hub]]
+  .filter(([p, next]) => bodyHash(next) !== bodyHash(readFileSync(p, "utf8"))).map(([p]) => p));
 const urls = [
   ...[...STATIC_PAGES, ...STATIC_PAGES_D, ...NENSHU_PAGES].map((p) => ({ loc: `https://keiri-tools.com/${p}`, file: join(DOCS, p, "index.html") })),
   ...articles.map((a) => ({ loc: `https://keiri-tools.com/column/${a.slug}/`,
                             file: join(COLUMN, a.slug, "index.html") })),
 ];
+const lastmods = bodyLastmods({ cwd: DOCS, files: urls.map((u) => u.file), today: TODAY });
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls.map(({ loc, file }) => {
-  const d = file === hubPath && hubChanged ? TODAY : verifiedContentDate(`docs/${relative(DOCS, file)}`, lastmodOf(file));
+  const d = rewrittenToday.has(file) ? TODAY : verifiedContentDate(`docs/${relative(DOCS, file)}`, lastmods.get(file));
   return `  <url><loc>${loc}</loc>${d ? `<lastmod>${d}</lastmod>` : ""}</url>`;
 }).join("\n")}
 </urlset>

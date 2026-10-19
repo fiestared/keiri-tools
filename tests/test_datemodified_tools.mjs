@@ -36,7 +36,7 @@ const git = (...a) => execFileSync('git', a, { cwd: dir, encoding: 'utf8', env }
 const commitAt = (msg, date) => execFileSync('git', ['commit', '-q', '-m', msg, '--date', `${date}T10:00:00+09:00`],
   { cwd: dir, env: { ...env, GIT_COMMITTER_DATE: `${date}T10:00:00+09:00` } });
 mkdirSync(join(dir, 'tools'), { recursive: true });
-for (const f of ['gen_datemodified.mjs', 'verified_content_dates.mjs', 'nav_experiment.mjs', 'nav_experiment.json'])
+for (const f of ['gen_datemodified.mjs', 'verified_content_dates.mjs', 'nav_experiment.mjs', 'nav_experiment.json', 'body_lastmod.mjs', 'page_body.mjs'])
   copyFileSync(join(ROOT, 'tools', f), join(dir, 'tools', f));
 
 const page = (rel) => join(dir, 'docs', rel, 'index.html');
