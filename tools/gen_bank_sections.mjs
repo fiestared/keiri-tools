@@ -133,7 +133,7 @@ export function buildSections(rows) {
   const out = [];
   out.push(START);
   out.push('  <h2 id="ginkobetsu">銀行別の振込手数料（他行宛）</h2>');
-  out.push('  <p>上の一覧を銀行ごとに並べ替えたものです。<b>数字は上の一覧と同一の調査結果に基づいています</b>ので食い違いません。個人と法人の両方がある銀行は並べて示します。出典欄には参照した資料の取得日、または未確認の表示を付けています。</p>');
+  out.push('  <p>上の一覧を銀行ごとに並べ替えたものです。<b>数字は上の一覧と同一の調査結果に基づいています</b>ので食い違いません。個人と法人の両方がある銀行は並べて示します。倍率は、掲載サービスの他行宛ネット振込の3万円以上を比較しています。無料・別料金の宛先と優遇を除く通常単価です。出典欄には参照した資料の取得日、または未確認の表示を付けています。</p>');
   for (const [base, list] of sorted) {
     const kojin = list.find((x) => x.kubun === '個人');
     const hojin = list.find((x) => x.kubun === '法人');
@@ -151,19 +151,20 @@ export function buildSections(rows) {
     const notes = [];
     if (kojin && hojin && kojin.rawOver !== null && hojin.rawOver !== null && kojin.rawOver !== hojin.rawOver) {
       const ratio = (hojin.rawOver / kojin.rawOver).toFixed(1).replace(/\.0$/, '');
-      notes.push(`${(list.some(r => r.scoped) ? "上表の対象サービス・通常単価で、無料・別料金の宛先と優遇を除いて比べた" : "") + "他行宛ネット振込の3万円以上では、"}${hojin.comparisonSubject ? esc(hojin.comparisonSubject) : '法人は個人の'}<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${hojin.comparisonAmounts ? esc(hojin.comparisonAmounts) : `${kojin.rawOver}円→${hojin.rawOver}円`}）`);
+      notes.push(`法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）。比較条件はこの節の冒頭と上表を参照`);
     }
     const withBoundary = list.filter((x) => x.boundary).map((x) => x.kubun);
     notes.push(list.every((x) => x.unverified)
       // ★2026-10-15: 未確認の額について「定額」と断定しない（3モデルレビュー #7）
       ? `${base}の掲載額は、公式資料で確認できていません。利用前に公式の料金ページをご確認ください`
       : withBoundary.length
-      ? base === "みずほ銀行" ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）` : `<b>${base === "楽天銀行" ? "楽天銀行の法人の基本振込（給与・賞与・総合振込を除く）は、通常の他行宛振込に3万円の境界あり" : `${base}の上表に掲載したサービスの通常の他行宛振込は3万円の境界あり`}</b>（${withBoundary.join('・')}。無料・別料金の宛先と優遇を除く${base === "楽天銀行" ? "。法人の基本振込に限り、給与・賞与・総合振込は除く" : base === "横浜銀行" ? "。再振込を除く" : ""}）`
+      ? base === "みずほ銀行" ? `<b>3万円の境界あり</b>（${withBoundary.join('・')}）` : `<b>${base === "楽天銀行" ? "楽天銀行の法人の基本振込（給与・賞与・総合振込を除く）は、通常の他行宛振込に3万円の境界あり" : `${base}の上表に掲載したサービスの通常の他行宛振込は3万円の境界あり`}</b>（${withBoundary.join('・')}${base === "楽天銀行" ? "" : base === "横浜銀行" ? "。再振込を除く" : ""}）`
       // ★区分名を文に入れる: 「金額にかかわらず定額。」だけだと、どの銀行の話か文単体で読めず、照合で10銀行ぶんが同じ文になった。
       : `${base}のこの表の料金は、金額にかかわらず<b>定額</b>`);
     out.push(`  <p>${notes.join('。')}。</p>`);
+    if (base === 'ドコモSMTBネット銀行') out.push('  <p>倍率は、BaaS・提携サービスを除く個人の77円と、上表の法人通常振込100円の比較です。</p>');
     for (const note of [...new Set(list.filter((x) => x.publicNote).map((x) => x.publicNote))]) {
-      out.push(`  <p class="bank-note">${esc(note)}。</p>`);
+      out.push(`  <p class="bank-note">${esc(note).replace("かかり、スタンダードから", "かかります。スタンダードから")}。</p>`);
     }
 
     const presetLabels = {"mizuho-eb": "みずほ銀行の法人手数料で、先方負担の差引額を計算する", "mufg-bizstation": "BizSTATIONの手数料で、先方負担の差引額を計算する", "smbc-web21-standard": "Web21の掲載プランの手数料で、先方負担の差引額を計算する"};
@@ -285,13 +286,14 @@ export function buildAmountIndex(rows) {
   out.push('  <p>通帳や請求書で見た手数料の金額から、その金額になる銀行を引く表です。<b>上の一覧と同じ調査結果を金額の順に並べ替えています</b>ので、金額が食い違うことはありません。「3万円未満／以上で同じ額」の区分は「金額不問」と書いています。</p>');
   out.push('  <table>');
   // 長い表は見出し行を thead に入れる（印刷で各ページに見出しを繰り返す。tests/test_long_table_thead.mjs）
-  out.push('    <thead><tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th></tr></thead>');
+  out.push('    <thead><tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th><th scope="col">条件</th></tr></thead>');
   out.push('    <tbody>');
   for (const [amount, list] of m) {
-    const cells = list.map((x) => x.fullLabel ? x.name : `${x.name}（${x.range}）`).join('<br>');
+    // 銀行ごとに行を分け、条件は独立した列に置く。
+    const entries = list.map(x => { const match = x.name.match(/^(.*?)【(.*?)】(.*)$/); return {x, name: match ? match[1] + match[3] : x.name, note: match ? match[2] : ''}; });
     // 金額は行の見出し（th scope="row"）。データのセルではない
     const reviewContext = list.some((x) => x.name.startsWith('auじぶん銀行')) ? ' data-review-context="row"' : '';
-    out.push(`    <tr><th scope="row"${reviewContext}><b>${amount}円</b></th><td>${cells}</td></tr>`);
+    for (const {x, name, note} of entries) out.push(`    <tr><th scope="row"${reviewContext}><b>${amount}円</b></th><td>${name}${x.fullLabel ? "" : `（${x.range}）`}</td><td>${note || "—"}</td></tr>`);
   }
   out.push('    </tbody>');
   out.push('  </table>');
