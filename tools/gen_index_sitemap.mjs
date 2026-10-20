@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "hatarakikata-kaikaku-joseikin", // Google推定5,280/月、2026-10-20 MF1需要ゲート。
   "soufujo-kakikata", // 送付状 Google月間21,680（2026-10-20実測）
   "ippan-koza-kakutei-shinkoku", // 一般口座 確定申告 Google月間2,880（2026-10-19）
   "kaigai-fx-zeikin", // 海外FX 税金 Google月間2,320（2026-10-19）
@@ -847,7 +848,7 @@ const CATEGORIES = [
     name: "補助金の経理・税務",
     desc: "補助金を受け取った後の処理。仕訳と計上時期、圧縮記帳と特別勘定（法人税法42〜44条）、消費税、個人事業主の場合。キャリアアップ助成金のコースと支給額、設備投資とセットで賃上げする業務改善助成金の上限額と助成率もここ。",
     slugs: [
-      "career-up-joseikin", "gyomu-kaizen-joseikin", "jinzai-kaihatsu-joseikin", "tokutei-kyushokusha-joseikin",
+      "hatarakikata-kaikaku-joseikin", "career-up-joseikin", "gyomu-kaizen-joseikin", "jinzai-kaihatsu-joseikin", "tokutei-kyushokusha-joseikin",
       "hojokin-shiwake", "hojokin-tokubetsu-kanjo", "assyuku-kicho-houshiki",
       "hojokin-asshuku-gendogaku", "hojokin-koteishisan-genka-shokyaku", "hojokin-shohizei",
       "hojokin-kojin-jigyonushi",
