@@ -34,9 +34,11 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "saikensha-saimusha", // 債権者 Google月間5,280・2026-10-20実測。個別手続の記事と語義総覧を分担。
   "kawase-saeki-kakutei-shinkoku", // 為替差益 確定申告 Google月間推定2,320（2026-10-20）
   "beikoku-kabu-zeikin-enkansan", // 米国株 税金 Google月間推定1,520（2026-10-20）
   "hatarakikata-kaikaku-joseikin", // Google推定5,280/月、2026-10-20 MF1需要ゲート。
+  "teikan", // 定款 Google月間21,680（2026-10-20実測）。本日D0★指定が旧却下より優先。制度総覧と既存の費用・資本金を分担
   "soufujo-kakikata", // 送付状 Google月間21,680（2026-10-20実測）
   "ippan-koza-kakutei-shinkoku", // 一般口座 確定申告 Google月間2,880（2026-10-19）
   "kaigai-fx-zeikin", // 海外FX 税金 Google月間2,320（2026-10-19）
@@ -823,6 +825,7 @@ const CATEGORIES = [
       "tegata-toha",
       "yoshin-kanri",
       "factoring-toha",
+      "saikensha-saimusha",
       "shiharai-tokusoku",
       "shogaku-sosho",
       "naiyo-shomei",
@@ -874,7 +877,7 @@ const CATEGORIES = [
     id: "hojinzei-kessan",
     name: "法人税・決算の実務",
     desc: "会社設立後の税務届出と法人税の税率、キャッシュフロー計算書、役員報酬・使用人兼務役員・交際費・決算賞与・繰越欠損金・引当金・経過勘定と、賃上げ促進税制などの優遇措置。",
-    slugs: ["jiko-shihon-hiritsu", "roe-roa", "godo-gaisha", 
+    slugs: ["jiko-shihon-hiritsu", "roe-roa", "godo-gaisha", "teikan",
       "kaisha-setsuritsu", "hojin-nari", "shihonkin", "genshi", "hojinzei-toha", "hojinzei-shinkokusho", "hojinzei-ritsu", "gaikei-hyojun-kazei", "kigyo-ban-furusato-nozei", "jigyoshozei", "zaimu-toha", "cash-flow-keisansho", "taishaku-taishohyo-mikata", "soneki-keisansho-mikata", "soukanjo-motocho-kakikata", "shiwakecho", "shisanhyo-mikata", "genkin-suitocho-kakikata",
       "yakuin-hoshu-kimekata", "shiyonin-kenmu-yakuin", "shikko-yakuin", "yakuin-taishokukin", "kosaihi-kaigihi-chigai", "shutcho-nittou-ryohi-kitei", "ryohi-kotsuhi", "shomohinhi", "tsushinhi", "chidai-yachin", "shikikin-hoshokin", "kyosankin-kanjo-kamoku", "kokoku-sendenhi", "noren", "genson-sonshitsu", "shisan-jokyo-saimu", "genka-shokyaku-ruikeigaku",
       "kessan-shoyo", "kurikoshi-kessonkin", "chinage-sokushin-zeisei", "shukko-zeimu", "kabunushi-soukai-gijiroku",
