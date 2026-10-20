@@ -57,7 +57,7 @@ const derived = {
 };
 
 // 記事に現れる「カンマ区切りの金額」を全て拾う(本文・図解・表・FAQを問わない)
-const inArticle = new Set(text.match(/\d{1,3}(?:,\d{3})+(?=円)/g) ?? []);
+const inArticle = new Set(text.replaceAll(`${KOTEI / 10000}万円`, `${yen(KOTEI)}円`).match(/\d{1,3}(?:,\d{3})+(?=円)/g) ?? []);
 const expected = new Set(Object.values(derived).map(yen));
 
 for (const [label, v] of Object.entries(derived)) {
@@ -69,19 +69,18 @@ for (const got of inArticle) {
   }
 }
 
-// 「4万円で賄えるのは何時間分か」も、出現箇所すべてが一致すること
+// 書き直しで6つの反復ラベルが1つの計算表に集約された。主語セルで一意に名指す。
 const hours = String(KOTEI / premium);
-// 整数の25時間になっても、SVGだけ古い値に戻った事故を見逃さない。
-// 本文・aria-label・図注とSVGの独立したラベルを全6箇所拾う。
-const hourMatches = [
-  ...html.matchAll(/(?:では|実際には)(\d+(?:\.\d+)?)時間分/g),
-  ...html.matchAll(/<(?:text|tspan)\b[^>]*>(\d+(?:\.\d+)?)時間(?:分)?<\/(?:text|tspan)>/g),
-];
-const hoursInArticle = new Set(hourMatches.map((m) => m[1]));
-if (hourMatches.length < 6) fails.push(`賄える時間数の照合が${hourMatches.length}箇所しかない`);
-for (const got of hoursInArticle) {
-  if (got !== hours) fails.push(`賄える時間数が合わない: 記事「${got}時間」/ 計算 ${hours}時間`);
-}
+const hourRows = [...html.matchAll(/<tr><th scope="row">固定残業代で賄える時間<\/th><td>([^<]+)<\/td><\/tr>/g)];
+if (hourRows.length !== 1) fails.push("賄える時間の計算行が一意でない、または無い");
+const hourFormula = `${KOTEI / 10000}万円 ÷ ${yen(premium)}円 ＝ ${hours}時間`;
+if (hourRows[0]?.[1] !== hourFormula) fails.push(`賄える時間の計算行が合わない: ${hourRows[0]?.[1]} / ${hourFormula}`);
+const hoursInArticle = new Set(hourRows.map(m => m[1]));
+// 同じ数が別の表にもあるため、設例の前提と改定履歴も最小の段落で守る。
+const premise = html.match(/<p data-review-context="before-table">以下は東京・[^<]+<\/p>/g) ?? [];
+if (premise.length !== 1 || !premise[0].includes(`基本給${BASE / 10000}万円と固定残業代${KOTEI / 10000}万円のみ`) || !premise[0].includes(`${HOURS}時間`)) fails.push("冒頭設例の基本給・固定残業代・所定時間が合わない");
+const history = html.match(/<p id="minimum-wage-history">([^<]+)<\/p>/g) ?? [];
+if (history.length !== 1 || !history[0].includes(`2026年9月30日時点の${yen(derived["過去額: 2026年9月30日まで"])}円`) || !history[0].includes(`2026年10月1日に${yen(MIN_WAGE_TOKYO)}円`)) fails.push("東京都最低賃金の改定履歴が合わない");
 
 // 見た件数を assert する。検査が黙って痩せる(=一部しか見ない)と緑のまま素通りするため(第18便)
 const CHECKED = Object.keys(derived).length + hoursInArticle.size;

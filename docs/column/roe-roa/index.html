@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ROEとは？ROAとの違いと計算式｜期首・期末平均の計算例</title>
+<meta name="description" content="ROE（自己資本利益率）は当期純利益を自己資本で、ROA（総資産利益率）は利益を総資産で割った比率です。決算短信の式（期首・期末平均）、自己資本の範囲、架空決算の計算例、両者の関係とそろえる条件を整理します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/roe-roa/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROEとは？ROAとの違いと計算式｜期首・期末平均の計算例">
+<meta property="og:description" content="ROE（自己資本利益率）は当期純利益を自己資本で、ROA（総資産利益率）は利益を総資産で割った比率です。決算短信の式（期首・期末平均）、自己資本の範囲、架空決算の計算例、両者の関係とそろえる条件を整理します。">
+<meta property="og:url" content="https://keiri-tools.com/column/roe-roa/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "ROEとは？ROAとの違いと計算式｜期首・期末平均の計算例",
+      "datePublished": "2026-10-19",
+      "dateModified": "2026-10-19",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/roe-roa/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "ROE・ROA"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. ROEとROAはどちらを見ればよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 目的で分けます。株主の持分に対する利益を見るならROE、負債も含めた資産全体に対する利益を見るならROAです。分子の利益と分母の時点をそろえて両方を並べると、ROE÷ROAの倍率が財務レバレッジになります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. ROEの分母は純資産でよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 株式引受権・新株予約権・非支配株主持分がなければ、純資産合計と自己資本は一致します。決算短信（日本基準）の定義では、これらを純資産合計から除いた額を自己資本とします。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 期末の自己資本で割ってもよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 社内の推移を見るだけなら計算できますが、決算短信や法人企業統計は期首・期末の平均で割ります。比べる相手と同じ時点にそろえ、どちらで計算したかを書き添えます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. ROAの分子は何の利益ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 決算短信（日本基準）の総資産経常利益率は経常利益です。法人企業統計では、使う利益によって総資本営業利益率・総資本経常利益率などと呼び分けます。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-E742DSDHPD');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578" crossorigin="anonymous"></script>
+<script src="../../assets/track.js" defer></script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › ROE・ROA</nav>
+<article>
+<h1>ROEとは？ROAとの違いと計算式｜期首・期末平均の計算例</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-19">2026年10月19日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><strong>ROE（自己資本利益率）は、当期純利益を自己資本で割った比率です。ROA（総資産利益率）は、利益を総資産で割った比率です。</strong>ROEは株主の持分に対する利益、ROAは負債も含めた資産全体に対する利益を見ます。</p>
+<p>同じROEでも、東証の決算短信と財務省の法人企業統計では、分子の利益と自己資本の範囲が違います。どちらも分母は期首と期末の平均です。社内で計算するときは、下の表で式を1つに決め、その条件を比率と一緒に残します。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#formula">ROE・ROAの計算式</a></li>
+<li><a href="#scope">自己資本と総資産の範囲</a></li>
+<li><a href="#example">架空の決算で計算する</a></li>
+<li><a href="#difference">ROEとROAの違いと関係</a></li>
+<li><a href="#compare">比べる前にそろえる条件</a></li>
+<li><a href="#minus">ROEがマイナス・「－」のとき</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#sources">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../jiko-shihon-hiritsu/">自己資本比率とは</a></li><li><a href="../soneki-keisansho-mikata/">損益計算書の見方</a></li><li><a href="../taishaku-taishohyo-mikata/">貸借対照表の見方</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="formula">ROE・ROAの計算式</h2>
+<p><strong>決算短信（日本基準の連結）のROEは、親会社株主に帰属する当期純利益を、期首と期末の自己資本の平均で割って100を掛けます。</strong>期首と期末の自己資本の合計がマイナスなら、数値でなく「－」と記載します。日本基準の決算短信での名前は「自己資本当期純利益率」です。</p>
+<p>日本基準の決算短信でROAに当たる指標は「総資産経常利益率」で、分子は当期純利益ではなく経常利益です。財務省の法人企業統計は、これとは別の定義を使います。</p>
+<p data-review-context="before-table">次の表は、東証「決算短信・四半期決算短信作成要領等」（2026年7月版）の日本基準の連結の様式と、財務省「キーワードで見る法人企業統計」（ROEは2007年度調査以降）の算式です。どの式も分子÷分母に100を掛けて％で表し、［平均］は（期首＋期末）÷2です。決算短信のROEは、分母がマイナスなら「－」と記載します。</p>
+<div class="scroll-wrap"><table>
+<thead><tr><th>資料と指標</th><th>分子</th><th>分母</th></tr></thead>
+<tbody>
+<tr><th>決算短信（日本基準）のROE（自己資本当期純利益率）</th><td>親会社株主に帰属する当期純利益</td><td>自己資本［平均］</td></tr>
+<tr><th>決算短信（日本基準）のROA（総資産経常利益率）</th><td>経常利益</td><td>総資産［平均］</td></tr>
+<tr><th>法人企業統計のROE（自己資本利益率・2007年度調査以降）</th><td>当期純利益</td><td>純資産－新株予約権［平均］</td></tr>
+<tr><th>法人企業統計のROA（総資本利益率）</th><td>営業利益・経常利益などの利益</td><td>総資本［平均］</td></tr>
+</tbody></table></div>
+<p class="hint">法人企業統計のROEの分母は、2006年度調査以前は新株予約権を除かない純資産でした。同統計の総資本は、負債・特別法上の準備金・純資産の合計です。</p>
+<p>「当期純利益÷期末の純資産」のように単純化した式でも、社内の推移を見ることはできます。決算短信や統計の比率と並べるときは、上の表の定義にそろえて計算し直します。</p>
+<h2 id="scope">自己資本と総資産の範囲</h2>
+<p><strong>決算短信（日本基準）の自己資本は、純資産合計から株式引受権・新株予約権・非支配株主持分を除いた額です。</strong>総資産は、貸借対照表の資産合計です。</p>
+<p>決算短信の個別情報（単体）では、自己資本は純資産合計から株式引受権と新株予約権を除いた額です。どちらもなければ、純資産合計がそのまま自己資本です。控除する項目の見つけ方は、<a href="../jiko-shihon-hiritsu/">自己資本比率の解説</a>で表にしています。</p>
+<p>日本基準の連結のROEの分子は、連結損益計算書の「親会社株主に帰属する当期純利益」の行を使います。分子の利益の段階は、<a href="../soneki-keisansho-mikata/">損益計算書の見方</a>で確認できます。</p>
+<p>IFRSの決算短信では、ROEに当たる指標を「親会社所有者帰属持分当期利益率」、ROAに当たる指標を「資産合計税引前利益率」と呼びます。米国基準の様式では「株主資本当社株主に帰属する当期純利益率」と「総資産税引前当期純利益率」です。会計基準が違う会社と並べるときは、指標の名前と分子の利益を確かめます。</p>
+<h2 id="example">架空の決算で計算する</h2>
+<p><strong>同じ決算でも、平均で割るか期末だけで割るかで、ROEは11.0%と約10.5%に分かれます</strong>（下の仮設例）。</p>
+<p data-review-context="before-table">次の表は、日本基準・単体の会社を想定した仮設例です。金額の単位は百万円です。株式引受権と新株予約権はなく、純資産の全額を自己資本とします。この仮設例の期中の純資産の動きは、当期純利益44と配当4だけとします。</p>
+<div class="scroll-wrap"><table>
+<thead><tr><th>貸借対照表</th><th class="num">期首</th><th class="num">期末</th><th class="num">平均</th></tr></thead>
+<tbody>
+<tr><th>総資産</th><td class="num">900</td><td class="num">1,100</td><td class="num">1,000</td></tr>
+<tr><th>自己資本</th><td class="num">380</td><td class="num">420</td><td class="num">400</td></tr>
+</tbody></table></div>
+<p data-review-context="before-table">同じ仮設例の当期の損益は、売上高1,600、経常利益66、当期純利益44です（単位は百万円）。次の表は、その数字を各式に当てはめた結果です。</p>
+<div class="scroll-wrap"><table>
+<thead><tr><th>指標</th><th>計算</th><th class="num">結果</th></tr></thead>
+<tbody>
+<tr><th>ROE（平均の自己資本）</th><td>44÷400×100</td><td class="num"><span class="numeric-token">11.0%</span></td></tr>
+<tr><th>ROE（期末の自己資本）</th><td>44÷420×100</td><td class="num">約10.5%</td></tr>
+<tr><th>ROA（経常利益・平均の総資産）</th><td>66÷1,000×100</td><td class="num"><span class="numeric-token">6.6%</span></td></tr>
+<tr><th>ROA（当期純利益・平均の総資産）</th><td>44÷1,000×100</td><td class="num"><span class="numeric-token">4.4%</span></td></tr>
+</tbody></table></div>
+<p>決算短信の式にそろえると、この仮設例のROEは11.0%、ROAに当たる総資産経常利益率は6.6%です。この仮設例のように黒字で自己資本が増えた年は、期末の自己資本で割ったROEのほうが低く出ます。</p>
+<p class="hint">期末の自己資本で割った仮設例の値は10.476…%で、小数第2位を四捨五入して約10.5%と表示しています。</p>
+<a class="tool-cta" href="../../riekiritsu/">売上高に対する利益率は、利益率・原価率計算で確かめる</a>
+<h2 id="difference">ROEとROAの違いと関係</h2>
+<p><strong>ROEは株主の持分に対する利益、ROAは事業に使う資産全体に対する利益を見る比率です。</strong>分母の差は負債などの部分なので、分子の利益と分母の時点をそろえると、ROEはROAに「総資産÷自己資本」を掛けた値になります。</p>
+<div class="scroll-wrap"><table>
+<thead><tr><th>項目</th><th>ROE</th><th>ROA</th></tr></thead>
+<tbody>
+<tr><th>分母</th><td>自己資本</td><td>総資産（負債も含む）</td></tr>
+<tr><th>決算短信（日本基準）の分子</th><td>親会社株主に帰属する当期純利益</td><td>経常利益</td></tr>
+<tr><th>法人企業統計の説明</th><td>株主から調達した資金と内部留保した資金で、どの程度の利益をあげているか</td><td>企業の総合的な収益性</td></tr>
+</tbody></table></div>
+<p>財務省の法人企業統計は、ROEを3つの比率の掛け算に分けて説明しています。</p>
+<p><strong>ROE＝売上高利益率×総資本回転率×財務レバレッジ</strong></p>
+<p>売上高利益率は当期純利益÷売上高、総資本回転率は売上高÷総資本、財務レバレッジは総資本÷自己資本で、自己資本比率の逆数です。前の2つを掛けると、分子を当期純利益にしたROAになります。</p>
+<figure class="figure">
+<svg viewBox="0 0 560 260" role="img" aria-label="仮設例の平均残高で、総資産1,000のうち自己資本は400。当期純利益44を総資産で割るとROA4.4%、自己資本で割るとROE11.0%">
+<text x="20" y="28" font-size="16" fill="currentColor">仮設例の平均残高（百万円）と当期純利益44</text>
+<rect x="20" y="44" width="180" height="200" rx="6" fill="var(--accent)" fill-opacity="0.10" stroke="currentColor"/>
+<text x="110" y="140" font-size="17" text-anchor="middle" fill="currentColor">総資産</text>
+<text x="110" y="164" font-size="17" text-anchor="middle" fill="currentColor">1,000</text>
+<rect x="200" y="44" width="180" height="120" rx="6" fill="none" stroke="currentColor"/>
+<text x="290" y="100" font-size="17" text-anchor="middle" fill="currentColor">負債など</text>
+<text x="290" y="124" font-size="17" text-anchor="middle" fill="currentColor">600</text>
+<rect x="200" y="164" width="180" height="80" rx="6" fill="var(--accent)" fill-opacity="0.28" stroke="currentColor"/>
+<text x="290" y="200" font-size="17" text-anchor="middle" fill="currentColor">自己資本</text>
+<text x="290" y="224" font-size="17" text-anchor="middle" fill="currentColor">400</text>
+<text x="398" y="92" font-size="16" fill="currentColor">ROA＝44÷1,000</text>
+<text x="398" y="116" font-size="16" fill="currentColor">＝4.4%</text>
+<text x="398" y="196" font-size="16" fill="currentColor">ROE＝44÷400</text>
+<text x="398" y="220" font-size="16" fill="currentColor">＝11.0%</text>
+</svg>
+<figcaption>仮設例では、総資産÷自己資本＝2.5倍なので、4.4%×2.5＝11.0%になります。</figcaption>
+</figure>
+<p>上の仮設例では、売上高利益率が2.75%（44÷1,600）、総資本回転率が1.6回（1,600÷1,000）、財務レバレッジが2.5倍（1,000÷400）です。3つを掛けた11.0%は、平均の自己資本で割った仮設例のROEと一致します。</p>
+<p>同じ平均総資産1,000・当期純利益44で、平均自己資本が200の仮設例なら、ROAは4.4%のままで、ROEは財務レバレッジ5.0倍により22.0%です。ROEだけが高い場合は、利益の大きさと自己資本の薄さのどちらによるものかを、ROAや自己資本比率と並べて確かめます。</p>
+<p class="hint">日本基準の決算短信のROAは分子が経常利益なので、そのROEをROAで割っても財務レバレッジとは一致しません。連結では、ROEの分子が親会社株主の分に限られる点でもずれます。</p>
+<h2 id="compare">比べる前にそろえる条件</h2>
+<p><strong>他社や過年度と比べる前に、式の条件をそろえます。</strong>この記事では、業種平均や「何%以上なら良い」という水準は示しません。</p>
+<div class="scroll-wrap"><table>
+<thead><tr><th>確かめる条件</th><th>社内資料に残す内容</th></tr></thead>
+<tbody>
+<tr><th>連結か単体か</th><td>日本基準の連結なら、ROEの分子は親会社株主に帰属する当期純利益</td></tr>
+<tr><th>分子の利益</th><td>当期純利益・経常利益・営業利益・税引前利益など、どの利益か</td></tr>
+<tr><th>分母の時点</th><td>期首・期末の平均か、期末の残高か</td></tr>
+<tr><th>自己資本の範囲</th><td>株式引受権・新株予約権・非支配株主持分を除いたか</td></tr>
+<tr><th>会計基準</th><td>日本基準・IFRS・米国基準のどれか</td></tr>
+<tr><th>利益の期間</th><td>1年分の利益か、四半期・中間の累計か</td></tr>
+</tbody></table></div>
+<p>自社の過年度と比べるときも、毎年同じ式で計算し直します。連結の範囲や会計基準が変わった年は、その旨を比率の横に書きます。</p>
+<h2 id="minus">ROEがマイナス・「－」のとき</h2>
+<p><strong>自己資本がプラスで当期純利益が赤字なら、ROEはマイナスになります。</strong>決算短信では、ROEの分母の（期首自己資本＋期末自己資本）がマイナスのときは、数値でなく「－」と記載します。</p>
+<p>自己資本がマイナスの年に赤字を割ると、計算上はプラスの比率が出ます。社内資料でも分母がマイナスの年は比率を出さず、自己資本の額を別に示すと、利益が出ていると読み違えずに済みます。純資産がマイナスの状態は、<a href="../saimu-choka/">債務超過の解説</a>で扱っています。</p>
+<div class="summary-box"><b>まとめ</b><p>ROEは自己資本、ROAは総資産で利益を割った比率です。日本基準の決算短信のROEは親会社株主に帰属する当期純利益と期首・期末平均の自己資本、ROAに当たる指標は経常利益と期首・期末平均の総資産を使います。比べるときは、連結か単体か・分子の利益・分母の時点をそろえます。</p></div>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>ROEとROAはどちらを見ればよいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>目的で分けます。株主の持分に対する利益を見るならROE、負債も含めた資産全体に対する利益を見るならROAです。分子の利益と分母の時点をそろえて両方を並べると、ROE÷ROAの倍率が財務レバレッジになります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>ROEの分母は純資産でよいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>株式引受権・新株予約権・非支配株主持分がなければ、純資産合計と自己資本は一致します。決算短信（日本基準）の定義では、これらを純資産合計から除いた額を自己資本とします。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>期末の自己資本で割ってもよいですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>社内の推移を見るだけなら計算できますが、決算短信や法人企業統計は期首・期末の平均で割ります。比べる相手と同じ時点にそろえ、どちらで計算したかを書き添えます。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>ROAの分子は何の利益ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>決算短信（日本基準）の総資産経常利益率は経常利益です。法人企業統計では、使う利益によって総資本営業利益率・総資本経常利益率などと呼び分けます。</p>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../gasolindai-kanjo-kamoku/"><b>ガソリン代の勘定科目｜仕訳・消費税・従業員への精算</b><span>ガソリン代は、旅費交通費・車両費・燃料費・消耗品費から管理目的に合う科目を選び、継続して処理します。税込・税抜の仕訳、家事按分、ガソリン税と軽油引取税の消費税の違い、インボイス、令</span></a><a class="tool-card" href="../genka-haifu/"><b>配賦とは？配賦基準の選び方と計算例、予定配賦と配賦差異の仕訳</b><span>配賦（はいふ）とは、複数の製品や部門に共通してかかる費用を、作業時間や人数などの配賦基準で割り振ることです。配賦率と配賦額の計算式、配賦基準の選び方、部門別の配賦、予定配賦と配賦差</span></a><a class="tool-card" href="../godo-gaisha/"><b>合同会社とは — 株式会社との違いと、経理・税務で変わること・変わらないこと</b><span>合同会社は、出資者（社員）が、定款で別に定めない限り自ら業務を執行する会社です。法人税は株式会社と同じ普通法人として計算し、違いは決算書の「社員資本」、準備金の積立義務、決算公告、</span></a></div></section><!--next-read:E-->
+<section class="related"><h2>関連記事・ツール</h2><div class="tool-grid">
+<a class="tool-card" href="../jiko-shihon-hiritsu/"><b>自己資本比率とは</b><span>ROEの分母になる自己資本の範囲と、単体・連結の違い。</span></a>
+<a class="tool-card" href="../soneki-keisansho-mikata/"><b>損益計算書の見方</b><span>経常利益・当期純利益など、分子に使う利益の段階。</span></a>
+<a class="tool-card" href="../taishaku-taishohyo-mikata/"><b>貸借対照表の見方</b><span>総資産・負債・純資産の区分。</span></a>
+</div></section>
+<h2 id="sources">出典</h2>
+<p class="source-method" data-source-nolink="下の出典リンク先で算式を確かめた旨の説明">東京証券取引所の決算短信作成要領と、財務省の法人企業統計の用語解説で算式を確認して作成。</p>
+<ul>
+<li><a href="https://www.jpx.co.jp/equities/listed-co/format/summary/tvdivq0000004wuh-att/t13vrt0000010n9j.pdf#page=25">東京証券取引所「決算短信・四半期決算短信作成要領等」（2026年7月版）</a>：p.25〜26の指標の計算方法（自己資本当期純利益率・総資産経常利益率・自己資本の定義、IFRS・米国基準の様式）と、p.31の個別情報の自己資本。</li>
+<li><a href="https://www.mof.go.jp/pri/reference/ssc/keyword/keyword_03.htm">財務省財務総合政策研究所「キーワードで見る法人企業統計・自己資本利益率」</a>：法人企業統計のROEの算式と、売上高利益率・総資本回転率・財務レバレッジへの分解。</li>
+<li><a href="https://www.mof.go.jp/pri/reference/ssc/keyword/keyword_02.htm">財務省財務総合政策研究所「キーワードで見る法人企業統計・総資本利益率」</a>：法人企業統計のROAの算式と総資本の範囲。</li>
+</ul>
+<p class="hint" data-source-nolink="自サイトの仮設例と記事の対象範囲の説明">本記事の金額と比率は説明用の仮設例で、特定企業の決算実績や目標水準を示すものではありません。銘柄の選び方や投資判断は扱っていません。</p>
+<p data-source-nolink="自サイトの記事の免責">本記事は一般的な情報提供を目的としたものです。個別の判断は税務署・税理士にご確認ください。</p>
+</article>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=ROE%EF%BC%88%E8%87%AA%E5%B7%B1%E8%B3%87%E6%9C%AC%E5%88%A9%E7%9B%8A%E7%8E%87%EF%BC%89%E3%81%AF%E5%BD%93%E6%9C%9F%E7%B4%94%E5%88%A9%E7%9B%8A%E3%82%92%E8%87%AA%E5%B7%B1%E8%B3%87%E6%9C%AC%E3%81%A7%E3%80%81ROA%EF%BC%88%E7%B7%8F%E8%B3%87%E7%94%A3%E5%88%A9%E7%9B%8A%E7%8E%87%EF%BC%89%E3%81%AF%E5%88%A9%E7%9B%8A%E3%82%92%E7%B7%8F%E8%B3%87%E7%94%A3%E3%81%A7%E5%89%B2%E3%81%A3%E3%81%9F%E6%AF%94%E7%8E%87%E3%81%A7%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Froe-roa%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main><footer class="site">© 税金・経理・補助金ツールズ  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body></html>

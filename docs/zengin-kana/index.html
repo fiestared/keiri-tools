@@ -107,7 +107,7 @@
 
   <section class="faq">
     <h2 id="examples">変換例を試す</h2>
-    <p>「試す」を押すと、その例を入力して変換します。総合振込の受取人名向けの例です。出力は銀行の登録名義と照合してください。</p>
+    <p data-review-context="before-table">「試す」を押すと、その例を入力して変換します。総合振込の受取人名向けの例です。出力は銀行の登録名義と照合してください。</p>
     <!--zengin-examples:S-->
 <div class="scroll-wrap">
 <table id="zengin-examples">
@@ -132,7 +132,7 @@
     <h2 id="tool-section-1">変換ルール（出典つき）</h2>
     <h3>法人略語（位置で形式が変わります）</h3>
     <p>株式会社の「カ」なら、先頭は「カ)」、末尾は「(カ」、中間は「(カ)」です。</p>
-    <p data-review-context="before-table">本ツールの法人略語の例です。法人の種類ごとに使える位置は、SMBCの法人略語表の条件を併記しています。</p>
+    <p data-review-context="before-table">本ツールの法人略語の例です。法人の種類ごとに使える位置は、<a href="https://www.smbc.co.jp/direct/sousa/help_furikomi/15.html" rel="nofollow">SMBCの法人略語表</a>の条件を併記しています。</p>
 <div class="scroll-wrap">
 <table>
 <thead><tr><th>法人の種類</th><th>略語</th><th>略語を使える位置</th></tr></thead>
@@ -163,7 +163,7 @@
       <li>出張所は先頭「シユツ)」・中間「(シユツ)」・末尾「(シユツ」です。</li>
     </ul>
     <h3>事業略語</h3>
-    <p>事業略語は、連合会=レン、協同組合=キヨウクミ、健康保険組合=ケンポ、生活協同組合=セイキヨウです。本ツールの事業略語は括弧なしです。銀行によっては先頭の事業略語に「)」を付けるため、出力を振込先の登録名義と照合してください。</p>
+    <p>事業略語の例は、連合会=レン、協同組合=キヨウクミ、健康保険組合=ケンポ、生活協同組合=セイキヨウです。本ツールの事業略語は括弧なしです。銀行によっては先頭の事業略語に「)」を付けるため、出力を振込先の登録名義と照合してください。</p>
     <h3>本ツールで未対応の法人名</h3>
     <p>三菱UFJ信託銀行の<a href="https://www.faq.direct.tr.mufg.jp/%E3%80%90%E6%8C%AF%E8%BE%BC%E3%80%91%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%BC%E3%83%8D%E3%83%83%E3%83%88%E3%83%90%E3%83%B3%E3%82%AD%E3%83%B3%E3%82%B0%E3%81%A7%E3%81%AE%E6%B3%95%E4%BA%BA%E7%AD%89%E7%95%A5%E7%A7%B0%E4%B8%80%E8%A6%A7-67da1ff6db97d084eb531431" rel="nofollow">法人等略称一覧</a>には、行政書士法人＝ギヨ、司法書士法人＝シホウ、社会保険労務士法人＝ロウム、地方独立行政法人＝チドク、農事組合法人＝ノウ、管理組合法人＝カンリ、相互会社＝ソも載っています。本ツールで未対応の法人名を手直しする際の参照先です。略語を使える位置は利用銀行の表で確認してください。</p>
     <h3>略語の組み合わせ</h3>
@@ -177,9 +177,13 @@
       <li>英字→半角大文字</li>
       <li>総合振込の受取人名の「ヲ」は「ｦ」のまま保持します。給与振込・賞与振込のファイルでは「ｦ」が使えないため、その旨を表示します。</li>
     </ul>
-    <p>使用できるのは半角カナ・英大文字・数字・半角スペース・記号()-.のみ(全銀協の使用文字一覧に基づく)。</p>
+    <p>総合振込の受取人名に使えるのは、半角カナ（小文字を除く、ヲを含む）・濁点・半濁点・英大文字・数字・半角スペース・記号「(」「)」「-」「.」です。 出典: <a href="https://www.zenginkyo.or.jp/fileadmin/res/abstract/efforts/system/jba_protocol_pc.pdf" rel="nofollow">全銀協の使用文字一覧・注1</a>。</p>
+    <h3>名義の区切り方</h3>
+    <p>姓と名、法人の種類名と名称、法人名と営業所名の間は、略語を使わない場合、半角スペースで区切ります。姓・名や各名称の内部は区切りません。</p>
+    <p>法人略語・営業所略語を使う箇所は、スペースの代わりに括弧で区切ります。事業略語は冠頭語と続けて書き、この括弧の規則は適用しません。</p>
+    <p class="hint">区切り方の出典: <a href="https://www.zenginkyo.or.jp/fileadmin/res/abstract/efforts/system/jba_protocol_pc.pdf" rel="nofollow">全銀協の通信プロトコル</a></p>
     <h3>漢字の名義について</h3>
-    <p>法人格(株式会社等)以外の漢字は読みが特定できないため自動変換しません。警告が出た行は、カナ読みに直して再変換してください。</p>
+    <p>法人格(株式会社等)以外の漢字は読みが特定できないため自動変換しません。姓と名などの区切りも自動判定しないため、登録名義の読みと区切りを確認して入力してください。警告が出た行は、カナ読みに直して再変換してください。</p>
     <h3>注意</h3>
     <p>文字数上限や一部記号の扱いは銀行・振込フォーマットによって異なることがあります。最終的には各銀行の仕様をご確認ください。</p>
   </section>
@@ -204,7 +208,7 @@
 <nav aria-label="記事の共有"><!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E7%B7%8F%E5%90%88%E6%8C%AF%E8%BE%BC%E3%81%AE%E5%8F%97%E5%8F%96%E4%BA%BA%E5%90%8D%E3%82%92%E5%85%A8%E9%8A%80%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88%E3%81%B8%E4%B8%80%E6%8B%AC%E5%A4%89%E6%8F%9B%E3%80%82%E5%8D%8A%E8%A7%92%E3%82%AB%E3%83%8A%E5%A4%89%E6%8F%9B%E3%80%81%E5%85%88%E9%A0%AD%E3%81%AE%E6%A0%AA%E5%BC%8F%E4%BC%9A%E7%A4%BE%E2%86%92%E3%82%AB%29%E3%81%AA%E3%81%A9%E3%81%AE%E6%B3%95%E4%BA%BA%E7%95%A5%E8%AA%9E%E3%80%81%E5%B0%8F%E6%96%87%E5%AD%97%E3%83%BB%E9%95%B7%E9%9F%B3%E3%83%BB%E4%B8%AD%E9%BB%92%E3%81%AE%E7%BD%AE%E6%8F%9B%E3%80%81%E4%BD%BF%E7%94%A8%E5%8F%AF%E8%83%BD%E6%96%87%E5%AD%97%E3%81%A830%E6%96%87%E5%AD%97%E3%83%81%E3%82%A7%E3%83%83%E3%82%AF%E3%81%BE%E3%81%A7%E8%87%AA%E5%8B%95%E3%80%82%E8%A4%87%E6%95%B0%E5%90%8D%E7%BE%A9%E3%82%92%E3%81%BE%E3%81%A8%E3%82%81%E3%81%A6%E5%87%A6%E7%90%86%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fzengin-kana%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto --></nav>
 </main>
 <footer class="site">
-  変換ルールの出典: 全銀協「使用文字一覧」、銀行公式の法人略語一覧(2026年7月確認)。データはブラウザの外へ送信されません。<br>
+  変換ルールの出典: <a href="https://www.zenginkyo.or.jp/fileadmin/res/abstract/efforts/system/jba_protocol_pc.pdf" rel="nofollow">全銀協「使用文字一覧」</a>、<a href="https://www.smbc.co.jp/direct/sousa/help_furikomi/15.html" rel="nofollow">SMBCの法人略語一覧</a>(2026年7月確認)。データはブラウザの外へ送信されません。<br>
   © 税金・経理・補助金ツールズ
   <!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
   <!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
