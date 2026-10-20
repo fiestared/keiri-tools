@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FANG+レバとレバナスの隠れコスト｜為替ヘッジの差を実績で推定</title>
-<meta name="description" content="iFreeレバレッジFANG+とauAMレバレッジNASDAQ100の、費用の欄に出ないコストを推定。目に見える運用管理費用の差は1ポイントに届かない一方、同じ指数のauAMの2本は為替の動きを除いても年3.6〜3.9ポイントの差が残りました（過去の実績からの推定）。">
+<meta name="description" content="信託報酬だけでは見えない費用の差を、FANG+レバとレバナスで比較。各社の基準価額と日本銀行の為替データを使い、為替ヘッジの差を過去の実績から推定します。">
 <link rel="stylesheet" href="../../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/column/fang-leverage-cost/">
 <!-- ogp:auto -->
 <meta property="og:type" content="article">
 <meta property="og:title" content="FANG+レバとレバナスの隠れコスト｜為替ヘッジの差を実績で推定">
-<meta property="og:description" content="iFreeレバレッジFANG+とauAMレバレッジNASDAQ100の、費用の欄に出ないコストを推定。目に見える運用管理費用の差は1ポイントに届かない一方、同じ指数のauAMの2本は為替の動きを除いても年3.6〜3.9ポイントの差が残りました（過去の実績からの推定）。">
+<meta property="og:description" content="信託報酬だけでは見えない費用の差を、FANG+レバとレバナスで比較。各社の基準価額と日本銀行の為替データを使い、為替ヘッジの差を過去の実績から推定します。">
 <meta property="og:url" content="https://keiri-tools.com/column/fang-leverage-cost/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -29,7 +29,7 @@
       "@type": "Article",
       "headline": "FANG+レバとレバナスの隠れコスト — 信託報酬に出ない為替ヘッジの差を実績で推定する",
       "datePublished": "2026-09-13",
-      "dateModified": "2026-10-13",
+      "dateModified": "2026-10-21",
       "author": {
         "@type": "Person",
         "name": "Masahiro Yasu",
@@ -72,7 +72,7 @@
           "name": "Q. 為替ヘッジありとなしでは、どちらのコストが高いですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. コストだけで優劣は決まりません。auAMの2本は、総経費率がどちらも0.44%ですが、2024年7月26日から2026年9月9日までの基準価額の差から為替の動きを除くと、年3.6〜3.9ポイントの差が残りました。ただし、この差には為替予約の実装の差も混ざります。また、ヘッジは円高時の損失を抑える保険でもあります。"
+            "text": "A. コストだけで優劣は決まりません。auAMの2本は、2024年7月26日から2026年9月9日までの基準価額の差から為替の動きを除くと、年3.6〜3.9ポイントの差が残りました。ただし、この差には為替予約の実装の差も混ざります。また、ヘッジは円高時の損失を抑える保険でもあります。"
           }
         },
         {
@@ -88,7 +88,7 @@
           "name": "Q. 総経費率が同じなら、コストは同じと考えてよいですか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. 同じとは言えません。為替ヘッジの金利差や、先物の価格に織り込まれる配当利回りと短期金利の差は、費用の欄にも総経費率にも出てきません。auAMの2本は総経費率がどちらも0.44%でも、2024年7月26日から2026年9月9日までの基準価額では、為替の動きを除いて年3ポイントを超える差が残りました。"
+            "text": "A. 同じとは言えません。為替ヘッジの金利差や、先物の価格に織り込まれる配当利回りと短期金利の差は、費用の欄にも総経費率にも出てきません。auAMの2本は2024年7月26日から2026年9月9日までの基準価額では、為替の動きを除いて年3ポイントを超える差が残りました。"
           }
         },
         {
@@ -140,7 +140,7 @@ gtag('config', 'G-E742DSDHPD');
 <nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › FANG+レバとレバナスの隠れコスト</nav>
 <article>
   <h1>FANG+レバとレバナスの隠れコスト — 信託報酬に出ない為替ヘッジの差を実績で推定する</h1>
-  <p class="article-meta">公開日: <time datetime="2026-09-13">2026年9月13日</time>（更新日: <time datetime="2026-10-13">2026年10月13日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-09-13">2026年9月13日</time>（更新日: <time datetime="2026-10-21">2026年10月21日</time>）</p>
   <p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
 
   <p>結論から言うと、費用の欄だけを比べると、<b>為替ヘッジという層を見落とします</b>。</p>
@@ -148,7 +148,7 @@ gtag('config', 'G-E742DSDHPD');
     <li><b>目に見える費用</b>：<b>iFreeレバレッジ FANG+</b>の実質的に負担する運用管理費用（概算値）は年率1.275%以下、<b>auAM レバレッジ NASDAQ100 為替ヘッジ無し</b>の運用管理費用は年率0.4334%で（どちらも税込）、差は1ポイントに届きません</li>
     <li><b>費用の欄に出ない差</b>：為替ヘッジの有無が違う同じ指数のauAMの2本では、2024年7月26日〜2026年9月9日の基準価額から為替の動きを除いても、<b>年3.6〜3.9ポイント</b>の差が残りました</li>
   </ul>
-  <p>iFreeレバレッジ FANG+は原則として為替ヘッジを行い、auAMのヘッジ無しは行いません。ただし、年3.6〜3.9ポイントはauAMの2本の比較で、FANG+レバのヘッジの負担を直接測ったものではありません。1.275%以下は目論見書作成時点の概算値、年3.6〜3.9ポイントは為替予約の実装の差なども含む過去の実績からの推定です。</p>
+  <p>iFreeレバレッジ FANG+は原則として為替ヘッジを行い、auAMのヘッジ無しは行いません。ただし、この推定差はauAMの2本の比較で、FANG+レバのヘッジの負担を直接測ったものではありません。1.275%以下は目論見書作成時点の概算値、この差は為替予約の実装の差なども含む過去の実績からの推定です。</p>
 
   <p>この記事は、どれかを勧めるものではありません。為替ヘッジはコストになる一方で、為替変動リスクを低減する仕組みでもあります。<b>費用の欄に出ない差を数字にし、その評価は読む人に委ねる</b>記事です。</p>
 
@@ -186,26 +186,26 @@ gtag('config', 'G-E742DSDHPD');
 
   <p id="visible-note" data-review-context="after-table">表の注：実質的に負担する運用管理費用の概算値は、目論見書作成時点の値で、実際の組入状況等により変動します。総経費率は、原則として募集手数料・売買委託手数料・有価証券取引税を除いた値で、iFreeレバレッジ FANG+の0.99%は投資対象とする連動債券にかかる費用等も原則として含みません。「該当する欄なし」は、費用がゼロという意味ではありません。</p>
 
-  <p id="tokushoku-note">※ 3本の交付目論見書には、当初設定日直後、大量の追加設定または解約が発生したとき、市況の急激な変化が予想されるとき、償還の準備に入ったとき等ならびに信託財産の規模によっては、ファンドの特色の運用が行われないことがあるとの注記があります。</p>
+  <p id="tokushoku-note">※ 3本の<a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=1" target="_blank" rel="noopener">交付目論見書</a>には、当初設定日直後、大量の追加設定または解約が発生したとき、市況の急激な変化が予想されるとき、償還の準備に入ったとき等ならびに信託財産の規模によっては、ファンドの特色の運用が行われないことがあるとの注記があります。</p>
 
   <p>iFreeレバレッジ FANG+の購入時手数料は販売会社によって異なり、目論見書にある上限がそのまま請求されるわけではありません。2026年10月8日に確認した楽天証券の案内では、iFreeレバレッジ FANG+の購入時手数料は無料ですが、金融商品仲介業者（IFA）と契約している顧客には別のIFA手数料が適用されます。</p>
 
-  <p>iFreeレバレッジ FANG+の交付運用報告書は、総経費率0.99%（対象期間2024年8月20日〜2025年8月18日）について「投資対象とする連動債券にかかる費用等を含みません」と書いています。それとは別に、投資対象とする連動債券で純資産総額に対して年率0.29%程度以下の費用がかかったとも書いています。</p>
+  <p>iFreeレバレッジ FANG+の<a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=4" target="_blank" rel="noopener">交付運用報告書</a>は、総経費率0.99%（対象期間2024年8月20日〜2025年8月18日）について「投資対象とする連動債券にかかる費用等を含みません」と書いています。それとは別に、投資対象とする連動債券で純資産総額に対して年率0.29%程度以下の費用がかかったとも書いています。</p>
 
   <h2 id="layers">レバレッジ型で増える見えないコストの層</h2>
 
   <p>投資信託を保有している間のコストは、主に次の層に分かれています。レバレッジ型では、為替ヘッジの条件や借入金利に相当する負担も確認が必要です。</p>
 
   <ol>
-    <li><b>信託報酬</b> — 交付目論見書に年率で書かれている、いちばん目に入る費用</li>
-    <li><b>その他費用</b> — 監査費用・保管費用など。<b>総経費率</b>は、運用管理費用の比率とその他の費用の比率を合わせた実績値</li>
+    <li><b>信託報酬</b> — <a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=1" target="_blank" rel="noopener">交付目論見書</a>に年率で書かれている、いちばん目に入る費用</li>
+    <li><b>その他費用</b> — 監査費用・保管費用など。<b>総経費率</b>は、運用管理費用の比率とその他の費用の比率を合わせた実績値で、年1回の決算ごとに運用報告書で示されます</li>
     <li><b>売買委託手数料・有価証券取引税</b> — 総経費率の計算から<b>原則として除かれている</b></li>
     <li><b>配当にかかる外国の税金</b> — 投資先の国で差し引かれる分</li>
     <li><b>為替ヘッジのコスト</b> — ヘッジを行う商品だけ。円金利が組入通貨の金利より低いとき、金利差相当分がコストになる</li>
     <li><b>レバレッジの資金調達コスト</b> — レバレッジ型だけ。目論見書は借入金利に相当する負担を説明している</li>
   </ol>
 
-  <p>為替ヘッジについては、3本のうちヘッジを行う2本の交付目論見書に同じ趣旨の記載があります。auAM レバレッジ NASDAQ100の書き方では「為替ヘッジを行う際、日本円の金利が組入資産の通貨の金利より低いときには、金利差相当分がコストとなり、需給要因等によっては、さらにコストが拡大することもあります」。</p>
+  <p>為替ヘッジについては、3本のうちヘッジを行う2本の<a href="https://www.kddi-am.com/wp-content/themes/aufunds/pdf/4001/prospective_prospectus.pdf" target="_blank" rel="noopener">交付目論見書</a>に同じ趣旨の記載があります。auAM レバレッジ NASDAQ100の書き方では「為替ヘッジを行う際、日本円の金利が組入資産の通貨の金利より低いときには、金利差相当分がコストとなり、需給要因等によっては、さらにコストが拡大することもあります」。</p>
 
   <p>また同じ目論見書は、基準価額が指数の2倍の値動きから乖離する要因の一つに「配当利回りと短期金利の差」を挙げています。<b>どちらも費用の欄や総経費率には数字として出てきません。</b></p>
 
@@ -231,9 +231,9 @@ gtag('config', 'G-E742DSDHPD');
 
   <p data-review-context="after-table">100万円あたりの差は、税金と購入時手数料を引く前の試算で<b>139,157円</b>です。分配金を税引前で再投資したとみなした基準価額による換算で、実際の損益は購入価額や課税条件などで変わります。</p>
 
-  <p>交付目論見書の総経費率は、2本ともに0.44%です。ただし、対象期間（<a href="#visible">上の費用の表</a>）は、この基準価額の比較とは別の期間です。</p>
+  <p>総経費率の実績は、<a href="#visible">上の費用の表</a>で対象期間とあわせて確認できます。基準価額の比較とは別の期間です。</p>
 
-  <p>ヘッジ無しは米ドルを持つので、為替の動きの分を除く必要があります。為替には、日本銀行が公表する「東京市場 ドル・円 スポット 9時時点」を、<b>基準価額と同じ日付</b>で当てました（理由は次の節）。同じ期間、ドル円は153.71円から153.46円へ-0.16%動きました。</p>
+  <p>ヘッジ無しは米ドルを持つので、為替の動きの分を除く必要があります。為替には、日本銀行が公表する<a href="https://www.stat-search.boj.or.jp/api/v1/getDataCode?format=csv&amp;lang=jp&amp;db=FM08&amp;code=FXERD01&amp;startDate=201801&amp;endDate=202609" target="_blank" rel="noopener">「東京市場 ドル・円 スポット 9時時点」</a>を、<b>基準価額と同じ日付</b>で当てました（理由は次の節）。同じ期間、ドル円は153.71円から153.46円へ-0.16%動きました。</p>
 
   <div class="scroll-wrap">
   <table>
@@ -265,7 +265,7 @@ gtag('config', 'G-E742DSDHPD');
   </table>
   </div>
 
-  <p>東京9時のほうが日次差と強く連動しており、日次差を為替に回帰した傾きは0.95でした。ヘッジ無しが通常の運用では為替予約取引等により純資産総額程度の米ドルを保有するという交付目論見書の説明とも合います。各ファンドが実際に使った為替レートは交付目論見書・交付運用報告書に書かれていないため、<b>実績との連動が強いほうを採用した</b>という判断です。</p>
+  <p>東京9時のほうが日次差と強く連動しており、日次差を為替に回帰した傾きは0.95でした。ヘッジ無しが通常の運用では為替予約取引等により純資産総額程度の米ドルを保有するという交付目論見書の説明とも合います。各ファンドが実際に使った為替レートは<a href="https://www.kddi-am.com/wp-content/themes/aufunds/pdf/4005/prospective_prospectus.pdf" target="_blank" rel="noopener">交付目論見書</a>・<a href="https://www.kddi-am.com/wp-content/themes/aufunds/pdf/4001/delivery_report.pdf" target="_blank" rel="noopener">交付運用報告書</a>に書かれていないため、<b>実績との連動が強いほうを採用した</b>という判断です。</p>
 
   <h2 id="vs1x">1倍ファンドを代理にした日次の追跡残差</h2>
 
@@ -311,7 +311,7 @@ gtag('config', 'G-E742DSDHPD');
   <p><b>この残差は、そのままコストではありません。</b>中には次のものが混ざっています。</p>
   <ul>
     <li><b>レバレッジの資金調達にあたる差</b> — 目論見書は借入金利に相当する負担を説明し、「配当利回りと短期金利の差」を乖離要因に挙げています</li>
-    <li><b>為替ヘッジに対応する差</b> — 円金利が組入通貨の金利より低いときに、為替ヘッジを行う際にコストとなる金利差相当分など</li>
+    <li><b>為替ヘッジに対応する差</b> — ヘッジありの2本だけ。円金利が組入通貨の金利より低いときに、為替ヘッジを行う際にコストとなる金利差相当分など</li>
     <li><b>代理の1倍ファンド自身の費用と、指数の定義の違い</b> — 代理は信託報酬を差し引いた基準価額で、税引後配当込みの指数を追っています。レバレッジ型3本の対象指数は米ドルベース（iFreeレバレッジ FANG+は配当込み）で、ヘッジ無しは米ドル保有に伴うリターンの獲得もめざします</li>
     <li><b>先物と現物の値動きの差など、目論見書に挙げられた乖離要因</b></li>
   </ul>
@@ -322,7 +322,7 @@ gtag('config', 'G-E742DSDHPD');
   <table>
     <thead><tr><th>要素</th><th>iFreeレバレッジ FANG+</th><th>auAM ヘッジ無し</th><th>分かっていること</th></tr></thead>
     <tbody>
-      <tr><td>目に見える運用管理費用（税込）</td><td class="num">年率1.275%以下（概算値）</td><td class="num">年<span class="numeric-token">0.4334%</span></td><td>交付目論見書の記載。差は約0.84ポイント</td></tr>
+      <tr><td>目に見える運用管理費用（税込）</td><td class="num">年率1.275%以下（概算値）</td><td class="num">年<span class="numeric-token">0.4334%</span></td><td><a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=1" target="_blank" rel="noopener">交付目論見書</a>の記載。差は約0.84ポイント</td></tr>
       <tr><td>為替ヘッジ</td><td>原則として行う</td><td>行わない</td><td>auAMの同じ指数の2本では、年3.6〜3.9ポイントの差と推定。<b>FANG+レバの実額はこの資料からは分けられない</b></td></tr>
       <tr><td>レバレッジの資金調達にあたる差</td><td colspan="2">両商品の目論見書が借入金利に相当する負担を説明</td><td>単独では取り出せていない</td></tr>
     </tbody>
@@ -331,7 +331,7 @@ gtag('config', 'G-E742DSDHPD');
 
   <p data-review-context="after-table">表の注：年率1.275%以下は、パフォーマンス連動債券にかかる費用等を含めた概算値です（<a href="#visible-note">費用の表の注</a>）。年3.6〜3.9ポイントは、2024年7月26日から2026年9月9日までの実績で為替の動きを除いた差です。</p>
 
-  <p>iFreeレバレッジ FANG+の交付目論見書も、為替ヘッジを行う際、日本円の金利が組入資産の通貨の金利より低いときには金利差相当分がコストとなり、需給要因等によってはさらに拡大することもあると書いています。</p>
+  <p>iFreeレバレッジ FANG+の<a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=1" target="_blank" rel="noopener">交付目論見書</a>も、為替ヘッジを行う際、日本円の金利が組入資産の通貨の金利より低いときには金利差相当分がコストとなり、需給要因等によってはさらに拡大することもあると書いています。</p>
 
   <p><b>費用の欄だけを比べると、為替ヘッジという層を見落とします</b>。ただし、年3ポイントを超える差は為替予約の実装の差なども含む残差で、全額が為替ヘッジの費用とは言えません。iFreeレバレッジ FANG+のヘッジに対応する差を直接測ったわけでもありません。</p>
 
@@ -343,11 +343,11 @@ gtag('config', 'G-E742DSDHPD');
 
   <p>レバレッジ型は日々の値動きの2倍程度を目指すため、2営業日以上の期間で見た基準価額の騰落率は、通常、指数の同期間の騰落率の2倍とは一致しません。</p>
 
-  <p>たとえば指数が+10%の翌日に−10%になると、指数は0.99倍ですが、2倍型は1.2×0.8＝0.96倍です。費用や連動のずれを考えず、日々ちょうど2倍で動くと仮定した計算例で、実際とは異なります。</p>
+  <p>たとえば指数が+10%の翌日に−10%になると、指数は0.99倍ですが、2倍型は1.2×0.8＝0.96倍です。反対に上昇が続くと、指数の騰落率の2倍を上回ることもあります。費用や連動のずれを考えず、日々ちょうど2倍で動くと仮定した計算例で、実際とは異なります。</p>
 
   <p>この記事の追跡残差は<b>日ごとの騰落率どうし</b>を比べているので、このずれは含めていません。ただし、保有する人の結果には効きます。</p>
 
-  <p>auAM レバレッジ NASDAQ100の交付運用報告書でも、2025年7月28日決算の期の分配金再投資基準価額の騰落率は29.0%で、同じ期のNASDAQ100指数（米ドルベース）の騰落率22.3%の2倍には届いていません。これはコストだけでなく、この日次2倍の性質も含んだ結果です。</p>
+  <p>auAM レバレッジ NASDAQ100の<a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=4" target="_blank" rel="noopener">交付運用報告書</a>でも、2025年7月28日決算の期の分配金再投資基準価額の騰落率は29.0%で、同じ期のNASDAQ100指数（米ドルベース）の騰落率22.3%の2倍には届いていません。これはコストだけでなく、この日次2倍の性質も含んだ結果です。</p>
 
   <h2 id="limits">この計算で言えないこと</h2>
 
@@ -364,16 +364,16 @@ gtag('config', 'G-E742DSDHPD');
   <h2 id="faq">よくある質問</h2>
 
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>為替ヘッジありとなしでは、どちらのコストが高いですか？</h3>
-  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>コストだけで優劣は決まりません。auAMの2本は、総経費率がどちらも0.44%ですが、2024年7月26日から2026年9月9日までの基準価額の差から為替の動きを除くと、年3.6〜3.9ポイントの差が残りました。ただし、この差には為替予約の実装の差も混ざります。また、ヘッジは円高時の損失を抑える保険でもあります。</p>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>コストだけで優劣は決まりません。auAMの2本は、2024年7月26日から2026年9月9日までの基準価額の差から為替の動きを除くと、年3.6〜3.9ポイントの差が残りました。ただし、この差には為替予約の実装の差も混ざります。また、ヘッジは円高時の損失を抑える保険でもあります。</p>
 
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>iFreeレバレッジ FANG+の信託報酬は0.98%ですか？</h3>
-  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>運用管理費用（信託報酬）は税込で年率0.9845%です。ただし、交付目論見書によると、パフォーマンス連動債券の費用（債券の評価額に対して年率0.29%程度）を含めた実質的に負担する運用管理費用の概算値は、税込で年率1.275%以下です。どちらも目論見書作成時点の値で、実際の組入状況等により変動します。</p>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>運用管理費用（信託報酬）は税込で年率0.9845%です。ただし、<a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=1" target="_blank" rel="noopener">交付目論見書</a>によると、パフォーマンス連動債券の費用（債券の評価額に対して年率0.29%程度）を含めた実質的に負担する運用管理費用の概算値は、税込で年率1.275%以下です。どちらも目論見書作成時点の値で、実際の組入状況等により変動します。</p>
 
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>総経費率が同じなら、コストは同じと考えてよいですか？</h3>
-  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>同じとは言えません。為替ヘッジの金利差や、先物の価格に織り込まれる配当利回りと短期金利の差は、費用の欄にも総経費率にも出てきません。auAMの2本は総経費率がどちらも0.44%でも、2024年7月26日から2026年9月9日までの基準価額では、為替の動きを除いて年3ポイントを超える差が残りました。</p>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>同じとは言えません。為替ヘッジの金利差や、先物の価格に織り込まれる配当利回りと短期金利の差は、費用の欄にも総経費率にも出てきません。auAMの2本は2024年7月26日から2026年9月9日までの基準価額では、為替の動きを除いて年3ポイントを超える差が残りました。</p>
 
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>レバレッジ型は長く持つと必ず損をしますか？</h3>
-  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>必ずとは言えません。ただし、2営業日以上の期間で見た騰落率は、通常、指数の騰落率の2倍とは一致しません。iFreeレバレッジ FANG+の交付目論見書は、細部を省略した例で、一般に、指数が上昇・下落をしながら動いた場合には基準価額は押し下げられると説明しています。結果は保有期間だけでなく、値動きの経路や金利差で変わります。</p>
+  <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>必ずとは言えません。ただし、2営業日以上の期間で見た騰落率は、通常、指数の騰落率の2倍とは一致しません。iFreeレバレッジ FANG+の<a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=1" target="_blank" rel="noopener">交付目論見書</a>は、細部を省略した例で、一般に、指数が上昇・下落をしながら動いた場合には基準価額は押し下げられると説明しています。結果は保有期間だけでなく、値動きの経路や金利差で変わります。</p>
 
   <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>為替ヘッジに対応する差は今後も年3ポイント以上ですか？</h3>
   <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>分かりません。円金利が組入通貨の金利より低いときに生じる金利差相当分のコストは、日本の金利が上がるか米国の金利が下がれば小さくなる方向ですが、需給要因等でも動きます。参考にした米国3か月物財務省証券の日次平均は4.04%（2024年7月26日〜2026年9月4日）、日本のコールレートの月次平均は0.47%（2024年7月〜2026年6月）です。</p>
@@ -392,34 +392,34 @@ gtag('config', 'G-E742DSDHPD');
   <p class="source-method">根拠は各社の交付目論見書・交付運用報告書、各社が公開する日次の基準価額、日本銀行の東京市場ドル・円スポット（9時時点）</p>
   <ul>
     <li><a href="https://www.rakuten-sec.co.jp/web/fund/detail/?ID=JP90C000KLQ6" target="_blank" rel="noopener">楽天証券「iFreeレバレッジ FANG+」</a> — 購入時手数料とIFA契約顧客の扱い</li>
-    <li>大和アセットマネジメント「iFreeレバレッジ FANG+」交付目論見書
+    <li><a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=1" target="_blank" rel="noopener">大和アセットマネジメント「iFreeレバレッジ FANG+」交付目論見書</a>
       <ul>
-        <li>購入時手数料の上限、運用管理費用（税込で年率0.9845%）</li>
-        <li>パフォーマンス連動債券の費用（目論見書作成時点で債券の評価額に対して年率0.29%程度）と実質的に負担する運用管理費用の概算値（目論見書作成時点で、税込で年率1.275%以下、実際の組入状況等により変動）</li>
-        <li>為替ヘッジと金利差相当分のコスト、投資対象、パフォーマンス連動債券の概要（発行体・連動対象）</li>
+        <li><a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=1" target="_blank" rel="noopener">購入時手数料の上限、運用管理費用（税込で年率0.9845%）</a></li>
+        <li><a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=1" target="_blank" rel="noopener">パフォーマンス連動債券の費用（目論見書作成時点で債券の評価額に対して年率0.29%程度）と実質的に負担する運用管理費用の概算値（目論見書作成時点で、税込で年率1.275%以下、実際の組入状況等により変動）</a></li>
+        <li><a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=1" target="_blank" rel="noopener">為替ヘッジと金利差相当分のコスト、投資対象、パフォーマンス連動債券の概要（発行体・連動対象）</a></li>
       </ul>
     </li>
-    <li>大和アセットマネジメント「同」交付運用報告書（作成対象期間2024年8月20日〜2025年8月18日） — 総経費率0.99%とそれが連動債券の費用等を含まない旨、連動債券に年率0.29%程度以下の費用がかかった旨</li>
-    <li>auアセットマネジメント「auAM レバレッジ NASDAQ100」「auAM レバレッジ NASDAQ100 為替ヘッジ無し」交付目論見書（使用開始日2026年4月28日）
+    <li><a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3425&amp;type=4" target="_blank" rel="noopener">大和アセットマネジメント「同」交付運用報告書</a>（作成対象期間2024年8月20日〜2025年8月18日） — 総経費率0.99%とそれが連動債券の費用等を含まない旨、連動債券に年率0.29%程度以下の費用がかかった旨</li>
+    <li>auアセットマネジメント<a href="https://www.kddi-am.com/wp-content/themes/aufunds/pdf/4001/prospective_prospectus.pdf" target="_blank" rel="noopener">「auAM レバレッジ NASDAQ100」</a><a href="https://www.kddi-am.com/wp-content/themes/aufunds/pdf/4005/prospective_prospectus.pdf" target="_blank" rel="noopener">「auAM レバレッジ NASDAQ100 為替ヘッジ無し」</a>交付目論見書（使用開始日2026年4月28日）
       <ul>
-        <li>購入時手数料の上限、運用管理費用（税込で年率0.4334%）、総経費率と対象期間</li>
-        <li>為替ヘッジと金利差相当分のコストの記載、乖離要因（配当利回りと短期金利の差）、運用の仕組み</li>
+        <li><a href="https://www.kddi-am.com/wp-content/themes/aufunds/pdf/4001/prospective_prospectus.pdf" target="_blank" rel="noopener">購入時手数料の上限、運用管理費用（税込で年率0.4334%）、総経費率と対象期間</a></li>
+        <li><a href="https://www.kddi-am.com/wp-content/themes/aufunds/pdf/4001/prospective_prospectus.pdf" target="_blank" rel="noopener">為替ヘッジと金利差相当分のコストの記載、乖離要因（配当利回りと短期金利の差）、運用の仕組み</a></li>
       </ul>
     </li>
-    <li>auアセットマネジメント「同」交付運用報告書（ヘッジありは第4期・ヘッジ無しは第2期で、どちらも決算日2026年7月27日） — 過去の決算日ごとの騰落率と参考指数（2025年7月28日決算の列を使用）、運用の仕組み</li>
-    <li>大和アセットマネジメント「iFreeNEXT FANG+インデックス」「iFreeNEXT NASDAQ100インデックス」交付目論見書・交付運用報告書
+    <li><a href="https://www.kddi-am.com/wp-content/themes/aufunds/pdf/4001/delivery_report.pdf" target="_blank" rel="noopener">auアセットマネジメント「同」交付運用報告書</a>（ヘッジありは第4期・<a href="https://www.kddi-am.com/wp-content/themes/aufunds/pdf/4005/delivery_report.pdf" target="_blank" rel="noopener">ヘッジ無しは第2期</a>で、どちらも決算日2026年7月27日） — 過去の決算日ごとの騰落率と参考指数（2025年7月28日決算の列を使用）、運用の仕組み</li>
+    <li>大和アセットマネジメント<a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3346&amp;type=1" target="_blank" rel="noopener">「iFreeNEXT FANG+インデックス」</a><a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3373&amp;type=1" target="_blank" rel="noopener">「iFreeNEXT NASDAQ100インデックス」</a>交付目論見書・交付運用報告書
       <ul>
-        <li>運用管理費用（税込で年率0.7755%／0.495%）</li>
-        <li>総経費率（原則として募集手数料・売買委託手数料・有価証券取引税を除く値で、0.78%：対象期間2025年1月31日〜2026年1月30日／0.51%：対象期間2024年8月31日〜2025年9月1日）</li>
-        <li>為替ヘッジを原則として行わない旨、ベンチマーク（税引後配当込み、円ベース）</li>
+        <li>運用管理費用（税込で年率<a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3346&amp;type=1" target="_blank" rel="noopener">0.7755%</a>／<a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3373&amp;type=1" target="_blank" rel="noopener">0.495%</a>）</li>
+        <li>総経費率（原則として募集手数料・売買委託手数料・有価証券取引税を除く値で、<a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3346&amp;type=4" target="_blank" rel="noopener">0.78%：対象期間2025年1月31日〜2026年1月30日</a>／<a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3373&amp;type=4" target="_blank" rel="noopener">0.51%：対象期間2024年8月31日〜2025年9月1日</a>）</li>
+        <li><a href="https://www.daiwa-am.co.jp/funds/doc_open/fund_doc_open.php?code=3346&amp;type=1" target="_blank" rel="noopener">為替ヘッジを原則として行わない旨、ベンチマーク（税引後配当込み、円ベース）</a></li>
       </ul>
     </li>
-    <li>大和アセットマネジメント・auアセットマネジメントが各ファンドページで公開する基準価額のCSV（取得日2026年9月13日） — 分配金再投資基準価額</li>
-    <li>日本銀行 時系列統計データ「東京市場 ドル・円 スポット 9時時点」（FM08 FXERD01） — 円換算と為替の除去に使用</li>
+    <li><a href="https://www.daiwa-am.co.jp/funds/detail/csv_out.php?code=3425&amp;type=1" target="_blank" rel="noopener">大和アセットマネジメント・auアセットマネジメントが各ファンドページで公開する基準価額のCSV</a>（取得日2026年9月13日） — 分配金再投資基準価額</li>
+    <li><a href="https://www.stat-search.boj.or.jp/api/v1/getDataCode?format=csv&amp;lang=jp&amp;db=FM08&amp;code=FXERD01&amp;startDate=201801&amp;endDate=202609" target="_blank" rel="noopener">日本銀行 時系列統計データ「東京市場 ドル・円 スポット 9時時点」（FM08 FXERD01）</a> — 円換算と為替の除去に使用</li>
     <li>参考：
       <ul>
-        <li>Board of Governors of the Federal Reserve System, H.10 Foreign Exchange Rates（FRED：DEXJPUS。当て方の比較に使用）、3-Month Treasury Bill Secondary Market Rate（FRED：DTB3）</li>
-        <li>OECD の日本のコールレート（FRED：IRSTCI01JPM156N）</li>
+        <li>Board of Governors of the Federal Reserve System, <a href="https://fred.stlouisfed.org/graph/fredgraph.csv?id=DEXJPUS&amp;cosd=2024-01-01&amp;coed=2026-09-30" target="_blank" rel="noopener">H.10 Foreign Exchange Rates（FRED：DEXJPUS。当て方の比較に使用）</a>、<a href="https://fred.stlouisfed.org/graph/fredgraph.csv?id=DTB3&amp;cosd=2024-01-01&amp;coed=2026-09-30" target="_blank" rel="noopener">3-Month Treasury Bill Secondary Market Rate（FRED：DTB3）</a></li>
+        <li><a href="https://fred.stlouisfed.org/graph/fredgraph.csv?id=IRSTCI01JPM156N&amp;cosd=2024-01-01&amp;coed=2026-09-30" target="_blank" rel="noopener">OECD の日本のコールレート（FRED：IRSTCI01JPM156N）</a></li>
       </ul>
     </li>
   </ul>
@@ -427,7 +427,7 @@ gtag('config', 'G-E742DSDHPD');
   <p style="font-size:13px;color:var(--sub)">本記事は一般的な情報提供を目的としたものであり、特定の金融商品の取得や売買を勧めるものではありません。当サイトは金融商品取引業者ではなく、投資助言を行うものでもありません。本文の数値は、記載した期間・資料・計算方法による過去の実績と、その実績から計算した目安であり、将来の運用成果を示すものではありません。各ファンドの費用・運用方針は変更されることがあるため、購入を検討する場合は販売会社で最新の交付目論見書をご確認ください。投資による損失が生じた場合の責任は負いかねます。</p>
 </article>
 
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=iFree%E3%83%AC%E3%83%90%E3%83%AC%E3%83%83%E3%82%B8FANG%2B%E3%81%A8auAM%E3%83%AC%E3%83%90%E3%83%AC%E3%83%83%E3%82%B8NASDAQ100%E3%81%AE%E3%80%81%E8%B2%BB%E7%94%A8%E3%81%AE%E6%AC%84%E3%81%AB%E5%87%BA%E3%81%AA%E3%81%84%E3%82%B3%E3%82%B9%E3%83%88%E3%82%92%E6%8E%A8%E5%AE%9A%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Ffang-leverage-cost%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=iFree%E3%83%AC%E3%83%90%E3%83%AC%E3%83%83%E3%82%B8FANG%2B%E3%81%A8auAM%E3%83%AC%E3%83%90%E3%83%AC%E3%83%83%E3%82%B8NASDAQ100%E3%81%AE%E3%80%81%E8%B2%BB%E7%94%A8%E3%81%AE%E6%AC%84%E3%81%AB%E5%87%BA%E3%81%AA%E3%81%84%E3%82%B3%E3%82%B9%E3%83%88%E3%82%92%E5%90%84%E7%A4%BE%E3%81%AE%E5%9F%BA%E6%BA%96%E4%BE%A1%E9%A1%8D%E3%81%A8%E6%97%A5%E6%9C%AC%E9%8A%80%E8%A1%8C%E3%81%AE%E7%82%BA%E6%9B%BF%E3%83%87%E3%83%BC%E3%82%BF%E3%81%A7%E6%8E%A8%E5%AE%9A%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Ffang-leverage-cost%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site" style="display:block">© 税金・経理・補助金ツールズ
   <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
