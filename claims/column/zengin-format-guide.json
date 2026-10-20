@@ -10431,26 +10431,22 @@
     },
     {
       "id": "r1-s-fc637ff257cec5d90d78-1",
-      "text": "数字項目(N)は右詰め・残りを0で埋める。",
+      "text": "数字項目(N)の桁埋めは、利用銀行の各項目の指定に従う。",
       "numbers": [],
       "covers": [
-        "s-fc637ff257cec5d90d78-1"
+        "s-e429946c95b301677e5d-1"
       ],
-      "scope": "当該記事の当該単位に限る。業務・銀行・項目ごとの仕様を一般化しない。",
-      "exceptions": "群馬銀行の総合振込仕様の桁埋め規則。銀行ごとの指定は本文の注意書きで確認を促す。",
-      "must_with": [],
-      "source_url": "https://www.gunmabank.co.jp/hojin/biznb/service/pdf/z_format1.pdf",
-      "source_quote": "        データ伝送の仕様（ＪＩＳコード）\n        １２０バイト（改行コード(ＣＲＬＦ)をつける場合は後付けで１２２バイト）\n        桁数欄の「Ｎ」は数字、\n                   「Ｃ」は半角文字(カタカナ、英大文字・数字)を表す。\n        伝送データ記録上の留意\n            各項目が所定の桁数に満たない場合には次によるものとする。\n            ① 数字項目は右詰とし、残りを「０」とする\n            ② カタカナ、英大文字項目等は左詰とし残りをスペースとする。",
-      "corpus_ref": "review-evidence/auto20261001-t8-q1/corpus/www_gunmabank_co_jp_hojin_biznb_service_pdf_z_format1_pdf.txt:11-13",
+      "scope": "利用銀行の数字項目の桁埋め。全数字欄を一律に0埋めする説明は削除。",
+      "exceptions": "帯広信用金庫の振込仕様全4表を確認。コード区分・仕向金融機関番号・手形交換所番号・新規コード・顧客コード1/2は省略時スペース。口座番号・金額・合計は右詰ZERO埋め。口座振替の数字型ダミーはスペース。",
+      "must_with": [
+        "各項目",
+        "指定"
+      ],
+      "source_url": "https://www.shinkin.co.jp/obishin/webfb2/service/fmt_zengin/",
+      "source_quote": "コード区分 / 半角数字 / 省略可（スペース）; 口座番号 / 半角数字 / 右詰、ZERO埋め",
+      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-20-drrg34/segment-review/corpus/obishin.html:279-575,734-787",
       "status": "repairer_checked",
-      "source_note": "修正計画に従い、桁埋め規則を群馬銀行の引用に対応させた。",
-      "sources": [
-        {
-          "source_url": "https://www.gunmabank.co.jp/hojin/biznb/service/pdf/z_format1.pdf",
-          "corpus_ref": "review-evidence/auto20261001-t8-q1/corpus/www_gunmabank_co_jp_hojin_biznb_service_pdf_z_format1_pdf.txt:11-13",
-          "source_quote": "        データ伝送の仕様（ＪＩＳコード）\n        １２０バイト（改行コード(ＣＲＬＦ)をつける場合は後付けで１２２バイト）\n        桁数欄の「Ｎ」は数字、\n                   「Ｃ」は半角文字(カタカナ、英大文字・数字)を表す。\n        伝送データ記録上の留意\n            各項目が所定の桁数に満たない場合には次によるものとする。\n            ① 数字項目は右詰とし、残りを「０」とする\n            ② カタカナ、英大文字項目等は左詰とし残りをスペースとする。"
-        }
-      ]
+      "source_note": "仕上げr1: 未解決highの一律0埋めを個別指定に狭めた。独立再照合はこれから。"
     },
     {
       "id": "r1-s-d0bbd6b70dab3e70fd31-1",
@@ -12707,6 +12703,146 @@
       "status": "unverified",
       "needed_source": "当該主張の対象銀行・サービスの一次資料（対象時点・適用範囲・注記を含む）。",
       "source_note": "引用は関連する仕様の文脈であり、この単位全体の裏付けとはしない。独立再照合待ち。"
+    },
+    {
+      "id": "finish-r1-coverage-s-87bb3a4ec57a83f0ecc8-1",
+      "text": "【行】桁を必ず埋める 【列】内容 【値】数字項目（N）は右詰め・余りを0、カタカナ・英大文字項目（C）は左詰め・余りを半角スペースで埋める（レコードレイアウト）。省略する欄の埋め方は各項目の指定と仕様書で確認する。",
+      "numbers": [],
+      "covers": [
+        "s-87bb3a4ec57a83f0ecc8-1"
+      ],
+      "scope": "既存本文の当該単位。本文は変更していない。",
+      "exceptions": "正本外のため未確認。銀行・サービスごとの指定を確認する必要がある。",
+      "status": "unverified",
+      "review_status": "unverified",
+      "needed_source": "当該単位の対象銀行の仕様書・文字一覧・料金表の本文と適用条件。正本外はnot_wrong/unsureとして保持し、確認済みにしない。",
+      "must_with": []
+    },
+    {
+      "id": "finish-r1-coverage-s-bb8b941784d55f021f36-1",
+      "text": "【行】カナ 【列】内容 【値】半角カタカナ。総合振込の受取人名では「ヲ」は使用可（給与・賞与振込では使用不可）。小文字（ッャュョァィゥェォ）は使用不可",
+      "numbers": [],
+      "covers": [
+        "s-bb8b941784d55f021f36-1"
+      ],
+      "scope": "既存本文の当該単位。本文は変更していない。",
+      "exceptions": "正本外のため未確認。銀行・サービスごとの指定を確認する必要がある。",
+      "status": "unverified",
+      "review_status": "unverified",
+      "needed_source": "当該単位の対象銀行の仕様書・文字一覧・料金表の本文と適用条件。正本外はnot_wrong/unsureとして保持し、確認済みにしない。",
+      "must_with": []
+    },
+    {
+      "id": "finish-r1-coverage-s-af49e17271ea1d96f3cd-1",
+      "text": "相互会社",
+      "numbers": [],
+      "covers": [
+        "s-af49e17271ea1d96f3cd-1"
+      ],
+      "scope": "既存本文の当該単位。本文は変更していない。",
+      "exceptions": "正本外のため未確認。銀行・サービスごとの指定を確認する必要がある。",
+      "status": "unverified",
+      "review_status": "unverified",
+      "needed_source": "当該単位の対象銀行の仕様書・文字一覧・料金表の本文と適用条件。正本外はnot_wrong/unsureとして保持し、確認済みにしない。",
+      "must_with": []
+    },
+    {
+      "id": "finish-r1-coverage-s-0392747470af2b72f7a6-1",
+      "text": "【行】相互会社 【列】略語 【値】ソ",
+      "numbers": [],
+      "covers": [
+        "s-0392747470af2b72f7a6-1"
+      ],
+      "scope": "既存本文の当該単位。本文は変更していない。",
+      "exceptions": "正本外のため未確認。銀行・サービスごとの指定を確認する必要がある。",
+      "status": "unverified",
+      "review_status": "unverified",
+      "needed_source": "当該単位の対象銀行の仕様書・文字一覧・料金表の本文と適用条件。正本外はnot_wrong/unsureとして保持し、確認済みにしない。",
+      "must_with": []
+    },
+    {
+      "id": "finish-r1-coverage-s-03265c3bbc7da84ddf57-1",
+      "text": "三菱UFJ銀行の振込組戻手数料は、法人向けのBizSTATIONでは770円（税込）、個人向けの手数料一覧では880円（税込）です。",
+      "numbers": [],
+      "covers": [
+        "s-03265c3bbc7da84ddf57-1"
+      ],
+      "scope": "既存本文の当該単位。本文は変更していない。",
+      "exceptions": "正本外のため未確認。銀行・サービスごとの指定を確認する必要がある。",
+      "status": "unverified",
+      "review_status": "unverified",
+      "needed_source": "当該単位の対象銀行の仕様書・文字一覧・料金表の本文と適用条件。正本外はnot_wrong/unsureとして保持し、確認済みにしない。",
+      "must_with": []
+    },
+    {
+      "id": "finish-r1-coverage-s-5e3dc52b86d2adead4eb-1",
+      "text": "BizSTATIONで組戻し・訂正サービスを利用していない場合は、店頭表示の手数料になります。",
+      "numbers": [],
+      "covers": [
+        "s-5e3dc52b86d2adead4eb-1"
+      ],
+      "scope": "既存本文の当該単位。本文は変更していない。",
+      "exceptions": "正本外のため未確認。銀行・サービスごとの指定を確認する必要がある。",
+      "status": "unverified",
+      "review_status": "unverified",
+      "needed_source": "当該単位の対象銀行の仕様書・文字一覧・料金表の本文と適用条件。正本外はnot_wrong/unsureとして保持し、確認済みにしない。",
+      "must_with": []
+    },
+    {
+      "id": "finish-r1-coverage-s-90e1ef67d8560e757f03-1",
+      "text": "使えるのは半角カナ（小文字を除く）・英大文字・数字・半角スペース・記号 ( ) - . のみ。",
+      "numbers": [],
+      "covers": [
+        "s-90e1ef67d8560e757f03-1"
+      ],
+      "scope": "既存本文の当該単位。本文は変更していない。",
+      "exceptions": "正本外のため未確認。銀行・サービスごとの指定を確認する必要がある。",
+      "status": "unverified",
+      "review_status": "unverified",
+      "needed_source": "当該単位の対象銀行の仕様書・文字一覧・料金表の本文と適用条件。正本外はnot_wrong/unsureとして保持し、確認済みにしない。",
+      "must_with": []
+    },
+    {
+      "id": "finish-r1-coverage-s-09554c0bebb94fe29be6-1",
+      "text": "ヲは総合振込では使えますが、給与・賞与振込では使えません",
+      "numbers": [],
+      "covers": [
+        "s-09554c0bebb94fe29be6-1"
+      ],
+      "scope": "既存本文の当該単位。本文は変更していない。",
+      "exceptions": "正本外のため未確認。銀行・サービスごとの指定を確認する必要がある。",
+      "status": "unverified",
+      "review_status": "unverified",
+      "needed_source": "当該単位の対象銀行の仕様書・文字一覧・料金表の本文と適用条件。正本外はnot_wrong/unsureとして保持し、確認済みにしない。",
+      "must_with": []
+    },
+    {
+      "id": "finish-r1-coverage-s-be75ea708fe3802b7da3-1",
+      "text": "「ヲ」は総合振込では使えますが、給与・賞与振込では使えません）、濁点・半濁点、英大文字、数字、半角スペース、記号の括弧・ハイフン・ピリオドです。",
+      "numbers": [],
+      "covers": [
+        "s-be75ea708fe3802b7da3-1"
+      ],
+      "scope": "既存本文の当該単位。本文は変更していない。",
+      "exceptions": "正本外のため未確認。銀行・サービスごとの指定を確認する必要がある。",
+      "status": "unverified",
+      "review_status": "unverified",
+      "needed_source": "当該単位の対象銀行の仕様書・文字一覧・料金表の本文と適用条件。正本外はnot_wrong/unsureとして保持し、確認済みにしない。",
+      "must_with": []
+    },
+    {
+      "id": "finish-r1-coverage-s-baa23f3ae9d4381d868c-1",
+      "text": "三菱UFJ銀行「BizSTATION ご利用料金」（振込組戻手数料770円）／「振込手数料」（振込組戻手数料880円）",
+      "numbers": [],
+      "covers": [
+        "s-baa23f3ae9d4381d868c-1"
+      ],
+      "scope": "既存本文の当該単位。本文は変更していない。",
+      "exceptions": "正本外のため未確認。銀行・サービスごとの指定を確認する必要がある。",
+      "status": "unverified",
+      "review_status": "unverified",
+      "needed_source": "当該単位の対象銀行の仕様書・文字一覧・料金表の本文と適用条件。正本外はnot_wrong/unsureとして保持し、確認済みにしない。",
+      "must_with": []
     }
   ],
   "absolutes": [
