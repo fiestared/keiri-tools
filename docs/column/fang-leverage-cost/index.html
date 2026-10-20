@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>FANG+レバとレバナスの隠れコスト｜為替ヘッジの差を実績で推定</title>
-<meta name="description" content="iFreeレバレッジFANG+とauAMレバレッジNASDAQ100の、費用の欄に出ないコストを推定。目に見える運用管理費用の差は1ポイントに届かない一方、同じ指数のauAMの2本は為替の動きを除いても年3.6〜3.9ポイントの差が残りました（過去の実績からの推定）。">
+<meta name="description" content="iFreeレバレッジFANG+とauAMレバレッジNASDAQ100の、費用の欄に出ないコストを各社の基準価額と日本銀行の為替データで推定。目に見える運用管理費用の差は1ポイントに届かない一方、同じ指数のauAMの2本は総経費率がどちらも0.44%でも、為替の動きを除いて年3.6〜3.9ポイントの差が残りました（過去の実績からの推定）。">
 <link rel="stylesheet" href="../../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/column/fang-leverage-cost/">
 <!-- ogp:auto -->
 <meta property="og:type" content="article">
 <meta property="og:title" content="FANG+レバとレバナスの隠れコスト｜為替ヘッジの差を実績で推定">
-<meta property="og:description" content="iFreeレバレッジFANG+とauAMレバレッジNASDAQ100の、費用の欄に出ないコストを推定。目に見える運用管理費用の差は1ポイントに届かない一方、同じ指数のauAMの2本は為替の動きを除いても年3.6〜3.9ポイントの差が残りました（過去の実績からの推定）。">
+<meta property="og:description" content="iFreeレバレッジFANG+とauAMレバレッジNASDAQ100の、費用の欄に出ないコストを各社の基準価額と日本銀行の為替データで推定。目に見える運用管理費用の差は1ポイントに届かない一方、同じ指数のauAMの2本は総経費率がどちらも0.44%でも、為替の動きを除いて年3.6〜3.9ポイントの差が残りました（過去の実績からの推定）。">
 <meta property="og:url" content="https://keiri-tools.com/column/fang-leverage-cost/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -198,7 +198,7 @@ gtag('config', 'G-E742DSDHPD');
 
   <ol>
     <li><b>信託報酬</b> — 交付目論見書に年率で書かれている、いちばん目に入る費用</li>
-    <li><b>その他費用</b> — 監査費用・保管費用など。<b>総経費率</b>は、運用管理費用の比率とその他の費用の比率を合わせた実績値</li>
+    <li><b>その他費用</b> — 監査費用・保管費用など。<b>総経費率</b>は、運用管理費用の比率とその他の費用の比率を合わせた実績値で、年1回の決算ごとに運用報告書で示されます</li>
     <li><b>売買委託手数料・有価証券取引税</b> — 総経費率の計算から<b>原則として除かれている</b></li>
     <li><b>配当にかかる外国の税金</b> — 投資先の国で差し引かれる分</li>
     <li><b>為替ヘッジのコスト</b> — ヘッジを行う商品だけ。円金利が組入通貨の金利より低いとき、金利差相当分がコストになる</li>
@@ -231,7 +231,7 @@ gtag('config', 'G-E742DSDHPD');
 
   <p data-review-context="after-table">100万円あたりの差は、税金と購入時手数料を引く前の試算で<b>139,157円</b>です。分配金を税引前で再投資したとみなした基準価額による換算で、実際の損益は購入価額や課税条件などで変わります。</p>
 
-  <p>交付目論見書の総経費率は、2本ともに0.44%です。ただし、対象期間（<a href="#visible">上の費用の表</a>）は、この基準価額の比較とは別の期間です。</p>
+  <p>交付目論見書の総経費率は、2本ともに0.44%（小数第2位までに丸めた表示）です。ただし、対象期間（<a href="#visible">上の費用の表</a>）は、この基準価額の比較とは別の期間です。</p>
 
   <p>ヘッジ無しは米ドルを持つので、為替の動きの分を除く必要があります。為替には、日本銀行が公表する「東京市場 ドル・円 スポット 9時時点」を、<b>基準価額と同じ日付</b>で当てました（理由は次の節）。同じ期間、ドル円は153.71円から153.46円へ-0.16%動きました。</p>
 
@@ -311,7 +311,7 @@ gtag('config', 'G-E742DSDHPD');
   <p><b>この残差は、そのままコストではありません。</b>中には次のものが混ざっています。</p>
   <ul>
     <li><b>レバレッジの資金調達にあたる差</b> — 目論見書は借入金利に相当する負担を説明し、「配当利回りと短期金利の差」を乖離要因に挙げています</li>
-    <li><b>為替ヘッジに対応する差</b> — 円金利が組入通貨の金利より低いときに、為替ヘッジを行う際にコストとなる金利差相当分など</li>
+    <li><b>為替ヘッジに対応する差</b> — ヘッジありの2本だけ。円金利が組入通貨の金利より低いときに、為替ヘッジを行う際にコストとなる金利差相当分など</li>
     <li><b>代理の1倍ファンド自身の費用と、指数の定義の違い</b> — 代理は信託報酬を差し引いた基準価額で、税引後配当込みの指数を追っています。レバレッジ型3本の対象指数は米ドルベース（iFreeレバレッジ FANG+は配当込み）で、ヘッジ無しは米ドル保有に伴うリターンの獲得もめざします</li>
     <li><b>先物と現物の値動きの差など、目論見書に挙げられた乖離要因</b></li>
   </ul>
@@ -343,7 +343,7 @@ gtag('config', 'G-E742DSDHPD');
 
   <p>レバレッジ型は日々の値動きの2倍程度を目指すため、2営業日以上の期間で見た基準価額の騰落率は、通常、指数の同期間の騰落率の2倍とは一致しません。</p>
 
-  <p>たとえば指数が+10%の翌日に−10%になると、指数は0.99倍ですが、2倍型は1.2×0.8＝0.96倍です。費用や連動のずれを考えず、日々ちょうど2倍で動くと仮定した計算例で、実際とは異なります。</p>
+  <p>たとえば指数が+10%の翌日に−10%になると、指数は0.99倍ですが、2倍型は1.2×0.8＝0.96倍です。反対に上昇が続くと、指数の騰落率の2倍を上回ることもあります。費用や連動のずれを考えず、日々ちょうど2倍で動くと仮定した計算例で、実際とは異なります。</p>
 
   <p>この記事の追跡残差は<b>日ごとの騰落率どうし</b>を比べているので、このずれは含めていません。ただし、保有する人の結果には効きます。</p>
 
@@ -427,7 +427,7 @@ gtag('config', 'G-E742DSDHPD');
   <p style="font-size:13px;color:var(--sub)">本記事は一般的な情報提供を目的としたものであり、特定の金融商品の取得や売買を勧めるものではありません。当サイトは金融商品取引業者ではなく、投資助言を行うものでもありません。本文の数値は、記載した期間・資料・計算方法による過去の実績と、その実績から計算した目安であり、将来の運用成果を示すものではありません。各ファンドの費用・運用方針は変更されることがあるため、購入を検討する場合は販売会社で最新の交付目論見書をご確認ください。投資による損失が生じた場合の責任は負いかねます。</p>
 </article>
 
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=iFree%E3%83%AC%E3%83%90%E3%83%AC%E3%83%83%E3%82%B8FANG%2B%E3%81%A8auAM%E3%83%AC%E3%83%90%E3%83%AC%E3%83%83%E3%82%B8NASDAQ100%E3%81%AE%E3%80%81%E8%B2%BB%E7%94%A8%E3%81%AE%E6%AC%84%E3%81%AB%E5%87%BA%E3%81%AA%E3%81%84%E3%82%B3%E3%82%B9%E3%83%88%E3%82%92%E6%8E%A8%E5%AE%9A%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Ffang-leverage-cost%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=iFree%E3%83%AC%E3%83%90%E3%83%AC%E3%83%83%E3%82%B8FANG%2B%E3%81%A8auAM%E3%83%AC%E3%83%90%E3%83%AC%E3%83%83%E3%82%B8NASDAQ100%E3%81%AE%E3%80%81%E8%B2%BB%E7%94%A8%E3%81%AE%E6%AC%84%E3%81%AB%E5%87%BA%E3%81%AA%E3%81%84%E3%82%B3%E3%82%B9%E3%83%88%E3%82%92%E5%90%84%E7%A4%BE%E3%81%AE%E5%9F%BA%E6%BA%96%E4%BE%A1%E9%A1%8D%E3%81%A8%E6%97%A5%E6%9C%AC%E9%8A%80%E8%A1%8C%E3%81%AE%E7%82%BA%E6%9B%BF%E3%83%87%E3%83%BC%E3%82%BF%E3%81%A7%E6%8E%A8%E5%AE%9A%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Ffang-leverage-cost%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 <footer class="site" style="display:block">© 税金・経理・補助金ツールズ
   <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
