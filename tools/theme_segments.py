@@ -153,7 +153,9 @@ def quote_present(run,ref,quote):
         #   弾いていたため、正しい逐語の引用 14 単位が不成立になり照合が止まった（write-2026-10-16-rg21・rg23）。画像・PDF は従来どおり不成立
         if path is None:return False
         if path.suffix.lower() not in ('.txt','.md','.htm','.html','.xml','.json','.csv','.tsv'):
-            if path.suffix.lower() not in ('','.raw'):return False
+            # 2026-10-20: 直し役が足した一次資料が source-link-N.bin で保存され（国税庁の Shift_JIS の HTML）、正しい逐語の引用が全部不成立になって照合が止まった（write-2026-10-20-drrg42）
+            # 2026-10-21: 取得した本文を r4-source-N.body で保存する便があり（銀行の料金ページ）、正しい逐語の引用 54 件が不成立になって照合が5回止まった（write-2026-10-20-dr1007rg36）
+            if path.suffix.lower() not in ('','.raw','.bin','.body'):return False
             with open(path,'rb') as fh:head=fh.read(8192)
             if b'\x00' in head or head.startswith(b'%PDF'):return False
         loaded=_corpus_text(str(path),path.stat().st_mtime_ns)
