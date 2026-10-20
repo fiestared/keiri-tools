@@ -527,7 +527,7 @@ $("calc").addEventListener("click", async () => {
       ${drow("社会保険料（本人負担）", sh.self,
         `標準賞与額 ${yen(sh.standardBonus)}（1,000円未満切捨）`)}
       ${drow("所得税（源泉徴収）", r.shotokuzei, taxSub)}
-      ${drow("住民税", 0, "賞与からは天引きされません（毎月の給与から月割で徴収）")}
+      ${drow("住民税", 0, "在職中は賞与から天引きされません（毎月の給与から月割で徴収。退職時は残りを一括徴収する場合あり）")}
       <tr style="border-top:2px solid var(--accent);font-weight:700">
         <td style="padding:6px 8px">手取り</td>
         <td style="padding:6px 8px;text-align:right">${yen(r.tedori)}</td></tr>
@@ -559,7 +559,7 @@ $("calc").addEventListener("click", async () => {
 
   html += `<div style="font-size:12.5px;color:var(--sub);margin-top:10px">
       ※ 所得税は源泉徴収額です（年末調整の対象者は年末調整で精算します）。
-      ※ 住民税は賞与から天引きされませんが、賞与も前年の所得に含まれるため翌年度の住民税は増えます。
+      ※ 住民税は在職中なら賞与から天引きされません（退職時は残りの税額を賞与から一括徴収する場合があります）。賞与も前年の所得に含まれるため、翌年度の住民税は増えます。
       ${sh.kaigoApplies ? "介護保険料は健康保険料と合算した料率で控除しています。" : $("age").value === "" ? "年齢が未入力のため、介護保険料はかからない（40歳未満）ものとして計算しています（40歳以上65歳未満は介護保険料がかかります）。" : `${Number($("age").value)}歳のため介護保険料はかかりません（40歳以上65歳未満が対象）。`}
       ${r.year ? `<span class="hint">（${r.year}の料率・${r.taxYear || ""}の算出率の表）</span>` : ""}</div>`;
 

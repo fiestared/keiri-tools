@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>投資信託の税金：売却・普通分配・元本払戻しで手取り額を検算</title>
+<meta name="description" content="投資信託の税金は、売却益・普通分配金・元本払戻金で扱いが異なります。国内公募株式投信の個別元本が異なる保有者を同じ分配額で比較。源泉税と手取り、払戻し後の取得費を使った売却益まで、架空の受取表で検算します。">
+<meta name="card-desc" content="国内公募株式投信の分配金と売却益を、個別元本・源泉税・手取り額から検算します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/toshi-shintaku-zeikin/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="投資信託の税金：売却・普通分配・元本払戻しで手取り額を検算">
+<meta property="og:description" content="投資信託の税金は、売却益・普通分配金・元本払戻金で扱いが異なります。国内公募株式投信の個別元本が異なる保有者を同じ分配額で比較。源泉税と手取り、払戻し後の取得費を使った売却益まで、架空の受取表で検算します。">
+<meta property="og:url" content="https://keiri-tools.com/column/toshi-shintaku-zeikin/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+
+
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "投資信託の税金：売却・普通分配・元本払戻しで手取り額を検算",
+      "datePublished": "2026-10-19",
+      "dateModified": "2026-10-19",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/toshi-shintaku-zeikin/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "投資信託の税金",
+          "item": "https://keiri-tools.com/column/toshi-shintaku-zeikin/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "元本払戻金は非課税なら利益ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "利益としての分配ではなく、元本の一部の払戻しです。国内公募株式投信では、元本払戻金を受け取るとその額だけ本人の個別元本が減ります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "分配金を再投資すると税金はかかりませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "個人の課税口座にある国内公募株式投信の普通分配金は、再投資でも課税され、税引後の額で再投資します。元本払戻金は非課税で、その全額が再投資されます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "同じ投信を持っている人と課税対象額が違うのはなぜですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "本人の個別元本が違うと、分配金に含まれる普通分配金と元本払戻金の額が違うためです。国内公募株式投信では、分配落ち後の基準価額と本人の個別元本を同じ口数当たりで比べます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "売却代金の全額に税金がかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "個人の課税口座にある国内公募株式投信では、売却・解約・償還の受取価額から取得費と売却委託手数料等を差し引いた利益に課税されます。取得費には購入時手数料とその消費税を含め、元本払戻し後は払戻し分を反映します。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main"><nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 投資信託の税金</nav>
+<article>
+<h1>投資信託の税金：分配金と売却の手取りを検算</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-19">2026年10月19日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><b>国内公募株式投信は、個人の課税口座では売却益と普通分配金に税金がかかり、元本払戻金は非課税です。</b></p>
+<p>ここでは国内の個人居住者が保有する国内公募株式投信を扱います。法人・NISA・私募投信・公社債投信・ETF・外国籍投信の計算は対象外です。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><b>目次</b><ol>
+<li><a href="#hayami">課税される額の早見表</a></li>
+<li><a href="#bunpai">同じ分配金でも手取りが変わる</a></li>
+<li><a href="#ganpon">個別元本と分配の内訳を計算する</a></li>
+<li><a href="#baikyaku">元本払戻し後に売却したら</a></li>
+<li><a href="#kakunin">通知を照合する順序と申告の確認先</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#shutten">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../tokutei-koza-gensen-ari/">特定口座（源泉徴収あり）と確定申告</a></li><li><a href="../haitokin-kakutei-shinkoku/">配当金の確定申告</a></li><li><a href="../../toushi/tsumitate/">積立シミュレーター</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="hayami">課税される額の早見表</h2>
+<p data-review-context="before-table">国内公募株式投信を保有する個人の課税口座の区分です。売却には解約・償還を含め、源泉徴収や申告後の税額の違いは後の節で区別します。</p>
+<div class="scroll-wrap"><table><caption>受け取るお金と課税対象</caption><thead><tr><th scope="col">受取の区分</th><th scope="col">課税対象になる額</th><th scope="col">照合するもの</th></tr></thead><tbody>
+<tr><th scope="row">売却・解約・償還</th><td>受取価額から取得費と売却委託手数料等を引いた利益</td><td>取引報告書の受取価額・取得費・費用</td></tr>
+<tr><th scope="row">普通分配金</th><td>分配金のうち、元本払戻金を除いた額</td><td>分配金の通知の課税対象額</td></tr>
+<tr><th scope="row">元本払戻金（特別分配金）</th><td>非課税。受取額だけ個別元本が減る</td><td>通知の元本払戻金と分配後の個別元本</td></tr>
+</tbody></table></div>
+<p>個人の課税口座で受け取る国内公募株式投信の普通分配金は、再投資する場合も税引後の額が再投資に回ります。再投資コースの元本払戻金は非課税のため、その全額が再投資に回ります。</p>
+<h2 id="bunpai">同じ分配金でも手取りが変わる</h2>
+<p>個別元本の違いを、架空の受取表で比べます。</p>
+<p data-review-context="before-table">令和8年分の国内公募株式投信の架空設例で、居住者である個人の課税口座・外国税額調整なしの現金分配を、国税15.315%・住民税5%で計算します。この設例に税額の端数はありません。</p>
+<div class="scroll-wrap"><table><caption>分配前の個別元本だけが違う保有者の受取表</caption><thead><tr><th scope="col">条件・計算項目</th><th scope="col">Aさん</th><th scope="col">Bさん</th></tr></thead><tbody>
+<tr><th scope="row">保有口数</th><td>100万口</td><td>100万口</td></tr>
+<tr><th scope="row">分配前の個別元本（1万口当たり）</th><td><span class="numeric-token">10,000円</span></td><td><span class="numeric-token">10,600円</span></td></tr>
+<tr><th scope="row">分配落ち後の基準価額（1万口当たり）</th><td><span class="numeric-token">10,200円</span></td><td><span class="numeric-token">10,200円</span></td></tr>
+<tr><th scope="row">税引前分配金（1万口当たり）</th><td><span class="numeric-token">1,000円</span></td><td><span class="numeric-token">1,000円</span></td></tr>
+<tr><th scope="row">保有全量の税引前分配金</th><td><span class="numeric-token">100,000円</span></td><td><span class="numeric-token">100,000円</span></td></tr>
+<tr><th scope="row">うち元本払戻金（保有全量）</th><td>なし</td><td>（10,600円−10,200円）×100＝40,000円</td></tr>
+<tr><th scope="row">うち普通分配金（保有全量）</th><td><span class="numeric-token">100,000円</span></td><td>（1,000円−400円）×100＝60,000円</td></tr>
+<tr><th scope="row">国税の源泉税</th><td>100,000円×15.315%＝15,315円</td><td>60,000円×15.315%＝9,189円</td></tr>
+<tr><th scope="row">住民税の徴収額</th><td>100,000円×5%＝5,000円</td><td>60,000円×5%＝3,000円</td></tr>
+<tr><th scope="row">源泉税の合計</th><td><span class="numeric-token">20,315円</span></td><td><span class="numeric-token">12,189円</span></td></tr>
+<tr><th scope="row">税引後の現金受取額</th><td><b><span class="numeric-token">79,685円</span></b></td><td><b><span class="numeric-token">87,811円</span></b></td></tr>
+<tr><th scope="row">分配後の個別元本（1万口当たり）</th><td><span class="numeric-token">10,000円</span></td><td><span class="numeric-token">10,200円</span></td></tr>
+</tbody></table></div>
+<p>Bさんの現金受取額が多いのは、元本の一部が戻っているためです。手取りの多さを、そのまま運用利益の多さとは比べられません。</p>
+<p class="hint">設例は分配時の国内徴収額です。外国税額の調整、申告による損益通算・税額控除などがある場合の最終年税額とは区別します。</p>
+<h2 id="ganpon">個別元本と分配の内訳を計算する</h2>
+<p>個別元本は、購入時の基準価額を出発点に管理する本人ごとの元本です。購入時手数料とその消費税は含みません。同一ファンドを複数回買う場合は購入口数で加重平均しますが、複数支店での購入などでは把握方法が異なる場合があるため、販売会社の表示を確認します。</p>
+<p>元本払戻金を受け取った後は、その額を引いた個別元本で次の分配を判定します。購入時の元本のまま固定する計算ではありません。</p>
+<p>分配の内訳は、同じ口数当たりの金額で比較します。分配落ち後の基準価額が本人の個別元本以上なら、分配金の全額が普通分配金です。</p>
+<p>分配落ち後の基準価額が本人の個別元本を下回るときは、個別元本から分配落ち後の基準価額を引いた額が元本払戻金です（分配額が上限）。普通分配金は、分配金から元本払戻金を引いた残額です。</p>
+<figure class="figure"><svg width="480" viewBox="0 0 360 260" role="img" aria-labelledby="bunpai-title"><title id="bunpai-title">個人の課税口座にある国内公募株式投信の分配を確認する順序</title>
+<rect x="10" y="10" width="340" height="58" rx="7" fill="none" stroke="currentColor"/><text x="180" y="34" text-anchor="middle" font-size="15" fill="currentColor">分配落ち後の基準価額と</text><text x="180" y="55" text-anchor="middle" font-size="15" fill="currentColor">本人の個別元本を同じ口数で比較</text>
+<path d="M180 68v24m-5-6 5 6 5-6" fill="none" stroke="currentColor"/>
+<rect x="10" y="92" width="340" height="64" rx="7" fill="none" stroke="currentColor"/><text x="180" y="116" text-anchor="middle" font-size="14" fill="currentColor">個別元本を下回る差額が元本払戻金</text><text x="180" y="139" text-anchor="middle" font-size="14" fill="currentColor">分配額が上限・差額がなければ払戻金なし</text>
+<path d="M180 156v24m-5-6 5 6 5-6" fill="none" stroke="currentColor"/>
+<rect x="10" y="180" width="340" height="62" rx="7" fill="none" stroke="currentColor"/><text x="180" y="204" text-anchor="middle" font-size="15" fill="currentColor">分配金の残りが普通分配金</text><text x="180" y="227" text-anchor="middle" font-size="14" fill="currentColor">払戻金は非課税・以後の個別元本から控除</text>
+</svg><figcaption>国内公募株式投信の個人の課税口座での区分。比較するのは分配落ち後の基準価額です。</figcaption></figure>
+<p>個別元本と取得費は同じものではありません。換金の利益を計算する取得費には購入時手数料とその消費税も含めます。分配の区分は<a href="https://www.rakuten-toushin.co.jp/fund/nav/riubsw/pdf/riubsw_Ps.pdf">請求目論見書「課税上の取扱い」</a>、譲渡益の算式は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1463.htm">国税庁No.1463</a>で確認できます。</p>
+<h2 id="baikyaku">元本払戻し後に売却したら</h2>
+<p>元本払戻しを受けた分は、後の換金で使う取得費にも反映します。ここでは購入時手数料のないBさんが、その後、追加購入も再投資もせずに保有分を換金する例を示します。</p>
+<p data-review-context="before-table">令和8年分の国内公募株式投信の架空設例で、居住者である個人の課税口座は源泉徴収口座とし、外国税額調整なし、国税15.315%・住民税5%で計算します。Bさんが払戻し後に全量換金し、手数料等なし、他取引・追加購入・再投資・損失との通算なしとします。この設例に税額の端数はありません。</p>
+<div class="scroll-wrap"><table><caption>Bさんの元本払戻し後の売却と換金時の手取り</caption><thead><tr><th scope="col">項目</th><th scope="col">設例の金額・計算</th></tr></thead><tbody>
+<tr><th scope="row">換金する口数</th><td>100万口</td></tr>
+<tr><th scope="row">払戻し後の個別元本（1万口当たり）</th><td><span class="numeric-token">10,200円</span></td></tr>
+<tr><th scope="row">全量の取得費（購入時手数料なし）</th><td><span class="numeric-token">1,020,000円</span></td></tr>
+<tr><th scope="row">売却価額</th><td><span class="numeric-token">1,200,000円</span></td></tr>
+<tr><th scope="row">譲渡益（売却価額−取得費）</th><td>1,200,000円−1,020,000円＝180,000円</td></tr>
+<tr><th scope="row">国税の源泉税</th><td>180,000円×15.315%＝27,567円</td></tr>
+<tr><th scope="row">住民税の徴収額</th><td>180,000円×5%＝9,000円</td></tr>
+<tr><th scope="row">源泉税の合計</th><td><span class="numeric-token">36,567円</span></td></tr>
+<tr><th scope="row">換金時の現金受取額</th><td><b><span class="numeric-token">1,163,433円</span></b></td></tr>
+</tbody></table></div>
+<p>取得費には払戻し後の額を使います。購入時の支払額をそのまま引くと、元本払戻金として既に受け取った分まで重ねて控除することになります。</p>
+<p>売却価額は取引報告書の金額で確認します。信託財産留保額などが既に反映された換金価額から、同じ費用を再度引かないようにします。買取請求の受取額・費用は販売会社の表示で確認します。</p>
+<p class="hint">表は源泉徴収時の手取りで、申告後の追加納付・還付は計算していません。</p>
+<h2 id="kakunin">通知を照合する順序と申告の確認先</h2>
+<ol><li>分配金の通知で、税引前分配金・普通分配金・元本払戻金・源泉税を分けます。</li><li>個別元本は分配前と分配後を区別し、表示がどの口数当たりかをそろえます。</li><li>換金時は、取引報告書の売却価額・取得費・費用・源泉税を確認します。</li></ol>
+<p>口座による納税手続や申告する範囲は、<a href="../tokutei-koza-gensen-ari/">特定口座と確定申告</a>にまとめています。普通分配金を申告する場合の総合課税・申告分離課税・申告不要の違いは、<a href="../haitokin-kakutei-shinkoku/">配当金の確定申告</a>を参照してください。</p>
+<a class="tool-cta" href="../../toushi/tsumitate/">積立シミュレーターで評価額と税引後の額を試算する</a>
+<p class="hint">分配金の普通・元本払戻しの内訳を判定するツールではありません。</p>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question">元本払戻金は非課税なら利益ですか？</h3>
+<p class="faq-answer">利益としての分配ではなく、元本の一部の払戻しです。国内公募株式投信では、元本払戻金を受け取るとその額だけ本人の個別元本が減ります。</p>
+<h3 class="faq-question">分配金を再投資すると税金はかかりませんか？</h3>
+<p class="faq-answer">個人の課税口座にある国内公募株式投信の普通分配金は、再投資でも課税され、税引後の額で再投資します。元本払戻金は非課税で、その全額が再投資されます。</p>
+<h3 class="faq-question">同じ投信を持っている人と課税対象額が違うのはなぜですか？</h3>
+<p class="faq-answer">本人の個別元本が違うと、分配金に含まれる普通分配金と元本払戻金の額が違うためです。国内公募株式投信では、分配落ち後の基準価額と本人の個別元本を同じ口数当たりで比べます。</p>
+<h3 class="faq-question">売却代金の全額に税金がかかりますか？</h3>
+<p class="faq-answer">個人の課税口座にある国内公募株式投信では、売却・解約・償還の受取価額から取得費と売却委託手数料等を差し引いた利益に課税されます。取得費には購入時手数料とその消費税を含め、元本払戻し後は払戻し分を反映します。</p>
+<h2>関連記事・ツール</h2>
+<ul><li><a href="../tokutei-koza-gensen-ari/">特定口座と確定申告</a></li><li><a href="../haitokin-kakutei-shinkoku/">配当金の確定申告</a></li><li><a href="../../toushi/tsumitate/">積立シミュレーター</a></li></ul>
+<h2 id="shutten">出典</h2>
+<ul><li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1330.htm">国税庁「配当金を受け取ったとき（配当所得）」</a></li><li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1463.htm">国税庁「株式等を譲渡したときの課税（申告分離課税）」</a></li><li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1538.htm">国税庁「上場株式等に係る譲渡所得等の収入金額とみなされる場合―投資信託等の終了等の場合―」</a> — 解約・償還の収入の扱い</li><li><a href="https://www.rakuten-toushin.co.jp/fund/nav/riubsw/pdf/riubsw_Ps.pdf">楽天投信投資顧問「投資信託説明書（請求目論見書）」の課税上の取扱い</a> — 個別元本・普通分配金・元本払戻金</li><li><a href="https://www.jp-bank.japanpost.jp/kojin/tameru/toushin/about/uddividend/index.html">ゆうちょ銀行「分配金について」</a> — 再投資時の課税</li></ul>
+<p class="note" data-source-nolink="本サイトの情報提供と個別相談への対応方針">この記事は一般的な情報提供であり、個別の税務相談や特定の金融商品・口座の利用を勧めるものではありません。個別の税務・労務相談には応じられません。実際の申告は税務署・税理士にご確認ください。</p>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../kawase-saeki-kakutei-shinkoku/"><b>為替差益の確定申告：円転・同通貨の預け替え・外貨の使用を検算</b><span>為替差益の確定申告は、円に戻したかだけでは決まりません。個人の外貨預金について、円転・同通貨の預け替え・貸付用建物への支払いを同じ元本で比較。国税庁の計算例、給与所得者の申告不要制</span></a><a class="tool-card" href="../beikoku-kabu-zeikin-enkansan/"><b>米国株の税金：ドルの売却損益と円換算した譲渡所得の違いを検算</b><span>米国株の売却損益は、購入時と売却時をそれぞれ円換算して確認します。ドルで値上がりしていなくても円建て所得が残る例を、取得費・売買手数料とつないで検算。使う為替相場、報告書の確認順、</span></a><a class="tool-card" href="../ippan-koza-kakutei-shinkoku/"><b>一般口座の確定申告：複数回購入の取得費・売却費用・税額を自分で検算</b><span>一般口座で上場株式を売った年の確定申告を、取引報告書から自分で計算する手順で整理。同じ銘柄を複数回買ったときの総平均法に準ずる方法と手数料の扱いを、設例で1株の単価から税額まで検算</span></a></div></section><!--next-read:E-->
+</article><!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E6%8A%95%E8%B3%87%E4%BF%A1%E8%A8%97%E3%81%AE%E7%A8%8E%E9%87%91%E3%81%AF%E3%80%81%E5%A3%B2%E5%8D%B4%E7%9B%8A%E3%83%BB%E6%99%AE%E9%80%9A%E5%88%86%E9%85%8D%E9%87%91%E3%83%BB%E5%85%83%E6%9C%AC%E6%89%95%E6%88%BB%E9%87%91%E3%81%A7%E6%89%B1%E3%81%84%E3%81%8C%E7%95%B0%E3%81%AA%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82%E5%9B%BD%E5%86%85%E5%85%AC%E5%8B%9F%E6%A0%AA%E5%BC%8F%E6%8A%95%E4%BF%A1%E3%81%AE%E5%80%8B%E5%88%A5%E5%85%83%E6%9C%AC%E3%81%8C%E7%95%B0%E3%81%AA%E3%82%8B%E4%BF%9D%E6%9C%89%E8%80%85%E3%82%92%E5%90%8C%E3%81%98%E5%88%86%E9%85%8D%E9%A1%8D%E3%81%A7%E6%AF%94%E8%BC%83%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Ftoshi-shintaku-zeikin%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main><footer class="site">© 税金・経理・補助金ツールズ  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer><script src="../../assets/empty-state.js" defer></script>
+</body></html>
