@@ -141,6 +141,7 @@ export function buildSections(rows) {
     out.push(`  <h3 id="${bankId(base)}">${base}の振込手数料</h3>`);
     const page = bankPages.find(b => b.name === base);
     if (page) out.push(`  <p class="bank-note"><a href="/column/${page.slug}/">${base}の同行宛て・他行宛て、境界と印刷用の表</a></p>`);
+    if (['みずほ銀行', 'りそな銀行', '埼玉りそな銀行', 'ゆうちょ銀行'].includes(base)) out.push('  <p class="hint" data-review-context="before-table">他行宛ネット振込の通常料金です。無料回数・会員優遇は適用しません。</p>');
     out.push('  <table>');
     out.push('    <tr><th scope="col">区分</th><th scope="col">3万円未満</th><th scope="col">3万円以上</th></tr>');
     for (const r of [kojin, hojin]) {
@@ -285,7 +286,7 @@ export function buildAmountIndex(rows) {
   out.push(AMT_START);
   out.push('  <h2 id="gyakubiki">この金額はどこの銀行？（金額から逆引き）</h2>');
   out.push('  <p>通帳や請求書で見た手数料の金額から、その金額になる銀行を引く表です。<b>上の一覧と同じ調査結果を金額の順に並べ替えています</b>ので、金額が食い違うことはありません。「3万円未満／以上で同じ額」の区分は「金額不問」と書いています。</p>');
-  out.push('  <table>');
+  out.push('  <table><caption>他行宛ネット振込の通常料金。無料回数・会員優遇を適用しない比較です。ゆうちょは取引時確認済み口座の居住者間送金に限定し、法人は通常振込のみです。</caption>');
   // 長い表は見出し行を thead に入れる（印刷で各ページに見出しを繰り返す。tests/test_long_table_thead.mjs）
   out.push('    <thead><tr><th scope="col">振込手数料</th><th scope="col">この金額になる区分</th><th scope="col">条件</th></tr></thead>');
   out.push('    <tbody>');
@@ -293,7 +294,7 @@ export function buildAmountIndex(rows) {
     // 銀行ごとに行を分け、条件は独立した列に置く。
     const entries = list.map(x => { const match = x.name.match(/^(.*?)【(.*?)】(.*)$/); return {x, name: match ? match[1] + match[3] : x.name, note: match ? match[2] : ''}; });
     // 金額は行の見出し（th scope="row"）。データのセルではない
-    const reviewContext = list.some((x) => x.name.startsWith('auじぶん銀行')) ? ' data-review-context="row"' : '';
+    const reviewContext = ' data-review-context="row"';
     for (const {x, name, note} of entries) out.push(`    <tr><th scope="row"${reviewContext}><b>${amount}円</b></th><td>${name}${x.fullLabel ? "" : `（${x.range}）`}</td><td>${note || "—"}</td></tr>`);
   }
   out.push('    </tbody>');
