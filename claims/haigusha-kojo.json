@@ -1,6 +1,6 @@
 {
   "page": "docs/haigusha-kojo/index.html",
-  "checked": "2026-10-19",
+  "checked": "2026-10-21",
   "scope": "r16/t1-z単位審査。coversは対応の記録。正本外はout_of_corpusにneeded_source付きで保存し、covers/verifiedには含めない。修正単位は作業者が再照合し、独立レビュー済みverifiedとは区別。",
   "claims": [
     {
@@ -4954,7 +4954,7 @@
     },
     {
       "id": "r16-t1-z-s-31ae9c2030184ee0f085-1",
-      "text": "配偶者控除・配偶者特別控除の対象は民法の規定による配偶者で、内縁関係の人は該当しないと国税庁が明記しています。",
+      "text": "定義文は2周目で削除。内縁・事実婚の結論と、表の外国人に関する例外は維持。",
       "where": [
         "p / faq"
       ],
@@ -4964,9 +4964,7 @@
       "source_quote": "                ２ ここでいう「配偶者」とは、婚姻の届出をしている配偶者をいい、いわゆる内縁関係の人は\n                    含まれません。",
       "corpus_ref": "corpus/nencho/nencho_all.txt:775-776",
       "exceptions": "審査範囲はこの単位の金額・年分・境界・要件の該当。正本 corpus/nencho/nencho_all.txt:775-776。引用は源泉徴収のあらまし2026または年末調整のしかた2026の該当箇所にあり、単位の述べる数値・年分・境界と矛盾しない。表の計算セルは計算式Ⅰ（2万円/4万円/8万円）・計算式Ⅱ（3万円/6万円/12万円）・計算式Ⅲ（2万5千円/5万円/10万円、上限5万円）と合計12万円に照らした。 外国人で民法の規定によれない人は法の適用に関する通則法による（gap3.txt:15）ため「だけ」を外した（2026-10-19 rg57 仕上げ1周目）。",
-      "covers": [
-        "s-d8807463211fe3279be0-1"
-      ],
+      "covers": [],
       "topic": [
         "r16-t1-z"
       ],
@@ -5967,38 +5965,42 @@
     },
     {
       "id": "rg57-gap1",
-      "text": "給与所得者の年末調整の提出手続き",
+      "text": "「給与所得者の配偶者控除等申告書」は、その年最後の給与等の支払日の前日までに勤務先へ提出します（配偶者が居住者の場合）。",
       "numbers": [],
       "applies": "所得税の申告手続き。記入例は令和7年分に限定。",
-      "scope": "給与所得者の年末調整の提出手続き",
-      "exceptions": "勤務先で保存し、税務署長から求められたとき提出。配偶者が非居住者の場合の親族関係書類・送金関係書類は rg57-gap1-nonresident（gap1.txt:116-117）。",
+      "scope": "配偶者が居住者の場合の年末調整の提出先と期限",
+      "exceptions": "非居住者は本文の国税庁注意事項へのリンクへ分離。給与の支払者が保存し、税務署長に求められたとき提出（gap1.txt:13-15）。",
       "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2672.htm",
       "source_quote": "年末調整において、給与所得者が配偶者控除または配偶者特別控除の適用を受けようとする場合には、給与の支払者からその年の最後に給与等の支払を受ける日の前日までに、「給与所得者の配偶者控除等申告書」（\n参考：［手続名］給与所得者の基礎控除、配偶者（特別）控除、特定親族特別控除及び所得金額調整控除の申告\n）を給与の支払者を経由して、その支払者の源泉所得税の納税地の所轄税務署長に提出することとなっています（税務署長から提出を求められるまでの間は、提出を受けた給与の支払者が保存するものとされています。）。\n控除額\n【配偶者控除額または配偶者特別控除額の表】\n（注）令和8年12月1日に施行され、令和8年分の所得税から適用される金額です。\n給与所得者の合計所得金額\n（給与所得だけの場合の所得者の給与等の収入金額）",
       "corpus_ref": "gap1.txt:13-20",
       "must_with": [
-        "配偶者"
+        "居住者",
+        "前日",
+        "勤務先"
       ],
       "covers": [
-        "s-8230966657ed15a3890a-1",
-        "s-1292db6ffefff83b13ac-1",
-        "s-5be685618a312cbb5195-1"
+        "s-cfc6ccf173dbdfaaa06e-1",
+        "s-a1e267856e088ae79413-1"
       ],
       "review_status": "author_checked"
     },
     {
       "id": "rg57-gap1-nonresident",
-      "text": "配偶者が非居住者の場合は、親族関係書類と送金関係書類の提出または提示も必要です（扶養控除等申告書で親族関係書類を出していればその書類は不要）。",
+      "text": "非居住者の必要書類・例外は国税庁No.2672の注意事項へ案内する。",
       "numbers": [],
       "applies": "年末調整での配偶者控除・配偶者特別控除の申告（令和8年4月1日現在法令等）",
-      "scope": "年末調整で配偶者控除等申告書を提出する給与所得者のうち、控除の対象となる配偶者が非居住者である人",
-      "exceptions": "扶養控除等申告書の提出時に親族関係書類を提出・提示済みなら親族関係書類は不要（gap1.txt:117）。書類の中身（注1・注2）は本文に書かない。根拠法令 所法195の2、所令318の3、所規47の2、74の4。",
+      "scope": "非居住者の配偶者の年末調整の必要書類への参照",
+      "exceptions": "親族関係書類は扶養控除等申告書時に提出又は提示済みなら再提出・提示不要。両書類は外国語なら翻訳文も必要。親族関係書類の2区分、送金関係書類の3区分と当年の生活費又は教育費を必要の都度各人に支払う要件は、細部を転載せず注意事項の原文へ案内。",
       "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/gensen/2672.htm",
       "source_quote": "控除の対象となる配偶者が非居住者である場合には、給与所得者の配偶者控除等申告書を提出する際に「親族関係書類」（注1）および「送金関係書類」（注2）を給与の支払者に提出または提示をする必要があります。\nなお、給与所得者の扶養控除等申告書を提出する際に「親族関係書類」を提出または提示している場合には、「親族関係書類」の提出または提示は必要ありません。",
-      "corpus_ref": "gap1.txt:116-117",
+      "corpus_ref": "gap1.txt:116-126",
       "covers": [
-        "s-ab156631846c3b799266-1"
+        "s-e692eb44cd7b5997f74f-1"
       ],
-      "review_status": "author_checked"
+      "review_status": "author_checked",
+      "must_with": [
+        "非居住者"
+      ]
     },
     {
       "id": "rg57-gap2",
@@ -6415,12 +6417,6 @@
       "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t1-z/segment-adjudication.json#s-32ecb85b78a7a04a8e19-1"
     },
     {
-      "id": "s-870a5de641ae3cb7bfcb-1",
-      "text_hash": "34413a2f5f67110cafe4",
-      "result": "ok",
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t1-z/segment-adjudication.json#s-870a5de641ae3cb7bfcb-1"
-    },
-    {
       "id": "s-0480757088e034ce758b-1",
       "text_hash": "816d579ff9c61a737429",
       "result": "ok",
@@ -6623,12 +6619,6 @@
       "text_hash": "1b999516a801b97f8f0c",
       "result": "ok",
       "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t1-z/segment-adjudication.json#s-b396a8648e7711a8ad8c-1"
-    },
-    {
-      "id": "s-31ae9c2030184ee0f085-1",
-      "text_hash": "ef1044c699ae055e8fb0",
-      "result": "ok",
-      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t1-z/segment-adjudication.json#s-31ae9c2030184ee0f085-1"
     },
     {
       "id": "s-bab393b735d8e1de2fcf-1",
@@ -7152,5 +7142,15 @@
     ],
     "superseded_verified": 72
   },
-  "rg57_note": "既存のnumbersは履歴を保存。must_withは同じ数値が現れる区分の条件語の選択肢。既存本文の全面的な事実照合を実施したという意味ではない。"
+  "rg57_note": "既存のnumbersは履歴を保存。must_withは同じ数値が現れる区分の条件語の選択肢。既存本文の全面的な事実照合を実施したという意味ではない。",
+  "rg57_r2": {
+    "removed_cover_ids": [
+      "s-d8807463211fe3279be0-1",
+      "s-8230966657ed15a3890a-1",
+      "s-1292db6ffefff83b13ac-1",
+      "s-5be685618a312cbb5195-1",
+      "s-ab156631846c3b799266-1"
+    ],
+    "note": "未解決3件を削除・対象限定・原文参照で修正。正本外not_wrongは変更せず未確認を維持。独立再照合待ち。"
+  }
 }
