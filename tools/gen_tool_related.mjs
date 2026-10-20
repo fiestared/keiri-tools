@@ -90,10 +90,25 @@ for (const tool of tools) {
     .sort((a, b) => rank(a[0]) - rank(b[0]))
     .slice(0, MAX);
 
+  // 検証済みの一次資料リンクを再生成で消さない。惹句の表示文は元記事のまま使う。
+  const sourceLinks = new Map();
+  for (const desc of html.matchAll(/<span class="rel-desc">([\s\S]*?)<\/span>/g)) {
+    for (const a of desc[1].matchAll(/<a href="(https:\/\/[^"<>]+)"[^>]*>([^<>]+)<\/a>/g)) {
+      if (/^https:\/\/(?:laws\.e-gov\.go\.jp|www\.nta\.go\.jp)\//.test(a[1])) sourceLinks.set(a[2], a[0]);
+    }
+  }
+  const description = (card) => {
+    const text = esc(card.slice(0, 70));
+    if (!sourceLinks.size) return text;
+    const labels = [...sourceLinks.keys()].sort((a, b) => b.length - a.length);
+    const pattern = labels.map(label => label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+    return text.replace(new RegExp(pattern, "g"), label => sourceLinks.get(label));
+  };
+
   const inner = rel.length
     ? `<ul class="rel-list">` + rel.map(([slug, c]) =>
         `<li><a href="../column/${esc(slug)}/">${esc(c.h1)}</a>` +
-        (c.card ? `<span class="rel-desc">${esc(c.card.slice(0, 70))}</span>` : "") + `</li>`).join("") +
+        (c.card ? `<span class="rel-desc">${description(c.card)}</span>` : "") + `</li>`).join("") +
       `</ul>`
     : "";
 
