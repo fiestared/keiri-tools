@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>米国株の税金：ドルの売却損益と円換算した譲渡所得の違いを検算</title>
+<meta name="description" content="米国株の売却損益は、購入時と売却時をそれぞれ円換算して確認します。ドルで値上がりしていなくても円建て所得が残る例を、取得費・売買手数料とつないで検算。使う為替相場、報告書の確認順、配当との分担も整理します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/beikoku-kabu-zeikin-enkansan/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="米国株の税金：ドルの売却損益と円換算した譲渡所得の違いを検算">
+<meta property="og:description" content="米国株の売却損益は、購入時と売却時をそれぞれ円換算して確認します。ドルで値上がりしていなくても円建て所得が残る例を、取得費・売買手数料とつないで検算。使う為替相場、報告書の確認順、配当との分担も整理します。">
+<meta property="og:url" content="https://keiri-tools.com/column/beikoku-kabu-zeikin-enkansan/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+
+
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "米国株の税金：ドルの売却損益と円換算した譲渡所得の違いを検算",
+      "datePublished": "2026-10-20",
+      "dateModified": "2026-10-20",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/beikoku-kabu-zeikin-enkansan/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "米国株の税金",
+          "item": "https://keiri-tools.com/column/beikoku-kabu-zeikin-enkansan/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "ドルの株価が同じなら売却益はありませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "円建てでは所得が生じる場合があります。日本の居住者が課税口座で購入した米国上場株式は、取得時と売却時を別々に円換算し、購入手数料込みの取得費と売却手数料等を差し引いて売却損益を確認します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "売却代金をドルのまま受け取る場合も円換算しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "外貨表示株式の売却価額は、外貨で支払われる場合も円換算の対象です。金融商品取引業者との約款の約定日と適用相場は、本文の換算の節で確認してください。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "購入手数料と売却手数料は両方差し引きますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "購入した株式では、購入手数料はその消費税を含めて取得費へ含め、売却手数料等は売却価額から差し引きます。取得費や受渡金額に織り込まれた費用を、もう一度引かないよう確認します。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 米国株の税金</nav>
+<article>
+<h1>米国株の税金：ドルの売却損益と円換算した譲渡所得の違いを検算</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-20">2026年10月20日</time></p>
+
+<p><b>米国株の売却損益は、購入時と売却時を別々に円換算して求めるため、ドルの値動きだけでは決まりません。</b>ドルの株価が同じでも、為替と手数料によって円建ての譲渡所得が生じる場合があります。</p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p>この記事は日本の居住者が課税口座で購入した米国上場普通株の現物売却を扱います。まず架空の取引を検算し、次に使う相場と報告書を確認します。配当の課税は<a href="../gaikoku-zeigaku-kojo/">外国税額控除の記事</a>へ分けています。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol><li><a href="#example">ドルの株価が同じでも円建て所得が残る例</a></li><li><a href="#rate">購入と売却で、いつ・どの相場を使うか</a></li><li><a href="#cost">取得費と手数料を重ねて引かない</a></li><li><a href="#tax">税率と申告は、円換算した所得から確認</a></li><li><a href="#check">報告書を照合する順序</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#sources">出典</a></li></ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../tokutei-koza-gensen-ari/">特定口座（源泉徴収あり）と確定申告</a></li><li><a href="../gaikoku-zeigaku-kojo/">外国税額控除とは</a></li><li><a href="../rsu-zeikin-vest-baikyaku/">RSUとは：付与・権利確定・売却の3時点で給与税と譲渡税を検算</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="example">ドルの株価が同じでも円建て所得が残る例</h2>
+<p>売却した株式の所得は、円換算した売却価額から、購入手数料込みの取得費と売却手数料等を差し引きます。<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1464.htm">国税庁「譲渡した株式等の取得費」</a>の式で、手数料の有無を分けて確かめます。</p>
+<p data-review-context="before-table">2026年中の国内居住者の架空例です。課税口座で一度購入し全株売却、ほかの保有・取引・分割はありません。購入代金と売却代金は各1,000ドル、購入約定日のTTSは1ドル140円、売却約定日のTTBは1ドル150円と仮定します。売買手数料は各約定日にドル払いする税込総額で、表の「手数料あり」は購入・売却各10ドルです。計算は割り切れ、途中の丸めは生じません。</p>
+<div class="scroll-wrap"><table>
+<caption>単独取引の譲渡所得の検算。税額ではありません</caption>
+<tr><th>項目</th><th>手数料なし</th><th>手数料あり</th></tr>
+<tr><td>購入代金の円換算</td><td class="num">1,000ドル × 140円 ＝ 140,000円</td><td class="num">1,000ドル × 140円 ＝ 140,000円</td></tr>
+<tr><td>購入手数料の円換算</td><td class="num">なし</td><td class="num">10ドル × 140円 ＝ 1,400円</td></tr>
+<tr><td>取得費</td><td class="num"><span class="numeric-token">140,000円</span></td><td class="num">140,000円 ＋ 1,400円 ＝ 141,400円</td></tr>
+<tr><td>売却代金の円換算</td><td class="num">1,000ドル × 150円 ＝ 150,000円</td><td class="num">1,000ドル × 150円 ＝ 150,000円</td></tr>
+<tr><td>売却手数料の円換算</td><td class="num">なし</td><td class="num">10ドル × 150円 ＝ 1,500円</td></tr>
+<tr><td>単独取引の譲渡所得</td><td class="num">150,000円 − 140,000円 ＝ 10,000円</td><td class="num">150,000円 − 141,400円 − 1,500円 ＝ 7,100円</td></tr>
+<tr><td>参考：ドルの売買差額（手数料込み）</td><td class="num">差額なし</td><td class="num">1,000ドル − 1,000ドル − 10ドル − 10ドル ＝ 20ドルの損失</td></tr>
+</table></div>
+<p class="hint">この表は所得の計算までです。年間の他の売買との通算、繰越損失、所得控除、源泉徴収済み税額などを反映した納税額ではありません。売却後に保有する外貨の取引も計算に含めていません。</p>
+<p><b>ドルの差額を売却日の相場で換算する計算では、取得時との為替差を拾えません。</b>先に円建ての売却価額と取得費を作るのが、この表の要点です。</p>
+<figure class="figure fig-wide" style="--figw:430px"><svg viewBox="0 0 640 220" role="img" aria-label="購入した株式の売却損益の計算。購入時の円換算額と購入手数料から取得費を作り、売却時の円換算額から取得費と売却手数料等を差し引く。">
+<rect x="10" y="15" width="300" height="70" rx="8" fill="none" stroke="var(--accent)"/><text x="160" y="42" text-anchor="middle" font-size="16" fill="currentColor">購入時の円換算額</text><text x="160" y="67" text-anchor="middle" font-size="15" fill="currentColor">＋ 購入手数料 → 取得費</text>
+<rect x="330" y="15" width="300" height="70" rx="8" fill="none" stroke="var(--accent)"/><text x="480" y="42" text-anchor="middle" font-size="16" fill="currentColor">売却時の円換算額</text><text x="480" y="67" text-anchor="middle" font-size="15" fill="currentColor">− 売却手数料等</text>
+<path d="M160 85V115H320M480 85V115H320V140" fill="none" stroke="currentColor"/><rect x="80" y="140" width="480" height="60" rx="8" fill="none" stroke="var(--accent)"/><text x="320" y="177" text-anchor="middle" font-size="16" fill="currentColor">売却価額 − 取得費 − 売却手数料等 ＝ 所得</text></svg>
+<figcaption>購入した株式の取得費には、購入手数料とその消費税も含めます。手数料を含めた取得費から同じ購入手数料を再び引かないようにします。</figcaption></figure>
+<h2 id="rate">購入と売却で、いつ・どの相場を使うか</h2>
+<p><b>金融商品取引業者を通じる外貨表示株式の売却対価は、外国証券取引口座約款で定める約定日のTTB（支払者の主要取引金融機関、支払者自身がTTBを公表する場合はその相場）で円換算する基本の扱いです。</b></p>
+<p>取得対価はTTSで同様に換算しますが、取得約定が平成10年3月以前なら外国為替公認銀行の公表TTSによります。TTBは電信買相場、TTSは電信売相場です。</p>
+<p><a href="https://www.nta.go.jp/law/tsutatsu/kobetsu/shotoku/sochiho/020624/sanrin/1273/37_10-11/01.htm">国税庁の邦貨換算通達</a>で、売却と取得の相場の使い分けを確認できます。</p>
+<p>実取引では約定日と適用相場が記載された取引報告書・証券会社の計算明細を照合します。ニュースのドル円相場、受渡日の相場、後日両替した相場を、そのまま置き換えて使わないようにします。</p>
+<p class="hint">上記は通常の株式取引の基本の扱いです。古い取得取引や公社債償還はここでは扱いません。海外業者との直接取引など、契約・報告書が異なる取引の適用相場は、この説明から断定しません。</p>
+<h2 id="cost">取得費と手数料を重ねて引かない</h2>
+<p><b>購入時の手数料は取得費、売却時の手数料は売却に要した費用として整理します。</b>購入した株式の取得費には、購入手数料にかかる消費税や購入時の名義書換料なども含まれます。</p>
+<p>取引報告書の「受渡金額」が手数料を差し引いた金額か、購入手数料を足した金額かを確認します。手数料込みの取得費を転記した後に、同じ手数料を再び費用へ入れると二重控除になります。</p>
+<p>取得費を実額で計算する場合、同一銘柄を複数回購入して一部を売却した株式は、総平均法に準ずる方法で単価を求めます。特定口座内の計算は口座外と区分するため、他口座の保有分を自己判断で合算しません。設例のような単純な購入額を使えるのは、一度購入して全株売却し、ほかの保有や調整がない場合です。</p>
+<p class="hint">相続・贈与、RSU等の報酬株、NISAからの移管、株式分割等がある場合は、取得費の出発点や調整が別です。<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1464.htm">国税庁の取得費の説明</a>と保管記録を確認します。個別の為替手数料を追加控除できるかは、この設例では扱いません。</p>
+<h2 id="tax">税率と申告は、円換算した所得から確認</h2>
+<p>外国金融商品市場で売買される株式も、日本の税制上の「上場株式等」に含まれます。居住者が課税口座で保有する米国上場株式の譲渡所得等は、給与など他の所得と区分して計算し、一般株式等とも別区分です（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1463.htm">国税庁の申告分離課税の説明</a>）。</p>
+<p>令和8年分の居住者の源泉徴収あり特定口座では、上場株式等の譲渡益に対する税率は所得税・復興特別所得税15.315%と住民税5%、合計20.315%です。口座内の損益通算と既徴収分の精算があるため、売却代金に税率を掛ける計算ではありません。</p>
+<p>源泉徴収あり特定口座内の上場株式等の譲渡所得は、他口座との損益通算や損失繰越を利用するために申告する場合を除き、口座単位で申告不要を選べます。他口座との損益通算や損失の繰越控除を適用する場合は申告が必要で、譲渡損失を申告する口座の受入利子等・配当等も併せて申告します（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1476.htm">国税庁「特定口座制度」</a>）。</p>
+<p>源泉徴収なし特定口座や一般口座は、所得控除や申告不要の特例も踏まえて申告要否を確認します。口座ごとの手続と住民税・扶養等への影響は<a href="../tokutei-koza-gensen-ari/">特定口座と確定申告の記事</a>、配当側の外国税と控除限度額は<a href="../gaikoku-zeigaku-kojo/">外国税額控除の記事</a>で扱います。</p>
+<h2 id="check">報告書を照合する順序</h2>
+<ol>
+<li><b>口座の種類を確認。</b>特定口座の売却は年間取引報告書を基礎にします。一般口座分と混ぜません。</li>
+<li><b>約定と費用を確認。</b>売買それぞれの取引報告書から、外貨の対価・約定日・適用相場・手数料を拾います。</li>
+<li><b>取得費を確認。</b>購入手数料が含まれているか、複数取得や分割などの調整がないかを照合します。</li>
+<li><b>円の所得と年間集計を確認。</b>特定口座は証券会社が区分計算するため、設例の計算結果で年間取引報告書を上書きしません。差があれば取引明細へ戻って理由を確認します。</li>
+</ol>
+<p>このページの対象外は、NISAの非課税取引、非居住者・法人の課税、信用取引、報酬株の取得時課税、国外転出時課税です。口座や商品、売買時期、申告方式の有利不利を個別に決めるものではありません。</p>
+<div class="summary-box"><b>確認の要点</b><p>ドルの売買差額から税金を決めず、購入・売却を別々に円換算します。購入手数料を含む取得費と売却手数料等を整理し、口座の年間計算へつなげます。</p></div>
+<a class="tool-cta" href="../../toushi/">資産形成の計算ツール一覧を見る</a>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question">ドルの株価が同じなら売却益はありませんか？</h3><p class="faq-answer">円建てでは所得が生じる場合があります。日本の居住者が課税口座で購入した米国上場株式は、取得時と売却時を別々に円換算し、購入手数料込みの取得費と売却手数料等を差し引いて売却損益を確認します。</p>
+<h3 class="faq-question">売却代金をドルのまま受け取る場合も円換算しますか？</h3><p class="faq-answer">外貨表示株式の売却価額は、外貨で支払われる場合も円換算の対象です。金融商品取引業者との約款の約定日と適用相場は、本文の換算の節で確認してください。</p>
+<h3 class="faq-question">購入手数料と売却手数料は両方差し引きますか？</h3><p class="faq-answer">購入した株式では、購入手数料はその消費税を含めて取得費へ含め、売却手数料等は売却価額から差し引きます。取得費や受渡金額に織り込まれた費用を、もう一度引かないよう確認します。</p>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../ippan-koza-kakutei-shinkoku/"><b>一般口座の確定申告：複数回購入の取得費・売却費用・税額を自分で検算</b><span>一般口座で上場株式を売った年の確定申告を、取引報告書から自分で計算する手順で整理。同じ銘柄を複数回買ったときの総平均法に準ずる方法と手数料の扱いを、設例で1株の単価から税額まで検算</span></a><a class="tool-card" href="../kaigai-fx-zeikin/"><b>海外FXの税金：総合課税の税額と国内FXとの通算範囲を検算</b><span>海外FXの税金を、取引先による課税特例の対象判定から確認。総合課税の雑所得として扱う場合の所得控除・復興特別所得税・翌年度の住民税所得割を、条件を固定した計算表で検算します。国内F</span></a><a class="tool-card" href="../toshi-shintaku-zeikin/"><b>投資信託の税金：分配金と売却の手取りを検算</b><span>国内公募株式投信の分配金と売却益を、個別元本・源泉税・手取り額から検算します。</span></a></div></section><!--next-read:E-->
+<section class="related"><div class="tool-grid"><a class="tool-card" href="../tokutei-koza-gensen-ari/">特定口座と確定申告</a><a class="tool-card" href="../gaikoku-zeigaku-kojo/">外国税額控除</a><a class="tool-card" href="../rsu-zeikin-vest-baikyaku/">RSUの取得と売却</a></div></section>
+<h2 id="sources">出典</h2>
+<ul><li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1463.htm">国税庁「株式等を譲渡したときの課税（申告分離課税）」</a></li><li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1464.htm">国税庁「譲渡した株式等の取得費」</a></li><li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1476.htm">国税庁「特定口座制度」</a></li><li><a href="https://www.nta.go.jp/law/tsutatsu/kobetsu/shotoku/sochiho/020624/sanrin/1273/37_10-11/01.htm">国税庁「租税特別措置法関係通達・株式等の譲渡所得等共通関係」</a>（邦貨換算・購入費用）</li></ul>
+<p class="source-method" data-source-nolink="確認基準日と対象範囲">確認基準日: 2026年10月20日。税率の内訳は令和8年分を対象とし、翌年以降は同じ内訳を転用しません。架空の設例は実際の相場や手数料ではありません。</p>
+<p class="note" data-source-nolink="一般情報の範囲と相談先">この記事は一般的な情報提供であり、個別の税務相談への回答ではありません。個別の税務・労務相談には応じられません。実際の申告判断は所轄の税務署または税理士へご確認ください。</p>
+</article><!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E7%B1%B3%E5%9B%BD%E6%A0%AA%E3%81%AE%E5%A3%B2%E5%8D%B4%E6%90%8D%E7%9B%8A%E3%81%AF%E3%80%81%E8%B3%BC%E5%85%A5%E6%99%82%E3%81%A8%E5%A3%B2%E5%8D%B4%E6%99%82%E3%82%92%E3%81%9D%E3%82%8C%E3%81%9E%E3%82%8C%E5%86%86%E6%8F%9B%E7%AE%97%E3%81%97%E3%81%A6%E7%A2%BA%E8%AA%8D%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E3%83%89%E3%83%AB%E3%81%A7%E5%80%A4%E4%B8%8A%E3%81%8C%E3%82%8A%E3%81%97%E3%81%A6%E3%81%84%E3%81%AA%E3%81%8F%E3%81%A6%E3%82%82%E5%86%86%E5%BB%BA%E3%81%A6%E6%89%80%E5%BE%97%E3%81%8C%E6%AE%8B%E3%82%8B%E4%BE%8B%E3%82%92%E3%80%81%E5%8F%96%E5%BE%97%E8%B2%BB%E3%83%BB%E5%A3%B2%E8%B2%B7%E6%89%8B%E6%95%B0%E6%96%99%E3%81%A8%E3%81%A4%E3%81%AA%E3%81%84%E3%81%A7%E6%A4%9C%E7%AE%97%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fbeikoku-kabu-zeikin-enkansan%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site"><p class="site-copy">© 税金・経理・補助金ツールズ</p>  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script></body></html>
