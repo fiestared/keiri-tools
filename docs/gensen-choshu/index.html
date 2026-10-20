@@ -451,7 +451,7 @@
   <p style="font-size:13.5px;color:var(--sub)">※ 支払先が<b>内国法人</b>の場合、原則として源泉徴収は不要です（馬主である法人などを除く）。所定の報酬・料金を受け取る居住者が対象で、個人事業主に限りません。</p>
   <p style="font-size:13.5px;color:var(--sub)">※ 弁護士・税理士などへの報酬の対象範囲は業務ごとに確認してください。建築代理士業務など源泉徴収対象業務への報酬は別判定です。</p>
 
-  <h3>納付の期限</h3>
+  <h3 id="nofu-kigen">納付の期限</h3>
   <p>源泉徴収した税額は、原則として支払った月の翌月10日までに納付します（休日に当たる場合は休日明け）。</p>
   <p>納期の特例は、承認を受けた場合の給与・退職手当や一定の士業報酬等が対象です。期限は次のとおりです（<a href="https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/03.pdf">源泉徴収のあらまし「納期の特例」</a>）。</p>
   <p>納付期限は、納期の特例の1〜6月分が7月10日、7〜12月分が翌年1月20日、特例対象外の原稿料・講演料等は支払った月の翌月10日です（土日祝日等なら休日明け）。</p>
@@ -756,7 +756,7 @@ $("calcS").addEventListener("click", async () => {
         <span class="big">${yen(r.tax)}</span></div>
       <div class="note" style="margin-top:10px">
         <b>この賞与は算出率の表を使えません。</b>${r.detail}、
-        国税庁の定めにより<b>月額表</b>を使って計算します（算出率の表の備考4）。
+        国税庁の定めにより<b>月額表</b>を使って計算します（<a href="https://www.nta.go.jp/publication/pamph/gensen/zeigakuhyo2026/data/15-16.pdf">算出率の表の備考4</a>）。
       </div>
       <div style="overflow-x:auto;margin-top:12px">
       <table style="width:100%;border-collapse:collapse;font-size:14px;background:#fff;border-radius:8px">
@@ -843,7 +843,7 @@ $("calc").addEventListener("click", () => {
       </table></div>
       <div class="note" style="margin-top:8px">
         納付するときは <b>（借）預り金 ${yen(r.tax)} ／（貸）普通預金 ${yen(r.tax)}</b>。
-        原則として<b>支払った月の翌月10日まで</b>に納付します（承認済みの給与・退職手当・一定の士業報酬等は納期特例で年2回。原稿料・講演料等は対象外）。
+        納付期限と納期の特例は、<a href="#nofu-kigen">納付の期限</a>で確認してください。
         勘定科目は自社の科目体系に合わせてください。<b>一般的な処理の例であり、個別の税務相談ではありません。</b>
       </div>
     </div>`;
