@@ -1647,7 +1647,7 @@
     },
     {
       "id": "finish-r1-reidai",
-      "text": "所得税30,000円は、令和8年分の控除対象の国内上場配当30万円を含む課税所得400万円の総合課税で、30万円×20%−30万円×10%と計算します。\n復興特別所得税630円を足した30,630円が、令和8年分の配当控除後の所得税30,000円に対する合計です。\n住民税21,600円は、令和8年分の控除対象の国内上場配当30万円を含む課税所得400万円の総合課税で、30万円×10%−30万円×2.8%と計算します。",
+      "text": "所得税30,000円は、令和8年分の控除対象の国内上場配当30万円を含む課税所得400万円の総合課税で、30万円×20%−30万円×10%と計算します（分離課税の所得なし）。\n復興特別所得税630円を足した30,630円が、令和8年分の配当控除後の所得税30,000円に対する合計です。\n住民税21,600円は、令和8年分の控除対象の国内上場配当30万円を含む課税所得400万円の総合課税で、30万円×10%−30万円×2.8%と計算します。",
       "numbers": [
         "630円",
         "30,000円"
@@ -1667,12 +1667,13 @@
       "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-20-dr1015rw/segment-review/corpus/nta1250.txt:16-57; /Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-20-dr1015rw/segment-review/corpus/nta2260.txt:14-51; /Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-20-dr1015rw/segment-review/corpus/shotokuzeiho92.txt:4-15; /Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-20-dr1015rw/segment-review/corpus/chihou_f5.txt:3-13; /Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-20-dr1015rw/segment-review/corpus/fukko10.txt:4-7; /Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-20-dr1015rw/segment-review/corpus/fukko13.txt:4-4",
       "review_status": "修正後・独立再照合待ち",
       "covers": [
-        "s-e28544e26aa237dff3cf-1",
+        "s-5e00bb6b595982502b04-1",
         "s-e93958f832c9c08dc7d7-1",
         "s-47b210524452d955b6a6-1"
       ],
       "derived": true,
-      "calc": "300000*0.20-300000*0.10=30000;30000*0.021=630;30000+630=30630;300000*(0.10-0.028)=21600"
+      "calc": "300000*0.20-300000*0.10=30000;30000*0.021=630;30000+630=30630;300000*(0.10-0.028)=21600",
+      "needed_source": "未確認：令和8年所得に対応する住民税所得割10%の適用根拠（地方税法35条・314条の3、指定都市・超過課税の適用関係）。別モデルは誤りと認定していない。"
     },
     {
       "id": "finish-r1-kojo",
@@ -1731,7 +1732,8 @@
         "s-45f9504caec45e22ed5b-1"
       ],
       "derived": true,
-      "calc": "21600-15000=6600;15000+6600=21600"
+      "calc": "21600-15000=6600;15000+6600=21600",
+      "needed_source": "未確認：令和8年所得に対応する住民税所得割10%の適用根拠（地方税法35条・314条の3、指定都市・超過課税の適用関係）。別モデルは誤りと認定していない。"
     },
     {
       "id": "finish-r1-gensen",
@@ -1791,6 +1793,37 @@
         "s-334220e4b41c156035ae-1"
       ],
       "review_status": "著者表示の台帳対応付け"
+    },
+    {
+      "id": "finish-r2-reidai-scope",
+      "text": "所得税30,000円は、令和8年分の控除対象の国内上場配当30万円を含む課税所得400万円の総合課税で、30万円×20%−30万円×10%と計算します（分離課税の所得なし）。",
+      "numbers": [
+        "30万円×20%−30万円×10%"
+      ],
+      "must_with": [
+        "令和8年分",
+        "控除対象",
+        "国内上場配当",
+        "課税所得400万円",
+        "総合課税",
+        "分離課税の所得なし"
+      ],
+      "scope": "令和8年分、控除対象の国内上場配当30万円を含む課税所得400万円、分離課税所得なしの設例。",
+      "exceptions": [
+        "控除対象の国内法人の剰余金の配当等に限定。外国法人、措置法9条1項各号、申告不要・申告分離は対象外。",
+        "課税所得400万円に配当30万円を含み、配当前後とも20%帯。所得税・住民税の課税所得は同額、分離課税所得・譲渡損失・借入利子なし。",
+        "1,000万円超・信託分配との混在時は別計算。所得税控除はその年分の算出税額が上限。復興特別所得税は令和8年分2.1%。"
+      ],
+      "source_url": "https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1250.htm",
+      "source_quote": "その年分の課税総所得金額等が1,000万円以下の場合／剰余金の配当等に係る配当所得の金額×10パーセント。課税総所得金額等は課税譲渡所得等も含む合計額。",
+      "corpus_ref": "segment-review-2/corpus/nta1250.txt:35-56; segment-review-2/corpus/nta2260.txt:25-33",
+      "derived": true,
+      "calc": "300000*0.20-300000*0.10=30000（分離課税所得なし、配当前後とも20%帯）",
+      "review_status": "author_checked",
+      "covers": [
+        "s-5e00bb6b595982502b04-1"
+      ],
+      "applies": "令和8年分"
     }
   ],
   "absolutes": [
