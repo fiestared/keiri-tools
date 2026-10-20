@@ -163,7 +163,7 @@
   <label style="margin-top:14px">性別<span class="hint">寡婦控除は条文上、女性だけが対象のため判定に使います</span></label>
   <div id="sex-rows"><p class="hint">読み込み中…</p></div>
 
-  <label style="margin-top:14px">生計を一にする子ども<span class="hint">同居に限りません。仕送りで養っている子も含みます</span></label>
+  <label style="margin-top:14px">生計を一にする子ども<span class="hint">同居に限りません。継続して生活費・学資金を送る子も含みます</span></label>
   <div id="child-rows"><p class="hint">読み込み中…</p></div>
 
   <div id="extra-rows"><p class="hint">読み込み中…</p></div>
@@ -218,7 +218,7 @@
 <tr><td><b>未婚（結婚したことがない）</b></td><td>本人と子の要件を満たせば対象</td><td>対象にならない（離婚・死別・政令所定の夫の生死不明のみ）</td></tr>
 <tr><td><b>子ども・扶養親族</b></td><td>生計を一にする<b>子</b>が必要。所得上限などの詳細は<a href="#kodomo">子どもの要件</a>を参照</td><td>離婚の場合は<b>扶養親族</b>が必要。<b>死別・政令所定の生死不明なら不要</b></td></tr>
 <tr><td><b>本人の所得制限</b></td><td>合計所得500万円以下</td><td>合計所得500万円以下</td></tr>
-<tr><td><b>事実婚の相手</b></td><td>いると対象外</td><td>いると対象外</td></tr>
+<tr><td><b>事実婚の相手（住民票で判定）</b></td><td>いると対象外</td><td>いると対象外</td></tr>
 </tbody>
 </table>
 </div>
@@ -228,7 +228,7 @@
 </div>
 
 <figure class="figure fig-wide" style="--figw:640px">
-<svg viewBox="0 0 640 390" role="img" aria-label="令和8年分のひとり親控除・寡婦控除の判定フロー。本人と子の要件を順に確認します。">
+<svg viewBox="0 0 640 450" role="img" aria-label="令和8年分のひとり親控除・寡婦控除の判定フロー。本人と子の要件を順に確認します。">
   <text x="20" y="20" font-size="13" fill="currentColor">所得税は令和8年分・住民税は令和9年度（上から順に判定）</text>
 
   <rect x="20" y="34" width="600" height="34" rx="6" fill="var(--accent)" opacity="0.10"/>
@@ -249,8 +249,8 @@
   <text x="300" y="142" font-size="11" fill="currentColor">いいえ →</text>
 
   <rect x="20" y="150" width="440" height="46" rx="6" fill="var(--accent)" opacity="0.10"/>
-  <text x="34" y="169" font-size="12" fill="currentColor">③ 生計を一にする子がいる？（詳しくは下の</text>
-  <text x="34" y="185" font-size="12" fill="currentColor">　 「子どもの要件」を確認）</text>
+  <text x="34" y="169" font-size="12" fill="currentColor">③ 生計を一にする子がいる？（下の条件すべて）</text>
+  <text x="34" y="185" font-size="10" fill="currentColor">　 総所得金額等62万円以下・他の人の同一生計配偶者や扶養親族でない子</text>
 
   <text x="40" y="212" font-size="11" fill="currentColor">はい ↓</text>
   <text x="300" y="212" font-size="11" fill="currentColor">いいえ ↓（女性のみ）</text>
@@ -266,8 +266,11 @@
   <text x="20" y="300" font-size="11" fill="currentColor">※ 未婚（結婚したことがない）で子がいない場合と、男性で子がいない場合は、寡婦控除の判定に進めず対象外になります</text>
   <text x="20" y="318" font-size="11" fill="currentColor">※ 両方に当てはまる人は自動的にひとり親控除（寡婦控除の条文が「ひとり親に該当しないもの」と定めているため）</text>
   <text x="20" y="340" font-size="12" fill="currentColor">※ 所得税は居住者が対象。本人は原則その年の12月31日の現況で判定。</text>
-  <text x="20" y="358" font-size="12" fill="currentColor">年途中の死亡・出国時はその時、既に死亡した子の該当性はその子の死亡時。</text>
+  <text x="20" y="358" font-size="12" fill="currentColor">年途中の死亡・出国して非居住者となる時はその時。死亡した子の判定は死亡時。</text>
   <text x="20" y="378" font-size="11" fill="currentColor"><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_85">判定時点：所得税法85条1項</a></text>
+<text x="20" y="399" font-size="11" fill="currentColor">※ 事実婚は住民票の続柄で判定。本人が世帯主なら同一世帯の相手の記載、</text>
+  <text x="20" y="416" font-size="11" fill="currentColor">世帯主でなければ本人の記載を確認。未届の夫・妻等が該当します。</text>
+  <text x="20" y="433" font-size="11" fill="currentColor">※ 総所得金額等は、総所得金額・退職所得金額・山林所得金額の合計です。</text>
 </svg>
 <figcaption>ひとり親控除・寡婦控除の判定フロー（令和8年分・<a href="https://laws.e-gov.go.jp/law/340AC0000000033" rel="nofollow">所得税法2条1項30号・31号、85条1項）</a></figcaption>
 </figure>
@@ -317,7 +320,7 @@
 
 <h3 id="seikei">同居していない子・16歳未満の子</h3>
 
-<p>「生計を一にする」は同居に限りません。進学で離れて暮らす子に仕送りをしている場合も含まれます。また子どもの<b>年齢に制限はありません</b>（16歳未満で扶養控除の対象にならない子でも、ひとり親控除の「子」にはなります）。</p>
+<p>「生計を一にする」は同居に限りません。進学で離れて暮らす子に、常に生活費・学資金を送っている場合も含まれます。また子どもの<b>年齢に制限はありません</b>。16歳未満でも、他の子の要件を満たせば対象です。</p>
 
 <h2 id="shotoku-seigen">本人の所得制限 — 合計所得500万円以下</h2>
 
@@ -333,7 +336,7 @@
 
 <h2 id="reidai">節税額の例</h2>
 
-<p data-review-context="before-table">令和8年分の所得税の例です。今回試算する控除を引く前の所得税課税所得ごとに、節税額の目安を示します。</p>
+<p data-review-context="before-table">令和8年分の所得税の例です。今回試算する控除を引く前の所得税課税所得ごとに、節税額の目安を示します。<br>所得税は住宅ローン控除などの税額控除を適用せずに計算しています。年末調整の年税額で行う100円未満の切捨て前の参考差額です。</p>
 
 <div class="scroll-wrap">
 <table>
@@ -409,7 +412,7 @@
 
 <h3 class="faq-question">未婚の母・未婚の父でも受けられますか？</h3>
 <p class="faq-answer">ひとり親控除は、要件を満たせば受けられます。結婚したことがない人でも、<a href="#kodomo">要件を満たす子</a>がいて、本人の合計所得が500万円以下で、事実婚の相手がいなければ対象です（原則として年末の現況で判定）。寡婦控除は、夫と離婚・死別した女性や夫が政令所定の生死不明の女性の制度です。結婚したことがない人は、子がいなければどちらの控除も受けられません。</p>
-<p class="hint">本人が年の途中で死亡・出国した場合はその時点、子が既に死亡している場合の子の要件は死亡時点で判定します（<a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_85">所得税法85条</a>）。</p>
+<p class="hint">本人が年の途中で死亡した場合や、出国して非居住者となる場合はその時点で判定します。既に死亡した子の要件は死亡時点で判定します（<a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_85">所得税法85条</a>）。</p>
 
 <h3 class="faq-question">男性（シングルファーザー）はどうなりますか？</h3>
 <p class="faq-answer">男性もひとり親控除を受けられます。本人と子の要件を満たすことが必要です。要件は女性と同じです（<a href="#chigai">違いの表</a>）。寡婦控除は女性だけの制度なので、子のいない男性は妻と死別していても控除はありません。かつての寡夫控除（27万円）は令和2年分の改正で廃止され、ひとり親控除に統合されました。</p>
