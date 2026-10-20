@@ -37,15 +37,30 @@ const ROOT = resolve(fileURLToPath(new URL("../", import.meta.url)));
  */
 const ENUMERATIONS = [
   {
-    page: "docs/gensen-choshu/index.html", element: "shoyo-getsugaku-conditions",
-    law: "国税庁 令和8年分 賞与の算出率の表16ページ・備考4",
-    why: "月額表を使う賞与の例外3条件を省略しない。",
+    page: "docs/column/shinya-teate/index.html", element: "ikuji-shinya-exclusions",
+    law: "厚生労働省『深夜業の制限』",
+    why: "育児の深夜業制限の対象外を省略しない。",
     items: [
-      { id: "no-salary", label: "前月普通給与なし", must: /前月に普通給与がない場合/ },
-      { id: "insurance", label: "社会保険料等以下", must: /前月の普通給与が、前月の社会保険料等以下の場合/ },
-      { id: "ten-times", label: "10倍超", must: /社会保険料等控除後の賞与が、同控除後の前月普通給与の10倍を超える場合/ },
+      { id: "daily", label: "日々雇用", must: /日々雇用される人/ },
+      { id: "tenure", label: "継続雇用期間", must: /継続雇用が1年未満の労働者/ },
+      { id: "days", label: "週所定日数", must: /週の所定労働日数が2日以下の労働者/ },
+      { id: "night", label: "全部が深夜", must: /所定労働時間の全部が深夜にある労働者/ },
+      { id: "family", label: "同居家族", must: /16歳以上の同居家族が/ },
     ],
   },
+  {
+    page: "docs/column/shinya-teate/index.html", element: "ikuji-shinya-family",
+    law: "厚生労働省『深夜業の制限』",
+    why: "保育できる同居家族の要件を省略しない。年齢を含め表の同じ行で定義。",
+    items: [
+      { id: "age", label: "年齢", must: /16歳以上の同居家族/ },
+      { id: "work", label: "深夜就労", must: /深夜不就労/ },
+      { id: "few-days", label: "月3日以下", must: /月3日以下の就労も含む/ },
+      { id: "care", label: "保育可能", must: /負傷・疾病・心身の障害等で保育困難でない/ },
+      { id: "leave", label: "産前産後", must: /産前産後休業中でない/ },
+    ],
+  },
+
   {
     page: "docs/saitei-chingin/index.html", element: "saitei-exclusions",
     law: "最低賃金法4条3項・施行規則1条・厚生労働省『最低賃金の対象となる賃金』",
@@ -463,7 +478,7 @@ const ENUMERATIONS = [
       { id: "①-教育訓練", label: "教育訓練休暇", must: /教育訓練休暇/ },
       { id: "①-交流採用", label: "交流採用", must: /交流採用/ },
       { id: "①-準ずる", label: "準ずる理由（所長がやむを得ないと認めるもの）", must: /準ずる理由/ },
-      { id: "②", label: "★特例基準日（産前休業を開始した日で数え直す）", must: /特例基準日/ },
+      { id: "②", label: "★特例基準日（産前休業を開始した日で数え直す）", must: /基準日を原則として産前休業開始日[^。]*まで戻します/ }, // 2026-10-19: /特例基準日/ は直下の注記にも出るので②を消しても通った（規則5）。②の本文だけにある句で名指す
       { id: "③", label: "80時間以上の月も1か月と数える", must: /80時間/ },
       { id: "④", label: "入社月は半月として数えることがある", must: /2分の1か月/ },
       { id: "判定せず", label: "この画面は受給可否を判定していない", must: /判定していません/ },

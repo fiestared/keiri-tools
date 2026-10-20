@@ -34,6 +34,11 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "saikensha-saimusha", // 債権者 Google月間5,280・2026-10-20実測。個別手続の記事と語義総覧を分担。
+  "kawase-saeki-kakutei-shinkoku", // 為替差益 確定申告 Google月間推定2,320（2026-10-20）
+  "beikoku-kabu-zeikin-enkansan", // 米国株 税金 Google月間推定1,520（2026-10-20）
+  "hatarakikata-kaikaku-joseikin", // Google推定5,280/月、2026-10-20 MF1需要ゲート。
+  "teikan", // 定款 Google月間21,680（2026-10-20実測）。本日D0★指定が旧却下より優先。制度総覧と既存の費用・資本金を分担
   "soufujo-kakikata", // 送付状 Google月間21,680（2026-10-20実測）
   "ippan-koza-kakutei-shinkoku", // 一般口座 確定申告 Google月間2,880（2026-10-19）
   "kaigai-fx-zeikin", // 海外FX 税金 Google月間2,320（2026-10-19）
@@ -61,6 +66,7 @@ const ORDER = [
 
   "index-toushi",               // インデックス投資 39,600/月（keyword_demand.py 2026-09-13 実測・Google推定）。★被覆確認: origin/main の docs/**/index.html 473件を走査し、インデックス投資／パッシブの主題保有は0件。/toushi/tsumitate/ は信託報酬差の計算ツール、/toushi/nisa-waku/ は枠の参照表で、いずれも「なぜパッシブが平均として有利か」の論証を持たない。核は Sharpe(1991) の算術を**条件つき**で読むこと ①費用控除前は平均アクティブ＝平均パッシブ ②費用控除後は必ず下回る ③ただし市場の定義とパッシブの定義に全面的に依存する。踏み込み: 原文が挙げる「崩れて見える3つの理由」（サンプリング等でパッシブが不徹底／アクティブ側の集計が非パッシブ全体を代表しない＝生存者バイアス・現金保有／平均が金額加重でなく単純平均や中央値＝小型株バイアス）を節にした。さらに「勝つ少数派を事前に見分けられるか」＝定義上かならず少数側を引く作業であること、総経費率は信託報酬より高いのが通常であることを追加。★金商法: 特定商品の推奨をせず、年率5%は費用差を比べるための仮定と明記。免責に「金融商品取引業者ではなく投資助言を行うものでもない」を入れた
   "dollar-cost-heikin",         // ドルコスト平均法 デメリット 1,520/月（関連する頭語「ドルコスト平均法」は 14,480。keyword_demand.py 2026-09-13 実測・Google推定。合算しない）。★被覆確認: origin/main の docs/**/index.html を走査し主題保有0件。/toushi/tsumitate/ は積立額から将来額を出す計算ツールで、一括との比較は持たない。核は Vanguard(2023) を**条件つき**で読むこと ①68%は MSCI World 1976-2022・100%株式・3か月3等分・1年後・未投資資金の利息0% の条件下の割合 ②Fig.3 の下位5パーセンタイルでは分割のほうが多く残る（一括82,947ドル 対 分割85,906ドル）＝悪い相場では一括の損失が大きい ③**論文自身が「給与から一定額を投資し続ける形とは区別する」と明記**しており、毎月の積立には適用できない。踏み込み: ★「上昇相場では平均取得単価が単純平均より高くなる」という通説は**算術的に誤り**（毎回同額なら平均取得単価は調和平均で、つねに単純平均以下）。比べる相手は単純平均ではなく一括で、下落例は分割+12,000円・上昇例は分割-8,000円と両方向を出した。さらに「分割終了時点で配分が同じになるので、差はその後もずっと残る」（論文の説明）を節にした。★金商法: 投入方法を勧めず、販売会社自身の研究であることを開示。免責に「金融商品取引業者ではなく投資助言を行うものでもない」を入れた
+  "shutokuhi-kasan-kabushiki", // Google月間1,280、2026-10-20。相続株式の取得費加算。
   "taishokutodoke-kakikata",  // 退職届と退職願の書き方 — 退職届 135,000/月（keyword_demand.py 2026-09-07 実測。Google 108,000・Bing Webmaster GetKeyword 実測 201,443/6か月）。★被覆は着手時 title/h1 0件、BODY は taishoku-shomeisho・kaiko-yokoku-teate・kihonteate の言及のみ。核は ①届＝解約の申入れ（民法627条1項・2週間）／願＝合意解約の申込みで撤回可否が分かれる ②★令和2年改正で627条2項に「使用者からの」が入った＝月給制でも労働者側は2週間（e-Gov v2 で条文確認済み） ③628条・附則137条の有期の扱い ④モデル就業規則が「1か月前」を空欄にしている ⑤退職日後ろに時季変更権は働かない ⑥労基法22条の退職時証明。★4モデル競合調査（gbrain keiri-tools/competitor-content-gap-4models-2026-09-07）で最大の空白として出た1本。
   "kakutei-shinkoku-yarikata",  // 確定申告のやり方 — 確定申告 やり方 110,000/月（Google 88,000・Bing実測 6,988）。★同種の需要順は やり方110,000 ＞ 必要書類27,100 ＞ 期限14,800 ＞ 書き方12,100 で、自社は期限（kakutei-shinkoku-itsumade）と必要書類（kakutei-shinkoku-hitsuyo-shorui）だけを持ち**手順の記事が無かった**。★食い合いを避けるため期限と必要書類はリンクで譲り、本記事は準備→作成→提出→納税の流れと分岐に集中する。核は ①提出3経路（e-Tax/郵送/窓口）の受付日の違いと通信日付印（国税通則法22条） ②通信日付印が不鮮明なときの扱い ③納付方法と期限 ④還付の時期 ⑤令和8年改正が年末調整に反映されない場合の分岐。
   "kokumin-nenkin-hokenryo",    // 国民年金保険料 110,000/月（google 88,000＋yahoo 22,000。keyword_demand.py 2026-10-05 朝便に実測。在庫 topic_stock.json の normal で未着手の最大）。★被覆: title/h1 に「国民年金保険料」を主題として持つページは0本（ディレクトリ grep は /kokunen-menjo/ の1件のみ＝h1「国民年金の免除・納付猶予 判定シミュレーター」で道具、title grep 0件）。節保有2本（jigyonushi-kashi-kari「事業用口座から払ったら経費か」・shakai-hokenryo-kojo「2年前納の控除はどの年か」）には文脈リンクで譲り、同じ説明を書いていない。★食い合わない形: 免除・納付猶予の所得基準の判定表と式は /kokunen-menjo/ に渡す（複製しない）、控除の中身（誰の所得から引くか・前納した分をどの年に引くか）は shakai-hokenryo-kojo と hokenryo-kojo-shinkokusho に渡す。★核は ①令和8年度（令和8年4月分〜令和9年3月分）は月額17,920円・令和9年度は18,290円（年金機構） ②額の決まり方＝国民年金法87条3項の基準額17,000円×保険料改定率1.054＝17,918円を「5円以上10円未満は10円に切り上げ」で17,920円 ③前納の割引額（令和8年度・口座振替2年前納17,370円／現金・クレカ2年前納16,010円／早割60円）と2年前納の土台434,520円＝17,920×12＋18,290×12 ④納付期限は91条の翌月末日・土日祝年末年始は翌月最初の金融機関営業日（令和8年4月分は2026-05-31が日曜のため6月1日） ⑤88条2項3項の世帯主・配偶者の連帯納付義務＝督促状と差押えは連帯納付義務者にも及ぶ ⑥付加保険料は87条の2の月400円・国民年金基金の加入員と免除中は不可（産前産後免除中は可） ⑦令和8年10月開始の育児免除（所得要件なし・第3号と任意加入は対象外） ⑧追納は94条1項の「承認の日の属する月前十年以内」・3年度目以降は加算額・納付書のみ ⑨未納の時効は102条4項の2年・延滞金は97条（500円未満切捨て・50円未満は徴収しない）
@@ -686,7 +692,7 @@ const CATEGORIES = [
     id: "shisan",
     name: "資産形成・投資",
     desc: "インデックス投資の考え方と、費用・分散・元本割れの扱い。具体的な商品名で投資信託を比較し、費用と同期間の実績、投資対象の違いを示します。特定の商品を勧めるものではありません。",
-    slugs: ["toshi-shintaku-zeikin", "kaigai-fx-zeikin", "ippan-koza-kakutei-shinkoku", "zaisan-saimu-chosho", "kojin-nenkin-zeikin", "kin-zeikin-joto", "rsu-zeikin-vest-baikyaku", "fx-zeikin-keisan", "index-toushi", "shintaku-hoshu", "junior-nisa-haraidashi", "kyu-nisa-kazei-ikou", "kodomo-nisa-2027-tetsuzuki", "nisa-kinyu-kikan-henko", "ideco-jogen-kaisei", "dollar-cost-heikin", "orcan-sp500-holding-period", "orcan-sp500-recovery-days", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold", "orcan-vs-fang", "ifreenext-india-vs-rakuten-india", "rakuten-schd-vs-sbi-vym", "tawara-vs-emaxis-sensinkoku", "orcan-vs-emaxis-sensinkoku", "rakuten-gold-vs-sbi-gold", "sbi-yukidaruma-vs-orcan", "rakuten-schd-vs-rakuten-vym", "sbi-spyd-vs-rakuten-schd", "sbi-spyd-vs-sbi-vym", "sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou", "rakuten-sox-vs-rakuten-nasdaq", "sbi-spyd-vs-rakuten-vym", "rakuten-jepi-vs-rakuten-schd", "emaxis-nikkei-vs-tawara-nikkei", "sbi-vym-vs-rakuten-vym", "rakuten-schd-vs-sbi-schd", "rakuten-gold-vs-mufg-gold", "emaxis-orcan-vs-rakuten-schd", "rakuten-schd-bunpaikin", "rakuten-vym-vs-rakuten-jepi"],
+    slugs: ["kawase-saeki-kakutei-shinkoku", "beikoku-kabu-zeikin-enkansan", "shutokuhi-kasan-kabushiki", "toshi-shintaku-zeikin", "kaigai-fx-zeikin", "ippan-koza-kakutei-shinkoku", "zaisan-saimu-chosho", "kojin-nenkin-zeikin", "kin-zeikin-joto", "rsu-zeikin-vest-baikyaku", "fx-zeikin-keisan", "index-toushi", "shintaku-hoshu", "junior-nisa-haraidashi", "kyu-nisa-kazei-ikou", "kodomo-nisa-2027-tetsuzuki", "nisa-kinyu-kikan-henko", "ideco-jogen-kaisei", "dollar-cost-heikin", "orcan-sp500-holding-period", "orcan-sp500-recovery-days", "orcan-hikaku", "sp500-hikaku", "fang-leverage-cost", "rakuten-vti-vs-sbi-vti", "rakuten-bull-vs-sbi-bull", "ifreenext-fang-vs-rakuten-nasdaq", "invesco-sekai-vs-emaxis-orcan", "emaxis-topix-vs-nikkei", "orcan-vs-emaxis-sp", "orcan-vs-rakuten-vti", "rakuten-orcan-vs-rakuten-sp", "rakuten-orcan-vs-rakuten-vti", "rakuten-orcan-vs-invesco", "emaxis-sp-vs-sbi-sp", "emaxis-sp-vs-rakuten-vti", "emaxis-sp-vs-fang", "emaxis-sp-vs-rakuten-nasdaq", "emaxis-sp-vs-sbi-nasdaq", "rakuten-sp-vs-sbi-sp", "rakuten-sp-vs-rakuten-vti", "rakuten-sp-vs-fang", "rakuten-sp-vs-rakuten-nasdaq", "rakuten-sp-vs-sbi-nasdaq", "sbi-sp-vs-rakuten-vti", "sbi-sp-vs-fang", "sbi-sp-vs-rakuten-nasdaq", "sbi-sp-vs-sbi-nasdaq", "rakuten-vti-vs-fang", "rakuten-vti-vs-rakuten-nasdaq", "rakuten-vti-vs-sbi-nasdaq", "fang-vs-sbi-nasdaq", "rakuten-nasdaq-vs-sbi-nasdaq", "sbi-gold-vs-mufg-gold", "orcan-vs-fang", "ifreenext-india-vs-rakuten-india", "rakuten-schd-vs-sbi-vym", "tawara-vs-emaxis-sensinkoku", "orcan-vs-emaxis-sensinkoku", "rakuten-gold-vs-sbi-gold", "sbi-yukidaruma-vs-orcan", "rakuten-schd-vs-rakuten-vym", "sbi-spyd-vs-rakuten-schd", "sbi-spyd-vs-sbi-vym", "sbi-nihon-kohaitou-vs-rakuten-nihon-kohaitou", "rakuten-sox-vs-rakuten-nasdaq", "sbi-spyd-vs-rakuten-vym", "rakuten-jepi-vs-rakuten-schd", "emaxis-nikkei-vs-tawara-nikkei", "sbi-vym-vs-rakuten-vym", "rakuten-schd-vs-sbi-schd", "rakuten-gold-vs-mufg-gold", "emaxis-orcan-vs-rakuten-schd", "rakuten-schd-bunpaikin", "rakuten-vym-vs-rakuten-jepi"],
   },
   {
     id: "shakai-hoken",
@@ -819,6 +825,7 @@ const CATEGORIES = [
       "tegata-toha",
       "yoshin-kanri",
       "factoring-toha",
+      "saikensha-saimusha",
       "shiharai-tokusoku",
       "shogaku-sosho",
       "naiyo-shomei",
@@ -847,7 +854,7 @@ const CATEGORIES = [
     name: "補助金の経理・税務",
     desc: "補助金を受け取った後の処理。仕訳と計上時期、圧縮記帳と特別勘定（法人税法42〜44条）、消費税、個人事業主の場合。キャリアアップ助成金のコースと支給額、設備投資とセットで賃上げする業務改善助成金の上限額と助成率もここ。",
     slugs: [
-      "career-up-joseikin", "gyomu-kaizen-joseikin", "jinzai-kaihatsu-joseikin", "tokutei-kyushokusha-joseikin",
+      "hatarakikata-kaikaku-joseikin", "career-up-joseikin", "gyomu-kaizen-joseikin", "jinzai-kaihatsu-joseikin", "tokutei-kyushokusha-joseikin",
       "hojokin-shiwake", "hojokin-tokubetsu-kanjo", "assyuku-kicho-houshiki",
       "hojokin-asshuku-gendogaku", "hojokin-koteishisan-genka-shokyaku", "hojokin-shohizei",
       "hojokin-kojin-jigyonushi",
@@ -870,7 +877,7 @@ const CATEGORIES = [
     id: "hojinzei-kessan",
     name: "法人税・決算の実務",
     desc: "会社設立後の税務届出と法人税の税率、キャッシュフロー計算書、役員報酬・使用人兼務役員・交際費・決算賞与・繰越欠損金・引当金・経過勘定と、賃上げ促進税制などの優遇措置。",
-    slugs: ["jiko-shihon-hiritsu", "roe-roa", "godo-gaisha", 
+    slugs: ["jiko-shihon-hiritsu", "roe-roa", "godo-gaisha", "teikan",
       "kaisha-setsuritsu", "hojin-nari", "shihonkin", "genshi", "hojinzei-toha", "hojinzei-shinkokusho", "hojinzei-ritsu", "gaikei-hyojun-kazei", "kigyo-ban-furusato-nozei", "jigyoshozei", "zaimu-toha", "cash-flow-keisansho", "taishaku-taishohyo-mikata", "soneki-keisansho-mikata", "soukanjo-motocho-kakikata", "shiwakecho", "shisanhyo-mikata", "genkin-suitocho-kakikata",
       "yakuin-hoshu-kimekata", "shiyonin-kenmu-yakuin", "shikko-yakuin", "yakuin-taishokukin", "kosaihi-kaigihi-chigai", "shutcho-nittou-ryohi-kitei", "ryohi-kotsuhi", "shomohinhi", "tsushinhi", "chidai-yachin", "shikikin-hoshokin", "kyosankin-kanjo-kamoku", "kokoku-sendenhi", "noren", "genson-sonshitsu", "shisan-jokyo-saimu", "genka-shokyaku-ruikeigaku",
       "kessan-shoyo", "kurikoshi-kessonkin", "chinage-sokushin-zeisei", "shukko-zeimu", "kabunushi-soukai-gijiroku",
