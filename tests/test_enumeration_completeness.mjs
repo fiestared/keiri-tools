@@ -37,6 +37,16 @@ const ROOT = resolve(fileURLToPath(new URL("../", import.meta.url)));
  */
 const ENUMERATIONS = [
   {
+    page: "docs/gensen-choshu/index.html", element: "shoyo-getsugaku-conditions",
+    law: "国税庁 令和8年分 賞与の算出率の表16ページ・備考4",
+    why: "月額表を使う賞与の例外3条件を省略しない。",
+    items: [
+      { id: "no-salary", label: "前月普通給与なし", must: /前月に普通給与がない場合/ },
+      { id: "insurance", label: "社会保険料等以下", must: /前月の普通給与が、前月の社会保険料等以下の場合/ },
+      { id: "ten-times", label: "10倍超", must: /社会保険料等控除後の賞与が、同控除後の前月普通給与の10倍を超える場合/ },
+    ],
+  },
+  {
     page: "docs/saitei-chingin/index.html", element: "saitei-exclusions",
     law: "最低賃金法4条3項・施行規則1条・厚生労働省『最低賃金の対象となる賃金』",
     why: "時間外・所定休日は通常賃金部分も除き、深夜は割増部分だけを除く。手当も省略しない。",
