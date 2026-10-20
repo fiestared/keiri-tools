@@ -10282,21 +10282,33 @@
     },
     {
       "id": "r1-s-0f675335cbbd9059e9a3-1",
-      "text": "【行】桁を必ず埋める 【列】内容 【値】桁埋めは各項目の指定に従う。省略する欄の埋め方も仕様書で確認する。",
+      "text": "【行】桁を必ず埋める 【列】内容 【値】数字項目（N）は右詰め・余りを0、カタカナ・英大文字項目（C）は左詰め・余りを半角スペースで埋める（レコードレイアウト）。そのほかは各項目の指定に従い、省略する欄の埋め方も仕様書で確認する。",
       "numbers": [],
       "covers": [
         "s-0f675335cbbd9059e9a3-1"
       ],
       "scope": "当該記事の当該単位に限る。業務・銀行・項目ごとの仕様を一般化しない。",
-      "exceptions": "振込仕様の全4表を確認。コード区分・仕向金融機関番号・手形交換所番号・新規コード・顧客コードは省略時スペース。口座番号・振込金額・合計件数・合計金額は右詰ZERO埋め。口座振替は別仕様。",
+      "exceptions": "N・Cの桁埋めは群馬銀行の総合振込仕様による。そのほかの各項目の指定・省略欄の扱いは帯広信用金庫の根拠を保持する。",
       "must_with": [
         "各項目"
       ],
-      "source_url": "https://www.shinkin.co.jp/obishin/webfb2/service/fmt_zengin/",
-      "source_quote": "省略可（スペース）",
-      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-16-rg34/segment-review/corpus/obishin.html:279-573",
+      "source_url": "https://www.gunmabank.co.jp/hojin/biznb/service/pdf/z_format1.pdf",
+      "source_quote": "        データ伝送の仕様（ＪＩＳコード）\n        １２０バイト（改行コード(ＣＲＬＦ)をつける場合は後付けで１２２バイト）\n        桁数欄の「Ｎ」は数字、\n                   「Ｃ」は半角文字(カタカナ、英大文字・数字)を表す。\n        伝送データ記録上の留意\n            各項目が所定の桁数に満たない場合には次によるものとする。\n            ① 数字項目は右詰とし、残りを「０」とする\n            ② カタカナ、英大文字項目等は左詰とし残りをスペースとする。",
+      "corpus_ref": "review-evidence/auto20261001-t8-q1/corpus/www_gunmabank_co_jp_hojin_biznb_service_pdf_z_format1_pdf.txt:11-13",
       "status": "repairer_checked",
-      "source_note": "引用は関連する仕様の文脈であり、この単位全体の裏付けとはしない。独立再照合待ち。"
+      "source_note": "修正計画に従い、桁埋め規則を群馬銀行の引用に対応させた。",
+      "sources": [
+        {
+          "source_url": "https://www.gunmabank.co.jp/hojin/biznb/service/pdf/z_format1.pdf",
+          "corpus_ref": "review-evidence/auto20261001-t8-q1/corpus/www_gunmabank_co_jp_hojin_biznb_service_pdf_z_format1_pdf.txt:11-13",
+          "source_quote": "        データ伝送の仕様（ＪＩＳコード）\n        １２０バイト（改行コード(ＣＲＬＦ)をつける場合は後付けで１２２バイト）\n        桁数欄の「Ｎ」は数字、\n                   「Ｃ」は半角文字(カタカナ、英大文字・数字)を表す。\n        伝送データ記録上の留意\n            各項目が所定の桁数に満たない場合には次によるものとする。\n            ① 数字項目は右詰とし、残りを「０」とする\n            ② カタカナ、英大文字項目等は左詰とし残りをスペースとする。"
+        },
+        {
+          "source_url": "https://www.shinkin.co.jp/obishin/webfb2/service/fmt_zengin/",
+          "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-16-rg34/segment-review/corpus/obishin.html:279-573",
+          "source_quote": "省略可（スペース）"
+        }
+      ]
     },
     {
       "id": "r1-s-f792caebba7963d819a9-1",
@@ -10419,21 +10431,26 @@
     },
     {
       "id": "r1-s-fc637ff257cec5d90d78-1",
-      "text": "数字項目の桁埋めは、各項目の指定を確認してください。",
+      "text": "数字項目(N)は右詰め・残りを0で埋める。",
       "numbers": [],
       "covers": [
         "s-fc637ff257cec5d90d78-1"
       ],
       "scope": "当該記事の当該単位に限る。業務・銀行・項目ごとの仕様を一般化しない。",
-      "exceptions": "振込仕様の全4表を確認。コード区分・仕向金融機関番号・手形交換所番号・新規コード・顧客コードは省略時スペース。口座番号・振込金額・合計件数・合計金額は右詰ZERO埋め。口座振替は別仕様。",
-      "must_with": [
-        "各項目"
-      ],
-      "source_url": "https://www.shinkin.co.jp/obishin/webfb2/service/fmt_zengin/",
-      "source_quote": "省略可（スペース）",
-      "corpus_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/write-2026-10-16-rg34/segment-review/corpus/obishin.html:279-573",
+      "exceptions": "群馬銀行の総合振込仕様の桁埋め規則。銀行ごとの指定は本文の注意書きで確認を促す。",
+      "must_with": [],
+      "source_url": "https://www.gunmabank.co.jp/hojin/biznb/service/pdf/z_format1.pdf",
+      "source_quote": "        データ伝送の仕様（ＪＩＳコード）\n        １２０バイト（改行コード(ＣＲＬＦ)をつける場合は後付けで１２２バイト）\n        桁数欄の「Ｎ」は数字、\n                   「Ｃ」は半角文字(カタカナ、英大文字・数字)を表す。\n        伝送データ記録上の留意\n            各項目が所定の桁数に満たない場合には次によるものとする。\n            ① 数字項目は右詰とし、残りを「０」とする\n            ② カタカナ、英大文字項目等は左詰とし残りをスペースとする。",
+      "corpus_ref": "review-evidence/auto20261001-t8-q1/corpus/www_gunmabank_co_jp_hojin_biznb_service_pdf_z_format1_pdf.txt:11-13",
       "status": "repairer_checked",
-      "source_note": "引用は関連する仕様の文脈であり、この単位全体の裏付けとはしない。独立再照合待ち。"
+      "source_note": "修正計画に従い、桁埋め規則を群馬銀行の引用に対応させた。",
+      "sources": [
+        {
+          "source_url": "https://www.gunmabank.co.jp/hojin/biznb/service/pdf/z_format1.pdf",
+          "corpus_ref": "review-evidence/auto20261001-t8-q1/corpus/www_gunmabank_co_jp_hojin_biznb_service_pdf_z_format1_pdf.txt:11-13",
+          "source_quote": "        データ伝送の仕様（ＪＩＳコード）\n        １２０バイト（改行コード(ＣＲＬＦ)をつける場合は後付けで１２２バイト）\n        桁数欄の「Ｎ」は数字、\n                   「Ｃ」は半角文字(カタカナ、英大文字・数字)を表す。\n        伝送データ記録上の留意\n            各項目が所定の桁数に満たない場合には次によるものとする。\n            ① 数字項目は右詰とし、残りを「０」とする\n            ② カタカナ、英大文字項目等は左詰とし残りをスペースとする。"
+        }
+      ]
     },
     {
       "id": "r1-s-d0bbd6b70dab3e70fd31-1",
