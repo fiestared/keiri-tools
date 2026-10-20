@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "soufujo-kakikata", // 送付状 Google月間21,680（2026-10-20実測）
   "ippan-koza-kakutei-shinkoku", // 一般口座 確定申告 Google月間2,880（2026-10-19）
   "kaigai-fx-zeikin", // 海外FX 税金 Google月間2,320（2026-10-19）
   "toshi-shintaku-zeikin", // Google月間2,320（2026-10-19）。公募株式投信の分配と換金の税額。
@@ -812,7 +813,7 @@ const CATEGORIES = [
       "yucho-furikomi-tesuryo", "mufg-furikomi-tesuryo", "furikomi-tesuryo-hikaku", "furikomi-hanei-jikan", "furikomi-furikae-chigai", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "kumimodoshi", "koza-furikae-iraisho", "kotora-sokin", "pay-easy",
       "zengin-format-guide", "csv-mojibake", "eigyobi-kazoekata", "shunyu-inshi-warihan",
-      "ryoshusho-kakikata", "mitsumorisho-kakikata", "nohinsho-toha", "seikyusho-kakikata", "chumon-ukesho", "tatekaekin-seisansho", "shukkin-denpyo",
+      "soufujo-kakikata", "ryoshusho-kakikata", "mitsumorisho-kakikata", "nohinsho-toha", "seikyusho-kakikata", "chumon-ukesho", "tatekaekin-seisansho", "shukkin-denpyo",
       "shoguchi-genkin",
       "shitaukeho-toritekiho",
       "tegata-toha",
