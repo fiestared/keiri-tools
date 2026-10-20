@@ -141,8 +141,7 @@ export function buildSections(rows) {
     out.push(`  <h3 id="${bankId(base)}">${base}の振込手数料</h3>`);
     const page = bankPages.find(b => b.name === base);
     if (page) out.push(`  <p class="bank-note"><a href="/column/${page.slug}/">${base}の同行宛て・他行宛て、境界と印刷用の表</a></p>`);
-    if (['みずほ銀行', 'りそな銀行', '埼玉りそな銀行', 'ゆうちょ銀行'].includes(base)) out.push('  <p class="hint" data-review-context="before-table">他行宛ネット振込の通常料金です。無料回数・会員優遇は適用しません。</p>');
-    out.push('  <table>');
+    out.push(`  <table><caption>${base}の他行宛ネット振込・通常料金（無料回数・会員優遇なし）</caption>`);
     out.push('    <tr><th scope="col">区分</th><th scope="col">3万円未満</th><th scope="col">3万円以上</th></tr>');
     for (const r of [kojin, hojin]) {
       if (!r) continue;
@@ -151,7 +150,7 @@ export function buildSections(rows) {
     out.push('  </table>');
 
     const notes = [];
-    if (!list.some(x => x.omitRatio) && kojin && hojin && kojin.rawOver !== null && hojin.rawOver !== null && kojin.rawOver !== hojin.rawOver) {
+    if (base === '福岡銀行' && !list.some(x => x.omitRatio) && kojin && hojin && kojin.rawOver !== null && hojin.rawOver !== null && kojin.rawOver !== hojin.rawOver) {
       const ratio = (hojin.rawOver / kojin.rawOver).toFixed(1).replace(/\.0$/, '');
       notes.push(`法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）。比較条件はこの節の冒頭と上表を参照`);
     }
@@ -164,7 +163,6 @@ export function buildSections(rows) {
       // ★区分名を文に入れる: 「金額にかかわらず定額。」だけだと、どの銀行の話か文単体で読めず、照合で10銀行ぶんが同じ文になった。
       : `${base}のこの表の料金は、金額にかかわらず<b>定額</b>`);
     out.push(`  <p>${notes.join('。')}。</p>`);
-    if (base === 'ドコモSMTBネット銀行') out.push('  <p>倍率は、BaaS・提携サービスを除く個人の77円と、上表の法人通常振込100円の比較です。</p>');
     for (const note of [...new Set(list.filter((x) => x.publicNote).map((x) => x.publicNote))]) {
       out.push(`  <p class="bank-note">${esc(note).replace("かかり、スタンダードから", "かかります。スタンダードから")}。</p>`);
     }
