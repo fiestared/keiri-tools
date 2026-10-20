@@ -5406,6 +5406,28 @@
         "s-bcfd9155de1fe1cff8e3-1"
       ],
       "review_status": "修正者による正本照合。独立再照合待ち。"
+    },
+    {
+      "id": "recheck1-s-a32173ee099877489481-1",
+      "text": "控除前後の所得税額に各々102.1%を掛け、1円未満を切り捨ててから差を求めています。",
+      "where": [
+        "p"
+      ],
+      "numbers": [
+        "102.1%"
+      ],
+      "applies": "令和8年分",
+      "scope": "令和8年分の控除前後の所得税を比較する参考表。税額控除なし。",
+      "source_url": "https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf",
+      "source_quote": "                                                  「令和８年分の年末調整のた\n                   めの算出所得税額の速算表」\n                               （５５ページ参照）の「税額」欄に示されている算式に従って所得税額（以下\n                  「算出所得税額」といいます。\n                               ）を計算します。\n                  〔例〕\n                    ◎ 差引課税給与所得金額（\n                                「㉒」欄の金額）               ２，\n                                                        ６９６，\n                                                           ０００円\n                    ◎ 算式（令和８年分の年末調整のための算出所得税額の速算表）\n                    \t\t               ２，\n                                      ６９６，\n                                         ０００円×１０％－９７，\n                                                    ５００円＝１７２，\n                                                            １００円\n                  ロ 上記により求めた算出所得税額を「算出所得税額㉓」欄に記入します。\n\n\n\n\n                  ３－６    年調年税額の計算",
+      "corpus_ref": "corpus/nencho/nencho_all.txt:2961-2982,4340-4394",
+      "exceptions": "年調年税額では100円未満切捨て。この表はその処理前で、各税額を1円未満切捨てする表示用設例。住宅ローン控除等なし。",
+      "covers": [
+        "s-a32173ee099877489481-1"
+      ],
+      "derived": true,
+      "calc": "floor(控除前本税*1021/1000)-floor(控除後本税*1021/1000)。独立Decimal検算はRUN calculation-check-recheck1.json。",
+      "review_status": "独立再照合待ち"
     }
   ],
   "absolutes": [
@@ -6479,132 +6501,6 @@
       "context_hash": null,
       "result": "ok",
       "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-a13fbdf49bdde7fb14d0-1"
-    },
-    {
-      "id": "s-6d5ddf74f3310290f2de-1",
-      "text_hash": "eed4281823a39430ba9e",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-6d5ddf74f3310290f2de-1"
-    },
-    {
-      "id": "s-0832cc4b67258fa54e49-1",
-      "text_hash": "243c85800627c8c43673",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-0832cc4b67258fa54e49-1"
-    },
-    {
-      "id": "s-f6d0f53c3d74c4e41e12-1",
-      "text_hash": "ecf91e743a7c9cb00503",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-f6d0f53c3d74c4e41e12-1"
-    },
-    {
-      "id": "s-55d358c01ec9a1cea03d-1",
-      "text_hash": "5a75bd40ea7312221c36",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-55d358c01ec9a1cea03d-1"
-    },
-    {
-      "id": "s-feba0276aeb8349b04c5-1",
-      "text_hash": "3cab8ab1ece33bebc8dc",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-feba0276aeb8349b04c5-1"
-    },
-    {
-      "id": "s-1f0dfa4b123193234d8c-1",
-      "text_hash": "7db722b1ea6478e440ef",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-1f0dfa4b123193234d8c-1"
-    },
-    {
-      "id": "s-45ad633d8467c1a8a0a8-1",
-      "text_hash": "87abc7f6e1dbfb215272",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-45ad633d8467c1a8a0a8-1"
-    },
-    {
-      "id": "s-5dfa57a57bcbf64991fe-1",
-      "text_hash": "a7a649adbb06fa5840d4",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-5dfa57a57bcbf64991fe-1"
-    },
-    {
-      "id": "s-ae0927cae955b00f53b8-1",
-      "text_hash": "fd7efdf1fc4a6f8c467a",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-ae0927cae955b00f53b8-1"
-    },
-    {
-      "id": "s-b879d3b4f453a642eca1-1",
-      "text_hash": "a001c5bce4e6428298ba",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-b879d3b4f453a642eca1-1"
-    },
-    {
-      "id": "s-c4357dda77c76041caae-1",
-      "text_hash": "056549f01630d8ca4f85",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-c4357dda77c76041caae-1"
-    },
-    {
-      "id": "s-82c0768b943e76c9c368-1",
-      "text_hash": "fe73a6aeec44818d863f",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-82c0768b943e76c9c368-1"
-    },
-    {
-      "id": "s-ce5d5b794d83c345ea9a-1",
-      "text_hash": "26fdc73d4392a6c872e6",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-ce5d5b794d83c345ea9a-1"
-    },
-    {
-      "id": "s-f822b3f4eabb1ea2201d-1",
-      "text_hash": "f3e9199bf40bf90ba487",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-f822b3f4eabb1ea2201d-1"
-    },
-    {
-      "id": "s-bd58b381bb488b04ecc2-1",
-      "text_hash": "aa06fb9e6ac781f4afc7",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-bd58b381bb488b04ecc2-1"
-    },
-    {
-      "id": "s-771d984b35918c8bc420-1",
-      "text_hash": "8bd41759fcace242c932",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-771d984b35918c8bc420-1"
-    },
-    {
-      "id": "s-4a0e3a588f7cfe8d0be6-1",
-      "text_hash": "441562aaab27d74de742",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-4a0e3a588f7cfe8d0be6-1"
-    },
-    {
-      "id": "s-38e598420930d4325f8d-1",
-      "text_hash": "86ebeded23907912c0f4",
-      "context_hash": "f31d89a3c8721a342a5b",
-      "result": "ok",
-      "review_ref": "review-loop/auto20261020/t1-q08445-recheck1/segment-adjudication.json#s-38e598420930d4325f8d-1"
     },
     {
       "id": "s-2799ec832cf2bdb019b2-1",
