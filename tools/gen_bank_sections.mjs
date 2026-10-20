@@ -76,9 +76,10 @@ export function loadBanks() {
       sourceLabel: b.article?.source_label || null,
       indexFullLabel: b.article?.index_full_label || false,
       boundary: b.article?.over_unverified ? null : b.under30k !== b.over30k,
-      source: b.source || null,
+      source: b.article?.source_available === false ? null : (b.source || null),
       verifiedAt: b.verified_date || null,
-      publicNote: b.public_note || null,
+      publicNote: b.article?.public_note || b.public_note || null,
+      omitRatio: Boolean(b.article?.omit_ratio),
       comparisonSubject: b.article?.comparison_subject || null,
       comparisonAmounts: b.article?.comparison_amounts || null,
       scoped: Boolean(b.scope_note),
@@ -149,7 +150,7 @@ export function buildSections(rows) {
     out.push('  </table>');
 
     const notes = [];
-    if (kojin && hojin && kojin.rawOver !== null && hojin.rawOver !== null && kojin.rawOver !== hojin.rawOver) {
+    if (!list.some(x => x.omitRatio) && kojin && hojin && kojin.rawOver !== null && hojin.rawOver !== null && kojin.rawOver !== hojin.rawOver) {
       const ratio = (hojin.rawOver / kojin.rawOver).toFixed(1).replace(/\.0$/, '');
       notes.push(`法人は個人の<b>${Number(ratio) === hojin.rawOver / kojin.rawOver ? "" : "約"}${ratio}倍</b>（${kojin.rawOver}円→${hojin.rawOver}円）。比較条件はこの節の冒頭と上表を参照`);
     }
