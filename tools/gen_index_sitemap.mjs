@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "saikensha-saimusha", // 債権者 Google月間5,280・2026-10-20実測。個別手続の記事と語義総覧を分担。
   "kawase-saeki-kakutei-shinkoku", // 為替差益 確定申告 Google月間推定2,320（2026-10-20）
   "beikoku-kabu-zeikin-enkansan", // 米国株 税金 Google月間推定1,520（2026-10-20）
   "hatarakikata-kaikaku-joseikin", // Google推定5,280/月、2026-10-20 MF1需要ゲート。
@@ -823,6 +824,7 @@ const CATEGORIES = [
       "tegata-toha",
       "yoshin-kanri",
       "factoring-toha",
+      "saikensha-saimusha",
       "shiharai-tokusoku",
       "shogaku-sosho",
       "naiyo-shomei",
