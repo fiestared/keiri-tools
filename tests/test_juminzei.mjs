@@ -305,24 +305,24 @@ console.log('\n■ ★★超過課税は「納税額」を動かすが「ふる�
 
 {
   // 地税37条の2第11項の20%上限は「第三十五条及び前条の規定を適用した場合の所得割の額」＝
-  // 標準税率で計算した所得割額を明文で指す。だから神奈川県（所得割+0.025%）でも限度額は変わらない。
+  // 標準税率で計算した所得割額を明文で指す。だから神奈川県（所得割+0.018%）でも限度額は変わらない。
   const inp = { kyuyoShunyu: 5000000, shakaiHoken: 700000, family: {} };
   const hyojun = calc({ ...inp, jichitai: 'hyojun' }, D);
   const kanagawa = calc({ ...inp, jichitai: 'kanagawa' }, D);
   const yokohama = calc({ ...inp, jichitai: 'yokohama' }, D);
 
   eq(kanagawa.furusatoGendo, hyojun.furusatoGendo,
-     '★神奈川県（所得割 4.025%）でも、ふるさと納税の限度額は標準の自治体と同額');
+     '★神奈川県（所得割 4.018%）でも、ふるさと納税の限度額は標準の自治体と同額');
   eq(yokohama.furusatoGendo, hyojun.furusatoGendo,
      '★横浜市（指定都市8:2＋県の超過課税）でも、限度額は同額');
 
   // 一方、実際に払う所得割は増える（＝限度額と納税額で答えが逆になる）
   ok(kanagawa.shotokuwariJissai > hyojun.shotokuwariJissai,
      '★しかし実際に払う所得割は神奈川県のほうが高い（超過課税がここには効く）');
-  eq(kanagawa.shotokuwariJissai - hyojun.shotokuwariJissai, 600,
-     '　└ 年収500万・独身・社保70万での差は600円（課税総所得243万 × 0.025%、府県民税100円未満切捨後）');
+  eq(kanagawa.shotokuwariJissai - hyojun.shotokuwariJissai, 400,
+     '　└ 年収500万・独身・社保70万での差は400円（課税総所得243万 × 4.018% − 調整控除1,000円 ＝ 96,637円 → 100円未満切捨で96,600円。標準は96,200円。令和9年度からの税率）');
   eq(yokohama.shotokuwariJissai, kanagawa.shotokuwariJissai,
-     '　└ 横浜市も同額（8%+2.025% ＝ 6%+4.025%。指定都市かどうかで合計は変わらない）');
+     '　└ 横浜市も同額（8%+2.018% ＝ 6%+4.018%。指定都市かどうかで合計は変わらない）');
 
   // 標準の自治体では、標準税率の所得割と実際の所得割が一致する
   eq(hyojun.shotokuwariJissai, hyojun.shotokuwari,
