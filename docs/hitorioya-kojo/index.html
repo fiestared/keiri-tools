@@ -103,7 +103,7 @@
           "name": "子どものアルバイト収入が多いと対象外になりますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "子の所得（総所得金額など）が62万円を超えると、その子はひとり親控除の「子」に当たらなくなります。令和8・9年分、給与所得のみ・特定支出控除なしなら年収136万円以下が62万円のラインです。改正は令和8年12月1日施行です。施行前の準確定申告の基準・手続・請求期限は一次資料を確認してください（国税庁Q&A・Q6-1）。住民税のほうも、令和8年分の所得に対する令和9年度分から同じ62万円で判定されます。"
+            "text": "所得税では、子の所得（総所得金額など）が62万円を超えると、その子はひとり親控除の「子」に当たらなくなります。令和8・9年分、給与所得のみ・特定支出控除なしなら年収136万円以下が62万円のラインです。改正は令和8年12月1日施行です。施行前の準確定申告の基準・手続・請求期限は一次資料を確認してください（国税庁Q&A・Q6-1）。住民税のほうも、令和8年分の所得に対する令和9年度分から同じ62万円で判定されます。"
           }
         },
         {
@@ -228,7 +228,7 @@
 </div>
 
 <figure class="figure fig-wide" style="--figw:640px">
-<svg viewBox="0 0 640 450" role="img" aria-label="令和8年分のひとり親控除・寡婦控除の判定フロー。本人と子の要件を順に確認します。">
+<svg viewBox="0 0 640 490" role="img" aria-label="令和8年分のひとり親控除・寡婦控除の判定フロー。本人と子の要件を順に確認します。">
   <text x="20" y="20" font-size="13" fill="currentColor">所得税は令和8年分・住民税は令和9年度（上から順に判定）</text>
 
   <rect x="20" y="34" width="600" height="34" rx="6" fill="var(--accent)" opacity="0.10"/>
@@ -248,29 +248,32 @@
   <text x="40" y="142" font-size="11" fill="currentColor">はい ↓</text>
   <text x="300" y="142" font-size="11" fill="currentColor">いいえ →</text>
 
-  <rect x="20" y="150" width="440" height="46" rx="6" fill="var(--accent)" opacity="0.10"/>
-  <text x="34" y="169" font-size="12" fill="currentColor">③ 生計を一にする子がいる？（下の条件すべて）</text>
-  <text x="34" y="185" font-size="10" fill="currentColor">　 総所得金額等62万円以下・他の人の同一生計配偶者や扶養親族でない子</text>
+  <rect x="20" y="150" width="440" height="64" rx="6" fill="var(--accent)" opacity="0.10"/>
+  <text x="34" y="169" font-size="12" fill="currentColor">③ 生計を一にする子がいる？（税目別に判定）</text>
+  <text x="34" y="185" font-size="10" fill="currentColor">　 所得62万円以下・他の人の同一生計配偶者や扶養親族でない子</text>
+  <text x="34" y="202" font-size="10" fill="currentColor">　 所得税：退職所得を含む／住民税：退職所得を除く</text>
 
-  <text x="40" y="212" font-size="11" fill="currentColor">はい ↓</text>
-  <text x="300" y="212" font-size="11" fill="currentColor">いいえ ↓（女性のみ）</text>
+  <text x="40" y="230" font-size="11" fill="currentColor">はい ↓</text>
+  <text x="300" y="230" font-size="11" fill="currentColor">いいえ ↓（女性のみ）</text>
 
-  <rect x="20" y="222" width="230" height="52" rx="6" fill="var(--accent)" opacity="0.55"/>
-  <text x="56" y="246" font-size="15" font-weight="bold" fill="currentColor">ひとり親控除 35万円</text>
-  <text x="34" y="263" font-size="10" fill="currentColor">性別・未婚を問わない（住民税30万円）</text>
+  <rect x="20" y="240" width="230" height="52" rx="6" fill="var(--accent)" opacity="0.55"/>
+  <text x="56" y="264" font-size="15" font-weight="bold" fill="currentColor">ひとり親控除 35万円</text>
+  <text x="34" y="281" font-size="10" fill="currentColor">性別・未婚を問わない（住民税30万円）</text>
 
-  <rect x="260" y="222" width="360" height="52" rx="6" fill="var(--accent)" opacity="0.35"/>
-  <text x="292" y="242" font-size="14" font-weight="bold" fill="currentColor">寡婦控除 27万円（住民税26万円）</text>
-  <text x="274" y="262" font-size="10.5" fill="currentColor">離婚：扶養親族が必要／死別・政令所定の生死不明：不要</text>
+  <rect x="260" y="240" width="360" height="52" rx="6" fill="var(--accent)" opacity="0.35"/>
+  <text x="292" y="260" font-size="14" font-weight="bold" fill="currentColor">寡婦控除 27万円（住民税26万円）</text>
+  <text x="274" y="280" font-size="10.5" fill="currentColor">離婚：扶養親族が必要／死別・政令所定の生死不明：不要</text>
 
-  <text x="20" y="300" font-size="11" fill="currentColor">※ 未婚（結婚したことがない）で子がいない場合と、男性で子がいない場合は、寡婦控除の判定に進めず対象外になります</text>
-  <text x="20" y="318" font-size="11" fill="currentColor">※ 両方に当てはまる人は自動的にひとり親控除（寡婦控除の条文が「ひとり親に該当しないもの」と定めているため）</text>
-  <text x="20" y="340" font-size="12" fill="currentColor">※ 所得税は居住者が対象。本人は原則その年の12月31日の現況で判定。</text>
-  <text x="20" y="358" font-size="12" fill="currentColor">年途中の死亡・出国して非居住者となる時はその時。死亡した子の判定は死亡時。</text>
-  <text x="20" y="378" font-size="11" fill="currentColor"><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_85">判定時点：所得税法85条1項</a></text>
-<text x="20" y="399" font-size="11" fill="currentColor">※ 事実婚は住民票の続柄で判定。本人が世帯主なら同一世帯の相手の記載、</text>
-  <text x="20" y="416" font-size="11" fill="currentColor">世帯主でなければ本人の記載を確認。未届の夫・妻等が該当します。</text>
-  <text x="20" y="433" font-size="11" fill="currentColor">※ 総所得金額等は、総所得金額・退職所得金額・山林所得金額の合計です。</text>
+  <text x="20" y="318" font-size="11" fill="currentColor">※ 未婚（結婚したことがない）で子がいない場合と、男性で子がいない場合は、寡婦控除の判定に進めず対象外になります</text>
+  <text x="20" y="336" font-size="11" fill="currentColor">※ 両方に当てはまる人は自動的にひとり親控除（寡婦控除の条文が「ひとり親に該当しないもの」と定めているため）</text>
+  <text x="20" y="358" font-size="12" fill="currentColor">※ 所得税は居住者が対象。本人は原則その年の12月31日の現況で判定。</text>
+  <text x="20" y="376" font-size="12" fill="currentColor">年途中の死亡・出国して非居住者となる時はその時。死亡した子の判定は死亡時。</text>
+  <text x="20" y="396" font-size="11" fill="currentColor"><a href="https://laws.e-gov.go.jp/law/340AC0000000033#Mp-At_85">判定時点：所得税法85条1項</a></text>
+<text x="20" y="417" font-size="11" fill="currentColor">※ 事実婚は住民票の続柄で判定。本人が世帯主なら同一世帯の相手の記載、</text>
+  <text x="20" y="434" font-size="11" fill="currentColor">世帯主でなければ本人の記載を確認。未届の夫・妻等が該当します。</text>
+  <text x="20" y="451" font-size="11" fill="currentColor">※ 所得税の子の所得は、総所得金額・退職所得金額・山林所得金額の合計です。</text>
+
+  <text x="20" y="470" font-size="11" fill="currentColor"><a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf">※ 寡婦控除の扶養親族も、住民税では退職所得を除いて判定します。</a></text>
 </svg>
 <figcaption>ひとり親控除・寡婦控除の判定フロー（令和8年分・<a href="https://laws.e-gov.go.jp/law/340AC0000000033" rel="nofollow">所得税法2条1項30号・31号、85条1項）</a></figcaption>
 </figure>
@@ -293,7 +296,7 @@
 
 <p>ひとり親控除の「生計を一にする子」には、2つの条件があります（<a href="https://laws.e-gov.go.jp/law/340CO0000000096" rel="nofollow">所得税法施行令11条の2第2項）</a>。</p>
 <ul>
-<li>子の所得は<b>62万円以下</b>であること（令和8年分以後の通常の年末判定）。所得は総所得金額・退職所得金額・山林所得金額の合計です</li>
+<li>所得税では、子の所得は<b>62万円以下</b>であること（令和8年分以後の通常の年末判定）。所得は総所得金額・退職所得金額・山林所得金額の合計です</li>
 <li><b>他の人の同一生計配偶者・扶養親族とされていない</b>こと</li>
 </ul>
 
@@ -424,7 +427,7 @@
 <p class="faq-answer">所得の上限は、本人の合計所得金額500万円です。年収換算では677万7,778円以下です（令和8年分・給与のみ・特定支出控除なし）。この合計所得金額は純損失・雑損失の繰越控除を引く前の金額なので、過去の赤字の繰り越しで500万円以下に下げることはできません。500万円を1円でも超えると、ひとり親控除も寡婦控除も全額受けられなくなります（段階的な縮小はありません）。</p>
 
 <h3 class="faq-question">子どものアルバイト収入が多いと対象外になりますか？</h3>
-<p class="faq-answer">子の所得（総所得金額など）が62万円を超えると、その子はひとり親控除の「子」に当たらなくなります。令和8・9年分、給与所得のみ・特定支出控除なしなら年収136万円以下が62万円のラインです。改正は令和8年12月1日施行です。施行前の準確定申告の基準・手続・請求期限は一次資料を確認してください（<a href="https://www.nta.go.jp/users/gensen/2026kiso/pdf/0026005-024.pdf#page=11">国税庁Q&amp;A・Q6-1</a>）。住民税のほうも、令和8年分の所得に対する令和9年度分から同じ62万円で判定されます。</p>
+<p class="faq-answer">所得税では、子の所得（総所得金額など）が62万円を超えると、その子はひとり親控除の「子」に当たらなくなります。令和8・9年分、給与所得のみ・特定支出控除なしなら年収136万円以下が62万円のラインです。改正は令和8年12月1日施行です。施行前の準確定申告の基準・手続・請求期限は一次資料を確認してください（<a href="https://www.nta.go.jp/users/gensen/2026kiso/pdf/0026005-024.pdf#page=11">国税庁Q&amp;A・Q6-1</a>）。住民税のほうも、令和8年分の所得に対する令和9年度分から同じ62万円で判定されます。</p>
 
 <h3 class="faq-question">住民税が非課税になると聞きました。本当ですか？</h3>
 <p class="faq-answer">非課税になる場合があります。国内に住所があるひとり親・寡婦は、前年の合計所得金額が135万円以下なら住民税の均等割・所得割が非課税になります。退職所得の分離課税に係る所得割は除きます（<a href="https://laws.e-gov.go.jp/law/325AC0000000226" rel="nofollow">地方税法24条の5・295条</a>）。障害者・未成年者にも同じ所得上限と例外が適用されます。</p>
