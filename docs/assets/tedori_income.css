@@ -1,0 +1,9 @@
+/* 年収別早見表の表・印刷 */
+#income-content table { width: 100%; }
+#income-content td.num { white-space: nowrap; }
+#income-print { margin: 12px; }
+@media print {
+  header, footer, button, nav, .tool-cta { display: none; }
+  main { max-width: none; margin: 0; }
+  #income-content table { break-inside: avoid; }
+}
