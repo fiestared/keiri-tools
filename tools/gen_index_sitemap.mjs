@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "shohyo", // 証憑 Google月間推定21,680（2026-10-21実測）
   "saikensha-saimusha", // 債権者 Google月間5,280・2026-10-20実測。個別手続の記事と語義総覧を分担。
   "kawase-saeki-kakutei-shinkoku", // 為替差益 確定申告 Google月間推定2,320（2026-10-20）
   "beikoku-kabu-zeikin-enkansan", // 米国株 税金 Google月間推定1,520（2026-10-20）
@@ -819,7 +820,7 @@ const CATEGORIES = [
       "yucho-furikomi-tesuryo", "mufg-furikomi-tesuryo", "furikomi-tesuryo-hikaku", "furikomi-hanei-jikan", "furikomi-furikae-chigai", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "kumimodoshi", "koza-furikae-iraisho", "kotora-sokin", "pay-easy",
       "zengin-format-guide", "csv-mojibake", "eigyobi-kazoekata", "shunyu-inshi-warihan",
-      "soufujo-kakikata", "ryoshusho-kakikata", "mitsumorisho-kakikata", "nohinsho-toha", "seikyusho-kakikata", "chumon-ukesho", "tatekaekin-seisansho", "shukkin-denpyo",
+      "shohyo", "soufujo-kakikata", "ryoshusho-kakikata", "mitsumorisho-kakikata", "nohinsho-toha", "seikyusho-kakikata", "chumon-ukesho", "tatekaekin-seisansho", "shukkin-denpyo",
       "shoguchi-genkin",
       "shitaukeho-toritekiho",
       "tegata-toha",
