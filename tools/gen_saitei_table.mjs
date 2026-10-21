@@ -43,8 +43,8 @@ const m = D._meta, na = m.national_average;
 const table = `<div class="scroll-wrap"><table style="width:100%;border-collapse:collapse;font-size:14px">
 <thead><tr>
 <th scope="col" style="text-align:left;padding:6px;border-bottom:2px solid var(--line)">都道府県</th>
-<th scope="col" style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">時間額</th>
-<th scope="col" style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">引上げ</th>
+<th scope="col" style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">${esc(m.year)}答申改定額（括弧内は改定前）</th>
+<th scope="col" style="text-align:right;padding:6px;border-bottom:2px solid var(--line)">答申改定額の引上げ</th>
 <th scope="col" style="text-align:left;padding:6px;border-bottom:2px solid var(--line)">発効日</th>
 </tr></thead><tbody>
 ${rows.map((p) => `<tr>` +
@@ -63,8 +63,8 @@ const lo = rows.reduce((a, b) => (b.wage < a.wage ? b : a));
 const answered = m.status === "answered";
 const effs = rows.map((r) => r.effective).sort();
 const oct1 = rows.filter((r) => r.effective === effs[0]).length;
-const note = `全国加重平均は<b>${na.wage}円</b>（改定前${na.prev}円・+${na.up}円／+${na.rate.toFixed(1)}%）。` +
-  `最高は${esc(hi.full)}の${hi.wage}円、最低は${lo.wage}円で、その差は<b>${hi.wage - lo.wage}円</b>です。` +
+const note = `${esc(m.year)}の答申改定額の全国加重平均は<b>${na.wage}円</b>（改定前${na.prev}円・+${na.up}円／+${na.rate.toFixed(1)}%）。` +
+  `${esc(m.year)}の答申改定額の最高は${esc(hi.full)}の${hi.wage}円、最低は${lo.wage}円で、その差は<b>${hi.wage - lo.wage}円</b>です。` +
   `金額は${answered ? "" : "全国一覧に記載された"}${esc(m.year)}の<b>${esc(m.table_amount_label ?? (answered ? "答申額" : "決定額"))}</b>で、発効日は都道府県ごとに${esc(rows.find((r) => r.effective === effs[0]).effective_wa)}から` +
   `${esc(rows.find((r) => r.effective === effs[effs.length - 1]).effective_wa)}まで分かれています` +
   `（もっとも早い日に発効するのは${oct1}都道府県）。<b>自分の県の発効日が来るまでは改定前の額が有効です。</b>` +
