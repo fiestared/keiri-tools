@@ -188,3 +188,26 @@ for (const bad of [null, undefined, 1, "x", [], {}, { sites: [] }, { sites: { [K
 }
 
 console.log("PASS: rt-accum（最大値で上書き・0時またぎ・欠けの検出・3日で捨てる・壊れた保存データ・応答の読み取り・壊しテスト）");
+
+// ---- 見張り（10分ごと）の値で置き換える（2026-10-21） ----
+{
+  const { overlaySampler } = await import("./rt-accum.mjs");
+  // 積み上げは 14:00〜14:40 を見ていて、14:05 だけずれて多い（7）。見張りは 14:20 に1回取って、13:51〜14:20 が窓
+  let st = run([
+    [at("2026-10-12", "14:29"), [{ minutesAgo: 24, s: 7, pv: 7 }, { minutesAgo: 20, s: 2, pv: 2 }]],
+    [at("2026-10-12", "14:40"), [{ minutesAgo: 5, s: 4, pv: 5 }]],
+  ]);
+  const sampler = { date: "2026-10-12", fetches: ["14:20"], minutes: { "14:05": { ss: 3, pv: 3 } } };
+  const o = overlaySampler(st, K, "2026-10-12", sampler);
+  const d = o.sites[K].days["2026-10-12"];
+  assert.equal(d.minutes["14:05"].s, 3, "窓の分は見張りの値");
+  assert.equal(d.minutes["14:09"].s, 0, "窓の分で見張りに無い分は 0");
+  assert.equal(d.minutes["14:35"].s, 4, "窓の外は積み上げのまま");
+  assert.equal(summarize(o, K, "2026-10-12").s, 3 + 4);
+  assert.equal(st.sites[K].days["2026-10-12"].minutes["14:05"].s, 7, "元の状態は書き換えない");
+  // 壊しテスト: 置き換えず最大値を取る実装なら 7 のまま（＝今のずれが残る）
+  assert.notEqual(Math.max(7, 3), d.minutes["14:05"].s);
+  // 日付が違う見張りは使わない
+  assert.equal(overlaySampler(st, K, "2026-10-12", { ...sampler, date: "2026-10-11" }).sites[K].days["2026-10-12"].minutes["14:05"].s, 7);
+  console.log("✓ 見張りの値で置き換える");
+}
