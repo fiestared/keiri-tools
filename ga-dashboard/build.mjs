@@ -1910,14 +1910,15 @@ if (!OFFLINE) {
     for (const s of SITES) rtErrors[s.key] ??= e.message;
   }
 }
-// 2026-10-21 Masahiro「見張りのやつ…そっちで数字変えて欲しい」: keiri-tools の速報と時間帯別は、司令塔の見張り
+// 2026-10-21 Masahiro「見張りのやつ…そっちで数字変えて欲しい」: 速報と時間帯別は、司令塔の見張り
 //   （~/Scripts/keiri-commander/logs/ga-rt/<日付>.json・10分ごと）の値で置き換えて描く。見張りの窓の外（直近10分など）は1分ごとの積み上げのまま
-const SAMPLER_DIR = process.env.GA_RT_SAMPLER_DIR ?? join(homedir(), "Scripts/keiri-commander/logs/ga-rt");
-const SAMPLER_SITES = { "keiri-tools": true };
+//   2026-10-21 Masahiro「道しるべもそうなってるんだよね？」→ 道しるべも同じ見張り（logs/ga-rt-shirube）で描く
+const SAMPLER_ROOT = process.env.GA_RT_SAMPLER_ROOT ?? join(homedir(), "Scripts/keiri-commander/logs");
+const SAMPLER_SITES = { "keiri-tools": join(SAMPLER_ROOT, "ga-rt"), "pachisloshirube": join(SAMPLER_ROOT, "ga-rt-shirube") };
 for (const s of m.sites) {
   let sum = null, hours = null, view = rtState;
   if (SAMPLER_SITES[s.key]) {
-    try { view = overlaySampler(rtState, s.key, m.today, JSON.parse(readFileSync(join(SAMPLER_DIR, `${m.today}.json`), "utf8"))); }
+    try { view = overlaySampler(rtState, s.key, m.today, JSON.parse(readFileSync(join(SAMPLER_SITES[s.key], `${m.today}.json`), "utf8"))); }
     catch { /* 見張りが無い・読めない日は今の積み上げで描く */ }
   }
   try { sum = summarize(view, s.key, m.today); } catch { /* 推定が描けなくても画面は出す */ }
