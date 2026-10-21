@@ -17,10 +17,12 @@ for (const [i,r] of rows('example').entries()){
  assert.equal(amounts(r[3])[0],face+count*data.issue_fee_including_tax,'窓口支払額に購入料金を加算');
 }
 assert.ok(/有効期間経過後、再交付請求のうえ即時払渡し・払戻しをする場合は無料/.test(plain(html)),'再交付料金の無料例外を表示');
-assert.ok(/紛失した定額小為替の有効期間内は再交付されない/.test(plain(html)),'紛失時の待機条件を表示');
+assert.ok(/紛失（有効期間内は発行・交付なし）/.test(plain(html)),'紛失時の待機条件を表示');
 const reissueTable=[...html.matchAll(/<table\b[^>]*>([\s\S]*?)<\/table>/g)].map(m=>m[1]).find(t=>plain(t).startsWith('定額小為替の再交付手続き'));
 assert.ok(reissueTable,'再交付の手続表を特定');
 const reissueRows=[...reissueTable.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/g)].slice(1);
 assert.equal(reissueRows.length,3);
-for(const row of reissueRows){const cells=[...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)];assert.equal(amounts(plain(cells.at(-1)[1]))[0],data.reissue_fee_including_tax,'再交付料金を正本JSONと照合');}
+const reissueContexts=[...html.matchAll(/<p[^>]*data-review-context="before-table"[^>]*>([\s\S]*?)<\/p>/g)].map(m=>plain(m[1])).filter(t=>t.includes('定額小為替の再交付は'));
+assert.equal(reissueContexts.length,1,'再交付料金の共通説明を一意に特定');
+assert.equal(Number(reissueContexts[0].match(/再交付は、?証書1枚([\d,]+)円/)[1].replaceAll(',','')),data.reissue_fee_including_tax,'再交付料金を正本JSONと照合');
 console.log('✓ 定額小為替の金種・購入費用・重要例外');
