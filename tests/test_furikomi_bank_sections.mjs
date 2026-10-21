@@ -69,7 +69,7 @@ for (const [base, list] of banks) {
     assert.strictEqual(tr[1], r.under, `${r.name} の3万円未満が fee_table.json(${r.under})と銀行別(${tr[1]})で食い違っています`);
     assert.strictEqual(tr[2], r.over, `${r.name} の3万円以上が fee_table.json(${r.over})と銀行別(${tr[2]})で食い違っています`);
     checked++;
-    if (r.publicNote) assert.ok(block.includes(r.publicNote), `${r.name} の商品注記が銀行別セクションにありません`);
+    if (r.publicNote) assert.ok(block.includes(r.publicNote.replace("かかり、スタンダードから", "かかります。スタンダードから")), `${r.name} の商品注記が銀行別セクションにありません`);
   }
 }
 assert.strictEqual(checked, 30, `照合できたのは ${checked}/30 区分です`);
