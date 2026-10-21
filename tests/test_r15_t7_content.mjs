@@ -7,13 +7,13 @@ function check(name,fn){try{fn();}catch(e){errors.push(name+': '+e.message);}}
 for(const page of ['docs/ikuji/index.html','docs/embed/ikuji/index.html']){
  const d=new JSDOM(readFileSync(page,'utf8')).window.document;
  // 2026-10-11 読みやすさの作り直し: 本体ページは条件を入力欄の補足から本文の節（#shien・#menjo）へ移した。埋め込み版は補足のまま。
- const hints=page.includes('/embed/')?[...d.querySelectorAll('.hint')].map(x=>x.textContent.replace(/\s/g,'')).join('\n'):[...d.querySelectorAll('#shien ~ ul li, #ikuji-menjo-list li')].map(x=>x.textContent.replace(/\s/g,'')).join('\n');
+ const hints=page.includes('/embed/')?[...d.querySelectorAll('.hint')].map(x=>x.textContent.replace(/\s/g,'')).join('\n'):[...d.querySelectorAll('#shien ~ ul li, #ikuji-menjo-list li, #ikuji-menjo-list td')].map(x=>x.textContent.replace(/\s/g,'')).join('\n');
  check(page+' 配偶者免除の限定',()=>assert.match(hints,/行方不明.{0,30}3か月以上無断欠勤/));
  check(page+' 災害行方不明',()=>assert.match(hints,/災害/));
  check(page+' 申告書の理由限定',()=>assert.match(hints,/申告書/));
  check(page+' 配偶者期間',()=>assert.match(hints,/配偶者.{0,40}免除に該当しない場合.{0,90}8週間/));
  if(!page.includes('/embed/')){
-  check('就業賃金が増えても合計一定の区間',()=>assert.match(d.body.textContent,/賃金が13%（181日目以降30%）を超えると給付が減額/));
+  check('就業賃金が増えても合計一定の区間',()=>assert.match(d.body.textContent,/賃金が(休業前の)?13%（181日目以降30%）を超えると給付が減額/));
   check('metaに配偶者免除',()=>assert.match(d.querySelector('meta[name="description"]').content,/免除/));
  }
  d.defaultView.close();

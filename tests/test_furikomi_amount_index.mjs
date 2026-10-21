@@ -30,9 +30,16 @@ const block = html.slice(start, end);
 // --- 2. 正本の金額が、過不足なく行になっていること --------------------------
 // ★「在ること」だけでは足りない。**表にしか無い金額**＝改定で消えたのに残った行を落とす。
 const want = amountMap(loadBanks());
-const rowRe = /<tr><th scope="row"(?: data-review-context="row")?><b>(\d+)円(?:<br>[^<]*)?<\/b><\/th><td>(.*?)<\/td><\/tr>/g;
+const rowRe = /<tr><th scope="row"(?: data-review-context="row")?><b>(\d+)円<\/b><\/th><td>(.*?)<\/td><td>(.*?)<\/td><\/tr>/g;
 const got = new Map();
-for (const m of block.matchAll(rowRe)) got.set(Number(m[1]), m[2]);
+for (const m of block.matchAll(rowRe)) {
+  const amount = Number(m[1]);
+  const range = m[2].match(/（(金額不問|3万円未満|3万円以上|金額区分も未確認)）$/);
+  assert.ok(range, `${amount}円の行に金額区分がありません`);
+  const name = m[2].slice(0, -range[0].length);
+  const entry = `${name}${m[3] === '—' ? '' : `【${m[3]}】`}${range[0]}`;
+  got.set(amount, [...(got.has(amount) ? got.get(amount).split('<br>') : []), entry].join('<br>'));
+}
 
 assert.deepStrictEqual([...got.keys()].sort((a, b) => a - b), [...want.keys()],
   `逆引き表の金額が正本(fee_table.json)と一致しません。\n  表: ${[...got.keys()]}\n  正本: ${[...want.keys()]}`);
