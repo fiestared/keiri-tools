@@ -2,14 +2,50 @@ import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {JSDOM} from 'jsdom';
-import {calculate,boundaries,incomes,demand} from '../tools/gen_tedori_income_pages.mjs';
+import {calculate,boundaries,nextTaxBand,incomes,demand} from '../tools/gen_tedori_income_pages.mjs';
 const oracle=JSON.parse(readFileSync(new URL('fixtures/kyoukaikenpo_tokyo_r08.json',import.meta.url)));
 const bands=JSON.parse(readFileSync(new URL('fixtures/tedori_income_tokyo_bands.json',import.meta.url)));
 const rounded=n=>Math.ceil(n-0.5); // 給与控除時の50銭以下切捨て（公表表の折半額から）
 assert.deepEqual(demand.rows.map(r=>r.man),[...Array.from({length:16},(_,i)=>250+50*i),1100,1200,1300,1400,1500]);
 assert.deepEqual(incomes,[300,350,400,450,500,600,700,750,800,850,1000,1200,1500]);
 assert(!incomes.includes(900),'Google 800・合計1000を誤って採用しない');
+const summary=new JSDOM(readFileSync(new URL('../docs/tedori/nenshu/index.html',import.meta.url),'utf8'));
+const description=summary.window.document.querySelector('meta[name="description"]').content;
+assert(description.startsWith('年収300万円の手取りは年額'+calculate(300).net.toLocaleString('ja-JP')+'円'));
+assert(description.includes(calculate(1500).net.toLocaleString('ja-JP')+'円'));
+summary.window.close();
+const pension=new JSDOM(readFileSync(new URL('../docs/tedori/nenshu/750/index.html',import.meta.url),'utf8'));
+const pensionText=pension.window.document.querySelector('#income-observation-2').textContent;
+for(const n of [7620000,120000,calculate(750).parts.kosei,calculate(800).parts.kosei])assert(pensionText.includes(n.toLocaleString('ja-JP')+'円'));
+pension.window.close();
 const pageFocus=new Set();
+// 公表報酬帯・税率表から独立に固定した初回到達。526万円は等級境界ではなく
+// 給与所得表の4,000円刻みによる跳びで、課税所得が1,949,000→1,952,000円になる。
+for(const [man,gross,rate,taxable,before] of [[300,5260000,10,1952000,1949000],[400,5260000,10,1952000,1949000],[500,5260000,10,1952000,1949000],[1500,22235540,40,18000000,17999000]]){
+ assert.deepEqual(nextTaxBand(man),{gross,distance:gross-man*10000,taxable,rate});
+ assert.equal(calculate((gross-1)/10000).tax.kazei,before);
+ assert.equal(calculate(gross/10000).tax.kazei,taxable);
+ const dom=new JSDOM(readFileSync(new URL(`../docs/tedori/nenshu/${man}/index.html`,import.meta.url),'utf8'));
+ const text=dom.window.document.querySelector('#income-observation-2').textContent;
+ assert(text.includes(gross.toLocaleString('ja-JP')+'円'));
+ assert(text.includes((gross-man*10000).toLocaleString('ja-JP')+'円'));
+ dom.window.close();
+}
+assert.equal(calculate(400).local.kazeiSoShotoku,1731000);
+assert.equal(calculate(450).local.kazeiSoShotoku,2060000);
+assert.equal(calculate(450).local.choseiKojo.total,2500);
+assert.equal(calculate(450,35,true).local.kazeiSoShotoku,1730000);
+assert.equal(calculate(450,35,true).net-calculate(450).net,54899);
+assert.equal(calculate(500,35,true).net-calculate(500).net,52399);
+const adjustment=new JSDOM(readFileSync(new URL('../docs/tedori/nenshu/450/index.html',import.meta.url),'utf8'));
+assert(adjustment.window.document.title.includes('調整控除'));
+assert(adjustment.window.document.querySelector('#income-observation-1').textContent.includes('2,060,000円'));
+assert(adjustment.window.document.querySelector('#income-observation-2').textContent.includes('1,730,000円'));
+adjustment.window.close();
+const monthly=new JSDOM(readFileSync(new URL('../docs/nenshu/index.html',import.meta.url),'utf8'));
+assert(monthly.window.document.title.startsWith('給与明細の月手取り表（年末調整前）'));
+assert(monthly.window.document.querySelector('#annual-income-guide a[href="/tedori/nenshu/"]'));
+monthly.window.close();
 for(const man of incomes){
  const doc=new JSDOM(readFileSync(new URL(`../docs/tedori/nenshu/${man}/index.html`,import.meta.url),'utf8')).window.document;
  for(const age of [35,45])for(const spouse of [false,true]){
@@ -30,6 +66,7 @@ for(const man of incomes){
   assert.equal(cells[1].textContent,Math.round(r.net/12).toLocaleString('ja-JP')+'円',label+' の平均月額');
  }
  const r=calculate(man);
+ assert(doc.querySelector('#income-conditions a[href="/nenshu/"]'));
  const index=incomes.indexOf(man), other=incomes[index?index-1:index+1],lo=calculate(Math.min(man,other)),hi=calculate(Math.max(man,other));
  const increase=doc.querySelectorAll('#income-increase tbody td');
  assert.equal(increase[0].textContent,(hi.gross-lo.gross).toLocaleString('ja-JP')+'円');

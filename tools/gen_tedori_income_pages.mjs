@@ -38,6 +38,7 @@ const labels={kenko:'健康保険',kaigo:'介護保険',kosodate:'子ども・�
 function readerLaw(url){return url.replace('/api/2/law_data/','/law/').split('_')[0];}
 export const sources=[['協会けんぽ「東京支部の保険料額表」','https://www.kyoukaikenpo.or.jp/assets/R8_13tokyo.pdf'],['厚生労働省「雇用保険料率」',S.koyou.url],['国税庁「所得税の税率」',refs.S._meta.sources.shotokuzei_sokusan],['国税庁「源泉所得税の改正のあらまし」',refs.N._meta.sources.kaisei_aramashi],['所得税法（令和8年12月1日施行版を参照）',readerLaw(refs.K._meta.sources.shotokuzeiho_r08)],['租税特別措置法（令和8年12月1日施行版を参照）',readerLaw(refs.K._meta.sources.sochiho_r08)],['地方税法',refs.J._meta.url],['国立市「住民税の計算方法」','https://www.city.kunitachi.tokyo.jp/kurashi/zeikin/6/2/5791.html']];
 function assumptions(){return `<h2 id="conditions">計算の前提</h2><table id="income-conditions"><tbody>
+<tr><th>毎月の給与明細との違い</th><td>この系列は35歳を基本に、年税額で年間の手取りを比較します。<a href="/nenshu/">年末調整前の月手取り表</a>は40歳・介護保険ありで、毎月の源泉徴収額を使います。年齢と税の精算時点が違うため、同じ年収でも答えは一致しません。</td></tr>
 <tr><th>対象</th><td>所得税上の居住者である会社員。社会保険・雇用保険に加入し、厚生年金基金は未加入。給与のみで、賞与・非課税通勤手当なし。</td></tr>
 <tr><th>支給方法</th><td>額面年収を12等分。円未満を含む理論上の月給から標準報酬月額を求め、同じ等級が続くモデル。</td></tr>
 <tr><th>保険料</th><td>${esc(S._meta.year)}の協会けんぽ東京。健康保険は${esc(S._meta.rate_applies_from)}、支援金は${esc(S._meta.kosodate_applies_from)}、雇用保険は${esc(S._meta.koyou_applies_from)}以後の料率を12か月に適用。暦年の途中の料率変更は反映しません。</td></tr>
@@ -54,14 +55,29 @@ const salaryBands=refs.J.kyuyo_shotoku.kojo_brackets;
 const pensionCap=S.kosei_grade_cap.current;
 const pensionStart=KENKO_GRADES.find(g=>g[1]===pensionCap)[2]*12;
 const spouseLimits=refs.S.haigu.honnin_tiers.map(t=>salaryLimit(t.upto));
+// 税率帯への初回到達を額面の円単位で逆算。保険料等級による小さな逆戻りを
+// 見落とさないよう、各健保等級の区間内だけで二分探索する。
+export function nextTaxBand(man){
+ const base=calculate(man), bracket=refs.S.shotokuzei_brackets.find(b=>b.upto==null||base.tax.kazei<=b.upto);
+ if(bracket.upto==null)return null;
+ const target=bracket.upto+1000, start=Math.floor(base.gross)+1;
+ const cuts=[start,...KENKO_GRADES.map(g=>g[2]*12).filter(n=>n>start&&n<40000000),40000000];
+ for(let i=0;i<cuts.length-1;i++){
+  let lo=cuts[i],hi=cuts[i+1]-1;
+  if(calculate(hi/10000).tax.kazei<target)continue;
+  while(lo<hi){const mid=Math.floor((lo+hi)/2);if(calculate(mid/10000).tax.kazei>=target)hi=mid;else lo=mid+1;}
+  return {gross:lo,distance:lo-base.gross,taxable:calculate(lo/10000).tax.kazei,rate:Math.round(refs.S.shotokuzei_brackets.find(b=>b.upto==null||target<=b.upto).rate*100)};
+ }
+ throw Error('次の税率帯が探索上限内にない');
+}
 export function boundaries(man){
  const r=calculate(man),k=kisoBands.find(b=>b.upto==null||r.tax.gokei<=b.upto),w=calculate(man,35,true);
  const rate=refs.S.shotokuzei_brackets.find(b=>b.upto==null||r.tax.kazei<=b.upto);
  const salaryBand=salaryBands.find(b=>b.upto==null||r.gross<=b.upto);
- return {salaryDeduction:r.gross-r.tax.shotoku.kyuyoShotoku,kiso:k.amount,kisoIncomeLimit:k.upto,kisoSalaryLimit:salaryLimit(k.upto),rate:Math.round(rate.rate*100),taxable:r.tax.kazei,taxableLimit:rate.upto,salaryBand,salaryFormulaConstant:salaryBand.base-salaryBand.over*salaryBand.rate_pct/100,pensionStart,pensionCap,pensionCapped:r.social.koseiStandard===pensionCap,spouseDeduction:w.tax.kojo.haigu,spouseGain:w.net-r.net,spouseLimits};
+ return {salaryDeduction:r.gross-r.tax.shotoku.kyuyoShotoku,kiso:k.amount,kisoIncomeLimit:k.upto,kisoSalaryLimit:salaryLimit(k.upto),rate:Math.round(rate.rate*100),taxable:r.tax.kazei,taxableLimit:rate.upto,salaryBand,salaryFormulaConstant:salaryBand.base-salaryBand.over*salaryBand.rate_pct/100,pensionStart,pensionCap,pensionCapped:r.social.koseiStandard===pensionCap,spouseDeduction:w.tax.kojo.haigu,spouseGain:w.net-r.net,spouseLimits,nextTax:nextTaxBand(man)};
 }
 const focus={
- 300:'給与所得の表計算と低い税率帯',350:'給与所得控除の算式が変わる手前',400:'給与所得控除の傾きが変わった帯',450:'月給と標準報酬のずれを読む帯',500:'所得税の次の税率帯までの余裕',600:'基礎控除の縮小を控える帯',700:'基礎控除の上乗せが縮む帯',750:'厚生年金の上限に届く直前',800:'年金が上限に達し健保だけが増える帯',850:'基礎控除と給与所得控除の二つの境目',1000:'配偶者控除は満額・年金は上限',1200:'配偶者控除の対象外になった帯',1500:'高い税率帯と定額の給与所得控除'
+ 300:'給与所得の表計算と低い税率帯',350:'給与所得控除の算式が変わる手前',400:'給与所得控除の傾きが変わった帯',450:'住民税の調整控除の計算が切り替わる帯',500:'所得税の次の税率帯までの余裕',600:'基礎控除の縮小を控える帯',700:'基礎控除の上乗せが縮む帯',750:'厚生年金の上限に届く直前',800:'年金が上限に達し健保だけが増える帯',850:'基礎控除と給与所得控除の二つの境目',1000:'配偶者控除は満額・年金は上限',1200:'配偶者控除の対象外になった帯',1500:'高い税率帯と定額の給与所得控除'
 };
 function observations(man,r,c){
  const amount=n=>yen(n);
@@ -80,19 +96,26 @@ function observations(man,r,c){
  1200:['本人の所得制限を超えたため、所得のない配偶者がいても配偶者控除はありません。配偶者ありの行と扶養なしの行の手取りが同額になるのは、この制限を反映した結果です。','厚生年金と給与所得控除はいずれも上限に達しています。昇給後の負担を比べるときは、定額の部分より課税所得の税率帯と健康保険の等級を確認します。'],
  1500:['掲載年収の中でも高い所得税率帯に進んでいます。次の税率は課税所得が今の帯の上端を超えた部分にかかるため、給与全体の負担率とは異なります。','給与所得控除は定額で、配偶者控除も本人の所得制限により対象外です。低い年収の手取り率を当てはめず、増えた額面が控除で相殺されにくい条件で比較します。']
  };
+ if([300,400,500,1500].includes(man))texts[man][1]=`この年収から次の所得税率${c.nextTax.rate}%の帯に初めて入るのは、この35歳・扶養なし・東京の料率固定モデルでは給与年額${amount(c.nextTax.gross)}です。額面であと${amount(c.nextTax.distance)}で、到達時の課税所得は${amount(c.nextTax.taxable)}になります。給与所得控除・基礎控除と保険料等級の変化も含めた額面の差です。`;
+ if(man===450){
+  const prev=calculate(400), spouse=calculate(man,35,true), next=calculate(500,35,true);
+  texts[man]=[`この35歳・扶養なしのモデルでは、住民税の課税所得が${amount(r.local.kazeiSoShotoku)}となり、掲載年収で初めて${refs.J.chosei_kojo.threshold/10000}万円を超えます。400万円の${amount(prev.local.kazeiSoShotoku)}から調整控除の計算方法が切り替わり、控除額は最低額${amount(r.local.choseiKojo.total)}になります（<a href="https://www.city.kunitachi.tokyo.jp/kurashi/zeikin/6/2/5792.html">国立市の調整控除の計算方法</a>、確認日: 2026-10-22）。`,`同じ年収450万円でも所得のない配偶者がいるモデルでは、住民税の課税所得が${amount(spouse.local.kazeiSoShotoku)}に下がり、${refs.J.chosei_kojo.threshold/10000}万円以下の計算に戻ります。年収450万円で配偶者ありによる本人の手取り差は${amount(spouse.net-r.net)}ですが、年収500万円では${amount(next.net-calculate(500).net)}になります。`];
+ }
+ if(man===750){const upper=calculate(800);texts[man][1]=`このモデルでは、給与年額${amount(c.pensionStart)}から厚生年金の標準報酬月額が上限${amount(c.pensionCap)}になります。年収750万円から額面であと${amount(c.pensionStart-r.gross)}です。800万円との比較では厚生年金の年額が${amount(r.parts.kosei)}から${amount(upper.parts.kosei)}へ増え、その先は同じ上限額です。`;}
+ if(man===700){const prev=calculate(600);texts[man][0]=`給与のみの${esc(refs.K._meta.year)}では、給与${amount(boundaries(600).kisoSalaryLimit)}を超えると基礎控除が${amount(boundaries(600).kiso)}から${amount(c.kiso)}に下がります。この35歳・扶養なしのモデルで年収600万円から700万円に増えると、所得税は${amount(prev.parts.tax)}から${amount(r.parts.tax)}へ${amount(r.parts.tax-prev.parts.tax)}増えます。給与所得控除の算式も収入の${boundaries(600).salaryBand.rate_pct}%から${c.salaryBand.rate_pct}%を使う帯に切り替わります。`;}
  return texts[man].map((t,i)=>`<p id="income-observation-${i+1}">${t}</p>`).join('');
 }
 function boundaryTable(man,r,c){
  const sb=c.salaryBand, next=sb.upto;
  const formula=sb.rate_pct?`速算式: 収入×${sb.rate_pct}%＋${yen(c.salaryFormulaConstant)}（表の端数処理あり）`:'控除額は定額';
  const rows=[
- ['給与所得控除',`${yen(c.salaryDeduction)}。${formula}`,next==null?'この先も定額':`算式の上端 ${yen(next)}まで${yen(next-r.gross)}。上端を超えると次の算式へ`],
+ ['給与所得控除',`${yen(c.salaryDeduction)}`,next==null?'この先も定額':`算式の上端 ${yen(next)}まで${yen(next-r.gross)}。上端を超えると次の算式へ`],
  ['所得税の基礎控除',`${yen(c.kiso)}。合計所得${yen(c.kisoIncomeLimit)}以下の帯`,`給与のみの上端 ${yen(c.kisoSalaryLimit)}まで${yen(c.kisoSalaryLimit-r.gross)}。上端超で控除縮小`],
  ['所得税の税率帯',`課税所得${yen(c.taxable)}、限界税率${c.rate}%`,`課税所得の上端 ${yen(c.taxableLimit)}まで${yen(c.taxableLimit-c.taxable)}。額面年収の差額ではありません`],
  ['厚生年金の上限',`標準報酬月額${yen(r.social.koseiStandard)}（上限${yen(c.pensionCap)}）`,c.pensionCapped?`給与年額${yen(c.pensionStart)}から上限に到達済み`:`給与年額${yen(c.pensionStart)}で上限へ。あと${yen(c.pensionStart-r.gross)}`],
  ['所得のない配偶者の控除',`所得税${yen(c.spouseDeduction)}。本人の手取り差${yen(c.spouseGain)}`,c.spouseDeduction===0?`給与のみで${yen(c.spouseLimits[2])}超のため対象外`:`給与のみで${yen(c.spouseLimits[0])}超から縮小、${yen(c.spouseLimits[2])}超で対象外`]
  ];
- return `<table id="income-boundaries"><caption>年収${man}万円・給与のみ・35歳・東京・${esc(refs.K._meta.year)}所得税と料率固定モデルの境目（配偶者の行だけ配偶者あり）</caption><thead><tr><th>制度</th><th>この年収での扱い</th><th>次の境目・到達状況</th></tr></thead><tbody>${rows.map((row,i)=>`<tr data-boundary="${i}">${row.map((v,j)=>`<${j?'td':'th'}>${v}</${j?'td':'th'}>`).join('')}</tr>`).join('')}</tbody></table><p>給与所得控除は、表を使う範囲では給与の端数処理も反映した実際の控除額です。制度の境目は<a href="${sources[3][1]}">国税庁の改正のあらまし</a>、給与所得控除は<a href="${refs.S._meta.sources.kyuyo_shotoku_kojo}">国税庁の給与所得控除表</a>、配偶者控除は<a href="${refs.S._meta.sources.haigu_shotokuzei}">国税庁の配偶者控除表</a>、税率帯は<a href="${sources[2][1]}">国税庁の税率表</a>、年金の上限は<a href="${sources[0][1]}">協会けんぽの額表</a>で確認できます（確認日: 2026-10-22）。</p>`;
+ return `<table id="income-boundaries"><caption>年収${man}万円・給与のみ・35歳・東京・${esc(refs.K._meta.year)}所得税と料率固定モデルの境目（配偶者の行だけ配偶者あり）</caption><thead><tr><th>制度</th><th>この年収での扱い</th><th>次の境目・到達状況</th></tr></thead><tbody>${rows.map((row,i)=>`<tr data-boundary="${i}">${row.map((v,j)=>`<${j?'td':'th'}>${v}</${j?'td':'th'}>`).join('')}</tr>`).join('')}</tbody></table><p>この年収の給与所得控除の${formula}。給与所得控除は、表を使う範囲では給与の端数処理も反映した実際の控除額です。制度の境目は<a href="${sources[3][1]}">国税庁の改正のあらまし</a>、給与所得控除は<a href="${refs.S._meta.sources.kyuyo_shotoku_kojo}">国税庁の給与所得控除表</a>、配偶者控除は<a href="${refs.S._meta.sources.haigu_shotokuzei}">国税庁の配偶者控除表</a>、税率帯は<a href="${sources[2][1]}">国税庁の税率表</a>、年金の上限は<a href="${sources[0][1]}">協会けんぽの額表</a>で確認できます（確認日: 2026-10-22）。</p>`;
 }
 function incomeContext(man){
  const r=calculate(man), c=boundaries(man), i=incomes.indexOf(man), neighbor=incomes[i?i-1:i+1], low=Math.min(man,neighbor),high=Math.max(man,neighbor),a=calculate(low),b=calculate(high);
@@ -125,10 +148,10 @@ ${assumptions()}
 function signature(html){const dom=new JSDOM(html),el=dom.window.document.querySelector('#income-content');if(!el)return '';const nav=el.querySelector('nav.toc'),toc=nav?{list:!!nav.querySelector(':scope > ol, :scope > ul'),heading:!!nav.querySelector('.toc-title'),links:[...nav.querySelectorAll('a')].map(a=>[a.getAttribute('href'),a.textContent.replace(/\s+/g,'')])}:null;for(const n of el.querySelectorAll('nav,aside,.x-share,.side-rail'))n.remove();const s=JSON.stringify({toc,ids:[...el.querySelectorAll('[id]')].map(e=>[e.id,e.localName]),sourceExemptions:[...el.querySelectorAll('[data-source-nolink]')].map(e=>e.getAttribute('data-source-nolink')),breadcrumbs:[...dom.window.document.querySelectorAll('script[type="application/ld+json"]')].flatMap(e=>{const j=JSON.parse(e.textContent);return (j['@graph']||[j]).filter(n=>n['@type']==='BreadcrumbList');}),styles:[...dom.window.document.querySelectorAll('link[rel="stylesheet"]')].map(e=>e.getAttribute('href')),title:dom.window.document.title,description:dom.window.document.querySelector('meta[name="description"]')?.content,text:el.textContent.replace(/\s+/g,''),links:[...el.querySelectorAll('a')].map(a=>[a.getAttribute('href'),a.textContent.replace(/\s+/g,'')]),rows:[...el.querySelectorAll('[data-part]')].map(e=>[e.getAttribute('data-part'),...[...e.querySelectorAll('th,td')].map(c=>c.textContent.replace(/\s+/g,''))])});dom.window.close();return s;}
 function incomeTitle(n){
  const c=boundaries(n),money=v=>(v/10000).toLocaleString('ja-JP')+'万円';
- const detail={300:`表計算の給与所得控除${money(c.salaryDeduction)}`,350:`控除算式の切替えまで${money(c.salaryBand.upto-n*10000)}`,400:`給与所得控除は収入×${c.salaryBand.rate_pct}%の帯`,450:`健保の標準報酬${money(calculate(n).social.standard)}`,500:`所得税率${c.rate}%・次の税率帯を確認`,600:`基礎控除${money(c.kiso)}が残る帯`,700:`基礎控除が${money(c.kiso)}に縮む帯`,750:`年金上限まで年収あと${money(c.pensionStart-n*10000)}`,800:`年金の標準報酬は上限${money(c.pensionCap)}`,850:`基礎控除${money(c.kiso)}の帯の上端`,1000:`配偶者控除は満額${money(c.spouseDeduction)}`,1200:'配偶者控除なし・所得制限を超える帯',1500:`所得税率${c.rate}%・給与所得控除は定額`};
+ const detail={300:`表計算の給与所得控除${money(c.salaryDeduction)}`,350:`控除算式の切替えまで${money(c.salaryBand.upto-n*10000)}`,400:`給与所得控除は収入×${c.salaryBand.rate_pct}%の帯`,450:`住民税の調整控除が${money(refs.J.chosei_kojo.threshold)}超の計算へ`,500:`所得税率${c.rate}%・次の税率帯を確認`,600:`基礎控除${money(c.kiso)}が残る帯`,700:`基礎控除が${money(c.kiso)}に縮む帯`,750:`年金上限まで年収あと${money(c.pensionStart-n*10000)}`,800:`年金の標準報酬は上限${money(c.pensionCap)}`,850:`基礎控除${money(c.kiso)}の帯の上端`,1000:`配偶者控除は満額${money(c.spouseDeduction)}`,1200:'配偶者控除なし・所得制限を超える帯',1500:`所得税率${c.rate}%・給与所得控除は定額`};
  return `年収${n}万円の手取り｜${detail[n]}`;
 }
-function allDescription(n,title){return n==null?`${title}。給与のみ・東京・扶養なしの料率固定モデルで、各年収の答えから内訳のページへ進めます。`:`年収${n}万円の手取りは年額${yen(calculate(n).net)}、月平均${yen(calculate(n).net/12)}。${focus[n]}を確認。基礎控除${yen(boundaries(n).kiso)}・所得税率${boundaries(n).rate}%の帯で、次の境目までの差額を比較。給与のみ・35歳・東京・扶養なしの料率固定モデルです。`;}
+function allDescription(n,title){return n==null?`年収300万円の手取りは年額${yen(calculate(300).net)}、1500万円は${yen(calculate(1500).net)}。給与のみ・35歳・東京・扶養なしの料率固定モデル。年税額で年間の答えと控除内訳を比較できます。40歳の年末調整前の月手取り表との違いも説明。`:`年収${n}万円の手取りは年額${yen(calculate(n).net)}、月平均${yen(calculate(n).net/12)}。${focus[n]}を確認。基礎控除${yen(boundaries(n).kiso)}・所得税率${boundaries(n).rate}%の帯で、次の境目までの差額を比較。給与のみ・35歳・東京・扶養なしの料率固定モデルです。`;}
 export function generate(){
  const registered=JSON.parse(readFileSync(join(ROOT,'tools/static_pages.d/tedori_income.json'),'utf8')).pages;
  const expected=['tedori/nenshu/',...incomes.map(n=>`tedori/nenshu/${n}/`)];
