@@ -18,4 +18,9 @@ for (const [i,r] of rows('example').entries()){
 }
 assert.ok(/有効期間経過後、再交付請求のうえ即時払渡し・払戻しをする場合は無料/.test(plain(html)),'再交付料金の無料例外を表示');
 assert.ok(/紛失した定額小為替の有効期間内は再交付されない/.test(plain(html)),'紛失時の待機条件を表示');
+const reissueTable=[...html.matchAll(/<table\b[^>]*>([\s\S]*?)<\/table>/g)].map(m=>m[1]).find(t=>plain(t).startsWith('定額小為替の再交付手続き'));
+assert.ok(reissueTable,'再交付の手続表を特定');
+const reissueRows=[...reissueTable.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/g)].slice(1);
+assert.equal(reissueRows.length,3);
+for(const row of reissueRows){const cells=[...row[1].matchAll(/<td[^>]*>([\s\S]*?)<\/td>/g)];assert.equal(amounts(plain(cells.at(-1)[1]))[0],data.reissue_fee_including_tax,'再交付料金を正本JSONと照合');}
 console.log('✓ 定額小為替の金種・購入費用・重要例外');
