@@ -49,12 +49,12 @@ function kyuyoShotokuIndep(shunyu, zeisei) {
 const JINTEKI = { kiso: 430_000, haigusha: 330_000, ippan: 330_000, tokutei: 450_000, nensho: 0 };
 const SA = { kiso: 50_000, haigusha: 50_000, ippan: 50_000, tokutei: 180_000, nensho: 0 };
 
-// 税率（×1000。4.025% → 4025）は自治体ごとの条例の率なので、ここだけ参照データの値を入力として使う。
+// 税率（×1000。4.018% → 4018）は自治体ごとの条例の率なので、ここだけ参照データの値を入力として使う。
 // 指定都市は調整控除の配分も 4%:1%（37条・314条の6のかっこ書き）。
 const RATES = {
   hyojun: { s: 6000, d: 4000, shitei: false },
-  kanagawa: { s: 6000, d: 4025, shitei: false },
-  yokohama: { s: 8000, d: 2025, shitei: true },
+  kanagawa: { s: 6000, d: 4018, shitei: false },
+  yokohama: { s: 8000, d: 2018, shitei: true },
   kobe: { s: 8000, d: 2000, shitei: true },
 };
 for (const [k, v] of Object.entries(RATES)) {
@@ -80,7 +80,7 @@ function expectIndep({ shunyu, shakai, fam, zeisei, jichitai = 'hyojun' }) {
   const base = Math.min(sa, kazei);
   const cS = Math.floor(base * (R.shitei ? 4 : 3) / 100);
   const cD = Math.floor(base * (R.shitei ? 1 : 2) / 100);
-  // 所得割の額を「円×100000」の整数で持つ（4.025% の小数を落とさない）。BigInt で桁あふれを避ける
+  // 所得割の額を「円×100000」の整数で持つ（4.018% の小数を落とさない）。BigInt で桁あふれを避ける
   const S5 = BigInt(Math.max(0, kazei * R.s - cS * 100_000));
   const D5 = BigInt(Math.max(0, kazei * R.d - cD * 100_000));
   const sum = S5 + D5;
@@ -150,10 +150,10 @@ function runSuite(calc, { quiet = false } = {}) {
     [{ kyuyoShunyu: 1_860_001, shakaiHoken: 0, family: { haigusha: 'ippan' }, zeisei: 'r8' }, 0, 31_000],
     [{ kyuyoShunyu: 1_880_000, shakaiHoken: 0, family: { haigusha: 'ippan' }, zeisei: 'r8' }, 20_000, 33_000],
   ];
-  // 超過課税（神奈川県 4.025%）で按分の前に1円未満を落とすと100円ずれる例（sol 6.1 r1 の M1）。
-  //   1,863,236円: 市18,780・県12,610.75、A−L=3,236 → 市1,935.98…→1,900／県1,300.01…→1,300
-  //   1,867,856円: 市4,600・県3,100（途中で丸めると市4,700）
-  for (const [k, ws, wd] of [[1_863_236, 1_900, 1_300], [1_867_856, 4_600, 3_100]]) {
+  // 超過課税（神奈川県 4.018%・令和9年度から）で按分の前に1円未満を落とすと100円ずれる例（sol 6.1 r1 の M1）。
+  //   1,862,243円: 市18,720・県12,545.16、A−L=2,243 → 県900.004…→900（途中で丸めると県800）
+  //   1,872,693円: 市19,320・県12,946.96、A−L=12,693 → 市7,599.99…→7,500（途中で丸めると市7,600）
+  for (const [k, ws, wd] of [[1_862_243, 1_300, 900], [1_872_693, 7_500, 5_000]]) {
     const r = calc({ kyuyoShunyu: k, shakaiHoken: 0, family: { haigusha: 'ippan' }, zeisei: 'r8', jichitai: 'kanagawa' }, D);
     eq(r.shotokuwariJissaiShichoson, ws, `神奈川 給与${k} 市（按分まで小数を保つ）`);
     eq(r.shotokuwariJissaiDofuken, wd, `神奈川 給与${k} 県（按分まで小数を保つ）`);
