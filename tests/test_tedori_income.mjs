@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,writeFileSync} from 'node:fs';
 import {execFileSync} from 'node:child_process';
 import {JSDOM} from 'jsdom';
-import {calculate,incomes,demand} from '../tools/gen_tedori_income_pages.mjs';
+import {calculate,boundaries,incomes,demand} from '../tools/gen_tedori_income_pages.mjs';
 const oracle=JSON.parse(readFileSync(new URL('fixtures/kyoukaikenpo_tokyo_r08.json',import.meta.url)));
 const bands=JSON.parse(readFileSync(new URL('fixtures/tedori_income_tokyo_bands.json',import.meta.url)));
 const rounded=n=>Math.ceil(n-0.5); // 給与控除時の50銭以下切捨て（公表表の折半額から）
@@ -34,7 +34,16 @@ for(const man of incomes){
  const increase=doc.querySelectorAll('#income-increase tbody td');
  assert.equal(increase[0].textContent,(hi.gross-lo.gross).toLocaleString('ja-JP')+'円');
  assert.equal(increase[1].textContent,(hi.net-lo.net).toLocaleString('ja-JP')+'円');
- pageFocus.add(doc.querySelector('#income-context').nextElementSibling.textContent);
+ pageFocus.add(doc.querySelector('#income-observation-1').textContent);
+ const boundaryRows=doc.querySelectorAll('#income-boundaries tbody tr');
+ assert.equal(boundaryRows.length,5,'各ページで実際に効く控除・税率・年金・配偶者の境目を表示');
+ assert(doc.querySelector('#income-observation-2').textContent.length>40,'年収に即した二つ目の説明');
+ const c=boundaries(man), cells=boundaryRows[1].querySelectorAll('td');
+ assert(cells[0].textContent.startsWith(c.kiso.toLocaleString('ja-JP')+'円。'));
+ assert(cells[1].textContent.includes((c.kisoSalaryLimit-r.gross).toLocaleString('ja-JP')+'円'));
+ assert(doc.querySelector('meta[name="description"]').content.includes(r.net.toLocaleString('ja-JP')+'円'));
+ assert(![...doc.querySelectorAll('#income-sources a')].some(a=>a.href.includes('/api/')),'読者向け法令閲覧ページへリンク');
+ assert(doc.querySelector('#income-lead').textContent.startsWith(`年収${man}万円の手取りは年額`),'結論を条件より先に');
  assert.equal(doc.querySelector('#income-annual').textContent,`年額${r.net.toLocaleString('ja-JP')}円`);
  assert.equal(doc.querySelector('#income-monthly').textContent,`平均月額${Math.round(r.net/12).toLocaleString('ja-JP')}円`);
  for(const [key,v] of Object.entries(r.parts))assert.equal(doc.querySelector(`[data-part="${key}"] td`).textContent,v.toLocaleString('ja-JP')+'円');
@@ -44,7 +53,26 @@ for(const man of incomes){
  assert.equal(doc.querySelector('meta[name="description"]').content.includes('料率固定モデル'),true);
  doc.defaultView.close();
 }
-assert.equal(pageFocus.size,incomes.length,'年収ごとに用途の異なる解説を持つ');
+assert.equal(pageFocus.size,incomes.length,'年収ごとに異なる境目の説明を持つ');
+// 国税庁の改正のあらましと協会けんぽの額表で確認した境界の独立期待値。
+for(const [man,kiso,rate,capped] of [[300,1040000,5,false],[600,1040000,10,false],[700,670000,20,false],[750,670000,20,false],[800,670000,20,true],[850,670000,20,true],[1000,620000,20,true],[1200,620000,23,true],[1500,620000,33,true]]){
+ const c=boundaries(man);assert.equal(c.kiso,kiso);assert.equal(c.rate,rate);assert.equal(c.pensionCapped,capped);
+}
+assert.equal(boundaries(600).kisoSalaryLimit,6655556);
+assert.equal(boundaries(850).kisoSalaryLimit,8500000);
+assert.equal(boundaries(750).pensionStart,7620000);
+assert.deepEqual(boundaries(1000).spouseLimits,[10950000,11450000,11950000]);
+assert.equal(boundaries(1000).spouseDeduction,380000);
+assert.equal(boundaries(1200).spouseDeduction,0);
+const thousand=new JSDOM(readFileSync(new URL('../docs/tedori/nenshu/1000/index.html',import.meta.url),'utf8'));
+assert(thousand.window.document.querySelector('#income-observation-1').textContent.includes('満額380,000円'));
+assert(thousand.window.document.querySelector('#income-observation-2').textContent.includes('10,950,000円超'));
+thousand.window.close();
+const article=new JSDOM(readFileSync(new URL('../docs/column/tedori-keisan/index.html',import.meta.url),'utf8'));
+assert(article.window.document.querySelector('#hayami').textContent.startsWith('月給別'));
+const monthlyTable=article.window.document.querySelector('#hayami').nextElementSibling.nextElementSibling;
+assert(monthlyTable.nextElementSibling.querySelector('a[href="/tedori/nenshu/"]'),'月給表の直後で年間比較へ案内');
+article.window.close();
 // 国税庁の給与所得控除・基礎控除・税率、地税法の税率・調整控除と公式保険料額表からの独立した年収500万円の積上げ。
 assert.equal(calculate(500).tax.kazei,1796000);
 assert.deepEqual(calculate(500).parts,{kenko:242304,kaigo:0,kosodate:5652,kosei:450180,koyou:24996,tax:89800,fukko:1885,local:243000});
