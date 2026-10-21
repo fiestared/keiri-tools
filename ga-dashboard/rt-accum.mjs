@@ -216,3 +216,44 @@ export function rowsFromRealtime(resp) {
   }
   return [...by.values()].sort((a, b) => a.minutesAgo - b.minutesAgo);
 }
+
+/**
+ * 司令塔の見張り（keiri-commander tools/ga_rt_sample.mjs・10分ごと。logs/ga-rt/<日付>.json）の分ごとの値で、
+ * その日の積み上げを置き換えた写しを返す（2026-10-21 Masahiro「見張りのやつ…そっちで数字変えて欲しい」）。
+ * 10-19 は GA4 の確定 sessions 2,768 に対し、見張り 2,776・この積み上げ 2,868（11時台・14時台・20時台の
+ * 30分ずつが多い。1分ごとの取得のどれかで分の割り当てがずれ、最大値で残った）。見張りは欠けの無い日で確定値と ±0.5%。
+ * 置き換えるのは見張りの取得の窓（各取得時刻の 29分前〜その分）に入った分だけ。窓の分は見張りの値（無ければ 0）、
+ * 窓の外（見張りの最後の取得より後など）は今の積み上げのまま。保存はしない（rt-accum.json は書き換えない）。
+ */
+export function overlaySampler(state, siteKey, date, sampler) {
+  const next = normalizeState(state);
+  const day = next.sites?.[siteKey]?.days?.[date];
+  if (!day || !sampler || sampler.date !== date || !Array.isArray(sampler.fetches)) return next;
+  const covered = new Set();
+  for (const f of sampler.fetches) {
+    const T = toAbs(date, f);
+    for (let a = T - (WINDOW_MIN - 1); a <= T; a++) {
+      const p = fromAbs(a);
+      if (p.date === date) covered.add(p.hm);
+    }
+  }
+  const sm = sampler.minutes || {};
+  for (const hm of covered) {
+    if (hm < day.start) continue;
+    const v = sm[hm];
+    day.minutes[hm] = { s: Math.max(0, Number(v?.ss) || 0), pv: Math.max(0, Number(v?.pv) || 0) };
+  }
+  // 見張りが埋めた分は欠けではない
+  day.gaps = day.gaps.flatMap((g) => {
+    const out = []; let from = null;
+    for (let a = toAbs(date, g.from); a <= toAbs(date, g.to); a++) {
+      const hm = fromAbs(a).hm;
+      if (covered.has(hm)) { if (from) { out.push({ from, to: fromAbs(a - 1).hm }); from = null; } }
+      else if (!from) from = hm;
+    }
+    if (from) out.push({ from, to: g.to });
+    return out;
+  });
+  next.sampler = { ...(next.sampler || {}), [siteKey]: { date, last: sampler.fetches.at(-1) || null, minutes: covered.size } };
+  return next;
+}
