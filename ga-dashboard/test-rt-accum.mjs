@@ -211,3 +211,28 @@ console.log("PASS: rt-accum（最大値で上書き・0時またぎ・欠けの�
   assert.equal(overlaySampler(st, K, "2026-10-12", { ...sampler, date: "2026-10-11" }).sites[K].days["2026-10-12"].minutes["14:05"].s, 7);
   console.log("✓ 見張りの値で置き換える");
 }
+
+// ---- samplerHours（前日・先週同曜日の比較。2026-10-22） ----
+{
+  const { samplerHours } = await import("./rt-accum.mjs");
+  // 10分ごとの取得で丸1日埋まった見張り。9:05 に2件・9:40 に1件・13:00 に1件
+  const fetches = []; for (let a = toAbs("2026-10-21", "00:09"); a <= toAbs("2026-10-21", "23:59"); a += 10) fetches.push(fromAbs(a).hm);
+  const full = { date: "2026-10-21", fetches, minutes: { "09:05": { ss: 2, pv: 3 }, "09:40": { ss: 1, pv: 1 }, "13:00": { ss: 1 } } };
+  const h = samplerHours(full, "2026-10-21");
+  assert.equal(h.hours[9], 3); assert.equal(h.hourPv[9], 4); assert.equal(h.hours[13], 1); assert.equal(h.hours[10], 0);
+  assert.ok(h.seen.every(Boolean));
+  assert.equal(h.cumTo("09:05"), 2); assert.equal(h.cumTo("09:39"), 2); assert.equal(h.cumTo("23:59"), 4);
+  // 日付が違う・取得が無い → null
+  assert.equal(samplerHours(full, "2026-10-22"), null);
+  assert.equal(samplerHours({ date: "2026-10-21", fetches: [], minutes: {} }, "2026-10-21"), null);
+  // 12:00〜13:59 の取得が抜けた日: その時間帯は seen=false、それより後の累計は null（欠けを0として比べない）
+  const holed = { ...full, fetches: fetches.filter((f) => f < "12:00" || f >= "14:30") };
+  const g = samplerHours(holed, "2026-10-21");
+  assert.equal(g.seen[12], false); assert.equal(g.seen[13], false); assert.equal(g.seen[11], true);
+  assert.equal(g.hours[13], 0);
+  assert.equal(g.cumTo("11:59"), 3); assert.equal(g.cumTo("13:30"), null);
+  // 壊しテスト: 欠けを見ない実装（minutes をそのまま足す）だと 13 時の1件が数に入り、累計も null にならない
+  const naive = (s) => Object.entries(s.minutes).filter(([m]) => m <= "13:30").reduce((a, [, v]) => a + (v.ss || 0), 0);
+  assert.notEqual(naive(holed), g.cumTo("13:30"));
+}
+console.log("samplerHours ok");
