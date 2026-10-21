@@ -765,6 +765,8 @@ html.ss-lock, html.ss-lock body { overflow: hidden; }
 .category-index .cat-nav a { align-items: baseline; max-width: 100%; }
 .category-index .cat-label { min-width: 0; }
 .category-index .cat-label .keep-phrase { white-space: nowrap; }
+/* keep-phrase は inline-block なので、親のリンクの下線が中まで引かれない（2026-10-21 トップの「会社・個人事業主がもらえるお金（補助金）」だけ下線が無かった）。自分で引く */
+.cat-nav a .keep-phrase { text-decoration: underline; text-underline-offset: 3px; }
 /* Only the three-gate comparison needs a wider local scroll surface. */
 .transfer-gates > table { min-width: 480px; }
 .transfer-gates-hint { display: none; }

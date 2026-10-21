@@ -1493,7 +1493,7 @@
     },
     {
       "id": "r16t12-s-404817c1b977ba4e1ea1-1",
-      "text": "自社で新築した倉庫は、新築後6月以内に最初の使用・譲渡があればその日、使用・譲渡がないまま6月を経過すればその経過日に取得したものとみなされます。",
+      "text": "たとえば自社で新築した倉庫は、新築後6月以内に最初の使用・譲渡があればその日、使用・譲渡がないまま6月を経過すればその経過日に取得したものとみなされます。",
       "where": [
         "p / body"
       ],
@@ -1504,12 +1504,13 @@
       "corpus_ref": "corpus/egov_chiho_73_2.txt:5-5",
       "exceptions": "照合箇所 corpus/egov_chiho_73_2.txt:5-5。新築から6か月を経過しても使用・譲渡がない場合は6か月経過日が取得日。6か月経過後に倉庫を稼働させた場合にも使用開始日を取得日とする書き方で、取得日が変わる少数ケースの条件が欠ける。",
       "covers": [
-        "s-404817c1b977ba4e1ea1-1"
+        "s-42c77482d43180f25672-1"
       ],
       "topic": [
         "r16-t12-a"
       ],
-      "review_status": "corrected_pending_independent_review"
+      "review_status": "corrected_pending_independent_review",
+      "scope": "自社で新築した倉庫の最初の使用・譲渡と6月経過によるみなし取得日。"
     },
     {
       "id": "r16t12-s-a62175c2969fbd912602-1",
@@ -3259,6 +3260,45 @@
         "fudosan-shutokuzei-shiwake"
       ],
       "review_status": "author_checked"
+    },
+    {
+      "id": "restore-s-acd771213af223994a50-1",
+      "text": "取得者とみなされるのは、その家屋の所有者または譲受人です（地方税法73条の2第2項）。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [],
+      "source_url": "https://laws.e-gov.go.jp/api/2/law_data/325AC0000000226",
+      "source_quote": "当該家屋の所有者又は譲受人を取得者とみなして",
+      "exceptions": "六月未使用・未譲渡のときは六月経過日の所有者。所定の注文者への請負人の最初の譲渡は除外。同条3〜12項は改築・区分所有・附帯設備・土地等の別区分。",
+      "scope": "地方税法73条の2第2項に規定する新築家屋の取得者の範囲。",
+      "covers": [
+        "s-752dd5811f8945abb56d-1"
+      ],
+      "corpus_ref": "segment-review/corpus/egov-full.json:1",
+      "must_with": [
+        "所有者",
+        "譲受人"
+      ]
+    },
+    {
+      "id": "restore-s-65cfc8a9003736cc7974-1",
+      "text": "新築・増築した家屋は取得時の価格によるため、固定資産税の評価額と異なる場合があります（兵庫県「不動産取得税について（Q4ご回答）」）。",
+      "where": [
+        "p / body"
+      ],
+      "numbers": [],
+      "source_url": "https://web.pref.hyogo.lg.jp/kk22/faq/hudousan/hudousan4.html",
+      "source_quote": "不動産取得税の課税標準は、不動産を取得した時における不動産の価格とする。",
+      "exceptions": "73条の13第2項は改築による増加価格。73条の21第1項ただし書は増築・改築・損壊・地目変換その他特別事情で登録価格により難い場合、第2項は未登録を含め固定資産評価基準で決定。第3・4項は通知・助言。新築日と取得日は同一とは限らない。",
+      "scope": "新築・増築家屋の取得時の価格と固定資産税の評価額の違い。",
+      "covers": [
+        "s-c8f3faf61b1f4d9e2e51-1"
+      ],
+      "corpus_ref": "segment-review/corpus/egov-full.json:1（73条の13・73条の21）",
+      "must_with": [
+        "取得時"
+      ]
     }
   ],
   "absolutes": [
@@ -3513,7 +3553,7 @@
       "why": "非主張。この記事が確認した範囲・確認していない範囲の申告（作り直し前は1段落で、同じく非主張）。制度の内容を述べていない。"
     },
     {
-      "id": "s-46176c5451131c081b22-1",
+      "id": "s-47a7b86801f34fe161ea-1",
       "why": "非主張。この記事が確認した範囲・確認していない範囲の申告（作り直し前は1段落で、同じく非主張）。制度の内容を述べていない。"
     },
     {
@@ -3543,6 +3583,10 @@
     {
       "id": "s-3471b081a7c42db9d8a0-1",
       "why": "記事の確認範囲についての編集上の説明。制度の適用結果の主張ではない。"
+    },
+    {
+      "id": "s-1f35388f8f06d8cab01d-1",
+      "why": "segment-review/segment-adjudication.json: nonclaim。参考資料名・リンク・取扱テーマの表示であり、評価額の具体的な異同を断定する文ではない。"
     }
   ],
   "verified": [
@@ -4471,6 +4515,46 @@
       "needed_source": "会計ソフトごとの不動産取得税の税区分入力マニュアル。税法の課税対象の定義だけではソフト上の名称・入力方法までは確認できない。",
       "text": "会計ソフトでは税区分を不課税または対象外として入力します。",
       "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t12-a/segment-adjudication.json#s-403d19b8d0a6c429efa7-1"
+    },
+    {
+      "id": "s-7297c02f28387e6dd84e-1",
+      "text_hash": "8e8d9589a12dc5255928",
+      "result": "out_of_corpus",
+      "needed_source": "不動産取得税の未払計上及び預金からの納付を示す複式簿記の仕訳基準・具体例。収録通達は損金算入時期を定めるが、この貸借位置の勘定科目を直接示していない。",
+      "text": "【行】租税公課 【列】貸方 【値】未払金",
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t12-a/segment-adjudication.json#s-6f71da7b46b43bf56e05-2",
+      "prior_id": "s-6f71da7b46b43bf56e05-2",
+      "note": "旧単位から現行単位へ対応付け。本文は変更せず、未確認を維持。今回の独立審査でokとされた記録ではない。"
+    },
+    {
+      "id": "s-1f65cefd519ee00aba2f-1",
+      "text_hash": "57b3ea92831c73df0625",
+      "result": "out_of_corpus",
+      "needed_source": "不動産取得税の未払計上及び預金からの納付を示す複式簿記の仕訳基準・具体例。収録通達は損金算入時期を定めるが、この貸借位置の勘定科目を直接示していない。",
+      "text": "【行】未払金 【列】貸方 【値】普通預金",
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t12-a/segment-adjudication.json#s-8e0c64df5edc79a97d04-1",
+      "prior_id": "s-8e0c64df5edc79a97d04-1",
+      "note": "旧単位から現行単位へ対応付け。本文は変更せず、未確認を維持。今回の独立審査でokとされた記録ではない。"
+    },
+    {
+      "id": "s-7748c4403465a80e3846-1",
+      "text_hash": "c7c95fd9c1a3a4079213",
+      "result": "out_of_corpus",
+      "needed_source": "法人税・住民税等を「法人税、住民税及び事業税」として別建て表示する会計基準。法人税法38条と通達9-5-1で税務上の扱いは確認できるが、表示区分を含む単位全体は裏付けられない。",
+      "text": "法人税は法人税法38条1項、道府県民税・市町村民税は同条2項2号で損金不算入とされるため、「法人税、住民税及び事業税」で別建てにします。",
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t12-a/segment-adjudication.json#s-74ab5537375c6f369581-1",
+      "prior_id": "s-74ab5537375c6f369581-1",
+      "note": "旧単位から現行単位へ対応付け。本文は変更せず、未確認を維持。今回の独立審査でokとされた記録ではない。"
+    },
+    {
+      "id": "s-aa91c39c2cfcf295e794-1",
+      "text_hash": "0d9217a019677ab57992",
+      "result": "out_of_corpus",
+      "needed_source": "法人税・住民税等を「法人税、住民税及び事業税」として別建て表示する会計基準。法人税法38条と通達9-5-1で税務上の扱いは確認できるが、表示区分を含む単位全体は裏付けられない。",
+      "text": "不動産取得税は損金になる税なので、租税公課に含めて問題ありません（9-5-1の柱書が除いているのは「損金の額に算入されないもの」です）。",
+      "review_ref": "/Users/masahiroyasu/Scripts/keiri-commander/runs/review-loop/r16/t12-a/segment-adjudication.json#s-74ab5537375c6f369581-1",
+      "prior_id": "s-74ab5537375c6f369581-1",
+      "note": "旧単位から現行単位へ対応付け。本文は変更せず、未確認を維持。今回の独立審査でokとされた記録ではない。"
     }
   ],
   "review_pending": [],

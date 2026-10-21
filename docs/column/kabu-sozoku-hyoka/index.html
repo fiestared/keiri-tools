@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>株を相続したら：上場株式の4つの価格候補と相続後の取得費を検算</title>
+<meta name="description" content="相続した上場株式は、納税義務者が選択した同一取引所の死亡日の終値と死亡月・前月・前々月の月平均を比べて評価します。架空例で評価額と承継取得費を検算し、終値なし・権利落ち等の補正、課税口座とNISAの違いを整理します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/kabu-sozoku-hyoka/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="株を相続したら：上場株式の4つの価格候補と相続後の取得費を検算">
+<meta property="og:description" content="相続した上場株式は、納税義務者が選択した同一取引所の死亡日の終値と死亡月・前月・前々月の月平均を比べて評価します。架空例で評価額と承継取得費を検算し、終値なし・権利落ち等の補正、課税口座とNISAの違いを整理します。">
+<meta property="og:url" content="https://keiri-tools.com/column/kabu-sozoku-hyoka/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "株を相続したら：上場株式の4つの価格候補と相続後の取得費を検算",
+      "datePublished": "2026-10-21",
+      "dateModified": "2026-10-21",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/kabu-sozoku-hyoka/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "株の相続と上場株式の評価",
+          "item": "https://keiri-tools.com/column/kabu-sozoku-hyoka/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 売却時の取得費に相続税評価額を使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 通常の課税口座から相続した株式は、被相続人の取得費を引き継ぎます。NISA等からの相続払出しは別扱いです。購入手数料等や分割等の調整も含め、取得費の節で区別しています。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 死亡月の月平均は、死亡日までで計算しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 権利落ち等の修正がない場合は、死亡月全体の毎日の最終価格の平均額です。死亡日までの平均や月末の終値ではありません。権利落ち等がある場合は、補正の節を確認します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 相続税の評価額が分かれば税額も決まりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 株式の評価額だけでは決まりません。相続税全体の計算には他の財産や債務、相続人などの情報も必要です。相続税計算機の対象範囲を確認して試算できます。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1"><nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 株の相続と上場株式の評価</nav><article>
+<h1>株を相続したら：上場株式の4つの価格候補と相続後の取得費を検算</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-21">2026年10月21日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><b>相続した上場株式の相続税評価は、納税義務者が選択した同一取引所の死亡日の終値と死亡月・前月・前々月の月平均額を比べ、最も低い価額を使います（終値なし・権利落ち等は補正後に比較）。</b>売却時に差し引く取得費は、この評価額とは別に確認します。</p>
+<p>この記事は国内上場株式の評価と取得費を扱います。非上場株式、外国株式、遺産分割で合意する価格は対象外です。名義変更の必要書類は取引金融機関の相続案内で確認し、税の評価資料と購入記録を分けて保管します。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol><li><a href="#prices">終値と月平均を同じ市場でそろえる</a></li><li><a href="#adjust">終値がない日・権利落ち等は補正する</a></li><li><a href="#cost">売却の取得費は相続税評価額と分ける</a></li><li><a href="#records">口座区分と購入記録を確認する</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#related">関連記事・ツール</a></li><li><a href="#shutten">出典</a></li></ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../shutokuhi-kasan-kabushiki/">取得費加算の特例：相続した株式を譲渡した例で按分額・期限・税額を検算</a></li><li><a href="../hotei-sozoku-joho-ichiranzu/">法定相続情報一覧図は何枚でも無料でもらえる</a></li><li><a href="../../sozokuzei/">相続税 計算機</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="prices">終値と月平均を同じ市場でそろえる</h2>
+<p>銘柄ごとに終値と月平均額をそろえ、採用単価に相続株数を掛けます。国内の複数市場に上場している場合は、納税義務者が選択した取引所の価格を使い、市場を混ぜて比較しません（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/01.htm#a-169">財産評価基本通達169</a>）。</p>
+<p data-review-context="before-table">死亡月を令和8年9月とする架空例です。同一市場の国内上場株式で、死亡日に終値があり、権利落等なしとします。金額は各価格候補の単価で、実在銘柄の相場ではありません。比較の根拠は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hyoka/4632.htm">国税庁No.4632</a>です。</p>
+<div class="scroll-wrap"><table><caption>架空例の相続税評価：価格候補の入力表</caption><thead><tr><th scope="col">候補</th><th scope="col">対象時点・期間</th><th scope="col" class="num">単価</th><th scope="col">記録する出所</th></tr></thead><tbody>
+<tr><th scope="row">死亡日の終値</th><td>死亡当日</td><td class="num"><span class="numeric-token">2,400円</span></td><td>選択した取引所の当日相場表</td></tr>
+<tr><th scope="row">死亡月の月平均</th><td>令和8年9月</td><td class="num"><span class="numeric-token">2,350円</span></td><td>同じ取引所の月間相場表</td></tr>
+<tr><th scope="row">前月の月平均</th><td>令和8年8月</td><td class="num"><span class="numeric-token">2,100円</span></td><td>同じ取引所の月間相場表</td></tr>
+<tr><th scope="row">前々月の月平均</th><td>令和8年7月</td><td class="num"><span class="numeric-token">2,250円</span></td><td>同じ取引所の月間相場表</td></tr>
+</tbody></table></div>
+<p data-review-context="before-table">令和8年9月死亡の架空例で、同一市場・死亡日に終値あり・権利落等なし、保有500株とします。以下の計算に端数は出ません。</p>
+<div class="scroll-wrap"><table><caption>架空例の相続税評価：採用単価と株数</caption><thead><tr><th scope="col">項目</th><th scope="col">計算・金額</th></tr></thead><tbody>
+<tr><th scope="row">採用単価</th><td>候補中の最小額である2,100円</td></tr>
+<tr><th scope="row">株式の相続税評価額</th><td>2,100円×500株＝1,050,000円</td></tr>
+</tbody></table></div>
+<p class="hint">算出したのは株式の評価額であり、納める相続税額ではありません。相続税全体は、他の財産や債務、相続人なども含めて計算します。</p>
+<p>単価の横には資料名・対象月・市場名を残します。権利落ち等の補正がない場合、月平均はその月の毎日の最終価格の平均額であり、月末の終値ではありません。評価の整理には、国税庁の<a href="https://www.nta.go.jp/taxes/tetsuzuki/shinsei/annai/hyoka/annai/1470-02.htm">上場株式の評価明細書</a>も使えます。</p>
+<h2 id="adjust">終値がない日・権利落ち等は補正する</h2>
+<p>死亡日の終値がない場合も、直前営業日の値を無条件に使うわけではありません。権利落ち・配当落ちがある場合は、日付の前後関係も確かめます。</p>
+<p data-review-context="before-table">相続した国内上場株式の、死亡日側の最終価格の確認表です。権利落ち・配当落ちを合わせて「権利落ち等」とします。根拠は<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/01.htm#a-170">財産評価基本通達170</a>・<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/01.htm#a-171">171</a>です。</p>
+<div class="scroll-wrap"><table><caption>死亡日側の候補を修正する主な場合</caption><thead><tr><th scope="col">状況</th><th scope="col">使う最終価格・確認点</th></tr></thead><tbody>
+<tr><th scope="row">終値なし・権利落ち等の特例なし</th><td>死亡日の前後で最も近い日の終値。同じ近さで前後にあるなら、その平均額</td></tr>
+<tr><th scope="row">権利落ち等の日から割当て等の基準日までに死亡</th><td>権利落ち等の前日以前で、死亡日に最も近い日の終値</td></tr>
+<tr><th scope="row">終値なし・死亡日が権利落ち等の前日以前</th><td>最も近い候補が落後だけ、または落前・落後の両側なら、死亡日前の最も近い終値</td></tr>
+<tr><th scope="row">終値なし・死亡日が基準日の翌日以後</th><td>最も近い候補が落前だけ、または落前・落後の両側なら、死亡日後の最も近い終値</td></tr>
+</tbody></table></div>
+<p>株式分割等に伴う権利落ちがある場合は、落日の属する月だけでなく、前月以前などの月平均額にも修正が及ぶことがあります。落日・基準日・死亡日と、割当株数・払込額を資料でそろえ、<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/01.htm#a-172">財産評価基本通達172</a>の該当区分で確認してから比較します。</p>
+<p class="hint">配当落ちの場合の月平均は、各該当月の初日から末日までの平均額を使います。権利落ちの期間分けや修正式を、そのまま配当落ちに当てはめません。</p>
+<h2 id="cost">売却の取得費は相続税評価額と分ける</h2>
+<p><b>通常の課税口座から相続した株式は、被相続人の取得費を引き継ぎます。</b>購入手数料などの取得費用も含むため、購入代金だけの記録と混同しません。根拠は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1464.htm">国税庁No.1464</a>です。</p>
+<p data-review-context="before-table">令和8年分の架空例です。通常の課税口座から相続した全株を売却し、同一銘柄の別保有はないとします。取得費は購入手数料込みで判明し、株式分割等の調整・取得費加算・他の損益との通算等はありません。以下の計算に端数は出ません。</p>
+<div class="scroll-wrap"><table><caption>架空例：売却代金から引くのは承継取得費</caption><thead><tr><th scope="col">項目</th><th scope="col">金額・計算</th></tr></thead><tbody>
+<tr><th scope="row">売却代金</th><td><span class="numeric-token">1,400,000円</span></td></tr>
+<tr><th scope="row">被相続人からの承継取得費</th><td><span class="numeric-token">700,000円</span></td></tr>
+<tr><th scope="row">売却手数料</th><td><span class="numeric-token">10,000円</span></td></tr>
+<tr><th scope="row">株式の譲渡所得</th><td>1,400,000円−700,000円−10,000円＝690,000円</td></tr>
+</tbody></table></div>
+<p>この譲渡所得に対する税額や、相続税が課税された本人に関する取得費加算の要件・期限は、<a href="../shutokuhi-kasan-kabushiki/">相続した株式の取得費加算の特例</a>で扱います。相続税の評価額をそのまま取得費に置き換える制度ではありません。</p>
+<figure class="figure"><svg width="320" height="350" viewBox="0 0 320 350" role="img" aria-label="相続税評価と通常課税口座の承継取得費を別に記録する"><rect x="8" y="10" width="304" height="130" rx="8" fill="var(--bg)" stroke="var(--accent)"/><text x="160" y="43" text-anchor="middle" font-size="18" fill="currentColor">相続税の評価</text><text x="160" y="81" text-anchor="middle" font-size="16" fill="currentColor">終値・月平均を必要に応じ補正</text><text x="160" y="116" text-anchor="middle" font-size="16" fill="currentColor">採用単価 × 相続株数</text><rect x="8" y="160" width="304" height="130" rx="8" fill="var(--bg)" stroke="var(--accent)"/><text x="160" y="193" text-anchor="middle" font-size="18" fill="currentColor">通常課税口座の承継取得費</text><text x="160" y="231" text-anchor="middle" font-size="16" fill="currentColor">被相続人の取得費を引き継ぐ</text><text x="160" y="266" text-anchor="middle" font-size="16" fill="currentColor">分割等は単価調整を確認</text><text x="160" y="328" text-anchor="middle" font-size="14" fill="currentColor">評価資料と購入記録を分けて残す</text></svg><figcaption>相続税の評価額と、通常の課税口座の売却時に引き継ぐ取得費は別の計算です。</figcaption></figure>
+<h2 id="records">口座区分と購入記録を確認する</h2>
+<p>NISA・ジュニアNISAから相続で払い出された上場株式等の取得費は、原則として相続開始日の終値相当額です。通常の課税口座の承継取得費とは分け、終値がない場合などの具体額は金融機関の資料で確認します（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1464.htm">国税庁No.1464</a>）。</p>
+<p>購入記録が見つからない場合の調査先や、取得費不明の場合の取扱いも<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1464.htm">国税庁No.1464</a>にあります。相続税評価額を代わりに転記せず、取得口座と購入履歴を確認します。</p>
+<p class="hint">株式分割等があれば、取得費の単価にも調整が必要になる場合があります。同じ銘柄を複数回購入していた場合の取得費の計算は、単純な購入単価の選択とは異なります。</p>
+<a class="tool-cta" href="../../sozokuzei/">評価した財産額をもとに相続税全体の目安を計算する</a>
+<div class="summary-box"><b>保管する資料を分ける</b><p>相続税の評価には終値・月平均・権利落ち等の資料、売却の取得費には口座区分と購入履歴を使います。売却時期や遺産の分け方の有利不利を、この評価表だけで決めるものではありません。</p></div>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>売却時の取得費に相続税評価額を使えますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>通常の課税口座から相続した株式は、被相続人の取得費を引き継ぎます。NISA等からの相続払出しは別扱いです。購入手数料等や分割等の調整も含め、<a href="#cost">取得費の節</a>で区別しています。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>死亡月の月平均は、死亡日までで計算しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>権利落ち等の修正がない場合は、死亡月全体の毎日の最終価格の平均額です。死亡日までの平均や月末の終値ではありません。権利落ち等がある場合は、<a href="#adjust">補正の節</a>を確認します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>相続税の評価額が分かれば税額も決まりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>株式の評価額だけでは決まりません。相続税全体の計算には他の財産や債務、相続人などの情報も必要です。<a href="../../sozokuzei/">相続税計算機</a>の対象範囲を確認して試算できます。</p>
+<h2 id="related">関連記事・ツール</h2>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../gakushi-hoken-zeikin/"><b>学資保険の税金｜一括・分割・別人受取の課税額を検算</b><span>学資保険の受取時の税金を、実際の保険料負担者と受取方法で整理。一括受取と年をまたぐ年金、同年の他の一時所得、夫負担・妻受取を架空例で計算し、所得への加算額と所得税本体・贈与税の税額</span></a><a class="tool-card" href="../shibo-hokenkin-sozokuzei/"><b>死亡保険金の相続税：非課税枠・相続放棄・受取割合を同じ例で検算</b><span>死亡保険金の相続税を、相続放棄した子が保険金を受け取る架空例で検算。非課税枠の人数と受取額の按分を分け、各人の課税価格・納付税額まで追います。受取後の贈与や申告資料の確認点も整理し</span></a><a class="tool-card" href="../kawase-saeki-kakutei-shinkoku/"><b>為替差益の確定申告：円転・同通貨の預け替え・外貨の使用を検算</b><span>為替差益の確定申告は、円に戻したかだけでは決まりません。個人の外貨預金について、円転・同通貨の預け替え・貸付用建物への支払いを同じ元本で比較。国税庁の計算例、給与所得者の申告不要制</span></a></div></section><!--next-read:E-->
+<section class="related"><ul><li><a href="../shutokuhi-kasan-kabushiki/">取得費加算の特例：相続した株式の売却</a></li><li><a href="../hotei-sozoku-joho-ichiranzu/">法定相続情報一覧図</a></li><li><a href="../../sozokuzei/">相続税計算機</a></li></ul></section>
+<h2 id="shutten">出典</h2>
+<p class="source-method"><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hyoka/4632.htm">国税庁のタックスアンサー</a>と<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/01.htm">財産評価基本通達</a>を参照。制度の確認基準日は2026年10月21日です。</p>
+<ul><li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hyoka/4632.htm">国税庁No.4632「上場株式の評価」</a>（令和8年4月1日現在法令等）</li><li><a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/01.htm">国税庁「財産評価基本通達」株式及び出資</a>（評価単位・上場株式・最終価格と月平均額の特例）</li><li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1464.htm">国税庁No.1464「譲渡した株式等の取得費」</a>（令和8年4月1日現在法令等）</li><li><a href="https://www.nta.go.jp/taxes/tetsuzuki/shinsei/annai/hyoka/annai/1470-02.htm">国税庁「上場株式の評価明細書」</a></li><li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4152.htm">国税庁No.4152「相続税の計算」</a></li></ul>
+<p data-source-nolink="記事の対象範囲と相談先を示す免責文">この記事は一般的な情報提供であり、個別の税務相談への回答ではありません。実際の申告の判断は、税務署・税理士にご確認ください。</p>
+</article><!-- x-share:auto --><div><a href="https://x.com/intent/tweet?text=%E7%9B%B8%E7%B6%9A%E3%81%97%E3%81%9F%E4%B8%8A%E5%A0%B4%E6%A0%AA%E5%BC%8F%E3%81%AF%E3%80%81%E7%B4%8D%E7%A8%8E%E7%BE%A9%E5%8B%99%E8%80%85%E3%81%8C%E9%81%B8%E6%8A%9E%E3%81%97%E3%81%9F%E5%90%8C%E4%B8%80%E5%8F%96%E5%BC%95%E6%89%80%E3%81%AE%E6%AD%BB%E4%BA%A1%E6%97%A5%E3%81%AE%E7%B5%82%E5%80%A4%E3%81%A8%E6%AD%BB%E4%BA%A1%E6%9C%88%E3%83%BB%E5%89%8D%E6%9C%88%E3%83%BB%E5%89%8D%E3%80%85%E6%9C%88%E3%81%AE%E6%9C%88%E5%B9%B3%E5%9D%87%E3%82%92%E6%AF%94%E3%81%B9%E3%81%A6%E8%A9%95%E4%BE%A1%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fkabu-sozoku-hyoka%2F&amp;via=keiri_tools" target="_blank" rel="noopener">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site"><small>© 税金・経理・補助金ツールズ</small>  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div>法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body></html>

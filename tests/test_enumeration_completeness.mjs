@@ -37,6 +37,31 @@ const ROOT = resolve(fileURLToPath(new URL("../", import.meta.url)));
  */
 const ENUMERATIONS = [
   {
+    page: "docs/column/shinya-teate/index.html", element: "ikuji-shinya-exclusions",
+    law: "厚生労働省『深夜業の制限』",
+    why: "育児の深夜業制限の対象外を省略しない。",
+    items: [
+      { id: "daily", label: "日々雇用", must: /日々雇用される人/ },
+      { id: "tenure", label: "継続雇用期間", must: /継続雇用が1年未満の労働者/ },
+      { id: "days", label: "週所定日数", must: /週の所定労働日数が2日以下の労働者/ },
+      { id: "night", label: "全部が深夜", must: /所定労働時間の全部が深夜にある労働者/ },
+      { id: "family", label: "同居家族", must: /16歳以上の同居家族が/ },
+    ],
+  },
+  {
+    page: "docs/column/shinya-teate/index.html", element: "ikuji-shinya-family",
+    law: "厚生労働省『深夜業の制限』",
+    why: "保育できる同居家族の要件を省略しない。年齢を含め表の同じ行で定義。",
+    items: [
+      { id: "age", label: "年齢", must: /16歳以上の同居家族/ },
+      { id: "work", label: "深夜就労", must: /深夜不就労/ },
+      { id: "few-days", label: "月3日以下", must: /月3日以下の就労も含む/ },
+      { id: "care", label: "保育可能", must: /負傷・疾病・心身の障害等で保育困難でない/ },
+      { id: "leave", label: "産前産後", must: /産前産後休業中でない/ },
+    ],
+  },
+
+  {
     page: "docs/saitei-chingin/index.html", element: "saitei-exclusions",
     law: "最低賃金法4条3項・施行規則1条・厚生労働省『最低賃金の対象となる賃金』",
     why: "時間外・所定休日は通常賃金部分も除き、深夜は割増部分だけを除く。手当も省略しない。",
@@ -45,8 +70,8 @@ const ENUMERATIONS = [
       { id: "long-period", label: "一か月を超える期間の賃金", must: /1か月を超える期間ごとに支払われる賃金/ },
       { id: "overtime", label: "所定時間外の賃金全体", must: /所定労働時間を超える時間の労働に対して支払われる賃金（時間外労働の賃金。割増部分だけではなく通常賃金部分も除く）/ },
       { id: "holiday", label: "所定休日の賃金全体", must: /所定労働日以外の日の労働に対して支払われる賃金（所定休日の労働の賃金。割増部分だけではなく通常賃金部分も除く）/ },
-      { id: "night", label: "深夜割増部分", must: /午後10時から午前5時までの深夜労働の賃金のうち、通常の労働時間の賃金を超える部分/ },
-      { id: "night-exception", label: "大臣指定の地域・期間", must: /厚生労働大臣が定める地域・期間は、午後11時から午前6時までが対象です/ },
+      { id: "night", label: "深夜割増部分", must: /通常賃金を超える深夜割増部分は、原則午後10時〜午前5時/ },
+      { id: "night-exception", label: "大臣指定の地域・期間", must: /厚生労働大臣の指定地域・期間は午後11時〜午前6時の労働分を除きます/ },
       { id: "attendance", label: "精皆勤手当", must: /精皆勤手当/ },
       { id: "commuting", label: "通勤手当", must: /通勤手当/ },
       { id: "family", label: "家族手当", must: /家族手当/ },

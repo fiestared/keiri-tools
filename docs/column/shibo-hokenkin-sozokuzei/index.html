@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>死亡保険金の相続税：非課税枠・相続放棄・受取割合を同じ例で検算</title>
+<meta name="description" content="死亡保険金の相続税を、相続放棄した子が保険金を受け取る架空例で検算。非課税枠の人数と受取額の按分を分け、各人の課税価格・納付税額まで追います。受取後の贈与や申告資料の確認点も整理します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/shibo-hokenkin-sozokuzei/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="死亡保険金の相続税：非課税枠・相続放棄・受取割合を同じ例で検算">
+<meta property="og:description" content="死亡保険金の相続税を、相続放棄した子が保険金を受け取る架空例で検算。非課税枠の人数と受取額の按分を分け、各人の課税価格・納付税額まで追います。受取後の贈与や申告資料の確認点も整理します。">
+<meta property="og:url" content="https://keiri-tools.com/column/shibo-hokenkin-sozokuzei/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+
+
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "死亡保険金の相続税：非課税枠・相続放棄・受取割合を同じ例で検算",
+      "datePublished": "2026-10-21",
+      "dateModified": "2026-10-21",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/shibo-hokenkin-sozokuzei/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "死亡保険金の相続税",
+          "item": "https://keiri-tools.com/column/shibo-hokenkin-sozokuzei/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 相続放棄した人は保険金の非課税枠の人数から外しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 外しません。枠の人数は放棄がなかったものとして数えます。ただし、放棄した本人が受け取る死亡保険金には非課税を適用せず、他の相続人へ枠を按分する分母にも含めません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 保険を複数契約していれば非課税枠も増えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 増えません。相続税の非課税枠を契約ごと・保険会社ごとに使う計算ではありません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 保険金を受け取ってから家族と分け直せますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 契約上の受取人が受領後に他の家族へ分けると、その家族への贈与税の課税対象になります。故人が保険料を負担した保険金は、みなし相続財産として相続税の対象でも、預金等と同じ遺産分割の対象ではありません。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 死亡保険金の相続税</nav>
+<article>
+<h1>死亡保険金の相続税：非課税枠・相続放棄・受取割合を同じ例で検算</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-21">2026年10月21日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><b>亡くなった人が保険料を負担した死亡保険金は相続税の対象ですが、相続放棄者・相続権を失った人を除く相続人の受取分には非課税枠があります。</b>相続放棄した人は枠を計算する人数に含めても、その人自身の保険金には枠を使えません。</p>
+<p>相続税では、保険金の受取額から非課税額を引いた課税部分を、他の財産と合算します。以下では、一時金で受け取る生命保険金を、放棄した子を含む架空の家族で検算します。商品選びや受取人変更を勧めるものではありません。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#example">相続放棄した子を含む受取額の設例</a></li>
+<li><a href="#allocation">非課税額の計算を確かめる</a></li>
+<li><a href="#tax">他の財産を足して各人の税額まで計算</a></li>
+<li><a href="#classification">保険料負担者が違えば税目も変わる</a></li>
+<li><a href="#records">申告前に受取人別の明細をそろえる</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#related">関連記事・ツール</a></li>
+<li><a href="#shutten">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../../sozokuzei/">相続税 計算機</a></li><li><a href="../choikin-hikazei/">弔慰金はどこまで非課税か</a></li><li><a href="../ichiji-shotoku/">一時所得とは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="example">相続放棄した子を含む受取額の設例</h2>
+<p>まず、<b>受取人として枠を使えるか</b>と、<b>枠の人数に数えるか</b>を分けます。相続放棄した人や相続権を失った人、その他の相続人以外の人が受け取る死亡保険金には、非課税の適用がありません（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4114.htm">国税庁No.4114</a>）。</p>
+<p data-review-context="before-table">令和8年の設例です。国内居住の夫が死亡し、保険料を全額負担した生命保険金を指定受取人が一時金で受け取ります。妻と成人の実子2人がおり、次男だけが相続放棄しました。養子や相続権喪失者、他の保険契約はありません。非課税枠の人数には放棄した次男も含めます。</p>
+<div class="scroll-wrap"><table><caption>設例の死亡保険金：受取額と非課税の対象</caption><thead><tr><th scope="col">受取人</th><th scope="col" class="num">保険金受取額</th><th scope="col">非課税枠を使えるか</th></tr></thead><tbody>
+<tr><th scope="row">妻</th><td class="num"><span class="numeric-token">1,600万円</span></td><td>使える</td></tr>
+<tr><th scope="row">長男</th><td class="num"><span class="numeric-token">800万円</span></td><td>使える</td></tr>
+<tr><th scope="row">次男（相続放棄）</th><td class="num"><span class="numeric-token">400万円</span></td><td>使えない</td></tr>
+</tbody></table></div>
+<p>故人が保険料を負担した契約の受取人が取得する生命保険金は、預金などと同じ遺産分割の対象ではありません。受取後に話合いで他の家族へ分けると、受取人からその家族への贈与税の課税対象になります（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4114_qa.htm">国税庁No.4114のQ&amp;A</a>）。</p>
+<h2 id="allocation">非課税額の計算を確かめる</h2>
+<p>放棄者の保険金を按分の分母に含めず、契約ごとに枠を増やすこともしません。</p>
+<p data-review-context="before-table">前節と同じ令和8年の設例です。死亡した夫が保険料を全額負担し、妻と実子2人のうち次男のみ放棄しています。養子がいないこの設例では、非課税枠は放棄がなかったものとした人数で計算します。按分対象は妻と長男の相続人受取合計で、非課税限度額を超えています。根拠：<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4114.htm">国税庁No.4114</a>。</p>
+<div class="scroll-wrap"><table><caption>設例の非課税枠と按分の分母</caption><thead><tr><th scope="col">項目</th><th scope="col">計算</th></tr></thead><tbody>
+<tr><th scope="row">非課税限度額</th><td>500万円×3人＝1,500万円</td></tr>
+<tr><th scope="row">按分対象の相続人受取合計</th><td>妻1,600万円＋長男800万円＝2,400万円</td></tr>
+<tr><th scope="row">次男の受取保険金</th><td>400万円は按分対象に含めない</td></tr>
+</tbody></table></div>
+<p data-review-context="before-table">死亡した夫が保険料を全額負担した死亡保険金を一時金で受け取る令和8年の設例で、相続人の受取合計が非課税限度額を超えるため、受取割合で按分します。放棄前の相続人は妻と成人の実子2人で、養子はない設例です。次男は放棄者なので非課税なしです。課税価格へ算入する保険金は受取額から非課税額を引いた額で、納付税額ではありません。この設例の按分には端数が出ません。</p>
+<div class="scroll-wrap"><table><caption>設例の各人の非課税額と課税価格算入額</caption><thead><tr><th scope="col">受取人</th><th scope="col">非課税額の計算</th><th scope="col" class="num">課税価格へ算入</th></tr></thead><tbody>
+<tr><th scope="row">妻</th><td>1,500万円×1,600万円÷2,400万円＝1,000万円</td><td class="num"><span class="numeric-token">600万円</span></td></tr>
+<tr><th scope="row">長男</th><td>1,500万円×800万円÷2,400万円＝500万円</td><td class="num"><span class="numeric-token">300万円</span></td></tr>
+<tr><th scope="row">次男（相続放棄）</th><td>適用なし</td><td class="num"><span class="numeric-token">400万円</span></td></tr>
+</tbody></table></div>
+<p class="hint">被相続人が保険料を全額負担した死亡保険金で、放棄者等を除く相続人の受取合計が限度額以下なら、その相続人の受取額までが相続税の非課税です。余った枠を預金や放棄者の保険金へ回すことはできません。養子がいる場合は人数の算入制限・別扱いがあるため、上の実子だけの人数を転用しません。</p>
+<figure class="figure"><svg width="340" viewBox="0 0 320 330" role="img" aria-label="死亡保険金の非課税計算では人数と按分対象を別に確認する"><rect x="10" y="10" width="300" height="80" rx="8" fill="var(--bg)" stroke="var(--accent)"/><text x="160" y="40" text-anchor="middle" font-size="16" fill="currentColor">枠を計算する人数</text><text x="160" y="68" text-anchor="middle" font-size="14" fill="currentColor">放棄がなかったものとして数える</text><path d="M160 90V120" stroke="currentColor"/><rect x="10" y="120" width="300" height="80" rx="8" fill="var(--bg)" stroke="var(--accent)"/><text x="160" y="150" text-anchor="middle" font-size="16" fill="currentColor">枠を使う受取人</text><text x="160" y="178" text-anchor="middle" font-size="14" fill="currentColor">放棄者・相続人以外は除く</text><path d="M160 200V230" stroke="currentColor"/><rect x="10" y="230" width="300" height="85" rx="8" fill="var(--bg)" stroke="var(--accent)"/><text x="160" y="260" text-anchor="middle" font-size="14" fill="currentColor">相続人の保険金合計が限度額を超えたら</text><text x="160" y="290" text-anchor="middle" font-size="16" fill="currentColor">その受取割合で枠を按分</text></svg><figcaption>被相続人が保険料を負担した死亡保険金の非課税計算。養子の人数には算入制限・別扱いがあります。</figcaption></figure>
+<h2 id="tax">他の財産を足して各人の税額まで計算</h2>
+<p>死亡保険金の課税価格算入額だけに税率を掛ける計算ではありません。他の財産を足して各人の課税価格を求め、相続税の総額を計算してから各人へ割り振ります。</p>
+<p data-review-context="before-table">同じ令和8年の設例で、預金は申告期限までに妻と長男へ分割済みとします。夫の保険料全額負担、妻と実子2人・次男のみ放棄という前提は同じです。この設例の保険金は妻1,600万円・長男800万円・放棄した次男400万円の受取で、按分対象の相続人受取合計2,400万円は非課税限度額1,500万円を超えます。贈与加算・相続時精算課税・債務・葬式費用・評価特例はありません。下表は保険金の非課税後の課税価格です。一般には各人の課税価格の千円未満を切り捨てますが、設例には端数が出ません。</p>
+<div class="scroll-wrap"><table><caption>設例の他の財産と保険金を合算</caption><thead><tr><th scope="col">取得者</th><th scope="col">預金</th><th scope="col" class="num">保険金算入額</th><th scope="col" class="num">課税価格</th></tr></thead><tbody>
+<tr><th scope="row">妻</th><td class="num"><span class="numeric-token">3,400万円</span></td><td class="num"><span class="numeric-token">600万円</span></td><td class="num"><span class="numeric-token">4,000万円</span></td></tr>
+<tr><th scope="row">長男</th><td class="num"><span class="numeric-token">3,300万円</span></td><td class="num"><span class="numeric-token">300万円</span></td><td class="num"><span class="numeric-token">3,600万円</span></td></tr>
+<tr><th scope="row">次男（相続放棄）</th><td>なし</td><td class="num"><span class="numeric-token">400万円</span></td><td class="num"><span class="numeric-token">400万円</span></td></tr>
+</tbody></table></div>
+<p data-review-context="before-table">同じ設例です。課税価格合計から基礎控除を差し引きます。基礎控除も放棄がなかったものとした妻・実子2人で計算し、養子はありません。根拠：<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4152.htm">国税庁No.4152</a>。</p>
+<div class="scroll-wrap"><table><caption>設例の課税遺産総額</caption><thead><tr><th scope="col">段階</th><th scope="col">計算</th></tr></thead><tbody>
+<tr><th scope="row">課税価格の合計</th><td>4,000万円＋3,600万円＋400万円＝8,000万円</td></tr>
+<tr><th scope="row">基礎控除</th><td>3,000万円＋600万円×3人＝4,800万円</td></tr>
+<tr><th scope="row">課税遺産総額</th><td>8,000万円−4,800万円＝3,200万円</td></tr>
+</tbody></table></div>
+<p data-review-context="before-table">同じ設例の課税遺産総額を、放棄がなかったものとして妻と実子2人の法定相続分で仮配分します。法定相続分に応ずる取得金額は千円未満切捨てですが、本設例は端数なしです。速算表は実際の取得額ではなく、この仮の取得額に適用します（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4155.htm">国税庁No.4155</a>）。</p>
+<div class="scroll-wrap"><table><caption>設例の相続税の総額：控除等を適用する前</caption><thead><tr><th scope="col">仮配分先</th><th scope="col">仮の取得金額</th><th scope="col">速算表での計算</th></tr></thead><tbody>
+<tr><th scope="row">妻</th><td>3,200万円×2分の1＝1,600万円</td><td>1,600万円×15%−50万円＝190万円</td></tr>
+<tr><th scope="row">長男</th><td>3,200万円×4分の1＝800万円</td><td>800万円×10%＝80万円</td></tr>
+<tr><th scope="row">次男（放棄前として仮配分）</th><td>3,200万円×4分の1＝800万円</td><td>800万円×10%＝80万円</td></tr>
+<tr><th scope="row">相続税の総額</th><td colspan="2">190万円＋80万円＋80万円＝350万円</td></tr>
+</tbody></table></div>
+<p>次に、相続税の総額を<b>各人の課税価格が全体に占める割合</b>で割り振ります。ここで使う割合は、法定相続分でも、保険金だけの受取割合でもありません。</p>
+<p data-review-context="before-table">同じ設例の税額です。この設例の妻の課税価格4,000万円は、配偶者軽減の基準1億6,000万円以下です。期限内分割済み・隠蔽仮装なしとして、必要資料を添えた申告で軽減を適用します。他の税額控除・納税猶予等はありません。次男は実子なので、相続放棄だけを理由とする税額加算はありません。この設例の割振額・納付税額に端数は出ません。</p>
+<div class="scroll-wrap"><table><caption>設例の課税価格割合で割り振り、配偶者軽減を適用</caption><thead><tr><th scope="col">取得者</th><th scope="col">控除等適用前の税額</th><th scope="col" class="num">納付税額</th></tr></thead><tbody>
+<tr><th scope="row">妻</th><td>350万円×4,000万円÷8,000万円＝175万円</td><td class="num">0円（配偶者軽減後）</td></tr>
+<tr><th scope="row">長男</th><td>350万円×3,600万円÷8,000万円＝157万5,000円</td><td class="num">157万<span class="numeric-token">5,000円</span></td></tr>
+<tr><th scope="row">次男（相続放棄）</th><td>350万円×400万円÷8,000万円＝17万5,000円</td><td class="num">17万<span class="numeric-token">5,000円</span></td></tr>
+</tbody></table></div>
+<p class="hint">上表の配偶者軽減には申告等の手続きが必要です。未分割財産や隠蔽仮装された財産の扱いは<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4158.htm">国税庁No.4158</a>、加算対象者の範囲は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4157.htm">No.4157</a>で確認します。未成年者・障害者等の控除がある人や、設例と違う取得者には、この納付額を使えません。</p>
+<div class="summary-box"><p><b>人数、保険金の受取割合、課税価格の割合を分ける</b>のが要点です。</p></div>
+<h2 id="classification">保険料負担者が違えば税目も変わる</h2>
+<p>死亡保険金という名称だけでは税目は決まりません。<b>契約者の名義ではなく、実際に誰が保険料を負担したか</b>を確認します。</p>
+<p data-review-context="before-table">次の表は、保険料を一人が全額負担し、死亡保険金を一時金で受け取る場合の分類です。被保険者は死亡した夫とします。相続人は相続放棄者・相続権を失った人を除きます。根拠：<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1750.htm">国税庁No.1750</a>。</p>
+<div class="scroll-wrap"><table><caption>保険料の実際の負担者で税目を確認</caption><thead><tr><th scope="col">保険料負担者</th><th scope="col">保険金受取人</th><th scope="col">課税対象となる税目</th></tr></thead><tbody>
+<tr><th scope="row">夫</th><td>妻または子</td><td>相続税。相続人受取分には非課税枠あり</td></tr>
+<tr><th scope="row">妻</th><td>妻</td><td>所得税。一時所得として計算</td></tr>
+<tr><th scope="row">妻</th><td>子</td><td>贈与税</td></tr>
+</tbody></table></div>
+<p class="hint">複数人が保険料を負担した場合は負担に対応する部分ごとに扱いが分かれるため、本記事の全額負担の設例は使いません。年金受取は、本記事の一時金の設例の対象外です。詳細は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1750.htm">国税庁の受取方法別の説明</a>へ。</p>
+<p>一時所得の計算は<a href="../ichiji-shotoku/">一時所得の解説</a>、会社からの死亡退職金・弔慰金は<a href="../choikin-hikazei/">弔慰金と死亡退職金の解説</a>で扱います。生命保険金の受取額と混ぜて集計しません。</p>
+<h2 id="records">申告前に受取人別の明細をそろえる</h2>
+<p>相続税の対象となる死亡保険金は、契約と受取人を対応させて集計します。<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4114.htm">国税庁No.4114</a>は、非課税額等の計算に相続税申告書第9表「生命保険金などの明細書」の利用を案内しています。</p>
+<ul><li><b>保険証券・支払通知</b>：被保険者、契約上の受取人、支払額を確認し、受取人ごとに契約を集める。</li>
+<li><b>保険料の支払記録</b>：契約者名義と実際の負担者が一致するかを確認する。</li>
+<li><b>家族関係・相続放棄の資料</b>：枠を計算する人数と、非課税を受ける人を分けて記録する。</li>
+<li><b>他の財産・債務等の資料</b>：保険金の非課税計算後、各人の課税価格へつなぐ。</li></ul>
+<p>保険金の非課税枠に収まることと、遺産全体の申告要否は別です。基礎控除や特例の適用前後も含めた申告要否・通常の期限・休日の扱いは<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4205.htm">国税庁No.4205「相続税の申告と納税」</a>で確認します。</p>
+<p>下の計算機では、保険金の非課税額を受取人別に配分する本記事の表を再現できません。相続税の総額を確認する際は、課税価格の計算が済んだ金額を使い、保険金の非課税枠を二重に引かないようにします。各人の実際の取得割合も、本記事の計算表と分けて確認してください。</p>
+<a class="tool-cta" href="../../sozokuzei/">相続税計算機で基礎控除と税総額の流れを確認する</a>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>相続放棄した人は保険金の非課税枠の人数から外しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>外しません。枠の人数は放棄がなかったものとして数えます。ただし、放棄した本人が受け取る死亡保険金には非課税を適用せず、他の相続人へ枠を按分する分母にも含めません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>保険を複数契約していれば非課税枠も増えますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>増えません。相続税の非課税枠を契約ごと・保険会社ごとに使う計算ではありません。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>保険金を受け取ってから家族と分け直せますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>契約上の受取人が受領後に他の家族へ分けると、その家族への贈与税の課税対象になります。故人が保険料を負担した保険金は、みなし相続財産として相続税の対象でも、預金等と同じ遺産分割の対象ではありません。</p>
+<h2 id="related">関連記事・ツール</h2>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../gakushi-hoken-zeikin/"><b>学資保険の税金｜一括・分割・別人受取の課税額を検算</b><span>学資保険の受取時の税金を、実際の保険料負担者と受取方法で整理。一括受取と年をまたぐ年金、同年の他の一時所得、夫負担・妻受取を架空例で計算し、所得への加算額と所得税本体・贈与税の税額</span></a><a class="tool-card" href="../kawase-saeki-kakutei-shinkoku/"><b>為替差益の確定申告：円転・同通貨の預け替え・外貨の使用を検算</b><span>為替差益の確定申告は、円に戻したかだけでは決まりません。個人の外貨預金について、円転・同通貨の預け替え・貸付用建物への支払いを同じ元本で比較。国税庁の計算例、給与所得者の申告不要制</span></a><a class="tool-card" href="../beikoku-kabu-zeikin-enkansan/"><b>米国株の税金：ドルの売却損益と円換算した譲渡所得の違いを検算</b><span>米国株の売却損益は、購入時と売却時をそれぞれ円換算して確認します。ドルで値上がりしていなくても円建て所得が残る例を、取得費・売買手数料とつないで検算。使う為替相場、報告書の確認順、</span></a></div></section><!--next-read:E-->
+<section class="related"><div class="tool-grid"><a class="tool-card" href="../../sozokuzei/"><b>相続税計算機</b><span>基礎控除と税総額を確認します。受取人別の保険金按分は本記事で確認。</span></a><a class="tool-card" href="../choikin-hikazei/"><b>弔慰金と死亡退職金</b><span>会社から遺族へ支給される金品を区別します。</span></a><a class="tool-card" href="../ichiji-shotoku/"><b>一時所得</b><span>所得税の対象になる受取金の計算を確認します。</span></a></div></section>
+<h2 id="shutten">出典</h2>
+<p class="source-method">制度の確認日：2026年10月21日。<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4114.htm">国税庁の死亡保険金の説明</a>等の令和8年4月1日現在法令等を参照しています。金額表は条件を固定した架空の計算例です。</p>
+<ul>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4114.htm">国税庁No.4114「相続税の課税対象になる死亡保険金」</a>：非課税限度額、放棄者の扱い、各人の算式、明細書。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4114_qa.htm">国税庁No.4114のQ&amp;A「契約上の受取人以外の人が受け取った場合」</a>：受取後の贈与。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4152.htm">国税庁No.4152「相続税の計算」</a>：基礎控除、法定相続分による税総額、各人への割振り。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4155.htm">国税庁No.4155「相続税の税率」</a>：法定取得金額への速算表。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4158.htm">国税庁No.4158「配偶者の税額の軽減」</a>：適用範囲と申告等の手続き。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4157.htm">国税庁No.4157「相続税額の2割加算」</a>：取得者の続柄による扱い。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1750.htm">国税庁No.1750「死亡保険金を受け取ったとき」</a>：保険料負担者による税目、年金受取との区別。</li>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/sozoku/4205.htm">国税庁No.4205「相続税の申告と納税」</a>：申告要否、期限、休日の扱い。</li>
+</ul>
+<p data-source-nolink="当サイトの情報提供範囲と個別相談に関する免責">本記事は一般的な情報提供を目的としたものです。個別の判断は税務署・税理士にご確認ください。個別の税務・労務相談には応じられません。</p>
+</article><!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E6%AD%BB%E4%BA%A1%E4%BF%9D%E9%99%BA%E9%87%91%E3%81%AE%E7%9B%B8%E7%B6%9A%E7%A8%8E%E3%82%92%E3%80%81%E7%9B%B8%E7%B6%9A%E6%94%BE%E6%A3%84%E3%81%97%E3%81%9F%E5%AD%90%E3%81%8C%E4%BF%9D%E9%99%BA%E9%87%91%E3%82%92%E5%8F%97%E3%81%91%E5%8F%96%E3%82%8B%E6%9E%B6%E7%A9%BA%E4%BE%8B%E3%81%A7%E6%A4%9C%E7%AE%97%E3%80%82%E9%9D%9E%E8%AA%B2%E7%A8%8E%E6%9E%A0%E3%81%AE%E4%BA%BA%E6%95%B0%E3%81%A8%E5%8F%97%E5%8F%96%E9%A1%8D%E3%81%AE%E6%8C%89%E5%88%86%E3%82%92%E5%88%86%E3%81%91%E3%80%81%E5%90%84%E4%BA%BA%E3%81%AE%E8%AA%B2%E7%A8%8E%E4%BE%A1%E6%A0%BC%E3%83%BB%E7%B4%8D%E4%BB%98%E7%A8%8E%E9%A1%8D%E3%81%BE%E3%81%A7%E8%BF%BD%E3%81%84%E3%81%BE%E3%81%99%E3%80%82%E5%8F%97%E5%8F%96%E5%BE%8C%E3%81%AE%E8%B4%88%E4%B8%8E%E3%82%84%E7%94%B3%E5%91%8A%E8%B3%87%E6%96%99%E3%81%AE%E7%A2%BA%E8%AA%8D%E7%82%B9%E3%82%82%E6%95%B4%E7%90%86%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fshibo-hokenkin-sozokuzei%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site"><p>© 税金・経理・補助金ツールズ</p>  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script></body></html>
