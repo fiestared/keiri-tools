@@ -103,7 +103,7 @@
     </div>
   </div>
   <div class="hint">所得等の扶養要件を満たす16歳未満の扶養親族（子・孫・弟妹など）は扶養控除は0円ですが、<b>非課税限度額の判定に効く</b>ので入力してください。</div>
-  <p class="hint" id="family-eligibility">年齢は寄附した年の12月31日時点で数えます。扶養に入れられる人の条件は<a href="https://keiri-tools.com/furusato/#kazoku" target="_blank" rel="noopener">配偶者・扶養親族の入力のしかた</a>にまとめました。</p>
+  <p class="hint" id="family-eligibility">年齢は寄附年の12月31日、年内に死亡した人は死亡時で判定します。扶養の条件は<a href="https://keiri-tools.com/furusato/#kazoku" target="_blank" rel="noopener">配偶者・扶養親族の入力のしかた</a>にまとめました。</p>
 
   <details>
     <summary>その他の控除・給与以外の所得</summary>
@@ -114,7 +114,7 @@
       </div>
       <div>
         <label for="fuyoDokyoRooya">同居老親等（70歳以上の直系尊属）</label>
-        <p class="hint">本人または配偶者の直系尊属で、本人または配偶者との同居を常況とする老人扶養親族です。同居の兄姉などは「同居老親等以外」に入力します。</p>
+        <p class="hint">同居老親等は、本人・配偶者の直系尊属で同居を常況とする老人扶養親族です。70歳以上の控除対象扶養親族の兄姉は「同居老親等以外」に入力します。</p>
         <input id="fuyoDokyoRooya" type="number" inputmode="numeric" value="0" min="0" max="20">
       </div>
     </div>
@@ -128,7 +128,7 @@
     <div class="hint" style="margin:0 0 4px 20px">あなたは
       <select id="hitorioyaSei" style="width:auto;display:inline-block">
         <option value="haha" selected>母</option><option value="chichi">父</option>
-      </select> です（調整控除に用いる法定の人的控除差は母5万円・父1万円。地方税法施行令48条の7の2による）</div>
+      </select> です（調整控除に用いる法定の人的控除差は母5万円・父1万円。<a href="https://laws.e-gov.go.jp/law/325CO0000000245#Mp-At_48_7_2" rel="nofollow">地方税法施行令48条の7の2</a>による）</div>
     <label class="chk"><input id="kafu" type="checkbox"> 寡婦（ひとり親と重複不可）</label>
     <label class="chk"><input id="shogai" type="checkbox"> 障害者（本人・同一生計配偶者・扶養親族のいずれか。一般）</label>
     <label class="chk"><input id="honninShogai" type="checkbox"> 上の障害者が<b>本人</b>である<span class="hint">本人が障害者で寄附年の合計所得135万円以下なら翌年度の住民税は非課税（所得税の寄附金控除が残る場合があります）</span></label>
@@ -136,7 +136,7 @@
   </details>
 
   <label style="display:block;margin-top:12px"><input type="checkbox" id="shotokuChoseiEligible"> 所得金額調整控除の対象条件あり（子ども・特別障害者等）</label>
-  <p class="hint" id="shotoku-chosei-scope">給与収入850万円超の人だけ関係します。一般扶養の欄に16〜18歳の子を入れた場合などにチェックします（<a href="https://keiri-tools.com/furusato/#chosei" target="_blank" rel="noopener">対象の条件</a>）。</p>
+  <p class="hint" id="shotoku-chosei-scope">給与850万円超で、一般扶養の16〜18歳の子がいる場合などに使うチェックです（<a href="https://keiri-tools.com/furusato/#chosei" target="_blank" rel="noopener">対象の条件</a>）。</p>
   <label for="kifu" style="margin-top:10px">寄附する予定の額（円・任意）</label>
   <input id="kifu" type="number" inputmode="numeric" placeholder="例: 60000" aria-describedby="kifu-hint">
 
@@ -148,7 +148,7 @@
 
   <div class="brand">
     <a href="https://keiri-tools.com/furusato/?utm_source=embed&utm_medium=widget" target="_blank" rel="noopener">keiri-tools</a>
-    の計算エンジンで動いています（地方税法・附則5条の6の読替え後の割合で計算）。
+    の計算エンジンで動いています（<a href="https://laws.e-gov.go.jp/law/325AC0000000226_20261016_508AC0000000002" rel="nofollow">地方税法</a>・<a href="https://laws.e-gov.go.jp/law/325AC0000000226_20261016_508AC0000000002" rel="nofollow">附則5条の6</a>の読替え後の割合で計算）。
     <div style="margin-top:5px">計算結果は目安です。個別の判断は、税理士・社会保険労務士等の専門家、または所轄の税務署・年金事務所・市区町村にご確認ください。</div>
   </div>
 </div>

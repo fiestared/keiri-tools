@@ -13,6 +13,7 @@ import { siteLinks, COPY } from './gen_site_footer.mjs';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const ROUTES = JSON.parse(readFileSync(join(ROOT, 'tools/saitei_pref_pages.json'), 'utf8')).prefectures;
 const D = JSON.parse(readFileSync(join(ROOT, 'docs/assets/saitei_chingin_r08.json'), 'utf8'));
+const INDUSTRY_NOTES = JSON.parse(readFileSync(join(ROOT, 'tools/saitei_pref_industry_notes.json'), 'utf8'));
 const CHECK = process.argv.includes('--check');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const yen = n => n.toLocaleString('ja-JP') + '円';
@@ -24,6 +25,13 @@ const REGULATION = 'https://laws.e-gov.go.jp/law/334M50002000016';
 
 export function prefContent(p) {
   const m = D._meta, r = ROUTES[p.pref], before = prevDay(p.effective), current = m.checked < p.effective ? p.prev : p.wage;
+  const industry = INDUSTRY_NOTES[r.slug];
+  const industryNote = industry ? `<p data-review-context="before-table">${date(industry.checked)}確認時点の${esc(p.full)}では、下表の産業でも地域別最低賃金の時間額${yen(p.wage)}が適用されます（減額特例の許可がある場合を除く）。</p>
+<div class="scroll-wrap"><table id="pref-industry"><thead><tr><th scope="col">産業</th><th scope="col">特定最低賃金の時間額（地域別を下回る額）</th></tr></thead><tbody>
+${industry.industries.map(i => `<tr><th scope="row">${esc(i.name)}</th><td class="num">${yen(i.wage)}</td></tr>`).join('\n')}
+</tbody></table></div>
+<p>産業別の改定後は、<a href="${esc(industry.source_url)}">${esc(p.pref)}労働局「最低賃金」</a>で改めて高い方を確認してください。</p>
+` : '';
   const boundary = [[`${date(before)}まで`, p.prev], [`${date(p.effective)}から`, p.wage]];
   const monthly = [160,173,180].map(h => `<tr><th scope="row">${h}時間</th><td class="num">${yen(p.prev*h)}</td><td class="num">${yen(p.wage*h)}</td><td class="num">${yen(p.up*h)}</td></tr>`).join('\n');
   const near = r.neighbors.map(name => {
@@ -43,7 +51,7 @@ ${m.checked < p.effective ? `<p id="pref-current">${date(m.checked)}の確認日
 ${boundary.map(([label,wage]) => `<tr><th scope="row">${label}</th><td class="num">${yen(wage)}</td></tr>`).join('\n')}
 </tbody></table></div>
 <p><a href="${esc(r.bureau_url)}">${esc(p.pref)}労働局の最低賃金資料</a>で、特定（産業別）最低賃金も確認できます。地域別と特定最低賃金の両方が適用される場合は、高い方を使います。減額特例の許可を受けている場合は許可内容を確認してください。<a href="../#tool-section-3">適用範囲の説明</a>。</p>
-<h2 id="monthly">${esc(p.full)}の最低賃金を月給に換算する例</h2>
+${industryNote}<h2 id="monthly">${esc(p.full)}の最低賃金を月給に換算する例</h2>
 <p id="monthly-assumption">${esc(p.full)}の${esc(m.year)}の地域別最低賃金を、月の所定労働時間が一定の場合の月給に換算した例です。時間が月によって違う場合は、年間の月平均所定労働時間で換算します。賞与や対象外の手当を含む総支給額とは区別してください。</p>
 <p>表の月給額 ＝ 地域別最低賃金の時間額 × 月の所定労働時間。換算の根拠は<a href="${REGULATION}">最低賃金法施行規則の月給の換算規定</a>、時間額と発効日の出典は${SOURCE}です。</p>
 <div class="scroll-wrap"><table id="pref-monthly"><caption>${esc(p.full)}・${esc(m.year)}の地域別最低賃金による月給換算例</caption><thead><tr><th scope="col">月の所定労働時間</th><th scope="col">${date(before)}まで</th><th scope="col">${date(p.effective)}から</th><th scope="col">引上げ額</th></tr></thead><tbody>
