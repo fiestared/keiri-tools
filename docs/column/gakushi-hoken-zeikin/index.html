@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>学資保険の税金：一括・分割・受取人が違う場合の課税額を検算</title>
+<meta name="description" content="学資保険の受取時の税金を、実際の保険料負担者と受取方法で整理。一括受取と年をまたぐ年金、同年の他の一時所得、夫負担・妻受取を架空例で計算し、所得への加算額と所得税本体・贈与税の税額を分けます。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/gakushi-hoken-zeikin/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="学資保険の税金：一括・分割・受取人が違う場合の課税額を検算">
+<meta property="og:description" content="学資保険の受取時の税金を、実際の保険料負担者と受取方法で整理。一括受取と年をまたぐ年金、同年の他の一時所得、夫負担・妻受取を架空例で計算し、所得への加算額と所得税本体・贈与税の税額を分けます。">
+<meta property="og:url" content="https://keiri-tools.com/column/gakushi-hoken-zeikin/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+
+
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "学資保険の税金：一括・分割・受取人が違う場合の課税額を検算",
+      "datePublished": "2026-10-21",
+      "dateModified": "2026-10-21",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/gakushi-hoken-zeikin/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "学資保険の税金",
+          "item": "https://keiri-tools.com/column/gakushi-hoken-zeikin/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "分割で受け取れば、毎年一時所得として計算できますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "受取回数だけでは決まりません。契約者・受取人が本人で、所定期間に連年定額で支払うこども保険を雑所得とする国税庁事例があります。契約と通知で区分を確かめ、給付に対応する保険料を差し引きます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "契約者名が自分なら、本人負担として計算できますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "名義だけでは決められません。生存時の満期金は、実際の保険料負担者と受取人が同じかで所得税・贈与税を分けます。家族が負担した期間が混在する契約は、本記事の単独負担の設例から外れます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "学資金を受け取ったら、会社の年末調整に入れますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "学資金の受取による一時所得や雑所得は、給与の年末調整で精算するものではありません。払込保険料の生命保険料控除と区別し、他の所得も含めて確定申告の要否を確認します。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 学資保険の税金</nav>
+<article>
+<h1>学資保険の税金｜一括・分割・別人受取の課税額を検算</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-21">2026年10月21日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><b>学資保険の受取時の税金は、実際に保険料を負担した人と受取人が同じか、学資金を一時金・年金のどちらで受け取るかで変わります。</b>被保険者が生存している満期金は、本人負担・本人受取なら所得税、別人受取なら贈与税の対象です。</p>
+<p>本人が受け取る場合も、年金形式は一時金と同じ計算にはなりません。以下では、生存時の学資金について分類を確認し、一括受取・年をまたぐ受取・夫負担で妻が受け取る例を検算します。</p>
+<p>払込時の保険料控除は<a href="../nenmatsu-chosei-gakushi-hoken/">年末調整の学資保険</a>で扱います。本記事の基準日は2026年10月21日で、税額の設例は令和7・8年分です。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#kubun">最初に負担者と受取方法を分ける</a></li>
+<li><a href="#ikkatsu">一括受取の計算例</a></li>
+<li><a href="#nenbetsu">年金受取の計算例</a></li>
+<li><a href="#zoyo">別人受取：差益ではなく保険金から計算</a></li>
+<li><a href="#shorui">通知書と支払履歴で確認する項目</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#related">関連記事・ツール</a></li>
+<li><a href="#shutten">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../ichiji-shotoku/">一時所得とは</a></li><li><a href="../kojin-nenkin-zeikin/">個人年金の税金：年金額・対応保険料・源泉徴収から年間税額を検算</a></li><li><a href="../nenmatsu-chosei-gakushi-hoken/">年末調整の学資保険</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="kubun">最初に負担者と受取方法を分ける</h2>
+<p data-review-context="before-table">日本の居住者個人が、生存時の学資金を受け取る場合の分類です。保険料の負担者は単独で生存しているものとし、契約者名ではなく実際の負担者を確認します。死亡給付・権利の相続・複数人負担・法人負担はこの表の対象外です。</p>
+<div class="scroll-wrap"><table><caption>生存時の学資金の受取区分</caption><thead><tr><th scope="col">負担者と受取方法</th><th scope="col">税の扱い</th></tr></thead><tbody>
+<tr><th scope="row">本人負担・本人が一時金で受取</th><td>総合課税の一時所得。ただし、金融類似商品の源泉分離課税は別扱い</td></tr>
+<tr><th scope="row">本人負担・本人が年金で受取</th><td>公的年金等以外の雑所得。各年の給付に対応する保険料を差し引く</td></tr>
+<tr><th scope="row">他人負担・別人が一時金で受取</th><td>贈与税。本人受取の一時所得の計算は使わない</td></tr>
+<tr><th scope="row">他人負担・別人が年金で受取</th><td>年金受給権に贈与税。各年の年金の所得税は課税部分・非課税部分に分けて計算</td></tr>
+</tbody></table></div>
+<p>区分の根拠は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1755.htm">国税庁No.1755</a>です。他人負担の年金は、贈与税の納付額が生じなくても、各年の年金を課税部分・非課税部分に分けます。</p>
+<p class="hint">主な対象外は、一定の一時払養老保険等で源泉分離課税となる差益、死亡による保険金、保険料負担者の死亡による契約の権利承継です。後の満期金だけを見て分類せず、死亡給付は<a href="../shibo-hokenkin-sozokuzei/">死亡保険金の記事</a>、契約の相続は税務署等で確認してください。</p>
+<figure class="figure"><svg viewBox="0 0 360 270" width="360" height="270" role="img" aria-label="生存時の学資金は負担者と受取人を確認。同じなら一時金か年金を分け、別人なら贈与と年金受給権を確認する。死亡・相続など対象外の条件は本文の注を参照。">
+<g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="35" y="10" width="290" height="44" rx="6"/><path d="M180 54V80H90V106M180 80H270V106"/><rect x="12" y="106" width="156" height="100" rx="6"/><rect x="192" y="106" width="156" height="100" rx="6"/></g>
+<g fill="currentColor" text-anchor="middle" font-size="14"><text x="180" y="38">実際の負担者と受取人</text><text x="90" y="99">同じ人</text><text x="270" y="99">別の人</text><text x="90" y="135">一時金か年金か</text><text x="90" y="161">一時所得・雑所得を</text><text x="90" y="185">契約で分ける</text><text x="270" y="135">贈与税の対象を確認</text><text x="270" y="161">年金なら受給権と</text><text x="270" y="185">各年の所得を分ける</text><text x="180" y="243">名義・入金回数だけで決めない</text></g></svg><figcaption>生存時の学資金の確認順。例外・対象外は上の注を参照してください。</figcaption></figure>
+<h2 id="ikkatsu">一括受取の計算例</h2>
+<p>本人負担・本人受取で総合課税となる一時所得は、年間合算した収入から対応支出を引き、特別控除は残額を上限に最高50万円、その控除後の2分の1を総所得金額へ加えます。</p>
+<p>次の表は、学資金だけを受け取る場合と、同じ年に業務に無関係な懸賞金も受け取る場合です。保険ごとに特別控除を引く計算にはしません。</p>
+<p data-review-context="before-table">令和8年分の設例です。居住者本人が全額負担した学資金を一時金で受け取り、総合課税とします。受取前の課税総所得は表の額に固定し、所得控除の変化・税額控除・損益通算・分離課税所得・高額所得者特例はありません。他の一時所得は表の懸賞のみで、懸賞の直接支出はありません。税額は所得税本体のみで、復興特別所得税・住民税・源泉徴収税額は含めません。</p>
+<div class="scroll-wrap"><table><caption>一括受取と懸賞金の設例（税額は所得税本体）</caption><thead><tr><th scope="col">計算項目</th><th scope="col">学資金のみ</th><th scope="col">懸賞も受取</th></tr></thead><tbody>
+<tr><th scope="row">受取前課税所得</th><td class="num"><span class="numeric-token">3,000,000円</span></td><td class="num"><span class="numeric-token">3,000,000円</span></td></tr>
+<tr><th scope="row">受取前税額</th><td class="num"><span class="numeric-token">202,500円</span></td><td class="num"><span class="numeric-token">202,500円</span></td></tr>
+<tr><th scope="row">学資金収入</th><td class="num"><span class="numeric-token">3,000,000円</span></td><td class="num"><span class="numeric-token">3,000,000円</span></td></tr>
+<tr><th scope="row">対応保険料</th><td class="num"><span class="numeric-token">2,400,000円</span></td><td class="num"><span class="numeric-token">2,400,000円</span></td></tr>
+<tr><th scope="row">同年懸賞収入</th><td class="num"><span class="numeric-token">0円</span></td><td class="num"><span class="numeric-token">400,000円</span></td></tr>
+<tr><th scope="row">控除前の差益</th><td class="num"><span class="numeric-token">600,000円</span></td><td class="num"><span class="numeric-token">1,000,000円</span></td></tr>
+<tr><th scope="row">特別控除</th><td class="num"><span class="numeric-token">500,000円</span></td><td class="num"><span class="numeric-token">500,000円</span></td></tr>
+<tr><th scope="row">一時所得</th><td class="num"><span class="numeric-token">100,000円</span></td><td class="num"><span class="numeric-token">500,000円</span></td></tr>
+<tr><th scope="row">総所得算入額</th><td class="num"><span class="numeric-token">50,000円</span></td><td class="num"><span class="numeric-token">250,000円</span></td></tr>
+<tr><th scope="row">受取後課税所得</th><td class="num"><span class="numeric-token">3,050,000円</span></td><td class="num"><span class="numeric-token">3,250,000円</span></td></tr>
+<tr><th scope="row">所得税の式</th><td>3,050,000×10%−97,500</td><td>3,250,000×10%−97,500</td></tr>
+<tr><th scope="row">受取後税額</th><td class="num"><span class="numeric-token">207,500円</span></td><td class="num"><span class="numeric-token">227,500円</span></td></tr>
+<tr><th scope="row">税額増加分</th><td class="num"><span class="numeric-token">5,000円</span></td><td class="num"><span class="numeric-token">25,000円</span></td></tr>
+</tbody></table></div>
+<p class="hint" data-review-context="after-table">課税総所得の千円未満を切り捨てて速算表を適用しますが、本例にその端数はありません。加算額は税額ではありません。</p>
+<p>総合課税の税額は、給与等から計算した所得や所得控除と合わせて決まります。表の差額を自分の受取額に比例させる計算はできません。一般の一時所得の範囲・損失の扱いは<a href="../ichiji-shotoku/">一時所得の記事</a>を参照してください。</p>
+<h2 id="nenbetsu">年金受取の計算例</h2>
+<p><b>複数年の受取に、一時所得の特別控除を毎年使えるとは限りません。</b><a href="https://www.nta.go.jp/law/shitsugi/shotoku/02/29.htm">国税庁「数年間にわたり支払を受ける保険金」</a>は、契約者・受取人が本人のこども保険で、契約上、所定期間に毎年定額を支払う教育資金・満期保険金を雑所得としています。</p>
+<p>この事例の所得は、それぞれの給付から対応保険料を引いた金額です。商品名が学資保険であることや、入金が数回あることだけでは分類できません。</p>
+<p data-review-context="before-table">令和7・8年分の年金受取の設例です。居住者本人が全額負担し本人が受け取り、各年の通知に表の対応保険料が記載されると仮定します。各年とも受取前の課税総所得は表の額に固定し、所得控除の変化・税額控除・損益通算・分離課税所得・高額所得者特例はありません。税額は所得税本体のみで、復興特別所得税・住民税・源泉徴収税額は含めません。</p>
+<div class="scroll-wrap"><table><caption>年金受取の設例（税額は各年の所得税本体）</caption><thead><tr><th scope="col">計算項目</th><th scope="col">令和7年分</th><th scope="col">令和8年分</th></tr></thead><tbody>
+<tr><th scope="row">受取前課税所得</th><td class="num"><span class="numeric-token">3,000,000円</span></td><td class="num"><span class="numeric-token">3,000,000円</span></td></tr>
+<tr><th scope="row">受取前税額</th><td class="num"><span class="numeric-token">202,500円</span></td><td class="num"><span class="numeric-token">202,500円</span></td></tr>
+<tr><th scope="row">年金収入</th><td class="num"><span class="numeric-token">1,500,000円</span></td><td class="num"><span class="numeric-token">1,500,000円</span></td></tr>
+<tr><th scope="row">対応保険料</th><td class="num"><span class="numeric-token">1,200,000円</span></td><td class="num"><span class="numeric-token">1,200,000円</span></td></tr>
+<tr><th scope="row">雑所得・算入額</th><td class="num"><span class="numeric-token">300,000円</span></td><td class="num"><span class="numeric-token">300,000円</span></td></tr>
+<tr><th scope="row">受取後課税所得</th><td class="num"><span class="numeric-token">3,300,000円</span></td><td class="num"><span class="numeric-token">3,300,000円</span></td></tr>
+<tr><th scope="row">所得税の式</th><td>3,300,000×20%−427,500</td><td>3,300,000×20%−427,500</td></tr>
+<tr><th scope="row">受取後税額</th><td class="num"><span class="numeric-token">232,500円</span></td><td class="num"><span class="numeric-token">232,500円</span></td></tr>
+<tr><th scope="row">税額増加分</th><td class="num"><span class="numeric-token">30,000円</span></td><td class="num"><span class="numeric-token">30,000円</span></td></tr>
+</tbody></table></div>
+<p class="hint" data-review-context="after-table">課税総所得は千円未満切捨てですが、本例に端数はありません。対応保険料は架空の通知額で、実在商品の共通比率や受取方法の推奨を示す表ではありません。</p>
+<p>本人負担の年金では、総払込保険料を毎年重ねて引かず、その年の給付に対応する額を使います。将来の年金総額に代わる一時金は、一時所得です（本人が保険料を負担し年金を受け取る場合、<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1610.htm">国税庁No.1610</a>）。</p>
+<h2 id="zoyo">別人受取：差益ではなく保険金から計算</h2>
+<p>夫が保険料を全額負担し、生存時の満期金を妻が一括で受け取るなら、妻の贈与税の対象です。妻の一時所得として夫の払込保険料を差し引く計算にはしません。</p>
+<p data-review-context="before-table">令和8年分の暦年課税の設例です。国内の居住者の夫が全額負担した生存時の満期金を、居住者の妻が一括受取します。夫は生存し、妻の同年の他の贈与はなく、配偶者控除等の特例を使わない一般税率です。相続時精算課税、年金受給権の贈与は対象外です。</p>
+<div class="scroll-wrap"><table><caption>夫負担・妻一括受取の贈与税の設例</caption><thead><tr><th scope="col">計算段階</th><th scope="col">金額・式</th></tr></thead><tbody>
+<tr><th scope="row">妻が受け取る満期金</th><td><span class="numeric-token">3,000,000円</span></td></tr>
+<tr><th scope="row">暦年課税の基礎控除</th><td><span class="numeric-token">1,100,000円</span></td></tr>
+<tr><th scope="row">基礎控除後の課税価格</th><td>3,000,000−1,100,000＝1,900,000円</td></tr>
+<tr><th scope="row">一般税率を適用</th><td>1,900,000×10%＝190,000円</td></tr>
+</tbody></table></div>
+<p>令和8年分の贈与税の基礎控除は暦年課税では受け取る人の年間合計に対し110万円です。上の表は夫婦間の一般税率で、親から子への特例税率を使う表ではありません（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/zoyo/4408.htm">国税庁No.4408</a>）。</p>
+<a class="tool-cta" href="../../zoyozei/">一般の暦年贈与の計算は贈与税計算機へ</a>
+<h2 id="shorui">通知書と支払履歴で確認する項目</h2>
+<p>通帳の入金額だけでなく、契約内容・保険料の支払履歴・支払通知をそろえます。申告用のメモは、次の順で作ると照合できます。</p>
+<ol><li>保険料を実際に負担した人と、学資金を受け取る人を記録する。</li><li>契約上の受取方法を確認し、一時金・連年給付・年金受給権を分ける。</li><li>年ごとに収入・対応保険料・源泉徴収税額を別欄に転記する。配当金や過去の給付があれば、通知の内訳と履歴も照合する。</li><li>同年の他の一時所得や雑所得、贈与を集計し、年末調整済みの給与等と分けて申告の要否を確認する。</li></ol>
+<p>源泉徴収されなかったことや、一定の給与所得者の申告不要に当たることは、非課税と同じ意味ではありません。給与所得者の判定条件は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1900.htm">国税庁No.1900</a>で確認してください。</p>
+<div class="summary-box"><p>受取時は、負担者・受取方法・年ごとの対応保険料を先に確認します。払込時の年末調整とは分け、学資金の受取額をそのまま税額や所得と読み替えないことが確認の要点です。</p></div>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question">分割で受け取れば、毎年一時所得として計算できますか？</h3><p class="faq-answer">受取回数だけでは決まりません。契約者・受取人が本人で、所定期間に連年定額で支払うこども保険を雑所得とする国税庁事例があります。契約と通知で区分を確かめ、給付に対応する保険料を差し引きます。</p>
+<h3 class="faq-question">契約者名が自分なら、本人負担として計算できますか？</h3><p class="faq-answer">名義だけでは決められません。生存時の満期金は、実際の保険料負担者と受取人が同じかで所得税・贈与税を分けます。家族が負担した期間が混在する契約は、本記事の単独負担の設例から外れます。</p>
+<h3 class="faq-question">学資金を受け取ったら、会社の年末調整に入れますか？</h3><p class="faq-answer">学資金の受取による一時所得や雑所得は、給与の年末調整で精算するものではありません。払込保険料の生命保険料控除と区別し、他の所得も含めて確定申告の要否を確認します。</p>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../shibo-hokenkin-sozokuzei/"><b>死亡保険金の相続税：非課税枠・相続放棄・受取割合を同じ例で検算</b><span>死亡保険金の相続税を、相続放棄した子が保険金を受け取る架空例で検算。非課税枠の人数と受取額の按分を分け、各人の課税価格・納付税額まで追います。受取後の贈与や申告資料の確認点も整理し</span></a><a class="tool-card" href="../kawase-saeki-kakutei-shinkoku/"><b>為替差益の確定申告：円転・同通貨の預け替え・外貨の使用を検算</b><span>為替差益の確定申告は、円に戻したかだけでは決まりません。個人の外貨預金について、円転・同通貨の預け替え・貸付用建物への支払いを同じ元本で比較。国税庁の計算例、給与所得者の申告不要制</span></a><a class="tool-card" href="../beikoku-kabu-zeikin-enkansan/"><b>米国株の税金：ドルの売却損益と円換算した譲渡所得の違いを検算</b><span>米国株の売却損益は、購入時と売却時をそれぞれ円換算して確認します。ドルで値上がりしていなくても円建て所得が残る例を、取得費・売買手数料とつないで検算。使う為替相場、報告書の確認順、</span></a></div></section><!--next-read:E-->
+<section class="related"><h2 id="related">関連記事・ツール</h2><div class="tool-grid">
+<a class="tool-card" href="../ichiji-shotoku/"><b>一時所得とは</b><span>総合課税の計算・同年の他の一時所得・損失の扱い</span></a>
+<a class="tool-card" href="../kojin-nenkin-zeikin/"><b>個人年金の税金</b><span>対応保険料・源泉徴収・年間の税額の関係</span></a>
+<a class="tool-card" href="../nenmatsu-chosei-gakushi-hoken/"><b>年末調整の学資保険</b><span>払い込んだ保険料を書く欄と控除できる人</span></a>
+<a class="tool-card" href="../../zoyozei/"><b>贈与税計算機</b><span>一般の暦年贈与の税額を試算</span></a></div></section>
+<h2 id="shutten">出典</h2>
+<p class="source-method">基準日：2026年10月21日。受取時の分類は<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1755.htm">国税庁No.1755</a>等の下記資料、所得税本体と贈与税の設例は速算表を参照しています。</p>
+<ul>
+<li>国税庁「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/zoyo/4408.htm">No.4408 贈与税の計算と税率（暦年課税）</a>」</li>
+<li>国税庁「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1490.htm">No.1490 一時所得</a>」</li>
+<li>国税庁「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1900.htm">No.1900 給与所得者で確定申告が必要な人</a>」</li>
+<li>国税庁「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm">No.2260 所得税の税率</a>」</li>
+<li>国税庁「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1755.htm">No.1755 生命保険契約に係る満期保険金等を受け取ったとき</a>」</li>
+<li>国税庁「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1610.htm">No.1610 保険契約者（保険料の負担者）である本人が支払を受ける個人年金</a>」</li>
+<li>国税庁「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/zoyo/4417.htm">No.4417 贈与税の対象になる生命保険金</a>」</li>
+<li>国税庁「<a href="https://www.nta.go.jp/law/shitsugi/shotoku/02/29.htm">数年間にわたり支払を受ける保険金</a>」</li>
+</ul><p class="note" data-source-nolink="一般情報提供と個別相談の範囲の説明">本記事は一般的な情報提供を目的としたものです。個別の税務相談には応じられません。実際の契約の分類や申告の判断は税務署・税理士にご確認ください。</p>
+</article><!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%AD%A6%E8%B3%87%E4%BF%9D%E9%99%BA%E3%81%AE%E5%8F%97%E5%8F%96%E6%99%82%E3%81%AE%E7%A8%8E%E9%87%91%E3%82%92%E3%80%81%E5%AE%9F%E9%9A%9B%E3%81%AE%E4%BF%9D%E9%99%BA%E6%96%99%E8%B2%A0%E6%8B%85%E8%80%85%E3%81%A8%E5%8F%97%E5%8F%96%E6%96%B9%E6%B3%95%E3%81%A7%E6%95%B4%E7%90%86%E3%80%82%E4%B8%80%E6%8B%AC%E5%8F%97%E5%8F%96%E3%81%A8%E5%B9%B4%E3%82%92%E3%81%BE%E3%81%9F%E3%81%90%E5%B9%B4%E9%87%91%E3%80%81%E5%90%8C%E5%B9%B4%E3%81%AE%E4%BB%96%E3%81%AE%E4%B8%80%E6%99%82%E6%89%80%E5%BE%97%E3%80%81%E5%A4%AB%E8%B2%A0%E6%8B%85%E3%83%BB%E5%A6%BB%E5%8F%97%E5%8F%96%E3%82%92%E6%9E%B6%E7%A9%BA%E4%BE%8B%E3%81%A7%E8%A8%88%E7%AE%97%E3%81%97%E3%80%81%E6%89%80%E5%BE%97%E3%81%B8%E3%81%AE%E5%8A%A0%E7%AE%97%E9%A1%8D%E3%81%A8%E6%89%80%E5%BE%97%E7%A8%8E%E6%9C%AC%E4%BD%93%E3%83%BB%E8%B4%88%E4%B8%8E%E7%A8%8E%E3%81%AE%E7%A8%8E%E9%A1%8D%E3%82%92%E5%88%86%E3%81%91%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fgakushi-hoken-zeikin%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main><footer class="site"><p>© 税金・経理・補助金ツールズ</p>  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer><script src="../../assets/empty-state.js" defer></script></body></html>
