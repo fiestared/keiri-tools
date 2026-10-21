@@ -79,7 +79,7 @@ function build(card) {
 <ul>
 ${lis.join('\n')}
 </ul>
-<p class="note">${esc(KOYOU._meta.attribution)}
+<p class="note"><a href="${esc(KOYOU._meta.source_url)}" rel="nofollow noopener">${esc(KOYOU._meta.attribution)}</a>
 当サイトは申請の代行や個別の可否判断は行っていません。
 制度の一覧は<a href="/hojokin/koyou/">雇用関係助成金の一覧</a>にあります。</p>
 </section>
