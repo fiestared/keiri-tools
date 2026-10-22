@@ -26,3 +26,18 @@ for(let i=0;i<periodRows.length;i++){
 assert.equal(number(periodRows[0].cells[3].textContent),1260);
 assert.match(dom.querySelector('#rate-table').parentElement.previousElementSibling.textContent,/銀行の支払額を再現したものではありません/);
 console.log('✓ 定期預金: 公表金利・基準日・3銀行の利息・期間境界と比較用端数処理を照合');
+// 表の列を移した際、台帳の被覆を「自サイトの編集方針」に割り当てない。
+const {segmentClaims}=await import('../tools/segment_claims.mjs');
+const ledger=JSON.parse(readFileSync(new URL('claims/column/teiki-yokin-kinri-table.json',root),'utf8'));
+const units=segmentClaims(dom.documentElement.outerHTML,'docs/column/teiki-yokin-kinri-table/index.html');
+let grounded=0;
+for(const b of d.banks){
+ for(const u of units.filter(u=>u.kind==='td'&&u.text.startsWith(`【行】${b.name} 【列】`))){
+  const claims=ledger.claims.filter(c=>c.covers.includes(u.id));
+  if(/【列】(?:税引前年率|公表基準日)/.test(u.text))assert(claims.some(c=>c.source_url===b.source_url&&c.kind!=='own_site'),u.text+'の公式資料への対応が必要');
+  else assert(claims.some(c=>c.derived===true&&c.kind!=='own_site'),u.text+'の計算主張への対応が必要');
+  grounded++;
+ }
+}
+assert.equal(grounded,12,'通常金利表の全データセルを台帳で照合');
+console.log('✓ 表の12セルを公式資料・計算式の台帳へ対応付け（自サイト情報への誤分類を防止）');
