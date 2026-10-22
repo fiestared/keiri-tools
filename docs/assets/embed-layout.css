@@ -41,3 +41,14 @@ a[role="button"] { display: inline-flex; align-items: center; justify-content: c
 .warn.field-error { margin: 4px 0 0; }
 .field-error + .hint { display: block; margin-top: 4px; }
 .hint .input-example { display: block; font-weight: 600; }
+/* UA 既定の矢印は枠の右端に貼り付くので、本体(style.css)と同じ自前の矢印を内側に置く。 */
+select {
+  appearance: none;
+  padding-right: 32px;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none' stroke='%235b6b7b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 5l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 12px;
+  cursor: pointer;
+}

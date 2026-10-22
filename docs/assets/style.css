@@ -144,6 +144,14 @@ input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not([type=
   border-radius: 8px;
   background: #fff;
 }
+/* UA 既定の矢印は padding を無視して枠の右端ぎりぎりに描かれ、幅の広い欄では
+   文言から遠く離れて見えた（2026-10-22 Masahiro 指摘）。自前の矢印で内側に置く。 */
+select {
+  appearance: none;
+  padding-right: 44px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14' fill='none' stroke='%235b6b7b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 5l4 4 4-4'/%3E%3C/svg%3E") no-repeat right 16px center / 14px 14px;
+  cursor: pointer;
+}
 .radio-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
 .radio-row label {
   flex: 1 1 140px;
