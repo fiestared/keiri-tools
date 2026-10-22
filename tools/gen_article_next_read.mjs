@@ -206,7 +206,20 @@ let changed = 0, frozen = 0, treated = 0;
 const failures = [];
 for (const [slug, a] of articles) {
   const path = `/column/${slug}/`;
-  if (exp.C.has(path) || exp.P.has(path) || exp.F.has(path)) { frozen++; continue; } // 入力バイトのまま
+  if (exp.C.has(path) || exp.P.has(path) || exp.F.has(path)) {
+    // 行き先と並びは入力のまま。ただしカードの見出し・説明文がリンク先の今の h1・説明文と食い違ったものだけ写し直す
+    // （2026-10-22: 傷病手当金支給申請書の記事が説明文を書き直し、据え置きの出産育児一時金の「次に読む」に古い文が残って
+    //   test_shussan_ichijikin_article が赤になった。tests/lib/next_read.mjs は「リンク先の説明文の写し」を求める）
+    frozen++;
+    const html = a.html.replace(MARK, (blk) => blk.replace(/<a class="tool-card" href="\.\.\/([a-z0-9-]+)\/"><b>([^<]*)<\/b><span>([^<]*)<\/span><\/a>/g, (cardHtml, s, title, desc) => {
+      const t = articles.get(s); if (!t) return cardHtml;
+      const src = unesc(t.desc).replace(/\s+/g, " ").trim(), d = unesc(desc).replace(/\s+/g, " ").trim().replace(/…$/, "");
+      if (unesc(title).trim() === unesc(t.h1).trim() && d && src.startsWith(d)) return cardHtml;
+      return legacyCard(s);
+    }));
+    if (html !== a.html) { changed++; if (!CHECK) writeFileSync(a.file, html); }
+    continue;
+  }
   let html;
   if (exp.T.has(path)) {
     try { html = buildTreatment(slug, a); treated++; } catch (e) { failures.push(e.message); continue; }

@@ -37,6 +37,18 @@ const ROOT = resolve(fileURLToPath(new URL("../", import.meta.url)));
  */
 const ENUMERATIONS = [
   {
+    page: "docs/column/ikuji-kaigo-kyugyoho/index.html", element: "flexible-options",
+    law: "厚生労働省『育児・介護休業法 令和6年改正内容の解説』28頁",
+    why: "柔軟な働き方の選択肢を省略せず示す。",
+    items: [
+      { id: "start", label: "始業時刻", must: /始業時刻等の変更/ },
+      { id: "telework", label: "テレワーク", must: /テレワーク等/ },
+      { id: "nursery", label: "保育施設", must: /保育施設の設置運営等/ },
+      { id: "leave", label: "養育両立支援休暇", must: /養育両立支援休暇/ },
+      { id: "short", label: "短時間勤務", must: /短時間勤務制度/ },
+    ],
+  },
+  {
     page: "docs/column/shinya-teate/index.html", element: "ikuji-shinya-exclusions",
     law: "厚生労働省『深夜業の制限』",
     why: "育児の深夜業制限の対象外を省略しない。",

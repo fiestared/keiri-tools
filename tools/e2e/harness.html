@@ -5672,6 +5672,61 @@ const gaEvents = (doc) => {
 };
 const gaNames = (doc) => gaEvents(doc).map((e) => e.name);
 
+// ── お問い合わせフォーム（/contact/、2026-10-22）──────────────────────────────
+// 送信先は Formspree と Worker keiri-contact の2つ。**どちらか一方でも受けたら「送信しました」**、
+// 両方とも落ちたときだけ「送信できませんでした」。成功したら GA4 に contact_submit が1回だけ飛び、
+// その引数は {form:"contact"} だけ（名前・メール・本文が GA4 に漏れていないこと）。
+// 外部への送信は iframe の fetch を差し替えて再現する（本物の Formspree・Worker には送らない）。
+const contactScene = ({ formspree, worker }) => async () => {
+  const doc = await open("/docs/contact/");
+  const win = doc.defaultView;
+  const calls = [];
+  const reply = (mode, url) => {
+    if (mode === "down") return Promise.reject(new TypeError("Failed to fetch"));
+    return Promise.resolve(new win.Response("{}", { status: mode }));
+  };
+  win.fetch = (url, opts = {}) => {
+    const u = String(url);
+    calls.push({ url: u, body: opts.body, type: (opts.headers || {})["Content-Type"] || "" });
+    if (u.includes("formspree.io")) return reply(formspree, u);
+    if (u.includes("keiri-contact")) return reply(worker, u);
+    return Promise.reject(new Error("unexpected fetch " + u));
+  };
+  const onOpen = gaNames(doc);
+  set(doc, "category", "その他");
+  set(doc, "name", "山田太郎");
+  set(doc, "email", "taro@example.com");
+  set(doc, "page", "社会保険料 計算機");
+  set(doc, "message", "【テスト】本文です");
+  doc.querySelector('#contact-form button[type="submit"]').click();
+  const box = await waitFor(() => doc.querySelector("#form-status .summary-box, #form-status .note"), "送信結果の表示");
+  await sleep(50);
+  const ev = gaEvents(doc).filter((e) => e.name === "contact_submit");
+  const workerCall = calls.find((c) => c.url.includes("keiri-contact"));
+  let workerBody = null;
+  try { workerBody = JSON.parse(workerCall.body); } catch (_) { workerBody = null; }
+  const gaDump = JSON.stringify(Array.from(win.dataLayer || []).map((a) => Array.from(a)));
+  return {
+    success: box.classList.contains("summary-box") && visibleEl(doc, box) && /送信しました/.test(box.textContent),
+    failure: box.classList.contains("note") && visibleEl(doc, box) && /送信できませんでした/.test(box.textContent),
+    formHidden: !visibleEl(doc, doc.getElementById("contact-form")),
+    buttonEnabled: !doc.querySelector('#contact-form button[type="submit"]').disabled,
+    onOpenCount: onOpen.filter((n) => n === "contact_submit").length,
+    eventCount: ev.length,
+    eventParams: ev.length ? JSON.stringify(ev[0].params) : null,
+    piiInGa: /山田太郎|taro@example\.com|【テスト】/.test(gaDump),
+    formspreeCalled: calls.some((c) => c.url === "https://formspree.io/f/mzdnbbyp"),
+    workerCalled: !!workerCall,
+    workerUrl: workerCall ? workerCall.url : null,
+    workerType: workerCall ? workerCall.type : null,
+    workerBody,
+  };
+};
+SCENES.contact_submit_both_ok = contactScene({ formspree: 200, worker: 201 });
+SCENES.contact_submit_worker_down = contactScene({ formspree: 200, worker: "down" });
+SCENES.contact_submit_formspree_down = contactScene({ formspree: 500, worker: 201 });
+SCENES.contact_submit_both_down = contactScene({ formspree: "down", worker: 503 });
+
 // 使った(入力→計算)ときに tool_input と tool_result が1回ずつ飛ぶこと
 SCENES.track_used = async () => {
   const doc = await open("/docs/senpou-futan/");
