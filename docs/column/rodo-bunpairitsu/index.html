@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>労働分配率の計算方法｜統計で違う分子・分母を同じ決算で比べる</title>
+<meta name="description" content="労働分配率は人件費を付加価値額で割った割合です。財務省の法人企業統計と経済産業省の企業活動基本調査では、付加価値額と分子の数え方が違います。同じ架空決算で4通りに計算し、公表値と比べるときのそろえ方を示します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/rodo-bunpairitsu/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="労働分配率の計算方法｜統計で違う分子・分母を同じ決算で比べる">
+<meta property="og:description" content="労働分配率は人件費を付加価値額で割った割合です。財務省の法人企業統計と経済産業省の企業活動基本調査では、付加価値額と分子の数え方が違います。同じ架空決算で4通りに計算し、公表値と比べるときのそろえ方を示します。">
+<meta property="og:url" content="https://keiri-tools.com/column/rodo-bunpairitsu/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "労働分配率の計算方法｜統計で違う分子・分母を同じ決算で比べる",
+      "datePublished": "2026-10-22",
+      "dateModified": "2026-10-22",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/rodo-bunpairitsu/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "労働分配率の計算方法",
+          "item": "https://keiri-tools.com/column/rodo-bunpairitsu/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "労働分配率の適正値は何%ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "本記事は一律の適正値を示しません。同じ決算でも式によって設例では57.1%〜71.4%まで変わるので、比べる公表値と同じ式にそろえ、同じ業種の値と比べます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "法定福利費は人件費に入れますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "使う統計の式によります。企業活動基本調査の概況の労働分配率は分子が給与総額で、福利厚生費は分母の付加価値額にだけ入ります。法人企業統計の付加価値額は、福利厚生費を役員給与・従業員給与と並ぶ項目として含みます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "賃上げすると労働分配率は上がりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "売上と他の費用が変わらなければ上がります。設例では従業員の給料を2,000千円上げると、法人企業統計の式の付加価値額84,000千円は変わらず、71.4%から73.8%になります。付加価値額も増えれば、上がらないこともあります。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1">
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 労働分配率の計算方法</nav>
+<article>
+<h1>労働分配率の計算方法｜統計ごとの分子・分母を同じ決算で比べる</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-22">2026年10月22日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><b>労働分配率は、会社が生み出した付加価値額のうち人件費に回った割合で、人件費÷付加価値額×100で計算します。</b>ただし、付加価値額と人件費の数え方は統計ごとに違います。</p>
+<p>本記事の架空決算では、同じ数字から57.1%〜71.4%まで4通りの労働分配率が出ます（設例）。自社の値を公表値と比べるときは、分子と分母を公表値と同じ式にそろえます。</p>
+<p>基準日は2026年10月22日です。一律の「適正値」は示さず、計算の仕組みを説明する一般的な解説です。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#shiki">統計ごとの式の早見表</a></li>
+<li><a href="#settei">同じ架空決算で4通りに計算する</a></li>
+<li><a href="#hikaku">公表値と比べるときは式をそろえる</a></li>
+<li><a href="#chinage">売上が同じまま賃上げすると</a></li>
+<li><a href="#seisansei">労働生産性との関係</a></li>
+<li><a href="#zei">外形標準課税の付加価値額は別の数字</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#related">関連記事</a></li>
+<li><a href="#shutten">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../soneki-bunkiten/">損益分岐点の求め方</a></li><li><a href="../gaikei-hyojun-kazei/">外形標準課税の対象になる会社</a></li><li><a href="../soneki-keisansho-mikata/">損益計算書の見方</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="shiki">統計ごとの式の早見表</h2>
+<p data-review-context="before-table">財務省の法人企業統計と、経済産業省の企業活動基本調査の式です。どちらも2026年10月22日に各省の公表物で確かめました。</p>
+<div class="scroll-wrap"><table><caption>付加価値額と労働分配率の式の違い</caption><thead><tr><th scope="col">項目</th><th scope="col">法人企業統計（財務省）</th><th scope="col">企業活動基本調査（経済産業省）</th></tr></thead><tbody>
+<tr><th scope="row">付加価値額の式</th><td>営業純益＋役員給与・賞与＋従業員給与・賞与＋福利厚生費＋支払利息等＋動産・不動産賃借料＋租税公課</td><td>営業利益＋減価償却費＋給与総額＋福利厚生費＋動産・不動産賃借料＋租税公課</td></tr>
+<tr><th scope="row">減価償却費</th><td>入らない</td><td>入る</td></tr>
+<tr><th scope="row">労働分配率の分子</th><td>本記事では役員給与・賞与、従業員給与・賞与、福利厚生費の合計</td><td>給与総額（福利厚生費は入れない）</td></tr>
+<tr><th scope="row">最新の年次の結果</th><td>令和7年度年次別調査（2026年9月1日公表）</td><td>2025年確報・2024年度実績（2026年6月29日公表）</td></tr>
+</tbody></table></div>
+<p class="hint" data-review-context="after-table">法人企業統計の式は平成19年度調査以降のもので、それ以前は役員賞与を含みません。営業純益は営業利益から支払利息等を引いた額なので、式の中で支払利息等は打ち消し合います。</p>
+<p>2つの式の大きな違いは、減価償却費を付加価値額に入れるかと、分子に福利厚生費を入れるかです。どちらも「人件費÷付加価値額」と説明されますが、そのまま並べると比べられません。</p>
+<h2 id="settei">同じ架空決算で4通りに計算する</h2>
+<p data-review-context="before-table">設例（架空・単位は千円）：売上高200,000の会社です。設例で外部から買った費用は、商品仕入（売上原価）95,000と、販管費の運賃・広告費など15,000だけとします。役員賞与は0、法定福利費は福利厚生費に合算します。</p>
+<div class="scroll-wrap"><table><caption>設例の損益（千円）</caption><thead><tr><th scope="col">項目</th><th scope="col" class="num">金額</th></tr></thead><tbody>
+<tr><th scope="row">売上高</th><td class="num">200,000</td></tr>
+<tr><th scope="row">売上原価（商品仕入）</th><td class="num">95,000</td></tr>
+<tr><th scope="row">販管費のうち外部から買った費用</th><td class="num">15,000</td></tr>
+<tr><th scope="row">役員報酬</th><td class="num">12,000</td></tr>
+<tr><th scope="row">従業員の給料・賞与</th><td class="num">40,000</td></tr>
+<tr><th scope="row">福利厚生費（法定福利費を含む）</th><td class="num">8,000</td></tr>
+<tr><th scope="row">減価償却費</th><td class="num">6,000</td></tr>
+<tr><th scope="row">地代家賃・リース料</th><td class="num">5,000</td></tr>
+<tr><th scope="row">租税公課</th><td class="num">1,000</td></tr>
+<tr><th scope="row">営業利益</th><td class="num">18,000</td></tr>
+<tr><th scope="row">支払利息（営業外費用）</th><td class="num">2,000</td></tr>
+</tbody></table></div>
+<p data-review-context="before-table">同じ設例の決算を4つの式で計算した結果です。割合は小数第2位を四捨五入しています。給与総額は、設例では役員報酬と従業員の給料・賞与の合計としました（実際の範囲は調査票の定義で確かめます）。</p>
+<div class="scroll-wrap"><table><caption>設例の労働分配率（千円）</caption><thead><tr><th scope="col">計算の仕方</th><th scope="col" class="num">分子</th><th scope="col" class="num">分母</th><th scope="col" class="num">労働分配率</th></tr></thead><tbody>
+<tr><th scope="row">①法人企業統計の付加価値額</th><td class="num">60,000</td><td class="num">84,000</td><td class="num"><span class="numeric-token">71.4%</span></td></tr>
+<tr><th scope="row">②企業活動基本調査の式（分子は給与総額）</th><td class="num">52,000</td><td class="num">90,000</td><td class="num"><span class="numeric-token">57.8%</span></td></tr>
+<tr><th scope="row">③企業活動基本調査の付加価値額で分子を人件費に</th><td class="num">60,000</td><td class="num">90,000</td><td class="num"><span class="numeric-token">66.7%</span></td></tr>
+<tr><th scope="row">④粗利（売上総利益）で代用</th><td class="num">60,000</td><td class="num">105,000</td><td class="num"><span class="numeric-token">57.1%</span></td></tr>
+</tbody></table></div>
+<p>①と③の差は、減価償却費6,000千円を分母に入れるかどうかです（設例）。②と③の差は、分子に福利厚生費8,000千円を入れるかどうかです（設例）。</p>
+<p>売上高から外部から買った費用を引く「控除法」でも、この設例では200,000−95,000−15,000＝90,000千円で、企業活動基本調査の式と同じ額になります。外部から買った費用を2つだけと置いた設例だからそろう額で、実際の決算では科目の振り分けで差が出ます。</p>
+<figure class="figure"><svg viewBox="0 0 360 230" width="360" height="230" role="img" aria-label="設例の労働分配率を4通りで比べた横棒グラフ。法人企業統計の付加価値額で71.4%、企業活動基本調査の付加価値額で分子を人件費にして66.7%、企業活動基本調査の式で57.8%、粗利で代用して57.1%。">
+<g fill="currentColor" font-size="13"><text x="8" y="38">①法人企業統計</text><text x="8" y="88">③企業活動・人件費</text><text x="8" y="138">②企業活動・給与総額</text><text x="8" y="188">④粗利で代用</text></g>
+<g fill="var(--accent)"><rect x="8" y="46" width="214" height="16" rx="3"/><rect x="8" y="96" width="200" height="16" rx="3"/><rect x="8" y="146" width="173" height="16" rx="3"/><rect x="8" y="196" width="171" height="16" rx="3"/></g>
+<g fill="currentColor" font-size="13"><text x="230" y="59">71.4%</text><text x="216" y="109">66.7%</text><text x="189" y="159">57.8%</text><text x="187" y="209">57.1%</text></g>
+</svg><figcaption>同じ設例の決算でも、分子と分母の数え方で労働分配率が変わります（棒の長さは割合に比例）。</figcaption></figure>
+<h2 id="hikaku">公表値と比べるときは式をそろえる</h2>
+<p data-review-context="before-table">企業活動基本調査の2025年確報（2024年度実績）の労働分配率です。分子は給与総額で、福利厚生費は入りません。</p>
+<div class="scroll-wrap"><table><caption>企業活動基本調査の労働分配率（2024年度実績）</caption><thead><tr><th scope="col">産業</th><th scope="col" class="num">労働分配率</th></tr></thead><tbody>
+<tr><th scope="row">合計</th><td class="num"><span class="numeric-token">46.6%</span></td></tr>
+<tr><th scope="row">製造業</th><td class="num"><span class="numeric-token">45.9%</span></td></tr>
+<tr><th scope="row">卸売業</th><td class="num"><span class="numeric-token">43.7%</span></td></tr>
+<tr><th scope="row">小売業</th><td class="num"><span class="numeric-token">46.7%</span></td></tr>
+</tbody></table></div>
+<p>設例の会社をこの表と比べるなら、同じ式で計算した②の57.8%を使います（設例）。設例の①の71.4%を並べると、式の違いの分まで差に見えてしまいます。</p>
+<p>法人企業統計の集計値と比べるときは、①の式にそろえます。どちらの公表値も業種・規模で集計した平均で、自社が目指す値を示すものではありません。</p>
+<a class="tool-cta" href="../../riekiritsu/">粗利率・原価率の計算は利益率計算ツールへ</a>
+<h2 id="chinage">売上が同じまま賃上げすると</h2>
+<p>設例で売上と他の費用・支払利息を変えずに従業員の給料を2,000千円上げると、営業利益が同じ額だけ減ります。売上と他の費用が同じなので、法人企業統計の式の付加価値額は84,000千円のまま、人件費が62,000千円になり、労働分配率は73.8%に上がります（設例）。</p>
+<p>付加価値額は、人件費と利益などに分ける元の額です。売上と他の費用が変わらなければ、賃上げは配分を変えるだけで、付加価値額は増えません。</p>
+<p class="hint">設例では、賃上げに伴う法定福利費の増加は入れていません。入れれば人件費はさらに増えます。</p>
+<h2 id="seisansei">労働生産性との関係</h2>
+<p>企業活動基本調査の概況は、労働生産性を付加価値額÷常時従業者数で計算しています。</p>
+<p>設例の常時従業者を10人とすると、企業活動基本調査の式の労働生産性は90,000千円÷10人＝9,000千円です（設例）。常時従業者10人の設例の1人当たり給与総額は52,000千円÷10人＝5,200千円で、労働生産性に丸める前の分配率（52,000÷90,000）を掛けた額と一致します。</p>
+<p>労働分配率が同じでも、労働生産性が高い会社ほど従業者ひとり当たりに回せる額は大きくなります。分配率だけで人件費の多い少ないを決めず、生産性と組で見ます。</p>
+<h2 id="zei">外形標準課税の付加価値額は別の数字</h2>
+<p>外形標準課税の付加価値割で使う付加価値額は、報酬給与額・純支払利子・純支払賃借料の合計額と、単年度損益との合計額です（<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_72_14">地方税法72条の14</a>）。</p>
+<p>名前は同じでも統計の付加価値額とは項目の範囲が違うので、申告書の付加価値額を労働分配率の分母に使うと、統計の公表値とはそろいません。対象法人と各項目の計算は<a href="../gaikei-hyojun-kazei/">外形標準課税の記事</a>で扱っています。</p>
+<div class="summary-box"><p>労働分配率は人件費÷付加価値額ですが、付加価値額に減価償却費を入れるか、分子に福利厚生費を入れるかが統計ごとに違います。公表値と比べるときは、その統計と同じ式で自社の値を計算し直します。</p></div>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question">労働分配率の適正値は何%ですか？</h3>
+<p class="faq-answer">本記事は一律の適正値を示しません。同じ決算でも式によって設例では57.1%〜71.4%まで変わるので、比べる公表値と同じ式にそろえ、同じ業種の値と比べます。</p>
+<h3 class="faq-question">法定福利費は人件費に入れますか？</h3>
+<p class="faq-answer">使う統計の式によります。企業活動基本調査の概況の労働分配率は分子が給与総額で、福利厚生費は分母の付加価値額にだけ入ります。法人企業統計の付加価値額は、福利厚生費を役員給与・従業員給与と並ぶ項目として含みます。</p>
+<h3 class="faq-question">賃上げすると労働分配率は上がりますか？</h3>
+<p class="faq-answer">売上と他の費用が変わらなければ上がります。設例では従業員の給料を2,000千円上げると、法人企業統計の式の付加価値額84,000千円は変わらず、71.4%から73.8%になります。付加価値額も増えれば、上がらないこともあります。</p>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../teikan/"><b>定款とは？株式会社・合同会社の記載事項、認証・保存・閲覧の違い</b><span>定款は会社の目的や組織、運営の基本ルールです。株式会社と合同会社の記載事項を比較し、絶対的・相対的・任意的記載事項の区分、認証の要否、備置きと閲覧、変更後の管理を会社法と確認表で整</span></a><a class="tool-card" href="../gasolindai-kanjo-kamoku/"><b>ガソリン代の勘定科目｜仕訳・消費税・従業員への精算</b><span>ガソリン代は、旅費交通費・車両費・燃料費・消耗品費から管理目的に合う科目を選び、継続して処理します。税込・税抜の仕訳、家事按分、ガソリン税と軽油引取税の消費税の違い、インボイス、令</span></a><a class="tool-card" href="../genka-haifu/"><b>配賦とは？配賦基準の選び方と計算例、予定配賦と配賦差異の仕訳</b><span>配賦（はいふ）とは、複数の製品や部門に共通してかかる費用を、作業時間や人数などの配賦基準で割り振ることです。配賦率と配賦額の計算式、配賦基準の選び方、部門別の配賦、予定配賦と配賦差</span></a></div></section><!--next-read:E-->
+<section class="related"><h2 id="related">関連記事</h2><div class="tool-grid">
+<a class="tool-card" href="../soneki-bunkiten/"><b>損益分岐点の計算と求め方</b><span>限界利益・固定費から売上の分岐点を出す</span></a>
+<a class="tool-card" href="../gaikei-hyojun-kazei/"><b>外形標準課税の対象法人</b><span>付加価値割を含む外形標準課税の入口</span></a>
+<a class="tool-card" href="../soneki-keisansho-mikata/"><b>損益計算書の見方</b><span>営業利益・経常利益などの区分</span></a>
+<a class="tool-card" href="../hotei-fukurihi-keisan/"><b>法定福利費の計算</b><span>会社負担の社会保険料・労働保険料</span></a></div></section>
+<h2 id="shutten">出典</h2>
+<p class="source-method">基準日：2026年10月22日。式と公表値は下記の各省の資料、設例の数値は架空の決算で計算しています。</p>
+<ul>
+<li>財務省財務総合政策研究所「<a href="https://www.mof.go.jp/pri/reference/ssc/results/calculation.htm">法人企業統計における財務営業比率の算式</a>」</li>
+<li>財務省財務総合政策研究所「<a href="https://www.mof.go.jp/pri/reference/ssc/index.htm">法人企業統計調査</a>」（令和7年度年次別調査の公表）</li>
+<li>経済産業省「<a href="https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040464644&amp;fileKind=2">2025年経済産業省企業活動基本調査確報（2024年度実績）調査結果の概要</a>」（e-Stat）</li>
+<li>経済産業省「<a href="https://www.meti.go.jp/statistics/tyo/kikatu/index.html">経済産業省企業活動基本調査</a>」</li>
+<li>e-Gov法令検索「<a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_72_14">地方税法</a>」72条の14</li>
+</ul><p class="note" data-source-nolink="一般情報提供と個別相談の範囲の説明">本記事は一般的な情報提供を目的としたものです。個別の税務・労務相談には応じられません。実際の判断は税理士・専門家にご確認ください。</p>
+</article>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%8A%B4%E5%83%8D%E5%88%86%E9%85%8D%E7%8E%87%E3%81%AF%E4%BA%BA%E4%BB%B6%E8%B2%BB%E3%82%92%E4%BB%98%E5%8A%A0%E4%BE%A1%E5%80%A4%E9%A1%8D%E3%81%A7%E5%89%B2%E3%81%A3%E3%81%9F%E5%89%B2%E5%90%88%E3%81%A7%E3%81%99%E3%80%82%E8%B2%A1%E5%8B%99%E7%9C%81%E3%81%AE%E6%B3%95%E4%BA%BA%E4%BC%81%E6%A5%AD%E7%B5%B1%E8%A8%88%E3%81%A8%E7%B5%8C%E6%B8%88%E7%94%A3%E6%A5%AD%E7%9C%81%E3%81%AE%E4%BC%81%E6%A5%AD%E6%B4%BB%E5%8B%95%E5%9F%BA%E6%9C%AC%E8%AA%BF%E6%9F%BB%E3%81%A7%E3%81%AF%E3%80%81%E4%BB%98%E5%8A%A0%E4%BE%A1%E5%80%A4%E9%A1%8D%E3%81%A8%E5%88%86%E5%AD%90%E3%81%AE%E6%95%B0%E3%81%88%E6%96%B9%E3%81%8C%E9%81%95%E3%81%84%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Frodo-bunpairitsu%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main><footer class="site"><p>© 税金・経理・補助金ツールズ</p>  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer><script src="../../assets/empty-state.js" defer></script></body></html>
