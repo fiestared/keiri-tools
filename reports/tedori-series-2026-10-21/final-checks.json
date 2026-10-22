@@ -1,0 +1,121 @@
+[
+  {
+    "args": [
+      "node",
+      "tools/gen_favicon_links.mjs"
+    ],
+    "exit": 0
+  },
+  {
+    "args": [
+      "node",
+      "tools/gen_index_sitemap.mjs"
+    ],
+    "exit": 0
+  },
+  {
+    "args": [
+      "node",
+      "tools/gen_index_sitemap.mjs",
+      "--check"
+    ],
+    "exit": 0
+  },
+  {
+    "args": [
+      "node",
+      "tests/test_favicon.mjs"
+    ],
+    "exit": 0
+  },
+  {
+    "args": [
+      "node",
+      "tools/gen_tedori_income_pages.mjs",
+      "--check"
+    ],
+    "exit": 0,
+    "log": "final-gen_tedori_income_pages.log"
+  },
+  {
+    "args": [
+      "node",
+      "tests/test_tedori_income.mjs"
+    ],
+    "exit": 0,
+    "log": "final-test_tedori_income.log",
+    "note": "公式報酬帯・厚生年金65万円上限・公表折半額を独立適用。13×4条件、結論/title/TOC hrefの壊しも緑。"
+  },
+  {
+    "args": [
+      "node",
+      "reports/tedori-series-2026-10-21/make-ledgers.mjs"
+    ],
+    "exit": 0,
+    "log": "final-make-ledgers.log"
+  },
+  {
+    "args": [
+      "node",
+      "tools/check_claims.mjs",
+      "--changed"
+    ],
+    "exit": 0,
+    "log": "final-check_claims.log"
+  },
+  {
+    "args": [
+      "node",
+      "tools/check_claim_scope.mjs",
+      "docs/tedori/nenshu/index.html",
+      "docs/tedori/nenshu/1000/index.html",
+      "docs/tedori/nenshu/1200/index.html",
+      "docs/tedori/nenshu/1500/index.html",
+      "docs/tedori/nenshu/300/index.html",
+      "docs/tedori/nenshu/350/index.html",
+      "docs/tedori/nenshu/400/index.html",
+      "docs/tedori/nenshu/450/index.html",
+      "docs/tedori/nenshu/500/index.html",
+      "docs/tedori/nenshu/600/index.html",
+      "docs/tedori/nenshu/700/index.html",
+      "docs/tedori/nenshu/750/index.html",
+      "docs/tedori/nenshu/800/index.html",
+      "docs/tedori/nenshu/850/index.html"
+    ],
+    "exit": 0,
+    "log": "final-check_claim_scope.log"
+  },
+  {
+    "args": [
+      "node",
+      "tests/test_toc_related.mjs"
+    ],
+    "exit": 0,
+    "log": "final-test_toc_related.log"
+  },
+  {
+    "args": [
+      "node",
+      "tests/test_layout_markup.mjs"
+    ],
+    "exit": 0,
+    "log": "final-test_layout_markup.log"
+  },
+  {
+    "args": [
+      "node",
+      "tests/test_source_links.mjs"
+    ],
+    "exit": 0,
+    "log": "final-test_source_links.log"
+  },
+  {
+    "args": [
+      "node",
+      "tests/test_generators_fresh.mjs"
+    ],
+    "exit": 0,
+    "log": "final-test_generators_fresh.log",
+    "note": "日付変更後に更新日・sitemapを再生成して照合"
+  }
+]

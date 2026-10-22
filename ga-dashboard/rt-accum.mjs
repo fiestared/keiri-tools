@@ -257,3 +257,42 @@ export function overlaySampler(state, siteKey, date, sampler) {
   next.sampler = { ...(next.sampler || {}), [siteKey]: { date, last: sampler.fetches.at(-1) || null, minutes: covered.size } };
   return next;
 }
+
+/**
+ * 司令塔の見張り（logs/ga-rt/<日付>.json）1日分だけから、時間帯 24 本と「HH:MM までの累計」を出す（前日・先週同曜日の比較用）。
+ * 2026-10-22 Masahiro「こっちのリアルタイムの方にも前日・前週のやつだせる？」。
+ * ★見張りの取得窓（各取得の直前 WINDOW_MIN 分）に入らなかった分は数えない。その時間帯は seen=false（0 と混ぜない）。
+ * ★cumTo(hm) は 00:00〜hm の窓が全部見張りで埋まっているときだけ数を返す。欠けがあれば null（比べない）。
+ * @returns {{date:string, hours:number[], hourPv:number[], seen:boolean[], cumTo:(hm:string)=>number|null}|null}
+ */
+export function samplerHours(sampler, date) {
+  if (!sampler || sampler.date !== date || !Array.isArray(sampler.fetches) || !sampler.fetches.length) return null;
+  const covered = new Set();
+  for (const f of sampler.fetches) {
+    const T = toAbs(date, f);
+    for (let a = T - (WINDOW_MIN - 1); a <= T; a++) {
+      const p = fromAbs(a);
+      if (p.date === date) covered.add(p.hm);
+    }
+  }
+  const sm = sampler.minutes || {};
+  const hours = Array(24).fill(0), hourPv = Array(24).fill(0), seenMin = Array(24).fill(0);
+  for (const hm of covered) {
+    const h = Number(hm.slice(0, 2));
+    hours[h] += Math.max(0, Number(sm[hm]?.ss) || 0);
+    hourPv[h] += Math.max(0, Number(sm[hm]?.pv) || 0);
+    seenMin[h]++;
+  }
+  // 時間帯の半分以上が見張りの窓に入っていれば描く（端の数分の欠けで1時間ぶんを消さない）
+  const seen = seenMin.map((n) => n >= 30);
+  const cumTo = (hm) => {
+    let s = 0;
+    for (let a = toAbs(date, "00:00"); a <= toAbs(date, hm); a++) {
+      const m = fromAbs(a).hm;
+      if (!covered.has(m)) return null;
+      s += Math.max(0, Number(sm[m]?.ss) || 0);
+    }
+    return s;
+  };
+  return { date, hours, hourPv, seen, cumTo };
+}
