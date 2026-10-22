@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "furusato-nozei-itsumade", // ふるさと納税 いつまで Google39,600/月（2026-10-22実測）。期限を主題とし計算・申告記事と分担。
   "gakushi-hoken-zeikin", // 学資保険 税金 Google推定1,280/月、2026-10-21。受取年別の課税検算。
   "shibo-hokenkin-sozokuzei", // 死亡保険金 相続税 Google推定5,280/月、2026-10-21。非課税按分と放棄者の設例。
   "shohyo", // 証憑 Google月間推定21,680（2026-10-21実測）
@@ -759,7 +760,7 @@ const CATEGORIES = [
       "kakutei-shinkoku-zeirishi-hiyo",
       "kakutei-shinkoku-yuso",
       "kakutei-shinkoku-sumaho",
-      "furusato-nozei-kakutei-shinkoku",
+      "furusato-nozei-itsumade", "furusato-nozei-kakutei-shinkoku",
       "gyomuitaku-kakutei-shinkoku",
       "nenkin-jukyusha-kakutei-shinkoku",
       "yachin-shunyu-kakutei-shinkoku",
