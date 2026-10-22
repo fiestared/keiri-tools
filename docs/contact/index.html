@@ -94,8 +94,9 @@
     <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
 
     <button class="primary" type="submit">送信する</button>
-    <div id="form-status" role="status" aria-live="polite" aria-atomic="true" style="margin-top:12px"></div>
   </form>
+  <!-- 結果の表示はフォームの外に置く（成功時はフォームを隠すので、内側だと「送信しました」まで消える。2026-10-22 E2E で発覚） -->
+  <div id="form-status" role="status" aria-live="polite" aria-atomic="true" style="margin-top:12px"></div>
 </div>
 
 <section class="faq">
@@ -104,6 +105,8 @@
   <p>当サイトは計算ツールと情報提供を行うものであり、<b>税理士・社会保険労務士による個別のご相談には応じられません</b>。具体的な処理の判断は、顧問の専門家または所轄の税務署・年金事務所にご確認ください。</p>
   <h3>入力したデータについて</h3>
   <p>ツールに入力された金額などのデータは<b>ブラウザの外に送信されていません</b>ので、当方から確認することはできません。不具合のご報告の際は、<b>再現する入力値をお書き添えください</b>。</p>
+  <h3>送信した内容の保管</h3>
+  <p>フォームの内容は、受付のためにフォーム送信サービス（Formspree）と、当サイトの受付用データベース（Cloudflare）の2か所に保存し、<b>運営者だけが確認します</b>。アクセス解析（Google Analytics）には「送信があったこと」だけを記録し、<b>お名前・メールアドレス・本文は送りません</b>。</p>
   <h3>返信について</h3>
   <p>個人で運営しているため、すべてのお問い合わせに返信できるとは限りません。<b>計算誤りのご指摘については優先的に確認・修正</b>いたします。</p>
 </section>
@@ -114,7 +117,11 @@
 </footer>
 
 <script>
-// Formspreeへ非同期送信し、ページ遷移せずに結果を出す
+// 送信先は2つ（2026-10-22）。Formspree（従来どおり運営者のメールへ）と、keiri-tools の受付用データベース
+// （Cloudflare Worker keiri-contact。届いたら運営者の Slack に流れる）。片方が落ちても取りこぼさないよう
+// 両方へ同時に送り、**どちらか一方でも受け付けたら「送信しました」**と出す（両方とも失敗したときだけ再送を促す）。
+// 送信が成功したら GA4 に contact_submit を1回送る。**付けるのはフォームの種類だけ**で、名前・メール・本文は送らない。
+const CONTACT_WORKER = "https://keiri-contact.wellsmanager.workers.dev/contact";
 const form = document.getElementById("contact-form");
 const status = document.getElementById("form-status");
 form.addEventListener("submit", async (e) => {
@@ -122,22 +129,37 @@ form.addEventListener("submit", async (e) => {
   const btn = form.querySelector("button");
   btn.disabled = true;
   btn.textContent = "送信中…";
-  try {
-    const res = await fetch(form.action, {
-      method: "POST",
-      body: new FormData(form),
-      headers: { Accept: "application/json" },
-    });
-    if (res.ok) {
-      status.setAttribute("role", "status");
-      form.style.display = "none";
-      status.innerHTML = '<div class="summary-box"><div class="t">送信しました</div>' +
-        '<p style="margin:0">お問い合わせありがとうございます。内容を確認いたします。' +
-        '返信が必要な場合は、順次ご連絡します。</p></div>';
-    } else {
-      throw new Error("送信に失敗しました");
-    }
-  } catch (err) {
+  const fd = new FormData(form);
+  const payload = {
+    category: fd.get("種類") || "",
+    name: fd.get("お名前") || "",
+    email: fd.get("email") || "",
+    page: fd.get("対象ページ") || "",
+    message: fd.get("内容") || "",
+    _gotcha: fd.get("_gotcha") || "",
+  };
+  const toFormspree = fetch(form.action, {
+    method: "POST",
+    body: fd,
+    headers: { Accept: "application/json" },
+  }).then((res) => res.ok);
+  // text/plain で送る（プリフライトを挟まない単純リクエスト。Worker 側は本文を JSON として読む）
+  const toWorker = fetch(CONTACT_WORKER, {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: { "Content-Type": "text/plain;charset=UTF-8" },
+    signal: typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(20000) : undefined,
+  }).then((res) => res.ok);
+  const results = await Promise.allSettled([toFormspree, toWorker]);
+  const delivered = results.some((r) => r.status === "fulfilled" && r.value === true);
+  if (delivered) {
+    status.setAttribute("role", "status");
+    form.style.display = "none";
+    status.innerHTML = '<div class="summary-box"><div class="t">送信しました</div>' +
+      '<p style="margin:0">お問い合わせありがとうございます。内容を確認いたします。' +
+      '返信が必要な場合は、順次ご連絡します。</p></div>';
+    try { gtag("event", "contact_submit", { form: "contact" }); } catch (_) { /* 計測の失敗で表示を止めない */ }
+  } else {
     status.setAttribute("role", "alert");
     status.innerHTML = '<div class="note">送信できませんでした。入力内容はこの画面に残っています。通信状況をご確認のうえ、時間をおいてもう一度「送信する」を押してください。</div>';
     btn.disabled = false;
