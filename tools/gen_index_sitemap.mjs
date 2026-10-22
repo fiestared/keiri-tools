@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "furusato-nozei-kojo-kakunin", // ふるさと納税 控除 確認 Google9,680/月・2026-10-22実測。通知書と申告書の照合表。
   "furusato-nozei-toha", // ふるさと納税とは Google39,600＋仕組み132,000/月（2026-10-21実測）。全体像のハブ。計算・申告・上限は既存へ譲る。
   "gakushi-hoken-zeikin", // 学資保険 税金 Google推定1,280/月、2026-10-21。受取年別の課税検算。
   "shibo-hokenkin-sozokuzei", // 死亡保険金 相続税 Google推定5,280/月、2026-10-21。非課税按分と放棄者の設例。
@@ -738,7 +739,7 @@ const CATEGORIES = [
     name: "年末調整・源泉徴収・控除",
     desc: "年末調整の書類の書き方と期限、源泉徴収票・税額表の読み方、医療費控除・ふるさと納税など各種控除と確定申告。税務署へ出す法定調書合計表と、市区町村へ出す給与支払報告書の違いもここ。開業届と青色申告承認申請の期限、修正申告と更正の請求、加算税と延滞税、税務調査の手続もここ。",
     slugs: [
-      "furusato-nozei-toha", "furusato-nozei-keisan", "kifukin-kojo",
+      "furusato-nozei-toha", "furusato-nozei-kojo-kakunin", "furusato-nozei-keisan", "kifukin-kojo",
       "teigaku-genzei-reiwa8",
       "shotokuzei-ritsu",
       "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-teisei", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-fukugyo", "nenmatsu-chosei-shinai", "chuto-nyusha-nenmatsu-chosei", "tomobataraki-nenmatsu-chosei", "gensen-taisho-gai-kyuyo", "hikyojusha-gensen", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "nenmatsu-chosei-keisan-hoho", "nenmatsu-chosei-kojin-jigyonushi", "shokibo-kyosai-kakekin-kojo", "kiso-kojo-shinkokusho",
