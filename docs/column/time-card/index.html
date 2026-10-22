@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>タイムカードの打刻漏れ・修正の手順｜実労働時間との照合と給与集計</title>
+<meta name="description" content="タイムカードの打刻は労働時間を確認する基礎の記録です。打刻漏れや打刻と実際の作業の差を他の記録と照らし、確定した時刻と修正の理由を残して給与集計へ渡す手順を、架空の1週間の勤怠で示します。">
+<meta name="card-desc" content="打刻漏れ・打刻と実労働時間の差を他の記録と照らし、確定時刻と修正記録を残して給与集計へ渡す手順。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/time-card/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="タイムカードの打刻漏れ・修正の手順｜実労働時間との照合と給与集計">
+<meta property="og:description" content="タイムカードの打刻は労働時間を確認する基礎の記録です。打刻漏れや打刻と実際の作業の差を他の記録と照らし、確定した時刻と修正の理由を残して給与集計へ渡す手順を、架空の1週間の勤怠で示します。">
+<meta property="og:url" content="https://keiri-tools.com/column/time-card/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "タイムカードの打刻漏れ・修正の手順｜実労働時間との照合と給与集計",
+      "datePublished": "2026-10-22",
+      "dateModified": "2026-10-22",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/time-card/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "タイムカード"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "打刻漏れの日は欠勤扱いにしてよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "打刻が無いことだけでは、働いていないとは決められません。入退館やパソコンの記録、本人の申告と上長の確認で始業・終業時刻を確かめ、確定した時刻と理由を修正記録に残します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "労働時間を1日15分単位で切り捨ててよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "1日ごとに一定時間に満たない時間を一律に切り捨て、その分の賃金を払わないことは労働基準法違反です。認められているのは、1か月の時間外などの各合計の1時間未満の端数を、30分未満は切り捨て・30分以上は切り上げる処理です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "タイムカードを押す前の着替えは労働時間ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "会社が制服の着替えを義務付け、事業場内で行わせているなら、その時間は労働時間として扱います。義務付けの有無と実際の運用で判断が分かれるため、職場のルールと実態を確かめます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "打刻した後に残って仕事をしていた日はどうしますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "打刻の後でも、使用者の指示で業務をしていた時間は労働時間です。退館やパソコンの記録と照らして終業時刻を確定し、修正記録に理由を残します。打刻後の業務が続くなら、その原因も確かめます。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › タイムカード</nav>
+<article>
+<h1>タイムカードの打刻漏れ・修正の手順｜実労働時間との照合と給与集計</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-22">2026年10月22日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><b>タイムカードの打刻は、労働時間を確かめるための「基礎」の記録で、打刻時刻がそのまま労働時間になるとは限りません。</b>打刻漏れや、打刻と実際の作業がずれた日は、入退館やパソコンの記録などと照らして始業・終業時刻を確定し、修正の理由を残してから給与集計へ渡します。</p>
+<p>この記事は、記録が食い違ったときの残し方に絞ります。出勤簿に書く項目や保存期間は<a href="../shukkinbo/">出勤簿の記事</a>で扱います。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#kiroku">打刻・確定時刻・修正記録を分けて残す</a></li>
+<li><a href="#rei">架空の1週間で照合する</a></li>
+<li><a href="#more">打刻漏れを見つけたときの手順</a></li>
+<li><a href="#sa">打刻と実際の作業がずれるとき</a></li>
+<li><a href="#hasu">1日ごとの切り捨ては違反になる</a></li>
+<li><a href="#kyuyo">給与集計へ渡す項目</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#sources">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../shukkinbo/">出勤簿とは</a></li><li><a href="../chingin-daicho/">賃金台帳とは</a></li><li><a href="../zangyodai-keisan/">残業代の計算方法</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+<h2 id="kiroku">打刻・確定時刻・修正記録を分けて残す</h2>
+<p><b>打刻をそのまま書き換えず、「打刻」「確定した時刻」「修正の記録」の3つを分けて持つと、後から確定の根拠を説明できます。</b>次の表は社内運用の一例です。</p>
+<div class="scroll-wrap"><table><caption>食い違いがあった日に残す3つの記録（運用例）</caption><thead><tr><th>記録</th><th>中身</th><th>使い方</th></tr></thead><tbody>
+<tr><th scope="row">打刻記録</th><td>タイムレコーダーやICカードの時刻</td><td>手を加えずに残す</td></tr>
+<tr><th scope="row">確定した始業・終業</th><td>他の記録と照らして確かめた時刻</td><td>労働時間の集計に使う</td></tr>
+<tr><th scope="row">修正記録</th><td>修正前後の時刻・理由・照らした記録・確認者・確認日</td><td>確定時刻の根拠として残す</td></tr>
+</tbody></table></div>
+<p>厚生労働省の<a href="https://www.mhlw.go.jp/file/06-Seisakujouhou-11200000-Roudoukijunkyoku/0000149439.pdf">労働時間の適正な把握のためのガイドライン</a>は、使用者が労働日ごとの始業・終業時刻を確認し、記録することを求めています。原則の方法は、使用者が自ら現認するか、タイムカード・ICカード・パソコンの使用時間などの客観的な記録を基礎として確認し、適正に記録することです。</p>
+<p class="hint">ガイドラインの対象から外れる人（労働基準法41条の管理監督者など、みなし労働時間制の適用者）の扱いは、<a href="../shukkinbo/">出勤簿の記事</a>を確認してください。</p>
+<figure class="figure">
+<svg width="360" height="400" viewBox="0 0 360 400" role="img" aria-labelledby="tc-flow-title" xmlns="http://www.w3.org/2000/svg">
+<title id="tc-flow-title">タイムカードの打刻から給与集計までの流れ</title>
+<g fill="var(--bg)" stroke="var(--accent)"><rect x="15" y="10" width="330" height="76" rx="8"/><rect x="15" y="110" width="330" height="76" rx="8"/><rect x="15" y="210" width="330" height="76" rx="8"/><rect x="15" y="310" width="330" height="76" rx="8"/></g>
+<path d="M180 88v16m-6-6 6 6 6-6M180 188v16m-6-6 6 6 6-6M180 288v16m-6-6 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2"/>
+<g fill="currentColor" font-size="16" text-anchor="middle">
+<text x="180" y="42">打刻記録</text><text x="180" y="70">手を加えずに残す</text>
+<text x="180" y="142">他の記録と照らす</text><text x="180" y="170">入退館・PC・本人申告・上長確認</text>
+<text x="180" y="242">確定した時刻と修正記録</text><text x="180" y="270">理由・確認者・確認日を書く</text>
+<text x="180" y="342">月の集計と賃金台帳</text><text x="180" y="370">労働時間数・時間外労働時間数など</text>
+</g></svg>
+<figcaption>食い違いがあった日の確認順（運用例）。打刻記録は確定時刻と別に残します。</figcaption>
+</figure>
+
+<h2 id="rei">架空の1週間で照合する</h2>
+<p><b>打刻と他の記録が合う日はそのまま確定し、合わない日だけ理由を確かめて直します。</b>次の設例では、5日のうち3日で確定時刻が打刻と変わりました。</p>
+<p data-review-context="before-table">この設例は架空の従業員Aの月曜〜金曜で、所定労働時間9:00〜18:00（休憩60分）の1日8時間、変形労働時間制やフレックスタイム制ではない通常の労働時間制とします。休日労働・深夜労働や土日の労働はなく、時刻はすべて架空です。</p>
+<div class="scroll-wrap"><table><caption>架空の1週間の照合結果</caption><thead><tr><th>曜日</th><th>打刻</th><th>照らした記録・確認</th><th>確定</th><th class="num">労働時間</th><th class="num">時間外</th></tr></thead><tbody>
+<tr><th scope="row">月</th><td>9:00／18:00</td><td>パソコンの記録も同じ時間帯</td><td>9:00／18:00</td><td class="num">8時間0分</td><td class="num">0分</td></tr>
+<tr><th scope="row">火</th><td>9:00／退勤なし</td><td>PC終了19:12、退館19:20。本人申告19:15を上長が確認</td><td>9:00／19:15</td><td class="num">9時間15分</td><td class="num">1時間15分</td></tr>
+<tr><th scope="row">水</th><td>9:00／18:00</td><td>会社が義務付けた制服の着替えを打刻前に10分</td><td>8:50／18:00</td><td class="num">8時間10分</td><td class="num">10分</td></tr>
+<tr><th scope="row">木</th><td>9:00／18:00</td><td>打刻後に上長の指示で資料作成。PC終了18:40</td><td>9:00／18:40</td><td class="num">8時間40分</td><td class="num">40分</td></tr>
+<tr><th scope="row">金</th><td>9:00／18:00</td><td>退館18:45。18時以降は業務なしと本人報告・上長確認</td><td>9:00／18:00</td><td class="num">8時間0分</td><td class="num">0分</td></tr>
+</tbody></table></div>
+<p>この設例の5日間の労働時間は合計42時間5分で、1日8時間を超えた時間外は合計2時間5分です。1日8時間以内の部分は合計40時間なので、この設例では週40時間を超える分は別に生じません。</p>
+<p>金曜のように、退館が遅くても業務をしていなかったと確かめられれば確定時刻は変えません。木曜のように打刻後に業務をしていた日は、なぜ打刻後に働いたのかも確認します（<a href="#sa">ずれるときの節</a>）。</p>
+
+<h2 id="more">打刻漏れを見つけたときの手順</h2>
+<p><b>打刻が無いことだけでは、働いていないとは決められません。</b>他の記録と本人・上長の確認で時刻を確定し、修正記録を残します。次は社内手順の一例です。</p>
+<ol>
+<li>気づいた日のうちに本人へ連絡し、始業・終業の時刻を申告してもらいます。</li>
+<li>入退館の記録やパソコンの使用時間など、事業場にいた時間が分かる記録を集めます。</li>
+<li>申告と記録の差を上長が確認し、確定した時刻を決めます。</li>
+<li>修正前後の時刻・理由・照らした記録・確認者・確認日を修正記録に書きます。</li>
+<li>確定した時刻で日ごとの労働時間を出し、月の集計に入れます。</li>
+</ol>
+<p>同じ人の打刻漏れが続くときは、打刻機の置き場所や手順を見直します。本人の申告だけで時刻を決める日が増えると、客観的な記録を基礎にした確認ではなくなるためです。</p>
+
+<h2 id="sa">打刻と実際の作業がずれるとき</h2>
+<p><b>打刻の前後でも、使用者の指揮命令下にあった時間は労働時間です。</b><a href="https://www.mhlw.go.jp/file/06-Seisakujouhou-11200000-Roudoukijunkyoku/0000149439.pdf">ガイドライン</a>は、次の時間を労働時間として扱うよう挙げています。</p>
+<ul>
+<li>使用者の指示で、事業場内で行った業務に必要な準備（着用を義務付けた服装への着替えなど）や後始末（清掃など）の時間</li>
+<li>指示があればすぐ業務に就くことを求められ、労働から離れることが保障されていない待機の時間（手待時間）</li>
+<li>参加が業務上義務付けられた研修・教育訓練や、使用者の指示で業務に必要な学習をした時間</li>
+</ul>
+<p>労働時間に当たるかは、就業規則などの定めではなく、指揮命令下にあったと評価できるかで客観的に決まり、個別具体的に判断されます。厚生労働省の<a href="https://www.mhlw.go.jp/content/11200000/001310369.pdf">リーフレット</a>は、打刻前に着替え・清掃・朝礼を義務付けながら労働時間として扱わない例を、労働基準法違反として挙げています。</p>
+<h3>本人の申告で時刻を決めるときに確かめること</h3>
+<p>自己申告で始業・終業を記録するときは、ガイドラインが定める措置が要ります。主なものは次の3つです。</p>
+<ul>
+<li>入退場やパソコンの記録と申告に著しい乖離があれば、実態調査をして労働時間を補正する</li>
+<li>申告を超えて事業場にいた理由を報告させるなら、報告が適正か確かめる</li>
+<li>申告できる時間外の時間数に上限を設けるなど、適正な申告を妨げる措置をとらない</li>
+</ul>
+<p>ガイドラインは、実際には36協定で延長できる時間を超えて働いているのに、記録上は守っているように見せることが慣習になっていないかの確認も求めています。木曜の設例のような「打刻後の業務」が続く職場では、この点も見直します。</p>
+
+<h2 id="hasu">1日ごとの切り捨ては違反になる</h2>
+<p><b>1日ごとに一定時間に満たない労働時間を一律に切り捨て、その分の賃金を払わないことは労働基準法違反です。</b><a href="https://www.mhlw.go.jp/content/11200000/001310369.pdf">厚生労働省のリーフレット</a>は、1日の時間外の15分未満を勤怠システムで一律に切り捨てる例や、時間外の申請を30分単位でしか認めない例を挙げています。</p>
+<p>上の設例で時間外を1日ごとに15分未満切り捨てると、水曜の10分が0分、木曜の40分が30分になり、週の時間外は1時間45分と20分少なくなります。</p>
+<p>認められている端数処理は、1か月の時間外労働・休日労働・深夜業の各合計に1時間未満の端数がある場合に、30分未満を切り捨て、30分以上を1時間に切り上げる方法です。例えば1か月の時間外の合計が12時間35分なら13時間、12時間25分なら12時間です。1日の労働時間の端数を切り上げて払うことは問題ないとされています。</p>
+<p class="hint">割増率や単価の端数は<a href="../zangyodai-keisan/">残業代の計算の記事</a>で扱います。</p>
+
+<h2 id="kyuyo">給与集計へ渡す項目</h2>
+<p><b>確定した時刻から日ごとの労働時間と時間外を出し、月の合計を賃金台帳へ移します。</b>ガイドラインは、労働基準法108条と施行規則54条により、賃金台帳に労働者ごとの労働日数・労働時間数・休日労働時間数・時間外労働時間数・深夜労働時間数といった事項を適正に記入するよう求めています。</p>
+<p>集計を渡すときは、打刻記録と修正記録も同じ期間で揃えておくと、賃金台帳の時間数の根拠を後から追えます。賃金台帳のほかの記載事項は<a href="../chingin-daicho/">賃金台帳の記事</a>、支給後に誤りが分かった場合の直し方は<a href="../kyuyo-keisan-machigai-teisei/">給与計算の間違いの訂正</a>を確認してください。</p>
+
+<div class="summary-box"><p><b>まとめ</b></p><ul>
+<li>打刻は労働時間を確かめる基礎の記録。打刻・確定時刻・修正記録を分けて残す。</li>
+<li>打刻漏れや打刻とのずれは、入退館・PCの記録と本人・上長の確認で時刻を確定する。</li>
+<li>1日ごとの一律の切り捨てはしない。確定した時間を賃金台帳の時間数へ移す。</li>
+</ul></div>
+<a class="tool-cta" href="../../zangyodai/">確定した時間外の時間から残業代を計算する</a>
+
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question">打刻漏れの日は欠勤扱いにしてよいですか？</h3>
+<p class="faq-answer">打刻が無いことだけでは、働いていないとは決められません。入退館やパソコンの記録、本人の申告と上長の確認で始業・終業時刻を確かめ、確定した時刻と理由を修正記録に残します。</p>
+<h3 class="faq-question">労働時間を1日15分単位で切り捨ててよいですか？</h3>
+<p class="faq-answer">1日ごとに一定時間に満たない時間を一律に切り捨て、その分の賃金を払わないことは労働基準法違反です。認められているのは、1か月の時間外などの各合計の1時間未満の端数を、30分未満は切り捨て・30分以上は切り上げる処理です。</p>
+<h3 class="faq-question">タイムカードを押す前の着替えは労働時間ですか？</h3>
+<p class="faq-answer">会社が制服の着替えを義務付け、事業場内で行わせているなら、その時間は労働時間として扱います。義務付けの有無と実際の運用で判断が分かれるため、職場のルールと実態を確かめます。</p>
+<h3 class="faq-question">打刻した後に残って仕事をしていた日はどうしますか？</h3>
+<p class="faq-answer">打刻の後でも、使用者の指示で業務をしていた時間は労働時間です。退館やパソコンの記録と照らして終業時刻を確定し、修正記録に理由を残します。打刻後の業務が続くなら、その原因も確かめます。</p>
+
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../shogu-kaizen-teate/"><b>処遇改善手当とは｜介護・障害福祉の配分と給与明細の確認表</b><span>処遇改善手当は、事業所が取得する処遇改善加算を使った賃金改善の支払項目です。介護と障害福祉の制度・適用時点を分け、基本給・手当・賞与への配分と、給与明細・賃金規程・計画書の照合順を</span></a><a class="tool-card" href="../taishoku-tetsuzuki/"><b>退職手続きの会社側チェックリスト</b><span>会社側の退職手続きを、保険の資格喪失・住民税の異動・本人への書類交付・翌年の給与支払報告まで、期限と提出先の一覧で確認できます。</span></a><a class="tool-card" href="../spot-work-romu/"><b>スポットワークの労務と経理｜応募で契約成立・労災は初日・丙欄・仕訳【令和8年】</b><span>スポットワーク（単発バイトのマッチング）で働く人の使用者は、仲介事業者ではなく受け入れ先の会社です。応募で労働契約が成立し、労災は初日から適用。源泉徴収は日額表の丙欄で、令和8年分</span></a></div></section><!--next-read:E-->
+<section class="related"><h2>関連記事・ツール</h2><div class="tool-grid">
+<a class="tool-card" href="../shukkinbo/"><b>出勤簿とは</b><span>書く項目・保存期間・管理監督者の扱いを確認する。</span></a>
+<a class="tool-card" href="../chingin-daicho/"><b>賃金台帳の書き方</b><span>労働時間数などの記載事項を確認する。</span></a>
+<a class="tool-card" href="../zangyodai-keisan/"><b>残業代の計算</b><span>単価・割増率・端数処理を確認する。</span></a>
+<a class="tool-card" href="../../zangyodai/"><b>残業代計算ツール</b><span>確定した時間外の時間から計算する。</span></a>
+</div></section>
+<h2 id="sources">出典</h2>
+<p class="source-method">労働時間の把握と端数処理は厚生労働省の<a href="https://www.mhlw.go.jp/file/06-Seisakujouhou-11200000-Roudoukijunkyoku/0000149439.pdf">ガイドライン</a>と<a href="https://www.mhlw.go.jp/content/11200000/001310369.pdf">リーフレット</a>、法定労働時間は<a href="https://laws.e-gov.go.jp/law/322AC0000000049">労働基準法</a>を2026年10月22日に確認。勤怠の設例は架空です。</p>
+<ul>
+<li><a href="https://www.mhlw.go.jp/file/06-Seisakujouhou-11200000-Roudoukijunkyoku/0000149439.pdf">厚生労働省「労働時間の適正な把握のために使用者が講ずべき措置に関するガイドライン」</a>：対象、労働時間の考え方、始業・終業時刻の確認と記録、自己申告制の措置、賃金台帳の記入。</li>
+<li><a href="https://www.mhlw.go.jp/content/11200000/001310369.pdf">厚生労働省・都道府県労働局・労働基準監督署「労働時間を適正に把握し正しく賃金を支払いましょう」</a>：1日ごとの切り捨ての違反例、1か月の合計の端数処理。</li>
+<li><a href="https://laws.e-gov.go.jp/law/322AC0000000049#Mp-At_32">e-Gov法令検索『労働基準法』32条</a>：1週40時間・1日8時間の法定労働時間。</li>
+<li><a href="https://laws.e-gov.go.jp/law/322AC0000000049#Mp-At_108">e-Gov法令検索『労働基準法』108条</a>：賃金台帳の調製と記入。</li>
+</ul>
+<p class="note" data-source-nolink="一般情報提供と個別相談を受けない当サイトの運営方針">この記事は一般的な情報提供であり、個別の事案についての助言ではありません。個別の税務・労務相談には応じられません。実際の判断は、最寄りの労働基準監督署や社会保険労務士に確認してください。</p>
+</article>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E3%82%BF%E3%82%A4%E3%83%A0%E3%82%AB%E3%83%BC%E3%83%89%E3%81%AE%E6%89%93%E5%88%BB%E3%81%AF%E5%8A%B4%E5%83%8D%E6%99%82%E9%96%93%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%99%E3%82%8B%E5%9F%BA%E7%A4%8E%E3%81%AE%E8%A8%98%E9%8C%B2%E3%81%A7%E3%81%99%E3%80%82%E6%89%93%E5%88%BB%E6%BC%8F%E3%82%8C%E3%82%84%E6%89%93%E5%88%BB%E3%81%A8%E5%AE%9F%E9%9A%9B%E3%81%AE%E4%BD%9C%E6%A5%AD%E3%81%AE%E5%B7%AE%E3%82%92%E4%BB%96%E3%81%AE%E8%A8%98%E9%8C%B2%E3%81%A8%E7%85%A7%E3%82%89%E3%81%97%E3%80%81%E7%A2%BA%E5%AE%9A%E3%81%97%E3%81%9F%E6%99%82%E5%88%BB%E3%81%A8%E4%BF%AE%E6%AD%A3%E3%81%AE%E7%90%86%E7%94%B1%E3%82%92%E6%AE%8B%E3%81%97%E3%81%A6%E7%B5%A6%E4%B8%8E%E9%9B%86%E8%A8%88%E3%81%B8%E6%B8%A1%E3%81%99%E6%89%8B%E9%A0%86%E3%82%92%E3%80%81%E6%9E%B6%E7%A9%BA%E3%81%AE1%E9%80%B1%E9%96%93%E3%81%AE%E5%8B%A4%E6%80%A0%E3%81%A7%E7%A4%BA%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Ftime-card%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site"><div>© 税金・経理・補助金ツールズ</div>  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body></html>
