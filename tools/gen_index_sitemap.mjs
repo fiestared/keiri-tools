@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "zairyu-shikaku", // 在留資格 Google月間推定17,760（2026-10-22実測）。雇用時の書類確認。
   "furusato-nozei-itsumade", // ふるさと納税 いつまで Google39,600/月（2026-10-22実測）。期限を主題とし計算・申告記事と分担。
   "ikuji-kaigo-kyugyoho", // 育児・介護休業法 Google 9,680/月（2026-10-22実測）。雇用主の義務と個別対応。給付額は既存へ。
   "furusato-nozei-kojo-kakunin", // ふるさと納税 控除 確認 Google9,680/月・2026-10-22実測。通知書と申告書の照合表。
@@ -779,7 +780,7 @@ const CATEGORIES = [
     id: "kyuyo",
     name: "給与計算・手取り",
     desc: "額面から手取りまでの引かれ方と、残業代・通勤手当・住民税の実務。労働時間と休憩・休日の決まり、就業規則と労働条件の明示、試用期間・解雇・懲戒処分・無期転換、健康診断・忌引き休暇・年俸制・カスタマーハラスメント対策もここ。",
-    slugs: [
+    slugs: ["zairyu-shikaku", 
       "tedori-keisan", "roudou-joken-tsuchisho", "36-kyotei", "kinmukan-interval", "flextime", "henkei-roudou-jikan", "sairyo-roudou", "zangyodai-keisan", "kotei-zangyodai", "shinya-teate", "kanri-kantokusha", "kenko-shindan", "kyugyo-teate", "kaiko-yokoku-teate", "furikae-kyujitsu-daikyu", "kyukei-jikan", "shugyo-kisoku", "kibiki-keicho-kyuka", "shiyo-kikan", "tsukin-teate-hikazei", "nenpousei", "hiseiki-koyo", "haken-shain", "part-arbeit-chigai", "rodo-kumiai", "rodo-sanpo", "fuyo-teate", "doitsu-rodo-doitsu-chingin", "gisou-ukeoi", "haken-3nen-teishokubi", "shokai-yotei-haken", "zesei-kankoku", "kasuhara", "chokai-shobun", "muki-tenkan", "anzen-eisei-iinkai", "anzen-eisei-suishinsha", "roudousha-shishobyo-houkoku", "hotei-koyoritsu", "naitei-torikeshi", "taishoku-kansho", "taishoku-shomeisho", "mimoto-hosho", "kyogyo-hishi-gimu", "anzen-hairyo-gimu", "fukugyo-rodojikan-tsusan", "sangyoi", "josei-katsuyaku-suishinho",
       "juminzei-hayamihyo", "juminzei-tokubetsu-choshu", "juminzei-kettei-tsuchisho", "juminzei-hikazei-border", "taishokugo-juminzei", "nenmatsu-chosei-juminzei", "juminzei-fuyo-kojo",
       "kazei-shomeisho",
