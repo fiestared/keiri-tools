@@ -61,7 +61,7 @@ const SCENES = [
   { name: "saitei_hourly", expect: (s) =>
       s.options > 45 && /1280円／時間/.test(s.prefBox) && !/それまでは改定前/.test(s.prefBox) &&
       /下回っています/.test(s.out) && /最低賃金 1280円/.test(s.out) && /1時間あたり180円不足/.test(s.out) &&
-      !/改定前/.test(s.out) && s.tableRows === 47 && /47都道府県すべてで決定済み/.test(s.nextBox) },
+      !/改定前/.test(s.out) && s.tableRows === 47 && /答申額・発効予定日を47都道府県分掲載/.test(s.nextBox) },
   { name: "saitei_hourly_before", expect: (s) =>
       /それまでは改定前の1226円が有効/.test(s.prefBox) &&
       /下回っています/.test(s.out) && /最低賃金 1226円/.test(s.out) && /1時間あたり126円不足/.test(s.out) &&
