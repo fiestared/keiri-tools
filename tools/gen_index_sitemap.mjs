@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "tekiyo", // 摘要 Google月間14,480・合計18,100（2026-10-23実測）。帳簿の摘要の記載例。
   "rodo-bunpairitsu",         // 労働分配率 Google月間推定6,480（2026-10-22実測。keyword_demand 8,100）。法人企業統計と企業活動基本調査の付加価値額・分子の違いを同じ架空決算で4通りに計算。
   "maruyu-tokubetsu-maruyu", // マル優 Google月間推定3,520（2026-10-22実測）。障害者等の利子非課税・350万円枠・税額差の設例。
   "zairyu-shikaku", // 在留資格 Google月間推定17,760（2026-10-22実測）。雇用時の書類確認。
@@ -837,7 +838,7 @@ const CATEGORIES = [
       "yucho-furikomi-tesuryo", "mufg-furikomi-tesuryo", "furikomi-tesuryo-hikaku", "furikomi-hanei-jikan", "furikomi-furikae-chigai", "furikomi-tesuryo-kanjo-kamoku", "senpou-futan-3hoshiki",
       "kumimodoshi", "koza-furikae-iraisho", "kotora-sokin", "pay-easy",
       "zengin-format-guide", "csv-mojibake", "eigyobi-kazoekata", "shunyu-inshi-warihan",
-      "shohyo", "soufujo-kakikata", "ryoshusho-kakikata", "mitsumorisho-kakikata", "nohinsho-toha", "seikyusho-kakikata", "chumon-ukesho", "tatekaekin-seisansho", "shukkin-denpyo",
+      "tekiyo", "shohyo", "soufujo-kakikata", "ryoshusho-kakikata", "mitsumorisho-kakikata", "nohinsho-toha", "seikyusho-kakikata", "chumon-ukesho", "tatekaekin-seisansho", "shukkin-denpyo",
       "shoguchi-genkin",
       "shitaukeho-toritekiho",
       "tegata-toha",
