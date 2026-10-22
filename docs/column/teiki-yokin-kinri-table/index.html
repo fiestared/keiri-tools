@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>定期預金の金利：基準日・預入期間・条件をそろえた税引前後の受取利息表</title>
+<meta name="description" content="定期預金の金利を、三井住友・三菱UFJ・ゆうちょの通常金利で確認。公表基準日と商品条件を並べ、固定元本・単利の税引前後の利息を同じ式で比べます。短期の年率表示、途中解約、満期の取扱いも整理します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/teiki-yokin-kinri-table/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="定期預金の金利：基準日・預入期間・条件をそろえた税引前後の受取利息表">
+<meta property="og:description" content="定期預金の金利を、三井住友・三菱UFJ・ゆうちょの通常金利で確認。公表基準日と商品条件を並べ、固定元本・単利の税引前後の利息を同じ式で比べます。短期の年率表示、途中解約、満期の取扱いも整理します。">
+<meta property="og:url" content="https://keiri-tools.com/column/teiki-yokin-kinri-table/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578" crossorigin="anonymous"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "定期預金の金利：基準日・預入期間・条件をそろえた税引前後の受取利息表",
+      "datePublished": "2026-10-23",
+      "dateModified": "2026-10-23",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/teiki-yokin-kinri-table/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "定期預金の金利",
+          "item": "https://keiri-tools.com/column/teiki-yokin-kinri-table/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 金利表が上がったら、預入済みの金利も変わりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 掲載した固定金利の定期預金・定期貯金では、預入時の約定利率を満期まで適用します。新規預入の金利変更と、預入済みの契約を分けて確認します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 税引後の表は、銀行の実際の支払額ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 比較用概算です。税引前利息に合計税率を一括で反映して切り捨てており、銀行ごとの税額の端数処理を再現していません。実際の入金額は満期の明細で確認します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 法人の定期預金にも使えますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 税引後の列は使えません。国内居住個人の通常課税を前提としており、法人の源泉徴収や法人税の精算は対象外です。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 短期の金利が高ければ、年間の受取額も多くなりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. その金利だけでは決まりません。短期の満期後に再預入するなら、その時点の金利と残りの期間が必要です。将来の金利を固定したものとして年間へ引き延ばさず、同じ終点までの条件をそろえて計算します。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 定期預金の金利</nav>
+<article>
+<h1>定期預金の金利：基準日・預入期間・条件をそろえた税引前後の受取利息表</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-23">2026年10月23日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><strong>掲載した三行の1年もの通常金利は、下表の公表基準日時点で同率です。</strong>受取利息は、元本・預入日数・税金で決まります。適用条件を確認してから、同じ期間の税引後の金額を比べます。</p>
+<p>このページは、三井住友・三菱UFJ・ゆうちょの通常金利を使った参照表です。銀行の公表基準日と商品条件を示し、利息を同じ計算方法でそろえます。キャンペーンやポイントは含めず、おすすめの順位も付けていません。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#rates">通常金利と税引前後の利息表</a></li>
+<li><a href="#conditions">同じ金利でも確認する条件</a></li>
+<li><a href="#calculation">利息の計算式と端数処理</a></li>
+<li><a href="#short-term">短期の年率を受取額に直す</a></li>
+<li><a href="#maturity">途中解約・満期・預金保険</a></li>
+<li><a href="#record">預入時に残す記録</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#related">関連ツール・記事</a></li>
+<li><a href="#sources">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../maruyu-tokubetsu-maruyu/">マル優・特別マル優</a></li><li><a href="../furikomi-tesuryo-hikaku/">銀行別 振込手数料 一覧</a></li><li><a href="../../toushi/tsumitate/">積立シミュレーター</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="rates">通常金利と税引前後の利息表</h2>
+<p>以下は公表金利を固定した試算です。公表基準日が異なるため、同日に確定した契約金利の一覧ではありません。新規に預ける際は、各行のリンク先と預入画面で適用金利を確認します。</p>
+<p data-review-context="before-table">比較用概算の共通条件：元本100万円、2026年10月23日から2027年10月23日までの単利365日・満期保有。国内居住個人の通常課税です。税引前年率は各行の公表基準日の標準金利。スーパー定期は300万円未満、ゆうちょは通常の定期貯金を対象とします。税引前利息の円未満を切り捨て、通常課税の合計税率を一括控除した額も円未満切捨てです。銀行の支払額を再現したものではありません。</p>
+<!--TEIKI_RATES:START-->
+<div class="scroll-wrap"><table id="rate-table"><caption>個人通常課税・単利・満期保有の比較用概算</caption><thead><tr><th scope="col">銀行</th><th scope="col" class="num">税引前年率</th><th scope="col" data-answer class="num">税引後利息（概算）</th><th scope="col" class="num">税引前利息</th><th scope="col">公表基準日</th></tr></thead><tbody>
+<tr><th scope="row"><a href="https://www.smbc.co.jp/kojin/kinri/yokin.html">三井住友銀行</a></th><td class="num"><span class="numeric-token">0.500%</span></td><td class="num"><span class="numeric-token">3,984円</span></td><td class="num"><span class="numeric-token">5,000円</span></td><td><span class="numeric-token">2026年</span><span class="numeric-token">10月</span><span class="numeric-token">23日</span></td></tr>
+<tr><th scope="row"><a href="https://www.bk.mufg.jp/ippan/kinri/yen_yokin.html">三菱UFJ銀行</a></th><td class="num"><span class="numeric-token">0.5000%</span></td><td class="num"><span class="numeric-token">3,984円</span></td><td class="num"><span class="numeric-token">5,000円</span></td><td><span class="numeric-token">2026年</span><span class="numeric-token">10月</span><span class="numeric-token">23日</span></td></tr>
+<tr><th scope="row"><a href="https://www.jp-bank.japanpost.jp/kinri/kinri.html">ゆうちょ銀行</a></th><td class="num"><span class="numeric-token">0.500%</span></td><td class="num"><span class="numeric-token">3,984円</span></td><td class="num"><span class="numeric-token">5,000円</span></td><td><span class="numeric-token">2026年</span><span class="numeric-token">10月</span><span class="numeric-token">19日</span></td></tr>
+</tbody></table></div>
+<!--TEIKI_RATES:END-->
+<p class="hint">※掲載した定期預金・定期貯金の適用開始日は、各行の金利表から確認できないため未掲載です。「公表基準日」を金利の適用開始日として扱わず、契約時の適用金利を確認します。将来の預入・継続金利を保証する表ではありません。</p>
+<h2 id="conditions">同じ金利でも確認する条件</h2>
+<p>商品名・期間・金額区分がそろっているかを先に確認します。普通預金、長期の複利商品、新規口座限定の特別金利を通常の定期預金に混ぜると、同じ条件での比較になりません。</p>
+<div class="scroll-wrap"><table><caption>通常金利表に対応する預入条件</caption><thead><tr><th scope="col">商品</th><th scope="col">金額と利用条件</th></tr></thead><tbody>
+<tr><th scope="row"><a href="https://www.bk.mufg.jp/tameru/yen/sp_teiki/btm/pdf/t_st_setsumei.pdf">三菱UFJ銀行のスーパー定期</a></th><td>スーパー定期の通常預入は1円以上300万円未満・1円単位。掲載例は単利型です。</td></tr>
+<tr><th scope="row"><a href="https://www.smbc.co.jp/setsumeisho/pdf/sonotaen005.pdf?version=20260817">三井住友銀行のスーパー定期</a></th><td>スーパー定期は300万円未満の区分。窓口預入は1円以上・1円単位、ATMは1万円以上です。</td></tr>
+<tr><th scope="row"><a href="https://www.jp-bank.japanpost.jp/setumeisho/pdf/teiki.pdf">ゆうちょ銀行の定期貯金</a></th><td>通常新規預入の定期貯金は1,000円以上・1,000円単位。継続預入時はこの限りではありません。</td></tr>
+</tbody></table></div>
+<p>ゆうちょの定額貯金と定期貯金は別の商品です。掲載表では、通常の定期貯金を使い、ニュー福祉定期貯金は含めていません。預入経路、本人確認、口座の種類による制限は、商品説明書で確かめます。ゆうちょの定期性貯金は、預金保険の保護額とは別に、預入限度と既存残高も確認します。</p>
+<p>税引後の列は国内居住の個人向けです。会社のお金を預ける法人口座は対象外で、この列を会社の入金見込額や受取利息の仕訳に転用できません。</p>
+<h2 id="calculation">利息の計算式と端数処理</h2>
+<p>日割りの単利は、元本に年率と預入日数の割合を掛けて計算します。<a href="https://www.bk.mufg.jp/regulation/teiki_super.html">三菱UFJ銀行のスーパー定期規定</a>では、預入日から満期日の前日までを利息の計算期間とします。</p>
+<p>比較用の単利計算式は「税引前利息＝元本×税引前年率×預入日数÷365日」です。年率は百分率を小数に直して使い、税引前利息の円未満を切り捨てます。</p>
+<p><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1310.htm">国税庁「利息を受け取ったとき（利子所得）」</a>によると、国内居住個人の預貯金利息は通常課税で合計20.315%の源泉分離課税です。マル優等の非課税制度を使う利息は、この計算から除きます。</p>
+<p>本表の税引後利息は、税引前利息から合計税率を一括控除し、円未満を切り捨てる比較用概算です。銀行が国税と地方税をそれぞれ計算する際の端数処理や計算単位を再現していないため、実際の支払額と異なることがあります。</p>
+<p>国内居住個人の通常課税の預貯金利息は、受取時の源泉徴収で納税が完結します。給与などの税額を計算する際に、この利息を重ねて総合課税に加える扱いではありません。非課税の対象・手続きは<a href="../maruyu-tokubetsu-maruyu/">マル優・特別マル優の記事</a>で確認できます。</p>
+<figure class="figure"><svg viewBox="0 0 360 280" width="360" height="280" role="img" aria-label="元本・年率・預入日数から税引前利息を求め、税金を差し引いて税引後利息を比べる流れ">
+<g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="20" y="12" width="320" height="54" rx="6"/><path d="M180 66v26"/><rect x="20" y="92" width="320" height="54" rx="6"/><path d="M180 146v26"/><rect x="20" y="172" width="320" height="54" rx="6"/></g>
+<g fill="currentColor" font-size="16" text-anchor="middle"><text x="180" y="44">元本 × 年率 × 預入期間の割合</text><text x="180" y="124">税引前利息</text><text x="180" y="204">税金を差し引いた利息</text><text x="180" y="256">実際の支払額は銀行の端数処理で確認</text></g>
+</svg><figcaption>年率から受取額を出すには、預入期間と税金をそろえます。元本は利息に含めません。</figcaption></figure>
+<h2 id="short-term">短期の年率を受取額に直す</h2>
+<p>短期商品の年率は、その預入期間だけの受取率ではありません。月数を年の割合に置き換える概算より、預入日と満期日から日数を数える方が、契約の計算に近づきます。</p>
+<p data-review-context="before-table">比較用の単利設例：元本100万円、税引前年率0.50%を固定し、2026年10月23日に預入。国内居住個人の通常課税で各満期まで保有します。税引前利息の円未満を切り捨てた後、合計税率を一括控除し、税引後も円未満切捨て。銀行の支払額とは異なる比較用概算です。期間ごとの金利差は仮定せず、満期後の再預入は含めません。</p>
+<!--TEIKI_PERIODS:START-->
+<div class="scroll-wrap"><table id="period-table"><caption>元本と年率を固定した単利の比較用概算</caption><thead><tr><th scope="col">期間</th><th scope="col">設例の満期日</th><th scope="col" class="num">預入日数</th><th scope="col" class="num">税引前利息</th><th scope="col" class="num">税引後利息（概算）</th></tr></thead><tbody>
+<tr><th scope="row">3か月</th><td><span class="numeric-token">2027年</span><span class="numeric-token">1月</span><span class="numeric-token">23日</span></td><td class="num"><span class="numeric-token">92日</span></td><td class="num"><span class="numeric-token">1,260円</span></td><td class="num"><span class="numeric-token">1,004円</span></td></tr>
+<tr><th scope="row">6か月</th><td><span class="numeric-token">2027年</span><span class="numeric-token">4月</span><span class="numeric-token">23日</span></td><td class="num"><span class="numeric-token">182日</span></td><td class="num"><span class="numeric-token">2,493円</span></td><td class="num"><span class="numeric-token">1,986円</span></td></tr>
+<tr><th scope="row"><span class="numeric-token">1年</span></th><td><span class="numeric-token">2027年</span><span class="numeric-token">10月</span><span class="numeric-token">23日</span></td><td class="num"><span class="numeric-token">365日</span></td><td class="num"><span class="numeric-token">5,000円</span></td><td class="num"><span class="numeric-token">3,984円</span></td></tr>
+</tbody></table></div>
+<!--TEIKI_PERIODS:END-->
+<p>表の短期分を単純に繰り返して年間利息にはできません。次に預けるときの適用金利と日数が未定だからです。月末やうるう年をまたぐ場合も、日付を決めてから計算します。</p>
+<h2 id="maturity">途中解約・満期・預金保険</h2>
+<h3 id="cancel">途中解約は満期の試算と分ける</h3>
+<p>満期前に解約すると、表の金利による満期利息は受け取れません。中途解約の可否と、その場合の利率は銀行の商品規定で確認します。計算期間を短くするだけで、満期の約定利率をそのまま使う計算ではありません。</p>
+<p>中間利払いのある商品では、支払済みの利息との差額を精算する場合があります。掲載した満期保有の設例から、長期商品の途中解約時の入金額は求められません。</p>
+<h3 id="renew">満期の取扱いは契約で確認する</h3>
+<p>自動継続なら、次の期間は継続時の所定利率を確認します。当初の金利がそのまま続くと決めつけられません。元本だけを継続するか、利息も組み入れるかによって、その後の計算対象も変わります。</p>
+<p><a href="https://www.jp-bank.japanpost.jp/setumeisho/pdf/teiki.pdf">ゆうちょ銀行の商品概要説明書</a>では、担保定期貯金は特に申出がなければ、満期時に通常貯金へ振り替える取扱いです。継続預入・再預入を希望する場合は特約を確認します。</p>
+<h3 id="insurance">預金保険は同じ銀行の預金を合算する</h3>
+<p><a href="https://www.fsa.go.jp/policy/payoff/">金融庁「預金保険制度」</a>によると、保護対象の一般預金等は預金者1人当たり・1金融機関ごとに合算し、元本1000万円までと破綻日までの利息等が保護されます。</p>
+<p>定期預金の口座だけで枠を数えず、同じ金融機関にある利息付き普通預金なども含めて確認します。決済用預金や預金保険の対象外商品は扱いが異なります。銀行で販売している商品が、いずれも同じ保護を受けるわけではありません。</p>
+<h2 id="record">預入時に残す記録</h2>
+<p>申込時の金利と、満期時の取扱いをセットで残すと、後から利息を確かめられます。会社の経理資料と個人の資金管理資料は分けます。</p>
+<ul>
+<li>商品名・預入金額・預入日・満期日・税引前年率。特別金利なら対象条件も残します。</li>
+<li>自動継続か満期解約か、元本だけか元利金か、入金先の口座を記録します。</li>
+<li>満期後は、税引前利息・源泉徴収額・実際の入金額を通知や取引明細で照らします。</li>
+</ul>
+<p>預け替えでは、資金移動の振込・ATM費用も別に確認します。金利表にはその費用を含めていません。銀行別の料金は<a href="../furikomi-tesuryo-hikaku/">振込手数料の比較表</a>へ。</p>
+<a class="tool-cta" href="../../toushi/tsumitate/">毎月積み立てる場合の仮定利回りを試す：積立シミュレーター</a>
+<p class="hint">積立シミュレーターは仮定した利回りの試算です。このページの定期預金の実際の税額・支払額を求めるものではありません。</p>
+<div class="summary-box"><p>金利を比べる順番は、期間・商品条件、公表基準日、税引後利息です。契約時の金利と満期の取扱いを記録し、中途解約や再預入は別の条件で計算します。</p></div>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>金利表が上がったら、預入済みの金利も変わりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>掲載した固定金利の定期預金・定期貯金では、預入時の約定利率を満期まで適用します。新規預入の金利変更と、預入済みの契約を分けて確認します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>税引後の表は、銀行の実際の支払額ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>比較用概算です。税引前利息に合計税率を一括で反映して切り捨てており、銀行ごとの税額の端数処理を再現していません。実際の入金額は満期の明細で確認します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>法人の定期預金にも使えますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>税引後の列は使えません。国内居住個人の通常課税を前提としており、法人の源泉徴収や法人税の精算は対象外です。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>短期の金利が高ければ、年間の受取額も多くなりますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>その金利だけでは決まりません。短期の満期後に再預入するなら、その時点の金利と残りの期間が必要です。将来の金利を固定したものとして年間へ引き延ばさず、同じ終点までの条件をそろえて計算します。</p>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../maruyu-tokubetsu-maruyu/"><b>マル優・特別マル優｜非課税の利子・枠の数え方・税額差を検算</b><span>国内に住所のある障害者等が使えるマル優・特別マル優を条文で整理。預貯金などの元本と国債・地方債の額面の別枠、複数の金融機関での最高限度額の合計、申告書の期限、通常の課税との差の設例</span></a><a class="tool-card" href="../gakushi-hoken-zeikin/"><b>学資保険の税金｜一括・分割・別人受取の課税額を検算</b><span>学資保険の受取時の税金を、実際の保険料負担者と受取方法で整理。一括受取と年をまたぐ年金、同年の他の一時所得、夫負担・妻受取を架空例で計算し、所得への加算額と所得税本体・贈与税の税額</span></a><a class="tool-card" href="../shibo-hokenkin-sozokuzei/"><b>死亡保険金の相続税：非課税枠・相続放棄・受取割合を同じ例で検算</b><span>死亡保険金の相続税を、相続放棄した子が保険金を受け取る架空例で検算。非課税枠の人数と受取額の按分を分け、各人の課税価格・納付税額まで追います。受取後の贈与や申告資料の確認点も整理し</span></a></div></section><!--next-read:E-->
+<section class="related"><h2 id="related">関連ツール・記事</h2><div class="tool-grid">
+<a class="tool-card" href="../maruyu-tokubetsu-maruyu/"><b>マル優・特別マル優</b><span>利子非課税の対象と手続き</span></a>
+<a class="tool-card" href="../furikomi-tesuryo-hikaku/"><b>振込手数料の比較表</b><span>預け替えの資金移動費用を確認</span></a>
+<a class="tool-card" href="../../toushi/tsumitate/"><b>積立シミュレーター</b><span>毎月の積立と仮定利回りによる試算</span></a>
+</div></section>
+<h2 id="sources">出典</h2>
+<p class="source-method">確認日：2026年10月23日。金利は各行が表示した公表基準日の通常金利で、商品条件と税の扱いは、下記の商品説明書と<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1310.htm">国税庁の利子所得の説明</a>を参照しています。利息表は固定条件による比較用概算です。</p>
+<ul>
+<li>三井住友銀行「<a href="https://www.smbc.co.jp/kojin/kinri/yokin.html">円預金金利</a>」「<a href="https://www.smbc.co.jp/setsumeisho/pdf/sonotaen005.pdf?version=20260817">スーパー定期〈単利型〉商品説明書</a>」</li>
+<li>三菱UFJ銀行「<a href="https://www.bk.mufg.jp/ippan/kinri/yen_yokin.html">円預金金利</a>」「<a href="https://www.bk.mufg.jp/tameru/yen/sp_teiki/btm/pdf/t_st_setsumei.pdf">スーパー定期商品説明書（2022年4月1日版）</a>」「<a href="https://www.bk.mufg.jp/regulation/teiki_super.html">スーパー定期規定</a>」</li>
+<li>ゆうちょ銀行「<a href="https://www.jp-bank.japanpost.jp/kinri/kinri.html">金利一覧</a>」「<a href="https://www.jp-bank.japanpost.jp/setumeisho/pdf/teiki.pdf">定期貯金商品概要説明書</a>」</li>
+<li>国税庁「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1310.htm">利息を受け取ったとき（利子所得）</a>」</li>
+<li>金融庁「<a href="https://www.fsa.go.jp/policy/payoff/">預金保険制度</a>」</li>
+</ul>
+<p class="disclaimer" data-source-nolink="一般的な情報提供の範囲を示す自サイトの免責。外部資料についての主張ではない。">本記事は一般的な情報提供を目的としており、個別の相談への回答ではありません。実際の判断は金融機関・税務署・税理士等にご確認ください。</p>
+</article><!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%AE%9A%E6%9C%9F%E9%A0%90%E9%87%91%E3%81%AE%E9%87%91%E5%88%A9%E3%82%92%E3%80%81%E4%B8%89%E4%BA%95%E4%BD%8F%E5%8F%8B%E3%83%BB%E4%B8%89%E8%8F%B1UFJ%E3%83%BB%E3%82%86%E3%81%86%E3%81%A1%E3%82%87%E3%81%AE%E9%80%9A%E5%B8%B8%E9%87%91%E5%88%A9%E3%81%A7%E7%A2%BA%E8%AA%8D%E3%80%82%E5%85%AC%E8%A1%A8%E5%9F%BA%E6%BA%96%E6%97%A5%E3%81%A8%E5%95%86%E5%93%81%E6%9D%A1%E4%BB%B6%E3%82%92%E4%B8%A6%E3%81%B9%E3%80%81%E5%9B%BA%E5%AE%9A%E5%85%83%E6%9C%AC%E3%83%BB%E5%8D%98%E5%88%A9%E3%81%AE%E7%A8%8E%E5%BC%95%E5%89%8D%E5%BE%8C%E3%81%AE%E5%88%A9%E6%81%AF%E3%82%92%E5%90%8C%E3%81%98%E5%BC%8F%E3%81%A7%E6%AF%94%E3%81%B9%E3%81%BE%E3%81%99%E3%80%82%E7%9F%AD%E6%9C%9F%E3%81%AE%E5%B9%B4%E7%8E%87%E8%A1%A8%E7%A4%BA%E3%80%81%E9%80%94%E4%B8%AD%E8%A7%A3%E7%B4%84%E3%80%81%E6%BA%80%E6%9C%9F%E3%81%AE%E5%8F%96%E6%89%B1%E3%81%84%E3%82%82%E6%95%B4%E7%90%86%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fteiki-yokin-kinri-table%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site">© 税金・経理・補助金ツールズ
+  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body></html>
