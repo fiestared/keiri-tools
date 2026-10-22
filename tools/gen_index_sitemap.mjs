@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "ikuji-kaigo-kyugyoho", // 育児・介護休業法 Google 9,680/月（2026-10-22実測）。雇用主の義務と個別対応。給付額は既存へ。
   "gakushi-hoken-zeikin", // 学資保険 税金 Google推定1,280/月、2026-10-21。受取年別の課税検算。
   "shibo-hokenkin-sozokuzei", // 死亡保険金 相続税 Google推定5,280/月、2026-10-21。非課税按分と放棄者の設例。
   "shohyo", // 証憑 Google月間推定21,680（2026-10-21実測）
@@ -708,7 +709,7 @@ const CATEGORIES = [
     slugs: [
       "iryo-hoken-toha", "kenko-hoken-kumiai",
       "shakai-hoken-kanyu-joken", "shakai-hokenryo-keisan", "hyojun-hoshu-gakuhyo", "kyokai-kenpo-ryoritsu-ichiran",
-      "teiji-kettei", "zuiji-kaitei", "sanzen-sango-kyugyo", "sango-papa-ikukyu", "shoyo-shakaihoken", "shoyo-shiharaitodoke", "kaigo-hokenryo-itsukara", "kaigo-hoken-ho",
+      "teiji-kettei", "zuiji-kaitei", "sanzen-sango-kyugyo", "ikuji-kaigo-kyugyoho", "sango-papa-ikukyu", "shoyo-shakaihoken", "shoyo-shiharaitodoke", "kaigo-hokenryo-itsukara", "kaigo-hoken-ho",
       "kodomo-kosodate-shienkin", "kodomo-kosodate-kyoshutsukin", "shakai-hoken-fuyo-joken", "hifuyosha-ido-todoke", "kenpo-shikaku-soshitsu", "nenshu-no-kabe",
       "yakuin-shakai-hoken",
       "koyou-hoken-kanyu-joken", "koyou-hoken-hihokenshasho", "koyou-hokenryo-ritsu", "rosai-hokenryoritsu", "hitori-oyakata-rosai",
