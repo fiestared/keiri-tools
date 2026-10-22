@@ -17,7 +17,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { productionGuard } from "./production-guard.mjs";
 import { settledCutoffHour, todayHeadline, todayPv } from "./settled.mjs";
-import { applyFetch, summarize, hoursOfDay, normalizeState, emptyState, rowsFromRealtime, overlaySampler } from "./rt-accum.mjs";
+import { applyFetch, summarize, hoursOfDay, normalizeState, emptyState, rowsFromRealtime, overlaySampler, samplerHours, toAbs, fromAbs } from "./rt-accum.mjs";
 import { createSign } from "node:crypto";
 
 const DIR = dirname(fileURLToPath(import.meta.url));
@@ -840,8 +840,8 @@ function hourChart(site) {
     };
   });
 
-  // 直値ラベルは1つだけ。**完全に経過した最後の時間帯**に置く（斜線の棒は途中なので置かない）
-  const lab = bars.find((b) => b.hh === site.cmpHour && b.h > 0);
+  // 直値ラベルは今日の全部の棒に置く（2026-10-22 Masahiro「棒の上に全部数字出して」）。
+  // 途中の時間帯（斜線）の値も途中までの実数として出す。前日・先週はツールチップと下の表で読む
   const hh2 = (n) => String(n).padStart(2, "0");
   const cum = site.hCumToday !== null && site.hCumYest !== null
     ? `0:00〜${hh2(site.cmpHour)}:59 の累計は <b>今日 ${site.hCumToday.toLocaleString("ja-JP")}</b> / 前日 ${site.hCumYest.toLocaleString("ja-JP")} ${
@@ -887,7 +887,7 @@ function hourChart(site) {
     ${[0, 3, 6, 9, 12, 15, 18, 21].map((hh) =>
       `<text x="${(x0(hh) + band / 2).toFixed(1)}" y="${H - PAD.b + 18}" class="xlab" text-anchor="middle">${hh}</text>`).join("")}
     <text x="${(PAD.l + iw / 2).toFixed(1)}" y="${H - PAD.b + 31}" class="xsub" text-anchor="middle">時（JST）</text>
-    ${lab ? `<text x="${lab.cx.toFixed(1)}" y="${(lab.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${lab.v.toLocaleString("ja-JP")}</text>` : ""}
+    ${bars.filter((b) => b.v > 0).map((b) => `<text x="${b.cx.toFixed(1)}" y="${Math.max(10, b.yy - 4).toFixed(1)}" class="barlab" text-anchor="middle">${b.v.toLocaleString("ja-JP")}</text>`).join("")}
     ${site.hToday.map((v, hh) => {
       const drawn = hh <= site.cutoffHour;
       const yv = site.hYest[hh];
@@ -952,7 +952,8 @@ function rtHourChart(site) {
   const iw = W - PAD.l - PAD.r, ih = H - PAD.t - PAD.b;
   const band = iw / 24;
   const bw = Math.min(18, band - 8);
-  const hourMax = Math.max(1, ...h.hours);
+  const cy = rt.cmp?.yest ?? null, cw = rt.cmp?.pw ?? null;
+  const hourMax = Math.max(1, ...h.hours, ...(cy ? cy.hours.filter((_, i) => cy.seen[i]) : []), ...(cw ? cw.hours.filter((_, i) => cw.seen[i]) : []));
   const st = niceStep(hourMax), top = Math.ceil(hourMax / st) * st;
   const y = (v) => PAD.t + ih - (v / top) * ih;
   const x0 = (hh) => PAD.l + band * hh;
@@ -970,6 +971,38 @@ function rtHourChart(site) {
         `M${x.toFixed(1)} ${(yy + ht).toFixed(1)} L${x.toFixed(1)} ${(yy + r).toFixed(1)} Q${x.toFixed(1)} ${yy.toFixed(1)} ${(x + r).toFixed(1)} ${yy.toFixed(1)} L${(x + bw - r).toFixed(1)} ${yy.toFixed(1)} Q${(x + bw).toFixed(1)} ${yy.toFixed(1)} ${(x + bw).toFixed(1)} ${(yy + r).toFixed(1)} L${(x + bw).toFixed(1)} ${(yy + ht).toFixed(1)} Z`,
     };
   }).filter(Boolean);
+  // 前日＝階段のシルエット、先週同曜日＝破線（上の「時間帯別のセッション数」と同じ描き分け）。見張りの欠けた時間帯は途切れさせる
+  let yStep = "", yFill = "";
+  if (cy) {
+    let run = [];
+    const flush = () => {
+      if (!run.length) return;
+      const seg = run.map((hh, i) => `${i === 0 ? "M" : "L"}${x0(hh).toFixed(1)} ${y(cy.hours[hh]).toFixed(1)} L${(x0(hh) + band).toFixed(1)} ${y(cy.hours[hh]).toFixed(1)}`).join(" ");
+      yStep += seg + " ";
+      yFill += `${seg} L${(x0(run.at(-1)) + band).toFixed(1)} ${y(0).toFixed(1)} L${x0(run[0]).toFixed(1)} ${y(0).toFixed(1)} Z `;
+      run = [];
+    };
+    for (let hh = 0; hh < 24; hh++) { if (cy.seen[hh]) run.push(hh); else flush(); }
+    flush();
+  }
+  let wPath = "";
+  if (cw) {
+    let pen = false;
+    for (let hh = 0; hh < 24; hh++) {
+      if (!cw.seen[hh]) { pen = false; continue; }
+      wPath += `${pen ? "L" : "M"}${(x0(hh) + band / 2).toFixed(1)} ${y(cw.hours[hh]).toFixed(1)} `; pen = true;
+    }
+  }
+  const pctTxt = (a, b) => { if (b === null || b === undefined) return null; if (b <= 0) return "（比べる数が0）";
+    const p = Math.round((a / b - 1) * 100); return `<span class="${p > 0 ? "up" : p < 0 ? "down" : ""}">（${p > 0 ? "+" : ""}${p}%）</span>`; };
+  const todayCum = h.from === "00:00" && !h.gaps.length ? h.s : null;
+  const yCum = cy ? cy.cumTo(h.to) : null, wCum = cw ? cw.cumTo(h.to) : null;
+  const cmpLine = (cy || cw)
+    ? `<div class="rt-cmp">0:00〜${esc(h.to)} の累計 ${todayCum === null ? "（今日の積み上げに欠けがあるので比べない）"
+        : `<b>今日 ${todayCum.toLocaleString("ja-JP")}</b>`
+          + (cy ? ` / 前日（${esc(cy.wd)}） ${yCum === null ? "見張りに欠け" : `${yCum.toLocaleString("ja-JP")} ${pctTxt(todayCum, yCum)}`}` : "")
+          + (cw ? ` / 先週${esc(cw.wd)} ${wCum === null ? "見張りに欠け" : `${wCum.toLocaleString("ja-JP")} ${pctTxt(todayCum, wCum)}`}` : "")}</div>`
+    : "";
   const fail = rt.error ? `<div class="rt-warn">今回の取得は失敗（${esc(h.to)} 時点の積み上げ）<br><code>${esc(rt.error)}</code></div>` : "";
   const gap = h.gaps.length
     ? `<div class="rt-warn">うち ${h.gaps.map((g) => `<b>${esc(g.from)}〜${esc(g.to)}</b>`).join("・")} は未取得（計${h.gapMin}分）</div>` : "";
@@ -978,15 +1011,19 @@ function rtHourChart(site) {
   <figcaption class="chart-title">推定セッション（Realtime 積み上げ・時間帯別） <span class="badge">GA4 の確定値ではない</span></figcaption>
   <div class="legend">
     <span><i class="sw sw-rt"></i>推定（session_start）</span>
+    ${cy ? `<span><i class="sw sw-yest"></i>前日（${esc(cy.wd)}）</span>` : ""}
+    ${cw ? `<span><i class="sw sw-prevweek"></i>先週同曜日（${esc(cw.wd)}）</span>` : ""}
     <span>範囲 ${esc(h.from)}〜${esc(h.to)} ／ 計 ${h.s.toLocaleString("ja-JP")} ／ PV ${h.pv.toLocaleString("ja-JP")}</span>
   </div>
-  ${fail}${gap}
+  ${cmpLine}${fail}${gap}
   <div class="chart-scroll">
   <svg viewBox="0 0 ${W} ${H}" role="img" preserveAspectRatio="xMidYMid meet"
        aria-label="${esc(site.label)} の推定セッション。Realtime の時間帯別。数値は下の表。">
     ${ticks.map((v) => `<line x1="${PAD.l}" x2="${W - PAD.r}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}"
         stroke="${v === 0 ? "var(--axis)" : "var(--grid)"}" stroke-width="1" shape-rendering="crispEdges"/>`).join("")}
     ${ticks.map((v) => `<text x="${PAD.l - 8}" y="${(y(v) + 4).toFixed(1)}" class="tick" text-anchor="end">${v.toLocaleString("ja-JP")}</text>`).join("")}
+    ${yFill ? `<path d="${yFill}" fill="var(--series-2-wash)"/><path d="${yStep}" fill="none" stroke="var(--series-2)" stroke-width="1.5" stroke-linejoin="round"/>` : ""}
+    ${wPath ? `<path d="${wPath}" fill="none" stroke="var(--series-3)" stroke-width="2.25" stroke-dasharray="7 5" stroke-linecap="round" stroke-linejoin="round"/>` : ""}
     ${bars.map((b) => b.path
       ? `<path d="${b.path}" fill="var(--series-rt)" stroke="var(--surface)" stroke-width="2" paint-order="stroke"/>` : "").join("")}
     ${[0, 3, 6, 9, 12, 15, 18, 21].map((hh) =>
@@ -997,21 +1034,26 @@ function rtHourChart(site) {
       const tip = h.seen[hh]
         ? `${hh}時台 — 推定 ${v.toLocaleString("ja-JP")} ／ PV ${h.hourPv[hh].toLocaleString("ja-JP")}`
         : `${hh}時台 — 未取得（0ではない）`;
+      const more = (cy ? ` / 前日 ${cy.seen[hh] ? cy.hours[hh].toLocaleString("ja-JP") : "—"}` : "")
+        + (cw ? ` / 先週${cw.wd} ${cw.seen[hh] ? cw.hours[hh].toLocaleString("ja-JP") : "—"}` : "");
       return `<rect class="hit" x="${x0(hh).toFixed(1)}" y="${PAD.t}" width="${band.toFixed(1)}" height="${ih}"
-        fill="transparent" data-tip="${esc(tip)}"></rect>`;
+        fill="transparent" data-tip="${esc(tip + more)}"></rect>`;
     }).join("")}
   </svg>
   </div>
-  <figcaption>Mac が毎分取った Realtime の session_start を時間帯に足した数。上の「時間帯別のセッション数」とは別物。
+  <figcaption>前日・先週同曜日は、司令塔の見張り（10分ごとの Realtime）のその日の記録から同じ数え方で描いている。比べるのは同じ時刻までの累計どうし。
+    Mac が毎分取った Realtime の session_start を時間帯に足した数。上の「時間帯別のセッション数」とは別物。
     ${h.from !== "00:00" ? `積み上げは ${esc(h.from)} から。` : ""}未取得の時間帯は棒を描いていない。</figcaption>
   <details class="tbl">
     <summary>表で見る（推定の時間帯別）</summary>
     <div class="tbl-scroll"><table>
-      <thead><tr><th>時間帯</th><th class="num">推定セッション</th><th class="num">推定 PV</th></tr></thead>
+      <thead><tr><th>時間帯</th><th class="num">推定セッション</th><th class="num">推定 PV</th>${cy ? `<th class="num">前日（${esc(cy.wd)}）</th>` : ""}${cw ? `<th class="num">先週${esc(cw.wd)}</th>` : ""}</tr></thead>
       <tbody>${h.hours.map((v, hh) => `<tr>
         <td>${hh}時台</td>
         <td class="num strong">${h.seen[hh] ? v.toLocaleString("ja-JP") : "—"}</td>
         <td class="num">${h.seen[hh] ? h.hourPv[hh].toLocaleString("ja-JP") : "—"}</td>
+        ${cy ? `<td class="num">${cy.seen[hh] ? cy.hours[hh].toLocaleString("ja-JP") : "—"}</td>` : ""}
+        ${cw ? `<td class="num">${cw.seen[hh] ? cw.hours[hh].toLocaleString("ja-JP") : "—"}</td>` : ""}
       </tr>`).join("")}</tbody>
     </table></div>
   </details>
@@ -1542,6 +1584,7 @@ h1{font-size:20px; font-weight:650; margin:0; letter-spacing:.01em}
 .xlab.we{fill:var(--ink2); font-weight:600}
 .xsub{font-size:10px}
 .endlab{fill:var(--ink); font-size:12px; font-weight:650}
+.barlab{fill:var(--ink); font-size:10px; font-weight:650; paint-order:stroke; stroke:var(--surface); stroke-width:3px; stroke-linejoin:round}
 .hit{cursor:default}
 figcaption{font-size:12px; color:var(--muted); margin-top:6px}
 .swatch-hatch{
@@ -1558,6 +1601,7 @@ figcaption{font-size:12px; color:var(--muted); margin-top:6px}
 .sw-today{background:var(--series-1)}
 .sw-part{background:repeating-linear-gradient(45deg,var(--series-1) 0 2.5px,var(--series-wash) 2.5px 6px)}
 .sw-yest{height:8px; background:var(--series-2-wash); border-top:1.5px solid var(--series-2); border-radius:0}
+.rt-cmp{font-size:13px; margin:4px 0 6px}
 .sw-prevweek{height:0; width:16px; border-top:2px dashed var(--series-3); border-radius:0}
 .sw-rt{background:var(--series-rt)}
 /* 推定は「時間帯別のセッション数」の直後。日次との区切り（.chart.hourly の実線）は重ねない */
@@ -1923,7 +1967,17 @@ for (const s of m.sites) {
   }
   try { sum = summarize(view, s.key, m.today); } catch { /* 推定が描けなくても画面は出す */ }
   try { hours = hoursOfDay(view, s.key, m.today); } catch { /* 同上 */ }
-  s.rt = { sum, hours, error: rtErrors[s.key] ?? null };
+  // 2026-10-22 Masahiro「こっちのリアルタイムの方にも前日・前週のやつだせる？」: 前日と先週同曜日を見張りの記録から重ねる
+  const cmp = {};
+  if (SAMPLER_SITES[s.key]) {
+    for (const [k, back] of [["yest", 1], ["pw", 7]]) {
+      const date = fromAbs(toAbs(m.today, "00:00") - back * 1440).date;
+      try { cmp[k] = samplerHours(JSON.parse(readFileSync(join(SAMPLER_SITES[s.key], `${date}.json`), "utf8")), date); }
+      catch { cmp[k] = null; }
+      if (cmp[k]) cmp[k].wd = WD[weekdayIdx(date)];
+    }
+  }
+  s.rt = { sum, hours, cmp, error: rtErrors[s.key] ?? null };
 }
 
 const html = standalone(m, err);

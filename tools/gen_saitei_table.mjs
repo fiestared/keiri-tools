@@ -61,6 +61,7 @@ const lo = rows.reduce((a, b) => (b.wage < a.wage ? b : a));
 //   ここを「公式一覧と照合しました」と固定で書くと、確かめていない資料を出典として名乗ることになる。
 //   発効日が県ごとに分かれている状態も、表の読み方に直接効くので本文に出す。
 const answered = m.status === "answered";
+const sourceHref = esc(m.source_pdf || m.source_url);
 const effs = rows.map((r) => r.effective).sort();
 const oct1 = rows.filter((r) => r.effective === effs[0]).length;
 const note = `${esc(m.year)}の答申改定額の全国加重平均は<b>${na.wage}円</b>（改定前${na.prev}円・+${na.up}円／+${na.rate.toFixed(1)}%）。` +
@@ -69,8 +70,8 @@ const note = `${esc(m.year)}の答申改定額の全国加重平均は<b>${na.wa
   `${esc(rows.find((r) => r.effective === effs[effs.length - 1]).effective_wa)}まで分かれています` +
   `（もっとも早い日に発効するのは${oct1}都道府県）。<b>自分の県の発効日が来るまでは改定前の額が有効です。</b>` +
   (answered
-    ? `${esc(m.checked)}に厚生労働省の答申状況（別紙）と照合しました。`
-    : `${esc(m.checked)}に厚生労働省の全国一覧PDFと${rows.length}件照合し、不一致0件を確認しました。`);
+    ? `${esc(m.checked)}に<a href="${sourceHref}">厚生労働省の答申状況（別紙）</a>と照合しました。`
+    : `${esc(m.checked)}に<a href="${sourceHref}">厚生労働省の全国一覧PDF</a>と${rows.length}件照合し、不一致0件を確認しました。`);
 
 let html = readFileSync(PAGE, "utf8");
 const before = html;

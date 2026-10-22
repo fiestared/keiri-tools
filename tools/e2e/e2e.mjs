@@ -61,7 +61,7 @@ const SCENES = [
   { name: "saitei_hourly", expect: (s) =>
       s.options > 45 && /1280円／時間/.test(s.prefBox) && !/それまでは改定前/.test(s.prefBox) &&
       /下回っています/.test(s.out) && /最低賃金 1280円/.test(s.out) && /1時間あたり180円不足/.test(s.out) &&
-      !/改定前/.test(s.out) && s.tableRows === 47 && /47都道府県すべてで決定済み/.test(s.nextBox) },
+      !/改定前/.test(s.out) && s.tableRows === 47 && /答申額・発効予定日を47都道府県分掲載/.test(s.nextBox) },
   { name: "saitei_hourly_before", expect: (s) =>
       /それまでは改定前の1226円が有効/.test(s.prefBox) &&
       /下回っています/.test(s.out) && /最低賃金 1226円/.test(s.out) && /1時間あたり126円不足/.test(s.out) &&
@@ -2048,6 +2048,25 @@ const SCENES = [
     expect: uxFieldErrorExpect({ skipFrame: t === "embed_yukyu" }) })),
   // 押した後に結果が折り目の下に出たら、結果の頭まで自動で送る（見えないところに答えを出さない）
   { name: "ux_result_scroll_shaho", noCoverage: true, expect: (s) => s.visible && s.scrolled },
+
+  // ─── お問い合わせフォーム（/contact/、2026-10-22）───
+  // 片方の送信先が落ちても利用者に「送信できませんでした」と出さない／成功時だけ contact_submit が1回／
+  // GA4 に付けるのは {form:"contact"} だけ（個人情報を送らない）。Worker へは本文を JSON で渡す。
+  // ★noCoverage: 計算ツールではない（網羅チェックの対象は *_core.js を読むページ）。
+  ...[
+    ["contact_submit_both_ok", true],
+    ["contact_submit_worker_down", true],
+    ["contact_submit_formspree_down", true],
+    ["contact_submit_both_down", false],
+  ].map(([name, ok]) => ({ name, noCoverage: true, expect: (s) =>
+    s.onOpenCount === 0 && s.formspreeCalled && s.workerCalled && !s.piiInGa &&
+    s.workerUrl === "https://keiri-contact.wellsmanager.workers.dev/contact" &&
+    /^text\/plain/.test(s.workerType) &&
+    s.workerBody && s.workerBody.message === "【テスト】本文です" && s.workerBody.email === "taro@example.com" &&
+    s.workerBody.category === "その他" && s.workerBody.name === "山田太郎" && s.workerBody.page === "社会保険料 計算機" &&
+    (ok
+      ? s.success && !s.failure && s.formHidden && s.eventCount === 1 && s.eventParams === '{"form":"contact"}'
+      : s.failure && !s.success && !s.formHidden && s.buttonEnabled && s.eventCount === 0) })),
 
   // ─── ツール利用の計測（assets/track.js）───
   // ★noCoverage: これらは「計測が飛ぶか」を見るシーンで、**答えの正しさは検査していない**。
