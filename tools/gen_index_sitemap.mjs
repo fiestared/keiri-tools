@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "furusato-nozei-itsumade", // ふるさと納税 いつまで Google39,600/月（2026-10-22実測）。期限を主題とし計算・申告記事と分担。
   "ikuji-kaigo-kyugyoho", // 育児・介護休業法 Google 9,680/月（2026-10-22実測）。雇用主の義務と個別対応。給付額は既存へ。
   "furusato-nozei-kojo-kakunin", // ふるさと納税 控除 確認 Google9,680/月・2026-10-22実測。通知書と申告書の照合表。
   "furusato-nozei-toha", // ふるさと納税とは Google39,600＋仕組み132,000/月（2026-10-21実測）。全体像のハブ。計算・申告・上限は既存へ譲る。
@@ -762,7 +763,7 @@ const CATEGORIES = [
       "kakutei-shinkoku-zeirishi-hiyo",
       "kakutei-shinkoku-yuso",
       "kakutei-shinkoku-sumaho",
-      "furusato-nozei-kakutei-shinkoku",
+      "furusato-nozei-itsumade", "furusato-nozei-kakutei-shinkoku",
       "gyomuitaku-kakutei-shinkoku",
       "nenkin-jukyusha-kakutei-shinkoku",
       "yachin-shunyu-kakutei-shinkoku",
