@@ -840,8 +840,8 @@ function hourChart(site) {
     };
   });
 
-  // 直値ラベルは1つだけ。**完全に経過した最後の時間帯**に置く（斜線の棒は途中なので置かない）
-  const lab = bars.find((b) => b.hh === site.cmpHour && b.h > 0);
+  // 直値ラベルは今日の全部の棒に置く（2026-10-22 Masahiro「棒の上に全部数字出して」）。
+  // 途中の時間帯（斜線）の値も途中までの実数として出す。前日・先週はツールチップと下の表で読む
   const hh2 = (n) => String(n).padStart(2, "0");
   const cum = site.hCumToday !== null && site.hCumYest !== null
     ? `0:00〜${hh2(site.cmpHour)}:59 の累計は <b>今日 ${site.hCumToday.toLocaleString("ja-JP")}</b> / 前日 ${site.hCumYest.toLocaleString("ja-JP")} ${
@@ -887,7 +887,7 @@ function hourChart(site) {
     ${[0, 3, 6, 9, 12, 15, 18, 21].map((hh) =>
       `<text x="${(x0(hh) + band / 2).toFixed(1)}" y="${H - PAD.b + 18}" class="xlab" text-anchor="middle">${hh}</text>`).join("")}
     <text x="${(PAD.l + iw / 2).toFixed(1)}" y="${H - PAD.b + 31}" class="xsub" text-anchor="middle">時（JST）</text>
-    ${lab ? `<text x="${lab.cx.toFixed(1)}" y="${(lab.yy - 7).toFixed(1)}" class="endlab" text-anchor="middle">${lab.v.toLocaleString("ja-JP")}</text>` : ""}
+    ${bars.filter((b) => b.v > 0).map((b) => `<text x="${b.cx.toFixed(1)}" y="${Math.max(10, b.yy - 4).toFixed(1)}" class="barlab" text-anchor="middle">${b.v.toLocaleString("ja-JP")}</text>`).join("")}
     ${site.hToday.map((v, hh) => {
       const drawn = hh <= site.cutoffHour;
       const yv = site.hYest[hh];
@@ -1584,6 +1584,7 @@ h1{font-size:20px; font-weight:650; margin:0; letter-spacing:.01em}
 .xlab.we{fill:var(--ink2); font-weight:600}
 .xsub{font-size:10px}
 .endlab{fill:var(--ink); font-size:12px; font-weight:650}
+.barlab{fill:var(--ink); font-size:10px; font-weight:650; paint-order:stroke; stroke:var(--surface); stroke-width:3px; stroke-linejoin:round}
 .hit{cursor:default}
 figcaption{font-size:12px; color:var(--muted); margin-top:6px}
 .swatch-hatch{
