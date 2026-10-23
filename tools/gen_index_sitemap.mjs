@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "rishoku-shomeisho", // 離職証明書 Google11,840・合計14,800/月（2026-10-24実測）。会社の欄別作成に限定。
   "mushoku-kakutei-shinkoku", // 無職 確定申告 月3,600（Google2,880・2026-10-24実測）。退職年の還付と無収入の住民税申告。
   "gaikoin-hoshu", // 外交員報酬 Google1,040・合計1,300/月。2026-10-24需要ゲート。
   "freeter-kakutei-shinkoku", // フリーター 確定申告 月3,600、2026-10-24需要実測。
@@ -882,7 +883,7 @@ const CATEGORIES = [
     desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務もここ。",
     slugs: [
       "shogu-kaizen-teate", "taishoku-tetsuzuki", "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
-      "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "time-card", "zaishoku-shomeisho", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
+      "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "time-card", "zaishoku-shomeisho", "rishoku-shomeisho", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
       "shakai-hokenryo-choshu-jiki", "kyushoku-shakai-hokenryo", "shoyo-gensen-shotokuzei",
       "gensen-shotokuzei-noki-tokurei", "kyuyo-shiharai-jimusho-kaisetsu", "gensen-shotokuzei-nofusho", "gaichuhi-kyuyo-kubun", "hotei-fukurihi-keisan", "rodo-hoken-nendo-koshin", "roudou-hoken-bango",
       "keiri-nenkan-schedule", "chutaikyo", "taishokukin-soba", "shataku-chintairyo", "fukuri-koseihi", "einen-kinzoku-hyosho", "shain-ryoko", "shokuji-hojo",
