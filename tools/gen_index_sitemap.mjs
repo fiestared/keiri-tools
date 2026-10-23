@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "eat-in-shohizei", // イートイン 消費税 1,300/月（2026-10-24実測）
   "rishoku-shomeisho", // 離職証明書 Google11,840・合計14,800/月（2026-10-24実測）。会社の欄別作成に限定。
   "mushoku-kakutei-shinkoku", // 無職 確定申告 月3,600（Google2,880・2026-10-24実測）。退職年の還付と無収入の住民税申告。
   "gaikoin-hoshu", // 外交員報酬 Google1,040・合計1,300/月。2026-10-24需要ゲート。
@@ -843,7 +844,7 @@ const CATEGORIES = [
     id: "shohizei",
     name: "消費税・インボイス",
     desc: "インボイス制度の基本と2割特例・簡易課税、課税売上割合と仕入税額控除、消費税の端数処理、中間申告。",
-    slugs: ["shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-kanpu", "kazei-uriage-wariai", "reverse-charge", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri", "shiharai-tsuchisho"],
+    slugs: ["eat-in-shohizei", "shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-kanpu", "kazei-uriage-wariai", "reverse-charge", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri", "shiharai-tsuchisho"],
   },
   {
     id: "denchoho",
