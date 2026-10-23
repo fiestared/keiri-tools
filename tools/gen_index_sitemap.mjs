@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "karikata-kashikata", // 借方 貸方 合計月12,100・Google9,680（2026-10-24実測）。左右判定の入門。
   "eat-in-shohizei", // イートイン 消費税 1,300/月（2026-10-24実測）
   "rishoku-shomeisho", // 離職証明書 Google11,840・合計14,800/月（2026-10-24実測）。会社の欄別作成に限定。
   "mushoku-kakutei-shinkoku", // 無職 確定申告 月3,600（Google2,880・2026-10-24実測）。退職年の還付と無収入の住民税申告。
@@ -920,7 +921,7 @@ const CATEGORIES = [
     name: "法人税・決算の実務",
     desc: "会社設立後の税務届出と法人税の税率、キャッシュフロー計算書、役員報酬・使用人兼務役員・交際費・決算賞与・繰越欠損金・引当金・経過勘定と、賃上げ促進税制などの優遇措置。",
     slugs: ["yojitsu-kanri", "romuhi", "arari", "kessan-tanshin", "jiko-shihon-hiritsu", "roe-roa", "godo-gaisha", "teikan",
-      "kaisha-setsuritsu", "hojin-nari", "shihonkin", "genshi", "hojinzei-toha", "hojinzei-shinkokusho", "hojinzei-ritsu", "gaikei-hyojun-kazei", "kigyo-ban-furusato-nozei", "jigyoshozei", "zaimu-toha", "cash-flow-keisansho", "taishaku-taishohyo-mikata", "soneki-keisansho-mikata", "soukanjo-motocho-kakikata", "shiwakecho", "shisanhyo-mikata", "genkin-suitocho-kakikata",
+      "kaisha-setsuritsu", "hojin-nari", "shihonkin", "genshi", "hojinzei-toha", "hojinzei-shinkokusho", "hojinzei-ritsu", "gaikei-hyojun-kazei", "kigyo-ban-furusato-nozei", "jigyoshozei", "zaimu-toha", "cash-flow-keisansho", "taishaku-taishohyo-mikata", "soneki-keisansho-mikata", "soukanjo-motocho-kakikata", "karikata-kashikata", "shiwakecho", "shisanhyo-mikata", "genkin-suitocho-kakikata",
       "yakuin-hoshu-kimekata", "shiyonin-kenmu-yakuin", "shikko-yakuin", "yakuin-taishokukin", "kosaihi-kaigihi-chigai", "shutcho-nittou-ryohi-kitei", "ryohi-kotsuhi", "shomohinhi", "kenshuhi-kanjo-kamoku", "tsushinhi", "chidai-yachin", "shikikin-hoshokin", "kyosankin-kanjo-kamoku", "kokoku-sendenhi", "noren", "genson-sonshitsu", "shisan-jokyo-saimu", "genka-shokyaku-ruikeigaku",
       "kessan-shoyo", "kurikoshi-kessonkin", "chinage-sokushin-zeisei", "shukko-zeimu", "kabunushi-soukai-gijiroku",
       "chusho-toshi-sokushin-zeisei", "chusho-keiei-kyoka-zeisei", "keiei-safety-kyosai-shiwake", "jigyo-shokei-zeisei", "sentan-setsubi-dounyu-keikaku",
