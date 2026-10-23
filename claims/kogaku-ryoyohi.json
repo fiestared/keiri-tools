@@ -1780,13 +1780,14 @@
       "scope": "本計算機の機能のみ。個別の支給額を保証しない。",
       "exceptions": "法定額の試算であり、窓口で限度額適用済みの支払額や組合独自の給付後の実際の負担を直接算出するものではない。",
       "source_url": "https://keiri-tools.com/kogaku-ryoyohi/",
-      "source_quote": "docs/assets/kogaku_core.js と docs/kogaku-ryoyohi/index.html。calcKogaku は refund と finalBurden を法定給付だけから算出し、組合独自の付加給付の入力・控除は持たない。",
+      "source_quote": "    totalMedical,\n    totalSelf,\n    excludedSelf,\n    limit,\n    refund,\n    tasukai,\n    limitNormal,\n    limitIfTasukai,\n    // 実際に自分の手元に残る負担（合算対象外の自己負担は戻ってこない）\n    finalBurden: Math.min(totalSelf, limit) + excludedSelf,\n  };",
       "must_with": [],
       "covers": [
         "s-744892e3afe28e7a4165-1",
         "s-d272ac0433611bffac3e-1",
         "s-0d42916561484562b72e-1"
-      ]
+      ],
+      "implementation_ref": "docs/assets/kogaku_core.js:472-482"
     },
     {
       "id": "rw-existing-ui",
@@ -1797,7 +1798,7 @@
       "scope": "本計算機の機能のみ。個別の支給額を保証しない。",
       "exceptions": "法定額の試算であり、窓口で限度額適用済みの支払額や組合独自の給付後の実際の負担を直接算出するものではない。",
       "source_url": "https://keiri-tools.com/kogaku-ryoyohi/",
-      "source_quote": "本ページのHTMLに記載されたinputの初期値・placeholder・selectの本人/配偶者・家族の選択肢。数値の入力例は利用者が変更できる表示例。",
+      "source_quote": "<input type=\"number\" id=\"medical1\" value=\"1000000\" placeholder=\"例: 1000000\" inputmode=\"numeric\">",
       "must_with": [],
       "covers": [
         "s-6d0be7353c60ac51f873-1",
@@ -1825,7 +1826,8 @@
         "s-ca57e74f90a6998578b7-4",
         "s-e604a41690e1c49c09d2-4",
         "s-8decd8fe27924c52f9fd-4"
-      ]
+      ],
+      "implementation_ref": "docs/kogaku-ryoyohi/index.html input#medical1 と未変更の入力UI"
     }
   ],
   "absolutes": [
