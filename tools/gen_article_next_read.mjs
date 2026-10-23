@@ -224,7 +224,7 @@ for (const [slug, a] of articles) {
   if (exp.T.has(path)) {
     try { html = buildTreatment(slug, a); treated++; } catch (e) { failures.push(e.message); continue; }
   } else {
-    const block = `<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid">${legacyPicks(slug, a).map((s) => legacyCard(s, ["fuyo-kojo-shinkokusho", "shiharai-chosho"].includes(slug))).join("")}</div></section><!--next-read:E-->`;
+    const block = `<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid">${legacyPicks(slug, a).map((s) => legacyCard(s, ["fuyo-kojo-shinkokusho", "shiharai-chosho", "yojitsu-kanri"].includes(slug))).join("")}</div></section><!--next-read:E-->`;
     html = a.html;
     if (MARK.test(html)) html = html.replace(MARK, block);
     else {

@@ -34,6 +34,15 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "eat-in-shohizei", // イートイン 消費税 1,300/月（2026-10-24実測）
+  "rishoku-shomeisho", // 離職証明書 Google11,840・合計14,800/月（2026-10-24実測）。会社の欄別作成に限定。
+  "mushoku-kakutei-shinkoku", // 無職 確定申告 月3,600（Google2,880・2026-10-24実測）。退職年の還付と無収入の住民税申告。
+  "gaikoin-hoshu", // 外交員報酬 Google1,040・合計1,300/月。2026-10-24需要ゲート。
+  "freeter-kakutei-shinkoku", // フリーター 確定申告 月3,600、2026-10-24需要実測。
+  "fuyo-kojo-oya", // 扶養控除 親 Google1,280＋Yahoo320＝月1,600（2026-10-23需要ゲート）。国内の親の年末調整確認表。
+  "yojitsu-kanri", // 予実管理 Google5,280・合計6,600/月（2026-10-23実測）。月次比較表と差異分析。
+  "shikaku-shutoku-todoke", // 資格取得届 1,600/月（2026-10-23実測）。提出・記入の参照表。加入要件は既存記事へ。
+  "kakutei-shinkoku-shinai-to", // 確定申告しないとどうなる Google7,920・合計9,900/月（2026-10-23実測）。申告義務と還付を分ける結果の参照表。
   "kokumin-nenkin-tsuino", // 国民年金 追納 合計月5,400・Google4,320（2026-10-23実測）。年度別追納額と申込手順。
   "nenmatsu-chosei-part", // 年末調整 パート・アルバイト 各月6,600（Google5,280＋Yahoo1,320、2026-10-23需要ゲート）。対象判定と提出先。
   "hotei-kyujitsu", // 法定休日 Google6,480・合計8,100/月（2026-10-23再実測）。休日の設定と勤怠区分の参照表。
@@ -337,6 +346,7 @@ const ORDER = [
   "shitsugyo-hoken-keisan",     // 失業保険 計算 25,591/月（失業保険 自己都合 25,591・失業保険 期間 11,464 も同記事で受ける）
   "saishushoku-teate",          // 再就職手当 25,591/月
   "koyou-hoken-kanyu-joken",    // 雇用保険 加入条件 25,591/月
+  "kenshuhi-kanjo-kamoku", // Google月間1600、2026-10-23。会社負担の研修費と仕訳。
   "kyoiku-kunren-kyufukin",     // 教育訓練給付金とは — 教育訓練給付金 14,800/月（keyword_demand.py 2026-08-22 第10便に実測）＋ 専門実践教育訓練給付金 12,100・教育訓練支援給付金 4,400・一般教育訓練給付金 1,300・教育訓練給付金 対象講座 880・条件 320・申請 170・いくら 30 ＝クラスタ約34,000。★被覆調査: title/h1 0件・SECTION 0件・BODY は tokutei-shishutsu-kojo(3回) の付随のみ＝主題として空白（第9便が次候補として残していたものを本便で消化）。同時に測って落とした候補: 高年齢雇用継続給付 6,600（kounenrei-koyou-keizoku が主題保有）・介護休業給付金 12,100（kaigo-kyugyo-kyufukin が主題保有）。★核は ①★★★**率も上限額も雇用保険法には書かれていない**＝法60条の2第4項が定めるのは「百分の二十以上百分の八十以下の範囲内において厚生労働省令で定める率」という枠だけで、20/40/50/70/80％の6区分は施行規則101条の2の7、上限10万・20万・25万・120万・168万・192万は同101条の2の8にある。改正で動くのは省令側なので法の条番号を追っても金額変更に気づけない ②★★★**80％は講座ではなく「賃金が105％以上になったか」で決まる**＝101条の2の7第6号が、訓練後の連続6か月の賃金日額（イ）が受講前の賃金日額（ロ）の百分の百五以上であることを要件にする。比較は賃金日額なので**賞与（3か月を超える期間ごとに支払われる賃金）は除外**＝年収ベースの判断と結論が逆になりうる。適用対象期間の延長で加算が2年超の者は除外 ③★★**「初回は1年」は本則ではなく附則11条の暫定措置**（「当分の間」）で、しかも「基準日前に教育訓練給付金の支給を受けたことがない」＝直近3年ではなく**生涯で一度も**。法60条の2第5項の再受給制限3年（施行規則101条の2の10）とは条文も役割も別物 ④★**特定一般・専門実践は受講開始の14日前まで**に受給資格確認票（101条の2の12第1項・101条の2の13第1項）。遅れても20％に読み替える救済規定は無い＝1円も出ない。一般教育訓練だけ事前手続き不要で修了後1か月以内（101条の2の11第1項） ⑤80％分の追加申請だけ「6か月を経過した日から6か月以内」（101条の2の13第6項）＝賃金105％の判定に就職後6か月の賃金が要るため窓が後ろにずれる ⑥費用の範囲は**入学料と受講料だけ**（101条の2の6）＝教材費・受験料・交通費は対象外。一般教育訓練に限りキャリアコンサルティング費用2万円まで加算可。さらに一般教育訓練が1年超なら1年を超える部分の受講料を除く（101条の2の2第1項6号） ⑦計算額4,000円以下は不支給（101条の2の9）＝20％なら受講料2万円が分岐点 ⑧離職者は離職から1年以内の受講開始（101条の2の5第1項）だが妊娠・出産・育児・疾病等で**最長20年**まで延長できる ⑨支給要件期間は受給のたびに通算がゼロに戻る（法60条の2第2項2号）・空白1年超でも切れる（同1号） ⑩教育訓練支援給付金（法附則11条の2）は**離職者・45歳未満・令和9年3月31日以前に受講開始**が要件で、この日は申請期限ではなく**開始**期限。額は基本手当日額の**60％**（以前は80％）で、どちらの率かは**受講開始日**で決まる。条文の2,460円/4,920円/12,090円は法18条の自動変更対象額＝毎年8月1日に改定されるので現在額として引用しない ⑪2025-10-01新設の教育訓練休暇給付金（法60条の3）は在職のまま無給休暇で学ぶ人向けで、日額は基本手当日額そのもの（60％減額なし）。法60条の4により休暇終了後6か月以内の離職では所定給付日数が90日に固定される副作用がある ⑫★改正法附則は例外なく「施行日以後に**教育訓練を開始した**者について適用し、施行日前に開始した者はなお従前の例による」＝**受講開始日でルールが固定される**（申請日ではない）。2028-10-01施行の改正でも60条の2と附則11条は変わらないことを e-Gov でリビジョン差分をとって確認済み。譲った隣接: 加入要件=koyou-hoken-kanyu-joken／賃金日額と基本手当日額=shitsugyo-hoken-keisan・kihonteate／早期就職=saishushoku-teate／賃金比較型の給付=kounenrei-koyou-keizoku／保険料=koyou-hokenryo-ritsu。blockquote 14本を check_quotes.py で素14/14・改ざん14/14 で照合（コーパス634,213字・雇用保険法＋施行規則）。
   "rishokuhyo",                 // 離職票 25,591/月（離職票 書き方 2,284・離職票 いつもらえる 1,226 も同記事で受ける）
   "taishoku-shomeisho",         // 退職証明書 22,200/月 ＋ 離職証明書 14,800・在籍証明書 8,100・解雇理由証明書 2,400 ＝クラスタ 47,500（keyword_demand.py 2026-08-24 第10便に実測。★申し送り1374どおり対照を先に取り、同じ実行で語ごとに異なる値が返ることを確認: 登記事項証明書 40,500／定款 27,100／身元保証書 14,800／安全配慮義務 5,400／課税事業者選択届出書 1,900／役員変更登記 1,300／マイナンバー保管 880）。★被覆調査: 「退職証明書」は title/h1 保有0件・節保有0件で、重複チェックが返したのは「退職／証明書」の語割れ候補4件（maina-hokensho・nenmatsu-chosei-itsumade・rishokuhyo・shikaku-kakuninsho）のみ。★申し送り1391どおり**上位概念でも当て直した**＝「退職」110,000・「証明書」9,900 でも本主題の保有は無し。★役割の分離を言葉で言えることを着手前に確認（申し送り1395）＝ rishokuhyo は「離職証明書」34回・「退職証明書」**0回**で、雇用保険法7条の会社→行政の経路を書いている／本記事は労基法22条の会社→本人の経路。名前が似ているだけで名宛人が正反対。★一次情報は労基法・労基則・雇用保険法・国保則の4本とも e-Gov API v2 で条単位に取得でき、PDF不要（申し送り1390）。★核は ①★★★**交付義務は「請求した場合においては」だけ**＝退職者全員に配る義務は条文から出てこない。日数は「遅滞なく」で、同じ退職まわりの23条が「七日以内」と日数で書いているのと**書き分けられている**ので7日を持ち込めない ②★★★**22条3項が逆を向いている**＝「前二項の証明書には、労働者の請求しない事項を記入してはならない」＝**どの事項を証明するかを選ぶのは労働者**。会社が親切のつもりで退職の事由を書き足すと3項違反（120条1号の対象）。3項は「前二項」なので解雇理由証明書にも同じ制限がかかる ③★★**解雇理由証明書（2項）は退職日で締め切られる**＝対象期間は「解雇の予告がされた日から退職の日までの間」＝**在職中のみ**。★ただし書「解雇の予告がされた日以後に労働者が当該解雇以外の事由により退職した場合」は退職日以後は交付不要＝**予告期間中に自分から辞表を出すと2項では取れなくなる**（1項では退職後も取れる。1項のかっこ書きが解雇の理由を含むため） ④★★★**罰則が直感と逆転している**＝1〜3項違反（出さない・書きすぎ）は**120条1号の30万円以下の罰金**だけ、4項違反（第三者と謀っての通信・秘密の記号＝ブラックリスト）は**119条1号で6月以下の拘禁刑**も入る。119条1号の列挙は22条4項を**3条・4条・16条・17条・19条・20条と同じ列**に置いている＝迷ったら「書かない」側に倒すのが条文の重みづけ ⑤★★★**施行規則53条1項5号が22条1項と同じかっこ書き**「（退職の事由が解雇の場合にあつては、その理由を含む。）」を持つ＝**会社は請求前から退職の事由と解雇の理由を労働者名簿に記録している前提**。22条が作っているのは調査義務ではなく**手元の記録を本人に出す義務**（「理由をまとめるのに時間がかかる」は条文と噛み合わない） ⑥★★**法定様式が無い**＝労基則の全文を検索して22条を受けた規定が1つも無いことを確認。労働者名簿は様式第19号・賃金台帳は記載事項8号があるのに、証明書だけ様式も記載事項の省令も無い ⑦★★**30人未満で非対称が起きる**＝規則53条2項が「従事する業務の種類」の名簿記入を免除しているが、法22条1項に規模の例外は無い＝**名簿に書かなくてよい会社でも証明書では証明する** ⑧★★**保存の起算日は「退職の日」**（規則56条1項3号「雇入れ又は退職に関する書類」）＝交付日ではない。109条5年→附則143条1項で当分の間3年なので、退職1年後に交付した控えは**残り2年**しか保存期間が無い ⑨★★★**請求権の時効は2年で、賃金より先に消える**＝115条の「その他の請求権…二年間」に当たる。**附則143条3項が読み替えているのは「賃金の請求権はこれを行使することができる時から五年間」の部分だけ**で（退職手当5年・賃金3年に分けている）、その他の請求権の2年には手を付けていない＝未払い残業代（3年）より証明書（2年）が先に消える ⑩★国保則3条は2条1項各号に記載事項を丸投げし、2号が「資格取得の年月日及びその理由」＝窓口が退職日の分かる書類を求める理由。★**規則に添付書類の定めは無い**（市町村の運用）。期限14日以内。譲った隣接: 離職票=rishokuhyo／解雇予告=kaiko-yokoku-teate／法定三帳簿=roudousha-meibo／健保のつなぎ=shikaku-kakuninsho／退職の事由の争い=chokai-shobun
@@ -730,7 +740,7 @@ const CATEGORIES = [
     name: "社会保険・年金",
     desc: "加入の条件、保険料の決まり方(標準報酬月額・定時決定・随時改定)、賞与支払届などの手続、扶養と年収の壁。",
     slugs: [
-      "iryo-hoken-toha", "kenko-hoken-kumiai",
+      "shikaku-shutoku-todoke", "iryo-hoken-toha", "kenko-hoken-kumiai",
       "shakai-hoken-kanyu-joken", "shakai-hokenryo-keisan", "hyojun-hoshu-gakuhyo", "kyokai-kenpo-ryoritsu-ichiran",
       "teiji-kettei", "zuiji-kaitei", "sanzen-sango-kyugyo", "ikuji-kaigo-kyugyoho", "sango-papa-ikukyu", "shoyo-shakaihoken", "shoyo-shiharaitodoke", "kaigo-hokenryo-itsukara", "kaigo-hoken-ho",
       "kodomo-kosodate-shienkin", "kodomo-kosodate-kyoshutsukin", "shakai-hoken-fuyo-joken", "hifuyosha-ido-todoke", "kenpo-shikaku-soshitsu", "nenshu-no-kabe",
@@ -764,9 +774,9 @@ const CATEGORIES = [
       "furusato-nozei-toha", "furusato-nozei-kojo-kakunin", "furusato-nozei-keisan", "kifukin-kojo",
       "teigaku-genzei-reiwa8",
       "shotokuzei-ritsu",
-      "nenmatsu-chosei-part", "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-teisei", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-fukugyo", "nenmatsu-chosei-shinai", "chuto-nyusha-nenmatsu-chosei", "tomobataraki-nenmatsu-chosei", "gensen-taisho-gai-kyuyo", "hikyojusha-gensen", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "nenmatsu-chosei-keisan-hoho", "nenmatsu-chosei-kojin-jigyonushi", "shokibo-kyosai-kakekin-kojo", "kiso-kojo-shinkokusho",
+      "freeter-kakutei-shinkoku", "nenmatsu-chosei-part", "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-teisei", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-fukugyo", "nenmatsu-chosei-shinai", "chuto-nyusha-nenmatsu-chosei", "tomobataraki-nenmatsu-chosei", "gensen-taisho-gai-kyuyo", "hikyojusha-gensen", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "nenmatsu-chosei-keisan-hoho", "nenmatsu-chosei-kojin-jigyonushi", "shokibo-kyosai-kakekin-kojo", "kiso-kojo-shinkokusho",
       "shotoku-kingaku-chosei-kojo",
-      "hokenryo-kojo-shinkokusho", "seimei-hokenryo-kojo-shomeisho", "nenmatsu-chosei-gakushi-hoken", "kokumin-nenkin-kojo-shomeisho", "ideco-nenmatsu-chosei", "jutaku-kojo-shinkokusho", "fuyo-kojo-shinkokusho", "haigusha-tokubetsu-kojo", "gensen-kojo-taisho-haigusha", "tokutei-shinzoku-tokubetsu-kojo", "gensen-choshu-toha", "gensen-choshuhyo-mikata", "kyuyo-shotoku-kojo", "gensen-zeigakuhyo-mikata", "gensen-zeigakuhyo-r09", "gensen-choshubo",
+      "hokenryo-kojo-shinkokusho", "seimei-hokenryo-kojo-shomeisho", "nenmatsu-chosei-gakushi-hoken", "kokumin-nenkin-kojo-shomeisho", "ideco-nenmatsu-chosei", "jutaku-kojo-shinkokusho", "fuyo-kojo-shinkokusho", "haigusha-tokubetsu-kojo", "gensen-kojo-taisho-haigusha", "tokutei-shinzoku-tokubetsu-kojo", "gaikoin-hoshu", "gensen-choshu-toha", "gensen-choshuhyo-mikata", "kyuyo-shotoku-kojo", "gensen-zeigakuhyo-mikata", "gensen-zeigakuhyo-r09", "gensen-choshubo",
       "hoteichosho-goukeihyo", "kyuyo-shiharai-hokokusho", "shiharai-chosho", "shakai-hokenryo-kojo", "seimei-hokenryo-kojo", "jishin-hokenryo-kojo", "jutaku-loan-kojo-yoken", "iryohi-kojo-ikura-kara", "tokutei-shishutsu-kojo", "zasson-kojo",
       "taishokukin-zeikin", "taishoku-shotoku-shinkokusho", "taishoku-gensen-choshuhyo", "gensen-choshuhyo-saihakko", "gensen-choshuhyo-itsu", "nenmatsu-chosei-kakutei-shinkoku-chigai", "nenmatsu-chosei-iryohi-kojo", "shokibo-kyosai-uketori", "fukugyo-20man-kakutei-shinkoku", "kinyu-shotoku-kazei-2027", "angoshisan-zeikin", "tokutei-koza-gensen-ari", "haitokin-kakutei-shinkoku", "nisa-kakutei-shinkoku", "jugyoin-mochikabukai", "gaikoku-zeigaku-kojo", "kaigyo-todoke", "yago", "haigyo-todoke", "aoiro-tokubetsu-kojo", "aoiro-shonin-shinseisho", "shiroiro-shinkoku", "kakutei-shinkoku-hitsuyo-shorui", "kakutei-shinkoku-itsumade", "junkakutei-shinkoku", "kaji-anbun", "kanai-rodosha-tokurei", "jigyonushi-kashi-kari", "yotei-nozei-toha", "kojin-jigyozei",
       "shusei-shinkoku-kosei-seikyu", "zeimu-chosa", "zeimu-dairi-kengen-shosho", "fufuku-moshitate", "nozei-shomeisho",
@@ -776,8 +786,8 @@ const CATEGORIES = [
       "ichiji-shotoku",
       "kakutei-shinkoku-kanpukin-itsu",
       "kanpu-shinkoku",
-      "kakutei-shinkoku-ikurakara",
-      "shotoku-kojo-ichiran", "zeigaku-kojo",
+      "kakutei-shinkoku-ikurakara", "kakutei-shinkoku-shinai-to", "mushoku-kakutei-shinkoku",
+      "fuyo-kojo-oya", "shotoku-kojo-ichiran", "zeigaku-kojo",
       "kiso-kojo",
       "zeisei-kaisei-taiko",
       "kakutei-shinkoku-zeirishi-hiyo",
@@ -834,7 +844,7 @@ const CATEGORIES = [
     id: "shohizei",
     name: "消費税・インボイス",
     desc: "インボイス制度の基本と2割特例・簡易課税、課税売上割合と仕入税額控除、消費税の端数処理、中間申告。",
-    slugs: ["shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-kanpu", "kazei-uriage-wariai", "reverse-charge", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri", "shiharai-tsuchisho"],
+    slugs: ["eat-in-shohizei", "shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-kanpu", "kazei-uriage-wariai", "reverse-charge", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri", "shiharai-tsuchisho"],
   },
   {
     id: "denchoho",
@@ -874,7 +884,7 @@ const CATEGORIES = [
     desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務もここ。",
     slugs: [
       "shogu-kaizen-teate", "taishoku-tetsuzuki", "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
-      "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "time-card", "zaishoku-shomeisho", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
+      "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "time-card", "zaishoku-shomeisho", "rishoku-shomeisho", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
       "shakai-hokenryo-choshu-jiki", "kyushoku-shakai-hokenryo", "shoyo-gensen-shotokuzei",
       "gensen-shotokuzei-noki-tokurei", "kyuyo-shiharai-jimusho-kaisetsu", "gensen-shotokuzei-nofusho", "gaichuhi-kyuyo-kubun", "hotei-fukurihi-keisan", "rodo-hoken-nendo-koshin", "roudou-hoken-bango",
       "keiri-nenkan-schedule", "chutaikyo", "taishokukin-soba", "shataku-chintairyo", "fukuri-koseihi", "einen-kinzoku-hyosho", "shain-ryoko", "shokuji-hojo",
@@ -909,9 +919,9 @@ const CATEGORIES = [
     id: "hojinzei-kessan",
     name: "法人税・決算の実務",
     desc: "会社設立後の税務届出と法人税の税率、キャッシュフロー計算書、役員報酬・使用人兼務役員・交際費・決算賞与・繰越欠損金・引当金・経過勘定と、賃上げ促進税制などの優遇措置。",
-    slugs: ["romuhi", "arari", "kessan-tanshin", "jiko-shihon-hiritsu", "roe-roa", "godo-gaisha", "teikan",
+    slugs: ["yojitsu-kanri", "romuhi", "arari", "kessan-tanshin", "jiko-shihon-hiritsu", "roe-roa", "godo-gaisha", "teikan",
       "kaisha-setsuritsu", "hojin-nari", "shihonkin", "genshi", "hojinzei-toha", "hojinzei-shinkokusho", "hojinzei-ritsu", "gaikei-hyojun-kazei", "kigyo-ban-furusato-nozei", "jigyoshozei", "zaimu-toha", "cash-flow-keisansho", "taishaku-taishohyo-mikata", "soneki-keisansho-mikata", "soukanjo-motocho-kakikata", "shiwakecho", "shisanhyo-mikata", "genkin-suitocho-kakikata",
-      "yakuin-hoshu-kimekata", "shiyonin-kenmu-yakuin", "shikko-yakuin", "yakuin-taishokukin", "kosaihi-kaigihi-chigai", "shutcho-nittou-ryohi-kitei", "ryohi-kotsuhi", "shomohinhi", "tsushinhi", "chidai-yachin", "shikikin-hoshokin", "kyosankin-kanjo-kamoku", "kokoku-sendenhi", "noren", "genson-sonshitsu", "shisan-jokyo-saimu", "genka-shokyaku-ruikeigaku",
+      "yakuin-hoshu-kimekata", "shiyonin-kenmu-yakuin", "shikko-yakuin", "yakuin-taishokukin", "kosaihi-kaigihi-chigai", "shutcho-nittou-ryohi-kitei", "ryohi-kotsuhi", "shomohinhi", "kenshuhi-kanjo-kamoku", "tsushinhi", "chidai-yachin", "shikikin-hoshokin", "kyosankin-kanjo-kamoku", "kokoku-sendenhi", "noren", "genson-sonshitsu", "shisan-jokyo-saimu", "genka-shokyaku-ruikeigaku",
       "kessan-shoyo", "kurikoshi-kessonkin", "chinage-sokushin-zeisei", "shukko-zeimu", "kabunushi-soukai-gijiroku",
       "chusho-toshi-sokushin-zeisei", "chusho-keiei-kyoka-zeisei", "keiei-safety-kyosai-shiwake", "jigyo-shokei-zeisei", "sentan-setsubi-dounyu-keikaku",
       "kashidaore-hikiatekin", "kashidaore-sonshitsu", "minashi-haito", "uketori-haito-ekikin-fusannyu", "dozoku-kaisha", "stock-option-zeikin", "shueki-ninshiki-kijun", "maebarai-hiyo",
