@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "kakutei-shinkoku-shinai-to", // 確定申告しないとどうなる Google7,920・合計9,900/月（2026-10-23実測）。申告義務と還付を分ける結果の参照表。
   "kokumin-nenkin-tsuino", // 国民年金 追納 合計月5,400・Google4,320（2026-10-23実測）。年度別追納額と申込手順。
   "nenmatsu-chosei-part", // 年末調整 パート・アルバイト 各月6,600（Google5,280＋Yahoo1,320、2026-10-23需要ゲート）。対象判定と提出先。
   "hotei-kyujitsu", // 法定休日 Google6,480・合計8,100/月（2026-10-23再実測）。休日の設定と勤怠区分の参照表。
@@ -776,7 +777,7 @@ const CATEGORIES = [
       "ichiji-shotoku",
       "kakutei-shinkoku-kanpukin-itsu",
       "kanpu-shinkoku",
-      "kakutei-shinkoku-ikurakara",
+      "kakutei-shinkoku-ikurakara", "kakutei-shinkoku-shinai-to",
       "shotoku-kojo-ichiran", "zeigaku-kojo",
       "kiso-kojo",
       "zeisei-kaisei-taiko",
