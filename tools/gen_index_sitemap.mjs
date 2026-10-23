@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "kokumin-nenkin-tsuino", // 国民年金 追納 合計月5,400・Google4,320（2026-10-23実測）。年度別追納額と申込手順。
   "nenmatsu-chosei-part", // 年末調整 パート・アルバイト 各月6,600（Google5,280＋Yahoo1,320、2026-10-23需要ゲート）。対象判定と提出先。
   "hotei-kyujitsu", // 法定休日 Google6,480・合計8,100/月（2026-10-23再実測）。休日の設定と勤怠区分の参照表。
   "yago", // 屋号 月間18,100（Google14,480＋Yahoo3,620、2026-10-23再実測）、開業届・口座・請求書の記入欄。
@@ -739,7 +740,7 @@ const CATEGORIES = [
       "izoku-nenkin-jukyu-yoken",
       "kenko-hoken-nini-keizoku",
       "kokuho-hokenryo",
-      "kokumin-nenkin-hokenryo",
+      "kokumin-nenkin-hokenryo", "kokumin-nenkin-tsuino",
       "shikaku-kakuninsho",
       "maina-hokensho",
       "kakutei-kyoshutsu-nenkin",
