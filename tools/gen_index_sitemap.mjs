@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "eat-in-shohizei", // イートイン 消費税 1,300/月（2026-10-24実測）
   "freeter-kakutei-shinkoku", // フリーター 確定申告 月3,600、2026-10-24需要実測。
   "fuyo-kojo-oya", // 扶養控除 親 Google1,280＋Yahoo320＝月1,600（2026-10-23需要ゲート）。国内の親の年末調整確認表。
   "yojitsu-kanri", // 予実管理 Google5,280・合計6,600/月（2026-10-23実測）。月次比較表と差異分析。
@@ -840,7 +841,7 @@ const CATEGORIES = [
     id: "shohizei",
     name: "消費税・インボイス",
     desc: "インボイス制度の基本と2割特例・簡易課税、課税売上割合と仕入税額控除、消費税の端数処理、中間申告。",
-    slugs: ["shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-kanpu", "kazei-uriage-wariai", "reverse-charge", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri", "shiharai-tsuchisho"],
+    slugs: ["eat-in-shohizei", "shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-kanpu", "kazei-uriage-wariai", "reverse-charge", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri", "shiharai-tsuchisho"],
   },
   {
     id: "denchoho",
