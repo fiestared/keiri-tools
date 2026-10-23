@@ -36,16 +36,16 @@ const LAST_RUN = join(DIR, "logs", "last-run.txt");
 // サイトを足したい時はここに1行足す（aitimes.jp = properties/545695263 は 2026-08-13 に外した）。
 // feeArticlePath / sessionGoal / googleKpi / adsense は keiri-tools 専用。無いサイトは出さない。
 const GOOGLE_KPI_KEIRI = [                        // Google クリック/日（GSC・7日平均）の通過点
-  { by: "2026-10-31", target: 10 },
-  { by: "2026-12-31", target: 30 },
-  { by: "2027-03-31", target: 100 },
+  { by: "2026-10-31", target: 30 },  // 2026-10-23 Masahiro「引き上げておいて」: 内訳 Google 500（targets.json）に合わせた。旧 10/30/100
+  { by: "2026-12-31", target: 133 }, // targets.json checkpoint の pace_marks.google_clicks 132.8
+  { by: "2027-03-31", target: 500 },
 ];
 const SITES = [
   {
     key: "keiri-tools", label: "keiri-tools.com", property: "properties/545217731",
     url: "https://keiri-tools.com", gscSite: "sc-domain:keiri-tools.com",
     feeArticlePath: "/column/furikomi-tesuryo-hikaku/",
-    pvGoal: 2400,   // 2026-10-04 Masahiro「目標はPV数に置き換えようか」（旧 sessionGoal 2400。PV/セッション≈1.01）
+    pvGoal: 10000, // 2026-10-23 Masahiro「2027-03-31まで日10,000PVに」（正本 keiri-commander/targets.json・2026-10-22 引き上げ。旧 2,400）
     goalBy: "2027-03-31",
     googleKpi: GOOGLE_KPI_KEIRI,
     titleSuffix: /\s*[|｜]\s*経理・税金・補助金ツールズ.*$/,
@@ -71,8 +71,8 @@ const FETCH_DAYS = WINDOW_DAYS + 7;
 const INTERVAL_SEC = 60;
 
 // ---------- 目標と Google トラック KPI ----------
-// 2026-09-10承認: keiriのみ日2,400（7日平均）、期日2027-03-31。日1万は長期の方向。
-// 内訳はBing 2,000クリック・GSC 100クリック・非検索300セッション。
+// 2026-10-22 引き上げ（旧 2026-09-10承認の日2,400）: keiriのみ日10,000 PV（7日平均）、期日2027-03-31。日3万は2027-12-31の最終目標。
+// 内訳はBing 8,500クリック・GSC 500クリック・非検索1,000セッション（正本 targets.json）。
 // 2026-09-12承認: 年末休業前の完成7日と平日平均を併記し、4指標の等率線で中間確認。
 // 旧「表示18,000未満なら下方修正」は廃止。正本: growth_ledger.md G-007。
 // BWT pages/queriesは週次バケット。全ラベルを合計して7で割らない。全体の分母はtraffic。
@@ -631,7 +631,7 @@ function model(data) {
 }
 
 /**
- * 目標（日2,400セッション・2027-03-31）と Google トラック KPI の数字を作る。
+ * 目標（日10,000 PV・2027-03-31）と Google トラック KPI の数字を作る。
  *
  * ★Google クリックの7日平均は「GSC がデータを出している末端の日」で締める（今日ではない）。
  *   GSC は2〜3日遅れなので、今日で締めると末尾がゼロ埋めされて平均が必ず下振れする。
@@ -1278,7 +1278,7 @@ function googleChart(g, key) {
 }
 
 /**
- * 目標（日2,400セッション・2027-03-31）と Google トラック KPI。タイルの直下＝画面の上のほうに置く。
+ * 目標（日10,000 PV・2027-03-31）と Google トラック KPI。タイルの直下＝画面の上のほうに置く。
  * ★数字より「どの日で締めたか」「何日遅れか」が見えることを優先する。GSC は末端が動くため。
  */
 function goalBlock(site) {
@@ -1314,9 +1314,9 @@ function goalBlock(site) {
         <div class="metric-sub">同じ7日のセッション <b>${n0(g.sessionsPerDay)}</b>/日・UU <b>${g.uu7 == null ? "—" : n0(g.uu7)}</b>人（7日間の重複なし）</div>
         ${g.weekdayPvPerDay == null ? "" : `<div class="metric-sub">平日${g.weekdayN}日平均 <b>${n0(g.weekdayPvPerDay)}</b> PV/日（${HOLIDAYS ? "土日・祝日・年末年始を除く" : "土日を除く。★祝日表を読めなかったので祝日は含んだまま"}）${g.offInWindow && g.offInWindow.length ? `。この7日の祝日: ${esc(g.offInWindow.join("・"))}` : ""}。目標は7日平均、進捗の判断には平日平均も使う。</div>`}
         ${bar(g.sessionPct)}
-        <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>${site.key === "keiri-tools" ? "。内訳の目標は Bing 2,000 ＋ Google 100 ＋ 非検索 300。" : `（月100万PV＝日約${sessionGoal.toLocaleString("ja-JP")} PV・${esc(siteConf(site).goalBy)}まで）。`}</div>
+        <div class="metric-sub">達成率 <b>${n1(g.sessionPct)}%</b>${site.key === "keiri-tools" ? "。内訳の目標は Bing 8,500 ＋ Google 500 ＋ 非検索 1,000。" : `（月100万PV＝日約${sessionGoal.toLocaleString("ja-JP")} PV・${esc(siteConf(site).goalBy)}まで）。`}</div>
         ${site.key !== "keiri-tools" ? "" : `<div class="metric-sub">2026-12-31に中間確認。年末休業前の完成7日（候補: Bingの日付で12/18〜24）と平日平均で進捗を見る。表示18,000/日だけでは判定しない。</div>
-        <div class="metric-sub">12月末の進捗目安: Bing 1,014 / Google 20.3 / 非検索 89.5 / GA4 1,201 PV。目標まで一定率で伸びた場合の目安で、予測値ではない。</div>`}
+        <div class="metric-sub">12月末の進捗目安: Bing 2,257 / Google 132.8 / 非検索 265.6 / GA4 2,656 PV。目標まで一定率で伸びた場合の目安で、予測値ではない。</div>`}
       </div>` : `
       <div class="goal-card">
         <div class="insight-head"><div><span class="eyebrow">全体（GA4）</span><h4>1日PV <small>直近7日平均・昨日まで</small></h4></div></div>
@@ -1337,8 +1337,8 @@ function goalBlock(site) {
     </div>` : "";
   const keiriFoot = sessionGoal && site.key === "keiri-tools" ? `
     <p class="foot">
-      日1万PVを2027-12-31までの最終目標とし、今期は2027-03-31までに日2,400 PVを目指す（2026-10-04 にセッションから PV へ変更）。<br>
-      Googleの通過点は10月末10 / 12月末30 / 2027-03末100クリック/日。外れた場合は方針も見直す。<br>
+      日3万PVを2027-12-31までの最終目標とし、今期は2027-03-31までに日10,000 PVを目指す（2026-10-22 に日2,400から引き上げ）。<br>
+      Googleの通過点は10月末30 / 12月末133 / 2027-03末500クリック/日（2026-10-23 に10/30/100から引き上げ）。外れた場合は方針も見直す。<br>
       ★Google クリックは GA4 ではなく Search Console の値。GSC は2〜3日遅れで届くので、7日平均は「今日」ではなく <b>GSC の末端の日</b> で締めている。
     </p>` : `
     <p class="foot">
