@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "fuyo-kojo-oya", // 扶養控除 親 Google1,280＋Yahoo320＝月1,600（2026-10-23需要ゲート）。国内の親の年末調整確認表。
   "yojitsu-kanri", // 予実管理 Google5,280・合計6,600/月（2026-10-23実測）。月次比較表と差異分析。
   "shikaku-shutoku-todoke", // 資格取得届 1,600/月（2026-10-23実測）。提出・記入の参照表。加入要件は既存記事へ。
   "kakutei-shinkoku-shinai-to", // 確定申告しないとどうなる Google7,920・合計9,900/月（2026-10-23実測）。申告義務と還付を分ける結果の参照表。
@@ -781,7 +782,7 @@ const CATEGORIES = [
       "kakutei-shinkoku-kanpukin-itsu",
       "kanpu-shinkoku",
       "kakutei-shinkoku-ikurakara", "kakutei-shinkoku-shinai-to",
-      "shotoku-kojo-ichiran", "zeigaku-kojo",
+      "fuyo-kojo-oya", "shotoku-kojo-ichiran", "zeigaku-kojo",
       "kiso-kojo",
       "zeisei-kaisei-taiko",
       "kakutei-shinkoku-zeirishi-hiyo",
