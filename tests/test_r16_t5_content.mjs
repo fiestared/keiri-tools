@@ -2,12 +2,20 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { JSDOM } from 'jsdom';
 const prefix=process.env.R16_HTML_ROOT||'.';
+const mainDoc=new JSDOM(fs.readFileSync(`${prefix}/docs/juminzei/index.html`,'utf8')).window.document;
 for(const slug of ['juminzei','embed/juminzei']){
  const d=new JSDOM(fs.readFileSync(`${prefix}/docs/${slug}/index.html`,'utf8')).window.document;
  assert.doesNotMatch(d.querySelector('#haigusha option[value="none"]').textContent,/共働き/,'共働きだけを理由に配偶者控除なしへ誘導しない');
  assert.match(d.querySelector('label[for="fuyoDokyoRooya"]').textContent,/直系尊属/,'同居老親等は直系尊属が要件');
  assert.match(d.querySelector('label[for="fuyoRojin"]').textContent,/同居老親等以外/,'同居する兄姉も通常の老人扶養へ');
- assert.match(d.querySelector('label[for="fuyoIppan"]').parentElement.textContent,/非居住者.*38万円/s,'非居住者30〜69歳の追加要件を入力前に確認できる');
+ const conditionLink=d.querySelector('label[for="fuyoIppan"]').parentElement.querySelector('a[href*="#hikyoju"]');
+ assert.ok(conditionLink,'非居住者扶養の入力欄から追加要件をたどれる');
+ const target=new URL(conditionLink.getAttribute('href'),`https://keiri-tools.com/${slug}/`);
+ assert.equal(target.pathname,'/juminzei/');assert.equal(target.hash,'#hikyoju');
+ const section=mainDoc.getElementById(target.hash.slice(1));assert.ok(section,'条件のリンク先が実在する');
+ const requirements=section.nextElementSibling.nextElementSibling;
+ assert.equal(requirements.localName,'ul');
+ for(const rule of [/留学.*日本国内の住所・居所を失った/,/障害者/,/納税義務者本人から.*生活費または教育費として38万円以上/])assert.match(requirements.textContent,rule,'リンク先に正本の追加3要件を残す');
 }
 const h=new JSDOM(fs.readFileSync(`${prefix}/docs/hikazei-setai/index.html`,'utf8')).window.document;
 for(let n=1;n<=6;n++) assert.match(h.querySelector(`label[for="m${n}_age"]`).textContent,/前年12月31日/,'年齢は課税年度の前年末');
@@ -16,6 +24,7 @@ assert.match(h.querySelector('#hero-155').parentElement.textContent,/公的年�
 assert.doesNotMatch(h.body.textContent,/参酌基準/,'295条3項は従う基準');
 assert.doesNotMatch(h.querySelector('.callout').textContent,/高額療養費の区分.*この定義/,'医療保険の判定対象を世帯全員と一律にしない');
 const j=new JSDOM(fs.readFileSync(`${prefix}/docs/juminzei/index.html`,'utf8')).window.document;
-assert.match(j.body.textContent,/給与所得控除\s*−\s*基礎控除/,'概算式は基礎控除を差し引く');
+assert.match(j.body.textContent,/所得割.*課税所得\s*×\s*税率\s*−\s*税額控除/s,'所得割の式は税額控除を差し引く');
+assert.match(j.body.textContent,/課税所得は所得から.*基礎控除.*引いた額/s,'課税所得は基礎控除を差し引く');
 assert.doesNotMatch(j.body.textContent,/配当所得がある人（分離課税なので/,'配当を一律の分離課税にしない');
 console.log('✓ r16: 入力条件・年度・説明式の回帰検査');
