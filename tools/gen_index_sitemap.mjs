@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "mushoku-kakutei-shinkoku", // 無職 確定申告 月3,600（Google2,880・2026-10-24実測）。退職年の還付と無収入の住民税申告。
   "gaikoin-hoshu", // 外交員報酬 Google1,040・合計1,300/月。2026-10-24需要ゲート。
   "freeter-kakutei-shinkoku", // フリーター 確定申告 月3,600、2026-10-24需要実測。
   "fuyo-kojo-oya", // 扶養控除 親 Google1,280＋Yahoo320＝月1,600（2026-10-23需要ゲート）。国内の親の年末調整確認表。
@@ -783,7 +784,7 @@ const CATEGORIES = [
       "ichiji-shotoku",
       "kakutei-shinkoku-kanpukin-itsu",
       "kanpu-shinkoku",
-      "kakutei-shinkoku-ikurakara", "kakutei-shinkoku-shinai-to",
+      "kakutei-shinkoku-ikurakara", "kakutei-shinkoku-shinai-to", "mushoku-kakutei-shinkoku",
       "fuyo-kojo-oya", "shotoku-kojo-ichiran", "zeigaku-kojo",
       "kiso-kojo",
       "zeisei-kaisei-taiko",
