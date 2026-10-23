@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="card-desc" content="予実管理の月次表と差異分析を整理。売上・費用の架空例、数量・単価への分解、Excelの式から翌月の改善まで確認できます。">
+<title>予実管理とは？月次の進め方・差異分析とExcel表の作り方</title>
+<meta name="description" content="予実管理は、予算と実績の差を調べて次の行動を決める仕事です。売上・変動費・固定費から予算を組む手順、差額と達成率の見方、数量と単価に分ける架空例、Excelで作る月次表の式とよくある失敗を整理します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/yojitsu-kanri/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="予実管理とは？月次の進め方・差異分析とExcel表の作り方">
+<meta property="og:description" content="予実管理は、予算と実績の差を調べて次の行動を決める仕事です。売上・変動費・固定費から予算を組む手順、差額と達成率の見方、数量と単価に分ける架空例、Excelで作る月次表の式とよくある失敗を整理します。">
+<meta property="og:url" content="https://keiri-tools.com/column/yojitsu-kanri/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-E742DSDHPD');
+</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578" crossorigin="anonymous"></script>
+<script src="../../assets/track.js" defer></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "予実管理とは？月次の進め方・差異分析とExcel表の作り方",
+      "datePublished": "2026-10-23",
+      "dateModified": "2026-10-24",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/yojitsu-kanri/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "予実管理",
+          "item": "https://keiri-tools.com/column/yojitsu-kanri/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 予実管理は何のために行いますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 予算と実績の差から原因を見つけ、次の行動を決めるためです。売上や費用を集計するだけで終わらず、改善の担当と、結果を確かめる方法を残します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 予実管理はExcelでもできますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 予算・実績・差額・達成率を並べた表から始められます。本記事の配置例では、入力欄と数式の欄を分け、未入力と確定したゼロを区別します。科目対応と更新担当も決めておくと確認しやすくなります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 予算が赤字のときも達成率を使いますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 本記事の表では、予算がゼロ以下の科目は達成率の比較を保留し、金額の差と理由を説明する扱いにします。赤字を分母にした比率では、数字の増減と改善・悪化の向きが分かりにくくなるためです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 予算と実績が大きくずれたら、予算を直しますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. まず差の原因を調べ、その後の見通しを更新します。当初予算は残し、修正予算や最新見込を別に管理する方法があります。承認手順は社内のルールに合わせ、変更理由を記録します。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script><!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+
+<main><nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 予実管理</nav><article>
+<h1>予実管理とは？月次の進め方・差異分析とExcel表の作り方</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-23">2026年10月23日</time>（更新日: <time datetime="2026-10-24">2026年10月24日</time>）</p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><b>予実管理は、予算と実績を比べ、差が出た原因を調べて次の行動を決める仕事です。</b>表を埋めるだけで終わらず、売上が足りないのか、費用の使い方が変わったのかを分けて確認します。</p>
+<p>経理で初めて担当するなら、売上・変動費・固定費・利益の月次表から始められます。下の架空例で差額と達成率を読み、そのままExcelに置ける式と、翌月の改善までの手順を確認できます。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#example">予実管理表の例と読み方</a></li>
+<li><a href="#budget">売上・変動費・固定費から予算を立てる</a></li>
+<li><a href="#monthly">月次の予実管理を進める手順</a></li>
+<li><a href="#variance">差異を金額・比率・数量と単価で分析する</a></li>
+<li><a href="#excel">Excelで予実管理表を作る</a></li>
+<li><a href="#mistakes">よくある失敗と直し方</a></li>
+<li><a href="#faq">よくある質問</a></li><li><a href="#sources">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../arari/">粗利とは？粗利率の計算式・売上原価の出し方</a></li><li><a href="../soneki-keisansho-mikata/">損益計算書の見方</a></li><li><a href="../zaimu-toha/">財務とは？経理・会計との違いと資金を管理する仕事の流れ</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="example">予実管理表の例と読み方</h2>
+<p><b>差額は実績から予算を引き、達成率は予算が正の場合に実績を予算で割って求めます。</b>費用の差額がマイナスでも、それだけで良い結果とは判断できません。売上と利益を一緒に見ます。</p>
+<p data-review-context="before-table">以下は架空の小売会社の単月・税抜の設例です。単一商品の販売を想定し、在庫変動と他の営業収益・費用はなく、変動費と固定費を引いた残りを営業利益とします。差額は実績−予算、達成率は実績÷予算を百分率で表示します。</p>
+<div class="scroll-wrap"><table><caption>架空の単月・税抜の予実比較</caption><thead><tr><th>項目</th><th class="num">予算</th><th class="num">実績</th><th class="num">差額</th><th class="num">達成率</th></tr></thead><tbody>
+<tr><th>売上高</th><td class="num"><span class="numeric-token">100万円</span></td><td class="num"><span class="numeric-token">90万円</span></td><td class="num">−<span class="numeric-token">10万円</span></td><td class="num"><span class="numeric-token">90%</span></td></tr>
+<tr><th>変動費</th><td class="num"><span class="numeric-token">60万円</span></td><td class="num">58万<span class="numeric-token">5,000円</span></td><td class="num">−1万<span class="numeric-token">5,000円</span></td><td class="num"><span class="numeric-token">97.5%</span></td></tr>
+<tr><th>固定費</th><td class="num"><span class="numeric-token">30万円</span></td><td class="num"><span class="numeric-token">30万円</span></td><td class="num">差なし</td><td class="num"><span class="numeric-token">100%</span></td></tr>
+<tr><th>営業利益</th><td class="num"><span class="numeric-token">10万円</span></td><td class="num">1万<span class="numeric-token">5,000円</span></td><td class="num">−8万<span class="numeric-token">5,000円</span></td><td class="num"><span class="numeric-token">15%</span></td></tr>
+</tbody></table></div>
+<p>この例では変動費も減っていますが、売上の減り方に対して十分には減っていません。費用の予算を使い切っていないという理由で安心せず、販売量や仕入条件を調べます。</p>
+<p>なお、ここで使う費用の分類は分析用のものです。粗利や営業利益の定義は、<a href="../arari/">粗利の計算方法</a>と<a href="../soneki-keisansho-mikata/">損益計算書の見方</a>で確認できます。</p>
+<h3>予算管理との違いは、社内の使い方をそろえる</h3>
+<p>予算を立てて運用する仕事を予算管理、その中で予算と実績を突き合わせる仕事を予実管理、と整理すると担当範囲が分かりやすくなります。本記事での整理であり、会社によって用語の使い方は異なります。</p>
+<p>名前の違いより、誰が予算を承認し、誰が実績を確定し、差の理由を誰に確認するかを決める方が実務に役立ちます。経理が数字を集め、営業や現場が原因を説明し、責任者が対応を決める、といった分担です。</p>
+<p><a href="https://www.mhlw.go.jp/content/11909000/001656099.pdf#page=7">厚生労働省の収支計画資料</a>には、予算と実績を比較して差異の把握・分析・改善につなげる説明と、予算実績報告書の様式例が掲載されています。労働者協同組合向けの資料ですが、比較と改善という考え方の参考になります。</p>
+<h2 id="budget">売上・変動費・固定費から予算を立てる</h2>
+<p><b>予算は、金額の根拠を残して月別に積み上げます。</b>前年と同じ金額を置く場合も、販売数量、価格、契約、採用計画が変わっていないかを確かめます。</p>
+<p data-review-context="before-table">以下は小規模な会社で予算を作るときの社内運用例です。売上の算出方法は業種に合わせて選び、費用の固定・変動は一定の事業規模と期間を前提に整理します。</p>
+<div class="scroll-wrap"><table><thead><tr><th>項目</th><th>組み立て方の例</th><th>残しておく根拠</th></tr></thead><tbody>
+<tr><th>売上</th><td>販売数量×販売単価</td><td>受注見込、販売履歴、価格改定予定</td></tr>
+<tr><th>変動費</th><td>販売量に応じる原価や手数料を見積もる</td><td>仕入単価、原価率、販売手数料の契約</td></tr>
+<tr><th>固定費</th><td>月ごとの契約額や人員計画を積み上げる</td><td>家賃、給与、保守契約、採用・更新予定</td></tr>
+<tr><th>利益</th><td>売上から計画した費用を差し引く</td><td>売上と費用の各明細、集計範囲</td></tr>
+</tbody></table></div>
+<h3>売上は販売量と価格を別々に置く</h3>
+<p>小売なら商品別の数量と単価、サービス業なら案件数と平均単価などに分ける方法があります。季節性や営業可能日、人員の処理能力も確認し、年の目標を機械的に均等配分しないようにします。</p>
+<p>経営者が求める利益目標と、現場の見込から積み上げた予算に差がある場合は、その差を埋める施策を別に記録します。実行する予定のない値上げや受注増を数字だけに織り込むと、後から未達の理由を検証できません。</p>
+<h3>費用は勘定科目名だけで決めない</h3>
+<p><a href="https://j-net21.smrj.go.jp/startup/manual/list5/5-2-9.html">中小企業基盤整備機構の損益分岐点の解説</a>では、売上に比例する変動費と、売上にかかわらず一定的にかかる固定費に分けています。原材料・仕入商品や、正社員の給与・家賃が例です。</p>
+<p>固定費も、採用、増床、契約更新などで変わります。一定規模・期間での分類として使い、今後も支出額が変わらないという意味には取らないようにします。</p>
+<p>たとえば配送費は、定額契約部分と出荷件数に応じる部分を分ける方法があります。分けにくい費用は仮の分類と根拠を残し、予算と実績で同じルールを使います。分類変更があれば、比較への影響も確認します。</p>
+<h2 id="monthly">月次の予実管理を進める手順</h2>
+<p><b>実績の基準をそろえ、差の大きい項目から原因と対応を決めます。</b>次は経理と現場で分担する社内運用例です。作成日、実績の確定状況、次回の確認予定を表に残します。</p>
+<figure class="figure"><svg viewBox="0 0 340 310" role="img" aria-label="月次の予実管理の社内運用例。実績を集め、比較基準をそろえ、原因を調べ、対応と担当を決め、見通しを更新する">
+<rect x="15" y="10" width="310" height="42" rx="6" fill="none" stroke="currentColor"/><text x="170" y="37" text-anchor="middle" font-size="15" fill="currentColor">実績を集める</text>
+<path d="M170 52v18m-5-5 5 5 5-5" fill="none" stroke="currentColor"/>
+<rect x="15" y="70" width="310" height="42" rx="6" fill="none" stroke="currentColor"/><text x="170" y="97" text-anchor="middle" font-size="15" fill="currentColor">比較する基準をそろえる</text>
+<path d="M170 112v18m-5-5 5 5 5-5" fill="none" stroke="currentColor"/>
+<rect x="15" y="130" width="310" height="42" rx="6" fill="none" stroke="currentColor"/><text x="170" y="157" text-anchor="middle" font-size="15" fill="currentColor">差の原因を確かめる</text>
+<path d="M170 172v18m-5-5 5 5 5-5" fill="none" stroke="currentColor"/>
+<rect x="15" y="190" width="310" height="42" rx="6" fill="none" stroke="currentColor"/><text x="170" y="217" text-anchor="middle" font-size="15" fill="currentColor">対応・担当・期限を決める</text>
+<path d="M170 232v18m-5-5 5 5 5-5" fill="none" stroke="currentColor"/>
+<rect x="15" y="250" width="310" height="42" rx="6" fill="none" stroke="currentColor"/><text x="170" y="277" text-anchor="middle" font-size="15" fill="currentColor">見通しを更新し、次回確認</text>
+</svg><figcaption>社内運用例。集計した数字を、次に確かめることと担当者につなげます。</figcaption></figure>
+<h3>実績を集めて、比較前のずれを除く</h3>
+<p>試算表や売上明細を集め、対象期間、部門、勘定科目、税込・税抜、単位を予算と合わせます。未着請求書、返品、棚卸、部門の振替などが未反映なら、確定値と見込値を区別します。</p>
+<p>年払い費用が予算では月割り、実績では支払月に集中している場合、そのままでは時期の差を業績の差と読み違えます。管理用に配分するなら、配分ルールと会計帳簿との差額を残し、元の試算表まで戻れる形にします。</p>
+<h3>原因は事実と仮説を分けて残す</h3>
+<p>差がある科目を取引明細へ戻し、金額の大きさ、繰り返す可能性、利益への影響で確認の順を決めます。売上未達なら、出荷の翌月ずれ、失注、値引き、商品構成の変化などを切り分けます。</p>
+<p>まだ裏付けがない原因は「確認中」とし、誰に何を聞くかを残します。単なる集計漏れと、販売が伸びていないという事業上の問題を混ぜないためです。</p>
+<h3>改善は担当と確認方法まで決める</h3>
+<p>たとえば「失注を減らす」だけでは次回に結果を確かめにくくなります。「営業担当が失注理由を案件一覧に記入し、責任者が翌月の会議で価格要因と納期要因を確認する」のように、作業と担当を具体化します。</p>
+<p>売上金額の手前で追う指標には、案件数、成約状況、受注単価、返品状況などがあります。目的に合うものを選び、集計負担が大きい項目を増やしすぎない運用にします。</p>
+<p>当初予算、承認済みの修正予算、最新の着地見込は列を分ける方法があります。見込は更新しても、元の予算を消さず、変更日・理由・承認者を残せば、何が変わったのかを説明できます。</p>
+<h2 id="variance">差異を金額・比率・数量と単価で分析する</h2>
+<p><b>金額差で影響の大きさを見て、比率差で採算の変化を見ます。</b>その後、売上を数量と単価に分けると、現場へ確認する内容を絞れます。</p>
+<h3>達成率と、率どうしの差を混同しない</h3>
+<p>達成率は予算に対する実績の割合です。変動費率は、対応する売上高に対して変動費が占める割合です。分母が違うので、同じ「比率」でも示す内容は異なります。</p>
+<p data-review-context="before-table">以下も架空の単月・税抜の設例です。予算の変動費を予算売上高で、実績の変動費を実績売上高で割ります。率どうしの差は、実績の率から予算の率を引いたポイント差です。</p>
+<div class="scroll-wrap"><table><thead><tr><th>指標</th><th class="num">予算</th><th class="num">実績</th><th class="num">差</th></tr></thead><tbody>
+<tr><th>変動費率</th><td class="num"><span class="numeric-token">60%</span></td><td class="num"><span class="numeric-token">65%</span></td><td class="num">＋5ポイント</td></tr>
+</tbody></table></div>
+<p>この例は、売上に占める変動費の割合が上がった状態です。仕入単価の上昇や廃棄、値引きなどを調べる入口になります。ただし、表だけでは原因は確定しません。</p>
+<p>予算がゼロ以下の科目は、達成率で良し悪しを判定せず、差額と内容を説明する扱いにします。赤字予算を分母にすると、数値の増減と改善・悪化の向きが分かりにくくなるためです。</p>
+<h3>売上の差を数量と単価に分ける</h3>
+<p>次は、数量を先に変える分解方法の例です。数量差異には予算単価、単価差異には実績数量を使います。複数商品の構成変化まで扱う場合は、商品別の分析を別に行います。</p>
+<p data-review-context="before-table">架空の単月・税抜の単一商品例では、予算は100個×10,000円、実績は80個×11,250円です。数量差異を予算単価で、単価差異を実績数量で計算し、分解の順序をそろえます。</p>
+<div class="scroll-wrap"><table><thead><tr><th>差異</th><th>この方式の式</th><th>架空例の計算</th><th class="num">結果</th></tr></thead><tbody>
+<tr><th>数量差異</th><td>数量差×予算単価</td><td>（80個−100個）×10,000円</td><td class="num">−<span class="numeric-token">20万円</span></td></tr>
+<tr><th>単価差異</th><td>実績数量×単価差</td><td>80個×（11,250円−10,000円）</td><td class="num">＋10万円</td></tr>
+<tr><th>売上差異との照合</th><td>数量差異＋単価差異</td><td>−20万円＋10万円</td><td class="num">−<span class="numeric-token">10万円</span></td></tr>
+</tbody></table></div>
+<p>この例では、単価の上昇が数量減による売上減少の一部を補っています。単価が上がった事実だけを見て販売が好調だったとは判断せず、数量減の理由も調べます。</p>
+<p class="hint">分解の順序を変えると、数量と単価への差異の配分も変わります。担当者間で方式をそろえ、合計が売上の実績−予算と一致することを確かめます。</p>
+<h2 id="excel">Excelで予実管理表を作る</h2>
+<p><b>入力欄と計算欄を分け、同じ配置を月ごとに使います。</b>ここではA列を項目、B列を予算、C列を実績、D列を差額、E列を達成率にする作成例を示します。金額の入力単位は円にそろえます。</p>
+<p>列見出しの下に売上・変動費・固定費・利益を並べ、入力するのは売上と各費用です。利益や差額は数式で求め、式を入力値で上書きしないようにします。</p>
+<p data-review-context="before-table">次のExcel式は本記事の配置例です。売上を行2、変動費を行3、固定費を行4、利益を行5とします。B列・C列の入力は数値とし、空欄や「未確定」は計算に進めず、数値のゼロは確定した実績として区別します。</p>
+<div class="scroll-wrap"><table><thead><tr><th>計算する欄</th><th>セル</th><th>式の例</th></tr></thead><tbody>
+<tr><th>売上の差額</th><td>D2</td><td><code>=IF(COUNT(B2,C2)=2,C2-B2,"未確定")</code></td></tr>
+<tr><th>売上の達成率</th><td>E2</td><td><code>=IF(COUNT(B2,C2)=2,IF(B2&gt;0,C2/B2,"比較保留"),"未確定")</code></td></tr>
+<tr><th>予算の利益</th><td>B5</td><td><code>=IF(COUNT(B2:B4)=3,B2-B3-B4,"未確定")</code></td></tr>
+<tr><th>実績の利益</th><td>C5</td><td><code>=IF(COUNT(C2:C4)=3,C2-C3-C4,"未確定")</code></td></tr>
+</tbody></table></div>
+<p>差額・達成率の式は各費用と利益の行にもコピーできます。達成率のセルはパーセント表示にし、差額は売上・費用とも実績−予算の向きを保ちます。費用増を良い結果と表示しないよう、評価は金額の符号と分けます。</p>
+<p>上のIF式は、予算が正の場合に達成率を計算し、未入力は未確定、予算がゼロ以下なら比較保留とする運用例です。IFの条件分岐は<a href="https://support.microsoft.com/ja-jp/excel/functions/if-function">MicrosoftのIF関数の説明</a>でも確認できます。</p>
+<p>利益の式では、数値が必要な欄にそろった場合に計算するためCOUNTを使っています。<a href="https://support.microsoft.com/ja-jp/excel/functions/count-function">COUNT関数の説明</a>も確認できます。</p>
+<h3>累計は同じ期間の金額から求める</h3>
+<p>月ごとの達成率を平均するのではなく、同じ対象期間の実績合計を予算合計で割ります。この方法も、予算合計が正の場合に使います。単月と累計を併記すると、翌月にずれた売上と、そのまま失った売上を区別しやすくなります。</p>
+<p>累計用の別シートで、確定した月の予算をB列、実績をC列に並べるなら、対象の数値セルをSUMで合計できます。未確定の月が混じっていないかを確かめ、合計する期間を予算側と実績側で合わせます。</p>
+<p class="hint">SUMは参照範囲の文字列を合計しないため、金額は数値で入力します。非表示の行も合計するので、フィルターで見えている行だけの合計とは分けて扱います。</p>
+<p>SUMの参照範囲と注意点は、<a href="https://support.microsoft.com/ja-jp/excel/functions/sum-function">MicrosoftのSUM関数の説明</a>で確認できます。月や科目を追加したときは、合計範囲に追加分が含まれたかも確認します。</p>
+<h3>帳簿との照合と版の管理を残す</h3>
+<p>実績を取り込んだ日、元の試算表の版、科目の対応表を保存します。更新担当を決め、確定後に修正した金額は理由を記録すると、会議で使った数字と後日の数字の違いを追えます。</p>
+<p>表計算で運用が難しくなったら、同時編集の衝突、承認記録、科目対応、集計にかかる作業を先に整理します。道具を変える前に、何を直したいかを明確にするためです。</p>
+<h2 id="mistakes">よくある失敗と直し方</h2>
+<p><b>差が出たことを責めるより、比較の前提と次の作業を確かめます。</b>原因が分からない差は、現場の説明と元の明細へ戻ります。</p>
+<p data-review-context="before-table">次は会社内で使う確認例です。特定の運用方法や提出様式を義務付けるものではありません。</p>
+<div class="scroll-wrap"><table><thead><tr><th>失敗</th><th>起きる問題</th><th>直し方の例</th></tr></thead><tbody>
+<tr><th>差額の報告で終わる</th><td>翌月も同じ理由で差が残る</td><td>対応する担当と、次回確認する資料を決める</td></tr>
+<tr><th>細かい科目を増やしすぎる</th><td>集計に追われ、原因を調べる時間がなくなる</td><td>金額と継続性で確認する項目を絞る</td></tr>
+<tr><th>予算を実績に上書きする</th><td>元の計画との差が分からなくなる</td><td>当初予算と最新見込を分け、変更記録を残す</td></tr>
+<tr><th>費用減を節約と決めつける</th><td>販売減や実施延期を見落とす</td><td>売上・数量と、予定した活動の実施状況を照合する</td></tr>
+<tr><th>未入力をゼロにする</th><td>未確定の実績を確定済みと誤認する</td><td>空欄と確定したゼロを区別する</td></tr>
+<tr><th>利益だけを見て安心する</th><td>売掛金の回収や支払いの時期を見落とす</td><td>資金繰り表で入出金日を確認する</td></tr>
+</tbody></table></div>
+<p>損益の予実と資金の予実は分けて確認します。売上の計上と代金の回収には時期のずれがあり、借入元本の返済や設備代金の支払いも、営業損益の費用と同じ扱いにはできません。詳しくは<a href="../zaimu-toha/">財務の仕事と資金予定の作り方</a>へ進めます。</p>
+<p>固定費や変動費を整理し終えたら、売上目標の点検には損益分岐点の計算も使えます。予実管理で原因を調べる作業と組み合わせ、費用の前提を変えたときの見通しを確かめます。</p>
+<a class="tool-cta" href="../../soneki-bunkiten/">固定費・変動費から損益分岐点を計算する</a>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>予実管理は何のために行いますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>予算と実績の差から原因を見つけ、次の行動を決めるためです。売上や費用を集計するだけで終わらず、改善の担当と、結果を確かめる方法を残します。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>予実管理はExcelでもできますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>予算・実績・差額・達成率を並べた表から始められます。本記事の配置例では、入力欄と数式の欄を分け、未入力と確定したゼロを区別します。科目対応と更新担当も決めておくと確認しやすくなります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>予算が赤字のときも達成率を使いますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>本記事の表では、予算がゼロ以下の科目は達成率の比較を保留し、金額の差と理由を説明する扱いにします。赤字を分母にした比率では、数字の増減と改善・悪化の向きが分かりにくくなるためです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>予算と実績が大きくずれたら、予算を直しますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>まず差の原因を調べ、その後の見通しを更新します。当初予算は残し、修正予算や最新見込を別に管理する方法があります。承認手順は社内のルールに合わせ、変更理由を記録します。</p>
+<h2 id="sources">出典</h2>
+<ul>
+<li><a href="https://www.mhlw.go.jp/content/11909000/001656099.pdf">厚生労働省「収支計画のポイント ～収支計画の作成～」</a>：労働者協同組合向け資料。予実管理の説明、収支計画、予算実績報告書の様式例。</li>
+<li><a href="https://j-net21.smrj.go.jp/startup/manual/list5/5-2-9.html">中小企業基盤整備機構「損益分岐点を使った目標売上高」</a>：変動費・固定費の考え方と利益の計算。</li>
+<li><a href="https://support.microsoft.com/ja-jp/excel/functions/if-function">Microsoft「IF 関数」</a>：条件による結果の切り替え。</li>
+<li><a href="https://support.microsoft.com/ja-jp/excel/functions/sum-function">Microsoft「SUM 関数」</a>：数値の合計と参照範囲の注意点。</li>
+<li><a href="https://support.microsoft.com/ja-jp/excel/functions/count-function">Microsoft「COUNT 関数」</a>：数値が入ったセルの個数の確認。</li>
+<li data-source-nolink="架空の入力値と計算式を置いた自サイトの設例">金額・比率・数量と単価の分解は、本記事の仮定による架空の設例です。実在会社の実績や公表統計ではありません。Excelの配置と月次手順は社内運用の例です。</li>
+</ul>
+<p class="note" data-source-nolink="免責の定型文で、出典ではない">この記事は一般的な情報提供であり、個別の税務相談ではありません。具体的な申告や判断は、顧問税理士または所轄の税務署にご確認ください。</p>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../romuhi/"><b>労務費とは？人件費との違い・内訳と計算</b><span>製造原価の労務費は、製造に関わる人の人件費です。賃金・賞与・会社負担の社会保険料などの内訳、販管費との区分、直接工の手待時間の扱いを表で確認。</span></a><a class="tool-card" href="../arari/"><b>粗利とは？粗利率の計算式・売上原価の出し方</b><span>粗利は売上高から売上原価を引いた売上総利益です。粗利率の分母は売上高。商品売買業の期首棚卸・仕入・期末棚卸を使う計算例と、営業利益との違い、決算書で拾う数字を確認できます。</span></a><a class="tool-card" href="../rodo-bunpairitsu/"><b>労働分配率の計算方法｜統計ごとの分子・分母を同じ決算で比べる</b><span>労働分配率は人件費を付加価値額で割った割合です。財務省の法人企業統計と経済産業省の企業活動基本調査では、付加価値額と分子の数え方が違います。</span></a></div></section><!--next-read:E-->
+</article><!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E4%BA%88%E5%AE%9F%E7%AE%A1%E7%90%86%E3%81%AF%E3%80%81%E4%BA%88%E7%AE%97%E3%81%A8%E5%AE%9F%E7%B8%BE%E3%81%AE%E5%B7%AE%E3%82%92%E8%AA%BF%E3%81%B9%E3%81%A6%E6%AC%A1%E3%81%AE%E8%A1%8C%E5%8B%95%E3%82%92%E6%B1%BA%E3%82%81%E3%82%8B%E4%BB%95%E4%BA%8B%E3%81%A7%E3%81%99%E3%80%82%E5%A3%B2%E4%B8%8A%E3%83%BB%E5%A4%89%E5%8B%95%E8%B2%BB%E3%83%BB%E5%9B%BA%E5%AE%9A%E8%B2%BB%E3%81%8B%E3%82%89%E4%BA%88%E7%AE%97%E3%82%92%E7%B5%84%E3%82%80%E6%89%8B%E9%A0%86%E3%80%81%E5%B7%AE%E9%A1%8D%E3%81%A8%E9%81%94%E6%88%90%E7%8E%87%E3%81%AE%E8%A6%8B%E6%96%B9%E3%80%81%E6%95%B0%E9%87%8F%E3%81%A8%E5%8D%98%E4%BE%A1%E3%81%AB%E5%88%86%E3%81%91%E3%82%8B%E6%9E%B6%E7%A9%BA%E4%BE%8B%E3%80%81Excel%E3%81%A7%E4%BD%9C%E3%82%8B%E6%9C%88%E6%AC%A1%E8%A1%A8%E3%81%AE%E5%BC%8F%E3%81%A8%E3%82%88%E3%81%8F%E3%81%82%E3%82%8B%E5%A4%B1%E6%95%97%E3%82%92%E6%95%B4%E7%90%86%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fyojitsu-kanri%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main><footer class="site"><p>© 税金・経理・補助金ツールズ</p>  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer><script src="../../assets/empty-state.js" defer></script></body></html>
