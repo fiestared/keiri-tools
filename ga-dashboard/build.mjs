@@ -36,9 +36,9 @@ const LAST_RUN = join(DIR, "logs", "last-run.txt");
 // サイトを足したい時はここに1行足す（aitimes.jp = properties/545695263 は 2026-08-13 に外した）。
 // feeArticlePath / sessionGoal / googleKpi / adsense は keiri-tools 専用。無いサイトは出さない。
 const GOOGLE_KPI_KEIRI = [                        // Google クリック/日（GSC・7日平均）の通過点
-  { by: "2026-10-31", target: 10 },
-  { by: "2026-12-31", target: 30 },
-  { by: "2027-03-31", target: 100 },
+  { by: "2026-10-31", target: 30 },  // 2026-10-23 Masahiro「引き上げておいて」: 内訳 Google 500（targets.json）に合わせた。旧 10/30/100
+  { by: "2026-12-31", target: 133 }, // targets.json checkpoint の pace_marks.google_clicks 132.8
+  { by: "2027-03-31", target: 500 },
 ];
 const SITES = [
   {
@@ -1338,7 +1338,7 @@ function goalBlock(site) {
   const keiriFoot = sessionGoal && site.key === "keiri-tools" ? `
     <p class="foot">
       日3万PVを2027-12-31までの最終目標とし、今期は2027-03-31までに日10,000 PVを目指す（2026-10-22 に日2,400から引き上げ）。<br>
-      Googleの通過点は10月末10 / 12月末30 / 2027-03末100クリック/日。外れた場合は方針も見直す。<br>
+      Googleの通過点は10月末30 / 12月末133 / 2027-03末500クリック/日（2026-10-23 に10/30/100から引き上げ）。外れた場合は方針も見直す。<br>
       ★Google クリックは GA4 ではなく Search Console の値。GSC は2〜3日遅れで届くので、7日平均は「今日」ではなく <b>GSC の末端の日</b> で締めている。
     </p>` : `
     <p class="foot">
