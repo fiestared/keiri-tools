@@ -34,7 +34,9 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
-  "kojin-jigyonushi-zeikin", // 個人事業主 税金 12,100/月（2026-10-24需要ゲート）。個別税を束ねるハブ。
+  "eat-in-shohizei", // イートイン 消費税 1,300/月（2026-10-24実測）
+  "rishoku-shomeisho", // 離職証明書 Google11,840・合計14,800/月（2026-10-24実測）。会社の欄別作成に限定。
+  "mushoku-kakutei-shinkoku", // 無職 確定申告 月3,600（Google2,880・2026-10-24実測）。退職年の還付と無収入の住民税申告。
   "gaikoin-hoshu", // 外交員報酬 Google1,040・合計1,300/月。2026-10-24需要ゲート。
   "freeter-kakutei-shinkoku", // フリーター 確定申告 月3,600、2026-10-24需要実測。
   "fuyo-kojo-oya", // 扶養控除 親 Google1,280＋Yahoo320＝月1,600（2026-10-23需要ゲート）。国内の親の年末調整確認表。
@@ -771,7 +773,7 @@ const CATEGORIES = [
     slugs: [
       "furusato-nozei-toha", "furusato-nozei-kojo-kakunin", "furusato-nozei-keisan", "kifukin-kojo",
       "teigaku-genzei-reiwa8",
-      "kojin-jigyonushi-zeikin", "shotokuzei-ritsu",
+      "shotokuzei-ritsu",
       "freeter-kakutei-shinkoku", "nenmatsu-chosei-part", "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-teisei", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-fukugyo", "nenmatsu-chosei-shinai", "chuto-nyusha-nenmatsu-chosei", "tomobataraki-nenmatsu-chosei", "gensen-taisho-gai-kyuyo", "hikyojusha-gensen", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "nenmatsu-chosei-keisan-hoho", "nenmatsu-chosei-kojin-jigyonushi", "shokibo-kyosai-kakekin-kojo", "kiso-kojo-shinkokusho",
       "shotoku-kingaku-chosei-kojo",
       "hokenryo-kojo-shinkokusho", "seimei-hokenryo-kojo-shomeisho", "nenmatsu-chosei-gakushi-hoken", "kokumin-nenkin-kojo-shomeisho", "ideco-nenmatsu-chosei", "jutaku-kojo-shinkokusho", "fuyo-kojo-shinkokusho", "haigusha-tokubetsu-kojo", "gensen-kojo-taisho-haigusha", "tokutei-shinzoku-tokubetsu-kojo", "gaikoin-hoshu", "gensen-choshu-toha", "gensen-choshuhyo-mikata", "kyuyo-shotoku-kojo", "gensen-zeigakuhyo-mikata", "gensen-zeigakuhyo-r09", "gensen-choshubo",
@@ -784,7 +786,7 @@ const CATEGORIES = [
       "ichiji-shotoku",
       "kakutei-shinkoku-kanpukin-itsu",
       "kanpu-shinkoku",
-      "kakutei-shinkoku-ikurakara", "kakutei-shinkoku-shinai-to",
+      "kakutei-shinkoku-ikurakara", "kakutei-shinkoku-shinai-to", "mushoku-kakutei-shinkoku",
       "fuyo-kojo-oya", "shotoku-kojo-ichiran", "zeigaku-kojo",
       "kiso-kojo",
       "zeisei-kaisei-taiko",
@@ -842,7 +844,7 @@ const CATEGORIES = [
     id: "shohizei",
     name: "消費税・インボイス",
     desc: "インボイス制度の基本と2割特例・簡易課税、課税売上割合と仕入税額控除、消費税の端数処理、中間申告。",
-    slugs: ["shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-kanpu", "kazei-uriage-wariai", "reverse-charge", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri", "shiharai-tsuchisho"],
+    slugs: ["eat-in-shohizei", "shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-kanpu", "kazei-uriage-wariai", "reverse-charge", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri", "shiharai-tsuchisho"],
   },
   {
     id: "denchoho",
@@ -882,7 +884,7 @@ const CATEGORIES = [
     desc: "毎月の給与計算の手順と、欠勤控除・日割り・賃金台帳・労働者名簿・訂正・社会保険料の徴収時期・法定福利費・年度更新。従業員の退職金を積み立てる中退共（中小企業退職金共済）の掛金と税務もここ。",
     slugs: [
       "shogu-kaizen-teate", "taishoku-tetsuzuki", "kyuyo-keisan-yarikata", "kekkin-kojo-keisan", "tsukitochu-nyusha-taishoku-kyuyo",
-      "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "time-card", "zaishoku-shomeisho", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
+      "chingin-daicho", "kyuyo-meisai-mikata", "roudousha-meibo", "shukkinbo", "time-card", "zaishoku-shomeisho", "rishoku-shomeisho", "kyuyo-keisan-machigai-teisei", "kyuyo-kojo-dekirumono",
       "shakai-hokenryo-choshu-jiki", "kyushoku-shakai-hokenryo", "shoyo-gensen-shotokuzei",
       "gensen-shotokuzei-noki-tokurei", "kyuyo-shiharai-jimusho-kaisetsu", "gensen-shotokuzei-nofusho", "gaichuhi-kyuyo-kubun", "hotei-fukurihi-keisan", "rodo-hoken-nendo-koshin", "roudou-hoken-bango",
       "keiri-nenkan-schedule", "chutaikyo", "taishokukin-soba", "shataku-chintairyo", "fukuri-koseihi", "einen-kinzoku-hyosho", "shain-ryoko", "shokuji-hojo",
