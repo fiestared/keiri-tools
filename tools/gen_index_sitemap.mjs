@@ -34,7 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
-  "kokumin-nenkin-tsuino", // 国民年金 追納 合計月5,400・Google4,320（2026-10-23実測）。年度別追納額と申込手順。
+  "nenmatsu-chosei-part", // 年末調整 パート・アルバイト 各月6,600（Google5,280＋Yahoo1,320、2026-10-23需要ゲート）。対象判定と提出先。
   "hotei-kyujitsu", // 法定休日 Google6,480・合計8,100/月（2026-10-23再実測）。休日の設定と勤怠区分の参照表。
   "yago", // 屋号 月間18,100（Google14,480＋Yahoo3,620、2026-10-23再実測）、開業届・口座・請求書の記入欄。
   "gaikadate-hoken-hiyo", // 外貨建て保険 Google月間9,680（2026-10-23需要ゲート）。通貨と契約費用の参照表。
@@ -739,7 +739,7 @@ const CATEGORIES = [
       "izoku-nenkin-jukyu-yoken",
       "kenko-hoken-nini-keizoku",
       "kokuho-hokenryo",
-      "kokumin-nenkin-hokenryo", "kokumin-nenkin-tsuino",
+      "kokumin-nenkin-hokenryo",
       "shikaku-kakuninsho",
       "maina-hokensho",
       "kakutei-kyoshutsu-nenkin",
@@ -763,7 +763,7 @@ const CATEGORIES = [
       "furusato-nozei-toha", "furusato-nozei-kojo-kakunin", "furusato-nozei-keisan", "kifukin-kojo",
       "teigaku-genzei-reiwa8",
       "shotokuzei-ritsu",
-      "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-teisei", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-fukugyo", "nenmatsu-chosei-shinai", "chuto-nyusha-nenmatsu-chosei", "tomobataraki-nenmatsu-chosei", "gensen-taisho-gai-kyuyo", "hikyojusha-gensen", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "nenmatsu-chosei-keisan-hoho", "nenmatsu-chosei-kojin-jigyonushi", "shokibo-kyosai-kakekin-kojo", "kiso-kojo-shinkokusho",
+      "nenmatsu-chosei-part", "nenmatsu-chosei-kakikata", "nenmatsu-chosei-itsumade", "nenmatsu-chosei-teisei", "nenmatsu-chosei-kanpukin", "ikukyu-nenmatsu-chosei", "nenmatsu-chosei-taishogai", "nenmatsu-chosei-fukugyo", "nenmatsu-chosei-shinai", "chuto-nyusha-nenmatsu-chosei", "tomobataraki-nenmatsu-chosei", "gensen-taisho-gai-kyuyo", "hikyojusha-gensen", "nenmatsu-chosei-denshika", "nenmatsu-chosei-hitsuyo-shorui", "nencho-misai", "nenmatsu-chosei-keisan-hoho", "nenmatsu-chosei-kojin-jigyonushi", "shokibo-kyosai-kakekin-kojo", "kiso-kojo-shinkokusho",
       "shotoku-kingaku-chosei-kojo",
       "hokenryo-kojo-shinkokusho", "seimei-hokenryo-kojo-shomeisho", "nenmatsu-chosei-gakushi-hoken", "kokumin-nenkin-kojo-shomeisho", "ideco-nenmatsu-chosei", "jutaku-kojo-shinkokusho", "fuyo-kojo-shinkokusho", "haigusha-tokubetsu-kojo", "gensen-kojo-taisho-haigusha", "tokutei-shinzoku-tokubetsu-kojo", "gensen-choshu-toha", "gensen-choshuhyo-mikata", "kyuyo-shotoku-kojo", "gensen-zeigakuhyo-mikata", "gensen-zeigakuhyo-r09", "gensen-choshubo",
       "hoteichosho-goukeihyo", "kyuyo-shiharai-hokokusho", "shiharai-chosho", "shakai-hokenryo-kojo", "seimei-hokenryo-kojo", "jishin-hokenryo-kojo", "jutaku-loan-kojo-yoken", "iryohi-kojo-ikura-kara", "tokutei-shishutsu-kojo", "zasson-kojo",
