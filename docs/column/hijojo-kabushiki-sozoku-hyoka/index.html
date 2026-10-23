@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>非上場株式の相続税評価：株主区分・会社規模・評価方法の分岐と数値例</title>
+<meta name="description" content="非上場株式（取引相場のない株式）の相続税評価は、取得した人の株主区分、会社規模、特定の評価会社かで方式が決まります。架空の中会社で、2026年4月以後の取得に使う38%を含め、類似業種比準・純資産価額・配当還元の1株の価額を検算します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/hijojo-kabushiki-sozoku-hyoka/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="非上場株式の相続税評価：株主区分・会社規模・評価方法の分岐と数値例">
+<meta property="og:description" content="非上場株式（取引相場のない株式）の相続税評価は、取得した人の株主区分、会社規模、特定の評価会社かで方式が決まります。架空の中会社で、2026年4月以後の取得に使う38%を含め、類似業種比準・純資産価額・配当還元の1株の価額を検算します。">
+<meta property="og:url" content="https://keiri-tools.com/column/hijojo-kabushiki-sozoku-hyoka/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578"
+     crossorigin="anonymous"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "非上場株式の相続税評価：株主区分・会社規模・評価方法の分岐と数値例",
+      "datePublished": "2026-10-22",
+      "dateModified": "2026-10-23",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/hijojo-kabushiki-sozoku-hyoka/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "非上場株式の相続税評価",
+          "item": "https://keiri-tools.com/column/hijojo-kabushiki-sozoku-hyoka/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Q. 非上場株式の評価方法は、相続人が自由に選べますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. いいえ。株主区分・会社規模・特定の評価会社かで方式が決まります。特定の評価会社以外では、大会社で純資産価額を使う、中会社の算式の類似業種比準価額を純資産価額に置き換える、小会社でLを0.50とした併用方式を使う、など通達179の選択ができます。特定の評価会社にも通達189の所定の選択があります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 配当還元方式の10%とは何ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 年配当金額（1株当たりの資本金等の額を50円とした場合の額。2円50銭未満と無配は2円50銭）を割る還元率です。これに直前期末の1株当たりの資本金等の額÷50円を掛けた額が、原則的評価方式の額を超えるときは原則的評価方式の額で評価します（通達188-2）。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 純資産価額の法人税額等相当額は37%と38%のどちらですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 令和8年4月1日以後に相続・遺贈・贈与で取得した非上場株式は38%です。改正前の割合は37%でした。38%は防衛特別法人税の創設を受けた財産評価基本通達186-2の改正によるものです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Q. 非上場株式の評価方法は変わるのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A. 国税庁の有識者会議が2026年8月20日に見直しの骨子を示しましたが、最終的には税制改正プロセスで決めるとされています。この記事の計算は、2026年10月22日に国税庁サイトで確認した現行の財産評価基本通達によります。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main id="main" tabindex="-1"><nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 非上場株式の相続税評価</nav><article>
+<h1>非上場株式の相続税評価：株主区分・会社規模・評価方法の分岐と数値例</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-22">2026年10月22日</time>（更新日: <time datetime="2026-10-23">2026年10月23日</time>）</p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><b>非上場株式（取引相場のない株式）の相続税評価は、取得した人の株主区分、会社の規模、特定の評価会社かで方式が決まり、自由には選べません（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-179">通達179</a>・<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/05.htm#a-189">189</a>の一部の選択を除く）。</b>同族株主等が取得した特定の評価会社でない株式は、大会社は類似業種比準方式、中会社は併用方式、小会社は純資産価額方式が原則です。同族株主以外の株主等が取得した株式は、会社の規模にかかわらず配当還元方式です（原則的評価の額が上限、開業前・休業中・清算中の会社などの例外は下の注）。</p>
+<p>この記事は架空の中会社1社で、同族株主が取得した場合の1株3,085円と、少数株主が取得した場合の1株500円を、式と途中の値まで出して比べます。</p>
+
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol><li><a href="#flow">評価方法が決まる順番</a></li><li><a href="#kubun">株主区分：同族株主等か</a></li><li><a href="#kibo">会社規模：大会社・中会社・小会社とL</a></li><li><a href="#hoshiki">評価方式ごとの式</a></li><li><a href="#rei">架空の中会社で1株の価額を検算</a></li><li><a href="#tokutei">特定の評価会社に当たる場合</a></li><li><a href="#minaoshi">評価方法の見直しの議論</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#related">関連記事・ツール</a></li><li><a href="#shutten">出典</a></li></ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../../sozokuzei/">相続税 計算機</a></li><li><a href="../kabu-sozoku-hyoka/">株を相続したら：上場株式の4つの価格候補と相続後の取得費を検算</a></li><li><a href="../minashi-haito/">みなし配当とは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+
+<h2 id="flow">評価方法が決まる順番</h2>
+<p><a href="https://www.nta.go.jp/law/tsutatsu/kobetsu/hyoka/kaisei/r0806/pdf/02_r08.pdf">国税庁の評価明細書</a>は、①株主区分、②会社規模、③特定の評価会社かの順に判定し、評価方式に応じて第3表以下を書く作りです（開業前・休業中・清算中の会社は一部の扱いが違います）。この記事も同じ順番で進めます。</p>
+<figure class="figure fig-wide" style="--figw:660px">
+<svg viewBox="0 0 720 360" role="img" aria-labelledby="flow-title" xmlns="http://www.w3.org/2000/svg">
+<title id="flow-title">非上場株式の評価方式が決まる順番の流れ図</title>
+<rect x="10" y="12" width="230" height="56" rx="8" fill="none" stroke="var(--accent)" stroke-width="2"/>
+<text x="125" y="36" font-size="14" text-anchor="middle" fill="currentColor">①取得した人は</text>
+<text x="125" y="56" font-size="14" text-anchor="middle" fill="currentColor">同族株主等か</text>
+<line x1="240" y1="40" x2="470" y2="40" stroke="currentColor" stroke-width="1.5"/>
+<text x="355" y="32" font-size="13" text-anchor="middle" fill="currentColor">いいえ</text>
+<rect x="470" y="12" width="240" height="56" rx="8" fill="none" stroke="var(--warn-line)" stroke-width="2"/>
+<text x="590" y="36" font-size="14" text-anchor="middle" fill="currentColor">配当還元方式</text>
+<text x="590" y="56" font-size="12" text-anchor="middle" fill="currentColor">（原則的評価の額が上限）</text>
+<line x1="125" y1="68" x2="125" y2="118" stroke="currentColor" stroke-width="1.5"/>
+<text x="140" y="98" font-size="13" fill="currentColor">はい</text>
+<rect x="10" y="118" width="230" height="56" rx="8" fill="none" stroke="var(--accent)" stroke-width="2"/>
+<text x="125" y="142" font-size="14" text-anchor="middle" fill="currentColor">②会社規模を判定</text>
+<text x="125" y="162" font-size="12" text-anchor="middle" fill="currentColor">総資産・従業員数・取引金額</text>
+<line x1="125" y1="174" x2="125" y2="224" stroke="currentColor" stroke-width="1.5"/>
+<rect x="10" y="224" width="230" height="56" rx="8" fill="none" stroke="var(--accent)" stroke-width="2"/>
+<text x="125" y="248" font-size="14" text-anchor="middle" fill="currentColor">③特定の評価会社か</text>
+<text x="125" y="268" font-size="12" text-anchor="middle" fill="currentColor">土地・株式の保有割合など</text>
+<line x1="240" y1="252" x2="290" y2="252" stroke="currentColor" stroke-width="1.5"/>
+<text x="265" y="244" font-size="12" text-anchor="middle" fill="currentColor">いいえ</text>
+<rect x="290" y="200" width="420" height="104" rx="8" fill="none" stroke="var(--sub)" stroke-width="1.5"/>
+<text x="305" y="226" font-size="13" fill="currentColor">大会社：類似業種比準方式</text>
+<text x="305" y="252" font-size="13" fill="currentColor">中会社：類似業種比準×L＋純資産価額×(1−L)</text>
+<text x="305" y="278" font-size="13" fill="currentColor">小会社：純資産価額方式</text>
+<text x="305" y="297" font-size="11" fill="currentColor">（いずれも<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-179">通達179</a>の納税者の選択あり）</text>
+<line x1="125" y1="280" x2="125" y2="320" stroke="currentColor" stroke-width="1.5"/>
+<text x="140" y="304" font-size="12" fill="currentColor">はい</text>
+<text x="10" y="340" font-size="13" fill="currentColor">→ 純資産価額方式など（下の「特定の評価会社」の節）</text>
+</svg>
+<figcaption><a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-178">財産評価基本通達178・179・188・189</a>と<a href="https://www.nta.go.jp/law/tsutatsu/kobetsu/hyoka/kaisei/r0806/pdf/02_r08.pdf">評価明細書の記載方法</a>から作成。①で「いいえ」でも、開業前・休業中・清算中の会社の株式は配当還元方式になりません。</figcaption>
+</figure>
+<p class="hint">注：配当還元方式になる「同族株主以外の株主等」には、同族株主のうち議決権5%未満の一部の人も含みます（次の節の表）。開業前・休業中・清算中の会社の株式は、取得した人の区分にかかわらず、特定の評価会社の節の方法で評価します。</p>
+
+<h2 id="kubun">株主区分：同族株主等か</h2>
+<p data-review-context="before-table"><b>配当還元方式になるのは、取得者側の議決権の割合などで<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-188">財産評価基本通達188</a>が定める次の4つの場合です。</b>配当還元の額は原則的評価方式の額が上限で、開業前・休業中・清算中の会社には使いません。どれにも当たらなければ原則的評価方式で、特定の評価会社なら<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/05.htm#a-189">通達189</a>の方式です。グループは、株主1人と、<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-188">法人税法施行令4条</a>の特殊の関係のある個人又は法人を合わせた範囲です。</p>
+<div class="scroll-wrap"><table>
+<caption>中小企業投資育成会社が株主にいない会社の判定。自己株式と<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-188_4">会社法308条1項による</a>無議決権の会社保有分は0とし、一部事項だけ議決権のない種類株式は算入します。役員は社長・理事長と<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-188">法人税法施行令71条1項1・2・4号</a>の役員で、課税時期の翌日から法定申告期限までに役員となる人も含みます。</caption>
+<thead><tr><th>会社の状況</th><th>配当還元方式になる取得者（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-188">通達188</a>）</th></tr></thead>
+<tbody>
+<tr><td>同族株主のいる会社</td><td>同族株主以外の株主</td></tr>
+<tr><td>中心的な同族株主のいる会社</td><td>中心的な同族株主以外の同族株主で、本人の取得後の議決権が5%未満の人（役員を除く）</td></tr>
+<tr><td>同族株主のいない会社</td><td>グループの議決権の合計が15%未満の株主</td></tr>
+<tr><td>同族株主がいない、中心的な株主のいる会社</td><td>グループの議決権が15%以上の株主のうち、本人の取得後の議決権が5%未満の人（役員を除く）</td></tr>
+</tbody></table></div>
+<p data-review-context="after-table"><a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-188">通達188の用語</a>：<b>同族株主</b>は、課税時期の評価会社で、株主1人と<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-188">法人税法施行令4条の同族関係者</a>の議決権が総数の30%以上となる、その株主と同族関係者です（最多グループが50%超なら50%超、集計・投資育成会社の特則は下の注）。<b>中心的な同族株主</b>は、同族株主の1人と配偶者・直系血族・兄弟姉妹・1親等の姻族（これらの人が25%以上を持つ会社を含む）の議決権の合計が25%以上の株主です。<b>中心的な株主</b>は、15%以上のグループのいずれかで、単独で10%以上を持つ株主です。</p>
+
+
+<p class="hint">注：議決権の集計は、<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-188_3">通達188-3〜188-5</a>による表題の数え方です。投資育成会社が株主の場合は、表で判定せず、<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-188_6">通達188-6</a>の特則を確認してください。</p>
+
+<h2 id="kibo">会社規模：大会社・中会社・小会社とL</h2>
+<p data-review-context="before-table"><b>同族株主等が取得した、特定の評価会社でない株式は、会社規模で評価方式が変わります。</b>規模は、直前期末の総資産価額（帳簿価額）と従業員数、直前期末以前1年間の取引金額（目的とする事業の収入金額、金融業・証券業は収入利息・手数料）で、業種ごとに次の表で判定します（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-178">通達178</a>）。</p>
+<div class="scroll-wrap"><table>
+<caption>従業員数は、直前期末以前1年間の継続勤務者のうち週の所定労働時間が30時間以上の人数に、他の従業員の同期間の労働時間合計÷1,800時間を加えます。社長・理事長と<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-178">法人税法施行令71条1項1・2・4号の役員</a>は除きます。</caption>
+<thead><tr><th>区分</th><th>卸売業</th><th>小売・サービス業</th><th>それ以外の業種</th></tr></thead>
+<tbody>
+<tr><td>大会社</td><td>総資産20億円以上（35人以下を除く）か取引金額30億円以上</td><td>総資産15億円以上（35人以下を除く）か取引金額20億円以上</td><td>総資産15億円以上（35人以下を除く）か取引金額15億円以上</td></tr>
+<tr><td>中会社</td><td>総資産7,000万円以上（5人以下を除く）か取引金額2億円以上30億円未満</td><td>総資産4,000万円以上（5人以下を除く）か取引金額6,000万円以上20億円未満</td><td>総資産5,000万円以上（5人以下を除く）か取引金額8,000万円以上15億円未満</td></tr>
+<tr><td>小会社</td><td>総資産7,000万円未満か5人以下で、取引金額2億円未満</td><td>総資産4,000万円未満か5人以下で、取引金額6,000万円未満</td><td>総資産5,000万円未満か5人以下で、取引金額8,000万円未満</td></tr>
+</tbody></table></div>
+<p data-review-context="after-table">表は<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-178">通達178</a>の表を整理したもので、人数は従業員数です。従業員数（表題の数え方）が70人以上の会社は、総資産・取引金額にかかわらず大会社です。従業員数が70人未満の会社は表で判定し、大会社の基準に当たれば中会社の行より大会社を優先します。業種は取引金額のうち最も多い業種で決めます。</p>
+
+<p><b>中会社の「L」は、総資産・従業員数で決まる割合と取引金額で決まる割合のうち、大きい方です（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-179">通達179</a>(2)）。</b></p>
+<p>Lの区分別の金額は、<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-179">通達179(2)の表</a>で確認できます。</p>
+
+<h2 id="hoshiki">評価方式ごとの式</h2>
+<p><b>類似業種比準方式は、上場会社の業種別の株価を、配当・利益・純資産の3つの比で調整する方式です（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/03.htm#a-180">通達180</a>）。</b>1株当たりの資本金等の額を50円とした場合の金額で計算し、最後に「直前期末の1株当たりの資本金等の額（自己株式を除いた株数で計算）÷50円」を掛けます。</p>
+<p>1株（50円）当たりの比準価額は「A×比準割合×0.7」です（中会社・小会社は率が変わります）。比準割合は「(Ⓑ÷B＋Ⓒ÷C＋Ⓓ÷D)÷3」で、各要素の割合と比準割合は小数点以下2位未満を切り捨てます（<a href="https://www.nta.go.jp/law/tsutatsu/kobetsu/hyoka/kaisei/r0806/pdf/02_r08.pdf">評価明細書の記載方法</a>）。掛ける率は大会社0.7・中会社0.6・小会社0.5です。</p>
+<div class="scroll-wrap"><table>
+<caption>Ⓑ・Ⓒ・Ⓓは、表の各金額を直前期末の所定株数で割った額です。所定株数は、1株当たり資本金等が50円なら直前期末の発行済株式数から自己株式数を引いた数、50円以外なら直前期末資本金等÷50円です。B・C・Dは課税時期の属する年の類似業種の金額です。Ⓒは直前期末以前2年間の調整後合計の半額を同じ所定株数で割る方法も選べます（合計が負数なら0）。</caption>
+<thead><tr><th>記号</th><th>中身（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/03.htm#a-180">通達180・182・183</a>）</th></tr></thead>
+<tbody>
+<tr><td>A</td><td>類似業種の株価。原則は課税時期の月以前3か月の各月の株価のうち最も低いもので、前年平均株価か以前2年間の平均株価も選べます</td></tr>
+<tr><td>Ⓑ・B</td><td>1株当たりの配当金額。評価会社は直前期末以前2年間の配当の合計の2分の1が基礎（集計・除外は下の注）</td></tr>
+<tr><td>Ⓒ・C</td><td>1株当たりの利益金額。評価会社は直前期1年の課税所得を所定の加減算で調整し、負数は0。2年平均も選択可（下の注）</td></tr>
+<tr><td>Ⓓ・D</td><td>1株当たりの純資産価額（帳簿価額）。評価会社は直前期末の資本金等の額と利益積立金額の合計（負数は0）</td></tr>
+</tbody></table></div>
+<p class="hint" data-review-context="after-table">注：Ⓑの配当は交付の効力発生日で集計し、継続が見込めない特別配当等と資本金等の減少による配当を除きます。Ⓒは非経常的な利益を除き、益金不算入の配当等と繰越欠損金控除額を加算します（配当等は資本金等の減少による配当と所得税相当額を除く）。</p>
+
+<p>類似業種の値は<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/03.htm#a-183_2">「令和○年分の類似業種比準価額計算上の業種目及び業種目別株価等について」</a>で確かめます。</p>
+<p><b>純資産価額方式の計算は、<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-185">通達185・186</a>によります。下の設例では、その条件を置いて計算します。</b></p>
+<p>現物出資等受入れ差額の加算が不要な場合、法人税額等相当額は、相続税評価額による純資産と帳簿価額による純資産の差額に、割合を掛けた額です（差額がプラスのときだけ）。割る株数は課税時期の発行済株式数（自己株式を除く）です。割合は、令和8年4月1日以後に相続・遺贈・贈与で取得した株式では38%です（改正前は37%）。</p>
+<p>純資産価額の主な注意（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-185">通達185・186</a>）：課税時期前3年以内に会社が取得・新築した土地等・家屋等（附属設備・構築物を含む）は、通常の取引価額で評価します（帳簿価額が通常の取引価額に相当すれば帳簿価額）。引当金・準備金は負債に含めません。負債に含める未払税額・死亡退職金等の範囲は、<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-186">通達186の各号</a>で確認してください。取得者とその同族関係者の議決権の合計（一部の事項だけ議決権のない株式を含む）が50%以下なら、中会社の算式の中の純資産価額と小会社の純資産価額を80%にします。</p>
+<p><b>配当還元方式は「年配当金額÷10%×直前期末の1株当たりの資本金等の額÷50円」で、年配当金額は50円換算・下限2円50銭、原則的評価方式の額が上限です（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-188_2">通達188-2</a>）。</b>年配当金額は、1株当たりの資本金等の額を50円とした場合の1株当たりの配当金額（Ⓑと同じ）で、2円50銭未満の会社と無配の会社は2円50銭とします。この式の額が原則的評価方式の額を超えるときは、原則的評価方式の額で評価します。</p>
+<div class="callout"><b>納税者が選べる範囲（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-179">通達179</a>）</b><p>同族株主等が取得した特定の評価会社でない株式では、大会社は純資産価額、中会社は算式の類似業種比準価額を純資産価額に置き換えた額、小会社はLを0.50とした併用方式も選べます。株主区分と会社規模そのものは選べません。</p></div>
+
+<h2 id="rei">架空の中会社で1株の価額を検算</h2>
+<p><b>架空の会社X社（製造業）の株式を、令和8年10月に相続で取得した2人の1株の価額を計算します。</b></p>
+<p data-review-context="before-table">次の表の数字はすべて説明用の仮定（架空のX社）で、実在の会社・業種の値ではありません。</p>
+<div class="scroll-wrap"><table>
+<thead><tr><th>前提（すべて仮定）</th><th>値</th></tr></thead>
+<tbody>
+<tr><td>業種・従業員数</td><td>卸売業、小売・サービス業以外／30人</td></tr>
+<tr><td>直前期末の総資産（帳簿価額）</td><td><span class="numeric-token">3億円</span></td></tr>
+<tr><td>直前期末以前1年間の取引金額</td><td><span class="numeric-token">5億円</span></td></tr>
+<tr><td>発行済株式数（自己株式なし・1株1議決権）</td><td>20,000株</td></tr>
+<tr><td>資本金等の額</td><td>1,000万円（1株当たり500円）</td></tr>
+<tr><td>配当（直前期末以前2年間の合計）</td><td><span class="numeric-token">200万円</span></td></tr>
+<tr><td>法人税の課税所得金額（直前期）</td><td><span class="numeric-token">900万円</span></td></tr>
+<tr><td>利益積立金額（直前期末）</td><td><span class="numeric-token">9,000万円</span></td></tr>
+<tr><td>類似業種の値（A・B・C・D）</td><td>300円・5.0円・30円・250円</td></tr>
+<tr><td>課税時期の資産（相続税評価額）・負債</td><td>3億5,000万円・2億円</td></tr>
+<tr><td>課税時期の資産（帳簿価額）</td><td><span class="numeric-token">3億円</span></td></tr>
+</tbody></table></div>
+<p data-review-context="after-table">X社は特定の評価会社に当たらない（土地・株式の保有割合が基準未満、開業後3年以上、比準要素が0でない）と仮定します。課税時期は直前期末の後で、期中の配当・増資はなく、端数は出ない値にしています。</p>
+<h3>手順1：会社規模とL</h3>
+<p>X社は従業員30人で70人未満、総資産3億円・取引金額5億円で大会社の基準に届かないため、中会社です。X社（卸売業、小売・サービス業以外）のLは、総資産3億円・30人で0.75、取引金額5億円で0.90となり、大きい方の0.90です。</p>
+<h3>手順2：類似業種比準価額</h3>
+<ol>
+<li>X社の1株当たりの資本金等の額は1,000万円÷20,000株＝500円で、50円換算の株数は1,000万円÷50円＝200,000株です。</li>
+<li>加算・除外する項目が無いと仮定し、X社のⒷは200万円÷2÷200,000株＝5.0円、Ⓒは900万円÷200,000株＝45円、Ⓓは（1,000万円＋9,000万円）÷200,000株＝500円です。</li>
+<li>X社の要素別の比は、5.0÷5.0＝1.00、45÷30＝1.50、500÷250＝2.00で、比準割合は（1.00＋1.50＋2.00）÷3＝1.50です。</li>
+<li>中会社の率0.6で、X社の1株（50円）当たりは300円×1.50×0.6＝270円です。X社の1株当たりの資本金等の額500円÷50円＝10倍して、1株2,700円です。</li>
+</ol>
+<h3>手順3：純資産価額</h3>
+<ol>
+<li>X社の相続税評価額による純資産は3億5,000万円−2億円＝1億5,000万円、帳簿価額による純資産は3億円−2億円＝1億円です。</li>
+<li>現物出資等受入れ差額の加算が不要なX社は、令和8年10月の相続による取得なので38%を使い、評価差額5,000万円×38%＝1,900万円が法人税額等相当額です。</li>
+<li>議決権50%超の取得者の場合、X社の1株の純資産価額は（1億5,000万円−1,900万円）÷20,000株＝6,550円です。改正前の37%で計算すると、議決権50%超の取得者でX社は6,575円になります。</li>
+</ol>
+<h3>手順4：取得した人ごとの1株の価額</h3>
+<p data-review-context="before-table">X社の株式を取得した2人（仮定）の結果です。</p>
+<div class="scroll-wrap"><table>
+<thead><tr><th>取得した人（仮定）</th><th>方式</th><th class="num">1株の価額</th><th class="num">課税価格に入る額</th></tr></thead>
+<tbody>
+<tr><td>創業家の長男。創業家グループで議決権80%、取得10,000株</td><td>併用方式</td><td class="num"><span class="numeric-token">3,085円</span></td><td class="num"><span class="numeric-token">3,085万円</span></td></tr>
+<tr><td>元従業員の子。グループで議決権3%、取得600株</td><td>配当還元方式</td><td class="num"><span class="numeric-token">500円</span></td><td class="num"><span class="numeric-token">30万円</span></td></tr>
+</tbody></table></div>
+<p data-review-context="after-table">X社の併用方式は2,700円×0.90＋6,550円×0.10＝2,430円＋655円＝3,085円です。X社の配当還元方式は5.0円÷10%×500円÷50円＝500円で、3,085円を超えないので500円です。</p>
+<p>X社の創業家のグループは議決権80%で50%超のため同族株主で、長男は取得後の議決権が50%（5%以上）なので原則的評価方式です。X社の元従業員の子のグループは3%で同族株主ではないため、配当還元方式です。仮にX社の創業家のグループの議決権が長男の取得分の50%だけで、50%超のグループがない場合も長男は同族株主です。その場合、X社の創業家のグループは議決権50%以下なので、純資産価額を80%にして2,700円×0.90＋6,550円×0.8×0.10＝2,954円です。</p>
+<p>同じX社の同じ日の株式でも、取得した人で1株の価額が6倍強ちがいます。これは評価方法を選んだ結果ではなく、通達が株主区分で方式を分けているためです。</p>
+<a class="tool-cta" href="../../sozokuzei/">相続税計算機で、課税価格から相続税の総額を計算する →</a>
+
+<h2 id="tokutei">特定の評価会社に当たる場合</h2>
+<p><b>次の6つに当たる会社の株式は、前の節の会社規模による方式ではなく、<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/05.htm#a-189">通達189</a>の方式で評価します。</b>同族株主等が取得した場合、(1)〜(5)は原則として純資産価額方式、(6)は清算分配見込額の複利現価で評価します（<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hyoka/4638.htm">国税庁No.4638</a>）。</p>
+<div class="scroll-wrap"><table>
+<thead><tr><th>特定の評価会社</th><th>当たる会社（概要）</th></tr></thead>
+<tbody>
+<tr><td>(1) 比準要素数1の会社</td><td>直前期末の配当・利益・純資産（帳簿価額）のいずれか2が0で、直前々期末でもいずれか2以上が0（配当・利益は3年間の実績を反映）</td></tr>
+<tr><td>(2) 株式等保有特定会社</td><td>総資産（相続税評価額）のうち株式・出資・新株予約権付社債の割合が50%以上（資産変動の例外は下の注）</td></tr>
+<tr><td>(3) 土地保有特定会社</td><td>総資産（相続税評価額）のうち土地等が、大会社側で70%以上、中会社側で90%以上（小会社の振分け・資産変動の例外は下の注）</td></tr>
+<tr><td>(4) 開業後3年未満の会社等</td><td>開業後3年未満か、直前期末の配当・利益・純資産（帳簿価額）がいずれも0（配当・利益は2年間の実績を反映）</td></tr>
+<tr><td>(5) 開業前・休業中の会社</td><td>開業前か休業中</td></tr>
+<tr><td>(6) 清算中の会社</td><td>清算中。分配見込額を、分配までの期間（1年未満の端数は1年）に応じた基準年利率の複利現価で評価（複数回なら各回の合計、<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/05.htm#a-189_6">通達189-6</a>）</td></tr>
+</tbody></table></div>
+<p class="hint" data-review-context="after-table">注：表の(1)〜(5)は後の番号の区分に当たる会社を除きます。(3)の大会社側には、帳簿総資産が卸売業20億円以上・それ以外15億円以上の小会社を含みます。中会社側には、帳簿総資産が卸売業7,000万円以上・小売・サービス業4,000万円以上・それ以外5,000万円以上で、大会社側に当たらない小会社を含みます。合理的な理由のない資産構成の変動が、(2)・(3)の判定を免れるためと認められる場合、その変動はなかったものとして判定します（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/05.htm#a-189">通達189</a>）。</p>
+<p>(1)〜(4)の株式を同族株主以外の株主等が取得したときは、配当還元方式です（その会社の方式の額が上限）。(1)と(2)には純資産価額以外を選べる計算があります。</p>
+<p>(1)〜(4)の純資産価額は、取得者とその同族関係者の議決権の合計が50%以下なら80%にします（一部事項の議決権制限株式も分子・分母に含む）。株式等保有特定会社のS1＋S2は別計算です（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/05.htm#a-189_2">通達189-2〜189-4</a>・<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-185">185注2</a>）。</p>
+
+<h2 id="minaoshi">評価方法の見直しの議論</h2>
+<p><b>国税庁の<a href="https://www.nta.go.jp/about/council/nai-hyoka/20260820/pdf/05shiryo_kabukaigi.pdf">「取引相場のない株式の評価に関する有識者会議」</a>は、2026年8月20日の第5回で見直しの骨子を示しました。</b>骨子は、例えば規模に応じた評価体系の廃止と評価方式の一本化、インカムアプローチ（残余利益モデル）の導入、純資産価額方式と配当還元方式の見直しを挙げています。</p>
+<p>骨子は、見直しの内容や評価水準・税負担の在り方は、最終的に税制改正プロセスで決めるとしています。この記事の計算は、2026年10月22日に国税庁サイトで確認した現行の<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-178">財産評価基本通達</a>によります。</p>
+
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>非上場株式の評価方法は、相続人が自由に選べますか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>いいえ。株主区分・会社規模・特定の評価会社かで方式が決まります。特定の評価会社以外では、大会社で純資産価額を使う、中会社の算式の類似業種比準価額を純資産価額に置き換える、小会社でLを0.50とした併用方式を使う、など<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-179">通達179</a>の選択ができます。特定の評価会社にも<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/05.htm#a-189">通達189</a>の所定の選択があります。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>配当還元方式の10%とは何ですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>年配当金額（1株当たりの資本金等の額を50円とした場合の額。2円50銭未満と無配は2円50銭）を割る還元率です。これに直前期末の1株当たりの資本金等の額÷50円を掛けた額が、原則的評価方式の額を超えるときは原則的評価方式の額で評価します（<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-188_2">通達188-2</a>）。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>純資産価額の法人税額等相当額は37%と38%のどちらですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>令和8年4月1日以後に相続・遺贈・贈与で取得した非上場株式は38%です。改正前の割合は37%でした。38%は防衛特別法人税の創設を受けた<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm#a-186_2">財産評価基本通達186-2</a>の改正によるものです。</p>
+<h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>非上場株式の評価方法は変わるのですか？</h3>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>国税庁の有識者会議が2026年8月20日に見直しの骨子を示しましたが、最終的には税制改正プロセスで決めるとされています。この記事の計算は、2026年10月22日に国税庁サイトで確認した現行の<a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm#a-178">財産評価基本通達</a>によります。</p>
+
+<h2 id="related">関連記事・ツール</h2>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../gaikadate-hoken-hiyo/"><b>外貨建て保険とは：円払込・外貨保険金・為替費用と解約控除を基準日付きで確認</b><span>外貨建て保険は、外貨の保険金額と円の受取額を分けて確認します。同じ公式商品資料の円入金・円支払レート、契約費用、解約控除を基準日付きの表に整理。架空の円換算例と、解約返戻金の見積り</span></a><a class="tool-card" href="../kojin-kokusai-kinri-table/"><b>個人向け国債の金利｜募集月・適用期間と税引後利息の早見表</b><span>個人向け国債の公表金利を募集月・回号・利子計算期間で確認。変動型の初回利率と固定型を区別し、同じ元本で初回利息を税引前後に分けて試算します。初回の日数調整、計算式、丸め方と対象外も</span></a><a class="tool-card" href="../espp-konyu-baikyaku-zeikin/"><b>ESPPとは：給与天引き・割引購入・売却の3時点と日本の課税を検算</b><span>ESPPは自己資金で会社株を買う制度です。発行法人の在職従業員が職務に関連して受ける有利な購入権を例に、給与収入への加算と売却時の取得費を円換算で検算。天引き・購入・売却の明細を突</span></a></div></section><!--next-read:E-->
+<section class="related"><ul><li><a href="../../sozokuzei/">相続税計算機</a></li><li><a href="../kabu-sozoku-hyoka/">株を相続したら：上場株式の評価</a></li><li><a href="../minashi-haito/">みなし配当（相続した非上場株式を発行会社に売る特例）</a></li><li><a href="../jigyo-shokei-zeisei/">事業承継税制</a></li></ul></section>
+<h2 id="shutten">出典</h2>
+<p class="source-method"><a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm">財産評価基本通達</a>、<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hyoka/4638.htm">国税庁のタックスアンサー</a>・<a href="https://www.nta.go.jp/law/tsutatsu/kobetsu/hyoka/kaisei/r0806/pdf/02_r08.pdf">評価明細書の記載方法</a>・<a href="https://www.nta.go.jp/about/council/nai-hyoka/20260820/pdf/05shiryo_kabukaigi.pdf">有識者会議の資料</a>を参照。確認基準日は2026年10月22日です。</p>
+<ul>
+<li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/hyoka/4638.htm">国税庁 タックスアンサーNo.4638「取引相場のない株式の評価」</a>（令和8年4月1日現在法令等）</li>
+<li><a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/02.htm">国税庁「財産評価基本通達」178・179（評価上の区分・評価の原則）</a></li>
+<li><a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/03.htm">国税庁「財産評価基本通達」180〜184（類似業種比準価額）</a></li>
+<li><a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/04.htm">国税庁「財産評価基本通達」185〜188-6（純資産価額・同族株主以外の株主等）</a></li>
+<li><a href="https://www.nta.go.jp/law/tsutatsu/kihon/sisan/hyoka_new/08/05.htm">国税庁「財産評価基本通達」189〜189-7（特定の評価会社）</a></li>
+<li><a href="https://www.nta.go.jp/law/tsutatsu/kobetsu/hyoka/kaisei/r0806/pdf/02_r08.pdf">国税庁「取引相場のない株式（出資）の評価明細書の記載方法等」（令和8年4月1日以降用）</a></li>
+<li><a href="https://www.nta.go.jp/law/joho-zeikaishaku/hyoka/r0803/pdf/01.pdf">国税庁「取引相場のない株式等の評価（純資産価額方式における法人税額等相当額）」</a>（37%から38%への改正と適用時期）</li>
+<li><a href="https://www.nta.go.jp/about/council/nai-hyoka/20260820/pdf/05kijoshiryo_kabukaigi.pdf">国税庁「取引相場のない株式の評価の見直し（骨子）」</a>（有識者会議 第5回、2026年8月20日）</li>
+<li><a href="https://www.nta.go.jp/about/council/nai-hyoka/20260820/pdf/05shiryo_kabukaigi.pdf">国税庁「取引相場のない株式の評価に関する有識者会議（第5回）資料」</a>（2026年8月20日）</li>
+</ul>
+<p data-source-nolink="記事の対象範囲と相談先を示す免責文">この記事は一般的な情報提供であり、個別の税務相談への回答ではありません。実際の申告の判断は、税務署・税理士にご確認ください。</p>
+</article>
+
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E9%9D%9E%E4%B8%8A%E5%A0%B4%E6%A0%AA%E5%BC%8F%EF%BC%88%E5%8F%96%E5%BC%95%E7%9B%B8%E5%A0%B4%E3%81%AE%E3%81%AA%E3%81%84%E6%A0%AA%E5%BC%8F%EF%BC%89%E3%81%AE%E7%9B%B8%E7%B6%9A%E7%A8%8E%E8%A9%95%E4%BE%A1%E3%81%AF%E3%80%81%E5%8F%96%E5%BE%97%E3%81%97%E3%81%9F%E4%BA%BA%E3%81%AE%E6%A0%AA%E4%B8%BB%E5%8C%BA%E5%88%86%E3%80%81%E4%BC%9A%E7%A4%BE%E8%A6%8F%E6%A8%A1%E3%80%81%E7%89%B9%E5%AE%9A%E3%81%AE%E8%A9%95%E4%BE%A1%E4%BC%9A%E7%A4%BE%E3%81%8B%E3%81%A7%E6%96%B9%E5%BC%8F%E3%81%8C%E6%B1%BA%E3%81%BE%E3%82%8A%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fhijojo-kabushiki-sozoku-hyoka%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site"><small>© 税金・経理・補助金ツールズ</small>  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body></html>

@@ -11,7 +11,7 @@
  *   S・D = 税率（6%・4%）× 課税総所得金額 − 調整控除（3%・2%）。確定金額は100円未満切捨（20条の4の2）。
  * ★壊しテスト: 減額を外したコア（限度額を −∞ にして適用条件を偽にする）で同じ検査を回し、赤になることを確かめる。
  *   壊す前に、無傷のコアで検査が緑であることを先に確かめる（CLAUDE.md 規則2）。
- * ★ページの計算例（<p id="kinbo-rei">）の数字を、その段落を名指しして照合する（規則3）。
+ * ★ページの計算例（#kinbo-rei）の数字を、その表を名指しして照合する（規則3）。
  */
 import { readFileSync, writeFileSync, mkdtempSync, copyFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -193,19 +193,25 @@ const realFails = runSuite(real.calc);
 // ── 2. ページの計算例を名指しで照合 ─────────────────────────────
 {
   const html = readFileSync(new URL('docs/juminzei/index.html', ROOT), 'utf8');
-  const m = html.match(/<p id="kinbo-rei">([\s\S]*?)<\/p>/);
-  eq(!!m, true, 'ページに <p id="kinbo-rei"> がある');
-  const t = m ? m[1].replace(/<[^>]+>/g, '') : '';
+  const m = html.match(/<table\b[^>]*\bid="kinbo-rei"[^>]*>([\s\S]*?)<\/table>/);
+  eq(!!m, true, 'ページに #kinbo-rei の設例表がある');
+  const text = (s) => s.replace(/<[^>]+>/g, '').trim();
+  const rows = m ? [...m[1].matchAll(/<tr>([\s\S]*?)<\/tr>/g)].map(r =>
+    [...r[1].matchAll(/<t[hd][^>]*>([\s\S]*?)<\/t[hd]>/g)].map(c => text(c[1]))) : [];
+  eq(JSON.stringify(rows[0]), JSON.stringify(['給与収入','総所得金額等','所得割の限度額','減額前の所得割','減額後の所得割','均等割・森林環境税']), '設例の列と意味を保持');
   const r1 = real.calc({ kyuyoShunyu: 1_860_001, shakaiHoken: 0, family: { haigusha: 'ippan' }, zeisei: 'r8' }, D);
   const r2 = real.calc({ kyuyoShunyu: 1_880_000, shakaiHoken: 0, family: { haigusha: 'ippan' }, zeisei: 'r8' }, D);
   const y = (n) => n.toLocaleString('en-US') + '円';
-  const want = [
-    `給与収入が1,860,001円`, `総所得金額等が${y(r1.goukeiShotoku)}`, `非課税限度額${y(r1.hikazei.shotokuLimit)}`,
-    `減額がなければ所得割は${y(r1.kinboChosei.beforeShichoson + r1.kinboChosei.beforeDofuken)}`,
-    `減額後は100円未満切捨てで${y(r1.shotokuwariJissai)}`, `の${y(r1.kintouwari.total)}はかかります`,
-    `給与収入1,880,000円なら、減額前の${y(r2.kinboChosei.beforeShichoson + r2.kinboChosei.beforeDofuken)}が${y(r2.shotokuwariJissai)}になります`,
-  ];
-  for (const w of want) eq(t.includes(w), true, `計算例の段落に「${w}」`);
+  for (const [row, income, r] of [[rows[1], 1860001, r1], [rows[2], 1880000, r2]]) {
+    const expected = [y(income), y(r.goukeiShotoku), y(r.hikazei.shotokuLimit),
+      y(r.kinboChosei.beforeShichoson + r.kinboChosei.beforeDofuken), y(r.shotokuwariJissai), y(r.kintouwari.total)];
+    for (let col = 0; col < expected.length; col++) eq((row?.[col] || '').split('（')[0], expected[col], `給与${income}の列${col}をcore実行値と照合`);
+  }
+  const premise = html.match(/<p data-review-context="before-table">([\s\S]*?)<\/p>\s*<div class="scroll-wrap"><table class="res" id="kinbo-rei">/);
+  eq(!!premise, true, '全セルへ渡す局所的な設例前提がある');
+  for (const word of ['令和8年分','給与のみ','標準税率','非課税特例の対象外','配偶者は年末70歳未満・所得0円で生計が同じ','扶養親族はいません','所得控除は基礎控除・配偶者控除のみ','社会保険料などほかの所得控除と、調整控除以外の税額控除はありません']) {
+    eq((premise?.[1] || '').includes(word), true, `設例前提に${word}`);
+  }
   eq(r1.goukeiShotoku - r1.hikazei.shotokuLimit, 1, '計算例は限度額を1円超える');
 }
 
