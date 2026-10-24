@@ -34,7 +34,6 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
-  "ideco-kaiyaku-teishi", // Google 2,320/月、2026-10-24再実測。iDeCo停止・脱退一時金の手続き。
   "senjusha-kyuyo", // 専従者給与 Google月9,680（2026-10-24実測）。届出・支払記録・変更手続き。
   "karikata-kashikata", // 借方 貸方 合計月12,100・Google9,680（2026-10-24実測）。左右判定の入門。
   "kojin-jigyonushi-zeikin", // 個人事業主 税金 12,100/月（2026-10-24需要ゲート）。個別税を束ねるハブ。
@@ -73,6 +72,7 @@ const ORDER = [
   "teigaku-kogawase", // 定額小為替 Google月間推定17,760、2026-10-21実測。
   "saikensha-saimusha", // 債権者 Google月間5,280・2026-10-20実測。個別手続の記事と語義総覧を分担。
   "kawase-saeki-kakutei-shinkoku", // 為替差益 確定申告 Google月間推定2,320（2026-10-20）
+  "ideco-kaiyaku-teishi", // Google 2,320/月、2026-10-24再実測。iDeCo停止・脱退一時金の手続き。
   "beikoku-kabu-zeikin-enkansan", // 米国株 税金 Google月間推定1,520（2026-10-20）
   "hatarakikata-kaikaku-joseikin", // Google推定5,280/月、2026-10-20 MF1需要ゲート。
   "teikan", // 定款 Google月間21,680（2026-10-20実測）。本日D0★指定が旧却下より優先。制度総覧と既存の費用・資本金を分担
