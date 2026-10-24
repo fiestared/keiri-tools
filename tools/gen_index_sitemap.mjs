@@ -36,6 +36,7 @@ const CHECK = process.argv.includes("--check");
 const ORDER = [
   "ideco-tesuryo-table", // iDeCo 手数料 Google月2,320（2026-10-24実測）。固定条件の事務費用表。
   "senjusha-kyuyo", // 専従者給与 Google月9,680（2026-10-24実測）。届出・支払記録・変更手続き。
+  "shohizei-shinkoku", // 消費税申告 Google 9,680/月、2026-10-24 nw2実測
   "karikata-kashikata", // 借方 貸方 合計月12,100・Google9,680（2026-10-24実測）。左右判定の入門。
   "kojin-jigyonushi-zeikin", // 個人事業主 税金 12,100/月（2026-10-24需要ゲート）。個別税を束ねるハブ。
   "eat-in-shohizei", // イートイン 消費税 1,300/月（2026-10-24実測）
@@ -850,7 +851,7 @@ const CATEGORIES = [
     id: "shohizei",
     name: "消費税・インボイス",
     desc: "インボイス制度の基本と2割特例・簡易課税、課税売上割合と仕入税額控除、消費税の端数処理、中間申告。",
-    slugs: ["eat-in-shohizei", "shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-kanpu", "kazei-uriage-wariai", "reverse-charge", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri", "shiharai-tsuchisho"],
+    slugs: ["shohizei-shinkoku", "eat-in-shohizei", "shohizei-zeiritsu", "invoice-wakariyasuku", "invoice-2wari-tokurei", "kani-kazei", "shohizei-kanpu", "kazei-uriage-wariai", "reverse-charge", "shohizei-hasu-shori", "chukan-shinkoku", "zeinuki-zeikomi-keiri", "shiharai-tsuchisho"],
   },
   {
     id: "denchoho",
