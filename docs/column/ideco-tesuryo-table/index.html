@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iDeCoの手数料：加入時・毎月・運用指図中・受取時の費用を同条件で集計</title>
+<meta name="description" content="iDeCoの手数料を支払先と発生時点で整理。連合会手数料の改定前後を、毎月拠出・年単位拠出の同条件で年額に直します。掛金停止後と給付回数の費用も固定設例で集計し、信託報酬や移換費用との違いを確認できます。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/ideco-tesuryo-table/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="iDeCoの手数料：加入時・毎月・運用指図中・受取時の費用を同条件で集計">
+<meta property="og:description" content="iDeCoの手数料を支払先と発生時点で整理。連合会手数料の改定前後を、毎月拠出・年単位拠出の同条件で年額に直します。掛金停止後と給付回数の費用も固定設例で集計し、信託報酬や移換費用との違いを確認できます。">
+<meta property="og:url" content="https://keiri-tools.com/column/ideco-tesuryo-table/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-E742DSDHPD');
+</script>
+<script src="../../assets/track.js" defer></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578" crossorigin="anonymous"></script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "iDeCoの手数料：加入時・毎月・運用指図中・受取時の費用を同条件で集計",
+      "datePublished": "2026-10-24",
+      "dateModified": "2026-10-24",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "税金・経理・補助金ツールズ"
+      },
+      "mainEntityOfPage": "https://keiri-tools.com/column/ideco-tesuryo-table/"
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "iDeCoの手数料",
+          "item": "https://keiri-tools.com/column/ideco-tesuryo-table/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "運営管理手数料が無料なら、iDeCoの費用はかかりませんか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "ほかの費用は別にかかります。無料なのが運営管理機関に払う費用かを確認し、連合会・資産管理・給付と、運用商品の費用を分けます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "掛金を止めた後も手数料はかかりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "運用指図中にも資産管理などの費用がかかります。参照プランでは年金資産や給付金から差し引かれます。掛金停止で資産が払い出されるわけではありません。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "年単位拠出なら改定後も手数料を減らせますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "連合会の改定後手数料は、収納回数を減らすだけでは減りません。掛金の拠出対象月数に応じて計算するためです。年単位拠出の利用可否と、手数料の計算は分けて確認します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "掲載した合計は、実際の総負担ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "単価と期間・回数を固定した事務費用の設例です。商品の信託報酬、移換・還付費用、税を含みません。将来の料金変更や、給付を受けられる時期も織り込んでいません。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body>
+<header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header>
+<main>
+<nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › iDeCoの手数料</nav>
+<article>
+<h1>iDeCoの手数料：加入時・毎月・運用指図中・受取時の費用を同条件で集計</h1>
+<p class="article-meta">公開日: <time datetime="2026-10-24">2026年10月24日</time></p>
+<p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p><strong>iDeCoは、運営管理手数料が無料でも、加入・資産管理・給付などの費用が別にかかります。</strong>掛金を払っている期間と、掛金を止めて運用だけを続ける期間を分けて集計します。</p>
+<p>以下は、確認した料金表の単価を固定した事務費用の参照表です。金融機関の共通最低額や、将来の総負担を示すものではありません。所得控除と受取時の税額は、末尾の既存ツールで分けて確認できます。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol>
+<li><a href="#fees">加入から受取までの手数料表</a></li>
+<li><a href="#annual">改定前後の年間費用を検算</a></li>
+<li><a href="#total">運用指図期間と給付を含む集計例</a></li>
+<li><a href="#excluded">表に含まない費用と確認書類</a></li>
+<li><a href="#faq">よくある質問</a></li>
+<li><a href="#related">関連ツール・記事</a></li>
+<li><a href="#sources">出典</a></li>
+</ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../../ideco-setsuzei/">iDeCo節税シミュレーター</a></li><li><a href="../../toushi/ideco-deguchi/">iDeCoの出口の税金</a></li><li><a href="../kakutei-kyoshutsu-nenkin/">確定拠出年金とは</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="fees">加入から受取までの手数料表</h2>
+<p>「無料」と表示された費目を確認します。運営管理機関に払う費用と、国民年金基金連合会・資産管理機関に払う費用は別です。</p>
+<p data-review-context="before-table">2026年10月24日確認・金額は税込。国民年金基金連合会の新規加入時等手数料と、参照プランの運営管理手数料なし・資産管理月額66円・給付1回440円を使う固定設例です。改定前は2026年11月分まで、改定後は2026年12月分以降の掛金拠出中の連合会手数料。年単位拠出も改定後は対象月数で計算します。出典：<a href="https://www.ideco-koushiki.jp/library/pdf/leaflet202604.pdf">連合会の改定案内</a>・<a href="https://dc.rakuten-sec.co.jp/service/commission/">参照料金表</a>。</p>
+<div class="scroll-wrap"><table><caption>固定設例：事務手数料の支払先・発生単位</caption><thead><tr><th scope="col">場面</th><th scope="col">支払先・費目</th><th scope="col">金額と発生単位</th></tr></thead><tbody>
+<tr><th scope="row">新規加入時等</th><td>国民年金基金連合会</td><td>2,829円／加入時等</td></tr>
+<tr><th scope="row">掛金拠出中・改定前</th><td>国民年金基金連合会</td><td>105円／収納1回</td></tr>
+<tr><th scope="row">掛金拠出中・改定後</th><td>国民年金基金連合会</td><td>120円／拠出対象月</td></tr>
+<tr><th scope="row">掛金拠出中・運用指図中</th><td>資産管理機関</td><td>66円／月</td></tr>
+<tr><th scope="row">給付を受けるとき</th><td>資産管理機関</td><td>440円／給付1回</td></tr>
+</tbody></table></div>
+<p>連合会の改定後手数料は、2027年1月26日の口座引落分から適用され、事業主払込も同じです。連合会の改定は毎月拠出では2026年12月分に当たり、改定に伴う加入者の手続きはありません。</p>
+<p class="hint">運営管理・資産管理・給付の料金は、契約先のプランで確認してください。この表の資産管理費や給付費を、他の金融機関の料金と決めつけないでください。</p>
+<h2 id="annual">改定前後の年間費用を検算</h2>
+<p>改定前は収納回数、改定後は掛金の対象月数を掛けます。年単位拠出の利用可否とは分けた、費用だけの比較です。企業年金制度に加入している方や公務員は、年単位拠出を選択できません（<a href="https://www.ideco-koushiki.jp/start/">公式サイトの加入案内</a>）。</p>
+<p data-review-context="before-table">年間の固定設例：運営管理手数料なし・資産管理月額66円で、全12対象月に拠出する連合会と資産管理の事務費用のみ。旧期間は2025年12月〜2026年11月、新期間は2026年12月〜2027年11月とし、新旧それぞれの単価を期間中固定します。改定前の連合会は掛金収納1回105円、改定後は対象月1か月120円です。加入時・給付時・信託報酬・移換・還付費用は含めません。</p>
+<div class="scroll-wrap"><table><caption>固定設例：改定前後の年間事務費用</caption><thead><tr><th scope="col">期間と収納回数</th><th scope="col">計算式（円）</th><th scope="col">年額</th></tr></thead><tbody>
+<tr><th scope="row">旧期間・毎月収納</th><td>105×12＋66×12</td><td><span class="numeric-token">2,052円</span></td></tr>
+<tr><th scope="row">旧期間・年1回収納</th><td>105×1＋66×12</td><td><span class="numeric-token">897円</span></td></tr>
+<tr><th scope="row">新期間・毎月収納</th><td>120×12＋66×12</td><td><span class="numeric-token">2,232円</span></td></tr>
+<tr><th scope="row">新期間・年1回収納</th><td>120×12＋66×12</td><td><span class="numeric-token">2,232円</span></td></tr>
+</tbody></table></div>
+<p>改定後は、収納をまとめても連合会手数料の対象月数は減りません。このため、以前の収納回数だけで計算した年額を、そのまま改定後へ使えません。表は暦年の実際の引落総額ではなく、対象月をそろえた比較です。</p>
+<figure class="figure fig-wide" style="--figw:380px"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 170" role="img" aria-labelledby="fee-flow-title"><title id="fee-flow-title">事務費用は加入・拠出・運用指図・給付で分けて集計</title><g font-family="sans-serif" text-anchor="middle" font-size="18" fill="currentColor"><rect x="10" y="30" width="145" height="90" rx="10" fill="#eef4ff"/><rect x="180" y="30" width="145" height="90" rx="10" fill="#eef4ff"/><rect x="350" y="30" width="145" height="90" rx="10" fill="#eef4ff"/><rect x="520" y="30" width="145" height="90" rx="10" fill="#eef4ff"/><text x="82" y="69">加入</text><text x="82" y="99">初回の費用</text><text x="252" y="69">拠出</text><text x="252" y="99">対象月と収納</text><text x="422" y="69">運用指図</text><text x="422" y="99">管理期間</text><text x="592" y="69">給付</text><text x="592" y="99">受取回数</text><text x="167" y="83">→</text><text x="337" y="83">→</text><text x="507" y="83">→</text></g></svg><figcaption>費用の集計区分を示す図です。加入から給付までの必要期間や、受給要件を示すものではありません。</figcaption></figure>
+<h2 id="total">運用指図期間と給付を含む集計例</h2>
+<p>掛金を止めた運用指図者にも、資産管理などの費用は残ります。参照プランでは、年金資産の一部売却による充当や、給付金からの差引きで支払います。掛金を止めることと、資産を引き出すことは別です。</p>
+<p data-review-context="before-table">税込の全体の固定設例：国民年金基金連合会の新規加入時等1回、改定後の掛金拠出1年間・全12対象月、運用指図12か月、給付1回を合計します。運営管理手数料なし・資産管理月額66円・給付1回440円、連合会は2026年12月分以降の掛金拠出対象月1か月120円の単価を固定。事務費用のみで、信託報酬・移換・還付・税は含めません。将来の料金改定を予測せず、短期間での受給が可能かも判定しない架空の集計です。</p>
+<div class="scroll-wrap"><table><caption>固定設例：運用指図期間と給付を含む事務費用の合計</caption><thead><tr><th scope="col">区分</th><th scope="col">計算式（円）</th><th scope="col">費用</th></tr></thead><tbody>
+<tr><th scope="row">新規加入時等</th><td>2,829×1</td><td><span class="numeric-token">2,829円</span></td></tr>
+<tr><th scope="row">改定後の拠出期間</th><td>120×12＋66×12</td><td><span class="numeric-token">2,232円</span></td></tr>
+<tr><th scope="row">運用指図期間</th><td>66×12</td><td><span class="numeric-token">792円</span></td></tr>
+<tr><th scope="row">給付</th><td>440×1</td><td><span class="numeric-token">440円</span></td></tr>
+<tr><th scope="row">合計</th><td>加入＋拠出＋運用指図＋給付</td><td><span class="numeric-token">6,293円</span></td></tr>
+</tbody></table></div>
+<p>端数のない税込単価に回数・月数を掛けており、丸めは行っていません。給付を分ける場合は、その給付回数に応じた費用を入れ直します。実際の管理費用の終了時点は、契約先の給付手続きで確認します。</p>
+<h2 id="excluded">表に含まない費用と確認書類</h2>
+<p>上の合計は事務費用の設例です。運用商品の費用まで含めた総負担や、税負担を差し引いた損益ではありません。</p>
+<ul>
+<li>投資信託を保有する場合は、目論見書の信託報酬・その他費用も確認します。事務費用とは別に整理します。</li>
+<li>運営管理機関や他制度へ資産を移す場合は、移換元・移換先と移換の区分を料金表で確認します。</li>
+<li>上限超過や加入資格のない月への拠出などで掛金が還付される場合は、通常の給付と区別して還付手数料を確認します。</li>
+</ul>
+<p>保存するのは、プラン名と料金表の確認日、掛金の対象月と収納回数、運用指図期間、給付回数、差引きの明細です。勤務先の担当者も、事業主払込の収納月だけで対象月を判断せず、通知の内訳を照らします。</p>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question">運営管理手数料が無料なら、iDeCoの費用はかかりませんか？</h3>
+<p class="faq-answer">ほかの費用は別にかかります。無料なのが運営管理機関に払う費用かを確認し、連合会・資産管理・給付と、運用商品の費用を分けます。</p>
+<h3 class="faq-question">掛金を止めた後も手数料はかかりますか？</h3>
+<p class="faq-answer">運用指図中にも資産管理などの費用がかかります。参照プランでは年金資産や給付金から差し引かれます。掛金停止で資産が払い出されるわけではありません。</p>
+<h3 class="faq-question">年単位拠出なら改定後も手数料を減らせますか？</h3>
+<p class="faq-answer">連合会の改定後手数料は、収納回数を減らすだけでは減りません。掛金の拠出対象月数に応じて計算するためです。年単位拠出の利用可否と、手数料の計算は分けて確認します。</p>
+<h3 class="faq-question">掲載した合計は、実際の総負担ですか？</h3>
+<p class="faq-answer">単価と期間・回数を固定した事務費用の設例です。商品の信託報酬、移換・還付費用、税を含みません。将来の料金変更や、給付を受けられる時期も織り込んでいません。</p>
+<!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../gaikadate-hoken-hiyo/"><b>外貨建て保険とは：円払込・外貨保険金・為替費用と解約控除を基準日付きで確認</b><span>外貨建て保険は、外貨の保険金額と円の受取額を分けて確認します。同じ公式商品資料の円入金・円支払レート、契約費用、解約控除を基準日付きの表に整理。架空の円換算例と、解約返戻金の見積り</span></a><a class="tool-card" href="../kojin-kokusai-kinri-table/"><b>個人向け国債の金利｜募集月・適用期間と税引後利息の早見表</b><span>個人向け国債の公表金利を募集月・回号・利子計算期間で確認。変動型の初回利率と固定型を区別し、同じ元本で初回利息を税引前後に分けて試算します。初回の日数調整、計算式、丸め方と対象外も</span></a><a class="tool-card" href="../espp-konyu-baikyaku-zeikin/"><b>ESPPとは：給与天引き・割引購入・売却の3時点と日本の課税を検算</b><span>ESPPは自己資金で会社株を買う制度です。発行法人の在職従業員が職務に関連して受ける有利な購入権を例に、給与収入への加算と売却時の取得費を円換算で検算。天引き・購入・売却の明細を突</span></a></div></section><!--next-read:E-->
+<section class="related"><h2 id="related">関連ツール・記事</h2>
+<p>費用と税額は分けて確認します。<a class="tool-cta" href="../../ideco-setsuzei/">掛金による税額の変化を試算：iDeCo節税シミュレーター</a></p>
+<p><a href="../../toushi/ideco-deguchi/">iDeCoの出口税額計算</a>は受取時の税額、<a href="../kakutei-kyoshutsu-nenkin/">確定拠出年金の解説</a>は企業型との制度の違いを扱います。手数料を差し引いた運用損益を計算するものではありません。</p></section>
+<h2 id="sources">出典</h2>
+<ul>
+<li>国民年金基金連合会「<a href="https://www.ideco-koushiki.jp/library/pdf/leaflet202604.pdf">iDeCo加入者に係る手数料を見直します</a>」：新旧手数料・適用引落分・年単位拠出・新規加入時等手数料。</li>
+<li>楽天証券「<a href="https://dc.rakuten-sec.co.jp/service/commission/">手数料</a>」：固定設例に使った自社プランの税込事務費用と控除方法。</li>
+<li>国民年金基金連合会「<a href="https://www.ideco-koushiki.jp/start/">iDeCoをはじめるまでのポイント</a>」：年単位拠出の対象外、運用商品と金融機関による費用の違い。</li>
+</ul>
+<p class="disclaimer" data-source-nolink="自サイトの一般情報提供の範囲と免責">本記事は一般的な情報提供を目的としており、個別の相談への回答ではありません。実際の判断は金融機関・税務署・税理士等にご確認ください。</p>
+</article>
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=iDeCo%E3%81%AE%E6%89%8B%E6%95%B0%E6%96%99%E3%82%92%E6%94%AF%E6%89%95%E5%85%88%E3%81%A8%E7%99%BA%E7%94%9F%E6%99%82%E7%82%B9%E3%81%A7%E6%95%B4%E7%90%86%E3%80%82%E9%80%A3%E5%90%88%E4%BC%9A%E6%89%8B%E6%95%B0%E6%96%99%E3%81%AE%E6%94%B9%E5%AE%9A%E5%89%8D%E5%BE%8C%E3%82%92%E3%80%81%E6%AF%8E%E6%9C%88%E6%8B%A0%E5%87%BA%E3%83%BB%E5%B9%B4%E5%8D%98%E4%BD%8D%E6%8B%A0%E5%87%BA%E3%81%AE%E5%90%8C%E6%9D%A1%E4%BB%B6%E3%81%A7%E5%B9%B4%E9%A1%8D%E3%81%AB%E7%9B%B4%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E6%8E%9B%E9%87%91%E5%81%9C%E6%AD%A2%E5%BE%8C%E3%81%A8%E7%B5%A6%E4%BB%98%E5%9B%9E%E6%95%B0%E3%81%AE%E8%B2%BB%E7%94%A8%E3%82%82%E5%9B%BA%E5%AE%9A%E8%A8%AD%E4%BE%8B%E3%81%A7%E9%9B%86%E8%A8%88%E3%81%97%E3%80%81%E4%BF%A1%E8%A8%97%E5%A0%B1%E9%85%AC%E3%82%84%E7%A7%BB%E6%8F%9B%E8%B2%BB%E7%94%A8%E3%81%A8%E3%81%AE%E9%81%95%E3%81%84%E3%82%92%E7%A2%BA%E8%AA%8D%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fideco-tesuryo-table%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main>
+<footer class="site">© 税金・経理・補助金ツールズ  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer>
+<script src="../../assets/empty-state.js" defer></script>
+</body></html>
