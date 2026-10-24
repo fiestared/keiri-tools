@@ -118,7 +118,7 @@
 <p>以下は円建て固定利付債の架空例です。単利の最終利回りと、受取時点を反映する複利IRRを分けて検算します。実在商品の順位や将来の市場金利を示す表ではありません。</p>
 <!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol><li><a href="#types">表面利率・直接利回り・最終利回りの違い</a></li><li><a href="#example">同じ債券の価格から検算する</a></li><li><a href="#net">税引後と購入時費用をそろえる</a></li><li><a href="#check">表示利回りと合わないときの確認表</a></li><li><a href="#summary">まとめ</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#related">関連する解説</a></li><li><a href="#sources">出典</a></li></ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../kojin-kokusai-kinri-table/">個人向け国債の金利</a></li><li><a href="../teiki-yokin-kinri-table/">定期預金の金利：基準日・預入期間・条件をそろえた税引前後の受取利息表</a></li><li><a href="../../toushi/tsumitate/">積立シミュレーター</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
 <h2 id="types">表面利率・直接利回り・最終利回りの違い</h2>
-<p>年利息を何で割るか、償還差損益を含めるかを先に分けると、表示された率を読み違えにくくなります。</p>
+<p data-review-context="before-table">下表は、所定の利子が支払われ額面償還される円建て固定利付債の税引前・費用なしの定義です。最終利回りは償還まで保有する場合を示します。</p>
 <div class="scroll-wrap"><table><thead><tr><th>表示</th><th>計算の考え方</th><th>含めないもの</th></tr></thead><tbody>
 <tr><th>表面利率</th><td>年利息 ÷ 額面金額</td><td>購入価格との差</td></tr>
 <tr><th>直接利回り</th><td>年利息 ÷ 購入価格</td><td>償還差損益</td></tr>
@@ -135,7 +135,7 @@
 <tr><th>額面購入に変更・単利と年次複利IRR</th><td>購入価格のみ1,000,000円に変更、償還差損益なし</td><td class="num"><span class="numeric-token">2.000％</span></td></tr>
 <tr><th>最終利回り・年次複利IRR</th><td>980,000＝20,000÷(1+r)＋1,020,000÷(1+r)² を解く</td><td class="num"><span class="numeric-token">3.046％</span></td></tr>
 </tbody></table></div>
-<p>この設例では、額面との差を満期に受け取るため、直接利回りより単利の最終利回りが高くなります。単利式は償還差益を年平均にしますが、IRRは実際に受け取る時点に割り引いて計算します。</p>
+<p>購入価格が額面より低い設例では、額面との差を満期に受け取るため、直接利回りより単利の最終利回りが高くなります。単利式は償還差益を年平均にしますが、IRRは実際に受け取る時点に割り引いて計算します。</p>
 <figure class="figure fig-wide" style="--figw:390px"><svg viewBox="0 0 660 170" role="img" aria-labelledby="flow-title"><title id="flow-title">利回りを計算する支出と受取の時点</title><path d="M65 80H595" stroke="currentColor" fill="none"/><circle cx="75" cy="80" r="6" fill="currentColor"/><circle cx="330" cy="80" r="6" fill="currentColor"/><circle cx="585" cy="80" r="6" fill="currentColor"/><g fill="currentColor" text-anchor="middle" font-size="17"><text x="75" y="45">購入</text><text x="330" y="45">利払い</text><text x="585" y="45">償還</text><text x="90" y="115">価格と費用を支出</text><text x="330" y="115">利子を受取</text><text x="555" y="115">元本と利子を受取</text></g></svg><figcaption>IRRは購入時の支出と、その後の受取を時点ごとに並べて求めます。</figcaption></figure>
 <p>複利IRRは、将来の受取額を現在価値に直した合計が購入時の支出と等しくなる割引率です。利子を受け取った後に、同じ率で再投資できることを保証するものではありません。</p>
 <h2 id="net">税引後と購入時費用をそろえる</h2>
