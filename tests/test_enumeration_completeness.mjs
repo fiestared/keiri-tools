@@ -42,8 +42,8 @@ const ENUMERATIONS = [
     why: "介護の対象家族の列挙を省略しない。",
     items: [
       { id: "spouse", label: "配偶者", must: /配偶者、父母/ },
-      { id: "parents", label: "父母", must: /父母、子/ },
-      { id: "child", label: "子", must: /子、祖父母/ },
+      { id: "parents", label: "父母", must: /父母、法律上の親子関係がある子/ },
+      { id: "child", label: "子", must: /養子を含む）、祖父母/ },
       { id: "grandparents", label: "祖父母", must: /祖父母、兄弟姉妹/ },
       { id: "siblings", label: "兄弟姉妹", must: /兄弟姉妹、孫/ },
       { id: "grandchild", label: "孫", must: /孫、配偶者の父母/ },
