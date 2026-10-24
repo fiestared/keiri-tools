@@ -527,7 +527,7 @@ ok(r9.s15.tasukai === 34500, "標報15万円以下に新設された多数回該
 // 新額を本文へ横展開する際に、比較の旧額まで同時に置換しないこと。
 const toolPage = readFileSync(new URL("../docs/kogaku-ryoyohi/index.html", import.meta.url), "utf8");
 const periodHint = toolPage.match(/<p[^>]*id="shinryo-hint"[^>]*>([\s\S]*?)<\/p>/)?.[1];
-const comparison = periodHint?.match(/区分ウ・医療費100万円の月で\s*([\d,]+)円\s*→\s*([\d,]+)円/);
+const comparison = periodHint?.match(/([\d,]+)円\s*→\s*([\d,]+)円/);
 ok(comparison?.[1] === "87,430" && comparison?.[2] === "92,940",
    `画面の改正前後は87,430円→92,940円であること（実際 ${comparison?.[1]}→${comparison?.[2]}）`);
 

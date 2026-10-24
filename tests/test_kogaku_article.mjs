@@ -711,7 +711,7 @@ const R9_REI_SA = R9_REI_GENDO - gendoOf(
   const found = new Set([...text.matchAll(/(\d{1,3}(?:,\d{3})+)円/g)].map(m => Number(m[1].replace(/,/g, ''))));
   const allow = new Set([
     ...KYOKAI_KENPO,               // 政令の12個
-    21000, 20000, 60000, 40000,    // 世帯合算（下限・例の3件・合計・同一病院で2回なら40,000円で対象に入る）
+    21000, 10500, 20000, 60000, 40000,    // 世帯合算（施行令41条1項の通常21,000円・75歳到達時特例10,500円、設例）
     1000000, 700000, 300000,       // 医療費100万・7割・3割
     87430, 171820, 84390, 212570,  // 崖と払い戻し
     7330,                          // 80,100＋(100万−26.7万)×1% の1%部分
@@ -778,9 +778,11 @@ const R9_REI_SA = R9_REI_GENDO - gendoOf(
   if (!title.includes('標準報酬月額')) fail(`titleに「標準報酬月額」が無い: ${title}`);
   else if (title.length > 60) fail(`titleが60字超: ${title.length}字`);
   else ok(`title（${title.length}字）: 区分は年収でなく標準報酬月額`);
-  for (const n of ['年齢', '標準報酬月額', '住民税非課税', '70歳未満', '21,000円', '70歳以上は少額も合算']) {
+  for (const n of ['年齢', '標準報酬月額', '住民税非課税', '70歳未満の5区分', '世帯合算', '70歳以上の別表']) {
     if (!desc.includes(n)) fail(`meta descriptionに ${n} が無い`);
   }
+  // 条件付きの足切りを短いmetaへ詰め込まず、本文の合算節で説明する。
+  if (desc.length > 120) fail(`meta descriptionが120字超: ${desc.length}字`);
   if (desc.includes('87,430円') && desc.includes('171,820円') && desc.includes('84,390円') && desc.includes('21,000円')) {
     ok('meta description: 崖(87,430→171,820・差84,390)と世帯合算21,000円を明記');
   }

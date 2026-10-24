@@ -8,13 +8,13 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>高額療養費 計算機｜自己負担限度額といくら戻るかを自動計算</title>
-<meta name="description" content="高額療養費の月額上限と払戻額を、診療月・年齢・療養月の標準報酬月額・非課税区分から試算します。70歳未満の世帯合算は医科・歯科、入院・外来を分けた各区分21,000円以上、70歳以上は全額が対象です。多数回該当は同一保険者・同一被保険者の支給月で確認し、70～74歳の外来個人上限による支給月は除きます。登録不要・無料。">
+<meta name="description" content="高額療養費の月額上限と払戻額を試算。診療月・年齢・療養月の標準報酬月額・非課税区分を選び、保険適用分の10割額を入力します。世帯合算・多数回該当に対応。登録不要・無料。">
 <link rel="stylesheet" href="../assets/style.css">
 <link rel="canonical" href="https://keiri-tools.com/kogaku-ryoyohi/">
 <!-- ogp:auto -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="高額療養費 計算機｜自己負担限度額といくら戻るかを自動計算">
-<meta property="og:description" content="高額療養費の月額上限と払戻額を、診療月・年齢・療養月の標準報酬月額・非課税区分から試算します。70歳未満の世帯合算は医科・歯科、入院・外来を分けた各区分21,000円以上、70歳以上は全額が対象です。多数回該当は同一保険者・同一被保険者の支給月で確認し、70～74歳の外来個人上限による支給月は除きます。登録不要・無料。">
+<meta property="og:description" content="高額療養費の月額上限と払戻額を試算。診療月・年齢・療養月の標準報酬月額・非課税区分を選び、保険適用分の10割額を入力します。世帯合算・多数回該当に対応。登録不要・無料。">
 <meta property="og:url" content="https://keiri-tools.com/kogaku-ryoyohi/">
 <meta property="og:image" content="https://keiri-tools.com/ogp.png">
 <meta property="og:site_name" content="税金・経理・補助金ツールズ">
@@ -37,7 +37,7 @@
         "price": "0",
         "priceCurrency": "JPY"
       },
-      "description": "高額療養費の月額上限と払戻額を、診療月・年齢・療養月の標準報酬月額・非課税区分から試算します。70歳未満の世帯合算は医科・歯科、入院・外来を分けた各区分21,000円以上、70歳以上は全額が対象です。多数回該当は同一保険者・同一被保険者の支給月で確認し、70～74歳の外来個人上限による支給月は除きます。登録不要・無料。"
+      "description": "高額療養費の月額上限と払戻額を試算。診療月・年齢・療養月の標準報酬月額・非課税区分を選び、保険適用分の10割額を入力します。世帯合算・多数回該当に対応。登録不要・無料。"
     },
     {
       "@type": "BreadcrumbList",
@@ -79,7 +79,7 @@
           "name": "家族の医療費は合算できますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "合算できます。同じ被保険者とその被扶養者の対象自己負担を合算する制度です。70歳未満の計算区分・足切り・特例は、世帯合算の入力案内で確認してください。"
+            "text": "合算できます。同じ被保険者とその被扶養者の同月分が対象です。70歳未満は医療機関ごとに医科・歯科、入院・外来を分け、各区分の自己負担21,000円以上を合算します。処方薬局分は処方元へ加えます。75歳到達時特例は10,500円以上です。保険外費用・入院時食事療養・生活療養の自己負担は含めません。70歳未満の計算区分・足切り・特例は、世帯合算の入力案内で確認してください。"
           }
         },
         {
@@ -87,7 +87,7 @@
           "name": "医療費が少ない月でも限度額は下がりますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "1%部分は0円です（医療費が起点額に満たない場合）。具体的な計算式は上の「この計算機が答えていること」をご覧ください。"
+            "text": "1%部分は0円です（保険適用10割額が起点額に満たない場合）。具体的な計算式は上の「この計算機が答えていること」をご覧ください。"
           }
         },
         {
@@ -95,7 +95,7 @@
           "name": "多数回該当はいつから適用されますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "多数回該当は、当月を含む直近12か月に既に支給対象月が3か月以上ある場合の4か月目からです（同一保険者・同一被保険者に限り、70歳以上75歳未満の外来個人上限による支給月は数えません）。令和8年8月〜令和9年7月診療分では区分ウは85,800円＋1%から44,400円へ、区分エは61,500円から44,400円へ下がり、この2つの区分は多数回該当では同額になります。"
+            "text": "多数回該当は、当月を含む直近12か月に既に支給対象月が3か月以上ある場合の4か月目からです（同一保険者・同一被保険者に限り、70歳以上75歳未満の外来個人上限による支給月は数えません）。区分ウもエも多数回該当の限度額は44,400円です（令和8年8月〜令和9年7月・75歳到達時特例を除く）。"
           }
         },
         {
@@ -111,7 +111,7 @@
           "name": "70歳以上の限度額もこの計算機で出せますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "出せます。「療養を受けた方の年齢」で70歳以上を選ぶと、健康保険法施行令42条3項の世帯単位の限度額と、同条5項の「外来（通院）だけを個人ごとに見る上限」の二段階で計算します。まず外来の自己負担をその人ごとに外来上限で頭打ちにし、そのあとで入院分と合わせて世帯の限度額と比べます。適用した表と両方の上限額は結果画面に表示します。70歳以上には21,000円の足切りがなく、自己負担をすべて合算できる点も70歳未満と違います。なお現役並み所得者には外来だけの上限がありません。"
+            "text": "出せます。70歳以上の区分は70歳に達する日の属する月の翌月から適用します。21,000円の足切りはなく、同じ被保険者と被扶養者の同月の対象自己負担を全額合算します。精算は外来個人、75歳到達時特例の個人、世帯の順です。各段階で支給される額を控除して次の上限と比べます。現役並み所得者に外来個人上限はありません（施行令41条3〜5項・42条3〜5項）。適用した表と両方の上限額は結果画面に表示します。"
           }
         }
       ]
@@ -215,7 +215,7 @@
 
   <div class="fee-pair field-pair">
     <div>
-      <label for="medical1">① 医療費（10割・円）</label>
+      <label for="medical1">① 保険適用の医療費（10割・円）</label>
       <input type="number" id="medical1" value="1000000" placeholder="例: 1000000" inputmode="numeric">
     </div>
     <div>
@@ -247,10 +247,10 @@
   </div>
 
   <div class="note" style="margin-top:12px">
-    <p style="margin:0 0 8px"><b id="gassan-input">世帯合算（任意）</b>　②〜④には、本人や同じ医療保険の被扶養者の同月分のうち、下記の合算条件を満たす分だけを入力します。入力できるのは、下記の合算条件に合う保険診療分だけです（保険外費用・食事負担額を除く）。<b>70歳未満は人・月・医療機関・医科歯科・入院外来別に、処方薬局分を処方元へ加えた自己負担21,000円以上を合算します（75歳到達時特例を除く）。70歳以上は対象自己負担を全額合算します。</b></p>
+    <p style="margin:0 0 8px"><b id="gassan-input">世帯合算（任意）</b>　②〜④には、本人や同じ医療保険の被扶養者の同月分のうち、下記の合算条件を満たす分だけを入力します。入力できるのは、下記の合算条件に合う保険診療分だけです（保険外費用・食事療養・生活療養の自己負担を除く）。<b>70歳未満は人・月・医療機関・医科歯科・入院外来別に、処方薬局分を処方元へ加えた自己負担21,000円以上を合算します（75歳到達時特例を除く）。</b></p><p class="hint"><b>70歳以上は、同じ被保険者と被扶養者の同月の対象自己負担を、適用開始月以後は全額合算できます。開始月は<a href="#over70-guide">所得区分の説明</a>に記載しています。</b></p>
     <div class="fee-pair field-pair">
       <div>
-        <label for="medical2">② 医療費（10割・円）</label>
+        <label for="medical2">② 保険適用の医療費（10割・円）</label>
         <input type="number" id="medical2" value="" placeholder="例: 200000" inputmode="numeric">
       </div>
       <div>
@@ -282,7 +282,7 @@
     </div>
     <div class="fee-pair field-pair">
       <div>
-        <label for="medical3">③ 医療費（10割・円）</label>
+        <label for="medical3">③ 保険適用の医療費（10割・円）</label>
         <input type="number" id="medical3" value="" placeholder="例: 80000" inputmode="numeric">
       </div>
       <div>
@@ -314,7 +314,7 @@
     </div>
     <div class="fee-pair field-pair">
       <div>
-        <label for="medical4">④ 医療費（10割・円）</label>
+        <label for="medical4">④ 保険適用の医療費（10割・円）</label>
         <input type="number" id="medical4" value="" placeholder="例: 60000" inputmode="numeric">
       </div>
       <div>
@@ -363,7 +363,7 @@
 
 <section class="card" aria-labelledby="over70-guide">
   <h3 id="over70-guide">所得区分と限度額の説明</h3>
-  <p>70歳以上は<b>限度額の表そのものが別</b>です（<a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">施行令42条3項・5項</a>）。70歳以上の一般・低所得者には世帯上限に加え外来個人上限があります（現役並み所得者にはありません）。70歳以上は21,000円の足切りなく自己負担を合算できます。<span id="over70-note"></span></p>
+  <p>70歳以上は<b>限度額の表そのものが別</b>です。適用は70歳に達する日の属する月の翌月からです（<a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">施行令42条3項・5項</a>）。70歳以上の一般・低所得者には世帯上限に加え外来個人上限があります（現役並み所得者にはありません）。70歳以上の対象自己負担は、同じ被保険者と被扶養者の同月分を、前述の適用開始月以後は21,000円の足切りなく合算できます。<span id="over70-note"></span></p>
     <p>70歳以上の所得区分の目安は次のとおりです。</p>
     <ul>
       <li>一般：現役並み所得者・低所得者以外</li>
@@ -378,12 +378,12 @@
 <section class="card">
   <h2 id="tool-section-1">この計算機が答えていること</h2>
   <p><b>月をまたぐ入院は、診療月ごとに医療費を分けて入力してください。</b>高額療養費は月初から月末までの暦月単位で計算し、入院日からの期間をまとめて計算するものではありません。協会けんぽの紙の支給申請書も、診療月ごとに1枚ずつ提出します（<a href="https://www.kyoukaikenpo.or.jp/faq/benefit/004/">協会けんぽの申請FAQ</a>）。</p>
-  <p class="hint" id="shinryo-hint">区分ウ・医療費100万円の月で87,430円→92,940円は、<b>令和8年8月診療分から限度額が上がった</b>例で、改正後は令和8年8月〜令和9年7月、70歳未満・課税、多数回と75歳特例以外です。</p>
+  <p class="hint" id="shinryo-hint">87,430円→92,940円は、区分ウ・保険適用10割額100万円・70歳未満・課税で、令和8年7月までと令和8年8月〜令和9年7月を比べた限度額です（多数回と75歳到達時特例を除く）。</p>
   <p><b>区分を決めるのは年収ではありません。</b><a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">健康保険法施行令42条1項2号〜4号</a>が判定に使うのは「療養のあった月の<b>標準報酬月額</b>」で、条文に「年収」も「報酬月額」も出てきません。非課税等の条件も含めて所得区分を確認してください。</p>
-  <p>令和8年8月〜令和9年7月の70歳未満・課税で多数回と75歳特例を除く例では、医療費100万円に対する区分ウとイの限度額は<b>92,940円と183,130円</b>で、差は<b>90,190円</b>です。4〜6月の平均報酬月額514,999円と515,000円から、それぞれ標準報酬月額50万円と53万円になる場合の比較です。給料の差は1円です。限度額の区分は、標準報酬月額だけでなく非課税などの判定条件も確認してください。同じ区分内の等級変更では区分は変わりません。</p>
-  <p><b>70歳未満の世帯合算は、75歳到達時特例を除き、各計算区分で21,000円未満の自己負担を含めません。</b>合算対象に入る自己負担は、基準を超えた部分だけでなく全額を足します。75歳到達時特例の対象外で全員70歳未満の被保険者とその被扶養者3人が、別々の病院で各20,000円だけ払った例では、計60,000円でも合算対象は0円です。この計算機は、<b>どの行が合算され、どの行が外れたのか</b>を1行ずつ表示します。</p>
-  <p><b>医療費が少ない月でも計算上の限度額は基準額を下回りません（実際の自己負担額を超える支払はありません）。令和8年8月〜令和9年7月診療分の区分ウなら、医療費が10万円でも通常の計算基準は85,800円です（多数回と75歳特例を除く）。</b></p>
-  <p>条文は1%を計算する費用の額について「その額が二十八万六千円に満たないときは、二十八万六千円」と定めているため、医療費が起点額に満たない月の1%部分は0円になります。85,800円＋max［医療費−286,000円, 0］×1%が計算式で、令和8年8月〜令和9年7月、70歳未満・区分ウ、多数回と75歳特例以外、1%部分は50銭未満切捨て・50銭以上1円切上げとします。</p>
+  <p>令和8年8月〜令和9年7月の70歳未満・課税で多数回と75歳特例を除く例では、保険適用10割額100万円に対する区分ウとイの限度額は<b>92,940円と183,130円</b>で、差は<b>90,190円</b>です。4〜6月の平均報酬月額514,999円と515,000円から、それぞれ標準報酬月額50万円と53万円になる場合の比較です。給料の差は1円です。限度額の区分は、標準報酬月額だけでなく非課税などの判定条件も確認してください。同じ区分内の等級変更では区分は変わりません。</p>
+  <p><b>70歳未満の世帯合算は、75歳到達時特例を除き、各計算区分で21,000円未満の自己負担を含めません。</b>合算対象に入る自己負担は、基準を超えた部分だけでなく全額を足します。75歳到達時特例の対象外で全員70歳未満の被保険者と被扶養者の計3人が、別々の病院で各20,000円だけ払った例では、計60,000円でも合算対象は0円です。この計算機は、<b>どの行が合算され、どの行が外れたのか</b>を1行ずつ表示します。</p>
+  <p><b>医療費が少ない月でも計算上の限度額は基準額を下回りません（実際の自己負担額を超える支払はありません）。令和8年8月〜令和9年7月診療分の区分ウなら、保険適用10割額が10万円でも通常の計算基準は85,800円です（多数回と75歳特例を除く）。</b></p>
+  <p><a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">区分ウの限度額</a>は85,800円＋max［保険適用10割額−286,000円, 0］×1%で、1%部分を1円未満四捨五入します（令和8年8月〜令和9年7月・70歳未満、多数回と75歳到達時特例を除く）。1%部分は0円になります（保険適用10割額が起点額に満たない月）。</p>
   <a class="tool-cta" href="../column/kogaku-ryoyohi/">解説を読む：高額療養費の自己負担限度額と、所得区分を確認する方法</a>
 </section>
 
@@ -418,19 +418,19 @@
 <p class="faq-answer">いいえ。<a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">健康保険法施行令42条1項</a>が判定に使うのは「療養のあった月の標準報酬月額」で、条文に年収も報酬月額も出てきません。非課税等の条件も含めて所得区分を確認してください。具体例は上の「この計算機が答えていること」で確認できます。</p>
 
 <h3 class="faq-question">家族の医療費は合算できますか？</h3>
-<p class="faq-answer">合算できます。同じ被保険者とその被扶養者の対象自己負担を合算する制度です。70歳未満の計算区分・足切り・特例は、<a href="#gassan-input">世帯合算の入力案内</a>で確認してください。</p>
+<p class="faq-answer">合算できます。同じ被保険者とその被扶養者の同月分が対象です。70歳未満は医療機関ごとに医科・歯科、入院・外来を分け、各区分の自己負担21,000円以上を合算します。処方薬局分は処方元へ加えます。75歳到達時特例は10,500円以上です。保険外費用・入院時食事療養・生活療養の自己負担は含めません。70歳未満の計算区分・足切り・特例は、<a href="#gassan-input">世帯合算の入力案内</a>で確認してください。</p>
 
 <h3 class="faq-question">医療費が少ない月でも限度額は下がりますか？</h3>
-<p class="faq-answer">1%部分は0円です（医療費が起点額に満たない場合）。具体的な計算式は上の「この計算機が答えていること」をご覧ください。</p>
+<p class="faq-answer">1%部分は0円です（保険適用10割額が起点額に満たない場合）。具体的な計算式は上の「この計算機が答えていること」をご覧ください。</p>
 
 <h3 class="faq-question">多数回該当はいつから適用されますか？</h3>
-<p class="faq-answer">多数回該当は、当月を含む直近12か月に既に支給対象月が3か月以上ある場合の4か月目からです（同一保険者・同一被保険者に限り、70歳以上75歳未満の外来個人上限による支給月は数えません）。令和8年8月〜令和9年7月診療分では区分ウは85,800円＋1%から44,400円へ、区分エは61,500円から44,400円へ下がり、この2つの区分は多数回該当では同額になります。</p>
+<p class="faq-answer">多数回該当は、当月を含む直近12か月に既に支給対象月が3か月以上ある場合の4か月目からです（同一保険者・同一被保険者に限り、70歳以上75歳未満の外来個人上限による支給月は数えません）。区分ウもエも多数回該当の限度額は44,400円です（令和8年8月〜令和9年7月・75歳到達時特例を除く）。</p>
 
 <h3 class="faq-question">差額ベッド代や食事代も高額療養費の対象になりますか？</h3>
 <p class="faq-answer">なりません。入院時の食事療養・生活療養の自己負担は<a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">施行令41条1項</a>が明文で除いており、差額ベッド代・先進医療の技術料・診断書料など保険がきかない費用も対象外です。窓口で払った総額をそのまま入れると、戻ってくる額が実際より多く出る場合があります。</p>
 
 <h3 class="faq-question">70歳以上の限度額もこの計算機で出せますか？</h3>
-<p class="faq-answer">出せます。「療養を受けた方の年齢」で70歳以上を選ぶと、<a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">健康保険法施行令42条3項</a>の世帯単位の限度額と、<a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">同条5項</a>の「外来（通院）だけを個人ごとに見る上限」の二段階で計算します。まず外来の自己負担をその人ごとに外来上限で頭打ちにし、そのあとで入院分と合わせて世帯の限度額と比べます。適用した表と両方の上限額は結果画面に表示します。70歳以上には21,000円の足切りがなく、自己負担をすべて合算できる点も70歳未満と違います。なお現役並み所得者には外来だけの上限がありません。</p>
+<p class="faq-answer">出せます。70歳以上の区分は70歳に達する日の属する月の翌月から適用します。21,000円の足切りはなく、同じ被保険者と被扶養者の同月の対象自己負担を全額合算します。精算は外来個人、75歳到達時特例の個人、世帯の順です。各段階で支給される額を控除して次の上限と比べます。現役並み所得者に外来個人上限はありません（<a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">施行令41条3〜5項・42条3〜5項</a>）。適用した表と両方の上限額は結果画面に表示します。</p>
 </section>
 <section class="card">
 <h2 id="sources">出典</h2>
@@ -449,7 +449,7 @@
 <h2>関連する解説</h2>
 <!--rel:S--><ul class="rel-list"><li><a href="../column/kogaku-ryoyohi/">高額療養費の自己負担限度額【令和8年】年齢・標準報酬月額・非課税区分で確認</a><span class="rel-desc">限度額の区分を決めるのは年収ではなく標準報酬月額。報酬月額が1円違うだけで等級が上がり、医療費100万円・令和8年7月診療分までの自己負担が</span></li><li><a href="../column/maina-hokensho/">マイナ保険証とは何か — 健康保険法に「マイナ保険証」という言葉は一度も出てこない</a><span class="rel-desc">マイナ保険証は、健康保険証の利用登録がされたマイナンバーカードのこと。従来の健康保険証は有効期限が2025年12月1日で終了し、期限切れの証</span></li></ul><!--rel:E-->
 </section>
-<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E9%AB%98%E9%A1%8D%E7%99%82%E9%A4%8A%E8%B2%BB%E3%81%AE%E6%9C%88%E9%A1%8D%E4%B8%8A%E9%99%90%E3%81%A8%E6%89%95%E6%88%BB%E9%A1%8D%E3%82%92%E3%80%81%E8%A8%BA%E7%99%82%E6%9C%88%E3%83%BB%E5%B9%B4%E9%BD%A2%E3%83%BB%E7%99%82%E9%A4%8A%E6%9C%88%E3%81%AE%E6%A8%99%E6%BA%96%E5%A0%B1%E9%85%AC%E6%9C%88%E9%A1%8D%E3%83%BB%E9%9D%9E%E8%AA%B2%E7%A8%8E%E5%8C%BA%E5%88%86%E3%81%8B%E3%82%89%E8%A9%A6%E7%AE%97%E3%81%97%E3%81%BE%E3%81%99%E3%80%8270%E6%AD%B3%E6%9C%AA%E6%BA%80%E3%81%AE%E4%B8%96%E5%B8%AF%E5%90%88%E7%AE%97%E3%81%AF%E5%8C%BB%E7%A7%91%E3%83%BB%E6%AD%AF%E7%A7%91%E3%80%81%E5%85%A5%E9%99%A2%E3%83%BB%E5%A4%96%E6%9D%A5%E3%82%92%E5%88%86%E3%81%91%E3%81%9F%E5%90%84%E5%8C%BA%E5%88%8621%2C000%E5%86%86%E4%BB%A5%E4%B8%8A%E3%80%8170%E6%AD%B3%E4%BB%A5%E4%B8%8A%E3%81%AF%E5%85%A8%E9%A1%8D%E3%81%8C%E5%AF%BE%E8%B1%A1%E3%81%A7%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fkogaku-ryoyohi%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+<!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E9%AB%98%E9%A1%8D%E7%99%82%E9%A4%8A%E8%B2%BB%E3%81%AE%E6%9C%88%E9%A1%8D%E4%B8%8A%E9%99%90%E3%81%A8%E6%89%95%E6%88%BB%E9%A1%8D%E3%82%92%E8%A9%A6%E7%AE%97%E3%80%82%E8%A8%BA%E7%99%82%E6%9C%88%E3%83%BB%E5%B9%B4%E9%BD%A2%E3%83%BB%E7%99%82%E9%A4%8A%E6%9C%88%E3%81%AE%E6%A8%99%E6%BA%96%E5%A0%B1%E9%85%AC%E6%9C%88%E9%A1%8D%E3%83%BB%E9%9D%9E%E8%AA%B2%E7%A8%8E%E5%8C%BA%E5%88%86%E3%82%92%E9%81%B8%E3%81%B3%E3%80%81%E4%BF%9D%E9%99%BA%E9%81%A9%E7%94%A8%E5%88%86%E3%81%AE10%E5%89%B2%E9%A1%8D%E3%82%92%E5%85%A5%E5%8A%9B%E3%81%97%E3%81%BE%E3%81%99%E3%80%82%E4%B8%96%E5%B8%AF%E5%90%88%E7%AE%97%E3%83%BB%E5%A4%9A%E6%95%B0%E5%9B%9E%E8%A9%B2%E5%BD%93%E3%81%AB%E5%AF%BE%E5%BF%9C%E3%80%82%E7%99%BB%E9%8C%B2%E4%B8%8D%E8%A6%81%E3%83%BB%E7%84%A1%E6%96%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fkogaku-ryoyohi%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
 </main>
 
 <footer class="site"><p class="site-copy">© 税金・経理・補助金ツールズ</p><!-- site-links:auto --><div class="site-links"><a href="../about/">このサイトについて</a><a href="../privacy/">プライバシーポリシー</a><a href="../contact/">お問い合わせ</a><a href="../policy/editorial/">編集ポリシー</a><a href="../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto -->
@@ -463,6 +463,15 @@ import { calcKogaku } from "../assets/kogaku_core.js";
 import { KENKO_GRADES, kenkoGrade } from "../assets/shaho_core.js";
 
 const $ = (id) => document.getElementById(id);
+const lawSourceUrl = () => {
+  const ym = $("shinryo").value;
+  const revision = ym >= "2027-08"
+    ? "215IO0000000243_20270801_508CO0000000240"
+    : ym >= "2026-08"
+      ? "215IO0000000243_20260801_508CO0000000240"
+      : "215IO0000000243_20260729_508CO0000000240";
+  return `https://laws.e-gov.go.jp/api/2/law_data/${revision}?response_format=xml`;
+};
 const yen = (n) => "¥" + Math.round(n).toLocaleString("ja-JP");
 // "2026-08" → "2026年8月"（月の先頭の0を落とす。padStart したまま出すと「2026年08月」になる）
 const ymJa = (ym) => `${ym.slice(0, 4)}年${Number(ym.slice(5, 7))}月`;
@@ -479,13 +488,13 @@ const dataReady = fetch("../assets/kogaku_r08.json")
 // 「データが手に入らなかったこと」だけ。飾りのバグをデータ取得の失敗に化けさせない）。
 dataReady.then((ok) => {
   if (!ok || !DATA) return;
-  $("src-note").textContent = `限度額の出典：${DATA._meta.label}`;
+  $("src-note").innerHTML = `限度額の出典：<a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">${DATA._meta.label}</a>`;
   // 対応期間は**データに持たせて画面に出す**（ページに年を手書きすると、表を差し替えた日に画面だけが古い期間を名乗る）
   if (DATA.supported_through) {
     const [y, m] = DATA.supported_through.split("-");
     $("period-note").innerHTML = `<b>このツールが持っているのは ${y}年${Number(m)}月 診療分までの表です。</b>`;
   }
-  $("not-covered-list").innerHTML = DATA.not_covered.map((s) => `<li>${s}</li>`).join("");
+  $("not-covered-list").innerHTML = DATA.not_covered.map((s) => `<li>${s.replace("施行令41条1項", '<a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">施行令41条1項</a>')}</li>`).join("");
 }).catch(() => {});
 
 // 診療年月の既定は「今月」。★JST固定（toISOString はUTCなので月初の未明に前月へずれる）
@@ -564,7 +573,7 @@ function renderOver70(box, r, plannedNote = "") {
 
   const gairaiHtml = r.gairaiLimit != null
     ? `<p style="margin:12px 0 4px"><b>① 外来（通院）だけを個人ごとに見る上限：${yen(r.gairaiLimit)}／人・月</b>
-       <span style="font-size:12px;color:var(--sub)">（施行令42条5項）</span></p>
+       <span style="font-size:12px;color:var(--sub)">（<a href="${lawSourceUrl()}">施行令42条5項</a>）</span></p>
        <table class="tbl"><tbody>${personHtml || `<tr><td colspan="3">外来の受診がありません</td></tr>`}</tbody></table>`
     : `<div class="callout" style="margin-top:12px"><b>現役並み所得者には外来だけの上限（外来特例）がありません。</b>
        外来も入院もまとめて、下の世帯単位の限度額だけで判定します。</div>`;
@@ -572,7 +581,7 @@ function renderOver70(box, r, plannedNote = "") {
   const ann = r.annual;
   const annHtml = ann ? `
     <div class="callout" style="margin-top:12px"><b>年間上限：あとから申請すると戻る場合があります</b>
-    <p style="margin:8px 0 0;font-size:13px">1年の区切りは<b>${ymJa(ann.period.from)} 診療分 〜 ${ymJa(ann.period.through)} 診療分</b>です（暦年でも年度でもありません。施行令41条の2の「計算期間」）。</p>
+    <p style="margin:8px 0 0;font-size:13px">1年の区切りは<b>${ymJa(ann.period.from)} 診療分 〜 ${ymJa(ann.period.through)} 診療分</b>です（暦年でも年度でもありません。<a href="${lawSourceUrl()}">施行令41条の2</a>の「計算期間」）。</p>
     ${ann.gairai != null ? `<p style="margin:8px 0 0;font-size:13px">・<b>外来の年間上限：${yen(ann.gairai)}</b>（個人ごと・外来だけの合計）</p>` : ""}
     ${ann.household != null ? `<p style="margin:4px 0 0;font-size:13px">・<b>世帯の年間上限：${yen(ann.household)}</b>${ann.householdReduced ? "（標準報酬月額15万円以下のため軽減後の額です。保険者が確認できた場合）" : ""}</p>` : ""}
     <p style="margin:8px 0 0;font-size:13px"><b>これは窓口で引かれる仕組みではありません。</b>窓口では上の月額の限度額（${yen(r.limit)}）まで払い、
@@ -582,10 +591,10 @@ function renderOver70(box, r, plannedNote = "") {
 
   box.innerHTML = `
     ${plannedNote}
-    <p style="margin:0 0 6px">あなたの区分は <b>${k.label}</b>（${k.criteria}）です。<span style="font-size:12px;color:var(--sub)">${k.item}</span></p>
+    <p style="margin:0 0 6px">あなたの区分は <b>${k.label}</b>（${k.criteria}）です。<span style="font-size:12px;color:var(--sub)"><a href="${lawSourceUrl()}">${k.item}</a></span></p>
     <p style="margin:0 0 6px;font-size:13px;color:var(--sub)">適用した表：${r.table.label}</p>
     ${needStd() ? `<p style="margin:0 0 6px;font-size:13px;color:var(--sub)">判定に使った標準報酬月額：${Number($("mode").value === "std" ? $("std").value : kenkoGrade(Number($("monthly").value)).standard).toLocaleString("ja-JP")}円</p>` : ""}
-    <p style="margin:0 0 12px;font-size:13px;color:var(--sub)">70歳以上は<b>21,000円の足切りがなく、自己負担をすべて合算できます</b>（70歳未満だけの規律です）。</p>
+    <p style="margin:0 0 12px;font-size:13px;color:var(--sub)">70歳以上は<b>21,000円の足切りなし</b>。同じ被保険者と被扶養者の同月の対象自己負担を合算します。</p>
 
     <table class="tbl"><tbody>
       <tr><td>合算した医療費（10割）</td><td><b>${yen(r.totalMedical)}</b></td></tr>
@@ -600,7 +609,7 @@ function renderOver70(box, r, plannedNote = "") {
     ${gairaiHtml}
 
     <p style="margin:12px 0 4px"><b>② 世帯単位の限度額（入院を含む）：${yen(r.limit)}</b>
-      <span style="font-size:12px;color:var(--sub)">（施行令42条3項）</span></p>
+      <span style="font-size:12px;color:var(--sub)">（<a href="${lawSourceUrl()}">施行令42条3項</a>）</span></p>
     <p style="margin:0 0 8px;font-family:ui-monospace,monospace;font-size:13px">${r.tasukaiApplied ? `多数回該当 ${yen(r.limit)}` : formula}</p>
     <table class="tbl"><tbody>
       <tr><td>①のあとの外来分</td><td>${yen(r.gairaiSelfCapped)}</td></tr>
@@ -612,7 +621,7 @@ function renderOver70(box, r, plannedNote = "") {
 
     ${r.tasukai && !r.tasukaiAvailable
       ? `<div class="callout" style="margin-top:12px"><b>この区分には多数回該当がありません。</b>
-         ${k.label}の限度額には多数回該当の軽減が定められていないため（施行令42条3項${k.key === "teishotoku1" ? "6" : "5"}号にただし書がありません）、
+         ${k.label}の限度額には多数回該当の軽減が定められていないため（<a href="${lawSourceUrl()}">施行令42条3項</a>${k.key === "teishotoku1" ? "6" : "5"}号にただし書がありません）、
          多数回該当にチェックがあっても限度額は ${yen(r.limit)} のままです。</div>`
       : ""}
     ${!r.tasukai && r.tasukaiAvailable
@@ -700,12 +709,12 @@ $("calc").addEventListener("click", async () => {
     <p style="margin:8px 0 0;font-size:13px"><b>これは窓口で引かれる仕組みではありません。</b>窓口では上の月額の限度額（${yen(r.limit)}）まで払い、
     <b>1年が終わったあとに保険者へ申請して払い戻し（償還払い）を受けます</b>。申請しないと戻りません。
     協会けんぽの場合は「年間の高額療養費支給申請書兼自己負担額証明書交付申請書」です。</p>
-    <p style="margin:8px 0 0;font-size:12px;color:var(--sub)"><a href="https://laws.e-gov.go.jp/api/2/law_data/215IO0000000243_20260801_508CO0000000240?response_format=xml">施行令41条の3</a>では、被保険者・被扶養者の対象自己負担を世帯で合算します。70歳未満分は月ごとの一医療機関等21,000円以上（75歳到達時の特例は10,500円）が対象です。月ごとの高額療養費・外来年間合算などの支給済み額を控除し、70歳以上の世帯分は先に精算します。年間上限の所得区分は基準日で判定するため、診療月の入力と異なる場合があります。このツールは<b>上限額と期間をお知らせするだけで、あなたの年間累計は計算していません</b>。加入先の健康保険にご確認ください。</p>
+    <p style="margin:8px 0 0;font-size:12px;color:var(--sub)"><a href="${lawSourceUrl()}">施行令41条の3</a>では、被保険者・被扶養者の対象自己負担を世帯で合算します。70歳未満分は月ごとの一医療機関等21,000円以上（75歳到達時の特例は10,500円）が対象です。月ごとの高額療養費・外来年間合算などの支給済み額を控除し、70歳以上の世帯分は先に精算します。年間上限の所得区分は基準日で判定するため、診療月の入力と異なる場合があります。このツールは<b>上限額と期間をお知らせするだけで、あなたの年間累計は計算していません</b>。加入先の健康保険にご確認ください。</p>
     </div>` : "";
 
   box.innerHTML = `
     ${plannedNote}
-    <p style="margin:0 0 6px">あなたの区分は <b>${kubunName}</b>（${k.criteria}）です。<span style="font-size:12px;color:var(--sub)">${k.item}</span></p>
+    <p style="margin:0 0 6px">あなたの区分は <b>${kubunName}</b>（${k.criteria}）です。<span style="font-size:12px;color:var(--sub)"><a href="${lawSourceUrl()}">${k.item}</a></span></p>
     <p style="margin:0 0 6px;font-size:13px;color:var(--sub)">適用した表：${r.table.label}</p>
     <p style="margin:0 0 12px;font-size:13px;color:var(--sub)">${r.kubun.hikazei ? `被保険者が市町村民税非課税で、区分ア・イに該当しないため${kubunName}で判定しました。` : `判定に使った標準報酬月額：${standardMonthly.toLocaleString("ja-JP")}円`}</p>
 
@@ -725,7 +734,7 @@ $("calc").addEventListener("click", async () => {
     ${r.excluded.length
       ? `<div class="callout" style="margin-top:10px"><b>${r.excluded.length}件が合算されませんでした。</b>` +
         `70歳未満は、ひとつの病院等・ひとり・ひと月あたりの自己負担が<b>${yen(r.gassanMin)}以上</b>のものだけを合算できます` +
-        `（施行令41条1項1号かっこ書き）。${yen(r.gassanMin)}を超えた部分だけを足すのではなく、` +
+        `（<a href="${lawSourceUrl()}">施行令41条1項1号かっこ書き</a>）。${yen(r.gassanMin)}を超えた部分だけを足すのではなく、` +
         `<b>${yen(r.gassanMin)}未満の自己負担はまるごと対象外</b>です。この${r.excluded.length}件の自己負担 ` +
         `<b>${yen(r.excludedSelf)}</b> は戻ってきません。</div>`
       : ""}
@@ -733,7 +742,7 @@ $("calc").addEventListener("click", async () => {
     ${r.tasukai
       ? `<p style="margin:12px 0 0;font-size:13px">多数回該当のため定額 ${yen(r.limit)} で計算しました。多数回該当でなければ ${yen(r.limitNormal)} でした。</p>`
       : `<div class="callout" style="margin-top:12px"><b>この先も治療が続く場合</b>：当月を含む直近12か月に同一保険者・同一被保険者の支給対象月が3か月以上ある場合（70～74歳の外来個人上限による支給月を除く）、` +
-        `<b>4回目の月から限度額が ${yen(r.limitIfTasukai)} に下がります</b>（多数回該当・施行令42条1項各号ただし書）。` +
+        `<b>4回目の月から限度額が ${yen(r.limitIfTasukai)} に下がります</b>（多数回該当・<a href="${lawSourceUrl()}">施行令42条1項各号ただし書</a>）。` +
         `今回の ${yen(r.limit)} と比べて <b>${yen(Math.max(0, r.limit - r.limitIfTasukai))}</b> 軽くなります。暦年ではなく、その月から遡って12か月で数えます。</div>`}
 
     ${annHtml}
