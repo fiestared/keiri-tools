@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<!-- favicon:auto -->
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>債券の利回り：表面・直接・最終利回りを同じ価格と残存期間で検算</title><meta name="description" content="債券の利回りを、表面利率・直接利回り・単利の最終利回りに分けて検算。同じ額面・価格・残存期間の計算例から、税引後の受取額と購入時費用を含む複利IRRまで確認できます。利払時点、丸め、対象外も明記します。">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="canonical" href="https://keiri-tools.com/column/saiken-rimawari-keisan/">
+<!-- ogp:auto -->
+<meta property="og:type" content="article">
+<meta property="og:title" content="債券の利回り：表面・直接・最終利回りを同じ価格と残存期間で検算">
+<meta property="og:description" content="債券の利回りを、表面利率・直接利回り・単利の最終利回りに分けて検算。同じ額面・価格・残存期間の計算例から、税引後の受取額と購入時費用を含む複利IRRまで確認できます。利払時点、丸め、対象外も明記します。">
+<meta property="og:url" content="https://keiri-tools.com/column/saiken-rimawari-keisan/">
+<meta property="og:image" content="https://keiri-tools.com/ogp.png">
+<meta property="og:site_name" content="税金・経理・補助金ツールズ">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<!-- /ogp:auto -->
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E742DSDHPD"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-E742DSDHPD');</script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2635067516563578" crossorigin="anonymous"></script>
+<script src="../../assets/track.js" defer></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "債券の利回り：表面・直接・最終利回りを同じ価格と残存期間で検算",
+      "datePublished": "2026-10-24",
+      "dateModified": "2026-10-24",
+      "author": {
+        "@type": "Person",
+        "name": "Masahiro Yasu",
+        "url": "https://keiri-tools.com/about/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "ホーム",
+          "item": "https://keiri-tools.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "コラム",
+          "item": "https://keiri-tools.com/column/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "債券の利回り",
+          "item": "https://keiri-tools.com/column/saiken-rimawari-keisan/"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "表面利率と最終利回りは同じですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "同じとは限りません。表面利率は額面に対する年利息の割合で、償還まで保有する最終利回りは購入価格と償還額の差も反映します。額面と異なる価格で買うと、その差が効きます。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "直接利回りだけで償還までの収益が分かりますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "分かりません。直接利回りは年利息を購入価格で割った率で、償還差損益を含みません。償還まで保有する場合は、償還額との差も計算する必要があります。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "単利の最終利回りに税引後の割合を掛ければよいですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "その方法では税引後の収益を再現できない場合があります。この記事の計算でも、購入時費用は利子への課税とは別の支出になるためです。税引後の各受取額と購入時の総支出を分けて計算します。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "複利IRRは実際の再投資利回りですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "実際の再投資利回りではありません。仮定した将来の受取額の現在価値と購入時支出が一致する割引率です。受け取った利子を同じ率で運用できる保証はありません。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<!--nav-exp:toc-script S--><script src="../../assets/toc-rail.js" defer></script><!--nav-exp:toc-script E--></head>
+<body><header class="site">
+  <a class="brand" href="../../">税金・経理・補助金ツールズ</a>
+  <nav>
+    <a href="../../#tools">ツール</a>
+    <a href="../../hojokin/">補助金</a>
+    <a href="../../column/" aria-current="page">コラム</a>
+    <a href="../../toushi/">資産形成</a>
+  </nav>
+  <button type="button" class="site-search-btn" data-site-search aria-label="サイト内検索" aria-haspopup="dialog" aria-expanded="false"><svg class="site-search-icon" viewBox="0 0 20 20" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8.5" cy="8.5" r="5.75" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="site-search-label">検索</span></button>
+  <script type="module" src="../../assets/site_search.js"></script>
+</header><main><nav class="breadcrumb"><a href="../../">ホーム</a> › <a href="../">コラム</a> › 債券の利回り</nav><article>
+<h1>債券の利回り：表面・直接・最終利回りを同じ価格と残存期間で検算</h1><p class="article-meta">公開日: <time datetime="2026-10-24">2026年10月24日</time></p><p class="byline">文責: <a href="../../about/">Masahiro Yasu</a>（クリニック・EC事業の経営者／経理実務者）</p>
+<p>債券を償還まで保有する利回りは、利子だけでなく、購入価格と償還額の差も含めて計算します。表面利率は額面に対する年利息の割合なので、額面と違う価格で買った場合の収益率とは一致しません。</p>
+<p>以下は円建て固定利付債の架空例です。単利の最終利回りと、受取時点を反映する複利IRRを分けて検算します。実在商品の順位や将来の市場金利を示す表ではありません。</p>
+<!--rail-next:wrap--><div class="side-rail" data-nav-exp="wrap"><nav class="toc"><div class="toc-title">目次</div><ol><li><a href="#types">表面利率・直接利回り・最終利回りの違い</a></li><li><a href="#example">同じ債券の価格から検算する</a></li><li><a href="#net">税引後と購入時費用をそろえる</a></li><li><a href="#check">表示利回りと合わないときの確認表</a></li><li><a href="#summary">まとめ</a></li><li><a href="#faq">よくある質問</a></li><li><a href="#related">関連する解説</a></li><li><a href="#sources">出典</a></li></ol></nav><!--rail-next:S--><section class="rail-next" data-workflow-slot="toc_related_v1" aria-labelledby="rail-next-h"><div class="rail-next-title" id="rail-next-h">あわせて読む</div><ul><li><a href="../kojin-kokusai-kinri-table/">個人向け国債の金利</a></li><li><a href="../teiki-yokin-kinri-table/">定期預金の金利：基準日・預入期間・条件をそろえた税引前後の受取利息表</a></li><li><a href="../../toushi/tsumitate/">積立シミュレーター</a></li></ul></section><!--rail-next:E--></div><!--rail-next:wrapE-->
+<h2 id="types">表面利率・直接利回り・最終利回りの違い</h2>
+<p data-review-context="before-table">下表は、所定の利子が支払われ額面償還される円建て固定利付債の税引前・費用なしの定義です。最終利回りは償還まで保有する場合を示します。</p>
+<div class="scroll-wrap"><table><thead><tr><th>表示</th><th>計算の考え方</th><th>含めないもの</th></tr></thead><tbody>
+<tr><th>表面利率</th><td>年利息 ÷ 額面金額</td><td>購入価格との差</td></tr>
+<tr><th>直接利回り</th><td>年利息 ÷ 購入価格</td><td>償還差損益</td></tr>
+<tr><th>最終利回り・単利</th><td>年利息に償還差損益の年平均を足し、購入価格で割る</td><td>受取時点による現在価値の違い</td></tr>
+</tbody></table></div>
+<p>固定利付債を償還まで保有する税引前単利の最終利回りは、「｛年利息＋（償還価格−購入価格）÷残存年数｝÷購入価格」で求めます。残存年数は購入から償還までの期間です。百分率表示では、この比率を百分率に換算します。</p>
+<p>算式の出典は<a href="https://www.jpx.co.jp/glossary/sa/519.html">日本取引所グループ「最終利回り」</a>、直接利回りの定義は<a href="https://www.jpx.co.jp/glossary/ta/296.html">同「直接利回り」</a>です。債券の価格表示が額面当たりの単価なら、利息・償還額も同じ額面の単位にそろえます。</p>
+<h2 id="example">同じ債券の価格から検算する</h2>
+<p data-review-context="before-table">税引前の架空例です。円建て固定利付債を額面1,000,000円、購入980,000円、残存2年、年利息20,000円、年1回の利払いとします。利払直後に購入し、経過利子・費用はなし。所定の利子が支払われ、額面で償還されるまで保有する前提です。率は途中を丸めず、小数第4位で四捨五入した年率です。</p>
+<div class="scroll-wrap"><table><thead><tr><th>検算する率</th><th>代入と途中値</th><th class="num">年率</th></tr></thead><tbody>
+<tr><th>表面利率</th><td>20,000 ÷ 1,000,000</td><td class="num"><span class="numeric-token">2.000％</span></td></tr>
+<tr><th>直接利回り</th><td>20,000 ÷ 980,000</td><td class="num"><span class="numeric-token">2.041％</span></td></tr>
+<tr><th>最終利回り・単利</th><td>｛20,000＋（1,000,000−980,000）÷2｝÷980,000</td><td class="num"><span class="numeric-token">3.061％</span></td></tr>
+<tr><th>額面購入に変更・単利と年次複利IRR</th><td>購入価格のみ1,000,000円に変更、償還差損益なし</td><td class="num"><span class="numeric-token">2.000％</span></td></tr>
+<tr><th>最終利回り・年次複利IRR</th><td>980,000＝20,000÷(1+r)＋1,020,000÷(1+r)² を解く</td><td class="num"><span class="numeric-token">3.046％</span></td></tr>
+</tbody></table></div>
+<p>購入価格が額面より低い設例では、額面との差を満期に受け取るため、直接利回りより単利の最終利回りが高くなります。単利式は償還差益を年平均にしますが、IRRは実際に受け取る時点に割り引いて計算します。</p>
+<figure class="figure fig-wide" style="--figw:390px"><svg viewBox="0 0 660 170" role="img" aria-labelledby="flow-title"><title id="flow-title">利回りを計算する支出と受取の時点</title><path d="M65 80H595" stroke="currentColor" fill="none"/><circle cx="75" cy="80" r="6" fill="currentColor"/><circle cx="330" cy="80" r="6" fill="currentColor"/><circle cx="585" cy="80" r="6" fill="currentColor"/><g fill="currentColor" text-anchor="middle" font-size="17"><text x="75" y="45">購入</text><text x="330" y="45">利払い</text><text x="585" y="45">償還</text><text x="90" y="115">価格と費用を支出</text><text x="330" y="115">利子を受取</text><text x="555" y="115">元本と利子を受取</text></g></svg><figcaption>IRRは購入時の支出と、その後の受取を時点ごとに並べて求めます。</figcaption></figure>
+<p>複利IRRは、将来の受取額を現在価値に直した合計が購入時の支出と等しくなる割引率です。利子を受け取った後に、同じ率で再投資できることを保証するものではありません。</p>
+<h2 id="net">税引後と購入時費用をそろえる</h2>
+<p>費用の影響は、同じ価格と利払条件のまま購入時の支出を変えて比べます。次の税引後例は前表の額面購入の行と価格・残存期間・利払回数をそろえ、償還差損益の課税計算を混ぜていません。</p>
+<p data-review-context="before-table">国内特定公社債の課税利子を受け取る居住者個人が2026年末に購入し、2027年末・2028年末の年1回、利子の住民税込み合計税率20.315％で受け取る架空例です。額面・購入価格とも1,000,000円、残存2年、年1回の税引前利子20,000円とし、最後の利払いと同時に額面で償還されます。経過利子なし、税の端数処理を省いた比較概算で、年次IRRは小数第4位で四捨五入します。費用欄は税込みの支払総額です。</p>
+<div class="scroll-wrap"><table><thead><tr><th>項目</th><th class="num">費用なし</th><th class="num">購入時費用2,000円</th></tr></thead><tbody>
+<tr><th>購入時の総支出</th><td class="num"><span class="numeric-token">1,000,000円</span></td><td class="num"><span class="numeric-token">1,002,000円</span></td></tr>
+<tr><th>各年の税引後利子</th><td class="num"><span class="numeric-token">15,937円</span></td><td class="num"><span class="numeric-token">15,937円</span></td></tr>
+<tr><th>最終年の元本と利子</th><td class="num"><span class="numeric-token">1,015,937円</span></td><td class="num"><span class="numeric-token">1,015,937円</span></td></tr>
+<tr><th>税引後の年次複利IRR</th><td class="num"><span class="numeric-token">1.594％</span></td><td class="num"><span class="numeric-token">1.491％</span></td></tr>
+</tbody></table></div>
+<p>税引後例の利子は「税引前利子×（税率を控除した割合）」、IRRは「総支出＝税引後利子÷(1+r)＋（元本＋税引後利子）÷(1+r)²」で計算します。費用は支出に加えていますが、税務上の必要経費への算入や損益通算は計算していません。</p>
+<p class="hint">この税引後例は、非課税制度、法人・非居住者、外国源泉税、償還差損益の課税、確定申告による精算を対象外とします。利子の源泉徴収と申告の扱いは<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1310.htm">国税庁「No.1310 利息を受け取ったとき」</a>で確認できます。</p>
+<h2 id="check">表示利回りと合わないときの確認表</h2>
+<p>まず、単利と複利、税引前と税引後、価格と総支出のどれが違うかを確認します。年率という表示だけでは計算条件はそろいません。</p>
+<div class="scroll-wrap"><table><thead><tr><th>確認するもの</th><th>見る箇所</th></tr></thead><tbody>
+<tr><th>購入価格</th><td>額面ではなく実際の買付単価。価格の基準時点もそろえる</td></tr>
+<tr><th>残存期間</th><td>発行からの期間ではなく、受渡しから償還までの期間</td></tr>
+<tr><th>利払回数と日付</th><td>年利息と利払ごとの金額を区別し、受取時点をそろえる</td></tr>
+<tr><th>経過利子</th><td>利払途中に買ったときの精算額を購入時の支出に含める</td></tr>
+<tr><th>費用と税</th><td>買付代金以外の支出、源泉徴収、償還時の税を分ける</td></tr>
+<tr><th>丸め</th><td>日数計算、税の端数処理、表示桁数を確認する</td></tr>
+</tbody></table></div>
+<p>表の例は年単位で利払いと償還がそろう場合に限定しています。実際の受渡日が利払日の途中なら、経過利子や日数の扱いを発行条件・取引明細と合わせる必要があります。半年ごとの利払いを、年末にまとめて受け取る式へ置き換えるとIRRが変わります。</p>
+<p>また、外貨建て債券の外貨ベースの利回りを、そのまま円での収益率にはできません。変動利付債、期限前償還、利払停止や債務不履行がある場合も、この固定条件の表では再現できません。購入前に表示される利回りは、履行が保証された実績値ではありません。</p>
+<p>公表される国債の購入価格と最終利回りの関係は<a href="https://www.mof.go.jp/faq/jgbs/04ec.htm">財務省「国債の利回りはどのように決まるのでしょうか」</a>で確認できます。個人向け国債の募集金利と初回利息は<a href="../kojin-kokusai-kinri-table/">募集回号別の解説</a>に分けています。</p>
+<p>毎月の積立を想定年率から試算する場合は、次のツールで計算できます。債券の買付価格からIRRを求める機能ではありません。</p><a class="tool-cta" href="../../toushi/tsumitate/">積立額と想定年率による試算を見る</a>
+<h2 id="summary">まとめ</h2><div class="summary-box"><p>債券の利回りを検算するときは、年利息・購入価格・償還額・残存期間をそろえます。複利IRRでは受取時点を、税引後では税と費用の発生時点を分けて確認します。</p></div>
+<h2 id="faq">よくある質問</h2>
+<h3 class="faq-question">表面利率と最終利回りは同じですか？</h3><p class="faq-answer">同じとは限りません。表面利率は額面に対する年利息の割合で、償還まで保有する最終利回りは購入価格と償還額の差も反映します。額面と異なる価格で買うと、その差が効きます。</p>
+<h3 class="faq-question">直接利回りだけで償還までの収益が分かりますか？</h3><p class="faq-answer">分かりません。直接利回りは年利息を購入価格で割った率で、償還差損益を含みません。償還まで保有する場合は、償還額との差も計算する必要があります。</p>
+<h3 class="faq-question">単利の最終利回りに税引後の割合を掛ければよいですか？</h3><p class="faq-answer">その方法では税引後の収益を再現できない場合があります。この記事の計算でも、購入時費用は利子への課税とは別の支出になるためです。税引後の各受取額と購入時の総支出を分けて計算します。</p>
+<h3 class="faq-question">複利IRRは実際の再投資利回りですか？</h3><p class="faq-answer">実際の再投資利回りではありません。仮定した将来の受取額の現在価値と購入時支出が一致する割引率です。受け取った利子を同じ率で運用できる保証はありません。</p>
+<h2 id="related">関連する解説</h2><!--next-read:S--><section class="next-read"><h2>次に読む</h2><div class="tool-grid"><a class="tool-card" href="../ideco-tesuryo-table/"><b>iDeCoの手数料：加入時・毎月・運用指図中・受取時の費用を同条件で集計</b><span>iDeCoの手数料を支払先と発生時点で整理。連合会手数料の改定前後を、毎月拠出・年単位拠出の同条件で年額に直します。掛金停止後と給付回数の費用も固定設例で集計し、信託報酬や移換費用</span></a><a class="tool-card" href="../gaikadate-hoken-hiyo/"><b>外貨建て保険とは：円払込・外貨保険金・為替費用と解約控除を基準日付きで確認</b><span>外貨建て保険は、外貨の保険金額と円の受取額を分けて確認します。同じ公式商品資料の円入金・円支払レート、契約費用、解約控除を基準日付きの表に整理。架空の円換算例と、解約返戻金の見積り</span></a><a class="tool-card" href="../kojin-kokusai-kinri-table/"><b>個人向け国債の金利｜募集月・適用期間と税引後利息の早見表</b><span>個人向け国債の公表金利を募集月・回号・利子計算期間で確認。変動型の初回利率と固定型を区別し、同じ元本で初回利息を税引前後に分けて試算します。初回の日数調整、計算式、丸め方と対象外も</span></a></div></section><!--next-read:E-->
+<section class="related"><ul><li><a href="../kojin-kokusai-kinri-table/">個人向け国債の金利と初回利息</a></li><li><a href="../teiki-yokin-kinri-table/">定期預金の金利と受取利息</a></li></ul></section>
+<h2 id="sources">出典</h2><ul><li><a href="https://www.mof.go.jp/faq/jgbs/04ec.htm">財務省「国債の利回りはどのように決まるのでしょうか」</a>：価格・表面利率・償還期間と税引前単利の式。</li><li><a href="https://www.jpx.co.jp/glossary/sa/519.html">日本取引所グループ「最終利回り」</a>：償還まで保有する場合の定義と単利式。</li><li><a href="https://www.jpx.co.jp/glossary/ta/296.html">日本取引所グループ「直接利回り」</a>：年利息と購入価格の関係。</li><li><a href="https://support.microsoft.com/ja-jp/excel/functions/irr-function">Microsoft「IRR 関数」</a>：定期的な支出・受取と現在価値の関係。</li><li><a href="https://www.jpx.co.jp/glossary/ka/119.html">日本取引所グループ「経過利子」</a>：購入時に精算する利子相当額。</li><li><a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1310.htm">国税庁「No.1310 利息を受け取ったとき」とは</a>：課税利子の源泉徴収と申告。</li></ul>
+<p class="source-method" data-source-nolink="自サイトの架空設例の計算方法と確認・更新方針">制度・定義の確認日: 2026年10月24日。表は架空条件を固定した算術例で、複利IRRは記載した受取額から求めています。一次資料の変更時と年次に税率・対象範囲を確認します。</p>
+<p data-source-nolink="自サイトが提供する情報の範囲と相談先の案内">この記事は一般的な情報提供であり、個別の税務相談への回答ではありません。特定の金融商品の取得・売買を勧めるものではありません。実際の申告や取扱いは税務署・税理士・取扱金融機関にご確認ください。</p>
+</article><!-- x-share:auto --><div style="margin:20px 0 4px;font-size:13px"><a href="https://x.com/intent/tweet?text=%E5%82%B5%E5%88%B8%E3%81%AE%E5%88%A9%E5%9B%9E%E3%82%8A%E3%82%92%E3%80%81%E8%A1%A8%E9%9D%A2%E5%88%A9%E7%8E%87%E3%83%BB%E7%9B%B4%E6%8E%A5%E5%88%A9%E5%9B%9E%E3%82%8A%E3%83%BB%E5%8D%98%E5%88%A9%E3%81%AE%E6%9C%80%E7%B5%82%E5%88%A9%E5%9B%9E%E3%82%8A%E3%81%AB%E5%88%86%E3%81%91%E3%81%A6%E6%A4%9C%E7%AE%97%E3%80%82%E5%90%8C%E3%81%98%E9%A1%8D%E9%9D%A2%E3%83%BB%E4%BE%A1%E6%A0%BC%E3%83%BB%E6%AE%8B%E5%AD%98%E6%9C%9F%E9%96%93%E3%81%AE%E8%A8%88%E7%AE%97%E4%BE%8B%E3%81%8B%E3%82%89%E3%80%81%E7%A8%8E%E5%BC%95%E5%BE%8C%E3%81%AE%E5%8F%97%E5%8F%96%E9%A1%8D%E3%81%A8%E8%B3%BC%E5%85%A5%E6%99%82%E8%B2%BB%E7%94%A8%E3%82%92%E5%90%AB%E3%82%80%E8%A4%87%E5%88%A9IRR%E3%81%BE%E3%81%A7%E7%A2%BA%E8%AA%8D%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82%E5%88%A9%E6%89%95%E6%99%82%E7%82%B9%E3%80%81%E4%B8%B8%E3%82%81%E3%80%81%E5%AF%BE%E8%B1%A1%E5%A4%96%E3%82%82%E6%98%8E%E8%A8%98%E3%81%97%E3%81%BE%E3%81%99%E3%80%82&amp;url=https%3A%2F%2Fkeiri-tools.com%2Fcolumn%2Fsaiken-rimawari-keisan%2F&amp;via=keiri_tools" target="_blank" rel="noopener" style="color:var(--sub)">この内容をXで共有</a></div><!-- /x-share:auto -->
+</main><footer class="site">
+  <p>© 税金・経理・補助金ツールズ</p>
+  <!-- site-links:auto --><div class="site-links"><a href="../../about/">このサイトについて</a><a href="../../privacy/">プライバシーポリシー</a><a href="../../contact/">お問い合わせ</a><a href="../../policy/editorial/">編集ポリシー</a><a href="../../policy/disclosure/">収益化方針</a></div><!-- /site-links:auto --><!-- x-link:auto --><div style="margin-top:6px;font-size:12px;color:var(--sub)">法改定は施行日に反映しています。更新の通知 → <a href="https://x.com/keiri_tools" rel="me noopener" style="color:var(--sub)">@keiri_tools</a></div>
+</footer><script src="../../assets/empty-state.js" defer></script>
+</body></html>
