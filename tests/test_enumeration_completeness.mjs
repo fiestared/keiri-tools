@@ -37,6 +37,44 @@ const ROOT = resolve(fileURLToPath(new URL("../", import.meta.url)));
  */
 const ENUMERATIONS = [
   {
+    page: "docs/column/jitan-kinmu/index.html", element: "kaigo-family",
+    law: "厚生労働省『短時間勤務等の措置』介護休業制度特設サイト・対象家族",
+    why: "介護の対象家族の列挙を省略しない。",
+    items: [
+      { id: "spouse", label: "配偶者", must: /配偶者、父母/ },
+      { id: "parents", label: "父母", must: /父母、子/ },
+      { id: "child", label: "子", must: /子、祖父母/ },
+      { id: "grandparents", label: "祖父母", must: /祖父母、兄弟姉妹/ },
+      { id: "siblings", label: "兄弟姉妹", must: /兄弟姉妹、孫/ },
+      { id: "grandchild", label: "孫", must: /孫、配偶者の父母/ },
+      { id: "inlaws", label: "配偶者の父母", must: /配偶者の父母/ },
+    ],
+  },
+  {
+    page: "docs/column/jitan-kinmu/index.html", element: "kaigo-options",
+    law: "厚生労働省『短時間勤務等の措置』介護休業制度特設サイト・措置一覧",
+    why: "会社の選択的措置を育児の短時間勤務と取り違えない。",
+    items: [
+      { id: "short", label: "短時間勤務", must: /会社は短時間勤務/ },
+      { id: "flex", label: "フレックス", must: /フレックスタイム/ },
+      { id: "staggered", label: "時差出勤", must: /時差出勤/ },
+      { id: "subsidy", label: "費用助成等", must: /介護サービス費用の助成その他これに準ずる制度/ },
+    ],
+  },
+  {
+    page: "docs/column/jitan-kinmu/index.html", element: "ikuji-alternatives",
+    law: "厚生労働省『短時間勤務等の措置』育児休業制度特設サイト・代替措置",
+    why: "困難業務の協定除外に伴う代替措置を省略しない。",
+    items: [
+      { id: "leave", label: "育児休業準拠", must: /育児休業に準ずる制度/ },
+      { id: "telework", label: "テレワーク", must: /テレワーク等/ },
+      { id: "flex", label: "フレックス", must: /フレックスタイム/ },
+      { id: "staggered", label: "時差出勤", must: /時差出勤/ },
+      { id: "nursery", label: "保育施設", must: /保育施設の設置運営等/ },
+    ],
+  },
+
+  {
     page: "docs/column/ikuji-kaigo-kyugyoho/index.html", element: "flexible-options",
     law: "厚生労働省『育児・介護休業法 令和6年改正内容の解説』28頁",
     why: "柔軟な働き方の選択肢を省略せず示す。",

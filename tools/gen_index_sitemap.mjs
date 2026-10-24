@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "jitan-kinmu", // 時短勤務 Google月9,680・2026-10-24実測
   "saiken-rimawari-keisan", // 債券 利回り Google 2880/月（2026-10-24）
   "ideco-tesuryo-table", // iDeCo 手数料 Google月2,320（2026-10-24実測）。固定条件の事務費用表。
   "senjusha-kyuyo", // 専従者給与 Google月9,680（2026-10-24実測）。届出・支払記録・変更手続き。
@@ -750,7 +751,7 @@ const CATEGORIES = [
     slugs: [
       "shikaku-shutoku-todoke", "iryo-hoken-toha", "kenko-hoken-kumiai",
       "shakai-hoken-kanyu-joken", "shakai-hokenryo-keisan", "hyojun-hoshu-gakuhyo", "kyokai-kenpo-ryoritsu-ichiran",
-      "teiji-kettei", "zuiji-kaitei", "sanzen-sango-kyugyo", "ikuji-kaigo-kyugyoho", "sango-papa-ikukyu", "shoyo-shakaihoken", "shoyo-shiharaitodoke", "kaigo-hokenryo-itsukara", "kaigo-hoken-ho",
+      "teiji-kettei", "zuiji-kaitei", "sanzen-sango-kyugyo", "jitan-kinmu", "ikuji-kaigo-kyugyoho", "sango-papa-ikukyu", "shoyo-shakaihoken", "shoyo-shiharaitodoke", "kaigo-hokenryo-itsukara", "kaigo-hoken-ho",
       "kodomo-kosodate-shienkin", "kodomo-kosodate-kyoshutsukin", "shakai-hoken-fuyo-joken", "hifuyosha-ido-todoke", "kenpo-shikaku-soshitsu", "nenshu-no-kabe",
       "yakuin-shakai-hoken",
       "koyou-hoken-kanyu-joken", "koyou-hoken-hihokenshasho", "koyou-hokenryo-ritsu", "rosai-hokenryoritsu", "hitori-oyakata-rosai",
