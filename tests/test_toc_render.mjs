@@ -13,7 +13,7 @@ try{
   const btn=p.locator('.toc-toggle'),list=p.locator('.toc > ol');
   if(await btn.isVisible()){
    // PC（1200px以上）は最初から開く・スマホは最初は閉じる（2026-09-29）
-   const initOpen=width>=1200;assert.equal(await btn.getAttribute('aria-expanded'),String(initOpen));assert.equal(await list.isVisible(),initOpen);
+   const initOpen=true; // 2026-10-24 Masahiro: 目次は幅を問わず初期表示で開くassert.equal(await btn.getAttribute('aria-expanded'),String(initOpen));assert.equal(await list.isVisible(),initOpen);
    if(initOpen){await btn.click();assert.equal(await btn.getAttribute('aria-expanded'),'false');}
    await btn.click();assert.equal(await btn.getAttribute('aria-expanded'),'true');assert(await list.isVisible());
    await btn.click();assert.equal(await btn.getAttribute('aria-expanded'),'false');assert(!await list.isVisible());

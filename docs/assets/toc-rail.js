@@ -123,7 +123,7 @@
     if (desktop && long) list.style.maxHeight = Math.max(96, room) + 'px';
     // 長い目次も、PCでは最初から開いておく（右レールに場所があるので、読者が開く手間を省く。2026-09-29）。
     // スマホは目次が本文の前に並ぶので、開くと本文が下へ押し出される。最初は閉じたままにする。
-    state(long ? (chosen ?? desktop) : true);
+    state(long ? (chosen ?? true) : true);
     rail.classList.toggle('toc-rail-tall', rail.getBoundingClientRect().height > innerHeight - 104 - band);
     current?.removeAttribute('aria-current'); current = null; spy(); cue();
     if (focused) button.focus({preventScroll:true});
