@@ -34,6 +34,7 @@ const CHECK = process.argv.includes("--check");
 
 /** 一覧の並び(検索需要の大きい順。ここに無い記事は日付降順で末尾) */
 const ORDER = [
+  "senjusha-kyuyo", // 専従者給与 Google月9,680（2026-10-24実測）。届出・支払記録・変更手続き。
   "karikata-kashikata", // 借方 貸方 合計月12,100・Google9,680（2026-10-24実測）。左右判定の入門。
   "kojin-jigyonushi-zeikin", // 個人事業主 税金 12,100/月（2026-10-24需要ゲート）。個別税を束ねるハブ。
   "eat-in-shohizei", // イートイン 消費税 1,300/月（2026-10-24実測）
@@ -780,7 +781,7 @@ const CATEGORIES = [
       "shotoku-kingaku-chosei-kojo",
       "hokenryo-kojo-shinkokusho", "seimei-hokenryo-kojo-shomeisho", "nenmatsu-chosei-gakushi-hoken", "kokumin-nenkin-kojo-shomeisho", "ideco-nenmatsu-chosei", "jutaku-kojo-shinkokusho", "fuyo-kojo-shinkokusho", "haigusha-tokubetsu-kojo", "gensen-kojo-taisho-haigusha", "tokutei-shinzoku-tokubetsu-kojo", "gaikoin-hoshu", "gensen-choshu-toha", "gensen-choshuhyo-mikata", "kyuyo-shotoku-kojo", "gensen-zeigakuhyo-mikata", "gensen-zeigakuhyo-r09", "gensen-choshubo",
       "hoteichosho-goukeihyo", "kyuyo-shiharai-hokokusho", "shiharai-chosho", "shakai-hokenryo-kojo", "seimei-hokenryo-kojo", "jishin-hokenryo-kojo", "jutaku-loan-kojo-yoken", "iryohi-kojo-ikura-kara", "tokutei-shishutsu-kojo", "zasson-kojo",
-      "taishokukin-zeikin", "taishoku-shotoku-shinkokusho", "taishoku-gensen-choshuhyo", "gensen-choshuhyo-saihakko", "gensen-choshuhyo-itsu", "nenmatsu-chosei-kakutei-shinkoku-chigai", "nenmatsu-chosei-iryohi-kojo", "shokibo-kyosai-uketori", "fukugyo-20man-kakutei-shinkoku", "kinyu-shotoku-kazei-2027", "angoshisan-zeikin", "tokutei-koza-gensen-ari", "haitokin-kakutei-shinkoku", "nisa-kakutei-shinkoku", "jugyoin-mochikabukai", "gaikoku-zeigaku-kojo", "kaigyo-todoke", "yago", "haigyo-todoke", "aoiro-tokubetsu-kojo", "aoiro-shonin-shinseisho", "shiroiro-shinkoku", "kakutei-shinkoku-hitsuyo-shorui", "kakutei-shinkoku-itsumade", "junkakutei-shinkoku", "kaji-anbun", "kanai-rodosha-tokurei", "jigyonushi-kashi-kari", "yotei-nozei-toha", "kojin-jigyozei",
+      "taishokukin-zeikin", "taishoku-shotoku-shinkokusho", "taishoku-gensen-choshuhyo", "gensen-choshuhyo-saihakko", "gensen-choshuhyo-itsu", "nenmatsu-chosei-kakutei-shinkoku-chigai", "nenmatsu-chosei-iryohi-kojo", "shokibo-kyosai-uketori", "fukugyo-20man-kakutei-shinkoku", "kinyu-shotoku-kazei-2027", "angoshisan-zeikin", "tokutei-koza-gensen-ari", "haitokin-kakutei-shinkoku", "nisa-kakutei-shinkoku", "jugyoin-mochikabukai", "gaikoku-zeigaku-kojo", "kaigyo-todoke", "yago", "haigyo-todoke", "aoiro-tokubetsu-kojo", "aoiro-shonin-shinseisho", "senjusha-kyuyo", "shiroiro-shinkoku", "kakutei-shinkoku-hitsuyo-shorui", "kakutei-shinkoku-itsumade", "junkakutei-shinkoku", "kaji-anbun", "kanai-rodosha-tokurei", "jigyonushi-kashi-kari", "yotei-nozei-toha", "kojin-jigyozei",
       "shusei-shinkoku-kosei-seikyu", "zeimu-chosa", "zeimu-dairi-kengen-shosho", "fufuku-moshitate", "nozei-shomeisho",
     
       "kakutei-shinkokusho-kakikata", "kakutei-shinkoku-yarikata",
