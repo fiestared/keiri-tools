@@ -28,7 +28,7 @@
     {
       "@type": "WebApplication",
       "datePublished": "2026-07-21",
-      "dateModified": "2026-10-20",
+      "dateModified": "2026-10-24",
       "name": "扶養控除シミュレーター",
       "applicationCategory": "FinanceApplication",
       "operatingSystem": "Web",
@@ -87,7 +87,7 @@
           "name": "Q. 別居している親でも扶養控除は受けられますか？",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "A. 受けられます。要件は「生計を一にしている」ことで、同居は必須ではありません。仕送りで親の生活費を支えていれば、別居の親も対象になり得ます。ただし、所得などの要件は同居の場合と同じです。公的年金だけなら、公的年金等控除を引いた後の所得で判定します。国外に住む親は、年齢と書類の条件が加わります（国外の節）。同居の場合や入院・老人ホームの扱いは、区分の節にあります。"
+            "text": "A. 受けられます。要件は「生計を一にしている」ことで、同居は必須ではありません。仕送りで親の生活費を支えていれば、別居の親も対象になり得ます。ただし、所得などの要件は同居の場合と同じです。課税対象の公的年金等は、公的年金等控除を引いた後の所得で判定します。非課税の遺族年金等は合計所得金額に含めません。国外に住む親は、年齢と書類の条件が加わります（国外の節）。同居の場合や入院・老人ホームの扱いは、区分の節にあります。"
           }
         },
         {
@@ -134,7 +134,7 @@
 
 <section class="hero">
   <h1>扶養控除シミュレーター</h1>
-  <p class="article-meta">公開日: <time datetime="2026-07-21">2026年7月21日</time>（更新日: <time datetime="2026-10-20">2026年10月20日</time>）</p>
+  <p class="article-meta">公開日: <time datetime="2026-07-21">2026年7月21日</time>（更新日: <time datetime="2026-10-24">2026年10月24日</time>）</p>
   <p><b>扶養控除</b>による税負担の減少額を試算できます。<b>扶養親族の区分と人数</b>・<b>課税される所得金額</b>を入れるだけで、<b>年間いくら税金が下がるか</b>を自動計算します（<a href="#reidai">計算例</a>）。</p>
 </section>
 
@@ -174,7 +174,7 @@
 <p><b>入れるのは「年収」ではなく「課税される所得金額」です</b></p>
 <p>このツールは、税率を決める<b>課税される所得金額</b>から節税額を計算します。年収から給与所得控除・基礎控除・社会保険料控除などをすべて引いた後の金額です。</p>
 <ul>
-<li>源泉徴収票：「給与所得控除後の金額」から「所得控除の額の合計額」を引いた額</li>
+<li>源泉徴収票：「給与所得控除後の金額」から「所得控除の額の合計額」を引き、千円未満を切り捨てた額</li>
 <li>確定申告書：「課税される所得金額」の欄</li>
 </ul>
 <p>すでに扶養控除を受けている人は、上記の源泉徴収票から求めた額も、確定申告書の課税所得も扶養控除を引いた後の金額です。そのまま入れると二重に引くことになるため、<b>「扶養控除を引く前」の課税所得</b>（いま扶養控除を外したらいくらになるか）を入れると正確です。</p>
@@ -202,7 +202,7 @@
 
 <ul>
 <li>特定扶養親族（大学生の年代）の所得税の控除額は区分中で最大で、一般との差は25万円です。</li>
-<li><b>同居老親等</b>は、老人扶養親族のうち、納税者またはその配偶者の直系尊属（父母・祖父母など）で、納税者またはその配偶者と普段同居している人です（治療入院は長期も含め同居扱い、老人ホーム入所は除く）。所得税の控除額は老人扶養親族の48万円に10万円を加えた58万円で、老人ホーム入所の場合は48万円です。</li>
+<li><b>同居老親等</b>は、老人扶養親族のうち、納税者またはその配偶者の直系尊属（父母・祖父母など）で、納税者またはその配偶者と普段同居している人です（治療入院は長期も含め同居扱い、老人ホーム入所は除く）。同居老親等の所得税の控除額は58万円です。老人扶養親族が老人ホームに入所すると、所得税控除額は48万円です。</li>
 <li>同居老親等に当たるかどうかは、年末調整を行う日の現況により判定します。</li>
 </ul>
 
@@ -253,7 +253,7 @@
 
 <h2 id="reidai">課税所得別の節税額の例</h2>
 
-<p data-review-context="before-table">下の表は、扶養控除を引く前の課税所得ごとに、扶養親族1人で減る令和8年分（2026年分）の年間税額をこのツールと同じ令和8年分の所得税速算表で計算した実数です。1人あたりの節税額は、課税所得に応じた所得税率によって変わります。所得税は復興特別所得税を含み、住民税は所得割10%の概算です。住宅ローン控除などの税額控除で所得税が少ない人は、これより小さくなることがあります。</p>
+<p data-review-context="before-table">下の表は、扶養親族1人による令和8年分の節税額の試算です。扶養控除前の課税所得ごとに、税額控除の影響がない場合を計算しています。所得税は復興特別所得税を含む最終端数処理前の税額差で、住民税は所得割10%の概算です。年末調整では年税額の百円未満を切り捨てるため、実際の減税額とは差が出ます。</p>
 
 <div class="scroll-wrap">
 <table>
@@ -261,11 +261,11 @@
 <tr><th scope="col" class="num">扶養控除前の課税所得</th><th scope="col" class="num">一般1人（38万/33万円）</th><th scope="col">特定1人（63万/45万円）</th></tr>
 </thead>
 <tbody>
-<tr><td class="num"><span class="numeric-token">200万円</span></td><td class="num"><b><span class="numeric-token">54,951円</span></b></td><td>計算例省略</td></tr>
+<tr><td class="num"><span class="numeric-token">200万円</span></td><td class="num"><b><span class="numeric-token">54,951.5円</span></b></td><td>計算例省略</td></tr>
 <tr><td class="num"><span class="numeric-token">300万円</span></td><td class="num"><b><span class="numeric-token">71,798円</span></b></td><td><b><span class="numeric-token">109,323円</span></b></td></tr>
 <tr><td class="num"><span class="numeric-token">500万円</span></td><td class="num"><b><span class="numeric-token">110,596円</span></b></td><td><b><span class="numeric-token">173,646円</span></b></td></tr>
-<tr><td class="num"><span class="numeric-token">700万円</span></td><td class="num"><b><span class="numeric-token">112,128円</span></b></td><td>計算例省略</td></tr>
-<tr><td class="num"><span class="numeric-token">900万円</span></td><td class="num"><b><span class="numeric-token">122,236円</span></b></td><td>計算例省略</td></tr>
+<tr><td class="num"><span class="numeric-token">700万円</span></td><td class="num"><b><span class="numeric-token">112,127.5円</span></b></td><td>計算例省略</td></tr>
+<tr><td class="num"><span class="numeric-token">900万円</span></td><td class="num"><b><span class="numeric-token">122,235.4円</span></b></td><td>計算例省略</td></tr>
 </tbody>
 </table>
 </div>
@@ -273,7 +273,7 @@
 <p class="hint">見出しのかっこ内は、所得税／住民税の控除額です。「計算例省略」は例を載せていない欄で、対象外という意味ではありません。</p>
 
 
-<p>令和8年分の上表では、扶養親族1人が特定扶養親族で控除前課税所得500万円の内訳は、所得税126,000円・復興特別所得税2,646円・住民税45,000円です。令和8年分に同居老親等に当たる扶養親族1人・扶養控除前の課税所得400万円なら、税額控除の影響がない場合の年間節税額は163,436円です（住民税は上表と同じ概算）。</p>
+<p>令和8年分の上表では、扶養親族1人が特定扶養親族で控除前課税所得500万円の内訳は、所得税126,000円・復興特別所得税2,646円・住民税45,000円です。令和8年分に同居老親等に当たる扶養親族1人・扶養控除前の課税所得400万円なら、上表と同じ前提で節税額は163,436円です。</p>
 
 <div class="callout">
 <p><b>所得税と住民税を分けて計算</b></p>
@@ -346,7 +346,7 @@
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>ありません。16歳未満の子ども（年少扶養親族）は扶養控除の対象外で、代わりに児童手当が支給されるため、扶養控除の区分表に16歳未満の欄はありません。年齢は通常12月31日で判定します（本人・親族の死亡や本人の出国のときの例外は<a href="#kubun">区分の節</a>）。年末調整の扶養控除等申告書に16歳未満の子どもを書く欄がありますが、これは住民税の計算などに使われるもので、所得税の扶養控除にはつながりません。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>別居している親でも扶養控除は受けられますか？</h3>
-<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>受けられます。要件は「生計を一にしている」ことで、同居は必須ではありません。仕送りで親の生活費を支えていれば、別居の親も対象になり得ます。ただし、<a href="#yoken">所得などの要件</a>は同居の場合と同じです。公的年金だけなら、公的年金等控除を引いた後の所得で判定します。国外に住む親は、年齢と書類の条件が加わります（<a href="#kokugai">国外の節</a>）。同居の場合や入院・老人ホームの扱いは、<a href="#kubun">区分の節</a>にあります。</p>
+<p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>受けられます。要件は「生計を一にしている」ことで、同居は必須ではありません。仕送りで親の生活費を支えていれば、別居の親も対象になり得ます。ただし、<a href="#yoken">所得などの要件</a>は同居の場合と同じです。課税対象の公的年金等は、公的年金等控除を引いた後の所得で判定します。非課税の遺族年金等は合計所得金額に含めません。国外に住む親は、年齢と書類の条件が加わります（<a href="#kokugai">国外の節</a>）。同居の場合や入院・老人ホームの扱いは、<a href="#kubun">区分の節</a>にあります。</p>
 
 <h3 class="faq-question"><span class="faq-existing-marker" aria-hidden="true">Q. </span>共働きの場合、子どもはどちらの扶養に入れるべきですか？</h3>
 <p class="faq-answer"><span class="faq-existing-marker" aria-hidden="true">A. </span>双方で控除前後の税額を計算して比べます。たとえば特定扶養親族1人について、所得税率20%の親なら年17万円強、5%の親なら概算年約7.7万円と差がつきます（住民税の調整控除等によって変動）。同じ扶養親族について控除できるのは、いずれか一人の所得者だけです。比較する際は、税率区分をまたぐ場合や課税所得が少なく控除を使い切れない場合も含めて計算します。</p>
@@ -368,7 +368,7 @@
 <li>国税庁「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1410.htm">給与所得控除</a>」</li>
 <li>国税庁「No.1180 <a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/1180.htm">扶養控除</a>」[令和8年4月1日現在法令等] — 控除額（区分表）、扶養親族の4要件、非居住者の追加要件、入院・老人ホームの同居の取り扱い、改正の施行時期を参照。</li>
 <li>国税庁「<a href="https://www.nta.go.jp/publication/pamph/gensen/nencho2026/pdf/nencho_all.pdf">令和8年分 年末調整のしかた</a>」— 扶養親族の所得要件（要件の節）、給与所得控除の最低保障額と低収入域の給与所得なしを含む給与所得控除後の金額の表を参照。</li>
-<li>国税庁「<a href="https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/index.htm">令和8年版 源泉徴収のあらまし</a>」— 扶養控除額と扶養親族等の定義（<a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-Pa_2-Ch_2-Se_4-At_84">所得税法84条</a>・<a href="https://laws.e-gov.go.jp/law/332AC0000000026/20261201_508AC0000000012">租税特別措置法41条の16</a>等）を参照。令和8年分の控除額は一般38万円、特定63万円、老人48万円、同居老親等58万円。</li>
+<li>国税庁「<a href="https://www.nta.go.jp/publication/pamph/gensen/aramashi2026/pdf/04.pdf">令和8年版 源泉徴収のあらまし（給与所得）</a>」— 扶養控除額と扶養親族等の定義（<a href="https://laws.e-gov.go.jp/law/340AC0000000033/20261201_508AC0000000012#Mp-Pa_2-Ch_2-Se_4-At_84">所得税法84条</a>・<a href="https://laws.e-gov.go.jp/law/332AC0000000026/20261201_508AC0000000012">租税特別措置法41条の16</a>等）を参照。令和8年分の控除額は一般38万円、特定63万円、老人48万円、同居老親等58万円。</li>
 <li><a href="https://laws.e-gov.go.jp/law/325AC0000000226#Mp-At_314_2">地方税法314条の2</a>第1項11号・第4項 — 住民税の扶養控除額（一般33万円・特定45万円・老人38万円・同居老親等45万円）</li>
 <li>国税庁「<a href="https://www.nta.go.jp/taxes/shiraberu/taxanswer/shotoku/2260.htm">No.2260 所得税の税率</a>」— 所得税の速算表（5%〜45%）。</li>
 
